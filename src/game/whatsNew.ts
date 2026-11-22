@@ -20,6 +20,17 @@ export interface Release {
 
 export const WHATS_NEW: Release[] = [
   {
+    version: '0.10.2',
+    date: '2026-11-23',
+    title: 'Walk them home',
+    items: [
+      'New stage: Stuck in the Reeds. I free the little ones and lead them home past the heron.',
+      'If a little one runs off the screen, an arrow with its face points the way.',
+      'I look the same in every move now: the same soft fur, climbing, swimming or swinging.',
+      'When I cheer, no ghostly second sloth shows behind me.',
+    ],
+  },
+  {
     version: '0.10.1',
     date: '2026-11-21',
     title: 'Count to four',

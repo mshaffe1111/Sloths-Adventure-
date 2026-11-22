@@ -67,14 +67,11 @@ export function swimFrame(p: Pick<PlayerState, 'vx' | 'swim'>, time: number): { 
   return { move, i: Math.floor(time * m.fps) % m.at.length };
 }
 
-/** a change of move (treading to the crawl, the first-swim moment to treading) cross-fades over this long (s): no pop between poses */
-const FADE = 0.22;
-/** the move on screen, the one before it and when it changed (one Pokey swims at a time; a gap in the drawing starts afresh) */
-let shown: { move: SwimMoveName; i: number; since: number; at: number; prev?: { move: SwimMoveName; i: number } } | null = null;
+// (a change of move, treading to the crawl or the first-swim moment to treading, is a CUT: two different poses cross-faded drew two
+// see-through sloths, R-165.382, heroClipsCut.test.ts)
 
 /** draws one frame of a move, anchored as the move is (the waterline on the water's top, the dive about the middle of his body) */
-function drawMove(ctx: CanvasRenderingContext2D, p: PlayerState, time: number, move: SwimMoveName, i: number, alpha: number) {
-  if (alpha <= 0.01) return;
+function drawMove(ctx: CanvasRenderingContext2D, p: PlayerState, time: number, move: SwimMoveName, i: number) {
   const m = SWIM_MOVES[move];
   const [fx, fy] = m.at[i];
   // (each a little high in the water, LIFT: a kid has to see him swim, his head, shoulders and arms out, not a head on the water)
@@ -82,7 +79,6 @@ function drawMove(ctx: CanvasRenderingContext2D, p: PlayerState, time: number, m
   ctx.save();
   ctx.translate(p.x, y);
   ctx.scale(p.facing, 1);
-  ctx.globalAlpha *= alpha;
   ctx.globalAlpha *= heroBlinkAlpha(p, time);
   ctx.imageSmoothingEnabled = true;
   ctx.imageSmoothingQuality = 'high';
@@ -95,12 +91,7 @@ function drawMove(ctx: CanvasRenderingContext2D, p: PlayerState, time: number, m
 export function drawSwimHero(ctx: CanvasRenderingContext2D, p: PlayerState, time: number): boolean {
   if (!p.swim || !swimAtlasReady()) return false;
   const { move, i } = swimFrame(p, time);
-  if (!shown || time < shown.at || time - shown.at > 0.3) shown = { move, i, since: -Infinity, at: time };
-  else if (shown.move !== move) shown = { move, i, since: time, at: time, prev: { move: shown.move, i: shown.i } };
-  else Object.assign(shown, { i, at: time });
-  const u = Math.min(1, (time - shown.since) / FADE);
-  if (u < 1 && shown.prev) drawMove(ctx, p, time, shown.prev.move, shown.prev.i, 1 - u);
-  drawMove(ctx, p, time, move, i, Math.min(1, u * 1.7));
+  drawMove(ctx, p, time, move, i);
   return true;
 }
 

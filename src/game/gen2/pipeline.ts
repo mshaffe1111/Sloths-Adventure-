@@ -3641,6 +3641,13 @@ export function fillSockets(laid: Laid, budget: StageBudget, kit: WorldKit, seed
         // out by a quota; the goal is a share of those laid, goals.ts)
         C.push({ id: sink.nextCollectibleId(), type: 'relic', mark: 'meeca', x: k.x, y: k.piece.y - (s.dn ?? 30), collected: false, bobPhase: 0 });
         fills.push({ section: sec.uid, socket: s.id, role: 'objective', what: 'mark', x: k.x, y: k.y });
+      } else if (s.role === 'objective' && s.allow?.includes('cage')) {
+        // (a DESIGNED cage (any world's: a socket allowing 'cage' and its little one), laid where the designer put it, every one, never
+        // shared out by a quota: a rolled graph's nodes carry none (missionGraph's spine alone sets them). Its little one rides on it, so a
+        // stage whose little ones follow him (followPlay.ts) joins it to the line when the cage bursts; the goal is goals.ts's count)
+        const critter = (['capy', 'duck', 'otter', 'eaglet'] as const).find((k) => s.allow!.includes(k));
+        C.push({ id: sink.nextCollectibleId(), type: 'cage', x: k.x, y: k.piece.y - (s.dn ?? 30), collected: false, bobPhase: 0, cageHp: 2, ...(critter ? { critter } : {}) });
+        fills.push({ section: sec.uid, socket: s.id, role: 'objective', what: 'cage', x: k.x, y: k.y });
       } else if (s.role === 'objective') {
         const wantN = graphObjectives(laid, sec);
         if (objectives >= wantN) continue;

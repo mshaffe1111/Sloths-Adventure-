@@ -1,0 +1,7 @@
+normal upright gone {"fx":5620,"cam":5545,"n":0,"faces":["duck:open","otter:spooked","capy:open"],"line":["duck:follow@5798","otter:spooked@5620","capy:follow@5832"]}
+normal sideways gone {"fx":5290,"cam":5214,"n":0,"faces":["duck:open","otter:spooked","capy:open"],"line":["duck:follow@5846","otter:spooked@5290","capy:follow@5880"]}
+normal gone lines 2 not duck+capybara open 0 exit 0
+easy upright gone {"fx":5660,"cam":5585,"n":0,"faces":["duck:open","otter:spooked","capy:open"],"line":["duck:follow@5838","otter:spooked@5660","capy:follow@5872"]}
+easy sideways gone {"fx":5330,"cam":5254,"n":0,"faces":["duck:open","otter:spooked","capy:open"],"line":["duck:follow@5886","otter:spooked@5330","capy:follow@5920"]}
+easy gone lines 2 not duck+capybara open 0 exit 0
+SLOT CONFIRM PASS

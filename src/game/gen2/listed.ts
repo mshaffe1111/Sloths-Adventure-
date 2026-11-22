@@ -16,6 +16,7 @@ import { finish19, kitLib19 } from './worlds/w1Arc19.ts';
 import { w2Finish, w2World } from './worlds/w2.ts';
 import { finish21, kitLib21 } from './worlds/w2Arc21.ts';
 import { kitLib22 } from './worlds/w2Arc22.ts';
+import { finish23, kitLib23 } from './worlds/w2Arc23.ts';
 import { kitLib24 } from './worlds/w2Arc24.ts';
 import { kitLib25 } from './worlds/w2Arc25.ts';
 import type { Difficulty } from '../difficulty.ts';
@@ -40,15 +41,15 @@ export interface ListedStage {
 }
 
 /** the world kits a row names (worlds/stageTable.ts `kit`); 'w1-12' is World 1's with 1-2's manifest-wide rows over it (w1Arc12.ts) */
-const KITS: Record<string, () => WorldKit> = { w1: w1World, 'w1-12': () => kitLib12(), 'w1-14': kitLib14, 'w1-15': kitLib15, 'w1-16': kitLib16, 'w1-17': kitLib17, 'w1-18': kitLib18, 'w1-19': kitLib19, w2: w2World, 'w2-21': kitLib21, 'w2-22': kitLib22, 'w2-24': kitLib24, 'w2-25': kitLib25 };
+const KITS: Record<string, () => WorldKit> = { w1: w1World, 'w1-12': () => kitLib12(), 'w1-14': kitLib14, 'w1-15': kitLib15, 'w1-16': kitLib16, 'w1-17': kitLib17, 'w1-18': kitLib18, 'w1-19': kitLib19, w2: w2World, 'w2-21': kitLib21, 'w2-22': kitLib22, 'w2-23': kitLib23, 'w2-24': kitLib24, 'w2-25': kitLib25 };
 /** each kit's world finish (by kit name; every World 1 kit runs World 1's). A row's world finish, World 1's when it names none (a test's fixture) */
 type WorldFinish = NonNullable<ListedStage['world']>;
 const W1: WorldFinish = (st, squirrels) => w1Finish(st as never, squirrels) as typeof st;
 const W2: WorldFinish = (st, _squirrels, difficulty) => w2Finish(st as never, difficulty) as typeof st;
 export const worldFinish = (row: Pick<ListedStage, 'world'>): WorldFinish => row.world ?? W1;
-const WORLD: Record<string, WorldFinish> = { w1: W1, 'w1-12': W1, 'w1-14': W1, 'w1-15': W1, 'w1-16': W1, 'w1-17': W1, 'w1-18': W1, 'w1-19': W1, w2: W2, 'w2-21': W2, 'w2-22': W2, 'w2-24': W2, 'w2-25': W2 };
+const WORLD: Record<string, WorldFinish> = { w1: W1, 'w1-12': W1, 'w1-14': W1, 'w1-15': W1, 'w1-16': W1, 'w1-17': W1, 'w1-18': W1, 'w1-19': W1, w2: W2, 'w2-21': W2, 'w2-22': W2, 'w2-23': W2, 'w2-24': W2, 'w2-25': W2 };
 /** the kits' own finishes, run after the world's (by kit name) */
-const FINISH: Record<string, ListedStage['finish']> = { 'w1-14': finish14 as ListedStage['finish'], 'w1-16': finish16 as ListedStage['finish'], 'w1-17': finish17 as ListedStage['finish'], 'w1-18': finish18 as ListedStage['finish'], 'w1-19': finish19 as ListedStage['finish'], 'w2-21': finish21 as ListedStage['finish'] };
+const FINISH: Record<string, ListedStage['finish']> = { 'w1-14': finish14 as ListedStage['finish'], 'w1-16': finish16 as ListedStage['finish'], 'w1-17': finish17 as ListedStage['finish'], 'w1-18': finish18 as ListedStage['finish'], 'w1-19': finish19 as ListedStage['finish'], 'w2-21': finish21 as ListedStage['finish'], 'w2-23': finish23 as ListedStage['finish'] };
 
 /** the rows, from the ONE stage table (worlds/stageTable.ts, world data): each stage's kit and its own flags */
 export const LISTED: Record<string, ListedStage> = Object.fromEntries(Object.entries(STAGE_TABLE).map(([id, r]) => [id, {

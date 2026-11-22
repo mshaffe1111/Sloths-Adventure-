@@ -3,6 +3,85 @@
 Last tasks: ART-W2B (§0h), ART-W2A (§0g-w2a) and ART-22P (§0g-22p). Before them: ART-W2 (§0f), ART-678b (§0e-b), R-165.85 (cut only), Matt's 15 sheets of 11-09, on branch t-c2-art-cut. The earlier note (from the
 art director, session_01FhBbYLmXQhDLjAzTexXzo3, 11-07) is folded in below; §1 to §7 are still true unless marked.
 
+# Hand-off: the art director role (Content), rewritten 2026-11-21 for ART-REGRADE (§0l); §0k and below still true unless marked
+
+Last task: ART-REGRADE (§0l, t-art-next). Before it: ART-NEXT-e (§0k), ART-NEXT-d (§0j), ART-NEXT-c (reeds redo, NEXT2 catalogue, the bridge takes), ART-NEXT/-b (§0i),
+ART-W2 (§0f), ART-678b (§0e-b). The earlier art-director note (11-07) is folded in below; §1 to §7 are still true unless marked.
+
+## 0m. 11-21 ART-HERO (t-art-next): Pokey is one sloth in EVERY animation (R-165.378) HANDED OVER (strips + gates + REPORT open)
+- regrade.py now also takes the NON-idle clips: `python3 -I tools/art/hfnext/regrade.py push,move-walk,move-run,move-jab,move-cross,
+  move-hook,move-kick,move-kick2,move-mega,move-climb,cheer,hurt --from 700b4ef8d --ship --even` (about 15 min). --ship writes WebP q86
+  (no bridgebake follows); --even takes out a clip's colour DRIFT across its frames (push went L 59 -> 62, so its loop popped 3.3 dE):
+  10 passes of a per-frame offset smoothed [1 2 1] (around the loop for push/climb/walk/run), then 3 exact per-frame passes.
+- Gate: tools/art/hfnext/herobody.py --write -> src/game/heroBody.json (every HERO_CLIPS sheet + hero-climb2, sha-pinned), read by
+  heroClipsBody.test.ts: fur frame <= 2.0 / pooled <= 1.0 dE of the plain pose, or a row in heroBody.known.json (shrink-only, knowncheck
+  lists it); and a LOOP SEAM check (push, climb, walk, run: last -> first <= max(2 x median step, 0.5), <= 1.0). Planted RED on 700b4ef8d:
+  reference/qa-reports/ART-HERO/body-plant-700b4ef8d.txt (cheer/hurt/climb/push colour; push 3.03, run 3.00, climb 1.95, walk 1.28 seams).
+- Known: only hero-climb2 (2.81 pooled; two-vine climb, not a HERO_CLIPS grid). Next packet (lead): the non-clip sheets, whole-sheet fur dE
+  on 700b4ef8d (props inflate it; need frame masks): vine 4.8, rope 10.2, swim 6.1, story 5.2, studies 5.5, atlas 4.0, climb2 2.8.
+- Strip tools: tools/art/hfnext/heroshoot.mjs (Playwright paused clock, every game frame; forces climb/push/cheer/walk/run/jab state on a
+  real stage) and heropair.py (before/after strips + game-speed mp4). The scratch worktree needs `npm install --legacy-peer-deps` (CI's).
+
+## 0l. 11-21 ART-REGRADE (t-art-next): Pokey is one sloth in every idle (R-165.377) DONE
+- tools/art/hfnext/regrade.py: one Lab transfer per idle clip (a/b offset by L band, plain minus clip over the FUR px, plus global passes
+  that close the fur mean as it ships through the q86 encode); the outline (L < 18) and the eyes' whites stay. Record: regrade.json.
+- RE-BAKE ORDER now: `regrade.py idle-yawn,look-around,wave` (it restores the 49-frame originals from 6c157b2ba AND their
+  heroClipsData blocks itself), then bridgebake.py (B1-s23 -> yawn,look-around; B3-s11 -> wave --pin-feet), then idleends.py and
+  clipde.py --write. Do NOT run bridgebake on an un-regraded original: heroClipsBody.test.ts goes red.
+- Gate: src/game/heroClipsBody.test.ts (reads heroClipsSeams.json's body + body_bar + plain_sha256): each frame's fur <= 2.0 dE of the
+  plain pose, a clip's own frames pooled <= 1.0. Measure on FUR, never the whole body: the old clips have ~5x the outline px.
+- The bridge ramp stays on whole-body stats: a fur-space ramp popped the whole-body seams 1-2.2 dE (outline amount jumps); tried, reverted.
+- Other animations off the plain pose (fur dE): walk 3.6, run 3.7, climb 6.5, cheer ~7, push ~12 (whole-body). Not idles; the same tool
+  can regrade them if the lead wants (they are not bridged: no rebake, just regrade + their own tests).
+
+## 0k. 11-21 ART-NEXT-e (t-art-next): the idle bridges carry Pokey's colours; seam dE gate (R-165.354) DONE
+- bridgebake.py now colour-ramps every bridge frame (Lab mean/std toward lerp(plain, target), target = clip f0 going in, the clip's
+  LAST frame coming out; --replace: tent plain -> take mean -> plain) and writes tools/art/hfnext/bridges.json (the layout).
+- Gate: src/game/heroClipsSeams.test.ts + heroClipsSeams.json, written by `python3 -I tools/art/hfnext/clipde.py --write` (`--check`
+  verifies). ANY idle-sheet change: re-run idleends.py AND clipde.py --write. Bar: each seam <= max(2x bridge median, 0.5) and < 1.0 dE.
+- To re-bake: restore the 49-frame originals (`git show 6c157b2ba:src/assets/hero/clips/<c>.webp`) and their heroClipsData blocks
+  first (bridgebake reads the clip from the shipped sheet); belly-scratch needs no restore (--replace). Needs scipy (pip install scipy)
+  and `npm install --legacy-peer-deps` (npm ci fails on peer deps) before idleshoot.mjs.
+- The see-through melt in t-art-next strips is fixed on release-0.10.1 (R-165.353); shoot "what ships" on a scratch merge with it.
+
+## 0j. 11-21 ART-NEXT-c/-d (t-art-next): Pokey's idle clips start and end on his plain pose (R-165.354, R-165.370) DONE
+- Shipped on the branch: idle-yawn + look-around bridged with B1 s23, wave with B3 s11 (81 frames each, bridge in, clip, bridge
+  reversed out); belly-scratch REPLACED by a new 41-frame clip (SC s19: plain pinned first AND last; bag + strap every frame);
+  doze OUT of IDLE_CLIPS (the lead: no sit-down take held his model), its sheet + heroClipsData entry + 49 catalog rows deleted.
+  Hurt is not bridged (the hit reaction; starts from any pose).
+- Gate: src/game/heroClipsEnds.test.ts + heroClipsEnds.json (sha256-pinned; CI has no decoder). ANY change to an idle sheet or
+  hero-standard.webp: re-run `python3 -I tools/art/hfnext/idleends.py` (writes the JSON; `--check` verifies) or the test fails.
+- Tools (tools/art/hfnext/): bridgebake.py `<take> <clip>[,..] [--pin-feet] [--replace] [--dry]` (reads the clip's frames FROM THE
+  SHIPPED SHEET: restore the original with git before re-baking a clip); takesheet.py (every frame keyed, light/dark, feet + xor
+  numbers); catalogclips.py (per-frame catalog rows = the sheets; then `catalog_master.py --emit`); runbridge.sh `<commit> [spec]`;
+  spec-bridge2.json; idleshoot.mjs (now exits). Takes: reference/art/hfnext/bridge/takes/ (B4 s5/37/47/61 and SC s7/31/43 unused).
+- Open: doze back only via a two-stage bridge (plain -> crouch -> sit), on the roadmap, the lead's call. 2-5 stills: the pin lands
+  under a "Normal" card and then a hit, so no clean 2-5 stop was shot (fix the shoot's pin or pick another stage). Idle sheets now
+  2,768 KB / 42.8 MB decoded (were 2,050 KB / 33.7 MB incl. doze), loaded at stage start by heroClips.ts startClips / plainSheets.
+- Traps: Wan with first == last frame still moves (the scratch worked); a sit-down in 33 frames morphs or blobs the back (8 seeds
+  tried in all). Repack Wan frames at WebP q80 in the sandbox before pulling (6 parts a take, not 10); the cutter's sheets are q86.
+  bridgestarts.py reads each clip's frame 0 from the CURRENT sheet: after a bake, B1-B3 starts can no longer be rebuilt from it.
+  heroClipsData.ts writes 202.0 (JSON round-trips 202): match an entry as a block, never by json.dumps.
+
+## 0i. 11-20 ART-NEXT + ART-NEXT-b (t-art-next): batch 1 cut + catalogued (ACCEPTED); special stages in NEEDS; batch 2 run
+- Needs: reference/art/NEEDS-W2W3.md: regular stages, the SPECIAL stages (The Rapids has no design; no new W2/W3 puzzle room is
+  designed; Crocus Rex / Shadow Prowler art in game, a bigger repaint only if PREDATORS.md's "ten guardians" is adopted), batches 1-7,
+  the batch 2 plan. Batches 3-7 each wait on the lead's go.
+- Batch 1 (World 2 village): 9 cuts in reference/art/hfnext/cut/ (NOT placed: artUse.allow.json only shrinks), rows w2-next#* part
+  NEXT1 (tools/art/hfnext/catalog.py; file 'origin/t-art-next:...'; used_in MUST be 'none (not placed)'; slot 'new slot: World 2 ...'
+  or a standable slot opens a gap in every world; inventory.test.ts pins the branch-only count, now 203). Contact sheet
+  hfnext/batch1-cuts.jpg (contact.py), weir mock with the deep river hfnext/weir-river-mock.jpg (weirmock.py). A level builder wires them.
+- Batch 2 (grotto floor kit + 2-8 reeds redo): starts tools/art/hfnext/starts2.py -> reference/art/hfnext/starts2/, spec
+  make_spec2.py -> spec-b2.json, run `bash run.sh <commit> spec-b2` in ONE sandbox created with **--forward-hf-token** (pokeygpu.py
+  reads HF_TOKEN; without it the run dies at once: 11-20 a first sandbox was lost that way, ~1 min). Takes to reference/art/hfnext/
+  takes2/<group>/; REPORT.md "EXACT NEXT STEP" has where it stands.
+- Tools: cut.py (border-flood key; `keep=x0,y0,x1,y1` protects grey paint the trapped-grey rule would punch: boatB's hull); weirfoot.py
+  (a piece whose take paints a pool off the frame: drop the water outside the outer rocks, fade the foot, round a frame-sliced rock);
+  sheet.py (takes sheet; FRAME EDGE flag: paint on >1% of a frame edge = reject before the pick, the lead 11-20).
+- Traps: (1) a pick can be cut off by its frame and the game-size preview hides it (barge s23): read the FRAME EDGE flags. (2) a colour
+  test for "rock" must hold on the shadow side (mauve read as water). (3) sandbox token lives in the session's connection: pull per piece.
+  (4) a SMALL `cat` lands in context and is not saved: never peek. (5) hf_jobs "logs" asks a human: don't call it. (6) cut.py needs scipy.
+
 ## 0h. 11-18 ART-W2B (t-art-w2b): 2-6's noria painted and wired (rim + spokes, bucket dry/spilling, millrace wall); $1.15 of $4
 - Route: ONE HF sandbox, Qwen-Image-Edit-2511 (no LoRA) from GEOMETRY PASTE-UPS on flat grey (tools/art/hfw2b/starts.py: exact 6 spokes, the
   120 px trough at 7x) with World 2's own wood (jetty, ladder, lashed frame) as the 2nd image: the painter matched first time, the geometry

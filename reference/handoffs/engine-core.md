@@ -17,6 +17,8 @@ Merged at INT-14 (11-20, t-int-14): §0zq-25d/§0zq-25c ENG-25c (2-5's snap rows
 - TRAP: clipcheck and kbdcheck now tap tiles by `.ct-pick[data-stage=...]`; renaming that class or attribute breaks both walks.
 
 ## 0zr-IDLE. FIX-IDLE (t-fix-idle from main 107870f5, 11-20 evening): Pokey's clip melt is a solid cross-dissolve (R-165.353)
+- **SUPERSEDED at INT-R3 (release-0.10.2, 11-21): R-165.382 (ART-CHEER, t-art-next) makes every clip switch a CUT, so drawMelt, its
+  scratch canvas and heroIdleMelt.test.ts are deleted (new replaces old); the cut's tests are heroClipsCut/heroClipsEnds.test.ts.**
 - **heroSprite.ts drawMelt:** on a clip's fade frames (blend < 1) the plain pose (1-b) and the clip (b, 'lighter') go onto ONE scratch
   canvas (module-level, grow-only, made once) lined up with the stage's pixels, then laid down whole. Never draw two poses part-clear
   straight onto the stage again: that paints only 1-(1-b)*b of him (the INT-15 x3268 see-through). Test: src/game/heroIdleMelt.test.ts
@@ -27,6 +29,30 @@ Merged at INT-14 (11-20, t-int-14): §0zq-25d/§0zq-25c ENG-25c (2-5's snap rows
   with tools/perf/instrument.js on frames you step yourself (reference/qa-reports/FIX-IDLE/stills/logs/perfmelt.mjs).
 - **Seeing a blend fault:** draw the hero ALONE on a transparent canvas after each real render and count solid vs part-clear pixels
   (stills/logs/melt2.mjs ISO mode); stage haze fooled the eye at one frame on both builds.
+
+## 0zq-23b. BUILD-23b (t-build-23, 11-20 evening; this entry 9:24 PM ET by `date`): two engine pieces and three engine-side fixes on 2-3
+- **Designed cage socket** (pipeline.ts fillSockets, 3f958e630 + its planted test ad2d9e15a, src/game/gen2/designedCage.test.ts): a
+  socket with role 'objective' whose allow holds 'cage' (and a little one's kind) lays that cage where it stands, every one. A rolled graph's
+  nodes carry no objective quota, so without it a designed stage lays no cage. Any world's designed cage uses it.
+- **Heron look** (followArt.ts lookInView, cd44b43fa): the look (gaze + wash) is drawn while its wash OR the heron is in view. Trap: the
+  wash's sight is 70 px and a sweep starts 160 px past its stretch, so a still shot at a sweep's start shows a head-up heron with no wash.
+- **World 2's new sheet** (w2NewArt.ts; riverArt.ts W2Decor.nw drawn by drawW2Decor; stageSheets 'w2-new'; stagePreload): a stage lays a
+  w2-new piece as World 2 dressing. A climb whose look is a painting sets Vine.rope (protoArt.ts skips the kapok trunk; no play change).
+- **sheetWarm** (stageAnims, stageExtras): no eagle on a follow stage (herons in the watcher's place), no props2 for reed clumps.
+- **HUD faces** (followFaces.ts pure; engine.ts lineFaces(); VineHud lineFaces prop polled every 150 ms, redrawn on facesKey change;
+  components/hud/LineFace.tsx). Trap: `.vh-slot:not(.on) > *` silhouettes any slot child; LineFace sets filter none inline, its tone on
+  an inner layer so the '!' keeps its amber.
+
+## 0zq-CAGE. ENG-CAGE + ENG-CAGE-b (t-eng-cage, 11-20 evening; this entry 9:56 PM ET): the cage bot and the line's fetch clock (R-165.359)
+- Where: tools/inspect/firsttimer.ts CAGE_SKILL { punch, climb } + FirstTimerRun.cagePlan (any world's cage by its data: in the engine's strike
+  reach at his height, or hung up a climbing vine at whose foot he stands); LINE_SKILL.hopBack (a plain hop over a face on the way back for a
+  spooked one) and LINE_SKILL.fetchClock (the stuck clock holds through a fetch and starts over after it; three fetches with no step further
+  are a loop); the SET-DOWN LOOP (set down by the game at one place tries3 times, no further: put past it). Toys: cageBot.test, lineBot.test
+  (hop-back, fetch-clock on 2-3's gen2 row seed 5), firsttimer.test 'set down'.
+- Traps: the set-down loop rule reaches 1-1 (2 child Normal runs moved; calibration recommitted 11-20). The stop reaction at a face counts
+  only his pushes (P13): counting it in real time breaks 1-1's calibration (tried and rejected, ENG-CAGE-b REPORT). RealPlay.frame's real-input
+  branch drops pad.punch: castBots --input touch|pad never punches.
+- Open: the cage meter CHANNEL (score.ts; coveragecheck's last red); 2-3 child Normal 1/40 is the lay (the watched mud, REPORT); the kid 0/40 untraced.
 
 ## 0zq-TAB. FIX-TAB (t-fix-tab from 453b69c2 + t-int-14, 11-20 afternoon): a bank's end steps down to the bank beside it (R-165.344)
 **Done, proven:** protoArt.ts `stepDownTo(p, banks, side)`: an open bank end steps down to the HIGHEST lower bank that meets it (the one
