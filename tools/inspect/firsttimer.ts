@@ -2763,9 +2763,9 @@ export class FirstTimerRun {
       //  13 of 14 such presses over the four hopJudged runs were bank-to-bank hops (came down on solid), and hopJudged fails any that
       //  comes down on a log unjudged. 2-7 home middle Normal 2 x 15632: the stand pressed its own jumpFor hop 0.37 s after the gate
       //  refused, a double no gate judged (it came down on log #40 by luck), ENG-27o)
-      const drifts = SKILLS.floatSure && s.dir !== 0 ? this.edgeFloats(s.dir as -1 | 1) : null;
+      const drifts = SKILLS.floatSure ? this.edgeFloats(s.dir) : null;
       if (drifts) {
-        const rivers = (this.sim.stage as { rivers?: RiverZone[] }).rivers, dir1 = s.dir as -1 | 1;
+        const rivers = (this.sim.stage as { rivers?: RiverZone[] }).rivers, dir1 = s.dir;
         const h = this.waitHop ?? (this.waitHop = this.drawHop(dir1));
         if (drifts.some((q) => hopFlies(q, floatAt(rivers, q), p.x, p.y, dir1, h, t, p.vx, 24, this.v2(), this.thumbAt(), this.flightOthers()))) {
           this.standing = null;
