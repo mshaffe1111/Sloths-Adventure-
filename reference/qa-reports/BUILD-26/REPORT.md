@@ -1,9 +1,11 @@
-# ENG-26q (engine; started 8:41 PM ET 11-21 by `date`): rollGuard 1-4 ?layout=72140 is vineField.ts pairPetals moving a petal onto the Notch (no clearance check), exposed by 2f188c552's gate band; fixed generally (pairPetals keeps PICKUP_APART from every pickup) and planted, 4e0888c5d on t-build-26-wip-26q; lockall x16 IDENTICAL (no stage moves); step 0 DONE: the whole suite on cb9372ead clean by the allowed list, t-build-26 fast-forwarded c00d2fd17..cb9372ead
+# ENG-26q (engine; started 8:41 PM ET 11-21 by `date`): rollGuard 1-4 ?layout=72140 is vineField.ts pairPetals moving a petal onto the Notch (no clearance check), exposed by 2f188c552's gate band; fixed generally (pairPetals keeps PICKUP_APART from every pickup) and planted, 4e0888c5d on t-build-26-wip-26q; lockall x16 IDENTICAL (no stage moves); step 0 DONE (t-build-26 fast-forwarded to cb9372ead); the suite on 4e0888c5d CLEAN (rollGuard green), so the fix is LANDED on t-build-26 by the lead's ruling
 Commits: **4e0888c5d** (the fix + its toy, base cb9372ead) and this REPORT, on t-build-26-wip-26q only (D117: not on t-build-26 until the lead rules).
 Frozen trees (D115, detached, node_modules linked): cb9372ead (the base suite; the roll; lockall base), 626fac5ac (the roll; removed),
 4e0888c5d (the plant; lockall fix), cb9372ead + the toy only (the toy's RED; removed).
 
-## EXACT NEXT STEP (the next engine member, or this session if the lead keeps it)
+## EXACT NEXT STEP (the next engine member)
+0. **Nothing of this packet is left open.** Optional, not run here: `BASE_PATH=/Sloths-Adventure-/ npx vite build` + `node tools/perf/chunkcheck.mjs`
+   on t-build-26's head (vineField.ts gained no import, so no chunk should move); CI runs both. Done, for the record:
 1. **Step 0 (land ENG-26p) DONE.** cd2a64b2d is on no branch any more (wip-26p was rebased: its code is 14acf0ec0, head cb9372ead) and the
    73 files' list is written nowhere (ENG-26p's REPORT says 'the list is in Done'; it is not), so the WHOLE CLAUDE.md suite ran on a frozen
    tree of **cb9372ead itself** (619 files, one process per file, 3 at a time, per-file verdicts; the 53 named files first): **619 of 619
@@ -16,7 +18,9 @@ Frozen trees (D115, detached, node_modules linked): cb9372ead (the base suite; t
    lock files IDENTICAL (sha256 b440909f92b74b22..., the same hash ENG-26p recorded): NO STAGE MOVES**, so rule 28 has no mover to cast
    (the bot is untouched). The fix fires only where a petal's nearest middle lies within 36 px of another pickup, which no layout 1-16 of
    any stage has; it guards rolls like 72140. NEXT: the suite on the fix head, RUNNING (frozen 4e0888c5d, two runners: files 1-350 and
-   351-619); the lead RULED: clean by the same list (rollGuard GREEN there, the three todos) -> fast-forward t-build-26 on to wip-26q.
+   351-619, then the last 73 of the first half on a third): **619 of 619 reported, 4035 pass, 0 fail, 3 todo** (the same three allowed
+   todos; 4035 = the base's 4033 + rollGuard 1-4 now GREEN + the toy). By the lead's ruling, **t-build-26 fast-forwarded cb9372ead..wip-26q**
+   (the fix and its REPORT commits; the commits after 4e0888c5d touch only this REPORT and engine-core.md, so the verdict carries).
 
 ## The roll (step 1; the test alone and a print, frozen cb9372ead)
 - 1-4 `?layout=72140` = rollVariants(10, 1028)'s v 72141; gen2 seed 42, 0 rerolls. Failing line: `flower #27 and find #13 overlap`
@@ -46,7 +50,8 @@ where pairPetals' unchecked move lands. The defect is pairPetals'.
   holds 'both middles taken: unmoved' and 'nothing near: the nearest mate's middle (887), as before'.
 - fieldPetals.test.ts (R-165.229, the two-hand climb takes every paired petal, 1-4 Normal and Easy): **6 pass, 0 fail** on the fix.
   vineField.test.ts 8 pass. `npx tsc --noEmit -p .`: clean.
-- lockall x16: identical (step 2 above). Not run yet (my box): the suite on the fix head (RUNNING), the build/chunkcheck (vineField.ts
+- lockall x16: identical (step 2 above). The whole suite on 4e0888c5d: 619 files, 4035 pass, 0 fail, the three allowed todos.
+  Not run: the build/chunkcheck (vineField.ts
   gained no import).
 
 ## Polish check
@@ -64,8 +69,11 @@ of on the Notch.
   branch), never 'the list is in Done' without it; a runner that prints per-file verdicts makes the list a by-product.
 
 ## Unresolved
-- The suite on the fix head (RUNNING) and t-build-26's fast-forward to it; the build and chunkcheck on the fix.
+- The build and chunkcheck on the fix were not run by me (CI runs them; no import moved).
 - My slip: one diagnostic (two quick roll prints) used a shell '&' inside a background command (the packet: never); not repeated.
+- My slip (a D119 repeat): the REPORT edit before the landing was a python heredoc whose anchor check failed, and the commit/push/
+  fast-forward after it were separate commands, not joined by &&, so t-build-26 went to f47bfd43a (the fix + REPORT commits, the right
+  code, the verdict covers it) with this REPORT still saying 'RUNNING'. Fixed in the next commit, its chain joined by && end to end.
 
 ## Method update
 level.md / STAGE-RULES (the lead's): a pass that MOVES a placed pickup checks the level check's spacing against every other pickup at the
