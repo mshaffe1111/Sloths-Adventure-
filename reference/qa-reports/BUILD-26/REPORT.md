@@ -84,7 +84,17 @@ crest.
   **101/102 stages unchanged; 2-6 (intended): proto.bankWall only. exit 0.** (Its "gen2 gained verdicts and drops (not hashed)" line is a
   standing note listing every stage whose gen2 carries those two unhashed fields, not a difference.) bankWall has no gameplay reader,
   so no castBots row can move.
-- **The suite on the head:** after the base suite ends (never two side by side, the lead's ruling), on a fresh frozen tree at the head.
+- **The suite on the head 3ecb87eaa** (alone, a fresh chattr-frozen tree, every CLAUDE.md step but drawcheck, whose verdict is the full
+  run above on identical code): tsc 0; unit 4,041 tests, 4,037 pass, 3 TODO (known), 1 fail = seedListChunk.test.ts:38, EPERM from the
+  freeze (it makes a temp folder in src/game/gen2/proven): re-run ALONE with only that folder unlocked (`chattr -i`, not -R): 2/2 pass (the
+  lead's ruling: that plus the rest green is the suite verdict); build 0; chunkcheck PASS; artcheck PASS; clipcheck 0 (359 s); knowncheck
+  0; generality 0; kbdcheck 0; buildcheck 0; seedlist 1-1 PASS (161 seeds); engine tool tests 39/39; tierBots 9/9.
+  **roadmapcheck: NOT RUN (exit 2): this container's clone is shallow** (history back to 11-15, .git 3.7 GB) and it refuses a shallow
+  clone; unshallowing is not safe on the 2.8 GB of disk left. Its inputs (reference/ROADMAP.md, the known lists, NEXT.md) are unchanged
+  from the base (git diff empty), so this candidate cannot move its verdict; it runs in CI (gates.yml, fetch-depth 0) on the deploy.
+  kbdcheck rewrites tracked screenshots under reference/qa/tester-page-1106/keyboard/ in the tree it runs on (not committed here).
+- The base suite was killed at the 40 min background limit I gave it (the miss, D123); the lead ruled no base suite is needed (BUILD-26n's
+  unit 4,035/0 on 2904961b8 carries to a07ed1bd7, D118).
 
 ## Polish check (stills, 2x, Pokey pinned at drawcheck's four spots on the fixed clock, base vs candidate, pixel for pixel)
 Tool: scratchpad stills.mjs (run.mjs's own load and pin, deviceScaleFactor 2, a still per spot instead of the counts), cmpshift.py (the
