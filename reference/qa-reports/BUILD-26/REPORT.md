@@ -1,18 +1,19 @@
 # ENG-26r (on t-build-26-wip-26r from a07ed1bd7): 2-6's draw budget. Candidate 89fb84b0f: static gradients made once (gradCache.ts) + the bank wall culls the backdrop and rivers it covers. Started 3:53 PM ET 11-22 (by `date`)
 
 ## EXACT NEXT STEP
-1. **The lead's ruling on spot 0 (the foot, x 320), sent with the interim message.** Spot 0 is still RED (port screens 9.39, land screens
-   11.22, land clips 23.75), unchanged, because w2Arc26.ts sets `bankWall.bottom = lowest street + 10`: at the foot the view runs below
-   the wall and things show there (a dark patch in the bottom-left corner sideways, soil of other shades under the streets), so the cull
-   rightly stays off. (a) Extend the wall down past the foot (bottom = the stage's floor): a LOOK CHANGE below the lowest street. Show
-   before/after stills first; then the same cull covers spot 0 (expected about 4.7 / 5.2 Mpx, as at spots 1-2). Or (b) a cut at the foot
-   that keeps the look (the rivers' under pass and the backdrop under the foot's ground), which is more work.
-2. Then, on a FROZEN worktree at the new head: drawcheck, all scenarios (about 6 min, `DRAWCHECK_VERBOSE=1`): 2-6 GREEN at every spot, no
-   other scenario worse (scenario rows to compare: the base suite's drawcheck log, scratchpad suite-base/drawcheck.log, when it finishes).
-3. The suite (scratchpad suite.sh <tree> <logdir>) and lockall on that head (drawing only: no castBots row may move).
-4. Lands on the lead's word, rebased on t-build-26's head (REPORT.md conflicts: keep both sides' sections).
-State: the base suite on a07ed1bd7 was still running at handover (tsc green; the unit step was running); its logs are in the scratchpad
-suite-base/. The candidate's full drawcheck, suite and lockall were NOT run.
+0. **The lead RULED (a), show first:** f78a3a66d (on 89fb84b0f) runs 2-6's bank wall down past the stage's floor
+   (w2Arc26.ts finish26: `bottom = max(lowest street + 10, config.levelHeight + 20)`). bankWall is read only by the drawing (engine.ts
+   render, protoArt drawEarthWall/earthWallCovers): no gameplay reader. The foot stills (before = scratchpad stills-base/, after =
+   stills-c2/, spot 0 both ways) go to the lead FIRST; the after must read as one clean earth, no seam where the old bottom was.
+1. On the lead's OK of the stills: on a FROZEN, IMMUTABLE worktree at f78a3a66d (`chattr -R +i src tools` right after its npm ci:
+   `chmod a-w` does NOT stop us, we run as root; chattr does, tested), drawcheck in full, all scenarios, verbose (about 6 min): 2-6 GREEN
+   at every spot, no scenario worse than the base suite's drawcheck (scratchpad suite-base/drawcheck.log).
+2. The suite (scratchpad suite.sh <tree> <logdir>) and lockall on that head: name any castBots mover (the wall's bottom is lay data on
+   the stage object; expected none, to be proven).
+3. Lands on the lead's word, rebased on t-build-26's head (REPORT.md conflicts: keep both sides' sections).
+State at handover: the base suite on a07ed1bd7 still running in the background (tsc green; unit step running), logs scratchpad
+suite-base/. Spot 0 numbers before the ruling: port screens 9.39, land screens 11.22, land clips 23.75 (RED); spots 1-2 and gradients
+GREEN on 89fb84b0f.
 
 ## Step 1: the plant, base a07ed1bd7, drawcheck for 2-6 alone, verbose: RED (5 breaches)
 (How: tools/perf/run.mjs for 2-6 alone at PERF_Q=0 PERF_TIME_FRAMES=0 PERF_SPOTS=4, port then land, then `DRAWCHECK_VERBOSE=1
@@ -106,6 +107,9 @@ was stopped and thrown away unread, every later run went on a separate frozen wo
   opaque full-view layer. An opaque layer that fills the view should cull what is under it; that is the general rule worth a line in
   PERFORMANCE-RULES §8 (proposed, the lead's call).
 - Proposed rule: every per-frame gradient goes through gradCache.ts (a check could grep createLinearGradient inside draw functions).
+- **For the lead's D115 countermeasure:** `chmod -R a-w` on a frozen tree does NOT stop an edit here: every session runs as root (uid 0),
+  and root writes through it (tested: `touch src/x` succeeded on a chmod'd tree). `chattr -R +i src tools` does stop it ("Operation not
+  permitted", tested on wt-c2); `chattr -R -i src tools` before removing the worktree. Vite and npm still work (they write node_modules).
 
 # BUILD-26n (on t-build-26-wip-26n from 65fd9bd9e): the FINAL CANDIDATE eae5b1ff7 (fix 1 FigPush reach + fix 3 the kid/adult wheel brake), NO tier drop vs cut 5 RE-JUDGED: 1-4 every tier 40/40; 2-6 adult E 31, adult N 36, kid E 26, kid N 33, the rest 40. Rows with the lead; suites running; rule 28 on the dodge done (one cause, tested), on 2-6's 31 fix-3 flips NOT yet. Started 2:07 PM ET 11-22 (by `date`)
 Commits on t-build-26-wip-26n (NOT on t-build-26, D117): **7d1da8535** toy (RED on 65fd9bd9e), **41b5b7a5a** fix 1 (GREEN), **c6f6e3d52**
