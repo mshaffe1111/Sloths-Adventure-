@@ -37,7 +37,8 @@ At hand-over: shards 414 / 387 / 444 tests passed, 0 failed so far; drawcheck 3 
   sideways**: the probe's own teleport from the previous case (cam 14663 -> 18594); its other layers differ too (5.11 / 3.17). Most
   likely the PROBE: d/zoom0.mjs (same moves, sideways) reads that frame at zoom 0.7316 and the end at 0.763 (an ease from the x 14800
   case still unwinding), and the probe re-renders every frame at the END zoom (it restores the camera's x,y, not the zoom). UPRIGHT the
-  zoom does not move (0.9364 on every frame), so upright's 2.62 is NOT that: unnamed. Neither re-judged.
+  zoom does not move (0.9364 on every frame), so upright's 2.62 is NOT that; nor is it the re-render's Pokey at the descent's end (the
+  probe now leaves those cells out too: the same 12139 ground cells, 2.74; d/after-C2-upright-v2.txt). Unnamed. Neither re-judged.
 - NOT measured: the burst's cost (up to all in-view squares painted in one frame at a cold view). d/burst-ms.mjs ran once under the
   suite's load and its numbers are void (the settled frame read 45.9 ms, the descent 1105 ms at 4x); stopped, nothing recorded.
   drawcheck on b04579a95: started, NOT finished in the box.
