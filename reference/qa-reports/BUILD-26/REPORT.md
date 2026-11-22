@@ -1,64 +1,23 @@
-# BUILD-26n (on t-build-26-wip-26n from 65fd9bd9e): the FINAL CANDIDATE eae5b1ff7 (fix 1 FigPush reach + fix 3 the kid/adult wheel brake), NO tier drop vs cut 5 RE-JUDGED: 1-4 every tier 40/40; 2-6 adult E 31, adult N 36, kid E 26, kid N 33, the rest 40. Rows with the lead; suites running; rule 28 on the dodge done (one cause, tested), on 2-6's 31 fix-3 flips NOT yet. Started 2:07 PM ET 11-22 (by `date`)
+# BUILD-26n: LANDED, t-build-26 = a07ed1bd7 (the final candidate eae5b1ff7, fix 1 FigPush reach + fix 3 the kid/adult wheel brake, merged with 86625c5ae + the 1-1 recalibration). NO tier drop vs cut 5 RE-JUDGED: 1-4 every tier 40/40; 2-6 adult E 31, adult N 36, kid E 26, kid N 33, the rest 40. Started 2:07 PM ET 11-22 (by `date`)
 Commits on t-build-26-wip-26n (NOT on t-build-26, D117): **7d1da8535** toy (RED on 65fd9bd9e), **41b5b7a5a** fix 1 (GREEN), **c6f6e3d52**
 fix 1 traces, **eae5b1ff7** fix 3 (wheel toy GREEN) = THE FINAL CANDIDATE, plus this REPORT and b26n/rows.
 
 ## EXACT NEXT STEP
-Base t-build-26-wip-26n at this REPORT's commit. Long runs in the BACKGROUND with fitting timeouts, frozen trees, at most two heavy.
-**The lead RULED on the rows (this box):** (1) eae5b1ff7 LANDS on t-build-26 when its suites are green (the CLAUDE.md suite + castBots.test.ts
-whole + tierBots 9/9; the R-165.312 todo and the two w4 todos allowed), rebased onto 86625c5ae, never force, the hash to the lead.
-(2) Rule 28 on 2-6's 31 flips gates the RELEASE, not the landing: trace the 12 pass -> FAIL by cause (two runs per cause) and confirm the
-19 gains are real finishes, BESIDE the relists. (3) The adult's brake is right (same thumb, same brake). (4) The --proven relist next, on
-the landed head; checkpoint about 8 PM ET.
-1. **The suites on eae5b1ff7 are RUNNING** (b26l/suite.sh.txt on the frozen worktree /home/user/f26n-cand, logs /home/user/x40/suite-cand/;
-   summary.txt has one line per gate and ALLDONE at the end; timeout 7,200,000 ms). Read summary.txt, copy the logs' summary into b26n/
-   and commit it. Any rc != 0: open its log and trace it; nothing lands red. The wheel toy (wheelRide.test.ts) is not in the script: it ran
-   GREEN on this code (b26n/toy-4-GREEN.txt).
-2. **Land (on green):** a dry rebase of be579bc01 onto 86625c5ae (scratch worktree /home/user/r26n, branch t-build-26n-rebase-dry, local
-   only) stops on the FIRST of 33 replayed commits (c98a40f06, BUILD-26j's REPORT). The ONLY file changed on both sides is
-   reference/qa-reports/BUILD-26/REPORT.md (src/ and tools/ do not overlap; 8 commits on t-build-26 since the merge base c00d2fd17).
-   So each stop is a REPORT.md conflict: keep BOTH sides' sections (the wip's BUILD-26 sections and t-build-26's ENG-26p/q lines),
-   `git add`, `git rebase --continue`. Then tsc on the rebased tree and a check that `git diff eae5b1ff7 <rebased> -- src tools` equals
-   `git diff c00d2fd17 86625c5ae -- src tools` (t-build-26's own changes, nothing else). Push the rebased head to t-build-26 as a
-   fast-forward (never force) and send the lead the hash.
-3. **The relists on the landed head (packet step 8):** 2-6 under castBots --proven (every bot >= 100 s on every listed roll, eraRoll.ts:28-30).
-   Passes under the 100 s floor rose (adult N 8 -> 13, kid N 0 -> 4, min 94.2 s), so report the yield honestly; under about 60%: the cause
-   and a plan to the lead, NO content change without the lead's GO. Then 1-4 relisted ONCE, then seedlist --check on both.
-4. **Beside 3: rule 28 on 2-6's flips** (b26n/rows/cmp26-cand.txt lists each with its last stuck spot; pad logs with b26m/k22wrap.mts.txt,
-   STAGE=2-6, BOT=FT_KID or FT_ADULT). The 12 new fails: 'fell back down from here 3 times' (kid E 16, 27; kid N 32, 34; adult N 13) or
-   'water ahead / in a dip' (adult E 11, 27; adult N 23; kid N 13, 14, 17, 29). Read whether any fall starts IN a wheel bucket (a brake
-   fault) or later on the climb (timing only). (2-6 kid E 22, the row fix 3 is for, PASSES 143.2 s; cut 5 139.7; its stuck spots are at
-   x 1273 and 824, none at bucket #51.)
-   **Started in this box (b26n/bl-26kidE-16-27.txt, tool b26n/bucketleave.mts.txt, on the candidate tree; times match the rows, 126.0 and
-   118.8 s):** kid E 16's and 27's 'fell back down from here 3 times' sit at y 3962 (x 870 at 88.4 s; x 1183 at 77.9 s, and 27 also at
-   927,6384 at 40.1 s). That is a climb ABOVE the last bucket leave (to plat 29 at y 4622), not in a wheel. **A lead to check:** in both runs
-   the FIRST bucket leave is bucket 11 dropping into a neighbouring bucket (16: at 10.93 s, 1273,6915, vx -87 into bucket 10; 27: at
-   14.87 s, vx -87 into bucket 12). -87 is the brake's blip size, so this may be a brake slip at a bucket's end. Run the same tool on the cut 5
-   re-judged tree for these two seeds: if cut 5 has no bucket 11 drop, the brake needs an end guard (no brake press toward an end he
-   is within BONK.half of), toy first.
-   **Checked on 064ca6df6 (2-6 kid E rows identical to cut 5 RE-JUDGED for these seeds: 195.7, 146.8 s; b26n/bl-26kidE-16-27-base064.txt):**
-   the bucket 11 drop is NOT the brake's. Base kid E 27 drops bucket 11 -> 10 at 9.67 s too, at full speed (vx -268). The brake only slows
-   it. Base kid E 16 is the old fault fix 3 removes: 29 leaves off buckets 71-76 between 144 and 180 s, every one a swing off an end at vx
-   268-285. So the two new 'fell back 3 times' fails sit on the climb at y 3962, which the base runs passed later. Next: what at y
-   3962 (x 870 / 1183) changes with his arrival time (a clocked hazard or ride there?). Two runs, one cause: read the pad log
-   (b26m/k22wrap.mts.txt, STAGE=2-6 SET=easy BOT=FT_KID, T0/T1 around 85-89 s for seed 16, 75-78 s for seed 27) for what drops him.
-   **Seed 16 read (b26n/k16-26E-pad-84-89.txt, candidate tree; the run ends 126.0 s, rescue x 1241 as the row):** NOT a wheel. He climbs a
-   vine at x 1612 (y 4049 -> 3946), loses it at 84.5 s and grabs again, leaves it left at 85.2 s, and runs and jumps left along y 3962-4030
-   toward target x ~1040-1090. At 87.0-87.4 s he drops to 1010,4313 ('fell back'), climbs back toward 1232,4302, and is rescued at
-   88.4 s. No wheel line acts in this window, so fix 3 can only have changed his ARRIVAL TIME here. Next: the same window on 064ca6df6
-   (which passes; it reaches 795,3065 by 91.0 s) to see what is different at x 1010-1090 when he gets there (a clocked piece?), then seed 27
-   at 75-78 s. Two runs, one cause, before the release (the lead's ruling 2).
-   **Base read (b26n/k16-26E-pad-base064-60-95.txt, 064ca6df6, passes 195.7 s):** the SAME loop, 18.5 s earlier. He climbs the vine at
-   1612, leaves it left at 66.7 s, runs and jumps along y 3962-4032, falls short at 1111,4313 (68.5 s), runs right back to the vine at 1612
-   (70.2 s), and tries again. The base gets out within its count; the candidate's third fall there is a rescue. **Cause (one run so far):**
-   an OLD route loop (the jump left near x 1080-1180 falls short), not fix 3's code. Fix 3 only shifts when and how often he tries it.
-   **Second run, seed 27 (b26n/k27-26E-pad-60-80.txt, candidate): the SAME loop, confirmed.** Vine at 1612 (62.2-64.0 s), left along
-   y 3962 (64.3 s), short at 1134,4313 (66.2 s), back right to 1612 (67.8 s), around again, rescued at x 1165 (row: rescues 2, xs 814,
-   1165). **Cause 'fell back down 3 times' (kid E 16, 27, two runs): an old route loop on 2-6's climb (the jump left from the vine at x
-   1612 along y 3962-4030 falls short near x 1110-1145), which the base runs too. Fix 3 only changes how often he tries it.** Still to trace for
-   the release (the lead's ruling 2): **adult N 13 (b26n/a13-26N-pad-40-115.txt): the SAME loop on Normal** (vine at 1596, left, short at
-   1090,4116 at 52.4 s, back right; rescued at x 1389, 113.5 s). Three runs, one cause, two bots, both settings. Left of this group: kid N
-   32, 34 (one read each, expected the same loop); then the 'water ahead / in a dip' group: adult E 11, 27; adult N 23; kid N 13, 14, 17, 29, two runs) and
-   the 19 gains as real finishes (rows: end 'shrine', no rescue).
+**Landed (the lead's rulings; nothing else on t-build-26): t-build-26 = a07ed1bd7**, a fast-forward from 86625c5ae, never forced.
+a07ed1bd7 = 2904961b8 (86625c5ae MERGED into the candidate, by the lead's ruling, not a rebase: one conflict, this REPORT, both sides kept;
+`git diff 86625c5ae 2904961b8 -- src tools` == the candidate's own c00d2fd17..eae5b1ff7 changes, 6 files in tools/inspect) + the 1-1
+recalibration (R-165.59, BOTS.md). For BUILD-26o, on the landed head:
+1. **The relists** (packet step 8): 2-6 under castBots --proven (every bot >= 100 s on every listed roll, eraRoll.ts:28-30), with the yield
+   reported honestly: passes under the 100 s floor rose with the brake (adult N 8 -> 13, kid N 0 -> 4, min 94.2 s). Under about 60%: the
+   cause and a plan to the lead, and NO content change without the lead's GO. Then 1-4 relisted ONCE, then seedlist --check on both.
+2. **Beside the relists: rule 28 on the rest of 2-6's flips** (b26n/rows/cmp26-cand.txt): kid N 32 and 34 (expected to be the same climb loop,
+   one read each), the 'water ahead / in a dip' 7 (adult E 11, 27; adult N 23; kid N 13, 14, 17, 29: two runs per cause), and the 19
+   gains as real finishes. The 'fell back down 3 times' loop is EXPLAINED (Step 6; the lead files its row; a route fix after release 3).
+3. **Not this member's, named:** drawcheck's 2-6 red (Step 7) is the BASE's per-frame gradients in drawRiverWater (riverArt.ts:219) and
+   drawWallChunks (protoArt.ts:1151), owned by an engine fix (the lead's ruling); a release-blocker for 2-6. roadmapcheck rc=2 here is
+   this container's shallow clone (CI runs it full-depth; not a red, the lead's ruling).
+4. The merged suite's drawcheck and clipcheck on 2904961b8 were still running at this commit (logs /home/user/x40/suite-merge/ in this
+   container); their result goes to the lead in a message.
 
 ## Step 1: fix 1, toy first (castBots.test.ts, last test; figPush.ts choose)
 - Toy: his row is field vines 43/44 at x 420/500 (3800-4700). He holds 43 at y 4300, and the target fig is on vine 48 at x 460, BETWEEN them,
@@ -140,6 +99,35 @@ Passes under the 100 s floor: adult N 8 -> 13, kid N 0 -> 4.
 | kid N | 31 | 33 | 25 |
 | middle E | 40 | 40 | 0 |
 | middle N | 40 | 40 | 0 |
+
+## Step 6: the suites, the tierBots bisect, the recalibration, the landing (b26n/suite/)
+- **The suite on eae5b1ff7 (b26l/suite.sh.txt, frozen worktree; b26n/suite/summary-cand-eae5b1ff7.txt): NOT green.** unit 4031 pass, **2 FAIL**,
+  3 allowed todos: tower.test.ts:659 ('gates easy 4: a fall off the piece at x 1068-1199, y 4720 drops 647 px', ENG-26p's 7d3330aad fixes
+  it on t-build-26) and rollGuard.test.ts:42 ('?layout=72140: flower #27 and find #13 overlap', ENG-26q's 4e0888c5d). Both are base reds
+  t-build-26 has since fixed. tierBots 8/9 (below); drawcheck 5 breaches (Step 7); roadmap rc=2 (shallow clone). Clean: tsc,
+  castBots.test.ts 23/23, vite, chunk, art, known, generality, kbd, build, seedlist 1-1, enginetools 39/39, clip.
+- **src tests import tools/inspect** (ciTests, rolling, eagleGlance, helpLadderSweep, breathAim...). So neither eae5b1ff7's suite nor
+  86625c5ae's covers the merged tree, and **the whole suite was run on the merged tree 2904961b8**: unit **4035 pass, 0 fail**, the 3 allowed todos;
+  castBots 23/23; tierBots 8/9 (the same replay check); tsc, vite, chunk, art, known, generality, kbd, build, seedlist, enginetools clean.
+- **tierBots bisect (rule 28; b26n/suite/tierBots-*.txt):** c00d2fd17 9/9; **d6350d3e7 (BUILD-26j, the step-up rule) 91 of 200 moved**;
+  83018b453 and 65fd9bd9e identical to it (91, the same list). Fix 1 and fix 3 move none of the 200. **Cause, tested directly
+  (b26n/stepup-childE.txt, tool b26n/stepup.mts.txt):** the rule turns a tier's 'late' edge press into 'run' at a faceless step up from a
+  lip, a tiers-only path (holdQ), so only child/middle/expert moved. Moved child E v1 / v5 hit it 1 / 5 times from about 191-193 s (lips x
+  24478 / 23296, onto #106 / #97); unmoved v2 / v3 hit it 0 times and replay exactly (297.6, 292.3).
+- **The recalibration (the lead's standing ruling: only if tierBots' other eight checks pass; they did on 2904961b8):** `tierBots.ts --stage
+  1-1 --tiers child,middle,expert --seeds 1-40 --setting both --calibrate` on a fresh worktree at 2904961b8 (210 lines, 0 errors), committed
+  as a07ed1bd7. The same checks pass and fail as committed (the 11-11 by-design misses, BOTS.md), and none flips. Numbers: child E finish p50
+  292.3 -> 296.5, put-backs 0.35 -> 0.2; child N p50 406.7 -> 409, put-backs 3.28 -> 3, rescues 4 -> 3; middle E 192.7 -> 192.9;
+  middle N 204 -> 203.7; expert N 171.9 -> 171.6. **tierBots 9/9 on a07ed1bd7.** calibration-main.jsonl is read only by tierBots.test (a doc
+  comment in firstRun11.ts names it), so the unit verdict on 2904961b8 stands.
+
+## Step 7: drawcheck's 2-6 red, read from the saved per-frame results (the candidate run's /tmp/drawcheck-2NfT1G; b26n/suite/draw-cand-tail.txt)
+Port: gradients 5 > 2, drawImageScreens 9.39 > 7.5; land: gradients 7 > 2, drawImageScreens 11.22 > 7.5, clips 24 > 19 (x 64). **NOT the
+start's zoom ease:** counting starts after a 1.5 s settle, and all 8 counted frames at spot 0 are equal (gradients 5 / 7 every frame).
+Spot 1 (mid-stage) is also over the gradient limit (4 / 6). The gradients come from two per-frame call sites: drawRiverWater (riverArt.ts:219,
+caller engine.ts:6294), with 64 createLinearGradient in 32 frames upright and 104 sideways; and drawWallChunks (protoArt.ts:1151), with 32.
+None of it is in the candidate (tools/inspect only); the merged tree's src/ is byte-identical to 86625c5ae's. The lead: the base's, an engine
+member's fix, a release-blocker for 2-6, not a hold on this landing.
 
 ## Step 4: rule 28 on the dodge's moved rows (064ca6df6 vs the dodge alone 567e2fbd7, 1-4 x40 both settings)
 - **Flips (13), every one traced:** the 10 fails that now pass are BUILD-26l's fig-field shuffle, now reaching the fig (BUILD-26l traces

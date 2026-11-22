@@ -1,0 +1,7 @@
+    91 of 200 runs moved: re-run the calibration and recommit calibration-main.jsonl (BOTS.md)
+child easy v1: stepUpAtLip non-null 1 first 193.1 lip 24478 -> #106; finish 285.8
+child easy v5: stepUpAtLip non-null 5 first 191.1 lip 23296 -> #97; finish 290.9
+child easy v2: stepUpAtLip non-null 0; finish 297.6
+child easy v3: stepUpAtLip non-null 0; finish 292.3
+
+[exited with code 0]

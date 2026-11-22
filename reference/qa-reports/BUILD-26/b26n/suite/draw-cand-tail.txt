@@ -1,0 +1,20 @@
+  note shrunkOver2_5x 8.00 at spot 1 (x 9308) (reported; fails over 32)
+      src/game/sheetBake.ts:125 (drawSheet) 3.34/frame  | } else ctx.drawImage(im, sx, sy, sw, sh, dx, dy, dw, dh);
+      src/game/sheetBake.ts:125 (drawSheet) 1.25/frame  | } else ctx.drawImage(im, sx, sy, sw, sh, dx, dy, dw, dh);
+      src/game/paintedScenery.ts:102 (drawGroundFlora) 0.50/frame  | ctx.drawImage(spr, -w / 2, y - h, w, h);
+      src/game/paintedScenery.ts:104 (drawGroundFlora) 0.50/frame  | } else ctx.drawImage(spr, x - w / 2, y - h, w, h);
+      src/game/riverArt.ts:332 (blitPond) 0.25/frame  | ctx.drawImage(im, 0, 0, b.w, b.h);
+✓ 2-4 land
+  note shrunkOver2_5x 6.00 at spot 1 (x 9368) (reported; fails over 32)
+      src/game/sheetBake.ts:125 (drawSheet) 2.59/frame  | } else ctx.drawImage(im, sx, sy, sw, sh, dx, dy, dw, dh);
+      src/game/paintedScenery.ts:104 (drawGroundFlora) 0.75/frame  | } else ctx.drawImage(spr, x - w / 2, y - h, w, h);
+      src/game/paintedScenery.ts:102 (drawGroundFlora) 0.56/frame  | ctx.drawImage(spr, -w / 2, y - h, w, h);
+      src/game/stageArt.ts:96 (blitAt) 0.03/frame  | ctx.drawImage(img, f.x, f.y, f.w, f.h, x - f.ax * k, y - f.ay * k, f.w * k, f.h * k);
+✓ 2-5 land
+  note shrunkOver2_5x 6.75 at spot 0 (x 320) (reported; fails over 32)
+      src/game/sheetBake.ts:125 (drawSheet) 3.21/frame  | } else ctx.drawImage(im, sx, sy, sw, sh, dx, dy, dw, dh);
+      src/game/paintedScenery.ts:104 (drawGroundFlora) 0.97/frame  | } else ctx.drawImage(spr, x - w / 2, y - h, w, h);
+      src/game/paintedScenery.ts:102 (drawGroundFlora) 0.79/frame  | ctx.drawImage(spr, -w / 2, y - h, w, h);
+      src/game/stageArt.ts:96 (blitAt) 0.24/frame  | ctx.drawImage(img, f.x, f.y, f.w, f.h, x - f.ax * k, y - f.ay * k, f.w * k, f.h * k);
+
+FAIL: 5 breach(es) (778 s; raw results in /tmp/drawcheck-2NfT1G)

@@ -1,0 +1,12 @@
+const W = process.env.WT!;
+await import(W + '/src/game/headlessDom.ts');
+const FT: any = await import(W + '/tools/inspect/firsttimer.ts');
+const TB: any = await import(W + '/tools/inspect/tierBots.ts');
+const P = FT.FirstTimerRun.prototype; const orig = P.stepUpAtLip;
+let hits: string[] = [];
+P.stepUpAtLip = function (...a: any[]) { const r = orig.apply(this, a); if (r) hits.push(`${(this as any).t?.toFixed?.(1)} lip ${Math.round(a[0])} -> #${r.id}`); return r; };
+for (const v of process.argv.slice(2).map(Number)) {
+  hits = [];
+  const run = TB.runTier(process.env.TIER ?? 'child', process.env.SET ?? 'easy', v);
+  console.log(`${process.env.TIER ?? 'child'} ${process.env.SET ?? 'easy'} v${v}: stepUpAtLip non-null ${hits.length}${hits.length ? ' first ' + hits[0] : ''}; finish ${run.finishSeconds}`);
+}

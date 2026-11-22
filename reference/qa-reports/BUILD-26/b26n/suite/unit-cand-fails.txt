@@ -1,0 +1,12 @@
+24839:# Subtest: every spore cloud of every World 3 stage leaves a clear, awake spell long enough to cross
+24845:# Subtest: the spell ends with the cloud: no lingering sleep, and a thin edge of a puff does nothing
+24851:# Subtest: drowsiness grows with the cloud and never more than the full spell
+24857:# Subtest: a jump made in the thick of a cloud still reaches every platform the generator calls safe
+24864:# tests 4036
+24865:# suites 0
+24866:# pass 4031
+24867:# fail 2
+24868:# cancelled 0
+24869:# skipped 0
+24870:# todo 3
+24871:# duration_ms 1790551.999732
