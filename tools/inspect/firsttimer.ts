@@ -1108,10 +1108,12 @@ const floatAt = (rivers: readonly RiverZone[] | undefined, q: Platform) => (t: n
  *  no decision reads it (tools/inspect/hopJudged.test.ts) */
 /**
  * What a drawn-hop gate (edgeStand, edgeWait, race, upstream; rule 28) reads when it decides to press (ENG-27r, the lead's concern: a
- * player cannot see his thumb slip before he presses). PLANT: B's read, the hop WITH its pre-drawn thumb noise and the thumb's state now.
+ * player cannot see his thumb slip before he presses). The hop AS AIMED: its kind, holds, second press and beat with no steer (the
+ * tier's draws, his plan), the log and the gap; never the thumb's noise drawn for it (drift, slip, late let-go) nor the thumb's state now.
+ * The press then flies the aim WITH that noise (startJump's flyThumb), and judge() records the flown draw's prediction, a fall included.
  */
-export function gateLands(q: Platform, at: (t: number) => number, x: number, y: number, dir: -1 | 1, h: DrawnHop, t0: number, vx0: number, margin: number, v2: number, thumb?: ThumbAt, others?: FlightOthers): boolean {
-  return hopFlies(q, at, x, y, dir, h, t0, vx0, margin, v2, thumb, others);
+export function gateLands(q: Platform, at: (t: number) => number, x: number, y: number, dir: -1 | 1, h: DrawnHop, t0: number, vx0: number, margin: number, v2: number, _thumb?: ThumbAt, others?: FlightOthers): boolean {
+  return hopFlies(q, at, x, y, dir, { ...h, thumb: undefined }, t0, vx0, margin, v2, undefined, others);
 }
 
 export type HopRow = { site: string; q: number; t: number; x: number; hold: number; lag: number; kind?: 'single' | 'double'; flown?: { t: number; x: number; hold: number; kind: 'single' | 'double' }; landed?: number | 'lost'; landedType?: string };
@@ -1742,6 +1744,8 @@ export class FirstTimerRun {
           return;
         }
       }
+      // (ENG-27r: the gate pressed on the aim; the flown draw, its thumb noise included, comes down on none of them: predicted a fall, q -2)
+      this.judged = { site, q: -2, t: this.t, x: p.x, hold: h.hold, lag: 0, kind: h.kind, on: this.sim.standingOn };
       return;
     }
     for (const lag of lags) for (const q of qs) {

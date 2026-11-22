@@ -46,7 +46,8 @@ for (const [setting, seed] of [['normal', 5], ['normal', 2], ['easy', 5], ['easy
     //  SAME kind and hold; a gate still judging a single held who.hold[0] (boardHop), a single held at least that)
     const flownWrong = rows.filter(isJudged).filter((r) => Math.abs(r.flown!.t - (r.t + r.lag)) > DT / 2 + 1e-6 || (r.kind !== undefined ? r.flown!.kind !== r.kind || Math.abs(r.flown!.hold - r.hold) > 1e-9 : r.flown!.kind !== 'single' || r.flown!.hold + 1e-9 < r.hold));
     // (and where he came down: the platform the gate judged)
-    const cameWrong = rows.filter(isJudged).filter((r) => r.landed !== undefined && r.landed !== r.q);
+    const cameWrong = rows.filter(isJudged).filter((r) => r.landed !== undefined && (r.q === -2 ? r.landed !== 'lost' : r.landed !== r.q));
+    //  (ENG-27r: q -2 is a predicted fall, the flown draw with its thumb noise landing on nothing judged: consistent only if he is lost)
     const lines = [...new Set([...unjudged, ...flownWrong, ...cameWrong])].map(show);
     for (const r of rows.filter((r) => !isJudged(r))) console.log('  [bank press] ' + show(r));
     console.log(`${setting} seed ${seed}: ${rows.length} judged hops pressed (${[...new Set(rows.map((r) => r.site))].join(', ')}); unjudged or stale ${unjudged.length}, flown not as judged ${flownWrong.length}, came down elsewhere ${cameWrong.length}`);
