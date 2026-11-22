@@ -1,0 +1,50 @@
+PLATS 
+PTS 
+50.43 LAND #13 660,5906 vx -285 vy 0 cur 188 best 195 tgt {"x":726.1219512195122,"y":5570.707317073171}
+JUMP @50.63 from 652,5906 vx 0 dir 1 kind double hold 0.279 d2 -1.000 upOnly 0.12649396390654147 needs  cur 188 tgt {"x":726.1219512195122,"y":5570.707317073171} edge null aimedDrop false
+50.67 AIR 652,5887 vx 0 vy -577 cur 188 best 195 tgt {"x":726.1219512195122,"y":5570.707317073171}
+51.53 LAND #6 846,5906 vx 268 vy 0 cur 191 best 195 tgt {"x":797.0243902439024,"y":5567.341463414634}
+JUMP @51.73 from 853,5906 vx 0 dir -1 kind single hold 0.091 d2 -1.000 upOnly 0.16539061246439815 needs  cur 191 tgt {"x":797.0243902439024,"y":5567.341463414634} edge null aimedDrop false
+51.77 AIR 853,5887 vx 0 vy -577 cur 191 best 195 tgt {"x":797.0243902439024,"y":5567.341463414634}
+52.17 LAND #13 797,5906 vx -285 vy 0 cur 191 best 195 tgt {"x":797.0243902439024,"y":5567.341463414634}
+JUMP @52.53 from 696,5906 vx -268 dir -1 kind double hold 0.176 d2 -1.000 upOnly 0 needs  cur 122 tgt {"x":587.9354838709678,"y":5906} edge null aimedDrop false
+52.57 AIR 686,5887 vx -285 vy -577 cur 122 best 195 tgt {"x":587.9354838709678,"y":5906}
+53.60 LAND #13 401,5906 vx -268 vy 0 cur 134 best 195 tgt {"x":302.258064516129,"y":5906}
+JUMP @53.80 from 346,5906 vx -268 dir -1 kind single hold 0.186 d2 -1.000 upOnly 0 needs  cur 137 tgt {"x":254.64516129032256,"y":5906} edge null aimedDrop false
+53.83 AIR 336,5887 vx -285 vy -577 cur 137 best 195 tgt {"x":230.8387096774194,"y":5906}
+54.40 LAND #13 180,5906 vx -268 vy 0 cur 144 best 195 tgt {"x":88,"y":5906}
+JUMP @54.60 from 125,5906 vx -268 dir -1 kind single hold 0.166 d2 -1.000 upOnly 0.08363395305350423 needs  cur 146 tgt {"x":88,"y":5812.153846153846} edge null aimedDrop false
+54.63 AIR 88,5899 vx 0 vy 0 cur 146 best 195 tgt {"x":88,"y":5788.692307692308}
+56.17 LAND #14 151,5601 vx 285 vy 0 cur 163 best 195 tgt {"x":253.4390243902439,"y":5593.1463414634145}
+JUMP @56.37 from 206,5601 vx 285 dir 1 kind single hold 0.165 d2 -1.000 upOnly 0 needs  cur 166 tgt {"x":300.70731707317077,"y":5590.90243902439} edge null aimedDrop false
+56.40 AIR 215,5582 vx 268 vy -577 cur 166 best 195 tgt {"x":324.3414634146342,"y":5589.780487804878}
+56.93 LAND #14 362,5601 vx 268 vy 0 cur 172 best 195 tgt {"x":466.1463414634146,"y":5583.048780487805}
+57.20 AIR 436,5604 vx 268 vy 83 cur 175 best 195 tgt {"x":537.0487804878048,"y":5579.682926829269}
+JUMP @57.30 from 464,5629 vx 285 dir 1 kind single hold 0.067 d2 -1.000 upOnly 0.12419343390502036 needs  cur 177 tgt {"x":560.6829268292684,"y":5578.5609756097565} edge null aimedDrop false
+57.53 LAND #15 498,5555 vx 0 vy 0 cur 178 best 195 tgt {"x":607.9512195121952,"y":5576.317073170731}
+JUMP @57.77 from 498,5555 vx 0 dir 1 kind single hold 0.067 d2 -1.000 upOnly 0 needs  cur 178 tgt {"x":607.9512195121952,"y":5576.317073170731} edge null aimedDrop false
+57.80 AIR 498,5536 vx 0 vy -577 cur 178 best 195 tgt {"x":584.3170731707316,"y":5577.4390243902435}
+58.10 LAND #16 554,5505 vx 285 vy 0 cur 180 best 195 tgt {"x":631.5853658536586,"y":5575.195121951219}
+58.43 AIR 646,5508 vx 285 vy 83 cur 184 best 195 tgt {"x":726.1219512195122,"y":5570.707317073171}
+58.60 LAND #15 692,5555 vx 268 vy 0 cur 186 best 195 tgt {"x":797.0243902439024,"y":5567.341463414634}
+58.73 AIR 729,5558 vx 268 vy 83 cur 188 best 195 tgt {"x":820.6585365853658,"y":5566.219512195122}
+58.93 LAND #18 784,5625 vx 268 vy 0 cur 190 best 195 tgt {"x":867.9268292682926,"y":5563.975609756098}
+59.03 AIR 812,5628 vx 285 vy 83 cur 191 best 195 tgt {"x":891.560975609756,"y":5562.8536585365855}
+59.50 LAND #6 940,5906 vx 268 vy 0 cur 195 best 195 tgt {"x":891.560975609756,"y":5562.8536585365855}
+JUMP @59.63 from 946,5906 vx 0 dir -1 kind double hold 0.182 d2 -1.000 upOnly 0 needs  cur 195 tgt {"x":891.560975609756,"y":5562.8536585365855} edge null aimedDrop false
+59.67 AIR 946,5887 vx 0 vy -577 cur 195 best 195 tgt {"x":891.560975609756,"y":5562.8536585365855}
+60.60 LAND #13 724,5906 vx -285 vy 0 cur 190 best 195 tgt {"x":773.390243902439,"y":5568.463414634146}
+JUMP @60.87 from 720,5906 vx 87 dir 1 kind double hold 0.125 d2 -1.000 upOnly 0.18156079099513592 needs  cur 190 tgt {"x":773.390243902439,"y":5568.463414634146} edge null aimedDrop false
+60.90 AIR 723,5887 vx 87 vy -577 cur 190 best 195 tgt {"x":773.390243902439,"y":5568.463414634146}
+61.73 LAND #6 914,5906 vx 285 vy 0 cur 193 best 195 tgt {"x":844.2926829268292,"y":5565.09756097561}
+JUMP @61.93 from 922,5906 vx 0 dir -1 kind double hold 0.203 d2 -1.000 upOnly 0 needs  cur 193 tgt {"x":844.2926829268292,"y":5565.09756097561} edge null aimedDrop false
+61.97 AIR 919,5887 vx -87 vy -577 cur 193 best 195 tgt {"x":844.2926829268292,"y":5565.09756097561}
+62.77 LAND #13 705,5906 vx -285 vy 0 cur 190 best 195 tgt {"x":773.390243902439,"y":5568.463414634146}
+JUMP @63.07 from 715,5906 vx 260 dir 1 kind single hold 0.067 d2 -1.000 upOnly 0.14847518095746637 needs  cur 190 tgt {"x":773.390243902439,"y":5568.463414634146} edge null aimedDrop false
+63.10 AIR 723,5887 vx 260 vy -577 cur 190 best 195 tgt {"x":773.390243902439,"y":5568.463414634146}
+63.50 LAND #6 832,5906 vx 268 vy 0 cur 190 best 195 tgt {"x":773.390243902439,"y":5568.463414634146}
+63.53 LAND #20 1538,5281 vx 87 vy 0 cur 235 best 195 tgt {"x":1605,"y":5210.8}
+63.67 AIR 1605,5274 vx 0 vy 0 cur 236 best 236 tgt {"x":1605,"y":5164}
+STUCK {"x":892,"y":5563,"t":63.5,"dur":0,"what":"fell back down from here 3 times","step":null,"dip":null,"puzzle":false,"rescued":true}
+STUCK {"x":1245,"y":751,"t":127.1,"dur":10.1,"what":"water ahead, the way on is 173 px down","step":null,"dip":null,"puzzle":false,"rescued":false
+{"t":144.5,"end":"shrine","rescues":1,"rescueXs":[832]}

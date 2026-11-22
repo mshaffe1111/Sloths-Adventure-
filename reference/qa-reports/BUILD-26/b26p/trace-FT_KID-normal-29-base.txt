@@ -1,0 +1,37 @@
+PLATS 
+PTS 
+66.53 LAND #13 754,5885 vx 268 vy 0 cur 120 best 204 tgt {"x":659.3548387096774,"y":5885}
+JUMP @66.80 from 752,5885 vx -173 dir -1 kind double hold 0.085 d2 -1.000 upOnly 0.16687504209578038 needs  cur 120 tgt {"x":659.3548387096774,"y":5885} edge null aimedDrop false
+66.83 AIR 746,5866 vx -173 vy -577 cur 120 best 204 tgt {"x":635.5483870967741,"y":5885}
+67.57 LAND #13 562,5885 vx -268 vy 0 cur 128 best 204 tgt {"x":468.9032258064516,"y":5885}
+JUMP @67.80 from 497,5885 vx -285 dir -1 kind double hold 0.067 d2 -1.000 upOnly 0.19272573669441045 needs  cur 131 tgt {"x":397.48387096774195,"y":5885} edge null aimedDrop false
+67.83 AIR 488,5866 vx -285 vy -577 cur 131 best 204 tgt {"x":397.48387096774195,"y":5885}
+68.67 LAND #13 256,5885 vx -285 vy 0 cur 141 best 204 tgt {"x":159.41935483870964,"y":5885}
+JUMP @68.97 from 174,5885 vx -268 dir -1 kind single hold 0.148 d2 -1.000 upOnly 0.12891207633540036 needs  cur 144 tgt {"x":88,"y":5838.076923076923} edge null aimedDrop false
+69.00 AIR 165,5866 vx -268 vy -577 cur 144 best 204 tgt {"x":88,"y":5814.615384615385}
+71.10 LAND #14 151,5580 vx 285 vy 0 cur 163 best 204 tgt {"x":252.0731707317073,"y":5572.1463414634145}
+JUMP @71.23 from 188,5580 vx 285 dir 1 kind single hold 0.067 d2 -1.000 upOnly 0 needs  cur 165 tgt {"x":298.9512195121951,"y":5569.90243902439} edge null aimedDrop false
+71.27 AIR 196,5561 vx 268 vy -577 cur 165 best 204 tgt {"x":298.9512195121951,"y":5569.90243902439}
+71.67 LAND #14 307,5580 vx 268 vy 0 cur 170 best 204 tgt {"x":416.1463414634146,"y":5564.292682926829}
+JUMP @71.87 from 362,5580 vx 268 dir 1 kind single hold 0.239 d2 -1.000 upOnly 0 needs  cur 173 tgt {"x":463.0243902439024,"y":5562.048780487805} edge null aimedDrop false
+71.90 AIR 372,5561 vx 285 vy -577 cur 173 best 204 tgt {"x":463.0243902439024,"y":5562.048780487805}
+72.40 LAND #15 495,5534 vx 0 vy 0 cur 178 best 204 tgt {"x":603.6585365853658,"y":5555.317073170731}
+JUMP @72.63 from 495,5534 vx 0 dir 1 kind single hold 0.280 d2 -1.000 upOnly 0.1008226452767849 needs  cur 178 tgt {"x":603.6585365853658,"y":5555.317073170731} edge null aimedDrop false
+72.67 AIR 495,5515 vx 0 vy -577 cur 178 best 204 tgt {"x":580.219512195122,"y":5556.4390243902435}
+73.17 LAND #16 588,5484 vx 285 vy 0 cur 182 best 204 tgt {"x":650.5365853658536,"y":5553.073170731707}
+73.40 AIR 652,5487 vx 268 vy 83 cur 185 best 204 tgt {"x":720.8536585365854,"y":5549.707317073171}
+73.57 LAND #15 699,5534 vx 285 vy 0 cur 187 best 204 tgt {"x":791.170731707317,"y":5546.341463414634}
+73.70 AIR 735,5537 vx 285 vy 83 cur 188 best 204 tgt {"x":838.0487804878048,"y":5544.09756097561}
+73.90 LAND #18 791,5604 vx 285 vy 0 cur 191 best 204 tgt {"x":861.4878048780488,"y":5542.975609756098}
+73.97 AIR 809,5607 vx 285 vy 83 cur 191 best 204 tgt {"x":884.9268292682926,"y":5541.8536585365855}
+74.43 LAND #6 939,5885 vx 285 vy 0 cur 195 best 204 tgt {"x":884.9268292682926,"y":5541.8536585365855}
+JUMP @74.77 from 902,5885 vx -285 dir -1 kind double hold 0.209 d2 -1.000 upOnly 0 needs  cur 195 tgt {"x":884.9268292682926,"y":5541.8536585365855} edge null aimedDrop false
+74.80 AIR 893,5866 vx -268 vy -577 cur 195 best 204 tgt {"x":884.9268292682926,"y":5541.8536585365855}
+75.73 LAND #13 635,5885 vx -268 vy 0 cur 187 best 204 tgt {"x":697.4146341463414,"y":5550.829268292683}
+JUMP @76.07 from 1533,5281 vx 0 dir 1 kind single hold 0.216 d2 -1.000 upOnly 0.18043503965251148 needs  cur 234 tgt {"x":1603,"y":5210.8} edge null aimedDrop false
+76.10 AIR 1533,5262 vx 0 vy -577 cur 234 best 204 tgt {"x":1603,"y":5187.4}
+STUCK {"x":1230,"y":5863,"t":10.8,"dur":8.5,"what":"in a dip 329 px deep, a drop of 308 px ahead, water ahead, the way on is 166 px down","step":n
+STUCK {"x":703,"y":5885,"t":55.4,"dur":12.1,"what":"in a dip 351 px deep, an open drop ahead, water ahead, the way on is 338 px up","step":null,"d
+STUCK {"x":1094,"y":5534,"t":76.1,"dur":0,"what":"fell back down from here 3 times","step":null,"dip":null,"puzzle":false,"rescued":true}
+STUCK {"x":335,"y":1712,"t":120.6,"dur":9.2,"what":"water ahead, the way on is 201 px down","step":null,"dip":null,"puzzle":false,"rescued":false}
+{"t":150.3,"end":"shrine","rescues":1,"rescueXs":[646]}

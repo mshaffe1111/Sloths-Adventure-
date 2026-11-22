@@ -1,0 +1,25 @@
+PLATS 
+PTS 
+30.00 LAND #20 1418,5278 vx 285 vy 0 cur 228 best 228 tgt {"x":1516.2857142857142,"y":5278}
+30.57 AIR 1610,5271 vx 0 vy 0 cur 235 best 235 tgt {"x":1610,"y":5161}
+32.07 LAND #81 1610,4927 vx 0 vy 0 cur 251 best 251 tgt {"x":1515.5438596491229,"y":4927}
+32.10 AIR 1610,4915 vx -160 vy -190 cur 252 best 252 tgt {"x":1515.5438596491229,"y":4927}
+32.33 LAND #21 1547,4927 vx -285 vy 0 cur 254 best 254 tgt {"x":1444.701754385965,"y":4927}
+33.37 AIR 1262,4930 vx -268 vy 83 cur 266 best 266 tgt {"x":1161.3333333333333,"y":4927}
+33.50 LAND #26 1225,4955 vx -285 vy 0 cur 268 best 268 tgt {"x":1137.719298245614,"y":4927}
+JUMP @34.20 from 1067,4955 vx -285 dir -1 kind single hold 0.186 d2 -1.000 upOnly 0.10414206990972162 needs  cur 275 tgt {"x":972.421052631579,"y":4927} edge null aimedDrop false
+34.23 AIR 1053,4936 vx -355 vy -577 cur 275 best 275 tgt {"x":948.8070175438596,"y":4927}
+34.80 LAND #23 884,4955 vx -285 vy 0 cur 282 best 282 tgt {"x":783.5087719298245,"y":4927}
+JUMP @35.20 from 765,4955 vx -285 dir -1 kind single hold 0.170 d2 -1.000 upOnly 0.11432588888332249 needs  cur 288 tgt {"x":665.438596491228,"y":4927} edge null aimedDrop false
+35.23 AIR 750,4936 vx -355 vy -577 cur 288 best 288 tgt {"x":641.8245614035088,"y":4927}
+35.80 LAND #24 581,4955 vx -285 vy 0 cur 295 best 295 tgt {"x":476.52631578947376,"y":4927}
+36.40 AIR 486,4958 vx -285 vy 83 cur 299 best 299 tgt {"x":382.0701754385964,"y":4927}
+36.90 LAND #82 347,5278 vx -285 vy 0 cur 304 best 304 tgt {"x":382.0701754385964,"y":4927}
+JUMP @37.23 from 372,5278 vx 172 dir 1 kind single hold 0.191 d2 -1.000 upOnly 0 needs  cur 304 tgt {"x":382.0701754385964,"y":4927} edge null aimedDrop false
+37.27 AIR 381,5259 vx 258 vy -577 cur 304 best 304 tgt {"x":382.0701754385964,"y":4927}
+37.83 LAND #82 538,5278 vx 285 vy 0 cur 304 best 304 tgt {"x":382.0701754385964,"y":4927}
+39.53 LAND #22 285,4927 vx -87 vy 0 cur 308 best 304 tgt {"x":264,"y":4835.181818181818}
+39.57 AIR 264,4920 vx 0 vy 0 cur 308 best 308 tgt {"x":264,"y":4812.227272727273}
+STUCK {"x":382,"y":4927,"t":39.5,"dur":0,"what":"fell back down from here 3 times","step":null,"dip":null,"puzzle":false,"rescued":true}
+STUCK {"x":1172,"y":692,"t":95.7,"dur":9.1,"what":"water ahead, the way on is 192 px down","step":null,"dip":null,"puzzle":false,"rescued":false}
+{"t":111,"end":"shrine","rescues":1,"rescueXs":[539]}

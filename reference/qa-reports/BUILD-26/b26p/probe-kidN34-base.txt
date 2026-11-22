@@ -1,0 +1,2 @@
+65.90 1509,3738 edgeAim 32 aimQ false floor@-54 - @+54 37 @0 undefined rivers [[681,1521,1239],[766,1526,6348]] onTower true
+65.93 1499,3738 edgeAim 32 aimQ false floor@-54 - @+54 37 @0 undefined rivers [[681,1521,1239],[766,1526,6348]] onTower true

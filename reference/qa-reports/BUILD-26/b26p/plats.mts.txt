@@ -1,0 +1,12 @@
+const W = process.env.WT!;
+await import(W + '/src/game/headlessDom.ts');
+const { setDifficulty } = await import(W + '/src/game/difficulty.ts');
+const FT: any = await import(W + '/tools/inspect/firsttimer.ts');
+const set = process.env.SET ?? 'normal'; setDifficulty(set);
+const ids = (process.env.IDS ?? '').split(',').map(Number);
+const run: any = new FT.FirstTimerRun(process.env.STAGE ?? '2-6', Number(process.argv[2]), { ...FT[process.env.BOT ?? 'FT_KID'], setting: set });
+const [X0, X1, Y0, Y1] = ['X0', 'X1', 'Y0', 'Y1'].map((k) => +(process.env[k] ?? 0));
+console.log('keys', Object.keys(run.sim.platforms[0]).join(','));
+for (const q of run.sim.platforms) if (ids.includes(q.id) || (q.x < X1 && q.x + (q.w ?? 0) > X0 && q.y > Y0 && q.y < Y1)) console.log(JSON.stringify(q, (k, v) => typeof v === 'number' ? Math.round(v) : v).slice(0, 220));
+console.log('PTS', run.prog.pts.map((q: any, i: number) => [i, q]).filter(([i]: any) => i >= +(process.env.P0 ?? 0) && i <= +(process.env.P1 ?? 0)).map(([i, q]: any) => `${i}:${Math.round(q.x)},${Math.round(q.y)}`).join(' '));
+console.log('PHYS', JSON.stringify(FT.PHYS ?? null));

@@ -1,0 +1,2 @@
+cd "$1" || exit 1
+for st in 2-6 2-1 2-2 2-3 2-4 2-5 1-4; do npx tsx tools/inspect/castBots.ts --stage $st --seeds 1-40 --setting both --par 2 --rows "$2/$st.jsonl" > "$2/$st.txt" 2>&1; echo "$st rc=$?"; done

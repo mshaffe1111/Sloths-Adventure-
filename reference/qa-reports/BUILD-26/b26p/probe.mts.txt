@@ -1,0 +1,12 @@
+const W = process.env.WT!;
+await import(W + '/src/game/headlessDom.ts');
+const { setDifficulty } = await import(W + '/src/game/difficulty.ts');
+const FT: any = await import(W + '/tools/inspect/firsttimer.ts');
+const set = process.env.SET ?? 'normal'; setDifficulty(set);
+const [T0, T1] = (process.env.TW ?? '0,0').split(',').map(Number);
+let run: any; const out: string[] = [];
+run = new FT.FirstTimerRun(process.env.STAGE ?? '2-6', Number(process.argv[2]), { ...FT[process.env.BOT ?? 'FT_KID'], setting: set }, { onFrame: (s: any) => {
+  if (run.t > T0 && run.t < T1) { const p = s.p; const f = (d: number) => run.floorAt(p.x + d, p.y, 40)?.id ?? '-';
+    out.push(`${run.t.toFixed(2)} ${Math.round(p.x)},${Math.round(p.y)} edgeAim ${run.who.edgeAim} aimQ ${!!run.who.aimQ} floor@-54 ${f(-54)} @+54 ${f(54)} @0 ${run.floorAt(p.x, p.y, 6)?.id} rivers ${JSON.stringify((run.sim.stage.rivers ?? []).filter((r: any) => p.x > r.x0 && p.x < r.x1).map((r: any) => [r.x0, r.x1, r.surfaceY]))} onTower ${run.onTower}`); }
+} });
+run.play(); console.log(out.join('\n'));

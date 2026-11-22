@@ -1,0 +1,23 @@
+PLATS 
+PTS 
+62.30 LAND #35 1359,4117 vx 268 vy 0 cur 380 best 425 tgt {"x":1460.4,"y":4117}
+JUMP @62.43 from 1396,4117 vx 268 dir 1 kind single hold 0.196 d2 -1.000 upOnly 0 needs  cur 382 tgt {"x":1506.6,"y":4117} edge null aimedDrop false
+62.47 AIR 1406,4098 vx 285 vy -577 cur 382 best 425 tgt {"x":1506.6,"y":4117}
+63.03 LAND #36 1562,4117 vx 268 vy 0 cur 389 best 425 tgt {"x":1599,"y":4022.25}
+63.20 AIR 1599,4110 vx 0 vy 0 cur 391 best 425 tgt {"x":1599,"y":3998.5625}
+65.80 LAND #37 1536,3738 vx -285 vy 0 cur 409 best 425 tgt {"x":1432.3125,"y":3738}
+JUMP @66.03 from 1472,3738 vx -268 dir -1 kind single hold 0.118 d2 -1.000 upOnly 0 needs  cur 412 tgt {"x":1360.875,"y":3738} edge null aimedDrop false
+66.07 AIR 1463,3719 vx -285 vy -577 cur 412 best 425 tgt {"x":1360.875,"y":3738}
+66.53 LAND #37 1334,3738 vx -285 vy 0 cur 418 best 425 tgt {"x":1241.8125,"y":3738}
+66.60 AIR 1315,3741 vx -285 vy 83 cur 419 best 425 tgt {"x":1218,"y":3738}
+66.80 LAND #41 1260,3808 vx -285 vy 0 cur 421 best 425 tgt {"x":1194.1875,"y":3738}
+66.87 AIR 1242,3811 vx -285 vy 83 cur 422 best 425 tgt {"x":1170.375,"y":3738}
+67.33 LAND #28 1111,4117 vx -285 vy 0 cur 425 best 425 tgt {"x":1170.375,"y":3738}
+JUMP @67.57 from 1131,4117 vx 285 dir 1 kind double hold 0.143 d2 -1.000 upOnly 0 needs  cur 425 tgt {"x":1170.375,"y":3738} edge null aimedDrop false
+67.60 AIR 1140,4098 vx 268 vy -577 cur 425 best 425 tgt {"x":1170.375,"y":3738}
+68.57 LAND #36 1407,4117 vx 285 vy 0 cur 425 best 425 tgt {"x":1170.375,"y":3738}
+68.60 LAND #38 1078,3738 vx 87 vy 0 cur 429 best 425 tgt {"x":979.875,"y":3738}
+JUMP @68.87 from 1086,3738 vx 0 dir -1 kind single hold 0.208 d2 -1.000 upOnly 0 needs  cur 429 tgt {"x":979.875,"y":3738} edge null aimedDrop false
+68.90 AIR 1083,3719 vx -87 vy -577 cur 429 best 429 tgt {"x":979.875,"y":3738}
+STUCK {"x":1170,"y":3738,"t":68.6,"dur":0,"what":"fell back down from here 3 times","step":null,"dip":null,"puzzle":false,"rescued":true}
+{"t":114.7,"end":"shrine","rescues":1,"rescueXs":[1407]}

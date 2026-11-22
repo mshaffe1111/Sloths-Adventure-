@@ -1,0 +1,40 @@
+PLATS 
+PTS 
+50.30 LAND #16 529,5477 vx 285 vy 0 cur 179 best 196 tgt {"x":583.8048780487804,"y":5548.951219512195}
+50.73 AIR 649,5480 vx 268 vy 83 cur 184 best 196 tgt {"x":725.4634146341464,"y":5542.365853658536}
+50.90 LAND #15 695,5527 vx 285 vy 0 cur 186 best 196 tgt {"x":796.2926829268292,"y":5539.073170731707}
+51.03 AIR 732,5530 vx 285 vy 83 cur 188 best 196 tgt {"x":843.5121951219512,"y":5536.878048780488}
+51.23 LAND #18 787,5597 vx 285 vy 0 cur 190 best 196 tgt {"x":867.1219512195122,"y":5535.780487804878}
+51.33 AIR 814,5600 vx 268 vy 83 cur 191 best 196 tgt {"x":890.7317073170732,"y":5534.682926829269}
+51.80 LAND #6 945,5878 vx 285 vy 0 cur 195 best 196 tgt {"x":890.7317073170732,"y":5534.682926829269}
+JUMP @51.97 from 952,5878 vx 0 dir -1 kind double hold 0.067 d2 -1.000 upOnly 0.08808126509189607 needs  cur 195 tgt {"x":890.7317073170732,"y":5534.682926829269} edge null aimedDrop false
+52.00 AIR 952,5859 vx 0 vy -577 cur 195 best 196 tgt {"x":890.7317073170732,"y":5534.682926829269}
+52.77 LAND #13 777,5878 vx -268 vy 0 cur 194 best 196 tgt {"x":867.1219512195122,"y":5535.780487804878}
+JUMP @53.13 from 806,5878 vx 268 dir 1 kind single hold 0.067 d2 -1.000 upOnly 0.10119870696216822 needs  cur 118 tgt {"x":706.9677419354839,"y":5878} edge null aimedDrop false
+53.17 AIR 815,5859 vx 268 vy -577 cur 118 best 196 tgt {"x":706.9677419354839,"y":5878}
+53.57 LAND #6 925,5878 vx 285 vy 0 cur 113 best 196 tgt {"x":826,"y":5878}
+JUMP @53.83 from 924,5878 vx -173 dir -1 kind double hold 0.152 d2 -1.000 upOnly 0.08591586302034557 needs  cur 113 tgt {"x":826,"y":5878} edge null aimedDrop false
+53.87 AIR 918,5859 vx -173 vy -577 cur 113 best 196 tgt {"x":826,"y":5878}
+54.60 LAND #13 723,5878 vx -285 vy 0 cur 121 best 196 tgt {"x":611.741935483871,"y":5878}
+JUMP @54.93 from 631,5878 vx -285 dir -1 kind single hold 0.067 d2 -1.000 upOnly 0 needs  cur 125 tgt {"x":540.3225806451612,"y":5878} edge null aimedDrop false
+54.97 AIR 622,5859 vx -268 vy -577 cur 125 best 196 tgt {"x":516.516129032258,"y":5878}
+55.37 LAND #13 512,5878 vx -268 vy 0 cur 130 best 196 tgt {"x":421.2903225806452,"y":5878}
+JUMP @55.70 from 420,5878 vx -268 dir -1 kind single hold 0.067 d2 -1.000 upOnly 0.1952824151981622 needs  cur 134 tgt {"x":326.06451612903226,"y":5878} edge null aimedDrop false
+55.73 AIR 411,5859 vx -268 vy -577 cur 134 best 196 tgt {"x":302.258064516129,"y":5878}
+56.13 LAND #13 301,5878 vx -285 vy 0 cur 139 best 196 tgt {"x":207.0322580645161,"y":5878}
+JUMP @56.40 from 228,5878 vx -285 dir -1 kind single hold 0.138 d2 -1.000 upOnly 0.1440972067322582 needs  cur 142 tgt {"x":135.61290322580646,"y":5878} edge null aimedDrop false
+56.43 AIR 218,5859 vx -285 vy -577 cur 142 best 196 tgt {"x":111.80645161290317,"y":5878}
+58.67 LAND #14 151,5572 vx 285 vy 0 cur 163 best 196 tgt {"x":253.26829268292684,"y":5564.317073170731}
+JUMP @59.03 from 252,5572 vx 268 dir 1 kind single hold 0.160 d2 -1.000 upOnly 0.16752450006082653 needs  cur 168 tgt {"x":347.7073170731707,"y":5559.926829268293} edge null aimedDrop false
+59.07 AIR 261,5553 vx 268 vy -577 cur 168 best 196 tgt {"x":371.3170731707317,"y":5558.829268292683}
+59.60 LAND #14 407,5572 vx 285 vy 0 cur 174 best 196 tgt {"x":512.9756097560976,"y":5552.243902439024}
+59.70 AIR 434,5575 vx 268 vy 83 cur 175 best 196 tgt {"x":536.5853658536585,"y":5551.1463414634145}
+60.17 LAND #13 564,5878 vx 285 vy 0 cur 180 best 196 tgt {"x":536.5853658536585,"y":5551.1463414634145}
+JUMP @60.40 from 569,5878 vx -87 dir -1 kind single hold 0.067 d2 -1.000 upOnly 0 needs  cur 180 tgt {"x":536.5853658536585,"y":5551.1463414634145} edge null aimedDrop false
+60.43 AIR 563,5859 vx -173 vy -577 cur 180 best 196 tgt {"x":536.5853658536585,"y":5551.1463414634145}
+60.83 LAND #13 453,5878 vx -285 vy 0 cur 180 best 196 tgt {"x":536.5853658536585,"y":5551.1463414634145}
+60.87 LAND #20 1540,5277 vx 0 vy 0 cur 234 best 196 tgt {"x":1610,"y":5206.8}
+STUCK {"x":1285,"y":5901,"t":14.9,"dur":11.5,"what":"in a dip 374 px deep, a drop of 265 px ahead, water ahead, the way on is 137 px down","step":
+STUCK {"x":914,"y":5534,"t":60.8,"dur":0,"what":"fell back down from here 3 times","step":null,"dip":null,"puzzle":false,"rescued":true}
+STUCK {"x":777,"y":2908,"t":99,"dur":8.3,"what":"in a dip 368 px deep, an open drop ahead, water ahead, the way on is 142 px down","step":null,"di
+{"t":144.3,"end":"shrine","rescues":1,"rescueXs":[453]}

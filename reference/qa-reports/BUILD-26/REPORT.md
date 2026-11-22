@@ -1,3 +1,53 @@
+# BUILD-26p (on t-build-26-wip-26p from 9e1e30b27): R-165.390 traced: a BOT fault on every row, not a level fact. The bot read a river by x alone (firsttimer.ts floorAt), so 2-6's high rivers made every branch under their windows 'under water'. Candidate 86bb3b145 (toy RED on base, GREEN on fix). Started 5:47 PM ET 11-22 (by `date`)
+
+## EXACT NEXT STEP (box 2)
+1. Rule 28 x40 for the other stages: base and candidate rows are being written to /home/user/x40p/{base,cand}/<stage>.jsonl (frozen trees
+   /home/user/f26p = 9e1e30b27, /home/user/c26p = 86bb3b145; runner b26p/x40.sh.txt). When both logs show 1-4 rc=0, run
+   `python3 b26p/rdiff.py.txt /home/user/x40p/base/<st>.jsonl /home/user/x40p/cand/<st>.jsonl` for each of 2-1..2-5 and 1-4 and trace every new fail.
+2. Then the suite (3 shards, timeout 7200000, frozen c26p) and tierBots; then `castBots --stage 2-6 --proven` over the 100 listed rolls on c26p.
+3. The lead's call on the two open families the fix moves runs into (below): cause B (riding a moving piece, rescued) and the log-ride bank end.
+
+## Step 1: the six rows traced (b26p/trace-*-base.txt, tool b26p/trace.mts.txt; geometry b26p/plats.mts.txt, probe b26p/probe-kidN34-base.txt)
+Every loop is the same piece of 2-6: a SUNKEN STEP, a short branch 70 px down between two branches at one height.
+| row | where | the gap / the step | what he did |
+|---|---|---|---|
+| kid N 14, 17, 29, 32 | y 5551: #15 (414-714), #18 (714-800, y 5621), #17 (800-1060) | 86 px across at one height; 70 px up out of #18 | ran off #16's end, landed on #15 18-37 px before its lip, ran off it 0.07-0.13 s later, the same off #18 under #17's lip, to the floor at 5902 |
+| kid N 34, adult N 23 (same frames) | y 3738: #37 (1333-1573), #41 (1260-1333, y 3808), #38 (1060-1260) | 73 px across; 70 px up | jumped 139-166 px BEFORE #37's lip (the edge call at x 1499), landed at the lip, ran off it and off #41 |
+| kid E 16 | y 3962: #39 (1346-1586), #43 (1266-1346, y 4032), #40 (1018-1266) | 80 px across; 70 px up | jumped 93 px before #39's lip, landed in #43, his press came late (thumb lag), short tap (52 px rise), fell |
+**Reach (src/game/physics.ts PHYS):** a single rises 107.8 px (JUMP_RISE) with 0.630 s of air, 180 px at maxRun 285. 70 px up needs
+0.511 s; the kid's mean hold (0.16 s) rises about 92 px. Every gap (73-89 px) and step (70 px) is inside the kid's and the adult's jump
+on both settings: **verdict (b) on all six rows: not a level fact.**
+**Why the bot missed them:** 2-6's stage carries river windows stacked up the climb (surfaces at y 1201-6348; probe lines list them).
+floorAt took the FIRST river whose window holds x and skipped every top under its surface, at any depth: at x 1445 the river at
+y 1239 made #37 (y 3738) 'under water'. So: no floor ahead mid-branch (the early jump at 1499), no floor under him (the landing beat's
+pause never set, firsttimer.ts 2682-2690, so he ran on). The engine already reads water by x AND y (river.ts riverAt, RIVER_DEPTH 120,
+ENG-27: "Never by x alone"); the bot was never moved over.
+## Step 2: the toy and the fix (86bb3b145)
+Toy: firsttimer.test.ts last test (CI runs the file, gates.yml): floorAt finds a branch 2,500 px under a high river, not a top 10 px
+under its surface, and a top over a low river. RED on 9e1e30b27 (expected 1, got null), GREEN on 86bb3b145. Fix: floorAt judges each
+top against `riverAt(rivers, x, q.y)`. No stage id, no x (generalitycheck PASS). tsc 0. The six rows on the candidate: 0 rescues each.
+## Step 3: rule 28, 2-6 x40 (b26p/rows/r26-base.jsonl, r26-cand.jsonl; b26p/diff-2-6.txt)
+| bot | N base -> cand | E base -> cand |
+|---|---|---|
+| kid | 33 -> 39 | 26 -> 30 |
+| adult | 36 -> 39 (under the floor 13 -> 4) | 31 -> 29 |
+| child / middle | 40 -> 40 / 40 -> 40 | 40 -> 40 / 40 -> 40 |
+| expert | 40 -> 40 | - |
+25 flips (18 gains, 7 new fails); 332 other rows moved (he reads every floor on 2-6 differently; times move). The 7 new fails, traced
+(b26p/cand-*.rl.txt, cand-*.tr.txt):
+- adult E 9, 14, 25, 30, 40: a stall while riding a moving piece (vx 0, x and y moving with it; 14/25/30 at x 985-995 y 1041, the
+  wheel bucket of BUILD-26o's cause B), rescued about 9 s later. Cause B, open; the fix only changes when he gets there.
+- kid E 40: the same sunken step at the foot (#15, #18, #17 near y 6369): he now reads the floors right, but a walk-off lands him 6 px
+  before #15's lip at 285 px/s (his stop takes 12 px): slid off. A narrower residue of this family (a drop that lands inside his stop).
+- adult N 4: rides the drifting log #24 on the river at x 486-1284 to its end and drops 323 px instead of stepping 28 px up onto the
+  bank #22: a log-ride bank-end fault, a new family; on the base he was elsewhere at that time.
+**Not done in box 1 (named plainly):** rule 28 on 2-1..2-5 and 1-4 (running); the child's median time on 2-6 rose 152.5 -> 188.2 s
+(Normal) with no fail, not yet explained; the suite, tierBots and the --proven yield are not run. The same x-alone river read lives at
+firsttimer.ts 1702 (describe, labels only) and 2788 (`wet`); left alone to keep the change narrow (Suggestions).
+## Lessons applied
+D96 (every gate, not the packet's list), D102/D111 (the box), D109 (no clock times to the lead), D113/D122 (background runs,
+timeout 7200000), D115 (both runs on frozen trees), D117 (the candidate on -wip-26p), D119 (no heredoc in the commit chain), D125 (the
+yield is the verdict). Law 22: no rule or content change; the fix is in the bot, where the cause is.
 # ENG-26r (on t-build-26-wip-26r from a07ed1bd7): 2-6's draw budget. Candidate 89fb84b0f: static gradients made once (gradCache.ts) + the bank wall culls the backdrop and rivers it covers. Started 3:53 PM ET 11-22 (by `date`)
 
 ## EXACT NEXT STEP

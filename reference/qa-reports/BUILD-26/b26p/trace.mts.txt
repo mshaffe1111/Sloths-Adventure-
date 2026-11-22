@@ -1,0 +1,24 @@
+// BUILD-26p: a climb-loop trace. WT STAGE SET BOT T0 T1 X0 X1 Y0 Y1; args: seed
+const W = process.env.WT!;
+await import(W + '/src/game/headlessDom.ts');
+const { setDifficulty } = await import(W + '/src/game/difficulty.ts');
+const FT: any = await import(W + '/tools/inspect/firsttimer.ts');
+const set = process.env.SET ?? 'normal'; setDifficulty(set);
+const T0 = +(process.env.T0 ?? 0), T1 = +(process.env.T1 ?? 999);
+const [X0, X1, Y0, Y1] = ['X0', 'X1', 'Y0', 'Y1'].map((k) => +(process.env[k] ?? 0));
+const out: string[] = []; let run: any; let dumped = false; let prevG: any = null;
+const P = FT.FirstTimerRun.prototype; const sj = P.startJump;
+P.startJump = function (...a: any[]) { const r = sj.apply(this, a); if (this.t > T0 && this.t < T1) { const j = this.jump; out.push(`JUMP @${this.t.toFixed(2)} from ${Math.round(j.x)},${Math.round(j.y)} vx ${Math.round(this.sim.p.vx)} dir ${j.dir} kind ${j.kind} hold ${j.hold.toFixed(3)} d2 ${j.d2.toFixed(3)} upOnly ${j.upOnly} needs ${j.needs ?? ''} cur ${j.cur} tgt ${JSON.stringify(this.prog.target(this.sim.p))} edge ${JSON.stringify(this.edge)} aimedDrop ${this.aimedDrop}`); } return r; };
+run = new FT.FirstTimerRun(process.env.STAGE ?? '2-6', Number(process.argv[2]), { ...FT[process.env.BOT ?? 'FT_KID'], setting: set }, { onFrame: (s: any) => {
+  if (!dumped) { dumped = true;
+    out.push('PLATS ' + run.sim.platforms.filter((q: any) => q.x + q.w > X0 && q.x < X1 && q.y > Y0 && q.y < Y1).map((q: any) => `#${q.id} ${Math.round(q.x)}..${Math.round(q.x + q.w)} y${Math.round(q.y)} h${Math.round(q.h ?? 0)} ${q.type ?? ''}`).join(' | '));
+    out.push('PTS ' + run.prog.pts.map((q: any, i: number) => [i, q]).filter(([, q]: any) => q.x > X0 && q.x < X1 && q.y > Y0 && q.y < Y1).map(([i, q]: any) => `${i}:${Math.round(q.x)},${Math.round(q.y)}`).join(' '));
+  }
+  if (run.t > T0 && run.t < T1) { const p = s.p; const g = p.grounded ? run.e.standingOnId : null;
+    if (g !== prevG) { out.push(`${run.t.toFixed(2)} ${p.grounded ? 'LAND #' + g : 'AIR'} ${Math.round(p.x)},${Math.round(p.y)} vx ${Math.round(p.vx)} vy ${Math.round(p.vy ?? 0)} cur ${run.prog.cur} best ${run.prog.best} tgt ${JSON.stringify(run.prog.target(p))}`); prevG = g; }
+  }
+} });
+const res = run.play();
+console.log(out.join('\n'));
+for (const z of run.stuck ?? []) console.log('STUCK', JSON.stringify(z).slice(0, 140));
+console.log(JSON.stringify({ t: +run.t.toFixed(1), end: res.end, rescues: res.rescues, rescueXs: run.rescueXs }));

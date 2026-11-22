@@ -1,0 +1,22 @@
+STUCK @39.53 {"x":382,"y":4927,"t":39.5,"dur":0,"what":"fell back down from here 3 times","step":null,"dip":null,"puzzle":false,"rescued":true}
+RESCUE 1 @39.53 x 539; the 3 s before (every 5th frame):
+  36.57 440,5013 vx -268 vy 500 tgt 406,4927
+  36.73 394,5138 vx -285 vy 917 tgt 406,4927
+  36.90 347,5278 vx -285 vy 0 tgt 382,4927
+  37.07 340,5278 vx 0 vy 0 tgt 382,4927
+  37.23 372,5278 vx 172 vy 0 tgt 382,4927
+  37.40 418,5203 vx 268 vy -323 tgt 382,4927
+  37.57 464,5185 vx 285 vy 23 tgt 382,4927
+  37.73 510,5230 vx 268 vy 440 tgt 382,4927
+  37.90 545,5278 vx 58 vy 0 tgt 382,4927
+  38.07 528,5278 vx -260 vy 0 tgt 382,4927
+  38.23 482,5278 vx -285 vy 0 tgt 538,5561
+  38.40 436,5278 vx -268 vy 0 tgt 538,5561
+  38.57 411,5278 vx 0 vy 0 tgt 538,5561
+  38.73 438,5278 vx 285 vy 0 tgt 538,5561
+  38.90 483,5278 vx 268 vy 0 tgt 443,5565
+  39.07 530,5278 vx 285 vy 0 tgt 443,5565
+  39.23 572,5278 vx 172 vy 0 tgt 443,5565
+  39.40 566,5278 vx -173 vy 0 tgt 443,5565
+STUCK @103.73 {"x":1172,"y":692,"t":95.7,"dur":8,"what":"water ahead, the way on is 192 px down","step":null,"dip":null,"puzzle":false,"rescued":false}
+{"t":111,"end":"shrine","rescues":1,"rescueXs":[539]}

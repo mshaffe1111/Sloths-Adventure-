@@ -1,0 +1,26 @@
+rows 360; pass flips 25; other moved rows 332
+  adult E 9: PASS shrine 117.8s r0 -> fail shrine 149.2s r1
+  adult E 11: fail shrine 127.1s r1 -> PASS shrine 125s r0
+  adult E 14: PASS shrine 114.7s r0 -> fail shrine 183.1s r1
+  adult E 25: PASS shrine 121.9s r0 -> fail shrine 137.8s r1
+  adult E 27: fail shrine 121.3s r1 -> PASS shrine 135.7s r0
+  adult E 30: PASS shrine 135.6s r0 -> fail shrine 165.5s r1
+  adult E 36: fail shrine 208.9s r2 -> PASS shrine 132.2s r0
+  adult E 40: PASS shrine 146.1s r0 -> fail shrine 174.1s r1
+  adult N 4: PASS shrine 102s r0 -> fail shrine 111s r1
+  adult N 9: fail shrine 110.8s r1 -> PASS shrine 110.8s r0
+  adult N 13: fail shrine 113.5s r1 -> PASS shrine 105.1s r0
+  adult N 23: fail shrine 123s r1 -> PASS shrine 95.9s r0
+  adult N 36: fail shrine 132s r1 -> PASS shrine 104.9s r0
+  kid E 1: fail shrine 143.4s r1 -> PASS shrine 136.4s r0
+  kid E 12: fail shrine 136.6s r1 -> PASS shrine 129.5s r0
+  kid E 14: fail shrine 171.2s r2 -> PASS shrine 181.9s r0
+  kid E 16: fail shrine 126s r1 -> PASS shrine 143.5s r0
+  kid E 26: fail shrine 146.8s r1 -> PASS shrine 146.8s r0
+  kid E 40: PASS shrine 129.7s r0 -> fail shrine 143.3s r1
+  kid N 13: fail shrine 171.6s r1 -> PASS shrine 111.1s r0
+  kid N 14: fail shrine 144.5s r1 -> PASS shrine 111.6s r0
+  kid N 17: fail shrine 144.3s r1 -> PASS shrine 111.6s r0
+  kid N 29: fail shrine 150.3s r1 -> PASS shrine 112s r0
+  kid N 32: fail shrine 126.3s r1 -> PASS shrine 117.2s r0
+  kid N 34: fail shrine 114.7s r1 -> PASS shrine 114.6s r0

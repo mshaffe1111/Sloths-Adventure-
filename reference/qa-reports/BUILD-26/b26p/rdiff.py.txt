@@ -1,0 +1,17 @@
+import json,sys
+def load(p):
+    d={}
+    for l in open(p):
+        r=json.loads(l); d[(r['bot'],r['setting'],r['seed'])]=r
+    return d
+b=load(sys.argv[1]); c=load(sys.argv[2])
+flips=[];moved=0
+for k in sorted(b):
+    x,y=b[k],c.get(k)
+    if y is None: print('MISSING',k); continue
+    if x['pass']!=y['pass']:
+        flips.append((k,x,y))
+    elif abs(x['time']-y['time'])>0.05 or x['rescues']!=y['rescues']: moved+=1
+print(f"rows {len(b)}; pass flips {len(flips)}; other moved rows {moved}")
+for k,x,y in flips:
+    print(f"  {k[0]} {k[1][0].upper()} {k[2]}: {'PASS' if x['pass'] else 'fail'} {x['end']} {x['time']}s r{x['rescues']} -> {'PASS' if y['pass'] else 'fail'} {y['end']} {y['time']}s r{y['rescues']}")

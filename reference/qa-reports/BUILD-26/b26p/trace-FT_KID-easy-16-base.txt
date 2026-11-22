@@ -1,0 +1,24 @@
+PLATS 
+PTS 
+80.97 LAND #38 1404,4313 vx 268 vy 0 cur 501 best 521 tgt {"x":1348.8461538461538,"y":3962}
+JUMP @81.20 from 1411,4313 vx 0 dir -1 kind single hold 0.069 d2 -1.000 upOnly 0.1736264950595796 needs  cur 466 tgt {"x":1519.6190476190477,"y":4313} edge null aimedDrop false
+81.23 AIR 1411,4294 vx 0 vy -577 cur 466 best 521 tgt {"x":1519.6190476190477,"y":4313}
+81.63 LAND #38 1364,4313 vx -268 vy 0 cur 465 best 521 tgt {"x":1473.4285714285716,"y":4313}
+JUMP @81.83 from 1357,4313 vx 0 dir 1 kind single hold 0.074 d2 -1.000 upOnly 0.14980798441916704 needs  cur 464 tgt {"x":1450.3333333333333,"y":4313} edge null aimedDrop false
+81.87 AIR 1357,4294 vx 0 vy -577 cur 464 best 521 tgt {"x":1450.3333333333333,"y":4313}
+82.27 LAND #38 1414,4313 vx 285 vy 0 cur 466 best 521 tgt {"x":1519.6190476190477,"y":4313}
+82.87 AIR 1612,4306 vx 0 vy 0 cur 473 best 521 tgt {"x":1612,"y":4196}
+85.33 LAND #39 1549,3962 vx -285 vy 0 cur 492 best 521 tgt {"x":1444.5384615384614,"y":3962}
+JUMP @85.73 from 1439,3962 vx -285 dir -1 kind single hold 0.072 d2 -1.000 upOnly 0 needs  cur 497 tgt {"x":1324.923076923077,"y":3962} edge null aimedDrop false
+85.77 AIR 1430,3943 vx -268 vy -577 cur 497 best 521 tgt {"x":1324.923076923077,"y":3962}
+86.27 LAND #43 1291,4032 vx -285 vy 0 cur 503 best 521 tgt {"x":1229.2307692307693,"y":3962}
+86.43 AIR 1246,4035 vx -268 vy 83 cur 505 best 521 tgt {"x":1181.3846153846152,"y":3962}
+JUMP @86.50 from 1227,4049 vx -268 dir -1 kind single hold 0.067 d2 -1.000 upOnly 0.15802191939204932 needs  cur 506 tgt {"x":1181.3846153846152,"y":3962} edge null aimedDrop false
+87.27 LAND #37 1017,4313 vx -268 vy 0 cur 513 best 521 tgt {"x":1061.7692307692307,"y":3962}
+JUMP @87.47 from 1010,4313 vx 0 dir 1 kind double hold 0.135 d2 -1.000 upOnly 0 needs  cur 513 tgt {"x":1061.7692307692307,"y":3962} edge null aimedDrop false
+87.50 AIR 1010,4294 vx 0 vy -577 cur 513 best 521 tgt {"x":1061.7692307692307,"y":3962}
+88.40 LAND #38 1241,4313 vx 268 vy 0 cur 508 best 521 tgt {"x":1181.3846153846152,"y":3962}
+88.43 LAND #47 1158,3065 vx 0 vy 0 cur 601 best 521 tgt {"x":1140,"y":2971.3333333333335}
+88.57 AIR 1140,3058 vx 0 vy 0 cur 601 best 601 tgt {"x":1140,"y":2947.9166666666665}
+STUCK {"x":870,"y":3962,"t":88.4,"dur":0,"what":"fell back down from here 3 times","step":null,"dip":null,"puzzle":false,"rescued":true}
+{"t":126,"end":"shrine","rescues":1,"rescueXs":[1241]}
