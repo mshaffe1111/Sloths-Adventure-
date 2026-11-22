@@ -72,6 +72,10 @@ Every packet says: **never wait in the foreground for a background run** (no unt
 
 ## Every engine packet starts the full suite on its base first (D114, 11-21)
 Step 0 of every engine packet: **the full unit suite on the BASE, started first with run_in_background**, its verdict in the REPORT; a red on the base is named to the lead before building on it (D40). **A suite verdict still pending at your box:** write the hand-over and push, end your turn, and when the run wakes you append its one-line verdict (plus whether src/ and tools/ changed since the base: if not, the verdict carries to the head) to the REPORT, push, send it to the lead, and stop; the lead keeps you un-archived until then ONLY when the verdict carries to the head and no critical work waits for your slot; otherwise the lead archives you and the next member's step 0 runs the suite on its own base (the suite alone runs about 22 minutes in a fresh container, so it rarely fits a 28-minute box: UI-372c, ENG-26l, 11-21). Three members on t-build-26 handed over with the suite unrun (the box leaves no room for it at the end), so two reds (tests still laying 2-6 as a draft after it was listed) hid until the fourth member ran it.
+**A suite verdict carries to a later head only if NEITHER src/ NOR tools/ changed since it ran (D118, 11-21):** more than 20 src tests
+import the bot from tools/inspect (pacerLay, legsHome, postLay, firstTimerBot, w6Game, w7Game, w6/w7SwingRoute, pipeline, wheel, w1Arc15/16,
+w5 ...), so a bot-only commit can turn them red. Every bot commit's push runs the suite on its head (frozen, in the background) before the
+lead rules its rows; a packet never says 'src unchanged: no suite' for a bot change.
 
 ## Every run reads a frozen worktree (D115, 11-21)
 Every packet says: **every run (the suite, drawcheck, castBots, lockall, a grade) reads a FROZEN worktree (git worktree add --detach <hash>), never the tree being edited.** Twice on 11-21 a run read a tree that was changing under it (ENG-27l caught its own; ART-SHEETS' base suite did not count).
