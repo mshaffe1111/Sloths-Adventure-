@@ -8,11 +8,11 @@ READ LEAN (D102): this packet; `git show origin/t-eng-wall:reference/qa-reports/
 and items 1-4); reference/qa-reports/ENG-WALL/plants-R-165.380.ts.txt; PERFORMANCE-RULES §1 and §8; STAGE-RULES §4 and §5b; LAWS headlines;
 LESSONS D40, D96, D102, D109, D111, D113-D119.
 **Run ReadNotifications at EVERY step boundary, at every push and between long tool rounds. Messages to the lead carry NO clock times (D109).**
-BASE: t-eng-wall at the head ENG-WALL hands over (cb10df2db or later: fix (i) 5a8f86166, GREEN). Push there; never force. Nothing lands in
-t-eng-27 before the lead judges the stills.
-0. The base suite: if ENG-WALL's REPORT carries its verdict on 484199316 (with the groundStack.test.ts check its EXACT NEXT STEP names), use
-   it; else run it on a CLEAN frozen worktree at 484199316 in the background now. Your own head's suite runs before the stills go to the
-   lead (D118: src changed).
+BASE: t-eng-wall at c884525bf (fix (i) 5a8f86166, GREEN). Push there; never force. Nothing lands in t-eng-27 before the lead judges the stills.
+0. The base suite is DONE (ENG-WALL, REPORT item 1): 484199316 tsc PASS; 4,043 tests, 4,039 pass, 1 fail, 3 known TODOs; none of its plant
+   tests ran in it (the D115 touch did not reach it). The one red is ENG-27's (pacerLay 'pacer race (the bots)', middle normal seed 2:
+   114.9 s against the boat's 112.21 s, real on that base): NOT yours. Your own head's suite runs before the stills go to the lead (D118:
+   src changed); its only allowed red is that pacerLay row.
 1. **The corner band (the ruled thing is the LOOK: no straight shade seam at a floor's end on the game's screen):** a 2x still of the
    x 20006 corner on the scratch merge with t-art-under 63963f54d's w2.webp and '2' atlas rows (NEVER pushed), the band's pixels sampled
    against the soil left of the floor's end, then the engine's draws turned off one at a time until the band is gone. Name the source
