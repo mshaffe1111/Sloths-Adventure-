@@ -76,6 +76,16 @@ s2 0/12/5.1, s3 0/18/8.7. The worst spot is now the crest (s3, above the wall's 
 land clips 18 of 19 is the closest margin (drawRivers' clips + drawSafeRiverOver + drawLadder), worth a look if anything is added at the
 crest.
 
+## Step 5: the gates on the head (frozen, chattr-immutable tree at de6e7bb35: code identical to the wip head, only REPORT commits after)
+- **drawcheck, FULL, verbose: PASS** (819 s, every scenario green upright and sideways, judge exit 0). 2-6: port gradients 0, screens
+  6.20, clips 17; land gradients 0, screens 6.15, clips 18. "No scenario worse than the base": compared row by row against the base
+  suite's verbose drawcheck on a07ed1bd7 when it lands (eng26r/dccmp.py.txt), below.
+- **lockall** (`--layouts 16`, base lock on a07ed1bd7 = 3,264 builds of 102 stages; `--check <base> --intended 2-6` on the head):
+  **101/102 stages unchanged; 2-6 (intended): proto.bankWall only. exit 0.** (Its "gen2 gained verdicts and drops (not hashed)" line is a
+  standing note listing every stage whose gen2 carries those two unhashed fields, not a difference.) bankWall has no gameplay reader,
+  so no castBots row can move.
+- **The suite on the head:** after the base suite ends (never two side by side, the lead's ruling), on a fresh frozen tree at the head.
+
 ## Polish check (stills, 2x, Pokey pinned at drawcheck's four spots on the fixed clock, base vs candidate, pixel for pixel)
 Tool: scratchpad stills.mjs (run.mjs's own load and pin, deviceScaleFactor 2, a still per spot instead of the counts), cmpshift.py (the
 best whole-pixel shift, then pixels over 1 luma below the HUD). Stills: scratchpad stills-base/ and stills-c1/; side by sides
