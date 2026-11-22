@@ -190,7 +190,12 @@ export class FigPush {
       if (!busy(h.a) && busy(h.b)) return h.a.x < h.b.x ? -1 : 1;
       if (!busy(h.b)) return h.b.x < h.a.x ? -1 : 1;
     }
-    for (const dir of [-1, 1] as const) {
+    // (toward the fig he is going for first, when that side is free: a dodge that always tried the left first stepped him away from a
+    //  fig to his right at every tell, back and forth over the same three vines, never reaching it. BUILD-26l, 1-4 adult N 32 and
+    //  middle N 14, fig 7 on vine 48 from vines 43-46)
+    const cv = this.target ? v.vines.find((q) => q.id === this.target!.vine) : undefined;
+    const first: -1 | 1 = cv && cv.x > p.x + 1 ? 1 : -1;
+    for (const dir of [first, -first as -1 | 1]) {
       const q = this.sideVine(v, h.a, dir, p.y);
       if (q && !busy(q)) return dir;
     }

@@ -509,3 +509,23 @@ test('a vine field\'s work that gets nowhere (no fig freed, no gate opened, no s
   const none = play(false);
   assert.ok(none.rescues >= 1, `with no figs' work the stall ends in a rescue (rescues ${none.rescues})`);
 });
+
+test('a pod\'s tell on the vine he holds, a free vine on both sides: he steps toward the fig he is going for, never away from it (BUILD-26l, 1-4 adult N 32, middle N 14)', async () => {
+  const { FigPush } = await import('./figPush.ts');
+  // (field vines 43/44/45 at x 420/500/580 and 48 at 740, the fig he is going for on 48; he holds 44 alone; a pod tells on 44)
+  const vine = (id: number, x: number) => ({ id, x, topY: 3800, bottomY: 4700, field: true, swaySpeed: 0, swayPhase: 0, vineType: 'tree_climb' });
+  const vines = [vine(43, 420), vine(44, 500), vine(45, 580), vine(46, 660), vine(48, 740)];
+  const fig = { id: 7, vine: 48, y: 4067, falling: false, gone: false };
+  const pod = { id: 1, vine: 44, x: 500, top: 3800, land: 4700, cost: 'hit', clock: 'c', shift: 0 };
+  const view = (dir: number) => ({
+    hands: { a: vines[1], b: null }, clusters: [fig], vines,
+    field: { gates: [], pods: [pod], blocksTop: () => true, capY: () => 0 },
+    clock: { read: () => ({ phase: 'warn', u: 0.5, into: 0, cycle: dir }) },
+  });
+  const p = { x: 500, y: 4300, climbing: true };
+  const fp = new FigPush(0);
+  (fp as unknown as { target: unknown }).target = fig;
+  let pad: { left?: boolean; right?: boolean } | null = null;
+  for (let i = 0; i < 3 && !(pad?.left || pad?.right); i++) pad = fp.step(view(1) as never, p as never, 10 + i / 30) as never;
+  assert.ok(pad?.right && !pad.left, `the dodge stepped ${JSON.stringify(pad)}: away from the fig on vine 48 to his right`);
+});
