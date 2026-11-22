@@ -15,6 +15,10 @@ re-run that file alone on a clean frozen tree at 484199316 before the verdict co
    while the suite ran there. Restored at once (git checkout); its verdict must be read with that in mind: if any of my plant names
    ('own aspect', 'no seam at the floor's end, ', 'no water fill shows', 'ground's squares') shows in it, it read the touched file.
    The base check that followed was done in a second worktree (base2).
+   VERDICT (484199316): tsc PASS; tests 4043, pass 4039, fail 1, todo 3 (R-165.312, 4-3: known TODO). NONE of my plant names ran (the
+   toy's 17 ground tests are base's own, all ok): the suite read the clean groundStack.test.ts, so the D115 touch did not reach it.
+   The one red: pacerLay.test 'pacer race (the bots)': 'middle normal seed 2: 114.9 s against the boat's 112.21 s' (ENG-27's lane,
+   not mine); re-run ALONE on the same frozen tree: RED again, the same numbers (deterministic, not timing): a real red on base.
 2. PLANTS, each RED on 484199316 (D96), kept as files until the fix that greens them (plants-R-165.380.ts.txt, 4 blocks):
    (i) no wall's face stretched past its frame's aspect (both ways) nor showing past its bank's span. TILE_STRETCH 1.1 cites
        STAGE-RULES.md:275 ('no texture stretched in strips') + 10% beside the constant (D116). red-i.txt: 7 walls normal, x3.31-3.80,
