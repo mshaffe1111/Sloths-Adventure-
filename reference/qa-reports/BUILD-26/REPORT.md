@@ -11,6 +11,10 @@ Frozen trees (D115, node_modules linked from wt-suite): c00d2fd17 (the suite + c
    955, #38 955-1175 @4965: 227 px before the lip, the child's aim) and he failed at 866,4451 at t 158.1. Trace each failure spot (the
    frames there with and without the rule, b26j/n14.mts.txt, `B26J=1` prints the fire) before calling them knock-ons (rule 22: two runs per
    cause). Watch N 8: a 'run' press from 227 px out onto a 40 px step is the one place the rule changes where he jumps from, not only whether.
+   **Started on N 14:** its failure spot 634,1923 is a field of climbing vines (tops at 1923, x 490-890 by 80, 1923-2363; the way on the vine
+   at 448, 1642-1923; #91 230-410 @1962 the only floor near): no lip and no floor leave within 200 px of it in either arm (the falls are off
+   a vine top, not a walk-off), so the rule's own branch never runs there: likely a knock-on of the one fire 30 s before (the same vine-top
+   family as adult N 9's end-vine spot). NOT yet proven: the frames at the vine tops with and without the rule are the next run.
 2. **2-6 x40 on d6350d3e7: DONE** (b26j/rows/r26-d6350d3e7.jsonl, b26j/tab26-d6350d3e7.txt): against cut 5 (b26f/rows/r26-fe3d3d6ca.jsonl)
    NO row moved in any tier (adult E 29, adult N 33, child E/N 40, expert 40, kid E 26, kid N 31, middle E/N 40). Rows sent to the lead.
 3. **The suite on c00d2fd17** (RUNNING: tsc 0; unit tests 1247 run, none red at my box): re-run if it died
