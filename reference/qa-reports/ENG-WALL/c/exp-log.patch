@@ -1,0 +1,54 @@
+diff --git a/src/game/protoArt.ts b/src/game/protoArt.ts
+index d63a28be2..2516728c3 100644
+--- a/src/game/protoArt.ts
++++ b/src/game/protoArt.ts
+@@ -1734,13 +1734,16 @@ function bankSig(banks: Platform[]): number {
+ }
+ 
+ function drawGroundChunks(ctx: CanvasRenderingContext2D, platforms: Platform[], banks: Platform[], view: { x0: number; x1: number; y0?: number; y1?: number }): boolean {
+-  if (typeof document === 'undefined' || typeof ctx.getTransform !== 'function' || view.y0 === undefined || view.y1 === undefined) return false;
++  const LOG = (globalThis as any).__gcLog as any[] | undefined;
++  if (typeof document === 'undefined' || typeof ctx.getTransform !== 'function' || view.y0 === undefined || view.y1 === undefined) { LOG?.push('nodoc'); return false; }
+   const m = ctx.getTransform();
+   // (only a plain scale and shift: squares can't be stamped under a turn or a skew)
+-  if (Math.abs(m.b) > 1e-6 || Math.abs(m.c) > 1e-6 || !(m.a > 0) || Math.abs(m.a - m.d) > 1e-6) return false;
++  if (Math.abs(m.b) > 1e-6 || Math.abs(m.c) > 1e-6 || !(m.a > 0) || Math.abs(m.a - m.d) > 1e-6) { LOG?.push('transform'); return false; }
+   const scale = m.a;
+   // (a sheet that arrived since is not in the key: those squares are painted again a few a frame, the old ones drawn meanwhile, sheetsSince)
+   const key = `${kitWorld}|${groundLook ?? ''}|${scale.toFixed(4)}|${Math.round(depthView)}|${bankSig(banks)}`;
++  let why = '';
++  if (!chunks) why = 'init'; else if (chunks.key !== key) why = 'key ' + chunks.key + ' -> ' + key; else if (chunks.plats !== platforms) why = 'plats';
+   if (!chunks || chunks.key !== key || chunks.plats !== platforms) {
+     releaseGroundChunks();
+     chunks = { key, plats: platforms, tiles: new Map(), order: [], epoch: new Map() };
+@@ -1789,7 +1792,8 @@ function drawGroundChunks(ctx: CanvasRenderingContext2D, platforms: Platform[],
+     c.epoch.delete(k);
+     c.order.splice(i, 1);
+   }
+-  if (missing) return false;
++  if (missing) { LOG?.push('missing' + (why ? ' after reset: ' + why : '')); return false; }
++  LOG?.push('ok' + (why ? ' after reset: ' + why : ''));
+   const px = CHUNK * scale;
+   const pad = CHUNK_PAD * scale;
+   for (let cy = cy0; cy <= cy1; cy++)
+@@ -1802,6 +1806,7 @@ function drawGroundChunks(ctx: CanvasRenderingContext2D, platforms: Platform[],
+ 
+ /** one square of ground painted at the screen's pixel size, or null where no ground reaches it */
+ function paintTile(platforms: Platform[], banks: Platform[], cx: number, cy: number, scale: number): HTMLCanvasElement | null {
++  (globalThis as any).__gcPaints = ((globalThis as any).__gcPaints | 0) + 1;
+   const x = cx * CHUNK, y = cy * CHUNK;
+   // (a bank's soil runs on down out of sight, its lip and end pieces stand up to ~130 above its top and out ~260 past its ends; a bough
+   // stage's bough only reaches its own thickness and a little under)
+@@ -1857,10 +1862,12 @@ export function drawProtoScene(
+   const bough = groundLook === 'bough';
+   if (bough) drawBoughMist(ctx, platforms, banks, view);
+   if (stageWorld === 1 && !bough) drawW1Pits(ctx, platforms, view, 'under');
++  const T0 = performance.now(); (globalThis as any).__gcPaints = 0;
+   if (!drawGroundChunks(ctx, platforms, banks, view)) {
+     if (bough) drawBoughGround(ctx, banks, boughJoins, view);
+     else drawGround(ctx, platforms, banks, view);
+   }
++  { const L = (globalThis as any).__gcLog as string[] | undefined; if (L?.length) L[L.length - 1] += ' |ms:' + (performance.now() - T0).toFixed(2) + '|p:' + (globalThis as any).__gcPaints; }
+   if (stageWorld === 1 && !bough) drawW1Pits(ctx, platforms, view, 'over', drawChaseBroken);
+   afterGround?.();
+   // the climb trunks: the painted kapok trunk with its vine, stacked from the ground up to the branch it reaches

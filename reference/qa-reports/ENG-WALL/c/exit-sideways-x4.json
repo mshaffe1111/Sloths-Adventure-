@@ -1,0 +1,161 @@
+{
+ "meta": {
+  "platformsLen": 90,
+  "cam": [
+   18540.216485094148,
+   748.0202759384064,
+   1199.2718446601941,
+   540
+  ]
+ },
+ "cases": [
+  {
+   "name": "stage start (first 6 s, real play, card up)",
+   "frames": 0,
+   "reasons": {},
+   "cost": {},
+   "first12": []
+  },
+  {
+   "name": "standing still (2 s, real play)",
+   "frames": 9,
+   "reasons": {
+    "missing after reset: key": 9
+   },
+   "cost": {
+    "missing after reset: key": {
+     "frames": 9,
+     "ms": 1040.3,
+     "worstMs": 123.8,
+     "painted": 27
+    }
+   },
+   "first12": [
+    "missing after reset: key 2||1.3848|595|-836438108 -> 2||1.4156|582|-836438108 |ms:123.80|p:3",
+    "missing after reset: key 2||1.4156|582|-836438108 -> 2||1.4416|572|-836438108 |ms:117.60|p:3",
+    "missing after reset: key 2||1.4416|572|-836438108 -> 2||1.4632|563|-836438108 |ms:112.20|p:3",
+    "missing after reset: key 2||1.4632|563|-836438108 -> 2||1.4807|556|-836438108 |ms:113.30|p:3",
+    "missing after reset: key 2||1.4807|556|-836438108 -> 2||1.4946|551|-836438108 |ms:114.60|p:3",
+    "missing after reset: key 2||1.4946|551|-836438108 -> 2||1.5053|547|-836438108 |ms:111.30|p:3",
+    "missing after reset: key 2||1.5053|547|-836438108 -> 2||1.5133|545|-836438108 |ms:112.10|p:3",
+    "missing after reset: key 2||1.5133|545|-836438108 -> 2||1.5189|543|-836438108 |ms:115.50|p:3",
+    "missing after reset: key 2||1.5189|543|-836438108 -> 2||1.5225|541|-836438108 |ms:119.90|p:3"
+   ]
+  },
+  {
+   "name": "respawn (respawnAtCheckpoint, 3 s real play)",
+   "frames": 21,
+   "reasons": {
+    "missing after reset: key": 3,
+    "missing": 4,
+    "ok": 14
+   },
+   "cost": {
+    "missing after reset: key": {
+     "frames": 3,
+     "ms": 373.4,
+     "worstMs": 143.4,
+     "painted": 9
+    },
+    "missing": {
+     "frames": 4,
+     "ms": 410.8,
+     "worstMs": 115.3,
+     "painted": 12
+    },
+    "ok": {
+     "frames": 14,
+     "ms": 90.1,
+     "worstMs": 84.2,
+     "painted": 3
+    }
+   },
+   "first12": [
+    "missing after reset: key 2||1.5225|541|-836438108 -> 2||1.5246|540|-836438108 |ms:118.90|p:3",
+    "missing after reset: key 2||1.5246|540|-836438108 -> 2||1.5256|540|-836438108 |ms:111.10|p:3",
+    "missing after reset: key 2||1.5256|540|-836438108 -> 2||1.5259|540|-836438108 |ms:143.40|p:3",
+    "missing |ms:77.00|p:3",
+    "missing |ms:115.30|p:3",
+    "missing |ms:110.00|p:3",
+    "missing |ms:108.50|p:3",
+    "ok |ms:84.20|p:3",
+    "ok |ms:0.80|p:0",
+    "ok |ms:0.90|p:0",
+    "ok |ms:0.10|p:0",
+    "ok |ms:0.00|p:0"
+   ]
+  },
+  {
+   "name": "COLD respawn (33 far views painted first, then respawnAtCheckpoint, 3 s real play)",
+   "frames": 51,
+   "reasons": {
+    "missing": 6,
+    "ok": 45
+   },
+   "cost": {
+    "missing": {
+     "frames": 6,
+     "ms": 206.1,
+     "worstMs": 49.6,
+     "painted": 18
+    },
+    "ok": {
+     "frames": 45,
+     "ms": 46.8,
+     "worstMs": 37.9,
+     "painted": 3
+    }
+   },
+   "first12": [
+    "missing |ms:27.30|p:3",
+    "missing |ms:16.90|p:3",
+    "missing |ms:21.30|p:3",
+    "missing |ms:45.60|p:3",
+    "missing |ms:45.40|p:3",
+    "missing |ms:49.60|p:3",
+    "ok |ms:37.90|p:3",
+    "ok |ms:0.30|p:0",
+    "ok |ms:0.50|p:0",
+    "ok |ms:0.00|p:0",
+    "ok |ms:0.60|p:0",
+    "ok |ms:0.10|p:0"
+   ]
+  },
+  {
+   "name": "fast descent x 18990 from y 600 at maxFall (2.5 s real play)",
+   "frames": 50,
+   "reasons": {
+    "ok": 47,
+    "missing": 3
+   },
+   "cost": {
+    "ok": {
+     "frames": 47,
+     "ms": 233.6,
+     "worstMs": 64.2,
+     "painted": 9
+    },
+    "missing": {
+     "frames": 3,
+     "ms": 251.7,
+     "worstMs": 100.6,
+     "painted": 9
+    }
+   },
+   "first12": [
+    "ok |ms:0.90|p:0",
+    "missing |ms:83.60|p:3",
+    "missing |ms:100.60|p:3",
+    "ok |ms:43.70|p:2",
+    "ok |ms:64.20|p:2",
+    "ok |ms:24.20|p:0",
+    "ok |ms:21.90|p:0",
+    "ok |ms:18.80|p:0",
+    "missing |ms:67.50|p:3",
+    "ok |ms:21.40|p:1",
+    "ok |ms:0.20|p:0",
+    "ok |ms:7.80|p:2"
+   ]
+  }
+ ]
+}

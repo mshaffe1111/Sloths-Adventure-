@@ -1,3 +1,82 @@
+# ENG-WALL-c REPORT (R-165.380 continued; start 8:54 PM ET by `date`; branch t-eng-wall; box to 9:22 PM ET)
+EXACT NEXT STEP: build C's first half on t-eng-wall: the squares baked at the zoom ease's TARGET scale (the lead's condition, below),
+then run c/exit-probe.mjs on a vite of the fix with the experiment's two log lines laid on a scratch copy (never pushed): the stage
+start must show 0 'missing after reset: key' frames, and the cost lines must drop (before numbers below). Then C's second half (no
+square in view ever missing: the burst at 4x CPU, the margin) against b/flip-probe.mjs, split by layer first (suspect 3, below).
+**No src change pushed in this box.** Item 1 is done and measured; C is designed to the lead's condition, not built.
+
+## 1. Why a played frame falls to the live ground path (DONE, measured in the browser on real play)
+METHOD: a local experiment tree (6e2df514b + two commits, never pushed: 3ceab3337 drawGroundChunks pushes its exit reason, which
+test sent it, and the key's old/new values when it was reset; 6828d98de the ground block's ms and squares painted per frame) served by
+vite; c/exit-probe.mjs runs the GAME'S OWN LOOP (not paused, no settled re-renders), 2-97 seed 1, DSF 2, upright 412x915 and
+sideways 915x412, and counts every frame's reason (c/exit-*.txt, c/exit-*.json).
+RESULT (three runs each way; c/exit-*.txt holds run 3, with timing):
+- Standing still: 60/60 frames on the squares, both ways. **Not every played frame is live. Suspect (1) chunks.plats is REFUTED.**
+- **THE CAUSE: suspect (2), the KEY, on the stage start.** The camera's intro dolly (engine.ts:1335-1345, INTRO_ZOOM_SECS 1.3 at :280)
+  eases the zoom in, and protoArt.ts:1743's key carries `scale.toFixed(4)` and `Math.round(depthView)` (depthView = the live
+  viewportHeight, engine.ts:7598 -> protoArt.ts:1440). So EVERY eased frame changes the key: upright scale 1.6855 -> 1.8727 with
+  depthView 1086 -> 977 over 28-29 frames; sideways 1.3733 -> 1.5259 with depthView 600 -> 540 over 25. Each of those frames throws
+  every square away (releaseGroundChunks), paints CHUNK_BUDGET (3) new ones the next frame throws away again, and draws the whole
+  ground LIVE. Stage start: 34 of 69 frames live upright, 31 of 76 sideways (run 1); 35/72, 32/69 (run 2).
+- The same key break comes from EVERY zoom ease, not only the start, by the code (not yet measured in play): revealZoom (engine.ts:8672,
+  :8800), swimZoom (:7245), swingWide (:6613), roomZoom (:9506), bossZoom (:4360) each ease per frame into this.zoom (:1345).
+- Fast descent (x 18990 from y 600 at maxFall, 2.5 s): 4/75 live upright and 8/75 sideways (run 1), 0/76 and 3/75 (run 2): all
+  'missing' (the budget, key unchanged). Real-time play varies run to run.
+- Respawn to a cached view (respawnAtCheckpoint): 91/91 squares. COLD respawn (33 far views painted first so the checkpoint's squares
+  are pushed out, then respawnAtCheckpoint): 4/90 live upright, 3/89 sideways, all 'missing' (the budget).
+- **PERFORMANCE FACT (§8), every stage start of every stage drawn by the squares (the bank and the bough looks both):**
+the ground block alone (drawGroundChunks + the live drawGround, per frame, this container's CPU; c/exit-*.txt run 3):
+  upright: the dolly's 30 key-reset frames cost 363 ms of ground in all (12.1 ms a frame, worst 29.6), 90 squares painted and thrown
+  away; sideways 24 frames, 628 ms (26.2 ms a frame, worst 33.3), 72 squares wasted. A settled frame's ground: 0.06 ms (60 frames 3.7
+  ms). So for about a second at every stage start the GROUND ALONE is at or past §1's 12 ms for our whole update and draw.
+  At 4x CPU (THROTTLE=4, c/exit-*-x4.txt; the page loads so slowly the dolly lands in the 'standing still' window): upright 9
+  key-reset frames, 465 ms (51.6 ms a frame, worst 55.2: past §1's 50 ms frame limit on the ground alone), 27 squares wasted; the game
+  ran 11 frames in 2 s there. Sideways at 4x: 12 key-reset frames (9 + 3 across the windows), 1414 ms of ground, worst frame 143.4 ms
+  (past even the stage start's 120 ms allowance), 36 squares wasted.
+  The fix's AFTER numbers (the same probe on the fix) are C's done-item: 0 key-reset frames, no square painted twice.
+- Suspect (3) STANDS for the flip-probe: ENG-WALL-b's no-budget tree gave the SAME flip-probe numbers, and its probe renders paused
+  at a settled zoom (no key break there). So what flip-probe sees on its cold view and descent is NOT (only) the ground path: another
+  lazily painted layer differs (sheetBake.ts:104 is in both censuses; the backdrop). flip-probe must be split by layer (ground-only
+  pixels, e.g. render with the ground block alone, or diff a mask of the squares' rects) before it can judge C. Not done.
+
+## 2. C, designed to the lead's condition (NOT built)
+The lead's condition (this box): bake at the ease's TARGET scale and draw scaled during the ease; stills at the stage start's first
+frame, mid-ease and settled, both ways, 2x: no blur settled, no pop at the ease's end, no shade jump; the start's wasted work before
+and after (§8) stated.
+DESIGN:
+(a) engine.ts: keep each ease's target in a field (the `want` locals at :4360 bossZoom, :6613 swingWideWant exists, :7245 swimZoom,
+    :8672/:8800 revealZoom, :9506 roomZoom) and in applyZoom (:1327) compute restZoom = the same formula as :1344-1345 with dolly = 1
+    and every eased factor at its want. Pass protoArt the ratio rest/zoom each frame (a new setGroundRest beside setDepthView at :7598)
+    and setDepthView(this.viewCssH / restZoom) instead of the live viewportHeight: the darkening's band (protoArt.ts:1466, :1027,
+    :1069) then holds through every ease (no shade jump, and the live soil elsewhere follows the same depth).
+(b) protoArt.ts drawGroundChunks (:1736): bakeScale = m.a * rest/zoom; the key (:1743) carries bakeScale and the rest depthView, so it
+    holds through the ease; paintTile at bakeScale (keep, :1782, sized from bakeScale); the blit's source rect (:1793-1794) px =
+    CHUNK * bakeScale, pad = CHUNK_PAD * bakeScale, dest CHUNK world units as now: the live transform scales it. The dolly runs
+    WIDE -> close (zoom up to rest), so during it the squares are drawn DOWN-scaled (sharp); at the ease's end live == bake, the very
+    same pixels: no pop. An ease OUTWARD (reveal 0.86/0.7, a swim, a room pulling back) has its target BELOW the live scale, so its
+    squares are drawn UP-scaled while it moves (by at most live/target: 1/0.86 = 1.16 upright at the firefly tree), sharp again when
+    it lands. If the lead's stills find that soft: bake at max(live, target) for an outward ease and re-key once when it lands.
+(c) Memory: CHUNK_BYTES (:1686) keep is computed from the bake side, so a 2x-3.5x phone keeps as now once settled.
+(d) Then C's second half: no square in view ever missing (paint every missing in-view square, no budget in view; CHUNK_BUDGET for a
+    directional margin, ENG-WALL-b's numbers), the cold burst measured at 4x CPU (THROTTLE=4 in c/exit-probe.mjs does it), the
+    corner's (a) and (b), the plant flip-probe split by layer and run with a respawn and a stage start by name.
+Checks to run on the fix: the suite (the node recorder has no getTransform, so groundStack/groundEnd still run the live path), the
+1-1 seed list, drawcheck (the ease's per-frame paint must drop, not rise), and the CLAUDE.md gates on the head.
+
+## Polish check
+No picture changed in this box (no src pushed): nothing to judge on a phone yet. The stills the lead named (start first frame, mid-ease,
+settled, both ways, 2x) are C's done-item.
+
+## Learned
+- A settled, paused probe cannot see a zoom ease: ENG-WALL-b's why-probe ruled the zoom out because it read scale AFTER settling. Log
+  the reason inside the function on the game's own loop first; it named the cause in one run.
+- Real-time play varies run to run (the descent: 4 vs 0 live frames upright): run every play probe at least twice and give both.
+
+## Lessons applied
+D96 (the measure before the fix, RED/before numbers first), D102 (read lean), D109 (no clock times to the lead), D111 (the box),
+D113 (every long run in the background), D115 (the experiment tree frozen during each run; the probe in the report tree, which no
+run reads as code), D120 (the lead's answer did not end the box).
+
 # ENG-WALL-b REPORT (R-165.380 continued; start 7:47 PM ET by `date`; branch t-eng-wall at c884525bf; box to 8:15 PM ET)
 EXACT NEXT STEP: FIRST find WHY the frame takes the live path (my 'budget' trigger is REFUTED, see CORRECTION), then build the
 lead's ruling C (the frame never flips ground path) against the plant b/flip-probe.mjs, which is RED now.

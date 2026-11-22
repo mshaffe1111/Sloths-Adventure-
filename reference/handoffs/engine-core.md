@@ -2,12 +2,19 @@
 
 Merged at INT-14 (11-20, t-int-14): §0zq-25d/§0zq-25c ENG-25c (2-5's snap rows level, the snapper's ground, the straddle), §0zq-NOISE ENG-NOISE (one noise channel), §0zq-PROWL ENG-PROWL (sight.up + the leap), §0zq-small3 ENG-SMALL3 (R-165.317/.319/.321), and PAINT-292 (World 1's painted planks and stones; no section here). Merged at INT-13 (11-19, t-int-13): §0ENG23 ENG-23 (followers, the heron reads the line) and §0zl-168 TIME-168 (timecheck), §0zm-25b ENG-25b (the snapper bot skill, the meter's snap channel) and §0zl-25 ENG-25 (2-5's snap stones and snapper rows), §0zn-26b ENG-26b and §0zm-26 ENG-26 (the water wheel), §0W2A ART-W2A (2-3's painted follow poses), §0zo ART-W2B (the wheel's painted draw), §0zo-285c/§0zo-285b/§0zo-285 ENG-285 (the judges and bots fly the engine's Pokey), §0zp-284 FIX-284/284b (2-2's big pads, the real tap hop), §0zp-24d BUILD-24d, §0zn-24c ENG-24c (the raft look, the glow) and §0zm-24 BUILD-24 (2-4) joined; rewritten at the INT-12 merge (11-18, t-int-12): four members wrote here the same day, so labels are suffixed where they met: §0zm-22p ART-22P (CI's seed-list matrix, R-165.278); §0zl-24 ENG-24 (a liana over a river; its REPORT cites it as §0zl); §0zm BUILD-19b, §0zn ENG-19c and §0zl BUILD-19 (t-build-19, the labels its REPORT cites). Before them FIX-22b (11-15): section 0zk.
 
-## 0zq-WALL-b. ENG-WALL-b (t-eng-wall, 11-21): the ground's two paths. drawGroundChunks (protoArt.ts:1736) paints at most CHUNK_BUDGET
-(3) squares a frame and returns false when any square in view is unpainted; that WHOLE frame is then drawn by the live drawGround
-(protoArt.ts:1860), whose soil darkens per bank (groundDepth null) while the squares darken by groundLine (:1825). So the phone shows
-two looks: the first frames of a cold view or a fast descent pop (mean 7-12 luma, worst column 33). The lead ruled C: the frame never
-flips path (REPORT ENG-WALL top section: conditions, design numbers, the plant b/flip-probe.mjs). A node test never reaches the squares
-(no getTransform): check every ground change in a browser, first frame AND settled.
+## 0zq-WALL-c. ENG-WALL-b, -c (t-eng-wall, 11-21): the ground's two paths, and why a played frame falls to the live one
+drawGroundChunks (protoArt.ts:1736) blits baked 256-unit squares; it returns false (the WHOLE frame drawn by the live drawGround,
+protoArt.ts:1860, whose soil darkens per bank while the squares darken by groundLine, :1825) when the key (:1743) changed or any
+square in view is unpainted (CHUNK_BUDGET 3 a frame). MEASURED in play (ENG-WALL-c, REPORT ENG-WALL top section, c/exit-probe.mjs):
+standing still is 100% squares; the stage start's intro dolly (engine.ts:1335-1345) changes the key's scale and depthView EVERY eased
+frame (~28 frames: all squares thrown away, 3 painted and thrown away, the whole ground live, ~12 ms a frame of ground on a desktop
+CPU); every other zoom ease (reveal, swim, swingWide, room, boss) does the same by the code. The descent and a cold respawn fall to the
+live path a few frames on the budget. The lead's ruling C (the frame never flips path) and its conditions, and the design (bake at the
+ease's TARGET scale, draw scaled during the ease; depthView from the rest zoom) are in that REPORT. TRAPS: a paused, settled probe
+cannot see a zoom ease (it reads scale after settling): log inside the function on the game's own loop; real-time play varies run to
+run, so run each play probe twice. A node test never reaches the squares (no getTransform): check every ground change in a browser,
+first frame AND settled. b/flip-probe.mjs compares the whole canvas: another lazily painted layer differs too (ENG-WALL-b's
+no-budget tree gave the same numbers), so split it by layer before it judges C.
 
 ## 0zq-GROUND. ENG-GROUND, -b, -c (t-eng-ground, 11-21): a leg laid under another leg shows; the out leg's earth ends at a ceiling
 **Read reference/qa-reports/ENG-GROUND/REPORT.md's top section first.** The painted ground runs each bank's soil (protoArt.ts drawBankArt)

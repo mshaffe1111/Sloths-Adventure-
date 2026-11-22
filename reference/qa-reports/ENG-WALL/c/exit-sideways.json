@@ -1,0 +1,193 @@
+{
+ "meta": {
+  "platformsLen": 90,
+  "cam": [
+   18540.24728000822,
+   748.0148817116741,
+   1199.2718446601941,
+   540
+  ]
+ },
+ "cases": [
+  {
+   "name": "stage start (first 6 s, real play, card up)",
+   "frames": 70,
+   "reasons": {
+    "missing after reset: init": 1,
+    "missing": 6,
+    "missing after reset: key": 24,
+    "ok": 39
+   },
+   "cost": {
+    "missing after reset: init": {
+     "frames": 1,
+     "ms": 143.8,
+     "worstMs": 143.8,
+     "painted": 3
+    },
+    "missing": {
+     "frames": 6,
+     "ms": 140.1,
+     "worstMs": 28.4,
+     "painted": 18
+    },
+    "missing after reset: key": {
+     "frames": 24,
+     "ms": 627.6,
+     "worstMs": 33.3,
+     "painted": 72
+    },
+    "ok": {
+     "frames": 39,
+     "ms": 32.3,
+     "worstMs": 29.3,
+     "painted": 3
+    }
+   },
+   "first12": [
+    "missing after reset: init |ms:143.80|p:3",
+    "missing |ms:17.90|p:3",
+    "missing |ms:28.40|p:3",
+    "missing after reset: key 2||1.3733|600|-836438108 -> 2||1.3848|595|-836438108 |ms:25.70|p:3",
+    "missing after reset: key 2||1.3848|595|-836438108 -> 2||1.3956|590|-836438108 |ms:26.20|p:3",
+    "missing after reset: key 2||1.3956|590|-836438108 -> 2||1.4156|582|-836438108 |ms:26.30|p:3",
+    "missing after reset: key 2||1.4156|582|-836438108 -> 2||1.4335|575|-836438108 |ms:24.60|p:3",
+    "missing after reset: key 2||1.4335|575|-836438108 -> 2||1.4416|572|-836438108 |ms:24.20|p:3",
+    "missing after reset: key 2||1.4416|572|-836438108 -> 2||1.4565|566|-836438108 |ms:24.50|p:3",
+    "missing after reset: key 2||1.4565|566|-836438108 -> 2||1.4695|561|-836438108 |ms:25.10|p:3",
+    "missing after reset: key 2||1.4695|561|-836438108 -> 2||1.4753|559|-836438108 |ms:26.50|p:3",
+    "missing after reset: key 2||1.4753|559|-836438108 -> 2||1.4857|555|-836438108 |ms:25.60|p:3"
+   ]
+  },
+  {
+   "name": "standing still (2 s, real play)",
+   "frames": 60,
+   "reasons": {
+    "ok": 60
+   },
+   "cost": {
+    "ok": {
+     "frames": 60,
+     "ms": 4.1,
+     "worstMs": 0.2,
+     "painted": 0
+    }
+   },
+   "first12": [
+    "ok |ms:0.10|p:0",
+    "ok |ms:0.10|p:0",
+    "ok |ms:0.00|p:0",
+    "ok |ms:0.00|p:0",
+    "ok |ms:0.10|p:0",
+    "ok |ms:0.00|p:0",
+    "ok |ms:0.00|p:0",
+    "ok |ms:0.00|p:0",
+    "ok |ms:0.00|p:0",
+    "ok |ms:0.10|p:0",
+    "ok |ms:0.00|p:0",
+    "ok |ms:0.20|p:0"
+   ]
+  },
+  {
+   "name": "respawn (respawnAtCheckpoint, 3 s real play)",
+   "frames": 91,
+   "reasons": {
+    "ok": 91
+   },
+   "cost": {
+    "ok": {
+     "frames": 91,
+     "ms": 5.9,
+     "worstMs": 0.5,
+     "painted": 0
+    }
+   },
+   "first12": [
+    "ok |ms:0.00|p:0",
+    "ok |ms:0.00|p:0",
+    "ok |ms:0.00|p:0",
+    "ok |ms:0.10|p:0",
+    "ok |ms:0.00|p:0",
+    "ok |ms:0.10|p:0",
+    "ok |ms:0.00|p:0",
+    "ok |ms:0.00|p:0",
+    "ok |ms:0.10|p:0",
+    "ok |ms:0.10|p:0",
+    "ok |ms:0.20|p:0",
+    "ok |ms:0.00|p:0"
+   ]
+  },
+  {
+   "name": "COLD respawn (33 far views painted first, then respawnAtCheckpoint, 3 s real play)",
+   "frames": 90,
+   "reasons": {
+    "missing": 5,
+    "ok": 85
+   },
+   "cost": {
+    "missing": {
+     "frames": 5,
+     "ms": 46.3,
+     "worstMs": 12.1,
+     "painted": 15
+    },
+    "ok": {
+     "frames": 85,
+     "ms": 15.1,
+     "worstMs": 10.5,
+     "painted": 3
+    }
+   },
+   "first12": [
+    "missing |ms:6.70|p:3",
+    "missing |ms:4.50|p:3",
+    "missing |ms:12.10|p:3",
+    "missing |ms:12.00|p:3",
+    "missing |ms:11.00|p:3",
+    "ok |ms:10.50|p:3",
+    "ok |ms:0.20|p:0",
+    "ok |ms:0.10|p:0",
+    "ok |ms:0.00|p:0",
+    "ok |ms:0.00|p:0",
+    "ok |ms:0.00|p:0",
+    "ok |ms:0.10|p:0"
+   ]
+  },
+  {
+   "name": "fast descent x 18990 from y 600 at maxFall (2.5 s real play)",
+   "frames": 75,
+   "reasons": {
+    "missing": 3,
+    "ok": 72
+   },
+   "cost": {
+    "missing": {
+     "frames": 3,
+     "ms": 37,
+     "worstMs": 14.8,
+     "painted": 9
+    },
+    "ok": {
+     "frames": 72,
+     "ms": 35.1,
+     "worstMs": 10.4,
+     "painted": 11
+    }
+   },
+   "first12": [
+    "missing |ms:14.80|p:3",
+    "ok |ms:10.40|p:3",
+    "missing |ms:10.80|p:3",
+    "ok |ms:5.20|p:2",
+    "ok |ms:0.00|p:0",
+    "ok |ms:0.10|p:0",
+    "ok |ms:0.80|p:0",
+    "ok |ms:0.10|p:0",
+    "ok |ms:7.40|p:1",
+    "ok |ms:0.00|p:0",
+    "ok |ms:0.10|p:0",
+    "ok |ms:0.20|p:0"
+   ]
+  }
+ ]
+}

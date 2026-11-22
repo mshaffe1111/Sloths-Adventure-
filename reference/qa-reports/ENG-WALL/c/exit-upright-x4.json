@@ -1,0 +1,176 @@
+{
+ "meta": {
+  "platformsLen": 90,
+  "cam": [
+   18857.97346446376,
+   507.56032228180936,
+   440,
+   977.1844660194174
+  ]
+ },
+ "cases": [
+  {
+   "name": "stage start (first 6 s, real play, card up)",
+   "frames": 3,
+   "reasons": {
+    "missing after reset: init": 1,
+    "missing": 2
+   },
+   "cost": {
+    "missing after reset: init": {
+     "frames": 1,
+     "ms": 497.8,
+     "worstMs": 497.8,
+     "painted": 3
+    },
+    "missing": {
+     "frames": 2,
+     "ms": 141.8,
+     "worstMs": 84.2,
+     "painted": 6
+    }
+   },
+   "first12": [
+    "missing after reset: init |ms:497.80|p:3",
+    "missing |ms:84.20|p:3",
+    "missing |ms:57.60|p:3"
+   ]
+  },
+  {
+   "name": "standing still (2 s, real play)",
+   "frames": 11,
+   "reasons": {
+    "missing after reset: key": 9,
+    "missing": 2
+   },
+   "cost": {
+    "missing after reset: key": {
+     "frames": 9,
+     "ms": 464.7,
+     "worstMs": 55.2,
+     "painted": 27
+    },
+    "missing": {
+     "frames": 2,
+     "ms": 117.7,
+     "worstMs": 59.4,
+     "painted": 6
+    }
+   },
+   "first12": [
+    "missing after reset: key 2||1.7957|1019|-836438108 -> 2||1.8172|1007|-836438108 |ms:49.20|p:3",
+    "missing after reset: key 2||1.8172|1007|-836438108 -> 2||1.8343|998|-836438108 |ms:46.20|p:3",
+    "missing after reset: key 2||1.8343|998|-836438108 -> 2||1.8475|991|-836438108 |ms:51.40|p:3",
+    "missing after reset: key 2||1.8475|991|-836438108 -> 2||1.8572|985|-836438108 |ms:48.70|p:3",
+    "missing after reset: key 2||1.8572|985|-836438108 -> 2||1.8641|982|-836438108 |ms:53.20|p:3",
+    "missing after reset: key 2||1.8641|982|-836438108 -> 2||1.8685|979|-836438108 |ms:53.70|p:3",
+    "missing after reset: key 2||1.8685|979|-836438108 -> 2||1.8711|978|-836438108 |ms:55.00|p:3",
+    "missing after reset: key 2||1.8711|978|-836438108 -> 2||1.8723|977|-836438108 |ms:52.10|p:3",
+    "missing after reset: key 2||1.8723|977|-836438108 -> 2||1.8727|977|-836438108 |ms:55.20|p:3",
+    "missing |ms:58.30|p:3",
+    "missing |ms:59.40|p:3"
+   ]
+  },
+  {
+   "name": "respawn (respawnAtCheckpoint, 3 s real play)",
+   "frames": 28,
+   "reasons": {
+    "missing": 1,
+    "ok": 27
+   },
+   "cost": {
+    "missing": {
+     "frames": 1,
+     "ms": 55,
+     "worstMs": 55,
+     "painted": 3
+    },
+    "ok": {
+     "frames": 27,
+     "ms": 87.3,
+     "worstMs": 77.1,
+     "painted": 3
+    }
+   },
+   "first12": [
+    "missing |ms:55.00|p:3",
+    "ok |ms:77.10|p:3",
+    "ok |ms:0.40|p:0",
+    "ok |ms:0.60|p:0",
+    "ok |ms:0.10|p:0",
+    "ok |ms:0.50|p:0",
+    "ok |ms:0.20|p:0",
+    "ok |ms:0.10|p:0",
+    "ok |ms:1.00|p:0",
+    "ok |ms:0.70|p:0",
+    "ok |ms:0.10|p:0",
+    "ok |ms:0.00|p:0"
+   ]
+  },
+  {
+   "name": "COLD respawn (33 far views painted first, then respawnAtCheckpoint, 3 s real play)",
+   "frames": 76,
+   "reasons": {
+    "missing": 5,
+    "ok": 71
+   },
+   "cost": {
+    "missing": {
+     "frames": 5,
+     "ms": 118.6,
+     "worstMs": 36.6,
+     "painted": 15
+    },
+    "ok": {
+     "frames": 71,
+     "ms": 50.8,
+     "worstMs": 31.6,
+     "painted": 3
+    }
+   },
+   "first12": [
+    "missing |ms:17.90|p:3",
+    "missing |ms:12.30|p:3",
+    "missing |ms:32.60|p:3",
+    "missing |ms:19.20|p:3",
+    "missing |ms:36.60|p:3",
+    "ok |ms:31.60|p:3",
+    "ok |ms:0.10|p:0",
+    "ok |ms:0.10|p:0",
+    "ok |ms:0.00|p:0",
+    "ok |ms:0.60|p:0",
+    "ok |ms:0.00|p:0",
+    "ok |ms:0.10|p:0"
+   ]
+  },
+  {
+   "name": "fast descent x 18990 from y 600 at maxFall (2.5 s real play)",
+   "frames": 66,
+   "reasons": {
+    "ok": 66
+   },
+   "cost": {
+    "ok": {
+     "frames": 66,
+     "ms": 108.6,
+     "worstMs": 47,
+     "painted": 9
+    }
+   },
+   "first12": [
+    "ok |ms:0.00|p:0",
+    "ok |ms:42.10|p:2",
+    "ok |ms:47.00|p:3",
+    "ok |ms:0.70|p:0",
+    "ok |ms:0.40|p:0",
+    "ok |ms:1.10|p:0",
+    "ok |ms:0.80|p:0",
+    "ok |ms:0.20|p:0",
+    "ok |ms:0.40|p:0",
+    "ok |ms:0.60|p:0",
+    "ok |ms:0.10|p:0",
+    "ok |ms:0.10|p:0"
+   ]
+  }
+ ]
+}
