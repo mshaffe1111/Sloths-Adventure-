@@ -20,7 +20,13 @@ the 72 px gap, river.ts:189-190, the lead's call). No race retune before it.
    happened).** ONE traced (s/cross-e6-7501bf2fb.txt, probe s/cross-27s.mts.txt): home middle Easy 6 x 3198: first pass at the respawn
    x 3490 margin 5.77, at the fall 5.43 (the first crossing LOST 0.34 s to the boat); respawn 5.77 - 0.75 = 5.02; the second crossing of the
    292 px took 1.57 s and GAINED 0.52 s, back at x 3198 5.54 (+0.10). So his second crossing beat his first by 0.86 s, more than the 0.75 s
-   beat: the first-pass margin is not enough wherever the first crossing was slow (what slowed it is not traced yet; the other six not traced). If so, the ruling's formula cannot keep the
+   beat: the first-pass margin is not enough wherever the first crossing was slow (what slowed it is not traced yet; the other six not traced).
+   **The lead (after my grid RED): trace two of the seven first; the form of the fix waits on the cause.** Bring with the trace: every race-leg
+   fall on the grid, its cost or gain, the mean and the worst gain, PER BOT (probe s/grid-27s.mts.txt; my run's output s/grid-7501bf2fb.txt
+   if it finished in my box). If the cause is river timing on the second try (a log in reach that was not the first time), the lead rules
+   between (a) a strict hold: back at the fall's x his margin is clamped to the one at the fall, the boat EASED over about a second, never
+   snapped on screen; (b) the mechanics invariant (no stretch credited twice) plus a floor that every fall costs at least the beat, the
+   residual named. Each names its invariant and test (D112, D121). The candidate stays on wip. If so, the ruling's formula cannot keep the
    invariant by itself; the lead rules the form (D112: name the invariant before any cap). Then the suite on the fix (pacerLay was RED 9/19
    on the base and on D': name any change), and send the lead the rows (rows first).
 1. Then (2) E with a plant first (a toy where a short drawn single would fall short of a 72 px gap and the smallest aimed hop that clears it
