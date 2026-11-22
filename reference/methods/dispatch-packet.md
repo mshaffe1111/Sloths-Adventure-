@@ -75,3 +75,9 @@ Step 0 of every engine packet: **the full unit suite on the BASE, started first 
 
 ## Every run reads a frozen worktree (D115, 11-21)
 Every packet says: **every run (the suite, drawcheck, castBots, lockall, a grade) reads a FROZEN worktree (git worktree add --detach <hash>), never the tree being edited.** Twice on 11-21 a run read a tree that was changing under it (ENG-27l caught its own; ART-SHEETS' base suite did not count).
+
+## A bot candidate is safe-kept off the shared branch (D117, 11-21)
+Every bot or level packet says: **safe-keeping pushes of a CANDIDATE (a bot or lay change whose rule-28 rows the lead has not ruled) go to
+`<work-branch>-wip-<member>`, never the shared work branch.** The shared branch takes the candidate only after the lead's ruling on its
+rows. Twice on 11-21 a bot member pushed a candidate to t-build-26 before its rows reached the lead (BUILD-26f 0bc969bce, worse, reverted;
+BUILD-26g 9df2f0d11 'for safe-keeping').
