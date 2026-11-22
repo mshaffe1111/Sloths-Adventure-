@@ -1,3 +1,70 @@
+# ENG-27s REPORT (start 8:09 PM ET by `date`; box 8:37 PM ET; base t-eng-27 2d9359932, code 16698b8a1; D' and two plants on t-eng-27-wip-27s e8c4d0153 (D117), NOT on t-eng-27)
+## EXACT NEXT STEP (ENG-27t, read only this section, D90)
+0. **The suite on the base 16698b8a1 (= 74a97ad44's code)** ran in MY container (scratchpad suite.sh, frozen worktree): tsc PASS; unit shard
+   at 1247 ok / 0 not ok and still running when I handed over; it dies with my container: RE-RUN it (D114/D118), and the same suite on
+   wip-27s e8c4d0153 beside it (D' + both plants; tsc PASS on it; the fall-pays plant is RED there BY DESIGN until the lead's race ruling).
+1. **Waiting on the lead (sent, rows below):** the honest middle (A, B, C or D'), then the race (the fall-pays cause in (4)). No race retune,
+   no boat or lay change, nothing on t-eng-27 but this REPORT before that.
+2. Not run (box): pacerLay and pacerRespawn (its existing invariant) per bot; the open hopJudged row on D' (q -2 safe, Easy 2 x 15087) and
+   D's two (Normal 2 x 15982): trace judge()'s noisy flight against the real one (the Normal 2 #66 kind).
+## Done-items
+- **(1) The lead's ruling built (t-eng-27-wip-27s, from D e75664cde):** one exported `WaitAim` (tools/inspect/firsttimer.ts, above gateLands)
+  holds each gate's aim: `at(dir, t, draw)` draws (drawHop: the tier's kind and hold) ONCE when a wait begins, returns it unchanged until
+  `end()` (pressed, or the target left reach: edgeWait's `lands` none, upstream's `next` none, edgeStand's bank-fallback press), a frame
+  the gate is not reached (gap over 1.5 frames) or a turn. **Deleted:** the 0.5 s beat, its redraw and the floatBeat fields at edgeStand,
+  edgeWait, upstream; refused with the target in reach he stands by choice holding the aim (edgeWait's 6 s fall-through came only on a
+  beat-out frame, so it is gone too). The decision reads the aim only (D's gateLands); the press flies it with its drawn noise (D's flyThumb).
+  **Plant 64134c343** (D's beat moved inside WaitAim; equal to D by reading, its redraw one frame sooner) + toy 'a wait holds its aim': **RED**
+  ('he pressed a redrawn lucky hold at frame 15 (2 draws in one wait)', s/toy-RED-64134c343.txt); **D' 95702a42e GREEN**, D's no-foresight
+  toy GREEN (s/toy-GREEN-95702a42e.txt); tsc PASS on D'.
+- **hopJudged in full:** D' 5 pass 1 fail: Easy seed 2 'edgeWait q#-2 t 27.70 x 15087 double 0.320 | came down #14 drift' (a predicted fall
+  that came down SAFE: a judge flight error); D e75664cde fails the same kind on Normal seed 2 (x 15982 twice, came down #20, #19). So it is
+  D's judge() (the noisy draw's flight), not the held aim (s/hopJudged-*.txt). OPEN.
+- **(2) The four-bot table** (frozen trees, middle; s/table-wt*.txt, probe s/table-27s.mts.txt; finish s | race won/lost, him vs boat s | lives
+  lost; land/press | falls/press over judged presses at a float):
+  | row | A b7a68a8bd | B 16698b8a1 | C b0c6dd586 | D' 95702a42e |
+  |---|---|---|---|---|
+  | home N1 (boat 93.9) | 175.1 W 85.4, 6 | 190.0 L 114.3, 1 | 246.3 L 108.4, 3 | 213.5 L 130.8, 4 |
+  | home N2 (92.4) | 203.0 W 90.9, 6 | 215.8 L 122.9, 1 | 167.1 W 81.3, 1 | 276.2 L 119.4, 3 |
+  | home N3 (92.1) | 189.5 W 89.7, 4 | 215.9 L 119.8, 4 | 203.8 L 93.0, 5 | 251.8 L 140.4, 1 |
+  | home E1 (97.5) | 145.9 W 83.4, 3 | 189.3 L 117.3, 5 | 145.3 W 83.3, 0 | 158.3 L 102.3, 0 |
+  | home E3 (96.1) | 149.7 W 83.1, 1 | 170.0 L 101.5, 2 | 146.3 W 82.8, 0 | 166.8 L 100.3, 0 |
+  | post N4 (100.8) | 153.3 W 90.2, 1 | 183.6 L 127.8, 1 | 164.9 L 110.8, 0 | 184.0 L 126.2, 1 |
+  | post N5 (103.4) | 172.9 W 96.9, 5 | 217.4 L 152.6, 1 | 186.1 L 118.2, 1 | 218.6 L 150.4, 0 |
+  | races won | 7/7 | 0/7 | 3/7 | 0/7 |
+  | land / fall per press | 0.87-1.00 / 0-0.13 | 1.00 / 0 | 1.00 / 0 | 1.00 / 0 |
+  Presses at a float 13-28 a run on every bot. D' never fell on a judged press, and stands longest (slowest finishes).
+- **(3) Split (b), the 72 px:** src/game/river.ts:189-190 `gapFor(dir, speed)` is a flat 72 for a river WITH him (96 + 0.2 x speed against).
+  Every log on a river drifts at its one speed, so the gap from the log he rides to the next never changes. Every race site rides with
+  the flow (`here.drift.dir === dir`), so every race site is the same 72 px gap, with RACE_MARGIN 50 px of log wanted past it.
+- **(4) Fall-pays, end to end** (back at the fall's x, margin vs the frame before the fall): A 12 of 20 race-leg falls pay, B 6 of 15,
+  C 2 of 4, D' 3 of 5, each +0.01..+0.81 s (A N1 x 10103 +0.61, A P5 x 12815 +0.81, B N1 x 8868 +0.60; D' N1 x 11600 +0.59, N1 x 8738
+  +0.56, P4 x 12479 +0.59); the rest cost 0.01-4.9 s. **One cause:** Option A keeps his margin where he STANDS after the respawn, behind
+  the fall's x; he then re-crosses the respawn-to-fall stretch, already credited on his first crossing, so it is credited twice: a fall
+  pays wherever he re-crosses it faster than the boat. pacerRespawn's invariant (margin at the stand) holds; the principle (D112) fails.
+  **Plant e8c4d0153** (tools/inspect/pacerRespawn.test.ts, 'back at a race-leg fall's x, his margin is never better than at the fall', the
+  middle on the table's 7 rows): **RED** on the wip-27s head, the same three falls as the probe (s/fallpays-RED-e8c4d0153.txt).
+## Polish check
+- No screen changed (bot and test code only); the numbers above are the evidence.
+## Pushback
+- "A new target comes in reach": I read a wait as the frames a target stays in reach at one gate (a second log arriving inside it does NOT
+  redraw). A redraw per new log is one key in WaitAim; the lead's call.
+- D' answers the foresight question but loses every race and is the slowest bot; with hopJudged's q -2 rows open on D and D', the judge
+  that records the noisy flight is not yet trustworthy enough to rule D' on land rate alone.
+## Unresolved
+- pacerLay and pacerRespawn per bot; the q -2 judge flight rows; the suite past unit on the base and the suite on e8c4d0153: NOT done.
+- I told the lead C's post N5 row was lost; it was not (I read the file before the run finished); corrected in a second message.
+- The disk allowance filled once (2.7 GB a worktree); I removed finished worktrees; no run's result was lost to it.
+- LESSONS read: D107, D109, D111-D120 (headline and countermeasure); D96, D102 not read in full (box). Applied: D111, D113, D114/D118,
+  D115, D117, D119 (edits as scratch scripts), D120 (worked on past the question), D109.
+## Method update
+- level.md rule 28: a drawn-hop gate's aim is drawn once per wait and held until the press or the target leaves reach (WaitAim); check: the
+  held-aim toy in hopJudged.test.ts. STAGE-RULES / the race: 'a fall never pays' is checked end to end at the fall's x (the new plant), not
+  at the respawn's stand.
+- A probe's table is read only after its run reports DONE (my C P5 miss).
+## Turnover note
+- reference/handoffs/engine-core.md not rewritten (box); this section is the hand-over.
+
 # ENG-27r REPORT (start 7:43 PM ET by `date`; box 8:11 PM ET; base t-eng-27 ea7686a43; candidate D on t-eng-27-wip-27r e75664cde (D117), NOT on t-eng-27)
 ## EXACT NEXT STEP (ENG-27s, read only this section, D90)
 0. **The suite on 74a97ad44 is running in MY container** (frozen worktree, scratchpad suite.sh; tsc PASS, unit shards running when the box closed).

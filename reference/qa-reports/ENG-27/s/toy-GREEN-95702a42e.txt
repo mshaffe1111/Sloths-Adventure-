@@ -1,0 +1,22 @@
+TAP version 13
+# Subtest: a drawn-hop gate decides on the hop as aimed, never on the thumb noise drawn for it (no foresight, ENG-27r)
+ok 1 - a drawn-hop gate decides on the hop as aimed, never on the thumb noise drawn for it (no foresight, ENG-27r)
+  ---
+  duration_ms: 1.116744
+  type: 'test'
+  ...
+# Subtest: a wait holds its aim: drawn once when the wait begins, never redrawn for a lucky hold (ENG-27s, the lead's ruling)
+ok 2 - a wait holds its aim: drawn once when the wait begins, never redrawn for a lucky hold (ENG-27s, the lead's ruling)
+  ---
+  duration_ms: 0.248521
+  type: 'test'
+  ...
+1..2
+# tests 2
+# suites 0
+# pass 2
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 876.347501
