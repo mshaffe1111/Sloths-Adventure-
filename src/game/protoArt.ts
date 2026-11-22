@@ -1693,8 +1693,17 @@ const CHUNK_PAD = 2;
  * The squares on screen are always kept, whatever this says (PERFORMANCE-RULES.md §2.13: the 4 GB OnePlus)
  */
 const CHUNK_BYTES = 40 * 1024 * 1024;
-/** squares painted per frame at most: the rest of the view is painted live that frame */
+/** squares painted per frame for the margin ahead and for sheets that arrived since (a square IN view is always painted that frame) */
 const CHUNK_BUDGET = 3;
+/**
+ * the margin ahead (R-165.380, C's second half): the squares one past each edge the view is moving toward are painted before they enter.
+ * One square is enough: the fastest the view moves is the fastest fall, maxFall 950 a second (physics.ts:27), 31.7 a frame at the
+ * locked 30 fps, so a 256 square takes at least 8 frames to cross, and the row ahead (at most 5 squares across the widest view) is
+ * painted at CHUNK_BUDGET a frame in 2.
+ */
+const CHUNK_AHEAD = 1;
+/** where the view was on the frame before (the margin goes on the side it moves toward) */
+let lastGroundView: { x0: number; y0: number } | null = null;
 interface GroundChunks {
   key: string;
   plats: Platform[];
@@ -1757,38 +1766,57 @@ function drawGroundChunks(ctx: CanvasRenderingContext2D, platforms: Platform[], 
   const c = chunks;
   const cx0 = Math.floor(view.x0 / CHUNK), cx1 = Math.floor(view.x1 / CHUNK);
   const cy0 = Math.floor(view.y0 / CHUNK), cy1 = Math.floor(view.y1 / CHUNK);
+  // (the margin: one square past each edge the view moved toward since the frame before; a jump of more than a view is a cut, no margin)
+  const was = lastGroundView;
+  lastGroundView = { x0: view.x0, y0: view.y0 };
+  const dx = was ? view.x0 - was.x0 : 0, dy = was ? view.y0 - was.y0 : 0;
+  const cut = Math.abs(dx) > view.x1 - view.x0 || Math.abs(dy) > view.y1 - view.y0;
+  const ax0 = !cut && dx < 0 ? cx0 - CHUNK_AHEAD : cx0, ax1 = !cut && dx > 0 ? cx1 + CHUNK_AHEAD : cx1;
+  const ay0 = !cut && dy < 0 ? cy0 - CHUNK_AHEAD : cy0, ay1 = !cut && dy > 0 ? cy1 + CHUNK_AHEAD : cy1;
+  const side = Math.ceil((CHUNK + 2 * CHUNK_PAD) * scale);
+  const keep = Math.max(8, Math.floor(CHUNK_BYTES / (side * side * 4)));
+  let painted = 0;
+  for (const cv of c.tiles.values()) if (cv) painted++;
   let budget = CHUNK_BUDGET;
-  let missing = false;
   const stale: string[] = [];
+  const paintAt = (cx: number, cy: number, k: string) => {
+    if (!c.tiles.has(k)) c.order.push(k);
+    const cv = paintTile(platforms, banks, cx, cy, scale);
+    if (cv) painted++;
+    c.tiles.set(k, cv);
+    c.epoch.set(k, sheetEpoch.n);
+  };
+  const have = (k: string) => {
+    // (a square the phone took back is painted again)
+    if (!c.tiles.has(k) || canvasLost(c.tiles.get(k), 'ground square')) return false;
+    // (an empty square, where no ground reaches, takes no sheet)
+    if (c.tiles.get(k) && c.epoch.get(k) !== sheetEpoch.n) stale.push(k);
+    return true;
+  };
+  // (every square in view is drawn from its own painted square, the same darkening model, this frame: never the live path for a square
+  // that is only late; the margin keeps that to a cold view, a stage start or a respawn)
   for (let cy = cy0; cy <= cy1; cy++)
     for (let cx = cx0; cx <= cx1; cx++) {
       const k = cx + ',' + cy;
-      // (a square the phone took back is painted again)
-      if (c.tiles.has(k) && !canvasLost(c.tiles.get(k), 'ground square')) {
-        // (an empty square, where no ground reaches, takes no sheet)
-        if (c.tiles.get(k) && c.epoch.get(k) !== sheetEpoch.n) stale.push(k);
-        continue;
-      }
-      if (budget-- <= 0) {
-        missing = true;
-        continue;
-      }
-      if (!c.tiles.has(k)) c.order.push(k);
-      c.tiles.set(k, paintTile(platforms, banks, cx, cy, scale));
-      c.epoch.set(k, sheetEpoch.n);
+      if (!have(k)) paintAt(cx, cy, k);
+    }
+  // (then the margin ahead, a few a frame and only while the memory holds them)
+  for (let cy = ay0; cy <= ay1 && budget > 0; cy++)
+    for (let cx = ax0; cx <= ax1 && budget > 0; cx++) {
+      if (cx >= cx0 && cx <= cx1 && cy >= cy0 && cy <= cy1) continue;
+      const k = cx + ',' + cy;
+      if (have(k) || painted >= keep) continue;
+      budget--;
+      paintAt(cx, cy, k);
     }
   sheetsSince(c, stale, budget, (cx, cy) => paintTile(platforms, banks, cx, cy, scale));
-  // (the oldest squares out of view go once too many are kept)
-  const side = Math.ceil((CHUNK + 2 * CHUNK_PAD) * scale);
-  const keep = Math.max(8, Math.floor(CHUNK_BYTES / (side * side * 4)));
-  // (an empty square, where no ground reaches, costs nothing, so only painted ones count; the empty ones are capped at 400 entries)
-  let painted = 0;
-  for (const cv of c.tiles.values()) if (cv) painted++;
+  // (the oldest squares out of view and out of the margin go once too many are kept; an empty square, where no ground reaches, costs
+  // nothing, so only painted ones count; the empty ones are capped at 400 entries)
   for (let i = 0; i < c.order.length && (painted > keep || c.order.length > 400); ) {
     const k = c.order[i];
     const cv = c.tiles.get(k);
     const [x, y] = k.split(',').map(Number);
-    if ((x >= cx0 && x <= cx1 && y >= cy0 && y <= cy1) || (!cv && c.order.length <= 400)) {
+    if ((x >= ax0 && x <= ax1 && y >= ay0 && y <= ay1) || (!cv && c.order.length <= 400)) {
       i++;
       continue;
     }
@@ -1798,7 +1826,6 @@ function drawGroundChunks(ctx: CanvasRenderingContext2D, platforms: Platform[], 
     c.epoch.delete(k);
     c.order.splice(i, 1);
   }
-  if (missing) return false;
   const px = CHUNK * scale;
   const pad = CHUNK_PAD * scale;
   for (let cy = cy0; cy <= cy1; cy++)
