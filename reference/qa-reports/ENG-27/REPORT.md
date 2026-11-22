@@ -7,6 +7,10 @@ inside the iris's black frames). One more check across the grid: the re-placemen
 an assert in pacerRespawn if cheap. Then on to E. **So ENG-27u: (a) pacerLay :71 rewrite (plant on Option A's code, e.g. 16698b8a1's
 piece); (b) the iris assert in pacerRespawn (on the respawn frame, the screen is in the iris: read the engine's iris/fade state there, every
 race-leg respawn on the grid); (c) the full suite on the result; then E, D's judge, the table below.**
+  (b)'s pointers (read, not built): the iris is engine.ts `irisOpen` (:913, private), set to IRIS_OPEN_SECS 0.45 s (:242) at the respawn
+  (:6210) and run down by dt (:1780); drawIris (:5809) closes on him while `down` (k from DOWN_SECS*0.3) and opens over 0.45 s, the hole
+  of radius full*(1 - smoothstep(k)) centred on him. The assert: on the frame the boat is re-placed (pacerRespawn's `wasDown && !e.down`),
+  the boat's box on screen lies OUTSIDE that hole (or k = 1), every race-leg respawn on the grid.
 **The lead's question (one line):** the black band down the right edge of the clips is NOT notch emulation (the clip sets no insets) and
 NOT the game's inset (probe on the dev page: the canvas fills the whole 915x412 and 412x915, the camera's view covers the canvas, no
 safe-area variable set): most likely the camera showing past the toy's painted backdrop at the out-and-back's far end, the platforms' art
