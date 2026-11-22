@@ -1,3 +1,88 @@
+# ENG-27u REPORT (start 9:11 PM ET by `date`; box 9:39 PM ET; base t-eng-27-wip-27t 7559289ca; on t-eng-27-wip-27u: the :71 rewrite 59f56e6a0, the iris assert 9eea72323 + 767ef6023 (D117), evidence a069e911c, NOT on t-eng-27)
+## EXACT NEXT STEP (the next engine member when release-4 work resumes; no successor tonight: the weekly limit. Read only this section, D90)
+**(1) The strict hold's three closing checks: (a) DONE, (b) DONE (a finding, ruled R-165.388), (c) NOT FINISHED in my box: re-run it first.**
+- (a) pacerLay.test.ts:71's respawn clause REWRITTEN to the ruled rule (59f56e6a0; new replaces old): he walks the leg at 1.5x the boat's pace
+  (ahead) and at 0.9x (behind), falls at 0.4 of the way, respawns at a flag at 0.3: his margin there is his FIRST pass's less DOWN_SECS; in
+  the air the boat runs on (a frame's dt a frame, nothing owed); back at the fall's x standing, the boat owes EXACTLY the excess and eases it
+  (not all in the first frame); the ease drains within max(EASE_MIN, 2E/EASE_PEAK) and then his margin at the x is the fall's less the time
+  he stood. RED on Option A's piece (plant a8edc22ed, detached: 16698b8a1's pacerPiece.ts + the two ease constants, so no missing export
+  fakes a red): `pace 1.5x: the respawn puts his margin at the first pass's 9.27 s less the beat, not the fall's 12.37 s (12.37 s)`
+  (u/pacerLay71-RED-optionA-a8edc22ed.txt). GREEN on 59f56e6a0 (u/pacerLay71-GREEN.txt).
+- (b) THE IRIS ASSERT in tools/inspect/pacerRespawn.test.ts (9eea72323, 767ef6023): ANY frame the boat moves over the ease's bound
+  ((1 + 0.5) x its step) must be a re-placement on a frame whose iris the engine draws is SHUT (engine.ts drawIris's k = 1: hole radius 0;
+  IRIS_OPEN_SECS now exported so the test reads the engine's own length). The old exception (fall / down / just-after-down frames skipped) is
+  gone, so nothing hides. On a respawn after the beat the engine sets irisOpen = 0.45 in the same update that re-places the boat: k = 1, black.
+  **FINDING (for the lead, two runs, one cause):** the first run of the assert (9eea72323) flagged 7 home and 12 post moves (30-317 px) with
+  the view live. Traced (tools/inspect/trace27u.ts): home middle Normal 5 frame 3385 lives 1 -> 0 (the LAST life, down starts), frame 3386
+  lives 3, the boat re-placed 7107 -> 7424 px with the beat still running (down.t 0.033, so drawIris reads the beat's k = 0); home expert
+  Normal 2 frame 3020 -> 3021 the same (12160 -> 12202). CAUSE: the bots tap Continue the frame after the last life is lost
+  (tools/inspect/firsttimer.ts:4494 reads `isGameOver && outOfLives`, which engine.ts:5777 sets at the beat's START); a player can only
+  tap Continue on the Game Over card, which shows once the beat is over (stepDown -> onDefeat). So in the real game the continue is behind
+  the card and then the respawn's iris is shut. The check now judges a continue frame that way (k = irisOpen / IRIS_OPEN_SECS) and counts
+  continues apart. **The harness defect stays, named, not fixed (outside the packet; it touches every bot's Game Over rows):** a bot
+  continues 0.72 s (the beat) early, mid-beat; the beat then ends with `d.last` and calls report(false) / onDefeat on a run already going
+  again. **RULED by the lead (in my box): R-165.388.** The harness must wait for the beat (a bot may never continue before a player
+  could), NOT now: after release 3, on one bot branch once t-build-26's and t-eng-27's bots meet, with the tierBots calibration re-run.
+  The assert's separate count of continues stays as built.
+  **GREEN on frozen 767ef6023 (2 of 2; u/grid-GREEN-767ef6023.txt):** home 41 race-leg falls judged, 299 ease frames, 23 re-placements on a
+  respawn and 7 on a Game Over continue; post 48 falls, 232 ease frames, 29 and 5; every one inside the iris's shut frame. (post's ease
+  count was 531 in ENG-27t's rows: the run-wide tallies carried home's 299 into post; now reset per test: 299 + 232 = 531, the same frames.)
+  **The plant bites:** 2f438eb66 (detached, not pushed: engine.ts's respawn sets irisOpen = 0, the re-placement on a live view) RED, home
+  30 and post 34 re-placements 'with the view live ... on the respawn' (u/grid-RED-irisplant-2f438eb66.txt): exactly 23 + 7 and 29 + 5.
+- (c) THE FULL SUITE on frozen 9eea72323 (the code under (a) and (b); 767ef6023 changes only tools/inspect/pacerRespawn.test.ts, which no
+  suite step runs, and adds two scratch tools; tsc PASS on 767ef6023): **NOT FINISHED IN MY BOX, named plainly:** tsc PASS; the unit stage
+  had 1247 top-level tests ok and 0 not ok when I handed over, still running (pacerLay's file, with its known nine race reds, had not reported yet);
+  build, chunkcheck, artcheck, drawcheck, clipcheck, knowncheck, generality, roadmap, kbdcheck, buildcheck, seedlist, the engine-tool tests
+  and tierBots NOT RUN yet (they run in order after the unit stage, in ENG-27u's container: the lead can ask ENG-27u for the SUMMARY).
+  **The next member re-runs the whole suite on frozen a069e911c (code as 9eea72323; only test, scratch and evidence changes after it) and
+  checks its only reds are pacerLay's known nine (1504, 1506, 1508, 1510, 1514, 1516-1519).**
+**Then (2) E, (3) D's judge, (4) the table: NOT STARTED (box).** ENG-27t's pointers stand unchanged (its REPORT section below: the race gate
+firsttimer.ts:3122-3140, gateLands :1136, drawHop :4193, the toy's shape: a 72 px gap, [single 0.1 s lands 20 px short, single 0.3 s lands
+60 px past, double ...]; D' never presses, E presses the 0.3 s single the first frame it lands with 50 px; RED on D', GREEN on E). Then
+D's judge: trace Easy 2 x 15087 on D' and Normal 2 x 15982 on D, hopJudged 4/4 GREEN. Then the table on the 7 rows (home N1-3, E1, E3,
+post N4, N5: finish, race result, lives lost, falls per press), E beside A b7a68a8bd and D', pacerLay and pacerRespawn on E. No race retune.
+**(4) The black band:** NOT IN THE GAME. The real 2-7, sideways 915x412: its right end (u/band-2-7-far-sideways.jpg,
+  2x: the door, Pokey and the painted village to the very edge; the camera's view ends 20 px past the last platform) and a scan of the
+  whole stage every 600 px (51 shots, u/bandscan-read.txt, e.g. u/scan-2-7-24900-sideways.jpg): no band in any shot (the right 24 px strip
+  never near black while the strip beside it is lit; the dark readings are the stage's dusk art, both strips alike). The toy
+  (2-97 seed 6, ENG-27t's clip's own fixture), scanned the same way as the control: 33 shots, no band either (u/scan-2-97-10500-sideways.jpg),
+  so the game's own drawing never showed the clip's band, even in the toy. So the band in ENG-27t's clip most likely comes from the clip method (recorded state put on a paused page), not from the game's camera or a backdrop that ends
+  short. UNVERIFIED: which of the clip's steps draws it (not traced: box). Trap for the scan (now in bandscan27u.mjs): a paused engine draws
+  ONE still and stops (engine.ts:1594 stillDrawn): my first scan shot every place identical until it cleared stillDrawn; a clip or still
+  on a paused page must clear it, or every shot repeats the first.
+## Done-items
+- pacerLay.test.ts:71 rewritten (59f56e6a0): RED on Option A (plant a8edc22ed), GREEN on the fix; u/pacerLay71-*.txt.
+- pacerRespawn's iris assert (9eea72323, 767ef6023): GREEN on frozen 767ef6023 (2 of 2); its plant 2f438eb66 RED (64 live-view re-placements);
+  the first run's 19 flags traced to one cause (two runs: u/trace-home-middle-n5-f3386.txt and expert Normal 2 frame 3021), named above.
+- engine.ts: IRIS_OPEN_SECS exported (one word; the test reads the engine's own length, no copied 0.45).
+- The suite on frozen 9eea72323: see (c) above (what finished inside the box, and what did not).
+- The band: (4) above, with stills.
+## Polish check
+- The real 2-7's right end, sideways 915x412 at 2x (u/band-2-7-far-sideways.png): the ground, the door ('Touch the door!'), Pokey and the
+  painted village behind to the very edge; no band; the camera's view ends 20 px past the last platform (30306 vs 30326).
+- The toy's right end, sideways (u/band-2-97-far-sideways.png): no band there either. The rest of the band answer is in (4).
+## Pushback
+- The packet's (b) wording ('on the frame the boat is re-placed (wasDown && !e.down) ... every race-leg respawn') would have missed the
+  harness's Game Over continue (re-placed on a frame that is neither): the assert now flags ANY over-bound move, so nothing is excepted by
+  frame type. That is how it found the mid-beat continue.
+## Suggestions
+- (R-165.388's packet, the lead filed it for after release 3) the bot harness waits for the beat before it taps Continue: tools/inspect/firsttimer.ts:4494
+  `if (e.isGameOver && e.outOfLives && !e.down)`; done-items: pacerRespawn GREEN with 0 continues re-placed mid-beat (a count the test
+  already prints), tierBots calibration re-run and recommitted (BOTS.md), the race table's 7 rows re-read; no row moves without the lead.
+## Unresolved
+- (2) E, (3) D's judge, (4)'s table: not started (box; the lead stopped release-4 work tonight after this box).
+- The harness's mid-beat continue: named, not fixed; filed by the lead as R-165.388 (after release 3).
+## Method update (proposed, the lead rules)
+- A check that excepts frames by TYPE (respawn, fall, down) can hide a jump of another type: bound EVERY frame, then name each allowed
+  case with the state that makes it allowed (here: the iris shut). Check: pacerRespawn's iris assert has no frame-type exception.
+- The bots' Game Over continue is earlier than a player's (mid-beat): any check of what the screen shows around a Game Over must judge
+  the continue as the card-then-iris the player sees, until the harness is fixed.
+## Turnover note
+- reference/handoffs/engine-core.md not rewritten (box); this section is the hand-over. Lessons applied: D63 (judged on the real screen:
+  stills of the real 2-7 sideways), D102 (read lean), D111 (box from `date`), D113/D122 (every long run in the background with a timeout),
+  D115 (every run on a frozen tree: 9eea72323, 767ef6023, the plants detached), D117 (candidates on wip-27u only), D119 (no heredoc in a
+  commit chain: files written in their own call), D109 (no clock times to the lead), law 22 (the continue is judged as the screen shows
+  it, and the harness's early tap is named for a fix, not hidden by the rule).
 # ENG-27t REPORT (start 8:31 PM ET by `date`; box 8:59 PM ET; base t-eng-27-wip-27s 7501bf2fb; the strict hold on t-eng-27-wip-27t: plant cc66545df, fix bf92d3daf, the D121 check 7559289ca (D117), NOT on t-eng-27)
 ## EXACT NEXT STEP (ENG-27u, read only this section, D90)
 **THE LEAD'S RULINGS IN MY BOX (verbatim in substance; they come first):** (1) YES: rewrite src/game/gen2/pacerLay.test.ts:71's respawn
