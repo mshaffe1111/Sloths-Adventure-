@@ -2775,6 +2775,20 @@ export class FirstTimerRun {
           return this.startJump(dir1, 'single', false);
         }
         if (HOP_TRACE.on) this.judged = null;
+        // (and no bank in reach past the edge (within 400 px, -120..+300 px of his feet): the stand's own hop, drawn in startJump and
+        //  flown unjudged, could only come down on a log or in the water, so he stands by choice (the lead: 'stands by choice only when the
+        //  trace shows the fallback cannot know'), the drawn hop drawn anew each 0.5 s beat as edgeWait's. Traced, ENG-27p: of the twelve
+        //  refused stands over the four hopJudged runs, eleven had a bank 300-430 px on (all came down on it); x 15632 had none (logs #39,
+        //  #40 only) and its drawn hop was a 0.033 s tap)
+        const here = this.floorAt(p.x, p.y, 6), edgeX = here ? (dir1 > 0 ? here.x + here.width : here.x) : p.x;
+        const bank = this.sim.platforms.some((q) => q.type !== 'drift' && q !== here && !q.broken && q.y - p.y > -120 && q.y - p.y < 300 && (dir1 > 0 ? q.x - edgeX : edgeX - (q.x + q.width)) > -10 && (dir1 > 0 ? q.x - edgeX : edgeX - (q.x + q.width)) < 400);
+        if (!bank) {
+          if (this.floatBeat < 0 || t - this.floatBeatLast > 1.5 * DT) this.floatBeat = t;
+          this.floatBeatLast = t;
+          if (t - this.floatBeat >= 0.5) { this.waitHop = null; this.floatBeat = -1; }
+          this.pending = null; this.lateArmed = null; this.clockHeld = true; this.blockedT = 0;
+          return {};
+        }
       }
       this.standing = null;
       return this.startJump(s.dir, this.jumpFor(p, s.dir, this.floorAt(p.x, p.y, 6)), false);
@@ -4546,7 +4560,7 @@ export class FirstTimerRun {
         const o = this.hopOpen;
         if (e.lives < o.lives) { o.row.landed = 'lost'; this.hopOpen = null; }
         else if (!this.sim.p.grounded) o.air = true;
-        else if (o.air) { o.row.landed = this.sim.standingOn; o.row.landedType = this.sim.platforms.find((q) => q.id === this.sim.standingOn)?.type; this.hopOpen = null; }
+        else if (o.air) { o.row.landed = this.sim.standingOn; o.row.landedType = (this.sim.platforms.find((q) => q.id === this.sim.standingOn) ?? this.floorAt(this.sim.p.x, this.sim.p.y, 6))?.type; this.hopOpen = null; }
       }
       if (HOP_TRACE.on && !this.sim.p.grounded && !this.hopOpen) this.judged = null;
       this.opts.onFrame?.(this.sim);
