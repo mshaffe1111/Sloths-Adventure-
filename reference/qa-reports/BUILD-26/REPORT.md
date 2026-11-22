@@ -1,3 +1,43 @@
+# BUILD-26h (on t-build-26 from 27e20ebf9): tierBots 9/9 before cut 5, so the calibration was recommitted on the head (9/9); the lip traced on child N 14 (a knock-on, and its toy proves nothing); the suite and the 1-4 table still RUNNING at my box. Started 7:27 PM ET 11-21 (by `date`)
+Commits: **47b57a3e8** (calibration-main.jsonl recommitted; t-build-26 fast-forwarded to it after tierBots 9/9 on its own frozen tree; the
+same commit safe-kept first on t-build-26-wip-26h), this REPORT with b26h/ evidence. No bot code changed. The lip stays OFF.
+Frozen trees (D115, detached, node_modules linked): 2f188c552 (tierBots), 27e20ebf9 (suite + castBots whole; then the 1-4 x40 table),
+b746b9a87 (27e20ebf9 + b26g/lip.patch, local only), 47b57a3e8 (tierBots on the recommit).
+
+## EXACT NEXT STEP (base t-build-26 at this REPORT's commit; long runs in the BACKGROUND, frozen trees, at most two heavy)
+0. **The two runs that were RUNNING at my box, on 27e20ebf9 (bot code = 47b57a3e8's):** (a) the full CLAUDE.md suite plus
+   tools/inspect/castBots.test.ts whole, one process (TSC clean; at my box about 1250 passes, **0 fails**, not finished). Re-run it
+   (it dies with the container): any red that 2f188c552's suite would not have -> revert the commit that brought it, tell the lead.
+   (b) Step 1's table: `npx tsx tools/inspect/castBots.ts --stage 1-4 --seeds 1-40 --setting both --rows <f>` on 27e20ebf9 (C + A/B,
+   no lip: the same bot as 7b81e2ee2, which is not on the remote), then `python3 reference/qa-reports/BUILD-26/b26g/cmp.py
+   reference/qa-reports/BUILD-26/b26f/rows/r14-fe3d3d6ca.jsonl <f>`. No tier may drop; rows to the lead.
+1. **The lip (step 2): the toy first.** b26g/toylip.mts drops 31/40 with the fix AND 31/40 planted, on the lip tree and on the base
+   (b26h/lip-childN14.txt): it does not reach the lip, so it is not RED/GREEN (D96 unmet). Rewrite it so the lip line fires (log at
+   the lip's line, as b26h/lip-childN14.txt did) before any 1-4/2-6 rows for the lip. Then the second run for child N 14's cause.
+2. Then the packet's steps 3-4 (BUILD-26h.md): adult N 9 (x 508) and child E 37 (x 252) traced, two runs per cause; the kid N gains
+   checked as real finishes; BUILD-26g's steps 4-5 (2-6's moved rows on the FINAL bot, 2-1..2-5 rows, castBots.test.ts whole, the
+   relists, the yield).
+
+## Done
+- **Step 0 (i): tierBots 1-1 on 2f188c552 (before cut 5) is 9/9** (b26h/tierbots-2f188c552.txt). So cut 5's Progress rewind moved
+  child normal 7 and 18 (the red on c99352a65 and on 7b81e2ee2/27e20ebf9 is cut 5's, not C's or A/B's).
+- **The calibration recommitted (R-165.59/BOTS.md: any 1-1 change re-runs it):** `tierBots.ts --stage 1-1 --tiers
+  child,middle,expert --seeds 1-40 --setting both --calibrate` on frozen 27e20ebf9. Against the committed file, exactly 3 of 210 lines
+  move: child normal 7 (397.2 -> 395.7 s, putbacks 8 -> 5, rescues 1 -> 0), 18 (402.3 -> 398.8, putbacks 2 -> 1), and child
+  normal's calibration summary (rescues 5 -> 4; its pass false before and after: the table's verdicts do not move). **tierBots on the
+  recommitted tree 47b57a3e8: 9/9**, the other eight included (b26h/tierbots-47b57a3e8.txt). So it went up per the ruling.
+- **Step 2, the lip on child N 14** (b26h/lip-childN14.txt): without the lip it finishes with 0 rescues (216.4 s); with it 1 rescue
+  (220.4 s, x 634 on #47, fell back 8 times). The lip fires ONCE in the run (t 161.03, x 415: a step up onto #42, 40 px up, which
+  both runs land on, 8 px apart). After that the runs differ by draws and position: at x 890 the base takes the vine, the lip run
+  presses a jump past it, then stalls on #47 for 10 s -> rescue. **A knock-on, not a walk-off under a ledge: one run; the second run
+  for the cause is not done.** The lip's toy does not prove it (above).
+- **Not done in my box:** step 0 (ii)'s verdict, step 1's table, steps 3-4.
+
+## Learned
+- A toy that fails the same way planted and unplanted is not a toy: run its plant arm before trusting it (D96 says RED and GREEN; here
+  neither had been seen).
+- trace.ts is hard-wired to 2-6; b26h/traceS.ts.txt (copy it to tools/inspect/b26/traceS.ts) takes the stage from ST (ST=1-4), which 1-4's traces need.
+
 # BUILD-26g (on t-build-26 from c99352a65): C and A/B fixed in the bot and on t-build-26 (A/B reverted at 6567d3557 on tierBots 8/9, then BACK when the base gave the same 8/9), the lip written but OFF (b26g/lip.patch), x40 on 1-4 and 2-6. Started 7:00 PM ET 11-21 (by `date`)
 Commits on t-build-26: **9df2f0d11** (C), **9631000b9** (A/B, REVERTED by **6567d3557**), 436d98a36 and 51345740a (evidence), this REPORT. C went up before
 1-4's rows reached the lead: my miss, logged by the lead as **D117** (safe-keeping now goes on t-build-26-wip-<member>; the shared
