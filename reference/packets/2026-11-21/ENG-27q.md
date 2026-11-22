@@ -8,7 +8,7 @@ READ LEAN (D102): this packet; `git show origin/t-eng-27:reference/qa-reports/EN
 NEXT STEP); level.md rule 28; reference/qa-reports/R-165.59/BOTS.md's calibration paragraph; LAWS headlines; LESSONS D96, D102, D107, D109,
 D111-D119.
 **Run ReadNotifications at EVERY step boundary, at every push and between long tool rounds. Messages to the lead carry NO clock times (D109).**
-BASE: t-eng-27 at the head ENG-27p hands over (8b3f5869b or later; code 16698b8a1).
+BASE: t-eng-27 at 4df2d084c (code 16698b8a1; ENG-27p handed over with the lead's ruling as its EXACT NEXT STEP).
 0. D114 + D118: the full CLAUDE.md suite on your base, frozen, in the background NOW (ENG-27p's run on b62ab031c ended with its box). List
    every red against ENG-27n's verdict on b7a68a8bd (4,056 pass; the one known fail B's boardLog plant), by test; pacerLay's 9 are known
    (bisected to a0ab91d33). Work steps 1-2 beside it.
