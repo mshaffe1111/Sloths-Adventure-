@@ -48,6 +48,11 @@ export class FigPush {
     return !!this.target || t - this.lastAct < 4;
   }
 
+  /** a knock read off the engine (FieldView.knocked) on any frame, climbing or not: the knock's own frame takes him off the vine */
+  sawKnock(knocked: number | undefined, t: number): void {
+    if ((knocked ?? 0) > 0) this.lastKnock = t;
+  }
+
   /** a pod knocked him off in the last few seconds: a fall that is a hit, not a missed climb (the bot's fell-back count leaves it out) */
   knockedRecently(t: number): boolean {
     return t - this.lastKnock < 6;
