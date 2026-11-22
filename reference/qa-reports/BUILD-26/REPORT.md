@@ -1,3 +1,68 @@
+# BUILD-26l (on t-build-26-wip-26l from 1f42b4323 / 37fbb6519): NO SILENT CAP fixed and proven by a toy (RED on 1f42b4323, GREEN on 064ca6df6). 2-6 kid E 22 traced: NOT the rewind's pick but the bot's ride on W2's rope lift (#51): he paces on it and walks off its left end before its top. x40s and suites still running at my box. Started 9:03 PM ET 11-21 (by `date`)
+Commit on t-build-26-wip-26l (NOT on t-build-26, D117): **064ca6df6** the fix + the toy. Evidence b26l/.
+
+## EXACT NEXT STEP (base t-build-26-wip-26l at this REPORT's commit; long runs in the BACKGROUND with fitting timeouts, frozen trees, at most two heavy)
+1. **Read or re-run what was going at my box** (they die with my container): (a) packet step 0's suite on the CANDIDATE 9f8b81346
+   (`b26l/suite.sh.txt <frozen tree> <log dir>`, timeout 7,200,000 ms; at my box only tsc had returned, rc 0); (b) **1-4 x40 on 064ca6df6**
+   (`npx tsx tools/inspect/castBots.ts --stage 1-4 --seeds 1-40 --setting both --rows <f>` on a frozen worktree, timeout 5,400,000 ms), then
+   **2-6 x40 on 064ca6df6** the same way; (c) the suite on 064ca6df6. Compare row for row with b26k/rows/*-54cad4125.jsonl: expected,
+   adult N 39 / child N 10 / middle N 1, 36 end in a RESCUE with a stuck spot (no 1200 s row with no stuck entry), no other row moved,
+   tierBots 1-1 9/9. Rows to the lead first.
+2. **Then the real kid E 22 fault (traced below): the bot on a rising lift paces on it and walks off its end before its top.** First trace
+   why the steer flips (log dir, prog.target and clockRide's return per frame, t 104-110, b26l/lift.mts.txt adds the frame lines). Toy first (a lift rising from a floor to a ledge, the way up its column: RED = he walks off before its top), then the fix in the
+   lift ride (firsttimer.ts clockRide :3488 / the steer's dir off prog.target while he stands on a 'moving' lift: hold still on it, step off
+   at its top toward the way on), then both x40s again.
+3. BUILD-26k's bound finding (the child walking off the step-up toy's lip with no press at look 1.2/2.5): NOT traced. It is a walk-off
+   with no press like kid E 22's, but kid E 22's is off a lift's end from a flipping direction, not a lip read: likely a different cause.
+
+## Step 1: no silent cap (064ca6df6)
+**Cause (BUILD-26k's a39 trace):** `FigPush.busy` (figPush.ts:47) reset the no-progress clock every frame while it acted, with no bound, and
+`held` keeps the fall-back rewind off: a FigPush shuffle between two field vines ran to the 1200 s cap with no stuck spot.
+**Fix (general, no stage, seed or x):** figPush.ts `changedAt`: when the field last moved under his work (a fig bunch falling or gone, a gate
+sprung open). firsttimer.ts `figsWork`: the figs' work lets the clock off only while it gets somewhere: a field change, his best place
+further on, or within FIG_GRACE = 20 s of its stretch's start; after that the clock runs as at any stall (20 s more to the rescue).
+And a stall on a vine (held, not grounded) is now a NAMED stuck spot ('on a vine at x,y with no way on'): before, the describer read only
+the ground, so a stall there had no entry even when it was rescued.
+**Toy** (castBots.test.ts, 'a vine field's work that gets nowhere...'): he climbs a vine to a top with no way on, the figs' work stood in by
+one that is busy every frame and moves nothing (1-4 adult N 39's shuffle). **RED on 1f42b4323: rescues 0, stuck 0, ran to the 90 s cap.**
+**GREEN on 064ca6df6** (a rescue and a stuck spot); its second arm (no figs' work) rescues as before. RED run on a fresh tree of its own
+(1f42b4323 + only the toy file, D115).
+Not yet measured: the rows (step 1(b) above). FIG_GRACE 20 s is a guess at the longest real fig push with no fig freed; if a 1-4 row that
+passed now rescues inside a field, measure that push's longest headway gap and set the bound from it.
+
+## Step 2: 2-6 kid E 22 traced (candidate 9f8b81346 a pass, 139.7 s; fix 064ca6df6 (= 54cad4125's bot) rescued once, 199.1 s)
+b26l/rw.mts.txt logs every Progress.relocate; k22-cand.txt / k22-fix.txt (1 s positions + rewinds), *-jumps.txt (FT_TRACE), k22-fix-lift.txt.
+- **First difference: the rewind at t 41.0** (fallen to y 5785 at x 1312): the candidate takes route point 222 at 1115,6049, **264 px under
+  his floor**; the fix takes 243 at 879,5785, his own floor. Both walk left to the vine at x 88 and back up; the pick is the correct one
+  (a reachable point), and the runs only differ in timing from here. Second rewind (fix only, t 90.0, fallen at 581,4316): his own floor
+  again (573,4316), reachable.
+- **The miss: 2-6's rope lift #51 (a 'moving' platform rising about 60 px/s from y ~3460).** Fix run t 104-124: he stands on #51 and paces
+  left-right on it (x 602-675, reversing every ~0.6 s, his place cur 571-576 all the while; the route there is one straight slant
+  traced across the lift's rise, 432,3439 to 901,3206 (points 563-585): WHY his steer flips is NOT yet traced); at y 3246, before the lift's top, he walks off its LEFT end (vy +83 at x 566, no press) to #46 at
+  y 3460, four times, then the 20 s rescue at 692 (stuck 'a drop of 36 px ahead, water ahead, the way on is 123 px up'). **No jump
+  pressed from t 100.6 to 133.9.** The candidate hopped onto #51 (615,3460 -> 680,3364), rode it and hopped off its top to the right
+  (727,3159 -> 840,3068) first time.
+- **Verdict: not the floor-first pick.** The pick changed only his timing; the fault is the bot's ride on a rising lift (ENGINE-WORTHY,
+  firsttimer.ts clockRide :3488 and the steer's dir). **Second run per cause: none yet** (the only row in b26k/b26j/b26f rows with a stuck
+  spot there is kid E 22 itself); the lift toy is the next step's proof.
+- adult N 39's stall (BUILD-26k's a39) is FigPush's, fixed in step 1, not the pick. So **no rewind-pick correction is made**: neither
+  traced fault is the pick's.
+
+## Own misses (owned)
+- One trace pair (cand + fix, kid E 22's first run) ran as two shell jobs joined with '&' and 'wait' in one foreground command: D113's
+  'never a shell &'. Seconds long, but the rule is no exception; every later run was one at a time.
+
+## Learned (for the next builder)
+- A no-progress exemption needs a bound on headway, never 'while the helper acts': any helper that acts every frame can hold every clock
+  off forever. Proposed rule-28 note: every exemption from the stuck clock names what counts as headway, and a toy holds it busy with none.
+- castBots rows print only the first stuck spot's words; the rescue may be at a later one (kid E 22: the 1192 dip was not where he was
+  rescued; 692 was). Trace the rescue's x (rescueXs), not the first stuck line.
+
+## Polish check
+No screen changed (bot code only); no stills (rule 29: bots not green).
+LESSONS applied: D113 (missed once, owned), D115 (RED on its own fresh tree), D117 (wip branch only), D119 (no heredoc in the commit
+chain), D120 (no box ended on a question), D122 (timeouts sized), D96/D118 (suite re-run, not carried).
+
 # BUILD-26k (on t-build-26-wip-26k from 9f8b81346): child N 8 and 14 traced: a KNOCK-ON (the rule's one fire 30 s earlier moved when he met 1-4's fig pods; a pod knock, then the bot's rewind stranded him). The fix 54cad4125 clears them and adult N 9, and 1-4 has NO tier under cut 5. But it is NOT LANDABLE: 2-6 kid E 26 -> 25 (kid E 22 lost), and on 1-4 four rescued fails became silent 1200 s vine stalls. Toy 195db372c RED/GREEN. Started 8:46 PM ET 11-21 (by `date`)
 Commits on t-build-26-wip-26k (NOT on t-build-26, D117): **4185812c7** FigPush.sawKnock + Progress.relocate's `climb`; **54cad4125** relocate
 takes the way he can reach first; **195db372c** the toy (castBots.test.ts); this REPORT with b26k/ evidence.
