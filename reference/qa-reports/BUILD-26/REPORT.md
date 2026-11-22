@@ -5,6 +5,15 @@ Frozen trees (D115, node_modules linked from wt-suite): c00d2fd17 (the suite + c
 (towerRoute only) + the rule (the both-arm runs), a toy tree (the toy, the C revert, the child N traces with a local env-guarded print).
 
 ## EXACT NEXT STEP (base t-build-26-wip-26j at this REPORT's commit; long runs in the BACKGROUND, frozen trees, at most two heavy)
+0. **The lead's ruling (after the 1-4 rows): bound the rule by the jump's reach. DONE in 83018b453:** a step-up lip's late press becomes a
+   run press only once the lip is within reachJump / reachJumpHeld (src/game/physics.ts:477, :485; jumpFor's pick by setting) at the step's
+   height; out of it he walks on. (A plain 'fire only within reach' would drop E 37's own fix: the child decides 158 px out, a held single
+   reaches 119 at 40 px up.) Numbers: reachJump(40) 156, double 295; reachJumpHeld(40) 119, double 258. tsc clean; the toy still GREEN.
+   **On the bounded rule (C taken out locally) child N 8 and N 14 fail EXACTLY as before** (8: 866,4451 t 158.1; 14: 634,1923 t 192.7,
+   both 'fell back down 8 times'): the press point does not cost them. Next: (a) the toy's arms for the bound (a start inside and outside
+   reach: inside presses at once, outside walks on and presses within reach); (b) trace the two vine-top spots with and without the rule
+   (two runs per cause) to prove or kill 'knock-on'; (c) the bounded rule's x40 on 1-4 and 2-6 (with C reverted locally from 83018b453, or
+   rebuilt rule-first), then C on top and its x40. Rows to the lead each time, wip only.
 1. **Child Normal 8 and 14 on the rule (1-4, d6350d3e7): the tier drop to clear before anything lands.** Both fail 'fell back down from here
    8 times' far above the rule's own spot: N 14 the rule fired ONCE at t 161.03 x 415,3646 (lip 395, #42 155-395 @3606) and he failed at
    634,1923 at t 192.7; with stepUpAtLip planted to null the same run passes, 0 rescues (two runs). N 8: fired at t 134.17 x 728,5005 (lip
