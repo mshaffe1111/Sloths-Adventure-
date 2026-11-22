@@ -164,3 +164,70 @@ for (const difficulty of ['normal', 'easy'] as const) {
     assert.deepEqual(bad, [], 'the water fill shows past a wall\'s end face inside its bank');
   });
 }
+
+// ENG-WALL (R-165.380 (a), on the path the game draws: the lead's ruling, D96): the ground is baked into squares (protoArt paintTile, its
+// darkening from the eased ground line); the test hands the painter recording canvases and reads each square's own darkening.
+const CHUNK_SIDE = 256, CHUNK_EDGE = 2;
+class TileCtx extends ShadeCtx {
+  ox?: number; oy?: number;
+  setTransform(a: number | DOMMatrix, _b = 0, _c = 0, d = 1, e = 0, f = 0) {
+    if (typeof a === 'number' && a > 0) { this.ox = -e / a + CHUNK_EDGE; this.oy = -f / d + CHUNK_EDGE; }
+  }
+}
+class HostCtx extends ShadeCtx { getTransform() { return { a: 1, b: 0, c: 0, d: 1, e: 0, f: 0 }; } }
+function chunkDark(platforms: Platform[], view: { x0: number; x1: number; y0: number; y1: number }) {
+  const tiles: TileCtx[] = [];
+  const doc = document as unknown as { createElement: (t: string) => unknown };
+  const orig = doc.createElement;
+  doc.createElement = (t: string) => {
+    const r = new TileCtx();
+    tiles.push(r);
+    return { width: 0, height: 0, style: {}, getContext: () => r };
+  };
+  const host = new HostCtx();
+  try {
+    (protoArt as { releaseGroundChunks?: () => void }).releaseGroundChunks?.();
+    for (let i = 0; i < 60; i++) drawProtoScene(host as unknown as CanvasRenderingContext2D, platforms, [], [], 0, view, { brokeAt: new Map(), movedAt: new Map() }, () => { host.off = true; });
+  } finally { doc.createElement = orig; }
+  const squares = tiles.filter((t) => t.ox !== undefined && t.fills.length);
+  return {
+    squares: squares.length,
+    at: (x: number, y: number) => {
+      const t = squares.find((q) => x >= q.ox! && x < q.ox! + CHUNK_SIDE && y >= q.oy! && y < q.oy! + CHUNK_SIDE);
+      return 1 - (1 - (t ? darkAt(t, x, y) : 0)) * (1 - darkAt(host, x, y));
+    },
+  };
+}
+for (const difficulty of ['normal', 'easy'] as const) {
+  test(`the out-and-back toy (${difficulty}), the ground's squares: the soil below a lower floor darkens from that floor's top, no seam`, () => {
+    let walls = 0;
+    const bad: string[] = [];
+    for (const seed of [1, 2, 3]) {
+      const cfg = { ...towerCfg('2-97', 'sprint'), unlocked: true };
+      const st = w2Finish(buildGen2Stage({ config: cfg, kit: homeKit('2-97', POST_CODE), seed, difficulty }) as never, difficulty) as unknown as {
+        platforms: Platform[]; rivers: Array<{ x0: number; x1: number; surfaceY: number }>; gen2?: { tower?: { legs?: unknown } };
+      };
+      setKitWorld(2);
+      setGroundLook(undefined);
+      setGroundPaint(true);
+      setStacks(st.gen2?.tower?.legs ?? [], st.rivers);
+      const banks = st.platforms.filter(paintedBank);
+      for (const w of banks.filter((p) => banks.some((q) => q !== p && Math.abs(q.x + q.width - p.x) < 2 && q.y - p.y > 150))) {
+        const floor = banks.filter((q) => q !== w && Math.abs(q.x + q.width - w.x) < 2 && q.y - w.y > 150).sort((a, b) => a.y - b.y)[0];
+        const view = { x0: w.x - 300, x1: w.x + 500, y0: w.y - 200, y1: floor.y + 500 };
+        const c = chunkDark(st.platforms, view);
+        if (!c.squares) continue;
+        walls++;
+        let worst = 0, at = 0;
+        for (let y = floor.y + 40; y < view.y1 - 10; y += 20) {
+          const step = Math.abs(c.at(w.x - 6, y) - c.at(w.x + 6, y));
+          if (step > worst) { worst = step; at = y; }
+        }
+        if (worst > 0.04) bad.push(`seed ${seed}: the wall x ${Math.round(w.x)}-${Math.round(w.x + w.width)} over the floor at ${Math.round(floor.y)}: a shade step of ${worst.toFixed(2)} across the floor's end at y ${Math.round(at)}`);
+      }
+    }
+    setStacks(undefined);
+    assert.ok(walls >= 3, `the toy's ground squares were baked beside its walls (${walls})`);
+    assert.deepEqual(bad, [], 'a straight shade seam stands at a lower floor\'s end under a wall, in the ground\'s squares');
+  });
+}
