@@ -174,7 +174,7 @@ export function kitLib26(): WorldKit {
 export const SIGN_26: readonly string[] = ['TAKE YOUR', 'TIME'];
 
 type Finish26 = {
-  platforms: Platform[]; vines: Vine[]; exitTotemX: number;
+  platforms: Platform[]; vines: Vine[]; exitTotemX: number; config?: { levelHeight: number };
   proto?: { decor?: W2Decor[]; ladders?: boolean; bankWall?: { x0: number; x1: number; top: number; bottom: number } };
 };
 /** a street the village dresses: a solid, main, standing piece (never a bucket, a log, a spring) at least this wide */
@@ -193,7 +193,11 @@ export function finish26<T extends Finish26>(st: T): T {
   proto.ladders = true;
   const solids = st.platforms.filter((p) => p.type === 'solid' && !p.wheel);
   const top = Math.min(...solids.map((p) => p.y)), bottom = Math.max(...solids.map((p) => p.y));
-  proto.bankWall = { x0: Math.min(...solids.map((p) => p.x)) - 200, x1: Math.max(...solids.map((p) => p.x + p.width)) + 200, top: top + 40, bottom: bottom + 10 };
+  // (the face runs down past the stage's floor, not only to the lowest street: at the foot the view went on below it, and the backdrop
+  // showed there as a dark patch in a corner; one earth down to the bottom of every view, and the wall then hides the backdrop and the
+  // rivers behind it at the foot too: protoArt.ts earthWallCovers, ENG-26r, the lead's ruling (a))
+  const floor = Math.max(bottom + 10, (st.config?.levelHeight ?? 0) + 20);
+  proto.bankWall = { x0: Math.min(...solids.map((p) => p.x)) - 200, x1: Math.max(...solids.map((p) => p.x + p.width)) + 200, top: top + 40, bottom: floor };
   const sweeps = [...new Set(st.platforms.flatMap((p) => (p.wheel ? [p.wheel.w as Wheel] : [])))].map(sweepBox);
   const crest = solids.filter((p) => p.x <= st.exitTotemX && p.x + p.width >= st.exitTotemX).sort((a, b) => a.y - b.y)[0];
   const clear = (p: Platform, x: number, half: number) =>
