@@ -1,3 +1,22 @@
+# BUILD-26o (on t-build-26-wip-26o from a07ed1bd7): the --proven relists (1-4 first: ENG-26r had not landed), the yields, rule 28's rest on 2-6. Started 4:29 PM ET 11-22 (by `date`)
+
+## EXACT NEXT STEP
+1. **Two castBots --proven runs are RUNNING** on the frozen worktree /home/user/f26o (a07ed1bd7, `chattr -R +i src tools`; never touch it
+   while they read it): 1-4 and 2-6, `--seeds 1-100` (the 100 LISTED rolls, variant n = the list's n-th seed), every bot, both settings,
+   1-4 `--par 3`, 2-6 `--par 2`, timeout 7,200,000 ms each. Outputs /home/user/x40/b26o/: cast14.txt / cast26.txt (summary, the
+   `proven: K of 100` line, each `seed N out:` line, rc and end time), rows14.jsonl / rows26.jsonl, proven14.json / proven26.json (VARIANT
+   numbers, not gen2 seeds: map each through the list file's `seeds[n-1]` before any `seedlist --merge`).
+2. **The yield** = K/100 per stage. Under about 60%: the cause (which bot, which section is short, from the `out:` lines and the rows'
+   times and stuck spots) and a plan to the lead; NO content change without the lead's GO.
+3. **The write is BLOCKED on one question to the lead (sent):** SEED_LIST_MIN is 100 and `--check` fails under it, so dropping the rolls
+   that fail leaves each list short. Plan A (proposed): keep the passing listed seeds in old order, fill to 100 with NEW gen2 seeds swept
+   past the list's top seed and bot-proven the same way on test-side rolls (a scratch worktree where the stage's provenIndex line is
+   removed, so the layout variant IS the gen2 seed: stageGenerator.ts listedRoll path, seedListReady false), appended at the end. Plan B:
+   yields only, the drop/fill decided on the numbers. Act on the lead's ruling only.
+4. 2-6's list is written ONLY on top of ENG-26r's landed head (rebase, no force); seedlist --check on 1-1, 1-4, 2-6 on that merged head.
+5. Rule 28 on 2-6's flips (kid N 32, 34; the 'water ahead / in a dip' 7; the 19 gains as real finishes): NOT started (at most two heavy
+   runs; it starts when one of the castBots runs ends).
+
 # BUILD-26n (on t-build-26-wip-26n from 65fd9bd9e): the FINAL CANDIDATE eae5b1ff7 (fix 1 FigPush reach + fix 3 the kid/adult wheel brake), NO tier drop vs cut 5 RE-JUDGED: 1-4 every tier 40/40; 2-6 adult E 31, adult N 36, kid E 26, kid N 33, the rest 40. Rows with the lead; suites running; rule 28 on the dodge done (one cause, tested), on 2-6's 31 fix-3 flips NOT yet. Started 2:07 PM ET 11-22 (by `date`)
 Commits on t-build-26-wip-26n (NOT on t-build-26, D117): **7d1da8535** toy (RED on 65fd9bd9e), **41b5b7a5a** fix 1 (GREEN), **c6f6e3d52**
 fix 1 traces, **eae5b1ff7** fix 3 (wheel toy GREEN) = THE FINAL CANDIDATE, plus this REPORT and b26n/rows.
