@@ -95,3 +95,9 @@ Every packet says: **a run_in_background call sets `timeout` to fit the run (the
 toward the at-most-TWO heavy runs (D123, 11-22):** a longer timeout costs nothing, and a 'fitting' guess fails under load: ENG-26r gave
 its base suite 40 minutes while it ran beside a full drawcheck and lockall's base (three heavy runs), and the slowed unit step was stopped
 at 3,564 results with no verdict.
+
+## A stage aimed at a release measures its ship verdict FIRST (D125, 11-22)
+Step 1 of the first packet that aims a stage at a release: **its castBots --proven yield on its current head (every bot, both settings,
+every listed roll; about 3 minutes a run), sent to the lead before any polish, draw or wall work.** Under the 60 bar, the lead re-plans
+(the cause first, or the stage moves to a later release) before more is spent. 11-22: 2-6's yield was first measured at 4:34 PM on
+release day, 29 of 100, after two days of work aimed at shipping it.
