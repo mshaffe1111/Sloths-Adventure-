@@ -1,3 +1,66 @@
+# BUILD-26j (on t-build-26-wip-26j from c00d2fd17): the step-up rule found and proven both arms (one shape: a thin bough a hop up that STARTS at the lip; a late press walks him off under it); its toy RED on c00d2fd17, GREEN on the rule; 1-4 x40 on the rule alone: child N 39 -> 37 (a tier drop: NOT landable as is); C re-applied on top (castBots.test.ts 19/19); the suite on c00d2fd17 and 2-6 x40 RUNNING at my box. Started 8:22 PM ET 11-21 (by `date`)
+Commits on t-build-26-wip-26j (NOT on t-build-26, D117): **d6350d3e7** the rule (firsttimer.ts stepUpAtLip + LIP_STEP), **f348115a2** its toy
+(castBots.test.ts), **f4eab7721** C re-applied (git revert 9c2ce855d), this REPORT with b26j/ evidence.
+Frozen trees (D115, node_modules linked from wt-suite): c00d2fd17 (the suite + castBots whole), d6350d3e7 (1-4 then 2-6 x40), c00d2fd17 + C
+(towerRoute only) + the rule (the both-arm runs), a toy tree (the toy, the C revert, the child N traces with a local env-guarded print).
+
+## EXACT NEXT STEP (base t-build-26-wip-26j at this REPORT's commit; long runs in the BACKGROUND, frozen trees, at most two heavy)
+1. **Child Normal 8 and 14 on the rule (1-4, d6350d3e7): the tier drop to clear before anything lands.** Both fail 'fell back down from here
+   8 times' far above the rule's own spot: N 14 the rule fired ONCE at t 161.03 x 415,3646 (lip 395, #42 155-395 @3606) and he failed at
+   634,1923 at t 192.7; with stepUpAtLip planted to null the same run passes, 0 rescues (two runs). N 8: fired at t 134.17 x 728,5005 (lip
+   955, #38 955-1175 @4965: 227 px before the lip, the child's aim) and he failed at 866,4451 at t 158.1. Trace each failure spot (the
+   frames there with and without the rule, b26j/n14.mts.txt, `B26J=1` prints the fire) before calling them knock-ons (rule 22: two runs per
+   cause). Watch N 8: a 'run' press from 227 px out onto a 40 px step is the one place the rule changes where he jumps from, not only whether.
+2. **2-6 x40 on d6350d3e7** (RUNNING at my box, rows to scratchpad; re-run if the container died): compare against cut 5
+   (b26f/rows/r26-fe3d3d6ca.jsonl), both settings, no tier drop. Rows to the lead.
+3. **The suite on c00d2fd17** (RUNNING: tsc 0; unit tests 1247 run, none red at my box): re-run if it died
+   (scratchpad suite.sh: the CLAUDE.md list + castBots.test.ts whole + tierBots). KNOWN: tower.test 'a sealed piece...', R-165.312's todo.
+4. **Then C on top (f4eab7721): 1-4 and 2-6 x40,** rows to the lead. Child E 37 on c00d2fd17 + C + the rule: shrine, 0 rescues (one run;
+   the x40 confirms it); C's adult/kid/middle E 10/37 should come back (on the base they stick at x 607 'in a dip 281 px deep', C's spot).
+5. The gains as real finishes (rule 28) and the relists still WAIT (packet steps 3-4).
+
+## What the rule is, and why lip.patch failed both ways
+- **Child E 37 under C is NOT the rise read.** Traced frame by frame on c00d2fd17 + C (b26j/c37-lip.txt): from a stand at 544 he walks left
+  with left held and runs off #44's lip at 360 with NO press (airborne at x 343, vy +83), under #45 (72-360 @2644, a thin bough 40 px up
+  that starts AT the lip), and falls back 8 times at x 252. Middle E 10's s14:b -> s14:c (520-960 @5045 -> 960-1208 @5005) is the same shape.
+  So the lead's two branches are one: the floor goes on a hop UP from the lip with no face to walk into.
+- An env-guarded print at the edge read (local only) at x 518: tierEdge how **'late'**, ahead false, across true, drops false: the late
+  press is a walk-off. lip.patch's ledgeJustPast measured its 80 px from HIM, but he decides `look` (166) px before the lip, so #45's end
+  was 158 px off and it never fired. The old toylip's 31/40 drops came off its top ledge's far end past the route's end (x 1750-1880), not
+  the lip: a toy artifact (b26j/toy.mts.txt prints where he left the floor).
+- **The rule (d6350d3e7):** at a tier edge, a 'late' becomes 'run' where `stepUpAtLip` finds a ledge whose near end is within
+  LIP_STEP.seam 5 px of the LIP (jumpFor's own 'a piece that starts at the edge itself carries the same ground on', d >= 5) and whose top is
+  over LIP_STEP.low 30 px (intend's tower-stop seam, q.y < p.y - 30) and under STAIR_HOP 100 (firsttimer.ts:1030) up. Beside the face rule
+  just above it: a step up with no face is still a step up.
+- **Both arms on the real run** (c00d2fd17 + C + the rule): child E 37 shrine, 0 rescues; stepUpAtLip planted to null: 'fell back down
+  from here 8 times' x 252, rescued.
+- **The toy** (castBots.test.ts, f348115a2): 1-4 E 37's lip (y less 1684), every edge drawn late unless a run, child Easy rolls 1-6: the
+  rule makes him leave the lip with a press in all 6; planted, he walks off in 4 of 6 (asserted >= 3). **RED on c00d2fd17's firsttimer.ts**
+  ('roll 2: he left the lip without a press (vy 83.3)'), **GREEN on d6350d3e7**. In the scratch run (b26j/toystep.mts.txt) middle roll 4
+  walks off even with the rule: not traced.
+
+## 1-4 x40 on the rule alone (d6350d3e7; b26j/rows/r14-d6350d3e7.jsonl, b26j/tab14-d6350d3e7.txt)
+| tier | cut 5 | 9c2ce855d | rule | lost vs cut 5 | gained vs 9c2ce855d |
+|---|---|---|---|---|---|
+| adult E | 36 | 38 | 38 | - | - |
+| adult N | 37 | 37 | 37 | 9 (A/B's, known) | - |
+| child E | 36 | 36 | **39** | - | 6, 23, 24 |
+| child N | 39 | 39 | **37** | **8, 14** | - |
+| expert N | 39 | 39 | 40 | - | 8 |
+| kid E | 32 | 38 | 38 | - | - |
+| kid N | 19 | 40 | 40 | - | - |
+| middle E | 37 | 37 | 39 | - | 19, 37 |
+| middle N | 36 | 36 | 37 | - | 15 |
+**A tier drop (child N 39 -> 37): the rule does not land until step 1 clears it.** +7 gained, none checked as real finishes yet (rule 28).
+
+## Polish check / Learned / proposed rules
+- Polish check: bot tooling only, no screen changed; every claim above is from a run or a trace in b26j/.
+- Learned: measure a lip rule from the LIP, not from him: his press comes `look` px out. And a toy's drop count is no proof until it
+  prints WHERE he left the floor (the old toy's drops were off its far end). Proposed for level.md rule 21: a toy prints the leave point
+  of every failing roll, and its assert is on the act the rule changes (here: the press at the lip), not a lowest-y far downstream.
+- Lessons applied: frozen trees per run (D115), rows to the lead first and wip only (D117), the suite on the head (D118), both arms (rule 21),
+  a number from its source (D116), no clock times to the lead (D109), background runs only (D113).
+
 # BUILD-26i (on t-build-26 from 43c4c6776): C REVERTED as ruled (9c2ce855d; no narrower rule can keep both rows); the lead ACCEPTED cut 5 + A/B; child E 37 and adult N 9 both traced to knock-ons downstream of each commit's own spot (two runs per cause); the 1-4 x40 table on 9c2ce855d DONE: no tier drops against cut 5 (lost only adult N 9, A/B's); the clean suite on 43c4c6776 RUNNING at my box. Started 7:51 PM ET 11-21 (by `date`)
 Commits: **9c2ce855d** (git revert 9df2f0d11: towerRoute.ts back to the strict span; C's toy removed from castBots.test.ts, A/B's toy kept;
 tsc clean on it), this REPORT with b26i/ evidence. A/B stays. No other bot code changed.

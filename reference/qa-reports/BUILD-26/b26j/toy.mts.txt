@@ -1,0 +1,30 @@
+import { FirstTimerRun, FT_MIDDLE_EASY } from '../tools/inspect/firsttimer.ts';
+const plats = [
+  { id: 1, x: 520, y: 1045, width: 440, height: 24, type: 'solid' },
+  { id: 2, x: 960, y: 1005, width: 248, height: 24, type: 'solid' },
+  { id: 3, x: 1100, y: 705, width: 400, height: 24, type: 'solid' },
+  { id: 9, x: 0, y: 1365, width: 2000, height: 100, type: 'solid' },
+];
+const vine = { id: 41, x: 1190, topY: 705, bottomY: 1005, swaySpeed: 0, swayPhase: 0, vineType: 'tree_climb' };
+const route = [
+  ...Array.from({ length: 29 }, (_, i) => ({ x: 517 + i * 24, y: 1045 - (40 * i) / 28 })),
+  ...Array.from({ length: 13 }, (_, i) => ({ x: 1190, y: 1005 - i * 24 })),
+  ...Array.from({ length: 13 }, (_, i) => ({ x: 1190 + i * 24, y: 705 })),
+];
+const N = Number(process.argv[2] ?? 40), plantArm = process.argv[3] === 'plant';
+let drops = 0; const res: string[] = [];
+for (let seed = 1; seed <= N; seed++) {
+  let lo = 0; let left: string | null = null; let wasG = true; let first: string | null = null;
+  const run: any = new FirstTimerRun('1-1', seed, { ...FT_MIDDLE_EASY, look: 0 }, { route, cap: 10, rescueAfter: 100, onFrame: (s: any) => {
+    lo = Math.max(lo, s.p.y);
+    if (wasG && !s.p.grounded && !left) left = `left floor x ${Math.round(s.p.x)} y ${Math.round(s.p.y)} vy ${Math.round(s.p.vy)} t ${s.t?.toFixed?.(2)}`;
+    if (!first && s.p.y > 1100) first = `below at x ${Math.round(s.p.x)}`;
+    wasG = s.p.grounded; } });
+  run.sim.bare(plats as never, [vine as never]);
+  run.sim.stand(560, 1045); run.sim.p.facing = 1; run.onTower = true;
+  if (plantArm) run.stepUpAt = () => null;
+  run.prog.relocate(run.sim.p); run.play();
+  if (lo > 1300) drops++;
+  res.push(`seed ${seed} lo ${Math.round(lo)} ${left} ${first ?? ''}`);
+}
+console.log(res.join('\n')); console.log(`${plantArm ? 'PLANT' : 'arm'} drops ${drops}/${N}`);
