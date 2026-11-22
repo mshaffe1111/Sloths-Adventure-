@@ -1,6 +1,17 @@
 # ENG-27p REPORT (start 7:04 PM ET by `date`; handed over at the D111 box; base df0cd9638 (code d2408e867); branch t-eng-27 head 16698b8a1 (code fb6bd156e + a type-only fix) + this REPORT)
 ## EXACT NEXT STEP (ENG-27q, from t-eng-27 head; read only this section, D90)
-**FIRST: the lead's ruling on pacerLay (asked, priority next).** pacerLay.test is RED 9/19 on the head fb6bd156e AND on d2408e867 AND on
+**STEP 0: the full CLAUDE.md suite on the head, frozen, in the BACKGROUND while you work (the lead, D118; mine was still running at the box
+in ENG-27p's container, so its result is lost to you).**
+**THE LEAD'S RULING (given at ENG-27p's box, on the table below):** (1) **The one-draw hold is a BOT MISREAD** (a tester re-aims every
+moment; the 0.5 s is a bare literal with no source, D116). Fix it: the gates (race ~3120, upstream ~3164, edgeWait ~3056, the edge stand
+~2766 on the head) re-draw the hop at a cadence WITH A SOURCE: the tier's calibrated decision or reaction time (R-165.59) if one exists, else
+EACH FRAME with the thumb's own lag. Say which, and why. Rule 28 still holds: a planted test first, hopJudged GREEN 4/4. (2) **The 2-21% land
+rates are real river difficulty;** the race's design call is the lead's and WAITS until (1) is fixed and three things are measured: (a) how
+much of the race gate's 38.7 s he would ride the log anyway; (b) why every race site shows 72 px; (c) how many of base b7a68a8bd's 6 lost
+lives on home Normal 1 fell on the race leg and what each cost in race time (under Option A a fall keeps his margin: does the race reward a
+reckless hop? base losses: t 13.9 x 15147, 26.5 x 15235, 88.7 x 13473, 110.2 x 10103, 121.1 x 8787, 149.1 x 4523; p/lossprobe-n1-27p.txt).
+**NO race retune before that.** Then pacerLay and the race table again, and the ORDER below.
+**Background to the ruling: pacerLay.** pacerLay.test is RED 9/19 on the head fb6bd156e AND on d2408e867 AND on
 a0ab91d33, the same 9 tests; 18/19 on b7a68a8bd (only B's plant), all four run here on frozen trees (p/pacerLay-*.txt). **The middle player
 stopped winning the race at a0ab91d33** (ENG-27n: the lead's ruling built, the drawn-hop gates on edgeWait, upstream and race: pressed only
 when the drawn hop lands, else he stands). Home middle Normal 1/2/3: 130 / 129.5 / 131 s on a0ab91d33 (boat 93.9 / 92.4 / 92.1); Easy 1/3
