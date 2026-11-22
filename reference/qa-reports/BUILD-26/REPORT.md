@@ -1,4 +1,4 @@
-# BUILD-26j (on t-build-26-wip-26j from c00d2fd17): the step-up rule found and proven both arms (one shape: a thin bough a hop up that STARTS at the lip; a late press walks him off under it); its toy RED on c00d2fd17, GREEN on the rule; 1-4 x40 on the rule alone: child N 39 -> 37 (a tier drop: NOT landable as is); C re-applied on top (castBots.test.ts 19/19); the suite on c00d2fd17 and 2-6 x40 RUNNING at my box. Started 8:22 PM ET 11-21 (by `date`)
+# BUILD-26j (on t-build-26-wip-26j from c00d2fd17): the step-up rule found and proven both arms (one shape: a thin bough a hop up that STARTS at the lip; a late press walks him off under it); its toy RED on c00d2fd17, GREEN on the rule; 1-4 x40 on the rule alone: child N 39 -> 37 (a tier drop: NOT landable as is); C re-applied on top (castBots.test.ts 19/19); 2-6 x40 on the rule: identical to cut 5 in every tier; the suite on c00d2fd17 RUNNING at my box. Started 8:22 PM ET 11-21 (by `date`)
 Commits on t-build-26-wip-26j (NOT on t-build-26, D117): **d6350d3e7** the rule (firsttimer.ts stepUpAtLip + LIP_STEP), **f348115a2** its toy
 (castBots.test.ts), **f4eab7721** C re-applied (git revert 9c2ce855d), this REPORT with b26j/ evidence.
 Frozen trees (D115, node_modules linked from wt-suite): c00d2fd17 (the suite + castBots whole), d6350d3e7 (1-4 then 2-6 x40), c00d2fd17 + C
@@ -11,8 +11,8 @@ Frozen trees (D115, node_modules linked from wt-suite): c00d2fd17 (the suite + c
    955, #38 955-1175 @4965: 227 px before the lip, the child's aim) and he failed at 866,4451 at t 158.1. Trace each failure spot (the
    frames there with and without the rule, b26j/n14.mts.txt, `B26J=1` prints the fire) before calling them knock-ons (rule 22: two runs per
    cause). Watch N 8: a 'run' press from 227 px out onto a 40 px step is the one place the rule changes where he jumps from, not only whether.
-2. **2-6 x40 on d6350d3e7** (RUNNING at my box, rows to scratchpad; re-run if the container died): compare against cut 5
-   (b26f/rows/r26-fe3d3d6ca.jsonl), both settings, no tier drop. Rows to the lead.
+2. **2-6 x40 on d6350d3e7: DONE** (b26j/rows/r26-d6350d3e7.jsonl, b26j/tab26-d6350d3e7.txt): against cut 5 (b26f/rows/r26-fe3d3d6ca.jsonl)
+   NO row moved in any tier (adult E 29, adult N 33, child E/N 40, expert 40, kid E 26, kid N 31, middle E/N 40). Rows sent to the lead.
 3. **The suite on c00d2fd17** (RUNNING: tsc 0; unit tests 1247 run, none red at my box): re-run if it died
    (scratchpad suite.sh: the CLAUDE.md list + castBots.test.ts whole + tierBots). KNOWN: tower.test 'a sealed piece...', R-165.312's todo.
 4. **Then C on top (f4eab7721): 1-4 and 2-6 x40,** rows to the lead. Child E 37 on c00d2fd17 + C + the rule: shrine, 0 rescues (one run;
