@@ -164,6 +164,50 @@ test("the tower route takes a turn's vine a hand's reach past the arrival straig
   assert.equal(way(-100).findIndex((p) => p.x === 481), -1, 'a vine inside the span still goes straight to it');
 });
 
+// (BUILD-26g, 1-4 A/B, kid Normal 7: a hop off r1 fell short onto the floor 80 px under the raised row; the tower's "stopped first"
+// meant {} but KID and ADULT's held steer re-armed its late lift-off every frame (thumbify, R-165.59), so he ran on under the row and
+// off the floor's end, 281 px down, rescued. A 1-4 s3 copy, y less 9000: the stop is a lift the thumb makes once. Planted: the stop
+// is not meant (the base, c99352a65): he runs off the end on every roll)
+test('under a raised row on a tower, KID stops (one late lift-off), hops up and never runs off the floor under it', async () => {
+  const { FirstTimerRun, FT_KID, FT_ADULT } = await import('./firsttimer.ts');
+  const plats = [
+    { id: 1, x: 364, y: 987, width: 110, height: 24, type: 'solid' },
+    { id: 2, x: 634, y: 987, width: 110, height: 24, type: 'solid' },
+    { id: 3, x: 744, y: 987, width: 110, height: 24, type: 'solid' },
+    { id: 4, x: 854, y: 987, width: 200, height: 24, type: 'solid' },
+    { id: 5, x: 334, y: 1067, width: 640, height: 24, type: 'solid' },
+    { id: 6, x: 900, y: 706, width: 500, height: 24, type: 'solid' },
+    { id: 9, x: 0, y: 1348, width: 2000, height: 100, type: 'solid' },
+  ];
+  const vine = { id: 5, x: 1036, topY: 706, bottomY: 987, swaySpeed: 0, swayPhase: 0, vineType: 'tree_climb' };
+  const route = [
+    ...Array.from({ length: 27 }, (_, i) => ({ x: 400 + i * 24, y: 987 })),
+    ...Array.from({ length: 12 }, (_, i) => ({ x: 1036, y: 987 - i * 24 })),
+    ...Array.from({ length: 14 }, (_, i) => ({ x: 1036 + i * 24, y: 706 })),
+  ];
+  const low = (who: typeof FT_KID, seed: number, plant: boolean) => {
+    let lo = 0;
+    const run = new FirstTimerRun('1-1', seed, { ...who, look: 0 }, { route, cap: 14, rescueAfter: 100, onFrame: (s: { p: { y: number } }) => { lo = Math.max(lo, s.p.y); } });
+    run.sim.bare(plats as never, [vine as never]);
+    // (landed short on the floor under r2, running right with the steer held, as at 15.87 s in eng26o/trace-a-b.txt)
+    run.sim.stand(687, 1067);
+    run.sim.p.vx = 268;
+    run.sim.p.facing = 1;
+    const r = run as unknown as { lastSteer: number; onTower: boolean };
+    r.lastSteer = 1;
+    r.onTower = true;
+    if (plant) Object.defineProperty(run, 'stopMeant', { get: () => false, set: () => undefined });
+    run.prog.relocate(run.sim.p);
+    run.play();
+    return Math.round(lo);
+  };
+  for (const seed of [1, 2, 3]) {
+    assert.ok(low(FT_KID, seed, false) < 1100, `kid roll ${seed} ran off the floor under the row (lowest y ${low(FT_KID, seed, false)})`);
+    assert.ok(low(FT_ADULT, seed, false) < 1100, `adult roll ${seed} ran off the floor under the row`);
+    assert.ok(low(FT_KID, seed, true) > 1300, `PLANT: with the stop not meant the kid (roll ${seed}) still stays up (lowest y ${low(FT_KID, seed, true)})`);
+  }
+});
+
 // (STAGE-RULES.md:77: "at least 2 minutes for a quick player, on every roll ... Climbs count 20 s short". castBots held every stage to a
 //  flat 120 s, so 1-4 (a climb) failed the rule's own 100 s: the floor is read from eraRoll.ts RULES and isClimb, R-165.206, D19)
 test('the length floor is the stage rule\'s: a climb at 105 s holds, a run stage at 105 s does not (STAGE-RULES.md:77)', () => {
