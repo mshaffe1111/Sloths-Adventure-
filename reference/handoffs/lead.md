@@ -88,6 +88,18 @@ code-checked plan (ENGINE-NEEDS.md); "add a level" in one step; every lead keeps
   The plan doc: reference/plans/ENGINE-NEEDS.md (Architect session_01FhBbYLVSn59vpCSU4ruo6P, t-engine-needs).
 - **Hugging Face is the lead's call** ($63.53 final budget 11-12; ~$10 reserve; every job in HF-SPEND.md).
 
+## RIGHT NOW (11-22 wrap, written 5:35 PM ET by `date`; this block wins over everything below; refreshed at check-ins, R-165.242)
+
+**Live:** 0.10.2 "Walk them home" (release 3; PR #78 merged by Matt 4:43 PM ET, main cdffdc627; publish run 45073660336 + Pages 207 SUCCESS; APK v0.10.2-47; retro reference/qa-reports/REL-0.10.2/RETRO.md). EnK5 v268 = the same code. **Lead branch:** ccr-ea739a2f-dfcee4 (+ ccr-e71c7674-i0i93u). **No member running; no trigger armed.**
+**WEEKLY RATE LIMIT IN WARNING** (seven_day 'allowed_warning', resets about Tuesday 11-24 morning ET). **No release 4 work until the reset or Matt's word** (the wrap question settles Monday).
+**RELEASE 4 (2-6 + t-build-26's bot work + 2-7 + R-165.380):**
+- **t-build-26 = 9e1e30b27** (ENG-26r's 2-6 draw fix landed, a fast-forward: gradCache.ts, the bank wall culls the covered backdrop and rivers on 2-6 only, the wall's bottom extended; full drawcheck PASS, 2-6 spots 0-2 at about a third of the drawImage; lockall 101/102 (2-6 proto.bankWall, intended); suite green; roadmapcheck not run in the shallow clone, inputs identical: release 4's integration runs it).
+- **2-6 does not ship until its castBots --proven yield clears 60 honestly:** 29 of 100 on a07ed1bd7 (BUILD-26o, t-build-26-wip-26o ae2fb63bb, rows in reference/qa-reports/BUILD-26/b26o/). Next, in order: R-165.390 (the climb loop: the jump left near x 1080-1180 at y about 3962 falls short; a level fact or a bot aiming fault, a toy RED on a07ed1bd7), then R-165.393 cause B (the adult on Easy stuck in a wheel bucket about 20 s: rescuelog on cut 5 064ca6df6, seeds 11 and 45), cause C (a 379 px dip near the start), then 2-6's floor (the fast adult on Normal about 99 s: a DESIGN question for the lead), then the list (filled IN PLACE, written by seedlist.ts).
+- **1-4:** yield 97 of 100 under t-build-26's bots (slots 66, 67, 88); its live list unchanged; the 3-slot fill in place when t-build-26 ships.
+- **2-7 and R-165.380:** paused as in the 11-21 block below (t-eng-27-wip-27u a069e911c; t-eng-wall 3deff4097 / t-eng-wall-c2 b04579a95).
+**Waiting on Matt (one question at a time):** what Monday does under the weekly limit; R-165.395 (his Claude Docs handoff doc names nothing after 0.9.4: bring it up to date or retire it).
+**Lessons today:** D123 (every suite and drawcheck gets 7200000 ms; the heavy runs that count toward two are named), D124 (the lead's 4b arithmetic: sum per list by the candidate's shard plan), D125 (a stage aimed at a release measures its --proven yield FIRST); D115 made a check (chattr -R +i src tools, then chattr -i src/game/gen2/proven). New rows: R-165.391 (2-6 soil shade blocks), .392 (release 3, done), .393 (the relists), .394 (a CI-time script), .395 (the handoff doc), .396 (kbdcheck writes tracked screenshots).
+
 ## RIGHT NOW (11-21 nightly wrap, written 9:39 PM ET by `date`; this block wins over everything below; refreshed at check-ins, R-165.242)
 
 **Live:** 0.10.1 (release 2; PR #77 merged by Matt, 2a87f4cda). **Lead branch:** ccr-ea739a2f-dfcee4 (+ ccr-e71c7674-i0i93u). **Tonight ended 10:15 PM ET (Matt, 9:28 PM).**
