@@ -91,3 +91,7 @@ Every packet says: **a question to the lead never ends your box: send it, then k
 
 ## Every background run sets its timeout to fit (D122, 11-21)
 Every packet says: **a run_in_background call sets `timeout` to fit the run (the default stops it at 30 minutes; the most is 2 hours, 7200000 ms), and a chain that may pass 2 hours is split into runs, each with its own verdict line.** On 11-21 ENG-26p's suite stopped at the 30-minute default with 73 files unreported, and INT-R3's FULL SET chain stopped at the 2-hour limit inside the unit suite, its last gate: both runs had to be redone.
+**Every suite and every drawcheck run gets the MOST, `timeout: 7200000`, and every suite, drawcheck, lockall, castBots and stills run counts
+toward the at-most-TWO heavy runs (D123, 11-22):** a longer timeout costs nothing, and a 'fitting' guess fails under load: ENG-26r gave
+its base suite 40 minutes while it ran beside a full drawcheck and lockall's base (three heavy runs), and the slowed unit step was stopped
+at 3,564 results with no verdict.
