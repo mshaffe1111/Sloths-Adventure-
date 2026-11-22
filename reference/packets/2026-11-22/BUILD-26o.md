@@ -17,6 +17,9 @@ BASE: t-build-26 at a07ed1bd7 (BUILD-26n landed: the final bot candidate eae5b1f
    content change without the lead's GO.
 2. **1-4 relisted ONCE** the same way (1-4 is SHIPPED: its list's change to the lead with the old and new lists side by side).
 3. `npx tsx tools/engine/seedlist.ts <stage> --check` on 1-4 and 2-6 (and 1-1, as CI does): every listed seed passes.
+   ORDER (lead, 11-22 check-in #6): if ENG-26r has not landed when you start, do 1-4 first. ENG-26r's change moves 2-6's bank wall
+   (w2Arc26.ts finish26, drawing only, but it is a stage part seedList.ts stageParts hashes), so the 2-6 list is LANDED on top of ENG-26r's
+   head (rebase, no force) and step 3's --check runs on that merged head, never on a head without it.
 4. Beside them (it gates the RELEASE, not the relists): rule 28's rest on 2-6's 31 flips: kid N 32 and 34 (expected the same old climb loop,
    R-165.390), the 'water ahead / in a dip' 7 (two runs), and the 19 gains checked as real finishes.
 5. Send the lead: the landed head, both lists' hashes and yields, the check, the rule-28 table. The lead then tells INT-R4 t-build-26 is final.
