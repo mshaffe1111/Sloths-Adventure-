@@ -3,18 +3,19 @@
 Packet: reference/packets/2026-11-21/INT-R3.md. Integration, a fresh member. NO PR, no version bump.
 
 ## EXACT NEXT STEP
-THE FULL SET is still running (one chain, one gate at a time) on the frozen tree /home/user/frz-b = e5eecab9a; its lines go to the
-scratchpad's fullset.txt (the scripts are copied to reference/qa-reports/INT-R3/tools/). When it wakes me (or the next member):
-1. Read fullset.txt; copy each new line into the gate table below with its PASS/FAIL words.
-2. castbots23: `python3 -I tools/castcmp.py reference/qa-reports/BUILD-23/castbots23e-rows.jsonl <scratchpad>/cast23-rows.jsonl` (row for row
-   vs BUILD-23e, 360 rows: 9 bot x setting x 40 seeds); any difference is named to the lead.
-3. After the chain ends (never beside it): `node tools/slotconfirm.mjs /home/user/frz-b <out>` with run_in_background (its own vite on
-   5181, UI-372's shooter, Normal + Easy): every 'gone' line must read duck:open and capybara:open (not spooked).
-4. funcheck's FAIL is ruled debt: at the FINAL integration re-run it and diff flag for flag vs INT-14's table (`tools/fundiff.sh <funcheck output> <repo>`: stage|setting|rule|layouts|known); 22/22 identical or it is a red.
-5. roadmapcheck's red is RULED (R-165.386, carried at the final integration with t-art-next 8feca1123): no fix on e5eecab9a.
-6. If this container is gone: `git worktree add --detach <dir> e5eecab9a`, `npm ci --legacy-peer-deps`, `git fetch --unshallow origin`, then
-   tools/fullset.sh <dir> <a worktree of 2a87f4cda> from the first gate not in the table (edit out the done lines).
-Not now (packet step 3): the version bump, What's New, 2-6's merge, the EnK5 test link, the PR.
+THE EARLY DRY RUN IS DONE: every gate of THE FULL SET has a verdict on e5eecab9a (table below). All PASS except two RULED reds:
+roadmapcheck (R-165.386, carried at the final integration) and funcheck (22/22 identical to INT-14, carried debt). Nothing was fixed on
+this head. The NEXT member (the final integration, packet step 3) does, in order:
+1. Cut the final from release-0.10.2 (or re-cut from origin/main the same way), MERGE t-art-next at **8feca1123** (not 4f0853b96, the lead's
+   ruling), carrying R-165.386's ROADMAP row from the lead branch (6de0eaab2) in that merge commit, as GATE-292 carried R-165.292; then
+   2-6's branch; tsc + the CI tool line after EACH merge (D92). Expect the same catalog conflicts: re-run catalogclips.py (all clips) +
+   catalog_master.py --emit, re-measure inventory.test's pinned count.
+2. The version bump and What's New (lead-approved words), then THE FULL SET on the exact head, in TWO background runs (one chain hit the
+   2 h limit here): tools/fullset.sh without the suite, then the suite alone; `git fetch --unshallow` FIRST.
+3. funcheck: `tools/fundiff.sh <funcheck output> <repo>` must print IDENTICAL 22/22, else a red. castBots 2-3 vs BUILD-23e with
+   tools/castcmp.py (0 of 360 differ here). lockall vs main with --intended 2-3 (plus 2-6's stages). The slot confirm (tools/slotconfirm.mjs).
+4. EnK5 test link from the final head, then the PR only on Matt's "push".
+Worktrees here: /home/user/rel3 (release-0.10.2), /home/user/frz-b (e5eecab9a, frozen), /home/user/frz-main (2a87f4cda, frozen).
 
 ## What merged (in order, MERGED never rebased; tsc + the CI tool line after each)
 | # | Branch at hash | Merge commit | tsc | CI tool line |
@@ -76,7 +77,7 @@ clock, 2x). Mean per-frame change (diffs.txt): plain pose 0.0-0.3; the CUT IN at
 | **funcheck** | **FAIL, ruled debt (identical to INT-14, 22/22), carried** (22 worse/new, 0 to lower) | 83 s; 77 known, 1067 flags. **IDENTICAL flag for flag** (stage, setting, rule, layout count, known count) to INT-14's inherited debt on main, ruled by the lead for release 1 (INT-14 REPORT 'funcheck debt' table: R-165.310/.48/.50/.51/.283/.222/.276). All World 1 (1-1..1-6); lockall shows those stages unchanged vs main. Neither merge brought it. Output: funcheck-e5eecab9a.txt. Lead's ruling: carried as the named debt of releases 1 and 2; at the final integration the same diff must still show 22/22 identical, and any new or worse flag there is a red. |
 | buildcheck (alone) | PASS | 1-1 p95 99 ms normal, 64 ms easy (budget 150 ms at CPU x4) |
 | the unit suite | PASS | re-run alone on the frozen tree (the chain hit the 2 h limit mid-suite at 3221 results, 0 failed): 4041 tests, 4038 pass, **0 fail**, 3 todo; 1840 s |
-| slot confirm (e.lineFaces() in 'gone': duck, capybara 'open') | pending | after the chain |
+| slot confirm (e.lineFaces() in 'gone': duck, capybara 'open') | PASS | UI-372's shooter on the frozen tree (tools/slotconfirm.mjs), Normal + Easy, upright + sideways: all 4 'gone' frames n = 0 (marker gone), faces duck:open, otter:spooked, capy:open. slotconfirm-e5eecab9a.txt |
 
 ## Learned
 - One chain for THE FULL SET does not fit the 2 h background limit here (seed lists alone 42 min, drawcheck 12, clipcheck 7, paintcheck 3 x 5-6): split it in two runs, the suite as its own run, started where the box allows.
