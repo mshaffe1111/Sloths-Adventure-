@@ -12,7 +12,8 @@ import { layPacer, pacerShoreFaults } from './pacerLay.ts';
 import { PACER_SHORE, pacerLength } from '../pacerDraw.ts';
 import { W2_RACE, W2_RIVERS } from './worlds/w2.ts';
 import { pacerFaults, pacerMargin, pacerOff, pacerX } from '../pacer.ts';
-import { PacerPiece } from '../pieces/pacerPiece.ts';
+import { EASE_MIN, EASE_PEAK, PacerPiece } from '../pieces/pacerPiece.ts';
+import { DOWN_SECS } from '../physics.ts';
 
 const ID = '2-97';
 const build = (seed: number, difficulty: 'normal' | 'easy' = 'normal') => buildGen2Stage({ config: { ...towerCfg(ID, 'sprint'), unlocked: true }, kit: homeKit(ID, HOME_CODE), seed, difficulty });
@@ -68,7 +69,7 @@ test('pacer (planted): a river on the race leg that no flown row matches is refu
   assert.deepEqual(layPacer({ ...st, gen2: { ...st.gen2, tower: undefined } } as never, W2_RACE, W2_RIVERS, false).problems, ['pacer: no run leg laid after a column to race on']);
 });
 
-test('pacer: it waits, sets off as he steps onto the race leg, docks, and on a respawn keeps exactly the margin he had when he fell', () => {
+test('pacer: it waits, sets off as he steps onto the race leg, docks, and a fall never pays: a respawn puts him on his first pass\'s margin less the beat, and the excess back at the fall is eased off', () => {
   const st = build(2);
   const P = st.pacer!;
   const player = { x: P.x0 + 200, y: P.yMin - 400 } as { x: number; y: number };
@@ -85,30 +86,57 @@ test('pacer: it waits, sets off as he steps onto the race leg, docks, and on a r
   for (let i = 0; i < 300; i++) piece.step(1 / 30, host);
   assert.ok(Math.abs(piece.clock! - 10) < 1e-6);
   assert.ok(Math.abs(piece.x - pacerX(P, 10)) < 1e-6 && piece.x < P.x0);
-  // (the lead's ruling, Option A, 11-21 (D112): a fall neither costs nor pays race time. He falls a third of the way home, ahead of the
-  //  boat, then behind it; each time the respawn at a flag behind him keeps EXACTLY the margin he had the frame before the life was lost,
-  //  and the boat holds it to him while he is in the air (the respawn's lost time forgiven); it runs on from the frame he stands.
-  //  The grid's invariant (every 2-7 row, every bot): tools/inspect/pacerRespawn.test.ts, RED on the floor it replaced)
-  const flag = P.x0 + (P.x1 - P.x0) / 3;
-  for (const lead of [300, -900]) {
-    const fell = piece.x + P.dir * lead;
-    Object.assign(player, { x: fell, y: P.yMin + 60, grounded: true });
-    piece.step(1 / 30, host);
-    const had = pacerMargin(P, fell, piece.clock! - 1 / 30);
-    assert.ok(Math.sign(had) === Math.sign(lead), `he was ${lead > 0 ? 'ahead' : 'behind'} (${had} s)`);
-    Object.assign(player, { x: flag - P.dir * 200, y: P.yMin + 60, grounded: false });
-    piece.respawn(host);
-    assert.ok(Math.abs(pacerMargin(P, player.x, piece.clock!) - had) < 1e-9, `the respawn keeps his ${had} s`);
-    // (in the air after the respawn, drifting on: the boat stays level with his margin)
-    for (let i = 0; i < 20; i++) { player.x += P.dir * 4; piece.step(1 / 30, host); }
-    assert.ok(Math.abs(pacerMargin(P, player.x, piece.clock!) - had) < 1e-9, `in the air: still ${had} s`);
-    // (he stands: the race runs on from there)
-    Object.assign(player, { grounded: true });
-    const c = piece.clock!;
-    piece.step(1 / 30, host);
-    assert.ok(Math.abs(piece.clock! - c - 1 / 30) < 1e-9, 'the step it sees him stand, it runs on');
-    piece.step(1 / 30, host);
-    assert.ok(Math.abs(piece.clock! - c - 2 / 30) < 1e-9, 'and on');
+  // (the lead's rulings (ENG-27s, D112; the strict hold, ENG-27t): a fall never pays race time. He walks the leg at a steady pace (half
+  //  again the boat's: ahead of it; then 0.9 of it: behind) and falls 0.4 of the way home; the respawn at a flag at 0.3 puts his margin there at the one he
+  //  had when he FIRST passed the flag, less the life-lost beat (DOWN_SECS), and the boat runs on while he is in the air (it waits for no
+  //  one). Back at the fall's x standing, with a margin better than at the fall, the boat owes exactly the excess and eases it off: once
+  //  the ease ends his margin there is the fall's, never better. RED on Option A's code (16698b8a1's piece: the respawn kept exactly the
+  //  margin at the fall and held the boat level with him in the air). The grid's invariant (every 2-7 row, every bot):
+  //  tools/inspect/pacerRespawn.test.ts)
+  const flag = P.x0 + (P.x1 - P.x0) * 0.3;
+  const fellAt = P.x0 + (P.x1 - P.x0) * 0.4;
+  const bucket = (x: number) => Math.floor(Math.max(0, (x - P.x0) * P.dir) / 16);
+  for (const pace of [1.5, 0.9]) {
+    const at = `pace ${pace}x the boat's`;
+    const q = new PacerPiece(P);
+    const me = { x: P.x0 + P.dir * 10, y: P.yMin + 60, grounded: true };
+    const h = { player: me } as never;
+    q.step(1 / 30, h);
+    assert.equal(q.clock, 0, `${at}: it sets off`);
+    const v = (P.dir * pace * Math.abs(P.x1 - P.x0)) / P.seconds / 30;
+    let first: number | null = null;
+    while ((fellAt - me.x) * P.dir > 0) {
+      if (first === null && bucket(me.x) >= bucket(flag)) first = pacerMargin(P, me.x, q.clock!);
+      q.step(1 / 30, h);
+      me.x += v;
+    }
+    // (the last frame before the life is lost: the world holds through the beat, so this is his margin at the fall)
+    q.step(1 / 30, h);
+    const fallX = me.x;
+    const had = pacerMargin(P, fallX, q.clock! - 1 / 30);
+    assert.ok(Math.sign(had) === (pace > 1 ? 1 : -1), `${at}: he was ${pace > 1 ? 'ahead' : 'behind'} at the fall (${had} s)`);
+    Object.assign(me, { x: flag, grounded: false });
+    q.respawn(h);
+    assert.ok(Math.abs(pacerMargin(P, flag, q.clock!) - (first! - DOWN_SECS)) < 1e-9, `${at}: the respawn puts his margin at the first pass's ${first} s less the beat, not the fall's ${had} s (${pacerMargin(P, flag, q.clock!)} s)`);
+    // (in the air after the respawn, drifting on: the boat runs on at its pace, a frame's dt a frame)
+    const c = q.clock!;
+    for (let i = 0; i < 10; i++) { me.x += P.dir * 4; q.step(1 / 30, h); }
+    assert.ok(Math.abs(q.clock! - c - 10 / 30) < 1e-9, `${at}: in the air the boat runs on (${q.clock! - c} s in 10 frames)`);
+    assert.equal(q.owed, 0, `${at}: nothing owed in the air`);
+    // (back at the fall's x standing, faster than he walked it: his margin there beats the fall's, so the boat owes exactly the excess)
+    Object.assign(me, { x: fallX, grounded: true });
+    const tBack = q.clock!;
+    const back = pacerMargin(P, fallX, tBack);
+    assert.ok(back > had + 0.5, `${at}: the premise: back at the fall he is ${back - had} s better off than at the fall (it would pay)`);
+    q.step(1 / 30, h);
+    assert.ok(Math.abs(q.clock! + q.owed - (tBack + 1 / 30 + (back - had))) < 1e-9, `${at}: the boat owes exactly the ${back - had} s excess`);
+    assert.ok(q.owed > 0 && q.clock! - tBack - 1 / 30 < (back - had) / 2, `${at}: and eases it off, never a snap (${q.clock! - tBack - 1 / 30} s made up in the first frame)`);
+    // (he stands there: the ease drains within its named length, and then his margin is the fall's, less the time he stood, never better)
+    let n = 1;
+    const len = Math.max(EASE_MIN, (2 * (back - had)) / EASE_PEAK);
+    while (q.owed > 0 && n < len * 30 + 2) { q.step(1 / 30, h); n++; }
+    assert.equal(q.owed, 0, `${at}: the ease drains within its ${len} s`);
+    assert.ok(Math.abs(pacerMargin(P, fallX, q.clock!) - (had - n / 30)) < 1e-9, `${at}: after the ease his margin at the fall's x is the fall's ${had} s less the ${n / 30} s he stood (${pacerMargin(P, fallX, q.clock!)} s)`);
   }
   // (a docked boat stays docked: the race is decided, no later fall rewinds it (ruling A (i); planted RED: before ENG-27e a fall after the
   //  dock put it back level with him and the race ran again, post Normal seeds 1 and 3's ride-only runs))
