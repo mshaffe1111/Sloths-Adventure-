@@ -5,7 +5,7 @@
    (w2Arc26.ts finish26: `bottom = max(lowest street + 10, config.levelHeight + 20)`). bankWall is read only by the drawing (engine.ts
    render, protoArt drawEarthWall/earthWallCovers): no gameplay reader. The foot stills (before = scratchpad stills-base/, after =
    stills-c2/, spot 0 both ways) go to the lead FIRST; the after must read as one clean earth, no seam where the old bottom was.
-1. On the lead's OK of the stills: on a FROZEN, IMMUTABLE worktree at f78a3a66d (`chattr -R +i src tools` right after its npm ci:
+1. On the lead's OK of the stills: on a FROZEN, IMMUTABLE worktree at the wip head (b0ae9a1c7 or later: f78a3a66d + gradCache.test.ts) (`chattr -R +i src tools` right after its npm ci:
    `chmod a-w` does NOT stop us, we run as root; chattr does, tested), drawcheck in full, all scenarios, verbose (about 6 min): 2-6 GREEN
    at every spot, no scenario worse than the base suite's drawcheck (scratchpad suite-base/drawcheck.log).
 2. The suite (scratchpad suite.sh <tree> <logdir>) and lockall on that head: name any castBots mover (the wall's bottom is lay data on
