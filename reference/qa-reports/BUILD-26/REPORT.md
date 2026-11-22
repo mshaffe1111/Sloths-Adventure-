@@ -1,7 +1,11 @@
-# BUILD-26p (on t-build-26-wip-26p from 9e1e30b27): R-165.390 traced: a BOT fault on every row, not a level fact. The bot read a river by x alone (firsttimer.ts floorAt), so 2-6's high rivers made every branch under their windows 'under water'. Candidate 86bb3b145 (toy RED on base, GREEN on fix). Started 5:47 PM ET 11-22 (by `date`)
+# BUILD-26p (on t-build-26-wip-26p from 9e1e30b27): R-165.390 traced: a BOT fault on every row, not a level fact. The bot read a river by x alone (firsttimer.ts floorAt), so 2-6's high rivers made every branch under their windows 'under water'. Candidate 86bb3b145 (toy RED on base, GREEN on fix); yield 29 -> 51; suite RED (wheelRide), NOT landed. Started 5:47 PM ET 11-22 (by `date`)
 
-## EXACT NEXT STEP (release 4, the lead's ruling: ACCEPTED, 29 -> 51; landed on t-build-26 on a GREEN suite, hash below)
-In this order, each a toy first (rule 21), rule 28 x40 after; tools: b26o rescuelog, b26p/trace.mts.txt, probe.mts.txt:
+## EXACT NEXT STEP (release 4; the lead ACCEPTED 29 -> 51 on a GREEN suite; the suite is RED, so NOTHING LANDED on t-build-26)
+0. **The RED first:** tools/inspect/wheelRide.test.ts 'rideWheel ON: every tier boards, rides and steps off the wheel': "sparse middle easy
+   v1: left a bucket 1 times other than onto the street". PASSES on 9e1e30b27, FAILS on 86bb3b145, re-run alone: still RED. The fix moves
+   a bucket leave on the toy wheel (cause B's ground). Trace that run's leave (wheelRide.test's sparse row, middle, Easy, v1), fix where
+   the cause is, the toy green, the suite again on the frozen head; then land (rebase on t-build-26's head, no force) on the lead's word.
+Then in this order, each a toy first (rule 21), rule 28 x40 after; tools: b26o rescuelog, b26p/trace.mts.txt, probe.mts.txt:
 1. **Cause B, the adult E wheel-bucket stall (R-165.393):** `rescuelog` on cut 5 RE-JUDGED (064ca6df6) for 2-6 adult E 11 and 45: if cut 5
    rides out, the brake holds him. Its unmasked rows here: adult E 9, 14, 25, 30, 40 (x40), each 'base pass from the wrong read'.
 2. **The lip family's residue:** kid E 40 (x40), middle E 58 (--proven): a walk off a raised block lands him 0.04-0.06 s from the next lip
@@ -11,14 +15,14 @@ In this order, each a toy first (rule 21), rule 28 x40 after; tools: b26o rescue
 5. **The floor:** 8 rolls pass under 100 s (adult N), named in b26p/cast26-cand.txt.
 **2-3 on this branch:** 0/40 'sealed door' on both trees because t-build-26 branched before 2-3's cage-bot engine piece (BUILD-23e, on
 main since 0.10.2), not this change: release 4's integration must show 2-3 matching INT-R4's rows on the merged head. 2-5's kid 0/40 on
-both trees is known (R-165.339). Suite on 86bb3b145: SUITE_VERDICT. tierBots: 9 pass, 0 fail.
+both trees is known (R-165.339). Suite on 86bb3b145 (b26p/suite-*): src 3 shards 4,038 pass, 0 fail; CI tools tests 338 pass, 10 fail: 9 fail the same on 9e1e30b27
+(b26p/suite-tools6-base.txt: libstage, registrycheck, chaseBots todo, riverRide x2, rowWheels x4), the 10th is the wheelRide RED above. tierBots: 9 pass, 0 fail.
 
 ## The yield (castBots --proven, 2-6, the 100 listed rolls, every bot, both settings, on 86bb3b145; b26p/cast26-cand.txt, proven26-cand.json)
 **51 of 100 (BUILD-26o: 29 on a07ed1bd7).** By bot, 26o -> now: kid N 86 -> 99, kid E 64 -> 68, adult N 89 -> 99 (under the floor 27 -> 8),
 adult E 69 -> 72, child N 100 -> 100, child E 100 -> 99, middle N 99 -> 100, middle E 100 -> 99, expert N 99 -> 100.
 The 49 out: 41 by a fail/rescue alone, 7 by the floor alone, 1 by both. The fails: kid E 32, adult E 28, kid N 1, adult N 1, child E 1, middle E 1.
 The two tier rows that moved down (middle E 58, child E 50) pass on the base tree; traced on both (b26p/c26p-*.rl.txt): next step 2, 3.
-
 ## Step 1: the six rows traced (b26p/trace-*-base.txt, tool b26p/trace.mts.txt; geometry b26p/plats.mts.txt, probe b26p/probe-kidN34-base.txt)
 Every loop is the same piece of 2-6: a SUNKEN STEP, a short branch 70 px down between two branches at one height.
 | row | where | the gap / the step | what he did |
@@ -49,14 +53,10 @@ top against `riverAt(rivers, x, q.y)`. No stage id, no x (generalitycheck PASS).
   cause B'** (R-165.393, next on the list); the wrong read is not kept to hide it.
 - kid E 40: the sunken step at the foot (near y 6369): floors read right now, but a walk-off lands him 6 px before #15's lip at 285 px/s
   (his stop takes 12 px): the residue. adult N 4: the log-ride bank end (next step 4); on the base he was elsewhere then.
-The child's 2-6 time (Normal median 152.5 -> 188.2 s, every seed +9 to +57 s, 40/40) is
-explained (child N 1, b26p/why.mts.txt): on the base he read the floor as water, stood at false 'edges' and hopped edge to edge, and
-rhythm() is skipped while he stands or jumps; now he walks the floor he sees, with his tester steer/gap rhythm (gapQ to 1.49 s).
-**Rule 28 on 2-1..2-5 and 1-4 (b26p/diff-others.txt, tables-others.txt): 0 pass flips and 0 moved rows on every stage (360 rows each).**
-**Not done (named plainly):** the suite verdict (running). The same x-alone river read lives at
-firsttimer.ts 1702 (describe, labels only) and 2788 (`wet`); left alone to keep the change narrow (Suggestions).
-## Lessons applied
-D96, D102/D111, D109, D113/D122, D115, D117, D119, D125; law 22 (no rule or content change: the fix is in the bot, where the cause is).
+The child's 2-6 time (N median 152.5 -> 188.2 s, 40/40; b26p/why.mts.txt): on the base he read floor as water and hopped false 'edges'
+(rhythm() is skipped then); now he walks the floor with his tester steer/gap rhythm (gapQ to 1.49 s).
+**Rule 28 on 2-1..2-5 and 1-4 (b26p/diff-others.txt): 0 pass flips, 0 moved rows on every stage (360 rows each).** **Not done:** the landing (RED suite). Suggestions: the x-alone river read also lives at firsttimer.ts 1702 (describe) and 2788 (`wet`).
+**Lessons applied:** D96, D102/D111, D109, D113/D122, D115, D117, D119, D125; law 22 (no rule or content change: the fix is in the bot, where the cause is).
 
 # ENG-26r (on t-build-26-wip-26r from a07ed1bd7): 2-6's draw budget. Candidate 89fb84b0f: static gradients made once (gradCache.ts) + the bank wall culls the backdrop and rivers it covers. Started 3:53 PM ET 11-22 (by `date`)
 

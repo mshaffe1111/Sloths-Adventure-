@@ -1,0 +1,289 @@
+✔ a stage with no row is refused by name, and rolls report it as thrown, never clean (0.77155ms)
+✖ every listed stage-table stage: its first 6 listed seeds are clean on both settings here, and lay the beats its list holds (Normal) (8750.183917ms)
+✔ the seeds it calls clean on both settings are the ones the list search kept (the first 12 seeds of each list's search range) (176052.289494ms)
+✔ planted: the summary counts what its names say (clean, thrown, both, refusals per roll once, foes on clean rolls only) (0.427711ms)
+✖ the shipped table passes the gate: every stage-table stage registered everywhere, every list checked in CI (no known list) (52878.383491ms)
+✔ planted: a stage taken out of drawcheck's scenarios fails "drawcheck" (D51), and the gate fails on it (0.893544ms)
+✔ planted: a listed stage with its list taken away and no stand-in fails "seeds"; a stand-in alone passes (0.213902ms)
+✔ planted: a kit name listed.ts does not hold fails "kit"; a stage with no row fails "row" (0.222594ms)
+✔ planted: no config, a hand-built plan shadowing the row, no levelSeeds entry each fail by name (0.178939ms)
+✔ planted: an unjudged row, a judged scope with no rows, and a scope missing one of Easy's moves each fail "flown" (0.238065ms)
+✔ planted: a sheet the rolls draw that the preload list lacks fails "sheets" (0.132974ms)
+✔ planted on the real builds: a stage whose rolls lay a creature, with the creature sheets taken out of its preload list, is caught (54864.252932ms)
+✔ planted: gates.yml without a seed-list check for a list fails "ci-seedlist"; a named line or the --lists loop passes (0.675162ms)
+✔ R-165.278: the seed-list shards hold every list exactly once, at most SHARD_LISTS each, for 1..40 lists; the gates.yml matrix line still counts as the loop (7.090394ms)
+MIDDLE strider, stood at the lip (s): without the hold 2.07, 1.50, 0.87, 0.70, 0.50, 0.00; with it 0.00, 0.00, 0.00, 0.00, 0.00, 0.00
+stood at the lip (s), by the swing's starting moment: plain swing 0.13, 0.00, 2.07, 1.57, 1.10, 0.63; phased 0.00, 0.00, 0.00, 0.00, 0.00, 0.00
+✔ chase bots: the CHILD bot on normal on a laid stretch, three seeds: the front never catches him (1035.12553ms)
+✔ chase bots: the MIDDLE bot on normal on a laid stretch, three seeds: the front never catches him; he reaches the fork on every seed (a missed gap is a fall: a heart and the flag) (354.161616ms)
+✔ chase bots: the EXPERT bot on normal on a laid stretch, three seeds: the front never catches him; he reaches the fork on every seed (a missed gap is a fall: a heart and the flag) (406.453135ms)
+✔ chase bots: the MIDDLE bot on easy on a laid stretch, three seeds: the front never catches him; he reaches the fork on every seed (a missed gap is a fall: a heart and the flag) (363.016273ms)
+✖ chase bots (OPEN, todo): the CHILD bot on Normal reaches the fork on 2 or more of 3 seeds (394.768505ms) # measured 1 of 3 (ENG-B4): every miss a fall at a 120 px gap, never a catch
+✔ chase bots, PLANTED (rule 21): a player who stops at every edge past the stop budget is caught without the skill and safe with it (247.624887ms)
+✔ chase bots read the nut and the fruit: the MIDDLE bot on normal, three seeds: every hazard drops in, none touches him, the front never catches him, he reaches the fork (462.342956ms)
+✔ chase bots read the nut and the fruit: the EXPERT bot on normal, three seeds: every hazard drops in, none touches him, the front never catches him, he reaches the fork (391.415562ms)
+✔ chase bots read the nut and the fruit: the MIDDLE bot on easy, three seeds: every hazard drops in, none touches him, the front never catches him, he reaches the fork (325.54855ms)
+✔ chase bots, PLANTED (rule 21): with the nut and fruit reading removed the same player is touched; with it he is not (633.60173ms)
+✔ chase bots at the still fork: the MIDDLE bot on normal, three seeds: at a full run onto the fork, he stops in the moss, holds still through the eagle's pass, no heart, and runs on as the next crack sets off (423.380213ms)
+✔ chase bots at the still fork: the EXPERT bot on normal, three seeds: at a full run onto the fork, he stops in the moss, holds still through the eagle's pass, no heart, and runs on as the next crack sets off (306.338342ms)
+✔ chase bots at the still fork: the MIDDLE bot on easy, three seeds: at a full run onto the fork, he stops in the moss, holds still through the eagle's pass, no heart, and runs on as the next crack sets off (280.221767ms)
+✔ chase bots, PLANTED (rule 21): at the still fork a player without the hide runs on into the eagle's pass and is dived on; with it he is not (761.9993ms)
+✔ chase bots and the runner liana: the MIDDLE STRIDER bot on normal, from six moments of its swing: he never stands at the lip, catches it in stride and reaches the far bank (629.745009ms)
+✔ chase bots and the runner liana: the EXPERT STRIDER bot on normal, from six moments of its swing: he never stands at the lip, catches it in stride and reaches the far bank (450.080753ms)
+✔ chase bots and the runner liana: the MIDDLE STRIDER bot on easy, from six moments of its swing: he never stands at the lip, catches it in stride and reaches the far bank (414.904929ms)
+✔ chase bots, PLANTED (rule 21): the runner liana's held thumb removed (noRunnerHold), the MIDDLE strider lifts his thumb on the run in by his rhythm and stands at the lip from some moments; with it, from none (917.854479ms)
+✔ chase bots, PLANTED (rule 21): the liana not phased (the piece off the hook), the same strider stands at the lip to wait for it from some moments; phased, from none (857.807117ms)
+✔ chase bots on EASY: the CHILD bot clears every chase gap Easy's lay allows (CHASE_LAY.easyGap 50 px) on 3 of 3 seeds: no fall, no catch, through (243.312166ms)
+✔ chase bots on EASY, PLANTED (rule 21): 10 px past Easy's chase gap the same CHILD drops a seed (the number is the edge of what he clears) (233.3782ms)
+✔ the fixture: one deep log river, rolled clean (44.21941ms)
+✔ middle, normal: rides the logs across the river and reaches the shrine (773.941781ms)
+✔ middle, easy: rides the logs across the river and reaches the shrine (639.195299ms)
+✔ child, normal: rides the logs across the river and reaches the shrine (994.547724ms)
+✔ child, easy: rides the logs across the river and reaches the shrine (578.442203ms)
+✔ planted: with the ride skill off, the middle and child bots drown in the river (2174.795506ms)
+✔ middle, normal: against the flow (W2_RIVERS.back), hops log to log off each front end and reaches the shrine (351.014347ms)
+✔ middle, normal: the long log (W2_RIVERS.long, laid deep) rides him in and hands him onto the far bank (377.037269ms)
+✔ middle, easy: against the flow (W2_RIVERS.back), hops log to log off each front end and reaches the shrine (348.944261ms)
+✔ middle, easy: the long log (W2_RIVERS.long, laid deep) rides him in and hands him onto the far bank (353.167536ms)
+✔ child, normal: against the flow (W2_RIVERS.back), hops log to log off each front end and reaches the shrine (727.350006ms)
+✔ child, normal: the long log (W2_RIVERS.long, laid deep) rides him in and hands him onto the far bank (699.429437ms)
+✔ child, easy: against the flow (W2_RIVERS.back), hops log to log off each front end and reaches the shrine (502.995387ms)
+✔ child, easy: the long log (W2_RIVERS.long, laid deep) rides him in and hands him onto the far bank (482.124752ms)
+✔ planted: with the handed-to-the-bank skill off, the middle on Normal hops at the water off the long log and drowns over the bar (408.434044ms)
+✔ 2-1, against the flow and up the far bank on: the adult on Normal (12), the child on Normal (4, 5) and on Easy (22) cross clean (7444.397493ms)
+✖ planted: with the against-the-flow skill off, the adult on Normal is rescued at 2-1's back river (12) and the child on Normal loses 5+ more lives (4, 5) (4052.848136ms)
+✖ planted (THIN): with the up-the-far-bank skill off, the child on Easy is carried back on 2-1's both-ways log and reaches its far bank 2+ s later (22) (1290.51711ms)
+✖ rideWheel ON, 2-6's row: every tier reaches the shrine, rides every wheel both ways round, no pond, across inside a turn (0.976776ms)
+✖ PLANTED: rideWheel OFF, every tier scrambles bucket to bucket on 2-6's row instead of riding (RED) (0.401459ms)
+✖ the meter's wheel channel prices every wheel on 2-6's row: a board each (every moment boards: 0 bits), a step-off each but the 'in' streets (0.355032ms)
+✖ the tower's turns, 2-6's row: the middle and the expert finish with NO rescue, seeds 1 and 2 (ENG-26e) (0.364746ms)
+✖ PLANTED: trunkCatch OFF, a double that grabs a turn vine straight off the ground flicks him off it: rescues come back (RED) (0.368209ms)
+✔ rideWheel ON: every tier boards, rides and steps off the wheel: no scramble, no pond, across in about half a turn (18127.73322ms)
+✔ PLANTED: rideWheel OFF, every tier scrambles bucket to bucket instead of riding (RED) (15568.911537ms)
+ℹ tests 60
+ℹ suites 0
+ℹ pass 50
+ℹ fail 9
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 1
+ℹ duration_ms 185500.171695
+
+✖ failing tests:
+
+test at tools/engine/libstage.test.ts:20:1
+✖ every listed stage-table stage: its first 6 listed seeds are clean on both settings here, and lay the beats its list holds (Normal) (8750.183917ms)
+  AssertionError [ERR_ASSERTION]: 1-4 seed 1: the beats its list replays
+  + actual - expected
+  
+    [
+      'w1-14-roots',
+      'w1-14-going-up',
+      'w1-14-rotting',
+  +   'w1-14-rest-d',
+  -   'w1-14-rest-e',
+      'w1-14-field',
+      'w1-14-pods',
+      'w1-14-push',
+      'w1-14-rest-b',
+      'w1-14-under-fire',
+  +   'w1-14-rest-a',
+  -   'w1-14-rest-d',
+      'w1-14-rotten-fork',
+  +   'w1-14-rest-g',
+  +   'w1-14-push-two',
+      'w1-14-rest-c',
+  -   'w1-14-push-two',
+  -   'w1-14-rest-h',
+      'w1-14-columns',
+  +   'w1-14-rest-i',
+  -   'w1-14-rest-g',
+      'w1-14-drop-one',
+  +   'w1-14-rest-e',
+  -   'w1-14-rest-i',
+      'w1-14-hollow',
+      'w1-14-rest-f',
+      'w1-14-crown',
+      'w1-14-view-north'
+    ]
+  
+      at TestContext.<anonymous> (/home/user/f26p/tools/engine/libstage.test.ts:29:14)
+      at async Test.run (node:internal/test_runner/test:1054:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:744:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: [
+      'w1-14-roots',       'w1-14-going-up',
+      'w1-14-rotting',     'w1-14-rest-d',
+      'w1-14-field',       'w1-14-pods',
+      'w1-14-push',        'w1-14-rest-b',
+      'w1-14-under-fire',  'w1-14-rest-a',
+      'w1-14-rotten-fork', 'w1-14-rest-g',
+      'w1-14-push-two',    'w1-14-rest-c',
+      'w1-14-columns',     'w1-14-rest-i',
+      'w1-14-drop-one',    'w1-14-rest-e',
+      'w1-14-hollow',      'w1-14-rest-f',
+      'w1-14-crown',       'w1-14-view-north'
+    ],
+    expected: [
+      'w1-14-roots',       'w1-14-going-up',
+      'w1-14-rotting',     'w1-14-rest-e',
+      'w1-14-field',       'w1-14-pods',
+      'w1-14-push',        'w1-14-rest-b',
+      'w1-14-under-fire',  'w1-14-rest-d',
+      'w1-14-rotten-fork', 'w1-14-rest-c',
+      'w1-14-push-two',    'w1-14-rest-h',
+      'w1-14-columns',     'w1-14-rest-g',
+      'w1-14-drop-one',    'w1-14-rest-i',
+      'w1-14-hollow',      'w1-14-rest-f',
+      'w1-14-crown',       'w1-14-view-north'
+    ],
+    operator: 'deepStrictEqual',
+    diff: 'simple'
+  }
+
+test at tools/engine/registrycheck.test.ts:15:1
+✖ the shipped table passes the gate: every stage-table stage registered everywhere, every list checked in CI (no known list) (52878.383491ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly deep-equal:
+  + actual - expected
+  
+  + [
+  +   '2-6 flown: its row is not judged (no `judged` scope): it lays to the unflown reach (reach.unflown). Fly it: FLIGHT_STAGE=2-6 npx tsx reference/specs/sims/flight.ts normal all'
+  + ]
+  - []
+  
+      at TestContext.<anonymous> (/home/user/f26p/tools/engine/registrycheck.test.ts:16:10)
+      at async Test.run (node:internal/test_runner/test:1054:7)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: [ '2-6 flown: its row is not judged (no `judged` scope): it lays to the unflown reach (reach.unflown). Fly it: FLIGHT_STAGE=2-6 npx tsx reference/specs/sims/flight.ts normal all' ],
+    expected: [],
+    operator: 'deepStrictEqual',
+    diff: 'simple'
+  }
+
+test at tools/inspect/chaseBots.test.ts:110:1
+✖ chase bots (OPEN, todo): the CHILD bot on Normal reaches the fork on 2 or more of 3 seeds (394.768505ms) # measured 1 of 3 (ENG-B4): every miss a fall at a 120 px gap, never a catch
+  AssertionError [ERR_ASSERTION]: reached the fork on 1 of 3
+      at TestContext.<anonymous> (/home/user/f26p/tools/inspect/chaseBots.test.ts:112:10)
+      at Test.runInAsyncScope (node:async_hooks:214:14)
+      at Test.run (node:internal/test_runner/test:1047:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+      at Test.postRun (node:internal/test_runner/test:1173:19)
+      at Test.run (node:internal/test_runner/test:1101:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:744:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: false,
+    expected: true,
+    operator: '==',
+    diff: 'simple'
+  }
+
+test at tools/inspect/riverRide.test.ts:202:1
+✖ planted: with the against-the-flow skill off, the adult on Normal is rescued at 2-1's back river (12) and the child on Normal loses 5+ more lives (4, 5) (4052.848136ms)
+  AssertionError [ERR_ASSERTION]: upstream off, 0 more lives (at least 5): on child normal seed 5: shrine, rescues 0, lives 1, stuck []; off child normal seed 5: shrine, rescues 0, lives 1, stuck []
+      at <anonymous> (/home/user/f26p/tools/inspect/riverRide.test.ts:212:14)
+      at Array.forEach (<anonymous>)
+      at TestContext.<anonymous> (/home/user/f26p/tools/inspect/riverRide.test.ts:210:20)
+      at Test.runInAsyncScope (node:async_hooks:214:14)
+      at Test.run (node:internal/test_runner/test:1047:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+      at Test.postRun (node:internal/test_runner/test:1173:19)
+      at Test.run (node:internal/test_runner/test:1101:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:744:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: false,
+    expected: true,
+    operator: '==',
+    diff: 'simple'
+  }
+
+test at tools/inspect/riverRide.test.ts:218:1
+✖ planted (THIN): with the up-the-far-bank skill off, the child on Easy is carried back on 2-1's both-ways log and reaches its far bank 2+ s later (22) (1290.51711ms)
+  AssertionError [ERR_ASSERTION]: bankUp off, child easy seed 22: boarding to far bank 4.77 s on, 4.77 s off (+0.00, at least 2)
+      at <anonymous> (/home/user/f26p/tools/inspect/riverRide.test.ts:225:14)
+      at Array.forEach (<anonymous>)
+      at TestContext.<anonymous> (/home/user/f26p/tools/inspect/riverRide.test.ts:222:18)
+      at Test.runInAsyncScope (node:async_hooks:214:14)
+      at Test.run (node:internal/test_runner/test:1047:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+      at Test.postRun (node:internal/test_runner/test:1173:19)
+      at Test.run (node:internal/test_runner/test:1101:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:744:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: false,
+    expected: true,
+    operator: '==',
+    diff: 'simple'
+  }
+
+test at tools/inspect/rowWheels.test.ts:23:1
+✖ rideWheel ON, 2-6's row: every tier reaches the shrine, rides every wheel both ways round, no pond, across inside a turn (0.976776ms)
+  Error: plantRow: 2-6 is already listed
+      at plantRow (/home/user/f26p/tools/inspect/plantRow.ts:26:73)
+      at withPlantedRow (/home/user/f26p/tools/inspect/rowWheels.ts:29:16)
+      at rowWheelRuns (/home/user/f26p/tools/inspect/rowWheels.ts:39:10)
+      at TestContext.<anonymous> (/home/user/f26p/tools/inspect/rowWheels.test.ts:24:16)
+      at Test.runInAsyncScope (node:async_hooks:214:14)
+      at Test.run (node:internal/test_runner/test:1047:25)
+      at Test.start (node:internal/test_runner/test:944:17)
+      at startSubtestAfterBootstrap (node:internal/test_runner/harness:296:17)
+
+test at tools/inspect/rowWheels.test.ts:50:1
+✖ PLANTED: rideWheel OFF, every tier scrambles bucket to bucket on 2-6's row instead of riding (RED) (0.401459ms)
+  Error: plantRow: 2-6 is already listed
+      at plantRow (/home/user/f26p/tools/inspect/plantRow.ts:26:73)
+      at withPlantedRow (/home/user/f26p/tools/inspect/rowWheels.ts:29:16)
+      at rowWheelRuns (/home/user/f26p/tools/inspect/rowWheels.ts:39:10)
+      at TestContext.<anonymous> (/home/user/f26p/tools/inspect/rowWheels.test.ts:53:18)
+      at Test.runInAsyncScope (node:async_hooks:214:14)
+      at Test.run (node:internal/test_runner/test:1047:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+      at Test.postRun (node:internal/test_runner/test:1173:19)
+      at Test.run (node:internal/test_runner/test:1101:12)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
+
+test at tools/inspect/rowWheels.test.ts:65:1
+✖ the meter's wheel channel prices every wheel on 2-6's row: a board each (every moment boards: 0 bits), a step-off each but the 'in' streets (0.355032ms)
+  Error: plantRow: 2-6 is already listed
+      at plantRow (/home/user/f26p/tools/inspect/plantRow.ts:26:73)
+      at withPlantedRow (/home/user/f26p/tools/inspect/rowWheels.ts:29:16)
+      at TestContext.<anonymous> (/home/user/f26p/tools/inspect/rowWheels.test.ts:66:3)
+      at Test.runInAsyncScope (node:async_hooks:214:14)
+      at Test.run (node:internal/test_runner/test:1047:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+      at Test.postRun (node:internal/test_runner/test:1173:19)
+      at Test.run (node:internal/test_runner/test:1101:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+
+test at tools/inspect/rowWheels.test.ts:80:1
+✖ the tower's turns, 2-6's row: the middle and the expert finish with NO rescue, seeds 1 and 2 (ENG-26e) (0.364746ms)
+  Error: plantRow: 2-6 is already listed
+      at plantRow (/home/user/f26p/tools/inspect/plantRow.ts:26:73)
+      at withPlantedRow (/home/user/f26p/tools/inspect/rowWheels.ts:29:16)
+      at rowWheelRuns (/home/user/f26p/tools/inspect/rowWheels.ts:39:10)
+      at TestContext.<anonymous> (/home/user/f26p/tools/inspect/rowWheels.test.ts:82:18)
+      at Test.runInAsyncScope (node:async_hooks:214:14)
+      at Test.run (node:internal/test_runner/test:1047:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+      at Test.postRun (node:internal/test_runner/test:1173:19)
+      at Test.run (node:internal/test_runner/test:1101:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+
+test at tools/inspect/rowWheels.test.ts:87:1
+✖ PLANTED: trunkCatch OFF, a double that grabs a turn vine straight off the ground flicks him off it: rescues come back (RED) (0.368209ms)
+  Error: plantRow: 2-6 is already listed
+      at plantRow (/home/user/f26p/tools/inspect/plantRow.ts:26:73)
+      at withPlantedRow (/home/user/f26p/tools/inspect/rowWheels.ts:29:16)
+      at rowWheelRuns (/home/user/f26p/tools/inspect/rowWheels.ts:39:10)
+      at TestContext.<anonymous> (/home/user/f26p/tools/inspect/rowWheels.test.ts:90:18)
+      at Test.runInAsyncScope (node:async_hooks:214:14)
+      at Test.run (node:internal/test_runner/test:1047:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+      at Test.postRun (node:internal/test_runner/test:1173:19)
+      at Test.run (node:internal/test_runner/test:1101:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
