@@ -55,8 +55,9 @@ the landed head; checkpoint about 8 PM ET.
    y 3962 (64.3 s), short at 1134,4313 (66.2 s), back right to 1612 (67.8 s), around again, rescued at x 1165 (row: rescues 2, xs 814,
    1165). **Cause 'fell back down 3 times' (kid E 16, 27, two runs): an old route loop on 2-6's climb (the jump left from the vine at x
    1612 along y 3962-4030 falls short near x 1110-1145), which the base runs too. Fix 3 only changes how often he tries it.** Still to trace for
-   the release (the lead's ruling 2): the other 2-6 new fails (kid N 32, 34 and adult N 13, also 'fell back 3 times': check that it is the
-   same loop, one read each; then the 'water ahead / in a dip' group: adult E 11, 27; adult N 23; kid N 13, 14, 17, 29, two runs) and
+   the release (the lead's ruling 2): **adult N 13 (b26n/a13-26N-pad-40-115.txt): the SAME loop on Normal** (vine at 1596, left, short at
+   1090,4116 at 52.4 s, back right; rescued at x 1389, 113.5 s). Three runs, one cause, two bots, both settings. Left of this group: kid N
+   32, 34 (one read each, expected the same loop); then the 'water ahead / in a dip' group: adult E 11, 27; adult N 23; kid N 13, 14, 17, 29, two runs) and
    the 19 gains as real finishes (rows: end 'shrine', no rescue).
 
 ## Step 1: fix 1, toy first (castBots.test.ts, last test; figPush.ts choose)
