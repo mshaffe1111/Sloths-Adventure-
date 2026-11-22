@@ -14,11 +14,11 @@ the placers; BUILD-26j owns tools/inspect (the bot): rebase on its pushes.
 FACT (ENG-26p): rollGuard.test.ts:42 '1-4: every sampled roll is long enough and passes the level check' fails with
 ['?layout=72140: flower #27 and find #13 overlap'] on 9c2ce855d alone (t-build-26 before ENG-26p's commits; src unchanged to c00d2fd17);
 KNOWN in that file is empty.
-0. **FIRST, land ENG-26p's lay fix (its member is past its box; the lead's ruling to land stands):** branch t-land-26p = c00d2fd17 + 7d3330aad
-   (the fix) + 14acf0ec0 (its toy), a fast-forward of t-build-26. Its suite on frozen cd2a64b2d ran 3,564 results clean but for R-165.312's
+0. **FIRST, land ENG-26p's lay fix (its member is past its box; the lead's ruling to land stands):** t-build-26-wip-26p at cb9372ead = c00d2fd17 + 7d3330aad
+   (the fix) + 14acf0ec0 (its toy) + its REPORT (a t-land-26p was never pushed), a fast-forward of t-build-26. Its suite on frozen cd2a64b2d ran 3,564 results clean but for R-165.312's
    todo and this rollGuard red, then hit the tool's 30-minute background limit: 73 files never reported (src/game/controlTest,
    ctestCourseGone, w1Overhang..zones, mostly worlds 4-7, and 23 template-named). Re-run those 73 ALONE on a fresh frozen worktree of
-   cd2a64b2d in the background (the 2-hour limit); clean -> fast-forward t-build-26 to t-land-26p (rebase if it moved; never force) and
+   cd2a64b2d in the background (the 2-hour limit); clean -> fast-forward t-build-26 to cb9372ead (rebase if it moved; never force) and
    send the lead the hash; any other red -> the lead before landing. Then your own base is t-build-26's new head.
    The CLAUDE.md suite on that base, frozen, in the background (D114/D118); its only allowed reds are this one and R-165.312's todo.
 1. Run the test alone on the base: the exact roll, the two pieces (which placer put each, where), and why they overlap.
