@@ -152,6 +152,18 @@ test('the tower route goes on from a turn\'s top along the leg, never back to an
   assert.ok(at(away, 400, 700) === at(away, 600, 700) + 1, `an entry 200 px from the vine lost its corner: ${JSON.stringify(away)}`);
 });
 
+// (BUILD-26g, 1-4 Easy 10, C: up a vine onto a floor at 781, the leg's exit back at 481, the next turn's vine 5 px PAST the arrival at
+// 786. The strict span kept the walk out to 481 and back over the same bough; Progress flipped between the two ways and he stood turning
+// for 23 s, rescued. A vine within GRAB_REACH of the span is taken from where he stands. Planted: the base line (c99352a65) keeps 481.
+// A vine well past the arrival (200 px) is a real way back past it, and the exit keeps its corner)
+test("the tower route takes a turn's vine a hand's reach past the arrival straight, never out to the exit and back", async () => {
+  const { noOutAndBack } = await import('./towerRoute.ts');
+  const way = (dx: number) => noOutAndBack([{ x: 781, y: 1000 }, { x: 781, y: 700 }, { x: 481, y: 700 }, { x: 781 + dx, y: 700 }, { x: 781 + dx, y: 400 }]);
+  assert.equal(way(5).findIndex((p) => p.x === 481), -1, `out to 481 and back for a vine 5 px past the arrival: ${JSON.stringify(way(5))}`);
+  assert.ok(way(200).some((p) => p.x === 481), `a vine 200 px past the arrival lost the exit's corner: ${JSON.stringify(way(200))}`);
+  assert.equal(way(-100).findIndex((p) => p.x === 481), -1, 'a vine inside the span still goes straight to it');
+});
+
 // (STAGE-RULES.md:77: "at least 2 minutes for a quick player, on every roll ... Climbs count 20 s short". castBots held every stage to a
 //  flat 120 s, so 1-4 (a climb) failed the rule's own 100 s: the floor is read from eraRoll.ts RULES and isClimb, R-165.206, D19)
 test('the length floor is the stage rule\'s: a climb at 105 s holds, a run stage at 105 s does not (STAGE-RULES.md:77)', () => {
