@@ -2757,6 +2757,25 @@ export class FirstTimerRun {
       const s = this.standing;
       if (s.until < 0 && Math.abs(p.vx) < 10) s.until = t + (this.edge?.stand ?? 0.2);
       if (s.until < 0 || t < s.until) return {};
+      // (the lead's ruling A, ENG-27p (rule 28: every bot gate that judges a hop): at a river's edge with a float within reach, the
+      //  stand's jump goes through edgeWait's drawn-hop gate: the hop he will fly, drawn once for the wait by the testers' habit, judged
+      //  from where he stands at lag 0 and pressed when it lands. When it does not, the stand's own press as before: from these banks
+      //  13 of 14 such presses over the four hopJudged runs were bank-to-bank hops (came down on solid), and hopJudged fails any that
+      //  comes down on a log unjudged. 2-7 home middle Normal 2 x 15632: the stand pressed its own jumpFor hop 0.37 s after the gate
+      //  refused, a double no gate judged (it came down on log #40 by luck), ENG-27o)
+      const drifts = SKILLS.floatSure && s.dir !== 0 ? this.edgeFloats(s.dir as -1 | 1) : null;
+      if (drifts) {
+        const rivers = (this.sim.stage as { rivers?: RiverZone[] }).rivers, dir1 = s.dir as -1 | 1;
+        const h = this.waitHop ?? (this.waitHop = this.drawHop(dir1));
+        if (drifts.some((q) => hopFlies(q, floatAt(rivers, q), p.x, p.y, dir1, h, t, p.vx, 24, this.v2(), this.thumbAt(), this.flightOthers()))) {
+          this.standing = null;
+          if (HOP_TRACE.on) { this.judged = null; this.judge('edgeStand', drifts, [0], dir1, h.hold, p.vx, 0, 24, h); }
+          this.gateHop = h;
+          this.waitHop = null;
+          return this.startJump(dir1, 'single', false);
+        }
+        if (HOP_TRACE.on) this.judged = null;
+      }
       this.standing = null;
       return this.startJump(s.dir, this.jumpFor(p, s.dir, this.floorAt(p.x, p.y, 6)), false);
     }
@@ -3014,6 +3033,9 @@ export class FirstTimerRun {
                 this.waitHop = null;
                 return this.startJump(dir, 'single', false);
               }
+              // (the gate refused: the `near` probe's judgment above is no judgment of a hop he will press (the lead's ruling A, ENG-27p:
+              //  left in place, the edge stand's press 0.37 s later picked it up, 2-7 home middle Normal 2 x 15632))
+              if (HOP_TRACE.on) this.judged = null;
               // (the beat is waited for even past the 6 s wait: the 6 s gave up on a float never near, not on one a beat away; seed 2 x
               //  13086 pressed the old hop 0.34 s after a lag-0.1 judgment, as the wait ran out, and fell)
               // (and a press decided before the judgment (a pending thumb, a late walk-off armed) is dropped while he stands for it, and
