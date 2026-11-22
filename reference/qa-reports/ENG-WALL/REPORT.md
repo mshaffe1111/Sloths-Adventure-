@@ -1,3 +1,61 @@
+# ENG-WALL-d REPORT (R-165.380 continued; start 9:13 PM ET by `date`; branch t-eng-wall; box to 9:41 PM ET)
+EXACT NEXT STEP: on an IDLE machine (nothing else running), time the candidate's burst: `node d/burst-ms.mjs <port> upright|sideways 4`
+against a vite on t-eng-wall (afdd5060c) and one on t-eng-wall-c2 (b04579a95), PERFORMANCE-RULES §1 (no frame over 50 ms in play, 120
+at a stage start); then name the descent's frame 0 (the probe's teleport cut: shoot it vs settled, ground squares or an overlay). If
+both hold, the lead judges stills of t-eng-wall-c2 and it lands with a planted test; then item 3 (the corner (a)/(b), (ii), (iii)).
+**The suite and drawcheck on the head did NOT finish inside the box** (rows below): re-run them on afdd5060c before anything merges.
+
+## 1. C's first half LANDED (done, pushed: t-eng-wall afdd5060c; `git ls-remote` = HEAD at the push)
+- 018086a32: one seam, no change in behaviour: protoArt.ts groundBakeKey (the key's scale and view), engine.ts groundView (what the
+  render hands setDepthView). Its planted test src/game/groundBake.test.ts drives the real engine through the intro dolly upright
+  412x915 and sideways 915x412: the zoom eases (plant), and the key's scale and view must not change on any dolly frame and must equal
+  the settled frame's. **RED on a fresh worktree at 018086a32: 0/2, "the ground's key changes on 36 of 40 dolly frames (0.8427|1086 ->
+  0.9364|977)" upright, (0.6867|600 -> 0.7630|540) sideways** (ENG-WALL-c's measured 1086 -> 977 and 600 -> 540 exactly).
+- afdd5060c: the accepted prototype's hunks WITHOUT its log (restZoom from roomWant/revealWant/swimWant/swingWideWant in applyZoom;
+  groundView = viewCssH / restZoom, over restZoom / zoom; the bake scale m.a * bakeOver). **GREEN on a fresh worktree: 2/2.** tsc 0.
+- Gates on the frozen head afdd5060c: seed list 1-1 **PASS (161 seeds, each clean on both settings)**. The CLAUDE.md suite (3 shards)
+  and drawcheck: started, NOT finished in the box (see the top).
+- The per-frame look BY LAYER (d/flip-layers.mjs: b/flip-probe.mjs plus a ground-only mask: 8-px cells in a painted bank, 16 under its
+  top, over 160 from Pokey; plus the stage start: squares released, the dolly's first frame), 2-97 seed 1, DSF 2, on afdd5060c
+  (d/before-C2-*.txt). Ground mean luma, first frame vs settled; bar 1:
+  upright: start 4.85, cold x19900 5.34, cold x14800 3.68, descent 10.49 (5 of 40 frames over 1). sideways: 12.17, 2.79, 2.96,
+  20.14 (7 of 40). Control 0 both. **RED on the ground: C's first half alone does not make the first frame equal settled** (the budget).
+
+## 2. C's second half: CANDIDATE, measured, NOT landed (branch t-eng-wall-c2 at b04579a95, pushed)
+- protoArt.ts drawGroundChunks: every square IN view is painted that frame from paintTile (the same groundLine darkening as every square),
+  so a late square never sends the frame to the live path; the margin ahead (CHUNK_AHEAD 1 square past each edge the view moved toward,
+  none on a cut) is painted at CHUNK_BUDGET 3 a frame while the memory (CHUNK_BYTES) holds it, and kept from eviction. Sized from the
+  fastest fall: maxFall 950 a second (physics.ts:27) = 31.7 a frame at 30 fps, so a 256 square takes at least 8 frames to cross and the
+  row ahead (at most 5 squares) is painted in 2.
+- Layer probe on b04579a95 (d/after-C2-*.txt): **GREEN 0.00 on the ground at the stage start and both cold respawns, upright and
+  sideways; descent frames 1-39 at most 0.03 upright, 0.40 sideways** (were 10.49 / 20.14). **Descent frame 0 RED: 2.62 upright, 9.33
+  sideways**: the probe's own teleport from the previous case (cam 14663 -> 18594); its other layers differ too (5.11 / 3.17); not named.
+- NOT measured: the burst's cost (up to all in-view squares painted in one frame at a cold view). d/burst-ms.mjs ran once under the
+  suite's load and its numbers are void (the settled frame read 45.9 ms, the descent 1105 ms at 4x); stopped, nothing recorded.
+  drawcheck on b04579a95: started, NOT finished in the box.
+
+## 3. The corner (a)/(b), (ii), (iii): NOT started (this box went to items 1 and 2).
+
+## Polish check
+No stills shot this box: item 1 changes no settled look (the lead judged ENG-WALL-c's dolly stills); the layer probe's numbers are the
+first-frame check. The candidate needs stills (first frame and settled, 2x, both ways) before the lead can judge it.
+
+## Learned
+- A planted test for a key must be able to fail at an assertion on the base: land a no-behaviour seam first (018086a32), RED there.
+- A whole-canvas flip measure mixes layers: with the ground mask the ground goes to 0.00 while "other layers" stay 1-12 (the settled
+  re-render moves Pokey and the animated layers), so judge the ground by its mask.
+- Never time on a machine running the suite (4x CPU numbers read 10x).
+
+## Lessons applied
+D40 (C's second half built on the landed first half, not the prototype), D102/D111 (the box by `date`), D109 (no clock times in
+messages), D113/D122 (every long run in the background with a timeout; one launch with a shell '&' inside was stopped and relaunched as
+three runs), D115 (every run on a frozen worktree: wt-red, wt-green, wt-c2), D117 (the candidate on its own branch, not on t-eng-wall),
+D119 (no heredoc in a commit chain), D120 (no question to the lead).
+
+## Suggestions
+- flip-layers.mjs re-places the camera on the descent with a cut from the previous case: a frame-0 cut is a respawn, so judge it as its
+  own case, and add a "warm" descent that starts settled at the column's top.
+
 # ENG-WALL-c REPORT (R-165.380 continued; start 8:54 PM ET by `date`; branch t-eng-wall; box to 9:22 PM ET)
 EXACT NEXT STEP: land C's first half on t-eng-wall from c/proto-C-bake-at-target.patch (apply c/exp-log.patch first: the
 prototype's context carries the two log lines; write the three hunks into src WITHOUT the log), then the suite (3 shards), the 1-1 seed list, drawcheck and the CLAUDE.md gates on the head. Then C's second

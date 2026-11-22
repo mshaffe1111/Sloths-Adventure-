@@ -1,0 +1,5 @@
+GREEN upright control: 1 frames (0 over 1 on the ground); worst ground 0 (7857 cells), other layers 0, whole 0, worstCol 0 at cam 14058,163
+RED   upright stage start: 1 frames (1 over 1 on the ground); worst ground 4.85 (9506 cells), other layers 1.12, whole 2.62, worstCol 8.2 at cam 14058,163
+RED   upright cold x 19900: 1 frames (1 over 1 on the ground); worst ground 5.34 (6127 cells), other layers 0.94, whole 2.08, worstCol 15.1 at cam 19768,913
+RED   upright cold x 14800: 1 frames (1 over 1 on the ground); worst ground 3.68 (19191 cells), other layers 1.92, whole 3.35, worstCol 8.5 at cam 14663,941
+RED   upright descent x 18990: 40 frames (5 over 1 on the ground); worst ground 10.49 (12139 cells), other layers 5.57, whole 8.1, worstCol 15.9 at cam 18594,790

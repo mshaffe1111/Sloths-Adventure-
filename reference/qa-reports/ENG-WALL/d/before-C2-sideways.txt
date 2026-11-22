@@ -1,0 +1,5 @@
+GREEN sideways control: 1 frames (0 over 1 on the ground); worst ground 0 (6463 cells), other layers 0, whole 0, worstCol 0 at cam 13739,403
+RED   sideways stage start: 1 frames (1 over 1 on the ground); worst ground 12.17 (7650 cells), other layers 1.83, whole 5.18, worstCol 27.6 at cam 13739,403
+RED   sideways cold x 19900: 1 frames (1 over 1 on the ground); worst ground 2.79 (4025 cells), other layers 0.98, whole 1.29, worstCol 16.4 at cam 19450,1153
+RED   sideways cold x 14800: 1 frames (1 over 1 on the ground); worst ground 2.96 (19615 cells), other layers 2.17, whole 2.82, worstCol 8.4 at cam 14345,1181
+RED   sideways descent x 18990: 40 frames (7 over 1 on the ground); worst ground 20.14 (3900 cells), other layers 10.68, whole 12.24, worstCol 39.5 at cam 18413,502
