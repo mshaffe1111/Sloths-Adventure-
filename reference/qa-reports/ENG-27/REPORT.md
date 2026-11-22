@@ -1,3 +1,65 @@
+# ENG-27o REPORT (handed over at the D111 box; base 3ca307dc7; branch t-eng-27 head d2408e867 + this REPORT)
+## EXACT NEXT STEP (ENG-27p, from t-eng-27 head; read only this section, D90)
+ORDER: (1) hopJudged's last RED rows (below) traced and fixed, the test GREEN on all four (Normal 5, 2; Easy 5, 2); (2) pacerLay (its one
+red is B's known plant), pacerRespawn (the invariant GREEN); (3) the race table (middle 24/24, expert 12/12, ride-only 0/24); (4) rule 28
+castBots x40 on 2-1..2-6 base 1465822f7 vs head, row for row (the judge changed on EVERY gate hop: rows WILL move, each traced); tierBots
+1-1 9/9; (5) seed 5's time traced (where he waits, why); (6) B, S. src/ is unchanged (bot and test only), so no suite.
+(1) **hopJudged on d2408e867 (o/hopJudged-d2408e867-27o.txt): Normal 5 GREEN (10 rows), Easy 5 GREEN (21), Easy 2 GREEN (20);
+    Normal 2 RED by ONE row, not a judge miss: `edgeWait q#40 judged t 79.30 x 15632 lag 0 hold 0.200 (no kind) | flown t 79.67 hold
+    0.162 double | came down #40`.** Probed (a stack at startJump, t 79.667): the press came from the EDGE STAND (`this.standing`, intend
+    ~line 2741 on d2408e867: 'a tier bot stopped at an edge: he lets go, comes to a stand, stands his time, then jumps from there',
+    startJump(s.dir, jumpFor(...))), not from a gate; the row is the edgeWait `near` probe's judgment (judge with who.hold[0], lags 0..0.2,
+    `if (HOP_TRACE.on && near) this.judge(...)`) left in `this.judged` when the drawn-hop gate refused, then picked up by the stand's press
+    0.37 s later. He came down where judged (#40), by luck: no gate judged that hop. **Ruling needed (lead), then build it:** (A, my
+    pick, rule 28's own words 'every bot gate that judges a hop'): at a river edge with a float near, the stand's jump goes through the
+    drawn-hop gate (hopFlies, lag 0, pressed only if it lands, else he stands by choice), and the probe's stale `this.judged` is cleared
+    when the gate refuses; or (B) the trace only: clear `this.judged` on refusal, and the stand's hop stays unjudged (a hop no gate judged
+    pressed at a float: the very miss rule 28 forbids). Then hopJudged GREEN on all four, and on to (2).**
+    How to trace a row (what found the four roots below, 1 min each): a copy of the head (NOT the frozen tree), one console.log in hopFlies
+    when HOPDIAG='t0:qid' matches (the judged flight, a J line per frame) and one in pad() for t0-0.05..t0+2.6 (the engine's: P lines:
+    x, y, vx, vy, grounded, on, the pad's steer and jump, lastSteer, travel, slip, release, the thumb frame); the runner is 6 lines
+    (homeRun('middle', setting, seed, 1) with HOP_TRACE on, print the rows that came down elsewhere). Compare J i with P ft i+1.
+## ENG-27o: what was done
+- **Step 1, the thumb flown by the judge (b53c49e49), as ENG-27n's root said:** `DrawnThumb` { drift, slip, release }, one entry per frame
+  from the press, drawn in drawHop on rHop AFTER the hop's own draws (so the hop's draws are as they were); `ThumbAt` (thumbify's state at
+  the judgment: lastSteer, driftPx, releaseArmed, releaseLeft, travel and slip ends from now, thumbSpeed, a tier bot's one lift-off per
+  let-go). hopFlies flies thumbify's order on the steer it means: the drift held the same way, the travel when turning ((2*16 + driftPx) /
+  thumbSpeed, no steer), a slip (no steer for its frames), the late lift-off at a let-go (not on a press frame; lastSteer not moved while it
+  runs). thumbify, on the gate hop's frames (from startJump until he is down, `flyThumb`), uses those draws in place of its own; its own
+  this.r draws are still made under the same conditions. **hopJudged on b53c49e49: Normal 5 GREEN (11 rows), Normal 2 GREEN (17 rows: the
+  lost double at x 14674 is gone).** Easy added to the test (seeds 5, 2): Easy 2 GREEN (21), Easy 5 RED by 2 rows.
+- **Easy 5's two rows, traced frame by frame (o/diag-easy5-q11-27o.txt, o/diag-easy5-q49-27o.txt), two roots (ddd49b0b3):**
+  (a) x 15540, a one-frame tap (hold 0.033), judged landing on log #11, came down LOST: the judge cut the FIRST press a frame early
+  (`age + DT < until`); the engine's cut reads this frame's jumpHeld (engine.ts ~2695) and the bot's pad carries jump while age < hold, so
+  the press frame is always held: the engine flew 20 px higher (vy -576.7 after frame 1 against the judge's -166.7) and came down past the
+  log's end. The q49 row showed the same frame short on a 0.185 s hold (engine held 6 frames, judge 5). Fix: `held = age < until` for
+  both presses (the second was already counted so). (b) x 13811, judged through the bank he stood on (#46) onto a log under its lip
+  (#49), came down on the bank: the judge looked at the target only.
+- **Then two more "came down elsewhere" rows (o/hopJudged-ddd49b0b3-27o.txt; Normal 5, 2 still GREEN): Easy 5 x 12053 (#55 judged, down on
+  #53) and Easy 2 x 13569 (#52 judged, down on #47);** traced (o/diag-easy5-q55-27o.txt, o/diag-easy2-q52-27o.txt): the flights EQUAL the
+  engine's frame for frame; he came down first on a solid above the judged log (#53 is the bank he hopped from, y 1473; #47 solid y 1478).
+  Fix (4f78f9cb3): `FlightOthers`, every platform within 700 px and -160..+220 px of his feet, each where it is at the frame's game time
+  (floatAt), checked each falling frame with the engine's own catch (onFloor: the side a centre may hang past, a log's wider on Easy, the
+  catch drop); caught on anything but the target -> the hop does not land. On 4f78f9cb3: Easy 2 GREEN, Easy 5 x 12053 still down on #53:
+  probed (the list held #53 at x 11910..12190; his centre at the crossing 11891.8, 18 px past its end, moving away): the engine's
+  ledge-landing forgiveness (FORGIVE.easy.landPx 12) caught and nudged him on. Fix (d2408e867): the catch takes landPx (a log's too on
+  Easy) either way he moves (the engine also asks for a carry toward it; taken both ways, the judge only refuses more, never lands more).
+  Also on 4f78f9cb3, Normal 2 showed a row of another kind: `edgeWait q#40 judged t 79.30 x 15632 lag 0 hold 0.200 (no kind) | flown t
+  79.67 hold 0.162 double | came down #40`: an old-judge trace row (the edgeWait's `near` probe, judge with who.hold[0] and lags 0..0.2)
+  whose press came 0.37 s later by another path (came down where judged). NOT traced: which path pressed it (ENG-27n's Learned: the
+  stopped-dead read presses a hop no gate judged).
+- **Checks:** the bot file and the test type-check alone (tsc on firsttimer.ts with node types, --ignoreConfig: 0 errors in tools/; the 23
+  reported are all src/ import.meta.glob, vite's types not loaded); hopJudged as above on every head, each on its own frozen worktree.
+  NOT run: pacerLay, pacerRespawn, the race table, rule 28's diff, tierBots, seed 5's time, B, S (the box went to step 1's four roots
+  and the fifth row's probe). Frozen trees left: /home/user/f-b53c49e49, f-ddd49b0b3, f-4f78f9cb3, f-d2408e867 (this container only).
+- **Lessons applied:** D111 (28 min by `date`, start 6:44 PM ET), D113 (every run backgrounded; no foreground wait: the harness refused one
+  sleep-then-read I tried, and I waited on the notification), D115 (every run on its own frozen worktree at its hash; traces on a separate
+  copy), D114 (src/ unchanged since the base suite, so it carries), D109 (no clock times in messages), D96/D102 (lean reads: the packet's
+  list only), D107/D112 n/a to a member, rule 28 (each miss traced frame by frame before its fix, the fix where the cause is: the judge).
+  **Polish check:** no screen changed (bot and test only); none due.
+- **Learned (proposed for level.md, rule 28's check):** a gate's judge must fly what the ENGINE does with the pad, not what the bot means:
+  the hold counted on the pad's own frames (the press frame held), the thumb's fumbles, and every platform's catch (forgiveness included)
+  on the way down, not only the target's. A judge pinned on one setting is not pinned: Easy's wider catches found three of the four roots.
 # ENG-27n REPORT (handed over at the D111 box, written 6:12 PM ET 11-21 by `date`; base b7a68a8bd; branch t-eng-27 head 40242a902 + this REPORT)
 ## EXACT NEXT STEP (ENG-27o, from t-eng-27 head; read only this section, D90)
 ORDER: (0) the suite's verdict and its RED; (1) the thumb's travel in hopFlies (the one LOST row's root); (2) boardHop onto the drawn
