@@ -7,7 +7,9 @@ rules their rows (D117).** npm ci needs --legacy-peer-deps.
 READ LEAN (D102): this packet; `git show origin/t-eng-27:reference/qa-reports/ENG-27/REPORT.md` top section ONLY (ENG-27q's EXACT NEXT STEP,
 its wait table and split (a)); level.md rule 28; reference/qa-reports/R-165.59/BOTS.md; LAWS headlines; LESSONS D96, D102, D107, D109, D111-D119.
 **Run ReadNotifications at EVERY step boundary, at every push and between long tool rounds. Messages to the lead carry NO clock times (D109).**
-BASE: t-eng-27 at 74a97ad44 (code 16698b8a1). ENG-27q's re-aim (every frame) is on t-eng-27-wip-27q b0c6dd586, NOT ruled.
+BASE: t-eng-27 at ea7686a43 (code 16698b8a1; REPORT only since). ENG-27q's re-aim (every frame) is on t-eng-27-wip-27q e32507e9b
+(plant 8e825b614 + re-aim b0c6dd586), NOT ruled. Its hopJudged Normal 2 row is TRACED (a double caught by the engine's side catch on
+bank #66's end, 6 px past it; the judge's flight landed a few px on), not fixed.
 **THE LEAD'S CONCERN (why b0c6dd586 is not ruled yet):** the drawn-hop gates press only on a frame where the hop drawn WITH THE THUMB'S NOISE
 lands. A player cannot see his own thumb's slip before he presses: he sees the log, the gap and his aim, presses, and his thumb then makes
 the hop land or not. A gate that reads the noisy draw before pressing gives him foresight; re-aiming every frame gives him about 30 tries a
@@ -24,7 +26,12 @@ not simple either way.
    frame), D = yours. Home middle Normal 1-3, Easy 1 and 3; post Normal 4 and 5. Per run: finish s, the race margin against the boat, lives
    lost, presses at a float, land rate per press, falls per press; plus hopJudged and pacerRespawn on C and D, and C's one red row (Normal 2 x
    8256, judged log #69, caught on bank #66) traced.
-4. Splits (b) why every race site shows 72 px; (c) b7a68a8bd's 6 lives on home Normal 1: where each fell and what it cost in race time.
+4. Split (b): why every race site shows 72 px. Split (c) is DONE by ENG-27q: on b7a68a8bd home Normal 1, 4 of the 6 lives fell on the race
+   leg; back at the same x 2.0-2.3 s later his margin had changed by -0.06, -0.61, +0.03, -0.01 s: a fall costs about nothing but the
+   heart, and ONE PAID 0.61 s. The lead's Option A invariant is 'a fall never pays' (pacerRespawn checks the margin at the respawn only).
+   Measure it end to end on all four bots and every listed race seed: when he is back at the fall's x, is his margin ever better than at
+   the fall? Name each fall that pays and why (the respawn point, the boat's hold, a log further on). A plant for the end-to-end form, RED
+   where a fall pays, comes with the table (not a fix: the race call is the lead's).
 5. To the lead: the table and the splits. The lead rules which bot is the honest middle, then the race design call. **No race retune, no boat
    or lay change, and nothing on t-eng-27 before that ruling.**
 6. Then ENG-27p's ORDER from (4) on the ruled bot: rule 28 castBots x40 on 2-1..2-6 base 1465822f7 vs head, row for row; tierBots 1-1 9/9;
