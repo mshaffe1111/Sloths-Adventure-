@@ -1,5 +1,15 @@
 # ENG-27s REPORT (start 8:09 PM ET by `date`; box 8:37 PM ET; base t-eng-27 2d9359932, code 16698b8a1; D', two plants and the fall-pays fix candidate on t-eng-27-wip-27s 7501bf2fb (D117), NOT on t-eng-27)
 ## EXACT NEXT STEP (ENG-27t, read only this section, D90)
+**FIRST, THE LEAD'S LATEST RULING (after my one traced fall), which overrides the fall-pays lines below where they differ: RULED (a), the
+STRICT HOLD** ("a fall never pays"; a named residual would change the rule to get around the defect, law 22). When he reaches the fall's x
+again with a margin better than the one he had at the fall, the boat makes up the excess EASED: never a snap; the ease is long enough
+that no boat visibly jumps, judged on a clip at game speed (D63). **INVARIANT (D112, D121):** once the ease ends, his margin is never better
+than at the fall; if he reaches the finish mid-ease, the excess still counts. **TEST:** the full grid (home and post, seeds 1-6, both settings,
+middle, expert, ride-only: tools/inspect/pacerRespawn.test.ts on wip-27s 7501bf2fb, which already IS that grid), the 7 paying falls RED on
+7501bf2fb (they are: s/grid-7501bf2fb.txt, s/fallpays-grid-RED-7501bf2fb.txt) and GREEN on the fix. **Keep the first-pass rewind under it**
+(db4f97f81: no stretch credited twice). The test must also check the ease (no boat jump per frame over a bound you name, and the excess
+counted at the finish). Build it on wip-27s from 7501bf2fb, the clip and the grid first, rows to the lead; then E and D's judge as ruled
+below. Nothing on t-eng-27 but the REPORT.
 **The lead's rulings (received in my box, for this step):** (1) fall-pays is an engine bug: on a respawn his margin is the one he had when he
 FIRST passed the respawn point, less the time from the fall to his stand (the boat waits for no one); invariant (D112): back at a race-leg
 fall's x his margin is never better than at the fall; pacerRespawn's at-the-stand test deleted (new replaces old); engine change on wip, rows
