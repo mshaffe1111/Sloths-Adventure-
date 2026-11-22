@@ -1,5 +1,20 @@
-# ENG-27t REPORT (start 8:31 PM ET by `date`; box 8:59 PM ET; base t-eng-27-wip-27s 7501bf2fb; the strict hold on t-eng-27-wip-27t: plant cc66545df, fix bf92d3daf (D117), NOT on t-eng-27)
+# ENG-27t REPORT (start 8:31 PM ET by `date`; box 8:59 PM ET; base t-eng-27-wip-27s 7501bf2fb; the strict hold on t-eng-27-wip-27t: plant cc66545df, fix bf92d3daf, the D121 check 7559289ca (D117), NOT on t-eng-27)
 ## EXACT NEXT STEP (ENG-27u, read only this section, D90)
+**THE LEAD'S RULINGS IN MY BOX (verbatim in substance; they come first):** (1) YES: rewrite src/game/gen2/pacerLay.test.ts:71's respawn
+clause to the ruled rule: first-pass margin less DOWN_SECS, then the eased hold; RED on Option A's code, GREEN on ours (new replaces old).
+(2) The ease is ACCEPTED (per-frame numbers 6.76 px peak vs 4.86 at pace, 1.39x; and the clip: the respawn's 228 px re-placement falls
+inside the iris's black frames). One more check across the grid: the re-placement ALWAYS lands inside the iris, never with the view live;
+an assert in pacerRespawn if cheap. Then on to E. **So ENG-27u: (a) pacerLay :71 rewrite (plant on Option A's code, e.g. 16698b8a1's
+piece); (b) the iris assert in pacerRespawn (on the respawn frame, the screen is in the iris: read the engine's iris/fade state there, every
+race-leg respawn on the grid); (c) the full suite on the result; then E, D's judge, the table below.**
+**The lead's question (one line):** the black band down the right edge of the clips is NOT notch emulation (the clip sets no insets) and
+NOT the game's inset (probe on the dev page: the canvas fills the whole 915x412 and 412x915, the camera's view covers the canvas, no
+safe-area variable set): most likely the camera showing past the toy's painted backdrop at the out-and-back's far end, the platforms' art
+drawn past it below. UNVERIFIED: the toy world's width was not read (my probe's field came back empty); check `stage.width` vs camera.x +
+view on a shot before calling it.
+**Done since the first rows:** pacerRespawn now also proves the boat's PLACE pays (D121, 7559289ca on t-eng-27-wip-27t): while it owes,
+its clock + owed grows by exactly a frame's dt, and the owed drains within the ease's named length. GREEN on frozen 7559289ca (2 of 2).
+The plant for it (an ease that never drains, a detached commit on 7559289ca): RUNNING at hand-over (scratchpad grid-plant-drain.txt, dies with my container): re-run it (sed the eased() guard to return 0, commit detached, pacerRespawn must fail with "the boat still owed ... past the ease's length").
 **(1) THE STRICT HOLD IS BUILT AND GREEN on the grid; the lead rules its rows. Then (2) E, (3) D's judge, (4) the table, as ENG-27t's
 packet wrote them (unchanged, none started: box).**
 - **Before (2), finish (1)'s two open checks:** (i) THE CLIP (D63) of the ease: the recording is made (tools/inspect/cliprec27t.ts on
@@ -62,6 +77,10 @@ packet wrote them (unchanged, none started: box).**
   hold); (2), (3), (4).
 - One interim grid ran on my WORK tree, not a frozen one (the look-ahead, uncommitted: 2 of 89 paid); its result only told me the look-ahead
   was wrong; every row above is from a frozen tree at a named hash (D115).
+- **D119 repeated (mine):** a bare `git commit` after a python heredoc ran outside its && chain, in the main checkout, when the worktree add
+  above it failed (the disk allowance was full): it had nothing to commit, no harm, but the countermeasure (one command per heredoc, or the
+  whole chain in a script that stops on error) was not applied. I freed the disk by removing my finished worktrees (git worktree remove).
+  A partial scratch folder fPl may remain in my scratchpad (not a worktree).
 - I restacked my own t-eng-27-wip-27t (force-with-lease from 13bbf0d7a, mine alone) so the plant is its own commit on 7501bf2fb.
 - **D121 on my own test (a proxy, named):** pacerRespawn reads the piece's `owed` (clock + owed is the race the verdict judges, and the
   verdict check proves the excess counts at the dock), but nothing yet proves the boat's PLACE pays it: a piece whose ease never drained
