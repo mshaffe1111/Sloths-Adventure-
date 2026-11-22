@@ -1,0 +1,107 @@
+TAP version 13
+# Subtest: the out-and-back toy (normal): no wall's painted face is stretched past its frame's own aspect, nor past its bank
+not ok 1 - the out-and-back toy (normal): no wall's painted face is stretched past its frame's own aspect, nor past its bank
+  ---
+  type: 'test'
+  failureType: 'testCodeFailure'
+  error: |-
+    a wall's painted face is stretched past its frame's aspect or shows past its bank
+    + actual - expected
+    
+    + [
+    +   'seed 1: the wall x 18666-18726: its face drawn 244x806 from 552x537, x3.40 out of shape',
+    +   "seed 1: the wall x 18666-18726: its face shows 164 past the bank's end",
+    +   'seed 1: the wall x 20006-20066: its face drawn 244x901 from 552x537, x3.80 out of shape',
+    +   "seed 1: the wall x 20006-20066: its face shows 164 past the bank's end",
+    +   'seed 2: the wall x 14604-15024: its face drawn 244x36 from 552x537, x6.59 out of shape',
+    +   'seed 2: the wall x 18477-18537: its face drawn 244x786 from 552x537, x3.31 out of shape',
+    +   "seed 2: the wall x 18477-18537: its face shows 164 past the bank's end",
+    +   'seed 2: the wall x 19817-19877: its face drawn 244x881 from 552x537, x3.71 out of shape',
+    +   "seed 2: the wall x 19817-19877: its face shows 164 past the bank's end",
+    +   'seed 3: the wall x 13775-14415: its face drawn 244x835 from 552x537, x3.52 out of shape',
+    +   'seed 3: the wall x 18239-18299: its face drawn 244x811 from 552x537, x3.42 out of shape',
+    +   "seed 3: the wall x 18239-18299: its face shows 164 past the bank's end",
+    +   'seed 3: the wall x 19579-19639: its face drawn 244x871 from 552x537, x3.67 out of shape',
+    +   "seed 3: the wall x 19579-19639: its face shows 164 past the bank's end"
+    + ]
+    - []
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+  actual:
+    0: 'seed 1: the wall x 18666-18726: its face drawn 244x806 from 552x537, x3.40 out of shape'
+    1: "seed 1: the wall x 18666-18726: its face shows 164 past the bank's end"
+    2: 'seed 1: the wall x 20006-20066: its face drawn 244x901 from 552x537, x3.80 out of shape'
+    3: "seed 1: the wall x 20006-20066: its face shows 164 past the bank's end"
+    4: 'seed 2: the wall x 14604-15024: its face drawn 244x36 from 552x537, x6.59 out of shape'
+    5: 'seed 2: the wall x 18477-18537: its face drawn 244x786 from 552x537, x3.31 out of shape'
+    6: "seed 2: the wall x 18477-18537: its face shows 164 past the bank's end"
+    7: 'seed 2: the wall x 19817-19877: its face drawn 244x881 from 552x537, x3.71 out of shape'
+    8: "seed 2: the wall x 19817-19877: its face shows 164 past the bank's end"
+    9: 'seed 3: the wall x 13775-14415: its face drawn 244x835 from 552x537, x3.52 out of shape'
+    10: 'seed 3: the wall x 18239-18299: its face drawn 244x811 from 552x537, x3.42 out of shape'
+    11: "seed 3: the wall x 18239-18299: its face shows 164 past the bank's end"
+    12: 'seed 3: the wall x 19579-19639: its face drawn 244x871 from 552x537, x3.67 out of shape'
+    13: "seed 3: the wall x 19579-19639: its face shows 164 past the bank's end"
+  operator: 'deepStrictEqual'
+  stack: |-
+    TestContext.<anonymous> (src/game/groundStack.test.ts:596:12)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
+  ...
+# Subtest: the out-and-back toy (easy): no wall's painted face is stretched past its frame's own aspect, nor past its bank
+not ok 2 - the out-and-back toy (easy): no wall's painted face is stretched past its frame's own aspect, nor past its bank
+  ---
+  type: 'test'
+  failureType: 'testCodeFailure'
+  error: |-
+    a wall's painted face is stretched past its frame's aspect or shows past its bank
+    + actual - expected
+    
+    + [
+    +   'seed 1: the wall x 19118-19178: its face drawn 244x806 from 552x537, x3.40 out of shape',
+    +   "seed 1: the wall x 19118-19178: its face shows 164 past the bank's end",
+    +   'seed 1: the wall x 20458-20518: its face drawn 244x901 from 552x537, x3.80 out of shape',
+    +   "seed 1: the wall x 20458-20518: its face shows 164 past the bank's end",
+    +   'seed 2: the wall x 18973-19033: its face drawn 244x786 from 552x537, x3.31 out of shape',
+    +   "seed 2: the wall x 18973-19033: its face shows 164 past the bank's end",
+    +   'seed 2: the wall x 20313-20373: its face drawn 244x881 from 552x537, x3.71 out of shape',
+    +   "seed 2: the wall x 20313-20373: its face shows 164 past the bank's end",
+    +   'seed 3: the wall x 18784-18844: its face drawn 244x807 from 552x537, x3.40 out of shape',
+    +   "seed 3: the wall x 18784-18844: its face shows 164 past the bank's end",
+    +   'seed 3: the wall x 20124-20184: its face drawn 244x871 from 552x537, x3.67 out of shape',
+    +   "seed 3: the wall x 20124-20184: its face shows 164 past the bank's end"
+    + ]
+    - []
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+  actual:
+    0: 'seed 1: the wall x 19118-19178: its face drawn 244x806 from 552x537, x3.40 out of shape'
+    1: "seed 1: the wall x 19118-19178: its face shows 164 past the bank's end"
+    2: 'seed 1: the wall x 20458-20518: its face drawn 244x901 from 552x537, x3.80 out of shape'
+    3: "seed 1: the wall x 20458-20518: its face shows 164 past the bank's end"
+    4: 'seed 2: the wall x 18973-19033: its face drawn 244x786 from 552x537, x3.31 out of shape'
+    5: "seed 2: the wall x 18973-19033: its face shows 164 past the bank's end"
+    6: 'seed 2: the wall x 20313-20373: its face drawn 244x881 from 552x537, x3.71 out of shape'
+    7: "seed 2: the wall x 20313-20373: its face shows 164 past the bank's end"
+    8: 'seed 3: the wall x 18784-18844: its face drawn 244x807 from 552x537, x3.40 out of shape'
+    9: "seed 3: the wall x 18784-18844: its face shows 164 past the bank's end"
+    10: 'seed 3: the wall x 20124-20184: its face drawn 244x871 from 552x537, x3.67 out of shape'
+    11: "seed 3: the wall x 20124-20184: its face shows 164 past the bank's end"
+  operator: 'deepStrictEqual'
+  stack: |-
+    TestContext.<anonymous> (src/game/groundStack.test.ts:596:12)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+1..2
+# tests 2
+# suites 0
+# pass 0
+# fail 2
+# cancelled 0
+# skipped 0
+# todo 0

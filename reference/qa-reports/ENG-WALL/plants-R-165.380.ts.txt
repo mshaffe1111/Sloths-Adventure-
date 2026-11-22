@@ -1,0 +1,164 @@
+
+// ENG-WALL (R-165.380, the lead's ruling (A); ENG-GROUND-e's plant): a tall wall's painted face is never stretched past its frame's own
+// aspect, and none of it shows past its bank's span. The high canopy wall's root-wall picture (protoArt drawWallArt, each world's 'wall'
+// frame, a square soil cutaway with straight sides) was blitted once from its lip to the ground: on the toy's descent 806 tall from a
+// 537-row frame squeezed to 244 wide, x3.4 out of shape, its straight side one long vertical edge, and 170 past a 60-wide column.
+// TILE_STRETCH: STAGE-RULES.md:275 (5b 2, 'no texture stretched in strips') + 10%, the slack of a frame fitted to its bank's lip.
+const TILE_STRETCH = 1.1;
+for (const difficulty of ['normal', 'easy'] as const) {
+  test(`the out-and-back toy (${difficulty}): no wall's painted face is stretched past its frame's own aspect, nor past its bank`, async () => {
+    const { KIT_FRAMES } = await import('./kitAtlasData.ts');
+    const f = KIT_FRAMES[2].wall;
+    let walls = 0;
+    const bad: string[] = [];
+    for (const seed of [1, 2, 3]) {
+      const cfg = { ...towerCfg('2-97', 'sprint'), unlocked: true };
+      const st = w2Finish(buildGen2Stage({ config: cfg, kit: homeKit('2-97', POST_CODE), seed, difficulty }) as never, difficulty) as unknown as {
+        platforms: Platform[]; rivers: Array<{ x0: number; x1: number; surfaceY: number }>; gen2?: { tower?: { legs?: unknown } };
+      };
+      setKitWorld(2);
+      setGroundLook(undefined);
+      setGroundPaint(true);
+      setStacks(st.gen2?.tower?.legs ?? [], st.rivers);
+      const banks = st.platforms.filter(paintedBank);
+      // (a high canopy wall: a bank with a floor 150 or more below its top meeting its left end, as drawGround's isWall)
+      for (const w of banks.filter((p) => banks.some((q) => q !== p && Math.abs(q.x + q.width - p.x) < 2 && q.y - p.y > 150))) {
+        const r = new RecordingCtx();
+        const foot = banks.find((q) => Math.abs(q.x + q.width - w.x) < 2)!.y;
+        const view = { x0: w.x - 300, x1: w.x + 500, y0: w.y - 200, y1: foot + 200 };
+        drawProtoScene(r as unknown as CanvasRenderingContext2D, st.platforms, [], [], 0, view, { brokeAt: new Map(), movedAt: new Map() }, () => { r.off = true; });
+        r.off = true;
+        const pics = r.draws.filter((d) => d.src && d.src[2] > 0 && Math.abs(d.src[0] - f.x) < 1 && Math.abs(d.src[2] - f.w) < f.w * 0.05 + 1 && d.box[0] < w.x + 20 && d.box[2] > w.x);
+        if (!pics.length) continue;
+        walls++;
+        const tag = `seed ${seed}: the wall x ${Math.round(w.x)}-${Math.round(w.x + w.width)}`;
+        for (const d of pics) {
+          const [, , sw, sh] = d.src!, dw = d.box[2] - d.box[0], dh = d.box[3] - d.box[1];
+          const k = Math.max((dh / sh) / (dw / sw), (dw / sw) / (dh / sh));
+          if (k > TILE_STRETCH) bad.push(`${tag}: its face drawn ${Math.round(dw)}x${Math.round(dh)} from ${sw}x${sh}, x${k.toFixed(2)} out of shape`);
+          // (past its bank: any of the face's box right of the bank's end, inside every clip in force, shows in the air)
+          let past = 0;
+          for (let x = w.x + w.width + 4; x < d.box[2]; x += 8) for (let y = d.box[1] + 4; y < d.box[3]; y += 16) {
+            if (d.clips.every((c) => inside(c.polys, c.evenodd, x, y))) past = Math.max(past, x - (w.x + w.width));
+          }
+          if (past > 0) bad.push(`${tag}: its face shows ${Math.round(past)} past the bank's end`);
+        }
+      }
+    }
+    setStacks(undefined);
+    assert.ok(walls >= 3, `the toy has high canopy walls with the root-wall face (${walls})`);
+    assert.deepEqual(bad, [], 'a wall\'s painted face is stretched past its frame\'s aspect or shows past its bank');
+  });
+}
+
+// ENG-WALL (R-165.380 (a), ENG-GROUND-e item 3): the soil below a lower floor is darkened by depth from THAT floor's top. The wall's soil
+// darkened from its own top (585) while the floor's darkened from 1450: from the floor's top to the view's foot a darker band stood right
+// of the floor's end with a straight left side, the lead's 'separate strip with a straight vertical seam'.
+/** a recording canvas that also keeps each fill's darkening: a vertical gradient's stops, or a solid colour */
+class ShadeCtx extends RecordingCtx {
+  fills: Array<{ i: number; g?: { y0: number; y1: number; stops: Array<[number, string]> }; solid?: string }> = [];
+  createLinearGradient(_x0: number, y0: number, _x1: number, y1: number) {
+    const g = { y0, y1, stops: [] as Array<[number, string]>, addColorStop(o: number, c: string) { g.stops.push([o, c]); } };
+    return g as unknown as { addColorStop(): void };
+  }
+  fillRect(x: number, y: number, w: number, h: number) {
+    const n = this.draws.length;
+    super.fillRect(x, y, w, h);
+    if (this.draws.length > n) {
+      const fs = this.fillStyle as { stops?: Array<[number, string]>; y0: number; y1: number } | string;
+      this.fills.push(typeof fs === 'string' ? { i: n, solid: fs } : { i: n, g: fs as never });
+    }
+  }
+}
+const alphaOf = (c: string) => Number(/rgba\([^)]*,\s*([\d.]+)\)/.exec(c)?.[1] ?? 0);
+const rgbOf = (c: string) => /rgba\(([^,]+,[^,]+,[^,]+),/.exec(c)?.[1]?.replace(/\s/g, '');
+/** how dark the depth darkening leaves (x, y): every depth band (a vertical gradient, or the solid of its last stop) over that spot */
+function darkAt(r: ShadeCtx, x: number, y: number): number {
+  const deep = new Set(r.fills.filter((f) => f.g && f.g.stops.length).map((f) => rgbOf(f.g!.stops[f.g!.stops.length - 1][1])));
+  let keep = 1;
+  for (const f of r.fills) {
+    const d = r.draws[f.i];
+    if (!(x >= d.box[0] && x <= d.box[2] && y >= d.box[1] && y <= d.box[3]) || !d.clips.every((c) => inside(c.polys, c.evenodd, x, y))) continue;
+    let a = 0;
+    if (f.g && f.g.stops.length >= 2) {
+      const t = Math.max(0, Math.min(1, (y - f.g.y0) / (f.g.y1 - f.g.y0 || 1)));
+      a = alphaOf(f.g.stops[0][1]) + (alphaOf(f.g.stops[f.g.stops.length - 1][1]) - alphaOf(f.g.stops[0][1])) * t;
+    } else if (f.solid && deep.has(rgbOf(f.solid))) a = alphaOf(f.solid);
+    keep *= 1 - a;
+  }
+  return 1 - keep;
+}
+for (const difficulty of ['normal', 'easy'] as const) {
+  test(`the out-and-back toy (${difficulty}): the soil below a lower floor darkens from that floor's top, no seam at the floor's end`, () => {
+    let walls = 0;
+    const bad: string[] = [];
+    for (const seed of [1, 2, 3]) {
+      const cfg = { ...towerCfg('2-97', 'sprint'), unlocked: true };
+      const st = w2Finish(buildGen2Stage({ config: cfg, kit: homeKit('2-97', POST_CODE), seed, difficulty }) as never, difficulty) as unknown as {
+        platforms: Platform[]; rivers: Array<{ x0: number; x1: number; surfaceY: number }>; gen2?: { tower?: { legs?: unknown } };
+      };
+      setKitWorld(2);
+      setGroundLook(undefined);
+      setGroundPaint(true);
+      setStacks(st.gen2?.tower?.legs ?? [], st.rivers);
+      const banks = st.platforms.filter(paintedBank);
+      for (const w of banks.filter((p) => banks.some((q) => q !== p && Math.abs(q.x + q.width - p.x) < 2 && q.y - p.y > 150))) {
+        const floor = banks.filter((q) => q !== w && Math.abs(q.x + q.width - w.x) < 2 && q.y - w.y > 150).sort((a, b) => a.y - b.y)[0];
+        const r = new ShadeCtx();
+        const view = { x0: w.x - 300, x1: w.x + 500, y0: w.y - 200, y1: floor.y + 500 };
+        drawProtoScene(r as unknown as CanvasRenderingContext2D, st.platforms, [], [], 0, view, { brokeAt: new Map(), movedAt: new Map() }, () => { r.off = true; });
+        r.off = true;
+        if (!r.fills.some((f) => f.g)) continue;
+        walls++;
+        let worst = 0, at = 0;
+        for (let y = floor.y + 40; y < view.y1 - 10; y += 20) {
+          const step = Math.abs(darkAt(r, w.x - 6, y) - darkAt(r, w.x + 6, y));
+          if (step > worst) { worst = step; at = y; }
+        }
+        if (worst > 0.04) bad.push(`seed ${seed}: the wall x ${Math.round(w.x)}-${Math.round(w.x + w.width)} over the floor at ${Math.round(floor.y)}: a shade step of ${worst.toFixed(2)} across the floor's end at y ${Math.round(at)}`);
+      }
+    }
+    setStacks(undefined);
+    assert.ok(walls >= 3, `the toy has high canopy walls beside a lower floor (${walls})`);
+    assert.deepEqual(bad, [], 'a straight shade seam stands at a lower floor\'s end under a wall');
+  });
+}
+
+// ENG-WALL (R-165.380 (b), ENG-GROUND-e item 3): no pale water fill shows past a wall's end face where the bank's soil runs on. The
+// stage's water line (stage.waterY, drawn across the view behind the ground: engine drawWaterAndFlags) showed from it to the view's foot
+// right of the column's end face, inside the column's own span: there the bank's soil must cover it.
+for (const difficulty of ['normal', 'easy'] as const) {
+  test(`the out-and-back toy (${difficulty}): no water fill shows past a wall's end face inside its bank`, () => {
+    let walls = 0;
+    const bad: string[] = [];
+    for (const seed of [1, 2, 3]) {
+      const cfg = { ...towerCfg('2-97', 'sprint'), unlocked: true };
+      const st = w2Finish(buildGen2Stage({ config: cfg, kit: homeKit('2-97', POST_CODE), seed, difficulty }) as never, difficulty) as unknown as {
+        platforms: Platform[]; rivers: Array<{ x0: number; x1: number; surfaceY: number }>; gen2?: { tower?: { legs?: unknown } }; waterY?: number;
+      };
+      if (st.waterY === undefined) continue;
+      setKitWorld(2);
+      setGroundLook(undefined);
+      setGroundPaint(true);
+      setStacks(st.gen2?.tower?.legs ?? [], st.rivers);
+      const banks = st.platforms.filter(paintedBank);
+      // (a wall whose right side drops away: no bank meets its right end)
+      for (const w of banks.filter((p) => banks.some((q) => q !== p && Math.abs(q.x + q.width - p.x) < 2 && q.y - p.y > 150) &&
+        !banks.some((q) => q !== p && Math.abs(q.x - (p.x + p.width)) < 2))) {
+        const r = new RecordingCtx();
+        const view = { x0: w.x - 300, x1: w.x + 500, y0: w.y - 200, y1: st.waterY + 500 };
+        drawProtoScene(r as unknown as CanvasRenderingContext2D, st.platforms, [], [], 0, view, { brokeAt: new Map(), movedAt: new Map() }, () => { r.off = true; });
+        r.off = true;
+        walls++;
+        let open = 0, at: Pt = [0, 0];
+        for (let y = st.waterY + 10; y < view.y1 - 10; y += 20) for (let x = w.x + 4; x < w.x + w.width - 2; x += 4) {
+          if (!covered(r, x, y)) { open++; at = [x, y]; }
+        }
+        if (open) bad.push(`seed ${seed}: the wall x ${Math.round(w.x)}-${Math.round(w.x + w.width)}: ${open} spots of its span below the water line ${st.waterY} show the water (e.g. x ${Math.round(at[0])}, y ${Math.round(at[1])})`);
+      }
+    }
+    setStacks(undefined);
+    assert.ok(walls >= 3, `the toy has walls whose right side drops away over the water line (${walls})`);
+    assert.deepEqual(bad, [], 'the water fill shows past a wall\'s end face inside its bank');
+  });
+}

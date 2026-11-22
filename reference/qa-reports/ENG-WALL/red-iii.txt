@@ -1,0 +1,76 @@
+TAP version 13
+# Subtest: the out-and-back toy (normal): no water fill shows past a wall's end face inside its bank
+not ok 1 - the out-and-back toy (normal): no water fill shows past a wall's end face inside its bank
+  ---
+  type: 'test'
+  failureType: 'testCodeFailure'
+  error: |-
+    the water fill shows past a wall's end face inside its bank
+    + actual - expected
+    
+    + [
+    +   'seed 1: the wall x 20006-20066: 184 spots of its span below the water line 1687 show the water (e.g. x 20062, y 2157)',
+    +   'seed 2: the wall x 19817-19877: 179 spots of its span below the water line 1656 show the water (e.g. x 19873, y 2126)',
+    +   'seed 3: the wall x 19579-19639: 183 spots of its span below the water line 1684 show the water (e.g. x 19635, y 2154)'
+    + ]
+    - []
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+  actual:
+    0: 'seed 1: the wall x 20006-20066: 184 spots of its span below the water line 1687 show the water (e.g. x 20062, y 2157)'
+    1: 'seed 2: the wall x 19817-19877: 179 spots of its span below the water line 1656 show the water (e.g. x 19873, y 2126)'
+    2: 'seed 3: the wall x 19579-19639: 183 spots of its span below the water line 1684 show the water (e.g. x 19635, y 2154)'
+  operator: 'deepStrictEqual'
+  stack: |-
+    TestContext.<anonymous> (src/game/groundStack.test.ts:708:12)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.start (node:internal/test_runner/test:944:17)
+    startSubtestAfterBootstrap (node:internal/test_runner/harness:296:17)
+    run (node:internal/test_runner/harness:307:12)
+    test (node:internal/test_runner/harness:316:12)
+    <anonymous> (src/game/groundStack.test.ts:677:3)
+  ...
+# Subtest: the out-and-back toy (easy): no water fill shows past a wall's end face inside its bank
+not ok 2 - the out-and-back toy (easy): no water fill shows past a wall's end face inside its bank
+  ---
+  type: 'test'
+  failureType: 'testCodeFailure'
+  error: |-
+    the water fill shows past a wall's end face inside its bank
+    + actual - expected
+    
+    + [
+    +   'seed 1: the wall x 20458-20518: 175 spots of its span below the water line 1669 show the water (e.g. x 20514, y 2139)',
+    +   'seed 2: the wall x 20313-20373: 170 spots of its span below the water line 1641 show the water (e.g. x 20369, y 2111)',
+    +   'seed 3: the wall x 20124-20184: 181 spots of its span below the water line 1665 show the water (e.g. x 20180, y 2135)'
+    + ]
+    - []
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+  actual:
+    0: 'seed 1: the wall x 20458-20518: 175 spots of its span below the water line 1669 show the water (e.g. x 20514, y 2139)'
+    1: 'seed 2: the wall x 20313-20373: 170 spots of its span below the water line 1641 show the water (e.g. x 20369, y 2111)'
+    2: 'seed 3: the wall x 20124-20184: 181 spots of its span below the water line 1665 show the water (e.g. x 20180, y 2135)'
+  operator: 'deepStrictEqual'
+  stack: |-
+    TestContext.<anonymous> (src/game/groundStack.test.ts:708:12)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
+  ...
+1..2
+# tests 2
+# suites 0
+# pass 0
+# fail 2
+# cancelled 0
+# skipped 0
+# todo 0
