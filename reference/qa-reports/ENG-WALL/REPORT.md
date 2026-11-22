@@ -35,7 +35,17 @@ c884525bf + t-art-under 0ebcb8f7e's w2.webp, groundAtlasData.ts, inventory/w2.js
       squares entering the view's margin first) and, on a cold view (stage start, respawn), paint the view's squares before its first
       frame (one-time cost behind the card). The live path stays only for no-canvas cases. Root fix of the pop and the band at once;
       plant: first frame == settled frame at the corner and over a fast descent. Cost: one burst at start/respawn, measured in drawcheck.
-2-5. NOT STARTED: (ii) wide walls, (iii) water past a face, puzzle rooms (show first), the stills of item 4, lockall, drawcheck, gates.
+3. PUZZLE ROOMS, SHOWN FIRST (b/puzzle-gates-asis-3-2_6-7_7-3-upright-top-sideways-bottom.jpg; b/gate-probe.mjs): rooms with a
+   shut gate: 3-2, 6-7, 7-3 (drawWallArt); 2-9 is 'reeds' (drawReedWall, not this); World 5's Butler (drawButler) also calls drawWallArt
+   (not shot). Each is a freestanding 90-wide pillar over the door, the world's near-square 'wall' frame blitted to 116 x 256-376: x2.26
+   (3-2), x3.53 (6-7), x3.23 (7-3), all past TILE_STRETCH 1.1. At game size they read as tall pillars (the textures' streaks run along
+   the stretch); the cap moss (3-2) and the bark's top (6-7) smear.
+   MOCK (cap 40% + middle 25% repeated at its own aspect, every other mirrored + foot): REJECTED by me (b/puzzle-gates-asis-vs-
+   bandmock-upright-REJECTED.jpg): it reads as wallpaper (diamonds 6-7, zigzag ropes 7-3, stacked glowing bricks 3-2), worse than as is.
+   Options sent to the lead: (a) MY PICK: a tall gate-pillar piece per world (3, 6, 7, 5?) painted on Hugging Face at about 1:3, drawn
+   at its own shape, fitted by cutting the top behind its cap; (b) as-is under a named exception (only with the lead's ruling);
+   (c) whole frames stacked (worse). Not built.
+2, 4-5. NOT STARTED: (ii) wide walls, (iii) water past a face, the stills of item 4, lockall, drawcheck, gates.
 Polish check: the x 20006 corner, upright and sideways, 2x: FAILS on the first frames (the band, 14-17 luma); settled still a faint
 straight line (2.7-3.8). Nothing else shot. Nothing lands.
 Pushback: the packet's 'turn the engine's draws off one at a time' found nothing on a settled frame: the band is TIME-dependent (which
