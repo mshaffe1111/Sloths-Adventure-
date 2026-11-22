@@ -1,3 +1,47 @@
+# ENG-27r REPORT (start 7:43 PM ET by `date`; box 8:11 PM ET; base t-eng-27 ea7686a43; candidate D on t-eng-27-wip-27r e75664cde (D117), NOT on t-eng-27)
+## EXACT NEXT STEP (ENG-27s, read only this section, D90)
+0. **The suite on 74a97ad44 is running in MY container** (frozen worktree, scratchpad suite.sh; tsc PASS, unit shards running when the box closed).
+   It dies with my container: RE-RUN it (D114/D118), and run the same suite on D e75664cde beside it (D's tsc is clean; only its toy test was run).
+1. **Run hopJudged on D in full** (`tools/inspect/hopJudged.test.ts`, the four home rows): D presses on the aim, so a flown draw can now fall;
+   judge() records it as q -2 and the test reads q -2 as consistent only if he is lost (`landed === 'lost'`). Name every q -2 row and whether
+   any q -2 row came down SAFE (that would be a judge flight error, the Normal 2 #66 kind). Then the four-bot table (packet step 3), frozen,
+   ONE run at a time beside the suite: A b7a68a8bd, B 74a97ad44, C b0c6dd586, D e75664cde; home middle Normal 1-3, Easy 1 and 3; post Normal
+   4 and 5; finish s, race margin vs the boat, lives lost, presses at a float, land rate per press, falls per press; hopJudged and pacerRespawn
+   on C and D; C's Normal 2 x 8256 row traced. Worktrees for A, B, C were made (scratchpad wtA/wtB/wtC) and die with this container.
+2. Then split (b) (every race site 72 px) and the fall-pays measure end to end (packet step 4) with its RED plant. Not started (box).
+## Done-items
+- **Step 1, the code answer (74a97ad44 = code 4df2d084c; tools/inspect/firsttimer.ts):** every drawn-hop gate reads the DRAWN NOISE of the very hop
+  it then flies. The hop: `drawHop` :4174-4199 draws kind, hold, d2, dblAt, hold2, upOnly AND the thumb's fumbles for 75 frames (drift, slip,
+  late let-go, :4192-4198) on rHop. Each gate judges `hopFlies(q, ..., h, t, vx, margin, this.v2(), this.thumbAt(), ...)`, whose flight plays
+  h.thumb frame by frame (:1037-1060) from the thumb's state now (thumbAt :4212): edgeStand :2769-2770, edgeWait :3041-3042, race :3102-3106
+  (bank 24 px, logs RACE_MARGIN), upstream :3148-3149. The press flies that same h: `gateHop = h`, startJump :4258-4262 takes its kind, hold,
+  d2, upOnly, and `flyThumb = gate.thumb` :4271, played by thumbify :4105-4110. So B presses only when the noise already drawn for this
+  press lands: FORESIGHT, one draw held, redrawn whole (noise too) every 0.5 s beat (:2786-2788, :3058-3060, :3156-3158). **On b0c6dd586:** the
+  same read, but `gateDraw` :~3000 (`return this.drawHop(dir)`, called at :2771 edgeStand, :3041 edgeWait, and the race and upstream sites)
+  draws a fresh hop, noise included, on EVERY frame judged: foresight with about 30 tries a second, as the lead said.
+- **Step 2, candidate D (t-eng-27-wip-27r):** plant 78979d13b first: the four gates (5 call sites) read through one exported `gateLands`
+  (B's read kept: noise and thumbAt) and a toy in hopJudged.test.ts ('no foresight, ENG-27r'): a single held 0.2 s at a solid 120 px on;
+  aimed it lands, with a 24-frame slip drawn on the press frame it falls short; the gate must press it. **RED on the plant** ('the gate read the
+  slip drawn for the hop before he pressed'; the toy's own first assert, the aim lands, passed). **D e75664cde:** `gateLands` judges
+  `{ ...h, thumb: undefined }` with no thumbAt: the aim (kind, holds, second press, beat: the tier's draws, held for the wait on B's beat),
+  the log, the gap. The press still flies h with its drawn noise (flyThumb, unchanged). judge() :~1727 still flies the FULL drawn hop and
+  now records a fall too (q -2) so the hop judged is the hop flown; hopJudged's came-down check reads q -2 as right only if `landed === 'lost'`.
+  **Toy GREEN on D**; tsc clean on D. Nothing else run on D.
+## Pushback
+- The aim keeps B's per-wait draws of kind and hold and B's 0.5 s beat (D116: that beat has no source). The hold drawn is the testers' habit, so
+  the aim still re-draws its kind and hold every 0.5 s: about 2 tries a second at a lucky hold (not a lucky thumb). If the lead wants the aim
+  fixed for the whole wait, or the hold the tier's median (who.hold[0]), it is one line in each gate; the table should say which.
+- The packet asked for 6 heavy items in a 28-minute box; the suite alone outlives the box. I cut scope (table, splits, fall-pays not started)
+  rather than any check.
+## Unresolved
+- The suite (B and D), hopJudged in full on D, the four-bot table, split (b), the fall-pays measure and its plant: NOT done.
+- LESSONS D96, D102, D107, D109, D111-D119 not read in full (box); applied as the packet states them: D109 (no clock times to the lead), D111
+  (box), D113 (background runs only), D114/D118 (suite first), D115 (frozen worktrees), D117 (candidate on wip).
+## Method update
+- level.md rule 28 should add: a gate decides on the hop AS AIMED (no thumb noise); the judge records the FLOWN draw's prediction, a fall included.
+## Turnover note
+- reference/handoffs/engine-core.md NOT rewritten (box); this section is the turnover.
+
 # ENG-27q REPORT (start 7:27 PM ET by `date`; box 7:55 PM ET; base t-eng-27 4df2d084c; bot change on t-eng-27-wip-27q b0c6dd586 (D117), NOT on t-eng-27)
 ## EXACT NEXT STEP (ENG-27r, read only this section, D90)
 0. **The lead (on this report): b0c6dd586 is NOT ruled; it stays on wip-27q.** The gates press only when the hop drawn WITH the thumb's noise lands,
