@@ -11,7 +11,11 @@
  * THE STRICT HOLD (the lead's ruling (a), ENG-27t): the first-pass rewind alone left 7 of 89 falls paying (RED on 7501bf2fb, +0.10..0.84 s);
  * back at the fall's x the boat makes up the excess EASED. So his margin back at the x is read against the boat's clock with the excess
  * still owed counted (the race the verdict judges), and the ease itself is checked: on no frame does the boat move more than (1 + EASE_PEAK)
- * of its own step (no jump; respawn frames excepted, the respawn re-places it), and a verdict counts the excess still owed.
+ * of its own step (no jump), and a verdict counts the excess still owed.
+ * THE IRIS (the lead's ruling, ENG-27u): the one frame the boat may move more than that is the respawn's re-placement, and it must land
+ * inside the iris's black frame, never with the view live: on any frame the boat moves over the bound, the iris the engine draws that
+ * frame (engine.ts drawIris: closing on him through the life-lost beat, then open from IRIS_OPEN_SECS) is shut (k = 1: the hole's radius
+ * 0, the whole view black). Every race-leg respawn on the grid.
  */
 import '../../src/game/headlessDom.ts';
 import test from 'node:test';
@@ -20,6 +24,8 @@ import { homeRun } from './homeToys.ts';
 import { SKILLS } from './firsttimer.ts';
 import { HOME_CODE, POST_CODE } from '../../src/game/gen2/toyHome.ts';
 import { pacerMargin, pacerX } from '../../src/game/pacer.ts';
+import { DOWN_SECS } from '../../src/game/physics.ts';
+import { IRIS_OPEN_SECS } from '../../src/game/engine.ts';
 
 /** a frame of the fixed loop (30 fps) of the boat's travel, and as much again for his own step on the frame he lands */
 const TOL = 2 / 30;
@@ -32,6 +38,15 @@ const EASE_PEAK = 0.5;
 /** the ease's breaches of one run: a frame the boat moved more than (1 + EASE_PEAK) of its step, a verdict that dropped the excess owed */
 const easeBad: string[] = [];
 let eased = 0;
+/** the boat's re-placements seen (frames it moved over the bound), and those with the view live (the iris not shut) */
+let replaced = 0;
+const irisBad: string[] = [];
+
+/** the iris the engine draws after this frame (engine.ts drawIris's k: 1 is shut, the whole view black; 0 is open) */
+function irisK(e: Record<string, any>): number {
+  if (e.down) return Math.min(1, Math.max(0, (e.down.t - DOWN_SECS * 0.3) / (DOWN_SECS * 0.7)));
+  return e.irisOpen > 0 ? e.irisOpen / IRIS_OPEN_SECS : 0;
+}
 
 function falls(bot: 'middle' | 'expert' | 'ride', code: string, setting: 'normal' | 'easy', seed: number): { x: number; m: number; back?: number; pend?: number }[] {
   const was = { ...SKILLS };
@@ -53,8 +68,13 @@ function falls(bot: 'middle' | 'expert' | 'ride', code: string, setting: 'normal
       const x = piece.clock === null ? null : pacerX(P as never, piece.clock);
       const step = Math.abs(P.x1 - P.x0) / P.seconds / 30;
       if ((piece.owed ?? 0) > 0) eased++;
-      if (x !== null && bx !== null && !fell && !e.down && !wasDown && Math.abs(x - bx) > (1 + EASE_PEAK) * step + 1e-6)
-        easeBad.push(`${bot} ${setting} ${seed}: the boat moved ${Math.abs(x - bx).toFixed(2)} px in a frame (its step ${step.toFixed(2)}, bound ${((1 + EASE_PEAK) * step).toFixed(2)})`);
+      // (any move over the bound is a re-placement, and it must fall on a frame the iris shuts: the respawn's, never with the view live)
+      if (x !== null && bx !== null && Math.abs(x - bx) > (1 + EASE_PEAK) * step + 1e-6) {
+        const k = irisK(e);
+        if (wasDown && !e.down) replaced++;
+        if (k < 1 - 1e-9 || !(wasDown && !e.down))
+          (k < 1 - 1e-9 ? irisBad : easeBad).push(`${bot} ${setting} ${seed} frame ${frame}: the boat moved ${Math.abs(x - bx).toFixed(2)} px in a frame (its step ${step.toFixed(2)}, bound ${((1 + EASE_PEAK) * step).toFixed(2)}), the iris ${k.toFixed(3)} (1 is shut)${wasDown && !e.down ? ' on the respawn' : ''}`);
+      }
       if (piece.verdict && !judged) {
         judged = true;
         if (piece.verdict.him + 0.05 + 1e-9 < (piece.clock ?? 0) + (piece.owed ?? 0) - 1 / 30)
@@ -111,6 +131,8 @@ for (const [name, code] of [['home', HOME_CODE], ['post', POST_CODE]] as const) 
     assert.ok(n > 0, `${name}: no race-leg fall in the grid (the test judges nothing)`);
     assert.deepEqual(bad, [], `${name}: ${bad.length} of ${n} race-leg falls paid:\n${bad.join('\n')}`);
     assert.deepEqual(easeBad, [], `${name}: the ease broke ${easeBad.length} times:\n${easeBad.join('\n')}`);
-    console.log(`# ${name}: ${n} race-leg falls judged; ${eased} frames of ease on the grid`);
+    assert.ok(replaced > 0, `${name}: no re-placement of the boat on the grid (the iris check judges nothing)`);
+    assert.deepEqual(irisBad, [], `${name}: ${irisBad.length} re-placements of the boat with the view live:\n${irisBad.join('\n')}`);
+    console.log(`# ${name}: ${n} race-leg falls judged; ${eased} frames of ease on the grid; ${replaced} re-placements of the boat, every one inside the iris's shut frame`);
   });
 }
