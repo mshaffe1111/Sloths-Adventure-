@@ -36,13 +36,16 @@ top against `riverAt(rivers, x, q.y)`. No stage id, no x (generalitycheck PASS).
 25 flips (18 gains, 7 new fails); 332 other rows moved (he reads every floor on 2-6 differently; times move). The 7 new fails, traced
 (b26p/cand-*.rl.txt, cand-*.tr.txt):
 - adult E 9, 14, 25, 30, 40: a stall while riding a moving piece (vx 0, x and y moving with it; 14/25/30 at x 985-995 y 1041, the
-  wheel bucket of BUILD-26o's cause B), rescued about 9 s later. Cause B, open; the fix only changes when he gets there.
+  wheel bucket of BUILD-26o's cause B), rescued about 9 s later. **The lead's ruling: each is 'base pass from the wrong read, now meets
+  cause B'** (R-165.393, next on the list); the wrong read is not kept to hide it.
 - kid E 40: the same sunken step at the foot (#15, #18, #17 near y 6369): he now reads the floors right, but a walk-off lands him 6 px
   before #15's lip at 285 px/s (his stop takes 12 px): slid off. A narrower residue of this family (a drop that lands inside his stop).
 - adult N 4: rides the drifting log #24 on the river at x 486-1284 to its end and drops 323 px instead of stepping 28 px up onto the
   bank #22: a log-ride bank-end fault, a new family; on the base he was elsewhere at that time.
-**Not done in box 1 (named plainly):** rule 28 on 2-1..2-5 and 1-4 (running); the child's median time on 2-6 rose 152.5 -> 188.2 s
-(Normal) with no fail, not yet explained; the suite, tierBots and the --proven yield are not run. The same x-alone river read lives at
+**2-1 x40: 0 flips, 0 moved rows (360 rows).** The child's 2-6 time (Normal median 152.5 -> 188.2 s, every seed +9 to +57 s, 40/40) is
+explained (child N 1, b26p/why.mts.txt): on the base he read the floor as water, stood at false 'edges' and hopped edge to edge, and
+rhythm() is skipped while he stands or jumps; now he walks the floor he sees, with his tester steer/gap rhythm (gapQ to 1.49 s).
+**Not done in box 1 (named plainly):** rule 28 on 2-2..2-5 and 1-4 (running); the suite, tierBots and the --proven yield are not run. The same x-alone river read lives at
 firsttimer.ts 1702 (describe, labels only) and 2788 (`wet`); left alone to keep the change narrow (Suggestions).
 ## Lessons applied
 D96 (every gate, not the packet's list), D102/D111 (the box), D109 (no clock times to the lead), D113/D122 (background runs,
