@@ -1347,6 +1347,12 @@ export class GameEngine {
     this.camera.viewportHeight = h / this.zoom;
   }
 
+  /** the view the ground's squares and darkening are laid out for (vh, world units) and the bake's scale over this frame's (protoArt.ts
+   * setDepthView; groundBake.test.ts) */
+  private groundView(): { vh: number; over: number } {
+    return { vh: this.camera.viewportHeight, over: 1 };
+  }
+
   /** the stage as built, for stageReady.ts to read what it can draw before its first frame */
   public builtStage(): GeneratedStage {
     return this.currentStage;
@@ -7595,7 +7601,7 @@ export class GameEngine {
     // World 8's set dressing, behind the boughs (w8DecorArt.ts: the generator's scenery and decor, the buttress corners at the banks' ends)
     const w8set = (this.proto?.gen2 as { w8?: W8DecorSet } | undefined)?.w8;
     if (w8set) drawW8Decor(ctx, w8set, this.platforms, { x0: this.camera.x, x1: this.camera.x + this.camera.viewportWidth });
-    setDepthView(this.camera.viewportHeight);
+    setDepthView(this.groundView().vh);
     if (!(paintedGround && drawProtoScene(ctx, this.platforms, this.currentStage.trees, this.proto?.ladders ? this.swingVines : this.plainVines, this.gameTime, { x0: this.camera.x, x1: this.camera.x + this.camera.viewportWidth, y0: this.camera.y, y1: this.camera.y + this.camera.viewportHeight + 60 }, this.protoScene, drawBack)))
       for (const lg of this.pushLogs) if (this.onScreen(lg.x + lg.width / 2, lg.y, 200)) drawPushLog(ctx, lg, this.gameTime);
     this.feel?.drawWorld(ctx, this.gameTime, { x0: this.camera.x, x1: this.camera.x + this.camera.viewportWidth });

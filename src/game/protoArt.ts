@@ -1440,6 +1440,11 @@ const DEPTH_BELOW = 0.45;
 export function setDepthView(vh: number) {
   if (vh > 0) depthView = vh;
 }
+/** what the ground's squares are keyed and baked on, for a frame drawn at this scale: the bake scale and the view the darkening is laid
+ * out for (drawGroundChunks' key; groundBake.test.ts) */
+export function groundBakeKey(frameScale: number): { scale: number; view: number } {
+  return { scale: frameScale, view: Math.round(depthView) };
+}
 /** how far either side of a spot the ground line takes in (world units): the darkening's line eases from one bank's top to the next over this */
 const LINE_REACH = 240;
 /**
@@ -1738,9 +1743,9 @@ function drawGroundChunks(ctx: CanvasRenderingContext2D, platforms: Platform[], 
   const m = ctx.getTransform();
   // (only a plain scale and shift: squares can't be stamped under a turn or a skew)
   if (Math.abs(m.b) > 1e-6 || Math.abs(m.c) > 1e-6 || !(m.a > 0) || Math.abs(m.a - m.d) > 1e-6) return false;
-  const scale = m.a;
+  const { scale, view: bakeView } = groundBakeKey(m.a);
   // (a sheet that arrived since is not in the key: those squares are painted again a few a frame, the old ones drawn meanwhile, sheetsSince)
-  const key = `${kitWorld}|${groundLook ?? ''}|${scale.toFixed(4)}|${Math.round(depthView)}|${bankSig(banks)}`;
+  const key = `${kitWorld}|${groundLook ?? ''}|${scale.toFixed(4)}|${bakeView}|${bankSig(banks)}`;
   if (!chunks || chunks.key !== key || chunks.plats !== platforms) {
     releaseGroundChunks();
     chunks = { key, plats: platforms, tiles: new Map(), order: [], epoch: new Map() };
