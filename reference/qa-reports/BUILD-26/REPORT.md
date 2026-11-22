@@ -9,9 +9,12 @@ The lead's ruling (a) and its four orders, in order:
    `figsWork`/`figGrace` and the vine stuck spot; `git apply -3` of the 1f42b4323..3d75a90df diff CONFLICTS on figPush.ts because of
    4185812c7's knock read: take only the bound's hunks). 1-4 and 2-6 x40 on that tree, frozen. Write two tables, cut 5 as committed and
    cut 5 re-judged, and name every row that flips (expected: the 320-940 s passes adult N 5, 32, 34, expert N 32, 34, middle N 12, 22).
-2. **Read the 1-4 x40 on 3d75a90df (bound 8 s + the dodge toward the fig)**: b26l/rows/ if it landed before my box (see Step 3 below),
-   else re-run it (`npx tsx tools/inspect/castBots.ts --stage 1-4 --seeds 1-40 --setting both --rows <f>`, timeout 5,400,000 ms; about
-   5 min). Compare against the RE-JUDGED cut 5; then 2-6 x40 on 3d75a90df. Rows to the lead before anything lands.
+2. **The 1-4 x40 on 3d75a90df LANDED (section below): NOT landable as is.** child N 38 is under cut 5's 39 (seed 38); adult N 9 and
+   expert N 20 are new fails (both on a vine at x 871); 305 of 360 rows moved in time, Easy too, untraced. Split the two changes: 1-4 x40
+   on 064ca6df6 + only the 8 s bound, and on 064ca6df6 + only the dodge (567e2fbd7's figPush.ts hunk), each on its own frozen tree
+   (`npx tsx tools/inspect/castBots.ts --stage 1-4 --seeds 1-40 --setting both --rows <f>`, timeout 5,400,000 ms, about 5 min). Trace
+   child N 38 and adult N 9 / expert N 20 (two runs per cause; b26l/fig.mts.txt logs FigPush). Then 2-6 x40 on the head. Compare against
+   the RE-JUDGED cut 5. Rows to the lead before anything lands.
 3. **The candidate suite (packet step 0)** on 9f8b81346 (`b26l/suite.sh.txt <frozen tree> <log dir>`, timeout 7,200,000 ms) was still in
    the unit tests at my box (tsc rc 0): re-run it; then the suite on the head that goes to the lead. tierBots 1-1 must stay 9/9.
 4. **2-6 kid E 22 at rope lift #51 (order 4): traced, BOT** (Step 2 below). Toy first (a 120 px moving platform rising under a ledge, the
