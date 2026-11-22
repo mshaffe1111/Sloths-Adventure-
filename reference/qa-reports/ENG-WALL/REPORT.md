@@ -1,7 +1,6 @@
 # ENG-WALL-c REPORT (R-165.380 continued; start 8:54 PM ET by `date`; branch t-eng-wall; box to 9:22 PM ET)
 EXACT NEXT STEP: land C's first half on t-eng-wall from c/proto-C-bake-at-target.patch (apply c/exp-log.patch first: the
-prototype's context carries the two log lines; write the three hunks into src WITHOUT the log), name the one key reset the 4x upright
-respawn still shows (§2b), then the suite (3 shards), the 1-1 seed list, drawcheck and the CLAUDE.md gates on the head. Then C's second
+prototype's context carries the two log lines; write the three hunks into src WITHOUT the log), then the suite (3 shards), the 1-1 seed list, drawcheck and the CLAUDE.md gates on the head. Then C's second
 half (no square in view ever missing: the burst at 4x CPU, the directional margin) against b/flip-probe.mjs split by layer (suspect 3).
 **No src pushed in this box.** Item 1 done and measured; C's first half PROTOTYPED and measured (below), not landed.
 
@@ -77,9 +76,11 @@ AFTER (c/exit-probe.mjs on the prototype + the log; scratch numbers copied into 
 | sideways AFTER  | 0  | 6 of 83 | 295 | 23 |
 | 4x CPU, upright, the window the dolly lands in: BEFORE 9 key-reset frames, 465 ms, worst 55.2 ms, 11 frames ran in 2 s; AFTER 0, 8.5 ms in all, worst 1.0 ms, 18 frames ran |||||
 | 4x CPU, sideways, same window: BEFORE 12 key-reset frames, 1414 ms, worst 143.4 ms; AFTER 0, 33.3 ms in all, worst 29.3 ms |||||
-Standing, respawn, cold respawn, descent: unchanged (all still 'missing' on the budget only: C's second half). ONE open fact: the 4x
-upright respawn AFTER shows 1 key reset (87 ms) whose key part is past the log's first 12 lines: name it before C ships (a want that
-flips on respawn, e.g. revealWant or swingWideWant reset, is the first suspect).
+Standing, respawn, cold respawn, descent: unchanged (all still 'missing' on the budget only: C's second half). The one key reset the 4x upright
+respawn AFTER shows is NAMED (c/after-upright-x4-keys.txt): the key goes 1.8727|977 -> 1.4045|977: the bake scale drops x0.75 with the
+rest view unchanged, i.e. the canvas's own scale fell (render dpr 2 -> 1.5: the quality governor stepping down on the slow CPU), not an
+ease. A new resolution needs new squares: one true re-key, correct; it still draws one frame live until C's second half paints every
+in-view square at once.
 STILLS (the lead's condition; c/dolly-before-top-after-bottom-early-mid-settled-{upright,sideways}.jpg, 2x shots, sheet halved;
 shot at the dolly's early (introT ~0.3), mid (~0.7-1.1) and settled (1.3 + 2 s), zoom read with each shot):
 - No blur settled: the settled soil before vs after differs by mean 0.30 luma upright (worst 8-css-px column 0.4) and 0.28 sideways

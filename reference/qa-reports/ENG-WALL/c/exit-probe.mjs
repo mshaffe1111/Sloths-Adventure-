@@ -24,7 +24,7 @@ const take = async (name) => {
     const c = (cls[k] ??= { frames: 0, ms: 0, worstMs: 0, painted: 0 }); c.frames++; c.ms += +ms; c.worstMs = Math.max(c.worstMs, +ms); c.painted += +pt;
   }
   for (const c of Object.values(cls)) { c.ms = +c.ms.toFixed(1); c.worstMs = +c.worstMs.toFixed(1); }
-  return { name, frames: r.length, reasons: n, cost: cls, first12: r.slice(0, 12).map((s) => s.slice(0, 200)) };
+  return { name, frames: r.length, reasons: n, cost: cls, first12: r.slice(0, 12).map((s) => s.slice(0, 200)), keys: r.filter((s) => s.includes(': key ')).map((s) => s.slice(0, 220)) };
 };
 const cases = [];
 await p.evaluate(() => { globalThis.__gcLog = []; window.__play('2-97', 1); });

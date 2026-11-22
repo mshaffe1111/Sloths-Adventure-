@@ -1,0 +1,17 @@
+1
+respawn (respawnAtCheckp | missing after reset: key 2||1.8727|977|-836438108 -> 2||1.4045|977|-836438108 |ms:88.50|p:3
+upright CPU/4 | stage start (first 6 s, real play, card up): 3 frames
+   1 x missing after reset: init: ground 530.8 ms in all (worst frame 530.8), 3 squares painted
+   2 x missing: ground 168 ms in all (worst frame 104.5), 6 squares painted
+upright CPU/4 | standing still (2 s, real play): 18 frames
+   18 x ok: ground 7.3 ms in all (worst frame 1.1), 0 squares painted
+upright CPU/4 | respawn (respawnAtCheckpoint, 3 s real play): 27 frames
+   26 x ok: ground 11.3 ms in all (worst frame 0.8), 0 squares painted
+   1 x missing after reset: key: ground 88.5 ms in all (worst frame 88.5), 3 squares painted
+upright CPU/4 | COLD respawn (33 far views painted first, then respawnAtCheckpoint, 3 s real play): 80 frames
+   5 x missing: ground 127.4 ms in all (worst frame 37.4), 15 squares painted
+   75 x ok: ground 43 ms in all (worst frame 32.8), 3 squares painted
+upright CPU/4 | fast descent x 18990 from y 600 at maxFall (2.5 s real play): 74 frames
+   74 x ok: ground 92.4 ms in all (worst frame 40.3), 9 squares painted
+
+[exited with code 0]
