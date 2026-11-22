@@ -1,3 +1,121 @@
+# BUILD-26m (on t-build-26-wip-26m from 22eb446fa): cut 5 RE-JUDGED measured (34/39/34/37 as expected, the 7 named rows flip); the two changes SPLIT (the 8 s bound alone flips nothing: every new fail and nearly every time move is the dodge's); 2-6 kid E 22's left press PINNED (wheelRide's settle in a wheel bucket, not the edge stop or rhythm) and the wheel toy now runs the kid (RED). Started 9:24 PM ET 11-21 (by `date`)
+Commits on t-build-26-wip-26m (NOT on t-build-26, D117): **223f72c05** the wheel-ride toy runs the kid (RED on 22eb446fa) + b26m rows/traces.
+Trees (patches in b26m/, each its own frozen worktree): cut 5 re-judged = 477258310 + b26f/cut5 patch + the bound hand-merged
+(**b26m/cut5rj-36669742f.patch**: figPush.ts changedAt/sig, firsttimer.ts figsWork/figGrace 8 s and the vine stuck spot; tsc clean); the 8 s
+bound alone = 064ca6df6 + 3d75a90df's firsttimer.ts hunk (**b26m/bound8-ee92bcc44.patch**); the dodge alone = 567e2fbd7 as committed
+(064ca6df6 + only the figPush.ts dodge hunk; its 20 s bound).
+
+## EXACT NEXT STEP
+Base t-build-26-wip-26m at this REPORT's commit; long runs in the BACKGROUND with fitting timeouts, frozen trees, at most two heavy.
+1. **The x 871 pair's cause is traced (two runs, one cause; Step 3 below): fix it, toy first.** Toy (castBots.test.ts, next to BUILD-26l's
+   fig toys): a vine field where a fig's vine (target) stands far over his row (1000 px+) with its x between two vines of his row; RED = FigPush
+   pushes left/right between those two vines under it, the clock held by `target`, until a rescue. The general fix to try: FigPush goes for a
+   fig only on a vine he can reach from his hands' row (its column in reach, the climb to it his own), else no target and the bot's own climb
+   (figPush.ts choose/target pick). RED on 223f72c05's tree, GREEN on the fix, each on its own fresh worktree.
+2. **child N 38 (the one tier drop vs cut 5 RE-JUDGED, 38 vs 39):** not traced yet. Run b26m's fig tool (`WT=<tree> BOT=FT_CHILD npx tsx
+   b26l/fig.mts.txt 38`) on 3d75a90df AND on ee92bcc44 (bound alone, where it passes 210.2 s); find the first frame they part (the dodge, as for
+   the pair: the dodge-alone rows say whether child N 38 fails with the dodge alone). Second run per cause from any other row that flips with
+   the dodge.
+3. **2-6 kid E 22 (wheel bucket #51, Step 4):** the toy is in (223f72c05, RED). The settle-band fix is TRIED and RED (b26m/settle-band-TRIED-RED.patch,
+   9 scrambles): the kid's thumb never lets a steer go (R-165.59), so wheelRide's `{}` leaves his last press held and he walks off at full
+   speed (b26m/toykid-settleband-steer.txt 13.6-14.1 s). The fix to try: the settle as a BRAKE for a thumb that does not let go (`!who.holdQ`):
+   press against his motion once he is within his stand distance of the middle and moving (|vx| > BONK.still), nothing once still; a tier
+   thumb keeps today's settle. Toy GREEN (every kid row, both toy rows) and the old tiers still GREEN; then 2-6 x40.
+4. **Rule 28 on moved rows:** the bound's 12 time moves are explained (Step 2). The dodge's: every flip traced (the dodge-alone rows name them),
+   two sampled time-only rows per cause (hypothesis to test: every tell on the field now steps him a different side, his rng draws shift, so every
+   later moment of the run moves; Easy too because 1-4's field has pods on both settings).
+5. **The final candidate** (fix 1 + fix 3 on 3d75a90df): 1-4 and 2-6 x40 vs cut 5 RE-JUDGED (1-4: adult N 34, child N 39, middle N 34,
+   expert N 37, the rest as the Step 1 table; 2-6: adult E 29, adult N 33, kid E 26, kid N 31, the rest 40): no tier drop. Rows to the lead
+   BEFORE anything lands.
+6. **The suites on that candidate** (b26l/suite.sh.txt <frozen tree> <log dir>, timeout 7,200,000 ms: the CLAUDE.md suite + castBots.test.ts
+   whole + tierBots 9/9). Not run in this box (no final candidate yet).
+
+## Step 1: cut 5 re-judged (b26m/rows/r14-cut5rj.jsonl, tab14-cut5rj.txt; 2-6: r26-cut5rj.jsonl)
+| 1-4 tier | cut 5 as committed (fe3d3d6ca) | cut 5 re-judged | 3d75a90df (8 s + dodge) |
+|---|---|---|---|
+| adult E | 36 | 36 | 40 |
+| adult N | 37 | **34** | 38 |
+| child E | 36 | 36 | 40 |
+| child N | 39 | 39 | **38** |
+| expert N | 39 | **37** | 39 |
+| kid E / kid N | 32 / 19 | 32 / 19 | 40 / 40 |
+| middle E | 37 | 37 | 40 |
+| middle N | 36 | **34** | 39 |
+Measured = BUILD-26l's expectation (34/39/34/37). **The 7 rows that flip, every one a hidden 320-940 s pass now a rescue 'on a vine ... with no
+way on':** adult N 5 (919.5 s -> rescued 145.3), 32 (319.6 -> 167.3), 34 (321.5 -> 148.5); expert N 32 (321 -> 161.5), 34 (925.9 -> 157.5);
+middle N 12 (941.5 -> 161.6), 22 (930.1 -> 159.2). 5 more rows moved in time only. Against cut 5 RE-JUDGED, 3d75a90df drops ONE tier row:
+**child N 38 vs 39** (seed 38). adult N 9 and expert N 20 are new fails but those tiers still sit above re-judged cut 5 (38 vs 34, 39 vs 37).
+2-6 (b26m/rows/r26-cut5rj.jsonl): cut 5 re-judged = cut 5 as committed, **no row moved** (2-6 has no vine field: the bound never
+acts). adult E 29, adult N 33, child E/N 40, expert N 40, kid E 26, kid N 31, middle E/N 40.
+
+## Step 2: the two changes split (1-4 x40, both settings)
+| 1-4 tier | 064ca6df6 (20 s, no dodge) | bound alone (8 s, no dodge) | dodge alone (20 s + dodge) | 3d75a90df (8 s + dodge) |
+|---|---|---|---|---|
+| adult E | 40 | 40 | 40 | 40 |
+| adult N | 36 | 36 | **38** | 38 |
+| child E | 40 | 40 | 40 | 40 |
+| child N | 39 | 39 | **38** | 38 |
+| expert N | 37 | 37 | **39** | 39 |
+| kid E / kid N | 40 / 40 | 40 / 40 | 40 / 40 | 40 / 40 |
+| middle E | 40 | 40 | 40 | 40 |
+| middle N | 35 | 35 | **39** | 39 |
+(rows: b26l/rows/r14-064ca6df6.jsonl, b26m/rows/r14-bound8.jsonl, b26m/rows/r14-dodge.jsonl, b26l/rows/r14-3d75a90df.jsonl)
+- **The 8 s bound alone flips NO row** vs 20 s and moves 12 rows in time, all of them already fails: adult N 5, 32, 34, 39; expert N 31, 32,
+  34; middle N 1, 12, 14, 22, 36, each rescued 2-20 s sooner (the field stall's rescue fires at 8 s of no headway, not 20). Cause: the bound
+  itself; nothing else changes.
+- **The dodge alone carries every tier move:** vs 064ca6df6 it flips 13 rows and moves 266 in time; dodge alone -> 3d75a90df (adding the 8 s
+  bound) moves only 5 rows, none flipping. Fails that now pass (10): adult N 5, 34, 39; expert N 31, 32, 34; middle N 1, 12, 14, 22 (all
+  the BUILD-26l fig-field shuffle, now reaching the fig). **Passes that now fail (3): adult N 9 (rescued 173.8 s at x 831, y 5659), expert
+  N 20 (171.8 s, x 831, y 5146), child N 38 (307.1 s, 'in a dip 380 px deep, a trunk beside him', x 664).** So child N 38 and the x 871
+  pair are the dodge's, not the bound's.
+
+## Step 4: 2-6 kid E 22 at rope lift #51: the branch PINNED (b26m/k22-wheel-steer.txt, tool b26m/k22wrap.mts.txt)
+Every method's pad logged per frame, 105-115 s on 22eb446fa: the LEFT (and every RIGHT) press on #51 comes from **wheelRide** (dir 1, the way
+right), its 'settle in the middle of the bucket' line (firsttimer.ts ~3582: `past < read.from - 0.6 && |off| > 16` -> a press toward the
+middle). #51 is a WATER-WHEEL BUCKET, not a rope lift. The kid's thumb lifts late, so each settle press carries him ~35 px past the middle:
+606 <-> 675 around mid ~640, a full swing every ~0.9 s for the whole ride up (105.0-109.1 s), until at 109.5 a swing carried him off the
+bucket's end (566,3244 -> 513,3460); boarded again at 110.6 and the same swing again. Two rides, one cause (a second seed with this spot: not
+yet found). Not the edge stop, not rhythm, not clockRide.
+**Toy first (D115):** tools/inspect/wheelRide.test.ts ran child/middle/expert only; the kid (FT_KID, the first-timer) never rode a toy wheel.
+223f72c05 adds kid Easy and Normal (wheelToys.ts wheelRun takes 'kid': firstTimer with FT_KID on the setting, cap 1200). **RED on 22eb446fa:
+'sparse kid easy v1: left a bucket 5 times other than onto the street'** (b26m/toy-RED-22eb446fa.txt).
+**First fix tried (NOT committed): the settle's dead band = his own stand distance** (clockRide's: aimQ[1]+31, or 22+edgeAim = 54 px for the
+kid). **Toy still RED: 9 scrambles.** The toy kid's steer (b26m/toykid-head-steer.txt on 22eb446fa) is
+2-6's swing exactly: bucket 9 on the sparse toy, wheelRide presses toward the middle (mid drifting 685-729 as the bucket moves), he overshoots
+35-50 px each way. With the wider band (b26m/toykid-settleband-steer.txt) the settle returns `{}`, but the kid's thumb never lets a steer go
+(R-165.59), so his last press stays held: 13.6-14.1 s at -268/-285 px/s with `{}` from wheelRide, off the bucket's end. **The root is the
+settle steering a thumb that does not let go as if it did.** The patch is kept as b26m/settle-band-TRIED-RED.patch, not committed.
+
+## Step 3: the x 871 pair traced (b26m/fig-a9-head.txt, fig-e20-head.txt, fig-a9-bound8.txt; b26l/fig.mts.txt)
+- **adult N 9** on 3d75a90df: at t 85-91 on row 42-46 (y 4655-4677) going for fig 7 on vine 47 (x 781); the run has already parted from the
+  bound-alone run (there he reaches vine 47 at t 86.5 and climbs it, 127.3 s, no rescue). He falls to row 35-37 (y 5659) and from t 94.3 to
+  the rescue (stuck t 91, 20 s) FigPush pushes him left/right over vines 37@751, 36@831, 35@911, `target 7 vine 47 y 4444` the whole time:
+  fig 7's vine is 1200 px over him and its x (781) lies between two vines of his row, so every step toward it overshoots; `target` keeps
+  `busy` true, the bound (8 s) lets the clock run, rescued at x 751.
+- **expert N 20**: the same spot and the same shuffle (vines 35-37 at y 5146, `target 7 vine 47 y 4027`, t 97.8 to the rescue at x 791).
+- **One cause, two runs:** FigPush keeps a target on a vine he cannot reach from his row and shuffles under it. The dodge only took these two
+  runs there (the bound-alone run never falls to that row); the shuffle is FigPush's target pick. Fix: EXACT NEXT STEP 1.
+- **child N 38: not traced in this box.**
+
+## Step 5: rule 28 on moved rows: the bound's moves explained (Step 2); the dodge's not yet (EXACT NEXT STEP 4)
+
+## Own misses (owned)
+- Three runs at once twice (two x40s + a one-seed trace or the ~10 s wheel toy): D-rule 'at most TWO heavy runs' read as x40s only. Memory
+  stayed over 12 GB free; still, named.
+- The toy rows are 'kid' added to RUNS for both toy rows (sparse, top); the RED is the first assert to fail (sparse kid Easy v1): the other kid
+  rows were not reached in that run.
+
+## Learned (for the next builder)
+- Wrap every FirstTimerRun prototype method (values only, not getters) and log which returns the pad: it pins a steer branch in one run
+  (b26m/k22wrap.mts.txt). The k22 'rope lift' was a wheel bucket: read `here.wheel` before naming a ride.
+- A toy that leaves a tier out (the kid) proves nothing for that tier: rule 21 note proposed: every bot toy runs every bot that plays the stage.
+
+## Polish check
+No screen changed (bot code and a toy only); no stills (rule 29: bots not green).
+LESSONS applied: D113 (no shell '&', every long run in the background), D115 (RED on its own fresh tree, the fix on another), D117 (wip
+branch only), D119 (no heredoc in the commit chain), D120 (no box ended on a question), D122 (timeouts sized), D109 (no clock times to the lead).
+
+
 # BUILD-26l (on t-build-26-wip-26l from 1f42b4323 / 37fbb6519): NO SILENT CAP (toy RED/GREEN), and it exposed hidden fig-field stalls already counted as passes on cut 5 (the lead RULED (a): those are misses). The real stall traced twice (a pod dodge that always tried the left first) and fixed (toy RED/GREEN). 2-6 kid E 22: the BOT's steer on rope lift #51, not the rewind pick. Started 9:03 PM ET 11-21 (by `date`)
 Commits on t-build-26-wip-26l (NOT on t-build-26, D117): **064ca6df6** the bound + the vine stuck spot + toy; **567e2fbd7** the dodge toward the
 fig + toy; **3d75a90df** the bound is RULES.wayOn.stuckSecs (8 s; the lead's D116 order). Evidence b26l/.
