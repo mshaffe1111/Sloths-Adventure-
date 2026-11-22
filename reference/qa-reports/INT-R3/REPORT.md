@@ -69,8 +69,8 @@ clock, 2x). Mean per-frame change (diffs.txt): plain pose 0.0-0.3; the CUT IN at
 | lockall vs main 2a87f4cda, --layouts 4, --intended 2-3 | PASS | base recorded on a frozen main; 101/102 stages unchanged; ONLY 2-3 moved (intended: size, platforms, vines, rivers, follow, ...); 'gen2 gained verdicts and drops (not hashed)' on 37 stages is the tool's note, not a change |
 | castBots 2-3 seeds 1-40, both settings, every tier, vs BUILD-23e rows | PASS, IDENTICAL | 216 s; 360 rows (9 bot x setting, 40 seeds); `tools/castcmp.py` vs reference/qa-reports/BUILD-23/castbots23e-rows.jsonl: **0 of 360 rows differ**. Passes: adult 39/40 normal, 40/40 easy; child, middle 40/40 both; expert 40/40 normal; kid 0/40 both (as BUILD-23e: the shrine, its known open item). Rows: castbots/castbots23-rows-e5eecab9a.jsonl |
 | tipwalk --layouts 4 | PASS | 15 s |
-| every registered seed list | pending | |
-| paintcheck 0/3, 1/3, 2/3 | pending | |
+| every registered seed list | PASS | 2548 s here; 14 lists, each clean on both settings: 1-1 1-2 1-3 1-4 1-5 1-6 1-7 1-8 1-9 2-1 2-2 2-3 2-4 2-5 |
+| paintcheck 0/3, 1/3, 2/3 | 0/3 PASS (284 s); 1/3 running | |
 | tierBots | pending | |
 | funcheck | pending | |
 | buildcheck (alone) | pending | |
