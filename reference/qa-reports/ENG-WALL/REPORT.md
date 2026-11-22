@@ -1,10 +1,9 @@
 # ENG-WALL-d REPORT (R-165.380 continued; start 9:13 PM ET by `date`; branch t-eng-wall; box to 9:41 PM ET)
 EXACT NEXT STEP: on an IDLE machine (nothing else running), time the candidate's burst: `node d/burst-ms.mjs <port> upright|sideways 4`
 against a vite on t-eng-wall (afdd5060c) and one on t-eng-wall-c2 (b04579a95), PERFORMANCE-RULES §1 (no frame over 50 ms in play, 120
-at a stage start); then fix d/flip-layers.mjs to keep and restore each frame's ZOOM with its camera (it restores x,y only) and re-judge
-the descent's frame 0 (d/zoom0.mjs: sideways it is drawn at zoom 0.7316 and re-rendered at 0.763; upright the zoom holds at 0.9364,
-upright's 2.62 is the plant band in front of the left column, the soil 0.0-0.2: d/frame0.mjs; the mask must leave out cells where
-another layer draws over a bank). If both hold, the lead judges stills of t-eng-wall-c2 and it lands with a planted test; then item 3 (the corner (a)/(b), (ii), (iii)).
+at a stage start); then name SIDEWAYS descent frame 0 (9.31 on the ground; NOT the zoom: the probe now restores each frame's zoom
+factors and reads 9.31 again, d/after-C2-sideways-v3-zoomrestored.txt): run d/frame0.mjs sideways (upright's 2.62 is the plant band
+in front of the left column, the soil 0.0-0.2); the mask must leave out cells where another layer draws over a bank. If both hold, the lead judges stills of t-eng-wall-c2 and it lands with a planted test; then item 3 (the corner (a)/(b), (ii), (iii)).
 **The suite and drawcheck on the head did NOT finish inside the box** (rows below): re-run them on afdd5060c before anything merges.
 MY MISS: I started the suite (about 35 min) 23 minutes before the box's end, and drawcheck after the lead's "no long run you can't
 finish" message, sure of about 6 minutes; under the suite's load it ran at about a stage a minute (3 of 19 stages done at the hand-over).
@@ -36,9 +35,8 @@ could not check (exit 2: "shallow clone, proofs cannot be checked"): NOT a pass,
 - Layer probe on b04579a95 (d/after-C2-*.txt): **GREEN 0.00 on the ground at the stage start and both cold respawns, upright and
   sideways; descent frames 1-39 at most 0.03 upright, 0.40 sideways** (were 10.49 / 20.14). **Descent frame 0 RED: 2.62 upright, 9.33
   sideways**: the probe's own teleport from the previous case (cam 14663 -> 18594); its other layers differ too (5.11 / 3.17). Most
-  likely the PROBE: d/zoom0.mjs (same moves, sideways) reads that frame at zoom 0.7316 and the end at 0.763 (an ease from the x 14800
-  case still unwinding), and the probe re-renders every frame at the END zoom (it restores the camera's x,y, not the zoom). UPRIGHT the
-  zoom does not move (0.9364 on every frame), so upright's 2.62 is NOT that; nor is it the re-render's Pokey at the descent's end (the
+  d/zoom0.mjs: sideways that frame's zoom is 0.7316, the end's 0.763, but re-rendering at the frame's own zoom changes nothing (9.31):
+  the zoom is REFUTED; sideways unnamed. Upright (zoom 0.9364 throughout) it is not the re-render's Pokey at the descent's end (the
   probe now leaves those cells out too: the same 12139 ground cells, 2.74; d/after-C2-upright-v2.txt). LOCATED (d/frame0.mjs, the still
   d/descent-frame0-left-vs-settled-right-upright.jpg, DSF 1): by 40-px row band the frame differs only in rows 280-600 (3.6-15.2 luma),
   the reeds and plants in front of the left rock column; the soil under the grass line is 0.0-0.2. The mask counts that band as ground

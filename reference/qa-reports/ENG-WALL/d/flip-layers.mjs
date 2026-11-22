@@ -39,6 +39,8 @@ const res = await p.evaluate(async (E) => {
     const rows = [];
     for (const f of frames) {
       if (f.introT !== undefined) { e.introT = f.introT; e.applyZoom(); }
+      // (each frame re-rendered at its OWN zoom: every ease's factor as it was on that frame)
+      if (f.z) { Object.assign(e, f.z); e.applyZoom(); }
       Object.assign(e.camera, f.cam); for (let i = 0; i < 30; i++) e.render(); Object.assign(e.camera, f.cam); e.render();
       // (and the cells near where Pokey is drawn on the re-render: after the descent he is at its end, maybe inside an earlier frame's view)
       const k2 = main.width / e.camera.viewportWidth, ex = e.player.x + (e.player.width ?? 0) / 2, ey = e.player.y + (e.player.height ?? 0) / 2;
@@ -73,7 +75,8 @@ const res = await p.evaluate(async (E) => {
   // (3) the fastest descent: from the top of the descent column (x 18990), falling at maxFall, every frame drawn as the game does
   place(18990, 600, 950);
   const frames = [];
-  for (let i = 0; i < 40; i++) { e.update(1 / 30); e.render(); frames.push({ cam: { x: e.camera.x, y: e.camera.y }, l: cells(), m: mask() }); }
+  const zf = () => ({ roomZoom: e.roomZoom, revealZoom: e.revealZoom, swimZoom: e.swimZoom, swingWide: e.swingWide, bossZoom: e.bossZoom, introT: e.introT });
+  for (let i = 0; i < 40; i++) { e.update(1 / 30); e.render(); frames.push({ cam: { x: e.camera.x, y: e.camera.y }, l: cells(), m: mask(), z: zf() }); }
   judge('descent x 18990', frames);
   return cases;
 }, E);
