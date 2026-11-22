@@ -64,9 +64,9 @@ clock, 2x). Mean per-frame change (diffs.txt): plain pose 0.0-0.3; the CUT IN at
 | timecheck | PASS | after `git fetch --unshallow` |
 | registrycheck | PASS | 48 s |
 | drawcheck (2-3 within limits.json) | PASS | 705 s; 2-3 upright and sideways both within limits.json (32 counted frames each, 94 / 89 sites) |
-| clipcheck (no new entry; marker inside the insets) | pending | |
-| kbdcheck | pending | |
-| lockall vs main 2a87f4cda, --layouts 4, --intended 2-3 | pending | base recorded on /home/user/frz-main |
+| clipcheck (no new entry; marker inside the insets) | PASS | 424 s; 83 known, no new entry (shrink-only list unchanged) |
+| kbdcheck | PASS | 109 s |
+| lockall vs main 2a87f4cda, --layouts 4, --intended 2-3 | PASS | base recorded on a frozen main; 101/102 stages unchanged; ONLY 2-3 moved (intended: size, platforms, vines, rivers, follow, ...); 'gen2 gained verdicts and drops (not hashed)' on 37 stages is the tool's note, not a change |
 | castBots 2-3 seeds 1-40, both settings, every tier, vs BUILD-23e rows | pending | the lead's addition |
 | tipwalk --layouts 4 | pending | |
 | every registered seed list | pending | |
