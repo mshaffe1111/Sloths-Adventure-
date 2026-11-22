@@ -1,9 +1,10 @@
 # ENG-WALL REPORT (R-165.380; start 7:03 PM ET by `date`; branch t-eng-wall off 484199316)
-EXACT NEXT STEP: (a) at the corner is NOT a darkening step on the game's path (item 2 ii, measured): shoot the x 20006 corner at 2x
-from the squares and name the PICTURE that makes the band (the column's end piece, drawEnd, is the first suspect: images are not
-fills, so chunkDark can't see them); bring the lead the measurement and a plant on that picture (RED on 484199316) before any fix.
-Separately the two wide walls' unshaded soil (seed 2 x14604, seed 3 x13775, normal) is a real step on the squares: why their soil
-under the floor's top gets no depth band (a stacked leg's ceiling clip is the first suspect). Then (b), puzzle rooms, stills.
+EXACT NEXT STEP: (a) at the x 20006 corner is in NO fill or picture drawProtoScene makes on 484199316 (measured, item 2 ii-c): in the
+squares, x 20000-20025 y 1600 is one soil cell under one clip with equal darkening both sides; over the squares the frame draws only
+the stamped squares there. So the band is from (1) t-art-under's w2.webp sheet (ENG-GROUND's stills were on that scratch merge; my
+probes ran on the repo's sheets), or (2) a draw outside drawProtoScene (engine scenery or water). Next: a 2x still of that corner on
+the scratch merge, sample its pixels in the band and left of the floor's end, then turn the engine's draws off one at a time to name
+the source; bring the lead that and a plant RED on 484199316 before any fix. Separately: the two wide walls' unshaded soil (item 2 ii).
 
 1. Step 0 (D114): the CLAUDE.md suite on 484199316, frozen worktree, in the background: tsc PASS; tests still running at hand-over
    (scratch suite-base.test). BREACH (D115): I copied a test file into that frozen worktree for about 10 s to re-check plant (i) RED,
@@ -21,6 +22,8 @@ under the floor's top gets no depth band (a stacked leg's ceiling clip is the fi
        points where a stacked leg leaves no soil. Fixed: half-open boxes, the frame's last call only, soil both sides. red-ii-chunks.txt
        on 484199316: easy PASS; normal RED on 2 wide walls only (14604-15024, 13775-14415: 0.45 at floor+40, the wall's soil there
        has no depth band). Every narrow descent wall, the x 20006 corner included: equal darkening both sides, no step.
+   (ii-c) probes (not committed: scratch zzProbe, deleted): at seed 1 normal, view 19706-20506 x 385-1950: squares at
+       (20000|20012|20025, 1600): the soil cell src 1027,3,1018,1018 only; the frame over them: the stamped squares only.
    (iii) no water fill shows past a wall's end face inside its bank (stage.waterY, drawn across the view by engine
        drawWaterAndFlags): red-iii.txt, 6 walls, 170-184 spots each below the water line. Not fixed.
 3. FIX (i), the lead's ruling (A), commit 5a8f86166: protoArt drawWallFace: the wall frame once at its own shape (244 x 244*h/w), drawn
