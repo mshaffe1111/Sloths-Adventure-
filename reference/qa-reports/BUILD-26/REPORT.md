@@ -1,4 +1,4 @@
-# BUILD-26g (on t-build-26 from c99352a65): C fixed in the bot and STAYS; A/B fixed, then REVERTED (6567d3557) on the lead's ruling (tierBots 1-1 8/9), the lip written but OFF (b26g/lip.patch), x40 on 1-4 and 2-6. Started 7:00 PM ET 11-21 (by `date`)
+# BUILD-26g (on t-build-26 from c99352a65): C and A/B fixed in the bot and on t-build-26 (A/B reverted at 6567d3557 on tierBots 8/9, then BACK when the base gave the same 8/9), the lip written but OFF (b26g/lip.patch), x40 on 1-4 and 2-6. Started 7:00 PM ET 11-21 (by `date`)
 Commits on t-build-26: **9df2f0d11** (C), **9631000b9** (A/B, REVERTED by **6567d3557**), 436d98a36 and 51345740a (evidence), this REPORT. C went up before
 1-4's rows reached the lead: my miss, logged by the lead as **D117** (safe-keeping now goes on t-build-26-wip-<member>; the shared
 branch takes a candidate only after the lead's ruling). The lip is NOT committed: b26g/lip.patch.
@@ -15,7 +15,9 @@ compares two row files (pass = shrine with no rescue).
    ruling. My doubt, sent to the lead: A/B's line cannot reach these runs (stopMeant is set only at the tower's "stopped first";
    1-1 is no tower; child has holdQ, its release rule unchanged), so the red may be C's or the base's. **tierBots on base c99352a65
    (= cut 5's code; src/tools diff to a59a144c0 empty) was RUNNING at my box** (scratchpad tierbots-base-c99352a65.txt, lost with
-   the container): re-run it. **The lead's ruling on it:** (a) base ALSO 8/9: the red is not A/B's; A/B comes back (revert
+   the container). **RESULT (in my box): base c99352a65 is ALSO 8/9, the same two runs with the same numbers**
+   (b26g/tierbots-base-c99352a65.txt): the red is not A/B's. **A/B is BACK** (the revert of 6567d3557, this REPORT's parent).
+   **So ruling (a) applies; next: tierBots on 2f188c552 (before cut 5), frozen, in the background.** The lead's ruling: (a) base ALSO 8/9: the red is not A/B's; A/B comes back (revert
    6567d3557); then tierBots on 2f188c552 (before cut 5). If that is 9/9, cut 5's Progress rewind moved child normal 7 and 18:
    re-run the calibration and recommit reference/qa-reports/R-165.59/calibration-main.jsonl WITH the bot (R-165.59/BOTS.md), and
    only if tierBots' other eight checks (the tiers matching the testers) still pass on the recommitted head; if any fails, tell
