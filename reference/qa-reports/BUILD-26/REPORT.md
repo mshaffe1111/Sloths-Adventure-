@@ -1,22 +1,19 @@
 # ENG-26r (on t-build-26-wip-26r from a07ed1bd7): 2-6's draw budget. Candidate 89fb84b0f: static gradients made once (gradCache.ts) + the bank wall culls the backdrop and rivers it covers. Started 3:53 PM ET 11-22 (by `date`)
 
 ## EXACT NEXT STEP
-0. **The lead RULED (a), show first:** f78a3a66d (on 89fb84b0f) runs 2-6's bank wall down past the stage's floor
-   (w2Arc26.ts finish26: `bottom = max(lowest street + 10, config.levelHeight + 20)`). bankWall is read only by the drawing (engine.ts
-   render, protoArt drawEarthWall/earthWallCovers): no gameplay reader. The foot stills (before = scratchpad stills-base/, after =
-   stills-c2/, spot 0 both ways) go to the lead FIRST; the after must read as one clean earth, no seam where the old bottom was.
-1. On the lead's OK of the stills: on a FROZEN, IMMUTABLE worktree at the wip head (b0ae9a1c7 or later: f78a3a66d + gradCache.test.ts) (`chattr -R +i src tools` right after its npm ci:
-   `chmod a-w` does NOT stop us, we run as root; chattr does, tested), drawcheck in full, all scenarios, verbose (about 6 min): 2-6 GREEN
-   at every spot, no scenario worse than the base suite's drawcheck (scratchpad suite-base/drawcheck.log).
-2. The suite (scratchpad suite.sh <tree> <logdir>) and lockall on that head: name any castBots mover (the wall's bottom is lay data on
-   the stage object; expected none, to be proven).
-3. Lands on the lead's word, rebased on t-build-26's head (REPORT.md conflicts: keep both sides' sections).
-State at handover: 2-6 alone is GREEN on f78a3a66d (Step 4). The base suite on a07ed1bd7 was still running in the background (tsc
-green; the unit step running, one long file), logs scratchpad suite-base/ (this container only: a fresh member re-runs the base drawcheck
-row it needs from the CI run of a07ed1bd7 or its own). NOT run on the candidate: the full drawcheck, the suite, lockall. Waiting on the
-lead's OK of the foot stills (sent at 5452d5db9), per the ruling's order: stills first, then the full gates. Tools used (in BUILD-26/eng26r/*.txt; to copy into a
-fresh container): suite.sh, dc26.sh (2-6 alone through run.mjs + drawcheck's own judge), stills.mjs (run.mjs with deviceScaleFactor 2 and
-a still per spot), cmpshift.py: their logic is described in Step 1 and the Polish check.
+**The lead OK'd the foot stills (5452d5db9): go.** The soil-shade blocks under the streets do NOT block release 3: the lead files them as
+R-165.391, after release 3; not touched in this packet.
+1. **Full drawcheck on the wip head de6e7bb35** (a fresh worktree, `chattr -R +i src tools` right after npm ci; code identical to
+   f78a3a66d + gradCache.test.ts): STARTED in this box (`DRAWCHECK_VERBOSE=1 node tools/perf/drawcheck.mjs`, about 6 min). If its log
+   is not in this REPORT, re-run it on a fresh frozen tree at the wip head. Bar: 2-6 green at every spot upright and sideways, no
+   scenario worse than the base, no limit raised.
+2. **lockall:** base lock on a07ed1bd7 STARTED in this box (`npx tsx tools/engine/lockall.ts --layouts 16 --out lock-base.json`); then
+   on the frozen head `npx tsx tools/engine/lockall.ts --layouts 16 --check lock-base.json --intended 2-6`. 2-6 is EXPECTED to change in
+   its proto part only (bankWall.bottom); name any other part or stage that moves.
+3. **The suite on the frozen head** (D118: src and tools both changed, nothing carries over): the CLAUDE.md list, every step.
+4. On all green: land on t-build-26, rebased onto its head, NO force (REPORT.md conflicts: keep both sides' sections). Send the lead the
+   hash plus 2-6's drawcheck table for spots 0-2, before and after (Step 1 and Step 4 below have the numbers).
+5. Remove the frozen trees with `chattr -R -i <tree>/src <tree>/tools` first, then `git worktree remove`.
 
 ## Step 1: the plant, base a07ed1bd7, drawcheck for 2-6 alone, verbose: RED (5 breaches)
 (How: tools/perf/run.mjs for 2-6 alone at PERF_Q=0 PERF_TIME_FRAMES=0 PERF_SPOTS=4, port then land, then `DRAWCHECK_VERBOSE=1
