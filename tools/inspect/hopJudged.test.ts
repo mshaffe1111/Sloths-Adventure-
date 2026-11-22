@@ -33,19 +33,22 @@ function trace(seed: number, setting: 'normal' | 'easy'): HopRow[] {
 
 // (Easy too, ENG-27o: its second press is the engine's own, 1.12x (FirstTimerRun.v2), and the thumb's fumbles are flown on both)
 for (const [setting, seed] of [['normal', 5], ['normal', 2], ['easy', 5], ['easy', 2]] as const) {
-  test(`2-7 home, middle ${setting === 'easy' ? 'Easy' : 'Normal'} seed ${seed}: every judged hop is flown as judged and comes down where the gate said`, () => {
+  test(`2-7 home, middle ${setting === 'easy' ? 'Easy' : 'Normal'} seed ${seed}: every judged hop is flown as judged and comes down where the gate said; every press from a bank with logs near its edge flies on a judgment of its own frame or comes down on solid (ruling A)`, () => {
     const rows = trace(seed, setting);
     assert.ok(rows.length > 0, 'no judged hop was pressed: the trace is not wired');
+    // (the lead's ruling A, ENG-27p: every press at a river's edge with a float within reach flies on a judgment of its own frame)
+    //  (a judgment left from an earlier frame or another branch always fails; a press no gate judged may come down only on SOLID: from
+    //   these banks most such presses are hops to the next bank (13 of 14 on d2408e867's four runs). On a log, in the water or nowhere
+    //   seen, it fails: a bank hop that falls in the river is a lost life no gate judged (the lead, on ENG-27p's measure))
+    const isJudged = (r: HopRow) => r.site !== 'unjudged' && !r.site.startsWith('stale');
+    const unjudged = rows.filter((r) => r.site.startsWith('stale') || (r.site === 'unjudged' && r.landedType !== 'solid'));
     // (the flight judged: the press on the frame judged plus its lag; a drawn hop (the lead's ruling, a row with its kind) flown with the
     //  SAME kind and hold; a gate still judging a single held who.hold[0] (boardHop), a single held at least that)
-    const flownWrong = rows.filter((r) => Math.abs(r.flown!.t - (r.t + r.lag)) > DT / 2 + 1e-6 || (r.kind !== undefined ? r.flown!.kind !== r.kind || Math.abs(r.flown!.hold - r.hold) > 1e-9 : r.flown!.kind !== 'single' || r.flown!.hold + 1e-9 < r.hold));
+    const flownWrong = rows.filter(isJudged).filter((r) => Math.abs(r.flown!.t - (r.t + r.lag)) > DT / 2 + 1e-6 || (r.kind !== undefined ? r.flown!.kind !== r.kind || Math.abs(r.flown!.hold - r.hold) > 1e-9 : r.flown!.kind !== 'single' || r.flown!.hold + 1e-9 < r.hold));
     // (and where he came down: the platform the gate judged)
-    const cameWrong = rows.filter((r) => r.landed !== undefined && r.landed !== r.q);
-    // (the lead's ruling A, ENG-27p: every press at a river's edge with a float within reach flies on a judgment of its own frame)
-    //  (a judgment left from an earlier frame or another branch always fails; a press no gate judged fails when it came down on a log:
-    //   from these banks most such presses are hops to the next bank, 13 of 14 on d2408e867's four runs)
-    const unjudged = rows.filter((r) => r.site.startsWith('stale') || (r.site === 'unjudged' && r.landedType === 'drift'));
+    const cameWrong = rows.filter(isJudged).filter((r) => r.landed !== undefined && r.landed !== r.q);
     const lines = [...new Set([...unjudged, ...flownWrong, ...cameWrong])].map(show);
+    for (const r of rows.filter((r) => !isJudged(r))) console.log('  [bank press] ' + show(r));
     console.log(`${setting} seed ${seed}: ${rows.length} judged hops pressed (${[...new Set(rows.map((r) => r.site))].join(', ')}); unjudged or stale ${unjudged.length}, flown not as judged ${flownWrong.length}, came down elsewhere ${cameWrong.length}`);
     for (const l of lines) console.log('  ' + l);
     assert.deepEqual(lines, [], 'a gate judged one hop and the bot flew another');
