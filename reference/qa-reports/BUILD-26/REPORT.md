@@ -7,9 +7,9 @@ table), 43c4c6776 + b26i/probe-switches.patch (local only: B26I_REACH=0 turns C'
 ## EXACT NEXT STEP (base t-build-26 at this REPORT's commit; long runs in the BACKGROUND, frozen trees, at most two heavy)
 **The lead ACCEPTED cut 5 + A/B (9c2ce855d) on t-build-26:** no tier drop on 1-4 against cut 5, the one lost row (adult N 9) traced as
 a knock-on, 30 gained. The lead's order:
-1. **tierBots 1-1 on 9c2ce855d and the full suite on the head, frozen, in the background (D118).** At my box: tierBots on 9c2ce855d
-   RUNNING (see the result line below if it landed); the clean suite on 43c4c6776 RUNNING (TSC 0, unit tests not finished). Re-run
-   whichever has no result here (`npm ci --legacy-peer-deps`: plain `npm ci` fails in this container). KNOWN, not ours: tower.test.ts
+1. **tierBots 1-1 on 9c2ce855d and the full suite on the head, frozen, in the background (D118).** **tierBots on 9c2ce855d: 9/9 PASS**
+   (b26i/tierbots-9c2ce855d.txt; the committed calibration holds, no recommit); the clean suite on 43c4c6776 RUNNING (TSC 0, unit tests not finished). Re-run
+   the suite (it dies with the container) (`npm ci --legacy-peer-deps`: plain `npm ci` fails in this container). KNOWN, not ours: tower.test.ts
    'a sealed piece (a gate bough)...' red; 'R-165.312: raw seed 1 keeps the roost boa' a todo. Any OTHER red: to the lead. If tierBots
    is not 9/9, tell the lead BEFORE any recommit of calibration-main.jsonl.
 2. **The step-up rule, then C on top, on wip (t-build-26-wip-26j), rows to the lead first,** so C's adult, kid and middle E rows
