@@ -75,10 +75,12 @@ clock, 2x). Mean per-frame change (diffs.txt): plain pose 0.0-0.3; the CUT IN at
 | tierBots | PASS | 179 s; # pass 9 # fail 0 |
 | **funcheck** | **FAIL, ruled debt (identical to INT-14, 22/22), carried** (22 worse/new, 0 to lower) | 83 s; 77 known, 1067 flags. **IDENTICAL flag for flag** (stage, setting, rule, layout count, known count) to INT-14's inherited debt on main, ruled by the lead for release 1 (INT-14 REPORT 'funcheck debt' table: R-165.310/.48/.50/.51/.283/.222/.276). All World 1 (1-1..1-6); lockall shows those stages unchanged vs main. Neither merge brought it. Output: funcheck-e5eecab9a.txt. Lead's ruling: carried as the named debt of releases 1 and 2; at the final integration the same diff must still show 22/22 identical, and any new or worse flag there is a red. |
 | buildcheck (alone) | PASS | 1-1 p95 99 ms normal, 64 ms easy (budget 150 ms at CPU x4) |
-| the unit suite | running | |
+| the unit suite | re-running alone | the chain hit the 2 h background limit mid-suite (3221 results, 0 failed, 1 TODO: R-165.312): no verdict from that run; re-started alone on the same frozen tree |
 | slot confirm (e.lineFaces() in 'gone': duck, capybara 'open') | pending | after the chain |
 
 ## Learned
+- One chain for THE FULL SET does not fit the 2 h background limit here (seed lists alone 42 min, drawcheck 12, clipcheck 7, paintcheck 3 x 5-6): split it in two runs, the suite as its own run, started where the box allows.
+- heroshoot.mjs leaves its vite (port 5198) running after it exits (it kills only the npx wrapper): kill it after a strip.
 - Put `git fetch --unshallow` FIRST in a full-set chain: roadmapcheck needs it as much as timecheck (gates.md names it only for both
   together); I put it between them and lost one roadmapcheck run.
 - A merge conflict in code that a named branch's own rule supersedes (the melt vs the cut) cannot be resolved by keeping both: the newer
