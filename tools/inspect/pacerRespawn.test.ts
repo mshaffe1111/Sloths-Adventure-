@@ -39,6 +39,7 @@ function falls(bot: 'middle' | 'expert' | 'ride', code: string, setting: 'normal
   const out: { x: number; m: number; back?: number; pend?: number }[] = [];
   let piece: { kind: string; pacer: { dir: number; x0: number; x1: number; seconds: number }; clock: number | null; owed?: number; verdict: { him: number } | null } | undefined;
   let mLast: number | null = null, lives: number | undefined, bx: number | null = null, judged = false, wasDown = false;
+  let dueAt: number | null = null, totLast: number | null = null, frame = 0;
   try {
     homeRun(bot === 'expert' ? 'expert' : 'middle', setting, seed, 1, { onFrame: (sim: { e: Record<string, any> }) => {
       const e = sim.e, p = e.player;
@@ -59,6 +60,21 @@ function falls(bot: 'middle' | 'expert' | 'ride', code: string, setting: 'normal
         if (piece.verdict.him + 0.05 + 1e-9 < (piece.clock ?? 0) + (piece.owed ?? 0) - 1 / 30)
           easeBad.push(`${bot} ${setting} ${seed}: the verdict ${piece.verdict.him} s dropped the excess owed (clock ${(piece.clock ?? 0).toFixed(2)} + owed ${(piece.owed ?? 0).toFixed(2)})`);
       }
+      // (the boat's PLACE pays the excess, not only the books (D121): while it owes, its clock + owed grows by exactly a frame's dt (more:
+      //  a new excess, the deadline restarts; less: excess lost), and the owed drains within the ease's named length, max(1, 2E / EASE_PEAK)
+      //  s and a frame; a fall or the dock ends the watch (the respawn re-places it; the verdict check counts the rest))
+      const owed = piece.owed ?? 0, tot = (piece.clock ?? 0) + owed;
+      if (fell || e.down || wasDown || piece.verdict) dueAt = null;
+      else if (owed > 0) {
+        if (dueAt === null || (totLast !== null && tot - totLast > 1 / 30 + 1e-6)) dueAt = frame + Math.ceil(Math.max(1, (2 * owed) / EASE_PEAK) * 30) + 1;
+        else if (totLast !== null && tot - totLast < 1 / 30 - 1e-6) easeBad.push(`${bot} ${setting} ${seed}: the ease lost ${(1 / 30 - (tot - totLast)).toFixed(4)} s of the excess in a frame`);
+        if (frame > dueAt) { easeBad.push(`${bot} ${setting} ${seed}: the boat still owed ${owed.toFixed(2)} s past the ease's length`); dueAt = Infinity; }
+      } else if (dueAt !== null && totLast !== null && Math.abs(tot - totLast - 1 / 30) > 1e-6) {
+        easeBad.push(`${bot} ${setting} ${seed}: the ease ended ${(tot - totLast - 1 / 30).toFixed(4)} s off its excess`);
+        dueAt = null;
+      } else dueAt = null;
+      totLast = piece.clock === null ? null : tot;
+      frame++;
       bx = x;
       wasDown = !!e.down;
       // (the boat learns where he stands one frame later (the pieces step before he moves): his margin back at the x is read against
