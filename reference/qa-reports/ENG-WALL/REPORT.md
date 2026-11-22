@@ -1,3 +1,50 @@
+# ENG-WALL-b REPORT (R-165.380 continued; start 7:47 PM ET by `date`; branch t-eng-wall at c884525bf; box to 8:15 PM ET)
+EXACT NEXT STEP: the lead rules the corner band's fix (item 1, options A/B/C below; my pick C). Then: the plant for the chosen fix,
+RED on 484199316 in a browser (the test recorder has no getTransform, so a node test only ever draws the live path): 'the first frame
+at x 19900 (seed 1 normal, 2-97) matches the settled frame within 1 luma across x 20006' (probe: b/corner-probe.mjs, numbers below).
+Then item 2 (ii) wide walls and (iii) water, item 3 (puzzle rooms: show first), items 4-5. Scratch merge (never pushed): worktree at
+c884525bf + t-art-under 0ebcb8f7e's w2.webp, groundAtlasData.ts, inventory/w2.json, local commit e3bbf076a; vite on it, frozen.
+
+1. THE CORNER BAND'S SOURCE, NAMED (measured on the scratch merge, 2x, upright and sideways; b/corner20006-firstframe-vs-settled-*.jpg,
+   left the first frame, right the settled frame): the band is the LIVE ground path, not the squares and not t-art-under's sheet.
+   - protoArt.ts:1860 drawProtoScene: `if (!drawGroundChunks(...)) drawGround(...)`. drawGroundChunks (protoArt.ts:1736) paints at most
+     CHUNK_BUDGET = 3 squares a frame (protoArt.ts:1688) and returns false when any square in view is still unpainted (budget out:
+     `missing = true`), so that WHOLE frame is drawn by the live drawGround. The squares paint with `groundDepth = groundLine(banks)`
+     (protoArt.ts:1825: the soil darkens from the ground line); the live path runs with groundDepth null (one gradient per bank from its
+     own top, by design: the comment at protoArt.ts:1819-1820, PERFORMANCE-RULES §8). So on a live frame the wall x 20006-20066's soil
+     below the floor's top (1450) is darkened from 585 and stands as a darker strip with a straight left side at the floor's end.
+   - Measured (mean luma over 2 world units by 6, x 20010-20030 vs x 19982-20002, y 1460-1740; screen = (world - cam) x 0.936 x 2):
+     upright first frame: band 68.1, left 85.6, STEP 17.5 (grass lip step 23.4); after 30 renders (squares in): band 74.1, left 76.9,
+     step 2.7. Sideways: first 14.2 (lip 27.2), settled 3.8. Census by first src/ frame: the first frame has the live draws
+     (groundPaint.ts, protoArt.ts:1443, sheetBake.ts) and no square blit; settled, the live draws are gone. Switching each of the 21
+     draw sources off on a settled frame moves the step by under 1.3: no single scenery/water draw makes it.
+   - The plant that sees it, RED on 484199316 (D96): plant (ii) live, red-ii.txt row 0: 'seed 1: the wall x 20006-20066 over the floor
+     at 1450: a shade step of 0.36 across the floor's end at y 1490' (the live path). red-ii-chunks (the squares) is GREEN there: both
+     are right; the game shows whichever path the frame took.
+   - WIDER than the corner (the phone's view): live and squares differ over ALL the soil (left of the corner 85.6 live vs 76.9 squares),
+     so any frame that falls back (stage start, respawn, a fast descent outrunning 3 squares a frame) pops the whole ground's shade for
+     those frames, the band included.
+   - The settled frame still shows a FAINT straight line at x 20006 (step 2.7 of about 77, ~3.5%; visible at 2x in the right half).
+     Not judged fixed.
+   OPTIONS for the lead (no fix built; the packet says bring it first):
+   A. the live path darkens by groundLine too: one model (D80), but per-column gradients live: PERFORMANCE-RULES §8's per-frame limit
+      (the reason it was dropped). Needs drawcheck proof.
+   B. the live path keeps one gradient a bank, plus one for a wall's soil below a lower floor's top (plant (ii) live): the corner
+      matches, the rest of the ground still pops between paths.
+   C. (my pick) the frame never flips path: the squares in view are always ready: paint ahead of the camera (the budget spent on
+      squares entering the view's margin first) and, on a cold view (stage start, respawn), paint the view's squares before its first
+      frame (one-time cost behind the card). The live path stays only for no-canvas cases. Root fix of the pop and the band at once;
+      plant: first frame == settled frame at the corner and over a fast descent. Cost: one burst at start/respawn, measured in drawcheck.
+2-5. NOT STARTED: (ii) wide walls, (iii) water past a face, puzzle rooms (show first), the stills of item 4, lockall, drawcheck, gates.
+Polish check: the x 20006 corner, upright and sideways, 2x: FAILS on the first frames (the band, 14-17 luma); settled still a faint
+straight line (2.7-3.8). Nothing else shot. Nothing lands.
+Pushback: the packet's 'turn the engine's draws off one at a time' found nothing on a settled frame: the band is TIME-dependent (which
+path the frame took), so a still shot after the squares paint hides it (ENG-GROUND's stills caught a live frame). Every ground still
+should say which path the frame drew.
+Learned: a still of the ground must be shot on a settled frame AND on the first frame; compare both.
+Lessons applied: D96 (the plant named before any fix), D102 (read lean), D111 (box by date), D113 (background runs, no waits), D115
+(every run on the frozen scratch merge; nothing copied into it), D117 (nothing pushed but the REPORT and its stills), D40.
+
 # ENG-WALL REPORT (R-165.380; start 7:03 PM ET by `date`; branch t-eng-wall off 484199316)
 EXACT NEXT STEP: (a) at the x 20006 corner is in NO fill or picture drawProtoScene makes on 484199316 (measured, item 2 ii-c): in the
 squares, x 20000-20025 y 1600 is one soil cell under one clip with equal darkening both sides; over the squares the frame draws only
