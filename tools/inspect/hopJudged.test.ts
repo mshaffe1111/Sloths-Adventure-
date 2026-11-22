@@ -72,7 +72,7 @@ test('a drawn-hop gate decides on the hop as aimed, never on the thumb noise dra
 // (ENG-27s, the lead's ruling on D's aim: the aim is drawn ONCE when a wait begins, from the tier's kind and hold draws (R-165.59: a
 //  player picks his hop when he sees the log), and HELD until he presses or the target leaves reach; no redraw inside a wait. The toy:
 //  a 1 s wait, the target in reach every frame, a gate that presses only a hold of 0.3 s or more; the first draw holds 0.1 s, a redraw
-//  would hold 0.4 s (the lucky hold). He must not press: the held aim never lands. RED on D's 0.5 s beat, GREEN with it deleted)
+//  would hold 0.4 s (the lucky hold). He must not press: the held aim never lands. RED on the plant 64134c343 (D's 0.5 s beat), GREEN with it deleted)
 test('a wait holds its aim: drawn once when the wait begins, never redrawn for a lucky hold (ENG-27s, the lead\'s ruling)', () => {
   const base: DrawnHop = { kind: 'single', hold: 0.1, d2: -1, dblAt: 0, hold2: 0, upOnly: 0 };
   const holds = [0.1, 0.4, 0.4, 0.4];
