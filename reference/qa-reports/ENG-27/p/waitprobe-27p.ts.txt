@@ -1,0 +1,10 @@
+// where he stands still on 2-7 home (seconds per 500 px of x), one run: npx tsx waitprobe.ts <tree> <setting> <seed>
+const [tree, setting = 'normal', seed = '1'] = process.argv.slice(2);
+await import(`${tree}/src/game/headlessDom.ts`);
+const { homeRun } = await import(`${tree}/tools/inspect/homeToys.ts`);
+const DT = 1 / 30;
+const still = new Map<number, number>();
+let total = 0;
+const r = homeRun('middle', setting as never, Number(seed), 1, { onFrame: (sim: any) => { const p = sim.p; if (p.grounded && Math.abs(p.vx) < 5) { const b = Math.floor(p.x / 500) * 500; still.set(b, (still.get(b) ?? 0) + DT); total += DT; } } } as never);
+const rows = [...still.entries()].sort((a, b) => b[1] - a[1]).slice(0, 10).map(([b, s]) => `${b}:${s.toFixed(1)}`);
+console.log(`${tree.split('/').pop()} ${setting} ${seed}: finish ${r.finishSeconds?.toFixed?.(1) ?? r.finishSeconds} end ${r.end} lives ${r.lives} | still ${total.toFixed(1)} s | top x-bins ${rows.join(' ')}`);

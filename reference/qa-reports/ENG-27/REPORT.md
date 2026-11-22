@@ -1,12 +1,40 @@
-# ENG-27p REPORT (start 7:04 PM ET by `date`; handed over at the D111 box; base df0cd9638 (code d2408e867); branch t-eng-27 head fb6bd156e + this REPORT)
+# ENG-27p REPORT (start 7:04 PM ET by `date`; handed over at the D111 box; base df0cd9638 (code d2408e867); branch t-eng-27 head 16698b8a1 (code fb6bd156e + a type-only fix) + this REPORT)
 ## EXACT NEXT STEP (ENG-27q, from t-eng-27 head; read only this section, D90)
-ORDER (ENG-27o's (2)-(6), on fb6bd156e, frozen, one at a time): (2) pacerLay (its one red is B's KNOWN plant) and pacerRespawn (the invariant
-GREEN): STARTED on /home/user/f-fb6bd156e at the box, result below if it came in, else re-run (seconds); (3) the race table (middle 24/24, expert
-12/12, ride-only 0/24; recipe: raceprobe-27e.ts.txt as tools/inspect/_race.ts, `npx tsx tools/inspect/_race.ts <middle|expert|ride> <home|post>`);
-(4) rule 28 castBots x40 on 2-1..2-6, base 1465822f7 vs head, row for row (the judge changed on EVERY gate hop AND the edge stand now waits:
-rows WILL move, each traced; no tier's count may drop), tierBots 1-1 9/9; (5) seed 5's +34.7 s traced (where he waits, why: NOTE the new
-stand-by-choice may add wait time; read it first); (6) B, S. src/ unchanged (bot and test only): no suite.
-**(1) DONE: ruling A built, its invariant planted RED first, hopJudged GREEN on all four (Normal 5, 2; Easy 5, 2) on fb6bd156e** (p/hopJudged-fb6bd156e-GREEN-27p.txt).
+**FIRST: the lead's ruling on pacerLay (asked, priority next).** pacerLay.test is RED 9/19 on the head fb6bd156e AND on d2408e867 AND on
+a0ab91d33, the same 9 tests; 18/19 on b7a68a8bd (only B's plant), all four run here on frozen trees (p/pacerLay-*.txt). **The middle player
+stopped winning the race at a0ab91d33** (ENG-27n: the lead's ruling built, the drawn-hop gates on edgeWait, upstream and race: pressed only
+when the drawn hop lands, else he stands). Home middle Normal 1/2/3: 130 / 129.5 / 131 s on a0ab91d33 (boat 93.9 / 92.4 / 92.1); Easy 1/3
+123.7 / 103.8 (boat 97.5 / 96.1); post Normal 4/5 126.3 / 144.7 (boat 100.8 / 103.4); B's plant and the racing-hop plant's RED half red
+too. No member ran pacerLay between (hopJudged only). **Probes, home middle Normal 1, whole run (p/waitprobe-n1-27p.txt,
+p/lossprobe-n1-27p.txt; scripts p/*-27p.*.txt, run as .mts with the PROJECT's tsx, node_modules/.bin/tsx, not npx from the scratchpad):**
+b7a68a8bd finish 175.1 s, 69.0 s standing still, 6 lives LOST (`r.lives` counts lives lost); head fb6bd156e finish 190.0 s, 104.6 s still,
+1 life lost. The gated bot is SAFER and SLOWER: +35.6 s still, most at x 15000-15999 (15.9 s), 10500 (7.8), 13000 (6.6), 6000 (6.5), 5000.
+**The lead's split (asked 7:20 PM ET): is the gate's thumb calibrated or a pacing guess?** The drawn hop itself is the calibrated thumb
+(drawHop: flickHold, dblShare, dbl2Q, the drift/slip/release draws, all from `who`, R-165.59's tiers); the BEAT is not: one hop drawn and held
+for 0.5 s (`t - this.floatBeat < 0.5`, edgeWait ~3060, upstream ~3158, and now the edge stand) is a bare literal with no cited source (D116),
+and the gate presses only on a frame that ONE draw lands, so the wait is paced by that literal. Per-site land rates (50 draws at each refused
+frame, on a THROWAWAY stream swapped in and out, so the run is unchanged: finish 190.0 s, 1 life lost; p/rate-n1-27p.txt, the probe's bot
+p/firsttimer-ratediag-27p.ts.txt, `RATEDIAG=1`): **seconds of frames each gate judged and refused: race 38.7, upstream 2.3, edgeWait 1.8,
+edgeStand 0.1.** Nearly all the +35.6 s is the RACE gate, off a log. Biggest race sites (x, s judged, mean land rate of the calibrated draw,
+nearest [platform, gap px]): 8500 3.1 s 9% [66, 72]; 1500 3.1 s 7% [96, 72]; 13250 3.1 s 16% [47, 72]; 5750 3.1 s 2% [78, 72]; 4250 2.9 s
+10%; 7000 2.8 s 11%; 11250 2.7 s 18%; 11500 2.5 s 16%; 13000 2.0 s 3%; 8750 1.9 s 16%; 1750 1.9 s 21%; 5500 1.8 s 18%; 9750 1.6 s 18%;
+10000 1.5 s 9%. Bank gates over 0.5 s: edgeWait 14900 52% [12, 99]; 16100 19% [17, 77]; 9000 43% [66, 149]. NOT separated yet: how much of
+the race gate's judged time he would ride the log anyway (the log carries him toward the bank) and how much is a true stand; the gap
+'72' is the same at every race site (likely the bank's lip from the log's end: check). **My read for the lead's split:** the hop is the
+calibrated thumb, but at the race sites only 2-21% of its draws land, and the gate holds ONE draw (beat 0.5 s upstream/edgeWait; the race
+holds waitHop until a gate presses it) and presses only when that draw lands. A tester re-aims every moment, so the one-draw hold reads as
+the pacing guess (D116: no source) and the low rate as the river's real difficulty. Both are in play; the probe cannot split them alone.
+ORDER after that (ENG-27o's (3)-(6), on the head, frozen, one at a time; disk: use SPARSE worktrees, `git worktree add --no-checkout`,
+`git sparse-checkout set --no-cone '/*' '!reference/' '!public/' '!docs/'`; full ones filled this container's allowance at 7):
+(3) the race table (middle 24/24, expert 12/12, ride-only 0/24: it WILL show pacerLay's losses; recipe raceprobe-27e.ts.txt as
+tools/inspect/_race.ts); (4) rule 28 castBots x40 on 2-1..2-6, base 1465822f7 vs head, row for row (the judge changed on every gate hop
+AND the edge stand now gates and may wait: rows WILL move, each traced; no tier's count may drop), tierBots 1-1 9/9; (5) seed 5's time;
+(6) B, S. **The full CLAUDE.md suite (the lead's D118: src tests import tools/inspect, so every bot commit needs it): STARTED on
+/home/user/f-fb6bd156e (frozen, code = b62ab031c's) at the box; result in the lead's message if it came in, else RE-RUN IT FIRST.** tsc on
+fb6bd156e: 1 error, MINE (firsttimer.ts:2766, `s.dir !== 0` on a -1|1 field; no runtime effect), fixed in 16698b8a1; **tsc on 16698b8a1: PASS (0 errors)**,
+on a sparse frozen tree (it ran beside the suite: two runs at once, my miss against 'one heavy run at a time', named).
+**(1) DONE: ruling A built, its invariant planted RED first, hopJudged GREEN on all four (Normal 5, 2; Easy 5, 2) on fb6bd156e**
+(p/hopJudged-fb6bd156e-GREEN-27p.txt). **(2) pacerRespawn GREEN 2/2** (p/pacerRespawn-fb6bd156e.txt); pacerLay as above.
 ## ENG-27p: what was done
 - **The invariant (D112), as the lead agreed it on my measure:** every press from a river's bank with drift logs near its edge (edgeWait's
   own window: within 400 px of the edge, |dy| < 70; `edgeFloats`) either flies on a judgment made on its OWN press frame, or, pressed with
@@ -38,8 +66,9 @@ stand-by-choice may add wait time; read it first); (6) B, S. src/ unchanged (bot
   x 5258 solid (own bank #76), x 2358 #93 solid; Normal 2 x 15632 #40 LOG (stale), x 7686 #71 solid, x 6255 #76 solid; Easy 5 x 6748 solid
   (own bank #70), x 2402 #93 solid; Easy 2 x 10647 #60, x 7854 #71, x 6420 #76, x 3730 #87, all solid. (13 of 14 solid.)
 - **Checks:** hopJudged on each head, each on its own frozen worktree (/home/user/f-39e19d036, f-cd7c0da5b, f-red3 (cd7c0da5b + the final
-  test, a local commit a900b63a1, not pushed), f-6ac2bab34, f-fb6bd156e); traces on /home/user/s-probe only. NOT run: tsc on the bot file,
-  the race table, rule 28's diff, tierBots, seed 5's time, B, S (the box went to the invariant's definition and two traces).
+  test, a local commit a900b63a1, not pushed), f-6ac2bab34, f-fb6bd156e); traces on /home/user/s-probe only. pacerRespawn 2/2 and pacerLay 10/19 on
+  fb6bd156e; pacerLay on d2408e867 (10/19), a0ab91d33 (10/19), b7a68a8bd (18/19) for the bisect. NOT run: tsc on the bot file, the race
+  table, rule 28's diff, tierBots, seed 5's time, B, S (the box went to the invariant's definition, two traces and pacerLay's bisect).
 - **Lessons applied:** D111 (28 min from 7:04 PM ET), D113 (every run backgrounded, waited on its notification), D115 (every run on its own
   frozen tree; traces on a separate copy), D114 (src/ unchanged: no suite), D109 (no clock times in messages), D96/D102 (lean reads),
   D112 (the invariant is the principle, "every press at a float flies on its own judgment", tested on the real runs, not a mechanism's toy),

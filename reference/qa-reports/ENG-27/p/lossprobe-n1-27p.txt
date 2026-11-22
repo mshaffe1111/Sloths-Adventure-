@@ -1,0 +1,2 @@
+f-b7a68a8bd normal 1: finish 175.1 lives 6 | losses: t 13.9 x 15147 last on #9 solid x 14650; t 26.5 x 15235 last on #12 drift x 14891; t 88.7 x 13473 last on #44 solid x 13585; t 110.2 x 10103 last on #58 solid x 10341; t 121.1 x 8787 last on #66 drift x 8839; t 149.1 x 4523 last on #86 drift x 4573
+f-fb6bd156e normal 1: finish 190 lives 1 | losses: t 77.2 x 13358 last on #47 drift x 13440
