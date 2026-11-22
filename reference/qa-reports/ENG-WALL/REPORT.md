@@ -1,9 +1,9 @@
 # ENG-WALL-c REPORT (R-165.380 continued; start 8:54 PM ET by `date`; branch t-eng-wall; box to 9:22 PM ET)
-EXACT NEXT STEP: build C's first half on t-eng-wall: the squares baked at the zoom ease's TARGET scale (the lead's condition, below),
-then run c/exit-probe.mjs on a vite of the fix with the experiment's two log lines laid on a scratch copy (never pushed): the stage
-start must show 0 'missing after reset: key' frames, and the cost lines must drop (before numbers below). Then C's second half (no
-square in view ever missing: the burst at 4x CPU, the margin) against b/flip-probe.mjs, split by layer first (suspect 3, below).
-**No src change pushed in this box.** Item 1 is done and measured; C is designed to the lead's condition, not built.
+EXACT NEXT STEP: land C's first half on t-eng-wall from c/proto-C-bake-at-target.patch (apply c/exp-log.patch first: the
+prototype's context carries the two log lines; write the three hunks into src WITHOUT the log), name the one key reset the 4x upright
+respawn still shows (§2b), then the suite (3 shards), the 1-1 seed list, drawcheck and the CLAUDE.md gates on the head. Then C's second
+half (no square in view ever missing: the burst at 4x CPU, the directional margin) against b/flip-probe.mjs split by layer (suspect 3).
+**No src pushed in this box.** Item 1 done and measured; C's first half PROTOTYPED and measured (below), not landed.
 
 ## 1. Why a played frame falls to the live ground path (DONE, measured in the browser on real play)
 METHOD: a local experiment tree (6e2df514b + two commits, never pushed: 3ceab3337 drawGroundChunks pushes its exit reason, which
@@ -39,7 +39,7 @@ the ground block alone (drawGroundChunks + the live drawGround, per frame, this 
   lazily painted layer differs (sheetBake.ts:104 is in both censuses; the backdrop). flip-probe must be split by layer (ground-only
   pixels, e.g. render with the ground block alone, or diff a mask of the squares' rects) before it can judge C. Not done.
 
-## 2. C, designed to the lead's condition (NOT built)
+## 2. C, designed to the lead's condition (its first half prototyped: 2b)
 The lead's condition (this box): bake at the ease's TARGET scale and draw scaled during the ease; stills at the stage start's first
 frame, mid-ease and settled, both ways, 2x: no blur settled, no pop at the ease's end, no shade jump; the start's wasted work before
 and after (§8) stated.
@@ -63,19 +63,46 @@ DESIGN:
 Checks to run on the fix: the suite (the node recorder has no getTransform, so groundStack/groundEnd still run the live path), the
 1-1 seed list, drawcheck (the ease's per-frame paint must drop, not rise), and the CLAUDE.md gates on the head.
 
+## 2b. C's first half PROTOTYPED and measured (local tree, never pushed as src; the diff is c/proto-C-bake-at-target.patch)
+WHAT: engine.ts keeps each ease's want (roomWant, revealWant, swimWant; swingWideWant already) and applyZoom computes restZoom (the
+zoom every ease is heading to, the dolly at its end); the frame passes setDepthView(viewCssH / restZoom, restZoom / zoom); protoArt's
+drawGroundChunks bakes at m.a * restZoom/zoom and blits with the live transform (22 lines, tsc clean). Bosses keep the live bossZoom
+(its target moves every frame). NOT RUN on it yet: the suite, the gates, drawcheck, the 1-1 seed list.
+AFTER (c/exit-probe.mjs on the prototype + the log; scratch numbers copied into c/after-*.txt):
+| stage start (first 6 s) | key-reset frames | live frames | ground ms in all | squares painted |
+|---|---|---|---|---|
+| upright BEFORE | 30 | 36 of 78 | 578 | 111 |
+| upright AFTER  | 0  | 4 of 81 (the first frame + 3 missing: C's second half) | 231 | 21 |
+| sideways BEFORE | 24 | 31 of 70 | 944 | 96 |
+| sideways AFTER  | 0  | 6 of 83 | 295 | 23 |
+| 4x CPU, upright, the window the dolly lands in: BEFORE 9 key-reset frames, 465 ms, worst 55.2 ms, 11 frames ran in 2 s; AFTER 0, 8.5 ms in all, worst 1.0 ms, 18 frames ran |||||
+| 4x CPU, sideways, same window: BEFORE 12 key-reset frames, 1414 ms, worst 143.4 ms; AFTER 0, 33.3 ms in all, worst 29.3 ms |||||
+Standing, respawn, cold respawn, descent: unchanged (all still 'missing' on the budget only: C's second half). ONE open fact: the 4x
+upright respawn AFTER shows 1 key reset (87 ms) whose key part is past the log's first 12 lines: name it before C ships (a want that
+flips on respawn, e.g. revealWant or swingWideWant reset, is the first suspect).
+STILLS (the lead's condition; c/dolly-before-top-after-bottom-early-mid-settled-{upright,sideways}.jpg, 2x shots, sheet halved;
+shot at the dolly's early (introT ~0.3), mid (~0.7-1.1) and settled (1.3 + 2 s), zoom read with each shot):
+- No blur settled: the settled soil before vs after differs by mean 0.30 luma upright (worst 8-css-px column 0.4) and 0.28 sideways
+  (worst column 2.2, the animated grass and flowers in the crop): inside the lead's 1 / 4 bar. At rest bakeOver is 1: the same bake.
+- No pop at the ease's end and no shade jump: by construction the key never changes through the dolly (0 key-reset frames measured)
+  and depthView is the rest view's all the way (the shade's band never moves); the stills show no step between mid and settled. NOT
+  yet measured frame by frame by layer (the plant, C's second half).
+- My judgment of the sheets: the before and after rows read the same at phone size; the card covers the left of the view through the
+  dolly in both. Nothing rough found; the early sideways frame's left column (x ~155, the wall) is the same in both rows.
+
 ## Polish check
-No picture changed in this box (no src pushed): nothing to judge on a phone yet. The stills the lead named (start first frame, mid-ease,
-settled, both ways, 2x) are C's done-item.
+No shipped picture changed (no src pushed). The prototype's dolly stills (2b) judged on the contact sheets the way the phone shows them:
+the before and after rows read the same, the settled soil matches within 0.3 luma; nothing rough found. c/ease-stills.mjs shoots them.
 
 ## Learned
 - A settled, paused probe cannot see a zoom ease: ENG-WALL-b's why-probe ruled the zoom out because it read scale AFTER settling. Log
   the reason inside the function on the game's own loop first; it named the cause in one run.
 - Real-time play varies run to run (the descent: 4 vs 0 live frames upright): run every play probe at least twice and give both.
 
-## Lessons applied
+## Lessons applied (their meaning as the packet words them: grep found no D-number lines for them on this tree's LESSONS.md)
 D96 (the measure before the fix, RED/before numbers first), D102 (read lean), D109 (no clock times to the lead), D111 (the box),
 D113 (every long run in the background), D115 (the experiment tree frozen during each run; the probe in the report tree, which no
-run reads as code), D120 (the lead's answer did not end the box).
+run reads as code), D116 (every number cites file:line), D120 (the lead's answer did not end the box: its condition was built into the prototype).
 
 # ENG-WALL-b REPORT (R-165.380 continued; start 7:47 PM ET by `date`; branch t-eng-wall at c884525bf; box to 8:15 PM ET)
 EXACT NEXT STEP: FIRST find WHY the frame takes the live path (my 'budget' trigger is REFUTED, see CORRECTION), then build the

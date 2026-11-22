@@ -10,7 +10,8 @@ standing still is 100% squares; the stage start's intro dolly (engine.ts:1335-13
 frame (~28 frames: all squares thrown away, 3 painted and thrown away, the whole ground live, ~12 ms a frame of ground on a desktop
 CPU); every other zoom ease (reveal, swim, swingWide, room, boss) does the same by the code. The descent and a cold respawn fall to the
 live path a few frames on the budget. The lead's ruling C (the frame never flips path) and its conditions, and the design (bake at the
-ease's TARGET scale, draw scaled during the ease; depthView from the rest zoom) are in that REPORT. TRAPS: a paused, settled probe
+ease's TARGET scale, draw scaled during the ease; depthView from the rest zoom) are in that REPORT; ENG-WALL-c PROTOTYPED that half
+(c/proto-C-bake-at-target.patch, 22 lines, not landed): the start's key resets 30 -> 0, its ground work 578 -> 231 ms upright. TRAPS: a paused, settled probe
 cannot see a zoom ease (it reads scale after settling): log inside the function on the game's own loop; real-time play varies run to
 run, so run each play probe twice. A node test never reaches the squares (no getTransform): check every ground change in a browser,
 first frame AND settled. b/flip-probe.mjs compares the whole canvas: another lazily painted layer differs too (ENG-WALL-b's

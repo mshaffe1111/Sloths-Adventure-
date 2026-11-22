@@ -1,0 +1,14 @@
+upright CPU/4 | stage start (first 6 s, real play, card up): 3 frames
+   1 x missing after reset: init: ground 501.7 ms in all (worst frame 501.7), 3 squares painted
+   2 x missing: ground 161.9 ms in all (worst frame 96.6), 6 squares painted
+upright CPU/4 | standing still (2 s, real play): 18 frames
+   18 x ok: ground 8.5 ms in all (worst frame 1), 0 squares painted
+upright CPU/4 | respawn (respawnAtCheckpoint, 3 s real play): 28 frames
+   26 x ok: ground 9.8 ms in all (worst frame 0.9), 0 squares painted
+   1 x missing after reset: key: ground 87 ms in all (worst frame 87), 3 squares painted
+   1 x missing: ground 84.5 ms in all (worst frame 84.5), 3 squares painted
+upright CPU/4 | COLD respawn (33 far views painted first, then respawnAtCheckpoint, 3 s real play): 72 frames
+   2 x missing: ground 79.1 ms in all (worst frame 58), 6 squares painted
+   70 x ok: ground 38 ms in all (worst frame 18.8), 1 squares painted
+upright CPU/4 | fast descent x 18990 from y 600 at maxFall (2.5 s real play): 75 frames
+   75 x ok: ground 63.3 ms in all (worst frame 44.3), 7 squares painted
