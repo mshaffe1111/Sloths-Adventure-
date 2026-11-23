@@ -200,7 +200,8 @@ import { maxHearts } from './secret.ts';
 import { drawLeafCover, drawPushLog, drawSeed, markSeedFound, seedFound, waterArt, type ProtoExtras } from './protoStage.ts';
 import { CHEER_SECONDS, footfallsBetween, hasClip, heroClipsEnabled, heroClipsLive, resetHeroClips, warmHeroClips } from './heroClips.ts';
 import { releaseDecorPics } from './envKit.ts';
-import { bushHeight, drawBranchArt, drawBushArt, drawEarthWall, setLianaTops, drawCurtainArt, drawHollowArt, drawProtoScene, drawSeedArt, hasKit, releaseGroundChunks, paintedKitEnabled, setDecoTrunks, setDepthView, setGroundPaint, setKitWorld, setRockLooks, setGroundLook, setBoughJoins, paintedPlatforms, protoArtReady, type ProtoSceneState , setGroundStacks, riverLid, riverUnderside, clipAboveLines } from './protoArt.ts';
+import { bushHeight, drawBranchArt, drawBushArt, drawEarthWall, setLianaTops, drawCurtainArt, drawHollowArt, drawProtoScene, drawSeedArt, hasKit, releaseGroundChunks, paintedKitEnabled, setDecoTrunks, setDepthView, setGroundPaint, setKitWorld, setRockLooks, setGroundLook, setBoughJoins, paintedPlatforms, protoArtReady, type ProtoSceneState , setGroundStacks, riverLid, riverUnderside, clipAboveLines, drawKitPiece, kitPieceAspect } from './protoArt.ts';
+import { PORCH_POST, drawPorchPosts, porchPosts, type PorchPost } from './porchPosts.ts';
 import { drawFx, fxFrame } from './bossFx.ts';
 import { drawGritBit, drawSoftShadow } from './w4Grit.ts';
 import { drawBossFighter, drawHazards } from './bossArt.ts';
@@ -6269,6 +6270,18 @@ export class GameEngine {
    * World 2 rivers. Before the platforms: the water body between the banks, with streaks that show the flow.
    * After them (`over`): a translucent sheet across the lower half of every log, so the logs sit in the water, not on it.
    */
+  /** the stage's porch posts (porchPosts.ts), found once a stage from its plank spans and rivers */
+  private porchPostsFor: { stage: GeneratedStage; posts: PorchPost[] } | null = null;
+  private drawPorchPostsNow(ctx: CanvasRenderingContext2D) {
+    const st = this.currentStage;
+    if (!st.rivers?.length || !this.paintKit || !protoArtReady()) return;
+    if (this.porchPostsFor?.stage !== st) this.porchPostsFor = { stage: st, posts: porchPosts(this.platforms, st.rivers) };
+    const posts = this.porchPostsFor.posts;
+    if (!posts.length) return;
+    const view = { x0: this.camera.x, x1: this.camera.x + this.camera.viewportWidth, y0: this.camera.y, y1: this.camera.y + this.camera.viewportHeight };
+    drawPorchPosts(ctx, posts, view, PORCH_POST.w * kitPieceAspect('trunk'), (c, x, y, w, h) => drawKitPiece(c, 'trunk', x, y, w, h));
+  }
+
   private drawRivers(ctx: CanvasRenderingContext2D, world: (typeof WORLDS_DATA)[number], over: boolean, floodsOnly = false) {
     const rivers = floodsOnly ? this.currentStage.rivers?.filter((r) => r.flood && this.floodAt.has(r)) : this.currentStage.rivers;
     if (!rivers?.length) return;
@@ -7507,6 +7520,8 @@ export class GameEngine {
     this.drawWaterAndFlags(ctx, world);
     // 6-8: the root wall and the hides and arches behind the climb
     if (this.proto?.stilt) drawStiltDecor(ctx, this.proto.stilt, { x0: this.camera.x, x1: this.camera.x + this.camera.viewportWidth, y0: this.camera.y, y1: this.camera.y + this.camera.viewportHeight });
+    // the posts under a plank deck over a river, drawn before the water so its surface covers their feet (porchPosts.ts, DRESS-27)
+    this.drawPorchPostsNow(ctx);
     this.drawRivers(ctx, world, false);
     // World 5's petals drift behind the stage, as every world's weather does (w5Play drawDrift; BUILD-24c)
     this.w5?.drawDrift(ctx, this.gameTime, { x0: this.camera.x, x1: this.camera.x + this.camera.viewportWidth, y0: this.camera.y, y1: this.camera.y + this.camera.viewportHeight });

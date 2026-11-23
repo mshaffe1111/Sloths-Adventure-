@@ -607,6 +607,11 @@ function stand(ctx: CanvasRenderingContext2D, n: Name, cx: number, bottom: numbe
   blit(ctx, n, cx - w / 2, bottom - h, w, h);
 }
 
+/** frame `n`'s height over its width in this world's kit (DRESS-27: a porch post is the kit's climb pole drawn narrow, its shape kept) */
+export function kitPieceAspect(n: Name): number {
+  const { f } = frameOf(n);
+  return f.h / f.w;
+}
 /** one piece of the painted World 1 kit filling a box (the journal's demo scenes); false until the kit has loaded */
 export function drawKitPiece(ctx: CanvasRenderingContext2D, n: Name, x: number, y: number, w: number, h: number): boolean {
   if (!protoArtReady()) return false;

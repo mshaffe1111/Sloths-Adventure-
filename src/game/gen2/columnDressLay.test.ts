@@ -12,7 +12,7 @@ import { buildGen2Stage } from './pipeline.ts';
 import { towerCfg } from './toyTower.ts';
 import { homeKit, POST_CODE } from './toyHome.ts';
 import { W2_WEIR } from './worlds/w2.ts';
-import { columnDressFaults, type ColumnDressSpec } from '../columnDress.ts';
+import { columnDressFaults, dressFeet, type ColumnDressSpec } from '../columnDress.ts';
 import { COLUMN_DRESS_PIECE, ColumnDressPiece } from '../pieces/columnDressPiece.ts';
 import { builtStageKeys } from '../stageManifest.ts';
 import type { WorldKit } from './types.ts';
@@ -91,7 +91,10 @@ test('column dress: the piece draws each one on layer back by its inventory id, 
   assert.equal(COLUMN_DRESS_PIECE.start({ ...st, columnDress: undefined } as never, host), null);
   const piece = COLUMN_DRESS_PIECE.start(st as never, host);
   assert.ok(piece instanceof ColumnDressPiece);
-  assert.deepEqual(piece.layers, ['back']);
+  // (DRESS-27: the toy column's climb stands in its dress, so the piece also draws the dress's foam over that climb's foot, layer 'world')
+  assert.deepEqual(piece.feet, dressFeet(st.columnDress!, st.vines));
+  assert.ok(piece.feet.length > 0, 'the climb up the column stands in its dress');
+  assert.deepEqual(piece.layers, ['back', 'world']);
   const drawn: unknown[][] = [];
   const p = new ColumnDressPiece(st.columnDress!, (_ctx, ...a) => (drawn.push(a), true));
   const d = st.columnDress![0];
