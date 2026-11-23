@@ -1,10 +1,24 @@
-# ENG-DOWNBOT REPORT (lane 2: the down lay's head room, then the bots on a way down) — IN PROGRESS
-**EXACT NEXT STEP (box 1 handover):** (1) read STEP 0's verdict (CI tool line on frozen c1008d8ed: re-run it if no verdict is here).
-(2) lockall on a FROZEN worktree of this candidate vs a lock of c1008d8ed: `npx tsx tools/engine/lockall.ts --layouts 16 --out
-lock-base.json` (on c1008d8ed), then `--layouts 16 --check lock-base.json` here: the bar is 102/102 unchanged (every change is gated
-`flow === 'down'`, no listed stage travels down). (3) Item 2, the bots: `GEN2_DRAFT=3-1 npx tsx tools/inspect/castBots.ts --stage 3-1
---seeds 1-40 --par 3` on the frozen candidate (first full run), then towerRoute.ts / firsttimer.ts on what stalls; a toy per skill RED off.
-Start 12:53 PM ET (by `date`). Box 1: 12:53-1:21 PM ET. **Box 2 (ENG-DOWNBOT-b): start 1:13 PM ET (by `date`).**
+# ENG-DOWNBOT REPORT (lane 2: the down lay's head room, then the bots on a way down) — PAUSED (the lead's call: the slot went to 2-7)
+**EXACT NEXT STEP (box 2 pause, resume Wednesday from here):** STEP 0 is DONE (below). Nothing is running (both runs were stopped at the
+pause; their partial output was not kept). (1) Two heavy runs, each on a chattr-frozen worktree (D115), both run_in_background:
+(a) `npx tsx tools/engine/lockall.ts --layouts 16 --out lock-base.json` on c1008d8ed (about 8 minutes beside one other run: it reached 7-4
+in 7 min), then `--layouts 16 --check lock-base.json` on the candidate head; the bar is 102/102 unchanged. (b) `GEN2_DRAFT=3-1 npx tsx
+tools/inspect/castBots.ts --stage 3-1 --seeds 1-40 --par 3 --rows rows.jsonl` on the candidate head (first full run; never finished yet).
+(2) towerRoute.ts / firsttimer.ts on what stalls, a toy per new skill RED off. (3) Toys still owed for ENG-W3a's other skills: downEnd
+(step off toward the way on, firsttimer.ts ~1730 and ~2358), the drop that ignores a near-level catch (~2917), the own route always on a
+way down (~1475); each built on castBots.test.ts `downArena` (it clears the carrier's water and deepens it: a 2-2 carrier's water put him
+back and its 900 px floor killed a two-storey fall). (4) Item 3: rule 28 x40, suite + CI tool line + tierBots on a frozen head, land.
+Start 12:53 PM ET (by `date`). Box 1: 12:53-1:21 PM ET. **Box 2 (ENG-DOWNBOT-b): 1:13-1:23 PM ET (by `date`), paused by the lead.**
+Hours used: about 0.7 of the 2 h (box 1 0.5, box 2 0.2). Left: the lockall verdict, the bots (item 2), item 3.
+
+## Box 2 done (candidate on t-eng-w3-wip-b)
+- **STEP 0:** CI tool line (gates.yml rolled, 21 files) on FROZEN c1008d8ed: **228 tests, 227 pass, 0 fail, 1 todo** (the base's todo);
+  ENG-W3a's '228, 0 fail' was measured on e8c21ef12, whose tools/engine draft files differ from c1008d8ed, so it was re-run.
+- **Toys, castBots.test.ts (no stage's numbers), GREEN on the candidate, each RED in a fresh worktree with its skill off:**
+  'a way down: the route turns straight down a turn vine, and drops ledge by ledge' (towerRoute.ts): turn skill off: RED 'a corner in
+  the air at the vine level with the ledge'; dropTo off: RED 'the way drops through the ledge at y 900 from (100, 500) to (100, 1100)'.
+  'he presses down onto it and climbs down to the storey on' (firsttimer.ts ~2828), 7 bots x 3 thumbs: GREEN 21/21; press off: RED,
+  18 of 21 fell past the catch.
 
 ## Done so far (candidate on t-eng-w3-wip-b)
 1. **Head room both ways going down (tower.ts towerCatches), general, every change gated on flow 'down':** (a) `cramped` keeps HEAD
