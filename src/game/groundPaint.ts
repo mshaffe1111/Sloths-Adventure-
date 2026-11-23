@@ -16,6 +16,7 @@ import { trackAtlas } from './atlasLoader.ts';
 import { GROUND_FRAMES, type GroundSheet } from './groundAtlasData.ts';
 import { lookHash } from './artRoll.ts';
 import { canvasLost } from './canvasLost.ts';
+import { cropToBox } from './drawThrift.ts';
 
 type C = CanvasRenderingContext2D;
 
@@ -159,6 +160,25 @@ export function drawSoil(
     ctx.drawImage(img, sx, sy, sw, sh, cell.x, cell.y, SOIL_TILE + 0.6, SOIL_TILE + 0.6);
   }
   if (shade) shadeSoil(ctx, w, x0, x1, top, bottom, viewBottom, viewTop, depthAt);
+  return true;
+}
+
+/**
+ * drawSoil's tiles with no shading, each cut at the box x0..x1, top..bottom by its own source rect (drawThrift.ts cropToBox): the same
+ * pixels as drawSoil under a clip to that box, with no clip and none of a 600-unit tile's area past the box drawn (DRESS-27b: the clip
+ * a river laid under its bed's soil was 1 of 2-7's 21-24 clips a frame, and the tiles' overhang counted in its drawImage screens)
+ */
+export function drawSoilCut(ctx: C, w: number, x0: number, x1: number, top: number, bottom: number): boolean {
+  const s = sheet(w);
+  if (!s) return false;
+  if (x1 <= x0 || bottom <= top) return true;
+  const { img, g } = s;
+  const T = SOIL_TILE + 0.6;
+  for (const cell of soilCells(x0, x1, top, bottom, SOIL_TILE, g.fills.length)) {
+    const [sx, sy, sw, sh] = fillSrc(g.fills[cell.v % g.fills.length]);
+    const c = cropToBox(cell.x, cell.y, T, T, sw, sh, x0, top, x1, bottom);
+    if (c) ctx.drawImage(img, sx + c[0], sy + c[1], c[2], c[3], c[4], c[5], c[6], c[7]);
+  }
   return true;
 }
 

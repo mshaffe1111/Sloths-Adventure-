@@ -104,11 +104,15 @@ import { swimHeadY } from './heroSwim.ts';
 import { CLUE_NAME, clearOfHollowLogs, drawHollowLog, drawW1Clue, drawW1Dress, insideHollow } from './w1NewArt.ts';
 import { drawMudSplash, drawW1Creek } from './w1Creek.ts';
 import { paintedBank, setW1PitWater } from './w1Pits.ts';
-import { stackZonesOf } from './groundStack.ts';
+import { stackZonesOf, aboveLinesPath } from './groundStack.ts';
+import { polygonInBox, vGradient } from './drawThrift.ts';
 import { stageClock, type StageClock } from './clock.ts';
 import { moveRide } from './ridePlay.ts';
 /** how far inside a bank's end the water drawn over him stays (its painted face leans up to about this far) */
 const ZONE_INSET = 14;
+/** a river's water over its logs (drawRivers' over pass), painted and plain, as gradient stops (vGradient) */
+const OVER_WATER_PAINTED = [[0, 'rgba(96, 160, 152, 0.3)'], [1, 'rgba(38, 66, 71, 0.75)']] as const;
+const OVER_WATER_PLAIN = [[0, 'rgba(56, 148, 168, 0.55)'], [1, 'rgba(24, 90, 120, 0.8)']] as const;
 import { drawLadder, drawLily, drawLogComing, drawRiverFoam, drawRiverLog, drawRiverTailEnd, TAIL_END, drawReedClump, drawRiverWater, drawSafeRiverOver, safeLogLine, riverWaterOutline, drawW2Cage, drawW2Decor, drawW2Lift, riverArtReady, RIVER_UNDER_BANK, deepFillFoot, riverPaintFoot } from './riverArt.ts';
 import type { RiverZone } from './river.ts';
 import { rideHidden, ridersOf, stepRiders, type Riders } from './ridePickups.ts';
@@ -203,7 +207,7 @@ import { maxHearts } from './secret.ts';
 import { drawLeafCover, drawPushLog, drawSeed, markSeedFound, seedFound, waterArt, type ProtoExtras } from './protoStage.ts';
 import { CHEER_SECONDS, footfallsBetween, hasClip, heroClipsEnabled, heroClipsLive, resetHeroClips, warmHeroClips } from './heroClips.ts';
 import { releaseDecorPics } from './envKit.ts';
-import { bushHeight, drawBranchArt, drawBushArt, drawEarthWall, setLianaTops, drawCurtainArt, drawHollowArt, drawProtoScene, drawSeedArt, hasKit, releaseGroundChunks, paintedKitEnabled, setDecoTrunks, setDepthView, setGroundPaint, setKitWorld, setRockLooks, setGroundLook, setBoughJoins, paintedPlatforms, protoArtReady, type ProtoSceneState , setGroundStacks, riverLid, riverUnderside, clipAboveLines, drawKitColumn, setClimbFeet } from './protoArt.ts';
+import { bushHeight, drawBranchArt, drawBushArt, drawEarthWall, setLianaTops, drawCurtainArt, drawHollowArt, drawProtoScene, drawSeedArt, hasKit, releaseGroundChunks, paintedKitEnabled, setDecoTrunks, setDepthView, setGroundPaint, setKitWorld, setRockLooks, setGroundLook, setBoughJoins, paintedPlatforms, protoArtReady, type ProtoSceneState , setGroundStacks, riverLid, riverUnderside, drawKitColumn, setClimbFeet } from './protoArt.ts';
 import { dressFeet } from './columnDress.ts';
 import { drawPorchPosts, porchPosts, type PorchPost } from './porchPosts.ts';
 import { drawFx, fxFrame } from './bossFx.ts';
@@ -6314,26 +6318,43 @@ export class GameEngine {
       const a = Math.max(x0, cam.x - 20);
       const b = Math.min(x1, cam.x + cam.viewportWidth + 20);
       ctx.save();
-      ctx.beginPath();
-      ctx.rect(x0, r.surfaceY - 30, x1 - x0, bottom - r.surfaceY + 30);
-      ctx.clip();
+      // the river's box: x0..x1, from 30 over its surface to the view's foot; over a TAIL's safe river (its over pass), each log's waterline
+      // only as far as the log is drawn, behind the reeds where they go under (drawRiverTailEnd): the box ends there
+      const top = r.surfaceY - 30;
+      const xr = over && r.safe && r.tail ? Math.max(x0, Math.min(x1, r.x1 - r.tail + TAIL_END.hide)) : x1;
       // (a river on a leg another leg runs under: its water, bed and soil end at the ceiling as its banks' earth does, the underside on its
       // soil; they ran to the view's foot as columns of earth over the race leg's banks and planks, 2-7's re-shoot: groundStack.ts,
       // ENG-GROUND-b. None where no leg is stacked)
       const lid = riverLid(this.platforms, r.x0, r.x1, r.surfaceY);
-      if (lid) clipAboveLines(ctx, lid, x0, x1, r.surfaceY - 30);
+      const lidPath = lid ? aboveLinesPath(lid, x0, x1, top) : null;
       // (under a painted bank, only as far as its face slopes back in, never behind it: riverArt.ts riverWaterOutline, ENG-24e 2c)
+      let face: Array<[number, number]> | null = null;
       if ((ul || ur) && this.paintKit && protoArtReady()) {
         const bk = this.riverBanks(r);
         // (the face the bank's soil is clipped to: its own edge and top, the kit's world, protoArt.ts setKitWorld)
         const nb = ul ? bk.near : undefined, fb = ur ? bk.far : undefined;
-        const o = riverWaterOutline(hasKit(world.id) ? world.id : 1, nb ? nb.x + nb.width : r.x0, fb ? fb.x : r.x1, nb ? nb.y : null, fb ? fb.y : null, r.surfaceY - 40, bottom);
+        face = riverWaterOutline(hasKit(world.id) ? world.id : 1, nb ? nb.x + nb.width : r.x0, fb ? fb.x : r.x1, nb ? nb.y : null, fb ? fb.y : null, r.surfaceY - 40, bottom);
+      }
+      // (the box, the ceiling and the faces in as few clips as the same region takes: a ceiling or a face cut to the box is one clip,
+      // drawThrift.ts polygonInBox; it was the box, then each in turn, 2-7's rivers 21-24 clips a frame over the limit 19, DRESS-27b. A
+      // ceiling that rises over the box's top (never, riverLid) keeps the old clips)
+      const clipTo = (o: ReadonlyArray<readonly [number, number]>) => {
         ctx.beginPath();
-        ctx.moveTo(o[0][0], o[0][1]);
+        if (o.length) ctx.moveTo(o[0][0], o[0][1]);
         for (let i = 1; i < o.length; i++) ctx.lineTo(o[i][0], o[i][1]);
         ctx.closePath();
         ctx.clip();
+      };
+      const lidInBox = !!lidPath && lidPath.every((p) => p[1] >= top);
+      if (lidPath && lidInBox) clipTo(polygonInBox(lidPath, x0, top, xr, bottom));
+      else if (face && !lidPath) clipTo(polygonInBox(face, x0, top, xr, bottom));
+      else {
+        ctx.beginPath();
+        ctx.rect(x0, top, xr - x0, bottom - top);
+        ctx.clip();
+        if (lidPath) clipTo(lidPath);
       }
+      if (face && lidPath) clipTo(face);
       const wave = (x: number) => r.surfaceY + Math.sin(x * 0.03 + t * 2.2 * r.dir) * 2.5 + Math.sin(x * 0.07 - t * 1.5 * r.dir) * 1.5;
       const painted = this.paintedRivers(world.id) && riverArtReady();
       if (!over) {
@@ -6354,12 +6375,8 @@ export class GameEngine {
         // (a safe river: on each log its own waterline, low on its body, in the river's own shallow water, and the foam along it; never the
         // deep sheet below, nor a band across the open water; nothing until its strip loads: riverArt.ts drawSafeRiverOver, ENG-24e 2b)
         const logs = this.logsOf(r).filter((lg) => !lg.broken && lg.x + lg.width > a && lg.x < b);
-        // (a TAIL: each log's waterline only as far as the log is drawn, behind the reeds where they go under, drawRiverTailEnd)
-        if (r.tail) {
-          ctx.beginPath();
-          ctx.rect(x0, r.surfaceY - 200, r.x1 - r.tail + TAIL_END.hide - x0, bottom - r.surfaceY + 200);
-          ctx.clip();
-        }
+        // (a TAIL: each log's waterline only as far as the log is drawn, behind the reeds where they go under, drawRiverTailEnd: the
+        //  river's box above ends there, one clip, DRESS-27b)
         if (painted && drawSafeRiverOver(ctx, logs, r.surfaceY, t, r.dir, r.speed)) {
           for (const lg of logs) {
             if (lg.drift?.look === 'raft') continue;
@@ -6368,11 +6385,8 @@ export class GameEngine {
           }
         }
       } else {
-        const g = ctx.createLinearGradient(0, r.surfaceY, 0, r.surfaceY + 60);
-        // (the painted river's own colours when it is painted, so the logs sink into the same water)
-        g.addColorStop(0, painted ? 'rgba(96, 160, 152, 0.3)' : 'rgba(56, 148, 168, 0.55)');
-        g.addColorStop(1, painted ? 'rgba(38, 66, 71, 0.75)' : 'rgba(24, 90, 120, 0.8)');
-        ctx.fillStyle = g;
+        // (the painted river's own colours when it is painted, so the logs sink into the same water; made once, drawThrift.ts, DRESS-27b)
+        ctx.fillStyle = vGradient(ctx, r.surfaceY, r.surfaceY + 60, painted ? OVER_WATER_PAINTED : OVER_WATER_PLAIN);
         // (over a leg laid under it the river has a bed under its painted strip (riverArt.ts deepFillFoot): this water ends there too, or it
         //  dimmed the bed's earth to the deep colour down to the ceiling, READY-27)
         const foot = lid ? deepFillFoot(riverPaintFoot(r.surfaceY, false), bottom, true) : bottom;
