@@ -79,4 +79,13 @@ D43 (works for any stage: no stage id in engine code), D109 (no clock times in m
   letter.
 
 ## EXACT NEXT STEP
-(written at hand-over; see below)
+The only step left is the landing. The code is done: fix 2ca3de9b5, this REPORT on top of it.
+1. Suite verdicts. This session's runs are in its scratchpad: base-unit.log / base-ci.log (base d9425f091) and fix-unit.log / fix-ci.log
+   (fix 2ca3de9b5), each ending in UNIT_EXIT / CI_EXIT. If they are lost, re-run both on frozen trees (dispatch-packet.md D115) with the
+   CLAUDE.md unit line and gates.yml's 'rolled' test line, each in the background with timeout 7200000. Then take `grep "^not ok"` from
+   each and compare the names. A red on the fix that is not red on the base is this branch's: STOP and send it to the lead. Inherited
+   reds are expected; ENG-27w named 2 unit and 12 CI-tool reds on d794dcda1.
+2. Land: `git ls-remote origin t-eng-27`. If it is still d9425f091, `git push origin <wip head>:t-eng-27` (a fast-forward). If it has
+   moved, merge it into the wip head, run tsc and hudRoute.test.ts, then push. Then `git ls-remote` must equal the pushed head.
+3. send_message to the lead (session_01FhBbYN2CVHnFXg7XzqKXpM) with the landed hash and the two suite lines (tests / pass / fail,
+   inherited reds named). No clock times.
