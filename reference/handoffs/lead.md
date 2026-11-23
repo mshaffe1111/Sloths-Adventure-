@@ -88,6 +88,14 @@ code-checked plan (ENGINE-NEEDS.md); "add a level" in one step; every lead keeps
   The plan doc: reference/plans/ENGINE-NEEDS.md (Architect session_01FhBbYLVSn59vpCSU4ruo6P, t-engine-needs).
 - **Hugging Face is the lead's call** ($63.53 final budget 11-12; ~$10 reserve; every job in HF-SPEND.md).
 
+## READ THIS FIRST, every start and after every compaction (Matt 11-23 11:27 AM ET, R-165.405: "Your job isn't to touch work. Your job is to manage... You just lack drive and urgency.")
+1. **Today's goal, with Eastern times** (set with Matt each morning in one line; every check-in and every report to him measures against it):
+   11-23: release 4's branch clean with 1-4's list rebuilt (ENG-26s, report by 12:15 PM); World 3's kit + a 3-1 row going down (ENG-W3a, report by
+   1:45 PM); the 2-7 race numbers decided by the end of the day. Targets: 2-6 on Matt's test link Wed 11-25; 2-7 Fri 11-27. A slip goes to Matt the moment it moves an ETA.
+2. **The board: reference/plans/LANES.md.** Three levels in flight (pieces for N+2, design/art/lines for N+1, build of N); every job a budget, an ET report-by and a hard stop the LEAD decides at.
+3. **The lead manages; members engineer.** The lead decides scope, priority, time and the bar, judges the evidence and unsticks; it does not do the work or design the code. A member's technical fork goes back as 'decide it within your budget and show me the evidence', unless it changes scope, the bar, a shipped stage or Matt's taste.
+4. **The scoreboard in every report to Matt:** levels on his link this week vs the plan; hours per level vs 2 h; pieces landed ahead.
+
 ## RIGHT NOW (11-22 wrap, written 5:35 PM ET by `date`; this block wins over everything below; refreshed at check-ins, R-165.242)
 
 **Live:** 0.10.2 "Walk them home" (release 3; PR #78 merged by Matt 4:43 PM ET, main cdffdc627; publish run 45073660336 + Pages 207 SUCCESS; APK v0.10.2-47; retro reference/qa-reports/REL-0.10.2/RETRO.md). EnK5 v268 = the same code. **Lead branch:** ccr-ea739a2f-dfcee4 (+ ccr-e71c7674-i0i93u). **No member running; no trigger armed.**
