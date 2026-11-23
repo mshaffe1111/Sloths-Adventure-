@@ -4,6 +4,10 @@
 Branch t-build-27e (fresh from t-build-27-wip 51ff9c43f): merged t-eng-27 09c23c1b0 (ENG-HUD27b, clean), cherry-picked BUILD-27d's
 92fcae5bf d1df3070b 361599287 fecf714c6 04db57dc9 f18614471 (letter 4, judged flip, the clip rig, dry stills); trial merge 533e28c29 dropped.
 Next: errs.mts 1-12 -> [] every roll; then ENG-BOT27b's hash -> merge, NEW frozen tree, castBots --proven 1-40 (bar 24/40), list, --check.
+DONE (3:34 PM ET), all on frozen /home/user/wt-b27e-f1 = 2cfd1871d: errs.mts 1-12 [] on every roll both settings; tsc PASS;
+w2Arc27 + judgedTable + easyMode 21/21 PASS. BASELINE before ENG-BOT27b: castBots 2-7 seeds 1-40 all bots both settings --proven = 23/40
+(bar 24): adult N 37 (rescued 26,27,30; seed 6 117.7 s under the floor), child N 29 (151 water lives), child E 39 (seed 4), middle N 36
+(7,10,17,33), expert N 39 (7); adult E, middle E 40. Run ~1.5 min. Sent to the lead.
 
 ## BUILD-27d (finishing; started 2:25 PM ET 11-23 by `date`; report by 3:50 PM ET; hard stop 4:35 PM ET; box 28 min / 320k)
 ### EXACT NEXT STEP (BUILD-27d's; read this first)
