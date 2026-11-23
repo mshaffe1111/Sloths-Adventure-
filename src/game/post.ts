@@ -28,6 +28,16 @@ export interface PostSpec { doors: number; art: PostArt }
 /** is he taking the letter at (x, y): the engine's reach, at his middle */
 export const inReach = (px: number, py: number, x: number, y: number): boolean => Math.hypot(px - x, py - PICK.up - y) < PICK.reach;
 
+/**
+ * The moments of play the post gives (the engine's moments, wayside.ts StageWay.on), from its doors' state (pieces/postPiece.ts open):
+ * 'post:letter' once the first letter is posted, and 'post:letter:<n>' once n letters are (1 on), so a story line can wait on the
+ * first letter or on the nth. Any post stage; a stage with no post gives none.
+ */
+export function postMoments(open: readonly boolean[]): string[] {
+  const n = open.filter(Boolean).length;
+  return n ? ['post:letter', ...Array.from({ length: n }, (_, i) => `post:letter:${i + 1}`)] : [];
+}
+
 /** what is wrong with a stage's slots, by name: a slot's letter missing, or a slot no ground under it carries his middle through */
 export function postFaults(post: Post, collectibles: readonly Collectible[], platforms: readonly Platform[]): string[] {
   const out: string[] = [];
