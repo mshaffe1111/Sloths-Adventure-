@@ -64,10 +64,12 @@ for (const o of ORIENTS) {
     const s = e.currentStage;
     const plats = (s.platforms || []).filter((p) => p.type === 'solid' && p.width >= 120 && !p.broken);
     const sorted = [...plats].sort((a, b) => a.y - b.y || a.x - b.x);
+    // (his y is his FEET (realPlay's p.y is the top of the wood he stands on): pinned there he stands on it; kitaudit/shoot.mjs's
+    //  `pin.y - height` drew him 70 px over the shelf)
     const R = Object.getPrototypeOf(e).render;
     e.render = function () {
       const pin = window.__pin;
-      if (pin && this.player) { const p = this.player; p.x = pin.x; p.y = pin.y - (p.height || 40); p.vx = 0; p.vy = 0; if (this.lives < 5) this.lives = 9; }
+      if (pin && this.player) { const p = this.player; p.x = pin.x; p.y = pin.y; p.vx = 0; p.vy = 0; p.grounded = true; if (this.lives < 5) this.lives = 9; }
       R.call(this);
     };
     return {
