@@ -1,3 +1,431 @@
+# ENG-27v REPORT (start 11:12 AM ET by `date`; box 11:40 AM ET; base t-eng-27-wip-27u a069e911c; on t-eng-27-wip-27v: E b20128270, D's judge d2bd53f61 (D117), NOT on t-eng-27)
+## EXACT NEXT STEP (the lead: the race call on the table below; the lead's hard box says no successor on the race unless the lead decides)
+1. **The lead rules the race** on the A / D' / E table below (the boats' pace or the 72 px gap, river.ts:189-190). No race tuning was done here.
+2. **Two E candidates, both on t-eng-27-wip-27v:** E = b20128270 (E's gate alone); E+J = d2bd53f61 (E plus D's judge fix: the judge AND the gate now
+   fly the Leaf Glide the engine flies). E+J is the honest one (the gate sees what the engine flies; hopJudged 4/4 GREEN), but it moves the expert
+   rows: expert 5/5 on E, 2/5 on E+J. NOT traced why (box): the first thing to trace if the lead takes E+J (expert home Normal 3 -17.8 s, post N5 -14.8 s).
+3. **The suite on frozen a069e911c: PENDING (named plainly).** tsc PASS; the unit stage had 1247 results, 0 not ok, at hand-over, still running (as in
+   ENG-27u's box, pacerLay's file had not reported); the CI tool line runs after it in the same script and has NOT run. Log in my container:
+   scratchpad/base-suite.log (+ .unit, .ci). The next member re-runs it if the lead wants the verdict; known reds expected: pacerLay's nine.
+4. Not done (the lead's hard box cut it): castBots / tierBots on E or E+J; pacerLay and pacerRespawn on E or E+J; a real-engine invariant that the
+   judge's leaf matches the engine on every judged hop (hopJudged covers it on middle only, D121's form for the expert is open).
+
+## The table (frozen trees; 2-7 out-and-back toy; the boats' pace and the 72 px gap as they stand on a069e911c; tool v/table-27v.mts.txt)
+A = b7a68a8bd's bot (ungated) on a069e911c's game (a069e911c with b7a68a8bd's tools/inspect/firsttimer.ts); D' = a069e911c (one drawn aim held);
+E = b20128270; E+J = d2bd53f61. Rows: home N1 N2 N3, home E1 E3, post N4 N5 (expert: Normal only, the tier has no Easy bot: 6 'no expert bot
+on easy' rows, by design). Margin = boat - him, s (+ = he won). Every run reached the shrine: NO stuck spot on any row.
+| tier | bot | won | margins per row | lives lost (on the race leg) |
+|---|---|---|---|---|
+| middle | A | 5/7 | +3.7 -2.5 -0.3 +9.4 +11.8 +9.2 +1.3 | 26 (20) |
+| middle | D' | 0/7 | -38.9 -27.0 -48.3 -4.8 -4.2 -27.1 -47.0 | 9 (5) |
+| middle | E | 5/7 | +7.6 +6.7 -7.5 +16.7 +17.7 -51.1 +5.6 | 15 (11) |
+| middle | E+J | 5/7 | +7.6 +6.7 -7.5 +11.1 +10.9 -51.1 +5.6 | 12 (9) |
+| expert | A | 5/5 | +22.9 +4.5 +9.0 +12.8 +9.8 | 12 (12) |
+| expert | D' | 0/5 | -32.8 -19.2 -33.1 -17.4 -22.1 | 10 (5) |
+| expert | E | 5/5 | +3.7 +5.4 +0.7 +2.4 +2.5 | 11 (6) |
+| expert | E+J | 2/5 | +14.2 -3.7 -17.8 +6.2 -14.8 | 10 (5) |
+| ride-only | A | 0/7 | -24.3 -21.1 -15.7 -12.9 -7.1 -25.7 -28.5 | 18 (12) |
+| ride-only | D' = E | 0/7 | -36.6 -46.3 -49.5 -26.3 -28.7 -72.5 -80.6 | 11 (7) |
+(ride-only is SKILLS.race off: E's gate never runs, so D' and E are the same rows, measured on both; A's ride differs: its older bot. E+J's
+ride-only rows not run: the leaf changes only judged hops, and ride-only judges none at the race gate (UNVERIFIED by a run).)
+**Wins and losses, read plainly:** D' (one drawn hop held) loses every race: it waits for a lucky draw and rides logs in. E wins the middle
+5/7 with fewer lives than A (15 vs 26; race-leg falls 11 vs 20) and the expert 5/5 by thin margins (+0.7 to +5.4 s). E's two middle losses:
+home N3 (-7.5 s: 4 race-leg falls, three at x 7009-7183, one spot) and post N4 (-51.1 s: 2 race-leg falls at x 11189, 7278; the outlier, not traced).
+E+J: middle the same on Normal, Easy rows 0 lives lost (were 1 and 2); expert 2/5. Every race press on every bot: 0 falls per press (the
+race-leg falls come from other hops). Raw rows: v/table-E-Dp-A-b20128270.txt, v/e2-hopJudged-and-table-d2bd53f61.txt; summary v/table-summary-b20128270.txt.
+
+## Done-items
+- **0. The suite on frozen a069e911c:** started first in the background (timeout 7200000) on a chattr-frozen tree; tsc PASS; unit 1247 results 0
+  not ok so far; NOT finished at hand-over: PENDING (above). The CI tool line is read from the tree's own gates.yml (line 157 at a069e911c).
+- **1. E toy first (b20128270):** tools/inspect/firsttimer.ts raceCandidates (the tier's holdQ singles at its 5 quantiles, then, if it presses
+  doubles, a double at each dbl2Q quantile, first press the median hold cut a frame short of d2; no noise; smallest first) and racePick (the
+  first whose AIMED flight lands, gateLands, no thumb). The race gate (firsttimer.ts ~3150) picks with them, then draws the hop (drawHop at the
+  press) only for its thumb noise, which is flown, never read. A tier with no holdQ keeps D' (the held drawn aim). Toy in hopJudged.test.ts: a
+  solid 40 px past his front, singles 0.1 / 0.3 / 0.5 s (0.1 short of the 50 px margin, the others land): E presses the 0.3 s; a slip drawn
+  for the press does not change the pick; none landing -> null. **RED on the D' plant** (racePick keeps only the one held draw: 'E rode on',
+  v/toyE-RED-plantDprime.txt), **GREEN on E** (with the no-foresight and held-aim toys, 3/3, v/toyE-GREEN.txt). Not RED on a069e911c itself:
+  racePick does not exist there and a missing export would fake a red, so the plant is the RED (ENG-27u's rule).
+- **2. D's judge flies what the engine flies (d2bd53f61):** ENG-27q's hop flown frame by frame beside the engine on its own tree (b0c6dd586,
+  scratch hooks, v/hf27v.mts.txt -> v/hf-n2-8256.txt). Two differences, both the judge's: (a) **the Leaf Glide**: at frames 24-25 (jump still
+  held after the second press, falling 0.1 s) the engine braked his fall to 125 px/s (glide.ts) and the judge did not; the engine came down
+  2 frames later, at x 7952, 6 px past bank #66's end, inside the side catch; the judge crossed y 1499 at x 7976, 30 px past, onto log #69.
+  (b) a constant 2.7 px from the first frame: the engine starts one frame of the log's carry (80 px/s) further on; NOT fixed (box), named for
+  the next judge change. FIX: hopFlies flies the leaf as engine.ts does (after gravity, before the move; FlightOthers.glide from the run's
+  skills); judge() also names where the engine's side catch takes the flown draw when nothing lands with the gate's margin (the 24/50 px are
+  the decision's, not the physics). The replay (v/replay27v.ts.txt): no leaf, #66 missed; leaf, #66 caught, as the engine did.
+  **hopJudged 4/4 GREEN on d2bd53f61** (v/hopJudged-GREEN-d2bd53f61.txt: 0 unjudged, 0 flown wrong, 0 came down elsewhere on all four).
+  **RED without the fix** on E b20128270 (v/hopJudged-RED-nojudgefix-b20128270.txt): Easy 2 `edgeWait q#-2 judged t 27.70 x 15087 ... double |
+  came down #14 drift`, the very row ENG-27u's packet named (Easy 2 x 15087).
+- **3. The table:** above. **4.** Sent to the lead with both hashes. 2-7 is not laid on a list in this work (no castBots yield owed, D125).
+
+## Polish check
+No screen changed (bot code, a test, evidence). Nothing drawn to look at.
+
+## Pushback
+- The packet's READ LEAN path `origin/t-eng-27-wip-27u:REPORT.md` holds no ENG-27u section; ENG-27u's report is on origin/t-eng-27 (cf7428424).
+  Read there. (A packet pointer, not a blocker.)
+- E+J is the honest candidate but costs the expert 3 races: the leaf the gate now sees changes the expert's picks. The race call should be
+  made knowing that, or on E+J's rows once the expert change is traced.
+
+## Suggestions
+- The judge's 2.7 px take-off carry (2b above): one more line in hopFlies (start x + the float's carry for one frame when he stands on a
+  moving float), checked by the same side-by-side trace; then hopJudged on the expert too (a test packet: tools/inspect/hopJudged.test.ts).
+
+## Unresolved
+- The base suite's verdict (pending). Why the expert loses 3 races on E+J (not traced). E's post N4 -51.1 s (not traced).
+
+## Lessons applied
+D111 (box by the clock, real context low), D113 (no foreground waits: every run in the background, notified), D114/D126 (the suite and the
+CI line first, on the base), D115 (every run on a chattr-frozen tree, edits only in w27v), D117 (candidates on wip-27v only), D119 (no heredoc
+in a commit chain: files written first), D120 (the lead's box message read and followed, no stop to wait), D121 (the judge fix checked on the
+real engine, hopJudged, not only the replay), D122/D123 (7200000 timeouts, two heavy runs at most).
+
+## Turnover note
+Trees in my container (gone with it): /home/user/base27u (a069e911c, frozen, the suite), /home/user/e27v (E), /home/user/e2 (E+J),
+/home/user/a27v (A's bot on the base game), /home/user/d27q (b0c6dd586 + scratch trace hooks, never pushed). Tools kept: v/table-27v.mts.txt
+(a row: tsx table-27v.mts <tree> <label> <middle|expert|ride> <home|post> <normal|easy> <seed>), v/hf27v.mts.txt (the side-by-side trace).
+
+# ENG-27u REPORT (start 9:11 PM ET by `date`; box 9:39 PM ET; base t-eng-27-wip-27t 7559289ca; on t-eng-27-wip-27u: the :71 rewrite 59f56e6a0, the iris assert 9eea72323 + 767ef6023 (D117), evidence a069e911c, NOT on t-eng-27)
+## EXACT NEXT STEP (the next engine member when release-4 work resumes; no successor tonight: the weekly limit. Read only this section, D90)
+**(1) The strict hold's three closing checks: (a) DONE, (b) DONE (a finding, ruled R-165.388), (c) NOT FINISHED in my box: re-run it first.**
+- (a) pacerLay.test.ts:71's respawn clause REWRITTEN to the ruled rule (59f56e6a0; new replaces old): he walks the leg at 1.5x the boat's pace
+  (ahead) and at 0.9x (behind), falls at 0.4 of the way, respawns at a flag at 0.3: his margin there is his FIRST pass's less DOWN_SECS; in
+  the air the boat runs on (a frame's dt a frame, nothing owed); back at the fall's x standing, the boat owes EXACTLY the excess and eases it
+  (not all in the first frame); the ease drains within max(EASE_MIN, 2E/EASE_PEAK) and then his margin at the x is the fall's less the time
+  he stood. RED on Option A's piece (plant a8edc22ed, detached: 16698b8a1's pacerPiece.ts + the two ease constants, so no missing export
+  fakes a red): `pace 1.5x: the respawn puts his margin at the first pass's 9.27 s less the beat, not the fall's 12.37 s (12.37 s)`
+  (u/pacerLay71-RED-optionA-a8edc22ed.txt). GREEN on 59f56e6a0 (u/pacerLay71-GREEN.txt).
+- (b) THE IRIS ASSERT in tools/inspect/pacerRespawn.test.ts (9eea72323, 767ef6023): ANY frame the boat moves over the ease's bound
+  ((1 + 0.5) x its step) must be a re-placement on a frame whose iris the engine draws is SHUT (engine.ts drawIris's k = 1: hole radius 0;
+  IRIS_OPEN_SECS now exported so the test reads the engine's own length). The old exception (fall / down / just-after-down frames skipped) is
+  gone, so nothing hides. On a respawn after the beat the engine sets irisOpen = 0.45 in the same update that re-places the boat: k = 1, black.
+  **FINDING (for the lead, two runs, one cause):** the first run of the assert (9eea72323) flagged 7 home and 12 post moves (30-317 px) with
+  the view live. Traced (tools/inspect/trace27u.ts): home middle Normal 5 frame 3385 lives 1 -> 0 (the LAST life, down starts), frame 3386
+  lives 3, the boat re-placed 7107 -> 7424 px with the beat still running (down.t 0.033, so drawIris reads the beat's k = 0); home expert
+  Normal 2 frame 3020 -> 3021 the same (12160 -> 12202). CAUSE: the bots tap Continue the frame after the last life is lost
+  (tools/inspect/firsttimer.ts:4494 reads `isGameOver && outOfLives`, which engine.ts:5777 sets at the beat's START); a player can only
+  tap Continue on the Game Over card, which shows once the beat is over (stepDown -> onDefeat). So in the real game the continue is behind
+  the card and then the respawn's iris is shut. The check now judges a continue frame that way (k = irisOpen / IRIS_OPEN_SECS) and counts
+  continues apart. **The harness defect stays, named, not fixed (outside the packet; it touches every bot's Game Over rows):** a bot
+  continues 0.72 s (the beat) early, mid-beat; the beat then ends with `d.last` and calls report(false) / onDefeat on a run already going
+  again. **RULED by the lead (in my box): R-165.388.** The harness must wait for the beat (a bot may never continue before a player
+  could), NOT now: after release 3, on one bot branch once t-build-26's and t-eng-27's bots meet, with the tierBots calibration re-run.
+  The assert's separate count of continues stays as built.
+  **GREEN on frozen 767ef6023 (2 of 2; u/grid-GREEN-767ef6023.txt):** home 41 race-leg falls judged, 299 ease frames, 23 re-placements on a
+  respawn and 7 on a Game Over continue; post 48 falls, 232 ease frames, 29 and 5; every one inside the iris's shut frame. (post's ease
+  count was 531 in ENG-27t's rows: the run-wide tallies carried home's 299 into post; now reset per test: 299 + 232 = 531, the same frames.)
+  **The plant bites:** 2f438eb66 (detached, not pushed: engine.ts's respawn sets irisOpen = 0, the re-placement on a live view) RED, home
+  30 and post 34 re-placements 'with the view live ... on the respawn' (u/grid-RED-irisplant-2f438eb66.txt): exactly 23 + 7 and 29 + 5.
+- (c) THE FULL SUITE on frozen 9eea72323 (the code under (a) and (b); 767ef6023 changes only tools/inspect/pacerRespawn.test.ts, which no
+  suite step runs, and adds two scratch tools; tsc PASS on 767ef6023): **NOT FINISHED IN MY BOX, named plainly:** tsc PASS; the unit stage
+  had 1247 top-level tests ok and 0 not ok when I handed over, still running (pacerLay's file, with its known nine race reds, had not reported yet);
+  build, chunkcheck, artcheck, drawcheck, clipcheck, knowncheck, generality, roadmap, kbdcheck, buildcheck, seedlist, the engine-tool tests
+  and tierBots NOT RUN yet (they run in order after the unit stage, in ENG-27u's container: the lead can ask ENG-27u for the SUMMARY).
+  **The next member re-runs the whole suite on frozen a069e911c (code as 9eea72323; only test, scratch and evidence changes after it) and
+  checks its only reds are pacerLay's known nine (1504, 1506, 1508, 1510, 1514, 1516-1519).**
+**Then (2) E, (3) D's judge, (4) the table: NOT STARTED (box).** ENG-27t's pointers stand unchanged (its REPORT section below: the race gate
+firsttimer.ts:3122-3140, gateLands :1136, drawHop :4193, the toy's shape: a 72 px gap, [single 0.1 s lands 20 px short, single 0.3 s lands
+60 px past, double ...]; D' never presses, E presses the 0.3 s single the first frame it lands with 50 px; RED on D', GREEN on E). Then
+D's judge: trace Easy 2 x 15087 on D' and Normal 2 x 15982 on D, hopJudged 4/4 GREEN. Then the table on the 7 rows (home N1-3, E1, E3,
+post N4, N5: finish, race result, lives lost, falls per press), E beside A b7a68a8bd and D', pacerLay and pacerRespawn on E. No race retune.
+**(4) The black band:** NOT IN THE GAME. The real 2-7, sideways 915x412: its right end (u/band-2-7-far-sideways.jpg,
+  2x: the door, Pokey and the painted village to the very edge; the camera's view ends 20 px past the last platform) and a scan of the
+  whole stage every 600 px (51 shots, u/bandscan-read.txt, e.g. u/scan-2-7-24900-sideways.jpg): no band in any shot (the right 24 px strip
+  never near black while the strip beside it is lit; the dark readings are the stage's dusk art, both strips alike). The toy
+  (2-97 seed 6, ENG-27t's clip's own fixture), scanned the same way as the control: 33 shots, no band either (u/scan-2-97-10500-sideways.jpg),
+  so the game's own drawing never showed the clip's band, even in the toy. So the band in ENG-27t's clip most likely comes from the clip method (recorded state put on a paused page), not from the game's camera or a backdrop that ends
+  short. UNVERIFIED: which of the clip's steps draws it (not traced: box). Trap for the scan (now in bandscan27u.mjs): a paused engine draws
+  ONE still and stops (engine.ts:1594 stillDrawn): my first scan shot every place identical until it cleared stillDrawn; a clip or still
+  on a paused page must clear it, or every shot repeats the first.
+## Done-items
+- pacerLay.test.ts:71 rewritten (59f56e6a0): RED on Option A (plant a8edc22ed), GREEN on the fix; u/pacerLay71-*.txt.
+- pacerRespawn's iris assert (9eea72323, 767ef6023): GREEN on frozen 767ef6023 (2 of 2); its plant 2f438eb66 RED (64 live-view re-placements);
+  the first run's 19 flags traced to one cause (two runs: u/trace-home-middle-n5-f3386.txt and expert Normal 2 frame 3021), named above.
+- engine.ts: IRIS_OPEN_SECS exported (one word; the test reads the engine's own length, no copied 0.45).
+- The suite on frozen 9eea72323: see (c) above (what finished inside the box, and what did not).
+- The band: (4) above, with stills.
+## Polish check
+- The real 2-7's right end, sideways 915x412 at 2x (u/band-2-7-far-sideways.png): the ground, the door ('Touch the door!'), Pokey and the
+  painted village behind to the very edge; no band; the camera's view ends 20 px past the last platform (30306 vs 30326).
+- The toy's right end, sideways (u/band-2-97-far-sideways.png): no band there either. The rest of the band answer is in (4).
+## Pushback
+- The packet's (b) wording ('on the frame the boat is re-placed (wasDown && !e.down) ... every race-leg respawn') would have missed the
+  harness's Game Over continue (re-placed on a frame that is neither): the assert now flags ANY over-bound move, so nothing is excepted by
+  frame type. That is how it found the mid-beat continue.
+## Suggestions
+- (R-165.388's packet, the lead filed it for after release 3) the bot harness waits for the beat before it taps Continue: tools/inspect/firsttimer.ts:4494
+  `if (e.isGameOver && e.outOfLives && !e.down)`; done-items: pacerRespawn GREEN with 0 continues re-placed mid-beat (a count the test
+  already prints), tierBots calibration re-run and recommitted (BOTS.md), the race table's 7 rows re-read; no row moves without the lead.
+## Unresolved
+- (2) E, (3) D's judge, (4)'s table: not started (box; the lead stopped release-4 work tonight after this box).
+- The harness's mid-beat continue: named, not fixed; filed by the lead as R-165.388 (after release 3).
+## Method update (proposed, the lead rules)
+- A check that excepts frames by TYPE (respawn, fall, down) can hide a jump of another type: bound EVERY frame, then name each allowed
+  case with the state that makes it allowed (here: the iris shut). Check: pacerRespawn's iris assert has no frame-type exception.
+- The bots' Game Over continue is earlier than a player's (mid-beat): any check of what the screen shows around a Game Over must judge
+  the continue as the card-then-iris the player sees, until the harness is fixed.
+## Turnover note
+- reference/handoffs/engine-core.md not rewritten (box); this section is the hand-over. Lessons applied: D63 (judged on the real screen:
+  stills of the real 2-7 sideways), D102 (read lean), D111 (box from `date`), D113/D122 (every long run in the background with a timeout),
+  D115 (every run on a frozen tree: 9eea72323, 767ef6023, the plants detached), D117 (candidates on wip-27u only), D119 (no heredoc in a
+  commit chain: files written in their own call), D109 (no clock times to the lead), law 22 (the continue is judged as the screen shows
+  it, and the harness's early tap is named for a fix, not hidden by the rule).
+# ENG-27t REPORT (start 8:31 PM ET by `date`; box 8:59 PM ET; base t-eng-27-wip-27s 7501bf2fb; the strict hold on t-eng-27-wip-27t: plant cc66545df, fix bf92d3daf, the D121 check 7559289ca (D117), NOT on t-eng-27)
+## EXACT NEXT STEP (ENG-27u, read only this section, D90)
+**THE LEAD'S RULINGS IN MY BOX (verbatim in substance; they come first):** (1) YES: rewrite src/game/gen2/pacerLay.test.ts:71's respawn
+clause to the ruled rule: first-pass margin less DOWN_SECS, then the eased hold; RED on Option A's code, GREEN on ours (new replaces old).
+(2) The ease is ACCEPTED (per-frame numbers 6.76 px peak vs 4.86 at pace, 1.39x; and the clip: the respawn's 228 px re-placement falls
+inside the iris's black frames). One more check across the grid: the re-placement ALWAYS lands inside the iris, never with the view live;
+an assert in pacerRespawn if cheap. Then on to E. **So ENG-27u: (a) pacerLay :71 rewrite (plant on Option A's code, e.g. 16698b8a1's
+piece); (b) the iris assert in pacerRespawn (on the respawn frame, the screen is in the iris: read the engine's iris/fade state there, every
+race-leg respawn on the grid); (c) the full suite on the result; then E, D's judge, the table below.**
+  (b)'s pointers (read, not built): the iris is engine.ts `irisOpen` (:913, private), set to IRIS_OPEN_SECS 0.45 s (:242) at the respawn
+  (:6210) and run down by dt (:1780); drawIris (:5809) closes on him while `down` (k from DOWN_SECS*0.3) and opens over 0.45 s, the hole
+  of radius full*(1 - smoothstep(k)) centred on him. The assert: on the frame the boat is re-placed (pacerRespawn's `wasDown && !e.down`),
+  the boat's box on screen lies OUTSIDE that hole (or k = 1), every race-leg respawn on the grid.
+**The lead's question (one line):** the black band down the right edge of the clips is NOT notch emulation (the clip sets no insets) and
+NOT the game's inset (probe on the dev page: the canvas fills the whole 915x412 and 412x915, the camera's view covers the canvas, no
+safe-area variable set): most likely the camera showing past the toy's painted backdrop at the out-and-back's far end, the platforms' art
+drawn past it below. UNVERIFIED: the toy world's width was not read (my probe's field came back empty); check `stage.width` vs camera.x +
+view on a shot before calling it.
+**Done since the first rows:** pacerRespawn now also proves the boat's PLACE pays (D121, 7559289ca on t-eng-27-wip-27t): while it owes,
+its clock + owed grows by exactly a frame's dt, and the owed drains within the ease's named length. GREEN on frozen 7559289ca (2 of 2).
+The plant for it (an ease that never drains, a detached commit on 7559289ca): RED, as it must be (8202e11b3, a detached commit, not pushed: the eased() guard returns 0; t/grid-RED-drainplant-8202e11b3.txt):
+  home and post both fail, 52 breaches 'the boat still owed ... past the ease's length' (home middle Normal 5 0.84 s, Easy 2 0.28, Easy 5
+  0.65, Easy 6 0.06, ride Easy 5 0.50, ...). GREEN on 7559289ca (t/grid-GREEN-7559289ca.txt). The check bites.
+**(1) THE STRICT HOLD IS BUILT AND GREEN on the grid; the lead rules its rows. Then (2) E, (3) D's judge, (4) the table, as ENG-27t's
+packet wrote them (unchanged, none started: box).**
+- **Before (2), finish (1)'s two open checks:** (i) THE CLIP (D63) of the ease: the recording is made (tools/inspect/cliprec27t.ts on
+  bf92d3daf: post, middle, Normal, seed 6, the +0.68 paying fall; the ease from run frame 3498 to 3585, 193 frames with 60 before and 45
+  after); film it on the dev page (`?fixture=home` is POST_CODE at the asked seed: `npx vite --port 5199` on a frozen bf92d3daf tree, then
+  `PW=/opt/node-tools/node_modules/playwright/index.js node reference/qa-reports/ENG-27/t/clip27t.mjs 5199 <rec.json> <out> upright 6`
+  and `sideways 6`), LOOK at both at game speed: the boat on screen while it eases; no visible jump or lurch. FILMED in my box (t/ease-upright.mp4, t/ease-sideways.mp4, stills t/sheet-*.jpg, on frozen bf92d3daf's dev page, the recording from a6bb1ef05, the same piece): the boat in view in 86 of 97 upright shots; in the recording its move per frame is 4.86 px at its pace and peaks at 6.76 px (1.39x) on the ease, a smooth rise and fall; the one big move (228 px) is the RESPAWN's re-placement (the first-pass rewind, db4f97f81: clock 43.43 -> 41.89 as the down ends), with the boat out of view in that shot. I looked at the stills, not the clip played at speed: WATCH both at game speed and judge 'no visible jump or lurch' (D63) before the lead rules.
+  (ii) the full suite on bf92d3daf (D114; pacerLay alone already run on it: the same ten reds as the base, no change): the base suite on 7501bf2fb ran in my container (tsc PASS; unit still running at hand-over, 10 not ok so far: pacerLay's known 9 (the race bots: 1504, 1506, 1508, 1510, 1514, 1516-1519) AND A TENTH, NEW: src/game/gen2/pacerLay.test.ts:71 'on a respawn keeps exactly the margin he had when he fell' (`the respawn keeps his 2.04 s`): it pins Option A, which db4f97f81 replaced (the lead's ruling); new replaces old: rewrite its respawn clause to the ruled rule (first-pass margin less DOWN_SECS, the hold eased) as a planted test, the lead's call since it is a unit test outside pacerRespawn); the suite on the fix is NOT run.
+- **Then (2) E toy-first** (RED on D', GREEN on E: a toy where a short drawn single would fall short of the 72 px gap and the smallest aimed
+  hop that lands 50 px past it is pressed), **(3)** trace Easy 2 x 15087 on D' and Normal 2 x 15982 on D (a predicted fall that came down
+  safe) and fix the judge, hopJudged 4/4 GREEN, **(4)** the table on the 7 rows (E beside A b7a68a8bd and D'), pacerLay and pacerRespawn on
+  E; then the race call goes to the lead. No race retune before it.
+- **Where E goes (read on bf92d3daf, not built):** the race gate is tools/inspect/firsttimer.ts:3122-3140 (`SKILLS.floatSure && raceLegal`):
+  today `h = this.aim.at(dir, t, (d) => this.drawHop(d))` (D': ONE drawn hop held, 1115 WaitAim) and `gateSees(q, ..., h, ..., RACE_MARGIN)` on
+  the far bank (24) or the next logs (RACE_MARGIN, :708). E replaces the drawn aim AT THIS GATE ONLY (the packet: 'the decision picks'):
+  candidates = the tier's calibrated kinds x their nominal holds (drawHop's own tables, firsttimer.ts:4193, without the noise), smallest
+  first; the first whose AIMED flight `gateLands(q, at, x, y, dir, cand, t, vx, margin, v2)` (:1136, no thumb arg) lands -> press it now;
+  `this.gateHop` = that candidate with the drawn hold spread and thumb noise applied at the press (what flies). None lands -> ride on.
+  The toy (hopJudged.test.ts beside the held-aim toy): a 72 px gap, a candidate list [single 0.1 s (aimed lands 20 px short), single
+  0.3 s (lands 60 px past), double ...]: D' (the held draw = the short single) never presses; E presses the 0.3 s single the first frame
+  it lands with 50 px. RED on bf92d3daf (D'), GREEN on E.
+## Done-items
+- **(0) The suite on 7501bf2fb, frozen, in the background first:** started 8:33 PM ET on a frozen 7501bf2fb tree (s/suite-7501.log in my container): npm ci and tsc PASS; unit at hand-over: 10 not ok, the known nine plus pacerLay.test.ts:71 (above). Its later gates did not finish in my box.
+- **(1) The strict hold (the lead's ruling (a)), src/game/pieces/pacerPiece.ts on bf92d3daf:** a respawn on the race leg (the first-pass
+  rewind of db4f97f81 kept under it, unchanged: the clock from `first[k] - DOWN_SECS`) now also HOLDS the fall: its x (his x the frame
+  before the life was lost) and his margin there. The first frame he STANDS at or past that x with a better margin, the excess is owed
+  and eased off: the boat's clock runs ahead of dt on a raised cosine (`EASE_PEAK` 0.5: at most half again its own pace, never a step in
+  its speed; `EASE_MIN` 1 s; length max(1, 2E/0.5) s, so 0.84 s takes 3.4 s). The verdict counts the excess still owed (if he docks
+  mid-ease); a new fall mid-ease ends the ease (the respawn's clock re-places him) and holds the new fall. **The ease's length cites its
+  reason** (D116, in the code): half again its pace reads as the boat pushing on, not jumping; the bound is checked per frame.
+- **The plant, cc66545df (the test only, on 7501bf2fb's code): RED on exactly ENG-27s's seven** (t/grid-RED-cc66545df.txt): home middle
+  Normal 5 x 7425 +0.84, Easy 2 x 10049 +0.33, Easy 5 x 4656 +0.69, Easy 6 x 3198 +0.10, ride Easy 5 x 7533 +0.50; post middle Normal 6
+  x 10125 +0.68, expert Normal 1 x 10076 +0.73. **GREEN on the fix** (frozen a6bb1ef05, the same piece as bf92d3daf:
+  t/grid-GREEN-a6bb1ef05.txt; and again on frozen bf92d3daf itself after the restack: t/grid-GREEN-bf92d3daf.txt, 2 of 2 ok): 89 race-leg falls judged, none pays; 830 frames of ease on the grid, no frame's boat move over
+  1.5x its step, no verdict drops the excess.
+- **What the test reads (pacerRespawn.test.ts):** his margin back at the fall's x against the boat's WHOLE clock (clock + the excess it
+  owes); the ease's own checks (the boat's move per frame at most 1.5x its own step, a respawn's frame excepted; a verdict at least clock +
+  owed). Its bound is its own named constant (0.5), not the piece's (a test that imports what it tests proves nothing); a piece with no
+  `owed` (the base) reads 0, so the plant is RED there, not NaN-green (I caught that hole in my own first test before the plant).
+- **Traced, two (rule 28):** (a) home middle Normal 5 x 7425 on 13bbf0d7a (t/trace-home-middle-n5-13bbf0d7a.txt): the hold fired, ONE
+  FRAME LATE: he stood back at x 7425 on frame 3449 (margin -1.34 against -2.17 at the fall), the boat owed 0.84 from frame 3450. Why: the
+  pieces step BEFORE he moves (engine.ts), so the piece reads where the last frame left him. (This fall was lives 1 -> 0 -> 3: the
+  game-over restart; the hold holds through it.) (b) post expert Normal 1 x 10076 with a look-ahead by his last step (work tree,
+  uncommitted, t/trace-post-expert-n1-lookahead.txt): it fired mid-jump OVER the x (grounded read from the frame before), margin 2.71 there,
+  no excess; he landed past it at 3.75 (+0.73). So the look-ahead was wrong and the stale read is the EXACT one: the frame-start state is
+  the previous frame's end, the very frame the test calls "back". The fix resolves the hold there; the test counts the owed from the frame
+  after (clock + owed there, less one step). The boat starts the ease 33 ms after he stands there; the race verdict loses nothing.
+## The rows (to the lead, rows first)
+| check | 7501bf2fb (base) | cc66545df (plant, base code) | bf92d3daf / a6bb1ef05 (fix) |
+|---|---|---|---|
+| pacerRespawn home | RED 5 of 41 (ENG-27s) | RED 5 of 41 | GREEN 0 of 41; 299 ease frames |
+| pacerRespawn post | RED 2 of 48 (ENG-27s) | RED 2 of 48 | GREEN 0 of 48; 531 ease frames |
+| the ease's bound (move per frame vs 1.5x the boat's step) | (no ease) | (no ease) | 0 breaches; the clip's ease: base step 4.86 px, peak 6.76 px (1.39x) |
+| verdict keeps the owed excess | (no ease) | (no ease) | 0 breaches |
+## Polish check
+- The ease, stills upright and sideways (t/sheet-upright.jpg, t/sheet-sideways.jpg): the boat on the water beside and past him, no snap in the stills; numbers above. ROUGH, named, not mine and not fixed: the fixture page draws a black band past the toy world's right edge in both orientations (the camera shows past the toy's end); Pokey draws over the boat where he stands on the log above it (the 'under' layer, the lead's ruling (a)). The clip is not yet watched at speed (above).
+## Unresolved
+- The clip (above) filmed, stills looked at, not watched at speed; the suite on the fix (pacerLay alone on frozen bf92d3daf: 9 pass, 10
+  fail, the SAME ten as the base with the same error lines: the known nine and :71's Option A; t/pacerLay-bf92d3daf.txt; no change from the
+  hold); (2), (3), (4).
+- One interim grid ran on my WORK tree, not a frozen one (the look-ahead, uncommitted: 2 of 89 paid); its result only told me the look-ahead
+  was wrong; every row above is from a frozen tree at a named hash (D115).
+- **D119 repeated (mine):** a bare `git commit` after a python heredoc ran outside its && chain, in the main checkout, when the worktree add
+  above it failed (the disk allowance was full): it had nothing to commit, no harm, but the countermeasure (one command per heredoc, or the
+  whole chain in a script that stops on error) was not applied. I freed the disk by removing my finished worktrees (git worktree remove).
+  A partial scratch folder fPl may remain in my scratchpad (not a worktree).
+- I restacked my own t-eng-27-wip-27t (force-with-lease from 13bbf0d7a, mine alone) so the plant is its own commit on 7501bf2fb.
+- **D121 on my own test (a proxy, named):** pacerRespawn reads the piece's `owed` (clock + owed is the race the verdict judges, and the
+  verdict check proves the excess counts at the dock), but nothing yet proves the boat's PLACE pays it: a piece whose ease never drained
+  `owed` would still pass (the race honest by the verdict, the boat on screen not). Add to pacerRespawn: after each ease, the boat's
+  clock has advanced by its frames' dt plus the excess (owed back to 0) before the dock, or the verdict counts the rest. Not done (box).
+- LESSONS read: the packet's list by headline (D63, D96, D102, D107, D109, D111-D121); not each in full (box). Applied: D96 (the
+  suite script runs the five CI-only gates too), D121 (above), D111 (box), D113 (every long run in the
+  background), D114/D118 (the base suite first), D115 (frozen trees; one breach named above), D117 (the candidate on wip), D120, D109,
+  D112/D121 (the invariant named before the ease), D116 (the ease's reason in the code), D63 (the clip: filmed, stills looked at, not watched at speed).
+## Method update (proposed, the lead rules)
+- level.md / engine-core.md trap: **a piece steps BEFORE Pokey moves** (engine.ts): any piece rule keyed on "he is at x" sees the last
+  frame's x, one frame late; a test reading the same frame's end must count what the piece does on the next frame, or the piece must not
+  guess ahead (a look-ahead by his last step misreads a jump). Check: pacerRespawn's frame-after read.
+- A plant that reads a new field must default it (`?? 0`), or the plant passes NaN-green on the base.
+## Turnover note
+- reference/handoffs/engine-core.md not rewritten (box); this section is the hand-over.
+
+# ENG-27s REPORT (start 8:09 PM ET by `date`; box 8:37 PM ET; base t-eng-27 2d9359932, code 16698b8a1; D', two plants and the fall-pays fix candidate on t-eng-27-wip-27s 7501bf2fb (D117), NOT on t-eng-27)
+## EXACT NEXT STEP (ENG-27t, read only this section, D90)
+**FIRST, THE LEAD'S LATEST RULING (after my one traced fall), which overrides the fall-pays lines below where they differ: RULED (a), the
+STRICT HOLD** ("a fall never pays"; a named residual would change the rule to get around the defect, law 22). When he reaches the fall's x
+again with a margin better than the one he had at the fall, the boat makes up the excess EASED: never a snap; the ease is long enough
+that no boat visibly jumps, judged on a clip at game speed (D63). **INVARIANT (D112, D121):** once the ease ends, his margin is never better
+than at the fall; if he reaches the finish mid-ease, the excess still counts. **TEST:** the full grid (home and post, seeds 1-6, both settings,
+middle, expert, ride-only: tools/inspect/pacerRespawn.test.ts on wip-27s 7501bf2fb, which already IS that grid), the 7 paying falls RED on
+7501bf2fb (they are: s/grid-7501bf2fb.txt, s/fallpays-grid-RED-7501bf2fb.txt) and GREEN on the fix. **Keep the first-pass rewind under it**
+(db4f97f81: no stretch credited twice). The test must also check the ease (no boat jump per frame over a bound you name, and the excess
+counted at the finish). Build it on wip-27s from 7501bf2fb, the clip and the grid first, rows to the lead; then E and D's judge as ruled
+below. Nothing on t-eng-27 but the REPORT.
+**The lead's rulings (received in my box, for this step):** (1) fall-pays is an engine bug: on a respawn his margin is the one he had when he
+FIRST passed the respawn point, less the time from the fall to his stand (the boat waits for no one); invariant (D112): back at a race-leg
+fall's x his margin is never better than at the fall; pacerRespawn's at-the-stand test deleted (new replaces old); engine change on wip, rows
+first. (2) The honest middle is NOT D': build **E**: the decision picks the SMALLEST hop from the tier's calibrated kinds and nominal holds
+whose AIMED flight lands with RACE_MARGIN (firsttimer.ts:708, 50 px) on the far side; no noise, no thumbAt; he presses when that aimed hop
+lands; the press flies the drawn hold spread and thumb noise; falls come only from the thumb. (3) D's judge must fly exactly what the engine
+flies: trace and fix the q -2 rows that came down safe (D' Easy 2 x 15087 #14; D Normal 2 x 15982 #20, #19) in the same change. (4) Table E
+beside A and D' on the 7 rows (finish, race, lives, falls per press), pacerLay and pacerRespawn; the lead then rules the race (boat pace or
+the 72 px gap, river.ts:189-190, the lead's call). No race retune before it.
+0. **(1) is BUILT on t-eng-27-wip-27s (candidate, NOT on t-eng-27):** db4f97f81 (pieces/pacerPiece.ts: `first[]`, his margin the first time
+   he reached each 16 px of the leg; respawn() sets the clock from first[k] - DOWN_SECS and the boat runs on, no hold; DOWN_SECS moved from
+   engine.ts to physics.ts so the piece can count the beat the clock holds through), 7501bf2fb (tools/inspect/pacerRespawn.test.ts: the old
+   at-the-stand test replaced by the end-to-end invariant over its whole grid: home and post, seeds 1-6, both settings, middle, expert,
+   ride-only). **Checked:** tsc PASS on db4f97f81; the table-row plant GREEN on db4f97f81 (was RED on e8c4d0153); home N1 falls now cost
+   -0.34..-2.35 s (paid +0.56..+0.59). **The full grid on 7501bf2fb is RED: 7 of 89 race-leg falls still pay** (s/fallpays-grid-RED-
+   7501bf2fb.txt): home middle Normal 5 x 7425 +0.84, Easy 2 x 10049 +0.33, Easy 5 x 4656 +0.69, Easy 6 x 3198 +0.10, ride Easy 5 x 7533
+   +0.50; post middle Normal 6 x 10125 +0.68, expert Normal 1 x 10076 +0.73. **Trace two of them first (rule 28: seed, x, frame, what
+   happened).** ONE traced (s/cross-e6-7501bf2fb.txt, probe s/cross-27s.mts.txt): home middle Easy 6 x 3198: first pass at the respawn
+   x 3490 margin 5.77, at the fall 5.43 (the first crossing LOST 0.34 s to the boat); respawn 5.77 - 0.75 = 5.02; the second crossing of the
+   292 px took 1.57 s and GAINED 0.52 s, back at x 3198 5.54 (+0.10). So his second crossing beat his first by 0.86 s, more than the 0.75 s
+   beat: the first-pass margin is not enough wherever the first crossing was slow (what slowed it is not traced yet; the other six not traced).
+   **The lead (after my grid RED): trace two of the seven first; the form of the fix waits on the cause.** Bring with the trace: every race-leg
+   fall on the grid, its cost or gain, the mean and the worst gain, PER BOT (probe s/grid-27s.mts.txt; my run's output s/grid-7501bf2fb.txt
+   if it finished in my box). If the cause is river timing on the second try (a log in reach that was not the first time), the lead rules
+   between (a) a strict hold: back at the fall's x his margin is clamped to the one at the fall, the boat EASED over about a second, never
+   snapped on screen; (b) the mechanics invariant (no stretch credited twice) plus a floor that every fall costs at least the beat, the
+   residual named. Each names its invariant and test (D112, D121). The candidate stays on wip.
+   **The per-bot grid on 7501bf2fb (MEASURED, s/grid-7501bf2fb.txt, every fall listed):** middle 38 falls, 5 pay, mean -1.12 s, worst gain
+   +0.84, worst cost -6.10; expert 10, 1 pay, mean -0.98, worst gain +0.73, worst cost -1.89; ride-only 41, 1 pay, mean -1.54, worst gain
+   +0.50, worst cost -5.82 (89 falls, 7 pay: the test's seven). Still to bring: the trace of a second paying fall (what slowed the first crossing). If so, the ruling's formula cannot keep the
+   invariant by itself; the lead rules the form (D112: name the invariant before any cap). Then the suite on the fix (pacerLay was RED 9/19
+   on the base and on D': name any change), and send the lead the rows (rows first).
+1. Then (2) E with a plant first (a toy where a short drawn single would fall short of a 72 px gap and the smallest aimed hop that clears it
+   with 50 px is pressed instead), and (3) the judge fix with hopJudged GREEN 4/4; then (4).
+2. **The base suite 16698b8a1** ran in my container: tsc PASS; unit 1846 ok, 9 not ok when I handed over, all nine pacerLay's (the same 9 ENG-27p
+   named on B); the rest dies with my container: RE-RUN (D114/D118).
+## Done-items
+- **(1) The lead's ruling built (t-eng-27-wip-27s, from D e75664cde):** one exported `WaitAim` (tools/inspect/firsttimer.ts, above gateLands)
+  holds each gate's aim: `at(dir, t, draw)` draws (drawHop: the tier's kind and hold) ONCE when a wait begins, returns it unchanged until
+  `end()` (pressed, or the target left reach: edgeWait's `lands` none, upstream's `next` none, edgeStand's bank-fallback press), a frame
+  the gate is not reached (gap over 1.5 frames) or a turn. **Deleted:** the 0.5 s beat, its redraw and the floatBeat fields at edgeStand,
+  edgeWait, upstream; refused with the target in reach he stands by choice holding the aim (edgeWait's 6 s fall-through came only on a
+  beat-out frame, so it is gone too). The decision reads the aim only (D's gateLands); the press flies it with its drawn noise (D's flyThumb).
+  **Plant 64134c343** (D's beat moved inside WaitAim; equal to D by reading, its redraw one frame sooner) + toy 'a wait holds its aim': **RED**
+  ('he pressed a redrawn lucky hold at frame 15 (2 draws in one wait)', s/toy-RED-64134c343.txt); **D' 95702a42e GREEN**, D's no-foresight
+  toy GREEN (s/toy-GREEN-95702a42e.txt); tsc PASS on D'.
+- **hopJudged in full:** D' 5 pass 1 fail: Easy seed 2 'edgeWait q#-2 t 27.70 x 15087 double 0.320 | came down #14 drift' (a predicted fall
+  that came down SAFE: a judge flight error); D e75664cde fails the same kind on Normal seed 2 (x 15982 twice, came down #20, #19). So it is
+  D's judge() (the noisy draw's flight), not the held aim (s/hopJudged-*.txt). OPEN.
+- **(2) The four-bot table** (frozen trees, middle; s/table-wt*.txt, probe s/table-27s.mts.txt; finish s | race won/lost, him vs boat s | lives
+  lost; land/press | falls/press over judged presses at a float):
+  | row | A b7a68a8bd | B 16698b8a1 | C b0c6dd586 | D' 95702a42e |
+  |---|---|---|---|---|
+  | home N1 (boat 93.9) | 175.1 W 85.4, 6 | 190.0 L 114.3, 1 | 246.3 L 108.4, 3 | 213.5 L 130.8, 4 |
+  | home N2 (92.4) | 203.0 W 90.9, 6 | 215.8 L 122.9, 1 | 167.1 W 81.3, 1 | 276.2 L 119.4, 3 |
+  | home N3 (92.1) | 189.5 W 89.7, 4 | 215.9 L 119.8, 4 | 203.8 L 93.0, 5 | 251.8 L 140.4, 1 |
+  | home E1 (97.5) | 145.9 W 83.4, 3 | 189.3 L 117.3, 5 | 145.3 W 83.3, 0 | 158.3 L 102.3, 0 |
+  | home E3 (96.1) | 149.7 W 83.1, 1 | 170.0 L 101.5, 2 | 146.3 W 82.8, 0 | 166.8 L 100.3, 0 |
+  | post N4 (100.8) | 153.3 W 90.2, 1 | 183.6 L 127.8, 1 | 164.9 L 110.8, 0 | 184.0 L 126.2, 1 |
+  | post N5 (103.4) | 172.9 W 96.9, 5 | 217.4 L 152.6, 1 | 186.1 L 118.2, 1 | 218.6 L 150.4, 0 |
+  | races won | 7/7 | 0/7 | 3/7 | 0/7 |
+  | land / fall per press | 0.87-1.00 / 0-0.13 | 1.00 / 0 | 1.00 / 0 | 1.00 / 0 |
+  Presses at a float 13-28 a run on every bot. D' never fell on a judged press, and stands longest (slowest finishes).
+- **(3) Split (b), the 72 px:** src/game/river.ts:189-190 `gapFor(dir, speed)` is a flat 72 for a river WITH him (96 + 0.2 x speed against).
+  Every log on a river drifts at its one speed, so the gap from the log he rides to the next never changes. Every race site rides with
+  the flow (`here.drift.dir === dir`), so every race site is the same 72 px gap, with RACE_MARGIN 50 px of log wanted past it.
+- **(4) Fall-pays, end to end** (back at the fall's x, margin vs the frame before the fall): A 12 of 20 race-leg falls pay, B 6 of 15,
+  C 2 of 4, D' 3 of 5, each +0.01..+0.81 s (A N1 x 10103 +0.61, A P5 x 12815 +0.81, B N1 x 8868 +0.60; D' N1 x 11600 +0.59, N1 x 8738
+  +0.56, P4 x 12479 +0.59); the rest cost 0.01-4.9 s. **One cause:** Option A keeps his margin where he STANDS after the respawn, behind
+  the fall's x; he then re-crosses the respawn-to-fall stretch, already credited on his first crossing, so it is credited twice: a fall
+  pays wherever he re-crosses it faster than the boat. pacerRespawn's invariant (margin at the stand) holds; the principle (D112) fails.
+  **Plant e8c4d0153** (tools/inspect/pacerRespawn.test.ts, 'back at a race-leg fall's x, his margin is never better than at the fall', the
+  middle on the table's 7 rows): **RED** on the wip-27s head, the same three falls as the probe (s/fallpays-RED-e8c4d0153.txt).
+## Polish check
+- No screen changed (bot and test code only); the numbers above are the evidence.
+## Pushback
+- "A new target comes in reach": I read a wait as the frames a target stays in reach at one gate (a second log arriving inside it does NOT
+  redraw). A redraw per new log is one key in WaitAim; the lead's call.
+- D' answers the foresight question but loses every race and is the slowest bot; with hopJudged's q -2 rows open on D and D', the judge
+  that records the noisy flight is not yet trustworthy enough to rule D' on land rate alone.
+## Unresolved
+- pacerLay on D' e8c4d0153: RED 9/19, the same nine as B; pacerRespawn's old invariant GREEN on D' (now replaced). Per bot A, C: not run. The q -2 judge flight rows; the suite past unit on the base and the suite on e8c4d0153: NOT done.
+- I told the lead C's post N5 row was lost; it was not (I read the file before the run finished); corrected in a second message.
+- The disk allowance filled once (2.7 GB a worktree); I removed finished worktrees; no run's result was lost to it.
+- LESSONS read: D107, D109, D111-D120 (headline and countermeasure); D96, D102 not read in full (box). Applied: D111, D113, D114/D118,
+  D115, D117, D119 (edits as scratch scripts), D120 (worked on past the question), D109.
+## Method update
+- level.md rule 28: a drawn-hop gate's aim is drawn once per wait and held until the press or the target leaves reach (WaitAim); check: the
+  held-aim toy in hopJudged.test.ts. STAGE-RULES / the race: 'a fall never pays' is checked end to end at the fall's x (the new plant), not
+  at the respawn's stand.
+- A probe's table is read only after its run reports DONE (my C P5 miss).
+## Turnover note
+- reference/handoffs/engine-core.md not rewritten (box); this section is the hand-over.
+
+# ENG-27r REPORT (start 7:43 PM ET by `date`; box 8:11 PM ET; base t-eng-27 ea7686a43; candidate D on t-eng-27-wip-27r e75664cde (D117), NOT on t-eng-27)
+## EXACT NEXT STEP (ENG-27s, read only this section, D90)
+0. **The suite on 74a97ad44 is running in MY container** (frozen worktree, scratchpad suite.sh; tsc PASS, unit shards running when the box closed).
+   It dies with my container: RE-RUN it (D114/D118), and run the same suite on D e75664cde beside it (D's tsc is clean; only its toy test was run).
+1. **Run hopJudged on D in full** (`tools/inspect/hopJudged.test.ts`, the four home rows): D presses on the aim, so a flown draw can now fall;
+   judge() records it as q -2 and the test reads q -2 as consistent only if he is lost (`landed === 'lost'`). Name every q -2 row and whether
+   any q -2 row came down SAFE (that would be a judge flight error, the Normal 2 #66 kind). Then the four-bot table (packet step 3), frozen,
+   ONE run at a time beside the suite: A b7a68a8bd, B 74a97ad44, C b0c6dd586, D e75664cde; home middle Normal 1-3, Easy 1 and 3; post Normal
+   4 and 5; finish s, race margin vs the boat, lives lost, presses at a float, land rate per press, falls per press; hopJudged and pacerRespawn
+   on C and D; C's Normal 2 x 8256 row traced. Worktrees for A, B, C were made (scratchpad wtA/wtB/wtC) and die with this container.
+2. Then split (b) (every race site 72 px) and the fall-pays measure end to end (packet step 4) with its RED plant. Not started (box).
+## Done-items
+- **Step 1, the code answer (74a97ad44 = code 4df2d084c; tools/inspect/firsttimer.ts):** every drawn-hop gate reads the DRAWN NOISE of the very hop
+  it then flies. The hop: `drawHop` :4174-4199 draws kind, hold, d2, dblAt, hold2, upOnly AND the thumb's fumbles for 75 frames (drift, slip,
+  late let-go, :4192-4198) on rHop. Each gate judges `hopFlies(q, ..., h, t, vx, margin, this.v2(), this.thumbAt(), ...)`, whose flight plays
+  h.thumb frame by frame (:1037-1060) from the thumb's state now (thumbAt :4212): edgeStand :2769-2770, edgeWait :3041-3042, race :3102-3106
+  (bank 24 px, logs RACE_MARGIN), upstream :3148-3149. The press flies that same h: `gateHop = h`, startJump :4258-4262 takes its kind, hold,
+  d2, upOnly, and `flyThumb = gate.thumb` :4271, played by thumbify :4105-4110. So B presses only when the noise already drawn for this
+  press lands: FORESIGHT, one draw held, redrawn whole (noise too) every 0.5 s beat (:2786-2788, :3058-3060, :3156-3158). **On b0c6dd586:** the
+  same read, but `gateDraw` :4172 (`return this.drawHop(dir)`, called at :2771 edgeStand, :3041 edgeWait, :3094 race, :3141 upstream)
+  draws a fresh hop, noise included, on EVERY frame judged: foresight with about 30 tries a second, as the lead said.
+- **Step 2, candidate D (t-eng-27-wip-27r):** plant 78979d13b first: the four gates (5 call sites) read through one exported `gateLands`
+  (B's read kept: noise and thumbAt) and a toy in hopJudged.test.ts ('no foresight, ENG-27r'): a single held 0.2 s at a solid 120 px on;
+  aimed it lands, with a 24-frame slip drawn on the press frame it falls short; the gate must press it. **RED on the plant** ('the gate read the
+  slip drawn for the hop before he pressed'; the toy's own first assert, the aim lands, passed). **D e75664cde:** `gateLands` judges
+  `{ ...h, thumb: undefined }` with no thumbAt: the aim (kind, holds, second press, beat: the tier's draws, held for the wait on B's beat),
+  the log, the gap. The press still flies h with its drawn noise (flyThumb, unchanged). judge() (D :1736) still flies the FULL drawn hop and
+  now records a fall too (q -2) so the hop judged is the hop flown; hopJudged's came-down check reads q -2 as right only if `landed === 'lost'`.
+  **Toy GREEN on D**; tsc clean on D. Nothing else run on D.
+## Pushback
+- The aim keeps B's per-wait draws of kind and hold and B's 0.5 s beat (D116: that beat has no source). The hold drawn is the testers' habit, so
+  the aim still re-draws its kind and hold every 0.5 s: about 2 tries a second at a lucky hold (not a lucky thumb). If the lead wants the aim
+  fixed for the whole wait, or the hold the tier's median (who.hold[0]), it is one line in each gate; the table should say which.
+- The packet asked for 6 heavy items in a 28-minute box; the suite alone outlives the box. I cut scope (table, splits, fall-pays not started)
+  rather than any check.
+## Unresolved
+- The suite (B and D), hopJudged in full on D, the four-bot table, split (b), the fall-pays measure and its plant: NOT done.
+- LESSONS D96, D102, D107, D109, D111-D119 not read in full (box); applied as the packet states them: D109 (no clock times to the lead), D111
+  (box), D113 (background runs only), D114/D118 (suite first), D115 (frozen worktrees), D117 (candidate on wip).
+## Method update
+- level.md rule 28 should add: a gate decides on the hop AS AIMED (no thumb noise); the judge records the FLOWN draw's prediction, a fall included.
+## Turnover note
+- reference/handoffs/engine-core.md NOT rewritten (box); this section is the turnover.
+
 # ENG-27q REPORT (start 7:27 PM ET by `date`; box 7:55 PM ET; base t-eng-27 4df2d084c; bot change on t-eng-27-wip-27q b0c6dd586 (D117), NOT on t-eng-27)
 ## EXACT NEXT STEP (ENG-27r, read only this section, D90)
 0. **The lead (on this report): b0c6dd586 is NOT ruled; it stays on wip-27q.** The gates press only when the hop drawn WITH the thumb's noise lands,

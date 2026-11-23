@@ -1,0 +1,95 @@
+TAP version 13
+#   [bank press] unjudged q\#-1 judged t 114.53 x 6661 lag 0 hold 0.183 | flown t 114.53 x 6661 hold 0.183 single | came down \#75 solid
+#   [bank press] unjudged q\#-1 judged t 122.93 x 5240 lag 0 hold 0.383 | flown t 122.93 x 5240 hold 0.383 single | came down \#81 solid
+#   [bank press] unjudged q\#-1 judged t 138.07 x 3811 lag 0 hold 0.282 | flown t 138.07 x 3811 hold 0.282 single | came down \#87 solid
+#   [bank press] unjudged q\#-1 judged t 149.17 x 2406 lag 0 hold 0.315 | flown t 149.17 x 2406 hold 0.315 single | came down \#93 solid
+# normal seed 5: 17 judged hops pressed (race, unjudged, edgeWait); unjudged or stale 0, flown not as judged 0, came down elsewhere 0
+#   [bank press] unjudged q\#-1 judged t 68.40 x 15543 lag 0 hold 0.148 | flown t 68.40 x 15543 hold 0.148 double | came down \#16 solid
+#   [bank press] unjudged q\#-1 judged t 115.10 x 16799 lag 0 hold 0.171 | flown t 115.10 x 16799 hold 0.171 single | came down \#21 solid
+#   [bank press] unjudged q\#-1 judged t 211.47 x 6235 lag 0 hold 0.153 | flown t 211.47 x 6235 hold 0.153 single | came down \#76 solid
+# normal seed 2: 36 judged hops pressed (edgeWait, upstream, unjudged, race); unjudged or stale 0, flown not as judged 0, came down elsewhere 0
+#   [bank press] unjudged q\#-1 judged t 99.27 x 12209 lag 0 hold 0.372 | flown t 99.27 x 12209 hold 0.372 double | came down \#53 solid
+#   [bank press] unjudged q\#-1 judged t 170.10 x 958 lag 0 hold 0.357 | flown t 170.10 x 958 hold 0.357 double | came down \#98 solid
+# easy seed 5: 22 judged hops pressed (edgeWait, upstream, unjudged, race); unjudged or stale 0, flown not as judged 0, came down elsewhere 0
+#   [bank press] unjudged q\#-1 judged t 58.87 x 16398 lag 0 hold 0.298 | flown t 58.87 x 16398 hold 0.298 double | came down \#36 solid
+#   [bank press] unjudged q\#-1 judged t 123.03 x 6399 lag 0 hold 0.138 | flown t 123.03 x 6399 hold 0.138 double | came down \#76 solid
+#   [bank press] unjudged q\#-1 judged t 138.63 x 3733 lag 0 hold 0.240 | flown t 138.63 x 3733 hold 0.240 single | came down \#87 solid
+# easy seed 2: 24 judged hops pressed (edgeWait, upstream, unjudged, race); unjudged or stale 0, flown not as judged 0, came down elsewhere 1
+#   edgeWait q\#-2 judged t 27.70 x 15087 lag 0 hold 0.320 double | flown t 27.70 x 15087 hold 0.320 double | came down \#14 drift
+# Subtest: 2-7 home, middle Normal seed 5: every judged hop is flown as judged and comes down where the gate said; every press from a bank with logs near its edge flies on a judgment of its own frame or comes down on solid (ruling A)
+ok 1 - 2-7 home, middle Normal seed 5: every judged hop is flown as judged and comes down where the gate said; every press from a bank with logs near its edge flies on a judgment of its own frame or comes down on solid (ruling A)
+  ---
+  duration_ms: 1647.450362
+  type: 'test'
+  ...
+# Subtest: 2-7 home, middle Normal seed 2: every judged hop is flown as judged and comes down where the gate said; every press from a bank with logs near its edge flies on a judgment of its own frame or comes down on solid (ruling A)
+ok 2 - 2-7 home, middle Normal seed 2: every judged hop is flown as judged and comes down where the gate said; every press from a bank with logs near its edge flies on a judgment of its own frame or comes down on solid (ruling A)
+  ---
+  duration_ms: 955.984935
+  type: 'test'
+  ...
+# Subtest: 2-7 home, middle Easy seed 5: every judged hop is flown as judged and comes down where the gate said; every press from a bank with logs near its edge flies on a judgment of its own frame or comes down on solid (ruling A)
+ok 3 - 2-7 home, middle Easy seed 5: every judged hop is flown as judged and comes down where the gate said; every press from a bank with logs near its edge flies on a judgment of its own frame or comes down on solid (ruling A)
+  ---
+  duration_ms: 887.681415
+  type: 'test'
+  ...
+# Subtest: 2-7 home, middle Easy seed 2: every judged hop is flown as judged and comes down where the gate said; every press from a bank with logs near its edge flies on a judgment of its own frame or comes down on solid (ruling A)
+not ok 4 - 2-7 home, middle Easy seed 2: every judged hop is flown as judged and comes down where the gate said; every press from a bank with logs near its edge flies on a judgment of its own frame or comes down on solid (ruling A)
+  ---
+  duration_ms: 609.564004
+  type: 'test'
+  location: '/home/user/e27v/tools/inspect/hopJudged.test.ts:36:3'
+  failureType: 'testCodeFailure'
+  error: |-
+    a gate judged one hop and the bot flew another
+    + actual - expected
+    
+    + [
+    +   'edgeWait q#-2 judged t 27.70 x 15087 lag 0 hold 0.320 double | flown t 27.70 x 15087 hold 0.320 double | came down #14 drift'
+    + ]
+    - []
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+  actual:
+    0: 'edgeWait q#-2 judged t 27.70 x 15087 lag 0 hold 0.320 double | flown t 27.70 x 15087 hold 0.320 double | came down #14 drift'
+  operator: 'deepStrictEqual'
+  stack: |-
+    TestContext.<anonymous> (/home/user/e27v/tools/inspect/hopJudged.test.ts:55:12)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: a drawn-hop gate decides on the hop as aimed, never on the thumb noise drawn for it (no foresight, ENG-27r)
+ok 5 - a drawn-hop gate decides on the hop as aimed, never on the thumb noise drawn for it (no foresight, ENG-27r)
+  ---
+  duration_ms: 0.374047
+  type: 'test'
+  ...
+# Subtest: a wait holds its aim: drawn once when the wait begins, never redrawn for a lucky hold (ENG-27s, the lead's ruling)
+ok 6 - a wait holds its aim: drawn once when the wait begins, never redrawn for a lucky hold (ENG-27s, the lead's ruling)
+  ---
+  duration_ms: 0.191145
+  type: 'test'
+  ...
+# Subtest: the race gate presses the smallest calibrated hop whose aimed flight lands with the race margin (E, the honest middle, ENG-27v)
+ok 7 - the race gate presses the smallest calibrated hop whose aimed flight lands with the race margin (E, the honest middle, ENG-27v)
+  ---
+  duration_ms: 1.981231
+  type: 'test'
+  ...
+1..7
+# tests 7
+# suites 0
+# pass 6
+# fail 1
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 8242.672002
+exit 1
