@@ -28,7 +28,9 @@ that design. The lead keeps it at every check-in; a check-in that does not updat
    running member's REAL context (get_session context_usage, never the member's estimate) at every check-in and stops any session past
    300k at its next result; a successor session continues the same job inside the same budget. **No exception, not even 'it only has to
    land' (D129 repeated by the lead 11-23 2:13 PM: ENG-BOT27 let run from 460k to 494k to land; the landing failed and the extra half hour
-   cost about $8): past 300k it writes its EXACT NEXT STEP and ends.**
+   cost about $8): past 300k it writes its EXACT NEXT STEP and ends.** The 28-minute box is the member's own stand-in for the context line (D111: members
+   cannot read their real figure); when the LEAD reads the real figure under 250k, the lead may let a session finish its running gate
+   and its landing past the box, said in a message and a STATE line (11-23 5:16 PM: DRESS-27d at 216k, only clipcheck left).
 4. **At the hard stop the LEAD decides, never the member and never "another box by default":** cut the scope, split the rest into a new
    budgeted job, or move it. The decision is written here and in STATE.
 5. **The ship verdict comes first** (D125): a level aimed at a release measures its castBots --proven yield in its first box.
