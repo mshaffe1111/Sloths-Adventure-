@@ -7,6 +7,7 @@
  */
 import type { LaidLeg } from './gen2/legs.ts';
 import type { Vine } from './types.ts';
+import { canvasLost } from './canvasLost.ts';
 
 /** a brief's column dress (GraphBrief.columnDress): what stands at every column's foot */
 export interface ColumnDressSpec {
@@ -87,4 +88,16 @@ export function footCut(foot: DressFoot): { solid: number; strips: Array<[number
   const solid = foot.floor - DRESS_FOOT.rise;
   const sh = DRESS_FOOT.fade / DRESS_FOOT.steps.length;
   return { solid, strips: DRESS_FOOT.steps.map((a, i) => [solid + i * sh, sh, a]) };
+}
+
+/** a climb foot's baked fade (protoArt.ts), kept by key and baked again when the phone has taken the copy back (canvasLost.ts, LESSONS D6) */
+export function cachedBake(cache: Map<string, HTMLCanvasElement>, key: string, bake: () => HTMLCanvasElement | null): HTMLCanvasElement | null {
+  let cv = cache.get(key);
+  if (cv && canvasLost(cv, 'climb foot')) cv = undefined;
+  if (!cv) {
+    const made = bake();
+    if (made) cache.set(key, made);
+    cv = made ?? undefined;
+  }
+  return cv ?? null;
 }

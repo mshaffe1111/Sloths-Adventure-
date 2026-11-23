@@ -57,7 +57,7 @@ let stageWorld = 1;
 import { fitTrunks, type DecoTrunk } from './trunkFit.ts';
 import { drawDrapedPair } from './pairArt.ts';
 import { drawFieldVine } from './vineFieldArt.ts';
-import { DRESS_FOOT, footCut, type DressFoot } from './columnDress.ts';
+import { DRESS_FOOT, cachedBake, footCut, type DressFoot } from './columnDress.ts';
 export { fitTrunks };
 type DecoLeaves = { x: number; y: number; w: number; flip?: boolean; kind?: 'bushWide' | 'fernClump' | 'bushTall' };
 let decoTrunks: ReadonlyArray<DecoTrunk> = [];
@@ -1888,33 +1888,31 @@ export function drawProtoScene(
     //  seams between them against the white water)
     if (cut && end < vy1 + 20 && end + DRESS_FOOT.fade > vy0 - 20) {
       const key = `${kitWorld}:${v.x}:${bottom}:${vine ? 1 : 0}`;
-      let baked = footBakes.get(key);
-      if (!baked && typeof document !== 'undefined' && (kitWorld === 1 || ready.has(kitWorld))) {
+      const canBake = typeof document !== 'undefined' && (kitWorld === 1 || ready.has(kitWorld));
+      const baked = !canBake ? footBakes.get(key) ?? null : cachedBake(footBakes, key, () => {
         const k = 2;
         const cv = document.createElement('canvas');
         cv.width = tw * 2 * k;
         cv.height = DRESS_FOOT.fade * k;
         const c2 = cv.getContext('2d');
-        if (c2) {
-          c2.scale(k, k);
-          c2.translate(-(v.x - tw), -end);
-          for (let y = bottom + 10 - th; y > v.topY - 30 - th; y -= th - 6) {
-            if (y > end + DRESS_FOOT.fade || y + th < end) continue;
-            if (vine) c2.drawImage(vine, v.x - tw / 2, y, tw, th);
-            else blit(c2, 'trunk', v.x - tw / 2, y, tw, th);
-          }
-          c2.setTransform(1, 0, 0, 1, 0, 0);
-          c2.globalCompositeOperation = 'destination-in';
-          const g = c2.createLinearGradient(0, 0, 0, cv.height);
-          cut.strips.forEach(([y, h, a]) => g.addColorStop(Math.min(1, (y + h / 2 - end) / DRESS_FOOT.fade), `rgba(0,0,0,${a})`));
-          g.addColorStop(0, 'rgba(0,0,0,1)');
-          g.addColorStop(1, 'rgba(0,0,0,0)');
-          c2.fillStyle = g;
-          c2.fillRect(0, 0, cv.width, cv.height);
-          baked = cv;
-          footBakes.set(key, cv);
+        if (!c2) return null;
+        c2.scale(k, k);
+        c2.translate(-(v.x - tw), -end);
+        for (let y = bottom + 10 - th; y > v.topY - 30 - th; y -= th - 6) {
+          if (y > end + DRESS_FOOT.fade || y + th < end) continue;
+          if (vine) c2.drawImage(vine, v.x - tw / 2, y, tw, th);
+          else blit(c2, 'trunk', v.x - tw / 2, y, tw, th);
         }
-      }
+        c2.setTransform(1, 0, 0, 1, 0, 0);
+        c2.globalCompositeOperation = 'destination-in';
+        const g = c2.createLinearGradient(0, 0, 0, cv.height);
+        g.addColorStop(0, 'rgba(0,0,0,1)');
+        cut.strips.forEach(([y, h, a]) => g.addColorStop(Math.min(1, (y + h / 2 - end) / DRESS_FOOT.fade), `rgba(0,0,0,${a})`));
+        g.addColorStop(1, 'rgba(0,0,0,0)');
+        c2.fillStyle = g;
+        c2.fillRect(0, 0, cv.width, cv.height);
+        return cv;
+      });
       if (baked) ctx.drawImage(baked, v.x - tw, end, tw * 2, DRESS_FOOT.fade);
     }
   }
