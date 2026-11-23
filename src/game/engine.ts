@@ -229,6 +229,7 @@ import { FollowPlay } from './followPlay.ts';
 import { drawFollowers, drawHerons } from './followArt.ts';
 import { aimBreaths, noteArrivals, type BreathWatch } from './breathAim.ts';
 import type { PodCost } from './podfall.ts';
+import { raceEndLine, type RaceEndWho } from './pacer.ts';
 
 /** how far right of the painted tea table the Queen stands for her tea (her pot hangs over it as she faces left) */
 const TEA_STAND = 150;
@@ -458,8 +459,9 @@ const FAIL_LIMIT = 20;
 const TEACH_LINE = { teach: true } as const;
 const LOCK_LINE = { lock: true } as const;
 /** what a guiding line is, as the engine knows it (onGuide): the stage's own teach line, or the locked exit's line (`lock`: Dot says it
- *  at once, whatever its words, R-165.241) */
-export interface GuideOpts { teach?: true; lock?: true }
+ *  at once, whatever its words, R-165.241), or a stage's own story moment said by the speaker its data names (`who`: a race's end,
+ *  sayRaceEnd; dotLines.ts engineGuideLine makes it a story line, on the story switch like the wayside's beats) */
+export interface GuideOpts { teach?: true; lock?: true; who?: RaceEndWho }
 
 export class GameEngine {
   private canvas: HTMLCanvasElement;
@@ -705,6 +707,9 @@ export class GameEngine {
   private sweepT = 0;
   /** the stage's runtime pieces on the one hook (pieces/index.ts): every registered kind its data lays, started at the stage's start */
   private pieces: StagePiece[] = [];
+  /** the race (its pacer piece) whose end line has been said: once a race. A respawn keeps the piece and its verdict, so a finish crossed
+   *  again after a fall says nothing; a stage start lays a new race (startPieces), whose own finish is said once */
+  private raceEndOf: StagePiece | null = null;
   /** what a piece may read of the engine (stagePiece.types.ts PieceHost): made once, it reads the engine live */
   private readonly pieceHost: PieceHost = ((e: GameEngine): PieceHost => ({
     get t() { return e.gameTime; },
@@ -1881,6 +1886,8 @@ export class GameEngine {
     const underX = under?.x;
     this.camFocus = null;
     if (this.pieces.length) stepPieces(this.pieces, dt, this.pieceHost);
+    // (a race that ends at its finish this step: its end line, once, sayRaceEnd)
+    if (this.currentStage.pacer?.ends) this.sayRaceEnd();
     // (a swing over a hollow that hurts: the view keeps its floor in, him whole first, unless a piece asked for its own focus:
     // cameraFollow.ts hurtFocus; the stage's hurt floors listed once per platform list)
     if (!this.camFocus && this.player.isVineSwinging) {
@@ -9639,6 +9646,20 @@ export class GameEngine {
     this.bossGuideUp = false;
     this.guideN++;
     this.callbacks.onGuide?.(text, seconds, undefined, o);
+  }
+
+  /**
+   * A pacer race's END (pacer.ts Pacer.ends, from the stage's brief): the step he reaches the dock, won (before the pacer) or lost (it
+   * docked first), its line is said ONCE, by the speaker the line names. Never mid-race: the pacer keeps a verdict only when HE reaches
+   * the dock (pieces/pacerPiece.ts; the boat docking first says nothing until he arrives). Never twice: the verdict outlives a respawn
+   * (a fall after the dock rewinds nothing), and this race is marked said. No stage id: any stage whose brief names race-end lines
+   */
+  private sayRaceEnd() {
+    const race = this.pieces.find((q) => q.kind === 'pacer') as (StagePiece & { verdict?: { won: boolean } | null }) | undefined;
+    if (!race?.verdict || this.raceEndOf === race) return;
+    this.raceEndOf = race;
+    const line = raceEndLine(this.currentStage.pacer!.ends!, race.verdict);
+    this.guide(line.text, TIP_SAY_S, { who: line.who });
   }
 
   /** take Dot's line down now (an empty line clears it: Wayside.tsx) */

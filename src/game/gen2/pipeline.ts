@@ -15,6 +15,7 @@
  * Same seed, same stage; Easy and Normal share the seed AND the section sequence (Normal picks, Easy lays the same picks by its rules).
  */
 import { layPacer } from './pacerLay.ts';
+import { raceEndsOf, type RaceEndSaid, type RaceEnds } from '../pacer.ts';
 import { layPost } from './postLay.ts';
 import { withSetting } from '../settingDials.ts';
 import { LAID_ASKS } from './walkedSpan.ts';
@@ -4209,12 +4210,15 @@ function layChaseStage(st: Gen2Stage, piecesOf: (uid: string) => ReadonlyArray<{
   // (a brief that names a pacer: laid on the finished ground, its time from the laid race leg, pacerLay.ts)
   const table = st.gen2.brief?.pacer;
   const paced = table ? layPacer(st, table, kit.manifest.rivers ?? {}, easy) : { problems: [] };
-  if (paced.pacer) st.pacer = paced.pacer;
+  // (and its end lines, from the brief's tip ids, in the world's own words: said once as he reaches the dock, engine.ts sayRaceEnd)
+  const endSpec = st.gen2.brief?.raceEnd;
+  const ended: { ends?: RaceEnds<RaceEndSaid>; problems: string[] } = paced.pacer && endSpec ? raceEndsOf(endSpec, kit.manifest.tips ?? {}) : { problems: [] };
+  if (paced.pacer) st.pacer = ended.ends ? { ...paced.pacer, ends: ended.ends } : paced.pacer;
   // (a brief's post: doors on the way out, replies home, postLay.ts)
   const spec = st.gen2.brief?.post;
   const posted = spec ? layPost(st, spec, piecesOf) : { problems: [] };
   if (posted.post) st.post = posted.post;
-  return [...chase.problems, ...r.problems, ...paced.problems, ...posted.problems];
+  return [...chase.problems, ...r.problems, ...paced.problems, ...ended.problems, ...posted.problems];
 }
 /** a graph with asks: each node's sections as laid (content type, the double, exit less entry height), read by applyVerdicts */
 const LAID_NODES = new WeakMap<Gen2Stage, Map<string, Array<{ content?: string; double: boolean; dy: number }>>>();
