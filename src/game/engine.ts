@@ -29,6 +29,9 @@ import { isGen2Stage } from './gen2/game.ts';
 import { maxGap, softFallStage, TIP_SAY_S } from './gen2/pipeline.ts';
 import { drawDoorPlate } from './sanctuaryDoor.ts';
 import { MODES, type TravelMode } from './stageModes.ts';
+import { routeBarOf, type RouteBar } from './routeBar.ts';
+import { postMoments } from './post.ts';
+import type { PostPiece } from './pieces/postPiece.ts';
 import { flagFurther, towerLead } from './gen2/tower.ts';
 import { vaultSide as vaultSideOf } from './vineTop.ts';
 import { carry as settleCarry, climbEnd, drawnOff, newSettle, settleStep } from './vineFeel.ts';
@@ -954,6 +957,8 @@ export class GameEngine {
   private startAt: Mark = { x: 0, y: 0 };
   private exitAt: Mark = { x: 0, y: 0 };
   private bestAt: Mark = { x: 0, y: 0 };
+  /** a stage laid as more than one leg (out, then back): the bar is measured along its laid route, never by x alone (routeBar.ts) */
+  private routeBar: RouteBar | null = null;
   private travelStart() {
     const st = this.currentStage;
     this.mode = MODES[st.config.travel ?? 'right'];
@@ -961,6 +966,7 @@ export class GameEngine {
     this.bestAt = { ...this.startAt };
     this.exitAt = { x: st.exitTotemX || st.config.levelWidth, y: st.exitTotemY };
     this.walls = this.mode.bounds({ levelWidth: st.config.levelWidth, exit: { x: st.exitTotemX, y: st.exitTotemY }, spawn: this.startAt });
+    this.routeBar = routeBarOf(st);
   }
   private daisyRescued: boolean = false;
   private isGameOver: boolean = false;
@@ -1880,7 +1886,12 @@ export class GameEngine {
     const under = p.grounded ? this.platforms.find((q) => q.id === this.standingOnId) : undefined;
     const underX = under?.x;
     this.camFocus = null;
-    if (this.pieces.length) stepPieces(this.pieces, dt, this.pieceHost);
+    if (this.pieces.length) {
+      stepPieces(this.pieces, dt, this.pieceHost);
+      // (the post's letters posted so far, each a moment a story line can wait on: post.ts postMoments, wayside.ts StageWay.on)
+      const post = this.pieces.find((q) => q.kind === 'post') as PostPiece | undefined;
+      if (post) for (const m of postMoments(post.open)) if (!this.moments.includes(m)) this.moments.push(m);
+    }
     // (a swing over a hollow that hurts: the view keeps its floor in, him whole first, unless a piece asked for its own focus:
     // cameraFollow.ts hurtFocus; the stage's hurt floors listed once per platform list)
     if (!this.camFocus && this.player.isVineSwinging) {
@@ -3724,7 +3735,9 @@ export class GameEngine {
       this.bestAt.x = b.x;
       this.bestAt.y = b.y;
     }
-    const distanceRatio = this.mc ? this.mc.ratio() : this.mode.progress(this.startAt, this.exitAt, this.bestAt);
+    // (a stage of legs: along its route, where he stands or climbs, never back; routeBar.ts)
+    if (this.routeBar && (p.grounded || p.climbing)) this.routeBar.stood(p);
+    const distanceRatio = this.mc ? this.mc.ratio() : this.routeBar ? this.routeBar.ratio() : this.mode.progress(this.startAt, this.exitAt, this.bestAt);
 
     // Notify HUD
     this.callbacks.onProgressUpdate(
