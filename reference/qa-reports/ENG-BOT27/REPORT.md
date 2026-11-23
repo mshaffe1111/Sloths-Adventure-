@@ -24,8 +24,8 @@ No screen changed (bot code only). Every fall and stall named here was read fram
 - **A third 2-7 fault, not the bot's** (sent at once): the draft's home-leg lower river had no bank at its end (w2.ts:372 deleted the low
   leg's bank under the out leg's soft pit); seed 14 lost 8 of 13 lives there; every castBots run on aede72157 alone is 'rescued x1'. ENG-JETTY's
   band fix restores it; 2-7 is measured here with that exact hunk applied (scratch, nothing of it lands).
-- BUILD-27b's yield ran on an uncommitted scratch fix: a yield is measured on a committed head only (LESSONS candidate).
-- The packet's faults were real but were not what held the yield: rescues (stalls), not deaths, decide child Normal's pass on 2-7.
+- BUILD-27b's yield ran on an uncommitted scratch fix (a yield on a committed head only: LESSONS candidate); the packet's faults were
+  real but did not hold the yield: rescues (stalls), not deaths, decide child Normal's pass on 2-7.
 ## 4. Rule 28 table (pass / lives / rescues, before -> after; tables in this folder)
 2-7 (draft aede72157 + ENG-JETTY's w2.ts hunk): child N 27->36 / 150->124 / 16->4; middle N 37->40 / 92->105 / 3->0; middle E 39->40;
 adult N 37->37, expert 40->40, child E 39->39, adult E 40->40; kid N 5->5, kid E 24->24 (kid rows unmoved: 0). No pass flips to fail.
@@ -41,11 +41,13 @@ re-aim the run's later random draws shift, so the rest of that row moves. Stages
 ## 5. Gates (on frozen 11ee2d0ca = the landing's code)
 (filled at landing)
 ## 6. Unresolved
-- 2-7 child N still 4 rescues (seeds 11, 14, 16, 33). Seed 11 traced once: not a river; on the solid planks x 10244-12505 he is set back
-  to ~10500 again and again, rescued at x 10474 (the next trace; needs a second run). Kid rows unmoved (the kid's moving-log weakness).
+- **2-7 open rows (with reAim; R-165.413):** adult N 11, a step off an at-him log's far tail (BUILD-27c; rescued x 13245); adult N 3 and 30,
+  aims at a drifting log's present place (BUILD-27c; set down at the stilts x 5868 / 5933). child N 11, 14, 16, 33: NOT TRACED, R-165.413
+  (one run each, a note only: 14 set down 8x at x 13964 = fault (a), the parked meetLog's case; 16 'water ahead' x 12968; 11, 33 set back
+  on solid planks, rescued x 10474 / 10417).
+  Kid rows unmoved (the kid's moving-log weakness, the lead's item).
 - 2-7 adult N: one run under 2:00 on the parked branch only; the builder's length data (lead).
-- The parked branch's commit 270f53977 names the lead's session in its trailer by mistake (a force push to fix it was refused).
-- roadmapcheck cannot run in this container (shallow clone): FAIL 'proofs cannot be checked', the same on any head here.
+- Parked commit 270f53977's trailer names the lead's session by mistake (force push refused). roadmapcheck cannot run here (shallow clone).
 ## 7. Suggestions
 - ENG packet: seed 15 x 13590 (draft): an upstream row judged a double and landed lost (its no-steer beat). Judged-vs-flown gap.
 - The parked meetLog/logEnd go on the World 2 river bot list with R-165.413 (the lead).
