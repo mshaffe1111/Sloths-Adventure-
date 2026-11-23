@@ -12,8 +12,16 @@
  * No stage is named in this file: it is handed one.
  *   npx tsx tools/engine/addlevel.ts <id> [--seeds 24] [--count N] [--relist] [--no-list] [--bots-seeds 1-40] [--no-bots] [--par 4]
  * Exit 0 only when every step passed and nothing is missing; 1 otherwise (the checklist says what); 2 with no row.
+ * A DRAFT (ENG-W3a, the lead's ruling 11-23: a stage's next build readied while the game plays its live stage; stageTable.ts DRAFT_TABLE):
+ *   GEN2_DRAFT=<id> npx tsx tools/engine/addlevel.ts <id>    the draft readied in this process and every step's (tools/engine/draft.ts).
+ * A draft writes no list and joins no registry: those ARE listing it. Its READY is DRAFT READY: its row, kit and config (with the row's
+ * travel) resolve, its rolls are clean on both settings, the bots pass, its sheets are preloaded; what listing it adds (the routing
+ * past the live stage, its list, its flown rows, drawcheck, CI) is printed as LISTING, not counted missing.
  */
 import '../../src/game/headlessDom.ts';
+import { readied } from './draft.ts';
+import { draftRow } from '../../src/game/gen2/worlds/stageTable.ts';
+import { generateAllLevels } from '../../src/game/worldsData.ts';
 import { spawnSync } from 'node:child_process';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -28,7 +36,9 @@ const val = (k: string) => { const i = argv.indexOf(k); return i >= 0 ? argv[i +
 const has = (k: string) => argv.includes(k);
 if (!id || id.startsWith('--')) { console.error('usage: npx tsx tools/engine/addlevel.ts <id> [--seeds 24] [--count N] [--relist] [--no-list] [--bots-seeds 1-40] [--no-bots] [--par 4]'); process.exit(2); }
 const par = Number(val('--par') ?? 4);
-const done: string[] = [], left: string[] = [];
+const done: string[] = [], left: string[] = [], listing: string[] = [];
+/** a draft readied in this process (GEN2_DRAFT=<id>, draft.ts): its steps are the draft's */
+const draft = readied === id;
 const t0 = Date.now();
 const clock = () => `${Math.round((Date.now() - t0) / 1000)} s`;
 const step = (n: number, what: string) => console.log(`\n== ${n}. ${what} (at ${clock()})`);
@@ -42,8 +52,16 @@ const run = (args: string[], env: Record<string, string> = {}): { code: number; 
 
 // 1. the row
 step(1, 'the row');
-const I = realInputs();
+const real = realInputs();
+// (a draft's row is its DRAFT_TABLE row; the game still plays its live stage, so it is not routed until its build lists it)
+const I = draft ? { ...real, row: (s: string) => (s === id ? { ...draftRow(id)! } : real.row(s)), routed: (s: string) => (s === id ? false : real.routed(s)) } : real;
 const first = (await stageMisses(id, { ...I, sheetMisses: async () => [] })).filter((m) => m.need === 'row' || m.need === 'kit' || m.need === 'config');
+if (draft) {
+  const cfg = generateAllLevels().find((c) => c.id === id && !c.secret);
+  const want = draftRow(id)!.travel;
+  if (want && cfg?.travel !== want) first.push({ stage: id, need: 'config', line: `its config travels ${cfg?.travel ?? 'right'}, its draft row ${want} (tools/engine/draft.ts sets it)` });
+  console.log(`  a DRAFT (GEN2_DRAFT=${id}): row ${JSON.stringify(draftRow(id))}, the live stage stays what the game plays`);
+}
 if (first.length) {
   for (const m of first) console.log(`  MISSING ${m.need}: ${m.line}`);
   console.log(`\naddlevel ${id}: stopped at the row. Give it a row in src/game/gen2/worlds/stageTable.ts (its kit by name, listed.ts KITS) and its arc in its world's kit (level.md step 2), then run this again.`);
@@ -66,7 +84,8 @@ if (S.per.normal.clean < N || S.per.easy.clean < N) left.push(`rolls: ${N - S.pe
 // 3. the list
 step(3, 'the seed list (tools/engine/seedlist.ts)');
 const hadList = Object.hasOwn(PROVEN_INDEX, id);
-if (has('--no-list')) { console.log('  skipped (--no-list)'); left.push(`seed list: not written (--no-list): npx tsx tools/engine/seedlist.ts ${id}`); }
+if (draft) { console.log('  a draft writes no list (its build lists it)'); listing.push(`seed list: npx tsx tools/engine/seedlist.ts ${id}, with its row in STAGE_TABLE`); }
+else if (has('--no-list')) { console.log('  skipped (--no-list)'); left.push(`seed list: not written (--no-list): npx tsx tools/engine/seedlist.ts ${id}`); }
 else {
   if (!hadList || has('--relist')) {
     const w = run(['tools/engine/seedlist.ts', id, ...(val('--count') ? ['--count', val('--count')!] : [])]);
@@ -99,6 +118,7 @@ else {
 step(5, 'the flown rows');
 const flown = (await stageMisses(id, { ...I, sheetMisses: async () => [] })).filter((m) => m.need === 'flown');
 if (!flown.length) { console.log(`  judged on "${I.judged[id]}", every move Easy flies has its row`); done.push(`flown: judged on ${I.judged[id]}`); }
+else if (draft) { for (const m of flown) listing.push(`flown: ${m.line}`); flown.length = 0; }
 else {
   for (const m of flown) console.log(`  MISSING: ${m.line}`);
   console.log(`  fly it:  FLIGHT_STAGE=${id} npx tsx reference/specs/sims/flight.ts normal all\n  then enter its Normal rows in src/game/gen2/worlds/flownArcs.ts (a block under scope 'normal-${id}', as 1-3's n13 rows) and give its row \`judged: 'normal-${id}'\` in stageTable.ts`);
@@ -106,13 +126,23 @@ else {
 
 // 6. the registry (fresh inputs: a list written in step 3 is on disk, not in this process's index, so it is read again in a child)
 step(6, 'every other registration (tools/engine/registrycheck.ts --stage)');
+// (a draft: the same needs, read here with its draft row: a sheet it lacks is the draft's to fix; the rest is listing it)
+const LISTING_NEEDS = new Set(['routed', 'attempts', 'drawcheck', 'seeds', 'flown', 'ci-seedlist']);
+if (draft) {
+  const ms = await stageMisses(id, I);
+  for (const m of ms) (LISTING_NEEDS.has(m.need) ? listing : left).push(`${m.need}: ${m.line}`);
+  if (!ms.some((m) => !LISTING_NEEDS.has(m.need))) done.push('the draft\'s own needs (row, kit, config, sheets) all met');
+} else {
 const r = run(['tools/engine/registrycheck.ts', '--stage', id]);
 const regMisses = [...r.out.matchAll(/^ {2}(\S+)\s+(.+)$/gm)].map((m) => ({ need: m[1], line: m[2] }));
 for (const m of regMisses) if (m.need !== 'flown') left.push(`${m.need}: ${m.line}`);
 if (!r.code) done.push('registered everywhere registrycheck looks');
+}
 
 console.log(`\n== addlevel ${id}: ${clock()}`);
 for (const d of done) console.log(`  DONE     ${d}`);
 for (const l of [...new Set([...left, ...flown.map((m) => `flown: ${m.line}`)])]) console.log(`  MISSING  ${l}`);
-console.log(left.length || flown.length ? `addlevel ${id}: NOT READY (${left.length + flown.length} missing above)` : `addlevel ${id}: READY: every step passed and it is registered everywhere`);
+for (const l of listing) console.log(`  LISTING  ${l}`);
+if (draft) console.log(left.length ? `addlevel ${id}: DRAFT NOT READY (${left.length} missing above)` : `addlevel ${id}: DRAFT READY: every step a draft takes passed; listing it adds the ${listing.length} LISTING lines above`);
+else console.log(left.length || flown.length ? `addlevel ${id}: NOT READY (${left.length + flown.length} missing above)` : `addlevel ${id}: READY: every step passed and it is registered everywhere`);
 process.exit(left.length || flown.length ? 1 : 0);

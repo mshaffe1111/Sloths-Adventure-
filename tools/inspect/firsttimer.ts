@@ -2821,10 +2821,11 @@ export class FirstTimerRun {
       this.punchAt = null;
       return { punch: true };
     }
-    // (a way DOWN turns on a vine whose top stands at his ledge's end: with the way on under him, straight down takes it, as the plain
+    // (a way DOWN turns on a vine whose top stands at his ledge's end (or that runs past a catch he landed on): with the way on under
+    //  him, straight down takes it, as the plain
     //  action does (STAGE-RULES §1: straight down on a vine always climbs; towerFly.ts presses the same); without it he hopped off the
     //  end past the vine, ENG-W3a's drafted 3-1. A climb never comes here)
-    if (this.onTower && e.nearTreeVine && p.grounded && !p.climbing && tgt && tgt.y > p.y + 60 && Math.abs(e.nearTreeVine.topY - p.y) <= 14 && e.nearTreeVine.bottomY > p.y + 60 && (this.sim.stage as { gen2?: { tower?: { flow?: string } } }).gen2?.tower?.flow === 'down') return { down: true };
+    if (this.onTower && e.nearTreeVine && p.grounded && !p.climbing && tgt && tgt.y > p.y + 60 && e.nearTreeVine.topY <= p.y + 14 && e.nearTreeVine.bottomY > p.y + 60 && (this.sim.stage as { gen2?: { tower?: { flow?: string } } }).gen2?.tower?.flow === 'down') return { down: true };
     // a trunk he is touching, and the way goes up (or he is stopped beside it): straight up
     // (holding up at the top of the trunk he just came up takes him nowhere: after a moment he lets the trunk be and goes on as on
     // open ground, a hop up to the ledge above, round 5 2026-10-29)

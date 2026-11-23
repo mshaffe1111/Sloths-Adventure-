@@ -394,9 +394,11 @@ export function towerCatches(flow: 'up' | 'down', platforms: readonly Platform[]
       // (going down, when the band at the storey under it is all in the way (its own jump's gap there, wood across it), the landing
       //  he can see is laid higher, a head's room under the piece at the least (HEAD), the deepest fair height first: a way down's
       //  catch is only ever a way on, and the band alone left a 10 px slot, ENG-W3a's down rolls: blind drops of 350-560 px)
-      //  Up there it keeps his body's room to all wood over or under it (the climb's rule, HEAD), so he never stands squeezed under it
+      //  Up there it keeps his body's room to all wood over or under it (the climb's rule, HEAD), so he never stands squeezed under it,
+      //  and HEAD over the storey laid under it later (a storey is TOWER.clear under the one it leaves: a catch 193 px down stood 81 px
+      //  over the next storey's floor, by its turn vine's top)
       const band = ys.length;
-      if (flow === 'down') for (let y = top - 20; y >= e.p.y + HEAD; y -= 20) ys.push(y);
+      if (flow === 'down') for (let y = Math.min(top - 20, e.p.y + TOWER.clear - HEAD); y >= e.p.y + HEAD; y -= 20) ys.push(y);
       const squeezed = (y: number) => solid([]).some((q) => q.x < x0 + TOWER.catchW && q.x + q.width > x0 && Math.abs(q.y - y) > 1 && Math.abs(q.y - y) < HEAD);
       for (const [k, y] of ys.entries()) {
         if (k >= band && squeezed(y)) continue;
