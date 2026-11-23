@@ -140,8 +140,10 @@ const porches: Lay = {
 const weir: Lay = {
   pieces: [
     { key: 'a', shape: 'branch', w: [240, 260], place: { kind: 'start' } },
-    { key: 'b', shape: 'branch', w: [220, 250], place: { kind: 'jump', after: 'a', dy: [110, 150], share: [0.25, 0.4] }, landing: true },
-    { key: 'z', shape: 'branch', w: [220, 260], place: { kind: 'jump', after: 'b', dy: [110, 150], share: [0.25, 0.4] }, landing: true },
+    // (the weir's stepped face: each step walked off straight down onto the next, no gap between: a gap in a column is a fall World 2's
+    //  finish reads as a river with no bank, and the weir is stone steps under white water, not a jump)
+    { key: 'b', shape: 'branch', w: [220, 250], place: { kind: 'walk', after: 'a', dy: [110, 150] }, landing: true },
+    { key: 'z', shape: 'branch', w: [220, 260], place: { kind: 'walk', after: 'b', dy: [110, 150] }, landing: true },
   ],
   sockets: [tip('t-turn', 'a', 0.3, 'turn'), petal('pb', 'b', 0.5)],
 };
