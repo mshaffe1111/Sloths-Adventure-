@@ -15,7 +15,8 @@
  *   - a ledge: World 3's stone bank (its top strip on the ledge's top, its soil fill under it), 320-420 px: 3.6-4.7 Pokeys to land on;
  *   - a shelf: World 3's branch shelf, 200-300 px (2.2-3.4 Pokeys), the plan's S/M shelves (WORLD-3-PLAN §3 batch 1: 120/200/320) until
  *     the painted stone shelves land (W3-ART-1: w3-new#shelf-long/short are packed, never loaded);
- *   - a drop: 110-150 px, under two of his heights (a fall of 200 px or less makes no noise, heroNoise.ts).
+ *   - a drop: 110-150 px, under two of his heights (a fall of 200 px or less makes no noise, heroNoise.ts), the next shelf 8-20 px past
+ *     the end: he steps off and lands.
  *
  * THE CAST (predators/world3.ts, the kit's creature rows: castPlay.ts runs a kind a brief names in `cast`): the OCELOT, the prowler,
  * and the JAGUAR, which waits above. Their bodies are the ones Worlds 6-8 lay (w6.ts:114-115). Rows only: the draft's way down casts
@@ -84,7 +85,7 @@ export const w3Ledge: SectionTemplate = {
   mirrorable: false,
 };
 
-/** two drops down onto shelves, each landing in view under the shelf he leaves */
+/** two drops down onto shelves: he steps off the end and lands on the next, 8-20 px across (a walk-off lands; a soft drop, 3-1's idea) */
 export const w3Drops: SectionTemplate = {
   id: 'w3-drops',
   name: 'drops down',
@@ -93,8 +94,8 @@ export const w3Drops: SectionTemplate = {
   difficulty: 3,
   pieces: [
     { key: 'a', shape: 'branch', w: [200, 260], place: { kind: 'start' } },
-    { key: 'b', shape: 'branch', w: [200, 250], place: { kind: 'jump', after: 'a', dy: [110, 150], share: [0.25, 0.4] }, landing: true },
-    { key: 'c', shape: 'branch', w: [200, 260], place: { kind: 'jump', after: 'b', dy: [110, 150], share: [0.25, 0.4] }, landing: true },
+    { key: 'b', shape: 'branch', w: [200, 250], place: { kind: 'jump', after: 'a', dy: [110, 150], gapPx: [8, 20] }, landing: true },
+    { key: 'c', shape: 'branch', w: [200, 260], place: { kind: 'jump', after: 'b', dy: [110, 150], gapPx: [8, 20] }, landing: true },
   ],
   entry: { piece: 'a', kind: 'ledge' },
   exit: { piece: 'c', kind: 'ledge' },

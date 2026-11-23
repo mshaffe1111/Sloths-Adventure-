@@ -1469,7 +1469,11 @@ export class FirstTimerRun {
       // (a tower the inspector cannot trace: the stage's own laid route, each turn's climb where its vine stands (towerRoute.ts), before
       // any rebuild: buildRoll's roll of a LISTED tower is not the proven variant he plays, and its route led him under the storey
       // above to dither (1-4 seed 1: 'the way on is 123 px up' at a vine he never walked to; INT-4 11-13))
-      const tower = route.traced === 'failed' ? towerRoutePts(st, this.sim.p) : null;
+      // (a way DOWN is always followed on its own route: the tracer reads a down tower as a run and traced a way that left him at the left
+      //  wall of every storey, 'the way on is 120 px down', ENG-W3a's drafted 3-1, 11-19 rescues a run. A climb keeps the traced route
+      //  first, as 1-4's bots were proven on it)
+      const down = (st as { gen2?: { tower?: { flow?: string } } }).gen2?.tower?.flow === 'down';
+      const tower = route.traced === 'failed' || down ? towerRoutePts(st, this.sim.p) : null;
       this.onTower = !!tower;
       if (route.traced === 'failed' && !tower) route = findRoute(buildRoll(levelConfig(this.id), this.seed, this.who.setting === 'easy'), [], { spurs: PAD_SKILL.outBack });
       pts = tower ?? (route.traced === 'failed' ? [] : sampleRoute(route).map((s) => ({ x: s.x, y: s.y, ...(s.seg.kind === 'rope' ? { rope: true } : {}) })));
@@ -2801,6 +2805,10 @@ export class FirstTimerRun {
       this.punchAt = null;
       return { punch: true };
     }
+    // (a way DOWN turns on a vine whose top stands at his ledge's end: with the way on under him, straight down takes it, as the plain
+    //  action does (STAGE-RULES §1: straight down on a vine always climbs; towerFly.ts presses the same); without it he hopped off the
+    //  end past the vine, ENG-W3a's drafted 3-1. A climb never comes here)
+    if (this.onTower && e.nearTreeVine && p.grounded && !p.climbing && tgt && tgt.y > p.y + 60 && Math.abs(e.nearTreeVine.topY - p.y) <= 14 && e.nearTreeVine.bottomY > p.y + 60 && (this.sim.stage as { gen2?: { tower?: { flow?: string } } }).gen2?.tower?.flow === 'down') return { down: true };
     // a trunk he is touching, and the way goes up (or he is stopped beside it): straight up
     // (holding up at the top of the trunk he just came up takes him nowhere: after a moment he lets the trunk be and goes on as on
     // open ground, a hop up to the ledge above, round 5 2026-10-29)

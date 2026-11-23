@@ -10,11 +10,15 @@ export interface Pt { x: number; y: number }
 
 /** px of height a plain hop takes him (the bots step or jump it; more is a climb) */
 const HOP = 60;
-type StageLike = { gen2?: unknown; exitTotemX?: number; exitTotemY?: number; vines?: ReadonlyArray<{ x: number; topY: number; bottomY: number; vineType?: string }> };
+type StageLike = {
+  gen2?: unknown; exitTotemX?: number; exitTotemY?: number; vines?: ReadonlyArray<{ x: number; topY: number; bottomY: number; vineType?: string }>;
+  platforms?: ReadonlyArray<{ x: number; y: number; width: number; type?: string }>;
+};
 
 interface TowerMeta {
   plan: ReadonlyArray<{ join?: string }>;
   tower?: {
+    flow?: string;
     route: { legs: ReadonlyArray<{ entry: Pt; exit: Pt }>; spawn: Pt };
     turns: ReadonlyArray<{ x: number; from: number; to: number }>;
   };
@@ -36,6 +40,34 @@ export function towerCorners(stage: StageLike, spawn: Pt): Pt[] | null {
   // leads on, up or down it, and on again, storey by storey, never the straight line from its entry to its exit, which cuts through
   // the floors between: at a field's top he read the way on as 300 px down and climbed back. Off vines count: a gate opens.)
   const vines = (stage.vines ?? []).filter((v) => v.vineType === 'tree_climb');
+  // (a way DOWN drops: where no vine leads down, he walks off the end of the wood he stands on toward where the way goes on and falls
+  // onto the wood under it, ledge after ledge, never the straight line from the leg's entry to its exit, which hangs in the air over
+  // the ledges between (ENG-W3a's drafted 3-1: 'the way on is 404 px up' once he had dropped under the line). Every drop lands in view,
+  // gen2's towerFalls; a climb never comes here)
+  const down = T.flow === 'down';
+  const wood = (stage.platforms ?? []).filter((p) => p.type !== 'fragile' && p.type !== 'bouncy');
+  const dropTo = (a: Pt, b: Pt): Pt => {
+    let at = a;
+    for (let n = 0; n < 12 && b.y - at.y > HOP; n++) {
+      const on = wood.filter((p) => at.x >= p.x - 2 && at.x <= p.x + p.width + 2 && Math.abs(p.y - at.y) <= 4);
+      if (!on.length) break;
+      const dir = b.x < at.x ? -1 : 1;
+      // (the run of wood he walks along at this height, to its end the way on lies)
+      let lo = Math.min(...on.map((p) => p.x)), hi = Math.max(...on.map((p) => p.x + p.width));
+      for (let grew = true; grew; ) {
+        grew = false;
+        for (const p of wood) if (Math.abs(p.y - at.y) <= 4 && p.x <= hi + 2 && p.x + p.width >= lo - 2 && (p.x < lo || p.x + p.width > hi)) { lo = Math.min(lo, p.x); hi = Math.max(hi, p.x + p.width); grew = true; }
+      }
+      const off = dir < 0 ? lo - 30 : hi + 30;
+      const under = wood.filter((p) => off >= p.x && off <= p.x + p.width && p.y > at.y + 4).sort((p, q) => p.y - q.y)[0];
+      if (!under) break;
+      // (to the end of the wood, then down to where he lands past it: a point in the air level with the wood read as a gap to jump,
+      // and he jumped it onto the catch beyond, ENG-W3a)
+      out.push({ x: dir < 0 ? lo + 8 : hi - 8, y: at.y }, { x: off, y: under.y });
+      at = { x: off, y: under.y };
+    }
+    return at;
+  };
   const within = (a: Pt, b: Pt) => {
     let at = a;
     for (let n = 0; n < 12 && Math.abs(b.y - at.y) > HOP; n++) {
@@ -46,7 +78,7 @@ export function towerCorners(stage: StageLike, spawn: Pt): Pt[] | null {
       // he goes for that foot, then up. 1-4's top section: three 60 px steps, then the field)
       const foot = (v: (typeof vines)[number]) => (up ? v.bottomY : v.topY);
       const next = leads.length ? leads : inX.filter((v) => (up ? v.topY < at.y - HOP && v.bottomY < at.y && v.bottomY > b.y : v.bottomY > at.y + HOP && v.topY > at.y && v.topY < b.y));
-      if (!next.length) break;
+      if (!next.length) { if (!up && down) at = dropTo(at, b); break; }
       const v = next.reduce((m, q) => {
         const dq = Math.abs(foot(q) - at.y), dm = Math.abs(foot(m) - at.y);
         return dq < dm - 1 || (Math.abs(dq - dm) <= 1 && Math.abs(q.x - at.x) < Math.abs(m.x - at.x)) ? q : m;
