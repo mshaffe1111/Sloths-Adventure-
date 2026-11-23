@@ -63,7 +63,7 @@ export const STAGE_LINES: Record<string, string> = {
   '2-4': "Dropped from the vines onto passing logs and jumped back up. Meeca's note said don't swim, so I flew instead.",
   '2-5': 'Snapping turtles. They snap. It says so right in the name. I respected the honesty, and asked them to leave.',
   '2-6': 'Climbed up past every front door in the village. Each one said PLEASE BE PATIENT. I already was.',
-  '2-7': 'Walked the mailman\'s whole route. His package still says URGENT. We nodded as we passed. It took a while.',
+  '2-7': 'Took the post up the mill-race, came down the weir, and raced the mailman home. The URGENT one stayed in his bag.',
   '2-8': "The water rose the moment I stepped in. Little ones out first. Then I remembered I don't swim.",
   '2-9': "The king's guards stood up straight and held their spears just so. I bowed. Then we got on with it.",
   '2-10': 'Told the king his crown suited him. It did. Then I put him upside down in his own mud.',
