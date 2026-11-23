@@ -96,7 +96,7 @@ code-checked plan (ENGINE-NEEDS.md); "add a level" in one step; every lead keeps
    1:45 PM); the 2-7 race numbers decided by the end of the day. Targets: 2-7 on Matt's test link TONIGHT (3 helpers, R-165.406); 2-6 Tue 11-24; the week plan in reference/plans/LANES.md. A slip goes to Matt the moment it moves an ETA.
 2. **The board: reference/plans/LANES.md.** Three levels in flight (pieces for N+2, design/art/lines for N+1, build of N); every job a budget, an ET report-by and a hard stop the LEAD decides at.
 3. **The lead manages; members engineer.** The lead decides scope, priority, time and the bar, judges the evidence and unsticks; it does not do the work or design the code. A member's technical fork goes back as 'decide it within your budget and show me the evidence', unless it changes scope, the bar, a shipped stage or Matt's taste.
-4. **The scoreboard in every report to Matt:** levels on his link this week vs the plan; hours per level vs 2 h; pieces landed ahead.
+4. **The scoreboard in every report to Matt:** levels on his link this week vs the plan; hours per level vs 2 h; pieces landed ahead; **2-HOUR PROGRESS** (Matt 11-23, R-165.409): what was done today toward the 2-hour level (reference/plans/TWO-HOUR-PLAN.md and its schedule).
 
 ## RIGHT NOW (11-22 wrap, written 5:35 PM ET by `date`; this block wins over everything below; refreshed at check-ins, R-165.242)
 
