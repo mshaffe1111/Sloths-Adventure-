@@ -23,7 +23,9 @@ with it. Start 11:27 AM ET (by `date`); ended ~12:45 PM ET, about 1.3 h of the 2
    squeezed. (b) the floor's walk to the shrine was off routeAt and never a flag spot: last flag 2045-2361 px out on 4 of 24; fixed.
 5. **Bots (OWED, own job):** expert 17-21 rescues/run -> 1-3 (seed 3: 0, 145.6 s) via towerRoute.ts (a down tower's own route, drops
    ledge by ledge, turns straight down) and firsttimer.ts (step off toward the way down; press down onto a turn vine). Down-only.
-6. **Gates:** main cdffdc627 base: suite 4042 (4039 pass, 0 fail, 3 todo), CI line 228 (227 pass, 0 fail, 1 todo). Branch: (pending).
+6. **Gates:** main cdffdc627 base: suite 4042 (4039 pass, 0 fail, 3 todo), CI line 228 (227 pass, 0 fail, 1 todo). **Branch e8c21ef12 (src as
+   landed): suite 4049 (4046 pass, 0 fail, 3 todo, the base's 3); CI line 228 (227 pass, 0 fail, 1 todo, the base's).** vite build,
+   chunkcheck, artcheck PASS (1f37e4473).
    tsc PASS; generalitycheck PASS; knowncheck PASS; roadmapcheck FAILS on the container's shallow clone (fetch-depth), not the change.
    **lockall --layouts 16 --check vs main's lock: 102/102 stages unchanged (3,264 builds), exit 0: no listed stage moves.**
 
