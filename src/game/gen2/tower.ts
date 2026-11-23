@@ -511,7 +511,9 @@ export interface Place { x: number; y: number }
  * it. ONE measure for every "first" and "last" a rule picks: x is the order he meets things only while the stage runs one way, and
  * on a stacked out-and-back (2-7) the way home lies under the way out at the same x (D130).
  */
-export function alongOf(stage: object): (x: number, y: number) => number {
+export function alongOf(stage: object | ((x: number, y: number) => number)): (x: number, y: number) => number {
+  // (a measure already made, as a lay that holds its route but no stage yet: used as it is)
+  if (typeof stage === 'function') return stage as (x: number, y: number) => number;
   const route = (stage as { gen2?: { tower?: { route?: Route } } }).gen2?.tower?.route;
   return route ? (x, y) => routeAt(route, x, y) : (x) => x;
 }
@@ -525,7 +527,7 @@ const metAt = (along: (x: number, y: number) => number, at: Place | readonly Pla
  * `.sort((a, b) => a.x - b.x)[0]` picked it (a tie keeps the earlier in the list). `at` gives a thing's place, or the places it
  * spans (a drop's two lips: he meets it at the lip he reaches first, its x0 on a stage with no route).
  */
-export function firstMet<T>(stage: object, items: readonly T[], at: (t: T) => Place | readonly Place[]): T | undefined {
+export function firstMet<T>(stage: object | ((x: number, y: number) => number), items: readonly T[], at: (t: T) => Place | readonly Place[]): T | undefined {
   const along = alongOf(stage);
   let best: T | undefined, bestS = Infinity;
   for (const t of items) { const s = metAt(along, at(t)); if (best === undefined || s < bestS) [best, bestS] = [t, s]; }
@@ -534,7 +536,7 @@ export function firstMet<T>(stage: object, items: readonly T[], at: (t: T) => Pl
 
 /** The thing he meets LAST along the stage's way: on a stage with no route the one with the most x, as `.sort(by x).at(-1)` picked
  *  it (a tie keeps the later in the list). `at` as firstMet. */
-export function lastMet<T>(stage: object, items: readonly T[], at: (t: T) => Place | readonly Place[]): T | undefined {
+export function lastMet<T>(stage: object | ((x: number, y: number) => number), items: readonly T[], at: (t: T) => Place | readonly Place[]): T | undefined {
   const along = alongOf(stage);
   let best: T | undefined, bestS = -Infinity;
   for (const t of items) { const s = metAt(along, at(t)); if (best === undefined || s >= bestS) [best, bestS] = [t, s]; }
@@ -543,7 +545,7 @@ export function lastMet<T>(stage: object, items: readonly T[], at: (t: T) => Pla
 
 /** The things in the order he meets them along the stage's way (a new array; a stable sort, so ties keep their list order): on a
  *  stage with no route, `[...items].sort((a, b) => a.x - b.x)` exactly. */
-export function inMetOrder<T>(stage: object, items: readonly T[], at: (t: T) => Place | readonly Place[]): T[] {
+export function inMetOrder<T>(stage: object | ((x: number, y: number) => number), items: readonly T[], at: (t: T) => Place | readonly Place[]): T[] {
   const along = alongOf(stage);
   return items.map((t) => [t, metAt(along, at(t))] as const).sort((a, b) => a[1] - b[1]).map(([t]) => t);
 }
