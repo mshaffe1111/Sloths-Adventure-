@@ -2,6 +2,21 @@
 
 Merged at INT-14 (11-20, t-int-14): §0zq-25d/§0zq-25c ENG-25c (2-5's snap rows level, the snapper's ground, the straddle), §0zq-NOISE ENG-NOISE (one noise channel), §0zq-PROWL ENG-PROWL (sight.up + the leap), §0zq-small3 ENG-SMALL3 (R-165.317/.319/.321), and PAINT-292 (World 1's painted planks and stones; no section here). Merged at INT-13 (11-19, t-int-13): §0ENG23 ENG-23 (followers, the heron reads the line) and §0zl-168 TIME-168 (timecheck), §0zm-25b ENG-25b (the snapper bot skill, the meter's snap channel) and §0zl-25 ENG-25 (2-5's snap stones and snapper rows), §0zn-26b ENG-26b and §0zm-26 ENG-26 (the water wheel), §0W2A ART-W2A (2-3's painted follow poses), §0zo ART-W2B (the wheel's painted draw), §0zo-285c/§0zo-285b/§0zo-285 ENG-285 (the judges and bots fly the engine's Pokey), §0zp-284 FIX-284/284b (2-2's big pads, the real tap hop), §0zp-24d BUILD-24d, §0zn-24c ENG-24c (the raft look, the glow) and §0zm-24 BUILD-24 (2-4) joined; rewritten at the INT-12 merge (11-18, t-int-12): four members wrote here the same day, so labels are suffixed where they met: §0zm-22p ART-22P (CI's seed-list matrix, R-165.278); §0zl-24 ENG-24 (a liana over a river; its REPORT cites it as §0zl); §0zm BUILD-19b, §0zn ENG-19c and §0zl BUILD-19 (t-build-19, the labels its REPORT cites). Before them FIX-22b (11-15): section 0zk.
 
+## 0zq-BOT27. ENG-BOT27 (t-eng-27-wip-bot27-aim -> t-eng-27, 11-23): SKILLS.reAim; the packet's two faults parked
+- **SKILLS.reAim** (firsttimer.ts, upstream gate only; WaitAim.since): a held aim the gate refuses for his tier's stopReact ends its wait
+  and is drawn again. On a river every log runs at one speed, so from a log the gap to the next never changes: a held tap that cannot
+  reach was held the whole ride back (2-7 child Normal 'water ahead' stall, seeds 6 x 9412, 8 x 8702). The lead's ruling (A) with two
+  conditions, both a toy (D121): never a re-draw inside stopReact; the press judged on the AIMED hop only (gateAirtime strips the thumb).
+  x40: 2-7 child N 27->36 (rescues 16->4); shipped 2-1/2-2/2-4/2-5 no pass flips to fail (ENG-BOT27 REPORT).
+- **Parked, unlanded (the lead):** t-eng-27-wip-bot27 be6aa1825: SKILLS.meetLog (an at-him log's tail is floor only if a walk off the lip
+  lands, walkOntoTail) and SKILLS.logEnd (no landing-pause flick off a log his way; LOG_LOOK 30 px on a log). Deaths fell on every tier,
+  passes did not rise, shipped 2-1 child Easy 40->38. For the World 2 river bot list (R-165.413).
+- **Traps:** the draft head (aede72157) alone drowns every bot at the home leg's lower river end (w2.ts:372, ENG-JETTY's band fix): measure
+  2-7 only with that in. A bare toy skips the floor-ahead read for the bot's first ~1.2 s (start-up); plant lip reads at the read itself or
+  start him far back. The home toy (2-97) does not stall the upstream gate. Rescues (stalls) and deaths are different yields: trace both.
+- **Probes** (re-creatable): a frame ring before each life / rescue (onFrame, sim.t, rescueXs), HOP_TRACE rows (no row at a take-off =
+  an unjudged press), a drawHop stub on the FirstTimerRun instance (plants an aim; counts draws).
+
 ## 0zq-27w. ENG-27w (t-eng-27-wip-27w, 11-23): 2-7's race is set by design numbers; E as ruled; the gap x pace grid (supersedes 27q's "Open")
 - **The bot:** E+J plus the lead's "smallest" = racePick takes the SHORTEST aimed flight by airtime to a safe landing (hopFlight / gateAirtime in
   firsttimer.ts; bank 24 px, log RACE_MARGIN; ties: the smaller hold). It moves no 2-7 row: the expert's 0.70 s glide single is the quickest
