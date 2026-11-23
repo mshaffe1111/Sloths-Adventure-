@@ -23,8 +23,12 @@
 - lockall (base = my merge 6b84c98f3, 16 layouts, 102 stages): 102/102 unchanged on 49d92b572 (later commits draw code only).
 - GATES (on the frozen candidate): see "Gates" below.
 
-## Gates
-PENDING (filled in at landing).
+## Gates (frozen worktrees; logs in the session scratchpad)
+- 34568db5c: drawcheck PASS (930 s, the listed stages); clipcheck PASS (83 known, 809 s). d7546ce89 after it changes only the bake's
+  cache (canvas-loss re-bake), the same draw. 2-7 is not a listed stage on t-eng-27: drawcheck on t-build-27-wip + this fix, 2-7 at
+  16 spots (porches and weir included): PENDING.
+- Head: tsc 0; generalitycheck, knowncheck, artcheck PASS; engine tools tests 39/39; seedlist 1-1 PASS (161); roadmapcheck FAIL (13)
+  IDENTICAL on the base 6b84c98f3 (commits not in this history: inherited). Suite (3 shards) and the rest of the CI line: PENDING.
 
 ## Pushback
 - The column dress (W2_WEIR, columnDress*.ts) was not on t-eng-27, only on t-build-27 via t-ready-27-wip; I merged t-ready-27-wip
