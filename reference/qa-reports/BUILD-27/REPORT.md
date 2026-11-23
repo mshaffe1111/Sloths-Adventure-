@@ -1,5 +1,22 @@
 # BUILD-27 REPORT: 2-7 "The Mailman's Route" (t-build-27-wip; started 12:35 PM ET 11-23 by `date`; budget 2 h, report by 2:40 PM ET)
 ## BUILD-27f (finishing; started 3:56 PM ET 11-23 by `date`; report by 5:00 PM ET; hard stop 5:30 PM ET; box 28 min / 320k)
+### Polish check (BUILD-27f; stills on frozen 0018fa7ab, LAYOUT=0 = list seed 1, rerolls 0, 2x; judged at phone size on contact sheets
+and full-size crops)
+- WEIR POOL (the seam): PASS. stills27f/clean/zoom-weir-pool-normal-x15950-upright.jpg, -sideways.jpg, zoom-weir-pool-easy-x16700-sideways.jpg:
+  the foam meets the pool with no dark line and no specks; the bamboo pole's foot fades into the foam; Easy's frog on its stone is clear.
+- PORCHES: PASS (BUILD-27b's (f) closed). porch-2-7-L0-normal-x10950-sideways.jpg, -x11460-upright.jpg, porch-2-7-L0-easy-x12100-sideways.jpg:
+  every plank span stands on two posts into the river; they read as porches, not floating planks. On this list build the porches are
+  x10610-11815 Normal, x11145-12517 Easy (the old x11376 spot lands on the bank).
+- START JETTY: c27-2-7-L0-normal-x4500-sideways.jpg: the rope-tied post, heron, the step down to the doors. NAMED, not fixed (not mine, not
+  2-7's): the high floor's pale band ends in a square dark notch at the step (DRESS-27's open item 4, every World 2 step, 2-3 too).
+- WALK OUT / HOME / RACE: clean/ Normal and Easy, upright and sideways, 16 spots each + porches: no seams, no floating pieces, no cut art
+  seen. Upright, the out leg's floor shows as a dirt ceiling over the home leg (the stacked out-and-back as designed).
+- RACE FINISH: race27f/ win (Dot's line, nothing over it) and lose (Pokey's line, the boat docked): PASS.
+- LIVE CARDS: stills27f/f27-2-7-L0-normal-x4960-*.jpg (tool probes27c/stills-live.mjs): cards are whole and readable both ways; the line
+  shown is whichever moment the placed Pokey last tripped (out of order), so the clip, not these, proves the order. The clean tool
+  (stills-at-setting) also shows Dot's win line at x800 because placing him at the home jetty settles the race: placement, not play.
+- Minor, named: faint vertical tile seams in the deep soil on some sideways shots (painted ground, every world); not 2-7's.
+
 ### EXACT NEXT STEP (BUILD-27f's; read this first)
 (1) DONE: t-eng-27 cfa555cc9 merged into t-build-27e = 0018fa7ab (one doc conflict, engine-core.md: both hunks t-eng-27's, HEAD side
 empty). It adds DRESS-27's draw code (columnDress, porchPosts, protoArt, engine setClimbFeet, the w2-next sheet) and no lay code.
