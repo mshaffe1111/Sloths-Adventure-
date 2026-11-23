@@ -1,9 +1,10 @@
-# READY-27 REPORT (t-ready-27-wip; started 11:36 AM ET by `date`; this version written 11:54 AM ET)
+# READY-27 REPORT (t-ready-27-wip; started 11:36 AM ET by `date`; this version written 12:06 PM ET)
 ## EXACT NEXT STEP
-1. Read the head's suite + CI tool line verdicts (running on frozen /home/user/wt/shot27 = 8ab004ce9, the src of this branch's head):
+1. Read the head's suite + CI tool line verdicts (running on frozen /home/user/wt/shot27c = 39722119b, the src of this branch's head):
    `grep "SUITE EXIT\|^EXIT\|^not ok" <scratchpad>/suite-head.txt <scratchpad>/ciline-head.txt`; compare any red with the base suite on main
    (suite-base.txt) and with t-eng-27 (the race's 9 known reds). Fill the table below.
-2. On the lead's word: land t-ready-27-wip onto t-eng-27 (it is t-eng-27 cf7428424 + 3 commits; no race file touched).
+2. drawcheck on 39722119b once the base suite frees a slot (the deep-river fix changes drawing; only lidded rivers, none on a listed stage).
+   On the lead's word: land t-ready-27-wip onto t-eng-27 (t-eng-27 cf7428424 + this branch; no race file touched).
 3. The 2-7 builder adds `columnDress: W2_WEIR` to 2-7's brief (gen2/worlds/w2.ts), beside pacer and post.
 ## Readiness list (code on main cdffdc627 and t-eng-27 cf7428424; frozen t-eng-27 run: 55 tests, 46 pass, 9 fail = the race)
 | Piece (2-7.md:66-81) | Verdict | Where / evidence |
@@ -24,35 +25,35 @@
    re-emitted (inventory.test 10/10). 3. Open door: a frame existed (no HF job). 4. Post: existed, GREEN (above). Weir placement is general:
    columnDress.ts + gen2/columnDressLay.ts + pieces/columnDressPiece.ts (layer 'back'); RED first (module missing), then GREEN 5/5 with plants.
 5. Stills (2x, upright + sideways, fixture ?fixture=home seed 1 Normal): weir-beside-pokey.jpg, boat-letter-door-beside-pokey.jpg.
-## Gates (head 8ab004ce9 src)
+## The lead's blocker: the flat dark-teal panel (fixed, general)
+Cause: a DEEP river's flat fill (riverArt.ts RIVER_DEEP) and the water over its logs (engine.ts drawRivers' over pass, 75% deep colour) ran
+to the view's foot; over a leg laid under the river the lid's clip left them as a panel down to the ceiling. Fix: under a lid (any stage, the
+engine's own riverLid) the deep river has a bed: the fill and the over-logs water end at its strip's foot (riverArt.ts deepFillFoot), the
+banks' painted earth (drawSoil) runs on to the ceiling with a 70 px fade from the deep colour; the existing underside ends it. Open rivers
+unchanged. Plant: deepRiverLid.test.ts (the engine's drawRivers, both passes, toy both settings): RED on 8ab004ce9 (deep-red.txt: x 16265
+fill to y 1462, 287 px of panel) and on f9f44068f (deep-red-over.txt: the over-logs water), GREEN on 39722119b; groundStack.test 16/16.
+Stills: teal-before-after.jpg (upright and sideways, before 8ab004ce9 / after 39722119b, and the river from its own bank: a deep channel
+with a bed). Note for the lead: the out leg's deep rivers now show a bed under 130 px of dark water (the race leg is under them).
+## Gates (head 39722119b src)
 | Gate | Verdict |
 |---|---|
-| tsc | PASS |
-| generalitycheck / artcheck / knowncheck | PASS / PASS / PASS |
+| tsc / generalitycheck / artcheck / knowncheck / timecheck | PASS / PASS / PASS / PASS / PASS |
 | roadmapcheck | FAIL 13 on main too (proof commits on branches this container never fetched); this branch touches no ROADMAP |
 | unit suite (head) / base suite (main) | RUNNING / RUNNING |
 | CI tool line (rolled job: tests, tipwalk, registrycheck, tierBots, buildcheck) | RUNNING after the head suite |
-| drawcheck | not run: no listed stage lays the weir yet; 2-7's builder runs it on 2-7 (one drawImage when near view) |
+| drawcheck | after the base suite (the deep-river fix draws; it touches lidded rivers only); 2-7's builder runs it on 2-7 |
 ## Polish check
-- Weir: a tier about one Pokey; foam meets the grass line, its foot hidden by the floor; ledges and the turn's pole stand in front; no hard edges.
-- Boat: mailman about Pokey's height, rows in the river beside him, both ways. Letters/replies about 28 px, read as envelopes.
-- Door: the letter sits in the slot of the shut door; open door shows warm light, same box.
-- ROUGH, not mine (D79): upright on the home leg, the out leg's underside above him is a flat dark-teal panel with no texture
-  (boat-letter-door sheet, upright boat). Owner: the ground stack (groundStack.ts, t-eng-27). Named, not fixed.
+- Weir: a tier about one Pokey; foam meets the grass, foot under the floor; ledges and the turn's pole in front. Boat: the mailman about
+  Pokey's height, beside him in the river both ways. Letters/replies ~28 px. Door: letter in the slot; open door lit. The teal panel: FIXED.
 ## Pushback
 - Design vs build: replies are every petal on the home race leg (postLay.ts:105-108), not one per house's river step. ACCEPTED by the lead
   for tonight (the race keeps its line); a deviation from 2-7.md signed by the lead.
 - CATALOG-MASTER's w2-next rows differ: main has ART-NEXT-b's 9 rows (cut paths), t-eng-27 has 7 wired rows (this branch 8). The t-eng-27 x main
   merge conflicts there: keep the wired rows and add main's barge row.
-## Suggestions
-- ENG packet: give the stacked ground's underside a painted face (the flat teal panel above).
-## Unresolved
-- The head's suite and CI tool line (running); the race's reds (ENG-27w); 2-7's story lines (KEEPER-27).
+## Suggestions: none beyond the merge note. ## Unresolved: the head's suite, CI line, drawcheck (running/next); the race (ENG-27w); story (KEEPER-27).
 ## Lessons applied
 D30/D109 (times from date, none in messages), D40 (the weir on t-eng-27's sheet, no second sheet), D41 (sizes vs 89.1 drawn), D57/D87
 (inbox at each step), D79 (whole screen judged), D113/D115 (background runs, frozen chattr trees), D114 (base suite first), D117
 (t-ready-27-wip), D119 (no heredoc in a commit chain), D126 (CI tool line), D127 (inside the budget).
-## Method update
-No method file for wiring a cut piece existed: wrote reference/methods/hf-props.md (append-pack, catalog, emit, draw by id, planted toy, stills).
-## Turnover note
-reference/handoffs/engine-core.md: new entry 0zq-R27 + the w2NextArt line (this branch's next commit).
+## Method update / turnover note
+Wrote reference/methods/hf-props.md (no method for wiring a cut piece existed). engine-core.md: entry 0zq-R27 (weir, column dress, the bed).
