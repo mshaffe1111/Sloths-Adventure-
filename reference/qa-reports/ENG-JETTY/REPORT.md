@@ -41,20 +41,13 @@ Method update: a disk-full worktree add fails silently under `>/dev/null`: check
 ## 7. Turnover note
 reference/handoffs/engine-core.md section 0zq-jetty (top), rewritten for all three items, in the landing commit.
 ## 8. Gates (code head 1b2897cfb, frozen tree)
-- PASS on 1b2897cfb (frozen): tsc, generalitycheck, knowncheck. PASS on f9eab29c9 (item 1 alone): vite build (BASE_PATH), chunkcheck,
-  artcheck, coveragecheck, registrycheck, roadmapcheck. Plants: raceEnd 6/6, storyTip 2/2, w2StackedFall 1/1 (each RED as section 1 says).
-- **Base suite d9425f091 (inherited reds):** at 2,586 results, two RED so far: 1522 and 1523 (bot (planted): the drifting-log hop and the
-  racing hop off a log, home Easy seed 1); 2013 is a TODO. Still running in ENG-JETTY's container at hand-over.
-- **UNRUN at hand-over (box reached):** the unit suite + CI tool line on 1b2897cfb (running in ENG-JETTY's container, 934 results, none
-  red so far), lockall, and the landing.
-
-## EXACT NEXT STEP (items 1-3 landing, then item 4)
-1. Suite + CI tool line on 1b2897cfb in a chattr-frozen tree (the CLAUDE.md suite list, then gates.yml 'rolled' test line); compare reds
-   with the base suite on d9425f091 (1522, 1523 known red there). Any red not on the base is a stop.
-2. lockall, the 13 listed stages, base vs head: `npx tsx tools/engine/lockall.ts --layouts 16 --out <scratch>/base.json` in a frozen
-   d9425f091 tree, then `--check <scratch>/base.json` in the frozen 1b2897cfb tree: expect no change (nothing listed sets raceEnd or
-   storyTips, and no listed stage stacks a run leg under another). Also vite build (BASE_PATH) + chunkcheck on 1b2897cfb.
-3. Land: `git push origin 1b2897cfb:t-eng-27` plus this docs commit (fast-forward; t-eng-27 was d9425f091), `git ls-remote` equal,
-   send the lead the hash.
-4. Item 4 (the lead's message): the child bot's two river faults on 2-7 (walking off a lip onto a log's tail sliding under the bank;
-   jumping from a log's middle, not its end): one toy each RED before/GREEN after, rule 28 x40 on the stages the change touches, land.
+- PASS on 1b2897cfb (frozen): tsc, generalitycheck, knowncheck, vite build (BASE_PATH), chunkcheck, artcheck, coveragecheck,
+  registrycheck; roadmapcheck (f9eab29c9; no roadmap file changed since). Plants: raceEnd 6/6, storyTip 2/2, w2StackedFall 1/1 (each RED as section 1 says).
+- **Unit suite 1b2897cfb:** 4,073 tests / 4,068 pass / 2 fail / 3 todo. Base d9425f091: 4,064 / 4,059 / 2 / 3. The two reds are the SAME,
+  inherited: pacerLay.test.ts:254 and :280 (the planted log-hop bot tests, home Easy seed 1), red on the base.
+- **CI tool line 1b2897cfb:** 225 / 219 pass / 5 fail / 1 todo, identical to the base: firsttimer.test.ts:184 and riverRide.test.ts:106,
+  :144, :202, :218, all red on d9425f091 (inherited). No new red.
+- **lockall** (13 listed stages x 16 layouts x 2 settings, 416 builds): base recorded, head checked: 13/13 unchanged.
+- **Landed:** fast-forward of t-eng-27 to this branch's head (the lead's LAND). Item 4 went to a fresh member.
+## EXACT NEXT STEP
+None for items 1-3 (landed). Item 4 (the child bot on 2-7) is the fresh member's.
