@@ -300,6 +300,33 @@ export function underFrames(w: number): UnderFrame[] | null {
 }
 /** the painted strip's shown width (world units) and height (its own aspect) */
 const UNDER_W = 512;
+/** the stand-in underside's dark band: how far up into the soil it reaches over the line (drawUnderside) */
+const STAND_IN_BAND = 56;
+/** how far the underside reaches UP into the soil over its line in world `w`: the painted strips over their edge, or the stand-in's band */
+export function underReach(w: number): number {
+  const fs = underFrames(w);
+  return fs ? Math.max(...fs.map((f) => (f.edge * UNDER_W * f.h) / f.w)) : STAND_IN_BAND;
+}
+
+/**
+ * The lowest a view over x0..x1 may frame while he stands at (heroX, feetY) on an upper leg's earth (engine.ts's camera, DRESS-27c): the
+ * highest the ceilings' lines come over the view, less the underside's `reach` up into the soil. A view of an upper leg's earth ends in
+ * that earth, never in its underside's band, the air under the ceiling or the lower leg's backdrop seen from above: upright on 2-7's
+ * raised out leg the view framed 70 units past the soil's end (a band of the stand-in's column seams over a dark strip, BUILD-27f's
+ * finding 1). Only a ceiling he stands over, inside its run with his feet above its line (on the lower leg, past every run's end or
+ * where no leg is stacked: null, the view frames as it always did). Pure: no stage, no place.
+ */
+export function viewFloor(cs: readonly Ceiling[], x0: number, x1: number, heroX: number, feetY: number, reach: number): number | null {
+  let f = Infinity;
+  for (const c of cs) {
+    if (heroX < c.x0 || heroX > c.x1 || feetY >= ceilingAt(c, heroX)) continue;
+    // (past its run the line slants down into the hillside, so where the view runs past an end that end is the highest it comes there)
+    f = Math.min(f, ceilingAt(c, x0), ceilingAt(c, x1));
+    const a = Math.max(x0, c.x0), b = Math.min(x1, c.x1);
+    for (let x = Math.ceil(a / STEP) * STEP; x <= b; x += STEP) f = Math.min(f, ceilingAt(c, x));
+  }
+  return Number.isFinite(f) ? f - reach : null;
+}
 /** where one strip gives way to the next, the next fades in over this much before the change: each strip wraps only with itself (its tail
  *  runs on into its head), so a hard seam stood at every change (ENG-GROUND-c's painted shoot) */
 const BLEND = 96;
@@ -348,7 +375,7 @@ export function drawUnderside(ctx: CanvasRenderingContext2D, w: number, p: Pick<
           ctx.drawImage(s, g.x + g.w - (to / UNDER_W) * g.w, g.y, ((xe - xs) * g.w) / UNDER_W, g.h, xs, y - g.edge * hg, dw, hg);
           ctx.globalAlpha = a0;
         }
-      } else if (img) ctx.drawImage(img, 0, 0, 4, 64, xs, y - 56, dw, 58);
+      } else if (img) ctx.drawImage(img, 0, 0, 4, 64, xs, y - STAND_IN_BAND, dw, STAND_IN_BAND + 2);
       ctx.transform(1, -k, 0, 1, 0, k * xs);
     }
     // (an end over open air: the painted corner, its face on the end and its underside on the line, sheared to the line's slope over

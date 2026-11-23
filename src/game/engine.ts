@@ -139,6 +139,8 @@ import { drawWaterSign, signRattle } from './waterSign.ts';
 import { ROOM_CAM, roomCentre, roomFloor, roomLean, roomView } from './puzzleCamera.ts';
 /** no World 5 pieces for Dot to point at (any other world) */
 const NO_W5_THINGS: readonly never[] = [];
+/** over a stacked leg's earth (stackViewFloor), the lowest share of the view his feet may sit at when the view's foot is held up */
+const STACK_FEET_MAX = 0.85;
 import { setGuideKeepOuts, type KeepOutBox } from './guideKeepOut.ts';
 import { recordCake } from './w5Kit.ts';
 import { DotRun } from './dotFlightRun.ts';
@@ -205,7 +207,7 @@ import { maxHearts } from './secret.ts';
 import { drawLeafCover, drawPushLog, drawSeed, markSeedFound, seedFound, waterArt, type ProtoExtras } from './protoStage.ts';
 import { CHEER_SECONDS, footfallsBetween, hasClip, heroClipsEnabled, heroClipsLive, resetHeroClips, warmHeroClips } from './heroClips.ts';
 import { releaseDecorPics } from './envKit.ts';
-import { bushHeight, drawBranchArt, drawBushArt, drawEarthWall, setLianaTops, drawCurtainArt, drawHollowArt, drawProtoScene, drawSeedArt, hasKit, releaseGroundChunks, paintedKitEnabled, setDecoTrunks, setDepthView, setGroundPaint, setKitWorld, setRockLooks, setGroundLook, setBoughJoins, paintedPlatforms, protoArtReady, type ProtoSceneState , setGroundStacks, riverLid, riverUnderside, drawKitColumn, setClimbFeet } from './protoArt.ts';
+import { bushHeight, drawBranchArt, drawBushArt, drawEarthWall, setLianaTops, drawCurtainArt, drawHollowArt, drawProtoScene, drawSeedArt, hasKit, releaseGroundChunks, paintedKitEnabled, setDecoTrunks, setDepthView, setGroundPaint, setKitWorld, setRockLooks, setGroundLook, setBoughJoins, paintedPlatforms, protoArtReady, type ProtoSceneState , setGroundStacks, riverLid, riverUnderside, drawKitColumn, setClimbFeet, stackViewFloor } from './protoArt.ts';
 import { dressFeet } from './columnDress.ts';
 import { drawPorchPosts, porchPosts, type PorchPost } from './porchPosts.ts';
 import { drawFx, fxFrame } from './bossFx.ts';
@@ -6310,7 +6312,11 @@ export class GameEngine {
       // (behind the banks, the water, its bed and the soil under it run on under each bank that meets the river (riverUnderBanks): a
       // bank's painted cliff tapers in below its top, and where the river stopped at the bank's edge the backdrop showed through as a
       // grey wall, a dark strip and a pale patch of the backdrop's water under every river bank, upright; BUILD-24c, 2-1, 2-2 and 2-4)
-      const [ul, ur] = over ? [0, 0] : this.riverUnderBanks(r);
+      // (a deep river's sheet over its logs (the over pass) runs on under its banks too, inside the same faces as its water, in the box's
+      //  one clip: it stopped at the lip's x, and under a bank whose face slopes back in the water there showed as a lighter teal strip
+      //  from the surface to the floor between the river and the wall, BUILD-27f's finding 2 at 2-7's deep river, DRESS-27c. A safe
+      //  river's over pass draws only on its logs, and a flood's has no bank)
+      const [ul, ur] = over && (r.safe || floodsOnly) ? [0, 0] : this.riverUnderBanks(r);
       const x0 = r.x0 - ul, x1 = r.x1 + ur;
       if (x1 < cam.x - 40 || x0 > cam.x + cam.viewportWidth + 40) continue;
       const a = Math.max(x0, cam.x - 20);
@@ -6395,8 +6401,9 @@ export class GameEngine {
         ctx.lineTo(b, foot);
         ctx.closePath();
         ctx.fill();
-        // foam where the logs cut the surface: the river's own painted foam along the waterline (no hard white line)
-        if (painted) for (let x = Math.floor(a / 54) * 54; x <= b + 54; x += 54) drawRiverFoam(ctx, Math.round(x / 54), x, wave(x) + 3, 70, 0.8, Math.round(x / 54) % 2 === 0);
+        // foam where the logs cut the surface: the river's own painted foam along the waterline (no hard white line), over its own span
+        const fa = Math.max(a, r.x0), fz = Math.min(b, r.x1);
+        if (painted) for (let x = Math.floor(fa / 54) * 54; x <= fz + 54; x += 54) drawRiverFoam(ctx, Math.round(x / 54), x, wave(x) + 3, 70, 0.8, Math.round(x / 54) % 2 === 0);
       }
       ctx.restore();
       // (its underside after the clip is lifted, over the river's own span: the strip's roots hang below the line, ENG-GROUND-b)
@@ -6404,6 +6411,22 @@ export class GameEngine {
     }
   }
 
+  /** the way a deep river's log drifts where its river comes out from under a bank (its upstream end meets one: riverBanks), so its sawn,
+   *  round end trails out of the bank and its broken end leads (riverArt.ts drawRiverLog); undefined elsewhere (a safe river's logs, a
+   *  still river, one that starts in open water), kept per log while the platforms are the same list */
+  private logLead(pl: Platform): 1 | -1 | undefined {
+    if (this.logLeads?.from !== this.platforms) this.logLeads = { from: this.platforms, by: new WeakMap() };
+    let v = this.logLeads.by.get(pl);
+    if (v === undefined) {
+      const d = pl.drift;
+      const r = d ? this.currentStage.rivers?.find((q) => onRiver(d, q)) : undefined;
+      const bk = r && !r.safe && r.speed > 0 ? this.riverBanks(r) : undefined;
+      v = d && bk && (d.dir === -1 ? bk.far : bk.near) ? d.dir : 0;
+      this.logLeads.by.set(pl, v);
+    }
+    return v || undefined;
+  }
+  private logLeads?: { from: Platform[]; by: WeakMap<Platform, 1 | -1 | 0> };
   /** the logs (or rafts) that ride river `r` (river.ts onRiver), kept while the platforms are the same list */
   private logsOf(r: RiverZone): Platform[] {
     if (this.riverLogs?.from !== this.platforms) this.riverLogs = { from: this.platforms, by: new WeakMap() };
@@ -6827,6 +6850,12 @@ export class GameEngine {
       this.camera.targetY = Math.min(this.camera.targetY, Math.max(crown - vh * 0.22, p.y - vh * 0.9));
     }
 
+    // over a leg laid under another (groundStack.ts), on the upper leg's earth: the view's foot stays in that earth, above its underside's
+    // band (protoArt.ts stackViewFloor). Upright on 2-7's raised out leg it framed past the soil's end: the stand-in underside's column
+    // seams over the air under the ceiling and the lower leg's backdrop (BUILD-27f's finding 1, DRESS-27c). Never so far that his feet
+    // leave the view's lower part; none on the lower leg or where no leg is stacked
+    const floorY = this.paintKit && protoArtReady() ? stackViewFloor(this.platforms, this.camera.targetX, this.camera.targetX + vw, p.x, p.y) : null;
+    if (floorY !== null) this.camera.targetY = Math.min(this.camera.targetY, Math.max(floorY - vh, p.y - vh * STACK_FEET_MAX));
     // his head stays under the HUD along the top, whatever the view wanted (cameraFollow.ts HUD_BAND): measured from the ground he
     // stands on (in the air, the height the camera keeps level with), so a hop does not drag the view up after him
     const band = (this.viewCssH > this.viewCssW ? HUD_BAND.port : HUD_BAND.land) / this.zoom;
@@ -7615,9 +7644,9 @@ export class GameEngine {
           ctx.beginPath();
           ctx.rect(pl.x - 200, pl.y - 400, end - (pl.x - 200), 800);
           ctx.clip();
-          drawRiverLog(ctx, pl, this.gameTime);
+          drawRiverLog(ctx, pl, this.gameTime, this.logLead(pl));
           ctx.restore();
-        } else drawRiverLog(ctx, pl, this.gameTime);
+        } else drawRiverLog(ctx, pl, this.gameTime, this.logLead(pl));
       }
     }
     // where a river's logs go under short of its far bank (a TAIL): World 2's painted reeds standing in the water there, in front of

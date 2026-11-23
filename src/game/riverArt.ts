@@ -296,7 +296,13 @@ export function riverPaintFoot(surfaceY: number, safe: boolean): number {
 /** a drifting log: the long painting for a long log, the short one for a short one, bobbing a touch on the current */
 /** a floating log's bob on the current (px): its painting and its waterline (drawSafeRiverOver) move together */
 export const logBob = (p: Pick<Platform, 'id'>, t: number): number => Math.sin(t * 2.3 + p.id * 1.7) * 1.5;
-export function drawRiverLog(ctx: CanvasRenderingContext2D, p: Platform, t: number): boolean {
+/** which end of each log painting is its broken end (the other is the sawn end, its rings showing round): the long one's right, the short
+ *  one's left (w2-props.webp) */
+const LOG_BROKEN_RIGHT: Partial<Record<W2Piece, boolean>> = { logLong: true, logShort: false };
+/** `lead`: the way the log drifts, on a river that comes out from under a bank (engine.ts logLead): its broken end leads and its sawn,
+ *  round end trails out from under the bank. Its broken end trailed half the time, flat against the bank wall it slid out of (BUILD-27f's
+ *  finding 2, 2-7's deep river, DRESS-27c). Without it, each log faces the way its id gives (a safe river's logs, as they were) */
+export function drawRiverLog(ctx: CanvasRenderingContext2D, p: Platform, t: number, lead?: 1 | -1): boolean {
   if (!riverArtReady()) return false;
   const bob = logBob(p, t);
   // a raft (RiverRow.look 'raft', R-165.288): World 2's painted raft (puzzle-kit#raft, w2.json), set as the sluice rooms set it
@@ -307,8 +313,9 @@ export function drawRiverLog(ctx: CanvasRenderingContext2D, p: Platform, t: numb
     if (drawKitArt(ctx, 'raft', p.x + p.width / 2, p.y + r.barkFoot + bob, { w: r.w, h: r.h })) return true;
   }
   const { n, w, h, barkTop } = logPaint(p);
+  const flip = lead ? (lead === -1) === !!LOG_BROKEN_RIGHT[n] : p.id % 2 === 1;
   // the bark's top is about a fifth of the way down the painting (the moss and the twig stand up above it)
-  blit(ctx, n, p.x + p.width / 2 - w / 2, p.y + barkTop - h * 0.2 + bob, w, h, p.id % 2 === 1);
+  blit(ctx, n, p.x + p.width / 2 - w / 2, p.y + barkTop - h * 0.2 + bob, w, h, flip);
   return true;
 }
 
