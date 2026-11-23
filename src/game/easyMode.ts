@@ -18,6 +18,7 @@
 import { withSetting } from './settingDials.ts';
 import { signsClearOfFlags, type DressPiece } from './dressArt.ts';
 import { GEN2_STAGES } from './gen2/game.ts';
+import { routeAt, type Route } from './gen2/tower.ts';
 import type { GeneratedStage } from './stageGenerator.ts';
 import type { Collectible, Enemy, Platform } from './types.ts';
 import { doubleAllowed, heldMaxGap, jumpOK, PICKUP_APART, SAFE_APPROACH, validateStage, type CheckGraph } from './levelCheck.ts';
@@ -518,24 +519,31 @@ function easyStageOn(stage: Stage): Stage {
   const cps = (stage.checkpoints ??= []);
   if (!climb) {
     const reach = new Set(reached ?? validateStage(stage, { rooms: false }).reachableIds);
-    const marks = [stage.spawnX, ...cps.map((c) => c.x), stage.exitTotemX].sort((a, b) => a - b);
+    // (how far on a place is: its x; on a stage with a route (a gen2 tower, a stage of legs: an out-and-back's legs share x, one laid
+    // under the other) the px along the route, gen2/tower.ts routeAt, the order the engine and the level check take flags in
+    // (flagFurther), so the gaps, the middles and the order below are the route's, never x across two legs)
+    const route = (stage as { gen2?: { tower?: { route?: Route } } }).gen2?.tower?.route;
+    const along = (x: number, y: number): number => (route ? routeAt(route, x, y) : x);
+    const marks = [along(stage.spawnX, stage.spawnY), ...cps.map((c) => along(c.x, c.y)), along(stage.exitTotemX, stage.exitTotemY)].sort((a, b) => a - b);
     for (let i = 0; i + 1 < marks.length; i++) {
       const [x0, x1] = [marks[i], marks[i + 1]];
       if (x1 - x0 < FLAG_EVERY) continue;
       const want = (x0 + x1) / 2;
       // a wide still ledge near the middle that he can reach, with no animal close
       let best: Platform | null = null;
+      let bestAt = 0;
       for (const p of stage.platforms) {
         if (!flagLedge(stage, p, reach)) continue;
         const cx = p.x + p.width / 2;
-        if (cx < x0 + 400 || cx > x1 - 400) continue;
+        const at = along(cx, p.y);
+        if (at < x0 + 400 || at > x1 - 400) continue;
         // (never inside a laid chase's stretch: its flags are its restarts, on the forks only, gen2/chaseLay.ts)
         if (stage.chase?.stretches.some((t) => cx > t.start && cx < t.end)) continue;
-        if (!best || Math.abs(cx - want) < Math.abs(best.x + best.width / 2 - want)) best = p;
+        if (!best || Math.abs(at - want) < Math.abs(bestAt - want)) [best, bestAt] = [p, at];
       }
       if (best) cps.push({ x: Math.round(best.x + best.width / 2), y: best.y, reached: false });
     }
-    cps.sort((a, b) => a.x - b.x);
+    cps.sort((a, b) => along(a.x, a.y) - along(b.x, b.y));
   }
   // (no hearts on Meeca's stage: nothing there hurts her, and a heart is only picked up when hurt, so Easy's hearts by the flags just
   // sat there, QA 2026-10-31 "not picked up"; H1 by flagHeartsOwed, below)
