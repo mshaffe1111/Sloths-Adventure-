@@ -2,6 +2,27 @@
 
 Merged at INT-14 (11-20, t-int-14): §0zq-25d/§0zq-25c ENG-25c (2-5's snap rows level, the snapper's ground, the straddle), §0zq-NOISE ENG-NOISE (one noise channel), §0zq-PROWL ENG-PROWL (sight.up + the leap), §0zq-small3 ENG-SMALL3 (R-165.317/.319/.321), and PAINT-292 (World 1's painted planks and stones; no section here). Merged at INT-13 (11-19, t-int-13): §0ENG23 ENG-23 (followers, the heron reads the line) and §0zl-168 TIME-168 (timecheck), §0zm-25b ENG-25b (the snapper bot skill, the meter's snap channel) and §0zl-25 ENG-25 (2-5's snap stones and snapper rows), §0zn-26b ENG-26b and §0zm-26 ENG-26 (the water wheel), §0W2A ART-W2A (2-3's painted follow poses), §0zo ART-W2B (the wheel's painted draw), §0zo-285c/§0zo-285b/§0zo-285 ENG-285 (the judges and bots fly the engine's Pokey), §0zp-284 FIX-284/284b (2-2's big pads, the real tap hop), §0zp-24d BUILD-24d, §0zn-24c ENG-24c (the raft look, the glow) and §0zm-24 BUILD-24 (2-4) joined; rewritten at the INT-12 merge (11-18, t-int-12): four members wrote here the same day, so labels are suffixed where they met: §0zm-22p ART-22P (CI's seed-list matrix, R-165.278); §0zl-24 ENG-24 (a liana over a river; its REPORT cites it as §0zl); §0zm BUILD-19b, §0zn ENG-19c and §0zl BUILD-19 (t-build-19, the labels its REPORT cites). Before them FIX-22b (11-15): section 0zk.
 
+## 0zq-dress. DRESS-27 (t-eng-27-wip-dress, 11-23): 2-7's weir seam, the pole in the pool, the floating porches (World 2's kit, general)
+- **Base:** t-eng-27 + a merge of t-ready-27-wip (the column dress was only on t-build-27; conflicts in pipeline.ts and this note resolved
+  as t-build-27 did). Landing it on t-eng-27 brings READY-27's six commits with it.
+- **The seam (item 1) was in the CUT:** reference/art/hfnext/cut/weir.png (main) has rows 329-331 fully transparent across the falls between
+  the foam and the pool; the sky behind showed as a thin dark line. Fixed in the sheet: reference/qa-reports/DRESS-27/weirseam.py blends
+  each gap pixel from its painted neighbours; the sheet repacked by READY-27's pack-w2-next.py from main's cuts (frames and JSON
+  unchanged; the other frames re-encode within 15/255). seamcheck.py (same folder) finds a see-through row across any frame: RED on the old
+  sheet, GREEN now. The cut on main is still the old one (Content: replace it with the repaired cut).
+- **The pole (item 2):** a 'tree_climb' whose foot stands on a dressed column's floor inside the dress (columnDress.ts dressFeet) is drawn
+  by protoArt.ts down to DRESS_FOOT.rise (56) over the floor, then fades out over 32 px (baked once per climb under a gradient,
+  cachedBake re-bakes on a canvas loss), nothing under it: the dress behind shows its own foam round the foot. engine.ts setClimbFeet at
+  stage start. TRAPS: drawing the dress's foam again IN FRONT of the pole (layer 'world') covered the frog on its stone (Easy) and thickened
+  the see-through pool into a box; fade strips drawn one by one showed seams against white water. Both tried and dropped.
+- **The porches (item 3):** porchPosts.ts: every solid canopy_bridge end over a river gets a post (the world kit's climb pole, 'trunk',
+  24 px wide, protoArt kitPieceAspect) from 6 px under the walk line to 40 px under the surface, drawn BEFORE drawRivers(false) so the
+  water's own surface covers the feet. Only 2-7 lays one today (2-1..2-6 probed both settings: no posts, no dress).
+- **Open (item 4, not fixed):** the low floor's pale band ends in a square notch against a raised bank's dirt: every World 2 step, not
+  2-7 only (2-3 x10600 shows it: qa-reports/DRESS-27/stills/item4-notch-zoom-2-7-and-2-3.jpg). The painted ground's cap at a leg's end.
+- **Proof:** columnDressFoot.test.ts (3), porchPosts.test.ts (2), columnDressLay.test.ts (dressFeet finds the toy column's climb); RED on
+  the base (the exports missing). Stills: qa-reports/DRESS-27/stills/ (2-7 seed 1, both settings, both ways, zooms).
+
 ## 0zq-jetty. ENG-JETTY (t-eng-27, 11-23): the race-end line, World 2's finish under a stacked leg, story tips (2-7's three pieces)
 - **Race end (item 1):** brief `GraphBrief.raceEnd = { win: { tip, who }, lose: { tip, who } }` (gen2/types.ts, beside `pacer`; `tip` a key
   of the world manifest's `tips`, `who` 'Dot' | 'Pokey'). The pipeline (layChaseStage, after layPacer) reads them into `Pacer.ends`
