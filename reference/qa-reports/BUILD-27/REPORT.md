@@ -36,6 +36,11 @@ is the freeze (unfrozen 2/2 PASS, BUILD-27b), not a defect.
 (e) Send the lead: the final hash, every gate line PASS/FAIL with the suite totals, the clip paths (race27f/), the stills' paths
 (stills27f/clean/), yield 29/40, list 69/100.
 
+LEAD'S FINDINGS (sent): (1) a portrait bottom band (vertical streaks under the dirt, a dark strip, an orange line, a sliver) on 2-7's OUT-leg
+upright spots only (N x4500 4960 6780 9080 11376 13508; E x4960 5419 7239 8900 9553 14205); 2-4 and 2-5 at spawn fill clean: 2-7-ONLY.
+(2) the deep river's lighter teal strip against the bank wall and the drifting log's flat cut at the bank (x9080 N sideways): 2-7-ONLY;
+2-2/2-4/2-5 lay the shallow river only. Files: stills27f/find/. The lead decides who fixes them (not BUILD's: no engine code).
+
 Learned / Method update (BUILD-27f): (a) once a stage is LISTED its stills spots must be re-found on the listed build: the list's plan for
 seed 1 is not the pre-list search's, and the old x11376 porch spot fell on the bank; probes27f/porchx.mjs reads the pieces' x from the
 live build (a level.md rule candidate: "spots come from the built stage, never from an older report"). (b) Two still tools, two jobs:
