@@ -13,6 +13,8 @@
  * Exit 1 when no seed is clean on both settings (a stage the list search cannot list), 2 on a stage with no row.
  */
 import '../../src/game/headlessDom.ts';
+// (a draft stage, GEN2_DRAFT=<id>, is readied before anything builds the levels: draft.ts)
+import './draft.ts';
 import { fileURLToPath } from 'node:url';
 import { buildGen2Stage, stagePool } from '../../src/game/gen2/pipeline.ts';
 import { listedStage, playFinish } from '../../src/game/gen2/listed.ts';

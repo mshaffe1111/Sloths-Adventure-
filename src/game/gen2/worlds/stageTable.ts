@@ -10,13 +10,14 @@
  * it, entering its rows in reach.ts and giving its row `judged`.
  */
 import type { BuildRequest } from '../types.ts';
+import type { Travel } from '../../stageKit.types.ts';
 import type { ReachScope } from '../verdicts.types.ts';
 import { FIRST_RUN_11 } from '../firstRun11.ts';
 
 export interface StageRow {
   /** the world kit the stage is rolled from, by name (listed.ts KITS): a world's own, or a world's kit with one stage's rows over it
    *  where they are manifest-wide (1-2's corridor room, thorn row and lessons: w1Arc12.ts kitLib12) */
-  kit: 'w1' | 'w1-12' | 'w1-14' | 'w1-15' | 'w1-16' | 'w1-17' | 'w1-18' | 'w1-19' | 'w2' | 'w2-21' | 'w2-22' | 'w2-23' | 'w2-24' | 'w2-25';
+  kit: 'w1' | 'w1-12' | 'w1-14' | 'w1-15' | 'w1-16' | 'w1-17' | 'w1-18' | 'w1-19' | 'w2' | 'w2-21' | 'w2-22' | 'w2-23' | 'w2-24' | 'w2-25' | 'w3';
   /** its finish dresses squirrels (a roll where too few find a spot is never listed) */
   squirrels?: true;
   /** it has a fixed first run, held to its lock */
@@ -76,6 +77,27 @@ export const STAGE_TABLE: Readonly<Record<string, StageRow>> = {
   //  flown rows, flownArcs.ts normal-2-5, BUILD-25c 11-20)
   '2-5': { kit: 'w2-25', judged: 'normal-2-5' },
 };
+
+/**
+ * A DRAFT row (ENG-W3a, the lead's ruling 11-23: "make the draft state general: any world's next stage can be readied this way"): a
+ * stage's next build readied on gen2 while its live stage (hand-built, or the old section maker) stays what the game plays. No game path
+ * reads this table: LISTED, the registry gate and the game see only STAGE_TABLE. The tools take a draft by GEN2_DRAFT=<id> (tools/engine/
+ * draft.ts: its row installed, its hand-built shadow lifted and its config given the row's travel, in that tool's process only), so
+ * addlevel, castBots and libstage roll it and play it as the game would once it is listed. `travel` is the draft's (LevelConfig.travel,
+ * stagePlan.ts) until its build lists it: the live stage keeps its own. A draft leaves this table in the commit that lists it.
+ */
+export interface DraftRow extends Pick<StageRow, 'kit' | 'squirrels'> {
+  /** which way the drafted stage travels (stagePlan.ts gets it with the build that replaces the live stage) */
+  travel?: Travel;
+}
+export const DRAFT_TABLE: Readonly<Record<string, DraftRow>> = {
+  // (3-1 Into the Grotto: World 3's first stage, laid DOWN on World 3's kit (w3.ts, ENG-W3a 11-23; WORLD-3-PLAN F1). The live 3-1 is
+  //  the old section maker until 3-1's build designs its arc on its own kit over 'w3' and lists it)
+  '3-1': { kit: 'w3', travel: 'down' },
+};
+
+/** a stage's draft row; undefined when it has none */
+export const draftRow = (stageId: string): DraftRow | undefined => (Object.hasOwn(DRAFT_TABLE, stageId) ? DRAFT_TABLE[stageId] : undefined);
 
 /** a stage's row; undefined when the table has none (an inherited name is no row) */
 export const stageRow = (stageId: string): StageRow | undefined => (Object.hasOwn(STAGE_TABLE, stageId) ? STAGE_TABLE[stageId] : undefined);

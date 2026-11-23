@@ -184,6 +184,11 @@ export function routeOf(flow: Flow, sections: ReadonlyArray<{ uid: string; entry
  */
 export function routeAt(route: Route, x: number, y: number): number {
   if (route.flow === 'right') return x - route.spawn.x;
+  // (a way DOWN ends on its floor, under its last section: a place lower than the last leg is on the way from that leg's exit to the
+  //  shrine (the route's own last span), measured along it, never past the exit. Before ENG-W3a every such place measured at the last
+  //  leg's end, so the floor's walk to the shrine, up to 1,500 px, was never on the measure and no flag there could count)
+  const last = route.legs[route.legs.length - 1];
+  if (route.flow === 'down' && last && y > Math.max(last.entry.y, last.exit.y) + 1) return Math.min(route.length, last.s0 + last.len + span(last.exit, { x, y }));
   let k = -1, bestD = Infinity;
   route.legs.forEach((g, i) => {
     const lo = Math.min(g.entry.y, g.exit.y), hi = Math.max(g.entry.y, g.exit.y);
@@ -385,7 +390,12 @@ export function towerCatches(flow: 'up' | 'down', platforms: readonly Platform[]
       const ys: number[] = [];
       for (let y = top; y <= last; y += 20) ys.push(y);
       for (const q of all) if (q.type === 'solid' && q.x < x0 + TOWER.catchW && q.x + q.width > x0 && q.y > top && q.y <= last) ys.push(q.y);
-      for (const y of ys.sort((a, b) => a - b)) {
+      ys.sort((a, b) => a - b);
+      // (going down, when the band at the storey under it is all in the way (its own jump's gap there, wood across it), the landing
+      //  he can see is laid higher, a head's room under the piece at the least (HEAD), the deepest fair height first: a way down's
+      //  catch is only ever a way on, and the band alone left a 10 px slot, ENG-W3a's down rolls: blind drops of 350-560 px)
+      if (flow === 'down') for (let y = top - 20; y >= e.p.y + HEAD; y -= 20) ys.push(y);
+      for (const y of ys) {
         const L = fair(x0, x0 + TOWER.catchW, y, Le, []);
         if (L < 0) continue;
         put(x0, x0 + TOWER.catchW, y, L);

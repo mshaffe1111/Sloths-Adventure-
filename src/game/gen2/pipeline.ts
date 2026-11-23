@@ -3502,6 +3502,12 @@ export function fillSockets(laid: Laid, budget: StageBudget, kit: WorldKit, seed
         if (q.main && pl.width >= FLAG_SPAN.pad) for (const [x0, x1] of flagRuns(laid.platforms, pl, pl.x + FLAG_SPAN.pad / 2, pl.x + pl.width - FLAG_SPAN.pad / 2)) spots.push({ x0, x1, y: pl.y });
       }
     }
+    // (a way DOWN ends on its floor: the last turn's vine sets him down there and he walks the floor to the shrine, past every section,
+    //  so the floor is a spot too, or the last flag can stand no nearer the exit than the goal section's storey: ENG-W3a's down rolls,
+    //  the last 2045-2361 px of way unflagged. A climb ends at its summit, in its goal section: nothing changes there)
+    if (laid.tower?.flow === 'down') {
+      for (const pl of laid.platforms) if (pl.type === 'solid' && Math.abs(pl.y - laid.tower.floorY) <= 1 && pl.width >= FLAG_SPAN.pad) for (const [x0, x1] of flagRuns(laid.platforms, pl, pl.x + FLAG_SPAN.pad / 2, pl.x + pl.width - FLAG_SPAN.pad / 2)) spots.push({ x0, x1, y: pl.y });
+    }
     const firstOf = new Map<string, number>();
     for (const g of route.legs) { const node = laid.sections.find((q) => q.uid === g.uid)!.node; if (hard?.has(node) && !firstOf.has(node)) firstOf.set(node, g.s0); }
     checkpoints.length = 0;

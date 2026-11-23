@@ -12,6 +12,8 @@
  * A seed is the stage's layout variant (RealPlay -> setLayoutVariant): on a listed stage its n-th proven seed, on a test-side roll its
  * gen2 seed (tools/engine/runs/page13.py's hook in a worktree).
  */
+// (a draft stage, GEN2_DRAFT=<id>, is readied before realPlay.ts builds the levels at load: tools/engine/draft.ts)
+import { draftCheck } from '../engine/draft.ts';
 import path from 'node:path';
 import { spawn } from 'node:child_process';
 import { firstTimer, FT_ADULT, FT_CHILD, FT_CHILD_EASY, FT_EXPERT, FT_KID, FT_MIDDLE, FT_MIDDLE_EASY, type FirstTimer, type FTRun } from './firsttimer.ts';
@@ -68,6 +70,7 @@ const arg = (k: string) => { const i = process.argv.indexOf(k); return i > 0 ? p
 if (process.argv[1] && path.resolve(process.argv[1]) === path.resolve(import.meta.filename)) {
   const stage = arg('--stage');
   if (!stage) throw new Error('--stage <id>');
+  draftCheck(levelConfig(stage));
   const bots = (arg('--bots') ?? 'kid,adult,child,middle,expert').split(',');
   const seeds = range(arg('--seeds') ?? '1-20');
   const want = arg('--setting') ?? 'both';
