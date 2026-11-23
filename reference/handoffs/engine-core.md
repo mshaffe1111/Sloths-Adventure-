@@ -22,6 +22,25 @@ Merged at INT-14 (11-20, t-int-14): §0zq-25d/§0zq-25c ENG-25c (2-5's snap rows
   2-7 only (2-3 x10600 shows it: qa-reports/DRESS-27/stills/item4-notch-zoom-2-7-and-2-3.jpg). The painted ground's cap at a leg's end.
 - **Proof:** columnDressFoot.test.ts (3), porchPosts.test.ts (2), columnDressLay.test.ts (dressFeet finds the toy column's climb); RED on
   the base (the exports missing). Stills: qa-reports/DRESS-27/stills/ (2-7 seed 1, both settings, both ways, zooms).
+## 0zq-BOT27. ENG-BOT27 + ENG-BOT27b (t-eng-27-wip-bot27-aim, 11-23): SKILLS.reAim, the CHILD bot's skill only; two faults parked
+- **reAim is the child's alone (ENG-BOT27b, the lead's ruling (3)):** `FirstTimer.reAim` (set on FT_CHILD and FT_CHILD_EASY only) is read
+  with SKILLS.reAim at the upstream gate; middle, expert, adult and kid hold the refused aim as before. On every bot it turned pacerLay's
+  'careful middle beats it, Normal 2' red (116.5 vs 114.04 s): the race is calibrated on the middle, so the middle's play changes only by
+  its own ruling (R-165.413). Toy: riverRide.test.ts 'SKILLS.reAim is the CHILD bot's alone' (every other cast bot flies the planted river
+  identically on and off; RED with the gate reading SKILLS.reAim alone: middle normal moved). Rows and gates: the REPORT's top section.
+- **SKILLS.reAim** (firsttimer.ts, upstream gate only; WaitAim.since): a held aim the gate refuses for his tier's stopReact ends its wait
+  and is drawn again. On a river every log runs at one speed, so from a log the gap to the next never changes: a held tap that cannot
+  reach was held the whole ride back (2-7 child Normal 'water ahead' stall, seeds 6 x 9412, 8 x 8702). The lead's ruling (A) with two
+  conditions, both a toy (D121): never a re-draw inside stopReact; the press judged on the AIMED hop only (gateAirtime strips the thumb).
+  x40 (all bots): 2-7 child N 27->36 (rescues 16->4), 2-7 bar 23->33/40; shipped 2-1/2-2/2-4/2-5 no pass flips to fail.
+- **Parked, unlanded (the lead):** t-eng-27-wip-bot27 be6aa1825: SKILLS.meetLog (an at-him log's tail is floor only if a walk off the lip
+  lands, walkOntoTail) and SKILLS.logEnd (no landing-pause flick off a log his way; LOG_LOOK 30 px on a log). Deaths fell on every tier,
+  passes did not rise, shipped 2-1 child Easy 40->38. For the World 2 river bot list (R-165.413).
+- **Traps:** the draft head (aede72157) alone drowns every bot at the home leg's lower river end (w2.ts:372, ENG-JETTY's band fix): measure
+  2-7 only with that in. A bare toy skips the floor-ahead read for the bot's first ~1.2 s (start-up); plant lip reads at the read itself or
+  start him far back. The home toy (2-97) does not stall the upstream gate. Rescues (stalls) and deaths are different yields: trace both.
+- **Probes** (re-creatable): a frame ring before each life / rescue (onFrame, sim.t, rescueXs), HOP_TRACE rows (no row at a take-off =
+  an unjudged press), a drawHop stub on the FirstTimerRun instance (plants an aim; counts draws).
 
 ## 0zq-HUD27. ENG-HUD27 (t-eng-27-wip-hud, 11-23): the HUD bar along the route's legs; 'post:letter' moments
 - **The bar** (routeBar.ts): a stage laid as 2+ legs (gen2 tower.flow 'legs') reads the best route px so far / the route's length

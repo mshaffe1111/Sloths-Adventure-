@@ -28,7 +28,8 @@ import { w2Finish, W2_RIVERS } from '../../src/game/gen2/worlds/w2.ts';
 import type { SectionTemplate, WorldKit } from '../../src/game/gen2/types.ts';
 import type { LevelConfig } from '../../src/game/types.ts';
 import type { RiverZone } from '../../src/game/river.ts';
-import { SKILLS, firstTimer } from './firsttimer.ts';
+import type { Platform } from '../../src/game/types.ts';
+import { SKILLS, firstTimer, FirstTimerRun, FT_CHILD, FT_CHILD_EASY, HOP_TRACE, type FirstTimer } from './firsttimer.ts';
 import { CAST_BOTS, castRun } from './castBots.ts';
 import { runTier, type Setting, type Tier, type TierRun } from './tierBots.ts';
 
@@ -226,5 +227,135 @@ test('planted (THIN): with the up-the-far-bank skill off, the child on Easy is c
     });
   } finally {
     SKILLS.bankUp = true;
+  }
+});
+
+/** (ENG-BOT27, ENG-BOT27b) a bare river of 150 px logs 80 px apart flowing AT him, 6 phases; the first hop drawn while he stands on a
+ *  log is planted as a 0.033 s tap the upstream gate refuses (every later draw is his own). Per phase: how his first log ended, 'hop'
+ *  (off it, upward) or 'back' (ridden back to the bank), and the frame. SKILLS.reAim set to `on` for the flight */
+const w = 150, gap = 80, speed = 75, x0 = 1000, x1 = 2840, T = (x1 - x0 + w) / speed, n = Math.round((x1 - x0 + w) / (w + gap));
+const pieces = (phase: number): Platform[] => [
+  { id: 1, x: 0, y: 600, width: x0, height: 90, type: 'solid' } as Platform,
+  { id: 2, x: x1, y: 600, width: 1200, height: 90, type: 'solid' } as Platform,
+  ...Array.from({ length: n }, (_, k) => ({ id: 10 + k, x: 0, y: 628, width: w, height: 24, type: 'drift', drift: { x0, x1, dir: -1, speed, width: w, baseY: 628, offset: ((k * (w + gap)) / speed + phase) % T } }) as unknown as Platform),
+];
+const plantedRide = (who: FirstTimer, on: boolean): string[] => {
+  const was = SKILLS.reAim;
+  SKILLS.reAim = on;
+  const out: string[] = [];
+  try {
+    for (const phase of [0, 0.5, 1, 1.5, 2, 2.5]) {
+      const line = Array.from({ length: 200 }, (_, i) => ({ x: 100 + i * 24, y: 600 }));
+      let log: number | null = null, onLog = false, f = 0, fEnd = -1, stubbed = false, prev: { g: boolean; id: number | null } = { g: false, id: null }, end = '';
+      const run = new FirstTimerRun('1-1', 1, who, { route: line, cap: 20, rescueAfter: 1000, onFrame: (sim) => {
+        const e = (sim as unknown as { e: { player: { vy: number; grounded: boolean }; platforms: Platform[]; standingOnId: number | null } }).e;
+        f++;
+        const here = e.platforms.find((q) => q.id === e.standingOnId);
+        onLog = !!here?.drift && e.player.grounded;
+        if (onLog && log === null) log = here!.id;
+        if (log !== null && !end) {
+          if (prev.g && prev.id === log && !e.player.grounded && e.player.vy < 0) end = 'hop';
+          else if (e.player.grounded && here?.id === 1) end = 'back';
+          if (end) fEnd = f;
+        }
+        prev = { g: e.player.grounded, id: here?.id ?? null };
+      } });
+      const own = run as unknown as { drawHop: (d: -1 | 1) => { kind: string; hold: number; d2: number } };
+      const real = own.drawHop.bind(run);
+      own.drawHop = (d) => { const h = real(d); if (!stubbed && onLog) { stubbed = true; return { ...h, kind: 'single', hold: 0.033, d2: -1 }; } return h; };
+      run.sim.bare(pieces(phase));
+      (run.sim as unknown as { e: { currentStage: { config: { levelHeight: number } } } }).e.currentStage.config.levelHeight = 720;
+      run.sim.stand(700, 600);
+      run.prog.relocate(run.sim.p);
+      run.play();
+      out.push(stubbed ? `${end || 'none'}@${fEnd}` : 'unplanted');
+    }
+  } finally {
+    SKILLS.reAim = was;
+  }
+  return out;
+};
+
+test('in the real engine: on a log flowing AT him, a held hop the upstream gate refuses is aimed again after his reaction, never held for the whole ride back (SKILLS.reAim; RED with it off)', () => {
+  // (ENG-BOT27, 2-7's 'water ahead' stall, traced on the draft (with ENG-JETTY's band hunk), child Normal seeds 6 x 9412 and 8 x 8702: at
+  //  an at-him log's front end the wait's drawn aim was a 0.033 s tap the gate never saw reach the next log 80 px off; the gap never
+  //  changes on a river (one speed), so he held it, rode back to the bank and boarded again until rescued. Planted: the first hop drawn
+  //  while he stands on a log is that tap; every later draw is his own. A bare river of 150 px logs 80 px apart flowing at him, 6 phases)
+  const first = (on: boolean) => plantedRide(FT_CHILD, on).map((r) => r.split('@')[0]);
+  const on = first(true), off = first(false);
+  assert.ok(on.every((s) => s === 'hop'), `with the skill: he aims again and hops off the first log every phase (${on.join(' ')})`);
+  assert.ok(off.filter((s) => s === 'back').length >= 4, `RED: with SKILLS.reAim off he holds the tap and rides back to the bank (${off.join(' ')})`);
+});
+
+test('SKILLS.reAim keeps the honest aim (D121, the lead\'s two conditions): on a log a re-draw never comes inside his stopReact, and the press is decided on the aimed hop alone, never its drawn thumb noise', () => {
+  // (the bare at-him river of the toy above, the first on-log draw planted as the 0.033 s tap; every draw made while he stands on a log
+  //  is timed; a run is flown twice, the on-log draws as drawn and again with a LOUD thumb (a slip of 30 frames with no steer from the
+  //  press, no drift, no late lift-off): the first upstream press (its frame and x, HOP_TRACE) must be the same, the noise only flown
+  //  after it. Planted: a gate that flies the drawn thumb (gateAirtime keeping h.thumb) refuses the loud hop and presses later, RED)
+  const loud = (th: { drift: number[]; slip: number[]; release: number[] } | undefined) => ({
+    drift: (th?.drift ?? Array(60).fill(0)).map(() => 0), slip: (th?.slip ?? Array(60).fill(-1)).map((_, i) => (i === 0 ? 30 : -1)), release: (th?.release ?? Array(60).fill(0)).map(() => 0),
+  });
+  const fly = (phase: number, quiet: boolean) => {
+    HOP_TRACE.on = true;
+    HOP_TRACE.rows.length = 0;
+    const line = Array.from({ length: 200 }, (_, i) => ({ x: 100 + i * 24, y: 600 }));
+    let onLog = false, log: number | null = null, stubbed = false, t = 0, prevG = false;
+    const draws: Array<{ t: number; log: number | null }> = [], offs: number[] = [];
+    try {
+      const run = new FirstTimerRun('1-1', 1, FT_CHILD, { route: line, cap: 20, rescueAfter: 1000, onFrame: (sim) => {
+        const e = (sim as unknown as { e: { player: { vy: number; grounded: boolean }; platforms: Platform[]; standingOnId: number | null } }).e;
+        const here = e.platforms.find((q) => q.id === e.standingOnId);
+        t = sim.t;
+        onLog = !!here?.drift && e.player.grounded;
+        log = onLog ? here!.id : null;
+        if (prevG && !e.player.grounded && e.player.vy < 0) offs.push(t);
+        prevG = e.player.grounded;
+      } });
+      const own = run as unknown as { drawHop: (d: -1 | 1) => { kind: string; hold: number; d2: number; thumb?: { drift: number[]; slip: number[]; release: number[] } } };
+      const real = own.drawHop.bind(run);
+      own.drawHop = (d) => {
+        const h = real(d);
+        if (!onLog) return h;
+        draws.push({ t, log });
+        const g = stubbed ? h : { ...h, kind: 'single', hold: 0.033, d2: -1 };
+        stubbed = true;
+        return quiet ? { ...g, thumb: loud(g.thumb) } : g;
+      };
+      run.sim.bare(pieces(phase));
+      (run.sim as unknown as { e: { currentStage: { config: { levelHeight: number } } } }).e.currentStage.config.levelHeight = 720;
+      run.sim.stand(700, 600);
+      run.prog.relocate(run.sim.p);
+      run.play();
+      const up = HOP_TRACE.rows.find((r) => r.site === 'upstream');
+      let gapMin = Infinity;
+      for (let i = 1; i < draws.length; i++) if (draws[i].log === draws[i - 1].log && !offs.some((o) => o > draws[i - 1].t && o <= draws[i].t)) gapMin = Math.min(gapMin, draws[i].t - draws[i - 1].t);
+      return { up: up ? `${up.t.toFixed(3)}@${up.x.toFixed(1)}` : 'none', gapMin, redraws: draws.length };
+    } finally {
+      HOP_TRACE.on = false;
+      HOP_TRACE.rows.length = 0;
+    }
+  };
+  for (const phase of [0, 0.5, 1, 1.5, 2, 2.5]) {
+    const noisy = fly(phase, false), quiet = fly(phase, true);
+    assert.ok(noisy.redraws >= 2, `phase ${phase}: the planted tap was aimed again (${noisy.redraws} on-log draws)`);
+    assert.ok(noisy.gapMin >= FT_CHILD.stopReact - 1e-6, `phase ${phase}: a re-draw on a log came inside stopReact ${FT_CHILD.stopReact} s (${noisy.gapMin.toFixed(3)} s)`);
+    assert.notEqual(noisy.up, 'none', `phase ${phase}: an upstream press was judged`);
+    assert.equal(quiet.up, noisy.up, `phase ${phase}: the press was decided on the drawn noise (as drawn ${noisy.up}, loud ${quiet.up})`);
+  }
+});
+
+test('SKILLS.reAim is the CHILD bot\'s alone (ENG-BOT27b, the lead\'s ruling 11-23): with it on, every other cast bot holds the refused aim exactly as with it off, frame for frame (RED if the switch leaks past FirstTimer.reAim)', () => {
+  // (on every bot, reAim moved pacerLay's careful middle (SKILLS.race beat the boat, normal seed 2, one re-aim at t 84.63); the race is
+  //  calibrated on the middle, so its play changes only by its own ruling, R-165.413. Planted: the gate reading SKILLS.reAim alone (no
+  //  who.reAim): RED, 'middle normal: the switch moved a bot that is not the child' (seen). With the leak the kid and adult still flew
+  //  this river identically (seen; not traced), so the real proof for every bot is its x40 rows against base (rule 28))
+  assert.ok(FT_CHILD.reAim && FT_CHILD_EASY.reAim, 'the child plays it on both settings');
+  for (const [bot, bySetting] of Object.entries(CAST_BOTS)) {
+    for (const [setting, who] of Object.entries(bySetting)) {
+      if (!who) continue;
+      if (bot === 'child') { assert.equal(who.reAim, true, `child ${setting} has the skill`); continue; }
+      assert.ok(!who.reAim, `${bot} ${setting} has no reAim`);
+      assert.deepEqual(plantedRide(who, true), plantedRide(who, false), `${bot} ${setting}: the switch moved a bot that is not the child`);
+    }
   }
 });
