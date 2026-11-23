@@ -42,16 +42,15 @@ w2Arc27.test green, registrycheck, THEN the list: `seedlist.ts 2-7`, `--check`, 
    Also sent: adult beats the boat by 42 s (design intent?); a dock teleport gives a WIN with the race never started (unreachable in play).
    LIVE STILLS (stills27c-live/, probes27c/stills-live.mjs = stills-at-setting without hints-shown/clearGuide): x5500 shows `race` as Dot's
    story card on Normal's default Tips (storyTips works in the game); x15950 shows `turn` at the weir. x5060 showed NO handover card (a
-   teleport artefact or a real miss): RUNNING at handover, a LIVE replay from the spawn (frames 0-420) -> scratchpad start-side/; look
-   for WATER_WARN, then `handover`, then `race`.
+   teleport artefact): PROVEN by a LIVE replay from the spawn (LIVE=1 FROM=0 TO=420): `handover` shows as Dot's story card at frame 140
+   (t4.7 s, race27c/start-f00070-handover-live.jpg), `race` after it. No WATER_WARN card at the spawn on Normal (f00010): ENG-JETTY's
+   known item (World 2's water warning is a plain tip, dropped on Tips; sent to the lead for release 4), not 2-7's.
    WEIR ZOOM: stills27c-live/zoom-weir-pool-normal-x15950-sideways.png: a hard thin dark line with coloured specks along the pool surface
    across the whole falls (BUILD-27b's (d) HOLDS): name it to the lead as a polish defect (the weir dress's foot / the pool sheen seam);
    also the climbing pole stands in front of the falls. Porches x11376: floating rope-tied planks (BUILD-27b's (f) HOLDS).
-   SUITE on frozen d9913b17d (suite1.txt; 1743+ tests when checked): reds (a) easyMode (engine, ENG-HUD27's); (b) pacerLay.test.ts:254
-   and the next ("bot (planted) ... RED without it": "without the skill the plant must lose (86.8 s against 108.37 s)") -> RUNNING at
-   handover: pacerLay.test on the base e2f3855cf (/home/user/wt-e27) -> scratchpad pacer-base.txt: if red there too it is t-eng-27's
-   (ENG-BOT27's area), else it is my merge's; (c) seedListChunk "EPERM mkdtemp src/game/gen2/proven": the FREEZE (the test writes into
-   src), re-run unfrozen -> scratchpad chunk-head.txt.
+   SUITE on frozen d9913b17d (suite1.txt; still running at handover, 1743+ tests): reds (a) easyMode 2-7 (engine, ENG-HUD27 takes it);
+   (b) pacerLay.test.ts "bot (planted)" x2: IDENTICAL on the base e2f3855cf (pacer-base.txt: 21 pass, 2 fail): t-eng-27's, not my merge;
+   (c) seedListChunk EPERM: the freeze (it writes into src); unfrozen on the head 2/2 PASS. Read suite1.txt's final count when it ends.
 7. Then the full gate set on the final head (CLAUDE.md list; gates.md), the LEVEL-LOG row (kid table), Learned.
 
 ## BUILD-27b (continuing; started 1:05 PM ET 11-23 by `date`; report by 2:40 PM ET)
