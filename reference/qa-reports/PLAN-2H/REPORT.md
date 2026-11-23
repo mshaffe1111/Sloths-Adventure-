@@ -46,8 +46,7 @@ wave hours re-added from the row sizes (45 / 47 / 29 / 20 / 30 / 6).
 - Hours assume two piece members (R5), not checked against the week's tokens. World 4-10 pieces are from map ideas (a design may add
   one more, lane 3's rule). World 3's bot skills are named from the designs, not traced in firsttimer.ts. Guardians: their own lane.
 
-## Method update
-New reference/methods/piece-plan.md (none existed), indexed in methods/README.md: meter-coverage.json first (86 ids, bot and channel
+**Method update:** new reference/methods/piece-plan.md (none existed), indexed in methods/README.md: meter-coverage.json first (86 ids, bot and channel
 in one read), map-tally.txt per stage, designs' NEW lines by grep, cites resolved by script with the folder.
 
 ## Lessons applied
