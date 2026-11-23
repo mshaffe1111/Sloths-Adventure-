@@ -1128,6 +1128,31 @@ export class WaitAim {
 }
 
 /**
+ * E, the honest middle at the race gate (the lead's ruling, ENG-27t/u/v): the hops he could aim, from the tier's calibrated tables with no
+ * noise (drawHop's own: the singles at holdQ's five quantiles, then, if the tier presses doubles (dblShare), a double at each of dbl2Q's
+ * quantiles with its first press held the median hold, cut a frame short of the second press as drawHop cuts it), smallest first. A tier
+ * with no holdQ has no table: [] (the gate keeps the drawn aim).
+ */
+export function raceCandidates(who: FirstTimer): DrawnHop[] {
+  if (!who.holdQ) return [];
+  const dblAt = (who.dblAt[0] + who.dblAt[1]) / 2;
+  const mid = Math.min(1.5, Math.max(DT, who.holdQ[2]));
+  const out: DrawnHop[] = who.holdQ.map((h) => ({ kind: 'single' as const, hold: Math.min(1.5, Math.max(DT, h)), d2: -1, dblAt, hold2: mid, upOnly: 0 }));
+  if (who.dbl2Q && (who.dblShare ?? 0) > 0) {
+    for (const d of who.dbl2Q) { const d2 = Math.max(2 * DT, d); out.push({ kind: 'double', hold: Math.min(mid, d2 - DT), d2, dblAt, hold2: mid, upOnly: 0 }); }
+  }
+  return out;
+}
+/**
+ * E's decision (no foresight): the first candidate, smallest first, whose AIMED flight lands (`lands` reads the aim only, gateLands);
+ * none lands: null (he rides on). The press flies it with the thumb's noise drawn at the press (`flown`), never read here.
+ */
+export function racePick(cands: DrawnHop[], lands: (h: DrawnHop) => boolean): DrawnHop | null {
+  for (const h of cands) if (lands(h)) return h;
+  return null;
+}
+
+/**
  * What a drawn-hop gate (edgeStand, edgeWait, race, upstream; rule 28) reads when it decides to press (ENG-27r, the lead's concern: a
  * player cannot see his thumb slip before he presses). The hop AS AIMED: its kind, holds, second press and beat with no steer (the
  * tier's draws, his plan), the log and the gap; never the thumb's noise drawn for it (drift, slip, late let-go) nor the thumb's state now.
@@ -3122,11 +3147,18 @@ export class FirstTimerRun {
           const raceLegal = SKILLS.race && pacer && here.drift && here.drift.dir === dir && pacerOff(pacer, p.x, p.y);
           if (SKILLS.floatSure && raceLegal) {
             const vx = p.vx + (Math.abs(carry) < 400 ? carry : 0);
-            const h = this.aim.at(dir as -1 | 1, t, (d) => this.drawHop(d));
             const banks = this.sim.platforms.filter(bankIn);
             const logs = this.sim.platforms.filter((q) => q !== here && q.type === 'drift' && !q.broken && Math.abs(q.y - p.y) < 70 && Math.abs(q.x - here.x) < 600);
-            const onBank = banks.some((q) => this.gateSees(q, floatAt(rivers, q), p.x, p.y, dir as -1 | 1, h, t, vx, 24));
-            if (onBank || logs.some((q) => this.gateSees(q, floatAt(rivers, q), p.x, p.y, dir as -1 | 1, h, t, vx, RACE_MARGIN))) {
+            const seesBank = (c: DrawnHop) => banks.some((q) => this.gateSees(q, floatAt(rivers, q), p.x, p.y, dir as -1 | 1, c, t, vx, 24));
+            const sees = (c: DrawnHop) => seesBank(c) || logs.some((q) => this.gateSees(q, floatAt(rivers, q), p.x, p.y, dir as -1 | 1, c, t, vx, RACE_MARGIN));
+            // (E, the honest middle (the lead's ruling): he picks the smallest calibrated hop whose AIMED flight lands, from the tier's
+            //  tables with no noise, and only then is the thumb's noise drawn for it (drawHop at the press: its drift, slip and late let-go
+            //  flown, never read by the pick). A tier with no table keeps the held drawn aim (D'))
+            const cands = raceCandidates(who);
+            const pick = cands.length ? racePick(cands, sees) : null;
+            const h = cands.length ? (pick ? { ...pick, thumb: this.drawHop(dir as -1 | 1).thumb } : null) : this.aim.at(dir as -1 | 1, t, (d) => this.drawHop(d));
+            const onBank = !!h && seesBank(h);
+            if (h && (cands.length || onBank || sees(h))) {
               this.edgeWait = -1;
               if (HOP_TRACE.on) {
                 this.judged = null;

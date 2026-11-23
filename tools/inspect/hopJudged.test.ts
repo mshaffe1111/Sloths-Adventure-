@@ -13,7 +13,7 @@ import '../../src/game/headlessDom.ts';
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { homeRun } from './homeToys.ts';
-import { HOP_TRACE, WaitAim, gateLands, type DrawnHop, type HopRow, type ThumbAt } from './firsttimer.ts';
+import { HOP_TRACE, WaitAim, gateLands, racePick, type DrawnHop, type HopRow, type ThumbAt } from './firsttimer.ts';
 
 const DT = 1 / 30;
 const show = (r: HopRow) =>
@@ -87,4 +87,25 @@ test('a wait holds its aim: drawn once when the wait begins, never redrawn for a
   aim.end();
   for (let f = 30; f < 60; f++) aim.at(1, f * DT, draw);
   assert.equal(aim.draws, 2, 'the next wait draws once');
+});
+
+// (E, the honest middle (the lead's ruling, ENG-27v): at the race gate he picks the SMALLEST calibrated hop whose AIMED flight lands with
+//  RACE_MARGIN (50 px), and only then is the thumb's noise drawn and flown. The toy: a solid 40 px past his front; a 0.1 s single (the
+//  held draw, D') comes down short of the 50 px, a 0.3 s single lands with it, a 0.5 s single lands too. E presses the 0.3 s single; D'
+//  (the one drawn hop held: the short single) never presses. RED on the D' plant (racePick keeps the first candidate only), GREEN on E)
+test('the race gate presses the smallest calibrated hop whose aimed flight lands with the race margin (E, the honest middle, ENG-27v)', () => {
+  const q = { id: 1, x: 184, y: 500, width: 400, height: 20, type: 'solid' } as never;
+  const single = (hold: number): DrawnHop => ({ kind: 'single', hold, d2: -1, dblAt: 0, hold2: 0, upOnly: 0 });
+  const cands = [single(0.1), single(0.3), single(0.5)];
+  const lands = (h: DrawnHop) => gateLands(q, () => 184, 100, 500, 1, h, 0, 0, 50, 1e9);
+  assert.deepEqual(cands.map(lands), [false, true, true], 'the toy: the short single comes down short of the margin, the others land');
+  const pick = racePick(cands, lands);
+  assert.ok(pick, 'E rode on: no hop pressed though a calibrated hop lands with the margin (the held short draw decided)');
+  assert.equal(pick.hold, 0.3, 'E pressed a bigger hop than the smallest that lands');
+  // (no foresight: a slip drawn for the press does not change the pick, which reads the aim only)
+  const n = 75, z = (v: number) => Array<number>(n).fill(v);
+  const slipped = racePick(cands.map((c) => ({ ...c, thumb: { drift: z(0), slip: [24, ...z(-1).slice(1)], release: z(0) } })), lands);
+  assert.equal(slipped?.hold, 0.3, 'the pick read the thumb noise drawn for the press');
+  // (none lands: he rides on)
+  assert.equal(racePick([single(0.1)], lands), null, 'E pressed a hop whose aim does not land');
 });
