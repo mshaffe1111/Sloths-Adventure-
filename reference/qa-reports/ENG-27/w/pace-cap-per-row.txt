@@ -1,0 +1,7 @@
+home normal 1	boat 93.89	middle 87.75	rideOnly 101.75	under 2	slowest pace the cap allows 94.1%
+home normal 2	boat 92.37	middle 86.33	rideOnly 100.33	under 2	slowest pace the cap allows 93.9%
+home normal 3	boat 92.06	middle 86.04	rideOnly 100.04	under 2	slowest pace the cap allows 93.9%
+home easy 1	boat 97.53	middle 88.67	rideOnly 102.67	under 2	slowest pace the cap allows 96.9%
+home easy 3	boat 96.09	middle 87.35	rideOnly 101.35	under 2	slowest pace the cap allows 96.7%
+post normal 4	boat 100.76	middle 94.17	rideOnly 109.72	under 2	slowest pace the cap allows 93.5%
+post normal 5	boat 103.44	middle 96.67	rideOnly 112.22	under 2	slowest pace the cap allows 93.8%

@@ -1,0 +1,96 @@
+judge t 118.567 x 8256.03 y 1527.00 vx -80.0 q#69 h {"kind":"double","hold":0.2945699398567279,"d2":0.3901558110415935,"dblAt":-114.46312682470307,"hold2":0.4123984144044419,"upOnly":0} thumb {"last":0,"driftPx":30,"armed":true,"releaseLeft":0,"travel":-23.19733279758958,"slip":-45.966666666664054,"speed":320,"once":true} v2 540.0 others solid 7626..7946 y 1499 w 44
+f1 x 8250.5 y 1507.8 vx -167 vy -577 steer -1 held true p2 false
+f2 x 8243.0 y 1490.7 vx -223 vy -513 steer -1 held true p2 false
+f3 x 8233.7 y 1475.7 vx -280 vy -450 steer -1 held true p2 false
+f4 x 8224.2 y 1462.8 vx -285 vy -387 steer -1 held true p2 false
+f5 x 8215.3 y 1452.0 vx -268 vy -323 steer -1 held true p2 false
+f6 x 8205.8 y 1443.3 vx -285 vy -260 steer -1 held true p2 false
+f7 x 8196.9 y 1436.8 vx -268 vy -197 steer -1 held true p2 false
+f8 x 8187.4 y 1432.3 vx -285 vy -133 steer -1 held true p2 false
+f9 x 8178.4 y 1430.0 vx -268 vy -70 steer -1 held true p2 false
+f10 x 8168.9 y 1429.8 vx -285 vy -7 steer -1 held false p2 false
+f11 x 8160.0 y 1431.7 vx -268 vy 57 steer -1 held false p2 false
+f12 x 8150.5 y 1436.3 vx -285 vy 140 steer -1 held false p2 false
+f13 x 8141.6 y 1420.4 vx -268 vy -477 steer -1 held true p2 true
+f14 x 8132.1 y 1406.7 vx -285 vy -413 steer -1 held true p2 true
+f15 x 8123.2 y 1395.0 vx -268 vy -350 steer -1 held true p2 true
+f16 x 8113.7 y 1385.4 vx -285 vy -287 steer -1 held true p2 true
+f17 x 8104.7 y 1378.0 vx -268 vy -223 steer -1 held true p2 true
+f18 x 8095.2 y 1372.7 vx -285 vy -160 steer -1 held true p2 true
+f19 x 8086.3 y 1369.4 vx -268 vy -97 steer -1 held true p2 true
+f20 x 8076.8 y 1368.3 vx -285 vy -33 steer -1 held true p2 true
+f21 x 8067.9 y 1368.7 vx -268 vy 12 steer -1 held true p2 true
+f22 x 8058.4 y 1371.2 vx -285 vy 72 steer -1 held true p2 true
+f23 x 8049.5 y 1375.6 vx -268 vy 132 steer -1 held true p2 true
+f24 x 8040.0 y 1382.7 vx -285 vy 216 steer -1 held true p2 true
+f25 x 8031.1 y 1392.7 vx -268 vy 299 steer -1 held true p2 true
+f26 x 8021.6 y 1405.5 vx -285 vy 382 steer -1 held false p2 true
+f27 x 8012.6 y 1421.0 vx -268 vy 466 steer -1 held false p2 true
+f28 x 8003.1 y 1439.3 vx -285 vy 549 steer -1 held false p2 true
+f29 x 7994.2 y 1460.3 vx -268 vy 632 steer -1 held false p2 true
+f30 x 7984.7 y 1484.2 vx -285 vy 716 steer -1 held false p2 true
+f31 x 7975.8 y 1510.8 vx -268 vy 799 steer -1 held false p2 true
+f32 x 7966.3 y 1540.2 vx -285 vy 882 steer -1 held false p2 true
+--- engine, frames after the judgment
+e1 x 8247.8 y 1507.8 vx -167 vy -577 grounded false on -1 | #66 7626..7946 y 1499
+e2 x 8240.4 y 1490.7 vx -223 vy -513 grounded false on -1 | #66 7626..7946 y 1499
+e3 x 8231.0 y 1475.7 vx -280 vy -450 grounded false on -1 | #66 7626..7946 y 1499
+e4 x 8221.5 y 1462.8 vx -285 vy -387 grounded false on -1 | #66 7626..7946 y 1499
+e5 x 8212.6 y 1452.0 vx -268 vy -323 grounded false on -1 | #66 7626..7946 y 1499
+e6 x 8203.1 y 1443.3 vx -285 vy -260 grounded false on -1 | #66 7626..7946 y 1499
+e7 x 8194.2 y 1436.8 vx -268 vy -197 grounded false on -1 | #66 7626..7946 y 1499
+e8 x 8184.7 y 1432.3 vx -285 vy -133 grounded false on -1 | #66 7626..7946 y 1499
+e9 x 8175.8 y 1430.0 vx -268 vy -70 grounded false on -1 | #66 7626..7946 y 1499
+e10 x 8166.3 y 1429.8 vx -285 vy -7 grounded false on -1 | #66 7626..7946 y 1499
+e11 x 8157.3 y 1431.7 vx -268 vy 57 grounded false on -1 | #66 7626..7946 y 1499
+e12 x 8147.8 y 1436.3 vx -285 vy 140 grounded false on -1 | #66 7626..7946 y 1499
+e13 x 8138.9 y 1420.4 vx -268 vy -477 grounded false on -1 | #66 7626..7946 y 1499
+e14 x 8129.4 y 1406.7 vx -285 vy -413 grounded false on -1 | #66 7626..7946 y 1499
+e15 x 8120.5 y 1395.0 vx -268 vy -350 grounded false on -1 | #66 7626..7946 y 1499
+e16 x 8111.0 y 1385.4 vx -285 vy -287 grounded false on -1 | #66 7626..7946 y 1499
+e17 x 8102.1 y 1378.0 vx -268 vy -223 grounded false on -1 | #66 7626..7946 y 1499
+e18 x 8092.6 y 1372.7 vx -285 vy -160 grounded false on -1 | #66 7626..7946 y 1499
+e19 x 8083.7 y 1369.4 vx -268 vy -97 grounded false on -1 | #66 7626..7946 y 1499
+e20 x 8074.2 y 1368.3 vx -285 vy -33 grounded false on -1 | #66 7626..7946 y 1499
+e21 x 8065.2 y 1368.7 vx -268 vy 12 grounded false on -1 | #66 7626..7946 y 1499
+e22 x 8055.7 y 1371.2 vx -285 vy 72 grounded false on -1 | #66 7626..7946 y 1499
+e23 x 8046.8 y 1375.6 vx -268 vy 132 grounded false on -1 | #66 7626..7946 y 1499
+e24 x 8037.3 y 1379.7 vx -285 vy 125 grounded false on -1 | #66 7626..7946 y 1499
+e25 x 8028.4 y 1383.9 vx -268 vy 125 grounded false on -1 | #66 7626..7946 y 1499
+e26 x 8018.9 y 1390.8 vx -285 vy 208 grounded false on -1 | #66 7626..7946 y 1499
+e27 x 8010.0 y 1400.6 vx -268 vy 292 grounded false on -1 | #66 7626..7946 y 1499
+e28 x 8000.5 y 1413.1 vx -285 vy 375 grounded false on -1 | #66 7626..7946 y 1499
+e29 x 7991.5 y 1428.3 vx -268 vy 458 grounded false on -1 | #66 7626..7946 y 1499
+e30 x 7982.0 y 1446.4 vx -285 vy 542 grounded false on -1 | #66 7626..7946 y 1499
+e31 x 7973.1 y 1467.2 vx -268 vy 625 grounded false on -1 | #66 7626..7946 y 1499
+e32 x 7963.6 y 1490.8 vx -285 vy 708 grounded false on -1 | #66 7626..7946 y 1499
+e33 x 7952.0 y 1499.0 vx -268 vy 0 grounded true on 66 | #66 7626..7946 y 1499
+e34 x 7942.5 y 1499.0 vx -285 vy 0 grounded true on 66 | #66 7626..7946 y 1499
+e35 x 7936.8 y 1499.0 vx -172 vy 0 grounded true on 66 | #66 7626..7946 y 1499
+e36 x 7934.8 y 1499.0 vx -58 vy 0 grounded true on 66 | #66 7626..7946 y 1499
+e37 x 7934.8 y 1499.0 vx 0 vy 0 grounded true on 66 | #66 7626..7946 y 1499
+e38 x 7934.8 y 1499.0 vx 0 vy 0 grounded true on 66 | #66 7626..7946 y 1499
+e39 x 7934.8 y 1499.0 vx 0 vy 0 grounded true on 66 | #66 7626..7946 y 1499
+e40 x 7934.8 y 1499.0 vx 0 vy 0 grounded true on 66 | #66 7626..7946 y 1499
+e41 x 7934.8 y 1499.0 vx 0 vy 0 grounded true on 66 | #66 7626..7946 y 1499
+e42 x 7934.8 y 1499.0 vx 0 vy 0 grounded true on 66 | #66 7626..7946 y 1499
+e43 x 7931.9 y 1499.0 vx -87 vy 0 grounded true on 66 | #66 7626..7946 y 1499
+e44 x 7926.2 y 1499.0 vx -173 vy 0 grounded true on 66 | #66 7626..7946 y 1499
+e45 x 7917.5 y 1499.0 vx -260 vy 0 grounded true on 66 | #66 7626..7946 y 1499
+e46 x 7908.0 y 1499.0 vx -285 vy 0 grounded true on 66 | #66 7626..7946 y 1499
+e47 x 7899.1 y 1499.0 vx -268 vy 0 grounded true on 66 | #66 7626..7946 y 1499
+e48 x 7889.6 y 1499.0 vx -285 vy 0 grounded true on 66 | #66 7626..7946 y 1499
+e49 x 7880.7 y 1499.0 vx -268 vy 0 grounded true on 66 | #66 7626..7946 y 1499
+e50 x 7871.2 y 1499.0 vx -285 vy 0 grounded true on 66 | #66 7626..7946 y 1499
+e51 x 7862.2 y 1499.0 vx -268 vy 0 grounded true on 66 | #66 7626..7946 y 1499
+e52 x 7852.7 y 1499.0 vx -285 vy 0 grounded true on 66 | #66 7626..7946 y 1499
+e53 x 7843.8 y 1499.0 vx -268 vy 0 grounded true on 66 | #66 7626..7946 y 1499
+e54 x 7834.3 y 1499.0 vx -285 vy 0 grounded true on 66 | #66 7626..7946 y 1499
+e55 x 7825.4 y 1499.0 vx -268 vy 0 grounded true on 66 | #66 7626..7946 y 1499
+e56 x 7815.9 y 1499.0 vx -285 vy 0 grounded true on 66 | #66 7626..7946 y 1499
+e57 x 7807.0 y 1499.0 vx -268 vy 0 grounded true on 66 | #66 7626..7946 y 1499
+e58 x 7797.5 y 1499.0 vx -285 vy 0 grounded true on 66 | #66 7626..7946 y 1499
+e59 x 7788.5 y 1499.0 vx -268 vy 0 grounded true on 66 | #66 7626..7946 y 1499
+e60 x 7779.0 y 1499.0 vx -285 vy 0 grounded true on 66 | #66 7626..7946 y 1499
+e61 x 7770.1 y 1499.0 vx -268 vy 0 grounded true on 66 | #66 7626..7946 y 1499
+{"site":"race","q":69,"t":118.5666666666625,"x":8256.033333333477,"hold":0.2945699398567279,"lag":0,"kind":"double","flown":{"t":118.5666666666625,"x":8256.033333333477,"hold":0.2945699398567279,"kind":"double"},"landed":66,"landedType":"solid"}

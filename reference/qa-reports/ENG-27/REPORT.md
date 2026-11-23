@@ -1,3 +1,171 @@
+# ENG-27w REPORT (start 11:35 AM ET by `date`; base t-eng-27-wip-27v 8861ae80b; on t-eng-27-wip-27w: E as ruled daf9ca777 (D117), NOT on t-eng-27)
+## EXACT NEXT STEP (read only this section, D90)
+**THE LEAD'S RULINGS (received):** pace Normal 81%; the cap (a): the principle stays (riding alone never wins, by 2 s or more), measured
+on the ride-only bot end to end on every race, both settings (D121); then Easy 90% (below); post N4's bank waits are a bot follow-up.
+**SET on d794dcda1:** RACE_PACE { normal 0.81, easy 0.9 } (w2.ts); W2_RACE.margin = 1.07/0.81 - 1, 1.10/0.90 - 1; pacerLay seconds =
+middle x (1 + share), the flown ride-only cap gone; pacerFaults keeps 'over the careful middle'; pacerLay.test flies the ride-only bot on
+home seeds 1-3 and post seeds 4-5, both settings, each lost by `under` (2 s) or more. **Flown first:** Normal 72 / 81% PASS (expert 5/5,
+smallest +3.8; middle 6/7; ride-only 0/7, closest -3.4; w/cell-72-81-flown-runtime.tsv; the set head reproduces it within 0.1 s,
+w/set-vs-runtime-81.md). **Easy at 81% FAILED the principle** (found by pacerLay's end-to-end test on races the grid did not have: the
+ride-only bot rides home Easy 2 in 112.8 s and post Easy 5 in 124.2 s and WINS both; plant RED at 0.80, w/pacerLay-rideonly-RED-plant-
+pace080.txt). **Easy 90% flown: PASS** (middle wins all 5 Easy races +15.8..+22.0 s; ride-only loses all 5 by 4.6 s or more;
+w/easy-90-flown.tsv); 88% fails (post Easy 5 ride-only -1.9 s, w/easy-88-flown.tsv).
+**THE GATES on frozen d794dcda1 (w/suite-d794dcda1-*.txt):** tsc PASS. Unit 4064: 4059 pass, 2 FAIL, 3 todo. The 2 fails are pacerLay's
+planted bots' RED halves, PRE-EXISTING (red on base daf9ca777 with the same messages, w/pacerLay-base-daf9ca777.txt; red since bf92d3daf):
+boardLog's plant (off the skill the middle WINS home Easy 1, base 86.6 s vs 97.53) and raceSure's (off the skill no fall at x 10683): their
+plants stopped biting once E's gate decided the race hops; they need re-planting on their causes (the ENG-27j rule; a bot packet). pacerLay
+otherwise all green: base's 'middle beats it, Normal 3' and 'post Normal 4' reds are GREEN at the set pace; the 10 ride-only races GREEN.
+CI tool line (345): 331 pass, 13 fail, 1 todo. 12 fails PRE-EXISTING, the same on base daf9ca777 (w/wheelChannel-base-daf9ca777.txt,
+w/ci-others-base-daf9ca777.txt): wheelChannel x4 ('World 2 finish: the fall at x=335-731 has no bank at one end'), wheelRide x2,
+riverRide x4, seedlist x1, firsttimer x1 (2-2 lip). ONE NEW: pacerRespawn home ('a fall never pays': expert N4 x 8346 +0.07 s, over the
+2-frame tolerance; GREEN on base). TRACED (w/fall-8346-trace.txt): the test's READ, not a pay: it paired the margin of the frame before the
+life was lost (x 8354.9) with the life-lost frame's x (8346.0) and read 'back' at x 8338.1, 16.8 px of ordinary running gain, which a slower
+boat turns into more boat-seconds (the same falls +0.05/+0.05/+0.01 at full pace, +0.07/+0.06/+0.02 at 81%: x 1/0.81); the engine held him
+to 19.400 s exactly at x 8350.3. FIX 288e8daa8 (the test only; tolerance and principle unchanged): the fall's x and margin from one frame,
+the engine's hold point. **GREEN on frozen 288e8daa8 (home, post); RED on the plant with the strict hold OFF (home 6 of 39 falls pay, post
+4 of 47)** (w/pacerRespawn-GREEN-288e8daa8.txt, w/pacerRespawn-RED-plant-holdoff.txt). The lead's condition met; landed (below). lockall not run: W2_RACE / RACE_PACE are read only by the
+2-7 toy (toyHome.ts); no listed stage lays a pacer.
+NEXT: merge t-eng-27-wip-27w into t-eng-27 (only report/evidence commits there since the fork; REPORT.md: take ours, it holds t-eng-27's
+text whole below ENG-27u's heading), push, send the hash.
+**Follow-up (bot, not tonight):** post N4's middle stands ~55 s on banks before unjudged boarding presses (item 5): the middle's one loss
+at every pace (-27.6 s at 81%).
+1. **E as ruled (shortest aimed flight by airtime; ties: smaller hold) built, moves NO race row** (daf9ca777; toy RED on kind-then-hold,
+   GREEN). The expert's 0.70 s glide single IS the quickest safe flight (0.83-0.90 s vs the double's 0.90-0.93 s; 0 of 412 decisions
+   differ, w/racepick-airtimes-expert.txt); the 19 rows at (72, 100%) equal E+J's to the tenth.
+2. **The gap is the wrong knob: smaller = harder** (100%: middle 5/7 at 72, 3/7 at 64 and 60). **56 does not lay** (riverLay: under
+   60 px between logs, w/gap56-does-not-lay.txt); 60 stood in. Read from the rows: the bot is slower (N1 at 64: 124 s vs 86 s).
+3. **Pace is the knob.** (72, 80%) passed the pick rule; (72, 85%) missed by one row (expert N3 -1.6 s). Pace moves only the boat's clock
+   (lives identical), so margin = boat/pace - him, within 0.64 s of every flown cell: the rule's window ~78.8-82.2% (w/pace-window.txt).
+4. **The cap (ruled (a), set):** a pace under ~94% Normal / ~97% Easy broke the lay's flown ride-only cap (w/pace-cap-per-row.txt), while
+   the ride-only BOT still lost: the flown ride-only rate (87-104 px/s) rides far faster than the bot. Its measure is now the bot's.
+5. **post N4's -51.1 s, traced once (E+J, middle; w/trace-postN4-middle-EJ.txt): about 55 s standing on river banks** (#47 11 s, #57
+   10 s, #78 17 s, #72 5 s, #84 5 s), each ended by an UNJUDGED press (the bank-to-log boarding, outside E's race gate and edgeWait); 12
+   race presses, 0 falls from them. His margin was +2.8 s before the first bank wait. It stays the middle's one loss at every pace.
+
+## The grid, key rows (all 12 cells + 81%: w/grid-table.md; tool w/table-27w.mts.txt; rows w/grid-rows-daf9ca777.tsv)
+Ew = E as ruled (daf9ca777); EJ = E+J (8861ae80b); pace = the laid boat's seconds / pace. Margins = boat - him (s). Rows: middle N1 N2 N3
+E1 E3 pN4 pN5; expert N1 N2 N3 pN4 pN5; ride-only as the middle. Every run reached the shrine; every row laid the gap set.
+| bot | gap / pace | middle | middle margins | expert | expert margins | ride-only (closest) | smallest win | pick rule |
+|---|---|---|---|---|---|---|---|---|
+| EJ | 72 / 100 | 5/7 | +7.6 +6.7 -7.5 +11.1 +10.9 -51.1 +5.6 | 2/5 | +14.2 -3.7 -17.8 +6.2 -14.8 | 0/7 (-26.3) | 5.6 | fail |
+| Ew | 72 / 100 | 5/7 | +7.6 +6.7 -7.5 +11.1 +10.9 -51.1 +5.6 | 2/5 | +14.2 -3.7 -17.8 +6.2 -14.8 | 0/7 (-26.3) | 5.6 | fail |
+| Ew | 72 / 85 | 6/7 | +24.2 +23.0 +8.6 +28.3 +27.8 -33.5 +23.8 | 4/5 | +30.8 +12.6 -1.6 +23.9 +3.5 | 0/7 (-9.1) | 3.5 | fail (1 row) |
+| **Ew** | **72 / 80** | **6/7** | +31.1 +29.8 +15.4 +35.5 +34.9 -26.0 +31.4 | **5/5** | +37.7 +19.4 +5.2 +31.4 +11.1 | **0/7 (-1.9)** | **5.2** | **PASS (the pick)** |
+| Ew | 64 / 100 | 3/7 | -32.2 -3.1 -15.3 +7.8 +8.2 +6.9 -16.0 | 1/5 | -8.8 -17.7 -2.6 +14.6 -2.4 | 0/7 (-30.5) | 6.9 | fail |
+| Ew | 60 / 100 | 3/7 | -47.0 +1.9 -15.2 +19.0 +15.1 -15.5 -15.5 | 2/5 | +5.1 -19.9 +13.4 -11.1 -25.4 | 0/7 (-20.4) | 1.9 | fail |
+Lives lost (race leg) m / e / r: gap 72: 12 (8) / 9 (5) / 11 (7); 64: 15 (11) / 5 (1) / 19 (15); 60: 15 (11) / 8 (4) / 17 (13).
+
+## Polish check / Pushback / Suggestions / Unresolved / Method / Turnover
+No screen changed (bot code, data, tests). Pushback held: E's ruled order moves no row; the gap knob hurts (56 does not lay); 81% failed on
+Easy (the end-to-end test caught it, D121). Suggestion (bot packet, BOTS lane): the bank-to-log boarding wait (post N4, ~55 s) judged by
+E's pick, planted on post N4. Unresolved: the gates' verdict on d794dcda1 at this commit (above). Method (level.md / dispatch-packet.md):
+a grid of design numbers flies EVERY race the end-to-end test flies (both settings, home and post), not a sample: 81% passed 19 rows and
+failed two Easy races outside them. Lessons applied: D111, D113, D115, D117, D121, D123, D126. Turnover: engine-core.md §0zq-27w.
+
+# ENG-27v REPORT (start 11:12 AM ET by `date`; box 11:40 AM ET; base t-eng-27-wip-27u a069e911c; on t-eng-27-wip-27v: E b20128270, D's judge d2bd53f61 (D117), NOT on t-eng-27)
+## EXACT NEXT STEP (the next 2-7 job, lane 1, when a slot frees; read only this section, D90)
+**THE LEAD'S RACE CALL (received in my box, on the table below; verbatim in substance):**
+(1) **E+J (d2bd53f61) is the bot.** It is the honest gate: it decides on the hop as aimed and its judge flies the leaf the engine flies. A, which
+wins more, is not honest, so its wins do not count. The race is judged on E+J from here.
+(2) **The race is fixed by design numbers, not by more bot work.** With honest bots the expert wins only 2/5, so the race is too tight as it
+stands. The next 2-7 job does three things in order: (a) lands E+J with its gates; (b) measures a small grid of the 72 px gap (72/64/56) and
+the boats' pace (100/90/80%); (c) the lead picks the smallest change where the expert wins 5/5, the middle wins at least 6/7 on Normal and every
+Easy race, ride-only still loses 7/7, and every win has 2 s or more to spare. The gap is the first knob (it helps hopping, not riding).
+post N4 at -51.1 s gets traced in that job.
+**Gaps the next job inherits (named plainly):** the base suite on frozen a069e911c is PENDING (item 3 below); the judge's 2.7 px take-off
+offset (one frame of the log's carry) is named, not fixed (Done-items 2b); E+J's ride-only rows were not run; castBots / tierBots,
+pacerLay and pacerRespawn on E+J were not run. **One flag sent after the call (it crossed the ruling):** E+J's expert losses come from its
+0.70 s glide single being picked before the doubles (item 2 below); the lead may want that read before the grid, since it is E's order, not
+the race, that moves those rows.
+1. (Before the ruling) **The lead rules the race** on the A / D' / E table below (the boats' pace or the 72 px gap, river.ts:189-190). No race tuning was done here.
+2. **Two E candidates, both on t-eng-27-wip-27v:** E = b20128270 (E's gate alone); E+J = d2bd53f61 (E plus D's judge fix: the judge AND the gate now
+   fly the Leaf Glide the engine flies). E+J is the honest one (the gate sees what the engine flies; hopJudged 4/4 GREEN), but it moves the expert
+   rows: expert 5/5 on E, 2/5 on E+J. **WHY (read from the rows' hop kinds, not traced frame by frame):** with the leaf in the gate, the
+   expert's 0.70 s single (its holdQ's top quantile) now glides far enough to land with the margin, and E's order puts every single before
+   any double, so the gate picks it over the 0.18 s double: expert race presses at 0.70 s on E+J / on E: home N1 5/0, N2 9/0, N3 5/0, post N4
+   4/0, N5 7/0 (doubles fall from 7-11 a run to 2-4). **A ruling on E's definition, not a race tune:** "smallest" as kind-then-hold (built) or as
+   the shortest aimed flight (airtime to landing; a held glide is long). The lead rules; then re-table the expert.
+3. **The suite on frozen a069e911c: PENDING (named plainly).** tsc PASS; the unit stage had 1247 results, 0 not ok, at hand-over, still running (as in
+   ENG-27u's box, pacerLay's file had not reported); the CI tool line runs after it in the same script and has NOT run. Log in my container:
+   scratchpad/base-suite.log (+ .unit, .ci). The next member re-runs it if the lead wants the verdict; known reds expected: pacerLay's nine.
+4. Not done (the lead's hard box cut it): castBots / tierBots on E or E+J; pacerLay and pacerRespawn on E or E+J; a real-engine invariant that the
+   judge's leaf matches the engine on every judged hop (hopJudged covers it on middle only, D121's form for the expert is open).
+
+## The table (frozen trees; 2-7 out-and-back toy; the boats' pace and the 72 px gap as they stand on a069e911c; tool v/table-27v.mts.txt)
+A = b7a68a8bd's bot (ungated) on a069e911c's game (a069e911c with b7a68a8bd's tools/inspect/firsttimer.ts); D' = a069e911c (one drawn aim held);
+E = b20128270; E+J = d2bd53f61. Rows: home N1 N2 N3, home E1 E3, post N4 N5 (expert: Normal only, the tier has no Easy bot: 6 'no expert bot
+on easy' rows, by design). Margin = boat - him, s (+ = he won). Every run reached the shrine: NO stuck spot on any row.
+| tier | bot | won | margins per row | lives lost (on the race leg) |
+|---|---|---|---|---|
+| middle | A | 5/7 | +3.7 -2.5 -0.3 +9.4 +11.8 +9.2 +1.3 | 26 (20) |
+| middle | D' | 0/7 | -38.9 -27.0 -48.3 -4.8 -4.2 -27.1 -47.0 | 9 (5) |
+| middle | E | 5/7 | +7.6 +6.7 -7.5 +16.7 +17.7 -51.1 +5.6 | 15 (11) |
+| middle | E+J | 5/7 | +7.6 +6.7 -7.5 +11.1 +10.9 -51.1 +5.6 | 12 (9) |
+| expert | A | 5/5 | +22.9 +4.5 +9.0 +12.8 +9.8 | 12 (12) |
+| expert | D' | 0/5 | -32.8 -19.2 -33.1 -17.4 -22.1 | 10 (5) |
+| expert | E | 5/5 | +3.7 +5.4 +0.7 +2.4 +2.5 | 11 (6) |
+| expert | E+J | 2/5 | +14.2 -3.7 -17.8 +6.2 -14.8 | 10 (5) |
+| ride-only | A | 0/7 | -24.3 -21.1 -15.7 -12.9 -7.1 -25.7 -28.5 | 18 (12) |
+| ride-only | D' = E | 0/7 | -36.6 -46.3 -49.5 -26.3 -28.7 -72.5 -80.6 | 11 (7) |
+(ride-only is SKILLS.race off: E's gate never runs, so D' and E are the same rows, measured on both; A's ride differs: its older bot. E+J's
+ride-only rows not run: the leaf changes only judged hops, and ride-only judges none at the race gate (UNVERIFIED by a run).)
+**Wins and losses, read plainly:** D' (one drawn hop held) loses every race: it waits for a lucky draw and rides logs in. E wins the middle
+5/7 with fewer lives than A (15 vs 26; race-leg falls 11 vs 20) and the expert 5/5 by thin margins (+0.7 to +5.4 s). E's two middle losses:
+home N3 (-7.5 s: 4 race-leg falls, three at x 7009-7183, one spot) and post N4 (-51.1 s: 2 race-leg falls at x 11189, 7278; the outlier, not traced).
+E+J: middle the same on Normal, Easy rows 0 lives lost (were 1 and 2); expert 2/5. Every race press on every bot: 0 falls per press (the
+race-leg falls come from other hops). Raw rows: v/table-E-Dp-A-b20128270.txt, v/e2-hopJudged-and-table-d2bd53f61.txt; summary v/table-summary-b20128270.txt.
+
+## Done-items
+- **0. The suite on frozen a069e911c:** started first in the background (timeout 7200000) on a chattr-frozen tree; tsc PASS; unit 1247 results 0
+  not ok so far; NOT finished at hand-over: PENDING (above). The CI tool line is read from the tree's own gates.yml (line 157 at a069e911c).
+- **1. E toy first (b20128270):** tools/inspect/firsttimer.ts raceCandidates (the tier's holdQ singles at its 5 quantiles, then, if it presses
+  doubles, a double at each dbl2Q quantile, first press the median hold cut a frame short of d2; no noise; smallest first) and racePick (the
+  first whose AIMED flight lands, gateLands, no thumb). The race gate (firsttimer.ts ~3150) picks with them, then draws the hop (drawHop at the
+  press) only for its thumb noise, which is flown, never read. A tier with no holdQ keeps D' (the held drawn aim). Toy in hopJudged.test.ts: a
+  solid 40 px past his front, singles 0.1 / 0.3 / 0.5 s (0.1 short of the 50 px margin, the others land): E presses the 0.3 s; a slip drawn
+  for the press does not change the pick; none landing -> null. **RED on the D' plant** (racePick keeps only the one held draw: 'E rode on',
+  v/toyE-RED-plantDprime.txt), **GREEN on E** (with the no-foresight and held-aim toys, 3/3, v/toyE-GREEN.txt). Not RED on a069e911c itself:
+  racePick does not exist there and a missing export would fake a red, so the plant is the RED (ENG-27u's rule).
+- **2. D's judge flies what the engine flies (d2bd53f61):** ENG-27q's hop flown frame by frame beside the engine on its own tree (b0c6dd586,
+  scratch hooks, v/hf27v.mts.txt -> v/hf-n2-8256.txt). Two differences, both the judge's: (a) **the Leaf Glide**: at frames 24-25 (jump still
+  held after the second press, falling 0.1 s) the engine braked his fall to 125 px/s (glide.ts) and the judge did not; the engine came down
+  2 frames later, at x 7952, 6 px past bank #66's end, inside the side catch; the judge crossed y 1499 at x 7976, 30 px past, onto log #69.
+  (b) a constant 2.7 px from the first frame: the engine starts one frame of the log's carry (80 px/s) further on; NOT fixed (box), named for
+  the next judge change. FIX: hopFlies flies the leaf as engine.ts does (after gravity, before the move; FlightOthers.glide from the run's
+  skills); judge() also names where the engine's side catch takes the flown draw when nothing lands with the gate's margin (the 24/50 px are
+  the decision's, not the physics). The replay (v/replay27v.ts.txt): no leaf, #66 missed; leaf, #66 caught, as the engine did.
+  **hopJudged 4/4 GREEN on d2bd53f61** (v/hopJudged-GREEN-d2bd53f61.txt: 0 unjudged, 0 flown wrong, 0 came down elsewhere on all four).
+  **RED without the fix** on E b20128270 (v/hopJudged-RED-nojudgefix-b20128270.txt): Easy 2 `edgeWait q#-2 judged t 27.70 x 15087 ... double |
+  came down #14 drift`, the very row ENG-27u's packet named (Easy 2 x 15087).
+- **3. The table:** above. **4.** Sent to the lead with both hashes. 2-7 is not laid on a list in this work (no castBots yield owed, D125).
+
+## Polish check
+No screen changed (bot code, a test, evidence). Nothing drawn to look at.
+
+## Pushback
+- The packet's READ LEAN path `origin/t-eng-27-wip-27u:REPORT.md` holds no ENG-27u section; ENG-27u's report is on origin/t-eng-27 (cf7428424).
+  Read there. (A packet pointer, not a blocker.)
+- E+J is the honest candidate but costs the expert 3 races: the leaf the gate now sees changes the expert's picks. The race call should be
+  made knowing that, or on E+J's rows once the expert change is traced.
+
+## Suggestions
+- The judge's 2.7 px take-off carry (2b above): one more line in hopFlies (start x + the float's carry for one frame when he stands on a
+  moving float), checked by the same side-by-side trace; then hopJudged on the expert too (a test packet: tools/inspect/hopJudged.test.ts).
+
+## Unresolved
+- The base suite's verdict (pending). The expert on E+J: read from hop kinds (the 0.70 s glide single picked before the doubles), not traced frame by frame. E's post N4 -51.1 s (not traced).
+
+## Lessons applied
+D111 (box by the clock, real context low), D113 (no foreground waits: every run in the background, notified), D114/D126 (the suite and the
+CI line first, on the base), D115 (every run on a chattr-frozen tree, edits only in w27v), D117 (candidates on wip-27v only), D119 (no heredoc
+in a commit chain: files written first), D120 (the lead's box message read and followed, no stop to wait), D121 (the judge fix checked on the
+real engine, hopJudged, not only the replay), D122/D123 (7200000 timeouts, two heavy runs at most).
+
+## Turnover note
+Trees in my container (gone with it): /home/user/base27u (a069e911c, frozen, the suite), /home/user/e27v (E), /home/user/e2 (E+J),
+/home/user/a27v (A's bot on the base game), /home/user/d27q (b0c6dd586 + scratch trace hooks, never pushed). Tools kept: v/table-27v.mts.txt
+(a row: tsx table-27v.mts <tree> <label> <middle|expert|ride> <home|post> <normal|easy> <seed>), v/hf27v.mts.txt (the side-by-side trace).
+
 # ENG-27u REPORT (start 9:11 PM ET by `date`; box 9:39 PM ET; base t-eng-27-wip-27t 7559289ca; on t-eng-27-wip-27u: the :71 rewrite 59f56e6a0, the iris assert 9eea72323 + 767ef6023 (D117), evidence a069e911c, NOT on t-eng-27)
 ## EXACT NEXT STEP (the next engine member when release-4 work resumes; no successor tonight: the weekly limit. Read only this section, D90)
 **(1) The strict hold's three closing checks: (a) DONE, (b) DONE (a finding, ruled R-165.388), (c) NOT FINISHED in my box: re-run it first.**

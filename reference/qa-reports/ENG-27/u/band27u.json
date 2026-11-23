@@ -1,0 +1,62 @@
+[
+ {
+  "id": "2-97",
+  "at": "far",
+  "W": null,
+  "keys": {},
+  "cam": {
+   "viewportWidth": 1199.2718446601941
+  },
+  "camX": 18907,
+  "viewW": 1199.2718446601941,
+  "viewR": 20106,
+  "right": 20066,
+  "px": 20006,
+  "file": "/tmp/claude-0/-home-user-Sloths-Adventure-/bc7a0058-b16a-58f1-b3e5-1e0d4d1dd3cd/scratchpad/band/band-2-97-far-sideways.png"
+ },
+ {
+  "id": "2-97",
+  "at": "farLow",
+  "W": null,
+  "keys": {},
+  "cam": {
+   "viewportWidth": 1199.2718446601941
+  },
+  "camX": 18907,
+  "viewW": 1199.2718446601941,
+  "viewR": 20106,
+  "right": 20066,
+  "px": 20006,
+  "file": "/tmp/claude-0/-home-user-Sloths-Adventure-/bc7a0058-b16a-58f1-b3e5-1e0d4d1dd3cd/scratchpad/band/band-2-97-farLow-sideways.png"
+ },
+ {
+  "id": "2-7",
+  "at": "far",
+  "W": null,
+  "keys": {},
+  "cam": {
+   "viewportWidth": 1199.2718446601941
+  },
+  "camX": 29127,
+  "viewW": 1199.2718446601941,
+  "viewR": 30326,
+  "right": 30306,
+  "px": 30246,
+  "file": "/tmp/claude-0/-home-user-Sloths-Adventure-/bc7a0058-b16a-58f1-b3e5-1e0d4d1dd3cd/scratchpad/band/band-2-7-far-sideways.png"
+ },
+ {
+  "id": "2-7",
+  "at": "farLow",
+  "W": null,
+  "keys": {},
+  "cam": {
+   "viewportWidth": 1199.2718446601941
+  },
+  "camX": 29127,
+  "viewW": 1199.2718446601941,
+  "viewR": 30326,
+  "right": 30306,
+  "px": 30246,
+  "file": "/tmp/claude-0/-home-user-Sloths-Adventure-/bc7a0058-b16a-58f1-b3e5-1e0d4d1dd3cd/scratchpad/band/band-2-7-farLow-sideways.png"
+ }
+]

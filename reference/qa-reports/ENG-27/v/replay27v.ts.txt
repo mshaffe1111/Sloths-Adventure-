@@ -1,0 +1,6 @@
+import '../../src/game/headlessDom.ts';
+import { hopFlies } from './firsttimer.ts';
+const b66 = { id: 66, x: 7626, y: 1499, width: 320, height: 20, type: 'solid' } as never;
+const h = { kind: 'double' as const, hold: 0.2945699398567279, d2: 0.3901558110415935, dblAt: -114.46312682470307, hold2: 0.4123984144044419, upOnly: 0 };
+for (const glide of [false, true]) { const fo = { list: [b66], at: () => () => 7626, w: 44, easy: false, assist: 0, land: 0, glide };
+  console.log('glide', glide, 'lands on #66 within the side catch (margin -11.44):', hopFlies(b66, () => 7626, 8256.03, 1527, -1, h, 0, -80, -0.26 * 44, 540, undefined, fo)); }

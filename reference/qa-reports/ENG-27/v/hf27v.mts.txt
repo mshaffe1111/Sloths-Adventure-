@@ -1,0 +1,12 @@
+const tree = process.argv[2];
+await import(`${tree}/src/game/headlessDom.ts`);
+const { homeRun } = await import(`${tree}/tools/inspect/homeToys.ts`);
+const { HOP_TRACE } = await import(`${tree}/tools/inspect/firsttimer.ts`);
+const G = globalThis as any; G.__HFAT = Number(process.argv[3] ?? 8256);
+HOP_TRACE.on = true; HOP_TRACE.rows.length = 0;
+let k = -1; const eng: string[] = [];
+homeRun('middle', 'normal', 2, 1, { onFrame: (sim: any) => { if (!G.__HFSAVED) return; if (k < 0) k = 0; if (k++ > 60) return; const p = sim.p;
+  const q66 = sim.platforms.find((o: any) => o.id === 66);
+  eng.push(`e${k} x ${p.x.toFixed(1)} y ${p.y.toFixed(1)} vx ${p.vx.toFixed(0)} vy ${p.vy.toFixed(0)} grounded ${p.grounded} on ${sim.standingOn} | #66 ${q66?.x.toFixed(0)}..${(q66?.x + q66?.width).toFixed(0)} y ${q66?.y}`); } } as never);
+console.log((G.__HFSAVED ?? ['no judged flight saved']).join('\n')); console.log('--- engine, frames after the judgment'); console.log(eng.join('\n'));
+console.log(HOP_TRACE.rows.filter((r: any) => Math.abs(r.x - G.__HFAT) < 2).map((r: any) => JSON.stringify(r)).join('\n'));

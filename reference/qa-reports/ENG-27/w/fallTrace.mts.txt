@@ -1,0 +1,23 @@
+// one fall end to end (ENG-27w): expert home Normal 4, the fall near x 8346: the engine's hold (x, m) against the test's read (x at the
+// lives-drop frame, m the frame before; back = the first grounded frame at or past that x, standing)
+const [tree] = process.argv.slice(2);
+await import(`${tree}/src/game/headlessDom.ts`);
+const { homeRun } = await import(`${tree}/tools/inspect/homeToys.ts`);
+const { pacerMargin } = await import(`${tree}/src/game/pacer.ts`);
+let piece: any, lives: number | undefined, mLast: number | null = null, f = 0, fall: any = null, holdSeen: any = null;
+const rows: string[] = [];
+homeRun('expert' as never, 'normal' as never, 4, 1, { onFrame: (sim: any) => {
+  f++; const e = sim.e, p = e.player;
+  piece ??= e.pieces.find((q: any) => q.kind === 'pacer'); if (!piece) return;
+  const P = piece.pacer;
+  const m = piece.clock === null || piece.verdict ? null : pacerMargin(P, p.x, piece.clock + (piece.owed ?? 0));
+  const fell = lives !== undefined && e.lives < lives;
+  if (fell && mLast !== null && Math.abs(p.x - 8346) < 40) { fall = { f, x: p.x, m: mLast, lastX: piece.lastX }; rows.push(`FALL frame ${f}: test x ${p.x.toFixed(1)} m(frame before) ${mLast.toFixed(3)}; engine hold x(lastX) ${piece.lastX.toFixed(1)} m ${piece.margin.toFixed(3)}; holds ${JSON.stringify(piece.holds.map((h: any) => [Math.round(h.x * 10) / 10, Math.round(h.m * 1000) / 1000]))}`); }
+  if (fall && !fall.done && f > fall.f + 2 && m !== null) {
+    const pastHold = (p.x - fall.lastX) * P.dir >= 0, pastTest = (p.x - fall.x) * P.dir >= 0;
+    if ((pastHold || pastTest) && !e.down && rows.length < 16) rows.push(`frame ${f}: x ${p.x.toFixed(1)} grounded ${p.grounded} down ${!!e.down} margin ${m.toFixed(3)} owed ${(piece.owed ?? 0).toFixed(3)} holds ${piece.holds.length} pastHold ${pastHold} pastTest ${pastTest}`);
+    if (pastTest && p.grounded && !e.down) fall.done = true;
+  }
+  mLast = m; lives = e.lives;
+} } as never);
+console.log(rows.join('\n'));

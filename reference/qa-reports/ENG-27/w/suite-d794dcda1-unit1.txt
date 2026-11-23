@@ -1,0 +1,9 @@
+not ok 800 - bot (planted): a log drifting his way, still mostly under the lip, is boarded by a hop, so the careful middle player wins home Easy seed 1; RED without it
+not ok 801 - bot (planted): the racing hop off a log lands where it was judged to, so the bank 28 px up is reached, not fallen short of; RED without it
+# tests 2071
+# pass 2068
+# fail 2
+# cancelled 0
+# skipped 0
+# todo 1
+UNIT EXIT 1

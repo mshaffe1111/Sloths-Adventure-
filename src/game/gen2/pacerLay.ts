@@ -9,8 +9,8 @@
  * crossings, as they were flown. A leg with no two such rivers is refused by name, and its box at both ends is checked over one river's
  * water (pacerShoreFaults). Its time is the design's rule, from the wait to the dock on the laid leg:
  *   the careful middle's time = each river on the leg crossed at its row's flown rate (with `crossingBank` px of bank) + the rest of the
- *   leg at the bank rate; the pacer's = that x (1 + the setting's share), and never more than the ride-only time (the same, at the ride-only
- *   rates) less `under`. A river's row is found by what it is (its current's speed and its logs' length, the world's river rows): a
+ *   leg at the bank rate; the pacer's = that x (1 + the setting's share). The ride-only time (the same, at the ride-only rates) is laid
+ *   for the record only: the ride-only bound is measured on the ride-only bot (pacerLay.test; the lead's ruling, ENG-27w). A river's row is found by what it is (its current's speed and its logs' length, the world's river rows): a
  *   river no flown row matches, or two with different rates, is refused by name, as is a stage with no race leg or no fair race.
  * No stage id, world number, seed or x.
  */
@@ -79,12 +79,12 @@ export function layPacer(st: Gen2Stage, table: PacerRow, rows: Readonly<Record<s
   }
   if (problems.length) return { problems };
   const middle = tMid, rideOnly = tRide;
-  const seconds = Math.min(middle * (1 + (easy ? table.margin.easy : table.margin.normal)), rideOnly - table.under);
+  const seconds = middle * (1 + (easy ? table.margin.easy : table.margin.normal));
   const R = (v: number) => Math.round(v * 100) / 100;
   const yMin = race.y0 - ON_LEG;
   // (its lane: the lowest surface of the water it is seen on, the river it waits over included (pacerDraw.ts pacerWaters keeps no river
   //  lower than the lane; a wait river lower than the rest was left out and the waiting boat not drawn, ENG-27e, home seed 6))
   const lane = Math.max(first.surfaceY, ...rivers.map((r) => r.surfaceY));
   const pacer: Pacer = { x0, x1: dock, lane, dir, yMin, seconds: R(seconds), middle: R(middle), rideOnly: R(rideOnly), under: table.under, art: table.art };
-  return { pacer, problems: [...pacerShoreFaults(pacer, len, leg), ...pacerFaults(pacer, table.under)] };
+  return { pacer, problems: [...pacerShoreFaults(pacer, len, leg), ...pacerFaults(pacer)] };
 }
