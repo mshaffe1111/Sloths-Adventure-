@@ -1,4 +1,19 @@
 # BUILD-27 REPORT: 2-7 "The Mailman's Route" (t-build-27-wip; started 12:35 PM ET 11-23 by `date`; budget 2 h, report by 2:40 PM ET)
+## BUILD-27c (finishing; started 2:03 PM ET 11-23 by `date`; report by 3:35 PM ET; box 28 min / 320k)
+### EXACT NEXT STEP (BUILD-27c's; read this first)
+Head: t-build-27-wip d9913b17d = 481203add + t-eng-27 e2f3855cf merged (f5810bbff; one conflict, pipeline.ts layChaseStage's return:
+both ENG-JETTY's `ended.problems` and the column dress kept) + 2-7's race-end wiring.
+1. DONE d9913b17d: LINES_27 `win`/`lose` verbatim (lines-2-7.md ask 4); BRIEF_27.raceEnd {win: w27.win Dot, lose: w27.lose Pokey};
+   manifest storyTips via STORY_27 {w27.handover: Dot, w27.race: Dot}. w2Arc27.test new case (pacer.ends text+who; handover/race are
+   story 'Dot'; win/lose never a mid-stage tip), seeds 2-4 both settings: 8/8 GREEN; RED with raceEnd and storyTips removed. tsc clean.
+2. RUNNING on frozen tree /home/user/wt-b27c-f1 (= d9913b17d, chattr +i on src and tools; node_modules a symlink to /home/user/wt-b27c's,
+   installed with `npm ci --legacy-peer-deps` as CI does): (a) the yield, `castBots --stage 2-7 --seeds 1-40 --bots
+   adult,child,middle,expert --setting both --par 4`, rows/proven/out in scratchpad y1/; (b) the whole unit suite -> scratchpad suite1.txt.
+3. Then: send the lead the yield (with the under-2:00 count; adult Normal had a 118.6 s run on BUILD-27b's head); merge ENG-HUD27 and
+   ENG-BOT27 when the lead sends their hashes, set wayside.ts way.2-7 to `dotOn('post:letter', <same words verbatim>)` (held in
+   w2Arc27.test), re-run the yield; then the list (seedlist.ts 2-7, --check, castBots --proven on the list), the flight for `judged`,
+   registrycheck, the final stills (every beat both ways 2x both settings; the jetty lines on default settings; zoom the weir's pool
+   line), THE race clip (name the frame he wins), the full gate set.
 ## BUILD-27b (continuing; started 1:05 PM ET 11-23 by `date`; report by 2:40 PM ET)
 ### EXACT NEXT STEP (BUILD-27b's; read this, not BUILD-27's below, for what is left). BUILD-27b stopped at its 28-minute box.
 NOW: nothing laid is waiting on me; 2-7 waits on the lead's hashes (ENG-JETTY: the w2.ts:372 finish fix, the race-end win/lose line,
