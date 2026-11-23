@@ -1,11 +1,37 @@
 # BUILD-27 REPORT: 2-7 "The Mailman's Route" (t-build-27-wip; started 12:35 PM ET 11-23 by `date`; budget 2 h, report by 2:40 PM ET)
 ## BUILD-27d (finishing; started 2:25 PM ET 11-23 by `date`; report by 3:50 PM ET; hard stop 4:35 PM ET; box 28 min / 320k)
 ### EXACT NEXT STEP (BUILD-27d's; read this first)
-Started from 3ad0a77e2. BUILD-27c's frozen trees and background runs were in its own container and are gone. Work tree /home/user/wt-b27d
-(branch t-build-27-wip-d, pushed to t-build-27-wip). Waiting on the lead's hashes: ENG-BOT27 (R1 re-aim) and ENG-HUD27b (route bar,
-'post:letter', route-order fix; on t-eng-27-wip-hud 64831cbe1, not yet on t-eng-27). Plan, in order: (1) merge both; (2) wayside.ts:101
-way.2-7 -> dotOn('post:letter', same words); (3) flip judged (3 lines); (4) castBots --proven 2-7 x40 every bot both settings on a NEW frozen
-tree (the ship number, bar 24/40); (5) the list; (6) re-shoot the race finish (+ a lose take if cheap); (7) gates on the final head.
+**Trial head: t-build-27-trial f18614471** = t-build-27-wip 3ad0a77e2 (BUILD-27c's last) + a TRIAL merge of t-eng-27-wip-hud 64831cbe1 (NOT
+landed; clean merge) + my commits: 92fcae5bf way.2-7 -> dotOn (then 361599287: on 'post:letter:4', see below), d1df3070b judged flip (3 lines:
+stageTable '2-7' judged:'normal-2-7'; judgedTable.test's two JUDGED lists), the clip rig and dry-run stills. **When the lead sends the LANDED
+t-eng-27 hashes: on a fresh branch from t-build-27-wip, merge t-eng-27 (with ENG-HUD27b + ENG-BOT27b), then cherry-pick 92fcae5bf 361599287
+d1df3070b and the probes27d/dry27d commits (04db57dc9 f18614471 and the rig ones before them); drop the trial merge 533e28c29.**
+Waiting on (lead, 11-23): ENG-HUD27b fixes the LAY side (pipeline.ts:3826 wet order by met order; :4610 hint match either way), due ~3:35 PM;
+ENG-BOT27b = R1 on the child bot only, lands ~3:20 PM; then DRESS-27 (weir seam, pole, porch posts) after both: the final clip and stills
+come AFTER DRESS-27.
+Then, in order: (a) `npx tsx reference/qa-reports/BUILD-27/probes27d/errs.mts 1-12` must print `[]` on every roll both settings with judged
+flipped; w2Arc27.test 10/10, judgedTable.test, easyMode.test; (b) a NEW chattr-frozen tree at that head (node_modules: `npm ci
+--legacy-peer-deps` once, symlink it), castBots --stage 2-7 --seeds 1-40 --bots adult,child,middle,expert --setting both --par 4 --rows ..
+--proven .. = the ship number (bar 24/40), send the lead; (c) the list: seedlist.ts 2-7 (100), --check, castBots --proven on the list;
+registrycheck; (d) the clip: dev server `npx vite --port 4318 --strictPort --host 127.0.0.1` on the frozen tree; `npx tsx
+probes27d/racerec.mts adult normal 1 <rec.json> 3300`, `LIVE=1 FROM=3450 PW=/opt/node-tools/node_modules/playwright/index.mjs node
+probes27d/racepuppet.mjs 4318 <rec.json> <dir> side 60 150` (FROM/TO are ENGINE frames), ffmpeg -framerate 15 -> mp4; lose take: child normal
+seed 1 rec from 11450, FROM=11600 (verdict 11758). Check the seed the puppet BUILT is the record's (it refuses otherwise; after the list,
+set LAYOUT); (e) the gates on the final head ONCE (unit suite + CI tool line + drawcheck, clipcheck, tierBots, registrycheck).
+DONE so far (BUILD-27d):
+1. Trial merge of ENG-HUD27b: clean. With it and judged NOT flipped, easyMode.test 6/6 GREEN (BUILD-27c's red (i) gone).
+2. FOUND (sent, the lead routed it to ENG-HUD27b): with the verdict fix and judged flipped EVERY roll 1-12 both settings fails
+   "drop.unwarned: the first water at x 12948..13508 has no Dot line": pipeline.ts:3826 lays WATER_WARN at the least-x wet gap (probes27d/errs.mts).
+3. way.2-7 on 'post:letter' measured in real play (probes27d/postmoment.mts): the 1st letter is posted at t2.3-3.9 s, x4756-5087, ON the
+   jetty's opening (seed 1: handover line x5023, letter x5087; seed 2: 368 px before the handover). 5 doors on every roll 1-40 both settings;
+   letter k's worst x past the race line (doorx.txt): -795, -365, +245, +1065, +1815 (855 = 3 s at a full run). DECIDED: dotOn('post:letter:4',
+   words verbatim) (361599287; lead told, may overrule); new w2Arc27.test case holds it on every roll, RED on letter 1 (planted), GREEN on 4.
+   Real run: adult N seed 1 letter 4 at t17.3 s x7991; seed 2 t11.2 s x6614.
+4. Clip rig made tree-relative and fixed (probes27d/racerec.mts, racepuppet.mjs: FROM/TO/verdict now ENGINE frames, built-seed check,
+   caption names who won). Dry run on frozen /home/user/wt-b27d-f0 (trial head minus the flip): WIN adult N seed 1 frame 3615, Dot's win line
+   on screen, no wayside card (dry27d/win-adult-n1-f3630-line.jpg); LOSE child N seed 1 frame 11758 (him 107.7 s, boat 89.28), Pokey's line,
+   boat docked (dry27d/lose-child-n1-f11764-line.jpg). Route bar in play 0.947 at the win, 0.999 at the totem (probes27d/barprobe.mts).
+5. Bots on the trial head (postmoment.mts): child Normal LOSES the race seeds 1-6 (101-114 s vs 88-90 s); middle Normal wins 6/6 (55-69 s).
 
 ## BUILD-27c (finishing; started 2:03 PM ET 11-23 by `date`; report by 3:35 PM ET; box 28 min / 320k)
 ### EXACT NEXT STEP (BUILD-27c's; read this first). BUILD-27c handed over at its 28-minute box.
