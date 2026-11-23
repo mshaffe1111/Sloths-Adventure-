@@ -36,6 +36,12 @@ frozen (unfreeze with chattr -R -i before removing). Probes: scratchpad/probe/tr
    w2Arc27.test. Until then it stays 'half' (the HUD distance ratio >= 0.5, engine.ts:3732; on the out-and-back, not yet measured
    where: offered the lead an adult-bot measure). (f) Porches (n27p x11200): rope-tied planks over the race with no posts or hangers to
    the bank houses: they read as floating planks. Judge on the final set; name it to the lead if it holds.
+   'half' MEASURED (adult seed 1, probe half.mts: onGuide lines + onProgressUpdate ratio): Normal half t125.0 x2139 (home neck, ~9 s
+   before the jetty; run 134.4 s); Easy t119.3 x2367 (~7 s before; 126.8 s). Lines: WATER_WARN t0.2 (Normal only), handover t2.4, race
+   t3.8, turn t53.2. Sent: 'half' lands mid-race (keeper note 3) -> 'post:letter' to engine. Also sent: (1) ENGINE-WORTHY, the HUD
+   progress bar on an out-and-back does not move for the whole out leg (x from start to exit, engine.ts:3732); (2) WATER_WARN -> handover
+   only 2.2 s apart on Normal: I offered to move the t-handover socket (w2Arc27.ts:122, 'a' 0.35) so the handover starts 3+ s after it.
+   Awaiting the lead's word on (2).
 5. When the lead sends ENG-JETTY's and ENG-BOT27's hashes (the w2.ts:372 fix, the race-end line, StageHint story, the child bot fix): merge into t-build-27-wip;
    wire `w27.win`/`w27.lose` (lines-2-7.md:24-25, verbatim) on the race-end hook, set story on handover/race; hold all four in
    w2Arc27.test; the whole suite + the CI tool line on a frozen head; castBots --proven 1-40 both settings; then the list (seedlist 2-7,
