@@ -7,9 +7,9 @@ after stepPieces: both kept, the post moments and then the race-end line; tsc PA
 
 ### EXACT NEXT STEP (if this session ends before the landing is pushed)
 State: t-eng-27-wip-hud e4c4d3de8 (+ this REPORT commit) holds everything; t-eng-27 is e2f3855cf, already merged into it (315caa0ef).
-Gates done on frozen e4c4d3de8: tsc, generalitycheck, knowncheck PASS; lockall 102/102 unchanged; toys RED/GREEN (below). Running at
-hand-over: the unit suite and the CI tool line on /home/user/wt/fix2 (they die with this container). A successor: (1) a frozen tree of
-e4c4d3de8; run the unit suite and the CI tool line (gates.yml 'rolled'), both run_in_background, 7200000 ms; (2) compare every `not ok`
+Gates done on frozen e4c4d3de8: tsc, generalitycheck, knowncheck PASS; lockall 102/102 unchanged; toys RED/GREEN (below). CI tool line
+done (the base's 11 inherited reds, nothing new). Running at hand-over: the unit suite on /home/user/wt/fix2 (it dies with this
+container). A successor: (1) a frozen tree of e4c4d3de8; run the unit suite, run_in_background, 7200000 ms; (2) compare every `not ok`
 with the base lists in Gates below (unit: pacerLay.test.ts:254, :280; CI: the 11 named); a new red blocks the landing; (3)
 `git ls-remote origin t-eng-27`: if still e2f3855cf, `git push origin <wip head>:t-eng-27` (a fast-forward); else merge it in (no force)
 and re-run tsc + waterWarnRouted/firstMet/easyRouted/hudRoute; (4) send the lead the landed hash and the two verdict lines (no clock times).
@@ -92,7 +92,8 @@ directly or through the sorted list within 25 lines), plus a grep of min/max of 
   **102/102 unchanged**, none intended. (Verdicts and drops are not hashed; the probe above covers the first water on every listed
   stage, and a run takes the old lay and match path line for line.)
 - **CI tool line** (gates.yml 'rolled', 345 tests): base e2f3855cf **333 pass / 11 fail / 1 todo**; my first head 64831cbe1 the same
-  11; landing head e4c4d3de8: CI_FIX2. The 11 inherited reds, all red on the base itself: wheelChannel.test.ts:40, :56, :79, :92 (World 2
+  11; landing head e4c4d3de8: 345 / 332 / 12 fail / 1 todo: the same 11, plus seedlist.test.ts:15, whose own `git worktree add` hit
+  my full disk ('unable to write file', seven worktrees); with the disk freed it re-ran on the same frozen tree 10 of 10 GREEN. The 11 inherited reds, all red on the base itself: wheelChannel.test.ts:40, :56, :79, :92 (World 2
   finish: 'the fall at x=335-731 has no bank at one end'; also red on d9425f091, before ENG-JETTY), wheelRide.test.ts:26, :42,
   firsttimer.test.ts:184, riverRide.test.ts:106, :144, :202, :218; the todo is chaseBots.test.ts:110.
 - **Unit suite**: base 4,073 / 4,068 pass / 2 fail / 3 todo (ENG-JETTY on 1b2897cfb, the same src and tools as e2f3855cf: the two reds
