@@ -1,4 +1,19 @@
 # DRESS-27 REPORT (Engine, art/dress code). Started 2:43 PM ET 11-23. Branch t-eng-27-wip-dress.
+## EXACT NEXT STEP (handover at the lead's word, 3:41 PM ET: context past the line; nothing landed on t-eng-27 yet)
+- Merged head to land: **80dbc46d8** on t-eng-27-wip-dress (= my work 09865f026 + origin/t-eng-27 09c23c1b0, one note conflict, both
+  sections kept; tsc 0; planted tests 10/10). Later commits on the branch are REPORT text only.
+- lockall: NOT done on the merged head (both runs, 09c23c1b0 --out and 80dbc46d8 --out, stopped unfinished at handover: no result).
+  Do: freeze a worktree at 09c23c1b0, `npx tsx tools/engine/lockall.ts --layouts 16 --out lock-eng27.json`; freeze one at the branch
+  head, `npx tsx tools/engine/lockall.ts --layouts 16 --check lock-eng27.json`; expect 102/102 unchanged (my code draws only; READY-27's
+  merge was 102/102 unchanged on 49d92b572 against 6b84c98f3).
+- Then land (lead's ruling: drawing only; a clean merge + tsc + lockall, no fresh suite): `git fetch origin t-eng-27`; if it moved,
+  `git merge --no-edit origin/t-eng-27` + tsc; then `git push origin HEAD:t-eng-27` (a fast-forward, no force); `git ls-remote` equal to
+  HEAD; send the lead the hash.
+- 2-7's own draw breaches (pristine t-build-27-wip, drawcheck with limits.json scenarios ['2-7'], spots 16; the same with this fix):
+  port: gradients 4.13 > 2 at spot 11 x13298 (spot 7 x9061 with the fix, same value); drawImageScreens 7.61 > 7.5 at spot 7 x9061;
+  clips 21 > 19 at spot 7 x9061. land: gradients 5.00 > 2 at spot 11 x13298; drawImageScreens 7.90 > 7.5 at spot 11 x13298; clips
+  24.13 > 19 at spot 7 x9061 (24.00 with the fix). Files: reference/qa-reports/DRESS-27/drawcheck-2-7-16spots-base.txt and -fix.txt.
+
 
 ## Polish check (stills: reference/qa-reports/DRESS-27/stills/, 2-7 seed 1, phone 2x, BEFORE from t-build-27-wip 51ff9c43f)
 - **Seam:** zoom-weir-pool-and-pole-before-after.jpg (Normal x15950, Easy x16700, sideways): the thin dark line with specks is gone across
@@ -53,8 +68,7 @@
 - Item 4 (above). 2-7 checked on seed 1 only.
 
 ## Method used / Lessons applied / Method update
-- Used: stage-fix (find the cause, fix where it lives), render-fix; stills via BUILD-27's stills-live.mjs (a scratch copy: its
-  playwright import fails on a CJS build; fixed with `_pw.chromium ?? _pw.default.chromium`).
+- Used: stage-fix, render-fix; stills: DRESS-27/stills-live.mjs (BUILD-27's, its playwright import fixed for a CJS build).
 - Lessons: D6 (a baked canvas re-bakes on loss, tested), D16 (every prop stands on something: the porches), judge every state
   (Normal and Easy, upright and sideways), freeze the tree before a heavy run (D115).
 - Method update (render-fix): when a painted piece shows a line, decode its frame's alpha first: a see-through row in the cut is
