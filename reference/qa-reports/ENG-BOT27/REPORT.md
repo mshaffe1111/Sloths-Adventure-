@@ -1,8 +1,8 @@
 # ENG-BOT27b REPORT: SKILLS.reAim as the CHILD bot's skill only, re-measured (started 2:30 PM ET 11-23 by `date`, 14:30:25)
 Branch t-eng-27-wip-bot27-aim. Code 3d90c4977 (child-only gate + toy), t-eng-27 e2f3855cf merged in (2334a3948). NOT landed yet at this push.
 ### EXACT NEXT STEP (if this member stops first)
-The unit suite re-runs on the frozen tree /home/user/wt/eng (2334a3948); every other gate is done (item 6). When it ends: if its reds are
-only pacerLay.test.ts:254 and :280 (and the todos), land: `git fetch origin t-eng-27`; if t-eng-27 is still e2f3855cf (an ancestor of this
+The unit suite re-runs on the frozen tree /home/user/wt/eng (2334a3948; the branch head is now its merge with t-eng-27 09c23c1b0, item 7); every other gate is done (item 6). When it ends: if its reds are
+only pacerLay.test.ts:254 and :280 (and the todos), land: `git fetch origin t-eng-27`; if t-eng-27 is still 09c23c1b0 (an ancestor of this
 branch), `git push origin t-eng-27-wip-bot27-aim:t-eng-27` (a fast-forward: the merge, no force); else merge t-eng-27 into this branch,
 re-run the suite on the merge and push that. Send the lead the hash, item 3's table and item 6's gate lines. Any other red: run that file
 on the frozen base /home/user/wt/base (e2f3855cf) before naming it inherited.
@@ -40,6 +40,11 @@ on the frozen base /home/user/wt/base (e2f3855cf) before naming it inherited.
    has no bank at one end': the lead says named on t-eng-27 by ENG-27w and on ENG-26t's list), firsttimer.test.ts:184, riverRide.test.ts
    :107 :145 :203 :219 (:106 :144 :202 :218 on the base: my import line shifts them one). No new red. tierBots: 9/9 PASS (1-1's child calibration unmoved). roadmapcheck: cannot run here (shallow clone; no roadmap file changed).
    Not run, by reason: lockall and the seed-list checks (no src/ file changed: the diff to t-eng-27 is tools/inspect and reference only).
+7. **t-eng-27 moved to 09c23c1b0 (ENG-HUD27b) and is merged in (9aff7f86f, no force; only engine-core.md conflicted, both sections
+   kept); tsc PASS on it.** The lead's check on the merged head: t-build-27-wip 51ff9c43f + 9aff7f86f, frozen, 2-7 child seeds 1-10, both
+   settings, reAim on and off: **20/20 identical** to the 32dd1236c tree's rows (on and off). The suite and the CI tool line above ran on
+   2334a3948 (my code on e2f3855cf); ENG-HUD27b's own suite and tool line ran on e4c4d3de8 (its REPORT); the merge joins disjoint files
+   (mine: tools/inspect, reference). timecheck and roadmapcheck cannot run here (shallow clone); my stamps predate their commits.
 ## 2. Polish check
 No screen changed (bot code only). Every table row read; every moved row is a child row (2-1, 2-7) and every other bot's row is identical.
 ## 3. Pushback
