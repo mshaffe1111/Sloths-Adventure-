@@ -1009,6 +1009,15 @@ export function stepLandsOn(q: Platform, at: (t: number) => number, x: number, y
   return false;
 }
 /**
+ * (ENG-BOT27, SKILLS.meetLog) Is the floor ahead `fa` a log flowing AT him (its drift against `dir`) a step under the bank he stands on
+ * that a plain walk off the lip at `lip` would NOT come down on (stepLandsOn, 24 px in)? Then it is no floor ahead: the ride wait at the
+ * lip judges a hop instead. False with the skill off, off a bank (on a log), or for any other floor (FirstTimerRun's floor-ahead read).
+ */
+export function walkOntoTail(fa: Platform | null | undefined, under: Platform | null | undefined, rivers: readonly RiverZone[] | undefined, p: { x: number; y: number; vx: number; grounded: boolean }, lip: number, dir: -1 | 1, t: number): boolean {
+  if (!SKILLS.meetLog || !p.grounded || under?.type === 'drift' || fa?.type !== 'drift' || !fa.drift || fa.drift.dir === dir || !(fa.y > p.y + 6)) return false;
+  return !stepLandsOn(fa, floatAt(rivers, fa), p.x, p.y, lip, dir, t, p.vx);
+}
+/**
  * A hop as the bot will press it (level.md rule 28, the hop judged is the hop flown; the lead's ruling 11-21, ENG-27n): its kind, the
  * first press's hold, the second press (`d2` s after the first, a tier bot's dbl2Q; -1: at `dblAt`, falling past it) and its hold
  * (`hold2`), and the beat with no steer (`upOnly`). Drawn once per wait (FirstTimerRun.drawHop, by the testers' habit), judged by
@@ -3140,8 +3149,7 @@ export class FirstTimerRun {
       //  on it (stepLandsOn: his run and its drift close on the tail it shows while he drops). He walked off the lip onto 48 px of a log's
       //  tail sliding under the bank and ran past its far end before landing: 2-7 child Normal seed 14 x 13898, BUILD-27b's trace. Not
       //  floor, he waits at the lip (the ride wait below) for a log whose front has reached the lip, or hops to the next as it judges)
-      const tail = SKILLS.meetLog && p.grounded && under?.type !== 'drift' && fa?.type === 'drift' && !!fa.drift && fa.drift.dir !== dir && fa.y > p.y + 6
-        && !stepLandsOn(fa, floatAt((this.sim.stage as { rivers?: RiverZone[] }).rivers, fa), p.x, p.y, under ? lip : p.x, dir as -1 | 1, t, p.vx);
+      const tail = walkOntoTail(fa, under, (this.sim.stage as { rivers?: RiverZone[] }).rivers, p, under ? lip : p.x, dir as -1 | 1, t);
       const ahead = fa && !underLip && !tail && (!past || this.floorAt(lip + dir * 24, p.y, 40));
       // (up the far bank, SKILLS.bankUp: at a river's far end the bank stands a step up from the log (river.ts LOG_DROP, 28 px), so it
       //  reads as floor ahead and the gap logic below never runs, and a log running back at him never carries him under it to be handed

@@ -29,10 +29,9 @@ import type { SectionTemplate, WorldKit } from '../../src/game/gen2/types.ts';
 import type { LevelConfig } from '../../src/game/types.ts';
 import type { RiverZone } from '../../src/game/river.ts';
 import type { Platform } from '../../src/game/types.ts';
-import { SKILLS, firstTimer, FirstTimerRun, FT_CHILD } from './firsttimer.ts';
+import { SKILLS, firstTimer, FirstTimerRun, FT_CHILD, stepLandsOn, walkOntoTail } from './firsttimer.ts';
 import { CAST_BOTS, castRun } from './castBots.ts';
 import { runTier, type Setting, type Tier, type TierRun } from './tierBots.ts';
-import { homeRun } from './homeToys.ts';
 
 const ID = '2-91';
 /** the fixture's one river section, laying World 2's row `row` (the long log is laid DEEP here: a fall costs a life, so a hop at the water
@@ -258,39 +257,37 @@ function bareRun(pieces: Platform[], onFrame: (p: { x: number; y: number; vx: nu
 }
 const PHASES = Array.from({ length: 12 }, (_, i) => i * 0.25);
 
-test('2-7\'s toy (homeRun): at a bank\'s lip with logs flowing AT him, the child never walks off onto a log\'s tail he cannot land on (SKILLS.meetLog; RED with it off)', () => {
-  // (2-7 child Normal seed 14 x 13898, BUILD-27b, re-traced on the draft by ENG-BOT27: he stood at the lip, then walked off onto 48 px of
-  //  a log's tail sliding under the bank, ran past its far end while he dropped the 28 px, and drowned. A bad step: a walk off a bank (no
-  //  press) toward a log flowing at him, a step down, then a life lost before he stands on a log. Measured on the toy's seeds 1-6, both
-  //  settings: off 5 (Normal 4 x2, Easy 1, 2, 4), on 0; the four seeds that went RED are flown here)
-  const steps = (on: boolean) => {
+test('the floor-ahead read at a bank\'s lip: a log flowing AT him whose tail a plain walk off the lip cannot land on is no floor (SKILLS.meetLog; RED with it off)', () => {
+  // (planted at the read itself, as the boardHop toy is: BUILD-27b's trace, re-traced by ENG-BOT27 on the 2-7 draft, child Normal seed 14
+  //  t 127.37: he stood at x 13898 just past the lip (bank 13636-13896, top 734), a log flowing at him (75 px/s) showing 48 px past it
+  //  (13784-13944, top 762, 28 px down), walked off at 268-285 px/s, crossed its far end before his drop landed him and drowned at 13962.
+  //  The log is on its own clock (driftX) where the trace had it at the read's time 0)
+  const bank = { id: 1, x: 13636, y: 734, width: 260, height: 90, type: 'solid' } as Platform;
+  const x1 = 13896 + 600;
+  const log = (x: number, dir: 1 | -1 = -1) => ({
+    id: 2, x, y: 762, width: 160, height: 24, type: 'drift',
+    drift: { x0: 13896, x1, dir, speed: 75, width: 160, baseY: 762, offset: dir === -1 ? (x1 - x) / 75 : (x - 13896 + 160) / 75 },
+  }) as unknown as Platform;
+  const stand = { x: 13898, y: 734, vx: 0, grounded: true };
+  const read = (fa: Platform, on: boolean) => {
     const was = SKILLS.meetLog;
     SKILLS.meetLog = on;
-    let bad = 0;
     try {
-      for (const [setting, seed] of [['normal', 4], ['easy', 1], ['easy', 2], ['easy', 4]] as const) {
-        let off = -1, lives0 = 0;
-        let prev: { g: boolean; here: Platform | undefined } | null = null;
-        homeRun('child', setting, seed, 1, { onFrame: (sim) => {
-          const e = (sim as unknown as { e: { player: { x: number; vx: number; vy: number; grounded: boolean }; platforms: Platform[]; standingOnId: number | null; lives: number } }).e;
-          const p = e.player, here = e.platforms.find((q) => q.id === e.standingOnId);
-          if (prev?.g && prev.here && prev.here.type !== 'drift' && !p.grounded && p.vy >= 0 && Math.abs(p.vx) > 20) {
-            const dir = Math.sign(p.vx), bank = prev.here;
-            if (e.platforms.some((q) => q.type === 'drift' && q.drift!.dir !== dir && q.y - bank.y > 6 && q.y - bank.y < 40 && Math.abs((dir > 0 ? q.x + q.width : q.x) - p.x) < 200)) { off = sim.t; lives0 = e.lives; }
-          }
-          if (off >= 0 && p.grounded && here?.type === 'drift') off = -1;
-          if (off >= 0 && (e.lives < lives0 || sim.t - off > 1.5)) { if (e.lives < lives0) bad++; off = -1; }
-          prev = { g: p.grounded, here };
-        } });
-      }
+      return walkOntoTail(fa, null, undefined, stand, 13896, 1, 0);
     } finally {
       SKILLS.meetLog = was;
     }
-    return bad;
   };
-  const on = steps(true), off = steps(false);
-  assert.equal(on, 0, `with the skill: no walk off the lip onto a log's tail he cannot land on (${on})`);
-  assert.ok(off >= 1, `RED: with SKILLS.meetLog off he walks onto a receding tail and loses a life (${off})`);
+  assert.equal(read(log(13784), true), true, 'the 48 px tail: a walk off the lip cannot land on it, so it is no floor ahead');
+  assert.equal(read(log(13784), false), false, 'RED: with SKILLS.meetLog off the tail reads as floor ahead and he walks onto it');
+  // (and nothing else moves: a log whose front has reached the lip (all of it past the lip) is floor he walks onto; a log running his way
+  //  is not this read's (boardLog's); standing ON a log, no read)
+  assert.equal(read(log(13896), true), false, 'a log whose front has reached the lip: floor, he steps on');
+  assert.equal(read(log(13784, 1), true), false, 'a log running his way: not this read');
+  assert.equal(walkOntoTail(log(13784), log(13600), undefined, { ...stand, y: 762 }, 13896, 1, 0), false, 'on a log: not this read');
+  // (the flight itself: from the stand at the lip a walk lands on the full log, not on the tail)
+  assert.equal(stepLandsOn(log(13896), (t) => 13896 - 75 * t, 13898, 734, 13896, 1, 0, 0), true);
+  assert.equal(stepLandsOn(log(13784), (t) => 13784 - 75 * t, 13898, 734, 13896, 1, 0, 0), false);
 });
 
 test('in the real engine: on a log flowing his way he never takes the landing pause\'s flick from mid-log; every hop off it is from its front end (SKILLS.logEnd; RED with it off)', () => {
