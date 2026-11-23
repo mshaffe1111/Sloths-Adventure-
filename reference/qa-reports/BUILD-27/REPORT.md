@@ -1,4 +1,12 @@
 # BUILD-27 REPORT: 2-7 "The Mailman's Route" (t-build-27-wip; started 12:35 PM ET 11-23 by `date`; budget 2 h, report by 2:40 PM ET)
+## BUILD-27d (finishing; started 2:25 PM ET 11-23 by `date`; report by 3:50 PM ET; hard stop 4:35 PM ET; box 28 min / 320k)
+### EXACT NEXT STEP (BUILD-27d's; read this first)
+Started from 3ad0a77e2. BUILD-27c's frozen trees and background runs were in its own container and are gone. Work tree /home/user/wt-b27d
+(branch t-build-27-wip-d, pushed to t-build-27-wip). Waiting on the lead's hashes: ENG-BOT27 (R1 re-aim) and ENG-HUD27b (route bar,
+'post:letter', route-order fix; on t-eng-27-wip-hud 64831cbe1, not yet on t-eng-27). Plan, in order: (1) merge both; (2) wayside.ts:101
+way.2-7 -> dotOn('post:letter', same words); (3) flip judged (3 lines); (4) castBots --proven 2-7 x40 every bot both settings on a NEW frozen
+tree (the ship number, bar 24/40); (5) the list; (6) re-shoot the race finish (+ a lose take if cheap); (7) gates on the final head.
+
 ## BUILD-27c (finishing; started 2:03 PM ET 11-23 by `date`; report by 3:35 PM ET; box 28 min / 320k)
 ### EXACT NEXT STEP (BUILD-27c's; read this first). BUILD-27c handed over at its 28-minute box.
 Head: t-build-27-wip (this commit) = 481203add + t-eng-27 e2f3855cf (f5810bbff; one conflict, pipeline.ts layChaseStage's return: both
