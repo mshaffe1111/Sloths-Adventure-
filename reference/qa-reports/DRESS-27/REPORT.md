@@ -1,4 +1,55 @@
 # DRESS-27 REPORT (Engine, art/dress code). Started 2:43 PM ET 11-23. Branch t-eng-27-wip-dress.
+## DRESS-27d (Engine, draw code; DRESS-27c's successor). Started 4:48 PM ET 11-23 by `date`. Branch t-eng-27-wip-dress27d.
+### EXACT NEXT STEP (pushed at the 28-minute box; the gates run in THIS container only)
+- The candidate: t-eng-27-wip-dress27d **8d441aa43** (DRESS-27c's f3649a092 + 3aa389ad9 + (2b) taken out). Not yet on t-eng-27.
+- Frozen gate trees: /home/user/wt-merge = t-build-27e 793ddf246 + dress27d (clean merge) = **a21dbcf34**; /home/user/wt-base = 793ddf246.
+  DONE on a21dbcf34: tsc 0, generalitycheck PASS, knowncheck PASS, stackViewFloor 5/5, related suites 61/61, 2-7 seedlist --check PASS.
+  RUNNING: lockall --out on both trees (compare the two JSONs key by key: every build equal = 102 stages unchanged), drawcheck
+  (limits.json scenarios, 2-7 included), clipcheck. A successor in another container re-runs those four on a fresh merge.
+- Then: `git fetch origin t-eng-27`; in a worktree of dress27d `git merge --no-edit origin/t-eng-27` if it moved (+ tsc), `git push origin
+  HEAD:t-eng-27` (fast-forward, no force), `git ls-remote` = HEAD, send the lead the hash and stills-27d/'s paths.
+### Polish check (stills-27d/: 2-7 layout 0 = seed 1, phone 2x, tools/engine/runs/stills-at-setting.mjs, ONE spot a run; BEFORE = t-build-27e 793ddf246, AFTER = the same + dress27d = a21dbcf34)
+- **Upright out-leg bottoms** (Normal x4500, Easy x5419): pair-2-7-L0-normal-x4500-upright.jpg, pair-2-7-L0-easy-x5419-upright.jpg,
+  zoom-bottom-x4500-upright.jpg. Before: the bottom of the screen ends in the stand-in's column streaks and a dark band. After: painted
+  earth, roots and stones to the screen's foot; Pokey stands lower (feet about two thirds down), sky and village above. PASS.
+- **The out leg's underside from the race leg** (Normal x9085 upright): pair-...-x9085-upright.jpg, zoom-under-x9085-upright.jpg.
+  Before: evenly spaced vertical seams along the underside. After: one smooth darkening, no seams. PASS.
+- **The deep river's wall** (Normal x9085 sideways = the finding's x9080 bank): pair-...-x9085-sideways.jpg, zoom-river-x9080-sideways.jpg.
+  Before: a lighter teal strip from the surface down beside the bank's roots. After: one dark teal right to the wall. PASS. The logs keep
+  their old ends (the id's flip): (2b) is out, as the lead cut it.
+- (pending) Easy x9600 river wall, re-shot with a build wait.
+- (pending) sideways out-leg spots.
+- (pending) 2-4 x15990 and 2-5 x21020 deep-river banks.
+- Seen, not mine, unchanged before and after (named for the lead): the out leg's soil shows two soil pieces meeting as vertical tone steps
+  (x9085 upright, zoom-under); a lighter flat strip under the right-hand grass lip at x4500 upright with a hard left edge (the grass
+  ledge's own art). Neither moved with this change.
+### What landed
+1. (2b) the log-end flip taken out on top of DRESS-27c's two commits (8d441aa43, no history rewrite): engine.ts `logLead`/`logLeads` and
+   the two calls' 4th argument gone; riverArt.ts back to 9fe64614e's byte for byte (no `LOG_BROKEN_RIGHT`, no `lead?`, `p.id % 2 === 1`);
+   `grep -rn "logLead\|LOG_BROKEN_RIGHT" src` empty. engine-core.md 0zq-floor: the log bullet replaced by "Held out".
+2. What stays: (1) the camera's view floor over a stacked upper leg (groundStack.ts viewFloor/underReach, protoArt.ts stackViewFloor,
+   engine.ts STACK_FEET_MAX + the clamp) and the continuous stand-in underside (standInBand); (2a) a deep river's over pass under its
+   banks' faces in the box's one clip. Code diff vs t-eng-27 9fe64614e: engine.ts, groundStack.ts, protoArt.ts, stackViewFloor.test.ts.
+### Gates (frozen trees, chattr +i on src: /home/user/wt-merge = t-build-27e 793ddf246 merged with dress27d (clean) = a21dbcf34;
+### /home/user/wt-base = 793ddf246)
+- tsc 0; generalitycheck PASS (26 known); knowncheck PASS; planted stackViewFloor.test.ts 5/5; related suites (groundStack,
+  deepRiverLid, cameraFollow, cameraReach, cameraLead, riverLook, riverRaft, drawThrift, stackViewFloor) 61/61.
+- 2-7 seedlist --check on a21dbcf34: PASS (100 seeds, each clean on both settings; the verdicts refuse 0).
+- (pending) lockall, drawcheck, clipcheck: running on the frozen trees.
+### Pushback
+- The packet says 2-4 and 2-5's deep-river banks stay UNCHANGED. (2a) is general (every deep, moving river against a bank wall), so where
+  2-4's deep river had the same lighter strip (x15990, DRESS-27c's zoom-2-4-deep), it is gone there too: the same fix, not a new look.
+  Everything else at those banks is unchanged. If the lead wants 2-4 untouched, (2a) needs a 2-7-only switch, which law 22 and "new
+  replaces old" argue against.
+### Learned
+- A still tool run under load prints BUILT before the stage is ready ({"stored":"normal"} only); the still itself is right (it waits
+  for the HUD card): judge the file, not the line.
+- On this container the ESM import of playwright needs PW=/opt/node-tools/node_modules/playwright/index.mjs (index.js gives no
+  named `chromium`).
+### Lessons applied: D115 (every gate on chattr-frozen trees), D119 (no heredoc in a commit chain), D109 (no clock times to the lead),
+D131 (drawcheck with 2-7 on the merged head), D36 (branch named, ls-remote), law 22 (no limit moved).
+### Turnover note: reference/handoffs/engine-core.md 0zq-floor (8d441aa43).
+
 ## DRESS-27c (Engine, draw code; a fresh member). Started 4:12 PM ET 11-23 by `date`; STOPPED by the lead at 35 min (real context 350k).
 ### EXACT NEXT STEP (for the successor; the lead's SCOPE CUT: land (1) + (2a), HOLD (2b) the log-end flip)
 Branch t-eng-27-wip-dress27c (local name dress27c) on t-eng-27 **9fe64614e** (t-eng-27 had not moved at the stop: fast-forward possible).
