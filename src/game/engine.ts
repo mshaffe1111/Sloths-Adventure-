@@ -200,9 +200,9 @@ import { maxHearts } from './secret.ts';
 import { drawLeafCover, drawPushLog, drawSeed, markSeedFound, seedFound, waterArt, type ProtoExtras } from './protoStage.ts';
 import { CHEER_SECONDS, footfallsBetween, hasClip, heroClipsEnabled, heroClipsLive, resetHeroClips, warmHeroClips } from './heroClips.ts';
 import { releaseDecorPics } from './envKit.ts';
-import { bushHeight, drawBranchArt, drawBushArt, drawEarthWall, setLianaTops, drawCurtainArt, drawHollowArt, drawProtoScene, drawSeedArt, hasKit, releaseGroundChunks, paintedKitEnabled, setDecoTrunks, setDepthView, setGroundPaint, setKitWorld, setRockLooks, setGroundLook, setBoughJoins, paintedPlatforms, protoArtReady, type ProtoSceneState , setGroundStacks, riverLid, riverUnderside, clipAboveLines, drawKitPiece, kitPieceAspect, setClimbFeet } from './protoArt.ts';
+import { bushHeight, drawBranchArt, drawBushArt, drawEarthWall, setLianaTops, drawCurtainArt, drawHollowArt, drawProtoScene, drawSeedArt, hasKit, releaseGroundChunks, paintedKitEnabled, setDecoTrunks, setDepthView, setGroundPaint, setKitWorld, setRockLooks, setGroundLook, setBoughJoins, paintedPlatforms, protoArtReady, type ProtoSceneState , setGroundStacks, riverLid, riverUnderside, clipAboveLines, drawKitColumn, setClimbFeet } from './protoArt.ts';
 import { dressFeet } from './columnDress.ts';
-import { PORCH_POST, drawPorchPosts, porchPosts, type PorchPost } from './porchPosts.ts';
+import { drawPorchPosts, porchPosts, type PorchPost } from './porchPosts.ts';
 import { drawFx, fxFrame } from './bossFx.ts';
 import { drawGritBit, drawSoftShadow } from './w4Grit.ts';
 import { drawBossFighter, drawHazards } from './bossArt.ts';
@@ -6282,7 +6282,7 @@ export class GameEngine {
     const posts = this.porchPostsFor.posts;
     if (!posts.length) return;
     const view = { x0: this.camera.x, x1: this.camera.x + this.camera.viewportWidth, y0: this.camera.y, y1: this.camera.y + this.camera.viewportHeight };
-    drawPorchPosts(ctx, posts, view, PORCH_POST.w * kitPieceAspect('trunk'), (c, x, y, w, h) => drawKitPiece(c, 'trunk', x, y, w, h));
+    drawPorchPosts(ctx, posts, view, (c, x, top, foot, w) => drawKitColumn(c, 'trunk', x, top, foot, w));
   }
 
   private drawRivers(ctx: CanvasRenderingContext2D, world: (typeof WORLDS_DATA)[number], over: boolean, floodsOnly = false) {

@@ -31,22 +31,17 @@ export function porchPosts(platforms: readonly Pick<Platform, 'x' | 'y' | 'width
   return out;
 }
 
-/** draws the posts in view with `draw` (a kit piece filling a box; false while the kit is not in), each clipped to its own height */
+/** draws the posts in view with `draw` (the kit's pole stacked from the post's foot up to its top, `w` wide; false while the kit is not
+ *  in). No clip: the column's top piece is cut by its source box (protoArt.ts drawKitColumn) */
 export function drawPorchPosts(
   ctx: CanvasRenderingContext2D,
   posts: readonly PorchPost[],
   view: { x0: number; x1: number; y0: number; y1: number },
-  pieceH: number,
-  draw: (ctx: CanvasRenderingContext2D, x: number, y: number, w: number, h: number) => boolean,
+  draw: (ctx: CanvasRenderingContext2D, x: number, top: number, foot: number, w: number) => boolean,
 ) {
   const w = PORCH_POST.w;
   for (const p of posts) {
     if (p.x + w < view.x0 || p.x - w > view.x1 || p.foot < view.y0 || p.top > view.y1) continue;
-    ctx.save();
-    ctx.beginPath();
-    ctx.rect(p.x - w, p.top, w * 2, p.foot - p.top);
-    ctx.clip();
-    for (let y = p.foot - pieceH; y + pieceH > p.top; y -= pieceH - 2) draw(ctx, p.x - w / 2, y, w, pieceH);
-    ctx.restore();
+    draw(ctx, p.x, p.top, p.foot, w);
   }
 }

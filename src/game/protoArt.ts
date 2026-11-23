@@ -616,10 +616,21 @@ export function setClimbFeet(f: readonly DressFoot[]) {
   climbFeet = f;
   footBakes.clear();
 }
-/** frame `n`'s height over its width in this world's kit (DRESS-27: a porch post is the kit's climb pole drawn narrow, its shape kept) */
-export function kitPieceAspect(n: Name): number {
-  const { f } = frameOf(n);
-  return f.h / f.w;
+/** frame `n` stacked up a column from `foot` to `top`, `w` wide with its shape kept, centred on cx; the top piece cut by its source box,
+ *  so nothing is clipped (DRESS-27: a porch post; a clip each was 28 clips a frame at 2-7's porches, PERFORMANCE-RULES limit 19). False
+ *  until the kit has loaded */
+export function drawKitColumn(ctx: CanvasRenderingContext2D, n: Name, cx: number, top: number, foot: number, w: number): boolean {
+  if (!protoArtReady() || foot <= top) return false;
+  const { img, f } = frameOf(n);
+  const h = (w * f.h) / f.w;
+  for (let y = foot - h; ; y -= h - 2) {
+    if (y <= top) {
+      const cut = top - y;
+      ctx.drawImage(img, f.x, f.y + (f.h * cut) / h, f.w, f.h - (f.h * cut) / h, cx - w / 2, top, w, h - cut);
+      return true;
+    }
+    ctx.drawImage(img, f.x, f.y, f.w, f.h, cx - w / 2, y, w, h);
+  }
 }
 /** one piece of the painted World 1 kit filling a box (the journal's demo scenes); false until the kit has loaded */
 export function drawKitPiece(ctx: CanvasRenderingContext2D, n: Name, x: number, y: number, w: number, h: number): boolean {

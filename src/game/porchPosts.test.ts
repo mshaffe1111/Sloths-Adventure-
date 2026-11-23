@@ -22,20 +22,15 @@ test('a plank span over a river gets a post at each end, from behind the plank t
   assert.equal(porchPosts([plank(1100)], [{ ...river, surfaceY: 700 }]).length, 0);
 });
 
-test('each post in view is drawn clipped to its own height, its pieces stacked up from its foot', () => {
+test('each post in view is drawn once, from its foot up to its top, with no clip', () => {
   const posts = porchPosts([plank(1100)], [river]);
-  const boxes: number[][] = [];
+  const calls: number[][] = [];
   let clips = 0;
   const ctx = { save() {}, restore() {}, beginPath() {}, rect() {}, clip() { clips++; } } as unknown as CanvasRenderingContext2D;
-  drawPorchPosts(ctx, posts, { x0: 900, x1: 1400, y0: 600, y1: 900 }, 60, (_c, x, y, w, h) => { boxes.push([x, y, w, h]); return true; });
-  assert.equal(clips, 2);
-  for (const [x, y, w, h] of boxes) {
-    assert.equal(w, PORCH_POST.w);
-    assert.ok(posts.some((p) => Math.abs(x + w / 2 - p.x) < 0.01 && y + h <= p.foot && y + h > p.top));
-  }
-  // the lowest piece's foot is the post's foot
-  assert.ok(boxes.some(([, y, , h]) => y + h === 820 + PORCH_POST.sink));
-  boxes.length = 0;
-  drawPorchPosts(ctx, posts, { x0: 5000, x1: 5400, y0: 600, y1: 900 }, 60, () => { boxes.push([]); return true; });
-  assert.equal(boxes.length, 0);
+  drawPorchPosts(ctx, posts, { x0: 900, x1: 1400, y0: 600, y1: 900 }, (_c, x, top, foot, w) => { calls.push([x, top, foot, w]); return true; });
+  assert.equal(clips, 0, 'no clip: PERFORMANCE-RULES counts clips a frame (2-7 porches went to 28 with one a post)');
+  assert.deepEqual(calls, posts.map((p) => [p.x, p.top, p.foot, PORCH_POST.w]));
+  calls.length = 0;
+  drawPorchPosts(ctx, posts, { x0: 5000, x1: 5400, y0: 600, y1: 900 }, () => { calls.push([]); return true; });
+  assert.equal(calls.length, 0, 'off screen: not drawn');
 });
