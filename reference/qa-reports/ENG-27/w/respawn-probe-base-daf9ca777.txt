@@ -1,0 +1,92 @@
+TAP version 13
+# Subtest: 2-7 home: back at a race-leg fall's x, his margin is never better than at the fall (a fall never pays, end to end)
+not ok 1 - 2-7 home: back at a race-leg fall's x, his margin is never better than at the fall (a fall never pays, end to end)
+  ---
+  duration_ms: 16360.065962
+  type: 'test'
+  location: '/home/user/wtbase/tools/inspect/pacerRespawn.test.ts:120:3'
+  failureType: 'testCodeFailure'
+  error: |-
+    home: 18 of 39 race-leg falls paid:
+    middle normal 1 x 1752: 6.86 at the fall -> 5.88 s back at its x (+-0.98)
+    middle normal 3 x 7183: -8.51 at the fall -> -8.51 s back at its x (+0.00)
+    middle normal 3 x 7042: -8.21 at the fall -> -8.17 s back at its x (+0.05)
+    middle normal 3 x 5590: -12.83 at the fall -> -13.15 s back at its x (+-0.33)
+    middle normal 4 x 4284: 6.64 at the fall -> 6.35 s back at its x (+-0.29)
+    middle easy 2 x 13303: 2.17 at the fall -> 2.15 s back at its x (+-0.01)
+    middle easy 2 x 10049: 7.78 at the fall -> 7.02 s back at its x (+-0.76)
+    middle easy 2 x 1763: 6.88 at the fall -> 6.88 s back at its x (+0.00)
+    middle easy 5 x 13659: 2.01 at the fall -> 1.41 s back at its x (+-0.60)
+    middle easy 6 x 13364: 2.40 at the fall -> 1.74 s back at its x (+-0.65)
+    expert normal 1 x 3036: 8.76 at the fall -> 8.59 s back at its x (+-0.16)
+    expert normal 4 x 8346: 7.57 at the fall -> 7.62 s back at its x (+0.05)
+    expert normal 5 x 4607: -7.53 at the fall -> -7.52 s back at its x (+0.01)
+    ride easy 1 x 13573: 1.83 at the fall -> 1.40 s back at its x (+-0.43)
+    ride easy 1 x 11816: 1.08 at the fall -> 0.41 s back at its x (+-0.67)
+    ride easy 1 x 8991: -8.32 at the fall -> -8.38 s back at its x (+-0.06)
+    ride easy 4 x 7332: -6.55 at the fall -> -7.41 s back at its x (+-0.86)
+    ride easy 5 x 7533: -6.52 at the fall -> -6.52 s back at its x (+0.00)
+    + actual - expected
+    
+    + [
+    +   'middle normal 1 x 1752: 6.86 at the fall -> 5.88 s back at its x (+-0.98)',
+    +   'middle normal 3 x 7183: -8.51 at the fall -> -8.51 s back at its x (+0.00)',
+    +   'middle normal 3 x 7042: -8.21 at the fall -> -8.17 s back at its x (+0.05)',
+    +   'middle normal 3 x 5590: -12.83 at the fall -> -13.15 s back at its x (+-0.33)',
+    +   'middle normal 4 x 4284: 6.64 at the fall -> 6.35 s back at its x (+-0.29)',
+    +   'middle easy 2 x 13303: 2.17 at the fall -> 2.15 s back at its x (+-0.01)',
+    +   'middle easy 2 x 10049: 7.78 at the fall -> 7.02 s back at its x (+-0.76)',
+    +   'middle easy 2 x 1763: 6.88 at the fall -> 6.88 s back at its x (+0.00)',
+    +   'middle easy 5 x 13659: 2.01 at the fall -> 1.41 s back at its x (+-0.60)',
+    +   'middle easy 6 x 13364: 2.40 at the fall -> 1.74 s back at its x (+-0.65)',
+    +   'expert normal 1 x 3036: 8.76 at the fall -> 8.59 s back at its x (+-0.16)',
+    +   'expert normal 4 x 8346: 7.57 at the fall -> 7.62 s back at its x (+0.05)',
+    +   'expert normal 5 x 4607: -7.53 at the fall -> -7.52 s back at its x (+0.01)',
+    +   'ride easy 1 x 13573: 1.83 at the fall -> 1.40 s back at its x (+-0.43)',
+    +   'ride easy 1 x 11816: 1.08 at the fall -> 0.41 s back at its x (+-0.67)',
+    +   'ride easy 1 x 8991: -8.32 at the fall -> -8.38 s back at its x (+-0.06)',
+    +   'ride easy 4 x 7332: -6.55 at the fall -> -7.41 s back at its x (+-0.86)',
+    +   'ride easy 5 x 7533: -6.52 at the fall -> -6.52 s back at its x (+0.00)'
+    + ]
+    - []
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+  actual:
+    0: 'middle normal 1 x 1752: 6.86 at the fall -> 5.88 s back at its x (+-0.98)'
+    1: 'middle normal 3 x 7183: -8.51 at the fall -> -8.51 s back at its x (+0.00)'
+    2: 'middle normal 3 x 7042: -8.21 at the fall -> -8.17 s back at its x (+0.05)'
+    3: 'middle normal 3 x 5590: -12.83 at the fall -> -13.15 s back at its x (+-0.33)'
+    4: 'middle normal 4 x 4284: 6.64 at the fall -> 6.35 s back at its x (+-0.29)'
+    5: 'middle easy 2 x 13303: 2.17 at the fall -> 2.15 s back at its x (+-0.01)'
+    6: 'middle easy 2 x 10049: 7.78 at the fall -> 7.02 s back at its x (+-0.76)'
+    7: 'middle easy 2 x 1763: 6.88 at the fall -> 6.88 s back at its x (+0.00)'
+    8: 'middle easy 5 x 13659: 2.01 at the fall -> 1.41 s back at its x (+-0.60)'
+    9: 'middle easy 6 x 13364: 2.40 at the fall -> 1.74 s back at its x (+-0.65)'
+    10: 'expert normal 1 x 3036: 8.76 at the fall -> 8.59 s back at its x (+-0.16)'
+    11: 'expert normal 4 x 8346: 7.57 at the fall -> 7.62 s back at its x (+0.05)'
+    12: 'expert normal 5 x 4607: -7.53 at the fall -> -7.52 s back at its x (+0.01)'
+    13: 'ride easy 1 x 13573: 1.83 at the fall -> 1.40 s back at its x (+-0.43)'
+    14: 'ride easy 1 x 11816: 1.08 at the fall -> 0.41 s back at its x (+-0.67)'
+    15: 'ride easy 1 x 8991: -8.32 at the fall -> -8.38 s back at its x (+-0.06)'
+    16: 'ride easy 4 x 7332: -6.55 at the fall -> -7.41 s back at its x (+-0.86)'
+    17: 'ride easy 5 x 7533: -6.52 at the fall -> -6.52 s back at its x (+0.00)'
+  operator: 'deepStrictEqual'
+  stack: |-
+    TestContext.<anonymous> (/home/user/wtbase/tools/inspect/pacerRespawn.test.ts:140:12)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.start (node:internal/test_runner/test:944:17)
+    startSubtestAfterBootstrap (node:internal/test_runner/harness:296:17)
+  ...
+1..1
+# tests 1
+# suites 0
+# pass 0
+# fail 1
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 19182.346999
+EXIT 1

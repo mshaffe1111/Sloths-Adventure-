@@ -53,7 +53,7 @@ function falls(bot: 'middle' | 'expert' | 'ride', code: string, setting: 'normal
   if (bot === 'ride') Object.assign(SKILLS, { race: false, rideOnly: true });
   const out: { x: number; m: number; back?: number; pend?: number }[] = [];
   let piece: { kind: string; pacer: { dir: number; x0: number; x1: number; seconds: number }; clock: number | null; owed?: number; verdict: { him: number } | null } | undefined;
-  let mLast: number | null = null, lives: number | undefined, bx: number | null = null, judged = false, wasDown = false;
+  let mLast: number | null = null, xLast: number | null = null, lives: number | undefined, bx: number | null = null, judged = false, wasDown = false;
   let dueAt: number | null = null, totLast: number | null = null, frame = 0;
   try {
     homeRun(bot === 'expert' ? 'expert' : 'middle', setting, seed, 1, { onFrame: (sim: { e: Record<string, any> }) => {
@@ -63,7 +63,12 @@ function falls(bot: 'middle' | 'expert' | 'ride', code: string, setting: 'normal
       const P = piece.pacer;
       const m = piece.clock === null || piece.verdict ? null : pacerMargin(P as never, p.x, piece.clock + (piece.owed ?? 0));
       const fell = lives !== undefined && e.lives < lives;
-      if (fell && mLast !== null) out.push({ x: p.x, m: mLast });
+      // (the fall: his x and his margin from the SAME frame, the last he stood in the race before the life was lost (the engine's hold,
+      //  pacerPiece lastX / margin). It paired the margin of the frame before with the x of the frame the life was lost, one frame's
+      //  travel on, so 'back at its x' read the margin he earns over that travel and the overshoot past it as a pay: expert home Normal 4
+      //  x 8346, the margin at x 8354.9 against the read at x 8338.1, 16.8 px on (+0.05 s at the boat's full pace, +0.07 s at 81%, over
+      //  the two-frame tolerance), while the engine held him to 19.400 s at x 8350.3 exactly (ENG-27w, w/fall-8346-trace.txt))
+      if (fell && mLast !== null && xLast !== null) out.push({ x: xLast, m: mLast });
       // (the ease: the boat's move this frame against its own step; a respawn's frame re-places it and is excepted)
       const x = piece.clock === null ? null : pacerX(P as never, piece.clock);
       const step = Math.abs(P.x1 - P.x0) / P.seconds / 30;
@@ -108,6 +113,7 @@ function falls(bot: 'middle' | 'expert' | 'ride', code: string, setting: 'normal
       for (const f of out) if (f.pend !== undefined && piece.clock !== null) { f.back = pacerMargin(P as never, f.pend, piece.clock + (piece.owed ?? 0) - 1 / 30); f.pend = undefined; }
       for (const f of out) if (f.back === undefined && f.pend === undefined && m !== null && !e.down && p.grounded && (p.x - f.x) * piece.pacer.dir >= 0) f.pend = p.x;
       mLast = m;
+      xLast = p.x;
       lives = e.lives;
     } } as never, code);
   } finally {
