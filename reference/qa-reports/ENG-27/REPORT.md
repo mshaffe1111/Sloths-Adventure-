@@ -3,7 +3,11 @@
 1. **The lead rules the race** on the A / D' / E table below (the boats' pace or the 72 px gap, river.ts:189-190). No race tuning was done here.
 2. **Two E candidates, both on t-eng-27-wip-27v:** E = b20128270 (E's gate alone); E+J = d2bd53f61 (E plus D's judge fix: the judge AND the gate now
    fly the Leaf Glide the engine flies). E+J is the honest one (the gate sees what the engine flies; hopJudged 4/4 GREEN), but it moves the expert
-   rows: expert 5/5 on E, 2/5 on E+J. NOT traced why (box): the first thing to trace if the lead takes E+J (expert home Normal 3 -17.8 s, post N5 -14.8 s).
+   rows: expert 5/5 on E, 2/5 on E+J. **WHY (read from the rows' hop kinds, not traced frame by frame):** with the leaf in the gate, the
+   expert's 0.70 s single (its holdQ's top quantile) now glides far enough to land with the margin, and E's order puts every single before
+   any double, so the gate picks it over the 0.18 s double: expert race presses at 0.70 s on E+J / on E: home N1 5/0, N2 9/0, N3 5/0, post N4
+   4/0, N5 7/0 (doubles fall from 7-11 a run to 2-4). **A ruling on E's definition, not a race tune:** "smallest" as kind-then-hold (built) or as
+   the shortest aimed flight (airtime to landing; a held glide is long). The lead rules; then re-table the expert.
 3. **The suite on frozen a069e911c: PENDING (named plainly).** tsc PASS; the unit stage had 1247 results, 0 not ok, at hand-over, still running (as in
    ENG-27u's box, pacerLay's file had not reported); the CI tool line runs after it in the same script and has NOT run. Log in my container:
    scratchpad/base-suite.log (+ .unit, .ci). The next member re-runs it if the lead wants the verdict; known reds expected: pacerLay's nine.
@@ -72,7 +76,7 @@ No screen changed (bot code, a test, evidence). Nothing drawn to look at.
   moving float), checked by the same side-by-side trace; then hopJudged on the expert too (a test packet: tools/inspect/hopJudged.test.ts).
 
 ## Unresolved
-- The base suite's verdict (pending). Why the expert loses 3 races on E+J (not traced). E's post N4 -51.1 s (not traced).
+- The base suite's verdict (pending). The expert on E+J: read from hop kinds (the 0.70 s glide single picked before the doubles), not traced frame by frame. E's post N4 -51.1 s (not traced).
 
 ## Lessons applied
 D111 (box by the clock, real context low), D113 (no foreground waits: every run in the background, notified), D114/D126 (the suite and the
