@@ -39,8 +39,8 @@ filled in place once, after the bot work (R-165.398). This is a red in CI's seed
 **The merge (b3e0a8206):** 10 conflicts, both intents kept. 2-3 rides main's arc (w2-23) and 2-6 rides t-build-26's (w2-26), so neither is
 a W2Plan now. The hand-built 2-3 and 2-6 Dot hints are gone (each side had dropped one). firsttimer keeps both the figs' progress clock
 and FETCH-CLOCK. gates.yml rolled runs the union (rowWheels + cageBot + cageChannel). engine-core.md keeps both entries. tsc 0. The CI
-tool line on the merge has the same 9 fails as the base: none gone, none new (b26s/tools-merge.txt). **The unit suite on the merge was still
-running at hand-over (the tail of its long files)**: its verdict is not in this report.
+tool line on the merge has the same 9 fails as the base: none gone, none new (b26s/tools-merge.txt). **The unit suite on the merge (frozen
+b3e0a8206): 4,080 tests, 4,077 pass, 0 fail, 3 todo, exit 0** (b26s/suite-merge.txt; it finished after the hand-over).
 **Lessons applied:** D96/D126 (the CI tool line, gates.yml's exact list, not CLAUDE.md's four), D102/D111 (the box), D109 (no clock times
 to the lead), D113/D122 (every long run in the background with the full timeout), D115 (every run on a frozen tree; the bisect freezes and
 thaws itself around each step), D117 (candidates on -wip-26s only), D119 (no heredoc in a commit chain), D120, law 22 (no test or plant
