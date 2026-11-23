@@ -5,13 +5,15 @@
  *   1. on the upper earth inside a ceiling's run: the highest the line comes over the view, less the underside's reach into the soil;
  *   2. on the lower leg (his feet under the line), past every run's end, or with no ceilings: null (the view frames as before);
  *   3. a view running past a run's end: the line slants down into the hillside there, so the run's own line is still the floor;
- *   4. the reach: the stand-in band's 56 in a world with no painted underside strips.
+ *   4. the reach: the stand-in band's 56 in a world with no painted underside strips;
+ *   5. the stand-in band itself is whole layers along the line, never 16-unit columns: their half-unit overlaps doubled its alpha into the
+ *      evenly spaced vertical seams of the finding (seen from above and, from the race leg, from below).
  *   npx tsx --test src/game/stackViewFloor.test.ts
  */
 import './headlessDom.ts';
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { STEP, underReach, viewFloor, type Ceiling } from './groundStack.ts';
+import { drawUnderside, STEP, underReach, viewFloor, type Ceiling } from './groundStack.ts';
 
 /** a ceiling's line from x0, n samples STEP apart */
 const line = (x0: number, n: number, y: (i: number) => number): Ceiling => ({ x0, x1: x0 + (n - 1) * STEP, ys: Array.from({ length: n }, (_, i) => y(i)), lower: [] });
@@ -37,4 +39,23 @@ test('3. a view past the run\'s end: the run\'s own line is the floor (its ends 
 
 test('4. the stand-in\'s reach where a world has no painted underside', () => {
   assert.equal(underReach(-1), 56);
+});
+
+test('5. the stand-in band: whole layers along the line, no columns (their overlaps were the seams)', () => {
+  let images = 0;
+  const fills: number[][] = [];
+  let cur: number[] = [];
+  const ctx = {
+    save() {}, restore() {}, transform() {}, closePath() {},
+    beginPath() { cur = []; },
+    moveTo(x: number) { cur.push(x); },
+    lineTo(x: number) { cur.push(x); },
+    fill() { fills.push(cur); },
+    drawImage() { images++; },
+    fillStyle: '',
+  } as unknown as CanvasRenderingContext2D;
+  drawUnderside(ctx, -1, { x: 1203, width: 600 }, [flat], { x0: 1000, x1: 2600 });
+  assert.equal(images, 0, 'no strip images laid column by column');
+  assert.ok(fills.length > 1 && fills.length <= 16, `a few layers (${fills.length})`);
+  for (const xs of fills) assert.deepEqual([Math.min(...xs), Math.max(...xs)], [1203, 1803], 'each layer spans the bank whole');
 });
