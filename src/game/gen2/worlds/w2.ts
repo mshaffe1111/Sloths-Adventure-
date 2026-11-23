@@ -362,7 +362,11 @@ export function w2Finish<T extends FinishStage>(st: T, _difficulty?: Difficulty)
       const land = catchUnder(st.platforms, x, f.y, TOWER.see);
       return land !== undefined && !rivers.some((r) => x >= r.x0 && x <= r.x1 && r.surfaceY > f.y && r.surfaceY < land);
     })) continue;
-    if (safe) for (const p of solids) if (p !== near && p !== far && !run.includes(p) && p.x >= x0 - 1 && p.x + p.width <= x1 + 1 && p.y > top) drop.add(p.id);
+    // (its bed: the solids under its water. Never a floor of a run leg laid UNDER the fall's own leg (stackedUnder, the band overLowFloor
+    //  reads): that is the low leg's ground, not this fall's bed. 2-7's out-leg soft pits lie over its home leg and deleted its banks there,
+    //  BUILD-27's trace, ENG-JETTY. A fall ON the low leg (its lip in the band) drops its own bed as before)
+    const under = lows.filter((l) => f.y < l.y0 - 2);
+    if (safe) for (const p of solids) if (p !== near && p !== far && !run.includes(p) && p.x >= x0 - 1 && p.x + p.width <= x1 + 1 && p.y > top && !under.some((l) => p.y >= l.y0 - 2 && p.y <= l.y1 + 2)) drop.add(p.id);
     // (a splash sets him back on the bank he came from: on a leg laid LEFT (gen2 legs.ts) that is the right one, ENG-27: the toy's home leg
     // set him on the far bank, ahead, and he turned back)
     const back = leftward(x0, x1, f.y);

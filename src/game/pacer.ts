@@ -57,7 +57,34 @@ export interface Pacer {
   under: number;
   /** its art (PacerRow.art) */
   art: readonly string[];
+  /** the race's END lines (the brief's `raceEnd`, its tip ids read from the world's tips when the stage is laid, gen2/pipeline.ts): one
+   *  is said ONCE, the frame he reaches the dock, by the speaker it names (engine.ts sayRaceEnd). Absent: the race ends unsaid */
+  ends?: RaceEnds<RaceEndSaid>;
 }
+
+/** who says a race's end line: Dot, or Pokey himself (the words name their speaker: the stage's line sheet says whose each is) */
+export type RaceEndWho = 'Dot' | 'Pokey';
+/** a brief's race-end line: a tip id of the world's own (WorldManifest.tips, where the stage's other lines live) and who says it */
+export interface RaceEndLine { tip: string; who: RaceEndWho }
+/** a race-end line as laid: its words and who says them */
+export interface RaceEndSaid { text: string; who: RaceEndWho }
+/** the line for a race he won (he reached the dock before the pacer) and for one he lost (the pacer docked first) */
+export interface RaceEnds<L> { win: L; lose: L }
+
+/** the brief's race-end lines read from the world's tips, or what is wrong with them by name (a tip id the world has no words for) */
+export function raceEndsOf(spec: RaceEnds<RaceEndLine>, tips: Readonly<Record<string, string>>): { ends?: RaceEnds<RaceEndSaid>; problems: string[] } {
+  const problems: string[] = [];
+  const said = (k: 'win' | 'lose'): RaceEndSaid => {
+    const text = tips[spec[k].tip];
+    if (!text) problems.push(`race end: the ${k} line's tip '${spec[k].tip}' has no words in the world's tips`);
+    return { text: text ?? '', who: spec[k].who };
+  };
+  const ends = { win: said('win'), lose: said('lose') };
+  return problems.length ? { problems } : { ends, problems };
+}
+
+/** the line a race's end says: the win's when he docked before the pacer, else the loss's */
+export const raceEndLine = (ends: RaceEnds<RaceEndSaid>, verdict: { won: boolean }): RaceEndSaid => (verdict.won ? ends.win : ends.lose);
 
 /** where the pacer is `clock` s after it set off (it docks at x1 and waits there) */
 export function pacerX(p: Pacer, clock: number): number {
