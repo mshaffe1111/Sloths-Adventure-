@@ -1,3 +1,51 @@
+# ENG-26s (t-build-26-wip-26s; base t-build-26 9e1e30b27 + main cdffdc627): R-165.399 step 0 of release 4. The merge is in, 3 of 9 reds are fixed at their causes, both remaining causes are bisected, and floorAt is merged with its wheelRide red traced. NOT landed. Started 11:12 AM ET 11-23 (by `date`)
+
+## EXACT NEXT STEP (the branch head is ca3a7d063, pushed; nothing is on t-build-26)
+1. **riverRide x2, the plants (the lead must name the new plant first: packet step 2):** bisected to **d6350d3e7** (BUILD-26j, the step-up
+   rule at a faceless lip: a late press becomes a run where the floor goes on a hop up). c00d2fd17 is GREEN and d6350d3e7 is RED on both
+   plants (b26s/rr-log.txt, rr-bisect.txt; the tool is b26s/rr.sh.txt, a git bisect that freezes the tree on every step). The general rule
+   now does the skills' job at 2-1's live cases (adult N 12; child N 4 and 5; child E 22), so with upstream or bankUp off he still crosses.
+   The plants' premise is gone because of a real fix. Next: on the head (with floorAt), search 2-1 for live cases that truly need each
+   skill: every cast bot, both settings, seeds 1-40, skill on and skill off (castRun, as riverRide.test does). For upstream, keep the
+   cases where off loses 5 or more lives or is rescued and on is clean. For bankUp, keep the cases where the far bank comes 2 or more s
+   later. Send the lead the cases and the new plant before writing it. If no live case needs a skill any more, say so: the lead rules
+   whether the skill is retired (no on/off switches for dead code: CLAUDE.md "new replaces old").
+2. **wheelRide's red (floorAt's, step 3):** traced, not fixed (b26s/wheel-sparse-middleE1.txt). On ca3a7d063, the 'sparse' toy, middle,
+   Easy, v1: he reaches the jetty 1.2 s later than before floorAt and jumps at another wheel angle. He lands 12 px past bucket #9's left
+   end at run speed (vx -285) and runs off it 0.04 s later onto bucket #8 below. That is the LIP family of R-165.398 (a landing at a lip
+   at run speed, then off it), now on a moving bucket. Next: find why the landing beat does not stop him on the bucket's edge (firsttimer.ts,
+   the landing beat; eae5b1ff7, BUILD-26n fix 3, brakes a thumb with no holdQ in a bucket). Make a toy that is RED on ca3a7d063, then the
+   general fix, then wheelRide.test and the full CI tool line.
+3. Then the packet's steps 3-5: castBots --proven 1-4 on the bot that lands (the lead's ruling: any slot that fails gets a new seed in place;
+   send the lead slot / old seed / new seed before it lands), 2-6's --proven yield re-measured under the judge, and rule 28 x40 (2-1..2-6,
+   1-4 against t-build-26's rows; 2-3 against INT-R4's; 1-4's rows on the new list). Then the suite, the CI tool line and tierBots on a
+   frozen candidate, the table to the lead, and the landing on the lead's word.
+4. **tierBots' calibration file:** calibration-main.jsonl has CONFLICTED in the merge (t-build-26 recommitted it twice; main's FETCH-CLOCK
+   moved 2 child Normal runs). I took t-build-26's side, so re-judge it with `npx tsx --test tools/inspect/tierBots.test.ts` on the final
+   bot. If runs moved, recommit it the BOTS.md way, naming each moved run and its cause (both bot changes are now on one bot).
+
+## The table (each red: its cause, its fix)
+| red (CI tool line, gates.yml rolled) | on the base 9e1e30b27 | on the merge b3e0a8206 | first bad commit | fix | now |
+|---|---|---|---|---|---|
+| rowWheels x5 'plantRow: 2-6 is already listed' | RED | RED | fab3a8a20 (BUILD-26 listed 2-6; the test's own header says ROW moves to the real row then, and it never did) | d9840a065: a row the table lists with that kit plays its own listed seed alone (proven plan, unchanged); a draft over a listed row still throws. The lead's ruling 1 | GREEN 5/5 on frozen df0d3d76f, the rideWheel-off plant included (b26s/rowwheels-b.txt) |
+| registrycheck '2-6 flown: not judged' | RED | RED | fab3a8a20 (2-6 listed unflown) | df0d3d76f: FLIGHT_STAGE=2-6 flight.ts normal all (fly-2-6.txt), flownArcs normal-2-6 (8 rows), chain.md, judged, judgedTable.test. Ruling 2a | GREEN (registrycheck.test + judgedTable.test) |
+| libstage '1-4 seed 1: the beats its list replays' | RED | RED | 2f188c552 (ENG-26n's lay change after ENG-26k's relist 5981c26c0: 5981c26c0 GREEN 6/6, 2f188c552 RED 4/6, b26s/lib14-out.txt) | 8d2ac35bc: 1-4 relisted once, seeds in order, 100 of 100, version b3feea99 -> 9fdaeff4; 53 of 100 plans change shape (b26s/cmp14). Ruling a | the libstage test itself has not been re-run on the relist yet: run it on the next frozen head |
+| riverRide x2 (the upstream and bankUp plants) | RED | RED | d6350d3e7 (the step-up rule) | not yet: step 1 above | RED |
+| chaseBots (R-165.206) | todo | todo | (open for the Designer) | none: a node 'todo' does not fail the run (the merge's tool line: 357 pass, 9 fail, 1 todo) | not a CI red |
+| wheelRide (floorAt's) | - | - | ca3a7d063 (the floorAt merge) | not yet: step 2 above | not run as a test yet; the leave is traced |
+**Named, expected red (the lead's ruling 2a):** seedlist 2-6 --check under the judge: FAIL, 3 of 100 listed seeds (70, 77, 78), 'its replay
+differs from its search' on both settings; the verdicts refuse 0 of 100. Without the judge (the merge): PASS 100/100. Not relisted: 2-6 is
+filled in place once, after the bot work (R-165.398). This is a red in CI's seedlists shard until then.
+**The merge (b3e0a8206):** 10 conflicts, both intents kept. 2-3 rides main's arc (w2-23) and 2-6 rides t-build-26's (w2-26), so neither is
+a W2Plan now. The hand-built 2-3 and 2-6 Dot hints are gone (each side had dropped one). firsttimer keeps both the figs' progress clock
+and FETCH-CLOCK. gates.yml rolled runs the union (rowWheels + cageBot + cageChannel). engine-core.md keeps both entries. tsc 0. The CI
+tool line on the merge has the same 9 fails as the base: none gone, none new (b26s/tools-merge.txt). **The unit suite on the merge was still
+running at hand-over (the tail of its long files)**: its verdict is not in this report.
+**Lessons applied:** D96/D126 (the CI tool line, gates.yml's exact list, not CLAUDE.md's four), D102/D111 (the box), D109 (no clock times
+to the lead), D113/D122 (every long run in the background with the full timeout), D115 (every run on a frozen tree; the bisect freezes and
+thaws itself around each step), D117 (candidates on -wip-26s only), D119 (no heredoc in a commit chain), D120, law 22 (no test or plant
+loosened: rowWheels' checks unchanged; the riverRide plants are left RED until a new plant is named).
+
 # ENG-26r (on t-build-26-wip-26r from a07ed1bd7): 2-6's draw budget. Candidate 89fb84b0f: static gradients made once (gradCache.ts) + the bank wall culls the backdrop and rivers it covers. Started 3:53 PM ET 11-22 (by `date`)
 
 ## EXACT NEXT STEP

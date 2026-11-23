@@ -1,0 +1,9 @@
+seedlist 2-6: the verdicts refuse 0 of 100 listed seeds
+seedlist 2-6: FAIL
+  2-6 seed 70 normal: its replay differs from its search (platforms, vines, rivers, collectibles): rebuild the list
+  2-6 seed 70 easy: its replay differs from its search (platforms, vines, rivers, collectibles): rebuild the list
+  2-6 seed 77 normal: its replay differs from its search (platforms, vines, rivers, collectibles): rebuild the list
+  2-6 seed 77 easy: its replay differs from its search (platforms, vines, rivers, collectibles): rebuild the list
+  2-6 seed 78 normal: its replay differs from its search (platforms, vines, rivers, collectibles): rebuild the list
+  2-6 seed 78 easy: its replay differs from its search (platforms, vines, rivers, collectibles): rebuild the list
+exit 1

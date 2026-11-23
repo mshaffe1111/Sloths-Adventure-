@@ -1,0 +1,24 @@
+// usage: tsx wheeltr.mts <tree> [row tier setting v]: every leave from a bucket and where it lands, with what floorAt saw
+const T = process.argv[2];
+const [row, tier, setting, v] = [process.argv[3] ?? 'sparse', process.argv[4] ?? 'middle', process.argv[5] ?? 'easy', Number(process.argv[6] ?? 1)];
+await import(`${T}/src/game/headlessDom.ts`);
+const { wheelRun, fixtureSeed } = await import(`${T}/tools/inspect/wheelToys.ts`);
+const seed = fixtureSeed(row);
+let prev = '', t0 = -1, done = false;
+const run = wheelRun(row, tier, setting, seed, v, { onFrame: (sim: any) => {
+  if (done) return;
+  if (!(globalThis as any).__r) { (globalThis as any).__r = 1; console.log('rivers', JSON.stringify((sim.stage.rivers ?? []).map((r: any) => [r.x0, r.x1, r.surfaceY, r.wheelPond ? 'pond' : ''])), 'wheel', JSON.stringify((() => { const w = sim.platforms.find((p: any) => p.wheel)?.wheel?.w; return w ? { cx: w.cx, cy: w.cy, R: w.R } : null; })())); }
+  const w = sim.platforms.find((p: any) => p.wheel)?.wheel?.w;
+  const rivers = sim.stage.rivers ?? [];
+  if (!w?.lay) return;
+  const on = sim.standingOn;
+  const street = sim.platforms.find((p: any) => p.id === w.lay.streetId);
+  const q = sim.platforms.find((p: any) => p.id === on);
+  const onStreet = !!q && !!street && (q === street || (!q.wheel && Math.abs(q.y - street.y) <= 4 && (sim.p.x - w.cx) * w.way > 0));
+  const where = on === w.lay.jetty ? 'jetty' : onStreet ? 'street' : q?.wheel ? 'bucket' : on >= 0 ? 'other' : 'air';
+  if (t0 < 0 && sim.t >= 2 && (where === 'jetty' || where === 'bucket')) t0 = sim.t;
+  if (t0 >= 0 && where !== prev) console.log(`t ${sim.t.toFixed(2)} ${prev} -> ${where} at ${Math.round(sim.p.x)},${Math.round(sim.p.y)} vx ${Math.round(sim.p.vx)} vy ${Math.round(sim.p.vy)} on #${on}${q ? ` (${Math.round(q.x)}-${Math.round(q.x + q.width)} y ${Math.round(q.y)}${q.wheel ? ' bucket' : ''})` : ''}`);
+  if (t0 >= 0 && where === 'street') done = true;
+  prev = where;
+} });
+console.log('end', run.end, 'lives', run.lives, 'rescues', run.rescues);

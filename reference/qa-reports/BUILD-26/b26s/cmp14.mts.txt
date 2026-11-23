@@ -1,0 +1,13 @@
+const T = process.argv[2];
+const { unpackPlan } = await import(`${T}/src/game/gen2/seedList.ts`);
+const O = (await import(process.argv[3])).LIST, N = (await import(`${T}/src/game/gen2/proven/seeds-1-4.ts`)).LIST;
+console.log('count', N.seeds.length, 'seeds same order', JSON.stringify(O.seeds) === JSON.stringify(N.seeds));
+const shape: number[] = [], any: number[] = [];
+N.seeds.forEach((sd: number, i: number) => {
+  const j = O.seeds.indexOf(sd);
+  const a = unpackPlan(O.plans[j], O.dict), b = unpackPlan(N.plans[i], N.dict);
+  if (JSON.stringify(a) !== JSON.stringify(b)) any.push(sd);
+  if (JSON.stringify(a.plan.map((p: { template: string }) => p.template)) !== JSON.stringify(b.plan.map((p: { template: string }) => p.template))) shape.push(sd);
+});
+console.log(`plans changed (any field): ${any.length}: ${any.join(',')}`);
+console.log(`plans changed shape (beats): ${shape.length}: ${shape.join(',')}`);

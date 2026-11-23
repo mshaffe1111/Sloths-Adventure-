@@ -1,0 +1,12 @@
+#!/bin/bash
+# git bisect run step: freeze the tree, run riverRide's two 2-1 plants, unfreeze; 0 good, 1 bad, 125 skip
+T=/home/user/bis-rr
+[ -e $T/node_modules ] || ln -s /home/user/wt26s/node_modules $T/node_modules
+chattr -R +i $T/src $T/tools; chattr -i $T/src/game/gen2/proven
+cd $T && timeout 900 npx tsx --test --test-name-pattern="planted: with the against-the-flow|planted \(THIN\)" tools/inspect/riverRide.test.ts > /tmp/claude-0/-home-user-Sloths-Adventure-/c77cce7e-873c-58c4-b96e-1ed826e58aa0/scratchpad/bis/rr-$(git rev-parse --short HEAD).txt 2>&1
+rc=$?
+chattr -R -i $T/src $T/tools
+echo "$(git -C $T rev-parse --short HEAD) rc=$rc" >> /tmp/claude-0/-home-user-Sloths-Adventure-/c77cce7e-873c-58c4-b96e-1ed826e58aa0/scratchpad/bis/rr-log.txt
+[ $rc -eq 0 ] && exit 0
+[ $rc -eq 124 ] && exit 125
+exit 1
