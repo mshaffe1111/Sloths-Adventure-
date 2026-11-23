@@ -2,6 +2,18 @@
 
 Merged at INT-14 (11-20, t-int-14): §0zq-25d/§0zq-25c ENG-25c (2-5's snap rows level, the snapper's ground, the straddle), §0zq-NOISE ENG-NOISE (one noise channel), §0zq-PROWL ENG-PROWL (sight.up + the leap), §0zq-small3 ENG-SMALL3 (R-165.317/.319/.321), and PAINT-292 (World 1's painted planks and stones; no section here). Merged at INT-13 (11-19, t-int-13): §0ENG23 ENG-23 (followers, the heron reads the line) and §0zl-168 TIME-168 (timecheck), §0zm-25b ENG-25b (the snapper bot skill, the meter's snap channel) and §0zl-25 ENG-25 (2-5's snap stones and snapper rows), §0zn-26b ENG-26b and §0zm-26 ENG-26 (the water wheel), §0W2A ART-W2A (2-3's painted follow poses), §0zo ART-W2B (the wheel's painted draw), §0zo-285c/§0zo-285b/§0zo-285 ENG-285 (the judges and bots fly the engine's Pokey), §0zp-284 FIX-284/284b (2-2's big pads, the real tap hop), §0zp-24d BUILD-24d, §0zn-24c ENG-24c (the raft look, the glow) and §0zm-24 BUILD-24 (2-4) joined; rewritten at the INT-12 merge (11-18, t-int-12): four members wrote here the same day, so labels are suffixed where they met: §0zm-22p ART-22P (CI's seed-list matrix, R-165.278); §0zl-24 ENG-24 (a liana over a river; its REPORT cites it as §0zl); §0zm BUILD-19b, §0zn ENG-19c and §0zl BUILD-19 (t-build-19, the labels its REPORT cites). Before them FIX-22b (11-15): section 0zk.
 
+## 0zq-R27. READY-27 (t-ready-27-wip from t-eng-27 cf7428424, 11-23): the weir wired; the COLUMN DRESS (a general set piece at every column's foot)
+- **What:** columnDress.ts (spec, laid box, `columnDressFaults`), gen2/columnDressLay.ts (`layColumnDress`: one per column of a legs stage, its
+  middle on the column's middle, its foot `sink` px under the floor; a column narrower than the piece is refused by name), pieces/columnDressPiece.ts
+  (layer 'back', behind the ledges and floor; draws by inventory id through drawW2Next; nothing until the sheet is in). Brief field
+  `columnDress` (gen2/types.ts), stage field `columnDress` (stageGenerator.ts), pipeline.ts layChaseStage after the post, stageManifest asks
+  'w2-next' for a w2-next dress. World 2's data: w2.ts `W2_WEIR` (w2-next#weir, 921x346 = the catalog's on_screen_px, sink 24).
+- **The 2-7 builder:** add `columnDress: W2_WEIR` to 2-7's brief (beside pacer and post). The dev fixture ?fixture=home shows it.
+- **Proof:** gen2/columnDressLay.test.ts (12 rolls both settings; the stage otherwise identical; planted RED: 60 px off its foot, out of its
+  column, one missing, a 5000 px piece refused). Stills: reference/qa-reports/READY-27/*.jpg (beside Pokey, upright and sideways, 2x).
+- **Traps:** CATALOG-MASTER's w2-next rows differ between main (ART-NEXT-b, 9 rows, cut paths) and t-eng-27/t-ready-27 (8 wired rows, no
+  barge): when t-eng-27 takes main, keep the wired rows and main's barge row. Playwright for a still script: PW=/opt/node-tools/node_modules/playwright/index.js.
+
 ## 0zq-27q. ENG-27q (t-eng-27-wip-27q b0c6dd586, 11-21): the gates re-aim every frame
 - **gateDraw (firsttimer.ts):** edgeStand, edgeWait, race and upstream draw their hop (drawHop, unchanged) ON the frame they judge it; the one-draw
   hold (waitHop) and the 0.5 s beat (floatBeat) are deleted. Source of the cadence: BOTS.md keeps stopReact/thumb from KID/ADULT ("no profile measures
@@ -19,7 +31,7 @@ Merged at INT-14 (11-20, t-int-14): §0zq-25d/§0zq-25c ENG-25c (2-5's snap rows
 - **The dock:** DOCKED = 0 (he is there at the far bank's edge). A docked boat stays docked: no later fall rewinds it (ruling A (i)).
 - **The draw:** layer 'under' (stagePiece.types.ts; engine.ts draws it over the river's body, BEHIND the ground's earth and every platform), so the boat slips behind each bank (the lead's ruling (a)). pacerWaters is closed at both ends: the wait river starts AT the race point.
 - **The post** (post.ts, gen2/postLay.ts, pieces/postPiece.ts layer 'back', postDraw.ts). PLEASE BE PATIENT doors on the out leg take a letter (a counted petal, mark 'letter') at the engine's pick-up reach; a door stays open after a respawn; the home leg's petals are replies.
-- **w2NextArt.ts:** the w2-next sheet (mail boat x2, door open, letter x2, reply x2), by inventory id. Every draw returns false until loaded (no stand-in); stageManifest 'w2-next', stagePreload decodes it.
+- **w2NextArt.ts:** the w2-next sheet (mail boat x2, door open, letter x2, reply x2, the weir: READY-27 repacked it 3304x371 with reference/qa-reports/READY-27/pack-w2-next.py, every earlier cell kept), by inventory id. Every draw returns false until loaded (no stand-in); stageManifest 'w2-next', stagePreload decodes it.
 - **The home fixture** (homeFixtureStage.ts): `?fixture=home[&seed=n]` or `__play('2-97')`, DEV only, POST_CODE. It is the tests' own toy (gen2/toyHome.ts HOME_CODE / POST_CODE, tools/inspect/homeToys.ts).
 - **w2.ts banks():** a bank lies on the fall's own storey (its height down to LIP_RISE under it), so a pond's put-back on a stacked leg stays on its storey (ENG-27e).
 - **The bot (firsttimer.ts):** SKILLS.race (hops off a log's front when the next log or the bank is in reach); SKILLS.rideOnly (the ride-only claim); SKILLS.fromTakeoff (ENG-27f: jumpFor reads the gap from where he takes off). fromTakeoff moves castBots rows: see the REPORT.
