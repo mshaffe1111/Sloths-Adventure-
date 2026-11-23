@@ -28,9 +28,11 @@ import { w2Finish, W2_RIVERS } from '../../src/game/gen2/worlds/w2.ts';
 import type { SectionTemplate, WorldKit } from '../../src/game/gen2/types.ts';
 import type { LevelConfig } from '../../src/game/types.ts';
 import type { RiverZone } from '../../src/game/river.ts';
-import { SKILLS, firstTimer } from './firsttimer.ts';
+import type { Platform } from '../../src/game/types.ts';
+import { SKILLS, firstTimer, FirstTimerRun, FT_CHILD } from './firsttimer.ts';
 import { CAST_BOTS, castRun } from './castBots.ts';
 import { runTier, type Setting, type Tier, type TierRun } from './tierBots.ts';
+import { homeRun } from './homeToys.ts';
 
 const ID = '2-91';
 /** the fixture's one river section, laying World 2's row `row` (the long log is laid DEEP here: a fall costs a life, so a hop at the water
@@ -227,4 +229,96 @@ test('planted (THIN): with the up-the-far-bank skill off, the child on Easy is c
   } finally {
     SKILLS.bankUp = true;
   }
+});
+
+// ---- ENG-BOT27: the child's two river faults on 2-7 (BUILD-27b's trace), each a bare toy in the real engine, RED with its skill off ----
+/** a bare river: bank A (0-1000, top 600), logs `w` px wide `gap` px apart 28 px under the banks (river.ts LOG_DROP) flowing `dir` at
+ *  75 px/s on the window 1000..x1, bank B past it; every log's place at the bot's time 0 shifted `phase` s along its cycle (driftX) */
+function bareRiver(dir: 1 | -1, w: number, gap: number, x1: number, phase: number): Platform[] {
+  const bank = (id: number, x: number, width: number) => ({ id, x, y: 600, width, height: 90, type: 'solid' }) as Platform;
+  const speed = 75, T = (x1 - 1000 + w) / speed, n = Math.floor((x1 - 1000 + w) / (w + gap));
+  const logs = Array.from({ length: n }, (_, k) => {
+    const offset = (((k * (w + gap)) / speed + phase) % T + T) % T;
+    return { id: 10 + k, x: 0, y: 628, width: w, height: 24, type: 'drift', drift: { x0: 1000, x1, dir, speed, width: w, baseY: 628, offset } } as unknown as Platform;
+  });
+  return [bank(1, 0, 1000), bank(2, x1, 1200), ...logs];
+}
+/** the child on Normal over a bare river from x 700, one run of `cap` s; a fall below the toy is a level put-back (softFalls) */
+function bareRun(pieces: Platform[], onFrame: (p: { x: number; y: number; vx: number; vy: number; grounded: boolean }, under: Platform | undefined, falls: number) => void, cap = 25) {
+  const line = Array.from({ length: 200 }, (_, i) => ({ x: 100 + i * 24, y: 600 }));
+  const run = new FirstTimerRun('1-1', 1, FT_CHILD, { route: line, cap, rescueAfter: 1000, onFrame: (sim) => {
+    const e = (sim as unknown as { e: { player: { x: number; y: number; vx: number; vy: number; grounded: boolean }; platforms: Platform[]; standingOnId: number | null } }).e;
+    onFrame(e.player, e.platforms.find((q) => q.id === e.standingOnId), run.softFalls.length);
+  } });
+  run.sim.bare(pieces);
+  (run.sim as unknown as { e: { currentStage: { config: { levelHeight: number } } } }).e.currentStage.config.levelHeight = 720;
+  run.sim.stand(700, 600);
+  run.prog.relocate(run.sim.p);
+  return run.play();
+}
+const PHASES = Array.from({ length: 12 }, (_, i) => i * 0.25);
+
+test('2-7\'s toy (homeRun): at a bank\'s lip with logs flowing AT him, the child never walks off onto a log\'s tail he cannot land on (SKILLS.meetLog; RED with it off)', () => {
+  // (2-7 child Normal seed 14 x 13898, BUILD-27b, re-traced on the draft by ENG-BOT27: he stood at the lip, then walked off onto 48 px of
+  //  a log's tail sliding under the bank, ran past its far end while he dropped the 28 px, and drowned. A bad step: a walk off a bank (no
+  //  press) toward a log flowing at him, a step down, then a life lost before he stands on a log. Measured on the toy's seeds 1-6, both
+  //  settings: off 5 (Normal 4 x2, Easy 1, 2, 4), on 0; the four seeds that went RED are flown here)
+  const steps = (on: boolean) => {
+    const was = SKILLS.meetLog;
+    SKILLS.meetLog = on;
+    let bad = 0;
+    try {
+      for (const [setting, seed] of [['normal', 4], ['easy', 1], ['easy', 2], ['easy', 4]] as const) {
+        let off = -1, lives0 = 0;
+        let prev: { g: boolean; here: Platform | undefined } | null = null;
+        homeRun('child', setting, seed, 1, { onFrame: (sim) => {
+          const e = (sim as unknown as { e: { player: { x: number; vx: number; vy: number; grounded: boolean }; platforms: Platform[]; standingOnId: number | null; lives: number } }).e;
+          const p = e.player, here = e.platforms.find((q) => q.id === e.standingOnId);
+          if (prev?.g && prev.here && prev.here.type !== 'drift' && !p.grounded && p.vy >= 0 && Math.abs(p.vx) > 20) {
+            const dir = Math.sign(p.vx), bank = prev.here;
+            if (e.platforms.some((q) => q.type === 'drift' && q.drift!.dir !== dir && q.y - bank.y > 6 && q.y - bank.y < 40 && Math.abs((dir > 0 ? q.x + q.width : q.x) - p.x) < 200)) { off = sim.t; lives0 = e.lives; }
+          }
+          if (off >= 0 && p.grounded && here?.type === 'drift') off = -1;
+          if (off >= 0 && (e.lives < lives0 || sim.t - off > 1.5)) { if (e.lives < lives0) bad++; off = -1; }
+          prev = { g: p.grounded, here };
+        } });
+      }
+    } finally {
+      SKILLS.meetLog = was;
+    }
+    return bad;
+  };
+  const on = steps(true), off = steps(false);
+  assert.equal(on, 0, `with the skill: no walk off the lip onto a log's tail he cannot land on (${on})`);
+  assert.ok(off >= 1, `RED: with SKILLS.meetLog off he walks onto a receding tail and loses a life (${off})`);
+});
+
+test('in the real engine: on a log flowing his way he never takes the landing pause\'s flick from mid-log; every hop off it is from its front end (SKILLS.logEnd; RED with it off)', () => {
+  // (2-7 child Normal seed 13 x 8700 (BUILD-27b's seed 14 x 8709): landed on a 150 px log, paused a beat, then the pause's flick, a hop
+  //  no gate judges, fired from 64 px behind its front and came down short of the next. A hop off a log his way from more than 40 px
+  //  behind its front end is the fault)
+  const hops = (on: boolean) => {
+    const was = SKILLS.logEnd;
+    SKILLS.logEnd = on;
+    let mid = 0, all = 0;
+    try {
+      for (const ph of PHASES) {
+        let prev: { g: boolean; under: Platform | undefined; x: number } = { g: false, under: undefined, x: 0 };
+        bareRun(bareRiver(1, 150, 72, 2400, ph), (p, under) => {
+          if (prev.g && prev.under?.drift && !p.grounded && p.vy < 0) {
+            all++;
+            const q = prev.under;
+            if (q.x + q.width - prev.x > 40) mid++;
+          }
+          prev = { g: p.grounded, under, x: p.x };
+        });
+      }
+    } finally {
+      SKILLS.logEnd = was;
+    }
+    return { mid, all };
+  };
+  const on = hops(true), off = hops(false);
+  assert.equal(on.mid, 0, `with the skill: no hop off a log his way from mid-log (${JSON.stringify(on)})`);
+  assert.ok(off.mid >= 1, `RED: with SKILLS.logEnd off the pause's flick fires from mid-log (${JSON.stringify(off)})`);
 });

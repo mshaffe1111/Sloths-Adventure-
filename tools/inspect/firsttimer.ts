@@ -707,7 +707,7 @@ export interface DotReport {
  */
 /** the log a racing hop wants on each side of where it lands (px): the flights' careful middle player (2-7.md FLOWN) */
 const RACE_MARGIN = 50;
-export const SKILLS = { ride: true, upstream: true, bankUp: true, handed: true, dropOnLog: true, vineFromLog: true, vineOverTail: true, bonkAfterSnap: true, rideWheel: true, bonkBrake: true, letItSnap: true, race: true, rideOnly: false, fromTakeoff: true, boardLog: true, boardHop: true, raceSure: true, floatSure: true };
+export const SKILLS = { ride: true, upstream: true, bankUp: true, handed: true, dropOnLog: true, vineFromLog: true, vineOverTail: true, bonkAfterSnap: true, rideWheel: true, bonkBrake: true, letItSnap: true, race: true, rideOnly: false, fromTakeoff: true, boardLog: true, boardHop: true, raceSure: true, floatSure: true, meetLog: true, logEnd: true };
 /**
  * (ENG-26, reference/design/2-6.md NEW 2) `rideWheel`, ride a water wheel (wheel.ts) as a person does: on the jetty he walks up to its lip,
  * stands, and boards with a hop toward the wheel (a tap hop off the jetty boards at every moment of the wheel: wheelFlights.data.ts); in a
@@ -973,6 +973,32 @@ export function hopLandsOn(q: Platform, at: (t: number) => number, x: number, y:
   for (let i = 1; i < 60; i++) {
     const prev = b.y;
     hopFrame(b, i, dir, hold);
+    if (b.vy >= 0 && prev <= q.y && b.y >= q.y) {
+      if (q.drift && (b.x < q.drift.x0 || b.x > q.drift.x1)) return false;
+      const lx = at(t0 + i * DT);
+      return b.x >= lx + margin && b.x <= lx + q.width - margin;
+    }
+    if (b.y > y + 200) return false;
+  }
+  return false;
+}
+/**
+ * (ENG-BOT27, SKILLS.meetLog) Does a plain WALK off the lip at `lip` (no press: he steers `dir` on the ground (groundStep) until he is past
+ * it, then falls with the engine's air tick, airStep, no hold) from (x, y) at `vx0`, game time t0, come down on the float `q` where it will
+ * be, `margin` px in from either end, inside its river's window? hopLandsOn's read for a step: a log flowing AT him shows only its tail past
+ * a bank's lip, and walking on at his run plus its drift he crossed that tail before his 28 px drop (river.ts LOG_DROP) landed him.
+ */
+export function stepLandsOn(q: Platform, at: (t: number) => number, x: number, y: number, lip: number, dir: -1 | 1, t0: number, vx0: number, margin = 24): boolean {
+  const b = { x, y, vx: vx0, vy: 0 };
+  let air = dir * (x - lip) > 0;
+  for (let i = 1; i < 60; i++) {
+    const prev = b.y;
+    if (!air) {
+      groundStep(b, DT, dir);
+      air = dir * (b.x - lip) > 0;
+      continue;
+    }
+    airStep(b, DT, dir);
     if (b.vy >= 0 && prev <= q.y && b.y >= q.y) {
       if (q.drift && (b.x < q.drift.x0 || b.x > q.drift.x1)) return false;
       const lx = at(t0 + i * DT);
@@ -3002,7 +3028,12 @@ export class FirstTimerRun {
       else if (t < this.padPause.until) return {};
       else {
         this.padPause = null;
-        if (dir !== 0 && !this.floorAt(p.x + dir * 80, p.y, 40)) {
+        // (SKILLS.logEnd, ENG-BOT27: never off a drifting log. The pause's flick is a hop no gate judges, pressed from where he landed:
+        //  running his way, 2-7 child Normal seed 13 x 8700, 64 px behind a 150 px log's front, came down short of the next and drowned
+        //  (BUILD-27b's seed 14 x 8709); running at him, seed 14 x 13550 (with the with-flow half alone), the log carried off under the
+        //  flick's no-steer beat. He walks on to the log's front end, where the ride code judges every hop off it (the race, the hand to
+        //  the bank, upstream), as a person aims from a log's end)
+        if (dir !== 0 && !(SKILLS.logEnd && here.drift) && !this.floorAt(p.x + dir * 80, p.y, 40)) {
           const on = this.prog.target(p, 160);
           if (!(on && on.y > p.y + 50)) return this.decide(dir, this.jumpFor(p, dir, here), false, side(dir));
         }
@@ -3104,7 +3135,13 @@ export class FirstTimerRun {
       //  lives every home race lost (trace-27g.txt 5; the lead's GO, ENG-27g). "Mostly under": less than half its length past the lip)
       const fa = this.floorAt(p.x + dir * look, p.y, 40);
       const underLip = SKILLS.boardLog && !!under && under.type !== 'drift' && fa?.type === 'drift' && fa.drift?.dir === dir && fa.y > p.y + 6 && (dir > 0 ? fa.x + fa.width - lip : lip - fa.x) < fa.width / 2;
-      const ahead = fa && !underLip && (!past || this.floorAt(lip + dir * 24, p.y, 40));
+      // (SKILLS.meetLog, ENG-BOT27: a log flowing AT him below the bank's lip is floor ahead only while a plain walk off the lip comes down
+      //  on it (stepLandsOn: his run and its drift close on the tail it shows while he drops). He walked off the lip onto 48 px of a log's
+      //  tail sliding under the bank and ran past its far end before landing: 2-7 child Normal seed 14 x 13898, BUILD-27b's trace. Not
+      //  floor, he waits at the lip (the ride wait below) for a log whose front has reached the lip, or hops to the next as it judges)
+      const tail = SKILLS.meetLog && p.grounded && under?.type !== 'drift' && fa?.type === 'drift' && !!fa.drift && fa.drift.dir !== dir && fa.y > p.y + 6
+        && !stepLandsOn(fa, floatAt((this.sim.stage as { rivers?: RiverZone[] }).rivers, fa), p.x, p.y, under ? lip : p.x, dir as -1 | 1, t, p.vx);
+      const ahead = fa && !underLip && !tail && (!past || this.floorAt(lip + dir * 24, p.y, 40));
       // (up the far bank, SKILLS.bankUp: at a river's far end the bank stands a step up from the log (river.ts LOG_DROP, 28 px), so it
       //  reads as floor ahead and the gap logic below never runs, and a log running back at him never carries him under it to be handed
       //  over. He walked into its face, stood while the log carried him off, walked off its end and splashed back, again, until rescued:
