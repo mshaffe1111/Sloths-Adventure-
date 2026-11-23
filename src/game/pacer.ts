@@ -2,8 +2,10 @@
  * The PACER (2-7's mail boat, reference/design/2-7.md NEW 1): a runner AHEAD of him over a stage's race leg, where a chase's front runs
  * behind (chase.ts). It waits at the race leg's start (2-7: the weir pool at the column's foot), sets off as he steps onto that leg, and
  * runs it at one steady speed to the dock (the stage's exit). Its time is set from the laid leg by the design's flown rule
- * (gen2/pacerLay.ts layPacer): the careful middle player's time for that leg plus the setting's share of it, and never more than the ride-only
- * time less `under`, so a careful middle player wins and letting the current carry him never does. Standing still loses by construction
+ * (gen2/pacerLay.ts layPacer): the careful middle player's time for that leg plus the setting's share of it, so a careful middle player
+ * wins. Letting the current carry him never wins, by `under` s or more: MEASURED on the ride-only bot (pacerLay.test), no longer capped at
+ * the designer's flown ride-only rate, which rides far faster than the bot does (the lead's ruling on the race's pace, ENG-27w: the boat at
+ * the picked pace broke that cap by 12-16 s while the ride-only bot still lost every race). Standing still loses by construction
  * (it never waits). It is a medal only: the race never locks the exit and never costs a life (the verdict is filed with the run's stats).
  * A fall neither costs nor pays race time (the lead's ruling, Option A, 11-21, D112): on a respawn on the race leg the respawn's lost time
  * is forgiven and he keeps EXACTLY the margin he had when he fell (pacerKeep; it still costs the heart). A respawn before that leg puts it
@@ -85,11 +87,11 @@ export function pacerOff(p: Pacer, x: number, feetY: number): boolean {
   return feetY >= p.yMin && (x - p.x0) * p.dir >= 0;
 }
 
-/** what is wrong with a pacer's time, by name (empty: a fair race): over the careful middle's time, never over the ride-only's less `under` */
-export function pacerFaults(p: Pacer, under: number): string[] {
+/** what is wrong with a pacer's time, by name (empty: a fair race): it must be over the careful middle's time. (The ride-only bound is
+ *  measured on the ride-only bot, pacerLay.test, not read from the flown ride-only rate: the lead's ruling, ENG-27w) */
+export function pacerFaults(p: Pacer): string[] {
   const out: string[] = [];
   const f = (s: number) => `${Math.round(s * 10) / 10} s`;
   if (!(p.seconds > p.middle)) out.push(`pacer: its ${f(p.seconds)} is not over the careful middle's ${f(p.middle)}: he cannot win the race`);
-  if (p.seconds > p.rideOnly - under + 1e-6) out.push(`pacer: its ${f(p.seconds)} is over the ride-only ${f(p.rideOnly)} less ${under} s: letting the current carry him wins`);
   return out;
 }
