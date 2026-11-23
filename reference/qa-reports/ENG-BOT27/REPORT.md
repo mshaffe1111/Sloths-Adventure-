@@ -16,8 +16,7 @@ test the measuring tool (D15: every toy shown RED on its plant), the hop judged 
    traced tap; on: a hop off the first log 6/6 phases; RED off: back to the bank 5/6). D121 toy: on-log re-draws never inside stopReact
    (RED on a 0 s plant: 0.067 s) and the first upstream press identical with the drawn thumb and a loud one (RED on a gate planted to read
    the thumb).
-4. **Rule 28 x40**, every bot, both settings, row for row: section 4. **tierBots** 9/9 PASS (candidate 3; reAim is not on 1-1's path: re-run
-   on the landing, section 5).
+4. **Rule 28 x40**, every bot, both settings, row for row: section 4. Gates: section 5.
 ## 2. Polish check
 No screen changed (bot code only). Every fall and stall named here was read frame by frame (probes: frame ring, HOP_TRACE rows).
 ## 3. Pushback
@@ -38,8 +37,11 @@ adult N 37->37, expert 40->40, child E 39->39, adult E 40->40; kid N 5->5, kid E
 **Every moved row:** reAim acts only by ending a refused upstream wait; a run with no re-aim is identical by construction. Checked with a
 counter: 2-1's 6 sampled moved rows had 1-4 re-aims each, 3 unmoved rows 0; 2-5 seed 21 had 2, its unmoved neighbour 0. After the first
 re-aim the run's later random draws shift, so the rest of that row moves. Stages with no river flowing at him (2-2, 2-4) never re-aim.
-## 5. Gates (on frozen 11ee2d0ca = the landing's code)
-(filled at landing)
+## 5. Gates (on frozen 11ee2d0ca = the candidate's code). NOT LANDED: one new red, the lead's call
+Unit shard 1/2: 2066 pass, 4 fail: pacerLay 800, 801 (planted halves, inherited per ENG-27w); seedListChunk 847 (EPERM: the frozen tree
+refuses its temp dir under src/; unfrozen same code 2/2 PASS); **pacerLay 784 NEW**: middle Normal seed 2 loses the home toy's race, 116.5
+s against the boat's 114.04 s (GREEN on base d9425f091, 6/6); one re-aim fires in that run (t 84.63 x 14775), then the stream shifts.
+Shard 2/2 and the CI tool line: see the lead message. tsc PASS; generality PASS; knowncheck PASS; tierBots 9/9 (candidate 3).
 ## 6. Unresolved
 - **2-7 open rows (with reAim; R-165.413):** adult N 11, a step off an at-him log's far tail (BUILD-27c; rescued x 13245); adult N 3 and 30,
   aims at a drifting log's present place (BUILD-27c; set down at the stilts x 5868 / 5933). child N 11, 14, 16, 33: NOT TRACED, R-165.413
