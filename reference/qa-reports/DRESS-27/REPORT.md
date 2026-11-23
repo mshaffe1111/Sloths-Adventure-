@@ -1,4 +1,12 @@
 # DRESS-27 REPORT (Engine, art/dress code). Started 2:43 PM ET 11-23. Branch t-eng-27-wip-dress.
+## DRESS-27c (Engine, draw/lay code; a fresh member). Started 4:12 PM ET 11-23 by `date`. Branch dress27c (pushed as t-eng-27-wip-dress27c).
+### EXACT NEXT STEP (while gates run; replaced at the end)
+Code is DONE and committed: f3649a092 + 3aa389ad9 on t-eng-27 9fe64614e (fast-forward possible). Test head (t-build-27e 793ddf246 + dress27c)
+= 93ae6d052, frozen at /home/user/wt-d27c-f2. Running in the background: drawcheck + clipcheck on wt-d27c-f2 (scratchpad gates/A/lines.txt),
+lockall record on t-build-27e (wt-d27c-base) then --check on 17055a8c1 (= the camera/river commit; 3aa389ad9 changes drawUnderside only,
+no lay) (gates/B/lines.txt), the after stills (dev server 4318 on wt-d27c-b = 93ae6d052; before = 4319 on wt-d27c-base). When every line
+is exit=0: full unit suite on wt-d27c-f2, then `git push origin dress27c:t-eng-27` (no force) and send the lead the hash and the stills.
+
 ## DRESS-27b (Engine, draw code; DRESS-27's successor). Started 3:42 PM ET 11-23. Branch t-eng-27-wip-dress27b.
 ### Polish check (stills-27b/: 2-7 seed 1 Normal, phone 2x, BEFORE = t-build-27-wip + 80dbc46d8, AFTER = the same + this fix)
 - Both breach spots, x9061 and x13298, Pokey on the low ledge and the high one, upright and sideways: sheet-*.jpg (before | after |
