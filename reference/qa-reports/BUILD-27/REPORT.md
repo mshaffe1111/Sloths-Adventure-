@@ -1,4 +1,23 @@
 # BUILD-27 REPORT: 2-7 "The Mailman's Route" (t-build-27-wip; started 12:35 PM ET 11-23 by `date`; budget 2 h, report by 2:40 PM ET)
+## BUILD-27f (finishing; started 3:56 PM ET 11-23 by `date`; report by 5:00 PM ET; hard stop 5:30 PM ET; box 28 min / 320k)
+### EXACT NEXT STEP (BUILD-27f's; read this first)
+(1) DONE: t-eng-27 cfa555cc9 merged into t-build-27e = 0018fa7ab (one doc conflict, engine-core.md: both hunks t-eng-27's, HEAD side
+empty). It adds DRESS-27's draw code (columnDress, porchPosts, protoArt, engine setClimbFeet, the w2-next sheet) and no lay code.
+Frozen tree /home/user/wt-b27f-f1 = 0018fa7ab (src, tools chattr +i; src/game/gen2/proven writable); node_modules
+/home/user/wt-b27f/node_modules (`npm ci --legacy-peer-deps`), symlinked. Dev server: `npx vite --port 4318 --strictPort --host 127.0.0.1`.
+LIST VARIANT: layout n builds seeds[n % 100] (seedList.ts:217 provenSeedFor); seeds = 1..100, so LAYOUT=0 = seed 1.
+(2) RACE CLIP DONE on frozen 0018fa7ab, LIST VARIANT LAYOUT=0 (built seed 1, the puppet's seed check passed): racerec.mts adult normal 1
+from 3300: verdict frame 3775 WON (him 51 s, boat 89.28 s); child normal 1 from 11450: verdict frame 13661 LOST (him 101.1 s, boat 89.28).
+(The verdict frames moved from BUILD-27d's dry run 3615/11758: ENG-BOT27b's re-aim changed the runs.) race27f/race27f-win-adult-normal-L0-
+seed1-side.mp4 (FROM=3600) and race27f-lose-child-normal-L0-seed1-side.mp4 (FROM=13500), 15 fps, 2x sideways. Named frames:
+race27f/win-adult-n-L0-f3800-dotline.jpg (Dot: "You beat the post home! I never manage that!", no wayside card over it, the line stays up
+to the shrine door at 3924) and race27f/lose-child-n-L0-f13680-pokeyline.jpg (Pokey: "Beaten by the post. Fair enough. He's had
+practice.", the boat docked at the jetty). Judged at phone size: both lines whole and readable, nothing covers them.
+(3) STILLS: stills27f/ = probes27c/stills-live.mjs (tip cards live) Normal + Easy, both ways; stills27f/clean/ = tools/engine/runs/
+stills-at-setting.mjs (cards cleared) Normal + Easy with the start jetty (N x4500), the weir pool (N x15950, E x16700) added.
+The live set shows cards out of order (Pokey is placed, so "Now home's the other way!" shows on the out leg): the tool's artefact,
+not play; the clean set is the one to judge the art on.
+
 ## BUILD-27e (finishing; started 3:29 PM ET 11-23 by `date`; this section written 3:31 PM ET; report by 4:45 PM ET; hard stop 5:15 PM ET; box 28 min / 320k)
 ### EXACT NEXT STEP (BUILD-27e's; read this first; written 3:47 PM ET by `date`)
 **Head: t-build-27e 42a5e6ef9** = t-build-27-wip 51ff9c43f + t-eng-27 09c23c1b0 (ENG-HUD27b, clean) + BUILD-27d's 92fcae5bf d1df3070b
