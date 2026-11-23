@@ -29,6 +29,8 @@ No screen changed (bot code only). Every fall and stall named here was read fram
 ## 4. Rule 28 table (pass / lives / rescues, before -> after; tables in this folder)
 2-7 (draft aede72157 + ENG-JETTY's w2.ts hunk): child N 27->36 / 150->124 / 16->4; middle N 37->40 / 92->105 / 3->0; middle E 39->40;
 adult N 37->37, expert 40->40, child E 39->39, adult E 40->40; kid N 5->5, kid E 24->24 (kid rows unmoved: 0). No pass flips to fail.
+**2-7's bar** (adult, child, middle, expert; both settings; 0 rescues; none under 2:00): 23/40 before, **33/40** with reAim (bar 24). Out:
+3, 30 (adult N), 8 (child E), 11 (adult N, child N), 14, 16, 33 (child N). Middle N and E now 0 rescues; adult N's 3 are BUILD-27c's traces.
 2-7 child N in full (seed: before > after, pass/lives/rescues): table-2-7.txt; after, the 4 fails are seeds 11, 14, 16, 33 (1 rescue each);
 11 F->P (6, 8, 9, 10, 12, 18, 21, 36, 37 among them), 0 P->F.
 2-1: no pass flips to fail; child N 38->39 (seed 26 F->P), middle E 39->40 (seed 24 F->P). 2-2: unmoved, row for row (no at-him river).
