@@ -20,7 +20,24 @@ BASE: t-eng-27 d9425f091 (ENG-27w's landing). Candidates on t-eng-27-wip-hud.
    Fork, decided: the engine reads the piece's `open` (the way it already reads the pacer's verdict, engine.ts `pieces.find(kind)`),
    because adding a moment call to PieceHost would change an interface, which is the Architect's.
 
+3. **Easy's flags on a stage with a route** (the lead's item 3; easyMode.ts, the flag fill). The fill put a flag into every gap of
+   FLAG_EVERY or more between the flags and then sorted them, measuring both by x. On a stacked out-and-back the two legs share x, so
+   an x gap ran across both legs, and sorting by x broke the route's order. levelCheck's routed check and the engine (tower.ts
+   flagFurther) take flags in route order. Now, on a stage with `gen2.tower.route`, the gaps, the ledge nearest the middle and the
+   order are all measured in route px (routeAt). Every stage without a route keeps x exactly (`along` is x).
+   Fork, decided: fill by the route rather than skip the fill on routed stages, because skipping would drop Easy's denser flags on 2-7
+   (16 instead of 11), and the route is the measure the engine already uses for flag order.
+
 ## Proofs (planted RED first)
+- **Item 3, src/game/gen2/easyRouted.test.ts**: plant c06f051d7 (the test, old fill), frozen: **RED**, "home seed 1: flag 1 at x
+  3399 (route 22315) is further along the way than flag 0 at x 2055 (route 23659)". On the x measure the home leg's flags come out in
+  reverse route order. Fix 90b9fbccc, frozen: **GREEN** (with hudRoute.test.ts: 4 of 4).
+  Toy probe, all 15 laid rolls (home and post codes, seeds 1-8): old fill 15 of 15 out of order; new fill 0 of 15, adding 3-4 flags.
+- **Item 3 on the real 2-7** (scratch tree: t-build-27-wip plus my commits, frozen per run), Easy, layouts 1-4: before the fix,
+  OUT-OF-ORDER on all 4 (v1 route px 29839,27866,26308,24342,3046,...). After it, in order on all 4: 11 flags become 16, strictly
+  increasing (v1: 1936,3916,5350,7513,9173,11279,12726,14554,16544,17576,19093,20897,24342,26308,27866,29839).
+- **Item 3, listed stages:** 1-4, the one listed stage with a route, is a climb ('ascent'), so the fill never runs there. Its Easy
+  flags are identical old and new over 16 layouts. Every other listed stage has no route, so it runs exactly the old code.
 - **src/game/gen2/hudRoute.test.ts**, plant 6c7aeccbd (helpers and tests, engine not wired), on a frozen tree: **RED 2 of 3**.
   - "the bar rises through the out leg: 0.000 at its end (today's measure: 0, a stuck bar for the whole way out)". This is the
     out-and-back toy (toyHome HOME_CODE, seed 1), the middle bot on the real engine, reading the ratio the engine sends the HUD. The
@@ -39,13 +56,17 @@ BASE: t-eng-27 d9425f091 (ENG-27w's landing). Candidates on t-eng-27-wip-hud.
   one-leg tower; the rest are runs). Their bars are the mode's measure, unchanged. No stage on t-eng-27 lays legs except the toys;
   2-7 lays them on the builder's branch.
 
-## Gates (fix head 2ca3de9b5, frozen worktrees)
+## Gates (frozen worktrees; the landing head is 90b9fbccc plus this REPORT)
 - tsc: PASS. generalitycheck: PASS (26 literals, 26 known). knowncheck: PASS.
 - roadmapcheck: "shallow clone, proofs cannot be checked (fetch-depth 0): FAIL", the same on base d9425f091 (environmental:
   `git rev-parse --is-shallow-repository` = true; this branch does not touch ROADMAP).
-- Unit suite + CI tool line, base d9425f091 and fix 2ca3de9b5: RUNNING at this writing (see EXACT NEXT STEP; verdicts are filled in
-  below when they end).
-- lockall: not run. Neither change touches the lay (routeBar reads the stage; postMoments reads a piece), so no layout can move.
+- Base d9425f091 unit suite: **tests 4064, pass 4059, fail 2, todo 3**. The 2 reds are the planted log-hop bot tests ('a log
+  drifting his way ... boarded by a hop', 'the racing hop off a log lands where it was judged to'), as ENG-27w named.
+- Fix 2ca3de9b5 (items 1-2) unit suite: STOPPED at 3,541 results once item 3 changed src. Up to there it had the same 2 reds and the
+  same todo as the base, and nothing new. Its verdict is superseded by the landing head's run.
+- Landing head 90b9fbccc unit suite + CI tool line, and the base CI tool line: see the verdict lines below (filled in at landing).
+- lockall: not run. Items 1-2 do not touch the lay (routeBar reads the stage; postMoments reads a piece). Item 3 changes Easy's flags
+  only on a stage with a route, and no listed stage is both routed and filled (1-4 measured identical, above).
   drawcheck/clipcheck: not run (no drawing changed; the HUD draws the same bar from a different number).
 
 ## Polish check
@@ -62,7 +83,12 @@ stage row (D75).
 D114 (the base suite first), D115 (frozen trees; my first unfreeze stopped on the node_modules link, so I unfroze src and tools only),
 D118 (the base suite and CI tool line re-run on d9425f091 itself, not carried from ENG-27w's d794dcda1: tools/ changed after it), D119 (no heredoc inside a
 commit chain), D122/D123 (7200000 ms timeouts, at most two heavy runs), D75/D101 (proved on the real 2-7 row, not only toys),
-D43 (works for any stage: no stage id in engine code), D109 (no clock times in messages), D117 (a candidate on -wip first).
+D80/D101 (item 3 is measured against the old code on every listed stage it could touch, and on the real 2-7), D43 (works for any stage: no stage id in engine code), D109 (no clock times in messages), D117 (a candidate on -wip first).
+
+## Own miss
+- Packet rule broken once: I ran the old-code toy probe behind a shell `&` (the packet says never). Its output was lost, so I re-ran
+  it in the foreground (about a minute). Nothing was built on it. Next time a side-by-side comparison runs as two sequential foreground
+  commands, or as one run_in_background.
 
 ## Method update
 - dispatch-packet.md D115: `chattr -R -i <tree>` fails on the node_modules symlink ("Operation not supported"), and a && chain stops
@@ -71,6 +97,8 @@ D43 (works for any stage: no stage id in engine code), D109 (no clock times in m
 ## Learned (for the next engine member)
 - gen2 already measures a route along legs (tower.ts routeOf/routeAt, used for flags). Anything that needs "how far along" on a legs
   stage should read `stage.gen2.tower.route`, never x.
+- Any rule that measures "gaps" or "order" by x (Easy's flag fill, w2.ts:372) is wrong on a stacked stage. Grep for `.x - ` /
+  `sort((a, b) => a.x - b.x)` near flags and checkpoints, and use routeAt when `gen2.tower.route` exists.
 - A moment a story line can wait on is just a name pushed onto `engine.moments` once (wayside.ts dueLine reads it). A piece's state the
   engine reads after `stepPieces` gives one without touching PieceHost.
 
@@ -79,13 +107,13 @@ D43 (works for any stage: no stage id in engine code), D109 (no clock times in m
   letter.
 
 ## EXACT NEXT STEP
-The only step left is the landing. The code is done: fix 2ca3de9b5, this REPORT on top of it.
-1. Suite verdicts. This session's runs are in its scratchpad: base-unit.log / base-ci.log (base d9425f091) and fix-unit.log / fix-ci.log
-   (fix 2ca3de9b5), each ending in UNIT_EXIT / CI_EXIT. If they are lost, re-run both on frozen trees (dispatch-packet.md D115) with the
+The only step left is the landing. The code is done: fix 90b9fbccc (items 1-3), this REPORT on top of it.
+1. Suite verdicts. This session's runs are in its scratchpad: base-unit.log / base-ci.log (base d9425f091) and fix3-unit.log / fix3-ci.log
+   (fix 90b9fbccc), each ending in UNIT_EXIT / CI_EXIT. If they are lost, re-run both on frozen trees (dispatch-packet.md D115) with the
    CLAUDE.md unit line and gates.yml's 'rolled' test line, each in the background with timeout 7200000. Then take `grep "^not ok"` from
    each and compare the names. A red on the fix that is not red on the base is this branch's: STOP and send it to the lead. Inherited
    reds are expected; ENG-27w named 2 unit and 12 CI-tool reds on d794dcda1.
 2. Land: `git ls-remote origin t-eng-27`. If it is still d9425f091, `git push origin <wip head>:t-eng-27` (a fast-forward). If it has
-   moved, merge it into the wip head, run tsc and hudRoute.test.ts, then push. Then `git ls-remote` must equal the pushed head.
+   moved, merge it into the wip head, run tsc, hudRoute.test.ts and easyRouted.test.ts, then push. Then `git ls-remote` must equal the pushed head.
 3. send_message to the lead (session_01FhBbYN2CVHnFXg7XzqKXpM) with the landed hash and the two suite lines (tests / pass / fail,
    inherited reds named). No clock times.

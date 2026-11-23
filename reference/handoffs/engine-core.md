@@ -10,6 +10,8 @@ Merged at INT-14 (11-20, t-int-14): §0zq-25d/§0zq-25c ENG-25c (2-5's snap rows
 - **Moments** (post.ts postMoments): 'post:letter' at the first letter posted, 'post:letter:<n>' at the nth, read from the post piece's
   `open` after stepPieces (no PieceHost change); wayside.ts `at: 'on'` waits on them.
 - Trap: anything "how far along" on a legs stage must read stage.gen2.tower.route, never x.
+- **Easy's flag fill** (easyMode.ts, item 3): on a stage with a route it measures gaps, middles and order in route px (routeAt), so
+  a stacked out-and-back keeps flagFurther's order (easyRouted.test.ts; real 2-7 Easy: 11 flags become 16, in order). No route: x as before.
 
 ## 0zq-27w. ENG-27w (t-eng-27-wip-27w, 11-23): 2-7's race is set by design numbers; E as ruled; the gap x pace grid (supersedes 27q's "Open")
 - **The bot:** E+J plus the lead's "smallest" = racePick takes the SHORTEST aimed flight by airtime to a safe landing (hopFlight / gateAirtime in
