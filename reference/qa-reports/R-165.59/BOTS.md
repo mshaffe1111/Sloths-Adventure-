@@ -20,6 +20,8 @@ run 0.05-2.05 against the testers' 1.5-3.8): the bots stand as calibrated on 0.9
 
 **11-19, ENG-SMALL3 (R-165.317):** the pin now holds as written: `tierBots.test.ts` replays EVERY committed run (all 200, variants 1-40 of each tier and setting), not three variants a tier, and names each moved run with its fields; planted with BUILD-24c's case (child Easy variant 25 moved). About 4 min.
 
+**11-20, ENG-CAGE-b (t-eng-cage @ 1f276d32e, 9:06 PM ET):** recommitted: TWO runs of 200 moved, both child Normal: variant 1 (finish 430.4 -> 426.8 s, put-backs 9 -> 8) and variant 12 (390.2 -> 417 s, 10 -> 9); lives and rescues unchanged (rescues 1 each). Cause, proved: ENG-CAGE's SET-DOWN LOOP rule (firsttimer.ts, set down at one place `tries3` times, no further: put past it, as three falls back are); with that one rule switched off (a scratch edit, not committed) both runs replay exactly as committed. The table's verdicts are unchanged (child Normal finish p50 406.7 -> 408.1 s against 444, put-backs a run 3.38 -> 3.33 against 3.4; w1-morning-path botP50 34 -> 33.5 s); every other line identical.
+
 ## Mapping: every field, its value, its source
 
 | Field | child N / child E | middle N / middle E | expert N | Source |

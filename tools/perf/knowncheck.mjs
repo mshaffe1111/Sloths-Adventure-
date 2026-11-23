@@ -29,6 +29,8 @@ const LISTS = [
   { file: 'tools/difficulty/coverage.known.json', ids: (j) => j.known.flatMap((k) => k.missing.map((h) => `${k.id}|${h}`)) },
   // (R-165.292: a painted style drawn through code terrain by its size, tools/engine/paintcheck.ts; one id per stage, style, height, look)
   { file: 'tools/engine/paintcheck.known.json', ids: (j) => j.known },
+  // hero sheets not on the plain pose's fur colour yet (ART-HERO, R-165.378; heroClipsBody.test.ts): one id per sheet
+  { file: 'src/game/heroBody.known.json', ids: (j) => j.known.map((k) => k.sheet) },
   { file: 'src/game/artUse.allow.json', ids: (j) => (Array.isArray(j) ? j : Object.keys(j)).map((x) => (typeof x === 'string' ? x : x.id ?? JSON.stringify(x))) },
 ];
 

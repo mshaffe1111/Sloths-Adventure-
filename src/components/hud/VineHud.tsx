@@ -23,9 +23,11 @@ import { goalInfo, goalShown } from './goalInfo.ts';
 import { clearOfInsets, fallbackSafeArea, setGuideSafeArea } from '../../game/dotGuidePerch.ts';
 import { Bolt, GoalPic, Heart, Leaf, MenuLines, Star, Tick, Vine, vineY } from './hudArt.tsx';
 import { GoalCard } from './GoalCard.tsx';
-import { PaintedVine, PlateArt, Piece, Tendril, fillStyle, useHudArt } from './painted.tsx';
+import { PaintedVine, PlateArt, Piece, Tendril, fillStyle, useHudArt, vineEndW } from './painted.tsx';
 import './hud.css';
 import { POWER_UP_SECS } from '../../game/powerUps.ts';
+import { facesKey, type Face } from '../../game/followFaces.ts';
+import { LineFace } from './LineFace.tsx';
 
 export interface VineHudProps {
   levelConfig: LevelConfig;
@@ -52,7 +54,13 @@ export interface VineHudProps {
   goalCreature?: () => string | undefined;
   /** a new number each time the stage (re)starts */
   runKey?: number;
+  /** on a stage whose little ones follow him home: each one's face for the goal slots (engine.ts lineFaces); null elsewhere */
+  lineFaces?: () => Face[] | null;
 }
+
+/** how often the HUD reads the little ones' faces (ms): they change without a count changing (hiding, spooked), and the HUD redraws only
+ *  when one does (facesKey) */
+const FACES_MS = 150;
 
 /** (the pod empties over the engine's own durations, game/powerUps.ts: UI-8) */
 const POWER = {
@@ -90,6 +98,9 @@ function readInsets(probe: HTMLElement | null): Insets {
 
 const reducedMotion = () => typeof window !== 'undefined' && !!window.matchMedia?.('(prefers-reduced-motion: reduce)').matches;
 
+/** the lower-row counter's own short vine is drawn this much thinner than the hearts' vine (its curls rise this much less) */
+const STRIP_K = 0.6;
+
 export const VineHud: React.FC<VineHudProps> = (props) => {
   const { levelConfig, hp, maxHp, currentObjectiveCount, targetObjectiveCount, distanceRatio = 0, score, onMenu, activePowerUp, powerUpTimer, lives = 3, heroPoint } = props;
   const isBoss = props.bossHp !== undefined && props.bossMaxHp !== undefined;
@@ -108,6 +119,25 @@ export const VineHud: React.FC<VineHudProps> = (props) => {
   // card and the counter wait for the real one, so the card never flips its number: UI-22)
   const counting = info.kind === 'count' && targetObjectiveCount <= 0;
   const slots = showsSlots(target) && !meeca;
+
+  // (2-3: the little ones' faces, read from the engine while the stage runs; none on any other stage)
+  const [faces, setFaces] = React.useState<Face[] | null>(null);
+  React.useEffect(() => {
+    const read = props.lineFaces;
+    if (!read) return;
+    let key = '';
+    const tick = () => {
+      const f = read();
+      const k = facesKey(f);
+      if (k !== key) {
+        key = k;
+        setFaces(f && f.length ? f : null);
+      }
+    };
+    tick();
+    const id = window.setInterval(tick, FACES_MS);
+    return () => window.clearInterval(id);
+  }, [props.lineFaces, props.runKey]);
 
   const vp = useViewport();
   const mode = hudMode(vp.w, vp.h);
@@ -297,7 +327,7 @@ export const VineHud: React.FC<VineHudProps> = (props) => {
       for (let i = 0; i < target; i++) {
         items.push(
           <span key={i} className={`vh-slot${i < goalNow ? ' on' : ''}`} style={{ width: cg.slot, height: cg.slot }}>
-            <GoalPic icon={info.slotIcon(i)} size={cg.slot} />
+            {faces?.[i] ? <LineFace kind={faces[i].kind} st={faces[i].st} size={cg.slot} /> : <GoalPic icon={info.slotIcon(i)} size={cg.slot} />}
           </span>,
         );
       }
@@ -362,8 +392,10 @@ export const VineHud: React.FC<VineHudProps> = (props) => {
           : { role: 'img', 'aria-label': label })}
       >
         {art ? (
-          // (painted: in the top row the hearts' vine runs on across it; lower down it hangs from a short vine of its own)
-          !(place.row === 1 && !underBoss) && <PaintedVine x0={2} x1={cw - 2} y={pv} k={k} />
+          // (painted: in the top row the hearts' vine runs on across it; lower down it hangs from a short vine of its own, curled at
+          // both ends like every painted run, the curls inside the plate's width; a thinner vine (STRIP_K) so its curls stay under the
+          // hearts' foot, not over it: R-165.364)
+          !(place.row === 1 && !underBoss) && <PaintedVine x0={Math.round(2 + vineEndW(k * STRIP_K))} x1={Math.round(cw - 2 - vineEndW(k * STRIP_K))} y={pv} k={k * STRIP_K} endL endR />
         ) : place.row === 1 && !underBoss ? (
           // in the top row its vine is the canopy strung from the hearts' vine across to the Menu's
           <Vine x0={Math.round(ins.left + vineEnd - 14 - place.x)} x1={Math.round(vp.w - ins.right - g.gutter - g.menu - 16 - place.x)} base={pv} amp={2.4} ph={1.3} />

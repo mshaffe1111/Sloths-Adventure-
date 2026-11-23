@@ -249,6 +249,8 @@ Everything is in `tools/README.md` and `tools/art/`. In short:
 Matt plays every round here before anything is pushed.
 
 1. Run `python3 tools/testlink/build.py "what this round adds"`. It builds into `tools/testlink/dist` and writes `tools/testlink/filesmap.json` with the changed and removed files.
+   It refuses (no map) over 480 files, with under 40 of them free, or with any file over 13 MB (R-165.252, LINK-ROOM 11-20); then
+   `node tools/testlink/smoke.mjs` boots the build headless (title, 1-1, 2-5) and must end `smoke: OK` (no error, no 404) before you publish.
 2. Publish with the Artifact tool:
    - `url`: https://claude.ai/artifact/EnK5hmtGubQeKhKEdgignb
    - `file_path`: `tools/testlink/dist/index.html`

@@ -311,22 +311,13 @@ export function drawHeroSprite(ctx: CanvasRenderingContext2D, p: PlayerState, ti
   const jarF = jarHero && ch && jarHero.img.complete && jarHero.img.naturalWidth ? jarHero.frame(ch.name) : undefined;
   if (jarF && drawStandard(ctx, p, time, ch!, jarHero!.img, jarF)) return true;
   if (clip) {
-    // at each end of a clip the ordinary pose shows through, so the change of pose melts instead of popping
-    if (clip.blend < 1 && ch && stdFrame(ch.name)) {
-      ctx.save();
-      ctx.globalAlpha *= 1 - clip.blend;
-      drawStandard(ctx, p, time, ch, stdImg!);
-      ctx.restore();
-    }
-    ctx.save();
-    ctx.globalAlpha *= clip.blend;
+    // (the clip draws alone: a switch of pose is a cut, never the ordinary pose faded under it, R-165.382)
     // (on the ground the run start's lean and the end of a turn's squeeze ride on the redrawn run too)
     // (and on a draped pair, the sway toward the strand the reaching hand takes: heroClips.ts pairSway)
     // (the painted two-hand climb carries its own reach, so no code sway rides on it: clip.k is set only on that sheet)
     const lean = p.grounded ? ch?.rot : p.climbing && p.climbPair && !clip.k ? pairSway(p) : undefined;
-    const drew = drawStandard(ctx, p, time, { name: clip.name, bob: 0, sx: clip.sx ?? ch?.sx, rot: lean }, clip.img, clip.f, clip.k);
-    ctx.restore();
-    if (drew) return true;
+    const clipCh: StdChoice = { name: clip.name, bob: 0, sx: clip.sx ?? ch?.sx, rot: lean };
+    if (drawStandard(ctx, p, time, clipCh, clip.img, clip.f, clip.k)) return true;
   }
   const mainLoaded = ready && !!atlas;
   const source = heroSource(!!(stdImg && ch && stdFrame(ch.name)), mainLoaded);

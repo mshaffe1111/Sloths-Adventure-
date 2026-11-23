@@ -20,6 +20,31 @@ export interface Release {
 
 export const WHATS_NEW: Release[] = [
   {
+    version: '0.10.2',
+    date: '2026-11-23',
+    title: 'Walk them home',
+    items: [
+      'New stage: Stuck in the Reeds. I free the little ones and lead them home past the heron.',
+      'If a little one runs off the screen, an arrow with its face points the way.',
+      'I look the same in every move now: the same soft fur, climbing, swimming or swinging.',
+      'When I cheer, no ghostly second sloth shows behind me.',
+    ],
+  },
+  {
+    version: '0.10.1',
+    date: '2026-11-21',
+    title: 'Count to four',
+    items: [
+      'River Snappers is rebuilt: the stones bite on four, so I hop off before four.',
+      'The snappers snap on four too. Right after one snaps, a kick sends it home.',
+      'No snapper is ever hurt: a kicked one just hurries off, grumpy.',
+      'The river’s rocks come in three painted shapes now, and no two in a row look alike.',
+      'The ground under the forest’s stones and stumps is tidy now, with no stray grass.',
+      'When I stand still to yawn, wave or scratch, I stay solid: nothing shows through me.',
+      'The riverbanks grow painted flowers and plants now, in place of the old bright stems.',
+    ],
+  },
+  {
     version: '0.10.0',
     date: '2026-11-20',
     title: 'Across the river',

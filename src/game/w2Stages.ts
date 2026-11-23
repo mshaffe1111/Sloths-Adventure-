@@ -30,15 +30,12 @@ import { buildW2Sections, w2Picks, type W2Kit, type W2Look, type W2Plan } from '
 
 export type { W2Plan } from './w2Sections.ts';
 export const W2_STAGES: Record<string, W2Plan> = {
-  '2-3': '2-3',
   '2-6': '2-6',
   '2-7': '2-7',
   '2-8': '2-8',
   '2-9': '2-9',
 };
 
-/** 2-3: five little ones to free (capybaras, ducklings and otters), each in a reed cage on a pulley */
-export const CAGES_23 = 5;
 /** 2-8 Reed Cages asks for 7 more little ones (the stage holds about one and a half times that) */
 export const CAGES_28 = 7;
 /** 2-9 The River King's Court asks for 14 of the court's guards and snappers (it holds about one and a half times that) */
@@ -50,8 +47,9 @@ export const ISLAND_TOP = 600;
  * so Dot's first tip (she waits 2.5 s at a stage's start: dotGuide.ts CALM) is up before anything can hurt him (stageStart.test.ts)
  */
 export const START_WALK = 1150;
-/** the stages with puzzle rooms (puzzleKit.ts): the reed cages on their pulleys (2-3, 2-8), the court's bell (2-9) */
-export const W2_PUZZLES: ReadonlySet<string> = new Set(['2-3', '2-8', '2-9']);
+/** the stages with puzzle rooms (puzzleKit.ts): the reed cages on their pulleys (2-8), the court's bell (2-9). (2-3's is gone with its
+ *  hand build: the designed 2-3 has none, the lead's ruling 8:05 PM ET 11-20; World 2 keeps two, STAGE-RULES' 2-3 per world) */
+export const W2_PUZZLES: ReadonlySet<string> = new Set(['2-8', '2-9']);
 /** a stone weighs this much in a counter-basket (puzzleKit.ts ITEM.stone) */
 const STONE = 2;
 /** a hanging cage's pool: a hop across, the cage over its middle; how far over the bank the cage comes up, its floor dropping open */
@@ -844,12 +842,6 @@ function buildW2Plan(config: LevelConfig, seed: number, plan: W2Plan): Generated
     flower(px, G - 170, 'orchid');
     // (the shelf runs from px - 40 to px + 160; the high bank starts a hop past its end)
     run(160 + Math.round(R.r(46, 60)));
-    // (LV-11, polish report 2026-10-29: in 2-3, a 72 px step at the foot of the bank, so the floor before it is never a dip with no way out:
-    // the scripted player fell back 6-7 times at this 200 px wall. From the step the bank is a double jump; the post is still the
-    // easy way up)
-    // (2-3 only: elsewhere the double jump off the step skipped the climb, and 2-2's quick route lost its climbs, 50 of 200 rolls over
-    // the dead-time limit)
-    if (plan === '2-3') P.push({ id: pid++, x: x - 96, y: G - 72, width: 96, height: 72 + BANK_H, type: 'solid', style: 'log' });
     close();
     open(x, G - 200);
     // (too high to jump: the only way up is the post. A short stretch on top: at 340-370 px the walk from the post's top to the drop
@@ -1078,7 +1070,7 @@ function buildW2Plan(config: LevelConfig, seed: number, plan: W2Plan): Generated
   });
 
   const width = Math.ceil(x + 20);
-  const targetCount = plan === '2-3' ? CAGES_23 : plan === '2-8' ? CAGES_28 : plan === '2-9' ? COURT_GOAL_29 : config.targetCount;
+  const targetCount = plan === '2-8' ? CAGES_28 : plan === '2-9' ? COURT_GOAL_29 : config.targetCount;
   const cfg: LevelConfig = {
     ...config,
     levelWidth: width,

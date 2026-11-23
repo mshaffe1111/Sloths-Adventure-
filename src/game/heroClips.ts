@@ -30,8 +30,9 @@ export function heroClipsEnabled(): boolean {
   }
   return forced;
 }
-/** the idle clips, in the order he goes through them (only the ones that exist and have loaded play) */
-export const IDLE_CLIPS = ['idle-yawn', 'look-around', 'belly-scratch', 'wave', 'doze'];
+/** the idle clips, in the order he goes through them (only the ones that exist and have loaded play). Each starts and ends on his plain
+ * pose (R-165.354, heroClipsEnds.test.ts). The doze clip left the rotation 11-21 (the lead): no sit-down bridge held his model. */
+export const IDLE_CLIPS = ['idle-yawn', 'look-around', 'belly-scratch', 'wave'];
 /** seconds of standing still before the first idle clip, and between one and the next */
 export const IDLE_WAIT = 4;
 export const IDLE_REST = 5;
@@ -62,24 +63,18 @@ export interface ClipFrame {
   img: HTMLImageElement;
   f: StdFrame;
   name: string;
-  /** how much of the clip shows over the ordinary hero (1 = all): a short fade at each end, so the change of pose melts */
-  blend: number;
   /** a sheet drawn at its own size (atlas px to world units), not the standard hero's; and a width stretch (the two-hand climb) */
   k?: number;
   sx?: number;
 }
-/** seconds of fade at each end of a clip */
-export const CLIP_FADE = 0.2;
-function fade(c: HeroClip, dt: number): number {
-  const len = c.n / c.fps;
-  return Math.max(0, Math.min(1, dt / CLIP_FADE, (len - dt) / CLIP_FADE));
-}
-function frameOf(name: string, i: number, blend = 1): ClipFrame | null {
+// (a clip starts and stops with a CUT, never a cross-fade: two different poses faded together draw two see-through sloths, R-165.382;
+// where a clip meets his plain pose it meets it on a painted frame, the idle clips' ends, heroClipsEnds.test.ts; heroClipsCut.test.ts)
+function frameOf(name: string, i: number): ClipFrame | null {
   const c: HeroClip | undefined = HERO_CLIPS[name];
   const img = imgs.get(name);
   if (!c || !img || !ready.has(name)) return null;
   const k = Math.max(0, Math.min(c.n - 1, i));
-  return { img, name: `${name}#${k}`, blend, f: { x: (k % c.cols) * c.w, y: Math.floor(k / c.cols) * c.h, w: c.w, h: c.h, ax: c.ax, ay: c.ay, hx: c.ax } };
+  return { img, name: `${name}#${k}`, f: { x: (k % c.cols) * c.w, y: Math.floor(k / c.cols) * c.h, w: c.w, h: c.h, ax: c.ax, ay: c.ay, hx: c.ax } };
 }
 
 /** when he came to a ledge's end facing the drop (game seconds, -1 not there), and whether he was still stepping back then */
@@ -90,17 +85,17 @@ let edgeStep = false;
  * pure: the step-back and teeter frame for `dt` seconds at a ledge's end (`step`: he arrived while stepping back, so the step-back plays
  * first; already settled, the teeter loops at once). Null where a clip is missing.
  */
-export function edgeClip(dt: number, step: boolean, have: (n: string) => boolean): { name: string; i: number; blend: number } | null {
+export function edgeClip(dt: number, step: boolean, have: (n: string) => boolean): { name: string; i: number } | null {
   const sb = HERO_CLIPS['step-back'];
   let t = dt;
   if (step && sb && have('step-back')) {
     const i = Math.floor(t * sb.fps);
-    if (i < sb.n) return { name: 'step-back', i, blend: Math.min(1, t / CLIP_FADE) };
+    if (i < sb.n) return { name: 'step-back', i };
     t -= sb.n / sb.fps;
   }
   const te = HERO_CLIPS.teeter;
   if (!te || !have('teeter')) return null;
-  return { name: 'teeter', i: Math.floor(t * te.fps) % te.n, blend: step ? 1 : Math.min(1, t / CLIP_FADE) };
+  return { name: 'teeter', i: Math.floor(t * te.fps) % te.n };
 }
 
 /** what is playing now, and since when (game seconds) */
@@ -253,7 +248,7 @@ export function climb2Pick(p: PlayerState, time: number): ClipFrame | null {
   c2LastY = p.y;
   const c = climb2Choice(climbU(p), time - c2StillAt < CLIMB2_STILL_AFTER, p.climbPair);
   const f = climb2Frame(c.name);
-  return f ? { img: climb2Img, f, name: `climb2#${c.name}`, blend: 1, k: CLIMB2_K, sx: c.sx } : null;
+  return f ? { img: climb2Img, f, name: `climb2#${c.name}`, k: CLIMB2_K, sx: c.sx } : null;
 }
 
 /** the redrawn frame for a move or the run/walk, or null when he is doing something else or the sheet is not there */
@@ -305,7 +300,7 @@ export function clipPick(p: PlayerState, time: number, ev: ClipCalm): ClipFrame 
   // the cheer at the exit plays whatever else is going on
   if (p.cheerAt !== undefined && hasClip('cheer')) {
     const c = HERO_CLIPS.cheer;
-    return frameOf('cheer', Math.floor((time - p.cheerAt) * c.fps), Math.min(1, (time - p.cheerAt) / CLIP_FADE));
+    return frameOf('cheer', Math.floor((time - p.cheerAt) * c.fps));
   }
   // the redrawn run, walk and fight moves (only while hurt is not showing: the flinch keeps its own frames)
   if (!ev.isHurt(time)) {
@@ -327,7 +322,7 @@ export function clipPick(p: PlayerState, time: number, ev: ClipCalm): ClipFrame 
     if (e) {
       playing = null;
       stillSince = time;
-      return frameOf(e.name, e.i, e.blend);
+      return frameOf(e.name, e.i);
     }
   } else edgeAt = -1;
   if (p.pushing && hasClip('push')) {
@@ -351,7 +346,7 @@ export function clipPick(p: PlayerState, time: number, ev: ClipCalm): ClipFrame 
   if (playing) {
     const c = HERO_CLIPS[playing.name];
     const i = Math.floor((time - playing.at) * c.fps);
-    if (i < c.n) return frameOf(playing.name, i, fade(c, time - playing.at));
+    if (i < c.n) return frameOf(playing.name, i);
     playing = null;
     stillSince = time - (IDLE_WAIT - IDLE_REST); // rest a while before the next one
     return null;
@@ -362,7 +357,7 @@ export function clipPick(p: PlayerState, time: number, ev: ClipCalm): ClipFrame 
       const name = have[idleNext % have.length];
       idleNext++;
       playing = { name, at: time };
-      return frameOf(name, 0, 0);
+      return frameOf(name, 0);
     }
   }
   return null;
