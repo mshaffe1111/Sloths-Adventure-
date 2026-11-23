@@ -6,7 +6,12 @@ ENG-JETTY's `ended.problems` and the column dress kept) + d9913b17d (race-end wi
 /home/user/wt-b27c-f1 = d9913b17d (chattr +i on src, tools; node_modules symlinked from /home/user/wt-b27c, installed `npm ci
 --legacy-peer-deps` as CI does; a plain `npm ci` fails ERESOLVE). PW for every browser tool: PW=/opt/node-tools/node_modules/playwright/index.mjs.
 Dev server (window.__play is DEV-only, so stills need `npx vite`, not preview): port 4318 from wt-b27c-f1.
-**FIRST:** merge ENG-BOT27 (and ENG-HUD27) when the lead sends their hashes; then wayside.ts:101 `7: dotOn('post:letter', <the same
+**RUNNING at handover (read first):** (1) the suite on frozen f1 d9913b17d -> scratchpad suite1.txt (final count; reds sorted in 6);
+(2) the gates on frozen /home/user/wt-b27c-f2 = 6a87b7d58 -> scratchpad gates-f2.txt: BASE_PATH vite build, chunkcheck, buildcheck,
+engine tools' tests, seedlist 1-1 --check, kbdcheck. Gates PASS already on the head: tsc, knowncheck, generalitycheck, roadmapcheck
+(after `git fetch --unshallow`), artcheck. Still owed on the FINAL head: drawcheck (~6 min), clipcheck (~4 min), tierBots (~40 s), the
+whole suite again, registrycheck (fails until the list and judged land: expected).
+**FIRST after that:** merge ENG-BOT27 (and ENG-HUD27) when the lead sends their hashes; then wayside.ts:101 `7: dotOn('post:letter', <the same
 words verbatim>)`, held in w2Arc27.test; re-run `castBots --stage 2-7 --seeds 1-40 --bots adult,child,middle,expert --setting both
 --par 4 --rows .. --proven ..` on a NEW frozen tree at that head: that is the ship number (lead). The lead measured ENG-BOT27 R1 at 33/40.
 **Blocked on engine (sent to the lead, owner asked):** (i) easyMode.ts:518-536 (Easy's flag fill by x-gap + `cps.sort` by x) makes the suite
