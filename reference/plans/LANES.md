@@ -50,6 +50,7 @@ Each line is checked at the end of its day on the scoreboard; a miss gets its ca
 | 2 | ~~ENG-PROWL~~: 'prowlers never look up' ALREADY LANDED 11-20 (core.ts:265, PLAN-2H); 'lit = seen' moves into ENG-DARK | - | - | - | removed |
 | 2 | ENG-DARK: dark + light ring as one shared brick, the glowworm wake below (F2) | 2 h (M) | after ENG-W3a | | queued |
 | 2 | W3-ART-1: World 3's standing and climbing art on Hugging Face (F4, about $4-8) | 2 h (M) | any free slot | | queued |
+| 2 | ENG-ROUTEORDER (R-165.414, S 1 h): every remaining x-order first/last pick in engine rule code onto ENG-HUD27b's route-order helper + a gate that flags a new one (planted); with it, XS: the pacer's verdict checks the race began (BUILD-27c 11-23: a teleport onto the dock gave a WIN with the pacer clock at 0; unreachable in play) | 1 h (S; hard stop 2 h) | Tue/Wed slot | | queued |
 | 2 | ENG-VINE (F5), METER-W3 (F6); 2-8's flood clock + followers meet the flood (after 2-7's left leg); 2-9's new pieces (sized from 2-9.md) | sized when queued | | | queued |
 
 ## Measured so far (why this board exists)
