@@ -22,7 +22,8 @@ riverRide x4, seedlist x1, firsttimer x1 (2-2 lip). ONE NEW: pacerRespawn home (
 life was lost (x 8354.9) with the life-lost frame's x (8346.0) and read 'back' at x 8338.1, 16.8 px of ordinary running gain, which a slower
 boat turns into more boat-seconds (the same falls +0.05/+0.05/+0.01 at full pace, +0.07/+0.06/+0.02 at 81%: x 1/0.81); the engine held him
 to 19.400 s exactly at x 8350.3. FIX 288e8daa8 (the test only; tolerance and principle unchanged): the fall's x and margin from one frame,
-the engine's hold point. The fixed test on frozen 288e8daa8 and the hold-off plant: RUNNING. lockall not run: W2_RACE / RACE_PACE are read only by the
+the engine's hold point. **GREEN on frozen 288e8daa8 (home, post); RED on the plant with the strict hold OFF (home 6 of 39 falls pay, post
+4 of 47)** (w/pacerRespawn-GREEN-288e8daa8.txt, w/pacerRespawn-RED-plant-holdoff.txt). The lead's condition met; landed (below). lockall not run: W2_RACE / RACE_PACE are read only by the
 2-7 toy (toyHome.ts); no listed stage lays a pacer.
 NEXT: merge t-eng-27-wip-27w into t-eng-27 (only report/evidence commits there since the fork; REPORT.md: take ours, it holds t-eng-27's
 text whole below ENG-27u's heading), push, send the hash.
