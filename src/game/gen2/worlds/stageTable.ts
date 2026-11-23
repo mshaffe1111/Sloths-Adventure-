@@ -77,7 +77,8 @@ export const STAGE_TABLE: Readonly<Record<string, StageRow>> = {
   '2-5': { kit: 'w2-25', judged: 'normal-2-5' },
   // (2-6 Up the Bank Houses, The Water Wheels: the designed arc, w2Arc26.ts, its own kit 'w2-26' (kitLib26), BUILD-26 11-21: World 2's water
   //  wheels (ENG-26..26f, wheel.ts, wheelLay.ts) up a 1700 px tower; the hand-built 2-6 (w2Stages.ts, protoStage.ts's village climb) is deleted)
-  '2-6': { kit: 'w2-26' },
+  //  Judged on its own flown rows, flownArcs.ts normal-2-6, ENG-26s 11-23)
+  '2-6': { kit: 'w2-26', judged: 'normal-2-6' },
 };
 
 /** a stage's row; undefined when the table has none (an inherited name is no row) */
