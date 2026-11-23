@@ -56,6 +56,7 @@ import { PAD_FAIR } from '../../src/game/gen2/rideLay.ts';
 import { beatAt, beatOf, type Beat } from '../../src/game/clock.ts';
 import { drowsyJump } from '../../src/game/zones.ts';
 import { airStep, ASSIST, canGrabSwing, DOUBLE_RISE, secondJumpV, JUMP_RISE, PHYS, SWING, reachJump, reachJumpHeld, TIMED, pressLaunches, groundStep, takeOffStep, vineAmp, vinePeriod } from '../../src/game/physics.ts';
+import { GLIDE, glideBrake } from '../../src/game/glide.ts';
 import { MIN_TOUCH_JUMP_HOLD_MS } from '../../src/game/inputEngine.ts';
 import { handsAlong } from '../../src/game/pieces/vineSnakePiece.ts';
 import { onVine, type SnakeNow } from '../../src/game/vineSnake.ts';
@@ -996,7 +997,7 @@ export type DrawnHop = { kind: 'single' | 'double'; hold: number; d2: number; db
  * frames, uses them in place of its own draws (still made, so the main stream is as ever).
  */
 /** what else a judged flight may come down on first (hopFlies): the platforms near, where each is at a game time, his width, Easy, the help */
-export type FlightOthers = { list: Platform[]; at: (q: Platform) => (t: number) => number; w: number; easy: boolean; assist: number; land: number };
+export type FlightOthers = { list: Platform[]; at: (q: Platform) => (t: number) => number; w: number; easy: boolean; assist: number; land: number; glide?: boolean };
 export type DrawnThumb = { drift: number[]; slip: number[]; release: number[] };
 /** the thumb at a judgment (FirstTimerRun.thumbify's state): the steer it holds, its drift, the late lift-off armed and left, and when
  *  the travel and a slip end (s from the judgment), with the habit (thumbSpeed, a tier bot's one lift-off per let-go) */
@@ -1014,6 +1015,9 @@ export function hopFlies(q: Platform, at: (t: number) => number, x: number, y: n
   let pressed2 = false;
   // (the thumb's own state, flown frame by frame as thumbify plays it: a copy, so each float judged starts from the same thumb)
   const th = thumb && h.thumb ? { ...thumb } : null;
+  // (the Leaf Glide, as the engine flies it (engine.ts update: glideStep after gravity, glideBrake before the move): a fresh leaf at the
+  //  take-off; falling past GLIDE.minFall for GLIDE.onset with Jump held, his fall is braked to GLIDE.fallSpeed)
+  let fallT = 0, leaf: number = GLIDE.maxTime;
   for (let i = 1; i < 75; i++) {
     const age = (i - 1) * DT;
     const prev = b.y;
@@ -1065,6 +1069,19 @@ export function hopFlies(q: Platform, at: (t: number) => number, x: number, y: n
     const held = age < until;
     if (!held && b.vy < -PHYS.cutV) b.vy = -PHYS.cutV;
     (i === 1 ? takeOffStep : airStep)(b, DT, steer, held);
+    // (ENG-27v: the judge flew no leaf. 2-7 home middle Normal 2 x 8256 (ENG-27q's double off log #68): held after the second press, the
+    //  engine braked his fall to 125 px/s two frames and he came down on bank #66, 6 px past its end; the judge, no leaf, came down 30 px
+    //  past it, on log #69 (v/hf-n2-8256.txt, frame by frame). airStep has moved him already: the brake's change to vy moves y back)
+    if (others?.glide) {
+      if (b.vy <= -GLIDE.refillUp) leaf = GLIDE.maxTime;
+      fallT = b.vy > GLIDE.minFall ? fallT + DT : 0;
+      if (held && fallT >= GLIDE.onset - 1e-9 && leaf > 0) {
+        leaf = Math.max(0, leaf - DT);
+        const vy = glideBrake(b.vy, GLIDE.fallSpeed, DT);
+        b.y += (vy - b.vy) * DT;
+        b.vy = vy;
+      }
+    }
     // (ENG-27o: anything else he comes down on first catches him there, by the engine's own catch (engine.ts onFloor: the side a centre
     //  may hang past it, a log's wider on Easy, and the drop it catches from): 2-7 home middle Easy 5 x 13811 judged through the bank he
     //  hopped from onto the log under its lip (came down on the bank, o/diag-easy5-q49-27o.txt); Easy 5 x 12053 and Easy 2 x 13569 judged
@@ -1783,6 +1800,17 @@ export class FirstTimerRun {
     if (h) {
       for (const q of qs) {
         if (hopFlies(q, floatAt(rivers, q), p.x, p.y, dir, h, this.t, vx, margin, this.v2(), this.thumbAt(), this.flightOthers())) {
+          this.judged = { site, q: q.id, t: this.t, x: p.x, hold: h.hold, lag: 0, kind: h.kind, on: this.sim.standingOn };
+          return;
+        }
+      }
+      // (ENG-27v: none with the gate's margin: where the engine catches the flown draw, by its own side catch (engine.ts onFloor, the
+      //  centre past the end by up to 0.26 w on solid, DRIFT_CATCH.side on a log), on anything near; ENG-27q's red row: the double off
+      //  log #68 came down on bank #66 6 px past its end, inside the catch, with no log or bank judged with the margin)
+      const fo = this.flightOthers();
+      for (const q of fo.list) {
+        const side = q.type === 'drift' ? DRIFT_CATCH.side + (fo.easy ? DRIFT_CATCH.easySide : 0) : 0.26 + ASSIST.landSide * fo.assist;
+        if (hopFlies(q, floatAt(rivers, q), p.x, p.y, dir, h, this.t, vx, -side * fo.w, this.v2(), this.thumbAt(), fo)) {
           this.judged = { site, q: q.id, t: this.t, x: p.x, hold: h.hold, lag: 0, kind: h.kind, on: this.sim.standingOn };
           return;
         }
@@ -4254,9 +4282,9 @@ export class FirstTimerRun {
   /** the platforms a judged hop from here may come down on first (hopFlies, ENG-27o) */
   private flightOthers(): FlightOthers {
     const p = this.sim.p, rivers = (this.sim.stage as { rivers?: RiverZone[] }).rivers;
-    const e = this.e as unknown as { assistNow?: () => number; easy?: boolean; forgive?: { landPx: number } };
+    const e = this.e as unknown as { assistNow?: () => number; easy?: boolean; forgive?: { landPx: number }; skills?: { has: (k: string) => boolean }; kit?: { holding?: unknown } };
     const list = this.sim.platforms.filter((o) => !o.broken && o.y > p.y - 160 && o.y < p.y + 220 && (o.drift ? o.drift.x1 > p.x - 700 && o.drift.x0 < p.x + 700 : o.x < p.x + 700 && o.x + o.width > p.x - 700));
-    return { list, at: (o) => floatAt(rivers, o), w: p.width, easy: !!e.easy, assist: e.assistNow?.() ?? 0, land: e.forgive?.landPx ?? 0 };
+    return { list, at: (o) => floatAt(rivers, o), w: p.width, easy: !!e.easy, assist: e.assistNow?.() ?? 0, land: e.forgive?.landPx ?? 0, glide: !!e.skills?.has('glide') && !e.kit?.holding };
   }
 
   /** the thumb now, for hopFlies (ENG-27o): thumbify's state, its ends counted from now */

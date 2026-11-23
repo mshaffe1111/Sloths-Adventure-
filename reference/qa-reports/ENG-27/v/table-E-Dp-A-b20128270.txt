@@ -1,0 +1,148 @@
+E	middle	home normal 1	end shrine at x 300 y 1530	finish 166.4	WON him 86.3 boat 93.89 by 7.6	lives lost 1 (race leg 1 at x 1752)	race presses 12 fall/press 0.00	hops {"single 0.18":1,"double 0.12":9,"single 0.05":1,"single 0.12":1}
+Dp	middle	home normal 1	end shrine at x 295 y 1530	finish 213.5	lost him 132.8 boat 93.89 by -38.9	lives lost 4 (race leg 4 at x 11600,8738,2789,1755)	race presses 11 fall/press 0.00	hops {"single 0.03":1,"single 0.08":1,"single 0.21":1,"single 0.11":1,"single 0.12":2,"double 0.13":1,"single 0.35":1,"single 0.24":1,"single 0.16":1,"single 0.05":1}
+A	middle	home normal 1	end shrine at x 295 y 1530	finish 175.1	WON him 90.2 boat 93.89 by 3.7	lives lost 6 (race leg 4 at x 13473,10103,8787,4523)	race presses 8 fall/press 0.00	hops {"single 0.20":8}
+E	middle	home normal 2	end shrine at x 296 y 1438	finish 241.6	WON him 85.7 boat 92.37 by 6.7	lives lost 3 (race leg 0 at x -)	race presses 13 fall/press 0.00	hops {"double 0.12":10,"single 0.18":1,"single 0.12":1,"single 0.33":1}
+Dp	middle	home normal 2	end shrine at x 293 y 1438	finish 276.2	lost him 119.4 boat 92.37 by -27	lives lost 3 (race leg 0 at x -)	race presses 9 fall/press 0.00	hops {"single 0.19":1,"single 0.28":1,"single 0.14":1,"single 0.12":1,"single 0.24":1,"single 0.09":2,"double 0.35":1,"single 0.31":1}
+A	middle	home normal 2	end shrine at x 291 y 1438	finish 203	lost him 94.9 boat 92.37 by -2.5	lives lost 6 (race leg 4 at x 11198,9789,5853,5678)	race presses 8 fall/press 0.00	hops {"single 0.20":8}
+E	middle	home normal 3	end shrine at x 298 y 1423	finish 215.6	lost him 99.6 boat 92.06 by -7.5	lives lost 5 (race leg 4 at x 7009,7183,7042,5590)	race presses 10 fall/press 0.00	hops {"double 0.12":7,"single 0.08":1,"single 0.33":1,"single 0.18":1}
+Dp	middle	home normal 3	end shrine at x 293 y 1423	finish 251.8	lost him 140.4 boat 92.06 by -48.3	lives lost 1 (race leg 0 at x -)	race presses 9 fall/press 0.00	hops {"single 0.12":2,"single 0.14":2,"double 0.06":1,"single 0.11":1,"single 0.36":1,"double 0.13":1,"single 0.28":1}
+A	middle	home normal 3	end shrine at x 295 y 1423	finish 189.5	lost him 92.4 boat 92.06 by -0.3	lives lost 4 (race leg 2 at x 7190,5686)	race presses 9 fall/press 0.00	hops {"single 0.20":9}
+E	middle	home easy 1	end shrine at x 293 y 1519	finish 138.1	WON him 80.8 boat 97.53 by 16.7	lives lost 1 (race leg 1 at x 1769)	race presses 14 fall/press 0.00	hops {"single 0.47":1,"single 0.09":2,"single 0.20":4,"double 0.14":6,"single 0.05":1}
+Dp	middle	home easy 1	end shrine at x 292 y 1519	finish 158.3	lost him 102.3 boat 97.53 by -4.8	lives lost 0 (race leg 0 at x -)	race presses 8 fall/press 0.00	hops {"single 0.18":2,"single 0.13":1,"single 0.04":1,"single 0.16":1,"double 0.06":1,"single 0.26":1,"single 0.51":1}
+A	middle	home easy 1	end shrine at x 296 y 1519	finish 145.9	WON him 88.1 boat 97.53 by 9.4	lives lost 3 (race leg 3 at x 13338,6143,4621)	race presses 9 fall/press 0.00	hops {"single 0.20":9}
+E	middle	home easy 3	end shrine at x 296 y 1422	finish 146.7	WON him 78.4 boat 96.09 by 17.7	lives lost 2 (race leg 2 at x 5796,4446)	race presses 11 fall/press 0.00	hops {"double 0.14":8,"single 0.20":1,"single 0.05":1,"single 0.09":1}
+Dp	middle	home easy 3	end shrine at x 292 y 1422	finish 166.8	lost him 100.3 boat 96.09 by -4.2	lives lost 0 (race leg 0 at x -)	race presses 8 fall/press 0.00	hops {"single 0.18":1,"single 0.14":2,"single 0.04":1,"single 0.09":1,"single 0.26":1,"single 0.51":1,"single 0.07":1}
+A	middle	home easy 3	end shrine at x 295 y 1422	finish 149.7	WON him 84.3 boat 96.09 by 11.8	lives lost 1 (race leg 1 at x 4549)	race presses 9 fall/press 0.00	hops {"single 0.20":9}
+E	middle	post normal 4	end shrine at x 296 y 1425	finish 207.9	lost him 151.9 boat 100.76 by -51.1	lives lost 2 (race leg 2 at x 11189,7278)	race presses 13 fall/press 0.00	hops {"double 0.12":10,"single 0.08":1,"single 0.05":1,"single 0.18":1}
+Dp	middle	post normal 4	end shrine at x 294 y 1425	finish 184	lost him 127.9 boat 100.76 by -27.1	lives lost 1 (race leg 1 at x 12479)	race presses 9 fall/press 0.00	hops {"single 0.16":1,"single 0.05":1,"single 0.04":1,"single 0.08":1,"single 0.21":1,"single 0.36":1,"single 0.07":1,"double 0.13":1,"single 0.35":1}
+A	middle	post normal 4	end shrine at x 294 y 1425	finish 153.3	WON him 91.6 boat 100.76 by 9.2	lives lost 1 (race leg 1 at x 4670)	race presses 10 fall/press 0.00	hops {"single 0.20":10}
+E	middle	post normal 5	end shrine at x 292 y 1472	finish 167.1	WON him 97.8 boat 103.44 by 5.6	lives lost 1 (race leg 1 at x 14141)	race presses 14 fall/press 0.00	hops {"double 0.12":10,"single 0.18":1,"single 0.08":1,"single 0.12":1,"single 0.05":1}
+Dp	middle	post normal 5	end shrine at x 295 y 1472	finish 218.6	lost him 150.4 boat 103.44 by -47	lives lost 0 (race leg 0 at x -)	race presses 10 fall/press 0.00	hops {"single 0.03":1,"single 0.04":1,"single 0.14":3,"single 0.21":1,"single 0.32":1,"single 0.36":1,"single 0.11":1,"single 0.28":1}
+A	middle	post normal 5	end shrine at x 296 y 1472	finish 172.9	WON him 102.1 boat 103.44 by 1.3	lives lost 5 (race leg 5 at x 12984,12815,10252,5984,1790)	race presses 9 fall/press 0.00	hops {"single 0.20":9}
+E	expert	home normal 1	end shrine at x 293 y 1530	finish 205	WON him 90.2 boat 93.89 by 3.7	lives lost 3 (race leg 1 at x 10123)	race presses 9 fall/press 0.00	hops {"single 0.28":1,"double 0.18":7,"single 0.08":1}
+Dp	expert	home normal 1	end shrine at x 296 y 1530	finish 239.5	lost him 126.7 boat 93.89 by -32.8	lives lost 3 (race leg 1 at x 2988)	race presses 10 fall/press 0.00	hops {"single 0.20":1,"single 0.39":1,"single 0.55":1,"double 0.52":1,"single 0.24":1,"single 0.23":1,"single 0.14":1,"double 0.51":1,"single 0.26":1,"single 0.17":1}
+A	expert	home normal 1	end shrine at x 293 y 1530	finish 129.2	WON him 71 boat 93.89 by 22.9	lives lost 0 (race leg 0 at x -)	race presses 7 fall/press 0.00	hops {"single 0.20":7}
+E	expert	home normal 2	end shrine at x 294 y 1438	finish 173	WON him 87 boat 92.37 by 5.4	lives lost 3 (race leg 1 at x 8450)	race presses 12 fall/press 0.00	hops {"single 0.18":1,"double 0.18":7,"single 0.13":2,"single 0.08":2}
+Dp	expert	home normal 2	end shrine at x 300 y 1438	finish 197.1	lost him 111.6 boat 92.37 by -19.2	lives lost 3 (race leg 1 at x 11185)	race presses 9 fall/press 0.00	hops {"double 0.26":1,"single 0.20":1,"single 0.16":1,"single 0.55":1,"single 0.11":1,"single 0.24":1,"single 0.26":1,"single 0.14":1,"double 0.51":1}
+A	expert	home normal 2	end shrine at x 299 y 1438	finish 157.2	WON him 87.9 boat 92.37 by 4.5	lives lost 4 (race leg 4 at x 12948,11307,7059,5370)	race presses 7 fall/press 0.00	hops {"single 0.20":7}
+E	expert	home normal 3	end shrine at x 297 y 1423	finish 200	WON him 91.4 boat 92.06 by 0.7	lives lost 1 (race leg 0 at x -)	race presses 10 fall/press 0.00	hops {"double 0.18":8,"single 0.18":1,"single 0.13":1}
+Dp	expert	home normal 3	end shrine at x 291 y 1423	finish 234.8	lost him 125.2 boat 92.06 by -33.1	lives lost 1 (race leg 0 at x -)	race presses 10 fall/press 0.00	hops {"double 0.26":1,"single 0.26":2,"single 0.39":1,"single 0.16":1,"single 0.06":1,"single 0.11":1,"double 0.52":1,"single 0.48":1,"single 0.23":1}
+A	expert	home normal 3	end shrine at x 300 y 1423	finish 145.8	WON him 83.1 boat 92.06 by 9	lives lost 4 (race leg 4 at x 9841,8602,8528,5637)	race presses 8 fall/press 0.00	hops {"single 0.20":8}
+/home/user/e27v/tools/inspect/tierBots.ts:75
+  if (!who) throw new Error(`no ${tier} bot on ${setting}`);
+                  ^
+
+Error: no expert bot on easy
+    at runTier (/home/user/e27v/tools/inspect/tierBots.ts:75:19)
+    at <anonymous> (/home/user/e27v/tools/inspect/homeToys.ts:33:47)
+    at withFixtureConfig (/home/user/e27v/src/game/realPlay.ts:120:16)
+    at <anonymous> (/home/user/e27v/tools/inspect/homeToys.ts:33:14)
+    at withTestStage (/home/user/e27v/src/game/gen2/listed.ts:93:12)
+    at homeRun (/home/user/e27v/tools/inspect/homeToys.ts:30:10)
+    at <anonymous> (/tmp/claude-0/-home-user-Sloths-Adventure-/a8c2913d-5e8d-5d1b-bd73-ed7938c99d4b/scratchpad/table-27v.mts:12:16)
+
+Node.js v22.23.5
+E expert home easy 1 FAILED exit 1
+/home/user/base27u/tools/inspect/tierBots.ts:75
+  if (!who) throw new Error(`no ${tier} bot on ${setting}`);
+                  ^
+
+Error: no expert bot on easy
+    at runTier (/home/user/base27u/tools/inspect/tierBots.ts:75:19)
+    at <anonymous> (/home/user/base27u/tools/inspect/homeToys.ts:33:47)
+    at withFixtureConfig (/home/user/base27u/src/game/realPlay.ts:120:16)
+    at <anonymous> (/home/user/base27u/tools/inspect/homeToys.ts:33:14)
+    at withTestStage (/home/user/base27u/src/game/gen2/listed.ts:93:12)
+    at homeRun (/home/user/base27u/tools/inspect/homeToys.ts:30:10)
+    at <anonymous> (/tmp/claude-0/-home-user-Sloths-Adventure-/a8c2913d-5e8d-5d1b-bd73-ed7938c99d4b/scratchpad/table-27v.mts:12:16)
+
+Node.js v22.23.5
+Dp expert home easy 1 FAILED exit 1
+/home/user/a27v/tools/inspect/tierBots.ts:75
+  if (!who) throw new Error(`no ${tier} bot on ${setting}`);
+                  ^
+
+Error: no expert bot on easy
+    at runTier (/home/user/a27v/tools/inspect/tierBots.ts:75:19)
+    at <anonymous> (/home/user/a27v/tools/inspect/homeToys.ts:33:47)
+    at withFixtureConfig (/home/user/a27v/src/game/realPlay.ts:120:16)
+    at <anonymous> (/home/user/a27v/tools/inspect/homeToys.ts:33:14)
+    at withTestStage (/home/user/a27v/src/game/gen2/listed.ts:93:12)
+    at homeRun (/home/user/a27v/tools/inspect/homeToys.ts:30:10)
+    at <anonymous> (/tmp/claude-0/-home-user-Sloths-Adventure-/a8c2913d-5e8d-5d1b-bd73-ed7938c99d4b/scratchpad/table-27v.mts:12:16)
+
+Node.js v22.23.5
+A expert home easy 1 FAILED exit 1
+/home/user/e27v/tools/inspect/tierBots.ts:75
+  if (!who) throw new Error(`no ${tier} bot on ${setting}`);
+                  ^
+
+Error: no expert bot on easy
+    at runTier (/home/user/e27v/tools/inspect/tierBots.ts:75:19)
+    at <anonymous> (/home/user/e27v/tools/inspect/homeToys.ts:33:47)
+    at withFixtureConfig (/home/user/e27v/src/game/realPlay.ts:120:16)
+    at <anonymous> (/home/user/e27v/tools/inspect/homeToys.ts:33:14)
+    at withTestStage (/home/user/e27v/src/game/gen2/listed.ts:93:12)
+    at homeRun (/home/user/e27v/tools/inspect/homeToys.ts:30:10)
+    at <anonymous> (/tmp/claude-0/-home-user-Sloths-Adventure-/a8c2913d-5e8d-5d1b-bd73-ed7938c99d4b/scratchpad/table-27v.mts:12:16)
+
+Node.js v22.23.5
+E expert home easy 3 FAILED exit 1
+/home/user/base27u/tools/inspect/tierBots.ts:75
+  if (!who) throw new Error(`no ${tier} bot on ${setting}`);
+                  ^
+
+Error: no expert bot on easy
+    at runTier (/home/user/base27u/tools/inspect/tierBots.ts:75:19)
+    at <anonymous> (/home/user/base27u/tools/inspect/homeToys.ts:33:47)
+    at withFixtureConfig (/home/user/base27u/src/game/realPlay.ts:120:16)
+    at <anonymous> (/home/user/base27u/tools/inspect/homeToys.ts:33:14)
+    at withTestStage (/home/user/base27u/src/game/gen2/listed.ts:93:12)
+    at homeRun (/home/user/base27u/tools/inspect/homeToys.ts:30:10)
+    at <anonymous> (/tmp/claude-0/-home-user-Sloths-Adventure-/a8c2913d-5e8d-5d1b-bd73-ed7938c99d4b/scratchpad/table-27v.mts:12:16)
+
+Node.js v22.23.5
+Dp expert home easy 3 FAILED exit 1
+/home/user/a27v/tools/inspect/tierBots.ts:75
+  if (!who) throw new Error(`no ${tier} bot on ${setting}`);
+                  ^
+
+Error: no expert bot on easy
+    at runTier (/home/user/a27v/tools/inspect/tierBots.ts:75:19)
+    at <anonymous> (/home/user/a27v/tools/inspect/homeToys.ts:33:47)
+    at withFixtureConfig (/home/user/a27v/src/game/realPlay.ts:120:16)
+    at <anonymous> (/home/user/a27v/tools/inspect/homeToys.ts:33:14)
+    at withTestStage (/home/user/a27v/src/game/gen2/listed.ts:93:12)
+    at homeRun (/home/user/a27v/tools/inspect/homeToys.ts:30:10)
+    at <anonymous> (/tmp/claude-0/-home-user-Sloths-Adventure-/a8c2913d-5e8d-5d1b-bd73-ed7938c99d4b/scratchpad/table-27v.mts:12:16)
+
+Node.js v22.23.5
+A expert home easy 3 FAILED exit 1
+E	expert	post normal 4	end shrine at x 298 y 1425	finish 140.9	WON him 98.4 boat 100.76 by 2.4	lives lost 0 (race leg 0 at x -)	race presses 14 fall/press 0.00	hops {"double 0.18":10,"single 0.18":2,"single 0.28":1,"single 0.13":1}
+Dp	expert	post normal 4	end shrine at x 292 y 1425	finish 161	lost him 118.2 boat 100.76 by -17.4	lives lost 1 (race leg 1 at x 6044)	race presses 12 fall/press 0.00	hops {"single 0.15":1,"single 0.25":1,"double 0.26":1,"single 0.27":1,"single 0.20":1,"single 0.39":1,"single 0.16":1,"single 0.18":1,"single 0.11":1,"double 0.52":1,"single 0.48":1,"single 0.23":1}
+A	expert	post normal 4	end shrine at x 294 y 1425	finish 142.1	WON him 88 boat 100.76 by 12.8	lives lost 4 (race leg 4 at x 6009,3248,3186,1782)	race presses 7 fall/press 0.00	hops {"single 0.20":7}
+E	expert	post normal 5	end shrine at x 299 y 1472	finish 159.5	WON him 100.9 boat 103.44 by 2.5	lives lost 4 (race leg 4 at x 10233,10134,8812,5993)	race presses 15 fall/press 0.00	hops {"double 0.18":11,"single 0.08":3,"single 0.28":1}
+Dp	expert	post normal 5	end shrine at x 291 y 1472	finish 180	lost him 125.5 boat 103.44 by -22.1	lives lost 2 (race leg 2 at x 12934,7408)	race presses 11 fall/press 0.00	hops {"single 0.17":2,"single 0.39":1,"single 0.55":1,"double 0.52":1,"single 0.26":1,"single 0.22":1,"single 0.14":1,"single 0.62":1,"single 0.16":1,"double 0.16":1}
+A	expert	post normal 5	end shrine at x 297 y 1472	finish 144.9	WON him 93.6 boat 103.44 by 9.8	lives lost 0 (race leg 0 at x -)	race presses 10 fall/press 0.00	hops {"single 0.20":10}
+E	ride	home normal 1	end shrine at x 295 y 1530	finish 211.1	lost him 130.5 boat 93.89 by -36.6	lives lost 1 (race leg 1 at x 3023)	race presses 0 fall/press 0.00	hops {}
+Dp	ride	home normal 1	end shrine at x 295 y 1530	finish 211.1	lost him 130.5 boat 93.89 by -36.6	lives lost 1 (race leg 1 at x 3023)	race presses 0 fall/press 0.00	hops {}
+A	ride	home normal 1	end shrine at x 292 y 1530	finish 205.9	lost him 118.2 boat 93.89 by -24.3	lives lost 5 (race leg 3 at x 11644,2995,1761)	race presses 0 fall/press 0.00	hops {}
+E	ride	home normal 2	end shrine at x 291 y 1438	finish 294.2	lost him 138.7 boat 92.37 by -46.3	lives lost 3 (race leg 0 at x -)	race presses 0 fall/press 0.00	hops {}
+Dp	ride	home normal 2	end shrine at x 291 y 1438	finish 294.2	lost him 138.7 boat 92.37 by -46.3	lives lost 3 (race leg 0 at x -)	race presses 0 fall/press 0.00	hops {}
+A	ride	home normal 2	end shrine at x 293 y 1438	finish 222.2	lost him 113.5 boat 92.37 by -21.1	lives lost 5 (race leg 3 at x 9808,5664,1667)	race presses 0 fall/press 0.00	hops {}
+E	ride	home normal 3	end shrine at x 298 y 1423	finish 253.2	lost him 141.6 boat 92.06 by -49.5	lives lost 2 (race leg 1 at x 5651)	race presses 0 fall/press 0.00	hops {}
+Dp	ride	home normal 3	end shrine at x 298 y 1423	finish 253.2	lost him 141.6 boat 92.06 by -49.5	lives lost 2 (race leg 1 at x 5651)	race presses 0 fall/press 0.00	hops {}
+A	ride	home normal 3	end shrine at x 298 y 1423	finish 207.6	lost him 107.8 boat 92.06 by -15.7	lives lost 3 (race leg 1 at x 13002)	race presses 0 fall/press 0.00	hops {}
+E	ride	home easy 1	end shrine at x 298 y 1519	finish 190.6	lost him 123.8 boat 97.53 by -26.3	lives lost 3 (race leg 3 at x 13573,11816,8991)	race presses 0 fall/press 0.00	hops {}
+Dp	ride	home easy 1	end shrine at x 298 y 1519	finish 190.6	lost him 123.8 boat 97.53 by -26.3	lives lost 3 (race leg 3 at x 13573,11816,8991)	race presses 0 fall/press 0.00	hops {}
+A	ride	home easy 1	end shrine at x 297 y 1519	finish 175.3	lost him 110.4 boat 97.53 by -12.9	lives lost 2 (race leg 2 at x 5960,4623)	race presses 0 fall/press 0.00	hops {}
+E	ride	home easy 3	end shrine at x 295 y 1422	finish 192.2	lost him 124.8 boat 96.09 by -28.7	lives lost 0 (race leg 0 at x -)	race presses 0 fall/press 0.00	hops {}
+Dp	ride	home easy 3	end shrine at x 295 y 1422	finish 192.2	lost him 124.8 boat 96.09 by -28.7	lives lost 0 (race leg 0 at x -)	race presses 0 fall/press 0.00	hops {}
+A	ride	home easy 3	end shrine at x 295 y 1422	finish 170.5	lost him 103.2 boat 96.09 by -7.1	lives lost 0 (race leg 0 at x -)	race presses 0 fall/press 0.00	hops {}
+E	ride	post normal 4	end shrine at x 300 y 1425	finish 229.7	lost him 173.3 boat 100.76 by -72.5	lives lost 1 (race leg 1 at x 1786)	race presses 0 fall/press 0.00	hops {}
+Dp	ride	post normal 4	end shrine at x 300 y 1425	finish 229.7	lost him 173.3 boat 100.76 by -72.5	lives lost 1 (race leg 1 at x 1786)	race presses 0 fall/press 0.00	hops {}
+A	ride	post normal 4	end shrine at x 291 y 1425	finish 191.2	lost him 126.5 boat 100.76 by -25.7	lives lost 1 (race leg 1 at x 12448)	race presses 0 fall/press 0.00	hops {}
+E	ride	post normal 5	end shrine at x 299 y 1472	finish 253.5	lost him 184 boat 103.44 by -80.6	lives lost 1 (race leg 1 at x 14569)	race presses 0 fall/press 0.00	hops {}
+Dp	ride	post normal 5	end shrine at x 299 y 1472	finish 253.5	lost him 184 boat 103.44 by -80.6	lives lost 1 (race leg 1 at x 14569)	race presses 0 fall/press 0.00	hops {}
+A	ride	post normal 5	end shrine at x 291 y 1472	finish 201.6	lost him 131.9 boat 103.44 by -28.5	lives lost 2 (race leg 2 at x 12866,10135)	race presses 0 fall/press 0.00	hops {}
+DONE

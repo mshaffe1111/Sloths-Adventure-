@@ -1,0 +1,26 @@
+// the A / D' / E race table row (ENG-27v, from ENG-27s's table-27s.mts): tsx table-27v.mts <tree> <label> <tier: middle|expert|ride> <home|post> <setting> <seed>
+const [tree, label, tier, where, setting, seed] = process.argv.slice(2);
+await import(`${tree}/src/game/headlessDom.ts`);
+const { homeRun } = await import(`${tree}/tools/inspect/homeToys.ts`);
+const { HOME_CODE, POST_CODE } = await import(`${tree}/src/game/gen2/toyHome.ts`);
+const { pacerMargin, pacerOff } = await import(`${tree}/src/game/pacer.ts`);
+const { HOP_TRACE, SKILLS } = await import(`${tree}/tools/inspect/firsttimer.ts`);
+if (tier === 'ride') Object.assign(SKILLS, { race: false, rideOnly: true });
+let t = 0, lives = -1, mLast: number | null = null, piece: any, lastX = 0, lastY = 0;
+const falls: any[] = [];
+HOP_TRACE.on = true; HOP_TRACE.rows.length = 0;
+const r: any = homeRun(tier === 'ride' ? 'middle' : tier as never, setting as never, Number(seed), 1, { onFrame: (sim: any) => {
+  t += 1 / 30; const e = sim.e as any, p = sim.p; lastX = p.x; lastY = p.y;
+  piece ??= (e.pieces ?? []).find((q: any) => q.kind === 'pacer');
+  const m = piece && piece.clock !== null ? pacerMargin(piece.pacer, p.x, piece.clock) : null;
+  if (lives >= 0 && e.lives < lives) falls.push({ t, x: p.x, m: mLast, race: !!piece && piece.clock !== null && pacerOff(piece.pacer, p.x, p.y) });
+  lives = e.lives; mLast = m;
+} } as never, where === 'post' ? POST_CODE : HOME_CODE);
+const rows = HOP_TRACE.rows.filter((w: any) => w.site !== 'unjudged');
+HOP_TRACE.on = false;
+const race = rows.filter((w: any) => w.site === 'race');
+const lost = race.filter((w: any) => w.landed === 'lost').length;
+const kinds: Record<string, number> = {}; for (const w of race as any[]) { const k = (w.kind ?? 'single') + ' ' + w.hold.toFixed(2); kinds[k] = (kinds[k] ?? 0) + 1; }
+const v = piece?.verdict;
+const raceFalls = falls.filter((f) => f.race);
+console.log(`${label}\t${tier}\t${where} ${setting} ${seed}\tend ${r.end}${r.end !== 'finished' && r.end !== 'done' ? ' at x ' + Math.round(lastX) + ' y ' + Math.round(lastY) : ''}\tfinish ${r.finishSeconds}\t${v ? (v.won ? 'WON' : 'lost') + ' him ' + v.him + ' boat ' + v.boat + ' by ' + (Math.round((v.boat - v.him) * 10) / 10) : 'no verdict'}\tlives lost ${r.lives} (race leg ${raceFalls.length} at x ${raceFalls.map((f) => Math.round(f.x)).join(',') || '-'})\trace presses ${race.length} fall/press ${(lost / Math.max(1, race.length)).toFixed(2)}\thops ${JSON.stringify(kinds)}`);
