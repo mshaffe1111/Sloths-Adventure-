@@ -3585,7 +3585,7 @@ export function fillSockets(laid: Laid, budget: StageBudget, kit: WorldKit, seed
           // where "hint.1-1.double" itself was on screen)
           const text = tipWords(M.tips, m);
           // (and only inside its section's height band, R-165.236: on a climbing stage x alone said 1-4's teach lines on the start floor)
-          if (text) hints.push({ x: k.x, text, pad: text, keys: text, band: tipBand(sec), ...(M.teachTips?.includes(m) ? { teach: true as const } : {}) });
+          if (text) hints.push({ x: k.x, text, pad: text, keys: text, band: tipBand(sec), ...(M.teachTips?.includes(m) ? { teach: true as const } : M.storyTips?.[m] ? { story: M.storyTips[m] } : {}) });
           fills.push({ section: sec.uid, socket: s.id, role: 'tip', what: m, x: k.x, y: k.y, ...(text ? {} : { unsaid: true }) });
         }
       } else if (s.role === 'roll') {

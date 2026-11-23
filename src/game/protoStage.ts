@@ -116,6 +116,12 @@ export interface StageHint {
    * (dotLines.ts engineGuideLine `teach`). The stage's data says so; the engine names no stage
    */
   teach?: true;
+  /**
+   * a stage's own STORY beat (2-7's hand-over and race challenge, a line said once after a moment): said by this speaker as a story
+   * line, on the story switch on every help setting (engine.ts GuideOpts `who`; dotLines.ts engineGuideLine). Without it a plain line
+   * is chatter to Tips, Normal's default, and is dropped there (dotGuideHelp.ts helpAllows; ENG-JETTY's scan). The data says so
+   */
+  story?: 'Dot' | 'Pokey';
 }
 /** leaves drawn in front of a hidden nook; they part when Pokey comes close */
 export interface LeafCover { x: number; y: number; w: number; h: number }

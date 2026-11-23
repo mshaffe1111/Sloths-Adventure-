@@ -3310,7 +3310,7 @@ export class GameEngine {
         if (h.firstOf) markTipHeard(FIRST_OF_STAGE, h.firstOf);
         const mode = lessonInputMode();
         const said = mode === 'pad' ? h.pad : mode === 'keys' ? h.keys : h.text;
-        this.guide(said, TIP_SAY_S, h.teach ? TEACH_LINE : undefined);
+        this.guide(said, TIP_SAY_S, h.teach ? TEACH_LINE : h.story ? { who: h.story } : undefined);
         if (h.passX !== undefined) this.passTips.push({ x: h.passX, text: said });
       }
       // a move tip about one spot goes once he is on the ground past it, done or not (StageHint.passX)
@@ -9652,13 +9652,19 @@ export class GameEngine {
    * A pacer race's END (pacer.ts Pacer.ends, from the stage's brief): the step he reaches the dock, won (before the pacer) or lost (it
    * docked first), its line is said ONCE, by the speaker the line names. Never mid-race: the pacer keeps a verdict only when HE reaches
    * the dock (pieces/pacerPiece.ts; the boat docking first says nothing until he arrives). Never twice: the verdict outlives a respawn
-   * (a fall after the dock rewinds nothing), and this race is marked said. No stage id: any stage whose brief names race-end lines
+   * (a fall after the dock rewinds nothing), this race is marked said, and each line is a stage tip's once on this device (a retry's
+   * replay of the same finish says nothing). No stage id: any stage whose brief names race-end lines
    */
   private sayRaceEnd() {
     const race = this.pieces.find((q) => q.kind === 'pacer') as (StagePiece & { verdict?: { won: boolean } | null }) | undefined;
     if (!race?.verdict || this.raceEndOf === race) return;
     this.raceEndOf = race;
     const line = raceEndLine(this.currentStage.pacer!.ends!, race.verdict);
+    // (each line once a stage on this device, as a stage tip: a retry or a replay that finishes the same way says nothing; one that
+    //  finishes the other way says its own line once. Kept only once shown, tipMemory.ts: a line the setting dropped is said next time)
+    const id = `race:${line.text}`;
+    if (tipHeard(this.currentStage.config.id, id)) return;
+    markTipHeard(this.currentStage.config.id, id);
     this.guide(line.text, TIP_SAY_S, { who: line.who });
   }
 

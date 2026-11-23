@@ -236,6 +236,9 @@ export interface WorldManifest {
   /** the tips (by mechanic, as `tips`) that are a stage's own TEACH line: Dot waits for a clear moment and keeps it up its reading
    *  time, and no stock lesson cuts it (protoStage.ts StageHint.teach) */
   teachTips?: readonly string[];
+  /** the tips (by id, as `tips`) that are a stage's own STORY beat, each with who says it: said as a story line by that speaker, on every
+   *  help setting while the story switch is on (protoStage.ts StageHint.story); a plain tip is dropped on Tips, Normal's default */
+  storyTips?: Readonly<Record<string, 'Dot' | 'Pokey'>>;
 }
 
 // ───────────────────────────── a section ─────────────────────────────

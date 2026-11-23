@@ -2,7 +2,8 @@
 // dock, won or lost, the stage's own line is said ONCE by the speaker it names: never mid-race (the boat docking first says nothing),
 // never twice (a respawn after the dock, and the finish crossed again), and only from the stage's brief (tip ids in the world's tips).
 // The toy plants a race on a listed stage and plays it through the engine's own loop (RealPlay): with the hook (engine.ts sayRaceEnd)
-// taken out, tests 1-3 are RED (no line at the dock; run 11-23 on 20cb0a2d9 with the hook line removed: 3 fail, 3 pass).
+// taken out, tests 1-3 are RED (no line at the dock; run 11-23 on 20cb0a2d9 with the hook line removed: 3 fail, 3 pass). Each line
+// is a stage tip's once on this device (tipMemory.ts): a retry's replay of the same finish says nothing (test 3).
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import './headlessDom.ts';
@@ -13,6 +14,7 @@ import { HOME_CODE, homeKit } from './gen2/toyHome.ts';
 import { raceEndsOf, type Pacer, type RaceEndSaid, type RaceEnds } from './pacer.ts';
 import { engineGuideLine } from './dotLines.ts';
 import { helpAllows } from './dotGuideHelp.ts';
+import { confirmHeard } from './tipMemory.ts';
 import type { WorldKit } from './gen2/types.ts';
 
 const WIN = 'Planted: you beat the toy boat!';
@@ -26,11 +28,12 @@ type Eng = { pieces: unknown[]; startPieces(): void; respawnAtCheckpoint(reason:
 
 /** a listed stage's real engine with a toy race planted from where he stands: the start just ahead, the dock a little past it (on his own
  *  ground, so nothing but the race moves), the boat's time `seconds`; every line the engine says is noted with its speaker */
-function plant(seconds = 5) {
+let planted = 0;
+function plant(seconds = 5, ends: RaceEnds<RaceEndSaid> = { win: { ...ENDS.win, text: `${WIN} #${++planted}` }, lose: { ...ENDS.lose, text: `${LOSE} #${planted}` } }) {
   const r = new RealPlay('2-1', 1);
   const e = r.e as unknown as Eng;
   const x = r.p.x;
-  const pacer: Pacer = { x0: x + 4, x1: x + 40, lane: r.p.y, dir: 1, yMin: -1e9, seconds, middle: seconds * 0.9, rideOnly: seconds * 2, under: 1, art: [], ends: ENDS };
+  const pacer: Pacer = { x0: x + 4, x1: x + 40, lane: r.p.y, dir: 1, yMin: -1e9, seconds, middle: seconds * 0.9, rideOnly: seconds * 2, under: 1, art: [], ends };
   e.currentStage.pacer = pacer;
   e.startPieces();
   const said: Said[] = [];
@@ -44,8 +47,9 @@ function plant(seconds = 5) {
       r.frame();
     }
   };
-  const race = () => said.filter((l) => l.text === WIN || l.text === LOSE);
-  return { r, e, pacer, hold, race };
+  // (each plant has its own words, so the device's tip memory of one test's race is not another's)
+  const race = () => said.filter((l) => l.text === ends.win.text || l.text === ends.lose.text).map((l) => ({ ...l, text: l.text === ends.win.text ? WIN : LOSE }));
+  return { r, e, pacer, hold, race, ends };
 }
 
 test('race end 1 (WIN): Dot says the win line once, the step he reaches the dock before the boat; nothing mid-race; nothing again', () => {
@@ -74,17 +78,21 @@ test('race end 2 (LOSE): the boat docks first and says nothing; Pokey says the l
   assert.equal(race().length, 1, 'once');
 });
 
-test('race end 3: a stage start lays a new race, whose own finish is said once (the last race\'s mark does not carry)', () => {
-  const { e, pacer, hold, race } = plant();
-  hold(pacer.x0 + 1, 3);
-  hold(pacer.x1 + 1, 3);
-  assert.equal(race().length, 1);
-  e.startPieces();
-  hold(pacer.x0 - 10, 3);
-  hold(pacer.x0 + 1, 3);
-  assert.equal(race().length, 1, 'the new race says nothing mid-race');
-  hold(pacer.x1 + 1, 3);
-  assert.equal(race().length, 2, "the new race's finish is said once");
+test("race end 3: a retry's replay of the same finish says nothing (once a stage on this device, as a stage tip); the other finish says its own", () => {
+  const first = plant();
+  first.hold(first.pacer.x0 + 1, 3);
+  first.hold(first.pacer.x1 + 1, 3);
+  assert.deepEqual(first.race().map((l) => l.text), [WIN]);
+  // (Dot's guide showed it: kept on this device, tipMemory.ts)
+  confirmHeard(first.ends.win.text);
+  const retry = plant(5, first.ends);
+  retry.hold(retry.pacer.x0 + 1, 3);
+  retry.hold(retry.pacer.x1 + 1, 30);
+  assert.equal(retry.race().length, 0, 'a retry that wins again says nothing');
+  const lost = plant(2, first.ends);
+  lost.hold(lost.pacer.x0 + 1, Math.round(3 / DT));
+  lost.hold(lost.pacer.x1 + 1, 30);
+  assert.deepEqual(lost.race().map((l) => [l.text, l.who]), [[LOSE, 'Pokey']], 'a retry that loses says the lose line once');
 });
 
 test('race end 4: a race with no end lines says nothing at its finish (the hook reads only the brief)', () => {
