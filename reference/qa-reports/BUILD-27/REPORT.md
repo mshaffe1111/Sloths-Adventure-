@@ -1,4 +1,10 @@
 # BUILD-27 REPORT: 2-7 "The Mailman's Route" (t-build-27-wip; started 12:35 PM ET 11-23 by `date`; budget 2 h, report by 2:40 PM ET)
+## BUILD-27e (finishing; started 3:29 PM ET 11-23 by `date`; this section written 3:31 PM ET; report by 4:45 PM ET; hard stop 5:15 PM ET; box 28 min / 320k)
+### EXACT NEXT STEP (BUILD-27e's; read this first)
+Branch t-build-27e (fresh from t-build-27-wip 51ff9c43f): merged t-eng-27 09c23c1b0 (ENG-HUD27b, clean), cherry-picked BUILD-27d's
+92fcae5bf d1df3070b 361599287 fecf714c6 04db57dc9 f18614471 (letter 4, judged flip, the clip rig, dry stills); trial merge 533e28c29 dropped.
+Next: errs.mts 1-12 -> [] every roll; then ENG-BOT27b's hash -> merge, NEW frozen tree, castBots --proven 1-40 (bar 24/40), list, --check.
+
 ## BUILD-27d (finishing; started 2:25 PM ET 11-23 by `date`; report by 3:50 PM ET; hard stop 4:35 PM ET; box 28 min / 320k)
 ### EXACT NEXT STEP (BUILD-27d's; read this first)
 **Trial head: t-build-27-trial f18614471** = t-build-27-wip 3ad0a77e2 (BUILD-27c's last) + a TRIAL merge of t-eng-27-wip-hud 64831cbe1 (NOT
