@@ -14,7 +14,11 @@ frozen (unfreeze with chattr -R -i before removing). Probes: scratchpad/probe/tr
    every World 2 river. Sent to the lead for a ruling (bot item for ENG-JETTY or Easy's drift catch). Do not try another stage row.
 4. Kid NORMAL 6/40 LOCATED and sent (the lead rules, LEAD-PERSONA): 49 set-downs on 34 seeds: out at-him 17, out upstream 14, home
    stilts 11, keep-running 2, with 2, neck 1, other 2 (scratchpad kidN-loc.jsonl). The same kid-on-logs cause as 3.
-5. When ENG-JETTY lands on t-eng-27 (the w2.ts:372 fix, the race-end line, StageHint story, the bot fix): merge into t-build-27-wip;
+   LEAD RULINGS (on receipt of 3 and 4): kid Normal ACCEPTED as located and honest (LEAD-PERSONA); kid Easy ACCEPTED for tonight on
+   2-5's footing (R-165.339), filed by the lead as its own World 2 job (should Easy forgive a kid walking off a moving log's end). So the
+   proven list needs adult, middle, expert and child on BOTH settings with 0 rescues: `castBots --bots adult,child,middle,expert --proven`.
+   The kid table goes in the LEVEL-LOG row.
+5. When the lead sends ENG-JETTY's and ENG-BOT27's hashes (the w2.ts:372 fix, the race-end line, StageHint story, the child bot fix): merge into t-build-27-wip;
    wire `w27.win`/`w27.lose` (lines-2-7.md:24-25, verbatim) on the race-end hook, set story on handover/race; hold all four in
    w2Arc27.test; the whole suite + the CI tool line on a frozen head; castBots --proven 1-40 both settings; then the list (seedlist 2-7,
    --check, castBots --proven on the list), the flight for `judged`, registrycheck, stills of every beat both ways 2x both settings
