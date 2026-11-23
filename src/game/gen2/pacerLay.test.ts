@@ -56,8 +56,8 @@ test('pacer: laid on the race leg by the design\'s rule, every roll and both set
   // (2-7's own table, the design's margins as shares of the careful middle's time (the lead's ruling, 11-21): Normal 7% (2-7.md's +3 s on
   // its 42 s home leg), Easy 10% (+5 s on its 47.8 s Easy leg), the boat at RACE_PACE of that (the lead's pick, ENG-27w); under 2 s; the
   // boat's two rowing frames)
-  assert.equal(RACE_PACE, 0.81);
-  assert.deepEqual([W2_RACE.margin, W2_RACE.under, W2_RACE.bank], [{ normal: 1.07 / 0.81 - 1, easy: 1.1 / 0.81 - 1 }, 2, 272]);
+  assert.deepEqual(RACE_PACE, { normal: 0.81, easy: 0.9 });
+  assert.deepEqual([W2_RACE.margin, W2_RACE.under, W2_RACE.bank], [{ normal: 1.07 / 0.81 - 1, easy: 1.1 / 0.9 - 1 }, 2, 272]);
   assert.deepEqual(W2_RACE.art, ['w2-next#mailBoat', 'w2-next#mailBoatB']);
 });
 
@@ -194,8 +194,8 @@ for (const setting of ['normal', 'easy'] as const) {
     // (a fall neither costs nor pays race time (the lead's ruling, Option A, D112), so letting the current carry him never wins, fall
     //  or none: the last-crossing exemption that let two ride-only runs win by a fall's pay is deleted with the floor, ENG-27k)
     // (and by `under` s or more, measured: the bound the lay once read off the designer's flown ride-only rate, which rides far faster than
-    //  the bot (the boat at the picked pace is 12-16 s over it, the bot still loses); the lead's ruling, ENG-27w. RED at RACE_PACE 0.80:
-    //  home Easy seed 1 lost by 1.9 s)
+    //  the bot (the boat at the picked pace is 12-16 s over it, the bot still loses); the lead's ruling, ENG-27w. RED at one pace of 0.80
+    //  for both settings: home Easy 1 lost by only 1.9 s, home Easy 2 and post Easy 5 WON by the ride-only bot)
     test(`pacer race (the bots): the ride-only player never wins, by ${W2_RACE.under} s or more, ${setting} seed ${seed}`, async () => {
       const { v } = await raceRun(setting, seed, true);
       assert.ok(v.boat - v.him <= -W2_RACE.under, `ride-only ${setting} seed ${seed}: ${v.him} s against the boat's ${v.boat} s: not ${W2_RACE.under} s behind it`);

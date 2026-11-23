@@ -114,13 +114,14 @@ const next = (frame: string) => `w2-next#${frame}`;
  * or more, measured, pacerLay.test). No row was flown with the current but these three: a race leg that lays
  * another is refused by name. Its art: the mail boat's two rowing frames (ART-NEXT-b, the inventory's w2-next rows).
  */
-/** the mail boat's pace, a share of the design's +7% / +10% boat (the lead's pick on the gap x pace grid, ENG-27w) */
-export const RACE_PACE = 0.81;
+/** the mail boat's pace by setting, a share of the design's +7% / +10% boat (the lead's pick on the gap x pace grid, ENG-27w: Normal 81%;
+ *  Easy 90%, where the ride-only bot rides some races fast (home Easy 2 in 112.8 s, post Easy 5 in 124.2 s) and must still lose by 2 s) */
+export const RACE_PACE = { normal: 0.81, easy: 0.9 } as const;
 export const W2_RACE: PacerRow = {
   bank: 272,
   rivers: { ride: { middle: 103, rideOnly: 87 }, twin: { middle: 115, rideOnly: 97 }, long: { middle: 126, rideOnly: 104 } },
   crossingBank: 230,
-  margin: { normal: (1 + 0.07) / RACE_PACE - 1, easy: (1 + 0.1) / RACE_PACE - 1 },
+  margin: { normal: (1 + 0.07) / RACE_PACE.normal - 1, easy: (1 + 0.1) / RACE_PACE.easy - 1 },
   under: 2,
   art: [next('mailBoat'), next('mailBoatB')],
 };
