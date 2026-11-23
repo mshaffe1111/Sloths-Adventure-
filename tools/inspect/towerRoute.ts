@@ -34,7 +34,10 @@ export function towerCorners(stage: StageLike, spawn: Pt): Pt[] | null {
   // (from where he is to a turn's foot: across first at his own height, then the climb straight up or down the vine)
   const climb = (t: { x: number; from: number; to: number }) => {
     const at = out[out.length - 1];
-    out.push({ x: t.x, y: at.y }, { x: t.x, y: t.from }, { x: t.x, y: t.to });
+    // (a way DOWN: the turn's vine top stands just past his ledge's end, so the way on from there is straight down it: a point at the
+    //  vine level with the ledge read as a gap to jump, and he jumped past the vine and fell two storeys, ENG-W3a's drafted 3-1)
+    if (T!.flow === 'down' && t.to > t.from) out.push({ x: t.x, y: t.to });
+    else out.push({ x: t.x, y: at.y }, { x: t.x, y: t.from }, { x: t.x, y: t.to });
   };
   // (a leg that rises or drops inside its own section (a vine field, a climb between two ledges): across to the nearest vine that
   // leads on, up or down it, and on again, storey by storey, never the straight line from its entry to its exit, which cuts through

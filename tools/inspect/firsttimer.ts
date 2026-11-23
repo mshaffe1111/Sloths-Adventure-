@@ -1725,6 +1725,18 @@ export class FirstTimerRun {
     return null;
   }
 
+  /** a way DOWN (gen2.tower.flow 'down', ENG-W3a): which way to step off, -1 or 1: toward the first point of the way on that lies under
+   *  him (the route drops off a ledge's end there, towerRoute.ts dropTo). 0 on any other stage, or when it is straight under him */
+  private downEnd(p: { x: number; y: number }): -1 | 0 | 1 {
+    if ((this.sim.stage as { gen2?: { tower?: { flow?: string } } }).gen2?.tower?.flow !== 'down') return 0;
+    const pts = this.prog.pts;
+    for (let j = this.prog.cur; j < Math.min(pts.length, this.prog.cur + 80); j++) {
+      if (pts[j].y <= p.y + 40) continue;
+      const dx = pts[j].x - p.x;
+      return dx > 8 ? 1 : dx < -8 ? -1 : 0;
+    }
+    return 0;
+  }
   private pitWayBack(tgt: Pt | null): -1 | 0 | 1 {
     const p = this.sim.p;
     const toward = (q: Platform): -1 | 0 | 1 => {
@@ -2343,6 +2355,10 @@ export class FirstTimerRun {
         // (kept until he stands on other ground (the engine's standingOnId) or 6 s pass: at the lip his middle is past the ledge and it
         // no longer reads as his floor)
         if (who.holdQ && this.dropOff) dir = this.dropOff.dir;
+        // (a way DOWN: the end of his ledge to step off is the one whose landing lies nearest the way on, never just the way he was
+        //  going: the run's rule walked him off the far end of a shelf into the storey under the way, and he stood there, ENG-W3a)
+        const end = p.grounded ? this.downEnd(p) : 0;
+        if (end) dir = end;
       }
     }
     // (fallen into a pit the way on cannot be reached from: back up its stair the way he came, pitWayBack)
@@ -2894,7 +2910,11 @@ export class FirstTimerRun {
         const across = this.sim.platforms.some((q) => !q.broken && q.type !== 'drift' && Math.abs(q.y - p.y) < 50 && (dir > 0 ? q.x > p.x && q.x - p.x < 150 + who.edgeAim : q.x + q.width < p.x && p.x - (q.x + q.width) < 150 + who.edgeAim) && !this.floorAt(p.x + dir * look, p.y, 40));
         // (a tier bot sees a pit: where nothing stands under the edge for 400 px, the way down to a lower ledge across it is a jump)
         const pit = !!who.holdQ && !this.floorAt(p.x + dir * (look + 40), p.y, 400);
-        const drops = on && on.y > p.y + 50 && !across && !pit;
+        // (a way DOWN goes on by dropping: where the way on is under him he steps off, even with a catch at about his height across the
+        //  gap (a catch is there for a miss; jumped onto, it left him a storey off the way, dithering, ENG-W3a's drafted 3-1). A run keeps
+        //  the jump, as above)
+        const wayDown = (this.sim.stage as { gen2?: { tower?: { flow?: string } } }).gen2?.tower?.flow === 'down';
+        const drops = on && on.y > p.y + 50 && (!across || wayDown) && !pit;
         // (a log or a lily pad drifting across the gap: he can see it, so he waits at the edge until it is near, up to 6 s)
         const here = this.floorAt(p.x, p.y, 6);
         // (ENG-W2b: a float is near when a hop he makes now, or a beat later as his thumb gets there, comes down on it where it will be,

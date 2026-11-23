@@ -1,9 +1,9 @@
 # ENG-W3a REPORT (World 3's kit on gen2 + a draft 3-1 that travels DOWN)
-**EXACT NEXT STEP (box 2):** make the bots go DOWN a drops section (castBots on GEN2_DRAFT=3-1 seed 1: every bot reaches the shrine only
-by 11-19 rescues, each 'the way on is ~120 px down', tools/inspect/firsttimer.ts:2318-2342 keeps `this.way` when the way on is below
-and close across; tools/inspect/towerRoute.ts within() draws a no-vine down leg as one diagonal). Then addlevel's draft mode, w3.test.ts
-(+ the plant), stills, the frozen-tree runs.
-Start 11:27 AM ET (by `date`). Box 1 ended 11:5x. Hours used: 0.3 of 2.
+**EXACT NEXT STEP (box 2, from 11:55):** the bots on a way DOWN: expert seed 3 now 0 rescues (145.6 s), seeds 1/2/4 three each
+(stalls: 'in a dip 287 px deep, the way on is ~120 px down' on a catch, and a jump onto a near-level catch at a step-off). Timebox
+the bots to 12:10 ET; then addlevel's draft mode, w3.test.ts + the plant, stills, the suite on a frozen tree. If the bots are not at
+40/40 by then, send the lead the cut (a down-bot packet) with the numbers.
+Start 11:27 AM ET (by `date`). Box 1 ended 11:55. Hours used at box 1 end: 0.47 of 2.
 
 ## Done so far (t-eng-w3-wip-a, candidate)
 - PUSHBACK.md (e6d3f1ef0): addlevel READY vs a draft row; stagePlan travel flips the live 3-1. Lead ruled A, general draft state.
@@ -17,3 +17,7 @@ Start 11:27 AM ET (by `date`). Box 1 ended 11:5x. Hours used: 0.3 of 2.
   2. the floor walk to the shrine (past the last section) was never on the route measure (routeAt clamps to the last leg) and never a
      flag spot: 'the last 2045-2361 px of way from the exit' on 4 of 24. Now routeAt measures it (down only) and the floor is a spot.
   Result: W3 down kit, 24 of 24 seeds clean on both settings (gen2 verdicts + levelCheck), fast model 146-165 s.
+- Bots on a down tower (tools/inspect/towerRoute.ts, firsttimer.ts; down-only, so no climb or run moves): a down tower's own route
+  always (the tracer read it as a run); its drops walked off ledge ends, ledge by ledge (dropTo), a turn straight down its vine; the
+  bot presses down onto a turn's vine top, steps off (not jumps) where the way on is under him, toward the first route point below.
+  Expert seed 1: 17 rescues -> 3. World 3 drops are step-offs now (gapPx 8-20); a down catch keeps HEAD room (no squeezed shelf).
