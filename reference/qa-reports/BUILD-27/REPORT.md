@@ -32,12 +32,26 @@ w2Arc27.test green, registrycheck, THEN the list: `seedlist.ts 2-7`, `--check`, 
    (b) weir x15738 side: the column's foot ends in a hard dark band at the pool line (the seam, BUILD-27b's (d)); still OWED: a zoomed
    shot of the weir's pool line (the falls' face, x ~15950 Normal) and the jetty lines on default settings (handover/race at the start:
    a still with hints LIVE, i.e. without stills-at's `hh.shown = true`).
-6. RACE CLIP (RUNNING at handover): probes27c/racerec.mts records a bot run (his fields, every drifting log by engine.platforms index, the
-   pacer piece), racepuppet.mjs replays it into the real game on the dev server, 15 fps 2x with a frame caption -> encodes
-   race27c-adult-normal-seed1-side.mp4. Adult Normal seed 1: race starts frame 2206 (t73.6, x12327), HE WINS at frame 3615 (t120.5, x1750;
-   verdict him 47 s, boat 89.28 s); the log prints the clip still of the win frame. LOOK at the frames after 3615 for Dot's win line.
-   Then an upright clip (`up`) and a LOSE clip (child Normal: record with racerec, it should lose; Pokey's line).
-   FLAG for the lead: adult beats the boat by 42 s (47 vs 89); is the race meant to be that easy for an adult (2-7.md:23-29)?
+6. DONE 7583d9a0b, THE RACE CLIP: race27c-adult-normal-seed1-side.mp4 (sideways, 15 fps 2x, 13.6 MB; key frames race27c/). Method:
+   probes27c/racerec.mts records a bot run (his fields, every drifting log by engine.platforms index, the pacer piece) and
+   probes27c/racepuppet.mjs replays it into the real game on the dev server (engine stepped each frame, so the race-end hook fires on the
+   real verdict); env FROM/TO pick frames, LIVE=1 leaves Dot's hints live. Adult Normal seed 1: race starts frame 2206 (t73.6, x12327);
+   HE WINS at engine frame 3615 = clip still f00734 (x1750; him 47 s, boat 89.28 s). **FINDING (sent): the win line never shows in the
+   clip**: way.2-7 ('half') fires at the finish (f00734) with its tap-to-read card and holds to the exit door (f00812); the win line waits
+   behind it. The hook works (stills27c x800 shows Dot's win line with no wayside line up). So 'post:letter' (ENG-HUD27) is REQUIRED.
+   Also sent: adult beats the boat by 42 s (design intent?); a dock teleport gives a WIN with the race never started (unreachable in play).
+   LIVE STILLS (stills27c-live/, probes27c/stills-live.mjs = stills-at-setting without hints-shown/clearGuide): x5500 shows `race` as Dot's
+   story card on Normal's default Tips (storyTips works in the game); x15950 shows `turn` at the weir. x5060 showed NO handover card (a
+   teleport artefact or a real miss): RUNNING at handover, a LIVE replay from the spawn (frames 0-420) -> scratchpad start-side/; look
+   for WATER_WARN, then `handover`, then `race`.
+   WEIR ZOOM: stills27c-live/zoom-weir-pool-normal-x15950-sideways.png: a hard thin dark line with coloured specks along the pool surface
+   across the whole falls (BUILD-27b's (d) HOLDS): name it to the lead as a polish defect (the weir dress's foot / the pool sheen seam);
+   also the climbing pole stands in front of the falls. Porches x11376: floating rope-tied planks (BUILD-27b's (f) HOLDS).
+   SUITE on frozen d9913b17d (suite1.txt; 1743+ tests when checked): reds (a) easyMode (engine, ENG-HUD27's); (b) pacerLay.test.ts:254
+   and the next ("bot (planted) ... RED without it": "without the skill the plant must lose (86.8 s against 108.37 s)") -> RUNNING at
+   handover: pacerLay.test on the base e2f3855cf (/home/user/wt-e27) -> scratchpad pacer-base.txt: if red there too it is t-eng-27's
+   (ENG-BOT27's area), else it is my merge's; (c) seedListChunk "EPERM mkdtemp src/game/gen2/proven": the FREEZE (the test writes into
+   src), re-run unfrozen -> scratchpad chunk-head.txt.
 7. Then the full gate set on the final head (CLAUDE.md list; gates.md), the LEVEL-LOG row (kid table), Learned.
 
 ## BUILD-27b (continuing; started 1:05 PM ET 11-23 by `date`; report by 2:40 PM ET)

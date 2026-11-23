@@ -7,7 +7,7 @@ import path from 'node:path';
 const { chromium } = await import(process.env.PW ?? 'playwright');
 const [port, rec, out, ori = 'side', PRE = '60', POST = '300'] = process.argv.slice(2);
 const d = JSON.parse(fs.readFileSync(rec, 'utf8'));
-const F = d.frames; const start = F.findIndex((q) => q.pc && q.pc.clock > 0); const a = Math.max(0, start - +PRE), z = Math.min(F.length - 1, d.verdictAt + +POST);
+const F = d.frames; const start = F.findIndex((q) => q.pc && q.pc.clock > 0); const a = process.env.FROM ? +process.env.FROM : Math.max(0, start - +PRE), z = process.env.TO ? +process.env.TO : Math.min(F.length - 1, d.verdictAt + +POST);
 fs.mkdirSync(out, { recursive: true });
 const [w, h] = ori === 'up' ? [412, 915] : [915, 412];
 const b = await chromium.launch();
@@ -20,7 +20,7 @@ const E = "(typeof window.__engine === 'function' ? window.__engine() : window._
 console.log('BUILT', await p.evaluate((E) => { const e = eval(E); return JSON.stringify({ seed: e.currentStage.gen2?.seed, diff: e.currentStage.gen2?.budget?.difficulty }); }, E));
 await p.waitForFunction(() => document.documentElement.dataset.hudCard !== '1', null, { timeout: 30000 }).catch(() => {});
 await p.waitForTimeout(1500);
-await p.evaluate((E) => { const e = eval(E); e.isPaused = true; for (const hh of e.currentStage?.proto?.hints ?? []) hh.shown = true; const c = document.createElement('div'); c.id = 'cap'; c.style.cssText = 'position:fixed;left:8px;bottom:8px;z-index:99999;font:bold 13px sans-serif;color:#fff;background:rgba(0,0,0,.55);padding:3px 6px;border-radius:4px;pointer-events:none'; document.body.appendChild(c); }, E);
+await p.evaluate(([E, LIVE]) => { const e = eval(E); e.isPaused = true; if (!LIVE) for (const hh of e.currentStage?.proto?.hints ?? []) hh.shown = true; const c = document.createElement('div'); c.id = 'cap'; c.style.cssText = 'position:fixed;left:8px;bottom:8px;z-index:99999;font:bold 13px sans-serif;color:#fff;background:rgba(0,0,0,.55);padding:3px 6px;border-radius:4px;pointer-events:none'; document.body.appendChild(c); }, [E, !!process.env.LIVE]);
 let k = 0;
 for (let i = a; i <= z; i++) {
   const fr = F[i];
