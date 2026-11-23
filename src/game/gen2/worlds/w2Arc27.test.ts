@@ -131,3 +131,19 @@ test("2-7: Dot's `turn` is said on the weir, 800+ px of his path before the firs
     assert.equal((st.enemies ?? []).length, 0, `${d} seed ${s}: 2-7 lays no foe`);
   }
 });
+
+test("2-7's race ends at the home jetty with the keeper's lines (`win` Dot's, `lose` Pokey's), and the hand-over and race challenge are story lines (Dot's), on every roll", () => {
+  // (red if the brief drops raceEnd, a tip id loses its words, who is swapped, or storyTips loses either line: a plain tip is dropped on
+  //  Normal's default Tips, so the stage's goal would go unsaid)
+  for (const d of BOTH) for (const s of SEEDS) {
+    const st = built(s, d);
+    assert.deepEqual(st.pacer?.ends, { win: { text: LINES_27.win, who: 'Dot' }, lose: { text: LINES_27.lose, who: 'Pokey' } }, `${d} seed ${s}: the race ends`);
+    const hints = (st.proto?.hints ?? []) as Any[];
+    for (const k of ['handover', 'race'] as const) {
+      const h = hints.find((q) => q.text === LINES_27[k]);
+      assert.ok(h, `${d} seed ${s}: ${k} is laid`);
+      assert.equal(h.story, 'Dot', `${d} seed ${s}: ${k} is Dot's story line`);
+    }
+    for (const k of ['win', 'lose'] as const) assert.ok(!hints.some((q) => q.text === LINES_27[k]), `${d} seed ${s}: ${k} is the race end's alone, never a mid-stage tip`);
+  }
+});

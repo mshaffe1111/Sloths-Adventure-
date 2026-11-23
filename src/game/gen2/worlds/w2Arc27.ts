@@ -45,6 +45,8 @@ export const BRIEF_27: GraphBrief = {
   ends: 'quiet', trend: 'level', branching: 'none', teaches: [HOME_LESSON],
   deal: { water: 500 / 11, ground: 200 / 11, floating: 200 / 11, climb: 100 / 11, bounce: 100 / 11 }, dealExact: true,
   tags: true, petals: 'few', pacer: W2_RACE, post: { doors: DOORS_27, art: W2_POST_ART }, columnDress: W2_WEIR,
+  // (the race-end lines at the home jetty, said once each run, never both: engine.ts sayRaceEnd, pacer.ts raceEndsOf; keeper note 3)
+  raceEnd: { win: { tip: 'w27.win', who: 'Dot' }, lose: { tip: 'w27.lose', who: 'Pokey' } },
 };
 
 /** the story keeper's lines for 2-7, verbatim (reference/story/lines-2-7.md, KEEPER-27 t-keeper-27@0614ae0a). The only player words this
@@ -56,6 +58,10 @@ export const LINES_27 = {
   race: "From the weir, he'll race us home by boat!",
   /** Dot, THE teach for the run left, 800+ px before beat 6, on the weir (beat 5) */
   turn: "Now home's the other way! Go with the river!",
+  /** Dot, once, at the jetty (beat 14) as Pokey reaches it BEFORE the boat docks (the race-end line, BRIEF_27.raceEnd.win) */
+  win: 'You beat the post home! I never manage that!',
+  /** Pokey, once, at the jetty (beat 14) as he reaches it AFTER the boat has docked (the race-end line, BRIEF_27.raceEnd.lose) */
+  lose: "Beaten by the post. Fair enough. He's had practice.",
 } as const;
 /** the stage card (stagePlan.ts World 2's 2-7 row): the keeper's `mission` */
 export const MISSION_27 = 'Carry the post up the mill-race, then race the mail boat home.';
@@ -63,6 +69,9 @@ export const MISSION_27 = 'Carry the post up the mill-race, then race the mail b
 export const lineId27 = (line: keyof typeof LINES_27): string => `w27.${line}`;
 /** the lines Dot says as TEACH lines (said on Normal's default Tips as on Help, D50) */
 export const TEACH_27 = ['turn'] as const;
+/** the lines said as STORY lines (StageHint.story: once, on every Tips setting while the story switch is on; a plain tip is dropped on
+ *  Normal's default Tips): the hand-over and the race challenge, both Dot's */
+export const STORY_27 = { handover: 'Dot', race: 'Dot' } as const;
 
 /**
  * 2-7's rivers: World 2's rows (the home leg's `ride`, `twin`, `long` are the mail boat's flown rows, W2_RACE.rivers) and the out leg's
@@ -216,6 +225,7 @@ export function kitLib27(): WorldKit {
       required: {},
       tips: { ...M.tips, ...Object.fromEntries((Object.keys(LINES_27) as Array<keyof typeof LINES_27>).map((key) => [lineId27(key), LINES_27[key]])) },
       teachTips: [...(M.teachTips ?? []), ...TEACH_27.map(lineId27)],
+      storyTips: { ...M.storyTips, ...Object.fromEntries(Object.entries(STORY_27).map(([key, who]) => [lineId27(key as keyof typeof LINES_27), who])) },
       graphs: { ...G, list: [...G.list.filter((g) => g.archetype !== 'sprint'), ...Object.entries(ARC_27).map(([id, code]) => ({ id, archetype: 'sprint' as const, code }))], briefs: { ...G.briefs, [STAGE_27]: BRIEF_27 } },
     } } as WorldKit;
 }
