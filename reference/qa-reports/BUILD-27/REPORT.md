@@ -1,6 +1,9 @@
 # BUILD-27 REPORT: 2-7 "The Mailman's Route" (t-build-27-wip; started 12:35 PM ET 11-23 by `date`; budget 2 h, report by 2:40 PM ET)
 ## BUILD-27b (continuing; started 1:05 PM ET 11-23 by `date`; report by 2:40 PM ET)
-### EXACT NEXT STEP (BUILD-27b's; read this, not BUILD-27's below, for what is left)
+### EXACT NEXT STEP (BUILD-27b's; read this, not BUILD-27's below, for what is left). BUILD-27b stopped at its 28-minute box.
+NOW: nothing laid is waiting on me; 2-7 waits on the lead's hashes (ENG-JETTY: the w2.ts:372 finish fix, the race-end win/lose line,
+StageHint story; ENG-BOT27: the child's log footing; the 'post:letter' moment if the lead orders it). The first thing on their landing is
+step 5 below.
 Head: this commit on t-build-27-wip (src = 0a010f11e). Scratch tree (not in the repo): /home/user/wt-b27-y = 0a010f11e + the w2.ts:372 y-band fix, chattr
 frozen (unfreeze with chattr -R -i before removing). Probes: scratchpad/probe/trace.mts (frames before each life lost or set-down:
 `npx tsx trace.mts <bot> <setting> <seed> <n> [stuck]`, run from the scratch tree) and kidloc.mts (each set-down's leg and beat).
@@ -27,6 +30,12 @@ frozen (unfreeze with chattr -R -i before removing). Probes: scratchpad/probe/tr
    (c) The home rivers' logs ride low under the water sheen: World 2's deep-river art (the same on `upstream`), intended, not a defect.
    (d) The weir: the falls' foot has a hard horizontal seam with coloured specks at the pool line (x15800 upright): judge it zoomed on
    the final set. (e) Upright, the home leg sits under the out leg's soil slab (x10000): the slab's lower edge is ragged; stacked-leg look.
+   way.2-7: the lead ruled (A), move it to the walk out at the doors, words verbatim. NOT doable by data: a wayside line is placed by
+   WHEN (wayside.ts StageWay.at start/half/near/on a moment); the only moments are 'cast:*' (engine.ts:4878). Sent ENGINE-WORTHY: a
+   moment when the post takes a letter (e.g. 'post:letter'), then wayside.ts:101 `7: dotOn('post:letter', <same words>)`, held in
+   w2Arc27.test. Until then it stays 'half' (the HUD distance ratio >= 0.5, engine.ts:3732; on the out-and-back, not yet measured
+   where: offered the lead an adult-bot measure). (f) Porches (n27p x11200): rope-tied planks over the race with no posts or hangers to
+   the bank houses: they read as floating planks. Judge on the final set; name it to the lead if it holds.
 5. When the lead sends ENG-JETTY's and ENG-BOT27's hashes (the w2.ts:372 fix, the race-end line, StageHint story, the child bot fix): merge into t-build-27-wip;
    wire `w27.win`/`w27.lose` (lines-2-7.md:24-25, verbatim) on the race-end hook, set story on handover/race; hold all four in
    w2Arc27.test; the whole suite + the CI tool line on a frozen head; castBots --proven 1-40 both settings; then the list (seedlist 2-7,
@@ -87,6 +96,7 @@ buildStage) and the teleport trace (firstTimer onFrame: a jump of 150+ px in one
 | roadmapcheck | FAIL: shallow clone, proofs cannot be checked (inherited; the same on main in this container) |
 | unit suite (32b01afee) | 5 reds when I stopped: inventory x2 (my merge, step 1); 2-7 at the bend x3 (step 2a) |
 ## Polish check
+BUILD-27b: a pre-look only (see 4 'STILLS PRE-LOOK', items a-f); the final check is on the GREEN head. BUILD-27:
 None yet. Rule 29: no stills while the bots are red. The lead allowed stills of the beats the bend does not touch; they are next.
 ## Pushback
 1. The design's 6 doors do not fit with Matt's rolled flags (above). 2. The design's 924 px `upstream` breaks the view rule (above).
@@ -94,6 +104,19 @@ None yet. Rule 29: no stills while the bots are red. The lead allowed stills of 
 - win/lose at the jetty: no hook (ENG-JETTY). lift.ts is exists-unwired (no stage lays a basket lift; only its unit tests hold it).
 - 2-7 has no `judged` flown scope (registrycheck): `FLIGHT_STAGE=2-7 npx tsx reference/specs/sims/flight.ts normal all` is owed.
 ## Learned (for the next builder)
+- (BUILD-27b) **Check a river row against the river's own rules before running bots on it.** A slower Easy row (55 px/s) made one log
+  every 5.1 s, over the 4 s rule, and no Easy roll laid; roll 12 seeds (libstage --json) first, seconds, not a 2-minute bot run.
+  Proposed: riverLay's row check (log every <= 4 s) also runs on a kit's RIVERS table in the kit's own test.
+- (BUILD-27b) **A stage's bad yield is often the bot, not the stage: trace before changing data.** Two frames-before-the-fall traces
+  showed child Normal walking onto a log tail sliding under the bank (bot), and kid Easy spread one rescue each over 8 beats (the kid
+  model on every river). My Easy data change moved the misses and was reverted. Trace two runs per cause FIRST (rule 28).
+- (BUILD-27b) **castBots rows drop each stuck spot's y**, so on an out-and-back the two legs share x and a cluster by x is ambiguous.
+  Proposed: castBots keeps y (and the beat) in its rows. Meanwhile scratchpad probe kidloc.mts maps a set-down to its leg and beat.
+- (BUILD-27b) **Pick a still's x ON a piece from the built platforms**, never by a section's span: 11100 fell between two planks.
+- (BUILD-27b) **A wayside line is placed by when, not where:** on an out-and-back 'half' is a distance ratio, not a place. A
+  stage that wants a line at a piece needs a named moment.
+Lessons applied (BUILD-27b): D115 (frozen scratch trees), D123 (runs in the background, 7200000), D125 (yield first), D59 (no run left
+running at stop: none left besides the dev server, stopped), D111 (box, exact next step), D127 (bot and engine gaps sent the same minute).
 - **Delete the hand build BEFORE the first bot run.** w2Stages' W2_STAGES wins over the stage table (stageGenerator.ts:2935), so the bots
   play the old stage while the build probes show the new one. Proposed rule: addlevel refuses a row whose id a hand-build table still holds.
 - **Judge the PLAYED stage, not the built one** (rule 27 goes further than built-vs-data): libstage's buildStage keeps platforms that the
