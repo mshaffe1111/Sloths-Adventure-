@@ -1,19 +1,45 @@
 # BUILD-27 REPORT: 2-7 "The Mailman's Route" (t-build-27-wip; started 12:35 PM ET 11-23 by `date`; budget 2 h, report by 2:40 PM ET)
 ## BUILD-27c (finishing; started 2:03 PM ET 11-23 by `date`; report by 3:35 PM ET; box 28 min / 320k)
-### EXACT NEXT STEP (BUILD-27c's; read this first)
-Head: t-build-27-wip d9913b17d = 481203add + t-eng-27 e2f3855cf merged (f5810bbff; one conflict, pipeline.ts layChaseStage's return:
-both ENG-JETTY's `ended.problems` and the column dress kept) + 2-7's race-end wiring.
-1. DONE d9913b17d: LINES_27 `win`/`lose` verbatim (lines-2-7.md ask 4); BRIEF_27.raceEnd {win: w27.win Dot, lose: w27.lose Pokey};
-   manifest storyTips via STORY_27 {w27.handover: Dot, w27.race: Dot}. w2Arc27.test new case (pacer.ends text+who; handover/race are
-   story 'Dot'; win/lose never a mid-stage tip), seeds 2-4 both settings: 8/8 GREEN; RED with raceEnd and storyTips removed. tsc clean.
-2. RUNNING on frozen tree /home/user/wt-b27c-f1 (= d9913b17d, chattr +i on src and tools; node_modules a symlink to /home/user/wt-b27c's,
-   installed with `npm ci --legacy-peer-deps` as CI does): (a) the yield, `castBots --stage 2-7 --seeds 1-40 --bots
-   adult,child,middle,expert --setting both --par 4`, rows/proven/out in scratchpad y1/; (b) the whole unit suite -> scratchpad suite1.txt.
-3. Then: send the lead the yield (with the under-2:00 count; adult Normal had a 118.6 s run on BUILD-27b's head); merge ENG-HUD27 and
-   ENG-BOT27 when the lead sends their hashes, set wayside.ts way.2-7 to `dotOn('post:letter', <same words verbatim>)` (held in
-   w2Arc27.test), re-run the yield; then the list (seedlist.ts 2-7, --check, castBots --proven on the list), the flight for `judged`,
-   registrycheck, the final stills (every beat both ways 2x both settings; the jetty lines on default settings; zoom the weir's pool
-   line), THE race clip (name the frame he wins), the full gate set.
+### EXACT NEXT STEP (BUILD-27c's; read this first). BUILD-27c handed over at its 28-minute box.
+Head: t-build-27-wip (this commit) = 481203add + t-eng-27 e2f3855cf (f5810bbff; one conflict, pipeline.ts layChaseStage's return: both
+ENG-JETTY's `ended.problems` and the column dress kept) + d9913b17d (race-end wiring) + ed23d3087 (flown rows). Frozen tree
+/home/user/wt-b27c-f1 = d9913b17d (chattr +i on src, tools; node_modules symlinked from /home/user/wt-b27c, installed `npm ci
+--legacy-peer-deps` as CI does; a plain `npm ci` fails ERESOLVE). PW for every browser tool: PW=/opt/node-tools/node_modules/playwright/index.mjs.
+Dev server (window.__play is DEV-only, so stills need `npx vite`, not preview): port 4318 from wt-b27c-f1.
+**FIRST:** merge ENG-BOT27 (and ENG-HUD27) when the lead sends their hashes; then wayside.ts:101 `7: dotOn('post:letter', <the same
+words verbatim>)`, held in w2Arc27.test; re-run `castBots --stage 2-7 --seeds 1-40 --bots adult,child,middle,expert --setting both
+--par 4 --rows .. --proven ..` on a NEW frozen tree at that head: that is the ship number (lead). The lead measured ENG-BOT27 R1 at 33/40.
+**Blocked on engine (sent to the lead, owner asked):** (i) easyMode.ts:518-536 (Easy's flag fill by x-gap + `cps.sort` by x) makes the suite
+RED on 2-7 (easyMode.test "checkpoints are out of order"; play not broken: engine.ts:3018 claims by flagFurther); (ii) verdicts.ts:142
+picks the "first water" by x, so `judged: 'normal-2-7'` fails w2Arc27's arc test (drop.unwarned at x1766, the home leg's last river).
+When (ii) lands: flip the 3 lines (stageTable '2-7' judged:'normal-2-7'; judgedTable.test.ts's two JUDGED lists + '2-7': 'normal-2-7'),
+w2Arc27.test green, registrycheck, THEN the list: `seedlist.ts 2-7`, `--check`, castBots --proven on the list (judge BEFORE listing).
+1. DONE d9913b17d: LINES_27 win/lose verbatim; BRIEF_27.raceEnd {win w27.win Dot, lose w27.lose Pokey}; storyTips (STORY_27) handover/race
+   Dot. w2Arc27.test new case: 8/8 GREEN, RED with raceEnd and storyTips removed. tsc clean.
+2. DONE, sent: the yield on d9913b17d (castBots-27c-d9913b17d.txt/.jsonl): PROVEN 23/40; 0 under 2:00 (adult N min 121.5, E 121.8).
+   adult N 37 (3,11,30), adult E 40, child N 27, child E 39 (8), middle N 37 (9,10,20), middle E 39 (22), expert N 40.
+   Traced (probes27c/ftrace.mts, rtrace.mts; rescues-27c.txt): adult N 11 / middle N 9 run across a log flowing at him and off its far tail
+   on `upstream` (x12982); adult N 30 / 3 jump at a drifting log where it IS, land ~30 px short on the home stilts (x5922); middle stalls
+   ("water ahead" x9455, x14620; "nothing in the way" x6818); middle E 22 walks off a lip into a 78 px gap (x12749). All bot: sent, the lead
+   has ENG-BOT27 covering them.
+3. DONE ed23d3087: flown on Normal (fly-2-7.txt; parser probes27c/flyrows.py reproduces 2-5's committed rows exactly): rows normal-2-7
+   in flownArcs.ts and chain.md §1 (a few px under 2-5's). `judged` held (above).
+4. Suite on d9913b17d (scratchpad suite1.txt, was RUNNING at handover): 1 red so far, easyMode (i). Re-read its tail for the final count.
+5. STILLS (lead: shoot now; rule 29 waived by the lead) on d9913b17d, seed 1 (BUILT seed 1 rerolls 0), 2x: stills27c/ (56 when done),
+   Normal x 4960 6780 9080 11376 13508 14928 15738 (high: out leg) 14208 12090 9972 8500 5800 2459 800 (low: home leg); Easy x 5419 7239
+   9553 12002 14205 15685 16495 / 14965 12799 10585 8900 6181 2657 800. Looked at: x13508 up, x12090 up, x15738 side, x11376 side.
+   Findings: (a) porches x11376: rope-tied planks with no posts or hangers read as floating over the race (BUILD-27b's (f) HOLDS: name it);
+   (b) weir x15738 side: the column's foot ends in a hard dark band at the pool line (the seam, BUILD-27b's (d)); still OWED: a zoomed
+   shot of the weir's pool line (the falls' face, x ~15950 Normal) and the jetty lines on default settings (handover/race at the start:
+   a still with hints LIVE, i.e. without stills-at's `hh.shown = true`).
+6. RACE CLIP (RUNNING at handover): probes27c/racerec.mts records a bot run (his fields, every drifting log by engine.platforms index, the
+   pacer piece), racepuppet.mjs replays it into the real game on the dev server, 15 fps 2x with a frame caption -> encodes
+   race27c-adult-normal-seed1-side.mp4. Adult Normal seed 1: race starts frame 2206 (t73.6, x12327), HE WINS at frame 3615 (t120.5, x1750;
+   verdict him 47 s, boat 89.28 s); the log prints the clip still of the win frame. LOOK at the frames after 3615 for Dot's win line.
+   Then an upright clip (`up`) and a LOSE clip (child Normal: record with racerec, it should lose; Pokey's line).
+   FLAG for the lead: adult beats the boat by 42 s (47 vs 89); is the race meant to be that easy for an adult (2-7.md:23-29)?
+7. Then the full gate set on the final head (CLAUDE.md list; gates.md), the LEVEL-LOG row (kid table), Learned.
+
 ## BUILD-27b (continuing; started 1:05 PM ET 11-23 by `date`; report by 2:40 PM ET)
 ### EXACT NEXT STEP (BUILD-27b's; read this, not BUILD-27's below, for what is left). BUILD-27b stopped at its 28-minute box.
 NOW: nothing laid is waiting on me; 2-7 waits on the lead's hashes (ENG-JETTY: the w2.ts:372 finish fix, the race-end win/lose line,
