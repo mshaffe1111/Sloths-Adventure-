@@ -12,6 +12,32 @@ setting printed = asked, 2x): stills27g/g27-2-7-L0-{normal,easy}-x{4500,5419,...
 4500 5419 9540 9553 (Easy's upper river ends at x9539 = Normal's x9081 bank: probes27g/riverx.mjs). Contact sheets
 stills27g/sheet-g27-upright.jpg, sheet-g27-sideways.jpg; zooms stills27g/zoom-g27-*.jpg.
 
+(3) GATES on the frozen final tree 312ce33a0 (logs in the session scratch gates/; every later commit on t-build-27e is reference/ only):
+tsc PASS 9s | seedlist 2-7 --check PASS (100 seeds, each clean on both settings) | artcheck PASS | vite build (BASE_PATH=/Sloths-Adventure-/)
+PASS | chunkcheck PASS | drawcheck PASS 967s (listed stages incl. 2-7 upright and sideways: 0 breaches) | clipcheck PASS (83 known) 680s |
+kbdcheck PASS | registrycheck PASS | knowncheck PASS | generalitycheck PASS | coveragecheck PASS | tipwalk --layouts 4 PASS | tierBots 9/9 PASS
+265s | roadmapcheck, timecheck: refused on the shallow clone (exit 2), PASS after `git fetch --unshallow` (CI uses fetch-depth 0) |
+unit suite shard 1/2: 2066 pass, 0 fail (1 TODO: 4-3 boulder fixer, a todo) | CI 'rolled' tool line (gates.yml:157, read live): 354 pass,
+12 fail, all INHERITED: wheelChannel :40 :56 :79 :92, wheelRide :26 :42, firsttimer :184, riverRide :107 :145 :197 :203 :219 (+ the chaseBots
+:110 TODO). unit suite shard 2/2: 2077 pass, 2 fail, 2 todo: the INHERITED pacerLay
+:254 :280 only. SUITE TOTAL 4143 pass, 2 fail (inherited). buildcheck: FAIL under three lanes of load (1-1 p95 451 ms), then PASS run alone on the
+idle box, same frozen tree (normal p95 127 ms, easy 67 ms; a timing gate, CI runs it alone). Base evidence: riverRide.test.ts on the base
+793ddf246 (frozen /home/user/wt-b27g-f0): the same 5 reds (:107 :145 :197 :203 :219), so the known list's 'riverRide x4' is x5, all
+inherited; wheelChannel, wheelRide, firsttimer :184, pacerLay :254 :280 are the lead's known inherited list (same lines). No red is 2-7's or
+DRESS-27d's.
+VERDICT: 312ce33a0's tree is clean for the test link: every gate PASS but the inherited reds named above.
+
+### Learned / Method update (BUILD-27g)
+(a) A timing gate (buildcheck) run in parallel with heavy lanes fails on load, not on code: run it alone after the lanes (laneC now runs it
+first, while idle, or last on its own). (b) roadmapcheck and timecheck need full history: `git fetch --unshallow` once in the container
+before the gate set (they refuse with exit 2 on a shallow clone). (c) The CI tool line drifts: read it live from gates.yml (probes27g/laneA.sh)
+instead of copying it into a lane script (probes27f's copy had 9 of today's 41 files). (d) An inherited count in a packet is checked on the
+base, not trusted (riverRide was 5, not 4).
+Lessons applied: D115 (frozen trees), D96 (the full gate set, the CI line live), D94 (inherited = red on the base, run there), D131 (drawcheck
+with 2-7 listed), D111/D129 (box, exact next step), D109 (no clock times to the lead), D119 (no heredoc in a commit chain).
+EXACT NEXT STEP (if anyone follows): none for BUILD; the lead builds the test link from t-build-27e (gates ran on 312ce33a0; later commits are
+reference/ only) and decides the two named items (the drifting log's end at the bank; Easy x4500 sideways gap view, pre-existing).
+
 ### Polish check (BUILD-27g; judged at phone size on the sheets and full-size zooms)
 - OUT-LEG UPRIGHT BOTTOMS (lead's finding 1): FIXED. Normal x4500/x5419/x9080/x9085 and Easy x4500/x5419/x9540/x9553 upright: the soil runs
   to the screen's bottom edge, no dark strip, no streaks, no orange line, no sliver. Numbers (probes27g/bands.py, bottom 30% in 6 bands,
