@@ -15,6 +15,7 @@ import { listedStage, worldFinish } from '../listed.ts';
 import { generateAllLevels } from '../../worldsData.ts';
 import { W2_STAGES } from '../../w2Stages.ts';
 import { STAGE_LINES } from '../../pokeyJournal.ts';
+import { PHYS } from '../../physics.ts';
 import { DOORS_27, LINES_27, MISSION_27, STAGE_27 } from './w2Arc27.ts';
 import { STAGE_TABLE } from './stageTable.ts';
 
@@ -99,6 +100,18 @@ test('2-7: the mail boat waits on the home leg and docks before the jetty; the p
     for (const q of st.post.doors) assert.ok(q.x > legs[0].x0 && q.x < legs[0].x1, `${d} seed ${s}: the door at ${Math.round(q.x)} is on the way out`);
     assert.ok(beatAt(st, st.post.doors[0].x) !== undefined, `${d} seed ${s}: the doors stand in beats`);
     assert.ok((st.columnDress ?? []).some((q: Any) => /weir/.test(q.art ?? '')), `${d} seed ${s}: the weir dresses the column`);
+  }
+});
+
+test("2-7: Dot's `handover` starts 3 s at a full run after any other line (Normal's WATER_WARN at the spawn), `race` after it", () => {
+  // (lead, 11-23: WATER_WARN at t0.2 and the handover at t2.4 crowded the opening on Normal; WATER_WARN stays, the handover moves)
+  const gap = 3 * PHYS.maxRun;
+  for (const d of BOTH) for (const s of SEEDS) {
+    const hints = (built(s, d).proto?.hints ?? []) as Any[];
+    const h = hints.find((q) => q.text === LINES_27.handover), r = hints.find((q) => q.text === LINES_27.race);
+    assert.ok(h && r, `${d} seed ${s}: handover and race are said`);
+    assert.ok(r.x > h.x, `${d} seed ${s}: race (x ${Math.round(r.x)}) after handover (x ${Math.round(h.x)})`);
+    for (const q of hints) if (q !== h && q !== r && q.x <= h.x) assert.ok(h.x - q.x >= gap, `${d} seed ${s}: "${String(q.text).slice(0, 30)}" at x ${Math.round(q.x)} is ${Math.round(h.x - q.x)} px before the handover (under ${gap})`);
   }
 });
 

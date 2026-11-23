@@ -119,7 +119,9 @@ function brick(o: { id: string; name: string; jobs: NodeJob[]; difficulty: numbe
 /** [A] beat 0, the post office jetty: the mailman hands over the satchel (`handover`, then `race`) */
 const jetty: Lay = {
   pieces: [bank('a', null, 440), bank('b', 'a', 420), rock('rb', 'b', 0.6), bank('z', 'b', 300)],
-  sockets: [tip('t-handover', 'a', 0.35, 'handover'), tip('t-race', 'b', 0.2, 'race'), petal('pz', 'z', 0.5)],
+  // (the handover on the jetty's second bank: on Normal, WATER_WARN is said at the spawn, and the handover must start 3 s at a full run
+  //  after it (lead, 11-23: 'a' 0.35 left 2.2 s); `race` follows it on the last bank, about 1.6 s on)
+  sockets: [tip('t-handover', 'b', 0.15, 'handover'), tip('t-race', 'z', 0.3, 'race'), petal('pz', 'z', 0.6)],
 };
 /** [P g] beat 1, the doors: the bank path, a boulder or two (the post lays the PLEASE BE PATIENT doors on the walked banks) */
 const doors: Lay = {
