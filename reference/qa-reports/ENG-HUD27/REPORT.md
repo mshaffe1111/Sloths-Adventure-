@@ -1,4 +1,161 @@
-# ENG-HUD27 REPORT: the HUD bar along the route's legs + a 'post:letter' moment
+# ENG-HUD27 REPORT
+
+## ENG-HUD27b (the successor session): one route-order helper, easyMode + verdicts.ts 'first water', the x-pick sweep, landed
+Started 2:20 PM ET (`TZ=America/New_York date`: Mon Nov 23 14:20:22 EST 2026). Packet: reference/packets/2026-11-23/ENG-HUD27b.md.
+Base: t-eng-27-wip-hud e4568241f, with t-eng-27 e2f3855cf (ENG-JETTY's landing) merged in first (315caa0ef; one conflict in engine.ts
+after stepPieces: both kept, the post moments and then the race-end line; tsc PASS).
+
+### EXACT NEXT STEP (if this session ends before the landing is pushed)
+State: t-eng-27-wip-hud e4c4d3de8 (+ this REPORT commit) holds everything; t-eng-27 is e2f3855cf, already merged into it (315caa0ef).
+Gates done on frozen e4c4d3de8: tsc, generalitycheck, knowncheck PASS; lockall 102/102 unchanged; toys RED/GREEN (below). Running at
+hand-over: the unit suite and the CI tool line on /home/user/wt/fix2 (they die with this container). A successor: (1) a frozen tree of
+e4c4d3de8; run the unit suite and the CI tool line (gates.yml 'rolled'), both run_in_background, 7200000 ms; (2) compare every `not ok`
+with the base lists in Gates below (unit: pacerLay.test.ts:254, :280; CI: the 11 named); a new red blocks the landing; (3)
+`git ls-remote origin t-eng-27`: if still e2f3855cf, `git push origin <wip head>:t-eng-27` (a fast-forward); else merge it in (no force)
+and re-run tsc + waterWarnRouted/firstMet/easyRouted/hudRoute; (4) send the lead the landed hash and the two verdict lines (no clock times).
+
+### Done-items
+1. **ONE helper** (src/game/gen2/tower.ts, beside routeOf/routeAt/flagFurther): `alongOf(stage)` (the px along the laid route on a
+   stage with `gen2.tower.route`, routeAt; x itself on every other stage), and `firstMet` / `lastMet` / `inMetOrder(stage, items, at)`.
+   `at` gives a thing's place, or the places it spans (a drop's two lips: met at the one he reaches first, which is x0 on a stage with no
+   route). With no route they are exactly `.sort(by x)[0]` / `.at(-1)` / the sorted list, ties kept (proven on 200 random lists).
+   easyMode's flag fill now reads `alongOf(stage)` in place of its local measure (90b9fbccc's `along`; same numbers).
+2. **verdicts.ts dropVerdicts' first water** = `firstMet(laid, waters, lips)`. Fork, decided: dropVerdicts takes an optional second
+   argument `laid` (the built stage; none: x order), and judgeRoll hands it `built`, which judged11 already sets (promises11 reads it the
+   same way). Why: the Architect's JudgedStage type stays as it is, and every existing caller and test reads exactly as before.
+2b. **The fourth site (the lead's add, found by BUILD-27d): the water LAY.** pipeline.ts fillSockets laid WATER_WARN's line and sign at
+   the least-x wet gap (`[...wet].sort((a, b) => a.x0 - b.x0)`), always left of x0, so on 2-7 Normal's one line went to the way home's
+   last river and was clamped to the spawn, and the first river he meets had none (a real play bug: Dot warned at the wrong river).
+   Now (pipeline.ts:3814-3842): the wet gaps in the order he meets them (`inMetOrder(met, wet, lips)`), each line WATER_WARN.lead px of
+   route before the lip he reaches first and never before the spawn; a gap he meets at x1 (running left) gets `x: x1, beforeX: x1 + lead`
+   (the engine says a line once he is past x and not past beforeX) and its sign at x1 + 40; Easy's spacing is along the route; on a stage
+   with a route each line carries its section's height band (tipBand), so a storey passing over the river does not say it. dropsOf
+   (pipeline.ts:4613-4622) matches a line to its fall the same way (leftward: beforeX, the sign right of x1). A stage with no route takes
+   the old path exactly: x order, no band, the same hint keys, the same match.
+3. **The sweep** (below): 20 sort-then-pick sites and the min-of-x "first" picks in src/game, each classified.
+4. lockall, suite and CI tool line: Gates, below.
+
+### Proofs (planted RED first, each on its own chattr-frozen worktree)
+- **src/game/gen2/firstMet.test.ts**, plant 462c9a8b4 (the test and the helper, verdicts.ts still on the x pick): **RED 1 of 2**,
+  "home seed 1: Dot's line on the way out's first river is the warning owed": `'the first water at x 1231..1927 has no Dot line'`.
+  1231..1927 is the way home's LAST river (route px 23113). The first river he meets is at x 13500 (route px 1346, on the way out).
+  Test 2 (no route: x order exactly, and dropVerdicts with no stage or a run picks the least x0) is GREEN on the plant.
+- Fix 64831cbe1, frozen: firstMet.test.ts + easyRouted.test.ts + hudRoute.test.ts **6 of 6 GREEN**. The toy test proves 3 things on
+  every laid roll, home and post codes, seeds 1-4: Dot's line on the first river met is enough; with it missing, that river and only it
+  is named; and judgeRoll with `built` gives no drop.unwarned. judgeRoll is the path pipeline applyVerdicts takes for a judged stage, so
+  it covers BUILD-27c's `judged: 'normal-2-7'`.
+- **The lay, src/game/gen2/waterWarnRouted.test.ts**, plant 9c3e6fb15 (the test, the old lay), frozen: **RED 2 of 2**. Normal: "home
+  seed 1 normal: the line starts 2734 px of route before the first wet gap he meets (x 14930..15470), within 960" (it stood at the spawn,
+  laid for the home leg's last gap). Easy: "the line at x 12591 starts before a warned river's near lip" (the home leg's lines all stood
+  at the spawn). Fix e4c4d3de8, frozen: waterWarnRouted + firstMet + easyRouted + hudRoute **8 of 8 GREEN**.
+- **The real 2-7** (a scratch tree: t-build-27-wip 51ff9c43f merged with this fix's engine code, judged flipped as BUILD-27d's 3 lines
+  say (stageTable '2-7' judged 'normal-2-7'); not pushed): every roll 1-12, both settings, **0 drop.unwarned, 0 other verdict lines**.
+  Normal's one line now stands 480 px before the first river he meets on every roll (seed 1: line x 12468, river 12948..13508 warned;
+  seed 4: 12183, river 12663..13223). Easy 2-7 has no lethal water at all (its rivers splash back): no line is owed, none laid, the same
+  as before. BUILD-27d measured every roll failing on 64831cbe1 (the verdict fix without the lay fix). w2Arc27.test.ts on that tree:
+  8 of 8. (My probe: reference/qa-reports/ENG-HUD27/errs27.ts; BUILD-27d's probes27d/errs.mts is not pushed on t-build-27-wip.)
+- easyMode's plant still RED on the old fill: easyRouted.test.ts on c06f051d7, frozen: **fail 1 of 1**. On the fix: GREEN (above).
+- **No listed stage's verdict can move.** 1-4 is the only listed stage with a route. A probe on the frozen fix tree built every listed
+  stage on 16 layouts x 2 settings (reference/qa-reports/ENG-HUD27/firstWaterListed.ts). The result: 32 routed builds, 0 painted lethal waters on them,
+  so the first water differs on 0. Every other listed stage runs x order exactly (test 2).
+
+### The x-pick sweep (list only; the Lane 2 job, R-165.414). src/game, not tests, on 64831cbe1
+"Stacked" = a stage laid as legs (gen2 tower flow 'legs': 2-7 and the toys today). "Lay-time" = runs inside one leg's lay, before
+legs.ts mirrors a left leg, so it reads rightward x correctly.
+| file:line | what it picks by x | can a stacked stage reach it |
+|---|---|---|
+| gen2/verdicts.ts:146 (was :142) | the first painted water (Dot's line) | FIXED here (firstMet) |
+| gen2/pipeline.ts:3826 (was :3818) | the wet gap Normal's one water line goes to, and Easy's order | FIXED here (inMetOrder; BUILD-27d's find) |
+| gen2/pipeline.ts:4616 (dropsOf) | a water line matched to its fall (assumed he runs right) | FIXED here (either way) |
+| easyMode.ts:522-546 | Easy's flag gaps, middles, order | FIXED (90b9fbccc, now alongOf) |
+| gen2/worlds/w2.ts:314 (the lead's :372) | falls in x order; the plank join's 'next fall' | already y-banded (`|o.y - f.y| <= LIP_RISE`, ENG-JETTY's under-leg band): safe |
+| gen2/walkedSpan.ts:193 | the first swinging vine AHEAD (rightward) of a ledge | YES: petals' walked path runs on the built stage, so on a left leg 'ahead' is the wrong way (y-banded) |
+| storyChecks.ts:71 (teachOrder) | a node's pieces by x; the first piece needing the move; `Math.min(...said)` the first line | YES if run on a legs stage: a node's x span takes in the other leg's pieces (no y band). No caller in src; tests and tools only |
+| gen2/stillLay.ts:277 | the first bush inside a still zone (`inside[0]`) | YES if a legs stage lays a still zone (w2.ts imports stillLay; no y band) |
+| levelCheck.ts:1137 | a zone's solids by x, the reach chain from the first | YES if a legs stage lays a tide or spore zone (no y band). World 4/5 kinds |
+| jumpTrails.ts:43 (routeGaps) | the reach chain from the least-x solid, whole stage | old builder (stageGenerator addJumpTrails); reaches a legs stage only if that path runs on gen2 stages. Not checked |
+| gen2/rideLay.ts:95 | the next level platform ahead of a ride | lay-time and y-banded: safe |
+| enemyBrain.ts:117 | the level piece under him (`find`, at his feet's y) | containment at one height, not a first pick: safe |
+| petals.ts:146 | runs of petals on one line (grouped by y first) | y-grouped: safe |
+| gen2/w8Harness.ts:24,33,64; gen2/worlds/w8.ts:296,312 | the first dark zone, the first void drop, the first meet | World 8 only; reaches a stacked stage only if World 8 lays legs |
+| gen2/worlds/w1Arc18.ts:380 | the last flag before a spot | 1-8 (a run): no |
+| chaseTestKit.ts:36,44 | the last flag before a chase stretch | a test kit, chase runs: no |
+| dotFlightPilot.ts:19, dotFlightStage.ts:861-870 | Dot's flight: the first wall, flower, puff, gust | the flight stage type (one way): no |
+| mixer/w1mix.ts:1243, protoArt.ts:1449, w7TempleArt.ts:110-111, artDress.ts:302,308 | art and the old mixer's placement | old builder or art only: no |
+Spans (`Math.min/max(...x)` as an extent, e.g. pipeline.ts:1119, 2654, 4256; chaseLay.ts:118) are not first/last picks and are left out.
+Found by a script (reference/qa-reports/ENG-HUD27/xpickSweep.mjs: a sort by x/x0/x1/start/cx then [0], at(-1), [length - 1], pop, shift or find,
+directly or through the sorted list within 25 lines), plus a grep of min/max of x named first/last.
+
+### Gates (frozen worktrees)
+- tsc PASS; generalitycheck PASS (26 literals, 26 known); knowncheck PASS (e4c4d3de8).
+- **lockall** (every stage, 102, x 16 layouts x 2 settings, 3,264 builds): base e2f3855cf recorded, head e4c4d3de8 checked:
+  **102/102 unchanged**, none intended. (Verdicts and drops are not hashed; the probe above covers the first water on every listed
+  stage, and a run takes the old lay and match path line for line.)
+- **CI tool line** (gates.yml 'rolled', 345 tests): base e2f3855cf **333 pass / 11 fail / 1 todo**; my first head 64831cbe1 the same
+  11; landing head e4c4d3de8: CI_FIX2. The 11 inherited reds, all red on the base itself: wheelChannel.test.ts:40, :56, :79, :92 (World 2
+  finish: 'the fall at x=335-731 has no bank at one end'; also red on d9425f091, before ENG-JETTY), wheelRide.test.ts:26, :42,
+  firsttimer.test.ts:184, riverRide.test.ts:106, :144, :202, :218; the todo is chaseBots.test.ts:110.
+- **Unit suite**: base 4,073 / 4,068 pass / 2 fail / 3 todo (ENG-JETTY on 1b2897cfb, the same src and tools as e2f3855cf: the two reds
+  pacerLay.test.ts:254, :280). Landing head e4c4d3de8: SUITE_FIX2. (A first run on 64831cbe1 was stopped at 1,250 results, no red, when
+  the lead's fourth site changed src.)
+
+### Polish check
+Nothing drawn changes. On 2-7 the change is which river Dot's 'water' line is owed at: the first one Pokey meets on the way out, not
+the way home's last river, where a line would come about 5 minutes too late. Easy's flags are unchanged from 90b9fbccc (same measure).
+The stills and the line itself are BUILD-27c's (its judged flip and yield).
+
+### Pushback
+- The packet and the hand-over said "a Drop has no y". It has one: `lipY` (verdicts.types.ts:77-80). So only the route had to be
+  handed over, and no type was widened (the hand-over's "a Pick widening is the Architect's" never came up).
+- The toy's first water he meets is the way out's river crossing, a ride (a narrow fall inside the river, drawn as deep water). The
+  verdict asks Dot's line at the FIRST painted water, but the water lay has never covered a river (its line, "Flick up and over", is
+  for a wet gap he jumps). So on a stage whose first water is a ridden river with no wet gap before it, drop.unwarned would stand. Not
+  on 2-7 (12 rolls clean) and not on any listed stage. It is a design question, not the x-order trap: does a ridden river owe Dot's
+  water line? Lead / Designer call; the toy test checks the first WET GAP met and names this.
+- t-eng-27 carries 11 CI tool-line reds, not the 5 ENG-JETTY's REPORT named: wheelChannel.test.ts x4 and wheelRide.test.ts x2 are red
+  on e2f3855cf itself (and wheelChannel on d9425f091). ENG-JETTY's line ran 225 tests; it is 345 now. The lead's list of inherited reds
+  should carry all 11 (D126).
+
+### Suggestions (outside this packet: the Lane 2 job, ready to dispatch)
+- **ENG-XPICK (R-165.414 part 2):** move walkedSpan.ts:193, storyChecks.ts:71 (teachOrder), stillLay.ts:277 and levelCheck.ts:1137
+  onto alongOf / firstMet / inMetOrder, and check whether jumpTrails.ts:43 runs on gen2 stages. Each gets an out-and-back toy case
+  (toyHome HOME_CODE), RED on x first. Files: those four, their tests. Done: each toy RED then GREEN; lockall unchanged; the sweep
+  table above re-run with those rows gone.
+- **The gate (D130's countermeasure):** grow xpickSweep.mjs into tools/engine/xpickcheck.mjs, with a known list that only shrinks
+  (the non-safe rows above). It fails on a NEW sort-by-x pick in engine rule code. Add it to gates.yml beside generalitycheck.
+
+### Unresolved
+- The river-first question above (no code change made for it).
+- A leftward water line has no `passX`: the engine takes a line down once he is grounded at x >= passX (engine.ts passTips), a
+  rightward rule, so a line said running left stays its full time (TIP_SAY_S) instead of going once he is over the river. Small;
+  making passTips two-way is an engine change for the Lane 2 job.
+- tipReach (pipeline.ts, read by tools and tests) models a tip as said "at the first step past its x"; it does not read beforeX, so its
+  'early' figure for a leftward water line is not exact. No gate reads it for water lines that I found; not changed.
+
+### Method update
+- level.md / engine-core: "first" and "last" on any stage mean firstMet / lastMet (gen2/tower.ts). A rule that sorts by x and takes [0]
+  or the end is the D130 trap. The test for such a rule includes the out-and-back toy.
+- dispatch-packet.md D118 held again: the base's CI tool line, re-run here on the base itself, named 6 reds the last landing's report did not (above). A base count carried from an older run under-counts once the
+  line grows: the report gives the line's test count with its reds.
+
+### Lessons applied
+D130 (this job: one helper, the sweep, an out-and-back toy per rule), D115 (each proof on its own chattr-frozen tree: plant, the
+old fill, the fix, the base; node_modules linked first), D118 (the base's CI tool line re-run on e2f3855cf itself), D122/D123 (7200000 ms,
+at most two heavy runs at a time), D126 (the CI tool line with the suite), D113 (no foreground wait; no shell '&'), D119 (no heredoc
+in a commit chain), D80/D101 (measured against the old pick on every listed stage it could touch), D43 (no stage id, seed or x:
+generalitycheck PASS), D109 (no clock times in messages).
+
+### Own miss
+None found. My working runs of the new test (before the proofs) ran in the edit tree with nothing editing it; every RED/GREEN
+proof and every gate ran on a frozen tree.
+
+### Learned (for the next engine member)
+- A drop's height is `lipY`. A judged stage's built stage is `built` (judged11 sets it; promises11 reads it). So a verdict that needs
+  the laid stage can take it without a type change.
+- On the out-and-back toy, x and the route disagree on every roll (the way home's last river has the least x), so it is the ready RED
+  for any "first/last" rule.
+
+## ENG-HUD27 (first session): the HUD bar along the route's legs + a 'post:letter' moment
 
 Started 1:22 PM ET (`TZ=America/New_York date`: Mon Nov 23 13:22:51 EST 2026). Packet: reference/packets/2026-11-23/ENG-HUD27.md.
 BASE: t-eng-27 d9425f091 (ENG-27w's landing). Candidates on t-eng-27-wip-hud.

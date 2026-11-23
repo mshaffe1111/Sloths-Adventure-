@@ -10,6 +10,15 @@ Merged at INT-14 (11-20, t-int-14): §0zq-25d/§0zq-25c ENG-25c (2-5's snap rows
 - **Moments** (post.ts postMoments): 'post:letter' at the first letter posted, 'post:letter:<n>' at the nth, read from the post piece's
   `open` after stepPieces (no PieceHost change); wayside.ts `at: 'on'` waits on them.
 - Trap: anything "how far along" on a legs stage must read stage.gen2.tower.route, never x.
+- **First/last met (ENG-HUD27b, D130, R-165.414):** gen2/tower.ts `alongOf(stage)` (route px on a stage with a route, x otherwise) and
+  `firstMet` / `lastMet` / `inMetOrder(stage, items, at)` (`at` a place or a thing's ends, e.g. a drop's two lips). Every "first" or
+  "last" a rule picks uses them, never `.sort(by x)[0]`. With no route they are the x sort exactly (firstMet.test.ts). Users: easyMode's
+  flag fill, verdicts.ts dropVerdicts (its optional `laid` = judgeRoll's `built`). The remaining x picks are listed in
+  reference/qa-reports/ENG-HUD27/REPORT.md (the Lane 2 job); xpickSweep.mjs there finds them.
+- **Dot's water line on a routed stage** (ENG-HUD27b, BUILD-27d's find): fillSockets lays it at the wet gaps in met order, before the
+  lip he reaches first; a leftward one is `{ x: x1, beforeX: x1 + lead }` with its sign at x1 + 40, and on a stage with a route every
+  one carries its section's band; dropsOf matches either way (waterWarnRouted.test.ts). Open: passTips (engine.ts) is rightward only, so
+  a leftward line has no passX; a ridden river that comes first owes no line in the lay but the verdict asks one (the lead's call).
 - **Easy's flag fill** (easyMode.ts, item 3): on a stage with a route it measures gaps, middles and order in route px (routeAt), so
   a stacked out-and-back keeps flagFurther's order (easyRouted.test.ts; real 2-7 Easy: 11 flags become 16, in order). No route: x as before.
 
