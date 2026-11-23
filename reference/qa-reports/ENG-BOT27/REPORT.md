@@ -28,7 +28,10 @@ Branch t-eng-27-wip-bot27-aim. Code 3d90c4977 (child-only gate + toy), t-eng-27 
    as on the base: ENG-JETTY's suite on 1b2897cfb and d9425f091 named the same two, inherited (ENG-27w).
 6. **Gates on the frozen candidate 2334a3948** (chattr +i on src, tools; src/game/gen2/proven unlocked, D115): tsc PASS; generalitycheck
    PASS (26 literals, 26 known); knowncheck PASS; reAim toys 3/3 (riverRide.test.ts). Unit suite: IN FLIGHT at this push (reds so far: pacerLay.test.ts:254, :280 only, inherited). CI tool line (gates.yml
-   'rolled', D126): IN FLIGHT at this push (reds so far: tools/difficulty/wheelChannel.test.ts 4/4, RED on the bare base e2f3855cf too, the same w2Finish throw (w2.ts:326, ENG-JETTY ef20e95a5): inherited, sent to the lead; not on ENG-JETTY's list). tierBots: queued after the tool line. roadmapcheck: cannot run here (shallow clone; no roadmap file changed).
+   'rolled', D126): 348 tests / 336 pass / 11 fail / 1 todo; the 11 = the base's 11, each run on the frozen bare base
+   e2f3855cf: wheelChannel.test.ts :40 :56 :79 :92 and wheelRide.test.ts :26 :42 (the w2Finish throw, w2.ts:326, 'the fall at x=335-731
+   has no bank at one end': the lead says named on t-eng-27 by ENG-27w and on ENG-26t's list), firsttimer.test.ts:184, riverRide.test.ts
+   :107 :145 :203 :219 (:106 :144 :202 :218 on the base: my import line shifts them one). No new red. tierBots: 9/9 PASS (1-1's child calibration unmoved). roadmapcheck: cannot run here (shallow clone; no roadmap file changed).
    Not run, by reason: lockall and the seed-list checks (no src/ file changed: the diff to t-eng-27 is tools/inspect and reference only).
 ## 2. Polish check
 No screen changed (bot code only). Every table row read; every moved row is a child row (2-1, 2-7) and every other bot's row is identical.
