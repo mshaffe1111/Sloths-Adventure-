@@ -236,24 +236,48 @@ export function clipAbove(ctx: CanvasRenderingContext2D, cs: readonly Ceiling[],
   ctx.clip('evenodd');
 }
 
-/** the stand-in underside's dark band, a 4 x 64 strip made once (no gradient per frame: PERFORMANCE-RULES §8) */
-let band: HTMLCanvasElement | null = null;
-function underBand(deep: readonly number[]): HTMLCanvasElement | null {
-  if (band) return band;
-  if (typeof document === 'undefined') return null;
-  const cv = document.createElement('canvas');
-  cv.width = 4;
-  cv.height = 64;
-  const g = cv.getContext('2d');
-  if (!g || typeof g.createLinearGradient !== 'function') return null;
-  const gr = g.createLinearGradient(0, 0, 0, 64);
-  gr.addColorStop(0, `rgba(${deep[0]},${deep[1]},${deep[2]},0)`);
-  gr.addColorStop(0.7, `rgba(${deep[0]},${deep[1]},${deep[2]},0.45)`);
-  gr.addColorStop(1, `rgba(${deep[0]},${deep[1]},${deep[2]},0.8)`);
-  g.fillStyle = gr;
-  g.fillRect(0, 0, 4, 64);
-  band = cv;
-  return cv;
+/** the stand-in underside's dark band in this many layers along the line, each one continuous fill (standInBand) */
+const STAND_IN_LAYERS = 12;
+/** the band's darkness down its height (0 at its top, STAND_IN_BAND over the line, to 1 at 2 units under it): its alpha there */
+const bandAlpha = (t: number) => (t < 0.7 ? (0.45 * t) / 0.7 : 0.45 + ((t - 0.7) / 0.3) * 0.35);
+/** each layer's fill for a world's deep colour, made once: stacked, layers 0..k give the band's alpha at the middle of layer k */
+let bandStyles: { key: string; styles: string[] } | null = null;
+function standInStyles(deep: readonly number[]): string[] {
+  const key = deep.join(',');
+  if (bandStyles?.key === key) return bandStyles.styles;
+  const styles: string[] = [];
+  let below = 0;
+  for (let k = 0; k < STAND_IN_LAYERS; k++) {
+    const want = bandAlpha((k + 0.5) / STAND_IN_LAYERS);
+    const a = 1 - (1 - want) / (1 - below);
+    styles.push(`rgba(${deep[0]},${deep[1]},${deep[2]},${a.toFixed(4)})`);
+    below = want;
+  }
+  bandStyles = { key, styles };
+  return styles;
+}
+/**
+ * The stand-in underside along line c over a..b: the soil's own edge darkened as ground seen from below, over the last STAND_IN_BAND units
+ * to the line, as STAND_IN_LAYERS layers that each follow the line whole (one fill each). It was a 4 x 64 gradient strip laid a sheared
+ * 16-unit column at a time, each column over the next by half a unit so no hairline showed: the overlaps doubled the band's alpha into
+ * evenly spaced vertical seams, from above (2-7's out leg upright, BUILD-27f's finding 1) and from below (the race leg), DRESS-27c.
+ */
+function standInBand(ctx: CanvasRenderingContext2D, c: Ceiling, a: number, b: number, deep: readonly number[]) {
+  const styles = standInStyles(deep);
+  const h = STAND_IN_BAND + 2;
+  for (let k = 0; k < STAND_IN_LAYERS; k++) {
+    const up = STAND_IN_BAND - (k * h) / STAND_IN_LAYERS;
+    ctx.fillStyle = styles[k];
+    ctx.beginPath();
+    ctx.moveTo(a, ceilingAt(c, a) - up);
+    for (let x = Math.floor(a / STEP) * STEP + STEP; x < b; x += STEP) ctx.lineTo(x, ceilingAt(c, x) - up);
+    ctx.lineTo(b, ceilingAt(c, b) - up);
+    ctx.lineTo(b, ceilingAt(c, b) + 2);
+    for (let x = Math.ceil(b / STEP) * STEP - STEP; x > a; x -= STEP) ctx.lineTo(x, ceilingAt(c, x) + 2);
+    ctx.lineTo(a, ceilingAt(c, a) + 2);
+    ctx.closePath();
+    ctx.fill();
+  }
 }
 
 /** the corner's top fades in over this share of its height, its inner side (away from the face) over this share of its body: drawn
@@ -300,6 +324,33 @@ export function underFrames(w: number): UnderFrame[] | null {
 }
 /** the painted strip's shown width (world units) and height (its own aspect) */
 const UNDER_W = 512;
+/** the stand-in underside's dark band: how far up into the soil it reaches over the line (drawUnderside) */
+const STAND_IN_BAND = 56;
+/** how far the underside reaches UP into the soil over its line in world `w`: the painted strips over their edge, or the stand-in's band */
+export function underReach(w: number): number {
+  const fs = underFrames(w);
+  return fs ? Math.max(...fs.map((f) => (f.edge * UNDER_W * f.h) / f.w)) : STAND_IN_BAND;
+}
+
+/**
+ * The lowest a view over x0..x1 may frame while he stands at (heroX, feetY) on an upper leg's earth (engine.ts's camera, DRESS-27c): the
+ * highest the ceilings' lines come over the view, less the underside's `reach` up into the soil. A view of an upper leg's earth ends in
+ * that earth, never in its underside's band, the air under the ceiling or the lower leg's backdrop seen from above: upright on 2-7's
+ * raised out leg the view framed 70 units past the soil's end (a band of the stand-in's column seams over a dark strip, BUILD-27f's
+ * finding 1). Only a ceiling he stands over, inside its run with his feet above its line (on the lower leg, past every run's end or
+ * where no leg is stacked: null, the view frames as it always did). Pure: no stage, no place.
+ */
+export function viewFloor(cs: readonly Ceiling[], x0: number, x1: number, heroX: number, feetY: number, reach: number): number | null {
+  let f = Infinity;
+  for (const c of cs) {
+    if (heroX < c.x0 || heroX > c.x1 || feetY >= ceilingAt(c, heroX)) continue;
+    // (past its run the line slants down into the hillside, so where the view runs past an end that end is the highest it comes there)
+    f = Math.min(f, ceilingAt(c, x0), ceilingAt(c, x1));
+    const a = Math.max(x0, c.x0), b = Math.min(x1, c.x1);
+    for (let x = Math.ceil(a / STEP) * STEP; x <= b; x += STEP) f = Math.min(f, ceilingAt(c, x));
+  }
+  return Number.isFinite(f) ? f - reach : null;
+}
 /** where one strip gives way to the next, the next fades in over this much before the change: each strip wraps only with itself (its tail
  *  runs on into its head), so a hard seam stood at every change (ENG-GROUND-c's painted shoot) */
 const BLEND = 96;
@@ -321,11 +372,15 @@ export function drawUnderside(ctx: CanvasRenderingContext2D, w: number, p: Pick<
   const s = underSheet(w);
   const frames = underFrames(w);
   const frameAt = (n: number) => frames![((n % frames!.length) + frames!.length) % frames!.length];
-  const img = frames && s ? null : underBand(GROUND_FRAMES[w]?.deep ?? [20, 14, 10]);
-  if (!frames && !img) return;
+  const painted = !!(frames && s);
   ctx.save();
   for (const c of cs) {
     const a = Math.max(p.x, c.x0, view.x0 - STEP), b = Math.min(p.x + p.width, c.x1, view.x1 + STEP);
+    // (the stand-in, until the world's painted strips land: whole layers along the line, no columns and no corner)
+    if (!painted) {
+      if (b > a) standInBand(ctx, c, a, b, GROUND_FRAMES[w]?.deep ?? [20, 14, 10]);
+      continue;
+    }
     for (let x = Math.floor(a / STEP) * STEP; x < b; x += STEP) {
       const xs = Math.max(x, a), xe = Math.min(x + STEP, b);
       if (xe <= xs) continue;
@@ -348,7 +403,7 @@ export function drawUnderside(ctx: CanvasRenderingContext2D, w: number, p: Pick<
           ctx.drawImage(s, g.x + g.w - (to / UNDER_W) * g.w, g.y, ((xe - xs) * g.w) / UNDER_W, g.h, xs, y - g.edge * hg, dw, hg);
           ctx.globalAlpha = a0;
         }
-      } else if (img) ctx.drawImage(img, 0, 0, 4, 64, xs, y - 56, dw, 58);
+      }
       ctx.transform(1, -k, 0, 1, 0, k * xs);
     }
     // (an end over open air: the painted corner, its face on the end and its underside on the line, sheared to the line's slope over

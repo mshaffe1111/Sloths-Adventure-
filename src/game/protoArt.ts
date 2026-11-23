@@ -28,7 +28,7 @@ import { GROUND_FRAMES } from './groundAtlasData.ts';
 import { canvasLost } from './canvasLost.ts';
 import { drawW8Fungus } from './w8FungusArt.ts';
 import { drawRoostBough } from './batArt.ts';
-import { ceilingsFor, ceilingsOver, ceilingsOverSpan, clipAbove, clipAboveLines, drawUnderside, underCeiling, type Ceiling, type StackZone, type UpperWater } from './groundStack.ts';
+import { ceilingsFor, ceilingsOver, ceilingsOverSpan, clipAbove, clipAboveLines, drawUnderside, underCeiling, underReach, viewFloor, type Ceiling, type StackZone, type UpperWater } from './groundStack.ts';
 import { riverPaintFoot } from './riverArt.ts';
 
 /** the painted World 1 kit on every World 1 stage (saved on the device): off by default while testers play */
@@ -96,6 +96,16 @@ export function riverLid(platforms: Platform[], x0: number, x1: number, surfaceY
   const cs = ceilingsFor(platforms, banks, bankSig(banks), stackZones, stackWaters);
   const over = cs.length ? ceilingsOverSpan(x0, x1, surfaceY, cs) : [];
   return over.length ? over : null;
+}
+/**
+ * The lowest the view over x0..x1 may frame while he stands at (heroX, feetY) on an upper leg's earth: the soil's end under it, less the
+ * underside's band (groundStack.ts viewFloor; engine.ts's camera, DRESS-27c). Null where no leg is stacked or he stands over no ceiling.
+ */
+export function stackViewFloor(platforms: Platform[], x0: number, x1: number, heroX: number, feetY: number): number | null {
+  if (!stackZones.length) return null;
+  const banks = groundLook === 'bough' ? platforms.filter((p) => !p.broken && boughPiece(p)) : platforms.filter(paintedBank);
+  const cs = ceilingsFor(platforms, banks, bankSig(banks), stackZones, stackWaters);
+  return cs.length ? viewFloor(cs, x0, x1, heroX, feetY, underReach(kitWorld)) : null;
 }
 /** a lidded river's underside over its own x0..x1 (between its banks, whose own undersides meet it there): the banks' painted strip or
  *  stand-in (groundStack.ts drawUnderside), drawn after the river's clip is lifted so the strip's roots hang below the line */
