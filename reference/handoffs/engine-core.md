@@ -2,6 +2,21 @@
 
 Merged at INT-14 (11-20, t-int-14): §0zq-25d/§0zq-25c ENG-25c (2-5's snap rows level, the snapper's ground, the straddle), §0zq-NOISE ENG-NOISE (one noise channel), §0zq-PROWL ENG-PROWL (sight.up + the leap), §0zq-small3 ENG-SMALL3 (R-165.317/.319/.321), and PAINT-292 (World 1's painted planks and stones; no section here). Merged at INT-13 (11-19, t-int-13): §0ENG23 ENG-23 (followers, the heron reads the line) and §0zl-168 TIME-168 (timecheck), §0zm-25b ENG-25b (the snapper bot skill, the meter's snap channel) and §0zl-25 ENG-25 (2-5's snap stones and snapper rows), §0zn-26b ENG-26b and §0zm-26 ENG-26 (the water wheel), §0W2A ART-W2A (2-3's painted follow poses), §0zo ART-W2B (the wheel's painted draw), §0zo-285c/§0zo-285b/§0zo-285 ENG-285 (the judges and bots fly the engine's Pokey), §0zp-284 FIX-284/284b (2-2's big pads, the real tap hop), §0zp-24d BUILD-24d, §0zn-24c ENG-24c (the raft look, the glow) and §0zm-24 BUILD-24 (2-4) joined; rewritten at the INT-12 merge (11-18, t-int-12): four members wrote here the same day, so labels are suffixed where they met: §0zm-22p ART-22P (CI's seed-list matrix, R-165.278); §0zl-24 ENG-24 (a liana over a river; its REPORT cites it as §0zl); §0zm BUILD-19b, §0zn ENG-19c and §0zl BUILD-19 (t-build-19, the labels its REPORT cites). Before them FIX-22b (11-15): section 0zk.
 
+## 0zq-thrift. DRESS-27b (t-eng-27-wip-dress27b, 11-23): 2-7's own per-frame draw breaches fixed in the shared river draw (same picture)
+- **What drew them:** every river, every frame: drawRivers made a box clip, then a ceiling clip (a lidded river), then the bank faces'
+  outline clip; drawRiverWater clipped again under a bed for its soil (600-unit tiles, their overhang counted as drawImage screens) and
+  made 1-3 gradients; drawSafeRiverOver clipped once per log; the over pass made a gradient. 2-7 (many rivers, lidded legs) hit
+  gradients 4.13/5.00, clips 21/24.13, drawImageScreens 7.61/7.90.
+- **The fix (src/game/drawThrift.ts, general):** vGradient (a vertical gradient made once per context and stops: a gradient's points are
+  read at paint time, so one made at world y paints the same under any camera); cropToBox (draw only the part of a picture inside a box by
+  its source rect = the same pixels a clip to the box let through); polygonInBox (Sutherland-Hodgman: a ceiling or face outline cut to
+  the river's box is ONE clip for the same region). groundPaint.ts drawSoilCut (no clip under a bed); groundStack.ts aboveLinesPath
+  (clipAboveLines' outline as points). A TAIL's over-pass clip is folded into the box's right edge.
+- **After (2-7, 16 spots):** gradients 0.25/0.00, clips 10/10, drawImageScreens 6.04/6.56. Proof: drawThrift.test.ts (4, planted).
+- **Traps:** a still diff between two runs is mostly animation (logs drift, reeds sway): judge zooms side by side, not the pixel count.
+  The box's foot is the view's foot + 40 (off screen), so a ceiling below it needs no box. A ceiling that rises over the box's top keeps
+  the old clips (never today: riverLid).
+
 ## 0zq-dress. DRESS-27 (t-eng-27-wip-dress, 11-23): 2-7's weir seam, the pole in the pool, the floating porches (World 2's kit, general)
 - **Base:** t-eng-27 + a merge of t-ready-27-wip (the column dress was only on t-build-27; conflicts in pipeline.ts and this note resolved
   as t-build-27 did). Landing it on t-eng-27 brings READY-27's six commits with it.

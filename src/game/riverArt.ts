@@ -10,7 +10,8 @@ import type { Platform } from './types.ts';
 import { endFace } from './groundPaint.ts';
 import { CELS, drawCel, warmCels } from './storyCels.ts';
 import { FONT_DISPLAY } from './fonts.ts';
-import { drawSoil } from './groundPaint.ts';
+import { drawSoilCut } from './groundPaint.ts';
+import { cropToBox, vGradient } from './drawThrift.ts';
 import { drawKitArt } from './puzzleArt.ts';
 import { drawW2New, type W2NewPiece } from './w2NewArt.ts';
 
@@ -101,6 +102,9 @@ export const RIVER_LOOK = {
 const SAFE_EARTH = ['#5e5638', '#3a3324'] as const;
 /** over the painted earth under a shallow bed: the bank wall's shadow, light at the bed and deeper below (the banks' DEPTH_DARK tone) */
 const SAFE_SHADE = ['rgba(31, 22, 15, 0.25)', 'rgba(31, 22, 15, 0.55)'] as const;
+/** the two as gradient stops (drawRiverWater, vGradient) */
+const SHADE_STOPS = [[0, SAFE_SHADE[0]], [1, SAFE_SHADE[1]]] as const;
+const EARTH_STOPS = [[0, SAFE_EARTH[0]], [1, SAFE_EARTH[1]]] as const;
 let shallow: HTMLImageElement | null = null;
 let shallowReady = false;
 function loadShallow() {
@@ -155,13 +159,14 @@ export function drawSafeRiverOver(ctx: CanvasRenderingContext2D, logs: readonly 
     const line = lg.y + logLineAt(lg) + logBob(lg, t);
     const foot = lg.y + logPaint(lg).barkFoot + logBob(lg, t) + 2;
     const x0 = lg.x + SAFE_OVER.inset, x1 = lg.x + lg.width - SAFE_OVER.inset;
-    ctx.save();
-    ctx.beginPath();
-    ctx.rect(x0, line - L.h * L.crest, x1 - x0, foot - line + L.h * L.crest);
-    ctx.clip();
+    // (each repeat cut at the log's own box by its source rect, the same pixels the clip to that box let through, with no clip: one clip a
+    //  log was 2-7's clips over 19 a frame, DRESS-27b, drawThrift.ts cropToBox)
     const top = line - L.h * L.crest;
-    for (let x = Math.floor((x0 - shift) / L.w) * L.w + shift; x < x1; x += L.w - 1) ctx.drawImage(shallow!, x, top, L.w, L.h);
-    ctx.restore();
+    const iw = shallow!.naturalWidth || shallow!.width, ih = shallow!.naturalHeight || shallow!.height;
+    for (let x = Math.floor((x0 - shift) / L.w) * L.w + shift; x < x1; x += L.w - 1) {
+      const c = cropToBox(x, top, L.w, L.h, iw, ih, x0, top, x1, foot);
+      if (c) ctx.drawImage(shallow!, c[0], c[1], c[2], c[3], c[4], c[5], c[6], c[7]);
+    }
   }
   ctx.restore();
   return true;
@@ -216,18 +221,11 @@ export function drawRiverWater(
       // (under the bed: the banks' own painted earth (groundPaint.ts drawSoil, the world's sheet, no shading passes), darkened toward the
       // bank wall in shadow; a flat olive fill showed under every safe river, the lead 11-15 2:56 PM ET, ART-W2's rule. The flat fill is
       // only the fallback until the world's ground sheet loads)
-      // (clipped to the bed and below: drawSoil lays whole tiles and leaves the clip to its caller; the river's own clip starts 30 px over
-      // the surface, and the soil showed there as a pale strip behind the logs)
-      ctx.save();
-      ctx.beginPath();
-      ctx.rect(x0, bed, x1 - x0, bottom - bed);
-      ctx.clip();
-      const soil = soilWorld !== undefined && drawSoil(ctx, soilWorld, x0, x1, bed, bottom, bottom, undefined, false);
-      ctx.restore();
-      const g = ctx.createLinearGradient(0, bed, 0, bed + 160);
-      g.addColorStop(0, soil ? SAFE_SHADE[0] : SAFE_EARTH[0]);
-      g.addColorStop(1, soil ? SAFE_SHADE[1] : SAFE_EARTH[1]);
-      ctx.fillStyle = g;
+      // (cut at the bed and below: whole tiles, uncut, showed in the river's own clip from 30 px over the surface, a pale strip behind the
+      // logs)
+      // (each soil tile cut at the bed by its own source rect, no clip; the shade's gradient made once: DRESS-27b, drawThrift.ts)
+      const soil = soilWorld !== undefined && drawSoilCut(ctx, soilWorld, x0, x1, bed, bottom);
+      ctx.fillStyle = vGradient(ctx, bed, bed + 160, soil ? SHADE_STOPS : EARTH_STOPS);
       ctx.fillRect(x0, bed, x1 - x0, bottom - bed);
     }
     const shift = (((t * speed * 0.35 * dir) % L.w) + L.w) % L.w;
@@ -252,24 +250,14 @@ export function drawRiverWater(
   ctx.fillStyle = RIVER_DEEP;
   ctx.fillRect(x0, foot, x1 - x0, Math.max(0, fillTo - foot));
   if (fillTo < bottom) {
-    ctx.save();
-    ctx.beginPath();
-    ctx.rect(x0, fillTo, x1 - x0, bottom - fillTo);
-    ctx.clip();
-    const soil = soilWorld !== undefined && drawSoil(ctx, soilWorld, x0, x1, fillTo, bottom, bottom, undefined, false);
-    ctx.restore();
+    // (the soil cut at the fill's foot by its own source rect, no clip; the gradients made once: DRESS-27b, drawThrift.ts)
+    const soil = soilWorld !== undefined && drawSoilCut(ctx, soilWorld, x0, x1, fillTo, bottom);
     if (!soil) {
       // (the flat earth only until the world's ground sheet loads, as under a still pool)
-      const ge = ctx.createLinearGradient(0, fillTo, 0, fillTo + 160);
-      ge.addColorStop(0, SAFE_EARTH[0]);
-      ge.addColorStop(1, SAFE_EARTH[1]);
-      ctx.fillStyle = ge;
+      ctx.fillStyle = vGradient(ctx, fillTo, fillTo + 160, EARTH_STOPS);
       ctx.fillRect(x0, fillTo, x1 - x0, bottom - fillTo);
     }
-    const g = ctx.createLinearGradient(0, fillTo, 0, fillTo + DEEP_BED_FADE);
-    g.addColorStop(0, RIVER_DEEP);
-    g.addColorStop(1, RIVER_DEEP_CLEAR);
-    ctx.fillStyle = g;
+    ctx.fillStyle = vGradient(ctx, fillTo, fillTo + DEEP_BED_FADE, DEEP_FADE_STOPS);
     ctx.fillRect(x0, fillTo, x1 - x0, Math.min(DEEP_BED_FADE, bottom - fillTo));
   }
   // the water slides with the current, a good deal slower than the logs (it reads as flow, not as a conveyor belt)
@@ -283,6 +271,10 @@ export function drawRiverWater(
 export const DEEP_BED_FADE = 70;
 /** RIVER_DEEP at no alpha: the bed's fade ends in it */
 const RIVER_DEEP_CLEAR = 'rgba(38, 66, 71, 0)';
+const DEEP_FADE_STOPS = [[0, RIVER_DEEP], [1, RIVER_DEEP_CLEAR]] as const;
+/** a river's water over its logs (engine.ts drawRivers' over pass), painted and plain, as gradient stops (drawThrift.ts vGradient) */
+export const OVER_WATER_PAINTED = [[0, 'rgba(96, 160, 152, 0.3)'], [1, 'rgba(38, 66, 71, 0.75)']] as const;
+export const OVER_WATER_PLAIN = [[0, 'rgba(56, 148, 168, 0.55)'], [1, 'rgba(24, 90, 120, 0.8)']] as const;
 /**
  * Where a deep river's flat fill ends (y), from its painted strip's foot: at the view's foot (`bottom`) for an open river, which runs down
  * out of sight; at the strip's foot when a leg runs under the river (`lidded`), the banks' earth under it from there (drawRiverWater)

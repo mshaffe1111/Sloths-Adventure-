@@ -199,15 +199,20 @@ export function ceilingsOverSpan(x0: number, x1: number, top: number, cs: readon
  * of its water, bed and soil. Only the stretch's own samples (a river's width, not the whole line). Call between save() and restore().
  */
 export function clipAboveLines(ctx: CanvasRenderingContext2D, cs: readonly Ceiling[], x0: number, x1: number, top: number) {
-  const at = (x: number) => Math.min(...cs.map((c) => ceilingAt(c, x)));
+  const o = aboveLinesPath(cs, x0, x1, top);
   ctx.beginPath();
-  ctx.moveTo(x0, top);
-  ctx.lineTo(x1, top);
-  ctx.lineTo(x1, at(x1));
-  for (let x = Math.floor(x1 / STEP) * STEP; x > x0; x -= STEP) ctx.lineTo(x, at(x));
-  ctx.lineTo(x0, at(x0));
+  ctx.moveTo(o[0][0], o[0][1]);
+  for (let i = 1; i < o.length; i++) ctx.lineTo(o[i][0], o[i][1]);
   ctx.closePath();
   ctx.clip();
+}
+/** clipAboveLines' outline as points (engine.ts drawRivers cuts it to the river's box and clips once, DRESS-27b, drawThrift.ts) */
+export function aboveLinesPath(cs: readonly Ceiling[], x0: number, x1: number, top: number): Array<[number, number]> {
+  const at = (x: number) => Math.min(...cs.map((c) => ceilingAt(c, x)));
+  const o: Array<[number, number]> = [[x0, top], [x1, top], [x1, at(x1)]];
+  for (let x = Math.floor(x1 / STEP) * STEP; x > x0; x -= STEP) o.push([x, at(x)]);
+  o.push([x0, at(x0)]);
+  return o;
 }
 
 /** is q one of a ceiling's lower pieces (the lower leg) */

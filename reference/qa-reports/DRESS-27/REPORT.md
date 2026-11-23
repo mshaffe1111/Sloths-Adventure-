@@ -1,4 +1,35 @@
 # DRESS-27 REPORT (Engine, art/dress code). Started 2:43 PM ET 11-23. Branch t-eng-27-wip-dress.
+## DRESS-27b (Engine, draw code; DRESS-27's successor). Started 3:42 PM ET 11-23. Branch t-eng-27-wip-dress27b.
+### Polish check (stills-27b/: 2-7 seed 1 Normal, phone 2x, BEFORE = t-build-27-wip + 80dbc46d8, AFTER = the same + this fix)
+- Both breach spots, x9061 and x13298, Pokey on the low ledge and the high one, upright and sideways: sheet-*.jpg (before | after |
+  pixels over 40 apart) and zoom-*.jpg (the rivers, before over after). Same look: the deep river, the still pool, its stones, the soil
+  under its bed, the wedge under each bank, the roots, the logs' waterline and foam. The only pixels that differ are animation phase
+  (the logs drift, the reeds and the hummingbird move: 0.1-1.6% of pixels, all on moving things). Nothing rough found; nothing changed.
+### Done-items
+1. LANDED: t-eng-27 = **cfa555cc9** (fast-forward, no force; ls-remote equal) = DRESS-27's 1bb560fb8 + t-eng-27 d1fad7e65 (ENG-BOT27b;
+   engine-core.md conflict, both sections kept). tsc 0; planted 10/10. lockall 16 layouts, 80dbc46d8 vs 09c23c1b0: 102/102 stages,
+   3264/3264 builds unchanged; cfa555cc9's src/ and tools/engine byte-identical to 80dbc46d8 (the new commits: tools/inspect + reports).
+2. 2-7's 6 breaches fixed at their cause, the shared river draw (engine.ts drawRivers, riverArt.ts drawRiverWater/drawSafeRiverOver),
+   with three general helpers (drawThrift.ts): gradients made once (vGradient), a picture cut by its source rect instead of a clip
+   (cropToBox: the soil under a bed via groundPaint.ts drawSoilCut, a log's waterline), and the river's box, ceiling and bank faces in
+   one clip where one does (polygonInBox; groundStack.ts aboveLinesPath; a TAIL's clip folded into the box). No limit raised, no piece
+   moved, no stage id/seed/x. Planted: drawThrift.test.ts (4): RED on the base (module missing), GREEN now.
+3. 2-7 drawcheck, 16 spots (drawcheck27b-2-7-before.txt / -after.txt, worst spot each):
+   | | gradients | drawImageScreens | clips | verdict |
+   |---|---|---|---|---|
+   | port before / after | 4.13 / 0.25 | 7.61 / 6.04 | 21.00 / 10.00 | 3 breaches / PASS |
+   | land before / after | 5.00 / 0.00 | 7.90 / 6.56 | 24.13 / 10.00 | 3 breaches / PASS |
+   Gates on frozen 152e53549 (= cfa555cc9 + the fix): drawcheck on the listed stages PASS (866 s); clipcheck
+   PASS (83 known, 770 s); vite build (BASE_PATH) 0, chunkcheck PASS, artcheck PASS.
+   tsc 0; generalitycheck PASS (26 known); knowncheck PASS; draw/river/ground tests (28 files) 192/195: the 3 reds (pacerLay x2 'bot
+   (planted)', stumps 'a log on a stump') are the same 3 on cfa555cc9 without the fix: inherited.
+### Pushback: none. ### Suggestions: other per-frame gradients and clips could use drawThrift.ts (vGradient, cropToBox): the remaining
+   clip sites in the limits.json notes (temple runs) are the next candidates; a packet when the lead wants the clip limit lowered to 6.
+### Unresolved: none of the 6. Not run: the full suite (item 3's list does not name it; drawing only, as DRESS-27's landing).
+### Lessons applied: D115 (every run on a chattr-frozen worktree), D119 (no heredoc in a commit chain), D36 (branch named, ls-remote),
+   law 22 (cause fixed, no limit moved), D51/D81 (2-7 drawchecked as a listed stage would be).
+### Turnover note: reference/handoffs/engine-core.md §0zq-thrift (this commit).
+
 ## EXACT NEXT STEP (handover at the lead's word, 3:41 PM ET: context past the line; nothing landed on t-eng-27 yet)
 - Merged head to land: **80dbc46d8** on t-eng-27-wip-dress (= my work 09865f026 + origin/t-eng-27 09c23c1b0, one note conflict, both
   sections kept; tsc 0; planted tests 10/10). Later commits on the branch are REPORT text only.
