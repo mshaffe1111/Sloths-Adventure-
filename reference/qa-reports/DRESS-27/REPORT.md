@@ -3,9 +3,9 @@
 ### EXACT NEXT STEP (pushed at the 28-minute box; the gates run in THIS container only)
 - The candidate: t-eng-27-wip-dress27d **8d441aa43** (DRESS-27c's f3649a092 + 3aa389ad9 + (2b) taken out). Not yet on t-eng-27.
 - Frozen gate trees: /home/user/wt-merge = t-build-27e 793ddf246 + dress27d (clean merge) = **a21dbcf34**; /home/user/wt-base = 793ddf246.
-  DONE on a21dbcf34: tsc 0, generalitycheck PASS, knowncheck PASS, stackViewFloor 5/5, related suites 61/61, 2-7 seedlist --check PASS.
-  RUNNING: lockall --out on both trees (compare the two JSONs key by key: every build equal = 102 stages unchanged), drawcheck
-  (limits.json scenarios, 2-7 included), clipcheck. A successor in another container re-runs those four on a fresh merge.
+  DONE on a21dbcf34: tsc 0, generalitycheck PASS, knowncheck PASS, stackViewFloor 5/5, related suites 61/61, 2-7 seedlist --check PASS,
+  lockall (both trees recorded, compared build by build: 3264/3264 builds of 102 stages unchanged), drawcheck PASS (1366 s, 2-7 both
+  ways). RUNNING: clipcheck. A successor in another container re-runs clipcheck on a fresh merge (t-build-27e + dress27d).
 - Then: `git fetch origin t-eng-27`; in a worktree of dress27d `git merge --no-edit origin/t-eng-27` if it moved (+ tsc), `git push origin
   HEAD:t-eng-27` (fast-forward, no force), `git ls-remote` = HEAD, send the lead the hash and stills-27d/'s paths.
 ### Polish check (stills-27d/: 2-7 layout 0 = seed 1, phone 2x, tools/engine/runs/stills-at-setting.mjs, ONE spot a run, a copy that waits for the build and prints where Pokey stands (every still below: at its x, lives x3); BEFORE = t-build-27e 793ddf246, AFTER = the same + dress27d = a21dbcf34)
@@ -41,7 +41,12 @@
 - tsc 0; generalitycheck PASS (26 known); knowncheck PASS; planted stackViewFloor.test.ts 5/5; related suites (groundStack,
   deepRiverLid, cameraFollow, cameraReach, cameraLead, riverLook, riverRaft, drawThrift, stackViewFloor) 61/61.
 - 2-7 seedlist --check on a21dbcf34: PASS (100 seeds, each clean on both settings; the verdicts refuse 0).
-- (pending) lockall, drawcheck, clipcheck: running on the frozen trees.
+- lockall: recorded on both frozen trees (`--layouts 16 --out`), compared build by build, part by part (what `--check` compares):
+  **3264/3264 builds of 102 stages unchanged** (no listed stage moves; groundStack.ts and protoArt.ts ARE in lockall's import graph,
+  checked with an esbuild metafile, so the run was needed).
+- drawcheck (limits.json's 21 scenarios, 2-7 among them, upright and sideways, 4 spots): **PASS** (1366 s, under load); 2-7 port and
+  land clean, no breach printed anywhere.
+@@CLIP@@
 ### Pushback
 - The packet says 2-4 and 2-5's deep-river banks stay UNCHANGED. (2a) is general (every deep, moving river against a bank wall), so where
   2-4's deep river had the same lighter strip (x15990, DRESS-27c's zoom-2-4-deep), it is gone there too: the same fix, not a new look.
