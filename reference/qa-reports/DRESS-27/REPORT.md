@@ -1,11 +1,117 @@
 # DRESS-27 REPORT (Engine, art/dress code). Started 2:43 PM ET 11-23. Branch t-eng-27-wip-dress.
-## DRESS-27c (Engine, draw/lay code; a fresh member). Started 4:12 PM ET 11-23 by `date`. Branch dress27c (pushed as t-eng-27-wip-dress27c).
-### EXACT NEXT STEP (while gates run; replaced at the end)
-Code is DONE and committed: f3649a092 + 3aa389ad9 on t-eng-27 9fe64614e (fast-forward possible). Test head (t-build-27e 793ddf246 + dress27c)
-= 93ae6d052, frozen at /home/user/wt-d27c-f2. Running in the background: drawcheck + clipcheck on wt-d27c-f2 (scratchpad gates/A/lines.txt),
-lockall record on t-build-27e (wt-d27c-base) then --check on 17055a8c1 (= the camera/river commit; 3aa389ad9 changes drawUnderside only,
-no lay) (gates/B/lines.txt), the after stills (dev server 4318 on wt-d27c-b = 93ae6d052; before = 4319 on wt-d27c-base). When every line
-is exit=0: full unit suite on wt-d27c-f2, then `git push origin dress27c:t-eng-27` (no force) and send the lead the hash and the stills.
+## DRESS-27c (Engine, draw code; a fresh member). Started 4:12 PM ET 11-23 by `date`; STOPPED by the lead at 35 min (real context 350k).
+### EXACT NEXT STEP (for the successor; the lead's SCOPE CUT: land (1) + (2a), HOLD (2b) the log-end flip)
+Branch t-eng-27-wip-dress27c (local name dress27c) on t-eng-27 **9fe64614e** (t-eng-27 had not moved at the stop: fast-forward possible).
+- **f3649a092** carries all three: (1) the camera floor [groundStack.ts `STAND_IN_BAND`, `underReach`, `viewFloor`; protoArt.ts
+  `stackViewFloor` + its import; engine.ts the protoArt import `stackViewFloor`, `STACK_FEET_MAX` after `NO_W5_THINGS`, the 6-line clamp
+  before "his head stays under the HUD"]; (2a) [engine.ts drawRivers: the `const [ul, ur] = over && (r.safe || floodsOnly) ? ...` line
+  with its comment, and the foam's `fa`/`fz` span]; and **(2b) the log flip** [riverArt.ts: `LOG_BROKEN_RIGHT` + its doc, the `lead?`
+  param of drawRiverLog + its doc, the line `const flip = lead ? ... : p.id % 2 === 1;` used by the blit; engine.ts: `logLead()` +
+  `logLeads` (the block just above "the logs (or rafts) that ride river `r`"), and the two calls `drawRiverLog(ctx, pl, this.gameTime,
+  this.logLead(pl))`].
+- **3aa389ad9**: (1)'s second half, the continuous underside (groundStack.ts `standInBand`, `STAND_IN_LAYERS`, `bandAlpha`,
+  `standInStyles`; drawUnderside's `painted` branch), test case 5, engine-core.md 0zq-floor.
+- **TO TAKE (2b) OUT CLEANLY** (a new commit on top, no history rewrite): engine.ts: both calls back to `drawRiverLog(ctx, pl,
+  this.gameTime)`, delete `logLead`/`logLeads`; riverArt.ts: delete `LOG_BROKEN_RIGHT` and its doc, the `lead?` param and the doc lines
+  that name it (restore the one-line doc "a drifting log: ..."), and blit with `p.id % 2 === 1` again. `grep -n "logLead\|LOG_BROKEN_RIGHT"
+  src` must be empty; tsc. engine-core.md 0zq-floor: delete its third bullet ("A deep river's log trails ..."). Nothing else uses them.
+- **Gates** on the frozen merged head t-build-27e 793ddf246 + dress27c = **93ae6d052** (/home/user/wt-d27c-f2, THIS container only; the
+  merge was clean, only my 5 files differ). DONE: tsc 0, generalitycheck 0, seedlist 2-7 --check PASS (100 seeds, both settings; on
+  17055a8c1 = the merge of f3649a092: 3aa389ad9 is draw only), lockall RECORD on the base (667 s, exit 0). LOST (stopped mid-run, the
+  lead's order): lockall --check; drawcheck (36 of 42 scenario-orientations done, 0 breaches printed; 2-4, 2-5, 2-7 not reached);
+  clipcheck; knowncheck; the full unit suite. The successor runs every one on the final head (after (2b) is out), frozen (D115).
+- **Planted test** src/game/stackViewFloor.test.ts, 5 cases: 1 the floor is the line less the reach (flat and rising line); 2 null on the
+  lower leg, past the run, with no ceilings; 3 a view past the run's end keeps the run's line; 4 `underReach(-1)` = 56; 5 the stand-in
+  is whole layers with no images (fails on the old columns: proven by stashing groundStack.ts alone, 4 pass 1 fail). The file fails on
+  the base (no viewFloor). Related suites 44/44 (groundStack, deepRiverLid, cameraFollow, cameraReach, cameraLead), riverLook +
+  riverRaft 8/8 PASS on dress27c.
+- **Stills done** (stills-27c/; all INCLUDE (2b), so re-shoot the river ones): sheets of 2-7's out-leg spots N/E upright and sideways;
+  zoom-bottom-x4500-upright, zoom-under-x9085-upright (the seams from the race leg, gone), zoom-river-x9085/x13508-sideways (the strip,
+  gone), zoom-2-4-deep (2-4 HAD the strip too, fainter: gone). **To shoot for (1)+(2a)** after (2b) is out, tools/engine/runs/
+  stills-at-setting.mjs layout 0, ONE spot per run (a life lost at one spot carries to the next in the same page): Normal x4500 4960
+  6780 9080 11376 13508 (`:high`) + x9085 (`:low`, the river wall = the finding's x9080 bank); Easy x4960 5419 7239 8900 9553 14205
+  (`:high`) + x9600 (`:low`); each upright AND sideways; zooms: x4500 upright bottom, x9085 sideways wall (the log keeps its old end).
+- **2-5's 21-41% is explained, not the change** (life27c.mjs, both servers, the same placement): at page clock 10.1 s a drifting log is
+  under x9260, lower than the bank, so the tool's `low` puts Pokey on it and he falls in (lives 3 -> 2, respawn x140), on the base AND
+  on this build; at 5.0 s he stands on the bank. Both rivers there are safe. Re-shot one spot a page, 2-4 x3620 0.29/0.46% and Easy
+  2-7 x9600 0.08/1.49% (moving things only). (2b)'s hold is the lead's call; this is the evidence for its follow-up.
+
+### DRAFT written before the stop (includes (2b); for the successor and the lead)
+### Polish check (stills-27c/: 2-7 LIST VARIANT layout 0 = seed 1, phone 2x, tools/engine/runs/stills-at-setting.mjs; BEFORE = t-build-27e 793ddf246, AFTER = the same + dress27c = 93ae6d052)
+- **Upright out-leg bottoms, every named spot** (N x4500 4960 6780 9080 11376 13508; E x4960 5419 7239 8900 9553 14205):
+  sheet-2-7-normal-upright.jpg, sheet-2-7-easy-upright.jpg (top row before, bottom row after). Before: every one ends in the band
+  (column streaks, the dark strip, the orange line, the sliver). After: painted earth to the screen's bottom at all twelve; Pokey stands
+  a little lower (feet about 62-66% down instead of 55%), sky above. Zoom: zoom-bottom-x4500-upright.jpg (before over after).
+- **The underside seen from the race leg** (N x9085 upright, E x9560 upright): zoom-under-x9085-upright.jpg. Before: the same evenly
+  spaced column seams along the out leg's underside (the finding's streaks, from below). After: one smooth darkening, no seams.
+- **The deep river's wall** (N x9085 sideways, the finding's x9080 river; N x13508 sideways, the out leg's lidded deep river):
+  zoom-river-x9085-sideways.jpg, zoom-river-x13508-sideways.jpg (before | after). Before: a lighter teal strip from the surface to the
+  floor beside each bank wall (two at x13508). After: one dark teal right to the wall. The log at the x9085 bank: before its broken end
+  stood flat against the bank; after its sawn, round end (rings showing) trails out of the bank.
+- **Sideways out-leg spots** (sheet-2-7-normal-sideways.jpg, sheet-2-7-easy-sideways.jpg): unchanged (the floor never binds sideways);
+  the only differences are moving things (logs, petals, the hummingbird) and E x9560, where the tool placed Pokey on a drifting log of a
+  SAFE river (untouched code): re-shot on the bank, see below.
+- **2-4 and 2-5** at BUILD-27f's comparison spots (2-4 x140 3620 11380, 2-5 x140 9260, both ways): pixels over 40 apart, before vs after: 2-4 x140 0.44/0.40%, x3620 0.29/0.46%
+  (re-shot one spot a page), x11380 0.31/2.06%; 2-5 x140 0.56/0.49% (upright/sideways): moving things only (logs, petals, birds,
+  reeds). UNCHANGED. 2-5 x9260 differed 21/41%: the still tool, not the change. Probed on both servers (.life.mjs: the same placement,
+  lives and position over the 90 steps): when the page's clock is at 10.1 s a drifting log is under x9260, lower than the bank, so
+  `low` puts him on it and he falls in (lives 3 -> 2, respawn at x140), on the base AND on this build; at 5.0 s he stands on the bank.
+  Both rivers there are safe (code this change does not draw).
+- **Deep rivers elsewhere** (the fix is general: every deep, moving river against a bank wall: 2-1/2-2/2-4/2-5 Normal and 2-9): 2-4
+  x15990/x17170 and 2-5 x21020/x21830 before | after: sheet deep-2425-sideways.jpg, zoom zoom-2-4-deep.jpg (before | after):
+  2-4's deep river at x15990 HAD the same lighter strip beside the bank's roots, fainter (BUILD-27f's "2-7-only" missed it): gone after,
+  one dark teal to the wall. Nothing else moves. The upright pairs differ only where the tool lost a life on an earlier spot in the same page (lives x2 vs x3).
+- Easy x9560 sideways, re-shot on the bank (x9600): 0.08/1.49%, unchanged (a safe river).
+- Seen and NOT fixed (not from this change, in both before and after): a faint vertical tone step in the out leg's soil above the race leg
+  (x9085 upright, screen x about 285 of 412 css): two soil pieces meeting. Named for the lead.
+### Done-items
+1. **Finding 1, the upright out-leg bottom band, fixed at its cause in general code (no stage, seed or x).** The out leg's soil ends at the
+   ceiling (groundStack.ts): HEADROOM + UNDER_HANG over the race leg, the lower leg's air, so the soil cannot reach lower (fork 1 would
+   break the race leg's headroom). FORK TAKEN: the camera's floor is clamped to the fill. groundStack.ts `viewFloor` (pure) +
+   `underReach`, protoArt.ts `stackViewFloor`, engine.ts's camera (before the HUD clamp): standing over a ceiling (inside its run, feet
+   above its line) the target never frames below the line less the underside's reach up into the soil (the stand-in's 56; the painted
+   strips over their edge once a world has them); guard: his feet never below 0.85 of the view. Upright x4500 the view rose 98 units.
+   None where no leg is stacked (every other stage frames as before), none on the lower leg, never binds sideways.
+   The streaks themselves had a second cause, also fixed: the stand-in underside (World 2 has no painted `unders` yet, so 2-7 ships it)
+   was a 4 x 64 gradient laid a sheared 16-unit column at a time with half-unit overlaps, and every overlap doubled its alpha into a
+   seam. They showed from the race leg looking up too (x9085 upright). groundStack.ts `standInBand`: 12 continuous layers along the
+   line, one fill each, their alphas stacked to the old gradient, made once per deep colour (no per-frame gradient).
+   The orange line and the white sliver were things in the race leg's air (below the soil's end): out of view now.
+2. **Finding 2, the deep river's wall strip and the log's flat end, fixed at the cause for every deep river against a wall.**
+   engine.ts drawRivers: a deep river's over pass (the sheet that sinks its logs) now reaches under its banks like its water does, clipped
+   to the same bank faces in the box's ONE clip (DRESS-27b's polygonInBox: no new clip, no new gradient); it had stopped at the lip's x,
+   so where the bank's face slopes back the water showed undarkened. The foam keeps the river's own span. The "flat cut" was the long
+   log painting's own broken end, trailing out of the bank half the time (the flip came from the log's id): engine.ts `logLead` +
+   riverArt.ts drawRiverLog `lead` (LOG_BROKEN_RIGHT: logLong's broken end is its right, logShort's its left): on a deep, moving river
+   whose upstream end meets a bank, the broken end leads and the sawn, round end trails out of the bank. Safe rivers keep the id's flip.
+3. **Planted test** src/game/stackViewFloor.test.ts (5): the floor (on the upper earth, the lower leg, past the run, a view past the run's
+   end, no ceilings), the reach, and the stand-in drawn as whole layers with no images. Fails on the base (no viewFloor); case 5 fails on
+   the old columns (stash of groundStack.ts only: 4 pass, 1 fail). Related suites: groundStack, deepRiverLid, riverLook, riverRaft,
+   cameraFollow, cameraReach, cameraLead: 44/44 + 8/8 + 21/21 PASS on dress27c.
+4. **Gates** (frozen trees, D115): see EXACT NEXT STEP
+5. **Landed**: NOT landed (stopped by the lead; see EXACT NEXT STEP)
+### Pushback
+- The packet says "the deep river is READY-27's (2-7 the first stage that lays it)" and BUILD-27f "2-2/2-4/2-5 lay the shallow river
+  only": the built stages say otherwise. Layout 0 Normal lays deep, moving rivers against bank walls on 2-1 (4), 2-2 (1), 2-4 (4), 2-5 (1),
+  2-9 (8, both settings). The fix is general, so those change too (darker under the bank's face, logs' round ends out of the bank);
+  stills of 2-4's and 2-5's are in Polish check. What READY-27 added is the LIDDED deep river (2-7's out leg, x13508).
+### Suggestions
+- ART (Content): World 2's painted underside strips (`w2#under0..2`, `w2#undercorner`; groundStack.ts's hook) so 2-7 stops shipping the
+  stand-in. The painted path still lays 16-unit columns with half-unit overlaps: if the strips have soft alpha at their top, the same
+  seams will come back there; the layer approach (or one pattern fill sheared per run) is the fix to carry over.
+- A drawcheck-style seam probe for any draw laid column by column (count columns' overlaps where alpha < 1).
+### Unresolved
+- The faint vertical tone step in the out leg's soil above the race leg (x9085 upright, about x 285 css): pre-existing, not chased.
+- The out-leg framing upright is now about 8-11% lower for Pokey on 2-7's out leg; looks right in the stills, but not judged on a run.
+### Method update (render-fix.md)
+- Step 4 add: "When a band of evenly spaced vertical lines shows, measure their spacing in world units first: 16 = groundStack's column
+  step. A draw laid in overlapping translucent columns doubles its alpha at each overlap; draw whole paths instead."
+- Add: "A still tool that places Pokey on 'low' can put him on a drifting log or in water: check the lives counter in every still
+  (x3 -> x2 '-1' means he died and the shot is at his respawn, not the spot)."
+### Turnover note
+- reference/handoffs/engine-core.md 0zq-floor (commits f3649a092, 3aa389ad9).
+Lessons applied: D115 (every gate on a chattr-frozen tree), D119 (no heredoc in a commit chain), D109 (no clock times to the lead), D131
+(drawcheck with 2-7 on the merged head), the box (an exact next step pushed at the 28-minute mark).
 
 ## DRESS-27b (Engine, draw code; DRESS-27's successor). Started 3:42 PM ET 11-23. Branch t-eng-27-wip-dress27b.
 ### Polish check (stills-27b/: 2-7 seed 1 Normal, phone 2x, BEFORE = t-build-27-wip + 80dbc46d8, AFTER = the same + this fix)
