@@ -106,14 +106,29 @@ D80/D101 (item 3 is measured against the old code on every listed stage it could
 - BUILD-27c: way.2-7 `dotOn('post:letter', <the same words>)` (packet item 3). 'post:letter:<n>' can also place a line at a later
   letter.
 
-## EXACT NEXT STEP
-The only step left is the landing. The code is done: fix 90b9fbccc (items 1-3), this REPORT on top of it.
-1. Suite verdicts. This session's runs are in its scratchpad: base-unit.log / base-ci.log (base d9425f091) and fix3-unit.log / fix3-ci.log
-   (fix 90b9fbccc), each ending in UNIT_EXIT / CI_EXIT. If they are lost, re-run both on frozen trees (dispatch-packet.md D115) with the
-   CLAUDE.md unit line and gates.yml's 'rolled' test line, each in the background with timeout 7200000. Then take `grep "^not ok"` from
-   each and compare the names. A red on the fix that is not red on the base is this branch's: STOP and send it to the lead. Inherited
-   reds are expected; ENG-27w named 2 unit and 12 CI-tool reds on d794dcda1.
-2. Land: `git ls-remote origin t-eng-27`. If it is still d9425f091, `git push origin <wip head>:t-eng-27` (a fast-forward). If it has
-   moved, merge it into the wip head, run tsc, hudRoute.test.ts and easyRouted.test.ts, then push. Then `git ls-remote` must equal the pushed head.
-3. send_message to the lead (session_01FhBbYN2CVHnFXg7XzqKXpM) with the landed hash and the two suite lines (tests / pass / fail,
-   inherited reds named). No clock times.
+## EXACT NEXT STEP (hand-over at the lead's 300k line; the lead widened item 3)
+State: t-eng-27-wip-hud holds items 1-2 (2ca3de9b5) and item 3's easyMode fix (90b9fbccc, a local `along` in easyMode.ts), each with
+a toy RED then GREEN (above). NOT landed. This session's suites cannot reach a successor (they are in its container), and the code
+below changes src again, so the successor runs its own suite on its landing head. The base verdict is above: unit 4064 / 4059 / 2 fail
+inherited / 3 todo on d9425f091. ENG-27w named 12 inherited CI-tool reds on d794dcda1; the base CI tool line was still running here
+at hand-over.
+1. ONE general route-order helper (the lead's ruling) in src/game/gen2/tower.ts, next to flagFurther:
+   `export const alongOf = (stage: object) => { const r = (stage as { gen2?: { tower?: { route?: Route } } }).gen2?.tower?.route; return (x: number, y: number) => (r ? routeAt(r, x, y) : x); }`
+   plus `firstMet` / `lastMet(stage, items, at)` that pick by it. On a one-leg stage it is x order, so every listed stage reads the
+   same. Replace easyMode.ts's local `along` (90b9fbccc, the flag-fill block) with alongOf(stage). easyRouted.test.ts must stay GREEN.
+2. verdicts.ts:142 `firstWater = ...sort((a, b) => a.x0 - b.x0)[0]` becomes firstMet along the route. dropVerdicts takes
+   `Pick<JudgedStage, 'setting'|'policy'|'drops'>` (called at verdicts.ts:186 with the judged stage `st`), so check whether the judged
+   stage carries `gen2.tower.route` and a drop's height (a Drop has x0/x1; routeAt needs a y). If it does not, pass the route and
+   take the drop's ground y from the stage; a Pick type widening is the Architect's, so name it if it is needed.
+   Toy: the out-and-back toy (toyHome HOME_CODE; the out leg's river 'home-test-back' is the first water he meets, and the home leg's
+   rivers lie at smaller x). Assert firstWater is the out leg's river: RED on x order (it picks the home leg's last river), GREEN on
+   the route. BUILD-27c's case: 2-7 seed 2, drop.unwarned.
+3. Grep sweep for the REPORT (list only; fix only these two; the rest is Lane 2, R-165.414): in src/game (not tests), every
+   first/last picked by x: `sort((a, b) => a.x0 - b.x0)`, `sort((a, b) => a.x - b.x)` followed by [0] / at(-1) / the end,
+   `Math.min(...x)` / `Math.max(...x)` used as "first". Name file:line and whether it can see a stacked stage. Known so far:
+   easyMode.ts flag fill (fixed), verdicts.ts:142 (step 2), w2.ts:372 (the lead's note).
+4. Gates on the landing head, frozen worktrees: tsc; the unit suite and gates.yml's 'rolled' test line (background, 7200000 ms);
+   compare each `not ok` name with the base's; generalitycheck; knowncheck. lockall vs the base: no listed stage may move (1-4 is the
+   only routed listed stage, an 'ascent', never filled; measured identical over 16 layouts for item 3).
+5. Land: `git ls-remote origin t-eng-27`; if still d9425f091, fast-forward-push the wip head to t-eng-27, else merge it and re-run
+   tsc + hudRoute.test.ts + easyRouted.test.ts + the verdicts toy. Then send the lead the landed hash and the suite lines. No clock times.
