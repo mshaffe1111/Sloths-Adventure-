@@ -1,4 +1,10 @@
 # BUILD-27 REPORT: 2-7 "The Mailman's Route" (t-build-27-wip; started 12:35 PM ET 11-23 by `date`; budget 2 h, report by 2:40 PM ET)
+## BUILD-27b (continuing; started 1:05 PM ET 11-23 by `date`; report by 2:40 PM ET)
+- Step 1 DONE 0a010f11e: the merge's 8 duplicate w2-next rows dropped (READY-27's kept), re-emitted; inventory.test 10/10. The census
+  line was 226 (main) but ENG-27 packed 8 of batch 1 into src/ for 2-7: the true count is 218, the test says so with the reason.
+- Step 2 RUNNING: castBots --proven 2-7 1-40 both settings every bot, frozen scratch = 0a010f11e + the w2.ts:372 y-band fix (uncommitted,
+  standing in for ENG-JETTY's landing).
+
 ## EXACT NEXT STEP (handover to BUILD-27b; BUILD-27 stopped at 1:03 PM ET at about 372k context. Head: see the commit that adds this)
 LAID on t-build-27-wip: w2Arc27.ts (kit w2-27, stageTable row, listed.ts), the hand build deleted, the keeper's words (minus win/lose),
 w2Arc27.test 6/6, planted-faults.py 7 plants (6/6 CAUGHT on 32b01afee; the 7th, turn, was added after that run and is not yet run),
