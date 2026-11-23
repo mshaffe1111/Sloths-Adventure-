@@ -44,7 +44,19 @@ class Rec {
     const [x, y, w, h] = a.length === 4 ? a : a.slice(4);
     this.images.push({ x0: x, y0: y, x1: x + w, y1: y + h });
   }
-  save() {} restore() {} beginPath() {} closePath() {} moveTo() {} lineTo() {} rect() {} clip() {} fill() {} stroke() {}
+  private path: Array<[number, number]> = [];
+  /** a filled path's box (the over pass's water: its gradient from the surface down) */
+  paths: Array<{ x0: number; y0: number; x1: number; y1: number }> = [];
+  beginPath() { this.path = []; }
+  moveTo(x: number, y: number) { this.path.push([x, y]); }
+  lineTo(x: number, y: number) { this.path.push([x, y]); }
+  rect(x: number, y: number, w: number, h: number) { this.path.push([x, y], [x + w, y + h]); }
+  fill() {
+    if (!this.path.length) return;
+    const xs = this.path.map((p) => p[0]), ys = this.path.map((p) => p[1]);
+    this.paths.push({ x0: Math.min(...xs), y0: Math.min(...ys), x1: Math.max(...xs), y1: Math.max(...ys) });
+  }
+  save() {} restore() {} closePath() {} clip() {} stroke() {}
   quadraticCurveTo() {} bezierCurveTo() {} arc() {} ellipse() {} translate() {} scale() {} rotate() {} setTransform() {} transform() {}
   resetTransform() {} fillText() {} strokeText() {} clearRect() {} setLineDash() {}
   measureText() { return { width: 0 }; }
@@ -74,13 +86,13 @@ for (const difficulty of ['normal', 'easy'] as const) {
     const open = deep.filter((r) => !riverLid(st.platforms, r.x0, r.x1, r.surfaceY));
     assert.ok(lidded.length >= 1, `the toy has a deep river over the race leg (${deep.length} deep)`);
     assert.ok(open.length >= 1, 'and a deep river with no leg under it');
-    const paint = (r: River) => {
+    const paint = (r: River, over = false) => {
       const rec = new Rec();
       Object.assign(e.camera, { x: (r.x0 + r.x1) / 2 - 300, y: r.surfaceY - 200, viewportWidth: 600, viewportHeight: 900 });
-      e.drawRivers(rec, world, false);
+      e.drawRivers(rec, world, over);
       // (this river's fills only: its x span)
       const mine = (b: { x0: number; x1: number }) => b.x0 < r.x1 && b.x1 > r.x0;
-      return { fills: rec.fills.filter(mine), images: rec.images.filter(mine), bottom: r.surfaceY - 200 + 900 };
+      return { fills: rec.fills.filter(mine), images: rec.images.filter(mine), paths: rec.paths.filter(mine), bottom: r.surfaceY - 200 + 900 };
     };
     const bad: string[] = [];
     for (const r of lidded) {
@@ -95,12 +107,17 @@ for (const difficulty of ['normal', 'easy'] as const) {
       // (and the earth is drawn there instead: a painted image holds the point half way from the strip's foot to the ceiling)
       const y = (foot + line) / 2;
       if (Number.isFinite(line) && line > foot + 20 && !images.some((b) => mid >= b.x0 && mid <= b.x1 && y >= b.y0 && y <= b.y1)) bad.push(`deep river x ${Math.round(r.x0)}: no earth painted under its water at y ${Math.round(y)}`);
+      // (and the pass over the logs (the water they sink into, 75% of the deep colour) ends there too: it ran to the view's foot and dimmed
+      //  the bed's earth to the same dark teal, the lead's re-check of the first fix's still)
+      const veil = paint(r, true).paths.filter((p) => p.y1 > foot + 1);
+      if (veil.length) bad.push(`deep river x ${Math.round(r.x0)}: the water over its logs runs to y ${Math.round(Math.max(...veil.map((p) => p.y1)))}, over its bed`);
     }
     assert.deepEqual(bad, []);
     // (a deep river with no leg under it: its flat fill runs to the view's foot as it always has)
     for (const r of open) {
       const { fills, bottom } = paint(r);
       assert.ok(fills.some((f) => f.style === RIVER_DEEP && f.y1 >= bottom - 1), `open deep river x ${Math.round(r.x0)}: its deep fill runs to the view's foot`);
+      assert.ok(paint(r, true).paths.some((p) => p.y1 >= bottom - 1), `open deep river x ${Math.round(r.x0)}: the water over its logs runs to the view's foot`);
     }
   });
 }
