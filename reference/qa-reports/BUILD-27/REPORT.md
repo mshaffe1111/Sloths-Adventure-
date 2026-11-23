@@ -22,7 +22,9 @@ and full-size crops)
 test link about 6:15 PM.** The final gates wait for BOTH DRESS-27b (2-7's 6 draw breaches, no visible change) AND DRESS-27c (session
 _01FhBbYNzLPjXxNT6cC9xjsf: the two LEAD'S FINDINGS below, the upright out-leg bottom band and the x9080 river wall strip and log cut;
 lands on t-eng-27 by 5:00 PM ET and runs seedlist 2-7 --check with its change). Watch t-eng-27 and ReadNotifications for the lead's hashes.
-(a) When BOTH have landed on t-eng-27: in /home/user/wt-b27f (or a fresh `git worktree add` of origin/t-build-27e,
+DRESS-27b LANDED (t-eng-27 9fe64614e) and is MERGED: t-build-27e ffd604183 (clean; src diff vs 0018fa7ab = drawThrift.ts + test,
+engine.ts draw, groundPaint.ts, groundStack.ts, riverArt.ts: draw only, no lay). Still waiting: DRESS-27c.
+(a) When DRESS-27c has landed on t-eng-27: in /home/user/wt-b27f (or a fresh `git worktree add` of origin/t-build-27e,
 `npm ci --legacy-peer-deps`), `git fetch origin t-eng-27` then `git merge --no-edit origin/t-eng-27` (no force). It must change DRAW code only:
 `git diff bb107cab4 HEAD --stat -- src tools`; if it touches the lay (pipeline.ts, gen2/, w2*.ts lay), the ship number re-runs.
 Push t-build-27e.
