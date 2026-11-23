@@ -3028,12 +3028,13 @@ export class FirstTimerRun {
       else if (t < this.padPause.until) return {};
       else {
         this.padPause = null;
-        // (SKILLS.logEnd, ENG-BOT27: never off a drifting log. The pause's flick is a hop no gate judges, pressed from where he landed:
-        //  running his way, 2-7 child Normal seed 13 x 8700, 64 px behind a 150 px log's front, came down short of the next and drowned
-        //  (BUILD-27b's seed 14 x 8709); running at him, seed 14 x 13550 (with the with-flow half alone), the log carried off under the
-        //  flick's no-steer beat. He walks on to the log's front end, where the ride code judges every hop off it (the race, the hand to
-        //  the bank, upstream), as a person aims from a log's end)
-        if (dir !== 0 && !(SKILLS.logEnd && here.drift) && !this.floorAt(p.x + dir * 80, p.y, 40)) {
+        // (SKILLS.logEnd, ENG-BOT27: never off a drifting log running his way. The pause's flick is a hop no gate judges, pressed from
+        //  where he landed: 2-7 child Normal seed 13 x 8700, 64 px behind a 150 px log's front, came down short of the next and drowned
+        //  (BUILD-27b's seed 14 x 8709). He walks on to the log's front end, where the ride code judges every hop off it (the race, the
+        //  hand to the bank), as a person aims from a log's end. A log running AT him keeps the flick for now: with it gone there too the
+        //  upstream gate rarely judged a hop sure, so he stood and was carried back again and again (2-7 draft child Normal seeds 1-8,
+        //  rescues 1 -> 11; ENG-BOT27 REPORT, the open fault: seed 14 x 13550 drowned off that flick))
+        if (dir !== 0 && !(SKILLS.logEnd && here.drift && here.drift.dir === dir) && !this.floorAt(p.x + dir * 80, p.y, 40)) {
           const on = this.prog.target(p, 160);
           if (!(on && on.y > p.y + 50)) return this.decide(dir, this.jumpFor(p, dir, here), false, side(dir));
         }
