@@ -12,7 +12,7 @@ READ LEAN: reference/methods/level.md's Building rules FIRST; reference/STAGE-RU
 KEEPER-27's notes (approved words t-keeper-27 0614ae0a): (1) optional: the boat rows off at the start, so it is seen reaching the weir pool
 ahead of Pokey; (2) Easy: WATER_WARN stays silent unless Easy lays a deep river; (3) win/lose play once at the jetty, never mid-race. Retire
 hint.2-7.basket/frames/open/porches; keep way.2-7.
-BASE: t-build-27 from t-eng-27 (after ENG-27w lands the race numbers there), MERGED with t-ready-27-wip (the weir) and t-keeper-27 (the words).
+BASE: t-build-27 from t-eng-27 (after ENG-27w lands the race numbers there), MERGED with origin/main FIRST (PLAN-2H: t-eng-27's cage and line skills are behind main), then t-ready-27-wip (the weir, the deep-river fix) and t-keeper-27 (the words).
 1. **The ship verdict FIRST (D125):** lay 2-7 on its stageTable row with the design's arc (2-7.md:41-58) on gen2; castBots --proven over 40
    rolls, every bot, both settings; send the lead the yield (bar 60 of 100 when listed) before any polish.
 2. **The stage:** the arc, flags and hearts by the live rule (2-7.md:62), the post doors and replies, the mail boat race home, the weir, the
