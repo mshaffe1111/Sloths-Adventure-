@@ -30,10 +30,10 @@ for (let i = a; i <= z; i++) {
   const res = await p.evaluate(([E, fr, cap]) => {
     const e = eval(E); const set = () => { Object.assign(e.player, fr.P); for (const [j, x, y] of fr.D) if (e.platforms[j]) { e.platforms[j].x = x; e.platforms[j].y = y; } const pc = e.pieces.find((q) => q.kind === 'pacer'); if (pc && fr.pc) { for (const [kk, vv] of Object.entries(fr.pc)) if (kk !== 'kind') pc[kk] = vv; } };
     set(); e.update(1 / 30); set(); e.render(); document.getElementById('cap').textContent = cap;
-    return Math.round(e.player.x);
-  }, [E, fr, `2-7 ${d.bot} ${d.setting} seed ${d.seed} | frame ${fr.n} t ${fr.t.toFixed(1)} s${fr.n >= d.verdictAt ? ` | HE WON at frame ${d.verdictAt} (him ${d.verdict.him} s, boat ${d.verdict.boat} s)` : fr.pc && fr.pc.clock > 0 ? ' | the race' : ''}`]);
+    return `${Math.round(e.player.x)} bar ${e.routeBar?.ratio?.()?.toFixed(3)} hud ${document.querySelector("[data-progress]")?.getAttribute("data-progress") ?? "-"}`;
+  }, [E, fr, `2-7 ${d.bot} ${d.setting} seed ${d.seed} | frame ${fr.n} t ${fr.t.toFixed(1)} s${fr.n >= d.verdictAt ? ` | ${d.verdict?.won ? "HE WON" : "THE BOAT WON"} at frame ${d.verdictAt} (him ${d.verdict.him} s, boat ${d.verdict.boat} s)` : fr.pc && fr.pc.clock > 0 ? ' | the race' : ''}`]);
   if ((i - a) % 2 === 0) { await p.evaluate(() => new Promise((r) => requestAnimationFrame(() => r(0)))); await p.screenshot({ path: path.join(out, `f${String(k++).padStart(5, '0')}.jpg`), type: 'jpeg', quality: 80 }); }
-  if (fr.n === d.verdictAt) console.log(`win frame ${fr.n} -> clip still f${String(k - 1).padStart(5, '0')} (x ${res})`);
+  if (fr.n === d.verdictAt) console.log(`verdict frame ${fr.n} -> clip still f${String(k - 1).padStart(5, '0')} (x ${res})`);
 }
 await b.close();
 console.log(`frames ${a}-${z} (race start ${start}, verdict ${d.verdictAt}), ${k} stills in ${out}`);
