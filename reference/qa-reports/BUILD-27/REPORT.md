@@ -11,6 +11,12 @@ Dev server (window.__play is DEV-only, so stills need `npx vite`, not preview): 
 engine tools' tests, seedlist 1-1 --check, kbdcheck. Gates PASS already on the head: tsc, knowncheck, generalitycheck, roadmapcheck
 (after `git fetch --unshallow`), artcheck. Still owed on the FINAL head: drawcheck (~6 min), clipcheck (~4 min), tierBots (~40 s), the
 whole suite again, registrycheck (fails until the list and judged land: expected).
+**LEAD (on the clip):** 'post:letter' is built on t-eng-27-wip-hud 2ca3de9b5 and lands on t-eng-27 with ENG-HUD27b (with the
+route-order fix). When it lands: way.2-7 -> dotOn('post:letter', the same words verbatim), then re-shoot ONLY the race finish (the last
+stretch to the jetty, the win line on screen with no wayside card over it; racepuppet.mjs FROM ~3450 on a fresh racerec of the new head)
+plus a LOSE take if cheap (record a bot that loses, e.g. child Normal, with racerec.mts). That clip is the proof Matt sees. Race margin
+stays as ruled (ENG-27w); the castBots x40 rows do NOT hold race margins (cast: null), so no per-bot margin table: no new runs for it
+(lead). The verdict-with-no-race edge is filed (Lane 2), not tonight.
 **FIRST after that:** merge ENG-BOT27 (and ENG-HUD27) when the lead sends their hashes; then wayside.ts:101 `7: dotOn('post:letter', <the same
 words verbatim>)`, held in w2Arc27.test; re-run `castBots --stage 2-7 --seeds 1-40 --bots adult,child,middle,expert --setting both
 --par 4 --rows .. --proven ..` on a NEW frozen tree at that head: that is the ship number (lead). The lead measured ENG-BOT27 R1 at 33/40.
