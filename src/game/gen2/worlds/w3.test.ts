@@ -1,0 +1,142 @@
+/**
+ * World 3's gen2 kit (ENG-W3a, 11-23; gen2/worlds/w3.ts) and its first stage DRAFTED on it, travelling DOWN (stageTable.ts DRAFT_TABLE,
+ * the lead's ruling 11-23: a general draft state). The kit's art is World 3's own from the inventory, in game and in scale with Pokey;
+ * its cast rows are the creature kit's ocelot and jaguar; the draft is readied as the tools ready it (tools/engine/draft.ts) and the
+ * game builds it (generateStage) going down, storey under storey, the shrine on the grotto floor, every roll clean on both settings;
+ * the draft state is general (no stage named in the readying) and no game path reads it (the live 3-1 stays the old section maker).
+ * Planted faults: reference/qa-reports/ENG-W3/planted-faults.py (each one turns a named test here red).
+ */
+import '../../headlessDom.ts';
+import { readied, readyDraft } from '../../../../tools/engine/draft.ts';
+import { test } from 'node:test';
+import assert from 'node:assert/strict';
+import fs from 'node:fs';
+import path from 'node:path';
+import { fileURLToPath } from 'node:url';
+import { castDef } from '../../predators/registry.ts';
+import { generateAllLevels } from '../../worldsData.ts';
+import { generateStage, setLayoutVariant } from '../../stageGenerator.ts';
+import { validateStage } from '../../levelCheck.ts';
+import { footingsFor } from '../../terrain.ts';
+import { MODEL_FAST, modelStage } from '../../stageTime.ts';
+import { routeAt } from '../tower.ts';
+import { buildGen2Stage } from '../pipeline.ts';
+import { LISTED, playFinish } from '../listed.ts';
+import { DRAFT_TABLE, STAGE_TABLE, draftRow } from './stageTable.ts';
+import { W3_ART, W3_CAST, w3Manifest } from './w3.ts';
+
+const root = path.join(path.dirname(fileURLToPath(import.meta.url)), '..', '..', '..', '..');
+const DRAFT = '3-1';
+const SEEDS = [1, 2, 3, 4, 5, 6];
+const BOTH = ['normal', 'easy'] as const;
+/** how the engine draws World 3's pieces (terrain.ts footingsFor): its painted kit's bank and branch, the floor */
+const W3_DRAWN = new Set(['ground', 'painted-bank', 'painted thin piece', 'step', 'pillar']);
+
+test('the kit: every World 3 art row it names is in the World 3 inventory, in game, usable and in scale with Pokey (R-165.107)', () => {
+  const inv = JSON.parse(fs.readFileSync(path.join(root, 'src/game/art/inventory/w3.json'), 'utf8')) as { cols: string[]; rows: unknown[][] };
+  const rows = new Map(inv.rows.map((r) => { const o = Object.fromEntries(inv.cols.map((c, i) => [c, r[i]])) as { id: string; status: string; worlds: number[]; scale_ok: boolean | null }; return [o.id, o]; }));
+  for (const [job, ids] of Object.entries(W3_ART)) for (const id of ids) {
+    const r = rows.get(id);
+    assert.ok(r, `${job}: ${id} is not in the World 3 inventory`);
+    assert.ok(r.worlds.includes(3), `${job}: ${id} does not fit World 3`);
+    assert.ok(r.status.startsWith('in game'), `${job}: ${id} is not drawn by the game (${r.status})`);
+    assert.ok(!r.status.includes('needs fix'), `${job}: ${id} waits on a fix (${r.status})`);
+    assert.notEqual(r.scale_ok, false, `${job}: ${id} is out of scale with Pokey`);
+  }
+});
+
+test("the cast rows: World 3's ocelot and jaguar, each a creature kit animal (predators/world3.ts) with Worlds 6-8's body", () => {
+  assert.deepEqual(W3_CAST.map((c) => c.enemy), ['ocelot', 'jaguar']);
+  for (const c of W3_CAST) assert.ok(castDef(c.enemy, 3), `${c.enemy} has World 3's kit def (predators/world3.ts)`);
+  assert.deepEqual(w3Manifest().creatures.map((c) => c.id), W3_CAST.map((c) => c.id));
+  // (the way down casts none: no brick of it has an animal socket, so none is laid from the list)
+  for (const q of w3Manifest().sections) assert.ok(!q.sockets.some((k) => k.role === 'enemy'), `${q.id} has no animal socket`);
+});
+
+test('the draft row: 3-1 drafted on World 3\'s kit going down; no game path reads it (not listed, the live 3-1 is the old section maker)', () => {
+  assert.deepEqual(draftRow(DRAFT), { kit: 'w3', travel: 'down' });
+  assert.ok(!Object.hasOwn(STAGE_TABLE, DRAFT), 'a draft is no STAGE_TABLE row');
+  for (const id of Object.keys(DRAFT_TABLE)) assert.ok(!Object.hasOwn(STAGE_TABLE, id), `${id}: a listed stage leaves DRAFT_TABLE`);
+  // (before any tool readies it: the game's 3-1 is not gen2's, and travels the plan's way, not the draft's)
+  if (readied !== DRAFT) {
+    assert.ok(!Object.hasOwn(LISTED, DRAFT));
+    assert.notEqual(generateAllLevels().find((c) => c.id === DRAFT)?.travel, 'down');
+  }
+});
+
+// (readied as the tools ready it, for the rest of this file's process: the game's own generateStage then builds it on gen2)
+const built = new Map<string, ReturnType<typeof generateStage>>();
+const draftBuilt = (seed: number, d: (typeof BOTH)[number]) => {
+  if (readied !== DRAFT) readyDraft(DRAFT);
+  const k = `${seed}:${d}`;
+  if (!built.has(k)) {
+    setLayoutVariant(seed);
+    try { built.set(k, generateStage({ ...generateAllLevels().find((c) => c.id === DRAFT && !c.secret)!, unlocked: true }, d)); } finally { setLayoutVariant(null); }
+  }
+  return built.get(k)! as unknown as Built;
+};
+type Built = {
+  platforms: Array<{ id: number; x: number; y: number; width: number; type: string; cut?: string }>; checkpoints?: Array<{ x: number; y: number }>; exitTotemX: number; exitTotemY: number; spawnY: number;
+  config: { travel?: string }; gen2: { errors?: string[]; graph: { flow: string }; tower?: { route: Parameters<typeof routeAt>[0]; floorY: number } };
+};
+/** a RAW roll of the readied draft, its verdicts as the roll made them (the game's build rerolls a roll that fails one, so the faults a
+ *  verdict names are judged here, as the seed-list search judges them: libstage.ts buildStage) */
+const raw = new Map<string, Built>();
+const draftRaw = (seed: number, d: (typeof BOTH)[number]): Built => {
+  if (readied !== DRAFT) readyDraft(DRAFT);
+  const k = `${seed}:${d}`;
+  if (!raw.has(k)) raw.set(k, buildGen2Stage({ config: generateAllLevels().find((c) => c.id === DRAFT && !c.secret)!, kit: LISTED[DRAFT].kit(), seed, difficulty: d }) as unknown as Built);
+  return raw.get(k)!;
+};
+
+test('the way DOWN: readied, the game builds 3-1 on gen2 storey under storey, the shrine on the grotto floor far below the start', () => {
+  for (const d of BOTH) for (const seed of SEEDS) {
+    const st = draftBuilt(seed, d);
+    assert.equal(st.config.travel, 'down', `${d} ${seed}: the engine is told the way on is down`);
+    assert.equal(st.gen2.graph.flow, 'down', `${d} ${seed}: laid down`);
+    const T = st.gen2.tower!;
+    assert.ok(T, `${d} ${seed}: laid as a tower`);
+    assert.ok(st.exitTotemY - st.spawnY > 8 * 280, `${d} ${seed}: the shrine ${Math.round(st.exitTotemY - st.spawnY)} px under the start (8+ storeys)`);
+    assert.ok(Math.abs(st.exitTotemY - T.floorY) <= 1, `${d} ${seed}: the shrine stands on the floor`);
+    // (the route goes on down: each section's exit lower than or level with the one before)
+    const legs = T.route.legs;
+    for (let k = 1; k < legs.length; k++) assert.ok(legs[k].exit.y >= legs[k - 1].exit.y - 1, `${d} ${seed}: leg ${k} climbs back up`);
+  }
+});
+
+test('every roll of the draft is clean on both settings (gen2 verdicts and levelCheck), two minutes or more for a quick player', () => {
+  for (const d of BOTH) for (const seed of SEEDS) {
+    const st = draftRaw(seed, d);
+    assert.deepEqual(st.gen2.errors ?? [], [], `${d} ${seed}`);
+    assert.deepEqual(validateStage(st as never).errors, [], `levelCheck ${d} ${seed}`);
+    assert.ok(modelStage(st as never, MODEL_FAST).total >= 120, `${d} ${seed}: a quick player takes ${Math.round(modelStage(st as never, MODEL_FAST).total)} s`);
+  }
+});
+
+test("the last flag is within 2000 px of way of the shrine, the floor's walk to it measured (tower.ts routeAt, down) and a spot", () => {
+  // (24 rolls: the floor as a flag spot is wanted on about 1 in 12, seeds 17 and 22 when it was planted out)
+  for (const d of BOTH) for (const seed of Array.from({ length: 24 }, (_, i) => i + 1)) {
+    const st = draftRaw(seed, d);
+    assert.ok(!(st.gen2.errors ?? []).some((e) => e.startsWith('flags:')), `${d} ${seed}: ${(st.gen2.errors ?? []).find((e) => e.startsWith('flags:'))}`);
+    const R = st.gen2.tower!.route;
+    const at = (st.checkpoints ?? []).map((c) => routeAt(R, c.x, c.y));
+    assert.ok(R.length - Math.max(...at) <= 2000, `${d} ${seed}: ${Math.round(R.length - Math.max(...at))} px`);
+    assert.equal(Math.round(routeAt(R, st.exitTotemX, st.exitTotemY)), Math.round(R.length), `${d} ${seed}: the shrine is the route's end`);
+  }
+});
+
+test("every piece of the draft is drawn by World 3's painted kit (terrain.ts footingsFor, world 3), none by World 1's cut art", () => {
+  for (const d of BOTH) {
+    const st = draftBuilt(1, d);
+    const feet = footingsFor(st as never, 3);
+    // (World 3's finish is its own and lays nothing yet: never World 1's cut art, squirrels or marks; read on the raw roll)
+    const r = draftRaw(1, d);
+    assert.deepEqual(playFinish(LISTED[DRAFT], structuredClone(r), d), structuredClone(r), `${d}: World 3's finish changed the roll (World 1's?)`);
+    for (const p of st.platforms) {
+      const f = feet.get(p.id);
+      assert.ok(f, `${d}: piece ${p.id} at x ${Math.round(p.x)} y ${p.y} has a footing`);
+      assert.ok(W3_DRAWN.has(f.drawn), `${d}: piece ${p.id} is drawn as ${f.drawn}`);
+      assert.equal(p.cut, undefined, `${d}: piece ${p.id} carries World 1's cut art`);
+    }
+  }
+});

@@ -14,9 +14,10 @@
  * Exit 0 only when every step passed and nothing is missing; 1 otherwise (the checklist says what); 2 with no row.
  * A DRAFT (ENG-W3a, the lead's ruling 11-23: a stage's next build readied while the game plays its live stage; stageTable.ts DRAFT_TABLE):
  *   GEN2_DRAFT=<id> npx tsx tools/engine/addlevel.ts <id>    the draft readied in this process and every step's (tools/engine/draft.ts).
- * A draft writes no list and joins no registry: those ARE listing it. Its READY is DRAFT READY: its row, kit and config (with the row's
- * travel) resolve, its rolls are clean on both settings, the bots pass, its sheets are preloaded; what listing it adds (the routing
- * past the live stage, its list, its flown rows, drawcheck, CI) is printed as LISTING, not counted missing.
+ * A draft writes no list and joins no registry: those ARE listing it. Its READY is DRAFT READY (the lead's ruling 11-23): its row,
+ * kit and config (with the row's travel) resolve, its rolls are clean on both settings, its sheets are preloaded. The bots run and their
+ * lines are printed as OWED (a draft's bots are its build's job: 3-1's way down, the down-bot lane); what listing it adds (the routing past
+ * the live stage, its list, its flown rows, drawcheck, CI) is printed as LISTING. Neither is counted missing.
  */
 import '../../src/game/headlessDom.ts';
 import { readied } from './draft.ts';
@@ -36,7 +37,7 @@ const val = (k: string) => { const i = argv.indexOf(k); return i >= 0 ? argv[i +
 const has = (k: string) => argv.includes(k);
 if (!id || id.startsWith('--')) { console.error('usage: npx tsx tools/engine/addlevel.ts <id> [--seeds 24] [--count N] [--relist] [--no-list] [--bots-seeds 1-40] [--no-bots] [--par 4]'); process.exit(2); }
 const par = Number(val('--par') ?? 4);
-const done: string[] = [], left: string[] = [], listing: string[] = [];
+const done: string[] = [], left: string[] = [], listing: string[] = [], owed: string[] = [];
 /** a draft readied in this process (GEN2_DRAFT=<id>, draft.ts): its steps are the draft's */
 const draft = readied === id;
 const t0 = Date.now();
@@ -100,16 +101,18 @@ else {
 // 4. the bots
 const botSeeds = val('--bots-seeds') ?? '1-40';
 step(4, `the bots (tools/inspect/castBots.ts --seeds ${botSeeds}, both settings)`);
-if (has('--no-bots')) { console.log('  skipped (--no-bots)'); left.push(`bots: not run (--no-bots): npx tsx tools/inspect/castBots.ts --stage ${id} --seeds ${botSeeds} --par ${par}`); }
+if (has('--no-bots')) { console.log('  skipped (--no-bots)'); (draft ? owed : left).push(`bots: not run (--no-bots): npx tsx tools/inspect/castBots.ts --stage ${id} --seeds ${botSeeds} --par ${par}`); }
 else {
   const b = run(['tools/inspect/castBots.ts', '--stage', id, '--seeds', botSeeds, '--par', String(par)]);
   // (castBots prints fields between the PASS and the time, e.g. LEN-14's 'under the floor N': read past them)
   const lines = [...b.out.matchAll(/^(\w+)\s+(normal|easy)\s+PASS (\d+)\/(\d+);.*?time median ([\d.-]+) s \(min ([\d.-]+)\)/gm)];
-  if (b.code || !lines.length) left.push('bots: castBots did not run to its summary (output above)');
+  // (a draft's bot lines are owed, never missing: its READY is its row, rolls and sheets)
+  const miss = draft ? owed : left;
+  if (b.code || !lines.length) miss.push('bots: castBots did not run to its summary (output above)');
   for (const m of lines) {
     const [, bot, setting, pass, of, , min] = m;
-    if (pass !== of) left.push(`bots: ${bot} ${setting} passes ${pass}/${of} (fails above, by cause)`);
-    if (Number(min) < 120) left.push(`bots: ${bot} ${setting} ran it in ${min} s, under STAGE-RULES' 2 minutes`);
+    if (pass !== of) miss.push(`bots: ${bot} ${setting} passes ${pass}/${of} (fails above, by cause)`);
+    if (Number(min) < 120) miss.push(`bots: ${bot} ${setting} ran it in ${min} s, under STAGE-RULES' 2 minutes`);
   }
   if (lines.length && lines.every((m) => m[3] === m[4])) done.push(`bots: every bot passes ${lines[0][4]}/${lines[0][4]} on both settings`);
 }
@@ -142,7 +145,8 @@ if (!r.code) done.push('registered everywhere registrycheck looks');
 console.log(`\n== addlevel ${id}: ${clock()}`);
 for (const d of done) console.log(`  DONE     ${d}`);
 for (const l of [...new Set([...left, ...flown.map((m) => `flown: ${m.line}`)])]) console.log(`  MISSING  ${l}`);
+for (const l of owed) console.log(`  OWED     ${l}`);
 for (const l of listing) console.log(`  LISTING  ${l}`);
-if (draft) console.log(left.length ? `addlevel ${id}: DRAFT NOT READY (${left.length} missing above)` : `addlevel ${id}: DRAFT READY: every step a draft takes passed; listing it adds the ${listing.length} LISTING lines above`);
+if (draft) console.log(left.length ? `addlevel ${id}: DRAFT NOT READY (${left.length} missing above)` : `addlevel ${id}: DRAFT READY: its row, rolls and sheets; ${owed.length} OWED (the bots) and ${listing.length} LISTING lines above are its build's`);
 else console.log(left.length || flown.length ? `addlevel ${id}: NOT READY (${left.length + flown.length} missing above)` : `addlevel ${id}: READY: every step passed and it is registered everywhere`);
 process.exit(left.length || flown.length ? 1 : 0);
