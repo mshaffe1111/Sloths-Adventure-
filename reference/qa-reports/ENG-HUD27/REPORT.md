@@ -5,14 +5,8 @@ Started 2:20 PM ET (`TZ=America/New_York date`: Mon Nov 23 14:20:22 EST 2026). P
 Base: t-eng-27-wip-hud e4568241f, with t-eng-27 e2f3855cf (ENG-JETTY's landing) merged in first (315caa0ef; one conflict in engine.ts
 after stepPieces: both kept, the post moments and then the race-end line; tsc PASS).
 
-### EXACT NEXT STEP (if this session ends before the landing is pushed)
-State: t-eng-27-wip-hud e4c4d3de8 (+ this REPORT commit) holds everything; t-eng-27 is e2f3855cf, already merged into it (315caa0ef).
-Gates done on frozen e4c4d3de8: tsc, generalitycheck, knowncheck PASS; lockall 102/102 unchanged; toys RED/GREEN (below). CI tool line
-done (the base's 11 inherited reds, nothing new). Running at hand-over: the unit suite on /home/user/wt/fix2 (it dies with this
-container). A successor: (1) a frozen tree of e4c4d3de8; run the unit suite, run_in_background, 7200000 ms; (2) compare every `not ok`
-with the base lists in Gates below (unit: pacerLay.test.ts:254, :280; CI: the 11 named); a new red blocks the landing; (3)
-`git ls-remote origin t-eng-27`: if still e2f3855cf, `git push origin <wip head>:t-eng-27` (a fast-forward); else merge it in (no force)
-and re-run tsc + waterWarnRouted/firstMet/easyRouted/hudRoute; (4) send the lead the landed hash and the two verdict lines (no clock times).
+### Landed
+t-eng-27 fast-forwarded from e2f3855cf to this REPORT's commit (the gated engine code is e4c4d3de8; later commits are REPORT only).
 
 ### Done-items
 1. **ONE helper** (src/game/gen2/tower.ts, beside routeOf/routeAt/flagFurther): `alongOf(stage)` (the px along the laid route on a
@@ -97,7 +91,8 @@ directly or through the sorted list within 25 lines), plus a grep of min/max of 
   finish: 'the fall at x=335-731 has no bank at one end'; also red on d9425f091, before ENG-JETTY), wheelRide.test.ts:26, :42,
   firsttimer.test.ts:184, riverRide.test.ts:106, :144, :202, :218; the todo is chaseBots.test.ts:110.
 - **Unit suite**: base 4,073 / 4,068 pass / 2 fail / 3 todo (ENG-JETTY on 1b2897cfb, the same src and tools as e2f3855cf: the two reds
-  pacerLay.test.ts:254, :280). Landing head e4c4d3de8: SUITE_FIX2. (A first run on 64831cbe1 was stopped at 1,250 results, no red, when
+  pacerLay.test.ts:254, :280). Landing head e4c4d3de8: **4,081 / 4,076 pass / 2 fail / 3 todo**: the same two inherited reds
+  (pacerLay.test.ts:254, :280) and the same 3 todo; the 8 new tests are this job's toys. (A first run on 64831cbe1 was stopped at 1,250 results, no red, when
   the lead's fourth site changed src.)
 
 ### Polish check
