@@ -23,6 +23,26 @@ Merged at INT-14 (11-20, t-int-14): §0zq-25d/§0zq-25c ENG-25c (2-5's snap rows
 - **Proof:** columnDressFoot.test.ts (3), porchPosts.test.ts (2), columnDressLay.test.ts (dressFeet finds the toy column's climb); RED on
   the base (the exports missing). Stills: qa-reports/DRESS-27/stills/ (2-7 seed 1, both settings, both ways, zooms).
 
+## 0zq-HUD27. ENG-HUD27 (t-eng-27-wip-hud, 11-23): the HUD bar along the route's legs; 'post:letter' moments
+- **The bar** (routeBar.ts): a stage laid as 2+ legs (gen2 tower.flow 'legs') reads the best route px so far / the route's length
+  (tower.ts routeOf/routeAt + the tail to the totem), where he stands or climbs only (an air frame over the lower leg is not progress),
+  never back. One leg: routeBarOf null, the travel mode's measure exactly. Proof: gen2/hudRoute.test.ts (the toy, the middle bot, the
+  real engine; RED on today's measure 0.000 at the out leg's end). Real 2-7 (middle, Normal, seed 1): 0.31 at the end of the way out.
+- **Moments** (post.ts postMoments): 'post:letter' at the first letter posted, 'post:letter:<n>' at the nth, read from the post piece's
+  `open` after stepPieces (no PieceHost change); wayside.ts `at: 'on'` waits on them.
+- Trap: anything "how far along" on a legs stage must read stage.gen2.tower.route, never x.
+- **First/last met (ENG-HUD27b, D130, R-165.414):** gen2/tower.ts `alongOf(stage)` (route px on a stage with a route, x otherwise) and
+  `firstMet` / `lastMet` / `inMetOrder(stage, items, at)` (`at` a place or a thing's ends, e.g. a drop's two lips). Every "first" or
+  "last" a rule picks uses them, never `.sort(by x)[0]`. With no route they are the x sort exactly (firstMet.test.ts). Users: easyMode's
+  flag fill, verdicts.ts dropVerdicts (its optional `laid` = judgeRoll's `built`). The remaining x picks are listed in
+  reference/qa-reports/ENG-HUD27/REPORT.md (the Lane 2 job); xpickSweep.mjs there finds them.
+- **Dot's water line on a routed stage** (ENG-HUD27b, BUILD-27d's find): fillSockets lays it at the wet gaps in met order, before the
+  lip he reaches first; a leftward one is `{ x: x1, beforeX: x1 + lead }` with its sign at x1 + 40, and on a stage with a route every
+  one carries its section's band; dropsOf matches either way (waterWarnRouted.test.ts). Open: passTips (engine.ts) is rightward only, so
+  a leftward line has no passX; a ridden river that comes first owes no line in the lay but the verdict asks one (the lead's call).
+- **Easy's flag fill** (easyMode.ts, item 3): on a stage with a route it measures gaps, middles and order in route px (routeAt), so
+  a stacked out-and-back keeps flagFurther's order (easyRouted.test.ts; real 2-7 Easy: 11 flags become 16, in order). No route: x as before.
+
 ## 0zq-jetty. ENG-JETTY (t-eng-27, 11-23): the race-end line, World 2's finish under a stacked leg, story tips (2-7's three pieces)
 - **Race end (item 1):** brief `GraphBrief.raceEnd = { win: { tip, who }, lose: { tip, who } }` (gen2/types.ts, beside `pacer`; `tip` a key
   of the world manifest's `tips`, `who` 'Dot' | 'Pokey'). The pipeline (layChaseStage, after layPacer) reads them into `Pacer.ends`
