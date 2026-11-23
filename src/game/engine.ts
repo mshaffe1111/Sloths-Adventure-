@@ -200,7 +200,8 @@ import { maxHearts } from './secret.ts';
 import { drawLeafCover, drawPushLog, drawSeed, markSeedFound, seedFound, waterArt, type ProtoExtras } from './protoStage.ts';
 import { CHEER_SECONDS, footfallsBetween, hasClip, heroClipsEnabled, heroClipsLive, resetHeroClips, warmHeroClips } from './heroClips.ts';
 import { releaseDecorPics } from './envKit.ts';
-import { bushHeight, drawBranchArt, drawBushArt, drawEarthWall, setLianaTops, drawCurtainArt, drawHollowArt, drawProtoScene, drawSeedArt, hasKit, releaseGroundChunks, paintedKitEnabled, setDecoTrunks, setDepthView, setGroundPaint, setKitWorld, setRockLooks, setGroundLook, setBoughJoins, paintedPlatforms, protoArtReady, type ProtoSceneState , setGroundStacks, riverLid, riverUnderside, clipAboveLines, drawKitPiece, kitPieceAspect } from './protoArt.ts';
+import { bushHeight, drawBranchArt, drawBushArt, drawEarthWall, setLianaTops, drawCurtainArt, drawHollowArt, drawProtoScene, drawSeedArt, hasKit, releaseGroundChunks, paintedKitEnabled, setDecoTrunks, setDepthView, setGroundPaint, setKitWorld, setRockLooks, setGroundLook, setBoughJoins, paintedPlatforms, protoArtReady, type ProtoSceneState , setGroundStacks, riverLid, riverUnderside, clipAboveLines, drawKitPiece, kitPieceAspect, setClimbFeet } from './protoArt.ts';
+import { dressFeet } from './columnDress.ts';
 import { PORCH_POST, drawPorchPosts, porchPosts, type PorchPost } from './porchPosts.ts';
 import { drawFx, fxFrame } from './bossFx.ts';
 import { drawGritBit, drawSoftShadow } from './w4Grit.ts';
@@ -1169,6 +1170,8 @@ export class GameEngine {
     setW1PitWater(this.proto?.water);
     // (a leg the lay stacks under another: the upper leg's earth ends at a ceiling over it, groundStack.ts; none on any other stage)
     setGroundStacks(stackZonesOf((this.currentStage as { gen2?: { tower?: { legs?: Array<{ travel: string; x0: number; x1: number; y0: number; y1: number }> } } }).gen2?.tower?.legs), this.currentStage.rivers);
+    // (a climb standing in a column dress goes down behind its foam: columnDress.ts dressFeet, protoArt.ts; none on any other stage)
+    setClimbFeet(dressFeet(this.currentStage.columnDress ?? [], this.currentStage.vines ?? []));
     // (no bank dressing stands where a hollow log lies: it drew over the log's body and in its mouths, the designer's review)
     if (this.proto?.dress && this.platforms.some((pl) => pl.hollow)) this.proto.dress = clearOfHollowLogs(this.proto.dress, this.platforms);
     // the stage's painted backdrop (World 5's light changes through the world: w5Backdrop.ts)

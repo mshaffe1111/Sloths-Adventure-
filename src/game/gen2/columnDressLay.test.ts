@@ -91,10 +91,9 @@ test('column dress: the piece draws each one on layer back by its inventory id, 
   assert.equal(COLUMN_DRESS_PIECE.start({ ...st, columnDress: undefined } as never, host), null);
   const piece = COLUMN_DRESS_PIECE.start(st as never, host);
   assert.ok(piece instanceof ColumnDressPiece);
-  // (DRESS-27: the toy column's climb stands in its dress, so the piece also draws the dress's foam over that climb's foot, layer 'world')
-  assert.deepEqual(piece.feet, dressFeet(st.columnDress!, st.vines));
-  assert.ok(piece.feet.length > 0, 'the climb up the column stands in its dress');
-  assert.deepEqual(piece.layers, ['back', 'world']);
+  assert.deepEqual(piece.layers, ['back']);
+  // (DRESS-27: the column's climb stands in its dress, so protoArt draws it down behind the dress's foam)
+  assert.equal(dressFeet(st.columnDress!, st.vines).length, st.columnDress!.length, 'each dressed column\'s climb stands in its dress');
   const drawn: unknown[][] = [];
   const p = new ColumnDressPiece(st.columnDress!, (_ctx, ...a) => (drawn.push(a), true));
   const d = st.columnDress![0];

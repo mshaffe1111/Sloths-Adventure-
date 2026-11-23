@@ -53,35 +53,38 @@ export function columnDressFaults(dress: readonly ColumnDress[], legs: readonly 
 }
 
 /**
- * The falls' white water over the foot of a climb that stands in a dress (DRESS-27, R-165.415: 2-7's climbing pole stood in the weir's
- * pool in front of the falls, a bare trunk in the water that read as a stray post). The dress's own painted foam and pool, from `rise` px
- * over the column's floor down to it, are drawn again IN FRONT of the climb (pieces/columnDressPiece.ts, layer 'world', behind Pokey),
- * over the pole's own width only (`half` px each side: protoArt.ts draws a climb 84 px wide), the top `fade` px fading in: the pole stands
- * in the falls' white water, part of the weir. Nothing is drawn beside the pole (the same picture twice over its see-through pool would
- * thicken it there). No new art; it moves nothing. `reach`: a climb's foot this far over the dress's foot or less stands in it. `below`:
- * the band runs on under the floor's walk line to the painted ground's grass top (10 px down, measured on 2-7's stills), so the pole's foot
- * in the see-through pool is under the water there, not a bare stub between the foam and the grass. `coats`: drawn once (twice thickened
- * the pool over the pole into a darker box with hard sides).
+ * A climb that stands in a dress goes down behind the falls' white water (DRESS-27, R-165.415: 2-7's climbing pole stood in the weir's
+ * pool in front of the falls, a bare trunk in the water that read as a stray post). protoArt.ts draws such a climb solid down to `rise`
+ * px over the column's floor, then fading out over `fade` px in `steps` strips (4 px each: 4 strips of 6 px showed as blocks against
+ * the white water on Easy's still), and nothing under that: the dress, drawn
+ * behind it on layer 'back', shows its own painted foam and pool round the pole's foot. Nothing is drawn over anything (an earlier try
+ * drew the foam again in front of the pole and covered the frog on its stone). No new art; it moves nothing; the climb is as tall to
+ * hold as ever. `reach`: a climb's foot this far over the dress's foot or less stands in it.
  */
-export const DRESS_FOOT = { rise: 64, below: 10, fade: 24, half: 42, reach: 80, coats: 1 } as const;
+export const DRESS_FOOT = { rise: 56, fade: 32, steps: [0.9, 0.78, 0.66, 0.54, 0.42, 0.3, 0.18, 0.07], reach: 80 } as const;
 
-/** one climb's foot in a dress: which dress, the band's span (world px) and the floor it stands on */
+/** one climb's foot in a dress: the climb's x and the floor it stands on */
 export interface DressFoot {
-  d: number;
-  x0: number;
-  x1: number;
+  x: number;
   floor: number;
 }
 
 /** the climbs (straight up/down: 'tree_climb') whose foot stands on a dressed column's floor inside the dress's box */
 export function dressFeet(dress: readonly ColumnDress[], climbs: readonly Pick<Vine, 'x' | 'bottomY' | 'vineType'>[]): DressFoot[] {
   const out: DressFoot[] = [];
-  dress.forEach((d, i) => {
+  for (const d of dress) {
     for (const v of climbs) {
       if (v.vineType !== 'tree_climb' || v.x < d.x || v.x > d.x + d.w) continue;
       if (v.bottomY > d.y + d.h || v.bottomY < d.y + d.h - DRESS_FOOT.reach) continue;
-      out.push({ d: i, x0: Math.max(d.x, v.x - DRESS_FOOT.half), x1: Math.min(d.x + d.w, v.x + DRESS_FOOT.half), floor: v.bottomY });
+      out.push({ x: v.x, floor: v.bottomY });
     }
-  });
+  }
   return out;
+}
+
+/** how a climb standing in a dress is drawn at its foot: solid down to `solid`, then each strip [top, height, alpha] fading out */
+export function footCut(foot: DressFoot): { solid: number; strips: Array<[number, number, number]> } {
+  const solid = foot.floor - DRESS_FOOT.rise;
+  const sh = DRESS_FOOT.fade / DRESS_FOOT.steps.length;
+  return { solid, strips: DRESS_FOOT.steps.map((a, i) => [solid + i * sh, sh, a]) };
 }

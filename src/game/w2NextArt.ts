@@ -49,13 +49,3 @@ export function drawW2Next(ctx: CanvasRenderingContext2D, id: string, x: number,
   ctx.restore();
   return true;
 }
-
-/** a part of a frame drawn where the whole frame would be: the frame's box (x, y, w, h) and the part's box inside it (world px). DRESS-27:
- *  the weir's foam drawn again over a climb's foot (columnDressPiece). False when the sheet is not in or the id is not this sheet's */
-export function drawW2NextPart(ctx: CanvasRenderingContext2D, id: string, x: number, y: number, w: number, h: number, px: number, py: number, pw: number, ph: number): boolean {
-  const f = w2NextFrame(id);
-  if (!f || !w2NextReady() || pw <= 0 || ph <= 0) return false;
-  const kx = f.w / w, ky = f.h / h;
-  ctx.drawImage(img!, f.x + (px - x) * kx, f.y + (py - y) * ky, pw * kx, ph * ky, px, py, pw, ph);
-  return true;
-}
