@@ -249,6 +249,10 @@ export interface FirstTimer {
   /** (ENG-SNAP, R-165.339; SKILLS.letItSnap) an awake snapper on a clock he plays the TAUGHT way (Dot's line: stand back, let it snap,
    *  then kick; the lead's ruling 11-18): the child and the kid. Unset, he bonks it (BONK-AFTER-THE-SNAP), as middle, expert and adult */
   letSnap?: boolean;
+  /** (ENG-BOT27b, SKILLS.reAim; the lead's ruling 11-23: the CHILD bot's skill only, R-165.413) at the upstream gate, standing on a log, a
+   *  held aim the gate refuses for his stopReact ends its wait and is drawn again. Unset, he holds the aim (the middle, expert, adult and
+   *  kid, as before): the race is calibrated on the careful middle (pacerLay), so the middle's play changes only by its own ruling */
+  reAim?: boolean;
 
   /** the runner liana's held thumb REMOVED (level.md rule 21's planted toy test only, chaseBots.test.ts): on open ground he lifts his
    *  thumb by his rhythm (gapQ) on the run to a liana phased to a runner too, stops short and waits for it. Every bot has it: running at
@@ -303,14 +307,14 @@ export const FT_MIDDLE_EASY: FirstTimer = {
   steerQ: ms([107, 169, 367, 767, 1401]), gapQ: ms([102, 233, 393, 615, 863]),
 };
 export const FT_CHILD: FirstTimer = {
-  ...KEPT_KID, name: 'CHILD', setting: 'normal', letSnap: true, upOnly: 0.16, edgeAim: 73, knowsDouble: true, readHold: 0.5, readDbl: 0.5, readGap: [0, 0.9],
+  ...KEPT_KID, name: 'CHILD', setting: 'normal', letSnap: true, reAim: true, upOnly: 0.16, edgeAim: 73, knowsDouble: true, readHold: 0.5, readDbl: 0.5, readGap: [0, 0.9],
   holdQ: ms([22, 49, 74, 115, 231]), aimQ: [1, 28, 73, 119, 232], lateShare: 0.121, lateQ: ms([18, 46, 83, 113, 129]),
   standShare: 0.81, standQ: ms([237, 394, 560, 740, 1131]), dblShare: 0.234, dbl2Q: ms([291, 323, 406, 530, 710]),
   steerQ: ms([56, 80, 120, 192, 524]), gapQ: ms([268, 420, 630, 1041, 1489]),
 };
 /** the child tier's one Easy run (P27, 37 minutes, 187 put-backs): an outlier no bot is tuned to; printed, never checked */
 export const FT_CHILD_EASY: FirstTimer = {
-  ...KEPT_KID, name: 'CHILD', setting: 'easy', letSnap: true, upOnly: 0.16, edgeAim: 71, knowsDouble: true, readHold: 0.5, readDbl: 0.5, readGap: [0, 0.9],
+  ...KEPT_KID, name: 'CHILD', setting: 'easy', letSnap: true, reAim: true, upOnly: 0.16, edgeAim: 71, knowsDouble: true, readHold: 0.5, readDbl: 0.5, readGap: [0, 0.9],
   holdQ: ms([49, 100, 219, 395, 1108]), aimQ: [0, 27, 71, 161, 245], lateShare: 0.25, lateQ: ms([65, 100, 180, 247, 362]),
   standShare: 0.663, standQ: ms([132, 263, 631, 1187, 2371]), dblShare: 0.3, dbl2Q: ms([361, 413, 543, 724, 1251]),
   steerQ: ms([64, 132, 231, 444, 931]), gapQ: ms([50, 83, 297, 717, 1708]),
@@ -1132,7 +1136,7 @@ const floatAt = (rivers: readonly RiverZone[] | undefined, q: Platform) => (t: n
  * The aim of a wait at a drawn-hop gate (edgeStand, edgeWait, race, upstream; rule 28): the hop he will press, drawn by the testers'
  * habit (drawHop) when the wait begins (a target comes in reach: the lead's ruling, ENG-27s, R-165.59: a player picks his hop when he
  * sees the log) and HELD until he presses or the target leaves reach (end(), or a frame the gate is not reached, or he turns). No redraw
- * inside a wait (D's 0.5 s beat had no source, D116), except SKILLS.reAim's at the upstream gate: an aim refused for his tier's stopReact on a
+ * inside a wait (D's 0.5 s beat had no source, D116), except SKILLS.reAim's at the upstream gate (the child only, FirstTimer.reAim): an aim refused for his stopReact on a
  * log ends its wait (the gap to the next log never changes on a river). The decision reads the aim only (gateLands); its thumb noise is flown, never read.
  */
 export class WaitAim {
@@ -3277,8 +3281,9 @@ export class FirstTimerRun {
               //  waits: a held aim the gate refuses now is refused for the whole ride. Seen refused for his tier's reaction (stopReact), the
               //  wait ends and he picks again, as a player who sees his hop will not reach does. Held, the child stood at an at-him log's
               //  front end with a 0.033 s tap the gate never saw reach the next log 80 px off, rode back to the bank and boarded again until
-              //  rescued: 2-7 draft child Normal seeds 6 x 9412 and 8 x 8702, the stage's 'water ahead' stall (seeds 1-20 rescues 11 -> 3))
-              if (SKILLS.reAim && t - this.aim.since > who.stopReact) this.aim.end();
+              //  rescued: 2-7 draft child Normal seeds 6 x 9412 and 8 x 8702, the stage's 'water ahead' stall (seeds 1-20 rescues 11 -> 3)
+              //  The child's skill only (FirstTimer.reAim, ENG-BOT27b, the lead's ruling): on every bot it moved pacerLay's careful middle)
+              if (SKILLS.reAim && who.reAim && t - this.aim.since > who.stopReact) this.aim.end();
               this.pending = null; this.lateArmed = null; this.clockHeld = true; this.blockedT = 0; return {};
             }
             this.aim.end();
