@@ -6411,22 +6411,6 @@ export class GameEngine {
     }
   }
 
-  /** the way a deep river's log drifts where its river comes out from under a bank (its upstream end meets one: riverBanks), so its sawn,
-   *  round end trails out of the bank and its broken end leads (riverArt.ts drawRiverLog); undefined elsewhere (a safe river's logs, a
-   *  still river, one that starts in open water), kept per log while the platforms are the same list */
-  private logLead(pl: Platform): 1 | -1 | undefined {
-    if (this.logLeads?.from !== this.platforms) this.logLeads = { from: this.platforms, by: new WeakMap() };
-    let v = this.logLeads.by.get(pl);
-    if (v === undefined) {
-      const d = pl.drift;
-      const r = d ? this.currentStage.rivers?.find((q) => onRiver(d, q)) : undefined;
-      const bk = r && !r.safe && r.speed > 0 ? this.riverBanks(r) : undefined;
-      v = d && bk && (d.dir === -1 ? bk.far : bk.near) ? d.dir : 0;
-      this.logLeads.by.set(pl, v);
-    }
-    return v || undefined;
-  }
-  private logLeads?: { from: Platform[]; by: WeakMap<Platform, 1 | -1 | 0> };
   /** the logs (or rafts) that ride river `r` (river.ts onRiver), kept while the platforms are the same list */
   private logsOf(r: RiverZone): Platform[] {
     if (this.riverLogs?.from !== this.platforms) this.riverLogs = { from: this.platforms, by: new WeakMap() };
@@ -7644,9 +7628,9 @@ export class GameEngine {
           ctx.beginPath();
           ctx.rect(pl.x - 200, pl.y - 400, end - (pl.x - 200), 800);
           ctx.clip();
-          drawRiverLog(ctx, pl, this.gameTime, this.logLead(pl));
+          drawRiverLog(ctx, pl, this.gameTime);
           ctx.restore();
-        } else drawRiverLog(ctx, pl, this.gameTime, this.logLead(pl));
+        } else drawRiverLog(ctx, pl, this.gameTime);
       }
     }
     // where a river's logs go under short of its far bank (a TAIL): World 2's painted reeds standing in the water there, in front of

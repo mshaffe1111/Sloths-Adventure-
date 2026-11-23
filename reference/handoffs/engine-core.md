@@ -2,7 +2,7 @@
 
 Merged at INT-14 (11-20, t-int-14): §0zq-25d/§0zq-25c ENG-25c (2-5's snap rows level, the snapper's ground, the straddle), §0zq-NOISE ENG-NOISE (one noise channel), §0zq-PROWL ENG-PROWL (sight.up + the leap), §0zq-small3 ENG-SMALL3 (R-165.317/.319/.321), and PAINT-292 (World 1's painted planks and stones; no section here). Merged at INT-13 (11-19, t-int-13): §0ENG23 ENG-23 (followers, the heron reads the line) and §0zl-168 TIME-168 (timecheck), §0zm-25b ENG-25b (the snapper bot skill, the meter's snap channel) and §0zl-25 ENG-25 (2-5's snap stones and snapper rows), §0zn-26b ENG-26b and §0zm-26 ENG-26 (the water wheel), §0W2A ART-W2A (2-3's painted follow poses), §0zo ART-W2B (the wheel's painted draw), §0zo-285c/§0zo-285b/§0zo-285 ENG-285 (the judges and bots fly the engine's Pokey), §0zp-284 FIX-284/284b (2-2's big pads, the real tap hop), §0zp-24d BUILD-24d, §0zn-24c ENG-24c (the raft look, the glow) and §0zm-24 BUILD-24 (2-4) joined; rewritten at the INT-12 merge (11-18, t-int-12): four members wrote here the same day, so labels are suffixed where they met: §0zm-22p ART-22P (CI's seed-list matrix, R-165.278); §0zl-24 ENG-24 (a liana over a river; its REPORT cites it as §0zl); §0zm BUILD-19b, §0zn ENG-19c and §0zl BUILD-19 (t-build-19, the labels its REPORT cites). Before them FIX-22b (11-15): section 0zk.
 
-## 0zq-floor. DRESS-27c (dress27c on t-eng-27 9fe64614e, 11-23): the view's foot over a stacked leg; a deep river's sheet and logs at a bank
+## 0zq-floor. DRESS-27c/27d (dress27c, landed by DRESS-27d on t-eng-27, 11-23): the view's foot over a stacked leg; a deep river's sheet at a bank
 - **The view's foot stays in an upper leg's earth** (groundStack.ts viewFloor + underReach, protoArt.ts stackViewFloor, engine.ts's camera
   before the HUD clamp): standing over a ceiling (inside its run, feet above its line) the camera's target never frames below the line
   less the underside's reach up into the soil (the stand-in band's 56, or the painted strips over their edge). Upright on 2-7's raised
@@ -12,9 +12,8 @@ Merged at INT-14 (11-20, t-int-14): §0zq-25d/§0zq-25c ENG-25c (2-5's snap rows
 - **A deep river's over pass reaches under its banks** (drawRivers: ul/ur for the over pass unless safe or a flood), clipped to the same
   bank faces in the box's ONE clip (DRESS-27b's polygonInBox): the sheet stopped at the lip's x and the receding face showed lighter water.
   The foam keeps the river's own span (fa..fz).
-- **A deep river's log trails its sawn end out of the bank** (engine.ts logLead, riverArt.ts drawRiverLog `lead`, LOG_BROKEN_RIGHT): on a
-  deep, moving river whose upstream end meets a bank, the broken end leads; elsewhere (safe rivers) the id's flip as before. logLong's
-  broken end is its right, logShort's its left (w2-props.webp).
+- **Held out (the lead's scope cut, DRESS-27d):** the log-end flip (logLead / LOG_BROKEN_RIGHT) changed shipped 2-1/2-2/2-4/2-5
+  looks; it waits for R-165.415's follow-up. A deep river's logs face the way their id gives, as before.
 - **The stand-in underside is whole layers along the line** (groundStack.ts standInBand, STAND_IN_LAYERS 12, one fill each, the alphas
   made once per deep colour): it was a 4 x 64 gradient laid a sheared 16-unit column at a time with half-unit overlaps, which doubled its
   alpha into evenly spaced vertical seams, seen from the race leg too (x9085 upright). W2 has no painted `unders` in groundAtlasData.ts
