@@ -57,6 +57,7 @@ let stageWorld = 1;
 import { fitTrunks, type DecoTrunk } from './trunkFit.ts';
 import { drawDrapedPair } from './pairArt.ts';
 import { drawFieldVine } from './vineFieldArt.ts';
+import { DRESS_FOOT, cachedBake, footCut, type DressFoot } from './columnDress.ts';
 export { fitTrunks };
 type DecoLeaves = { x: number; y: number; w: number; flip?: boolean; kind?: 'bushWide' | 'fernClump' | 'bushTall' };
 let decoTrunks: ReadonlyArray<DecoTrunk> = [];
@@ -607,6 +608,30 @@ function stand(ctx: CanvasRenderingContext2D, n: Name, cx: number, bottom: numbe
   blit(ctx, n, cx - w / 2, bottom - h, w, h);
 }
 
+/** the climbs that stand in a column dress (columnDress.ts dressFeet; engine.ts sets them as a stage starts): drawn down behind its foam */
+let climbFeet: readonly DressFoot[] = [];
+/** each such climb's fading foot, baked once (a stage's few climbs; cleared as the next stage sets its feet) */
+const footBakes = new Map<string, HTMLCanvasElement>();
+export function setClimbFeet(f: readonly DressFoot[]) {
+  climbFeet = f;
+  footBakes.clear();
+}
+/** frame `n` stacked up a column from `foot` to `top`, `w` wide with its shape kept, centred on cx; the top piece cut by its source box,
+ *  so nothing is clipped (DRESS-27: a porch post; a clip each was 28 clips a frame at 2-7's porches, PERFORMANCE-RULES limit 19). False
+ *  until the kit has loaded */
+export function drawKitColumn(ctx: CanvasRenderingContext2D, n: Name, cx: number, top: number, foot: number, w: number): boolean {
+  if (!protoArtReady() || foot <= top) return false;
+  const { img, f } = frameOf(n);
+  const h = (w * f.h) / f.w;
+  for (let y = foot - h; ; y -= h - 2) {
+    if (y <= top) {
+      const cut = top - y;
+      ctx.drawImage(img, f.x, f.y + (f.h * cut) / h, f.w, f.h - (f.h * cut) / h, cx - w / 2, top, w, h - cut);
+      return true;
+    }
+    ctx.drawImage(img, f.x, f.y, f.w, f.h, cx - w / 2, y, w, h);
+  }
+}
 /** one piece of the painted World 1 kit filling a box (the journal's demo scenes); false until the kit has loaded */
 export function drawKitPiece(ctx: CanvasRenderingContext2D, n: Name, x: number, y: number, w: number, h: number): boolean {
   if (!protoArtReady()) return false;
@@ -1850,18 +1875,57 @@ export function drawProtoScene(
     }
     const tw = 84;
     const th = (tw * tf.h) / tf.w;
+    // (a climb standing in a column dress goes down behind the falls' white water: drawn solid to its cut, then fading out, nothing
+    //  under that; the dress behind shows its own foam round the pole's foot. columnDress.ts DRESS_FOOT, DRESS-27)
+    const foot = climbFeet.find((f) => Math.abs(f.x - v.x) < 1 && Math.abs(f.floor - bottom) < 1);
+    const cut = foot ? footCut(foot) : null;
+    const end = cut ? cut.solid : bottom + 14;
     ctx.save();
     ctx.beginPath();
-    ctx.rect(v.x - tw, v.topY - 30, tw * 2, bottom + 14 - (v.topY - 30));
+    ctx.rect(v.x - tw, v.topY - 30, tw * 2, end - (v.topY - 30));
     ctx.clip();
     const vine = st.pillars && drawFallsPillar(ctx, v.x, tw, v.topY - 30, bottom + 14) ? trunkVine() : null;
     // (the pieces stay where they were, counted up from the ground; only those on screen are drawn)
-    for (let y = bottom + 10 - th; y > v.topY - 30 - th; y -= th - 6) {
-      if (y > vy1 + 20 || y + th < vy0 - 20) continue;
-      if (vine) ctx.drawImage(vine, v.x - tw / 2, y, tw, th);
-      else blit(ctx, 'trunk', v.x - tw / 2, y, tw, th);
-    }
+    const pieces = (y0: number, y1: number) => {
+      for (let y = bottom + 10 - th; y > v.topY - 30 - th; y -= th - 6) {
+        if (y > Math.min(vy1 + 20, y1) || y + th < Math.max(vy0 - 20, y0)) continue;
+        if (vine) ctx.drawImage(vine, v.x - tw / 2, y, tw, th);
+        else blit(ctx, 'trunk', v.x - tw / 2, y, tw, th);
+      }
+    };
+    pieces(v.topY - 30, end);
     ctx.restore();
+    // (its fading foot: baked once, the pole's own pieces under a soft gradient, then one draw a frame: strips drawn one by one showed
+    //  seams between them against the white water)
+    if (cut && end < vy1 + 20 && end + DRESS_FOOT.fade > vy0 - 20) {
+      const key = `${kitWorld}:${v.x}:${bottom}:${vine ? 1 : 0}`;
+      const canBake = typeof document !== 'undefined' && (kitWorld === 1 || ready.has(kitWorld));
+      const baked = !canBake ? footBakes.get(key) ?? null : cachedBake(footBakes, key, () => {
+        const k = 2;
+        const cv = document.createElement('canvas');
+        cv.width = tw * 2 * k;
+        cv.height = DRESS_FOOT.fade * k;
+        const c2 = cv.getContext('2d');
+        if (!c2) return null;
+        c2.scale(k, k);
+        c2.translate(-(v.x - tw), -end);
+        for (let y = bottom + 10 - th; y > v.topY - 30 - th; y -= th - 6) {
+          if (y > end + DRESS_FOOT.fade || y + th < end) continue;
+          if (vine) c2.drawImage(vine, v.x - tw / 2, y, tw, th);
+          else blit(c2, 'trunk', v.x - tw / 2, y, tw, th);
+        }
+        c2.setTransform(1, 0, 0, 1, 0, 0);
+        c2.globalCompositeOperation = 'destination-in';
+        const g = c2.createLinearGradient(0, 0, 0, cv.height);
+        g.addColorStop(0, 'rgba(0,0,0,1)');
+        cut.strips.forEach(([y, h, a]) => g.addColorStop(Math.min(1, (y + h / 2 - end) / DRESS_FOOT.fade), `rgba(0,0,0,${a})`));
+        g.addColorStop(1, 'rgba(0,0,0,0)');
+        c2.fillStyle = g;
+        c2.fillRect(0, 0, cv.width, cv.height);
+        return cv;
+      });
+      if (baked) ctx.drawImage(baked, v.x - tw, end, tw * 2, DRESS_FOOT.fade);
+    }
   }
   // the scenery trunks: the same painted kapok, set back in the shade (darker), so it reads as the tree behind and not a climb
   for (const v of decoTrunks) {

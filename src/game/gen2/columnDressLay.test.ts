@@ -12,7 +12,7 @@ import { buildGen2Stage } from './pipeline.ts';
 import { towerCfg } from './toyTower.ts';
 import { homeKit, POST_CODE } from './toyHome.ts';
 import { W2_WEIR } from './worlds/w2.ts';
-import { columnDressFaults, type ColumnDressSpec } from '../columnDress.ts';
+import { columnDressFaults, dressFeet, type ColumnDressSpec } from '../columnDress.ts';
 import { COLUMN_DRESS_PIECE, ColumnDressPiece } from '../pieces/columnDressPiece.ts';
 import { builtStageKeys } from '../stageManifest.ts';
 import type { WorldKit } from './types.ts';
@@ -92,6 +92,8 @@ test('column dress: the piece draws each one on layer back by its inventory id, 
   const piece = COLUMN_DRESS_PIECE.start(st as never, host);
   assert.ok(piece instanceof ColumnDressPiece);
   assert.deepEqual(piece.layers, ['back']);
+  // (DRESS-27: the column's climb stands in its dress, so protoArt draws it down behind the dress's foam)
+  assert.equal(dressFeet(st.columnDress!, st.vines).length, st.columnDress!.length, 'each dressed column\'s climb stands in its dress');
   const drawn: unknown[][] = [];
   const p = new ColumnDressPiece(st.columnDress!, (_ctx, ...a) => (drawn.push(a), true));
   const d = st.columnDress![0];

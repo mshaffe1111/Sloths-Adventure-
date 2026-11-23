@@ -1,0 +1,49 @@
+draw check: 2-7 at q0, upright and sideways, 16 spots each
+[land 20:32:26] 2-7 land 75s 16 spots, 128 counted frames, 165 sites 
+[port 20:32:28] 2-7 port 75s 16 spots, 128 counted frames, 167 sites 
+
+✗ 2-7 port
+  ✗ gradients 4.13 at spot 7 (x 9061) > limit 2
+      src/game/riverArt.ts:227 (drawRiverWater) 0.56/frame  | const g = ctx.createLinearGradient(0, bed, 0, bed + 160);
+      src/game/engine.ts:6363 (drawRivers) 0.38/frame  | const g = ctx.createLinearGradient(0, r.surfaceY, 0, r.surfaceY + 60);
+      src/game/riverArt.ts:269 (drawRiverWater) 0.19/frame  | const g = ctx.createLinearGradient(0, fillTo, 0, fillTo + DEEP_BED_FADE);
+      src/game/terrain.ts:1537 (waterGradient) 0.07/frame  | const g = ctx.createLinearGradient(0, y, 0, b);
+  ✗ drawImageScreens 7.61 at spot 7 (x 9061) > limit 7.5
+      src/game/scenery.ts:2085 (drawFitted) 1.57/frame  | if (sw > 0 && sh2 > 0) ctx.drawImage(cv, sx, sy, sw, sh2, (dx + sx * r) / k, (y0 + sy * r)
+      src/game/scenery.ts:2392 (drawVignette) 1.00/frame  | ctx.drawImage(vigPic, 0, 0, bw, bh, 0, 0, vw, vh);
+      src/game/protoArt.ts:1782 (drawGroundChunks) 0.86/frame  | if (cv) ctx.drawImage(cv, pad, pad, px, px, cx * CHUNK, cy * CHUNK, CHUNK, CHUNK);
+      src/game/scenery.ts:2089 (drawFitted) 0.69/frame  | if (gap > 0 && f.foot) ctx.drawImage(f.foot, 0, 0, FOOT_W, FOOT_H, px, top + dh - 1 / k, (
+      src/game/groundPaint.ts:159 (drawSoil) 0.48/frame  | ctx.drawImage(img, sx, sy, sw, sh, cell.x, cell.y, SOIL_TILE + 0.6, SOIL_TILE + 0.6);
+  ✗ clips 21.00 at spot 7 (x 9061) > limit 19
+      src/game/engine.ts:6311 (drawRivers) 1.13/frame  | ctx.clip();
+      src/game/engine.ts:6327 (drawRivers) 1.13/frame  | ctx.clip();
+      src/game/engine.ts:6311 (drawRivers) 0.94/frame  | ctx.clip();
+      src/game/riverArt.ts:224 (drawRiverWater) 0.56/frame  | ctx.clip();
+      src/game/groundStack.ts:210 (clipAboveLines) 0.56/frame  | ctx.clip();
+  note shrunkOver2_5x 1.00 at spot 2 (x 4267) (reported; fails over 32)
+      src/game/paintedScenery.ts:104 (drawGroundFlora) 0.19/frame  | } else ctx.drawImage(spr, x - w / 2, y - h, w, h);
+      src/game/bounceArt.ts:118 (drawBounce) 0.06/frame  | if (top + fh >= v.y0 && top <= v.y1) ctx.drawImage(b.fade, 0, 0, sf.w, fh / ks, sx, top, s
+✗ 2-7 land
+  ✗ gradients 5.00 at spot 11 (x 13298) > limit 2
+      src/game/riverArt.ts:227 (drawRiverWater) 0.81/frame  | const g = ctx.createLinearGradient(0, bed, 0, bed + 160);
+      src/game/engine.ts:6363 (drawRivers) 0.75/frame  | const g = ctx.createLinearGradient(0, r.surfaceY, 0, r.surfaceY + 60);
+      src/game/riverArt.ts:269 (drawRiverWater) 0.19/frame  | const g = ctx.createLinearGradient(0, fillTo, 0, fillTo + DEEP_BED_FADE);
+  ✗ drawImageScreens 7.90 at spot 11 (x 13298) > limit 7.5
+      src/game/scenery.ts:2085 (drawFitted) 2.34/frame  | if (sw > 0 && sh2 > 0) ctx.drawImage(cv, sx, sy, sw, sh2, (dx + sx * r) / k, (y0 + sy * r)
+      src/game/scenery.ts:2392 (drawVignette) 1.00/frame  | ctx.drawImage(vigPic, 0, 0, bw, bh, 0, 0, vw, vh);
+      src/game/protoArt.ts:1782 (drawGroundChunks) 0.83/frame  | if (cv) ctx.drawImage(cv, pad, pad, px, px, cx * CHUNK, cy * CHUNK, CHUNK, CHUNK);
+      src/game/groundPaint.ts:159 (drawSoil) 0.58/frame  | ctx.drawImage(img, sx, sy, sw, sh, cell.x, cell.y, SOIL_TILE + 0.6, SOIL_TILE + 0.6);
+      src/game/scenery.ts:1510 (lanePool) 0.40/frame  | ctx.drawImage(poolSprite(col, a), hs.x - rx, hs.y - 36 - ry, rx * 2, ry * 2);
+  ✗ clips 24.00 at spot 7 (x 9061) > limit 19
+      src/game/engine.ts:6311 (drawRivers) 1.69/frame  | ctx.clip();
+      src/game/engine.ts:6327 (drawRivers) 1.69/frame  | ctx.clip();
+      src/game/engine.ts:6311 (drawRivers) 1.63/frame  | ctx.clip();
+      src/game/riverArt.ts:161 (drawSafeRiverOver) 1.00/frame  | ctx.clip();
+      src/game/riverArt.ts:224 (drawRiverWater) 0.81/frame  | ctx.clip();
+  note shrunkOver2_5x 9.63 at spot 4 (x 6230) (reported; fails over 32)
+      src/game/sheetBake.ts:125 (drawSheet) 2.96/frame  | } else ctx.drawImage(im, sx, sy, sw, sh, dx, dy, dw, dh);
+      src/game/paintedScenery.ts:104 (drawGroundFlora) 1.69/frame  | } else ctx.drawImage(spr, x - w / 2, y - h, w, h);
+      src/game/paintedScenery.ts:102 (drawGroundFlora) 1.50/frame  | ctx.drawImage(spr, -w / 2, y - h, w, h);
+      src/game/bounceArt.ts:118 (drawBounce) 0.06/frame  | if (top + fh >= v.y0 && top <= v.y1) ctx.drawImage(b.fade, 0, 0, sf.w, fh / ks, sx, top, s
+
+FAIL: 6 breach(es) (93 s; raw results in /tmp/drawcheck-xPOwa3)
