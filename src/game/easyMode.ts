@@ -18,7 +18,7 @@
 import { withSetting } from './settingDials.ts';
 import { signsClearOfFlags, type DressPiece } from './dressArt.ts';
 import { GEN2_STAGES } from './gen2/game.ts';
-import { routeAt, type Route } from './gen2/tower.ts';
+import { alongOf } from './gen2/tower.ts';
 import type { GeneratedStage } from './stageGenerator.ts';
 import type { Collectible, Enemy, Platform } from './types.ts';
 import { doubleAllowed, heldMaxGap, jumpOK, PICKUP_APART, SAFE_APPROACH, validateStage, type CheckGraph } from './levelCheck.ts';
@@ -520,10 +520,10 @@ function easyStageOn(stage: Stage): Stage {
   if (!climb) {
     const reach = new Set(reached ?? validateStage(stage, { rooms: false }).reachableIds);
     // (how far on a place is: its x; on a stage with a route (a gen2 tower, a stage of legs: an out-and-back's legs share x, one laid
-    // under the other) the px along the route, gen2/tower.ts routeAt, the order the engine and the level check take flags in
-    // (flagFurther), so the gaps, the middles and the order below are the route's, never x across two legs)
-    const route = (stage as { gen2?: { tower?: { route?: Route } } }).gen2?.tower?.route;
-    const along = (x: number, y: number): number => (route ? routeAt(route, x, y) : x);
+    // under the other) the px along the route, gen2/tower.ts alongOf, the one route order every first/last pick takes (D130), the
+    // order the engine and the level check take flags in (flagFurther), so the gaps, the middles and the order below are the
+    // route's, never x across two legs)
+    const along = alongOf(stage);
     const marks = [along(stage.spawnX, stage.spawnY), ...cps.map((c) => along(c.x, c.y)), along(stage.exitTotemX, stage.exitTotemY)].sort((a, b) => a - b);
     for (let i = 0; i + 1 < marks.length; i++) {
       const [x0, x1] = [marks[i], marks[i + 1]];
