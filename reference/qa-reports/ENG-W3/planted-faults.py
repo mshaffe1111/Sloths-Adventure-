@@ -11,7 +11,7 @@ TEST = 'src/game/gen2/worlds/w3.test.ts'
 FAULTS = [
     ("the packet's plant: the draft travels back to 'right'", 'src/game/gen2/worlds/stageTable.ts',
      "  '3-1': { kit: 'w3', travel: 'down' },", "  '3-1': { kit: 'w3', travel: 'right' },", 'the way DOWN'),
-    ('readying lifts no hand-built shadow (the game builds the old 3-1)', 'tools/engine/draft.ts',
+    ('readying lifts no hand-built shadow (the game builds the old 3-1)', 'tools/engine/draftReady.ts',
      "  delete HAND_STAGES[id];", "", 'the way DOWN'),
     ('the draft is also a listed row', 'src/game/gen2/worlds/stageTable.ts',
      "  '1-1': { kit: 'w1',", "  '3-1': { kit: 'w3' },\n  '1-1': { kit: 'w1',", 'the draft row'),
