@@ -4,6 +4,27 @@ Plan: wait for DRESS-27d (the camera's view floor on the stacked upper leg + the
 t-build-27e (no force); ONE frozen final tree; the gates once in three lanes (probes27g/laneA.sh, laneB.sh, laneC.sh: the full CI set,
 the 'rolled' tool line read live from gates.yml:157, plus the shipping build + chunkcheck); re-shoot only DRESS-27d's spots.
 Set up: worktree /home/user/wt-b27g (branch t-build-27e at 793ddf246, node_modules by npm ci).
+(1) MERGE DONE: DRESS-27d's t-eng-27 091ba9479 merged into t-build-27e = 312ce33a0 (clean, no conflict, no force). src/tools diff vs
+793ddf246: engine.ts (+21), groundStack.ts (+97/-), protoArt.ts (+12), stackViewFloor.test.ts (new): draw/camera only, no lay; seedlist 2-7
+--check PASS on the frozen tree. Frozen final tree /home/user/wt-b27g-f1 = 312ce33a0 (src, tools chattr +i; src/game/gen2/proven writable).
+(2) STILLS DONE on the frozen final tree's dev server (tools/engine/runs/stills-at-setting.mjs, LAYOUT 0 = list seed 1, rerolls 0, built
+setting printed = asked, 2x): stills27g/g27-2-7-L0-{normal,easy}-x{4500,5419,...}-{upright,sideways}.jpg; Normal 4500 5419 9080 9085, Easy
+4500 5419 9540 9553 (Easy's upper river ends at x9539 = Normal's x9081 bank: probes27g/riverx.mjs). Contact sheets
+stills27g/sheet-g27-upright.jpg, sheet-g27-sideways.jpg; zooms stills27g/zoom-g27-*.jpg.
+
+### Polish check (BUILD-27g; judged at phone size on the sheets and full-size zooms)
+- OUT-LEG UPRIGHT BOTTOMS (lead's finding 1): FIXED. Normal x4500/x5419/x9080/x9085 and Easy x4500/x5419/x9540/x9553 upright: the soil runs
+  to the screen's bottom edge, no dark strip, no streaks, no orange line, no sliver. Numbers (probes27g/bands.py, bottom 30% in 6 bands,
+  luminance/streak): before (stills27f/clean N x4500) last band 38.2, last 12 rows min 20.8; after N x4500 100.3 / min 101.1, E x5419
+  80.9 / min 79.1, N x9085 76.2 / min 66.7: every band soil-bright, streak <= 1.4 (the grass edge), none dark.
+- DEEP RIVER WALL (lead's finding 2, the strip): FIXED. N x9080 sideways and Easy x9540 sideways: the water meets both bank walls with no
+  lighter teal strip (zoom-g27-normal-x9080-sideways-bank.jpg). The roots and the pebble floor run straight into the wall.
+- NAMED, not fixed (the lead said the log flip is OUT of DRESS-27d): a drifting log reaching the left bank shows a flat end with a small
+  pale water box over it (zoom-g27-normal-x9080-sideways-logend.jpg, about 15 px at phone size, only while a log is at the bank).
+- NAMED, pre-existing (identical on the base 793ddf246: stills27g/base/zoom-base-easy-x4500-sideways-left.jpg vs
+  zoom-g27-easy-x4500-sideways-left.jpg), Easy only, sideways: at Easy x4500 the upper out leg starts at the log column x4279-4339
+  (probes27g/near.mjs); left of it the view looks into the gap between the legs: dark undergrowth backdrop and a dark bottom strip with
+  faint vertical seams. Not DRESS-27d's change; the lead decides (it is finding 1's family, sideways, at the out leg's open start).
 
 ## BUILD-27f (finishing; started 3:56 PM ET 11-23 by `date`; report by 5:00 PM ET; hard stop 5:30 PM ET; box 28 min / 320k)
 ### Polish check (BUILD-27f; stills on frozen 0018fa7ab, LAYOUT=0 = list seed 1, rerolls 0, 2x; judged at phone size on contact sheets

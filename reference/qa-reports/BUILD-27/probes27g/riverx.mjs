@@ -7,7 +7,7 @@ for (const d of ['normal', 'easy']) {
   const p = await ctx.newPage();
   await p.goto(`http://127.0.0.1:${port}/?lessons=off`); await p.waitForTimeout(2500);
   await p.evaluate(() => window.__play('2-7', 0)); await p.waitForTimeout(4000);
-  console.log(d, await p.evaluate(() => { const e = window.__engine(); const s = e.currentStage; const g = s.gen2;
+  console.log(d, await p.evaluate(() => { const e = typeof window.__engine === "function" ? window.__engine() : window.__engine; const s = e.currentStage; const g = s.gen2;
     const rv = (s.rivers ?? []).map((r) => JSON.stringify(Object.fromEntries(Object.entries(r).filter(([k, v]) => typeof v !== 'object' || v === null).map(([k, v]) => [k, typeof v === 'number' ? Math.round(v) : v]))));
     return `seed ${g?.seed} diff ${g?.budget?.difficulty}\n  ` + rv.join('\n  '); }));
   await ctx.close();
