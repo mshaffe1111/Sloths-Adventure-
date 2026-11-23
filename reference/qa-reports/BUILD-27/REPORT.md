@@ -1,4 +1,10 @@
 # BUILD-27 REPORT: 2-7 "The Mailman's Route" (t-build-27-wip; started 12:35 PM ET 11-23 by `date`; budget 2 h, report by 2:40 PM ET)
+## BUILD-27g (closing; started 5:12 PM ET 11-23 by `date`; report by 6:15 PM ET; hard stop 6:45 PM ET; box 28 min / 320k)
+Plan: wait for DRESS-27d (the camera's view floor on the stacked upper leg + the deep river's wall strip) on t-eng-27; merge it into
+t-build-27e (no force); ONE frozen final tree; the gates once in three lanes (probes27g/laneA.sh, laneB.sh, laneC.sh: the full CI set,
+the 'rolled' tool line read live from gates.yml:157, plus the shipping build + chunkcheck); re-shoot only DRESS-27d's spots.
+Set up: worktree /home/user/wt-b27g (branch t-build-27e at 793ddf246, node_modules by npm ci).
+
 ## BUILD-27f (finishing; started 3:56 PM ET 11-23 by `date`; report by 5:00 PM ET; hard stop 5:30 PM ET; box 28 min / 320k)
 ### Polish check (BUILD-27f; stills on frozen 0018fa7ab, LAYOUT=0 = list seed 1, rerolls 0, 2x; judged at phone size on contact sheets
 and full-size crops)
