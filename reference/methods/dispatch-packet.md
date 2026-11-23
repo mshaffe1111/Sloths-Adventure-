@@ -101,6 +101,9 @@ Step 1 of the first packet that aims a stage at a release: **its castBots --prov
 every listed roll; about 3 minutes a run), sent to the lead before any polish, draw or wall work.** Under the 60 bar, the lead re-plans
 (the cause first, or the stage moves to a later release) before more is spent. 11-22: 2-6's yield was first measured at 4:34 PM on
 release day, 29 of 100, after two days of work aimed at shipping it.
+**And its drawcheck on the DRAFT stage (D131, 11-23):** a stage under build is not a listed stage, so the repo's drawcheck never sees it;
+the first box also runs `drawcheck` on the draft at its own spots (the stage alone) and sends the breaches with the yield. 11-23: 2-7's
+six draw breaches were found by DRESS-27 at 3:40 PM on the night it was due on Matt's link, after a full day's build.
 
 ## A landing on a shared t-branch runs the CI tool line (D126, 11-22)
 Every landing on a shared work branch (t-build-*, t-eng-*, t-int-*) runs, with the unit suite, **the CI tool line: the tests in
