@@ -10,21 +10,29 @@ w/set-vs-runtime-81.md). **Easy at 81% FAILED the principle** (found by pacerLay
 ride-only bot rides home Easy 2 in 112.8 s and post Easy 5 in 124.2 s and WINS both; plant RED at 0.80, w/pacerLay-rideonly-RED-plant-
 pace080.txt). **Easy 90% flown: PASS** (middle wins all 5 Easy races +15.8..+22.0 s; ride-only loses all 5 by 4.6 s or more;
 w/easy-90-flown.tsv); 88% fails (post Easy 5 ride-only -1.9 s, w/easy-88-flown.tsv).
-**NOW:** the gates on frozen d794dcda1 (fzhead2): tsc, unit 1/2 + CI tool line (pacerLay, pacerRespawn, hopJudged inside), unit 2/2
-(scratchpad/w/out/suite-d794dcda1.*). NEXT: read the verdicts; merge t-eng-27-wip-27w into t-eng-27 (t-eng-27 holds only report and
-evidence commits since the fork; REPORT.md conflicts: take ours, it holds t-eng-27's text whole below ENG-27u's heading); push; send the hash.
+**THE GATES on frozen d794dcda1 (w/suite-d794dcda1-*.txt):** tsc PASS. Unit 4064: 4059 pass, 2 FAIL, 3 todo. The 2 fails are pacerLay's
+planted bots' RED halves, PRE-EXISTING (red on base daf9ca777 with the same messages, w/pacerLay-base-daf9ca777.txt; red since bf92d3daf):
+boardLog's plant (off the skill the middle WINS home Easy 1, base 86.6 s vs 97.53) and raceSure's (off the skill no fall at x 10683): their
+plants stopped biting once E's gate decided the race hops; they need re-planting on their causes (the ENG-27j rule; a bot packet). pacerLay
+otherwise all green: base's 'middle beats it, Normal 3' and 'post Normal 4' reds are GREEN at the set pace; the 10 ride-only races GREEN.
+CI tool line (345): 331 pass, 13 fail, 1 todo. 12 fails PRE-EXISTING, the same on base daf9ca777 (w/wheelChannel-base-daf9ca777.txt,
+w/ci-others-base-daf9ca777.txt): wheelChannel x4 ('World 2 finish: the fall at x=335-731 has no bank at one end'), wheelRide x2,
+riverRide x4, seedlist x1, firsttimer x1 (2-2 lip). ONE NEW: pacerRespawn home ('a fall never pays': expert N4 x 8346 +0.07 s, over the
+2-frame tolerance; GREEN on base). TRACED (w/fall-8346-trace.txt): the test's READ, not a pay: it paired the margin of the frame before the
+life was lost (x 8354.9) with the life-lost frame's x (8346.0) and read 'back' at x 8338.1, 16.8 px of ordinary running gain, which a slower
+boat turns into more boat-seconds (the same falls +0.05/+0.05/+0.01 at full pace, +0.07/+0.06/+0.02 at 81%: x 1/0.81); the engine held him
+to 19.400 s exactly at x 8350.3. FIX 288e8daa8 (the test only; tolerance and principle unchanged): the fall's x and margin from one frame,
+the engine's hold point. The fixed test on frozen 288e8daa8 and the hold-off plant: RUNNING. lockall not run: W2_RACE / RACE_PACE are read only by the
+2-7 toy (toyHome.ts); no listed stage lays a pacer.
+NEXT: merge t-eng-27-wip-27w into t-eng-27 (only report/evidence commits there since the fork; REPORT.md: take ours, it holds t-eng-27's
+text whole below ENG-27u's heading), push, send the hash.
 **Follow-up (bot, not tonight):** post N4's middle stands ~55 s on banks before unjudged boarding presses (item 5): the middle's one loss
 at every pace (-27.6 s at 81%).
-1. **E as ruled (the shortest aimed flight by airtime; ties: the smaller hold) is built and moves NO race row.** daf9ca777: hopFlight /
-   gateAirtime read the aimed flight's airtime; racePick takes the shortest safe one. Toy RED on the kind-then-hold plant, GREEN on the ruled
-   order (w/toyAir-RED-plantKindThenHold.txt, w/toyAir-GREEN.txt; hopJudged 8/8). On the real race the ruling's premise does not hold: the
-   expert's 0.70 s glide single IS the quickest safe flight (0.83-0.90 s; the quickest double 0.90-0.93 s), 0 of 412 race decisions differ
-   from kind-then-hold on the expert's losing rows N2, N3, pN5 (w/racepick-airtimes-expert.txt). The 19 rows at (72, 100%) are identical
-   to E+J's to the tenth (EJ and Ew lines in the table). The expert's 3 losses are the race's, not E's order.
-2. **The gap is the wrong knob: a smaller gap makes the race HARDER.** At 100%: middle 5/7 (72) -> 3/7 (64) -> 3/7 (60); expert 2/5 -> 1/5
-   -> 2/5. **56 does not lay**: riverLay refuses 'under 60 px between logs' on every seed (w/gap56-does-not-lay.txt; a design rule, not
-   mine), so 60 (the smallest gap that lays) stands in for 56. Why it hurts (read from the rows, not traced): the bot's time grows (middle
-   N1 at 64: him 124 s against 86 s at 72; race-leg falls middle 8 -> 11, ride-only 7 -> 15, expert 5 -> 1) while the boat's leg shrinks.
+1. **E as ruled (shortest aimed flight by airtime; ties: smaller hold) built, moves NO race row** (daf9ca777; toy RED on kind-then-hold,
+   GREEN). The expert's 0.70 s glide single IS the quickest safe flight (0.83-0.90 s vs the double's 0.90-0.93 s; 0 of 412 decisions
+   differ, w/racepick-airtimes-expert.txt); the 19 rows at (72, 100%) equal E+J's to the tenth.
+2. **The gap is the wrong knob: smaller = harder** (100%: middle 5/7 at 72, 3/7 at 64 and 60). **56 does not lay** (riverLay: under
+   60 px between logs, w/gap56-does-not-lay.txt); 60 stood in. Read from the rows: the bot is slower (N1 at 64: 124 s vs 86 s).
 3. **Pace is the knob.** (72, 80%) passed the pick rule; (72, 85%) missed by one row (expert N3 -1.6 s). Pace moves only the boat's clock
    (lives identical), so margin = boat/pace - him, within 0.64 s of every flown cell: the rule's window ~78.8-82.2% (w/pace-window.txt).
 4. **The cap (ruled (a), set):** a pace under ~94% Normal / ~97% Easy broke the lay's flown ride-only cap (w/pace-cap-per-row.txt), while
@@ -33,23 +41,17 @@ at every pace (-27.6 s at 81%).
    10 s, #78 17 s, #72 5 s, #84 5 s), each ended by an UNJUDGED press (the bank-to-log boarding, outside E's race gate and edgeWait); 12
    race presses, 0 falls from them. His margin was +2.8 s before the first bank wait. It stays the middle's one loss at every pace.
 
-## The grid (frozen trees; 2-7 out-and-back toy; tool w/table-27w.mts.txt, rows w/grid-rows-daf9ca777.tsv, table w/grid-table.md)
+## The grid, key rows (all 12 cells + 81%: w/grid-table.md; tool w/table-27w.mts.txt; rows w/grid-rows-daf9ca777.tsv)
 Ew = E as ruled (daf9ca777); EJ = E+J (8861ae80b); pace = the laid boat's seconds / pace. Margins = boat - him (s). Rows: middle N1 N2 N3
 E1 E3 pN4 pN5; expert N1 N2 N3 pN4 pN5; ride-only as the middle. Every run reached the shrine; every row laid the gap set.
 | bot | gap / pace | middle | middle margins | expert | expert margins | ride-only (closest) | smallest win | pick rule |
 |---|---|---|---|---|---|---|---|---|
 | EJ | 72 / 100 | 5/7 | +7.6 +6.7 -7.5 +11.1 +10.9 -51.1 +5.6 | 2/5 | +14.2 -3.7 -17.8 +6.2 -14.8 | 0/7 (-26.3) | 5.6 | fail |
 | Ew | 72 / 100 | 5/7 | +7.6 +6.7 -7.5 +11.1 +10.9 -51.1 +5.6 | 2/5 | +14.2 -3.7 -17.8 +6.2 -14.8 | 0/7 (-26.3) | 5.6 | fail |
-| Ew | 72 / 95 | 5/7 | +12.5 +11.5 -2.7 +16.3 +16.0 -45.9 +11.1 | 3/5 | +19.1 +1.1 -13.0 +11.5 -9.3 | 0/7 (-21.1) | 1.1 | fail |
-| Ew | 72 / 90 | 6/7 | +18.0 +16.9 +2.7 +22.0 +21.6 -40.0 +17.0 | 3/5 | +24.6 +6.5 -7.6 +17.4 -3.3 | 0/7 (-15.4) | 2.7 | fail |
 | Ew | 72 / 85 | 6/7 | +24.2 +23.0 +8.6 +28.3 +27.8 -33.5 +23.8 | 4/5 | +30.8 +12.6 -1.6 +23.9 +3.5 | 0/7 (-9.1) | 3.5 | fail (1 row) |
 | **Ew** | **72 / 80** | **6/7** | +31.1 +29.8 +15.4 +35.5 +34.9 -26.0 +31.4 | **5/5** | +37.7 +19.4 +5.2 +31.4 +11.1 | **0/7 (-1.9)** | **5.2** | **PASS (the pick)** |
 | Ew | 64 / 100 | 3/7 | -32.2 -3.1 -15.3 +7.8 +8.2 +6.9 -16.0 | 1/5 | -8.8 -17.7 -2.6 +14.6 -2.4 | 0/7 (-30.5) | 6.9 | fail |
-| Ew | 64 / 90 | 4/7 | -22.0 +7.0 -5.3 +18.4 +18.7 +17.9 -4.7 | 4/5 | +1.4 -7.6 +7.5 +25.6 +8.9 | 0/7 (-19.9) | 1.4 | fail |
-| Ew | 64 / 80 | 6/7 | -9.2 +19.5 +6.9 +31.6 +31.7 +31.6 +9.3 | 5/5 | +14.2 +5.0 +20.0 +39.3 +22.9 | 0/7 (-6.7) | 5.0 | pass (2 knobs) |
 | Ew | 60 / 100 | 3/7 | -47.0 +1.9 -15.2 +19.0 +15.1 -15.5 -15.5 | 2/5 | +5.1 -19.9 +13.4 -11.1 -25.4 | 0/7 (-20.4) | 1.9 | fail |
-| Ew | 60 / 90 | 3/7 | -36.9 +11.6 -4.3 +29.5 +26.5 -4.7 -4.3 | 2/5 | +15.2 -10.1 +24.3 -0.3 -13.5 | 0/7 (-9.0) | 11.6 | fail |
-| Ew | 60 / 80 | 6/7 | -24.3 +23.8 +9.3 +42.6 +40.7 +10.0 +9.6 | 5/5 | +27.8 +2.3 +37.9 +13.3 +0.4 | 1/7 (+5.2) | 0.4 | fail |
 Lives lost (race leg) m / e / r: gap 72: 12 (8) / 9 (5) / 11 (7); 64: 15 (11) / 5 (1) / 19 (15); 60: 15 (11) / 8 (4) / 17 (13).
 
 ## Polish check / Pushback / Suggestions / Unresolved / Method / Turnover
