@@ -1,13 +1,7 @@
 # DRESS-27 REPORT (Engine, art/dress code). Started 2:43 PM ET 11-23. Branch t-eng-27-wip-dress.
-## DRESS-27d (Engine, draw code; DRESS-27c's successor). Started 4:48 PM ET 11-23 by `date`. Branch t-eng-27-wip-dress27d.
-### EXACT NEXT STEP (pushed at the 28-minute box; the gates run in THIS container only)
-- The candidate: t-eng-27-wip-dress27d **8d441aa43** (DRESS-27c's f3649a092 + 3aa389ad9 + (2b) taken out). Not yet on t-eng-27.
-- Frozen gate trees: /home/user/wt-merge = t-build-27e 793ddf246 + dress27d (clean merge) = **a21dbcf34**; /home/user/wt-base = 793ddf246.
-  DONE on a21dbcf34: tsc 0, generalitycheck PASS, knowncheck PASS, stackViewFloor 5/5, related suites 61/61, 2-7 seedlist --check PASS,
-  lockall (both trees recorded, compared build by build: 3264/3264 builds of 102 stages unchanged), drawcheck PASS (1366 s, 2-7 both
-  ways). RUNNING: clipcheck. A successor in another container re-runs clipcheck on a fresh merge (t-build-27e + dress27d).
-- Then: `git fetch origin t-eng-27`; in a worktree of dress27d `git merge --no-edit origin/t-eng-27` if it moved (+ tsc), `git push origin
-  HEAD:t-eng-27` (fast-forward, no force), `git ls-remote` = HEAD, send the lead the hash and stills-27d/'s paths.
+## DRESS-27d (Engine, draw code; DRESS-27c's successor). Started 4:48 PM ET 11-23 by `date`; report 5:21 PM ET. Branch t-eng-27-wip-dress27d.
+### Landed: t-eng-27 fast-forwarded to this branch's head (the hash is in the message to the lead; t-eng-27 had not moved from 9fe64614e).
+Every gate below is GREEN on the frozen merge a21dbcf34 (t-build-27e 793ddf246 + dress27d). BUILD-27g merges t-eng-27 into t-build-27e.
 ### Polish check (stills-27d/: 2-7 layout 0 = seed 1, phone 2x, tools/engine/runs/stills-at-setting.mjs, ONE spot a run, a copy that waits for the build and prints where Pokey stands (every still below: at its x, lives x3); BEFORE = t-build-27e 793ddf246, AFTER = the same + dress27d = a21dbcf34)
 - **Upright out-leg bottoms** (Normal x4500, Easy x5419): pair-2-7-L0-normal-x4500-upright.jpg, pair-2-7-L0-easy-x5419-upright.jpg,
   zoom-bottom-x4500-upright.jpg. Before: the bottom of the screen ends in the stand-in's column streaks and a dark band. After: painted
@@ -46,7 +40,9 @@
   checked with an esbuild metafile, so the run was needed).
 - drawcheck (limits.json's 21 scenarios, 2-7 among them, upright and sideways, 4 spots): **PASS** (1366 s, under load); 2-7 port and
   land clean, no breach printed anywhere.
-@@CLIP@@
+- clipcheck: **PASS (83 known)** (1708 s, under load).
+- Not run: the full unit suite and vite build/chunkcheck (not on this packet's list; draw and camera code only; BUILD-27g runs 2-7's final
+  gates on the merge).
 ### Pushback
 - The packet says 2-4 and 2-5's deep-river banks stay UNCHANGED. (2a) is general (every deep, moving river against a bank wall), so where
   2-4's deep river had the same lighter strip (x15990, DRESS-27c's zoom-2-4-deep), it is gone there too: the same fix, not a new look.
