@@ -17,6 +17,10 @@ rows on the frozen head, land on t-eng-27, send the hash. The base suite on froz
 3. **Pace is the knob. (72, 80%) PASSES the pick rule**: expert 5/5 (smallest +5.2), middle 6/7 with both Easy won (its loss: post N4,
    -26.0), ride-only 0/7, every win +5.2 s or more. (72, 85%) misses by ONE row: expert N3 -1.6 s (pace about 82% would give it +2.0, by
    the boat's arithmetic, NOT flown). Risk named: at 80% the ride-only bot loses Easy 1 by only 1.9 s and Easy 3 by 4.7 s.
+   **The window (w/pace-window.txt):** pace moves only the boat's clock (lives identical at every pace), so margin = boat/pace - him from
+   the 100% row, within 0.64 s of every flown pace cell. The pick rule passes for pace ~78.8-82.2%; with the ride-only losing by 2 s or
+   more (the lay's `under`, measured) ~80.1-82.2%. 80% (flown) passes the rule but the ride-only's Easy 1 is 1.9 s, under that 2 s; **81%
+   sits mid-window** (expert N3 ~+3.8, ride-only Easy 1 ~-3.4; arithmetic, one cell flies it in a minute).
 4. **THE RULING NEEDED: every pace under about 94% (Normal) / 97% (Easy) breaks the lay's cap** (pacerLay.ts:82: the boat's time <= the
    designer's FLOWN ride-only time less 2 s; pacerFaults; pacerLay.test pins it per roll; w/pace-cap-per-row.txt: 93.5-94.1% Normal,
    96.7-96.9% Easy). At 80% the boat is 12-16 s slower than that flown ride-only, yet the ride-only BOT still loses 7/7: the flown ride-only
