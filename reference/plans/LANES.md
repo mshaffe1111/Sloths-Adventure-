@@ -27,9 +27,10 @@ that design. The lead keeps it at every check-in; a check-in that does not updat
 | Lane | Job | Budget | Started | Burn | Status / the lead's decision at the stop |
 |---|---|---|---|---|---|
 | 1 | ENG-26s: release 4's base (main into t-build-26, R-165.399's reds at their causes, the floorAt fix lands) | 1 h (hard stop 2 h) | 11:12 AM | | running; REPORT BY 12:15 PM ET |
-| 1 | 2-7's race (ENG-27 a..v: 22 sessions so far, never budgeted) | ENDS at ENG-27v's box (about 11:40 AM) | 11-20 | about 22 sessions | the lead makes the race call on ENG-27v's table; no successor by default |
+| 1 | 2-7's race (ENG-27 a..v: 23 sessions, never budgeted) | ENDED 11:26 AM with ENG-27v's table | 11-20 | 23 sessions | RACE CALL (11:26 AM): E+J d2bd53f61 is the bot (the honest gate); the race is fixed by design numbers, not more bot work |
+| 1 | 2-7 race numbers: land E+J (suite, CI tool line, pacerLay, pacerRespawn), then the grid gap 72/64/56 x pace 100/90/80% on E+J; the lead picks the smallest change where the expert wins 5/5, the middle 6/7+ on Normal and every Easy race, ride-only loses 7/7, every win 2 s or more; post N4's -51.1 s traced | 1.5 h (hard stop 3 h) | after ENG-26s (lane 1) | | queued |
 | 1 | 2-6's Easy residue (R-165.398: cause B, the lip family, child E 50, adult N 4, the floor), then its list | 4 h in all, from ENG-26s's landing | | | if 2-6 is not at 60 of 100 by then, the lead cuts (re-lay or simplify the spots that fail), no open-ended bot work |
-| 2 | ENG-W3a: World 3's kit on gen2 + a 3-1 row travelling down (WORLD-3-PLAN F1) | 2 h (hard stop 4 h) | about 11:45 AM | | next; REPORT BY 1:45 PM ET |
+| 2 | ENG-W3a: World 3's kit on gen2 + a 3-1 row travelling down (WORLD-3-PLAN F1) | 2 h (hard stop 4 h) | 11:26 AM | | running; REPORT BY 1:45 PM ET |
 | 2 | ENG-PROWL: 'prowlers never look up' + 'lit = seen' (F3) | 1 h (S) | after ENG-W3a | | queued |
 | 2 | ENG-DARK: dark + light ring as one shared brick, the glowworm wake below (F2) | 2 h (M) | after ENG-W3a | | queued |
 | 2 | W3-ART-1: World 3's standing and climbing art on Hugging Face (F4, about $4-8) | 2 h (M) | any free slot | | queued |
