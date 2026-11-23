@@ -23,6 +23,16 @@ that design. The lead keeps it at every check-in; a check-in that does not updat
    stage's own tests); the full rule 28 (x40 on every stage it can touch), the suite and the CI tool line run once, on the candidate it
    asks to land.
 
+## THIS WEEK (Matt 11-23: World 2 done and World 3 ready to build; plans in hours)
+| Day | Lands on Matt's link | Pieces ahead, side by side |
+|---|---|---|
+| Mon 11-23 | 2-7 tonight (race numbers + readiness in parallel, then the 2-hour build) | release 4's base; World 3's kit + 3-1 travelling down |
+| Tue 11-24 | 2-6 (its Easy residue in a 4 h budget, then its one in-place fill) | 2-8's flood clock (M) + followers meet the flood (S-M); World 3: 'prowlers never look up' (S), the dark + glow brick (M) |
+| Wed 11-25 (usage reset) | 2-8 (the 2-hour build on ready pieces); release 4 (2-6, 2-7, 2-8) to Matt's push | 2-9's new pieces; World 3's art batch 1 (HF); World 3 designs 3-3..3-9 from the picks |
+| Thu 11-26 | 2-9 (the 2-hour build) | World 3's remaining pieces (thorn vine, meter channels, roof root) |
+| Fri 11-27 | release 5 (2-9) to Matt's push: WORLD 2 DONE | World 3 READY: every 3-x design final, its pieces GREEN, its art in the inventory |
+Each line is checked at the end of its day on the scoreboard; a miss gets its cause and the recovery the same evening, told to Matt.
+
 ## The board (11-23)
 | Lane | Job | Budget | Started | Burn | Status / the lead's decision at the stop |
 |---|---|---|---|---|---|

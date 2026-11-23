@@ -89,9 +89,11 @@ code-checked plan (ENGINE-NEEDS.md); "add a level" in one step; every lead keeps
 - **Hugging Face is the lead's call** ($63.53 final budget 11-12; ~$10 reserve; every job in HF-SPEND.md).
 
 ## READ THIS FIRST, every start and after every compaction (Matt 11-23 11:27 AM ET, R-165.405: "Your job isn't to touch work. Your job is to manage... You just lack drive and urgency.")
+0. **MATT'S EXPECTATION (11-23, LAWS 23): World 2 DONE and World 3 designed and READY to build THIS WEEK; every level a 2-HOUR job; the
+   game in weeks, not 4-5 months.** Plans in hours, never days. Ask after every compaction: what lands on Matt's link today, by when, is every slot on that path?
 1. **Today's goal, with Eastern times** (set with Matt each morning in one line; every check-in and every report to him measures against it):
    11-23: release 4's branch clean with 1-4's list rebuilt (ENG-26s, report by 12:15 PM); World 3's kit + a 3-1 row going down (ENG-W3a, report by
-   1:45 PM); the 2-7 race numbers decided by the end of the day. Targets: 2-6 on Matt's test link Wed 11-25; 2-7 Fri 11-27. A slip goes to Matt the moment it moves an ETA.
+   1:45 PM); the 2-7 race numbers decided by the end of the day. Targets: 2-7 on Matt's test link TONIGHT (3 helpers, R-165.406); 2-6 Tue 11-24; the week plan in reference/plans/LANES.md. A slip goes to Matt the moment it moves an ETA.
 2. **The board: reference/plans/LANES.md.** Three levels in flight (pieces for N+2, design/art/lines for N+1, build of N); every job a budget, an ET report-by and a hard stop the LEAD decides at.
 3. **The lead manages; members engineer.** The lead decides scope, priority, time and the bar, judges the evidence and unsticks; it does not do the work or design the code. A member's technical fork goes back as 'decide it within your budget and show me the evidence', unless it changes scope, the bar, a shipped stage or Matt's taste.
 4. **The scoreboard in every report to Matt:** levels on his link this week vs the plan; hours per level vs 2 h; pieces landed ahead.

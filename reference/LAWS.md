@@ -87,5 +87,13 @@ have.
     at its root cause (usually the engine or the builder), never by loosening, re-wording, re-scoping or "known-listing" the rule
     to make it pass. A rule changes only when Matt changes it for a reason of its own, never to clear a miss. Known lists are
     only for misses that already exist when a NEW gate starts (law 5), and they only shrink.
+23. **Urgency: the 2-hour level, and the whole game in weeks, not months** (Matt, 2026-11-23: "At the beginning of this week, I was hoping
+    to have the whole world 2 done. And world 3 visioned out and ready to go ... at this pace, it literally will take us about 4 months or 5
+    months to get this thing done."; "I'm asking for 2-hour levels, and you're giving me 2-day levels."; "Your job isn't to touch work.
+    Your job is to manage."). Plans are in HOURS, never days: a level is a 2-hour job once its pieces are ready; the pieces for the next
+    two levels and the next world are built ahead, side by side, never inside a level. Every job has a budget and an Eastern report-by
+    time, and the lead decides at the stop; the lead manages and members engineer. After EVERY start and compaction the lead reads
+    reference/handoffs/lead.md's 'READ THIS FIRST' block and reference/plans/LANES.md BEFORE anything else, and asks: what lands on
+    Matt's link today, by when, and is every slot on that path?
 
 Breaking a law is a defect: it goes in the log with its root cause like any other.
