@@ -199,6 +199,8 @@ export function drawRiverWater(
   speed: number,
   safe = false,
   soilWorld?: number,
+  /** a leg runs under this river (engine.ts drawRivers' riverLid): a deep river then has a bed, the banks' earth under its strip */
+  lidded = false,
 ): boolean {
   if (safe && safeRiverArtReady()) {
     const L = RIVER_LOOK.safe;
@@ -236,13 +238,51 @@ export function drawRiverWater(
   //  fill): over the deep fill they drew a hard dark line across every deep river (the lead, 11-19, 2-4 beat 6 upright). The strip is
   //  drawn without them, its last whole row (38,67,71) meeting the deep fill RIVER_DEEP (38,66,71) under it, ENG-24f)
   const sh = f.h - WATER_FRAY, dh = (th * sh) / f.h;
+  const foot = top + dh - 1;
+  // (over a leg laid under this one, the deep fill would hang down to the ceiling as a flat dark-teal panel over that leg (READY-27, 2-7's
+  //  race leg upright): there the river has a bed, the banks' own painted earth under its strip (as under a still pool), the strip's last
+  //  row fading into it, and the ceiling's clip and underside end it as they end the banks' earth. Elsewhere the deep fill runs on down)
+  const fillTo = deepFillFoot(foot, bottom, lidded);
   ctx.fillStyle = RIVER_DEEP;
-  ctx.fillRect(x0, top + dh - 1, x1 - x0, Math.max(0, bottom - (top + dh - 1)));
+  ctx.fillRect(x0, foot, x1 - x0, Math.max(0, fillTo - foot));
+  if (fillTo < bottom) {
+    ctx.save();
+    ctx.beginPath();
+    ctx.rect(x0, fillTo, x1 - x0, bottom - fillTo);
+    ctx.clip();
+    const soil = soilWorld !== undefined && drawSoil(ctx, soilWorld, x0, x1, fillTo, bottom, bottom, undefined, false);
+    ctx.restore();
+    if (!soil) {
+      // (the flat earth only until the world's ground sheet loads, as under a still pool)
+      const ge = ctx.createLinearGradient(0, fillTo, 0, fillTo + 160);
+      ge.addColorStop(0, SAFE_EARTH[0]);
+      ge.addColorStop(1, SAFE_EARTH[1]);
+      ctx.fillStyle = ge;
+      ctx.fillRect(x0, fillTo, x1 - x0, bottom - fillTo);
+    }
+    const g = ctx.createLinearGradient(0, fillTo, 0, fillTo + DEEP_BED_FADE);
+    g.addColorStop(0, RIVER_DEEP);
+    g.addColorStop(1, RIVER_DEEP_CLEAR);
+    ctx.fillStyle = g;
+    ctx.fillRect(x0, fillTo, x1 - x0, Math.min(DEEP_BED_FADE, bottom - fillTo));
+  }
   // the water slides with the current, a good deal slower than the logs (it reads as flow, not as a conveyor belt)
   const shift = (((t * speed * 0.35 * dir) % WATER_TILE) + WATER_TILE) % WATER_TILE;
   const start = Math.floor((x0 - shift) / WATER_TILE) * WATER_TILE + shift;
   for (let x = start; x < x1; x += WATER_TILE - 1) ctx.drawImage(img!, f.x, f.y, f.w, sh, x, top, WATER_TILE, dh);
   return true;
+}
+
+/** how far the deep water's colour fades into the bed under a lidded deep river (px) */
+export const DEEP_BED_FADE = 70;
+/** RIVER_DEEP at no alpha: the bed's fade ends in it */
+const RIVER_DEEP_CLEAR = 'rgba(38, 66, 71, 0)';
+/**
+ * Where a deep river's flat fill ends (y), from its painted strip's foot: at the view's foot (`bottom`) for an open river, which runs down
+ * out of sight; at the strip's foot when a leg runs under the river (`lidded`), the banks' earth under it from there (drawRiverWater)
+ */
+export function deepFillFoot(stripFoot: number, bottom: number, lidded: boolean): number {
+  return lidded ? Math.min(stripFoot, bottom) : bottom;
 }
 
 /**

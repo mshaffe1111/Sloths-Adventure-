@@ -106,7 +106,7 @@ import { stageClock, type StageClock } from './clock.ts';
 import { moveRide } from './ridePlay.ts';
 /** how far inside a bank's end the water drawn over him stays (its painted face leans up to about this far) */
 const ZONE_INSET = 14;
-import { drawLadder, drawLily, drawLogComing, drawRiverFoam, drawRiverLog, drawRiverTailEnd, TAIL_END, drawReedClump, drawRiverWater, drawSafeRiverOver, safeLogLine, riverWaterOutline, drawW2Cage, drawW2Decor, drawW2Lift, riverArtReady, RIVER_UNDER_BANK } from './riverArt.ts';
+import { drawLadder, drawLily, drawLogComing, drawRiverFoam, drawRiverLog, drawRiverTailEnd, TAIL_END, drawReedClump, drawRiverWater, drawSafeRiverOver, safeLogLine, riverWaterOutline, drawW2Cage, drawW2Decor, drawW2Lift, riverArtReady, RIVER_UNDER_BANK, deepFillFoot, riverPaintFoot } from './riverArt.ts';
 import type { RiverZone } from './river.ts';
 import { rideHidden, ridersOf, stepRiders, type Riders } from './ridePickups.ts';
 import { RIDE } from './ride.ts';
@@ -6308,7 +6308,7 @@ export class GameEngine {
       const wave = (x: number) => r.surfaceY + Math.sin(x * 0.03 + t * 2.2 * r.dir) * 2.5 + Math.sin(x * 0.07 - t * 1.5 * r.dir) * 1.5;
       const painted = this.paintedRivers(world.id) && riverArtReady();
       if (!over) {
-        if (!painted || !drawRiverWater(ctx, a, b, r.surfaceY, bottom, t, r.dir, r.speed, !!r.safe, world.id)) drawWater(ctx, world.id, a, b, r.surfaceY, bottom, t);
+        if (!painted || !drawRiverWater(ctx, a, b, r.surfaceY, bottom, t, r.dir, r.speed, !!r.safe, world.id, !!lid)) drawWater(ctx, world.id, a, b, r.surfaceY, bottom, t);
         // the current: the river's own painted foam sliding along the surface the way the logs go (still water, a lily pond, has
         // none; the old pale code streaks are gone, Matt 2026-10-29: repeating effects are painted)
         if (r.speed > 0 && painted) {
@@ -6344,11 +6344,14 @@ export class GameEngine {
         g.addColorStop(0, painted ? 'rgba(96, 160, 152, 0.3)' : 'rgba(56, 148, 168, 0.55)');
         g.addColorStop(1, painted ? 'rgba(38, 66, 71, 0.75)' : 'rgba(24, 90, 120, 0.8)');
         ctx.fillStyle = g;
+        // (over a leg laid under it the river has a bed under its painted strip (riverArt.ts deepFillFoot): this water ends there too, or it
+        //  dimmed the bed's earth to the deep colour down to the ceiling, READY-27)
+        const foot = lid ? deepFillFoot(riverPaintFoot(r.surfaceY, false), bottom, true) : bottom;
         ctx.beginPath();
-        ctx.moveTo(a, bottom);
+        ctx.moveTo(a, foot);
         ctx.lineTo(a, wave(a));
         for (let x = a; x <= b + 12; x += 12) ctx.lineTo(x, wave(x));
-        ctx.lineTo(b, bottom);
+        ctx.lineTo(b, foot);
         ctx.closePath();
         ctx.fill();
         // foam where the logs cut the surface: the river's own painted foam along the waterline (no hard white line)
