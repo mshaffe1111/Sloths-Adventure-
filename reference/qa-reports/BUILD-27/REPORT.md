@@ -32,6 +32,17 @@ DONE so far (BUILD-27d):
    on screen, no wayside card (dry27d/win-adult-n1-f3630-line.jpg); LOSE child N seed 1 frame 11758 (him 107.7 s, boat 89.28), Pokey's line,
    boat docked (dry27d/lose-child-n1-f11764-line.jpg). Route bar in play 0.947 at the win, 0.999 at the totem (probes27d/barprobe.mts).
 5. Bots on the trial head (postmoment.mts): child Normal LOSES the race seeds 1-6 (101-114 s vs 88-90 s); middle Normal wins 6/6 (55-69 s).
+6. Checks on frozen /home/user/wt-b27d-f0 (trial head minus the flip, local revert 36abf30ef): tsc PASS; w2Arc27.test 9/9 (with the new
+   letter-4 case); castMoments, dotLines, dotTips, lessons, pokeyJournal, storyStyle, wayside tests 83/83; easyMode 6/6. NOT run yet (owed on
+   the FINAL head, once): the unit suite, the CI tool line, drawcheck, clipcheck, tierBots, registrycheck, the build/chunk/perf gates.
+7. Lead agreed 'post:letter:4' (its message: every roll lays 5 doors; clear of the handover and the finish).
+Final stills (after DRESS-27), on the frozen final tree's dev server: `PW=... DIFF=normal node probes27c/stills-live.mjs 4318 <out> n27 2-7 <layout>
+4960:high 6780:high 9080:high 11376:high 13508:high 14928:high 15738:high 14208:low 12090:low 9972:low 8500:low 5800:low 2459:low 800:low`
+(and DIFF=easy with BUILD-27c's Easy x list), upright and sideways come out of the tool; LIVE=1 for one jetty still with the lines live.
+Learned (so far, for level.md): (a) a story line set `on` a moment must be measured in real play against the stage's other lines before it is
+picked (the 1st letter fell on the handover); a test holds the gap on every roll, not one seed. (b) A clip rig that replays a cut recording
+must index by engine frame, not array position, and its caption must read the verdict, not assume a win. (c) D130's "first by x" also lives
+in the WATER_WARN lay (pipeline.ts:3826): any verdict fix on order needs its lay twin checked the same day.
 
 ## BUILD-27c (finishing; started 2:03 PM ET 11-23 by `date`; report by 3:35 PM ET; box 28 min / 320k)
 ### EXACT NEXT STEP (BUILD-27c's; read this first). BUILD-27c handed over at its 28-minute box.
