@@ -707,6 +707,9 @@ export interface DotReport {
  */
 /** the log a racing hop wants on each side of where it lands (px): the flights' careful middle player (2-7.md FLOWN) */
 const RACE_MARGIN = 50;
+/** (ENG-BOT27, SKILLS.logEnd) how far ahead he looks for a drifting log's end while he stands on it (px): he walks on until its front end
+ *  is this close, then the ride code judges the hop (his 12 px slide to a stop and a frame of thumb lag stay on the log) */
+const LOG_LOOK = 30;
 export const SKILLS = { ride: true, upstream: true, bankUp: true, handed: true, dropOnLog: true, vineFromLog: true, vineOverTail: true, bonkAfterSnap: true, rideWheel: true, bonkBrake: true, letItSnap: true, race: true, rideOnly: false, fromTakeoff: true, boardLog: true, boardHop: true, raceSure: true, floatSure: true, meetLog: true, logEnd: true };
 /**
  * (ENG-26, reference/design/2-6.md NEW 2) `rideWheel`, ride a water wheel (wheel.ts) as a person does: on the jetty he walks up to its lip,
@@ -3129,11 +3132,17 @@ export class FirstTimerRun {
       // 31 px more (his lift-off up to 2 frames late, 19 px, and the 12 px Pokey slides to a stop), so he stands about p25 before the lip:
       // groundPressToLipPx counts only presses made moving)
       const tierEdge = who.aimQ ? this.edgePlan() : null;
-      const look = tierEdge ? (tierEdge.how === 'stand' ? who.aimQ![1] + 31 : tierEdge.aim) : 22 + who.edgeAim;
+      const lookOn = tierEdge ? (tierEdge.how === 'stand' ? who.aimQ![1] + 31 : tierEdge.aim) : 22 + who.edgeAim;
       // (and a gap between: a look past the end of the floor he stands on sees the gap only if nothing stands just past that end. A
       // tier bot's press distance (aimQ, up to ~270 px) looked clean over 2-1's 110 px splash creeks onto the far bank, so he walked into
       // the creek, was splashed back and walked in again until rescued: child Easy seed 10, x 2,063, FIX-21)
       const under = p.grounded ? this.floorAt(p.x, p.y, 6) : null;
+      // (SKILLS.logEnd, ENG-BOT27, aim from a log's end: on a drifting log he looks only LOG_LOOK px ahead, so he walks on to its front
+      //  end before the ride code judges a hop off it. The ground stand's press distance (aimQ p25 + 31, ~129 px for the child) read
+      //  a 170 px log's end as reached from 104 px behind it: he stood mid-log, the upstream gate judged 180 px from a stand never sure,
+      //  and the log carried him back to the bank, again and again until rescued (2-1 child Easy seed 7 x 26110); on a log his way the
+      //  race hop went from mid-log)
+      const look = SKILLS.logEnd && under?.type === 'drift' ? Math.min(lookOn, LOG_LOOK) : lookOn;
       const lip = under ? (dir > 0 ? under.x + under.width : under.x) : NaN;
       // (only over WATER: the creek he walked into. A pit gap the same width is left to the edge's own press, as before: with this look
       //  on every gap the middle bot jumped 1-8's 120 px chase gaps from his full press distance and fell in, chaseBots, INT-11 11-15)
