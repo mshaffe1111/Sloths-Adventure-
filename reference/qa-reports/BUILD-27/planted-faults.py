@@ -12,6 +12,7 @@ PLANTS = [
     ('a home river flowing right (at him)', 'src/game/gen2/worlds/w2Arc27.ts', "versions: [{ id: 'ride', lay: crossing('ride') }]", "versions: [{ id: 'ride', lay: crossing('back27') }]"),
     ('Easy lays a deep home river', 'src/game/gen2/worlds/w2Arc27.ts', "easy: crossing('ride', 300, 360)", "easy: crossing('long', 300, 360)"),
     ('the weir dress dropped from the brief', 'src/game/gen2/worlds/w2Arc27.ts', ", columnDress: W2_WEIR,", ","),
+    ('turn moved off the weir to the reed bank (too late)', 'src/game/gen2/worlds/w2Arc27.ts', "sockets: [tip('t-turn', 'a', 0.3, 'turn'), petal('pb', 'b', 0.5)],", "sockets: [petal('pb', 'b', 0.5)],"),
     ('the old mission line back', 'src/game/stagePlan.ts', "'Carry the post up the mill-race, then race the mail boat home.'", "'Take the long way round the river, past every door marked PLEASE BE PATIENT.'"),
 ]
 bad = 0

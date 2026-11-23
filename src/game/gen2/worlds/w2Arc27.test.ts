@@ -101,3 +101,20 @@ test('2-7: the mail boat waits on the home leg and docks before the jetty; the p
     assert.ok((st.columnDress ?? []).some((q: Any) => /weir/.test(q.art ?? '')), `${d} seed ${s}: the weir dresses the column`);
   }
 });
+
+test("2-7: Dot's `turn` is said on the weir, 800+ px of his path before the first river home, nothing that hurts between (rule 6)", () => {
+  for (const d of BOTH) for (const s of SEEDS) {
+    const st = built(s, d);
+    const legs = st.gen2.tower.legs;
+    const h = (st.proto?.hints ?? []).find((q: Any) => q.text === LINES_27.turn);
+    assert.ok(h, `${d} seed ${s}: Dot says turn`);
+    assert.ok(h.x > legs[0].x0 && h.x <= legs[1].frame.x1, `${d} seed ${s}: turn is said on the way out, at the weir (x ${Math.round(h.x)})`);
+    // (his path: right from the line to the column's far side, then left along the home leg to the first river's near end)
+    const home = (st.rivers ?? []).filter((r: Any) => r.surfaceY > legs[0].ground + 100 && st.platforms.some((p: Any) => p.drift && p.drift.x0 >= r.x0 - 2 && p.drift.x1 <= r.x1 + 2));
+    const first = home.sort((a: Any, b: Any) => b.x1 - a.x1)[0];
+    const path = (legs[1].frame.x1 - h.x) + (legs[1].frame.x1 - first.x1);
+    assert.ok(path >= 800, `${d} seed ${s}: turn ${Math.round(path)} px of path before the first river home`);
+    // (nothing that hurts between: no deep river on the home leg before the first one, no foe)
+    assert.equal((st.enemies ?? []).length, 0, `${d} seed ${s}: 2-7 lays no foe`);
+  }
+});
