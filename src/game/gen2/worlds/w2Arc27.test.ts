@@ -55,10 +55,11 @@ test("2-7's lines are the story keeper's, word for word (reference/story/lines-2
   assert.ok(clue.includes(`'2-7': C('${rows.get('cluetitle')}', '${rows.get('cluetext')}')`), 'the Stage Cleared find');
   assert.ok(!/"hint\.2-7\.(basket|frames|open|porches)"/.test(fs.readFileSync(path.join(root, 'src/game/dotLinesData.ts'), 'utf8')), "the hand-built 2-7's hints are gone");
   assert.ok(/"way\.2-7"/.test(fs.readFileSync(path.join(root, 'src/game/dotLinesData.ts'), 'utf8')), 'way.2-7 is kept');
-  // way.2-7 waits on the first letter posted (the engine's moment 'post:letter'), so it never lands on the race's finish over the win line
+  // way.2-7 waits on the fourth letter posted (the engine's moment 'post:letter:4', post.ts postMoments): never on the race's finish over the
+  // win line, and clear of the jetty's lines (the next test holds the gap on every roll)
   const way = stageLine(2, 7);
   assert.equal(way?.at, 'on', "way.2-7 is said on a moment of play");
-  assert.equal(way?.on, 'post:letter', "way.2-7 waits on 'post:letter'");
+  assert.equal(way?.on, 'post:letter:4', "way.2-7 waits on 'post:letter:4'");
   assert.equal(way?.text, 'I asked the mailman for the time. He said, "Soon." I\'m going to hold him to that.', 'way.2-7 word for word');
 });
 
@@ -118,6 +119,18 @@ test("2-7: Dot's `handover` starts 3 s at a full run after any other line (Norma
     assert.ok(h && r, `${d} seed ${s}: handover and race are said`);
     assert.ok(r.x > h.x, `${d} seed ${s}: race (x ${Math.round(r.x)}) after handover (x ${Math.round(h.x)})`);
     for (const q of hints) if (q !== h && q !== r && q.x <= h.x) assert.ok(h.x - q.x >= gap, `${d} seed ${s}: "${String(q.text).slice(0, 30)}" at x ${Math.round(q.x)} is ${Math.round(h.x - q.x)} px before the handover (under ${gap})`);
+  }
+});
+
+test("2-7: way.2-7's moment, the 4th letter, is posted 3 s at a full run past the jetty's last line (`race`) on every roll (BUILD-27d: the 1st letter fell on the handover)", () => {
+  const gap = 3 * PHYS.maxRun;
+  const k = Number(stageLine(2, 7)?.on?.split(':')[2]);
+  for (const d of BOTH) for (const s of SEEDS) {
+    const st = built(s, d);
+    const race = (st.proto?.hints ?? []).find((q: Any) => q.text === LINES_27.race);
+    const xs = (st.post?.doors ?? []).map((dr: Any) => st.collectibles.find((c: Any) => c.id === dr.letter)?.x).sort((a: number, b: number) => a - b);
+    assert.ok(xs.length >= k, `${d} seed ${s}: ${xs.length} doors, the line waits on letter ${k}`);
+    assert.ok(xs[k - 1] - race.x >= gap, `${d} seed ${s}: letter ${k} at x ${Math.round(xs[k - 1])} is ${Math.round(xs[k - 1] - race.x)} px past the race line (under ${gap})`);
   }
 });
 
