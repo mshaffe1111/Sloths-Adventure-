@@ -18,6 +18,24 @@ and full-size crops)
 - Minor, named: faint vertical tile seams in the deep soil on some sideways shots (painted ground, every world); not 2-7's.
 
 ### EXACT NEXT STEP (BUILD-27f's; read this first)
+**NEXT (for BUILD-27f's successor; head t-build-27e bb107cab4 or later; the look is final, steps (1)-(3) below are DONE):**
+(a) When the lead sends DRESS-27b's hash (on t-eng-27): in /home/user/wt-b27f (or a fresh `git worktree add` of origin/t-build-27e,
+`npm ci --legacy-peer-deps`), `git fetch origin t-eng-27` then `git merge --no-edit origin/t-eng-27` (no force). It must change DRAW code only:
+`git diff bb107cab4 HEAD --stat -- src tools`; if it touches the lay (pipeline.ts, gen2/, w2*.ts lay), the ship number re-runs.
+Push t-build-27e.
+(b) A NEW frozen tree of that head: `git worktree add --detach /home/user/wt-b27f-f2 <head>`; `ln -s /home/user/wt-b27f/node_modules
+node_modules`; `chattr -R +i src tools && chattr -R -i src/game/gen2/proven`.
+(c) Gates ONCE, two lanes in the background (run_in_background, timeout 7200000; never '&'):
+`bash reference/qa-reports/BUILD-27/probes27f/laneA.sh /home/user/wt-b27f-f2 <scratch>/gates` (tsc, seedlist 2-7 --check, the suite
+shard 1/2, the CI tool line gates.yml:157, tierBots) and the same with laneB.sh (drawcheck, clipcheck, registrycheck, knowncheck,
+generality, the suite shard 2/2). Each step appends `<name> exit=<code> <secs>s` to <scratch>/gates/lines.txt; the logs are <name>.txt.
+drawcheck must show 0 breaches with 2-7 included; a suite red: re-run that file alone before calling it red; the seedListChunk EPERM
+is the freeze (unfrozen 2/2 PASS, BUILD-27b), not a defect.
+(d) Stills: only if DRESS-27b changes a look (it should not): re-shoot the spots it names with tools/engine/runs/stills-at-setting.mjs
+(LAYOUT 0) on the dev server of the new tree and diff against stills27f/clean/.
+(e) Send the lead: the final hash, every gate line PASS/FAIL with the suite totals, the clip paths (race27f/), the stills' paths
+(stills27f/clean/), yield 29/40, list 69/100.
+
 (1) DONE: t-eng-27 cfa555cc9 merged into t-build-27e = 0018fa7ab (one doc conflict, engine-core.md: both hunks t-eng-27's, HEAD side
 empty). It adds DRESS-27's draw code (columnDress, porchPosts, protoArt, engine setClimbFeet, the w2-next sheet) and no lay code.
 Frozen tree /home/user/wt-b27f-f1 = 0018fa7ab (src, tools chattr +i; src/game/gen2/proven writable); node_modules
