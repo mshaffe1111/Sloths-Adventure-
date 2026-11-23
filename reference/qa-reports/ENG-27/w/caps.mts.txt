@@ -1,0 +1,10 @@
+const [tree] = process.argv.slice(2);
+await import(`${tree}/src/game/headlessDom.ts`);
+const { homeRun } = await import(`${tree}/tools/inspect/homeToys.ts`);
+const { HOME_CODE, POST_CODE } = await import(`${tree}/src/game/gen2/toyHome.ts`);
+for (const r of ['home normal 1', 'home normal 2', 'home normal 3', 'home easy 1', 'home easy 3', 'post normal 4', 'post normal 5']) {
+  const [w, s, seed] = r.split(' ');
+  let P: any = null;
+  try { homeRun('middle' as never, s as never, Number(seed), 1, { onFrame: (sim: any) => { P ??= (sim.e.pieces ?? []).find((q: any) => q.kind === 'pacer')?.pacer; if (P) throw new Error('stop'); } } as never, w === 'post' ? POST_CODE : HOME_CODE); } catch (e: any) { if (e.message !== 'stop') throw e; }
+  console.log(`${r}\tboat ${P.seconds}\tmiddle ${P.middle}\trideOnly ${P.rideOnly}\tunder ${P.under}\tslowest pace the cap allows ${(100 * P.seconds / (P.rideOnly - P.under)).toFixed(1)}%`);
+}

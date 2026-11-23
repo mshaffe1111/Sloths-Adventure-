@@ -115,9 +115,11 @@ test('the race gate presses the smallest calibrated hop whose aimed flight lands
 // (E's order as the lead ruled "smallest" (ENG-27w): the SHORTEST aimed flight by airtime to a safe landing with the race margin; ties: the
 //  smaller hold. ENG-27v built kind-then-hold (the first in the table that lands: singles before doubles), so the expert's 0.70 s glide
 //  single (holdQ's top quantile, its leaf braking the fall) was pressed over a double that comes down safe sooner. The toy: the tier's
-//  table as raceCandidates orders it (singles by hold, then doubles); the 0.70 s single comes down safe at 1.10 s, the doubles at 0.93 s
-//  and 0.97 s, the short singles not at all. E presses the 0.93 s double. RED on the kind-then-hold plant (the first that lands), GREEN on
-//  the ruled order. A tie in airtime goes to the smaller hold, whatever its place in the table)
+//  table as raceCandidates orders it (singles by hold, then doubles), with SET airtimes (the rule, not the physics): the 0.70 s single
+//  safe at 1.10 s, the doubles at 0.93 s and 0.97 s, the short singles not at all. E presses the 0.93 s double. RED on the kind-then-hold
+//  plant (the first that lands), GREEN on the ruled order. A tie in airtime goes to the smaller hold, whatever its place in the table.
+//  On the real 2-7 race the glide single IS the quickest safe flight (0.83-0.90 s against the quickest double's 0.90-0.93 s, 0 of 412
+//  expert race decisions differ from kind-then-hold: reference/qa-reports/ENG-27/w/racepick-airtimes-expert.txt), so the ruled order moves no row there)
 test('the race gate presses the shortest aimed flight that lands safe, by airtime; ties: the smaller hold (E as ruled, ENG-27w)', () => {
   const single = (hold: number): DrawnHop => ({ kind: 'single', hold, d2: -1, dblAt: 0, hold2: 0.18, upOnly: 0 });
   const double = (d2: number): DrawnHop => ({ kind: 'double', hold: 0.18, d2, dblAt: 0, hold2: 0.18, upOnly: 0 });

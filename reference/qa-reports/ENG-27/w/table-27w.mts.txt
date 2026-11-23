@@ -1,0 +1,48 @@
+// ENG-27w's grid row (from ENG-27v's table-27v.mts): tsx table-27w.mts <tree> <label> <tier: middle|expert|ride> <home|post> <setting> <seed> <gap px> <pace %>
+// the gap: every World 2 river row the 72 px gap reaches (dir +1, no gap of its own: rowGap = gapFor = 72) gets `gap` (RiverRow.gap, data);
+// the pace: the laid mail boat's speed x pace/100 (its seconds / (pace/100)), set on the piece's pacer before its clock starts; the lay's
+// cap (seconds <= rideOnly - under) is NOT re-applied: `capOK` says whether the boat's time still keeps it (pacerFaults' rule)
+const [tree, label, tier, where, setting, seed, gapS, paceS] = process.argv.slice(2);
+const G = Number(gapS), PACE = Number(paceS) / 100;
+await import(`${tree}/src/game/headlessDom.ts`);
+const { W2_RIVERS } = await import(`${tree}/src/game/gen2/worlds/w2.ts`);
+const { rowGap } = await import(`${tree}/src/game/gen2/riverLay.ts`);
+const set: string[] = [];
+for (const [k, row] of Object.entries(W2_RIVERS as Record<string, any>)) if (row.dir === 1 && row.gap === undefined && rowGap(row) === 72) { if (G !== 72) row.gap = G; set.push(`${k}:${rowGap(row)}`); }
+const { homeRun } = await import(`${tree}/tools/inspect/homeToys.ts`);
+const { HOME_CODE, POST_CODE } = await import(`${tree}/src/game/gen2/toyHome.ts`);
+const { pacerMargin, pacerOff, pacerFaults } = await import(`${tree}/src/game/pacer.ts`);
+const { HOP_TRACE, SKILLS } = await import(`${tree}/tools/inspect/firsttimer.ts`);
+if (tier === 'ride') Object.assign(SKILLS, { race: false, rideOnly: true });
+let t = 0, lives = -1, mLast: number | null = null, piece: any, lastX = 0, lastY = 0, paced = false, laidSec = 0, capOK = true;
+const falls: any[] = [];
+const seen = new Map<number, number>();
+HOP_TRACE.on = true; HOP_TRACE.rows.length = 0;
+const r: any = homeRun(tier === 'ride' ? 'middle' : tier as never, setting as never, Number(seed), 1, { onFrame: (sim: any) => {
+  t += 1 / 30; const e = sim.e as any, p = sim.p; lastX = p.x; lastY = p.y;
+  piece ??= (e.pieces ?? []).find((q: any) => q.kind === 'pacer');
+  if (piece && !paced) {
+    if (piece.clock !== null) throw new Error('the boat set off before its pace was set');
+    if (Object.isFrozen(piece.pacer)) throw new Error('the pacer is frozen: the pace cannot be set at run time');
+    laidSec = piece.pacer.seconds; piece.pacer.seconds = Math.round((laidSec / PACE) * 100) / 100; paced = true;
+    capOK = pacerFaults(piece.pacer, piece.pacer.under).length === 0;
+  }
+  // (the laid gap, read off the logs: edge-to-edge space to the next log of the same river, the most common)
+  if (t < 0.05) {
+    const by = new Map<number, any[]>();
+    for (const q of sim.platforms) if (q.type === 'drift' && q.drift) by.set(q.drift.x0, [...(by.get(q.drift.x0) ?? []), q]);
+    for (const qs of by.values()) { const d = qs[0].drift; const g = Math.round((d.x1 - d.x0 + d.width) / qs.length - d.width); seen.set(g, (seen.get(g) ?? 0) + 1); }
+  }
+  const m = piece && piece.clock !== null ? pacerMargin(piece.pacer, p.x, piece.clock) : null;
+  if (lives >= 0 && e.lives < lives) falls.push({ t, x: p.x, m: mLast, race: !!piece && piece.clock !== null && pacerOff(piece.pacer, p.x, p.y) });
+  lives = e.lives; mLast = m;
+} } as never, where === 'post' ? POST_CODE : HOME_CODE);
+const rows = HOP_TRACE.rows.filter((w: any) => w.site !== 'unjudged');
+HOP_TRACE.on = false;
+const race = rows.filter((w: any) => w.site === 'race');
+const lost = race.filter((w: any) => w.landed === 'lost').length;
+const kinds: Record<string, number> = {}; for (const w of race as any[]) { const k = (w.kind ?? 'single') + ' ' + w.hold.toFixed(2); kinds[k] = (kinds[k] ?? 0) + 1; }
+const v = piece?.verdict;
+const raceFalls = falls.filter((f) => f.race);
+const gapSeen = [...seen.entries()].sort((a, b) => b[1] - a[1]).slice(0, 3).map(([g, n]) => `${g}x${n}`).join(',');
+console.log(`${label}\tgap ${G} pace ${PACE * 100}\t${tier}\t${where} ${setting} ${seed}\tend ${r.end}${r.end !== 'finished' && r.end !== 'done' ? ' at x ' + Math.round(lastX) + ' y ' + Math.round(lastY) : ''}\tfinish ${r.finishSeconds}\t${v ? (v.won ? 'WON' : 'lost') + ' him ' + v.him + ' boat ' + v.boat + ' by ' + (Math.round((v.boat - v.him) * 10) / 10) : 'no verdict'}\tboat laid ${laidSec} capOK ${capOK}\tlives lost ${r.lives} (race leg ${raceFalls.length} at x ${raceFalls.map((f) => Math.round(f.x)).join(',') || '-'})\trace presses ${race.length} fall/press ${(lost / Math.max(1, race.length)).toFixed(2)}\trows ${set.join(' ')} logs-gap ${gapSeen}\thops ${JSON.stringify(kinds)}`);

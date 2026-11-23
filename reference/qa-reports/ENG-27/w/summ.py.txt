@@ -1,0 +1,36 @@
+import sys, re, glob, os
+rows = {}
+for f in sorted(glob.glob(sys.argv[1] + '/*.tsv')):
+    for ln in open(f):
+        c = ln.rstrip('\n').split('\t')
+        if len(c) < 8 or not c[1].startswith('gap'): print('BAD', f, ln[:200]); continue
+        lab, gp, tier, run = c[0], c[1], c[2], c[3]
+        m = re.search(r'(WON|lost) him ([\d.]+) boat ([\d.]+) by (-?[\d.]+)', ln)
+        lv = re.search(r'lives lost (\d+) \(race leg (\d+)', ln)
+        cap = re.search(r'capOK (\w+)', ln).group(1)
+        g = re.search(r'logs-gap (\S+)', ln).group(1)
+        key = (lab, gp)
+        rows.setdefault(key, []).append(dict(tier=tier, run=run, won=m and m.group(1) == 'WON', by=float(m.group(4)) if m else None, lives=int(lv.group(1)), leg=int(lv.group(2)), cap=cap, g=g, end=c[4]))
+order = ['home normal 1', 'home normal 2', 'home normal 3', 'home easy 1', 'home easy 3', 'post normal 4', 'post normal 5']
+print('| bot | gap pace | middle won | middle margins (N1 N2 N3 E1 E3 pN4 pN5) | expert won | expert margins (N1 N2 N3 pN4 pN5) | ride-only won | ride-only margins | lives (race leg) m/e/r | smallest win | boat cap kept | pick rule |')
+print('|---|---|---|---|---|---|---|---|---|---|---|---|')
+for key in sorted(rows, key=lambda k: (k[0] != 'EJ', -int(k[1].split()[1]), -int(k[1].split()[3]))):
+    R = rows[key]
+    def T(t):
+        d = {r['run']: r for r in R if r['tier'] == t}
+        return [d.get(o) for o in order if d.get(o) is not None or t != 'expert' or 'easy' not in o]
+    mid, exp, ride = T('middle'), T('expert'), T('ride')
+    fmt = lambda L: ' '.join('?' if r is None or r['by'] is None else ('%+.1f' % r['by']) for r in L)
+    wins = lambda L: sum(1 for r in L if r and r['won'])
+    allw = [r['by'] for r in mid + exp + ride if r and r['won']]
+    lives = lambda L: '%d (%d)' % (sum(r['lives'] for r in L if r), sum(r['leg'] for r in L if r))
+    easyOK = all(r and r['won'] for r in mid[3:5])
+    ok_e = wins(exp) == 5 and len(exp) == 5
+    ok_m = wins(mid) >= 6 and easyOK and len(mid) == 7
+    ok_r = wins(ride) == 0 and len(ride) == 7
+    ok_2 = all(b >= 2.0 for b in allw)
+    caps = set(r['cap'] for r in R)
+    fails = [n for n, ok in [('expert<5/5', ok_e), ('middle<6/7 or an Easy loss', ok_m), ('ride-only won', ok_r), ('a win under +2 s', ok_2)] if not ok]
+    print(f"| {key[0]} | {key[1].replace('gap ','').replace(' pace ',' / ')}% | {wins(mid)}/{len(mid)} | {fmt(mid)} | {wins(exp)}/{len(exp)} | {fmt(exp)} | {wins(ride)}/{len(ride)} | {fmt(ride)} | {lives(mid)} / {lives(exp)} / {lives(ride)} | {min(allw) if allw else '-'} | {'/'.join(sorted(caps))} | {'PASS' if not fails else 'fail: ' + ', '.join(fails)} |")
+    gs = set(r['g'] for r in R); ends = set(r['end'].split()[1] for r in R)
+    if len(gs) > 1 or ends != {'shrine'}: print(f'<!-- {key}: laid gaps {gs} ends {ends} -->')

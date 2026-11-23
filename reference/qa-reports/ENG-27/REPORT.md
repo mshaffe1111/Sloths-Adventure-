@@ -1,3 +1,63 @@
+# ENG-27w REPORT (start 11:35 AM ET by `date`; base t-eng-27-wip-27v 8861ae80b; on t-eng-27-wip-27w: E as ruled daf9ca777 (D117), NOT on t-eng-27)
+## EXACT NEXT STEP (read only this section, D90)
+**Waiting on the lead's pick and one ruling (sent with the table).** The pick rule marks ONE cell of the asked grid: **gap 72, pace 80%**
+(nothing else changes). Setting it breaks the lay's own fairness rule, so the lead rules HOW (item 4) before it is set. Then: set it on
+wt27w (data + the ruled rule line + its tests), freeze, run the suite + CI tool line + pacerLay + pacerRespawn + hopJudged + the 19 race
+rows on the frozen head, land on t-eng-27, send the hash. The base suite on frozen daf9ca777 is running (scratchpad/w/out/suite-daf9ca777.*).
+1. **E as ruled (the shortest aimed flight by airtime; ties: the smaller hold) is built and moves NO race row.** daf9ca777: hopFlight /
+   gateAirtime read the aimed flight's airtime; racePick takes the shortest safe one. Toy RED on the kind-then-hold plant, GREEN on the ruled
+   order (w/toyAir-RED-plantKindThenHold.txt, w/toyAir-GREEN.txt; hopJudged 8/8). On the real race the ruling's premise does not hold: the
+   expert's 0.70 s glide single IS the quickest safe flight (0.83-0.90 s; the quickest double 0.90-0.93 s), 0 of 412 race decisions differ
+   from kind-then-hold on the expert's losing rows N2, N3, pN5 (w/racepick-airtimes-expert.txt). The 19 rows at (72, 100%) are identical
+   to E+J's to the tenth (EJ and Ew lines in the table). The expert's 3 losses are the race's, not E's order.
+2. **The gap is the wrong knob: a smaller gap makes the race HARDER.** At 100%: middle 5/7 (72) -> 3/7 (64) -> 3/7 (60); expert 2/5 -> 1/5
+   -> 2/5. **56 does not lay**: riverLay refuses 'under 60 px between logs' on every seed (w/gap56-does-not-lay.txt; a design rule, not
+   mine), so 60 (the smallest gap that lays) stands in for 56. Why it hurts (read from the rows, not traced): the bot's time grows (middle
+   N1 at 64: him 124 s against 86 s at 72; race-leg falls middle 8 -> 11, ride-only 7 -> 15, expert 5 -> 1) while the boat's leg shrinks.
+3. **Pace is the knob. (72, 80%) PASSES the pick rule**: expert 5/5 (smallest +5.2), middle 6/7 with both Easy won (its loss: post N4,
+   -26.0), ride-only 0/7, every win +5.2 s or more. (72, 85%) misses by ONE row: expert N3 -1.6 s (pace about 82% would give it +2.0, by
+   the boat's arithmetic, NOT flown). Risk named: at 80% the ride-only bot loses Easy 1 by only 1.9 s and Easy 3 by 4.7 s.
+4. **THE RULING NEEDED: every pace under about 94% (Normal) / 97% (Easy) breaks the lay's cap** (pacerLay.ts:82: the boat's time <= the
+   designer's FLOWN ride-only time less 2 s; pacerFaults; pacerLay.test pins it per roll; w/pace-cap-per-row.txt: 93.5-94.1% Normal,
+   96.7-96.9% Easy). At 80% the boat is 12-16 s slower than that flown ride-only, yet the ride-only BOT still loses 7/7: the flown ride-only
+   rate (87-104 px/s) is far faster than the bot rides. Two ways, the lead's call: **(a, my recommendation)** margin shares as data
+   (W2_RACE.margin: normal 0.07 -> 0.3375, easy 0.10 -> 0.375, i.e. 1.07/0.8 and 1.10/0.8) and the flown-ride-only cap replaced by the
+   measured one (the ride-only bot loses every race by 1 s or more; pacerLay.test's bound asserts it), a game rule: the Designer's; or
+   **(b)** keep the cap and re-fly W2_RACE's rideOnly rates with the ride-only bot (data only, but a re-fly: not today).
+5. **post N4's -51.1 s, traced once (E+J, middle; w/trace-postN4-middle-EJ.txt): about 55 s standing on river banks** (#47 11 s, #57
+   10 s, #78 17 s, #72 5 s, #84 5 s), each ended by an UNJUDGED press (the bank-to-log boarding, outside E's race gate and edgeWait); 12
+   race presses, 0 falls from them. His margin was +2.8 s before the first bank wait. It stays the middle's one loss at every pace.
+
+## The grid (frozen trees; 2-7 out-and-back toy; tool w/table-27w.mts.txt, rows w/grid-rows-daf9ca777.tsv, table w/grid-table.md)
+Ew = E as ruled (daf9ca777); EJ = E+J (8861ae80b). Pace = the laid boat's speed x pace (its seconds / pace, the cap NOT re-applied).
+Margins = boat - him, s. Rows: middle N1 N2 N3 E1 E3 pN4 pN5; expert N1 N2 N3 pN4 pN5; ride-only as the middle. Every run reached the shrine;
+every row laid the gap set (logs-gap in the rows).
+| bot | gap / pace | middle | middle margins | expert | expert margins | ride-only (closest) | smallest win | pick rule |
+|---|---|---|---|---|---|---|---|---|
+| EJ | 72 / 100 | 5/7 | +7.6 +6.7 -7.5 +11.1 +10.9 -51.1 +5.6 | 2/5 | +14.2 -3.7 -17.8 +6.2 -14.8 | 0/7 (-26.3) | 5.6 | fail |
+| Ew | 72 / 100 | 5/7 | +7.6 +6.7 -7.5 +11.1 +10.9 -51.1 +5.6 | 2/5 | +14.2 -3.7 -17.8 +6.2 -14.8 | 0/7 (-26.3) | 5.6 | fail |
+| Ew | 72 / 95 | 5/7 | +12.5 +11.5 -2.7 +16.3 +16.0 -45.9 +11.1 | 3/5 | +19.1 +1.1 -13.0 +11.5 -9.3 | 0/7 (-21.1) | 1.1 | fail |
+| Ew | 72 / 90 | 6/7 | +18.0 +16.9 +2.7 +22.0 +21.6 -40.0 +17.0 | 3/5 | +24.6 +6.5 -7.6 +17.4 -3.3 | 0/7 (-15.4) | 2.7 | fail |
+| Ew | 72 / 85 | 6/7 | +24.2 +23.0 +8.6 +28.3 +27.8 -33.5 +23.8 | 4/5 | +30.8 +12.6 -1.6 +23.9 +3.5 | 0/7 (-9.1) | 3.5 | fail (1 row) |
+| **Ew** | **72 / 80** | **6/7** | +31.1 +29.8 +15.4 +35.5 +34.9 -26.0 +31.4 | **5/5** | +37.7 +19.4 +5.2 +31.4 +11.1 | **0/7 (-1.9)** | **5.2** | **PASS (the pick)** |
+| Ew | 64 / 100 | 3/7 | -32.2 -3.1 -15.3 +7.8 +8.2 +6.9 -16.0 | 1/5 | -8.8 -17.7 -2.6 +14.6 -2.4 | 0/7 (-30.5) | 6.9 | fail |
+| Ew | 64 / 90 | 4/7 | -22.0 +7.0 -5.3 +18.4 +18.7 +17.9 -4.7 | 4/5 | +1.4 -7.6 +7.5 +25.6 +8.9 | 0/7 (-19.9) | 1.4 | fail |
+| Ew | 64 / 80 | 6/7 | -9.2 +19.5 +6.9 +31.6 +31.7 +31.6 +9.3 | 5/5 | +14.2 +5.0 +20.0 +39.3 +22.9 | 0/7 (-6.7) | 5.0 | pass (2 knobs) |
+| Ew | 60 / 100 | 3/7 | -47.0 +1.9 -15.2 +19.0 +15.1 -15.5 -15.5 | 2/5 | +5.1 -19.9 +13.4 -11.1 -25.4 | 0/7 (-20.4) | 1.9 | fail |
+| Ew | 60 / 90 | 3/7 | -36.9 +11.6 -4.3 +29.5 +26.5 -4.7 -4.3 | 2/5 | +15.2 -10.1 +24.3 -0.3 -13.5 | 0/7 (-9.0) | 11.6 | fail |
+| Ew | 60 / 80 | 6/7 | -24.3 +23.8 +9.3 +42.6 +40.7 +10.0 +9.6 | 5/5 | +27.8 +2.3 +37.9 +13.3 +0.4 | 1/7 (+5.2) | 0.4 | fail |
+Lives lost (race leg), middle / expert / ride-only: gap 72: 12 (8) / 9 (5) / 11 (7); gap 64: 15 (11) / 5 (1) / 19 (15); gap 60: 15 (11) / 8 (4)
+/ 17 (13); pace moves no life (the bots play the same; only the boat's clock changes).
+
+## Polish check
+No screen changed (bot code, a test, evidence). Nothing drawn to look at.
+## Pushback
+Yes, two, with evidence: E's ruled order moves no row (item 1); the gap knob hurts and 56 does not lay (item 2). Lessons applied: D111 (box by
+`date`), D113 (no foreground waits), D115 (every run on a chattr-frozen tree), D117 (candidates on -27w), D121 (the trace reads the player's
+time end to end), D123 (two heavy runs), D126 (the CI tool line in the suite script).
+## Unresolved
+The pick is not set (the ruling, item 4). The base suite verdict on daf9ca777 is pending at this commit. engine-core.md not yet rewritten.
+
 # ENG-27v REPORT (start 11:12 AM ET by `date`; box 11:40 AM ET; base t-eng-27-wip-27u a069e911c; on t-eng-27-wip-27v: E b20128270, D's judge d2bd53f61 (D117), NOT on t-eng-27)
 ## EXACT NEXT STEP (the next 2-7 job, lane 1, when a slot frees; read only this section, D90)
 **THE LEAD'S RACE CALL (received in my box, on the table below; verbatim in substance):**
