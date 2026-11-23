@@ -1,17 +1,19 @@
 # BUILD-27 REPORT: 2-7 "The Mailman's Route" (t-build-27-wip; started 12:35 PM ET 11-23 by `date`; budget 2 h, report by 2:40 PM ET)
 ## BUILD-27b (continuing; started 1:05 PM ET 11-23 by `date`; report by 2:40 PM ET)
 ### EXACT NEXT STEP (BUILD-27b's; read this, not BUILD-27's below, for what is left)
-Head e84769247 on t-build-27-wip. Scratch trees (not in the repo): /home/user/wt-b27-y2 = e84769247 + the w2.ts:372 y-band fix, chattr
+Head: this commit on t-build-27-wip (src = 0a010f11e). Scratch tree (not in the repo): /home/user/wt-b27-y = 0a010f11e + the w2.ts:372 y-band fix, chattr
 frozen (unfreeze with chattr -R -i before removing). Probes: scratchpad/probe/trace.mts (frames before each life lost or set-down:
 `npx tsx trace.mts <bot> <setting> <seed> <n> [stuck]`, run from the scratch tree) and kidloc.mts (each set-down's leg and beat).
 1. DONE 0a010f11e: catalog dupes; inventory.test 10/10 (census 218: ENG-27 packed 8 of batch 1).
 2. DONE, sent: the yield on fafd18d05 + fix (a): PROVEN 2/40, 24/40 without the kid; 0 runs under 2:00. Child Normal's rescues: a BOT
    fault (walks off the lip onto a log tail sliding under the bank on `upstream`; jumps from mid-log on keep-running) -> ENG-JETTY item 4,
    landing on t-eng-27 by about 3:15 PM (lead). Not mine to fix.
-3. Kid EASY (lead: must pass): candidate e84769247, Easy's out-leg reaches flowing at him on their own row `back27e` (70 px/s, logs 200,
-   gap 70; the kid's full-run hop overshot back27's 150 px logs, seed 14 x14086). Easy castBots 1-40 on y2: RUNNING (see below for the result).
-   If it does not clear kid Easy, trace the next cluster (x 9100-10400 and 14000-15050 were back27; 3000-3300 is the home `neck` on Easy).
-4. Kid NORMAL: locate by cluster (kidloc.mts) and send the clusters to the lead, who rules (LEAD-PERSONA); do not chase it before 3.
+3. Kid EASY 27/40 (lead: must pass): a data candidate (Easy's at-him rows on their own row back27e: logs 200, gap 70, 70 px/s) FAILED
+   and is REVERTED (0293f6eb2; src equal to 0a010f11e): kid Easy 27/40 again, 2 kid runs under 2:00, child Easy 38 -> 36. Kid Easy's
+   misses are 1 rescue each over 8 beats: the kid model (FT_KID) on moving logs (untimed jumps into gaps, walking off log ends), on
+   every World 2 river. Sent to the lead for a ruling (bot item for ENG-JETTY or Easy's drift catch). Do not try another stage row.
+4. Kid NORMAL 6/40 LOCATED and sent (the lead rules, LEAD-PERSONA): 49 set-downs on 34 seeds: out at-him 17, out upstream 14, home
+   stilts 11, keep-running 2, with 2, neck 1, other 2 (scratchpad kidN-loc.jsonl). The same kid-on-logs cause as 3.
 5. When ENG-JETTY lands on t-eng-27 (the w2.ts:372 fix, the race-end line, StageHint story, the bot fix): merge into t-build-27-wip;
    wire `w27.win`/`w27.lose` (lines-2-7.md:24-25, verbatim) on the race-end hook, set story on handover/race; hold all four in
    w2Arc27.test; the whole suite + the CI tool line on a frozen head; castBots --proven 1-40 both settings; then the list (seedlist 2-7,
