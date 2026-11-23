@@ -73,6 +73,10 @@ export const RIVERS_27 = {
   ...W2_RIVERS,
   back27: { dir: -1, speed: 70, logW: 150, logs: 2, gap: 80, safe: true },
   upstream: { dir: -1, speed: 75, logW: 160, logs: 2, gap: 80 },
+  // (Easy's reaches flowing at him, both out-leg beats: longer, slower logs. On `back27` the kid's full-run hop from one log's end came down
+  //  past the far end of the next, closing at 70 px/s (castBots kid Easy seed 14 x 14086, 11 px past a 150 px log): 13 of 40 Easy seeds
+  //  rescued. Easy is never harder than Normal in any number: 55 <= 70, 200 >= 150)
+  back27e: { dir: -1, speed: 55, logW: 200, logs: 2, gap: 80, safe: true },
 } as const satisfies Record<string, RiverRow>;
 type Row27 = keyof typeof RIVERS_27;
 type Content = NonNullable<SectionTemplate['content']>;
@@ -175,9 +179,9 @@ const rest: Lay = {
 export const BEATS_27: SectionTemplate[] = [
   brick({ id: 'jetty', name: 'the post office jetty', jobs: ['arrive'], difficulty: 1, content: 'structural', phases: ['start'], versions: [{ id: 'jetty', lay: jetty }] }),
   brick({ id: 'doors', name: 'the doors', jobs: ['practise'], difficulty: 1, content: 'ground', versions: [{ id: 'path', lay: doors }] }),
-  brick({ id: 'at-him', name: 'logs at him', jobs: ['practise'], difficulty: 3, content: 'water', window: [0, 0.35], versions: [{ id: 'back', lay: twoReaches('back27') }] }),
+  brick({ id: 'at-him', name: 'logs at him', jobs: ['practise'], difficulty: 3, content: 'water', window: [0, 0.35], versions: [{ id: 'back', lay: twoReaches('back27'), easy: twoReaches('back27e') }] }),
   brick({ id: 'porches', name: 'the porch walk', jobs: ['practise'], difficulty: 2, content: 'floating', versions: [{ id: 'planks', lay: porches }] }),
-  brick({ id: 'upstream', name: 'upstream', jobs: ['test'], difficulty: 5, content: 'water', versions: [{ id: 'deep', lay: twoReaches('upstream'), easy: twoReaches('back27') }] }),
+  brick({ id: 'upstream', name: 'upstream', jobs: ['test'], difficulty: 5, content: 'water', versions: [{ id: 'deep', lay: twoReaches('upstream'), easy: twoReaches('back27e') }] }),
   brick({ id: 'weir', name: 'the weir', jobs: ['descent'], difficulty: 2, content: 'climb', entry: 'ledge', exitDy: 260, versions: [{ id: 'steps', lay: weir }] }),
   brick({ id: 'reed-bank', name: 'home is this way', jobs: ['teach'], difficulty: 1, content: 'ground', teaches: HOME_LESSON, versions: [{ id: 'calm', lay: reedBank }] }),
   brick({ id: 'with', name: 'with the current', jobs: ['practise'], difficulty: 2, content: 'water', window: [0.35, 1], uses: [HOME_LESSON], versions: [{ id: 'ride', lay: twoReaches('ride') }] }),
