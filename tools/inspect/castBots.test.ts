@@ -6,7 +6,7 @@
 // direction rule too; the rule is kept for a handle and an animal both in reach).
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { FirstTimerRun, FT_MIDDLE, freshPhone, rng, stillCoverNear } from './firsttimer.ts';
+import { FirstTimerRun, FT_MIDDLE, freshPhone, rng, stillCoverNear, type FirstTimer } from './firsttimer.ts';
 import { eagleOver } from '../../src/game/gen2/worlds/w1Cast.ts';
 import { floorSeconds, runHolds, stageFloor } from './castBots.ts';
 import { setDifficulty } from '../../src/game/difficulty.ts';
@@ -131,6 +131,86 @@ test('the tower route goes down to a sunk vine\'s foot before it climbs (a down-
   assert.ok(sunk[top - 1].y > 1000 + 60, `the climb starts in the air at y ${sunk[top - 1].y}: ${JSON.stringify(sunk)}`);
   const plain = towerCorners(leg(1000) as never, { x: 0, y: 1000 })!;
   assert.ok(at(plain, 300, 1000) >= 0 && at(plain, 300, 760) === at(plain, 300, 1000) + 1, `an ordinary climb is no longer straight up: ${JSON.stringify(plain)}`);
+});
+
+// A way DOWN's own route (towerRoute.ts, ENG-W3a's skills, toys ENG-DOWNBOT; no stage's numbers). (1) A turn whose vine stands just past
+// his ledge's end goes straight down it: a corner in the air level with the ledge read as a gap to jump, and he jumped past the vine and
+// fell two storeys. A climb tower keeps its across-then-up corners. (2) A leg that drops with no vine walks off the end of each ledge and
+// lands on the one under it, ledge by ledge: never the straight line from the entry to the exit, which runs through the ledges between.
+test('a way down: the route turns straight down a turn vine, and drops ledge by ledge off each ledge\'s end', async () => {
+  const { towerCorners } = await import('./towerRoute.ts');
+  const turned = (flow?: string) => ({
+    gen2: { plan: [{}, { join: 'turn' }], tower: { ...(flow ? { flow } : {}), route: { legs: [{ entry: { x: 100, y: 500 }, exit: { x: 700, y: 500 } }, { entry: { x: 760, y: 900 }, exit: { x: 200, y: 900 } }], spawn: { x: 100, y: 500 } }, turns: [{ x: 760, from: 500, to: 900 }] } },
+    vines: [{ x: 760, topY: 500, bottomY: 900, vineType: 'tree_climb' }],
+  });
+  const at = (c: { x: number; y: number }[], x: number, y: number) => c.findIndex((p) => Math.abs(p.x - x) < 1 && Math.abs(p.y - y) < 1);
+  const down = towerCorners(turned('down') as never, { x: 100, y: 500 })!;
+  assert.equal(at(down, 760, 500), -1, `a corner in the air at the vine level with the ledge (a gap to jump): ${JSON.stringify(down)}`);
+  assert.equal(at(down, 760, 900), at(down, 700, 500) + 1, `the turn is not straight down from the ledge's end: ${JSON.stringify(down)}`);
+  const up = towerCorners(turned() as never, { x: 100, y: 500 })!;
+  assert.ok(at(up, 760, 500) >= 0, `a climb tower lost its across corner: ${JSON.stringify(up)}`);
+  // (2) four ledges stepping down, the floor under them; the leg from the top one's to the floor's
+  const plat = (x: number, y: number, width: number) => ({ x, y, width, type: 'solid' });
+  const platforms = [plat(0, 500, 400), plat(300, 700, 500), plat(60, 900, 440), plat(0, 1100, 1000)];
+  const stair = { gen2: { plan: [{}], tower: { flow: 'down', route: { legs: [{ entry: { x: 100, y: 500 }, exit: { x: 100, y: 1100 } }], spawn: { x: 100, y: 500 } }, turns: [] } }, vines: [], platforms };
+  const c = towerCorners(stair as never, { x: 100, y: 500 })!;
+  // (no stretch of the way passes down through a ledge's top: each drop leaves from past a ledge's end)
+  for (let i = 0; i + 1 < c.length; i++) {
+    const a = c[i], b = c[i + 1];
+    if (b.y - a.y <= 60) continue;
+    const through = platforms.find((p) => p.y > a.y + 4 && p.y < b.y - 4 && [a.x + ((b.x - a.x) * (p.y - a.y)) / (b.y - a.y)].some((x) => x > p.x && x < p.x + p.width));
+    assert.equal(through, undefined, `the way drops through the ledge at y ${through?.y} from (${a.x}, ${a.y}) to (${b.x}, ${b.y}): ${JSON.stringify(c)}`);
+  }
+  for (const p of platforms.slice(1)) assert.ok(c.some((q) => Math.abs(q.y - p.y) < 1 && q.x >= p.x && q.x <= p.x + p.width), `he never lands on the ledge at y ${p.y}: ${JSON.stringify(c)}`);
+});
+
+// A way DOWN in the real engine (firsttimer.ts, ENG-W3a's skills; toys ENG-DOWNBOT, no stage's numbers: a carrier stage, its ground
+// swapped for thin ledges and its gen2 for a down tower's). Each bot, a few thumbs each, on the stage's own route (towerRoutePts).
+const thin = (id: number, x: number, y: number, width: number): Platform => ({ id, x, y, width, height: 24, type: 'solid' } as Platform);
+function downArena(o: { who: FirstTimer; k: number; platforms: Platform[]; vines?: Array<{ x: number; topY: number; bottomY: number }>; route: Array<{ x: number; y: number }>; at: { x: number; y: number }; cap?: number; seen: (sim: { p: { x: number; y: number; grounded: boolean; climbing?: boolean }; standingOn: number | null }) => void }) {
+  freshPhone(o.who.setting);
+  setDifficulty(o.who.setting);
+  Math.random = rng(o.k);
+  const run = new FirstTimerRun('2-2', 1, o.who, { route: o.route, cap: o.cap ?? 12, onFrame: (sim) => o.seen(sim as never) });
+  const e = (run as any).e; // eslint-disable-line @typescript-eslint/no-explicit-any
+  e.platforms.length = 0;
+  e.platforms.push(...o.platforms);
+  e.enemies.length = 0;
+  e.vines.length = 0;
+  (o.vines ?? []).forEach((v, i) => e.vines.push({ id: 9700 + i, swaySpeed: 0, swayPhase: 0, vineType: 'tree_climb', ...v }));
+  e.collectibles.length = 0;
+  e.hazards.length = 0;
+  e.proto.cast = { kinds: [], traps: [] };
+  e.proto.hints = [];
+  e.startCast();
+  // (deep enough for a fall of two storeys, and no water, pit or hurt floor of the carrier's)
+  e.currentStage.config.levelHeight = 2400;
+  Object.assign(e.currentStage, { waterY: undefined, rivers: [], safeWater: [], heartFalls: [] });
+  if (e.proto) e.proto.water = [];
+  (run as any).sim.stage.gen2 = { tower: { flow: 'down' } }; // eslint-disable-line @typescript-eslint/no-explicit-any
+  (run as any).onTower = true; // eslint-disable-line @typescript-eslint/no-explicit-any
+  (run as any).sim.stand(o.at.x, o.at.y); // eslint-disable-line @typescript-eslint/no-explicit-any
+  e.player.hp = e.player.maxHp;
+  return run.play();
+}
+const ALL = async () => { const m = await import('./firsttimer.ts'); return [m.FT_KID, m.FT_ADULT, m.FT_CHILD, m.FT_CHILD_EASY, m.FT_MIDDLE, m.FT_MIDDLE_EASY, m.FT_EXPERT]; };
+
+// (the turn's vine stands 20 px past his ledge's end and goes down to a narrow catch, the storey on; nothing else under it for 1,000
+//  px. Straight down takes the vine (STAGE-RULES §1); without the press he hopped off the end past the vine and fell two storeys)
+test('a way down: at a turn vine whose top stands at his ledge\'s end, he presses down onto it and climbs down to the storey on', async () => {
+  const miss: string[] = [];
+  for (const who of await ALL()) for (let k = 1; k <= 3; k++) {
+    let deep = false, on = false;
+    downArena({
+      who, k, at: { x: 300, y: 500 },
+      platforms: [thin(9001, 0, 500, 620), thin(9002, 580, 900, 160), thin(9003, -400, 1900, 3000)],
+      vines: [{ x: 640, topY: 500, bottomY: 900 }],
+      route: [...Array.from({ length: 9 }, (_, i) => ({ x: 300 + i * 40, y: 500 })), ...Array.from({ length: 10 }, (_, i) => ({ x: 640, y: 540 + i * 40 })), { x: 680, y: 900 }, { x: 720, y: 900 }],
+      seen: (sim) => { if (on) return; if (sim.p.y > 1000) deep = true; if (sim.p.grounded && sim.standingOn === 9002) on = true; },
+    });
+    if (deep || !on) miss.push(`${who.name}${who.setting === 'easy' ? ' easy' : ''} thumb ${k}: ${deep ? 'fell past the catch' : 'never on the storey on'}`);
+  }
+  assert.deepEqual(miss, []);
 });
 
 // (STAGE-RULES.md:77: "at least 2 minutes for a quick player, on every roll ... Climbs count 20 s short". castBots held every stage to a

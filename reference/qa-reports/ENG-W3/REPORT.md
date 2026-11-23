@@ -4,7 +4,7 @@
 lock-base.json` (on c1008d8ed), then `--layouts 16 --check lock-base.json` here: the bar is 102/102 unchanged (every change is gated
 `flow === 'down'`, no listed stage travels down). (3) Item 2, the bots: `GEN2_DRAFT=3-1 npx tsx tools/inspect/castBots.ts --stage 3-1
 --seeds 1-40 --par 3` on the frozen candidate (first full run), then towerRoute.ts / firsttimer.ts on what stalls; a toy per skill RED off.
-Start 12:53 PM ET (by `date`). Box 1: 12:53-1:21 PM ET.
+Start 12:53 PM ET (by `date`). Box 1: 12:53-1:21 PM ET. **Box 2 (ENG-DOWNBOT-b): start 1:13 PM ET (by `date`).**
 
 ## Done so far (candidate on t-eng-w3-wip-b)
 1. **Head room both ways going down (tower.ts towerCatches), general, every change gated on flow 'down':** (a) `cramped` keeps HEAD
