@@ -24,11 +24,17 @@
 - GATES (on the frozen candidate): see "Gates" below.
 
 ## Gates (frozen worktrees; logs in the session scratchpad)
-- 34568db5c: drawcheck PASS (930 s, the listed stages); clipcheck PASS (83 known, 809 s). d7546ce89 after it changes only the bake's
-  cache (canvas-loss re-bake), the same draw. 2-7 is not a listed stage on t-eng-27: drawcheck on t-build-27-wip + this fix, 2-7 at
-  16 spots (porches and weir included): PENDING.
-- Head: tsc 0; generalitycheck, knowncheck, artcheck PASS; engine tools tests 39/39; seedlist 1-1 PASS (161); roadmapcheck FAIL (13)
-  IDENTICAL on the base 6b84c98f3 (commits not in this history: inherited). Suite (3 shards) and the rest of the CI line: PENDING.
+- 34568db5c: drawcheck PASS (930 s, the listed stages); clipcheck PASS (83 known, 809 s). Later code commits: the bake's cache
+  (canvas-loss re-bake) and posts with no clip (fewer canvas calls, the same look: stills redone).
+- 2-7 is not a listed stage on t-eng-27, so I ran drawcheck on t-build-27-wip plus this fix, 2-7 alone at 16 spots (porches and
+  weir included). FOUND AND FIXED: one clip a post took 2-7's porches to 28 clips a frame (limit 19); posts now draw with no clip.
+  After: 6 breaches, the SAME 6 as pristine 2-7 (drawcheck-2-7-16spots-base.txt vs -fix.txt: gradients 4.13/5.00 at x13298 or x9061,
+  drawImageScreens 7.61/7.90, clips 21/24 at x9061). These are BUILD-27's, inherited, none at the porches or weir: for the lead.
+- tsc 0; generalitycheck, knowncheck, artcheck PASS; engine tools tests 39/39; seedlist 1-1 PASS (161); roadmapcheck FAIL (13)
+  IDENTICAL on the base 6b84c98f3 (commits not in this history: inherited).
+- Landing (the lead's ruling: drawing only, so a clean merge plus tsc and lockall on the merged head; no fresh suite): merged
+  t-eng-27 09c23c1b0 (one note conflict, both sections kept), tsc 0, planted tests 10/10; lockall merged vs 09c23c1b0: see below.
+  The suite shards I had started on 09865f026 were stopped unfinished (no results claimed).
 
 ## Pushback
 - The column dress (W2_WEIR, columnDress*.ts) was not on t-eng-27, only on t-build-27 via t-ready-27-wip; I merged t-ready-27-wip
