@@ -14,6 +14,14 @@ that design. The lead keeps it at every check-in; a check-in that does not updat
 2. **A level job starts only when it is READY:** every piece its design names is GREEN (built, its toy RED->GREEN, landed), its art is
    in the inventory at Pokey's scale, Dot's lines are approved. A piece found missing during a level job is NOT built inside it: it
    becomes a Lane 2 job, and the level waits or is cut to what exists.
+   **READY is MEASURED on the draft, not declared (2-7's lesson, 11-23: 9 pieces were found missing inside the build: the race-end
+   line, the finish's banks, the route bar, 'post:letter', the child's re-aim, the x-order trap at 4 sites, the weir/porch dress, 2-7's
+   own draw breaches, the portrait bottom and the deep river's wall).** Before the build job starts, the READY job runs on the DRAFT
+   stage and sends: (a) castBots x40 --proven, every bot, both settings (D125); (b) drawcheck on the draft at its own spots (D131);
+   (c) a stills pass at phone size, upright AND sideways, Normal AND Easy, every leg, judged by the lead zoomed (law 2); (d) the
+   verdicts (judged/errs) with the stage's own lines wired; (e) for a stacked or out-and-back stage, every first/last rule checked in
+   met order (D130). Each finding is a Lane 2 piece job; the build starts when all five are clean or each open item is named and
+   ruled by the lead.
 3. **Every job has a BUDGET before it starts, and a HARD STOP.** A level job: 2 hours (the target), hard stop at 4. A piece: S 1 h,
    M 2 h, L 2-4 h (sized from measured history), hard stop at 2x. Hours = member time from its first `date` to its report.
 3b. **A job's budget spans SESSIONS; each session still hands over at 320k REAL context or 28 minutes (D111, D129).** The lead reads every
