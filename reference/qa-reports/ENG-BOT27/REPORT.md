@@ -1,3 +1,55 @@
+# ENG-BOT27b REPORT: SKILLS.reAim as the CHILD bot's skill only, re-measured (started 2:30 PM ET 11-23 by `date`, 14:30:25)
+Branch t-eng-27-wip-bot27-aim. Code 3d90c4977 (child-only gate + toy), t-eng-27 e2f3855cf merged in (2334a3948). NOT landed yet at this push: the suite and the CI tool line are in flight (section 1 item 6).
+## 1. Done-items
+1. **reAim is the child's alone** (the lead's ruling (3)): `FirstTimer.reAim` (firsttimer.ts, a profile field like letSnap) is set on
+   FT_CHILD and FT_CHILD_EASY only and read with SKILLS.reAim at the upstream gate (`SKILLS.reAim && who.reAim && t - aim.since > stopReact`).
+   Middle, expert, adult and kid hold the refused aim exactly as on base. No stage id, seed or x. No src/ file changed (tools/inspect only),
+   so the stage lock and the proven seed lists cannot move.
+2. **Toys** (tools/inspect/riverRide.test.ts; the planted river hoisted into one helper, plantedRide(who, on)): the two ENG-BOT27 toys
+   hold on FT_CHILD (GREEN; their REDs as ENG-BOT27 showed); NEW 'SKILLS.reAim is the CHILD bot's alone': both child profiles carry it, no
+   other cast bot does, and every other cast bot flies the planted river frame for frame the same with SKILLS.reAim on and off. **RED** with
+   the gate planted to read SKILLS.reAim alone: 'middle normal: the switch moved a bot that is not the child' (seen, then restored). 3/3 GREEN.
+3. **2-7's ship number** (t-build-27-wip 32dd1236c, GEN2_DRAFT-free, ENG-JETTY's finish fix in, + this change; frozen tree; x40 every bot
+   both settings; base = the same tree with SKILLS.reAim off, the gate being its only reader): **bar 23/40 -> 29/40 (bar 24: PASS)**.
+   Proven: 1,2,4,5,6,7,12,13,15,17,18,19,21,23,24,25,26,27,28,29,31,32,34,35,36,37,38,39,40. Out: 3, 30 (adult N rx1); 8 (child E rx1);
+   9, 10, 20 (middle N rx1); 22 (middle E rx1); 11 (adult N + child N rx1); 14, 16, 33 (child N rx1). Table: bot27b-table-2-7.txt.
+   kid N/E, adult N/E, middle N/E, expert N: IDENTICAL to base row for row (40/40 each). child N 27->36 pass, lives 150->124, rescues
+   16->4; child E 39->39 (10 rows moved, times only): ENG-BOT27's child rows seed for seed (pass, lives, rescues; a time
+   ending .5 s prints 1 s higher here: this table rounds, his floored). 0 pass -> fail. Against ENG-BOT27's all-bots 33/40,
+   the four seeds 9, 10, 20, 22 are the middle's own refused-aim stalls, held now for the race's ruling (R-165.413).
+4. **Rule 28 on 2-1, 2-2, 2-4, 2-5, both settings, x40 every bot** (t-eng-27-wip-bot27-aim 2334a3948, frozen; base = the same tree with
+   SKILLS.reAim off): every kid, adult, middle and expert row **IDENTICAL to base row for row** on all four (40/40 each; the files
+   bot27b-table-2-1/2-2/2-4/2-5.txt). Child: 2-1 N 38->39 (seed 26 F->P; 18 rows moved, lives 71->74, rescues 2->1), E 40->40 (7 rows
+   moved, times only): ENG-BOT27's child rows seed for seed (the same .5 s rounding only). 2-2, 2-4, 2-5: child unmoved row for row (no re-aim). **0 pass -> fail anywhere.**
+   ENG-BOT27's all-bots moves that are now gone, as ruled: 2-1 middle E seed 24 (39 stays 39), 2-5 kid N seed 21 (unmoved).
+   tierBots: 1-1 has no river, so the child calibration cannot move; tierBots.test.ts result in item 6.
+5. **pacerLay GREEN** on the frozen candidate: every race row passes, 'the careful middle player (SKILLS.race) beats it, normal seed 2'
+   among them (RED under all-bots reAim). The two planted rows (pacerLay.test.ts:254 home Easy seed 1, :280 the bank 28 px up) are red
+   as on the base: ENG-JETTY's suite on 1b2897cfb and d9425f091 named the same two, inherited (ENG-27w).
+6. **Gates on the frozen candidate 2334a3948** (chattr +i on src, tools; src/game/gen2/proven unlocked, D115): tsc PASS; generalitycheck
+   PASS (26 literals, 26 known); knowncheck PASS; reAim toys 3/3 (riverRide.test.ts). Unit suite: IN FLIGHT at this push (reds so far: pacerLay.test.ts:254, :280 only, inherited). CI tool line (gates.yml
+   'rolled', D126): IN FLIGHT at this push (reds so far: tools/difficulty/wheelChannel.test.ts 4/4, RED on the bare base e2f3855cf too, the same w2Finish throw (w2.ts:326, ENG-JETTY ef20e95a5): inherited, sent to the lead; not on ENG-JETTY's list). tierBots: queued after the tool line. roadmapcheck: cannot run here (shallow clone; no roadmap file changed).
+   Not run, by reason: lockall and the seed-list checks (no src/ file changed: the diff to t-eng-27 is tools/inspect and reference only).
+## 2. Polish check
+No screen changed (bot code only). Every table row read; every moved row is a child row (2-1, 2-7) and every other bot's row is identical.
+## 3. Pushback
+- None on the ruling. A note for the lead's race ruling (R-165.413): child-only costs 2-7's bar 4 seeds against all-bots (33 -> 29/40);
+  the four (9, 10, 20 middle N; 22 middle E) are the middle's 'water ahead' stall, the same refused held aim the child had.
+## 4. Suggestions
+- ENG packet (R-165.413, after the race ruling): give the middle reAim with pacerLay re-flown on the race legs only; measure whether the
+  careful middle still beats the boat on normal seed 2 (116.5 vs 114.04 s under all-bots) by tuning the re-draw, not the race.
+- The x40 runner here (bot27b-run.mts: SKILLS switch on/off in one tree, the off flight as the base) halves a rule-28 run's set-up (no
+  second worktree, no base checkout): a candidate for tools/inspect/castBots.ts as `--skill reAim=off`.
+## 5. Unresolved
+- 2-7's 11 out seeds (section 1 item 3): middle 9, 10, 20, 22 (held for the ruling); adult 3, 11, 30 (BUILD-27c's traces); child 8 (E),
+  11, 14, 16, 33 (N; not traced, R-165.413, ENG-BOT27's notes stand).
+- roadmapcheck not run (shallow clone).
+## 6. Method update
+methods (bots), rule 28: a skill switched per bot is proven by flying the same frozen tree with the switch on and off, every bot: the
+bots it must not touch are identical row for row (a table that says YES 40/40), not 'unmoved in total'.
+## 7. Turnover note: reference/handoffs/engine-core.md §0zq-BOT27 rewritten (3abf15230). Lessons applied: D115 (frozen trees), D122/D123
+(7200000 s timeouts, two heavy runs), D125 (the ship number measured first), D126 (CI tool line), D128 (clock from `date`), D129.
+
 # ENG-BOT27 REPORT: 2-7's child river faults in the bot (started 1:16 PM ET 11-23 by `date`; stopped by the lead, context)
 ### EXACT NEXT STEP (for ENG-BOT27b; the lead's ruling (3): R1 is the CHILD bot's skill only tonight)
 Branch t-eng-27-wip-bot27-aim (this commit; code = 11ee2d0ca, base t-eng-27 d9425f091). NOT landed.
