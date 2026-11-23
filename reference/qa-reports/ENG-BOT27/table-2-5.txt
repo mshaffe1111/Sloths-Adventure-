@@ -1,0 +1,10 @@
+bot    set      pass b->a   lives b->a  rescues b->a  moved rows (seed: pass/lives/rescues/time before -> after)
+adult  easy     40->40        0->0          0->0       0 moved: 
+adult  normal   40->40        9->9          0->0       0 moved: 
+child  easy     40->40        0->0          0->0       0 moved: 
+child  normal   40->40       13->13         0->0       0 moved: 
+expert normal   40->40        8->8          0->0       0 moved: 
+kid    easy      0->0         0->0        101->101     0 moved: 
+kid    normal    0->0       180->179      308->306     1 moved: 21:F/5/9/574->F/4/7/625
+middle easy     40->40        0->0          0->0       0 moved: 
+middle normal   40->40        9->9          0->0       0 moved: 
