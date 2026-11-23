@@ -43,6 +43,7 @@ Each line is checked at the end of its day on the scoreboard; a miss gets its ca
 | 1 | 2-6's Easy residue (R-165.398: cause B, the lip family, child E 50, adult N 4, the floor), then its list | 4 h in all, from ENG-26s's landing | | | if 2-6 is not at 60 of 100 by then, the lead cuts (re-lay or simplify the spots that fail), no open-ended bot work |
 | 2 | ENG-W3a: World 3's kit on gen2 + a 3-1 row travelling down (WORLD-3-PLAN F1) | 2 h (hard stop 4 h) | 11:26 AM | | running; REPORT BY 1:45 PM ET, then PAUSES (its slot to KEEPER-27, then BUILD-27) |
 | 2 | PLAN-2H: ENGINE-NEEDS refreshed against today's code, every piece + bot skill, per stage to World 10, the weekly schedule (TWO-HOUR-PLAN.md) | 1.5 h (hard stop 3 h) | 12:20 PM (KEEPER-27's slot) | | running session_01FhBbYKAq4ZaV19oTZNe871; REPORT BY 1:50 PM ET |
+| 2 | ENG-DOWNBOT: the bots on a way down (down-bot skill: drop ledge by ledge, step off, take a turn vine down) + the squeezed-catch lay fix (a band catch about 60 px over/under the next storey); serves 3-1, 4-7, 6-7, 8-6; split from ENG-W3a 11-23 1:00 PM (expert 17-21 rescues -> 1-3 so far) | 2 h (M; hard stop 4 h) | next lane 2 slot | | queued |
 | 2 | ENG-PROWL: 'prowlers never look up' + 'lit = seen' (F3) | 1 h (S) | after ENG-W3a | | queued |
 | 2 | ENG-DARK: dark + light ring as one shared brick, the glowworm wake below (F2) | 2 h (M) | after ENG-W3a | | queued |
 | 2 | W3-ART-1: World 3's standing and climbing art on Hugging Face (F4, about $4-8) | 2 h (M) | any free slot | | queued |
