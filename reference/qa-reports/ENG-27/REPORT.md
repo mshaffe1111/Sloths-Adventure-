@@ -1,9 +1,16 @@
 # ENG-27w REPORT (start 11:35 AM ET by `date`; base t-eng-27-wip-27v 8861ae80b; on t-eng-27-wip-27w: E as ruled daf9ca777 (D117), NOT on t-eng-27)
 ## EXACT NEXT STEP (read only this section, D90)
-**Waiting on the lead's pick and one ruling (sent with the table).** The pick rule marks ONE cell of the asked grid: **gap 72, pace 80%**
-(nothing else changes). Setting it breaks the lay's own fairness rule, so the lead rules HOW (item 4) before it is set. Then: set it on
-wt27w (data + the ruled rule line + its tests), freeze, run the suite + CI tool line + pacerLay + pacerRespawn + hopJudged + the 19 race
-rows on the frozen head, land on t-eng-27, send the hash. The base suite on frozen daf9ca777 is running (scratchpad/w/out/suite-daf9ca777.*).
+**THE LEAD'S RULINGS (received): pace 81%; the cap (a): the principle stays (riding alone never wins, by 2 s or more), its measure moves
+from the flown estimate to the ride-only bot, end to end on every race, both settings (D121); post N4's bank waits are a bot follow-up.**
+**SET on cccda7fe5** (W2_RACE.margin = 1.07/RACE_PACE - 1, 1.10/RACE_PACE - 1, RACE_PACE 0.81; pacerLay seconds = middle x (1 + share);
+pacerFaults keeps 'over the careful middle'; pacerLay.test flies the ride-only bot home seeds 1-3 and post seeds 4-5, both settings, each
+lost by `under` (2 s) or more). **The 72 / 81% cell flown first (runtime pace, frozen daf9ca777): PASS**: expert 5/5 (+36.2 +17.9 +3.8
++29.8 +9.5), middle 6/7 (+29.6 +28.3 +14.0 +34.0 +33.4 -27.6 +29.8), ride-only 0/7 (closest -3.4, Easy 1), every win +3.8 s or more
+(w/cell-72-81-flown-runtime.tsv). **Running on frozen cccda7fe5 (fzhead):** the suite (tsc, unit 1/2 + CI tool line; unit 2/2), the set head's
+own cell (data pace, must match the runtime cell), the ride-only plant (RACE_PACE 0.80 on fzplant: RED on home Easy 1). NEXT: read the
+verdicts (scratchpad/w/out/suite-cccda7fe5.*), land cccda7fe5's line on t-eng-27 (git fetch t-eng-27; merge; push), send the lead the hash.
+**Follow-up (bot, not tonight):** post N4's middle stands ~55 s on banks before unjudged boarding presses (item 5); at 81% it is the
+middle's one loss (-27.6 s).
 1. **E as ruled (the shortest aimed flight by airtime; ties: the smaller hold) is built and moves NO race row.** daf9ca777: hopFlight /
    gateAirtime read the aimed flight's airtime; racePick takes the shortest safe one. Toy RED on the kind-then-hold plant, GREEN on the ruled
    order (w/toyAir-RED-plantKindThenHold.txt, w/toyAir-GREEN.txt; hopJudged 8/8). On the real race the ruling's premise does not hold: the
