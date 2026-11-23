@@ -133,7 +133,10 @@ const crossing = (row: Row27, near = 300, far = 340): Lay => ({ pieces: [bank('a
 const twoReaches = (row: Row27): Lay => ({ pieces: [bank('a', null, 300), river('m', 'a', row, 260), river('z', 'm', row, 340)], sockets: [petal('pm', 'm', 0.5), petal('pz', 'z', 0.4)] });
 /** [P f] beat 3, the porch walk: planks hung off the bank houses over the race, plank to plank */
 const porches: Lay = {
-  pieces: [bank('a', null, 300), porch('p1', 'a', 170, -20), porch('p2', 'p1', 170, 0), porch('p3', 'p2', 170, 0), porch('p4', 'p3', 170, -20), porch('p5', 'p4', 170, 0), { ...porch('z', 'p5', 320, 40), shape: 'bank', style: 'log', main: true }],
+  pieces: [bank('a', null, 300), porch('p1', 'a', 170, -20), porch('p2', 'p1', 170, 0), porch('p3', 'p2', 170, 0), porch('p4', 'p3', 170, -20), porch('p5', 'p4', 170, 0), { ...porch('y', 'p5', 300, 0), shape: 'bank', style: 'log', main: true },
+    // (the last hop lands LEVEL on the bank, then a step walked down to the race: a gap and a step down in one hop read as a walk-off, and
+    //  the adult bot walked off the last plank into the gap, three times, on Normal seed 19)
+    { ...bank('z', 'y', 300), place: { kind: 'walk', after: 'y', dy: [36, 44] } }],
   sockets: [petal('p2p', 'p2', 0.5)],
 };
 /** [D c] beat 5, the weir: down its stepped face (the toy tower's drops; the weir dresses the column), `turn` said on its top */
@@ -177,11 +180,11 @@ export const BEATS_27: SectionTemplate[] = [
   brick({ id: 'upstream', name: 'upstream', jobs: ['test'], difficulty: 5, content: 'water', versions: [{ id: 'deep', lay: twoReaches('upstream'), easy: twoReaches('back27') }] }),
   brick({ id: 'weir', name: 'the weir', jobs: ['descent'], difficulty: 2, content: 'climb', entry: 'ledge', exitDy: 260, versions: [{ id: 'steps', lay: weir }] }),
   brick({ id: 'reed-bank', name: 'home is this way', jobs: ['teach'], difficulty: 1, content: 'ground', teaches: HOME_LESSON, versions: [{ id: 'calm', lay: reedBank }] }),
-  brick({ id: 'with', name: 'with the current', jobs: ['practise'], difficulty: 2, content: 'water', window: [0.35, 1], uses: [HOME_LESSON], versions: [{ id: 'ride', lay: crossing('ride') }] }),
+  brick({ id: 'with', name: 'with the current', jobs: ['practise'], difficulty: 2, content: 'water', window: [0.35, 1], uses: [HOME_LESSON], versions: [{ id: 'ride', lay: twoReaches('ride') }] }),
   brick({ id: 'bend', name: 'over the bend', jobs: ['practise'], difficulty: 2, content: 'bounce', uses: [HOME_LESSON], versions: [{ id: 'spring', lay: bend }] }),
   brick({ id: 'keep-running', name: 'keep running', jobs: ['twist'], difficulty: 5, content: 'water', uses: [HOME_LESSON], versions: [{ id: 'twin', lay: crossing('twin'), easy: crossing('ride') }] }),
   brick({ id: 'stilts', name: 'the stilt houses', jobs: ['combine'], difficulty: 5, content: 'floating', uses: [HOME_LESSON], versions: [{ id: 'twin', lay: stilts('twin'), easy: stilts('ride') }] }),
-  brick({ id: 'neck', name: 'neck and neck', jobs: ['signature'], difficulty: 4, content: 'water', uses: [HOME_LESSON], versions: [{ id: 'long', lay: crossing('long', 300, 360), easy: crossing('ride', 300, 360) }] }),
+  brick({ id: 'neck', name: 'neck and neck', jobs: ['signature'], difficulty: 4, content: 'water', uses: [HOME_LESSON], versions: [{ id: 'long', lay: twoReaches('long'), easy: twoReaches('ride') }] }),
   brick({ id: 'rest', name: 'a rest on the bank', jobs: ['rest'], difficulty: 1, content: 'structural', phases: ['rest'], maxPerStage: 6, versions: [{ id: 'bank', lay: rest }] }),
 ];
 
