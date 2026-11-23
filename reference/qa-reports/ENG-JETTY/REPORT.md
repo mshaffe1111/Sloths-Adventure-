@@ -30,20 +30,16 @@ its bed rule; (f) GraphBrief and WorldManifest each gained one optional field, S
 default Tips (scan), against "Dot warns first". Make WATER_WARN a danger/must line (dotLines classify or a GuideOpts flag) with a test
 that plants it and asserts helpAllows on Tips; re-run the scan. Then mark the scan's story beats (2-5 quiet, the marks, 2-1/2-2/2-4) in
 each world's storyTips. **FINISH-BAND:** BUILD-27's trap: every world finish rule that works by x span gets a stacked-leg toy.
-
 ## 5. Unresolved
 None in scope. 2-7's ids and storyTips are BUILD-27b's wiring (the note's last bullet).
-
 ## 6. Method used / Lessons applied / Method update
 Method: dispatch-packet.md (base suite first, frozen trees, CI tool line), engine-core.md section 4. Lessons: D114, D115 (chattr-frozen
 trees; each RED run in its own), D113 (no foreground wait), D50 (defaults tested; the scan), D43 (general, no stage id), D126 (CI tool
 line), D118 (scan kept out of tools/ so the suite verdict carries), D109 (no clock times in messages), D57 (inbox at each step), D119.
 Method update: a disk-full worktree add fails silently under `>/dev/null`: check `git worktree add`'s exit, and remove finished trees
 (each is about 3 GB). level.md: every new line a builder lays is checked with the scan on Tips.
-
 ## 7. Turnover note
 reference/handoffs/engine-core.md section 0zq-jetty (top), rewritten for all three items, in the landing commit.
-
 ## 8. Gates (code head 1b2897cfb, frozen tree)
 - PASS on 1b2897cfb (frozen): tsc, generalitycheck, knowncheck. PASS on f9eab29c9 (item 1 alone): vite build (BASE_PATH), chunkcheck,
   artcheck, coveragecheck, registrycheck, roadmapcheck. Plants: raceEnd 6/6, storyTip 2/2, w2StackedFall 1/1 (each RED as section 1 says).
