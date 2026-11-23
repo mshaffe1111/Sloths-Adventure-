@@ -26,6 +26,7 @@
  */
 import type { PacerRow } from '../../pacer.ts';
 import type { PostArt } from '../../post.ts';
+import type { ColumnDressSpec } from '../../columnDress.ts';
 import { G } from '../../protoStage.ts';
 import { surfaceBelowBank, type RiverZone } from '../../river.ts';
 import type { W2Decor } from '../../riverArt.ts';
@@ -134,6 +135,12 @@ export const W2_POST_ART: PostArt = {
   letter: [next('letter'), next('letterB')],
   reply: [next('reply'), next('replyB')],
 };
+
+/** World 2's COLUMN DRESS (columnDress.ts; 2-7's weir, reference/design/2-7.md Art (4), the D leg's dressing): the weir's stepped stone
+ *  face, white water over each lip, at the foot of the column he comes down, behind its catch ledges. Its box is the catalog's
+ *  on_screen_px for w2-next#weir (921x346: a tier about one Pokey, 89.1 px drawn); its foam foot sits under the floor's top, which hides it.
+ *  The 2-7 builder names it in 2-7's brief (columnDress: W2_WEIR) */
+export const W2_WEIR: ColumnDressSpec = { art: next('weir'), w: 921, h: 346, sink: 24 };
 
 /**
  * World 2's pad table (ENG-22; place `pads` names a row; rideLay.ts layPads): 2-2's ponds, by its design (reference/design/2-2.md, the arc).

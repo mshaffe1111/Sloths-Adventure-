@@ -59,7 +59,7 @@ Last proven: <date>, <branch/commit>, <what it produced>. Owner of the last upda
 | Gates (artcheck, drawcheck, clipcheck, playerText, art-use, knowncheck) | `gates.md` | written 11-01 (kaizen-gates) | whoever adds a gate |
 | Test link and release (build.py, Artifact publish limits, release branch, PR, deploy and APK check) | `test-link-and-release.md` | to write; source: HANDOFF §6-7 | the lead (11-01) |
 | Cutscene art and clips | `hf-cutscenes.md` | to write; source: tools/art/hfstory, the hf-cutscenes branch notes | next cutscene helper |
-| Props and sprite sheets (cutting, atlases, art-use) | `hf-props.md` | to write; source: tools/art/hfbatch, prop-sheets | next props helper |
+| Props and sprite sheets (cutting, atlases, art-use) | `hf-props.md` | written 11-23 (READY-27: wiring a cut piece; cutting stays hf-art.md) | whoever wires a cut piece |
 | Fixing a drawing fault in shared render code (trace the call, fix it once for every stage, the whole-picture check, stills both ways) | `render-fix.md` | written 11-05 (engine-render, R-164.6/7/8) | next render helper |
 | Building, extending and shipping a stage's proven seed list (the sweep on 4 workers, old seeds kept in place, the relay drop-outs, the chunk and offline proofs) | `seed-list.md` | written 11-11 (Engine, R-165.112) | next Engine member who rebuilds a list |
 | Making a level (designed before it is built: the one idea, the arc as data, rolls, tests with planted faults, real-game stills, bots, gates, the Learned table) | `level.md` | written 11-12 (W1C, after 1-3; D12's Learned row after 1-2) | every level builder |

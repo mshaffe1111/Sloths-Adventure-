@@ -16,6 +16,7 @@
  */
 import { layPacer } from './pacerLay.ts';
 import { layPost } from './postLay.ts';
+import { layColumnDress } from './columnDressLay.ts';
 import { withSetting } from '../settingDials.ts';
 import { LAID_ASKS } from './walkedSpan.ts';
 import { rollLook } from '../artRoll.ts';
@@ -4221,7 +4222,11 @@ function layChaseStage(st: Gen2Stage, piecesOf: (uid: string) => ReadonlyArray<{
   const spec = st.gen2.brief?.post;
   const posted = spec ? layPost(st, spec, piecesOf) : { problems: [] };
   if (posted.post) st.post = posted.post;
-  return [...chase.problems, ...r.problems, ...paced.problems, ...posted.problems];
+  // (a brief's column dress: a set piece at every column's foot, behind its ledges, columnDressLay.ts; it moves nothing)
+  const dressSpec = st.gen2.brief?.columnDress;
+  const dressed = dressSpec ? layColumnDress(st.gen2.tower?.legs ?? [], dressSpec) : { problems: [] };
+  if (dressed.dress) st.columnDress = dressed.dress;
+  return [...chase.problems, ...r.problems, ...paced.problems, ...posted.problems, ...dressed.problems];
 }
 /** a graph with asks: each node's sections as laid (content type, the double, exit less entry height), read by applyVerdicts */
 const LAID_NODES = new WeakMap<Gen2Stage, Map<string, Array<{ content?: string; double: boolean; dy: number }>>>();
