@@ -1,0 +1,51 @@
+{
+ "bar": {
+  "times_median": 2,
+  "floor": 0.5,
+  "ceiling": 1.0
+ },
+ "clips": {
+  "idle-yawn": {
+   "sheet_sha256": "0fa8d8fd3e690de2b428fe7aec398a138a490de84d313b3f8050478e3fe5f5fc",
+   "n": 81,
+   "bridge_median": 0.402,
+   "seams": {
+    "0": 1.247,
+    "15": 3.3,
+    "64": 4.297,
+    "79": 1.251
+   }
+  },
+  "look-around": {
+   "sheet_sha256": "869145444e468d419fff0f6b329e5dae13844665bc273fb1147ec3de1bd44791",
+   "n": 81,
+   "bridge_median": 0.423,
+   "seams": {
+    "0": 1.32,
+    "15": 3.308,
+    "64": 3.812,
+    "79": 1.32
+   }
+  },
+  "belly-scratch": {
+   "sheet_sha256": "f75c28288bd91b272ecf5e267cc338ec152426ef9dd5f62dabd614b26f782fa4",
+   "n": 41,
+   "bridge_median": 0.221,
+   "seams": {
+    "0": 1.243,
+    "39": 0.804
+   }
+  },
+  "wave": {
+   "sheet_sha256": "578c6c1f790b4f0b09e50b4c7afe221c30b834ffcfcc1b606b652c946b14aa52",
+   "n": 81,
+   "bridge_median": 0.488,
+   "seams": {
+    "0": 1.073,
+    "15": 2.887,
+    "64": 3.693,
+    "79": 1.061
+   }
+  }
+ }
+}

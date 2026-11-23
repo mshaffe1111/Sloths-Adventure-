@@ -32,9 +32,10 @@ test("every golden seed the game writes is part of the adventure: a save file ca
   // (1-1's seed has no find id; the hand-built 1-9's is `seed-1`: 1-5 rolls on gen2 from 11-13 and its one seed has none, the gen2 1-6
   //  has no golden seed (R-165.238: the old hand-built 1-6's two, `seed-1` and `seed-2`, went with its proto plan), and 1-7's lost its
   //  find id when 1-7 rolled on gen2 (BUILD-17; INT-10b found this set-up red on the integration head); the gen2 1-9 lays none (BUILD-19,
-  //  11-18: its design names no golden seed), so no World 1 stage writes a find id now: 2-3's hand-built seed is `seed-1`)
-  const keys = seedKeys(['1-1', '2-3']);
-  assert.ok(keys.some((k) => k.includes('-', 'sloth_seed_2-3_'.length)), `set-up: a seed key with its find id (${keys.join(', ')})`);
+  //  11-18: its design names no golden seed), so no World 1 stage writes a find id now: 2-8's hand-built seed is `seed-1` (2-3's went with its
+  //  hand build, BUILD-23 11-20))
+  const keys = seedKeys(['1-1', '2-8']);
+  assert.ok(keys.some((k) => k.includes('-', 'sloth_seed_2-8_'.length)), `set-up: a seed key with its find id (${keys.join(', ')})`);
   assert.deepEqual(keys.filter((k) => !isSaveKey(k)), [], 'golden-seed keys on no list');
   const mem = memStorage(Object.fromEntries(keys.map((k) => [k, '1'])));
   assert.deepEqual(Object.keys(buildSave(mem).data).sort(), [...keys].sort(), 'the save file carries every seed');

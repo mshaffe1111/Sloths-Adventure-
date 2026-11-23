@@ -73,7 +73,9 @@ export const STAGE_PLAN: Record<number, StageSpec[]> = {
     // (the river king's crown is water hyacinths, not Meeca's pink trail petals (FIX-22, lines-2-2.md fault 1): ART-22P's painted lavender
     //  hyacinth petal, the inventory's hf22p/petal-hyacinth)
     { ...S('harvest', 'Petals for the Crown', 'The river king wants admiring. Gather flowers for his crown.'), looks: { petal: 'petal-hyacinth' } },
-    S('rescue', 'Stuck in the Reeds', 'Free {n} little ones caught in the reed cages.', 5),
+    // (the story keeper's line 8, reference/story/lines-2-3.md (t-keeper-23-29@e5f754d8): gen2/worlds/w2Arc23.ts MISSION_23, held equal by
+    //  w2Arc23.test.ts; no {n}: Normal 5, Easy 3, the HUD's card gives the count)
+    S('rescue', 'Stuck in the Reeds', 'Free the little ones and walk them home, past the heron.', 5),
     // (the story keeper's line 6, reference/story/lines-2-4.md (t-keeper-24@fa3b0930): gen2/worlds/w2Arc24.ts MISSION_24, held equal by
     //  w2Arc24.test.ts; vine_runner, so its exit never locks (the keeper's conflict 4))
     S('vine_runner', 'Over the Water', 'Vines to logs, logs to vines. Cross the river to the jetty.'),

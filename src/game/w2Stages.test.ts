@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { buildW2Stage, CAGES_23, CAGES_28, COURT_GOAL_29, ISLAND_TOP, type W2Plan } from './w2Stages.ts';
+import { buildW2Stage, CAGES_28, COURT_GOAL_29, ISLAND_TOP, type W2Plan } from './w2Stages.ts';
 import { floodLevel } from './river.ts';
 import { turtleGuard } from './predatorAI.ts';
 import type { Enemy } from './types.ts';
@@ -15,8 +15,9 @@ const cfg = (id: W2Plan): LevelConfig =>
     targetCount: 1, timeLimit: 0, levelWidth: 9000, levelHeight: 900, description: '', unlocked: true, completed: false, stars: 0, highScore: 0, bestTime: 0,
   }) as LevelConfig;
 const SEEDS = Array.from({ length: 16 }, (_, i) => 1 + i * 37);
-// (2-4 is gen2's since BUILD-24, 11-18: gen2/worlds/w2Arc24.ts; its crossings are held in w2Arc24.test.ts)
-const PLANS: W2Plan[] = ['2-3', '2-7', '2-8', '2-9'];
+// (2-4 is gen2's since BUILD-24, 11-18: gen2/worlds/w2Arc24.ts; its crossings are held in w2Arc24.test.ts. 2-3 is gen2's since BUILD-23,
+//  11-20: gen2/worlds/w2Arc23.ts, held in w2Arc23.test.ts)
+const PLANS: W2Plan[] = ['2-7', '2-8', '2-9'];
 
 test('World 2 trio: every roll passes the reachability check, keeps its beats in order, has one exit and hearts on the way', () => {
   for (const plan of PLANS) {
@@ -60,40 +61,6 @@ test('World 2 trio: every roll passes the reachability check, keeps its beats in
         assert.ok(r.open ? vines.length >= 2 || porches.length >= 2 : r.flood ? islands.length >= 2 : r.speed === 0 ? still : r.raft ? logs.length === 1 : logs.length >= 2, `${plan} seed ${s}: river at ${r.x0}`);
       }
     }
-  }
-});
-
-test('2-3: five little ones, each in a reed cage hung on a pulley over the water, lifted out by stones in its counter-basket', () => {
-  for (const s of SEEDS) {
-    const st = buildW2Stage(cfg('2-3'), s, '2-3');
-    const cages = st.collectibles.filter((c) => c.type === 'cage');
-    assert.equal(cages.length, CAGES_23);
-    assert.equal(st.config.targetCount, CAGES_23);
-    assert.deepEqual(new Set(cages.map((c) => c.critter)), new Set(['capy', 'duck', 'otter']), `seed ${s}`);
-    const rooms = st.kit!.rooms;
-    assert.equal(rooms.length, CAGES_23, `seed ${s}: a room for each cage`);
-    for (const c of cages) {
-      // every cage hangs on a lift that a counter-basket raises (no cage to punch open in 2-3)
-      const room = rooms.find((r) => r.pieces.some((p) => p.kind === 'lift' && p.cage === c.id));
-      assert.ok(room, `seed ${s}: cage ${c.id} hangs on a pulley`);
-      const lift = room!.pieces.find((p) => p.kind === 'lift')!;
-      assert.ok(lift.kind === 'lift' && room!.pieces.some((p) => p.kind === 'basket' && p.id === lift.by), `seed ${s}: its counter-basket`);
-      assert.equal(room!.exit, lift.id);
-      assert.ok(room!.pieces.some((p) => p.kind === 'source' && p.variant === 'stone'), `seed ${s}: a pile of river stones`);
-    }
-    // the first is taught: one stone lifts it, and a splash there costs nothing
-    const first = rooms[0];
-    const basket = first.pieces.find((p) => p.kind === 'basket')!;
-    assert.ok(basket.kind === 'basket' && (basket.need ?? 1) <= 2 && first.tips?.enter && first.tips?.hold, `seed ${s}: the teaching room`);
-    assert.ok(st.rivers!.filter((r) => r.speed === 0 && r.x1 - r.x0 <= 180)[0].safe, `seed ${s}: the first pool is safe`);
-    assert.equal(st.enemies.filter((e) => Math.abs(e.x - (st.rivers!.find((r) => r.safe)!.x0)) < 700).length, 0, `seed ${s}: no animal by the first cage`);
-    // a heavy one (two stones), one with the stones across the water, one with its basket hung high
-    const baskets = rooms.map((r) => r.pieces.find((p) => p.kind === 'basket')!).map((b) => (b.kind === 'basket' ? b : null)!);
-    assert.ok(baskets.some((b) => (b.need ?? 1) >= 4), `seed ${s}: two stones`);
-    assert.ok(baskets.some((b) => b.mouth >= 200), `seed ${s}: a high basket`);
-    assert.ok(rooms.some((r) => r.ground.length >= 2), `seed ${s}: the stones across the water`);
-    // and the mooring posts up onto the high banks (the posts' roll; the others cross the reeds on lily pads, past snakes, or on vines)
-    if (w2Picks('2-3', s).flavour === 'posts') assert.ok(st.vines.filter((v) => v.vineType === 'tree_climb').length >= 3, `seed ${s}: the posts`);
   }
 });
 

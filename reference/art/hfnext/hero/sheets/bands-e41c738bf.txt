@@ -1,0 +1,39 @@
+# ART-SHEETS-b: herobody.py's per-move-group BAND measure (light/dark half vs the plain pose's, dE) on e41c738bf's sheets (mean-graded rope/swim/vine/climb2). Columns cut: sheet ... band max
+idle-yawn       49 frames | fur L a b [60.4 16.5 29.6] | pooled  0.03 dE, worst frame  1.28 (#0) | fur steps median 0.17 max 0.59, last->first 1.33 | band max 2.31
+look-around     49 frames | fur L a b [60.4 16.5 29.6] | pooled  0.05 dE, worst frame  1.11 (#0) | fur steps median 0.16 max 0.80, last->first 1.21 | band max 2.83
+hurt            41 frames | fur L a b [60.4 16.5 29.6] | pooled  0.01 dE, worst frame  0.18 (#32) | fur steps median 0.07 max 0.35, last->first 0.05 | band max 3.08
+belly-scratch   39 frames | fur L a b [60.3 16.1 29.8] | pooled  0.52 dE, worst frame  0.96 (#20) | fur steps median 0.11 max 0.29, last->first 0.23 | band max 0.79
+wave            49 frames | fur L a b [60.4 16.6 29.5] | pooled  0.10 dE, worst frame  1.07 (#0) | fur steps median 0.14 max 0.57, last->first 1.43 | band max 1.60
+cheer           30 frames | fur L a b [60.4 16.5 29.6] | pooled  0.00 dE, worst frame  0.14 (#9) | fur steps median 0.07 max 0.16, last->first 0.08 | band max 1.72
+push            49 frames | fur L a b [60.4 16.5 29.6] | pooled  0.01 dE, worst frame  0.17 (#12) | fur steps median 0.08 max 0.18, last->first 0.06 | band max 3.61
+move-run        15 frames | fur L a b [60.4 16.5 29.6] | pooled  0.01 dE, worst frame  0.19 (#11) | fur steps median 0.07 max 0.27, last->first 0.07 | band max 1.01
+move-jab         9 frames | fur L a b [60.4 16.5 29.6] | pooled  0.03 dE, worst frame  0.19 (#7) | fur steps median 0.12 max 0.23, last->first 0.06 | band max 0.63
+move-cross       7 frames | fur L a b [60.4 16.5 29.6] | pooled  0.02 dE, worst frame  0.12 (#3) | fur steps median 0.09 max 0.15, last->first 0.09 | band max 0.25
+move-hook        7 frames | fur L a b [60.4 16.5 29.6] | pooled  0.06 dE, worst frame  0.22 (#2) | fur steps median 0.10 max 0.25, last->first 0.11 | band max 1.18
+move-kick       10 frames | fur L a b [60.4 16.5 29.6] | pooled  0.02 dE, worst frame  0.12 (#3) | fur steps median 0.07 max 0.18, last->first 0.09 | band max 2.03
+move-kick2      10 frames | fur L a b [60.4 16.5 29.6] | pooled  0.09 dE, worst frame  0.42 (#6) | fur steps median 0.17 max 0.50, last->first 0.08 | band max 1.16
+move-mega       16 frames | fur L a b [60.4 16.5 29.6] | pooled  0.01 dE, worst frame  0.19 (#5) | fur steps median 0.07 max 0.32, last->first 0.13 | band max 1.75
+teeter          10 frames | fur L a b [59.5 16.3 29.3] | pooled  0.99 dE, worst frame  1.30 (#6) | fur steps median 0.32 max 0.50, last->first 0.40 | band max 1.15
+step-back       16 frames | fur L a b [59.7 16.2 29.4] | pooled  0.74 dE, worst frame  1.35 (#9) | fur steps median 0.31 max 0.93, last->first 0.65 | band max 0.95
+move-climb      21 frames | fur L a b [60.4 16.5 29.6] | pooled  0.01 dE, worst frame  0.34 (#9) | fur steps median 0.11 max 0.49, last->first 0.06 | band max 4.20
+move-walk       17 frames | fur L a b [60.4 16.5 29.6] | pooled  0.02 dE, worst frame  0.14 (#10) | fur steps median 0.09 max 0.20, last->first 0.05 | band max 1.45
+hero-climb2      5 frames | fur L a b [60.4 16.6 29.6] | pooled  0.03 dE, worst frame  0.12 (#4) | fur steps median 0.07 max 0.14, last->first 0.11 | band max 2.66
+hero-rope       11 frames | fur L a b [60.4 16.5 29.6] | pooled  0.03 dE, worst frame  0.16 (#1) | fur steps median 0.05 max 0.19, last->first 0.14 | band max 3.91
+pokey-swim      28 frames | fur L a b [60.4 16.5 29.6] | pooled  0.01 dE, worst frame  0.70 (#15) | fur steps median 0.13 max 0.84, last->first 0.13 | band max 5.54
+hero-vine        5 frames | fur L a b [60.5 16.5 29.6] | pooled  0.10 dE, worst frame  0.16 (#2) | fur steps median 0.11 max 0.16, last->first 0.04 | band max 3.02
+hero-story      31 frames | fur L a b [55.4 14.8 26.6] | pooled  6.09 dE, worst frame  9.79 (#30) | fur steps median 1.69 max 6.64, last->first 8.12 | band max 18.12
+hero-studies    29 frames | fur L a b [55.4 15.1 27.6] | pooled  5.54 dE, worst frame  8.55 (#9) | fur steps median 1.75 max 4.35, last->first 3.59 | band max 9.76
+hero-atlas      29 frames | fur L a b [58.7 16.1 33.4] | pooled  4.19 dE, worst frame  9.41 (#19) | fur steps median 2.48 max 6.73, last->first 2.12 | band max 13.86
+
+# swim per group, before (4f0853b96) | mean (e41c738bf) | --group quantile | --group --affine
+first    | before light 7.13 dark 9.36 pooled 7.43 | mean light 2.41 dark 2.38 pooled 0.02 | after light 2.01 dark 2.00 pooled 0.02 | worst frame first4 0.54
+surf     | before light 10.50 dark 8.36 pooled 7.89 | mean light 5.55 dark 5.43 pooled 0.06 | after light 2.59 dark 2.60 pooled 0.01 | worst frame surf0 1.79
+tread    | before light 5.98 dark 7.38 pooled 5.08 | mean light 3.78 dark 3.82 pooled 0.04 | after light 2.86 dark 2.87 pooled 0.02 | worst frame tread2 0.84
+under    | before light 7.15 dark 5.74 pooled 5.46 | mean light 4.72 dark 4.84 pooled 0.06 | after light 1.50 dark 1.48 pooled 0.03 | worst frame under7 0.99
+# affine:
+exit 0
+swim: fur mean [55.27 13.19 28.84] -> [60.33 16.54 29.6 ] (plain [60.4  16.53 29.59]); pooled dE 6.17 -> 0.08; worst frame after 1.12; dL [2.3, 6.39, 4.66, 4.5] ['first', 'surf', 'tread', 'under']; |even| max 1.40
+first    | before light 7.13 dark 9.36 pooled 7.43 | mean light 2.41 dark 2.38 pooled 0.02 | after light 2.79 dark 2.50 pooled 0.26 | worst frame first2 0.85
+surf     | before light 10.50 dark 8.36 pooled 7.89 | mean light 5.55 dark 5.43 pooled 0.06 | after light 5.56 dark 5.53 pooled 0.02 | worst frame surf0 1.08
+tread    | before light 5.98 dark 7.38 pooled 5.08 | mean light 3.78 dark 3.82 pooled 0.04 | after light 5.07 dark 5.10 pooled 0.02 | worst frame tread2 1.12
+under    | before light 7.15 dark 5.74 pooled 5.46 | mean light 4.72 dark 4.84 pooled 0.06 | after light 4.43 dark 4.36 pooled 0.04 | worst frame under1 0.38
