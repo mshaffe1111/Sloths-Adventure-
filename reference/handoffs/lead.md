@@ -94,6 +94,9 @@ code-checked plan (ENGINE-NEEDS.md); "add a level" in one step; every lead keeps
 1. **Today's goal, with Eastern times** (set with Matt each morning in one line; every check-in and every report to him measures against it):
    11-23: release 4's branch clean with 1-4's list rebuilt (ENG-26s, report by 12:15 PM); World 3's kit + a 3-1 row going down (ENG-W3a, report by
    1:45 PM); the 2-7 race numbers decided by the end of the day. Targets: 2-7 on Matt's test link TONIGHT (3 helpers, R-165.406); 2-6 Tue 11-24; the week plan in reference/plans/LANES.md. A slip goes to Matt the moment it moves an ETA.
+1b. **CAPACITY (Matt 11-23, R-165.411): 3 helpers from the Wednesday 11-25 usage reset: TWO on pieces ahead (TWO-HOUR-PLAN Waves 1-2, about 45 h each),
+   ONE building levels (2-hour jobs). The whole-game schedule: reference/plans/TWO-HOUR-PLAN.md on t-plan-2h f945e2986 (builds one world a week;
+   with one builder, the finish moves from Jan 22 to about the end of January).**
 2. **THE SPRINT BOARD (Matt 11-23, R-165.410): https://claude.ai/artifact/S4RKaaxGrRqMKjxCUJBWpc** (a Claude Sheets artifact; write it with the Claude
    Docs connector: read the project for its workbook node, then applyEdits; tabs Jobs / Sprints / Levels). EVERY lead keeps it: a row per job the
    minute it starts (estimate, member, start, report-by); actual hours, cost, outcome, where it got stuck and what we learned when it ends;
