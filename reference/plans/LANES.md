@@ -16,6 +16,9 @@ that design. The lead keeps it at every check-in; a check-in that does not updat
    becomes a Lane 2 job, and the level waits or is cut to what exists.
 3. **Every job has a BUDGET before it starts, and a HARD STOP.** A level job: 2 hours (the target), hard stop at 4. A piece: S 1 h,
    M 2 h, L 2-4 h (sized from measured history), hard stop at 2x. Hours = member time from its first `date` to its report.
+3b. **A job's budget spans SESSIONS; each session still hands over at 320k REAL context or 28 minutes (D111, D129).** The lead reads every
+   running member's REAL context (get_session context_usage, never the member's estimate) at every check-in and stops any session past
+   300k at its next result; a successor session continues the same job inside the same budget.
 4. **At the hard stop the LEAD decides, never the member and never "another box by default":** cut the scope, split the rest into a new
    budgeted job, or move it. The decision is written here and in STATE.
 5. **The ship verdict comes first** (D125): a level aimed at a release measures its castBots --proven yield in its first box.
