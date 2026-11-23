@@ -13,7 +13,7 @@ import '../../src/game/headlessDom.ts';
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { homeRun } from './homeToys.ts';
-import { HOP_TRACE, WaitAim, gateLands, racePick, type DrawnHop, type HopRow, type ThumbAt } from './firsttimer.ts';
+import { HOP_TRACE, WaitAim, gateAirtime, gateLands, racePick, type DrawnHop, type HopRow, type ThumbAt } from './firsttimer.ts';
 
 const DT = 1 / 30;
 const show = (r: HopRow) =>
@@ -98,14 +98,41 @@ test('the race gate presses the smallest calibrated hop whose aimed flight lands
   const single = (hold: number): DrawnHop => ({ kind: 'single', hold, d2: -1, dblAt: 0, hold2: 0, upOnly: 0 });
   const cands = [single(0.1), single(0.3), single(0.5)];
   const lands = (h: DrawnHop) => gateLands(q, () => 184, 100, 500, 1, h, 0, 0, 50, 1e9);
+  const air = (h: DrawnHop) => gateAirtime(q, () => 184, 100, 500, 1, h, 0, 0, 50, 1e9);
   assert.deepEqual(cands.map(lands), [false, true, true], 'the toy: the short single comes down short of the margin, the others land');
-  const pick = racePick(cands, lands);
+  assert.deepEqual(cands.map((h) => air(h) !== null), cands.map(lands), 'gateAirtime lands where gateLands does');
+  const pick = racePick(cands, air);
   assert.ok(pick, 'E rode on: no hop pressed though a calibrated hop lands with the margin (the held short draw decided)');
   assert.equal(pick.hold, 0.3, 'E pressed a bigger hop than the smallest that lands');
   // (no foresight: a slip drawn for the press does not change the pick, which reads the aim only)
   const n = 75, z = (v: number) => Array<number>(n).fill(v);
-  const slipped = racePick(cands.map((c) => ({ ...c, thumb: { drift: z(0), slip: [24, ...z(-1).slice(1)], release: z(0) } })), lands);
+  const slipped = racePick(cands.map((c) => ({ ...c, thumb: { drift: z(0), slip: [24, ...z(-1).slice(1)], release: z(0) } })), air);
   assert.equal(slipped?.hold, 0.3, 'the pick read the thumb noise drawn for the press');
   // (none lands: he rides on)
-  assert.equal(racePick([single(0.1)], lands), null, 'E pressed a hop whose aim does not land');
+  assert.equal(racePick([single(0.1)], air), null, 'E pressed a hop whose aim does not land');
+});
+
+// (E's order as the lead ruled "smallest" (ENG-27w): the SHORTEST aimed flight by airtime to a safe landing with the race margin; ties: the
+//  smaller hold. ENG-27v built kind-then-hold (the first in the table that lands: singles before doubles), so the expert's 0.70 s glide
+//  single (holdQ's top quantile, its leaf braking the fall) was pressed over a double that comes down safe sooner. The toy: the tier's
+//  table as raceCandidates orders it (singles by hold, then doubles); the 0.70 s single comes down safe at 1.10 s, the doubles at 0.93 s
+//  and 0.97 s, the short singles not at all. E presses the 0.93 s double. RED on the kind-then-hold plant (the first that lands), GREEN on
+//  the ruled order. A tie in airtime goes to the smaller hold, whatever its place in the table)
+test('the race gate presses the shortest aimed flight that lands safe, by airtime; ties: the smaller hold (E as ruled, ENG-27w)', () => {
+  const single = (hold: number): DrawnHop => ({ kind: 'single', hold, d2: -1, dblAt: 0, hold2: 0.18, upOnly: 0 });
+  const double = (d2: number): DrawnHop => ({ kind: 'double', hold: 0.18, d2, dblAt: 0, hold2: 0.18, upOnly: 0 });
+  const glide = single(0.701), dblA = double(0.284), dblB = double(0.329);
+  const cands = [single(0.084), single(0.18), glide, dblA, dblB];
+  const airs = new Map<DrawnHop, number | null>([[cands[0], null], [cands[1], null], [glide, 1.1], [dblA, 0.93], [dblB, 0.97]]);
+  const pick = racePick(cands, (h) => airs.get(h) ?? null);
+  assert.ok(pick, 'E rode on though three aimed flights land safe');
+  assert.notEqual(pick, glide, "E pressed the expert's 0.70 s glide single (1.10 s in the air) over a double that lands safe in 0.93 s (kind-then-hold)");
+  assert.equal(pick, dblA, 'E pressed a slower safe flight than the shortest');
+  // (ties: the smaller hold, wherever it sits in the table)
+  const big = single(0.4), small = single(0.2);
+  assert.equal(racePick([big, small], () => 0.8), small, 'a tie in airtime went to the bigger hold');
+  // (the real flight: gateAirtime is the s from the take-off to the landing; a longer single comes down later on the same solid)
+  const q = { id: 1, x: 184, y: 500, width: 400, height: 20, type: 'solid' } as never;
+  const a3 = gateAirtime(q, () => 184, 100, 500, 1, single(0.3), 0, 0, 50, 1e9), a5 = gateAirtime(q, () => 184, 100, 500, 1, single(0.5), 0, 0, 50, 1e9);
+  assert.ok(a3 !== null && a5 !== null && a3 > 0 && a5 > a3, `the airtime read is not the flight's: 0.3 s single ${a3}, 0.5 s single ${a5}`);
 });

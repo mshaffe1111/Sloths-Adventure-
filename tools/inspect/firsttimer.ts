@@ -1010,6 +1010,11 @@ export type ThumbAt = { last: -1 | 0 | 1; driftPx: number; armed: boolean; relea
  * thumb's let-go short of its middle and steer back past it (overSmall, read for `q` only).
  */
 export function hopFlies(q: Platform, at: (t: number) => number, x: number, y: number, dir: -1 | 1, h: DrawnHop, t0: number, vx0: number, margin = 24, v2: number = PHYS.doubleV, thumb?: ThumbAt, others?: FlightOthers): boolean {
+  return hopFlight(q, at, x, y, dir, h, t0, vx0, margin, v2, thumb, others) !== null;
+}
+/** hopFlies' flight, read for its AIRTIME (ENG-27w, E's order as the lead ruled it): the s from the take-off to his landing on `q` with
+ *  `margin`, or null where hopFlies says false (short, past it, or something else catches him first) */
+export function hopFlight(q: Platform, at: (t: number) => number, x: number, y: number, dir: -1 | 1, h: DrawnHop, t0: number, vx0: number, margin = 24, v2: number = PHYS.doubleV, thumb?: ThumbAt, others?: FlightOthers): number | null {
   const b = { x, y, vx: vx0, vy: -PHYS.jumpV };
   let until = h.hold;
   let pressed2 = false;
@@ -1097,17 +1102,17 @@ export function hopFlies(q: Platform, at: (t: number) => number, x: number, y: n
         // (and the ledge-landing forgiveness, a foot short by up to landPx (a log's too on Easy), taken either way he moves: Easy 5
         //  x 12053, his centre 18 px past the bank's end, moving away, caught and nudged on, o/diag-easy5-q55-27o.txt)
         const reach = drift && !others.easy ? 0 : others.land;
-        if (b.x + others.w * side + reach > ox && b.x - others.w * side - reach < ox + o.width && prev <= o.y + drop && b.y >= o.y) return false;
+        if (b.x + others.w * side + reach > ox && b.x - others.w * side - reach < ox + o.width && prev <= o.y + drop && b.y >= o.y) return null;
       }
     }
     if (b.vy >= 0 && prev <= q.y && b.y >= q.y) {
-      if (q.drift && (b.x < q.drift.x0 || b.x > q.drift.x1)) return false;
+      if (q.drift && (b.x < q.drift.x0 || b.x > q.drift.x1)) return null;
       const lx = at(t0 + i * DT);
-      return b.x >= lx + margin && b.x <= lx + q.width - margin;
+      return b.x >= lx + margin && b.x <= lx + q.width - margin ? i * DT : null;
     }
-    if (b.y > y + 200) return false;
+    if (b.y > y + 200) return null;
   }
-  return false;
+  return null;
 }
 /** where a float's left edge is at game time t: a drifting log on its river's clock (river.ts logClock), anything else where it stands */
 const floatAt = (rivers: readonly RiverZone[] | undefined, q: Platform) => (t: number): number => (q.drift ? driftX(q.drift, logClock(rivers, q.drift, t)) : q.x);
@@ -1161,12 +1166,23 @@ export function raceCandidates(who: FirstTimer): DrawnHop[] {
   return out;
 }
 /**
- * E's decision (no foresight): the first candidate, smallest first, whose AIMED flight lands (`lands` reads the aim only, gateLands);
- * none lands: null (he rides on). The press flies it with the thumb's noise drawn at the press (`flown`), never read here.
+ * E's decision (no foresight), as the lead ruled "smallest" (ENG-27w): the candidate whose AIMED flight comes down safe (`air` reads the aim
+ * only, gateAirtime: the s from the take-off to the landing with the gate's margin, null for none) in the SHORTEST airtime; ties: the
+ * smaller hold (then the table's order). It was kind-then-hold (ENG-27v: the first that lands, singles before doubles), which picked the
+ * expert's 0.70 s glide single over a quicker safe double once the judge flew the leaf. None lands: null (he rides on). The press flies
+ * the pick with the thumb's noise drawn at the press, never read here.
  */
-export function racePick(cands: DrawnHop[], lands: (h: DrawnHop) => boolean): DrawnHop | null {
-  for (const h of cands) if (lands(h)) return h;
-  return null;
+export function racePick(cands: DrawnHop[], air: (h: DrawnHop) => number | null): DrawnHop | null {
+  let best: DrawnHop | null = null, bestAir = Infinity;
+  for (const h of cands) {
+    const a = air(h);
+    if (a === null) continue;
+    if (a < bestAir - 1e-9 || (Math.abs(a - bestAir) <= 1e-9 && best && h.hold < best.hold - 1e-9)) {
+      best = h;
+      bestAir = a;
+    }
+  }
+  return best;
 }
 
 /**
@@ -1176,7 +1192,11 @@ export function racePick(cands: DrawnHop[], lands: (h: DrawnHop) => boolean): Dr
  * The press then flies the aim WITH that noise (startJump's flyThumb), and judge() records the flown draw's prediction, a fall included.
  */
 export function gateLands(q: Platform, at: (t: number) => number, x: number, y: number, dir: -1 | 1, h: DrawnHop, t0: number, vx0: number, margin: number, v2: number, _thumb?: ThumbAt, others?: FlightOthers): boolean {
-  return hopFlies(q, at, x, y, dir, { ...h, thumb: undefined }, t0, vx0, margin, v2, undefined, others);
+  return gateAirtime(q, at, x, y, dir, h, t0, vx0, margin, v2, _thumb, others) !== null;
+}
+/** gateLands read for the aimed flight's airtime (s from the take-off to the landing with `margin`; null: it does not land): E's order */
+export function gateAirtime(q: Platform, at: (t: number) => number, x: number, y: number, dir: -1 | 1, h: DrawnHop, t0: number, vx0: number, margin: number, v2: number, _thumb?: ThumbAt, others?: FlightOthers): number | null {
+  return hopFlight(q, at, x, y, dir, { ...h, thumb: undefined }, t0, vx0, margin, v2, undefined, others);
 }
 
 export type HopRow = { site: string; q: number; t: number; x: number; hold: number; lag: number; kind?: 'single' | 'double'; flown?: { t: number; x: number; hold: number; kind: 'single' | 'double' }; landed?: number | 'lost'; landedType?: string };
@@ -1789,7 +1809,11 @@ export class FirstTimerRun {
 
   /** the gate's read (gateLands, ENG-27r) */
   private gateSees(q: Platform, at: (t: number) => number, x: number, y: number, dir: -1 | 1, h: DrawnHop, t0: number, vx0: number, margin: number): boolean {
-    return gateLands(q, at, x, y, dir, h, t0, vx0, margin, this.v2(), this.thumbAt(), this.flightOthers());
+    return this.gateAir(q, at, x, y, dir, h, t0, vx0, margin) !== null;
+  }
+  /** the gate's read of the aimed flight's airtime (gateAirtime; null: it does not land with `margin`) */
+  private gateAir(q: Platform, at: (t: number) => number, x: number, y: number, dir: -1 | 1, h: DrawnHop, t0: number, vx0: number, margin: number): number | null {
+    return gateAirtime(q, at, x, y, dir, h, t0, vx0, margin, this.v2(), this.thumbAt(), this.flightOthers());
   }
 
   /** HOP_TRACE: a gate judged a hop: the first platform of `qs` the hop comes down on, at the first lag of `lags` that lands */
@@ -3179,11 +3203,20 @@ export class FirstTimerRun {
             const logs = this.sim.platforms.filter((q) => q !== here && q.type === 'drift' && !q.broken && Math.abs(q.y - p.y) < 70 && Math.abs(q.x - here.x) < 600);
             const seesBank = (c: DrawnHop) => banks.some((q) => this.gateSees(q, floatAt(rivers, q), p.x, p.y, dir as -1 | 1, c, t, vx, 24));
             const sees = (c: DrawnHop) => seesBank(c) || logs.some((q) => this.gateSees(q, floatAt(rivers, q), p.x, p.y, dir as -1 | 1, c, t, vx, RACE_MARGIN));
-            // (E, the honest middle (the lead's ruling): he picks the smallest calibrated hop whose AIMED flight lands, from the tier's
-            //  tables with no noise, and only then is the thumb's noise drawn for it (drawHop at the press: its drift, slip and late let-go
-            //  flown, never read by the pick). A tier with no table keeps the held drawn aim (D'))
+            // (the aimed flight's airtime to its safe landing: on a bank with 24 px, on a log with RACE_MARGIN, as `sees` reads it; one
+            //  flight comes down once, so the first it lands on)
+            const air = (c: DrawnHop): number | null => {
+              let a: number | null = null;
+              for (const q of banks) { const v = this.gateAir(q, floatAt(rivers, q), p.x, p.y, dir as -1 | 1, c, t, vx, 24); if (v !== null && (a === null || v < a)) a = v; }
+              for (const q of logs) { const v = this.gateAir(q, floatAt(rivers, q), p.x, p.y, dir as -1 | 1, c, t, vx, RACE_MARGIN); if (v !== null && (a === null || v < a)) a = v; }
+              return a;
+            };
+            // (E, the honest middle (the lead's ruling): he picks, from the tier's calibrated tables with no noise, the hop whose AIMED
+            //  flight comes down safe SOONEST (the shortest airtime; ties: the smaller hold; the lead's ruling on "smallest", ENG-27w), and
+            //  only then is the thumb's noise drawn for it (drawHop at the press: its drift, slip and late let-go flown, never read by the
+            //  pick). A tier with no table keeps the held drawn aim (D'))
             const cands = raceCandidates(who);
-            const pick = cands.length ? racePick(cands, sees) : null;
+            const pick = cands.length ? racePick(cands, air) : null;
             const h = cands.length ? (pick ? { ...pick, thumb: this.drawHop(dir as -1 | 1).thumb } : null) : this.aim.at(dir as -1 | 1, t, (d) => this.drawHop(d));
             const onBank = !!h && seesBank(h);
             if (h && (cands.length || onBank || sees(h))) {
