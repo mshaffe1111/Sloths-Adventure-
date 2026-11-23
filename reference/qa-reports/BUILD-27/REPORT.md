@@ -36,6 +36,15 @@ is the freeze (unfrozen 2/2 PASS, BUILD-27b), not a defect.
 (e) Send the lead: the final hash, every gate line PASS/FAIL with the suite totals, the clip paths (race27f/), the stills' paths
 (stills27f/clean/), yield 29/40, list 69/100.
 
+Learned / Method update (BUILD-27f): (a) once a stage is LISTED its stills spots must be re-found on the listed build: the list's plan for
+seed 1 is not the pre-list search's, and the old x11376 porch spot fell on the bank; probes27f/porchx.mjs reads the pieces' x from the
+live build (a level.md rule candidate: "spots come from the built stage, never from an older report"). (b) Two still tools, two jobs:
+stills-at-setting.mjs (cards cleared) for judging the art, the race clip for the order of the lines; stills-live.mjs shows whichever line
+the placed Pokey last tripped, so it cannot prove order. (c) Verdict frames move when the bots move (3615 -> 3775): read them from
+racerec's own output each time, never from an older report.
+Lessons applied: D115 (every run on a frozen tree), D111 (box with an exact next step), D109 (no clock times to the lead), D119 (no heredoc
+in a commit chain), D131 (drawcheck on the listed stage in the final gate set), D125 (the clip on a listed variant).
+
 (1) DONE: t-eng-27 cfa555cc9 merged into t-build-27e = 0018fa7ab (one doc conflict, engine-core.md: both hunks t-eng-27's, HEAD side
 empty). It adds DRESS-27's draw code (columnDress, porchPosts, protoArt, engine setClimbFeet, the w2-next sheet) and no lay code.
 Frozen tree /home/user/wt-b27f-f1 = 0018fa7ab (src, tools chattr +i; src/game/gen2/proven writable); node_modules
