@@ -7,6 +7,8 @@
  * As a tool: npx tsx tools/inspect/rowWheels.ts  (2-6's draft row, seed 1; OFF=1 the plant, rideWheel off; SEED=n; TIER=child SET=easy V=1)
  */
 import '../../src/game/headlessDom.ts';
+import { LISTED } from '../../src/game/gen2/listed.ts';
+import { packPlan, plantSeedList, provenPlan } from '../../src/game/gen2/seedList.ts';
 import { plantRow, type PlantedRow } from './plantRow.ts';
 import { runTier, type Setting, type Tier, type TierRun } from './tierBots.ts';
 import { wheelTally, type WheelCrossing } from './wheelCrossings.ts';
@@ -24,14 +26,25 @@ export interface RowWheelRun {
 
 export type { PlantedRow };
 
-/** `fn` with `row` planted as the one listed roll of its stage at `seed` (as the game rolls a listed row: plantRow.ts), put back after */
+/** `fn` with `row` planted as the one listed roll of its stage at `seed` (as the game rolls a listed row: plantRow.ts), put back after.
+ *  A row the stage table already lists with this kit is the real row: its own listed seed is played alone (its proven plan, as Play
+ *  builds it), never a fresh roll over it (ENG-26s, R-165.399: BUILD-26 listed 2-6, fab3a8a20, and the draft plant then threw on every
+ *  run). A listed stage on another kit, or a seed off its list, still throws: a draft never stands in for a listed row */
 export function withPlantedRow<T>(row: PlantedRow, seed: number, fn: () => T): T {
-  const undo = plantRow(row, seed);
+  const undo = Object.hasOwn(LISTED, row.stage) && LISTED[row.stage].kit === row.kit ? listedSeedAlone(row.stage, seed) : plantRow(row, seed);
   try {
     return fn();
   } finally {
     undo();
   }
+}
+
+/** the listed `seed` of a listed stage as its one-seed list (its proven plan, unchanged); the undo puts the whole list back */
+function listedSeedAlone(stage: string, seed: number): () => void {
+  const plan = provenPlan(stage, seed);
+  if (!plan) throw new Error(`withPlantedRow: ${stage} is listed and ${seed} is not on its list`);
+  const dict: string[] = [];
+  return plantSeedList(stage, { dict, seeds: [seed], plans: [packPlan(plan, dict)] });
 }
 
 /** each tier run over the planted row, both variants, with every wheel tallied */
