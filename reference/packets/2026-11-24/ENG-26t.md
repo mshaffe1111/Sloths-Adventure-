@@ -19,4 +19,7 @@ BASE: t-build-26-wip-26s 23cdb07e8 (main merged; rowWheels, registrycheck, libst
 4. castBots --proven 1-4 (slot / old / new for any failing slot, filled in place by the tool, to the lead before it lands); 2-6's --proven yield
    under the judge (it was 51 before the judge; the lead needs the number).
 5. Rule 28 x40 on 2-1..2-6 and 1-4, and 2-3 against INT-R4's rows; then the table to the lead; land on t-build-26 on the lead's word.
+ALSO (ENG-27w 11-23, inherited on t-eng-27 daf9ca777, same families): pacerLay x2 (the boardLog and raceSure plants' RED halves no longer bite
+since E's gate), wheelChannel x4, wheelRide x2, riverRide x4, seedlist x1 ('listed stage with no list'), firsttimer x1 (2-2 lip): fix each at its
+cause on t-eng-27 too (or show it is the same cause as t-build-26's and fixed by the same commit), so release 4 integrates two green branches.
 REPORT: a new top section of reference/qa-reports/BUILD-26/REPORT.md on t-build-26-wip-26t (EXACT NEXT STEP first). Lead: session_01FhBbYN2CVHnFXg7XzqKXpM.
