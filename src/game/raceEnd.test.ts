@@ -2,7 +2,7 @@
 // dock, won or lost, the stage's own line is said ONCE by the speaker it names: never mid-race (the boat docking first says nothing),
 // never twice (a respawn after the dock, and the finish crossed again), and only from the stage's brief (tip ids in the world's tips).
 // The toy plants a race on a listed stage and plays it through the engine's own loop (RealPlay): with the hook (engine.ts sayRaceEnd)
-// taken out, tests 1 and 2 are RED (no line at the dock).
+// taken out, tests 1-3 are RED (no line at the dock; run 11-23 on 20cb0a2d9 with the hook line removed: 3 fail, 3 pass).
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import './headlessDom.ts';
