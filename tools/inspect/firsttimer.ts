@@ -707,7 +707,7 @@ export interface DotReport {
  */
 /** the log a racing hop wants on each side of where it lands (px): the flights' careful middle player (2-7.md FLOWN) */
 const RACE_MARGIN = 50;
-export const SKILLS = { ride: true, upstream: true, bankUp: true, handed: true, dropOnLog: true, vineFromLog: true, vineOverTail: true, bonkAfterSnap: true, rideWheel: true, bonkBrake: true, letItSnap: true, race: true, rideOnly: false, fromTakeoff: true, boardLog: true, boardHop: true, raceSure: true, floatSure: true };
+export const SKILLS = { ride: true, upstream: true, bankUp: true, handed: true, dropOnLog: true, vineFromLog: true, vineOverTail: true, bonkAfterSnap: true, rideWheel: true, bonkBrake: true, letItSnap: true, race: true, rideOnly: false, fromTakeoff: true, boardLog: true, boardHop: true, raceSure: true, floatSure: true, reAim: true };
 /**
  * (ENG-26, reference/design/2-6.md NEW 2) `rideWheel`, ride a water wheel (wheel.ts) as a person does: on the jetty he walks up to its lip,
  * stands, and boards with a hop toward the wheel (a tap hop off the jetty boards at every moment of the wheel: wheelFlights.data.ts); in a
@@ -1132,7 +1132,8 @@ const floatAt = (rivers: readonly RiverZone[] | undefined, q: Platform) => (t: n
  * The aim of a wait at a drawn-hop gate (edgeStand, edgeWait, race, upstream; rule 28): the hop he will press, drawn by the testers'
  * habit (drawHop) when the wait begins (a target comes in reach: the lead's ruling, ENG-27s, R-165.59: a player picks his hop when he
  * sees the log) and HELD until he presses or the target leaves reach (end(), or a frame the gate is not reached, or he turns). No redraw
- * inside a wait (D's 0.5 s beat had no source, D116). The decision reads the aim only (gateLands); its thumb noise is flown, never read.
+ * inside a wait (D's 0.5 s beat had no source, D116), except SKILLS.reAim's at the upstream gate: an aim refused for his tier's stopReact on a
+ * log ends its wait (the gap to the next log never changes on a river). The decision reads the aim only (gateLands); its thumb noise is flown, never read.
  */
 export class WaitAim {
   private hop: DrawnHop | null = null;
@@ -1140,8 +1141,10 @@ export class WaitAim {
   private last = -1;
   /** draws made (the toy reads it) */
   draws = 0;
+  /** when the held aim was drawn (SKILLS.reAim reads its age) */
+  since = -1;
   at(dir: -1 | 1, t: number, draw: (dir: -1 | 1) => DrawnHop): DrawnHop {
-    if (!this.hop || this.dir !== dir || t - this.last > 1.5 * DT) { this.hop = draw(dir); this.dir = dir; this.draws++; }
+    if (!this.hop || this.dir !== dir || t - this.last > 1.5 * DT) { this.hop = draw(dir); this.dir = dir; this.draws++; this.since = t; }
     this.last = t;
     return this.hop;
   }
@@ -3270,6 +3273,12 @@ export class FirstTimerRun {
               }
               // (refused with the next log in reach: he stands on the log holding the aim (the log hands him on); the 0.5 s beat and its
               //  redraw deleted, ENG-27s. The old press here fired a hop no gate judged, home middle Normal 2 t 21.67, 36.47, 39.33, ENG-27n)
+              // (SKILLS.reAim, ENG-BOT27: on a river every log runs at one speed, so from a log the gap to the next never changes while he
+              //  waits: a held aim the gate refuses now is refused for the whole ride. Seen refused for his tier's reaction (stopReact), the
+              //  wait ends and he picks again, as a player who sees his hop will not reach does. Held, the child stood at an at-him log's
+              //  front end with a 0.033 s tap the gate never saw reach the next log 80 px off, rode back to the bank and boarded again until
+              //  rescued: 2-7 draft child Normal seeds 6 x 9412 and 8 x 8702, the stage's 'water ahead' stall (seeds 1-20 rescues 11 -> 3))
+              if (SKILLS.reAim && t - this.aim.since > who.stopReact) this.aim.end();
               this.pending = null; this.lateArmed = null; this.clockHeld = true; this.blockedT = 0; return {};
             }
             this.aim.end();
