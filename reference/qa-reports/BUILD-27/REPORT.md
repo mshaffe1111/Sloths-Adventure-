@@ -4,7 +4,7 @@
 NOW: nothing laid is waiting on me; 2-7 waits on the lead's hashes (ENG-JETTY: the w2.ts:372 finish fix, the race-end win/lose line,
 StageHint story; ENG-BOT27: the child's log footing; the 'post:letter' moment if the lead orders it). The first thing on their landing is
 step 5 below.
-Head: this commit on t-build-27-wip (src = 0a010f11e). Scratch tree (not in the repo): /home/user/wt-b27-y = 0a010f11e + the w2.ts:372 y-band fix, chattr
+Head: this commit on t-build-27-wip. Scratch tree (not in the repo): /home/user/wt-b27-y = e531bce46 + the w2.ts:372 y-band fix, chattr
 frozen (unfreeze with chattr -R -i before removing). Probes: scratchpad/probe/trace.mts (frames before each life lost or set-down:
 `npx tsx trace.mts <bot> <setting> <seed> <n> [stuck]`, run from the scratch tree) and kidloc.mts (each set-down's leg and beat).
 1. DONE 0a010f11e: catalog dupes; inventory.test 10/10 (census 218: ENG-27 packed 8 of batch 1).
@@ -41,7 +41,9 @@ frozen (unfreeze with chattr -R -i before removing). Probes: scratchpad/probe/tr
    t3.8, turn t53.2. Sent: 'half' lands mid-race (keeper note 3) -> 'post:letter' to engine. Also sent: (1) ENGINE-WORTHY, the HUD
    progress bar on an out-and-back does not move for the whole out leg (x from start to exit, engine.ts:3732); (2) WATER_WARN -> handover
    only 2.2 s apart on Normal: I offered to move the t-handover socket (w2Arc27.ts:122, 'a' 0.35) so the handover starts 3+ s after it.
-   Awaiting the lead's word on (2).
+   (2) DONE e531bce46 (lead: WATER_WARN stays, the handover moves): handover on the jetty's bank b at 0.15, race on z at 0.3; new test
+   "handover starts 3 s at a full run after any other line" was RED on the old socket (614 px < 855), GREEN now; w2Arc27.test 7/7;
+   24/24 rolls clean. 'post:letter' and the route-measured HUD bar: engine, landing on t-eng-27 (lead); then wayside.ts:101 -> dotOn.
 5. When the lead sends ENG-JETTY's and ENG-BOT27's hashes (the w2.ts:372 fix, the race-end line, StageHint story, the child bot fix): merge into t-build-27-wip;
    wire `w27.win`/`w27.lose` (lines-2-7.md:24-25, verbatim) on the race-end hook, set story on handover/race; hold all four in
    w2Arc27.test; the whole suite + the CI tool line on a frozen head; castBots --proven 1-40 both settings; then the list (seedlist 2-7,
