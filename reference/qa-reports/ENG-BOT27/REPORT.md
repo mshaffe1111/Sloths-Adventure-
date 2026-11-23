@@ -1,5 +1,11 @@
 # ENG-BOT27b REPORT: SKILLS.reAim as the CHILD bot's skill only, re-measured (started 2:30 PM ET 11-23 by `date`, 14:30:25)
-Branch t-eng-27-wip-bot27-aim. Code 3d90c4977 (child-only gate + toy), t-eng-27 e2f3855cf merged in (2334a3948). NOT landed yet at this push: the suite and the CI tool line are in flight (section 1 item 6).
+Branch t-eng-27-wip-bot27-aim. Code 3d90c4977 (child-only gate + toy), t-eng-27 e2f3855cf merged in (2334a3948). NOT landed yet at this push.
+### EXACT NEXT STEP (if this member stops first)
+The unit suite re-runs on the frozen tree /home/user/wt/eng (2334a3948); every other gate is done (item 6). When it ends: if its reds are
+only pacerLay.test.ts:254 and :280 (and the todos), land: `git fetch origin t-eng-27`; if t-eng-27 is still e2f3855cf (an ancestor of this
+branch), `git push origin t-eng-27-wip-bot27-aim:t-eng-27` (a fast-forward: the merge, no force); else merge t-eng-27 into this branch,
+re-run the suite on the merge and push that. Send the lead the hash, item 3's table and item 6's gate lines. Any other red: run that file
+on the frozen base /home/user/wt/base (e2f3855cf) before naming it inherited.
 ## 1. Done-items
 1. **reAim is the child's alone** (the lead's ruling (3)): `FirstTimer.reAim` (firsttimer.ts, a profile field like letSnap) is set on
    FT_CHILD and FT_CHILD_EASY only and read with SKILLS.reAim at the upstream gate (`SKILLS.reAim && who.reAim && t - aim.since > stopReact`).
@@ -27,7 +33,8 @@ Branch t-eng-27-wip-bot27-aim. Code 3d90c4977 (child-only gate + toy), t-eng-27 
    among them (RED under all-bots reAim). The two planted rows (pacerLay.test.ts:254 home Easy seed 1, :280 the bank 28 px up) are red
    as on the base: ENG-JETTY's suite on 1b2897cfb and d9425f091 named the same two, inherited (ENG-27w).
 6. **Gates on the frozen candidate 2334a3948** (chattr +i on src, tools; src/game/gen2/proven unlocked, D115): tsc PASS; generalitycheck
-   PASS (26 literals, 26 known); knowncheck PASS; reAim toys 3/3 (riverRide.test.ts). Unit suite: IN FLIGHT at this push (reds so far: pacerLay.test.ts:254, :280 only, inherited). CI tool line (gates.yml
+   PASS (26 literals, 26 known); knowncheck PASS; reAim toys 3/3 (riverRide.test.ts). Unit suite: RE-RUNNING (started 3:19 PM ET): the first run was lost to a container restart at 3,164 results, its
+   only reds pacerLay.test.ts:254 and :280 (inherited; ENG-JETTY's suite on 1b2897cfb, code-identical to e2f3855cf, had the same two). CI tool line (gates.yml
    'rolled', D126): 348 tests / 336 pass / 11 fail / 1 todo; the 11 = the base's 11, each run on the frozen bare base
    e2f3855cf: wheelChannel.test.ts :40 :56 :79 :92 and wheelRide.test.ts :26 :42 (the w2Finish throw, w2.ts:326, 'the fall at x=335-731
    has no bank at one end': the lead says named on t-eng-27 by ENG-27w and on ENG-26t's list), firsttimer.test.ts:184, riverRide.test.ts
