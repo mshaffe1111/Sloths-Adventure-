@@ -19,6 +19,30 @@ Merged at INT-14 (11-20, t-int-14): §0zq-25d/§0zq-25c ENG-25c (2-5's snap rows
 - **Probes** (re-creatable): a frame ring before each life / rescue (onFrame, sim.t, rescueXs), HOP_TRACE rows (no row at a take-off =
   an unjudged press), a drawHop stub on the FirstTimerRun instance (plants an aim; counts draws).
 
+## 0zq-jetty. ENG-JETTY (t-eng-27, 11-23): the race-end line, World 2's finish under a stacked leg, story tips (2-7's three pieces)
+- **Race end (item 1):** brief `GraphBrief.raceEnd = { win: { tip, who }, lose: { tip, who } }` (gen2/types.ts, beside `pacer`; `tip` a key
+  of the world manifest's `tips`, `who` 'Dot' | 'Pokey'). The pipeline (layChaseStage, after layPacer) reads them into `Pacer.ends`
+  (pacer.ts raceEndsOf; a tip with no words is a named lay problem). engine.ts `sayRaceEnd` (after stepPieces, only when the pacer has
+  `ends`) fires on the pacer piece's verdict, set only when HE reaches the dock (the boat docking first says nothing): `raceEndOf` marks the
+  race (a respawn keeps piece and verdict), and each line is a stage tip's once on this device (tipMemory.ts `race:<text>`: a retry's
+  replay of the same finish says nothing, the other finish says its own once; kept only once Dot's guide has shown it).
+- **The speaker path:** `GuideOpts.who` rides App.tsx onGuide -> DotGuide GuideFeed.who -> engineLine -> dotLines.ts engineGuideLine, which
+  makes a STORY line (source 'story', waitMs RACE_END_WAIT_MS 9 s): helpAllows passes it on every help setting while the story switch is
+  on. Dot's line with Dot away (o.dot === false) is not said: her words are never put in Pokey's mouth.
+- **Story tips (item 3):** `WorldManifest.storyTips` (tip id -> 'Dot' | 'Pokey') lays `StageHint.story` (pipeline, beside teachTips); the
+  engine's hint loop sends it as GuideOpts.who. Use it for a once-only story beat (2-7's handover and race). A plain tip is kind 'info'
+  and DROPPED on Tips, Normal's default. reference/qa-reports/ENG-JETTY/storyTipScan.ts lists every listed stage's dropped tips (20 on
+  1b2897cfb), INCLUDING World 2's water warning on Normal (2-1, 2-2, 2-4, 2-5): a safety line, which needs danger/must, not story (open,
+  sent to the lead for release 4; no shipped data changed).
+- **World 2's finish (item 2):** a soft fall drops the solids under its water (its bed) but never a solid in a run leg stacked UNDER the
+  fall's own leg (`under = lows.filter((l) => f.y < l.y0 - 2)`, the band overLowFloor reads); a fall ON the low leg drops its own bed as
+  before. 2-7 seed 2 on t-build-27-wip 7bff04c33: restores Easy 11164+340@1501 and 11616+388@1501, Normal 10955+340@1502, nothing else.
+  TRAP (BUILD-27): every world finish rule that works by x span (drop, fill, reeds) must check the y band on a stacked stage.
+- **Proof:** src/game/raceEnd.test.ts (6; tests 1-3 RED with the hook line removed), src/game/storyTip.test.ts (2; RED with the field's
+  path removed), src/game/gen2/worlds/w2StackedFall.test.ts (1; RED before the fix).
+- **For BUILD-27:** 2-7's win/lose words in the kit's `tips` under two ids (as LINES_25), named in 2-7's brief `raceEnd` with who Dot /
+  Pokey; handover and race in `storyTips` with 'Dot'; words held equal to lines-2-7.md (as w2Arc25.test does).
+
 ## 0zq-27w. ENG-27w (t-eng-27-wip-27w, 11-23): 2-7's race is set by design numbers; E as ruled; the gap x pace grid (supersedes 27q's "Open")
 - **The bot:** E+J plus the lead's "smallest" = racePick takes the SHORTEST aimed flight by airtime to a safe landing (hopFlight / gateAirtime in
   firsttimer.ts; bank 24 px, log RACE_MARGIN; ties: the smaller hold). It moves no 2-7 row: the expert's 0.70 s glide single is the quickest
