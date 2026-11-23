@@ -1,6 +1,19 @@
 # ENG-27v REPORT (start 11:12 AM ET by `date`; box 11:40 AM ET; base t-eng-27-wip-27u a069e911c; on t-eng-27-wip-27v: E b20128270, D's judge d2bd53f61 (D117), NOT on t-eng-27)
-## EXACT NEXT STEP (the lead: the race call on the table below; the lead's hard box says no successor on the race unless the lead decides)
-1. **The lead rules the race** on the A / D' / E table below (the boats' pace or the 72 px gap, river.ts:189-190). No race tuning was done here.
+## EXACT NEXT STEP (the next 2-7 job, lane 1, when a slot frees; read only this section, D90)
+**THE LEAD'S RACE CALL (received in my box, on the table below; verbatim in substance):**
+(1) **E+J (d2bd53f61) is the bot.** It is the honest gate: it decides on the hop as aimed and its judge flies the leaf the engine flies. A, which
+wins more, is not honest, so its wins do not count. The race is judged on E+J from here.
+(2) **The race is fixed by design numbers, not by more bot work.** With honest bots the expert wins only 2/5, so the race is too tight as it
+stands. The next 2-7 job does three things in order: (a) lands E+J with its gates; (b) measures a small grid of the 72 px gap (72/64/56) and
+the boats' pace (100/90/80%); (c) the lead picks the smallest change where the expert wins 5/5, the middle wins at least 6/7 on Normal and every
+Easy race, ride-only still loses 7/7, and every win has 2 s or more to spare. The gap is the first knob (it helps hopping, not riding).
+post N4 at -51.1 s gets traced in that job.
+**Gaps the next job inherits (named plainly):** the base suite on frozen a069e911c is PENDING (item 3 below); the judge's 2.7 px take-off
+offset (one frame of the log's carry) is named, not fixed (Done-items 2b); E+J's ride-only rows were not run; castBots / tierBots,
+pacerLay and pacerRespawn on E+J were not run. **One flag sent after the call (it crossed the ruling):** E+J's expert losses come from its
+0.70 s glide single being picked before the doubles (item 2 below); the lead may want that read before the grid, since it is E's order, not
+the race, that moves those rows.
+1. (Before the ruling) **The lead rules the race** on the A / D' / E table below (the boats' pace or the 72 px gap, river.ts:189-190). No race tuning was done here.
 2. **Two E candidates, both on t-eng-27-wip-27v:** E = b20128270 (E's gate alone); E+J = d2bd53f61 (E plus D's judge fix: the judge AND the gate now
    fly the Leaf Glide the engine flies). E+J is the honest one (the gate sees what the engine flies; hopJudged 4/4 GREEN), but it moves the expert
    rows: expert 5/5 on E, 2/5 on E+J. **WHY (read from the rows' hop kinds, not traced frame by frame):** with the leaf in the gate, the
