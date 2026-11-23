@@ -94,7 +94,12 @@ code-checked plan (ENGINE-NEEDS.md); "add a level" in one step; every lead keeps
 1. **Today's goal, with Eastern times** (set with Matt each morning in one line; every check-in and every report to him measures against it):
    11-23: release 4's branch clean with 1-4's list rebuilt (ENG-26s, report by 12:15 PM); World 3's kit + a 3-1 row going down (ENG-W3a, report by
    1:45 PM); the 2-7 race numbers decided by the end of the day. Targets: 2-7 on Matt's test link TONIGHT (3 helpers, R-165.406); 2-6 Tue 11-24; the week plan in reference/plans/LANES.md. A slip goes to Matt the moment it moves an ETA.
-2. **The board: reference/plans/LANES.md.** Three levels in flight (pieces for N+2, design/art/lines for N+1, build of N); every job a budget, an ET report-by and a hard stop the LEAD decides at.
+2. **THE SPRINT BOARD (Matt 11-23, R-165.410): https://claude.ai/artifact/S4RKaaxGrRqMKjxCUJBWpc** (a Claude Sheets artifact; write it with the Claude
+   Docs connector: read the project for its workbook node, then applyEdits; tabs Jobs / Sprints / Levels). EVERY lead keeps it: a row per job the
+   minute it starts (estimate, member, start, report-by); actual hours, cost, outcome, where it got stuck and what we learned when it ends;
+   the Sprints row each evening (planned vs landed, the biggest stuck point and the fix made); the Levels row when a level reaches Matt's link.
+   The weekly retro reads the stuck column and turns the top cause into a standard (CONTINUOUS-IMPROVEMENT.md).
+2b. **The lanes: reference/plans/LANES.md.** Three levels in flight (pieces for N+2, design/art/lines for N+1, build of N); every job a budget, an ET report-by and a hard stop the LEAD decides at.
 3. **The lead manages; members engineer.** The lead decides scope, priority, time and the bar, judges the evidence and unsticks; it does not do the work or design the code. A member's technical fork goes back as 'decide it within your budget and show me the evidence', unless it changes scope, the bar, a shipped stage or Matt's taste.
 4. **The scoreboard in every report to Matt:** levels on his link this week vs the plan; hours per level vs 2 h; pieces landed ahead; **2-HOUR PROGRESS** (Matt 11-23, R-165.409): what was done today toward the 2-hour level (reference/plans/TWO-HOUR-PLAN.md and its schedule).
 
