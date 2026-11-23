@@ -1,27 +1,36 @@
-# Architect turnover note (rewritten 2026-11-10, R-165.61)
+# Architect turnover note (rewritten 2026-11-23 by PLAN-2H; the 11-10 note's rulings kept below)
 
 ## Open
-- E0 (verdicts + reach data + first-run picker) is the packet that implements ADR-001/002; it is not yet dispatched. It and C1 (the
-  1-1 re-lay) must ship as ONE PR: E0 alone fails most proven 1-1 seeds.
-- Normal past 1-1 has no flown reach (reach.md scope). `reach.unflown` is reported, not enforced, there until the Designer flies it.
-- E4's frame-time gate is a CI stand-in (Chromium, CPU x4) until calibrated on the three phones.
+- **The piece plan is TWO-HOUR-PLAN.md** (reference/plans/, PLAN-2H 11-23, t-plan-2h): §The truth table (75 pieces, 10 kits, art per
+  world), §Per stage (2-8..10-9 + 10 hidden), §The schedule (6 waves, one row per piece, GREEN-by dates), §The risks (R1-R8). It
+  replaces ENGINE-NEEDS.md §1-2 (11-13); ENGINE-NEEDS §3-4 (ADD-LEVEL, the vine field's returns) still stand.
+- Waiting on the lead: R5 (two piece members through Waves 1-2, or World 3 and World 4 slip a week); ENG-PROWL off LANES (landed 11-20);
+  main merged into t-eng-27 before BUILD-27 (its coverage table and LINE_SKILL are behind main).
+- Refresh the truth table at the start of every wave (each Monday): re-run the reads in reference/methods/piece-plan.md and flip rows.
+- From the 11-10 note, still open: E0's verdict schema (ADR-001/002) and the frame-time gate (R-165.65) are not re-checked here.
 
 ## Where things live
-- Types: src/game/gen2/verdicts.types.ts (the only file the Architect wrote in src/). types.ts was NOT touched: A1
-  (t-engine-putback@41c2e248) edits it, and a second edit there would collide; E0 adds Gen2Meta's `verdicts` / `drops` fields.
-- Decisions: reference/architecture/ADR-001-verdicts.md, ADR-002-first-run.md. File lists: PACKETS.md. Budgets: BUDGET.md.
-- Today's falls: pipeline.ts `falls` (gaps' kind), `lethalSpans` (pipeline.ts:1053), promises11.ts floorlessGaps (w1Pits). A1's
-  softFallStage (pipeline.ts on A1) reads Gen2Meta.softFalls; engine softOn reads it. A1 keeps water lethal.
-- 1-1 is built by stageGenerator.ts gen2Roll11 -> testlink1_1.ts play11Seed -> seedList buildPlayStage; not in GEN2_STAGES.
+- What gen2 can lay: PlaceRule (gen2/types.ts:295-342), SectionZone (gen2/types.ts:492-494: tide, wind only), GraphBrief fields
+  (gen2/types.ts:696; t-eng-27 adds pacer, post), WorldManifest tables (gen2/types.ts:110-239: rivers, pads, wheels, creak ...), the lay
+  files gen2/*Lay.ts, legs.ts (travel by leg), tower.ts (up/down).
+- Which stages are designed-arc rows: gen2/worlds/stageTable.ts (1-1..2-5 on main). Worlds 5-8's OLD gen2 kits: gen2/game.ts:90-96.
+- Bot skill + meter channel per piece id: reference/design/meter-coverage.json (bot = tools/inspect/firsttimer.ts symbol, channel =
+  tools/difficulty/score.ts symbol); the gate is tools/difficulty/coveragecheck.ts (holds stage-table rows + shipped worlds).
+- Per-stage mechanics from the map: reference/qa-reports/ENGINE-NEEDS/map-tally.txt. Designs: 2-6..2-8 on t-design-26, 2-9 on
+  t-design-29, 3-1/3-2 t-design-31-32, 3-3..3-5 t-design-33-35, 3-6..3-9 + 3-hidden t-design-36-39 (each `**NEW n**` line is a piece).
+- Art per world: src/game/art/inventory/wN.json (cols: world_best, engine_slot 'landing/...' or 'climbable/...', scale_ok).
+- Decisions (11-10): reference/architecture/ADR-001-verdicts.md, ADR-002-first-run.md; types in src/game/gen2/verdicts.types.ts.
 
 ## Rulings to keep
+- A piece lands WITH its bot skill and its meter channel, proven on a real stageTable row (D75), or it is not done (TWO-HOUR-PLAN).
+- PART (runtime exists, gen2 does not lay it, or one old kit does) counts as MISSING for READY.
 - A verdict is a name in VerdictName; a roll is a tagged RollVerdict; no "accepted with warnings"; out-of-scope checks are listed in
-  `notJudged`, never dropped.
-- A planted failure must be sized against the rule it trips (a p95 plant on every frame, not 1 in 30).
-- ADR-002: a retry before the first finish of 1-1 is still the first run (the lead, 11-10).
-- A drop's outcome and its look are one record; soft and lethal looks never overlap.
-- One PromiseRegistry feeds promises11 and seedListBreaches; the setting filter is `settings`, never a substring.
+  `notJudged`, never dropped. One PromiseRegistry feeds promises11 and seedListBreaches.
+- A planted failure is sized against the rule it trips. A drop's outcome and its look are one record.
 
 ## Traps hit
-- node_modules is absent in a fresh container: `bun install --frozen-lockfile` (5 s) before tsc; there is no package-lock.json.
-- art-raw-2026-11-07 is an art-only tree (W1/, W2/, cut/, contact sheets); `git diff` against main is meaningless, use ls-tree.
+- The clone is SHALLOW (depth 50): `rev-list --count` and merge-base lie; roadmapcheck FAILs until `git fetch --unshallow`.
+- The lead's branch is not main: read code at origin/main (a detached worktree), not the checkout's src.
+- `types.ts` is three files (gen2/types.ts, src/game/types.ts, predators/types.ts): cite with the folder.
+- The tool output is trimmed past about 4,000 characters: write long reads to a scratch file and Read a range.
+- node_modules is absent in a fresh worktree: `bun install --frozen-lockfile` (4 s); it leaves the tracked tree clean.
