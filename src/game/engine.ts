@@ -232,6 +232,7 @@ import { drawEdgeMarks, edgeMarks, safeInsets, stillMarks, type EdgeMark, type M
 import { lineFaces, type Face } from './followFaces.ts';
 import { aimBreaths, noteArrivals, type BreathWatch } from './breathAim.ts';
 import type { PodCost } from './podfall.ts';
+import { raceEndLine, type RaceEndWho } from './pacer.ts';
 
 /** how far right of the painted tea table the Queen stands for her tea (her pot hangs over it as she faces left) */
 const TEA_STAND = 150;
@@ -461,8 +462,9 @@ const FAIL_LIMIT = 20;
 const TEACH_LINE = { teach: true } as const;
 const LOCK_LINE = { lock: true } as const;
 /** what a guiding line is, as the engine knows it (onGuide): the stage's own teach line, or the locked exit's line (`lock`: Dot says it
- *  at once, whatever its words, R-165.241) */
-export interface GuideOpts { teach?: true; lock?: true }
+ *  at once, whatever its words, R-165.241), or a stage's own story moment said by the speaker its data names (`who`: a race's end,
+ *  sayRaceEnd; dotLines.ts engineGuideLine makes it a story line, on the story switch like the wayside's beats) */
+export interface GuideOpts { teach?: true; lock?: true; who?: RaceEndWho }
 
 export class GameEngine {
   private canvas: HTMLCanvasElement;
@@ -708,6 +710,9 @@ export class GameEngine {
   private sweepT = 0;
   /** the stage's runtime pieces on the one hook (pieces/index.ts): every registered kind its data lays, started at the stage's start */
   private pieces: StagePiece[] = [];
+  /** the race (its pacer piece) whose end line has been said: once a race. A respawn keeps the piece and its verdict, so a finish crossed
+   *  again after a fall says nothing; a stage start lays a new race (startPieces), whose own finish is said once */
+  private raceEndOf: StagePiece | null = null;
   /** what a piece may read of the engine (stagePiece.types.ts PieceHost): made once, it reads the engine live */
   private readonly pieceHost: PieceHost = ((e: GameEngine): PieceHost => ({
     get t() { return e.gameTime; },
@@ -1886,6 +1891,8 @@ export class GameEngine {
     const underX = under?.x;
     this.camFocus = null;
     if (this.pieces.length) stepPieces(this.pieces, dt, this.pieceHost);
+    // (a race that ends at its finish this step: its end line, once, sayRaceEnd)
+    if (this.currentStage.pacer?.ends) this.sayRaceEnd();
     // (a swing over a hollow that hurts: the view keeps its floor in, him whole first, unless a piece asked for its own focus:
     // cameraFollow.ts hurtFocus; the stage's hurt floors listed once per platform list)
     if (!this.camFocus && this.player.isVineSwinging) {
@@ -3308,7 +3315,7 @@ export class GameEngine {
         if (h.firstOf) markTipHeard(FIRST_OF_STAGE, h.firstOf);
         const mode = lessonInputMode();
         const said = mode === 'pad' ? h.pad : mode === 'keys' ? h.keys : h.text;
-        this.guide(said, TIP_SAY_S, h.teach ? TEACH_LINE : undefined);
+        this.guide(said, TIP_SAY_S, h.teach ? TEACH_LINE : h.story ? { who: h.story } : undefined);
         if (h.passX !== undefined) this.passTips.push({ x: h.passX, text: said });
       }
       // a move tip about one spot goes once he is on the ground past it, done or not (StageHint.passX)
@@ -9689,6 +9696,26 @@ export class GameEngine {
     this.bossGuideUp = false;
     this.guideN++;
     this.callbacks.onGuide?.(text, seconds, undefined, o);
+  }
+
+  /**
+   * A pacer race's END (pacer.ts Pacer.ends, from the stage's brief): the step he reaches the dock, won (before the pacer) or lost (it
+   * docked first), its line is said ONCE, by the speaker the line names. Never mid-race: the pacer keeps a verdict only when HE reaches
+   * the dock (pieces/pacerPiece.ts; the boat docking first says nothing until he arrives). Never twice: the verdict outlives a respawn
+   * (a fall after the dock rewinds nothing), this race is marked said, and each line is a stage tip's once on this device (a retry's
+   * replay of the same finish says nothing). No stage id: any stage whose brief names race-end lines
+   */
+  private sayRaceEnd() {
+    const race = this.pieces.find((q) => q.kind === 'pacer') as (StagePiece & { verdict?: { won: boolean } | null }) | undefined;
+    if (!race?.verdict || this.raceEndOf === race) return;
+    this.raceEndOf = race;
+    const line = raceEndLine(this.currentStage.pacer!.ends!, race.verdict);
+    // (each line once a stage on this device, as a stage tip: a retry or a replay that finishes the same way says nothing; one that
+    //  finishes the other way says its own line once. Kept only once shown, tipMemory.ts: a line the setting dropped is said next time)
+    const id = `race:${line.text}`;
+    if (tipHeard(this.currentStage.config.id, id)) return;
+    markTipHeard(this.currentStage.config.id, id);
+    this.guide(line.text, TIP_SAY_S, { who: line.who });
   }
 
   /** take Dot's line down now (an empty line clears it: Wayside.tsx) */

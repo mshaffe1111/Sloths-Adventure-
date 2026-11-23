@@ -236,6 +236,9 @@ export interface WorldManifest {
   /** the tips (by mechanic, as `tips`) that are a stage's own TEACH line: Dot waits for a clear moment and keeps it up its reading
    *  time, and no stock lesson cuts it (protoStage.ts StageHint.teach) */
   teachTips?: readonly string[];
+  /** the tips (by id, as `tips`) that are a stage's own STORY beat, each with who says it: said as a story line by that speaker, on every
+   *  help setting while the story switch is on (protoStage.ts StageHint.story); a plain tip is dropped on Tips, Normal's default */
+  storyTips?: Readonly<Record<string, 'Dot' | 'Pokey'>>;
 }
 
 // ───────────────────────────── a section ─────────────────────────────
@@ -757,6 +760,9 @@ export interface GraphBrief {
   /** a PACER to race on the stage's race leg (the run leg after its last column; pacer.ts, gen2/pacerLay.ts; 2-7's mail boat): the
    *  world's flown table its time is set from. Absent: no pacer, the stage laid as it always was */
   pacer?: import('../pacer.ts').PacerRow;
+  /** the pacer race's END lines (pacer.ts RaceEnds; 2-7's jetty): a tip id of the world's for a win and for a loss, each with who says
+   *  it; one is said once, as he reaches the dock (engine.ts sayRaceEnd). Absent: the race ends unsaid. Read only with `pacer` */
+  raceEnd?: import('../pacer.ts').RaceEnds<import('../pacer.ts').RaceEndLine>;
   /** the POST (post.ts, gen2/postLay.ts; 2-7's doors): doors on the way out whose slots take letters, replies on the way home. Absent:
    *  none, the stage laid as it always was */
   post?: import('../post.ts').PostSpec;

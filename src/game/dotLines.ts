@@ -176,6 +176,8 @@ export function gestureMove(gesture: string | null, topic: TopicId | undefined):
 export const PUZZLE_NAME_WAIT_MS = 45000;
 /** how long a line of a scene played in a stage (5-5's pouch scene) may wait its turn (ms) */
 export const SCENE_WAIT_MS = 150000;
+/** a stage's own story moment from the engine (a race's end, GuideOpts `who`): news for seconds, not a minute; a line up may hold it this long */
+export const RACE_END_WAIT_MS = 9000;
 /** a tip about a new thing rather than a new move (dotGuide.ts GuideLine.thing): World 5's first-time tips */
 /** how long a thing's tip stays up at most (ms): read, then gone, done or not */
 export const THING_CAP_MS = 6000;
@@ -188,7 +190,11 @@ export const isThingTip = (id: string): boolean => W5_THING_TIPS.has(id);
  */
 /** how long a stage's own teach line (StageHint.teach) may wait for a clear moment: it is the lesson for its beat, never old news */
 export const TEACH_WAIT_MS = 60000;
-export function engineGuideLine(text: string, stageId: string, o: { boss?: boolean; flight?: boolean; dot?: boolean; ms?: number; teach?: boolean; lock?: boolean } = {}): GuideLine | null {
+export function engineGuideLine(text: string, stageId: string, o: { boss?: boolean; flight?: boolean; dot?: boolean; ms?: number; teach?: boolean; lock?: boolean; who?: 'Dot' | 'Pokey' } = {}): GuideLine | null {
+  // (a stage's own story moment, its speaker named by its data (engine.ts GuideOpts `who`: a race's end): a story line in those words,
+  // on the story switch on every help setting, as the wayside's beats are (dotGuideHelp.ts helpAllows). Dot's words are never put in
+  // Pokey's mouth: with her away, her line is not said)
+  if (o.who) return o.who === 'Dot' && o.dot === false ? null : { key: `engine:${text}`, text, kind: 'story', who: o.who, source: 'story', waitMs: RACE_END_WAIT_MS };
   const sw = swapLine(text, stageId);
   if (sw && sw.text === null) return null;
   // (a puzzle's later step, the move itself, is never said as he walks up: only after struggle there, dotTips.ts)
