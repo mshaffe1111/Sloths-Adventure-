@@ -76,7 +76,7 @@ Matt, 2026-11-06, after 0.9.5: "Make sure that you note going forward how to do 
 4. Check the live title shows the new version, and that the testers' #ctest link opens the new build. Have Matt tap Refresh on his
    phone, because a PWA keeps the cached copy until the next reload.
 5. Rebuild EnK5 from main's merge commit, so Matt's test link and the live site are the same build.
-6. Give Matt: the live link, the testers' link, and the Releases entry link. Then tick Matt's handoff doc, update STATUS and ROADMAP
+6. Give Matt: the live link, the testers' link, and the Releases entry link. Then tick Matt's handoff doc (the Claude Docs doc https://claude.ai/artifact/Y664eSHsuhSWhwQAq52pVa: its "Where we are today" section gets the new live version and one line for the release, and its next step; R-165.395), update STATUS and ROADMAP
    (done items name the PR), log any defect here and in CONTINUOUS-IMPROVEMENT, and run the 15-minute retro.
 7. **Never push a v* tag by hand.** build-apk.yml names the release from package.json itself, and a tag makes a duplicate release.
 
