@@ -9,6 +9,9 @@ READ LEAN: reference/methods/level.md's Building rules FIRST; reference/STAGE-RU
 (the whole design: 85 lines); reference/story/lines-2-7.md on t-keeper-27 (KEEPER-27's, held VERBATIM); READY-27's REPORT top section
 (reference/qa-reports/READY-27/REPORT.md on t-ready-27-wip); LAWS headlines; LESSONS D40, D96, D111-D127.
 **ReadNotifications at every step boundary. Messages to the lead carry NO clock times (D109).**
+KEEPER-27's notes (approved words t-keeper-27 0614ae0a): (1) optional: the boat rows off at the start, so it is seen reaching the weir pool
+ahead of Pokey; (2) Easy: WATER_WARN stays silent unless Easy lays a deep river; (3) win/lose play once at the jetty, never mid-race. Retire
+hint.2-7.basket/frames/open/porches; keep way.2-7.
 BASE: t-build-27 from t-eng-27 (after ENG-27w lands the race numbers there), MERGED with t-ready-27-wip (the weir) and t-keeper-27 (the words).
 1. **The ship verdict FIRST (D125):** lay 2-7 on its stageTable row with the design's arc (2-7.md:41-58) on gen2; castBots --proven over 40
    rolls, every bot, both settings; send the lead the yield (bar 60 of 100 when listed) before any polish.
