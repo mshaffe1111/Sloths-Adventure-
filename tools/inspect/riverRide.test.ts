@@ -28,7 +28,8 @@ import { w2Finish, W2_RIVERS } from '../../src/game/gen2/worlds/w2.ts';
 import type { SectionTemplate, WorldKit } from '../../src/game/gen2/types.ts';
 import type { LevelConfig } from '../../src/game/types.ts';
 import type { RiverZone } from '../../src/game/river.ts';
-import { SKILLS, firstTimer } from './firsttimer.ts';
+import type { Platform } from '../../src/game/types.ts';
+import { SKILLS, firstTimer, FirstTimerRun, FT_CHILD } from './firsttimer.ts';
 import { CAST_BOTS, castRun } from './castBots.ts';
 import { runTier, type Setting, type Tier, type TierRun } from './tierBots.ts';
 
@@ -227,4 +228,54 @@ test('planted (THIN): with the up-the-far-bank skill off, the child on Easy is c
   } finally {
     SKILLS.bankUp = true;
   }
+});
+
+test('in the real engine: on a log flowing AT him, a held hop the upstream gate refuses is aimed again after his reaction, never held for the whole ride back (SKILLS.reAim; RED with it off)', () => {
+  // (ENG-BOT27, 2-7's 'water ahead' stall, traced on the draft (with ENG-JETTY's band hunk), child Normal seeds 6 x 9412 and 8 x 8702: at
+  //  an at-him log's front end the wait's drawn aim was a 0.033 s tap the gate never saw reach the next log 80 px off; the gap never
+  //  changes on a river (one speed), so he held it, rode back to the bank and boarded again until rescued. Planted: the first hop drawn
+  //  while he stands on a log is that tap; every later draw is his own. A bare river of 150 px logs 80 px apart flowing at him, 6 phases)
+  const w = 150, gap = 80, speed = 75, x0 = 1000, x1 = 2840, T = (x1 - x0 + w) / speed, n = Math.round((x1 - x0 + w) / (w + gap));
+  const pieces = (phase: number): Platform[] => [
+    { id: 1, x: 0, y: 600, width: x0, height: 90, type: 'solid' } as Platform,
+    { id: 2, x: x1, y: 600, width: 1200, height: 90, type: 'solid' } as Platform,
+    ...Array.from({ length: n }, (_, k) => ({ id: 10 + k, x: 0, y: 628, width: w, height: 24, type: 'drift', drift: { x0, x1, dir: -1, speed, width: w, baseY: 628, offset: ((k * (w + gap)) / speed + phase) % T } }) as unknown as Platform),
+  ];
+  const first = (on: boolean) => {
+    const was = SKILLS.reAim;
+    SKILLS.reAim = on;
+    const out: string[] = [];
+    try {
+      for (const phase of [0, 0.5, 1, 1.5, 2, 2.5]) {
+        const line = Array.from({ length: 200 }, (_, i) => ({ x: 100 + i * 24, y: 600 }));
+        let log: number | null = null, onLog = false, stubbed = false, prev: { g: boolean; id: number | null } = { g: false, id: null }, end = '';
+        const run = new FirstTimerRun('1-1', 1, FT_CHILD, { route: line, cap: 20, rescueAfter: 1000, onFrame: (sim) => {
+          const e = (sim as unknown as { e: { player: { vy: number; grounded: boolean }; platforms: Platform[]; standingOnId: number | null } }).e;
+          const here = e.platforms.find((q) => q.id === e.standingOnId);
+          onLog = !!here?.drift && e.player.grounded;
+          if (onLog && log === null) log = here!.id;
+          if (log !== null && !end) {
+            if (prev.g && prev.id === log && !e.player.grounded && e.player.vy < 0) end = 'hop';
+            else if (e.player.grounded && here?.id === 1) end = 'back';
+          }
+          prev = { g: e.player.grounded, id: here?.id ?? null };
+        } });
+        const own = run as unknown as { drawHop: (d: -1 | 1) => { kind: string; hold: number; d2: number } };
+        const real = own.drawHop.bind(run);
+        own.drawHop = (d) => { const h = real(d); if (!stubbed && onLog) { stubbed = true; return { ...h, kind: 'single', hold: 0.033, d2: -1 }; } return h; };
+        run.sim.bare(pieces(phase));
+        (run.sim as unknown as { e: { currentStage: { config: { levelHeight: number } } } }).e.currentStage.config.levelHeight = 720;
+        run.sim.stand(700, 600);
+        run.prog.relocate(run.sim.p);
+        run.play();
+        out.push(stubbed ? end || 'none' : 'unplanted');
+      }
+    } finally {
+      SKILLS.reAim = was;
+    }
+    return out;
+  };
+  const on = first(true), off = first(false);
+  assert.ok(on.every((s) => s === 'hop'), `with the skill: he aims again and hops off the first log every phase (${on.join(' ')})`);
+  assert.ok(off.filter((s) => s === 'back').length >= 4, `RED: with SKILLS.reAim off he holds the tap and rides back to the bank (${off.join(' ')})`);
 });
