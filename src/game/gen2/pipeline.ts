@@ -28,7 +28,7 @@ import { JUMP_CLEAR, jumpEdges } from '../stageMetrics.ts';
 import { APEX, BANDS, bounceLipOverCap, CAP_UP, gapEnvelope, judgedOnArcs, linkArcs, lesserArcs, riseEnvelope, BLOCK_H, SPARE } from './reach.ts';
 import { classify, headroomOf, judgeRoll, NOT_JUDGED_ALL, TAUGHT, verdictLines, type Judged11, type RouteAsk } from './verdicts.ts';
 import { PROMISES_11, realFalls } from './promises11.ts';
-import { gapCatchY, localExtent, reflectLocal, routeAt, routeOf, storeyLimit, TOWER, towerCatches, towerFalls, towerFlagBreaches, towerFlags, towerGates, towerSkips, towerVaults, vertical } from './tower.ts';
+import { alongOf, gapCatchY, inMetOrder, localExtent, reflectLocal, routeAt, routeOf, storeyLimit, TOWER, towerCatches, towerFalls, towerFlagBreaches, towerFlags, towerGates, towerSkips, towerVaults, vertical } from './tower.ts';
 import { CLIMB_CLEAR } from '../vineTop.ts';
 import { LAND_IN, repairLandings } from './landings.ts';
 import { findW1Pits } from '../w1Pits.ts';
@@ -3815,17 +3815,31 @@ export function fillSockets(laid: Laid, budget: StageBudget, kit: WorldKit, seed
     const text = M.tips?.water ?? WATER_LINE;
     const signs = (sink.extras.waterWarnings ??= []) as Array<{ x: number; y: number }>;
     let last = -Infinity;
-    for (const g of [...wet].sort((a, b) => a.x0 - b.x0)) {
+    // (in the order he MEETS them, each met at the lip he reaches first (gen2/tower.ts inMetOrder, D130): on a run that is x0, as ever;
+    // on a stage with a route (a tower, a stage of legs) the px along it, so a stacked out-and-back's way home, laid under the way out
+    // and running left, is warned at its near lip (x1) and after the way out, never at the least x: Normal's one line went to 2-7's last
+    // river, clamped to the spawn, BUILD-27d. The line starts WATER_WARN.lead px of way before that lip, never before the spawn; a
+    // leftward one is said from `beforeX` down to the lip (the engine says a line once he is past its x), and a stage with a route
+    // gives each its section's height band, so a storey over the river does not say it)
+    const met = along ?? ((x: number) => x);
+    const from = met(laid.spawn.x, laid.spawn.y) + 40;
+    const ordered = inMetOrder(met, wet, (g) => [{ x: g.x0, y: g.y }, { x: g.x1, y: g.y }]);
+    for (const g of ordered) {
       if (g.x1 - g.x0 < 20) continue;
-      if (signs.length && (!easy || g.x0 - last < every)) continue;
-      const x = R(Math.max(laid.spawn.x + 40, g.x0 - WATER_WARN.lead));
-      hints.push({ x, text, pad: text, keys: text, passX: R(g.x1 + 80) });
+      const left = met(g.x1, g.y) < met(g.x0, g.y);
+      const at = Math.min(met(g.x0, g.y), met(g.x1, g.y));
+      if (signs.length && (!easy || at - last < every)) continue;
+      const lead = Math.max(0, Math.min(WATER_WARN.lead, at - from));
+      const sec = along ? laid.sections.find((q) => q.uid === g.section) : undefined;
+      const band = sec ? { band: tipBand(sec) } : {};
+      const x = R(left ? g.x1 : g.x0 - lead);
+      hints.push(left ? { x, beforeX: R(g.x1 + lead), text, pad: text, keys: text, ...band } : { x, text, pad: text, keys: text, passX: R(g.x1 + 80), ...band });
       // (the sign stands on the near lip: g.y is the higher of the two lips, so where the far side stood higher the sign hung in the air)
-      const sx = g.x0 - 40;
+      const sx = left ? g.x1 + 40 : g.x0 - 40;
       const lip = laid.platforms.filter((q) => q.x <= sx && q.x + q.width >= sx && q.y >= g.y - 1).reduce((m, q) => Math.min(m, q.y), Infinity);
       signs.push({ x: R(sx), y: R(Number.isFinite(lip) ? lip : g.y) });
       fills.push({ section: g.section ?? '', socket: 'water', role: 'tip', what: 'water', x, y: R(g.y) });
-      last = g.x0;
+      last = at;
     }
   }
   // (a flag an emitter's zone has come to cover is taken down: nothing stands in a zone)
@@ -4571,7 +4585,9 @@ export function dropsOf(st: Gen2Stage, pits: Pick<WorldManifest, 'pitPainter'> =
   const zones = st.heartFalls ?? [];
   const extras = (st.proto as { gen2?: { waterWarnings?: Array<{ x: number; y: number }> } }).gen2;
   const signs = extras?.waterWarnings ?? [];
-  const hints = ((st.proto as { hints?: Array<{ x: number; text: string; passX?: number }> }).hints ?? []);
+  const hints = ((st.proto as { hints?: Array<{ x: number; text: string; passX?: number; beforeX?: number; band?: readonly [number, number] }> }).hints ?? []);
+  // (the order he meets things on this stage: x on a run, the route's px on a stage with one, gen2/tower.ts alongOf)
+  const met = alongOf(st), routed = !!st.gen2.tower?.route;
   const death = st.waterY ?? st.config.levelHeight;
   const world = st.gen2.budget.world;
   // (the world's pit painter paints its pit floors, its marked drops and its hurt floors: the manifest's pit rule, never a world number)
@@ -4595,9 +4611,15 @@ export function dropsOf(st: Gen2Stage, pits: Pick<WorldManifest, 'pitPainter'> =
     }
     if (ground) return { ...at, ends: { kind: 'floor', y: R(ground.y) }, look: 'ground' };
     if (river || f.kind === 'water' || (f.kind === 'void' && !st.gen2.softFalls)) {
-      const h = hints.find((q) => q.x <= f.x0 && q.x >= f.x0 - 2 * WATER_WARN.lead && (q.passX ?? Infinity) >= f.x1);
-      const sign = signs.some((q) => Math.abs(q.x - (f.x0 - 40)) <= 2);
-      const warn = h && sign ? { warn: { dotLine: h.text, leadPx: R(f.x0 - h.x), sign: true as const } } : {};
+      // (a fall he meets at its right lip, running left on a stage with a route (fillSockets' water lines): its line is said from
+      // `beforeX` down to that lip, and its sign stands right of it; every other fall, as ever)
+      const left = met(f.x1, f.y) < met(f.x0, f.y);
+      const inBand = (q: { band?: readonly [number, number] }) => !routed || !q.band || (f.y >= q.band[0] && f.y <= q.band[1]);
+      const h = left
+        ? hints.find((q) => q.beforeX !== undefined && q.x >= f.x1 - 2 && q.x <= f.x1 + 2 * WATER_WARN.lead && q.beforeX >= f.x1 && q.beforeX <= f.x1 + 2 * WATER_WARN.lead && inBand(q))
+        : hints.find((q) => q.x <= f.x0 && q.x >= f.x0 - 2 * WATER_WARN.lead && (q.passX ?? Infinity) >= f.x1 && inBand(q));
+      const sign = signs.some((q) => Math.abs(q.x - (left ? f.x1 + 40 : f.x0 - 40)) <= 2);
+      const warn = h && sign ? { warn: { dotLine: h.text, leadPx: R(left ? h.beforeX! - f.x1 : f.x0 - h.x), sign: true as const } } : {};
       return { ...at, ends: { kind: 'life', cause: river || f.kind === 'water' ? 'water' : 'void' }, look: river || f.kind === 'water' || world !== 8 ? 'water-art' : 'void-dark', ...warn } as Drop;
     }
     if (zone) return { ...at, ends: { kind: 'putback', to: 'take-off' }, look: 'pit-floor-art' };

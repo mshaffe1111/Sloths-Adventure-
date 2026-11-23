@@ -500,6 +500,56 @@ export function towerFalls(flow: 'up' | 'down', platforms: readonly Platform[], 
   return out;
 }
 
+// ───────────────────────────── the order he meets things (D130, R-165.414) ─────────────────────────────
+
+/** a place on a stage */
+export interface Place { x: number; y: number }
+
+/**
+ * How far along a stage's way a place lies: on a stage with a route (a gen2 tower, a stage of legs) the px along the route
+ * (routeAt), the order the engine takes flags in (flagFurther); on every other stage its x, exactly as every rule has always read
+ * it. ONE measure for every "first" and "last" a rule picks: x is the order he meets things only while the stage runs one way, and
+ * on a stacked out-and-back (2-7) the way home lies under the way out at the same x (D130).
+ */
+export function alongOf(stage: object | ((x: number, y: number) => number)): (x: number, y: number) => number {
+  // (a measure already made, as a lay that holds its route but no stage yet: used as it is)
+  if (typeof stage === 'function') return stage as (x: number, y: number) => number;
+  const route = (stage as { gen2?: { tower?: { route?: Route } } }).gen2?.tower?.route;
+  return route ? (x, y) => routeAt(route, x, y) : (x) => x;
+}
+
+/** where along the way he meets a thing: a place, or the places it spans (a pit's two lips), met at whichever he reaches first */
+const metAt = (along: (x: number, y: number) => number, at: Place | readonly Place[]): number =>
+  Array.isArray(at) ? Math.min(...(at as readonly Place[]).map((p) => along(p.x, p.y))) : along((at as Place).x, (at as Place).y);
+
+/**
+ * The thing he meets FIRST along the stage's way (alongOf): on a stage with no route the one with the least x, exactly as
+ * `.sort((a, b) => a.x - b.x)[0]` picked it (a tie keeps the earlier in the list). `at` gives a thing's place, or the places it
+ * spans (a drop's two lips: he meets it at the lip he reaches first, its x0 on a stage with no route).
+ */
+export function firstMet<T>(stage: object | ((x: number, y: number) => number), items: readonly T[], at: (t: T) => Place | readonly Place[]): T | undefined {
+  const along = alongOf(stage);
+  let best: T | undefined, bestS = Infinity;
+  for (const t of items) { const s = metAt(along, at(t)); if (best === undefined || s < bestS) [best, bestS] = [t, s]; }
+  return best;
+}
+
+/** The thing he meets LAST along the stage's way: on a stage with no route the one with the most x, as `.sort(by x).at(-1)` picked
+ *  it (a tie keeps the later in the list). `at` as firstMet. */
+export function lastMet<T>(stage: object | ((x: number, y: number) => number), items: readonly T[], at: (t: T) => Place | readonly Place[]): T | undefined {
+  const along = alongOf(stage);
+  let best: T | undefined, bestS = -Infinity;
+  for (const t of items) { const s = metAt(along, at(t)); if (best === undefined || s >= bestS) [best, bestS] = [t, s]; }
+  return best;
+}
+
+/** The things in the order he meets them along the stage's way (a new array; a stable sort, so ties keep their list order): on a
+ *  stage with no route, `[...items].sort((a, b) => a.x - b.x)` exactly. */
+export function inMetOrder<T>(stage: object | ((x: number, y: number) => number), items: readonly T[], at: (t: T) => Place | readonly Place[]): T[] {
+  const along = alongOf(stage);
+  return items.map((t) => [t, metAt(along, at(t))] as const).sort((a, b) => a[1] - b[1]).map(([t]) => t);
+}
+
 // ───────────────────────────── flags along the route ─────────────────────────────
 
 /** Matt's flag rule's numbers (pipeline.ts ROLLED_FLAGS: one rule, the same numbers, on a run and on a tower) */
