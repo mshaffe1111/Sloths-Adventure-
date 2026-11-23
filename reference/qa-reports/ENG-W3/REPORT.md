@@ -1,7 +1,11 @@
 # ENG-W3a REPORT (World 3's kit on gen2 + 3-1 drafted DOWN; WORLD-3-PLAN F1, lane 2)
-**EXACT NEXT STEP:** read the branch suite + CI line (scratchpad br-suite.log / br-ci.log on snap2 e8c21ef12) and lockall --check
-against lock-main.json (--intended none); shoot `node tools/engine/draftshoot.mjs <out> 3-1` on a frozen tree; judge the stills; send
-the lead hash + gates + stills; land on t-eng-w3 on the ruling. Start 11:27 AM ET (by `date`); budget 2 h; report by 1:45 PM ET.
+**EXACT NEXT STEP (handed over at the context line, the lead's call):** (1) the lead rules the candidate on t-eng-w3-wip-a, then
+land it on t-eng-w3 (not done here). (2) ENG-DOWNBOT (lane 2) starts from: `GEN2_DRAFT=3-1 npx tsx tools/inspect/castBots.ts --stage 3-1
+--seeds 1-40 --par 3` (never run in full here); expert seeds 1-6: 3/2/2/3/3/1 rescues (17-21 before this job; seed 3 once 0 at 145.6 s);
+stalls 'in a dip 287 px deep, the way on is ~120 px down' on a catch, a jump onto a near-level catch at a step-off. Its lay fix FIRST:
+down needs HEAD room both ways (a rule-2 bridge 70 px under a shelf, seed 1 389-881 @6861 under @6791; a band catch ~60 px over the
+storey laid after it, seed 2 238-418 @2314 under @2255); HEAD alone gives 7/48 blind drops of 301-313 px, so the catch search changes
+with it. Start 11:27 AM ET (by `date`); ended ~12:45 PM ET, about 1.3 h of the 2 h budget.
 
 ## Done-items (lead's cut, 12:00 PM ET: bots-to-the-shrine becomes its own lane 2 job)
 1. **w3.ts, World 3's kit on gen2:** W3_GROUND; W3_ART (bank, shelf, rock, glow, fern: World 3 inventory rows, in game, in scale);
