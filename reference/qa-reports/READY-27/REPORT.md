@@ -1,11 +1,8 @@
-# READY-27 REPORT (t-ready-27-wip; started 11:36 AM ET by `date`; this version written 12:06 PM ET)
+# READY-27 REPORT (t-ready-27-wip; started 11:36 AM ET by `date`; this version written 1:01 PM ET)
 ## EXACT NEXT STEP
-1. Read the head's suite + CI tool line verdicts (running on frozen /home/user/wt/shot27c = 39722119b, the src of this branch's head):
-   `grep "SUITE EXIT\|^EXIT\|^not ok" <scratchpad>/suite-head.txt <scratchpad>/ciline-head.txt`; compare any red with the base suite on main
-   (suite-base.txt) and with t-eng-27 (the race's 9 known reds). Fill the table below.
-2. drawcheck on 39722119b once the base suite frees a slot (the deep-river fix changes drawing; only lidded rivers, none on a listed stage).
-   On the lead's word: land t-ready-27-wip onto t-eng-27 (t-eng-27 cf7428424 + this branch; no race file touched).
-3. The 2-7 builder adds `columnDress: W2_WEIR` to 2-7's brief (gen2/worlds/w2.ts), beside pacer and post.
+1. None for READY-27: the lead's ruling, no landing (real context past 320k); BUILD-27 merges t-ready-27-wip itself.
+2. The 2-7 builder adds `columnDress: W2_WEIR` to 2-7's brief (gen2/worlds/w2.ts), beside pacer and post; runs drawcheck on 2-7.
+3. The 9 suite + 11 CI-line reds are t-eng-27 cf7428424's own (below); ENG-27w's landing d9425f091 fixes the race (the lead).
 ## Readiness list (code on main cdffdc627 and t-eng-27 cf7428424; frozen t-eng-27 run: 55 tests, 46 pass, 9 fail = the race)
 | Piece (2-7.md:66-81) | Verdict | Where / evidence |
 |---|---|---|
@@ -39,9 +36,10 @@ with a bed). Note for the lead: the out leg's deep rivers now show a bed under 1
 |---|---|
 | tsc / generalitycheck / artcheck / knowncheck / timecheck | PASS / PASS / PASS / PASS / PASS |
 | roadmapcheck | FAIL 13 on main too (proof commits on branches this container never fetched); this branch touches no ROADMAP |
-| unit suite (head) / base suite (main) | RUNNING / RUNNING |
-| CI tool line (rolled job: tests, tipwalk, registrycheck, tierBots, buildcheck) | RUNNING after the head suite |
-| drawcheck | after the base suite (the deep-river fix draws; it touches lidded rivers only); 2-7's builder runs it on 2-7 |
+| unit suite, head 39722119b (1 shard) | FAIL 9: 4067 tests, 4055 pass, 9 fail, 3 todo; the 9 = the mail-boat race reds, the same 9 on t-eng-27 cf7428424 (frozen run, 46/55) |
+| base suite, main cdffdc627 (1 shard) | PASS: 4042 tests, 4039 pass, 0 fail, 3 todo |
+| CI tool line, head | rolled tests FAIL 11 (341: 329 pass, 1 todo), the SAME 11 on t-eng-27 cf7428424 (frozen run, diff empty: wheel route/channel x6, riverRide/ride-skill plants x5); tipwalk PASS, registrycheck PASS, tierBots PASS 9/9, buildcheck PASS |
+| drawcheck, head | PASS (792 s) |
 ## Polish check
 - Weir: a tier about one Pokey; foam meets the grass, foot under the floor; ledges and the turn's pole in front. Boat: the mailman about
   Pokey's height, beside him in the river both ways. Letters/replies ~28 px. Door: letter in the slot; open door lit. The teal panel: FIXED.
