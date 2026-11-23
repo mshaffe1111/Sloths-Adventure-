@@ -1,3 +1,25 @@
+# ENG-DOWNBOT REPORT (lane 2: the down lay's head room, then the bots on a way down) — IN PROGRESS
+**EXACT NEXT STEP (box 1 handover):** (1) read STEP 0's verdict (CI tool line on frozen c1008d8ed: re-run it if no verdict is here).
+(2) lockall on a FROZEN worktree of this candidate vs a lock of c1008d8ed: `npx tsx tools/engine/lockall.ts --layouts 16 --out
+lock-base.json` (on c1008d8ed), then `--layouts 16 --check lock-base.json` here: the bar is 102/102 unchanged (every change is gated
+`flow === 'down'`, no listed stage travels down). (3) Item 2, the bots: `GEN2_DRAFT=3-1 npx tsx tools/inspect/castBots.ts --stage 3-1
+--seeds 1-40 --par 3` on the frozen candidate (first full run), then towerRoute.ts / firsttimer.ts on what stalls; a toy per skill RED off.
+Start 12:53 PM ET (by `date`). Box 1: 12:53-1:21 PM ET.
+
+## Done so far (candidate on t-eng-w3-wip-b)
+1. **Head room both ways going down (tower.ts towerCatches), general, every change gated on flow 'down':** (a) `cramped` keeps HEAD
+   (84 px) over AND under a down bough or bridge (was: only its own 24 px body); (b) rule 4 slides a down bough along under the end
+   (SLIDE: 60 px out past the fall line, 30 back) when the centred one is in the way at a height; (c) rule 2 tries each anchor in
+   order going down (was: the nearest only); (d) rule 1 runs a down end on only into ITS OWN side's wall, head room kept (found here:
+   a 60 px bridge's right end by the LEFT wall ran on to the RIGHT wall, a 1,196 px plank 70 px over a storey, easy 18).
+   **Evidence (probe reference/qa-reports/ENG-W3/probes/headroom.mts, 24 seeds x both):** base c1008d8ed: 1,156 squeezed pairs on
+   48/48 rolls, 0 refused; (a) alone: 1 pair, 7/48 refused for blind drops 301-382 px (ENG-W3a's finding reproduced); +(b): 1 pair,
+   1 refused; +(c)(d): **0 pairs, 0 refused.**
+2. **Planted tests, RED on base / GREEN here:** tower.test.ts 'towerCatches going down keeps his head room both ways' (3 plants, each
+   RED alone on c1008d8ed: the bridge 70 px under a shelf, the band catch 60 px over the storey, the 84-1280 run-on); w3.test.ts 'head
+   room on the way down' (24 raw rolls x both; RED on base: normal 1, 846-1099 @927 60 px under 987-1167 @867). tower.test 32/32,
+   w3.test 8/8, tsc PASS.
+
 # ENG-W3a REPORT (World 3's kit on gen2 + 3-1 drafted DOWN; WORLD-3-PLAN F1, lane 2)
 **EXACT NEXT STEP (handed over at the context line, the lead's call):** (1) the lead rules the candidate on t-eng-w3-wip-a, then
 land it on t-eng-w3 (not done here). (2) ENG-DOWNBOT (lane 2) starts from: `GEN2_DRAFT=3-1 npx tsx tools/inspect/castBots.ts --stage 3-1

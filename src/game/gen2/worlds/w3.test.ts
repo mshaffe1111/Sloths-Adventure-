@@ -125,6 +125,20 @@ test("the last flag is within 2000 px of way of the shrine, the floor's walk to 
   }
 });
 
+test('head room on the way down: no piece of 24 raw rolls has wood across it less than his body over it, none refused for a blind drop (ENG-DOWNBOT)', () => {
+  // (before ENG-DOWNBOT: 1,156 such pairs on 48 of 48 rolls: bridges run on 70 px under a shelf, catches 51-60 px over the next storey,
+  //  a run-on across the whole tower; head room alone then refused 7 of 48 for blind drops of 301-382 px, so the catch search widened)
+  for (const d of BOTH) for (const seed of Array.from({ length: 24 }, (_, i) => i + 1)) {
+    const st = draftRaw(seed, d);
+    assert.ok(!(st.gen2.errors ?? []).some((e) => e.includes('blind drop')), `${d} ${seed}: ${(st.gen2.errors ?? []).find((e) => e.includes('blind drop'))}`);
+    const P = st.platforms.filter((p) => p.type !== 'fragile' && p.type !== 'block' && p.y < st.gen2.tower!.floorY - 1);
+    for (const a of P) for (const b of P) {
+      const across = Math.min(a.x + a.width, b.x + b.width) - Math.max(a.x, b.x), over = a.y - b.y;
+      assert.ok(!(across > 30 && over > 1 && over < 84), `${d} ${seed}: x ${a.x}-${a.x + a.width}, y ${a.y} lies ${over} px under x ${b.x}-${b.x + b.width}, y ${b.y}`);
+    }
+  }
+});
+
 test("every piece of the draft is drawn by World 3's painted kit (terrain.ts footingsFor, world 3), none by World 1's cut art", () => {
   for (const d of BOTH) {
     const st = draftBuilt(1, d);

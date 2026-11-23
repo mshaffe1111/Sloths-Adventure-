@@ -234,6 +234,33 @@ test('towerCatches: every open end of a planted tower is given a catch, and no c
   }
 });
 
+test('towerCatches going down keeps his head room both ways: no bridge under a shelf, no catch just over the storey under it, no run-on across the tower (ENG-DOWNBOT)', () => {
+  const W = 1280, FLOOR = 3000;
+  /** every catch and every piece it lies across: his body (84 px, tower.ts HEAD) between them, over it or under it */
+  const roomy = (base: Platform[], cs: ReturnType<typeof towerCatches>) => {
+    const all = [...base, ...cs.map((c, k) => solid(c.x, c.y, c.w, 200 + k))];
+    for (const [k, c] of cs.entries()) for (const q of all) {
+      if (q.id === 200 + k || q.x >= c.x + c.w || q.x + q.width <= c.x || Math.abs(q.y - c.y) <= 1) continue;
+      assert.ok(Math.abs(q.y - c.y) >= 84, `the catch at x ${c.x}-${c.x + c.w}, y ${c.y} lies ${Math.abs(q.y - c.y)} px from the wood at x ${q.x}-${q.x + q.width}, y ${q.y}`);
+    }
+    assert.ok(cs.every((c) => c.w < W - 2 * TOWER.wall), 'no catch runs across the tower');
+    return all;
+  };
+  // (a shelf with its open end at x 724; the next wood 70 px under it and 36 px past the end: run on as a bridge, it lay under the shelf)
+  const shelf = solid(400, 1000, 300, 1), beside = solid(760, 1070, 200, 2), floor = solid(0, FLOOR, W, 3);
+  const a = towerCatches('down', [shelf, beside, floor], [], FLOOR, W);
+  assert.deepEqual(towerFalls('down', roomy([shelf, beside, floor], a), FLOOR, W), [], 'every end of the bridge plant is caught');
+  // (a shelf's open end over the storey under it, 347 px down (a turn): the band a catch was laid in is 51-60 px over that storey)
+  const under = solid(600, 1347, 400, 4);
+  const b = towerCatches('down', [shelf, under, floor], [], FLOOR, W);
+  assert.ok(b.some((c) => c.x <= 724 && c.x + c.w >= 724), 'the open end is caught');
+  assert.deepEqual(towerFalls('down', roomy([shelf, under, floor], b), FLOOR, W), [], 'every end of the band plant is caught');
+  // (a 60 px bridge by the left wall: its RIGHT end is near the left wall, and was run on to the right wall, 1,196 px)
+  const stub = solid(24, 1000, 60, 5), low = solid(560, 1070, 80, 6);
+  const c = towerCatches('down', [stub, low, floor], [], FLOOR, W);
+  roomy([stub, low, floor], c);
+});
+
 test("leaps: the tower's jump model says yes to everything the engine flies, and no to a turn", () => {
   const a = solid(0, 1000, 300);
   assert.ok(leaps(a, solid(300, 1000 - 214, 200)), 'the flown climb of a double jump onto a lip (214 px, reach.md §2)');
