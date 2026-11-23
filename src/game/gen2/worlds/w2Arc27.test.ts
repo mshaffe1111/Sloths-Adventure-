@@ -18,6 +18,7 @@ import { STAGE_LINES } from '../../pokeyJournal.ts';
 import { PHYS } from '../../physics.ts';
 import { DOORS_27, LINES_27, MISSION_27, STAGE_27 } from './w2Arc27.ts';
 import { STAGE_TABLE } from './stageTable.ts';
+import { stageLine } from '../../wayside.ts';
 
 const root = path.join(path.dirname(fileURLToPath(import.meta.url)), '..', '..', '..', '..');
 const cfg = generateAllLevels().find((c) => c.id === STAGE_27 && !c.secret)!;
@@ -54,6 +55,11 @@ test("2-7's lines are the story keeper's, word for word (reference/story/lines-2
   assert.ok(clue.includes(`'2-7': C('${rows.get('cluetitle')}', '${rows.get('cluetext')}')`), 'the Stage Cleared find');
   assert.ok(!/"hint\.2-7\.(basket|frames|open|porches)"/.test(fs.readFileSync(path.join(root, 'src/game/dotLinesData.ts'), 'utf8')), "the hand-built 2-7's hints are gone");
   assert.ok(/"way\.2-7"/.test(fs.readFileSync(path.join(root, 'src/game/dotLinesData.ts'), 'utf8')), 'way.2-7 is kept');
+  // way.2-7 waits on the first letter posted (the engine's moment 'post:letter'), so it never lands on the race's finish over the win line
+  const way = stageLine(2, 7);
+  assert.equal(way?.at, 'on', "way.2-7 is said on a moment of play");
+  assert.equal(way?.on, 'post:letter', "way.2-7 waits on 'post:letter'");
+  assert.equal(way?.text, 'I asked the mailman for the time. He said, "Soon." I\'m going to hold him to that.', 'way.2-7 word for word');
 });
 
 test('2-7 is gen2\'s: its own row and kit, the hand build deleted (new replaces old)', () => {
