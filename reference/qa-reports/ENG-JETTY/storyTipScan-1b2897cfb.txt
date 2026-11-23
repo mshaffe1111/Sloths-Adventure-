@@ -1,0 +1,21 @@
+1-1 seed 769 (normal+easy) | info | Up the bank! Step to step
+1-1 seed 769 (normal+easy) | info | No soft moss up here!
+1-2 seed 1 (normal+easy) | info | There's something down by the roots...
+1-7 seed 1 (normal+easy) | info | That's MY bush, dent and all! And that far-off screech is an eagle.
+1-7 seed 1 (normal+easy) | info | Her mark! She walked right past my bush with her chin up.
+1-8 seed 1 (normal+easy) | info | Her mark! And those coils ahead... the boa's branches.
+1-9 seed 1 (normal+easy) | info | Her mark! Her trail runs down to that river.
+2-1 seed 1 (normal+easy) | info | The trees just stop! The river's our road now.
+2-1 seed 1 (normal+easy) | info | Her mark, right on the village gate!
+2-1 seed 1 (normal+easy) | info | A whole village of sloths! They're all still waving.
+2-1 seed 1 (normal) | info | This river's deep. Don't touch the water!
+2-2 seed 1 (normal+easy) | info | Sit tight! The pads come back up.
+2-2 seed 1 (normal+easy) | info | Finally. Somewhere I can stand still.
+2-2 seed 1 (normal+easy) | info | Crown petals! The king only wants the best.
+2-2 seed 1 (normal+easy) | info | Enough for a crown! The king will be thrilled.
+2-2 seed 1 (normal+easy) | info | This river's deep. Don't touch the water!
+2-4 seed 1 (normal+easy) | info | So this is what Dot sees all day.
+2-4 seed 1 (normal) | info | This river's deep. Don't touch the water!
+2-5 seed 1 (normal+easy) | info | Shh. Hear that? Just the river again.
+2-5 seed 1 (normal) | info | This river's deep. Don't touch the water!
+storyTipScan: 20 laid tip line(s) dropped on Tips (Normal's default) over 13 listed stage(s)
