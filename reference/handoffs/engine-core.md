@@ -2,6 +2,24 @@
 
 Merged at INT-14 (11-20, t-int-14): §0zq-25d/§0zq-25c ENG-25c (2-5's snap rows level, the snapper's ground, the straddle), §0zq-NOISE ENG-NOISE (one noise channel), §0zq-PROWL ENG-PROWL (sight.up + the leap), §0zq-small3 ENG-SMALL3 (R-165.317/.319/.321), and PAINT-292 (World 1's painted planks and stones; no section here). Merged at INT-13 (11-19, t-int-13): §0ENG23 ENG-23 (followers, the heron reads the line) and §0zl-168 TIME-168 (timecheck), §0zm-25b ENG-25b (the snapper bot skill, the meter's snap channel) and §0zl-25 ENG-25 (2-5's snap stones and snapper rows), §0zn-26b ENG-26b and §0zm-26 ENG-26 (the water wheel), §0W2A ART-W2A (2-3's painted follow poses), §0zo ART-W2B (the wheel's painted draw), §0zo-285c/§0zo-285b/§0zo-285 ENG-285 (the judges and bots fly the engine's Pokey), §0zp-284 FIX-284/284b (2-2's big pads, the real tap hop), §0zp-24d BUILD-24d, §0zn-24c ENG-24c (the raft look, the glow) and §0zm-24 BUILD-24 (2-4) joined; rewritten at the INT-12 merge (11-18, t-int-12): four members wrote here the same day, so labels are suffixed where they met: §0zm-22p ART-22P (CI's seed-list matrix, R-165.278); §0zl-24 ENG-24 (a liana over a river; its REPORT cites it as §0zl); §0zm BUILD-19b, §0zn ENG-19c and §0zl BUILD-19 (t-build-19, the labels its REPORT cites). Before them FIX-22b (11-15): section 0zk.
 
+## 0zr-W3a. ENG-W3a (t-eng-w3, 11-23): World 3's gen2 kit, a GENERAL draft state, 3-1 drafted DOWN; gen2's down flow fixed (WORLD-3-PLAN F1, R-165.313; lane 2, R-165.404)
+- WHERE: gen2/worlds/w3.ts (W3_GROUND, W3_ART, W3_CAST ocelot/jaguar, the way-down pool w3Ledge/w3Drops/w3Walk: drops are STEP-OFFS,
+  gapPx 8-20); listed.ts KITS 'w3', World 3's finish W3 (identity, never World 1's), draftListed; stageTable.ts DRAFT_TABLE + draftRow.
+- THE DRAFT STATE (the lead's ruling: any world's next stage): DRAFT_TABLE row = { kit, travel? }; no game path reads it. Tools ready it
+  with GEN2_DRAFT=<id> (tools/engine/draft.ts -> draftReady.ts: LISTED row, HAND_STAGES/W2_STAGES shadow lifted, STAGE_PLAN travel, in
+  that process; imported FIRST in libstage.ts and castBots.ts, before realPlay.ts builds `levels` at load; draftCheck refuses a late
+  import). Pages: draftBoot.ts, loaded before /src/main.tsx by tools/engine/draftshoot.mjs (2x stills). addlevel: GEN2_DRAFT=<id>
+  addlevel <id> prints DRAFT READY (row, rolls, sheets); bots = OWED, listing needs (routed, list, flown, drawcheck, CI) = LISTING.
+  Listing a draft = move its row to STAGE_TABLE, delete its HAND_STAGES entry, give stagePlan.ts its travel, in ONE commit.
+- DOWN FLOW (no listed stage travels down, so no lock moved; 4-7, 6-7, 8-6 will lean on it): tower.ts towerCatches rule 4 going down
+  also tries a head's room (HEAD) under the piece up to TOWER.clear-HEAD (the band alone was a 10 px slot: blind drops 350-560 px), never
+  squeezed; routeAt measures the floor's walk to the shrine (down only); pipeline.ts: the floor is a flag spot on a way down.
+- BOTS ON A WAY DOWN (towerRoute.ts dropTo + down turns; firsttimer.ts downEnd, step off not jump, press down onto a turn vine): expert
+  17-21 rescues/run -> 1-3. NOT DONE: its own lane 2 job (the lead 11-23). TRAP: a band catch can sit ~60 px over the storey laid later
+  (seed 2 y 2314: 238-418 @2314 under the 2255 row): the squeezed-catch lay fix belongs to that job.
+- TRAP: the game's build REROLLS a roll that fails a verdict, so a test of a verdict judges RAW rolls (buildGen2Stage), not generateStage
+  (w3.test.ts draftRaw; two plants were MISSED until it did).
+
 ## 0zq-PICK. PICK-W1 (t-pick-w1 from t-int-15 0eefc707e, 11-20 evening): the testers' link plays all of World 1, picked on its front page (R-165.343)
 - WHERE: playRecorder.ts CTEST_STAGES (1-1..1-9, the ONE list; CTEST_LEVEL_ID is deleted), isCtestStage, savedCtestStage/saveCtestStage
   ('sloth_qa_ctest_stage'), ctestPlayed/markCtestPlayed ('sloth_qa_ctest_played', the tile tick). ControlTestGate.tsx: StagePicker,
