@@ -7,8 +7,10 @@ Merged at INT-14 (11-20, t-int-14): §0zq-25d/§0zq-25c ENG-25c (2-5's snap rows
   firsttimer.ts; bank 24 px, log RACE_MARGIN; ties: the smaller hold). It moves no 2-7 row: the expert's 0.70 s glide single is the quickest
   safe flight there (ENG-27/w/racepick-airtimes-expert.txt). Do not look for the expert's losses in E's order again.
 - **The knobs (ENG-27/REPORT.md, ENG-27w):** the gap (river.ts gapFor 72 / RiverRow.gap) makes the race HARDER when smaller, and riverLay
-  refuses under 60 px; the boat's pace is the knob (the pick rule marked 72 / 80%). A pace under ~94% (Normal) / ~97% (Easy) breaks the lay's
-  flown ride-only cap (pacerLay.ts seconds = min(middle x (1 + share), rideOnly - under); pacerFaults): setting it needs the lead's ruling.
+  refuses under 60 px; the boat's pace is the knob. SET (the lead's rulings): RACE_PACE { normal 0.81, easy 0.9 } (w2.ts) into W2_RACE.margin;
+  the lay's flown ride-only cap is gone, its principle measured instead: pacerLay.test flies the ride-only bot on home 1-3 and post 4-5, both
+  settings, each lost by `under` (2 s) or more. TRAP: the ride-only bot rides some Easy races fast (home E2 112.8 s, post E5 124.2 s): one
+  pace for both settings (81%) let it WIN two Easy races the 19-row grid never flew. Any pace change flies every race the test flies.
 - **The grid tool:** ENG-27/w/table-27w.mts.txt (+ cell.sh.txt): one row in ~3 s, gap set on the W2_RIVERS rows at runtime, pace on the laid
   boat; summ.py.txt makes the table and marks the pick rule. post N4's middle loss is ~55 s of bank waits before unjudged boarding presses.
 

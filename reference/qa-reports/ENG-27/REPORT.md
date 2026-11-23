@@ -1,16 +1,20 @@
 # ENG-27w REPORT (start 11:35 AM ET by `date`; base t-eng-27-wip-27v 8861ae80b; on t-eng-27-wip-27w: E as ruled daf9ca777 (D117), NOT on t-eng-27)
 ## EXACT NEXT STEP (read only this section, D90)
-**THE LEAD'S RULINGS (received): pace 81%; the cap (a): the principle stays (riding alone never wins, by 2 s or more), its measure moves
-from the flown estimate to the ride-only bot, end to end on every race, both settings (D121); post N4's bank waits are a bot follow-up.**
-**SET on cccda7fe5** (W2_RACE.margin = 1.07/RACE_PACE - 1, 1.10/RACE_PACE - 1, RACE_PACE 0.81; pacerLay seconds = middle x (1 + share);
-pacerFaults keeps 'over the careful middle'; pacerLay.test flies the ride-only bot home seeds 1-3 and post seeds 4-5, both settings, each
-lost by `under` (2 s) or more). **The 72 / 81% cell flown first (runtime pace, frozen daf9ca777): PASS**: expert 5/5 (+36.2 +17.9 +3.8
-+29.8 +9.5), middle 6/7 (+29.6 +28.3 +14.0 +34.0 +33.4 -27.6 +29.8), ride-only 0/7 (closest -3.4, Easy 1), every win +3.8 s or more
-(w/cell-72-81-flown-runtime.tsv). **Running on frozen cccda7fe5 (fzhead):** the suite (tsc, unit 1/2 + CI tool line; unit 2/2), the set head's
-own cell (data pace, must match the runtime cell), the ride-only plant (RACE_PACE 0.80 on fzplant: RED on home Easy 1). NEXT: read the
-verdicts (scratchpad/w/out/suite-cccda7fe5.*), land cccda7fe5's line on t-eng-27 (git fetch t-eng-27; merge; push), send the lead the hash.
-**Follow-up (bot, not tonight):** post N4's middle stands ~55 s on banks before unjudged boarding presses (item 5); at 81% it is the
-middle's one loss (-27.6 s).
+**THE LEAD'S RULINGS (received):** pace Normal 81%; the cap (a): the principle stays (riding alone never wins, by 2 s or more), measured
+on the ride-only bot end to end on every race, both settings (D121); then Easy 90% (below); post N4's bank waits are a bot follow-up.
+**SET on d794dcda1:** RACE_PACE { normal 0.81, easy 0.9 } (w2.ts); W2_RACE.margin = 1.07/0.81 - 1, 1.10/0.90 - 1; pacerLay seconds =
+middle x (1 + share), the flown ride-only cap gone; pacerFaults keeps 'over the careful middle'; pacerLay.test flies the ride-only bot on
+home seeds 1-3 and post seeds 4-5, both settings, each lost by `under` (2 s) or more. **Flown first:** Normal 72 / 81% PASS (expert 5/5,
+smallest +3.8; middle 6/7; ride-only 0/7, closest -3.4; w/cell-72-81-flown-runtime.tsv; the set head reproduces it within 0.1 s,
+w/set-vs-runtime-81.md). **Easy at 81% FAILED the principle** (found by pacerLay's end-to-end test on races the grid did not have: the
+ride-only bot rides home Easy 2 in 112.8 s and post Easy 5 in 124.2 s and WINS both; plant RED at 0.80, w/pacerLay-rideonly-RED-plant-
+pace080.txt). **Easy 90% flown: PASS** (middle wins all 5 Easy races +15.8..+22.0 s; ride-only loses all 5 by 4.6 s or more;
+w/easy-90-flown.tsv); 88% fails (post Easy 5 ride-only -1.9 s, w/easy-88-flown.tsv).
+**NOW:** the gates on frozen d794dcda1 (fzhead2): tsc, unit 1/2 + CI tool line (pacerLay, pacerRespawn, hopJudged inside), unit 2/2
+(scratchpad/w/out/suite-d794dcda1.*). NEXT: read the verdicts; merge t-eng-27-wip-27w into t-eng-27 (t-eng-27 holds only report and
+evidence commits since the fork; REPORT.md conflicts: take ours, it holds t-eng-27's text whole below ENG-27u's heading); push; send the hash.
+**Follow-up (bot, not tonight):** post N4's middle stands ~55 s on banks before unjudged boarding presses (item 5): the middle's one loss
+at every pace (-27.6 s at 81%).
 1. **E as ruled (the shortest aimed flight by airtime; ties: the smaller hold) is built and moves NO race row.** daf9ca777: hopFlight /
    gateAirtime read the aimed flight's airtime; racePick takes the shortest safe one. Toy RED on the kind-then-hold plant, GREEN on the ruled
    order (w/toyAir-RED-plantKindThenHold.txt, w/toyAir-GREEN.txt; hopJudged 8/8). On the real race the ruling's premise does not hold: the
@@ -21,28 +25,17 @@ middle's one loss (-27.6 s).
    -> 2/5. **56 does not lay**: riverLay refuses 'under 60 px between logs' on every seed (w/gap56-does-not-lay.txt; a design rule, not
    mine), so 60 (the smallest gap that lays) stands in for 56. Why it hurts (read from the rows, not traced): the bot's time grows (middle
    N1 at 64: him 124 s against 86 s at 72; race-leg falls middle 8 -> 11, ride-only 7 -> 15, expert 5 -> 1) while the boat's leg shrinks.
-3. **Pace is the knob. (72, 80%) PASSES the pick rule**: expert 5/5 (smallest +5.2), middle 6/7 with both Easy won (its loss: post N4,
-   -26.0), ride-only 0/7, every win +5.2 s or more. (72, 85%) misses by ONE row: expert N3 -1.6 s (pace about 82% would give it +2.0, by
-   the boat's arithmetic, NOT flown). Risk named: at 80% the ride-only bot loses Easy 1 by only 1.9 s and Easy 3 by 4.7 s.
-   **The window (w/pace-window.txt):** pace moves only the boat's clock (lives identical at every pace), so margin = boat/pace - him from
-   the 100% row, within 0.64 s of every flown pace cell. The pick rule passes for pace ~78.8-82.2%; with the ride-only losing by 2 s or
-   more (the lay's `under`, measured) ~80.1-82.2%. 80% (flown) passes the rule but the ride-only's Easy 1 is 1.9 s, under that 2 s; **81%
-   sits mid-window** (expert N3 ~+3.8, ride-only Easy 1 ~-3.4; arithmetic, one cell flies it in a minute).
-4. **THE RULING NEEDED: every pace under about 94% (Normal) / 97% (Easy) breaks the lay's cap** (pacerLay.ts:82: the boat's time <= the
-   designer's FLOWN ride-only time less 2 s; pacerFaults; pacerLay.test pins it per roll; w/pace-cap-per-row.txt: 93.5-94.1% Normal,
-   96.7-96.9% Easy). At 80% the boat is 12-16 s slower than that flown ride-only, yet the ride-only BOT still loses 7/7: the flown ride-only
-   rate (87-104 px/s) is far faster than the bot rides. Two ways, the lead's call: **(a, my recommendation)** margin shares as data
-   (W2_RACE.margin: normal 0.07 -> 0.3375, easy 0.10 -> 0.375, i.e. 1.07/0.8 and 1.10/0.8) and the flown-ride-only cap replaced by the
-   measured one (the ride-only bot loses every race by 1 s or more; pacerLay.test's bound asserts it), a game rule: the Designer's; or
-   **(b)** keep the cap and re-fly W2_RACE's rideOnly rates with the ride-only bot (data only, but a re-fly: not today).
+3. **Pace is the knob.** (72, 80%) passed the pick rule; (72, 85%) missed by one row (expert N3 -1.6 s). Pace moves only the boat's clock
+   (lives identical), so margin = boat/pace - him, within 0.64 s of every flown cell: the rule's window ~78.8-82.2% (w/pace-window.txt).
+4. **The cap (ruled (a), set):** a pace under ~94% Normal / ~97% Easy broke the lay's flown ride-only cap (w/pace-cap-per-row.txt), while
+   the ride-only BOT still lost: the flown ride-only rate (87-104 px/s) rides far faster than the bot. Its measure is now the bot's.
 5. **post N4's -51.1 s, traced once (E+J, middle; w/trace-postN4-middle-EJ.txt): about 55 s standing on river banks** (#47 11 s, #57
    10 s, #78 17 s, #72 5 s, #84 5 s), each ended by an UNJUDGED press (the bank-to-log boarding, outside E's race gate and edgeWait); 12
    race presses, 0 falls from them. His margin was +2.8 s before the first bank wait. It stays the middle's one loss at every pace.
 
 ## The grid (frozen trees; 2-7 out-and-back toy; tool w/table-27w.mts.txt, rows w/grid-rows-daf9ca777.tsv, table w/grid-table.md)
-Ew = E as ruled (daf9ca777); EJ = E+J (8861ae80b). Pace = the laid boat's speed x pace (its seconds / pace, the cap NOT re-applied).
-Margins = boat - him, s. Rows: middle N1 N2 N3 E1 E3 pN4 pN5; expert N1 N2 N3 pN4 pN5; ride-only as the middle. Every run reached the shrine;
-every row laid the gap set (logs-gap in the rows).
+Ew = E as ruled (daf9ca777); EJ = E+J (8861ae80b); pace = the laid boat's seconds / pace. Margins = boat - him (s). Rows: middle N1 N2 N3
+E1 E3 pN4 pN5; expert N1 N2 N3 pN4 pN5; ride-only as the middle. Every run reached the shrine; every row laid the gap set.
 | bot | gap / pace | middle | middle margins | expert | expert margins | ride-only (closest) | smallest win | pick rule |
 |---|---|---|---|---|---|---|---|---|
 | EJ | 72 / 100 | 5/7 | +7.6 +6.7 -7.5 +11.1 +10.9 -51.1 +5.6 | 2/5 | +14.2 -3.7 -17.8 +6.2 -14.8 | 0/7 (-26.3) | 5.6 | fail |
@@ -57,17 +50,14 @@ every row laid the gap set (logs-gap in the rows).
 | Ew | 60 / 100 | 3/7 | -47.0 +1.9 -15.2 +19.0 +15.1 -15.5 -15.5 | 2/5 | +5.1 -19.9 +13.4 -11.1 -25.4 | 0/7 (-20.4) | 1.9 | fail |
 | Ew | 60 / 90 | 3/7 | -36.9 +11.6 -4.3 +29.5 +26.5 -4.7 -4.3 | 2/5 | +15.2 -10.1 +24.3 -0.3 -13.5 | 0/7 (-9.0) | 11.6 | fail |
 | Ew | 60 / 80 | 6/7 | -24.3 +23.8 +9.3 +42.6 +40.7 +10.0 +9.6 | 5/5 | +27.8 +2.3 +37.9 +13.3 +0.4 | 1/7 (+5.2) | 0.4 | fail |
-Lives lost (race leg), middle / expert / ride-only: gap 72: 12 (8) / 9 (5) / 11 (7); gap 64: 15 (11) / 5 (1) / 19 (15); gap 60: 15 (11) / 8 (4)
-/ 17 (13); pace moves no life (the bots play the same; only the boat's clock changes).
+Lives lost (race leg) m / e / r: gap 72: 12 (8) / 9 (5) / 11 (7); 64: 15 (11) / 5 (1) / 19 (15); 60: 15 (11) / 8 (4) / 17 (13).
 
-## Polish check
-No screen changed (bot code, a test, evidence). Nothing drawn to look at.
-## Pushback
-Yes, two, with evidence: E's ruled order moves no row (item 1); the gap knob hurts and 56 does not lay (item 2). Lessons applied: D111 (box by
-`date`), D113 (no foreground waits), D115 (every run on a chattr-frozen tree), D117 (candidates on -27w), D121 (the trace reads the player's
-time end to end), D123 (two heavy runs), D126 (the CI tool line in the suite script).
-## Unresolved
-The pick is not set (the ruling, item 4). The base suite verdict on daf9ca777 is pending at this commit. engine-core.md not yet rewritten.
+## Polish check / Pushback / Suggestions / Unresolved / Method / Turnover
+No screen changed (bot code, data, tests). Pushback held: E's ruled order moves no row; the gap knob hurts (56 does not lay); 81% failed on
+Easy (the end-to-end test caught it, D121). Suggestion (bot packet, BOTS lane): the bank-to-log boarding wait (post N4, ~55 s) judged by
+E's pick, planted on post N4. Unresolved: the gates' verdict on d794dcda1 at this commit (above). Method (level.md / dispatch-packet.md):
+a grid of design numbers flies EVERY race the end-to-end test flies (both settings, home and post), not a sample: 81% passed 19 rows and
+failed two Easy races outside them. Lessons applied: D111, D113, D115, D117, D121, D123, D126. Turnover: engine-core.md §0zq-27w.
 
 # ENG-27v REPORT (start 11:12 AM ET by `date`; box 11:40 AM ET; base t-eng-27-wip-27u a069e911c; on t-eng-27-wip-27v: E b20128270, D's judge d2bd53f61 (D117), NOT on t-eng-27)
 ## EXACT NEXT STEP (the next 2-7 job, lane 1, when a slot frees; read only this section, D90)
