@@ -18,6 +18,15 @@ frozen (unfreeze with chattr -R -i before removing). Probes: scratchpad/probe/tr
    2-5's footing (R-165.339), filed by the lead as its own World 2 job (should Easy forgive a kid walking off a moving log's end). So the
    proven list needs adult, middle, expert and child on BOTH settings with 0 rescues: `castBots --bots adult,child,middle,expert --proven`.
    The kid table goes in the LEVEL-LOG row.
+   STILLS PRE-LOOK (lead allowed; NOT the final set, rule 29: reshoot on the GREEN head): seed 1, both settings, both ways 2x, on
+   scratch 0a010f11e + fix (a), 52 stills in the scratchpad (stills/n27-*, e27-*). Seen: jetty/doors, at-him, upstream, weir, bend, home
+   jetty (Normal); upstream (Easy). Findings: (a) `way.2-7` (the keeper's kept wayside line) speaks AT THE HOME JETTY (x1000), where
+   win/lose will speak once ENG-JETTY's race-end line lands: a collision to settle with the lead/keeper before wiring win/lose.
+   (b) My x picks for porches (11100) and stilts (5600) missed their pieces (11100 is between planks, so "high" fell to the home bank):
+   pick each beat's x ON a piece from the built platforms (probe porch.mts), never by the section's span. Reshot porches at 11200.
+   (c) The home rivers' logs ride low under the water sheen: World 2's deep-river art (the same on `upstream`), intended, not a defect.
+   (d) The weir: the falls' foot has a hard horizontal seam with coloured specks at the pool line (x15800 upright): judge it zoomed on
+   the final set. (e) Upright, the home leg sits under the out leg's soil slab (x10000): the slab's lower edge is ragged; stacked-leg look.
 5. When the lead sends ENG-JETTY's and ENG-BOT27's hashes (the w2.ts:372 fix, the race-end line, StageHint story, the child bot fix): merge into t-build-27-wip;
    wire `w27.win`/`w27.lose` (lines-2-7.md:24-25, verbatim) on the race-end hook, set story on handover/race; hold all four in
    w2Arc27.test; the whole suite + the CI tool line on a frozen head; castBots --proven 1-40 both settings; then the list (seedlist 2-7,
