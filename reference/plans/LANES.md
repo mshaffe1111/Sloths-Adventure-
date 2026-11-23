@@ -3,7 +3,11 @@
 Matt, 11-23: "What have you designed to get us to this 2-hour? Instead of just allowing the workers to dictate the time." This board is
 that design. The lead keeps it at every check-in; a check-in that does not update it is a red check-in (LEADER-STANDARD-WORK).
 
-## The rules
+## The rules (the persona's own, reference/roles/LEAD-PERSONA.md: 'Run a pipeline', 'Ready to build, or it doesn't start', 'Strict timelines')
+0. **Three levels always in flight:** engine pieces and bot skills for level N+2, design, art and Dot's lines for N+1, the build of N. A builder
+   who must build engine mid-level is the lead's plan failing. Every job's report-by is an EASTERN CLOCK TIME in this board and in lead.md's
+   members table; at that time it reports or the lead stops it, and a missed time gets a cause and the lead's call the same check-in
+   (help, cut, replace); Matt hears the moment a slip moves a level's ETA.
 1. **Two lanes, always both staffed.** LANE 1 builds levels and releases. LANE 2 builds the pieces the NEXT levels need (engine pieces,
    bot skills, meter channels, art), at least two stages ahead and into the next world (Matt 11-19: "at least 2 stages ahead"). A
    Lane 2 member is never pulled into a Lane 1 level. With two helpers: one per lane. A check-in with no one on Lane 2 is red.
@@ -22,10 +26,10 @@ that design. The lead keeps it at every check-in; a check-in that does not updat
 ## The board (11-23)
 | Lane | Job | Budget | Started | Burn | Status / the lead's decision at the stop |
 |---|---|---|---|---|---|
-| 1 | ENG-26s: release 4's base (main into t-build-26, R-165.399's reds at their causes, the floorAt fix lands) | 1 h (hard stop 2 h) | 11:12 AM | | running |
+| 1 | ENG-26s: release 4's base (main into t-build-26, R-165.399's reds at their causes, the floorAt fix lands) | 1 h (hard stop 2 h) | 11:12 AM | | running; REPORT BY 12:15 PM ET |
 | 1 | 2-7's race (ENG-27 a..v: 22 sessions so far, never budgeted) | ENDS at ENG-27v's box (about 11:40 AM) | 11-20 | about 22 sessions | the lead makes the race call on ENG-27v's table; no successor by default |
 | 1 | 2-6's Easy residue (R-165.398: cause B, the lip family, child E 50, adult N 4, the floor), then its list | 4 h in all, from ENG-26s's landing | | | if 2-6 is not at 60 of 100 by then, the lead cuts (re-lay or simplify the spots that fail), no open-ended bot work |
-| 2 | ENG-W3a: World 3's kit on gen2 + a 3-1 row travelling down (WORLD-3-PLAN F1) | 2 h (hard stop 4 h) | when ENG-27v ends | | next |
+| 2 | ENG-W3a: World 3's kit on gen2 + a 3-1 row travelling down (WORLD-3-PLAN F1) | 2 h (hard stop 4 h) | about 11:45 AM | | next; REPORT BY 1:45 PM ET |
 | 2 | ENG-PROWL: 'prowlers never look up' + 'lit = seen' (F3) | 1 h (S) | after ENG-W3a | | queued |
 | 2 | ENG-DARK: dark + light ring as one shared brick, the glowworm wake below (F2) | 2 h (M) | after ENG-W3a | | queued |
 | 2 | W3-ART-1: World 3's standing and climbing art on Hugging Face (F4, about $4-8) | 2 h (M) | any free slot | | queued |
