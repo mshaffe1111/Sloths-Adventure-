@@ -266,6 +266,9 @@ export const DEEP_BED_FADE = 70;
 /** RIVER_DEEP at no alpha: the bed's fade ends in it */
 const RIVER_DEEP_CLEAR = 'rgba(38, 66, 71, 0)';
 const DEEP_FADE_STOPS = [[0, RIVER_DEEP], [1, RIVER_DEEP_CLEAR]] as const;
+/** a river's water over its logs (engine.ts drawRivers' over pass), painted and plain, as gradient stops (drawThrift.ts vGradient) */
+export const OVER_WATER_PAINTED = [[0, 'rgba(96, 160, 152, 0.3)'], [1, 'rgba(38, 66, 71, 0.75)']] as const;
+export const OVER_WATER_PLAIN = [[0, 'rgba(56, 148, 168, 0.55)'], [1, 'rgba(24, 90, 120, 0.8)']] as const;
 /**
  * Where a deep river's flat fill ends (y), from its painted strip's foot: at the view's foot (`bottom`) for an open river, which runs down
  * out of sight; at the strip's foot when a leg runs under the river (`lidded`), the banks' earth under it from there (drawRiverWater)

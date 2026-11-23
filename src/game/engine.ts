@@ -106,13 +106,11 @@ import { drawMudSplash, drawW1Creek } from './w1Creek.ts';
 import { paintedBank, setW1PitWater } from './w1Pits.ts';
 import { stackZonesOf, aboveLinesPath } from './groundStack.ts';
 import { polygonInBox, vGradient } from './drawThrift.ts';
+import { OVER_WATER_PAINTED, OVER_WATER_PLAIN } from './riverArt.ts';
 import { stageClock, type StageClock } from './clock.ts';
 import { moveRide } from './ridePlay.ts';
 /** how far inside a bank's end the water drawn over him stays (its painted face leans up to about this far) */
 const ZONE_INSET = 14;
-/** a river's water over its logs (drawRivers' over pass), painted and plain, as gradient stops (vGradient) */
-const OVER_WATER_PAINTED = [[0, 'rgba(96, 160, 152, 0.3)'], [1, 'rgba(38, 66, 71, 0.75)']] as const;
-const OVER_WATER_PLAIN = [[0, 'rgba(56, 148, 168, 0.55)'], [1, 'rgba(24, 90, 120, 0.8)']] as const;
 import { drawLadder, drawLily, drawLogComing, drawRiverFoam, drawRiverLog, drawRiverTailEnd, TAIL_END, drawReedClump, drawRiverWater, drawSafeRiverOver, safeLogLine, riverWaterOutline, drawW2Cage, drawW2Decor, drawW2Lift, riverArtReady, RIVER_UNDER_BANK, deepFillFoot, riverPaintFoot } from './riverArt.ts';
 import type { RiverZone } from './river.ts';
 import { rideHidden, ridersOf, stepRiders, type Riders } from './ridePickups.ts';
