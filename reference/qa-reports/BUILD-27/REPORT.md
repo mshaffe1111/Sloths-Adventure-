@@ -1,13 +1,34 @@
 # BUILD-27 REPORT: 2-7 "The Mailman's Route" (t-build-27-wip; started 12:35 PM ET 11-23 by `date`; budget 2 h, report by 2:40 PM ET)
 ## BUILD-27e (finishing; started 3:29 PM ET 11-23 by `date`; this section written 3:31 PM ET; report by 4:45 PM ET; hard stop 5:15 PM ET; box 28 min / 320k)
-### EXACT NEXT STEP (BUILD-27e's; read this first)
-Branch t-build-27e (fresh from t-build-27-wip 51ff9c43f): merged t-eng-27 09c23c1b0 (ENG-HUD27b, clean), cherry-picked BUILD-27d's
-92fcae5bf d1df3070b 361599287 fecf714c6 04db57dc9 f18614471 (letter 4, judged flip, the clip rig, dry stills); trial merge 533e28c29 dropped.
-Next: errs.mts 1-12 -> [] every roll; then ENG-BOT27b's hash -> merge, NEW frozen tree, castBots --proven 1-40 (bar 24/40), list, --check.
-DONE (3:34 PM ET), all on frozen /home/user/wt-b27e-f1 = 2cfd1871d: errs.mts 1-12 [] on every roll both settings; tsc PASS;
-w2Arc27 + judgedTable + easyMode 21/21 PASS. BASELINE before ENG-BOT27b: castBots 2-7 seeds 1-40 all bots both settings --proven = 23/40
-(bar 24): adult N 37 (rescued 26,27,30; seed 6 117.7 s under the floor), child N 29 (151 water lives), child E 39 (seed 4), middle N 36
-(7,10,17,33), expert N 39 (7); adult E, middle E 40. Run ~1.5 min. Sent to the lead.
+### EXACT NEXT STEP (BUILD-27e's; read this first; written 3:47 PM ET by `date`)
+**Head: t-build-27e 42a5e6ef9** = t-build-27-wip 51ff9c43f + t-eng-27 09c23c1b0 (ENG-HUD27b, clean) + BUILD-27d's 92fcae5bf d1df3070b
+361599287 fecf714c6 04db57dc9 f18614471 (letter 4, judged flip, clip rig, dry stills; trial merge 533e28c29 dropped) + ENG-BOT27b
+t-eng-27-wip-bot27-aim 9480d879b (merged 5a6847ffe, clean) + 2-7's proven list. Frozen trees: /home/user/wt-b27e-f2 = 5a6847ffe (its
+provenIndex.ts was unfrozen to write the list: do not reuse), /home/user/wt-b27e-f3 = 42a5e6ef9 (src, tools chattr +i; proven/ writable).
+node_modules: /home/user/wt-b27e/node_modules (`npm ci --legacy-peer-deps`), symlinked into each frozen tree.
+DONE (numbers on frozen trees): errs.mts 1-12 [] every roll both settings (f1 2cfd1871d); tsc PASS; w2Arc27 + judgedTable + easyMode 21/21.
+SHIP NUMBER (f2 5a6847ffe): castBots --stage 2-7 --seeds 1-40 --bots adult,child,middle,expert --setting both --par 4 --proven =
+**29/40** (bar 24): adult N 37, adult E 40, child N 36 (out 6,16,26,29), child E 39 (4), middle N 36 (7,10,17,33), middle E 40, expert N 39
+(7). Baseline before BOT27b 23/40 (child N 29). LIST: seedlist.ts 2-7 = 100 of 100 tried, quiet 1.1 s, version dcdc8f40; --check PASS
+(verdicts refuse 0 of 100); castBots --seeds 1-100 ON THE LIST = **69/100** (bar 60): adult N 96 (3 under the floor), adult E 100, child N
+84, child E 89, middle N 98, middle E 100, expert N 100. All sent to the lead.
+RUNNING at handover on f3 42a5e6ef9 (early, to catch tests that lay 2-7 as a draft now it is listed, D114): the unit suite -> scratchpad
+suite-f3.txt; the CI tool line (gates.yml:157) -> scratchpad tool-f3.txt. If the session is gone, they are UNRUN: re-run them.
+NEXT, in order:
+1. When t-eng-27 carries ENG-BOT27b (lead: by 4:05 PM ET), `git merge origin/t-eng-27` into t-build-27e: it must add no code
+   (`git diff 42a5e6ef9 HEAD -- src tools` empty but merge bookkeeping); if it adds code, re-run the ship number.
+2. When DRESS-27b lands (lead: about 4:30 PM ET; DRESS-27's items 1-3 are on t-eng-27-wip-dress; 2-7 pristine breaks drawcheck at 6
+   points, DRESS-27b fixes them), merge it, take a NEW frozen tree = THE FINAL HEAD.
+3. On the final head, ONCE: the unit suite (CLAUDE.md list, timeout 7200000, background) and the CI tool line (gates.yml:157) and
+   tierBots (gates.yml:168), drawcheck, clipcheck, registrycheck; tsc; also seedlist 2-7 --check again only if src changed under it.
+4. Final stills on the final tree's dev server (`npx vite --port 4318 --strictPort --host 127.0.0.1`; PW=/opt/node-tools/node_modules/
+   playwright/index.mjs): BUILD-27d's command (section below, "Final stills"), DIFF=normal and DIFF=easy, upright and sideways, the weir
+   pool zoomed, the porches. The list is now in: stills/clip take seeds as LIST VARIANTS (set LAYOUT; the rig refuses a built seed that
+   is not the record's): re-record racerec with the variant the puppet builds.
+5. The race clip: probes27d/racerec.mts + racepuppet.mjs (BUILD-27d's step (d) below): win take (Dot's line on screen, no card over it;
+   name the frame) and a lose take; ffmpeg -framerate 15 -> mp4.
+6. Send the lead: hash, yield (29/40; list 69/100), the gate lines with PASS/FAIL and suite totals, the clip path, the stills' paths.
+Process slip to own: one command in this session used a shell '&' (seedlist --check beside castBots on f3); both finished, verdicts read.
 
 ## BUILD-27d (finishing; started 2:25 PM ET 11-23 by `date`; report by 3:50 PM ET; hard stop 4:35 PM ET; box 28 min / 320k)
 ### EXACT NEXT STEP (BUILD-27d's; read this first)
