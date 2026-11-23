@@ -48,7 +48,7 @@ import { findTarget } from '../../src/game/dotGuidePerch.ts';
 
 /** a move tip about one of these is over once none is in view (as DotGuide.tsx has it) */
 const GONE_TOPICS = new Set<TopicId>(['trunk', 'vine', 'rope', 'log', 'foe']);
-import { driftX, DRIFT_CATCH, lianasOver, LOG_DROP, logClock, onRiver, riverEnd, type RiverZone } from '../../src/game/river.ts';
+import { driftX, DRIFT_CATCH, lianasOver, LOG_DROP, logClock, onRiver, riverAt, riverEnd, type RiverZone } from '../../src/game/river.ts';
 import { RIDE } from '../../src/game/ride.ts';
 import { padShows } from '../../src/game/pieces/padPiece.ts';
 import { PAD_FAIR } from '../../src/game/gen2/rideLay.ts';
@@ -1640,9 +1640,13 @@ export class FirstTimerRun {
   floorAt(x: number, y: number, down = 40): Platform | null {
     // (a top under the water is no floor to him: a cage's lift resting in its pool, 10 px under the surface, round 5 2-8, read as a
     // step down and was walked onto, a drowning, again and again; a person sees it is under water)
-    const river = (this.sim.stage.rivers ?? []).find((r) => x > r.x0 && x < r.x1);
+    // (the river is the one whose WATER the top is in, read by x and the top's y as the engine reads him, river.ts riverAt: read by x
+    //  alone, a climb's river high up the stage put every branch under its window 'under water', 2,500 px down, so he saw no floor under
+    //  him or ahead, jumped short of lips and ran off them in the landing's beat: 2-6's climb loop, R-165.390, BUILD-26p)
+    const rivers = this.sim.stage.rivers;
     for (const q of this.sim.platforms) {
       if (!this.solid(q)) continue;
+      const river = rivers?.length ? riverAt(rivers, x, q.y) : undefined;
       if (river && q.type !== 'drift' && q.y > river.surfaceY) continue;
       if (x >= q.x && x <= q.x + q.width && q.y >= y - 6 && q.y <= y + down) return q;
     }
