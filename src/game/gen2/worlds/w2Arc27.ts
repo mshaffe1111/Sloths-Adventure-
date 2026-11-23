@@ -75,8 +75,9 @@ export const RIVERS_27 = {
   upstream: { dir: -1, speed: 75, logW: 160, logs: 2, gap: 80 },
   // (Easy's reaches flowing at him, both out-leg beats: longer, slower logs. On `back27` the kid's full-run hop from one log's end came down
   //  past the far end of the next, closing at 70 px/s (castBots kid Easy seed 14 x 14086, 11 px past a 150 px log): 13 of 40 Easy seeds
-  //  rescued. Easy is never harder than Normal in any number: 55 <= 70, 200 >= 150)
-  back27e: { dir: -1, speed: 55, logW: 200, logs: 2, gap: 80, safe: true },
+  //  rescued. Easy is never harder than Normal in any number: the same 70 px/s, logs 200 >= 150, gaps 70 <= 80. A log every
+  //  (200 + 70) / 70 = 3.86 s, inside the river rule's 4 s (a slower 55 px/s row broke it: 5.1 s, no Easy roll laid)
+  back27e: { dir: -1, speed: 70, logW: 200, logs: 2, gap: 70, safe: true },
 } as const satisfies Record<string, RiverRow>;
 type Row27 = keyof typeof RIVERS_27;
 type Content = NonNullable<SectionTemplate['content']>;
