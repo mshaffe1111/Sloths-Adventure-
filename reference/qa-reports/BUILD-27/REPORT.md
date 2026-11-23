@@ -18,8 +18,11 @@ and full-size crops)
 - Minor, named: faint vertical tile seams in the deep soil on some sideways shots (painted ground, every world); not 2-7's.
 
 ### EXACT NEXT STEP (BUILD-27f's; read this first)
-**NEXT (for BUILD-27f's successor; head t-build-27e bb107cab4 or later; the look is final, steps (1)-(3) below are DONE):**
-(a) When the lead sends DRESS-27b's hash (on t-eng-27): in /home/user/wt-b27f (or a fresh `git worktree add` of origin/t-build-27e,
+**NEXT (for BUILD-27f's successor; head t-build-27e 148cd80a7 or later; steps (1)-(3) below are DONE). NEW REPORT-BY 5:45 PM ET (lead);
+test link about 6:15 PM.** The final gates wait for BOTH DRESS-27b (2-7's 6 draw breaches, no visible change) AND DRESS-27c (session
+_01FhBbYNzLPjXxNT6cC9xjsf: the two LEAD'S FINDINGS below, the upright out-leg bottom band and the x9080 river wall strip and log cut;
+lands on t-eng-27 by 5:00 PM ET and runs seedlist 2-7 --check with its change). Watch t-eng-27 and ReadNotifications for the lead's hashes.
+(a) When BOTH have landed on t-eng-27: in /home/user/wt-b27f (or a fresh `git worktree add` of origin/t-build-27e,
 `npm ci --legacy-peer-deps`), `git fetch origin t-eng-27` then `git merge --no-edit origin/t-eng-27` (no force). It must change DRAW code only:
 `git diff bb107cab4 HEAD --stat -- src tools`; if it touches the lay (pipeline.ts, gen2/, w2*.ts lay), the ship number re-runs.
 Push t-build-27e.
@@ -31,7 +34,10 @@ shard 1/2, the CI tool line gates.yml:157, tierBots) and the same with laneB.sh 
 generality, the suite shard 2/2). Each step appends `<name> exit=<code> <secs>s` to <scratch>/gates/lines.txt; the logs are <name>.txt.
 drawcheck must show 0 breaches with 2-7 included; a suite red: re-run that file alone before calling it red; the seedListChunk EPERM
 is the freeze (unfrozen 2/2 PASS, BUILD-27b), not a defect.
-(d) Stills: only if DRESS-27b changes a look (it should not): re-shoot the spots it names with tools/engine/runs/stills-at-setting.mjs
+(d) Stills: re-shoot ONLY the spots DRESS-27c changes, both settings, both ways: the out-leg upright bottoms (N x4500 4960 6780 9080 11376
+13508; E x4960 5419 7239 8900 9553 14205; check the bottom rows as probes27f's band numbers did: no dark strip, no streaks) and N x9080
+sideways (the river wall, the log end; Easy: the same river's bank end, find it with probes27f/porchx.mjs's way on e.currentStage.rivers).
+Compare with stills27f/find/f1-*, f2-*. Any other spot DRESS-27b or c names: re-shoot it the same way with tools/engine/runs/stills-at-setting.mjs
 (LAYOUT 0) on the dev server of the new tree and diff against stills27f/clean/.
 (e) Send the lead: the final hash, every gate line PASS/FAIL with the suite totals, the clip paths (race27f/), the stills' paths
 (stills27f/clean/), yield 29/40, list 69/100.
