@@ -98,7 +98,7 @@ export const WAYSIDE: Record<number, WorldWay> = {
       // (Gruntlewick comes back twice in play, and finishes his warning in the weeks after: storyFinale.ts)
       5: petal('half', 'Up on the bank, Gruntlewick\'s flood warning has reached the word "however."'),
       6: pokey('half', 'Every house in the bank has a round door, and every door says PLEASE BE PATIENT. I\'m climbing past them very patiently.'),
-      7: dot('half', 'I asked the mailman for the time. He said, "Soon." I\'m going to hold him to that.'),
+      7: dotOn('post:letter', 'I asked the mailman for the time. He said, "Soon." I\'m going to hold him to that.'),
       8: petal('start', 'The river\'s rising. Gruntlewick, up on the bank, just reached that part.'),
       9: pokey('start', 'Meeca came through here first. I bet she admired the whole river out loud.'),
     },
