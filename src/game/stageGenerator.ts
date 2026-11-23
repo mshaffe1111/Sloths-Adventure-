@@ -120,6 +120,8 @@ export interface GeneratedStage {
   pacer?: import('./pacer.ts').Pacer;
   /** a laid post (post.ts Post, gen2/postLay.ts, run by pieces/postPiece.ts): its doors and the letters their slots take */
   post?: import('./post.ts').Post;
+  /** the laid column dress (columnDress.ts, gen2/columnDressLay.ts, drawn by pieces/columnDressPiece.ts): set pieces at the columns' feet */
+  columnDress?: import('./columnDress.ts').ColumnDress[];
   /** the ground's look from its world data (gen2 WorldManifest.ground.look): 'bough', drawn as the painted bough (protoArt.ts setGroundLook) */
   groundLook?: 'bough';
   /** rolling nuts and bouncing fruit (any world; rolling.ts RollSpec, run by pieces/rollingPiece.ts), each set off by his x */

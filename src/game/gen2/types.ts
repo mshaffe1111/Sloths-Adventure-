@@ -760,6 +760,9 @@ export interface GraphBrief {
   /** the POST (post.ts, gen2/postLay.ts; 2-7's doors): doors on the way out whose slots take letters, replies on the way home. Absent:
    *  none, the stage laid as it always was */
   post?: import('../post.ts').PostSpec;
+  /** a COLUMN DRESS (columnDress.ts, gen2/columnDressLay.ts; 2-7's weir): a painted set piece at the foot of every column of a stage of
+   *  legs, behind its ledges. Absent: none, the stage laid as it always was */
+  columnDress?: import('../columnDress.ts').ColumnDressSpec;
 }
 /** a content type (NODES.md §7.2): what fills a content node; `structural` sections (arrive, rest, exit) sit outside the mix */
 export type ContentType = 'ground' | 'floating' | 'climb' | 'bounce' | 'rope' | 'crumble' | 'water' | 'hazard' | 'puzzle';

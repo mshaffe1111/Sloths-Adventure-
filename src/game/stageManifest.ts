@@ -7,7 +7,7 @@
  * the same keys (stagePreload.ts start):
  *   foe:<name>    every creature it holds, the animals a ring drops in, the eagle over a watched stretch (sheetWarm.ts stageAnims)
  *   props2        bushes, trunk hollows, or a liana (it hangs from a painted bush): World 1's second sheet
- *   w2-next       a laid pacer or post (2-7's mail boat, the open door, the letters and replies: w2NextArt.ts)
+ *   w2-next       a laid pacer, post or column dress (2-7's mail boat, the open door, the letters and replies, the weir: w2NextArt.ts)
  *   vine, rope    Pokey on a liana, on a shimmy rope (and the painted rope)
  *   boss:<w>      the world's guardian, or World 4's watcher (asked for by drawing a still of it off screen: stageReady.ts), and
  *                 for a guardian World 4's sheet (its rocks and stone debris)
@@ -48,6 +48,8 @@ export interface BuiltStage extends StageDraws {
   /** a laid pacer and a laid post (stageGenerator.ts GeneratedStage.pacer, .post): World 2's next sheet */
   pacer?: unknown;
   post?: unknown;
+  /** a laid column dress (GeneratedStage.columnDress): its pieces' inventory ids */
+  columnDress?: ReadonlyArray<{ art: string }>;
   /** a laid chase (stageGenerator.ts GeneratedStage.chase): its sections draw off the long-branch sheet */
   chase?: unknown;
 }
@@ -96,5 +98,7 @@ export function builtStageKeys(st: BuiltStage): string[] {
   if (st.chase) out.add('props3');
   // (a laid pacer or post draws World 2's next sheet: the mail boat, the open door, the letters: w2NextArt.ts)
   if (st.pacer || st.post) out.add('w2-next');
+  // (a laid column dress draws its piece off its own sheet: 2-7's weir on World 2's next sheet)
+  if (st.columnDress?.some((d) => d.art.startsWith('w2-next#'))) out.add('w2-next');
   return [...out];
 }
