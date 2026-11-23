@@ -8,7 +8,7 @@
   (limits.json scenarios, 2-7 included), clipcheck. A successor in another container re-runs those four on a fresh merge.
 - Then: `git fetch origin t-eng-27`; in a worktree of dress27d `git merge --no-edit origin/t-eng-27` if it moved (+ tsc), `git push origin
   HEAD:t-eng-27` (fast-forward, no force), `git ls-remote` = HEAD, send the lead the hash and stills-27d/'s paths.
-### Polish check (stills-27d/: 2-7 layout 0 = seed 1, phone 2x, tools/engine/runs/stills-at-setting.mjs, ONE spot a run; BEFORE = t-build-27e 793ddf246, AFTER = the same + dress27d = a21dbcf34)
+### Polish check (stills-27d/: 2-7 layout 0 = seed 1, phone 2x, tools/engine/runs/stills-at-setting.mjs, ONE spot a run, a copy that waits for the build and prints where Pokey stands (every still below: at its x, lives x3); BEFORE = t-build-27e 793ddf246, AFTER = the same + dress27d = a21dbcf34)
 - **Upright out-leg bottoms** (Normal x4500, Easy x5419): pair-2-7-L0-normal-x4500-upright.jpg, pair-2-7-L0-easy-x5419-upright.jpg,
   zoom-bottom-x4500-upright.jpg. Before: the bottom of the screen ends in the stand-in's column streaks and a dark band. After: painted
   earth, roots and stones to the screen's foot; Pokey stands lower (feet about two thirds down), sky and village above. PASS.
@@ -17,9 +17,15 @@
 - **The deep river's wall** (Normal x9085 sideways = the finding's x9080 bank): pair-...-x9085-sideways.jpg, zoom-river-x9080-sideways.jpg.
   Before: a lighter teal strip from the surface down beside the bank's roots. After: one dark teal right to the wall. PASS. The logs keep
   their old ends (the id's flip): (2b) is out, as the lead cut it.
-- (pending) Easy x9600 river wall, re-shot with a build wait.
-- (pending) sideways out-leg spots.
-- (pending) 2-4 x15990 and 2-5 x21020 deep-river banks.
+- **Easy's river at that bank is SAFE** (Easy lays 2-7's race-leg river at x8999-9539 safe; probed on the build): (2a) touches deep rivers
+  only, so the wall check is Normal's. Easy x9600 `:low` is a bad spot for the still tool (the drifting log at y1540 sits lower than the
+  bank at y1512, so `low` puts Pokey on it and he drops in, respawning at x4479 in some runs): not shown, not a finding.
+- **Sideways out-leg spots** (Normal x4500, Easy x5419): pair-...-sideways.jpg, 0.79% / 1.90% of pixels over 40 apart: moving things
+  only (petals, birds). The floor never binds sideways. UNCHANGED.
+- **2-4 and 2-5 at a deep river's bank** (2-4 x15990, 2-5 x21020, Normal, both ways): pair-2-4-...jpg, pair-2-5-...jpg. 2-5: the same
+  picture (1.05% / 2.67%: the logs and petals moving). 2-4: the same picture except the one thing (2a) fixes: before, a hard-edged lighter
+  strip of water under the bank's lip down beside its roots (zoom-2-4-deep-x15990-upright.jpg); after, one dark teal to the wall. The rest
+  of 2-4's 8.30% upright is Pokey's speech bubble and the swinging vine (timing). See Pushback.
 - Seen, not mine, unchanged before and after (named for the lead): the out leg's soil shows two soil pieces meeting as vertical tone steps
   (x9085 upright, zoom-under); a lighter flat strip under the right-hand grass lip at x4500 upright with a hard left edge (the grass
   ledge's own art). Neither moved with this change.
@@ -44,6 +50,9 @@
 ### Learned
 - A still tool run under load prints BUILT before the stage is ready ({"stored":"normal"} only); the still itself is right (it waits
   for the HUD card): judge the file, not the line.
+  Proven: the first x4500 still and its re-shoot (a copy that waits for the build) are 0.37% apart. Suggestion (tools/engine/runs, not
+  my file): stills-at-setting.mjs waits for the stage by id instead of 4 s and prints Pokey's x and lives after placing him (the copy:
+  two lines), so a still at a respawn or a drifting log is caught in the log, not by eye.
 - On this container the ESM import of playwright needs PW=/opt/node-tools/node_modules/playwright/index.mjs (index.js gives no
   named `chromium`).
 ### Lessons applied: D115 (every gate on chattr-frozen trees), D119 (no heredoc in a commit chain), D109 (no clock times to the lead),
