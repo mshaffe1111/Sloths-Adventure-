@@ -1,0 +1,13 @@
+diff --git a/tools/inspect/firsttimer.ts b/tools/inspect/firsttimer.ts
+index d220c71c0..3f7917828 100644
+--- a/tools/inspect/firsttimer.ts
++++ b/tools/inspect/firsttimer.ts
+@@ -4953,7 +4953,7 @@ export class FirstTimerRun {
+     //  river block judges him again next frame. c5-c16 refused every unjudged press off a log and needed an exception per kind (D133))
+     if (SKILLS.floatSure && !gate && !this.pressJudged && p.grounded && dir !== 0) {
+       const here = this.sim.platforms.find((q) => q.id === this.sim.standingOn);
+-      if (here?.type === 'drift' && this.hopOntoSinker(here, dir, { kind, hold, d2, dblAt: (who.dblAt[0] + who.dblAt[1]) / 2, hold2: hold, upOnly })) {
++      if (false && here?.type === 'drift' && this.hopOntoSinker(here, dir, { kind, hold, d2, dblAt: (who.dblAt[0] + who.dblAt[1]) / 2, hold2: hold, upOnly })) {
+         UNJUDGED.n++;
+         this.pending = null; this.lateArmed = null;
+         return {};

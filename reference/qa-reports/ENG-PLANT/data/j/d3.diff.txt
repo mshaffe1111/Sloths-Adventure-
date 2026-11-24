@@ -1,0 +1,12 @@
+diff --git a/tools/inspect/firsttimer.ts b/tools/inspect/firsttimer.ts
+index d220c71c0..cfb351d22 100644
+--- a/tools/inspect/firsttimer.ts
++++ b/tools/inspect/firsttimer.ts
+@@ -4871,6 +4871,7 @@ export class FirstTimerRun {
+    * 80 px ahead of its front. Every other log: main's walk.
+    */
+   private rideCase(lr: Platform, dir: -1 | 1): boolean {
++    return false; // ENG-PLANT-j probe: the ride off
+     if (lr.type !== 'drift' || !lr.drift || lr.drift.dir !== dir) return false;
+     const p = this.sim.p;
+     const front = dir > 0 ? lr.x + lr.width : lr.x;

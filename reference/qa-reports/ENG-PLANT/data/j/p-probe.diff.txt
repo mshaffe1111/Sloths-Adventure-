@@ -1,0 +1,36 @@
+diff --git a/tools/inspect/firsttimer.ts b/tools/inspect/firsttimer.ts
+index 623a06655..049e0241a 100644
+--- a/tools/inspect/firsttimer.ts
++++ b/tools/inspect/firsttimer.ts
+@@ -2382,6 +2382,7 @@ export class FirstTimerRun {
+         return side1(dir);
+       }
+       this.pressJudged = true;
++      if (this.t > 120.5 && this.t < 120.9) console.error('RUNUP', JSON.stringify(v).slice(0, 300), 'lags', lags.map((l) => l.toFixed(3)).join(','), 'carry', carry.toFixed(1), 'hold', hold.toFixed(3), 'x', p.x.toFixed(1), 'vx', p.vx.toFixed(1));
+       const go = this.decide(dir, 'single', true, side1(dir));
+       this.pressJudged = false;
+       if (this.pending) this.pending.judged = true;
+@@ -4732,6 +4733,7 @@ export class FirstTimerRun {
+ 
+   /** he decides to flick: it comes after the thumb's latency (N(mean, sd); an early one comes at once) */
+   private decide(dir: -1 | 0 | 1, kind: 'single' | 'double', off: boolean, meanwhile: Pad): Pad {
++    if (this.t > 120.5 && this.t < 120.9) console.error("DE", this.t.toFixed(3), dir, kind, off, (new Error().stack ?? "").split("\n").slice(2, 5).map((s) => s.trim().replace(/.*firsttimer.ts:/, "")).join(" < "));
+     const lag = gauss(this.r, this.who.thumb);
+     const want = this.t + pressIn(lag);
+     if (lag <= DT / 2) {
+@@ -4921,6 +4923,7 @@ export class FirstTimerRun {
+   }
+ 
+   private startJump(dir: -1 | 0 | 1, kind: 'single' | 'double', off: boolean): Pad {
++    if (this.t > 120.5 && this.t < 120.9) console.error("SJ", this.t.toFixed(3), dir, kind, off, (new Error().stack ?? "").split("\n").slice(2, 6).map((s) => s.trim().replace(/.*firsttimer.ts:/, "")).join(" < "));
+     const p = this.sim.p, who = this.who;
+     // (a tier bot: where a jump has failed him he holds on longer; any jump may get its second press, at his own delay)
+     const overhead = this.climbJump;
+@@ -4929,6 +4932,7 @@ export class FirstTimerRun {
+     this.climbToX = null;
+     const needs = who.readHold !== undefined && (overhead || dir !== 0 && (this.faceAhead(dir, 60) !== null || !this.floorAt(p.x + dir * ((this.edge?.aim ?? 0) + 100), p.y, 40)));
+     let hold = flickHold(this.r, who, who.retryHold && this.mem.fails(p.x, p.y) > 0 ? who.retryHold : needs ? (who.readHold ?? 0) : 0);
++    if (this.t > 120.5 && this.t < 120.9) console.error('HOLD', hold.toFixed(3), JSON.stringify(who.hold), 'x', this.sim.p.x.toFixed(1), 'vx', this.sim.p.vx.toFixed(1));
+     let d2 = -1;
+     if (who.dbl2Q) {
+       if (kind === 'single' && !this.aimedDrop && this.r() < (who.dblShare ?? 0)) kind = 'double';

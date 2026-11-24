@@ -1,0 +1,4 @@
+#!/bin/bash
+# usage: row.sh <tree> <stage> <bot> <setting> <seed> <out>
+cd "$1" && npx tsx tools/inspect/castBots.ts --stage $2 --seeds $5 --bots $3 --setting $4 --par 1 --rows "$6" > "$6.log" 2>&1
+echo "$(basename $6) exit $? $(TZ=America/New_York date +%l:%M:%S)"
