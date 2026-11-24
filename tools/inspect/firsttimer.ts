@@ -3175,6 +3175,10 @@ export class FirstTimerRun {
       const held = this.padRead(p, dir, t);
       if (held) {
         this.clockHeld = !held.left && !held.right && !held.jump;
+        // (c11's piece kept in the lean candidate (ENG-PLANT-i): a stand on a ride read is a stop he MEANS: a bot with no holdQ (the
+        //  adult, the kid) never lets go of a bare {} otherwise (thumbify, R-165.59): 2-2 adult Normal 24 landed on lift #117, padRead
+        //  stood him and his thumb ran him off its front, rescued; it fails on the lean candidate with c5's pieces alone and passes with this)
+        if (this.clockHeld) this.stopMeant = true;
         return held;
       }
     }
@@ -3531,7 +3535,12 @@ export class FirstTimerRun {
         const pit = !!who.holdQ && !this.floorAt(p.x + dir * (look + 40), p.y, 400);
         const drops = on && on.y > p.y + 50 && !across && !pit;
         // (a log or a lily pad drifting across the gap: he can see it, so he waits at the edge until it is near, up to 6 s)
-        const here = this.floorAt(p.x, p.y, 6);
+        // (SKILLS.floatSure, c5's piece kept in the lean candidate (ENG-PLANT-i): the log he stands on is the one the ENGINE stands him
+        //  on (standingOn), not only the one under the point at his x, so every hop off a log goes through the river gates. Lean + c4
+        //  alone fail, at c4's own x: 2-1 child Normal 11 (water ahead 30,239), 2-2 adult Normal 4 (set down 3x 29,392), 2-4 child Easy
+        //  11 (set down 8x 28,028); with this piece each passes)
+        const stood = SKILLS.floatSure && p.grounded ? this.sim.platforms.find((q) => q.id === this.sim.standingOn) : undefined;
+        const here = stood?.type === 'drift' ? stood : this.floorAt(p.x, p.y, 6);
         // (ENG-W2b: a float is near when a hop he makes now, or a beat later as his thumb gets there, comes down on it where it will be,
         // hopLandsOn; drifting logs come out from under the bank at his feet, so every log on the water is looked at, not only those ahead)
         const rivers = (this.sim.stage as { rivers?: RiverZone[] }).rivers;
