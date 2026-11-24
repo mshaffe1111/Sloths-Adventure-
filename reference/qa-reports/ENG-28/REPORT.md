@@ -1,4 +1,4 @@
-# ENG-28 REPORT (2-8's pieces ahead, Lane 2): session 4 (ENG-28d), started 4:21 PM ET, handed over 4:40 PM ET (both from date)
+# ENG-28 REPORT (2-8's pieces ahead, Lane 2): session 4 (ENG-28d), started 4:21 PM ET, handed over 4:42 PM ET (both from date)
 (Session 2 ENG-28b 2:29-2:50 PM ET; session 3 left no commit on this branch; session 4 below, its section first.)
 
 ## Session 4 (ENG-28d): the lead's DESIGN-route ruling, built and half-proven
@@ -31,7 +31,8 @@ refuses a fork whose high road starts with a bare edge hop (planted RED/GREEN); 
   or the adult not waiting for the tail before the exit).
 - NOT YET: floodLay.test.ts's GREEN lay toy is RED under the rule (its brick's porch is a thin branch 60 px over the bank: a bare edge
   hop, by name at x 17315): the toy brick must lay the stand-back shape. FLOODDBG traces still in. Base lock: running at hand-over on
-  /home/user/wtbase28 (frozen), 1-1..7-6 done; its json is committed with this hand-over only if it finished (see the commit).
+  /home/user/wtbase28 (frozen): FINISHED 4:40 PM ET (started 4:28, 12 min): 3264 builds of 102 stages, committed as
+  reference/qa-reports/ENG-28/lock-base-90552d3ec.json (the precedent: VAR-19e's base lock).
 Branch t-eng-28-wip (base t-eng-27 90552d3ec). Session 1: 601e37549 pure core + follower toys; 4c53ea427 gen2 lay + toy row; dd4367cd2
 engine wiring. Session 2: 016b5b45b engine-level toy; e76a2886d flood.ts highRoad (the chain); 0aab83a4e two flood defects fixed, each
 with a planted toy; 2a4edf8db WIP lead-the-line (one toy case still RED, below).
