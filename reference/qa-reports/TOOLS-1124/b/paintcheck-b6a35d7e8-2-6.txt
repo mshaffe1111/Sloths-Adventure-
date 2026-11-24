@@ -1,0 +1,3 @@
+NEW: 2-6 easy seed 117747 x 715 y 3960: SIDE-ON WALL 'moss_stone' 24x94, its left side open 70 px: painted as bank soil, narrower than his body (44) (R-165.434)
+NEW: 2-6 easy seed 117747 x 715 y 3960: SIDE-ON WALL 'moss_stone' 24x94, its right side open 70 px: painted as bank soil, narrower than his body (44) (R-165.434)
+paintcheck: FAIL, 3200 new breach lines, 0 fixed ids still listed

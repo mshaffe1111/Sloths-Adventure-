@@ -1,12 +1,21 @@
 # TOOLS-1124: the shell '&' hook (R-165.418) and the see-through-row gate + the weir cut (R-165.417)
 
-EXACT NEXT STEP (TOOLS-1124b, session 2; head 60f9c6c8): WAIT for the lead's answer to two questions, sent with the evidence below.
-(1) Does artcheck's row part go into CI RED on its 7 non-seam hits until the inventory carries their boxes and kinds, or does it wait?
-(2) 'Go' on R-165.434's rule: if yes, wire tools/engine/sideWall.ts into tools/engine/paintcheck.ts. Call sideWalls(st.platforms, inp.f)
-next to paintFalls. Breach id `${stage}|sidewall|${style}|w${w}h${h}`, using the same known list and printing. Add a planted test
-(tools/engine/sideWall.test.ts: on main's 2-6, insert one 24x94 moss_stone solid like b6a35d7e8's faces under a lip, which must be RED;
-the stage as built must be GREEN) and put it on the CI tool line (gates.yml 'rolled', found BY CONTENT). Then run tsc and the CI tool
-line once, push, and send the lead the hash. The survey probe is at the scratchpad's zsurvey.ts (args: stages, seeds a stage).
+EXACT NEXT STEP (TOOLS-1124c; head after this commit; code head 93738226). The lead ruled (A: --rows report-only, out of CI;
+B: GO, no known list), and both are wired. BUT paintcheck on main is now RED, so this head must NOT merge as it is:
+- R-165.434's check flags MAIN on 2 stages (b/paintcheck-main-sidewall.txt): 1-6 Normal, a 24x345 moss_stone at x 27896, y 865, on all
+  100 listed seeds (both its sides); 8-1, a 14x224 'log' at x 1466 (seed 38747, Normal and Easy). My 'main 0' was WRONG: the survey
+  labelled each block by its FIRST failed clause ('top buried'), and I grepped only 'narrower', so these hid under 'buried' (my miss).
+- Step 1: take a still of each on main (1-6 Normal, first listed seed, x 27896; 8-1 seed 38747, x 1466), upright, at game zoom.
+  Judge it: is the face visible against the backdrop?
+- Step 2, the lead decides: (a) they ARE invisible walls: defects, fixed at their root by Content/Builder (the check stays as is and
+  goes RED until fixed; no known list, per the ruling); or (b) another drawer shows them (then the rule must read that drawer, the
+  way footingOf does, never a list).
+- Step 3: tsc and the CI tool line (gates.yml rolled, found BY CONTENT) ONCE on the final head. This container had NO node_modules
+  (npm install done at the end of session 2). The session-2 tsc (exit 2: no vite types) and rolled (34 fail: no react) are void.
+- Already proven: the 2-6 faces at b6a35d7e8 are RED in paintcheck (3,200 lines; b/paintcheck-b6a35d7e8-2-6.txt). sideWall.test.ts is
+  GREEN (main 2-6 as built GREEN; a 24x94 face is RED; 60 wide is GREEN). paintcheck part 1/3 PASS; parts 0/3 and 2/3 fail ONLY on
+  the side-wall lines above (0 other new lines). artcheck (sizes) PASS; artcheck --rows exit 1 on the 7 non-seams (report-only, ruled).
+  ciTests 4/4.
 
 ## Session 2 (TOOLS-1124b)
 ### A. R-165.417 (2), reworked as ruled (e84e8b08)
@@ -27,7 +36,7 @@ line once, push, and send the lead the hash. The survey probe is at the scratchp
 - Chosen: a rule on the collider list, not pixels. paintcheck stubs every image 1x1, so pixels would need a real render of every stage.
   The rule: a solid whose terrain.ts footingOf look is 'painted-bank', narrower than his body (44), with a side open (no solid touching
   it) over at least his height (48), is a breach. It is painted as bank soil, the backdrop's look.
-- Survey (3 seeds a stage, both settings, 612 builds each): main has 0 hits; 2-6 at b6a35d7e8 has 96, every one a 24x94 moss_stone face.
+- Survey (3 seeds a stage, both settings, 612 builds each): WRONG, see the next step (1-6 and 8-1 hid under 'buried'); claimed main 0 hits; 2-6 at b6a35d7e8 has 96, every one a 24x94 moss_stone face.
   GREEN stages: all of main, including 2-6, 8-6 and 5-5.
 - Limit, said plainly: the 44 is his width, not read from the painter. A 'top buried' clause was tried and DROPPED (797 false hits on
   main, all wide banks with a piece resting on them).
