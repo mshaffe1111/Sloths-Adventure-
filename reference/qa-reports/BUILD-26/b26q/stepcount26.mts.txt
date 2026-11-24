@@ -1,0 +1,30 @@
+// BUILD-26q: for each failing run logged at the first street, does he fall THROUGH the street's soft pit (below its floor, inside its
+// x span or just past its far lip)? The pit is the gen2 drop at the street's height whose ends are a floor (built).
+import fs from 'node:fs';
+const tree = process.argv[2], hitsFile = process.argv[3];
+const { RealPlay } = await import(`${tree}/src/game/realPlay.ts`);
+const { CAST_BOTS } = await import(`${tree}/tools/inspect/castBots.ts`);
+const { firstTimer, freshPhone } = await import(`${tree}/tools/inspect/firsttimer.ts`);
+const hits = fs.readFileSync(hitsFile, 'utf8').trim().split('\n').map((l) => JSON.parse(l)).filter((h) => h.sec === 'w2-26-first-street' && String(h.what).startsWith('fell back'));
+let pit: any = null, through = 0, falls = 0;
+const orig = RealPlay.prototype.frame;
+RealPlay.prototype.frame = function (this: any, pad: any) {
+  const out = orig.call(this, pad);
+  const p = this.p;
+  if (pit && p.x >= pit.x0 && p.x <= pit.x1 + 80 && p.y > pit.ends.y + 30 && p.y < pit.ends.y + 200) { if (!pit.hit) { pit.hit = true; through++; } }
+  return out;
+};
+const rows: string[] = [];
+for (const h of hits) {
+  freshPhone(h.setting);
+  const st = new RealPlay('2-6', h.seed).stage as any;
+  const s3 = st.gen2.tower.route.legs.find((l: any) => l.uid === 's3');
+  pit = (st.gen2.drops ?? []).find((d: any) => d.ends?.kind === 'floor' && Math.abs(d.lipY - s3.exit.y) <= 2 && d.x0 > s3.x0 && d.x1 < s3.x1);
+  if (!pit) { rows.push(`${h.bot} ${h.setting} ${h.seed}: no pit found`); continue; }
+  pit = { ...pit, hit: false };
+  firstTimer('2-6', h.seed, CAST_BOTS[h.bot][h.setting], { cap: 1200, dotSetting: true });
+  falls++;
+  rows.push(`${h.bot} ${h.setting} ${h.seed}: pit ${Math.round(pit.x0)}..${Math.round(pit.x1)} floor ${pit.ends.y}: ${pit.hit ? 'FELL THROUGH' : 'not through'}`);
+}
+console.log(rows.join('\n'));
+console.log(`first-street rows ${hits.length}; runs played ${falls}; fell through the street's soft pit ${through}`);

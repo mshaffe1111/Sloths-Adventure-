@@ -16,8 +16,8 @@
    **Withdrawn in this box:** my first reading (the house ladder 18 px from a lip; b26q/lip-40a9c4bd2.txt is true but not the cause: every
    turned-back climb stands 18 px, both settings, and the bots pass them) and its toy (b26q/towerClimbLip.test.ts.txt, not on the branch).
    CONFIRMED 3 of 3 traced (kid E 40, adult E 2, kid E 4: b26q/frames-*.txt): each lands in the step at x 837-840 at run speed and runs off
-   under the next street. Next: (a) count how many of the 59 fall at the step (frames26 per row, the window filter in the file; the 59
-   share one logged place, 927-937 x 6378-6392, so expect all); (b) the toy RED on the base: 'a run at full speed into
+   under the next street. COUNTED: 59 of 59 fall THROUGH the street's soft pit
+   (b26q/stepcount-40a9c4bd2.txt; stepcount26.mts.txt: the gen2 drop at the street's height, below its floor within its span + 80 px). Next: (b) the toy RED on the base: 'a run at full speed into
    a tower soft pit stops in it (or lands on the far floor), never passes under the far lip', every tower stage's pits, both settings;
    (c) the general fix in the soft pit's lay, RULED BY THE LEAD: THE FACE (a face under the far lip down to the bough: a sunken step has
    sides; a runner stops at it and climbs or jumps out), every tower stage, both settings (pipeline/tower, engine tier), then lockall on every listed stage (the lead's first
