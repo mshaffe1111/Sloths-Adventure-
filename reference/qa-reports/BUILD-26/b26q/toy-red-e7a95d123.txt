@@ -1,0 +1,156 @@
+TAP version 13
+# Subtest: a tower climb stands its step in from an open lip, both settings (2-6: the house climb on Easy)
+not ok 1 - a tower climb stands its step in from an open lip, both settings (2-6: the house climb on Easy)
+  ---
+  duration_ms: 807.371557
+  type: 'test'
+  location: '/home/user/wt-toy2/src/game/gen2/towerClimbLip.test.ts:50:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    normal roll 1: the climb at 1582,5280 stands 18 px from an open lip (floor 1280..1600)
+    normal roll 1: the climb at 236,4929 stands 18 px from an open lip (floor 218..458)
+    normal roll 1: the climb at 1529,1556 stands 18 px from an open lip (floor 827..1547)
+    normal roll 2: the climb at 1610,5280 stands 18 px from an open lip (floor 1308..1628)
+    normal roll 2: the climb at 264,4929 stands 18 px from an open lip (floor 246..486)
+    normal roll 2: the climb at 1529,1556 stands 18 px from an open lip (floor 827..1547)
+    normal roll 3: the climb at 1579,5276 stands 18 px from an open lip (floor 1277..1597)
+    normal roll 3: the climb at 233,4925 stands 18 px from an open lip (floor 215..455)
+    normal roll 3: the climb at 1529,1556 stands 18 px from an open lip (floor 827..1547)
+    normal roll 4: the climb at 1609,5278 stands 18 px from an open lip (floor 1307..1627)
+    normal roll 4: the climb at 263,4927 stands 18 px from an open lip (floor 245..485)
+    normal roll 4: the climb at 1529,1556 stands 18 px from an open lip (floor 827..1547)
+    normal roll 5: the climb at 1604,5279 stands 18 px from an open lip (floor 1302..1622)
+    normal roll 5: the climb at 258,4928 stands 18 px from an open lip (floor 240..480)
+    normal roll 5: the climb at 1529,1556 stands 18 px from an open lip (floor 827..1547)
+    easy roll 1: the climb at 1116,6381 stands 18 px from an open lip (floor 826..1134)
+    easy roll 1: the climb at 1482,5433 stands 18 px from an open lip (floor 1212..1500)
+    easy roll 1: the climb at 396,3964 stands 18 px from an open lip (floor 378..666)
+    easy roll 1: the climb at 1145,1799 stands 18 px from an open lip (floor 477..1163)
+    easy roll 1: the climb at 609,1518 stands 18 px from an open lip (floor 591..1119)
+    easy roll 2: the climb at 1126,6384 stands 18 px from an open lip (floor 836..1144)
+    easy roll 2: the climb at 1482,5433 stands 18 px from an open lip (floor 1212..1500)
+    easy roll 2: the climb at 376,3964 stands 18 px from an open lip (floor 358..646)
+    easy roll 2: the climb at 1145,1799 stands 18 px from an open lip (floor 477..1163)
+    easy roll 2: the climb at 609,1518 stands 18 px from an open lip (floor 591..1119)
+    easy roll 3: the climb at 1112,6372 stands 18 px from an open lip (floor 822..1130)
+    easy roll 3: the climb at 1482,5429 stands 18 px from an open lip (floor 1212..1500)
+    easy roll 3: the climb at 370,3960 stands 18 px from an open lip (floor 352..640)
+    easy roll 3: the climb at 1145,1799 stands 18 px from an open lip (floor 477..1163)
+    easy roll 3: the climb at 609,1518 stands 18 px from an open lip (floor 591..1119)
+    easy roll 4: the climb at 1119,6374 stands 18 px from an open lip (floor 829..1137)
+    easy roll 4: the climb at 1482,5431 stands 18 px from an open lip (floor 1212..1500)
+    easy roll 4: the climb at 379,3962 stands 18 px from an open lip (floor 361..649)
+    easy roll 4: the climb at 1145,1799 stands 18 px from an open lip (floor 477..1163)
+    easy roll 4: the climb at 609,1518 stands 18 px from an open lip (floor 591..1119)
+    easy roll 5: the climb at 1122,6375 stands 18 px from an open lip (floor 832..1140)
+    easy roll 5: the climb at 1482,5432 stands 18 px from an open lip (floor 1212..1500)
+    easy roll 5: the climb at 384,3963 stands 18 px from an open lip (floor 366..654)
+    easy roll 5: the climb at 1145,1799 stands 18 px from an open lip (floor 477..1163)
+    easy roll 5: the climb at 609,1518 stands 18 px from an open lip (floor 591..1119)
+    + actual - expected
+    
+    + [
+    +   'normal roll 1: the climb at 1582,5280 stands 18 px from an open lip (floor 1280..1600)',
+    +   'normal roll 1: the climb at 236,4929 stands 18 px from an open lip (floor 218..458)',
+    +   'normal roll 1: the climb at 1529,1556 stands 18 px from an open lip (floor 827..1547)',
+    +   'normal roll 2: the climb at 1610,5280 stands 18 px from an open lip (floor 1308..1628)',
+    +   'normal roll 2: the climb at 264,4929 stands 18 px from an open lip (floor 246..486)',
+    +   'normal roll 2: the climb at 1529,1556 stands 18 px from an open lip (floor 827..1547)',
+    +   'normal roll 3: the climb at 1579,5276 stands 18 px from an open lip (floor 1277..1597)',
+    +   'normal roll 3: the climb at 233,4925 stands 18 px from an open lip (floor 215..455)',
+    +   'normal roll 3: the climb at 1529,1556 stands 18 px from an open lip (floor 827..1547)',
+    +   'normal roll 4: the climb at 1609,5278 stands 18 px from an open lip (floor 1307..1627)',
+    +   'normal roll 4: the climb at 263,4927 stands 18 px from an open lip (floor 245..485)',
+    +   'normal roll 4: the climb at 1529,1556 stands 18 px from an open lip (floor 827..1547)',
+    +   'normal roll 5: the climb at 1604,5279 stands 18 px from an open lip (floor 1302..1622)',
+    +   'normal roll 5: the climb at 258,4928 stands 18 px from an open lip (floor 240..480)',
+    +   'normal roll 5: the climb at 1529,1556 stands 18 px from an open lip (floor 827..1547)',
+    +   'easy roll 1: the climb at 1116,6381 stands 18 px from an open lip (floor 826..1134)',
+    +   'easy roll 1: the climb at 1482,5433 stands 18 px from an open lip (floor 1212..1500)',
+    +   'easy roll 1: the climb at 396,3964 stands 18 px from an open lip (floor 378..666)',
+    +   'easy roll 1: the climb at 1145,1799 stands 18 px from an open lip (floor 477..1163)',
+    +   'easy roll 1: the climb at 609,1518 stands 18 px from an open lip (floor 591..1119)',
+    +   'easy roll 2: the climb at 1126,6384 stands 18 px from an open lip (floor 836..1144)',
+    +   'easy roll 2: the climb at 1482,5433 stands 18 px from an open lip (floor 1212..1500)',
+    +   'easy roll 2: the climb at 376,3964 stands 18 px from an open lip (floor 358..646)',
+    +   'easy roll 2: the climb at 1145,1799 stands 18 px from an open lip (floor 477..1163)',
+    +   'easy roll 2: the climb at 609,1518 stands 18 px from an open lip (floor 591..1119)',
+    +   'easy roll 3: the climb at 1112,6372 stands 18 px from an open lip (floor 822..1130)',
+    +   'easy roll 3: the climb at 1482,5429 stands 18 px from an open lip (floor 1212..1500)',
+    +   'easy roll 3: the climb at 370,3960 stands 18 px from an open lip (floor 352..640)',
+    +   'easy roll 3: the climb at 1145,1799 stands 18 px from an open lip (floor 477..1163)',
+    +   'easy roll 3: the climb at 609,1518 stands 18 px from an open lip (floor 591..1119)',
+    +   'easy roll 4: the climb at 1119,6374 stands 18 px from an open lip (floor 829..1137)',
+    +   'easy roll 4: the climb at 1482,5431 stands 18 px from an open lip (floor 1212..1500)',
+    +   'easy roll 4: the climb at 379,3962 stands 18 px from an open lip (floor 361..649)',
+    +   'easy roll 4: the climb at 1145,1799 stands 18 px from an open lip (floor 477..1163)',
+    +   'easy roll 4: the climb at 609,1518 stands 18 px from an open lip (floor 591..1119)',
+    +   'easy roll 5: the climb at 1122,6375 stands 18 px from an open lip (floor 832..1140)',
+    +   'easy roll 5: the climb at 1482,5432 stands 18 px from an open lip (floor 1212..1500)',
+    +   'easy roll 5: the climb at 384,3963 stands 18 px from an open lip (floor 366..654)',
+    +   'easy roll 5: the climb at 1145,1799 stands 18 px from an open lip (floor 477..1163)',
+    +   'easy roll 5: the climb at 609,1518 stands 18 px from an open lip (floor 591..1119)'
+    + ]
+    - []
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+  actual:
+    0: 'normal roll 1: the climb at 1582,5280 stands 18 px from an open lip (floor 1280..1600)'
+    1: 'normal roll 1: the climb at 236,4929 stands 18 px from an open lip (floor 218..458)'
+    2: 'normal roll 1: the climb at 1529,1556 stands 18 px from an open lip (floor 827..1547)'
+    3: 'normal roll 2: the climb at 1610,5280 stands 18 px from an open lip (floor 1308..1628)'
+    4: 'normal roll 2: the climb at 264,4929 stands 18 px from an open lip (floor 246..486)'
+    5: 'normal roll 2: the climb at 1529,1556 stands 18 px from an open lip (floor 827..1547)'
+    6: 'normal roll 3: the climb at 1579,5276 stands 18 px from an open lip (floor 1277..1597)'
+    7: 'normal roll 3: the climb at 233,4925 stands 18 px from an open lip (floor 215..455)'
+    8: 'normal roll 3: the climb at 1529,1556 stands 18 px from an open lip (floor 827..1547)'
+    9: 'normal roll 4: the climb at 1609,5278 stands 18 px from an open lip (floor 1307..1627)'
+    10: 'normal roll 4: the climb at 263,4927 stands 18 px from an open lip (floor 245..485)'
+    11: 'normal roll 4: the climb at 1529,1556 stands 18 px from an open lip (floor 827..1547)'
+    12: 'normal roll 5: the climb at 1604,5279 stands 18 px from an open lip (floor 1302..1622)'
+    13: 'normal roll 5: the climb at 258,4928 stands 18 px from an open lip (floor 240..480)'
+    14: 'normal roll 5: the climb at 1529,1556 stands 18 px from an open lip (floor 827..1547)'
+    15: 'easy roll 1: the climb at 1116,6381 stands 18 px from an open lip (floor 826..1134)'
+    16: 'easy roll 1: the climb at 1482,5433 stands 18 px from an open lip (floor 1212..1500)'
+    17: 'easy roll 1: the climb at 396,3964 stands 18 px from an open lip (floor 378..666)'
+    18: 'easy roll 1: the climb at 1145,1799 stands 18 px from an open lip (floor 477..1163)'
+    19: 'easy roll 1: the climb at 609,1518 stands 18 px from an open lip (floor 591..1119)'
+    20: 'easy roll 2: the climb at 1126,6384 stands 18 px from an open lip (floor 836..1144)'
+    21: 'easy roll 2: the climb at 1482,5433 stands 18 px from an open lip (floor 1212..1500)'
+    22: 'easy roll 2: the climb at 376,3964 stands 18 px from an open lip (floor 358..646)'
+    23: 'easy roll 2: the climb at 1145,1799 stands 18 px from an open lip (floor 477..1163)'
+    24: 'easy roll 2: the climb at 609,1518 stands 18 px from an open lip (floor 591..1119)'
+    25: 'easy roll 3: the climb at 1112,6372 stands 18 px from an open lip (floor 822..1130)'
+    26: 'easy roll 3: the climb at 1482,5429 stands 18 px from an open lip (floor 1212..1500)'
+    27: 'easy roll 3: the climb at 370,3960 stands 18 px from an open lip (floor 352..640)'
+    28: 'easy roll 3: the climb at 1145,1799 stands 18 px from an open lip (floor 477..1163)'
+    29: 'easy roll 3: the climb at 609,1518 stands 18 px from an open lip (floor 591..1119)'
+    30: 'easy roll 4: the climb at 1119,6374 stands 18 px from an open lip (floor 829..1137)'
+    31: 'easy roll 4: the climb at 1482,5431 stands 18 px from an open lip (floor 1212..1500)'
+    32: 'easy roll 4: the climb at 379,3962 stands 18 px from an open lip (floor 361..649)'
+    33: 'easy roll 4: the climb at 1145,1799 stands 18 px from an open lip (floor 477..1163)'
+    34: 'easy roll 4: the climb at 609,1518 stands 18 px from an open lip (floor 591..1119)'
+    35: 'easy roll 5: the climb at 1122,6375 stands 18 px from an open lip (floor 832..1140)'
+    36: 'easy roll 5: the climb at 1482,5432 stands 18 px from an open lip (floor 1212..1500)'
+    37: 'easy roll 5: the climb at 384,3963 stands 18 px from an open lip (floor 366..654)'
+    38: 'easy roll 5: the climb at 1145,1799 stands 18 px from an open lip (floor 477..1163)'
+    39: 'easy roll 5: the climb at 609,1518 stands 18 px from an open lip (floor 591..1119)'
+  operator: 'deepStrictEqual'
+  stack: |-
+    TestContext.<anonymous> (/home/user/wt-toy2/src/game/gen2/towerClimbLip.test.ts:58:10)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.start (node:internal/test_runner/test:944:17)
+    startSubtestAfterBootstrap (node:internal/test_runner/harness:296:17)
+  ...
+1..1
+# tests 1
+# suites 0
+# pass 0
+# fail 1
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 5657.670298
