@@ -12,7 +12,8 @@ import { DT } from '../../src/game/realPlay.ts';
 import { FirstTimerRun, FT_ADULT, FT_MIDDLE, LINE_SKILL, ROAD_TRIPS, freshPhone, rng, type FirstTimer } from './firsttimer.ts';
 import { spook, type Follower } from '../../src/game/follow.ts';
 import { W2_FLOOD, W2_FOLLOW } from '../../src/game/gen2/worlds/w2.ts';
-import { FloodClock, floodTailOff, type Flood } from '../../src/game/flood.ts';
+import { FloodClock, floodTailOff, highRoad, type Flood } from '../../src/game/flood.ts';
+import { FLOOD_HOP, FLOOD_STEP } from '../../src/game/gen2/floodLay.ts';
 import type { RiverZone } from '../../src/game/river.ts';
 import type { WatchZone } from '../../src/game/watcher.ts';
 import type { Collectible, Platform } from '../../src/game/types.ts';
@@ -135,8 +136,11 @@ interface FloodRun {
   end: string;
   setBack: number;
   home: number;
-  /** The road he took AT THE FORK: a grounded stand on the high road before the first close. Set only while no close has fired: after the
-   *  close the high road is the only way on, so a stand there then says nothing about his choice (the lead's ruling, R-165.432, ENG-28f). */
+  /** The road he took AT THE FORK: before the first close he stood grounded on a piece of the HIGH ROAD ONLY, read from the flood's own
+   *  high-road chain (flood.ts highRoad, as floodFaults and the bot read it), never a height. Its first piece, the wall-step W, does not
+   *  count: both roads climb it (the low road walks off it 60 px down), so a stand on W is no choice yet. Set only while no close has
+   *  fired: after the close the high road is the only way on, so a stand there then says nothing about his choice (the lead's rulings,
+   *  R-165.432, ENG-28f). */
   high: boolean;
   t: number;
 }
@@ -198,11 +202,16 @@ function floodRun(who: FirstTimer, seed: number, late: number): FloodRun {
       return out;
     };
     let high = false;
+    const tops = run.sim.platforms.filter((q) => q.type === 'solid' && q.y < Y - 1).map((q) => ({ x: q.x, w: q.width, y: q.y, h: q.height, q }));
+    const road = highRoad(tops, { x0: W0, x1: W1, from: { x: W0, y: Y }, to: { x: W1, y: Y } }, FLOOD_STEP, FLOOD_HOP);
+    assert.deepEqual(road.faults, [], 'the toy lays a high road');
+    assert.ok(road.chain.length >= 2, 'the high road: the wall-step and its own pieces');
+    const highOnly = new Set<Platform>(road.chain.slice(1).map((t) => t.q));
     const on = run.sim.frame.bind(run.sim);
     run.sim.frame = (...a: unknown[]) => {
       const r = on(...(a as [never]));
       const p = run.sim.p;
-      if (!shut && p.x > W0 + 40 && p.x < W1 - 40 && p.grounded && p.y < Y - 100) high = true;
+      if (!shut && p.grounded && [...highOnly].some((q) => Math.abs(q.y - p.y) < 2 && p.x + p.width / 2 > q.x && p.x - p.width / 2 < q.x + q.width)) high = true;
       return r;
     };
     run.play();
