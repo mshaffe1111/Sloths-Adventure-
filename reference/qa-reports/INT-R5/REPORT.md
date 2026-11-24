@@ -25,6 +25,17 @@ Head: release-0.10.3 = **4816edd31** (pushed). It is NOT green yet: 2-6's draft 
 is one merge interaction: t-build-26's wheel lays (wheel ponds) vs t-eng-27's w2.ts falls judged by height (ENG-GROUND-b, w2.ts:321-333).
 Green on t-build-26 alone; BUILD-27g saw 'wheelChannel 4' red on 27e. So B below does NOT clear it: a w2.ts fix is needed for release 4
 either way (asked the lead: an ENG packet (my pick) or the next INT session at the root with a planted test). Step 1 waits on that ruling.
+**The root, read (not yet fixed):** w2.ts `banks()` on t-build-26 took any solid ending/starting at the fall's x at or above its lip
+(`p.y <= y + LIP_RISE`, the topmost); the merged w2.ts (ENG-27e / ENG-GROUND-b) takes only a solid ON the fall's storey
+(`lip(p, y)`: y-2 .. y+LIP_RISE: 'never a solid over the fall's height', so a stacked leg's edge is not taken as a bank). A wheel's fall
+has its far bank, the street, standing OVER the jetty by design (the wheel lifts him up the bank), so the street is no longer found and
+the finish throws, unless `hasRiver` gives the fall its pond (it reads a river only at the fall's own height; the wheel pond lies
+WHEEL.pond under the wheel). The ENG fix: a fall over a wheel's pond (`r.wheelPond` spanning it) has that pond as its river, or banks()
+accepts the wheel's own jetty/street (wheel.lay.jetty / streetId) at any height; planted: wheelChannel.test's four, towerWater's draft
+test, w2Arc26.test.
+**Run on 4816edd31 (frozen), every src test file that mentions 2-6 (21 files):** 119 pass, 2 fail: towerWater.test "2-6's draft row
+... the first frames keep him at the spawn" and w2Arc26.test (the file): both the 2-6 draft on the merged w2.ts. qaW123, dotBox,
+towerBots, listedWheelSheet, w2Stages and the rest pass with 2-6 as on main.
 
 ## What merged (packet step 1), in order
 | commit | what |
