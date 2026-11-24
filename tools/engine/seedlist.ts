@@ -8,6 +8,7 @@
 //   npx tsx tools/engine/seedlist.ts 1-1 --check            every listed seed still clean on both settings; at least SEED_LIST_MIN; exit 1 if not
 //   npx tsx tools/engine/seedlist.ts 1-1 --merge c.json --in-order --part p.json   (one of N in parallel: each seed of c laid and filtered)
 //   npx tsx tools/engine/seedlist.ts 1-1 --combine p0.json,p1.json,order.json       the list from those parts, in order's order
+//   npx tsx tools/engine/seedlist.ts 1-4 --fill 26,45 --with p.json,order.json        those layout variants filled IN PLACE from order's first seeds
 import fs from 'node:fs';
 import '../../src/game/headlessDom.ts';
 import { generateAllLevels } from '../../src/game/worldsData.ts';
@@ -19,7 +20,7 @@ import { asPlayedBreaches, helpRoomBreaches, listJudge, quietOf as quietAt } fro
 import { hasSeedList, listVersion, loadSeedList, packPlan, provenList, seedListError, provenSeeds, QUIET_MAX, seedListBreaches, SEED_LIST_MIN, stageParts } from '../../src/game/gen2/seedList.ts';
 import { PROVEN_INDEX } from '../../src/game/gen2/provenIndex.ts';
 import { loadInventory } from '../../src/game/art/inventory.ts';
-import { listFile, writeSeedList } from './seedlistFile.ts';
+import { fillSlots, listFile, variantIndex, writeSeedList, type ProvenCandidate } from './seedlistFile.ts';
 import { firstRunVerdicts } from '../../src/game/gen2/verdicts.ts';
 import type { FirstRunLayout } from '../../src/game/gen2/verdicts.types.ts';
 import { createHash } from 'node:crypto';
@@ -92,6 +93,31 @@ async function firstRunBreaches(): Promise<string[]> {
 }
 
 
+
+// (--fill 26,45 --with a.json,...,ORDER.json: the stage's list with those layout VARIANTS filled IN PLACE, the lead's ruling 11-22 (FILL-14):
+// a variant as Play and castBots name it (castBots' "seed N out" on a listed stage), resolved to the list index Play draws for it by the
+// game's own build (seedlistFile.ts variantIndex: on 1-4, variant 26 is the 27th seed; on 1-1, variant 11 the 11th), takes ORDER's next seed (a JSON seed array: the
+// candidates that passed, in order), each proven by a --merge part (the list's own filters, re-laid; no seed laid again here); every other
+// index keeps its seed, plan, quiet and outro (seedlistFile.ts fillSlots). A seed of ORDER no part kept, or too few, is refused by name
+// and nothing is written. Then --check and the bots on the new list, as for any list)
+if (process.argv.includes('--fill')) {
+  const variants = arg('--fill', '').split(',').map(Number);
+  const files = arg('--with', '').split(',').filter(Boolean);
+  if (files.length < 2) { console.error('seedlist: --fill needs --with part.json[,...],order.json'); process.exit(2); }
+  const order = JSON.parse(fs.readFileSync(files.pop()!, 'utf8')) as number[];
+  const got = new Map<number, ProvenCandidate>();
+  for (const f of files) { const P = JSON.parse(fs.readFileSync(f, 'utf8')) as { seeds: number[]; quiet: number[]; outro: number[]; replays: Array<ProvenCandidate['replay']> }; P.seeds.forEach((sd, i) => got.set(sd, { seed: sd, quiet: P.quiet[i], outro: P.outro[i], replay: P.replays[i] })); }
+  const use = order.slice(0, variants.length);
+  const unproven = use.filter((sd) => !got.has(sd));
+  if (unproven.length) { console.log(`seedlist ${id}: FAIL\n  --fill: no part proved seed(s) ${unproven.join(', ')} (lay them with --merge ... --in-order --part first): nothing written`); process.exit(1); }
+  if (!(await loadSeedList(id))) { console.log(`seedlist ${id}: FAIL\n  --fill: the list did not load: ${seedListError(id)}`); process.exit(1); }
+  const old = provenList(id)!;
+  let L: ReturnType<typeof fillSlots>, at: number[];
+  try { at = []; for (const v of variants) at.push(await variantIndex(id, v)); L = fillSlots(old, at, use.map((sd) => got.get(sd)!)); } catch (err) { console.log(`seedlist ${id}: FAIL\n  ${(err as Error).message}: nothing written`); process.exit(1); }
+  const bytes = writeSeedList(id, L);
+  console.log(`seedlist ${id}: filled ${variants.length} variant(s) in place (${bytes} bytes, ${L.seeds.length} seeds, version ${listVersion(L)}): ${variants.map((v, j) => `variant ${v} (index ${at[j]}) ${old.seeds[at[j]]} -> ${use[j]}`).join(', ')}`);
+  process.exit(0);
+}
 
 // (--combine a.json,b.json,... ORDER.json: the list from --merge parts, in ORDER's order (a JSON seed array), no seed laid again: each part
 // holds what its --merge proved per seed (the same filters as a write); a seed of ORDER no part kept is left out, by name)

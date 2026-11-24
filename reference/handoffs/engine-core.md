@@ -14,6 +14,16 @@ Merged at INT-14 (11-20, t-int-14): §0zq-25d/§0zq-25c ENG-25c (2-5's snap rows
 - Planted: w2.test.ts 'a fall over a water wheel's sweep...' (every row, both settings, both ways) and 'another storey's fall over a wheel's
   pond...' (RED on an x-only loosened variant: reference/qa-reports/ENG-W2FIN/loosened.txt).
 
+## 0zr-FILL14. FILL-14 + FILL-14b (t-build-26-wip-fill14, code 094e09746, 11-24): a failing list slot is filled IN PLACE
+- `seedlist <stage> --fill <variants> --with part.json[,...],order.json` (seedlistFile.ts fillSlots + variantIndex): each named layout
+  VARIANT is resolved to its list index by building the stage as Play does (RealPlay), then takes the next candidate of ORDER; every other
+  index keeps seed, packed plan, quiet and outro byte for byte. Candidates are laid first (`--merge cand.json --in-order --part`) and
+  played through a planted list (castBots --proven). Planted: seedlist.test.ts (red on a drop-and-append reorder; red on 'v - 1' and 'v mod n').
+- TRAP: a variant is not a list position by one rule. 1-1 plays index v - 1 (testlink1_1.ts play11Seed); every other listed stage plays
+  index v mod n (seedList.ts provenSeedFor). A castBots or ENG table's "seed N" on a listed stage is the VARIANT: FILL-14's first fill
+  replaced the wrong four by reading it as the seed. Resolve with variantIndex, never by hand (seed-list.md "Order is identity").
+- 1-4 at 094e09746: variants 26/45/66/69 (seeds 27/46/67/70) -> 101/102/103/104; castBots --proven 1-4 100/100; lockall 102/102 unchanged.
+
 ## 0zr-26s. ENG-26s (t-build-26-wip-26s ca3a7d063, 11-23): release 4's base, main merged into t-build-26; three CI reds fixed at cause
 - Merge b3e0a8206: 2-3 is main's arc (w2-23) and 2-6 is t-build-26's (w2-26); W2Plan is now '2-7' | '2-8' | '2-9'. firsttimer's stuck
   clock keeps both the figs' progress hold and FETCH-CLOCK. calibration-main.jsonl took t-build-26's side: re-judge it with tierBots.
