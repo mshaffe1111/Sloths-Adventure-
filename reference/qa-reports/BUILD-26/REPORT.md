@@ -1,24 +1,26 @@
-# BUILD-26q (t-build-26-wip-26q; base t-build-26 40a9c4bd2, frozen): 2-6's Easy residue: box 1 = the re-measure and the clusters. Started 4:21 PM ET 11-24 (by `date`); this box written 4:37 PM ET
+# BUILD-26q (t-build-26-wip-26q; base t-build-26 40a9c4bd2, frozen): 2-6's Easy residue: box 1 = the re-measure and the clusters. Started 4:21 PM ET 11-24 (by `date`); this box written 4:39 PM ET
 
-## EXACT NEXT STEP (session 2, xhigh, engine tier; budget: session 1 ran 4:21 PM ET to 4:37 PM ET of the job's 4 h; HARD STOP 11:00 PM ET)
-1. **The spot that matters (59 of 83 failing runs; 31 seeds fail on it alone): the first street's end, where the house climb stands 18 px
-   from an open lip on EVERY Easy roll** (to-lip 18 px on 100/100 Easy rolls, 416-452 px on Normal, where the house fits ahead and its foot
-   floor is laid; b26q/lip-40a9c4bd2.txt). Why Easy turns back here (read in code + built, seed 40): Easy's widened landings make the street
-   79 px longer (b 348 vs 300, c 308 vs 260, the dip 67 vs 84), so pipeline.ts:2235 turns the house back; `tipOf` (2238) stands the vine
-   `TOWER.vineIn` (tower.ts:49, 44 px) back from the tip (s4 entry 1093 = 1137 - 44, built), and clearClimbs (pipeline.ts:3342) moves it
-   +CLIMB_CLEAR (26) off the roof's face (roof 793..1093 @6038, built) toward the lip: 1137 - 44 + 26 = 1119.
-   **CORRECTION inside this box (b26q/toy-red-e7a95d123.txt):** 18 px is NOT unique to this spot: EVERY turned-back tower climb stands
-   18 px from its lip, on both settings (Normal rolls 1-5: 3 each; Easy seed 40's climbs at 1482 and 365 have the same 288-308 px floor and
-   351 px fall, and the bots pass them). So the geometry alone is not the cause; what differs here is the APPROACH (not yet traced frame by
-   frame): the street's last piece is a jump out of the sunken step (w2Arc26.ts:106 c: 'jump', share 0.4-0.5), and ENG-26t's trace says he
-   lands 0.04-0.06 s from the lip at run speed: the run-jump out of the dip carries him to the ladder's foot with no room to stop.
-   The toy I first wrote (b26q/towerClimbLip.test.ts.txt, 'climb >= vineIn from an open lip') flags every turn-back on both settings, so
-   it is the WRONG invariant and is not on the branch. Next: (a) trace kid E 40 frame by frame from the dip's take-off (x 762-829) to the
-   fall (FT_TRACE plus the per-frame x/vx/onGround from 30.7 s to 32.9 s; b26q/one26.mts.txt runs it) and confirm where he lands and why
-   he doesn't take the climb; (b) write the toy for the REAL invariant (a candidate: 'the landing of the plain run-jump out of a piece
-   before a climb's foot leaves >= the stop distance between the landing and an open lip', or Easy keeps Normal's 'ahead' where Normal
-   fits: Easy never turns back where Normal goes on), RED on the base; (c) the lead rules the fix's scope (every setting vs Easy only)
-   on that toy; then castBots --proven 2-6 (expected about 77/100 if nothing else moves), rule 28 vs MAIN on every shipped tower stage.
+## EXACT NEXT STEP (session 2, xhigh, engine tier; budget: session 1 ran 4:21 PM ET to 4:39 PM ET of the job's 4 h; HARD STOP 11:00 PM ET)
+1. **The spot that matters (59 of 83 failing runs; 31 seeds fail on it alone): the first street's SUNKEN STEP (the tower's soft pit),
+   NOT the house ladder.** FRAME TRACE (kid E 40, b26q/frames-kidE40.txt; b26q/frames26.mts.txt wraps RealPlay.frame; x is his centre):
+   he runs off the boulder (541..706 @6319) at run speed (vx 268-285), touches the street b (414..762 @6369) at x 771 for one frame, drops into
+   the sunken step (762..829 @6439) and lands at x 836, 7 px from its far lip, still at run speed, and runs straight off it, UNDER the next
+   street (c, 829..1137 @6369, a 24 px branch: he passes below it, at the step floor's height), and falls a storey to the bank (6748). The same frames
+   repeat on the second pass (44.3-45.3 s). This is ENG-26t's 'lip family' exactly (R-165.398: 'walks off a raised block at run speed,
+   lands 0.04-0.06 s from the next lip and runs off it; same sunken-step piece'). The cluster's place (about 930,6378) is where the bot last
+   stood before its 3rd fall-back, not where he fell. The step is the tower's soft pit: a catch bough `TOWER.hop` (70 px) under a storey's
+   own gap, laid LIP TO LIP (tower.ts:54-57; built: drops entry x0 762, x1 829, lipY 6369, floor 6439). Its far end is open under the next
+   floor, so 'a fall in is one plain hop out' fails for a run THROUGH it: nothing stops him under the far lip.
+   Easy vs Normal (seed 40, built): Easy's step is 67 px wide with 56 px of street between the boulder's end and the step; Normal's is
+   84 px with 82 px. Easy lands him later and nearer the far lip (Easy harder than Normal: rule 4).
+   **Withdrawn in this box:** my first reading (the house ladder 18 px from a lip; b26q/lip-40a9c4bd2.txt is true but not the cause: every
+   turned-back climb stands 18 px, both settings, and the bots pass them) and its toy (b26q/towerClimbLip.test.ts.txt, not on the branch).
+   Next: (a) confirm on 2 more runs (adult E 2, kid E 4: frames26 with --t0 600 --t1 1250, the window filter in the file) and count how
+   many of the 59 fall at the step (the first fall-back's x within 762..900); (b) the toy RED on the base: 'a run at full speed into
+   a tower soft pit stops in it (or lands on the far floor), never passes under the far lip', every tower stage's pits, both settings;
+   (c) the general fix in the soft pit's lay (pipeline/tower, engine tier: a face under the far lip down to the bough, or the bough
+   carried under the far lip by a stopping distance; the lead rules which), then lockall on every listed stage (the lead's first
+   ruling: any shipped stage moving goes to the lead first), castBots --proven 2-6, rule 28 vs MAIN.
 2. **The floor (adult Normal, 11 runs 95.9-99.1 s; 8 seeds fail on it alone):** the packet's way: lengthen the route (a section added or
    re-laid in w2Arc26.ts; a design change: the lead's call, LEAD's design question in R-165.398), never a slower bot (law 22).
 3. **The residue (after 1 and 2):** great-wheel dip at 977,1041 (adult E seeds 25, 44, 60, 67: 'in a dip 75 px, a drop of 479 px ahead');
@@ -34,7 +36,7 @@ rescued), adult N 88 (1 rescued, 11 under the 100 s climb floor, min 95.9 s), ki
 ## The clusters (b26q/cluster-40a9c4bd2.txt; place = the tower route leg holding x AND y, D130)
 | place (section, built) | cause | runs | seeds | bot or stage |
 |---|---|---|---|---|
-| first street s3, the house climb at the street's tip (x ~930-1137, y ~6370) | ran past the ladder and off the open lip, 3 fall-backs, rescue | 59 (kid E 34, adult E 24, middle E 1) | 31 fail on it alone | Easy lay turns back where Normal goes on; the approach not yet traced (step 1) |
+| first street s3: the sunken step (soft pit 762..829 @6439; rescue logged at ~930,6378) | runs off the boulder, lands at the step's far lip at run speed, runs off under the next street's branch, falls a storey; 3 fall-backs, rescue | 59 (kid E 34, adult E 24, middle E 1) | 31 fail on it alone | STAGE: the soft pit's far end is open (frame trace, kid E 40; 2 more to confirm) |
 | none (time) | adult Normal under the 100 s floor | 11 | 8 on it alone | STAGE (length) |
 | great wheel s13, 977..1097 @1041 | dip 75 px, drop 479 px ahead | 4 (adult E) | 25, 44, 60, 67 | not traced |
 | 'set down here 3 times' | rescue, place not captured | 5 (kid E 3, kid N 2) | 15, 51, 93, 30, 43 | not traced |
@@ -44,9 +46,8 @@ Trace of one (kid E 40, b26q/trace-kidE40.txt): up onto the boulder at 30.7 s, a
 'FELL BACK' at 51.0 s, rescued at 932,6378.
 
 ## Pushback
-- The packet's 'the lip family: walk-offs off lips' is ONE spot (59 of 83 runs), on every Easy roll, at the end of the Easy lay's turn-back;
-  the bot runs off it, but the same lay on Normal never turns back there (Easy harder than Normal, rule 4). Whether the fix is the lay's or the
-  bot's waits on the frame trace (step 1a); not a 2-6 data patch either way (law 22; level.md rule 22).
+- None on the packet: its 'lip family' is right (one spot, 59 of 83 runs). My own first reading this box (the house ladder) was wrong and
+  is withdrawn above; the lead was told the same box. The fix is the tower's soft pit (engine tier, every tower stage), not 2-6 data (law 22).
 # FILL-14b (t-build-26-wip-fill14 -> t-build-26; code 094e09746, unchanged): FILL-14's gates finished on a frozen tree; LANDED. Started 2:54 PM ET 11-24 (by `date`)
 
 ## Verdict

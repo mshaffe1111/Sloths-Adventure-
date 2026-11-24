@@ -1,0 +1,22 @@
+// BUILD-26q: per-frame log of one bot run (castRun's exact call) in a time window: x, y, vx, vy, ground, the pad the bot pressed.
+//   node --import tsx frames26.mts --tree <tree> --bot kid --setting easy --seed 40 --t0 30.5 --t1 33.5
+const arg = (k: string) => { const i = process.argv.indexOf(k); return i > 0 ? process.argv[i + 1] : undefined; };
+const tree = arg('--tree')!;
+const { RealPlay } = await import(`${tree}/src/game/realPlay.ts`);
+const { CAST_BOTS } = await import(`${tree}/tools/inspect/castBots.ts`);
+const { firstTimer } = await import(`${tree}/tools/inspect/firsttimer.ts`);
+const t0 = Number(arg('--t0')), t1 = Number(arg('--t1'));
+const orig = RealPlay.prototype.frame;
+let n = 0;
+RealPlay.prototype.frame = function (this: any, pad: any) {
+  const out = orig.call(this, pad);
+  const t = ++n / 30;
+  const q = this.p; if (q.x >= t0 && q.x <= t1 && q.y >= 6290 && q.y <= 6470) {
+    const p = this.p;
+    const keys = pad ? Object.entries(pad).filter(([, v]) => v && v !== 0).map(([k, v]) => (v === true ? k : `${k}=${typeof v === 'number' ? (v as number).toFixed(2) : v}`)).join(' ') : '';
+    console.log(`${t.toFixed(2)} x ${p.x.toFixed(0)} y ${p.y.toFixed(0)} vx ${(p.vx ?? 0).toFixed(0)} vy ${(p.vy ?? 0).toFixed(0)} ${p.onGround ? 'G' : '-'}${p.climbing || p.onVine ? ' V' : ''} | ${keys}`);
+  }
+  return out;
+};
+const r = firstTimer(arg('--stage') ?? '2-6', Number(arg('--seed')), CAST_BOTS[arg('--bot')!][arg('--setting')!], { cap: 1200, dotSetting: true });
+console.log(JSON.stringify({ end: r.end, time: r.time, rescues: r.rescues }));
