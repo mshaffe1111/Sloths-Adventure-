@@ -1,3 +1,64 @@
+# FILL-14 (t-build-26-wip-fill14; base e8e99d167; head 094e09746): 1-4's four failing variants filled IN PLACE by a new general `seedlist --fill`; the fill is right, the gates are PART-RUN at the 28-minute hand-over. Started 2:04 PM ET 11-24 (by `date`)
+
+## EXACT NEXT STEP (handed over at the 28-minute box; the runs below were left running in FILL-14's container)
+1. Read, if FILL-14's container still holds them (scratchpad out/): the unit suite, 3 shards on frozen 094e09746 (started about 2:21 PM
+   ET, ~35 min) -> out/suite-{0,1,2}.txt; lockall --layouts 16 --check against the base lock (out/lock-base-e8e99d167.json, 3264 builds /
+   102 stages) on frozen 094e09746 -> out/lock-check-094e09746.txt (~10 min). If gone: re-run both on a chattr-frozen worktree of
+   094e09746 (D115; proven/ thawed), the base lock re-recorded on frozen e8e99d167 (10.5 min).
+2. Then, on the same frozen head: the CI tool line (gates.yml line 157; it holds the two new fill tests); `npx tsx
+   tools/engine/paintcheck.ts --stages 1-4` (it builds EVERY listed seed: 101-104 are new to it); `npx tsx tools/engine/registrycheck.ts`.
+3. All green: merge 094e09746 (+ this REPORT commit) into t-build-26 (no force), push, ls-remote; send the lead the hash, the table
+   below and each gate's PASS/FAIL line.
+
+## The fill (slot = the layout VARIANT castBots and Play name; old/new = the list's seed)
+| variant | list index | old seed | new seed | why out (ENG-26u's table, castBots --proven at 5ecec4018) |
+|---|---|---|---|---|
+| 26 | 26 | 27 | 101 | child Normal: shrine, rescued x1 |
+| 45 | 45 | 46 | 102 | middle Normal: shrine, rescued x1 |
+| 66 | 66 | 67 | 103 | middle Normal: shrine, rescued x1 |
+| 69 | 69 | 70 | 104 | middle Normal: shrine, rescued x1 |
+Every other index keeps seed, packed plan, quiet and outro byte for byte; the dict is unchanged (23 entries); version 9fdaeff4 -> 698829e6.
+
+## Done-items
+| item | evidence (fill14/) | state |
+|---|---|---|
+| candidates past the list's last seed, laid by its own rule | lay-101-124: seedlist --merge cand --in-order --part on frozen e8e99d167: 24 of 24 kept, 16 s | done |
+| every bot, both settings, through a planted list | castBots-1-4-planted-101-124: a 24-seed planted 1-4 list (--combine) on a frozen tree: 24/24, every bot and setting PASS; the first four (101-104) fill in order | done |
+| the smallest general in-place fill, planted | seedlist.ts --fill <variants> --with part,order; seedlistFile.ts fillSlots + variantIndex; seedlist.test.ts: 2 tests (red on a drop-and-append reorder; red on 'v - 1' and on 'v mod n') | done |
+| seedlist 1-4 --check | seedlist-1-4-check-98e75019d: PASS (100 seeds, verdicts refuse 0); the list file is the same at 094e09746 | PASS |
+| castBots --proven 1-4 = 100/100 | castBots-1-4-98e75019d: **100 of 100**, every bot both settings PASS 100/100, none under the 100 s floor (src and tools/inspect identical at 094e09746: `git diff --stat 98e75019d 094e09746 -- src tools/inspect` empty) | PASS |
+| lockall unchanged | base lock recorded (lockall-base-e8e99d167.txt); the check running at hand-over (step 1) | UNRUN at hand-over |
+| the suite + the CI tool line | suite running at hand-over (step 1); CI tool line not run (step 2); the fill tests alone 2/2 | UNRUN |
+| land on t-build-26 | not landed (step 3) | open |
+
+## Pushback (finds)
+- ENG-26u's table (the packet's input) names seeds 26/45/66/69; castBots' "seed N" on a listed stage is the VARIANT, and Play draws
+  variant v from list index v mod n (stageGenerator.ts:2943, provenSeedFor): the failing seeds are 27/46/67/70. FILL-14's first fill
+  (6552c7790) took the packet literally and replaced the wrong four; caught by reading the game's pick before the gates
+  (variantprobe.mts.txt: RealPlay's replayed plan head per variant), refilled from the base list in 98e75019d.
+- seed-list.md:14 "Layout variant N is the list's N-th seed" holds for 1-1 only: 1-1 is not a listedRoll and draws index v - 1
+  (testlink1_1.ts play11Seed); every other listed stage draws index v mod n (v1 = the 2nd seed, v100 = the 1st). Its example "variant
+  11 = seed 4106" is stale too (1-1's seeds[10] is 9800 now; v11probe.mts.txt).
+
+## Suggestions
+- One variant-to-index rule for every stage (Engine packet): 1-1 and the listed rows disagree by one; any tool that maps a variant to a
+  list position by hand repeats FILL-14's first slip. Done-items: one function both paths call; the fill test's pins move with it.
+- seed-list.md (lead's merge): "Order is identity" names the game's pick (variantIndex), and a "Fill in place" step: lay candidates past
+  the last seed (--merge --in-order --part), play them through a planted list (--combine on a scratch tree), `--fill <variants> --with
+  part,order`, then --check, castBots --proven, lockall, the suite.
+
+## Unresolved
+- lockall, the suite, the CI tool line, paintcheck 1-4, registrycheck: UNRUN or unread at hand-over (steps 1-2). Not landed. The turnover
+  note (engine-core.md) not rewritten: its new trap is the variant rule above.
+
+## Method update
+- Resolve a bot table's slot with the game's pick (variantIndex) before acting. Fast gates on 094e09746: tsc, knowncheck, generality PASS;
+  roadmapcheck and timecheck could not run (a shallow clone: they need full history; CI has it).
+
+## Lessons applied: D111 (28-minute box: handed over), D113 (no foreground wait), D115 (every run on a chattr-frozen tree, proven/ thawed: f0/f1 at
+e8e99d167, f3 at 98e75019d, f4 at 094e09746), D117 (work on -wip-fill14 only), D118 (the suite restarted on 094e09746 after a tools/
+change), D119 (no heredoc in a commit chain: commit messages via -m), law 3 (the variant mapping checked in code and by a build), law 22.
+
 # ENG-26u (t-build-26-wip-26t; base 4285e263c, code 35ca56b16): rowWheels' trunkCatch plant re-planted at its cause on the lead's word (5ecec4018); the CI tool line GREEN; tierBots' replay RED (120 of 200 calibration runs moved: the recalibration is under way). NOT landed. Started 11:13 AM ET 11-24 (by `date`)
 
 ## EXACT NEXT STEP (head 5ecec4018 on t-build-26-wip-26t, pushed; t-build-26 is 9e1e30b27, an ancestor: the landing is a fast-forward, no force)

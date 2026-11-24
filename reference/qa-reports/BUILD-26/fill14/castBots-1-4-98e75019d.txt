@@ -1,0 +1,14 @@
+14:16:46
+proven: 100 of 100 seeds (every bot passes, none under 100 s) -> /tmp/claude-0/-home-user-Sloths-Adventure-/ab733d37-2afe-5bbe-adb4-13235428449f/scratchpad/out/proven-1-4-98e75019d.json
+castBots 1-4, seeds 1-100; the floor 100 s (STAGE-RULES.md:77: a climb, 20 s short)
+kid    normal PASS 100/100; under the floor 0; time median 133.7 s (min 123.3); hits 159 lives 6 (other 165); cleared none; told of traps 0/100; first trap sprung 0/100; traps sprung 0/0; turned back 0; left 0
+kid    easy   PASS 100/100; under the floor 0; time median 125 s (min 118.9); hits 0 lives 0 (none); cleared none; told of traps 0/100; first trap sprung 0/100; traps sprung 0/0; turned back 0; left 0
+adult  normal PASS 100/100; under the floor 0; time median 121.6 s (min 114.1); hits 147 lives 5 (other 152); cleared none; told of traps 0/100; first trap sprung 0/100; traps sprung 0/0; turned back 0; left 0
+adult  easy   PASS 100/100; under the floor 0; time median 111.8 s (min 108.4); hits 0 lives 0 (none); cleared none; told of traps 0/100; first trap sprung 0/100; traps sprung 0/0; turned back 0; left 0
+child  normal PASS 100/100; under the floor 0; time median 210.3 s (min 188); hits 148 lives 4 (other 152); cleared none; told of traps 0/100; first trap sprung 0/100; traps sprung 0/0; turned back 0; left 0
+child  easy   PASS 100/100; under the floor 0; time median 164 s (min 142.6); hits 0 lives 0 (none); cleared none; told of traps 0/100; first trap sprung 0/100; traps sprung 0/0; turned back 0; left 0
+middle normal PASS 100/100; under the floor 0; time median 142 s (min 129.5); hits 143 lives 2 (other 145); cleared none; told of traps 0/100; first trap sprung 0/100; traps sprung 0/0; turned back 0; left 0
+middle easy   PASS 100/100; under the floor 0; time median 131.7 s (min 118.7); hits 0 lives 0 (none); cleared none; told of traps 0/100; first trap sprung 0/100; traps sprung 0/0; turned back 0; left 0
+expert normal PASS 100/100; under the floor 0; time median 131.5 s (min 122); hits 122 lives 0 (other 122); cleared none; told of traps 0/100; first trap sprung 0/100; traps sprung 0/0; turned back 0; left 0
+EXIT 0
+14:27:07
