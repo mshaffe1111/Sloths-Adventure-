@@ -1,0 +1,14 @@
+normal R160 V60 N6 W120 in (teach): board tap 100% 2.8 s, walk 48%; ride street; step 3.87 s (walk 3.73, tap 3.87, jump 0); misses {"board walk pond":44,"walk pond":205,"tap pond":165}
+easy R160 V50 N6 W120 in (teach): board tap 100% 3.37 s, walk 66%; ride street; step 4.93 s (walk 4.5, tap 4.93, jump 0); misses {"board walk pond":34,"walk pond":243,"tap pond":184}
+normal R180 V70 N6 W120 edge (edge): board tap 100% 2.7 s, walk 44%; ride stayed in; step 2.87 s (walk 1.77, tap 2.87, jump 0); misses {"board walk pond":45,"walk pond":262,"tap pond":229}
+easy R180 V50 N6 W120 edge (edge): board tap 100% 3.77 s, walk 59%; ride stayed in; step 4.2 s (walk 2.63, tap 4.2, jump 0); misses {"board walk pond":46,"walk pond":355,"tap pond":302}
+normal R180 V70 N6 W120 up80 (top): board tap 100% 2.7 s, walk 44%; ride stayed in; step 2.27 s (walk 0, tap 0, jump 2.27); misses {"board walk pond":45,"jump pond":221}
+easy R180 V60 N6 W120 up60 (top): board tap 100% 3.13 s, walk 61%; ride stayed in; step 4.07 s (walk 0, tap 0, jump 4.07); misses {"board walk pond":37,"jump pond":231}
+normal R200 V70 N6 W120 in (great): board tap 100% 3 s, walk 41%; ride street; step 3.5 s (walk 3.5, tap 3.43, jump 0); misses {"board walk pond":53,"walk pond":235,"tap pond":206}
+easy R200 V60 N6 W120 in (great): board tap 100% 3.5 s, walk 55%; ride street; step 4.13 s (walk 4.13, tap 4.1, jump 0); misses {"board walk pond":47,"walk pond":272,"tap pond":236}
+normal R180 V70 N5 W120 edge (sparse): board tap 97% 3.13 s, walk 37%; ride stayed in; step 2.87 s (walk 1.77, tap 2.87, jump 0); misses {"board walk pond":61,"board tap pond":3,"walk pond":262,"tap p
+easy R180 V50 N5 W120 edge (sparse): board tap 100% 4.53 s, walk 49%; ride stayed in; step 4.2 s (walk 2.63, tap 4.2, jump 0); misses {"board walk pond":69,"walk pond":362,"tap pond":315}
+wrote 10 rows to src/game/gen2/wheelFlights.data.ts
+Tue Nov 24 23:00:41 UTC 2026
+
+[exited with code 0]
