@@ -55,3 +55,27 @@ test('PLANTED: rideWheel OFF, every tier scrambles bucket to bucket instead of r
     SKILLS.rideWheel = true;
   }
 });
+
+/**
+ * BUILD-26w (SKILLS.wheelWay, the lead's GO): a bucket carries him 180 px round the hub and the route's line runs through the hub, out of
+ * the tracker's 160 px reach, so its point was left at the hub. Off the step-off onto the street that stale point lay behind him: his way
+ * turned back mid-air and on the street the 'way on is below' rule hopped him back into the wheel. GREEN with the skill: 2-6 adult Easy 90
+ * steps off the edge wheel onto its street and goes on, no rescue. RED with it off (the plant): back into the wheel, to a rescue.
+ */
+test('wheelWay: off a wheel onto its street he goes on, never back into the wheel (2-6 adult Easy 90); PLANTED off: rescued', async () => {
+  const { firstTimer } = await import('./firsttimer.ts');
+  const { CAST_BOTS } = await import('./castBots.ts');
+  const run = (on: boolean) => {
+    SKILLS.wheelWay = on;
+    try {
+      return firstTimer('2-6', 90, CAST_BOTS.adult.easy, { cap: 1200, dotSetting: true });
+    } finally {
+      SKILLS.wheelWay = true;
+    }
+  };
+  const on = run(true);
+  assert.equal(on.end, 'shrine', 'wheelWay on: 2-6 adult Easy 90 reaches the shrine');
+  assert.equal(on.rescues, 0, `wheelWay on: ${on.rescues} rescues`);
+  const off = run(false);
+  assert.ok(off.rescues >= 1, `PLANTED wheelWay off: ${off.rescues} rescues (the plant must still catch the stale way)`);
+});
