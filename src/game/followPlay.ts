@@ -38,7 +38,7 @@ export interface FollowStage {
   covers: readonly LineCover[];
   platforms: readonly Platform[];
   /** splash-back water: a teaching river's or pool's span and surface (a flood's water reads its surface live as it rises) */
-  safeWater: ReadonlyArray<{ x0: number; x1: number; y: number }>;
+  safeWater: ReadonlyArray<{ x0: number; x1: number; y: number; lip?: number }>;
   /** deep water (a flood's low road once it has turned, flood.ts FloodClock.deepAt): a WALL the line waits at; unset: none */
   deep?: DeepAt;
 }
@@ -127,10 +127,12 @@ export class FollowPlay {
     return homeCount(this.line);
   }
 
-  /** splash-back water under a point, where no stone (a solid, still piece) stands there */
+  /** splash-back water under a point, where no stone (a solid, still piece) stands there. A flood's water (`lip`: its banks' top) paddles
+   *  only at or under its banks: a point above them is the high road over the low road (his hop from piece to piece), never a paddle */
   readonly surf: SurfaceAt = (x, y) => {
     for (const w of this.stage.safeWater) {
       if (x < w.x0 || x > w.x1) continue;
+      if (w.lip !== undefined && y < w.lip - 1) continue;
       const on = this.stage.platforms.some((pl) => pl.type === 'solid' && !pl.pad && !pl.broken && x >= pl.x && x <= pl.x + pl.width && Math.abs(pl.y - y) < 8);
       if (!on && y > w.y - 160) return w.y;
     }

@@ -8980,7 +8980,7 @@ export class GameEngine {
     const p = this.player;
     const safeWater = [
       // (a flood's water is splash-back for the line while it paddles, its surface read live as the clock raises it)
-      ...(st.rivers ?? []).filter((r) => r.safe || r.floodMark).map((r) => (r.floodMark ? { x0: r.x0, x1: r.x1, get y() { return r.surfaceY; } } : { x0: r.x0, x1: r.x1, y: r.surfaceY })),
+      ...(st.rivers ?? []).filter((r) => r.safe || r.floodMark).map((r) => (r.floodMark ? { x0: r.x0, x1: r.x1, lip: r.floodMark.lip, get y() { return r.surfaceY; } } : { x0: r.x0, x1: r.x1, y: r.surfaceY })),
       ...(st.waterY !== undefined ? (st.safeWater ?? []).map((w) => ({ x0: w.x0, x1: w.x1, y: st.waterY! })) : []),
     ];
     this.follow = new FollowPlay(row, this.easy, {

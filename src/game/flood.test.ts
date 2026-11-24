@@ -235,3 +235,14 @@ test('the wall is where he stood in deep water, never his hop over it: the line 
   const red = { ...t, pts: t.pts.map((q) => ({ ...q, air: undefined })) };
   assert.ok(wallCap(red, 0, end, deep) < end, 'RED: with the hop\'s points read as ground, the line waits on the bank');
 });
+
+test('the high road over a flood is no paddle: his hop between two pieces above the banks stays his arc; at or under the banks the line paddles (RED: no lip, the arc is snapped to the water)', () => {
+  // (the porch P 60 px over the banks and the block B on it 60 px higher, over the low road; the low road deep: its surface at the lip)
+  const platforms = [{ id: 1, x: 1000, y: LIP - 60, width: 100, height: 20, type: 'solid' }, { id: 2, x: 1100, y: LIP - 120, width: 240, height: 60, type: 'solid' }] as unknown as Platform[];
+  const mk = (lip?: number) => new FollowPlay(W2_FOLLOW, false, { exitX: 9000, zones: [], covers: [], platforms, safeWater: [{ x0: 1000, x1: 1400, y: LIP, ...(lip !== undefined ? { lip } : {}) }] }, { x: 1300, y: LIP - 120 });
+  const g = mk(LIP);
+  for (const y of [LIP - 64, LIP - 90, LIP - 110]) assert.equal(g.surf(1095, y), null, `GREEN: the arc at y ${y} over the porch's end is his hop, no paddle`);
+  assert.equal(g.surf(1200, LIP + 20), LIP, 'GREEN: under the banks the line still paddles');
+  const red = mk();
+  assert.equal(red.surf(1095, LIP - 90), LIP, 'RED: with no lip the hop\'s arc is snapped down to the deep water');
+});

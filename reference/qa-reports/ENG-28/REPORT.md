@@ -21,6 +21,14 @@ refuses a fork whose high road starts with a bare edge hop (planted RED/GREEN); 
   low route, so the low road is no longer the default and the planted-RED test loses its split); (b) 'too late' adult seed 1: climbs W,
   hops onto P, bumps B and climbs it (all good), but the LINE drops off P to y 800 at x 1081 (the deep surface) when he climbs B and the
   run ends stranded, home 0 (trace: late2.log lines PATH 7.0-9.5 in the next step's command).
+- FIXED with a planted toy (2b's cause): followPlay.ts surf snapped his hop's ARC over a flood water (P up onto B, y 680-740) down to the
+  deep surface. Now a flood's water (safeWater `lip`, set by engine.ts from the river's floodMark) paddles only at or under its banks; a
+  point above them is the high road. Toy in flood.test.ts (12/12 GREEN): the arc over the porch's end stays his hop; under the banks the
+  line still paddles; RED with no lip (the arc snapped to the water). Teaching rivers carry no lip: unchanged by construction (follow
+  toys 39/40 GREEN; the one RED is the lay toy below). In the real engine the line now follows him over W, P, B, C to the far bank.
+- NEW RED (adult seed 1, 'too late', after the fix): he reaches the exit (x 2965 at 18.0 s) with the line about 400 px behind, and the run
+  ends 'stranded', home 0 (t 36.8). The middle bots bring all three home. Not yet read why the run ends (FirstTimerRun's end condition,
+  or the adult not waiting for the tail before the exit).
 - NOT YET: floodLay.test.ts's GREEN lay toy is RED under the rule (its brick's porch is a thin branch 60 px over the bank: a bare edge
   hop, by name at x 17315): the toy brick must lay the stand-back shape. FLOODDBG traces still in. Base lock: running at hand-over on
   /home/user/wtbase28 (frozen), 1-1..7-6 done; its json is committed with this hand-over only if it finished (see the commit).
@@ -75,16 +83,11 @@ a. `git fetch origin t-eng-28-wip t-eng-27` (about 3 min, in the background), `g
    branch, use it; else START IT FIRST (it took about 12 min here): `git worktree add --detach /home/user/wtbase28 90552d3ec`,
    `ln -s <repo>/node_modules /home/user/wtbase28/node_modules`, `chattr -R +i /home/user/wtbase28/src /home/user/wtbase28/tools`,
    in it `npx tsx tools/engine/lockall.ts --layouts 16 --out <scratchpad>/lock-base-90552d3ec.json` (run_in_background, timeout 2400000).
-b. The line drops off P (FINDING 2b): `FLOODDBG=1 npx tsx --test --test-name-pattern="too late" tools/inspect/lineBot.test.ts`; the
-   adult seed 1 run is the 4th READ. Cause found at hand-over (confirm on the trace, do not assume): followPlay.ts:131-137 `surf`
-   returns the water's LIVE surface for ANY point over a flood water's span with no solid within 8 px of it and y within 160 px over the
-   surface (`if (!on && y > w.y - 160) return w.y`). His hop from P (y 740) up onto B (y 680) at x 1081-1100 has air points there, so the
-   line following that hop is snapped to y 800 (the deep surface, the lip) and stands in deep water. Session 2's defect (b) had the same
-   shape (air points read as water). The splash-back paddle is meant for his hops between stones NEAR the surface (teaching rivers), never
-   for the high road over the low road. Fix by the principle, then a planted toy in flood.test.ts (the session-2 pattern): a follower
-   following his hop between two pieces ABOVE the flood's lip stays on his arc and lands on the second piece (RED: today's snap puts it at
-   the surface). Candidate rule: a point whose hop took off from ground above the water's lip (the trail's last ground point, y < lip - 1)
-   is no paddle; keep every teaching-river toy GREEN (follow23 / wait-for-the-tail / the river toys). Then 'too late' all 6 GREEN.
+b. (2b's paddle snap is FIXED, see above.) The adult's new RED: `FLOODDBG=1 npx tsx --test --test-name-pattern="too late"
+   tools/inspect/lineBot.test.ts`, the 4th READ's run: he reaches x 2965 (EXIT 3000) at 18.0 s with the line ~400 px behind and the run
+   ends 'stranded', home 0. Read FirstTimerRun's end ('stranded': which condition fires) and the adult's wait-for-the-tail before the
+   exit; the middle tier passes the same fork. Fix the cause (the bot's lead-the-line or wait for the tail after a reroute, never the
+   toy), then 'too late' all 6 GREEN.
 c. The low road as the default (FINDING 2a, NO change to the bot's edge press, the ruling): reshape the toy so walking off W is the low
    road and the gap onto P is not the edge press's far side on the low route. First READ firsttimer.ts's edge press (`if (!ahead)`, near
    line 3200; prog.target(p, 160); tierEdge/jumpFor) to learn which far side it aims at, then pick the shape from it, e.g. P's near end
