@@ -1,7 +1,65 @@
-# ENG-28 REPORT (2-8's pieces ahead, Lane 2): session 5 (ENG-28e), started 4:46 PM ET, handed over 5:03 PM ET (both from date)
-(Session 2 ENG-28b 2:29-2:50 PM ET; session 3 left no commit; session 4 ENG-28d 4:21-4:42 PM ET; session 5 first, then session 4.)
+# ENG-28 REPORT (2-8's pieces ahead, Lane 2): session 6 (ENG-28f), started 5:35 PM ET, handed over 5:47 PM ET (both from date)
+(Session 2 ENG-28b 2:29-2:50 PM ET; session 3 left no commit; session 4 ENG-28d 4:21-4:42 PM ET; session 5 ENG-28e 4:46-5:03 PM ET.
+Sessions newest first.)
 
-## EXACT NEXT STEP (session 6)
+## EXACT NEXT STEP (session 7)
+Branch t-eng-28-wip, head bb04993f3 or later (`git fetch origin t-eng-28-wip`, confirm). `npm ci --no-audit --no-fund --legacy-peer-deps`.
+STATE: lineBot 7/8 on frozen bb04993f3. RED: 'too late' (late 22). The lead's narrow-A ruling is BUILT: `high` = a grounded stand
+before the first close on a piece of the flood's own high-road chain past the wall-step W (flood.ts highRoad, no y threshold). Under
+it, 'time enough' (low), the keep-the-road plant (off high / on low), the heron tests and the read-removed plant at late 19 are all GREEN.
+tierBots 9/9 on frozen 6556b42ca, no calibration file changed. firsttimer.ts is unchanged since, so that result stands for bb04993f3.
+WAITING ON THE LEAD (sent, with the numbers below): 'too late' cannot go GREEN at 22 (nobody has taken a road by the close) and the
+ruling's option B (an earlier late) is blocked at 19 by the ADULT's miss of P. The lead's options as I put them:
+  (1) TOY: widen W in floodRun (and the plant) so his climb jump lands with run-up before W's lip. FIRST, check the real lay's W width
+      (gen2/floodLay.ts and floodLay.test.ts' brick; flood.ts:101 'its FIRST piece is a WALL-STEP'). The toy must match the lay. If the
+      lay can also give a W under 220 px with a 60 px gap to P, it is a 2-8 READY finding: the first-timer adult misses P there too.
+  (2) BOT: the small-ledge pause (firsttimer.ts:3083, a ledge under 220 px gets 0.25-0.5 s of stop) not on a wall-step whose next piece
+      is level across a gap. Then tierBots 9/9 and ROAD_TRIPS re-run on the new head, and the calibration check per BOTS.md.
+  Then 'too late' at the late the lead rules (a re-plant at the same bar, derivation in the comment), all 8 lineBot tests re-run, and no
+  other verdict may move.
+1. On the lead's ruling, do it, then re-run lineBot on a frozen tree: 8/8. Prove the plant both ways at its late: RED with the read
+   removed (as written) and GREEN with the read on (setBack 0 for all 6 runs). Use a scratch copy in a separate frozen worktree, never
+   committed, the way session 6 did (/home/user/wt28r, lineBot.diag.test.ts).
+2. ROAD_TRIPS over the World 2 river stages: NOT RUN (held to save usage until firsttimer.ts is final). Scratch script:
+   <scratchpad>/roadtrips.ts (stages 2-1,2-2,2-4,2-5 are listed; it builds each and skips stages without rivers). Copy it, point its
+   imports at the frozen tree, run `npx tsx roadtrips.ts 2-1,2-2,2-3,2-4,2-5,2-6,2-7 1-2` with run_in_background and a fitting timeout.
+   Must print 0. Not 0: STOP and tell the lead the stage and count.
+3. tierBots: re-run only if firsttimer.ts changes.
+4. lockall: every commit after 8cd71852d touches only tools/inspect/firsttimer.ts, tools/inspect/lineBot.test.ts and this folder
+   (`git diff --stat 8cd71852d..HEAD`), so session 5's PASS stands. If the fix touches src/ (a lay change), re-run it on a frozen tree.
+5. The SUITE in SHARDS on a frozen tree of the final head, each shard with run_in_background and timeout 7200000, at most two heavy
+   runs at a time. Then the CI tool line (gates.yml 'rolled', found by its content).
+6. Land: `git branch t-eng-28 <head>`, push (no force), `git ls-remote` equal; message the lead (no clock times) as the brief says.
+
+## Session 6 (ENG-28f): the re-plant built; 'too late' moved; stopped and told the lead (twice)
+- 6556b42ca: FloodRun.high set only before the first close (a `shut` flag in the floodClosed wrapper, the meaning in its doc comment);
+  the read-removed plant at late 19 with its derivation. lineBot 7/8 frozen: the plant GREEN, but 'too late' RED: middle seed 1
+  {end shrine, setBack 0, home 3, high false, t 19.5}. That is another verdict moving, so I STOPPED and told the lead.
+- The lead ruled narrow A: high-road-only pieces from the flood's chain, W excluded, no y threshold. If any late-22 run is not on P by the
+  close, option B (an earlier late, a re-plant at the same bar). BUILT in bb04993f3. lineBot 7/8 frozen: 'too late' still RED.
+- MEASURED (scratch copy, frozen /home/user/wt28r; p.y is his feet: bank 800, P/W tops 740, walkway 860). The close fires at t 5.03 at
+  late 22 and t 8.03 at late 19. Seeds 1/2/3 are IDENTICAL in this toy (each line below = 3 runs).
+  The six late-22 positions at the close (read on):
+    middle x 836 y 800: on the near bank, 44 px short of W; setBack 0, home 3; first stand on B at t 9.57.
+    adult x 1098 y 860: on the low road's walkway; setBack 0 (the line is still on the bank); drowned and respawned; first B at 8.83.
+  Late 19, read ON: middle on P (x 1081 y 740), setBack 0 (GREEN under narrow A). Adult on the walkway (x 1122 y 860), setBack 3: the
+    line followed him out. So the plant's 'GREEN with the read on' FAILS for the adult at 19.
+  Late 19, read OFF: middle on the walkway (x 1301), setBack 3. Adult already on the far bank (x 1990), setBack 2. The plant: split.
+  Late 0, read on: no close inside the run; high false; setBack 0 (as 'time enough').
+- THE ADULT'S MISS, traced frame by frame (late 19, read on, seed 1). He stops at W's face (x 861, 0.4 s) and jumps up it (vy -577).
+  He lands on W's top at x 946, t 3.93, by his trailing edge: W is x 880-940 and Pokey is 44 px wide. firsttimer.ts:3083's small-ledge
+  pause (a ledge under 220 px: stop a beat) drops him from 268 to 41 px/s. Walking on at 87 px/s he topples off W's lip into the 60 px
+  gap (x 955, t 4.07). He lands on the bank strip (x 1003, y 800) and runs off onto the walkway (x 1077, t 4.53). Under P (120 px up,
+  out of reach) he paces x 1098-1122 until the close drowns him (t 8.03). NOT keep-the-road: on the round road `otherRoad` is the
+  walkway only (firsttimer.ts:2484), and an edge-press probe after `drops` printed nothing for this run, so that branch never ran on W.
+- tierBots 9/9 on frozen 6556b42ca (226.7 s); `git status` in the frozen tree empty: no calibration change.
+- NOT DONE: ROAD_TRIPS count (held, item 2), the suite, the CI tool line, the landing (t-eng-28 not created: the head is not final).
+- Lessons applied: D115 (every run on a chattr-frozen worktree: wt28f, wt28r and wt28g; edits only in the main tree; the scratch probes
+  never committed), D119 (commit -m, no heredoc in a commit chain), D128 (times from `date`), D59 (no run left going at the hand-over),
+  the lead's stop condition (a moved verdict stopped the work). LESSONS.md on this branch ends before D111: D111-D132 are known only as
+  the brief restates them.
+
+## EXACT NEXT STEP (session 6, superseded by session 7's above)
 Branch t-eng-28-wip, head b0bc6d79e or later (`git fetch origin t-eng-28-wip`, confirm). `npm ci --no-audit --no-fund --legacy-peer-deps`.
 1. lineBot 7/8 GREEN; RED: 'planted: with the read removed ... the close splits the line'. Every read-removed late-22 run now goes round
    high with setBack 0 (middle t 23.6, adult t 26): with LINE_SKILL.leadLine off he keeps the way's own road (the low road), so the new
