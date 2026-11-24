@@ -1,0 +1,13 @@
+CI tool line (gates.yml:157) on frozen 094e09746 (FILL-14b, chattr +i, proven/ thawed)
+ok 134 - --fill fills named list indices IN PLACE: every other index keeps its seed, plan, quiet and outro; refusals by name (FILL-14)
+ok 135 - --fill names a slot by its layout variant as Play draws it, on both of the game's paths (FILL-14: 1-4 variant 26 is NOT the 26th seed)
+not ok 179 - chase bots (OPEN, todo): the CHILD bot on Normal reaches the fork on 2 or more of 3 seeds # TODO measured 1 of 3 (ENG-B4): every miss a fall at a 120 px gap, never a catch
+# tests 370
+# suites 0
+# pass 369
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 1
+# duration_ms 579797.674391
+EXIT 0

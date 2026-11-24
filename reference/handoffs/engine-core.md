@@ -14,6 +14,16 @@ Merged at INT-14 (11-20, t-int-14): §0zq-25d/§0zq-25c ENG-25c (2-5's snap rows
 - Planted: w2.test.ts 'a fall over a water wheel's sweep...' (every row, both settings, both ways) and 'another storey's fall over a wheel's
   pond...' (RED on an x-only loosened variant: reference/qa-reports/ENG-W2FIN/loosened.txt).
 
+## 0zr-FILL14. FILL-14 + FILL-14b (t-build-26-wip-fill14, code 094e09746, 11-24): a failing list slot is filled IN PLACE
+- `seedlist <stage> --fill <variants> --with part.json[,...],order.json` (seedlistFile.ts fillSlots + variantIndex): each named layout
+  VARIANT is resolved to its list index by building the stage as Play does (RealPlay), then takes the next candidate of ORDER; every other
+  index keeps seed, packed plan, quiet and outro byte for byte. Candidates are laid first (`--merge cand.json --in-order --part`) and
+  played through a planted list (castBots --proven). Planted: seedlist.test.ts (red on a drop-and-append reorder; red on 'v - 1' and 'v mod n').
+- TRAP: a variant is not a list position by one rule. 1-1 plays index v - 1 (testlink1_1.ts play11Seed); every other listed stage plays
+  index v mod n (seedList.ts provenSeedFor). A castBots or ENG table's "seed N" on a listed stage is the VARIANT: FILL-14's first fill
+  replaced the wrong four by reading it as the seed. Resolve with variantIndex, never by hand (seed-list.md "Order is identity").
+- 1-4 at 094e09746: variants 26/45/66/69 (seeds 27/46/67/70) -> 101/102/103/104; castBots --proven 1-4 100/100; lockall 102/102 unchanged.
+
 ## 0zr-26s. ENG-26s (t-build-26-wip-26s ca3a7d063, 11-23): release 4's base, main merged into t-build-26; three CI reds fixed at cause
 - Merge b3e0a8206: 2-3 is main's arc (w2-23) and 2-6 is t-build-26's (w2-26); W2Plan is now '2-7' | '2-8' | '2-9'. firsttimer's stuck
   clock keeps both the figs' progress hold and FETCH-CLOCK. calibration-main.jsonl took t-build-26's side: re-judge it with tierBots.
@@ -72,6 +82,40 @@ names any lay wood in it. A box is a new wall every catch rule must step round: 
 and the bridge laid instead stepped off 9 px past the band's edge, where rule 4's CENTRED bough always lay in the band (647 px fall; tower.test
 red from 2f188c552, run by name filter only). Rule 4 now also tries the bough slid to the box's edge on the side he comes down, when it still
 lies under him (toy: 'towerCatches (planted, ENG-26p)'). After any keepOut change run tower.test.ts WHOLE, not the tests named for the box.
+
+## 0zq-teach. TEACH-11 (t-eng-27-wip-teach, 11-24): a teach section's tip is a teach line; the first-appearance gate (R-165.427)
+- **Landed** on t-eng-27 (fast-forward; hash in reference/qa-reports/TEACH-11/REPORT.md item 4). 1-1's first-run lock re-recorded on the
+  lead's ruling (11-24 3:28 PM ET): Normal 63ee55bd4e47e897, Easy d166f084d0071472 (only proto.hints moved; revert proof in
+  reference/qa-reports/TEACH-11/firstrun-lock.txt). A future change to a 1-1 line's KIND moves that lock: bring the same proof.
+- **CI** runs `teachFirstScan --check --seeds 20` (520 rolls, ~3 min, the lead's ruling); THE FULL SET at release runs every seed.
+- **The rule reaches Worlds 5-8 too** (lockall: 18 stages, proto.hints only): 15 lesson lines in their teach sections that Tips dropped
+  on Normal are now said (6-2, 6-4, 6-6, 7-1..7-9's brown vines, cracked tiles and four locked-shrine lines, 8-1, 8-2). No gate reads
+  non-listed stages' lines: storyTipScan and teachFirstScan cover LISTED stages only.
+- **Tests that pinned the old rule were re-pinned, not loosened:** src/game/gen2/teachTips.test.ts (1-3's trap tip is a teach line
+  with the list empty; the bare branch stays plain unless listed); tools/engine/library.test.ts thorn plant (out of teachTips alone
+  the thorn lines stay teach lines; the plain plant strips the laid mark, as the section's mark cannot come off: 1-2's teach node then
+  has no section).
+- **The cause (1-1's double line missing before the tall steps):** the line was LAID on every roll (161/161 listed seeds, both
+  settings, in the first double section) but laid as a PLAIN move tip: W1's `teachTips` named 'hint.1-1.bank' but not the teach
+  sections' own lines (coach.jump, hint.1-1.gaps, hint.1-1.double, w1.ts TEACH_LINES). A plain tip that can wait starts no sooner than
+  30 s after the last line started on Tips (TIPS_GAP_MS, Normal's default): on seed 15050 (w1-bank-double-teach, the testers' tall
+  bank) it was sent at x 5450 and SHOWN at x 7595 (32.6 s = the petals line's 2.6 s + 30 s), ~1,900 px past the bank at x 5698.
+- **The fix (general, pipeline.ts fillSockets):** a tip in a section whose template `teaches` a mechanic is laid with
+  `StageHint.teach` (stageTeach: Tips keeps it, it skips the 30 s gap, waits only for a clear moment), whatever the kit's teachTips
+  say; a story tip keeps its story kind. Every other world already listed its teach-section tips in teachTips, so only 1-1's three
+  lines changed kind (lockall: 1-1 `proto.hints` only).
+- **The gate:** `npx tsx tools/engine/teachFirstScan.ts --check` (gates.yml 'rolled'; gates.md 8e; every listed stage, EVERY proven
+  seed, both settings; its test plants four reds). Channels it accepts as "taught": a Dot teach line laid as a teach line, an earlier
+  stage's lesson (manifest.lessons), the 1-1 touch coach on a fresh touch phone (touchCoach.ts coachWanted: run, jump), a teach
+  section with no line of its own (its lesson card: the bounce). An EMPTY tip socket (w1-mushroom-lift's, no `allow`) lays nothing.
+- **Traps:** the built stage's sections carry no pieces, beats or entry/exit (stripped): the first required move is
+  pipeline.ts `laidAsks(st)` (lay order); a section's walking direction is the next section's place. storyTipScan only proves Tips
+  keeps a line, not WHEN it is said: the 30 s gap is what delayed this one. The moment is teachFirstScan.ts `walkSaid` (the brisk
+  route through Dot's real queue, DotSay + GuideQueue, dotHelp's default, a fresh device, the route's moves counted as done; its test
+  walks 1-1 seeds 15050, 9013, 9652). A probe that counts no move done keeps 'Slide your thumb to run' up to its 12 s cap and
+  over-reports late lines (my first count did: 5033 was NOT late on the base); dotPace.ts drops a hint's teach/warn/story flags (it calls engineGuideLine with
+  `{ dot: true }` only), so it under-reports teach lines.
+
 ## 0zq-warn. WARN-412 (t-eng-27-wip-warn, 11-24): every laid warning a must, every story beat a story line; the laid-line gate (R-165.412)
 - **A laid line's KIND is data, never words.** `StageHint.warn` (protoStage.ts) -> engine.ts GuideOpts `warn` (WARN_LINE) -> App.tsx's
   guide feed -> DotGuide.tsx engineLine -> dotLines.ts engineGuideLine `o.warn`: kind 'must' on every help setting (lock still wins:
