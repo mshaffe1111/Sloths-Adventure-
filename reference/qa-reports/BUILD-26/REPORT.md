@@ -1,4 +1,4 @@
-# BUILD-26u (session 5 of BUILD-26q; t-build-26-wip-26q). Started 5:53 PM ET 11-24 (by `date`); this box written 6:07 PM ET
+# BUILD-26u (session 5 of BUILD-26q; t-build-26-wip-26q). Started 5:53 PM ET 11-24 (by `date`); this box written 6:09 PM ET
 
 ## EXACT NEXT STEP
 **For the next session (base: this branch's head). Ruling 1 (place A) DONE and GREEN; ruling 2 (place B) READ, sent to the lead, no fix
@@ -11,6 +11,14 @@ NO token added, the node string and dealExact's deal unchanged, no wheel R/V cha
 Normal at 104 s or more on every roll. NOTE: the jetty clearance (below) already moves 2-6 (every wheel's axle and street 24 px out from
 its jetty), so re-measure the floor (castBots adult N alone, light) BEFORE re-laying: the shortfall may have moved. Stills of the three
 changed beats both ways.
+RE-MEASURED THIS BOX (castBots 2-6 seeds 1-100 adult normal, frozen 96cb4215f, 18 s; b26q5/floor-adultN-96cb4215f.txt + .jsonl): PASS
+99/100 (seed 16 rescued x1); UNDER 100 s: 27 (was 5 on b6a35d7e8); FASTEST 95.8 s (seed 22; 3: 95.9, 41: 96.8; was 98.6); median 104.9
+(unchanged); 52 under 105 s. The fastest moved ~3 s, about one Normal bucket period (2.7 s): the 24 px gap lets the bot board or step
+off one bucket earlier on some rolls (to confirm with one trace of seed 22). So the GO'd plan (+~6 s model, sized for a 98.6 s minimum)
+likely lands ~102 s, short of 104. ASKED THE LEAD (message sent): keep the three re-lays as GO'd and add a fourth brick's re-lay, or
+accept the new minimum's target; WAIT for the answer before laying. Drafting notes (not applied): P's fourth doorstep as a step DOWN
+(walk, dy [40, 50]) with a boulder, so its declared exitDy 0 still holds; U's exitDy (-265) must follow the ladder's new height
+(~-390) and that may change pool fits: check dealExact's deal is unchanged before anything else.
 (b) Then ruling 4: ONE castBots --proven 2-6, lockall (2-6 the only mover: the jetty clearance AND the face move 2-6 alone; anything else
 to the lead first), paint --stages 2-6, the suite + the CI tool line ONCE on the final head, timecheck; land on t-build-26 (merge, no
 force); hash and table to the lead. node_modules: `npm ci --legacy-peer-deps` (plain `npm ci` fails ERESOLVE in this container).

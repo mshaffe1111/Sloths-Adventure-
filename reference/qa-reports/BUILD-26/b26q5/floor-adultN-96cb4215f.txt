@@ -1,0 +1,15 @@
+4
+Tue Nov 24 23:08:33 UTC 2026
+castBots 2-6, seeds 1-100; the floor 100 s (STAGE-RULES.md:77: a climb, 20 s short)
+adult  normal PASS 99/100; under the floor 27; time median 104.9 s (min 95.8); hits 0 lives 0 (none); cleared none; told of traps 0/100; first trap sprung 0/100; traps sprung 0/0; turned back 0; left 
+        fail 1: shrine rescued x1  (seeds 16)
+adult normal rows 100, passes 99
+fastest 12 passes (seed: s): 22: 95.8, 3: 95.9, 41: 96.8, 94: 98.6, 58: 98.8, 70: 98.8, 76: 98.8, 48: 98.8, 75: 98.8, 19: 98.8, 25: 98.8, 73: 98.8
+passes under 100 s: 27
+passes under 102 s: 34
+passes under 105 s: 52
+passes under 110 s: 76
+min 95.8 median 104.9 max 125.8
+Tue Nov 24 23:08:51 UTC 2026
+
+[exited with code 0]
