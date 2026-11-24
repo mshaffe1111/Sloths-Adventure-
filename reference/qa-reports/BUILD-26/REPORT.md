@@ -38,6 +38,13 @@ strung between their feet; no seam, no stray look. Sideways: the posts' tops und
 Polish check: face-2-6-L0-easy-pit0-near-upright-close.jpg, face-2-6-L0-normal-pit0-near-upright-wide.jpg (looked at); the
 sideways close (normal) looked at; the other five shot, not opened by me (same frame cut).
 
+## The lead's question (the blue-band log in face-2-6-L0-normal-pit0-near-upright-wide.jpg): ANSWERED, not fixed
+It is 2-6's beat 'the millrace' (w2-26-millrace, s5; Normal layout 0): a moving river at surface y 4970, x 479-1277, leftward 70 px/s;
+the log is a drift log, the pale band the river drawer's water against the tower's soil wall. ROUGH (a see-through strip with hard
+square ends reads as glass). Fix proposed to the lead (no fix tonight): seat a tower river in a made channel (a bed under the water, a lip
+at each end tucked under its banks), the water at World 2's painted opacity. Whether shipped stages show the same is NOT checked.
+The lead APPROVED the face stills (ruling 1).
+
 ## Not run on this head (named plainly)
 castBots, lockall, paint, the full suite, the CI tool line, drawcheck/clipcheck/build gates: all wait for the final head (step d).
 Lessons applied: D115/D119/D128 as briefed (no heredoc in a commit; times from `date`); D59 (no run left in the background: vite only,
