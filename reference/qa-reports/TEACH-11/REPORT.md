@@ -26,33 +26,33 @@ route), D115 (every run on a chattr-frozen tree), D119 (no heredoc in a commit c
    other world already listed its teach-section tips in teachTips, so only 1-1's three lines change kind. No stage id, seed or x.
 3. **The gate (step 3).** tools/engine/teachFirstScan.ts `--check` (storyTipScan's twin): every listed stage, every proven seed, both
    settings, fresh touch phone: each mechanic Dot teaches with a line is laid in the first section that shows it, as a teach line,
-   not dropped on Tips, before its first ask. All stages: **0 misses over 2,822 rolls** (13 listed stages x every proven seed x 2), frozen 78a2c5d4e; 17 min while the suite shared the CPU. Its test (7/7) plants four reds (the teach after a section that
-   uses it; past the first double in its own section; laid as a plain tip; not laid) and walks the moment: 1-1 seeds 15050, 9013, 9652
-   (late on the base) on time on both settings with the fix; laid as a plain tip, late (RED). The fit test is RED on the base
-   ("laid as a plain tip") and green with the fix. Wired: gates.yml 'rolled' (the step + the test in the tool line), gates.md 8e.
-4. **Landing (step 4).** lockall: PENDING (re-running base 90552d3ec -> fix 78a2c5d4e; expected: 1-1 `proto.hints` only). Suite: PENDING on frozen 78a2c5d4e (3,628 run so far): reds so far = ciTests :677 (that tree predates the gates.yml wiring; re-run on the head), pacerLay :1542/:1543 (inherited, named by WARN-412), teachTips.test :17 (pinned the OLD rule; updated in 3b4ff8257 to the new contract, red on base, 2/2 green), 2035 todo. CI tool line: PENDING (queued after the suite, same frozen tree). tipwalk / storyTipScan / registrycheck /
-   tierBots: PENDING (queued). seedlist 1-1 --check: PENDING (after the lock). Landed on t-eng-27: NOT YET (waits on the lock, the suite, the CI line and seedlist; by 4:00 PM ET or handed over).
-
+   not dropped on Tips, before its first ask. Base: 322 misses / 322 1-1 rolls; fix: **0 / 2,822 rolls** (13 stages; 17 min beside
+   the suite). Test 7/7: four planted reds + the walk (1-1 seeds 15050, 9013, 9652, late on the base, on time; laid plain, late: RED).
+   Wired: gates.yml 'rolled' (step + tool line), gates.md 8e.
+4. **Landing (step 4): BLOCKED on the lead's ruling (PUSHBACK.md here).** `seedlist 1-1 --check` fails first-run.drift: 1-1's
+   first-run lock hashes proto.hints; only proto.hints moved, and with the teach mark off the head gives the recorded hashes exactly
+   (firstrun-lock.txt). lockall (lockall.txt): 84/102 unchanged, 18 moved, proto.hints only; lines named in PUSHBACK.md/kindcheck.txt
+   (15 World 6-8 lesson lines Tips dropped are now said, 4 of them locked-shrine lines). Suite (frozen 78a2c5d4e): 4,102: 4,095 pass,
+   3 todo, 4 fail = pacerLay :1542/:1543 (inherited, WARN-412) + ciTests (tree predates the wiring) + teachTips.test (old rule;
+   re-pinned) -> both green on frozen cac4b678b (34/34 with library.test + teachFirstScan.test). CI tool line (frozen 78a2c5d4e):
+   355: 342 pass, 1 todo, 12 fail = WARN-412's 11 inherited (wheelChannel x4, wheelRide x2, firsttimer, riverRide x4) + library.test
+   thorn plant (old rule; re-planted, 2/2 on cac4b678b). tipwalk, storyTipScan --check, registrycheck, tierBots 9/9: exit 0.
 ## 2. Polish check
 - reference/qa-reports/TEACH-11/1-1-15050-double-line-{sideways,upright}.png: the real page (dev server of the fix), fresh touch phone,
   Normal (Tips by default), 1-1 seed 15050 (the tall bank that came 1,900 px late on the base): Dot's "Flick up again midair to jump
-  twice." on screen, the bank ahead of him, readable both ways, nothing clipped. Rough spot (the shot, not the game): sideways, Pokey
-  stands ~60 px above the grass. The shooter pinned him to the floor the line's band picked; the game never stands him there.
-  Re-shoot from a walk to the spot if the lead wants a clean frame for Matt.
-
+  twice." on screen, the bank ahead of him, readable both ways, nothing clipped. Rough (my shooter's pin, not the game):
+  sideways, Pokey stands ~60 px above the grass; re-shoot from a walk before Matt sees it.
 ## 3. Pushback
-- The gate over EVERY proven seed (2,822 rolls) costs 17 min under load (est. 8-10 alone) in CI 'rolled'. The packet asks for every
-  roll, so it is wired that way; if the job budget can't take it, `--seeds 20` (about 2 min) is the lead's call, not mine.
+- Landing blocked: 1-1's first-run lock needs the lead's re-record ruling (PUSHBACK.md). Gate cost: every seed = 17 min under
+  load in CI 'rolled' (packet: every roll); `--seeds 20` (~2 min) is the lead's call.
 - My first count of late lines was wrong (the probe counted no move as done); corrected before any number left this branch.
-
 ## 4. Suggestions (outside my walls)
-- **Critic, tools/inspect/dotPace.ts:** it calls engineGuideLine(text, id, { dot: true }) and drops the hint's teach/warn/story flags,
-  so its pacing under-reports teach and warning lines. Packet: pass GuideOpts through onGuide's 4th argument (as the probe here does).
-- **Engine, the walk as a sweep:** `walkSaid` runs in the test on three 1-1 rolls; a `--walk N` mode over every listed stage (each
-  mechanic's line SHOWN before its first ask) needs the route finder proven on Worlds 2+ first; ~1 s a walk.
+- Critic: tools/inspect/dotPace.ts drops a hint's teach/warn/story flags (engineGuideLine with `{ dot: true }` only): pass GuideOpts.
+- Engine: `walkSaid` as a sweep over every listed stage (`--walk N`), once the route finder is proven on Worlds 2+; ~1 s a walk.
+- Lead: storyTipScan/teachFirstScan read LISTED stages only; Worlds 3-8's lines are judged by no gate (this fix found 15 dropped).
 ## 5. Unresolved
-Lock, CI tool line, tipwalk/storyTipScan/registrycheck/tierBots, seedlist 1-1 and the landing were still running at report time (named above).
-
+NOT landed on t-eng-27: waits the first-run re-record ruling. EXACT NEXT STEP: PUSHBACK.md "Ask" (edit firstRun11.ts, seedlist
+1-1 --check frozen, `git push origin cac4b678b-or-later:t-eng-27`, a fast-forward). Over the two-heavy-run cap twice for ~5 min (stills, head re-runs).
 ## 6. Method update
 gates.md 8e. Add to methods/stage-fix.md: "a line's KIND sets WHEN it is said (a plain tip waits Tips' 30 s gap); storyTipScan proves
 Tips keeps it, teachFirstScan that it is a teach line before its first use, walkSaid the moment. A Dot probe must count moves done."

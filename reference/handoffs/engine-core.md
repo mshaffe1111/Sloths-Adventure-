@@ -3,6 +3,18 @@
 Merged at INT-14 (11-20, t-int-14): §0zq-25d/§0zq-25c ENG-25c (2-5's snap rows level, the snapper's ground, the straddle), §0zq-NOISE ENG-NOISE (one noise channel), §0zq-PROWL ENG-PROWL (sight.up + the leap), §0zq-small3 ENG-SMALL3 (R-165.317/.319/.321), and PAINT-292 (World 1's painted planks and stones; no section here). Merged at INT-13 (11-19, t-int-13): §0ENG23 ENG-23 (followers, the heron reads the line) and §0zl-168 TIME-168 (timecheck), §0zm-25b ENG-25b (the snapper bot skill, the meter's snap channel) and §0zl-25 ENG-25 (2-5's snap stones and snapper rows), §0zn-26b ENG-26b and §0zm-26 ENG-26 (the water wheel), §0W2A ART-W2A (2-3's painted follow poses), §0zo ART-W2B (the wheel's painted draw), §0zo-285c/§0zo-285b/§0zo-285 ENG-285 (the judges and bots fly the engine's Pokey), §0zp-284 FIX-284/284b (2-2's big pads, the real tap hop), §0zp-24d BUILD-24d, §0zn-24c ENG-24c (the raft look, the glow) and §0zm-24 BUILD-24 (2-4) joined; rewritten at the INT-12 merge (11-18, t-int-12): four members wrote here the same day, so labels are suffixed where they met: §0zm-22p ART-22P (CI's seed-list matrix, R-165.278); §0zl-24 ENG-24 (a liana over a river; its REPORT cites it as §0zl); §0zm BUILD-19b, §0zn ENG-19c and §0zl BUILD-19 (t-build-19, the labels its REPORT cites). Before them FIX-22b (11-15): section 0zk.
 
 ## 0zq-teach. TEACH-11 (t-eng-27-wip-teach, 11-24): a teach section's tip is a teach line; the first-appearance gate (R-165.427)
+- **OPEN (stopped 11-24 3:35 PM ET, not landed):** t-eng-27-wip-teach @ the head named in reference/qa-reports/TEACH-11/REPORT.md.
+  `seedlist 1-1 --check` fails first-run.drift because 1-1's first-run lock (firstRun11.ts) hashes proto.hints. Waiting on the lead's
+  re-record ruling (reference/qa-reports/TEACH-11/PUSHBACK.md: new Normal 63ee55bd4e47e897, Easy d166f084d0071472; revert proof in
+  firstrun-lock.txt). NEXT: on the ruling, edit FIRST_RUN_11's lock + a "Re-recorded by TEACH-11" note, seedlist 1-1 --check on a
+  frozen tree, then fast-forward t-eng-27 (`git push origin <head>:t-eng-27`, no force; t-eng-27 was still 90552d3ec at 3:05 PM).
+- **The rule reaches Worlds 5-8 too** (lockall: 18 stages, proto.hints only): 15 lesson lines in their teach sections that Tips dropped
+  on Normal are now said (6-2, 6-4, 6-6, 7-1..7-9's brown vines, cracked tiles and four locked-shrine lines, 8-1, 8-2). No gate reads
+  non-listed stages' lines: storyTipScan and teachFirstScan cover LISTED stages only.
+- **Tests that pinned the old rule were re-pinned, not loosened:** src/game/gen2/teachTips.test.ts (1-3's trap tip is a teach line
+  with the list empty; the bare branch stays plain unless listed); tools/engine/library.test.ts thorn plant (out of teachTips alone
+  the thorn lines stay teach lines; the plain plant strips the laid mark, as the section's mark cannot come off: 1-2's teach node then
+  has no section).
 - **The cause (1-1's double line missing before the tall steps):** the line was LAID on every roll (161/161 listed seeds, both
   settings, in the first double section) but laid as a PLAIN move tip: W1's `teachTips` named 'hint.1-1.bank' but not the teach
   sections' own lines (coach.jump, hint.1-1.gaps, hint.1-1.double, w1.ts TEACH_LINES). A plain tip that can wait starts no sooner than
