@@ -189,8 +189,13 @@ test("Dot's thorn lines are 1-2's TEACH lines on every roll, both settings (the 
   each((st, d, s) => assert.deepEqual(teachOf(st), { thorns: 'teach', 'thorns.then': 'teach' }, `${d} seed ${s}`));
 });
 
-test('PLANTED: with the thorn lines left out of teachTips they are laid as ordinary hints, and that is caught', () => {
+test('PLANTED: the thorn lines laid as ordinary hints are caught (and out of teachTips alone they stay teach lines, TEACH-11)', () => {
+  // (since TEACH-11, R-165.427, a tip of a section that `teaches` is a teach line whatever teachTips says: the list alone is no longer the
+  // switch. The section's mark cannot come off (1-2's teach node then has no section), so the plant takes the teach mark off the laid lines)
   const st = plant((k) => ({ ...k, manifest: { ...k.manifest, teachTips: (k.manifest.teachTips ?? []).filter((m) => !m.startsWith('thorns')) } }))(1, 'normal');
+  assert.deepEqual(teachOf(st), { thorns: 'teach', 'thorns.then': 'teach' }, 'out of teachTips alone they stay teach lines (their section teaches)');
+  const words = ['thorns', 'thorns.then'].map((id) => (id in LINES_12 ? (LINES_12 as Any)[id] : kitLib12().manifest.tips![id]));
+  for (const h of st.proto?.hints ?? []) if (words.includes(h.text)) delete h.teach;
   assert.deepEqual(teachOf(st), { thorns: 'hint', 'thorns.then': 'hint' });
 });
 
