@@ -2466,7 +2466,6 @@ export class FirstTimerRun {
     const going = fp.line.filter((f) => f.state === 'follow' || f.state === 'join');
     const tail = going.length ? Math.min(...going.map((f) => f.x * dir)) * dir : p.x;
     const rate = c.f.tailOff > 0 ? c.f.px / c.f.tailOff : Infinity;
-    if (process.env.FLOODDBG) console.log('READ', p.x.toFixed(0), 'left', left.toFixed(2), 'tail', tail.toFixed(0), 'need', (((far - tail) * dir) / rate).toFixed(2));
     if (left >= ((far - tail) * dir) / rate) return;
     // (they can't make it: round by the high road, its pieces' tops every 24 px)
     const pts: Pt[] = [];

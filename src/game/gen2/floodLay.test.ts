@@ -17,9 +17,13 @@ import type { SectionTemplate, WorldKit } from './types.ts';
 const ID = '2-96';
 /** the toy's rows: the ride river (the home leg's first) is the low road, the twin rises */
 const RIVERS = { ...W2_RIVERS, ride: { ...W2_RIVERS.ride, flood: 'close' as const }, twin: { ...W2_RIVERS.twin, flood: 'rise' as const } };
-/** the ride crossing with a HIGH ROAD: a porch FLOOD_STEP px over the near bank's end, over the whole river, ending over the far bank */
+/** the ride crossing with a HIGH ROAD: a WALL-STEP on the near bank's end (a block FLOOD_STEP px tall, its far side at the water's edge:
+ *  he walks into it and climbs, flood.ts highRoad's first piece), then a porch level off its top, over the whole river, ending over the far
+ *  bank. (A porch alone, FLOOD_STEP px over the bank's end, is a bare edge hop up: refused by name, ENG-28 session 4's widened rule) */
 const withPorch = (porch: boolean): SectionTemplate[] => HOME_BRICKS.map((b) => (b.id !== 'home-practise-ride' || !porch ? b : {
-  ...b, pieces: [...b.pieces, { key: 'porch', shape: 'branch', w: [880, 880], place: { kind: 'over', on: 'near', at: [1, 1], dy: [-FLOOD_STEP, -FLOOD_STEP] }, style: 'log', main: false }],
+  ...b, pieces: [...b.pieces,
+    { key: 'stand', shape: 'block', w: [60, 60], place: { kind: 'on', on: 'near', at: [1, 1], h: [FLOOD_STEP, FLOOD_STEP] }, style: 'moss_stone' },
+    { key: 'porch', shape: 'branch', w: [880, 880], place: { kind: 'over', on: 'near', at: [1, 1], dy: [-FLOOD_STEP, -FLOOD_STEP] }, style: 'log', main: false }],
 }));
 const floodKit = (porch: boolean, flood?: FloodRow): WorldKit => {
   const k = homeKit(ID, HOME_CODE);

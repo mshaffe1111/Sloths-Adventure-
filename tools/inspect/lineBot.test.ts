@@ -124,10 +124,12 @@ test('planted: with fetch-the-spooked off the spooked one is left at its reed an
 });
 
 /**
- * LEAD-THE-LINE (ENG-28; 2-8.md "Bots"): a toy fork in the real engine. The low road: a walkway 5 px under the banks over 400 px of water
- * marked to close (paddling depth 10 px under the banks, deep at 26 s); the high road: three thin pieces (60 px up, 120 px up over the water,
- * 60 px up) a step each, flood.ts highRoad's chain. Three little ones behind him; the clock started `late` s before he sets off (the last
- * cage freed that long ago: he dawdled). Counted: the little ones the close sets on the near bank (a split line) and which road he took.
+ * LEAD-THE-LINE (ENG-28; 2-8.md "Bots"): a toy fork in the real engine. The low road: a walkway 60 px under the banks over 400 px of water
+ * marked to close (deep at 26 s); the high road, flood.ts highRoad's chain: W, a block 60 px tall on the near bank (a wall-step he walks
+ * into and climbs), P a thin piece level with W's top across a 60 px gap, B a block 60 px over P standing on its level (a wall-step out of
+ * the low road's lane), C a thin piece level with P on to the far bank. Three little ones behind him; the clock started `late` s before he
+ * sets off (the last cage freed that long ago: he dawdled). Counted: the little ones the close sets on the near bank (a split line) and
+ * which road he took. The toy's spawn and flags stand on its own floor (a lost heart puts him and the line back there).
  */
 interface FloodRun { end: string; setBack: number; home: number; high: boolean; t: number }
 function floodRun(who: FirstTimer, seed: number, late: number): FloodRun {
@@ -182,7 +184,6 @@ function floodRun(who: FirstTimer, seed: number, late: number): FloodRun {
     const closed = e.follow.floodClosed.bind(e.follow);
     e.follow.floodClosed = (w: unknown) => {
       const out = closed(w) as Follower[];
-      if (process.env.FLOODDBG) console.log("CLOSE", e.gameTime.toFixed(2), "he", Math.round(run.sim.p.x), Math.round(run.sim.p.y), "line", (e.follow.line as Follower[]).map((f) => `${f.state}@${Math.round(f.x)},${Math.round(f.y)}`).join(" "));
       setBack += out.length;
       return out;
     };
@@ -192,11 +193,9 @@ function floodRun(who: FirstTimer, seed: number, late: number): FloodRun {
       const r = on(...(a as [never]));
       const p = run.sim.p;
       if (p.x > W0 + 40 && p.x < W1 - 40 && p.grounded && p.y < Y - 100) high = true;
-      if (process.env.FLOODDBG && Math.round(e.gameTime * 30) % 15 === 0 && e.gameTime < 40) console.log("PATH", e.gameTime.toFixed(1), Math.round(p.x), Math.round(p.y), p.grounded ? "g" : "a", (e.follow.line as Follower[]).map((f) => `${f.state}@${Math.round(f.x)},${Math.round(f.y)}`).join(" "), "trail", e.follow.trail.pts.length, "s", Math.round(e.follow.trail.s));
       return r;
     };
     run.play();
-    if (process.env.FLOODDBG) console.log("STUCK", JSON.stringify((run as any).stuck), "rescues", (run as any).rescues, "hi", (run as any).prog.hi, "pts", (run as any).prog.pts.length);
     return { end: run.end, setBack, home: e.follow.home(), high, t: +run.t.toFixed(1) };
   } finally {
     Math.random = mr;
