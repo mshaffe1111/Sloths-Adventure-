@@ -101,28 +101,35 @@ export function floodFaults(f: Flood): string[] {
  * Pieces out of that reach (a leg laid far above) are no part of it. By name; empty: walkable.
  */
 export function highRoadFaults(tops: ReadonlyArray<{ x: number; w: number; y: number }>, span: { x0: number; x1: number; from: { x: number; y: number }; to: { x: number; y: number } }, step: number, hop: number): string[] {
+  return highRoad(tops, span, step, hop).faults;
+}
+
+/** the high road itself (highRoadFaults' walk): its pieces in the order he meets them (the bot's way round, lead-the-line), and the faults
+ *  by name (empty: walkable) */
+export function highRoad<T extends { x: number; w: number; y: number }>(tops: ReadonlyArray<T>, span: { x0: number; x1: number; from: { x: number; y: number }; to: { x: number; y: number } }, step: number, hop: number): { chain: T[]; faults: string[] } {
   const dir = span.to.x >= span.from.x ? 1 : -1;
   const nearOf = (p: { x: number; w: number }) => (dir > 0 ? p.x : p.x + p.w);
   const farOf = (p: { x: number; w: number }) => (dir > 0 ? p.x + p.w : p.x);
   const beyond = (a: number, b: number) => (a - b) * dir;
   let at = { x: span.from.x, y: span.from.y };
-  let used = 0;
+  const chain: T[] = [];
   for (;;) {
+    const used = chain.length;
     // (done when the far bank is a step and a hop from here)
-    if (used && beyond(span.to.x, at.x) <= hop && Math.abs(span.to.y - at.y) <= step) return [];
+    if (used && beyond(span.to.x, at.x) <= hop && Math.abs(span.to.y - at.y) <= step) return { chain, faults: [] };
     // (the next piece: it starts within a hop ahead of here (or under him already), goes on past here, and is a step up or down)
-    let next: { x: number; w: number; y: number } | undefined;
+    let next: T | undefined;
     for (const p of tops) {
       if (beyond(nearOf(p), at.x) > hop || beyond(farOf(p), at.x) <= 1 || Math.abs(p.y - at.y) > step || Math.abs(p.y - at.y) < 1) continue;
       if (!next || beyond(farOf(p), farOf(next)) > 0) next = p;
     }
     if (!next) {
-      if (!used) return [`flood: no high road over the low road at x ${Math.round(span.x0)}-${Math.round(span.x1)} (no piece a step of at most ${step} px off its near bank)`];
-      return [`flood: the high road breaks at x ${Math.round(at.x)}: no piece or far bank within a step of ${step} px and a hop of ${hop} px from there`];
+      if (!used) return { chain, faults: [`flood: no high road over the low road at x ${Math.round(span.x0)}-${Math.round(span.x1)} (no piece a step of at most ${step} px off its near bank)`] };
+      return { chain, faults: [`flood: the high road breaks at x ${Math.round(at.x)}: no piece or far bank within a step of ${step} px and a hop of ${hop} px from there`] };
     }
-    used++;
+    chain.push(next);
     at = { x: farOf(next), y: next.y };
-    if (used > tops.length) return ['flood: the high road loops'];
+    if (chain.length > tops.length) return { chain, faults: ['flood: the high road loops'] };
   }
 }
 
