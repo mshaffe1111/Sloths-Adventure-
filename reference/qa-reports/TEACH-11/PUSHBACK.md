@@ -1,4 +1,4 @@
-# PUSHBACK (TEACH-11, 11-24 3:32 PM ET): the landing needs the lead's ruling on 1-1's first-run lock
+# PUSHBACK (TEACH-11, 11-24 3:27 PM ET, from date): the landing needs the lead's ruling on 1-1's first-run lock
 
 **Blocker.** `seedlist 1-1 --check` fails `first-run.drift` on the fix: 1-1's fixed first run (src/game/gen2/firstRun11.ts, seed 9652,
 ADR-002) hashes its built parts, and the fix changes `proto.hints` (three lines become teach lines). Every past re-record of that lock
