@@ -1,4 +1,4 @@
-# BUILD-26w (session 7 of BUILD-26q; t-build-26-wip-26q, the bot fix a44decc0e on 48b277994's stage). Started 6:34 PM ET 11-24 (by `date`); this box written 6:48 PM ET
+# BUILD-26w (session 7 of BUILD-26q; t-build-26-wip-26q, the bot fix a44decc0e on 48b277994's stage). Started 6:34 PM ET 11-24 (by `date`); this box written 6:54 PM ET
 
 ## EXACT NEXT STEP
 **The lead GO'd the E 90 bot fix ("general for every wheel"; conditions: planted toy RED off / GREEN on; the new path's trips 0 outside 2-6;
@@ -9,7 +9,7 @@ in-air way (2421-2422: `if (this.wheelOff) dir = this.wheelOff.way`); wheelRide(
 DONE on frozen trees: tsc clean (a44decc0e, b26w/tsc-a44decc0e.txt); adult E 90 shrine 128.7 s, 0 rescues (was 153.3 s, 1), lands x 849 way +1;
 adult E 1 unchanged (124.9 s); the toy (wheelRide.test.ts 'wheelWay', CI-run file) GREEN on 2a60f9275, its plant (off) rescued
 (b26w/toy-2a60f9275.txt); trips: only w2Arc26.ts among the world arcs lays a wheel (grep), wheelFixtureStage is the toy: the path needs him
-IN a bucket, so 0 outside 2-6 by build; lockall in ruling 4 proves it on the rows. tierBots: RUNNING on 2a60f9275 at this push (b26w/tierBots-2a60f9275.txt when done).**
+IN a bucket, so 0 outside 2-6 by build; lockall in ruling 4 proves it on the rows. tierBots 9/9 GREEN on 2a60f9275 (b26w/tierBots-2a60f9275.txt).**
 (a) NEXT, in order: (1) Beat A's bare ground (pre-existing, cause NOT read): platform 5 (326-1026, y 7761, h 90, 'log') is drawn by
 protoArt.ts's painted earth bank (bankPainted: h >= 90), which shows a bank END at ~548 and another at ~839, so the bank is split in two
 INSIDE one platform; FIXED in world space, not a view cull (camera moved 330 px right: the same stretch bare, b26w/stills/cropA-shift500.jpg;
