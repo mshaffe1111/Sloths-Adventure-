@@ -124,3 +124,7 @@ release branch, before THE FULL SET.
 **Known flips first (ENG-PLANT-c, approved 11-24):** when an attribution or an earlier run has already named the pass -> fail rows, a
 candidate runs THOSE rows first (minutes), and only then the full table: 3b's 2-4 miss was visible from ENG-PLANT-b's flip list before a
 25-minute run. A refused judged hop names its way on in the same code block, with a toy each way.
+**Then a wide sample before the full table (D133):** between candidates that touch a shared gate, run every bot on both settings, seeds 1-10, on each
+shipped stage the gate can touch (about a quarter of the full table) before stacking another candidate; eight candidates judged on 10 rows
+alone broke 60 shipped 2-1 rows unseen (11-24). A rule that refuses every path a judge cannot see is wrong until the judge can see them:
+refuse the traced bad case only.
