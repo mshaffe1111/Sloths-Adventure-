@@ -1,0 +1,18 @@
+// spot.mts (b26r) with its window and setting as arguments: tree setting variant x0 x1 y0 y1
+const [tree, setting, v, X0, X1, Y0, Y1] = process.argv.slice(2);
+await import(`${tree}/src/game/headlessDom.ts`);
+const { generateAllLevels } = await import(`${tree}/src/game/worldsData.ts`);
+const { generateStage, setLayoutVariant } = await import(`${tree}/src/game/stageGenerator.ts`);
+const { loadSeedList } = await import(`${tree}/src/game/gen2/seedList.ts`);
+const c = generateAllLevels().find((l: { id: string }) => l.id === '2-6');
+await loadSeedList('2-6');
+setLayoutVariant(+v);
+const st: any = generateStage({ ...c, unlocked: true }, setting as never);
+setLayoutVariant(null);
+const [x0, x1, y0, y1] = [X0, X1, Y0, Y1].map(Number);
+console.log(`== 2-6 ${setting} variant ${v} (seed ${st.gen2?.seed}), pieces at x ${x0}-${x1}, y ${y0}-${y1}`);
+for (const p of st.platforms) if (p.x < x1 && p.x + p.width > x0 && p.y > y0 && p.y < y1) console.log(`x ${Math.round(p.x)}-${Math.round(p.x + p.width)} y ${Math.round(p.y)} h ${p.height} ${p.style} ${p.type}`);
+for (const d of st.gen2.drops ?? []) if (d.lipY > y0 && d.lipY < y1) console.log('drop', JSON.stringify(d).slice(0, 160));
+for (const w of st.proto?.wheels ?? st.wheels ?? []) if (w.cy > y0 - 300 && w.cy < y1 + 300) console.log('wheel', JSON.stringify(w).slice(0, 200));
+const tok = new Map(st.gen2.nodes.map((n: any, i: number) => [`n${i + 1}`, n.token]));
+console.log('sections:', st.gen2.sections.map((s: any) => `${tok.get(s.node)} ${s.template.replace('w2-26-', '')} ${Math.round(s.x0)}-${Math.round(s.x1)}`).join(' | '));

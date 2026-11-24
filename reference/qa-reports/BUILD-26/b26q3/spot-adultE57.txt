@@ -1,0 +1,6 @@
+== 2-6 easy variant 57 (seed 58), pieces at x 800-1250, y 850-1250
+x 635-875 y 1013 h 24 branch solid
+x 977-1097 y 1041 h 16 undefined moving
+x 804-924 y 941 h 16 undefined moving
+x 1150-1270 y 941 h 16 undefined moving
+sections: A millpond 640-1628 | Tr1^< first-wheel 826-1584 | Pg1^< first-street 114-1132 | Uc1^> through-house 467-1088 | Pw1^> millrace 114-1500 | Xr1^< edge-wheel 555-1456 | R rest 599-1127 | Pf1^< porches 360-1586 | Wr1^> top-wheel 404-1168 | R rest 596-1124 | Cb^< wheel-bounce 114-1163 | R rest 591-1119 | Sr1^< great-wheel 635-1405 | E crest 928-1361
