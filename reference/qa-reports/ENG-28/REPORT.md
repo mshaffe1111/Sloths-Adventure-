@@ -10,7 +10,9 @@ refuses a fork whose high road starts with a bare edge hop (planted RED/GREEN); 
   edge); level and down hops stay legal. Refused by name: 'starts with a bare edge hop at x N' (first piece) and 'climbs by a bare edge
   hop up at x N' (any later up). Toys in flood.test.ts (11/11 GREEN): GREEN block on the bank / face at the edge / the stand-back shape;
   RED thin piece at the edge, block out over the water, no height, a thin porch-top step one piece in.
-  WIDENED from 'the first piece' to 'every step up' on evidence (below); sent to the lead, box not ended on it.
+  WIDENED from 'the first piece' to 'every step up' on evidence (below); sent to the lead, box not ended on it. THE LEAD AGREED (its
+  reply, read at hand-over): the flood check refuses a bare edge hop UP anywhere on the high road; level and down hops stay legal; every
+  rise is a wall-step out of the low road's lane; it is what 2-8's Content job will lay. 'Carry on: the toy, then the gates, then t-eng-28.'
 - FINDING 1 (real engine, lineBot toy v1: block W 60 px on the bank set back 60 px, then the old porch B 60 up off W's far edge): the
   adult BUMPS W and climbs it (the wall-step works with no bot change) but at W's far edge walks off forward: W->B is a bare edge hop up
   again, the same RED one piece later. In 2D a wall in the low road's lane blocks the low road, so after the first wall-step the high road
