@@ -82,6 +82,9 @@ export interface Follower {
   slot?: number;
   /** which way it faces (+1 right) */
   facing: 1 | -1;
+  /** spooked by the FLOOD, not a heron (setOnBank): the water it was in turned deep and it sits in the reeds on the near bank, drawn
+   *  sitting, until he comes back within `rejoin` (2-8.md:46-48) */
+  sat?: boolean;
 }
 
 /** what record() is told he is doing this frame */
@@ -214,7 +217,7 @@ export type SurfaceAt = (x: number, y: number) => number | null;
  * closer than `gap`, never past a WAIT. A freed one drops from its cage, then goes straight to the end of the line; a spooked one runs
  * straight back at `scamper` to its stretch's start and waits there. `surf`: the splash-back water under a point (it paddles there).
  */
-export function stepLine(t: Trail, line: Follower[], pace: number, gap: number, dt: number, surf?: SurfaceAt, scamper = 300): void {
+export function stepLine(t: Trail, line: Follower[], pace: number, gap: number, dt: number, surf?: SurfaceAt, scamper = 300, wall?: DeepAt): void {
   let lead = t.s;
   const cap = trailCap(t);
   for (const f of line) {
@@ -233,6 +236,8 @@ export function stepLine(t: Trail, line: Follower[], pace: number, gap: number, 
         const sp = airSpan(t, ns);
         if (sp && ns < sp.to - 0.01 && ns - f.s < step - 1e-6) ns = Math.max(f.s, sp.from);
       }
+      // (deep water is a WALL: it never walks onto a point of his trail in deep water; it waits on the bank before it, as at a climb's foot)
+      if (wall) ns = Math.max(f.s, Math.min(ns, wallCap(t, f.s, ns, wall)));
       f.s = ns;
       const q = trailAt(t, f.s);
       f.x = q.x;
@@ -285,6 +290,42 @@ export function stepLine(t: Trail, line: Follower[], pace: number, gap: number, 
   }
 }
 
+/** is (x, y) in deep water (the flood's low road once it has turned, flood.ts): a wall the line waits at */
+export type DeepAt = (x: number, y: number) => boolean;
+
+/** the farthest s in (from, to] the line may walk before deep water on the trail (to when there is none on the way) */
+export function wallCap(t: Trail, from: number, to: number, deep: DeepAt): number {
+  if (to <= from) return to;
+  const p = t.pts;
+  // (from the trail's point at or before `from`, the first point after it in deep water stops it at the point before)
+  let lo = 0, hi = p.length - 1;
+  while (lo < hi) {
+    const m = (lo + hi + 1) >> 1;
+    if (p[m].s <= from) lo = m;
+    else hi = m - 1;
+  }
+  for (let i = lo + 1; i < p.length && p[i - 1].s < to; i++) if (deep(p[i].x, p[i].y)) return Math.max(from, p[i - 1].s);
+  return to;
+}
+
+/**
+ * The water it paddles in turned deep (the flood's close, 2-8.md:46): it is set on that water's NEAR bank (`at`), sitting in the reeds,
+ * and waits there as a spooked one waits (rejoin: he comes back within reach and it runs to the end of the line). Never lost, never hurt.
+ */
+export function setOnBank(f: Follower, at: { x: number; y: number }): void {
+  if (f.state === 'home') return;
+  f.state = 'spooked';
+  f.backX = at.x;
+  f.back = true;
+  f.x = at.x;
+  f.y = at.y;
+  f.slot = undefined;
+  f.land = undefined;
+  f.paddle = false;
+  f.moved = true;
+  f.sat = true;
+}
+
 /** a freed little one: it drops from its cage at `from` to `land` (the ground or water under the cage), then walks to the end of the line */
 export function join(line: Follower[], kind: FollowKind, from: { x: number; y: number }, land: { x: number; y: number }): Follower {
   const f: Follower = { kind, s: 0, x: from.x, y: from.y, moved: true, state: 'join', land: { ...land }, facing: 1 };
@@ -313,6 +354,7 @@ export function unkeep(line: Follower[]): void {
 export function rejoin(line: Follower[], f: Follower, heX: number, reach: number): boolean {
   if (f.state !== 'spooked' || !f.back || Math.abs(heX - f.x) > reach) return false;
   f.state = 'join';
+  f.sat = undefined;
   f.land = undefined;
   f.back = undefined;
   f.backX = undefined;
@@ -348,6 +390,7 @@ export function regroup(line: Follower[], at: { x: number; y: number }, gap: num
     f.slot = undefined;
     f.moved = false;
     f.paddle = false;
+    f.sat = undefined;
     f.facing = dir;
   }
   return t;

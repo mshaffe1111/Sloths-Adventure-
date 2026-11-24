@@ -25,6 +25,7 @@
  * section of its own (gen2/riverLay.ts), and so is a pond of sinking pads (gen2/rideLay.ts layPads).
  */
 import type { PacerRow } from '../../pacer.ts';
+import type { FloodRow } from '../../flood.ts';
 import type { PostArt } from '../../post.ts';
 import type { ColumnDressSpec } from '../../columnDress.ts';
 import { G } from '../../protoStage.ts';
@@ -126,6 +127,11 @@ export const W2_RACE: PacerRow = {
   under: 2,
   art: [next('mailBoat'), next('mailBoatB')],
 };
+
+/** World 2's FLOOD table (flood.ts FloodRow; 2-8's flown numbers, reference/design/2-8.md "FLOWN" @ t-design-26): the low road turns deep
+ *  26 s after the last cage on both settings (:16, :20), at least 4 s (Normal) / 8 s (Easy) after the line's prompt tail-off (:58), the
+ *  flights' leg 2,000 + 1,400 px from the turn to off the low road (:8-9) and the prompt line's tail-off over it 22.0 / 17.9 s (:13) */
+export const W2_FLOOD: FloodRow = { close: { normal: 26, easy: 26 }, spare: { normal: 4, easy: 8 }, flown: { px: 2000 + 1400, tailOff: { normal: 22.0, easy: 17.9 } } };
 
 /** World 2's POST art (post.ts PostArt; 2-7's doors): the PLEASE BE PATIENT door shut (w2-props) and open, a letter and a reply, two
  *  flutter frames each (ART-NEXT-b, the inventory's w2-next rows) */
