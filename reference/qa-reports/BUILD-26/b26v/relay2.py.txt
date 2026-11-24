@@ -1,0 +1,27 @@
+# usage: python3 relay2.py <file> key=val ...  keys: shore, d (width), ddy (lo,hi), lad (lo,hi), ex, high
+import sys
+f = sys.argv[1]; o = dict(a.split('=') for a in sys.argv[2:])
+t = open(f).read()
+def rep(a, b):
+    global t
+    assert t.count(a) == 1, a
+    t = t.replace(a, b)
+if 'shore' in o:
+    rep("{ key: 'shore', shape: 'bank', w: [380, 380], place: { kind: 'walk', after: 'bank', dy: [0, 0] }, style: 'log', main: true, landing: true }],",
+        "{ key: 'shore', shape: 'bank', w: [%s, %s], place: { kind: 'walk', after: 'bank', dy: [0, 0] }, style: 'log', main: true, landing: true }, rock('r2', 'shore', %s)]," % (o['shore'], o['shore'], o.get('shoreat', '0.55')))
+if 'd' in o:
+    lo, hi = o.get('ddy', '40,50').split(',')
+    kind = o.get('dkind', 'walk')
+    rep("branch('c', 260, { kind: 'jump', after: 'b', dy: [0, 0], share: [0.4, 0.5] })],",
+        "branch('c', 260, { kind: 'jump', after: 'b', dy: [0, 0], share: [0.4, 0.5] }),\n      branch('d', %s, { kind: '%s', after: 'c', dy: [%s, %s] }), rock('r2', 'd', %s)]," % (o['d'], kind, lo, hi, o.get('dat', '0.4')))
+if 'lad' in o:
+    lo, hi = o['lad'].split(',')
+    rep("content: 'climb', exitDy: -265,", "content: 'climb', exitDy: %s," % o['ex'])
+    rep("h: [250, 280] } },", "h: [%s, %s] } }," % (lo, hi))
+if 'high' in o:
+    rep("branch('high', 240, { kind: 'walk', after: 'street', dy: [-180, -174] }, { block: 'bounce', from: 'spring' })],",
+        "branch('high', %s, { kind: 'walk', after: 'street', dy: [-180, -174] }, { block: 'bounce', from: 'spring' })%s]," % (o['high'], (", rock('r', 'high', %s)" % o['highrock']) if 'highrock' in o else ''))
+if 'crest' in o:
+    rep("pieces: [{ key: 'in', shape: 'branch', w: [420, 440],", "pieces: [{ key: 'in', shape: 'branch', w: [%s, %s]," % (o['crest'], o['crest']))
+open(f, 'w').write(t)
+print('ok', o)

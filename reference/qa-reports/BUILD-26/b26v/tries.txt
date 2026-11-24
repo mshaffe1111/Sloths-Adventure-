@@ -1,0 +1,12 @@
+scratch tries (model = gen2 sections[].seconds, Normal, seeds 1-100; base 74df28278; relay2.py.txt keys; try.sh.txt)
+model-base-74df2827.jsonl    min  95.30 median  98.28 max  98.58 turns {10: 40, 11: 60}
+model-try-A.jsonl            min 106.11 median 106.39 max 106.61 turns {13: 100}
+model-try-APU.jsonl          min 108.08 median 108.34 max 108.56 turns {13: 100}
+model-try-APlevel.jsonl      min 107.51 median 107.78 max 108.00 turns {13: 100}
+model-try-AU.jsonl           min 106.69 median 106.95 max 107.17 turns {13: 100}
+model-try-P.jsonl            min 102.60 median 102.88 max 103.10 turns {12: 100}
+model-try-PU.jsonl           min 103.18 median 103.44 max 103.66 turns {12: 100}
+model-try-U.jsonl            min  95.88 median  98.86 max  99.15 turns {10: 40, 11: 60}
+model-cand760.jsonl          min 112.16 median 112.42 max 112.63 turns {14: 100}
+model-cand700.jsonl          min 111.83 median 112.09 max 112.31 turns {14: 100}
+FAILED TO BUILD (pipeline: "no seed of 24 builds cleanly", tower: a storey reached by jumps alone): A+P+U with P's doorstep a step DOWN (walk dy 40-50); A+P (same); A+P with d 220; A 900 + P

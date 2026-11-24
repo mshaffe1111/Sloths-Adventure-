@@ -1,3 +1,40 @@
+# BUILD-26v (session 6 of BUILD-26q; t-build-26-wip-26q, base 74df28278). Started 6:15 PM ET 11-24 (by `date`); this box written 6:29 PM ET
+
+## EXACT NEXT STEP
+**Ruling 3's STEP 0 is SENT to the lead (below). NOTHING is laid on the branch: every number below is from scratch worktrees. WAIT for
+GO; change nothing before it. Ruling 4 not started.**
+(a) ON GO: `git apply reference/qa-reports/BUILD-26/b26v/candidate-700.diff` (src/game/gen2/worlds/w2Arc26.ts only; made by
+b26v/relay2.py.txt on 74df28278), then update the four bricks' comments to say what they now lay (A: the shore 700 px and its second
+boulder; P: the fourth doorstep, level, a boulder on it; U: a two-floor house, ladder 380-400, exitDy -390; C: the highest street 480).
+Then the 2-6 tests (src/game/gen2/worlds/w2Arc26.test.ts, the plan test), the re-measure on a frozen tree (castBots --stage 2-6 --seeds
+1-100 --bots adult --setting normal --rows; target: fastest >= 104 s), stills of the four changed beats upright and sideways (A's
+second boulder, P's fourth doorstep, U's ladder, C's highest street) to the lead to judge.
+(b) Then ruling 4 exactly as BUILD-26u's (b): ONE castBots --proven 2-6, lockall (2-6 the only mover), paint --stages 2-6, the suite +
+the CI tool line ONCE on the final head, timecheck; land on t-build-26 (merge, no force); hash and table to the lead.
+
+## STEP 0 (ruling 3, A): the three GO'd re-lays + a fourth, sized on scratch copies (model = gen2 sections[].seconds, Normal, seeds 1-100)
+| Brick (design s) | Re-lay | model s, median: base -> new | note |
+|---|---|---|---|
+| A millpond (10) | shore 380 -> 700 px, a second boulder at 0.65 (clear of the shore's petal at 0.4) | 5.1 -> 9.9 (max 9.88) | 760 models 10.2, over its 10 (a tower turn's climb lands in it): 700 |
+| P first-street (10) | a fourth doorstep d 300 px, LEVEL (dy 0), a boulder at 0.4 | 8.0 -> 9.7 | the draft's step DOWN (dy 40-50) does NOT build with A (below) |
+| U through-house (12) | the ladder 250-280 -> 380-400 px; exitDy -265 -> -390 (the ladder's middle, as -265 was 250-280's) | 5.7 -> 9.1 | |
+| 4th: C wheel-bounce (16) | the highest street 240 -> 480 px, plain | 9.1 -> 10.4 | the largest non-wheel gap to design (7 s); no boulder: one at 0.5 sat under its petal (0.6), and one near the bounce landing or a storey's end is the rest-street trap |
+TOTAL model: min 95.30 -> 111.83, median 98.28 -> 112.09 (b26v/model-base-74df2827.jsonl, model-cand700.jsonl). Every beat at or under
+its design s on every roll. WHERE THE SECONDS COME FROM: walking and the ladder ~+6 s; the rest is the tower re-wrapping (1700 px
+storeys): 10-11 turns -> 14 on every roll, each a climb.
+THE DEAL: unchanged on all 100 seeds (rope 3, ground 1, climb 1, water 1, floating 1, bounce 1; every node's job:type identical), the
+node letters identical; no token added; ARC_26 untouched; no wheel R/V change; no bot touched.
+FAILED TO BUILD (pipeline: "no seed of 24 builds cleanly": a storey reached by jumps alone, not only by its turn's vine): P's fourth
+doorstep as a step DOWN with A (with or without U, at 220 or 300 px, A at 760 or 900). LEVEL builds on every roll (b26v/tries.txt).
+SCRATCH castBots (adult, both settings, seeds 1-100; NOT the measure, which runs after the lay on a frozen tree):
+- the 760 version: Normal PASS 100/100, fastest 116.5 s, median 122.8 s (was 99/100, 95.8, 104.9); Easy PASS 100/100, min 124.9 s,
+  median 125.3 s (b26v/scratch-castBots-adult-both-cand760.txt).
+- the 700 version (proposed): Normal PASS 100/100, FASTEST 113.7 s (target 104), median 122.8 s; Easy PASS 99/100, min 124.9 s, median 125.2 s:
+  seed 90 Easy rescued x1, stuck at x ~578 and ~692 ('in a dip 300 px deep, water ahead, the way on is 197 px down'), NOT traced
+  (b26v/scratch-castBots-adult-both-cand700.txt, scratch-adultE90-cand700.jsonl). The 760 version had Easy 100/100; on GO, trace 90
+  first (which beat; whether the re-lay put it there or wheel phase moved), before the measure.
+NOT RUN (ruling 4's): the other tiers (kid, child, middle, expert), lockall, paint, the suite, stills.
+
 # BUILD-26u (session 5 of BUILD-26q; t-build-26-wip-26q). Started 5:53 PM ET 11-24 (by `date`); this box written 6:14 PM ET
 
 ## EXACT NEXT STEP

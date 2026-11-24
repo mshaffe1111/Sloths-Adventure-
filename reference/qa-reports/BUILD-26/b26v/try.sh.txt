@@ -1,0 +1,5 @@
+# usage: bash try.sh <tag> key=val ...   (scratch worktree only)
+S=/tmp/claude-0/-home-user-Sloths-Adventure-/c7bab08b-acfe-59fe-b148-4c9f632280f6/scratchpad
+tag=$1; shift
+cd $S/wt && git checkout -q -- src/game/gen2/worlds/w2Arc26.ts && python3 $S/relay2.py src/game/gen2/worlds/w2Arc26.ts "$@" >/dev/null
+cd /home/user/Sloths-Adventure- && timeout 600 npx tsx $S/secs.mts $S/wt normal 1 100 $S/$tag.jsonl 2>&1 | grep -v "^\s*at " | grep -m2 "Error\|model min" | cut -c1-330

@@ -1,0 +1,17 @@
+// usage: npx tsx secs.mts <tree> <setting normal|easy> <seedFrom> <seedTo> <outJsonl>
+// per seed: model total seconds, per-section (template, px, s), the node deal (token + content), the node code
+import { writeFileSync } from 'node:fs';
+const [tree, setting, a, b, out] = process.argv.slice(2);
+const { RealPlay } = await import(`${tree}/src/game/realPlay.ts`);
+const rows: string[] = [];
+for (let seed = Number(a); seed <= Number(b); seed++) {
+  const rp: any = new RealPlay('2-6', seed);
+  const g = rp.stage.gen2;
+  let tot = 0;
+  const secs = g.sections.map((s: any) => { tot += s.seconds ?? 0; return [s.template.replace('w2-26-', ''), Math.round(s.x1 - s.x0), +(s.seconds ?? 0).toFixed(2)]; });
+  const deal = JSON.stringify(g.graph?.deal ?? g.deal ?? null) + " " + (g.graph?.nodes ?? []).map((n: any) => `${n.job}:${n.content ?? "-"}`).join(" ");
+  rows.push(JSON.stringify({ seed, tot: +tot.toFixed(2), deal, code: g.code ?? null, n: g.sections.length, secs, tower: g.tower ? { turns: g.tower.turns?.length, floorY: g.tower.floorY } : null }));
+}
+writeFileSync(out, rows.join('\n') + '\n');
+const tots = rows.map((r) => JSON.parse(r).tot).sort((x: number, y: number) => x - y);
+console.log(`${tree} ${setting} seeds ${a}-${b}: model min ${tots[0]} median ${tots[Math.floor(tots.length / 2)]} max ${tots[tots.length - 1]}`);
