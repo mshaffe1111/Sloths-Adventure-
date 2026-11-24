@@ -20,6 +20,12 @@ Head: release-0.10.3 = **4816edd31** (pushed). It is NOT green yet: 2-6's draft 
 3. Then packet step 2: version 0.10.3 + What's New, words to the lead FIRST (draft below), then THE FULL SET (packet step 3).
 4. FILL-14 / TEACH-11 when the lead sends hashes (packet step 4).
 
+**CORRECTION (end of session 1, sent to the lead):** the wheelChannel reds on b3195f31e (tools/difficulty/wheelChannel.test.ts:40,
+56, 79, 92) are the SAME throw ('World 2 finish: the fall at x=335-731 has no bank at one end') on that test's own toy wheel row. The root
+is one merge interaction: t-build-26's wheel lays (wheel ponds) vs t-eng-27's w2.ts falls judged by height (ENG-GROUND-b, w2.ts:321-333).
+Green on t-build-26 alone; BUILD-27g saw 'wheelChannel 4' red on 27e. So B below does NOT clear it: a w2.ts fix is needed for release 4
+either way (asked the lead: an ENG packet (my pick) or the next INT session at the root with a planted test). Step 1 waits on that ruling.
+
 ## What merged (packet step 1), in order
 | commit | what |
 |---|---|
