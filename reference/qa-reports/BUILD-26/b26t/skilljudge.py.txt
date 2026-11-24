@@ -1,0 +1,19 @@
+import json, sys
+rows = [json.loads(l) for f in sys.argv[1:] for l in open(f)]
+clean = lambda r: r['end'] == 'shrine' and r['rescues'] == 0
+print(f'{len(rows)} rows (bot x setting x seed), each run on, upstream off, bankUp off')
+for k, name in (('up', 'upstream'), ('bu', 'bankUp')):
+    need, moved, better = [], [], 0
+    for x in rows:
+        on, off = x['on'], x[k]
+        dl = off['lives'] - on['lives']
+        resc = clean(on) and not clean(off)
+        ds = (off['both'] - on['both']) if on['both'] is not None and off['both'] is not None else None
+        tag = f"{x['bot']} {x['setting'][0].upper()} {x['seed']}: lives {on['lives']}->{off['lives']} (at back {on['atBack']}->{off['atBack']}), rescues {on['rescues']}->{off['rescues']}, end {on['end']}->{off['end']}, both-ways {on['both']}->{off['both']}"
+        if on != off: moved.append(tag)
+        if dl >= 5 or resc or (k == 'bu' and ds is not None and ds >= 2): need.append(tag)
+        if dl < 0 or (clean(off) and not clean(on)): better += 1
+    print(f'\n== {name}: {len(moved)} rows move with it off; {better} rows do BETTER off; NEED (off: 5+ more lives, or rescued while on is clean' + (', or the both-ways far bank 2+ s later' if k == 'bu' else '') + f'): {len(need)}')
+    for t in need: print('  NEED', t)
+    for t in moved:
+        if t not in need: print('  moved', t)

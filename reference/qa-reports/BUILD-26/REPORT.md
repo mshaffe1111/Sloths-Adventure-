@@ -1,3 +1,41 @@
+# ENG-26t (t-build-26-wip-26t; base t-build-26-wip-26s 23cdb07e8): release 4's branch green. wheelRide's red fixed at its cause (candidate 997f7e98c, wheelRide 2/2 GREEN); riverRide's live cases found and new plants sent to the lead (not written: waits for the lead's word). NOT landed. Started 10:02 AM ET 11-24 (by `date`)
+
+## EXACT NEXT STEP (the branch head is the REPORT commit over 997f7e98c, pushed; nothing is on t-build-26)
+1. **Read the lead's answer to the plants message** (sent this box). On its word, write riverRide.test's plants exactly as ruled (law 22: no
+   bar loosened): PROPOSED upstream UPSTREAM_CASES adult N 12 (as is), UPSTREAM_LIVES child N 4 (kept) + child N 23 (replaces child N 5) +
+   middle N 26; bankUp: child N 40 as a LIVES plant (5+ more lives off) replacing child E 22's THIN time plant, the both-ways time (2+ s)
+   kept as a second check. Measured on 997f7e98c (b26t/skillrows-997f7e98c.jsonl): adult N 12 0->5 lives + rescued; child N 4 1->9;
+   child N 23 0->8; middle N 26 0->8; child N 40 1->6 lives, far bank 6.2->40.2 s. Then riverRide.test on a frozen tree: GREEN, and each
+   plant RED with its skill off (the test itself proves it).
+2. **The CI tool line on frozen 997f7e98c** was STARTED in this box (gates.yml rolled line 157; log not in this REPORT if the box ended
+   first): re-run it on a fresh frozen tree at the head after step 1. Expected reds before step 1: riverRide x2 (the old plants), and the
+   t-eng-27 families are not on this branch. Then registrycheck, tipwalk --layouts 4, tierBots (re-judge calibration-main.jsonl on this
+   bot: the merge took t-build-26's side; 997f7e98c changes overSmall, so runs may move: recommit the BOTS.md way, each moved run named).
+3. **The unit suite** (3 shards, background) on the same frozen head; then packet steps 4-5 (castBots --proven 1-4, 2-6's --proven yield
+   under the judge, rule 28 x40 on 2-1..2-6 and 1-4, 2-3 vs INT-R4), on the fix: it moves 2-1 runs (middle E 4, middle N 17's on runs moved).
+4. **2-6's lip family is NOT fixed by 997f7e98c** (kid E 40, middle E 58 the same as on the base: walk-offs, overSmall never runs for
+   them). It needs its own trace (b26t/rows.mts.txt runs the rows). Told the lead as pushback.
+5. t-eng-27's reds (packet ALSO): not started.
+
+## Done-items so far
+| item | evidence | state |
+|---|---|---|
+| riverRide: which skills a live 2-1 case still needs | b26t/skillsearch-*.jsonl (360 rows: 5 bots x settings x seeds 1-40, on / upstream off / bankUp off, frozen 23cdb07e8), b26t/skilljudge-23cdb07e8.txt | upstream: 12 rows need it (adult N 12 still rescued off; child N 5 alone stopped biting: 1->1). bankUp: 11 rows on the base (child E 22 stopped biting: 4.77 s on and off); on 997f7e98c only child N 40 holds |
+| riverRide: new plants to the lead before writing | the send_message this box | waiting on the lead |
+| wheelRide (floorAt's red): cause | b26t/wheel-v1-frames-23cdb07e8.txt, b26t/lipdbg.mts.txt (overSmall and thumbify per frame) | In the air a let-go keeps his speed (physics.ts airStep: only Down brakes), so only a reverse steers back, and a reverse costs his thumb (32 + drift)/thumbSpeed s of travel (0.10-0.15 s). overSmall said 'past it, steer back' over bucket #9 from 8.867 s; at 9.000 his middle crossed its end, overSmall stopped counting it and steered left again, a frame before the reversal (travel to 9.016) would have arrived. He touched down 11.6 px past the end at -285 px/s and ran off |
+| wheelRide: the general fix | 997f7e98c (firsttimer.ts overSmall): the strip past a small landing's end where the engine still lands a falling foot (physics.ts FORGIVE landPx: 8 Normal, 12 Easy) counts as over it, only while he comes down on it within two frames | wheelRide.test 2/2 GREEN on frozen 997f7e98c (b26t/wheelRide-997f7e98c.txt); RED on the base (b26t/wheelRide-23cdb07e8.txt; ENG-26s: 'sparse middle easy v1: left a bucket 1 times'). He stops on bucket #9 at 9.13 s (b26t/wheel-v1-frames-997f7e98c.txt) |
+| tried and dropped | 90228c5ca (a brake press on the landing frame: fires, but the thumb's reversal travel and the tier rhythm drop it; he is off a frame later). 3ad5ee266 (the strip with no 'within two frames' test: wheel v1 GREEN, v2 RED: steered back over bucket #9 40 px under him and fell short of #8 into the pond, b26t/wheelRide-3ad5ee266.txt; it did fix 2-6 middle E 58, rescue 1->0) | not on the branch |
+
+## Pushback
+- The packet's 'the same fix serves 2-6's lip family': it does not (above, item 4). Measured, not assumed.
+- bankUp has one live case on the fix head (child N 40). A plant on one case is thin; the lead rules keep or retire.
+
+## Lessons applied
+D111 (28-minute box, handover with EXACT NEXT STEP), D113 (no foreground wait on a background run), D115 (every run on a chattr-frozen tree: f0 base, f2/f3 candidates; proven/ thawed), D117 (candidates on -wip-26t only), D119 (no heredoc in a commit chain), law 22 (no plant written before the lead's word; none loosened).
+
+## Turnover note
+Not rewritten this box (mid-task); the next box rewrites reference/handoffs/engine-core.md with the overSmall strip rule and the air-steer facts above.
+
 # ENG-26s (t-build-26-wip-26s; base t-build-26 9e1e30b27 + main cdffdc627): R-165.399 step 0 of release 4. The merge is in, 3 of 9 reds are fixed at their causes, both remaining causes are bisected, and floorAt is merged with its wheelRide red traced. NOT landed. Started 11:12 AM ET 11-23 (by `date`)
 
 ## EXACT NEXT STEP (the branch head is ca3a7d063, pushed; nothing is on t-build-26)
