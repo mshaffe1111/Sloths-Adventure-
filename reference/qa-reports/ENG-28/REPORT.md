@@ -86,7 +86,10 @@ a. `git fetch origin t-eng-28-wip t-eng-27` (about 3 min, in the background), `g
    in it `npx tsx tools/engine/lockall.ts --layouts 16 --out <scratchpad>/lock-base-90552d3ec.json` (run_in_background, timeout 2400000).
 b. (2b's paddle snap is FIXED, see above.) The adult's new RED: `FLOODDBG=1 npx tsx --test --test-name-pattern="too late"
    tools/inspect/lineBot.test.ts`, the 4th READ's run: he reaches x 2965 (EXIT 3000) at 18.0 s with the line ~400 px behind and the run
-   ends 'stranded', home 0. Read FirstTimerRun's end ('stranded': which condition fires) and the adult's wait-for-the-tail before the
+   ends 'stranded', home 0. 'stranded' is set at firsttimer.ts:1678/1695 (the same death 3 times), :2119 (the same pit 3 times), :4636
+   (fell back 3 times) or :4667 (no progress for rescueAfter, 20 s), each only when rescue() fails; the PATH trace stops at gameTime 18.0
+   with the line at x 2528-2600 still moving (r.t 36.8 is the bot's clock). Find which fired (add a one-line FLOODDBG print at each, or
+   TRACE), and the adult's wait-for-the-tail before the
    exit; the middle tier passes the same fork. Fix the cause (the bot's lead-the-line or wait for the tail after a reroute, never the
    toy), then 'too late' all 6 GREEN.
 c. The low road as the default (FINDING 2a, NO change to the bot's edge press, the ruling): reshape the toy so walking off W is the low
