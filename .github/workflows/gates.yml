@@ -2,7 +2,7 @@ name: Gates (art, known lists, clip, draw)
 
 # The gates that are not unit tests (reference/methods/gates.md, LAWS.md law 5). deploy.yml calls this before it publishes, so a
 # failing gate blocks the live site. The unit tests (playerText.test.ts among them) run in deploy.yml's own test shards.
-#   gates      artcheck (1 s) + build and chunkcheck (about 30 s) + knowncheck (1 s) + roadmapcheck (1 s) + clipcheck (about 3 min): about 4.5 min with setup (measured 2026-11-01)
+#   gates      build and chunkcheck (about 30 s) + knowncheck (1 s) + roadmapcheck (1 s) + artcheck (sizes and see-through rows, about ROWTIME) + clipcheck (about 3 min): about 4.5 min with setup (measured 2026-11-01)
 #   drawcheck  its own runner, side by side: about 6.5 min with setup (measured 2026-11-01)
 #   rolled     the engine tools' tests, the tip walk, the registry, the tier bots and the stage-start build time (buildcheck: p95 <= 150 ms
 #              at CPU x4): about 1 + 3 min here, 2026-11-06
@@ -30,7 +30,6 @@ jobs:
       - run: npm install --no-audit --no-fund --legacy-peer-deps
       # the type check runs here too, so a red shows in minutes, not after the publish job (0.9.9 run 43810079186)
       - run: npx tsc --noEmit
-      - run: node tools/perf/artcheck.mjs
       # every JS chunk at least 200 KB under Workbox's 4 MiB precache limit (R-165.103; tools/perf/chunkplan.mjs splits the game into
       # layered files). Built AS THE DEPLOY BUILDS (deploy.yml publish: the same BASE_PATH), so the gate measures the files that ship:
       # the base is written into every picture's address inside the scripts, and a plain build is smaller (LESSONS D45: 0.9.6 shipped
@@ -56,6 +55,9 @@ jobs:
       - run: node tools/timecheck.mjs
       # the browser the clip check drives (Chrome's safe-area override needs a recent one); not a project dependency
       - run: npm install --no-save --no-audit --no-fund --legacy-peer-deps playwright@1.63.0 && npx playwright install --with-deps chromium
+      # image sizes, then every shipped frame for a see-through row across the piece (R-165.417; planted on the old weir cut each run):
+      # after the browser install, because the row check decodes the sheets in Chromium (node has no WebP decoder)
+      - run: node tools/perf/artcheck.mjs
       # shell: bash runs with pipefail, so the check's exit code survives the tee (the default shell here has no pipefail: a crash
       # showed green on the first run)
       - run: node tools/perf/clipcheck.mjs | tee clipcheck.log
@@ -154,7 +156,7 @@ jobs:
       # (the engine tools' own tests, outside the suite glob: the section library, the seed-list writer, the seed yield, the travel
       # bots, 1-3's designed arc (library13), the cast bots (castBots, F13 11-12), the one roll tool and the registry gate (libstage,
       # registrycheck, ADD-LEVEL R-165.187: about 50 s; the bot out of a pit, pitClimb, BUILD-16c; the chase bots, chaseBots, ENG-DR/BUILD-18; the meter's swings, score, TOOLS-1 R-165.239: about 8 s); PROOF-1 violation 5, about 5 s. src/game/ciTests.test.ts fails on a test file no workflow runs)
-      - run: npx tsx --test tools/engine/library.test.ts tools/engine/seedlist.test.ts tools/engine/yield.test.ts tools/inspect/travelBots.test.ts tools/inspect/sweeper.test.ts tools/inspect/chaseBots.test.ts tools/inspect/boaBots.test.ts tools/inspect/riverRide.test.ts tools/inspect/padRide.test.ts tools/inspect/lianaRide.test.ts tools/difficulty/coveragecheck.test.ts tools/difficulty/rideChannel.test.ts tools/inspect/clockRide.test.ts tools/engine/library13.test.ts tools/inspect/castBots.test.ts tools/inspect/firsttimer.test.ts tools/inspect/clip.test.ts tools/inspect/routeHumps.test.ts tools/inspect/pitClimb.test.ts tools/engine/libstage.test.ts tools/engine/registrycheck.test.ts tools/engine/tipwalk.test.ts tools/difficulty/score.test.ts tools/testlink/build.test.ts tools/engine/paintFall.test.ts tools/timecheck.test.mjs tools/inspect/lineBot.test.ts tools/inspect/cageBot.test.ts tools/inspect/snapRide.test.ts tools/inspect/snapperBonk.test.ts tools/difficulty/snapChannel.test.ts tools/inspect/wheelRide.test.ts tools/difficulty/lianaChannel.test.ts tools/difficulty/wheelChannel.test.ts tools/difficulty/lineChannel.test.ts tools/difficulty/cageChannel.test.ts tools/inspect/posted.test.ts tools/engine/paintcheck.test.ts tools/inspect/snapperTaught.test.ts
+      - run: npx tsx --test tools/engine/library.test.ts tools/engine/seedlist.test.ts tools/engine/yield.test.ts tools/inspect/travelBots.test.ts tools/inspect/sweeper.test.ts tools/inspect/chaseBots.test.ts tools/inspect/boaBots.test.ts tools/inspect/riverRide.test.ts tools/inspect/padRide.test.ts tools/inspect/lianaRide.test.ts tools/difficulty/coveragecheck.test.ts tools/difficulty/rideChannel.test.ts tools/inspect/clockRide.test.ts tools/engine/library13.test.ts tools/inspect/castBots.test.ts tools/inspect/firsttimer.test.ts tools/inspect/clip.test.ts tools/inspect/routeHumps.test.ts tools/inspect/pitClimb.test.ts tools/engine/libstage.test.ts tools/engine/registrycheck.test.ts tools/engine/tipwalk.test.ts tools/difficulty/score.test.ts tools/testlink/build.test.ts tools/engine/paintFall.test.ts tools/timecheck.test.mjs tools/inspect/lineBot.test.ts tools/inspect/cageBot.test.ts tools/inspect/snapRide.test.ts tools/inspect/snapperBonk.test.ts tools/difficulty/snapChannel.test.ts tools/inspect/wheelRide.test.ts tools/difficulty/lianaChannel.test.ts tools/difficulty/wheelChannel.test.ts tools/difficulty/lineChannel.test.ts tools/difficulty/cageChannel.test.ts tools/inspect/posted.test.ts tools/engine/paintcheck.test.ts tools/inspect/snapperTaught.test.ts tools/team/bgguard.test.ts
       # (the tip walk, R-165.236: every climbing or descending rolled stage, 4 layouts x both settings: no tip said a storey early (the
       # build's tip verdict) and none said with his feet outside its band (the real engine, a 20 s walk from the spawn); about 15 s)
       - run: npx tsx tools/engine/tipwalk.ts --layouts 4

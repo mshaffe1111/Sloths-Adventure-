@@ -20,6 +20,15 @@
             "command": "node \"$CLAUDE_PROJECT_DIR/tools/team/modelgate.mjs\""
           }
         ]
+      },
+      {
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node \"$CLAUDE_PROJECT_DIR/tools/team/bgguard.mjs\""
+          }
+        ]
       }
     ],
     "UserPromptSubmit": [
