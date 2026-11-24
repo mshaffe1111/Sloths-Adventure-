@@ -751,7 +751,7 @@ export interface DotReport {
  * will be (hopLandsOn), and on a log he rides it until such a hop takes him to the next log, or the bank is near (riverRide.test.ts: with
  * it off, he hops at a river's edge whatever the logs are doing). Always on outside a test.
  */
-export const SKILLS = { trunkCatch: true, ride: true, upstream: true, bankUp: true, handed: true, dropOnLog: true, vineFromLog: true, vineOverTail: true, bonkAfterSnap: true, rideWheel: true, bonkBrake: true, letItSnap: true };
+export const SKILLS = { trunkCatch: true, ride: true, upstream: true, bankUp: true, handed: true, dropOnLog: true, vineFromLog: true, vineOverTail: true, bonkAfterSnap: true, rideWheel: true, bonkBrake: true, letItSnap: true, wheelWay: true };
 /**
  * (ENG-26e) `trunkCatch`, a thumb gone to the climb: a jump that catches a trunk straight off the ground (no frame in the air, so no landing
  * ends it) is over the frame he holds the trunk, its hold and its second press with it; the climb is his. With it off the jump runs on
@@ -1248,6 +1248,8 @@ export class FirstTimerRun {
   private wheelSeen = -1;
   private wheelDelay = 0;
   private wheelHop = 0;
+  /** SKILLS.wheelWay: a step off a wheel's bucket, its way (BUILD-26w): held in the air, the route found again where he lands */
+  private wheelOff: { way: -1 | 1 } | null = null;
   /** a pond's pad ahead first read ready (s), or -1 (padRead's reaction) */
   private padSeen = -1;
   /** with KEEP-HOPPING off: the pad he stops on and until when (padRead) */
@@ -2357,6 +2359,14 @@ export class FirstTimerRun {
     const sim = this.sim, p = sim.p, e = this.e, t = this.t, who = this.who;
     // (a spur's dead-end stone stood on: counted, FTRun.spurs)
     if (p.grounded) for (const r of (sim.stage as Stage).rivers ?? []) if (r.spur && Math.abs(p.x - r.spur.x) < 70 && Math.abs(p.y - r.spur.y) < 10) this.spursMet.add(r.x0);
+    // (SKILLS.wheelWay: down from a wheel's step-off, on a street he finds the route again where he stands; in a bucket (a miss) he rides on.
+    // A bucket carries him 180 px round the hub and the route's line runs through the hub, out of the tracker's 160 px reach, so its point
+    // was left behind at the hub: mid-air it lay behind him, his way turned back, and on the street the 'way on is below' rule took that
+    // way and hopped him back into the wheel, 11 times to a rescue (2-6 adult E 90, BUILD-26w))
+    if (this.wheelOff && p.grounded && !this.jump && !this.pending) {
+      if (!sim.platforms.find((q) => q.id === sim.standingOn)?.wheel) this.prog.relocate(p);
+      this.wheelOff = null;
+    }
     const tgt = p.isVineSwinging ? this.pastLiana(p) : this.prog.target(p);
     if (p.isVineSwinging && p.swingVineId != null) this.swungOn = p.swingVineId;
     if (this.dropOff && ((p.grounded && e.standingOnId !== this.dropOff.id) || t - this.dropOff.t > 6)) this.dropOff = null;
@@ -2408,6 +2418,8 @@ export class FirstTimerRun {
     // (turned back for an animal he passed: its way, not the route's)
     const prey = this.hunt ? (e.enemies as Array<{ id: number; x: number }>).find((m) => m.id === this.hunt!.id) : undefined;
     if (prey) dir = prey.x > p.x + 16 ? 1 : prey.x < p.x - 16 ? -1 : prey.x >= p.x ? 1 : -1;
+    // (in the air off a wheel's step-off: the way he hopped, the wheel's, never the stale point's behind him)
+    if (this.wheelOff) dir = this.wheelOff.way;
     if (dir !== 0) this.way = dir;
     const fdir: -1 | 1 = dir === 0 ? (p.facing >= 0 ? 1 : -1) : dir;
     const side = (d: -1 | 0 | 1): Pad => (d > 0 ? { right: true } : d < 0 ? { left: true } : {});
@@ -3759,6 +3771,7 @@ export class FirstTimerRun {
       // end (the wheel toy, top kid Normal v2, 15.4 s))
       if (!who.holdQ && Math.abs(p.vx) > BONK.still) return stand();
       this.wheelSeen = -1;
+      if (SKILLS.wheelWay) this.wheelOff = { way: w.way > 0 ? 1 : -1 };
       // (a street at the sweep's edge: a hop off toward it, the flight's tap; off the top: a single jump held to its top, the way on held,
       // the flight's jump)
       this.wheelHop = lay.street === 'edge' ? who.hold[0] : 0.5;
