@@ -8,8 +8,23 @@ STATE: lineBot 7/8 on frozen bb04993f3. RED: 'too late' (late 22). The lead's na
 before the first close on a piece of the flood's own high-road chain past the wall-step W (flood.ts highRoad, no y threshold). Under
 it, 'time enough' (low), the keep-the-road plant (off high / on low), the heron tests and the read-removed plant at late 19 are all GREEN.
 tierBots 9/9 on frozen 6556b42ca, no calibration file changed. firsttimer.ts is unchanged since, so that result stands for bb04993f3.
-WAITING ON THE LEAD (sent, with the numbers below): 'too late' cannot go GREEN at 22 (nobody has taken a road by the close) and the
-ruling's option B (an earlier late) is blocked at 19 by the ADULT's miss of P. The lead's options as I put them:
+THE LEAD'S ORDER (word for word): "finish the adult late-19 read-on trace (jump or walk at W's lip, vx at the lip, where he leaves).
+Then (2) FIRST, as you advise: compare the toy's W and the P gap with what floodLay actually lays (W's width, the run-up to the P gap, the
+gap). If the toy is narrower than the lay, the toy is wrong: make it match the lay (that is no loosening; the toy must be the real shape).
+If the lay's W is the same 60 px, do NOT fix the bot to cover it: bring me the trace. My leaning then is the LAY: a high road the adult
+cannot board from a standing climb is a stage shape fault, and floodFaults should refuse a W whose run-up is too short for the slowest
+tier to clear the gap to P (named verdict, planted RED/GREEN), unless the trace shows a bot fault a player would not make."
+DONE: the trace (below: he WALKS off W's lip at 87 px/s after the small-ledge pause, from x 955; he lands on W at x 946, 6 px past its
+lip). COMPARED (session 6): gen2/floodLay.ts lays NO high road itself: the stage data lays the pieces, and it only judges them
+(highRoadFaults, FLOOD_STEP 60 up, FLOOD_HOP 60 the widest gap, gap 'a step's tread at most'). The toy's shape (W 60 px wide, set
+back 60 px from the edge, a 60 px gap, P level) PASSES that rule: every floodRun asserts highRoad's faults empty (bb04993f3) and none
+failed. floodLay.test.ts' brick lays a different legal shape: 'stand' w 60, h FLOOD_STEP, its far side at the water's edge, the porch
+'over' the near bank at dy -FLOOD_STEP (where the porch starts against W, so the gap, NOT yet measured: print the built stand/porch x
+from floodLay.test.ts' build()). So the rule lets a lay make the toy's exact shape: per the lead's leaning, the fix is a LAY verdict, not
+the toy and not the bot. Bring the lead this and take its ruling before building (the verdict's run-up number would be read from the
+slowest tier's climb-and-walk, as traced here: the adult needs more than a 60 px W, or no gap to P).
+'too late' cannot go GREEN at 22 (nobody has taken a road by the close) and the ruling's option B (an earlier late) is blocked at 19 by
+the ADULT's miss of P. The options as I first put them (superseded by the lead's order above):
   (1) TOY: widen W in floodRun (and the plant) so his climb jump lands with run-up before W's lip. FIRST, check the real lay's W width
       (gen2/floodLay.ts and floodLay.test.ts' brick; flood.ts:101 'its FIRST piece is a WALL-STEP'). The toy must match the lay. If the
       lay can also give a W under 220 px with a 60 px gap to P, it is a 2-8 READY finding: the first-timer adult misses P there too.
