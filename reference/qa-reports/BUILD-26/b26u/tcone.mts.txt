@@ -1,0 +1,10 @@
+const W = process.env.W!;
+await import(`${W}/src/game/headlessDom.ts`);
+const { kitLib26, STAGE_26 } = await import(`${W}/src/game/gen2/worlds/w2Arc26.ts`);
+const { w2Finish } = await import(`${W}/src/game/gen2/worlds/w2.ts`);
+const { SKILLS } = await import(`${W}/tools/inspect/firsttimer.ts`);
+const { rowWheelRuns } = await import(`${W}/tools/inspect/rowWheels.ts`);
+const [seed, tier, setting, v, on] = process.argv.slice(2);
+SKILLS.trunkCatch = on === 'on';
+const [r] = rowWheelRuns({ stage: STAGE_26, kit: kitLib26, world: w2Finish }, Number(seed), [[tier, setting]] as never, [Number(v)]);
+console.log(on, r.run.end, r.run.finishSeconds, 'rescues', r.run.rescues);

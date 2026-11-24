@@ -1,0 +1,22 @@
+// trunkCatch search: 2-6's listed seeds, every tier bot, both settings, both variants, skill on and off (ENG-26u)
+const W = process.env.W!;
+await import(`${W}/src/game/headlessDom.ts`);
+const { provenSeeds } = await import(`${W}/src/game/gen2/seedList.ts`);
+const { kitLib26, STAGE_26 } = await import(`${W}/src/game/gen2/worlds/w2Arc26.ts`);
+const { w2Finish } = await import(`${W}/src/game/gen2/worlds/w2.ts`);
+const { SKILLS } = await import(`${W}/tools/inspect/firsttimer.ts`);
+const { rowWheelRuns, TIER_RUNS } = await import(`${W}/tools/inspect/rowWheels.ts`);
+const ROW = { stage: STAGE_26, kit: kitLib26, world: w2Finish };
+const [from, to] = process.argv.slice(2).map(Number);
+const seeds = provenSeeds('2-6');
+console.error(`2-6 listed seeds: ${seeds.length}; first ${seeds.slice(0, 5).join(',')}`);
+for (const seed of seeds.slice(from - 1, to)) {
+  for (const on of [true, false]) {
+    SKILLS.trunkCatch = on;
+    try {
+      for (const r of rowWheelRuns(ROW, seed, TIER_RUNS)) {
+        console.log(JSON.stringify({ seed, on, tier: r.tier, setting: r.setting, v: r.v, end: r.run.end, s: r.run.finishSeconds, lives: r.run.lives, putbacks: r.run.putbacks, rescues: r.run.rescues }));
+      }
+    } finally { SKILLS.trunkCatch = true; }
+  }
+}

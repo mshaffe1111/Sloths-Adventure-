@@ -77,17 +77,21 @@ test("the meter's wheel channel prices every wheel on 2-6's row: a board each (e
   });
 });
 
-test("the tower's turns, 2-6's row: the middle and the expert finish with NO rescue, seeds 1 and 2 (ENG-26e)", () => {
-  for (const seed of [1, 2]) {
+// (seed 28: the trunkCatch plant's GREEN half, below; ENG-26u)
+test("the tower's turns, 2-6's row: the middle and the expert finish with NO rescue, seeds 1, 2 and 28 (ENG-26e)", () => {
+  for (const seed of [1, 2, 28]) {
     const runs = rowWheelRuns(ROW, seed, TIER_RUNS.filter(([t]) => t !== 'child'));
     for (const r of runs) assert.equal(r.run.rescues, 0, `seed ${seed} ${runLine(r)} (stuck ${JSON.stringify(r.run.stuck.filter((s) => s.rescued))})`);
   }
 });
 
-test('PLANTED: trunkCatch OFF, a double that grabs a turn vine straight off the ground flicks him off it: rescues come back (RED)', () => {
+// (ENG-26u, 11-24: seed 1 no longer meets the flick since the floorAt merge (0 rescues with the skill off); seed 28 does, the same way: a
+// ground double onto a trunk, the second press 0.3-0.4 s on, FELL BACK, again and again to a rescue (middle Easy v1 at x 89, through-house;
+// middle Normal v1 and v2). Off: 3 rescues; on: 0 (the test above). The bar is the old one. b26u/trunkCatch-*.txt)
+test('PLANTED: trunkCatch OFF, a double that grabs a trunk or turn vine straight off the ground flicks him off it: rescues come back (RED)', () => {
   SKILLS.trunkCatch = false;
   try {
-    const runs = rowWheelRuns(ROW, 1, TIER_RUNS.filter(([t]) => t !== 'child'));
+    const runs = rowWheelRuns(ROW, 28, TIER_RUNS.filter(([t]) => t !== 'child'));
     const n = runs.reduce((a, r) => a + r.run.rescues, 0);
     assert.ok(n >= 2, `with the jump running on after the catch, rescues return (${n}: ${runs.map((r) => `${r.tier} ${r.setting} v${r.v} ${r.run.rescues}`).join(', ')})`);
   } finally {
