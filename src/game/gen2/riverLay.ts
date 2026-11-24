@@ -47,6 +47,9 @@ export interface RiverRow {
    * riverFaults holds it wider than the farthest a rider reaches off a log's end (rideReach + RIVER_LAY.tailMargin)
    */
   tail?: number;
+  /** a FLOOD mark (data; flood.ts, gen2/floodLay.ts; 2-8's water, reference/design/2-8.md NEW 1): on a stage whose brief names a flood,
+   *  'rise' rises to paddling depth on the flood clock, 'close' is the low road (it rises, then turns deep at the close). Unset: no flood */
+  flood?: 'rise' | 'close';
 }
 
 /** how high over its log's top a riding petal sits (px): a petal's height over the floor it is laid on (the sections' pickup `dn`) */
@@ -99,7 +102,7 @@ export function layRiver(row: RiverRow, x0: number, bankY: number, nextId: () =>
     p.x = driftX(drift, 0);
     logs.push(p);
   }
-  const zone: RiverZone = { x0, x1: x1 + tail, surfaceY: bankY + surfaceBelowBank, dir: row.dir, speed: row.speed, ...(row.safe ? { safe: { backX: x0 - 70, backY: bankY } } : {}), ...(tail ? { tail } : {}) };
+  const zone: RiverZone = { x0, x1: x1 + tail, surfaceY: bankY + surfaceBelowBank, dir: row.dir, speed: row.speed, ...(row.safe ? { safe: { backX: x0 - 70, backY: bankY } } : {}), ...(tail ? { tail } : {}), ...(row.flood ? { floodMark: { kind: row.flood, lip: bankY } } : {}) };
   const petals = logs.slice(0, Math.max(0, row.petals ?? 0)).map((log) => ({ log, dx: Math.round(log.width / 2), dy: -PETAL_SIT }));
   return { zone, logs, petals };
 }

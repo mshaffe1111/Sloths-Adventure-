@@ -15,6 +15,7 @@
  * Same seed, same stage; Easy and Normal share the seed AND the section sequence (Normal picks, Easy lays the same picks by its rules).
  */
 import { layPacer } from './pacerLay.ts';
+import { layFlood } from './floodLay.ts';
 import { raceEndsOf, type RaceEndSaid, type RaceEnds } from '../pacer.ts';
 import { layPost } from './postLay.ts';
 import { layColumnDress } from './columnDressLay.ts';
@@ -3157,7 +3158,7 @@ export function layStage(budget: StageBudget, graph: MissionGraph, kit: WorldKit
       for (const r of ropes) { r.y += down; r.g0 += down; r.g1 += down; }
       // (a river's surface and where a splash sets him back (and a spur's stone, FIX-22: left behind, the bots never stood on it), and each
       // log's float line: its platform moved with the rest)
-      for (const r of rivers) { r.surfaceY += down; if (r.safe) r.safe.backY += down; if (r.spur) r.spur.y += down; }
+      for (const r of rivers) { r.surfaceY += down; if (r.safe) r.safe.backY += down; if (r.spur) r.spur.y += down; if (r.floodMark) r.floodMark.lip += down; }
       for (const q of platforms) if (q.drift) q.drift.baseY += down;
       for (const w of stageWheels(platforms)) w.cy += down;
       for (const g of gaps) g.y += down;
@@ -4230,6 +4231,10 @@ function layChaseStage(st: Gen2Stage, piecesOf: (uid: string) => ReadonlyArray<{
   const endSpec = st.gen2.brief?.raceEnd;
   const ended: { ends?: RaceEnds<RaceEndSaid>; problems: string[] } = paced.pacer && endSpec ? raceEndsOf(endSpec, kit.manifest.tips ?? {}) : { problems: [] };
   if (paced.pacer) st.pacer = ended.ends ? { ...paced.pacer, ends: ended.ends } : paced.pacer;
+  // (a brief that names a flood: its clock from the last cage met, its waters from the rows marked for it, floodLay.ts)
+  const floodRow = st.gen2.brief?.flood;
+  const flooded = floodRow ? layFlood(st, floodRow, easy) : { problems: [] };
+  if (flooded.flood) st.flood = flooded.flood;
   // (a brief's post: doors on the way out, replies home, postLay.ts)
   const spec = st.gen2.brief?.post;
   const posted = spec ? layPost(st, spec, piecesOf) : { problems: [] };
@@ -4238,7 +4243,7 @@ function layChaseStage(st: Gen2Stage, piecesOf: (uid: string) => ReadonlyArray<{
   const dressSpec = st.gen2.brief?.columnDress;
   const dressed = dressSpec ? layColumnDress(st.gen2.tower?.legs ?? [], dressSpec) : { problems: [] };
   if (dressed.dress) st.columnDress = dressed.dress;
-  return [...chase.problems, ...r.problems, ...paced.problems, ...ended.problems, ...posted.problems, ...dressed.problems];
+  return [...chase.problems, ...r.problems, ...paced.problems, ...ended.problems, ...flooded.problems, ...posted.problems, ...dressed.problems];
 }
 /** a graph with asks: each node's sections as laid (content type, the double, exit less entry height), read by applyVerdicts */
 const LAID_NODES = new WeakMap<Gen2Stage, Map<string, Array<{ content?: string; double: boolean; dy: number }>>>();

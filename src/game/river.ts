@@ -72,6 +72,8 @@ export interface RiverZone {
    * islands in it (the banks stay dry). Back to where it started when he respawns. `y0` is filled in by the engine (the starting level).
    */
   flood?: { y1: number; seconds: number; trigger: number; y0?: number };
+  /** a gen2 flood's water (RiverRow.flood, gen2/floodLay.ts; flood.ts FloodClock raises it): its mark and its banks' top (`lip`) */
+  floodMark?: { kind: 'rise' | 'close'; lip: number };
   /**
    * the puzzle kit's sluice gate (puzzleKit.ts 'sluice') runs this river's current: `flowT` is the river's own clock, which its logs
    * and its streaks follow instead of the game's (it runs on at 1 with the current, backwards at -1 when the sluice turns the current

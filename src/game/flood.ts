@@ -96,28 +96,34 @@ export function floodFaults(f: Flood): string[] {
 
 /**
  * The high road round the low road (2-8.md:58: always laid and walkable by the line: steps of at most `step` px up or down, no climb, no
- * fall): the solid pieces over the low road's span (`x0..x1`, from its near bank's top `from` to its far bank's top `to`) must chain from
- * bank to bank, each top within `step` px of the one before and each gap a hop of at most `hop` px. By name; empty: walkable.
+ * fall): from the near bank's top (`span.from`) a chain of solid pieces, each met next in the way he goes, each reached from the one before
+ * by a step of at most `step` px and a gap of at most `hop` px, out over the low road's span (`x0..x1`) to its far bank's top (`span.to`).
+ * Pieces out of that reach (a leg laid far above) are no part of it. By name; empty: walkable.
  */
 export function highRoadFaults(tops: ReadonlyArray<{ x: number; w: number; y: number }>, span: { x0: number; x1: number; from: { x: number; y: number }; to: { x: number; y: number } }, step: number, hop: number): string[] {
   const dir = span.to.x >= span.from.x ? 1 : -1;
-  const over = tops.filter((p) => p.x < span.x1 && p.x + p.w > span.x0 && p.y < Math.min(span.from.y, span.to.y) + step).sort((a, b) => (a.x - b.x) * dir);
-  const out: string[] = [];
+  const nearOf = (p: { x: number; w: number }) => (dir > 0 ? p.x : p.x + p.w);
+  const farOf = (p: { x: number; w: number }) => (dir > 0 ? p.x + p.w : p.x);
+  const beyond = (a: number, b: number) => (a - b) * dir;
   let at = { x: span.from.x, y: span.from.y };
-  for (const p of over) {
-    const near = dir > 0 ? p.x : p.x + p.w;
-    const gap = (near - at.x) * dir;
-    if (gap > hop) out.push(`flood: the high road has a ${Math.round(gap)} px gap at x ${Math.round(near)} (a hop for the line is at most ${hop})`);
-    if (Math.abs(p.y - at.y) > step) out.push(`flood: the high road steps ${Math.round(Math.abs(p.y - at.y))} px at x ${Math.round(near)} (the line takes at most ${step})`);
-    at = { x: dir > 0 ? p.x + p.w : p.x, y: p.y };
+  let used = 0;
+  for (;;) {
+    // (done when the far bank is a step and a hop from here)
+    if (used && beyond(span.to.x, at.x) <= hop && Math.abs(span.to.y - at.y) <= step) return [];
+    // (the next piece: it starts within a hop ahead of here (or under him already), goes on past here, and is a step up or down)
+    let next: { x: number; w: number; y: number } | undefined;
+    for (const p of tops) {
+      if (beyond(nearOf(p), at.x) > hop || beyond(farOf(p), at.x) <= 1 || Math.abs(p.y - at.y) > step || Math.abs(p.y - at.y) < 1) continue;
+      if (!next || beyond(farOf(p), farOf(next)) > 0) next = p;
+    }
+    if (!next) {
+      if (!used) return [`flood: no high road over the low road at x ${Math.round(span.x0)}-${Math.round(span.x1)} (no piece a step of at most ${step} px off its near bank)`];
+      return [`flood: the high road breaks at x ${Math.round(at.x)}: no piece or far bank within a step of ${step} px and a hop of ${hop} px from there`];
+    }
+    used++;
+    at = { x: farOf(next), y: next.y };
+    if (used > tops.length) return ['flood: the high road loops'];
   }
-  if (!over.length) out.push(`flood: no high road over the low road at x ${Math.round(span.x0)}-${Math.round(span.x1)}`);
-  else {
-    const gap = (span.to.x - at.x) * dir;
-    if (gap > hop) out.push(`flood: the high road ends ${Math.round(gap)} px short of the far bank (a hop for the line is at most ${hop})`);
-    if (Math.abs(span.to.y - at.y) > step) out.push(`flood: the high road steps ${Math.round(Math.abs(span.to.y - at.y))} px onto the far bank (the line takes at most ${step})`);
-  }
-  return out;
 }
 
 /**

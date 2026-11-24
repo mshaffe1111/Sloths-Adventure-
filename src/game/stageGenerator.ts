@@ -118,6 +118,8 @@ export interface GeneratedStage {
   chase?: import('./chase.ts').ChaseLay;
   /** a laid pacer (any world; pacer.ts Pacer, gen2/pacerLay.ts, run by pieces/pacerPiece.ts): a runner ahead of him over the race leg */
   pacer?: import('./pacer.ts').Pacer;
+  /** a laid flood (any world; flood.ts Flood, gen2/floodLay.ts, stepped by flood.ts FloodClock): its clock's start, close and waters */
+  flood?: import('./flood.ts').Flood;
   /** a laid post (post.ts Post, gen2/postLay.ts, run by pieces/postPiece.ts): its doors and the letters their slots take */
   post?: import('./post.ts').Post;
   /** the laid column dress (columnDress.ts, gen2/columnDressLay.ts, drawn by pieces/columnDressPiece.ts): set pieces at the columns' feet */

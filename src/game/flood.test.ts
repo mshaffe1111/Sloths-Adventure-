@@ -57,7 +57,7 @@ test('highRoadFaults: steps of 60 px are walkable by the line; a 100 px step or 
   const span = { x0: 1000, x1: 1400, from: { x: 990, y: LIP }, to: { x: 1410, y: LIP } };
   const steps = [{ x: 990, w: 60, y: LIP - 60 }, { x: 1050, w: 300, y: LIP - 120 }, { x: 1350, w: 60, y: LIP - 60 }];
   assert.deepEqual(highRoadFaults(steps, span, 60, 120), []);
-  assert.match(highRoadFaults([{ ...steps[0], y: LIP - 100 }, ...steps.slice(1)], span, 60, 120).join(';'), /steps 100 px/);
+  assert.match(highRoadFaults([{ ...steps[0], y: LIP - 100 }, ...steps.slice(1)], span, 60, 120).join(";"), /no piece a step of at most 60 px/);
   assert.match(highRoadFaults([], span, 60, 120).join(';'), /no high road/);
 });
 
