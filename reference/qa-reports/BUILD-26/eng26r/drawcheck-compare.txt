@@ -1,0 +1,48 @@
+38 base rows, 38 candidate rows
+2-6 port {'gradients': (5.0, 0.0), 'drawImageScreens': (9.39, 6.2), 'clips': (17.0, 17.0), 'drawImageCalls': (169.0, 154.0), 'fillStrokeCalls': (620.0, 617.0)}
+2-6 land {'gradients': (7.0, 0.0), 'drawImageScreens': (11.22, 6.15), 'clips': (24.0, 18.0), 'drawImageCalls': (267.75, 207.0), 'fillStrokeCalls': (1078.0, 1073.0)}
+WORSE (scenario, metric, base, candidate): [('1-1 port', 'drawImageCalls', 50.75, 51.25), ('1-3 land', 'shrunkOver2_5x', 8.0, 9.88), ('1-4 land', 'shrunkOver2_5x', 9.0, 9.38), ('1-6 port', 'drawImageCalls', 46.88, 47.38), ('1-7 land', 'shrunkOver2_5x', 7.0, 9.0), ('1-9 land', 'shrunkOver2_5x', 7.0, 7.38), ('2-1 port', 'drawImageCalls', 63.5, 64.0), ('2-4 land', 'clips', 6.0, 6.75), ('2-4 land', 'drawImageScreens', 5.73, 5.81), ('2-5 land', 'shrunkOver2_5x', 6.13, 6.5), ('3-3 land', 'drawImageCalls', 128.13, 129.0), ('3-3 port', 'drawImageCalls', 71.5, 72.13), ('8-4 land', 'shrunkOver2_5x', 6.0, 6.5)]
+
+per (file, function), base -> candidate, per frame at the worst spot's scenario:
+1-1 port drawImageCalls frames 34/31
+   +0.145/frame  src/game/groundPaint.ts (drawSoil)  base 1.500 cand 1.645
+   +0.137/frame  src/game/scenery.ts (drawFitted)  base 7.412 cand 7.548
+   +0.097/frame  src/game/groundPaint.ts (drawLip)  base 1.000 cand 1.097
+1-3 land shrunkOver2_5x frames 32/33
+   +0.992/frame  src/game/sheetBake.ts (drawSheet)  base 2.250 cand 3.242
+   -0.015/frame  src/game/paintedScenery.ts (drawGroundFlora)  base 4.500 cand 4.485
+1-4 land shrunkOver2_5x frames 33/32
+   -0.484/frame  src/game/vineFieldArt.ts (fluff)  base 0.515 cand 0.031
+   +0.109/frame  src/game/sheetBake.ts (drawSheet)  base 1.485 cand 1.594
+   -0.061/frame  src/game/vineFieldArt.ts (drawPod)  base 0.061 cand 0.000
+1-6 port drawImageCalls frames 33/32
+   +0.176/frame  src/game/pieces/vineSnakePiece.ts (draw)  base 3.636 cand 3.812
+   -0.045/frame  src/game/sheetBake.ts (drawSheet)  base 10.545 cand 10.500
+   +0.038/frame  src/game/protoArt.ts (drawGroundChunks)  base 9.212 cand 9.250
+1-7 land shrunkOver2_5x frames 32/32
+   +0.781/frame  src/game/sheetBake.ts (drawSheet)  base 1.375 cand 2.156
+   +0.062/frame  src/game/stageArt.ts (blitAt)  base 0.188 cand 0.250
+1-9 land shrunkOver2_5x frames 32/32
+   +0.125/frame  src/game/sheetBake.ts (drawSheet)  base 1.469 cand 1.594
+2-1 port drawImageCalls frames 33/32
+   +0.189/frame  src/game/stageArt.ts (drawCheckpointArt)  base 6.061 cand 6.250
+   +0.085/frame  src/game/protoArt.ts (drawGroundChunks)  base 8.727 cand 8.812
+   +0.055/frame  src/game/readable.ts (drawAura)  base 1.758 cand 1.812
+2-4 land clips frames 32/32
+   +0.188/frame  src/game/riverArt.ts (drawSafeRiverOver)  base 0.250 cand 0.438
+2-4 land drawImageScreens frames 32/32
+   +0.023/frame  src/game/riverArt.ts (drawSafeRiverOver)  base 0.032 cand 0.056
+   +0.002/frame  src/game/riverArt.ts (blit)  base 0.004 cand 0.007
+   +0.001/frame  src/game/riverArt.ts (drawRiverFoam)  base 0.002 cand 0.003
+2-5 land shrunkOver2_5x frames 34/32
+   +0.074/frame  src/game/stageArt.ts (blitAt)  base 0.176 cand 0.250
+   +0.044/frame  src/game/paintedScenery.ts (drawGroundFlora)  base 1.706 cand 1.750
+   -0.006/frame  src/game/sheetBake.ts (drawSheet)  base 3.412 cand 3.406
+3-3 land drawImageCalls frames 32/32
+   -0.156/frame  src/game/scenery.ts (renderWeather)  base 10.438 cand 10.281
+3-3 port drawImageCalls frames 32/32
+   +0.500/frame  src/game/scenery.ts (renderWeather)  base 10.312 cand 10.812
+8-4 land shrunkOver2_5x frames 34/32
+   +0.125/frame  src/game/stageArt.ts (blitAt)  base 0.000 cand 0.125
+   -0.029/frame  src/game/w810FaceArt.ts (drawW8Stones)  base 3.529 cand 3.500
+   +0.015/frame  src/game/paintedScenery.ts (drawGroundFlora)  base 1.235 cand 1.250

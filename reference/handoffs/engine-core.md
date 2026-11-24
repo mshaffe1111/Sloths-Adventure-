@@ -2,6 +2,64 @@
 
 Merged at INT-14 (11-20, t-int-14): §0zq-25d/§0zq-25c ENG-25c (2-5's snap rows level, the snapper's ground, the straddle), §0zq-NOISE ENG-NOISE (one noise channel), §0zq-PROWL ENG-PROWL (sight.up + the leap), §0zq-small3 ENG-SMALL3 (R-165.317/.319/.321), and PAINT-292 (World 1's painted planks and stones; no section here). Merged at INT-13 (11-19, t-int-13): §0ENG23 ENG-23 (followers, the heron reads the line) and §0zl-168 TIME-168 (timecheck), §0zm-25b ENG-25b (the snapper bot skill, the meter's snap channel) and §0zl-25 ENG-25 (2-5's snap stones and snapper rows), §0zn-26b ENG-26b and §0zm-26 ENG-26 (the water wheel), §0W2A ART-W2A (2-3's painted follow poses), §0zo ART-W2B (the wheel's painted draw), §0zo-285c/§0zo-285b/§0zo-285 ENG-285 (the judges and bots fly the engine's Pokey), §0zp-284 FIX-284/284b (2-2's big pads, the real tap hop), §0zp-24d BUILD-24d, §0zn-24c ENG-24c (the raft look, the glow) and §0zm-24 BUILD-24 (2-4) joined; rewritten at the INT-12 merge (11-18, t-int-12): four members wrote here the same day, so labels are suffixed where they met: §0zm-22p ART-22P (CI's seed-list matrix, R-165.278); §0zl-24 ENG-24 (a liana over a river; its REPORT cites it as §0zl); §0zm BUILD-19b, §0zn ENG-19c and §0zl BUILD-19 (t-build-19, the labels its REPORT cites). Before them FIX-22b (11-15): section 0zk.
 
+## 0zr-26s. ENG-26s (t-build-26-wip-26s ca3a7d063, 11-23): release 4's base, main merged into t-build-26; three CI reds fixed at cause
+- Merge b3e0a8206: 2-3 is main's arc (w2-23) and 2-6 is t-build-26's (w2-26); W2Plan is now '2-7' | '2-8' | '2-9'. firsttimer's stuck
+  clock keeps both the figs' progress hold and FETCH-CLOCK. calibration-main.jsonl took t-build-26's side: re-judge it with tierBots.
+- rowWheels (d9840a065): withPlantedRow plays a LISTED row's own listed seed alone when the table lists the stage with that kit.
+  Trap: a draft plant over a listed stage throws by design; when a stage gets listed, point its row tools at the real row the same day.
+- 2-6 judged (df0d3d76f): flownArcs normal-2-6 from fly-2-6.txt. Under the judge, seedlist 2-6 --check fails 3 of 100 (70, 77, 78:
+  replay differs from search). That is a named red until 2-6 is filled in place after R-165.398.
+- 1-4 relisted in order (8d2ac35bc, 9fdaeff4). Trap: any lay change (2f188c552) stales libstage's 'beats its list replays' even while
+  seedlist --check passes. Relist in the same packet as the lay change.
+- riverRide's upstream and bankUp plants go RED at d6350d3e7 (the step-up rule does their job at 2-1's live cases). A new plant is owed.
+
+## 0zr-26q. ENG-26q (t-build-26-wip-26q 4e0888c5d, 11-21 evening): pairPetals keeps the level check's spacing
+- vineField.ts pairPetals (run last in stageGenerator finishStage, after addFinds, fixPickups and petalPass) moves a field petal to the
+  middle of its vine and a mate. It now takes `apart` (finishStage passes levelCheck's PICKUP_APART) and moves only to a middle at least that
+  far from every other pickup: the nearest mate's, else the next mate's, else it stays. Before, it checked nothing: 1-4 ?layout=72140 put
+  flower #27 28 px from the Notch (rollGuard red, exposed when 2f188c552's gate band changed the catch boughs and so addFinds' hashed spot).
+  Trap: any pass that MOVES a placed pickup must re-check spacing against every other pickup; addFinds' 110 px only holds at its own time.
+  Plants: rollGuard.test.ts 1-4; vineField.test.ts 'pairPetals (planted, ENG-26q)'.
+
+## 0zr-26. The tower's walk-off judge (t-build-26, ENG-26g to ENG-26m, 11-21): what the next engineer must know (1-4, 2-6, every tower)
+**The judge (ENG-26g, de009b9f5 + ac2fd73b6):** tower.ts `walkOff` flies the engine's own full-speed walk-off (landFlights.data.ts 'walk',
+proven the engine's by landFlights.test.ts; the same path on both settings), held at the tower's sides [20, W-20] and at a wall's face (a
+wall face is flown straight down and on again; the deeper is judged). Water takes him by his MIDDLE (river.ts riverAt), not a foot's 11 px.
+A mushroom cap bounces him on along the flown 'bounce' (BOUNCES 3). `openEnds` judges the step AND the run; `towerFalls` names "a running
+walk-off"; `towerCatches` lays a run's catch where the arc comes down to its height (runX), and only if the flown run lands on it
+(`takes`); a contiguous bridge needs no 60 px. BUILD-26b's `clearFoot` (TOWER.foot) is in pipeline.ts towerJoin. Planted against an
+independent flier (landings.ts `Landings.walk`): old code 420/4376 ends past 450 px on 24 toy rolls, the judge 0/5307.
+**The gate's own run (ENG-26j, 8e21145f1; the lead's ruling (a)):** a run off a gate's end at full speed is 164 px out at the frame he lands
+360 px down, 173 at 400, 191 at 440 (both settings). w1Arc14.ts `gateRun(H)` (replaced `GATE_RUN` = 80) runs the gate field's foot out, at
+each end, that flown run (the larger of the two settings) plus half his body (22 px), never under one vine spacing: 360 -> 186, 400 -> 195,
+440 -> 214. The foot is walked onto, never landed on (`landing: false`, so Easy's widening is unchanged). **The lay adds nothing by a sealed
+piece** (a gate is never run on; the lay-side cure 97bb2b73e and its proof b73600b56 were reverted in ecb86074e). 1-4's yield, seeds 1-400:
+49 kept (12%) under the judge alone, 400 (100%) with gateRun. Plants: w1Arc14.test.ts (RED 9/12 with gateRun = GAP, GREEN 12/12).
+**The price (ENG-26h):** the cost of the judge came from the refused ROLLS, not from the flights. Before gateRun, seed 5's search rerolled 7 times (0 on
+the base), and the stage check ran 32-56 times a build (4 on the base). Flights were about 13% of a head build. Profile: physics reachTable's
+linear scan about 27%, levelCheck roofedDrop about 20% (every pair in a tower, each a pass over every piece), tower.ts fly about 13%. The
+three EXACT speed-ups (91e6c584e, on the branch as d12ffcacf): fly reads only the pieces in its path's box, roofedDrop's run and closed ends
+are found once a walk, and the reach tables are in Map<v0, Map<vx, list>>; proven exact by lockall (3,264 builds, 66,457 part hashes,
+0 differ). **Trap:** a search that refuses a roll BEFORE its checks is not exact (the checks repair the stage first: repairLandings takes
+caps up, and caps bounce a walk-off).
+**Measured on frozen trees (ENG-26m, OLD 4ea253b8c vs RELISTED 626fac5ac):** loadtime.mts (eng26h/tools; desktop, best of 3, every listed
+seed, both settings): 1-4 p50 39-41 ms, 2-6 6-8 ms, 0 fell to the search. buildcheck at 4x CPU (BUILDCHECK_STAGE): **1-4 is OVER the 150 ms
+p95 budget on BOTH trees** (OLD Normal p50 192 / p95 581, RELISTED 197 / 455; Easy 162 / 210 and 175 / 205: so the relist did not cause it). CI
+times 1-1 only, so this is open (PERFORMANCE-RULES §1, the lead's call). 2-6 passes (p95 39-53 ms).
+**Traps:** (1) the page's `?layout=N` builds the seed the stills tool prints (the engine's own `gen2.seed`): on 1-4, layout 1 is SEED 2.
+Measure spots on that seed (eng26k/feet.mts, eng26j/gates.mts). (2) Take stills with eng26l/stand.mjs (Pokey set down and left to stand,
+Dot's cards tapped away), never eng26h's pin.mjs (it draws Pokey frozen in the air under a paused card). (3) lockall's 1-4 builds go the
+game's path with the list in (layout 12 asks seed 13, the list's seeds[12]); a listed seed whose plan no longer replays falls to the
+search, as it would on a phone. So after an engine change, `seedlist.ts <id> --check` names the seeds that replay differently: relist them
+(methods/seed-list.md). (4) Every bot number is taken on a FROZEN tree at a fixed hash (D115); BUILD-26c's towerRoute.ts moves the bot's route.
+**Open (named):** 1-4's build over budget at 4x CPU (above). A walk-off at less than full speed (a slow walker) lands between the step and the
+run, and only those two are flown (ENG-26g's pushback: fly a short run-up too if the bots show it).
+**Kept-out boxes and the catch lay (ENG-26n 2f188c552, ENG-26p 7d663daee):** a sealed piece's BAND (tower.ts gateBand: its section's full
+width, from just under its level up to the storey its way on climbs to) joins the wheel sweeps in towerCatches' `keepOut`; towerGateRoofs
+names any lay wood in it. A box is a new wall every catch rule must step round: with the band in, gateKit Easy seed 4's run-on was refused
+and the bridge laid instead stepped off 9 px past the band's edge, where rule 4's CENTRED bough always lay in the band (647 px fall; tower.test
+red from 2f188c552, run by name filter only). Rule 4 now also tries the bough slid to the box's edge on the side he comes down, when it still
+lies under him (toy: 'towerCatches (planted, ENG-26p)'). After any keepOut change run tower.test.ts WHOLE, not the tests named for the box.
 ## 0zq-PICK. PICK-W1 (t-pick-w1 from t-int-15 0eefc707e, 11-20 evening): the testers' link plays all of World 1, picked on its front page (R-165.343)
 - WHERE: playRecorder.ts CTEST_STAGES (1-1..1-9, the ONE list; CTEST_LEVEL_ID is deleted), isCtestStage, savedCtestStage/saveCtestStage
   ('sloth_qa_ctest_stage'), ctestPlayed/markCtestPlayed ('sloth_qa_ctest_played', the tile tick). ControlTestGate.tsx: StagePicker,

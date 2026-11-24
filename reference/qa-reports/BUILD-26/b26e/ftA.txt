@@ -1,0 +1,133 @@
+  2.43 single from 311,6710 hold 0.23 up 0.00 d2 0.44 2nd false -> 473,6710 ok
+  4.63 single from 525,6710 hold 0.22 up 0.00 d2 0.38 2nd false -> 686,6710 ok
+  6.17 double from 720,6710 hold 0.08 up 0.00 d2 0.69 2nd false -> 826,6710 ok
+  7.23 single from 897,6710 hold 0.08 up 0.00 d2 0.50 2nd false -> 954,6660 ok
+  8.43 single from 1007,6660 hold 0.18 up 0.10 d2 0.43 2nd false -> 1136,6710 ok
+  9.97 single from 1163,6710 hold 0.10 up 0.00 d2 0.27 2nd false -> 1269,6710 ok
+  10.67 single from 1305,6710 hold 0.14 up 0.00 d2 0.29 2nd false -> 1462,6710 ok
+  16.03 single from 1323,6155 hold 0.16 up 0.00 -> 1216,6137 ok
+  25.17 double from 1042,5891 hold 0.59 up 0.00 d2 0.42 2nd true -> 772,5891 ok
+  27.13 double from 746,5891 hold 0.40 up 0.00 d2 0.29 2nd true -> 530,5891 ok
+  29.20 single from 459,5891 hold 0.18 up 0.00 d2 0.53 2nd false -> 307,5891 ok
+  30.37 single from 290,5891 hold 0.30 up 0.00 d2 0.49 2nd false -> 129,5891 ok
+  32.70 single from 188,5580 hold 0.16 up 0.16 d2 0.36 2nd false -> 346,5580 ok
+  34.00 double from 372,5580 hold 0.42 up 0.00 d2 0.32 2nd true -> 560,5490 ok
+  35.30 single from 585,5490 hold 0.10 up 0.11 d2 0.28 2nd false -> 637,5490 FELL BACK
+  37.07 double from 604,5490 hold 0.54 up 0.00 d2 0.28 2nd true -> 876,5540 ok
+  39.10 single from 892,5540 hold 0.16 up 0.00 d2 0.33 2nd false -> 1035,5540 ok
+  40.63 single from 1098,5540 hold 0.26 up 0.00 d2 0.27 2nd false -> 1259,5540 ok
+  43.40 single from 1374,5279 hold 0.14 up 0.00 d2 0.47 2nd false -> 1516,5279 ok
+  47.03 double from 1479,4928 hold 0.39 up 0.08 d2 0.28 2nd true -> 1304,4928 ok
+  47.67 single from 1279,4928 hold 0.09 up 0.00 d2 0.48 2nd false -> 1147,4956 ok
+  48.57 single from 1051,4956 hold 0.06 up 0.00 d2 0.46 2nd false -> 931,4956 ok
+  54.33 single from 475,4928 hold 0.07 up 0.00 d2 0.35 2nd false -> 371,4928 ok
+  54.90 single from 354,4928 hold 0.22 up 0.00 d2 0.39 2nd false -> 259,4837 ok
+  59.47 single from 484,4423 hold 0.26 up 0.00 -> 545,4347 ok
+  65.67 single from 724,4094 hold 0.16 up 0.00 -> 886,4119 ok
+  72.03 double from 1231,4119 hold 0.61 up 0.00 d2 0.34 2nd true -> 1484,4119 ok
+  75.57 single from 1474,3740 hold 0.08 up 0.00 d2 0.34 2nd false -> 1368,3740 ok
+  77.03 single from 1210,3838 hold 0.28 up 0.00 d2 0.32 2nd false -> 1108,3740 ok
+  78.07 single from 1084,3740 hold 0.10 up 0.00 d2 0.34 2nd false -> 945,3740 ok
+  83.27 double from 849,3740 hold 0.38 up 0.00 d2 0.29 2nd true -> 631,3740 ok
+  83.73 double from 597,3740 hold 0.09 up 0.00 d2 0.66 2nd false -> 467,3682 ok
+  88.17 single from 690,3235 hold 0.16 up 0.00 -> 798,3211 ok
+  94.00 single from 855,2910 hold 0.50 up 0.00 -> 979,2823 ok
+  102.13 single from 857,2542 hold 0.14 up 0.00 d2 0.64 2nd false -> 714,2542 ok
+  104.20 single from 688,2542 hold 0.16 up 0.00 d2 0.54 2nd false -> 545,2542 ok
+  105.27 single from 519,2542 hold 0.25 up 0.00 d2 0.45 2nd false -> 357,2542 ok
+  107.30 single from 276,2542 hold 0.09 up 0.00 d2 0.31 2nd false -> 170,2542 ok
+  109.57 single from 234,2037 hold 0.16 up 0.00 -> 348,2020 ok
+  116.87 single from 462,1707 hold 0.29 up 0.00 -> 642,1733 ok
+  117.50 single from 642,1733 hold 0.20 up 0.00 d2 0.37 2nd false -> 810,1733 ok
+  119.23 double from 810,1733 hold 1.23 up 0.00 d2 1.13 2nd true -> 1035,1556 ok
+  122.60 single from 1265,1556 hold 0.15 up 0.00 d2 0.67 2nd false -> 1408,1556 ok
+  122.90 double from 1445,1556 hold 0.27 up 0.17 d2 0.45 2nd false -> 1529,1484 ok
+  129.83 single from 1311,1051 hold 0.16 up 0.00 -> 1167,1062 ok
+== child normal seed 5: shrine 153.3 s rescues 0
+  2.17 single from 277,6708 hold 0.16 up 0.00 d2 0.27 2nd false -> 420,6708 ok
+  3.43 double from 472,6708 hold 0.08 up 0.00 d2 0.68 2nd false -> 578,6708 ok
+  4.57 single from 630,6708 hold 0.10 up 0.18 d2 0.39 2nd false -> 677,6708 FELL BACK
+  6.20 single from 731,6708 hold 0.23 up 0.00 d2 0.30 2nd false -> 893,6708 ok
+  6.87 single from 895,6708 hold 0.31 up 0.00 d2 0.70 2nd false -> 1005,6658 ok
+  8.53 double from 992,6658 hold 0.38 up 0.00 d2 0.29 2nd true -> 1206,6708 ok
+  9.17 single from 1243,6708 hold 0.11 up 0.00 d2 0.44 2nd false -> 1381,6708 ok
+  16.70 single from 1331,6153 hold 0.16 up 0.00 -> 1217,6104 ok
+  28.37 single from 1025,5889 hold 0.10 up 0.00 d2 0.40 2nd false -> 899,5889 ok
+  30.27 single from 874,5889 hold 0.09 up 0.00 d2 0.53 2nd false -> 768,5889 ok
+  31.50 single from 697,5889 hold 0.11 up 0.00 d2 0.31 2nd false -> 573,5889 ok
+  32.83 single from 558,5889 hold 0.28 up 0.00 d2 0.66 2nd false -> 396,5889 ok
+  34.07 double from 326,5889 hold 0.10 up 0.00 d2 0.66 2nd false -> 201,5889 ok
+  34.93 single from 164,5889 hold 0.06 up 0.00 d2 0.33 2nd false -> 88,5836 ok
+  37.07 single from 177,5585 hold 0.09 up 0.00 d2 0.36 2nd false -> 283,5585 ok
+  38.10 single from 335,5585 hold 0.09 up 0.00 d2 0.31 2nd false -> 413,5538 ok
+  39.70 double from 438,5538 hold 0.62 up 0.00 d2 0.37 2nd true -> 535,5488 ok
+  40.70 single from 560,5488 hold 0.11 up 0.00 d2 0.29 2nd false -> 706,5538 ok
+  41.47 single from 818,5616 hold 0.10 up 0.00 d2 0.38 2nd false -> 891,5538 ok
+  42.73 single from 878,5538 hold 0.09 up 0.00 d2 0.44 2nd false -> 984,5538 ok
+  44.00 single from 1036,5538 hold 0.13 up 0.18 d2 0.48 2nd false -> 1102,5538 ok
+  44.43 single from 1138,5538 hold 0.10 up 0.00 d2 0.44 2nd false -> 1261,5457 ok
+  47.00 double from 1376,5278 hold 0.10 up 0.00 d2 0.47 2nd false -> 1500,5278 ok
+  50.73 single from 1500,4927 hold 0.08 up 0.14 d2 0.30 2nd false -> 1427,4927 ok
+  61.23 single from 459,4927 hold 0.09 up 0.00 d2 0.29 2nd false -> 355,4927 ok
+  66.50 single from 468,4422 hold 0.16 up 0.00 -> 586,4404 ok
+  73.90 single from 718,4095 hold 0.16 up 0.00 -> 880,4118 ok
+  76.97 double from 1057,4118 hold 0.41 up 0.00 d2 0.31 2nd true -> 1292,4118 ok
+  78.83 single from 1307,4118 hold 0.23 up 0.00 d2 0.28 2nd false -> 1469,4118 ok
+  82.90 single from 1477,3739 hold 0.17 up 0.00 d2 0.52 2nd false -> 1325,3739 ok
+  83.53 double from 1244,3809 hold 0.10 up 0.00 d2 0.31 2nd false -> 1150,3739 ok
+  84.70 double from 1131,3739 hold 0.16 up 0.08 d2 0.69 2nd false -> 1035,3739 ok
+  85.80 single from 938,3809 hold 0.29 up 0.00 d2 0.28 2nd false -> 948,3739 ok
+  87.90 single from 896,3739 hold 0.23 up 0.00 d2 0.35 2nd false -> 720,3809 FELL BACK
+  89.03 single from 707,3809 hold 0.11 up 0.00 d2 0.29 2nd false -> 629,3739 ok
+  90.47 single from 594,3739 hold 0.19 up 0.00 d2 0.42 2nd false -> 442,3739 ok
+  97.97 single from 681,3234 hold 0.23 up 0.00 -> 832,3248 ok
+  104.83 single from 820,2908 hold 0.50 up 0.00 -> 945,2822 ok
+  114.47 double from 870,2541 hold 0.60 up 0.00 d2 0.32 2nd true -> 607,2541 ok
+  116.97 single from 278,2541 hold 0.18 up 0.00 d2 0.50 2nd false -> 126,2541 ok
+  118.57 single from 234,2036 hold 0.16 up 0.00 -> 303,1969 ok
+  124.97 single from 457,1707 hold 0.18 up 0.00 -> 625,1732 ok
+  126.23 double from 625,1732 hold 0.77 up 0.00 d2 0.66 2nd true -> 975,1556 ok
+  130.67 single from 1246,1556 hold 0.16 up 0.17 d2 0.71 2nd false -> 1330,1556 ok
+  132.37 single from 1347,1556 hold 0.11 up 0.00 d2 0.31 2nd false -> 1471,1556 ok
+  138.47 single from 1308,1051 hold 0.16 up 0.00 -> 1165,1071 ok
+== child normal seed 7: shrine 156.3 s rescues 0
+  2.27 single from 299,6712 hold 0.10 up 0.00 d2 0.37 2nd false -> 423,6712 ok
+  4.73 single from 770,6712 hold 0.11 up 0.00 d2 0.45 2nd false -> 895,6712 ok
+  6.03 single from 896,6712 hold 0.08 up 0.00 d2 0.60 2nd false -> 952,6662 ok
+  8.13 double from 997,6662 hold 0.64 up 0.00 d2 0.42 2nd true -> 1296,6712 ok
+  9.67 single from 1350,6712 hold 0.26 up 0.00 d2 0.32 2nd false -> 1511,6712 ok
+  14.37 single from 1352,6157 hold 0.27 up 0.00 -> 1255,6083 ok
+  22.70 single from 1041,5893 hold 0.09 up 0.00 d2 0.47 2nd false -> 936,5893 ok
+  23.93 double from 919,5893 hold 0.09 up 0.00 d2 0.52 2nd false -> 813,5893 ok
+  26.27 single from 498,5893 hold 0.11 up 0.16 d2 0.30 2nd false -> 423,5893 ok
+  27.77 double from 360,5893 hold 0.20 up 0.10 d2 0.69 2nd false -> 230,5893 ok
+  28.13 double from 203,5893 hold 0.06 up 0.00 d2 0.33 2nd false -> 88,5843 ok
+  31.00 single from 177,5583 hold 0.26 up 0.00 d2 0.33 2nd false -> 338,5583 ok
+  31.90 single from 390,5583 hold 0.11 up 0.00 d2 0.29 2nd false -> 495,5542 ok
+  32.63 single from 495,5542 hold 0.10 up 0.00 d2 0.47 2nd false -> 570,5492 ok
+  34.60 single from 585,5492 hold 0.11 up 0.00 d2 0.60 2nd false -> 755,5612 FELL BACK
+  35.07 single from 820,5615 hold 0.10 up 0.00 d2 0.35 2nd false -> 886,5542 ok
+  36.93 single from 891,5542 hold 0.19 up 0.00 d2 0.45 2nd false -> 1043,5542 ok
+  37.57 single from 1080,5542 hold 0.13 up 0.00 d2 0.38 2nd false -> 1218,5542 ok
+  43.13 single from 1516,4926 hold 0.11 up 0.00 d2 0.32 2nd false -> 1391,4926 ok
+  59.70 single from 500,4421 hold 0.16 up 0.00 -> 569,4330 ok
+  68.37 single from 716,4092 hold 0.16 up 0.00 -> 878,4117 ok
+  76.40 single from 1451,4117 hold 0.17 up 0.11 d2 0.38 2nd false -> 1562,4117 ok
+  80.23 single from 1456,3738 hold 0.20 up 0.00 d2 0.71 2nd false -> 1276,3808 FELL BACK
+  80.77 single from 1271,3808 hold 0.30 up 0.00 d2 0.32 2nd false -> 1132,3738 ok
+  81.80 single from 1090,3738 hold 0.22 up 0.00 d2 0.66 2nd false -> 918,3738 ok
+  83.07 single from 864,3738 hold 0.11 up 0.00 d2 0.29 2nd false -> 695,3808 FELL BACK
+  83.33 single from 689,3808 hold 0.07 up 0.00 d2 0.33 2nd false -> 625,3738 ok
+  84.63 single from 606,3738 hold 0.16 up 0.00 d2 0.61 2nd false -> 464,3738 ok
+  85.80 double from 390,3738 hold 0.41 up 0.00 d2 0.30 2nd true -> 456,3738 FELL BACK
+  91.20 single from 660,3233 hold 0.28 up 0.00 -> 801,3192 ok
+  99.40 single from 810,2908 hold 0.50 up 0.00 -> 936,2821 ok
+  110.27 double from 886,2540 hold 0.62 up 0.00 d2 0.50 2nd true -> 618,2540 ok
+  110.90 single from 586,2540 hold 0.11 up 0.00 d2 0.49 2nd false -> 449,2540 ok
+  112.03 single from 387,2540 hold 0.27 up 0.00 d2 0.45 2nd false -> 226,2540 ok
+  112.73 double from 181,2540 hold 0.28 up 0.00 d2 0.44 2nd false -> 88,2449 ok
+  113.63 single from 234,2035 hold 0.16 up 0.00 -> 303,1939 ok
+  119.57 single from 452,1706 hold 0.16 up 0.00 -> 616,1731 ok
+  120.80 double from 616,1731 hold 0.72 up 0.00 d2 0.61 2nd true -> 957,1556 ok
+  129.83 single from 1316,1051 hold 0.16 up 0.00 -> 1174,1062 ok
+== child normal seed 18: shrine 151.4 s rescues 0

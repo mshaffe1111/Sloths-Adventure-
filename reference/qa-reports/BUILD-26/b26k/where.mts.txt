@@ -1,0 +1,12 @@
+const W = process.env.WT!;
+await import(W + '/src/game/headlessDom.ts');
+const { setDifficulty } = await import(W + '/src/game/difficulty.ts');
+const FT: any = await import(W + '/tools/inspect/firsttimer.ts');
+setDifficulty('normal');
+let last = -1; const out: string[] = [];
+const run: any = new FT.FirstTimerRun('1-4', Number(process.argv[2]), FT[process.env.BOT!], { onFrame: (s: any) => {
+  const b = Math.floor(run.t / 10); if (b !== last) { last = b; const p = s.p; out.push(`t ${run.t.toFixed(0)} x ${Math.round(p.x)},${Math.round(p.y)} ${p.grounded ? 'G' : ''}${p.climbing ? 'C' : ''} cur ${run.prog.cur} best ${run.prog.best} fb ${run.fallBacks} off ${Math.round(run.prog.off(p))}`); }
+} });
+const res = run.play();
+console.log(out.filter((_, i) => i % 3 === 0 || i > out.length - 4).join('\n'));
+console.log(JSON.stringify({ t: +run.t.toFixed(1), shrine: !!(res.reached ?? res.done ?? res.won ?? res.atShrine), rescues: res.rescues, stuck: res.stuck }));

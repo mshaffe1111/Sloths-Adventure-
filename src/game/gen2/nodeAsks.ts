@@ -46,6 +46,13 @@ export const TYPE_OF_LETTER: Readonly<Partial<Record<string, ContentType>>> = {
 // (l, the lure: a node holds it where a lure target was laid in it, a prop tagged 'lure' (gen2/lureLay.ts LURE_TAG; nodeLetters.test))
 export const FILL_LETTER: Readonly<Record<string, string>> = { m: 'hide', l: 'lure' };
 
+/** a content letter laid by a piece ON A CLOCK in the node's sections, not by the deal's type (ENG-26c, the lead's ruling G1 11:33 AM ET
+ *  11-21: p, "pieces on a clock", 2-6's water wheels): a wheel's bucket, a beat pad or snap stone (Pad.by 'beat'), a ride on the stage's
+ *  beat. Any section type may carry them, so the brick keeps its own type in the deal */
+export const CLOCK_LETTER: ReadonlySet<string> = new Set(['p']);
+/** does this platform move or change on a clock (CLOCK_LETTER's test; a weight pad sinks under him, never by a clock) */
+export const onClock = (p: { wheel?: unknown; ride?: unknown; pad?: { by: string } }): boolean => !!p.wheel || !!p.ride || p.pad?.by === 'beat';
+
 /** the building blocks with no emitter in this tree yet, and where each is built (packet NODES-2: named, never dropped; the one
  *  letter table's `unlaid` rows, nodeLetters.ts) */
 export const LATER_CONTENT: Readonly<Record<string, string>> = Object.fromEntries(Object.entries(CONTENT_LETTERS).flatMap(([k, v]) => ('unlaid' in v ? [[k, v.unlaid]] : [])));
@@ -57,6 +64,7 @@ export type ElementStatus = 'laid' | 'checked' | 'later';
 /** every element of the key, what it does today (one source: NODE-KEY.html's cards and the tests read it) */
 export const ELEMENTS: ReadonlyArray<{ element: string; mark: string; status: ElementStatus; how: string }> = [
   { element: 'content g f c b r k w h', mark: 'Pg', status: 'laid', how: "the node's type is fixed in the deal; every section laid there is checked to be that type" },
+  { element: 'content p', mark: 'Pp', status: 'checked', how: "a piece on a clock laid in the node (a water wheel's bucket, a beat pad or snap stone, a ride on the beat), whatever the section's type, or the roll fails by name" },
   { element: `content ${Object.keys(LATER_CONTENT).join(' ')}`, mark: 'Ps', status: 'later', how: 'no emitter keyed by the letter in this tree: the roll fails by name' },
   { element: 'move 1 / 2', mark: 'Pg2', status: 'checked', how: "2: a section there asks for the double; 1: none does. A miss fails by name" },
   { element: 'shape ^ _', mark: 'Pg^', status: 'laid', how: "the node's shape and height dial are the ask; its sections' net rise is checked (^ ends higher, _ lower)" },
@@ -106,6 +114,8 @@ export interface LaidNode {
   pickups: number;
   /** the props laid in it, by their tags (a hide: 'hide', 'cover'), for a letter laid by fills (FILL_LETTER) */
   props?: ReadonlyArray<readonly string[]>;
+  /** how many pieces on a clock its sections laid (onClock), for a letter laid by them (CLOCK_LETTER) */
+  clocked?: number;
 }
 
 /** each ask the laid node does not hold, by name: "node n5 Pg2&:&snake*2 threat snake*2: laid 1" (empty: every ask laid) */
@@ -116,6 +126,8 @@ export function askMisses(a: NodeAsks | undefined, n: LaidNode, cast: ReadonlyAr
   if (a.content && FILL_LETTER[a.content]) {
     const tag = FILL_LETTER[a.content];
     if (!(n.props ?? []).some((t) => t.includes(tag))) miss(`content '${a.content}' (${CONTENT_OF[a.content] ?? '?'})`, `no ${tag} laid`);
+  } else if (a.content && CLOCK_LETTER.has(a.content)) {
+    if (!n.clocked) miss(`content '${a.content}' (${CONTENT_OF[a.content] ?? '?'})`, "no piece on a clock laid (a wheel's bucket, a beat pad or snap stone, a ride on the beat)");
   } else if (a.content) {
     const type = TYPE_OF_LETTER[a.content];
     if (!type) miss(`content '${a.content}' (${CONTENT_OF[a.content] ?? '?'})`, `Later: ${LATER_CONTENT[a.content] ?? 'no such letter'}`);

@@ -1,0 +1,56 @@
+t 68.6 at 920,8327 hands 18@920 target 1 vine 18 y 8249 pad {"up":true} dodge false changed -1000000000.0
+t 85.3 at 825,7326 hands 25@825 target 2 vine 25 y 7248 pad {"up":true} dodge false changed 68.6
+t 85.5 at 785,7317 hands 25@825+26@745 target 3 vine 28 y 7268 pad {} dodge true changed 85.4
+t 86.0 at 705,7317 hands 26@745+27@665 target 3 vine 28 y 7268 pad {"left":true} dodge true changed 85.4
+t 86.5 at 585,7317 hands 28@585 target 3 vine 28 y 7268 pad {} dodge false changed 85.4
+t 87.0 at 505,7390 hands 29@505 target 3 vine 28 y 7268 pad {"right":true} dodge false changed 85.4
+t 87.5 at 585,7333 hands 28@585 target 3 vine 28 y 7255 pad {"up":true} dodge false changed 85.4
+t 88.0 at 505,7329 hands 29@505 target 3 vine 28 y 7251 pad {} dodge true changed 85.4
+t 88.5 at 505,7373 hands 29@505 target 3 vine 28 y 7251 pad {} dodge true changed 85.4
+t 89.0 at 505,7373 hands 29@505 target 3 vine 28 y 7251 pad {} dodge true changed 85.4
+t 89.5 at 585,7358 hands 28@585 target 3 vine 28 y 7251 pad {"up":true} dodge false changed 85.4
+t 90.0 at 585,7280 hands 28@585 target 3 vine 28 y 7202 pad {"up":true} dodge false changed 85.4
+t 127.8 at 911,5338 hands 35@911 target 4 vine 36 y 5364 pad {"down":true} dodge false changed 90.1
+t 128.0 at 911,5455 hands 35@911 target 4 vine 36 y 5364 pad {"down":true} dodge false changed 90.1
+t 128.5 at 831,5436 hands 36@831 target 4 vine 36 y 5358 pad {"up":true} dodge false changed 90.1
+t 129.0 at 831,5370 hands 36@831 target 4 vine 36 y 5292 pad {"up":true} dodge false changed 90.1
+t 129.5 at 831,5337 hands 36@831 target 5 vine 39 y 5284 pad {"down":true} dodge false changed 129.4
+t 130.0 at 751,5410 hands 37@751 target 5 vine 39 y 5284 pad {} dodge false changed 129.4
+t 130.5 at 631,5410 hands 38@671+39@591 target 5 vine 39 y 5284 pad {"left":true} dodge false changed 129.4
+t 131.0 at 591,5345 hands 39@591 target 5 vine 39 y 5267 pad {"up":true} dodge false changed 129.4
+t 140.1 at 420,4385 hands 42@420 target 6 vine 42 y 4307 pad {"up":true} dodge false changed 131.5
+t 140.5 at 460,4508 hands 42@420+43@500 target 7 vine 47 y 4388 pad {} dodge false changed 140.1
+t 141.0 at 580,4508 hands 44@580 target 7 vine 47 y 4388 pad {"right":true} dodge false changed 140.1
+t 141.5 at 500,4508 hands 43@500 target 7 vine 47 y 4388 pad {} dodge true changed 140.1
+t 142.0 at 500,4508 hands 43@500 target 7 vine 47 y 4388 pad {"right":true} dodge false changed 140.1
+t 142.5 at 580,4508 hands 44@580 target 7 vine 47 y 4388 pad {} dodge false changed 140.1
+t 143.0 at 700,4508 hands 45@660+46@740 target 7 vine 47 y 4388 pad {"right":true} dodge false changed 140.1
+t 143.5 at 660,4508 hands 45@660 target 7 vine 47 y 4388 pad {} dodge true changed 140.1
+t 144.0 at 540,4508 hands 44@580+43@500 target 7 vine 47 y 4388 pad {"right":true} dodge false changed 140.1
+t 144.5 at 660,4508 hands 45@660 target 7 vine 47 y 4388 pad {} dodge true changed 140.1
+t 145.0 at 660,4508 hands 45@660 target 7 vine 47 y 4388 pad {"right":true} dodge false changed 140.1
+t 145.5 at 780,4508 hands 46@740+47@820 target 7 vine 47 y 4388 pad {} dodge false changed 140.1
+t 146.0 at 820,4437 hands 47@820 target 7 vine 47 y 4359 pad {"up":true} dodge false changed 140.1
+t 160.5 at 360,3441 hands 50@360 target 8 vine 53 y 3486 pad {"down":true} dodge false changed 146.4
+t 161.0 at 400,3602 hands 50@360+51@440 target 8 vine 53 y 3486 pad {} dodge false changed 146.4
+t 161.5 at 520,3602 hands 52@520 target 8 vine 53 y 3486 pad {"right":true} dodge true changed 146.4
+t 162.0 at 560,3602 hands 53@600+52@520 target 8 vine 53 y 3486 pad {} dodge true changed 146.4
+t 162.5 at 600,3557 hands 53@600 target 8 vine 53 y 3479 pad {"up":true} dodge false changed 146.4
+t 163.0 at 600,3491 hands 53@600 target 8 vine 53 y 3413 pad {"up":true} dodge false changed 146.4
+t 176.2 at 882,2520 hands 56@882 target 9 vine 56 y 2442 pad {"up":true} dodge false changed 163.2
+t 176.5 at 842,2563 hands 56@882+57@802 target 10 vine 58 y 2440 pad {} dodge false changed 176.3
+t 177.0 at 722,2563 hands 58@722 target 10 vine 58 y 2440 pad {"up":true} dodge false changed 176.3
+t 177.5 at 642,2514 hands 59@642 target 10 vine 58 y 2436 pad {} dodge true changed 176.3
+t 178.0 at 562,2514 hands 60@562 target 10 vine 58 y 2436 pad {"left":true} dodge true changed 176.3
+t 178.5 at 562,2551 hands 60@562 target 10 vine 58 y 2436 pad {} dodge false changed 176.3
+t 179.0 at 682,2551 hands 59@642+58@722 target 10 vine 58 y 2436 pad {"right":true} dodge false changed 176.3
+t 179.5 at 722,2492 hands 58@722 target 10 vine 58 y 2414 pad {"up":true} dodge false changed 176.3
+t 180.0 at 722,2652 hands 58@722 target 11 vine 61 y 2540 pad {"down":true} dodge false changed 179.6
+t 180.5 at 602,2667 hands 59@642+60@562 target 11 vine 61 y 2540 pad {} dodge false changed 179.6
+t 181.0 at 522,2667 hands 60@562+61@482 target 11 vine 61 y 2540 pad {"left":true} dodge false changed 179.6
+t 181.5 at 482,2585 hands 61@482 target 11 vine 61 y 2507 pad {"up":true} dodge false changed 179.6
+t 182.0 at 482,2519 hands 61@482 target 11 vine 61 y 2441 pad {"up":true} dodge false changed 179.6
+t 195.5 at 562,1343 hands 65@562 target - pad {"left":true} dodge true changed 182.5
+t 195.5 at 522,1343 hands 65@562+66@482 target - pad {} dodge true changed 182.5
+t 196.0 at 442,1343 hands 66@482+67@402 target - pad {"left":true} dodge true changed 182.5
+{"t":210.2,"rescues":0,"rescueXs":[],"stuck":[]}

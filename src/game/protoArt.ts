@@ -55,6 +55,7 @@ let stageWorld = 1;
 import { fitTrunks, type DecoTrunk } from './trunkFit.ts';
 import { drawDrapedPair } from './pairArt.ts';
 import { drawFieldVine } from './vineFieldArt.ts';
+import { cachedLinearGradient } from './gradCache.ts';
 export { fitTrunks };
 type DecoLeaves = { x: number; y: number; w: number; flip?: boolean; kind?: 'bushWide' | 'fernClump' | 'bushTall' };
 let decoTrunks: ReadonlyArray<DecoTrunk> = [];
@@ -1046,6 +1047,18 @@ export function drawBankArt(
  * The face of a river bank behind a climb (2-6, the village dug into the bank): the world's painted soil across the view, shaded back so
  * the porches and posts in front stand out, with the grassy lip along its top. False until the sheets have loaded.
  */
+/**
+ * True when drawEarthWall will paint the whole view this frame: its sheets are in and the wall reaches past every edge of the view by
+ * more than `slack` (the world's shake and snap, in world units, which move the wall against the screen). Its soil is opaque, so
+ * nothing drawn before it can show: the caller leaves the backdrop and the layers behind the wall undrawn (PERFORMANCE-RULES §8, the
+ * overdraw on 2-6's climb, ENG-26r). drawEarthWall draws from 10 units outside the view, so `slack` must stay under 10.
+ */
+export function earthWallCovers(wall: { x0: number; x1: number; top: number; bottom: number }, view: { x0: number; x1: number; y0: number; y1: number }, slack: number): boolean {
+  if (!(slack < 10)) return false;
+  if (wall.x0 > view.x0 - 10 || wall.x1 < view.x1 + 10 || wall.top > view.y0 - 10 || wall.bottom < view.y1 + 10) return false;
+  return protoArtReady() && warmGround(kitWorld);
+}
+
 export function drawEarthWall(ctx: CanvasRenderingContext2D, wall: { x0: number; x1: number; top: number; bottom: number }, view: { x0: number; x1: number; y0: number; y1: number }): boolean {
   if (!protoArtReady() || !warmGround(kitWorld)) return false;
   const a = Math.max(wall.x0, view.x0 - 10), b = Math.min(wall.x1, view.x1 + 10);
@@ -1148,15 +1161,16 @@ function drawWallChunks(
   const col = `${Math.round(deep[0] * (1 - sa) + sr * sa)},${Math.round(deep[1] * (1 - sa) + sg * sa)},${Math.round(deep[2] * (1 - sa) + sb * sa)}`;
   const y0 = view.y0 + (view.y1 - view.y0) * 0.5;
   if (bottom > y0) {
-    const gr = ctx.createLinearGradient(0, y0, 0, view.y1);
-    gr.addColorStop(0, `rgba(${col},0)`);
-    gr.addColorStop(1, `rgba(${col},${DEPTH_DARK})`);
-    ctx.fillStyle = gr;
+    // (its span is the view's lower half: built once per view height at the origin and drawn translated to the view, gradCache.ts;
+    // the context is saved above and restored below, so the translation ends with it)
+    const h = view.y1 - y0;
+    ctx.translate(0, y0);
+    ctx.fillStyle = cachedLinearGradient(ctx, 0, 0, 0, h, [[0, `rgba(${col},0)`], [1, `rgba(${col},${DEPTH_DARK})`]]);
     const t = Math.max(top, y0);
-    ctx.fillRect(a, t, b - a, Math.min(bottom, view.y1) - t);
+    ctx.fillRect(a, t - y0, b - a, Math.min(bottom, view.y1) - t);
     if (bottom > view.y1) {
       ctx.fillStyle = `rgba(${col},${DEPTH_DARK})`;
-      ctx.fillRect(a, view.y1, b - a, bottom - view.y1);
+      ctx.fillRect(a, h, b - a, bottom - view.y1);
     }
   }
   ctx.restore();

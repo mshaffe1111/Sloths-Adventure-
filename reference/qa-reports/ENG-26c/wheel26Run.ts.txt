@@ -1,0 +1,28 @@
+import '../../src/game/headlessDom.ts';
+import { withTestStage } from '../../src/game/gen2/listed.ts';
+import { buildGen2Stage, keptFoes } from '../../src/game/gen2/pipeline.ts';
+import { packPlan, plantSeedList } from '../../src/game/gen2/seedList.ts';
+import { w2Finish } from '../../src/game/gen2/worlds/w2.ts';
+import { kitLib26, STAGE_26 } from '../../src/game/gen2/worlds/w2Arc26.ts';
+import { generateAllLevels } from '../../src/game/worldsData.ts';
+import { runTier, type Setting, type Tier } from './tierBots.ts';
+import { SKILLS } from './firsttimer.ts';
+import { wheelTally } from './wheelCrossings.ts';
+import { W2_STAGES } from '../../src/game/w2Stages.ts';
+const cfg = generateAllLevels().find((c) => c.id === STAGE_26 && !c.secret)!;
+if (process.env.OFF) SKILLS.rideWheel = false;
+const seed = Number(process.env.SEED ?? 1);
+const RUNS = (process.env.ONE ? [['child', 'easy']] : [['child', 'easy'], ['child', 'normal'], ['middle', 'normal'], ['middle', 'easy'], ['expert', 'normal']]) as ReadonlyArray<readonly [string, string]>;
+for (const [tier, setting] of RUNS) for (const v of [1, 2]) {
+  const kit = kitLib26();
+  const st = buildGen2Stage({ config: cfg, kit, seed, difficulty: 'normal' });
+  const dict: string[] = [];
+  const packed = packPlan({ seed: st.gen2.seed, rerolls: st.gen2.rerolls, plan: st.gen2.plan, foes: [...keptFoes(st)] }, dict);
+  const t0 = Date.now();
+  const r = withTestStage({ [STAGE_26]: { kit: () => kit, world: (s, _sq, d) => w2Finish(s as never, d) as typeof s, seeds: [] } }, () => {
+    const undo = plantSeedList(STAGE_26, { dict, seeds: [seed], plans: [packed] });
+    const hand = (W2_STAGES as Record<string, unknown>)[STAGE_26]; delete (W2_STAGES as Record<string, unknown>)[STAGE_26];
+    try { const tally = wheelTally(); let last = -9; const run = runTier(tier as Tier, setting as Setting, v, STAGE_26, { onFrame: (sim) => { tally.onFrame(sim); if (process.env.TRACE && last < 0 && sim.t >= 0) console.log('SECS', JSON.stringify((sim.stage as any).gen2?.sections?.map((x: any) => x.template.slice(6))), 'spawn', (sim.stage as any).spawnX, (sim.stage as any).spawnY, 'wheels', JSON.stringify([...new Set(sim.platforms.flatMap((p) => p.wheel ? [p.wheel.w as any] : []))].map((w: any) => [w.lay?.row, Math.round(w.cy)]))); if (process.env.TRACE && sim.t - last >= 1.5) { last = sim.t; const q = sim.platforms.find((p) => p.id === sim.standingOn); console.log('T', sim.t.toFixed(1), Math.round(sim.p.x), Math.round(sim.p.y), sim.standingOn, q ? `${q.type}${q.wheel ? '/bucket ' + (q.wheel.w as any).lay?.row + ' cy' + Math.round((q.wheel.w as any).cy) : ''} w${q.width}` : sim.p.onVine ? 'vine' : 'air'); } } }); return { run, c: tally.crossings() }; } finally { undo(); (W2_STAGES as Record<string, unknown>)[STAGE_26] = hand; }
+  });
+  console.log(tier, setting, 'v' + v, 'end', r.run.end, 'fin', r.run.finishSeconds, 'lives', r.run.lives, 'putbacks', r.run.putbacks, '|', r.c.map((c) => `${c.row}${c.way > 0 ? 'R' : 'L'}:${c.seconds}s/sc${c.scrambles}/pd${c.pond}`).join(' '), `(${((Date.now() - t0) / 1000).toFixed(0)} s)`);
+}

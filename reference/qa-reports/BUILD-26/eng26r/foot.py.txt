@@ -1,0 +1,6 @@
+# usage: python3 -I foot.py <scratchpad> <orient>: before | after of the foot (spot 0) side by side, saved as foot-<orient>.png
+import sys
+from PIL import Image
+S, o = sys.argv[1], sys.argv[2]
+a = Image.open(f'{S}/stills-base/stills/2-6-{o}-s0.png').convert('RGB'); b = Image.open(f'{S}/stills-c2/stills/2-6-{o}-s0.png').convert('RGB')
+w, h = a.size; m = Image.new('RGB', (w * 2 + 16, h), (255, 255, 255)); m.paste(a, (0, 0)); m.paste(b, (w + 16, 0)); m.save(f'{S}/foot-{o}.png')

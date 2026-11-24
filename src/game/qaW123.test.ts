@@ -11,6 +11,7 @@ import { easyStage } from './easyMode.ts';
 import { withGoals } from './goals.ts';
 import { reachJump } from './physics.ts';
 import { RealPlay } from './realPlay.ts';
+import { TOWER } from './gen2/tower.ts';
 import { setDifficulty } from './difficulty.ts';
 import { pickLesson } from './lessons.ts';
 import { harmlessPass, newWatch, stepWatch, type WatchZone } from './watcher.ts';
@@ -117,28 +118,47 @@ test("watcher: a freeFirst stretch's first pass is harmless, its second is not, 
   assert.equal(passOver(c), false, 'the second over it');
 });
 
-// QA 5 (rules 7/2): 2-6 upright, 0-11%: the first ladder stood 440 px from the start, off an upright screen (it shows 70-510), so Dot's
-// "Slide up a post" came as he walked past it and the floor led him away along the bank's dirt. Now it stands in view from the start,
-// and a log a hop high lies on the floor just past it, so a plain walk stops beside it.
-test('2-6: the first ladder is on an upright screen from the start, and a plain walk stops beside it (every roll)', () => {
-  setDifficulty('normal');
-  for (const s of [1, 2, 3, 7, 12]) {
-    const r = new RealPlay('2-6', s);
-    const st = r.stage;
-    const ladder = r.vines.filter((v) => v.vineType === 'tree_climb').sort((a, b) => b.bottomY - a.bottomY)[0];
-    assert.ok(ladder.x - st.spawnX <= 260, `roll ${s}: the first ladder ${Math.round(ladder.x - st.spawnX)} px from the start`);
-    r.stand(st.spawnX, st.spawnY);
-    for (let i = 0; i < 120; i++) r.frame({ right: true });
-    assert.ok(Math.abs(r.p.x - ladder.x) < 120, `roll ${s}: a plain walk stops by the ladder (at ${Math.round(r.p.x)}, ladder ${ladder.x})`);
+// QA 5 (rules 7/2): 2-6 upright, 0-11%: the hand build's first ladder stood 440 px from the start, off an upright screen, so Dot's tip
+// came as he walked past it and the floor led him away along the bank. The hand build is gone (BUILD-26): the first thing to use is now
+// the climb from the millpond bank up to the first wheel's jetty (the tower's first turn), and Dot's ride line stands 800+ px before the
+// jetty on purpose (level.md rule 6), so the old "on screen from the start" number is the design's to break; the rest of the QA holds:
+// it is the only way up from the bank, it leads to the first wheel's jetty, and a walk that hops what stops it (the bank's boulder)
+// comes to rest beside it, never carried on past it into anything.
+test("2-6: the first thing to use is the climb up to the first wheel's jetty, and a hopping walk comes to rest beside it (every roll, both settings)", () => {
+  for (const diff of ['normal', 'easy'] as const) {
+    setDifficulty(diff);
+    for (const s of [1, 2, 3, 7, 12]) {
+      const r = new RealPlay('2-6', s);
+      const st = r.stage;
+      const fromBank = r.vines.filter((v) => v.bottomY >= st.spawnY - 10);
+      assert.equal(fromBank.length, 1, `${diff} roll ${s}: ${fromBank.length} climbs up from the bank`);
+      const ladder = fromBank[0];
+      // (the first wheel: the lowest; its jetty is the solid its bucket floors pass a log step (WHEEL drop) over, where the climb tops out)
+      const wheels = [...new Set(r.platforms.filter((p) => p.wheel).map((p) => p.wheel!.w))].sort((a, b) => b.cy - a.cy);
+      const w = wheels[0];
+      const jetty = r.platforms.find((p) => !p.wheel && p.height === 24 && Math.abs(p.y - ladder.topY) < 4 && p.x <= ladder.x + 40 && p.x + p.width >= ladder.x - 40);
+      assert.ok(jetty, `${diff} roll ${s}: the climb at ${ladder.x} tops out on no jetty`);
+      assert.ok(w && Math.abs(jetty.y - (w.cy + w.R)) < 60 && Math.abs(jetty.x + jetty.width / 2 - w.cx) < w.R + 400, `${diff} roll ${s}: the jetty at ${jetty.x} (y ${jetty.y}) is not the first wheel's (cx ${w?.cx}, bottom ${w ? w.cy + w.R : '-'})`);
+      r.stand(st.spawnX, st.spawnY);
+      let lastX = r.p.x, stall = 0;
+      for (let i = 0; i < 300; i++) {
+        const hop = stall >= 3 && r.p.grounded;
+        r.frame(hop ? { right: true, jump: true, press: true } : { right: true });
+        stall = Math.abs(r.p.x - lastX) < 0.5 ? stall + 1 : 0;
+        lastX = r.p.x;
+      }
+      assert.ok(Math.abs(r.p.x - ladder.x) < 120 && Math.abs(r.p.y - st.spawnY) < 40, `${diff} roll ${s}: a hopping walk rests at ${Math.round(r.p.x)} (y ${Math.round(r.p.y)}), the climb at ${ladder.x}`);
+    }
   }
+  setDifficulty('normal');
 });
 
-// QA 5 (rules 2/7): Dot's "Up through the village! Slide up a post" came after he had walked past the ladder. Dot says nothing in a
-// stage's first 2.5 s (dotGuide.ts CALM.startMs) and he reaches the ladder in 0.7 s, so the tip can only come before the climb if he is
-// still standing by the ladder when it does: walked in the real engine through Dot's queue, holding right and nothing else, the first
-// line about climbing (the stage's tip, or the climb lesson for a first-timer) goes up while he stands within 120 px of the ladder, on
-// the floor, on every roll, Normal and Easy, upright and sideways.
-test("2-6: Dot's climb line goes up while a plain walk stands by the first ladder (every roll, both settings, both views, taught or not)", async () => {
+// QA 5 (rules 2/7): the hand build's climb tip came after he had walked past the ladder. Dot says nothing in a stage's first 2.5 s
+// (dotGuide.ts CALM.startMs). The new 2-6's teach is the ride (w2Arc26.ts LINES_26.ride), laid on the millpond bank 800+ px before the
+// first wheel's jetty: walked in the real engine through Dot's queue, holding right and nothing else (the bank's boulder stops him), the
+// ride line goes up while he stands on the bank's floor short of the climb to the jetty, on every roll, Normal and Easy, upright and
+// sideways, taught or not.
+test("2-6: Dot's ride line goes up while a plain walk stands on the bank before the climb to the first wheel (every roll, both settings, both views, taught or not)", async () => {
   const { GameEngine } = await import('./engine.ts');
   const { GuideQueue } = await import('./dotGuide.ts');
   const { engineGuideLine } = await import('./dotLines.ts');
@@ -164,6 +184,7 @@ test("2-6: Dot's climb line goes up while a plain walk stands by the first ladde
           e.updateCamera = proto.updateCamera.bind(e);
           e.resizeCanvas();
           const ladder = r.vines.filter((v) => v.vineType === 'tree_climb').sort((a, b) => b.bottomY - a.bottomY)[0];
+          assert.ok(ladder.bottomY >= r.stage.spawnY - 10, `roll ${s}: the lowest climb ${ladder.x} does not stand on the bank`);
           const said: Array<{ text: string; lesson?: Parameters<typeof lessonDotLine>[0] }> = [];
           e.callbacks.onLesson = (l: Parameters<typeof lessonDotLine>[0]) => said.push({ text: '', lesson: l });
           e.callbacks.onGuide = (text: string, _s: number, passed?: boolean) => {
@@ -180,12 +201,12 @@ test("2-6: Dot's climb line goes up while a plain walk stands by the first ladde
             }
             q.tick((i * 1000) / 30, { danger: false, hold: i < 45, moveCount: () => 0 });
             for (const ev of q.drain()) {
-              if (ev.type !== 'start' || !/climb|post/i.test(ev.show.line.text)) continue;
+              if (ev.type !== 'start' || !/ride a bucket/i.test(ev.show.line.text)) continue;
               at = `"${ev.show.line.text}" at ${(i / 30).toFixed(1)} s, x ${Math.round(r.p.x)} (ladder ${ladder.x}), y ${Math.round(r.p.y)}`;
-              if (Math.abs(r.p.x - ladder.x) > 120 || Math.abs(r.p.y - r.stage.spawnY) > 8 || !r.p.grounded) bad.push(`${diff} ${view.join('x')} ${taught ? 'taught' : 'first-timer'} roll ${s}: ${at}`);
+              if (r.p.x > ladder.x - 60 || Math.abs(r.p.y - r.stage.spawnY) > 8 || !r.p.grounded) bad.push(`${diff} ${view.join('x')} ${taught ? 'taught' : 'first-timer'} roll ${s}: ${at}`);
             }
           }
-          if (!at) bad.push(`${diff} ${view.join('x')} ${taught ? 'taught' : 'first-timer'} roll ${s}: no climb line in 12 s`);
+          if (!at) bad.push(`${diff} ${view.join('x')} ${taught ? 'taught' : 'first-timer'} roll ${s}: no ride line in 12 s`);
         }
       }
     }
@@ -200,7 +221,7 @@ test("2-6: Dot's climb line goes up while a plain walk stands by the first ladde
 // walk off a dead end falls 400 px or more, or onto the floor (where he first lands). (Not dead ends: a hop gap, the way on; and the
 // secret side ledge, where a knot at the stub by its ladder would be a double jump up to the porch above, past the ladder, the rope and
 // two porches: the level check takes it away. 0 open dead ends over rolls 1-40.)
-test('2-6: a plain walk to a porch\'s dead end stops there: no fall of 400 px or more, none onto the floor (every roll, Normal and Easy)', () => {
+test('2-6: a plain walk to a street\'s dead end falls no further than TOWER.fall, never onto the floor (every roll, Normal and Easy)', () => {
   const bad: string[] = [];
   for (const diff of ['normal', 'easy'] as const) {
     setDifficulty(diff);
@@ -227,7 +248,8 @@ test('2-6: a plain walk to a porch\'s dead end stops there: no fall of 400 px or
             else if (left) break;
           }
           const fell = r.p.y - p.y;
-          if (fell >= 400 || Math.abs(r.p.y - floor.y) < 4) bad.push(`${diff} roll ${s}: walking ${side > 0 ? 'right' : 'left'} on the porch at ${p.x}-${end} (y ${p.y}) fell ${Math.round(fell)} px`);
+          // (the live rule's number, the lead's ruling BUILD-26b: TOWER.fall, a miss in a climb costs a storey; 400 was the hand build's knot)
+          if (fell > TOWER.fall || Math.abs(r.p.y - floor.y) < 4) bad.push(`${diff} roll ${s}: walking ${side > 0 ? 'right' : 'left'} on the porch at ${p.x}-${end} (y ${p.y}) fell ${Math.round(fell)} px`);
         }
       }
       assert.ok(ends > 20, `roll ${s}: ${ends} porch ends walked`);

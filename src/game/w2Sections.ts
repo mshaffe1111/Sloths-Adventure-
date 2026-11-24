@@ -18,7 +18,7 @@ import { stream } from './protoStage.ts';
 import type { RoomTips } from './puzzleKit.ts';
 import type { Collectible, LevelConfig, Platform, Vine } from './types.ts';
 
-export type W2Plan = '2-6' | '2-7' | '2-8' | '2-9';
+export type W2Plan = '2-7' | '2-8' | '2-9';
 type Critter = 'capy' | 'duck' | 'otter';
 type Stream = ReturnType<typeof stream>;
 
@@ -92,8 +92,8 @@ export interface W2Kit {
   STONE: number;
 }
 
-/** the flavours each stage rolls among (2-6 is World 1's climbing stage built up the bank houses: protoStage.ts buildKapok) */
-export const W2_FLAVOURS: Record<Exclude<W2Plan, '2-6'>, readonly string[]> = {
+/** the flavours each stage rolls among */
+export const W2_FLAVOURS: Record<W2Plan, readonly string[]> = {
   '2-7': ['porches', 'lifts', 'swings', 'logs'],
   '2-8': ['islands', 'channels', 'reeds', 'logs'],
   '2-9': ['lilies', 'porches', 'sandbars', 'gates'],
@@ -111,9 +111,9 @@ export interface W2Picks {
  * Which flavour each stage takes for a draw of 0..3. The draw is the layout number's own (the same for every stage of the world), and the
  * tables pair the stages that share a world's ideas so that one roll never gives them the same kind of way across (the 200-roll tool
  * compares each stage with the same roll of the others: "no two stages of a world alike", STAGE-RULES §2): 2-3 and 2-8 (the cages),
- * 2-4 and 2-7 (swings and lifts). (2-1, 2-2, 2-4 and 2-5 are gen2's: gen2/worlds/w2.ts, w2Arc24.ts, w2Arc25.ts)
+ * 2-4 and 2-7 (swings and lifts). (2-1, 2-2, 2-4, 2-5 and 2-6 are gen2's: gen2/worlds/w2.ts, w2Arc24.ts, w2Arc25.ts, w2Arc26.ts)
  */
-const BY_DRAW: Record<Exclude<W2Plan, '2-6'>, readonly string[]> = {
+const BY_DRAW: Record<W2Plan, readonly string[]> = {
   '2-8': ['channels', 'reeds', 'logs', 'islands'],
   '2-7': ['porches', 'lifts', 'swings', 'logs'],
   '2-9': ['porches', 'lilies', 'sandbars', 'gates'],
@@ -123,7 +123,7 @@ const BY_DRAW: Record<Exclude<W2Plan, '2-6'>, readonly string[]> = {
 export function w2Picks(plan: W2Plan, seed: number): W2Picks {
   const s = stream(seed * 131 + plan.charCodeAt(2) * 17 + 5);
   const draw = new ShuffleBag(stream(seed * 131 + 5).f, [0, 1, 2, 3]).draw()!;
-  const flavour = plan === '2-6' ? 'climb' : BY_DRAW[plan][draw];
+  const flavour = BY_DRAW[plan][draw];
   const look = new ShuffleBag(s.f, LOOKS).draw()!;
   return { flavour, look, rng: s.f };
 }
@@ -155,7 +155,7 @@ class Turns<K extends string> {
 }
 
 /** build a stage's sections in the order its flavour gives */
-export function buildW2Sections(plan: Exclude<W2Plan, '2-6'>, k: W2Kit, picks: W2Picks): void {
+export function buildW2Sections(plan: W2Plan, k: W2Kit, picks: W2Picks): void {
   PLANS[plan](k, picks.flavour, picks.rng);
 }
 
@@ -295,7 +295,7 @@ class Crossings {
   }
 }
 
-const PLANS: Record<Exclude<W2Plan, '2-6'>, (k: W2Kit, flavour: string, rng: Rng) => void> = {
+const PLANS: Record<W2Plan, (k: W2Kit, flavour: string, rng: Rng) => void> = {
   // ======================================================================================================================
   // 2-7 The Mailman's Route: the long way round the river, the way the mailman goes: up the carved steps, along the porches over the
   // water, into the basket of a rope lift and up the bank, over the river on the logs and on the rope-swing frames, and past every door

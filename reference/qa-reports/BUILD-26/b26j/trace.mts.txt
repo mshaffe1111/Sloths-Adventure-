@@ -1,0 +1,11 @@
+import '../src/game/headlessDom.ts';
+import { setDifficulty } from '../src/game/difficulty.ts';
+import { FirstTimerRun, FT_KID } from '../tools/inspect/firsttimer.ts';
+setDifficulty('easy');
+const [seed, x0, x1] = process.argv.slice(2).map(Number);
+const lines: string[] = []; let k = 0;
+const run: any = new FirstTimerRun('1-4', seed, { ...FT_KID, setting: 'easy' }, { onFrame: (s: any) => {
+  if (s.p.x >= x0 && s.p.x <= x1 && k++ % 5 === 0 && lines.length < 120) lines.push(`t ${s.t?.toFixed?.(1)} x ${Math.round(s.p.x)} y ${Math.round(s.p.y)} g ${+!!s.p.grounded} cl ${+!!s.p.climbing} vx ${Math.round(s.p.vx)} vy ${Math.round(s.p.vy)} in ${JSON.stringify(s.input ?? '')}`);
+} });
+const res = run.play();
+console.log(lines.join('\n')); console.log(JSON.stringify({ end: res?.end, time: res?.time, rescues: res?.rescues, stuck: res?.stuck }));

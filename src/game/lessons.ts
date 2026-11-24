@@ -11,6 +11,7 @@ import type { GlyphKind } from '../components/GestureGlyph.tsx';
 import { ctestEnabled } from './playRecorder.ts';
 import type { GuideLine, TopicId } from './dotGuide.ts';
 import { dotLine, gestureMove, targetTopic } from './dotLines.ts';
+import { waterNear } from './river.ts';
 
 export type LessonId =
   | 'foe' | 'nostomp' | 'eagle' | 'tough'
@@ -309,7 +310,9 @@ export interface LessonScene {
   platforms: { x: number; y: number; width: number; type: string; broken?: boolean }[];
   /** the flags; `reached` once he has run past one (the checkpoint card comes on the flag, not on the way to it) */
   checkpoints: { x: number; y: number; reached?: boolean }[];
-  rivers: { x0: number; x1: number }[];
+  /** the rivers, with their surfaces: the water lesson comes at water on his storey (river.ts waterNear), never at a pond's window a
+   *  storey above or below him (ENG-26e) */
+  rivers: { x0: number; x1: number; surfaceY: number }[];
   /** shimmy ropes (their ends, and their height), when the stage has them and he can use them */
   ropes?: { x0: number; x1: number; g0: number; g1: number }[];
   /** his hearts now and at most: the heart's lesson ("Hurt? Grab a heart to heal.") waits until he is hurt (QA 2026-10-29, 1-7 and 3-1
@@ -428,7 +431,7 @@ export function pickLesson(s: LessonScene, seen: ReadonlySet<LessonId>): LessonI
     if (p.type === 'fragile' && want('crumble') && near(cx, p.y, NEAR.thing)) return 'crumble';
     if (p.type === 'moving' && want('moving') && near(cx, p.y, NEAR.thing)) return 'moving';
   }
-  if (want('water') && s.rivers.some((r) => (r.x0 <= s.px + NEAR.thing && r.x1 >= s.px - 40) && s.py >= 0 && Math.abs(r.x0 - s.px) <= 500)) return 'water';
+  if (want('water') && s.rivers.some((r) => (r.x0 <= s.px + NEAR.thing && r.x1 >= s.px - 40) && s.py >= 0 && Math.abs(r.x0 - s.px) <= 500 && waterNear(r, s.px, s.py, s.platforms))) return 'water';
   const col = (types: string[]) => s.collectibles.find((c) => !c.collected && types.includes(c.type) && near(c.x, c.y, NEAR.thing));
   if (want('cage') && col(['cage'])) return 'cage';
   if (want('power') && col(POWERS)) return 'power';

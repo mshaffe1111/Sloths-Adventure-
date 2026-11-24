@@ -1,0 +1,6 @@
+seedlist 2-6: PASS (100 seeds, each clean on both settings)
+
+real	0m14.618s
+user	0m22.684s
+sys	0m0.693s
+2-6 exit 0

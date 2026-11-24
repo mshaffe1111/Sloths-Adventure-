@@ -1,0 +1,25 @@
+  25.97 single from 300,9706 hold 0.23 up 0.00 d2 0.40 2nd false -> 461,9706 ok
+  27.13 double from 467,9706 hold 0.62 up 0.00 d2 0.96 2nd false -> 642,9706 ok
+  36.10 double from 649,9608 hold 0.31 up 0.00 d2 0.37 2nd false -> 428,9786 FELL BACK
+  41.80 single from 906,9786 hold 0.26 up 0.00 d2 0.51 2nd false -> 1033,9706 ok
+  46.73 double from 768,9425 hold 1.44 up 0.10 d2 0.36 2nd true -> 489,9350 ok
+  97.83 single from 752,6235 hold 0.33 up 0.00 d2 0.47 2nd false -> 914,6235 ok
+  103.93 double from 637,5592 hold 1.05 up 0.00 d2 1.09 2nd false -> 536,5474 ok
+  146.20 double from 852,2931 hold 0.30 up 0.00 d2 0.71 2nd false -> 1045,3004 FELL BACK
+  169.93 double from 905,1700 hold 0.57 up 0.00 d2 0.96 2nd false -> 1046,1595 ok
+== child easy seed 4: shrine 183.4 s rescues 1
+   t 152.5 x 958 y 2647 dur 0 [#46 solid/branch x 114-1062 y 2740] fell back down from here 8 times
+  21.43 single from 339,9858 hold 0.06 up 0.00 d2 0.34 2nd false -> 451,9858 ok
+  22.53 single from 467,9858 hold 0.28 up 0.00 d2 0.61 2nd false -> 642,9858 ok
+  55.37 double from 1041,7739 hold 0.45 up 0.00 d2 0.48 2nd false -> 1260,7934 FELL BACK
+  61.57 single from 1037,7934 hold 1.24 up 0.00 d2 0.75 2nd false -> 886,7895 ok
+  67.53 double from 1039,7739 hold 0.92 up 0.00 d2 0.95 2nd false -> 1259,7934 FELL BACK
+  69.03 double from 1251,7934 hold 0.64 up 0.00 d2 0.36 2nd true -> 981,7895 ok
+  74.17 double from 906,7614 hold 0.63 up 0.00 d2 0.66 2nd false -> 1072,7574 ok
+  94.33 double from 542,6281 hold 1.68 up 0.00 d2 0.47 2nd true -> 326,6154 ok
+  100.53 double from 512,5610 hold 0.90 up 0.00 d2 0.55 2nd true -> 834,5570 ok
+  117.63 double from 231,4728 hold 0.72 up 0.00 d2 0.75 2nd false -> 20,4948 FELL BACK
+  144.10 double from 557,2684 hold 1.18 up 0.00 d2 1.21 2nd false -> 405,2644 ok
+  162.67 double from 480,1642 hold 0.30 up 0.00 d2 1.10 2nd false -> 337,1602 ok
+== child easy seed 24: shrine 177.7 s rescues 1
+   t 121.8 x 90 y 4588 dur 0 [#39 solid/branch x 234-1164 y 4644] fell back down from here 8 times

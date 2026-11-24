@@ -291,15 +291,21 @@ const REACH_SIZE = REACH_OFFSET * 2 + 1;
 /** a flight is flown at most this many frames (then it has neither landed nor fallen past: no reach) */
 const REACH_FRAMES = 600;
 interface ReachTable { v0: number; vx: number; dbl: boolean; dt: number; glide: boolean; vals: Float64Array; far: Map<number, number> }
-const reachTables: ReachTable[] = [];
+/** the tables by launch speed, then run speed (number keys), each a short list told apart by its double, tick and glide (ENG-26h,
+ *  load speed: one list scanned on every ask was a quarter of a tall tower's build) */
+const reachTables = new Map<number, Map<number, ReachTable[]>>();
 
 function reachTable(v0: number, vx: number, dbl: boolean, dt: number, glide = false): ReachTable {
-  for (let i = 0; i < reachTables.length; i++) {
-    const t = reachTables[i];
-    if (t.v0 === v0 && t.vx === vx && t.dbl === dbl && t.dt === dt && t.glide === glide) return t;
+  let byVx = reachTables.get(v0);
+  if (!byVx) reachTables.set(v0, (byVx = new Map()));
+  let list = byVx.get(vx);
+  if (!list) byVx.set(vx, (list = []));
+  for (let i = 0; i < list.length; i++) {
+    const t = list[i];
+    if (t.dbl === dbl && t.dt === dt && t.glide === glide) return t;
   }
   const t: ReachTable = { v0, vx, dbl, dt, glide, vals: new Float64Array(REACH_SIZE).fill(NaN), far: new Map() };
-  reachTables.push(t);
+  list.push(t);
   return t;
 }
 

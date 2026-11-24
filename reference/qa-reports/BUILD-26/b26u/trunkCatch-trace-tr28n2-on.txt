@@ -1,0 +1,18 @@
+  5.07 double from 899,6711 hold 0.85 up 0.00 d2 0.49 2nd true -> 961,6661 ok
+  6.07 single from 976,6661 hold 0.12 up 0.00 d2 0.45 2nd false -> 1132,6711 ok
+  12.70 single from 1337,6156 hold 0.20 up 0.00 -> 1191,6158 ok
+  30.47 double from 374,5586 hold 0.62 up 0.00 d2 0.44 2nd true -> 608,5491 ok
+  33.30 single from 794,5611 hold 0.41 up 0.00 d2 0.50 2nd false -> 927,5541 ok
+  42.83 single from 1234,4955 hold 0.20 up 0.00 d2 0.46 2nd false -> 1068,4955 ok
+  55.13 single from 482,4422 hold 0.20 up 0.00 -> 637,4428 ok
+  62.93 single from 702,4092 hold 0.20 up 0.00 -> 882,4118 ok
+  70.03 double from 1260,3809 hold 0.41 up 0.00 d2 0.21 2nd true -> 1215,3739 ok
+  71.77 single from 1086,3739 hold 0.10 up 0.00 d2 0.34 2nd false -> 970,3739 ok
+  72.47 single from 981,3809 hold 0.17 up 0.00 d2 0.37 2nd false -> 873,3739 ok
+  74.43 single from 788,3739 hold 0.11 up 0.00 d2 0.37 2nd false -> 648,3739 ok
+  79.40 single from 686,3234 hold 0.20 up 0.00 -> 828,3239 ok
+  85.80 single from 803,2911 hold 0.50 up 0.00 -> 928,2822 ok
+  94.33 single from 234,2036 hold 0.26 up 0.00 -> 304,1969 ok
+  100.63 single from 449,1706 hold 0.20 up 0.00 -> 630,1732 ok
+  102.00 double from 630,1732 hold 1.11 up 0.00 d2 0.71 2nd true -> 1007,1556 ok
+  107.80 single from 1308,1051 hold 0.38 up 0.00 -> 1257,974 ok

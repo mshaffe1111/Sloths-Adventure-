@@ -1,0 +1,19 @@
+// probe: 1-4 tower corners before the squeeze, then strict vs C's widened squeeze, with each splice named
+import '../../src/game/headlessDom.ts';
+import { setDifficulty } from '../../src/game/difficulty.ts';
+import { RealPlay } from '../../src/game/realPlay.ts';
+import * as TR from '../../tools/inspect/towerRoute.ts';
+const [setting, seedsArg, id = '1-4'] = process.argv.slice(2);
+const HOP = 60;
+const squeeze = (c0: any[], reach: number) => { const c = c0.map((p) => ({ ...p })); const cut: string[] = [];
+  for (let i = 1; i + 1 < c.length; ) { const a = c[i - 1], b = c[i], d = c[i + 1];
+    const flat = Math.abs(b.y - a.y) <= HOP && Math.abs(d.y - b.y) <= HOP;
+    if (flat && (b.x - a.x) * (d.x - b.x) < 0 && Math.min(a.x, b.x) - reach <= d.x && d.x <= Math.max(a.x, b.x) + reach) { cut.push(`cut ${b.x},${b.y} (a ${a.x},${a.y} d ${d.x},${d.y})`); c.splice(i, 1); } else i++; }
+  return { c, cut }; };
+for (const seed of seedsArg.split(',').map(Number)) {
+  setDifficulty(setting as any);
+  const sim: any = new RealPlay(id, seed);
+  const raw = (TR as any).rawCorners(sim.stage, sim.p);
+  const s = squeeze(raw, 0), w = squeeze(raw, 54);
+  console.log(`== ${id} ${setting} ${seed} HOP ${HOP}\n raw ${raw.map((p: any) => `${Math.round(p.x)},${Math.round(p.y)}`).join(' ')}\n strict: ${s.cut.join('; ')}\n wide:   ${w.cut.join('; ')}`);
+}

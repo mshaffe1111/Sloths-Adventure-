@@ -1,0 +1,55 @@
+== run 1
+1-4 kid normal 12: end shrine at x 402 f3918 (130.6 s, progress 100%), goal 1/1, rescued at x [1067], layout seed ?, harms 1 [hit other @x601,y2177 f3198], stuck x1036,y9706 f570 fell back down from here 3 times
+1-4 kid normal 13: end shrine at x 309 f3930 (131 s, progress 100%), goal 1/1, rescued at x [1061], layout seed ?, harms 0 [], stuck x1036,y9762 f624 fell back down from here 3 times
+1-4 kid normal 18: end shrine at x 601 f4650 (155 s, progress 100%), goal 1/1, rescued at x [1025], layout seed ?, harms 6 [hit other @x600,y4655 f2811; life other @x772,y2563 f3630; hit other @x772,y2563 f3630], stuck x1036,y10083 f579 fell back down from here 3 times
+1-4 kid normal 34: end shrine at x 719 f4002 (133.4 s, progress 100%), goal 1/1, rescued at x [1056], layout seed ?, harms 0 [], stuck x1036,y10420 f585 fell back down from here 3 times
+1-4 kid normal 7: end shrine at x 869 f3822 (127.4 s, progress 100%), goal 1/1, rescued at x [790], layout seed ?, harms 1 [hit other @x489,y5135 f2181], stuck x1036,y9987 f579 fell back down from here 3 times
+1-4 kid normal 19: end shrine at x 679 f4245 (141.5 s, progress 100%), goal 1/1, rescued at x [1114], layout seed ?, harms 0 [], stuck x1036,y10235 f858 fell back down from here 3 times
+1-4 adult normal 36: end shrine at x 871 f3774 (125.8 s, progress 100%), goal 1/1, rescued at x [1057], layout seed ?, harms 1 [hit other @x801,y7213 f1359], stuck x1036,y10043 f525 fell back down from here 3 times
+1-4 adult easy 17: end shrine at x 647 f3489 (116.3 s, progress 100%), goal 1/1, rescued at x [982], layout seed ?, harms 0 [], stuck x1115,y10139 f546 fell back down from here 3 times
+1-4 adult easy 19: end shrine at x 291 f3882 (129.4 s, progress 100%), goal 1/1, rescued at x [1004], layout seed ?, harms 0 [], stuck x1115,y9858 f543 fell back down from here 3 times
+1-4 kid easy 37: end shrine at x 311 f4443 (148.1 s, progress 100%), goal 1/1, rescued at x [610], layout seed ?, harms 0 [], stuck x607,y2965 f2973 in a dip 281 px deep
+1-4 kid easy 10: end shrine at x 721 f4530 (151 s, progress 100%), goal 1/1, rescued at x [610], layout seed ?, harms 0 [], stuck x607,y3342 f2946 in a dip 281 px deep
+1-4 adult easy 37: end shrine at x 311 f4206 (140.2 s, progress 100%), goal 1/1, rescued at x [610], layout seed ?, harms 0 [], stuck x610,y2965 f2784 in a dip 281 px deep
+1-4 adult easy 10: end shrine at x 721 f4125 (137.5 s, progress 100%), goal 1/1, rescued at x [610], layout seed ?, harms 0 [], stuck x610,y3342 f2652 in a dip 281 px deep
+1-4 middle easy 37: end shrine at x 307 f4653 (155.1 s, progress 100%), goal 1/1, rescued at x [588], layout seed ?, harms 0 [], stuck x592,y2965 f3162 in a dip 281 px deep
+1-4 middle easy 10: end shrine at x 729 f4800 (160 s, progress 100%), goal 1/1, rescued at x [609], layout seed ?, harms 0 [], stuck x583,y3342 f3312 in a dip 281 px deep
+1-4 middle normal 29: end shrine at x 681 f5673 (189.1 s, progress 100%), goal 1/1, rescued at x [134], layout seed ?, harms 2 [hit other @x489,y5512 f3555; hit other @x668,y1417 f5391], stuck x61,y9858 f867 the way on is 281 px down
+1-4 middle easy 29: end shrine at x 682 f4503 (150.1 s, progress 100%), goal 1/1, rescued at x [138], layout seed ?, harms 0 [], stuck x111,y5285 f2529 in a dip 360 px deep, the way on is 341 px down | x135,y4925 f2865 fell back down from here 8 times
+1-4 child normal 24: end shrine at x 311 f7065 (235.5 s, progress 100%), goal 1/1, rescued at x [200], layout seed ?, harms 3 [hit other @x791,y5185 f3969; hit other @x791,y5179 f4110; hit other @x711,y5179 f4380], stuck x463,y6753 f2709 fell back down from here 8 times
+1-4 child easy 3: end shrine at x 681 f5367 (178.9 s, progress 100%), goal 1/1, rescued at x [137], layout seed ?, harms 0 [], stuck x442,y596 f5343 fell back down from here 8 times
+1-4 child easy 12: end shrine at x 973 f5394 (179.8 s, progress 100%), goal 1/1, rescued at x [296], layout seed ?, harms 0 [], stuck x1044,y1602 f5001 fell back down from here 8 times
+1-4 child normal 30: end shrine at x 801 f6468 (215.6 s, progress 100%), goal 1/1, rescued at x [1099], layout seed ?, harms 0 [], stuck x996,y9441 f1626 in a dip 400 px deep, the way on is 321 px down | x936,y8901 f1908 fell back down from here 8 times
+1-4 child normal 32: end shrine at x 464 f6435 (214.5 s, progress 100%), goal 1/1, rescued at x [20], layout seed ?, harms 1 [hit other @x601,y7150 f2682], stuck x60,y9666 f1263 the way on is 321 px down | x388,y9502 f1560 fell back down from here 8 times
+1-4 child normal 26: end time at x 600 f36000 (1200 s, progress 83%), goal 0/1, rescued at x [], layout seed ?, harms 6 [hit other @x692,y2564 f6009; life other @x772,y2733 f6132; hit other @x772,y2733 f6132]
+1-4 middle normal 6: end shrine at x 428 f4653 (155.1 s, progress 100%), goal 1/1, rescued at x [884], layout seed ?, harms 0 [], stuck x801,y6799 f1845 fell back down from here 8 times
+1-4 middle normal 15: end shrine at x 687 f4686 (156.2 s, progress 100%), goal 1/1, rescued at x [1260], layout seed ?, harms 2 [hit other @x540,y4524 f3120; hit other @x700,y4637 f3192], stuck x1183,y7273 f1638 the way on is 301 px down | x1187,y6853 f2040 fell back down from here 8 times
+1-4 kid normal 3: end shrine at x 679 f4011 (133.7 s, progress 100%), goal 1/1, rescued at x [228], layout seed ?, harms 0 [], stuck x182,y1885 f3630 fell back down from here 3 times
+== run 2
+1-4 kid normal 12: end shrine at x 402 f3918 (130.6 s, progress 100%), goal 1/1, rescued at x [1067], layout seed ?, harms 1 [hit other @x601,y2177 f3198], stuck x1036,y9706 f570 fell back down from here 3 times
+1-4 kid normal 13: end shrine at x 309 f3930 (131 s, progress 100%), goal 1/1, rescued at x [1061], layout seed ?, harms 0 [], stuck x1036,y9762 f624 fell back down from here 3 times
+1-4 kid normal 18: end shrine at x 601 f4650 (155 s, progress 100%), goal 1/1, rescued at x [1025], layout seed ?, harms 6 [hit other @x600,y4655 f2811; life other @x772,y2563 f3630; hit other @x772,y2563 f3630], stuck x1036,y10083 f579 fell back down from here 3 times
+1-4 kid normal 34: end shrine at x 719 f4002 (133.4 s, progress 100%), goal 1/1, rescued at x [1056], layout seed ?, harms 0 [], stuck x1036,y10420 f585 fell back down from here 3 times
+1-4 kid normal 7: end shrine at x 869 f3822 (127.4 s, progress 100%), goal 1/1, rescued at x [790], layout seed ?, harms 1 [hit other @x489,y5135 f2181], stuck x1036,y9987 f579 fell back down from here 3 times
+1-4 kid normal 19: end shrine at x 679 f4245 (141.5 s, progress 100%), goal 1/1, rescued at x [1114], layout seed ?, harms 0 [], stuck x1036,y10235 f858 fell back down from here 3 times
+1-4 adult normal 36: end shrine at x 871 f3774 (125.8 s, progress 100%), goal 1/1, rescued at x [1057], layout seed ?, harms 1 [hit other @x801,y7213 f1359], stuck x1036,y10043 f525 fell back down from here 3 times
+1-4 adult easy 17: end shrine at x 647 f3489 (116.3 s, progress 100%), goal 1/1, rescued at x [982], layout seed ?, harms 0 [], stuck x1115,y10139 f546 fell back down from here 3 times
+1-4 adult easy 19: end shrine at x 291 f3882 (129.4 s, progress 100%), goal 1/1, rescued at x [1004], layout seed ?, harms 0 [], stuck x1115,y9858 f543 fell back down from here 3 times
+1-4 kid easy 37: end shrine at x 311 f4443 (148.1 s, progress 100%), goal 1/1, rescued at x [610], layout seed ?, harms 0 [], stuck x607,y2965 f2973 in a dip 281 px deep
+1-4 kid easy 10: end shrine at x 721 f4530 (151 s, progress 100%), goal 1/1, rescued at x [610], layout seed ?, harms 0 [], stuck x607,y3342 f2946 in a dip 281 px deep
+1-4 adult easy 37: end shrine at x 311 f4206 (140.2 s, progress 100%), goal 1/1, rescued at x [610], layout seed ?, harms 0 [], stuck x610,y2965 f2784 in a dip 281 px deep
+1-4 adult easy 10: end shrine at x 721 f4125 (137.5 s, progress 100%), goal 1/1, rescued at x [610], layout seed ?, harms 0 [], stuck x610,y3342 f2652 in a dip 281 px deep
+1-4 middle easy 37: end shrine at x 307 f4653 (155.1 s, progress 100%), goal 1/1, rescued at x [588], layout seed ?, harms 0 [], stuck x592,y2965 f3162 in a dip 281 px deep
+1-4 middle easy 10: end shrine at x 729 f4800 (160 s, progress 100%), goal 1/1, rescued at x [609], layout seed ?, harms 0 [], stuck x583,y3342 f3312 in a dip 281 px deep
+1-4 middle normal 29: end shrine at x 681 f5673 (189.1 s, progress 100%), goal 1/1, rescued at x [134], layout seed ?, harms 2 [hit other @x489,y5512 f3555; hit other @x668,y1417 f5391], stuck x61,y9858 f867 the way on is 281 px down
+1-4 middle easy 29: end shrine at x 682 f4503 (150.1 s, progress 100%), goal 1/1, rescued at x [138], layout seed ?, harms 0 [], stuck x111,y5285 f2529 in a dip 360 px deep, the way on is 341 px down | x135,y4925 f2865 fell back down from here 8 times
+1-4 child normal 24: end shrine at x 311 f7065 (235.5 s, progress 100%), goal 1/1, rescued at x [200], layout seed ?, harms 3 [hit other @x791,y5185 f3969; hit other @x791,y5179 f4110; hit other @x711,y5179 f4380], stuck x463,y6753 f2709 fell back down from here 8 times
+1-4 child easy 3: end shrine at x 681 f5367 (178.9 s, progress 100%), goal 1/1, rescued at x [137], layout seed ?, harms 0 [], stuck x442,y596 f5343 fell back down from here 8 times
+1-4 child easy 12: end shrine at x 973 f5394 (179.8 s, progress 100%), goal 1/1, rescued at x [296], layout seed ?, harms 0 [], stuck x1044,y1602 f5001 fell back down from here 8 times
+1-4 child normal 30: end shrine at x 801 f6468 (215.6 s, progress 100%), goal 1/1, rescued at x [1099], layout seed ?, harms 0 [], stuck x996,y9441 f1626 in a dip 400 px deep, the way on is 321 px down | x936,y8901 f1908 fell back down from here 8 times
+1-4 child normal 32: end shrine at x 464 f6435 (214.5 s, progress 100%), goal 1/1, rescued at x [20], layout seed ?, harms 1 [hit other @x601,y7150 f2682], stuck x60,y9666 f1263 the way on is 321 px down | x388,y9502 f1560 fell back down from here 8 times
+1-4 child normal 26: end time at x 600 f36000 (1200 s, progress 83%), goal 0/1, rescued at x [], layout seed ?, harms 6 [hit other @x692,y2564 f6009; life other @x772,y2733 f6132; hit other @x772,y2733 f6132]
+1-4 middle normal 6: end shrine at x 428 f4653 (155.1 s, progress 100%), goal 1/1, rescued at x [884], layout seed ?, harms 0 [], stuck x801,y6799 f1845 fell back down from here 8 times
+1-4 middle normal 15: end shrine at x 687 f4686 (156.2 s, progress 100%), goal 1/1, rescued at x [1260], layout seed ?, harms 2 [hit other @x540,y4524 f3120; hit other @x700,y4637 f3192], stuck x1183,y7273 f1638 the way on is 301 px down | x1187,y6853 f2040 fell back down from here 8 times
+1-4 kid normal 3: end shrine at x 679 f4011 (133.7 s, progress 100%), goal 1/1, rescued at x [228], layout seed ?, harms 0 [], stuck x182,y1885 f3630 fell back down from here 3 times
+

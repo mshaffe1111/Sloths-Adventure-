@@ -152,15 +152,4 @@ test('the snapper: head-on it hides, its shell is kicked away, and from behind (
   assert.equal(turtleGuard(t('dizzy', -1), 40, false), 'hit');
 });
 
-test('2-6: the climb up the bank village, with the bank behind it, doors on the porches and Gruntlewick at the top', () => {
-  for (const s of SEEDS.slice(0, 8)) {
-    const st = buildW2Stage({ ...cfg('2-6'), id: '2-6', miniIndex: 6, objectiveType: 'ascent' } as LevelConfig, s, '2-6');
-    assert.ok(st.proto.bankWall, `seed ${s}`);
-    assert.ok(st.proto.decor!.filter((d) => d.n === 'doorRoof').length >= 5, `seed ${s}: doors`);
-    assert.ok(st.proto.ladders, 'the climbs are ladders');
-    assert.ok(st.proto.decor!.some((d) => d.cel?.startsWith('tc.')), `seed ${s}: Gruntlewick`);
-    assert.ok(st.vines.some((v) => v.vineType === 'tree_climb'));
-    assert.ok(st.collectibles.filter((c) => c.type === 'heart').length >= 2, `seed ${s}: hearts`);
-    assert.equal(st.proto.hollows?.length ?? 0, 0, 'the lit window stands in for the hollow');
-  }
-});
+// (2-6's look test moved to gen2/worlds/w2Arc26.test.ts with its assertions when the hand build was deleted, BUILD-26)

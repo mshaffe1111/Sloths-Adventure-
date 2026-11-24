@@ -1,0 +1,13 @@
+runs old 200 new 200; moved 120
+  field finishSeconds: 119 runs changed
+  field lives: 0 runs changed
+  field putbacks: 39 runs changed
+  field rescues: 2 runs changed
+  field end: 0 runs changed
+   ('child', 'normal', 12) lives 0 -> 0 rescues 1 -> 0 end shrine -> shrine
+   ('child', 'normal', 14) lives 0 -> 0 rescues 0 -> 1 end shrine -> shrine
+TABLE ('child', 'easy') pass False -> False finished 40 -> 40 rescues 0 -> 0
+TABLE ('child', 'normal') pass False -> False finished 40 -> 40 rescues 3 -> 3
+TABLE ('expert', 'normal') pass True -> True finished 40 -> 40 rescues 0 -> 0
+TABLE ('middle', 'easy') pass False -> False finished 40 -> 40 rescues 0 -> 0
+TABLE ('middle', 'normal') pass False -> False finished 40 -> 40 rescues 0 -> 0

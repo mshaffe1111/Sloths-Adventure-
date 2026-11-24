@@ -1,0 +1,1478 @@
+== 105.03 705,3470 vx -172 tgt 709 standing null edge null
+105.03 wheelRide(1,105.03333333332994) -> {"right":true}
+105.03 intend() -> {"right":true}
+105.03 rhythm() -> {"right":true}
+105.03 thumbify() -> {}
+== 105.07 701,3469 vx -58 tgt 709 standing null edge null
+105.07 wheelRide(1,105.06666666666327) -> {"right":true}
+105.07 intend() -> {"right":true}
+105.07 rhythm() -> {"right":true}
+105.07 thumbify() -> {}
+== 105.10 699,3468 vx 0 tgt 688 standing null edge null
+105.10 wheelRide(1,105.0999999999966) -> {"right":true}
+105.10 intend() -> {"right":true}
+105.10 rhythm() -> {"right":true}
+105.10 thumbify() -> {}
+== 105.13 697,3467 vx 0 tgt 688 standing null edge null
+105.13 wheelRide(1,105.13333333332993) -> {"right":true}
+105.13 intend() -> {"right":true}
+105.13 rhythm() -> {"right":true}
+105.13 thumbify() -> {}
+== 105.17 696,3466 vx 0 tgt 688 standing null edge null
+105.17 wheelRide(1,105.16666666666326) -> {"right":true}
+105.17 intend() -> {"right":true}
+105.17 rhythm() -> {"right":true}
+105.17 thumbify() -> {}
+== 105.20 694,3465 vx 0 tgt 688 standing null edge null
+105.20 wheelRide(1,105.19999999999659) -> {"right":true}
+105.20 intend() -> {"right":true}
+105.20 rhythm() -> {"right":true}
+105.20 thumbify() -> {"right":true}
+105.20 pad() -> {"right":true}
+== 105.23 695,3464 vx 87 tgt 688 standing null edge null
+105.23 wheelRide(1,105.23333333332992) -> {"right":true}
+105.23 intend() -> {"right":true}
+105.23 rhythm() -> {"right":true}
+105.23 thumbify() -> {"right":true}
+105.23 pad() -> {"right":true}
+== 105.27 699,3463 vx 173 tgt 688 standing null edge null
+105.27 wheelRide(1,105.26666666666326) -> {"right":true}
+105.27 intend() -> {"right":true}
+105.27 rhythm() -> {"right":true}
+105.27 thumbify() -> {"right":true}
+105.27 pad() -> {"right":true}
+== 105.30 706,3462 vx 260 tgt 688 standing null edge null
+105.30 intend() -> {}
+105.30 thumbify() -> {"right":true}
+105.30 pad() -> {"right":true}
+== 105.33 714,3461 vx 285 tgt 709 standing null edge null
+105.33 intend() -> {}
+105.33 thumbify() -> {"right":true}
+105.33 pad() -> {"right":true}
+== 105.37 721,3460 vx 268 tgt 709 standing null edge null
+105.37 intend() -> {}
+105.37 thumbify() -> {"right":true}
+105.37 pad() -> {"right":true}
+== 105.40 729,3459 vx 285 tgt 709 standing null edge null
+105.40 intend() -> {}
+105.40 thumbify() -> {"right":true}
+105.40 pad() -> {"right":true}
+== 105.43 736,3458 vx 268 tgt 731 standing null edge null
+105.43 wheelRide(1,105.43333333332991) -> {"left":true}
+105.43 intend() -> {"left":true}
+105.43 rhythm() -> {"left":true}
+105.43 thumbify() -> {}
+== 105.47 740,3457 vx 154 tgt 731 standing null edge null
+105.47 wheelRide(1,105.46666666666324) -> {"left":true}
+105.47 intend() -> {"left":true}
+105.47 rhythm() -> {"left":true}
+105.47 thumbify() -> {}
+== 105.50 739,3456 vx 41 tgt 731 standing null edge null
+105.50 wheelRide(1,105.49999999999658) -> {"left":true}
+105.50 intend() -> {"left":true}
+105.50 rhythm() -> {"left":true}
+105.50 thumbify() -> {}
+== 105.53 738,3454 vx 0 tgt 731 standing null edge null
+105.53 wheelRide(1,105.5333333333299) -> {"left":true}
+105.53 intend() -> {"left":true}
+105.53 rhythm() -> {"left":true}
+105.53 thumbify() -> {}
+== 105.57 736,3453 vx 0 tgt 731 standing null edge null
+105.57 wheelRide(1,105.56666666666324) -> {"left":true}
+105.57 intend() -> {"left":true}
+105.57 rhythm() -> {"left":true}
+105.57 thumbify() -> {}
+== 105.60 734,3452 vx 0 tgt 731 standing null edge null
+105.60 wheelRide(1,105.59999999999657) -> {"left":true}
+105.60 intend() -> {"left":true}
+105.60 rhythm() -> {"left":true}
+105.60 thumbify() -> {}
+== 105.63 733,3451 vx 0 tgt 731 standing null edge null
+105.63 wheelRide(1,105.6333333333299) -> {"left":true}
+105.63 intend() -> {"left":true}
+105.63 rhythm() -> {"left":true}
+105.63 thumbify() -> {"left":true}
+105.63 pad() -> {"left":true}
+== 105.67 728,3450 vx -87 tgt 731 standing null edge null
+105.67 wheelRide(1,105.66666666666323) -> {"left":true}
+105.67 intend() -> {"left":true}
+105.67 rhythm() -> {"left":true}
+105.67 thumbify() -> {"left":true}
+105.67 pad() -> {"left":true}
+== 105.70 721,3448 vx -173 tgt 731 standing null edge null
+105.70 wheelRide(1,105.69999999999656) -> {"left":true}
+105.70 intend() -> {"left":true}
+105.70 rhythm() -> {"left":true}
+105.70 thumbify() -> {"left":true}
+105.70 pad() -> {"left":true}
+== 105.73 711,3447 vx -260 tgt 709 standing null edge null
+105.73 intend() -> {}
+105.73 thumbify() -> {"left":true}
+105.73 pad() -> {"left":true}
+== 105.77 700,3446 vx -285 tgt 709 standing null edge null
+105.77 intend() -> {}
+105.77 thumbify() -> {"left":true}
+105.77 pad() -> {"left":true}
+== 105.80 689,3445 vx -268 tgt 688 standing null edge null
+105.80 intend() -> {}
+105.80 thumbify() -> {"left":true}
+105.80 pad() -> {"left":true}
+== 105.83 678,3443 vx -285 tgt 688 standing null edge null
+105.83 intend() -> {}
+105.83 thumbify() -> {"left":true}
+105.83 pad() -> {"left":true}
+== 105.87 668,3442 vx -268 tgt 667 standing null edge null
+105.87 wheelRide(1,105.86666666666322) -> {"right":true}
+105.87 intend() -> {"right":true}
+105.87 rhythm() -> {"right":true}
+105.87 thumbify() -> {}
+== 105.90 661,3441 vx -154 tgt 667 standing null edge null
+105.90 wheelRide(1,105.89999999999655) -> {"right":true}
+105.90 intend() -> {"right":true}
+105.90 rhythm() -> {"right":true}
+105.90 thumbify() -> {}
+== 105.93 658,3439 vx -41 tgt 667 standing null edge null
+105.93 wheelRide(1,105.93333333332988) -> {"right":true}
+105.93 intend() -> {"right":true}
+105.93 rhythm() -> {"right":true}
+105.93 thumbify() -> {}
+== 105.97 657,3438 vx 0 tgt 645 standing null edge null
+105.97 wheelRide(1,105.96666666666322) -> {"right":true}
+105.97 intend() -> {"right":true}
+105.97 rhythm() -> {"right":true}
+105.97 thumbify() -> {}
+== 106.00 656,3436 vx 0 tgt 645 standing null edge null
+106.00 wheelRide(1,105.99999999999655) -> {"right":true}
+106.00 intend() -> {"right":true}
+106.00 rhythm() -> {"right":true}
+106.00 thumbify() -> {}
+== 106.03 654,3435 vx 0 tgt 645 standing null edge null
+106.03 wheelRide(1,106.03333333332988) -> {"right":true}
+106.03 intend() -> {"right":true}
+106.03 rhythm() -> {"right":true}
+106.03 thumbify() -> {}
+== 106.07 653,3434 vx 0 tgt 645 standing null edge null
+106.07 wheelRide(1,106.06666666666321) -> {"right":true}
+106.07 intend() -> {"right":true}
+106.07 rhythm() -> {"right":true}
+106.07 thumbify() -> {"right":true}
+106.07 pad() -> {"right":true}
+== 106.10 654,3432 vx 87 tgt 645 standing null edge null
+106.10 wheelRide(1,106.09999999999654) -> {"right":true}
+106.10 intend() -> {"right":true}
+106.10 rhythm() -> {"right":true}
+106.10 thumbify() -> {"right":true}
+106.10 pad() -> {"right":true}
+== 106.13 659,3431 vx 173 tgt 645 standing null edge null
+106.13 wheelRide(1,106.13333333332987) -> {"right":true}
+106.13 intend() -> {"right":true}
+106.13 rhythm() -> {"right":true}
+106.13 thumbify() -> {"right":true}
+106.13 pad() -> {"right":true}
+== 106.17 666,3429 vx 260 tgt 645 standing null edge null
+106.17 intend() -> {}
+106.17 thumbify() -> {"right":true}
+106.17 pad() -> {"right":true}
+== 106.20 674,3428 vx 285 tgt 667 standing null edge null
+106.20 intend() -> {}
+106.20 thumbify() -> {"right":true}
+106.20 pad() -> {"right":true}
+== 106.23 682,3426 vx 268 tgt 667 standing null edge null
+106.23 intend() -> {}
+106.23 thumbify() -> {"right":true}
+106.23 pad() -> {"right":true}
+== 106.27 690,3425 vx 285 tgt 688 standing null edge null
+106.27 intend() -> {}
+106.27 thumbify() -> {"right":true}
+106.27 pad() -> {"right":true}
+== 106.30 697,3423 vx 268 tgt 688 standing null edge null
+106.30 wheelRide(1,106.29999999999653) -> {"left":true}
+106.30 intend() -> {"left":true}
+106.30 rhythm() -> {"left":true}
+106.30 thumbify() -> {}
+== 106.33 701,3422 vx 154 tgt 688 standing null edge null
+106.33 wheelRide(1,106.33333333332986) -> {"left":true}
+106.33 intend() -> {"left":true}
+106.33 rhythm() -> {"left":true}
+106.33 thumbify() -> {}
+== 106.37 701,3420 vx 41 tgt 688 standing null edge null
+106.37 wheelRide(1,106.36666666666319) -> {"left":true}
+106.37 intend() -> {"left":true}
+106.37 rhythm() -> {"left":true}
+106.37 thumbify() -> {}
+== 106.40 700,3419 vx 0 tgt 688 standing null edge null
+106.40 wheelRide(1,106.39999999999652) -> {"left":true}
+106.40 intend() -> {"left":true}
+106.40 rhythm() -> {"left":true}
+106.40 thumbify() -> {}
+== 106.43 699,3417 vx 0 tgt 688 standing null edge null
+106.43 wheelRide(1,106.43333333332986) -> {"left":true}
+106.43 intend() -> {"left":true}
+106.43 rhythm() -> {"left":true}
+106.43 thumbify() -> {}
+== 106.47 698,3415 vx 0 tgt 688 standing null edge null
+106.47 wheelRide(1,106.46666666666319) -> {"left":true}
+106.47 intend() -> {"left":true}
+106.47 rhythm() -> {"left":true}
+106.47 thumbify() -> {}
+== 106.50 697,3414 vx 0 tgt 688 standing null edge null
+106.50 wheelRide(1,106.49999999999652) -> {"left":true}
+106.50 intend() -> {"left":true}
+106.50 rhythm() -> {"left":true}
+106.50 thumbify() -> {"left":true}
+106.50 pad() -> {"left":true}
+== 106.53 693,3412 vx -87 tgt 688 standing null edge null
+106.53 wheelRide(1,106.53333333332985) -> {"left":true}
+106.53 intend() -> {"left":true}
+106.53 rhythm() -> {"left":true}
+106.53 thumbify() -> {"left":true}
+106.53 pad() -> {"left":true}
+== 106.57 686,3411 vx -173 tgt 688 standing null edge null
+106.57 wheelRide(1,106.56666666666318) -> {"left":true}
+106.57 intend() -> {"left":true}
+106.57 rhythm() -> {"left":true}
+106.57 thumbify() -> {"left":true}
+106.57 pad() -> {"left":true}
+== 106.60 676,3409 vx -260 tgt 688 standing null edge null
+106.60 intend() -> {}
+106.60 thumbify() -> {"left":true}
+106.60 pad() -> {"left":true}
+== 106.63 665,3407 vx -285 tgt 688 standing null edge null
+106.63 intend() -> {}
+106.63 thumbify() -> {"left":true}
+106.63 pad() -> {"left":true}
+== 106.67 655,3406 vx -268 tgt 688 standing null edge null
+106.67 intend() -> {}
+106.67 thumbify() -> {"left":true}
+106.67 pad() -> {"left":true}
+== 106.70 645,3404 vx -285 tgt 688 standing null edge null
+106.70 intend() -> {}
+106.70 thumbify() -> {"left":true}
+106.70 pad() -> {"left":true}
+== 106.73 635,3402 vx -268 tgt 688 standing null edge null
+106.73 wheelRide(1,106.73333333332984) -> {"right":true}
+106.73 intend() -> {"right":true}
+106.73 rhythm() -> {"right":true}
+106.73 thumbify() -> {}
+== 106.77 628,3400 vx -154 tgt 688 standing null edge null
+106.77 wheelRide(1,106.76666666666317) -> {"right":true}
+106.77 intend() -> {"right":true}
+106.77 rhythm() -> {"right":true}
+106.77 thumbify() -> {}
+== 106.80 626,3399 vx -41 tgt 688 standing null edge null
+106.80 wheelRide(1,106.7999999999965) -> {"right":true}
+106.80 intend() -> {"right":true}
+106.80 rhythm() -> {"right":true}
+106.80 thumbify() -> {}
+== 106.83 625,3397 vx 0 tgt 688 standing null edge null
+106.83 wheelRide(1,106.83333333332983) -> {"right":true}
+106.83 intend() -> {"right":true}
+106.83 rhythm() -> {"right":true}
+106.83 thumbify() -> {}
+== 106.87 624,3395 vx 0 tgt 688 standing null edge null
+106.87 wheelRide(1,106.86666666666316) -> {"right":true}
+106.87 intend() -> {"right":true}
+106.87 rhythm() -> {"right":true}
+106.87 thumbify() -> {}
+== 106.90 623,3394 vx 0 tgt 688 standing null edge null
+106.90 wheelRide(1,106.8999999999965) -> {"right":true}
+106.90 intend() -> {"right":true}
+106.90 rhythm() -> {"right":true}
+106.90 thumbify() -> {}
+== 106.93 622,3392 vx 0 tgt 688 standing null edge null
+106.93 wheelRide(1,106.93333333332983) -> {"right":true}
+106.93 intend() -> {"right":true}
+106.93 rhythm() -> {"right":true}
+106.93 thumbify() -> {"right":true}
+106.93 pad() -> {"right":true}
+== 106.97 624,3390 vx 87 tgt 688 standing null edge null
+106.97 wheelRide(1,106.96666666666316) -> {"right":true}
+106.97 intend() -> {"right":true}
+106.97 rhythm() -> {"right":true}
+106.97 thumbify() -> {"right":true}
+106.97 pad() -> {"right":true}
+== 107.00 629,3388 vx 173 tgt 688 standing null edge null
+107.00 wheelRide(1,106.99999999999649) -> {"right":true}
+107.00 intend() -> {"right":true}
+107.00 rhythm() -> {"right":true}
+107.00 thumbify() -> {"right":true}
+107.00 pad() -> {"right":true}
+== 107.03 637,3386 vx 260 tgt 688 standing null edge null
+107.03 intend() -> {}
+107.03 thumbify() -> {"right":true}
+107.03 pad() -> {"right":true}
+== 107.07 646,3385 vx 285 tgt 709 standing null edge null
+107.07 intend() -> {}
+107.07 thumbify() -> {"right":true}
+107.07 pad() -> {"right":true}
+== 107.10 654,3383 vx 268 tgt 709 standing null edge null
+107.10 intend() -> {}
+107.10 thumbify() -> {"right":true}
+107.10 pad() -> {"right":true}
+== 107.13 662,3381 vx 285 tgt 709 standing null edge null
+107.13 intend() -> {}
+107.13 thumbify() -> {"right":true}
+107.13 pad() -> {"right":true}
+== 107.17 670,3379 vx 268 tgt 731 standing null edge null
+107.17 wheelRide(1,107.16666666666315) -> {"left":true}
+107.17 intend() -> {"left":true}
+107.17 rhythm() -> {"left":true}
+107.17 thumbify() -> {}
+== 107.20 675,3377 vx 154 tgt 731 standing null edge null
+107.20 wheelRide(1,107.19999999999648) -> {"left":true}
+107.20 intend() -> {"left":true}
+107.20 rhythm() -> {"left":true}
+107.20 thumbify() -> {}
+== 107.23 675,3375 vx 41 tgt 731 standing null edge null
+107.23 wheelRide(1,107.23333333332981) -> {"left":true}
+107.23 intend() -> {"left":true}
+107.23 rhythm() -> {"left":true}
+107.23 thumbify() -> {}
+== 107.27 675,3374 vx 0 tgt 731 standing null edge null
+107.27 wheelRide(1,107.26666666666314) -> {"left":true}
+107.27 intend() -> {"left":true}
+107.27 rhythm() -> {"left":true}
+107.27 thumbify() -> {}
+== 107.30 674,3372 vx 0 tgt 731 standing null edge null
+107.30 wheelRide(1,107.29999999999647) -> {"left":true}
+107.30 intend() -> {"left":true}
+107.30 rhythm() -> {"left":true}
+107.30 thumbify() -> {}
+== 107.33 673,3370 vx 0 tgt 731 standing null edge null
+107.33 wheelRide(1,107.3333333333298) -> {"left":true}
+107.33 intend() -> {"left":true}
+107.33 rhythm() -> {"left":true}
+107.33 thumbify() -> {}
+== 107.37 673,3368 vx 0 tgt 731 standing null edge null
+107.37 wheelRide(1,107.36666666666314) -> {"left":true}
+107.37 intend() -> {"left":true}
+107.37 rhythm() -> {"left":true}
+107.37 thumbify() -> {"left":true}
+107.37 pad() -> {"left":true}
+== 107.40 669,3366 vx -87 tgt 731 standing null edge null
+107.40 wheelRide(1,107.39999999999647) -> {"left":true}
+107.40 intend() -> {"left":true}
+107.40 rhythm() -> {"left":true}
+107.40 thumbify() -> {"left":true}
+107.40 pad() -> {"left":true}
+== 107.43 663,3364 vx -173 tgt 731 standing null edge null
+107.43 wheelRide(1,107.4333333333298) -> {"left":true}
+107.43 intend() -> {"left":true}
+107.43 rhythm() -> {"left":true}
+107.43 thumbify() -> {"left":true}
+107.43 pad() -> {"left":true}
+== 107.47 653,3362 vx -260 tgt 731 standing null edge null
+107.47 intend() -> {}
+107.47 thumbify() -> {"left":true}
+107.47 pad() -> {"left":true}
+== 107.50 643,3360 vx -285 tgt 731 standing null edge null
+107.50 intend() -> {}
+107.50 thumbify() -> {"left":true}
+107.50 pad() -> {"left":true}
+== 107.53 634,3358 vx -268 tgt 709 standing null edge null
+107.53 intend() -> {}
+107.53 thumbify() -> {"left":true}
+107.53 pad() -> {"left":true}
+== 107.57 624,3356 vx -285 tgt 709 standing null edge null
+107.57 intend() -> {}
+107.57 thumbify() -> {"left":true}
+107.57 pad() -> {"left":true}
+== 107.60 614,3355 vx -268 tgt 709 standing null edge null
+107.60 wheelRide(1,107.59999999999646) -> {"right":true}
+107.60 intend() -> {"right":true}
+107.60 rhythm() -> {"right":true}
+107.60 thumbify() -> {}
+== 107.63 609,3353 vx -154 tgt 709 standing null edge null
+107.63 wheelRide(1,107.63333333332979) -> {"right":true}
+107.63 intend() -> {"right":true}
+107.63 rhythm() -> {"right":true}
+107.63 thumbify() -> {}
+== 107.67 607,3351 vx -41 tgt 688 standing null edge null
+107.67 wheelRide(1,107.66666666666312) -> {"right":true}
+107.67 intend() -> {"right":true}
+107.67 rhythm() -> {"right":true}
+107.67 thumbify() -> {}
+== 107.70 606,3349 vx 0 tgt 709 standing null edge null
+107.70 wheelRide(1,107.69999999999645) -> {"right":true}
+107.70 intend() -> {"right":true}
+107.70 rhythm() -> {"right":true}
+107.70 thumbify() -> {}
+== 107.73 606,3347 vx 0 tgt 709 standing null edge null
+107.73 wheelRide(1,107.73333333332978) -> {"right":true}
+107.73 intend() -> {"right":true}
+107.73 rhythm() -> {"right":true}
+107.73 thumbify() -> {}
+== 107.77 605,3345 vx 0 tgt 709 standing null edge null
+107.77 wheelRide(1,107.76666666666311) -> {"right":true}
+107.77 intend() -> {"right":true}
+107.77 rhythm() -> {"right":true}
+107.77 thumbify() -> {}
+== 107.80 605,3343 vx 0 tgt 709 standing null edge null
+107.80 wheelRide(1,107.79999999999644) -> {"right":true}
+107.80 intend() -> {"right":true}
+107.80 rhythm() -> {"right":true}
+107.80 thumbify() -> {"right":true}
+107.80 pad() -> {"right":true}
+== 107.83 607,3341 vx 87 tgt 709 standing null edge null
+107.83 wheelRide(1,107.83333333332978) -> {"right":true}
+107.83 intend() -> {"right":true}
+107.83 rhythm() -> {"right":true}
+107.83 thumbify() -> {"right":true}
+107.83 pad() -> {"right":true}
+== 107.87 613,3339 vx 173 tgt 709 standing null edge null
+107.87 wheelRide(1,107.86666666666311) -> {"right":true}
+107.87 intend() -> {"right":true}
+107.87 rhythm() -> {"right":true}
+107.87 thumbify() -> {"right":true}
+107.87 pad() -> {"right":true}
+== 107.90 621,3337 vx 260 tgt 709 standing null edge null
+107.90 intend() -> {}
+107.90 thumbify() -> {"right":true}
+107.90 pad() -> {"right":true}
+== 107.93 630,3335 vx 285 tgt 731 standing null edge null
+107.93 intend() -> {}
+107.93 thumbify() -> {"right":true}
+107.93 pad() -> {"right":true}
+== 107.97 639,3333 vx 268 tgt 731 standing null edge null
+107.97 intend() -> {}
+107.97 thumbify() -> {"right":true}
+107.97 pad() -> {"right":true}
+== 108.00 648,3331 vx 285 tgt 731 standing null edge null
+108.00 intend() -> {}
+108.00 thumbify() -> {"right":true}
+108.00 pad() -> {"right":true}
+== 108.03 657,3329 vx 268 tgt 752 standing null edge null
+108.03 wheelRide(1,108.03333333332976) -> {"left":true}
+108.03 intend() -> {"left":true}
+108.03 rhythm() -> {"left":true}
+108.03 thumbify() -> {}
+== 108.07 662,3327 vx 154 tgt 752 standing null edge null
+108.07 wheelRide(1,108.0666666666631) -> {"left":true}
+108.07 intend() -> {"left":true}
+108.07 rhythm() -> {"left":true}
+108.07 thumbify() -> {}
+== 108.10 663,3325 vx 41 tgt 752 standing null edge null
+108.10 wheelRide(1,108.09999999999643) -> {"left":true}
+108.10 intend() -> {"left":true}
+108.10 rhythm() -> {"left":true}
+108.10 thumbify() -> {}
+== 108.13 663,3323 vx 0 tgt 752 standing null edge null
+108.13 wheelRide(1,108.13333333332976) -> {"left":true}
+108.13 intend() -> {"left":true}
+108.13 rhythm() -> {"left":true}
+108.13 thumbify() -> {}
+== 108.17 663,3321 vx 0 tgt 752 standing null edge null
+108.17 wheelRide(1,108.16666666666309) -> {"left":true}
+108.17 intend() -> {"left":true}
+108.17 rhythm() -> {"left":true}
+108.17 thumbify() -> {}
+== 108.20 663,3319 vx 0 tgt 752 standing null edge null
+108.20 wheelRide(1,108.19999999999642) -> {"left":true}
+108.20 intend() -> {"left":true}
+108.20 rhythm() -> {"left":true}
+108.20 thumbify() -> {}
+== 108.23 662,3317 vx 0 tgt 752 standing null edge null
+108.23 wheelRide(1,108.23333333332975) -> {"left":true}
+108.23 intend() -> {"left":true}
+108.23 rhythm() -> {"left":true}
+108.23 thumbify() -> {"left":true}
+108.23 pad() -> {"left":true}
+== 108.27 660,3315 vx -87 tgt 752 standing null edge null
+108.27 wheelRide(1,108.26666666666308) -> {"left":true}
+108.27 intend() -> {"left":true}
+108.27 rhythm() -> {"left":true}
+108.27 thumbify() -> {"left":true}
+108.27 pad() -> {"left":true}
+== 108.30 654,3313 vx -173 tgt 752 standing null edge null
+108.30 wheelRide(1,108.29999999999642) -> {"left":true}
+108.30 intend() -> {"left":true}
+108.30 rhythm() -> {"left":true}
+108.30 thumbify() -> {"left":true}
+108.30 pad() -> {"left":true}
+== 108.33 645,3311 vx -260 tgt 752 standing null edge null
+108.33 intend() -> {}
+108.33 thumbify() -> {"left":true}
+108.33 pad() -> {"left":true}
+== 108.37 635,3309 vx -285 tgt 731 standing null edge null
+108.37 intend() -> {}
+108.37 thumbify() -> {"left":true}
+108.37 pad() -> {"left":true}
+== 108.40 627,3307 vx -268 tgt 731 standing null edge null
+108.40 intend() -> {}
+108.40 thumbify() -> {"left":true}
+108.40 pad() -> {"left":true}
+== 108.43 617,3305 vx -285 tgt 709 standing null edge null
+108.43 intend() -> {}
+108.43 thumbify() -> {"left":true}
+108.43 pad() -> {"left":true}
+== 108.47 608,3303 vx -268 tgt 709 standing null edge null
+108.47 wheelRide(1,108.46666666666307) -> {"right":true}
+108.47 intend() -> {"right":true}
+108.47 rhythm() -> {"right":true}
+108.47 thumbify() -> {}
+== 108.50 603,3301 vx -154 tgt 709 standing null edge null
+108.50 wheelRide(1,108.4999999999964) -> {"right":true}
+108.50 intend() -> {"right":true}
+108.50 rhythm() -> {"right":true}
+108.50 thumbify() -> {}
+== 108.53 602,3299 vx -41 tgt 709 standing null edge null
+108.53 wheelRide(1,108.53333333332974) -> {"right":true}
+108.53 intend() -> {"right":true}
+108.53 rhythm() -> {"right":true}
+108.53 thumbify() -> {}
+== 108.57 602,3297 vx 0 tgt 709 standing null edge null
+108.57 wheelRide(1,108.56666666666307) -> {"right":true}
+108.57 intend() -> {"right":true}
+108.57 rhythm() -> {"right":true}
+108.57 thumbify() -> {}
+== 108.60 602,3295 vx 0 tgt 709 standing null edge null
+108.60 wheelRide(1,108.5999999999964) -> {"right":true}
+108.60 intend() -> {"right":true}
+108.60 rhythm() -> {"right":true}
+108.60 thumbify() -> {}
+== 108.63 602,3293 vx 0 tgt 709 standing null edge null
+108.63 wheelRide(1,108.63333333332973) -> {"right":true}
+108.63 intend() -> {"right":true}
+108.63 rhythm() -> {"right":true}
+108.63 thumbify() -> {}
+== 108.67 602,3291 vx 0 tgt 709 standing null edge null
+108.67 wheelRide(1,108.66666666666306) -> {"right":true}
+108.67 intend() -> {"right":true}
+108.67 rhythm() -> {"right":true}
+108.67 thumbify() -> {"right":true}
+108.67 pad() -> {"right":true}
+== 108.70 605,3289 vx 87 tgt 709 standing null edge null
+108.70 wheelRide(1,108.6999999999964) -> {"right":true}
+108.70 intend() -> {"right":true}
+108.70 rhythm() -> {"right":true}
+108.70 thumbify() -> {"right":true}
+108.70 pad() -> {"right":true}
+== 108.73 611,3287 vx 173 tgt 709 standing null edge null
+108.73 wheelRide(1,108.73333333332972) -> {"right":true}
+108.73 intend() -> {"right":true}
+108.73 rhythm() -> {"right":true}
+108.73 thumbify() -> {"right":true}
+108.73 pad() -> {"right":true}
+== 108.77 620,3285 vx 260 tgt 709 standing null edge null
+108.77 intend() -> {}
+108.77 thumbify() -> {"right":true}
+108.77 pad() -> {"right":true}
+== 108.80 630,3283 vx 285 tgt 731 standing null edge null
+108.80 intend() -> {}
+108.80 thumbify() -> {"right":true}
+108.80 pad() -> {"right":true}
+== 108.83 639,3281 vx 268 tgt 731 standing null edge null
+108.83 intend() -> {}
+108.83 thumbify() -> {"right":true}
+108.83 pad() -> {"right":true}
+== 108.87 649,3279 vx 285 tgt 752 standing null edge null
+108.87 intend() -> {}
+108.87 thumbify() -> {"right":true}
+108.87 pad() -> {"right":true}
+== 108.90 658,3277 vx 268 tgt 752 standing null edge null
+108.90 wheelRide(1,108.89999999999638) -> {"left":true}
+108.90 intend() -> {"left":true}
+108.90 rhythm() -> {"left":true}
+108.90 thumbify() -> {}
+== 108.93 664,3275 vx 154 tgt 773 standing null edge null
+108.93 wheelRide(1,108.93333333332971) -> {"left":true}
+108.93 intend() -> {"left":true}
+108.93 rhythm() -> {"left":true}
+108.93 thumbify() -> {}
+== 108.97 666,3273 vx 41 tgt 773 standing null edge null
+108.97 wheelRide(1,108.96666666666304) -> {"left":true}
+108.97 intend() -> {"left":true}
+108.97 rhythm() -> {"left":true}
+108.97 thumbify() -> {}
+== 109.00 666,3271 vx 0 tgt 773 standing null edge null
+109.00 wheelRide(1,108.99999999999638) -> {"left":true}
+109.00 intend() -> {"left":true}
+109.00 rhythm() -> {"left":true}
+109.00 thumbify() -> {}
+== 109.03 666,3269 vx 0 tgt 773 standing null edge null
+109.03 wheelRide(1,109.03333333332971) -> {"left":true}
+109.03 intend() -> {"left":true}
+109.03 rhythm() -> {"left":true}
+109.03 thumbify() -> {}
+== 109.07 667,3267 vx 0 tgt 773 standing null edge null
+109.07 wheelRide(1,109.06666666666304) -> {"left":true}
+109.07 intend() -> {"left":true}
+109.07 rhythm() -> {"left":true}
+109.07 thumbify() -> {}
+== 109.10 667,3266 vx 0 tgt 773 standing null edge null
+109.10 intend() -> {}
+109.10 thumbify() -> {"left":true}
+109.10 pad() -> {"left":true}
+== 109.13 665,3264 vx -87 tgt 773 standing null edge null
+109.13 intend() -> {}
+109.13 thumbify() -> {"left":true}
+109.13 pad() -> {"left":true}
+== 109.17 660,3262 vx -173 tgt 752 standing null edge null
+109.17 intend() -> {}
+109.17 thumbify() -> {"left":true}
+109.17 pad() -> {"left":true}
+== 109.20 652,3260 vx -260 tgt 752 standing null edge null
+109.20 intend() -> {}
+109.20 thumbify() -> {"left":true}
+109.20 pad() -> {"left":true}
+== 109.23 643,3258 vx -285 tgt 731 standing null edge null
+109.23 intend() -> {}
+109.23 thumbify() -> {"left":true}
+109.23 pad() -> {"left":true}
+== 109.27 634,3256 vx -268 tgt 731 standing null edge null
+109.27 intend() -> {}
+109.27 thumbify() -> {"left":true}
+109.27 pad() -> {"left":true}
+== 109.30 625,3254 vx -285 tgt 709 standing null edge null
+109.30 intend() -> {}
+109.30 thumbify() -> {"left":true}
+109.30 pad() -> {"left":true}
+== 109.33 617,3252 vx -268 tgt 624 standing null edge null
+109.33 intend() -> {}
+109.33 thumbify() -> {"left":true}
+109.33 pad() -> {"left":true}
+== 109.37 608,3250 vx -285 tgt 624 standing null edge null
+109.37 intend() -> {}
+109.37 thumbify() -> {"left":true}
+109.37 pad() -> {"left":true}
+== 109.40 600,3248 vx -268 tgt 603 standing null edge null
+109.40 intend() -> {}
+109.40 thumbify() -> {"left":true}
+109.40 pad() -> {"left":true}
+== 109.43 591,3246 vx -285 tgt 603 standing null edge null
+109.43 intend() -> {}
+109.43 thumbify() -> {"left":true}
+109.43 pad() -> {"left":true}
+== 109.47 583,3244 vx -268 tgt 603 standing null edge null
+109.47 intend() -> {}
+109.47 thumbify() -> {"left":true}
+109.47 pad() -> {"left":true}
+== 109.50 574,3243 vx -285 tgt 581 standing null edge null
+109.50 intend() -> {}
+109.50 thumbify() -> {"left":true}
+109.50 pad() -> {"left":true}
+== 109.53 566,3244 vx -268 tgt 581 standing null edge null
+109.53 intend() -> {"right":true}
+109.53 rhythm() -> {"right":true}
+109.53 thumbify() -> {}
+== 109.57 557,3249 vx -268 tgt 560 standing null edge null
+109.57 intend() -> {"right":true}
+109.57 rhythm() -> {"right":true}
+109.57 thumbify() -> {}
+== 109.60 548,3257 vx -268 tgt 560 standing null edge null
+109.60 intend() -> {"right":true}
+109.60 rhythm() -> {"right":true}
+109.60 thumbify() -> {}
+== 109.63 539,3269 vx -268 tgt 560 standing null edge null
+109.63 intend() -> {"right":true}
+109.63 rhythm() -> {"right":true}
+109.63 thumbify() -> {}
+== 109.67 530,3282 vx -268 tgt 538 standing null edge null
+109.67 intend() -> {"right":true}
+109.67 rhythm() -> {"right":true}
+109.67 thumbify() -> {}
+== 109.70 521,3299 vx -268 tgt 603 standing null edge null
+109.70 intend() -> {"right":true}
+109.70 rhythm() -> {"right":true}
+109.70 thumbify() -> {}
+== 109.73 512,3319 vx -268 tgt 603 standing null edge null
+109.73 intend() -> {"right":true}
+109.73 rhythm() -> {"right":true}
+109.73 thumbify() -> {"right":true}
+109.73 pad() -> {"right":true}
+== 109.77 506,3341 vx -181 tgt 603 standing null edge null
+109.77 intend() -> {"right":true}
+109.77 rhythm() -> {"right":true}
+109.77 thumbify() -> {"right":true}
+109.77 pad() -> {"right":true}
+== 109.80 503,3366 vx -94 tgt 603 standing null edge null
+109.80 intend() -> {"right":true}
+109.80 rhythm() -> {"right":true}
+109.80 thumbify() -> {"right":true}
+109.80 pad() -> {"right":true}
+== 109.83 503,3394 vx -8 tgt 603 standing null edge null
+109.83 intend() -> {"right":true}
+109.83 rhythm() -> {"right":true}
+109.83 thumbify() -> {"right":true}
+109.83 pad() -> {"right":true}
+== 109.87 505,3424 vx 49 tgt 581 standing null edge null
+109.87 intend() -> {"right":true}
+109.87 rhythm() -> {"right":true}
+109.87 thumbify() -> {"right":true}
+109.87 pad() -> {"right":true}
+== 109.90 508,3456 vx 106 tgt 560 standing null edge null
+109.90 intend() -> {"right":true}
+109.90 rhythm() -> {"right":true}
+109.90 thumbify() -> {"right":true}
+109.90 pad() -> {"right":true}
+== 109.93 513,3460 vx 162 tgt 560 standing null edge null
+109.93 wheelRide(1,109.93333333332966) -> {"right":true}
+109.93 intend() -> {"right":true}
+109.93 rhythm() -> {"right":true}
+109.93 thumbify() -> {"right":true}
+109.93 pad() -> {"right":true}
+== 109.97 522,3460 vx 249 tgt 560 standing null edge null
+109.97 wheelRide(1,109.96666666666299) -> {"right":true}
+109.97 intend() -> {"right":true}
+109.97 rhythm() -> {"right":true}
+109.97 thumbify() -> {"right":true}
+109.97 pad() -> {"right":true}
+== 110.00 531,3460 vx 285 tgt 581 standing null edge null
+110.00 wheelRide(1,109.99999999999632) -> {"right":true}
+110.00 intend() -> {"right":true}
+110.00 rhythm() -> {"right":true}
+110.00 thumbify() -> {"right":true}
+110.00 pad() -> {"right":true}
+== 110.03 540,3460 vx 268 tgt 581 standing null edge null
+110.03 wheelRide(1,110.03333333332965) -> {"right":true}
+110.03 intend() -> {"right":true}
+110.03 rhythm() -> {"right":true}
+110.03 thumbify() -> {"right":true}
+110.03 pad() -> {"right":true}
+== 110.07 550,3460 vx 285 tgt 581 standing null edge null
+110.07 wheelRide(1,110.06666666666298) -> {"right":true}
+110.07 intend() -> {"right":true}
+110.07 rhythm() -> {"right":true}
+110.07 thumbify() -> {"right":true}
+110.07 pad() -> {"right":true}
+== 110.10 559,3460 vx 268 tgt 581 standing null edge null
+110.10 wheelRide(1,110.09999999999631) -> {"right":true}
+110.10 intend() -> {"right":true}
+110.10 rhythm() -> {"right":true}
+110.10 thumbify() -> {"right":true}
+110.10 pad() -> {"right":true}
+== 110.13 568,3460 vx 285 tgt 581 standing null edge null
+110.13 wheelRide(1,110.13333333332965) -> {"right":true}
+110.13 intend() -> {"right":true}
+110.13 rhythm() -> {"right":true}
+110.13 thumbify() -> {"right":true}
+110.13 pad() -> {"right":true}
+== 110.17 577,3460 vx 268 tgt 581 standing null edge null
+110.17 wheelRide(1,110.16666666666298) -> {"right":true}
+110.17 intend() -> {"right":true}
+110.17 rhythm() -> {"right":true}
+110.17 thumbify() -> {"right":true}
+110.17 pad() -> {"right":true}
+== 110.20 587,3460 vx 285 tgt 581 standing null edge null
+110.20 wheelRide(1,110.19999999999631) -> {"right":true}
+110.20 intend() -> {"right":true}
+110.20 rhythm() -> {"right":true}
+110.20 thumbify() -> {"right":true}
+110.20 pad() -> {"right":true}
+== 110.23 595,3460 vx 268 tgt 581 standing null edge null
+110.23 wheelRide(1,110.23333333332964) -> {"right":true}
+110.23 intend() -> {"right":true}
+110.23 rhythm() -> {"right":true}
+110.23 thumbify() -> {"right":true}
+110.23 pad() -> {"right":true}
+== 110.27 605,3460 vx 285 tgt 581 standing null edge null
+110.27 intend() -> {}
+110.27 thumbify() -> {"right":true}
+110.27 pad() -> {"right":true}
+== 110.30 614,3460 vx 268 tgt 603 standing null edge null
+110.30 intend() -> {}
+110.30 thumbify() -> {"right":true}
+110.30 pad() -> {"right":true}
+== 110.33 623,3460 vx 285 tgt 603 standing null edge null
+110.33 intend() -> {}
+110.33 thumbify() -> {"right":true}
+110.33 pad() -> {"right":true}
+== 110.37 632,3460 vx 268 tgt 624 standing null edge null
+110.37 intend() -> {}
+110.37 thumbify() -> {"right":true}
+110.37 pad() -> {"right":true}
+== 110.40 642,3460 vx 285 tgt 624 standing null edge null
+110.40 intend() -> {}
+110.40 thumbify() -> {"right":true}
+110.40 pad() -> {"right":true}
+== 110.43 651,3460 vx 268 tgt 645 standing null edge null
+110.43 intend() -> {}
+110.43 thumbify() -> {"right":true}
+110.43 pad() -> {"right":true}
+== 110.47 660,3460 vx 285 tgt 645 standing null edge null
+110.47 intend() -> {}
+110.47 thumbify() -> {"right":true}
+110.47 pad() -> {"right":true}
+== 110.50 669,3460 vx 268 tgt 667 standing null edge null
+110.50 intend() -> {}
+110.50 thumbify() -> {"right":true}
+110.50 pad() -> {"right":true}
+== 110.53 679,3463 vx 285 tgt 667 standing null edge null
+110.53 intend() -> {"right":true}
+110.53 rhythm() -> {"right":true}
+110.53 thumbify() -> {"right":true}
+110.53 pad() -> {"right":true}
+== 110.57 688,3468 vx 268 tgt 667 standing null edge null
+110.57 intend() -> {"right":true}
+110.57 rhythm() -> {"right":true}
+110.57 thumbify() -> {"right":true}
+110.57 pad() -> {"right":true}
+== 110.60 697,3477 vx 285 tgt 688 standing null edge null
+110.60 intend() -> {"right":true}
+110.60 rhythm() -> {"right":true}
+110.60 thumbify() -> {"right":true}
+110.60 pad() -> {"right":true}
+== 110.63 706,3483 vx 268 tgt 688 standing null edge null
+110.63 wheelRide(1,110.63333333332962) -> {"right":true}
+110.63 intend() -> {"right":true}
+110.63 rhythm() -> {"right":true}
+110.63 thumbify() -> {"right":true}
+110.63 pad() -> {"right":true}
+== 110.67 714,3483 vx 285 tgt 709 standing null edge null
+110.67 wheelRide(1,110.66666666666295) -> {"right":true}
+110.67 intend() -> {"right":true}
+110.67 rhythm() -> {"right":true}
+110.67 thumbify() -> {"right":true}
+110.67 pad() -> {"right":true}
+== 110.70 721,3482 vx 268 tgt 709 standing null edge null
+110.70 wheelRide(1,110.69999999999628) -> {"right":true}
+110.70 intend() -> {"right":true}
+110.70 rhythm() -> {"right":true}
+110.70 thumbify() -> {"right":true}
+110.70 pad() -> {"right":true}
+== 110.73 728,3482 vx 285 tgt 709 standing null edge null
+110.73 wheelRide(1,110.73333333332961) -> {"right":true}
+110.73 intend() -> {"right":true}
+110.73 rhythm() -> {"right":true}
+110.73 thumbify() -> {"right":true}
+110.73 pad() -> {"right":true}
+== 110.77 735,3481 vx 268 tgt 731 standing null edge null
+110.77 wheelRide(1,110.76666666666294) -> {"right":true}
+110.77 intend() -> {"right":true}
+110.77 rhythm() -> {"right":true}
+110.77 thumbify() -> {"right":true}
+110.77 pad() -> {"right":true}
+== 110.80 743,3481 vx 285 tgt 731 standing null edge null
+110.80 wheelRide(0,110.79999999999627) -> {"right":true}
+110.80 intend() -> {"right":true}
+110.80 rhythm() -> {"right":true}
+110.80 thumbify() -> {"right":true}
+110.80 pad() -> {"right":true}
+== 110.83 750,3480 vx 268 tgt 731 standing null edge null
+110.83 intend() -> {}
+110.83 thumbify() -> {"right":true}
+110.83 pad() -> {"right":true}
+== 110.87 757,3480 vx 285 tgt 752 standing null edge null
+110.87 intend() -> {}
+110.87 thumbify() -> {"right":true}
+110.87 pad() -> {"right":true}
+== 110.90 764,3479 vx 268 tgt 752 standing null edge null
+110.90 intend() -> {}
+110.90 thumbify() -> {"right":true}
+110.90 pad() -> {"right":true}
+== 110.93 772,3479 vx 285 tgt 752 standing null edge null
+110.93 wheelRide(0,110.9333333333296) -> {"left":true}
+110.93 intend() -> {"left":true}
+110.93 rhythm() -> {"left":true}
+110.93 thumbify() -> {}
+== 110.97 776,3478 vx 172 tgt 773 standing null edge null
+110.97 wheelRide(0,110.96666666666293) -> {"left":true}
+110.97 intend() -> {"left":true}
+110.97 rhythm() -> {"left":true}
+110.97 thumbify() -> {}
+== 111.00 776,3477 vx 58 tgt 773 standing null edge null
+111.00 wheelRide(0,110.99999999999626) -> {"left":true}
+111.00 intend() -> {"left":true}
+111.00 rhythm() -> {"left":true}
+111.00 thumbify() -> {}
+== 111.03 774,3477 vx 0 tgt 773 standing null edge null
+111.03 wheelRide(0,111.0333333333296) -> {"left":true}
+111.03 intend() -> {"left":true}
+111.03 rhythm() -> {"left":true}
+111.03 thumbify() -> {}
+== 111.07 772,3476 vx 0 tgt 773 standing null edge null
+111.07 wheelRide(0,111.06666666666293) -> {"left":true}
+111.07 intend() -> {"left":true}
+111.07 rhythm() -> {"left":true}
+111.07 thumbify() -> {}
+== 111.10 770,3475 vx 0 tgt 773 standing null edge null
+111.10 wheelRide(0,111.09999999999626) -> {"left":true}
+111.10 intend() -> {"left":true}
+111.10 rhythm() -> {"left":true}
+111.10 thumbify() -> {}
+== 111.13 768,3474 vx 0 tgt 773 standing null edge null
+111.13 wheelRide(0,111.13333333332959) -> {"left":true}
+111.13 intend() -> {"left":true}
+111.13 rhythm() -> {"left":true}
+111.13 thumbify() -> {}
+== 111.17 766,3474 vx 0 tgt 773 standing null edge null
+111.17 wheelRide(0,111.16666666666292) -> {"left":true}
+111.17 intend() -> {"left":true}
+111.17 rhythm() -> {"left":true}
+111.17 thumbify() -> {"left":true}
+111.17 pad() -> {"left":true}
+== 111.20 762,3473 vx -87 tgt 773 standing null edge null
+111.20 wheelRide(0,111.19999999999625) -> {"left":true}
+111.20 intend() -> {"left":true}
+111.20 rhythm() -> {"left":true}
+111.20 thumbify() -> {"left":true}
+111.20 pad() -> {"left":true}
+== 111.23 754,3472 vx -173 tgt 752 standing null edge null
+111.23 wheelRide(1,111.23333333332958) -> {"left":true}
+111.23 intend() -> {"left":true}
+111.23 rhythm() -> {"left":true}
+111.23 thumbify() -> {"left":true}
+111.23 pad() -> {"left":true}
+== 111.27 744,3471 vx -260 tgt 752 standing null edge null
+111.27 intend() -> {}
+111.27 thumbify() -> {"left":true}
+111.27 pad() -> {"left":true}
+== 111.30 732,3470 vx -285 tgt 731 standing null edge null
+111.30 intend() -> {}
+111.30 thumbify() -> {"left":true}
+111.30 pad() -> {"left":true}
+== 111.33 722,3469 vx -268 tgt 731 standing null edge null
+111.33 intend() -> {}
+111.33 thumbify() -> {"left":true}
+111.33 pad() -> {"left":true}
+== 111.37 710,3468 vx -285 tgt 709 standing null edge null
+111.37 wheelRide(1,111.36666666666291) -> {"right":true}
+111.37 intend() -> {"right":true}
+111.37 rhythm() -> {"right":true}
+111.37 thumbify() -> {}
+== 111.40 703,3468 vx -172 tgt 709 standing null edge null
+111.40 wheelRide(1,111.39999999999624) -> {"right":true}
+111.40 intend() -> {"right":true}
+111.40 rhythm() -> {"right":true}
+111.40 thumbify() -> {}
+== 111.43 699,3467 vx -58 tgt 709 standing null edge null
+111.43 wheelRide(1,111.43333333332957) -> {"right":true}
+111.43 intend() -> {"right":true}
+111.43 rhythm() -> {"right":true}
+111.43 thumbify() -> {}
+== 111.47 697,3466 vx 0 tgt 688 standing null edge null
+111.47 wheelRide(1,111.4666666666629) -> {"right":true}
+111.47 intend() -> {"right":true}
+111.47 rhythm() -> {"right":true}
+111.47 thumbify() -> {}
+== 111.50 696,3465 vx 0 tgt 688 standing null edge null
+111.50 wheelRide(1,111.49999999999623) -> {"right":true}
+111.50 intend() -> {"right":true}
+111.50 rhythm() -> {"right":true}
+111.50 thumbify() -> {}
+== 111.53 694,3464 vx 0 tgt 688 standing null edge null
+111.53 wheelRide(1,111.53333333332957) -> {"right":true}
+111.53 intend() -> {"right":true}
+111.53 rhythm() -> {"right":true}
+111.53 thumbify() -> {}
+== 111.57 692,3463 vx 0 tgt 688 standing null edge null
+111.57 wheelRide(1,111.5666666666629) -> {"right":true}
+111.57 intend() -> {"right":true}
+111.57 rhythm() -> {"right":true}
+111.57 thumbify() -> {"right":true}
+111.57 pad() -> {"right":true}
+== 111.60 693,3462 vx 87 tgt 688 standing null edge null
+111.60 wheelRide(1,111.59999999999623) -> {"right":true}
+111.60 intend() -> {"right":true}
+111.60 rhythm() -> {"right":true}
+111.60 thumbify() -> {"right":true}
+111.60 pad() -> {"right":true}
+== 111.63 697,3461 vx 173 tgt 688 standing null edge null
+111.63 wheelRide(1,111.63333333332956) -> {"right":true}
+111.63 intend() -> {"right":true}
+111.63 rhythm() -> {"right":true}
+111.63 thumbify() -> {"right":true}
+111.63 pad() -> {"right":true}
+== 111.67 704,3460 vx 260 tgt 688 standing null edge null
+111.67 intend() -> {}
+111.67 thumbify() -> {"right":true}
+111.67 pad() -> {"right":true}
+== 111.70 712,3458 vx 285 tgt 709 standing null edge null
+111.70 intend() -> {}
+111.70 thumbify() -> {"right":true}
+111.70 pad() -> {"right":true}
+== 111.73 719,3457 vx 268 tgt 709 standing null edge null
+111.73 intend() -> {}
+111.73 thumbify() -> {"right":true}
+111.73 pad() -> {"right":true}
+== 111.77 727,3456 vx 285 tgt 709 standing null edge null
+111.77 wheelRide(1,111.76666666666289) -> {"left":true}
+111.77 intend() -> {"left":true}
+111.77 rhythm() -> {"left":true}
+111.77 thumbify() -> {}
+== 111.80 731,3455 vx 172 tgt 731 standing null edge null
+111.80 wheelRide(1,111.79999999999622) -> {"left":true}
+111.80 intend() -> {"left":true}
+111.80 rhythm() -> {"left":true}
+111.80 thumbify() -> {}
+== 111.83 732,3454 vx 58 tgt 731 standing null edge null
+111.83 wheelRide(1,111.83333333332955) -> {"left":true}
+111.83 intend() -> {"left":true}
+111.83 rhythm() -> {"left":true}
+111.83 thumbify() -> {}
+== 111.87 730,3453 vx 0 tgt 731 standing null edge null
+111.87 wheelRide(1,111.86666666666288) -> {"left":true}
+111.87 intend() -> {"left":true}
+111.87 rhythm() -> {"left":true}
+111.87 thumbify() -> {}
+== 111.90 728,3452 vx 0 tgt 731 standing null edge null
+111.90 wheelRide(1,111.89999999999621) -> {"left":true}
+111.90 intend() -> {"left":true}
+111.90 rhythm() -> {"left":true}
+111.90 thumbify() -> {}
+== 111.93 727,3450 vx 0 tgt 731 standing null edge null
+111.93 wheelRide(1,111.93333333332954) -> {"left":true}
+111.93 intend() -> {"left":true}
+111.93 rhythm() -> {"left":true}
+111.93 thumbify() -> {}
+== 111.97 725,3449 vx 0 tgt 731 standing null edge null
+111.97 wheelRide(1,111.96666666666287) -> {"left":true}
+111.97 intend() -> {"left":true}
+111.97 rhythm() -> {"left":true}
+111.97 thumbify() -> {"left":true}
+111.97 pad() -> {"left":true}
+== 112.00 721,3448 vx -87 tgt 731 standing null edge null
+112.00 wheelRide(1,111.9999999999962) -> {"left":true}
+112.00 intend() -> {"left":true}
+112.00 rhythm() -> {"left":true}
+112.00 thumbify() -> {"left":true}
+112.00 pad() -> {"left":true}
+== 112.03 714,3447 vx -173 tgt 709 standing null edge null
+112.03 wheelRide(1,112.03333333332954) -> {"left":true}
+112.03 intend() -> {"left":true}
+112.03 rhythm() -> {"left":true}
+112.03 thumbify() -> {"left":true}
+112.03 pad() -> {"left":true}
+== 112.07 703,3445 vx -260 tgt 709 standing null edge null
+112.07 intend() -> {}
+112.07 thumbify() -> {"left":true}
+112.07 pad() -> {"left":true}
+== 112.10 692,3444 vx -285 tgt 709 standing null edge null
+112.10 intend() -> {}
+112.10 thumbify() -> {"left":true}
+112.10 pad() -> {"left":true}
+== 112.13 682,3443 vx -268 tgt 688 standing null edge null
+112.13 intend() -> {}
+112.13 thumbify() -> {"left":true}
+112.13 pad() -> {"left":true}
+== 112.17 671,3441 vx -285 tgt 688 standing null edge null
+112.17 wheelRide(1,112.16666666666286) -> {"right":true}
+112.17 intend() -> {"right":true}
+112.17 rhythm() -> {"right":true}
+112.17 thumbify() -> {}
+== 112.20 664,3440 vx -172 tgt 667 standing null edge null
+112.20 wheelRide(1,112.1999999999962) -> {"right":true}
+112.20 intend() -> {"right":true}
+112.20 rhythm() -> {"right":true}
+112.20 thumbify() -> {}
+== 112.23 660,3439 vx -58 tgt 667 standing null edge null
+112.23 wheelRide(1,112.23333333332953) -> {"right":true}
+112.23 intend() -> {"right":true}
+112.23 rhythm() -> {"right":true}
+112.23 thumbify() -> {}
+== 112.27 659,3437 vx 0 tgt 667 standing null edge null
+112.27 wheelRide(1,112.26666666666286) -> {"right":true}
+112.27 intend() -> {"right":true}
+112.27 rhythm() -> {"right":true}
+112.27 thumbify() -> {}
+== 112.30 657,3436 vx 0 tgt 645 standing null edge null
+112.30 wheelRide(1,112.29999999999619) -> {"right":true}
+112.30 intend() -> {"right":true}
+112.30 rhythm() -> {"right":true}
+112.30 thumbify() -> {}
+== 112.33 656,3434 vx 0 tgt 645 standing null edge null
+112.33 wheelRide(1,112.33333333332952) -> {"right":true}
+112.33 intend() -> {"right":true}
+112.33 rhythm() -> {"right":true}
+112.33 thumbify() -> {}
+== 112.37 655,3433 vx 0 tgt 645 standing null edge null
+112.37 wheelRide(1,112.36666666666285) -> {"right":true}
+112.37 intend() -> {"right":true}
+112.37 rhythm() -> {"right":true}
+112.37 thumbify() -> {"right":true}
+112.37 pad() -> {"right":true}
+== 112.40 656,3431 vx 87 tgt 645 standing null edge null
+112.40 wheelRide(1,112.39999999999618) -> {"right":true}
+112.40 intend() -> {"right":true}
+112.40 rhythm() -> {"right":true}
+112.40 thumbify() -> {"right":true}
+112.40 pad() -> {"right":true}
+== 112.43 661,3430 vx 173 tgt 645 standing null edge null
+112.43 wheelRide(1,112.43333333332951) -> {"right":true}
+112.43 intend() -> {"right":true}
+112.43 rhythm() -> {"right":true}
+112.43 thumbify() -> {"right":true}
+112.43 pad() -> {"right":true}
+== 112.47 668,3429 vx 260 tgt 667 standing null edge null
+112.47 intend() -> {}
+112.47 thumbify() -> {"right":true}
+112.47 pad() -> {"right":true}
+== 112.50 676,3427 vx 285 tgt 667 standing null edge null
+112.50 intend() -> {}
+112.50 thumbify() -> {"right":true}
+112.50 pad() -> {"right":true}
+== 112.53 684,3426 vx 268 tgt 667 standing null edge null
+112.53 intend() -> {}
+112.53 thumbify() -> {"right":true}
+112.53 pad() -> {"right":true}
+== 112.57 692,3424 vx 285 tgt 688 standing null edge null
+112.57 wheelRide(1,112.56666666666284) -> {"left":true}
+112.57 intend() -> {"left":true}
+112.57 rhythm() -> {"left":true}
+112.57 thumbify() -> {}
+== 112.60 696,3422 vx 172 tgt 688 standing null edge null
+112.60 wheelRide(1,112.59999999999617) -> {"left":true}
+112.60 intend() -> {"left":true}
+112.60 rhythm() -> {"left":true}
+112.60 thumbify() -> {}
+== 112.63 697,3421 vx 58 tgt 688 standing null edge null
+112.63 wheelRide(1,112.6333333333295) -> {"left":true}
+112.63 intend() -> {"left":true}
+112.63 rhythm() -> {"left":true}
+112.63 thumbify() -> {}
+== 112.67 696,3419 vx 0 tgt 688 standing null edge null
+112.67 wheelRide(1,112.66666666666283) -> {"left":true}
+112.67 intend() -> {"left":true}
+112.67 rhythm() -> {"left":true}
+112.67 thumbify() -> {}
+== 112.70 694,3418 vx 0 tgt 688 standing null edge null
+112.70 wheelRide(1,112.69999999999617) -> {"left":true}
+112.70 intend() -> {"left":true}
+112.70 rhythm() -> {"left":true}
+112.70 thumbify() -> {}
+== 112.73 693,3416 vx 0 tgt 688 standing null edge null
+112.73 wheelRide(1,112.7333333333295) -> {"left":true}
+112.73 intend() -> {"left":true}
+112.73 rhythm() -> {"left":true}
+112.73 thumbify() -> {}
+== 112.77 692,3415 vx 0 tgt 688 standing null edge null
+112.77 wheelRide(1,112.76666666666283) -> {"left":true}
+112.77 intend() -> {"left":true}
+112.77 rhythm() -> {"left":true}
+112.77 thumbify() -> {"left":true}
+112.77 pad() -> {"left":true}
+== 112.80 688,3413 vx -87 tgt 688 standing null edge null
+112.80 wheelRide(1,112.79999999999616) -> {"left":true}
+112.80 intend() -> {"left":true}
+112.80 rhythm() -> {"left":true}
+112.80 thumbify() -> {"left":true}
+112.80 pad() -> {"left":true}
+== 112.83 681,3411 vx -173 tgt 688 standing null edge null
+112.83 wheelRide(1,112.83333333332949) -> {"left":true}
+112.83 intend() -> {"left":true}
+112.83 rhythm() -> {"left":true}
+112.83 thumbify() -> {"left":true}
+112.83 pad() -> {"left":true}
+== 112.87 671,3410 vx -260 tgt 688 standing null edge null
+112.87 intend() -> {}
+112.87 thumbify() -> {"left":true}
+112.87 pad() -> {"left":true}
+== 112.90 661,3408 vx -285 tgt 688 standing null edge null
+112.90 intend() -> {}
+112.90 thumbify() -> {"left":true}
+112.90 pad() -> {"left":true}
+== 112.93 651,3406 vx -268 tgt 688 standing null edge null
+112.93 intend() -> {}
+112.93 thumbify() -> {"left":true}
+112.93 pad() -> {"left":true}
+== 112.97 640,3405 vx -285 tgt 688 standing null edge null
+112.97 wheelRide(1,112.96666666666282) -> {"right":true}
+112.97 intend() -> {"right":true}
+112.97 rhythm() -> {"right":true}
+112.97 thumbify() -> {}
+== 113.00 633,3403 vx -172 tgt 688 standing null edge null
+113.00 wheelRide(1,112.99999999999615) -> {"right":true}
+113.00 intend() -> {"right":true}
+113.00 rhythm() -> {"right":true}
+113.00 thumbify() -> {}
+== 113.03 630,3401 vx -58 tgt 688 standing null edge null
+113.03 wheelRide(1,113.03333333332948) -> {"right":true}
+113.03 intend() -> {"right":true}
+113.03 rhythm() -> {"right":true}
+113.03 thumbify() -> {}
+== 113.07 629,3400 vx 0 tgt 688 standing null edge null
+113.07 wheelRide(1,113.06666666666281) -> {"right":true}
+113.07 intend() -> {"right":true}
+113.07 rhythm() -> {"right":true}
+113.07 thumbify() -> {}
+== 113.10 628,3398 vx 0 tgt 688 standing null edge null
+113.10 wheelRide(1,113.09999999999614) -> {"right":true}
+113.10 intend() -> {"right":true}
+113.10 rhythm() -> {"right":true}
+113.10 thumbify() -> {}
+== 113.13 627,3396 vx 0 tgt 688 standing null edge null
+113.13 wheelRide(1,113.13333333332947) -> {"right":true}
+113.13 intend() -> {"right":true}
+113.13 rhythm() -> {"right":true}
+113.13 thumbify() -> {}
+== 113.17 626,3394 vx 0 tgt 688 standing null edge null
+113.17 wheelRide(1,113.1666666666628) -> {"right":true}
+113.17 intend() -> {"right":true}
+113.17 rhythm() -> {"right":true}
+113.17 thumbify() -> {"right":true}
+113.17 pad() -> {"right":true}
+== 113.20 628,3393 vx 87 tgt 688 standing null edge null
+113.20 wheelRide(1,113.19999999999614) -> {"right":true}
+113.20 intend() -> {"right":true}
+113.20 rhythm() -> {"right":true}
+113.20 thumbify() -> {"right":true}
+113.20 pad() -> {"right":true}
+== 113.23 633,3391 vx 173 tgt 688 standing null edge null
+113.23 wheelRide(1,113.23333333332947) -> {"right":true}
+113.23 intend() -> {"right":true}
+113.23 rhythm() -> {"right":true}
+113.23 thumbify() -> {"right":true}
+113.23 pad() -> {"right":true}
+== 113.27 641,3389 vx 260 tgt 688 standing null edge null
+113.27 intend() -> {}
+113.27 thumbify() -> {"right":true}
+113.27 pad() -> {"right":true}
+== 113.30 649,3387 vx 285 tgt 709 standing null edge null
+113.30 intend() -> {}
+113.30 thumbify() -> {"right":true}
+113.30 pad() -> {"right":true}
+== 113.33 657,3385 vx 268 tgt 709 standing null edge null
+113.33 intend() -> {}
+113.33 thumbify() -> {"right":true}
+113.33 pad() -> {"right":true}
+== 113.37 666,3384 vx 285 tgt 709 standing null edge null
+113.37 wheelRide(1,113.3666666666628) -> {"left":true}
+113.37 intend() -> {"left":true}
+113.37 rhythm() -> {"left":true}
+113.37 thumbify() -> {}
+== 113.40 671,3382 vx 172 tgt 731 standing null edge null
+113.40 wheelRide(1,113.39999999999613) -> {"left":true}
+113.40 intend() -> {"left":true}
+113.40 rhythm() -> {"left":true}
+113.40 thumbify() -> {}
+== 113.43 672,3380 vx 58 tgt 731 standing null edge null
+113.43 wheelRide(1,113.43333333332946) -> {"left":true}
+113.43 intend() -> {"left":true}
+113.43 rhythm() -> {"left":true}
+113.43 thumbify() -> {}
+== 113.47 671,3378 vx 0 tgt 731 standing null edge null
+113.47 wheelRide(1,113.46666666666279) -> {"left":true}
+113.47 intend() -> {"left":true}
+113.47 rhythm() -> {"left":true}
+113.47 thumbify() -> {}
+== 113.50 671,3376 vx 0 tgt 731 standing null edge null
+113.50 wheelRide(1,113.49999999999612) -> {"left":true}
+113.50 intend() -> {"left":true}
+113.50 rhythm() -> {"left":true}
+113.50 thumbify() -> {}
+== 113.53 670,3374 vx 0 tgt 731 standing null edge null
+113.53 wheelRide(1,113.53333333332945) -> {"left":true}
+113.53 intend() -> {"left":true}
+113.53 rhythm() -> {"left":true}
+113.53 thumbify() -> {}
+== 113.57 669,3373 vx 0 tgt 731 standing null edge null
+113.57 wheelRide(1,113.56666666666278) -> {"left":true}
+113.57 intend() -> {"left":true}
+113.57 rhythm() -> {"left":true}
+113.57 thumbify() -> {"left":true}
+113.57 pad() -> {"left":true}
+== 113.60 666,3371 vx -87 tgt 731 standing null edge null
+113.60 wheelRide(1,113.59999999999611) -> {"left":true}
+113.60 intend() -> {"left":true}
+113.60 rhythm() -> {"left":true}
+113.60 thumbify() -> {"left":true}
+113.60 pad() -> {"left":true}
+== 113.63 659,3369 vx -173 tgt 731 standing null edge null
+113.63 wheelRide(1,113.63333333332945) -> {"left":true}
+113.63 intend() -> {"left":true}
+113.63 rhythm() -> {"left":true}
+113.63 thumbify() -> {"left":true}
+113.63 pad() -> {"left":true}
+== 113.67 650,3367 vx -260 tgt 731 standing null edge null
+113.67 intend() -> {}
+113.67 thumbify() -> {"left":true}
+113.67 pad() -> {"left":true}
+== 113.70 640,3365 vx -285 tgt 709 standing null edge null
+113.70 intend() -> {}
+113.70 thumbify() -> {"left":true}
+113.70 pad() -> {"left":true}
+== 113.73 630,3363 vx -268 tgt 709 standing null edge null
+113.73 intend() -> {}
+113.73 thumbify() -> {"left":true}
+113.73 pad() -> {"left":true}
+== 113.77 620,3361 vx -285 tgt 709 standing null edge null
+113.77 wheelRide(1,113.76666666666277) -> {"right":true}
+113.77 intend() -> {"right":true}
+113.77 rhythm() -> {"right":true}
+113.77 thumbify() -> {}
+== 113.80 614,3359 vx -172 tgt 709 standing null edge null
+113.80 wheelRide(1,113.7999999999961) -> {"right":true}
+113.80 intend() -> {"right":true}
+113.80 rhythm() -> {"right":true}
+113.80 thumbify() -> {}
+== 113.83 611,3357 vx -58 tgt 709 standing null edge null
+113.83 wheelRide(1,113.83333333332943) -> {"right":true}
+113.83 intend() -> {"right":true}
+113.83 rhythm() -> {"right":true}
+113.83 thumbify() -> {}
+== 113.87 611,3356 vx 0 tgt 709 standing null edge null
+113.87 wheelRide(1,113.86666666666277) -> {"right":true}
+113.87 intend() -> {"right":true}
+113.87 rhythm() -> {"right":true}
+113.87 thumbify() -> {}
+== 113.90 610,3354 vx 0 tgt 709 standing null edge null
+113.90 wheelRide(1,113.8999999999961) -> {"right":true}
+113.90 intend() -> {"right":true}
+113.90 rhythm() -> {"right":true}
+113.90 thumbify() -> {}
+== 113.93 610,3352 vx 0 tgt 709 standing null edge null
+113.93 wheelRide(1,113.93333333332943) -> {"right":true}
+113.93 intend() -> {"right":true}
+113.93 rhythm() -> {"right":true}
+113.93 thumbify() -> {}
+== 113.97 609,3350 vx 0 tgt 709 standing null edge null
+113.97 wheelRide(1,113.96666666666276) -> {"right":true}
+113.97 intend() -> {"right":true}
+113.97 rhythm() -> {"right":true}
+113.97 thumbify() -> {"right":true}
+113.97 pad() -> {"right":true}
+== 114.00 612,3348 vx 87 tgt 709 standing null edge null
+114.00 wheelRide(1,113.99999999999609) -> {"right":true}
+114.00 intend() -> {"right":true}
+114.00 rhythm() -> {"right":true}
+114.00 thumbify() -> {"right":true}
+114.00 pad() -> {"right":true}
+== 114.03 617,3346 vx 173 tgt 709 standing null edge null
+114.03 wheelRide(1,114.03333333332942) -> {"right":true}
+114.03 intend() -> {"right":true}
+114.03 rhythm() -> {"right":true}
+114.03 thumbify() -> {"right":true}
+114.03 pad() -> {"right":true}
+== 114.07 625,3344 vx 260 tgt 709 standing null edge null
+114.07 intend() -> {}
+114.07 thumbify() -> {"right":true}
+114.07 pad() -> {"right":true}
+== 114.10 634,3342 vx 285 tgt 731 standing null edge null
+114.10 intend() -> {}
+114.10 thumbify() -> {"right":true}
+114.10 pad() -> {"right":true}
+== 114.13 643,3340 vx 268 tgt 731 standing null edge null
+114.13 intend() -> {}
+114.13 thumbify() -> {"right":true}
+114.13 pad() -> {"right":true}
+== 114.17 652,3338 vx 285 tgt 731 standing null edge null
+114.17 wheelRide(1,114.16666666666275) -> {"left":true}
+114.17 intend() -> {"left":true}
+114.17 rhythm() -> {"left":true}
+114.17 thumbify() -> {}
+== 114.20 657,3336 vx 172 tgt 752 standing null edge null
+114.20 wheelRide(1,114.19999999999608) -> {"left":true}
+114.20 intend() -> {"left":true}
+114.20 rhythm() -> {"left":true}
+114.20 thumbify() -> {}
+== 114.23 659,3334 vx 58 tgt 752 standing null edge null
+114.23 wheelRide(1,114.23333333332941) -> {"left":true}
+114.23 intend() -> {"left":true}
+114.23 rhythm() -> {"left":true}
+114.23 thumbify() -> {}
+== 114.27 659,3332 vx 0 tgt 752 standing null edge null
+114.27 wheelRide(1,114.26666666666274) -> {"left":true}
+114.27 intend() -> {"left":true}
+114.27 rhythm() -> {"left":true}
+114.27 thumbify() -> {}
+== 114.30 658,3330 vx 0 tgt 752 standing null edge null
+114.30 wheelRide(1,114.29999999999607) -> {"left":true}
+114.30 intend() -> {"left":true}
+114.30 rhythm() -> {"left":true}
+114.30 thumbify() -> {}
+== 114.33 658,3328 vx 0 tgt 752 standing null edge null
+114.33 wheelRide(1,114.3333333333294) -> {"left":true}
+114.33 intend() -> {"left":true}
+114.33 rhythm() -> {"left":true}
+114.33 thumbify() -> {}
+== 114.37 658,3326 vx 0 tgt 752 standing null edge null
+114.37 wheelRide(1,114.36666666666274) -> {"left":true}
+114.37 intend() -> {"left":true}
+114.37 rhythm() -> {"left":true}
+114.37 thumbify() -> {"left":true}
+114.37 pad() -> {"left":true}
+== 114.40 655,3324 vx -87 tgt 752 standing null edge null
+114.40 wheelRide(1,114.39999999999607) -> {"left":true}
+114.40 intend() -> {"left":true}
+114.40 rhythm() -> {"left":true}
+114.40 thumbify() -> {"left":true}
+114.40 pad() -> {"left":true}
+== 114.43 649,3322 vx -173 tgt 752 standing null edge null
+114.43 wheelRide(1,114.4333333333294) -> {"left":true}
+114.43 intend() -> {"left":true}
+114.43 rhythm() -> {"left":true}
+114.43 thumbify() -> {"left":true}
+114.43 pad() -> {"left":true}
+== 114.47 640,3320 vx -260 tgt 731 standing null edge null
+114.47 intend() -> {}
+114.47 thumbify() -> {"left":true}
+114.47 pad() -> {"left":true}
+== 114.50 631,3318 vx -285 tgt 731 standing null edge null
+114.50 intend() -> {}
+114.50 thumbify() -> {"left":true}
+114.50 pad() -> {"left":true}
+== 114.53 622,3316 vx -268 tgt 731 standing null edge null
+114.53 intend() -> {}
+114.53 thumbify() -> {"left":true}
+114.53 pad() -> {"left":true}
+== 114.57 612,3314 vx -285 tgt 709 standing null edge null
+114.57 wheelRide(1,114.56666666666273) -> {"right":true}
+114.57 intend() -> {"right":true}
+114.57 rhythm() -> {"right":true}
+114.57 thumbify() -> {}
+== 114.60 606,3312 vx -172 tgt 709 standing null edge null
+114.60 wheelRide(1,114.59999999999606) -> {"right":true}
+114.60 intend() -> {"right":true}
+114.60 rhythm() -> {"right":true}
+114.60 thumbify() -> {}
+== 114.63 604,3310 vx -58 tgt 709 standing null edge null
+114.63 wheelRide(1,114.63333333332939) -> {"right":true}
+114.63 intend() -> {"right":true}
+114.63 rhythm() -> {"right":true}
+114.63 thumbify() -> {}
+== 114.67 604,3308 vx 0 tgt 709 standing null edge null
+114.67 wheelRide(1,114.66666666666272) -> {"right":true}
+114.67 intend() -> {"right":true}
+114.67 rhythm() -> {"right":true}
+114.67 thumbify() -> {}
+== 114.70 604,3306 vx 0 tgt 709 standing null edge null
+114.70 wheelRide(1,114.69999999999605) -> {"right":true}
+114.70 intend() -> {"right":true}
+114.70 rhythm() -> {"right":true}
+114.70 thumbify() -> {}
+== 114.73 604,3304 vx 0 tgt 709 standing null edge null
+114.73 wheelRide(1,114.73333333332938) -> {"right":true}
+114.73 intend() -> {"right":true}
+114.73 rhythm() -> {"right":true}
+114.73 thumbify() -> {}
+== 114.77 604,3302 vx 0 tgt 709 standing null edge null
+114.77 wheelRide(1,114.76666666666272) -> {"right":true}
+114.77 intend() -> {"right":true}
+114.77 rhythm() -> {"right":true}
+114.77 thumbify() -> {"right":true}
+114.77 pad() -> {"right":true}
+== 114.80 607,3300 vx 87 tgt 709 standing null edge null
+114.80 wheelRide(1,114.79999999999605) -> {"right":true}
+114.80 intend() -> {"right":true}
+114.80 rhythm() -> {"right":true}
+114.80 thumbify() -> {"right":true}
+114.80 pad() -> {"right":true}
+== 114.83 613,3298 vx 173 tgt 709 standing null edge null
+114.83 wheelRide(1,114.83333333332938) -> {"right":true}
+114.83 intend() -> {"right":true}
+114.83 rhythm() -> {"right":true}
+114.83 thumbify() -> {"right":true}
+114.83 pad() -> {"right":true}
+== 114.87 622,3296 vx 260 tgt 731 standing null edge null
+114.87 intend() -> {}
+114.87 thumbify() -> {"right":true}
+114.87 pad() -> {"right":true}
+== 114.90 632,3294 vx 285 tgt 731 standing null edge null
+114.90 intend() -> {}
+114.90 thumbify() -> {"right":true}
+114.90 pad() -> {"right":true}
+== 114.93 641,3292 vx 268 tgt 752 standing null edge null
+114.93 intend() -> {}
+114.93 thumbify() -> {"right":true}
+114.93 pad() -> {"right":true}
+== 114.97 650,3290 vx 285 tgt 752 standing null edge null
+114.97 wheelRide(1,114.9666666666627) -> {"left":true}
+114.97 intend() -> {"left":true}
+114.97 rhythm() -> {"left":true}
+114.97 thumbify() -> {}
+== 115.00 656,3288 vx 172 tgt 752 standing null edge null
+115.00 wheelRide(1,114.99999999999604) -> {"left":true}
+115.00 intend() -> {"left":true}
+115.00 rhythm() -> {"left":true}
+115.00 thumbify() -> {}
+{"t":199.1,"rescues":1,"rescueXs":[688]}

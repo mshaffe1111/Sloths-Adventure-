@@ -1,0 +1,22 @@
+const W = process.env.WT!;
+await import(W + '/src/game/headlessDom.ts');
+const { setDifficulty } = await import(W + '/src/game/difficulty.ts');
+const FT: any = await import(W + '/tools/inspect/firsttimer.ts');
+const set = process.env.SET ?? 'easy';
+setDifficulty(set);
+const out: string[] = [];
+let run: any;
+const orig = FT.Progress.prototype.relocate;
+FT.Progress.prototype.relocate = function (p: any, level?: boolean, band?: number, climb?: any) {
+  const before = this.cur;
+  orig.call(this, p, level, band, climb);
+  const q = this.pts[this.cur];
+  if (run && (level || climb)) out.push(`t ${run.t.toFixed(1)} relocate from ${Math.round(p.x)},${Math.round(p.y)} lvl ${!!level} climb ${climb ? Math.round(climb.x) + '/' + Math.round(climb.topY) : '-'} cur ${before} -> ${this.cur} (${Math.round(q.x)},${Math.round(q.y)})`);
+};
+let last = -1;
+run = new FT.FirstTimerRun(process.env.STAGE ?? '2-6', Number(process.argv[2]), { ...FT[process.env.BOT ?? 'FT_KID'], setting: set }, { onFrame: (s: any) => {
+  const b = Math.floor(run.t / 5); if (b !== last) { last = b; const p = s.p; out.push(`t ${run.t.toFixed(0)} at ${Math.round(p.x)},${Math.round(p.y)} ${p.grounded ? 'G' : ''}${p.climbing ? 'C' : ''} cur ${run.prog.cur} best ${run.prog.best}`); }
+} });
+const res = run.play();
+console.log(out.join('\n'));
+console.log(JSON.stringify({ t: +run.t.toFixed(1), rescues: res.rescues, rescueXs: run.rescueXs, stuck: res.stuck }));

@@ -1,0 +1,27 @@
+import json,sys
+def load(f):
+  runs={};cal={}
+  for l in open(f):
+    if not l.startswith('{'): continue
+    o=json.loads(l)
+    if 'calibration' in o: c=o['calibration']; cal[(c['tier'],c['setting'])]=c
+    elif 'variant' in o and 'tier' in o: runs[(o['tier'],o['setting'],o['variant'])]=o
+  return runs,cal
+A,ca=load(sys.argv[1]); B,cb=load(sys.argv[2])
+moved=[k for k in A if k in B and {x:A[k][x] for x in A[k]}!={x:B[k].get(x) for x in A[k]}]
+print(f"runs old {len(A)} new {len(B)}; moved {len(moved)}")
+import collections
+for f in ['finishSeconds','lives','putbacks','rescues','end']:
+  ch=[k for k in moved if A[k].get(f)!=B[k].get(f)]
+  print(f"  field {f}: {len(ch)} runs changed")
+for k in sorted(moved):
+  a,b=A[k],B[k]
+  if a.get('lives')!=b.get('lives') or a.get('rescues')!=b.get('rescues') or a.get('end')!=b.get('end'):
+    print('  ',k,'lives',a.get('lives'),'->',b.get('lives'),'rescues',a.get('rescues'),'->',b.get('rescues'),'end',a.get('end'),'->',b.get('end'))
+for k in sorted(set(ca)|set(cb)):
+  a,b=ca.get(k),cb.get(k)
+  pa=None if not a else a['pass']; pb=None if not b else b['pass']
+  print('TABLE',k,'pass',pa,'->',pb,'finished',a and a['finished'],'->',b and b['finished'],'rescues',a and a['rescues'],'->',b and b['rescues'])
+  if a and b:
+    for x,y in zip(a['checks'],b['checks']):
+      if x.get('pass')!=y.get('pass'): print('   check',x['name'],x.get('pass'),'->',y.get('pass'),x.get('bot'),'->',y.get('bot'))

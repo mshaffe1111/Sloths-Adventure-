@@ -1,0 +1,21 @@
+# usage: python3 -I dccmp.py <base drawcheck verbose log> <candidate log>: every scenario's worst-spot numbers, base -> candidate,
+# and every metric that got worse
+import re, sys
+def parse(p):
+    out, cur = {}, None
+    for l in open(p, encoding='utf-8'):
+        m = re.match(r'^[✓✗] (\S+ (?:port|land))$', l.rstrip())
+        if m: cur = m.group(1); out[cur] = {}; continue
+        m = re.match(r'^    (\w+) ([\d.]+) \(limit', l)
+        if m and cur: out[cur][m.group(1)] = float(m.group(2))
+    return out
+a, b = parse(sys.argv[1]), parse(sys.argv[2])
+worse = []
+for k in sorted(set(a) | set(b)):
+    for met in sorted(set(a.get(k, {})) | set(b.get(k, {}))):
+        x, y = a.get(k, {}).get(met), b.get(k, {}).get(met)
+        if x is None or y is None or y > x + 1e-9: worse.append((k, met, x, y))
+print(f'{len(a)} base rows, {len(b)} candidate rows')
+for k in ['2-6 port', '2-6 land']:
+    print(k, {m: (a.get(k, {}).get(m), b.get(k, {}).get(m)) for m in ['gradients', 'drawImageScreens', 'clips', 'drawImageCalls', 'fillStrokeCalls']})
+print('WORSE (scenario, metric, base, candidate):', worse if worse else 'none')

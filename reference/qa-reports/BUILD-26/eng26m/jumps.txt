@@ -1,0 +1,144 @@
+=== rel kid normal 12
+  15.30 single from 316,9706 hold 0.23 up 0.00 -> 516,9786 FELL BACK
+  56.83 single from 472,6323 hold 0.07 up 0.12 -> 335,6264 ok
+  76.03 single from 288,4668 hold 0.29 up 0.10 -> 130,4628 ok
+  88.10 single from 401,3646 hold 0.22 up 0.00 -> 245,3606 ok
+  98.97 single from 344,2684 hold 0.18 up 0.19 -> 210,2644 ok
+  118.57 single from 538,1642 hold 0.14 up 0.00 -> 409,1602 ok
+=== rel adult normal 36
+  13.87 single from 325,10043 hold 0.19 up 0.00 -> 516,10123 FELL BACK
+  19.57 single from 606,9762 hold 0.17 up 0.00 -> 458,9722 ok
+  60.43 single from 744,6191 hold 0.26 up 0.14 -> 612,6241 ok
+  61.23 single from 548,6241 hold 0.13 up 0.00 -> 391,6291 ok
+  78.73 single from 918,4628 hold 0.24 up 0.00 -> 1074,4588 ok
+  90.13 single from 742,3606 hold 0.25 up 0.10 -> 885,3566 ok
+  100.37 single from 745,2644 hold 0.19 up 0.00 -> 892,2604 ok
+=== rel adult easy 17
+  13.63 single from 298,10139 hold 0.26 up 0.00 -> 475,10139 ok
+  14.83 single from 485,10139 hold 0.23 up 0.13 -> 655,10219 FELL BACK
+  52.10 single from 733,6658 hold 0.24 up 0.00 -> 926,6708 ok
+  58.53 single from 724,5987 hold 0.24 up 0.11 -> 566,5947 ok
+  69.07 single from 919,5005 hold 0.21 up 0.00 -> 1076,4965 ok
+  80.80 single from 835,3983 hold 0.20 up 0.00 -> 983,3943 ok
+  90.47 single from 868,3021 hold 0.24 up 0.00 -> 1025,2981 ok
+=== rel kid easy 10
+  14.97 single from 307,10139 hold 0.14 up 0.15 -> 462,10139 ok
+  15.93 single from 573,10167 hold 0.19 up 0.00 -> 730,10139 ok
+  58.30 single from 797,6658 hold 0.24 up 0.15 -> 991,6708 ok
+  75.97 single from 925,5045 hold 0.15 up 0.00 -> 1054,5005 ok
+  87.67 single from 824,4023 hold 0.14 up 0.00 -> 953,3983 ok
+  121.90 single from 379,3061 hold 0.14 up 0.20 -> 252,3021 ok
+  135.73 single from 429,2019 hold 0.07 up 0.00 -> 327,1979 ok
+=== rel middle normal 29
+  16.20 single from 257,10139 hold 0.04 up 0.00 d2 0.31 2nd false -> 368,10139 ok
+  18.03 single from 443,10217 hold 0.12 up 0.00 d2 0.65 2nd false -> 581,10219 ok
+  18.60 single from 600,10219 hold 0.43 up 0.00 d2 0.47 2nd false -> 733,10139 ok
+  28.20 single from 338,9458 hold 0.37 up 0.00 d2 0.40 2nd false -> 164,9458 ok
+  29.70 double from 145,9458 hold 0.50 up 0.00 d2 0.35 2nd true -> 20,9858 FELL BACK
+  51.50 double from 315,10139 hold 0.91 up 0.00 d2 0.55 2nd true -> 674,10219 FELL BACK
+  52.30 double from 821,10219 hold 0.12 up 0.00 d2 0.32 2nd false -> 895,10139 ok
+  92.03 single from 433,6989 hold 0.14 up 0.00 d2 0.60 2nd false -> 317,6949 ok
+  100.60 double from 494,6668 hold 0.17 up 0.00 d2 0.33 2nd false -> 513,6568 ok
+  102.13 single from 549,6568 hold 0.15 up 0.00 d2 0.44 2nd false -> 700,6618 ok
+  103.20 single from 706,6618 hold 0.18 up 0.00 d2 0.44 2nd false -> 890,6668 ok
+  111.10 double from 681,5947 hold 0.16 up 0.00 d2 0.48 2nd false -> 566,5907 ok
+  120.27 double from 352,5626 hold 0.57 up 0.00 d2 0.28 2nd true -> 20,5907 FELL BACK
+  133.93 single from 382,4965 hold 0.31 up 0.00 d2 0.48 2nd false -> 241,4925 ok
+  173.73 single from 441,2019 hold 0.15 up 0.00 d2 0.40 2nd false -> 326,1979 ok
+=== old kid normal 12
+  15.30 single from 316,9650 hold 0.23 up 0.00 -> 516,9730 FELL BACK
+  18.63 single from 970,10348 hold 0.21 up 0.12 -> 875,10331 ok
+  26.83 double from 344,9650 hold 0.61 up 0.11 -> 619,9650 ok
+  69.43 single from 454,6275 hold 0.33 up 0.00 -> 326,6171 ok
+  89.57 single from 325,4612 hold 0.12 up 0.00 -> 206,4572 ok
+  103.80 single from 927,3590 hold 0.10 up 0.12 -> 1027,3550 ok
+  114.47 single from 384,2684 hold 0.20 up 0.00 -> 236,2644 ok
+  129.10 single from 434,1642 hold 0.26 up 0.00 -> 278,1602 ok
+=== old adult normal 36
+  13.87 single from 325,10364 hold 0.19 up 0.00 -> 516,10444 FELL BACK
+  17.50 single from 1061,11045 hold 0.19 up 0.07 -> 917,11045 FELL BACK
+  25.00 double from 298,10364 hold 0.43 up 0.00 -> 574,10444 FELL BACK
+  25.87 single from 664,10444 hold 0.19 up 0.00 -> 664,10364 ok
+  30.97 single from 605,10083 hold 0.22 up 0.00 -> 449,10043 ok
+  66.90 single from 731,6506 hold 0.21 up 0.00 -> 924,6556 ok
+  83.83 single from 993,4949 hold 0.17 up 0.07 -> 1140,4909 ok
+  94.60 single from 896,3927 hold 0.23 up 0.00 -> 1053,3887 ok
+  104.43 single from 344,2965 hold 0.28 up 0.00 -> 187,2925 ok
+=== old adult easy 17
+  13.57 single from 298,10083 hold 0.26 up 0.00 -> 475,10083 ok
+  14.77 single from 485,10083 hold 0.23 up 0.13 -> 655,10163 FELL BACK
+  18.07 single from 1026,10764 hold 0.16 up 0.00 -> 869,10764 FELL BACK
+  25.17 single from 316,10083 hold 0.22 up 0.00 -> 519,10163 FELL BACK
+  26.33 single from 693,10163 hold 0.23 up 0.09 -> 693,10083 ok
+  63.43 single from 762,6602 hold 0.19 up 0.00 -> 946,6652 ok
+  80.00 single from 960,4989 hold 0.25 up 0.00 -> 1115,4949 ok
+  90.33 single from 401,3967 hold 0.07 up 0.00 -> 300,3927 ok
+  100.07 single from 896,3061 hold 0.18 up 0.12 -> 1043,3021 ok
+  111.93 single from 336,2019 hold 0.17 up 0.00 -> 189,1979 ok
+=== old kid easy 10
+  14.97 single from 307,10139 hold 0.14 up 0.15 -> 462,10139 ok
+  15.93 single from 573,10167 hold 0.19 up 0.00 -> 730,10139 ok
+  56.30 single from 853,6700 hold 0.07 up 0.14 -> 954,6632 ok
+  73.57 single from 944,5045 hold 0.13 up 0.00 -> 1063,5005 ok
+  84.30 single from 921,4023 hold 0.07 up 0.00 -> 1022,3983 ok
+  94.17 single from 410,3061 hold 0.13 up 0.16 -> 289,3021 ok
+  107.87 single from 919,2019 hold 0.11 up 0.15 -> 1037,1979 ok
+=== old middle normal 29
+  16.20 single from 257,10027 hold 0.04 up 0.00 d2 0.31 2nd false -> 368,10027 ok
+  18.03 single from 443,10105 hold 0.12 up 0.00 d2 0.65 2nd false -> 581,10107 ok
+  18.60 single from 600,10107 hold 0.43 up 0.00 d2 0.47 2nd false -> 733,10027 ok
+  28.20 single from 338,9346 hold 0.37 up 0.00 d2 0.40 2nd false -> 164,9346 ok
+  30.37 double from 145,9346 hold 0.50 up 0.00 d2 0.35 2nd true -> 20,10388 FELL BACK
+  34.90 double from 293,10027 hold 0.96 up 0.00 d2 0.56 2nd true -> 638,10107 FELL BACK
+  37.27 single from 816,10107 hold 0.18 up 0.00 d2 0.41 2nd false -> 937,10027 ok
+  44.23 double from 250,9346 hold 0.40 up 0.00 d2 0.52 2nd false -> 168,9274 ok
+  73.70 single from 416,6877 hold 0.25 up 0.00 d2 0.41 2nd false -> 266,6837 ok
+  79.87 single from 697,6456 hold 0.17 up 0.00 d2 0.60 2nd false -> 861,6506 ok
+  80.90 single from 862,6506 hold 0.17 up 0.00 d2 0.65 2nd false -> 1032,6556 ok
+  87.53 double from 833,5835 hold 0.39 up 0.00 d2 0.58 2nd false -> 690,5795 ok
+  98.63 double from 746,4853 hold 0.63 up 0.00 d2 0.47 2nd true -> 691,4813 ok
+  143.03 double from 495,2019 hold 0.70 up 0.00 d2 0.44 2nd true -> 204,1979 ok
+
+rel 1-4 normal castBots seed 10: gen2.seed 19018, size 1280x11264, box x 280-1000, y 2442-4242
+  wood 877-1117 @2644 solid s18:c
+  wood 477-877 @2684 solid s18:b
+  wood 433-793 @2965 solid s17:top
+  wood 247-979 @3325 solid s17:foot
+  vine x 739 top 3927 bottom 4347 s15:f3
+  vine x 659 top 3927 bottom 4347 s15:f4
+  vine x 579 top 3927 bottom 4347 s15:f5
+  vine x 733 top 2965 bottom 3325 s17:f1
+  vine x 653 top 2965 bottom 3325 s17:f2
+  vine x 573 top 2965 bottom 3325 s17:f3
+  vine x 493 top 2965 bottom 3325 s17:f4
+=== rel middle easy 29
+  10.70 double from 700,10820 hold 0.22 up 0.00 d2 0.36 2nd false -> 593,10729 ok
+  18.37 single from 561,10156 hold 0.41 up 0.00 d2 0.63 2nd false -> 737,10139 ok
+  53.23 double from 436,6989 hold 0.99 up 0.00 d2 0.52 2nd true -> 329,6949 ok
+  60.53 double from 491,6668 hold 0.27 up 0.00 d2 0.37 2nd false -> 537,6568 ok
+  63.73 single from 755,6618 hold 0.19 up 0.00 d2 0.42 2nd false -> 925,6668 ok
+  71.10 double from 764,5947 hold 0.55 up 0.00 d2 0.37 2nd true -> 510,5907 ok
+  84.63 double from 265,5065 hold 0.16 up 0.00 d2 0.36 2nd false -> 43,5285 FELL BACK
+  87.10 single from 35,5285 hold 0.18 up 0.00 d2 0.43 2nd false -> 26,5285 FELL BACK
+  135.90 double from 430,2019 hold 0.63 up 0.00 d2 0.44 2nd true -> 159,1979 ok
+=== rel middle easy 10
+  16.00 single from 331,10139 hold 0.35 up 0.00 d2 0.59 2nd false -> 486,10139 ok
+  17.60 double from 489,10139 hold 0.86 up 0.00 d2 0.38 2nd true -> 770,10139 ok
+  62.07 double from 561,6608 hold 0.67 up 0.00 d2 0.45 2nd true -> 877,6708 FELL BACK
+  82.60 double from 907,5045 hold 0.53 up 0.00 d2 0.37 2nd true -> 1193,5005 ok
+  83.57 double from 1211,5005 hold 0.40 up 0.00 d2 0.22 2nd true -> 1260,5005 FELL BACK
+  95.60 double from 806,4023 hold 0.84 up 0.00 d2 0.45 2nd true -> 1053,3847 ok
+  134.60 double from 405,3061 hold 0.60 up 0.00 d2 0.42 2nd true -> 125,3021 ok
+  147.50 single from 366,2061 hold 0.16 up 0.00 d2 0.36 2nd false -> 274,1979 ok
+  154.77 single from 807,1018 hold 0.38 up 0.00 d2 0.30 2nd false -> 912,927 ok
+=== old middle easy 29
+  10.70 double from 700,10876 hold 0.22 up 0.00 d2 0.36 2nd false -> 593,10785 ok
+  18.37 single from 561,10212 hold 0.41 up 0.00 d2 0.63 2nd false -> 737,10195 ok
+  53.70 double from 287,6989 hold 1.06 up 0.00 d2 0.44 2nd true -> 90,6885 ok
+  60.17 single from 594,6568 hold 0.40 up 0.00 d2 0.60 2nd false -> 753,6618 ok
+  61.30 single from 748,6618 hold 0.41 up 0.00 d2 0.56 2nd false -> 936,6668 ok
+  67.37 single from 812,5947 hold 0.34 up 0.00 d2 0.40 2nd false -> 656,5907 ok
+  78.43 double from 648,4965 hold 0.63 up 0.00 d2 0.44 2nd true -> 396,4817 ok
+  115.10 double from 980,2061 hold 0.14 up 0.00 d2 0.54 2nd false -> 1072,1979 ok
+  125.73 single from 731,737 hold 0.14 up 0.00 d2 0.48 2nd false -> 887,737 ok
+
