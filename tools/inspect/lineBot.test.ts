@@ -9,7 +9,7 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { DT } from '../../src/game/realPlay.ts';
-import { FirstTimerRun, FT_ADULT, FT_MIDDLE, LINE_SKILL, freshPhone, rng, type FirstTimer } from './firsttimer.ts';
+import { FirstTimerRun, FT_ADULT, FT_MIDDLE, LINE_SKILL, ROAD_TRIPS, freshPhone, rng, type FirstTimer } from './firsttimer.ts';
 import { spook, type Follower } from '../../src/game/follow.ts';
 import { W2_FLOOD, W2_FOLLOW } from '../../src/game/gen2/worlds/w2.ts';
 import { FloodClock, floodTailOff, type Flood } from '../../src/game/flood.ts';
@@ -210,6 +210,22 @@ test('lead-the-line, time enough (the clock started as he sets off): the bot lea
     assert.equal(r.setBack, 0, `${name} seed ${seed}: ${JSON.stringify(r)}`);
     assert.equal(r.home, 3);
   }
+});
+
+test('planted: with keep-the-road off the edge press hops the porch off the wall-step on the low road, and time enough goes high', () => {
+  LINE_SKILL.keepRoad = false;
+  const before = ROAD_TRIPS.n;
+  try {
+    const r = floodRun(FT_MIDDLE, 1, 0);
+    assert.equal(r.high, true, `middle seed 1, keep-the-road off: ${JSON.stringify(r)}`);
+    assert.equal(ROAD_TRIPS.n, before, 'switched off, the rule changed no jump');
+  } finally {
+    LINE_SKILL.keepRoad = true;
+  }
+  const on = ROAD_TRIPS.n;
+  const r = floodRun(FT_MIDDLE, 1, 0);
+  assert.equal(r.high, false, `middle seed 1, keep-the-road on: ${JSON.stringify(r)}`);
+  assert.ok(ROAD_TRIPS.n > on, 'the rule tripped on the low road (the porch in reach, not taken)');
 });
 
 test('lead-the-line, too late for the line (he dawdled 22 s): the bot reads the water and leads them round by the high road, nobody set back', () => {

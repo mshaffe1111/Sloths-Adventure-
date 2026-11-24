@@ -140,8 +140,13 @@ const SNAP_THUMB = 0.1;
  * LEAD-THE-LINE (2-8.md "Bots"; ENG-28): at a flood's fork (FORK_READ before the roads part, once its clock runs) he reads the low road's
  * water: when the time left before it turns deep is under the line's tail-off of the rest of it (the rear-most little one's px to off the
  * low road at the laid flood's flown rate, flood.ts Flood px / tailOff), he leads them round by the high road (flood.ts highRoad) instead.
+ * KEEP-THE-ROAD (the lead's ruling on ENG-28e's pushback): once he has his road at a fork (the low road, the way's own, unless the read
+ * sends him round), the edge press does not jump onto a ledge of the OTHER road; with no fork read nothing changes. Today the only fork
+ * read is the flood's, so on a stage with no flood it never trips (ROAD_TRIPS: 0 on every listed stage, ENG-28e's count).
  */
-export const LINE_SKILL = { waitTail: true, fetch: true, leadLine: true };
+export const LINE_SKILL = { waitTail: true, fetch: true, leadLine: true, keepRoad: true };
+/** the edge-press jumps KEEP-THE-ROAD changed (a ledge of the other road in reach, not taken): the proof it touches no shipped stage */
+export const ROAD_TRIPS = { n: 0 };
 
 /** px before the roads part (the high road's first piece) that he reads a flood's low road: a stride and a half, still on the near bank */
 export const FORK_READ = 300;
@@ -1482,6 +1487,8 @@ export class FirstTimerRun {
   private lineLooking = false;
   /** lead-the-line read the fork (once a run: the clock never resets) */
   private roadRead = false;
+  /** KEEP-THE-ROAD: the pieces of the road he did not take at the fork he read (null: no fork read) */
+  private otherRoad: Set<Platform> | null = null;
   private lineLookEnd = -Infinity;
   private lineGo: unknown = null;
   private lineWait: unknown = null;
@@ -2451,7 +2458,7 @@ export class FirstTimerRun {
     if (!low?.deep) return;
     const dir: 1 | -1 = low.deep.near.x < low.x0 ? 1 : -1;
     const [edge, far] = dir > 0 ? [low.x0, low.x1] : [low.x1, low.x0];
-    const tops = this.sim.platforms.filter((q) => q.type === 'solid' && !q.pad && !q.broken && q.y < low.lip - 1).map((q) => ({ x: q.x, w: q.width, y: q.y, h: q.height }));
+    const tops = this.sim.platforms.filter((q) => q.type === 'solid' && !q.pad && !q.broken && q.y < low.lip - 1).map((q) => ({ x: q.x, w: q.width, y: q.y, h: q.height, q }));
     const road = highRoad(tops, { x0: low.x0, x1: low.x1, from: { x: edge, y: low.lip }, to: { x: far, y: low.lip } }, FLOOD_STEP, FLOOD_HOP);
     if (road.faults.length || !road.chain.length) return;
     const nearOf = (q: { x: number; w: number }) => (dir > 0 ? q.x : q.x + q.w);
@@ -2461,6 +2468,8 @@ export class FirstTimerRun {
     const before = (fork - p.x) * dir;
     if (before > FORK_READ || before < 0 || Math.abs(p.y - low.lip) > 20) return;
     this.roadRead = true;
+    // (his road from here is the way's own, the low road, unless the read below sends him round: the high road's pieces are the other's)
+    this.otherRoad = new Set(road.chain.map((t) => t.q));
     if (!LINE_SKILL.leadLine) return;
     const left = c.f.close - (c.since((this.e as unknown as { gameTime: number }).gameTime) ?? 0);
     const going = fp.line.filter((f) => f.state === 'follow' || f.state === 'join');
@@ -2471,6 +2480,8 @@ export class FirstTimerRun {
     const pts: Pt[] = [];
     for (const q of road.chain) for (let x = nearOf(q); (farOf(q) - x) * dir >= 0; x += 24 * dir) pts.push({ x, y: q.y });
     this.prog.reroute(this.prog.cur, fork, farOf(road.chain[road.chain.length - 1]), dir, pts);
+    // (round by the high road: the other road is the low road's own pieces, laid under the banks within its span)
+    this.otherRoad = new Set(this.sim.platforms.filter((q) => q.y > low.lip + 1 && q.x >= low.x0 - 1 && q.x + q.width <= low.x1 + 1));
   }
 
   /**
@@ -3178,7 +3189,13 @@ export class FirstTimerRun {
       //  this look's 40, he ran off the lip at full speed, came down a few px from its front and ran off it into the water: 2-7's toy,
       //  home Easy seed 1, the careful middle player, x 7650 onto a log 64 px out (of 240), again at x 5788 and 3191; 2-4 of the 4-8
       //  lives every home race lost (trace-27g.txt 5; the lead's GO, ENG-27g). "Mostly under": less than half its length past the lip)
-      const fa = this.floorAt(p.x + dir * look, p.y, 40);
+      // (KEEP-THE-ROAD, LINE_SKILL.keepRoad: once he has read his road at a fork, a piece of the OTHER road is neither his floor ahead nor
+      //  his jump across: at 2-8's fork, with time enough, the porch level off the wall-step read as floor ahead and he hopped onto it on
+      //  the low road (ENG-28e's pushback; the lead's ruling). ROAD_TRIPS counts the reads it changed: none where no fork was read)
+      const kept = (q: Platform) => LINE_SKILL.keepRoad && q !== under && !!this.otherRoad?.has(q);
+      const seen = this.floorAt(p.x + dir * look, p.y, 40);
+      const fa = seen && kept(seen) ? null : seen;
+      if (seen && !fa) ROAD_TRIPS.n++;
       const underLip = SKILLS.boardLog && !!under && under.type !== 'drift' && fa?.type === 'drift' && fa.drift?.dir === dir && fa.y > p.y + 6 && (dir > 0 ? fa.x + fa.width - lip : lip - fa.x) < fa.width / 2;
       const ahead = fa && !underLip && (!past || this.floorAt(lip + dir * 24, p.y, 40));
       // (up the far bank, SKILLS.bankUp: at a river's far end the bank stands a step up from the log (river.ts LOG_DROP, 28 px), so it
@@ -3194,7 +3211,10 @@ export class FirstTimerRun {
         const on = this.prog.target(p, 160);
         // (a ledge at about his height just across the gap is a jump, whatever the way does after it: 2-7's lifts, round 4, the kid
         // walked off a plank into the river six times because the route dropped down past the next bank)
-        const across = this.sim.platforms.some((q) => !q.broken && q.type !== 'drift' && Math.abs(q.y - p.y) < 50 && (dir > 0 ? q.x > p.x && q.x - p.x < 150 + who.edgeAim : q.x + q.width < p.x && p.x - (q.x + q.width) < 150 + who.edgeAim) && !this.floorAt(p.x + dir * look, p.y, 40));
+        const ledge = (q: Platform) => !q.broken && q.type !== 'drift' && Math.abs(q.y - p.y) < 50 && (dir > 0 ? q.x > p.x && q.x - p.x < 150 + who.edgeAim : q.x + q.width < p.x && p.x - (q.x + q.width) < 150 + who.edgeAim);
+        // (and KEEP-THE-ROAD: a ledge of the other road is not his jump, above)
+        const across = this.sim.platforms.some((q) => ledge(q) && !kept(q)) && !fa;
+        if (this.otherRoad && !across && !fa && this.sim.platforms.some(ledge)) ROAD_TRIPS.n++;
         // (a tier bot sees a pit: where nothing stands under the edge for 400 px, the way down to a lower ledge across it is a jump)
         const pit = !!who.holdQ && !this.floorAt(p.x + dir * (look + 40), p.y, 400);
         const drops = on && on.y > p.y + 50 && !across && !pit;
