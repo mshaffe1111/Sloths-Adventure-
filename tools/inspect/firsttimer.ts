@@ -3327,10 +3327,13 @@ export class FirstTimerRun {
       //  or leaves no floor ahead (rideCase), he stops pressing on landing; the walk-on below kept him running 0.1 s, and his thumb's
       //  let-go (releaseMax frames, the testers' own) ran him on: 2-1 child Normal 11 landed 40 px from #137's front (x 30,394 on
       //  30,194-30,434) and ran off it 4+ times, rescued. Where the front is inside that run-out he pulls the thumb back (a turn drops the
-      //  press at once, thumbify), never off. Any other log: main's walk, as c4 (c5's landing stop on every log broke 6 of 2-1's 8 BAR rows)
+      //  press at once, thumbify), never off. This landing stop (c5's piece) is kept on EVERY log running his way: the lean candidate c19
+      //  (the stop only in rideCase) fails 2-1 child Normal 11, 2-2 adult Normal 4 and 2-4 child Easy 11 at c4's own x; with it each
+      //  passes and 2-1's 8 BAR rows stay clean (c5's other piece, the river block's standingOn 'here', fixes the same three but breaks
+      //  2-1 adult Normal 1/2/4/6/8/9: not kept). The ride after it (landRide) stays only in rideCase
       const ridden = SKILLS.floatSure && SKILLS.handed && p.grounded ? this.sim.platforms.find((q) => q.id === this.sim.standingOn) : undefined;
-      if (ridden && dir !== 0 && this.rideCase(ridden, dir)) {
-        this.landRide = ridden.id;
+      if (ridden?.drift && dir !== 0 && ridden.drift.dir === dir) {
+        if (this.rideCase(ridden, dir)) this.landRide = ridden.id;
         const front = dir > 0 ? ridden.x + ridden.width : ridden.x;
         if (dir * (front - p.x) < this.runOut()) return side(-dir as -1 | 1);
         this.stopMeant = true;
@@ -3535,12 +3538,7 @@ export class FirstTimerRun {
         const pit = !!who.holdQ && !this.floorAt(p.x + dir * (look + 40), p.y, 400);
         const drops = on && on.y > p.y + 50 && !across && !pit;
         // (a log or a lily pad drifting across the gap: he can see it, so he waits at the edge until it is near, up to 6 s)
-        // (SKILLS.floatSure, c5's piece kept in the lean candidate (ENG-PLANT-i): the log he stands on is the one the ENGINE stands him
-        //  on (standingOn), not only the one under the point at his x, so every hop off a log goes through the river gates. Lean + c4
-        //  alone fail, at c4's own x: 2-1 child Normal 11 (water ahead 30,239), 2-2 adult Normal 4 (set down 3x 29,392), 2-4 child Easy
-        //  11 (set down 8x 28,028); with this piece each passes)
-        const stood = SKILLS.floatSure && p.grounded ? this.sim.platforms.find((q) => q.id === this.sim.standingOn) : undefined;
-        const here = stood?.type === 'drift' ? stood : this.floorAt(p.x, p.y, 6);
+        const here = this.floorAt(p.x, p.y, 6);
         // (ENG-W2b: a float is near when a hop he makes now, or a beat later as his thumb gets there, comes down on it where it will be,
         // hopLandsOn; drifting logs come out from under the bank at his feet, so every log on the water is looked at, not only those ahead)
         const rivers = (this.sim.stage as { rivers?: RiverZone[] }).rivers;
