@@ -9,17 +9,21 @@ two REPORT-only commits merged in), then REPORT-only commits). In order:
 0. **Setup (session 3 lost 2 minutes here):** a release tree (`git worktree add -b release-0.10.3 <dir> origin/release-0.10.3`), then
    `npm ci --no-audit --no-fund --legacy-peer-deps` (plain `npm ci` fails ERESOLVE: no node_modules at all), then
    `git fetch --unshallow origin` (timecheck and blame need it; about 2 minutes, in the background).
-1. **TEACH-11 is MERGED (6c1740d2b, tsc clean).** If session 3's run on frozen 90faac0ba is not in "Session 3: results" below, run it:
-   the CI tool line (gates.yml:157 read live; expect 384 tests with teachFirstScan.test, the same 6 ENG-PLANT reds + the chaseBots todo),
-   `npx tsx tools/engine/teachFirstScan.ts --check --seeds 20` (CI's form) and `npx tsx tools/engine/seedlist.ts 1-1 --check`.
-2. **ENG-PLANT (lands ON release-0.10.3 itself, about 5:30 PM ET):** `git pull` the release tree; tsc + the CI tool line on a frozen copy:
+1. **TEACH-11 is MERGED and checked (6c1740d2b; on 90faac0ba: tsc clean, the CI line 383/6 FAIL (ENG-PLANT's six only)/1 todo,
+   teachFirstScan --seeds 20 PASS, seedlist 1-1 PASS; "Session 3: results" below).** FILL-14b likewise (86aad83a7: seedlist 1-4 PASS,
+   castBots 1-4 100/100). Nothing left to merge but ENG-PLANT.
+1b. **FIRST: WAIT FOR THE LEAD'S RULING ON ENG-PLANT-b'S ATTRIBUTION** (the lead's change of plan, session 3): ENG-PLANT found shipped
+   2-1, 2-2 and 2-4 rows going pass to fail against MAIN on the merged release (most of it from the merge, not its fix); ENG-PLANT-b is
+   attributing it (main / main+t-build-26 / pre-fix / fix). Release 4 does NOT run THE FULL SET until the lead rules. ReadNotifications
+   at every step boundary; do nothing below until the ruling names what to do.
+2. **ENG-PLANT (lands ON release-0.10.3 itself, when the lead says):** `git pull` the release tree; tsc + the CI tool line on a frozen copy:
    **0 FAIL** is the bar (the todo chaseBots :110 aside). If any red: stop and send it to the lead (no re-plant here, LAWS 22).
-3. **THE FULL SET, once, on the final head** (session 2's step 3 below is the recipe: frozen worktree + chattr, run1.sh then run2.sh, both
-   run_in_background with timeout 7,200,000 ms, never a shell '&'; bars there). rowWheels is gone from the line (part 3). ADD to run1.sh
-   before it runs: `g teachfirst "npx tsx tools/engine/teachFirstScan.ts --check"` (every seed: the lead's ruling, CI runs --seeds 20) and
-   make lockall's `--intended 2-7,1-4` also cover TEACH-11's 18 hint-only stages (their list and how TEACH-11 ran lockall:
-   reference/qa-reports/TEACH-11/REPORT.md; read lockall.ts's --intended first);
-   the lead's ruling: lockall vs main's intended moves are 2-7, 1-4's fill, and TEACH-11's 18 hint-only moves; NAME EACH in the table.
+3. **THE FULL SET, once, on the final head, only when the lead says** (session 2's step 3 below is the recipe: frozen worktree + chattr,
+   run1.sh then run2.sh, both run_in_background with timeout 7,200,000 ms, never a shell '&'; bars there; a main worktree at origin/main
+   for lockbase). rowWheels is gone from the line (part 3). **run1.sh is updated (9d4330707):** `g teachfirst` (teachFirstScan --check,
+   every seed; CI runs --seeds 20) after storytipscan; lockall's --intended = 2-7, 1-4 and the 30 hint stages (WARN-412's 22 + TEACH-11's
+   18, union), then `g lockhints` (tools/lockhints.py: each hint stage must have moved ONLY proto.hints; prints every moved stage, its
+   parts and whose move it is, for the table). The lead's ruling: the intended moves are 2-7, 1-4's fill and the hint-only moves; NAME EACH.
 4. Gate table into this REPORT; the final head and table to the lead (no clock times).
 
 ## Session 3 (INT-R5c): what it did
@@ -55,7 +59,9 @@ two REPORT-only commits merged in), then REPORT-only commits). In order:
 | 86aad83a7 | castBots 1-4 --seeds 1-100, 4 bots, both, par 4 | proven 100 of 100; every row PASS 100/100, 0 under the 100 s floor; medians = FILL-14b's (adult N 121.6, child N 210.3, middle N 142, expert N 131.5 s) |
 | 575022e30's successor | timecheck (full history) | PASS (557 commits, 84 stamps) |
 | 6c1740d2b (TEACH-11 merged) | tsc | clean |
-| 90faac0ba (TEACH-11 merged + ENG-PLANT REPORT commits) | the CI tool line, teachFirstScan --check --seeds 20, seedlist 1-1 --check | RUNNING at session 3's box (results below when in) |
+| 90faac0ba (TEACH-11 merged + ENG-PLANT REPORT commits) | the CI tool line (gates.yml:157, with teachFirstScan.test) | 390 tests: 383 pass, **6 FAIL**, 1 todo (chaseBots). The SAME 6 ENG-PLANT reds (firsttimer '2-2 child N 36 / middle N 17'; riverRide x5); TEACH-11 adds none (its 7 teachFirstScan.test tests pass). |
+| 90faac0ba | teachFirstScan --check --seeds 20 (CI's form) | PASS: 0 misses over 600 rolls of 15 listed stages |
+| 90faac0ba | seedlist 1-1 --check | PASS (161 seeds, each clean on both settings) |
 
 ### Session 3: unresolved, pushback, method update
 - Unresolved: release 4 is NOT green yet: the CI line's 6 ENG-PLANT reds (lands about 5:30 PM ET); THE FULL SET not run (waits on ENG-PLANT).
