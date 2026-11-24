@@ -1,0 +1,5 @@
+place B on frozen 96cb4215f (the jetty clearance), adult Easy, firstTimer (castRun's call), frames26s.mts:
+seed 32: {"end":"shrine","time":114.4,"rescues":0}
+seed 89: {"end":"shrine","time":114.8,"rescues":0}
+seed 92: {"end":"shrine","time":114.7,"rescues":0}
+bde501f86 (b26r/fails-2-6-bde501f86.txt): 32 FAIL 150.3 resc 1, 89 FAIL 153 resc 1, 92 FAIL 173.8 resc 1; 47b53e642 seed 32: {"end":"shrine","time":150.3,"rescues":1}

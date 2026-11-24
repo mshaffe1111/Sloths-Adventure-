@@ -1,0 +1,65 @@
+// BUILD-26u: stills of a wheel's JETTY END (the jetty's end now WHEEL.jettyClear 24 px short of the bucket's path at its height) on the
+// real page, 2-6, Easy and Normal, upright 412x915 and sideways 915x412, 2x. facestills.mjs's way (engine paused, Pokey placed, 60 frames
+// stepped, then 30 stepped AND rendered), placed by the BUILT stage's own wheels: the bucket platforms' seat (Platform.wheel), its lay's
+// jetty id. Pokey stands on the jetty 50 px back from its end, facing the wheel. A WIDE still and a CLOSE still (jetty end + the wheel).
+//   node jettystills.mjs <port> <out dir> <layout> <wheel k: 0 = the first wheel laid>
+import fs from 'node:fs';
+import path from 'node:path';
+const PWm = await import(process.env.PW ?? 'playwright'); const chromium = PWm.chromium ?? PWm.default.chromium;
+const [port, out, layoutS = '0', kS = '0'] = process.argv.slice(2);
+const layout = +layoutS, K = +kS;
+fs.mkdirSync(out, { recursive: true });
+const b = await chromium.launch();
+const E = "(typeof window.__engine === 'function' ? window.__engine() : window.__engine)";
+for (const diff of ['easy', 'normal']) for (const [tag, w, h] of [['upright', 412, 915], ['sideways', 915, 412]]) {
+  const ctx = await b.newContext({ viewport: { width: w, height: h }, deviceScaleFactor: 2 });
+  await ctx.addInitScript((d) => { try { localStorage.setItem('sloth_difficulty', d); } catch {} }, diff);
+  const p = await ctx.newPage();
+  p.on('pageerror', (e) => console.log('ERR', e.message));
+  await p.goto(`http://127.0.0.1:${port}/?lessons=off`);
+  await p.waitForTimeout(2500);
+  await p.evaluate((v) => window.__play('2-6', v), layout);
+  await p.waitForTimeout(4000);
+  await p.waitForFunction((E) => { const e = eval(E); return !!(e && e.currentStage && e.player && e.platforms); }, E, { timeout: 60000 });
+  await p.waitForFunction(() => document.documentElement.dataset.hudCard !== '1', null, { timeout: 30000 }).catch(() => {});
+  await p.waitForTimeout(3000);
+  const info = await p.evaluate(([E, K]) => {
+    const e = eval(E);
+    e.isPaused = true;
+    const g = e.currentStage.gen2;
+    const wheels = [];
+    for (const q of e.platforms) if (q.wheel && !wheels.includes(q.wheel.w)) wheels.push(q.wheel.w);
+    const w = wheels[K];
+    if (!w) return { wheels: wheels.length };
+    const jetty = e.platforms.find((q) => q.id === w.lay?.jetty);
+    const end = w.way > 0 ? jetty.x + jetty.width : jetty.x;
+    const pw = e.player.width, ph = e.player.height;
+    const x = w.way > 0 ? end - 50 - pw : end + 50;
+    Object.assign(e.player, { x, y: jetty.y - ph - 2, vx: 0, vy: 0, grounded: false, hanging: false, climbing: false, facing: w.way, invincibleTimer: 9 });
+    for (const hh of e.currentStage?.proto?.hints ?? []) hh.shown = true;
+    for (let i = 0; i < 60; i++) e.update(1 / 30);
+    return { wheels: wheels.length, wheel: { cx: w.cx, cy: w.cy, R: w.R, N: w.N, V: w.V, way: w.way, row: w.lay?.row, street: w.lay?.street }, jetty: { x: jetty.x, y: jetty.y, w: jetty.width, h: jetty.height, style: jetty.style, end }, seed: g.seed, built: g.budget?.difficulty, player: { x: e.player.x, y: e.player.y, grounded: e.player.grounded } };
+  }, [E, K]);
+  if (!info.wheel) { console.log(diff, tag, 'NO WHEEL', JSON.stringify(info)); await ctx.close(); continue; }
+  for (let i = 0; i < 30; i++) {
+    await p.evaluate((E) => { const e = eval(E); e.update(1 / 30); e.clearGuide?.(); e.player.invincibleTimer = 0; e.render(); }, E);
+    await p.evaluate(() => new Promise((r) => requestAnimationFrame(() => r(0))));
+  }
+  await p.evaluate((E) => { const e = eval(E); e.player.invincibleTimer = 0; e.render(); }, E);
+  const cam = await p.evaluate((E) => { const e = eval(E); return { x: e.camera.x, y: e.camera.y, z: e.zoom, px: e.player.x, py: e.player.y, g: e.player.grounded }; }, E);
+  const base = `jetty-2-6-L${layout}-${diff}-wheel${K}-${tag}`;
+  const wide = path.join(out, `${base}-wide.jpg`);
+  await p.screenshot({ path: wide, type: 'jpeg', quality: 80 });
+  // (the close cut: 200 px of jetty before its end, the wheel's near half and its bottom bucket, Pokey's height over the jetty)
+  const W = info.wheel, J = info.jetty;
+  const x0 = W.way > 0 ? J.end - 220 : W.cx - 40, x1 = W.way > 0 ? W.cx + 40 : J.end + 220;
+  const top = J.y - 190, bot = W.cy + W.R + 70;
+  let cx = (x0 - cam.x) * cam.z, cy = (top - cam.y) * cam.z, cw = (x1 - x0) * cam.z, ch = (bot - top) * cam.z;
+  const L = Math.max(0, cx), T = Math.max(0, cy);
+  cw = Math.min(w, cx + cw) - L; ch = Math.min(h, cy + ch) - T;
+  const close = path.join(out, `${base}-close.jpg`);
+  if (cw > 20 && ch > 20) await p.screenshot({ path: close, type: 'jpeg', quality: 85, clip: { x: L, y: T, width: cw, height: ch } });
+  console.log(JSON.stringify({ diff, tag, seed: info.seed, built: info.built, wheels: info.wheels, wheel: info.wheel, jetty: info.jetty, placed: info.player, settled: cam, wide, close: cw > 20 && ch > 20 ? close : 'off screen' }));
+  await ctx.close();
+}
+await b.close();

@@ -1,3 +1,55 @@
+# BUILD-26u (session 5 of BUILD-26q; t-build-26-wip-26q). Started 5:53 PM ET 11-24 (by `date`); this box written 6:07 PM ET
+
+## EXACT NEXT STEP
+**For the next session (base: this branch's head). Ruling 1 (place A) DONE and GREEN; ruling 2 (place B) READ, sent to the lead, no fix
+made (none needed on these seeds: see below); ruling 3 (the Normal floor STEP 0, GO'd) NOT STARTED; ruling 4 (castBots/lockall/paint/
+suite/land) NOT STARTED.**
+(a) RULING 3, as GO'd (plan in BUILD-26s below; the bricks are in src/game/gen2/worlds/w2Arc26.ts: [A] 'millpond' line ~97, [P]
+'first-street' ~104, [U] 'through-house' ~109): re-lay A (the shore 380 -> ~760 px, a second boulder hop, the first wheel turning
+ahead), P (a fourth doorstep, one more porch step and hop), U (the inside ladder 250-280 -> ~380-400 px) toward their design seconds;
+NO token added, the node string and dealExact's deal unchanged, no wheel R/V change, no bot slowed (law 22). Target: the fastest adult
+Normal at 104 s or more on every roll. NOTE: the jetty clearance (below) already moves 2-6 (every wheel's axle and street 24 px out from
+its jetty), so re-measure the floor (castBots adult N alone, light) BEFORE re-laying: the shortfall may have moved. Stills of the three
+changed beats both ways.
+(b) Then ruling 4: ONE castBots --proven 2-6, lockall (2-6 the only mover: the jetty clearance AND the face move 2-6 alone; anything else
+to the lead first), paint --stages 2-6, the suite + the CI tool line ONCE on the final head, timecheck; land on t-build-26 (merge, no
+force); hash and table to the lead. node_modules: `npm ci --legacy-peer-deps` (plain `npm ci` fails ERESOLVE in this container).
+
+## Ruling 1, place A: DONE (96cb4215f code, 442d68dc3 table; pushed)
+THE FIX: src/game/wheel.ts WHEEL.jettyClear = 24 (px): the jetty's end stands 24 px short of a bucket's path at the jetty's height, in
+axleFromJetty (the lay: the axle 24 px further out from the jetty it is laid from) and wheelLips (the flown layout's jetty lip), so every
+wheel with a jetty, both settings, both ways (one formula; layWheel, streetFromJetty, wheelSpan, the flight all read it).
+THE TOY (wheel.test.ts, last test): now flies FIVE stances, his middle 0, 6, 10, 16 and 19 px over the bucket's near edge (19: the furthest
+the engine stands him on Easy; 20 is not stood, measured this box). GREEN all five at 24; RED at jettyClear 0 ('0 px over: set back on
+the jetty ... 100 -> 1 -> 100'). The lips test now holds the clearance (the jetty lip at lipOff + W/2 + jettyClear; a bucket at the
+jetty's height never within jettyClear of its end, sampled over a turn, both ways).
+RE-FLY (tools/engine/wheelflights.ts --write on frozen 96cb4215f; b26t/refly-jettyClear-96cb4215f.txt): all 8 real 2-6 rows still board
+100% by a tap hop on both settings; step-off windows, walks and rides UNCHANGED; walk-board shares lower (Easy 84->66, 63->49, 74->59,
+77->61, 70->55; Normal 73->48, 65->44, 65->44, 58->41: a walk-on now crosses 24 px; not a floor, the tap hop is). The toy row 'sparse'
+(N5, tools/inspect/wheelToys.ts, not a 2-6 row) Normal taps 97% (was 100); no test holds it. Wheel tests 13/13 GREEN (wheel.test 9,
+listedWheelSheet 1, wheelDraw 3), 'the flight table is the engine' GREEN.
+STILLS (b26q5/jetty-2-6-L0-{easy,normal}-wheel0-{upright,sideways}-{close,wide}.jpg; b26q5/jettystills.mjs.txt, placed by the built
+stage's own wheels, Pokey 50 px back from the jetty's end): the lashed plank still ends right beside the turning wheel and reads as a
+jetty you board from; the gap at its height is small. Polish check: looked at easy-upright-close, easy-sideways-close, normal-sideways-wide.
+Noticed, not changed: above the jetty's height the near side of the rim still swings a rising bucket over the jetty's end (geometry of
+any wheel; Pokey 50 px back is clear of it; it was 24 px worse before).
+
+## Ruling 2, place B: READ (no fix; sent to the lead)
+CLUSTER: all three (adult Easy 32, 89, 92) at the SAME beat: the TOP wheel (R180, Easy V60, N6, 'up' street 60 px over the top floor;
+jetty 401-641 / 392-632 / 398-638 @ ~3456), the fail point 0-25 px over the jetty's top at its end (b26q5/spotB.mts.txt).
+TRACE (adult E 32 on 47b53e642, b26q5/frames-adultE32-old-47b53e642-93-99.txt + b26q3/frames-adultE32-82-96.txt): he boards at the
+jetty's end and stands on the bucket's BACK end (middle ~22 px in from it); rides up clean (not set back); at 94.27 s, the bucket ~35 px
+under the top floor, the bot jumps right: peak y 3062 (4 px over the street's top 3066) at x ~750, ~70 px short of the street's lip
+(817); lands in the NEXT bucket (61) over the top, rides it down the far side, and the rescue follows.
+CAUSE: the stance the old jetty gave a walk-on rider (the bucket's back end) + the bot's jump timed for the flight's stance: the flight
+table stands its rider in the bucket's MIDDLE (wheelFlights.ts:147, r.stand(b.x + W/2)), so 'the jump off the top is open 4.07 s a turn'
+is the middle's window; from the back end, 60 px further back, the same moment falls short.
+ON THE NEW HEAD (frozen 96cb4215f, the clearance): 32, 89, 92 all finish, 0 rescues (114.4, 114.8, 114.7 s; were 150.3, 153, 173.8 with
+a rescue; b26q5/placeB-runs.txt). Seed 32's trace (b26q5/frames-adultE32-new-96cb4215f-top-wheel.txt): he hops the 24 px gap, lands
+further in (23 px from the bucket's FRONT end at the top), the same jump reaches the street at 841. So the clearance clears B on these
+seeds; the lead rules whether the flight should also fly the back-end stance (the stance-dependence stays for any rider who walks back).
+Slip owned: one trace this box was started with a shell '&' (against the box rule); it failed to start and was re-run properly.
+
 # BUILD-26t (session 4 of BUILD-26q; t-build-26-wip-26q, face at 1af03d233, toy on the next commit). Started 5:33 PM ET 11-24 (by `date`); this box written 5:48 PM ET
 
 ## EXACT NEXT STEP

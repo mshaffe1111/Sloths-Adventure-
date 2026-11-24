@@ -1,0 +1,20 @@
+const tree = process.argv[2];
+await import(`${tree}/src/game/headlessDom.ts`);
+const { generateAllLevels } = await import(`${tree}/src/game/worldsData.ts`);
+const { generateStage, setLayoutVariant } = await import(`${tree}/src/game/stageGenerator.ts`);
+const { loadSeedList } = await import(`${tree}/src/game/gen2/seedList.ts`);
+const { setDifficulty } = await import(`${tree}/src/game/difficulty.ts`);
+const c = generateAllLevels().find((l: { id: string }) => l.id === '2-6');
+await loadSeedList('2-6');
+for (const seed of process.argv.slice(3).map(Number)) {
+  setDifficulty('easy');
+  setLayoutVariant(seed);
+  const st: any = generateStage({ ...c, unlocked: true }, 'easy');
+  setLayoutVariant(null);
+  console.log(`== seed ${seed} easy`);
+  const secs = st.gen2?.sections ?? [];
+  for (const s of secs) if (s.x0 !== undefined && s.x0 < 900 && (s.x1 ?? 1e9) > 400 && (s.y0 === undefined || (s.y0 < 3700 && (s.y1 ?? 0) > 3200))) console.log('section', JSON.stringify(s).slice(0, 220));
+  for (const p of st.platforms) if (p.x < 950 && p.x + p.width > 350 && p.y > 3200 && p.y < 3700) console.log(`x ${p.x}-${p.x + p.width} y ${p.y} h ${p.height} ${p.style ?? ''} ${p.type} ${p.art ?? ''} ${p.wheel ? 'WHEEL' : ''} ${p.drift ? 'DRIFT' : ''}`);
+  for (const z of st.proto?.water ?? st.water ?? []) if (z.x0 < 950 && z.x1 > 350) console.log('water', JSON.stringify(z).slice(0, 200));
+  for (const z of st.rivers ?? st.proto?.rivers ?? []) if (z.x0 < 950 && z.x1 > 350 && z.surfaceY > 3200 && z.surfaceY < 3800) console.log('river', JSON.stringify(z).slice(0, 220));
+}
