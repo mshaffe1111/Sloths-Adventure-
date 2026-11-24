@@ -8,7 +8,7 @@
  * the spare) and highRoadFaults (a high road over the low road the line can walk: steps of at most FLOOD_STEP px). Each refusal by name.
  * No stage id, world number, seed or x.
  */
-import { floodFaults, floodTailOff, highRoadFaults, type Flood, type FloodRow, type FloodWater } from '../flood.ts';
+import { floodFaults, floodTailOff, forkFaults, highRoad, type Flood, type FloodRow, type FloodWater } from '../flood.ts';
 import { alongOf, lastMet } from './tower.ts';
 import type { Gen2Stage } from './types.ts';
 
@@ -52,7 +52,9 @@ export function layFlood(st: Gen2Stage, row: FloodRow, easy: boolean): { flood?:
     const nearIsX0 = low.deep!.near.x < low.x0;
     const span = { x0: low.x0, x1: low.x1, from: { x: nearIsX0 ? low.x0 : low.x1, y: low.lip }, to: { x: nearIsX0 ? low.x1 : low.x0, y: low.lip } };
     // (the banks themselves are not the high road: only what stands over the water)
-    problems.push(...highRoadFaults(tops.filter((t) => t.y < low.lip - 1), span, FLOOD_STEP, FLOOD_HOP));
+    const road = highRoad(tops.filter((t) => t.y < low.lip - 1), span, FLOOD_STEP, FLOOD_HOP);
+    // (and its fork at the wall-step: a way down onto the low road, and a gap after it each tier's play crosses: forkFaults)
+    problems.push(...road.faults, ...(road.faults.length ? [] : forkFaults(road.chain, span, row.climb)));
   }
   const flood: Flood = { start: { id: last.id, x: last.x, y: last.y }, close, waters, tailOff: floodTailOff(row, Math.max(0, px), easy), spare: easy ? row.spare.easy : row.spare.normal, px: Math.max(0, px) };
   return { flood, problems: [...problems, ...floodFaults(flood)] };

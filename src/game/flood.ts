@@ -13,6 +13,7 @@
  * seed or x.
  */
 import { floodLevel } from './river.ts';
+import { JUMP_AIRTIME, PHYS } from './physics.ts';
 
 /** a world's flood table (the designer's flown numbers, 2-8.md "FLOWN"; a graph's brief names it: GraphBrief.flood) */
 export interface FloodRow {
@@ -23,6 +24,24 @@ export interface FloodRow {
   /** the leg the flights measured: px from the turn (the last cage) to off the low road, and the prompt line's tail-off time over it (s),
    *  by setting (2-8.md:8-9, :13). The line's rate over any laid leg is that px over that time (its waits and its length included) */
   flown: { px: number; tailOff: { normal: number; easy: number } };
+  /** the FORK's wall-step numbers: each tier's modelled play from its landing on the wall-step W to the next high-road piece (forkFaults) */
+  climb: FloodClimb;
+}
+
+/** the tiers the fork is judged for (the bots' own: child, middle, expert, and the first-timer adult) */
+export type FloodTier = 'child' | 'middle' | 'expert' | 'adult';
+
+/** a world's WALL-STEP numbers (R-165.430's fork: a wall-step W on the bank that both roads climb; the low road walks off W down into the
+ *  gap, the high road hops that gap onto the next piece). Each value DERIVED, never invented: the world's table cites its source */
+export interface FloodClimb {
+  /** px: his centre past W's NEAR face where the climb-jump from a stand at that face sets him down, by tier */
+  land: Record<FloodTier, number>;
+  /** px: the room he needs between that landing and W's FAR lip to take off from (his take-off aim before a lip), by tier */
+  runUp: Record<FloodTier, number>;
+  /** s: the small-ledge pause on W. It STOPS him: he restarts from a stand (its length is the clock's business, floodFaults) */
+  pause: [number, number];
+  /** px: his width. The way down onto the low road is a gap after W at least this wide (he falls through it) */
+  width: number;
 }
 
 /** one water the clock raises (a river of the stage, by index) */
@@ -106,6 +125,40 @@ export function floodFaults(f: Flood): string[] {
  */
 export function highRoadFaults(tops: ReadonlyArray<{ x: number; w: number; y: number; h?: number }>, span: { x0: number; x1: number; from: { x: number; y: number }; to: { x: number; y: number } }, step: number, hop: number): string[] {
   return highRoad(tops, span, step, hop).faults;
+}
+
+/**
+ * The FORK at the high road's first piece, the wall-step W (the lead's ruling on ENG-28's fork, R-165.430), both halves by name:
+ * (1) a WAY DOWN from W onto the low road: the gap after W (to the high road's next piece) at least his width, so he falls through it;
+ * (2) that gap CROSSED by each tier's own modelled play from its landing on W: he lands `land` px past W's near face, the small-ledge pause
+ *     stops him, he restarts from a stand (PHYS.groundAcc to PHYS.maxRun) and needs `runUp` px of W before its far lip to take off from.
+ *     Short of it he walks off the lip and a walk-off crosses no gap; with it, a full jump at the speed his run reached (the air pushing
+ *     him on to PHYS.maxRun over JUMP_AIRTIME) must carry him from his take-off past the gap.
+ * `chain` is highRoad's (W first, the next piece second). By name; empty: fair.
+ */
+export function forkFaults(chain: ReadonlyArray<{ x: number; w: number; y: number }>, span: { from: { x: number }; to: { x: number } }, climb: FloodClimb): string[] {
+  const [w, next] = chain;
+  if (!w || !next) return [];
+  const dir = span.to.x >= span.from.x ? 1 : -1;
+  const farLip = dir > 0 ? w.x + w.w : w.x;
+  const gap = Math.round((dir > 0 ? next.x - farLip : farLip - (next.x + next.w)) * 10) / 10;
+  const at = `the wall-step at x ${Math.round(w.x)}-${Math.round(w.x + w.w)}`;
+  const out: string[] = [];
+  if (gap < climb.width) out.push(`flood: ${at} has no way down onto the low road: the gap after it is ${gap} px, under his ${climb.width} px width (the low road falls through it)`);
+  for (const tier of Object.keys(climb.land) as FloodTier[]) {
+    const room = w.w - climb.land[tier];
+    const runUp = climb.runUp[tier];
+    if (room < runUp) {
+      if (gap > 0) out.push(`flood: on ${at} the ${tier} lands ${climb.land[tier]} px past its face and has ${Math.round(room)} px to its lip, short of his ${runUp} px run-up: he walks off into the ${gap} px gap (W at least ${climb.land[tier] + runUp} px wide)`);
+      continue;
+    }
+    // (a stand start over room - runUp px, then a full jump runUp px before the lip; the air takes him on to a full run)
+    const v = Math.min(PHYS.maxRun, Math.sqrt(2 * PHYS.groundAcc * (room - runUp)));
+    const tUp = (PHYS.maxRun - v) / PHYS.airAcc;
+    const reach = tUp >= JUMP_AIRTIME ? v * JUMP_AIRTIME + (PHYS.airAcc * JUMP_AIRTIME ** 2) / 2 : ((v + PHYS.maxRun) / 2) * tUp + PHYS.maxRun * (JUMP_AIRTIME - tUp);
+    if (reach < runUp + gap) out.push(`flood: from ${at} the ${tier}'s jump ${runUp} px before its lip at ${Math.round(v)} px/s reaches ${Math.round(reach)} px, short of the ${gap} px gap past it`);
+  }
+  return out;
 }
 
 /** the high road itself (highRoadFaults' walk): its pieces in the order he meets them (the bot's way round, lead-the-line), and the faults

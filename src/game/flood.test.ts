@@ -5,7 +5,7 @@
 // he walks off is a walk for the line, never a wait (2-8.md:59, Pushback 5).
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { FloodClock, floodFaults, floodSurface, floodTailOff, highRoadFaults, type Flood, type FloodWater } from './flood.ts';
+import { FloodClock, floodFaults, floodSurface, floodTailOff, forkFaults, highRoad, highRoadFaults, type Flood, type FloodWater } from './flood.ts';
 import { join, newTrail, record, rejoin, setOnBank, stepLine, wallCap, type Follower } from './follow.ts';
 import { FollowPlay } from './followPlay.ts';
 import type { Platform } from './types.ts';
@@ -81,6 +81,35 @@ test('highRoadFaults: the first piece is a WALL-STEP on the near bank he walks i
   assert.deepEqual(highRoadFaults(back, span, 60, 60), []);
   // RED: every step UP is a wall-step: the block on the porch made a thin piece floating 60 px over it (a bare edge hop up, one piece in)
   assert.match(highRoadFaults([back[0], back[1], { ...back[2], h: 20 }, back[3]], span, 60, 60).join(';'), /climbs by a bare edge hop up at x 1100/);
+});
+
+test('forkFaults: the fork at the wall-step, both halves by name: RED on the toy (W 60 + gap 60: every tier walks off, the adult as traced) and the brick (W 60 flush: no way down); GREEN on the shape it finds (W 150 + gap 60)', () => {
+  const span = { x0: 1000, x1: 1400, from: { x: 1000, y: LIP }, to: { x: 1410, y: LIP } };
+  // the toy fork's high road (tools/inspect/lineBot.test.ts): W, a 60 px gap over the bank strip, P level with W's top, B, C
+  const fork = (wW: number, gap: number) => {
+    const wx = 1000 - gap - wW;
+    return [{ x: wx, w: wW, y: LIP - 60, h: 60 }, { x: 1000, w: 100, y: LIP - 60, h: 20 }, { x: 1100, w: 240, y: LIP - 120, h: 60 }, { x: 1340, w: 220, y: LIP - 60, h: 20 }];
+  };
+  const judge = (wW: number, gap: number) => {
+    const road = highRoad(fork(wW, gap), span, 60, 60);
+    assert.deepEqual(road.faults, [], `W ${wW} + gap ${gap}: a walkable high road (only the fork is judged)`);
+    return forkFaults(road.chain, span, W2_FLOOD.climb).join(';');
+  };
+  // RED: the toy's current numbers. The adult lands 86 px past W's face, 26 px PAST a 60 px W's lip: no room to take off, he walks off
+  const toy = judge(60, 60);
+  for (const tier of ['child', 'middle', 'expert', 'adult']) assert.match(toy, new RegExp(`the ${tier} lands \\d+ px past its face .* walks off into the 60 px gap`), tier);
+  assert.doesNotMatch(toy, /no way down/, 'the toy has its way down: the 60 px gap is the low road');
+  // RED: the brick's shape (floodLay.test: W 60 at the water's edge, the porch flush against it): no way down onto the low road
+  const brick = judge(60, 0);
+  assert.match(brick, /no way down onto the low road: the gap after it is 0 px, under his 44 px width/);
+  assert.doesNotMatch(brick, /walks off/, 'a flush porch: he walks on');
+  // GREEN: the shape the verdict finds: W at least the widest tier's land + run-up (86 + 61 = 147), a 60 px gap (his width up to FLOOD_HOP)
+  assert.deepEqual(judge(150, 60), []);
+  // the edge of it, planted: 146 px refuses the middle and the expert by name, 147 passes them
+  assert.match(judge(146, 60), /the middle lands 86 px past its face and has 60 px to its lip, short of his 61 px run-up/);
+  assert.deepEqual(judge(147, 60), []);
+  // a gap the jump cannot carry is refused by name (the reach from a stand start, the air pushing him on to a full run)
+  assert.match(judge(150, 120), /reaches \d+ px, short of the 120 px gap/);
 });
 
 test('followers meet the flood: one mid-dip at the close is set on the near bank and rejoins; none walks into deep water', () => {

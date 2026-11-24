@@ -131,7 +131,22 @@ export const W2_RACE: PacerRow = {
 /** World 2's FLOOD table (flood.ts FloodRow; 2-8's flown numbers, reference/design/2-8.md "FLOWN" @ t-design-26): the low road turns deep
  *  26 s after the last cage on both settings (:16, :20), at least 4 s (Normal) / 8 s (Easy) after the line's prompt tail-off (:58), the
  *  flights' leg 2,000 + 1,400 px from the turn to off the low road (:8-9) and the prompt line's tail-off over it 22.0 / 17.9 s (:13) */
-export const W2_FLOOD: FloodRow = { close: { normal: 26, easy: 26 }, spare: { normal: 4, easy: 8 }, flown: { px: 2000 + 1400, tailOff: { normal: 22.0, easy: 17.9 } } };
+/*  Its CLIMB (the fork's wall-step, flood.ts forkFaults; ENG-28, sent to the lead as Designer stand-in for approval), each value DERIVED:
+ *  - land: his centre past the wall-step's near face where the climb-jump sets him down: the engine's physics (physics.ts PHYS: jumpV 640,
+ *    cutV 230, gravUp 1900, gravDown 2500, airAcc 1700, maxRun 285) climbing a 60 px step from a stand 19-22 px short of its face, forward
+ *    held, at the tier's mean jump hold (tools/inspect/firsttimer.ts: FT_KID 0.16 s, kept by the child: 62 px; FT_ADULT 0.2 s, kept by the
+ *    middle and the expert: 86 px). The adult's traced climb landed nearer, 66 (ENG-28 REPORT: face 880, centre 946, his steer a thumb-lag
+ *    late); the farther landing is taken, the stricter side (less room to run)
+ *  - pause: firsttimer.ts:3083's small-ledge pause (a ledge under 220 px), every tier; it stops him (traced 268 to 41 px/s)
+ *  - runUp: each tier's take-off aim before a lip, its edgeAim (the median of its aimQ; the larger of its settings): child 73 (Easy 71),
+ *    middle 61 (Normal 58), expert 61, adult 22
+ *  - width: Pokey's, 44 px (engine.ts's player) */
+export const W2_FLOOD: FloodRow = {
+  close: { normal: 26, easy: 26 },
+  spare: { normal: 4, easy: 8 },
+  flown: { px: 2000 + 1400, tailOff: { normal: 22.0, easy: 17.9 } },
+  climb: { land: { child: 62, middle: 86, expert: 86, adult: 86 }, runUp: { child: 73, middle: 61, expert: 61, adult: 22 }, pause: [0.25, 0.5], width: 44 },
+};
 
 /** World 2's POST art (post.ts PostArt; 2-7's doors): the PLEASE BE PATIENT door shut (w2-props) and open, a letter and a reply, two
  *  flutter frames each (ART-NEXT-b, the inventory's w2-next rows) */
