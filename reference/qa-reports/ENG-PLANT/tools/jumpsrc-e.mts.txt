@@ -1,0 +1,28 @@
+// usage: tsx jumpsrc.mts <tree> <stage> <bot> <setting> <seed> <tFrom> <tTo>  -> each startJump in [tFrom,tTo]: t x kind, its caller lines
+const [T, stage, bot, setting, seed, a, b] = process.argv.slice(2);
+await import(`${T}/src/game/headlessDom.ts`);
+const { CAST_BOTS } = await import(`${T}/tools/inspect/castBots.ts`);
+const ft = await import(`${T}/tools/inspect/firsttimer.ts`);
+const proto = (ft.FirstTimerRun as any).prototype;
+const orig = proto.startJump;
+proto.startJump = function (this: any, ...args: any[]) {
+  const t = this.t;
+  if (t >= Number(a) && t <= Number(b)) {
+    const st = (new Error().stack ?? '').split('\n').slice(2, 5).map((s) => (s.match(/firsttimer\.ts:(\d+)/) ?? [, '?'])[1]).join('<');
+    const p = this.sim.p; const e = this.sim.e; const h = e.platforms.find((q: any) => q.id === e.standingOnId);
+    console.log(t.toFixed(3), p.x.toFixed(1), args[1], 'gateHop', !!this.gateHop, 'on', h ? h.type + (h.drift ? h.drift.dir : '') : '-', 'from', st);
+  }
+  return orig.apply(this, args);
+};
+const od = proto.decide;
+proto.decide = function (this: any, ...args: any[]) {
+  const t = this.t;
+  if (t >= Number(a) && t <= Number(b)) {
+    const st = (new Error().stack ?? '').split('\n').slice(2, 5).map((s) => (s.match(/firsttimer\.ts:(\d+)/) ?? [, '?'])[1]).join('<');
+    const p = this.sim.p; const e = this.sim.e; const h = e.platforms.find((q: any) => q.id === e.standingOnId);
+    console.log('  decide', t.toFixed(3), p.x.toFixed(1), args[1], 'on', h ? h.type + (h.drift ? h.drift.dir : '') + '#' + h.id + ' x' + h.x.toFixed(0) + '-' + (h.x + h.width).toFixed(0) : '-', 'from', st);
+  }
+  return od.apply(this, args);
+};
+const r: any = ft.firstTimer(stage, Number(seed), CAST_BOTS[bot][setting], { cap: 1200, dotSetting: true });
+console.log('end', r.end, 'rescues', r.rescues);

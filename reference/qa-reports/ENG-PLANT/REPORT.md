@@ -1,3 +1,92 @@
+# ENG-PLANT-e (ENG-PLANT-c session 3, started 5:14 PM ET 11-24 by `date`; this section written 5:29 PM ET by `date`): hand-over (LANES 3b box)
+
+Engine (bots), Opus 5.5 xhigh. Lead: session_01FhBbYN2CVHnFXg7XzqKXpM. Candidates on origin/release-0.10.3-wip-plant-c (NOT on
+release-0.10.3, D117): **c5 0152354a9**, **c6 6234a03ff**, **c7 05aa7f3bd**, **c8 82e3c1b3a**, **c9 742886378** (head). Main rows: data/c/main-*.jsonl (never re-run).
+Known-flip rows (D132, the 10 rows: 2-1 child N 11; 2-2 adult N 4, 24; 2-4 adult N 6, 8, 24, 32, child E 11, 23, child N 39) per
+candidate: data/e/flip-<stage>-<bot>-<setting>-c<n>.jsonl. No full table run on any of them (none cleared the flips).
+
+## EXACT NEXT STEP (session 4)
+1. Setup as session 2's step 1 (npm ci --legacy-peer-deps; freeze with tools/freeze.sh.txt, its `cd` set to your checkout). Work on
+   origin/release-0.10.3-wip-plant-c at **c9 742886378** (the head). Known-flip rows of every candidate: data/e/.
+2. **2-4 adult N 6, 8, 24, 32 (the last 2-4 flips; c9 trace data/e/tr-c9-2-4-adult-N6.txt)**: on c9 he no longer runs off a log's front;
+   on the TAILED river (x 10,028-10,766, tail 430, logs go under 430 px short of the bank) he now steps back log to log (#47 t 57.0, #46
+   t 59.6, #45 t 62.8, every ~2.6 s; the stepBack hop is judged) and is never handed on: no water, but rescued twice by the stuck rule
+   ('water ahead' at 10,685-10,829), again at 16,6xx (another tailed river? check its rivers' tail). His only way on there is the LIANA
+   over the tail, which SKILLS.vineFromLog refuses each ride (session 2: its catch judged at three thumb lags; his own drawn aim catches
+   once in three rides). The lead's ruling 1 says EVERY hop goes through the same landing judge: make vineFromLog judge the hop he will
+   fly (the drawn hop, as gateSees does for floors: hopCatches with the drawn aim at lag 0, not three lags), so a catch his own aim makes
+   is pressed, and a refused one waits on the step-back cycle (which keeps him safe). Toy each way: 2-4 adult N 6 (RED c9, GREEN fix).
+   Ask the lead before changing the vine judge's lags if it reads as a bar (law 22). Then **2-2 adult N 24**: PASS on c8, FAIL on c7 and
+   c9 (set down 3x at 29,875 on c7, 29,708 on c9): trace it on c9 (tools/trace.mts.txt, then tools/padsrc2.mts.txt: copy the frozen tree
+   to a scratch dir, tag intend's returns with perl as this session did, see the REPORT's c9 note) and name the press; c9's only change
+   over c8 is stopMeant on the handed stand and the landing stop, so suspect a stand that now lets go where c8 kept walking.
+3. When the 10 known flips all PASS on one head: the full rule-28 rows vs main (castBots every bot, both settings, seeds 1-40, --par 2,
+   frozen tree; tools/rows-d.sh.txt; at most TWO heavy runs at once) on 2-1, 2-2, 2-4 first (compare data/c/cmp3.py.txt `<st> main -
+   <new>`), then 2-5, 2-7 (its own bar: x40 29/40 or better, the list 69/100 or better; hopJudged + pacerLay since the river gates are
+   shared), 1-4. Bar: ZERO bar PASS -> FAIL vs main on every shipped stage. Send the lead each result as it lands.
+4. Then the toys (each way, RED on c4 6b5f43da0 by the flip rows above, GREEN on the head): riverRide.test.ts' two new tests ('2-4,
+   every hop off a log is judged' adult N 6; '2-1, he never runs off the front of the log he just landed on' child N 11) and the c4 toy
+   (2-4 adult N 30) still green; then the packet's plants (same bars, or retire per R-165.432), riverRide + firsttimer tests, the CI tool
+   line at 0 fail, tierBots 9/9, timecheck + roadmapcheck; merge into release-0.10.3 (no force); hash + table to the lead.
+5. Polish to check on the head: session 2's item 5 (a forward step between the walk back and the hop back, 2-4 adult N 30 t 53.3 on c4;
+   seen again on c6 #48 t 56.0-56.4): c7-c9 change that walk (run-out look, log ahead not floor, stopMeant); trace adult N 30 and look.
+6. A suggestion for the lead (not done, outside this ruling): thumbify's R-165.59 re-arm ('for KID and ADULT the steer is never let go
+   once held' unless stopMeant) is a trap for every stop the bots make with a bare {}; a check that every intend stop on a carrier sets
+   stopMeant, or a stop helper, would close the class.
+
+## What this session found (the lead's rulings 1 and 2)
+- **Ruling 1, the unjudged hop (2-4 adult N 6 on c4)**: jumpsrc (tools/jumpsrc.mts.txt) at t 51.53: the hop came from the queued press
+  (firsttimer.ts c4 :2820, `this.pending`), decided at t 51.47 by the edge code's plain `decide` (c4 :3683). Why the river gates never saw
+  it: the step-back hop landed him on #45's very TIP (x 10,598 on #45 x 10,443-10,593); `floorAt(p.x, p.y, 6)` reads the point at his x,
+  saw no floor, so `here` was null, the river block (`here.type === 'drift'`) was skipped and the generic edge code pressed a hop no gate
+  judged. Fix (c5): the river block reads the log the ENGINE stands him on (`sim.standingOn`, as c4 :4113 already does), and
+  `startJump` refuses any hop off a drifting log with no gate-judged hop (`gateHop` null), counted in `UNJUDGED.n`, one choke point.
+- **Hop paths found outside the judge** (startJump call sites with no `this.gateHop =` before them, line numbers on c4): the queued press
+  :2820 (decide's pending thumb); the late walk-off press :3053; intend's plan hop :3132; the bank-up hop with floatSure off :3414; the
+  legacy race hop (raceSure, floatSure off) :3541; tierEdge 'run' :3673 and 'stand' on a sinking pad :3675; the mushroom double :4439; the
+  snapper hop :4485; decide's immediate press (lag under half a frame) :4595. All now meet the choke point when he stands on a drift.
+- **Ruling 2, 2-1 child N 11**: tagged probe (tools/padsrc2.mts.txt: every return in intend tagged with its line): the press after the
+  judged landing on #137 is intend's "just landed" walk-on (c4 :3233, `if (!this.padPause) return side(dir)`: 0.1 s of run after EVERY
+  landing; #137 is 240 px so no padPause), then the child's thumb let-go (thumbify releaseLeft, his calibrated releaseMax frames) carries
+  the press 4-5 frames more: 40 px of log was not enough. Fix (c5): on landing on a log running his way he stops pressing; where the front
+  is inside his run-out he pulls the thumb back (a turn drops the press at once in thumbify). **c5: 2-1 child N 11 PASS** (rescues 0).
+- **Same root on 2-4 (c5 trace data/e/tr-c5-2-4-adult-N6.txt)**: after the step-back hop lands on #47, he is 67 px from its front,
+  OUTSIDE the edge block's look (his press distance), so intend's default `return side(dir)` (the last line of intend) walks him on at
+  full run; the river block's stand comes 39 px out and his let-go runs him off the front into the water. c6: on a log running his way
+  the look is at least his run-out; c6's run-out used his speed NOW (about 0 when he starts the walk), so it never widened (c6 trace
+  data/e/tr-c6-2-4-adult-N6.txt t 57.30-57.47: intend's last line, vx 0 -> 285). c7: run-out at a full run (PHYS.maxRun x (releaseMax[1]
+  + 3) frames + 24 px).
+- **c7 trace (data/e/tr-c7-2-4-adult-N6.txt, tagged probe)**: still intend's last line at 89 px from #47's front: the widened look
+  reached past #47's front onto **#48, the next log**, and `ahead` read it as floor, so the river block never ran; at 57.30 the stand
+  came 47 px out and the let-go ran him off. c8: standing on a log running his way, another log ahead is no floor to walk on (`logAhead`).
+- **c8 trace (data/e/tr-c8-2-4-adult-N6.txt, tagged probe)**: now the river block's handed stand DOES return {} from t 63.20, 80 px
+  from #45's front, but thumbify keeps pressing right 10 frames: the ADULT has no holdQ, so his let-go re-arms every frame (thumbify's
+  own R-165.59 note: 'for KID and ADULT ... the steer is never let go once held') unless the stop is one he means (`stopMeant`, as the
+  stop at intend's raised-row line sets). c9: the handed stand and the landing stop set `stopMeant`.
+- Polish item 5 of session 2 (the forward step between the walk back and the hop back) is visible again on c6 (#48, t 56.0-56.4: back
+  to -267, then forward to +285, then the hop back): the same default walk, outside the look; c7 should cover it (check the trace).
+
+## Known flips per candidate (bar rows; main PASSES all 10)
+| row | c4 | c5 0152354a9 | c6 6234a03ff | c7 05aa7f3bd | c8 82e3c1b3a | c9 742886378 |
+|---|---|---|---|---|---|---|
+| 2-1 child N 11 | FAIL | PASS | PASS | PASS | PASS | PASS |
+| 2-2 adult N 4 / 24 | FAIL / FAIL | PASS / PASS | PASS / PASS | PASS / **FAIL** (new: set down 3x at 29,875) | PASS / PASS | PASS / **FAIL** (set down 3x at 29,708) |
+| 2-4 child E 11 / 23 | FAIL / FAIL | PASS / PASS | PASS / PASS | PASS / PASS | PASS / PASS | PASS / PASS |
+| 2-4 adult N 6 / 8 / 24 / 32 | FAIL x4 | FAIL x4 (rescues 4/2/2/3; set down 3x at 10,718-10,902 and 16,7xx) | FAIL x4 (3/3/2/2) | FAIL x4 (3/2/2/1; 10,742-10,878 and 16,7xx) | FAIL x4 (1/2/2/2; 10,693-10,878) | FAIL x4 (2/2/2/2: no water; stuck-rescued cycling step-backs, see next step 2) |
+| 2-4 child N 39 | FAIL | FAIL (1) | FAIL (2) | PASS | PASS | PASS |
+
+**Totals of the 10 known flips: c4 0/10, c5 5/10, c6 5/10, c7 6/10, c8 6/10, c9 5/10.** None lands (bar: 10/10, then zero bar
+PASS -> FAIL on the full tables). c9 is the head and the right base: every fix in it is at a named root (the log he stands on, one
+hop judge, no landing walk-on, the run-out look, a log ahead is no floor, a meant stop); what is left is the tailed river's way on (the
+liana judge) and 2-2 adult N 24.
+
+## Process notes (own them)
+- D36: c5 was committed on a DETACHED head (the checkout sat on 6b5f43da0 detached; `git status -sb` said "HEAD (no branch)" in the
+  commit chain and I did not stop on it). It was pushed as HEAD:release-0.10.3-wip-plant-c, a fast-forward, ls-remote equal; the local
+  branch was then pointed at it and switched to before c6. Countermeasure for me: the commit chain checks `git symbolic-ref -q HEAD` first.
+- Every run on chattr-frozen worktrees (/home/user/fz-c4..c7, proven writable, D115); every long run run_in_background; no heredoc in a
+  commit chain (D119); time stamps from `date` (D128). Lessons applied: D115, D117, D119, D128, D132 (known flips first).
+
 # ENG-PLANT-d (ENG-PLANT-c session 2, started 4:56 PM ET 11-24 by `date`; this section written 5:12 PM ET by `date`): hand-over (LANES 3b box)
 
 Engine (bots), Opus 5.5 xhigh. Lead: session_01FhBbYN2CVHnFXg7XzqKXpM. Candidate 4 = **6b5f43da0** on origin/release-0.10.3-wip-plant-c

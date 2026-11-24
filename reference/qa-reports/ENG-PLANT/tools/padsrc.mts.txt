@@ -1,0 +1,22 @@
+// usage: tsx padsrc.mts <tree> <stage> <bot> <setting> <seed> <tFrom> <tTo> -> per frame: t x here intend rhythm out
+const [T, stage, bot, setting, seed, a, b] = process.argv.slice(2);
+await import(`${T}/src/game/headlessDom.ts`);
+const { CAST_BOTS } = await import(`${T}/tools/inspect/castBots.ts`);
+const ft = await import(`${T}/tools/inspect/firsttimer.ts`);
+const proto = (ft.FirstTimerRun as any).prototype;
+const fmt = (o: any) => JSON.stringify(o ?? {}).replace(/"/g, '');
+for (const m of ['intend', 'rhythm', 'thumbify', 'tapped']) {
+  const orig = proto[m];
+  proto[m] = function (this: any, ...args: any[]) {
+    const out = orig.apply(this, args);
+    const t = this.t;
+    if (t >= Number(a) && t <= Number(b)) {
+      const p = this.sim.p; const e = this.sim.e; const h = e.platforms.find((q: any) => q.id === e.standingOnId);
+      const f = this.floorAt(p.x, p.y, 6);
+      console.log(t.toFixed(3), m, p.x.toFixed(1), 'on', h ? h.type + '#' + h.id + ' ' + h.x.toFixed(0) + '-' + (h.x + h.width).toFixed(0) : '-', 'floorAt', f ? f.type + '#' + f.id : '-', 'jump', !!this.jump, 'standing', fmt(this.standing), 'out', fmt(out));
+    }
+    return out;
+  };
+}
+const r: any = ft.firstTimer(stage, Number(seed), CAST_BOTS[bot][setting], { cap: 1200, dotSetting: true });
+console.log('end', r.end, 'rescues', r.rescues);
