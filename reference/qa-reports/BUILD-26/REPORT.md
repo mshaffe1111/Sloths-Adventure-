@@ -1,6 +1,6 @@
-# BUILD-26q (t-build-26-wip-26q; base t-build-26 40a9c4bd2, frozen): 2-6's Easy residue: box 1 = the re-measure and the clusters. Started 4:21 PM ET 11-24 (by `date`); this box written 4:39 PM ET
+# BUILD-26q (t-build-26-wip-26q; base t-build-26 40a9c4bd2, frozen): 2-6's Easy residue: box 1 = the re-measure and the clusters. Started 4:21 PM ET 11-24 (by `date`); this box written 4:40 PM ET
 
-## EXACT NEXT STEP (session 2, xhigh, engine tier; budget: session 1 ran 4:21 PM ET to 4:39 PM ET of the job's 4 h; HARD STOP 11:00 PM ET)
+## EXACT NEXT STEP (session 2, xhigh, engine tier; budget: session 1 ran 4:21 PM ET to 4:40 PM ET of the job's 4 h; HARD STOP 11:00 PM ET)
 1. **The spot that matters (59 of 83 failing runs; 31 seeds fail on it alone): the first street's SUNKEN STEP (the tower's soft pit),
    NOT the house ladder.** FRAME TRACE (kid E 40, b26q/frames-kidE40.txt; b26q/frames26.mts.txt wraps RealPlay.frame; x is his centre):
    he runs off the boulder (541..706 @6319) at run speed (vx 268-285), touches the street b (414..762 @6369) at x 771 for one frame, drops into
@@ -15,8 +15,9 @@
    84 px with 82 px. Easy lands him later and nearer the far lip (Easy harder than Normal: rule 4).
    **Withdrawn in this box:** my first reading (the house ladder 18 px from a lip; b26q/lip-40a9c4bd2.txt is true but not the cause: every
    turned-back climb stands 18 px, both settings, and the bots pass them) and its toy (b26q/towerClimbLip.test.ts.txt, not on the branch).
-   Next: (a) confirm on 2 more runs (adult E 2, kid E 4: frames26 with --t0 600 --t1 1250, the window filter in the file) and count how
-   many of the 59 fall at the step (the first fall-back's x within 762..900); (b) the toy RED on the base: 'a run at full speed into
+   CONFIRMED 3 of 3 traced (kid E 40, adult E 2, kid E 4: b26q/frames-*.txt): each lands in the step at x 837-840 at run speed and runs off
+   under the next street. Next: (a) count how many of the 59 fall at the step (frames26 per row, the window filter in the file; the 59
+   share one logged place, 927-937 x 6378-6392, so expect all); (b) the toy RED on the base: 'a run at full speed into
    a tower soft pit stops in it (or lands on the far floor), never passes under the far lip', every tower stage's pits, both settings;
    (c) the general fix in the soft pit's lay (pipeline/tower, engine tier: a face under the far lip down to the bough, or the bough
    carried under the far lip by a stopping distance; the lead rules which), then lockall on every listed stage (the lead's first
@@ -44,6 +45,13 @@ rescued), adult N 88 (1 rescued, 11 under the 100 s climb floor, min 95.9 s), ki
 Fixing the first street alone: 46 + 31 = 77; with the floor: 87 (if nothing else moves; to be measured).
 Trace of one (kid E 40, b26q/trace-kidE40.txt): up onto the boulder at 30.7 s, at 6748 below by 32.9 s with no jump between (ran off),
 'FELL BACK' at 51.0 s, rescued at 932,6378.
+
+## Method used / lessons applied / method update (box 1)
+- Method: dispatch-packet.md D125 (yield first), D115 (frozen trees, chattr), level.md rule 28 (trace each miss before fixing). Lessons:
+  D125, D115, D114 (base suite first), D130 (place by x AND y on a tower), D113 (no foreground waits), D109 (no clock in messages), D53.
+- Method update (proposed): a cluster's 'place' from the bot's stuck list is where he last STOOD, not where he fell; trace one run frame by
+  frame (b26q/frames26.mts.txt, wraps RealPlay.frame, a position window) BEFORE naming a cause. I named the wrong piece first (the ladder)
+  and had to withdraw it twice to the lead; the frame trace took 30 s.
 
 ## Pushback
 - None on the packet: its 'lip family' is right (one spot, 59 of 83 runs). My own first reading this box (the house ladder) was wrong and

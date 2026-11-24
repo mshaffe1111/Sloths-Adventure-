@@ -1,0 +1,75 @@
+31.70 x 708 y 6334 vx 285 vy 0 - | right
+31.73 x 717 y 6334 vx 268 vy 0 - | right
+31.77 x 727 y 6337 vx 285 vy 83 - | right
+31.80 x 736 y 6342 vx 268 vy 167 - | right
+31.83 x 745 y 6351 vx 285 vy 250 - | right
+31.87 x 754 y 6362 vx 268 vy 333 - | right
+31.90 x 764 y 6376 vx 285 vy 417 - | right
+31.93 x 773 y 6384 vx 268 vy 0 - | right
+31.97 x 782 y 6387 vx 285 vy 83 - | right
+32.00 x 791 y 6392 vx 268 vy 167 - | right
+32.03 x 801 y 6401 vx 285 vy 250 - | right
+32.07 x 809 y 6412 vx 268 vy 333 - | right
+32.10 x 819 y 6426 vx 285 vy 417 - | right
+32.13 x 828 y 6442 vx 268 vy 500 - | right
+32.17 x 837 y 6454 vx 285 vy 0 - | right
+32.20 x 846 y 6454 vx 268 vy 0 - | right
+32.23 x 856 y 6457 vx 285 vy 83 - | right
+32.27 x 865 y 6462 vx 268 vy 167 - | right
+40.10 x 701 y 6334 vx 268 vy 0 - | right
+40.13 x 710 y 6334 vx 285 vy 0 - | right
+40.17 x 719 y 6337 vx 268 vy 83 - | right
+40.20 x 729 y 6342 vx 285 vy 167 - | right
+40.23 x 738 y 6351 vx 268 vy 250 - | right
+40.27 x 747 y 6362 vx 285 vy 333 - | right
+40.30 x 756 y 6376 vx 268 vy 417 - | right
+40.33 x 765 y 6384 vx 285 vy 0 - | right
+40.37 x 774 y 6384 vx 268 vy 0 - | right
+40.40 x 784 y 6387 vx 285 vy 83 - | right
+40.43 x 793 y 6392 vx 285 vy 167 - | 
+40.47 x 803 y 6401 vx 285 vy 250 - | 
+40.50 x 812 y 6412 vx 285 vy 333 - | 
+40.53 x 822 y 6426 vx 285 vy 417 - | 
+40.57 x 831 y 6442 vx 285 vy 500 - | 
+40.60 x 841 y 6454 vx 285 vy 0 - | 
+40.63 x 850 y 6454 vx 268 vy 0 - | right
+40.67 x 859 y 6457 vx 285 vy 83 - | right
+40.70 x 868 y 6462 vx 268 vy 167 - | right
+49.77 x 708 y 6334 vx 285 vy 0 - | right
+49.80 x 717 y 6334 vx 268 vy 0 - | right
+49.83 x 726 y 6337 vx 285 vy 83 - | right
+49.87 x 735 y 6342 vx 268 vy 167 - | right
+49.90 x 745 y 6351 vx 285 vy 250 - | right
+49.93 x 754 y 6362 vx 268 vy 333 - | right
+49.97 x 763 y 6376 vx 285 vy 417 - | right
+50.00 x 772 y 6384 vx 268 vy 0 - | right
+50.03 x 782 y 6387 vx 285 vy 83 - | right
+50.07 x 790 y 6392 vx 268 vy 167 - | right
+50.10 x 800 y 6401 vx 285 vy 250 - | right
+50.13 x 809 y 6412 vx 285 vy 333 - | 
+50.17 x 819 y 6426 vx 285 vy 417 - | 
+50.20 x 828 y 6442 vx 285 vy 500 - | 
+50.23 x 838 y 6454 vx 285 vy 0 - | 
+50.27 x 847 y 6454 vx 268 vy 0 - | right
+50.30 x 856 y 6457 vx 285 vy 83 - | right
+50.33 x 865 y 6462 vx 268 vy 167 - | right
+52.50 x 1035 y 6384 vx 87 vy 0 - | right
+52.53 x 1040 y 6384 vx 173 vy 0 - | right
+52.57 x 1049 y 6384 vx 260 vy 0 - | right
+52.60 x 1058 y 6384 vx 285 vy 0 - | right
+52.63 x 1067 y 6384 vx 268 vy 0 - | right
+52.67 x 1077 y 6384 vx 285 vy 0 - | right
+52.70 x 1086 y 6384 vx 268 vy 0 - | right
+52.73 x 1126 y 6377 vx 0 vy 0 - V | up right
+52.77 x 1126 y 6369 vx 0 vy 0 - V | up right
+52.80 x 1126 y 6362 vx 0 vy 0 - V | up right
+52.83 x 1126 y 6355 vx 0 vy 0 - V | up right
+52.87 x 1126 y 6347 vx 0 vy 0 - V | up right
+52.90 x 1126 y 6340 vx 0 vy 0 - V | up right
+52.93 x 1126 y 6333 vx 0 vy 0 - V | up right
+52.97 x 1126 y 6325 vx 0 vy 0 - V | up right
+53.00 x 1126 y 6318 vx 0 vy 0 - V | up right
+53.03 x 1126 y 6311 vx 0 vy 0 - V | up right
+53.07 x 1126 y 6303 vx 0 vy 0 - V | up right
+53.10 x 1126 y 6296 vx 0 vy 0 - V | up right
+{"end":"shrine","time":131.7,"rescues":1}
