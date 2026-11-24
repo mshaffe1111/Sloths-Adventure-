@@ -1,0 +1,10 @@
+// usage: tsx hops.mts <tree> <stage> <bot> <setting> <seed> <xFrom> <xTo> [skillOff]  -> the judged hops in [xFrom, xTo]
+const [T, stage, bot, setting, seed, a, b, off] = process.argv.slice(2);
+await import(`${T}/src/game/headlessDom.ts`);
+const { CAST_BOTS } = await import(`${T}/tools/inspect/castBots.ts`);
+const { SKILLS, firstTimer, HOP_TRACE } = await import(`${T}/tools/inspect/firsttimer.ts`);
+if (off) (SKILLS as any)[off] = false;
+HOP_TRACE.on = true; HOP_TRACE.rows.length = 0;
+const r: any = firstTimer(stage, Number(seed), CAST_BOTS[bot][setting], { cap: 1200, dotSetting: true });
+for (const h of HOP_TRACE.rows) if (h.x >= Number(a) && h.x <= Number(b)) console.log(JSON.stringify(h));
+console.log('end', r.end, 'rescues', r.rescues, 'lives', r.lives);
