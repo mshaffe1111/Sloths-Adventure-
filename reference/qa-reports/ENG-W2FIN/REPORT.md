@@ -1,5 +1,5 @@
 # ENG-W2FIN REPORT: a wheel's fall takes its own pond as its river (R-165.431, release 4's CI line)
-Member: ENG-W2FIN (engine, Opus 5.5 xhigh). Base: release-0.10.3 0077c62c6. Fix: 78bf17d60 (branch eng-w2fin). Landed: MERGE_HASH.
+Member: ENG-W2FIN (engine, Opus 5.5 xhigh). Base: release-0.10.3 0077c62c6. Fix: 78bf17d60 (branch eng-w2fin). Landed on release-0.10.3: merge 150e6e161 (tsc PASS, the 2 plants + wheelChannel 4/4 GREEN on it).
 
 ## The fork (packet item 1)
 **A fall over a wheel's sweep takes that wheel's own pond as its river** (w2.ts w2Finish, `wheelPond` inside `hasRiver`), not banks()
