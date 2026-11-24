@@ -1431,9 +1431,11 @@ export class FirstTimerRun {
   private blockedT = 0;
   private lastX = 0;
   /** a press he has decided on, and when the thumb gets there */
-  private pending: { at: number; dir: -1 | 0 | 1; kind: 'single' | 'double'; off: boolean; still?: boolean; want: number; judged?: boolean } | null = null;
+  private pending: { at: number; dir: -1 | 0 | 1; kind: 'single' | 'double'; off: boolean; still?: boolean; want: number; judged?: boolean; climb?: boolean } | null = null;
   /** the press now coming is one its own catch judge passed (vineFromLog's liana catch): startJump's one-gate check lets it through */
   private pressJudged = false;
+  /** the press now coming is a climb up off where he stands to a ledge or vine 60+ px above (intend's climb line): no hop onto a log */
+  private pressClimb = false;
   /** SKILLS.runUp: the run-up vineFromLog sent him on, on this log (its id), last judged at this game time */
   private runUp: { id: number; t: number } | null = null;
   /** the game time a press decided on (decide) was aimed to reach the engine (pressIn), for the press this frame's pad carries */
@@ -2899,8 +2901,10 @@ export class FirstTimerRun {
       this.pending = null;
       if (p.grounded || p.climbing || p.isVineSwinging || p.hanging || t - (this.airFrom?.t ?? t) < 0.4) {
         this.pressJudged = !!q.judged;
+        this.pressClimb = !!q.climb;
         const out = this.startJump(q.dir, q.kind, q.off);
         this.pressJudged = false;
+        this.pressClimb = false;
         this.pressWant = q.want;
         return out;
       }
@@ -3287,7 +3291,16 @@ export class FirstTimerRun {
       const toX = q ? Math.max(q.x + 30, Math.min(q.x + q.width - 30, p.x)) : trunk ? trunk.x : null;
       this.climbJump = true;
       this.climbToX = toX;
-      return this.decide(toX === null ? d : toX > p.x + 6 ? 1 : toX < p.x - 6 ? -1 : 0, tgt.y < p.y - 90 ? 'double' : this.mem.plan(p.x, p.y), false, {});
+      // (ENG-PLANT-g, D133, the lead's ruling 2: a climb up to a ledge 60+ px above comes down on no log, so startJump's one-gate check
+      //  (no unjudged hop off a carrier, c5) lets it through; refused, he stood on 2-4's logs #103-#105 (x 23,400) with the climb queued
+      //  and refused 17 times, walked off the front, set down 8 times, rescued (child Normal 39 on candidate 14))
+      this.pressClimb = true;
+      const out = this.decide(toX === null ? d : toX > p.x + 6 ? 1 : toX < p.x - 6 ? -1 : 0, tgt.y < p.y - 90 ? 'double' : this.mem.plan(p.x, p.y), false, {});
+      this.pressClimb = false;
+      // (decide may have queued it: the pending press carries the mark; the narrowing above does not see decide's write)
+      const queued = this.pending as { climb?: boolean } | null;
+      if (queued) queued.climb = true;
+      return out;
     }
     // (walking off for a late press that never came: the ground went on after all)
     if (this.lateArmed && t - this.lateArmed.t > 1) {
@@ -4862,7 +4875,7 @@ export class FirstTimerRun {
     // (SKILLS.floatSure, ENG-PLANT-e, the lead's ruling 1: EVERY hop off a carrier is one the landing judge saw (gateSees set gateHop):
     //  one gate, no path around it. A press from any other path standing on a drifting log (a decide's queued thumb, the edge code's run
     //  or stand press, a plan's hop) is refused here, counted (UNJUDGED), and dropped; the river block judges him again next frame)
-    if (SKILLS.floatSure && !this.gateHop && !this.pressJudged && p.grounded && this.sim.platforms.find((q) => q.id === this.sim.standingOn)?.type === 'drift') {
+    if (SKILLS.floatSure && !this.gateHop && !this.pressJudged && !this.pressClimb && p.grounded && this.sim.platforms.find((q) => q.id === this.sim.standingOn)?.type === 'drift') {
       UNJUDGED.n++;
       this.pending = null; this.lateArmed = null;
       return {};
