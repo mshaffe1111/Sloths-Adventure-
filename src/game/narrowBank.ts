@@ -10,7 +10,8 @@
  * - 'post': standing alone with a side open over his height and its foot on a solid (a floor under it, or its foot sunk in one): drawn as
  *   World 1's tall live post (the inventory's hf678/w1-livepost-tall, 'support', a made thing), from its top to the floor, its shaft the
  *   collider's width (livePostArt.ts), and left out of the painted soil.
- * A narrow block with neither (floating in the air, both sides closed) keeps the painted bank, and the side-wall check fails it.
+ * Only a block he can meet side-on (a side open over his height) is given a look; a narrow bank with both sides closed draws as it always
+ * has. A narrow open block with neither shape (floating in the air) keeps the painted bank, and the side-wall check fails it.
  * sideWall.ts reads this same decision, so the check and the screen cannot disagree. Pure geometry; one pass per stage, memoised.
  */
 import type { Platform } from './types.ts';
@@ -41,11 +42,12 @@ export function openSide(p: Platform, solids: readonly Platform[], side: 'left' 
 
 function lookOf(p: Platform, platforms: readonly Platform[]): NarrowLook | null {
   if (p.width >= BODY_W || !paintedBank(p)) return null;
+  // (only a block he can meet side-on: a side open over his height. A narrow bank with both sides closed draws as it always has)
+  const solids = platforms.filter(solidOf);
+  if (Math.max(openSide(p, solids, 'left'), openSide(p, solids, 'right')) < BODY_H) return null;
   const into = platforms.find((q) => q !== p && q.width >= BODY_W && paintedBank(q) && Math.abs(q.y - p.y) <= 2 && Math.abs(q.y + q.height - (p.y + p.height)) <= 2
     && (Math.abs(q.x + q.width - p.x) <= 2 || Math.abs(p.x + p.width - q.x) <= 2));
   if (into) return { look: 'joined', into };
-  const solids = platforms.filter(solidOf);
-  if (Math.max(openSide(p, solids, 'left'), openSide(p, solids, 'right')) < BODY_H) return null;
   // (its foot on a solid: the highest top under its own top by at least his height, at most 2 px under its foot; a post never floats)
   let floor = Infinity;
   for (const q of solids) if (q !== p && q.x < p.x + p.width && q.x + q.width > p.x && q.y >= p.y + BODY_H && q.y <= p.y + p.height + 2) floor = Math.min(floor, q.y);
