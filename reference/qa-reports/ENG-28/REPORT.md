@@ -36,7 +36,11 @@ code head (recipes in session 6's steps below; the suite in 6 shards of the CLAU
     expert/adult, ROAD_TRIPS.n per stage; 6:15-6:16 PM ET): 2-1 0, 2-2 0, 2-3 0, 2-4 0, 2-5 0, 2-6 0, 2-7 0, 1-2 0; TOTAL 0. (Those
     runs' ends, named and not read further: 2-3 'sealed door' for all four tiers on seed 1, the child 'time' on 2-4/2-6/2-7, every other
     run 'shrine'; a fresh phone, seed 1, not the proven-seed runs.)
-  - lockall --check and the suite shards: running (see the hand-over).
+  - lockall `--layouts 16 --check reference/qa-reports/ENG-28/lock-base-90552d3ec.json` (6:10-6:22 PM ET): PASS, exit 0, 'lock: 102/102
+    stages unchanged'; its unhashed note names the same 36 stages as session 5's ('gen2 gained verdicts and drops' against the base
+    file: 1-1..1-9, 2-1, 2-2, 2-4, 2-5, 5-7, 5-9, 6-1..6-7, 6-9, 7-1, 7-3, 7-5, 7-6, 7-7, 7-9, 8-1, 8-2, 8-3, 8-5, 8-6, 8-8, 8-9).
+  - The suite (the CLAUDE.md glob, 631 files) in 6 shards (`split -n l/6` of the sorted list): shard 0 589 pass, 0 fail (63 s).
+  - Suite shards 1-5 and the CI tool line: running (see the hand-over).
 
 ## FOR THE LEAD: R-165.424's bot list (no bot change in this job)
 1. The late-18 read at the boundary (re-measured this session on the passing shape, frozen wt28h1, seeds 1/2/3 identical): the MIDDLE
