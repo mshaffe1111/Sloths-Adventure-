@@ -1438,6 +1438,8 @@ export class FirstTimerRun {
   private landRide: number | null = null;
   /** SKILLS.runUp: the run-up vineFromLog sent him on, on this log (its id), last judged at this game time */
   private runUp: { id: number; t: number } | null = null;
+  /** SKILLS.runUp: the hold the run-up's jump was judged with (runPress: who.hold[0]), and when; startJump holds at least that */
+  private runUpHold: { hold: number; t: number } | null = null;
   /** the game time a press decided on (decide) was aimed to reach the engine (pressIn), for the press this frame's pad carries */
   private pressWant: number | undefined;
 
@@ -2381,6 +2383,7 @@ export class FirstTimerRun {
         this.runUp = { id: here.id, t };
         return side1(dir);
       }
+      this.runUpHold = { hold, t };
       this.pressJudged = true;
       const go = this.decide(dir, 'single', true, side1(dir));
       this.pressJudged = false;
@@ -4954,6 +4957,15 @@ export class FirstTimerRun {
       hold = Math.max(hold, this.raceHop);
       if (kind === 'double') hold = Math.min(hold, d2 - DT);
       this.raceHop = 0;
+    }
+    // (the run-up's jump, SKILLS.runUp: held at least as long as runPress judged it (who.hold[0]), as the race's, the liana's and the
+    //  wheel's hops are; a shorter draw (0.093 s on 2-4 child Normal 8, t 120.77) peaked at y 895 under liana #4's foot (859) and fell in)
+    if (this.runUpHold) {
+      if (this.t - this.runUpHold.t < 0.5) {
+        hold = Math.max(hold, this.runUpHold.hold);
+        if (kind === 'double') hold = Math.min(hold, d2 - DT);
+      }
+      this.runUpHold = null;
     }
     let upOnly = !off && this.r() < who.upOnly ? between(this.r, who.upOnlyT) : 0;
     // (a hop a gate judged, SKILLS.floatSure (rule 28, the lead's ruling): flown as drawn and judged, kind, holds, second press and the
