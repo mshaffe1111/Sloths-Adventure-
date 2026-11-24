@@ -2,6 +2,23 @@
 
 Merged at INT-14 (11-20, t-int-14): §0zq-25d/§0zq-25c ENG-25c (2-5's snap rows level, the snapper's ground, the straddle), §0zq-NOISE ENG-NOISE (one noise channel), §0zq-PROWL ENG-PROWL (sight.up + the leap), §0zq-small3 ENG-SMALL3 (R-165.317/.319/.321), and PAINT-292 (World 1's painted planks and stones; no section here). Merged at INT-13 (11-19, t-int-13): §0ENG23 ENG-23 (followers, the heron reads the line) and §0zl-168 TIME-168 (timecheck), §0zm-25b ENG-25b (the snapper bot skill, the meter's snap channel) and §0zl-25 ENG-25 (2-5's snap stones and snapper rows), §0zn-26b ENG-26b and §0zm-26 ENG-26 (the water wheel), §0W2A ART-W2A (2-3's painted follow poses), §0zo ART-W2B (the wheel's painted draw), §0zo-285c/§0zo-285b/§0zo-285 ENG-285 (the judges and bots fly the engine's Pokey), §0zp-284 FIX-284/284b (2-2's big pads, the real tap hop), §0zp-24d BUILD-24d, §0zn-24c ENG-24c (the raft look, the glow) and §0zm-24 BUILD-24 (2-4) joined; rewritten at the INT-12 merge (11-18, t-int-12): four members wrote here the same day, so labels are suffixed where they met: §0zm-22p ART-22P (CI's seed-list matrix, R-165.278); §0zl-24 ENG-24 (a liana over a river; its REPORT cites it as §0zl); §0zm BUILD-19b, §0zn ENG-19c and §0zl BUILD-19 (t-build-19, the labels its REPORT cites). Before them FIX-22b (11-15): section 0zk.
 
+## 0zq-warn. WARN-412 (t-eng-27-wip-warn, 11-24): every laid warning a must, every story beat a story line; the laid-line gate (R-165.412)
+- **A laid line's KIND is data, never words.** `StageHint.warn` (protoStage.ts) -> engine.ts GuideOpts `warn` (WARN_LINE) -> App.tsx's
+  guide feed -> DotGuide.tsx engineLine -> dotLines.ts engineGuideLine `o.warn`: kind 'must' on every help setting (lock still wins:
+  its topic is the exit). The pipeline's water line (pipeline.ts, WATER_WARN) is laid with `warn: true` in every world. Before, "This
+  river's deep." read as 'info' and Tips dropped it on Normal; note a word-classified 'danger' line WITHOUT a mech is dropped on Tips
+  too (helpAllows), so 'danger' alone is not "always shows": use `warn`.
+- **Story beats are the world's `storyTips`** (by tip id, with the speaker the arc's line table names): w1Arc12 roots; w1Arc17
+  arrive, mark; w1Arc18/19 mark; w2Arc21 edge, village, mark; w2Arc22 stone, lily (Pokey), crown, king; w2Arc24 view (Pokey);
+  w2Arc25 quiet. Two of them (2-2's lily, 2-4's view) are Pokey's: before this, Dot said them. 1-1's "Up the bank! Step to step"
+  is the first stage's own coaching: W1's `teachTips` ('hint.1-1.bank'). 1-1's "No soft moss up here!" is never said (engine.ts
+  marks it heard at the start; the gate skips a hint already `shown` at load).
+- **The gate:** `npx tsx tools/engine/storyTipScan.ts --check` (gates.yml 'rolled'; gates.md 8d; its test plants 2-1's warning as
+  plain words, RED as info). 20 dropped on t-eng-27 091ba9479 -> 0 on 642e95598, 128 laid lines over the 13 listed stages.
+- **Traps:** the mixer's 1-1 (src/game/mixer) is NOT the 1-1 the game builds: its line flags change nothing (I tried; reverted).
+  lockall hashes `proto.hints`, so a line-only change shows as `proto.hints` moving: the proof is that NOTHING ELSE moved.
+  There is no "optional" mark: no laid line needs one today; the first builder who wants a Tips-silent stage line proposes it.
+
 ## 0zq-floor. DRESS-27c/27d (dress27c, landed by DRESS-27d on t-eng-27, 11-23): the view's foot over a stacked leg; a deep river's sheet at a bank
 - **The view's foot stays in an upper leg's earth** (groundStack.ts viewFloor + underReach, protoArt.ts stackViewFloor, engine.ts's camera
   before the HUD clamp): standing over a ceiling (inside its run, feet above its line) the camera's target never frames below the line
