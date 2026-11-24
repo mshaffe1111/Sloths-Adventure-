@@ -131,7 +131,15 @@ test('planted: with fetch-the-spooked off the spooked one is left at its reed an
  * sets off (the last cage freed that long ago: he dawdled). Counted: the little ones the close sets on the near bank (a split line) and
  * which road he took. The toy's spawn and flags stand on its own floor (a lost heart puts him and the line back there).
  */
-interface FloodRun { end: string; setBack: number; home: number; high: boolean; t: number }
+interface FloodRun {
+  end: string;
+  setBack: number;
+  home: number;
+  /** The road he took AT THE FORK: a grounded stand on the high road before the first close. Set only while no close has fired: after the
+   *  close the high road is the only way on, so a stand there then says nothing about his choice (the lead's ruling, R-165.432, ENG-28f). */
+  high: boolean;
+  t: number;
+}
 function floodRun(who: FirstTimer, seed: number, late: number): FloodRun {
   freshPhone(who.setting);
   const mr = Math.random;
@@ -181,8 +189,10 @@ function floodRun(who: FirstTimer, seed: number, late: number): FloodRun {
     // (the last cage burst `late` s ago: the clock has run that long)
     e.floodClock.freed(flood.start.id, e.gameTime - late);
     let setBack = 0;
+    let shut = false;
     const closed = e.follow.floodClosed.bind(e.follow);
     e.follow.floodClosed = (w: unknown) => {
+      shut = true;
       const out = closed(w) as Follower[];
       setBack += out.length;
       return out;
@@ -192,7 +202,7 @@ function floodRun(who: FirstTimer, seed: number, late: number): FloodRun {
     run.sim.frame = (...a: unknown[]) => {
       const r = on(...(a as [never]));
       const p = run.sim.p;
-      if (p.x > W0 + 40 && p.x < W1 - 40 && p.grounded && p.y < Y - 100) high = true;
+      if (!shut && p.x > W0 + 40 && p.x < W1 - 40 && p.grounded && p.y < Y - 100) high = true;
       return r;
     };
     run.play();
@@ -238,13 +248,18 @@ test('lead-the-line, too late for the line (he dawdled 22 s): the bot reads the 
   }
 });
 
+// Late 19, not 'too late''s 22 (a re-plant at the SAME bar, R-165.432, ENG-28f): with the read removed he keeps the way's own low road, and
+// keep-the-road's step-off now stops him at W's lip first, so at late 22 the close (2.93 s left at the fork read) fell while he and the
+// line were still on the near bank (middle seed 1: he at x 836, the three at 745/711/677) and cut nobody off. At late 19 about 5.9 s are
+// left at the read against the 6.44 s the line needs to cross, so the read still sends him round, and without it the line is out on the
+// low road when it closes.
 test('planted: with the read removed the bot takes the low road late and the close splits the line (one or more set on the near bank)', () => {
   LINE_SKILL.leadLine = false;
   const off: string[] = [];
   let split = 0;
   try {
     for (const [name, who] of WHO) for (const seed of SEEDS) {
-      const r = floodRun(who, seed, 22);
+      const r = floodRun(who, seed, 19);
       off.push(`${name} ${seed}: ${JSON.stringify(r)}`);
       if (!r.high && r.setBack > 0) split++;
     }
