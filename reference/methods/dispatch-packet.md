@@ -110,3 +110,8 @@ Every landing on a shared work branch (t-build-*, t-eng-*, t-int-*) runs, with t
 .github/workflows/gates.yml's 'rolled' job, the exact list there (about 5 minutes)**, never only CLAUDE.md's four engine tool tests. A red
 the landing inherits is named to the lead with its first bad commit if known; a red it adds is a stop. 11-22: nine of the rolled job's
 tests were red on t-build-26 9e1e30b27 after a landing reported 'suite green' on CLAUDE.md's short list.
+
+## A time in a REPORT is the time it was WRITTEN (D128 by members, 11-24)
+Every clock time a member writes (REPORT, turnover note, STATE) comes from `TZ=America/New_York date` in the same command, never a planned
+time such as the box's end. timecheck fails a stamp later than its own commit: two members did it on 11-24 (INT-R5b's REPORT.md:201,
+ENG-PLANT's REPORT.md:3), each writing 'hand-over at the box (H:MM)' before the box ended.
