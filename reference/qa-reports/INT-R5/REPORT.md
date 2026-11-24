@@ -2,7 +2,58 @@
 
 Session 1: started 2:31 PM ET 11-24 (by `date`), handed over at the 28-minute box. Lead: session_01FhBbYN2CVHnFXg7XzqKXpM.
 
-## EXACT NEXT STEP (session 2 starts here)
+## EXACT NEXT STEP (session 3 starts here)
+Session 2 (INT-R5b): started 2:51 PM ET 11-24 (by `date`). Head: release-0.10.3 = see `git log -1 origin/release-0.10.3` (session 2 pushed
+57d8b8ffb, the bump, then REPORT-only commits). In order:
+1. **Wait for three hashes from the lead (ReadNotifications at every step boundary):** ENG-W2FIN's w2.ts root fix (red class (A); it
+   merges into release-0.10.3 itself; due 4:00 PM ET), ENG-PLANT's (bots: red classes (B) riverRide x5 and (C) firsttimer :184, re-planted
+   at the same bar, riverRide :207's real 2-1 case traced to its cause; it reads the bisect below) and FILL-14b's (1-4's slots 26/45/66/69
+   filled in place). On each: `git pull` the release tree,
+   `npx tsc --noEmit -p .`, then the CI tool line (gates.yml:157, read live) on a FROZEN `git worktree add --detach` of the new head
+   (the D92 rule: the CI line after EACH merge). FILL-14b: merge it (`git merge --no-ff <hash>`, message by `-m` flags, never a heredoc),
+   then `npx tsx tools/engine/seedlist.ts 1-4 --check` and castBots 1-4 100/100 (run1.sh's castbots14 line).
+2. **The lead's rulings in force (session 2):** HOLD part 3: the 2-6 draft (w2Arc26.ts/.test.ts, rowWheels.test) STAYS; if ENG-W2FIN's fix
+   makes w2Arc26.test green it stays as the unlisted draft; if not, the lead revisits. Release 4 ships only with a fully green CI line: every
+   red fixed at its cause, none taken off the line (LAWS 22). The red list on 0077c62c6 is under "Session 2: the CI 'rolled' job" below.
+3. **THE FULL SET, once, on the final head (all three hashes in):** `git fetch --unshallow` in the release tree first; then a FROZEN worktree
+   (`git worktree add --detach <dir> <head>`, node_modules symlinked, `chattr -R +i <dir>/src <dir>/tools` then `chattr -R -i
+   <dir>/src/game/gen2/proven`); then TWO background runs (run_in_background, timeout 7,200,000 ms, NEVER a shell '&'):
+   `bash reference/qa-reports/INT-R5/tools/run1.sh <frozen> <main worktree at origin/main> <outdir>` (every gate but the suite: the six
+   'rolled' steps, the build gates, drawcheck, clipcheck, kbdcheck, lockall vs main --intended 2-7,1-4 (name WARN-412's hint-line moves),
+   every seed list --check, the shard plan for release.md 4b, paintcheck 0-2/3, castBots 2-7 and 1-4 on their lists, funcheck + fundiff,
+   build:store, the slot confirm, tierBots, buildcheck LAST and ALONE), then `bash .../run2.sh <frozen> <outdir>` (the suite in 3 shards).
+   Bars: castBots 2-7 on the list = BUILD-27g's 69/100 (adult N 96 ...; the 1-40 yield 29/40, BUILD-27/REPORT.md:136-141); 1-4 = 100/100
+   after FILL-14; fundiff IDENTICAL to INT-14's ruled debt; buildcheck alone on an idle box. release.md 4b: sum each seed-list shard by
+   LIST from the shard plan (g-shardplan.log) with each list's time from g-seedlists.log's '== <id> <epoch>' lines; any job within 20% of
+   gates.yml's timeout-minutes (seedlists: 45) is raised or split before the PR.
+   After ENG-W2FIN + ENG-PLANT: the CI tool line must be 0 FAIL (the todo chaseBots :110 aside) before THE FULL SET starts.
+4. Gate table into this REPORT; the final head and table to the lead (no clock times). The lead builds the test link and opens the PR.
+
+## Session 2 (INT-R5b): what it did
+- **Version 0.10.3 + What's New (packet step 2), commit 57d8b8ffb, pushed:** package.json and package-lock.json's own two fields
+  0.10.2 -> 0.10.3; whatsNew.ts top entry 0.10.3, 2026-11-24, 'The Mailman’s Route', the lead's three approved lines verbatim (curly
+  apostrophe as every What's New entry uses). tsc clean; whatsNew.test + playerText.test 79 pass, 0 fail.
+- **Full-set scripts ready (reference/qa-reports/INT-R5/tools/):** run1.sh (no suite), run2.sh (the suite, 3 shards), fundiff.sh,
+  castcmp.py, slotconfirm.mjs (the last three copied from INT-R4's, 237337d33).
+
+### Session 2: the CI 'rolled' job on 0077c62c6 (frozen), every step, continuing past reds
+Script: the six `run:` steps of gates.yml's `rolled` job in order (the tool line :157 read live, tipwalk --layouts 4, storyTipScan --check,
+registrycheck, tierBots, buildcheck), each continuing past a red. Sent to the lead in full.
+- **The CI tool line: 386 tests, 368 pass, 17 FAIL, 1 todo.** By cause:
+  - **(A) the w2Finish throw, 11 reds**, every one 'World 2 finish: the fall at x=... has no bank at one end' (w2.ts:333):
+    wheelChannel.test :40 :56 :79 :92 and wheelRide.test :26 :42 (x=335-731, ENG-26's wheel toy; t-build-26's wheelRide fix is masked:
+    the test throws before its ride); rowWheels.test :23 :50 :65 :81 (x=274-670) and :91 (x=437-859), 2-6's row. ENG-W2FIN's root fix.
+  - **(B) riverRide.test x5, not the throw:** :107 (planted: ride skill off, the middle N still crosses, toy-one-river), :145 (planted:
+    handed-to-the-bank off, the middle N still crosses), :207 (2-1 adult N seed 12 rescued x1, set down 3x at x=25624), :213 (planted:
+    upstream off: -1 more lives, needs 5, child N 4), :229 (planted: bankUp off: 1 more, needs 5, child N 40). The same five BUILD-27g
+    had on 27e (:107 :145 :197 :203 :219; +10 lines from t-build-26's added plants). riverRide.test.ts is a 3-way merge of both sides
+    (t-build-26 fe5793747, 27e 7926daba9, merged 22b3a4455); firsttimer.test.ts likewise (0d827c23b, d6496c636 -> 5612f4569).
+  - **(C) firsttimer.test :184 x1:** 2-2 child N seed 36 / middle N 17, SKILLS.boardHop planted: 'RED with it off: 0 of 1 stands'.
+  - (D) chaseBots :110 is the todo (OPEN: the child N reaches the fork 1 of 3), not a fail.
+- tipwalk --layouts 4 PASS; storyTipScan --check PASS; ROLLED_REST
+- Bisect of (B) + (C): BISECT_PLACEHOLDER
+
+## Session 1's next step (superseded by session 2's above; kept for the record)
 Head: release-0.10.3 = **4816edd31** (pushed). It is NOT green yet: 2-6's draft test is RED (below). In order:
 1. **Wait for the lead's ruling on 2-6's draft (asked in session 1's last message; options A/B under "The 2-6 draft red").** On B
    (my pick): one commit 'INT-R5: 2-6 as on main (part 3)': `git rm src/game/gen2/worlds/w2Arc26.ts src/game/gen2/worlds/w2Arc26.test.ts
@@ -103,7 +154,7 @@ t-eng-27 merge (c5143db85): gates.yml CI tool line + storyTipScan.test.ts (union
 **Watch in the gates:** the two bot choices in firsttimer.ts (route, floorUnder) move castBots 2-7 vs BUILD-27g's rows and 1-4 vs
 ENG-26u's rows if they move anything: compare both.
 
-## What's New draft (packet step 2): NOT committed, to the lead first
+## What's New (packet step 2): approved by the lead, committed in 57d8b8ffb (session 2)
 0.10.3, 'The Mailman's Route' (at most 4 lines, player words):
 - New stage: The Mailman's Route. I post the letters, then race the mail boat home.
 - Dot warns me before deep water, on every setting.
