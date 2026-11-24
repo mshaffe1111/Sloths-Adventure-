@@ -760,7 +760,7 @@ export interface DotReport {
  */
 /** the log a racing hop wants on each side of where it lands (px): the flights' careful middle player (2-7.md FLOWN) */
 const RACE_MARGIN = 50;
-export const SKILLS = { trunkCatch: true, ride: true, upstream: true, bankUp: true, handed: true, dropOnLog: true, vineFromLog: true, vineOverTail: true, bonkAfterSnap: true, rideWheel: true, bonkBrake: true, letItSnap: true, race: true, rideOnly: false, fromTakeoff: true, boardLog: true, boardHop: true, raceSure: true, floatSure: true, reAim: true };
+export const SKILLS = { trunkCatch: true, ride: true, upstream: true, bankUp: true, handed: true, dropOnLog: true, vineFromLog: true, vineOverTail: true, bonkAfterSnap: true, rideWheel: true, bonkBrake: true, letItSnap: true, race: true, rideOnly: false, fromTakeoff: true, boardLog: true, boardHop: true, raceSure: true, floatSure: true, reAim: true, runUp: true };
 /**
  * (ENG-26e) `trunkCatch`, a thumb gone to the climb: a jump that catches a trunk straight off the ground (no frame in the air, so no landing
  * ends it) is over the frame he holds the trunk, its hold and its second press with it; the climb is his. With it off the jump runs on
@@ -1434,6 +1434,8 @@ export class FirstTimerRun {
   private pending: { at: number; dir: -1 | 0 | 1; kind: 'single' | 'double'; off: boolean; still?: boolean; want: number; judged?: boolean } | null = null;
   /** the press now coming is one its own catch judge passed (vineFromLog's liana catch): startJump's one-gate check lets it through */
   private pressJudged = false;
+  /** SKILLS.runUp: the run-up vineFromLog sent him on, on this log (its id), last judged at this game time */
+  private runUp: { id: number; t: number } | null = null;
   /** the game time a press decided on (decide) was aimed to reach the engine (pressIn), for the press this frame's pad carries */
   private pressWant: number | undefined;
 
@@ -2345,7 +2347,33 @@ export class FirstTimerRun {
       const under = SKILLS.vineOverTail && !!d.tail && x > d.x1 - 10;
       return x > lx + 10 && x < lx + here.width - 10 && !under && hopCatches(v, x, p.y, dir, hold, clock + aim.clock, vx + carry);
     });
-    if (![mid, Math.max(0, mid - sd / 2), mid + sd / 2].every(catches)) return null;
+    const lags = [mid, Math.max(0, mid - sd / 2), mid + sd / 2];
+    // (SKILLS.runUp, ENG-PLANT-g: a run-up he is on (sent last frame, this log); else none)
+    const running = SKILLS.runUp && !!this.runUp && this.runUp.id === here.id && t - this.runUp.t < DT * 1.5;
+    this.runUp = null;
+    if (!running && !lags.every(catches)) {
+      // (SKILLS.runUp, ENG-PLANT-g: from a stand a PERFECT thumb catches 2-4's tailed-river liana 0 of ~560 frames; a running jump off the
+      //  same log catches it (2-4 adult Normal 6, 52 of 541 frames; main crossed by an unjudged full-run leap). The hop he can make is
+      //  judged: a run along the log (groundStep, his own thumb lag and spread on the run press and the jump press, the take-off still on
+      //  the log and before a tailed river's x1 - 10), then a jump, catches it at all three lags: he runs. Else the stand and hop-back stay)
+      if (!SKILLS.runUp || !this.runUpCatches(p, dir, here, v, lags, carry, hold, clock, t, false)) return null;
+      this.runUp = { id: here.id, t };
+      return side1(dir);
+    }
+    if (running) {
+      // (on the run-up: the press now, judged at his running speed, the run kept through his thumb's lag (no pending.still)); else
+      //  on while a later press catches; else the stand and hop-back stay)
+      if (!this.runUpCatches(p, dir, here, v, lags, carry, hold, clock, t, true)) return null;
+      if (!lags.every((lag) => this.runPress(p.x, p.vx, 0, lag, p, dir, here, v, carry, hold, clock, t))) {
+        this.runUp = { id: here.id, t };
+        return side1(dir);
+      }
+      this.pressJudged = true;
+      const go = this.decide(dir, 'single', true, side1(dir));
+      this.pressJudged = false;
+      if (this.pending) this.pending.judged = true;
+      return go;
+    }
     // (judged here: decide's immediate press (a lag under half a frame) reaches startJump now, so the flag is up for it too; candidate
     //  10 marked only the queued press and 2-4 adult Normal 6 had two liana presses refused, x 21,600 and 24,700, UNJUDGED)
     this.pressJudged = true;
@@ -2355,6 +2383,46 @@ export class FirstTimerRun {
     //  without it candidates 5-9 refused every liana hop off a log, and the tailed river's only way on was gone)
     if (this.pending) { this.pending.still = true; this.pending.judged = true; }
     return out;
+  }
+
+  /**
+   * SKILLS.runUp (vineFromLog): a jump decided `s0` s from now at (x0, vx0) (x0 as if the log stood still), pressed after his thumb's
+   * `lag` with the run held through it (groundStep): taken off still on the log (10 px in, never past a tailed river's x1 - 10) and
+   * catching liana `v`?
+   */
+  private runPress(x0: number, vx0: number, s0: number, lag: number, p: RealPlay['p'], dir: -1 | 1, here: Platform, v: Parameters<typeof canGrabSwing>[2], carry: number, hold: number, clock: number, t: number): boolean {
+    const rivers = this.sim.stage.rivers;
+    const at = floatAt(rivers, here), d = here.drift!;
+    const aim = hopAim(lag);
+    const b = { x: x0, y: p.y, vx: vx0, vy: 0 };
+    for (let f = Math.round(aim.off / DT); f > 0; f--) groundStep(b, DT, dir);
+    const when = t + s0 + aim.off;
+    const x = b.x + at(when) - at(t), lx = at(when);
+    const under = SKILLS.vineOverTail && !!d.tail && x > d.x1 - 10;
+    return x > lx + 10 && x < lx + here.width - 10 && !under && hopCatches(v, x, p.y, dir, hold, clock + s0 + aim.clock, b.vx + carry);
+  }
+
+  /**
+   * SKILLS.runUp (vineFromLog): does a run along this log, then a jump, catch liana `v` at every lag of `lags`? From a stand the run
+   * press comes after his thumb's lag (each of `lags`, braking meanwhile); on the run (`running`) it is held now. For each, some frame of
+   * the run (on the log) from which the jump caught at all three lags (runPress).
+   */
+  private runUpCatches(p: RealPlay['p'], dir: -1 | 1, here: Platform, v: Parameters<typeof canGrabSwing>[2], lags: number[], carry: number, hold: number, clock: number, t: number, running: boolean): boolean {
+    const rivers = this.sim.stage.rivers;
+    const at = floatAt(rivers, here), d = here.drift!;
+    return (running ? [0] : lags).every((rl) => {
+      const b = { x: p.x, y: p.y, vx: p.vx, vy: 0 };
+      let s = 0;
+      for (let f = rl > 0 ? Math.round(hopAim(rl).off / DT) : 0; f > 0; f--) { groundStep(b, DT, 0); s += DT; }
+      for (let k = 0; k < 45; k++) {
+        const x = b.x + at(t + s) - at(t), lx = at(t + s);
+        if (!(x > lx + 10 && x < lx + here.width - 10) || (SKILLS.vineOverTail && !!d.tail && x > d.x1 - 10)) return false;
+        if (lags.every((lag) => this.runPress(b.x, b.vx, s, lag, p, dir, here, v, carry, hold, clock, t))) return true;
+        groundStep(b, DT, dir);
+        s += DT;
+      }
+      return false;
+    });
   }
 
   private lianaWait(dir: -1 | 1): Pad | null {
