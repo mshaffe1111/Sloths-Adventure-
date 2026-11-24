@@ -1,0 +1,14 @@
+#!/bin/bash
+# usage: lane.sh <tag:hash> ... ; 2-1's 8 BAR rows (adult N 1,2,4,6,8,9; adult E 9; middle E 10) on each candidate's frozen tree
+S=/tmp/claude-0/-home-user-Sloths-Adventure-/8848811d-b0f9-5caf-b8f0-79319ef08984/scratchpad
+for th in "$@"; do
+  t=${th%%:*}; h=${th##*:}; d=/home/user/fz-$t
+  [ -d $d ] || $S/freeze.sh $d $h > /dev/null
+  cd $d || continue
+  o=$S/cb/$t.jsonl; : > $o
+  npx tsx tools/inspect/castBots.ts --stage 2-1 --seeds 1,2,4,6,8,9 --bots adult --setting normal --par 2 --rows $o.a > $S/cb/$t.log 2>&1
+  npx tsx tools/inspect/castBots.ts --stage 2-1 --seeds 9 --bots adult --setting easy --par 1 --rows $o.b >> $S/cb/$t.log 2>&1
+  npx tsx tools/inspect/castBots.ts --stage 2-1 --seeds 10 --bots middle --setting easy --par 1 --rows $o.c >> $S/cb/$t.log 2>&1
+  cat $o.a $o.b $o.c > $o
+  echo "$t $h rows $(wc -l < $o) fails $(grep -c '"pass":false' $o) $(TZ=America/New_York date '+%-I:%M %p ET')" >> $S/cb/done.txt
+done

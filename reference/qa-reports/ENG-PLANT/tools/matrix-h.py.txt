@@ -1,0 +1,11 @@
+import json, sys, os, glob
+S = sys.argv[1]; D = sys.argv[2]
+L = lambda f: {(r['bot'], r['setting'], r['seed']): r for r in map(json.loads, open(f)) if r}
+rows = [('adult','normal',s) for s in (1,2,4,6,8,9)] + [('adult','easy',9), ('middle','easy',10)]
+cols = [('main', D + '/c/main-2-1.jsonl'), ('c4', D + '/d/c4-2-1.jsonl')] + [(f'c{i}', f'{S}/cb/c{i}.jsonl') for i in range(5, 18)] + [('c18', f'{S}/w/c18-2-1-w.jsonl')]
+data = {n: L(f) for n, f in cols if os.path.exists(f) and os.path.getsize(f)}
+names = [n for n, _ in cols if n in data]
+print('row'.ljust(12) + ' '.join(n.rjust(4) for n in names))
+for k in rows:
+  cell = lambda n: ('P' if data[n][k]['pass'] else f"R{data[n][k].get('rescues')}") if k in data[n] else '-'
+  print(f"{k[0][:5]} {k[1][0].upper()} {k[2]}".ljust(12) + ' '.join(cell(n).rjust(4) for n in names))

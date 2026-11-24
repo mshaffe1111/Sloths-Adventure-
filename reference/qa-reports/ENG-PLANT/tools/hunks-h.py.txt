@@ -1,0 +1,11 @@
+import sys
+# usage: hunks.py <diff> <out.patch> <i,j,...>  (keep only the listed hunks, 0-based)
+src, out, keep = sys.argv[1], sys.argv[2], {int(x) for x in sys.argv[3].split(',') if x != ''}
+lines = open(src).read().split('\n')
+head, hunks, cur = [], [], None
+for ln in lines:
+    if ln.startswith('@@'): cur = [ln]; hunks.append(cur)
+    elif cur is None: head.append(ln)
+    else: cur.append(ln)
+sel = [h for i, h in enumerate(hunks) if i in keep]
+open(out, 'w').write('\n'.join(head + [l for h in sel for l in h]).rstrip('\n') + '\n')

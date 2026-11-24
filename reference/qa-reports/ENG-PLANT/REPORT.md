@@ -1,49 +1,69 @@
-# ENG-PLANT-h (ENG-PLANT-c session 6, started 6:12 PM ET 11-24 by `date`; this section written 6:20 PM ET 11-24 by `date`): hand-over (LANES 3b box)
+# ENG-PLANT-h (ENG-PLANT-c session 6, started 6:12 PM ET 11-24 by `date`; this section written 6:26 PM ET 11-24 by `date`): hand-over (LANES 3b box)
 
-Engine (bots), Opus 5.5 xhigh. Lead: session_01FhBbYN2CVHnFXg7XzqKXpM. Code: c18 fca50fc81 (unchanged; NO fix made this session, per
-ruling 1: causes first). Every run on a chattr-frozen worktree (fz-c18, fz-c17, fz-c4, fz-r103; bisect tree frozen per step, tools/bisrun-h.sh.txt).
-(a) and (b) and the wide-sample table were SENT to the lead; his ruling on them is pending.
+Engine (bots), Opus 5.5 xhigh. Lead: session_01FhBbYN2CVHnFXg7XzqKXpM. Code: c18 fca50fc81 UNCHANGED (no fix this session: causes first,
+ruling 1). Every run on a chattr-frozen worktree (fz-<cand>; the bisect tree frozen per step: tools/bisrun-h.sh.txt, t8hunk-h.sh.txt).
 
-## (a) pacerLay's BASE reds on release-0.10.3 dfe631913 {8, 22, 23} (git bisect, one frozen pacerLay run per step: data/h/bisect-log.txt)
-- **22** (:254, SKILLS.boardLog plant, home middle Easy 1): GREEN half (with the skill he wins) holds; RED half fails (without it he must
-  lose; he wins 86.8 s vs 108.37). First bad: **24d6ba567** ENG-27j's merge of t-eng-ground into t-eng-27 (groundStack, the corner's endFace);
-  there 85.2 vs 97.53 (data/h/T22-24d6ba567.txt). The ground change removed the stop the plant was laid on.
-- **23** (:280, SKILLS.raceSure plant, home Normal 2 x 10683/6551/3959, post Normal 5 x 12371): GREEN half holds; RED half fails (without
-  the skill he no longer falls there). First bad: **a0ab91d33** ENG-27n 'judge the hop he flies' (drawHop on its own stream); falls moved
-  to 12790, 12640, 5831, 1810 there (data/h/T23-a0ab91d33.txt); on the base, none.
-- 22 and 23: stale plants (later landings changed the run; each skill's own claim holds). Fix = re-plant each on its cause laid explicitly
-  (as ENG-27j did fromTakeoff): the lead's call. NOT a fault of c4..c18.
-- **8** (middle beats the boat, Normal 3): the base loses by 0.04 s (113.7 vs 113.66). Bisect d9425f091 (good) .. dfe631913 was running at
-  hand-over (many skips: merged main-lineage commits have no pacerLay.test); see EXACT NEXT STEP 1.
+## THE LEAD'S RULINGS (received this session; they ARE the next step)
+(a) pacerLay 22 and 23 are stale plants: RE-PLANT each at its SAME bar on its cause laid explicitly (as ENG-27j re-planted fromTakeoff;
+R-165.432), RED with the skill off, GREEN with it on. Row 8: send him the culprit before any change (found below; NOT yet sent).
+(b) Agreed, a BOT fault: c18's ride is too broad. (c) Build a LEAN candidate from c4: c4 + the judged run-up (c13/c14/c16) + c17's
+inverted rule (the sinker case only) + the ride ONLY for the traced case (a log whose front goes under or leaves no floor ahead), and
+NOTHING else from c5..c9 unless the bisect shows it is needed (name each piece kept and the row that needs it). Measure it on the 10 known
+flips, then the wide sample, then pacerLay. Hard stop 9:30 PM ET.
 
-## (b) c17 {6,8,20,22,23} -> c18 {4,8,10,21,22,23} (re-run on fz-c18: identical, data/h/pacerLay-c18-rerun.txt)
-c18 is one commit: the 2-1 landing ride adds 4, 10, 21 (clears 6, 20). Traced 10 (middle Easy 1; tools/race-h.mts.txt, data/h/race-easy1-c1[78].jsonl):
-c17 wins 90.7 s, c18 loses 110 s (boat 108.37). Same falls (t 32.3, 88.3), race clock starts the same frame at the same x. First split
-pre-race t 69.8 x 16,161: on a log drifting his way c17 runs along it (vx to -285), c18 rides (vx 0). In the race leg c18 stands 1,804
-frames vs c17's 1,204 (600 frames = 20 s = the whole loss; no fall). My read: a bot fault (the ride covers EVERY log running his way, not
-only a landing onto a sinking front); narrow the ride rather than re-tune the race.
+## (a) pacerLay's BASE reds on release-0.10.3 dfe631913 {8, 22, 23} (logs: data/h/bisect-log.txt, t8hunk.txt)
+- **22** (:254, SKILLS.boardLog plant, home middle Easy 1): RED half stale since **24d6ba567** (ENG-27j's merge of t-eng-ground: groundStack,
+  endFace): without the skill he wins (85.2 vs 97.53 there; 86.8 vs 108.37 on the base). GREEN half holds.
+- **23** (:280, SKILLS.raceSure plant, home N 2 x 10683/6551/3959, post N 5 x 12371): RED half stale since **a0ab91d33** (ENG-27n, drawHop
+  on its own stream): falls moved to 12790, 12640, 5831, 1810; none on the base. GREEN half holds. NB the lead ruled the re-plant on 11-21
+  already (d29258340, ENG-27i hand-over); only fromTakeoff was done (af127d21e).
+- **8** (middle beats the boat, home Normal 3; base 113.7 vs 113.66, lost by 0.04 s): first failing = **b3195f31e** (INT-R5's merge of
+  t-build-27e into release 4's base); its 2-7 parent 801cae9e8 PASSES. On b3195f31e with ONLY tools/inspect/firsttimer.ts put back to
+  801cae9e8's: PASS. Hunk bisect of that file's diff (data/h/firsttimer-801cae9e8-b3195f31e.diff.txt, 27 hunks; t8hunk.txt): hunk 14 alone
+  (with its helper stepUpAtLip, hunk 19) turns it red: **BUILD-26j's step-up rule at a faceless lip (d6350d3e7, bounded in 83018b453)**,
+  'a late press becomes a run where the floor goes on a hop up with no face', carried in from t-build-26. A shipped rule (1-1's calibration
+  was recommitted for it, a07ed1bd7), 0.04 s on one race: the lead's call (trace where the 0.04 s goes, or the race's margin).
 
-## WIDE SAMPLE on c18 (seeds 1-10, every bot, both settings, expert Normal only = 90 rows a stage; data/h/c18-<st>-w.jsonl vs data/c/main-<st>.jsonl)
+## (b) c17 {6,8,20,22,23} -> c18 {4,8,10,21,22,23}: c18's ride adds 4, 10, 21 (traced 10: data/h/race-easy1-c1[78].jsonl)
+Middle Easy 1: c17 wins 90.7 s, c18 loses 110 s (boat 108.37). Same falls, same race start; first split t 69.8 x 16,161 (c17 runs along a
+log drifting his way, c18 rides it at vx 0); in the race leg c18 stands 1,804 frames vs 1,204 (600 frames = 20 s = the whole loss).
+
+## WIDE SAMPLE on c18 (seeds 1-10, every bot, both settings; expert Normal only = 90 rows a stage) vs main: NOT CLEAN
 | stage | differ | PASS->FAIL (BAR) | fail->pass | passes main -> c18 | BAR rows |
 |---|---|---|---|---|---|
-| 2-1 | 52 | 13 (**8**) | 4 | 83 -> 74 | adult E9 (set down 3x 15,189), N1 (25,580), N2 (9,362), N4 (25,730), N6, N8, N9 (25,658); middle E10 (water ahead 19,900) |
+| 2-1 | 52 | 13 (**8**) | 4 | 83 -> 74 | adult E9, N1, N2, N4, N6, N8, N9 (set down 3x at 2-1's rivers 9,362 / 15,189 / 25,5xx-25,7xx); middle E10 |
 | 2-2 | 84 | 3 (0) | 2 | 85 -> 84 | (kids N1, N2, N7) |
-| 2-4 | 75 | 3 (**2**) | 15 | 71 -> 83 | adult E7 (on a vine at 7,311, no way on), child N6 (water ahead 20,990) |
-**NOT CLEAN.** c4 (data/d/c4-2-*.jsonl) at the same seeds: 2-1 0 BAR flips, 2-4 2 (adult N6, N8, both fixed on c18). So c5..c18 broke 2-1's
-adult rows; c18's ride did not clear the 2-1 river class (packet g item 2). hopJudged and the full rows NOT run (ruling 2: only on a clean sample).
+| 2-4 | 75 | 3 (**2**) | 15 | 71 -> 83 | adult E7 (on a vine at 7,311 no way on), child N6 (water ahead 20,990) |
+Rows: data/h/c18-<st>-w.jsonl. hopJudged and full rows NOT run (ruling: only on a clean sample).
+
+## 2-1's 8 BAR rows on every candidate (data/h/cb/c<n>.jsonl, matrix: data/h/cb/matrix-2-1-bar8.txt; P = pass, R<n> = rescues)
+| row | main | c4 | c5 | c6 | c7 | c8 | c9 | c12-c17 | c18 |
+|---|---|---|---|---|---|---|---|---|---|
+| adult N 1 / N 6 / N 8 / N 9 / E 9 | P | P | R1/R2/R1/R1/R2 | R1/P/P/R2/P | P/P/P/P/R1 | P | P | P | R1 each |
+| adult N 2 | P | P | P | R1 | R1 | P | P | P | R1 |
+| adult N 4 | P | P | R1 | R6 | R2 | **P** | **R2** (set down 3x 14,701 and 25,848) | R2 | R1 |
+| middle E 10 | P | P | P | P | P | P | P | P | R1 |
+So: **c18's ride alone breaks 7 of the 8** (c17 passes them); **c9 breaks adult N 4** and it stays broken to c17; c8 is clean on all 8.
+c10/c11 not run (their tree's freeze failed in a parallel worktree add; not needed: c9 and c12 agree on all 8).
 
 ## EXACT NEXT STEP (session 7)
-0. Read the lead's ruling on (a)/(b) first (sent this session). Setup: `npm ci --legacy-peer-deps` in a plant-work worktree; freeze with
-   tools/freeze.sh.txt (keep src/game/gen2/proven writable). Base c18 fca50fc81.
-1. Test 8's culprit: `git bisect start dfe631913 d9425f091` then `git bisect run <bisrun-h.sh> 'beats it, normal seed 3' T8` in a
-   worktree at /home/user/bis (tools/bisrun-h.sh.txt; exit 125 = skip when the test file is absent). Partial log: data/h/bisect-log.txt (T8
-   lines: f089aae92 FAILS, 2cfd1871d/793ddf246/cac4b678b/78a2c5d4e/07bdf5855 pass). Send the commit to the lead.
-2. Bisect c4..c18 on 2-1's 8 BAR rows (cheap: `castBots --stage 2-1 --seeds 1,2,4,6,8,9 --bots adult --setting normal` + adult E 9 +
-   middle E 10 on each candidate's frozen tree; c4 6b5f43da0, c9, c12 db9ef7073, c17 dd3c3bc00), then trace adult N 1 at 25,580 on the
-   first bad candidate vs c4 (tools/*-g.mts.txt: iprobe2 = intend's pad changes, jumps = set-downs). Send cause before any fix (ruling 1).
-3. Only on the lead's go and a clean wide sample: hopJudged, then the full rows (2-1, 2-2, 2-4, 2-5, 2-7 x40 29/40 + list 69/100, 1-4).
-Lessons applied: D134 (pushed + ls-remote before hand-over), D115 (frozen trees, the bisect tree frozen per step), D119 (no heredoc in the
-commit chain), D128 (times from `date`), D133 (wide sample before full rows), D135/D118 (base reds named to their commits, not carried).
+0. Setup: `npm ci --legacy-peer-deps` in a worktree at /home/user/plant-work; freeze each tree with tools/freeze.sh.txt (keep
+   src/game/gen2/proven writable). Messages to the lead carry no clock times.
+1. Send the lead row 8's culprit (above, (a) 8: BUILD-26j's step-up rule, d6350d3e7) and wait for his call on it; no change to it before.
+2. Build the LEAN candidate on origin/release-0.10.3-wip-plant-c from c4 6b5f43da0 (ruling (c)): take tools/inspect/firsttimer.ts at c4,
+   add (i) the run-up judge as c16 has it (SKILLS.runUp: c13 d29bd7065 + c14 bb5325f24 + c16 e095b5cea, `git diff 6b5f43da0 e095b5cea`
+   restricted to the runUp pieces), (ii) c17's inverted one-gate rule (dd3c3bc00: refuse only an unjudged hop onto a sinker), (iii) the ride
+   ONLY where the log's front goes under or no floor is ahead (narrow c18's fca50fc81). Keep nothing else from c5..c9 unless a row needs it:
+   name each piece and its row. Evidence for the pieces: c5's three pieces (landing stop floatSure, here = standingOn, one-gate refusal)
+   broke 6 of these 8 rows; c9 (the stand on a log running his way) broke adult N 4. Push + ls-remote at once (D134).
+3. Measure the lean candidate: the 10 known flips (data/g/flip-*), then the wide sample (`castBots --stage <st> --seeds 1-10 --bots
+   kid,adult,child,middle,expert --setting both --par 2 --rows ...`, 2-1/2-2/2-4, about 3 min a stage) vs data/c/main-*.jsonl, then pacerLay.
+4. Re-plant pacerLay 22 and 23 (ruling (a)) on their causes laid explicitly, RED with the skill off, GREEN with it on.
+5. Only on a clean table: hopJudged, the full rows (2-1, 2-2, 2-4, 2-5, 2-7 x40 29/40 + list 69/100, 1-4), toys, plants, CI line, tierBots
+   9/9, merge into release-0.10.3 (no force).
+Lessons applied: D134 (pushed + ls-remote before hand-over), D115 (frozen trees; the bisect tree frozen per step), D119 (no heredoc in a
+commit chain), D128 (times from `date`), D133 (cheap bisect before a candidate), D135 (base reds named to their commits, not carried).
+Owned miss: commit a4db43d04's Claude-Session line names the lead's session, not mine (session_01FhBbYK6oyFnEukkjNQgFNT); not rewritten (no force on a shared branch).
 
 # ENG-PLANT-g (ENG-PLANT-c session 5, started 5:49 PM ET 11-24 by `date`; this section written 6:08 PM ET 11-24 by `date`): hand-over (LANES 3b box)
 

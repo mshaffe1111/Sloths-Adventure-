@@ -1,0 +1,13 @@
+35ca56b16 rev -> 1   error: "middle normal seed 3: 113.7 s against the boat's 113.66 s"
+997f7e98c rev -> noapply 
+3ad5ee266 rev -> noapply 
+86bb3b145 rev -> noapply 
+eae5b1ff7 rev -> 1   error: "middle normal seed 3: 113.7 s against the boat's 113.66 s"
+3d75a90df rev -> noapply 
+064ca6df6 rev -> noapply 
+54cad4125 rev -> 1   error: "middle normal seed 3: 113.7 s against the boat's 113.66 s"
+4185812c7 rev -> noapply 
+83018b453 rev -> 1   error: "middle normal seed 3: 113.7 s against the boat's 113.66 s"
+d6350d3e7 rev -> noapply 
+a59a144c0 rev -> noapply 
+cef59bafe rev -> 1   error: "middle normal seed 3: 113.7 s against the boat's 113.66 s"

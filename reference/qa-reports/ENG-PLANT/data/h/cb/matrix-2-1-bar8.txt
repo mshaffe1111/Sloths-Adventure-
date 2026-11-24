@@ -1,0 +1,9 @@
+row         main   c4   c5   c6   c7   c8   c9  c12  c13  c14  c15  c16  c17  c18
+adult N 1      P    P   R1   R1    P    P    P    P    P    P    P    P    P   R1
+adult N 2      P    P    P   R1   R1    P    P    P    P    P    P    P    P   R1
+adult N 4      P    P   R1   R6   R2    P   R2   R2   R2   R2   R2   R2   R2   R1
+adult N 6      P    P   R2    P    P    P    P    P    P    P    P    P    P   R1
+adult N 8      P    P   R1    P    P    P    P    P    P    P    P    P    P   R1
+adult N 9      P    P   R1   R2    P    P    P    P    P    P    P    P    P   R1
+adult E 9      P    P   R2    P   R1    P    P    P    P    P    P    P    P   R1
+middl E 10     P    P    P    P    P    P    P    P    P    P    P    P    P   R1

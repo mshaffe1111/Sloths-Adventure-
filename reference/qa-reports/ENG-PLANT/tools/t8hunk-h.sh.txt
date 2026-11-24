@@ -1,0 +1,11 @@
+#!/bin/bash
+# test 8 on b3195f31e with 801cae9e8's firsttimer.ts plus the listed forward hunks (801 -> b319) applied; frozen for the run
+S=/tmp/claude-0/-home-user-Sloths-Adventure-/8848811d-b0f9-5caf-b8f0-79319ef08984/scratchpad
+F=tools/inspect/firsttimer.ts
+cd /home/user/bis
+git checkout -q -f --detach b3195f31e
+git show 801cae9e8:$F > $F
+python3 $S/hunks.py $S/ft.diff $S/sel.patch "$1"
+if git apply --recount $S/sel.patch 2>$S/apply.err; then r=$($S/bisrun.sh 'beats it, normal seed 3' T8h-$2 >/dev/null; echo $?); else r="noapply $(head -1 $S/apply.err)"; fi
+echo "hunks [$1] -> $r $(grep -m1 'error:' $S/bis/T8h-$2-b3195f31e.txt 2>/dev/null | cut -c1-80)" >> $S/bis/t8hunk.txt
+git checkout -q -f b3195f31e

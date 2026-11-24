@@ -1,0 +1,339 @@
+# bad: [dfe631913b0b572cda8c7eb3d44b3692de630344] Merge origin/release-0.10.3 (ENG-PLANT REPORT-only commits) into the release tree
+# good: [d9425f091712fcb461734ec2d83e6bd340de0e13] ENG-27w lands on t-eng-27: 2-7's race set by design numbers (the boat's pace Normal 81%, Easy 90%; the ride-only bound measured on the ride-only bot, end to end, every race, both settings), E as the lead ruled it (the shortest aimed flight by airtime), pacerRespawn's read of a fall taken from one frame; gates on frozen heads d794dcda1 / 288e8daa8: tsc PASS, unit 4064 with 2 inherited reds, CI tool line 12 inherited reds (the same on base daf9ca777), pacerRespawn GREEN with its hold-off plant RED
+git bisect start 'dfe631913' 'd9425f091'
+# good: [07bdf5855ea12eace5eab55f37b80a94c580a871] BUILD-27d: the race-clip rig, tree-relative (racerec.mts; racepuppet.mjs: FROM/TO/verdict in engine frames, refuses a built seed that is not the record's); dry run on f0 shows the win line with no wayside card
+git bisect good 07bdf5855ea12eace5eab55f37b80a94c580a871
+# skip: [2904961b801f67e588c143163196f52bfcfee0c9] BUILD-26n: merge t-build-26 (86625c5ae) into the final candidate (eae5b1ff7 + REPORTs); REPORT.md kept both sides; src/tools = 86625c5ae + the candidate's own changes
+git bisect skip 2904961b801f67e588c143163196f52bfcfee0c9
+# skip: [35233ff6fb142268ea2210b968c8f33c2146e2f7] BUILD-26m evidence: the x 871 pair fig traces, the wheel toy kid steer (head and the tried settle band), the tried patch (RED), cut 5 2-6 rows
+git bisect skip 35233ff6fb142268ea2210b968c8f33c2146e2f7
+# good: [78a2c5d4e53b5deff43260dc1daa4cdcbd1b42a2] TEACH-11 (R-165.427): a teach section's tip is laid as a teach line; teachFirstScan gate + planted reds
+git bisect good 78a2c5d4e53b5deff43260dc1daa4cdcbd1b42a2
+# skip: [45441f6617a7fee8ff35a439fdfbc025af61fc77] BUILD-26l REPORT: no silent cap (064ca6df6, toy RED/GREEN); 2-6 kid E 22 traced to the bot's lift ride, not the rewind pick; runs in flight; next step
+git bisect skip 45441f6617a7fee8ff35a439fdfbc025af61fc77
+# good: [cac4b678b744d0ddf609c43c664810ac31c97b67] TEACH-11: 1-2 thorn plant follows the new lay rule (out of teachTips alone they stay teach lines; the plain plant strips the laid mark)
+git bisect good cac4b678b744d0ddf609c43c664810ac31c97b67
+# skip: [37fbb65199aa8f5d88b19b937f0014cfe1ad9ef8] BUILD-26k REPORT: adult N 39's silent cap traced (a FigPush shuffle with every clock off, exposed by the knock read)
+git bisect skip 37fbb65199aa8f5d88b19b937f0014cfe1ad9ef8
+# skip: [c50c8406fc52acab1848668eebb409d6e5c81c87] ENG-26f step 3: the table (rowWheels seeds 1-2, ON and OFF): ON 20/20 shrine, 0 rescues on every run; OFF scrambles and 3 rescues
+git bisect skip c50c8406fc52acab1848668eebb409d6e5c81c87
+# skip: [436d98a36c27999e2e135278889650051a0c039a] BUILD-26g evidence: the twelve 1-4 rows on C + A/B, 2-6 x40 on all three, the toys, the lip as a patch (not landed)
+git bisect skip 436d98a36c27999e2e135278889650051a0c039a
+# bad: [f089aae927df54b5d2e40ab1c1e0af30376cae75] ENG-PLANT REPORT: row verdict fix vs main (2-1/2-2/2-4: PASS->FAIL 30/11/15, not yet attributed: needs the unfixed head's rows); line 3's stamp corrected to the commit's own time (D128)
+git bisect bad f089aae927df54b5d2e40ab1c1e0af30376cae75
+# skip: [0c0a91730d99a57bc2e2298b5a332ea2ae46febd] BUILD-26j: 2-6 x40 on the rule (no row moved against cut 5)
+git bisect skip 0c0a91730d99a57bc2e2298b5a332ea2ae46febd
+# skip: [2586d08c2065449eee0b1e04da915114a86d9858] ENG-26q REPORT: rollGuard 1-4 ?layout=72140 is pairPetals moving a petal onto the Notch (2f188c552's gate band exposed it); fix 4e0888c5d planted (rollGuard RED -> GREEN, toy RED -> GREEN); step 0's suite and lockall RUNNING; engine-core.md 0zr-26q
+git bisect skip 2586d08c2065449eee0b1e04da915114a86d9858
+# skip: [89fb84b0fb300d9faf68830c8831c9501423fe66] ENG-26r: the bank wall culls what it covers: when 2-6's opaque earth wall fills the view (past every edge by more than the shake), the backdrop and the rivers under it are left undrawn
+git bisect skip 89fb84b0fb300d9faf68830c8831c9501423fe66
+# good: [2cfd1871dd51f5d725e2dcdf2615cd265742f576] BUILD-27e REPORT: start section, the fresh branch (t-eng-27 09c23c1b0 merged, BUILD-27d's letter-4, flip and rig commits picked)
+git bisect good 2cfd1871dd51f5d725e2dcdf2615cd265742f576
+# skip: [4e0888c5d9ca28457e19934745ca43058b33903d] ENG-26q: pairPetals never moves a petal onto another pickup (the level check's PICKUP_APART): the next mate's middle when the nearest is taken, else it stays
+git bisect skip 4e0888c5d9ca28457e19934745ca43058b33903d
+# skip: [fd8c39590c2267ad44ec72243e955eee58fbbc17] ENG-26e step 1: the island plant (a flag on an island or lily in a one-storey river is not clear; the water lesson comes there), RED on 5a67dba93's any-floor rule
+git bisect skip fd8c39590c2267ad44ec72243e955eee58fbbc17
+# skip: [d11c4a7771a1e2c3373e1d2f1592ee1528c1c484] BUILD-26n: 2-6 kid E 16/27 bucket-leave traces (the fell-back spots are on the climb at y 3962; a bucket 11 slip to check)
+git bisect skip d11c4a7771a1e2c3373e1d2f1592ee1528c1c484
+# good: [793ddf246a7c4e6ffc87e09b58a5a0a31fab963c] BUILD-27f REPORT: DRESS-27b merged (ffd604183), waiting on DRESS-27c
+git bisect good 793ddf246a7c4e6ffc87e09b58a5a0a31fab963c
+# skip: [5c8940ae1f1bdfb645e7ff167078b459c26dd97d] BUILD-26i REPORT: the lead's ruling in EXACT NEXT STEP (one step-up rule, then C on top); what the rise read does on E 37
+git bisect skip 5c8940ae1f1bdfb645e7ff167078b459c26dd97d
+# skip: [f297aff98036023dade23da5ed7065b8d368f600] BUILD-26g REPORT: the lead's ruling on the tierBots red in step 0
+git bisect skip f297aff98036023dade23da5ed7065b8d368f600
+# skip: [fa7338d253a5235988ef21126ed3fc74f60150ab] ENG-26r: REPORT: the row-by-row drawcheck compare (base FAIL 5 on 2-6, candidate PASS; 13 small rises traced to untouched code)
+git bisect skip fa7338d253a5235988ef21126ed3fc74f60150ab
+# skip: [cb9372eadd5bb9b5f4ba49eb2433cd1d342d1f33] ENG-26p REPORT (under BUILD-26i's): the tower.test red is 2f188c552's lay, fixed generally (rule 4 slides clear of a kept-out box; lockall identical); rollGuard 1-4 ?layout=72140 is an OPEN red from 2f188c552 too; engine-core.md's tower lines
+git bisect skip cb9372eadd5bb9b5f4ba49eb2433cd1d342d1f33
+# skip: [fd3ce98b1a580a3ca84df0088dd38ee9ebd03333] ENG-26l: the base's 1-4 layout 1 stills (the before, beside the head's)
+git bisect skip fd3ce98b1a580a3ca84df0088dd38ee9ebd03333
+# skip: [14acf0ec04206a6a543cea2dbe79d1fdea97395a] ENG-26p: the toy for towerCatches' slide: an end stepping off 14 px past a kept-out box is caught by a bough at the box's edge (RED on 43c4c6776's tower.ts, GREEN on 4f9b8244b)
+git bisect skip 14acf0ec04206a6a543cea2dbe79d1fdea97395a
+# skip: [ac69c70406935ca5aa2a1305c5f445aec66f81be] ENG-26r: REPORT: 2-6 alone GREEN both ways on the wall-extended candidate
+git bisect skip ac69c70406935ca5aa2a1305c5f445aec66f81be
+# skip: [7d3330aad6d103a0d0ec313ea3dbf83fd4e82a5b] ENG-26p: towerCatches rule 4 slides a bough clear of a kept-out box (a gate's band, a wheel's sweep) when the centred one lies in it
+git bisect skip 7d3330aad6d103a0d0ec313ea3dbf83fd4e82a5b
+# skip: [f78a3a66d51bac1afb7f5794e8fa0579fba67999] ENG-26r: 2-6's bank wall runs down past the stage's floor (the lead's ruling a): one earth to the bottom of every view, and the wall's cull covers the foot too
+git bisect skip f78a3a66d51bac1afb7f5794e8fa0579fba67999
+# skip: [84f6024545315f74ecd10bc95a311b67e16e62ef] BUILD-26i REPORT: the lead accepted cut 5 + A/B; EXACT NEXT STEP in the lead's order (tierBots and the suite, the step-up rule then C, the gains, relists wait)
+git bisect skip 84f6024545315f74ecd10bc95a311b67e16e62ef
+# skip: [fcade89ce10643129dcda0a57ddb398fc06108be] BUILD-26c: REPORT: the lead's corrected bar (100 s every bot, expert MIN 105 s); the 8 adult runs under 100 s are real runs
+git bisect skip fcade89ce10643129dcda0a57ddb398fc06108be
+# skip: [9c2ce855dbef18999b8e8557ed0f52bd28917f2c] Revert C (9df2f0d11): the widened out-and-back squeeze, by the lead's ruling (child Easy 36 -> 35 on 1-4)
+git bisect skip 9c2ce855dbef18999b8e8557ed0f52bd28917f2c
+# skip: [4959d1e97a6b58da122ae5f8668bd580d4f50e51] BUILD-26d: TRIAL (unplanted): the climb-jump at a vine's foot goes toward the vine, never his facing; the 15 lost runs traced; REPORT
+git bisect skip 4959d1e97a6b58da122ae5f8668bd580d4f50e51
+# skip: [8fbc7c3971610534a8455c6d71b52e77bd83c059] BUILD-26i REPORT at the box: C reverted as ruled; child E 37 and adult N 9 traced as knock-ons (two runs per cause); the 1-4 table and the suite running
+git bisect skip 8fbc7c3971610534a8455c6d71b52e77bd83c059
+# skip: [064911bf1ff4d903bad820ccb7834af7f36341a4] ENG-26m: step 3, castBots 1-4 OLD vs RELISTED: FAIL (six tiers drop); the cause table (26 new misses, each run twice: A/B/D BOT -> BUILD-26e, C LAY -> the lead, 9 singles traced and unclassed); tierBots 1-1 9/9; the rows, traces and tools in eng26m/
+git bisect skip 064911bf1ff4d903bad820ccb7834af7f36341a4
+# good: [5e1d1f6a446149db315c52cf06eb2aaf7beccbd8] BUILD-27g: start section, lane scripts probes27g (full CI set)
+git bisect good 5e1d1f6a446149db315c52cf06eb2aaf7beccbd8
+# skip: [7ca46626cf977e2d7484ff367799c82ce640ccf0] BUILD-26n: 2-6 kid E 16/27 on the base: the bucket 11 drop predates the brake; the new fails sit on the climb at y 3962
+git bisect skip 7ca46626cf977e2d7484ff367799c82ce640ccf0
+# good: [4e1d4bbb927e720d7da074b6686b8d24eb6fe973] BUILD-27g REPORT: every gate on 312ce33a0 PASS but inherited reds (suite 4143/2 pacerLay; CI line 12: wheelChannel 4, wheelRide 2, firsttimer, riverRide 5 = base); buildcheck PASS alone
+git bisect good 4e1d4bbb927e720d7da074b6686b8d24eb6fe973
+# skip: [43c4c677666a96f49ff2384b6102f340438c6ed1] BUILD-26h REPORT at the box: child E 37 is C's, adult N 9 is A/B's (one run each); the tower test red is older than these commits; EXACT NEXT STEP is the lead's ruling
+git bisect skip 43c4c677666a96f49ff2384b6102f340438c6ed1
+# skip: [22eb446fa15e633ab705adc4086a5e4d650e73d4] BUILD-26l REPORT: the exact next step after the 3d75a90df rows
+git bisect skip 22eb446fa15e633ab705adc4086a5e4d650e73d4
+# bad: [4816edd31036d26878295c1bb2914e9330a9ee6b] INT-R5: 2-6 as on main (part 2, WIP): the tests back to main's or to the draft
+git bisect bad 4816edd31036d26878295c1bb2914e9330a9ee6b
+# skip: [838daca052065d3e65016add78a24660dde3559a] ENG-26o: REPORT: the third spot (middle Easy 10 x 1102) proven BOT: a late walk-off drawn at s14:b's lip (firsttimer.ts:2836) where the way on rises onto a thin bough; 2820 only turns late into run at a face; each diagnostic re-run alone
+git bisect skip 838daca052065d3e65016add78a24660dde3559a
+# skip: [71cbb9bdaf0f78eecb3ac830b27ca342bc3a8b2e] ENG-26l: REPORT: stills ACCEPTED (layout 1 is seed 2; stand.mjs is the stills tool), the suite 3,214 ok 0 failed and still running at the box; EXACT NEXT STEP is step 0 whole, then load speed, bots, lockall, the full set
+git bisect skip 71cbb9bdaf0f78eecb3ac830b27ca342bc3a8b2e
+# skip: [c99352a65c74f34094522e595ba2495fb76924fc] ENG-26o: REPORT: the named bot lines mapped onto t-build-26 after cut 5 (a59a144c0); the measurements stay on 4b6ce810f
+git bisect skip c99352a65c74f34094522e595ba2495fb76924fc
+# skip: [dbe8a22595ed4eb62e787c729e7e7f10e47e9d70] BUILD-26c: planted test: the tower route goes on from a turn's top along the leg, never back to an entry beside the vine
+git bisect skip dbe8a22595ed4eb62e787c729e7e7f10e47e9d70
+# skip: [38ba109c197e0c7655a8b9e6ed6e725a3235e51d] BUILD-26g REPORT: C stays, A/B reverted on tierBots 8/9 (base check pending), the lip off; EXACT NEXT STEP in the lead's order
+git bisect skip 38ba109c197e0c7655a8b9e6ed6e725a3235e51d
+# skip: [7d1da853511c51d745d2de9cc374bf2efb3a2725] BUILD-26n: toy: a fig on a vine out of his hands' reach (RED on 65fd9bd9e: 45 side pushes in 3 s, busy held)
+git bisect skip 7d1da853511c51d745d2de9cc374bf2efb3a2725
+# skip: [6567d3557bd3dbc57a3a2873b0125d4f685686c2] Revert A/B (9631000b9): tierBots 1-1 8/9 on C + A/B (the lead's ruling: not 9/9, revert at once)
+git bisect skip 6567d3557bd3dbc57a3a2873b0125d4f685686c2
+# skip: [860347236e8a43fe4e453ac02a25d07c11aca13f] BUILD-26m REPORT: cut 5 re-judged 34/39/34/37; the dodge alone carries every flip (child N 38 and the x 871 pair included), the 8 s bound none; the x 871 pair traced to FigPush's unreachable target; 2-6 kid E 22 pinned to wheelRide's settle, toy RED; exact next step
+git bisect skip 860347236e8a43fe4e453ac02a25d07c11aca13f
+# skip: [51345740ab9940d8d3ff0d41df2d5142617b4f8d] BUILD-26g: 1-4 x40 rows on all three; the three lost rows isolated on C + A/B
+git bisect skip 51345740ab9940d8d3ff0d41df2d5142617b4f8d
+# skip: [b9404d3e77ca706345d2aa47a95b850c071d2d95] BUILD-26l REPORT: 1-4 x40 on 3d75a90df (no silent cap, no 300 s pass; child N 38 under cut 5; 305 rows moved, untraced)
+git bisect skip b9404d3e77ca706345d2aa47a95b850c071d2d95
+# skip: [47227d01b6e892fe7379d8ddfbe43f1cc1e60b6e] ENG-26c: hand-over REPORT (readiness list, G1/G2/G5 fixed and planted, G3/G4 data, G6 open), EXACT NEXT STEP for ENG-26d
+git bisect skip 47227d01b6e892fe7379d8ddfbe43f1cc1e60b6e
+# skip: [e5ecc7b893ebb56aae92cfac9531ed74a2207691] ENG-26m: REPORT at the box: load speed (1-4 over the 4x-CPU build budget on BOTH trees, 2-6 passes, 0 fell to search), seedlist 1-4 --check PASS 152 s OLD / 99 s RELISTED, lockall RELISTED vs OLD moves 1-4 and 2-6 only; castBots and tierBots pending in the chain
+git bisect skip e5ecc7b893ebb56aae92cfac9531ed74a2207691
+# skip: [5a67dba937be274b2dba4cdbcaae8cfeec9df1a6] ENG-26e step 1: the four x-only water reads (drop judge, Easy's flags and steps, the water lesson) read by ONE rule, river.ts waterUnder/waterNear on riverAt, planted
+git bisect skip 5a67dba937be274b2dba4cdbcaae8cfeec9df1a6
+# skip: [9693961a7c091725a9fb584ef677647438b9005c] BUILD-26k REPORT: child N 8 and 14 traced (a knock-on: pod knock, then the rewind stranded him); the general fix; toy RED/GREEN; runs in flight
+git bisect skip 9693961a7c091725a9fb584ef677647438b9005c
+# skip: [11b7adfa00b2eea1e2e2b7c7bd3f02a126ec75c2] ENG-26e: hand-over REPORT (steps 1-2 done and planted, EXACT NEXT STEP: the full lock, rule 28's row diff, table, stills, gates)
+git bisect skip 11b7adfa00b2eea1e2e2b7c7bd3f02a126ec75c2
+# skip: [4185812c77f7bbf940421981c806aab9cf4acfaf] Bots: a pod's knock is read every frame, and a rewind after a fall reaches up a climbing vine at his feet (1-4 child N 8, 14)
+git bisect skip 4185812c77f7bbf940421981c806aab9cf4acfaf
+# skip: [3e212becc44f5d42c45f9155dfe0cd6286d4e0ab] ENG-26t: riverRide's plants on 2-1's live cases (the lead's rulings): upstream child N 23 replaces child N 5, middle N 26 added; bankUp child N 40 as a lives plant, the time kept
+git bisect skip 3e212becc44f5d42c45f9155dfe0cd6286d4e0ab
+# skip: [42304b76d0de8f69046cae7c6c977bee96e906fa] BUILD-26e: REPORT at the box: 2-3 unmoved but red on base and fix alike (sealed door, goal 0/5); 2-4, 2-5 remain
+git bisect skip 42304b76d0de8f69046cae7c6c977bee96e906fa
+# skip: [c30315581d73ab79ce273cbc6fdd6f201ee4ba59] ENG-26s: REPORT: libstage GREEN 4/4 on the relisted head ca3a7d063
+git bisect skip c30315581d73ab79ce273cbc6fdd6f201ee4ba59
+# skip: [86625c5ae3d9cea12b15fd0d270a2e5bb173a21c] ENG-26q REPORT: the suite on 4e0888c5d CLEAN (619 files, 4035 pass, 0 fail, the three allowed todos; rollGuard 1-4 green); landed on t-build-26 by the lead's ruling; the D119 repeat owned
+git bisect skip 86625c5ae3d9cea12b15fd0d270a2e5bb173a21c
+# skip: [fab3a8a20fd45a2c14d8ae3ab6f73466c1784438] BUILD-26 step 1 (in progress): 2-6 laid by its design on its row (kit 'w2-26', finish26), its seed list (100 of 101), the hand build's route deleted
+git bisect skip fab3a8a20fd45a2c14d8ae3ab6f73466c1784438
+# skip: [c308a57591abbe89eb72f62d84cfe050082fbb40] ENG-26q REPORT: lockall x16 base vs fix IDENTICAL (no stage moves, no rule-28 mover); the 53 named files clean; the suites RUNNING
+git bisect skip c308a57591abbe89eb72f62d84cfe050082fbb40
+# skip: [c29b8332dea85c1c8531d825e436ce0f9bd4fd4b] BUILD-26b step 1: the village climb deleted (buildKapok's village branch, its knots, windows, dressing and bank wall; stageSheets '2-6' gold snake); 2-6.md: the hearts ruling, the deletion
+git bisect skip c29b8332dea85c1c8531d825e436ce0f9bd4fd4b
+# skip: [c98a40f06ad853232d1558a9f04bab6e8d6460ab] BUILD-26j REPORT: the step-up rule proven both arms; 1-4 x40 on the rule (child N 39 -> 37, not landable as is); C on top; EXACT NEXT STEP
+git bisect skip c98a40f06ad853232d1558a9f04bab6e8d6460ab
+# skip: [2c0c2569b0863d9f4242196958bb5c02f952bbe9] ENG-26r: REPORT: roadmapcheck ruling (a) and the diff that shows its inputs unchanged
+git bisect skip 2c0c2569b0863d9f4242196958bb5c02f952bbe9
+# skip: [007480469bbfcdbfad625711f190605b22233333] BUILD-26f: 2-6 x40 rows, 2f188c552 vs 0bc969bce (the first cut, worse: adult N 33 -> 23)
+git bisect skip 007480469bbfcdbfad625711f190605b22233333
+# skip: [de6e7bb35a62bc63aac0feb67ad6f5045a3d9161] ENG-26r: the stills, 2-6-alone drawcheck and suite scripts kept with the report
+git bisect skip de6e7bb35a62bc63aac0feb67ad6f5045a3d9161
+# skip: [ff826a91429eef5f1921976ce53074a646a49205] ENG-26o: REPORT: 1-4 cause C proven BOT: towerRoute.ts line 86's out-and-back squeeze misses by 5 px (the way on x 786 just past the arrival vine x 781); widened on a copy, all six of C's rows pass; spots A and B are not the C shape
+git bisect skip ff826a91429eef5f1921976ce53074a646a49205
+# skip: [53dd58170b18fce2d593617f50ede00b28df4c2b] ENG-26h: hand-over REPORT (D111; EXACT NEXT STEP: prove 91e6c584e exact by the lock, relist 1-4 from the 1-400 sweep, quiet load-speed measures, stills, bots, gates); locks, sweep and tools saved
+git bisect skip 53dd58170b18fce2d593617f50ede00b28df4c2b
+# skip: [3e2f9df71bd5286a95eb1f0774c515ada1b9c5f6] BUILD-26i: the 1-4 x40 table on 9c2ce855d (no tier drop against cut 5; adult N 9 lost, A/B's); rows and compare
+git bisect skip 3e2f9df71bd5286a95eb1f0774c515ada1b9c5f6
+# skip: [97bb2b73e010f186657344060ddeaceba65066c2] ENG-26i: a gate's running walk-off gets a catch of its own under the arc (towerCatches rule 4), so the roll passes instead of being thrown away
+git bisect skip 97bb2b73e010f186657344060ddeaceba65066c2
+# skip: [b663afb6debfcbdcc2df6d33831a42f0051683f4] BUILD-26f: REPORT: the Progress rewind, five cuts on 2-6 x40; cut 5 (fe3d3d6ca, local) has no tier drop; 1-4 running; the exact next step
+git bisect skip b663afb6debfcbdcc2df6d33831a42f0051683f4
+# skip: [d3433995c01ddf4aaeaf58d69fce01c81ac61a58] ENG-26i: handed over by D111 (the proof's sweep not finished in the box; step 1 re-runs it)
+git bisect skip d3433995c01ddf4aaeaf58d69fce01c81ac61a58
+# skip: [abb8ee49c7d080237fbfa61e3375b34027a6b75c] BUILD-26f: 1-4 x40 on fe3d3d6ca: no row moved (sent to the lead); REPORT
+git bisect skip abb8ee49c7d080237fbfa61e3375b34027a6b75c
+# skip: [bd4f14924f244ef0c07adeb7ef2d91616d238a60] ENG-26j: REPORT (step 1 done and accepted; 1-4 yield 400/400 and 2-6 100/100 on 8e21145f1; the lead's gate-bough question measured harmless; EXACT NEXT STEP for ENG-26k); the sweep and tools saved
+git bisect skip bd4f14924f244ef0c07adeb7ef2d91616d238a60
+# skip: [9cd007ce6c1241fb504455d59389359b4bf74b22] BUILD-26f: REPORT: one lost row traced (adult N 11 on fe3d3d6ca): real falls off the leg's dip #41, a separate spot
+git bisect skip 9cd007ce6c1241fb504455d59389359b4bf74b22
+# skip: [c45496570ad5720cf3f827529fbfc55f1529130f] ENG-26k: two tests re-pointed at the LISTED 2-6 (the lead's ruling): they laid 2-6 as a draft and failed 'already listed' on 3310f3ac9
+git bisect skip c45496570ad5720cf3f827529fbfc55f1529130f
+# skip: [47b57a3e830717d935df6666950bb3dd74d55258] R-165.59 calibration recommitted on t-build-26's bot (cut 5 + C + A/B, 27e20ebf9): cut 5's Progress rewind moved child normal 7 (397.2 -> 395.7 s, putbacks 8 -> 5, rescues 1 -> 0) and 18 (402.3 -> 398.8, putbacks 2 -> 1); tierBots on 2f188c552 is 9/9
+git bisect skip 47b57a3e830717d935df6666950bb3dd74d55258
+# skip: [ea3d7e7a2a0c7ffe01f952858f7e0ff4d8eab4c1] ENG-26l: the head's 1-4 layout 1 stills (Pokey standing at the gate's foot and at a run's landing), stand.mjs and order.mts
+git bisect skip ea3d7e7a2a0c7ffe01f952858f7e0ff4d8eab4c1
+# skip: [27e20ebf9a32883d4aaad1cfb1917ee4d24a353a] BUILD-26g REPORT: base tierBots also 8/9; A/B back; next tierBots on 2f188c552
+git bisect skip 27e20ebf9a32883d4aaad1cfb1917ee4d24a353a
+# skip: [d39645444f72a816492ecac08ab2c7e7add4f272] BUILD-26n REPORT: the lead's ruling and the landing path (only REPORT.md conflicts on the rebase)
+git bisect skip d39645444f72a816492ecac08ab2c7e7add4f272
+# skip: [9df2f0d117a389ccd26b5a66096b5ec8d570c516] C: the tower route's out-and-back squeeze takes a turn's vine within GRAB_REACH of the span (1-4 Easy 10)
+git bisect skip 9df2f0d117a389ccd26b5a66096b5ec8d570c516
+# skip: [cd6937dcd05039b7081add111d7499a0cca5ff23] BUILD-26c (trial): the bots take a tower's own route whenever the stage has one (the inspector's trace slants each turn's climb through the floors)
+git bisect skip cd6937dcd05039b7081add111d7499a0cca5ff23
+# skip: [9631000b9868b870a725c4dfd65718470b74280d] A/B: the tower's 'stopped first' is a stop KID and ADULT's thumb makes (one late lift-off), 1-4 s3
+git bisect skip 9631000b9868b870a725c4dfd65718470b74280d
+# skip: [654377c188d3a4c83d9128c4dfb7ec6f8cb914c0] BUILD-26c: REPORT: the climb floor named (rule, bar or measure); the lead's two-beat ruling in the EXACT NEXT STEP
+git bisect skip 654377c188d3a4c83d9128c4dfb7ec6f8cb914c0
+# skip: [f79e86f2a32df6f55481a51786b9354871e41afd] ENG-26c: 2-6 readiness on a draft row; G1 p letter, G2 leftward river, G5 tower wall (planted)
+git bisect skip f79e86f2a32df6f55481a51786b9354871e41afd
+# skip: [223f72c056c6e3927d5f1cee2ad21bdf8dcc52bc] Bots: the wheel-ride toy runs the kid too (Easy and Normal): RED on 22eb446fa, sparse kid Easy leaves a bucket 5 times; b26m rows (cut 5 re-judged, the 8 s bound alone) and the 2-6 kid E 22 steer trace. BUILD-26m
+git bisect skip 223f72c056c6e3927d5f1cee2ad21bdf8dcc52bc
+# skip: [73431eecb542ea2977d113ac654e2f0e85e2c651] INT-R5: merge t-build-26 @ e8e99d167 (release 4's base: today's bot/river fixes, 1-4's relist)
+git bisect skip 73431eecb542ea2977d113ac654e2f0e85e2c651
+# skip: [04ae11fa0b306ac286f2ff4a6b51f9a7959e5137] BUILD-26l REPORT: the 1-4/2-6 rows on the bound, the hidden 320-940 s passes on cut 5, the fig stall traced and fixed, the lift steer traced (bot); next step in the lead's order
+git bisect skip 04ae11fa0b306ac286f2ff4a6b51f9a7959e5137
+# skip: [9346f3948878a15c011b950f4b750266f590d885] ENG-26e step 2: the tower-turn rescues, two causes fixed and planted
+git bisect skip 9346f3948878a15c011b950f4b750266f590d885
+# skip: [064ca6df657d022dbf272cac40f06889f0aeb49c] Bots: no silent cap: a vine field's work that gets nowhere for 20 s runs the no-progress clock; a stall on a vine is a named stuck spot; the toy (RED on 1f42b4323, GREEN). BUILD-26l
+git bisect skip 064ca6df657d022dbf272cac40f06889f0aeb49c
+# skip: [cfdca80e3256be9f63d34c19fc631a47fdce34f3] ENG-26f step 0: the last four x-only water reads (floorWater, routeGaps, Easy's creek stones, Easy's landings at a river's edge) read it by river.ts waterNear
+git bisect skip cfdca80e3256be9f63d34c19fc631a47fdce34f3
+# skip: [b8ee1998a23e65f1abb963bb1769960e83f586bc] BUILD-26e: REPORT: the first 2-6 adult spot traced (the floor at y 4118, the vine at x 1587 never reached); ENG-26m's 1-4 BOT causes in the next step
+git bisect skip b8ee1998a23e65f1abb963bb1769960e83f586bc
+# skip: [862382d359885fce366a6eee563178684776b0b2] ENG-26t: REPORT (EXACT NEXT STEP first): wheelRide fixed at cause 997f7e98c, riverRide live cases and proposed plants, evidence in BUILD-26/b26t
+git bisect skip 862382d359885fce366a6eee563178684776b0b2
+# skip: [0a215c1e8273920bfde7075e98afb55b86530c76] BUILD-26e: REPORT: the 2-6 adult spot settled: Progress keeps cur on the floor above after a fall (a bot cause); the fix and its toy named
+git bisect skip 0a215c1e8273920bfde7075e98afb55b86530c76
+# skip: [a71c69427d5a48d675ac920039588760191d5f11] ENG-26f step 5 (in progress): tsc on the head (the other gate logs follow as they finish)
+git bisect skip a71c69427d5a48d675ac920039588760191d5f11
+# skip: [d2ed84c4000bd07125d17c0626cd3a1582a77d11] BUILD-26j: C on the rule x40 (every 1-4 Easy tier 40/40; child N 8 and 14 the one drop; 2-6 unchanged)
+git bisect skip d2ed84c4000bd07125d17c0626cd3a1582a77d11
+# skip: [8d2ac35bc9e81058616a80654b196b430acd611f] ENG-26s: 1-4 relisted once on the head's lay, seeds kept in order (libstage RED's cause 2f188c552; the lead's ruling a)
+git bisect skip 8d2ac35bc9e81058616a80654b196b430acd611f
+# skip: [f47bfd43a7b076ed1c4aaee121c2599e8b151667] ENG-26q REPORT: step 0 DONE (the whole suite on cb9372ead, 619 files: 4033 pass, rollGuard 1-4 the only fail, 3 allowed todos; t-build-26 fast-forwarded to cb9372ead); the fix suite RUNNING
+git bisect skip f47bfd43a7b076ed1c4aaee121c2599e8b151667
+# skip: [4ea253b8c379b8ea0215df7bb45c37b11d032102] BUILD-26: hand-over REPORT (EXACT NEXT STEP first: the village branch deletion, 6 pins to re-point, the hearts ruling, the bot traces), the bot rows
+git bisect skip 4ea253b8c379b8ea0215df7bb45c37b11d032102
+# skip: [99a68ff10de701f1225b54434689b4e40e54ded5] BUILD-26j REPORT: child N 14's failure spot read (a vine field, no lip)
+git bisect skip 99a68ff10de701f1225b54434689b4e40e54ded5
+# skip: [44dcbb41aa9976a735038f59931957850a3de21d] BUILD-26b: hand-over REPORT (EXACT NEXT STEP: the walk-off engine piece, its draft as walkoff-wip.patch, RED); qaW123 dead-end test on TOWER.fall (lead's ruling)
+git bisect skip 44dcbb41aa9976a735038f59931957850a3de21d
+# skip: [0bc969bce1eedf34a00718c23c2148d70395eff7] BUILD-26f: bot: Progress rewinds when he stands more than a double's reach under its point (a fall off a leg), hops or not; the toy and its plant (RED on 2f188c552)
+git bisect skip 0bc969bce1eedf34a00718c23c2148d70395eff7
+# skip: [3ecb87eaaaeec5260d1b31d634a86f0aca7f458b] ENG-26r: REPORT: full drawcheck PASS, lockall 101/102 unchanged (2-6 proto.bankWall, intended)
+git bisect skip 3ecb87eaaaeec5260d1b31d634a86f0aca7f458b
+# skip: [f348115a2fb68151011d5be5579b9127ca47968a] BUILD-26j: the step-up lip's toy (RED on c00d2fd17 roll 2 walks off; GREEN on the rule; planted arm walks off in 3+ of 6)
+git bisect skip f348115a2fb68151011d5be5579b9127ca47968a
+# skip: [742fe477cf5604bf7f71e8d84a22536f1d83fb33] ENG-26r: REPORT: handover state
+git bisect skip 742fe477cf5604bf7f71e8d84a22536f1d83fb33
+# skip: [d18b03d5fa390a5b3f40294092129509ffe3e9e4] BUILD-26f: revert 0bc969bce (the first cut of the Progress rewind: worse on 2-6 x40, adult N 33 -> 23; the lead's ruling)
+git bisect skip d18b03d5fa390a5b3f40294092129509ffe3e9e4
+# skip: [deaaf3a7c423cc5a7af7d0edad3e2c627f3b07bc] ENG-26h: REPORT's EXACT NEXT STEP in the lead's order for ENG-26i (towerCatches cures the refused runs, the speed-ups proven, ONE relist, load speed, stills, gates); the sweep and relist stopped by D40
+git bisect skip deaaf3a7c423cc5a7af7d0edad3e2c627f3b07bc
+# skip: [d58ea1df6ff551a0b0a8bc793aa9ece25b767ed2] ENG-26o: REPORT: spots A and B traced: one shape, not C's (a hop off r1 falls short onto s3:s under the raised row; he walks off s3:s's end short of the way-on vine); a third spot on middle Easy 10 (s14:b to s14:c); BOT or LAY unproven there
+git bisect skip d58ea1df6ff551a0b0a8bc793aa9ece25b767ed2
+# skip: [b73600b56bda7c899117846fc0bbd1ac2d54acfe] ENG-26i: the lead's proof: a gate's run catch is reached only by a fall off its gate (towerGateCatches, named; the lay keeps to it)
+git bisect skip b73600b56bda7c899117846fc0bbd1ac2d54acfe
+# skip: [4772583105b0581e3fb5bbe5872ad16084c885aa] BUILD-26f: the candidate fix saved as a patch (b26f/cut5-fe3d3d6ca.patch, not applied); REPORT heading
+git bisect skip 4772583105b0581e3fb5bbe5872ad16084c885aa
+# skip: [e420a27949a3e20222fab7303ebe3c2077068579] ENG-26i: the lead's ruling (a) written into the EXACT NEXT STEP for ENG-26j (the fix in the gate section; the lay's gate catch and its proof reverted)
+git bisect skip e420a27949a3e20222fab7303ebe3c2077068579
+# skip: [853c7661900b91c48e8dfc49bdf0a1b6f728306a] BUILD-26h REPORT: 1-4 x40 on C + A/B (no lip): child Easy 36 -> 35 (child E 37), adult N 9 lost; rows committed
+git bisect skip 853c7661900b91c48e8dfc49bdf0a1b6f728306a
+# skip: [d12ffcacff83e1f70ea07b0bda296e36a1c7a6dc] ENG-26h step 4 (load speed, EXACT, proof running): fly reads only the pieces its path can meet; roofedDrop's run found once a piece a walk; reach tables indexed by speed, not scanned
+git bisect skip d12ffcacff83e1f70ea07b0bda296e36a1c7a6dc
+# skip: [fe83d99e5dee9e23099f76ed7f394a01a8c2358d] BUILD-26h REPORT: tierBots 9/9 before cut 5; the calibration recommitted (9/9); the lip traced on child N 14 (a knock-on) and its toy does not separate fix from plant; suite and the 1-4 table running
+git bisect skip fe83d99e5dee9e23099f76ed7f394a01a8c2358d
+# skip: [9d2fa3e5a38def0fb2e0ceb0c1eb72c5a541b400] BUILD-26n: 2-6 adult N 13 is the same climb loop (three runs, one cause)
+git bisect skip 9d2fa3e5a38def0fb2e0ceb0c1eb72c5a541b400
+# skip: [ff9c50d3bfb0bf54d9630923f95481d79eaf7d90] BUILD-26f: REPORT at the box: cut 5 landed (a59a144c0); the 7 lost and 16 gained 2-6 rows named as the exact next step
+git bisect skip ff9c50d3bfb0bf54d9630923f95481d79eaf7d90
+# skip: [0e916a505bce3d3f4ea5180708113d4652187428] BUILD-26n: 2-6 kid E 16's new fail is an old route loop (the base runs it too, 18.5 s earlier); fix 3 shifts timing only
+git bisect skip 0e916a505bce3d3f4ea5180708113d4652187428
+# skip: [7fb134d4401708393fb0b9d0c7a26d546d59e4ea] A/B back (revert of 6567d3557): tierBots 1-1 on base c99352a65 is also 8/9, the same two runs, the same numbers (the lead's ruling (a))
+git bisect skip 7fb134d4401708393fb0b9d0c7a26d546d59e4ea
+# skip: [2b123df7c14f40e3fc102cc6dcba678ad4cd9003] BUILD-26c: towerRoute: no corner at a leg's entry beside the turn's vine top (the bot went back for it into the climb hole / off the lip)
+git bisect skip 2b123df7c14f40e3fc102cc6dcba678ad4cd9003
+# skip: [a59a144c066393085a75ba5ed195d77d700af035] BUILD-26f: bot: Progress rewinds when he stands more than a double's reach under its point, hops or not (Progress.under); the toy and its plant (RED on 2f188c552)
+git bisect skip a59a144c066393085a75ba5ed195d77d700af035
+# skip: [eae5b1ff78403c0ab0583e5506b1d0ce8de6a9c7] BUILD-26n fix 3: a thumb that does not let go (no holdQ) brakes in a wheel bucket and at the jetty's lip, and steps off only once still (wheel toy GREEN, every kid row)
+git bisect skip eae5b1ff78403c0ab0583e5506b1d0ce8de6a9c7
+# bad: [b3195f31e72b7ef781a846912aac6365e7ea61d4] INT-R5: merge t-build-27e @ 801cae9e8 (2-7 The Mailman's Route; carries t-eng-27 to 091ba947 as BUILD-27 resolved it with main)
+git bisect bad b3195f31e72b7ef781a846912aac6365e7ea61d4
+# skip: [704165d24ed490d0a4c30cf2ec1b1861d063abc7] ENG-26d step 2: the bots table on 2-6's draft row (rowWheels.ts, in CI), the meter's wheel channel priced
+git bisect skip 704165d24ed490d0a4c30cf2ec1b1861d063abc7
+# skip: [cd00bedd98946ddbeec210ef6bed809d95a8e134] BUILD-26c: REPORT: the lead's ruling: the adult is a fair quick-player bound; relist 2-6 under --proven, report the yield
+git bisect skip cd00bedd98946ddbeec210ef6bed809d95a8e134
+# skip: [4285e263c95b6c06043a2a74c30e726bee7a7fe7] ENG-26t: REPORT: verdicts on frozen 35ca56b16: suite 4,077/0/3; tool line 366/1 RED (rowWheels trunkCatch plant, RED on the base too)/1 todo
+git bisect skip 4285e263c95b6c06043a2a74c30e726bee7a7fe7
+# skip: [5be367dd88aa632da80708cb08de1d291d801c48] BUILD-26c: REPORT: the suite at hand-over (2,559 ok, 0 failed, one TODO)
+git bisect skip 5be367dd88aa632da80708cb08de1d291d801c48
+# skip: [1234a83cfac690ee308c2102925fc93ac2b7a85a] ENG-26t: REPORT: plants approved and written (3e212becc); runs in flight named
+git bisect skip 1234a83cfac690ee308c2102925fc93ac2b7a85a
+# skip: [cc62d6b99c7ad8e276ec9cbe026dba6b551d7e55] BUILD-26e: the vine-foot toy planted: decides 14 px left of the vine with way -1; RED on 5be367dd8 (lowest y 1351), GREEN with climbUpVine
+git bisect skip cc62d6b99c7ad8e276ec9cbe026dba6b551d7e55
+# skip: [c1fe87a6e7a1aa44d4281b063a6b38590925733f] ENG-26f (safe-keeping): the row plant lifted out of rowWheels.ts into tools/inspect/plantRow.ts (an undo, for the bots and a DEV page)
+git bisect skip c1fe87a6e7a1aa44d4281b063a6b38590925733f
+# skip: [195db372cec4bdc26f119976dfa1178033a817ac] Bots toy: the knocked-off-a-vine-field rewind (RED on 9f8b81346, GREEN on the fix; the nothing-reachable arm). BUILD-26k
+git bisect skip 195db372cec4bdc26f119976dfa1178033a817ac
+# skip: [411638a73c5e86641306ea792941094b3b873a0c] ENG-26f step 2 (rule 28): the trunkCatch bot fix row for row: 2-3 0/360 moved vs BUILD-23e, 2-5 0/360 moved vs BUILD-25d; tierBots 1-1 9/9
+git bisect skip 411638a73c5e86641306ea792941094b3b873a0c
+# skip: [f1c7c88cd0e8150c91063cf7f99c6cdb5f796fe4] BUILD-26e: REPORT: the 2-6 adult spot's cause narrowed: the route's way on points straight up at x ~1250, not to the vine at 1587
+git bisect skip f1c7c88cd0e8150c91063cf7f99c6cdb5f796fe4
+# skip: [df0d3d76f5cec6627715748a3605340537259e0f] ENG-26s: 2-6 judged on its own flown rows (registrycheck '2-6 flown', the lead's ruling 2a)
+git bisect skip df0d3d76f5cec6627715748a3605340537259e0f
+# skip: [75412aeff8aaeb8ab48037d81b0064ba2fd7421a] BUILD-26j: the bounded rule + C, 1-4 x40 (identical to unbounded + C; child N 8 and 14 the one drop)
+git bisect skip 75412aeff8aaeb8ab48037d81b0064ba2fd7421a
+# skip: [86bb3b145857d324745791481019f395f5771b6a] BUILD-26p: the bot reads a river's water by x and y (floorAt via riverAt), R-165.390; toy in firsttimer.test.ts
+git bisect skip 86bb3b145857d324745791481019f395f5771b6a
+# skip: [c3a5ff06bd77783476fd9ddcec5c4de29b35c336] BUILD-26j REPORT: the reach bound (the lead's ruling) and what it does to child N 8 and 14
+git bisect skip c3a5ff06bd77783476fd9ddcec5c4de29b35c336
+# skip: [6441a263ed8ae305060403a2f2ecc5b3ddfef618] ENG-26r: REPORT: the suite on the head (green but roadmapcheck, which a shallow clone cannot run)
+git bisect skip 6441a263ed8ae305060403a2f2ecc5b3ddfef618
+# skip: [acfb717963a69f023739e160833eb3385f9f2c60] ENG-26n: REPORT: cause C planted RED and fixed GREEN (1-4 Easy 10, 37 on their listed rolls); the seed lists running; the band's height ruled for the lead
+git bisect skip acfb717963a69f023739e160833eb3385f9f2c60
+# skip: [de009b9f5e5294bb76ac16d0026572fd95c16334] ENG-26g step 2 (rule 26, ENGINE): the tower judges a RUNNING walk-off where it lands
+git bisect skip de009b9f5e5294bb76ac16d0026572fd95c16334
+# skip: [96b80dd713b9cc0e7f3b367b14f031950bfe5a43] ENG-26n: REPORT: the lead suspect for cause C (LAY): the way-on vine x 786 stands 5 px from the field's vine f1 x 781 since gateRun moved the field (OLD: 103 px; Normal: 42 px); the next step's first print
+git bisect skip 96b80dd713b9cc0e7f3b367b14f031950bfe5a43
+# skip: [95cafaabc33d5c6b772d3d6adbe7f69dbe294b25] ENG-26g REPORT: qaW123's 2-6 dead-end test GREEN on ac2fd73b6 (19/19 with towerFoot, towerCatchWater, wheel tests)
+git bisect skip 95cafaabc33d5c6b772d3d6adbe7f69dbe294b25
+# skip: [4b6ce810f13f1a0a646a0e5a57f0d71de0a34357] ENG-26n: REPORT at the box: the engine's vine pick read (a field vine is skipped from on its gate); the stand-and-press probe inconclusive and not claimed; the exact next step
+git bisect skip 4b6ce810f13f1a0a646a0e5a57f0d71de0a34357
+# skip: [91e6c584e38facd8184807fedfab30a6054d142f] ENG-26h step 4 (load speed, EXACT, proof running): fly reads only the pieces its path can meet; roofedDrop's run found once a piece a walk; reach tables indexed by speed, not scanned
+git bisect skip 91e6c584e38facd8184807fedfab30a6054d142f
+# skip: [d6350d3e7ad93a92475d76d68ab4e1e948f3a7d5] BUILD-26j: the step-up rule at a faceless lip (stepUpAtLip, LIP_STEP measured from the lip: a late press becomes a run where the floor goes on a hop up with no face)
+git bisect skip d6350d3e7ad93a92475d76d68ab4e1e948f3a7d5
+# skip: [fa98a0fd1f6972afb66bec2b9db8f89c47e21ada] ENG-26h: revert 91e6c584e off the branch head (the lead's ruling: push only what is proven; its lock proof was never run). ENG-26i cherry-picks it in its step 2 and proves it by the lock
+git bisect skip fa98a0fd1f6972afb66bec2b9db8f89c47e21ada
+# skip: [79e596bf219b908437d6e060950f658ad4a4288d] BUILD-26f: the trace that settled the hop cause (b26f/dbgOff.txt, 2-6 adult N 26 on 2f188c552) and the window printer
+git bisect skip 79e596bf219b908437d6e060950f658ad4a4288d
+# skip: [5e1cd1003e1353e5d4b57a6436e63907dc0704bb] ENG-26r: static gradients made once and reused (gradCache.ts): the safe river's under-bed shade and the bank wall's depth darkening (drawn translated); 2-6's per-frame gradients
+git bisect skip 5e1cd1003e1353e5d4b57a6436e63907dc0704bb
+# skip: [f33640cac2ab48cde9e1a75317d92f140467c0f2] BUILD-26f: rows: 2-6 x40 on 144d79032 and bbc21cb2d (cuts 2 and 3, not landed), 1-4 x40 on 2f188c552
+git bisect skip f33640cac2ab48cde9e1a75317d92f140467c0f2
+# skip: [e0970160b4505931d81106764347299ed012fe99] ENG-26i: REPORT (the proof's price measured, the lead's options, EXACT NEXT STEP); the cure's 1-400 sweep and scratch tools saved
+git bisect skip e0970160b4505931d81106764347299ed012fe99
+# skip: [2c266d4772d7b0e25e45e39178d6ce1bf4a4e223] BUILD-26f: rows: 2-6 x40 on 30ada3574 (cut 4, not landed: adult N 33 -> 32)
+git bisect skip 2c266d4772d7b0e25e45e39178d6ce1bf4a4e223
+# skip: [62716575903e26fda1354a68035633b86ba5714b] ENG-26j: REPORT: 1-4's list check measured on 8e21145f1 (0 of 100 refused; 7 seeds' replays differ, rebuild the list)
+git bisect skip 62716575903e26fda1354a68035633b86ba5714b
+# skip: [cbb93c5e115390df501f5c4c242715d63c7454db] ENG-26o: REPORT: spots A and B proven BOT: firsttimer.ts:2734 intends a stop under the raised row, but KID/ADULT's thumb release (3764) re-arms every frame and never lets go; letting go on a copy clears all five A/B rows; the third spot (middle Easy 10) still open
+git bisect skip cbb93c5e115390df501f5c4c242715d63c7454db
+# skip: [5981c26c0afaf3f3f0d7ba5772557220ce131126] ENG-26k: 1-4 relisted once on the gate section's own catch (seeds 1-100 kept in order, 45 plans re-laid, version b3feea99); seedlist 1-4 --check PASS
+git bisect skip 5981c26c0afaf3f3f0d7ba5772557220ce131126
+# skip: [c00d2fd174ae8c746366c903f8ffcfabe5cc9329] BUILD-26i: tierBots 9/9 on 9c2ce855d (the calibration holds after C's revert)
+git bisect skip c00d2fd174ae8c746366c903f8ffcfabe5cc9329
+# skip: [9e7310a42bc77cccae28f088426e93f51072e8ae] ENG-26k: REPORT: 1-4 relisted (seedlist 1-4 --check PASS), the two 2-6 tests re-pointed at the listed 2-6; EXACT NEXT STEP is the full suite, the re-pins, then load speed, stills, bots, the full set
+git bisect skip 9e7310a42bc77cccae28f088426e93f51072e8ae
+# good: [801cae9e8d6f4bb72278d1bb67e5b7da493d7cdd] BUILD-27g: the gate lines on 312ce33a0
+git bisect good 801cae9e8d6f4bb72278d1bb67e5b7da493d7cdd
+# skip: [be579bc016752ca6eeadf7547dfff3eb0b5d83a7] BUILD-26n REPORT: the final candidate's rows (no tier drop on 1-4 or 2-6), rule 28 on the dodge, fix 3's three causes
+git bisect skip be579bc016752ca6eeadf7547dfff3eb0b5d83a7
+# skip: [c0142f99071343bbfc3a961697655056008bae00] ENG-26u: REPORT: the 1-1 recalibration on frozen 5ecec4018 reproduces the replay (120 of 200 moved), the table keeps every verdict; the cause bisect next
+git bisect skip c0142f99071343bbfc3a961697655056008bae00
+# skip: [a840ac5ff9f51d03b230e6c0d528f137c5ba0de7] ENG-26l: REPORT: step 0 whole on 626fac5ac: 4,035 tests, 4,032 pass, 0 fail, 3 TODO; the verdict carries to this head (src and tools unchanged but BUILD-26c's w2Arc26 test, re-run 5/5, and towerRoute)
+git bisect skip a840ac5ff9f51d03b230e6c0d528f137c5ba0de7
+# skip: [e67e01113c9c184aeee7f202b1d3511cf9e9dce0] ENG-26d: hand-over REPORT (steps 0-2 done, bots table, EXACT NEXT STEP: the four x-only water reads per the lead's 12:10 PM ruling)
+git bisect skip e67e01113c9c184aeee7f202b1d3511cf9e9dce0
+# skip: [65fd9bd9edd6b1869b2cf06f3a75f6c8da686953] BUILD-26m REPORT: child N 38 traced, the same chain as the x 871 pair (fig 7's unreachable target after the dodge's fall)
+git bisect skip 65fd9bd9edd6b1869b2cf06f3a75f6c8da686953
+# skip: [ccc6bb3eb75330ddc71b9a19f1e982ffa34e529c] ENG-26t: REPORT: the lead ruled B; tool line and suite started on frozen 35ca56b16
+git bisect skip ccc6bb3eb75330ddc71b9a19f1e982ffa34e529c
+# skip: [ca9ba7d38caf66a3f46ea9626214358632c5334d] BUILD-26c: the route choice as takesTowerRoute, and its planted test
+git bisect skip ca9ba7d38caf66a3f46ea9626214358632c5334d
+# skip: [997f7e98c5ff40074aee9d57eb0f0e258e5176fa] ENG-26t: overSmall's strip only while he comes down on the landing within two frames (wheel toy v2: no steer back over a bucket 40 px under him)
+git bisect skip 997f7e98c5ff40074aee9d57eb0f0e258e5176fa
+# skip: [3d75a90dfb319ccf931991fcffd2a3ae2342c0bc] Bots: the figs' work bound is the bot's own stuck rule (RULES.wayOn 8 s), not a number by eye (the lead's ruling). BUILD-26l
+git bisect skip 3d75a90dfb319ccf931991fcffd2a3ae2342c0bc
+# skip: [3ad5ee266a1c9a16de69474dce64e0009bd931a9] ENG-26t: overSmall: the strip past a small landing's end where the engine still lands him counts as over it (wheelRide's red, R-165.398 lip family)
+git bisect skip 3ad5ee266a1c9a16de69474dce64e0009bd931a9
+# skip: [d57c9b92d2472e965078f50c89e922dbbc87b3f8] BUILD-26c: REPORT: the 1-4 base-vs-trial row diff (1-4 moves: 5 gained, 6 lost, 64 time-only); rows saved
+git bisect skip d57c9b92d2472e965078f50c89e922dbbc87b3f8
+# skip: [eb790358bb86e7e5c3ee1ad852666d5487bd0dad] ENG-26s: REPORT (EXACT NEXT STEP first: riverRide's plants bisected to d6350d3e7, wheelRide's leave traced), evidence in BUILD-26/b26s, turnover note
+git bisect skip eb790358bb86e7e5c3ee1ad852666d5487bd0dad
