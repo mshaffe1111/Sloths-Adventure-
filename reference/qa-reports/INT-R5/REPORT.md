@@ -50,8 +50,18 @@ registrycheck, tierBots, buildcheck), each continuing past a red. Sent to the le
     (t-build-26 fe5793747, 27e 7926daba9, merged 22b3a4455); firsttimer.test.ts likewise (0d827c23b, d6496c636 -> 5612f4569).
   - **(C) firsttimer.test :184 x1:** 2-2 child N seed 36 / middle N 17, SKILLS.boardHop planted: 'RED with it off: 0 of 1 stands'.
   - (D) chaseBots :110 is the todo (OPEN: the child N reaches the fork 1 of 3), not a fail.
-- tipwalk --layouts 4 PASS; storyTipScan --check PASS; ROLLED_REST
-- Bisect of (B) + (C): BISECT_PLACEHOLDER
+- tipwalk --layouts 4 PASS; storyTipScan --check PASS; registrycheck PASS; tierBots 9/9 PASS; **buildcheck FAIL by 3 ms, run alone on the idle box:
+  1-1 Normal p50 69 / p95 153 / max 160 ms (budget p95 150 at CPU x4), Easy p50 58 / p95 90 / max 97 ms** (BUILD-27g on 27e alone: Normal
+  127, Easy 67). Measured next against main (cdffdc627) on the same box, alternating, 3 rounds each (tools/bcmp.sh; scratch paths inside):
+  BCMP_PLACEHOLDER
+- Bisect of (B) + (C): **the t-build-27e merge (b3195f31e) brings all six back.** Frozen detached
+  worktrees, `npx tsx --test tools/inspect/riverRide.test.ts tools/inspect/firsttimer.test.ts` (tools/bisect.sh), run alone after the CI job:
+  8d094787c (main + t-build-26 + 2-6 as on main, BEFORE 27e): **30 pass, 0 fail**. b3195f31e (+ t-build-27e @ 801cae9e8, which carries
+  t-eng-27 to 091ba947): **30 pass, 6 fail**: firsttimer :184 and riverRide :107 :145 :207 :213 :229, the same errors as on 0077c62c6
+  (so c5143db85, the t-eng-27 @ 90552d3ec merge, adds none). For ENG-PLANT, the 27e merge's non-test src changes that touch the bots'
+  river crossings (`git diff --stat 8d094787c b3195f31e -- src tools ':!*.test.ts'`): engine.ts (+172/-), w2.ts (+146), riverArt.ts (+88),
+  tower.ts (+54), easyMode.ts (+16), physics.ts (+4); the bot code (tools/inspect/ riverRide's bots) is unchanged by it. Both test files
+  are 3-way merges (riverRide.test 22b3a4455, firsttimer.test 5612f4569). Not traced further (ENG-PLANT's job, the lead's ruling).
 
 ## Session 1's next step (superseded by session 2's above; kept for the record)
 Head: release-0.10.3 = **4816edd31** (pushed). It is NOT green yet: 2-6's draft test is RED (below). In order:
@@ -173,3 +183,9 @@ D92 (tsc after each merge; the CI tool line started on the 27e merge head), D111
 timeouts, no '&'), D115 (frozen worktrees for every run), D109 (no clock times to the lead). D119 only in part: two merge commits took
 their message from a heredoc as the LAST link of an && chain (nothing after it depended on it; each commit checked by `git log` after);
 session 2 uses `git commit -F <file>` instead.
+Session 2 (INT-R5b): D92 (the CI line on the merged head before anything else; re-run after each fix merge), D111 (the 28-minute box:
+hand-over at 3:19 PM ET), D113/D122 (every long run run_in_background with a timeout, waiting by a monitor, never a foreground wait,
+never a shell '&'; the bisect waits for the CI job in its own background loop so buildcheck runs alone), D115 (every run on a detached
+worktree nobody edits; THE FULL SET adds chattr +i), D119 (commit messages by -m flags only), D124 (run1.sh prints the candidate's own
+shard plan for the per-list sums), D109 (no clock times to the lead). Slip, named: 57d8b8ffb's Claude-Session trailer names the lead's
+session, not this one (pushed before it was seen; not rewritten, the branch is shared).
