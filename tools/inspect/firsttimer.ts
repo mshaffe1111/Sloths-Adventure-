@@ -53,7 +53,7 @@ import { RIDE } from '../../src/game/ride.ts';
 import { padShows } from '../../src/game/pieces/padPiece.ts';
 import { PAD_FAIR } from '../../src/game/gen2/rideLay.ts';
 import { beatAt, beatOf, type Beat } from '../../src/game/clock.ts';
-import { airStep, canGrabSwing, DOUBLE_RISE, JUMP_RISE, PHYS, SWING, reachJump, reachJumpHeld, TIMED, pressLaunches, groundStep, takeOffStep, vineAmp, vinePeriod } from '../../src/game/physics.ts';
+import { airStep, canGrabSwing, DOUBLE_RISE, FORGIVE, JUMP_RISE, PHYS, SWING, reachJump, reachJumpHeld, TIMED, pressLaunches, groundStep, takeOffStep, vineAmp, vinePeriod } from '../../src/game/physics.ts';
 import { MIN_TOUCH_JUMP_HOLD_MS } from '../../src/game/inputEngine.ts';
 import { handsAlong } from '../../src/game/pieces/vineSnakePiece.ts';
 import { onVine, type SnakeNow } from '../../src/game/vineSnake.ts';
@@ -1693,8 +1693,12 @@ export class FirstTimerRun {
     if (dir === 0 || (rising && !this.onTower)) return 0;
     // (rising, only a step higher than the one he jumped from: the step under his take-off is behind him)
     const from = this.airFrom?.y ?? p.y;
+    // (the strip just past a small landing's end where the engine still sets a falling foot on it (FORGIVE landPx) counts as over it: his
+    //  middle crossing its end dropped the steer back a frame before the thumb's reversal arrived, so he came down on its last inch at a
+    //  run and ran off (the wheel toy, sparse middle Easy v1, bucket #9 at 9.0 s; ENG-26t, R-165.398's lip family))
+    const strip = FORGIVE[this.who.setting === 'easy' ? 'easy' : 'normal'].landPx;
     for (const q of this.sim.platforms) {
-      if (q.broken || q.width >= 220 || p.x < q.x || p.x > q.x + q.width || q.y < p.y - 2 || q.y > p.y + 140) continue;
+      if (q.broken || q.width >= 220 || p.x < q.x - strip || p.x > q.x + q.width + strip || q.y < p.y - 2 || q.y > p.y + 140) continue;
       // (never the snap stone a snap hop leaves: he is going on, not back; ENG-25c)
       if (leaving !== undefined && q.id === leaving) continue;
       if (rising && q.y > from - 20) continue;
