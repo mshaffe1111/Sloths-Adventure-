@@ -1,8 +1,56 @@
-# ENG-28 REPORT (2-8's pieces ahead, Lane 2): session 6 (ENG-28f), started 5:35 PM ET, handed over 5:47 PM ET (both from date)
-(Session 2 ENG-28b 2:29-2:50 PM ET; session 3 left no commit; session 4 ENG-28d 4:21-4:42 PM ET; session 5 ENG-28e 4:46-5:03 PM ET.
-Sessions newest first.)
+# ENG-28 REPORT (2-8's pieces ahead, Lane 2): session 7 (ENG-28g), started 5:54 PM ET, handed over 6:05 PM ET (both from date)
+(Session 2 ENG-28b 2:29-2:50 PM ET; session 3 left no commit; session 4 ENG-28d 4:21-4:42 PM ET; session 5 ENG-28e 4:46-5:03 PM ET;
+session 6 ENG-28f 5:35-5:47 PM ET. Sessions newest first.)
 
-## EXACT NEXT STEP (session 7)
+## EXACT NEXT STEP (session 8)
+Branch t-eng-28-wip, head 91c2ee16 + this hand-over commit (`git fetch origin t-eng-28-wip`, confirm). `npm ci --no-audit --no-fund --legacy-peer-deps`.
+STOPPED on the lead's stop condition (a moved verdict): lineBot went 7/8 -> 5/8 on the new toy shape. Read your queue for the lead's
+ruling on (A) and (B) below BEFORE changing any test. Then: lineBot 8/8 on a frozen tree; ROAD_TRIPS over 2-1..2-7 and 1-2 (scratch
+recipe in session 6's step 2 below; must print 0 outside the flood toys, else STOP and tell the lead); tierBots 9/9 ONLY if firsttimer.ts
+changed (it has not); lockall on a frozen tree (flood.ts, gen2/floodLay.ts and gen2/worlds/w2.ts are under src: RE-RUN, base lock per
+session 6's step a); the suite in SHARDS (timeouts up to 7,200,000 ms); the CI tool line found by its content; land on a NEW branch
+t-eng-28 (no force). The brick's bot run (the lead asked for one on each shape) is NOT done: name it to the lead if no bot drives the
+brick's stage (floodLay.test lays it; lineBot drives only the toy).
+(A) 'time enough' and the keep-the-road plant RED: a MEASURE artifact, not a road change. On W 150 + gap 60 the middle (seed 1, late 0)
+    takes the LOW road as he should: lands on W at x 926 (W 790-940), the small-ledge pause, walks off its lip at x 955 into the gap,
+    the bank strip (1006), the walkway (1070). His climb out of the walkway at its far wall (x 1381, t 11.07) lands on C (x 1566 y 740,
+    t 11.87): C, the high road's LAST piece (solid 7, x 1340-1560), overhangs the walkway's exit by 60 px, and `high` counts any stand on
+    the chain past W before the close. Options: (i) `high` skips the chain's last piece as it skips W (both roads end there: the far
+    bank's rejoin); (ii) the toy's C starts at the walkway's end (W1). My advice: (i), the same reasoning the lead ruled for W.
+(B) 'too late' at late 22 RED as before, now for the MIDDLE only: he DOES go high (hops from x 930, 10 px before W's lip, onto P at
+    t 6.93, B at 7.93), but the close fires at 4.0 s, before his first stand on P, so his choice is unread (high false, setBack 0,
+    home 3). The adult goes high in time (6/6). MEASURED on the new shape (scratch copies of lineBot.test.ts, frozen tree 91c2ee16; each
+    line 3 seeds, identical): late 22: middle high false setBack 0, adult high true setBack 0. late 19: ALL 6 GREEN (high true, setBack
+    0, home 3), but the middle's margin is 0.07 s (first stand on P at 6.93 s, the close at 7.0 s). late 18: middle reads LOW and the
+    close splits the line (setBack 3, t 30.7); adult low, beats the close (setBack 0). So a re-plant at 19 passes on a 0.07 s margin and
+    18 shows the read sending the middle low about 1 s too late. The lead's call: re-plant 'too late' at 19 (derivation in the comment)
+    and put the late-18 read on R-165.424's bot list (no bot change in this job), or another late.
+(C) The verdict's LAND number (86, physics, approved) is not the bots' real landing: the middle lands 136 px past W 150's face (a 0.94 s
+    climb, landing steered back at vx -162), the adult 66 on W 60. The verdict and the bots AGREE on both shapes all the same: on W 60
+    every bot walks off W (RED), on W 150 the middle stops at x 915 (25 px before the lip), and at late 22 hops onto P from 930 (GREEN).
+    Named so the lead knows the model's landing is the stricter stand-in, not a measured landing.
+
+## SESSION 7 DONE (frozen trees /home/user/wt28s7a-d, one per commit)
+- The lead APPROVED (as Designer and Architect stand-in) the W2_FLOOD `climb` entry: land child 62, middle 86, expert 86, adult 86; pause
+  0.25-0.5 s; runUp child 73, middle 61, expert 61, adult 22; width 44. Each source by file:line in w2.ts's comment (PHYS, the tier holds,
+  the edgeAim medians; the traced adult 66 named as the nearer reading not taken, and why).
+- src/game/flood.ts: FloodRow.climb (FloodClimb, FloodTier) and forkFaults(chain, span, climb), beside highRoadFaults: (1) a way down from
+  W onto the low road (the gap after W at least his width), (2) each tier crosses that gap from its landing (room = W's width - land;
+  short of its run-up he walks off and crosses no gap; else a full jump at the speed a stand start reaches, the air pushing him on to
+  maxRun over JUMP_AIRTIME, must carry run-up + gap). gen2/floodLay.ts layFlood calls it on highRoad's chain (floodFaults has no tops,
+  so the call sits where the chain is; the problems list carries both).
+- Plants: flood.test.ts 'forkFaults: ...' RED on W 60 + gap 60 (all four tiers by name, walks off), RED on W 60 + gap 0 (no way down),
+  GREEN on W 150 + gap 60, the edge (146 refuses the middle and the expert by name, 147 passes), a 120 px gap refused (reach). floodLay.test
+  lays the brick to W 150 + gap 60 (the porch 'over' past the 280 px near bank by 60/280) and plants the old flush brick and the W 60 +
+  gap 60 shape RED by name through layFlood. flood.test + floodLay.test 15/15 and tsc clean on frozen 91c2ee16.
+- lineBot.test.ts' toy: W = FORK_W 150 (x 790-940), gap 60 to P unchanged. lineBot 5/8 on frozen 91c2ee16 (3.8 s): RED 'time enough',
+  the keep-the-road plant, 'too late' (see (A), (B)). GREEN: the four heron tests and the read-removed plant.
+- NOT DONE: lineBot 8/8, ROAD_TRIPS, lockall, the suite, the CI line, the landing on t-eng-28, the brick's bot run.
+- Lessons applied: D115 (every run on a chattr-frozen worktree, src/game/gen2/proven writable; probes in the scratchpad, never committed),
+  D119 (commit -m, no heredoc in a commit chain), D128 (times from date), D134 (pushed and ls-remote checked before the hand-over
+  message), the lead's stop condition. LESSONS.md on this branch ends before D111 (D111-D134 known only as the brief restates them).
+
+## EXACT NEXT STEP (session 7, superseded by session 8's above)
 Branch t-eng-28-wip, head bb04993f3 or later (`git fetch origin t-eng-28-wip`, confirm). `npm ci --no-audit --no-fund --legacy-peer-deps`.
 STATE: lineBot 7/8 on frozen bb04993f3. RED: 'too late' (late 22). The lead's narrow-A ruling is BUILT: `high` = a grounded stand
 before the first close on a piece of the flood's own high-road chain past the wall-step W (flood.ts highRoad, no y threshold). Under
