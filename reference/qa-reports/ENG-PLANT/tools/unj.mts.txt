@@ -1,0 +1,13 @@
+// usage: tsx unj.mts <tree> <stage> <bot> <setting> <seed> -> each startJump refused by the one-gate check: t x, caller lines; rescues
+const [T, stage, bot, setting, seed] = process.argv.slice(2);
+await import(`${T}/src/game/headlessDom.ts`);
+const { CAST_BOTS } = await import(`${T}/tools/inspect/castBots.ts`);
+const ft = await import(`${T}/tools/inspect/firsttimer.ts`);
+const proto = (ft.FirstTimerRun as any).prototype; const orig = proto.startJump; let last = 0; const seen = new Map<string, number>();
+proto.startJump = function (this: any, ...args: any[]) {
+  const before = ft.UNJUDGED.n; const out = orig.apply(this, args);
+  if (ft.UNJUDGED.n > before) { const st = (new Error().stack ?? '').split('\n').slice(2, 4).map((s) => (s.match(/firsttimer\.ts:(\d+)/) ?? [, '?'])[1]).join('<'); const k = `${Math.round(this.sim.p.x / 100) * 100} from ${st}`; seen.set(k, (seen.get(k) ?? 0) + 1); }
+  return out;
+};
+const r: any = ft.firstTimer(stage, Number(seed), CAST_BOTS[bot][setting], { cap: 1200, dotSetting: true });
+console.log('end', r.end, 'rescues', r.rescues, 'UNJUDGED', ft.UNJUDGED.n, JSON.stringify([...seen]));
