@@ -1,3 +1,44 @@
+# ENG-26u (t-build-26-wip-26t; base 4285e263c, code 35ca56b16): rowWheels' trunkCatch plant re-planted at its cause on the lead's word (5ecec4018); the CI tool line GREEN; tierBots' replay RED (120 of 200 calibration runs moved: the recalibration is under way). NOT landed. Started 11:13 AM ET 11-24 (by `date`)
+
+## EXACT NEXT STEP (head 5ecec4018 on t-build-26-wip-26t, pushed; t-build-26 is 9e1e30b27, an ancestor: the landing is a fast-forward, no force)
+1. **tierBots' replay (test 9) is RED: 120 of 200 committed 1-1 runs moved** (b26u/tierBots-35ca56b16.txt; tests 1-8 pass, incl. 6 'the
+   committed runs, judged again, give the committed table'). calibration-main.jsonl is unchanged since t-build-26 9e1e30b27 (a07ed1bd7), so
+   the moves come from this branch: the main merge b3e0a8206 (ENG-CAGE-b's FETCH-CLOCK moved 2 child Normal runs on main), floorAt
+   ca3a7d063, and ENG-26t's overSmall strip 997f7e98c/35ca56b16. IN FLIGHT in ENG-26u's container: the BOTS.md calibration re-run on frozen
+   5ecec4018 (`npx tsx tools/inspect/tierBots.ts --stage 1-1 --tiers child,middle,expert --seeds 1-40 --setting both --calibrate`, about
+   6 min). Next: compare it with the committed file (b26u/calcmp.py.txt: moved runs, any lives/rescues/end change, the table's pass per
+   check), NAME the cause of the moves by running the same command at 23cdb07e8 (before overSmall) and at b3e0a8206 (before floorAt) on
+   frozen trees, then recommit calibration-main.jsonl the BOTS.md way (a dated BOTS.md line naming the moved runs and their causes; the
+   table must keep its pass/fail). If the table's verdict CHANGES (a check flips), stop and send it to the lead before recommitting.
+2. **2-6's castBots --proven yield** IN FLIGHT on frozen 5ecec4018 (`castBots.ts --stage 2-6 --seeds 1-100 --setting both --par 2 --proven`,
+   b26u/castBots-2-6-5ecec4018.txt once copied). Then 1-4's the same way (100 listed seeds; slot / old / new for any failing slot to the
+   lead before it lands). 2-6's number to the lead (the bar is 60 of 100).
+3. Land: after tierBots is GREEN on the recommit, push the head to t-build-26 (fast-forward). Send the lead the hash, the gate lines, 2-6's number.
+
+## Gate lines so far
+- CI tool line (gates.yml line 157) on frozen 5ecec4018: **368 tests, 367 pass, 0 fail, 1 todo** (chaseBots R-165.206) (b26u/toolline-5ecec4018.txt). GREEN.
+- registrycheck on frozen 35ca56b16: PASS (15 stages, 82 s). tipwalk --layouts 4: PASS. (src/tools identical to 5ecec4018 but the one test file.)
+- Unit suite: ENG-26t's on frozen 35ca56b16, 4,077/0/3; 5ecec4018 changes no file the suite reads (only tools/inspect/rowWheels.test.ts).
+- tierBots on frozen 35ca56b16: 8/9, test 9 RED (above).
+
+## Done-items so far
+| item | evidence | state |
+|---|---|---|
+| the cause of rowWheels' red | seed 1 no longer meets the flick: 0 middle/expert rescues with the skill off (reproduced, frozen 35ca56b16). The skill still bites elsewhere | traced |
+| where trunkCatch still bites | b26u/trunkCatch-search-35ca56b16.jsonl (440 rows: 2-6's listed seeds 2-23 and 26-36, every tier bot, both settings, v1+v2, skill on/off; the search stopped there once the case was clear), b26u/trunkCatch-judge-35ca56b16.txt | on: 0 middle/expert rescues on every seed; off: 15 seeds 1+, seeds 10/27/33 2, seed 28 3 |
+| the mechanism on seed 28 (the plant's premise) | b26u/trunkCatch-trace-tr28*.txt (FT_TRACE, on vs off, first divergence): middle Easy v1, off: a ground double at x 89 (through-house, a trunk beside him), second press 0.3-0.4 s on, FELL BACK 6 times to a rescue; on: he catches and climbs. Middle Normal v1/v2 diverge the same way: 32 and 22 fall-backs off vs 2 and 0 on | confirmed |
+| the re-plant (the lead APPROVED before it was written) | 5ecec4018: the plant moves to seed 28, bar unchanged (middle+expert, v1+v2, rescues >= 2; measured 3); seed 28 joins the turns test's green half (0 rescues measured on all 6 runs); title 'a trunk or turn vine' | written |
+| CI tool line on frozen 5ecec4018 | b26u/toolline-5ecec4018.txt: 368/367/0 fail/1 todo; the new plant and the turns test (seed 28) GREEN | GREEN |
+| registrycheck on frozen 35ca56b16 (src/tools identical to 5ecec4018 but the one test file) | b26u/registrycheck-35ca56b16.txt: PASS (15 stages, 82 s) | GREEN |
+| tipwalk --layouts 4 on frozen 35ca56b16 | b26u/tipwalk-35ca56b16.txt: PASS | GREEN |
+| the unit suite | ENG-26t's on frozen 35ca56b16: 4,077/0/3. 5ecec4018 changes only tools/inspect/rowWheels.test.ts (not in the suite's globs, imported by no suite file): `git diff --stat 35ca56b16 5ecec4018 -- src tools` | carries (no file it reads changed) |
+
+## Pushback
+- none on the plant. The cause of seed 1's change (floorAt merge, ENG-26t's guess) is not bisected: the plant now rests on a measured live case, which is what law 22 asks.
+
+## Lessons applied
+D111 (the box), D113 (no foreground wait on a background run), D115 (every run on a chattr-frozen tree: w0 at 35ca56b16, w2 at 5ecec4018; proven/ thawed), D117 (the candidate on -wip-26t only), D119 (no heredoc in a commit chain), law 22 (the plant sent to the lead before it was written; the bar not loosened).
+
 # ENG-26t (t-build-26-wip-26t; base t-build-26-wip-26s 23cdb07e8): release 4's branch green. wheelRide fixed at its cause and riverRide re-planted on the lead's word: candidate B 35ca56b16 (riverRide 18/18, wheelRide 2/2 GREEN), the strip-on-logs fork with the lead. NOT landed. Started 10:02 AM ET 11-24 (by `date`)
 
 ## EXACT NEXT STEP (code head 35ca56b16, the lead's ruling B; the branch head is a REPORT commit over it, pushed; nothing is on t-build-26)
