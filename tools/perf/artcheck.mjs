@@ -9,8 +9,10 @@
  * total over its budget) are notes for now and not checked here.
  * Reads the sizes from the file headers itself (WebP, PNG, JPEG), so that part needs nothing installed.
  *
- * The see-through-row check (R-165.417; DRESS-27's seamcheck.py rule, found on 2-7's weir): every shipped frame (each {x,y,w,h} of a
- * sheet's sibling .json, else the whole image), cut to its painted box, fails on a ROW that is see-through across the piece: of the
+ * The see-through-row check (R-165.417; DRESS-27's seamcheck.py rule, found on 2-7's weir): every SOLID piece the art inventory lists
+ * (its frame box from the inventory or the sheet's sibling .json, else the whole image when the inventory lists it whole; solid by its
+ * inventory layer, inventoryPieces below; files and frames the inventory gives no kind or box are printed as inventory gaps), cut to
+ * its painted box, fails on a ROW that is see-through across the piece: of the
  * columns painted both above it (alpha > 128 within 8 rows) and below it (alpha > 16 within 8 rows), at least 20% of the box's width,
  * 60% or more are fully transparent on that row. Such a row draws as a thin line of whatever is behind, across the screen. Decoded in
  * Chromium (playwright: node has no WebP decoder), so in CI this step runs after the browser install. No known list: a sheet that trips
@@ -120,15 +122,67 @@ export async function seamCheck(items) {
   } finally { await browser.close(); }
 }
 
-/** A sheet's frames from its sibling .json ({ name: {x,y,w,h} }), or null (the whole image is one frame). */
+/** A sheet's frames from its sibling .json ({ name: {x,y,w,h} }), or null (the whole image is one frame). Used by --seam only. */
 function framesOf(file) {
+  const o = siblingBoxes(file);
+  const fr = o ? Object.entries(o).map(([name, v]) => ({ name, ...v })) : [];
+  return fr.length ? fr : null;
+}
+function siblingBoxes(file) {
   const j = file.replace(/\.(webp|png|jpe?g)$/i, '.json');
   if (!fs.existsSync(j)) return null;
   try {
     const o = JSON.parse(fs.readFileSync(j, 'utf8'));
-    const fr = Object.entries(o).filter(([, v]) => v && ['x', 'y', 'w', 'h'].every((k) => Number.isFinite(v[k]))).map(([name, v]) => ({ name, x: v.x, y: v.y, w: v.w, h: v.h }));
-    return fr.length ? fr : null;
+    return Object.fromEntries(Object.entries(o).filter(([, v]) => v && ['x', 'y', 'w', 'h'].every((k) => Number.isFinite(v[k]))).map(([n, v]) => [n, { x: v.x, y: v.y, w: v.w, h: v.h }]));
   } catch { return null; }
+}
+
+/**
+ * The pieces the row check reads, from the art inventory (src/game/art/inventory/*.json, the same rows src/game/art/inventory.ts
+ * loads; written by tools/art/catalog_master.py --emit): every shipped file's rows, one per frame. A frame's box is the rect the
+ * inventory gives ('name (x,y wxh)'), else the frame's {x,y,w,h} in the sheet's sibling .json; a row with no frame is the whole image.
+ * Only SOLID pieces are checked, by their inventory layer (ground, platform, step, soft landing, support, decor near/mid = props,
+ * character, enemy, actor = bodies). Left out by their layer, never by a file list (law 22): backdrop and 'back (...)' set pieces,
+ * ui (icons), pickup, climb (strands), danger look (hazards, fx, water strips). Returns the frames to check per file and the gaps:
+ * shipped files with no inventory row (no kind), and solid frames whose box the inventory does not give (sliced in code only).
+ */
+const SOLID_LAYERS = new Set(['ground', 'platform', 'step', 'soft landing', 'support', 'decor near', 'decor mid', 'character', 'enemy', 'actor']);
+function inventoryPieces(images) {
+  const dir = path.join(root, 'src', 'game', 'art', 'inventory');
+  const byFile = new Map();
+  for (const f of fs.readdirSync(dir).filter((n) => n.endsWith('.json'))) {
+    const j = JSON.parse(fs.readFileSync(path.join(dir, f), 'utf8'));
+    const col = Object.fromEntries(j.cols.map((c, i) => [c, i]));
+    for (const r of j.rows) {
+      const file = r[col.file];
+      if (!file.startsWith('src/assets/')) continue;
+      if (!byFile.has(file)) byFile.set(file, new Map());
+      byFile.get(file).set(r[col.frame] ?? '', r[col.layer]);
+    }
+  }
+  const RECT = /^(.*?)\s*\((\d+),(\d+) (\d+)x(\d+)\)\s*$/;
+  const items = [], noKind = [], noBox = [];
+  let skipped = 0;
+  for (const abs of images) {
+    const rel = path.relative(root, abs).split(path.sep).join('/');
+    const rows = byFile.get(rel);
+    if (!rows) { noKind.push(rel); continue; }
+    const side = siblingBoxes(abs) ?? {};
+    const frames = [], unboxed = [];
+    for (const [frame, layer] of rows) {
+      if (!SOLID_LAYERS.has(layer)) { skipped++; continue; }
+      if (!frame) { frames.push(null); continue; }
+      const m = RECT.exec(frame);
+      if (m) frames.push({ name: `${m[1]} [${layer}]`, x: +m[2], y: +m[3], w: +m[4], h: +m[5] });
+      else if (side[frame.trim()]) frames.push({ name: `${frame.trim()} [${layer}]`, ...side[frame.trim()] });
+      else unboxed.push(frame);
+    }
+    if (unboxed.length) noBox.push(`${rel}: ${unboxed.length} solid frame(s), e.g. ${unboxed.slice(0, 3).join(', ')}`);
+    const boxed = frames.filter(Boolean);
+    if (frames.includes(null)) items.push({ file: abs, frames: null });
+    if (boxed.length) items.push({ file: abs, frames: boxed });
+  }
+  return { items, noKind, noBox, skipped };
 }
 const seamLine = (s) => `${path.relative(root, s.file)} ${s.name}: rows ${s.rows[0]}..${s.rows[s.rows.length - 1]} (${s.rows.length}) see-through across the piece`;
 
@@ -162,7 +216,11 @@ if (over.length) {
 }
 const t0 = Date.now();
 const PLANT_RED = path.join(root, 'tools', 'perf', 'fixtures', 'weir-seam-old.png'), PLANT_GREEN = path.join(root, 'reference', 'art', 'hfnext', 'cut', 'weir.png');
-const all = await seamCheck([PLANT_RED, PLANT_GREEN, ...images].map((file) => ({ file, frames: framesOf(file) })));
+const pieces = inventoryPieces(images);
+if (pieces.noKind.length) console.log(`note: inventory gap, ${pieces.noKind.length} shipped image(s) with no inventory row (no kind; not row-checked):\n  ${pieces.noKind.join('\n  ')}`);
+if (pieces.noBox.length) console.log(`note: inventory gap, ${pieces.noBox.length} sheet(s) whose solid frames have no box in the inventory or a sibling .json (sliced in code only; not row-checked):\n  ${pieces.noBox.join('\n  ')}`);
+console.log(`row check: ${pieces.skipped} inventory frame(s) left out by layer (backdrop, ui, pickup, climb, danger look)`);
+const all = await seamCheck([{ file: PLANT_RED, frames: null }, { file: PLANT_GREEN, frames: null }, ...pieces.items]);
 const [red, green] = all;
 if (!red.rows.length || green.rows.length) {
   console.log(`FAIL: the planted row check is broken: the old weir cut ${red.rows.length ? 'tripped' : 'did NOT trip'} (must), the repaired cut ${green.rows.length ? 'tripped' : 'passed'} (must pass)`);

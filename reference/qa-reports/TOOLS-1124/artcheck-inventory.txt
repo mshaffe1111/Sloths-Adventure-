@@ -1,0 +1,252 @@
+art check: 1012 images in src/assets
+note: 2 clip sheet(s) over 2048 wide:
+  src/assets/enemies/croc-anim.webp 4096x2056
+  src/assets/enemies/prowler-anim.webp 4096x2951
+note: 13 known sheet(s) over 4096 (limits.json art.knownOver4096; to be split):
+  src/assets/enemies/dangler-anim.webp 2048x5094
+  src/assets/enemies/dozer-anim.webp 2048x4870
+  src/assets/enemies/mantis-anim.webp 2048x4868
+  src/assets/enemies/queen-anim.webp 2048x8172
+  src/assets/enemies/seamstress-anim.webp 2048x6664
+  src/assets/enemies/soldier-anim.webp 2048x5721
+  src/assets/w6to10/bosses/drake-anim.webp 2048x6066
+  src/assets/w6to10/bosses/golem-anim.webp 2048x4551
+  src/assets/w6to10/bosses/ironclaw-anim-0.webp 2048x6889
+  src/assets/w6to10/bosses/ironclaw-anim-1.webp 2048x5755
+  src/assets/w6to10/bosses/thornbark-anim-0.webp 2048x6757
+  src/assets/w6to10/bosses/thornbark-anim-1.webp 2048x6899
+  src/assets/w6to10/bosses/thornbark-anim-2.webp 2048x6942
+note: inventory gap, 11 shipped image(s) with no inventory row (no kind; not row-checked):
+  src/assets/props/pits/w1-thorn-long.webp
+  src/assets/props/pits/w1-thorn-low.webp
+  src/assets/ui/ctest-1-1.webp
+  src/assets/ui/ctest-1-2.webp
+  src/assets/ui/ctest-1-5.webp
+  src/assets/ui/ctest-1-6.webp
+  src/assets/ui/ctest-1-7.webp
+  src/assets/ui/ctest-1-8.webp
+  src/assets/ui/ctest-1-9.webp
+  src/assets/w1-678/w16-vinesnake-hang-brown.webp
+  src/assets/w1-678/w16-vinesnake-slide-brown.webp
+note: inventory gap, 210 sheet(s) whose solid frames have no box in the inventory or a sibling .json (sliced in code only; not row-checked):
+  src/assets/bosses/boss-1010.webp: 21 solid frame(s), e.g. battlement, chair0, chair1
+  src/assets/bosses/boss-910.webp: 32 solid frame(s), e.g. crust10, crust11, crust12
+  src/assets/characters/cels-0.webp: 6 solid frame(s), e.g. dr.sit, gn.dim, gn.glare
+  src/assets/characters/cels-1.webp: 7 solid frame(s), e.g. dr.cup, gc.hand, gn.lids
+  src/assets/characters/cels-2.webp: 12 solid frame(s), e.g. gv.reach_a, gv.sorrow, gv.sorrow_b
+  src/assets/characters/cels-3.webp: 14 solid frame(s), e.g. da.tie_closeup, dr.bowed, face.beam
+  src/assets/characters/cels-4.webp: 32 solid frame(s), e.g. da.side_by_side, db.side_by_side, hug.arm_around
+  src/assets/characters/cels-5.webp: 34 solid frame(s), e.g. da.hands_rim, da.lean_rest, db.tie_stand
+  src/assets/characters/cels-6.webp: 40 solid frame(s), e.g. da.kneel_tie, da.reach_slump, gr.box_sit
+  src/assets/characters/dot-atlas.webp: 26 solid frame(s), e.g. fly0, fly1, fly2
+  src/assets/characters/flicker-anim.webp: 307 solid frame(s), e.g. talk_00, talk_02, talk_04
+  src/assets/characters/meeca-blanket.webp: 2 solid frame(s), e.g. meeca_blanket, blanket
+  src/assets/characters/meeca-carve.webp: 12 solid frame(s), e.g. carve_12, carve_13, carve_14
+  src/assets/characters/meeca-standard.webp: 59 solid frame(s), e.g. idle, idle_b, blink
+  src/assets/enemies/boa-anim.webp: 19 solid frame(s), e.g. coil_00, coil_01, coil_02
+  src/assets/enemies/boa-atlas.webp: 11 solid frame(s), e.g. slither_0, slither_1, slither_2
+  src/assets/enemies/butler-poses.webp: 6 solid frame(s), e.g. idle, move, tell
+  src/assets/enemies/caiman-atlas.webp: 20 solid frame(s), e.g. walk_0, walk_1, walk_2
+  src/assets/enemies/croc-anim.webp: 117 solid frame(s), e.g. crawl_006, crawl_007, crawl_008
+  src/assets/enemies/croc-atlas.webp: 30 solid frame(s), e.g. idle, crawl0, crawl1
+  src/assets/enemies/dangler-anim.webp: 100 solid frame(s), e.g. move_16, move_20, move_22
+  src/assets/enemies/dangler-poses.webp: 6 solid frame(s), e.g. idle, move, tell
+  src/assets/enemies/dozer-anim.webp: 75 solid frame(s), e.g. hurt_20, hurt_28, hurt_38
+  src/assets/enemies/dozer-poses.webp: 6 solid frame(s), e.g. idle, move, tell
+  src/assets/enemies/drake-atlas.webp: 19 solid frame(s), e.g. idle, enrage, stomp
+  src/assets/enemies/eagle-anim.webp: 52 solid frame(s), e.g. dive_00, dive_01, dive_02
+  src/assets/enemies/eagle-atlas.webp: 16 solid frame(s), e.g. flap_0, flap_1, flap_2
+  src/assets/enemies/frog-atlas.webp: 17 solid frame(s), e.g. idle, prep, hop
+  src/assets/enemies/goldsnake-anim.webp: 155 solid frame(s), e.g. defeat_00, defeat_01, defeat_02
+  src/assets/enemies/golem-atlas.webp: 32 solid frame(s), e.g. idle, awaken, march1
+  src/assets/enemies/guard-anim.webp: 67 solid frame(s), e.g. after_06, after_08, after_10
+  src/assets/enemies/guard-atlas.webp: 18 solid frame(s), e.g. stand, march, ready
+  src/assets/enemies/harpy-atlas.webp: 13 solid frame(s), e.g. walkA, walkB, tense
+  src/assets/enemies/ironclaw-atlas.webp: 37 solid frame(s), e.g. idle, march0, march1
+  src/assets/enemies/jaguar-anim.webp: 70 solid frame(s), e.g. hurt_00, hurt_01, hurt_02
+  src/assets/enemies/jaguar-atlas.webp: 22 solid frame(s), e.g. walk_0, walk_1, walk_2
+  src/assets/enemies/mantis-anim.webp: 100 solid frame(s), e.g. hurt_04, hurt_02, attack_32
+  src/assets/enemies/mantis-poses.webp: 7 solid frame(s), e.g. idle, move, tell
+  src/assets/enemies/monarch-atlas.webp: 17 solid frame(s), e.g. perched, fl_0, fl_1
+  src/assets/enemies/ocelot-anim.webp: 65 solid frame(s), e.g. dazed_00, dazed_02, dazed_04
+  src/assets/enemies/ocelot-atlas.webp: 17 solid frame(s), e.g. walk_0, walk_1, walk_2
+  src/assets/enemies/pell-anim.webp: 122 solid frame(s), e.g. catch_00, catch_01, catch_02
+  src/assets/enemies/prowler-anim.webp: 172 solid frame(s), e.g. defeated_000, defeated_001, defeated_002
+  src/assets/enemies/prowler-atlas.webp: 20 solid frame(s), e.g. idle, w_0, w_1
+  src/assets/enemies/queen-anim.webp: 184 solid frame(s), e.g. defeat_00, defeat_01, defeat_02
+  src/assets/enemies/queen-atlas.webp: 23 solid frame(s), e.g. idle, walk_0, walk_1
+  src/assets/enemies/reaver-atlas.webp: 17 solid frame(s), e.g. idle, swipe, guard
+  src/assets/enemies/seamstress-anim.webp: 100 solid frame(s), e.g. attack_10, attack_12, attack_14
+  src/assets/enemies/seamstress-poses.webp: 6 solid frame(s), e.g. idle, move, tell
+  src/assets/enemies/snake-atlas.webp: 12 solid frame(s), e.g. slither_0, slither_1, slither_2
+  src/assets/enemies/snake2-atlas.webp: 6 solid frame(s), e.g. cobra, crouch, coilup
+  src/assets/enemies/soldier-anim.webp: 179 solid frame(s), e.g. back_a_32, back_a_33, back_a_34
+  src/assets/enemies/sovereign-atlas.webp: 23 solid frame(s), e.g. idle, prep, launch
+  src/assets/enemies/spider-anim.webp: 49 solid frame(s), e.g. crouch_12, crouch_13, crouch_14
+  src/assets/enemies/spider-atlas.webp: 17 solid frame(s), e.g. walk_0, walk_1, walk_2
+  src/assets/enemies/tayra-atlas.webp: 22 solid frame(s), e.g. walk_1, walk_2, walk_3
+  src/assets/enemies/thornbark-atlas.webp: 16 solid frame(s), e.g. idle, rest, march1
+  src/assets/enemies/turtle-anim.webp: 76 solid frame(s), e.g. after_10, after_11, after_12
+  src/assets/enemies/turtle-atlas.webp: 13 solid frame(s), e.g. walk1, walk2, walk3
+  src/assets/enemies/venom-atlas.webp: 39 solid frame(s), e.g. idle, sl_0, sl_1
+  src/assets/enemies/venom2-atlas.webp: 10 solid frame(s), e.g. head_calm, head_hiss, head_snap
+  src/assets/flora/birds-atlas.webp: 48 solid frame(s), e.g. hummer_0, hummer_1, hummer_2
+  src/assets/flora/butterflies-atlas.webp: 40 solid frame(s), e.g. morpho_0, morpho_1, morpho_2
+  src/assets/ground/w10.webp: 10 solid frame(s), e.g. end, ends0, fills0
+  src/assets/ground/w5.webp: 10 solid frame(s), e.g. end, ends0, fills0
+  src/assets/ground/w6.webp: 10 solid frame(s), e.g. end, ends0, fills0
+  src/assets/ground/w7.webp: 10 solid frame(s), e.g. end, ends0, fills0
+  src/assets/ground/w8.webp: 10 solid frame(s), e.g. end, ends0, fills0
+  src/assets/ground/w9.webp: 10 solid frame(s), e.g. end, ends0, fills0
+  src/assets/hero/clips/belly-scratch.webp: 41 solid frame(s), e.g. belly-scratch.0, belly-scratch.1, belly-scratch.2
+  src/assets/hero/clips/cheer.webp: 30 solid frame(s), e.g. cheer.0, cheer.1, cheer.2
+  src/assets/hero/clips/hurt.webp: 41 solid frame(s), e.g. hurt.0, hurt.1, hurt.2
+  src/assets/hero/clips/idle-yawn.webp: 81 solid frame(s), e.g. idle-yawn.0, idle-yawn.1, idle-yawn.2
+  src/assets/hero/clips/look-around.webp: 81 solid frame(s), e.g. look-around.0, look-around.1, look-around.2
+  src/assets/hero/clips/move-climb.webp: 21 solid frame(s), e.g. move-climb.0, move-climb.1, move-climb.2
+  src/assets/hero/clips/move-cross.webp: 7 solid frame(s), e.g. move-cross.0, move-cross.1, move-cross.2
+  src/assets/hero/clips/move-hook.webp: 7 solid frame(s), e.g. move-hook.0, move-hook.1, move-hook.2
+  src/assets/hero/clips/move-jab.webp: 9 solid frame(s), e.g. move-jab.0, move-jab.1, move-jab.2
+  src/assets/hero/clips/move-kick.webp: 10 solid frame(s), e.g. move-kick.0, move-kick.1, move-kick.2
+  src/assets/hero/clips/move-kick2.webp: 10 solid frame(s), e.g. move-kick2.0, move-kick2.1, move-kick2.2
+  src/assets/hero/clips/move-mega.webp: 16 solid frame(s), e.g. move-mega.0, move-mega.1, move-mega.2
+  src/assets/hero/clips/move-run.webp: 15 solid frame(s), e.g. move-run.0, move-run.1, move-run.2
+  src/assets/hero/clips/move-walk.webp: 17 solid frame(s), e.g. move-walk.0, move-walk.1, move-walk.2
+  src/assets/hero/clips/push.webp: 49 solid frame(s), e.g. push.0, push.1, push.2
+  src/assets/hero/clips/step-back.webp: 16 solid frame(s), e.g. step-back.0, step-back.1, step-back.2
+  src/assets/hero/clips/teeter.webp: 10 solid frame(s), e.g. teeter.0, teeter.1, teeter.2
+  src/assets/hero/clips/wave.webp: 81 solid frame(s), e.g. wave.0, wave.1, wave.2
+  src/assets/hero/hero-atlas.webp: 36 solid frame(s), e.g. run_a, run_b, run_c
+  src/assets/hero/hero-rope.webp: 11 solid frame(s), e.g. f1, f2, t23
+  src/assets/hero/hero-standard.webp: 94 solid frame(s), e.g. idle, blink, walk_0
+  src/assets/hero/hero-story.webp: 43 solid frame(s), e.g. look_a, talk_a, talk_b
+  src/assets/hero/hero-studies.webp: 29 solid frame(s), e.g. s1_05, s1_06, s1_07
+  src/assets/hero/hero-vine.webp: 5 solid frame(s), e.g. still, stillfwd, forward
+  src/assets/hero/pokey-swim.webp: 28 solid frame(s), e.g. surf.0, surf.1, surf.2
+  src/assets/kits/w10.webp: 13 solid frame(s), e.g. bank, bankEnd, boulder
+  src/assets/kits/w5.webp: 8 solid frame(s), e.g. bank, bankEnd, boulder
+  src/assets/kits/w6.webp: 13 solid frame(s), e.g. bank, bankEnd, boulder
+  src/assets/kits/w7.webp: 13 solid frame(s), e.g. bank, bankEnd, boulder
+  src/assets/kits/w8.webp: 13 solid frame(s), e.g. bank, bankEnd, boulder
+  src/assets/kits/w9.webp: 13 solid frame(s), e.g. bank, bankEnd, boulder
+  src/assets/props/dress.webp: 39 solid frame(s), e.g. w5BankA1, w5BankA2, w5BankA3
+  src/assets/props/dressnew-w5.webp: 21 solid frame(s), e.g. w5ButterflyBush, w5Cocoons, w5Ladybug
+  src/assets/props/dressnew-w6.webp: 15 solid frame(s), e.g. w6AirPlants, w6BromeliadRoot, w6DriftRoot
+  src/assets/props/dressnew-w7.webp: 19 solid frame(s), e.g. w7Altar, w7Banner, w7BellVine
+  src/assets/props/faces810.webp: 12 solid frame(s), e.g. w8-0, w8-1, w8-2
+  src/assets/props/gates/w10.webp: 2 solid frame(s), e.g. open, shut
+  src/assets/props/gates/w5.webp: 2 solid frame(s), e.g. open, shut
+  src/assets/props/gates/w6.webp: 2 solid frame(s), e.g. open, shut
+  src/assets/props/gates/w7.webp: 2 solid frame(s), e.g. open, shut
+  src/assets/props/gates/w8.webp: 2 solid frame(s), e.g. open, shut
+  src/assets/props/gates/w9.webp: 2 solid frame(s), e.g. open, shut
+  src/assets/props/meeca-night.webp: 79 solid frame(s), e.g. bu1, bu13, bu14
+  src/assets/props/w5-props.webp: 67 solid frame(s), e.g. fern, fernStump, mossRoot
+  src/assets/story/hd/dot-0.webp: 26 solid frame(s), e.g. ah, angry, cheer
+  src/assets/story/hd/guard-0.webp: 5 solid frame(s), e.g. croc.idle_005, croc.roar_020, golem.march1
+  src/assets/story/hd/guard-1.webp: 8 solid frame(s), e.g. drake.enrage, drake.idle, golem.defeat2
+  src/assets/story/hd/guard-2.webp: 6 solid frame(s), e.g. drake.petrified, monarch.deadcollapse, monarch.fl_1
+  src/assets/story/hd/meeca-0.webp: 25 solid frame(s), e.g. blink, breathe, climb_0
+  src/assets/story/hd/meeca-1.webp: 24 solid frame(s), e.g. alarm, crouch, idle
+  src/assets/story/hd/meeca-2.webp: 10 solid frame(s), e.g. dwalk_a, dwalk_b, knock_b
+  src/assets/story/hd/pokey-0.webp: 23 solid frame(s), e.g. away, away_a, away_b
+  src/assets/story/hd/pokey-1.webp: 25 solid frame(s), e.g. alarm, cheer_c, crossed
+  src/assets/story/hd/pokey-2.webp: 28 solid frame(s), e.g. apex, duck, face_ah
+  src/assets/story/hd/pokey-3.webp: 6 solid frame(s), e.g. face_calm_closed, face_happy, hurt_c
+  src/assets/story/hd/pokeyface-0.webp: 9 solid frame(s), e.g. face_ah, face_cry, face_gasp
+  src/assets/story/hd/pokeyface-1.webp: 7 solid frame(s), e.g. face_calm_closed, face_happy, face_smile
+  src/assets/w6/ledges.webp: 16 solid frame(s), e.g. boardwalk-ledge, boardwalk-ledge-tall, boardwalk-perch
+  src/assets/w6to10/bosses/drake-anim.webp: 325 solid frame(s), e.g. breath_00, breath_02, breath_04
+  src/assets/w6to10/bosses/golem-anim.webp: 325 solid frame(s), e.g. awaken_00, awaken_02, awaken_04
+  src/assets/w6to10/bosses/ironclaw-anim-0.webp: 156 solid frame(s), e.g. block_00, block_02, block_04
+  src/assets/w6to10/bosses/ironclaw-anim-1.webp: 169 solid frame(s), e.g. block_44, block_46, block_48
+  src/assets/w6to10/bosses/monarch-anim.webp: 250 solid frame(s), e.g. descent_00, descent_02, descent_04
+  src/assets/w6to10/bosses/reaver-anim.webp: 300 solid frame(s), e.g. block_00, block_02, block_04
+  src/assets/w6to10/bosses/thornbark-anim-0.webp: 104 solid frame(s), e.g. freed_02, idle_00, idle_02
+  src/assets/w6to10/bosses/thornbark-anim-1.webp: 112 solid frame(s), e.g. claw_04, claw_06, claw_10
+  src/assets/w6to10/bosses/thornbark-anim-2.webp: 121 solid frame(s), e.g. claw_00, claw_02, claw_08
+  src/assets/w6to10/bosses/thornbark-anim-3.webp: 13 solid frame(s), e.g. leap_06, leap_08, leap_10
+  src/assets/w6to10/creatures/beetle-anim-0.webp: 86 solid frame(s), e.g. attack_01, attack_03, attack_04
+  src/assets/w6to10/creatures/beetle-anim-1.webp: 39 solid frame(s), e.g. attack_00, attack_02, attack_08
+  src/assets/w6to10/creatures/capuchin-anim.webp: 25 solid frame(s), e.g. defeat_00, defeat_01, defeat_02
+  src/assets/w6to10/creatures/crab-anim.webp: 78 solid frame(s), e.g. attack_00, attack_01, attack_02
+  src/assets/w6to10/creatures/fruitbat-anim.webp: 50 solid frame(s), e.g. defeat_00, defeat_01, defeat_02
+  src/assets/w6to10/creatures/fruitbat-fly-anim.webp: 6 solid frame(s), e.g. fly_00, fly_01, fly_02
+  src/assets/w6to10/creatures/fruitbat-w8-anim.webp: 25 solid frame(s), e.g. doze_00, doze_01, doze_02
+  src/assets/w6to10/creatures/howler-anim.webp: 25 solid frame(s), e.g. defeat_00, defeat_01, defeat_02
+  src/assets/w6to10/creatures/lavalizard-anim.webp: 25 solid frame(s), e.g. defeat_00, defeat_01, defeat_02
+  src/assets/w6to10/creatures/owl-anim.webp: 25 solid frame(s), e.g. defeat_00, defeat_01, defeat_02
+  src/assets/w6to10/creatures/piranha-anim.webp: 53 solid frame(s), e.g. attack_00, attack_01, attack_02
+  src/assets/w6to10/creatures/sentry-anim-0.webp: 77 solid frame(s), e.g. attack_00, attack_01, attack_02
+  src/assets/w6to10/creatures/sentry-anim-1.webp: 26 solid frame(s), e.g. attack_05, attack_06, attack_07
+  src/assets/w6to10/creatures/soldier-anim-0.webp: 106 solid frame(s), e.g. attack_a_00, attack_a_01, attack_a_02
+  src/assets/w6to10/creatures/soldier-anim-1.webp: 44 solid frame(s), e.g. down_a_04, down_a_05, down_a_06
+  src/assets/w6to10/gemini/general-armour-off.webp: 8 solid frame(s), e.g. bow, eyes-shut, hand-on-heart
+  src/assets/w6to10/gemini/grandma-things.webp: 6 solid frame(s), e.g. medal, seed-pouch, spectacles
+  src/assets/w6to10/gemini/pokey-climb-back.webp: 8 solid frame(s), e.g. climb-0, climb-1, climb-2
+  src/assets/w6to10/gemini/queen-collar-off.webp: 8 solid frame(s), e.g. bow, hop, look-back
+  src/assets/w6to10/gemini/river-king-peek.webp: 3 solid frame(s), e.g. flustered, proud, surprised
+  src/assets/w6to10/gemini/secret-cracks.webp: 3 solid frame(s), e.g. floor-crack, wall-crack, wall-net
+  src/assets/w6to10/gemini/secret-roots-glow-water.webp: 5 solid frame(s), e.g. glowworms-asleep, glowworms-lit, root-hanger
+  src/assets/w6to10/gemini/secret-tunnel-kit.webp: 6 solid frame(s), e.g. rubble, stump-pillar, tunnel-floor
+  src/assets/w6to10/gemini/story18-squirrels.webp: 5 solid frame(s), e.g. hammering, kids, laughing
+  src/assets/w6to10/gemini/story21-dot-flour.webp: 4 solid frame(s), e.g. puff, sneeze, stand
+  src/assets/w6to10/gemini/w10c-set-dressing.webp: 6 solid frame(s), e.g. banner, brazier, cage
+  src/assets/w6to10/gemini/w6-hides-arches.webp: 6 solid frame(s), e.g. log-hide, moss-arch, moss-hide
+  src/assets/w6to10/gemini/w6a-puzzle.webp: 6 solid frame(s), e.g. door-closed, door-open, lever-down
+  src/assets/w6to10/gemini/w6b-water-room-take2.webp: 6 solid frame(s), e.g. gauge-post, lily-pads, raft
+  src/assets/w6to10/gemini/w7a-puzzle-take2.webp: 4 solid frame(s), e.g. door-closed, door-open, lever-down
+  src/assets/w6to10/gemini/w8a-puzzle.webp: 6 solid frame(s), e.g. door-closed, door-open, lever-down
+  src/assets/w6to10/gemini/w9a-puzzle.webp: 6 solid frame(s), e.g. gate-closed, gate-open, lever-down
+  src/assets/w6to10/gemini/w9w10-bridges.webp: 6 solid frame(s), e.g. chain-bridge, charred-log, ember-slab
+  src/assets/w6to10/props/collar.webp: 5 solid frame(s), e.g. collar-closed, collar-cracked, collar-falling
+  src/assets/w6to10/props/guardiansfree.webp: 9 solid frame(s), e.g. free-croc, free-drake, free-golem
+  src/assets/w6to10/props/props.webp: 23 solid frame(s), e.g. w8-bough-17, w8-bough-5, w8-burl-17
+  src/assets/w6to10/props-made/w10a.webp: 6 solid frame(s), e.g. lever-down, lever-up, plate-down
+  src/assets/w6to10/props-made/w10alt.webp: 6 solid frame(s), e.g. banner-b, brazier-b, cage-b
+  src/assets/w6to10/props-made/w10b.webp: 5 solid frame(s), e.g. balcony, crate, hanging-iron
+  src/assets/w6to10/props-made/w10var.webp: 6 solid frame(s), e.g. bank-b, branch-b, buttress-b
+  src/assets/w6to10/props-made/w5a-b.webp: 6 solid frame(s), e.g. bromeliad, ferns, mossy-log
+  src/assets/w6to10/props-made/w5a.webp: 6 solid frame(s), e.g. bromeliad, ferns, mossy-log
+  src/assets/w6to10/props-made/w5b.webp: 6 solid frame(s), e.g. door-closed, door-open, lever-down
+  src/assets/w6to10/props-made/w5var.webp: 6 solid frame(s), e.g. bank-b, bankEnd-b, buttress-b
+  src/assets/w6to10/props-made/w5web.webp: 3 solid frame(s), e.g. billow, slack, snap
+  src/assets/w6to10/props-made/w6balt.webp: 5 solid frame(s), e.g. gauge-post-b, lily-pads-b, raft-b
+  src/assets/w6to10/props-made/w6c-b.webp: 6 solid frame(s), e.g. canoe, cattails, glow-mushrooms
+  src/assets/w6to10/props-made/w6c.webp: 6 solid frame(s), e.g. canoe, cattails, glow-mushrooms
+  src/assets/w6to10/props-made/w6d.webp: 6 solid frame(s), e.g. log, moss-log, reed-hide
+  src/assets/w6to10/props-made/w6var.webp: 6 solid frame(s), e.g. bank-b, branch-b, buttress-b
+  src/assets/w6to10/props-made/w7-plates.webp: 2 solid frame(s), e.g. plate-down, plate-up
+  src/assets/w6to10/props-made/w7b.webp: 6 solid frame(s), e.g. bridge-span, capital, cracked-ledge
+  src/assets/w6to10/props-made/w7c-b.webp: 6 solid frame(s), e.g. archway, fallen-column, fig-roots
+  src/assets/w6to10/props-made/w7c.webp: 6 solid frame(s), e.g. archway, fallen-column, fig-roots
+  src/assets/w6to10/props-made/w7var.webp: 6 solid frame(s), e.g. bank-b, branch-b, buttress-b
+  src/assets/w6to10/props-made/w8b.webp: 6 solid frame(s), e.g. bouncy-leaf, branch-fork, knot-perch
+  src/assets/w6to10/props-made/w8c-b.webp: 6 solid frame(s), e.g. bark-fungus, bird-nest, firefly-leaf
+  src/assets/w6to10/props-made/w8c.webp: 6 solid frame(s), e.g. bark-fungus, bird-nest, firefly-leaf
+  src/assets/w6to10/props-made/w8fungus.webp: 2 solid frame(s), e.g. moss, plain
+  src/assets/w6to10/props-made/w8roost-b.webp: 6 solid frame(s), e.g. roost-branch, roost-branch-b, seed-pile
+  src/assets/w6to10/props-made/w8roost.webp: 6 solid frame(s), e.g. roost-branch, roost-branch-b, seed-pile
+  src/assets/w6to10/props-made/w8var.webp: 6 solid frame(s), e.g. bank-b, branch-b, buttress-b
+  src/assets/w6to10/props-made/w9b.webp: 3 solid frame(s), e.g. hex-column, hot-platform, pumice-raft
+  src/assets/w6to10/props-made/w9c-b.webp: 4 solid frame(s), e.g. ash-fern, charred-log, obsidian
+  src/assets/w6to10/props-made/w9c.webp: 4 solid frame(s), e.g. ash-fern, charred-log, obsidian
+  src/assets/w6to10/props-made/w9var.webp: 6 solid frame(s), e.g. bank-b, buttress-b, fill-b
+  src/assets/w6to10/slide/pokey-slide-back.webp: 8 solid frame(s), e.g. air, impact, land
+  src/assets/w7/temple-walls.webp: 5 solid frame(s), e.g. wall-1, wall-2, wall-3
+  src/assets/w7/vine-anchors.webp: 4 solid frame(s), e.g. anchor-1, anchor-2, anchor-3
+  src/assets/w7slide/flume-pokey.webp: 12 solid frame(s), e.g. cheer, duck, fallCurl
+  src/assets/w7slide/flume-props.webp: 22 solid frame(s), e.g. boulder, fungusG, fungusP
+  src/assets/w8/lantern.webp: 6 solid frame(s), e.g. moth, tree, gaugeDim
+  src/assets/w8/pokey-jar.webp: 7 solid frame(s), e.g. air, hold, tuck
+row check: 1145 inventory frame(s) left out by layer (backdrop, ui, pickup, climb, danger look)
+row check plant: the old weir cut trips it, the repaired cut passes
+row check: 1012 images, 10 s
+FAIL: 7 frame(s) with a see-through row across the piece (R-165.417; fix the cut, never a known list):
+  src/assets/bosses/boss-fx.webp pennant0 [decor near]: rows 56..99 (8) see-through across the piece
+  src/assets/bosses/boss-fx.webp pennant1 [decor near]: rows 91..95 (4) see-through across the piece
+  src/assets/props/w1-traps.webp sprung [decor near]: rows 146..148 (2) see-through across the piece
+  src/assets/props/w2-props.webp mailbox [decor near]: rows 29..30 (2) see-through across the piece
+  src/assets/props/w6-calm-water.webp (whole image): rows 43..97 (10) see-through across the piece
+  src/assets/story/drake/drake-cup.webp (whole image): rows 544..545 (2) see-through across the piece
+  src/assets/w1-18/hf18-bough.webp (whole image): rows 529..533 (5) see-through across the piece
