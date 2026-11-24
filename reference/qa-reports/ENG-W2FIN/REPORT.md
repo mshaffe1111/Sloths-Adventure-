@@ -20,7 +20,7 @@ looked for water at the fall's lip, and the pond is a wheel's height under it (t
    - wheelChannel.test 4/4: RED on base (wheelChannel-red.txt), GREEN on the fix. towerWater's draft case ('2-6's draft row ... the
      first frames keep him at the spawn'): GREEN on the fix, RED on base (the throw, x=274-670: towerWater-red.txt). w2Arc26.test: the module loads and its wheel cases pass
      (beat for beat; every wheel with jetty, street, pond, both ways), 3 of 5; **2 stay RED, neither the wheel's fall** (Pushback).
-3. lockall --layouts 16 (base 0077c62c6 recorded, fix checked, both frozen): LOCK. tsc PASS. generalitycheck PASS (26 literals, 26 known).
+3. lockall --layouts 16 (base 0077c62c6 recorded, fix checked, both frozen): **102/102 stages unchanged** (3,264 builds, 2-7 included; lock-summary.txt) PASS. tsc PASS. generalitycheck PASS (26 literals, 26 known).
    World 2 / wheel / tower src tests (23 files) on the frozen fix: 160 tests, 158 pass, 2 FAIL (both w2Arc26, Pushback): suite-w2-summary.txt.
    CI tool line (gates.yml:157) on the frozen fix: 386 tests, 378 pass, 7 FAIL, 1 todo (ciline-summary.txt); base had 17 FAIL (INT-R5b).
    0 'no bank' throws. Of the 11 throw reds: 10 GREEN (wheelChannel x4, wheelRide x2, rowWheels :23 :50 :65 :81); rowWheels :91 runs
