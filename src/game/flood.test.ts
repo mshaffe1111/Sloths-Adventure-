@@ -104,10 +104,10 @@ test('forkFaults: the fork at the wall-step, both halves by name: RED on the toy
   assert.match(brick, /no way down onto the low road: the gap after it is 0 px, under his 44 px width/);
   assert.doesNotMatch(brick, /walks off/, 'a flush porch: he walks on');
   // GREEN: the shape the verdict finds: W at least the widest tier's land + run-up (86 + 61 = 147), a 60 px gap (his width up to FLOOD_HOP)
-  assert.deepEqual(judge(150, 60), []);
+  assert.equal(judge(150, 60), '');
   // the edge of it, planted: 146 px refuses the middle and the expert by name, 147 passes them
   assert.match(judge(146, 60), /the middle lands 86 px past its face and has 60 px to its lip, short of his 61 px run-up/);
-  assert.deepEqual(judge(147, 60), []);
+  assert.equal(judge(147, 60), '');
   // a gap the jump cannot carry is refused by name (the reach from a stand start, the air pushing him on to a full run)
   assert.match(judge(150, 120), /reaches \d+ px, short of the 120 px gap/);
 });
