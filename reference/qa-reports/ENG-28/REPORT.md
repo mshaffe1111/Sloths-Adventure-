@@ -6,17 +6,17 @@ session 6 ENG-28f 5:35-5:47 PM ET; session 7 ENG-28g 5:54-6:05 PM ET. Sessions n
 Branch t-eng-28-wip: CODE head 94cf0d86 (every later commit touches only this folder; `git diff --stat 94cf0d86..origin/t-eng-28-wip`
 must show only reference/qa-reports/ENG-28/). `git fetch origin t-eng-28-wip`, confirm, `npm ci --no-audit --no-fund --legacy-peer-deps`.
 DONE on frozen 94cf0d86 (do NOT re-run): rulings A/B/C, lineBot 8/8, flood + floodLay 15/15, tierBots 9/9, trip count 0, lockall PASS,
-suite shards 0 and 1 (589 + 638 pass, 0 fail). LEFT, in order, on a frozen worktree of 94cf0d86 (`git worktree add --detach <dir>
+suite shards 0 and 1 (589 + 638 pass, 0 fail), the CI tool line (inherited reds only). LEFT, in order, on a frozen worktree of 94cf0d86 (`git worktree add --detach <dir>
 94cf0d86`, `ln -s <repo>/node_modules <dir>/node_modules`, `chattr -R +i <dir>/src <dir>/tools`, `chattr -R -i <dir>/src/game/gen2/proven`):
 1. The suite shards 2-5 (my runs of 2 and the CI line were cut by the hand-over: partial, NOT results). Rebuild the list in the frozen
    tree: `shopt -s globstar; ls src/audio/*.test.ts src/game/*.test.ts src/components/*.test.ts src/components/**/*.test.ts
    src/game/gen2/*.test.ts src/game/gen2/worlds/*.test.ts src/game/art/*.test.ts | sort -u > suite.txt` (631 files), `split -n l/6 -d
    suite.txt shard`, then `npx tsx --test $(cat shard02)` etc. for 02..05 (each run_in_background, timeout up to 7200000; shard 1
    took 6.1 min; two at a time at most). Base: WARN-412's 4096 pass, inherited reds only (pacerLay :254 :280 named there).
-2. The CI tool line, by content: the `- run: npx tsx --test tools/engine/library.test.ts ...` line of .github/workflows/gates.yml's
-   `rolled` job (includes lineBot). Inherited reds (WARN-412: wheelChannel x4, wheelRide x2, firsttimer :184, riverRide x4; 338 pass
-   there). My cut run had reached 315 tests with only these reds: 50-53 (wheelChannel), 160 (chase bots, a TODO), 191 (2-2's log-hop
-   runs, firsttimer), 272/281/283/284 (riverRide); compare by name when it finishes.
+2. The CI tool line: DONE (it finished at 6:34 PM ET, after the hand-over note was first written; do NOT re-run). Frozen 94cf0d86,
+   gates.yml `rolled`'s `npx tsx --test tools/engine/library.test.ts ...` line (includes lineBot), 6:22-6:34 PM ET: 354 tests, 342 pass,
+   11 fail, 1 todo. The 11 are exactly WARN-412's inherited list: wheelChannel x4 (50-53), firsttimer.test.ts:184 (191, 2-2's log-hop
+   runs), riverRide x4 (272, 281, 283, 284), wheelRide x2 (335, 336); 160 is the chase bots' TODO. No new red.
 3. Land: `git branch t-eng-28 origin/t-eng-28-wip` (the head that carries this REPORT), `git push origin t-eng-28` (no force),
    `git ls-remote origin t-eng-28` equal; message the lead (no clock times) with the hash and what READY-28 can now measure (below).
 HARD STOP 8:00 PM ET. If the suite or the CI line shows a red not inherited: STOP and tell the lead (test name, file:line).
@@ -57,7 +57,7 @@ the draft's wall-steps against climb.land (the calibration is R-165.424's, later
     file: 1-1..1-9, 2-1, 2-2, 2-4, 2-5, 5-7, 5-9, 6-1..6-7, 6-9, 7-1, 7-3, 7-5, 7-6, 7-7, 7-9, 8-1, 8-2, 8-3, 8-5, 8-6, 8-8, 8-9).
   - The suite (the CLAUDE.md glob, 631 files) in 6 shards (`split -n l/6` of the sorted list): shard 0 589 pass, 0 fail (63 s).
   - Suite shard 1: 638 pass, 0 fail (6:17-6:24 PM ET, 6.1 min). Shards 2-5 and the CI tool line: NOT DONE (cut at the hand-over;
-    session 9's steps 1-2).
+    session 9's step 1). The CI tool line: 342 pass, 11 fail (all inherited, named in step 2), 1 todo (6:22-6:34 PM ET).
 - Lessons applied: D115 (every run on chattr-frozen wt28h1/wt28h2, src/game/gen2/proven writable; probes in the scratchpad, never
   committed), D119 (commit -m, no heredoc in a commit chain), D128 (times from date), D134 (pushed and ls-remote checked before the
   hand-over message), the lead's stop conditions (no other lineBot verdict moved; margin over 0.25 s; trips 0; no lock move).
