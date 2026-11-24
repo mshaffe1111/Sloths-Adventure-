@@ -467,10 +467,11 @@ const FAIL_LIMIT = 20;
 /** what the engine hands Dot with a stage's own teach line (StageHint.teach) */
 const TEACH_LINE = { teach: true } as const;
 const LOCK_LINE = { lock: true } as const;
+const WARN_LINE = { warn: true } as const;
 /** what a guiding line is, as the engine knows it (onGuide): the stage's own teach line, or the locked exit's line (`lock`: Dot says it
  *  at once, whatever its words, R-165.241), or a stage's own story moment said by the speaker its data names (`who`: a race's end,
  *  sayRaceEnd; dotLines.ts engineGuideLine makes it a story line, on the story switch like the wayside's beats) */
-export interface GuideOpts { teach?: true; lock?: true; who?: RaceEndWho }
+export interface GuideOpts { teach?: true; lock?: true; who?: RaceEndWho; /** a stage's warning (StageHint.warn): a must on every setting */ warn?: true }
 
 export class GameEngine {
   private canvas: HTMLCanvasElement;
@@ -3329,7 +3330,7 @@ export class GameEngine {
         if (h.firstOf) markTipHeard(FIRST_OF_STAGE, h.firstOf);
         const mode = lessonInputMode();
         const said = mode === 'pad' ? h.pad : mode === 'keys' ? h.keys : h.text;
-        this.guide(said, TIP_SAY_S, h.teach ? TEACH_LINE : h.story ? { who: h.story } : undefined);
+        this.guide(said, TIP_SAY_S, h.warn ? WARN_LINE : h.teach ? TEACH_LINE : h.story ? { who: h.story } : undefined);
         if (h.passX !== undefined) this.passTips.push({ x: h.passX, text: said });
       }
       // a move tip about one spot goes once he is on the ground past it, done or not (StageHint.passX)
