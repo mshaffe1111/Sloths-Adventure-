@@ -11,8 +11,11 @@ Use it when: a rolled stage's list must be rebuilt (the kit, the pipeline, a ver
 - `src/game/gen2/provenIndex.ts`: a stage's count, version and loader (GENERATED). All the main script holds of a list.
 - Both are written together by `tools/engine/seedlist.ts`. Never edit either by hand, never import a list file by name
   (`seedListChunk.test.ts` fails), and in a merge conflict take both files from the same side.
-- **Order is identity.** Layout variant N is the list's N-th seed: the first run (variant 11 = seed 4106), Rolls A/B/C
-  (testlink1_1.json) and the tier bots' calibration (variants 1-40) all read it. Seeds are ADDED after the ones already there.
+- **Order is identity.** A layout variant names a list INDEX, by two rules: on 1-1 alone variant v is index v - 1, the v-th seed
+  (testlink1_1.ts play11Seed); on every other listed stage Play draws variant v from index v mod n (seedList.ts provenSeedFor, from
+  stageGenerator.ts: variant 1 = the 2nd seed, variant n = the 1st). A bot table's "seed N" on a listed stage is that VARIANT, not the
+  list's seed (FILL-14, 11-24). The first run (firstRun11.ts), Rolls A/B/C (testlink1_1.json) and the tier bots' calibration (variants
+  1-40) all read the order. Seeds are ADDED after the ones already there.
 
 ## Steps
 1. **Before:** `npx tsx tools/engine/seedlist.ts 1-1 --check` and note the count, `seeds[10]` and the version (provenIndex.ts).
