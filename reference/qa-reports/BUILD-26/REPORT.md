@@ -1,6 +1,6 @@
-# BUILD-26q (t-build-26-wip-26q; base t-build-26 40a9c4bd2, frozen): 2-6's Easy residue: box 1 = the re-measure and the clusters. Started 4:21 PM ET 11-24 (by `date`); this box written 4:40 PM ET
+# BUILD-26q (t-build-26-wip-26q; base t-build-26 40a9c4bd2, frozen): 2-6's Easy residue: box 1 = the re-measure and the clusters. Started 4:21 PM ET 11-24 (by `date`); this box written 4:41 PM ET
 
-## EXACT NEXT STEP (session 2, xhigh, engine tier; budget: session 1 ran 4:21 PM ET to 4:40 PM ET of the job's 4 h; HARD STOP 11:00 PM ET)
+## EXACT NEXT STEP (session 2, xhigh, engine tier; budget: session 1 ran 4:21 PM ET to 4:41 PM ET of the job's 4 h; HARD STOP 11:00 PM ET)
 1. **The spot that matters (59 of 83 failing runs; 31 seeds fail on it alone): the first street's SUNKEN STEP (the tower's soft pit),
    NOT the house ladder.** FRAME TRACE (kid E 40, b26q/frames-kidE40.txt; b26q/frames26.mts.txt wraps RealPlay.frame; x is his centre):
    he runs off the boulder (541..706 @6319) at run speed (vx 268-285), touches the street b (414..762 @6369) at x 771 for one frame, drops into
@@ -19,8 +19,8 @@
    under the next street. Next: (a) count how many of the 59 fall at the step (frames26 per row, the window filter in the file; the 59
    share one logged place, 927-937 x 6378-6392, so expect all); (b) the toy RED on the base: 'a run at full speed into
    a tower soft pit stops in it (or lands on the far floor), never passes under the far lip', every tower stage's pits, both settings;
-   (c) the general fix in the soft pit's lay (pipeline/tower, engine tier: a face under the far lip down to the bough, or the bough
-   carried under the far lip by a stopping distance; the lead rules which), then lockall on every listed stage (the lead's first
+   (c) the general fix in the soft pit's lay, RULED BY THE LEAD: THE FACE (a face under the far lip down to the bough: a sunken step has
+   sides; a runner stops at it and climbs or jumps out), every tower stage, both settings (pipeline/tower, engine tier), then lockall on every listed stage (the lead's first
    ruling: any shipped stage moving goes to the lead first), castBots --proven 2-6, rule 28 vs MAIN.
 2. **The floor (adult Normal, 11 runs 95.9-99.1 s; 8 seeds fail on it alone):** the packet's way: lengthen the route (a section added or
    re-laid in w2Arc26.ts; a design change: the lead's call, LEAD's design question in R-165.398), never a slower bot (law 22).
