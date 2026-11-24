@@ -198,7 +198,7 @@ timeouts, no '&'), D115 (frozen worktrees for every run), D109 (no clock times t
 their message from a heredoc as the LAST link of an && chain (nothing after it depended on it; each commit checked by `git log` after);
 session 2 uses `git commit -F <file>` instead.
 Session 2 (INT-R5b): D92 (the CI line on the merged head before anything else; re-run after each fix merge), D111 (the 28-minute box:
-hand-over at 3:19 PM ET), D113/D122 (every long run run_in_background with a timeout, waiting by a monitor, never a foreground wait,
+hand-over at 3:10 PM ET, the commit's real time; first typed 3:19 PM, the box's end, D128), D113/D122 (every long run run_in_background with a timeout, waiting by a monitor, never a foreground wait,
 never a shell '&'; the bisect waits for the CI job in its own background loop so buildcheck runs alone), D115 (every run on a detached
 worktree nobody edits; THE FULL SET adds chattr +i), D119 (commit messages by -m flags only), D124 (run1.sh prints the candidate's own
 shard plan for the per-list sums), D109 (no clock times to the lead). Slip, named: 57d8b8ffb's Claude-Session trailer names the lead's
