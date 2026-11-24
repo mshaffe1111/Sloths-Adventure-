@@ -1,0 +1,7 @@
+== 2-6 easy variant 32 (seed 33), pieces at x 350-950, y 3250-3600
+x 401-641 y 3458 h 24 branch solid
+x 737-857 y 3486 h 16 undefined moving
+x 582-702 y 3396 h 16 undefined moving
+x 893-1013 y 3396 h 16 undefined moving
+x 0-401 y 3458 h 24 branch solid
+sections: A millpond 640-1628 | Tr1^< first-wheel 826-1584 | Pg1^< first-street 114-1138 | Uc1^> through-house 491-1094 | Pw1^> millrace 114-1500 | Xr1^> edge-wheel 555-1456 | R rest 599-1127 | Pf1< porches 357-1586 | Wr1^> top-wheel 401-1165 | R rest 593-1121 | Cb^> wheel-bounce 114-1163 | R rest 591-1119 | Sr1^< great-wheel 635-1405 | E crest 932-1361

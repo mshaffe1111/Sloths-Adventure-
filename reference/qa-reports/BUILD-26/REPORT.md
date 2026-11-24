@@ -1,4 +1,4 @@
-# BUILD-26s (session 3 of BUILD-26q; t-build-26-wip-26q, head b6a35d7e8): the lead's rulings 1-5. Started 5:09 PM ET 11-24 (by `date`); this box written 5:24 PM ET
+# BUILD-26s (session 3 of BUILD-26q; t-build-26-wip-26q, head b6a35d7e8): the lead's rulings 1-5. Started 5:09 PM ET 11-24 (by `date`); this box written 5:25 PM ET
 
 ## EXACT NEXT STEP
 **For the next session (base: this branch's head). Ruling 1 FAILED ON THE SCREEN: the face does not show.** Stills (b26q3/, frozen
@@ -44,6 +44,10 @@ stands in the bucket's path at its own height: a solid in the sweep, which 2-6.m
 back), not the bot. Sent to the lead to rule. NEXT on GO: the toy first (a rider on a bucket's near end, held still, rides up past
 the jetty: RED now), then the fix (the jetty's end clear of the bucket's path at its height, every wheel with a jetty, both settings),
 then place B (seeds 32, 89, 92). Then ruling 5 (landing).
+B, trace 1 (adult E 32, b26q3/frames-adultE32-82-96.txt, spot-adultE32.txt): another wheel (R180 by its buckets; jetty 401-641
+@3458). He boards, rides up the jetty's side (NOT set back on it: standingOn stays the bucket), and near the top (94.27 s, x 661 y 3140)
+presses jump right and lands on another bucket (id 61), not the street; the rescue is after 96 s. Cause NOT read yet: next, the
+trace past 96 s and which street that wheel serves (edge or up: its flown window), then a second seed (89 or 92).
 Proposed countermeasure (lead's call): a face check on the BUILT stage's screen: every collider a player meets side-on must differ from
 the backdrop where it stands (a still pixel check at the soft pit), so 'painted' can never mean 'invisible'.
 
