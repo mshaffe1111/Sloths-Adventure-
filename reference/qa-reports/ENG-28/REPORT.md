@@ -1,4 +1,4 @@
-# ENG-28 REPORT (2-8's pieces ahead, Lane 2): session 2 (ENG-28b), started 2:29 PM ET, handed over 2:45 PM ET (both from date)
+# ENG-28 REPORT (2-8's pieces ahead, Lane 2): session 2 (ENG-28b), started 2:29 PM ET, handed over 2:50 PM ET (both from date)
 Branch t-eng-28-wip (base t-eng-27 90552d3ec). Session 1: 601e37549 pure core + follower toys; 4c53ea427 gen2 lay + toy row; dd4367cd2
 engine wiring. Session 2: 016b5b45b engine-level toy; e76a2886d flood.ts highRoad (the chain); 0aab83a4e two flood defects fixed, each
 with a planted toy; 2a4edf8db WIP lead-the-line (one toy case still RED, below).
@@ -54,9 +54,15 @@ b. Fix the adult's 'too late' RED: `FLOODDBG=1 npx tsx --test --test-name-patter
    fetch must stay GREEN) and tools/inspect/tierBots.test.ts (any bot change re-runs calibration; if tierBots moves, STOP and tell the
    lead: the calibration file is recommitted only with a 1-1 change, BOTS.md). Do NOT loosen the toy (no thinner A, no skipping the
    adult). Then remove the FLOODDBG lines and commit.
-c. On FROZEN trees (D115, chattr; never a shell '&', run_in_background): lockall --layouts 16 base (90552d3ec) vs head (expect no listed
-   stage moved: no listed brief names a flood); the full suite (CLAUDE.md "Checks") + the CI tool line (gates.yml: the engine tools'
-   tests incl. lineBot, tierBots, seedlist 1-1 --check); the base suite is WARN-412's on 90552d3ec (4096 pass, inherited reds only).
+c. On FROZEN trees (D115; never a shell '&', run_in_background): START THE BASE LOCK FIRST, in parallel with step b (it is slow: about
+   3 stages per 40 s, ~15 min; session 2 started it at 2:47 PM and stopped it at hand-over, 1-1..1-3 done). What worked here:
+   `git worktree add --detach /home/user/wtbase28 90552d3ec`, `ln -s <repo>/node_modules /home/user/wtbase28/node_modules`,
+   `chattr -R +i /home/user/wtbase28/src /home/user/wtbase28/tools` (root: allowed), then in it
+   `npx tsx tools/engine/lockall.ts --layouts 16 --out <scratchpad>/lock-base-90552d3ec.json`. On the frozen head (a second worktree at the
+   candidate, the same freeze): `lockall.ts --layouts 16 --check <scratchpad>/lock-base-90552d3ec.json` (expect no listed stage moved: no
+   listed brief names a flood). Then the full suite (CLAUDE.md "Checks") + the CI tool line (gates.yml: the engine tools' tests incl.
+   lineBot, tierBots, seedlist 1-1 --check); the base suite is WARN-412's on 90552d3ec (4096 pass, inherited reds only). At most TWO heavy
+   runs at once.
 d. Land: `git branch t-eng-28` from the frozen candidate, push it (NOT t-eng-27); merge INT-R5's candidate in when the lead sends its
    hash; message the lead (session_01FhBbYN2CVHnFXg7XzqKXpM, no clock times) the hash and what 2-8's READY can now measure: yield,
    drawcheck, stills both ways, the flood's verdicts (floodFaults, highRoadFaults by name), met order (lastMet), and the cast bots' road
