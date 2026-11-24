@@ -1,4 +1,4 @@
-# BUILD-26s (session 3 of BUILD-26q; t-build-26-wip-26q, head b6a35d7e8): the lead's rulings 1-5. Started 5:09 PM ET 11-24 (by `date`); this box written 5:23 PM ET
+# BUILD-26s (session 3 of BUILD-26q; t-build-26-wip-26q, head b6a35d7e8): the lead's rulings 1-5. Started 5:09 PM ET 11-24 (by `date`); this box written 5:24 PM ET
 
 ## EXACT NEXT STEP
 **For the next session (base: this branch's head). Ruling 1 FAILED ON THE SCREEN: the face does not show.** Stills (b26q3/, frozen
@@ -32,11 +32,18 @@ token added (node string and dealExact's deal unchanged; touches 2-6 alone: feel
 B, 3 of 13 (seeds 32, 89, 92) at x ~630 y ~3434 ('water ahead, the way on is 112-129 px up'), not yet looked at.
 A, TRACED 2 of 2 (adult E 57 and 26: b26q3/frames-adultE57-104-113.txt, frames-adultE26-96-112.txt; pieces spot-adultE57.txt): the
 same both times: he stops at the jetty's end (x ~847; jetty 635-875 @1013), jumps into the bucket at the sweep's bottom (@1041), rides
-it left; as it starts up the jetty's side (him at x 893, y 994-1027) the bot PRESSES JUMP RIGHT onto the next low bucket, every ~3.5 s
-(seed 26: 107.8, 111.2 s), never riding up, until rescued. The board is the design's (R200: the jetty's end is the bucket's edge at the
-jetty's height, 1037 - 102 - 60 = 875), and kid E 99, child E 100, middle E 100 ride this wheel. READING: the BOT (adult Easy's wheel
-ride presses jump as the bucket rises), sent to the lead to rule. NEXT: find the press in firsttimer.ts's ride-wheel skill and set it
-against the testers (law 22: no bot slowed, no rule bent); then place B (seeds 32, 89, 92). Then ruling 5 (landing).
+it left; as it starts up the jetty's side (him at x 893, y 994-1027) the bot presses jump right onto the next low bucket, every ~3.5 s
+(seed 26: 107.8, 111.2 s), never riding up, until rescued. WHY (b26q3/frames-adultE26-standingOn-107.txt, frames26s: the frame
+wrapper + what the ENGINE stands him on): at 107.67 s the engine moves him from the bucket (id 80) onto the JETTY (id 77, 635-875):
+his y snaps 1024 -> 1013 though his x (890) is past the jetty's end. The rising bucket passes the jetty's end at the jetty's height
+(R200: the bucket's edge IS the jetty's end, 1037 - 102 - 60 = 875), and a rider standing on the bucket's near end is set back on the
+jetty; there the bot does what a player would, hops in again (firsttimer.ts wheelRide's jetty branch: 'up to the lip, the hop in'),
+onto the next low bucket, every turn. Kid E 99, child E 100, middle E 100 ride it; why they clear the jetty is NOT traced (on an 'in'
+street every bot only stands, wheelRide; likely where each lands in the bucket); the adult stands where he landed, on the near end. READING (corrected): the STAGE (the great wheel's jetty end
+stands in the bucket's path at its own height: a solid in the sweep, which 2-6.md's NEW 1 forbids; any rider on the near end is put
+back), not the bot. Sent to the lead to rule. NEXT on GO: the toy first (a rider on a bucket's near end, held still, rides up past
+the jetty: RED now), then the fix (the jetty's end clear of the bucket's path at its height, every wheel with a jetty, both settings),
+then place B (seeds 32, 89, 92). Then ruling 5 (landing).
 Proposed countermeasure (lead's call): a face check on the BUILT stage's screen: every collider a player meets side-on must differ from
 the backdrop where it stands (a still pixel check at the soft pit), so 'painted' can never mean 'invisible'.
 
@@ -50,7 +57,7 @@ the backdrop where it stands (a still pixel check at the soft pit), so 'painted'
 
 ## Unresolved (named plainly)
 - The face is invisible on the screen (above). Nothing ships until it reads as the step's side.
-- Ruling 3 waits for the lead's GO on the plan; ruling 4: place A traced 2 of 2 (bot reading, the lead rules), place B not looked at; ruling 5 not started.
+- Ruling 3 waits for the lead's GO on the plan; ruling 4: place A traced 2 of 2 + the engine's floor (stage reading, the lead rules), place B not looked at; ruling 5 not started.
 
 # BUILD-26r (t-build-26-wip-26q; base t-build-26 40a9c4bd2): THE FACE (the lead's ruling), its toy, lockall, castBots. Started 4:47 PM ET 11-24 (by `date`); this box written 5:06 PM ET
 

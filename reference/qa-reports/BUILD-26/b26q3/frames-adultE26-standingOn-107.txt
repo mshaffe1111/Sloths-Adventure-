@@ -1,0 +1,21 @@
+on 80 bucket 107.20 x 916 y 1033 vx 0 vy 0 - | 
+on 80 bucket 107.23 x 914 y 1032 vx 0 vy 0 - | 
+on 80 bucket 107.27 x 912 y 1031 vx 0 vy 0 - | 
+on 80 bucket 107.30 x 910 y 1031 vx 0 vy 0 - | 
+on 80 bucket 107.33 x 909 y 1030 vx 0 vy 0 - | 
+on 80 bucket 107.37 x 907 y 1029 vx 0 vy 0 - | 
+on 80 bucket 107.40 x 905 y 1029 vx 0 vy 0 - | 
+on 80 bucket 107.43 x 903 y 1028 vx 0 vy 0 - | 
+on 80 bucket 107.47 x 901 y 1027 vx 0 vy 0 - | 
+on 80 bucket 107.50 x 899 y 1027 vx 0 vy 0 - | 
+on 80 bucket 107.53 x 897 y 1026 vx 0 vy 0 - | 
+on 80 bucket 107.57 x 896 y 1025 vx 0 vy 0 - | 
+on 80 bucket 107.60 x 894 y 1024 vx 0 vy 0 - | 
+on 80 bucket 107.63 x 892 y 1024 vx 0 vy 0 - | 
+on 77 branch@635-875 107.67 x 890 y 1013 vx 0 vy 0 - | 
+on 77 branch@635-875 107.70 x 890 y 1013 vx 0 vy 0 - | 
+on 77 branch@635-875 107.73 x 890 y 1013 vx 0 vy 0 - | 
+on -1  107.77 x 893 y 994 vx 87 vy -577 - | right press jump
+on -1  107.80 x 898 y 977 vx 143 vy -513 - | right jump
+on -1  107.83 x 904 y 962 vx 200 vy -450 - | right jump
+{"end":"shrine","time":127.2,"rescues":1}
