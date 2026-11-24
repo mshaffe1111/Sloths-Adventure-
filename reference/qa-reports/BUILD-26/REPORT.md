@@ -8,6 +8,14 @@
    this bot), then castBots --proven 1-4 and 2-6's --proven yield under the judge, the table to the lead, land on its word.
    Evidence for the fork: test 6 GREEN on the base, RED on 997f7e98c (b26t/riverRide-ridePlant-*.txt); B: riverRide 18/18 + wheelRide
    2/2 GREEN (b26t/rr-wr-35ca56b16.txt).
+   **VERDICTS on frozen 35ca56b16 (this box):** CI tool line (b26t/toolline-35ca56b16.txt): 368 tests, 366 pass, 1 todo (chaseBots
+   R-165.206, not a red), **1 RED: rowWheels.test 'PLANTED: trunkCatch OFF ... rescues come back (RED)'** ('rescues return (0: middle
+   normal v1 0 ... expert normal v2 0)'). It is RED on the base 23cdb07e8 too, same message (b26t/rowWheels-trunkCatch-23cdb07e8.txt), so
+   inherited, not this fix; ENG-26s's merge tool line (before floorAt, 9 reds) did not list it, so it most likely came with the floorAt
+   merge ca3a7d063 (not bisected: the lead's no-other-runs). A plant that stopped biting: the successor finds a case that still needs
+   SKILLS.trunkCatch (the riverRide method) and sends it to the lead before writing (law 22). riverRide, wheelRide, rowWheels' other
+   tests, libstage, registrycheck: GREEN in this line.
+   Unit suite (CLAUDE.md Checks, one process; b26t/suite-35ca56b16.txt): 4,080 tests, 4,077 pass, **0 fail**, 3 todo (as ENG-26s's merge: 4,077/0/3). Next for the successor: the trunkCatch re-plant, then registrycheck + tipwalk + tierBots, the 1-4 / 2-6 yields, the landing.
 1. **riverRide's plants: the lead APPROVED both rulings and they are WRITTEN: 3e212becc** (upstream: child N 23 replaces child N 5,
    middle N 26 added, bar 5+ lives; bankUp: child N 40 as a LIVES plant, 5+ more lives off, the both-ways time 2+ s kept). GREEN
    (b26t/riverRide-3e212becc.txt tests 16-18). child N 40's lives margin is exactly the bar (+5, measured on 997f7e98c; on the base
