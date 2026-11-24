@@ -5,7 +5,7 @@ lead's word (the row verdict below). Engine (bots), Opus 5.5. Lead:
 session_01FhBbYN2CVHnFXg7XzqKXpM. Base: release-0.10.3 bf2479dc2 (the INT-R5b red list); release head at hand-over 40a493b70 (ENG-W2FIN
 landed at 150e6e161). Lead's ruling A (in a message): write the fix at the cause; hard stop moved to 5:30 PM ET.
 
-## ROW VERDICT (narrow continue; written 3:42 PM ET by `date`): PASS -> FAIL on shipped rows: YES. STOPPED, told the lead.
+## ROW VERDICT (narrow continue; written 3:41 PM ET by `date`): PASS -> FAIL on shipped rows: YES. STOPPED, told the lead.
 castBots CLI rows (the CLI's own input, not castRun's 'fake'), every bot, both settings, seeds 1-40, frozen fix ea573b4e4 vs frozen
 main cdffdc627 (tools/rows.sh.txt, tools/flips.py.txt; data/flips-main-vs-fix-partial.txt):
 | Stage | Rows differ | PASS -> FAIL | fail -> pass | PASS -> FAIL by bot |
