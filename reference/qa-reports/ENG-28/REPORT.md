@@ -19,10 +19,15 @@ lip). COMPARED (session 6): gen2/floodLay.ts lays NO high road itself: the stage
 (highRoadFaults, FLOOD_STEP 60 up, FLOOD_HOP 60 the widest gap, gap 'a step's tread at most'). The toy's shape (W 60 px wide, set
 back 60 px from the edge, a 60 px gap, P level) PASSES that rule: every floodRun asserts highRoad's faults empty (bb04993f3) and none
 failed. floodLay.test.ts' brick lays a different legal shape: 'stand' w 60, h FLOOD_STEP, its far side at the water's edge, the porch
-'over' the near bank at dy -FLOOD_STEP (where the porch starts against W, so the gap, NOT yet measured: print the built stand/porch x
-from floodLay.test.ts' build()). So the rule lets a lay make the toy's exact shape: per the lead's leaning, the fix is a LAY verdict, not
-the toy and not the bot. Bring the lead this and take its ruling before building (the verdict's run-up number would be read from the
-slowest tier's climb-and-walk, as traced here: the adult needs more than a 60 px W, or no gap to P).
+'over' the near bank at dy -FLOOD_STEP. MEASURED (a scratch copy of floodLay.test.ts' build() on the frozen scratch tree, 4 rolls x 2
+settings; the home leg runs right to left, near bank on the right): W is 60 px wide, 60 up, h 60, its water side AT the water's edge
+(normal 1: W 17315-17375, the low road x0 16517 x1 17315); the porch is 880 px, 60 up, from 16435 to 17315: it TOUCHES W (gap 0) on all 8
+rolls. THE TOY DIFFERS: its W is set back 60 px from the edge with a 60 px gap to P, which the brick never lays. Both shapes pass the rule
+(FLOOD_HOP 60). So both branches of the lead's order apply, and it is the lead's call. (a) Make the toy match the brick: W at the
+water's edge, P touching it. The toy then tests the shape the lay makes, and the adult walks straight on, with no pause problem. (b) The
+lead's leaning, a LAY verdict: floodFaults refuses a wall-step whose run-up cannot carry the slowest tier across the gap to the next
+piece (named, planted RED/GREEN). The number comes from the trace (the adult lands 6 px past a 60 px W's lip, then the small-ledge pause),
+for example 'no gap after a wall-step under N px wide'. Or (a) and (b) together. Take the ruling before building.
 'too late' cannot go GREEN at 22 (nobody has taken a road by the close) and the ruling's option B (an earlier late) is blocked at 19 by
 the ADULT's miss of P. The options as I first put them (superseded by the lead's order above):
   (1) TOY: widen W in floodRun (and the plant) so his climb jump lands with run-up before W's lip. FIRST, check the real lay's W width
