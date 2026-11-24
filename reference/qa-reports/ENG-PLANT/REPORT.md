@@ -19,13 +19,15 @@ Run-up = 2-4 adult N 6: rescued at 10,699 on c12 (no run-up), crosses on c14+ by
 c4 6b5f43da0 {4,21,22,23}; c12 db9ef7073 {6,20,22,23}; c16 {6,20,22,23}; c17 {6,8,20,22,23}; **c18 {4,8,10,21,22,23} (6 of 23)**. 22, 23 (the
 planted 'log under the lip boarded' and 'racing hop lands where judged') fail on EVERY candidate since c4; the rest are 'the careful middle
 player beats the boat' seeds shuffling (c18: middle N 1 118.5 s vs 115.91; N 3 141.3 vs 113.66; E 1 110 vs 108.37; post N 5 131.5 vs 127.7).
-Outputs: data/g/pacerLay-c<n>.txt. hopJudged NOT run. Main's pacerLay NOT run (never ran it; a 25 s test, not a castBots row).
+**The base: origin/release-0.10.3 dfe631913 (an ancestor of c4) fails {8,22,23}** (main has no pacerLay: 2-7 is not shipped). So 22/23
+are red on release-0.10.3 itself (D126 shape); vs it, c18 adds 4, 10, 21 (c12: 6, 20; c17: 6, 20). Outputs: data/g/pacerLay-<c4..c18|r103>.txt.
+hopJudged NOT run.
 
 ## EXACT NEXT STEP (session 6)
 1. Setup: `npm ci --legacy-peer-deps`; freeze with tools/freeze.sh.txt (its `cd` = your checkout; keep src/game/gen2/proven writable).
    Base: **c18 fca50fc81**. Messages to the lead carry no clock times.
-2. Run pacerLay on origin/main once (frozen; 25 s): is it green there? If main is green, pacerLay's reds are a branch regression
-   since c4 (D132/D118 shape): bisect c4's base vs main with the 2-7 race path in mind. Lead: c5-c16's gate refused the race block's
+2. pacerLay: red on release-0.10.3 itself {8,22,23}; ask the lead whether c18's extra three (4, 10, 21: middle beats the boat, N 1,
+   E 1, post N 5) are in this job's bar (they are 2-7 race rows), and trace them if so. Lead: c5-c16's gate refused the race block's
    press off a log (`startJump(dir, this.jumpFor(...))`, no gateHop/pressJudged; firsttimer.ts race block 'raceLegal && (reach || ...)').
    Then hopJudged (`npx tsx --test tools/inspect/hopJudged.test.ts`) on c18. Send the lead both results BEFORE the wide sample (ask).
 3. WIDE SAMPLE on c18 (D133): `npx tsx tools/inspect/castBots.ts --stage <st> --seeds 1-10 --bots kid,adult,child,middle,expert
