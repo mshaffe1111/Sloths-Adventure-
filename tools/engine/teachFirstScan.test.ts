@@ -3,7 +3,7 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import '../../src/game/headlessDom.ts';
-import { COACH_MOVES, teachFirstMisses, type TeachRoll } from './teachFirstScan.ts';
+import { COACH_MOVES, teachFirstMisses, walkSaid, type TeachRoll } from './teachFirstScan.ts';
 import { RealPlay } from '../../src/game/realPlay.ts';
 import { setDifficulty } from '../../src/game/difficulty.ts';
 import { LISTED } from '../../src/game/gen2/listed.ts';
@@ -79,4 +79,20 @@ test('planted: no double teach laid at all is caught', () => {
   const { f } = dbl(r);
   const miss = teachFirstMisses({ ...r, fills: r.fills.filter((q) => q !== f) });
   assert.ok(miss.some((m) => m.startsWith('double: no teach line laid')), miss.join('\n'));
+});
+
+// (the moment: 1-1 rolls whose double line came late on the base (the brisk walk through Dot's real queue, reference/qa-reports/TEACH-11),
+// 15050 on the testers' tall bank: with the line laid as a teach line it is SHOWN before the first double on the default setting; laid as a
+// plain tip (the base) it waits out Dot's gap between lines and comes after it on at least one of them)
+const LATE_ON_BASE = [15050, 9013, 9652];
+test('the walk: 1-1 rolls late on the base show the double line before the first double, Normal (Tips) and Easy (Help)', async () => {
+  for (const seed of LATE_ON_BASE) for (const s of ['normal', 'easy'] as const) {
+    const w = await walkSaid(ID, seed, s, 'double');
+    assert.ok(w.before, `${seed} ${s}: shown at x ${w.shownX} (sent ${w.sentX}), first double at x ${w.needX}`);
+  }
+});
+test('planted: the walk catches the double line laid as a plain tip (the base) coming after the first double', async () => {
+  let late = 0;
+  for (const seed of LATE_ON_BASE) for (const s of ['normal', 'easy'] as const) if (!(await walkSaid(ID, seed, s, 'double', { plain: true })).before) late++;
+  assert.ok(late > 0, 'a plain tip came late on at least one roll');
 });

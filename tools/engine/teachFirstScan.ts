@@ -4,8 +4,9 @@
 // or a laid section's), unless an earlier stage taught it (manifest.lessons), must have its teach line:
 //   1. LAID: a tip in a section that teaches it, in the first section (lay order, never x order: D130) that shows it, or before;
 //   2. SAID on the default settings: Tips (Normal's default, the stricter of the two: Easy's is Help) does not drop it
-//      (storyTipScan.ts droppedOnTips), and it is laid as a teach line (StageHint.teach, or a warning) so it never waits out Dot's calm
-//      gap: as a plain move tip, 1-1's double line on seed 5033 came ~1,900 px past the first tall step it teaches;
+//      (storyTipScan.ts droppedOnTips), and it is laid as a teach line (StageHint.teach, or a warning) so it never waits out Dot's gap
+//      between lines (Tips: 30 s from the last line's start, TIPS_GAP_MS): as a plain tip, 1-1's double line on seed 15050 came ~1,900 px
+//      past the tall bank it teaches;
 //   3. BEFORE the first required move of it on the route (the lay's asks, pipeline.ts laidAsks, in lay order): no ask of that move in a
 //      section before the teach, and in the teach's own section the line stands before the first ask, in the section's walking direction.
 //   npx tsx tools/engine/teachFirstScan.ts                 every listed stage, every proven seed: the list
@@ -69,7 +70,7 @@ export function teachFirstMisses(r: TeachRoll): string[] {
     const h = r.hints.find((q) => Math.abs(q.x - tip.x) < 1);
     if (!h) { out.push(`${m}: teach line "${tip.what}" filled at x ${Math.round(tip.x)} but no hint laid there`); continue; }
     if (droppedOnTips(r.stageId, [h]).length) out.push(`${m}: teach line "${tip.what}" is dropped on Tips (Normal's default)`);
-    if (!h.teach && !h.warn) out.push(`${m}: teach line "${tip.what}" laid as a plain tip (not StageHint.teach): it waits out Dot's calm gap and can come after ${at}`);
+    if (!h.teach && !h.warn) out.push(`${m}: teach line "${tip.what}" laid as a plain tip (not StageHint.teach): it waits out Dot's gap between lines (Tips 30 s) and can come after ${at}`);
     if (ti === need && ask0 >= 0 && askSec === need) {
       // (its walking direction from the route, the next section's place: a leg run leftward judges the other way, D130)
       const s = r.sections[need], a = r.asks[ask0], nx = r.sections[need + 1];
@@ -78,6 +79,92 @@ export function teachFirstMisses(r: TeachRoll): string[] {
     }
   }
   return out;
+}
+
+/** the route's segment kinds as the moves they make (dotPace.ts MOVE_OF): a move line closes when he makes its move, not at its cap */
+const MOVE_OF: Readonly<Record<string, readonly string[]>> = { walk: ['run'], hop: ['jump'], jump: ['jump'], timedHop: ['jump'], bounce: ['bounce'], climb: ['grab', 'climb'], swing: ['grab', 'leap'], rope: ['grab'], glide: ['jump', 'glide'] };
+
+/**
+ * The walk (the moment, which the scan above only proves eligible): Pokey on the brisk route (tools/inspect/route.ts, as dotPace.ts walks
+ * it) in the real engine, a fresh device, Dot's real queue (DotSay + GuideQueue, dotSay.ts) on the setting's default (dotHelp: Tips on
+ * Normal, Help on Easy), each hint's kind passed as the engine sends it (GuideOpts), the route's moves counted as done. Returns where the
+ * line laid by `m`'s teach section was first SHOWN against the first ask of `m` on the route (lay order). `plain`: the teach hint laid as a
+ * plain tip (the base before TEACH-11: the planted run).
+ */
+export async function walkSaid(id: string, seed: number, setting: 'normal' | 'easy', m: string, o: { plain?: boolean } = {}): Promise<{ needX: number; sentX: number | null; shownX: number | null; before: boolean }> {
+  const { RealPlay } = await import('../../src/game/realPlay.ts');
+  const { GameEngine } = await import('../../src/game/engine.ts');
+  const { GuideQueue } = await import('../../src/game/dotGuide.ts');
+  const { engineGuideLine } = await import('../../src/game/dotLines.ts');
+  const { lessonDotLine } = await import('../../src/game/lessons.ts');
+  const { dotHelp, movesDone, seenSkills } = await import('../../src/game/dotGuideHelp.ts');
+  const { DotSay } = await import('../../src/game/dotSay.ts');
+  const { setDifficulty } = await import('../../src/game/difficulty.ts');
+  const { laidAsks } = await import('../../src/game/gen2/pipeline.ts');
+  const { LISTED } = await import('../../src/game/gen2/listed.ts');
+  const { stageList } = await import('../inspect/stages.ts');
+  const { findRoute } = await import('../inspect/route.ts');
+  const { sampleRoute } = await import('../inspect/beats.ts');
+  try {
+    localStorage.clear();
+  } catch {
+    /* none */
+  }
+  setDifficulty(setting);
+  const help = dotHelp();
+  const entry = stageList([Number(id.split('-')[0])], seed).stages.find((q: { id: string }) => q.id === id);
+  if (!entry) throw new Error(`walkSaid: no stage ${id}`);
+  const samples = sampleRoute(findRoute(entry.build(false)));
+  const win = globalThis as unknown as { window?: { innerWidth: number; innerHeight: number } };
+  if (win.window) Object.assign(win.window, { innerWidth: 844, innerHeight: 390 });
+  const sim = new RealPlay(id, seed);
+  setDifficulty('normal');
+  const e = sim.e as unknown as Record<string, any>; // eslint-disable-line @typescript-eslint/no-explicit-any
+  sim.safe = false;
+  e.damagePlayer = () => {};
+  const proto = GameEngine.prototype as unknown as Record<string, (...a: unknown[]) => unknown>;
+  e.lessonTick = proto.lessonTick.bind(e);
+  e.updateCamera = proto.updateCamera.bind(e);
+  e.resizeCanvas();
+  const st = sim.stage as unknown as { gen2: { sections: PlacedSection[]; fills: FilledSocket[] }; proto?: { hints?: StageHint[] } };
+  const tpl = new Map(LISTED[id].kit().manifest.sections.map((t) => [t.id, t]));
+  const order = st.gen2.sections.map((q) => q.uid);
+  const fill = st.gen2.fills.filter((f) => f.role === 'tip' && f.what && tpl.get(st.gen2.sections[order.indexOf(f.section)]?.template ?? '')?.teaches === m).sort((a, b) => order.indexOf(a.section) - order.indexOf(b.section))[0];
+  const hint = fill && (st.proto?.hints ?? []).find((h) => Math.abs(h.x - fill.x) < 1);
+  if (hint && o.plain) delete (hint as { teach?: true }).teach;
+  const ask = laidAsks(st as never).find((a) => a.move === m || a.block === m);
+  const needX = ask ? Math.min(ask.x0, ask.x1) : Infinity;
+  const said: Array<{ text?: string; o?: Record<string, unknown>; lesson?: string }> = [];
+  e.callbacks.onLesson = (l: string) => said.push({ lesson: l });
+  e.callbacks.onGuide = (text: string, _s: number, passed?: boolean, go?: Record<string, unknown>) => {
+    if (text && !passed) said.push({ text, o: go });
+  };
+  const q = new GuideQueue(true);
+  const dot = new DotSay(q, help, seenSkills(), movesDone());
+  const moves: Record<string, number> = {};
+  let k = 0, lastSeg: unknown = null, sentX: number | null = null, shownX: number | null = null;
+  const end = samples.length ? samples[samples.length - 1].base : 0;
+  for (let t = 0; t <= end + 3 && shownX === null; t += 1 / 30) {
+    while (k + 1 < samples.length && samples[k + 1].base <= t) k++;
+    const sm = samples[k];
+    if (sm && sm.seg !== lastSeg) {
+      lastSeg = sm.seg;
+      for (const mv of MOVE_OF[sm.seg.kind] ?? []) moves[mv] = (moves[mv] ?? 0) + 1;
+    }
+    if (sm) Object.assign(e.player, { x: sm.x, y: sm.y, vx: 0, vy: 0, grounded: true, invincibleTimer: 0, hp: e.player.maxHp });
+    sim.frame();
+    if (e.player.x > needX + 3000) break;
+    for (const x of said.splice(0)) {
+      const l = x.lesson ? lessonDotLine(x.lesson as never, 'screen') : engineGuideLine(x.text!, id, { dot: true, ...(x.o ?? {}) });
+      if (!l) continue;
+      if (hint && x.text === hint.text && sentX === null) sentX = e.player.x;
+      dot.say(l, t * 1000);
+    }
+    q.tick(t * 1000, { danger: false, hold: t < 1.5, moveCount: (mv: string) => moves[mv] ?? 0 } as never);
+    dot.keep(t * 1000);
+    for (const ev of q.drain()) if (ev.type === 'start' && hint && (ev.show.line as { said?: string }).said === hint.text) shownX = e.player.x;
+  }
+  return { needX, sentX, shownX, before: shownX !== null && shownX <= needX };
 }
 
 async function main(): Promise<void> {

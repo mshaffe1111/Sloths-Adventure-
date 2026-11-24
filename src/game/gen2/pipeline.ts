@@ -3387,8 +3387,8 @@ export function fillSockets(laid: Laid, budget: StageBudget, kit: WorldKit, seed
   const tipsSaid = new Set<string>();
   const refuse = M.graphs?.briefs?.[budget.id]?.pick?.refuse;
   // (a tip in a section that TEACHES a mechanic is that lesson's line: laid as a teach line (StageHint.teach), whether or not the kit
-  //  names it in teachTips. As a plain move tip it waited out Dot's calm gap behind the line before it and came ~2,000 px past the
-  //  first tall step it teaches; a middle player's first two 1-1 runs never saw it (R-165.427, TEACH-11; tools/engine/teachFirstScan.ts))
+  //  names it in teachTips. As a plain tip it waited out Tips' 30 s gap after the line before it and came ~1,900 px past the tall
+  //  bank it teaches (seed 15050); a middle player's first two 1-1 runs never saw it (R-165.427, TEACH-11; tools/engine/teachFirstScan.ts))
   const teachSecs = new Set(M.sections.filter((t) => t.teaches).map((t) => t.id));
   // (lessons from earlier stages need no tip here)
   for (const [m, st] of Object.entries(M.lessons ?? {})) if (stageOrder(st) < stageOrder(budget.id)) tipsSaid.add(m);

@@ -5,11 +5,11 @@ Merged at INT-14 (11-20, t-int-14): §0zq-25d/§0zq-25c ENG-25c (2-5's snap rows
 ## 0zq-teach. TEACH-11 (t-eng-27-wip-teach, 11-24): a teach section's tip is a teach line; the first-appearance gate (R-165.427)
 - **The cause (1-1's double line missing before the tall steps):** the line was LAID on every roll (161/161 listed seeds, both
   settings, in the first double section) but laid as a PLAIN move tip: W1's `teachTips` named 'hint.1-1.bank' but not the teach
-  sections' own lines (coach.jump, hint.1-1.gaps, hint.1-1.double, w1.ts TEACH_LINES). A plain tip waits out Dot's calm gap (10 s)
-  behind the line before it ("Flick up and forward to jump"), so on seed 5033 (w1-bank-double-teach, the testers' tall bank) it was
-  sent at x 5253 and SHOWN at x 7441, ~1,900 px past the first tall step; a player stuck there for 40 s with put-backs never saw it.
+  sections' own lines (coach.jump, hint.1-1.gaps, hint.1-1.double, w1.ts TEACH_LINES). A plain tip that can wait starts no sooner than
+  30 s after the last line started on Tips (TIPS_GAP_MS, Normal's default): on seed 15050 (w1-bank-double-teach, the testers' tall
+  bank) it was sent at x 5450 and SHOWN at x 7595 (32.6 s = the petals line's 2.6 s + 30 s), ~1,900 px past the bank at x 5698.
 - **The fix (general, pipeline.ts fillSockets):** a tip in a section whose template `teaches` a mechanic is laid with
-  `StageHint.teach` (stageTeach: Tips keeps it, it skips the calm gap, waits only for a clear moment), whatever the kit's teachTips
+  `StageHint.teach` (stageTeach: Tips keeps it, it skips the 30 s gap, waits only for a clear moment), whatever the kit's teachTips
   say; a story tip keeps its story kind. Every other world already listed its teach-section tips in teachTips, so only 1-1's three
   lines changed kind (lockall: 1-1 `proto.hints` only).
 - **The gate:** `npx tsx tools/engine/teachFirstScan.ts --check` (gates.yml 'rolled'; gates.md 8e; every listed stage, EVERY proven
@@ -18,9 +18,10 @@ Merged at INT-14 (11-20, t-int-14): §0zq-25d/§0zq-25c ENG-25c (2-5's snap rows
   section with no line of its own (its lesson card: the bounce). An EMPTY tip socket (w1-mushroom-lift's, no `allow`) lays nothing.
 - **Traps:** the built stage's sections carry no pieces, beats or entry/exit (stripped): the first required move is
   pipeline.ts `laidAsks(st)` (lay order); a section's walking direction is the next section's place. storyTipScan only proves Tips
-  keeps a line, not WHEN it is said: the calm gap is what dropped this one. The probe that measures "said before" (the brisk route
-  through Dot's real queue, DotSay + GuideQueue, the default setting, a fresh device) is
-  reference/qa-reports/TEACH-11/saidprobe.mts; dotPace.ts drops a hint's teach/warn/story flags (it calls engineGuideLine with
+  keeps a line, not WHEN it is said: the 30 s gap is what delayed this one. The moment is teachFirstScan.ts `walkSaid` (the brisk
+  route through Dot's real queue, DotSay + GuideQueue, dotHelp's default, a fresh device, the route's moves counted as done; its test
+  walks 1-1 seeds 15050, 9013, 9652). A probe that counts no move done keeps 'Slide your thumb to run' up to its 12 s cap and
+  over-reports late lines (my first count did: 5033 was NOT late on the base); dotPace.ts drops a hint's teach/warn/story flags (it calls engineGuideLine with
   `{ dot: true }` only), so it under-reports teach lines.
 
 ## 0zq-warn. WARN-412 (t-eng-27-wip-warn, 11-24): every laid warning a must, every story beat a story line; the laid-line gate (R-165.412)
