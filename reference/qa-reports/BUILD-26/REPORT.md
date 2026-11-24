@@ -1,4 +1,4 @@
-# BUILD-26s (session 3 of BUILD-26q; t-build-26-wip-26q, head b6a35d7e8): the lead's rulings 1-5. Started 5:09 PM ET 11-24 (by `date`); this box written 5:22 PM ET
+# BUILD-26s (session 3 of BUILD-26q; t-build-26-wip-26q, head b6a35d7e8): the lead's rulings 1-5. Started 5:09 PM ET 11-24 (by `date`); this box written 5:23 PM ET
 
 ## EXACT NEXT STEP
 **For the next session (base: this branch's head). Ruling 1 FAILED ON THE SCREEN: the face does not show.** Stills (b26q3/, frozen
@@ -30,12 +30,13 @@ token added (node string and dealExact's deal unchanged; touches 2-6 alone: feel
 (d) Ruling 4 (adult E 87, the 13; b26r/fails-2-6-bde501f86.txt), STARTED. Two places: A, 10 of 13 (seeds 19, 26, 42, 50, 57, 59,
 83, 88, 91, 94) at x ~995 y ~1039, late (the great wheel, beat 12: R200, Easy V60, 6 buckets; 'in a dip, the way on is 194 px up');
 B, 3 of 13 (seeds 32, 89, 92) at x ~630 y ~3434 ('water ahead, the way on is 112-129 px up'), not yet looked at.
-A, trace 1 of 2 (adult E 57, b26q3/frames-adultE57-104-113.txt; pieces b26q3/spot-adultE57.txt): he stops at the jetty's end (x 847,
-jetty 635-875 @1013), jumps into the bucket at the sweep's bottom (@1041), rides it left; as it starts up the jetty's side (him at x
-~893-900, y ~1026) he jumps RIGHT onto the next low bucket, again at 107.6 and 111.2 s, never riding up, until rescued. The jetty's end
-is exactly the bucket's edge at the jetty's height (R200: 1037 - 102 - 60 = 875), the board the design means. Reading: the BOT
-(adult Easy's ride-wheel bails as the bucket starts to rise), not yet ruled. NEXT: trace 2 (seed 26 or 88, t ~100-112; the fails'
-t runs ~2 s ahead of the frame clock), then the ruling and the count; then B. Then ruling 5 (landing).
+A, TRACED 2 of 2 (adult E 57 and 26: b26q3/frames-adultE57-104-113.txt, frames-adultE26-96-112.txt; pieces spot-adultE57.txt): the
+same both times: he stops at the jetty's end (x ~847; jetty 635-875 @1013), jumps into the bucket at the sweep's bottom (@1041), rides
+it left; as it starts up the jetty's side (him at x 893, y 994-1027) the bot PRESSES JUMP RIGHT onto the next low bucket, every ~3.5 s
+(seed 26: 107.8, 111.2 s), never riding up, until rescued. The board is the design's (R200: the jetty's end is the bucket's edge at the
+jetty's height, 1037 - 102 - 60 = 875), and kid E 99, child E 100, middle E 100 ride this wheel. READING: the BOT (adult Easy's wheel
+ride presses jump as the bucket rises), sent to the lead to rule. NEXT: find the press in firsttimer.ts's ride-wheel skill and set it
+against the testers (law 22: no bot slowed, no rule bent); then place B (seeds 32, 89, 92). Then ruling 5 (landing).
 Proposed countermeasure (lead's call): a face check on the BUILT stage's screen: every collider a player meets side-on must differ from
 the backdrop where it stands (a still pixel check at the soft pit), so 'painted' can never mean 'invisible'.
 
@@ -49,7 +50,7 @@ the backdrop where it stands (a still pixel check at the soft pit), so 'painted'
 
 ## Unresolved (named plainly)
 - The face is invisible on the screen (above). Nothing ships until it reads as the step's side.
-- Ruling 3 waits for the lead's GO on the plan; ruling 4 has one trace of place A (needs a second, then B); ruling 5 not started.
+- Ruling 3 waits for the lead's GO on the plan; ruling 4: place A traced 2 of 2 (bot reading, the lead rules), place B not looked at; ruling 5 not started.
 
 # BUILD-26r (t-build-26-wip-26q; base t-build-26 40a9c4bd2): THE FACE (the lead's ruling), its toy, lockall, castBots. Started 4:47 PM ET 11-24 (by `date`); this box written 5:06 PM ET
 
