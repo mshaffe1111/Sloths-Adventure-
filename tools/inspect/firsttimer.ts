@@ -3331,6 +3331,23 @@ export class FirstTimerRun {
       if (SKILLS.bankUp && under?.type === 'drift' && under.drift && under.drift.dir !== dir) {
         const front = dir > 0 ? under.x + under.width : under.x;
         const up = this.sim.platforms.find((q) => q.type !== 'drift' && !q.broken && q.y < p.y - 6 && q.y > p.y - 70 && (dir > 0 ? q.x >= front - 2 && q.x - p.x < 90 : q.x + q.width <= front + 2 && p.x - (q.x + q.width) < 90));
+        // (SKILLS.floatSure, ENG-PLANT (the lead's ruling A, rule 28): the hop up the face is the hop judged, as raceSure judges the race's
+        //  bank hop: drawn once for the wait, pressed only when gateSees lands it on the bank with the gate's 24 px; refused, he stands and
+        //  the log hands him back. Pressed blind (jumpFor) off a log running back at him, the log carried him away through his thumb's lag
+        //  and he came down short of the face: 2-1 adult Normal seed 12, three lives at the both-ways back river and rescued (riverRide.test))
+        if (up && SKILLS.floatSure) {
+          const rv = (this.sim.stage as { rivers?: RiverZone[] }).rivers;
+          const cr = ((floatAt(rv, under)(t + DT) - floatAt(rv, under)(t)) / DT) * RIDE.keep.x;
+          const vx = p.vx + (Math.abs(cr) < 400 ? cr : 0);
+          const h = this.aim.at(dir as -1 | 1, t, (d) => this.drawHop(d));
+          if (this.gateSees(up, floatAt(rv, up), p.x, p.y, dir as -1 | 1, h, t, vx, 24)) {
+            if (HOP_TRACE.on) { this.judged = null; this.judge('bankUp', [up], [0], dir as -1 | 1, h.hold, vx, cr, 24, h); }
+            this.gateHop = h;
+            this.aim.end();
+            return this.startJump(dir, 'single', false);
+          }
+          this.pending = null; this.lateArmed = null; this.clockHeld = true; this.blockedT = 0; return {};
+        }
         if (up) return this.startJump(dir, this.jumpFor(p, dir, under), false);
       }
       if (!ahead) {
@@ -3496,6 +3513,23 @@ export class FirstTimerRun {
               //  rescued: 2-7 draft child Normal seeds 6 x 9412 and 8 x 8702, the stage's 'water ahead' stall (seeds 1-20 rescues 11 -> 3)
               //  The child's skill only (FirstTimer.reAim, ENG-BOT27b, the lead's ruling): on every bot it moved pacerLay's careful middle)
               if (SKILLS.reAim && who.reAim && t - this.aim.since > who.stopReact) this.aim.end();
+              this.pending = null; this.lateArmed = null; this.clockHeld = true; this.blockedT = 0; return {};
+            }
+            // (SKILLS.floatSure, ENG-PLANT (the lead's ruling A, rule 28): the far bank in reach and no log, the hop onto the bank is the hop
+            //  judged, as raceSure judges the race's bank hop: pressed only when gateSees lands it on the bank with the gate's 24 px; refused,
+            //  he stands and the log hands him back. Pressed blind (jumpFor) off a log running back at him, the log carried him away through
+            //  his thumb's lag and he came down short of the bank: 2-1 adult Normal seed 12, x 25,440 -> 25,607 into the water, three lives
+            //  at the both-ways back river and rescued (riverRide.test; it crossed clean only by the phase the run reached it at))
+            if (SKILLS.floatSure && bank) {
+              const vx = p.vx + (Math.abs(carry) < 400 ? carry : 0);
+              const banks = this.sim.platforms.filter((q) => q !== here && q.type !== 'drift' && !q.broken && Math.abs(q.y - p.y) < 70 && (dir > 0 ? q.x - edgeX < 80 && q.x + q.width > edgeX : edgeX - (q.x + q.width) < 80 && q.x < edgeX));
+              const h = this.aim.at(dir as -1 | 1, t, (d) => this.drawHop(d));
+              if (banks.some((q) => this.gateSees(q, floatAt(rivers, q), p.x, p.y, dir as -1 | 1, h, t, vx, 24))) {
+                if (HOP_TRACE.on) { this.judged = null; this.judge('upstream', banks, [0], dir as -1 | 1, h.hold, vx, carry, 24, h); }
+                this.gateHop = h;
+                this.aim.end();
+                return this.startJump(dir, 'single', false);
+              }
               this.pending = null; this.lateArmed = null; this.clockHeld = true; this.blockedT = 0; return {};
             }
             this.aim.end();
