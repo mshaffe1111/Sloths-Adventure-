@@ -1,6 +1,17 @@
 # BUILD-26q (t-build-26-wip-26q; base t-build-26 40a9c4bd2, frozen): 2-6's Easy residue: box 1 = the re-measure and the clusters. Started 4:21 PM ET 11-24 (by `date`); this box written 4:41 PM ET
 
-## EXACT NEXT STEP (session 2, xhigh, engine tier; budget: session 1 ran 4:21 PM ET to 4:41 PM ET of the job's 4 h; HARD STOP 11:00 PM ET)
+## EXACT NEXT STEP
+**For BUILD-26r. The lead's ruling, word for word:** "The FACE: the soft pit's far end gets a face under the far lip (a sunken step has
+sides), every tower stage, both settings; the toy 'a full-speed run into a tower soft pit never passes under the far lip', RED on base;
+confirm on kid E 40, adult E 2 and kid E 4 and count how many of the 59 failures fall at the step; lockall on every listed stage, and any
+shipped stage that moves comes to the lead first with the count; then 2-6's yield and the floor; hard stop 11:00 PM, the cut rule applies."
+- Already done in BUILD-26q's box (evidence in b26q/): the three confirmations (frames-kidE40.txt, frames-adultE2.txt, frames-kidE4.txt:
+  each lands in the step at x 837-840 at run speed and runs off under the next street) and the count (stepcount-40a9c4bd2.txt: 59 of 59).
+  So BUILD-26r starts at the toy. The pit is the gen2 drop whose ends.kind is 'floor' (stage.gen2.drops; tower.ts:54-57, TOWER.hop 70).
+- Base suite (step 0, D114): STARTED on frozen 40a9c4bd2 in BUILD-26q's container; at hand-over 1,265 top-level results, 0 'not ok', NO
+  verdict. Its output is in BUILD-26q's own scratchpad (b26q/suite-40a9c4bd2.txt there, not in the repo and not reachable from another
+  session): it counts as UNRUN; BUILD-26r runs the suite on its own base first.
+- Below: BUILD-26q's step list (the detail behind the ruling), kept as written.
 1. **The spot that matters (59 of 83 failing runs; 31 seeds fail on it alone): the first street's SUNKEN STEP (the tower's soft pit),
    NOT the house ladder.** FRAME TRACE (kid E 40, b26q/frames-kidE40.txt; b26q/frames26.mts.txt wraps RealPlay.frame; x is his centre):
    he runs off the boulder (541..706 @6319) at run speed (vx 268-285), touches the street b (414..762 @6369) at x 771 for one frame, drops into
