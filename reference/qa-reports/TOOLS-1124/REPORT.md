@@ -1,6 +1,42 @@
 # TOOLS-1124: the shell '&' hook (R-165.418) and the see-through-row gate + the weir cut (R-165.417)
 
-EXACT NEXT STEP (the lead ruled: items 1 and 3 DONE, ship with release 5 from t-tools-1124; the row check's rework APPROVED):
+EXACT NEXT STEP (TOOLS-1124b, session 2; head 60f9c6c8): WAIT for the lead's answer to two questions, sent with the evidence below.
+(1) Does artcheck's row part go into CI RED on its 7 non-seam hits until the inventory carries their boxes and kinds, or does it wait?
+(2) 'Go' on R-165.434's rule: if yes, wire tools/engine/sideWall.ts into tools/engine/paintcheck.ts. Call sideWalls(st.platforms, inp.f)
+next to paintFalls. Breach id `${stage}|sidewall|${style}|w${w}h${h}`, using the same known list and printing. Add a planted test
+(tools/engine/sideWall.test.ts: on main's 2-6, insert one 24x94 moss_stone solid like b6a35d7e8's faces under a lip, which must be RED;
+the stage as built must be GREEN) and put it on the CI tool line (gates.yml 'rolled', found BY CONTENT). Then run tsc and the CI tool
+line once, push, and send the lead the hash. The survey probe is at the scratchpad's zsurvey.ts (args: stages, seeds a stage).
+
+## Session 2 (TOOLS-1124b)
+### A. R-165.417 (2), reworked as ruled (e84e8b08)
+- artcheck's row check reads each frame's box from the art inventory (src/game/art/inventory/*.json, the rows inventory.ts loads: the
+  rect in 'name (x,y wxh)', else the sheet's sibling .json; a whole-image row is the whole image). It checks only SOLID layers (ground,
+  platform, step, soft landing, support, decor near/mid, character, enemy, actor). Backdrop, 'back (...)', ui, pickup, climb and
+  danger look are left out BY LAYER (1,145 frames). There is no file list.
+- The plant still bites: the old weir cut trips it, the repaired cut passes. The row part takes 10 s.
+- RED on 7, none a seam (rowhits-inventory.png, rows ticked in red, on a dark ground): boss-fx pennant0/1 (separate strips, inventory
+  says decor near); w1-traps sprung (thin tendrils); w2-props mailbox (the flag above the box); w6-calm-water (stacked strips listed as
+  one whole 'soft landing' image); drake-cup and hf18-bough (judged in session 1; the bough is listed whole, the game slices it in 3).
+  Each is an inventory labelling or boxing problem, not a gate problem. Nothing was put on a known list.
+- INVENTORY GAPS (artcheck-inventory.txt): 11 shipped images with no inventory row (w1-thorn-long/low, 7 ui/ctest-1-*, 2
+  w16-vinesnake-*-brown). 210 sheets have 7,243 solid frames sliced only in code, with no box in the inventory (the boss and creature
+  anim sheets, the cels, dot-atlas, hero clips, ground/kits/dress sheets ...). Those are NOT row-checked. The fix is
+  catalog_master.py emitting every frame's rect (Content).
+### B. R-165.434, the side-on wall rule (60f9c6c8, NOT wired yet)
+- Chosen: a rule on the collider list, not pixels. paintcheck stubs every image 1x1, so pixels would need a real render of every stage.
+  The rule: a solid whose terrain.ts footingOf look is 'painted-bank', narrower than his body (44), with a side open (no solid touching
+  it) over at least his height (48), is a breach. It is painted as bank soil, the backdrop's look.
+- Survey (3 seeds a stage, both settings, 612 builds each): main has 0 hits; 2-6 at b6a35d7e8 has 96, every one a 24x94 moss_stone face.
+  GREEN stages: all of main, including 2-6, 8-6 and 5-5.
+- Limit, said plainly: the 44 is his width, not read from the painter. A 'top buried' clause was tried and DROPPED (797 false hits on
+  main, all wide banks with a piece resting on them).
+- My miss: the first survey run passed an empty stage filter and built nothing ('builds 0'). I caught it from the count and re-ran.
+- Lessons applied: D115 (no source edits while a run read the tree; the 2-6 build ran in its own worktree), D126 (the CI tool line,
+  not a subset, still to run on the final head).
+
+## Session 1
+(SUPERSEDED, done in session 2) NEXT STEP (the lead ruled: items 1 and 3 DONE, ship with release 5 from t-tools-1124; the row check's rework APPROVED):
 on t-tools-1124, change artcheck's row check so it reads the REAL frame boxes (each atlas's slicing as the game uses it, or
 src/game/art/inventory.ts) and checks ONLY frames whose INVENTORY kind is a solid piece (ground, platform, step, prop, character body);
 fx, strands, icons and water strips are left out BY THEIR INVENTORY KIND, never by a file list in the gate. An atlas whose frames have
