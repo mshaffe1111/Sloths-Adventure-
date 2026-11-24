@@ -14,7 +14,9 @@ changed beats both ways.
 RE-MEASURED THIS BOX (castBots 2-6 seeds 1-100 adult normal, frozen 96cb4215f, 18 s; b26q5/floor-adultN-96cb4215f.txt + .jsonl): PASS
 99/100 (seed 16 rescued x1); UNDER 100 s: 27 (was 5 on b6a35d7e8); FASTEST 95.8 s (seed 22; 3: 95.9, 41: 96.8; was 98.6); median 104.9
 (unchanged); 52 under 105 s. The fastest moved ~3 s, about one Normal bucket period (2.7 s): the 24 px gap lets the bot board or step
-off one bucket earlier on some rolls (to confirm with one trace of seed 22). So the GO'd plan (+~6 s model, sized for a 98.6 s minimum)
+off one bucket earlier on some rolls. CONFIRMED on seed 22 (b26q5/seed22-adultN-wheelrides.txt: 102.2 -> 95.8 s): the edge wheel
+he rides the NEXT bucket and steps off after 5.8 s (was 8.4), the great wheel 8.2 s (was 11.3); the other three wheels the same. So
+2-6's adult time carries wheel-phase luck of ~one bucket period per wheel (5 wheels), and the floor's minimum is the luckiest phases. So the GO'd plan (+~6 s model, sized for a 98.6 s minimum)
 likely lands ~102 s, short of 104. ASKED THE LEAD (message sent): keep the three re-lays as GO'd and add a fourth brick's re-lay, or
 accept the new minimum's target; WAIT for the answer before laying. Drafting notes (not applied): P's fourth doorstep as a step DOWN
 (walk, dy [40, 50]) with a boulder, so its declared exitDy 0 still holds; U's exitDy (-265) must follow the ladder's new height

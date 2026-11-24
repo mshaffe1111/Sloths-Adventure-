@@ -1,0 +1,13 @@
+adult normal seed 22, frames26s.mts (castRun's call), bucket rides (first-last time standing on each bucket id):
+old (47b53e642): {"end":"shrine","time":102.2,"rescues":0}
+  bucket 11 14.40-20.73 s
+  bucket 35 42.77-51.13 s
+  bucket 57 64.50-68.80 s
+  bucket 71 76.50-83.43 s
+  bucket 78 91.10-102.43 s
+new (96cb4215f): {"end":"shrine","time":95.8,"rescues":0}
+  bucket 11 14.40-20.73 s
+  bucket 36 42.63-48.40 s
+  bucket 58 62.10-66.03 s
+  bucket 72 73.93-80.73 s
+  bucket 80 88.23-96.43 s
