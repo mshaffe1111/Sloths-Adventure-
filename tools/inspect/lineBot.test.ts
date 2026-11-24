@@ -153,6 +153,12 @@ function floodRun(who: FirstTimer, seed: number, late: number): FloodRun {
     st.exitTotemY = Y;
     st.config = { ...st.config, objectiveType: 'rescue', targetCount: 3, levelWidth: 6000 };
     e.walls = e.mode.bounds({ levelWidth: 6000, exit: { x: EXIT, y: Y }, spawn: { x: START, y: Y } });
+    // (a lost heart puts him back on the toy's own floor, as every stage's spawn and flags stand on theirs: left at 2-3's spawn, 217 px
+    //  over this floor, the line was regrouped in the air there and its trail held at the drop for good, a 'stranded' run, ENG-28e)
+    st.spawnX = START;
+    st.spawnY = Y;
+    st.checkpoints = [];
+    e.checkpoint = { x: START, y: Y };
     const river: RiverZone = { x0: W0, x1: W1, surfaceY: Y + 90, dir: 1, speed: 0, safe: { backX: W0 - 40, backY: Y }, floodMark: { kind: 'close', lip: Y } };
     st.rivers = [river];
     const easy = who.setting === 'easy';
@@ -190,6 +196,7 @@ function floodRun(who: FirstTimer, seed: number, late: number): FloodRun {
       return r;
     };
     run.play();
+    if (process.env.FLOODDBG) console.log("STUCK", JSON.stringify((run as any).stuck), "rescues", (run as any).rescues, "hi", (run as any).prog.hi, "pts", (run as any).prog.pts.length);
     return { end: run.end, setBack, home: e.follow.home(), high, t: +run.t.toFixed(1) };
   } finally {
     Math.random = mr;
