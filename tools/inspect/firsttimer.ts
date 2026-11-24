@@ -3257,6 +3257,18 @@ export class FirstTimerRun {
               this.aim.end();
               return this.startJump(dir, 'single', false);
             }
+            // (ENG-PLANT-c, the lead's packet: a refused hop leaves a WAY ON. Refused here, the ride's gates below judged the same held aim
+            //  and refused it too: on 2-1's back river (logs 150 px, gaps 80 px, running back at him) the middle on Normal, seed 25, landed
+            //  on a log 59 px from its front, the flick refused, stood 4.5 s while the log carried him back to the bank, three boardings,
+            //  rescued at x 19,674 (candidate 3 before this line; the release head flicked blind and crossed). The hop of his own table that
+            //  the gate lands on the next log or the bank is pressed (tablePick); none: the ride's gates decide as before)
+            const alt = this.tablePick(to, dir as -1 | 1, vx, 24);
+            if (alt) {
+              if (HOP_TRACE.on) { this.judged = null; this.judge('padPause', to, [0], dir as -1 | 1, alt.hold, vx, cr, 24, alt); }
+              this.gateHop = alt;
+              this.aim.end();
+              return this.startJump(dir, alt.kind, false);
+            }
           } else if (!(on && on.y > p.y + 50)) return this.decide(dir, this.jumpFor(p, dir, here), false, side(dir));
         }
       }
