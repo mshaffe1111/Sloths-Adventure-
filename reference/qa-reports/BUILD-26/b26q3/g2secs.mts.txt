@@ -1,0 +1,11 @@
+const tree = process.argv[2];
+const { RealPlay } = await import(`${tree}/src/game/realPlay.ts`);
+for (const seed of process.argv.slice(3).map(Number)) {
+  const rp: any = new RealPlay('2-6', seed);
+  const g = rp.stage.gen2;
+  const tok = new Map(g.nodes.map((n: any, i: number) => [`n${i + 1}`, n.token]));
+  let tot = 0;
+  const rows = g.sections.map((s: any) => { tot += s.seconds ?? 0; return `${String(tok.get(s.node) ?? s.node).padEnd(9)} ${s.template.replace('w2-26-', '').padEnd(14)} ${String(Math.round(s.x1 - s.x0)).padStart(5)} px ${(s.seconds ?? 0).toFixed(1).padStart(5)} s`; });
+  console.log(`== 2-6 normal seed ${seed} (built ${g.budget?.difficulty}): modelled total ${tot.toFixed(1)} s; tower ${JSON.stringify(g.tower)?.slice(0, 160)}`);
+  console.log(rows.join('\n'));
+}

@@ -1,0 +1,12 @@
+import json, sys
+rows = [json.loads(l) for l in open(sys.argv[1]) if l.strip()]
+p = [r for r in rows if r.get('pass')]
+p.sort(key=lambda r: r['time'])
+print(f"adult normal rows {len(rows)}, passes {len(p)}")
+print("fastest 12 passes (seed: s):", ', '.join(f"{r['seed']}: {r['time']:.1f}" for r in p[:12]))
+for lim in (100, 102, 105, 110):
+    print(f"passes under {lim} s: {sum(1 for r in p if r['time'] < lim)}")
+ts = [r['time'] for r in p]
+if ts:
+    ts2 = sorted(ts)
+    print(f"min {ts2[0]:.1f} median {ts2[len(ts2)//2]:.1f} max {ts2[-1]:.1f}")

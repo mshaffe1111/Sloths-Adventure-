@@ -15,14 +15,18 @@ lip end at 24 x 94, MY PICK; (2) moss stone drawn as stone (the ruling's words) 
 platform rects and castBots' 74/100 stand; re-run lockall (dress) and paintcheck --stages 2-6 after.
 (b) Then stills again, same spots (b26q3/facestills.mjs.txt: `node facestills.mjs <port> <out> 0 0 near`, PW=/opt/node-tools/...),
 judged close and wide, upright and sideways; send the lead the paths.
-(c) Ruling 3, the Normal floor: STEP 0 plan to the lead BY 7:00 PM ET, before any change (which section is added or re-laid in
-w2Arc26.ts, how it changes 2-6.md:43's node string and dealExact's deal, which stages it can touch). Lengthen the route, never slow him.
-Facts (b26r/cast-2-6-bde501f86.txt): adult N fastest 98.6 s (5 under 100 s); expert N 105.1, kid N 101.2, middle N 117.4. 2-6.md's
-beat table budgets 168 s ('s': 10+18+10+12+12+24+10+22+22+20+8). 2-6's bricks are its own (feel [STAGE_26], own: true, kit 'w2-26'
-only, listed.ts:22): a re-laid brick touches 2-6 alone (lockall confirms). Method: per-beat times of the 5 under-floor adult N seeds
-(castBots rows; frames26r for one), set against the 's' column; plan to RE-LAY the beats furthest under their design seconds to the
-design's own words (node string and dealExact's deal unchanged: no token added). Only if that can't put the fastest adult near 105 s
-does the plan add a token (a design change: the deal moves; the lead's call).
+(c) Ruling 3, the Normal floor: the STEP 0 PLAN IS SENT to the lead (BUILD-26s); WAIT for GO, change nothing before it. The plan:
+the shortfall is the STAGE's, not a seed's: every roll models ~95 s (gen2.sections[].seconds; the 5 under-floor seeds 13, 23, 47, 76,
+31 model 94.8-95.0 s, b26q3/secs-under-floor-b6a35d7e.txt); adult N real 98.6-99.2 s on them, MEDIAN 104.9 s over 100 seeds, 50 under
+105 s (b26q3/floor-adultN-b6a35d7e.txt: re-run on frozen b6a35d7e8, the same 93/100, 5 under, as bde501f86). The design table budgets
+168 s and every beat runs under its 's'. RE-LAY three of 2-6's own bricks toward their design seconds, by the design's own words, NO
+token added (node string and dealExact's deal unchanged; touches 2-6 alone: feel [STAGE_26], own: true, kit 'w2-26' only):
+ 1. A 'the millpond bank' (10 s; model 5.1): the shore 380 -> ~760 px with a second boulder hop, the first wheel turning ahead.
+ 2. P g1< 'the first street' (10 s; model 7.9): a fourth doorstep, one more porch step and hop.
+ 3. U c1^ 'through a house' (12 s; model 5.8): the inside ladder 250-280 -> ~380-400 px (a two-floor house).
+ Target: model about 101 s, the fastest adult N 104 s or more. No wheel's R/V changes; no bot is slowed (law 22).
+ After GO: the toy GREEN, the plan test, castBots adult N alone (light), then --proven 2-6 once, lockall (only 2-6 moves),
+ paint --stages 2-6, stills of the three beats upright and sideways.
 (d) Then ruling 4 (adult E 87: the 13 by place and cause), then ruling 5 (landing).
 Proposed countermeasure (lead's call): a face check on the BUILT stage's screen: every collider a player meets side-on must differ from
 the backdrop where it stands (a still pixel check at the soft pit), so 'painted' can never mean 'invisible'.
@@ -33,10 +37,11 @@ the backdrop where it stands (a still pixel check at the soft pit), so 'painted'
 | ruling 1: stills of the face, 2-6 Easy and Normal, upright and sideways, close and wide (frozen worktree b6a35d7e8, D115) | taken, 8 stills; JUDGED: the face is not visible in any of them (viewed: Easy upright close and wide, Normal upright close, Normal sideways close; the other four are the same frames uncut or the same code path). Sideways, the bough is below the screen's bottom from the near street | face-2-6-L0-*.jpg, facestills.mjs.txt |
 | why it is invisible | the faces are solid moss_stone 24 x 94 (ids 19, 20); terrain calls them 'painted-bank' (height 94 >= 90, protoArt.ts bankPainted), so the painted ground paints them as the backdrop's soil | faceprobe-easy-L0-b6a35d7e.txt, faceprobe.mjs.txt |
 | ruling 2: kid Normal's millrace drop (98 -> 93) | NAMED, no second trace (the lead's ruling): the R-165.413 family (the lead's id; not on this branch's ROADMAP.md) (a kid on moving logs: kid N 63 runs a drifting log's length at full speed and off its end, b26r/frames-kidN63-river.txt), located and accepted on World 2 rivers until release 5's design call; the face only changed when he arrives there, so the logs' phase differs. Seeds 14, 30, 32, 61, 63, 76, 84 (base failed there on 30 and 43) | b26r/fails-2-6-bde501f86.txt, b26r/spot-63.txt |
+| ruling 3, STEP 0 (the Normal floor) | adult N alone re-run on frozen b6a35d7e8 (light: one persona): holds 93/100, under the floor 5 (seeds 13 98.6, 23 98.6, 47 98.8, 76 98.8, 31 99.2), median 104.9 s; the pipeline's own seconds per section on those 5 seeds: ~95 s each; the plan (above) sent to the lead, no change made | floor-adultN-b6a35d7e.txt, rows-adultN-b6a35d7e.jsonl, secs-under-floor-b6a35d7e.txt, g2secs.mts.txt |
 
 ## Unresolved (named plainly)
 - The face is invisible on the screen (above). Nothing ships until it reads as the step's side.
-- Rulings 3, 4, 5 not started in this box.
+- Ruling 3 waits for the lead's GO on the plan; rulings 4 and 5 not started in this box.
 
 # BUILD-26r (t-build-26-wip-26q; base t-build-26 40a9c4bd2): THE FACE (the lead's ruling), its toy, lockall, castBots. Started 4:47 PM ET 11-24 (by `date`); this box written 5:06 PM ET
 

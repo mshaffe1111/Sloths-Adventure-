@@ -1,0 +1,8 @@
+Tue Nov 24 22:18:46 UTC 2026
+adult normal rows 100, passes 98
+fastest 12 passes (seed: s): 13: 98.6, 23: 98.6, 47: 98.8, 76: 98.8, 31: 99.2, 65: 101.2, 53: 101.5, 15: 101.8, 42: 101.8, 45: 101.8, 48: 101.8, 58: 101.8
+passes under 100 s: 5
+passes under 102 s: 21
+passes under 105 s: 50
+passes under 110 s: 83
+min 98.6 median 104.9 max 123.0
