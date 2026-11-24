@@ -1,8 +1,71 @@
-# ENG-28 REPORT (2-8's pieces ahead, Lane 2): session 8 (ENG-28h), started 6:07 PM ET, handed over 6:33 PM ET (both from date)
+# ENG-28 REPORT (2-8's pieces ahead, Lane 2): session 9 (ENG-28i), started 6:36 PM ET, handed over 6:59 PM ET (both from date)
 (Session 2 ENG-28b 2:29-2:50 PM ET; session 3 left no commit; session 4 ENG-28d 4:21-4:42 PM ET; session 5 ENG-28e 4:46-5:03 PM ET;
-session 6 ENG-28f 5:35-5:47 PM ET; session 7 ENG-28g 5:54-6:05 PM ET. Sessions newest first.)
+session 6 ENG-28f 5:35-5:47 PM ET; session 7 ENG-28g 5:54-6:05 PM ET; session 8 ENG-28h 6:07-6:33 PM ET. Sessions newest first.)
 
-## EXACT NEXT STEP (session 9)
+## EXACT NEXT STEP (session 10)
+Branch t-eng-28-wip: CODE head 94cf0d86 (every later commit touches only this folder; `git diff --stat 94cf0d86..origin/t-eng-28-wip`
+must show only reference/qa-reports/ENG-28/). `git fetch origin t-eng-28-wip`, confirm, `npm ci --no-audit --no-fund --legacy-peer-deps`.
+DONE on frozen 94cf0d86 (do NOT re-run): everything session 8 lists below, PLUS (session 9) suite shard 3 (596 tests, 595 pass, 0 fail,
+1 todo: w1Arc19.test.ts:191 R-165.312's TODO), suite shard 4 (749 tests, 749 pass, 0 fail) and THE RED TABLE (below: every red named with base, release and owner; this job
+adds none to the four CI-line files).
+LEFT, in order, on a frozen worktree of 94cf0d86 (`git worktree add --detach <dir> 94cf0d86`, `ln -s <repo>/node_modules
+<dir>/node_modules`, `chattr -R +i <dir>/src <dir>/tools`, `chattr -R -i <dir>/src/game/gen2/proven`):
+1. The suite shards 2 and 5 (shard 2 was cut at the hand-over with 632 ok and only pacerLay :254 :280 red so far; shard 5 never started) (cut at session 9's hand-over: partial, NOT results). Rebuild the list in the frozen tree: `shopt -s globstar;
+   ls src/audio/*.test.ts src/game/*.test.ts src/components/*.test.ts src/components/**/*.test.ts src/game/gen2/*.test.ts
+   src/game/gen2/worlds/*.test.ts src/game/art/*.test.ts | sort -u > suite.txt` (631 files), `split -n l/6 -d suite.txt shard`, then
+   `npx tsx --test $(cat shardNN) > shardNN.log 2>&1` per shard (each run_in_background, timeout 3600000; two at a time at most; shard 3
+   took 10.9 min beside shard 2; shard 2 holds graph.test + game.test (5+ CPU-min each) and pacerLay: the longest).
+   The bar: shard 2 must fail ONLY pacerLay.test.ts:254 and :280 (rows 22, 23; the base's own, R-165.439, in the table below) and
+   nothing else; shards 4 and 5: 0 fail (todo allowed). Any other red: STOP and tell the lead (test name, file:line), and run that one
+   file on the base (/home/user/wtbase pattern: a frozen worktree of 90552d3ec) before calling it ours or inherited.
+2. Land: `git branch t-eng-28 origin/t-eng-28-wip` (the head that carries this REPORT with the shard results added), `git push origin
+   t-eng-28` (no force), `git ls-remote origin t-eng-28` equal; message the lead (no clock times) with the hash, the red table (short form
+   below) and what READY-28 can measure (session 8's list below, unchanged).
+HARD STOP 8:00 PM ET.
+SHORT FORM FOR THE LEAD'S MESSAGE: no red added by ENG-28. 11 CI-line reds identical on base 90552d3ec (names, file:line and error text):
+wheelChannel x4 + wheelRide x2 = R-165.431, already FIXED on release-0.10.3 by ENG-W2FIN 78bf17d60 (clears when t-eng-28 takes
+release); firsttimer :184 + riverRide x4 = R-165.432, still RED on release, owner ENG-PLANT; suite: pacerLay :254 :280 = R-165.439, RED
+on base and on release (release also fails row 8 from b3195f31e), owner ENG-PLANT.
+
+## SESSION 9 DONE (frozen trees /home/user/wt28i at 94cf0d86, /home/user/wtbase at 90552d3ec, /home/user/wtrel at dfe631913)
+- Suite shard 3 on ours (6:39-6:50 PM ET): 596 tests, 595 pass, 0 fail, 1 todo (w1Arc19.test.ts:191, R-165.312's flag placer TODO).
+- Suite shard 4 on ours (6:50-6:59 PM ET): 749 tests, 749 pass, 0 fail, 0 todo.
+- Suite shard 2 on ours (from 6:39 PM ET): CUT at the hand-over, NOT a result. Read so far: 632 ok, 2 not ok, both pacerLay:
+  :254 (row 22, 'RED: without the skill the plant must lose (86.8 s against 108.37 s)') and :280 (row 23, 'RED: without the skill seed 2
+  falls short at x 10683 (falls )'): the SAME error text as the base's (below); row 8 (the careful middle beats the boat, Normal 3) ok 316
+  on ours. The rest of shard 2 (graph.test, game.test were still running) is session 10's step 1.
+- Suite shard 5: not started (two at a time; the box).
+- Lessons applied: D135 (every red named with base, release and owner, not "inherited"), D134 (pushed and ls-remote before the message),
+  D128 (stamps from date), D119 (no heredoc in a commit chain); frozen trees (chattr) for every run; each run once.
+
+
+## THE INHERITED REDS, each with its owner (session 9, D135; frozen worktrees, each run once)
+Trees: ours = 94cf0d86 (/home/user/wt28i), base = t-eng-27 90552d3ec (/home/user/wtbase), release = origin/release-0.10.3 dfe631913
+(/home/user/wtrel); each `chattr -R +i src tools` (proven/ left writable), node_modules shared (release's package files differ from ours
+only in the version string 0.10.0 -> 0.10.3). The four CI-line files (wheelChannel, firsttimer, riverRide, wheelRide) on ours: 40 tests,
+29 pass, 11 fail; on base (+ pacerLay.test.ts): 63 tests, 50 pass, 13 fail; on release: 42 tests, 36 pass, 6 fail; pacerLay alone on
+release: 23 tests, 20 pass, 3 fail. The four test files are byte-identical on ours and base (`git diff 90552d3ec 94cf0d86` empty for
+each), so the names match one for one; the 11 `error:` lines on ours and base are byte-identical (`diff` of the sorted lines: only
+pacerLay's two, which ours runs in suite shard 2, below). This job adds NO red to these files.
+| Red (file:line, ours) | ours 94cf0d86 | base 90552d3ec | release-0.10.3 dfe631913 | cause, R-number, owner |
+|---|---|---|---|---|
+| wheelChannel.test.ts:40 THE ROUTE rides a wheel as ONE move | RED | RED, same error | PASS | the throw 'World 2 finish: the fall at x=335-731 has no bank at one end' (w2.ts's finish rule on a wheel's fall), R-165.431. FIXED on release by ENG-W2FIN 78bf17d60 ('a fall over a water wheel's sweep takes the wheel's own pond as its river'), merged there by 150e6e161. 78bf17d60 is on neither t-eng-27 nor t-eng-28: these clear when t-eng-28 takes release-0.10.3. Owner: ENG-W2FIN (done). |
+| wheelChannel.test.ts:56 THE CHANNEL prices the board and the step-off | RED | RED, same | PASS | as above, R-165.431, ENG-W2FIN 78bf17d60 |
+| wheelChannel.test.ts:79 PLANTED: a wheel whose row was never flown is refused | RED | RED, same | PASS | as above |
+| wheelChannel.test.ts:92 PLANTED: without its channel a stage laying a wheel is refused | RED | RED, same | PASS | as above (its error line is empty in both: the same throw upstream) |
+| wheelRide.test.ts:26 rideWheel ON: every tier boards, rides and steps off | RED | RED, same | PASS | as above |
+| wheelRide.test.ts:42 PLANTED: rideWheel OFF, every tier scrambles | RED | RED, same | PASS | as above |
+| firsttimer.test.ts:184 2-2 child N 36 / middle N 17: no life lost after a lip with a log his way (SKILLS.boardHop) | RED ('he stood at such a lip (0)') | RED, same | RED (same test, its #15) | R-165.432 (boardHop may have no live case on the merged engine). NOT fixed on release. Owner: ENG-PLANT (the next ENG-PLANT session; candidate line on release-0.10.3-wip-plant). |
+| riverRide.test.ts:107 planted: ride skill off, the middle and child drown | RED ('with no ride skill every tier still crossed within') | RED, same | RED | R-165.432 (the river plants with no live case). Owner: ENG-PLANT |
+| riverRide.test.ts:145 planted: handed-to-the-bank off, the middle N drowns over the bar | RED | RED, same | RED | R-165.432, ENG-PLANT |
+| riverRide.test.ts:203 planted: against-the-flow off, adult N 12 rescued at 2-1's back river | RED ('upstream off, still clean: adult normal seed 12') | RED, same | RED (release's own rows, ENG-26t 3e212becc: child 4/23, middle 26) | R-165.432, ENG-PLANT |
+| riverRide.test.ts:219 planted (THIN): up-the-far-bank off, child E 22 carried back | RED ('bankUp off, child easy seed 22') | RED, same | RED (release re-planted it on child N 40, still red) | R-165.432, ENG-PLANT |
+| (release only) riverRide 2-1 against the flow and up the far bank ON, adult N 12, child N 4/23/40, middle N 26 cross clean | not on ours (the test is ENG-26t's, release only) | not on base | RED | release's own, R-165.432, ENG-PLANT; not ours to carry |
+| pacerLay.test.ts:254 (row 22) bot (planted): a log drifting his way is boarded by a hop (SKILLS.boardLog) | RED, same error text (shard 2 partial) | RED ('the plant must lose (86.8 s against 108.37 s)') | RED | R-165.439: a stale plant since 24d6ba567 (ENG-27j's ground merge removed the stop it was laid on; ENG-PLANT-h's trace); the lead's 11-21 ruling re-plants it (never done). Owner: ENG-PLANT (pacerLay is in release 4's bar) |
+| pacerLay.test.ts:280 (row 23) the racing hop off a log lands where judged (SKILLS.raceSure) | RED, same error text (shard 2 partial) | RED ('seed 2 falls short at x 10683') | RED | R-165.439: stale since a0ab91d33 (ENG-27n); owner ENG-PLANT |
+| (release only) pacerLay row 8: the careful middle beats the boat, Normal seed 3 | PASS (ok 316, shard 2 partial) | PASS (not in base's reds) | RED | R-165.439: INT-R5's merge of t-build-27e b3195f31e (BUILD-26j's step-up rule at a faceless lip, ENG-PLANT-h's bisect); release's own; owner ENG-PLANT |
+
+## EXACT NEXT STEP (session 9, superseded by session 10's above)
 Branch t-eng-28-wip: CODE head 94cf0d86 (every later commit touches only this folder; `git diff --stat 94cf0d86..origin/t-eng-28-wip`
 must show only reference/qa-reports/ENG-28/). `git fetch origin t-eng-28-wip`, confirm, `npm ci --no-audit --no-fund --legacy-peer-deps`.
 DONE on frozen 94cf0d86 (do NOT re-run): rulings A/B/C, lineBot 8/8, flood + floodLay 15/15, tierBots 9/9, trip count 0, lockall PASS,
