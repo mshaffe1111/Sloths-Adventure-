@@ -1,53 +1,69 @@
-# ENG-28 REPORT (2-8's pieces ahead, Lane 2): session 1, started 2:04 PM ET, handed over 2:28 PM ET (both from date)
-Branch t-eng-28-wip (base t-eng-27 90552d3ec). Commits: 601e37549 pure core + follower toys; 4c53ea427 gen2 lay + toy row; dd4367cd2 engine wiring.
+# ENG-28 REPORT (2-8's pieces ahead, Lane 2): session 2 (ENG-28b), started 2:29 PM ET, handed over 2:45 PM ET (both from date)
+Branch t-eng-28-wip (base t-eng-27 90552d3ec). Session 1: 601e37549 pure core + follower toys; 4c53ea427 gen2 lay + toy row; dd4367cd2
+engine wiring. Session 2: 016b5b45b engine-level toy; e76a2886d flood.ts highRoad (the chain); 0aab83a4e two flood defects fixed, each
+with a planted toy; 2a4edf8db WIP lead-the-line (one toy case still RED, below).
 
 ## Done-items (so far)
 1. NEW 1 flood clock + floodFaults: src/game/flood.ts (FloodRow, Flood, FloodClock, floodFaults, highRoadFaults, deepAt); W2_FLOOD in
    gen2/worlds/w2.ts (2-8.md:8-16, :58 pasted); gen2/floodLay.ts (GraphBrief.flood; RiverRow.flood 'rise'|'close' marks; the clock at the
-   LAST cage MET via tower.ts lastMet, D130; paddling 10 px under the banks, 2-8.md:39; the low road deep at the close; the near bank by met
-   order; the high road a chain of <= 60 px steps, 2-8.md:35/58); pipeline hook beside layPacer; the leg's lowering moves the lip
-   (pipeline.ts, found by the toy: lip 1398 vs banks 1518). Toys: flood.test.ts (floodFaults GREEN on the flown 3,400 px both settings,
-   RED 3 s early by name; the clock starts only at its cage, once, no drain, turns once) and gen2/floodLay.test.ts on the out-and-back toy
-   (GREEN 4 rolls x 2 settings; RED by name: 3 s early, no high road, no cage, and through the pipeline). PARTIAL: no engine-level toy yet.
-2. NEW 2 followers meet the flood: follow.ts stepLine wall (deep water is a WAIT), setOnBank (on the near bank, sitting; rejoin as a
-   spooked one); followPlay.ts floodClosed + FollowStage.deep; engine.ts runs FloodClock (start cage freed; live surfaces for the line; the
-   low road lethal after the close, floodDeepRiver; no reset on respawn). Toys: mid-dip at the close set back + rejoined (RED without the
-   set-back: in deep water); the wall (RED off: walks in); a 60 px walk-off step is a walk (2-8.md Pushback 5 already holds: W2_FOLLOW.step
-   is bankH 90).
-3. Bot skill lead-the-line: NOT STARTED.
-4. lockall / suite / CI tool line / landing: NOT RUN. Base suite running on frozen /home/user/wtbase28 at hand-over (1,264 results, 0 red).
-Toys at hand-over: flood + floodLay + follow + river tests 37/37; tsc PASS; generalitycheck PASS.
+   LAST cage MET via tower.ts lastMet, D130; the high road a chain of <= 60 px steps); pipeline hook beside layPacer. Toys: flood.test.ts,
+   gen2/floodLay.test.ts (GREEN 4 rolls x 2 settings; RED by name: 3 s early, no high road, no cage, through the pipeline).
+   **Engine-level toy DONE (016b5b45b)**: FollowPlay + FloodClock on a toy floor, stepped in the engine's order (engine.ts:1974 the clock,
+   each closed water to floodClosed, then the line at :3363; stage.deep = clock.deepAt; the flood's water read LIVE): five freed at the
+   start cage, he stands just past the low road. GREEN: half way to the close 4 paddle, off the live surface by 0 px; at the close 4 set
+   on the near bank (990, 500), 0 in deep water, 1 still with him. RED without floodClosed: 4 left in deep water.
+2. NEW 2 followers meet the flood (session 1): follow.ts wall + setOnBank; followPlay.ts floodClosed + FollowStage.deep; engine.ts runs
+   FloodClock. **Two defects found by session 2's bot toy, fixed with planted toys (0aab83a4e):**
+   a. followPlay.ts floodClosed set back EVERY little one over the low road's span, including ones up on the high road's porch over the
+      water. Now only those in the water (deepAt's own height rule, y > lip - 2). Toy: the porch one stays, the wet one is set back; RED:
+      the span alone takes both.
+   b. follow.ts wallCap read his hop's AIR points as the wall: his hop up off the near bank onto the high road starts at the banks' top,
+      over the water's span, so after the close the line never followed him up (stranded on the near bank). Now only ground points are the
+      wall and the line waits at the last ground point. Toy: the line follows the hop; RED: the same trail with the air flags stripped stops
+      on the bank.
+   (Both are toy-proven only; no listed stage has a flood, so lockall must show no stage moved.)
+3. Bot skill lead-the-line: BUILT, ONE TOY CASE RED (2a4edf8db, WIP).
+   - flood.ts highRoad(tops, span, step, hop) returns highRoadFaults' walk as its chain (pieces in met order); highRoadFaults wraps it.
+   - firsttimer.ts: LINE_SKILL.leadLine; FORK_READ = 300 px; floodRoad(p) runs at the top of intend() (before the way on is read: called
+      lower down, the adult had passed the fork before it ran). Once a run, once the clock runs, on the near bank within FORK_READ of the
+      high road's first piece: time left = close - since; need = the rear-most follower's px to off the low road / (Flood.px / tailOff);
+      left < need: Progress.reroute (new) splices the high road's tops (every 24 px) into the route ahead, moving cur/hi/best/floors/pins.
+   - lineBot.test.ts floodRun (real engine, toy fork: near bank, walkway 60 px down over 400 px of water marked 'close', high road
+      A 60 up / B 120 up / C 60 up and 220 wide so a hop off B lands on it): 'time enough' GREEN (middle + adult x 3 seeds: low road,
+      none set back, all home); planted (read off, 22 s late) GREEN as a RED (the close splits the line).
+   - **'too late' (22 s): middle x 3 GREEN; ADULT SEED 1 RED**: he reads (left 2.50 s < need 5.91 s, reroute made) but his edge press at
+      x 981 is a low hop (peak y 764, A's top is 740): he misses A, lands on the walkway (y 860) and drowns at the close (x 1381); the
+      respawn regroups the line at the start and the run ends stranded. The bot does not aim its edge hop at a piece ABOVE the edge.
+   - FLOODDBG console traces are still in firsttimer.ts floodRoad and lineBot.test.ts floodRun: REMOVE before landing.
+4. lockall / suite / CI tool line / landing: NOT RUN.
 
-## Pushback
-1. The base lacks main's DESIGNED cages (main pipeline.ts:3644, sockets allowing 'cage', 2-3's build): on t-eng-27 a rolled graph lays no
-   cage (D101), so nothing starts the clock through the pipeline; the toy places its two cages in the test and the pipeline path refuses
-   by name ('flood: no cage to start its clock'). 2-8's READY needs t-eng-27 + main (an INT merge: 10 files conflict incl. engine.ts,
-   gates.yml, inventory json, per git merge-tree). Not done here (out of lane).
-2. World 2 has NO two-road section (shape 'two-road' only in w1.ts:609): 2-8's fork F[Pf1+|Pw1] needs one (Content data: the low road a
-   row marked 'close', porches 'over' it); the engine checks any high road over the marked water, fork or not.
-3. FLOOD_HOP 60 px (floodLay.ts) is an engine tolerance (the gap between high-road pieces), not in 2-8.md: the Designer confirms or sets it.
-4. The hand build's basin flood (engine.ts 'r.flood' loop with its drain; respawnAtCheckpoint floodAt.clear) stays until w2Stages '2-8'
-   is replaced; its deletion (about 25 lines) belongs to that replacement commit. Named so the level job does not meet it unplanned.
+## Pushback (session 1's, with the lead's rulings)
+(1) INT-R5 merges main with t-eng-27; this job merges THAT candidate in once its hash comes. (2) 2-8's two-road section is a Content job.
+(3) FLOOD_HOP 60 accepted for now. (4) The hand-built basin stays until 2-8's build replaces it. Land on a NEW branch t-eng-28.
+New from session 2 (for the lead): the bot's edge hop never aims UP at a piece over the edge, so on 2-8's real fork every tier bot needs
+that move or the high road must start with a piece he walks or bumps onto (a step he meets as a wall). Which one is the fork's shape is
+the Designer's/Content's; the bot fix is mine (next step c).
 
-## The lead's rulings on the pushback (received at hand-over)
-(1) INT-R5 (release 4's integration) merges main with t-eng-27: the successor merges THAT candidate in once it exists, not the 10-file merge.
-(2) 2-8's two-road section is a Content Lane 2 job before BUILD-28 (filed). (3) FLOOD_HOP 60 accepted for now; 2-8's READY measures it on
-the draft. (4) The hand-built basin stays until 2-8's build replaces it. LANDING: on a NEW branch t-eng-28 (release 5), NOT t-eng-27.
-Base suite: my run was stopped at the lead's word (1,264 results, 0 red); the base evidence is WARN-412's suite on 90552d3ec.
-
-## EXACT NEXT STEP (session 2)
-a. Base suite: cite WARN-412's suite on 90552d3ec (the lead's ruling); no re-run.
-b. Engine-level toy (flood.test.ts): FollowPlay + FloodClock on a toy floor (stage.deep = clock.deepAt; safeWater live): the line through
-   the low road, the close -> floodClosed sets the paddlers on the near bank; RED without floodClosed (one in deep water).
-c. lead-the-line: grep tools/inspect for 2-3's 'wait-for-the-tail'; add 'lead-the-line' (at the low road's near bank: if the clock's time
-   left < the line's tail-off of the rest of the low road + spare, take the high road); toy on floodLay.test's toy (its caged()), RED with
-   the read removed.
-d. On FROZEN trees (D115): lockall --layouts 16 base vs head (expect no listed stage moved: no listed brief names a flood, no world row is
-   marked); the full suite + the CI tool line (gates.yml rolled + tierBots); land on a NEW branch t-eng-28 (from t-eng-28-wip; merge
-   INT-R5's candidate in once it exists, for main's designed cages), push, message the lead.
+## EXACT NEXT STEP (session 3)
+a. `git fetch origin t-eng-28-wip && git checkout -b t-eng-28-wip origin/t-eng-28-wip` (head 2a4edf8db or this REPORT's commit);
+   `npm ci --no-audit --no-fund --legacy-peer-deps` (plain npm ci fails on a peer conflict; CI uses --legacy-peer-deps).
+b. Fix the adult's 'too late' RED: `FLOODDBG=1 npx tsx --test --test-name-pattern="too late" tools/inspect/lineBot.test.ts` prints READ
+   and PATH. In firsttimer.ts, find the edge press (the `if (!ahead) { const on = this.prog.target(p, 160); ...` branch near line 3200 and
+   tierEdge/jumpFor) and make it aim at the route's target when it lies ABOVE the edge (a piece he must land on, not the gap's far side):
+   the held jump (a full hold) toward it. Prove it on all 6 late runs (GREEN), then rerun ALL of lineBot.test.ts (wait-for-the-tail and
+   fetch must stay GREEN) and tools/inspect/tierBots.test.ts (any bot change re-runs calibration; if tierBots moves, STOP and tell the
+   lead: the calibration file is recommitted only with a 1-1 change, BOTS.md). Do NOT loosen the toy (no thinner A, no skipping the
+   adult). Then remove the FLOODDBG lines and commit.
+c. On FROZEN trees (D115, chattr; never a shell '&', run_in_background): lockall --layouts 16 base (90552d3ec) vs head (expect no listed
+   stage moved: no listed brief names a flood); the full suite (CLAUDE.md "Checks") + the CI tool line (gates.yml: the engine tools'
+   tests incl. lineBot, tierBots, seedlist 1-1 --check); the base suite is WARN-412's on 90552d3ec (4096 pass, inherited reds only).
+d. Land: `git branch t-eng-28` from the frozen candidate, push it (NOT t-eng-27); merge INT-R5's candidate in when the lead sends its
+   hash; message the lead (session_01FhBbYN2CVHnFXg7XzqKXpM, no clock times) the hash and what 2-8's READY can now measure: yield,
+   drawcheck, stills both ways, the flood's verdicts (floodFaults, highRoadFaults by name), met order (lastMet), and the cast bots' road
+   at the fork (lead-the-line).
 
 ## Lessons applied / Method update
-D130 (lastMet for the start cage; the toy's last cage met lies at a smaller x), D115 (frozen base tree, chattr), D114 (base suite first),
-D75 (proven on a gen2-laid toy row, not a fixture). Method update: never write a REPORT through an unquoted shell heredoc: a backticked
-word in it runs as a command (here it ran wall and held the commit about 2 min; the first REPORT commit 6e822e752 lost those words); use
-the Write tool (D52's quoting rule, a new form).
+D130 (lastMet for the start cage), D115 (frozen base tree), D114 (base suite first: WARN-412's, the lead's ruling), D75 (a gen2-laid toy
+row and a real-engine toy, not a fixture). Session 2: a bot toy in the REAL engine found two engine defects the pure toys could not
+(floodClosed's span, the wall's air points): build the bot toy before calling the engine piece done. Method update: a REPORT goes through
+the Write tool, never a shell heredoc (session 1's rule, kept).
