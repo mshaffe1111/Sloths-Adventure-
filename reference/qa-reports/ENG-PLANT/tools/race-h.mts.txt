@@ -1,0 +1,15 @@
+// usage: npx tsx race.mts <tree> <setting> <seed> <out.json> [post]  (run from inside the frozen tree)
+const [tree, setting, seedS, out, which] = process.argv.slice(2);
+const { homeRun } = await import(`${tree}/tools/inspect/homeToys.ts`);
+const fs = await import('node:fs');
+let code: string | undefined;
+if (which === 'post') {
+  code = (await import(`${tree}/src/game/gen2/toyHome.ts`)).POST_CODE;
+}
+const rows: number[][] = []; let piece: any; let f = 0;
+homeRun('middle', setting, Number(seedS), 1, { onFrame: (sim: any) => {
+  const e = sim.e; piece ??= e.pieces.find((q: any) => q.kind === 'pacer');
+  rows.push([f++, Math.round(e.player.x * 10) / 10, Math.round(e.player.y * 10) / 10, e.lives, piece?.clock ?? -1, Math.round((e.player.vx ?? 0) * 10) / 10]);
+} } as never, ...(code ? [code] : []));
+fs.writeFileSync(out, JSON.stringify({ v: piece?.verdict, rows }));
+console.log(out, JSON.stringify(piece?.verdict), rows.length);

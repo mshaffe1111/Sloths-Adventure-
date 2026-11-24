@@ -1,0 +1,14 @@
+#!/bin/bash
+# usage (git bisect run): bisrun.sh <pattern> <tag>; a frozen tree for the run (D115), thawed for the next checkout
+S=/tmp/claude-0/-home-user-Sloths-Adventure-/8848811d-b0f9-5caf-b8f0-79319ef08984/scratchpad
+cd /home/user/bis
+[ -e node_modules ] || ln -s /home/user/plant-work/node_modules node_modules
+h=$(git rev-parse --short HEAD)
+chattr -R +i src tools; chattr -i src/game/gen2/proven
+timeout 400 npx tsx --test --test-name-pattern="$1" src/game/gen2/pacerLay.test.ts > $S/bis/$2-$h.txt 2>&1
+chattr -R -i src tools
+n=$(grep -m1 '^# tests' $S/bis/$2-$h.txt | awk '{print $3}')
+f=$(grep -m1 '^# fail' $S/bis/$2-$h.txt | awk '{print $3}')
+echo "$2 $h tests=$n fail=$f $(grep '^not ok' $S/bis/$2-$h.txt | cut -c1-40 | tr '\n' ';')" >> $S/bis/log.txt
+[ -z "$n" ] || [ "$n" = 0 ] && exit 125
+[ "$f" = 0 ] && exit 0 || exit 1

@@ -1,0 +1,28 @@
+TAP version 13
+# Subtest: bot (planted): the racing hop off a log lands where it was judged to, so the bank 28 px up is reached, not fallen short of; RED without it
+not ok 1 - bot (planted): the racing hop off a log lands where it was judged to, so the bank 28 px up is reached, not fallen short of; RED without it
+  ---
+  duration_ms: 3360.539872
+  type: 'test'
+  location: '/home/user/bis/src/game/gen2/pacerLay.test.ts:237:1'
+  failureType: 'testCodeFailure'
+  error: 'RED: without the skill seed 2 falls short at x 10683 (falls 12790, 12640, 5831, 1810)'
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: true
+  actual: false
+  operator: '=='
+  stack: |-
+    TestContext.<anonymous> (/home/user/bis/src/game/gen2/pacerLay.test.ts:260:14)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
+  ...
+1..1
+# tests 1
+# suites 0
+# pass 0
+# fail 1
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 3917.869503

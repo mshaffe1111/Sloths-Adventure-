@@ -1,0 +1,51 @@
+P d9425f091 tests=3 fail=2 not ok 2 - bot (planted): a log drifting;not ok 3 - bot (planted): the racing hop;
+P 122193be4 tests=3 fail=1 not ok 2 - bot (planted): a log drifting;
+T23 7501bf2fb tests=1 fail=1 not ok 1 - bot (planted): the racing hop;
+T23 d2408e867 tests=1 fail=1 not ok 1 - bot (planted): the racing hop;
+T23 f2ef505d3 tests=1 fail=1 not ok 1 - bot (planted): the racing hop;
+T23 a22667eee tests=1 fail=0 
+T23 a0ab91d33 tests=1 fail=1 not ok 1 - bot (planted): the racing hop;
+T23 b7a68a8bd tests=1 fail=0 
+T22 484199316 tests=1 fail=0 
+T22 24d6ba567 tests=1 fail=1 not ok 1 - bot (planted): a log drifting;
+T22 6d3b91adf tests=1 fail=0 
+T22 fb0c0777e tests=1 fail=0 
+T22 d1f9a153e tests=1 fail=0 
+T22 d29258340 tests=1 fail=0 
+T8 07bdf5855 tests=1 fail=0 
+T8 2904961b8 tests= fail= 
+T8 35233ff6f tests= fail= 
+T8 78a2c5d4e tests=1 fail=0 
+T8 45441f661 tests= fail= 
+T8 cac4b678b tests=1 fail=0 
+T8 37fbb6519 tests= fail= 
+T8 c50c8406f tests= fail= 
+T8 436d98a36 tests= fail= 
+T8 f089aae92 tests=1 fail=1 not ok 1 - pacer race (the bots): the ca;
+T8 0c0a91730 tests= fail= 
+T8 2586d08c2 tests= fail= 
+T8 89fb84b0f tests= fail= 
+T8 2cfd1871d tests=1 fail=0 
+T8 4e0888c5d tests= fail= 
+T8 fd8c39590 tests= fail= 
+T8 d11c4a777 tests= fail= 
+T8 793ddf246 tests=1 fail=0 
+T8 5c8940ae1 tests= fail= 
+T8 f297aff98 tests= fail= 
+T8 fa7338d25 tests= fail= 
+T8 cb9372ead tests= fail= 
+T8 fd3ce98b1 tests= fail= 
+T8 14acf0ec0 tests= fail= 
+T8 ac69c7040 tests= fail= 
+T8 7d3330aad tests= fail= 
+T8 f78a3a66d tests= fail= 
+T8 84f602454 tests= fail= 
+T8 fcade89ce tests= fail= 
+T8 9c2ce855d tests= fail= 
+T8 4959d1e97 tests= fail= 
+T8 8fbc7c397 tests= fail= 
+T8 064911bf1 tests= fail= 
+T8 5e1d1f6a4 tests=1 fail=0 
+T8 7ca46626c tests= fail= 
+T8 4e1d4bbb9 tests=1 fail=0 
+T8 43c4c6776 tests= fail= 
