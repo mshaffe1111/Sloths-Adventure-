@@ -3232,7 +3232,9 @@ export class FirstTimerRun {
       const ridden = SKILLS.floatSure && SKILLS.handed && p.grounded ? this.sim.platforms.find((q) => q.id === this.sim.standingOn) : undefined;
       if (ridden?.drift && ridden.drift.dir === dir) {
         const front = dir > 0 ? ridden.x + ridden.width : ridden.x;
-        return dir * (front - p.x) < this.runOut() ? side(-dir as -1 | 1) : {};
+        if (dir * (front - p.x) < this.runOut()) return side(-dir as -1 | 1);
+        this.stopMeant = true;
+        return {};
       }
       // (landed on a small pad or ledge: he stops on it a beat, then flicks on from where he stands if its edge is close)
       const here = this.floorAt(p.x, p.y, 6);
@@ -3593,6 +3595,10 @@ export class FirstTimerRun {
                 }
                 if (Math.abs(p.x - rear) > 20) return side(back);
               }
+              // (ENG-PLANT-e: the stand on the log is a stop he MEANS (stopMeant): a bot with no holdQ (the adult) re-arms his let-go every
+              //  frame otherwise (thumbify, R-165.59) and the steer is never let go: 2-4 adult Normal 6 on candidate 8, intend {} from t 63.20
+              //  and the thumb still pressed right 10 frames, off #45's front into the water)
+              this.stopMeant = true;
             }
             return {};
           }
