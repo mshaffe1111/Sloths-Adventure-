@@ -3218,6 +3218,9 @@ export class FirstTimerRun {
         // (a tier bot sees a pit: where nothing stands under the edge for 400 px, the way down to a lower ledge across it is a jump)
         const pit = !!who.holdQ && !this.floorAt(p.x + dir * (look + 40), p.y, 400);
         const drops = on && on.y > p.y + 50 && !across && !pit;
+        // (KEEP-THE-ROAD's STEP-OFF: dropping where the other road's ledge is in reach, he goes at a stand, never at a run: Pokey is 44 px
+        //  wide, so at a run a 60 px level gap is 16 px of air and he came down on the porch, ENG-28e. Slowed under 30 px/s, he steps off)
+        if (drops && this.otherRoad && Math.abs(p.vx) > 30 && this.sim.platforms.some((q) => ledge(q) && kept(q))) return {};
         // (a log or a lily pad drifting across the gap: he can see it, so he waits at the edge until it is near, up to 6 s)
         const here = this.floorAt(p.x, p.y, 6);
         // (ENG-W2b: a float is near when a hop he makes now, or a beat later as his thumb gets there, comes down on it where it will be,
