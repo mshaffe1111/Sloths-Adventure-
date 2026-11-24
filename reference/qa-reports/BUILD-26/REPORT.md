@@ -4,11 +4,12 @@
 1. **tierBots' replay (test 9) is RED: 120 of 200 committed 1-1 runs moved** (b26u/tierBots-35ca56b16.txt; tests 1-8 pass, incl. 6 'the
    committed runs, judged again, give the committed table'). calibration-main.jsonl is unchanged since t-build-26 9e1e30b27 (a07ed1bd7), so
    the moves come from this branch: the main merge b3e0a8206 (ENG-CAGE-b's FETCH-CLOCK moved 2 child Normal runs on main), floorAt
-   ca3a7d063, and ENG-26t's overSmall strip 997f7e98c/35ca56b16. IN FLIGHT in ENG-26u's container: the BOTS.md calibration re-run on frozen
-   5ecec4018 (`npx tsx tools/inspect/tierBots.ts --stage 1-1 --tiers child,middle,expert --seeds 1-40 --setting both --calibrate`, about
-   6 min). Next: compare it with the committed file (b26u/calcmp.py.txt: moved runs, any lives/rescues/end change, the table's pass per
-   check), NAME the cause of the moves by running the same command at 23cdb07e8 (before overSmall) and at b3e0a8206 (before floorAt) on
-   frozen trees, then recommit calibration-main.jsonl the BOTS.md way (a dated BOTS.md line naming the moved runs and their causes; the
+   ca3a7d063, and ENG-26t's overSmall strip 997f7e98c/35ca56b16. **The BOTS.md re-run on frozen 5ecec4018 is DONE**
+   (b26u/calibration-5ecec4018.jsonl; `npx tsx tools/inspect/tierBots.ts --stage 1-1 --tiers child,middle,expert --seeds 1-40 --setting both
+   --calibrate`, about 6 min): it reproduces the replay (120 of 200 moved; b26u/calcmp-committed-vs-5ecec4018.txt): finish 119, put-backs 39,
+   lives 0, ends 0, rescues 2 (child N v12 1->0, v14 0->1; child N total 3 -> 3); **the table keeps every verdict** (child E, child N,
+   middle E, middle N fail and expert N pass, as committed; no check flips). Next: NAME the cause by running the same command at 23cdb07e8
+   (before overSmall; IN FLIGHT in ENG-26u's container) and at b3e0a8206 (before floorAt) on frozen trees and comparing (calcmp.py), then recommit calibration-main.jsonl the BOTS.md way (a dated BOTS.md line naming the moved runs and their causes; the
    table must keep its pass/fail). If the table's verdict CHANGES (a check flips), stop and send it to the lead before recommitting.
 2. **2-6's castBots --proven yield** IN FLIGHT on frozen 5ecec4018 (`castBots.ts --stage 2-6 --seeds 1-100 --setting both --par 2 --proven`,
    b26u/castBots-2-6-5ecec4018.txt once copied). Then 1-4's the same way (100 listed seeds; slot / old / new for any failing slot to the
