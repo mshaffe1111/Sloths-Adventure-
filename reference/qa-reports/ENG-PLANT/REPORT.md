@@ -1,25 +1,24 @@
-# ENG-PLANT-e (ENG-PLANT-c session 3, started 5:14 PM ET 11-24 by `date`; this section written 5:29 PM ET by `date`): hand-over (LANES 3b box)
+# ENG-PLANT-e (ENG-PLANT-c session 3, started 5:14 PM ET 11-24 by `date`; this section written 5:31 PM ET by `date`): hand-over (LANES 3b box)
 
 Engine (bots), Opus 5.5 xhigh. Lead: session_01FhBbYN2CVHnFXg7XzqKXpM. Candidates on origin/release-0.10.3-wip-plant-c (NOT on
-release-0.10.3, D117): **c5 0152354a9**, **c6 6234a03ff**, **c7 05aa7f3bd**, **c8 82e3c1b3a**, **c9 742886378** (head). Main rows: data/c/main-*.jsonl (never re-run).
+release-0.10.3, D117): **c5 0152354a9**, **c6 6234a03ff**, **c7 05aa7f3bd**, **c8 82e3c1b3a**, **c9 742886378**, **c10 4bcd12a19** (head). Main rows: data/c/main-*.jsonl (never re-run).
 Known-flip rows (D132, the 10 rows: 2-1 child N 11; 2-2 adult N 4, 24; 2-4 adult N 6, 8, 24, 32, child E 11, 23, child N 39) per
 candidate: data/e/flip-<stage>-<bot>-<setting>-c<n>.jsonl. No full table run on any of them (none cleared the flips).
 
 ## EXACT NEXT STEP (session 4)
 1. Setup as session 2's step 1 (npm ci --legacy-peer-deps; freeze with tools/freeze.sh.txt, its `cd` set to your checkout). Work on
-   origin/release-0.10.3-wip-plant-c at **c9 742886378** (the head). Known-flip rows of every candidate: data/e/.
-2. **2-4 adult N 6, 8, 24, 32 (the last 2-4 flips; c9 trace data/e/tr-c9-2-4-adult-N6.txt)**: on c9 he no longer runs off a log's front;
-   on the TAILED river (x 10,028-10,766, tail 430, logs go under 430 px short of the bank) he now steps back log to log (#47 t 57.0, #46
-   t 59.6, #45 t 62.8, every ~2.6 s; the stepBack hop is judged) and is never handed on: no water, but rescued twice by the stuck rule
-   ('water ahead' at 10,685-10,829), again at 16,6xx (another tailed river? check its rivers' tail). His only way on there is the LIANA
-   over the tail, which SKILLS.vineFromLog refuses each ride (session 2: its catch judged at three thumb lags; his own drawn aim catches
-   once in three rides). The lead's ruling 1 says EVERY hop goes through the same landing judge: make vineFromLog judge the hop he will
-   fly (the drawn hop, as gateSees does for floors: hopCatches with the drawn aim at lag 0, not three lags), so a catch his own aim makes
-   is pressed, and a refused one waits on the step-back cycle (which keeps him safe). Toy each way: 2-4 adult N 6 (RED c9, GREEN fix).
-   Ask the lead before changing the vine judge's lags if it reads as a bar (law 22). Then **2-2 adult N 24**: PASS on c8, FAIL on c7 and
-   c9 (set down 3x at 29,875 on c7, 29,708 on c9): trace it on c9 (tools/trace.mts.txt, then tools/padsrc2.mts.txt: copy the frozen tree
-   to a scratch dir, tag intend's returns with perl as this session did, see the REPORT's c9 note) and name the press; c9's only change
-   over c8 is stopMeant on the handed stand and the landing stop, so suspect a stand that now lets go where c8 kept walking.
+   origin/release-0.10.3-wip-plant-c at **c10 4bcd12a19** (the head). Known-flip rows of every candidate: data/e/.
+2. **c10 known flips 7/10; three left** (data/e/*-c10.jsonl). (a) **2-2 adult N 24** (PASS c8, FAIL c7/c9/c10): he lands on
+   `moving#117` (a LIFT, type 'moving', not a drift) at x 29,669 at a full run and runs off its front (t 140.13-140.30, again t 151.4),
+   lives 3 -> 1, rescued (data/e/tr-c10-2-2-adult-N24.txt). Suspect the same root as ruling 2 on a lift: intend's just-landed walk-on
+   (`return side(dir)` in the `t - this.lastLand < 0.1` block) and the adult's never-let-go thumb (R-165.59: a bare {} never lets go
+   for KID/ADULT without stopMeant); c10's landing stop reads only `ridden.drift`. Confirm with tools/padsrc2.mts.txt (copy the frozen
+   tree to a scratch dir, tag intend's returns with perl: see this session's commands), then make the landing stop general to any
+   carrier (drift or moving) whose front is inside his run-out, with stopMeant; toy each way. (b) **2-4 adult N 6**: 'an open drop
+   ahead, water ahead' at 10,699 (rescue 1) and 'on a vine with no way on' at 21,179 / 22,758. (c) **2-4 adult N 32**: vine 'no way on'
+   at 21,393 / 22,966, set down at 23,620. For (b) and (c), print `UNJUDGED.n` at the end of the run and a stack at each refusal: a
+   refusal at the stuck x is another judged press the one-gate check blocks (as vineFromLog's did on c5-c9); otherwise trace the vine
+   let-go (session 2: 'a refused let-go is never hung into a rescue').
 3. When the 10 known flips all PASS on one head: the full rule-28 rows vs main (castBots every bot, both settings, seeds 1-40, --par 2,
    frozen tree; tools/rows-d.sh.txt; at most TWO heavy runs at once) on 2-1, 2-2, 2-4 first (compare data/c/cmp3.py.txt `<st> main -
    <new>`), then 2-5, 2-7 (its own bar: x40 29/40 or better, the list 69/100 or better; hopJudged + pacerLay since the river gates are
@@ -33,6 +32,16 @@ candidate: data/e/flip-<stage>-<bot>-<setting>-c<n>.jsonl. No full table run on 
 6. A suggestion for the lead (not done, outside this ruling): thumbify's R-165.59 re-arm ('for KID and ADULT the steer is never let go
    once held' unless stopMeant) is a trap for every stop the bots make with a bare {}; a check that every intend stop on a carrier sets
    stopMeant, or a stop helper, would close the class.
+
+## UPDATE: candidate 10 = 4bcd12a19 (the head; written after the c9 hand-over above, same session)
+- Found while writing step 2: SKILLS.vineFromLog's liana press off a log is judged by ITS OWN catch judge (hopCatches at three thumb
+  lags x two speeds) and pressed through `decide` -> the queued press (firsttimer.ts c4 :2820), never setting `gateHop`. c5's one-gate
+  check at startJump therefore REFUSED every judged liana hop off a log on c5-c9 (my miss: the choke point was written from the
+  startJump sites with no `gateHop` and I did not check which of them carry a different judge). c10: vineFromLog marks its queued press
+  `judged`; the check lets a judged press through (`pressJudged`). This is the tailed river's only way on, so it is the first suspect for
+  c9's 2-4 adult N cycling. Known flips on c10: 7/10: PASS 2-1 child N 11; 2-2 adult N 4; 2-4 adult N 8, 24; child E 11, 23; child N 39. FAIL 2-2 adult N 24; 2-4 adult N 6, 32 (next step 2).
+- The other queued presses that carry a judge of their own must be checked the same way before any landing (grep `this.decide(` callers
+  that judged first: the bonk hop :3823 is off an animal, not a log; lianaWait is off a bank).
 
 ## What this session found (the lead's rulings 1 and 2)
 - **Ruling 1, the unjudged hop (2-4 adult N 6 on c4)**: jumpsrc (tools/jumpsrc.mts.txt) at t 51.53: the hop came from the queued press
@@ -67,16 +76,16 @@ candidate: data/e/flip-<stage>-<bot>-<setting>-c<n>.jsonl. No full table run on 
   to -267, then forward to +285, then the hop back): the same default walk, outside the look; c7 should cover it (check the trace).
 
 ## Known flips per candidate (bar rows; main PASSES all 10)
-| row | c4 | c5 0152354a9 | c6 6234a03ff | c7 05aa7f3bd | c8 82e3c1b3a | c9 742886378 |
-|---|---|---|---|---|---|---|
-| 2-1 child N 11 | FAIL | PASS | PASS | PASS | PASS | PASS |
-| 2-2 adult N 4 / 24 | FAIL / FAIL | PASS / PASS | PASS / PASS | PASS / **FAIL** (new: set down 3x at 29,875) | PASS / PASS | PASS / **FAIL** (set down 3x at 29,708) |
-| 2-4 child E 11 / 23 | FAIL / FAIL | PASS / PASS | PASS / PASS | PASS / PASS | PASS / PASS | PASS / PASS |
-| 2-4 adult N 6 / 8 / 24 / 32 | FAIL x4 | FAIL x4 (rescues 4/2/2/3; set down 3x at 10,718-10,902 and 16,7xx) | FAIL x4 (3/3/2/2) | FAIL x4 (3/2/2/1; 10,742-10,878 and 16,7xx) | FAIL x4 (1/2/2/2; 10,693-10,878) | FAIL x4 (2/2/2/2: no water; stuck-rescued cycling step-backs, see next step 2) |
-| 2-4 child N 39 | FAIL | FAIL (1) | FAIL (2) | PASS | PASS | PASS |
+| row | c4 | c5 0152354a9 | c6 6234a03ff | c7 05aa7f3bd | c8 82e3c1b3a | c9 742886378 | c10 4bcd12a19 |
+|---|---|---|---|---|---|---|---|
+| 2-1 child N 11 | FAIL | PASS | PASS | PASS | PASS | PASS | PASS |
+| 2-2 adult N 4 / 24 | FAIL / FAIL | PASS / PASS | PASS / PASS | PASS / **FAIL** (new: set down 3x at 29,875) | PASS / PASS | PASS / **FAIL** (set down 3x at 29,708) | PASS / **FAIL** (lift run-off 29,669) |
+| 2-4 child E 11 / 23 | FAIL / FAIL | PASS / PASS | PASS / PASS | PASS / PASS | PASS / PASS | PASS / PASS | PASS / PASS |
+| 2-4 adult N 6 / 8 / 24 / 32 | FAIL x4 | FAIL x4 (rescues 4/2/2/3; set down 3x at 10,718-10,902 and 16,7xx) | FAIL x4 (3/3/2/2) | FAIL x4 (3/2/2/1; 10,742-10,878 and 16,7xx) | FAIL x4 (1/2/2/2; 10,693-10,878) | FAIL x4 (2/2/2/2: no water; stuck-rescued cycling step-backs, see next step 2) | FAIL / PASS / PASS / FAIL |
+| 2-4 child N 39 | FAIL | FAIL (1) | FAIL (2) | PASS | PASS | PASS | PASS |
 
-**Totals of the 10 known flips: c4 0/10, c5 5/10, c6 5/10, c7 6/10, c8 6/10, c9 5/10.** None lands (bar: 10/10, then zero bar
-PASS -> FAIL on the full tables). c9 is the head and the right base: every fix in it is at a named root (the log he stands on, one
+**Totals of the 10 known flips: c4 0/10, c5 5/10, c6 5/10, c7 6/10, c8 6/10, c9 5/10, c10 7/10.** None lands (bar: 10/10, then zero bar
+PASS -> FAIL on the full tables). c10 is the head and the right base (c9 + the judged liana press let through): every fix in it is at a named root (the log he stands on, one
 hop judge, no landing walk-on, the run-out look, a log ahead is no floor, a meant stop); what is left is the tailed river's way on (the
 liana judge) and 2-2 adult N 24.
 
