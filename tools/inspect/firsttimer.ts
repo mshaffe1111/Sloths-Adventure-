@@ -1697,12 +1697,12 @@ export class FirstTimerRun {
     //  middle crossing its end dropped the steer back a frame before the thumb's reversal arrived, so he came down on its last inch at a
     //  run and ran off (the wheel toy, sparse middle Easy v1, bucket #9 at 9.0 s; ENG-26t, R-165.398's lip family). Only while he comes
     //  down on it now, within two frames: a landing 40 px under him as he sails past its end is not where he lands (v2: steered back over
-    //  bucket #9's strip, he fell short of #8 into the pond))
+    //  bucket #9's strip, he fell short of #8 into the pond). Never a log's strip: on the river toy it did the ride skill's job (ENG-26t))
     const strip = FORGIVE[this.who.setting === 'easy' ? 'easy' : 'normal'].landPx;
     const now = Math.max(0, p.vy) * 2 * DT + 0.5 * PHYS.gravDown * (2 * DT) ** 2;
     for (const q of this.sim.platforms) {
       if (q.broken || q.width >= 220 || p.x < q.x - strip || p.x > q.x + q.width + strip || q.y < p.y - 2 || q.y > p.y + 140) continue;
-      if ((p.x < q.x || p.x > q.x + q.width) && q.y - p.y > now) continue;
+      if ((p.x < q.x || p.x > q.x + q.width) && (q.y - p.y > now || q.type === 'drift' || !!q.drift)) continue;
       // (never the snap stone a snap hop leaves: he is going on, not back; ENG-25c)
       if (leaving !== undefined && q.id === leaving) continue;
       if (rising && q.y > from - 20) continue;
