@@ -2346,7 +2346,11 @@ export class FirstTimerRun {
       return x > lx + 10 && x < lx + here.width - 10 && !under && hopCatches(v, x, p.y, dir, hold, clock + aim.clock, vx + carry);
     });
     if (![mid, Math.max(0, mid - sd / 2), mid + sd / 2].every(catches)) return null;
+    // (judged here: decide's immediate press (a lag under half a frame) reaches startJump now, so the flag is up for it too; candidate
+    //  10 marked only the queued press and 2-4 adult Normal 6 had two liana presses refused, x 21,600 and 24,700, UNJUDGED)
+    this.pressJudged = true;
     const out = this.decide(dir, 'single', true, {});
+    this.pressJudged = false;
     // (ENG-PLANT-e: a judged catch, so startJump's one-gate check (no unjudged hop off a carrier) lets it through when it comes;
     //  without it candidates 5-9 refused every liana hop off a log, and the tailed river's only way on was gone)
     if (this.pending) { this.pending.still = true; this.pending.judged = true; }
