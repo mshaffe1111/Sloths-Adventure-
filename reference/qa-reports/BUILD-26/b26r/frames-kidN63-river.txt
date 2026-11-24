@@ -1,0 +1,203 @@
+Tue Nov 24 17:08:15 EST 2026
+bde501f86
+39.50 x 1338 y 4927 vx -268 vy 0 - | left
+39.53 x 1328 y 4927 vx -285 vy 0 - | left
+39.57 x 1319 y 4927 vx -268 vy 0 - | left
+39.60 x 1310 y 4927 vx -285 vy 0 - | left
+39.63 x 1301 y 4927 vx -268 vy 0 - | left
+39.67 x 1291 y 4927 vx -285 vy 0 - | left
+39.70 x 1282 y 4908 vx -285 vy -577 - | press jump
+39.73 x 1272 y 4891 vx -285 vy -513 - | jump
+39.77 x 1263 y 4876 vx -285 vy -450 - | jump
+39.80 x 1254 y 4863 vx -268 vy -387 - | left jump
+39.83 x 1245 y 4857 vx -285 vy -167 - | left
+39.87 x 1236 y 4854 vx -268 vy -103 - | left
+39.90 x 1226 y 4852 vx -285 vy -40 - | left
+39.93 x 1217 y 4853 vx -268 vy 23 - | left
+39.97 x 1208 y 4857 vx -285 vy 107 - | left
+40.00 x 1199 y 4863 vx -268 vy 190 - | left
+40.03 x 1189 y 4872 vx -285 vy 273 - | left
+40.07 x 1180 y 4884 vx -268 vy 357 - | left
+40.10 x 1171 y 4899 vx -285 vy 440 - | left
+40.13 x 1162 y 4916 vx -268 vy 523 - | left
+40.17 x 1152 y 4936 vx -285 vy 607 - | left
+40.20 x 1143 y 4955 vx -268 vy 0 - | left
+40.23 x 1132 y 4955 vx -285 vy 0 - | left
+40.27 x 1120 y 4955 vx -268 vy 0 - | left
+40.30 x 1109 y 4955 vx -285 vy 0 - | left
+40.33 x 1097 y 4955 vx -268 vy 0 - | left
+40.37 x 1085 y 4955 vx -285 vy 0 - | left
+40.40 x 1074 y 4955 vx -268 vy 0 - | left
+40.43 x 1062 y 4955 vx -285 vy 0 - | left
+40.47 x 1051 y 4955 vx -268 vy 0 - | left
+40.50 x 1039 y 4955 vx -285 vy 0 - | left
+40.53 x 1028 y 4955 vx -268 vy 0 - | left
+40.57 x 1016 y 4955 vx -285 vy 0 - | left
+40.60 x 1005 y 4955 vx -268 vy 0 - | left
+40.63 x 993 y 4955 vx -285 vy 0 - | left
+40.67 x 982 y 4955 vx -268 vy 0 - | left
+40.70 x 970 y 4955 vx -285 vy 0 - | left
+40.73 x 959 y 4955 vx -268 vy 0 - | left
+40.77 x 947 y 4955 vx -285 vy 0 - | left
+40.80 x 936 y 4955 vx -268 vy 0 - | left
+40.83 x 924 y 4958 vx -285 vy 83 - | left
+40.87 x 915 y 4939 vx -268 vy -577 - | left press jump
+40.90 x 905 y 4921 vx -285 vy -513 - | left jump
+40.93 x 897 y 4906 vx -268 vy -450 - | left jump
+40.97 x 887 y 4894 vx -285 vy -387 - | left jump
+41.00 x 878 y 4883 vx -268 vy -323 - | left jump
+41.03 x 869 y 4874 vx -285 vy -260 - | left jump
+41.07 x 860 y 4868 vx -268 vy -197 - | left jump
+41.10 x 850 y 4863 vx -285 vy -133 - | left jump
+41.13 x 841 y 4861 vx -268 vy -70 - | left jump
+41.17 x 832 y 4860 vx -285 vy -24 - | left jump
+41.20 x 823 y 4861 vx -268 vy 39 - | left
+41.23 x 813 y 4865 vx -285 vy 122 - | left
+41.27 x 804 y 4872 vx -268 vy 206 - | left
+41.30 x 795 y 4882 vx -285 vy 289 - | left
+41.33 x 786 y 4894 vx -268 vy 372 - | left
+41.37 x 776 y 4909 vx -285 vy 456 - | left
+41.40 x 768 y 4927 vx -268 vy 539 - | left
+41.43 x 758 y 4948 vx -285 vy 622 - | left
+41.47 x 749 y 4955 vx -268 vy 0 - | left
+41.50 x 737 y 4955 vx -285 vy 0 - | left
+41.53 x 726 y 4955 vx -268 vy 0 - | left
+41.57 x 714 y 4955 vx -285 vy 0 - | left
+41.60 x 703 y 4955 vx -268 vy 0 - | left
+41.63 x 691 y 4955 vx -285 vy 0 - | left
+41.67 x 680 y 4955 vx -268 vy 0 - | left
+41.70 x 668 y 4955 vx -285 vy 0 - | left
+41.73 x 657 y 4955 vx -268 vy 0 - | left
+41.77 x 645 y 4955 vx -285 vy 0 - | left
+41.80 x 634 y 4955 vx -268 vy 0 - | left
+41.83 x 622 y 4955 vx -285 vy 0 - | left
+41.87 x 611 y 4958 vx -268 vy 83 - | left
+41.90 x 601 y 4963 vx -285 vy 167 - | left
+41.93 x 592 y 4972 vx -268 vy 250 - | left
+41.97 x 1341 y 4927 vx 0 vy 0 - | left
+42.00 x 1338 y 4927 vx -87 vy 0 - | left
+42.03 x 1332 y 4908 vx -173 vy -577 - | left press jump
+42.07 x 1325 y 4891 vx -230 vy -513 - | left jump
+42.10 x 1315 y 4876 vx -285 vy -450 - | left jump
+42.13 x 1306 y 4863 vx -268 vy -387 - | left jump
+42.17 x 1297 y 4852 vx -285 vy -323 - | left jump
+42.20 x 1288 y 4843 vx -268 vy -260 - | left jump
+42.23 x 1278 y 4837 vx -285 vy -197 - | left jump
+42.27 x 1269 y 4832 vx -268 vy -133 - | left
+42.30 x 1260 y 4830 vx -285 vy -70 - | left
+42.33 x 1251 y 4830 vx -268 vy -7 - | left
+42.37 x 1241 y 4832 vx -285 vy 57 - | left
+42.40 x 1233 y 4836 vx -268 vy 140 - | left
+42.43 x 1223 y 4844 vx -285 vy 223 - | left
+42.47 x 1214 y 4854 vx -268 vy 307 - | left
+42.50 x 1205 y 4867 vx -285 vy 390 - | left
+42.53 x 1196 y 4883 vx -268 vy 473 - | left
+42.57 x 1186 y 4901 vx -285 vy 557 - | left
+42.60 x 1177 y 4923 vx -268 vy 640 - | left
+42.63 x 1168 y 4947 vx -285 vy 723 - | left
+42.67 x 1159 y 4955 vx -268 vy 0 - | left
+42.70 x 1147 y 4955 vx -285 vy 0 - | left
+42.73 x 1136 y 4955 vx -268 vy 0 - | left
+42.77 x 1124 y 4955 vx -285 vy 0 - | left
+42.80 x 1113 y 4955 vx -268 vy 0 - | left
+42.83 x 1101 y 4955 vx -285 vy 0 - | left
+42.87 x 1090 y 4955 vx -268 vy 0 - | left
+42.90 x 1078 y 4955 vx -285 vy 0 - | left
+42.93 x 1067 y 4955 vx -268 vy 0 - | left
+42.97 x 1055 y 4955 vx -285 vy 0 - | left
+43.00 x 1043 y 4955 vx -268 vy 0 - | left
+43.03 x 1032 y 4955 vx -285 vy 0 - | left
+43.07 x 1020 y 4955 vx -268 vy 0 - | left
+43.10 x 1009 y 4958 vx -285 vy 83 - | left
+43.13 x 1000 y 4963 vx -268 vy 167 - | left
+43.17 x 990 y 4972 vx -285 vy 250 - | left
+43.20 x 1341 y 4927 vx 0 vy 0 - | left
+43.23 x 1341 y 4908 vx 0 vy -577 - | press jump
+43.27 x 1341 y 4891 vx 0 vy -513 - | jump
+43.30 x 1341 y 4876 vx 0 vy -450 - | jump
+43.33 x 1341 y 4870 vx 0 vy -167 - | 
+43.37 x 1339 y 4867 vx -57 vy -103 - | left
+43.40 x 1335 y 4865 vx -113 vy -40 - | left
+43.43 x 1330 y 4866 vx -170 vy 23 - | left
+43.47 x 1322 y 4870 vx -227 vy 107 - | left
+43.50 x 1313 y 4876 vx -283 vy 190 - | left
+43.53 x 1303 y 4885 vx -285 vy 273 - | left
+43.57 x 1294 y 4897 vx -268 vy 357 - | left
+43.60 x 1285 y 4912 vx -285 vy 440 - | left
+43.63 x 1275 y 4927 vx -285 vy 0 - | 
+43.67 x 1270 y 4927 vx -172 vy 0 - | 
+43.70 x 1268 y 4927 vx -58 vy 0 - | 
+43.73 x 1268 y 4927 vx 0 vy 0 - | 
+43.77 x 1268 y 4927 vx 0 vy 0 - | 
+43.80 x 1268 y 4927 vx 0 vy 0 - | 
+43.83 x 1268 y 4927 vx 0 vy 0 - | 
+43.87 x 1265 y 4927 vx -87 vy 0 - | left
+43.90 x 1259 y 4927 vx -173 vy 0 - | left
+43.93 x 1250 y 4908 vx -260 vy -577 - | left press jump
+43.97 x 1241 y 4891 vx -285 vy -513 - | left jump
+44.00 x 1232 y 4876 vx -268 vy -450 - | left jump
+44.03 x 1222 y 4870 vx -285 vy -167 - | left
+44.07 x 1213 y 4867 vx -268 vy -103 - | left
+44.10 x 1204 y 4865 vx -285 vy -40 - | left
+44.13 x 1194 y 4866 vx -285 vy 23 - | 
+44.17 x 1185 y 4870 vx -285 vy 107 - | 
+44.20 x 1175 y 4876 vx -285 vy 190 - | 
+44.23 x 1166 y 4885 vx -285 vy 273 - | 
+44.27 x 1156 y 4897 vx -285 vy 357 - | 
+44.30 x 1147 y 4912 vx -285 vy 440 - | 
+44.33 x 1137 y 4929 vx -285 vy 523 - | 
+44.37 x 1128 y 4949 vx -285 vy 607 - | 
+44.40 x 1119 y 4972 vx -268 vy 690 - | left
+44.43 x 1341 y 4927 vx 0 vy 0 - | left
+44.47 x 461 y 4927 vx -87 vy 0 - | left
+44.50 x 455 y 4927 vx -173 vy 0 - | left
+44.53 x 446 y 4927 vx -260 vy 0 - | left
+44.57 x 437 y 4927 vx -285 vy 0 - | left
+44.60 x 428 y 4927 vx -268 vy 0 - | left
+44.63 x 418 y 4927 vx -285 vy 0 - | left
+44.67 x 409 y 4927 vx -268 vy 0 - | left
+44.70 x 400 y 4927 vx -285 vy 0 - | left
+44.73 x 391 y 4927 vx -268 vy 0 - | left
+44.77 x 381 y 4927 vx -285 vy 0 - | left
+44.80 x 373 y 4927 vx -268 vy 0 - | left
+44.83 x 363 y 4927 vx -285 vy 0 - | left
+44.87 x 354 y 4927 vx -268 vy 0 - | left
+44.90 x 345 y 4927 vx -285 vy 0 - | left
+44.93 x 336 y 4927 vx -268 vy 0 - | left
+44.97 x 326 y 4927 vx -285 vy 0 - | left
+45.00 x 317 y 4927 vx -268 vy 0 - | left
+45.03 x 308 y 4927 vx -285 vy 0 - | left
+45.07 x 299 y 4927 vx -268 vy 0 - | left
+45.10 x 289 y 4927 vx -285 vy 0 - | left
+45.13 x 251 y 4920 vx 0 vy 0 - V | up left
+45.17 x 251 y 4912 vx 0 vy 0 - V | up left
+45.20 x 251 y 4905 vx 0 vy 0 - V | up left
+45.23 x 251 y 4898 vx 0 vy 0 - V | up left
+45.27 x 251 y 4890 vx 0 vy 0 - V | up left
+45.30 x 251 y 4883 vx 0 vy 0 - V | up left
+45.33 x 251 y 4876 vx 0 vy 0 - V | up left
+45.37 x 251 y 4868 vx 0 vy 0 - V | up left
+45.40 x 251 y 4861 vx 0 vy 0 - V | up left
+45.43 x 251 y 4854 vx 0 vy 0 - V | up left
+45.47 x 251 y 4846 vx 0 vy 0 - V | up left
+45.50 x 251 y 4839 vx 0 vy 0 - V | up left
+45.53 x 251 y 4832 vx 0 vy 0 - V | up left
+45.57 x 251 y 4824 vx 0 vy 0 - V | up left
+45.60 x 251 y 4817 vx 0 vy 0 - V | up left
+45.63 x 251 y 4810 vx 0 vy 0 - V | up left
+45.67 x 251 y 4802 vx 0 vy 0 - V | up left
+45.70 x 251 y 4795 vx 0 vy 0 - V | up left
+45.73 x 251 y 4788 vx 0 vy 0 - V | up left
+45.77 x 251 y 4780 vx 0 vy 0 - V | up left
+45.80 x 251 y 4773 vx 0 vy 0 - V | up left
+45.83 x 251 y 4766 vx 0 vy 0 - V | up left
+45.87 x 251 y 4758 vx 0 vy 0 - V | up left
+45.90 x 251 y 4751 vx 0 vy 0 - V | up left
+45.93 x 251 y 4744 vx 0 vy 0 - V | up left
+45.97 x 251 y 4736 vx 0 vy 0 - V | up left
+46.00 x 251 y 4729 vx 0 vy 0 - V | up left
+46.03 x 251 y 4722 vx 0 vy 0 - V | up left
+46.07 x 251 y 4714 vx 0 vy 0 - V | up left
+46.10 x 251 y 4707 vx 0 vy 0 - V | up left
+{"end":"shrine","time":108.3,"rescues":1}
+Tue Nov 24 17:08:16 EST 2026

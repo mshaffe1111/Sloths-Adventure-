@@ -6,9 +6,12 @@
 (t 37-46 s; seeds 14, 30, 32, 61, 63, 76, 84; on base only 30 and 43 failed there). (a) Frame-trace kid N 63 (it fails on that spot
 alone). The spot is the MILLRACE, not a face: on normal seed 63 the pieces there are the same on base and face (b26r/spot-63.txt: jetty
 233-473 @4927, drift logs 545-715 and 787-957 @4955 over a put-back river 473-1271; no catch bough, no face). Reading: the face changes
-when he reaches it (the route before it no longer falls through), so the drift logs' phase differs. (a) Frame-trace kid N 63 with
-b26q/frames26.mts.txt, window x 200-1300, y 4850-5000, and name the cause (bot, engine or data; rule 28) BEFORE any fix. (b) Send the
-lead the trace and the count. (c) Then the Normal floor (below), then the residue.
+when he reaches it, so the drift logs' phase differs. TRACED (b26r/frames-kidN63-river.txt, frame clock; b26r/frames26r.mts.txt: b26q's
+copy read --t0/--t1 as an X window with y fixed 6290-6470, this one reads them as times, --y0/--y1 a y window): going left over the river
+he jumps onto a drifting log, RUNS ITS LENGTH AT FULL SPEED (vx -285) and runs off its left end into the water (x 601 @4963; again at
+1009), put back twice, short a third time, then set down on the jetty (x 437). (a) Second run for the cause (rule 28: two per cause):
+kid N 84 or 14, same window; then rule where it goes: the BOT (the kid persona's jump at a moving log's end, if the child tester would
+make it) or the STAGE (the log's end too far from the jetty at that phase). (b) Send the lead both traces and the count. (c) Then the Normal floor (below), then the residue.
 
 ## Done this box (evidence in b26r/)
 | step | result | evidence |
