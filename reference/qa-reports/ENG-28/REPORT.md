@@ -1,8 +1,48 @@
-# ENG-28 REPORT (2-8's pieces ahead, Lane 2): session 7 (ENG-28g), started 5:54 PM ET, handed over 6:05 PM ET (both from date)
+# ENG-28 REPORT (2-8's pieces ahead, Lane 2): session 8 (ENG-28h), started 6:07 PM ET, handed over (in progress) (both from date)
 (Session 2 ENG-28b 2:29-2:50 PM ET; session 3 left no commit; session 4 ENG-28d 4:21-4:42 PM ET; session 5 ENG-28e 4:46-5:03 PM ET;
-session 6 ENG-28f 5:35-5:47 PM ET. Sessions newest first.)
+session 6 ENG-28f 5:35-5:47 PM ET; session 7 ENG-28g 5:54-6:05 PM ET. Sessions newest first.)
 
-## EXACT NEXT STEP (session 8)
+## EXACT NEXT STEP (session 9)
+(PROVISIONAL, written mid-session) Branch t-eng-28-wip, code head 94cf0d86 (`git fetch origin t-eng-28-wip`, confirm). Rulings A, B, C
+are BUILT and lineBot is 8/8 on frozen 94cf0d86. Running when this was written: tierBots and lockall --check on frozen 94cf0d86; the
+trip count (ROAD_TRIPS) and the suite shards not yet started. If no later hand-over replaced this: run them on a frozen tree of the
+code head (recipes in session 6's steps below; the suite in 6 shards of the CLAUDE.md glob, at most two at a time), the CI tool line
+(gates.yml rolled, the `npx tsx --test tools/engine/library.test.ts ...` line), then land on a NEW branch t-eng-28 (no force).
+
+## SESSION 8 DONE (frozen trees /home/user/wt28h1 for the probe, /home/user/wt28h2 at 94cf0d86 for every run)
+- The lead's ruling A BUILT (tools/inspect/lineBot.test.ts floodRun): `high` = a grounded stand before the first close on a piece of the
+  HIGH ROAD ONLY: highRoad's chain minus the fork's shared ends, W (chain[0], both roads climb it) and C (the chain's last piece: the low
+  road climbs out of the walkway onto it, both roads end there), named 'the fork's shared ends' in the doc comment. The toy's chain is
+  W, P, B, C, so `high` reads P and B (asserted: chain length >= 3).
+- The lead's ruling B MEASURED and BUILT. Scratch probe (lineBot.diag.test.ts on frozen wt28h1, never committed: P's first grounded stand
+  and the first close, by e.gameTime). The middle hops onto P at 6.933 s at EVERY late (18 aside, below); the close at 9.03 - (late - 18):
+  | late | middle: close - first stand on P | the close | adult: close - on P (4.567 s) |
+  | 19   | +1.100 s (high, setBack 0)       | 8.033 s   | +3.467 s                       |
+  | 20   | +0.100 s (high, setBack 0)       | 7.033 s   | +2.467 s                       |
+  | 21   | -0.900 s (on P after the close)  | 6.033 s   | +1.467 s                       |
+  | 22   | -1.900 s                         | 5.033 s   | +0.467 s                       |
+  Seeds 1/2/3 identical at every late, both tiers; every run ends shrine, home 3, setBack 0. The widest is late 19, +1.10 s (over the
+  0.25 s floor, so no stop): 'too late' re-planted at late 19 at the same bar (6 runs: shrine, high, setBack 0, home 3), the derivation
+  and the margins in its comment. The read-removed plant already runs at late 19, so the two now differ only by the read: GREEN with the
+  read on (test 7), RED with it off (test 8, split >= 1). (Session 7's '0.07 s at late 19' was the late-20 reading: close 7.03.)
+- The lead's ruling C WRITTEN in W2_FLOOD's comment (src/game/gen2/worlds/w2.ts): the model, not a measure (the middle lands 136 past
+  W 150's face against the approved 86), the verdict and the bots agree on W 60 (all walk off) and W 150 (all board P), the verdict
+  refuses 146 so it errs on the safe side; calibrating `land` against the tier bots is a later job (R-165.424). No number changed.
+- lineBot 8/8 on frozen 94cf0d86 (every test re-ran; the four heron tests and the read-removed plant unmoved, GREEN as before).
+  flood.test + floodLay.test 15/15 on the same tree.
+- RUNS on frozen 94cf0d86: see the hand-over (in progress).
+
+## FOR THE LEAD: R-165.424's bot list (no bot change in this job)
+1. The late-18 read at the boundary (re-measured this session on the passing shape, frozen wt28h1, seeds 1/2/3 identical): the MIDDLE
+   reads LOW at late 18 and the close (9.03 s) splits the line: high false, setBack 3, first stand on P only at 18.53 s (after the
+   close, the high road the only way on), end shrine, home 3. The adult also goes low and beats the close (setBack 0). At late 19 both
+   read high. A bot-read fault at the boundary (the read sends him low about 1 s too late), not a toy or verdict fault.
+2. Calibrating W2_FLOOD.climb.land against the tier bots (the middle's real landing 136 px past W 150's face, the adult's 66 on W 60,
+   against the model's 86): the verdict's model is the stricter stand-in today; measure each tier's landing and pause on real wall-steps.
+3. The brick's bot run: no bot drives floodLay.test's brick (lineBot drives only the toy); READY-28 runs the bots on 2-8's real draft
+   (the lead accepted this).
+
+## EXACT NEXT STEP (session 8, superseded by session 9's above)
 Branch t-eng-28-wip, head 91c2ee16 + this hand-over commit (`git fetch origin t-eng-28-wip`, confirm). `npm ci --no-audit --no-fund --legacy-peer-deps`.
 STOPPED on the lead's stop condition (a moved verdict): lineBot went 7/8 -> 5/8 on the new toy shape. Read your queue for the lead's
 ruling on (A) and (B) below BEFORE changing any test. Then: lineBot 8/8 on a frozen tree; ROAD_TRIPS over 2-1..2-7 and 1-2 (scratch
