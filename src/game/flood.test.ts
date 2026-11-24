@@ -7,6 +7,8 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import { FloodClock, floodFaults, floodSurface, floodTailOff, highRoadFaults, type Flood, type FloodWater } from './flood.ts';
 import { join, newTrail, record, rejoin, setOnBank, stepLine, type Follower } from './follow.ts';
+import { FollowPlay } from './followPlay.ts';
+import type { Platform } from './types.ts';
 import { W2_FLOOD, W2_FOLLOW } from './gen2/worlds/w2.ts';
 
 const LIP = 500;
@@ -123,4 +125,65 @@ test('a step down of 60 px he walks off is a walk for the line, never a wait (2-
   const f = join(line, 'duck', { x: 0, y: LIP }, { x: 0, y: LIP });
   for (let i = 0; i < 30 * 6; i++) stepLine(t, line, W2_FOLLOW.pace.normal, W2_FOLLOW.gap, 1 / 30);
   assert.ok(f.x > 400 && f.y === LIP + 60, `it walked down the step with him (x ${Math.round(f.x)}, y ${Math.round(f.y)})`);
+});
+
+/**
+ * The ENGINE's flood on a toy floor, stepped in the engine's order (engine.ts: the clock first, each water it closed handed to the line,
+ * then the line's step; stage.deep = the clock's deepAt; the flood's water splash-back read LIVE as it rises): he frees five at the start
+ * cage, which starts the clock, and walks through the low road to stand just past it; the line bunches behind him, the tail in the water.
+ */
+function engineFlood(setBack: boolean) {
+  const flood = laid(W2_FLOOD.flown.px, false);
+  // (deep is brim-full at its banks' lip, as the lay makes it: gen2/floodLay.ts)
+  const w = (flood.waters[1] = { ...flood.waters[1], deep: { y: LIP, near: flood.waters[1].deep!.near } });
+  const clock = new FloodClock(flood);
+  let now = 0;
+  let levels = flood.waters.map((q) => q.y0);
+  const solid = (id: number, x: number, width: number, y: number) => ({ id, x, y, width, height: 200, type: 'solid' }) as Platform;
+  const platforms = [solid(1, 0, w.x0, LIP), solid(2, w.x0, w.x1 - w.x0, LIP + 90), solid(3, w.x1, 3000, LIP)];
+  const fp = new FollowPlay(W2_FOLLOW, false, {
+    exitX: 9000, zones: [], covers: [], platforms,
+    safeWater: [{ x0: w.x0, x1: w.x1, get y() { return levels[1]; } }],
+    deep: (x, y) => clock.deepAt(x, y, now),
+  }, { x: flood.start.x - 60, y: LIP });
+  const kinds = ['duck', 'otter', 'capy', 'duck', 'otter'] as const;
+  for (const k of kinds) fp.free(k, { x: flood.start.x, y: LIP - 40 }, { x: flood.start.x, y: LIP });
+  assert.equal(clock.freed(flood.start.id, now), true, 'the start cage starts the clock');
+  const stand = w.x1 + 60;
+  let x = flood.start.x - 60;
+  let midRise: { paddlers: number; off: number } | undefined;
+  let setOn: Follower[] = [];
+  for (let i = 1; i <= 30 * 32; i++) {
+    now = i / 30;
+    const st = clock.step(now);
+    levels = st.levels;
+    if (setBack) for (const q of st.closed) setOn = setOn.concat(fp.floodClosed(q));
+    x = Math.min(stand, x + 150 / 30);
+    const inWater = x > w.x0 && x < w.x1;
+    fp.step(1 / 30, { x, y: inWater ? levels[1] : LIP, vy: 0, grounded: true }, undefined, () => 0.5);
+    // (half way to the close the water is rising: every one paddling rides its LIVE surface)
+    if (!midRise && now >= flood.close / 2) {
+      const p = fp.line.filter((f) => f.paddle);
+      midRise = { paddlers: p.length, off: Math.max(0, ...p.map((f) => Math.abs(f.y - levels[1]))) };
+    }
+  }
+  const lost = fp.line.filter((f) => clock.deepAt(f.x, f.y, now));
+  return { fp, w, lost, setOn, midRise: midRise!, levels, now };
+}
+
+test('the engine meets the flood (FollowPlay + FloodClock on a toy floor): at the close the tail in the low road is set on its near bank, none left in deep water', () => {
+  const g = engineFlood(true);
+  assert.ok(g.midRise.paddlers >= 1, `half way to the close the tail paddles (${g.midRise.paddlers})`);
+  assert.ok(g.midRise.off < 1, `and rides the rising surface live (off by ${g.midRise.off.toFixed(2)} px)`);
+  assert.equal(g.levels[1], g.w.deep!.y, 'the low road is deep (brim-full) at the end');
+  assert.ok(g.setOn.length >= 1, `the close set ${g.setOn.length} on the near bank`);
+  for (const f of g.setOn) assert.ok(f.state === 'spooked' && f.sat && f.x === g.w.deep!.near.x && f.y === g.w.deep!.near.y, 'each sits on the near bank, waiting for him');
+  assert.equal(g.lost.length, 0, `GREEN: none in deep water (${g.lost.map((f) => Math.round(f.x)).join(', ')})`);
+  // (the ones past the low road at the close stay with him; the ones set back wait for him, not drowned and not over the wall)
+  assert.equal(g.fp.line.filter((f) => f.state === 'follow').length + g.setOn.length, 5, 'every one is with him or on the near bank');
+});
+
+test('the engine meets the flood, planted: without floodClosed the tail is left paddling in the low road as it turns deep, so the toy goes RED', () => {
+  const g = engineFlood(false);
+  assert.ok(g.lost.length >= 1, `RED: ${g.lost.length} left in deep water`);
 });
