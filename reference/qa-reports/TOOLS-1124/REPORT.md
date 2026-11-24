@@ -41,8 +41,14 @@ how the check gets real frame boxes (above).
 - The repaired cut and release 4's shipped weir frame now agree: 0 alpha pixels differ by more than 8 (the old cut: 2,116).
 - Still (before on top, after below, on a dark ground): `weir-seam-before-after.png`. The dark line across the falls is gone.
 
-## Gates on the final head
-GATES
+## Gates on the final code head (f812eeb95; this commit adds only the report)
+- `npx tsc --noEmit -p .`: exit 0.
+- The CI tool line (gates.yml rolled, now with tools/team/bgguard.test.ts): 355 tests, 354 pass, 0 fail, 1 todo (chaseBots' open
+  CHILD-bot todo, not mine). `src/game/ciTests.test.ts`: 4/4 (the new test file is on a workflow line).
+- `node tools/perf/artcheck.mjs`: exit 1. Sizes PASS; the row plant bites (old weir cut trips, repaired cut passes); the row check
+  over 1,012 images in 89 s FAILS on the 26 frames above (artcheck-main.log). This red is the finding the lead decides on.
+- My own miss, caught: my first tool-line run read the command from gates.yml by LINE NUMBER after my own edit had moved it, so it
+  ran an empty command and "passed". I re-ran it, finding the line by its content. Countermeasure proposed (Learned below).
 
 ## Polish check
 - The weir still above: the line is gone and nothing new shows along it (the fill blends foam into pool).
@@ -53,5 +59,7 @@ D115 (a check, not a rule: the hook replaces the 'never a shell &' sentence); D1
 ran on the final head); D119 (no heredoc in a commit chain); D128 (every stamp from `date`).
 
 ## Learned / proposed
+- Never read a CI command by line number from a file you just edited: grep it by content and print the count of tests it ran; a
+  tool-line run that reports no "# tests" line is a failed run, not a pass. (Proposed for dispatch-packet.md's tool-line rule.)
 - A gate that needs pixels must say how it decodes: node cannot read WebP, so any future pixel gate either rides the Chromium the
   gates job installs (as here) or adds a decoder to the project on purpose.
