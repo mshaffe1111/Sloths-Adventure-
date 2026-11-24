@@ -2,6 +2,18 @@
 
 Merged at INT-14 (11-20, t-int-14): §0zq-25d/§0zq-25c ENG-25c (2-5's snap rows level, the snapper's ground, the straddle), §0zq-NOISE ENG-NOISE (one noise channel), §0zq-PROWL ENG-PROWL (sight.up + the leap), §0zq-small3 ENG-SMALL3 (R-165.317/.319/.321), and PAINT-292 (World 1's painted planks and stones; no section here). Merged at INT-13 (11-19, t-int-13): §0ENG23 ENG-23 (followers, the heron reads the line) and §0zl-168 TIME-168 (timecheck), §0zm-25b ENG-25b (the snapper bot skill, the meter's snap channel) and §0zl-25 ENG-25 (2-5's snap stones and snapper rows), §0zn-26b ENG-26b and §0zm-26 ENG-26 (the water wheel), §0W2A ART-W2A (2-3's painted follow poses), §0zo ART-W2B (the wheel's painted draw), §0zo-285c/§0zo-285b/§0zo-285 ENG-285 (the judges and bots fly the engine's Pokey), §0zp-284 FIX-284/284b (2-2's big pads, the real tap hop), §0zp-24d BUILD-24d, §0zn-24c ENG-24c (the raft look, the glow) and §0zm-24 BUILD-24 (2-4) joined; rewritten at the INT-12 merge (11-18, t-int-12): four members wrote here the same day, so labels are suffixed where they met: §0zm-22p ART-22P (CI's seed-list matrix, R-165.278); §0zl-24 ENG-24 (a liana over a river; its REPORT cites it as §0zl); §0zm BUILD-19b, §0zn ENG-19c and §0zl BUILD-19 (t-build-19, the labels its REPORT cites). Before them FIX-22b (11-15): section 0zk.
 
+## 0zr-W2FIN. ENG-W2FIN (eng-w2fin 78bf17d60 on release-0.10.3, 11-24): a wheel's fall takes its own pond as its river (R-165.431)
+- w2.ts w2Finish hasRiver: a fall is a WHEEL'S fall when that wheel's own jetty lip (way>0: jetty right edge = f.x0; way<0: jetty.x = f.x1)
+  and its own street (street.y = f.y) are its ends (Wheel.lay.jetty/streetId); its river is the wheel's pond (wheelPond, surface
+  w.cy + w.R + WHEEL.pond, spanning the fall). Every other fall keeps 2-7's height rule (ENG-GROUND-b) and needs a bank at each end.
+- Why it broke: the gen2 fall for place `wheel` runs jetty lip -> the sweep's far end at the STREET's height (pipeline.ts wheel gap); the
+  street reaches in over the top, so the far end has no bank by design and the pond is a wheel's height under the lip. t-build-26 passed
+  only because its hasRiver matched rivers by x alone (the height rule replaced that).
+- Trap: the gen2 fall record (types.ts falls) carries no `wheel` mark (pipeline.ts ~4216 drops g.wheel); the finish finds the wheel by
+  geometry. If the Architect adds the mark, w2Finish can read it instead.
+- Planted: w2.test.ts 'a fall over a water wheel's sweep...' (every row, both settings, both ways) and 'another storey's fall over a wheel's
+  pond...' (RED on an x-only loosened variant: reference/qa-reports/ENG-W2FIN/loosened.txt).
+
 ## 0zr-26s. ENG-26s (t-build-26-wip-26s ca3a7d063, 11-23): release 4's base, main merged into t-build-26; three CI reds fixed at cause
 - Merge b3e0a8206: 2-3 is main's arc (w2-23) and 2-6 is t-build-26's (w2-26); W2Plan is now '2-7' | '2-8' | '2-9'. firsttimer's stuck
   clock keeps both the figs' progress hold and FETCH-CLOCK. calibration-main.jsonl took t-build-26's side: re-judge it with tierBots.
