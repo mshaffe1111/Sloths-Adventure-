@@ -3087,6 +3087,10 @@ export class FirstTimerRun {
       const held = this.padRead(p, dir, t);
       if (held) {
         this.clockHeld = !held.left && !held.right && !held.jump;
+        // (ENG-PLANT-e: a stand on a ride read is a stop he MEANS: a bot with no holdQ (the adult, the kid) never lets go of a bare {}
+        //  otherwise (thumbify, R-165.59): 2-2 adult Normal 24 on candidate 10 landed on lift #117, padRead stood him at t 140.20 and his
+        //  thumb ran him off its front, lives 3 -> 1, rescued)
+        if (this.clockHeld) this.stopMeant = true;
         return held;
       }
     }
