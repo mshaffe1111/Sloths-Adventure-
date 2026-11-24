@@ -12,7 +12,7 @@
 import '../headlessDom.ts';
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { bucketAt, lipOff, turnTime, wheelLips, WHEEL, type Wheel } from '../wheel.ts';
+import { axleFromJetty, bucketAt, lipOff, turnTime, wheelLips, WHEEL, type Wheel } from '../wheel.ts';
 import { RealPlay, DT } from '../realPlay.ts';
 import { setDifficulty } from '../difficulty.ts';
 import type { Platform } from '../types.ts';
@@ -202,4 +202,35 @@ test('PLANTED: a moved jetty, a bough in the sweep, a drowned ledge, no pond, an
   const high: Wheel = { ...w, lay: { ...lay, up: 100 } };
   const f5 = wheelFaults({ ...st, platforms: st.platforms.map((p) => (p.wheel ? { ...p, wheel: { w: high, i: p.wheel.i } } : p)) }, 'normal');
   assert.ok(f5.some((f) => /stands 100 px over the top bucket, past the 80 px/.test(f)), `${f5}`);
+});
+
+// BUILD-26t, the lead's ruling 2 (place A: adult Easy 10 of 13 at 2-6's great wheel, b26q3/frames-adultE26-standingOn-107.txt): the
+// rising bucket passes the jetty's end at the jetty's own height (axleFromJetty: its near edge IS the jetty's end there), and the engine
+// set a rider standing still on the bucket's near end back on the jetty (his y snapped to its top though he stood past its end); the bot
+// then hopped in again, every turn. 2-6.md NEW 1: no other solid in the sweep. RED on ccc0d1b1/1af03d233 (the stage's fault).
+test("TOY (ruling 2): a rider held still on a bucket's near end rides up past the jetty, never set back on it (the great wheel, Easy)", () => {
+  setDifficulty('easy');
+  const r = new RealPlay('2-6', 1);
+  const jetty: Platform = { id: 1, x: 635, y: 1013, width: 240, height: 24, type: 'solid' };
+  const ax = axleFromJetty(jetty.x + jetty.width, jetty.y, 200, WHEEL.bucketW, 1);
+  const w: Wheel = { cx: ax.cx, cy: ax.cy, R: 200, N: 6, W: WHEEL.bucketW, V: 60, way: 1 };
+  const buckets: Platform[] = [];
+  for (let i = 0; i < w.N; i++) buckets.push({ id: 100 + i, x: 0, y: 0, width: w.W, height: WHEEL.bucketH, type: 'moving', wheel: { w, i } });
+  r.bare([{ id: 2, x: 0, y: w.cy + w.R + 400, width: 4000, height: 200, type: 'solid' }, jetty, ...buckets]);
+  r.t = 0;
+  r.frame();
+  // (bucket 0 is at the bottom at t 0; he stands on its near end, the jetty's side, his left edge on its edge, and does nothing. RED there
+  // and with him 6, 10 or 16 px over it (the trace: 6 px over, x 890 on a bucket at 896); 4 px in, he rides clean)
+  r.stand(buckets[0].x, buckets[0].y);
+  r.frame();
+  r.frame();
+  const on: number[] = [];
+  const n = Math.round(turnTime(w) / 4 / DT);
+  for (let k = 0; k < n; k++) {
+    r.frame();
+    if (on[on.length - 1] !== r.standingOn) on.push(r.standingOn);
+  }
+  assert.ok(!on.includes(jetty.id), `set back on the jetty as his bucket rose past its end (what he stood on, in turn: ${on.join(' -> ')})`);
+  assert.equal(r.standingOn, 100, 'still in his bucket a quarter turn on');
+  assert.ok(r.p.y < jetty.y - 100, `carried up past the jetty (feet at ${Math.round(r.p.y)}, the jetty's top ${jetty.y})`);
 });

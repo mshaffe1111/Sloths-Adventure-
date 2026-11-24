@@ -1,3 +1,45 @@
+# BUILD-26t (session 4 of BUILD-26q; t-build-26-wip-26q, face at 1af03d233, toy on the next commit). Started 5:33 PM ET 11-24 (by `date`); this box written 5:48 PM ET
+
+## EXACT NEXT STEP
+**For the next session (base: this branch's head). Ruling 1 DONE on the screen; ruling 2's toy is RED (on purpose); rulings 2-fix and 3 not started.**
+(a) RULING 2, THE FIX (the toy is in src/game/gen2/wheel.test.ts, last test, "TOY (ruling 2)": RED on this head, by design, 100 -> 1 -> 100).
+The toy is the great wheel on Easy exactly as 2-6 builds it (jetty 635-875 @1013, axle 1037/841 = axleFromJetty(875, 1013, 200, 120);
+probed on seeds 26 and 57 Easy: the built jetty IS the lay's, no Easy widening). A rider standing still with his left edge on the
+bucket's near end (or 6/10/16 px over it; the trace: 6 px over) is set on the jetty as the bucket rises past its end; 4 px in, he rides
+clean. So the jetty's end stands in the sweep of a rider's body at its own height. Fix per the ruling: keep the jetty's end clear of the
+bucket's path at its height on every wheel with a jetty, both settings (2-6.md NEW 1). Where to look: wheel.ts axleFromJetty
+(cx = jettyX + way*(lipOff(R) + W/2): the bucket's near edge meets the jetty's end exactly at jetty height) and wheelLay.ts layWheel /
+the layout check (lips within WHEEL_FAIR.lip of the flown layout) and the board check (a tap hop boards at 100% of moments). Moving
+the axle out (or the jetty's end in) by about a body's overhang changes the flown rows: re-fly (tools/engine/wheelflights.ts) and the
+'flight table is the engine' test must stay GREEN; Easy board share must stay 100%. Then the toy GREEN, the wheel tests GREEN.
+(b) Then place B (seeds 32, 89, 92 adult Easy, x ~630 y ~3434): cluster and read; tell the lead what it is BEFORE any fix.
+(c) Then ruling 3 (the Normal floor), the STEP 0 plan as GO'd (re-lay A, P g1<, U c1^; the plan is in BUILD-26s below; no token, no R/V,
+no bot slowed).
+(d) Then ONE castBots --proven 2-6, lockall (2-6 the only mover: the face's `art: 'facePost'` is a 2-6-only change; lockall may show
+it on 2-6), paint --stages 2-6, stills of every changed beat both ways; the suite + the CI tool line ONCE on the final head; land on
+t-build-26 (merge, no force); hash and table to the lead.
+
+## Ruling 1, THE FACE'S LOOK: done (1af03d233, pushed; stills sent to the lead)
+Each tower soft-pit face is drawn by its OWN drawer (src/game/facePostArt.ts) as the inventory's w1-post-vine-wrapped ('post / scaffold',
+made thing, World 2 best; picked over rope-wrapped: ~28 x 94 at the collider's height where the rope one is ~34 wide with ferns into the
+gap), shipped as src/assets/props/face-post.webp (142x469, 16 KB; it was only on origin/art-director). The face platform carries
+art 'facePost' (types.ts), so protoArt bankPainted and the platform look skip it; engine.ts draws it in the 'back' layer (over the earth,
+behind every ledge: the lip's plank and the bough sit on it). Collider unchanged (24 x 94). 2-6 preloads it (stageSheets '2-6':
+['face-post'], stagePreload). NO play code reads `art` (physics, castBots, lockall greps: none).
+Tests: towerSoftPit.test now also fails any piece at a soft pit's end that the painted bank would take with no drawer of its own:
+RED 384 (2-6: 192 boughs x 2) with the mark missing (my first try lost it: mk's piece was copied, the original kept no art), GREEN with
+it. stageSheets.test 8/8 (the new key checked both ways), src/game/art tests 16/16, tsc clean. All on the working tree of 1af03d233.
+Stills (b26t/, same spots as b26q3: layout 0, lowest soft pit, Pokey on the near street; Easy + Normal, upright + sideways, close + wide):
+upright, a lashed post under each street end, the plank over its top (its cap shows a few px above the plank, like a pier post), the bough
+strung between their feet; no seam, no stray look. Sideways: the posts' tops under each lip; the bough is under the screen (R-165.435).
+Polish check: face-2-6-L0-easy-pit0-near-upright-close.jpg, face-2-6-L0-normal-pit0-near-upright-wide.jpg (looked at); the
+sideways close (normal) looked at; the other five shot, not opened by me (same frame cut).
+
+## Not run on this head (named plainly)
+castBots, lockall, paint, the full suite, the CI tool line, drawcheck/clipcheck/build gates: all wait for the final head (step d).
+Lessons applied: D115/D119/D128 as briefed (no heredoc in a commit; times from `date`); D59 (no run left in the background: vite only,
+stopped at hand-over). LESSONS.md on every branch I can read ends before D111; D111-D132 were not found to read.
+
 # BUILD-26s (session 3 of BUILD-26q; t-build-26-wip-26q, head b6a35d7e8): the lead's rulings 1-5. Started 5:09 PM ET 11-24 (by `date`); this box written 5:25 PM ET
 
 ## EXACT NEXT STEP
