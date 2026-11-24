@@ -226,6 +226,7 @@ import { beatClock } from './beat.ts';
 import { FollowPlay } from './followPlay.ts';
 import { drawFollowers, drawHerons } from './followArt.ts';
 import { W2_FRAMES } from './w2PropsData.ts';
+import { drawFacePosts } from './facePostArt.ts';
 import { drawEdgeMarks, edgeMarks, safeInsets, stillMarks, type EdgeMark, type MarkView } from './edgeMarker.ts';
 import { lineFaces, type Face } from './followFaces.ts';
 import { aimBreaths, noteArrivals, type BreathWatch } from './breathAim.ts';
@@ -503,6 +504,8 @@ export class GameEngine {
     return (this.proto?.beats ?? []).map((b) => b[2]);
   }
   private pushLogs: Platform[] = [];
+  /** a tower soft pit's faces, each drawn as a rope-lashed post in the 'back' layer (facePostArt.ts; BUILD-26t) */
+  private facePosts: Platform[] = [];
   private drawPlats: Platform[] = [];
   /** the hand-built stage's painted props: the platforms they draw, and their state */
   private paintedPlats: Platform[] = [];
@@ -1120,6 +1123,7 @@ export class GameEngine {
     if (this.currentStage.waterHint) this.currentStage.waterHint.shown = false;
     this.passTips = [];
     this.pushLogs = this.platforms.filter((pl) => !!pl.push && !pl.art); // (a pushed boulder is World 4's to paint: w4Play.ts)
+    this.facePosts = this.platforms.filter((pl) => pl.art === 'facePost');
     this.w4 = this.proto?.w4 ? new W4Play(this.proto.w4, this.platforms, this.vines) : null;
     this.w5 = this.proto?.w5 ? new W5Play(this.proto.w5, this.platforms, this.vines) : null;
     this.moments.length = 0;
@@ -7563,7 +7567,11 @@ export class GameEngine {
     // (the stage's runtime pieces that stand behind the platforms: pieces/index.ts, layer 'back': a water wheel behind its jetty and street,
     //  in front of the earth. Painted ground: drawn by protoArt.ts drawProtoScene over its soil, before its trunks and ledges (the soil of a
     //  bank above runs down through the wheel's sweep); drawn ground: here, before the platforms. Once a frame either way)
-    const drawBack = () => { if (this.pieces.length) drawPieces(this.pieces, ctx, 'back', this.pieceHost); };
+    const drawBack = () => {
+      // (a soft pit's faces: a post under each lip's end, over the earth and behind every ledge, facePostArt.ts)
+      if (this.facePosts.length) drawFacePosts(ctx, this.facePosts, { x0: this.camera.x, x1: this.camera.x + this.camera.viewportWidth, y0: this.camera.y, y1: this.camera.y + this.camera.viewportHeight });
+      if (this.pieces.length) drawPieces(this.pieces, ctx, 'back', this.pieceHost);
+    };
     const paintedGround = this.paintKit && protoArtReady();
     if (!paintedGround) drawBack();
     // Render In-World Trees, Vines and Platforms

@@ -41,7 +41,12 @@ export function openEnds(st: Built): { open: string[]; boughs: number } {
     const top = bough.y;
     for (const [end, x] of [['x0', bough.x - 2], ['x1', bough.x + bough.width + 2]] as const) {
       // (his band over the bough, just past its end: covered top to bottom by solid pieces standing there)
-      const cover = solid.filter((q) => q !== bough && q.x <= x && q.x + q.width >= x && q.y < top && q.y + q.height > top - BODY_H)
+      const covering = solid.filter((q) => q !== bough && q.x <= x && q.x + q.width >= x && q.y < top && q.y + q.height > top - BODY_H);
+      // (and SEEN: a covering piece the painted bank would take, 90 px or taller or soil with no drawer of its own (protoArt.ts
+      // bankPainted), is drawn the tower backdrop's soil: a wall the player cannot see, BUILD-26s. The face is drawn by its own drawer,
+      // a rope-lashed post (art 'facePost', facePostArt.ts; BUILD-26t, the lead's ruling 1))
+      for (const q of covering) if ((q.height >= 90 || q.soil) && !q.art && !q.push) out.push(`the soft pit at x ${bough.x}-${bough.x + bough.width}: the piece standing at its ${end} end (x ${q.x}, y ${q.y}, ${q.width} x ${q.height}) has no drawer of its own: the painted bank draws it as the backdrop's soil, unseen`);
+      const cover = covering
         .map((q) => [Math.max(q.y, top - BODY_H), Math.min(q.y + q.height, top)] as const).sort((a, b) => a[0] - b[0]);
       let reach = top - BODY_H;
       for (const [a, b] of cover) if (a <= reach + 0.5) reach = Math.max(reach, b);

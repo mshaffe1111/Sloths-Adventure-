@@ -2970,7 +2970,10 @@ export function layStage(budget: StageBudget, graph: MissionGraph, kit: WorldKit
                 .sort((a, b) => a.y - b.y)[0];
               if (lip && lip.y + lip.height >= bough.y) continue;
               const top = lip ? lip.y : bough.y - TOWER.hop;
-              placed.seam.push(mk(end === g0.x0 ? end - PIT_WALL.w : end, top, PIT_WALL.w, 'block', bough.y + bough.height - top, 'moss_stone'));
+              // (drawn as a rope-lashed post by its own drawer, facePostArt.ts: never the painted bank's soil, BUILD-26t)
+              const face = mk(end === g0.x0 ? end - PIT_WALL.w : end, top, PIT_WALL.w, 'block', bough.y + bough.height - top, 'moss_stone');
+              face.art = 'facePost';
+              placed.seam.push(face);
             }
           }
         } else if (!g.water && FR?.catchDrop) {
