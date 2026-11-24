@@ -1,0 +1,39 @@
+failing runs 83; rescue places 83; floor 100 s
+ 59  w2-26-first-street | fell back down from here N times  [adult E 24, kid E 34, middle E 1]  seeds 2,4,5,10,12,14,18,19,34,40,48,52...
+       e.g. adult easy s2 at 937,6392 on 17:836,6384 w308
+       e.g. adult easy s4 at 927,6382 on 17:829,6374 w308
+       e.g. adult easy s5 at 934,6382 on 17:832,6375 w308
+  5  - | shrine (no rescue place)  [kid E 3, kid N 2]  seeds 15,51,93,30,43
+       e.g. kid easy s15 at NaN,NaN on -
+       e.g. kid easy s51 at NaN,NaN on -
+       e.g. kid easy s93 at NaN,NaN on -
+  4  - | under floor 98.8 s  [adult N 4]  seeds 16,17,41,47
+       e.g. adult normal s16 at NaN,NaN on -
+       e.g. adult normal s17 at NaN,NaN on -
+       e.g. adult normal s41 at NaN,NaN on -
+  3  - | under floor 98.6 s  [adult N 3]  seeds 13,74,76
+       e.g. adult normal s13 at NaN,NaN on -
+       e.g. adult normal s74 at NaN,NaN on -
+       e.g. adult normal s76 at NaN,NaN on -
+  2  w2-26-great-wheel | in a dip 75 px deep, a drop of 479 px ahead, water ahead, the way on is 193 px up  [adult E 2]  seeds 25,44
+       e.g. adult easy s25 at 1001,1039 on 71:977,1041 w120
+       e.g. adult easy s44 at 997,1039 on 71:977,1041 w120
+  2  - | under floor 99.1 s  [adult N 2]  seeds 26,42
+       e.g. adult normal s26 at NaN,NaN on -
+       e.g. adult normal s42 at NaN,NaN on -
+  1  w2-26-first-street | in a dip 281 px deep, water ahead, the way on is 332 px up  [adult E 1]  seeds 23
+       e.g. adult easy s23 at 684,6716 on 13:70,6716 w756
+  1  w2-26-top-wheel | water ahead, the way on is 125 px up  [adult E 1]  seeds 33
+       e.g. adult easy s33 at 643,3442 on 46:400,3455 w240
+  1  w2-26-great-wheel | in a dip 72 px deep, a drop of 479 px ahead, water ahead, the way on is 193 px up  [adult E 1]  seeds 60
+       e.g. adult easy s60 at 998,1039 on 71:977,1041 w120
+  1  w2-26-great-wheel | in a dip 76 px deep, water ahead, the way on is 194 px up  [adult E 1]  seeds 67
+       e.g. adult easy s67 at 994,1039 on 71:977,1041 w120
+  1  w2-26-millrace | fell back down from here N times  [adult N 1]  seeds 4
+       e.g. adult normal s4 at 381,4927 on 22:245,4927 w240
+  1  - | under floor 95.9 s  [adult N 1]  seeds 23
+       e.g. adult normal s23 at NaN,NaN on -
+  1  - | under floor 99.0 s  [adult N 1]  seeds 61
+       e.g. adult normal s61 at NaN,NaN on -
+  1  w2-26-wheel-bounce | in a dip 281 px deep, water ahead, the way on is 281 px up  [child E 1]  seeds 50
+       e.g. child easy s50 at 645,1799 on 95:477,1799 w398

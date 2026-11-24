@@ -1,0 +1,14 @@
+// the first street (route leg s3) and the climb above its exit, for one seed and setting
+const arg = (k: string) => { const i = process.argv.indexOf(k); return i > 0 ? process.argv[i + 1] : undefined; };
+const tree = arg('--tree')!;
+const { freshPhone } = await import(`${tree}/tools/inspect/firsttimer.ts`);
+const { RealPlay } = await import(`${tree}/src/game/realPlay.ts`);
+for (const set of ['normal', 'easy']) for (const seed of arg('--seeds')!.split(',').map(Number)) {
+  freshPhone(set as never);
+  const st = new RealPlay('2-6', seed).stage as any;
+  const legs = st.gen2.tower.route.legs; const s3 = legs.find((l: any) => l.uid === 's3'); const s4 = legs.find((l: any) => l.uid === 's4');
+  const y = s3.exit.y;
+  const pl = st.platforms.filter((p: any) => p.x < s3.x1 + 150 && p.x + p.width > s3.x0 - 10 && p.y >= y - 120 && p.y <= y + 120).sort((a: any, b: any) => a.x - b.x).map((p: any) => `${Math.round(p.x)}..${Math.round(p.x + p.width)}@${Math.round(p.y)}${p.style === 'moss_stone' ? 'B' : ''}`);
+  const v = st.vines.filter((q: any) => q.bottomY >= y - 5 && q.bottomY <= y + 5 && q.topY > y - 500).map((q: any) => `${q.x}:${q.topY}-${q.bottomY}`);
+  console.log(`${set} s${seed} s3 ${s3.entry.x},${s3.entry.y}->${s3.exit.x},${s3.exit.y} s4 entry ${s4.entry.x},${s4.entry.y} | climb ${v.join(' ')} | ${pl.join(' ')}`);
+}

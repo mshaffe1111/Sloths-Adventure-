@@ -1,0 +1,44 @@
+// BUILD-26q: cluster 2-6's failing runs by place (the section and the platform under the rescue) and by what the bot recorded.
+//   node --import tsx cluster26.mts --tree <tree> --rows rows.jsonl [--stage 2-6]
+import fs from 'node:fs';
+const arg = (k: string) => { const i = process.argv.indexOf(k); return i > 0 ? process.argv[i + 1] : undefined; };
+const tree = arg('--tree')!;
+const stage = arg('--stage') ?? '2-6';
+const rows = fs.readFileSync(arg('--rows')!, 'utf8').trim().split('\n').map((l) => JSON.parse(l));
+const { runHolds, stageFloor } = await import(`${tree}/tools/inspect/castBots.ts`);
+const { RealPlay } = await import(`${tree}/src/game/realPlay.ts`);
+const floor = stageFloor(stage, 1);
+const built = new Map<number, any>();
+const { freshPhone } = await import(`${tree}/tools/inspect/firsttimer.ts`);
+const stageOf = (seed: number, setting: string) => { const k = `${setting}:${seed}`; if (!built.has(k)) { freshPhone(setting as never); built.set(k, new RealPlay(stage, seed).stage); } return built.get(k); };
+type Hit = { bot: string; setting: string; seed: number; x: number; y: number; what: string; sec: string; plat: string };
+const hits: Hit[] = [];
+const fails = rows.filter((r) => !runHolds(r, floor));
+for (const r of fails) {
+  const st = stageOf(r.seed, r.setting);
+  const tmpl = new Map<string, string>((st.gen2?.sections ?? []).map((q: any) => [q.uid, q.template]));
+  const secs: any[] = (st.gen2?.tower?.route?.legs ?? []).map((l: any) => ({ ...l, template: tmpl.get(l.uid) ?? l.uid }));
+  const resc = (r.stuck ?? []).filter((s: any) => s.rescued);
+  if (!resc.length) { hits.push({ bot: r.bot, setting: r.setting, seed: r.seed, x: NaN, y: NaN, what: r.pass ? `under floor ${r.time.toFixed(1)} s` : `${r.end} (no rescue place)`, sec: '-', plat: '-' }); continue; }
+  for (const s of resc) {
+    // the section: x inside, y between its entry and exit storeys (a tower: x alone is ambiguous, D130), else the nearest by y
+    const inX = secs.filter((q) => s.x >= q.x0 - 5 && s.x <= q.x1 + 5);
+    const lo = (q: any) => Math.min(q.entry.y, q.exit.y) - 350, hi = (q: any) => Math.max(q.entry.y, q.exit.y) + 150;
+    const sec = inX.find((q) => s.y >= lo(q) && s.y <= hi(q)) ?? inX.sort((a, b) => Math.abs(s.y - (a.entry.y + a.exit.y) / 2) - Math.abs(s.y - (b.entry.y + b.exit.y) / 2))[0];
+    // the platform he stood on or fell to (top within 80 px below him, x inside)
+    const pl = (st.platforms as any[]).filter((p) => s.x >= p.x - 4 && s.x <= p.x + p.width + 4 && p.y >= s.y - 10 && p.y <= s.y + 80).sort((a, b) => a.y - b.y)[0];
+    const kind = String(s.what).replace(/\d+ times/, 'N times').replace(/\(its far wall -?\d+ px up\)/, '(wall)');
+    hits.push({ bot: r.bot, setting: r.setting, seed: r.seed, x: s.x, y: s.y, what: kind, sec: sec ? `${sec.template ?? sec.uid}` : '?', plat: pl ? `${pl.id ?? ''}:${Math.round(pl.x)},${Math.round(pl.y)} w${Math.round(pl.width)}${pl.kind ? ' ' + pl.kind : ''}` : 'none' });
+  }
+}
+fs.writeFileSync(arg('--out') ?? '/dev/null', hits.map((h) => JSON.stringify(h)).join('\n') + '\n');
+const by = new Map<string, Hit[]>();
+for (const h of hits) { const k = `${h.sec} | ${h.what}`; by.set(k, [...(by.get(k) ?? []), h]); }
+console.log(`failing runs ${fails.length}; rescue places ${hits.length}; floor ${floor} s`);
+for (const [k, H] of [...by].sort((a, b) => b[1].length - a[1].length)) {
+  const who = new Map<string, number>();
+  for (const h of H) who.set(`${h.bot} ${h.setting[0].toUpperCase()}`, (who.get(`${h.bot} ${h.setting[0].toUpperCase()}`) ?? 0) + 1);
+  const seeds = [...new Set(H.map((h) => h.seed))];
+  console.log(`${String(H.length).padStart(3)}  ${k}  [${[...who].map(([a, n]) => `${a} ${n}`).join(', ')}]  seeds ${seeds.slice(0, 12).join(',')}${seeds.length > 12 ? '...' : ''}`);
+  for (const h of H.slice(0, 3)) console.log(`       e.g. ${h.bot} ${h.setting} s${h.seed} at ${h.x},${h.y} on ${h.plat}`);
+}

@@ -1,0 +1,61 @@
+// BUILD-26q: castBots --proven on a frozen tree, keeping every run row WITH the stuck/rescue places (x, y, what).
+// Same run as castRun (firstTimer(stage, seed, CAST_BOTS[bot][setting], { cap: 1200, dotSetting: true })) and the same verdict
+// (runHolds / stageFloor, imported from the tree's castBots.ts). Usage (cwd = the frozen tree):
+//   node --import tsx cast26.mts --tree <tree> --stage 2-6 --seeds 1-100 --par 4 --out rows.jsonl [--bots a,b] [--setting both]
+import { spawn } from 'node:child_process';
+import fs from 'node:fs';
+const arg = (k: string) => { const i = process.argv.indexOf(k); return i > 0 ? process.argv[i + 1] : undefined; };
+const tree = arg('--tree')!;
+const stage = arg('--stage')!;
+const range = (s: string) => s.split(',').flatMap((p) => { const [a, b] = p.split('-').map(Number); return Array.from({ length: (b ?? a) - a + 1 }, (_, i) => a + i); });
+const seeds = range(arg('--seeds') ?? '1-100');
+const want = arg('--setting') ?? 'both';
+const settings = want === 'both' ? ['normal', 'easy'] : [want];
+const { CAST_BOTS, runHolds, stageFloor } = await import(`${tree}/tools/inspect/castBots.ts`);
+const { firstTimer } = await import(`${tree}/tools/inspect/firsttimer.ts`);
+const bots = (arg('--bots') ?? 'kid,adult,child,middle,expert').split(',');
+if (process.argv.includes('--child')) {
+  for (const bot of bots) for (const setting of settings) {
+    const who = CAST_BOTS[bot]?.[setting];
+    if (!who) continue;
+    for (const seed of seeds) {
+      let row: Record<string, unknown>;
+      try {
+        const r = firstTimer(stage, seed, who, { cap: 1200, dotSetting: true });
+        const goalFull = !r.goal || r.goal.got >= r.goal.need;
+        row = { bot, setting, seed, end: r.end, pass: r.end === 'shrine' && goalFull && r.rescues === 0, time: r.time, goal: r.goal, rescues: r.rescues,
+          lives: r.harms.filter((h: { kind: string }) => h.kind === 'life').length, hits: r.harms.filter((h: { kind: string }) => h.kind === 'hit').length,
+          stuck: r.stuck.map((s: Record<string, unknown>) => ({ x: s.x, y: s.y, t: s.t, what: s.what, rescued: s.rescued })) };
+      } catch (err) { row = { bot, setting, seed, end: 'stranded', pass: false, time: 0, rescues: 0, error: String(err).slice(0, 300), stuck: [] }; }
+      console.log(JSON.stringify(row));
+    }
+  }
+} else {
+  const par = Number(arg('--par') ?? 4);
+  const out = arg('--out')!;
+  const chunks = Array.from({ length: par }, (_, i) => seeds.filter((_, j) => j % par === i)).filter((c) => c.length);
+  const rows: Array<Record<string, any>> = [];
+  await Promise.all(chunks.map((c) => new Promise<void>((res) => {
+    const a = ['--import', 'tsx', process.argv[1], '--child', '--tree', tree, '--stage', stage, '--bots', bots.join(','), '--setting', want, '--seeds', c.join(',')];
+    const ch = spawn(process.execPath, a, { stdio: ['ignore', 'pipe', 'inherit'] });
+    let buf = '';
+    ch.stdout.on('data', (b) => (buf += b));
+    ch.on('close', () => { for (const l of buf.split('\n')) if (l.startsWith('{')) rows.push(JSON.parse(l)); res(); });
+  })));
+  rows.sort((a, b) => a.bot.localeCompare(b.bot) || a.setting.localeCompare(b.setting) || a.seed - b.seed);
+  fs.writeFileSync(out, rows.map((r) => JSON.stringify(r)).join('\n') + '\n');
+  const floor = stageFloor(stage, seeds[0]);
+  const ok = seeds.filter((sd) => { const R = rows.filter((r) => r.seed === sd); return R.length > 0 && R.every((r) => runHolds(r, floor)); });
+  console.log(`proven: ${ok.length} of ${seeds.length} seeds (every bot passes, none under ${floor} s); rows ${rows.length} -> ${out}`);
+  for (const bot of bots) for (const setting of settings) {
+    const R = rows.filter((r) => r.bot === bot && r.setting === setting);
+    if (!R.length) continue;
+    const hold = R.filter((r) => runHolds(r, floor)).length;
+    const resc = R.filter((r) => r.rescues > 0).length;
+    const under = R.filter((r) => r.pass && r.time < floor).length;
+    const lives = R.reduce((s, r) => s + (r.lives ?? 0), 0);
+    const err = R.filter((r) => r.error).length;
+    const minT = Math.min(...R.filter((r) => r.pass).map((r) => r.time));
+    console.log(`${bot} ${setting}: holds ${hold}/${R.length}; rescued ${resc}; under floor ${under} (min pass ${minT.toFixed(1)} s); lives lost ${lives}; errors ${err}`);
+  }
+}

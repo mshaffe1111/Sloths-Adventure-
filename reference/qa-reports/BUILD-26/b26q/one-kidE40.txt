@@ -1,0 +1,3 @@
+{"end":"shrine","time":146.9,"rescues":1,"goal":{"got":1,"need":1}}
+{"x":1202,"y":6729,"t":11,"dur":8.1,"what":"in a dip 360 px deep, water ahead, the way on is 147 px down","step":null,"dip":360,"puzzle":false,"rescued":false}
+{"x":932,"y":6378,"t":50.6,"dur":0,"what":"fell back down from here 3 times","step":null,"dip":null,"puzzle":false,"rescued":true}

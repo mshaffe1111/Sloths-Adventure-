@@ -1,0 +1,22 @@
+// BUILD-26q: on every listed roll, both settings: the first street's climb (the house ladder) - its distance to the lip of the floor it stands on,
+// and whether floor continues behind it (the fall a run past the ladder takes)
+const tree = process.argv[2];
+const { freshPhone } = await import(`${tree}/tools/inspect/firsttimer.ts`);
+const { RealPlay } = await import(`${tree}/src/game/realPlay.ts`);
+const out: Record<string, number[]> = {};
+for (const set of ['normal', 'easy']) for (let seed = 1; seed <= 100; seed++) {
+  freshPhone(set as never);
+  const st = new RealPlay('2-6', seed).stage as any;
+  const s3 = st.gen2.tower.route.legs.find((l: any) => l.uid === 's3');
+  const y = s3.exit.y;
+  const v = st.vines.filter((q: any) => Math.abs(q.bottomY - y) <= 5 && q.topY > y - 500).sort((a: any, b: any) => Math.abs(a.x - s3.exit.x) - Math.abs(b.x - s3.exit.x))[0];
+  if (!v) { console.log(`${set} s${seed}: no climb at the street`); continue; }
+  const under = st.platforms.filter((p: any) => Math.abs(p.y - y) <= 2 && p.type !== 'wall');
+  // the floor run through the ladder's foot: platforms at the street's height, joined end to end
+  let a = v.x, b = v.x;
+  for (let grow = true; grow;) { grow = false; for (const p of under) { if (p.x <= b + 1 && p.x + p.width > b) { b = p.x + p.width; grow = true; } if (p.x + p.width >= a - 1 && p.x < a) { a = p.x; grow = true; } } }
+  const toLip = Math.round(Math.min(v.x - a, b - v.x));
+  (out[set] ??= []).push(toLip);
+  console.log(`${set} s${seed}: climb x ${v.x}, floor ${Math.round(a)}..${Math.round(b)}, to the near lip ${toLip} px`);
+}
+for (const [k, d] of Object.entries(out)) { d.sort((x, y) => x - y); console.log(`${k}: rolls ${d.length}, to-lip min ${d[0]} median ${d[d.length >> 1]} max ${d[d.length - 1]}, under 60 px: ${d.filter((x) => x < 60).length}`); }

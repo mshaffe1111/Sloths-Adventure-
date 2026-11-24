@@ -1,0 +1,16 @@
+// BUILD-26q: the built 2-6 (as the bot builds it for a setting) in a window: platforms, walls, wheels, and the gen2 section there.
+//   node --import tsx dump26.mts --tree <tree> --seed 40 --setting easy --x0 300 --x1 1400 --y0 6200 --y1 6900
+const arg = (k: string) => { const i = process.argv.indexOf(k); return i > 0 ? process.argv[i + 1] : undefined; };
+const tree = arg('--tree')!;
+const { freshPhone } = await import(`${tree}/tools/inspect/firsttimer.ts`);
+const { RealPlay } = await import(`${tree}/src/game/realPlay.ts`);
+freshPhone(arg('--setting') as never);
+const sim = new RealPlay(arg('--stage') ?? '2-6', Number(arg('--seed')));
+const st = sim.stage as any;
+const [x0, x1, y0, y1] = ['--x0', '--x1', '--y0', '--y1'].map((k) => Number(arg(k)));
+console.log(`difficulty ${st.gen2?.budget?.difficulty}; platforms ${st.platforms.length}`);
+for (const p of st.platforms) if (p.x + p.width >= x0 && p.x <= x1 && p.y + (p.height ?? 0) >= y0 && p.y <= y1)
+  console.log(`plat ${p.id} x ${Math.round(p.x)}..${Math.round(p.x + p.width)} top ${Math.round(p.y)} h ${Math.round(p.height ?? 0)}${p.kind ? ' ' + p.kind : ''}${p.wall ? ' wall' : ''}${p.oneWay ? ' oneWay' : ''}${p.style ? ' ' + p.style : ''}${p.gen2 ? ' ' + JSON.stringify(p.gen2).slice(0, 60) : ''}`);
+for (const s of st.gen2?.sections ?? []) if (s.x1 >= x0 && s.x0 <= x1 && (!s.entry || (Math.max(s.entry.y, s.exit.y) >= y0 - 300 && Math.min(s.entry.y, s.exit.y) <= y1 + 300)))
+  console.log(`sec ${s.uid} ${s.template ?? ''} x ${Math.round(s.x0)}..${Math.round(s.x1)} ${JSON.stringify(s.entry)} ${JSON.stringify(s.exit)} ${Object.keys(s).join(",")}`);
+for (const w of st.wheels ?? []) console.log(`wheel ${JSON.stringify(w).slice(0, 160)}`);

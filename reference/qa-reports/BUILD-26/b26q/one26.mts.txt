@@ -1,0 +1,9 @@
+// BUILD-26q: one bot run on 2-6 (castRun's exact call), printing its stuck/rescue places; FT_TRACE=1 puts every jump on stderr.
+//   FT_TRACE=1 node --import tsx one26.mts --tree <tree> --bot kid --setting easy --seed 40 [--stage 2-6] 2> trace.txt
+const arg = (k: string) => { const i = process.argv.indexOf(k); return i > 0 ? process.argv[i + 1] : undefined; };
+const tree = arg('--tree')!;
+const { CAST_BOTS } = await import(`${tree}/tools/inspect/castBots.ts`);
+const { firstTimer } = await import(`${tree}/tools/inspect/firsttimer.ts`);
+const r = firstTimer(arg('--stage') ?? '2-6', Number(arg('--seed')), CAST_BOTS[arg('--bot')!][arg('--setting')!], { cap: 1200, dotSetting: true });
+console.log(JSON.stringify({ end: r.end, time: r.time, rescues: r.rescues, goal: r.goal }));
+for (const s of r.stuck) console.log(JSON.stringify(s));

@@ -1,0 +1,13 @@
+Tue Nov 24 16:25:51 EST 2026
+proven: 46 of 100 seeds (every bot passes, none under 100 s); rows 900 -> /tmp/claude-0/-home-user-Sloths-Adventure-/0f2f37bb-4637-5c8f-bf6c-d6e21126f3a5/scratchpad/b26q/rows-2-6-40a9c4bd2.jsonl
+kid normal: holds 98/100; rescued 2; under floor 0 (min pass 102.3 s); lives lost 0; errors 0
+kid easy: holds 63/100; rescued 37; under floor 0 (min pass 118.8 s); lives lost 0; errors 0
+adult normal: holds 88/100; rescued 1; under floor 11 (min pass 95.9 s); lives lost 0; errors 0
+adult easy: holds 70/100; rescued 30; under floor 0 (min pass 114.2 s); lives lost 0; errors 0
+child normal: holds 100/100; rescued 0; under floor 0 (min pass 167.8 s); lives lost 0; errors 0
+child easy: holds 99/100; rescued 1; under floor 0 (min pass 155.5 s); lives lost 0; errors 0
+middle normal: holds 100/100; rescued 0; under floor 0 (min pass 114.9 s); lives lost 0; errors 0
+middle easy: holds 99/100; rescued 1; under floor 0 (min pass 129.5 s); lives lost 0; errors 0
+expert normal: holds 100/100; rescued 0; under floor 0 (min pass 105.2 s); lives lost 0; errors 0
+exit 0
+Tue Nov 24 16:30:03 EST 2026

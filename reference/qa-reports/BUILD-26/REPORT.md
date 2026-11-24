@@ -1,3 +1,48 @@
+# BUILD-26q (t-build-26-wip-26q; base t-build-26 40a9c4bd2, frozen): 2-6's Easy residue: box 1 = the re-measure and the clusters. Started 4:21 PM ET 11-24 (by `date`); this box written 4:33 PM ET
+
+## EXACT NEXT STEP (session 2, xhigh, engine tier; budget left about 3 h 25 m of 4 h; HARD STOP 11:00 PM ET)
+1. **The one fix that matters (59 of 83 failing runs, 31 seeds on their own): Easy's tower turns BACK at the first street's end and stands
+   the house's climb 18 px from an open lip** (100 of 100 Easy rolls: to-lip 18 px every roll; Normal: 416-452 px, 0 under 60;
+   b26q/lip-40a9c4bd2.txt). Cause, read in code, not yet traced line by line: Easy's widened landings make the street 79 px longer (b 348 vs
+   300, c 308 vs 260, the dip 67 vs 84; built, seed 40), so most likely the house no longer fits on toward the wall; pipeline.ts:2235 picks `way = -dir`, `tipOf` (pipeline.ts:2238)
+   puts the turn `TOWER.vineIn` (tower.ts:49, 44 px) back over the ledge (s4 entry 1093 = 1137 - 44, built) and the vine is built at x 1119
+   (moved 26 px toward the lip, most likely by clearClimbs: UNVERIFIED). Behind the lip: a 100 px gap and a 380 px fall to the bank, so a
+   child who runs for the ladder runs off the street, climbs back and does it again (the kid/adult first-timers: 3 fall-backs -> rescue).
+   This is a STAGE fault, not a bot fault: Easy is harder than Normal here (level.md rule 4) and a real child holding 'right' does the same.
+   Plan (lead to rule A or B before it is written; a question never ends the box): plant a toy RED on the base first (every Easy and Normal
+   roll of every listed tower stage: a climb's foot stands >= CLIMB_CLEAR from an open lip whose fall is a storey or more), then
+   **A (general, every setting):** a turned-back climb stands far enough in from an open lip (tipOf takes CLIMB_CLEAR there, or the ledge gets
+   a wall/rail at its tip as the tower's sides do), or **B (Easy only, the packet's 'Easy forgiveness at a lip'):** easyMode lays a rail
+   (a low post the run stops at) at an open tip that carries a climb's foot. A moves Normal rolls of every tower stage (rule 28 vs MAIN on
+   1-4 and every shipped tower stage, D132); B moves only Easy. Either way: the fix, the toy GREEN, castBots --proven 2-6 (expected about
+   77/100 if nothing else moves), rule 28 vs main, then relist only if a layout changed.
+2. **The floor (adult Normal, 11 runs 95.9-99.1 s; 8 seeds fail on it alone):** the packet's way: lengthen the route (a section added or
+   re-laid in w2Arc26.ts; a design change: the lead's call, LEAD's design question in R-165.398), never a slower bot (law 22).
+3. **The residue (after 1 and 2):** great-wheel dip at 977,1041 (adult E seeds 25, 44, 60, 67: 'in a dip 75 px, a drop of 479 px ahead');
+   'set down here 3 times' (kid E 15, 51, 93; kid N 30, 43: not placed by this box's cluster: the entry is rescued:false); child E 50 (the
+   wheel-bounce dip 281 px at 645,1799); adult E 23 and 33; adult N 4 (millrace fall-back at 381,4927); middle E 58 (first street, 8 fall-backs).
+4. Step 0's base suite was STARTED on frozen /home/user/wt-base (40a9c4bd2) at 4:25 PM ET; its verdict is appended below when it ends.
+
+## The re-measure (D125; every bot, both settings, the 100 listed rolls, on frozen 40a9c4bd2; b26q/cast-2-6-40a9c4bd2.txt)
+**--proven 46 of 100** (bar 60), the same as ENG-26u on 5ecec4018 (only 1-4's list changed since). kid E 63 (37 rescued), adult E 70 (30
+rescued), adult N 88 (1 rescued, 11 under the 100 s climb floor, min 95.9 s), kid N 98, child E 99, middle E 99; child N, middle N, expert N
+100. No life lost anywhere. (cast26.mts.txt = castRun's exact call + the stuck places with y; the verdict from castBots' own runHolds/stageFloor.)
+
+## The clusters (b26q/cluster-40a9c4bd2.txt; place = the tower route leg holding x AND y, D130)
+| place (section, built) | cause | runs | seeds | bot or stage |
+|---|---|---|---|---|
+| first street s3, the house climb at the street's tip (x ~930-1137, y ~6370) | ran past the ladder and off the open lip, 3 fall-backs, rescue | 59 (kid E 34, adult E 24, middle E 1) | 31 fail on it alone | STAGE (Easy lay; above) |
+| none (time) | adult Normal under the 100 s floor | 11 | 8 on it alone | STAGE (length) |
+| great wheel s13, 977..1097 @1041 | dip 75 px, drop 479 px ahead | 4 (adult E) | 25, 44, 60, 67 | not traced |
+| 'set down here 3 times' | rescue, place not captured | 5 (kid E 3, kid N 2) | 15, 51, 93, 30, 43 | not traced |
+| other singles | first-street dip (adult E 23), top wheel (adult E 33), millrace (adult N 4), wheel-bounce dip (child E 50) | 4 | | not traced |
+Fixing the first street alone: 46 + 31 = 77; with the floor: 87 (if nothing else moves; to be measured).
+Trace of one (kid E 40, b26q/trace-kidE40.txt): up onto the boulder at 30.7 s, at 6748 below by 32.9 s with no jump between (ran off),
+'FELL BACK' at 51.0 s, rescued at 932,6378.
+
+## Pushback
+- The packet's 'the lip family: walk-offs off lips' is ONE spot on every Easy roll, made by the lay, not a bot misstep: the fix is the
+  tower's (engine tier, generality), not a 2-6 data patch and not the bot (law 22; level.md rule 22).
 # FILL-14b (t-build-26-wip-fill14 -> t-build-26; code 094e09746, unchanged): FILL-14's gates finished on a frozen tree; LANDED. Started 2:54 PM ET 11-24 (by `date`)
 
 ## Verdict
