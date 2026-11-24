@@ -2,7 +2,7 @@
 // own lazy chunk in the build, never in the game's main script) and the stage's line in src/game/gen2/provenIndex.ts (count, version and
 // loader: all the main script holds, the same size whatever the list's length).
 import fs from 'node:fs';
-import { listVersion, packPlan, provenSeedFor, provenSeeds, type PackedList } from '../../src/game/gen2/seedList.ts';
+import { listVersion, packPlan, provenList, type PackedList } from '../../src/game/gen2/seedList.ts';
 import { PROVEN_INDEX } from '../../src/game/gen2/provenIndex.ts';
 
 const DIR = 'src/game/gen2';
@@ -37,12 +37,20 @@ ${Object.keys(lines).sort().map((k) => `  '${k}': { n: ${lines[k].n}, version: '
 /** a seed a --merge part proved (the list's own filters, re-laid): what a fill or a combine writes into a list without laying it again */
 export interface ProvenCandidate { seed: number; quiet: number; outro: number; replay: Parameters<typeof packPlan>[0] }
 
-/** the list index Play draws for layout variant `v` of a listed stage: the game's own pick (seedList.ts provenSeedFor, as
- *  stageGenerator.ts builds a listed stage and castBots names its runs), never `v - 1`: on 1-4, variant 26 is the list's 27th seed (FILL-14) */
-export function variantIndex(id: string, v: number): number {
-  const i = provenSeeds(id).indexOf(provenSeedFor(id, v));
-  if (i < 0) throw new Error(`seedlist fill: ${id} variant ${v} draws no listed seed`);
-  return i;
+/** the list index Play draws for layout variant `v` of a listed stage: the stage built as Play builds it (realPlay.ts, the game's own
+ *  pick: stageGenerator.ts draws a listed row's variant from provenSeedFor(id, v), index v mod n, and 1-1's from play11Seed, index v - 1)
+ *  and matched to the one listed plan it replays; never `v - 1` by assumption: on 1-4, variant 26 is the list's 27th seed (FILL-14) */
+export async function variantIndex(id: string, v: number): Promise<number> {
+  await import('../../src/game/headlessDom.ts');
+  const { RealPlay } = await import('../../src/game/realPlay.ts');
+  const L = provenList(id);
+  if (!L) throw new Error(`seedlist fill: ${id} has no list in memory`);
+  const g = (new RealPlay(id, v).stage as unknown as { gen2?: { seed: number; rerolls: number } }).gen2;
+  if (!g) throw new Error(`seedlist fill: ${id} variant ${v} builds no gen2 stage`);
+  const head = `${g.seed}:${g.rerolls}`;
+  const at = L.plans.flatMap((p, i) => (p.split('|')[0] === head ? [i] : []));
+  if (at.length !== 1) throw new Error(`seedlist fill: ${id} variant ${v} replays ${head}, the head of ${at.length} listed plans (one wanted)`);
+  return at[0];
 }
 
 /**

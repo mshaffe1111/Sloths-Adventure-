@@ -337,16 +337,20 @@ test('--fill fills named list indices IN PLACE: every other index keeps its seed
   assert.deepEqual(fillSlots(old, [1], [cand(12)]).seeds, old.seeds);
 });
 
-test('--fill names a slot by its layout variant as Play draws it: the index of the plan a built stage replays (FILL-14: 1-4 variant 26 is NOT the 26th seed)', async () => {
+test('--fill names a slot by its layout variant as Play draws it, on both of the game\'s paths (FILL-14: 1-4 variant 26 is NOT the 26th seed)', async () => {
   await import('../../src/game/headlessDom.ts');
   const { variantIndex } = await import('./seedlistFile.ts');
   const { provenList } = await import('../../src/game/gen2/seedList.ts');
   const { RealPlay } = await import('../../src/game/realPlay.ts');
-  const L = provenList('1-4')!;
-  for (const v of [1, 26, L.seeds.length]) {
-    const i = variantIndex('1-4', v);
-    const g = (new RealPlay('1-4', v).stage as unknown as { gen2: { seed: number; rerolls: number } }).gen2;
-    assert.equal(L.plans[i].split('|')[0], `${g.seed}:${g.rerolls}`, `variant ${v}: the plan Play replays is the list's index ${i}`);
+  for (const [id, v] of [['1-4', 1], ['1-4', 26], ['1-1', 11]] as const) {
+    const L = provenList(id)!;
+    const i = await variantIndex(id, v);
+    const g = (new RealPlay(id, v).stage as unknown as { gen2: { seed: number; rerolls: number } }).gen2;
+    assert.equal(L.plans[i].split('|')[0], `${g.seed}:${g.rerolls}`, `${id} variant ${v}: the plan Play replays is the list's index ${i}`);
   }
-  assert.equal(variantIndex('1-4', 26), 26, 'castBots and Play name variant 26: the list index 26 (its 27th seed), not 25');
+  // (the two paths, pinned: a listed row draws index v mod n (seedList.ts provenSeedFor); 1-1 draws index v - 1 (testlink1_1.ts
+  // play11Seed). A change to either moves every variant the QA rolls, the calibration and a fill name: this goes red first)
+  assert.equal(await variantIndex('1-4', 26), 26, '1-4 variant 26 is list index 26 (its 27th seed), not 25');
+  assert.equal(await variantIndex('1-4', provenList('1-4')!.seeds.length), 0, '1-4 variant n wraps to index 0');
+  assert.equal(await variantIndex('1-1', 11), 10, '1-1 variant 11 is list index 10 (play11Seed)');
 });

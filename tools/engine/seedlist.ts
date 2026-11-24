@@ -96,7 +96,7 @@ async function firstRunBreaches(): Promise<string[]> {
 
 // (--fill 26,45 --with a.json,...,ORDER.json: the stage's list with those layout VARIANTS filled IN PLACE, the lead's ruling 11-22 (FILL-14):
 // a variant as Play and castBots name it (castBots' "seed N out" on a listed stage), resolved to the list index Play draws for it by the
-// game's own pick (seedlistFile.ts variantIndex: on 1-4, variant 26 is the 27th seed), takes ORDER's next seed (a JSON seed array: the
+// game's own build (seedlistFile.ts variantIndex: on 1-4, variant 26 is the 27th seed; on 1-1, variant 11 the 11th), takes ORDER's next seed (a JSON seed array: the
 // candidates that passed, in order), each proven by a --merge part (the list's own filters, re-laid; no seed laid again here); every other
 // index keeps its seed, plan, quiet and outro (seedlistFile.ts fillSlots). A seed of ORDER no part kept, or too few, is refused by name
 // and nothing is written. Then --check and the bots on the new list, as for any list)
@@ -113,7 +113,7 @@ if (process.argv.includes('--fill')) {
   if (!(await loadSeedList(id))) { console.log(`seedlist ${id}: FAIL\n  --fill: the list did not load: ${seedListError(id)}`); process.exit(1); }
   const old = provenList(id)!;
   let L: ReturnType<typeof fillSlots>, at: number[];
-  try { at = variants.map((v) => variantIndex(id, v)); L = fillSlots(old, at, use.map((sd) => got.get(sd)!)); } catch (err) { console.log(`seedlist ${id}: FAIL\n  ${(err as Error).message}: nothing written`); process.exit(1); }
+  try { at = []; for (const v of variants) at.push(await variantIndex(id, v)); L = fillSlots(old, at, use.map((sd) => got.get(sd)!)); } catch (err) { console.log(`seedlist ${id}: FAIL\n  ${(err as Error).message}: nothing written`); process.exit(1); }
   const bytes = writeSeedList(id, L);
   console.log(`seedlist ${id}: filled ${variants.length} variant(s) in place (${bytes} bytes, ${L.seeds.length} seeds, version ${listVersion(L)}): ${variants.map((v, j) => `variant ${v} (index ${at[j]}) ${old.seeds[at[j]]} -> ${use[j]}`).join(', ')}`);
   process.exit(0);
