@@ -3175,10 +3175,6 @@ export class FirstTimerRun {
       const held = this.padRead(p, dir, t);
       if (held) {
         this.clockHeld = !held.left && !held.right && !held.jump;
-        // (ENG-PLANT-e: a stand on a ride read is a stop he MEANS: a bot with no holdQ (the adult, the kid) never lets go of a bare {}
-        //  otherwise (thumbify, R-165.59): 2-2 adult Normal 24 on candidate 10 landed on lift #117, padRead stood him at t 140.20 and his
-        //  thumb ran him off its front, lives 3 -> 1, rescued)
-        if (this.clockHeld) this.stopMeant = true;
         return held;
       }
     }
@@ -3323,12 +3319,13 @@ export class FirstTimerRun {
     if (this.pending) return this.pending.still ? {} : side(this.pending.dir);
     // (just landed: the thumb comes back down before the next flick)
     if (t - this.lastLand < 0.1) {
-      // (SKILLS.floatSure, ENG-PLANT-e, the lead's ruling 2: landed on a log running his way, he stops pressing on landing, as main's
-      //  walk down onto a log's back stops; the walk-on below kept him running 0.1 s, and his thumb's let-go (releaseMax frames, the
-      //  testers' own) ran him on: 2-1 child Normal 11 landed 40 px from #137's front (x 30,394 on 30,194-30,434) and ran off it 4+ times,
-      //  rescued. Where the front is inside that run-out he pulls the thumb back (a turn drops the press at once, thumbify), never off)
+      // (SKILLS.floatSure, ENG-PLANT-i (the lean candidate, the lead's ruling 1): landed on a log running his way whose front goes under
+      //  or leaves no floor ahead (rideCase), he stops pressing on landing; the walk-on below kept him running 0.1 s, and his thumb's
+      //  let-go (releaseMax frames, the testers' own) ran him on: 2-1 child Normal 11 landed 40 px from #137's front (x 30,394 on
+      //  30,194-30,434) and ran off it 4+ times, rescued. Where the front is inside that run-out he pulls the thumb back (a turn drops the
+      //  press at once, thumbify), never off. Any other log: main's walk, as c4 (c5's landing stop on every log broke 6 of 2-1's 8 BAR rows)
       const ridden = SKILLS.floatSure && SKILLS.handed && p.grounded ? this.sim.platforms.find((q) => q.id === this.sim.standingOn) : undefined;
-      if (ridden?.drift && ridden.drift.dir === dir) {
+      if (ridden && dir !== 0 && this.rideCase(ridden, dir)) {
         this.landRide = ridden.id;
         const front = dir > 0 ? ridden.x + ridden.width : ridden.x;
         if (dir * (front - p.x) < this.runOut()) return side(-dir as -1 | 1);
@@ -3467,12 +3464,7 @@ export class FirstTimerRun {
       // 31 px more (his lift-off up to 2 frames late, 19 px, and the 12 px Pokey slides to a stop), so he stands about p25 before the lip:
       // groundPressToLipPx counts only presses made moving)
       const tierEdge = who.aimQ ? this.edgePlan() : null;
-      let look = tierEdge ? (tierEdge.how === 'stand' ? who.aimQ![1] + 31 : tierEdge.aim) : 22 + who.edgeAim;
-      // (SKILLS.floatSure, ENG-PLANT-e, the lead's ruling 2: on a log running his way he looks at least his run-out ahead (runOut), so
-      //  the river block's stand comes while his thumb's let-go still stops him on it: 2-4 adult Normal 6 on candidate 5 walked #47's
-      //  back at full run (the default walk, 67 px from its front, inside his press distance's look), the stand came 39 px out and his
-      //  let-go ran him off its front into the water, rescued)
-      if (SKILLS.floatSure && SKILLS.handed && p.grounded && this.sim.platforms.find((q) => q.id === this.sim.standingOn)?.drift?.dir === dir) look = Math.max(look, this.runOut());
+      const look = tierEdge ? (tierEdge.how === 'stand' ? who.aimQ![1] + 31 : tierEdge.aim) : 22 + who.edgeAim;
       // (and a gap between: a look past the end of the floor he stands on sees the gap only if nothing stands just past that end. A
       // tier bot's press distance (aimQ, up to ~270 px) looked clean over 2-1's 110 px splash creeks onto the far bank, so he walked into
       // the creek, was splashed back and walked in again until rescued: child Easy seed 10, x 2,063, FIX-21)
@@ -3488,12 +3480,7 @@ export class FirstTimerRun {
       //  lives every home race lost (trace-27g.txt 5; the lead's GO, ENG-27g). "Mostly under": less than half its length past the lip)
       const fa = this.floorAt(p.x + dir * look, p.y, 40);
       const underLip = SKILLS.boardLog && !!under && under.type !== 'drift' && fa?.type === 'drift' && fa.drift?.dir === dir && fa.y > p.y + 6 && (dir > 0 ? fa.x + fa.width - lip : lip - fa.x) < fa.width / 2;
-      // (SKILLS.floatSure, ENG-PLANT-e: standing on a log running his way, ANOTHER log ahead is no floor to walk on: the water between is a
-      //  hop the river block judges. Read as floor, intend's last line walked him on at a full run toward the gap and the stand came too
-      //  late for his thumb's let-go: 2-4 adult Normal 6 on candidate 7, off #47's front with #48 ahead, t 57.13-57.67)
-      const onLog = SKILLS.floatSure && SKILLS.handed && p.grounded ? this.sim.platforms.find((q) => q.id === this.sim.standingOn) : undefined;
-      const logAhead = onLog?.drift?.dir === dir && fa?.type === 'drift' && fa !== onLog;
-      const ahead = fa && !underLip && !logAhead && (!past || this.floorAt(lip + dir * 24, p.y, 40));
+      const ahead = fa && !underLip && (!past || this.floorAt(lip + dir * 24, p.y, 40));
       // (up the far bank, SKILLS.bankUp: at a river's far end the bank stands a step up from the log (river.ts LOG_DROP, 28 px), so it
       //  reads as floor ahead and the gap logic below never runs, and a log running back at him never carries him under it to be handed
       //  over. He walked into its face, stood while the log carried him off, walked off its end and splashed back, again, until rescued:
@@ -3544,12 +3531,7 @@ export class FirstTimerRun {
         const pit = !!who.holdQ && !this.floorAt(p.x + dir * (look + 40), p.y, 400);
         const drops = on && on.y > p.y + 50 && !across && !pit;
         // (a log or a lily pad drifting across the gap: he can see it, so he waits at the edge until it is near, up to 6 s)
-        // (SKILLS.floatSure, ENG-PLANT-e, the lead's ruling 1: the log he stands on is the one the ENGINE stands him on (standingOn), not
-        //  only the one under the point at his x: landed on a log's very tip (2-4 adult Normal 6, t 51.47, x 10,598 on #45 x 10,443-10,593)
-        //  floorAt saw no floor, the river block was skipped, and the edge code's decide pressed an UNJUDGED hop back onto #46, a log going
-        //  under before the bank: set down 3 times, rescued. Read as the engine reads him, every hop off a log goes through the river gates)
-        const stood = SKILLS.floatSure && p.grounded ? this.sim.platforms.find((q) => q.id === this.sim.standingOn) : undefined;
-        const here = stood?.type === 'drift' ? stood : this.floorAt(p.x, p.y, 6);
+        const here = this.floorAt(p.x, p.y, 6);
         // (ENG-W2b: a float is near when a hop he makes now, or a beat later as his thumb gets there, comes down on it where it will be,
         // hopLandsOn; drifting logs come out from under the bank at his feet, so every log on the water is looked at, not only those ahead)
         const rivers = (this.sim.stage as { rivers?: RiverZone[] }).rivers;
@@ -3694,10 +3676,6 @@ export class FirstTimerRun {
                 }
                 if (Math.abs(p.x - rear) > 20) return side(back);
               }
-              // (ENG-PLANT-e: the stand on the log is a stop he MEANS (stopMeant): a bot with no holdQ (the adult) re-arms his let-go every
-              //  frame otherwise (thumbify, R-165.59) and the steer is never let go: 2-4 adult Normal 6 on candidate 8, intend {} from t 63.20
-              //  and the thumb still pressed right 10 frames, off #45's front into the water)
-              this.stopMeant = true;
             }
             return {};
           }
@@ -3834,28 +3812,23 @@ export class FirstTimerRun {
         if (this.foeSeen.get(m.id) && dx < 90) return this.decide(dir, 'single', false, side(dir));
       }
     }
-    // (ENG-PLANT-g, the lead's ruling 2: landed on a log running his way, he rides it (a stop he means) instead of this walk, while no
-    //  judged hop (the river block and vineFromLog, above) or bank ahead (a floor, not a log, within 80 px of its front) takes him on;
-    //  the ride never carries him into a rescue (c4's handed check: a floor within 80 px of the run's end, else the walk back to its rear
-    //  in time). The landing stop held only 0.1 s, then this walk ran him along #65 at a full run and his let-go ran him off its front:
-    //  2-1 adult Easy 5 on candidate 12, x 14,766, set down 3 times, rescued (57 of 2-1's 60 flips had the signature))
+    // (ENG-PLANT-i, the lean candidate (the lead's ruling 1; c18's ride narrowed): landed on a log running his way whose front goes under
+    //  or leaves no floor ahead (rideCase), he rides it (a stop he means) instead of this walk while that holds; the ride never carries
+    //  him into a rescue (c4's handed check: a floor within 80 px of the run's end, else the walk back to its rear in time). The landing
+    //  stop held only 0.1 s, then this walk ran him along #65 at a full run and his let-go ran him off its front: 2-1 adult Easy 5 on
+    //  candidate 12, x 14,766, set down 3 times, rescued. c18 rode every log with no bank ahead and broke 7 of 2-1's 8 BAR rows)
     if (this.landRide !== null && SKILLS.floatSure && SKILLS.handed && p.grounded && dir !== 0) {
       const lr = this.sim.platforms.find((q) => q.id === this.sim.standingOn);
-      if (!lr || lr.id !== this.landRide || !lr.drift || lr.drift.dir !== dir) this.landRide = null;
+      if (!lr || lr.id !== this.landRide || !this.rideCase(lr, dir)) this.landRide = null;
       else {
-        const front = dir > 0 ? lr.x + lr.width : lr.x;
-        const bankAhead = this.sim.platforms.some((b) => b.type !== 'drift' && !b.broken && Math.abs(b.y - p.y) < 70 && (dir > 0 ? b.x - front < 80 && b.x + b.width > front : front - (b.x + b.width) < 80 && b.x < front));
-        if (!bankAhead) {
-          const d = lr.drift, endX = dir > 0 ? d.x1 : d.x0;
-          const handedOn = this.sim.platforms.some((q) => q.type !== 'drift' && !q.broken && Math.abs(q.y - p.y) < 70 && q.x - 80 < endX && q.x + q.width + 80 > endX);
-          if (!handedOn) {
-            const rear = dir > 0 ? lr.x : lr.x + lr.width;
-            const left = ((endX - dir * 10) - p.x) * dir / d.speed;
-            if (left < who.stopReact + Math.abs(p.x - rear) / PHYS.maxRun && Math.abs(p.x - rear) > 20) return side((-dir) as -1 | 1);
-          }
-          this.stopMeant = true;
-          return {};
+        const d = lr.drift!, endX = dir > 0 ? d.x1 : d.x0;
+        if (!this.handedAt(endX, p.y)) {
+          const rear = dir > 0 ? lr.x : lr.x + lr.width;
+          const left = ((endX - dir * 10) - p.x) * dir / d.speed;
+          if (left < who.stopReact + Math.abs(p.x - rear) / PHYS.maxRun && Math.abs(p.x - rear) > 20) return side((-dir) as -1 | 1);
         }
+        this.stopMeant = true;
+        return {};
       }
     }
     return side(dir);
@@ -4887,6 +4860,26 @@ export class FirstTimerRun {
     return { last: this.lastSteer, driftPx: this.driftPx, armed: this.releaseArmed, releaseLeft: this.releaseLeft, travel: this.travelUntil - t, slip: this.driftUntil - t, speed: this.who.thumbSpeed, once: !!this.who.holdQ };
   }
 
+  /** a floor (not a log) within 80 px of x at his height: a log's run ending there hands him on (c4's handed check) */
+  private handedAt(x: number, y: number): boolean {
+    return this.sim.platforms.some((b) => b.type !== 'drift' && !b.broken && Math.abs(b.y - y) < 70 && b.x - 80 < x && b.x + b.width + 80 > x);
+  }
+
+  /**
+   * The lean ride's case (ENG-PLANT-i, the lead's ruling 1): log `lr` runs his way (`dir`), no bank stands within 80 px of its front, and
+   * either its front goes under (its run ends with no floor to hand him on: handedAt) or no floor at all (bank or another log) is within
+   * 80 px ahead of its front. Every other log: main's walk.
+   */
+  private rideCase(lr: Platform, dir: -1 | 1): boolean {
+    if (lr.type !== 'drift' || !lr.drift || lr.drift.dir !== dir) return false;
+    const p = this.sim.p;
+    const front = dir > 0 ? lr.x + lr.width : lr.x;
+    const near = (b: Platform): boolean => b !== lr && !b.broken && Math.abs(b.y - p.y) < 70 && (dir > 0 ? b.x - front < 80 && b.x + b.width > front : front - (b.x + b.width) < 80 && b.x < front);
+    if (this.sim.platforms.some((b) => b.type !== 'drift' && near(b))) return false;
+    const goesUnder = !this.handedAt(dir > 0 ? lr.drift.x1 : lr.drift.x0, p.y);
+    return goesUnder || !this.sim.platforms.some(near);
+  }
+
   /** px he runs on after he lets go at a full run (a walk he starts from a stand reaches it in a few frames, so his speed NOW is no
    *  bound: candidate 6, 2-4 adult Normal 6, stood at vx 0 81 px from #47's front, looked 24 px, ran on and off it): his thumb's
    *  longest let-go (releaseMax) and the 3 frames he slides to a stop, and the gate's 24 px (ENG-PLANT-e: the stand on a log running his
@@ -4908,8 +4901,7 @@ export class FirstTimerRun {
     return this.sim.platforms.some((q) => {
       if (q === here || q.type !== 'drift' || !q.drift || q.broken || Math.abs(q.y - p.y) >= 70 || Math.abs(q.x - here.x) >= 600) return false;
       const endX = q.drift.dir > 0 ? q.drift.x1 : q.drift.x0;
-      const handedOn = this.sim.platforms.some((b) => b.type !== 'drift' && !b.broken && Math.abs(b.y - p.y) < 70 && b.x - 80 < endX && b.x + b.width + 80 > endX);
-      return !handedOn && this.gateSees(q, floatAt(rv, q), p.x, p.y, dir, h, t, vx, 0);
+      return !this.handedAt(endX, p.y) && this.gateSees(q, floatAt(rv, q), p.x, p.y, dir, h, t, vx, 0);
     });
   }
 
