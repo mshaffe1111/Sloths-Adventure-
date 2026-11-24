@@ -1,0 +1,710 @@
+on 40 bucket 60.00 x 555 y 4963 vx 0 vy 0 - | 
+on 40 bucket 60.03 x 554 y 4962 vx 0 vy 0 - | 
+on 40 bucket 60.07 x 553 y 4961 vx 0 vy 0 - | 
+on 40 bucket 60.10 x 551 y 4960 vx 0 vy 0 - | 
+on 40 bucket 60.13 x 550 y 4959 vx 0 vy 0 - | 
+on 40 bucket 60.17 x 549 y 4958 vx 0 vy 0 - | 
+on 40 bucket 60.20 x 547 y 4957 vx 0 vy 0 - | 
+on 40 bucket 60.23 x 546 y 4956 vx 0 vy 0 - | 
+on 40 bucket 60.27 x 545 y 4955 vx 0 vy 0 - | 
+on 40 bucket 60.30 x 543 y 4954 vx 0 vy 0 - | 
+on 40 bucket 60.33 x 542 y 4953 vx 0 vy 0 - | 
+on 40 bucket 60.37 x 541 y 4951 vx 0 vy 0 - | 
+on 40 bucket 60.40 x 540 y 4950 vx 0 vy 0 - | 
+on 40 bucket 60.43 x 538 y 4949 vx 0 vy 0 - | 
+on 40 bucket 60.47 x 537 y 4948 vx 0 vy 0 - | 
+on 40 bucket 60.50 x 536 y 4947 vx 0 vy 0 - | 
+on 40 bucket 60.53 x 535 y 4946 vx 0 vy 0 - | 
+on 40 bucket 60.57 x 534 y 4945 vx 0 vy 0 - | 
+on 40 bucket 60.60 x 532 y 4943 vx 0 vy 0 - | 
+on 40 bucket 60.63 x 531 y 4942 vx 0 vy 0 - | 
+on 40 bucket 60.67 x 530 y 4941 vx 0 vy 0 - | 
+on 40 bucket 60.70 x 529 y 4940 vx 0 vy 0 - | 
+on 40 bucket 60.73 x 528 y 4939 vx 0 vy 0 - | 
+on 40 bucket 60.77 x 527 y 4937 vx 0 vy 0 - | 
+on 40 bucket 60.80 x 525 y 4936 vx 0 vy 0 - | 
+on 40 bucket 60.83 x 524 y 4935 vx 0 vy 0 - | 
+on 40 bucket 60.87 x 523 y 4934 vx 0 vy 0 - | 
+on 40 bucket 60.90 x 522 y 4932 vx 0 vy 0 - | 
+on 40 bucket 60.93 x 521 y 4931 vx 0 vy 0 - | 
+on 40 bucket 60.97 x 520 y 4930 vx 0 vy 0 - | 
+on 40 bucket 61.00 x 519 y 4929 vx 0 vy 0 - | 
+on 40 bucket 61.03 x 518 y 4927 vx 0 vy 0 - | 
+on 40 bucket 61.07 x 517 y 4926 vx 0 vy 0 - | 
+on 40 bucket 61.10 x 516 y 4925 vx 0 vy 0 - | 
+on 40 bucket 61.13 x 515 y 4923 vx 0 vy 0 - | 
+on 40 bucket 61.17 x 514 y 4922 vx 0 vy 0 - | 
+on 40 bucket 61.20 x 513 y 4921 vx 0 vy 0 - | 
+on 40 bucket 61.23 x 512 y 4919 vx 0 vy 0 - | 
+on 40 bucket 61.27 x 511 y 4918 vx 0 vy 0 - | 
+on 40 bucket 61.30 x 510 y 4917 vx 0 vy 0 - | 
+on 40 bucket 61.33 x 509 y 4915 vx 0 vy 0 - | 
+on 40 bucket 61.37 x 508 y 4914 vx 0 vy 0 - | 
+on 40 bucket 61.40 x 507 y 4912 vx 0 vy 0 - | 
+on 40 bucket 61.43 x 506 y 4911 vx 0 vy 0 - | 
+on 40 bucket 61.47 x 506 y 4910 vx 0 vy 0 - | 
+on 40 bucket 61.50 x 505 y 4908 vx 0 vy 0 - | 
+on 40 bucket 61.53 x 504 y 4907 vx 0 vy 0 - | 
+on 40 bucket 61.57 x 503 y 4905 vx 0 vy 0 - | 
+on 40 bucket 61.60 x 502 y 4904 vx 0 vy 0 - | 
+on 40 bucket 61.63 x 501 y 4902 vx 0 vy 0 - | 
+on 40 bucket 61.67 x 501 y 4901 vx 0 vy 0 - | 
+on 40 bucket 61.70 x 500 y 4899 vx 0 vy 0 - | 
+on 40 bucket 61.73 x 499 y 4898 vx 0 vy 0 - | 
+on 40 bucket 61.77 x 498 y 4896 vx 0 vy 0 - | 
+on 40 bucket 61.80 x 498 y 4895 vx 0 vy 0 - | 
+on 40 bucket 61.83 x 497 y 4893 vx 0 vy 0 - | 
+on 40 bucket 61.87 x 496 y 4892 vx 0 vy 0 - | 
+on 40 bucket 61.90 x 495 y 4890 vx 0 vy 0 - | 
+on 40 bucket 61.93 x 495 y 4889 vx 0 vy 0 - | 
+on 40 bucket 61.97 x 494 y 4887 vx 0 vy 0 - | 
+on 40 bucket 62.00 x 493 y 4886 vx 0 vy 0 - | 
+on 40 bucket 62.03 x 493 y 4884 vx 0 vy 0 - | 
+on 40 bucket 62.07 x 492 y 4883 vx 0 vy 0 - | 
+on 40 bucket 62.10 x 492 y 4881 vx 0 vy 0 - | 
+on 40 bucket 62.13 x 491 y 4880 vx 0 vy 0 - | 
+on 40 bucket 62.17 x 490 y 4878 vx 0 vy 0 - | 
+on 40 bucket 62.20 x 490 y 4876 vx 0 vy 0 - | 
+on 40 bucket 62.23 x 489 y 4875 vx 0 vy 0 - | 
+on 40 bucket 62.27 x 489 y 4873 vx 0 vy 0 - | 
+on 40 bucket 62.30 x 488 y 4872 vx 0 vy 0 - | 
+on 40 bucket 62.33 x 488 y 4870 vx 0 vy 0 - | 
+on 40 bucket 62.37 x 487 y 4869 vx 0 vy 0 - | 
+on 40 bucket 62.40 x 487 y 4867 vx 0 vy 0 - | 
+on 40 bucket 62.43 x 486 y 4865 vx 0 vy 0 - | 
+on 40 bucket 62.47 x 486 y 4864 vx 0 vy 0 - | 
+on 40 bucket 62.50 x 485 y 4862 vx 0 vy 0 - | 
+on 40 bucket 62.53 x 485 y 4861 vx 0 vy 0 - | 
+on 40 bucket 62.57 x 485 y 4859 vx 0 vy 0 - | 
+on 40 bucket 62.60 x 484 y 4857 vx 0 vy 0 - | 
+on 40 bucket 62.63 x 484 y 4856 vx 0 vy 0 - | 
+on 40 bucket 62.67 x 483 y 4854 vx 0 vy 0 - | 
+on 40 bucket 62.70 x 483 y 4852 vx 0 vy 0 - | 
+on 40 bucket 62.73 x 483 y 4851 vx 0 vy 0 - | 
+on 40 bucket 62.77 x 482 y 4849 vx 0 vy 0 - | 
+on 40 bucket 62.80 x 482 y 4848 vx 0 vy 0 - | 
+on 40 bucket 62.83 x 482 y 4846 vx 0 vy 0 - | 
+on 40 bucket 62.87 x 482 y 4844 vx 0 vy 0 - | 
+on 40 bucket 62.90 x 481 y 4843 vx 0 vy 0 - | 
+on 40 bucket 62.93 x 481 y 4841 vx 0 vy 0 - | 
+on 40 bucket 62.97 x 481 y 4839 vx 0 vy 0 - | 
+on 40 bucket 63.00 x 481 y 4838 vx 0 vy 0 - | 
+on 40 bucket 63.03 x 481 y 4836 vx 0 vy 0 - | 
+on 40 bucket 63.07 x 480 y 4834 vx 0 vy 0 - | 
+on 40 bucket 63.10 x 480 y 4833 vx 0 vy 0 - | 
+on 40 bucket 63.13 x 480 y 4831 vx 0 vy 0 - | 
+on 40 bucket 63.17 x 480 y 4829 vx 0 vy 0 - | 
+on 40 bucket 63.20 x 480 y 4828 vx 0 vy 0 - | 
+on 40 bucket 63.23 x 480 y 4826 vx 0 vy 0 - | 
+on 40 bucket 63.27 x 480 y 4824 vx 0 vy 0 - | 
+on 40 bucket 63.30 x 480 y 4823 vx 0 vy 0 - | 
+on 40 bucket 63.33 x 479 y 4821 vx 0 vy 0 - | 
+on 40 bucket 63.37 x 479 y 4819 vx 0 vy 0 - | 
+on 40 bucket 63.40 x 479 y 4818 vx 0 vy 0 - | 
+on 40 bucket 63.43 x 479 y 4816 vx 0 vy 0 - | 
+on 40 bucket 63.47 x 479 y 4814 vx 0 vy 0 - | 
+on 40 bucket 63.50 x 479 y 4813 vx 0 vy 0 - | 
+on 40 bucket 63.53 x 479 y 4811 vx 0 vy 0 - | 
+on 40 bucket 63.57 x 480 y 4809 vx 0 vy 0 - | 
+on 40 bucket 63.60 x 480 y 4808 vx 0 vy 0 - | 
+on 40 bucket 63.63 x 480 y 4806 vx 0 vy 0 - | 
+on 40 bucket 63.67 x 480 y 4804 vx 0 vy 0 - | 
+on 40 bucket 63.70 x 480 y 4803 vx 0 vy 0 - | 
+on 40 bucket 63.73 x 480 y 4801 vx 0 vy 0 - | 
+on 40 bucket 63.77 x 480 y 4799 vx 0 vy 0 - | 
+on 40 bucket 63.80 x 480 y 4798 vx 0 vy 0 - | 
+on 40 bucket 63.83 x 480 y 4796 vx 0 vy 0 - | 
+on 40 bucket 63.87 x 481 y 4794 vx 0 vy 0 - | 
+on 40 bucket 63.90 x 481 y 4793 vx 0 vy 0 - | 
+on 40 bucket 63.93 x 481 y 4791 vx 0 vy 0 - | 
+on 40 bucket 63.97 x 481 y 4789 vx 0 vy 0 - | 
+on 40 bucket 64.00 x 482 y 4788 vx 0 vy 0 - | 
+on 40 bucket 64.03 x 482 y 4786 vx 0 vy 0 - | 
+on 40 bucket 64.07 x 482 y 4785 vx 0 vy 0 - | 
+on 40 bucket 64.10 x 482 y 4783 vx 0 vy 0 - | 
+on 40 bucket 64.13 x 483 y 4781 vx 0 vy 0 - | 
+on 40 bucket 64.17 x 483 y 4780 vx 0 vy 0 - | 
+on 40 bucket 64.20 x 483 y 4778 vx 0 vy 0 - | 
+on 40 bucket 64.23 x 484 y 4776 vx 0 vy 0 - | 
+on 40 bucket 64.27 x 484 y 4775 vx 0 vy 0 - | 
+on 40 bucket 64.30 x 485 y 4773 vx 0 vy 0 - | 
+on 40 bucket 64.33 x 485 y 4771 vx 0 vy 0 - | 
+on 40 bucket 64.37 x 485 y 4770 vx 0 vy 0 - | 
+on 40 bucket 64.40 x 486 y 4768 vx 0 vy 0 - | 
+on 40 bucket 64.43 x 486 y 4767 vx 0 vy 0 - | 
+on 40 bucket 64.47 x 487 y 4765 vx 0 vy 0 - | 
+on 40 bucket 64.50 x 487 y 4763 vx 0 vy 0 - | 
+on 40 bucket 64.53 x 488 y 4762 vx 0 vy 0 - | 
+on 40 bucket 64.57 x 488 y 4760 vx 0 vy 0 - | 
+on 40 bucket 64.60 x 489 y 4759 vx 0 vy 0 - | 
+on 40 bucket 64.63 x 489 y 4757 vx 0 vy 0 - | 
+on 40 bucket 64.67 x 490 y 4756 vx 0 vy 0 - | 
+on 40 bucket 64.70 x 490 y 4754 vx 0 vy 0 - | 
+on 40 bucket 64.73 x 491 y 4752 vx 0 vy 0 - | 
+on 40 bucket 64.77 x 492 y 4751 vx 0 vy 0 - | 
+on 40 bucket 64.80 x 492 y 4749 vx 0 vy 0 - | 
+on 40 bucket 64.83 x 493 y 4748 vx 0 vy 0 - | 
+on 40 bucket 64.87 x 493 y 4746 vx 0 vy 0 - | 
+on 40 bucket 64.90 x 494 y 4745 vx 0 vy 0 - | 
+on 40 bucket 64.93 x 495 y 4743 vx 0 vy 0 - | 
+on 40 bucket 64.97 x 495 y 4742 vx 0 vy 0 - | 
+on 40 bucket 65.00 x 496 y 4740 vx 0 vy 0 - | 
+on 40 bucket 65.03 x 497 y 4739 vx 0 vy 0 - | 
+on 40 bucket 65.07 x 498 y 4737 vx 0 vy 0 - | 
+on 40 bucket 65.10 x 498 y 4736 vx 0 vy 0 - | 
+on 40 bucket 65.13 x 499 y 4734 vx 0 vy 0 - | 
+on 40 bucket 65.17 x 500 y 4733 vx 0 vy 0 - | 
+on 40 bucket 65.20 x 501 y 4731 vx 0 vy 0 - | 
+on 40 bucket 65.23 x 501 y 4730 vx 0 vy 0 - | 
+on 40 bucket 65.27 x 502 y 4728 vx 0 vy 0 - | 
+on 40 bucket 65.30 x 503 y 4727 vx 0 vy 0 - | 
+on 40 bucket 65.33 x 504 y 4725 vx 0 vy 0 - | 
+on 40 bucket 65.37 x 505 y 4724 vx 0 vy 0 - | 
+on 40 bucket 65.40 x 506 y 4722 vx 0 vy 0 - | 
+on 40 bucket 65.43 x 506 y 4721 vx 0 vy 0 - | 
+on 40 bucket 65.47 x 507 y 4720 vx 0 vy 0 - | 
+on 40 bucket 65.50 x 508 y 4718 vx 0 vy 0 - | 
+on 40 bucket 65.53 x 509 y 4717 vx 0 vy 0 - | 
+on 40 bucket 65.57 x 510 y 4715 vx 0 vy 0 - | 
+on 40 bucket 65.60 x 511 y 4714 vx 0 vy 0 - | 
+on 40 bucket 65.63 x 512 y 4713 vx 0 vy 0 - | 
+on 40 bucket 65.67 x 513 y 4711 vx 0 vy 0 - | 
+on 40 bucket 65.70 x 514 y 4710 vx 0 vy 0 - | 
+on 40 bucket 65.73 x 515 y 4709 vx 0 vy 0 - | 
+on 40 bucket 65.77 x 516 y 4707 vx 0 vy 0 - | 
+on 40 bucket 65.80 x 517 y 4706 vx 0 vy 0 - | 
+on 40 bucket 65.83 x 518 y 4705 vx 0 vy 0 - | 
+on 40 bucket 65.87 x 519 y 4703 vx 0 vy 0 - | 
+on 40 bucket 65.90 x 520 y 4702 vx 0 vy 0 - | 
+on 40 bucket 65.93 x 521 y 4701 vx 0 vy 0 - | 
+on 40 bucket 65.97 x 522 y 4700 vx 0 vy 0 - | 
+on 40 bucket 66.00 x 523 y 4698 vx 0 vy 0 - | 
+on 40 bucket 66.03 x 524 y 4697 vx 0 vy 0 - | 
+on 40 bucket 66.07 x 525 y 4696 vx 0 vy 0 - | 
+on 40 bucket 66.10 x 527 y 4695 vx 0 vy 0 - | 
+on 40 bucket 66.13 x 528 y 4693 vx 0 vy 0 - | 
+on 40 bucket 66.17 x 529 y 4692 vx 0 vy 0 - | 
+on 40 bucket 66.20 x 530 y 4691 vx 0 vy 0 - | 
+on 40 bucket 66.23 x 531 y 4690 vx 0 vy 0 - | 
+on 40 bucket 66.27 x 532 y 4689 vx 0 vy 0 - | 
+on 40 bucket 66.30 x 533 y 4687 vx 0 vy 0 - | 
+on 40 bucket 66.33 x 535 y 4686 vx 0 vy 0 - | 
+on 40 bucket 66.37 x 536 y 4685 vx 0 vy 0 - | 
+on 40 bucket 66.40 x 537 y 4684 vx 0 vy 0 - | 
+on 40 bucket 66.43 x 538 y 4683 vx 0 vy 0 - | 
+on 40 bucket 66.47 x 540 y 4682 vx 0 vy 0 - | 
+on 40 bucket 66.50 x 541 y 4681 vx 0 vy 0 - | 
+on 40 bucket 66.53 x 542 y 4679 vx 0 vy 0 - | 
+on 40 bucket 66.57 x 543 y 4678 vx 0 vy 0 - | 
+on 40 bucket 66.60 x 545 y 4677 vx 0 vy 0 - | 
+on 40 bucket 66.63 x 546 y 4676 vx 0 vy 0 - | 
+on 40 bucket 66.67 x 547 y 4675 vx 0 vy 0 - | 
+on 40 bucket 66.70 x 549 y 4674 vx 0 vy 0 - | 
+on 40 bucket 66.73 x 550 y 4673 vx 0 vy 0 - | 
+on 40 bucket 66.77 x 551 y 4672 vx 0 vy 0 - | 
+on 40 bucket 66.80 x 553 y 4671 vx 0 vy 0 - | 
+on 40 bucket 66.83 x 554 y 4670 vx 0 vy 0 - | 
+on 40 bucket 66.87 x 555 y 4669 vx 0 vy 0 - | 
+on 40 bucket 66.90 x 557 y 4668 vx 0 vy 0 - | 
+on 40 bucket 66.93 x 558 y 4667 vx 0 vy 0 - | 
+on 40 bucket 66.97 x 559 y 4666 vx 0 vy 0 - | 
+on 40 bucket 67.00 x 561 y 4665 vx 0 vy 0 - | 
+on 40 bucket 67.03 x 562 y 4665 vx 0 vy 0 - | 
+on 40 bucket 67.07 x 564 y 4664 vx 0 vy 0 - | 
+on 40 bucket 67.10 x 565 y 4663 vx 0 vy 0 - | 
+on 40 bucket 67.13 x 566 y 4662 vx 0 vy 0 - | 
+on 40 bucket 67.17 x 568 y 4661 vx 0 vy 0 - | 
+on 40 bucket 67.20 x 569 y 4660 vx 0 vy 0 - | 
+on 40 bucket 67.23 x 571 y 4659 vx 0 vy 0 - | 
+on 40 bucket 67.27 x 572 y 4659 vx 0 vy 0 - | 
+on 40 bucket 67.30 x 574 y 4658 vx 0 vy 0 - | 
+on 40 bucket 67.33 x 575 y 4657 vx 0 vy 0 - | 
+on 40 bucket 67.37 x 577 y 4656 vx 0 vy 0 - | 
+on 40 bucket 67.40 x 578 y 4655 vx 0 vy 0 - | 
+on 40 bucket 67.43 x 580 y 4655 vx 0 vy 0 - | 
+on 40 bucket 67.47 x 581 y 4654 vx 0 vy 0 - | 
+on 40 bucket 67.50 x 583 y 4653 vx 0 vy 0 - | 
+on 40 bucket 67.53 x 584 y 4653 vx 0 vy 0 - | 
+on 40 bucket 67.57 x 586 y 4652 vx 0 vy 0 - | 
+on 40 bucket 67.60 x 587 y 4651 vx 0 vy 0 - | 
+on 40 bucket 67.63 x 589 y 4651 vx 0 vy 0 - | 
+on 40 bucket 67.67 x 590 y 4650 vx 0 vy 0 - | 
+on 40 bucket 67.70 x 592 y 4649 vx 0 vy 0 - | 
+on 40 bucket 67.73 x 593 y 4649 vx 0 vy 0 - | 
+on 40 bucket 67.77 x 595 y 4648 vx 0 vy 0 - | 
+on 40 bucket 67.80 x 596 y 4647 vx 0 vy 0 - | 
+on 40 bucket 67.83 x 598 y 4647 vx 0 vy 0 - | 
+on 40 bucket 67.87 x 599 y 4646 vx 0 vy 0 - | 
+on 40 bucket 67.90 x 601 y 4646 vx 0 vy 0 - | 
+on 40 bucket 67.93 x 603 y 4645 vx 0 vy 0 - | 
+on 40 bucket 67.97 x 604 y 4645 vx 0 vy 0 - | 
+on 40 bucket 68.00 x 606 y 4644 vx 0 vy 0 - | 
+on 40 bucket 68.03 x 607 y 4644 vx 0 vy 0 - | 
+on 40 bucket 68.07 x 609 y 4643 vx 0 vy 0 - | 
+on 40 bucket 68.10 x 611 y 4643 vx 0 vy 0 - | 
+on 40 bucket 68.13 x 612 y 4642 vx 0 vy 0 - | 
+on 40 bucket 68.17 x 614 y 4642 vx 0 vy 0 - | 
+on 40 bucket 68.20 x 615 y 4641 vx 0 vy 0 - | 
+on 40 bucket 68.23 x 617 y 4641 vx 0 vy 0 - | 
+on 40 bucket 68.27 x 619 y 4641 vx 0 vy 0 - | 
+on 40 bucket 68.30 x 620 y 4640 vx 0 vy 0 - | 
+on 40 bucket 68.33 x 622 y 4640 vx 0 vy 0 - | 
+on 40 bucket 68.37 x 624 y 4640 vx 0 vy 0 - | 
+on 40 bucket 68.40 x 625 y 4639 vx 0 vy 0 - | 
+on 40 bucket 68.43 x 627 y 4639 vx 0 vy 0 - | 
+on 40 bucket 68.47 x 628 y 4639 vx 0 vy 0 - | 
+on 40 bucket 68.50 x 630 y 4638 vx 0 vy 0 - | 
+on 40 bucket 68.53 x 632 y 4638 vx 0 vy 0 - | 
+on 40 bucket 68.57 x 633 y 4638 vx 0 vy 0 - | 
+on 40 bucket 68.60 x 635 y 4638 vx 0 vy 0 - | 
+on 40 bucket 68.63 x 637 y 4637 vx 0 vy 0 - | 
+on 40 bucket 68.67 x 638 y 4637 vx 0 vy 0 - | 
+on 40 bucket 68.70 x 640 y 4637 vx 0 vy 0 - | 
+on 40 bucket 68.73 x 642 y 4637 vx 0 vy 0 - | 
+on 40 bucket 68.77 x 643 y 4637 vx 0 vy 0 - | 
+on 40 bucket 68.80 x 645 y 4637 vx 0 vy 0 - | 
+on 40 bucket 68.83 x 647 y 4636 vx 0 vy 0 - | 
+on 40 bucket 68.87 x 648 y 4636 vx 0 vy 0 - | 
+on 40 bucket 68.90 x 650 y 4636 vx 0 vy 0 - | 
+on 40 bucket 68.93 x 652 y 4636 vx 0 vy 0 - | 
+on 40 bucket 68.97 x 653 y 4636 vx 0 vy 0 - | 
+on 40 bucket 69.00 x 655 y 4636 vx 0 vy 0 - | 
+on 40 bucket 69.03 x 657 y 4636 vx 0 vy 0 - | 
+on 40 bucket 69.07 x 658 y 4636 vx 0 vy 0 - | 
+on 40 bucket 69.10 x 660 y 4636 vx 0 vy 0 - | 
+on 40 bucket 69.13 x 662 y 4636 vx 0 vy 0 - | 
+on 40 bucket 69.17 x 663 y 4636 vx 0 vy 0 - | 
+on 40 bucket 69.20 x 665 y 4636 vx 0 vy 0 - | 
+on 40 bucket 69.23 x 667 y 4636 vx 0 vy 0 - | 
+on 40 bucket 69.27 x 668 y 4636 vx 0 vy 0 - | 
+on 40 bucket 69.30 x 670 y 4636 vx 0 vy 0 - | 
+on 40 bucket 69.33 x 672 y 4636 vx 0 vy 0 - | 
+on 35 branch@821-1169 70.00 x 849 y 4664 vx 285 vy 0 - | right
+on 35 branch@821-1169 70.03 x 855 y 4664 vx 172 vy 0 - | 
+on 35 branch@821-1169 70.07 x 857 y 4664 vx 58 vy 0 - | 
+on 35 branch@821-1169 70.10 x 857 y 4664 vx 0 vy 0 - | 
+on 35 branch@821-1169 70.13 x 857 y 4664 vx 0 vy 0 - | 
+on 35 branch@821-1169 70.17 x 854 y 4664 vx -87 vy 0 - | left
+on 35 branch@821-1169 70.20 x 848 y 4664 vx -173 vy 0 - | left
+on 40 bucket 70.80 x 682 y 4656 vx -285 vy 0 - | 
+on 40 bucket 70.83 x 679 y 4657 vx -125 vy 0 - | right
+on 40 bucket 70.87 x 682 y 4658 vx 35 vy 0 - | right
+on 40 bucket 70.90 x 683 y 4658 vx 0 vy 0 - | 
+on 40 bucket 70.93 x 685 y 4659 vx 0 vy 0 - | 
+on 40 bucket 70.97 x 686 y 4660 vx 0 vy 0 - | 
+on 40 bucket 71.00 x 688 y 4661 vx 0 vy 0 - | 
+on 40 bucket 71.03 x 686 y 4662 vx -87 vy 0 - | left
+on 40 bucket 71.07 x 690 y 4662 vx 73 vy 0 - | right
+on 40 bucket 71.10 x 691 y 4663 vx 0 vy 0 - | 
+on 40 bucket 71.13 x 693 y 4664 vx 0 vy 0 - | 
+on 35 branch@821-1169 71.77 x 807 y 4664 vx -106 vy 0 - | left
+on 40 bucket 71.90 x 774 y 4688 vx -268 vy 0 - | left
+on 40 bucket 71.93 x 770 y 4689 vx -154 vy 0 - | 
+on 40 bucket 71.97 x 770 y 4691 vx -41 vy 0 - | 
+on 40 bucket 72.00 x 771 y 4692 vx 0 vy 0 - | 
+on 40 bucket 72.03 x 772 y 4693 vx 0 vy 0 - | 
+on 40 bucket 72.07 x 770 y 4694 vx -87 vy 0 - | left
+on 40 bucket 72.10 x 774 y 4695 vx 73 vy 0 - | right
+on 40 bucket 72.13 x 775 y 4697 vx 0 vy 0 - | 
+on 40 bucket 72.17 x 776 y 4698 vx 0 vy 0 - | 
+on 40 bucket 72.20 x 777 y 4699 vx 0 vy 0 - | 
+on 40 bucket 72.23 x 778 y 4700 vx 0 vy 0 - | 
+on 40 bucket 72.27 x 779 y 4702 vx 0 vy 0 - | 
+on 35 branch@821-1169 72.83 x 928 y 4664 vx 268 vy 0 - | right
+on 35 branch@821-1169 72.87 x 934 y 4664 vx 154 vy 0 - | 
+on 35 branch@821-1169 72.90 x 935 y 4664 vx 41 vy 0 - | 
+on 35 branch@821-1169 72.93 x 935 y 4664 vx 0 vy 0 - | 
+on 35 branch@821-1169 72.97 x 935 y 4664 vx 0 vy 0 - | 
+on 35 branch@821-1169 73.00 x 932 y 4664 vx -87 vy 0 - | left
+on 35 branch@821-1169 73.03 x 926 y 4664 vx -173 vy 0 - | left
+on 35 branch@821-1169 73.07 x 918 y 4664 vx -260 vy 0 - | left
+on 35 branch@821-1169 73.10 x 908 y 4664 vx -285 vy 0 - | left
+on 35 branch@821-1169 73.13 x 899 y 4664 vx -268 vy 0 - | left
+on 35 branch@821-1169 73.17 x 890 y 4664 vx -285 vy 0 - | left
+on 35 branch@821-1169 73.20 x 881 y 4664 vx -268 vy 0 - | left
+on 35 branch@821-1169 73.23 x 871 y 4664 vx -285 vy 0 - | left
+on 35 branch@821-1169 73.27 x 862 y 4664 vx -268 vy 0 - | left
+on 35 branch@821-1169 73.30 x 853 y 4664 vx -285 vy 0 - | left
+on 35 branch@821-1169 73.33 x 844 y 4664 vx -268 vy 0 - | left
+on 39 bucket 73.93 x 686 y 4644 vx -112 vy 0 - | right
+on 39 bucket 73.97 x 689 y 4644 vx 48 vy 0 - | right
+on 39 bucket 74.00 x 690 y 4645 vx 0 vy 0 - | 
+on 39 bucket 74.03 x 692 y 4646 vx 0 vy 0 - | 
+on 39 bucket 74.07 x 694 y 4646 vx 0 vy 0 - | 
+on 39 bucket 74.10 x 695 y 4647 vx 0 vy 0 - | 
+on 39 bucket 74.13 x 697 y 4647 vx 0 vy 0 - | 
+on 39 bucket 74.17 x 698 y 4648 vx 0 vy 0 - | 
+on 39 bucket 74.20 x 700 y 4648 vx 0 vy 0 - | 
+on 39 bucket 74.23 x 701 y 4649 vx 0 vy 0 - | 
+on 39 bucket 74.27 x 703 y 4650 vx 0 vy 0 - | 
+on 39 bucket 74.30 x 704 y 4650 vx 0 vy 0 - | 
+on 39 bucket 74.33 x 706 y 4651 vx 0 vy 0 - | 
+on 35 branch@821-1169 74.97 x 876 y 4664 vx 285 vy 0 - | right
+on 35 branch@821-1169 75.00 x 882 y 4664 vx 172 vy 0 - | 
+on 35 branch@821-1169 75.03 x 884 y 4664 vx 58 vy 0 - | 
+on 35 branch@821-1169 75.07 x 884 y 4664 vx 0 vy 0 - | 
+on 35 branch@821-1169 75.10 x 884 y 4664 vx 0 vy 0 - | 
+on 35 branch@821-1169 75.13 x 881 y 4664 vx -87 vy 0 - | left
+on 35 branch@821-1169 75.17 x 875 y 4664 vx -173 vy 0 - | left
+on 35 branch@821-1169 75.20 x 866 y 4664 vx -260 vy 0 - | left
+on 35 branch@821-1169 75.23 x 857 y 4664 vx -285 vy 0 - | left
+on 35 branch@821-1169 75.27 x 848 y 4664 vx -268 vy 0 - | left
+on 35 branch@821-1169 75.30 x 839 y 4664 vx -285 vy 0 - | left
+on 35 branch@821-1169 75.33 x 830 y 4664 vx -268 vy 0 - | left
+on 35 branch@821-1169 75.37 x 820 y 4664 vx -285 vy 0 - | left
+on 35 branch@821-1169 75.40 x 811 y 4664 vx -268 vy 0 - | left
+on 39 bucket 75.53 x 773 y 4683 vx -285 vy 0 - | 
+on 39 bucket 75.57 x 770 y 4685 vx -125 vy 0 - | right
+on 39 bucket 75.60 x 773 y 4686 vx 35 vy 0 - | right
+on 39 bucket 75.63 x 774 y 4687 vx 0 vy 0 - | 
+on 39 bucket 75.67 x 775 y 4688 vx 0 vy 0 - | 
+on 39 bucket 75.70 x 776 y 4689 vx 0 vy 0 - | 
+on 39 bucket 75.73 x 777 y 4690 vx 0 vy 0 - | 
+on 39 bucket 75.77 x 779 y 4692 vx 0 vy 0 - | 
+on 39 bucket 75.80 x 780 y 4693 vx 0 vy 0 - | 
+on 39 bucket 75.83 x 781 y 4694 vx 0 vy 0 - | 
+on 39 bucket 75.87 x 782 y 4695 vx 0 vy 0 - | 
+on 35 branch@821-1169 76.43 x 931 y 4664 vx 268 vy 0 - | right
+on 35 branch@821-1169 76.47 x 936 y 4664 vx 154 vy 0 - | 
+on 35 branch@821-1169 76.50 x 937 y 4664 vx 41 vy 0 - | 
+on 35 branch@821-1169 76.53 x 937 y 4664 vx 0 vy 0 - | 
+on 35 branch@821-1169 76.57 x 937 y 4664 vx 0 vy 0 - | 
+on 35 branch@821-1169 76.60 x 934 y 4664 vx -87 vy 0 - | left
+on 35 branch@821-1169 76.63 x 929 y 4664 vx -173 vy 0 - | left
+on 35 branch@821-1169 76.67 x 920 y 4664 vx -260 vy 0 - | left
+on 35 branch@821-1169 76.70 x 911 y 4664 vx -285 vy 0 - | left
+on 35 branch@821-1169 76.73 x 902 y 4664 vx -268 vy 0 - | left
+on 35 branch@821-1169 76.77 x 892 y 4664 vx -285 vy 0 - | left
+on 35 branch@821-1169 76.80 x 883 y 4664 vx -268 vy 0 - | left
+on 35 branch@821-1169 76.83 x 874 y 4664 vx -285 vy 0 - | left
+on 35 branch@821-1169 76.87 x 865 y 4664 vx -268 vy 0 - | left
+on 35 branch@821-1169 76.90 x 855 y 4664 vx -285 vy 0 - | left
+on 35 branch@821-1169 76.93 x 846 y 4664 vx -268 vy 0 - | left
+on 38 bucket 77.43 x 708 y 4640 vx -268 vy 0 - | 
+on 38 bucket 77.47 x 706 y 4641 vx -108 vy 0 - | right
+on 38 bucket 77.50 x 710 y 4641 vx 52 vy 0 - | right
+on 38 bucket 77.53 x 711 y 4642 vx 0 vy 0 - | 
+on 38 bucket 77.57 x 713 y 4642 vx 0 vy 0 - | 
+on 38 bucket 77.60 x 715 y 4643 vx 0 vy 0 - | 
+on 38 bucket 77.63 x 716 y 4643 vx 0 vy 0 - | 
+on 38 bucket 77.67 x 718 y 4643 vx 0 vy 0 - | 
+on 38 bucket 77.70 x 719 y 4644 vx 0 vy 0 - | 
+on 38 bucket 77.73 x 721 y 4644 vx 0 vy 0 - | 
+on 38 bucket 77.77 x 723 y 4645 vx 0 vy 0 - | 
+on 38 bucket 77.80 x 724 y 4645 vx 0 vy 0 - | 
+on 35 branch@821-1169 78.43 x 892 y 4664 vx 268 vy 0 - | right
+on 35 branch@821-1169 78.47 x 897 y 4664 vx 154 vy 0 - | 
+on 35 branch@821-1169 78.50 x 899 y 4664 vx 41 vy 0 - | 
+on 35 branch@821-1169 78.53 x 899 y 4664 vx 0 vy 0 - | 
+on 35 branch@821-1169 78.57 x 899 y 4664 vx 0 vy 0 - | 
+on 35 branch@821-1169 78.60 x 896 y 4664 vx -87 vy 0 - | left
+on 35 branch@821-1169 78.63 x 890 y 4664 vx -173 vy 0 - | left
+on 35 branch@821-1169 78.67 x 881 y 4664 vx -260 vy 0 - | left
+on 35 branch@821-1169 78.70 x 872 y 4664 vx -285 vy 0 - | left
+on 35 branch@821-1169 78.73 x 863 y 4664 vx -268 vy 0 - | left
+on 35 branch@821-1169 78.77 x 854 y 4664 vx -285 vy 0 - | left
+on 35 branch@821-1169 78.80 x 845 y 4664 vx -268 vy 0 - | left
+on 35 branch@821-1169 78.83 x 835 y 4664 vx -285 vy 0 - | left
+on 35 branch@821-1169 78.87 x 826 y 4664 vx -268 vy 0 - | left
+on 35 branch@821-1169 78.90 x 817 y 4664 vx -285 vy 0 - | left
+on 35 branch@821-1169 78.93 x 808 y 4664 vx -268 vy 0 - | left
+on 38 bucket 79.03 x 780 y 4675 vx -285 vy 0 - | left
+on 38 bucket 79.07 x 775 y 4676 vx -172 vy 0 - | 
+on 38 bucket 79.10 x 775 y 4677 vx -58 vy 0 - | 
+on 38 bucket 79.13 x 776 y 4678 vx 0 vy 0 - | 
+on 38 bucket 79.17 x 777 y 4679 vx 0 vy 0 - | 
+on 38 bucket 79.20 x 776 y 4680 vx -87 vy 0 - | left
+on 38 bucket 79.23 x 779 y 4681 vx 73 vy 0 - | right
+on 38 bucket 79.27 x 781 y 4682 vx 0 vy 0 - | 
+on 38 bucket 79.30 x 782 y 4683 vx 0 vy 0 - | 
+on 38 bucket 79.33 x 783 y 4684 vx 0 vy 0 - | 
+on 38 bucket 79.37 x 784 y 4686 vx 0 vy 0 - | 
+on 38 bucket 79.40 x 783 y 4687 vx -87 vy 0 - | left
+on 38 bucket 79.43 x 784 y 4688 vx 0 vy 0 - | 
+on 35 branch@821-1169 80.03 x 941 y 4664 vx 285 vy 0 - | right
+on 35 branch@821-1169 80.07 x 947 y 4664 vx 172 vy 0 - | 
+on 35 branch@821-1169 80.10 x 949 y 4664 vx 58 vy 0 - | 
+on 35 branch@821-1169 80.13 x 949 y 4664 vx 0 vy 0 - | 
+on 35 branch@821-1169 80.17 x 949 y 4664 vx 0 vy 0 - | 
+on 35 branch@821-1169 80.20 x 946 y 4664 vx -87 vy 0 - | left
+on 35 branch@821-1169 80.23 x 940 y 4664 vx -173 vy 0 - | left
+on 35 branch@821-1169 80.27 x 932 y 4664 vx -260 vy 0 - | left
+on 35 branch@821-1169 80.30 x 922 y 4664 vx -285 vy 0 - | left
+on 35 branch@821-1169 80.33 x 913 y 4664 vx -268 vy 0 - | left
+on 35 branch@821-1169 80.37 x 904 y 4664 vx -285 vy 0 - | left
+on 35 branch@821-1169 80.40 x 895 y 4664 vx -268 vy 0 - | left
+on 35 branch@821-1169 80.43 x 885 y 4664 vx -285 vy 0 - | left
+on 35 branch@821-1169 80.47 x 876 y 4664 vx -268 vy 0 - | left
+on 35 branch@821-1169 80.50 x 867 y 4664 vx -285 vy 0 - | left
+on 35 branch@821-1169 80.53 x 858 y 4664 vx -268 vy 0 - | left
+on 37 bucket 81.13 x 692 y 4640 vx -268 vy 0 - | left
+on 37 bucket 81.17 x 689 y 4640 vx -154 vy 0 - | 
+on 37 bucket 81.20 x 689 y 4640 vx -41 vy 0 - | 
+on 37 bucket 81.23 x 691 y 4641 vx 0 vy 0 - | 
+on 37 bucket 81.27 x 692 y 4641 vx 0 vy 0 - | 
+on 37 bucket 81.30 x 691 y 4642 vx -87 vy 0 - | left
+on 37 bucket 81.33 x 695 y 4642 vx 73 vy 0 - | right
+on 37 bucket 81.37 x 697 y 4642 vx 0 vy 0 - | 
+on 37 bucket 81.40 x 698 y 4643 vx 0 vy 0 - | 
+on 37 bucket 81.43 x 700 y 4643 vx 0 vy 0 - | 
+on 37 bucket 81.47 x 701 y 4644 vx 0 vy 0 - | 
+on 37 bucket 81.50 x 700 y 4644 vx -87 vy 0 - | left
+on 35 branch@821-1169 82.13 x 869 y 4664 vx 268 vy 0 - | right
+on 35 branch@821-1169 82.17 x 874 y 4664 vx 154 vy 0 - | 
+on 35 branch@821-1169 82.20 x 875 y 4664 vx 41 vy 0 - | 
+on 35 branch@821-1169 82.23 x 875 y 4664 vx 0 vy 0 - | 
+on 35 branch@821-1169 82.27 x 875 y 4664 vx 0 vy 0 - | 
+on 35 branch@821-1169 82.30 x 872 y 4664 vx -87 vy 0 - | left
+on 35 branch@821-1169 82.33 x 866 y 4664 vx -173 vy 0 - | left
+on 35 branch@821-1169 82.37 x 858 y 4664 vx -260 vy 0 - | left
+on 35 branch@821-1169 82.40 x 848 y 4664 vx -285 vy 0 - | left
+on 35 branch@821-1169 82.43 x 839 y 4664 vx -268 vy 0 - | left
+on 35 branch@821-1169 82.47 x 830 y 4664 vx -285 vy 0 - | left
+on 37 bucket 82.50 x 821 y 4666 vx -268 vy 0 - | left
+on 37 bucket 82.53 x 817 y 4667 vx -154 vy 0 - | 
+on 37 bucket 82.57 x 817 y 4668 vx -41 vy 0 - | 
+on 37 bucket 82.60 x 818 y 4669 vx 0 vy 0 - | 
+on 37 bucket 82.63 x 820 y 4670 vx 0 vy 0 - | 
+on 35 branch@821-1169 82.67 x 818 y 4664 vx -87 vy 0 - | left
+on 35 branch@821-1169 82.70 x 813 y 4664 vx -173 vy 0 - | left
+on 37 bucket 82.80 x 785 y 4675 vx -268 vy 0 - | left
+on 37 bucket 82.83 x 782 y 4676 vx -154 vy 0 - | 
+on 37 bucket 82.87 x 782 y 4677 vx -41 vy 0 - | 
+on 37 bucket 82.90 x 783 y 4678 vx 0 vy 0 - | 
+on 37 bucket 82.93 x 784 y 4679 vx 0 vy 0 - | 
+on 37 bucket 82.97 x 782 y 4680 vx -87 vy 0 - | left
+on 35 branch@821-1169 83.57 x 939 y 4664 vx 268 vy 0 - | right
+on 35 branch@821-1169 83.60 x 944 y 4664 vx 154 vy 0 - | 
+on 35 branch@821-1169 83.63 x 945 y 4664 vx 41 vy 0 - | 
+on 35 branch@821-1169 83.67 x 945 y 4664 vx 0 vy 0 - | 
+on 35 branch@821-1169 83.70 x 945 y 4664 vx 0 vy 0 - | 
+on 35 branch@821-1169 83.73 x 942 y 4664 vx -87 vy 0 - | left
+on 35 branch@821-1169 83.77 x 937 y 4664 vx -173 vy 0 - | left
+on 35 branch@821-1169 83.80 x 928 y 4664 vx -260 vy 0 - | left
+on 35 branch@821-1169 83.83 x 918 y 4664 vx -285 vy 0 - | left
+on 35 branch@821-1169 83.87 x 910 y 4664 vx -268 vy 0 - | left
+on 35 branch@821-1169 83.90 x 900 y 4664 vx -285 vy 0 - | left
+on 35 branch@821-1169 83.93 x 891 y 4664 vx -268 vy 0 - | left
+on 35 branch@821-1169 83.97 x 882 y 4664 vx -285 vy 0 - | left
+on 35 branch@821-1169 84.00 x 873 y 4664 vx -268 vy 0 - | left
+on 35 branch@821-1169 84.03 x 863 y 4664 vx -285 vy 0 - | left
+on 35 branch@821-1169 84.07 x 854 y 4664 vx -268 vy 0 - | left
+on 35 branch@821-1169 84.10 x 845 y 4664 vx -285 vy 0 - | left
+on 36 bucket 84.67 x 688 y 4638 vx -268 vy 0 - | left
+on 36 bucket 84.70 x 685 y 4638 vx -154 vy 0 - | 
+on 36 bucket 84.73 x 685 y 4638 vx -41 vy 0 - | 
+on 36 bucket 84.77 x 687 y 4638 vx 0 vy 0 - | 
+on 36 bucket 84.80 x 689 y 4639 vx 0 vy 0 - | 
+on 36 bucket 84.83 x 687 y 4639 vx -87 vy 0 - | left
+on 36 bucket 84.87 x 691 y 4639 vx 73 vy 0 - | right
+on 36 bucket 84.90 x 693 y 4640 vx 0 vy 0 - | 
+on 36 bucket 84.93 x 695 y 4640 vx 0 vy 0 - | 
+on 36 bucket 84.97 x 696 y 4640 vx 0 vy 0 - | 
+on 36 bucket 85.00 x 698 y 4641 vx 0 vy 0 - | 
+on 35 branch@821-1169 85.67 x 875 y 4664 vx 268 vy 0 - | 
+on 35 branch@821-1169 85.70 x 880 y 4664 vx 154 vy 0 - | 
+on 35 branch@821-1169 85.73 x 882 y 4664 vx 41 vy 0 - | 
+on 35 branch@821-1169 85.77 x 882 y 4664 vx 0 vy 0 - | 
+on 35 branch@821-1169 85.80 x 879 y 4664 vx -87 vy 0 - | left
+on 35 branch@821-1169 85.83 x 873 y 4664 vx -173 vy 0 - | left
+on 35 branch@821-1169 85.87 x 864 y 4664 vx -260 vy 0 - | left
+on 39 bucket 86.80 x 618 y 4950 vx -285 vy 0 - | left
+on 39 bucket 86.83 x 608 y 4949 vx -268 vy 0 - | left
+on 39 bucket 86.87 x 597 y 4948 vx -285 vy 0 - | left
+on 39 bucket 86.90 x 587 y 4947 vx -268 vy 0 - | left
+on 39 bucket 86.93 x 577 y 4945 vx -285 vy 0 - | left
+on 39 bucket 86.97 x 570 y 4944 vx -172 vy 0 - | 
+on 39 bucket 87.00 x 566 y 4943 vx -58 vy 0 - | 
+on 39 bucket 87.03 x 565 y 4942 vx 0 vy 0 - | 
+on 39 bucket 87.07 x 564 y 4941 vx 0 vy 0 - | 
+on 39 bucket 87.10 x 560 y 4940 vx -87 vy 0 - | left
+on 39 bucket 87.13 x 561 y 4938 vx 73 vy 0 - | right
+on 39 bucket 87.17 x 560 y 4937 vx 0 vy 0 - | 
+on 39 bucket 87.20 x 559 y 4936 vx 0 vy 0 - | 
+on 39 bucket 87.23 x 558 y 4935 vx 0 vy 0 - | 
+on 39 bucket 87.27 x 557 y 4933 vx 0 vy 0 - | 
+on 39 bucket 87.30 x 553 y 4932 vx -87 vy 0 - | left
+on 39 bucket 87.33 x 554 y 4931 vx 73 vy 0 - | right
+on 39 bucket 87.37 x 553 y 4930 vx 0 vy 0 - | 
+on 39 bucket 87.40 x 552 y 4928 vx 0 vy 0 - | 
+on 39 bucket 87.43 x 551 y 4927 vx 0 vy 0 - | 
+on 39 bucket 87.47 x 547 y 4926 vx -87 vy 0 - | left
+on 39 bucket 87.50 x 549 y 4924 vx 73 vy 0 - | right
+on 39 bucket 87.53 x 548 y 4923 vx 0 vy 0 - | 
+on 39 bucket 87.57 x 547 y 4922 vx 0 vy 0 - | 
+on 39 bucket 87.60 x 546 y 4920 vx 0 vy 0 - | 
+on 39 bucket 87.63 x 542 y 4919 vx -87 vy 0 - | left
+on 39 bucket 87.67 x 543 y 4917 vx 73 vy 0 - | right
+on 39 bucket 87.70 x 543 y 4916 vx 0 vy 0 - | 
+on 39 bucket 87.73 x 542 y 4915 vx 0 vy 0 - | 
+on 39 bucket 87.77 x 541 y 4913 vx 0 vy 0 - | 
+on 39 bucket 87.80 x 537 y 4912 vx -87 vy 0 - | left
+on 39 bucket 87.83 x 538 y 4910 vx 73 vy 0 - | right
+on 39 bucket 87.87 x 538 y 4909 vx 0 vy 0 - | 
+on 39 bucket 87.90 x 537 y 4908 vx 0 vy 0 - | 
+on 39 bucket 87.93 x 536 y 4906 vx 0 vy 0 - | 
+on 39 bucket 87.97 x 532 y 4905 vx -87 vy 0 - | left
+on 39 bucket 88.00 x 534 y 4903 vx 73 vy 0 - | right
+on 39 bucket 88.03 x 533 y 4902 vx 0 vy 0 - | 
+on 39 bucket 88.07 x 532 y 4900 vx 0 vy 0 - | 
+on 39 bucket 88.10 x 531 y 4899 vx 0 vy 0 - | 
+on 39 bucket 88.13 x 528 y 4897 vx -87 vy 0 - | left
+on 39 bucket 88.17 x 530 y 4896 vx 73 vy 0 - | right
+on 39 bucket 88.20 x 529 y 4894 vx 0 vy 0 - | 
+on 39 bucket 88.23 x 528 y 4893 vx 0 vy 0 - | 
+on 39 bucket 88.27 x 527 y 4891 vx 0 vy 0 - | 
+on 39 bucket 88.30 x 524 y 4890 vx -87 vy 0 - | left
+on 39 bucket 88.33 x 526 y 4888 vx 73 vy 0 - | right
+on 39 bucket 88.37 x 525 y 4887 vx 0 vy 0 - | 
+on 39 bucket 88.40 x 524 y 4885 vx 0 vy 0 - | 
+on 39 bucket 88.43 x 524 y 4884 vx 0 vy 0 - | 
+on 39 bucket 88.47 x 520 y 4882 vx -87 vy 0 - | left
+on 39 bucket 88.50 x 522 y 4881 vx 73 vy 0 - | right
+on 39 bucket 88.53 x 521 y 4879 vx 0 vy 0 - | 
+on 39 bucket 88.57 x 521 y 4878 vx 0 vy 0 - | 
+on 39 bucket 88.60 x 520 y 4876 vx 0 vy 0 - | 
+on 39 bucket 88.63 x 517 y 4874 vx -87 vy 0 - | left
+on 39 bucket 88.67 x 519 y 4873 vx 73 vy 0 - | right
+on 39 bucket 88.70 x 518 y 4871 vx 0 vy 0 - | 
+on 39 bucket 88.73 x 518 y 4870 vx 0 vy 0 - | 
+on 39 bucket 88.77 x 517 y 4868 vx 0 vy 0 - | 
+on 39 bucket 88.80 x 514 y 4866 vx -87 vy 0 - | left
+on 39 bucket 88.83 x 516 y 4865 vx 73 vy 0 - | right
+on 39 bucket 88.87 x 515 y 4863 vx 0 vy 0 - | 
+on 39 bucket 88.90 x 515 y 4862 vx 0 vy 0 - | 
+on 39 bucket 88.93 x 514 y 4860 vx 0 vy 0 - | 
+on 39 bucket 88.97 x 511 y 4858 vx -87 vy 0 - | left
+on 39 bucket 89.00 x 513 y 4857 vx 73 vy 0 - | right
+on 39 bucket 89.03 x 513 y 4855 vx 0 vy 0 - | 
+on 39 bucket 89.07 x 513 y 4854 vx 0 vy 0 - | 
+on 39 bucket 89.10 x 512 y 4852 vx 0 vy 0 - | 
+on 39 bucket 89.13 x 509 y 4850 vx -87 vy 0 - | left
+on 39 bucket 89.17 x 511 y 4849 vx 73 vy 0 - | right
+on 39 bucket 89.20 x 511 y 4847 vx 0 vy 0 - | 
+on 39 bucket 89.23 x 511 y 4845 vx 0 vy 0 - | 
+on 39 bucket 89.27 x 510 y 4844 vx 0 vy 0 - | 
+on 39 bucket 89.30 x 507 y 4842 vx -87 vy 0 - | left
+on 39 bucket 89.33 x 509 y 4840 vx 73 vy 0 - | right
+on 39 bucket 89.37 x 509 y 4839 vx 0 vy 0 - | 
+on 39 bucket 89.40 x 509 y 4837 vx 0 vy 0 - | 
+on 39 bucket 89.43 x 509 y 4835 vx 0 vy 0 - | 
+on 39 bucket 89.47 x 506 y 4834 vx -87 vy 0 - | left
+on 39 bucket 89.50 x 508 y 4832 vx 73 vy 0 - | right
+on 39 bucket 89.53 x 508 y 4830 vx 0 vy 0 - | 
+on 39 bucket 89.57 x 508 y 4829 vx 0 vy 0 - | 
+on 39 bucket 89.60 x 508 y 4827 vx 0 vy 0 - | 
+on 39 bucket 89.63 x 505 y 4825 vx -87 vy 0 - | left
+on 39 bucket 89.67 x 507 y 4824 vx 73 vy 0 - | right
+on 39 bucket 89.70 x 507 y 4822 vx 0 vy 0 - | 
+on 39 bucket 89.73 x 507 y 4820 vx 0 vy 0 - | 
+on 39 bucket 89.77 x 507 y 4819 vx 0 vy 0 - | 
+on 39 bucket 89.80 x 504 y 4817 vx -87 vy 0 - | left
+on 39 bucket 89.83 x 506 y 4815 vx 73 vy 0 - | right
+on 39 bucket 89.87 x 506 y 4814 vx 0 vy 0 - | 
+on 39 bucket 89.90 x 506 y 4812 vx 0 vy 0 - | 
+on 39 bucket 89.93 x 506 y 4810 vx 0 vy 0 - | 
+on 39 bucket 89.97 x 504 y 4809 vx -87 vy 0 - | left
+on 39 bucket 90.00 x 506 y 4807 vx 73 vy 0 - | right
+on 39 bucket 90.03 x 506 y 4805 vx 0 vy 0 - | 
+on 39 bucket 90.07 x 506 y 4804 vx 0 vy 0 - | 
+on 39 bucket 90.10 x 506 y 4802 vx 0 vy 0 - | 
+on 39 bucket 90.13 x 504 y 4801 vx -87 vy 0 - | left
+on 39 bucket 90.17 x 506 y 4799 vx 73 vy 0 - | right
+on 39 bucket 90.20 x 506 y 4797 vx 0 vy 0 - | 
+on 39 bucket 90.23 x 507 y 4796 vx 0 vy 0 - | 
+on 39 bucket 90.27 x 507 y 4794 vx 0 vy 0 - | 
+on 39 bucket 90.30 x 504 y 4792 vx -87 vy 0 - | left
+on 39 bucket 90.33 x 507 y 4791 vx 73 vy 0 - | right
+on 39 bucket 90.37 x 507 y 4789 vx 0 vy 0 - | 
+on 39 bucket 90.40 x 507 y 4787 vx 0 vy 0 - | 
+on 39 bucket 90.43 x 508 y 4786 vx 0 vy 0 - | 
+on 39 bucket 90.47 x 505 y 4784 vx -87 vy 0 - | left
+on 39 bucket 90.50 x 508 y 4782 vx 73 vy 0 - | right
+on 39 bucket 90.53 x 508 y 4781 vx 0 vy 0 - | 
+on 39 bucket 90.57 x 508 y 4779 vx 0 vy 0 - | 
+on 39 bucket 90.60 x 509 y 4777 vx 0 vy 0 - | 
+on 39 bucket 90.63 x 506 y 4776 vx -87 vy 0 - | left
+on 39 bucket 90.67 x 509 y 4774 vx 73 vy 0 - | right
+on 39 bucket 90.70 x 509 y 4773 vx 0 vy 0 - | 
+on 39 bucket 90.73 x 510 y 4771 vx 0 vy 0 - | 
+on 39 bucket 90.77 x 510 y 4769 vx 0 vy 0 - | 
+on 39 bucket 90.80 x 508 y 4768 vx -87 vy 0 - | left
+on 39 bucket 90.83 x 511 y 4766 vx 73 vy 0 - | right
+on 39 bucket 90.87 x 511 y 4765 vx 0 vy 0 - | 
+on 39 bucket 90.90 x 512 y 4763 vx 0 vy 0 - | 
+on 39 bucket 90.93 x 512 y 4761 vx 0 vy 0 - | 
+on 39 bucket 90.97 x 510 y 4760 vx -87 vy 0 - | left
+on 39 bucket 91.00 x 513 y 4758 vx 73 vy 0 - | right
+on 39 bucket 91.03 x 513 y 4757 vx 0 vy 0 - | 
+on 39 bucket 91.07 x 514 y 4755 vx 0 vy 0 - | 
+on 39 bucket 91.10 x 514 y 4753 vx 0 vy 0 - | 
+on 39 bucket 91.13 x 512 y 4752 vx -87 vy 0 - | left
+on 39 bucket 91.17 x 515 y 4750 vx 73 vy 0 - | right
+on 39 bucket 91.20 x 516 y 4749 vx 0 vy 0 - | 
+on 39 bucket 91.23 x 516 y 4747 vx 0 vy 0 - | 
+on 39 bucket 91.27 x 517 y 4746 vx 0 vy 0 - | 
+on 39 bucket 91.30 x 515 y 4744 vx -87 vy 0 - | left
+on 39 bucket 91.33 x 518 y 4743 vx 73 vy 0 - | right
+on 39 bucket 91.37 x 519 y 4741 vx 0 vy 0 - | 
+on 39 bucket 91.40 x 519 y 4740 vx 0 vy 0 - | 
+on 39 bucket 91.43 x 520 y 4738 vx 0 vy 0 - | 
+on 39 bucket 91.47 x 518 y 4737 vx -87 vy 0 - | left
+on 39 bucket 91.50 x 521 y 4735 vx 73 vy 0 - | right
+on 39 bucket 91.53 x 522 y 4734 vx 0 vy 0 - | 
+on 39 bucket 91.57 x 523 y 4732 vx 0 vy 0 - | 
+on 39 bucket 91.60 x 523 y 4731 vx 0 vy 0 - | 
+on 39 bucket 91.63 x 521 y 4729 vx -87 vy 0 - | left
+on 39 bucket 91.67 x 525 y 4728 vx 73 vy 0 - | right
+on 39 bucket 91.70 x 525 y 4726 vx 0 vy 0 - | 
+on 39 bucket 91.73 x 526 y 4725 vx 0 vy 0 - | 
+on 39 bucket 91.77 x 527 y 4723 vx 0 vy 0 - | 
+on 39 bucket 91.80 x 525 y 4722 vx -87 vy 0 - | left
+on 39 bucket 91.83 x 528 y 4721 vx 73 vy 0 - | right
+on 39 bucket 91.87 x 529 y 4719 vx 0 vy 0 - | 
+on 39 bucket 91.90 x 530 y 4718 vx 0 vy 0 - | 
+on 39 bucket 91.93 x 531 y 4716 vx 0 vy 0 - | 
+on 39 bucket 91.97 x 529 y 4715 vx -87 vy 0 - | left
+on 39 bucket 92.00 x 533 y 4714 vx 73 vy 0 - | right
+on 39 bucket 92.03 x 533 y 4712 vx 0 vy 0 - | 
+on 39 bucket 92.07 x 534 y 4711 vx 0 vy 0 - | 
+on 39 bucket 92.10 x 535 y 4710 vx 0 vy 0 - | 
+on 39 bucket 92.13 x 534 y 4708 vx -87 vy 0 - | left
+on 39 bucket 92.17 x 537 y 4707 vx 73 vy 0 - | right
+on 39 bucket 92.20 x 538 y 4706 vx 0 vy 0 - | 
+on 39 bucket 92.23 x 539 y 4704 vx 0 vy 0 - | 
+on 39 bucket 92.27 x 540 y 4703 vx 0 vy 0 - | 
+on 39 bucket 92.30 x 538 y 4702 vx -87 vy 0 - | left
+on 39 bucket 92.33 x 542 y 4700 vx 73 vy 0 - | right
+on 39 bucket 92.37 x 543 y 4699 vx 0 vy 0 - | 
+on 39 bucket 92.40 x 544 y 4698 vx 0 vy 0 - | 
+on 39 bucket 92.43 x 545 y 4697 vx 0 vy 0 - | 
+on 39 bucket 92.47 x 543 y 4695 vx -87 vy 0 - | left
+on 39 bucket 92.50 x 547 y 4694 vx 73 vy 0 - | right
+on 39 bucket 92.53 x 548 y 4693 vx 0 vy 0 - | 
+on 39 bucket 92.57 x 549 y 4692 vx 0 vy 0 - | 
+on 39 bucket 92.60 x 550 y 4691 vx 0 vy 0 - | 
+on 39 bucket 92.63 x 548 y 4689 vx -87 vy 0 - | left
+on 39 bucket 92.67 x 552 y 4688 vx 73 vy 0 - | right
+on 39 bucket 92.70 x 553 y 4687 vx 0 vy 0 - | 
+on 39 bucket 92.73 x 554 y 4686 vx 0 vy 0 - | 
+on 39 bucket 92.77 x 556 y 4685 vx 0 vy 0 - | 
+on 39 bucket 92.80 x 554 y 4684 vx -87 vy 0 - | left
+on 39 bucket 92.83 x 558 y 4682 vx 73 vy 0 - | right
+on 39 bucket 92.87 x 559 y 4681 vx 0 vy 0 - | 
+on 35 branch@821-1169 92.90 x 1146 y 4664 vx 0 vy 0 - | 
+on 35 branch@821-1169 92.93 x 1146 y 4664 vx 0 vy 0 - | 
+on 42 branch@865-1125 94.53 x 1088 y 4355 vx -285 vy 0 - | left
+on 42 branch@865-1125 94.57 x 1079 y 4355 vx -268 vy 0 - | left
+on 42 branch@865-1125 94.60 x 1070 y 4355 vx -285 vy 0 - | left
+on 42 branch@865-1125 94.63 x 1061 y 4355 vx -268 vy 0 - | left
+on 42 branch@865-1125 94.67 x 1051 y 4355 vx -285 vy 0 - | left
+on 42 branch@865-1125 94.70 x 1043 y 4355 vx -268 vy 0 - | left
+on 42 branch@865-1125 94.73 x 1033 y 4355 vx -285 vy 0 - | left
+on 42 branch@865-1125 94.77 x 1024 y 4355 vx -268 vy 0 - | left
+on 42 branch@865-1125 94.80 x 1015 y 4355 vx -285 vy 0 - | left
+on 42 branch@865-1125 94.83 x 1006 y 4355 vx -268 vy 0 - | left
+on 42 branch@865-1125 94.87 x 996 y 4355 vx -285 vy 0 - | left
+on 42 branch@865-1125 94.90 x 987 y 4355 vx -268 vy 0 - | left
+on 42 branch@865-1125 94.93 x 978 y 4355 vx -285 vy 0 - | left
+on 42 branch@865-1125 94.97 x 969 y 4355 vx -268 vy 0 - | left
+on 42 branch@865-1125 95.00 x 959 y 4355 vx -285 vy 0 - | left

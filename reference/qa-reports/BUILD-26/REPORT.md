@@ -33,6 +33,11 @@ SCRATCH castBots (adult, both settings, seeds 1-100; NOT the measure, which runs
   seed 90 Easy rescued x1, stuck at x ~578 and ~692 ('in a dip 300 px deep, water ahead, the way on is 197 px down'), NOT traced
   (b26v/scratch-castBots-adult-both-cand700.txt, scratch-adultE90-cand700.jsonl). The 760 version had Easy 100/100; on GO, trace 90
   first (which beat; whether the re-lay put it there or wheel phase moved), before the measure.
+  READ (scratch frames, b26v/frames-adultE90-cand700-60-95.txt): it is the EDGE wheel (beat 5, X, its brick UNCHANGED; buckets
+  36-40, jetty piece 35 at x 821-1169, y 4664). From 69 to 86 s he boards a bucket, then the BOT presses right off it onto the
+  jetty (70.00 s: 'right', from the bucket at y 4636, 28 px over the jetty) and left back in, every ~1.5-3 s; at 86.8 s a fall
+  to y 4950, the rescue at 92.9 s. Not the engine's set-back (place A): an input. The re-lay only moved when he meets the wheel.
+  NEXT: why firsttimer.ts wheelRide steps off on the jetty side (every frame 69.3-70.0 s); then the lead rules.
 NOT RUN (ruling 4's): the other tiers (kid, child, middle, expert), lockall, paint, the suite, stills.
 
 # BUILD-26u (session 5 of BUILD-26q; t-build-26-wip-26q). Started 5:53 PM ET 11-24 (by `date`); this box written 6:14 PM ET
