@@ -6,7 +6,10 @@
 The toy is the great wheel on Easy exactly as 2-6 builds it (jetty 635-875 @1013, axle 1037/841 = axleFromJetty(875, 1013, 200, 120);
 probed on seeds 26 and 57 Easy: the built jetty IS the lay's, no Easy widening). A rider standing still with his left edge on the
 bucket's near end (or 6/10/16 px over it; the trace: 6 px over) is set on the jetty as the bucket rises past its end; 4 px in, he rides
-clean. So the jetty's end stands in the sweep of a rider's body at its own height. Fix per the ruling: keep the jetty's end clear of the
+clean. CORRECTION (my own wording above): p.x is his MIDDLE in the engine's collisions, so 'left edge' reads 'middle' (his middle on
+the bucket's edge, half his body over it). THE MECHANISM: the lip hoist (engine.ts ~2764: fromRight, feet within forgive.mantle 26 px
+under the jetty's top, lipHasRoom): rising, his body meets the jetty's end face and he is hoisted onto it. So the jetty's end must clear
+a rider's body (half his width, 22 px, past the bucket's near edge, plus his middle's own overhang) at its height. Fix per the ruling: keep the jetty's end clear of the
 bucket's path at its height on every wheel with a jetty, both settings (2-6.md NEW 1). Where to look: wheel.ts axleFromJetty
 (cx = jettyX + way*(lipOff(R) + W/2): the bucket's near edge meets the jetty's end exactly at jetty height) and wheelLay.ts layWheel /
 the layout check (lips within WHEEL_FAIR.lip of the flown layout) and the board check (a tap hop boards at 100% of moments). Moving

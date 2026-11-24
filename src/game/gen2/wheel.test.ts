@@ -219,8 +219,10 @@ test("TOY (ruling 2): a rider held still on a bucket's near end rides up past th
   r.bare([{ id: 2, x: 0, y: w.cy + w.R + 400, width: 4000, height: 200, type: 'solid' }, jetty, ...buckets]);
   r.t = 0;
   r.frame();
-  // (bucket 0 is at the bottom at t 0; he stands on its near end, the jetty's side, his left edge on its edge, and does nothing. RED there
-  // and with him 6, 10 or 16 px over it (the trace: 6 px over, x 890 on a bucket at 896); 4 px in, he rides clean)
+  // (bucket 0 is at the bottom at t 0; he stands on its near end, the jetty's side, his MIDDLE on its edge (p.x is his middle in the
+  // engine's collisions), and does nothing. RED there and with his middle 6, 10 or 16 px over it (the trace: 6 px over, x 890 on a bucket
+  // at 896); 4 px in, he rides clean. The cause: the lip hoist (engine.ts, forgive.mantle 26 px): rising, his body meets the jetty's end
+  // from the far side with his feet under its top, and he is hoisted onto it)
   r.stand(buckets[0].x, buckets[0].y);
   r.frame();
   r.frame();
