@@ -1,0 +1,10 @@
+main 2-2 exit 0 360 rows 4:37 PM
+c3b 2-1 exit 0 360 rows 4:38 PM
+main 2-4 exit 0 360 rows 4:40 PM
+c3b 2-2 exit 0 360 rows 4:40 PM
+main 2-5 exit 0 360 rows 4:43 PM
+c3b 2-4 exit 0 360 rows 4:44 PM
+main 2-7 exit 0 360 rows 4:47 PM
+c3b 2-5 exit 0 360 rows 4:48 PM
+main 1-4 exit 0 360 rows 4:50 PM
+c3b 2-7 exit 0 360 rows 4:52 PM

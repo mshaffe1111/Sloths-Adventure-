@@ -1,3 +1,59 @@
+# ENG-PLANT-c (session 1, started 4:20 PM ET 11-24 by `date`; this section written 4:51 PM ET by `date`): STOPPED on rule 28, hand-over
+
+Engine (bots), Opus 5.5 xhigh. Lead: session_01FhBbYN2CVHnFXg7XzqKXpM. Base: release-0.10.3 dfe631913 + candidate 2 (merge 80eb07842).
+Candidate 3b is on **origin/release-0.10.3-wip-plant-c** (06b5316be; code a64f02ce5), NOT on release-0.10.3 (D117). Rows: data/c/.
+
+## VERDICT: rule 28 vs MAIN (D132) FAILS on 2-2 and 2-4. Nothing lands. Told the lead.
+castBots CLI rows, every bot, both settings, seeds 1-40, frozen trees (main cdffdc627, head dfe631913, c3 60bbf14cc, c3b a64f02ce5);
+compare: data/c/cmp3.py.txt (main rows first; BAR = adult, child, middle, expert).
+| Stage | head vs main (bar flips) | 3b vs main: bar PASS -> FAIL | 3b bar rows |
+|---|---|---|---|
+| 2-1 | 5 (adult N 12/24/37, child N 27, middle E 9) | 1: child N 11 (rescued x 19,592 'water ahead': not traced) | all 5 head flips cleared |
+| 2-2 | (ENG-PLANT-b: adult N 24) | 2: adult N 4 (ENG-PLANT-b: walks off the last pad crossing that fails on main), adult N 24 | NOT cleared |
+| 2-4 | (ENG-PLANT-b: 8) | 8: adult N 8/27/30/32/35/38, child E 11/23 = exactly ENG-PLANT-b's merge flips | NOT cleared |
+| 2-5 | - | 0 | clean |
+| 2-7 | not shipped on main (main 70/360 pass, a draft) | 3 (child E 24, expert N 29, middle N 32): not a shipped row; 3b passes 294/360 | informational |
+| 1-4 | - | c3b 1-4 was still running at the stop: UNRUN (main's rows are in data/c) | |
+
+## What 3b is (tools/inspect/firsttimer.ts, general, no stage id)
+A refused hop leaves a WAY ON at candidate 2's three judged gates (padPause flick off a drift log, bankUp face, upstream bank): (1) the hop
+of his OWN tier table the gate lands (new FirstTimerRun.tablePick: raceCandidates + racePick, the race's honest-middle pick; thumb noise
+drawn at the press and flown via gateHop); (2) bankUp only: not at the face yet with log under him, walk on toward it; (3) else stand and
+the log hands him back. Toys: blind press = riverRide :207 (adult N 12: rescued on head, clean on 3b); stand-until-rescued = new riverRide
+test 'a refused hop leaves a way on' (child N 1: castRun rescued x 19,576 on candidate 2 after standing 6 s + 5 s at the face; clean on 3b).
+c3 (without the padPause pick) left 4 new 2-1 bar flips (child E 31, middle E 31, middle N 24/25; middle N 25 traced: flick refused on a
+150 px log at 2-1's back river, the ride gates refused the same held aim, stood 4.5 s carried back, x3, rescued); 3b clears all four.
+Plants re-measured on 3b (toyfind) and re-planted at UNCHANGED bars (commit 06b5316be): ride on toy roll 4 (on: 0 lives every tier; off:
+middle N 2, middle E 3, child N 3, child E 1: two tiers over RIDE_LIVES; note middle N alone is AT the bar, not over); handed on child N
+long roll 12 (on 0 lives handed 1; off 4). Not run yet: riverRide/firsttimer tests on 3b, upstream/bankUp/boardHop searches, CI line.
+
+## Why 2-2/2-4 still flip (read, not yet traced)
+tablePick has no table for kid and ADULT (raceCandidates needs holdQ), and 3b touches only candidate 2's three gates. ENG-PLANT-b
+(ATTRIBUTION.md) puts every bar flip on floatSure's refuse-and-stand on a log carrying him back. 2-4's adult rows end 'set down here 3
+times' (x 10,766-10,902, 17,010, 25,164) and 'on a vine ... with no way on' (x 21,5xx-23,4xx): the stands are at the OLDER floatSure
+sites (edgeWait refused stand ~:3420, upstream next-log refused stand ~:3580, edgeStand ~:3097), where no way on exists for any bot.
+
+## EXACT NEXT STEP (session 2)
+1. `git fetch origin release-0.10.3-wip-plant-c`; work on it (06b5316be). Freeze per dispatch-packet D115. Rows of main for all six
+   stages are in data/c/main-*.jsonl (cdffdc627): do not re-run main.
+2. Trace ONE 2-4 adult row (adult N 30, x 10,766: data/c tools trace.mts.txt + geo.mts.txt, `awk` the frames near x) and name the
+   gate that stands (HOP_TRACE or a stack at the return {}). Expect an older floatSure stand with no table.
+3. Generalise the way on to EVERY floatSure refuse-and-stand on a log or bank edge (edgeWait, upstream next-log, edgeStand, raceSure
+   is the race's own): (1) tablePick; (2) for a bot with no table (kid, adult): a way on that passes the gate, e.g. the drawn aim
+   re-drawn after stopReact (SKILLS.reAim is the child's only by the lead's ruling R-165.413: ASK the lead before giving it to the adult),
+   or ride on / step back. Check pacerLay + hopJudged (2-7) on any change at a shared gate.
+4. Rows on the new candidate: 2-1, 2-2, 2-4 first (tools/rows.sh.txt in data/c), then 2-5, 2-7, 1-4; cmp3 vs data/c/main-*. Zero bar
+   PASS -> FAIL vs main or STOP and tell the lead. Also trace 2-1 child N 11 (3b's one 2-1 bar flip).
+5. Then the packet's item 3 (plants: upstream re-search on 2-1 via search21, bankUp/boardHop full search for retirement), riverRide +
+   firsttimer tests, the CI tool line (gates.yml rolled), tierBots 9/9; push by merge into release-0.10.3; hash + table to the lead.
+
+## Lessons applied
+D115 (every run on a chattr-frozen tree: pc-main, pc-head, pc-c2, pc-c3, pc-c3b), D117 (candidate on -wip-plant-c, not the shared
+branch), D119 (scripts to files; -m commits), D113 (no foreground wait), D132 (baseline main), D59 (no run left behind: c3b 2-7/1-4 named),
+law 22 (bars unchanged; the plants moved rolls at the same bars, per the lead's ruling).
+## Method update
+Proposed: a refused judged hop must name its way on in the same code block (a toy each way), and rule 28's first row run is the attribution's
+flip list (ENG-PLANT-b's rows) before the full table: 3b's 2-4 miss was visible from that list before any run.
 # ENG-PLANT REPORT: release 4's six non-throw CI reds (riverRide x5, firsttimer :184)
 
 Session 1: started 3:04 PM ET 11-24 (by `date`), hand-over REPORT pushed 3:27 PM ET (commit 963aa5eb7's time); narrow continue on the

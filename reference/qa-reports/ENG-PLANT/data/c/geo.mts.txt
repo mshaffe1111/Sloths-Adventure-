@@ -1,0 +1,12 @@
+// usage: tsx geo.mts <tree> <stage> <bot> <setting> <seed> <t> <x0> <x1>  -> platforms in [x0,x1] at time t, and the player
+const [T, stage, bot, setting, seed, tt, x0, x1] = process.argv.slice(2);
+await import(`${T}/src/game/headlessDom.ts`);
+const { CAST_BOTS } = await import(`${T}/tools/inspect/castBots.ts`);
+const { firstTimer } = await import(`${T}/tools/inspect/firsttimer.ts`);
+let done = false;
+firstTimer(stage, Number(seed), CAST_BOTS[bot][setting], { cap: Number(tt) + 1, dotSetting: true, onFrame: (sim: any) => {
+  if (done || sim.t < Number(tt)) return; done = true;
+  const p = sim.p;
+  console.log(`t ${sim.t.toFixed(2)} player x ${p.x.toFixed(1)} y ${p.y.toFixed(1)} grounded ${p.grounded}`);
+  for (const q of sim.e.platforms) if (q.x + q.width > +x0 && q.x < +x1) console.log(`#${q.id} ${q.type}${q.drift ? ' dir ' + q.drift.dir : ''} x ${q.x.toFixed(1)}..${(q.x + q.width).toFixed(1)} w ${q.width} y ${q.y}`);
+} });

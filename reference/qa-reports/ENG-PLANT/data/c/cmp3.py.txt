@@ -1,0 +1,18 @@
+import json, sys, os
+# usage: cmp3.py <stage> <main.jsonl> <head.jsonl|-> <fix.jsonl>   rule 28 vs MAIN (D132): bar bots adult, child, middle, expert
+st, M, H, F = sys.argv[1:5]
+load = lambda f: {(r['bot'], r['setting'], r['seed']): r for r in map(json.loads, open(f))} if f != '-' and os.path.exists(f) else {}
+a, h, b = load(M), load(H), load(F)
+BAR = {'adult', 'child', 'middle', 'expert'}
+ks = sorted(set(a) & set(b))
+short = lambda r: f"{r.get('end')} L{r.get('lives')} R{r.get('rescues')} {r.get('time')}s" if r else '-'
+pf = [k for k in ks if a[k].get('pass') and not b[k].get('pass')]
+fp = [k for k in ks if not a[k].get('pass') and b[k].get('pass')]
+pfb = [k for k in pf if k[0] in BAR]
+diff = [k for k in ks if {x: v for x, v in a[k].items() if x != 'time'} != {x: v for x, v in b[k].items() if x != 'time'}]
+print(f"{st}: rows {len(ks)}, differ {len(diff)}, PASS->FAIL {len(pf)} (bar {len(pfb)}), fail->pass {len(fp)}; pass main {sum(1 for k in ks if a[k].get('pass'))} fix {sum(1 for k in ks if b[k].get('pass'))}")
+for k in pf:
+    hk = h.get(k)
+    who = 'head too (the merge)' if hk is not None and not hk.get('pass') else ('FIX (head passes)' if hk is not None else 'head n/a')
+    print(f"  PASS->FAIL {'BAR ' if k[0] in BAR else 'kid '}{k[0]} {k[1][0].upper()} {k[2]}: main {short(a[k])} | head {short(hk)} | fix {short(b[k])} {b[k].get('stuck')} [{who}]")
+for k in fp: print(f"  fail->pass {k[0]} {k[1][0].upper()} {k[2]}: main {short(a[k])} | fix {short(b[k])}")

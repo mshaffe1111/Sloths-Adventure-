@@ -1,0 +1,9 @@
+// usage: npx tsx probe.mts <tree> <stage> bot:setting:seed ...   one JSON line per row (castRun, fake input)
+const [tree, stage, ...rows] = process.argv.slice(2);
+const { castRun } = await import(`${tree}/tools/inspect/castBots.ts`);
+for (const r of rows) {
+  const [bot, s, seed] = r.split(':');
+  const setting = s === 'N' ? 'normal' : s === 'E' ? 'easy' : s;
+  const x = castRun(bot, setting, stage, +seed);
+  console.log(JSON.stringify({ row: r, pass: x.pass, end: x.end, lives: x.lives, rescues: x.rescues, time: +x.time.toFixed(1), stuck: x.stuck }));
+}

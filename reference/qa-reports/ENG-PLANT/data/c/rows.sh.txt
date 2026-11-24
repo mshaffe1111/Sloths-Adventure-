@@ -1,0 +1,7 @@
+#!/bin/bash
+# usage: rows.sh <frozen tree> <tag> <stage>...   castBots rows, every bot, both settings, seeds 1-40 -> /home/user/pc-out/<tag>-<stage>.jsonl
+T=$1; G=$2; shift 2; cd $T
+for st in "$@"; do
+  npx tsx tools/inspect/castBots.ts --stage $st --seeds 1-40 --bots kid,adult,child,middle,expert --setting both --par 2 --rows /home/user/pc-out/$G-$st.jsonl > /home/user/pc-out/$G-$st.log 2>&1
+  echo "$G $st exit $? $(wc -l < /home/user/pc-out/$G-$st.jsonl) rows $(TZ=America/New_York date '+%-I:%M %p')" >> /home/user/pc-out/progress.txt
+done
