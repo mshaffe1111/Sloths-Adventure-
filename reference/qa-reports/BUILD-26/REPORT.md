@@ -1,3 +1,62 @@
+# FILL-14b (t-build-26-wip-fill14 -> t-build-26; code 094e09746, unchanged): FILL-14's gates finished on a frozen tree; LANDED. Started 2:54 PM ET 11-24 (by `date`)
+
+## Verdict
+Every gate the lead named is GREEN on a chattr-frozen worktree of 094e09746 (src/ and tools/ immutable, src/game/gen2/proven's own flag
+thawed, D115). Nothing under src/, tools/, .github/ or package files changed after 094e09746: the commits after it are reference/ only
+(`git diff --stat 094e09746 <landed head> -- src tools .github package.json package-lock.json` is empty). t-build-26 fast-forwarded
+from e8e99d167 (merge, no force).
+
+| gate (frozen 094e09746) | result | evidence (fill14/) |
+|---|---|---|
+| suite shard 1/3 (FILL-14) | 1353 / 1353 pass / 0 fail / 0 todo | suite-shard1-094e09746.txt |
+| suite shard 2/3 (FILL-14b; timeout 2 h, run_in_background) | 1260 / 1258 pass / 0 fail / 2 todo (R-165.312 flag placer; 4-3 boulder fixer: both marked todo in the test files); 1301 s. Suite total 4080 / 4077 pass / 0 fail / 3 todo | suite-shard2-094e09746.txt |
+| suite shard 3/3 (FILL-14) | 1467 / 1466 pass / 0 fail / 1 todo | suite-shard3-094e09746.txt |
+| CI tool line (gates.yml:157, 40 files) | 370 / 369 pass / 0 fail / 1 todo (chase bots child Normal, ENG-B4's open todo: the same todo on ENG-26u's line, b26u/toolline-5ecec4018.txt; chaseBots.test.ts unchanged e8e99d167..094e09746); both new --fill tests ok (134, 135); 580 s | ciline-094e09746.txt |
+| paintcheck --stages 1-4 | PASS: 200 builds (every listed seed incl. 101-104, both settings), 0 known ids | paintcheck-1-4-094e09746.txt |
+| registrycheck | PASS: 15 stages registered everywhere, 15 lists checked in CI; 78 s | registrycheck-094e09746.txt |
+| seedlist 1-4 --check (FILL-14) | PASS, 100 seeds | seedlist-1-4-check-98e75019d.txt (list file identical at 094e09746) |
+| castBots --proven 1-4 (FILL-14) | 100 / 100, every bot both settings | castBots-1-4-98e75019d.txt (src + tools/inspect identical at 094e09746) |
+| lockall --check vs e8e99d167 (FILL-14) | 102 / 102 unchanged | lock-check-094e09746.txt |
+
+The fill (unchanged from FILL-14's table below): variant 26 (index 26) 27 -> 101, variant 45 46 -> 102, variant 66 67 -> 103, variant 69
+70 -> 104; every other index byte for byte; list version 9fdaeff4 -> 698829e6.
+
+## Done-items
+- Shard 2/3, the CI tool line, paintcheck 1-4, registrycheck: run on frozen 094e09746, all green (table above).
+- seed-list.md:14 fixed (33ff0e108): "Order is identity" now names both rules, checked in code: 1-1 alone plays index v - 1
+  (testlink1_1.ts play11Seed: `provenSeedFor('1-1', variant - 1)`); every other listed stage plays index v mod n (stageGenerator.ts ->
+  seedList.ts provenSeedFor). The stale example "variant 11 = seed 4106" is gone (the first run is firstRun11.ts's to name).
+- Turnover note: reference/handoffs/engine-core.md §0zr-FILL14 (33ff0e108): the --fill tool and the variant trap.
+- Landed: t-build-26 fast-forwarded from e8e99d167 to the commit that adds this section (hash in the message to the lead; ls-remote checked).
+
+## Polish check
+No screen changed (a seed list and docs). The new seeds' look is covered by FILL-14's castBots and by paintcheck 1-4 above on every seed.
+
+## Pushback
+- None on the packet. One more place holds FILL-14's slip: tools/inspect/castBots.ts:12 says a listed stage's seed is "its n-th proven
+  seed"; it is the list's (n mod length)-th. A comment in the Critic's file: named, not edited (suggestion below).
+
+## Suggestions
+- Critic packet (one line): castBots.ts:12's head comment names the game's pick ("variant v plays list index v mod n; 1-1 alone v - 1"),
+  or better, FILL-14's "one variant-to-index rule for every stage" Engine packet, after which the comment says one rule.
+- seed-list.md "Fill in place" step (FILL-14's suggestion, the lead's merge): lay candidates past the last seed (--merge --in-order
+  --part), play them through a planted list (castBots --proven on a scratch tree), `--fill <variants> --with part,order`, then --check,
+  castBots --proven, lockall, the suite.
+
+## Unresolved
+- None of the lead's named gates. Not run here (not asked; the integration head runs them once): drawcheck, clipcheck, kbdcheck,
+  buildcheck, tipwalk, tierBots, timecheck and roadmapcheck (both need full history; this clone is shallow).
+
+## Method update
+- A third of the suite on a 4-core container took 22 minutes here (shard 2/3, 1301 s, beside the CI tool line); shard 3 took 29 under FILL-14: a shard gets timeout 7200000 with
+  run_in_background (the default 30-minute background limit stopped FILL-14's shard 2 at 343 passes). Split further only if a shard alone
+  passes 90 minutes. (Lead to merge into gates.md row 2.)
+
+## Lessons applied
+D111 (report by the box), D113 (no foreground wait: every run in the background, Monitor on its EXIT line), D115 (every run on the frozen
+tree; edits only in a separate worktree), D117 (work on -wip-fill14), D119 (commit messages via -m, no heredoc), D126 (the suite AND the CI
+tool line before landing), law 3 (the variant rules read in code before the doc edit), law 5 (every named gate run, none skipped).
+
 # FILL-14 (t-build-26-wip-fill14; base e8e99d167; head 094e09746): 1-4's four failing variants filled IN PLACE by a new general `seedlist --fill`; the fill is right, the gates are PART-RUN at the 28-minute hand-over. Started 2:04 PM ET 11-24 (by `date`)
 
 ## EXACT NEXT STEP (handed over at the 28-minute box; the runs below were left running in FILL-14's container)
