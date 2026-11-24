@@ -121,3 +121,6 @@ A landing that touches the engine or the bots compares castBots rows on every SH
 have), never only against the branch it started from: 11-24, a week of 2-7 landings each matched t-eng-27's own base, and the release merge
 then showed shipped 2-1/2-2/2-4 rows pass -> fail vs main. The integration member runs the same comparison right after each merge onto a
 release branch, before THE FULL SET.
+**Known flips first (ENG-PLANT-c, approved 11-24):** when an attribution or an earlier run has already named the pass -> fail rows, a
+candidate runs THOSE rows first (minutes), and only then the full table: 3b's 2-4 miss was visible from ENG-PLANT-b's flip list before a
+25-minute run. A refused judged hop names its way on in the same code block, with a toy each way.
