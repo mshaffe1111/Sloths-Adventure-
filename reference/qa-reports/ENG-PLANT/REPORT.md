@@ -24,9 +24,12 @@ data/candidate-2.patch.txt). It is NOT on release-0.10.3.
    case clean on / rescued off; bankUp: 5+ more lives off (BANKUP_MORE) and the both-ways far bank 2+ s later; boardHop: a life lost within
    3 s of a lip stand off, none on. Each new case: a premise trace (tools/trace.mts.txt or toytrace.mts.txt: first divergence on vs off,
    then where the lives go), sent to the lead BEFORE it is written.
-4. Lead rulings pending (asked in messages): toy ride on seed 4 middle N (0 -> 6) instead of seed 3 child N (0 -> 3, the lead's first
-   word, sent before seed 4 was found); handed on the child N seed 12. bankUp: the lead ruled 'no live case anywhere -> write it, I rule
-   on retiring, never lower it'; boardHop the same.
+4. **Lead rulings (in messages, session 1):** APPROVED, at the same bars, each premise traced in this REPORT and RE-MEASURED ON THE
+   FIX before writing: the toy ride plant on seed 4 middle N (bar 2), handed on child N seed 12 (bar more than 1). boardHop and bankUp:
+   if the FIXED bot shows NO live case anywhere (every listed stage with that mechanic, every bot, both settings), RETIRE that PLANT (the
+   skill's code stays); this REPORT carries the full search and the line 'plant retired: no live case on the merged engine; re-plant when
+   a stage needs it' (the lead files the roadmap row). If either still has a live case, plant it at the same bar. Upstream: re-search on
+   the fix (child N 8/23/39 were the approved head cases; none bites on the fix). Stop on any shipped pass -> fail. Hard stop 5:30 PM ET.
 5. Then riverRide.test + firsttimer.test on the frozen fix, the CI tool line (gates.yml rolled line, read live) on the frozen merge: 0 fail
    except the chaseBots todo; tierBots (1-1: the fix touches log play only, expect calibration unchanged; if a run moves, BOTS.md);
    push by merge into release-0.10.3 (never force); send the lead the hash and the table.
