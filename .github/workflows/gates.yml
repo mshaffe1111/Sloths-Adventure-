@@ -162,10 +162,11 @@ jobs:
       # first proven seed, both settings, fresh device: a warning laid as plain words (World 2's water line, dropped on Normal) fails by
       # name; tools/engine/storyTipScan.test.ts plants it; about 1 min)
       - run: npx tsx tools/engine/storyTipScan.ts --check
-      # (the first-appearance gate, R-165.427 TEACH-11, storyTipScan's twin: every listed stage, EVERY proven seed, both settings, fresh
+      # (the first-appearance gate, R-165.427 TEACH-11, storyTipScan's twin: every listed stage, its first 20 proven seeds (the lead's ruling
+      # 11-24: CI runs --seeds 20; THE FULL SET at release runs every seed), both settings, fresh
       # touch phone: each mechanic Dot teaches with a line has it laid as a teach line (StageHint.teach, so it never waits out Dot's calm
-      # gap) in the first section that shows it, before its first ask; tools/engine/teachFirstScan.test.ts plants the reds; 2,822 rolls, about 10 min)
-      - run: npx tsx tools/engine/teachFirstScan.ts --check
+      # gap) in the first section that shows it, before its first ask; tools/engine/teachFirstScan.test.ts plants the reds; about 3 min, 520 rolls)
+      - run: npx tsx tools/engine/teachFirstScan.ts --check --seeds 20
       # (the proven seed lists are checked in the seedlists matrix below, R-165.278)
       # (every stage-table stage registered everywhere: kit, config, routed, levelSeeds, sheets, a drawcheck scenario, a seed list or stand-in,
       # flown rows. ADD-LEVEL R-165.187, D51; seconds)
