@@ -92,8 +92,11 @@ code-checked plan (ENGINE-NEEDS.md); "add a level" in one step; every lead keeps
 0. **MATT'S EXPECTATION (11-23, LAWS 23): World 2 DONE and World 3 designed and READY to build THIS WEEK; every level a 2-HOUR job; the
    game in weeks, not 4-5 months.** Plans in hours, never days. Ask after every compaction: what lands on Matt's link today, by when, is every slot on that path?
 1. **Today's goal, with Eastern times** (set with Matt each morning in one line; every check-in and every report to him measures against it):
-   11-23: release 4's branch clean with 1-4's list rebuilt (ENG-26s, report by 12:15 PM); World 3's kit + a 3-1 row going down (ENG-W3a, report by
-   1:45 PM); the 2-7 race numbers decided by the end of the day. Targets: 2-7 on Matt's test link TONIGHT (3 helpers, R-165.406); 2-6 Tue 11-24; the week plan in reference/plans/LANES.md. A slip goes to Matt the moment it moves an ETA.
+   **TUE 11-24 STARTS ONLY ON MATT'S GO-AHEAD (Matt 11-23 9:26 PM ET, R-165.419: "Wait for my go-ahead"; a weekly-usage warning until the
+   Wednesday reset).** Ready when he says go: (a) ENG-26t (packet 2026-11-24/ENG-26t.md: 2-6's inherited reds incl. the wheelChannel/w2Finish
+   throw, release 4's branch clean); (b) 2-6's Easy residue (R-165.398) then its list; (c) READY-28 on 2-8's DRAFT by the new LANES rule 2
+   (yield, drawcheck, stills both ways judged zoomed, verdicts, met order); (d) R-165.412 (warnings as danger/must, story tips; storyTipScan
+   a gate). Ask him the helper count with the go (he chose 3 on 11-23). 2-7 is DONE on his link (v269, 6:21 PM 11-23).
 1b. **CAPACITY (Matt 11-23, R-165.411): 3 helpers from the Wednesday 11-25 usage reset: TWO on pieces ahead (TWO-HOUR-PLAN Waves 1-2, about 45 h each),
    ONE building levels (2-hour jobs). The whole-game schedule: reference/plans/TWO-HOUR-PLAN.md on t-plan-2h f945e2986 (builds one world a week;
    with one builder, the finish moves from Jan 22 to about the end of January).**
@@ -105,6 +108,15 @@ code-checked plan (ENGINE-NEEDS.md); "add a level" in one step; every lead keeps
 2b. **The lanes: reference/plans/LANES.md.** Three levels in flight (pieces for N+2, design/art/lines for N+1, build of N); every job a budget, an ET report-by and a hard stop the LEAD decides at.
 3. **The lead manages; members engineer.** The lead decides scope, priority, time and the bar, judges the evidence and unsticks; it does not do the work or design the code. A member's technical fork goes back as 'decide it within your budget and show me the evidence', unless it changes scope, the bar, a shipped stage or Matt's taste.
 4. **The scoreboard in every report to Matt:** levels on his link this week vs the plan; hours per level vs 2 h; pieces landed ahead; **2-HOUR PROGRESS** (Matt 11-23, R-165.409): what was done today toward the 2-hour level (reference/plans/TWO-HOUR-PLAN.md and its schedule).
+
+## RIGHT NOW (11-23 nightly wrap, written 9:28 PM ET by `date`; this block wins over everything below; refreshed at check-ins, R-165.242)
+2-7 'The Mailman's Route' ON MATT'S LINK: EnK5 v269 (6:21 PM), built from t-build-27e 312ce33a0 (final branch head 801cae9e8; every later
+commit reference/ only). Yield 29/40, list 69/100, every gate clean (inherited reds named: pacerLay :254 :280; CI line wheelChannel x4,
+wheelRide x2, firsttimer :184, riverRide x5). Engine landed on t-eng-27 091ba9479 (ENG-JETTY, ENG-HUD27b route order x4, ENG-BOT27b child-only
+re-aim, DRESS-27/27b/27d). Named to Matt, not fixed: the step notch (R-165.416), the log's flat end at a deep bank (the held log flip,
+R-165.415), Easy's start view into the gap between legs (R-165.415). The adult race margin (47 s vs 89 s) told to Matt: his play decides.
+NO MEMBER RUNNING. TUESDAY WAITS FOR MATT'S GO-AHEAD (R-165.419). The lesson of the day: LANES rule 2 (READY measured on the draft), D130, D131,
+LANES 3b (no exception past 300k; the box vs the lead's real read). Sprint Board rows for 11-23 written (Jobs, Sprints, Levels).
 
 ## RIGHT NOW (11-22 wrap, written 5:35 PM ET by `date`; this block wins over everything below; refreshed at check-ins, R-165.242)
 
