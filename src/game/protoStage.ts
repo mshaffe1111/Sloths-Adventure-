@@ -122,6 +122,12 @@ export interface StageHint {
    * is chatter to Tips, Normal's default, and is dropped there (dotGuideHelp.ts helpAllows; ENG-JETTY's scan). The data says so
    */
   story?: 'Dot' | 'Pokey';
+  /**
+   * a stage's WARNING before what costs a life (the pipeline's water line before the first deep river): Dot says it as a must, on every
+   * help setting (engine.ts GuideOpts `warn`; dotLines.ts engineGuideLine). Without it the words decide, and "This river's deep. Don't
+   * touch the water!" read as information and was dropped on Tips, Normal's default (R-165.412). The data says so
+   */
+  warn?: true;
 }
 /** leaves drawn in front of a hidden nook; they part when Pokey comes close */
 export interface LeafCover { x: number; y: number; w: number; h: number }

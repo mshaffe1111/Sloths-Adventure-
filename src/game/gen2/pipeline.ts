@@ -3891,7 +3891,8 @@ export function fillSockets(laid: Laid, budget: StageBudget, kit: WorldKit, seed
       const sec = along ? laid.sections.find((q) => q.uid === g.section) : undefined;
       const band = sec ? { band: tipBand(sec) } : {};
       const x = R(left ? g.x1 : g.x0 - lead);
-      hints.push(left ? { x, beforeX: R(g.x1 + lead), text, pad: text, keys: text, ...band } : { x, text, pad: text, keys: text, passX: R(g.x1 + 80), ...band });
+      // (a warning: Dot says it on every help setting, StageHint.warn; as plain words it read as information and Tips dropped it, R-165.412)
+      hints.push(left ? { x, beforeX: R(g.x1 + lead), text, pad: text, keys: text, warn: true, ...band } : { x, text, pad: text, keys: text, passX: R(g.x1 + 80), warn: true, ...band });
       // (the sign stands on the near lip: g.y is the higher of the two lips, so where the far side stood higher the sign hung in the air)
       const sx = left ? g.x1 + 40 : g.x0 - 40;
       const lip = laid.platforms.filter((q) => q.x <= sx && q.x + q.width >= sx && q.y >= g.y - 1).reduce((m, q) => Math.min(m, q.y), Infinity);

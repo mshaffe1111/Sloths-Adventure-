@@ -60,6 +60,23 @@ names any lay wood in it. A box is a new wall every catch rule must step round: 
 and the bridge laid instead stepped off 9 px past the band's edge, where rule 4's CENTRED bough always lay in the band (647 px fall; tower.test
 red from 2f188c552, run by name filter only). Rule 4 now also tries the bough slid to the box's edge on the side he comes down, when it still
 lies under him (toy: 'towerCatches (planted, ENG-26p)'). After any keepOut change run tower.test.ts WHOLE, not the tests named for the box.
+## 0zq-warn. WARN-412 (t-eng-27-wip-warn, 11-24): every laid warning a must, every story beat a story line; the laid-line gate (R-165.412)
+- **A laid line's KIND is data, never words.** `StageHint.warn` (protoStage.ts) -> engine.ts GuideOpts `warn` (WARN_LINE) -> App.tsx's
+  guide feed -> DotGuide.tsx engineLine -> dotLines.ts engineGuideLine `o.warn`: kind 'must' on every help setting (lock still wins:
+  its topic is the exit). The pipeline's water line (pipeline.ts, WATER_WARN) is laid with `warn: true` in every world. Before, "This
+  river's deep." read as 'info' and Tips dropped it on Normal; note a word-classified 'danger' line WITHOUT a mech is dropped on Tips
+  too (helpAllows), so 'danger' alone is not "always shows": use `warn`.
+- **Story beats are the world's `storyTips`** (by tip id, with the speaker the arc's line table names): w1Arc12 roots; w1Arc17
+  arrive, mark; w1Arc18/19 mark; w2Arc21 edge, village, mark; w2Arc22 stone, lily (Pokey), crown, king; w2Arc24 view (Pokey);
+  w2Arc25 quiet. Two of them (2-2's lily, 2-4's view) are Pokey's: before this, Dot said them. 1-1's "Up the bank! Step to step"
+  is the first stage's own coaching: W1's `teachTips` ('hint.1-1.bank'). 1-1's "No soft moss up here!" is never said (engine.ts
+  marks it heard at the start; the gate skips a hint already `shown` at load).
+- **The gate:** `npx tsx tools/engine/storyTipScan.ts --check` (gates.yml 'rolled'; gates.md 8d; its test plants 2-1's warning as
+  plain words, RED as info). 20 dropped on t-eng-27 091ba9479 -> 0 on 642e95598, 128 laid lines over the 13 listed stages.
+- **Traps:** the mixer's 1-1 (src/game/mixer) is NOT the 1-1 the game builds: its line flags change nothing (I tried; reverted).
+  lockall hashes `proto.hints`, so a line-only change shows as `proto.hints` moving: the proof is that NOTHING ELSE moved.
+  There is no "optional" mark: no laid line needs one today; the first builder who wants a Tips-silent stage line proposes it.
+
 ## 0zq-floor. DRESS-27c/27d (dress27c, landed by DRESS-27d on t-eng-27, 11-23): the view's foot over a stacked leg; a deep river's sheet at a bank
 - **The view's foot stays in an upper leg's earth** (groundStack.ts viewFloor + underReach, protoArt.ts stackViewFloor, engine.ts's camera
   before the HUD clamp): standing over a ceiling (inside its run, feet above its line) the camera's target never frames below the line

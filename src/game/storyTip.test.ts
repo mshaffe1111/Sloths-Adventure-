@@ -14,18 +14,21 @@ import { helpAllows } from './dotGuideHelp.ts';
 import type { StageHint } from './protoStage.ts';
 import type { WorldKit } from './gen2/types.ts';
 
-test("story tip 1: a world's story tip is laid with its speaker (2-5's 'quiet' marked a story beat on a planted kit); others are not", () => {
+test("story tip 1: a world's story tip is laid with its speaker (2-5's 'quiet', marked in its kit since R-165.412); others are not", () => {
   const k = kitLib25();
-  const kit = { ...k, manifest: { ...k.manifest, storyTips: { [lineId25('quiet')]: 'Dot' } } } as WorldKit;
   const cfg = generateAllLevels().find((c) => c.id === STAGE_25 && !c.secret)!;
-  const st = buildGen2Stage({ config: cfg, kit, seed: 1, difficulty: 'normal' }) as unknown as { proto: { hints: StageHint[] } };
+  const st = buildGen2Stage({ config: cfg, kit: k, seed: 1, difficulty: 'normal' }) as unknown as { proto: { hints: StageHint[] } };
   const quiet = st.proto.hints.find((h) => h.text === LINES_25.quiet);
   assert.ok(quiet, "the 'quiet' tip is laid");
-  assert.equal(quiet.story, 'Dot', 'with its speaker');
+  assert.equal(quiet.story, 'Dot', 'with its speaker (the kit as shipped asks for it: WARN-412)');
   assert.ok(st.proto.hints.filter((h) => h !== quiet).every((h) => h.story === undefined), 'no other tip is a story beat');
-  // (the kit as shipped marks none: nothing moves on a listed stage until its data asks)
-  const plain = buildGen2Stage({ config: cfg, kit: k, seed: 1, difficulty: 'normal' }) as unknown as { proto: { hints: StageHint[] } };
+  // (planted: the kit's story marks taken off, the escape as it shipped: the beat is laid as a plain tip, which Tips drops)
+  const kit = { ...k, manifest: { ...k.manifest, storyTips: {} } } as WorldKit;
+  const plain = buildGen2Stage({ config: cfg, kit, seed: 1, difficulty: 'normal' }) as unknown as { proto: { hints: StageHint[] } };
   assert.ok(plain.proto.hints.every((h) => h.story === undefined));
+  const bare = plain.proto.hints.find((h) => h.text === LINES_25.quiet)!;
+  assert.equal(helpAllows(engineGuideLine(bare.text, STAGE_25, { dot: true })!, 'reminders', new Set(), true), false, 'unmarked, Tips drops it');
+  assert.equal(lineId25('quiet'), 'w25.quiet');
 });
 
 test('story tip 2: the engine says a story hint with its speaker, and it is heard on Tips and Help defaults; a plain hint is dropped on Tips', () => {

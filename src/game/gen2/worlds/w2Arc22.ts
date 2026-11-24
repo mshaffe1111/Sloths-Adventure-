@@ -276,6 +276,9 @@ export function kitLib22(): WorldKit {
       required: {},
       tips: { ...M.tips, ...Object.fromEntries((Object.keys(LINES_22) as Array<keyof typeof LINES_22>).map((key) => [lineId22(key), LINES_22[key]])) },
       teachTips: [...(M.teachTips ?? []), ...TEACH_22.map(lineId22)],
+      // (the stage's once-only story beats, each by the speaker its line table names: a story line on every help setting with the story switch
+      // on. As plain tips Tips dropped them, Normal's default: ENG-JETTY's scan, R-165.412)
+      storyTips: { ...(M.storyTips ?? {}), [lineId22('stone')]: 'Dot', [lineId22('lily')]: 'Pokey', [lineId22('crown')]: 'Dot', [lineId22('king')]: 'Dot' },
       graphs: { ...G, list: [...G.list.filter((g) => g.archetype !== 'harvest'), ...Object.entries(ARC_22).map(([id, code]) => ({ id, archetype: 'harvest' as const, code }))], briefs: { ...G.briefs, [STAGE_22]: BRIEF_22 } },
     } } as WorldKit;
 }

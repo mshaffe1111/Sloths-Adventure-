@@ -190,7 +190,7 @@ export const isThingTip = (id: string): boolean => W5_THING_TIPS.has(id);
  */
 /** how long a stage's own teach line (StageHint.teach) may wait for a clear moment: it is the lesson for its beat, never old news */
 export const TEACH_WAIT_MS = 60000;
-export function engineGuideLine(text: string, stageId: string, o: { boss?: boolean; flight?: boolean; dot?: boolean; ms?: number; teach?: boolean; lock?: boolean; who?: 'Dot' | 'Pokey' } = {}): GuideLine | null {
+export function engineGuideLine(text: string, stageId: string, o: { boss?: boolean; flight?: boolean; dot?: boolean; ms?: number; teach?: boolean; lock?: boolean; who?: 'Dot' | 'Pokey'; warn?: boolean } = {}): GuideLine | null {
   // (a stage's own story moment, its speaker named by its data (engine.ts GuideOpts `who`: a race's end): a story line in those words,
   // on the story switch on every help setting, as the wayside's beats are (dotGuideHelp.ts helpAllows). Dot's words are never put in
   // Pokey's mouth: with her away, her line is not said)
@@ -220,6 +220,13 @@ export function engineGuideLine(text: string, stageId: string, o: { boss?: boole
   if (o.lock) {
     kind = 'must';
     topic = 'exit';
+    move = undefined;
+  }
+  // (a stage's warning before what costs a life, its data says so (StageHint.warn, the pipeline's water line): a must, whatever its words,
+  // on every help setting. Read as information, World 2's "This river's deep." was dropped on Tips, Normal's default: Dot never warned a
+  // Normal player before the first deep river, R-165.412)
+  if (o.warn && !o.lock) {
+    kind = 'must';
     move = undefined;
   }
   // Dot's own flight: she is the one flying, so her tips are read, not watched for
