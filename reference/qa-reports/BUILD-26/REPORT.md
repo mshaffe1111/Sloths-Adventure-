@@ -4,7 +4,10 @@
 **Ruling 3 (A) is LAID as the lead GO'd (the 700 version): code commit 48b277994 (src/game/gen2/worlds/w2Arc26.ts only: candidate-700.diff
 + the four bricks' comments; tsc clean). The lead's GO: "Trace adult E 90 FIRST, before the measure: if it is the re-lay's, bring it with
 the trace before any fix; if it is pre-existing or a bot fault, name it." READ (below, scratch frames): the EDGE wheel, an unchanged
-beat; the bot steps off the bucket onto the jetty. Named to the lead; its root is NOT read yet.**
+beat; the bot steps off the bucket onto the jetty. Named to the lead; its root is NOT read yet.** Every frame 69.33-70.00 s (scratch
+f90, same code as 48b277994): on bucket 40 at y 4636 (28 px over the jetty's top 4664), x creeping right 667 -> 672; at 69.37 the
+BOT presses jump + right, peaks at y 4539, lands on the jetty (piece 35, 821-1169) at 70.00; at 70.20 it presses left and hops into
+the next bucket. A loop the bot drives (a jump back to the jetty it boarded from), not the engine's set-back.
 ON 48b277994 (frozen worktree), this box: THE MEASURE (castBots --stage 2-6 --seeds 1-100 --bots adult --setting normal --rows; b26v/floor-adultN-48b277994.txt + .jsonl):
 PASS 100/100, under the floor 0, FASTEST 113.7 s (target 104: MET on every roll; was 95.8), median 122.8 s (was 104.9). The 2-6 tests
 (w2Arc26.test.ts 5 + towerSoftPit.test.ts 1) 6/6 GREEN (b26v/tests-2-6-48b277994.txt; wheel.test.ts was not at the path I gave: it
