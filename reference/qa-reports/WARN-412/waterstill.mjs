@@ -4,7 +4,8 @@
 //   node reference/qa-reports/WARN-412/waterstill.mjs <port> <out dir>
 import fs from 'node:fs';
 import path from 'node:path';
-const { chromium } = await import(process.env.PW ?? 'playwright');
+const pw = await import(process.env.PW ?? 'playwright');
+const chromium = pw.chromium ?? pw.default.chromium;
 const [port, out] = process.argv.slice(2);
 fs.mkdirSync(out, { recursive: true });
 const b = await chromium.launch();
@@ -34,6 +35,9 @@ for (const [tag, w, h] of [['upright', 412, 915], ['sideways', 915, 412]]) {
   }, E);
   console.log('BUILT', tag, JSON.stringify(info));
   await p.waitForTimeout(2500);
+  // (a still never shows him flashing see-through: the safe timer is for settling only, the lead 11-05)
+  await p.evaluate((E) => { const e = eval(E); e.player.invincibleTimer = 0; }, E);
+  await p.waitForTimeout(400);
   const said = await p.evaluate(() => document.body.innerText.includes("This river's deep"));
   console.log('ON SCREEN', tag, said);
   const file = path.join(out, `warn412-2-1-L1-normal-tips-water-${tag}.jpg`);

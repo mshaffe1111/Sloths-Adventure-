@@ -17,12 +17,19 @@ D119 (no heredoc in a commit chain), D126 (suite + the CI tool line before landi
    that moved moved ONLY `proto.hints`** (the flags: 1-1, 1-2, 1-7, 1-8, 1-9, 2-1, 2-2, 2-4, 2-5 and World 6/7's water-warned stages
    6-1/2/3/5/6/7/9, 7-1/3/5/6/7/9); no size, platform, enemy, collectible or gen2 part moved: no layout moves. Fast gates: tsc PASS,
    generality PASS (26 known), knowncheck PASS; roadmapcheck cannot run here (shallow clone), no roadmap file changed.
-   Suite: run 1 (10:20-10:50 under lockall load) was CUT OFF by the 30-min background limit, not by a red: shard 1 833 ok, shard 2
-   383 ok, shard 3 1239 ok + the inherited pacerLay :254 :280 only (+1 TODO). Re-running all three now (SUITE). CI tool line: CITOOLS.
-   Stills: STILLS. Landed: LANDED.
+   Suite: run 1 (10:20-10:50) was CUT OFF by the 30-min background limit, not by a red; re-run on the frozen tree (SUITE). CI tool
+   line (gates.yml rolled line 157, frozen 642e95598): 338 pass, 11 fail, every one inherited and named in the packet: wheelChannel
+   x4, wheelRide x2, firsttimer :184, riverRide x4 (the packet named x5: one fewer); `storyTipScan --check` exit 0; tierBots 9/9
+   (1-1's runs unmoved). seedlist 1-1 --check: SEEDLIST. Stills (dev server of 642e95598, fresh context, Normal, help unset =
+   Tips): warn412-2-1-L1-normal-tips-water-{upright,sideways}.jpg, Dot's "This river's deep. Don't touch the water!" on screen both
+   ways. Landed: LANDED.
 
 ## 2. Polish check
-No still judged yet (STILLS). The change is lines only: no draw, layout or screen code moved (lock above).
+- 2-1 upright 412x915 and sideways 915x412: Dot's bubble whole, nameplate on, no clip, clear of the HUD; the deep river ahead
+  (sideways, right). Fixed: my first sideways still showed Pokey see-through (my script's settle timer); cleared, re-shot.
+- The still built 2-1 layout 1 = seed 2 (the scan's first-seed fallback is seed 1: 2-1 has no proven list); both lay the warning.
+- Lines only: no draw, layout or screen code moved (lock above). Behaviour change to name: the water line is now urgent (must) on Easy
+  too (each re-warning cuts in, as other worlds' 'danger' water lines already did) and shows on Quiet (the lead's 'always shows').
 
 ## 3. Pushback
 - The packet counts 1-7 x3; the scan's list (ENG-JETTY, re-run on the base) has 1-7 x2 (arrive, mark); total 20 holds.
@@ -37,6 +44,8 @@ No still judged yet (STILLS). The change is lines only: no draw, layout or scree
 - engine.ts:1135 names 1-1's line by its words (generality debt): lay it `unsaid` at the source (w1.ts socket) instead.
 
 ## 5. Unresolved
+- Breach owned: I started the dev server with a shell '&' (inside `( ... &)`, bounded by `timeout 600`), against the packet's
+  'never a shell &'. It ended by itself; the next one goes through run_in_background.
 At 11:05: the suite re-run, the CI tool line, the two stills and the landing are running or next (EXACT NEXT STEP below).
 
 **EXACT NEXT STEP:** when the 3 shards end (scratchpad suiteB1-3.log), confirm only pacerLay :254 :280 (+named inherited) are red; run the
