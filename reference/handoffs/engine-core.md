@@ -2,6 +2,27 @@
 
 Merged at INT-14 (11-20, t-int-14): §0zq-25d/§0zq-25c ENG-25c (2-5's snap rows level, the snapper's ground, the straddle), §0zq-NOISE ENG-NOISE (one noise channel), §0zq-PROWL ENG-PROWL (sight.up + the leap), §0zq-small3 ENG-SMALL3 (R-165.317/.319/.321), and PAINT-292 (World 1's painted planks and stones; no section here). Merged at INT-13 (11-19, t-int-13): §0ENG23 ENG-23 (followers, the heron reads the line) and §0zl-168 TIME-168 (timecheck), §0zm-25b ENG-25b (the snapper bot skill, the meter's snap channel) and §0zl-25 ENG-25 (2-5's snap stones and snapper rows), §0zn-26b ENG-26b and §0zm-26 ENG-26 (the water wheel), §0W2A ART-W2A (2-3's painted follow poses), §0zo ART-W2B (the wheel's painted draw), §0zo-285c/§0zo-285b/§0zo-285 ENG-285 (the judges and bots fly the engine's Pokey), §0zp-284 FIX-284/284b (2-2's big pads, the real tap hop), §0zp-24d BUILD-24d, §0zn-24c ENG-24c (the raft look, the glow) and §0zm-24 BUILD-24 (2-4) joined; rewritten at the INT-12 merge (11-18, t-int-12): four members wrote here the same day, so labels are suffixed where they met: §0zm-22p ART-22P (CI's seed-list matrix, R-165.278); §0zl-24 ENG-24 (a liana over a river; its REPORT cites it as §0zl); §0zm BUILD-19b, §0zn ENG-19c and §0zl BUILD-19 (t-build-19, the labels its REPORT cites). Before them FIX-22b (11-15): section 0zk.
 
+## 0zq-teach. TEACH-11 (t-eng-27-wip-teach, 11-24): a teach section's tip is a teach line; the first-appearance gate (R-165.427)
+- **The cause (1-1's double line missing before the tall steps):** the line was LAID on every roll (161/161 listed seeds, both
+  settings, in the first double section) but laid as a PLAIN move tip: W1's `teachTips` named 'hint.1-1.bank' but not the teach
+  sections' own lines (coach.jump, hint.1-1.gaps, hint.1-1.double, w1.ts TEACH_LINES). A plain tip waits out Dot's calm gap (10 s)
+  behind the line before it ("Flick up and forward to jump"), so on seed 5033 (w1-bank-double-teach, the testers' tall bank) it was
+  sent at x 5253 and SHOWN at x 7441, ~1,900 px past the first tall step; a player stuck there for 40 s with put-backs never saw it.
+- **The fix (general, pipeline.ts fillSockets):** a tip in a section whose template `teaches` a mechanic is laid with
+  `StageHint.teach` (stageTeach: Tips keeps it, it skips the calm gap, waits only for a clear moment), whatever the kit's teachTips
+  say; a story tip keeps its story kind. Every other world already listed its teach-section tips in teachTips, so only 1-1's three
+  lines changed kind (lockall: 1-1 `proto.hints` only).
+- **The gate:** `npx tsx tools/engine/teachFirstScan.ts --check` (gates.yml 'rolled'; gates.md 8e; every listed stage, EVERY proven
+  seed, both settings; its test plants four reds). Channels it accepts as "taught": a Dot teach line laid as a teach line, an earlier
+  stage's lesson (manifest.lessons), the 1-1 touch coach on a fresh touch phone (touchCoach.ts coachWanted: run, jump), a teach
+  section with no line of its own (its lesson card: the bounce). An EMPTY tip socket (w1-mushroom-lift's, no `allow`) lays nothing.
+- **Traps:** the built stage's sections carry no pieces, beats or entry/exit (stripped): the first required move is
+  pipeline.ts `laidAsks(st)` (lay order); a section's walking direction is the next section's place. storyTipScan only proves Tips
+  keeps a line, not WHEN it is said: the calm gap is what dropped this one. The probe that measures "said before" (the brisk route
+  through Dot's real queue, DotSay + GuideQueue, the default setting, a fresh device) is
+  reference/qa-reports/TEACH-11/saidprobe.mts; dotPace.ts drops a hint's teach/warn/story flags (it calls engineGuideLine with
+  `{ dot: true }` only), so it under-reports teach lines.
+
 ## 0zq-warn. WARN-412 (t-eng-27-wip-warn, 11-24): every laid warning a must, every story beat a story line; the laid-line gate (R-165.412)
 - **A laid line's KIND is data, never words.** `StageHint.warn` (protoStage.ts) -> engine.ts GuideOpts `warn` (WARN_LINE) -> App.tsx's
   guide feed -> DotGuide.tsx engineLine -> dotLines.ts engineGuideLine `o.warn`: kind 'must' on every help setting (lock still wins:
