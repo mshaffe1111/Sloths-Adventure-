@@ -11,7 +11,9 @@ import assert from 'node:assert/strict';
 import { DT } from '../../src/game/realPlay.ts';
 import { FirstTimerRun, FT_ADULT, FT_MIDDLE, LINE_SKILL, freshPhone, rng, type FirstTimer } from './firsttimer.ts';
 import { spook, type Follower } from '../../src/game/follow.ts';
-import { W2_FOLLOW } from '../../src/game/gen2/worlds/w2.ts';
+import { W2_FLOOD, W2_FOLLOW } from '../../src/game/gen2/worlds/w2.ts';
+import { FloodClock, floodTailOff, type Flood } from '../../src/game/flood.ts';
+import type { RiverZone } from '../../src/game/river.ts';
 import type { WatchZone } from '../../src/game/watcher.ts';
 import type { Collectible, Platform } from '../../src/game/types.ts';
 
@@ -119,6 +121,115 @@ test('planted: with fetch-the-spooked off the spooked one is left at its reed an
   } finally {
     LINE_SKILL.fetch = true;
   }
+});
+
+/**
+ * LEAD-THE-LINE (ENG-28; 2-8.md "Bots"): a toy fork in the real engine. The low road: a walkway 5 px under the banks over 400 px of water
+ * marked to close (paddling depth 10 px under the banks, deep at 26 s); the high road: three thin pieces (60 px up, 120 px up over the water,
+ * 60 px up) a step each, flood.ts highRoad's chain. Three little ones behind him; the clock started `late` s before he sets off (the last
+ * cage freed that long ago: he dawdled). Counted: the little ones the close sets on the near bank (a split line) and which road he took.
+ */
+interface FloodRun { end: string; setBack: number; home: number; high: boolean; t: number }
+function floodRun(who: FirstTimer, seed: number, late: number): FloodRun {
+  freshPhone(who.setting);
+  const mr = Math.random;
+  Math.random = rng(seed * 7919 + 3);
+  try {
+    const W0 = 1000;
+    const W1 = 1400;
+    const route = Array.from({ length: Math.ceil((EXIT + 100 - START) / 24) + 1 }, (_, i) => {
+      const x = START + i * 24;
+      return { x, y: x > W0 && x < W1 ? Y + 60 : Y };
+    });
+    const run = new FirstTimerRun('2-3', 1, who, { route, cap: 200 });
+    const e = run.e as unknown as Record<string, any>;
+    const solid = (id: number, x: number, width: number, y: number, height = 200) => ({ id, x, y, width, height, type: 'solid' }) as Platform;
+    run.sim.bare([solid(1, 0, W0, Y), solid(2, W0, W1 - W0, Y + 60), solid(3, W1, 6000 - W1, Y), solid(4, W0, 60, Y - 60, 20), solid(5, W0 + 60, W1 - W0 - 120, Y - 120, 20), solid(6, W1 - 60, 220, Y - 60, 20)]);
+    const cages = [420, 470, 520].map((x, i) => ({ id: 300 + i, x, y: Y - 26, type: 'cage', collected: true, critter: (['duck', 'otter', 'capy'] as const)[i] }) as Collectible);
+    const exit = { id: 400, x: EXIT, y: Y - 40, type: 'exit_totem', collected: false } as Collectible;
+    e.collectibles = [...cages, exit];
+    const st = e.currentStage;
+    st.exitTotemX = EXIT;
+    st.exitTotemY = Y;
+    st.config = { ...st.config, objectiveType: 'rescue', targetCount: 3, levelWidth: 6000 };
+    e.walls = e.mode.bounds({ levelWidth: 6000, exit: { x: EXIT, y: Y }, spawn: { x: START, y: Y } });
+    const river: RiverZone = { x0: W0, x1: W1, surfaceY: Y + 90, dir: 1, speed: 0, safe: { backX: W0 - 40, backY: Y }, floodMark: { kind: 'close', lip: Y } };
+    st.rivers = [river];
+    const easy = who.setting === 'easy';
+    const px = W1 - cages[2].x;
+    const flood: Flood = {
+      start: { id: cages[2].id, x: cages[2].x, y: Y }, close: easy ? W2_FLOOD.close.easy : W2_FLOOD.close.normal, px,
+      waters: [{ river: 0, x0: W0, x1: W1, y0: Y + 90, y1: Y + 70, seconds: 26, lip: Y, deep: { y: Y, near: { x: W0 - 40, y: Y } } }],
+      tailOff: floodTailOff(W2_FLOOD, px, easy), spare: easy ? W2_FLOOD.spare.easy : W2_FLOOD.spare.normal,
+    };
+    st.flood = flood;
+    e.floodClock = new FloodClock(flood);
+    e.proto = { hints: [], covers: [], beats: [], movedPickups: [], bushes: [], watch: [], follow: W2_FOLLOW };
+    run.sim.stand(START, Y);
+    e.startFollow();
+    for (const c of cages) e.follow.free(c.critter, { x: c.x - 300, y: Y }, { x: c.x - 300, y: Y });
+    for (let i = 0; i < 30; i++) run.sim.frame({});
+    run.prog.relocate(run.sim.p);
+    // (the last cage burst `late` s ago: the clock has run that long)
+    e.floodClock.freed(flood.start.id, e.gameTime - late);
+    let setBack = 0;
+    const closed = e.follow.floodClosed.bind(e.follow);
+    e.follow.floodClosed = (w: unknown) => {
+      const out = closed(w) as Follower[];
+      if (process.env.FLOODDBG) console.log("CLOSE", e.gameTime.toFixed(2), "he", Math.round(run.sim.p.x), Math.round(run.sim.p.y), "line", (e.follow.line as Follower[]).map((f) => `${f.state}@${Math.round(f.x)},${Math.round(f.y)}`).join(" "));
+      setBack += out.length;
+      return out;
+    };
+    let high = false;
+    const on = run.sim.frame.bind(run.sim);
+    run.sim.frame = (...a: unknown[]) => {
+      const r = on(...(a as [never]));
+      const p = run.sim.p;
+      if (p.x > W0 + 40 && p.x < W1 - 40 && p.grounded && p.y < Y - 100) high = true;
+      if (process.env.FLOODDBG && Math.round(e.gameTime * 30) % 15 === 0 && e.gameTime < 40) console.log("PATH", e.gameTime.toFixed(1), Math.round(p.x), Math.round(p.y), p.grounded ? "g" : "a", (e.follow.line as Follower[]).map((f) => `${f.state}@${Math.round(f.x)},${Math.round(f.y)}`).join(" "), "trail", e.follow.trail.pts.length, "s", Math.round(e.follow.trail.s));
+      return r;
+    };
+    run.play();
+    return { end: run.end, setBack, home: e.follow.home(), high, t: +run.t.toFixed(1) };
+  } finally {
+    Math.random = mr;
+  }
+}
+
+test('lead-the-line, time enough (the clock started as he sets off): the bot leads the line through the low road, nobody set back', () => {
+  for (const [name, who] of WHO) for (const seed of SEEDS) {
+    const r = floodRun(who, seed, 0);
+    assert.equal(r.end, 'shrine', `${name} seed ${seed}: ${JSON.stringify(r)}`);
+    assert.equal(r.high, false, `${name} seed ${seed}: the short road: ${JSON.stringify(r)}`);
+    assert.equal(r.setBack, 0, `${name} seed ${seed}: ${JSON.stringify(r)}`);
+    assert.equal(r.home, 3);
+  }
+});
+
+test('lead-the-line, too late for the line (he dawdled 22 s): the bot reads the water and leads them round by the high road, nobody set back', () => {
+  for (const [name, who] of WHO) for (const seed of SEEDS) {
+    const r = floodRun(who, seed, 22);
+    assert.equal(r.end, 'shrine', `${name} seed ${seed}: ${JSON.stringify(r)}`);
+    assert.equal(r.high, true, `${name} seed ${seed}: the high road: ${JSON.stringify(r)}`);
+    assert.equal(r.setBack, 0, `${name} seed ${seed}: ${JSON.stringify(r)}`);
+    assert.equal(r.home, 3);
+  }
+});
+
+test('planted: with the read removed the bot takes the low road late and the close splits the line (one or more set on the near bank)', () => {
+  LINE_SKILL.leadLine = false;
+  const off: string[] = [];
+  let split = 0;
+  try {
+    for (const [name, who] of WHO) for (const seed of SEEDS) {
+      const r = floodRun(who, seed, 22);
+      off.push(`${name} ${seed}: ${JSON.stringify(r)}`);
+      if (!r.high && r.setBack > 0) split++;
+    }
+  } finally {
+    LINE_SKILL.leadLine = true;
+  }
+  assert.ok(split >= 1, `with the read removed no late run split the line: ${off.join('; ')}`);
 });
 
 void DT;

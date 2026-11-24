@@ -78,6 +78,8 @@ import { towerRoutePts } from './towerRoute.ts';
 import type { Stage } from './stages.ts';
 import { liftStop } from '../../src/game/lift.ts';
 import type { FollowPlay } from '../../src/game/followPlay.ts';
+import { highRoad, type FloodClock } from '../../src/game/flood.ts';
+import { FLOOD_HOP, FLOOD_STEP } from '../../src/game/gen2/floodLay.ts';
 import { bucketAngle } from '../../src/game/wheel.ts';
 import { WHEEL_FLOWN } from '../../src/game/gen2/wheelFlights.data.ts';
 import { flownKey } from '../../src/game/gen2/wheelLay.ts';
@@ -135,8 +137,14 @@ const SNAP_THUMB = 0.1;
  * walks to their far end and stands while a heron warns or looks, and goes on only right after a look has ended with the whole line in
  * the reeds and still (2-3.md: "go right after a look"). FETCH-THE-SPOOKED: one the heron spooked, hiding where it ran to, he walks back
  * to (within its rejoin reach) before he goes on; and at a sealed door he waits while any little one is still on its way home.
+ * LEAD-THE-LINE (2-8.md "Bots"; ENG-28): at a flood's fork (FORK_READ before the roads part, once its clock runs) he reads the low road's
+ * water: when the time left before it turns deep is under the line's tail-off of the rest of it (the rear-most little one's px to off the
+ * low road at the laid flood's flown rate, flood.ts Flood px / tailOff), he leads them round by the high road (flood.ts highRoad) instead.
  */
-export const LINE_SKILL = { waitTail: true, fetch: true };
+export const LINE_SKILL = { waitTail: true, fetch: true, leadLine: true };
+
+/** px before the roads part (the high road's first piece) that he reads a flood's low road: a stride and a half, still on the near bank */
+export const FORK_READ = 300;
 
 // a phone: the lessons and tips say "slide" and "flick", not keys (lessons.ts lessonInputMode reads pointer: coarse)
 {
@@ -477,6 +485,29 @@ export class Progress {
   /** how far he stands from the point he is at along the way (0 with no route) */
   off(p: Pt): number {
     return this.pts.length ? this.d(this.cur, p) : 0;
+  }
+  /** the way on from `from` takes another road (lead-the-line: the high road round a flood's low road): the route's points from the first
+   *  one at or past `a` (along `dir` in x) to the last one before `b` are replaced by `road`; every index past them moves on (his place,
+   *  the pins, the floors). False: the route does not reach that stretch ahead of him */
+  reroute(from: number, a: number, b: number, dir: 1 | -1, road: Pt[]): boolean {
+    const P = this.pts;
+    let i0 = -1;
+    for (let i = from; i < P.length; i++) if ((P[i].x - a) * dir >= 0) { i0 = i; break; }
+    if (i0 < 0) return false;
+    let i1 = P.length;
+    for (let i = i0; i < P.length; i++) if ((P[i].x - b) * dir > 0) { i1 = i; break; }
+    const d = road.length - (i1 - i0);
+    const mv = (i: number) => (i >= i1 ? i + d : i >= i0 ? i0 : i);
+    const gone = this.pins.slice(0, this.pin).filter((q) => q >= i0 && q < i1).length;
+    P.splice(i0, i1 - i0, ...road);
+    this.cur = mv(this.cur);
+    this.hi = mv(this.hi);
+    this.best = mv(this.best);
+    this.floor = mv(this.floor);
+    this.pinFloor = mv(this.pinFloor);
+    this.pins = this.pins.filter((q) => q < i0 || q >= i1).map(mv);
+    this.pin -= gone;
+    return true;
   }
   /** after a respawn or a rescue: find him anywhere along the way */
   relocate(p: Pt, level = false): void {
@@ -1449,6 +1480,8 @@ export class FirstTimerRun {
   private warnSeenAt = -1;
   /** the little ones' herons: whether one warned or looked last frame, when the last look ended, and the reeds he decided to leave */
   private lineLooking = false;
+  /** lead-the-line read the fork (once a run: the clock never resets) */
+  private roadRead = false;
   private lineLookEnd = -Infinity;
   private lineGo: unknown = null;
   private lineWait: unknown = null;
@@ -2407,6 +2440,41 @@ export class FirstTimerRun {
   }
 
   /**
+   * LEAD-THE-LINE (LINE_SKILL.leadLine): at a flood's fork, once its clock runs, he reads the low road's water once; when the line can't
+   * make it (the time left is under the rear-most one's tail-off of the rest of the low road) the way on goes round by the high road.
+   */
+  private floodRoad(p: PlayerState): void {
+    const c = (this.e as unknown as { floodClock: FloodClock | null }).floodClock;
+    const fp = this.e.follow as FollowPlay | null | undefined;
+    if (this.roadRead || !c || !fp || c.at === undefined || !p.grounded) return;
+    const low = c.f.waters.find((w) => w.deep);
+    if (!low?.deep) return;
+    const dir: 1 | -1 = low.deep.near.x < low.x0 ? 1 : -1;
+    const [edge, far] = dir > 0 ? [low.x0, low.x1] : [low.x1, low.x0];
+    const tops = this.sim.platforms.filter((q) => q.type === 'solid' && !q.pad && !q.broken && q.y < low.lip - 1).map((q) => ({ x: q.x, w: q.width, y: q.y }));
+    const road = highRoad(tops, { x0: low.x0, x1: low.x1, from: { x: edge, y: low.lip }, to: { x: far, y: low.lip } }, FLOOD_STEP, FLOOD_HOP);
+    if (road.faults.length || !road.chain.length) return;
+    const nearOf = (q: { x: number; w: number }) => (dir > 0 ? q.x : q.x + q.w);
+    const farOf = (q: { x: number; w: number }) => (dir > 0 ? q.x + q.w : q.x);
+    const fork = nearOf(road.chain[0]);
+    // (at the fork: on the near bank, a stride and a half before the roads part, not yet past it)
+    const before = (fork - p.x) * dir;
+    if (before > FORK_READ || before < 0 || Math.abs(p.y - low.lip) > 20) return;
+    this.roadRead = true;
+    if (!LINE_SKILL.leadLine) return;
+    const left = c.f.close - (c.since((this.e as unknown as { gameTime: number }).gameTime) ?? 0);
+    const going = fp.line.filter((f) => f.state === 'follow' || f.state === 'join');
+    const tail = going.length ? Math.min(...going.map((f) => f.x * dir)) * dir : p.x;
+    const rate = c.f.tailOff > 0 ? c.f.px / c.f.tailOff : Infinity;
+    if (process.env.FLOODDBG) console.log('READ', p.x.toFixed(0), 'left', left.toFixed(2), 'tail', tail.toFixed(0), 'need', (((far - tail) * dir) / rate).toFixed(2));
+    if (left >= ((far - tail) * dir) / rate) return;
+    // (they can't make it: round by the high road, its pieces' tops every 24 px)
+    const pts: Pt[] = [];
+    for (const q of road.chain) for (let x = nearOf(q); (farOf(q) - x) * dir >= 0; x += 24 * dir) pts.push({ x, y: q.y });
+    this.prog.reroute(this.prog.cur, fork, farOf(road.chain[road.chain.length - 1]), dir, pts);
+  }
+
+  /**
    * The little ones (followPlay.ts), LINE_SKILL: a spooked one hiding where it ran to, he goes back for; in the reeds on a watched
    * stretch he waits for the tail and goes right after a look. Null: nothing to do with them this frame (the route goes on).
    */
@@ -2501,6 +2569,8 @@ export class FirstTimerRun {
     const sim = this.sim, p = sim.p, e = this.e, t = this.t, who = this.who;
     // (a spur's dead-end stone stood on: counted, FTRun.spurs)
     if (p.grounded) for (const r of (sim.stage as Stage).rivers ?? []) if (r.spur && Math.abs(p.x - r.spur.x) < 70 && Math.abs(p.y - r.spur.y) < 10) this.spursMet.add(r.x0);
+    // (at a flood's fork, the road the line can make, read before the way on is: lead-the-line)
+    this.floodRoad(p);
     const tgt = p.isVineSwinging ? this.pastLiana(p) : this.prog.target(p);
     if (p.isVineSwinging && p.swingVineId != null) this.swungOn = p.swingVineId;
     if (this.dropOff && ((p.grounded && e.standingOnId !== this.dropOff.id) || t - this.dropOff.t > 6)) this.dropOff = null;
