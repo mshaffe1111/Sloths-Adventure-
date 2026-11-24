@@ -115,3 +115,9 @@ tests were red on t-build-26 9e1e30b27 after a landing reported 'suite green' on
 Every clock time a member writes (REPORT, turnover note, STATE) comes from `TZ=America/New_York date` in the same command, never a planned
 time such as the box's end. timecheck fails a stamp later than its own commit: two members did it on 11-24 (INT-R5b's REPORT.md:201,
 ENG-PLANT's REPORT.md:3), each writing 'hand-over at the box (H:MM)' before the box ended.
+
+## Rule 28's baseline is MAIN for a shipped stage (D132, 11-24)
+A landing that touches the engine or the bots compares castBots rows on every SHIPPED stage it can touch against MAIN (the build players
+have), never only against the branch it started from: 11-24, a week of 2-7 landings each matched t-eng-27's own base, and the release merge
+then showed shipped 2-1/2-2/2-4 rows pass -> fail vs main. The integration member runs the same comparison right after each merge onto a
+release branch, before THE FULL SET.
