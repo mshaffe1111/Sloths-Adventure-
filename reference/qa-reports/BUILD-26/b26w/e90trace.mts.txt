@@ -1,0 +1,36 @@
+const arg = (k: string) => { const i = process.argv.indexOf(k); return i > 0 ? process.argv[i + 1] : undefined; };
+const tree = arg('--tree')!;
+const { RealPlay } = await import(`${tree}/src/game/realPlay.ts`);
+const { CAST_BOTS } = await import(`${tree}/tools/inspect/castBots.ts`);
+const { firstTimer, FirstTimerRun } = await import(`${tree}/tools/inspect/firsttimer.ts`);
+const t0 = Number(arg('--t0')), t1 = Number(arg('--t1'));
+let n = 0; let T = 0; let dumped = false;
+const orig = RealPlay.prototype.frame;
+RealPlay.prototype.frame = function (this: any, pad: any) {
+  const out = orig.call(this, pad);
+  T = ++n / 30;
+  if (T >= t0 && T <= t1) {
+    const p = this.p; const so = this.standingOn; const sq = so != null ? (this.platforms ?? []).find((q: any) => q.id === so) : undefined;
+    const keys = pad ? Object.entries(pad).filter(([, v]) => v).map(([k, v]) => (v === true ? k : `${k}=${v}`)).join(' ') : '';
+    console.log(`F ${T.toFixed(2)} on ${so ?? '-'}${sq?.wheel ? ' bucket#' + sq.wheel.i : ''} x ${p.x.toFixed(0)} y ${p.y.toFixed(0)} vx ${(p.vx ?? 0).toFixed(0)} vy ${(p.vy ?? 0).toFixed(0)} g ${p.grounded ? 1 : 0} | ${keys}`);
+    if (!dumped) { dumped = true;
+      for (const q of this.platforms) if (q.y > 4200 && q.y < 5200 && q.x < 1600 && !q.wheel) console.log(`P ${q.id} ${q.type} ${q.style ?? ''} x ${Math.round(q.x)}-${Math.round(q.x + q.width)} y ${Math.round(q.y)}`);
+      const wq = this.platforms.find((q: any) => q.wheel && Math.abs(q.y - p.y) < 400);
+      if (wq) { const w = wq.wheel.w; console.log('W', JSON.stringify({ cx: w.cx, cy: w.cy, x: w.x, y: w.y, R: w.R, V: w.V, N: w.N, W: w.W, way: w.way, lay: w.lay })); }
+    }
+  }
+  return out;
+};
+let shown = false;
+const oi = (FirstTimerRun.prototype as any).intend;
+(FirstTimerRun.prototype as any).intend = function (this: any) { if (T >= t0 && T <= t1) { const pr = this.prog; const tg = pr.target(this.sim.p); console.log(`  intend cur ${pr.cur} tgt ${tg ? Math.round(tg.x) + ',' + Math.round(tg.y) : '-'} way ${this.way} pins ${JSON.stringify(pr.pins)} pin ${pr.pin} t200 ${JSON.stringify(pr.target(this.sim.p, 200))} t240 ${JSON.stringify(pr.target(this.sim.p, 240))} hunt ${JSON.stringify(this.hunt)}`); if (!shown) { shown = true; pr.pts.forEach((q: any, i: number) => { if (q.y > 4300 && q.y < 5000) console.log(`R ${i} ${Math.round(q.x)},${Math.round(q.y)}${q.rope ? ' rope' : ''}${q.kind ? ' ' + q.kind : ''}`); }); } } return oi.apply(this, arguments as any); };
+for (const m of ['wheelRide', 'decide', 'startJump', 'pitWayBack']) {
+  const o = (FirstTimerRun.prototype as any)[m];
+  (FirstTimerRun.prototype as any)[m] = function (this: any, ...a: any[]) {
+    const r = o.apply(this, a);
+    if (T >= t0 && T <= t1) console.log(`  ${m}(${a.map((v) => typeof v === 'object' ? (v && 'x' in v ? 'p' : JSON.stringify(v)) : v).join(',')}) -> ${JSON.stringify(r)} jump=${JSON.stringify(this.jump && { dir: this.jump.dir, kind: this.jump.kind })} pend=${JSON.stringify(this.pending)} hop=${this.wheelHop} drop=${JSON.stringify(this.dropOff)} cb=${JSON.stringify(this.climbBack && { dir: this.climbBack.dir, t: this.climbBack.t, n: this.climbBack.path.map((q: any) => q.id) })}`);
+    return r;
+  };
+}
+const r = firstTimer(arg('--stage') ?? '2-6', Number(arg('--seed')), CAST_BOTS[arg('--bot')!][arg('--setting')!], { cap: 1200, dotSetting: true });
+console.log(JSON.stringify({ end: r.end, time: r.time, rescues: r.rescues }));

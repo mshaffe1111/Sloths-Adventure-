@@ -1,0 +1,38 @@
+F 69.80 on -1 x 794 y 4564 vx 285 vy 307 g 0 | right
+P 34 solid branch x 244-484 y 4968
+P 35 solid branch x 821-1169 y 4664
+P 42 solid branch x 865-1125 y 4355
+P 43 solid branch x 597-865 y 4355
+P 44 solid branch x 70-597 y 4355
+P 98 solid branch x 0-244 y 4968
+P 99 solid branch x 1169-1700 y 4664
+P 100 solid branch x 0-70 y 4355
+P 101 solid branch x 1225-1458 y 4355
+P 112 solid branch x 1458-1598 y 4355
+W {"cx":664.4157663455517,"cy":4816,"R":180,"V":50,"N":6,"W":120,"way":1,"lay":{"row":"edge","street":"edge","up":0,"jetty":34,"streetId":35}}
+  intend cur 467 tgt 671,4823 way 1 pins [] pin 0 t200 {"x":670.8571428571429,"y":4823.238095238095} t240 {"x":670.8571428571429,"y":4823.238095238095} hunt null
+  pitWayBack(p) -> 0 jump={"dir":1,"kind":"single"} pend=null hop=0 drop=null cb=null
+F 69.83 on -1 x 803 y 4577 vx 268 vy 390 g 0 | right
+  intend cur 473 tgt 807,4780 way -1 pins [] pin 0 t200 {"x":806.7142857142857,"y":4779.809523809524} t240 {"x":1010.5,"y":4714.666666666667} hunt null
+  pitWayBack(p) -> 0 jump={"dir":1,"kind":"single"} pend=null hop=0 drop=null cb=null
+F 69.87 on -1 x 813 y 4592 vx 285 vy 473 g 0 | right
+  intend cur 473 tgt 807,4780 way -1 pins [] pin 0 t200 {"x":965.2142857142857,"y":4729.142857142857} t240 {"x":1033.142857142857,"y":4707.428571428572} hunt null
+  pitWayBack(p) -> 0 jump={"dir":1,"kind":"single"} pend=null hop=0 drop=null cb=null
+F 69.90 on -1 x 822 y 4611 vx 268 vy 557 g 0 | right
+  intend cur 474 tgt 829,4773 way -1 pins [] pin 0 t200 {"x":1010.5,"y":4714.666666666667} t240 {"x":1055.7857142857142,"y":4700.190476190476} hunt null
+  pitWayBack(p) -> 0 jump={"dir":1,"kind":"single"} pend=null hop=0 drop=null cb=null
+F 69.93 on -1 x 831 y 4632 vx 285 vy 640 g 0 | right
+  intend cur 474 tgt 829,4773 way -1 pins [] pin 0 t200 {"x":1033.142857142857,"y":4707.428571428572} t240 {"x":1078.4285714285716,"y":4692.952380952381} hunt null
+  pitWayBack(p) -> 0 jump={"dir":1,"kind":"single"} pend=null hop=0 drop=null cb=null
+F 69.97 on -1 x 840 y 4656 vx 268 vy 723 g 0 | right
+  intend cur 475 tgt 852,4765 way -1 pins [] pin 0 t200 {"x":1055.7857142857142,"y":4700.190476190476} t240 {"x":1078.4285714285716,"y":4692.952380952381} hunt null
+  pitWayBack(p) -> 0 jump={"dir":1,"kind":"single"} pend=null hop=0 drop=null cb=null
+F 70.00 on 35 x 849 y 4664 vx 285 vy 0 g 1 | right
+  intend cur 475 tgt 852,4765 way -1 pins [] pin 0 t200 {"x":1055.7857142857142,"y":4700.190476190476} t240 {"x":1101.0714285714284,"y":4685.714285714285} hunt null
+  pitWayBack(p) -> 0 jump=null pend=null hop=0 drop=null cb=null
+  wheelRide(p,-1,64.99999999999888) -> null jump=null pend=null hop=0 drop=null cb=null
+F 70.03 on 35 x 855 y 4664 vx 172 vy 0 g 1 | 
+  intend cur 475 tgt 852,4765 way -1 pins [] pin 0 t200 {"x":1055.7857142857142,"y":4700.190476190476} t240 {"x":1101.0714285714284,"y":4685.714285714285} hunt null
+  pitWayBack(p) -> 0 jump=null pend=null hop=0 drop=null cb=null
+  wheelRide(p,-1,65.03333333333221) -> null jump=null pend=null hop=0 drop=null cb=null
+{"end":"shrine","time":153.3,"rescues":1}

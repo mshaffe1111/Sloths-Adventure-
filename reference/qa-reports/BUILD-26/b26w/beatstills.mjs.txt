@@ -1,0 +1,77 @@
+// BUILD-26w: stills of 2-6's four re-laid beats (A the millpond bank, P the first street, U through the house, C the wheel-bounce's
+// highest street) on the real page, Easy and Normal, upright 412x915 and sideways 915x412, 2x. jettystills.mjs's way (engine paused,
+// Pokey placed, 60 frames stepped, then 30 stepped AND rendered), placed from the BUILT stage: gen2.tower.route.legs (the beat's
+// entry/exit), its boulders (moss_stone), its ladder (a tree_climb vine), its exit platform.
+//   node beatstills.mjs <port> <out dir> <layout>
+import fs from 'node:fs';
+import path from 'node:path';
+const PWm = await import(process.env.PW ?? 'playwright'); const chromium = PWm.chromium ?? PWm.default.chromium;
+const [port, out, layoutS = '0'] = process.argv.slice(2);
+const layout = +layoutS;
+fs.mkdirSync(out, { recursive: true });
+const b = await chromium.launch();
+const E = "(typeof window.__engine === 'function' ? window.__engine() : window.__engine)";
+const BEATS = [['A', 'w2-26-millpond'], ['P', 'w2-26-first-street'], ['U', 'w2-26-through-house'], ['C', 'w2-26-wheel-bounce']];
+for (const diff of ['easy', 'normal']) for (const [tag, w, h] of [['upright', 412, 915], ['sideways', 915, 412]]) {
+  const ctx = await b.newContext({ viewport: { width: w, height: h }, deviceScaleFactor: 2 });
+  await ctx.addInitScript((d) => { try { localStorage.setItem('sloth_difficulty', d); } catch {} }, diff);
+  const p = await ctx.newPage();
+  p.on('pageerror', (e) => console.log('ERR', e.message));
+  await p.goto(`http://127.0.0.1:${port}/?lessons=off`);
+  await p.waitForTimeout(2500);
+  await p.evaluate((v) => window.__play('2-6', v), layout);
+  await p.waitForTimeout(4000);
+  await p.waitForFunction((E) => { const e = eval(E); return !!(e && e.currentStage && e.player && e.platforms); }, E, { timeout: 60000 });
+  await p.waitForFunction(() => document.documentElement.dataset.hudCard !== '1', null, { timeout: 30000 }).catch(() => {});
+  await p.waitForTimeout(3000);
+  for (const [letter, tpl] of BEATS) {
+    const info = await p.evaluate(([E, tpl, letter]) => {
+      const e = eval(E);
+      e.isPaused = true;
+      const g = e.currentStage.gen2;
+      const sec = g.sections.find((s) => s.template === tpl);
+      const L = g.tower.route.legs.find((l) => l.uid === sec.uid);
+      const dir = L.exit.x >= L.entry.x ? 1 : -1;
+      const y0 = Math.min(L.entry.y, L.exit.y) - 120, y1 = Math.max(L.entry.y, L.exit.y) + 60;
+      const inLeg = e.platforms.filter((q) => q.y >= y0 && q.y <= y1 && q.x + q.width > L.x0 - 40 && q.x < L.x1 + 40);
+      const solid = inLeg.filter((q) => q.type === 'solid' && q.style !== 'moss_stone');
+      const rocks = inLeg.filter((q) => q.type === 'solid' && q.style === 'moss_stone' && q.height <= 60).sort((a, b2) => dir * ((b2.x) - (a.x)));
+      const floorAt = (x, yNear) => solid.filter((q) => x >= q.x && x <= q.x + q.width).sort((a, b2) => Math.abs(a.y - yNear) - Math.abs(b2.y - yNear))[0];
+      let x, plat, note;
+      if (letter === 'A' || letter === 'P') {
+        // the boulder nearest the exit: A's second boulder on the 700 shore; P's boulder on the fourth doorstep. Pokey 170 px before it.
+        const r = rocks[0];
+        const top = r.y + r.height;
+        x = r.x + r.width / 2 - dir * 170;
+        plat = floorAt(x, top) ?? floorAt(x, L.exit.y);
+        note = { rock: [Math.round(r.x), Math.round(r.x + r.width), Math.round(r.y)], rockFloor: (() => { const f = floorAt(r.x + r.width / 2, top); return f && [f.id, Math.round(f.x), Math.round(f.x + f.width), Math.round(f.y)]; })() };
+      } else if (letter === 'U') {
+        const v = e.vines.filter((v) => v.x > L.x0 - 40 && v.x < L.x1 + 40 && Math.abs(v.bottomY - L.entry.y) < 60)[0];
+        x = v.x - dir * 110;
+        plat = floorAt(x, L.entry.y);
+        note = { ladder: [Math.round(v.x), Math.round(v.topY), Math.round(v.bottomY), Math.round(v.bottomY - v.topY)] };
+      } else {
+        // the highest street: the exit's platform, Pokey at its middle
+        plat = solid.filter((q) => Math.abs(q.y - L.exit.y) < 6 && q.x <= Math.max(L.exit.x, L.x0) + 20 && q.x + q.width >= Math.min(L.exit.x, L.x1) - 20).sort((a, b2) => b2.width - a.width)[0];
+        x = plat.x + plat.width / 2;
+        note = { high: [plat.id, Math.round(plat.x), Math.round(plat.x + plat.width), Math.round(plat.width), Math.round(plat.y)] };
+      }
+      const pw = e.player.width, ph = e.player.height;
+      Object.assign(e.player, { x: x - pw / 2, y: plat.y - ph - 2, vx: 0, vy: 0, grounded: false, hanging: false, climbing: false, facing: dir, invincibleTimer: 9 });
+      for (const hh of e.currentStage?.proto?.hints ?? []) hh.shown = true;
+      for (let i = 0; i < 60; i++) e.update(1 / 30);
+      return { seed: g.seed, leg: { uid: L.uid, entry: L.entry, exit: L.exit }, dir, plat: [plat.id, Math.round(plat.x), Math.round(plat.x + plat.width), Math.round(plat.y)], note, player: { x: Math.round(e.player.x), y: Math.round(e.player.y), g: e.player.grounded } };
+    }, [E, tpl, letter]);
+    for (let i = 0; i < 30; i++) {
+      await p.evaluate((E) => { const e = eval(E); e.update(1 / 30); e.clearGuide?.(); e.player.invincibleTimer = 0; e.render(); }, E);
+      await p.evaluate(() => new Promise((r) => requestAnimationFrame(() => r(0))));
+    }
+    await p.evaluate((E) => { const e = eval(E); e.player.invincibleTimer = 0; e.render(); }, E);
+    const cam = await p.evaluate((E) => { const e = eval(E); return { px: Math.round(e.player.x), py: Math.round(e.player.y), g: e.player.grounded, z: e.zoom }; }, E);
+    const file = path.join(out, `beat${letter}-2-6-L${layout}-${diff}-${tag}.jpg`);
+    await p.screenshot({ path: file, type: 'jpeg', quality: 82 });
+    console.log(JSON.stringify({ letter, diff, tag, ...info, settled: cam, file: path.basename(file) }));
+  }
+  await ctx.close();
+}
+await b.close();

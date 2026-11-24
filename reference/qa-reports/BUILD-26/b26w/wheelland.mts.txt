@@ -1,0 +1,18 @@
+const arg = (k: string) => { const i = process.argv.indexOf(k); return i > 0 ? process.argv[i + 1] : undefined; };
+const tree = arg('--tree')!;
+const { RealPlay } = await import(`${tree}/src/game/realPlay.ts`);
+const { CAST_BOTS } = await import(`${tree}/tools/inspect/castBots.ts`);
+const { firstTimer, FirstTimerRun } = await import(`${tree}/tools/inspect/firsttimer.ts`);
+let n = 0, T = 0, last: any = null, bot: any = null;
+const oi = (FirstTimerRun.prototype as any).intend;
+(FirstTimerRun.prototype as any).intend = function (this: any) { bot = this; return oi.apply(this, arguments as any); };
+const orig = RealPlay.prototype.frame;
+RealPlay.prototype.frame = function (this: any, pad: any) {
+  const out = orig.call(this, pad); T = ++n / 30;
+  const so = this.standingOn; const sq = so != null ? this.platforms.find((q: any) => q.id === so) : undefined;
+  const k = sq ? (sq.wheel ? `bucket(R${sq.wheel.w.R},${sq.wheel.w.lay?.street})` : `${sq.id}@${Math.round(sq.x)}-${Math.round(sq.x + sq.width)},${Math.round(sq.y)}`) : null;
+  if (k && k !== last) { if (last && last.startsWith('bucket') && !k.startsWith('bucket')) console.log(`${T.toFixed(2)} off ${last} -> ${k} at x ${Math.round(this.p.x)} way ${bot?.way} cur ${bot?.prog.cur} pt ${JSON.stringify(bot && bot.prog.pts[bot.prog.cur])}`); last = k; }
+  return out;
+};
+const r = firstTimer(arg('--stage') ?? '2-6', Number(arg('--seed')), CAST_BOTS[arg('--bot')!][arg('--setting')!], { cap: 1200, dotSetting: true });
+console.log(JSON.stringify({ end: r.end, time: r.time, rescues: r.rescues }));

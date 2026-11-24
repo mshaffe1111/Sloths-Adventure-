@@ -1,3 +1,44 @@
+# BUILD-26w (session 7 of BUILD-26q; t-build-26-wip-26q, code head 48b277994 unchanged: no src or tools change this box). Started 6:34 PM ET 11-24 (by `date`); this box written 6:46 PM ET
+
+## EXACT NEXT STEP
+**Item 1 (adult E 90) ROOT READ and SENT to the lead; NO fix made (the lead's rule: root first). Item 2 stills SHOT and pushed (paths below);
+ONE ROUGH SPOT found, NOT fixed (beat A: Pokey stands on air on the millpond shore; PRE-EXISTING on base 74df28278 too). Item 3 (ruling 4) NOT started.**
+(a) NEXT, in order: (1) read the lead's reply on the E 90 fix (proposed below). On a GO: lay it in tools/inspect/firsttimer.ts (general, every wheel),
+the planted toy first (RED with it off on 2-6 adult E 90), then re-run adult E 90 and adult E 1-3 (b26w/wheelland.mts.txt prints every step-off
+landing and the bot's way). (2) Beat A's bare ground: find which painter draws 2-6's millpond ground (World 2, 'log' style bank, h 90;
+NOT w1CutArt's pickCut, which only takes logs under THICK_LOG_MAX and moss stones) and why it leaves ~290 px bare past the second boulder
+(head: world x ~548-839 on platform 5, 326-1026 y 7761, Normal layout 0; base: ~300 px past the boulder 919-1029 on platform 2). Send the
+lead the cause before a fix (it may be ENGINE-WORTHY: a painter, every stage with a long log bank). (3) Then ruling 4 exactly as before:
+ONE castBots --proven 2-6, lockall (2-6 the only mover), paint --stages 2-6, the suite + the CI tool line ONCE on the final head,
+timecheck; land on t-build-26 (merge, no force); hash and table to the lead.
+
+## Item 1: adult Easy 90 (rescued x1 at the edge wheel, beat 5): ROOT = a BOT fault (latent), a NEW family (not R-165.413)
+Read on a chattr-frozen tree of 918b3894 (= 48b277994's code). Trace: b26w/trace-adultE90-918b3894.txt (b26w/e90trace.mts.txt); the route: b26w/route-edgewheel-918b3894.txt.
+- CORRECTION: piece 35 (x 821-1169, y 4664) is the edge wheel's STREET, not its jetty. Wheel cx 664 cy 4816 R 180 way +1, lay {street 'edge',
+  jetty 34 (x 244-484 y 4968, LEFT and low), streetId 35 (RIGHT, at the sweep's edge cx+R = 844)}. Way on: right along 35 to x 1151, up the climb (y 4664 -> 4355), left on 4355.
+- The route line for this beat is one straight line jetty (218,4991) -> street end (1169,4664), through the HUB (pt 467 = 671,4823). The
+  bucket rides 180 px from the hub; Progress advances cur only within 160 px (bd < 160), so over the top cur stays stale at 467.
+- 69.33 the step-off is RIGHT (window open, decide(+1, single)). 69.83 mid-air at x 794 the stale target (x 671) is 123 px behind -> dir -1,
+  this.way = -1. 70.00 lands on the street at x 849; cur -> 475 (852,4765), 101 px straight under him; the 'way on is below, close across'
+  rule (dy > 40, |dx| < 120) gives a bot with NO holdQ (FT_ADULT) dir = this.way = the stale -1. 70.13 decide(-1) hops him back into the wheel.
+  11 times (70.0-85.7 s, landing x 807-941, way -1 each) until the rescue sets him at x 1146 (cur 490, way +1).
+- Seed-specific by phase: adult E 1, 2, 3 (same layout) land at x 885/842/886 with way +1. Base 74df28278 seed 90: 0 rescues (it reached this
+  wheel 11 s earlier, landed x 798 on that roll's street). The re-lay moved his arrival time only; the code path is unchanged.
+- PROPOSED (not applied; the lead's GO): on the wheel step-off this.way = the wheel's way, held until he stands on the street, then
+  prog.relocate(p) on landing (the rescue's own call). A planted toy (RED off, E 90 0 rescues on). Wheels are 2-6 only: lockall should show 2-6 alone.
+
+## Item 2: stills of the four re-laid beats, layout 0, Easy + Normal, upright 412x915 + sideways 915x412, 2x (on 918b3894's src = 48b277994)
+b26w/stills/beat{A,P,U,C}-2-6-L0-{easy,normal}-{upright,sideways}.jpg (16), contact sheets b26w/stills/sheet-{upright,sideways}.jpg; placement
+log b26w/stills-918b3894.jsonl; the script b26w/beatstills.mjs.txt (Pokey placed from the built stage's tower.route.legs, its boulders, ladder, exit).
+- A (millpond, 700 shore + second boulder): ROUGH. Pokey stands on AIR: the painted ground is missing for ~290 px past the second boulder while
+  platform 5 is solid under him (b26w/stills/cropA.jpg). PRE-EXISTING: base 74df28278 shows the same bare stretch past its boulder
+  (b26w/stills/base74df-cropA.jpg); the 700 shore now puts it on the walk line. NOT fixed (cause not read; next step (2)).
+- P (first street, fourth doorstep + boulder): reads clean on all four. U (two-floor ladder, 391 px built): the whole ladder and the roof in frame
+  upright and sideways; reads clean. C (highest street 480 built, Normal; 528 on Easy): clean; Pokey's 'PLEASE BE PATIENT' line sits over a heart
+  on Easy sideways (a story bubble, for the lead's eye).
+
+Lessons applied: D115 (frozen worktrees), D119, D128 (stamp from date), D134 (pushed and confirmed before the hand-over).
+
 # BUILD-26v (session 6 of BUILD-26q; t-build-26-wip-26q, base 74df28278). Started 6:15 PM ET 11-24 (by `date`); this box written 6:32 PM ET
 
 ## EXACT NEXT STEP
