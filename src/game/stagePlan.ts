@@ -82,9 +82,7 @@ export const STAGE_PLAN: Record<number, StageSpec[]> = {
     // (the story keeper's line 7, reference/story/lines-2-5.md (t-keeper-25@a7ad4455): gen2/worlds/w2Arc25.ts MISSION_25, held equal by
     //  w2Arc25.test.ts; its goal the design's (2-5.md "Goal", every snapper laid but one: GOAL_25, R-165.336), no top-up)
     { ...S('purge', 'River Snappers', 'The stones bite on four. Hop across and send the snappers home.'), count: 8 },
-    // (the story keeper's line 7, reference/story/lines-2-6.md (t-keeper-26@19f90520b): gen2/worlds/w2Arc26.ts MISSION_26, held equal by
-    //  w2Arc26.test.ts; an ascent counts nothing)
-    S('ascent', 'Up the Bank Houses', "Ride the village's water wheels up to the top of the bank."),
+    S('ascent', 'Up the Bank Houses', 'Climb up through the village houses dug into the bank.'),
     S('sprint', "The Mailman's Route", 'Take the long way round the river, past every door marked PLEASE BE PATIENT.'),
     S('rescue', 'Before the Water Rises', 'Free more little ones before the water rises.'),
     S('gauntlet', "The River King's Court", "Fight through the river king's court and reach the shrine."),
