@@ -3327,17 +3327,20 @@ export class FirstTimerRun {
       //  or leaves no floor ahead (rideCase), he stops pressing on landing; the walk-on below kept him running 0.1 s, and his thumb's
       //  let-go (releaseMax frames, the testers' own) ran him on: 2-1 child Normal 11 landed 40 px from #137's front (x 30,394 on
       //  30,194-30,434) and ran off it 4+ times, rescued. Where the front is inside that run-out he pulls the thumb back (a turn drops the
-      //  press at once, thumbify), never off. This landing stop (c5's piece) is kept on EVERY log running his way: the lean candidate c19
-      //  (the stop only in rideCase) fails 2-1 child Normal 11, 2-2 adult Normal 4 and 2-4 child Easy 11 at c4's own x; with it each
-      //  passes and 2-1's 8 BAR rows stay clean (c5's other piece, the river block's standingOn 'here', fixes the same three but breaks
-      //  2-1 adult Normal 1/2/4/6/8/9: not kept). The ride after it (landRide) stays only in rideCase
+      //  press at once, thumbify), never off. On EVERY log running his way only that pull-back is kept (c5's landing stop narrowed): the
+      //  lean candidate c19 fails 2-1 child Normal 11, 2-2 adult Normal 4 and 2-4 child Easy 11 at c4's own x, and each passes with it;
+      //  the stand itself stays only in rideCase (c21 stood on every such log and broke 2-1 child Easy 6, middle Normal 7 and 10 at the
+      //  back river, x 25,840-26,040; c5's other piece, the river block's standingOn 'here', broke 2-1 adult Normal 1/2/4/6/8/9: not kept)
       const ridden = SKILLS.floatSure && SKILLS.handed && p.grounded ? this.sim.platforms.find((q) => q.id === this.sim.standingOn) : undefined;
       if (ridden?.drift && dir !== 0 && ridden.drift.dir === dir) {
-        if (this.rideCase(ridden, dir)) this.landRide = ridden.id;
+        const inRide = this.rideCase(ridden, dir);
+        if (inRide) this.landRide = ridden.id;
         const front = dir > 0 ? ridden.x + ridden.width : ridden.x;
         if (dir * (front - p.x) < this.runOut()) return side(-dir as -1 | 1);
-        this.stopMeant = true;
-        return {};
+        if (inRide) {
+          this.stopMeant = true;
+          return {};
+        }
       }
       // (landed on a small pad or ledge: he stops on it a beat, then flicks on from where he stands if its edge is close)
       const here = this.floorAt(p.x, p.y, 6);
