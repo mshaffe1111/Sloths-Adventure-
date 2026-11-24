@@ -4753,10 +4753,12 @@ export class FirstTimerRun {
     return { last: this.lastSteer, driftPx: this.driftPx, armed: this.releaseArmed, releaseLeft: this.releaseLeft, travel: this.travelUntil - t, slip: this.driftUntil - t, speed: this.who.thumbSpeed, once: !!this.who.holdQ };
   }
 
-  /** px he runs on after he lets go at his speed now: his thumb's longest let-go (releaseMax) and the 3 frames he slides to a stop, and
-   *  the gate's 24 px (ENG-PLANT-e: the stand on a log running his way comes at least this far from its front) */
+  /** px he runs on after he lets go at a full run (a walk he starts from a stand reaches it in a few frames, so his speed NOW is no
+   *  bound: candidate 6, 2-4 adult Normal 6, stood at vx 0 81 px from #47's front, looked 24 px, ran on and off it): his thumb's
+   *  longest let-go (releaseMax) and the 3 frames he slides to a stop, and the gate's 24 px (ENG-PLANT-e: the stand on a log running his
+   *  way comes at least this far from its front) */
   private runOut(): number {
-    return Math.abs(this.sim.p.vx) * DT * (this.who.releaseMax[1] + 3) + 24;
+    return PHYS.maxRun * DT * (this.who.releaseMax[1] + 3) + 24;
   }
 
   private startJump(dir: -1 | 0 | 1, kind: 'single' | 'double', off: boolean): Pad {
