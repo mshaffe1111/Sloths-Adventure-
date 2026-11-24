@@ -2956,7 +2956,23 @@ export function layStage(budget: StageBudget, graph: MissionGraph, kit: WorldKit
           // (a tower's soft pit: a catch bough under the gap, one hop under its lower lip, lip to lip, when its lips are a hop apart or
           // less; under a taller step the lower ledge is the catch already)
           const cy = gapCatchY(g);
-          if (cy !== undefined) placed.seam.push(mk(g0.x0, oy + cy, g0.x1 - g0.x0, 'branch', 0));
+          if (cy !== undefined) {
+            const bough = mk(g0.x0, oy + cy, g0.x1 - g0.x0, 'branch', 0);
+            placed.seam.push(bough);
+            // (its sides: a sunken step has sides, BUILD-26r, the lead's ruling 11-24. Each end of the bough gets a face under the lip
+            // that meets it, from that lip's top down to the bough's underside, so a run along the bough at full speed stops at the lip
+            // ahead and never passes under it: the street past a soft pit is a 24 px branch, and 2-6's Easy bots ran off the bough's far
+            // end under it and fell a storey, 59 of 59 first-street failures (towerSoftPit.test.ts). A lip whose own piece already
+            // reaches the bough is its own face; with no piece at an end, the face stands a hop over the bough, as the lower lip does.)
+            for (const end of [g0.x0, g0.x1] as const) {
+              const meets = (q: Platform) => (end === g0.x0 ? Math.abs(q.x + q.width - end) < 3 : Math.abs(q.x - end) < 3);
+              const lip = platforms.filter((q) => q !== bough && q.type === 'solid' && !q.broken && meets(q) && q.y < bough.y && q.y >= bough.y - TOWER.hop - 22)
+                .sort((a, b) => a.y - b.y)[0];
+              if (lip && lip.y + lip.height >= bough.y) continue;
+              const top = lip ? lip.y : bough.y - TOWER.hop;
+              placed.seam.push(mk(end === g0.x0 ? end - PIT_WALL.w : end, top, PIT_WALL.w, 'block', bough.y + bough.height - top, 'moss_stone'));
+            }
+          }
         } else if (!g.water && FR?.catchDrop) {
           const before = platforms.length;
           // (under the gap's LOWER lip, as a join's is: hung under the upper one it was a step down onto the lower bough, Roll A 11-05)
