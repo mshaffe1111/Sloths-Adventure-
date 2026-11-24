@@ -1,0 +1,47 @@
+TAP version 13
+# tower stages read: 1-4, 2-6; floor drops 432; open ends 0 (1-4: 0 catch boughs, 0 open ends; 2-6: 192 catch boughs, 0 open ends)
+# Subtest: a full-speed run along a tower's soft pit never passes under the lip ahead: a face under each end, every tower stage, both settings, listed seeds
+ok 1 - a full-speed run along a tower's soft pit never passes under the lip ahead: a face under each end, every tower stage, both settings, listed seeds
+  ---
+  duration_ms: 19466.883065
+  type: 'test'
+  ...
+# Subtest: 2-6's draft row lays its node string beat for beat on every roll, both settings, with no error
+ok 2 - 2-6's draft row lays its node string beat for beat on every roll, both settings, with no error
+  ---
+  duration_ms: 2.270724
+  type: 'test'
+  ...
+# Subtest: every wheel the design names lays with its jetty, its street, its pond and its buckets, and wheels turn both ways round
+ok 3 - every wheel the design names lays with its jetty, its street, its pond and its buckets, and wheels turn both ways round
+  ---
+  duration_ms: 10.256362
+  type: 'test'
+  ...
+# Subtest: beat 4's millrace lays 2-1's ride logs (soft), crossed either way, fair; beat 10 its bounce; the crest its totem
+ok 4 - beat 4's millrace lays 2-1's ride logs (soft), crossed either way, fair; beat 10 its bounce; the crest its totem
+  ---
+  duration_ms: 1.121695
+  type: 'test'
+  ...
+# Subtest: 2-6: the climb up the bank village, with the bank behind it, doors on the porches and Gruntlewick at the top
+ok 5 - 2-6: the climb up the bank village, with the bank behind it, doors on the porches and Gruntlewick at the top
+  ---
+  duration_ms: 3213.87222
+  type: 'test'
+  ...
+# Subtest: 2-6's words are the story keeper's, verbatim (reference/story/lines-2-6.md, KEEPER-26 @19f90520b)
+ok 6 - 2-6's words are the story keeper's, verbatim (reference/story/lines-2-6.md, KEEPER-26 @19f90520b)
+  ---
+  duration_ms: 0.587081
+  type: 'test'
+  ...
+1..6
+# tests 6
+# suites 0
+# pass 6
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 22384.344966

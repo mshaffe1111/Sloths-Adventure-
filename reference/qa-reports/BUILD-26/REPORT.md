@@ -1,16 +1,20 @@
-# BUILD-26v (session 6 of BUILD-26q; t-build-26-wip-26q, base 74df28278). Started 6:15 PM ET 11-24 (by `date`); this box written 6:29 PM ET
+# BUILD-26v (session 6 of BUILD-26q; t-build-26-wip-26q, base 74df28278). Started 6:15 PM ET 11-24 (by `date`); this box written 6:32 PM ET
 
 ## EXACT NEXT STEP
-**Ruling 3's STEP 0 is SENT to the lead (below). NOTHING is laid on the branch: every number below is from scratch worktrees. WAIT for
-GO; change nothing before it. Ruling 4 not started.**
-(a) ON GO: `git apply reference/qa-reports/BUILD-26/b26v/candidate-700.diff` (src/game/gen2/worlds/w2Arc26.ts only; made by
-b26v/relay2.py.txt on 74df28278), then update the four bricks' comments to say what they now lay (A: the shore 700 px and its second
-boulder; P: the fourth doorstep, level, a boulder on it; U: a two-floor house, ladder 380-400, exitDy -390; C: the highest street 480).
-Then the 2-6 tests (src/game/gen2/worlds/w2Arc26.test.ts, the plan test), the re-measure on a frozen tree (castBots --stage 2-6 --seeds
-1-100 --bots adult --setting normal --rows; target: fastest >= 104 s), stills of the four changed beats upright and sideways (A's
-second boulder, P's fourth doorstep, U's ladder, C's highest street) to the lead to judge.
-(b) Then ruling 4 exactly as BUILD-26u's (b): ONE castBots --proven 2-6, lockall (2-6 the only mover), paint --stages 2-6, the suite +
-the CI tool line ONCE on the final head, timecheck; land on t-build-26 (merge, no force); hash and table to the lead.
+**Ruling 3 (A) is LAID as the lead GO'd (the 700 version): code commit 48b277994 (src/game/gen2/worlds/w2Arc26.ts only: candidate-700.diff
++ the four bricks' comments; tsc clean). The lead's GO: "Trace adult E 90 FIRST, before the measure: if it is the re-lay's, bring it with
+the trace before any fix; if it is pre-existing or a bot fault, name it." READ (below, scratch frames): the EDGE wheel, an unchanged
+beat; the bot steps off the bucket onto the jetty. Named to the lead; its root is NOT read yet.**
+ON 48b277994 (frozen worktree), this box: THE MEASURE (castBots --stage 2-6 --seeds 1-100 --bots adult --setting normal --rows; b26v/floor-adultN-48b277994.txt + .jsonl):
+PASS 100/100, under the floor 0, FASTEST 113.7 s (target 104: MET on every roll; was 95.8), median 122.8 s (was 104.9). The 2-6 tests
+(w2Arc26.test.ts 5 + towerSoftPit.test.ts 1) 6/6 GREEN (b26v/tests-2-6-48b277994.txt; wheel.test.ts was not at the path I gave: it
+does not read 2-6's bricks; the suite in ruling 4 runs it). Adult E 90: STILL rescued x1 on 48b277994 (b26v/e90-48b277994.jsonl).
+(a) NEXT, in order: (1) adult E 90 (CONFIRMED still rescued x1 on 48b277994; the scratch frames are the same code): read why firsttimer.ts wheelRide steps RIGHT off the bucket onto the jetty (frames 69.3-70.0 s every frame, with
+b26v/frames26s.mts.txt `--t0 69 --t1 71`) and which side the edge wheel's street is on (not read yet); send the lead the cause (stage or bot) BEFORE any
+fix. (2) Stills of the four changed beats, upright and sideways, Normal and Easy (A's second boulder on the shore, P's fourth doorstep
+and its boulder, U's two-floor ladder, C's highest street): to the lead to judge. (3) Ruling 4 exactly as BUILD-26u's (b): ONE
+castBots --proven 2-6, lockall (2-6 the only mover), paint --stages 2-6, the suite + the CI tool line ONCE on the final head, timecheck;
+land on t-build-26 (merge, no force); hash and table to the lead.
 
 ## STEP 0 (ruling 3, A): the three GO'd re-lays + a fourth, sized on scratch copies (model = gen2 sections[].seconds, Normal, seeds 1-100)
 | Brick (design s) | Re-lay | model s, median: base -> new | note |
