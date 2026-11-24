@@ -12,6 +12,7 @@
 // Planted: tools/engine/sideWall.test.ts (a 2-6 face added to main's 2-6 is RED; the stage as built and a body-wide block are GREEN).
 import { footingOf, type FootingInput } from '../../src/game/terrain.ts';
 import type { Platform } from '../../src/game/types.ts';
+import { narrowLook } from '../../src/game/narrowBank.ts';
 
 /** his body's collider (physics.ts / tower.ts BODY_H and engine.ts's 44 px width) */
 export const BODY_H = 48, BODY_W = 44;
@@ -26,13 +27,16 @@ function longestOpen(y0: number, y1: number, spans: Array<readonly [number, numb
   return Math.max(best, y1 - at);
 }
 
-export function sideWalls(platforms: readonly Platform[], f: FootingInput): SideWall[] {
+export function sideWalls(platforms: readonly Platform[], f: FootingInput, drawnBy: (p: Platform, all: readonly Platform[]) => unknown = narrowLook): SideWall[] {
   const solid = platforms.filter((p) => p.type !== 'bouncy' && !p.broken);
   const out: SideWall[] = [];
   for (const p of solid) {
     if (p.height < BODY_H) continue;
     if (footingOf(p, f).drawn !== 'painted-bank') continue;
     if (p.width >= BODY_W) continue;
+    // (R-165.440: a narrow bank the painted ground gives a look, the same decision the screen draws by, narrowBank.ts: a sliver joined
+    // to the bank it continues, or a post on its floor. A test may pass its own decision to plant the drawer's absence)
+    if (drawnBy(p, platforms)) continue;
     const others = solid.filter((q) => q !== p);
     for (const side of ['left', 'right'] as const) {
       const x = side === 'left' ? p.x - 1 : p.x + p.width + 1;
