@@ -1,0 +1,53 @@
+FOOTING [[15,{"drawn":"painted thin piece","bodyBottom":6405}],[17,{"drawn":"painted thin piece","bodyBottom":6405}],[18,{"drawn":"painted thin piece","bodyBottom":6475}],[19,{"drawn":"painted-bank","bodyBottom":null}],[20,{"drawn":"painted-bank","bodyBottom":null}]]
+[
+ {
+  "i": 14,
+  "x": 414,
+  "y": 6381,
+  "w": 348,
+  "h": 24,
+  "type": "solid",
+  "style": "branch",
+  "keys": "id=15"
+ },
+ {
+  "i": 16,
+  "x": 830,
+  "y": 6381,
+  "w": 308,
+  "h": 24,
+  "type": "solid",
+  "style": "branch",
+  "keys": "id=17"
+ },
+ {
+  "i": 17,
+  "x": 762,
+  "y": 6451,
+  "w": 68,
+  "h": 24,
+  "type": "solid",
+  "style": "branch",
+  "keys": "id=18"
+ },
+ {
+  "i": 18,
+  "x": 738,
+  "y": 6381,
+  "w": 24,
+  "h": 94,
+  "type": "solid",
+  "style": "moss_stone",
+  "keys": "id=19"
+ },
+ {
+  "i": 19,
+  "x": 830,
+  "y": 6381,
+  "w": 24,
+  "h": 94,
+  "type": "solid",
+  "style": "moss_stone",
+  "keys": "id=20"
+ }
+]

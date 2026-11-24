@@ -1,3 +1,37 @@
+# BUILD-26s (session 3 of BUILD-26q; t-build-26-wip-26q, head b6a35d7e8): the lead's rulings 1-5. Started 5:09 PM ET 11-24 (by `date`); this box written 5:16 PM ET
+
+## EXACT NEXT STEP
+**For the next session (base: this branch's head). Ruling 1 FAILED ON THE SCREEN: the face does not show.** Stills (b26q3/, frozen
+b6a35d7e8, 2-6 layout 0 = seed 1, the lowest soft pit, Pokey on the near street 40 px before it, Easy and Normal, upright and sideways,
+a wide still and a close cut each): both lips' planks and the catch bough show; under each lip's end there is only the tower's soil
+backdrop. The faces ARE in the engine (faceprobe: ids 19, 20, solid moss_stone 24 x 94 at x 738 and 830, y 6381, Easy). CAUSE
+(terrain.ts footingOf -> 'painted-bank'): a face is 94 px tall, and protoArt.ts bankPainted takes any block 90 px or taller and leaves it
+to the painted ground, which paints it the same soil as the tower's backdrop. So he is stopped by a wall the player cannot see.
+paintcheck passed it (a painted bank counts as painted): a gate gap, not a pass.
+(a) WAIT for the lead's look call (sent with the stills; show first). Options: (1) a rope-lashed post from the inventory (w2.json:
+w1-post-rope-wrapped / w1-post-vine-wrapped, 'post / scaffold', worlds 2,6,10,8: a made thing, like the lashed planks) drawn under the
+lip end at 24 x 94, MY PICK; (2) moss stone drawn as stone (the ruling's words) by the face's own drawer, not the bank painter;
+(3) the lip's plank drawn down to the bough. In every option the collider stays as it is (only the dress changes): the toy, lockall's
+platform rects and castBots' 74/100 stand; re-run lockall (dress) and paintcheck --stages 2-6 after.
+(b) Then stills again, same spots (b26q3/facestills.mjs.txt: `node facestills.mjs <port> <out> 0 0 near`, PW=/opt/node-tools/...),
+judged close and wide, upright and sideways; send the lead the paths.
+(c) Ruling 3, the Normal floor: STEP 0 plan to the lead BY 7:00 PM ET, before any change (which section is added or re-laid in
+w2Arc26.ts, how it changes 2-6.md:43's node string and dealExact's deal, which stages it can touch). Lengthen the route, never slow him.
+(d) Then ruling 4 (adult E 87: the 13 by place and cause), then ruling 5 (landing).
+Proposed countermeasure (lead's call): a face check on the BUILT stage's screen: every collider a player meets side-on must differ from
+the backdrop where it stands (a still pixel check at the soft pit), so 'painted' can never mean 'invisible'.
+
+## Done this box (evidence in b26q3/)
+| step | result | evidence |
+|---|---|---|
+| ruling 1: stills of the face, 2-6 Easy and Normal, upright and sideways, close and wide (frozen worktree b6a35d7e8, D115) | taken, 8 stills; JUDGED: the face is not visible in any of them (viewed: Easy upright close and wide, Normal upright close, Normal sideways close; the other four are the same frames uncut or the same code path). Sideways, the bough is below the screen's bottom from the near street | face-2-6-L0-*.jpg, facestills.mjs.txt |
+| why it is invisible | the faces are solid moss_stone 24 x 94 (ids 19, 20); terrain calls them 'painted-bank' (height 94 >= 90, protoArt.ts bankPainted), so the painted ground paints them as the backdrop's soil | faceprobe-easy-L0-b6a35d7e.txt, faceprobe.mjs.txt |
+| ruling 2: kid Normal's millrace drop (98 -> 93) | NAMED, no second trace (the lead's ruling): the R-165.413 family (the lead's id; not on this branch's ROADMAP.md) (a kid on moving logs: kid N 63 runs a drifting log's length at full speed and off its end, b26r/frames-kidN63-river.txt), located and accepted on World 2 rivers until release 5's design call; the face only changed when he arrives there, so the logs' phase differs. Seeds 14, 30, 32, 61, 63, 76, 84 (base failed there on 30 and 43) | b26r/fails-2-6-bde501f86.txt, b26r/spot-63.txt |
+
+## Unresolved (named plainly)
+- The face is invisible on the screen (above). Nothing ships until it reads as the step's side.
+- Rulings 3, 4, 5 not started in this box.
+
 # BUILD-26r (t-build-26-wip-26q; base t-build-26 40a9c4bd2): THE FACE (the lead's ruling), its toy, lockall, castBots. Started 4:47 PM ET 11-24 (by `date`); this box written 5:06 PM ET
 
 ## EXACT NEXT STEP

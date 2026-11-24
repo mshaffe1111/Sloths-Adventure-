@@ -1,0 +1,15 @@
+const { chromium } = await import(process.env.PW);
+const b = await chromium.launch();
+const ctx = await b.newContext({ viewport: { width: 412, height: 915 } });
+await ctx.addInitScript(() => { try { localStorage.setItem('sloth_difficulty', 'easy'); } catch {} });
+const p = await ctx.newPage();
+await p.goto('http://127.0.0.1:5207/?lessons=off'); await p.waitForTimeout(2500);
+await p.evaluate(() => window.__play('2-6', 0)); await p.waitForTimeout(5000);
+const E = "(typeof window.__engine === 'function' ? window.__engine() : window.__engine)";
+const T = await p.evaluate(async (E) => { const e = eval(E); const t = await import("/src/game/terrain.ts"); const m = t.footingsFor(e.currentStage, e.currentStage.config.worldIndex); return JSON.stringify([15,17,18,19,20].map((id) => [id, m.get(id)])); }, E); console.log("FOOTING", T);
+console.log(await p.evaluate((E) => {
+  const e = eval(E); e.isPaused = true;
+  const hits = e.platforms.map((q, i) => ({ i, q })).filter(({ q }) => q.x < 860 && q.x + q.width > 730 && q.y < 6480 && q.y + q.height > 6375);
+  return JSON.stringify(hits.map(({ i, q }) => ({ i, x: q.x, y: q.y, w: q.width, h: q.height, type: q.type, style: q.style, keys: Object.keys(q).filter((k) => !['x','y','width','height','type','style'].includes(k)).map((k) => k + '=' + (typeof q[k] === 'object' ? '{}' : q[k])).join(' ') })), null, 1);
+}, E));
+await b.close();
