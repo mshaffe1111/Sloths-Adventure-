@@ -97,6 +97,8 @@ code-checked plan (ENGINE-NEEDS.md); "add a level" in one step; every lead keeps
    throw, release 4's branch clean); (b) 2-6's Easy residue (R-165.398) then its list; (c) READY-28 on 2-8's DRAFT by the new LANES rule 2
    (yield, drawcheck, stills both ways judged zoomed, verdicts, met order); (d) R-165.412 (warnings as danger/must, story tips; storyTipScan
    a gate). Ask him the helper count with the go (he chose 3 on 11-23). 2-7 is DONE on his link (v269, 6:21 PM 11-23).
+1a. **THE DAILY TESTER READ (Matt 11-24, R-165.422): the first job of every work day is DATA-DAILY (packet reference/packets/DATA-DAILY.md):
+   the test-site runs since the last read; bots vs players; bot tuning jobs and opportunities from it; three lines to Matt.**
 1b. **CAPACITY (Matt 11-23, R-165.411): 3 helpers from the Wednesday 11-25 usage reset: TWO on pieces ahead (TWO-HOUR-PLAN Waves 1-2, about 45 h each),
    ONE building levels (2-hour jobs). The whole-game schedule: reference/plans/TWO-HOUR-PLAN.md on t-plan-2h f945e2986 (builds one world a week;
    with one builder, the finish moves from Jan 22 to about the end of January).**

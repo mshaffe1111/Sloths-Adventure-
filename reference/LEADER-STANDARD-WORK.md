@@ -39,6 +39,13 @@ Sources: Google Project Oxygen (O'Reilly, Leading Effective Engineering ch. 4; P
 ## The lead's day
 **Start (every session):** laws, lessons, PARTNER, STATUS, this file; the supervisor's last digest; the Day 1 burn-down; set the day's
 three priorities from the plan, not from whatever arrived last.
+**THE DAILY TESTER READ (Matt 11-24 10:50 AM ET, R-165.422: "We should look daily at this and tune bots and see areas of possible
+opportunities"):** the FIRST job of every work day, started with the day's go: DATA-DAILY (analyst, high, 1 h; packet
+reference/packets/DATA-DAILY.md): the test-site runs since the last read (the row it stopped at is in reference/handoffs/analyst.md),
+bots vs players per stage on the same layouts, the gap list ranked, the opportunities (where players quit, die again and again, skip help,
+or love it), and per-tier bot tuning proposals. The lead turns the top gaps into the day's bot-tuning jobs (engine, budgeted) and the top
+opportunities into design or polish items (roadmap rows), and gives Matt three lines in the day's first report: what players did, what the
+bots got wrong, what we change. P-numbers only; nothing personal in the repo. A day with no new runs: the job is 10 minutes and says so.
 **Token math for a handoff (11-15): every step re-reads the whole context, so a member at 60% costs ~2x a fresh one per step; past ~55% real with more than ~15 steps left, hand off to a fresh member at an exact step.**
 **Every packet's gate step (D96, 11-20):** names 'THE FULL SET' from reference/methods/gates.md (every gates.yml run line incl. coveragecheck, registrycheck, tipwalk, paintcheck 0-2, timecheck; the suite in shards; lockall/funcheck/castBots for levels), never only 'the CLAUDE.md list'.
 **Packets and context (D90, 11-19): a fresh member is at 270-350k within 25 minutes, so the 400k box leaves 50-130k of work. Continuation packets read only the EXACT NEXT STEP section of the stopped member's REPORT (sed between its heading and the next '## '); every packet says: judge stills cropped to the part judged, gate output to files, summary lines only; a job holding both a stills pass and the full gate list is split up front (look member, then gates member).** **A new gate (D88): its packet plants the repo's look-alike shapes (stage ids, versions, seeds), and before approval it is run over every open branch, not one. A gate that cries wolf gets loosened; a gate that never ran on real text is unproven.**
