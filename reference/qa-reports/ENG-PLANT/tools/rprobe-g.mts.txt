@@ -1,0 +1,21 @@
+// usage: tsx rprobe.mts <tree> <stage> <bot> <setting> <seed> <x0> <x1>: vineFromLog's calls with x in [x0, x1]: result, run-up judge
+const [T, stage, bot, setting, seed, x0, x1] = process.argv.slice(2);
+await import(`${T}/src/game/headlessDom.ts`);
+const { CAST_BOTS } = await import(`${T}/tools/inspect/castBots.ts`);
+const { firstTimer, FirstTimerRun } = await import(`${T}/tools/inspect/firsttimer.ts`);
+const who = CAST_BOTS[bot][setting];
+const P: any = FirstTimerRun.prototype; const orig = P.vineFromLog, oru = P.runUpCatches; let last = '';
+let ru: any = null;
+P.runUpCatches = function (...a: any[]) { const r = oru.apply(this, a); ru = r; return r; };
+P.vineFromLog = function (p: any, dir: any, t: number) {
+  ru = null;
+  const r = orig.call(this, p, dir, t);
+  if (p.x >= +x0 && p.x <= +x1) {
+    const s = `${r ? JSON.stringify(r) : 'null'} ru ${ru} pend ${this.pending ? (this.pending.still ? 'still' : 'run') : '-'}`;
+    if (s !== last) console.log(`t ${t.toFixed(2)} x ${p.x.toFixed(0)} vx ${p.vx.toFixed(0)} on ${this.sim.standingOn} -> ${s}`);
+    last = s;
+  }
+  return r;
+};
+const r = firstTimer(stage, Number(seed), who, { cap: 1200, dotSetting: true });
+console.log('end', r.end, 'rescues', (r as any).rescues);

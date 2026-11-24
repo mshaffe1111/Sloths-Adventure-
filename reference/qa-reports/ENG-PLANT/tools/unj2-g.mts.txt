@@ -1,0 +1,16 @@
+// usage: tsx unj2.mts <tree> <stage> <bot> <setting> <seed> <x0> <x1>: each startJump the one-gate check refused in [x0,x1]: t, x, and the line that called decide for it
+const [T, stage, bot, setting, seed, x0, x1] = process.argv.slice(2);
+await import(`${T}/src/game/headlessDom.ts`);
+const { CAST_BOTS } = await import(`${T}/tools/inspect/castBots.ts`);
+const ft = await import(`${T}/tools/inspect/firsttimer.ts`);
+const P = (ft.FirstTimerRun as any).prototype; const os = P.startJump, od = P.decide; const seen = new Map<string, number>();
+const line = (k: number) => ((new Error().stack ?? '').split('\n')[k].match(/firsttimer\.ts:(\d+)/) ?? [, '?'])[1];
+P.decide = function (...a: any[]) { this.__from = line(3); return od.apply(this, a); };
+P.startJump = function (...a: any[]) {
+  const before = ft.UNJUDGED.n; const out = os.apply(this, a); const x = this.sim.p.x;
+  if (ft.UNJUDGED.n > before && x >= +x0 && x <= +x1) { const k = `decide@${this.__from} start@${line(3)}`; seen.set(k, (seen.get(k) ?? 0) + 1); if ((seen.get(k) ?? 0) <= 2) console.log(`t ${this.t.toFixed(2)} x ${x.toFixed(0)} ${k}`); }
+  this.__from = '-';
+  return out;
+};
+const r: any = ft.firstTimer(stage, Number(seed), CAST_BOTS[bot][setting], { cap: 1200, dotSetting: true });
+console.log('end', r.end, 'rescues', r.rescues, 'UNJUDGED', ft.UNJUDGED.n, JSON.stringify([...seen]));

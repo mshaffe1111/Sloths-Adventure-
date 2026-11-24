@@ -1,0 +1,18 @@
+// usage: tsx iprobe.mts <tree> <stage> <bot> <setting> <seed> <t0> <t1>: intend's pad each frame in [t0, t1] with his state
+const [T, stage, bot, setting, seed, t0, t1] = process.argv.slice(2);
+await import(`${T}/src/game/headlessDom.ts`);
+const { CAST_BOTS } = await import(`${T}/tools/inspect/castBots.ts`);
+const { firstTimer, FirstTimerRun } = await import(`${T}/tools/inspect/firsttimer.ts`);
+const who = CAST_BOTS[bot][setting];
+const P: any = FirstTimerRun.prototype; const orig = P.intend;
+P.intend = function () {
+  const r = orig.call(this);
+  const p = this.sim.p, t = this.t;
+  if (t >= +t0 && t <= +t1) {
+    const on = this.sim.platforms.find((q: any) => q.id === this.sim.standingOn);
+    console.log(`t ${t.toFixed(2)} x ${p.x.toFixed(0)} y ${p.y.toFixed(0)} vx ${p.vx.toFixed(0)} g ${p.grounded ? 1 : 0} on ${this.sim.standingOn}${on ? ` [${on.x.toFixed(0)}-${(on.x + on.width).toFixed(0)}]` : ''} pend ${this.pending ? JSON.stringify(this.pending) : '-'} jump ${this.jump ? 1 : 0} ru ${this.runUp ? 1 : 0} -> ${JSON.stringify(r)}`);
+  }
+  return r;
+};
+const r = firstTimer(stage, Number(seed), who, { cap: 1200, dotSetting: true });
+console.log('end', r.end, 'rescues', (r as any).rescues);

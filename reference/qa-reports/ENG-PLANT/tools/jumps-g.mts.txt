@@ -1,0 +1,15 @@
+// usage: tsx jumps.mts <tree> <stage> <bot> <setting> <seed>: every frame he is moved 150+ px at once (a set-down or a rescue): t, from, to
+const [T, stage, bot, setting, seed] = process.argv.slice(2);
+await import(`${T}/src/game/headlessDom.ts`);
+const { CAST_BOTS } = await import(`${T}/tools/inspect/castBots.ts`);
+const { firstTimer, FirstTimerRun } = await import(`${T}/tools/inspect/firsttimer.ts`);
+const P: any = FirstTimerRun.prototype; const orig = P.intend; let lx = NaN, lr = 0;
+P.intend = function () {
+  const p = this.sim.p;
+  const res = (this as any).rescues ?? (this as any).rescueN ?? 0;
+  if (Math.abs(p.x - lx) > 150) console.log(`t ${this.t.toFixed(2)} ${lx.toFixed(0)} -> ${p.x.toFixed(0)}`);
+  lx = p.x;
+  return orig.call(this);
+};
+const r: any = firstTimer(stage, Number(seed), CAST_BOTS[bot][setting], { cap: 1200, dotSetting: true });
+console.log('end', r.end, 'rescues', r.rescues, 'stuck', JSON.stringify(r.stuck));

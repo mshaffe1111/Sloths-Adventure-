@@ -1,0 +1,21 @@
+// usage: tsx jprobe.mts <tree> <stage> <bot> <setting> <seed> <t0> <t1>: on each vineFromLog call in [t0,t1]: per run lag, the best k and how many jump lags catch there (runPress), and why a k stopped
+const [T, stage, bot, setting, seed, t0, t1] = process.argv.slice(2);
+await import(`${T}/src/game/headlessDom.ts`);
+const { CAST_BOTS } = await import(`${T}/tools/inspect/castBots.ts`);
+const { firstTimer, FirstTimerRun } = await import(`${T}/tools/inspect/firsttimer.ts`);
+const who = CAST_BOTS[bot][setting];
+const P: any = FirstTimerRun.prototype; const orc = P.runUpCatches, orp = P.runPress;
+let tally: any = null;
+P.runPress = function (...a: any[]) { const r = orp.apply(this, a); if (tally) { const k = `${a[2].toFixed(2)}`; (tally[k] ??= []).push(r ? 1 : 0); } return r; };
+P.runUpCatches = function (p: any, dir: any, here: any, v: any, lags: number[], carry: number, hold: number, clock: number, t: number, running: boolean) {
+  tally = t >= +t0 && t <= +t1 ? {} : null;
+  const r = orc.call(this, p, dir, here, v, lags, carry, hold, clock, t, running);
+  if (tally) {
+    const best = Object.entries(tally).map(([s, xs]: any) => [s, xs.reduce((a: number, b: number) => a + b, 0), xs.length]).filter((e: any) => e[1] > 0);
+    console.log(`t ${t.toFixed(2)} x ${p.x.toFixed(0)} log [${here.x.toFixed(0)}-${(here.x + here.width).toFixed(0)}] x1 ${here.drift.x1} tail ${here.drift.tail ?? 0} vine ${v.x} lags ${lags.map((l: number) => l.toFixed(3)).join(',')} run ${running} -> ${r}; s:hits/tries ${best.slice(0, 8).map((e: any) => `${e[0]}:${e[1]}/${e[2]}`).join(' ')}`);
+  }
+  tally = null;
+  return r;
+};
+const r = firstTimer(stage, Number(seed), who, { cap: 1200, dotSetting: true });
+console.log('end', r.end, 'rescues', (r as any).rescues);

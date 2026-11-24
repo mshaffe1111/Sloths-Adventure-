@@ -1,3 +1,50 @@
+# ENG-PLANT-g (ENG-PLANT-c session 5, started 5:49 PM ET 11-24 by `date`; this section written 6:08 PM ET 11-24 by `date`): hand-over (LANES 3b box)
+
+Engine (bots), Opus 5.5 xhigh. Lead: session_01FhBbYN2CVHnFXg7XzqKXpM. Candidates on origin/release-0.10.3-wip-plant-c, EACH pushed and
+`git ls-remote`-confirmed the moment it existed (D134); NOT on release-0.10.3 (D117). Known flips = the 10 D132 rows (main passes all 10).
+| cand | hash | what | known flips |
+|---|---|---|---|
+| c13 | d29bd7065 | run-up judge (SKILLS.runUp) rebuilt from packet item 4, read as 3 run-press lags x 3 jump lags | 8/10 (2-4 adult N 6 rescued 2 at 10,699; child N 39 set down 8x at 23,851) |
+| c14 | bb5325f24 | one plan (run k frames, then press) flown at each of his 3 lags, the lag on both presses (c13 got 5/6 at best at t 56.40-56.47) | 8/10 (adult N 6 crosses the tailed river by a judged run-up; rescued 1 at the 24,234 liana; child N 39 as c13) |
+| c15 | 426669c52 | one-gate exception for intend's climb line (SUPERSEDED by c17, the lead's steer: no exceptions per kind) | 9/10 |
+| c16 | e095b5cea | run-up starts only when the steer-held-now plan catches too (no run/stand/run flicker); a run-up given up = meant stop, pulled back inside runOut | 10/10 |
+| c17 | dd3c3bc00 | **one-gate check INVERTED** (lead's steer, D133): refuses ONLY an unjudged hop off a log that, flown as drawn (gateSees, margin 0), comes down on another log that goes under before it can hand him on (no floor within 80 px of its run's end, c4's handed check); every other press as main; c15's exception gone | 10/10 |
+| **c18** | **fca50fc81** (HEAD) | **ruling 2**: landed on a log running his way, he rides (stopMeant) instead of intend's default walk while no bank is ahead (floor within 80 px of the log's front); never into a rescue (c4's handed check, else the walk back to the log's rear in time) | **10/10** (2-4 adult N 6/8/24/32: 0 lives each) |
+
+Toys on the frozen trees: ruling 2 = 2-1 adult E 5: RED on c17 (set down 3x at 14,800, rescued), GREEN on c18. Inverted gate = 2-4 child N 39:
+RED on c14 (17 refused climb presses on logs #103-#105, x 23,400; walked off the front; set down 8x, rescued), GREEN on c15/c17/c18.
+Run-up = 2-4 adult N 6: rescued at 10,699 on c12 (no run-up), crosses on c14+ by a judged run-up (t 63.57 x 10,627, press 63.67).
+
+**pacerLay (2-7, shared gate) is RED, and was RED before this session**: `npx tsx --test src/game/gen2/pacerLay.test.ts`, failing tests by number:
+c4 6b5f43da0 {4,21,22,23}; c12 db9ef7073 {6,20,22,23}; c16 {6,20,22,23}; c17 {6,8,20,22,23}; **c18 {4,8,10,21,22,23} (6 of 23)**. 22, 23 (the
+planted 'log under the lip boarded' and 'racing hop lands where judged') fail on EVERY candidate since c4; the rest are 'the careful middle
+player beats the boat' seeds shuffling (c18: middle N 1 118.5 s vs 115.91; N 3 141.3 vs 113.66; E 1 110 vs 108.37; post N 5 131.5 vs 127.7).
+Outputs: data/g/pacerLay-c<n>.txt. hopJudged NOT run. Main's pacerLay NOT run (never ran it; a 25 s test, not a castBots row).
+
+## EXACT NEXT STEP (session 6)
+1. Setup: `npm ci --legacy-peer-deps`; freeze with tools/freeze.sh.txt (its `cd` = your checkout; keep src/game/gen2/proven writable).
+   Base: **c18 fca50fc81**. Messages to the lead carry no clock times.
+2. Run pacerLay on origin/main once (frozen; 25 s): is it green there? If main is green, pacerLay's reds are a branch regression
+   since c4 (D132/D118 shape): bisect c4's base vs main with the 2-7 race path in mind. Lead: c5-c16's gate refused the race block's
+   press off a log (`startJump(dir, this.jumpFor(...))`, no gateHop/pressJudged; firsttimer.ts race block 'raceLegal && (reach || ...)').
+   Then hopJudged (`npx tsx --test tools/inspect/hopJudged.test.ts`) on c18. Send the lead both results BEFORE the wide sample (ask).
+3. WIDE SAMPLE on c18 (D133): `npx tsx tools/inspect/castBots.ts --stage <st> --seeds 1-10 --bots kid,adult,child,middle,expert
+   --setting both --par 2 --rows <out>/c18-<st>-w.jsonl` for 2-1, 2-2, 2-4 (two at most at once; about 10 s a row); compare with
+   data/c/main-<st>.jsonl at seeds 1-10 (data/c/cmp3.py.txt; BAR = adult, child, middle, expert): ZERO bar PASS -> FAIL; trace every
+   moved row (tools/*-g.mts.txt: rprobe = vineFromLog/run-up per frame, iprobe2 = intend's pad changes, unj2 = refused presses by the
+   decide line, jumps = set-downs/rescues, jprobe = the run-up judge's hits per run length).
+4. Then the full rows (tools/rows-d.sh.txt) 2-1, 2-2, 2-4, then 2-5, 2-7 (x40 29/40, list 69/100), 1-4; then the toys into
+   riverRide.test.ts (each way, as above) + the existing three; plants; riverRide + firsttimer tests; CI tool line 0 fail; tierBots 9/9;
+   timecheck + roadmapcheck; merge into release-0.10.3 (no force).
+5. Risks to read in the sample: c17 now lets main's unjudged presses off a log through again (all but the sinker case), so 2-1's and
+   2-7's moved rows may move back; c17's refusal happens after the hop's draws (a refused press uses draws; vs main the stream differs
+   anyway); c18's ride is only at intend's last line (the default walk) and ends when he leaves that log.
+Lessons applied: D134 (6 candidates, each pushed + ls-remote), D115 (every run on a chattr-frozen worktree), D119 (no heredoc in a
+commit chain), D128 (times from `date`), D133 (gate inverted per the lead's steer; known flips before the sample), D118 (pacerLay read
+on the base, not carried). Owned miss: my first flip run used a shell `&` inside a background command; killed within a minute,
+relaunched as two run_in_background lanes; no result from it was used.
+Data: data/g/flip-<stage>-<bot>-<setting>-c<13..18>.jsonl; data/g/toy-2-1-adult-easy-5-c17|c18.jsonl; data/g/pacerLay-c<4,12,16,17,18>.txt.
+
 # ENG-PLANT-e (ENG-PLANT-c session 3, started 5:14 PM ET 11-24 by `date`; this section written 5:34 PM ET by `date`): hand-over (LANES 3b box)
 
 Engine (bots), Opus 5.5 xhigh. Lead: session_01FhBbYN2CVHnFXg7XzqKXpM. Candidates on origin/release-0.10.3-wip-plant-c (NOT on
