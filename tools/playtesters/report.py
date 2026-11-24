@@ -355,6 +355,43 @@ def sections(runs):
     return findings
 
 
+def stages_overview(runs):
+    """Every stage that is not 1-1 (DATA-1124, R-165.421): per stage, setting and player, runs, finishes, play time, falls and incidents.
+    A fall is a drop of 150 px or more from the highest point since the last footing (ground or climb) to the next footing: on a climb
+    that is the cost a player pays, and no softFall or lostLife line records it on Easy. Section ids are checked against height: when a
+    stage's runs cover 3,000 px of height but log 3 ids or fewer, the ids follow x only and places must be read by height (1-4, 11-24)."""
+    rs = [r for r in runs if r['stage'] != '1-1']
+    if not rs:
+        return
+    print('STAGES (every stage but 1-1; places on a climb by height, y grows downward)')
+    for key in sorted({(r['stage'], r['mode']) for r in rs}):
+        for who in sorted({r['who'] for r in rs if (r['stage'], r['mode']) == key}, key=lambda w: int(w[1:])):
+            grp = [r for r in rs if (r['stage'], r['mode']) == key and r['who'] == who]
+            for r in grp:
+                P = [m for m in r['m'] if m[0] == 'p']
+                ys = [m[3] for m in P]
+                falls, top = [], None
+                for m in P:
+                    st = str(m[6])[:1] if len(m) > 6 else ''
+                    if top is None or m[3] < top:
+                        top = m[3]
+                    if st in ('g', 'c'):
+                        if m[3] - top >= 150:
+                            falls.append(m[3] - top)
+                        top = m[3]
+                ids = {sl['id'] for sl in r['slices']}
+                span = (max(ys) - min(ys)) if ys else 0
+                inc = C()
+                for sl in r['slices']:
+                    inc['life'] += len(sl['life']); inc['soft'] += sl['soft']; inc['hurt'] += sl['hurt']
+                play = sum(sl['dur'] for sl in r['slices'])
+                fin = f"finish {r['finish'][1]}s" if r['finish'] else f"{r['end']}"
+                print(f"  {key[0]} {key[1]:6} {who:4} seed {r['seed']:>6}  {fin:12} play {play:5.0f}s  falls>=150px {len(falls):3} "
+                      f"({sum(falls):6.0f} px)  lives {inc['life']} put-backs {inc['soft']} hurts {inc['hurt']}  y {min(ys, default=0)}..{max(ys, default=0)}"
+                      + ('  SECTION IDS FOLLOW X ONLY (%d ids over %d px of height)' % (len(ids), span) if span >= 3000 and len(ids) <= 3 else ''))
+    print()
+
+
 def stretches(runs):
     """the same, folded by the plain words the survey offers (one stretch spans several layout pieces)"""
     for mode in ('normal', 'easy'):
@@ -978,7 +1015,7 @@ def steering_of(r):
          'climbMs': [], 'climbSpeed': []}
     cur, since, last_dir, let_go = None, None, None, None
     fingers, last_f = {}, None
-    still_at, duck_at, climb_at = None, None, None
+    still_at, duck_at, climb_at, prev_c = None, None, None, None
     for m in r['m']:
         k, t = m[0], m[1]
         if k == 'd':
@@ -1021,10 +1058,18 @@ def steering_of(r):
                 still_at = None
             if st == 'c':
                 climb_at = t if climb_at is None else climb_at
-                o['climbSpeed'].append(abs(m[5]))
-            elif climb_at is not None:
-                o['climbMs'].append(t - climb_at)
-                climb_at = None
+                # the p line's vy reads 0 on a climb (DATA-1124: all 4,836 of 1-4's climb lines in the 11-24 window), so the speed is the climb's own dy/dt
+                # between two climb lines under 600 ms apart; vy is used only where the recorder filled it
+                if m[5]:
+                    o['climbSpeed'].append(abs(m[5]))
+                elif prev_c and 0 < t - prev_c[0] <= 600:
+                    o['climbSpeed'].append(abs(m[3] - prev_c[1]) / ((t - prev_c[0]) / 1000))
+                prev_c = (t, m[3])
+            else:
+                prev_c = None
+                if climb_at is not None:
+                    o['climbMs'].append(t - climb_at)
+                    climb_at = None
     return o
 
 
@@ -1164,6 +1209,10 @@ def self_test():
     slice_run(ro)
     slice_run(rn)
     assert ro['slices'] == rn['slices'] and ro['end'] == rn['end'], (ro['slices'], rn['slices'])
+    # DATA-1124: a climb's p lines carry vy 0; the speed comes from dy/dt (300 px up in 1 s = 300 px/s), and the spell's length is kept
+    rc = {'m': [['p', 0, 50, 1000, 0, 0, 'c/U'], ['p', 500, 50, 850, 0, 0, 'c/U'], ['p', 1000, 50, 700, 0, 0, 'c/U'], ['p', 1100, 50, 700, 0, 0, 'g']]}
+    so = steering_of(rc)
+    assert so['climbSpeed'] == [300.0, 300.0] and so['climbMs'] == [1100], so
     print('self-test passed')
 
 
@@ -1201,6 +1250,7 @@ def main(argv):
     moves(runs)
     teaching(runs)
     ranking(findings)
+    stages_overview([r for r in runs_of(sessions, pseud) if not delta or (parse_arrived(r['last']) or datetime.min) > delta])
     if prof:
         profiles(sessions, [r for r in runs_of(sessions, pseud) if r['stage'] == '1-1'], pseud, prof)
 

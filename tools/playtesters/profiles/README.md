@@ -97,3 +97,9 @@ the same stroke numbers: how a player's touch changed.
 
 ## survey (counts only)
 `<question>=<answer>`: the v2 survey's fixed choices (fun, long, knew, tips, next, hard). The free text (`note`, `lookedNote`) was never read out.
+
+## window-1124.json (DATA-1124, R-165.421): an addendum, not a rebuild
+The 11-23..11-24 window (Sessions rows 5700-5996, build 0.10.2): P24 (expert) on 1-2 and 1-5 Normal, P27 (child) on 1-4 Easy, 5 runs,
+no 1-1 and no World 2, so the files above are unchanged. It holds the runs (finish, play time, falls of 150 px or more, the stall band
+by height on the climb), each player's window numbers (jump hold, second press, punches, misreads, touch, steering with the climb
+speed from dy/dt) and the 36 castBots rows on the same variants. Fold it into players/ and tiers/ at the next whole-tab rebuild.
