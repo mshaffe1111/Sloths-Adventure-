@@ -1,0 +1,220 @@
+TAP version 13
+# Subtest: the fixture: one deep log river, rolled clean
+ok 1 - the fixture: one deep log river, rolled clean
+  ---
+  duration_ms: 70.358517
+  type: 'test'
+  ...
+# Subtest: middle, normal: rides the logs across the river and reaches the shrine
+ok 2 - middle, normal: rides the logs across the river and reaches the shrine
+  ---
+  duration_ms: 960.329128
+  type: 'test'
+  ...
+# Subtest: middle, easy: rides the logs across the river and reaches the shrine
+ok 3 - middle, easy: rides the logs across the river and reaches the shrine
+  ---
+  duration_ms: 717.956555
+  type: 'test'
+  ...
+# Subtest: child, normal: rides the logs across the river and reaches the shrine
+ok 4 - child, normal: rides the logs across the river and reaches the shrine
+  ---
+  duration_ms: 1608.554117
+  type: 'test'
+  ...
+# Subtest: child, easy: rides the logs across the river and reaches the shrine
+ok 5 - child, easy: rides the logs across the river and reaches the shrine
+  ---
+  duration_ms: 1260.048262
+  type: 'test'
+  ...
+# Subtest: planted: with the ride skill off, the middle and child bots drown in the river
+not ok 6 - planted: with the ride skill off, the middle and child bots drown in the river
+  ---
+  duration_ms: 2841.850626
+  type: 'test'
+  location: '/home/user/fz-head/tools/inspect/riverRide.test.ts:107:1'
+  failureType: 'testCodeFailure'
+  error: 'with no ride skill every tier still crossed within 2 lives: middle normal: ended shrine, at the river {"id":"toy-one-river","lives":1,"putbacks":0,"seconds":14.5} (at most 2 lives), stuck []; middle easy: ended shrine, at the river {"id":"toy-one-river","lives":0,"putbacks":0,"seconds":8} (at most 2 lives), stuck []; child normal: ended shrine, at the river {"id":"toy-one-river","lives":0,"putbacks":0,"seconds":13} (at most 2 lives), stuck []; child easy: ended shrine, at the river {"id":"toy-one-river","lives":0,"putbacks":0,"seconds":11.5} (at most 2 lives), stuck []'
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: true
+  actual: false
+  operator: '=='
+  stack: |-
+    TestContext.<anonymous> (/home/user/fz-head/tools/inspect/riverRide.test.ts:117:12)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: middle, normal: against the flow (W2_RIVERS.back), hops log to log off each front end and reaches the shrine
+ok 7 - middle, normal: against the flow (W2_RIVERS.back), hops log to log off each front end and reaches the shrine
+  ---
+  duration_ms: 581.239372
+  type: 'test'
+  ...
+# Subtest: middle, normal: the long log (W2_RIVERS.long, laid deep) rides him in and hands him onto the far bank
+ok 8 - middle, normal: the long log (W2_RIVERS.long, laid deep) rides him in and hands him onto the far bank
+  ---
+  duration_ms: 493.241519
+  type: 'test'
+  ...
+# Subtest: middle, easy: against the flow (W2_RIVERS.back), hops log to log off each front end and reaches the shrine
+ok 9 - middle, easy: against the flow (W2_RIVERS.back), hops log to log off each front end and reaches the shrine
+  ---
+  duration_ms: 562.296097
+  type: 'test'
+  ...
+# Subtest: middle, easy: the long log (W2_RIVERS.long, laid deep) rides him in and hands him onto the far bank
+ok 10 - middle, easy: the long log (W2_RIVERS.long, laid deep) rides him in and hands him onto the far bank
+  ---
+  duration_ms: 520.684466
+  type: 'test'
+  ...
+# Subtest: child, normal: against the flow (W2_RIVERS.back), hops log to log off each front end and reaches the shrine
+ok 11 - child, normal: against the flow (W2_RIVERS.back), hops log to log off each front end and reaches the shrine
+  ---
+  duration_ms: 1148.791051
+  type: 'test'
+  ...
+# Subtest: child, normal: the long log (W2_RIVERS.long, laid deep) rides him in and hands him onto the far bank
+ok 12 - child, normal: the long log (W2_RIVERS.long, laid deep) rides him in and hands him onto the far bank
+  ---
+  duration_ms: 1059.937642
+  type: 'test'
+  ...
+# Subtest: child, easy: against the flow (W2_RIVERS.back), hops log to log off each front end and reaches the shrine
+ok 13 - child, easy: against the flow (W2_RIVERS.back), hops log to log off each front end and reaches the shrine
+  ---
+  duration_ms: 737.734711
+  type: 'test'
+  ...
+# Subtest: child, easy: the long log (W2_RIVERS.long, laid deep) rides him in and hands him onto the far bank
+ok 14 - child, easy: the long log (W2_RIVERS.long, laid deep) rides him in and hands him onto the far bank
+  ---
+  duration_ms: 659.207668
+  type: 'test'
+  ...
+# Subtest: planted: with the handed-to-the-bank skill off, the middle on Normal hops at the water off the long log and drowns over the bar
+not ok 15 - planted: with the handed-to-the-bank skill off, the middle on Normal hops at the water off the long log and drowns over the bar
+  ---
+  duration_ms: 510.623547
+  type: 'test'
+  location: '/home/user/fz-head/tools/inspect/riverRide.test.ts:145:1'
+  failureType: 'testCodeFailure'
+  error: 'handed off, the middle on Normal still crossed within 1: handed 0, ended shrine, at the river {"id":"toy-one-river","lives":0,"putbacks":0,"seconds":11} (at most 2 lives), stuck []'
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: true
+  actual: false
+  operator: '=='
+  stack: |-
+    TestContext.<anonymous> (/home/user/fz-head/tools/inspect/riverRide.test.ts:149:12)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: 2-1, against the flow and up the far bank on: the adult on Normal (12), the child on Normal (4, 23, 40) and the middle on Normal (26) cross clean
+not ok 16 - 2-1, against the flow and up the far bank on: the adult on Normal (12), the child on Normal (4, 23, 40) and the middle on Normal (26) cross clean
+  ---
+  duration_ms: 2023.370198
+  type: 'test'
+  location: '/home/user/fz-head/tools/inspect/riverRide.test.ts:207:1'
+  failureType: 'testCodeFailure'
+  error: 'adult normal seed 12: shrine, rescues 1, lives 3, stuck [{"x":25624,"what":"set down here 3 times"}]'
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: true
+  actual: false
+  operator: '=='
+  stack: |-
+    TestContext.<anonymous> (/home/user/fz-head/tools/inspect/riverRide.test.ts:210:12)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: planted: with the against-the-flow skill off, the adult on Normal is rescued at 2-1's back river (12) and the child and the middle on Normal lose 5+ more lives (child 4, 23; middle 26)
+not ok 17 - planted: with the against-the-flow skill off, the adult on Normal is rescued at 2-1's back river (12) and the child and the middle on Normal lose 5+ more lives (child 4, 23; middle 26)
+  ---
+  duration_ms: 9480.065615
+  type: 'test'
+  location: '/home/user/fz-head/tools/inspect/riverRide.test.ts:213:1'
+  failureType: 'testCodeFailure'
+  error: 'upstream off, -1 more lives (at least 5): on child normal seed 4: shrine, rescues 0, lives 2, stuck []; off child normal seed 4: shrine, rescues 0, lives 1, stuck []'
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: true
+  actual: false
+  operator: '=='
+  stack: |-
+    <anonymous> (/home/user/fz-head/tools/inspect/riverRide.test.ts:223:14)
+    Array.forEach (<anonymous>)
+    TestContext.<anonymous> (/home/user/fz-head/tools/inspect/riverRide.test.ts:221:20)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: planted: with the up-the-far-bank skill off, the child on Normal loses 5+ more lives on 2-1 and reaches the both-ways far bank 2+ s later (40)
+not ok 18 - planted: with the up-the-far-bank skill off, the child on Normal loses 5+ more lives on 2-1 and reaches the both-ways far bank 2+ s later (40)
+  ---
+  duration_ms: 5969.711566
+  type: 'test'
+  location: '/home/user/fz-head/tools/inspect/riverRide.test.ts:229:1'
+  failureType: 'testCodeFailure'
+  error: 'bankUp off, 1 more lives (at least 5): on child normal seed 40: shrine, rescues 0, lives 1, stuck []; off child normal seed 40: shrine, rescues 0, lives 2, stuck []'
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: true
+  actual: false
+  operator: '=='
+  stack: |-
+    <anonymous> (/home/user/fz-head/tools/inspect/riverRide.test.ts:235:14)
+    Array.forEach (<anonymous>)
+    TestContext.<anonymous> (/home/user/fz-head/tools/inspect/riverRide.test.ts:233:18)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: in the real engine: on a log flowing AT him, a held hop the upstream gate refuses is aimed again after his reaction, never held for the whole ride back (SKILLS.reAim; RED with it off)
+ok 19 - in the real engine: on a log flowing AT him, a held hop the upstream gate refuses is aimed again after his reaction, never held for the whole ride back (SKILLS.reAim; RED with it off)
+  ---
+  duration_ms: 1224.500304
+  type: 'test'
+  ...
+# Subtest: SKILLS.reAim keeps the honest aim (D121, the lead's two conditions): on a log a re-draw never comes inside his stopReact, and the press is decided on the aimed hop alone, never its drawn thumb noise
+ok 20 - SKILLS.reAim keeps the honest aim (D121, the lead's two conditions): on a log a re-draw never comes inside his stopReact, and the press is decided on the aimed hop alone, never its drawn thumb noise
+  ---
+  duration_ms: 1082.385915
+  type: 'test'
+  ...
+# Subtest: SKILLS.reAim is the CHILD bot's alone (ENG-BOT27b, the lead's ruling 11-23): with it on, every other cast bot holds the refused aim exactly as with it off, frame for frame (RED if the switch leaks past FirstTimer.reAim)
+ok 21 - SKILLS.reAim is the CHILD bot's alone (ENG-BOT27b, the lead's ruling 11-23): with it on, every other cast bot holds the refused aim exactly as with it off, frame for frame (RED if the switch leaks past FirstTimer.reAim)
+  ---
+  duration_ms: 6556.335991
+  type: 'test'
+  ...
+1..21
+# tests 21
+# suites 0
+# pass 16
+# fail 5
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 44972.678129
