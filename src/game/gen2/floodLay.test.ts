@@ -17,20 +17,26 @@ import type { SectionTemplate, WorldKit } from './types.ts';
 const ID = '2-96';
 /** the toy's rows: the ride river (the home leg's first) is the low road, the twin rises */
 const RIVERS = { ...W2_RIVERS, ride: { ...W2_RIVERS.ride, flood: 'close' as const }, twin: { ...W2_RIVERS.twin, flood: 'rise' as const } };
-/** the ride crossing with a HIGH ROAD: a WALL-STEP on the near bank's end (a block FLOOD_STEP px tall, its far side at the water's edge:
- *  he walks into it and climbs, flood.ts highRoad's first piece), then a porch level off its top, over the whole river, ending over the far
- *  bank. (A porch alone, FLOOD_STEP px over the bank's end, is a bare edge hop up: refused by name, ENG-28 session 4's widened rule) */
-const withPorch = (porch: boolean): SectionTemplate[] => HOME_BRICKS.map((b) => (b.id !== 'home-practise-ride' || !porch ? b : {
+/** the ride crossing with a HIGH ROAD and its FORK (the lead's ruling, ENG-28 session 7): a WALL-STEP on the near bank's end (a block
+ *  FLOOD_STEP px tall, `fork.w` wide, its far side at the water's edge: he walks into it and climbs, flood.ts highRoad's first piece), a
+ *  `fork.gap` px gap over the water's first px (the low road's way down: he falls through it), then a porch level with W's top over the rest of
+ *  the river, ending over the far bank. The passing shape is W 150 + gap 60 (forkFaults: W at least the widest tier's landing + run-up,
+ *  86 + 61; the gap his 44 px width up to FLOOD_HOP). (A porch alone, FLOOD_STEP px over the bank's end, is a bare edge hop up: refused by
+ *  name, ENG-28 session 4's widened rule) */
+const FORK = { w: 150, gap: 60 };
+/** toyHome's near bank (bank('near', 280)): the porch's place past its end is a share of it */
+const NEAR_W = 280;
+const withPorch = (porch: boolean, fork = FORK): SectionTemplate[] => HOME_BRICKS.map((b) => (b.id !== 'home-practise-ride' || !porch ? b : {
   ...b, pieces: [...b.pieces,
-    { key: 'stand', shape: 'block', w: [60, 60], place: { kind: 'on', on: 'near', at: [1, 1], h: [FLOOD_STEP, FLOOD_STEP] }, style: 'moss_stone' },
-    { key: 'porch', shape: 'branch', w: [880, 880], place: { kind: 'over', on: 'near', at: [1, 1], dy: [-FLOOD_STEP, -FLOOD_STEP] }, style: 'log', main: false }],
+    { key: 'stand', shape: 'block', w: [fork.w, fork.w], place: { kind: 'on', on: 'near', at: [1, 1], h: [FLOOD_STEP, FLOOD_STEP] }, style: 'moss_stone' },
+    { key: 'porch', shape: 'branch', w: [880, 880], place: { kind: 'over', on: 'near', at: [1 + fork.gap / NEAR_W, 1 + fork.gap / NEAR_W], dy: [-FLOOD_STEP, -FLOOD_STEP] }, style: 'log', main: false }],
 }));
-const floodKit = (porch: boolean, flood?: FloodRow): WorldKit => {
+const floodKit = (porch: boolean, flood?: FloodRow, fork = FORK): WorldKit => {
   const k = homeKit(ID, HOME_CODE);
   const briefs = k.manifest.graphs!.briefs!;
-  return { ...k, manifest: { ...k.manifest, rivers: RIVERS, sections: [k.manifest.sections[0], ...withPorch(porch)], graphs: { ...k.manifest.graphs!, briefs: { [ID]: { ...briefs[ID], pacer: undefined, ...(flood ? { flood } : {}) } } } } };
+  return { ...k, manifest: { ...k.manifest, rivers: RIVERS, sections: [k.manifest.sections[0], ...withPorch(porch, fork)], graphs: { ...k.manifest.graphs!, briefs: { [ID]: { ...briefs[ID], pacer: undefined, ...(flood ? { flood } : {}) } } } } };
 };
-const build = (seed: number, difficulty: 'normal' | 'easy', porch = true, flood?: FloodRow) => buildGen2Stage({ config: { ...towerCfg(ID, 'sprint'), unlocked: true }, kit: floodKit(porch, flood), seed, difficulty });
+const build = (seed: number, difficulty: 'normal' | 'easy', porch = true, flood?: FloodRow, fork = FORK) => buildGen2Stage({ config: { ...towerCfg(ID, 'sprint'), unlocked: true }, kit: floodKit(porch, flood, fork), seed, difficulty });
 
 /** two cages: one on the out leg at the column's lip, one past the column on the home leg, at a smaller x (met later) */
 function caged(st: ReturnType<typeof build>): { out: Collectible; home: Collectible } {
@@ -79,6 +85,14 @@ test('flood lay: RED with T_CLOSE 3 s early, with no high road, with no cage, ea
   caged(bare);
   assert.match(layFlood(bare, W2_FLOOD, false).problems.join('; '), /no high road over the low road/, 'RED: no high road');
   assert.match(layFlood(build(1, 'normal'), W2_FLOOD, false).problems.join('; '), /no cage to start its clock/, 'RED: no cage');
+  // RED, planted on the old brick (W 60 flush against the porch: no way down onto the low road) and on the old toy's numbers (W 60, gap 60:
+  // every tier lands past W's lip and walks off into the gap), each by name (flood.ts forkFaults)
+  const flush = build(1, 'normal', true, undefined, { w: 60, gap: 0 });
+  caged(flush);
+  assert.match(layFlood(flush, W2_FLOOD, false).problems.join('; '), /no way down onto the low road: the gap after it is 0 px/, 'RED: the flush brick');
+  const narrow = build(1, 'normal', true, undefined, { w: 60, gap: 60 });
+  caged(narrow);
+  assert.match(layFlood(narrow, W2_FLOOD, false).problems.join('; '), /the adult lands 86 px past its face .* walks off into the 60 px gap/, 'RED: W 60 + gap 60');
   // (through the pipeline: a brief that names the flood lays it, and refuses this base's caged-less roll by name (designed cages are
   //  main's 2-3 piece, pipeline.ts 'objective' sockets allowing 'cage'; not on this base: REPORT Pushback 1))
   const piped = build(1, 'normal', true, W2_FLOOD);

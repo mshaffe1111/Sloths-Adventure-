@@ -126,12 +126,15 @@ test('planted: with fetch-the-spooked off the spooked one is left at its reed an
 
 /**
  * LEAD-THE-LINE (ENG-28; 2-8.md "Bots"): a toy fork in the real engine. The low road: a walkway 60 px under the banks over 400 px of water
- * marked to close (deep at 26 s); the high road, flood.ts highRoad's chain: W, a block 60 px tall on the near bank (a wall-step he walks
+ * marked to close (deep at 26 s); the high road, flood.ts highRoad's chain: W, a block 60 px tall and FORK_W wide on the near bank (a wall-step he walks
  * into and climbs), P a thin piece level with W's top across a 60 px gap, B a block 60 px over P standing on its level (a wall-step out of
  * the low road's lane), C a thin piece level with P on to the far bank. Three little ones behind him; the clock started `late` s before he
  * sets off (the last cage freed that long ago: he dawdled). Counted: the little ones the close sets on the near bank (a split line) and
  * which road he took. The toy's spawn and flags stand on its own floor (a lost heart puts him and the line back there).
  */
+/** the wall-step W's width: the fork's passing shape with the 60 px gap after it (the lead's ruling, ENG-28 session 7; flood.ts forkFaults:
+ *  W at least the widest tier's landing + run-up, W2_FLOOD.climb 86 + 61). W 60 is refused by name: every tier lands past its lip */
+const FORK_W = 150;
 interface FloodRun {
   end: string;
   setBack: number;
@@ -158,7 +161,7 @@ function floodRun(who: FirstTimer, seed: number, late: number): FloodRun {
     const run = new FirstTimerRun('2-3', 1, who, { route, cap: 200 });
     const e = run.e as unknown as Record<string, any>;
     const solid = (id: number, x: number, width: number, y: number, height = 200) => ({ id, x, y, width, height, type: 'solid' }) as Platform;
-    run.sim.bare([solid(1, 0, W0, Y), solid(2, W0, W1 - W0, Y + 60), solid(3, W1, 6000 - W1, Y), solid(4, W0 - 120, 60, Y - 60, 60), solid(5, W0, 100, Y - 60, 20), solid(6, W0 + 100, W1 - W0 - 160, Y - 120, 60), solid(7, W1 - 60, 220, Y - 60, 20)]);
+    run.sim.bare([solid(1, 0, W0, Y), solid(2, W0, W1 - W0, Y + 60), solid(3, W1, 6000 - W1, Y), solid(4, W0 - 60 - FORK_W, FORK_W, Y - 60, 60), solid(5, W0, 100, Y - 60, 20), solid(6, W0 + 100, W1 - W0 - 160, Y - 120, 60), solid(7, W1 - 60, 220, Y - 60, 20)]);
     const cages = [420, 470, 520].map((x, i) => ({ id: 300 + i, x, y: Y - 26, type: 'cage', collected: true, critter: (['duck', 'otter', 'capy'] as const)[i] }) as Collectible);
     const exit = { id: 400, x: EXIT, y: Y - 40, type: 'exit_totem', collected: false } as Collectible;
     e.collectibles = [...cages, exit];
