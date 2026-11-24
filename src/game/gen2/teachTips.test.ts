@@ -1,5 +1,6 @@
 // A kit's teach tips (WorldManifest.teachTips, P13 11-12): a tip the kit lists there is laid as the stage's own TEACH line
-// (StageHint.teach: Dot waits for a clear moment, keeps it up its reading time, and no stock lesson cuts it); every other tip as before.
+// (StageHint.teach: Dot waits for a clear moment, keeps it up its reading time, and no stock lesson cuts it); so is every tip of a section
+// whose template `teaches` a mechanic, listed or not (TEACH-11, R-165.427); every other tip as before.
 // Rolled on the test-side 1-3 (tools/engine/library13.ts), the one roll today with a tip for a drop trap. No stage id in engine code.
 import '../headlessDom.ts';
 import { test } from 'node:test';
@@ -14,15 +15,20 @@ const hintsOf = (teachTips?: string[]) => {
   return st.proto.hints;
 };
 
-test('a tip the kit lists in teachTips is laid as a teach line; with none listed, no hint is', () => {
-  const words = kitLib13().manifest.tips!.traps;
+test('a tip the kit lists in teachTips is laid as a teach line; a tip in a section that TEACHES is one whatever the list (R-165.427); no other hint is', () => {
+  const T = kitLib13().manifest.tips!;
+  const words = T.traps;
   assert.ok(words, 'the kit has a trap tip');
   // (World 1's kit lists `traps` itself since W1C's 7d9efa0d: the plain case is the kit with the list emptied)
   const plain = hintsOf([]);
   assert.ok(plain.some((h) => h.text === words), 'the trap tip is laid');
-  assert.ok(plain.every((h) => !h.teach), 'none is a teach line unless the kit says so');
-  const taught = hintsOf(['traps']);
-  assert.deepEqual(taught.filter((h) => h.teach).map((h) => h.text), [words], 'the trap tip, and only it, is a teach line');
+  // (the trap tip's section teaches the trap: its lesson line is a teach line with no list, TEACH-11; laid plain it waited out Tips'
+  // 30 s gap, as 1-1's double line did)
+  assert.deepEqual(plain.filter((h) => h.teach).map((h) => h.text), [words], "with none listed, only the teach section's own tip is a teach line");
+  // (a tip outside a teach section, the first branch with no vine, is a teach line only when the kit lists it)
+  assert.ok(plain.some((h) => h.text === T.bare && !h.teach), 'the bare branch is laid, and plain while the list is empty');
+  assert.deepEqual(hintsOf(['traps']).filter((h) => h.teach).map((h) => h.text), [words], 'listing the teach section\'s tip changes nothing');
+  assert.deepEqual(hintsOf(['bare']).filter((h) => h.teach).map((h) => h.text).sort(), [words, T.bare].sort(), 'the listed tip, and the teach section\'s, are teach lines');
 });
 
 test("World 1's kit as shipped: 1-3's teaching cards are teach lines, the lesson ONE card with both of the keeper's lines, then the first branch with no vine, on both settings", () => {

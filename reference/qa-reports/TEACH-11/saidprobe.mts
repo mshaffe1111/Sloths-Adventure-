@@ -20,9 +20,11 @@ const id = a[0] ?? '1-1';
 const mode = a[1] ?? 'listed';
 const n = Number(a[2] ?? 5);
 const verbose = a.includes('-v');
+// (the moves the route makes count as done, as dotPace.ts counts them: a move line closes when he makes its move, not at its cap)
+const MOVE_OF: Record<string, string[]> = { walk: ['run'], hop: ['jump'], jump: ['jump'], timedHop: ['jump'], bounce: ['bounce'], climb: ['grab', 'climb'], swing: ['grab', 'leap'], rope: ['grab'], glide: ['jump', 'glide'] };
 const tally: Record<string, number> = {};
 const live: number[] = []; let z = 20261124; while (live.length < n) { z = (z * 1103515245 + 12345) % 2147483648; live.push(10000000 + (z % 89999999)); }
-const seeds = mode === 'live' ? live : provenSeeds(id).slice(0, n);
+const seeds = mode === 'live' ? live : mode === 'one' ? [n] : provenSeeds(id).slice(0, n);
 for (const seed of seeds) for (const d of ['normal', 'easy'] as const) {
   try { localStorage.clear(); } catch { /* */ }
   setDifficulty(d);
@@ -52,6 +54,8 @@ for (const seed of seeds) for (const d of ['normal', 'easy'] as const) {
   const seen = seenSkills();
   const dot = new DotSay(q, help as any, seen, movesDone());
   const log: string[] = [];
+  const moves: Record<string, number> = {};
+  let lastSeg: unknown = null;
   let k = 0, shownAt: number | null = null, shownX = 0, sentAt: number | null = null, reached: number | null = null, why = '';
   const end = samples.length ? samples[samples.length - 1].base : 0;
   const stopX = Number.isFinite(needX) ? needX + 600 : Infinity;
@@ -60,6 +64,7 @@ for (const seed of seeds) for (const d of ['normal', 'easy'] as const) {
     if (e.player.x > stopX + 3000) break;
     while (k + 1 < samples.length && samples[k + 1].base <= t) k++;
     const s = samples[k];
+    if (s && s.seg !== lastSeg) { lastSeg = s.seg; for (const m of MOVE_OF[s.seg.kind] ?? []) moves[m] = (moves[m] ?? 0) + 1; }
     if (s) { e.player.x = s.x; e.player.y = s.y; e.player.vx = 0; e.player.vy = 0; e.player.grounded = true; e.player.invincibleTimer = 0; e.player.hp = e.player.maxHp; }
     sim.frame();
     if (reached === null && e.player.x >= needX) reached = t;
@@ -70,7 +75,7 @@ for (const seed of seeds) for (const d of ['normal', 'easy'] as const) {
       const ok = dot.say(l, t * 1000);
       log.push(`${t.toFixed(1)}s x${Math.round(e.player.x)} SAY ${ok ? '' : '(refused) '}${l.kind}${l.stageTeach ? '/teach' : ''}: ${l.text.slice(0, 44)}`);
     }
-    q.tick(t * 1000, { danger: false, hold: t < 1.5, moveCount: () => 0 });
+    q.tick(t * 1000, { danger: false, hold: t < 1.5, moveCount: (m: string) => moves[m] ?? 0 });
     dot.keep(t * 1000);
     for (const ev of q.drain()) {
       const l = ev.show.line;
