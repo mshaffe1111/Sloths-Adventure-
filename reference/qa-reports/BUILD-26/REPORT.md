@@ -1,4 +1,4 @@
-# BUILD-26u (session 5 of BUILD-26q; t-build-26-wip-26q). Started 5:53 PM ET 11-24 (by `date`); this box written 6:09 PM ET
+# BUILD-26u (session 5 of BUILD-26q; t-build-26-wip-26q). Started 5:53 PM ET 11-24 (by `date`); this box written 6:14 PM ET
 
 ## EXACT NEXT STEP
 **For the next session (base: this branch's head). Ruling 1 (place A) DONE and GREEN; ruling 2 (place B) READ, sent to the lead, no fix
@@ -17,8 +17,13 @@ RE-MEASURED THIS BOX (castBots 2-6 seeds 1-100 adult normal, frozen 96cb4215f, 1
 off one bucket earlier on some rolls. CONFIRMED on seed 22 (b26q5/seed22-adultN-wheelrides.txt: 102.2 -> 95.8 s): the edge wheel
 he rides the NEXT bucket and steps off after 5.8 s (was 8.4), the great wheel 8.2 s (was 11.3); the other three wheels the same. So
 2-6's adult time carries wheel-phase luck of ~one bucket period per wheel (5 wheels), and the floor's minimum is the luckiest phases. So the GO'd plan (+~6 s model, sized for a 98.6 s minimum)
-likely lands ~102 s, short of 104. ASKED THE LEAD (message sent): keep the three re-lays as GO'd and add a fourth brick's re-lay, or
-accept the new minimum's target; WAIT for the answer before laying. Drafting notes (not applied): P's fourth doorstep as a step DOWN
+likely lands ~102 s, short of 104. THE LEAD RULED (A): the floor is judged on the luckiest roll (a lucky real player finishes on it
+too; not a rule to change, law 22; 2-6 models ~95 s against its design's 168 s, so lengthening toward the design is the honest fix).
+DO: the three GO'd re-lays (A, P, U) PLUS a FOURTH of 2-6's own bricks re-laid toward its design seconds, same rules (no token, the
+deal unchanged, no wheel R/V change, no bot slowed). FIRST a STEP 0 to the lead, BEFORE laying anything: which fourth brick, how many
+seconds each re-lay adds (model), dealExact's deal checked unchanged with all four, and U's exitDy following the new ladder. Lay only on
+the lead's GO. Target unchanged: the fastest adult Normal at 104 s or more on every roll (re-measure as this box did: castBots 2-6
+--seeds 1-100 --bots adult --setting normal --rows, on a frozen tree, ~20 s). Drafting notes (not applied): P's fourth doorstep as a step DOWN
 (walk, dy [40, 50]) with a boulder, so its declared exitDy 0 still holds; U's exitDy (-265) must follow the ladder's new height
 (~-390) and that may change pool fits: check dealExact's deal is unchanged before anything else.
 (b) Then ruling 4: ONE castBots --proven 2-6, lockall (2-6 the only mover: the jetty clearance AND the face move 2-6 alone; anything else
@@ -57,13 +62,17 @@ is the middle's window; from the back end, 60 px further back, the same moment f
 ON THE NEW HEAD (frozen 96cb4215f, the clearance): 32, 89, 92 all finish, 0 rescues (114.4, 114.8, 114.7 s; were 150.3, 153, 173.8 with
 a rescue; b26q5/placeB-runs.txt). Seed 32's trace (b26q5/frames-adultE32-new-96cb4215f-top-wheel.txt): he hops the 24 px gap, lands
 further in (23 px from the bucket's FRONT end at the top), the same jump reaches the street at 841. So the clearance clears B on these
-seeds; the lead rules whether the flight should also fly the back-end stance (the stance-dependence stays for any rider who walks back).
+seeds. THE LEAD: no change tonight; the flight should also fly the bucket's back-end stance, a later job (R-165.398's notes).
 LOOK QUESTIONS (the lead, on jetty-2-6-L0-normal-wheel0-sideways-wide.jpg; answered, no fix): (1) the line at x ~660 is GREEN, in the
 BACKDROP (it passes behind the buckets; no stage object at world x 935-980), on a soil tone step (~57 -> ~67); fainter steps at x ~1160
 and ~1500: panel seams in the tower's painted soil, ROUGH, proposed for the backdrop job with R-165.438. (2) the 'in' street's plank in
 front of the upper rim reads as a walkway in front of the wheel, not a clash; rough: a passing bucket's lip peeks ~6-8 px over the plank
-(z-order inside the sweep; reads as a stray rail) and the plank's end has no post. Both to the lead to rule.
-Slip owned: one trace this box was started with a shell '&' (against the box rule); it failed to start and was re-run properly.
+(z-order inside the sweep; reads as a stray rail) and the plank's end has no post. THE LEAD: both judgments accepted; all four look
+items (the backdrop panel seams, the bucket lip over the plank, the plank's cantilevered end, the millrace channel) filed as R-165.438
+'2-6's look polish before it ships': NOT tonight, do not touch.
+Slips owned: one trace this box was started with a shell '&' (against the box rule; it failed to start and was re-run properly), and
+D119 (it covers ANY heredoc in the same && chain as a commit: scripts go to files first): two commits here ran in one command with a
+python heredoc edit; counted by the lead, no harm done.
 
 # BUILD-26t (session 4 of BUILD-26q; t-build-26-wip-26q, face at 1af03d233, toy on the next commit). Started 5:33 PM ET 11-24 (by `date`); this box written 5:48 PM ET
 
