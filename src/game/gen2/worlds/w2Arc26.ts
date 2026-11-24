@@ -92,22 +92,26 @@ const rock = (key: string, on: string, at: number): SectionPiece => ({ key, shap
  * finish, finish26). A brick's length is its beat's (2-6.md seconds), never filler: the 2-minute rule is the castBots expert's MIN.
  */
 export const BEATS_26: SectionTemplate[] = [
-  // [A] beat 0: the millpond's bank at the foot of the village, a boulder to hop; the first wheel turning ahead. Long enough that Dot's
+  // [A] beat 0: the millpond's bank at the foot of the village, a boulder to hop, then the shore (700 px) and a second boulder; the first
+  // wheel turning ahead (BUILD-26v, the lead's ruling 3: toward the design's 10 s; models 9.9 s on every roll). Long enough that Dot's
   // wheel line (t 0.1) stands 800+ px before beat 1's jetty (rule 6)
   brick({ id: 'millpond', name: 'the millpond bank', jobs: ['arrive'], difficulty: 1, content: 'structural' as Content, phases: ['start'], exitDy: 0,
     pieces: [{ key: 'bank', shape: 'bank', w: [560, 560], place: { kind: 'start' }, style: 'log', main: true, landing: true }, rock('r', 'bank', 0.62),
-      { key: 'shore', shape: 'bank', w: [380, 380], place: { kind: 'walk', after: 'bank', dy: [0, 0] }, style: 'log', main: true, landing: true }],
+      { key: 'shore', shape: 'bank', w: [700, 700], place: { kind: 'walk', after: 'bank', dy: [0, 0] }, style: 'log', main: true, landing: true }, rock('r2', 'shore', 0.65)],
     sockets: [tip('t-ride', 'bank', 0.1, 'ride'), petal('p', 'shore', 0.4)] }),
   // [T p1^ soft] beat 1: the teach wheel (R160 V60, Easy V50), boarded off its jetty, the street in over the top, its own soft pond
   wheelBrick('first-wheel', 'the first wheel, safe', 'teach', 'teach', 2, { teaches: WHEEL_LESSON, uses: [] }),
-  // [P g1<] beat 2: the first street: a porch step up, a hop over the washing-line gap, the next doorstep
+  // [P g1<] beat 2: the first street: a porch step up, a hop over the washing-line gap, the next doorstep, then a fourth doorstep with a
+  // boulder on it (BUILD-26v: toward the design's 10 s; LEVEL: a step down to it does not build with the millpond's shore, the tower
+  // lay refuses a storey reached by jumps alone)
   brick({ id: 'first-street', name: 'the first street', jobs: ['practise'], difficulty: 1, content: 'ground', exitDy: 0,
     pieces: [branch('a', 300, { kind: 'start' }), branch('b', 300, { kind: 'walk', after: 'a', dy: [-50, -40] }), rock('r', 'b', 0.55),
-      branch('c', 260, { kind: 'jump', after: 'b', dy: [0, 0], share: [0.4, 0.5] })],
+      branch('c', 260, { kind: 'jump', after: 'b', dy: [0, 0], share: [0.4, 0.5] }),
+      branch('d', 300, { kind: 'walk', after: 'c', dy: [0, 0] }), rock('r2', 'd', 0.4)],
     sockets: [petal('p', 'b', 0.3), petal('q', 'c', 0.6)] }),
-  // [U c1^] beat 3: in at a house's round door, up its inside ladder, out on the roof
-  brick({ id: 'through-house', name: 'through a house', jobs: ['climb'], difficulty: 2, content: 'climb', exitDy: -265,
-    pieces: [branch('foot', 300, { kind: 'start' }, { landing: false }), { key: 'ladder', shape: 'vine', w: 0, place: { kind: 'climb', on: 'foot', at: [0.75, 0.85], h: [250, 280] } },
+  // [U c1^] beat 3: in at a house's round door, up its inside ladder (a two-floor house, 380-400 px; exitDy its middle), out on the roof
+  brick({ id: 'through-house', name: 'through a house', jobs: ['climb'], difficulty: 2, content: 'climb', exitDy: -390,
+    pieces: [branch('foot', 300, { kind: 'start' }, { landing: false }), { key: 'ladder', shape: 'vine', w: 0, place: { kind: 'climb', on: 'foot', at: [0.75, 0.85], h: [380, 400] } },
       branch('roof', 320, { kind: 'over', on: 'ladder', at: 0, dy: 0 })],
     sockets: [petal('p', 'roof', 0.6)] }),
   // [P w1> soft] beat 4: the millrace that feeds the next wheel, 2-1's ride logs (splash back); its near bank wide enough for the flag
@@ -124,11 +128,12 @@ export const BEATS_26: SectionTemplate[] = [
     sockets: [tip('t-jump', 'a', 0.05, 'jump'), petal('p', 'b', 0.5), petal('q', 'c', 0.5)] }),
   // [W p1>] beat 8, the twist: the next street 80 px ABOVE the top bucket (Easy 60): only a jump off the top reaches it
   wheelBrick('top-wheel', 'twist: jump off the top', 'twist', 'top', 5),
-  // [C b1^] beat 10: off a wheel's street onto World 2's bounce, up to the highest street
+  // [C b1^] beat 10: off a wheel's street onto World 2's bounce, up to the highest street (480 px, BUILD-26v: toward the design's 16 s;
+  // no boulder: one would stand under its petal or by the bounce's landing)
   brick({ id: 'wheel-bounce', name: 'wheel to bounce', jobs: ['combine'], difficulty: 5, content: 'bounce', uses: [WHEEL_LESSON], exitDy: -300,
     pieces: [branch('jetty', 160, { kind: 'start' }, { landing: false }), branch('street', 240, { kind: 'wheel', after: 'jetty', row: 'edge' }),
       { key: 'spring', shape: 'bouncy', w: [70, 70], place: { kind: 'on', on: 'street', at: [0.7, 0.7], h: [30, 30] } },
-      branch('high', 240, { kind: 'walk', after: 'street', dy: [-180, -174] }, { block: 'bounce', from: 'spring' })],
+      branch('high', 480, { kind: 'walk', after: 'street', dy: [-180, -174] }, { block: 'bounce', from: 'spring' })],
     sockets: [petal('p', 'high', 0.6)] }),
   // [S p1^<] beat 12, the signature: the great wheel (R200 V70) lifts him the last bank
   // (Pokey's `view` as he steps into the bucket at the jetty's lip: said on the way up)
