@@ -8,7 +8,24 @@ STATE: lineBot 7/8 on frozen bb04993f3. RED: 'too late' (late 22). The lead's na
 before the first close on a piece of the flood's own high-road chain past the wall-step W (flood.ts highRoad, no y threshold). Under
 it, 'time enough' (low), the keep-the-road plant (off high / on low), the heron tests and the read-removed plant at late 19 are all GREEN.
 tierBots 9/9 on frozen 6556b42ca, no calibration file changed. firsttimer.ts is unchanged since, so that result stands for bb04993f3.
-THE LEAD'S LATEST RULING (word for word, sent BEFORE it read my no-low-road finding below): "BOTH, as you advise. (a) The toy matches
+THE LEAD'S FINAL RULING (word for word; this one governs, and (a) below is RETRACTED): "you are right, and I RETRACT (a). The
+reference is the DESIGN (R-165.430: a wall-step W on the bank that both roads climb; the low road walks off W down into the gap; the high
+road hops the level gap onto the porch P), not floodLay.test's brick, which has no low road. RULING: keep the toy's fork shape.
+floodFaults' new verdict covers both halves, by name: (1) a fork must have a way down from W onto the low road (a gap he falls through:
+at least his width); (2) the gap after W must be crossable by each tier's own modelled play from its landing on W (its small-ledge pause
+included). Planted: RED on the current toy numbers (W 60 + gap 60: the first-timer adult falls short) and RED on the brick (no way
+down); GREEN on a shape that passes both, whose numbers the verdict itself finds (e.g. a wider W). Then the toy and the brick both lay
+that passing shape, proven by a bot run on each, and 'too late' and the plant are re-read on it (a re-plant at the same bar if a late
+moves, derivation in the comment). No bot change."
+SESSION 7 DOES, in order: (i) the verdict in src/game/flood.ts beside highRoadFaults (floodFaults calls it), each tier's modelled play
+read from the bots' own models (the way pacerFaults judges the race: find how pacerFaults reads a tier's model, and use the same
+source). Planted toys in src/game/flood.test.ts / gen2/floodLay.test.ts: RED on W 60 + gap 60 (the adult falls short), RED on the
+brick (no way down), GREEN on the passing shape the verdict finds. (ii) lineBot's toy and floodLay.test's brick lay that shape. A bot
+run on each: lineBot 8/8, and 'too late' and the plant re-read (a re-plant at the same bar if a late moves). (iii) ROAD_TRIPS, the suite
+in shards, the CI line, lockall (flood.ts is under src: RE-RUN it on a frozen tree), land on t-eng-28 by the 8:00 PM hard stop.
+tierBots re-runs only if firsttimer.ts changes, and it must not ('No bot change').
+
+THE LEAD'S EARLIER RULING (retracted in its part (a); kept for the record; sent BEFORE it read my no-low-road finding below): "BOTH, as you advise. (a) The toy matches
 the brick: W at the water's edge, P touching W (gap 0), as floodLay.test's brick lays on all 8 rolls; then re-read 'too late' and the
 plant at the brick's shape (a re-plant at the same bar if its late moves, derivation in the comment). (b) floodFaults gains a named
 verdict: after a wall-step, a gap to the next high-road piece is refused unless each tier's own modelled play (its landing on the step,
