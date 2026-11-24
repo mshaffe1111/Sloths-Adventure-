@@ -3387,7 +3387,12 @@ export class FirstTimerRun {
       //  lives every home race lost (trace-27g.txt 5; the lead's GO, ENG-27g). "Mostly under": less than half its length past the lip)
       const fa = this.floorAt(p.x + dir * look, p.y, 40);
       const underLip = SKILLS.boardLog && !!under && under.type !== 'drift' && fa?.type === 'drift' && fa.drift?.dir === dir && fa.y > p.y + 6 && (dir > 0 ? fa.x + fa.width - lip : lip - fa.x) < fa.width / 2;
-      const ahead = fa && !underLip && (!past || this.floorAt(lip + dir * 24, p.y, 40));
+      // (SKILLS.floatSure, ENG-PLANT-e: standing on a log running his way, ANOTHER log ahead is no floor to walk on: the water between is a
+      //  hop the river block judges. Read as floor, intend's last line walked him on at a full run toward the gap and the stand came too
+      //  late for his thumb's let-go: 2-4 adult Normal 6 on candidate 7, off #47's front with #48 ahead, t 57.13-57.67)
+      const onLog = SKILLS.floatSure && SKILLS.handed && p.grounded ? this.sim.platforms.find((q) => q.id === this.sim.standingOn) : undefined;
+      const logAhead = onLog?.drift?.dir === dir && fa?.type === 'drift' && fa !== onLog;
+      const ahead = fa && !underLip && !logAhead && (!past || this.floorAt(lip + dir * 24, p.y, 40));
       // (up the far bank, SKILLS.bankUp: at a river's far end the bank stands a step up from the log (river.ts LOG_DROP, 28 px), so it
       //  reads as floor ahead and the gap logic below never runs, and a log running back at him never carries him under it to be handed
       //  over. He walked into its face, stood while the log carried him off, walked off its end and splashed back, again, until rescued:
