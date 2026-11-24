@@ -1,0 +1,17 @@
+TAP version 13
+# Subtest: wheelWay: off a wheel onto its street he goes on, never back into the wheel (2-6 adult Easy 90); PLANTED off: rescued
+ok 1 - wheelWay: off a wheel onto its street he goes on, never back into the wheel (2-6 adult Easy 90); PLANTED off: rescued
+  ---
+  duration_ms: 1814.676843
+  type: 'test'
+  ...
+1..1
+# tests 1
+# suites 0
+# pass 1
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 5683.828209
+rc=0

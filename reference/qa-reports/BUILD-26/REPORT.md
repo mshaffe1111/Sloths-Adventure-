@@ -1,21 +1,23 @@
 # BUILD-26w (session 7 of BUILD-26q; t-build-26-wip-26q, the bot fix a44decc0e on 48b277994's stage). Started 6:34 PM ET 11-24 (by `date`); this box written 6:48 PM ET
 
 ## EXACT NEXT STEP
-**The lead GO'd the E 90 bot fix ("general for every wheel"; conditions: planted toy RED off / GREEN on; the new path's trips 0 outside 2-6
-on every listed stage, else STOP and tell the lead; tierBots 9/9; small and self-contained, function and lines NAMED, since release 4's
-bot fix also changes firsttimer.ts on release-0.10.3-wip-plant-c). LAID: a44decc0e, tools/inspect/firsttimer.ts only, +14/-1:
-SKILLS.wheelWay (line 754); field `wheelOff` (1251-1252); intend(): the landing block (2362-2369: grounded, no jump/pending -> relocate on a
-non-bucket, clear) and the in-air way (2421-2422: `if (this.wheelOff) dir = this.wheelOff.way`); wheelRide(): set at the bucket step-off (3774).
-MEASURED on a frozen tree of a44decc0e (b26w/wheelland.mts.txt): adult E 90 shrine 128.7 s, 0 rescues (was 153.3 s, 1 rescue), lands x 849
-way +1; adult E 1 unchanged (124.9 s, 0). NOT yet run: tsc, the toy, the trip count, tierBots, the suite.**
-(a) NEXT, in order: (1) `npx tsc --noEmit -p .`. (2) The planted toy in tools/inspect/wheelRide.test.ts (CI runs it via gates.yml; check
-ciTests): SKILLS.wheelWay = false -> 2-6 adult E 90 rescued >= 1 (back into the wheel); true -> 0 rescues, shrine. (3) The trip count: a
-counter on the step-off set (line 3774) over every listed stage (castBots' list) and both settings: must be 0 outside 2-6, else STOP and tell
-the lead. (4) `npx tsx --test tools/inspect/tierBots.test.ts` (9/9). (5) Beat A's bare ground: find the painter of 2-6's millpond ground
-(World 2, 'log' style bank, h 90; NOT w1CutArt's pickCut) and why ~290 px past the second boulder is bare (head: world x ~548-839 on
-platform 5, 326-1026 y 7761, Normal layout 0; base 74df28278 the same past its boulder): the cause to the lead before a fix. (6) Ruling 4:
-ONE castBots --proven 2-6, lockall (2-6 the only mover), paint --stages 2-6, the suite + the CI tool line ONCE on the final head,
-timecheck; land on t-build-26 (merge, no force); hash and table to the lead.
+**The lead GO'd the E 90 bot fix ("general for every wheel"; conditions: planted toy RED off / GREEN on; the new path's trips 0 outside 2-6;
+tierBots 9/9; small and self-contained with function and lines NAMED, since release 4's bot fix also changes firsttimer.ts on
+release-0.10.3-wip-plant-c). LAID a44decc0e + toy 2a60f9275. tools/inspect/firsttimer.ts only, +14/-1: SKILLS.wheelWay (line 754); field
+`wheelOff` (1251-1252); intend(): the landing block (2362-2369: grounded, no jump/pending -> prog.relocate(p) on a non-bucket, clear) and the
+in-air way (2421-2422: `if (this.wheelOff) dir = this.wheelOff.way`); wheelRide(): set at the bucket step-off (3774).
+DONE on frozen trees: tsc clean (a44decc0e, b26w/tsc-a44decc0e.txt); adult E 90 shrine 128.7 s, 0 rescues (was 153.3 s, 1), lands x 849 way +1;
+adult E 1 unchanged (124.9 s); the toy (wheelRide.test.ts 'wheelWay', CI-run file) GREEN on 2a60f9275, its plant (off) rescued
+(b26w/toy-2a60f9275.txt); trips: only w2Arc26.ts among the world arcs lays a wheel (grep), wheelFixtureStage is the toy: the path needs him
+IN a bucket, so 0 outside 2-6 by build; lockall in ruling 4 proves it on the rows. tierBots: RUNNING on 2a60f9275 at this push (b26w/tierBots-2a60f9275.txt when done).**
+(a) NEXT, in order: (1) Beat A's bare ground (pre-existing, cause NOT read): platform 5 (326-1026, y 7761, h 90, 'log') is drawn by
+protoArt.ts's painted earth bank (bankPainted: h >= 90), which shows a bank END at ~548 and another at ~839, so the bank is split in two
+INSIDE one platform; FIXED in world space, not a view cull (camera moved 330 px right: the same stretch bare, b26w/stills/cropA-shift500.jpg;
+the boulder 530-647 and a round-door mound ~650-745 are drawn over its left part, ~95 px bare beyond them, 745-839, where he walks); NOT the
+bough-span cover rule (no platform covers 647-839), NOT a gen2 gap/pond record (none at that y). Next: read
+protoArt.ts's earth-bank draw (~922-1030, its ends 'where it drops away') and what splits it (a decor/house cut? riverArt.ts village
+dressing), then the cause to the lead before any fix. (2) Ruling 4 on the final head: ONE castBots --proven 2-6, lockall (2-6 the only
+mover), paint --stages 2-6, the suite + the CI tool line ONCE, timecheck; land on t-build-26 (merge, no force); hash and table to the lead.
 
 ## Item 1: adult Easy 90 (rescued x1 at the edge wheel, beat 5): ROOT = a BOT fault (latent), a NEW family (not R-165.413)
 Read on a chattr-frozen tree of 918b3894 (= 48b277994's code). Trace: b26w/trace-adultE90-918b3894.txt (b26w/e90trace.mts.txt); the route: b26w/route-edgewheel-918b3894.txt.
