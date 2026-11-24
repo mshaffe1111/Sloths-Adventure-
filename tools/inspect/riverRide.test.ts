@@ -210,6 +210,15 @@ test('2-1, against the flow and up the far bank on: the adult on Normal (12), th
     assert.ok(crossedClean(r), said(r));
   }
 });
+// (ENG-PLANT-c 11-24, the lead's packet: a refused hop leaves a WAY ON. Under SKILLS.floatSure the hop up the far bank's face off a log
+//  running back at him is pressed only when the gate lands it; refused with nothing else to do, the child stood while the log carried him
+//  back, boarded again, stood again, and the stuck rule rescued him: 2-1 child Normal seed 1, x 19,890, 6 s then 5 s, rescued at x 19,576
+//  (candidate 2, ea573b4e4: RED). Now the hop of his own table that the gate lands is pressed (FirstTimerRun.tablePick): GREEN. The blind
+//  press's toy is the test above (the adult on Normal, seed 12: RED on the release head dfe631913, GREEN with the judged hops))
+test('2-1, a refused hop leaves a way on: the child on Normal (1) is never stood at the far bank until a rescue', () => {
+  const r = castRun('child', 'normal', '2-1', 1);
+  assert.ok(crossedClean(r), said(r));
+});
 test('planted: with the against-the-flow skill off, the adult on Normal is rescued at 2-1\'s back river (12) and the child and the middle on Normal lose 5+ more lives (child 4, 23; middle 26)', () => {
   const withIt = UPSTREAM_LIVES.map(([bot, setting, seed]) => castRun(bot, setting, '2-1', seed));
   SKILLS.upstream = false;
