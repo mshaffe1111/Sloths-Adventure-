@@ -13,7 +13,7 @@
  *
  * No engine import: the engine passes what it knows (follow.test.ts drives it the same way on a toy floor).
  */
-import { home, homeCount, join, unkeep, newTrail, record, regroup, rejoin, spook, stepLine, trailAt, zoneLookX, lineSeen, type Follower, type FollowKind, type FollowRow, type LineCover, type SurfaceAt, type Trail } from './follow.ts';
+import { home, homeCount, join, unkeep, newTrail, record, regroup, rejoin, setOnBank, spook, stepLine, trailAt, zoneLookX, lineSeen, type DeepAt, type Follower, type FollowKind, type FollowRow, type LineCover, type SurfaceAt, type Trail } from './follow.ts';
 import { newWatch, stepWatch, WATCH, type WatchState, type WatchZone } from './watcher.ts';
 import type { Platform } from './types.ts';
 
@@ -37,8 +37,10 @@ export interface FollowStage {
   zones: readonly WatchZone[];
   covers: readonly LineCover[];
   platforms: readonly Platform[];
-  /** splash-back water: a teaching river's or pool's span and surface */
+  /** splash-back water: a teaching river's or pool's span and surface (a flood's water reads its surface live as it rises) */
   safeWater: ReadonlyArray<{ x0: number; x1: number; y: number }>;
+  /** deep water (a flood's low road once it has turned, flood.ts FloodClock.deepAt): a WALL the line waits at; unset: none */
+  deep?: DeepAt;
 }
 
 /** one heron: its stretch, its rhythm and where its look is (null: not looking) */
@@ -108,6 +110,17 @@ export class FollowPlay {
     this.pending = true;
   }
 
+  /**
+   * A flood's water turned deep (flood.ts FloodClock.step's `closed`): every little one in it (over its span, not yet home) is set on its
+   * NEAR bank, sitting in the reeds, and waits there for him (follow.ts setOnBank; rejoin as a spooked one). Returns the ones set back.
+   */
+  floodClosed(w: { x0: number; x1: number; deep?: { near: { x: number; y: number } } }): Follower[] {
+    if (!w.deep) return [];
+    const out = this.line.filter((f) => f.state !== 'home' && f.x > w.x0 && f.x < w.x1);
+    for (const f of out) setOnBank(f, w.deep.near);
+    return out;
+  }
+
   /** how many little ones are home (the goal's count) */
   home(): number {
     return homeCount(this.line);
@@ -139,7 +152,7 @@ export class FollowPlay {
     }
     this.last = { x: p.x, y: p.y };
     const before = this.home();
-    stepLine(this.trail, this.line, this.pace, this.row.gap, dt, this.surf, this.row.scamper);
+    stepLine(this.trail, this.line, this.pace, this.row.gap, dt, this.surf, this.row.scamper, this.stage.deep);
     for (const f of [...this.line]) rejoin(this.line, f, p.x, this.row.rejoin);
     home(this.line, this.stage.exitX - dir * this.row.home, dir);
     // the herons

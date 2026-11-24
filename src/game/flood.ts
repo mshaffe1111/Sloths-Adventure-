@@ -143,6 +143,11 @@ export class FloodClock {
   since(now: number): number | undefined {
     return this.at === undefined ? undefined : now - this.at;
   }
+  /** is (x, y) in a water that has turned deep by `now`: within its span, at or under its banks' top (a wall the line waits at) */
+  deepAt(x: number, y: number, now: number): boolean {
+    const since = this.since(now);
+    return this.f.waters.some((w) => floodDeep(this.f, w, since) && x > w.x0 && x < w.x1 && y > w.lip - 2);
+  }
   step(now: number): { levels: number[]; closed: FloodWater[] } {
     const since = this.since(now);
     const closed: FloodWater[] = [];

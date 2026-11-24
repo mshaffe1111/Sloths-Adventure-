@@ -115,6 +115,7 @@ import { drawLadder, drawLily, drawLogComing, drawRiverFoam, drawRiverLog, drawR
 import type { RiverZone } from './river.ts';
 import { rideHidden, ridersOf, stepRiders, type Riders } from './ridePickups.ts';
 import { RIDE } from './ride.ts';
+import { FloodClock, floodDeep } from './flood.ts';
 import { driftCycle, driftProgress, driftX, floodLevel, lianasOver, logClock, logKnocks, LOG_DROP, DRIFT_CATCH, onRiver, riverAt, type DriftInfo } from './river.ts';
 import { GLOW_SHOWN, letGoLands, letGoTable, type LetGoTable } from './letGoCue.ts';
 import { heard, NOISE } from './noise.ts';
@@ -845,6 +846,8 @@ export class GameEngine {
   private watch: WatchState = newWatch();
   /** the little ones that follow him home and the herons that watch them (2-3: proto.follow, followPlay.ts); null on every other stage */
   follow: FollowPlay | null = null;
+  /** a laid flood's clock (flood.ts, gen2/floodLay.ts; 2-8): started by its start cage, never reset by a respawn (nothing drains) */
+  floodClock: FloodClock | null = null;
   private watchEagle: Enemy | null = null;
   private watchFrom = { x: 0, y: 0 };
   private bushRustle = new Map<number, number>();
@@ -1115,6 +1118,7 @@ export class GameEngine {
     if (this.tide) this.currentStage.waterY = this.tide.y;
     this.watch = newWatch();
     this.watch.dur = 5; // the first pass waits a little longer, for the hint to be read
+    this.floodClock = this.currentStage.flood ? new FloodClock(this.currentStage.flood) : null;
     this.startFollow();
     this.bushRustle.clear();
     this.glowStill = 0;
@@ -1965,6 +1969,17 @@ export class GameEngine {
     // (a pickup riding a carrier goes where it went this step: a petal on a log, ridePickups.ts)
     this.riders = ridersOf(this.collectibles, this.platforms, this.riders);
     if (this.riders.list.length) stepRiders(this.riders);
+    // a laid flood (flood.ts, gen2/floodLay.ts): its clock raises its waters to paddling depth; the low road turns deep at the close and the
+    // little ones in it are set on its near bank (followPlay.ts floodClosed). Nothing drains, and a respawn keeps it
+    if (this.floodClock) {
+      const { levels, closed } = this.floodClock.step(this.gameTime);
+      const rivers = this.currentStage.rivers ?? [];
+      this.floodClock.f.waters.forEach((w, i) => {
+        const r = rivers[w.river];
+        if (r) r.surfaceY = levels[i];
+      });
+      for (const w of closed) this.follow?.floodClosed(w);
+    }
     // 2-8: rising water. It starts once he steps in, and covers the low reed islands; out on a bank again (either one) it drains away as
     // fast as it rose, so a little one left behind can still be gone back for (every one of them is the goal)
     for (const r of this.currentStage.rivers ?? []) {
@@ -2992,7 +3007,7 @@ export class GameEngine {
         p.vy = 0;
         p.grounded = true;
         p.invincibleTimer = Math.max(p.invincibleTimer, 1);
-      } else if (river?.safe && p.y > river.surfaceY + 8 && !this.isGameOver) {
+      } else if (river?.safe && !this.floodDeepRiver(river) && p.y > river.surfaceY + 8 && !this.isGameOver) {
         // a teaching river (2-1): a splash and back to the bank to try again, no life lost
         this.spawnWaterSplash(p.x, river.surfaceY);
         sound.playSplash(1);
@@ -4544,6 +4559,8 @@ export class GameEngine {
     if (c.collected) return;
     c.collected = true;
     c.freedAt = this.gameTime;
+    // (a flood's clock starts at its start cage, the last one met: flood.ts)
+    this.floodClock?.freed(c.id, this.gameTime);
     this.player.crittersRescued++;
     // (2-3: the little one drops out and follows him; the goal counts it once it is home, rescueCount)
     if (this.follow && c.critter && c.critter !== 'eaglet') this.follow.free(c.critter, { x: c.x, y: c.y }, this.landUnder(c.x, c.y + 26));
@@ -8962,7 +8979,8 @@ export class GameEngine {
     const st = this.currentStage;
     const p = this.player;
     const safeWater = [
-      ...(st.rivers ?? []).filter((r) => r.safe).map((r) => ({ x0: r.x0, x1: r.x1, y: r.surfaceY })),
+      // (a flood's water is splash-back for the line while it paddles, its surface read live as the clock raises it)
+      ...(st.rivers ?? []).filter((r) => r.safe || r.floodMark).map((r) => (r.floodMark ? { x0: r.x0, x1: r.x1, get y() { return r.surfaceY; } } : { x0: r.x0, x1: r.x1, y: r.surfaceY })),
       ...(st.waterY !== undefined ? (st.safeWater ?? []).map((w) => ({ x0: w.x0, x1: w.x1, y: st.waterY! })) : []),
     ];
     this.follow = new FollowPlay(row, this.easy, {
@@ -8972,7 +8990,16 @@ export class GameEngine {
       covers: this.proto?.bushes ?? [],
       platforms: this.platforms,
       safeWater,
+      ...(this.floodClock ? { deep: (x: number, y: number) => this.floodClock?.deepAt(x, y, this.gameTime) ?? false } : {}),
     }, { x: p.x, y: p.y });
+  }
+
+  /** has this river turned deep on a laid flood's clock (its low road after the close): a fall into it costs a heart, never a splash-back */
+  private floodDeepRiver(r: import('./river.ts').RiverZone): boolean {
+    const c = this.floodClock;
+    if (!c) return false;
+    const i = (this.currentStage.rivers ?? []).indexOf(r);
+    return c.f.waters.some((w) => w.river === i && floodDeep(c.f, w, c.since(this.gameTime)));
   }
 
   /** where a little one dropping from (x, y) lands: the first still ground or splash-back water under it */
