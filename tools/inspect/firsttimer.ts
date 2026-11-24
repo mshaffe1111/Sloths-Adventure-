@@ -3221,7 +3221,24 @@ export class FirstTimerRun {
         this.padPause = null;
         if (dir !== 0 && !this.floorAt(p.x + dir * 80, p.y, 40)) {
           const on = this.prog.target(p, 160);
-          if (!(on && on.y > p.y + 50)) return this.decide(dir, this.jumpFor(p, dir, here), false, side(dir));
+          // (SKILLS.floatSure, ENG-PLANT (the lead's ruling A, rule 28): off a drifting log the flick after the pause is the hop judged:
+          //  drawn once, pressed only when gateSees lands it on a log (24 px) or the bank ahead; refused, no flick: the ride's own gates
+          //  (edgeWait, upstream, handed) decide from where he stands. Flicked blind (jumpFor, after his thumb's lag) it came down in the
+          //  water: 2-1 adult Normal seed 12, x 24,631 and 24,301 on the river running his way, the rescue's last two lives)
+          if (!(on && on.y > p.y + 50) && SKILLS.floatSure && here.type === 'drift' && here.drift) {
+            const rv = (this.sim.stage as { rivers?: RiverZone[] }).rivers;
+            const cr = ((floatAt(rv, here)(t + DT) - floatAt(rv, here)(t)) / DT) * RIDE.keep.x;
+            const vx = p.vx + (Math.abs(cr) < 400 ? cr : 0);
+            const edgeX = dir > 0 ? here.x + here.width : here.x;
+            const to = this.sim.platforms.filter((q) => q !== here && !q.broken && Math.abs(q.y - p.y) < 70 && (q.type === 'drift' ? Math.abs(q.x - here.x) < 600 : (dir > 0 ? q.x - edgeX < 80 && q.x + q.width > edgeX : edgeX - (q.x + q.width) < 80 && q.x < edgeX)));
+            const h = this.aim.at(dir as -1 | 1, t, (d) => this.drawHop(d));
+            if (to.some((q) => this.gateSees(q, floatAt(rv, q), p.x, p.y, dir as -1 | 1, h, t, vx, 24))) {
+              if (HOP_TRACE.on) { this.judged = null; this.judge('padPause', to, [0], dir as -1 | 1, h.hold, vx, cr, 24, h); }
+              this.gateHop = h;
+              this.aim.end();
+              return this.startJump(dir, 'single', false);
+            }
+          } else if (!(on && on.y > p.y + 50)) return this.decide(dir, this.jumpFor(p, dir, here), false, side(dir));
         }
       }
     }
