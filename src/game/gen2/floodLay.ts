@@ -48,7 +48,7 @@ export function layFlood(st: Gen2Stage, row: FloodRow, easy: boolean): { flood?:
     const farX = low.deep!.near.x < low.x0 ? low.x1 : low.x0;
     px = along(farX, low.lip) - along(last.x, last.y);
     if (px <= 0) problems.push(`flood: the low road (x ${Math.round(low.x0)}-${Math.round(low.x1)}) is met before the last cage: the clock starts after it`);
-    const tops = st.platforms.filter((p) => p.type === 'solid' && !p.pad && !p.broken).map((p) => ({ x: p.x, w: p.width, y: p.y }));
+    const tops = st.platforms.filter((p) => p.type === 'solid' && !p.pad && !p.broken).map((p) => ({ x: p.x, w: p.width, y: p.y, h: p.height }));
     const nearIsX0 = low.deep!.near.x < low.x0;
     const span = { x0: low.x0, x1: low.x1, from: { x: nearIsX0 ? low.x0 : low.x1, y: low.lip }, to: { x: nearIsX0 ? low.x1 : low.x0, y: low.lip } };
     // (the banks themselves are not the high road: only what stands over the water)

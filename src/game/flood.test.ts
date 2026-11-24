@@ -57,10 +57,30 @@ test('FloodClock: only the start cage starts it, once; the dip stops at paddling
 
 test('highRoadFaults: steps of 60 px are walkable by the line; a 100 px step or a missing road is refused', () => {
   const span = { x0: 1000, x1: 1400, from: { x: 990, y: LIP }, to: { x: 1410, y: LIP } };
-  const steps = [{ x: 990, w: 60, y: LIP - 60 }, { x: 1050, w: 300, y: LIP - 120 }, { x: 1350, w: 60, y: LIP - 60 }];
+  const steps = [{ x: 990, w: 60, y: LIP - 60, h: 60 }, { x: 1050, w: 300, y: LIP - 120, h: 60 }, { x: 1350, w: 60, y: LIP - 60, h: 20 }];
   assert.deepEqual(highRoadFaults(steps, span, 60, 120), []);
   assert.match(highRoadFaults([{ ...steps[0], y: LIP - 100 }, ...steps.slice(1)], span, 60, 120).join(";"), /no piece a step of at most 60 px/);
   assert.match(highRoadFaults([], span, 60, 120).join(';'), /no high road/);
+});
+
+test('highRoadFaults: the first piece is a WALL-STEP on the near bank he walks into and climbs; a bare edge hop up is refused by name', () => {
+  const span = { x0: 1000, x1: 1400, from: { x: 1000, y: LIP }, to: { x: 1410, y: LIP } };
+  const rest = [{ x: 1050, w: 300, y: LIP - 120, h: 60 }, { x: 1350, w: 60, y: LIP - 60, h: 20 }];
+  // GREEN: a block standing on the bank, its face at or before the edge and down to the bank's top (he meets it as a wall)
+  assert.deepEqual(highRoadFaults([{ x: 990, w: 60, y: LIP - 60, h: 60 }, ...rest], span, 60, 120), []);
+  assert.deepEqual(highRoadFaults([{ x: 1000, w: 50, y: LIP - 60, h: 200 }, ...rest], span, 60, 120), [], 'its face right at the edge');
+  // RED: a thin piece at the edge with room under it (he walks under it: the hop up off the edge is bare)
+  assert.match(highRoadFaults([{ x: 990, w: 60, y: LIP - 60, h: 20 }, ...rest], span, 60, 120).join(';'), /starts with a bare edge hop at x 990/);
+  // RED: a full block, but out over the water past the edge (the hop off the edge up onto it is bare)
+  assert.match(highRoadFaults([{ x: 1010, w: 40, y: LIP - 60, h: 200 }, ...rest], span, 60, 120).join(';'), /starts with a bare edge hop at x 1010/);
+  // RED: no height known is no wall
+  assert.match(highRoadFaults([{ x: 990, w: 60, y: LIP - 60 }, ...rest], span, 60, 120).join(';'), /bare edge hop/);
+  // GREEN: the wall-step stands back on the bank (a hop before the edge), a LEVEL gap hop onto a porch over the water, a block standing on
+  // the porch for the next step up (out of the low road's lane), a step down, the far bank (the shape the toy fork and 2-8 lay)
+  const back = [{ x: 880, w: 60, y: LIP - 60, h: 60 }, { x: 1000, w: 100, y: LIP - 60, h: 20 }, { x: 1100, w: 240, y: LIP - 120, h: 60 }, { x: 1340, w: 220, y: LIP - 60, h: 20 }];
+  assert.deepEqual(highRoadFaults(back, span, 60, 60), []);
+  // RED: every step UP is a wall-step: the block on the porch made a thin piece floating 60 px over it (a bare edge hop up, one piece in)
+  assert.match(highRoadFaults([back[0], back[1], { ...back[2], h: 20 }, back[3]], span, 60, 60).join(';'), /climbs by a bare edge hop up at x 1100/);
 });
 
 test('followers meet the flood: one mid-dip at the close is set on the near bank and rejoins; none walks into deep water', () => {

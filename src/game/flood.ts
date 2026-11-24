@@ -98,15 +98,19 @@ export function floodFaults(f: Flood): string[] {
  * The high road round the low road (2-8.md:58: always laid and walkable by the line: steps of at most `step` px up or down, no climb, no
  * fall): from the near bank's top (`span.from`) a chain of solid pieces, each met next in the way he goes, each reached from the one before
  * by a step of at most `step` px and a gap of at most `hop` px, out over the low road's span (`x0..x1`) to its far bank's top (`span.to`).
- * Pieces out of that reach (a leg laid far above) are no part of it. By name; empty: walkable.
+ * Pieces out of that reach (a leg laid far above) are no part of it. Its FIRST piece is a WALL-STEP (the lead's ruling on ENG-28's late
+ * case): its face stands on the near bank (its near side at or before the bank's edge, `span.from.x`) and reaches down to the bank's top
+ * (`h`, its height: y + h at or under span.from.y), so he walks into it and climbs it. A first piece out over the edge, or floating over the
+ * bank with room under it, is a BARE EDGE HOP up off the bank, which nobody is shown and the tier bots' edge press does not aim at: refused
+ * by name. By name; empty: walkable.
  */
-export function highRoadFaults(tops: ReadonlyArray<{ x: number; w: number; y: number }>, span: { x0: number; x1: number; from: { x: number; y: number }; to: { x: number; y: number } }, step: number, hop: number): string[] {
+export function highRoadFaults(tops: ReadonlyArray<{ x: number; w: number; y: number; h?: number }>, span: { x0: number; x1: number; from: { x: number; y: number }; to: { x: number; y: number } }, step: number, hop: number): string[] {
   return highRoad(tops, span, step, hop).faults;
 }
 
 /** the high road itself (highRoadFaults' walk): its pieces in the order he meets them (the bot's way round, lead-the-line), and the faults
  *  by name (empty: walkable) */
-export function highRoad<T extends { x: number; w: number; y: number }>(tops: ReadonlyArray<T>, span: { x0: number; x1: number; from: { x: number; y: number }; to: { x: number; y: number } }, step: number, hop: number): { chain: T[]; faults: string[] } {
+export function highRoad<T extends { x: number; w: number; y: number; h?: number }>(tops: ReadonlyArray<T>, span: { x0: number; x1: number; from: { x: number; y: number }; to: { x: number; y: number } }, step: number, hop: number): { chain: T[]; faults: string[] } {
   const dir = span.to.x >= span.from.x ? 1 : -1;
   const nearOf = (p: { x: number; w: number }) => (dir > 0 ? p.x : p.x + p.w);
   const farOf = (p: { x: number; w: number }) => (dir > 0 ? p.x + p.w : p.x);
@@ -117,11 +121,23 @@ export function highRoad<T extends { x: number; w: number; y: number }>(tops: Re
     const used = chain.length;
     // (done when the far bank is a step and a hop from here)
     if (used && beyond(span.to.x, at.x) <= hop && Math.abs(span.to.y - at.y) <= step) return { chain, faults: [] };
-    // (the next piece: it starts within a hop ahead of here (or under him already), goes on past here, and is a step up or down)
+    // (the next piece: it starts within a hop ahead of here (or under him already), goes on past here, and is a step up, level or down;
+    //  the first may stand back on the near bank: its far side at most a hop before the edge, a step down off it onto the bank. Every step
+    //  UP is a WALL-STEP: its face where he stands, reaching down to his feet, so he walks into it and climbs; a piece up off an edge with
+    //  room under it is a bare edge hop up, which nobody is shown and the tier bots' edge press does not aim at)
     let next: T | undefined;
+    let bare: T | undefined;
     for (const p of tops) {
-      if (beyond(nearOf(p), at.x) > hop || beyond(farOf(p), at.x) <= 1 || Math.abs(p.y - at.y) > step || Math.abs(p.y - at.y) < 1) continue;
+      if (beyond(nearOf(p), at.x) > hop || beyond(farOf(p), at.x) <= (used ? 1 : -hop - 1) || Math.abs(p.y - at.y) > step) continue;
+      if (p.y < at.y - 1 && !(beyond(nearOf(p), at.x) <= 0 && p.h !== undefined && p.y + p.h >= at.y - 1)) {
+        if (!bare || beyond(farOf(p), farOf(bare)) > 0) bare = p;
+        continue;
+      }
       if (!next || beyond(farOf(p), farOf(next)) > 0) next = p;
+    }
+    if (!next && bare) {
+      const up = Math.round(at.y - bare.y);
+      return { chain, faults: [used ? `flood: the high road climbs by a bare edge hop up at x ${Math.round(nearOf(bare))} (${up} px up off the piece at x ${Math.round(at.x)}): every step up is a wall-step he walks into and climbs` : `flood: the high road starts with a bare edge hop at x ${Math.round(nearOf(bare))}: its first piece (${up} px up) is not a wall-step standing on the near bank that he walks into and climbs`] };
     }
     if (!next) {
       if (!used) return { chain, faults: [`flood: no high road over the low road at x ${Math.round(span.x0)}-${Math.round(span.x1)} (no piece a step of at most ${step} px off its near bank)`] };

@@ -144,7 +144,7 @@ function floodRun(who: FirstTimer, seed: number, late: number): FloodRun {
     const run = new FirstTimerRun('2-3', 1, who, { route, cap: 200 });
     const e = run.e as unknown as Record<string, any>;
     const solid = (id: number, x: number, width: number, y: number, height = 200) => ({ id, x, y, width, height, type: 'solid' }) as Platform;
-    run.sim.bare([solid(1, 0, W0, Y), solid(2, W0, W1 - W0, Y + 60), solid(3, W1, 6000 - W1, Y), solid(4, W0, 60, Y - 60, 20), solid(5, W0 + 60, W1 - W0 - 120, Y - 120, 20), solid(6, W1 - 60, 220, Y - 60, 20)]);
+    run.sim.bare([solid(1, 0, W0, Y), solid(2, W0, W1 - W0, Y + 60), solid(3, W1, 6000 - W1, Y), solid(4, W0 - 120, 60, Y - 60, 60), solid(5, W0, 100, Y - 60, 20), solid(6, W0 + 100, W1 - W0 - 160, Y - 120, 60), solid(7, W1 - 60, 220, Y - 60, 20)]);
     const cages = [420, 470, 520].map((x, i) => ({ id: 300 + i, x, y: Y - 26, type: 'cage', collected: true, critter: (['duck', 'otter', 'capy'] as const)[i] }) as Collectible);
     const exit = { id: 400, x: EXIT, y: Y - 40, type: 'exit_totem', collected: false } as Collectible;
     e.collectibles = [...cages, exit];

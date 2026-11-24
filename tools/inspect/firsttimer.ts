@@ -2451,7 +2451,7 @@ export class FirstTimerRun {
     if (!low?.deep) return;
     const dir: 1 | -1 = low.deep.near.x < low.x0 ? 1 : -1;
     const [edge, far] = dir > 0 ? [low.x0, low.x1] : [low.x1, low.x0];
-    const tops = this.sim.platforms.filter((q) => q.type === 'solid' && !q.pad && !q.broken && q.y < low.lip - 1).map((q) => ({ x: q.x, w: q.width, y: q.y }));
+    const tops = this.sim.platforms.filter((q) => q.type === 'solid' && !q.pad && !q.broken && q.y < low.lip - 1).map((q) => ({ x: q.x, w: q.width, y: q.y, h: q.height }));
     const road = highRoad(tops, { x0: low.x0, x1: low.x1, from: { x: edge, y: low.lip }, to: { x: far, y: low.lip } }, FLOOD_STEP, FLOOD_HOP);
     if (road.faults.length || !road.chain.length) return;
     const nearOf = (q: { x: number; w: number }) => (dir > 0 ? q.x : q.x + q.w);
