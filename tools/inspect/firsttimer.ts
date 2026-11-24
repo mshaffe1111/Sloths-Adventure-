@@ -1953,6 +1953,25 @@ export class FirstTimerRun {
     return drifts.length ? drifts : null;
   }
 
+  /** SKILLS.floatSure (ENG-PLANT-c, the lead's packet: a refused hop leaves a WAY ON): at a log gate the drawn aim (his habit) was
+   *  refused; the tier's own table (raceCandidates: his calibrated holds and doubles, no noise) is asked for the hop whose AIMED flight
+   *  comes down on one of `targets` with `margin` soonest (racePick, as the race's honest middle picks), its thumb noise drawn at the
+   *  press and flown (gateHop). A player who sees his hop will not reach presses harder; he never stands at a bank in reach until a
+   *  rescue: 2-1 child Normal seed 1, refused twice at the far bank 28 px up (x 19,890), stood 6 s and 5 s as the log carried him back,
+   *  rescued (candidate 2, ea573b4e4). null: no hop of his lands (a tier with no table, kid and adult, keeps the drawn aim only) */
+  private tablePick(targets: Platform[], dir: -1 | 1, vx: number, margin: number): DrawnHop | null {
+    const cands = raceCandidates(this.who);
+    if (!cands.length || !targets.length) return null;
+    const p = this.sim.p, t = this.t, rivers = (this.sim.stage as { rivers?: RiverZone[] }).rivers;
+    const air = (c: DrawnHop): number | null => {
+      let a: number | null = null;
+      for (const q of targets) { const v = this.gateAir(q, floatAt(rivers, q), p.x, p.y, dir, c, t, vx, margin); if (v !== null && (a === null || v < a)) a = v; }
+      return a;
+    };
+    const pick = racePick(cands, air);
+    return pick ? { ...pick, thumb: this.drawHop(dir).thumb } : null;
+  }
+
   /** a single pressed now from (p.x, p.y) comes down on a drifting log, where the log will be then (hopLandsOn): SKILLS.boardHop's test */
   private singleLands(p: { x: number; y: number }, dir: -1 | 1): boolean {
     const rivers = (this.sim.stage as { rivers?: RiverZone[] }).rivers;
@@ -3363,7 +3382,22 @@ export class FirstTimerRun {
             this.aim.end();
             return this.startJump(dir, 'single', false);
           }
-          this.pending = null; this.lateArmed = null; this.clockHeld = true; this.blockedT = 0; return {};
+          // (ENG-PLANT-c, the lead's packet: a refused hop leaves a WAY ON, never a stand until rescued. Standing, the log running back at
+          //  him carries him away from the face, so a refused aim is refused for the whole ride: 2-1 child Normal seed 1 stood 6 s, rode
+          //  back, boarded, stood 5 s and was rescued at x 19,576 (candidate 2). (1) the hop of his own table that the gate lands on the
+          //  bank (tablePick); (2) none yet and the face still ahead with log under his feet: he walks on toward it, nearer each frame,
+          //  and the gate asks again; (3) at the face with no hop of his that lands: he stands, and the log hands him back)
+          const alt = this.tablePick([up], dir as -1 | 1, vx, 24);
+          if (alt) {
+            if (HOP_TRACE.on) { this.judged = null; this.judge('bankUp', [up], [0], dir as -1 | 1, alt.hold, vx, cr, 24, alt); }
+            this.gateHop = alt;
+            this.aim.end();
+            return this.startJump(dir, alt.kind, false);
+          }
+          if (HOP_TRACE.on) this.judged = null;
+          const face = dir > 0 ? up.x : up.x + up.width;
+          this.pending = null; this.lateArmed = null; this.clockHeld = true; this.blockedT = 0;
+          return dir * (face - p.x) > 30 && dir * (front - p.x) > 30 ? side(dir) : {};
         }
         if (up) return this.startJump(dir, this.jumpFor(p, dir, under), false);
       }
@@ -3547,6 +3581,17 @@ export class FirstTimerRun {
                 this.aim.end();
                 return this.startJump(dir, 'single', false);
               }
+              // (ENG-PLANT-c, the lead's packet: a refused hop leaves a WAY ON. The log runs back at him, so the bank he stands refused at
+              //  only draws away: the hop of his own table that the gate lands on it (tablePick) is pressed; none: he stands at the log's
+              //  front, and the log hands him back to the bank behind, a new boarding and a new aim)
+              const alt = this.tablePick(banks, dir as -1 | 1, vx, 24);
+              if (alt) {
+                if (HOP_TRACE.on) { this.judged = null; this.judge('upstream', banks, [0], dir as -1 | 1, alt.hold, vx, carry, 24, alt); }
+                this.gateHop = alt;
+                this.aim.end();
+                return this.startJump(dir, alt.kind, false);
+              }
+              if (HOP_TRACE.on) this.judged = null;
               this.pending = null; this.lateArmed = null; this.clockHeld = true; this.blockedT = 0; return {};
             }
             this.aim.end();
