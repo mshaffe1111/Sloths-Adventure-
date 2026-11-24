@@ -111,6 +111,24 @@ code-checked plan (ENGINE-NEEDS.md); "add a level" in one step; every lead keeps
 3. **The lead manages; members engineer.** The lead decides scope, priority, time and the bar, judges the evidence and unsticks; it does not do the work or design the code. A member's technical fork goes back as 'decide it within your budget and show me the evidence', unless it changes scope, the bar, a shipped stage or Matt's taste.
 4. **The scoreboard in every report to Matt:** levels on his link this week vs the plan; hours per level vs 2 h; pieces landed ahead; **2-HOUR PROGRESS** (Matt 11-23, R-165.409): what was done today toward the 2-hour level (reference/plans/TWO-HOUR-PLAN.md and its schedule).
 
+## RIGHT NOW (11-24 evening, written 6:36 PM ET by `date`; refreshed at the nightly wrap; this block wins over everything below, R-165.242)
+RELEASE 4 (0.10.3) MOVED TO WEDNESDAY (the lead's call 5:45 PM: the bot fix was not clean; no bar bent to fit the night). Its path:
+ENG-PLANT (the shipped-stage bot regressions from 2-7's floatSure: rule 28 vs MAIN, D132) -> a LEAN candidate from c4 (run-up judge +
+the sinker-only refusal + the ride only on a sinking front; ENG-PLANT-i, release-0.10.3-wip-plant-c) -> known flips, the WIDE SAMPLE
+(D133), full rows, pacerLay GREEN (R-165.439: rows 22/23 re-planted; row 8's 0.04 s margin is a 2-7 race-calibration call for the lead)
+-> merge into release-0.10.3 -> INT-R5d THE FULL SET -> the test link -> Matt's 'push' -> the PR. Release 5 reverts 8d094787c,
+4816edd31, 41cb842a1 to bring 2-6 back.
+2-6 (release 5): the soft-pit FACE drawn as vine-wrapped posts (approved from stills), the jetty clearance (24 px), the floor re-lay
+(fastest adult Normal 113.7 s); BUILD-26w landing on t-build-26 tonight if the gates pass. Look polish before it ships: R-165.438.
+2-8 (pieces ahead): the flood clock, followers, lead-the-line, keep-the-road, the fork verdict (W >= 150 px, gap 60, W2_FLOOD.climb):
+ENG-28i landing on t-eng-28 tonight. Then the Content two-road section (R-165.430) and READY-28 on the draft.
+TOOLS (release 5): the '&' hook (R-165.418), the weir cut, the row check report-only (R-165.436), the side-wall check (R-165.434):
+it flags SHIPPED 1-6 (x 27896) and 8-1 (x 1466): TOOLS-1124c's stills decide (a live invisible wall is a defect to fix first).
+LESSONS today: D132 (rule 28 vs main), D133 (wide sample; no sweeping invariant on a release night), D134 (archive only after
+ls-remote; R-165.437 the hook), D135 (an 'inherited' red is still red: an owner the same turn).
+WEDNESDAY 11-25 (after the usage reset, on Matt's go): DATA-DAILY first; then release 4 (ENG-PLANT landing -> INT-R5d -> the PR);
+then R-165.430's two-road section and READY-28; the R-165.424 bot list (incl. the small-ledge pause, the late-18 read, climb.land).
+
 ## RIGHT NOW (11-23 nightly wrap, written 9:28 PM ET by `date`; this block wins over everything below; refreshed at check-ins, R-165.242)
 2-7 'The Mailman's Route' ON MATT'S LINK: EnK5 v269 (6:21 PM), built from t-build-27e 312ce33a0 (final branch head 801cae9e8; every later
 commit reference/ only). Yield 29/40, list 69/100, every gate clean (inherited reds named: pacerLay :254 :280; CI line wheelChannel x4,
