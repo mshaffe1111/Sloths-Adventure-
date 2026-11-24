@@ -1,0 +1,5 @@
+homeRun middle Normal (2-7 home), candidate2 vs off (OFF=floatSure = the base):
+seed 5 floatSure on : shrine 205.7 s, lives 3, handed 3
+seed 5 floatSure off: shrine 171 s, lives 4, handed 1
+seed 2 floatSure on : shrine 182.2 s, lives 1, handed 2
+seed 2 floatSure off: shrine 203 s, lives 6, handed 2

@@ -1,0 +1,99 @@
+== home: SKILLS.fromTakeoff on, the OLD single floor (before 4a7584fb4's ruling (1)); tier setting seed end lives finish verdict
+middle	normal	1	shrine	lives 5	deaths ?	finish 158	WON him 90.8 boat 93.89 gap 3.1	P.middle 87.75
+middle	normal	2	shrine	lives 8	deaths ?	finish 179.9	WON him 86.7 boat 92.37 gap 5.7	P.middle 86.33
+middle	normal	3	shrine	lives 6	deaths ?	finish 207.5	WON him 90.1 boat 92.06 gap 2	P.middle 86.04
+middle	normal	4	shrine	lives 10	deaths ?	finish 258.2	WON him 98.8 boat 99.82 gap 1	P.middle 93.29
+middle	normal	5	shrine	lives 4	deaths ?	finish 176.7	WON him 84.2 boat 93.63 gap 9.4	P.middle 87.5
+middle	normal	6	shrine	lives 2	deaths ?	finish 156.6	WON him 90.8 boat 91.82 gap 1	P.middle 85.82
+middle	easy	1	shrine	lives 2	deaths ?	finish 150.1	WON him 82.9 boat 97.53 gap 14.6	P.middle 88.67
+middle	easy	2	shrine	lives 3	deaths ?	finish 149.8	WON him 86.3 boat 96.32 gap 10	P.middle 87.56
+middle	easy	3	shrine	lives 1	deaths ?	finish 153.9	WON him 90.5 boat 96.09 gap 5.6	P.middle 87.35
+middle	easy	4	shrine	lives 1	deaths ?	finish 152.5	WON him 92.3 boat 104.55 gap 12.3	P.middle 95.05
+middle	easy	5	shrine	lives 4	deaths ?	finish 184.6	WON him 94.1 boat 97.38 gap 3.3	P.middle 88.52
+middle	easy	6	shrine	lives 1	deaths ?	finish 154	WON him 90.6 boat 95.88 gap 5.3	P.middle 87.16
+expert	normal	1	shrine	lives 2	deaths ?	finish 138.3	WON him 84.5 boat 93.89 gap 9.4	P.middle 87.75
+expert	normal	2	shrine	lives 1	deaths ?	finish 148.9	WON him 87.8 boat 92.37 gap 4.6	P.middle 86.33
+expert	normal	3	shrine	lives 6	deaths ?	finish 196.9	WON him 85.4 boat 92.06 gap 6.7	P.middle 86.04
+expert	normal	4	shrine	lives 4	deaths ?	finish 187.7	WON him 96.6 boat 99.82 gap 3.2	P.middle 93.29
+expert	normal	5	shrine	lives 2	deaths ?	finish 149.2	WON him 92.3 boat 93.63 gap 1.3	P.middle 87.5
+expert	normal	6	shrine	lives 5	deaths ?	finish 149.3	WON him 89 boat 91.82 gap 2.8	P.middle 85.82
+expert	easy	1	no bot (no expert bot on easy)
+expert	easy	2	no bot (no expert bot on easy)
+expert	easy	3	no bot (no expert bot on easy)
+expert	easy	4	no bot (no expert bot on easy)
+expert	easy	5	no bot (no expert bot on easy)
+expert	easy	6	no bot (no expert bot on easy)
+ride-only	normal	1	shrine	lives 2	deaths ?	finish 175.4	lost him 96.6 boat 93.89 gap -2.7	P.middle 87.75
+ride-only	normal	2	shrine	lives 2	deaths ?	finish 184.2	lost him 97.6 boat 92.37 gap -5.2	P.middle 86.33
+ride-only	normal	3	shrine	lives 4	deaths ?	finish 221.4	lost him 102.4 boat 92.06 gap -10.3	P.middle 86.04
+ride-only	normal	4	shrine	lives 5	deaths ?	finish 263.8	lost him 115 boat 99.82 gap -15.2	P.middle 93.29
+ride-only	normal	5	shrine	lives 1	deaths ?	finish 201.2	lost him 114 boat 93.63 gap -20.4	P.middle 87.5
+ride-only	normal	6	shrine	lives 0	deaths ?	finish 174	lost him 111.9 boat 91.82 gap -20.1	P.middle 85.82
+ride-only	easy	1	shrine	lives 1	deaths ?	finish 166.2	WON him 96 boat 97.53 gap 1.5	P.middle 88.67
+ride-only	easy	2	shrine	lives 2	deaths ?	finish 163.1	lost him 99 boat 96.32 gap -2.7	P.middle 87.56
+ride-only	easy	3	shrine	lives 0	deaths ?	finish 165.1	lost him 101.8 boat 96.09 gap -5.7	P.middle 87.35
+ride-only	easy	4	shrine	lives 0	deaths ?	finish 174.9	lost him 112 boat 104.55 gap -7.5	P.middle 95.05
+ride-only	easy	5	shrine	lives 3	deaths ?	finish 198.3	lost him 115.2 boat 97.38 gap -17.8	P.middle 88.52
+ride-only	easy	6	shrine	lives 1	deaths ?	finish 174.1	lost him 103 boat 95.88 gap -7.1	P.middle 87.16
+== post: the same
+middle	normal	1	shrine	lives 8	deaths ?	finish 220.3	WON him 102.5 boat 103.21 gap 0.7	P.middle 96.46
+middle	normal	2	shrine	lives 3	deaths ?	finish 163.3	WON him 98.6 boat 101.69 gap 3.1	P.middle 95.04
+middle	normal	3	shrine	lives 1	deaths ?	finish 145.8	WON him 93.5 boat 101.38 gap 7.9	P.middle 94.75
+middle	normal	4	shrine	lives 4	deaths ?	finish 161.5	WON him 99.2 boat 100.76 gap 1.6	P.middle 94.17
+middle	normal	5	shrine	lives 2	deaths ?	finish 159.2	WON him 100.4 boat 103.44 gap 3	P.middle 96.67
+middle	normal	6	shrine	lives 4	deaths ?	finish 170.6	lost him 101.8 boat 101.14 gap -0.7	P.middle 94.53
+middle	easy	1	shrine	lives 1	deaths ?	finish 154	WON him 95 boat 107.31 gap 12.3	P.middle 97.55
+middle	easy	2	shrine	lives 1	deaths ?	finish 153.6	WON him 90.8 boat 106.09 gap 15.3	P.middle 96.45
+middle	easy	3	shrine	lives 2	deaths ?	finish 154.3	WON him 95.9 boat 105.86 gap 10	P.middle 96.24
+middle	easy	4	shrine	lives 3	deaths ?	finish 147.2	WON him 102 boat 105.33 gap 3.3	P.middle 95.76
+middle	easy	5	shrine	lives 0	deaths ?	finish 146	WON him 87.3 boat 107.55 gap 20.3	P.middle 97.77
+middle	easy	6	shrine	lives 3	deaths ?	finish 166.3	WON him 102.7 boat 105.32 gap 2.6	P.middle 95.75
+expert	normal	1	shrine	lives 3	deaths ?	finish 161.2	WON him 100.2 boat 103.21 gap 3	P.middle 96.46
+expert	normal	2	shrine	lives 1	deaths ?	finish 138.9	WON him 82.8 boat 101.69 gap 18.9	P.middle 95.04
+expert	normal	3	shrine	lives 2	deaths ?	finish 158	WON him 98.6 boat 101.38 gap 2.8	P.middle 94.75
+expert	normal	4	shrine	lives 6	deaths ?	finish 164.5	lost him 101.9 boat 100.76 gap -1.1	P.middle 94.17
+expert	normal	5	shrine	lives 3	deaths ?	finish 159.9	WON him 97.4 boat 103.44 gap 6	P.middle 96.67
+expert	normal	6	shrine	lives 2	deaths ?	finish 153.7	WON him 93.7 boat 101.14 gap 7.4	P.middle 94.53
+expert	easy	1	no bot (no expert bot on easy)
+expert	easy	2	no bot (no expert bot on easy)
+expert	easy	3	no bot (no expert bot on easy)
+expert	easy	4	no bot (no expert bot on easy)
+expert	easy	5	no bot (no expert bot on easy)
+expert	easy	6	no bot (no expert bot on easy)
+ride-only	normal	1	shrine	lives 4	deaths ?	finish 220.6	lost him 117.4 boat 103.21 gap -14.2	P.middle 96.46
+ride-only	normal	2	shrine	lives 1	deaths ?	finish 193.6	lost him 114.9 boat 101.69 gap -13.2	P.middle 95.04
+ride-only	normal	3	shrine	lives 2	deaths ?	finish 181.9	lost him 118.4 boat 101.38 gap -17	P.middle 94.75
+ride-only	normal	4	shrine	lives 2	deaths ?	finish 174.9	lost him 111.8 boat 100.76 gap -11	P.middle 94.17
+ride-only	normal	5	shrine	lives 1	deaths ?	finish 188.3	lost him 122.7 boat 103.44 gap -19.3	P.middle 96.67
+ride-only	normal	6	shrine	lives 0	deaths ?	finish 177.7	lost him 115.5 boat 101.14 gap -14.4	P.middle 94.53
+ride-only	easy	1	shrine	lives 1	deaths ?	finish 174.5	lost him 114.8 boat 107.31 gap -7.5	P.middle 97.55
+ride-only	easy	2	shrine	lives 0	deaths ?	finish 182.8	lost him 120.3 boat 106.09 gap -14.2	P.middle 96.45
+ride-only	easy	3	shrine	lives 4	deaths ?	finish 186.1	lost him 107.8 boat 105.86 gap -1.9	P.middle 96.24
+ride-only	easy	4	shrine	lives 2	deaths ?	finish 179.6	lost him 115.7 boat 105.33 gap -10.4	P.middle 95.76
+ride-only	easy	5	shrine	lives 0	deaths ?	finish 176.6	lost him 116.4 boat 107.55 gap -8.9	P.middle 97.77
+ride-only	easy	6	shrine	lives 2	deaths ?	finish 179.1	lost him 105.8 boat 105.32 gap -0.5	P.middle 95.75
+== middle pond put-backs and falls, the same
+middle	home	normal	1	WON 3.1	ponds 5	fall x 13482 f 1959 clk 7.9; pond x 13482->13665 f 1982 clk 6.0; fall x 10161 f 2676 clk 29.1; pond x 10161->10421 f 2677 clk 28.2; pond x 7787->7968 f 3194 clk 44.7; fall x 5922 f 3620 clk 58.9; pond x 5922->6152 f 3643 clk 57.6; fall x 3078 f 4233 clk 77.3; pond x 3078->3303 f 4256 clk 76.4
+middle	home	normal	2	WON 5.7	ponds 9	pond x 14435->14556 f 2228 clk 1.6; fall x 11137 f 2780 clk 20.0; pond x 11137->11440 f 2803 clk 18.4; fall x 7080 f 3597 clk 44.9; pond x 7080->7308 f 3598 clk 47.4; fall x 5811 f 3960 clk 58.7; pond x 5811->6012 f 3983 clk 56.7; fall x 5255 f 4198 clk 63.8; pond x 5255->6012 f 4221 clk 56.7; pond x 3541->3690 f 4759 clk 74.6; fall x 3050 f 4836 clk 77.2; pond x 3050->3302 f 4837 clk 74.9; fall x 1249 f 5297 clk 89.5; pond x 1249->2006 f 5320 clk 83.6; fall x 1763 f 5357 clk 84.8; pond x 1763->2006 f 5380 clk 83.6
+middle	home	normal	3	WON 2	ponds 7	pond x 13823->13970 f 3231 clk 6.8; pond x 11698->11859 f 3664 clk 21.3; pond x 10285->10428 f 4002 clk 32.5; pond x 6125->6297 f 4725 clk 56.6; fall x 5525 f 4849 clk 60.8; pond x 5525->5906 f 4872 clk 56.8; fall x 5031 f 5035 clk 62.3; pond x 5031->5906 f 5058 clk 56.8; fall x 2557 f 5742 clk 79.6; pond x 2557->3314 f 5743 clk 74.6
+middle	home	normal	4	WON 1	ponds 5	fall x 10453 f 5391 clk 32.5; pond x 10453->11210 f 5392 clk 26.8; fall x 10372 f 5545 clk 31.2; pond x 10372->11210 f 5568 clk 26.8; fall x 8480 f 6141 clk 45.9; pond x 8480->8618 f 6164 clk 45.4; fall x 5882 f 6628 clk 60.9; pond x 5882->6026 f 6629 clk 64.1; fall x 1839 f 7589 clk 95.3; pond x 1839->2004 f 7612 clk 91.0
+middle	home	normal	5	WON 9.4	ponds 7	pond x 14733->14904 f 2517 clk 1.9; pond x 14133->14270 f 2630 clk 5.7; pond x 13718->13892 f 2692 clk 7.8; fall x 13259 f 2814 clk 11.8; pond x 13259->13493 f 2837 clk 6.5; fall x 12969 f 2944 clk 10.1; pond x 12969->13493 f 2945 clk 6.5; fall x 8832 f 3838 clk 35.6; pond x 8832->9012 f 3861 clk 37.8; pond x 3667->3840 f 4788 clk 68.7
+middle	home	normal	6	WON 1	ponds 3	fall x 12518 f 2175 clk 15.2; pond x 12518->13317 f 2198 clk 5.3; pond x 7789->7958 f 3251 clk 40.4; fall x 1245 f 4363 clk 77.5; pond x 1245->2002 f 4386 clk 83.0
+middle	home	easy	1	WON 14.6	ponds 2	fall x 8998 f 2833 clk 37.4; pond x 8998->9177 f 2856 clk 39.6; fall x 8420 f 3077 clk 46.9; pond x 8420->9177 f 3100 clk 39.6
+middle	home	easy	2	WON 10	ponds 3	fall x 13304 f 1935 clk 9.4; pond x 13304->13478 f 1958 clk 6.9; fall x 10001 f 2663 clk 30.4; pond x 10001->10306 f 2686 clk 29.4; fall x 6030 f 3571 clk 58.9; pond x 6030->6180 f 3572 clk 59.1
+middle	home	easy	3	WON 5.6	ponds 1	fall x 5232 f 3537 clk 60.7; pond x 5232->6098 f 3560 clk 59.3
+middle	home	easy	4	WON 12.3	ponds 1	fall x 12715 f 2253 clk 18.4; pond x 12715->12910 f 2276 clk 18.5
+middle	home	easy	5	WON 3.3	ponds 4	fall x 12996 f 2804 clk 13.9; pond x 12996->13795 f 2805 clk 6.8; fall x 8440 f 3824 clk 40.0; pond x 8440->9197 f 3847 clk 39.4; pond x 5210->5336 f 4650 clk 66.2; pond x 3739->3887 f 5014 clk 78.3
+middle	home	easy	6	WON 5.3	ponds 1	fall x 6877 f 3184 clk 48.2; pond x 6877->7724 f 3207 clk 48.1
+middle	post	normal	1	WON 0.7	ponds 8	pond x 15622->15773 f 3069 clk 8.3; fall x 11437 f 3886 clk 35.5; pond x 11437->11747 f 3909 clk 28.2; fall x 8712 f 4449 clk 46.2; pond x 8712->8894 f 4472 clk 47.9; pond x 7705->7868 f 4746 clk 57.0; pond x 6267->6452 f 5130 clk 69.8; fall x 3091 f 5778 clk 91.4; pond x 3091->3333 f 5779 clk 85.7; fall x 1281 f 6233 clk 100.1; pond x 1281->2037 f 6256 clk 94.4; fall x 1280 f 6374 clk 98.3; pond x 1280->2037 f 6397 clk 94.4
+middle	post	normal	2	WON 3.1	ponds 5	pond x 15090->15236 f 1953 clk 8.0; pond x 15090->15236 f 1971 clk 8.6; fall x 11967 f 2471 clk 25.3; pond x 11967->12724 f 2494 clk 18.4; fall x 5844 f 3670 clk 57.6; pond x 5844->6000 f 3693 clk 66.0; fall x 4413 f 4043 clk 77.7; pond x 4413->4586 f 4044 clk 75.5
+middle	post	normal	3	WON 7.9	ponds 3	pond x 15104->15251 f 1622 clk 3.7; pond x 11536->11709 f 2171 clk 22.0; fall x 5134 f 3404 clk 63.1; pond x 5134->5891 f 3427 clk 66.2
+middle	post	normal	4	WON 1.6	ponds 5	fall x 7398 f 2948 clk 52.2; pond x 7398->7579 f 2971 clk 54.8; fall x 4644 f 3679 clk 78.4; pond x 4644->4865 f 3702 clk 73.7; fall x 4108 f 3923 clk 81.0; pond x 4108->4865 f 3924 clk 73.7; pond x 3669->3839 f 4136 clk 80.0; fall x 1844 f 4545 clk 93.6; pond x 1844->2033 f 4568 clk 92.0
+middle	post	normal	5	WON 3	ponds 4	fall x 10242 f 2702 clk 36.4; pond x 10242->10404 f 2725 clk 37.8; pond x 3646->3814 f 3970 clk 79.3; pond x 3667->3814 f 4036 clk 81.5; fall x 1695 f 4424 clk 94.4; pond x 1695->2006 f 4447 clk 94.6
+middle	post	normal	6	lost -0.7	ponds 8	fall x 14321 f 1827 clk 7.4; pond x 14321->14670 f 1850 clk 5.3; fall x 14360 f 1923 clk 7.7; pond x 14360->14670 f 1946 clk 5.3; fall x 10142 f 2882 clk 36.5; pond x 10142->10337 f 2883 clk 36.0; pond x 9133->9311 f 3219 clk 46.4; fall x 7454 f 3596 clk 59.0; pond x 7454->7618 f 3619 clk 55.1; pond x 6461->6592 f 3932 clk 65.6; pond x 5001->5161 f 4267 clk 76.7; pond x 5029->5161 f 4299 clk 77.8
+middle	post	easy	1	WON 12.3	ponds 3	pond x 9324->9477 f 3031 clk 46.7; pond x 5009->5141 f 3721 clk 69.7; pond x 5013->5141 f 3737 clk 70.2
+middle	post	easy	2	WON 15.3	ponds 1	fall x 12393 f 2318 clk 20.6; pond x 12393->13082 f 2341 clk 19.3
+middle	post	easy	3	WON 10	ponds 3	fall x 14648 f 1821 clk 10.6; pond x 14648->14970 f 1844 clk 6.1; fall x 8001 f 3092 clk 47.7; pond x 8001->8867 f 3115 clk 49.1; pond x 7654->7793 f 3408 clk 58.9
+middle	post	easy	4	WON 3.3	ponds 3	fall x 14767 f 1755 clk 8.5; pond x 14767->14911 f 1778 clk 5.9; fall x 8913 f 2850 clk 41.6; pond x 8913->9088 f 2873 clk 47.8; fall x 3314 f 3820 clk 79.4; pond x 3314->3519 f 3821 clk 87.0
+middle	post	easy	5	WON 20.3	ponds 0	
+middle	post	easy	6	WON 2.6	ponds 3	fall x 5628 f 3664 clk 67.0; pond x 5628->6160 f 3687 clk 68.1; fall x 4500 f 4035 clk 79.7; pond x 4500->4715 f 4058 clk 77.7; fall x 3183 f 4399 clk 89.1; pond x 3183->3371 f 4400 clk 87.4

@@ -1,0 +1,107 @@
+castBots 2-3 seeds 1-40, the first narrowing (a STAND only, run-up under a single's reach; no water test): origin/t-build-23 + that hunk vs BUILD-23e (ENG-27g; superseded by the stand-over-water narrowing)
+kid    normal  rows 40 moved   0  pass 0/40 -> 0/40  flips -
+kid    easy    rows 40 moved   0  pass 0/40 -> 0/40  flips -
+adult  normal  rows 40 moved   0  pass 39/40 -> 39/40  flips -
+adult  easy    rows 40 moved   0  pass 40/40 -> 40/40  flips -
+child  normal  rows 40 moved  20  pass 40/40 -> 40/40  flips -
+child  easy    rows 40 moved  21  pass 40/40 -> 40/40  flips -
+middle normal  rows 40 moved  16  pass 40/40 -> 40/40  flips -
+middle easy    rows 40 moved  24  pass 40/40 -> 40/40  flips -
+expert normal  rows 40 moved  15  pass 40/40 -> 40/40  flips -
+total moved 96 of 360
+  child  normal  2  P->P  time 402.2 -> 403  rescues 0->0
+  child  normal  5  P->P  time 392.7 -> 396.3  rescues 0->0
+  child  normal  6  P->P  time 375.4 -> 384  rescues 0->0
+  child  normal  8  P->P  time 446.1 -> 396.5  rescues 0->0  stuck []
+  child  normal  9  P->P  time 427.5 -> 393.7  rescues 0->0
+  child  normal 11  P->P  time 410.9 -> 413.5  rescues 0->0
+  child  normal 13  P->P  time 404.8 -> 407.6  rescues 0->0
+  child  normal 14  P->P  time 388.3 -> 383.2  rescues 0->0
+  child  normal 15  P->P  time 419.8 -> 437.1  rescues 0->0  stuck [{'x': 11580, 'what': 'nothing in the way the bot can see'}, {'x': 11679, 'what': 'nothing in the way the bot can see'}]
+  child  normal 16  P->P  time 421.8 -> 434.5  rescues 0->0
+  child  normal 20  P->P  time 414.5 -> 406.7  rescues 0->0
+  child  normal 27  P->P  time 413.6 -> 394  rescues 0->0
+  child  normal 28  P->P  time 396.7 -> 419.5  rescues 0->0  stuck [{'x': 20564, 'what': 'nothing in the way the bot can see'}]
+  child  normal 30  P->P  time 401.8 -> 393.6  rescues 0->0
+  child  normal 31  P->P  time 422.3 -> 410.7  rescues 0->0
+  child  normal 34  P->P  time 402.4 -> 403  rescues 0->0
+  child  normal 35  P->P  time 386.6 -> 429.5  rescues 0->0
+  child  normal 36  P->P  time 389.1 -> 396.1  rescues 0->0
+  child  normal 37  P->P  time 401.8 -> 419.8  rescues 0->0
+  child  normal 39  P->P  time 427.5 -> 420.1  rescues 0->0
+  child  easy    1  P->P  time 285.2 -> 296.2  rescues 0->0
+  child  easy    2  P->P  time 312.7 -> 300.6  rescues 0->0
+  child  easy    3  P->P  time 319.5 -> 299.5  rescues 0->0
+  child  easy    4  P->P  time 300.3 -> 301.9  rescues 0->0
+  child  easy    5  P->P  time 305 -> 278.3  rescues 0->0
+  child  easy    7  P->P  time 294.4 -> 298.6  rescues 0->0
+  child  easy   10  P->P  time 294.5 -> 309.5  rescues 0->0
+  child  easy   13  P->P  time 295.7 -> 304.8  rescues 0->0
+  child  easy   16  P->P  time 295.7 -> 306.9  rescues 0->0
+  child  easy   18  P->P  time 287.2 -> 292.8  rescues 0->0
+  child  easy   19  P->P  time 277.2 -> 275.8  rescues 0->0
+  child  easy   21  P->P  time 286.9 -> 300.2  rescues 0->0
+  child  easy   24  P->P  time 287.9 -> 290.5  rescues 0->0
+  child  easy   25  P->P  time 296.2 -> 283.2  rescues 0->0
+  child  easy   27  P->P  time 278.8 -> 288.1  rescues 0->0
+  child  easy   31  P->P  time 305.6 -> 304.7  rescues 0->0
+  child  easy   34  P->P  time 345.9 -> 306  rescues 0->0
+  child  easy   37  P->P  time 307.4 -> 288.5  rescues 0->0
+  child  easy   38  P->P  time 285.7 -> 270.4  rescues 0->0
+  child  easy   39  P->P  time 291.1 -> 287.2  rescues 0->0
+  child  easy   40  P->P  time 282.2 -> 280.5  rescues 0->0
+  middle normal  1  P->P  time 237 -> 238.8  rescues 0->0
+  middle normal  2  P->P  time 245 -> 244  rescues 0->0
+  middle normal  5  P->P  time 230.4 -> 227.6  rescues 0->0
+  middle normal  6  P->P  time 240.2 -> 232  rescues 0->0
+  middle normal  9  P->P  time 237.8 -> 235.7  rescues 0->0
+  middle normal 11  P->P  time 237.5 -> 240  rescues 0->0
+  middle normal 16  P->P  time 240.9 -> 241.6  rescues 0->0
+  middle normal 19  P->P  time 235 -> 233.9  rescues 0->0
+  middle normal 20  P->P  time 245.3 -> 240.4  rescues 0->0  stuck [{'x': 27854, 'what': 'the sealed shrine'}]
+  middle normal 27  P->P  time 238 -> 240.9  rescues 0->0
+  middle normal 28  P->P  time 235.8 -> 236  rescues 0->0  stuck []
+  middle normal 30  P->P  time 237.3 -> 236.5  rescues 0->0
+  middle normal 31  P->P  time 236.7 -> 236.4  rescues 0->0
+  middle normal 33  P->P  time 242 -> 243.1  rescues 0->0
+  middle normal 35  P->P  time 239.9 -> 242.8  rescues 0->0
+  middle normal 37  P->P  time 234.8 -> 237.5  rescues 0->0  stuck [{'x': 27472, 'what': 'the sealed shrine'}]
+  middle easy    2  P->P  time 222.4 -> 223.6  rescues 0->0
+  middle easy    4  P->P  time 226.9 -> 227.1  rescues 0->0
+  middle easy    6  P->P  time 222.6 -> 221.3  rescues 0->0
+  middle easy    7  P->P  time 232.6 -> 221.9  rescues 0->0
+  middle easy    8  P->P  time 217.3 -> 222.9  rescues 0->0
+  middle easy    9  P->P  time 226.1 -> 223  rescues 0->0
+  middle easy   10  P->P  time 223 -> 220.4  rescues 0->0
+  middle easy   11  P->P  time 221.1 -> 219.6  rescues 0->0
+  middle easy   13  P->P  time 224.3 -> 224.6  rescues 0->0
+  middle easy   14  P->P  time 225.1 -> 221.9  rescues 0->0
+  middle easy   16  P->P  time 225.5 -> 230.4  rescues 0->0
+  middle easy   20  P->P  time 219.4 -> 217.8  rescues 0->0
+  middle easy   21  P->P  time 218.4 -> 218.7  rescues 0->0
+  middle easy   22  P->P  time 224.1 -> 219.1  rescues 0->0
+  middle easy   24  P->P  time 229.1 -> 222.7  rescues 0->0
+  middle easy   25  P->P  time 227.7 -> 224.3  rescues 0->0
+  middle easy   27  P->P  time 229.2 -> 225.2  rescues 0->0
+  middle easy   28  P->P  time 217 -> 218.3  rescues 0->0
+  middle easy   29  P->P  time 220.6 -> 223.3  rescues 0->0
+  middle easy   31  P->P  time 223.4 -> 222.9  rescues 0->0
+  middle easy   34  P->P  time 221.2 -> 216.8  rescues 0->0
+  middle easy   37  P->P  time 229.3 -> 229.4  rescues 0->0
+  middle easy   38  P->P  time 224.7 -> 225.2  rescues 0->0
+  middle easy   39  P->P  time 220 -> 225  rescues 0->0
+  expert normal  1  P->P  time 234 -> 229.3  rescues 0->0
+  expert normal  2  P->P  time 233.4 -> 232.9  rescues 0->0  stuck []
+  expert normal  8  P->P  time 228.7 -> 228  rescues 0->0
+  expert normal 10  P->P  time 231.4 -> 224.1  rescues 0->0  stuck [{'x': 27869, 'what': 'the sealed shrine'}]
+  expert normal 11  P->P  time 237.9 -> 225.9  rescues 0->0  stuck [{'x': 28127, 'what': 'the sealed shrine'}]
+  expert normal 16  P->P  time 239.7 -> 237.4  rescues 0->0  stuck []
+  expert normal 19  P->P  time 224.6 -> 235.7  rescues 0->0
+  expert normal 20  P->P  time 222.6 -> 222.7  rescues 0->0
+  expert normal 21  P->P  time 228 -> 223.8  rescues 0->0  stuck []
+  expert normal 26  P->P  time 229.4 -> 222.2  rescues 0->0  stuck [{'x': 27454, 'what': 'the sealed shrine'}]
+  expert normal 30  P->P  time 238.1 -> 250.9  rescues 0->0  stuck [{'x': 27614, 'what': 'the sealed shrine'}]
+  expert normal 31  P->P  time 240.5 -> 241.6  rescues 0->0
+  expert normal 34  P->P  time 236.9 -> 235.6  rescues 0->0
+  expert normal 37  P->P  time 224.1 -> 220.8  rescues 0->0  stuck []
+  expert normal 38  P->P  time 234.4 -> 234.2  rescues 0->0

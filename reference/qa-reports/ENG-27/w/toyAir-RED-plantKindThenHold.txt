@@ -1,0 +1,42 @@
+TAP version 13
+# Subtest: the race gate presses the shortest aimed flight that lands safe, by airtime; ties: the smaller hold (E as ruled, ENG-27w)
+not ok 1 - the race gate presses the shortest aimed flight that lands safe, by airtime; ties: the smaller hold (E as ruled, ENG-27w)
+  ---
+  duration_ms: 1.274686
+  type: 'test'
+  location: '/home/user/wt27w/tools/inspect/hopJudged.test.ts:121:1'
+  failureType: 'testCodeFailure'
+  error: "E pressed the expert's 0.70 s glide single (1.10 s in the air) over a double that lands safe in 0.93 s (kind-then-hold)"
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+    kind: 'single'
+    hold: 0.701
+    d2: -1
+    dblAt: 0
+    hold2: 0.18
+    upOnly: 0
+  actual:
+    kind: 'single'
+    hold: 0.701
+    d2: -1
+    dblAt: 0
+    hold2: 0.18
+    upOnly: 0
+  operator: 'notStrictEqual'
+  stack: |-
+    TestContext.<anonymous> (/home/user/wt27w/tools/inspect/hopJudged.test.ts:129:10)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.start (node:internal/test_runner/test:944:17)
+    startSubtestAfterBootstrap (node:internal/test_runner/harness:296:17)
+  ...
+1..1
+# tests 1
+# suites 0
+# pass 0
+# fail 1
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 682.589606

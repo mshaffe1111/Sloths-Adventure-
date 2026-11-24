@@ -1,0 +1,6 @@
+hopJudged on 40242a902 (frozen tree; hopFlies takes the engine's own v2):
+# seed 5: 12 judged hops pressed (edgeWait, race); flown not as judged 0, came down elsewhere 0
+# seed 2: 16 judged hops pressed (edgeWait, upstream, race); flown not as judged 0, came down elsewhere 1
+#   edgeWait q\#14 judged t 19.93 x 14674 lag 0 hold 0.235 double | flown t 19.93 x 14674 hold 0.235 double | came down LOST
+# pass 1
+# fail 1

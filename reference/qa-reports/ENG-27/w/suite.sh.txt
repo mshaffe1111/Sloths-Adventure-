@@ -1,0 +1,9 @@
+#!/bin/bash
+# suite.sh <tree> <outprefix> <part 1|2>: part 1 = tsc, unit shard 1/2, then the CI tool line (gates.yml rolled); part 2 = unit shard 2/2
+T=$1; O=$2; P=$3
+cd "$T"
+UNIT="src/audio/*.test.ts src/game/*.test.ts src/components/*.test.ts src/components/**/*.test.ts src/game/gen2/*.test.ts src/game/gen2/worlds/*.test.ts src/game/art/*.test.ts"
+if [ "$P" = 1 ]; then npx tsc --noEmit -p . > $O.tsc 2>&1; echo "TSC EXIT $?" >> $O.tsc; fi
+npx tsx --test --test-shard=$P/2 --test-reporter=tap $UNIT > $O.unit$P 2>&1; echo "UNIT EXIT $?" >> $O.unit$P
+if [ "$P" = 1 ]; then npx tsx --test --test-reporter=tap tools/engine/library.test.ts tools/engine/seedlist.test.ts tools/engine/yield.test.ts tools/inspect/travelBots.test.ts tools/inspect/sweeper.test.ts tools/inspect/chaseBots.test.ts tools/inspect/boaBots.test.ts tools/inspect/riverRide.test.ts tools/inspect/padRide.test.ts tools/inspect/lianaRide.test.ts tools/difficulty/coveragecheck.test.ts tools/difficulty/rideChannel.test.ts tools/inspect/clockRide.test.ts tools/engine/library13.test.ts tools/inspect/castBots.test.ts tools/inspect/firsttimer.test.ts tools/inspect/pacerRespawn.test.ts tools/inspect/clip.test.ts tools/inspect/routeHumps.test.ts tools/inspect/pitClimb.test.ts tools/engine/libstage.test.ts tools/engine/registrycheck.test.ts tools/engine/tipwalk.test.ts tools/difficulty/score.test.ts tools/testlink/build.test.ts tools/engine/paintFall.test.ts tools/timecheck.test.mjs tools/inspect/lineBot.test.ts tools/inspect/snapRide.test.ts tools/inspect/snapperBonk.test.ts tools/difficulty/snapChannel.test.ts tools/inspect/wheelRide.test.ts tools/difficulty/lianaChannel.test.ts tools/difficulty/wheelChannel.test.ts tools/difficulty/lineChannel.test.ts tools/inspect/posted.test.ts tools/engine/paintcheck.test.ts tools/inspect/snapperTaught.test.ts tools/inspect/hopJudged.test.ts > $O.ci 2>&1; echo "CI EXIT $?" >> $O.ci; fi
+echo PART $P DONE

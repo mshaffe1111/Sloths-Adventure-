@@ -9,6 +9,10 @@ import { GLIDE } from './glide.ts';
  *  it), and its lip is caught as a thin piece's (LIP_CATCH). gen2 lays every 1-1 hop rock at least this tall (pipeline.ts, R-165.122) */
 export const WALL_H = 50;
 
+/** a life lost: the world holds this long (s) before the respawn (engine.ts stepDown); the stage clock holds with it, so a piece that
+ *  must count it (pieces/pacerPiece.ts: the boat waits for no one) reads it here */
+export const DOWN_SECS = 0.75;
+
 export const PHYS = {
   maxRun: 285,
   groundAcc: 2600,

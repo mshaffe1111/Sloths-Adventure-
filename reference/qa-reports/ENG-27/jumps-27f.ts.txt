@@ -1,0 +1,15 @@
+import '../../src/game/headlessDom.ts';
+import { homeRun } from './homeToys.ts';
+import { HOME_CODE, POST_CODE } from '../../src/game/gen2/toyHome.ts';
+const [tier, setting, seedS, codeS, c0 = '-1', c1 = '-1', every = '6'] = process.argv.slice(2);
+let f = 0, piece: any, l0: number | undefined, last = -1;
+homeRun(tier as never, setting as never, Number(seedS), 1, { onFrame: (sim: any) => {
+  f++; const e = sim.e, p = e.player; piece ??= e.pieces.find((q: any) => q.kind === 'pacer');
+  const clk = piece?.clock ?? null; const dl = l0 !== undefined && e.lives < l0; l0 = e.lives;
+  const on = e.platforms.find((q: any) => q.id === e.standingOnId);
+  if (dl) console.log(`f ${f} LIFE LOST x ${Math.round(p.x)} y ${Math.round(p.y)} clk ${clk?.toFixed(2)}`);
+  if (clk !== null && last >= 0 && Math.abs(clk - last - 1 / 30) > 0.02) console.log(`f ${f} CLOCK ${last.toFixed(2)} -> ${clk.toFixed(2)} at x ${Math.round(p.x)} y ${Math.round(p.y)} boat ${Math.round(piece.x)}`);
+  if (clk !== null && clk >= Number(c0) && clk <= Number(c1) && f % Number(every) === 0) console.log(`f ${f} x ${Math.round(p.x)} y ${Math.round(p.y)} vx ${Math.round(p.vx)} vy ${Math.round(p.vy)} g ${p.grounded ? 1 : 0} clk ${clk.toFixed(2)} on ${on ? `${on.id}:${on.type}${on.drift ? ':log' : ''}@${Math.round(on.x)}-${Math.round(on.x + on.width)},${Math.round(on.y)}` : '-'}`);
+  last = clk ?? -1;
+} } as never, codeS === 'post' ? POST_CODE : HOME_CODE);
+console.log('verdict', JSON.stringify(piece?.verdict));

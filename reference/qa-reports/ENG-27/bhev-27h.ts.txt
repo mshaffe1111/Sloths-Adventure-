@@ -1,0 +1,17 @@
+// scratch (ENG-27h rule 28): for rows given as bot:setting:seed, every life lost within 3 s after jumpFor met a log across a lip (SKILLS.boardHop's
+// read, the r28patch-27h log __bh), with the read's x, and the bot's jump kind and take-off floor at the read
+import { CAST_BOTS } from './castBots.ts';
+import { firstTimer } from './firsttimer.ts';
+const stage = process.argv[2];
+for (const spec of process.argv.slice(3)) {
+  const [bot, setting, seedS] = spec.split(':');
+  (globalThis as any).__ft = []; (globalThis as any).__bl = []; (globalThis as any).__bh = [];
+  let nbh = 0, lastRead: any = null, lives0: number | undefined; const hits: any[] = [];
+  const r = firstTimer(stage, Number(seedS), (CAST_BOTS as any)[bot][setting], { cap: 1200, dotSetting: true, onFrame: (sim: any) => {
+    const e = sim.e, bh = (globalThis as any).__bh as any[];
+    if (bh.length > nbh) { lastRead = bh[bh.length - 1]; nbh = bh.length; }
+    if (lives0 !== undefined && e.lives < lives0 && lastRead && sim.t - lastRead.t < 3) hits.push({ t: Math.round(sim.t * 10) / 10, x: Math.round(e.player.x), read: lastRead });
+    lives0 = e.lives;
+  } } as never);
+  console.log(JSON.stringify({ stage, bot, setting, seed: Number(seedS), lives: r.harms.filter((h: any) => h.kind === 'life').length, reads: nbh, atRead: hits }));
+}

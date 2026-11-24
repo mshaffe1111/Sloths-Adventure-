@@ -1,0 +1,19 @@
+import '../../src/game/headlessDom.ts';
+import { homeRun } from './homeToys.ts';
+import { SKILLS } from './firsttimer.ts';
+import { HOME_CODE, POST_CODE } from '../../src/game/gen2/toyHome.ts';
+const [setting = 'easy', seedS = '1', codeS = 'home'] = process.argv.slice(2);
+Object.assign(SKILLS, { race: false, rideOnly: true });
+let f = 0, piece: any, l0: number | undefined, lastClk = -1; const out: string[] = []; let tail = -1;
+homeRun('middle', setting as never, Number(seedS), 1, { onFrame: (sim: any) => {
+  f++; const e = sim.e, p = e.player; piece ??= e.pieces.find((q: any) => q.kind === 'pacer');
+  const on = e.platforms.find((q: any) => q.id === e.standingOnId);
+  const clk = piece?.clock;
+  const dl = l0 !== undefined && e.lives < l0; l0 = e.lives;
+  const jump = clk !== null && lastClk >= 0 && Math.abs(clk - lastClk - 1 / 30) > 0.02;
+  if (dl || jump) { out.push(`f ${f} ${dl ? 'LIFE LOST' : 'CLOCK JUMP'} x ${Math.round(p.x)} y ${Math.round(p.y)} clk ${lastClk.toFixed(2)} -> ${clk?.toFixed(2)} boat x ${Math.round(piece.x)}`); tail = 0; }
+  if (clk !== null && piece.pacer.marks && f % 15 === 0 && p.x < 2700 && !piece.verdict) out.push(`f ${f} x ${Math.round(p.x)} y ${Math.round(p.y)} vx ${Math.round(p.vx)} g ${p.grounded ? 1 : 0} on ${on ? `${on.type}${on.drift ? ':log' : ''}@${Math.round(on.x)}-${Math.round(on.x + on.width)}` : '-'} clk ${clk?.toFixed(2)} boat ${Math.round(piece.x)}`);
+  lastClk = clk ?? -1;
+} } as never, codeS === 'post' ? POST_CODE : HOME_CODE);
+console.log(out.join('\n'));
+console.log('verdict', JSON.stringify(piece.verdict), 'rivers', JSON.stringify(piece.pacer.marks.slice(-4)));

@@ -678,10 +678,33 @@ function validateStageOn(stage: GeneratedStage, opts: CheckOptions): CheckResult
     return !(Math.min(inL, inR) <= back);
   };
 
+  /** a stage of legs (gen2 legs.ts, flow 'legs'): each platform's RUN leg (right or left), by the leg's box as laid; a column's pieces
+   *  and the walls between legs belong to none */
+  const runLegOf = new Map<number, number>();
+  const legBoxes = (stage as { gen2?: { tower?: { flow?: string; legs?: ReadonlyArray<{ travel: string; x0: number; x1: number; y0: number; y1: number }> } } }).gen2?.tower;
+  const runLegs = () => {
+    runLegOf.clear();
+    if (!gen2Built || legBoxes?.flow !== 'legs') return;
+    const runs = (legBoxes.legs ?? []).map((g, k) => ({ g, k })).filter(({ g }) => g.travel === 'right' || g.travel === 'left');
+    if (runs.length > 1) for (const p of plats) {
+      const [x0, x1] = ext(p);
+      // (the leg whose span holds it and whose heights lie nearest: a floor or a catch the lay hangs after the leg's box was taken (a pit's
+      // floor, a catch bough) lies a little under it, and two run legs that share x are kept LEG_CLEAR apart)
+      let on: { k: number; d: number } | undefined;
+      for (const { g, k } of runs) {
+        if (x0 < g.x0 - 1 || x1 > g.x1 + 1) continue;
+        const d = Math.max(0, g.y0 - p.y, p.y - g.y1);
+        if (!on || d < on.d) on = { k, d };
+      }
+      if (on) runLegOf.set(p.id, on.k);
+    }
+  };
+
   /** build the graph over the ground as `layout` left it, and walk it from the spawn point (false: nothing under the spawn point) */
   const walk = (): boolean => {
     adj.clear();
     runs.clear();
+    runLegs();
     usedSwing.clear();
     maxGapUsed = 0;
     swingEdges = 0;
@@ -745,6 +768,10 @@ function validateStageOn(stage: GeneratedStage, opts: CheckOptions): CheckResult
           // (gen2 stages only for this release, the lead 11-06: roofedDrop moved 4-9 layout 4's find; only 1-1 may change in 0.9.5, so the
           // old generator's stages keep main's check: 4-9's dead stair is its own roadmap item)
           if (gen2Built && a.type !== 'bouncy' && dy < -8 && roofedDrop(a, b, bx0, bx1, dy)) continue;
+          // (a stage of legs: two RUN legs meet only through the column between them, never by a jump or a fall from one to the other;
+          // ENG-27, gen2 legs.ts legOverlaps keeps them a jump and his height apart, and the lay's fall verdict refuses a fall from one
+          // onto the other. Unjudged, every bank of the out leg linked down to the home leg under it, through the banks themselves)
+          if (runLegOf.size) { const la = runLegOf.get(a.id), lb = runLegOf.get(b.id); if (la !== undefined && lb !== undefined && la !== lb) continue; }
           link(pid(a), pid(b));
           if (a.type !== 'bouncy') maxGapUsed = Math.max(maxGapUsed, gap);
         }
@@ -1017,8 +1044,10 @@ function validateStageOn(stage: GeneratedStage, opts: CheckOptions): CheckResult
   for (const c of stage.collectibles) {
     if (c.type === 'exit_totem') continue;
     if (c.x < stripLo || c.x > stripHi) errors.push(`${c.type} #${c.id} is outside the walkable strip`);
-    // (in a stage that is not a climb the engine stops him at the shrine: nothing beyond it can be picked up)
-    if (cfg.objectiveType !== 'ascent' && stage.exitTotemX > 0 && c.x > stage.exitTotemX + PAST_SHRINE) errors.push(`${c.type} #${c.id} lies past the shrine, where he cannot go`);
+    // (in a stage that is not a climb the engine stops him at the shrine: nothing beyond it can be picked up. Beyond is the way he travels
+    //  at the end: a stage whose last leg runs LEFT (config.travel 'left', gen2 legs) has its shrine at its left end, ENG-27)
+    const ahead = cfg.travel === 'left' ? -1 : 1;
+    if (cfg.objectiveType !== 'ascent' && stage.exitTotemX > 0 && (c.x - stage.exitTotemX) * ahead > PAST_SHRINE) errors.push(`${c.type} #${c.id} lies past the shrine, where he cannot go`);
     for (const p of stage.platforms) {
       if (p.broken || p.type === 'drift' || p.type === 'moving') continue;
       if (c.x >= p.x && c.x <= p.x + p.width && c.y > p.y + 2 && c.y < p.y + p.height - 2) {

@@ -1,0 +1,36 @@
+# Subtest: up in the engine (1-4): a higher flag is further on, the bar is the old climb bar, no wall at the door
+ok 497 - up in the engine (1-4): a higher flag is further on, the bar is the old climb bar, no wall at the door
+  ---
+  duration_ms: 793.850436
+  type: 'test'
+  ...
+# Subtest: left in the engine (a fixture only this test builds: 1-1 read leftward, its shrine moved to the left of the start)
+not ok 498 - left in the engine (a fixture only this test builds: 1-1 read leftward, its shrine moved to the left of the start)
+  ---
+  duration_ms: 8477.03232
+  type: 'test'
+  location: '/tmp/claude-0/-home-user-Sloths-Adventure-/acbec125-f940-5578-a7d4-3d581524dfe9/scratchpad/ground/wt/src/game/stageModes.test.ts:131:1'
+  failureType: 'testCodeFailure'
+  error: 'gen2 1-1 (normal): no seed of 24 from 769 builds cleanly (the first: seed #71 lies past the shrine, where he cannot go)'
+  code: 'ERR_TEST_FAILURE'
+  stack: |-
+    provenGen2Stage (/tmp/claude-0/-home-user-Sloths-Adventure-/acbec125-f940-5578-a7d4-3d581524dfe9/scratchpad/ground/wt/src/game/gen2/pipeline.ts:4797:9)
+    buildPlayStage (/tmp/claude-0/-home-user-Sloths-Adventure-/acbec125-f940-5578-a7d4-3d581524dfe9/scratchpad/ground/wt/src/game/gen2/seedList.ts:241:10)
+    generateStageOn (/tmp/claude-0/-home-user-Sloths-Adventure-/acbec125-f940-5578-a7d4-3d581524dfe9/scratchpad/ground/wt/src/game/stageGenerator.ts:2951:27)
+    <anonymous> (/tmp/claude-0/-home-user-Sloths-Adventure-/acbec125-f940-5578-a7d4-3d581524dfe9/scratchpad/ground/wt/src/game/stageGenerator.ts:2889:40)
+    withSetting (/tmp/claude-0/-home-user-Sloths-Adventure-/acbec125-f940-5578-a7d4-3d581524dfe9/scratchpad/ground/wt/src/game/settingDials.ts:45:12)
+    generateStage (/tmp/claude-0/-home-user-Sloths-Adventure-/acbec125-f940-5578-a7d4-3d581524dfe9/scratchpad/ground/wt/src/game/stageGenerator.ts:2889:10)
+    new GameEngine (/tmp/claude-0/-home-user-Sloths-Adventure-/acbec125-f940-5578-a7d4-3d581524dfe9/scratchpad/ground/wt/src/game/engine.ts:1043:101)
+    new RealPlay (/tmp/claude-0/-home-user-Sloths-Adventure-/acbec125-f940-5578-a7d4-3d581524dfe9/scratchpad/ground/wt/src/game/realPlay.ts:156:15)
+    play (/tmp/claude-0/-home-user-Sloths-Adventure-/acbec125-f940-5578-a7d4-3d581524dfe9/scratchpad/ground/wt/src/game/stageModes.test.ts:86:13)
+    TestContext.<anonymous> (/tmp/claude-0/-home-user-Sloths-Adventure-/acbec125-f940-5578-a7d4-3d581524dfe9/scratchpad/ground/wt/src/game/stageModes.test.ts:132:22)
+  ...
+# Subtest: the help ladder's past: a counted piece resets once he stands beyond it along the travel (right as before; left at its near end)
+ok 499 - the help ladder's past: a counted piece resets once he stands beyond it along the travel (right as before; left at its near end)
+  ---
+  duration_ms: 0.43679
+  type: 'test'
+  ...
+# Subtest: he is still on the ground under the threshold, after the calm-in, and any step breaks it at once
+ok 500 - he is still on the ground under the threshold, after the calm-in, and any step breaks it at once
+  ---

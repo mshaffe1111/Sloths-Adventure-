@@ -5,7 +5,7 @@ import assert from 'node:assert/strict';
 import './headlessDom.ts';
 import { MODES, travelSpan } from './stageModes.ts';
 import { HelpLadder } from './helpLadder.ts';
-import { RealPlay, levelConfig } from './realPlay.ts';
+import { RealPlay } from './realPlay.ts';
 import { generateAllLevels } from './worldsData.ts';
 import { SHRINE_STOP, ascentProgress } from './rules.ts';
 import type { Travel } from './stageKit.types.ts';
@@ -129,12 +129,15 @@ test('up in the engine (1-4): a higher flag is further on, the bar is the old cl
 });
 
 test('left in the engine (a fixture only this test builds: 1-1 read leftward, its shrine moved to the left of the start)', () => {
-  const { r, bar } = play('1-1', { ...levelConfig('1-1'), travel: 'left' });
-  assert.equal(r.e.mode, MODES.left);
+  // (1-1 is BUILT as the game lays it, rightward, its shrine at its right end, and read leftward only after: the level check refuses a
+  //  stage whose config travels left while its pickups lie left of its shrine, as the engine's own left wall would keep him from them,
+  //  levelCheck past-the-shrine; asking the builder for travel 'left' made every seed fail, ENG-27k. The fixture is made in one place)
+  const { r, bar } = play('1-1');
   const st = r.stage, cps = st.checkpoints!;
   const startX = cps[3].x, exitX = st.spawnX + 600;
-  Object.assign(st, { spawnX: startX, spawnY: cps[3].y, exitTotemX: exitX });
+  Object.assign(st, { config: { ...st.config, travel: 'left' }, spawnX: startX, spawnY: cps[3].y, exitTotemX: exitX });
   r.e.travelStart();
+  assert.equal(r.e.mode, MODES.left);
   r.e.checkpoint = { x: startX, y: cps[3].y };
   r.stand(cps[1].x, cps[1].y); r.frame();
   assert.deepEqual(r.e.checkpoint, { x: cps[1].x, y: cps[1].y }, 'a flag further left replaces the start');

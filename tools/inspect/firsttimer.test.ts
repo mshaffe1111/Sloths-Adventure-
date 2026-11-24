@@ -2,7 +2,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {
-  dotReport, edgesOf, firstHarms, flagsFor, flickHold, FirstTimerRun, FT_ADULT, FT_KID, gauss, LEVEL_REACH, peakStress, Progress, rng, SpotMemory, teaches,
+  dotReport, edgesOf, firstHarms, firstTimer, flagsFor, flickHold, FirstTimerRun, FT_ADULT, FT_CHILD, FT_KID, FT_MIDDLE, gauss, LEVEL_REACH, peakStress, Progress, rng, SKILLS, SpotMemory, teaches,
   type Harm, type Shown, type Try,
 } from './firsttimer.ts';
 import type { Platform } from '../../src/game/types.ts';
@@ -143,6 +143,118 @@ test("in the real engine: after a put-back the game's steer hold is not a wall; 
     assert.equal(r.rescues, 0, `seed ${seed}: never rescued (${tries})`);
     assert.ok(r.sim.p.x > 1300, `seed ${seed}: over the gap (x ${Math.round(r.sim.p.x)})`);
     for (const t of r.tries) assert.ok(t.x >= 1000 - FT_ADULT.edgeAim - 60 && t.running, `seed ${seed}: every jump from a run-up near the lip, never where he was set down (${tries})`);
+  }
+});
+
+test('in the real engine: a log drifting his way across the lip is the floor his boarding hop is for: a single where a single comes down on it, never a double read past it to the next log (SKILLS.boardHop; RED with it off)', () => {
+  // (SKILLS.boardLog has him wait at a bank's lip while a log his way is still mostly under it, then hop on. jumpFor skipped that log
+  // (a piece starting behind the edge) and read the gap to the NEXT log: 2-2 child Normal seed 36 stood at the lip with log 79 under it,
+  // took the 214 px to log 80 for a double, flew over 79 and came down in the water between them (x 20212; trace-27h.txt 9, ENG-27h).
+  // Planted at the read itself: the toy is 2-2's lip, the bank's top at 600, the river's logs 28 px under it (river.ts LOG_DROP), each log
+  // on its river's clock (driftX) where the platform stands at the bot's time 0)
+  const bank = { id: 1, x: 0, y: 600, width: 1000, height: 90, type: 'solid' } as Platform;
+  const log = (id: number, x: number, dir: 1 | -1 = 1) => ({
+    id, x, y: 628, width: 200, height: 24, type: 'drift',
+    drift: { x0: 1000, x1: 3000, dir, speed: 60, width: 200, baseY: 628, offset: (dir === 1 ? x - 800 : 3000 - x) / 60 },
+  }) as unknown as Platform;
+  const read = (under: Platform | null, on: boolean) => {
+    const line = Array.from({ length: 160 }, (_, i) => ({ x: 100 + i * 24, y: 600 }));
+    const run = new FirstTimerRun('1-1', 1, FT_CHILD, { route: line, cap: 1, rescueAfter: 1000 });
+    run.sim.bare([bank, ...(under ? [under] : []), log(3, 1214)]);
+    const was = SKILLS.boardHop;
+    SKILLS.boardHop = on;
+    try {
+      return (run as unknown as { jumpFor(p: { x: number; y: number }, dir: 1, here: Platform): 'single' | 'double' }).jumpFor({ x: 970, y: 600 }, 1, bank);
+    } finally {
+      SKILLS.boardHop = was;
+    }
+  };
+  // (a log 160 px past the lip, his single from a stand 30 px back comes down on it)
+  assert.equal(read(log(2, 960), true), 'single', 'a log his way across the lip, a single comes down on it: a single');
+  assert.equal(read(log(2, 960), false), 'double', 'RED: with SKILLS.boardHop off the gap to the next log (214 px) is read, a double');
+  // (and nothing else moves. A log only 40 px past the lip: a single comes down past its front, in the water, so the gap read stands (2-2
+  //  middle Normal seed 17 with log 79 75 px out: the double reached log 80). No log across the lip (none, one still all under the bank, one
+  //  running back at him): the next log's gap, as before)
+  for (const [under, why] of [[log(2, 840), 'a log only 40 px out'], [null, 'no log at the lip'], [log(2, 700), 'a log still all under the bank'], [log(2, 960, -1), 'a log running back at him']] as const) {
+    assert.equal(read(under, true), 'double', `${why}: the 214 px to the next log is a double, with the skill on as off`);
+    assert.equal(read(under, false), 'double', `${why}: (skill off)`);
+  }
+});
+
+test('on the runs it was found on, 2-2 child Normal seed 36 and middle Normal seed 17: no life lost in the 3 s after he stands at a lip with a log his way across it (SKILLS.boardHop; the child RED with it off)', () => {
+  // (the real stage and bots, as castBots rolls them; read by what he meets, never where: every stand at a bank's lip, a log drifting his
+  //  way across it a step down, and a life lost within 3 s of one. Off, the child took the double over log 79 into the water; a single
+  //  wherever a log crossed the lip (this skill's first cut) dropped the middle short of log 79's front, where the double reached log 80)
+  const meet = (on: boolean, who = FT_CHILD, seed = 36) => {
+    const was = SKILLS.boardHop;
+    let stood = -1, lost = 0, stands = 0, lives: number | undefined;
+    SKILLS.boardHop = on;
+    try {
+      firstTimer('2-2', seed, who, { cap: 1200, dotSetting: true, onFrame: (sim) => {
+        const e = (sim as unknown as { e: { player: { x: number; vx: number; grounded: boolean }; platforms: Platform[]; standingOnId: number | null; lives: number } }).e;
+        const p = e.player, t = sim.t, here = e.platforms.find((q) => q.id === e.standingOnId);
+        if (p.grounded && here && here.type !== 'drift' && Math.abs(p.vx) < 10 && here.x + here.width - p.x < 60
+          && e.platforms.some((q) => q.type === 'drift' && q.drift?.dir === 1 && q.y - here.y > 6 && q.y - here.y <= 40 && q.x < here.x + here.width && q.x + q.width > here.x + here.width)) {
+          if (t - stood > 3) stands++;
+          stood = t;
+        }
+        if (lives !== undefined && e.lives < lives && stood >= 0 && t - stood < 3) lost++;
+        lives = e.lives;
+      } });
+    } finally {
+      SKILLS.boardHop = was;
+    }
+    return { stands, lost };
+  };
+  const v = meet(true), off = meet(false);
+  assert.ok(v.stands >= 1, `he stood at such a lip (${v.stands})`);
+  assert.equal(v.lost, 0, `with the skill: no life lost after one (${v.stands} stands)`);
+  assert.ok(off.lost >= 1, `RED: with SKILLS.boardHop off a life is lost after one (${off.lost} of ${off.stands} stands)`);
+  const mid = meet(true, FT_MIDDLE, 17);
+  assert.ok(mid.stands >= 1 && mid.lost === 0, `the middle, seed 17: no life lost after such a stand (${mid.lost} of ${mid.stands})`);
+});
+
+test('in the real engine: a jump from a STAND over a laid pond reads the gap from where he stands, so a single that cannot carry his own ground to the lip and the pond is a double (SKILLS.fromTakeoff; RED with it off)', () => {
+  // (re-planted by ENG-27j on its cause laid EXPLICITLY, the lead's ruling 11-21: the race plants it was first planted on (2-7's toy,
+  //  post Normal seeds 4 and 5, ENG-27f) won without it once the merged ground took away the descent pools they stood on. The two
+  //  misses, each laid here: (a) post Normal seed 5's middle stood 165 px before a 133 px safe pond and took a single, splashed back eight
+  //  times (x 6591); (b) seed 4's stood 107 px back on a log with the bank 72 px past its front and took a single, came down on the log's
+  //  end and walked off it into the water (x 2749). The bank's top at 600, a log 28 px under it (river.ts LOG_DROP), the water a river zone)
+  const solid = (id: number, x: number, w: number, y = 600) => ({ id, x, y, width: w, height: 90, type: 'solid' }) as Platform;
+  const log = (id: number, x: number) => ({
+    id, x, y: 628, width: 240, height: 24, type: 'drift',
+    drift: { x0: 0, x1: 6000, dir: 1, speed: 0.001, width: 240, baseY: 628, offset: (x + 240) / 0.001 },
+  }) as unknown as Platform;
+  const read = (pieces: Platform[], water: Array<[number, number]>, at: number, here: Platform, on: boolean, vx = 0) => {
+    const line = Array.from({ length: 160 }, (_, i) => ({ x: 100 + i * 24, y: 600 }));
+    const run = new FirstTimerRun('1-1', 1, FT_MIDDLE, { route: line, cap: 1, rescueAfter: 1000 });
+    run.sim.bare(pieces);
+    (run.sim.stage as unknown as { rivers: Array<{ x0: number; x1: number }> }).rivers = water.map(([x0, x1]) => ({ x0, x1 }));
+    run.sim.stand(at, here.y);
+    run.sim.p.vx = vx;
+    const was = SKILLS.fromTakeoff;
+    SKILLS.fromTakeoff = on;
+    try {
+      return (run as unknown as { jumpFor(p: { x: number; y: number }, dir: 1, here: Platform): 'single' | 'double' }).jumpFor({ x: at, y: here.y }, 1, here);
+    } finally {
+      SKILLS.fromTakeoff = was;
+    }
+  };
+  // (a) the pond: the near bank ends at 1000, 133 px of safe water, the far bank at 1133; he stands 165 px before the lip
+  const near = solid(1, 0, 1000), far = solid(2, 1133, 3000);
+  assert.equal(read([near, far], [[1000, 1133]], 835, near, true), 'double', '(a) 165 px of his own ground and a 133 px pond from a stand: a double');
+  assert.equal(read([near, far], [[1000, 1133]], 835, near, false), 'single', 'RED (a): with SKILLS.fromTakeoff off the 133 px gap alone is read, a single');
+  // (b) the log: he stands on a log 107 px back from its front (x 1240), the bank 72 px past it (x 1312), water from the near bank on
+  const lg = log(3, 1000), bank = solid(4, 1312, 3000);
+  assert.equal(read([solid(1, 0, 900), lg, bank], [[900, 1312]], 1133, lg, true), 'double', '(b) 107 px of log and a 72 px gap to the bank from a stand: a double');
+  assert.equal(read([solid(1, 0, 900), lg, bank], [[900, 1312]], 1133, lg, false), 'single', 'RED (b): with it off the 72 px gap alone is read, a single');
+  // (and nothing else moves, the narrowing rule 28 found (ENG-27g): a RUNNING single (his own run carries it), a DRY pit the same width,
+  //  and a run-up longer than a single carries (2-3: a stand 330 px before a 60 px pond) read the gap alone, a single, on as off)
+  for (const on of [true, false]) {
+    assert.equal(read([near, far], [[1000, 1133]], 835, near, on, 300), 'single', `running at the pond: a single (skill ${on ? 'on' : 'off'})`);
+    assert.equal(read([near, far], [], 835, near, on), 'single', `a dry pit the same width: a single (skill ${on ? 'on' : 'off'})`);
+    const far60 = solid(2, 1060, 3000);
+    assert.equal(read([near, far60], [[1000, 1060]], 670, near, on), 'single', `a stand 330 px before a 60 px pond: a single (skill ${on ? 'on' : 'off'})`);
   }
 });
 

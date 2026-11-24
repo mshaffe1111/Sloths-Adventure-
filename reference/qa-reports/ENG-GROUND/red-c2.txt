@@ -1,0 +1,54 @@
+TAP version 13
+# Subtest: the out-and-back toy: the painted underside hangs its roots below the ceiling line (banks and pools), over their own spans only
+not ok 1 - the out-and-back toy: the painted underside hangs its roots below the ceiling line (banks and pools), over their own spans only
+  ---
+  duration_ms: 1384.989013
+  type: 'test'
+  location: '/home/user/Sloths-Adventure-/src/game/groundStack.test.ts:274:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    a hard seam where one strip gives way to the next
+    + actual - expected
+    
+    + [
+    +   'bank x 14049: a hard seam at x 14336',
+    +   'bank x 14689: a hard seam at x 14848',
+    +   'bank x 15102: a hard seam at x 15360',
+    +   'bank x 16805: a hard seam at x 16896',
+    +   'bank x 17125: a hard seam at x 17408',
+    +   'bank x 18382: a hard seam at x 18432',
+    +   'pool x 16265: a hard seam at x 16384'
+    + ]
+    - []
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+  actual:
+    0: 'bank x 14049: a hard seam at x 14336'
+    1: 'bank x 14689: a hard seam at x 14848'
+    2: 'bank x 15102: a hard seam at x 15360'
+    3: 'bank x 16805: a hard seam at x 16896'
+    4: 'bank x 17125: a hard seam at x 17408'
+    5: 'bank x 18382: a hard seam at x 18432'
+    6: 'pool x 16265: a hard seam at x 16384'
+  operator: 'deepStrictEqual'
+  stack: |-
+    TestContext.<anonymous> (/home/user/Sloths-Adventure-/src/game/groundStack.test.ts:373:12)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.start (node:internal/test_runner/test:944:17)
+    startSubtestAfterBootstrap (node:internal/test_runner/harness:296:17)
+    run (node:internal/test_runner/harness:307:12)
+    test (node:internal/test_runner/harness:316:12)
+    <anonymous> (/home/user/Sloths-Adventure-/src/game/groundStack.test.ts:274:1)
+  ...
+1..1
+# tests 1
+# suites 0
+# pass 0
+# fail 1
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 2136.724706

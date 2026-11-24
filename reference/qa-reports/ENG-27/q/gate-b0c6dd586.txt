@@ -1,0 +1,27 @@
+plant normal 1: finish 246.3 end shrine lives lost 3
+  edgeWait: judged 0.5 s, refused 0.1 s, pressed 10, land rate 71.4%
+  upstream: judged 0.3 s, refused 0.1 s, pressed 6, land rate 60.0%
+  edgeStand: judged 0.2 s, refused 0.2 s, pressed 0, land rate 0.0%
+  race: judged 8.4 s, refused 8.0 s, pressed 12, land rate 4.8%
+  big sites: race 2750 3.1s 0%; race 3000 1.3s 0%; race 2500 1.1s 3%; race 4000 1.0s 3%; race 5750 0.7s 5%; race 11000 0.4s 9%; edgeWait 14750 0.2s 67%; race 9750 0.2s 17%; upstream 15000 0.2s 60%; race 4500 0.2s 20%; race 11500 0.1s 25%; race 8500 0.1s 25%; upstream 15250 0.1s 67%; edgeWait 4500 0.1s 33%
+  race episodes 12: hopped off 12 (8.4 s judged before the hop), carried on to the log's end 0 (0.0 s: the log rode him toward the bank the whole time)
+  episode ends: hop 12
+  longest: t 229.0 x 3124->2665 5.5s hop; t 217.5 x 4155->4060 1.0s hop; t 201.8 x 5915->5861 0.7s hop; t 155.7 x 11257->11210 0.4s hop; t 164.7 x 9994->9963 0.2s hop; t 216.1 x 4524->4513 0.2s hop; t 154.4 x 11632->11609 0.1s hop; t 175.5 x 8665->8640 0.1s hop
+plant normal 2: finish 167.1 end shrine lives lost 1
+  edgeWait: judged 0.3 s, refused 0.1 s, pressed 8, land rate 80.0%
+  upstream: judged 0.0 s, refused 0.0 s, pressed 1, land rate 100.0%
+  edgeStand: judged 0.1 s, refused 0.1 s, pressed 0, land rate 0.0%
+  race: judged 4.4 s, refused 4.0 s, pressed 14, land rate 10.5%
+  big sites: race 12750 1.0s 3%; race 10750 1.0s 3%; race 5500 0.8s 4%; race 6500 0.7s 5%; race 8250 0.3s 13%; edgeWait 14500 0.1s 50%; race 1500 0.1s 25%; race 9750 0.1s 33%; race 3000 0.1s 33%; race 7000 0.1s 0%; race 4250 0.1s 50%; edgeStand 3500 0.1s 0%; race 2500 0.1s 50%; upstream 14750 0.0s 100%
+  race episodes 15: hopped off 14 (4.4 s judged before the hop), carried on to the log's end 1 (0.1 s: the log rode him toward the bank the whole time)
+  episode ends: hop 14, carried->air 1
+  longest: t 92.3 x 12847->12752 1.0s hop; t 100.4 x 10894->10800 1.0s hop; t 129.5 x 5617->5542 0.8s hop; t 124.1 x 6720->6651 0.7s hop; t 118.3 x 8281->8256 0.3s hop; t 161.3 x 1561->1546 0.1s hop; t 154.6 x 3077->3053 0.1s hop; t 111.7 x 9798->9777 0.1s hop
+plant normal 3: finish 203.8 end shrine lives lost 5
+  upstream: judged 0.3 s, refused 0.2 s, pressed 3, land rate 37.5%
+  edgeWait: judged 0.9 s, refused 0.6 s, pressed 9, land rate 33.3%
+  edgeStand: judged 0.1 s, refused 0.1 s, pressed 0, land rate 0.0%
+  race: judged 4.7 s, refused 4.3 s, pressed 13, land rate 9.2%
+  big sites: race 10750 1.4s 2%; race 6750 0.8s 4%; race 8250 0.7s 5%; race 1750 0.4s 9%; race 1250 0.4s 9%; race 2750 0.3s 10%; edgeWait 15500 0.3s 22%; race 9500 0.3s 13%; race 12750 0.2s 17%; edgeWait 3250 0.2s 33%; upstream 16000 0.1s 25%; edgeWait 11250 0.1s 25%; race 5250 0.1s 25%; edgeWait 4500 0.1s 25%
+  race episodes 13: hopped off 13 (4.7 s judged before the hop), carried on to the log's end 0 (0.0 s: the log rode him toward the bank the whole time)
+  episode ends: hop 13
+  longest: t 119.5 x 10925->10803 1.4s hop; t 156.6 x 6938->6851 0.8s hop; t 145.0 x 8353->8287 0.7s hop; t 193.0 x 1800->1773 0.4s hop; t 194.6 x 1399->1357 0.4s hop; t 187.8 x 2922->2881 0.3s hop; t 132.0 x 9738->9702 0.3s hop; t 108.2 x 12850->12820 0.2s hop

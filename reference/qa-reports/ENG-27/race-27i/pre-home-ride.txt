@@ -1,0 +1,12 @@
+ride-only	normal	1	shrine	lives 4	deaths ?	finish 175.2	lost him 96.1 boat 93.89 gap -2.2	P.middle 87.75
+ride-only	normal	2	shrine	lives 1	deaths ?	finish 183.3	lost him 109.5 boat 92.37 gap -17.1	P.middle 86.33
+ride-only	normal	3	shrine	lives 2	deaths ?	finish 207.9	lost him 118.4 boat 92.06 gap -26.3	P.middle 86.04
+ride-only	normal	4	shrine	lives 5	deaths ?	finish 268.3	lost him 118.9 boat 99.82 gap -19.1	P.middle 93.29
+ride-only	normal	5	shrine	lives 3	deaths ?	finish 182.9	lost him 95.8 boat 93.63 gap -2.2	P.middle 87.5
+ride-only	normal	6	shrine	lives 4	deaths ?	finish 190.4	lost him 103 boat 91.82 gap -11.2	P.middle 85.82
+ride-only	easy	1	shrine	lives 0	deaths ?	finish 178.1	lost him 111.9 boat 97.53 gap -14.4	P.middle 88.67
+ride-only	easy	2	shrine	lives 3	deaths ?	finish 191.5	lost him 97.7 boat 96.32 gap -1.4	P.middle 87.56
+ride-only	easy	3	shrine	lives 1	deaths ?	finish 170.1	lost him 104.7 boat 96.09 gap -8.6	P.middle 87.35
+ride-only	easy	4	shrine	lives 1	deaths ?	finish 175.2	lost him 112.2 boat 104.55 gap -7.7	P.middle 95.05
+ride-only	easy	5	shrine	lives 0	deaths ?	finish 172.8	lost him 105.5 boat 97.38 gap -8.1	P.middle 88.52
+ride-only	easy	6	shrine	lives 0	deaths ?	finish 161	lost him 104.3 boat 95.88 gap -8.4	P.middle 87.16

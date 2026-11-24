@@ -24,12 +24,17 @@
  * ('w2-21', 'w2-22'); this kit holds World 2's ground, art, rivers, pads, lianas, tips and finish. The river with its drifting logs is a
  * section of its own (gen2/riverLay.ts), and so is a pond of sinking pads (gen2/rideLay.ts layPads).
  */
+import type { PacerRow } from '../../pacer.ts';
+import type { PostArt } from '../../post.ts';
+import type { ColumnDressSpec } from '../../columnDress.ts';
 import { G } from '../../protoStage.ts';
 import { surfaceBelowBank, type RiverZone } from '../../river.ts';
 import type { W2Decor } from '../../riverArt.ts';
 import type { Platform } from '../../types.ts';
 import type { Difficulty, GraphBrief, NodeJob, SectionPiece, SectionTemplate, Socket, WorldKit, WorldManifest } from '../types.ts';
 import { hash01 } from '../stillLay.ts';
+import { stackedUnder } from '../legs.ts';
+import { catchUnder, TOWER } from '../tower.ts';
 import type { RiverRow } from '../riverLay.ts';
 import type { PadRow } from '../rideLay.ts';
 import type { FollowRow } from '../../follow.ts';
@@ -95,6 +100,47 @@ export const W2_RIVERS = {
   twin: { dir: 1, speed: 80, logW: 150, logs: 3 },
   long: { dir: 1, speed: 80, logW: 240, logs: 2 },
 } as const satisfies Record<string, RiverRow>;
+
+/** an inventory id on World 2's next sheet (w2NextArt.ts), its frame named on its own (so tools/art/artuse.mjs sees the piece drawn) */
+const next = (frame: string) => `w2-next#${frame}`;
+
+/**
+ * World 2's PACER table (pacer.ts PacerRow; 2-7's mail boat, gen2/pacerLay.ts): the designer's flown numbers, as written
+ * (reference/design/2-7.md "FLOWN" and "THE MAIL BOAT", reference/specs/sims/river27.ts): a bank at a full run, 272 px/s; each HOME row's
+ * crossing (its water and 230 px of bank) at the careful middle's median rate and the ride-only rate; the boat's time is the middle's
+ * + 7% (Easy + 10%: the design's +3 s on its 42 s home leg and +5 s on its 47.8 s Easy leg, as shares, the lead's ruling 11-21, so any
+ * leg's length keeps the same race), the boat then rowing at RACE_PACE of that speed (the lead's pick, ENG-27w: the race set by a design
+ * number, the gap x pace grid, ENG-27/REPORT.md: with honest bots the expert lost 3 of 5 at full pace; at this pace the expert wins every
+ * race, the careful middle 6 of 7 with both Easy races, every win by 2 s or more, and the ride-only bot loses every race by `under` (2 s)
+ * or more, measured, pacerLay.test). No row was flown with the current but these three: a race leg that lays
+ * another is refused by name. Its art: the mail boat's two rowing frames (ART-NEXT-b, the inventory's w2-next rows).
+ */
+/** the mail boat's pace by setting, a share of the design's +7% / +10% boat (the lead's pick on the gap x pace grid, ENG-27w: Normal 81%;
+ *  Easy 90%, where the ride-only bot rides some races fast (home Easy 2 in 112.8 s, post Easy 5 in 124.2 s) and must still lose by 2 s) */
+export const RACE_PACE = { normal: 0.81, easy: 0.9 } as const;
+export const W2_RACE: PacerRow = {
+  bank: 272,
+  rivers: { ride: { middle: 103, rideOnly: 87 }, twin: { middle: 115, rideOnly: 97 }, long: { middle: 126, rideOnly: 104 } },
+  crossingBank: 230,
+  margin: { normal: (1 + 0.07) / RACE_PACE.normal - 1, easy: (1 + 0.1) / RACE_PACE.easy - 1 },
+  under: 2,
+  art: [next('mailBoat'), next('mailBoatB')],
+};
+
+/** World 2's POST art (post.ts PostArt; 2-7's doors): the PLEASE BE PATIENT door shut (w2-props) and open, a letter and a reply, two
+ *  flutter frames each (ART-NEXT-b, the inventory's w2-next rows) */
+export const W2_POST_ART: PostArt = {
+  door: 'w2-props#door',
+  open: next('doorOpen'),
+  letter: [next('letter'), next('letterB')],
+  reply: [next('reply'), next('replyB')],
+};
+
+/** World 2's COLUMN DRESS (columnDress.ts; 2-7's weir, reference/design/2-7.md Art (4), the D leg's dressing): the weir's stepped stone
+ *  face, white water over each lip, at the foot of the column he comes down, behind its catch ledges. Its box is the catalog's
+ *  on_screen_px for w2-next#weir (921x346: a tier about one Pokey, 89.1 px drawn); its foam foot sits under the floor's top, which hides it.
+ *  The 2-7 builder names it in 2-7's brief (columnDress: W2_WEIR) */
+export const W2_WEIR: ColumnDressSpec = { art: next('weir'), w: 921, h: 346, sink: 24 };
 
 /**
  * World 2's pad table (ENG-22; place `pads` names a row; rideLay.ts layPads): 2-2's ponds, by its design (reference/design/2-2.md, the arc).
@@ -203,7 +249,7 @@ export function w2World(): WorldKit {
 type FinishStage = {
   platforms: Platform[];
   rivers?: RiverZone[];
-  gen2?: { falls?: Array<{ x0: number; x1: number; y: number; kind: string; site?: string }>; seed?: number };
+  gen2?: { falls?: Array<{ x0: number; x1: number; y: number; kind: string; site?: string }>; seed?: number; tower?: { flow?: string; legs?: ReadonlyArray<{ travel: string; x0: number; x1: number; y0: number; y1: number }> } };
   proto?: { decor?: W2Decor[] };
 };
 
@@ -211,8 +257,10 @@ type FinishStage = {
 const REED_OFF = 20;
 /** how far under a fall's height (its higher lip) the other lip may stand and still be its bank (px): a liana perch's highest rise over
  *  the bank it leaves (pipeline place 'land': raised up to 160), and some */
-const LIP_RISE = 170;
+export const LIP_RISE = 170;
 const REED_BANK = 200;
+/** a piece under this deep is a plank, not a bank (a bank of earth is 90 or more: w1Pits.ts paintedBank) */
+const THIN = 90;
 
 /**
  * World 2's finish (listed.ts BASE 'w2', run where World 1's runs w1Finish): every fall of the built stage becomes its river between the
@@ -242,29 +290,95 @@ export function w2Finish<T extends FinishStage>(st: T, _difficulty?: Difficulty)
       decor.push({ n, x, b, w: n === 'reedTall' ? 64 : n === 'reedShort' ? 90 : 70, ...(hash01(x, 43) < 0.5 ? { flip: true } : {}) });
     }
   };
-  // (the banks at each end of a fall or a river: a solid ending at x0 and one starting at x1, at its lips, the topmost of each. A lip may
-  //  stand up to LIP_RISE under the fall's height: a liana's perch is laid up to 160 px over the bank it leaves (pipeline place 'land'),
-  //  so the gap under a World 2 liana has its take-off bank that far below the perch, BUILD-21's 2-1)
+  // (the banks at each end of a fall or a river: a solid ending at x0 and one starting at x1, at its lips, the topmost of each ON THE
+  //  FALL'S OWN STOREY: from its height `y` (the higher lip) down to LIP_RISE under it. A liana's perch is laid up to 160 px over the bank
+  //  it leaves (pipeline place 'land'), so the gap under a World 2 liana has its take-off bank that far below the perch, BUILD-21's 2-1.
+  //  Never a solid over the fall's height: on a tower's stacked legs another leg's ground can end or start at the same x, and taken as
+  //  the bank its splash set him on that leg (ENG-27e: the home toy's Easy seed 2 put him back on the out leg, 790 px up, mid-race; and
+  //  ENG-GROUND-b, the toy's race leg: an upper leg's piece 600 over the fall had its edge within 2 of a plank's and was taken for its bank))
+  const lip = (p: Platform, y: number) => p.y >= y - 2 && p.y <= y + LIP_RISE;
   const banks = (x0: number, x1: number, y: number) => ({
-    near: solids.filter((p) => Math.abs(p.x + p.width - x0) <= 2 && p.y <= y + LIP_RISE).sort((a, b) => a.y - b.y)[0],
-    far: solids.filter((p) => Math.abs(p.x - x1) <= 2 && p.y <= y + LIP_RISE).sort((a, b) => a.y - b.y)[0],
+    near: solids.filter((p) => Math.abs(p.x + p.width - x0) <= 2 && lip(p, y)).sort((a, b) => a.y - b.y)[0],
+    far: solids.filter((p) => Math.abs(p.x - x1) <= 2 && lip(p, y)).sort((a, b) => a.y - b.y)[0],
   });
+  // (is the fall at x0-x1, lip y, on a leg laid LEFT? The run leg whose span holds it and whose heights lie nearest, gen2 tower.legs)
+  const runs = st.gen2?.tower?.flow === 'legs' ? (st.gen2.tower.legs ?? []).filter((g) => g.travel === 'left' || g.travel === 'right') : [];
+  const leftward = (x0: number, x1: number, y: number): boolean => {
+    let on: { travel: string; d: number } | undefined;
+    for (const g of runs) {
+      if (x0 < g.x0 - 1 || x1 > g.x1 + 1) continue;
+      const d = Math.max(0, g.y0 - y, y - g.y1);
+      if (!on || d < on.d) on = { travel: g.travel, d };
+    }
+    return on?.travel === 'left';
+  };
   // (a log river's reeds, as a fall's)
   for (const r of had) {
     if (r.speed === 0) continue;
     const { near, far } = banks(r.x0, r.x1, r.surfaceY - surfaceBelowBank);
     if (near && far) reeds(near, far, r.x0, r.x1);
   }
-  for (const f of [...falls].sort((a, b) => a.x0 - b.x0)) {
-    if (f.kind !== 'water' && f.kind !== 'soft') continue;
-    if (had.some((r) => r.x0 < f.x1 - 1 && r.x1 > f.x0 + 1)) continue;
-    const { near, far } = banks(f.x0, f.x1, f.y);
-    if (!near || !far) throw new Error(`World 2 finish: the fall at x=${f.x0}-${f.x1} has no bank at one end`);
-    const top = Math.max(near.y, far.y);
+  const sorted = [...falls].sort((a, b) => a.x0 - b.x0);
+  // (a floor of a run leg laid under another (gen2 legs.ts stackedUnder), its top in that leg's band, under the whole of x0..x1)
+  const lows = stackedUnder(st.gen2?.tower?.legs);
+  const overLowFloor = (x0: number, x1: number) => lows.some((l) => solids.some((p) => p.y >= l.y0 - 2 && p.y <= l.y1 + 2 && p.x <= x0 + 1 && p.x + p.width >= x1 - 1));
+  // (a fall has its river when one spans it AT ITS HEIGHT, its surface just under the fall's lip: where one leg runs under another, the
+  //  upper leg's log river spans the lower leg's falls in x, and they were left with no water at all, ENG-GROUND-b, the toy's race leg)
+  const hasRiver = (f: (typeof sorted)[number]) => had.some((r) => r.x0 < f.x1 - 1 && r.x1 > f.x0 + 1 && r.surfaceY >= f.y - 20 && r.surfaceY <= f.y + surfaceBelowBank + LIP_RISE + 20);
+  const water = (f: (typeof sorted)[number]) => (f.kind === 'water' || f.kind === 'soft') && !hasRiver(f);
+  const taken = new Set<(typeof sorted)[number]>();
+  for (const f of sorted) {
+    if (!water(f) || taken.has(f)) continue;
+    const { near, far: far0 } = banks(f.x0, f.x1, f.y);
+    if (!near || !far0) throw new Error(`World 2 finish: the fall at x=${f.x0}-${f.x1} has no bank at one end`);
+    // (a run of falls joined by planks, thin pieces over the water between them, is ONE river under a bridge, bank to bank: laid pocket
+    //  by pocket, its water showed in slices between the planks with the backdrop under each plank, and a pocket between two planks
+    //  stood 20 higher than its neighbours (its lip the planks'): ENG-GROUND-b, the out-and-back toy's join. Each plank stands at or
+    //  over the run's banks' lower top and its foot over the water. The next fall is the one that starts at the plank's end (another
+    //  leg's falls lie between them in x). No shipped stage lays one: tools/engine/plankscan.ts)
+    let far = far0, x1 = f.x1;
+    const run: Platform[] = [], joined: Array<(typeof sorted)[number]> = [];
+    while (far.height < THIN) {
+      const end = far.x + far.width;
+      const g = sorted.find((o) => o !== f && !taken.has(o) && !joined.includes(o) && o.kind === f.kind && water(o) && Math.abs(o.x0 - end) <= 2 && Math.abs(o.y - f.y) <= LIP_RISE);
+      const next = g && banks(g.x0, g.x1, g.y).far;
+      if (!g || !next) break;
+      run.push(far);
+      joined.push(g);
+      far = next;
+      x1 = g.x1;
+    }
+    let top = Math.max(near.y, far.y);
+    if (run.length && (near.height < THIN || far.height < THIN || run.some((p) => p.y > top || p.y + p.height > top + surfaceBelowBank - 8))) {
+      // (not a bridge between two banks: the fall alone, as before)
+      far = far0;
+      x1 = f.x1;
+      run.length = 0;
+      joined.length = 0;
+      top = Math.max(near.y, far.y);
+    }
+    for (const g of joined) taken.add(g);
+    const x0 = f.x0;
     const safe = f.kind === 'soft';
-    if (safe) for (const p of solids) if (p !== near && p !== far && p.x >= f.x0 - 1 && p.x + p.width <= f.x1 + 1 && p.y > top) drop.add(p.id);
-    rivers.push({ x0: f.x0, x1: f.x1, surfaceY: top + surfaceBelowBank, dir: 1, speed: 0, ...(safe ? { safe: { backX: f.x0 - 70, backY: near.y } } : {}) });
-    reeds(near, far, f.x0, f.x1);
+    // (the lead's ruling (B), ENG-GROUND-d: on a stage that lays a run leg under another, a soft gap between two thin pieces over that
+    //  leg's floor is left open. Filled, its water stood under the next stair down, out of his reach, and ran its paint to the view's foot
+    //  as a column over the floor he walks (2-7's toy, the descent); lidded at its bed it hung as a box of water between the planks. Only
+    //  where every drop through it (either lip and its middle) lands on wood within the live fall rule going down (tower.ts towerFalls:
+    //  TOWER.see) and in no water; else it keeps its water as before)
+    if (safe && near.height < THIN && far.height < THIN && overLowFloor(x0, x1) && [x0 + 8, (x0 + x1) / 2, x1 - 8].every((x) => {
+      const land = catchUnder(st.platforms, x, f.y, TOWER.see);
+      return land !== undefined && !rivers.some((r) => x >= r.x0 && x <= r.x1 && r.surfaceY > f.y && r.surfaceY < land);
+    })) continue;
+    // (its bed: the solids under its water. Never a floor of a run leg laid UNDER the fall's own leg (stackedUnder, the band overLowFloor
+    //  reads): that is the low leg's ground, not this fall's bed. 2-7's out-leg soft pits lie over its home leg and deleted its banks there,
+    //  BUILD-27's trace, ENG-JETTY. A fall ON the low leg (its lip in the band) drops its own bed as before)
+    const under = lows.filter((l) => f.y < l.y0 - 2);
+    if (safe) for (const p of solids) if (p !== near && p !== far && !run.includes(p) && p.x >= x0 - 1 && p.x + p.width <= x1 + 1 && p.y > top && !under.some((l) => p.y >= l.y0 - 2 && p.y <= l.y1 + 2)) drop.add(p.id);
+    // (a splash sets him back on the bank he came from: on a leg laid LEFT (gen2 legs.ts) that is the right one, ENG-27: the toy's home leg
+    // set him on the far bank, ahead, and he turned back)
+    const back = leftward(x0, x1, f.y);
+    rivers.push({ x0, x1, surfaceY: top + surfaceBelowBank, dir: 1, speed: 0, ...(safe ? { safe: back ? { backX: x1 + 70, backY: far.y } : { backX: x0 - 70, backY: near.y } } : {}) });
+    reeds(near, far, x0, x1);
   }
   if (drop.size) st.platforms = st.platforms.filter((p) => !drop.has(p.id));
   st.rivers = rivers.sort((a, b) => a.x0 - b.x0);

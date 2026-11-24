@@ -83,7 +83,7 @@ export const STAGE_PLAN: Record<number, StageSpec[]> = {
     //  w2Arc25.test.ts; its goal the design's (2-5.md "Goal", every snapper laid but one: GOAL_25, R-165.336), no top-up)
     { ...S('purge', 'River Snappers', 'The stones bite on four. Hop across and send the snappers home.'), count: 8 },
     S('ascent', 'Up the Bank Houses', 'Climb up through the village houses dug into the bank.'),
-    S('sprint', "The Mailman's Route", 'Take the long way round the river, past every door marked PLEASE BE PATIENT.'),
+    S('sprint', "The Mailman's Route", 'Carry the post up the mill-race, then race the mail boat home.'),
     S('rescue', 'Before the Water Rises', 'Free more little ones before the water rises.'),
     S('gauntlet', "The River King's Court", "Fight through the river king's court and reach the shrine."),
   ],

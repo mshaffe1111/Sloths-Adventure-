@@ -1,0 +1,33 @@
+// ENG-27e scratch (kept as reference/qa-reports/ENG-27/cliprec-27e.ts.txt): the middle bot's race leg on the fixture's roll (POST_CODE),
+// a REAL engine run; every frame's changed state (the engine's and Pokey's plain fields, the logs, the pieces, the petals) as deltas.
+import fs from 'node:fs';
+import '../../src/game/headlessDom.ts';
+import { homeRun } from './homeToys.ts';
+import { POST_CODE } from '../../src/game/gen2/toyHome.ts';
+const [tier = 'middle', setting = 'normal', seedS = '1', out = 'clip.json', pre = '75', post = '75'] = process.argv.slice(2);
+const prim = (v: unknown) => v === null || ['number', 'boolean', 'string'].includes(typeof v);
+const flat = (o: Record<string, unknown>) => { const r: Record<string, unknown> = {}; for (const [k, v] of Object.entries(o)) if (prim(v)) r[k] = v; else if (Array.isArray(v) && v.every(prim) && v.length < 20) r[k] = v; return r; };
+const frames: Array<Record<string, unknown>> = [];
+let f = 0, piece: any, start = -1, end = -1, last: Record<string, string> = {};
+const ring: Array<Record<string, unknown>> = [];
+const shot = (e: any) => {
+  const s: Record<string, unknown> = { E: flat(e), P: flat(e.player) };
+  for (const q of e.platforms) if (q.drift || q.broken !== undefined || q.crumbleT !== undefined) s['pl' + q.id] = flat(q);
+  e.pieces.forEach((q: any, i: number) => { s['pc' + i] = flat(q); });
+  e.collectibles.forEach((c: any, i: number) => { s['c' + i] = flat(c); });
+  e.vines.forEach((v: any, i: number) => { if (v.isSwingingVine || v.swingAngle !== undefined) s['v' + i] = flat(v); });
+  return s;
+};
+const r = homeRun(tier as never, setting as never, Number(seedS), 1, { onFrame: (sim: any) => {
+  f++; const e = sim.e; piece ??= e.pieces.find((q: any) => q.kind === 'pacer');
+  if (start < 0 && piece?.clock !== null && piece?.clock !== undefined) start = f;
+  if (end < 0 && piece?.verdict) end = f;
+  const s = shot(e);
+  if (start < 0) { ring.push(s); if (ring.length > Number(pre)) ring.shift(); return; }
+  if (end > 0 && f > end + Number(post)) return;
+  const take = (st: Record<string, unknown>) => { const d: Record<string, unknown> = {}; for (const [k, v] of Object.entries(st)) { const j = JSON.stringify(v); if (last[k] !== j) { d[k] = v; last[k] = j; } } frames.push(d); };
+  if (ring.length) { for (const q of ring) take(q); ring.length = 0; }
+  take(s);
+} } as never, POST_CODE);
+fs.writeFileSync(out, JSON.stringify({ tier, setting, seed: Number(seedS), end: r.end, verdict: piece?.verdict, startFrame: start, frames }));
+console.log(`recorded ${frames.length} frames (race from run frame ${start}, verdict at ${end}: ${JSON.stringify(piece?.verdict)}); ${(fs.statSync(out).size / 1e6).toFixed(1)} MB`);

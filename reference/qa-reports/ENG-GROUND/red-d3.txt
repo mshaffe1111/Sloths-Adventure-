@@ -1,0 +1,69 @@
+TAP version 13
+# Subtest: World 2 finish: planks between falls are a bridge over ONE river, bank to bank (the out-and-back toy, every roll, both settings)
+ok 1 - World 2 finish: planks between falls are a bridge over ONE river, bank to bank (the out-and-back toy, every roll, both settings)
+  ---
+  duration_ms: 1138.220869
+  type: 'test'
+  ...
+# Subtest: World 2 finish: a soft gap between two thin pieces over a lower leg's floor is left open, its drop onto wood within the fall rule (the out-and-back toy, every roll, both settings)
+not ok 2 - World 2 finish: a soft gap between two thin pieces over a lower leg's floor is left open, its drop onto wood within the fall rule (the out-and-back toy, every roll, both settings)
+  ---
+  duration_ms: 905.761151
+  type: 'test'
+  location: '/home/user/Sloths-Adventure-/src/game/gen2/worlds/w2.test.ts:203:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    32 faults
+    + actual - expected
+    
+    + [
+    +   'post normal seed 1: the gap x 18955..19015 (lip 905) is filled (surface 1087)',
+    +   'post normal seed 1: the gap x 19221..19288 (lip 1045) is filled (surface 1211)',
+    +   'post normal seed 2: the gap x 18785..18845 (lip 905) is filled (surface 1076)',
+    +   'post normal seed 2: the gap x 19068..19129 (lip 1034) is filled (surface 1191)',
+    +   'post normal seed 3: the gap x 18543..18603 (lip 930) is filled (surface 1092)',
+    +   'post normal seed 3: the gap x 18815..18875 (lip 1050) is filled (surface 1206)',
+    +   'post normal seed 4: the gap x 18470..18530 (lip 905) is filled (surface 1097)',
+    +   'post normal seed 4: the gap x 18734..18794 (lip 1055) is filled (surface 1240)',
+    +   'post easy seed 1: the gap x 19407..19467 (lip 905) is filled (surface 1087)',
+    +   'post easy seed 1: the gap x 19721..19781 (lip 1045) is filled (surface 1211)',
+    +   'post easy seed 2: the gap x 19281..19341 (lip 905) is filled (surface 1076)',
+    +   'post easy seed 2: the gap x 19612..19672 (lip 1034) is filled (surface 1191)'
+    + ]
+    - []
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+  actual:
+    0: 'post normal seed 1: the gap x 18955..19015 (lip 905) is filled (surface 1087)'
+    1: 'post normal seed 1: the gap x 19221..19288 (lip 1045) is filled (surface 1211)'
+    2: 'post normal seed 2: the gap x 18785..18845 (lip 905) is filled (surface 1076)'
+    3: 'post normal seed 2: the gap x 19068..19129 (lip 1034) is filled (surface 1191)'
+    4: 'post normal seed 3: the gap x 18543..18603 (lip 930) is filled (surface 1092)'
+    5: 'post normal seed 3: the gap x 18815..18875 (lip 1050) is filled (surface 1206)'
+    6: 'post normal seed 4: the gap x 18470..18530 (lip 905) is filled (surface 1097)'
+    7: 'post normal seed 4: the gap x 18734..18794 (lip 1055) is filled (surface 1240)'
+    8: 'post easy seed 1: the gap x 19407..19467 (lip 905) is filled (surface 1087)'
+    9: 'post easy seed 1: the gap x 19721..19781 (lip 1045) is filled (surface 1211)'
+    10: 'post easy seed 2: the gap x 19281..19341 (lip 905) is filled (surface 1076)'
+    11: 'post easy seed 2: the gap x 19612..19672 (lip 1034) is filled (surface 1191)'
+  operator: 'deepStrictEqual'
+  stack: |-
+    TestContext.<anonymous> (/home/user/Sloths-Adventure-/src/game/gen2/worlds/w2.test.ts:226:10)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
+  ...
+1..2
+# tests 2
+# suites 0
+# pass 1
+# fail 1
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 2658.975994

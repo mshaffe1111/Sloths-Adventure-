@@ -1,0 +1,17 @@
+/home/user/wt27w/src/game/gen2/pipeline.ts:4797
+  throw new Error(`gen2 ${req.config.id} (${req.difficulty}): no seed of ${walk} from ${req.seed} builds cleanly (the first: ${first?.join('; ')})`);
+        ^
+
+Error: gen2 2-97 (normal): no seed of 24 from 1 builds cleanly (the first: river at x=6591: logs overlap or nearly touch; river at x=4309: logs overlap or nearly touch; river at x=2586: logs overlap or nearly touch; river at x=1203: logs overlap or nearly touch; river: river at x=6591: 56 px between logs, under 60; river: river at x=4309: 56 px between logs, under 60; river: river at x=2586: 56 px between logs, under 60; river: river at x=1203: 56 px between logs, under 60)
+    at provenGen2Stage (/home/user/wt27w/src/game/gen2/pipeline.ts:4797:9)
+    at buildPlayStage (/home/user/wt27w/src/game/gen2/seedList.ts:241:10)
+    at generateStageOn (/home/user/wt27w/src/game/stageGenerator.ts:2950:28)
+    at <anonymous> (/home/user/wt27w/src/game/stageGenerator.ts:2889:40)
+    at withSetting (/home/user/wt27w/src/game/settingDials.ts:45:12)
+    at generateStage (/home/user/wt27w/src/game/stageGenerator.ts:2889:10)
+    at new GameEngine (/home/user/wt27w/src/game/engine.ts:1042:101)
+    at new RealPlay (/home/user/wt27w/src/game/realPlay.ts:156:15)
+    at piecesOf (/home/user/wt27w/tools/inspect/tierBots.ts:54:14)
+    at runTier (/home/user/wt27w/tools/inspect/tierBots.ts:76:18)
+
+Node.js v22.23.5

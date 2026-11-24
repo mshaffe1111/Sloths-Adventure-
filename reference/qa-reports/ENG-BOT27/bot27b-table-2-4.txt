@@ -1,0 +1,16 @@
+(ENG-BOT27b: t-eng-27-wip-bot27-aim 2334a3948 = t-eng-27 e2f3855cf + reAim child-only, frozen; off = the same tree with SKILLS.reAim off)
+2-4: rows off 360, on 360
+bot    set     pass off->on  lives off->on  rescues off->on  rows identical  moved (seed: pass/lives/rescues/time off -> on)
+kid    normal  26->26       360->360       15->15          YES 40/40   
+kid    easy    40->40         0->0          0->0           YES 40/40   
+adult  normal  38->38       144->144        2->2           YES 40/40   
+adult  easy    40->40         0->0          0->0           YES 40/40   
+child  normal  40->40       187->187        0->0           YES 40/40   
+child  easy    40->40         0->0          0->0           YES 40/40   
+middle normal  40->40       120->120        0->0           YES 40/40   
+middle easy    40->40         0->0          0->0           YES 40/40   
+expert normal  40->40       133->133        0->0           YES 40/40   
+pass -> fail flips: 0
+bar (adult, child, middle, expert; both settings; pass, 0 rescues, >= 120 s): off 38/40 -> on 38/40
+  on, proven seeds: 1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,20,21,22,23,24,25,26,27,28,29,30,31,32,34,35,36,37,38,39,40
+  on, out: 19 (adult N shrine rx1); 33 (adult N shrine rx1)

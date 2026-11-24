@@ -1,0 +1,19 @@
+not ok 50 - THE ROUTE rides a wheel as ONE move, the jetty to the street: never a hop onto a bucket (PLANTED: the old route hopped on and off them)
+not ok 51 - THE CHANNEL prices the board and the step-off from the flown table, the easiest way; an in-street asks no step-off; both settings
+not ok 52 - PLANTED: a wheel whose row was never flown is refused by the channel, never priced from a guess
+not ok 53 - PLANTED: without its channel a stage laying a wheel is refused by the meter and failed by the coverage gate
+not ok 120 - a listed stage with no list yet fails --check by name, not by a throw (a list taken out of the index, in a scratch worktree)
+not ok 158 - chase bots (OPEN, todo): the CHILD bot on Normal reaches the fork on 2 or more of 3 seeds # TODO measured 1 of 3 (ENG-B4): every miss a fall at a 120 px gap, never a catch
+not ok 189 - on the runs it was found on, 2-2 child Normal seed 36 and middle Normal seed 17: no life lost in the 3 s after he stands at a lip with a log his way across it (SKILLS.boardHop; the child RED with it off)
+not ok 210 - 2-7 home: back at a race-leg fall's x, his margin is never better than at the fall (a fall never pays, end to end)
+not ok 266 - planted: with the ride skill off, the middle and child bots drown in the river
+not ok 275 - planted: with the handed-to-the-bank skill off, the middle on Normal hops at the water off the long log and drowns over the bar
+not ok 277 - planted: with the against-the-flow skill off, the adult on Normal is rescued at 2-1's back river (12) and the child on Normal loses 5+ more lives (4, 5)
+not ok 278 - planted (THIN): with the up-the-far-bank skill off, the child on Easy is carried back on 2-1's both-ways log and reaches its far bank 2+ s later (22)
+not ok 326 - rideWheel ON: every tier boards, rides and steps off the wheel: no scramble, no pond, across in about half a turn
+not ok 327 - PLANTED: rideWheel OFF, every tier scrambles bucket to bucket instead of riding (RED)
+# tests 345
+# pass 331
+# fail 13
+# todo 1
+CI EXIT 1

@@ -1,0 +1,11 @@
+// scratch: the world around him at frames lo..hi (enemies, pieces, platforms near), one bot run
+import { CAST_BOTS } from './castBots.ts';
+import { firstTimer } from './firsttimer.ts';
+const [stage, bot, setting, seedS, lo, hi] = process.argv.slice(2);
+let f = 0;
+firstTimer(stage, Number(seedS), (CAST_BOTS as any)[bot][setting], { cap: Number(hi) / 30 + 5, dotSetting: true, onFrame: (sim: any) => {
+  f++; if (f < Number(lo) || f > Number(hi)) return; const e = sim.e, p = e.player;
+  const en = (e.enemies ?? []).filter((m: any) => Math.abs(m.x - p.x) < 250).map((m: any) => `${m.type ?? m.kind}@${Math.round(m.x)},${Math.round(m.y)}${m.defeated ? ' dead' : ''}`);
+  const pl = e.platforms.filter((q: any) => q.x + q.width > p.x - 60 && Math.abs(q.y - p.y) < 160 && q.x < p.x + 520).map((q: any) => `${q.id}:${q.type}@${Math.round(q.x)}-${Math.round(q.x + q.width)},${Math.round(q.y)}`);
+  console.log(`f ${f} x ${Math.round(p.x)} y ${Math.round(p.y)} vx ${Math.round(p.vx)} vy ${Math.round(p.vy)} inv ${p.invincibleTimer?.toFixed?.(2)} swing ${p.isVineSwinging ? 1 : 0} pieces ${(e.pieces ?? []).filter((q: any) => Math.abs((q.x ?? 0) - p.x) < 300).map((q: any) => q.kind).join(',')} | en ${en.join(' ')} | pl ${pl.join(' ')}`);
+} } as never);

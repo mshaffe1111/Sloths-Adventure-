@@ -10,9 +10,9 @@ import type { Platform } from './types.ts';
 import { endFace } from './groundPaint.ts';
 import { CELS, drawCel, warmCels } from './storyCels.ts';
 import { FONT_DISPLAY } from './fonts.ts';
-import { drawSoil } from './groundPaint.ts';
+import { drawSoilCut } from './groundPaint.ts';
+import { cropToBox, vGradient } from './drawThrift.ts';
 import { drawKitArt } from './puzzleArt.ts';
-import { cachedLinearGradient } from './gradCache.ts';
 import { drawW2New, type W2NewPiece } from './w2NewArt.ts';
 
 export type W2Piece = keyof typeof W2_FRAMES;
@@ -102,6 +102,9 @@ export const RIVER_LOOK = {
 const SAFE_EARTH = ['#5e5638', '#3a3324'] as const;
 /** over the painted earth under a shallow bed: the bank wall's shadow, light at the bed and deeper below (the banks' DEPTH_DARK tone) */
 const SAFE_SHADE = ['rgba(31, 22, 15, 0.25)', 'rgba(31, 22, 15, 0.55)'] as const;
+/** the two as gradient stops (drawRiverWater, vGradient) */
+const SHADE_STOPS = [[0, SAFE_SHADE[0]], [1, SAFE_SHADE[1]]] as const;
+const EARTH_STOPS = [[0, SAFE_EARTH[0]], [1, SAFE_EARTH[1]]] as const;
 let shallow: HTMLImageElement | null = null;
 let shallowReady = false;
 function loadShallow() {
@@ -156,13 +159,14 @@ export function drawSafeRiverOver(ctx: CanvasRenderingContext2D, logs: readonly 
     const line = lg.y + logLineAt(lg) + logBob(lg, t);
     const foot = lg.y + logPaint(lg).barkFoot + logBob(lg, t) + 2;
     const x0 = lg.x + SAFE_OVER.inset, x1 = lg.x + lg.width - SAFE_OVER.inset;
-    ctx.save();
-    ctx.beginPath();
-    ctx.rect(x0, line - L.h * L.crest, x1 - x0, foot - line + L.h * L.crest);
-    ctx.clip();
+    // (each repeat cut at the log's own box by its source rect, the same pixels the clip to that box let through, with no clip: one clip a
+    //  log was 2-7's clips over 19 a frame, DRESS-27b, drawThrift.ts cropToBox)
     const top = line - L.h * L.crest;
-    for (let x = Math.floor((x0 - shift) / L.w) * L.w + shift; x < x1; x += L.w - 1) ctx.drawImage(shallow!, x, top, L.w, L.h);
-    ctx.restore();
+    const iw = shallow!.naturalWidth || shallow!.width, ih = shallow!.naturalHeight || shallow!.height;
+    for (let x = Math.floor((x0 - shift) / L.w) * L.w + shift; x < x1; x += L.w - 1) {
+      const c = cropToBox(x, top, L.w, L.h, iw, ih, x0, top, x1, foot);
+      if (c) ctx.drawImage(shallow!, c[0], c[1], c[2], c[3], c[4], c[5], c[6], c[7]);
+    }
   }
   ctx.restore();
   return true;
@@ -206,6 +210,8 @@ export function drawRiverWater(
   speed: number,
   safe = false,
   soilWorld?: number,
+  /** a leg runs under this river (engine.ts drawRivers' riverLid): a deep river then has a bed, the banks' earth under its strip */
+  lidded = false,
 ): boolean {
   if (safe && safeRiverArtReady()) {
     const L = RIVER_LOOK.safe;
@@ -215,17 +221,11 @@ export function drawRiverWater(
       // (under the bed: the banks' own painted earth (groundPaint.ts drawSoil, the world's sheet, no shading passes), darkened toward the
       // bank wall in shadow; a flat olive fill showed under every safe river, the lead 11-15 2:56 PM ET, ART-W2's rule. The flat fill is
       // only the fallback until the world's ground sheet loads)
-      // (clipped to the bed and below: drawSoil lays whole tiles and leaves the clip to its caller; the river's own clip starts 30 px over
-      // the surface, and the soil showed there as a pale strip behind the logs)
-      ctx.save();
-      ctx.beginPath();
-      ctx.rect(x0, bed, x1 - x0, bottom - bed);
-      ctx.clip();
-      const soil = soilWorld !== undefined && drawSoil(ctx, soilWorld, x0, x1, bed, bottom, bottom, undefined, false);
-      ctx.restore();
-      // (the shade's span is the bed's, in world space, and its colours fixed: made once and reused, gradCache.ts)
-      const c = soil ? SAFE_SHADE : SAFE_EARTH;
-      ctx.fillStyle = cachedLinearGradient(ctx, 0, bed, 0, bed + 160, [[0, c[0]], [1, c[1]]]);
+      // (cut at the bed and below: whole tiles, uncut, showed in the river's own clip from 30 px over the surface, a pale strip behind the
+      // logs)
+      // (each soil tile cut at the bed by its own source rect, no clip; the shade's gradient made once: DRESS-27b, drawThrift.ts)
+      const soil = soilWorld !== undefined && drawSoilCut(ctx, soilWorld, x0, x1, bed, bottom);
+      ctx.fillStyle = vGradient(ctx, bed, bed + 160, soil ? SHADE_STOPS : EARTH_STOPS);
       ctx.fillRect(x0, bed, x1 - x0, bottom - bed);
     }
     const shift = (((t * speed * 0.35 * dir) % L.w) + L.w) % L.w;
@@ -242,13 +242,61 @@ export function drawRiverWater(
   //  fill): over the deep fill they drew a hard dark line across every deep river (the lead, 11-19, 2-4 beat 6 upright). The strip is
   //  drawn without them, its last whole row (38,67,71) meeting the deep fill RIVER_DEEP (38,66,71) under it, ENG-24f)
   const sh = f.h - WATER_FRAY, dh = (th * sh) / f.h;
+  const foot = top + dh - 1;
+  // (over a leg laid under this one, the deep fill would hang down to the ceiling as a flat dark-teal panel over that leg (READY-27, 2-7's
+  //  race leg upright): there the river has a bed, the banks' own painted earth under its strip (as under a still pool), the strip's last
+  //  row fading into it, and the ceiling's clip and underside end it as they end the banks' earth. Elsewhere the deep fill runs on down)
+  const fillTo = deepFillFoot(foot, bottom, lidded);
   ctx.fillStyle = RIVER_DEEP;
-  ctx.fillRect(x0, top + dh - 1, x1 - x0, Math.max(0, bottom - (top + dh - 1)));
+  ctx.fillRect(x0, foot, x1 - x0, Math.max(0, fillTo - foot));
+  if (fillTo < bottom) {
+    // (the soil cut at the fill's foot by its own source rect, no clip; the gradients made once: DRESS-27b, drawThrift.ts)
+    const soil = soilWorld !== undefined && drawSoilCut(ctx, soilWorld, x0, x1, fillTo, bottom);
+    if (!soil) {
+      // (the flat earth only until the world's ground sheet loads, as under a still pool)
+      ctx.fillStyle = vGradient(ctx, fillTo, fillTo + 160, EARTH_STOPS);
+      ctx.fillRect(x0, fillTo, x1 - x0, bottom - fillTo);
+    }
+    ctx.fillStyle = vGradient(ctx, fillTo, fillTo + DEEP_BED_FADE, DEEP_FADE_STOPS);
+    ctx.fillRect(x0, fillTo, x1 - x0, Math.min(DEEP_BED_FADE, bottom - fillTo));
+  }
   // the water slides with the current, a good deal slower than the logs (it reads as flow, not as a conveyor belt)
   const shift = (((t * speed * 0.35 * dir) % WATER_TILE) + WATER_TILE) % WATER_TILE;
   const start = Math.floor((x0 - shift) / WATER_TILE) * WATER_TILE + shift;
   for (let x = start; x < x1; x += WATER_TILE - 1) ctx.drawImage(img!, f.x, f.y, f.w, sh, x, top, WATER_TILE, dh);
   return true;
+}
+
+/** how far the deep water's colour fades into the bed under a lidded deep river (px) */
+export const DEEP_BED_FADE = 70;
+/** RIVER_DEEP at no alpha: the bed's fade ends in it */
+const RIVER_DEEP_CLEAR = 'rgba(38, 66, 71, 0)';
+const DEEP_FADE_STOPS = [[0, RIVER_DEEP], [1, RIVER_DEEP_CLEAR]] as const;
+/** a river's water over its logs (engine.ts drawRivers' over pass), painted and plain, as gradient stops (drawThrift.ts vGradient) */
+export const OVER_WATER_PAINTED = [[0, 'rgba(96, 160, 152, 0.3)'], [1, 'rgba(38, 66, 71, 0.75)']] as const;
+export const OVER_WATER_PLAIN = [[0, 'rgba(56, 148, 168, 0.55)'], [1, 'rgba(24, 90, 120, 0.8)']] as const;
+/**
+ * Where a deep river's flat fill ends (y), from its painted strip's foot: at the view's foot (`bottom`) for an open river, which runs down
+ * out of sight; at the strip's foot when a leg runs under the river (`lidded`), the banks' earth under it from there (drawRiverWater)
+ */
+export function deepFillFoot(stripFoot: number, bottom: number, lidded: boolean): number {
+  return lidded ? Math.min(stripFoot, bottom) : bottom;
+}
+
+/**
+ * How far down a river's own paint reaches under its surface before the soil under it (drawRiverWater): a still pool's shallow strip down
+ * to its bed's foot, a deep river's painted strip (the flat deep fill below it is water too, but has no picture to slice). A ceiling over an
+ * upper leg's river never runs higher than this, so the water stands whole and only the soil under it ends there (groundStack.ts
+ * UpperWater, ENG-GROUND-d). Pure: from the river's kind, not from whether its sheet has loaded, so the ceiling is the same every frame.
+ */
+export function riverPaintFoot(surfaceY: number, safe: boolean): number {
+  if (safe) {
+    const L = RIVER_LOOK.safe;
+    return surfaceY - L.h * L.crest + L.h - 2;
+  }
+  const f = W2_FRAMES.water;
+  const th = (WATER_TILE * f.h) / f.w;
+  return surfaceY - th * 0.045 + (th * (f.h - WATER_FRAY)) / f.h - 1;
 }
 
 /** a drifting log: the long painting for a long log, the short one for a short one, bobbing a touch on the current */

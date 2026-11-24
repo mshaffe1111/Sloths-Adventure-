@@ -1,0 +1,67 @@
+TAP version 13
+# normal seed 5: 11 judged hops pressed (edgeWait, race); flown not as judged 0, came down elsewhere 0
+# normal seed 2: 17 judged hops pressed (edgeWait, upstream, race); flown not as judged 0, came down elsewhere 0
+# easy seed 5: 21 judged hops pressed (edgeWait, upstream, race); flown not as judged 0, came down elsewhere 2
+#   edgeWait q\#11 judged t 28.43 x 15540 lag 0 hold 0.033 single | flown t 28.43 x 15540 hold 0.033 single | came down LOST
+#   edgeWait q\#49 judged t 86.23 x 13811 lag 0 hold 0.185 single | flown t 86.23 x 13811 hold 0.185 single | came down \#46
+# easy seed 2: 21 judged hops pressed (edgeWait, upstream, race); flown not as judged 0, came down elsewhere 0
+# Subtest: 2-7 home, middle Normal seed 5: every judged hop is flown as judged and comes down where the gate said
+ok 1 - 2-7 home, middle Normal seed 5: every judged hop is flown as judged and comes down where the gate said
+  ---
+  duration_ms: 859.077209
+  type: 'test'
+  ...
+# Subtest: 2-7 home, middle Normal seed 2: every judged hop is flown as judged and comes down where the gate said
+ok 2 - 2-7 home, middle Normal seed 2: every judged hop is flown as judged and comes down where the gate said
+  ---
+  duration_ms: 665.43695
+  type: 'test'
+  ...
+# Subtest: 2-7 home, middle Easy seed 5: every judged hop is flown as judged and comes down where the gate said
+not ok 3 - 2-7 home, middle Easy seed 5: every judged hop is flown as judged and comes down where the gate said
+  ---
+  duration_ms: 616.114857
+  type: 'test'
+  location: '/home/user/f-b53c49e49/tools/inspect/hopJudged.test.ts:36:3'
+  failureType: 'testCodeFailure'
+  error: |-
+    a gate judged one hop and the bot flew another
+    + actual - expected
+    
+    + [
+    +   'edgeWait q#11 judged t 28.43 x 15540 lag 0 hold 0.033 single | flown t 28.43 x 15540 hold 0.033 single | came down LOST',
+    +   'edgeWait q#49 judged t 86.23 x 13811 lag 0 hold 0.185 single | flown t 86.23 x 13811 hold 0.185 single | came down #46'
+    + ]
+    - []
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+  actual:
+    0: 'edgeWait q#11 judged t 28.43 x 15540 lag 0 hold 0.033 single | flown t 28.43 x 15540 hold 0.033 single | came down LOST'
+    1: 'edgeWait q#49 judged t 86.23 x 13811 lag 0 hold 0.185 single | flown t 86.23 x 13811 hold 0.185 single | came down #46'
+  operator: 'deepStrictEqual'
+  stack: |-
+    TestContext.<anonymous> (/home/user/f-b53c49e49/tools/inspect/hopJudged.test.ts:47:12)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: 2-7 home, middle Easy seed 2: every judged hop is flown as judged and comes down where the gate said
+ok 4 - 2-7 home, middle Easy seed 2: every judged hop is flown as judged and comes down where the gate said
+  ---
+  duration_ms: 505.05746
+  type: 'test'
+  ...
+1..4
+# tests 4
+# suites 0
+# pass 3
+# fail 1
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 5200.784158

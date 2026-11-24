@@ -1,0 +1,315 @@
+TAP version 13
+# Subtest: the out-and-back toy (normal, seed 1): no other leg's paint stands in his air anywhere over the race leg's band, ends and the descent's floor included
+not ok 1 - the out-and-back toy (normal, seed 1): no other leg's paint stands in his air anywhere over the race leg's band, ends and the descent's floor included
+  ---
+  duration_ms: 1342.35907
+  type: 'test'
+  location: '/home/user/Sloths-Adventure-/src/game/groundStack.test.ts:392:5'
+  failureType: 'testCodeFailure'
+  error: |-
+    14 points of his air over the race leg's band are under another leg's paint
+    + actual - expected
+    
+    + [
+    +   'x 18966, 28 over the piece at y 1450 (x 18666-20006): river paint from y 1213',
+    +   'x 18990, 28 over the piece at y 1450 (x 18666-20006): river paint from y 1213',
+    +   'x 19014, 28 over the piece at y 1450 (x 18666-20006): river paint from y 1213',
+    +   'x 19230, 28 over the piece at y 1450 (x 18666-20006): river paint from y 1337',
+    +   'x 19254, 28 over the piece at y 1450 (x 18666-20006): river paint from y 1337',
+    +   'x 19278, 28 over the piece at y 1450 (x 18666-20006): river paint from y 1337',
+    +   'x 18968, 28 over the piece at y 1450 (x 18666-20006): river paint from y 1213',
+    +   'x 18992, 28 over the piece at y 1450 (x 18666-20006): river paint from y 1213',
+    +   'x 19232, 28 over the piece at y 1450 (x 18666-20006): river paint from y 1337',
+    +   'x 19256, 28 over the piece at y 1450 (x 18666-20006): river paint from y 1337',
+    +   'x 19280, 28 over the piece at y 1450 (x 18666-20006): river paint from y 1337',
+    +   'x 19224, 28 over the piece at y 1450 (x 18666-20006): river paint from y 1337',
+    +   'x 19248, 28 over the piece at y 1450 (x 18666-20006): river paint from y 1337',
+    +   'x 19272, 28 over the piece at y 1450 (x 18666-20006): river paint from y 1337'
+    + ]
+    - []
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+  actual:
+    0: 'x 18966, 28 over the piece at y 1450 (x 18666-20006): river paint from y 1213'
+    1: 'x 18990, 28 over the piece at y 1450 (x 18666-20006): river paint from y 1213'
+    2: 'x 19014, 28 over the piece at y 1450 (x 18666-20006): river paint from y 1213'
+    3: 'x 19230, 28 over the piece at y 1450 (x 18666-20006): river paint from y 1337'
+    4: 'x 19254, 28 over the piece at y 1450 (x 18666-20006): river paint from y 1337'
+    5: 'x 19278, 28 over the piece at y 1450 (x 18666-20006): river paint from y 1337'
+    6: 'x 18968, 28 over the piece at y 1450 (x 18666-20006): river paint from y 1213'
+    7: 'x 18992, 28 over the piece at y 1450 (x 18666-20006): river paint from y 1213'
+    8: 'x 19232, 28 over the piece at y 1450 (x 18666-20006): river paint from y 1337'
+    9: 'x 19256, 28 over the piece at y 1450 (x 18666-20006): river paint from y 1337'
+    10: 'x 19280, 28 over the piece at y 1450 (x 18666-20006): river paint from y 1337'
+    11: 'x 19224, 28 over the piece at y 1450 (x 18666-20006): river paint from y 1337'
+    12: 'x 19248, 28 over the piece at y 1450 (x 18666-20006): river paint from y 1337'
+    13: 'x 19272, 28 over the piece at y 1450 (x 18666-20006): river paint from y 1337'
+  operator: 'deepStrictEqual'
+  stack: |-
+    TestContext.<anonymous> (/home/user/Sloths-Adventure-/src/game/groundStack.test.ts:442:14)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.start (node:internal/test_runner/test:944:17)
+    startSubtestAfterBootstrap (node:internal/test_runner/harness:296:17)
+    run (node:internal/test_runner/harness:307:12)
+    test (node:internal/test_runner/harness:316:12)
+    <anonymous> (/home/user/Sloths-Adventure-/src/game/groundStack.test.ts:392:5)
+  ...
+# Subtest: the out-and-back toy (normal, seed 2): no other leg's paint stands in his air anywhere over the race leg's band, ends and the descent's floor included
+not ok 2 - the out-and-back toy (normal, seed 2): no other leg's paint stands in his air anywhere over the race leg's band, ends and the descent's floor included
+  ---
+  duration_ms: 219.659533
+  type: 'test'
+  location: '/home/user/Sloths-Adventure-/src/game/groundStack.test.ts:392:5'
+  failureType: 'testCodeFailure'
+  error: |-
+    8 points of his air over the race leg's band are under another leg's paint
+    + actual - expected
+    
+    + [
+    +   'x 18801, 28 over the piece at y 1430 (x 18477-19817): river paint from y 1202',
+    +   'x 18825, 28 over the piece at y 1430 (x 18477-19817): river paint from y 1202',
+    +   'x 19089, 28 over the piece at y 1430 (x 18477-19817): river paint from y 1317',
+    +   'x 19113, 28 over the piece at y 1430 (x 18477-19817): river paint from y 1317',
+    +   'x 18800, 28 over the piece at y 1430 (x 18477-19817): river paint from y 1202',
+    +   'x 18824, 28 over the piece at y 1430 (x 18477-19817): river paint from y 1202',
+    +   'x 19088, 28 over the piece at y 1430 (x 18477-19817): river paint from y 1317',
+    +   'x 19112, 28 over the piece at y 1430 (x 18477-19817): river paint from y 1317'
+    + ]
+    - []
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+  actual:
+    0: 'x 18801, 28 over the piece at y 1430 (x 18477-19817): river paint from y 1202'
+    1: 'x 18825, 28 over the piece at y 1430 (x 18477-19817): river paint from y 1202'
+    2: 'x 19089, 28 over the piece at y 1430 (x 18477-19817): river paint from y 1317'
+    3: 'x 19113, 28 over the piece at y 1430 (x 18477-19817): river paint from y 1317'
+    4: 'x 18800, 28 over the piece at y 1430 (x 18477-19817): river paint from y 1202'
+    5: 'x 18824, 28 over the piece at y 1430 (x 18477-19817): river paint from y 1202'
+    6: 'x 19088, 28 over the piece at y 1430 (x 18477-19817): river paint from y 1317'
+    7: 'x 19112, 28 over the piece at y 1430 (x 18477-19817): river paint from y 1317'
+  operator: 'deepStrictEqual'
+  stack: |-
+    TestContext.<anonymous> (/home/user/Sloths-Adventure-/src/game/groundStack.test.ts:442:14)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
+  ...
+# Subtest: the out-and-back toy (normal, seed 3): no other leg's paint stands in his air anywhere over the race leg's band, ends and the descent's floor included
+not ok 3 - the out-and-back toy (normal, seed 3): no other leg's paint stands in his air anywhere over the race leg's band, ends and the descent's floor included
+  ---
+  duration_ms: 184.398602
+  type: 'test'
+  location: '/home/user/Sloths-Adventure-/src/game/groundStack.test.ts:392:5'
+  failureType: 'testCodeFailure'
+  error: |-
+    12 points of his air over the race leg's band are under another leg's paint
+    + actual - expected
+    
+    + [
+    +   'x 18563, 28 over the piece at y 1445 (x 18239-19579): river paint from y 1218',
+    +   'x 18587, 28 over the piece at y 1445 (x 18239-19579): river paint from y 1218',
+    +   'x 18827, 28 over the piece at y 1445 (x 18239-19579): river paint from y 1332',
+    +   'x 18851, 28 over the piece at y 1445 (x 18239-19579): river paint from y 1332',
+    +   'x 18544, 28 over the piece at y 1445 (x 18239-19579): river paint from y 1218',
+    +   'x 18568, 28 over the piece at y 1445 (x 18239-19579): river paint from y 1218',
+    +   'x 18592, 28 over the piece at y 1445 (x 18239-19579): river paint from y 1218',
+    +   'x 18832, 28 over the piece at y 1445 (x 18239-19579): river paint from y 1332',
+    +   'x 18856, 28 over the piece at y 1445 (x 18239-19579): river paint from y 1332',
+    +   'x 18824, 28 over the piece at y 1445 (x 18239-19579): river paint from y 1332',
+    +   'x 18848, 28 over the piece at y 1445 (x 18239-19579): river paint from y 1332',
+    +   'x 18872, 28 over the piece at y 1445 (x 18239-19579): river paint from y 1332'
+    + ]
+    - []
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+  actual:
+    0: 'x 18563, 28 over the piece at y 1445 (x 18239-19579): river paint from y 1218'
+    1: 'x 18587, 28 over the piece at y 1445 (x 18239-19579): river paint from y 1218'
+    2: 'x 18827, 28 over the piece at y 1445 (x 18239-19579): river paint from y 1332'
+    3: 'x 18851, 28 over the piece at y 1445 (x 18239-19579): river paint from y 1332'
+    4: 'x 18544, 28 over the piece at y 1445 (x 18239-19579): river paint from y 1218'
+    5: 'x 18568, 28 over the piece at y 1445 (x 18239-19579): river paint from y 1218'
+    6: 'x 18592, 28 over the piece at y 1445 (x 18239-19579): river paint from y 1218'
+    7: 'x 18832, 28 over the piece at y 1445 (x 18239-19579): river paint from y 1332'
+    8: 'x 18856, 28 over the piece at y 1445 (x 18239-19579): river paint from y 1332'
+    9: 'x 18824, 28 over the piece at y 1445 (x 18239-19579): river paint from y 1332'
+    10: 'x 18848, 28 over the piece at y 1445 (x 18239-19579): river paint from y 1332'
+    11: 'x 18872, 28 over the piece at y 1445 (x 18239-19579): river paint from y 1332'
+  operator: 'deepStrictEqual'
+  stack: |-
+    TestContext.<anonymous> (/home/user/Sloths-Adventure-/src/game/groundStack.test.ts:442:14)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: the out-and-back toy (easy, seed 1): no other leg's paint stands in his air anywhere over the race leg's band, ends and the descent's floor included
+not ok 4 - the out-and-back toy (easy, seed 1): no other leg's paint stands in his air anywhere over the race leg's band, ends and the descent's floor included
+  ---
+  duration_ms: 140.58557
+  type: 'test'
+  location: '/home/user/Sloths-Adventure-/src/game/groundStack.test.ts:392:5'
+  failureType: 'testCodeFailure'
+  error: |-
+    11 points of his air over the race leg's band are under another leg's paint
+    + actual - expected
+    
+    + [
+    +   'x 19418, 28 over the piece at y 1450 (x 19118-20458): river paint from y 1213',
+    +   'x 19442, 28 over the piece at y 1450 (x 19118-20458): river paint from y 1213',
+    +   'x 19466, 28 over the piece at y 1450 (x 19118-20458): river paint from y 1213',
+    +   'x 19416, 28 over the piece at y 1450 (x 19118-20458): river paint from y 1213',
+    +   'x 19440, 28 over the piece at y 1450 (x 19118-20458): river paint from y 1213',
+    +   'x 19464, 28 over the piece at y 1450 (x 19118-20458): river paint from y 1213',
+    +   'x 19728, 28 over the piece at y 1450 (x 19118-20458): river paint from y 1337',
+    +   'x 19752, 28 over the piece at y 1450 (x 19118-20458): river paint from y 1337',
+    +   'x 19776, 28 over the piece at y 1450 (x 19118-20458): river paint from y 1337',
+    +   'x 19744, 28 over the piece at y 1450 (x 19118-20458): river paint from y 1337',
+    +   'x 19768, 28 over the piece at y 1450 (x 19118-20458): river paint from y 1337'
+    + ]
+    - []
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+  actual:
+    0: 'x 19418, 28 over the piece at y 1450 (x 19118-20458): river paint from y 1213'
+    1: 'x 19442, 28 over the piece at y 1450 (x 19118-20458): river paint from y 1213'
+    2: 'x 19466, 28 over the piece at y 1450 (x 19118-20458): river paint from y 1213'
+    3: 'x 19416, 28 over the piece at y 1450 (x 19118-20458): river paint from y 1213'
+    4: 'x 19440, 28 over the piece at y 1450 (x 19118-20458): river paint from y 1213'
+    5: 'x 19464, 28 over the piece at y 1450 (x 19118-20458): river paint from y 1213'
+    6: 'x 19728, 28 over the piece at y 1450 (x 19118-20458): river paint from y 1337'
+    7: 'x 19752, 28 over the piece at y 1450 (x 19118-20458): river paint from y 1337'
+    8: 'x 19776, 28 over the piece at y 1450 (x 19118-20458): river paint from y 1337'
+    9: 'x 19744, 28 over the piece at y 1450 (x 19118-20458): river paint from y 1337'
+    10: 'x 19768, 28 over the piece at y 1450 (x 19118-20458): river paint from y 1337'
+  operator: 'deepStrictEqual'
+  stack: |-
+    TestContext.<anonymous> (/home/user/Sloths-Adventure-/src/game/groundStack.test.ts:442:14)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: the out-and-back toy (easy, seed 2): no other leg's paint stands in his air anywhere over the race leg's band, ends and the descent's floor included
+not ok 5 - the out-and-back toy (easy, seed 2): no other leg's paint stands in his air anywhere over the race leg's band, ends and the descent's floor included
+  ---
+  duration_ms: 167.463887
+  type: 'test'
+  location: '/home/user/Sloths-Adventure-/src/game/groundStack.test.ts:392:5'
+  failureType: 'testCodeFailure'
+  error: |-
+    10 points of his air over the race leg's band are under another leg's paint
+    + actual - expected
+    
+    + [
+    +   'x 19297, 28 over the piece at y 1430 (x 18973-20313): river paint from y 1202',
+    +   'x 19321, 28 over the piece at y 1430 (x 18973-20313): river paint from y 1202',
+    +   'x 19633, 28 over the piece at y 1430 (x 18973-20313): river paint from y 1317',
+    +   'x 19657, 28 over the piece at y 1430 (x 18973-20313): river paint from y 1317',
+    +   'x 19296, 28 over the piece at y 1430 (x 18973-20313): river paint from y 1202',
+    +   'x 19320, 28 over the piece at y 1430 (x 18973-20313): river paint from y 1202',
+    +   'x 19632, 28 over the piece at y 1430 (x 18973-20313): river paint from y 1317',
+    +   'x 19656, 28 over the piece at y 1430 (x 18973-20313): river paint from y 1317',
+    +   'x 19624, 28 over the piece at y 1430 (x 18973-20313): river paint from y 1317',
+    +   'x 19648, 28 over the piece at y 1430 (x 18973-20313): river paint from y 1317'
+    + ]
+    - []
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+  actual:
+    0: 'x 19297, 28 over the piece at y 1430 (x 18973-20313): river paint from y 1202'
+    1: 'x 19321, 28 over the piece at y 1430 (x 18973-20313): river paint from y 1202'
+    2: 'x 19633, 28 over the piece at y 1430 (x 18973-20313): river paint from y 1317'
+    3: 'x 19657, 28 over the piece at y 1430 (x 18973-20313): river paint from y 1317'
+    4: 'x 19296, 28 over the piece at y 1430 (x 18973-20313): river paint from y 1202'
+    5: 'x 19320, 28 over the piece at y 1430 (x 18973-20313): river paint from y 1202'
+    6: 'x 19632, 28 over the piece at y 1430 (x 18973-20313): river paint from y 1317'
+    7: 'x 19656, 28 over the piece at y 1430 (x 18973-20313): river paint from y 1317'
+    8: 'x 19624, 28 over the piece at y 1430 (x 18973-20313): river paint from y 1317'
+    9: 'x 19648, 28 over the piece at y 1430 (x 18973-20313): river paint from y 1317'
+  operator: 'deepStrictEqual'
+  stack: |-
+    TestContext.<anonymous> (/home/user/Sloths-Adventure-/src/game/groundStack.test.ts:442:14)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: the out-and-back toy (easy, seed 3): no other leg's paint stands in his air anywhere over the race leg's band, ends and the descent's floor included
+not ok 6 - the out-and-back toy (easy, seed 3): no other leg's paint stands in his air anywhere over the race leg's band, ends and the descent's floor included
+  ---
+  duration_ms: 141.918542
+  type: 'test'
+  location: '/home/user/Sloths-Adventure-/src/game/groundStack.test.ts:392:5'
+  failureType: 'testCodeFailure'
+  error: |-
+    10 points of his air over the race leg's band are under another leg's paint
+    + actual - expected
+    
+    + [
+    +   'x 19108, 28 over the piece at y 1444 (x 18784-20124): river paint from y 1217',
+    +   'x 19132, 28 over the piece at y 1444 (x 18784-20124): river paint from y 1217',
+    +   'x 19088, 28 over the piece at y 1444 (x 18784-20124): river paint from y 1217',
+    +   'x 19112, 28 over the piece at y 1444 (x 18784-20124): river paint from y 1217',
+    +   'x 19136, 28 over the piece at y 1444 (x 18784-20124): river paint from y 1217',
+    +   'x 19424, 28 over the piece at y 1444 (x 18784-20124): river paint from y 1331',
+    +   'x 19448, 28 over the piece at y 1444 (x 18784-20124): river paint from y 1331',
+    +   'x 19416, 28 over the piece at y 1444 (x 18784-20124): river paint from y 1331',
+    +   'x 19440, 28 over the piece at y 1444 (x 18784-20124): river paint from y 1331',
+    +   'x 19464, 28 over the piece at y 1444 (x 18784-20124): river paint from y 1331'
+    + ]
+    - []
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+  actual:
+    0: 'x 19108, 28 over the piece at y 1444 (x 18784-20124): river paint from y 1217'
+    1: 'x 19132, 28 over the piece at y 1444 (x 18784-20124): river paint from y 1217'
+    2: 'x 19088, 28 over the piece at y 1444 (x 18784-20124): river paint from y 1217'
+    3: 'x 19112, 28 over the piece at y 1444 (x 18784-20124): river paint from y 1217'
+    4: 'x 19136, 28 over the piece at y 1444 (x 18784-20124): river paint from y 1217'
+    5: 'x 19424, 28 over the piece at y 1444 (x 18784-20124): river paint from y 1331'
+    6: 'x 19448, 28 over the piece at y 1444 (x 18784-20124): river paint from y 1331'
+    7: 'x 19416, 28 over the piece at y 1444 (x 18784-20124): river paint from y 1331'
+    8: 'x 19440, 28 over the piece at y 1444 (x 18784-20124): river paint from y 1331'
+    9: 'x 19464, 28 over the piece at y 1444 (x 18784-20124): river paint from y 1331'
+  operator: 'deepStrictEqual'
+  stack: |-
+    TestContext.<anonymous> (/home/user/Sloths-Adventure-/src/game/groundStack.test.ts:442:14)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+1..6
+# tests 6
+# suites 0
+# pass 0
+# fail 6
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 2947.254212

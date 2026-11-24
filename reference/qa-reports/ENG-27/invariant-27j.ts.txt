@@ -1,0 +1,32 @@
+// ENG-27j: the lead's respawn invariant (option A), measured: every respawn on the race leg, margin after == margin before the fall
+import '../../src/game/headlessDom.ts';
+import { homeRun } from './homeToys.ts';
+import { SKILLS } from './firsttimer.ts';
+import { HOME_CODE, POST_CODE } from '../../src/game/gen2/toyHome.ts';
+const [bot, codeName] = process.argv.slice(2);
+const CODE = codeName === 'post' ? POST_CODE : HOME_CODE;
+let n = 0, bad = 0;
+for (const setting of ['normal', 'easy'] as const) {
+  if (bot === 'expert' && setting === 'easy') continue;
+  for (let seed = 1; seed <= 6; seed++) {
+    const was = { ...SKILLS };
+    if (bot === 'ride') Object.assign(SKILLS, { race: false, rideOnly: true });
+    let piece: any, lives: number | undefined, prev: any = null, fall: any = null;
+    const rows: string[] = [];
+    try {
+      homeRun(bot === 'expert' ? 'expert' : 'middle', setting, seed, 1, { onFrame: (sim: any) => {
+        const e = sim.e; piece ??= e.pieces.find((q: any) => q.kind === 'pacer'); if (!piece) return;
+        const P = piece.pacer, v = Math.abs(P.x1 - P.x0) / P.seconds;
+        const m = piece.clock === null ? null : ((e.player.x - piece.x) * P.dir) / v;
+        if (lives !== undefined && e.lives < lives && prev && prev.m !== null) fall = prev;
+        if (fall && e.player.grounded && piece.clock !== null && m !== null && prev && !prev.g) {
+          n++; const d = m - fall.m; if (Math.abs(d) > 0.1) { bad++; rows.push(`${fall.m.toFixed(2)}->${m.toFixed(2)} x${Math.round(e.player.x)}`); } fall = null;
+        }
+        if (e.player.grounded) prev = { m, g: true }; else if (prev) prev.g = false;
+        lives = e.lives;
+      } } as never, CODE);
+    } finally { Object.assign(SKILLS, was); }
+    if (rows.length) console.log(`${bot} ${codeName} ${setting} ${seed}: ${rows.join(' ')}`);
+  }
+}
+console.log(`== ${bot} ${codeName}: ${bad} of ${n} respawns on the leg break the invariant`);

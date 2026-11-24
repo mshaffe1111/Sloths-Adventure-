@@ -1,0 +1,7 @@
+hopJudged on 123876d28 (frozen tree):
+# seed 5: 13 judged hops pressed (boardHop, race, edgeWait); flown not as judged 1, came down elsewhere 0
+#   boardHop q\#62 judged t 86.67 x 10467 lag 0 hold 0.200 | flown t 86.73 x 10458 hold 0.171 single | came down \#62
+# seed 2: 22 judged hops pressed (edgeWait, upstream, race); flown not as judged 1, came down elsewhere 0
+#   edgeWait q\#14 judged t 20.13 x 14674 lag 0 hold 0.200 | flown t 20.20 x 14677 hold 0.033 single | came down \#14
+# pass 0
+# fail 2

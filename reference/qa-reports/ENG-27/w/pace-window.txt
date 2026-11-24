@@ -1,0 +1,5 @@
+boat/p - him against the measured cells at gap 72: worst difference 0.64 s
+ride-only loses (the pick rule): passes for pace 78.8% .. 82.2%
+   at the top of the window, the tightest rows: [(('expert', 'home normal 3'), 2.1), (('ride', 'home easy 1'), -5.15), (('expert', 'post normal 5'), 7.64)]
+ride-only loses by 2 s or more (the lay's under, measured): passes for pace 80.1% .. 82.2%
+   at the top of the window, the tightest rows: [(('expert', 'home normal 3'), 2.1), (('ride', 'home easy 1'), -5.15), (('expert', 'post normal 5'), 7.64)]

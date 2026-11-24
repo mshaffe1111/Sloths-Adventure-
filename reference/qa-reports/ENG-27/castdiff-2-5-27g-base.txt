@@ -1,0 +1,12 @@
+castBots 2-5 seeds 1-40, BASELINE re-run: origin/t-build-25 6ddeeead2 unpatched vs BUILD-25d castrows-2-5-25d.jsonl (ENG-27g)
+kid    normal  rows 40 moved   0  pass 0/40 -> 0/40  flips -
+kid    easy    rows 40 moved   0  pass 0/40 -> 0/40  flips -
+adult  normal  rows 40 moved   0  pass 40/40 -> 40/40  flips -
+adult  easy    rows 40 moved   0  pass 40/40 -> 40/40  flips -
+child  normal  rows 40 moved   0  pass 40/40 -> 40/40  flips -
+child  easy    rows 40 moved   0  pass 40/40 -> 40/40  flips -
+middle normal  rows 40 moved   0  pass 40/40 -> 40/40  flips -
+middle easy    rows 40 moved   0  pass 40/40 -> 40/40  flips -
+expert normal  rows 40 moved   0  pass 40/40 -> 40/40  flips -
+total moved 0 of 360
+

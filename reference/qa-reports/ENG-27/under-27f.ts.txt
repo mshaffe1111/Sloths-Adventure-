@@ -1,0 +1,10 @@
+import '../../src/game/headlessDom.ts';
+import { homeStage } from './homeToys.ts';
+import { POST_CODE, HOME_CODE } from '../../src/game/gen2/toyHome.ts';
+const [seedS, setting, codeS, lo, hi] = process.argv.slice(2);
+const g: any = homeStage(Number(seedS), setting as never, codeS === 'post' ? POST_CODE : HOME_CODE);
+const st = g.stage ?? g;
+const L = Number(lo), H = Number(hi);
+for (const p of st.platforms) if (p.x < H && p.x + p.width > L) console.log(`plat ${p.id} ${p.type}${p.drift ? ' drift' : ''} x ${Math.round(p.x)}-${Math.round(p.x + p.width)} y ${Math.round(p.y)} h ${Math.round(p.height ?? 0)}`);
+for (const r of st.rivers ?? []) if (r.x0 < H && r.x1 > L) console.log(`river ${r.x0}-${r.x1} surf ${r.surfaceY} ${r.safe ? 'safe' : ''} way ${r.way ?? ''}`);
+console.log('pacer', JSON.stringify({ x0: st.pacer?.x0, x1: st.pacer?.x1, lane: st.pacer?.lane, marks: st.pacer?.marks?.slice(-4) }));

@@ -1,0 +1,35 @@
+ENG-27f step 1: every middle loss after ruling A, traced (rule 28: seed, x, frame, what took him; each cause in two runs)
+(probes: splash-27f = pond put-backs and falls per run; jumps-27f = frames and the pacer's re-placements; trapx-27f = who wrote his x;
+ riv-27f = the river the engine finds under him; under-27f = the laid platforms and rivers in an x window. Copy to tools/inspect/_<name>.ts)
+
+LOSS 1: middle Normal post seed 5, lost by 8.3 s (him 111.7, boat 103.44). NEW after ruling A: before it, WON by 1.0 only because his one
+  fall (x 1751, frame 4967, clock 105.07) came AFTER the boat docked at 103.44 and rewound it (ruling A (i) stops that). No fall before
+  the dock. He lost 7.7 s on ONE bank stretch (marks 6911 to 6178: flown 2.7 s, bot 10.4 s):
+  - post 5 Normal, x 6539-6542, frames 3726-3873 (clock 63.7-68.6): EIGHT put-backs at the safe pond 6458-6591 (surface 1559; its bed is
+    plat 76, a solid notch 75 px under the banks 72 and 77, top 1517), no life. engine.ts:2971 (river.safe.backX 6661) put him back each
+    time (trapx-27f). Try 1: took off at 6739 (148 px before the pond), landed on bank 72's own lip at 6585 and slid in. Tries 2-8: from
+    the put-back point (70 px from the pond) he walked in with no jump (frame 3738-3750: y never rises).
+  - second run, same cause: middle Normal home seed 5, x 13816 frame 2042 (walked off bank 44 at full speed, no jump, into the pond
+    13693-13822 whose bed plat 45 is 75 px down) and x 13862 frame 2058 (jumped 40 px back, landed 22 px short at 13715); WON 1.2 anyway.
+    Also seen: middle Easy home 1 (6533, 6528), ride-only Normal home 3 (four at 7595), ride-only Normal home 5 (9252, 9235).
+  CAUSE (bot): the bot routes DOWN into a safe pond's notch as a step (the bed is a solid platform) and does not read the water over it;
+  after a put-back 70 px from the edge it walks in again. Where the fix goes: the bot (firsttimer.ts reads a safe river as water: jump
+  it from a run-up), not the race. Not fixed here (outside this packet).
+
+LOSS 2: middle Normal post seed 4, lost by 1.0 s (him 101.8, boat 100.76). Same as before ruling A (-1.0) and on the base.
+  Five falls on the race leg: x 14155 f 2075, x 14257 f 2155, x 13707 f 2297 (the first river, clock 7-12; each put the boat back to
+  5.45 at x 14506), x 6109 f 3948 (clock 59.72 -> 64.11 at x 6283: he was 2.4 s ahead of the flown middle at 6803 and the fall spent it),
+  and the one that lost the race:
+  - post 4 Normal, x 2582, frame 4801 (clock 91.77): on log 86 in river 2672-3368 he hopped left at x 2856 (frame 4771) toward the bank
+    (plat 84, 2352-2672, top 1425: 28 px over the log's top 1453), came down on the SAME log at 2702 (30 px short of the bank), and
+    walked off the log's end into the last 13 px of water (frame 4789). At careful-middle pace from 2582 he would have docked at 100.59
+    (0.17 s ahead). The respawn put him at x 3448, BEFORE river 3368-2672 (not the last crossing by the respawn point, so the cap
+    applies; it did not bind: the floor held its full 2.0 s, clock 82.82). He then took 18.9 s for the flown 15.9 s left: the re-crossing
+    of river 3368-2672 and the bank to 1953 cost 2.8 s over the flown marks (the log wait), and he lost by 1.0.
+  - second run, same cause (a hop off a log's end toward a higher bank, short): middle Normal home seed 4, x 1247 frame 4691 (log 96,
+    ENG-27e's trace: peaked 19 px over the bank's top and met its side); since ruling A it WINS by 0.9 (respawn on the last crossing:
+    the floor held whole).
+  CAUSE (two parts): (a) bot: the short hop off a log toward a bank higher than the log (take-off too early, then walking off the log's
+  end); (b) the race: a fall in the river BEFORE the last puts the respawn a river back, and the 2 s Normal floor is less than one
+  river's log wait over the flown mark (2.8 s here). Whether (b) needs a rule (the floor read at the FALL's point, or a floor per river
+  left to cross) is the lead's / Designer's call; not changed here.

@@ -1,0 +1,121 @@
+P t 105.867 x 12053.2 y 1473.0 vx 0.0 vy 0.0 gr true on 53 out 0 press false jump false last 0 trav -35.700 slip -43.233 rel 0 ft -
+J 1 x 12050.3 y 1453.8 vx -86.7 vy -576.7 steer -1 held true log 11859.3-12099.3 qy 1501
+J 2 x 12045.5 y 1436.7 vx -143.3 vy -513.3 steer -1 held true log 11856.7-12096.7 qy 1501
+J 3 x 12038.8 y 1421.7 vx -200.0 vy -450.0 steer -1 held true log 11854.0-12094.0 qy 1501
+J 4 x 12030.3 y 1408.8 vx -256.7 vy -386.7 steer -1 held true log 11851.3-12091.3 qy 1501
+J 5 x 12020.8 y 1398.0 vx -285.0 vy -323.3 steer -1 held true log 11848.7-12088.7 qy 1501
+J 6 x 12011.9 y 1389.3 vx -267.7 vy -260.0 steer -1 held true log 11846.0-12086.0 qy 1501
+J 7 x 12002.4 y 1382.8 vx -285.0 vy -196.7 steer -1 held true log 11843.3-12083.3 qy 1501
+J 8 x 11993.4 y 1378.3 vx -267.7 vy -133.3 steer -1 held true log 11840.7-12080.7 qy 1501
+J 9 x 11983.9 y 1376.0 vx -285.0 vy -70.0 steer -1 held true log 11838.0-12078.0 qy 1501
+J 10 x 11975.0 y 1375.8 vx -267.7 vy -6.7 steer -1 held false log 11835.3-12075.3 qy 1501
+J 11 x 11965.5 y 1377.7 vx -285.0 vy 56.7 steer -1 held false log 11832.7-12072.7 qy 1501
+J 12 x 11956.6 y 1382.3 vx -267.7 vy 140.0 steer -1 held false log 11830.0-12070.0 qy 1501
+J 13 x 11947.1 y 1389.8 vx -285.0 vy 223.3 steer -1 held false log 11827.3-12067.3 qy 1501
+J 14 x 11938.2 y 1400.0 vx -267.7 vy 306.7 steer -1 held false log 11824.7-12064.7 qy 1501
+J 15 x 11928.7 y 1413.0 vx -285.0 vy 390.0 steer -1 held false log 11822.0-12062.0 qy 1501
+J 16 x 11919.8 y 1428.8 vx -267.7 vy 473.3 steer -1 held false log 11819.3-12059.3 qy 1501
+J 17 x 11910.3 y 1447.3 vx -285.0 vy 556.7 steer -1 held false log 11816.7-12056.7 qy 1501
+J 18 x 11901.3 y 1468.7 vx -267.7 vy 640.0 steer -1 held false log 11814.0-12054.0 qy 1501
+J 19 x 11891.8 y 1492.8 vx -285.0 vy 723.3 steer -1 held false log 11811.3-12051.3 qy 1501
+J 20 x 11882.9 y 1519.7 vx -267.7 vy 806.7 steer -1 held false log 11808.7-12048.7 qy 1501
+J 1 x 12050.3 y 1453.8 vx -86.7 vy -576.7 steer -1 held true log 11859.3-12099.3 qy 1501
+J 2 x 12045.5 y 1436.7 vx -143.3 vy -513.3 steer -1 held true log 11856.7-12096.7 qy 1501
+J 3 x 12038.8 y 1421.7 vx -200.0 vy -450.0 steer -1 held true log 11854.0-12094.0 qy 1501
+J 4 x 12030.3 y 1408.8 vx -256.7 vy -386.7 steer -1 held true log 11851.3-12091.3 qy 1501
+J 5 x 12020.8 y 1398.0 vx -285.0 vy -323.3 steer -1 held true log 11848.7-12088.7 qy 1501
+J 6 x 12011.9 y 1389.3 vx -267.7 vy -260.0 steer -1 held true log 11846.0-12086.0 qy 1501
+J 7 x 12002.4 y 1382.8 vx -285.0 vy -196.7 steer -1 held true log 11843.3-12083.3 qy 1501
+J 8 x 11993.4 y 1378.3 vx -267.7 vy -133.3 steer -1 held true log 11840.7-12080.7 qy 1501
+J 9 x 11983.9 y 1376.0 vx -285.0 vy -70.0 steer -1 held true log 11838.0-12078.0 qy 1501
+J 10 x 11975.0 y 1375.8 vx -267.7 vy -6.7 steer -1 held false log 11835.3-12075.3 qy 1501
+J 11 x 11965.5 y 1377.7 vx -285.0 vy 56.7 steer -1 held false log 11832.7-12072.7 qy 1501
+J 12 x 11956.6 y 1382.3 vx -267.7 vy 140.0 steer -1 held false log 11830.0-12070.0 qy 1501
+J 13 x 11947.1 y 1389.8 vx -285.0 vy 223.3 steer -1 held false log 11827.3-12067.3 qy 1501
+J 14 x 11938.2 y 1400.0 vx -267.7 vy 306.7 steer -1 held false log 11824.7-12064.7 qy 1501
+J 15 x 11928.7 y 1413.0 vx -285.0 vy 390.0 steer -1 held false log 11822.0-12062.0 qy 1501
+J 16 x 11919.8 y 1428.8 vx -267.7 vy 473.3 steer -1 held false log 11819.3-12059.3 qy 1501
+J 17 x 11910.3 y 1447.3 vx -285.0 vy 556.7 steer -1 held false log 11816.7-12056.7 qy 1501
+J 18 x 11901.3 y 1468.7 vx -267.7 vy 640.0 steer -1 held false log 11814.0-12054.0 qy 1501
+J 19 x 11891.8 y 1492.8 vx -285.0 vy 723.3 steer -1 held false log 11811.3-12051.3 qy 1501
+J 20 x 11882.9 y 1519.7 vx -267.7 vy 806.7 steer -1 held false log 11808.7-12048.7 qy 1501
+P t 105.900 x 12053.2 y 1473.0 vx 0.0 vy 0.0 gr true on 53 out -1 press true jump true last -1 trav -35.733 slip -43.267 rel 0 ft 1
+P t 105.933 x 12050.3 y 1453.8 vx -86.7 vy -576.7 gr false on -1 out -1 press false jump true last -1 trav -35.767 slip -43.300 rel 0 ft 2
+P t 105.967 x 12045.5 y 1436.7 vx -143.3 vy -513.3 gr false on -1 out -1 press false jump true last -1 trav -35.800 slip -43.333 rel 0 ft 3
+P t 106.000 x 12038.8 y 1421.7 vx -200.0 vy -450.0 gr false on -1 out -1 press false jump true last -1 trav -35.833 slip -43.367 rel 0 ft 4
+P t 106.033 x 12030.3 y 1408.8 vx -256.7 vy -386.7 gr false on -1 out -1 press false jump true last -1 trav -35.867 slip -43.400 rel 0 ft 5
+P t 106.067 x 12020.8 y 1398.0 vx -285.0 vy -323.3 gr false on -1 out -1 press false jump true last -1 trav -35.900 slip -43.433 rel 0 ft 6
+P t 106.100 x 12011.9 y 1389.3 vx -267.7 vy -260.0 gr false on -1 out -1 press false jump true last -1 trav -35.933 slip -43.467 rel 0 ft 7
+P t 106.133 x 12002.4 y 1382.8 vx -285.0 vy -196.7 gr false on -1 out -1 press false jump true last -1 trav -35.967 slip -43.500 rel 0 ft 8
+P t 106.167 x 11993.4 y 1378.3 vx -267.7 vy -133.3 gr false on -1 out -1 press false jump true last -1 trav -36.000 slip -43.533 rel 0 ft 9
+P t 106.200 x 11983.9 y 1376.0 vx -285.0 vy -70.0 gr false on -1 out -1 press false jump false last -1 trav -36.033 slip -43.567 rel 0 ft 10
+P t 106.233 x 11975.0 y 1375.8 vx -267.7 vy -6.7 gr false on -1 out -1 press false jump false last -1 trav -36.067 slip -43.600 rel 0 ft 11
+P t 106.267 x 11965.5 y 1377.7 vx -285.0 vy 56.7 gr false on -1 out -1 press false jump false last -1 trav -36.100 slip -43.633 rel 0 ft 12
+P t 106.300 x 11956.6 y 1382.3 vx -267.7 vy 140.0 gr false on -1 out -1 press false jump false last -1 trav -36.133 slip -43.667 rel 0 ft 13
+P t 106.333 x 11947.1 y 1389.8 vx -285.0 vy 223.3 gr false on -1 out -1 press false jump false last -1 trav -36.167 slip -43.700 rel 0 ft 14
+P t 106.367 x 11938.2 y 1400.0 vx -267.7 vy 306.7 gr false on -1 out -1 press false jump false last -1 trav -36.200 slip -43.733 rel 0 ft 15
+P t 106.400 x 11928.7 y 1413.0 vx -285.0 vy 390.0 gr false on -1 out -1 press false jump false last -1 trav -36.233 slip -43.767 rel 0 ft 16
+P t 106.433 x 11919.8 y 1428.8 vx -267.7 vy 473.3 gr false on -1 out -1 press false jump false last -1 trav -36.267 slip -43.800 rel 0 ft 17
+P t 106.467 x 11910.3 y 1447.3 vx -285.0 vy 556.7 gr false on -1 out -1 press false jump false last -1 trav -36.300 slip -43.833 rel 0 ft 18
+P t 106.500 x 11901.3 y 1468.7 vx -267.7 vy 640.0 gr false on -1 out -1 press false jump false last -1 trav -36.333 slip -43.867 rel 0 ft 19
+P t 106.533 x 11904.0 y 1473.0 vx -285.0 vy 0.0 gr true on 53 out -1 press false jump false last -1 trav -36.367 slip -43.900 rel 0 ft -
+P t 106.567 x 11895.1 y 1473.0 vx -267.7 vy 0.0 gr true on 53 out -1 press false jump false last -1 trav -36.400 slip -43.933 rel 0 ft -
+P t 106.600 x 11885.6 y 1475.8 vx -285.0 vy 83.3 gr false on -1 out -1 press false jump false last -1 trav -36.433 slip -43.967 rel 0 ft -
+P t 106.633 x 11876.7 y 1481.3 vx -267.7 vy 166.7 gr false on -1 out -1 press false jump false last -1 trav -36.467 slip -44.000 rel 0 ft -
+P t 106.667 x 11867.2 y 1489.7 vx -285.0 vy 250.0 gr false on -1 out -1 press false jump false last -1 trav -36.500 slip -44.033 rel 0 ft -
+P t 106.700 x 11858.2 y 1500.8 vx -267.7 vy 333.3 gr false on -1 out -1 press false jump false last -1 trav -36.533 slip -44.067 rel 0 ft -
+P t 106.733 x 11848.7 y 1501.0 vx -285.0 vy 0.0 gr true on 55 out -1 press false jump false last -1 trav -36.567 slip -44.100 rel 0 ft -
+P t 106.767 x 11837.1 y 1501.0 vx -267.7 vy 0.0 gr true on 55 out -1 press false jump false last -1 trav -36.600 slip -44.133 rel 0 ft -
+P t 106.800 x 11825.0 y 1501.0 vx -285.0 vy 0.0 gr true on 55 out -1 press false jump false last -1 trav -36.633 slip -44.167 rel 0 ft -
+P t 106.833 x 11813.4 y 1501.0 vx -267.7 vy 0.0 gr true on 55 out -1 press false jump false last -1 trav -36.667 slip -44.200 rel 0 ft -
+P t 106.867 x 11801.2 y 1501.0 vx -285.0 vy 0.0 gr true on 55 out -1 press false jump false last -1 trav -36.700 slip -44.233 rel 0 ft -
+P t 106.900 x 11789.6 y 1501.0 vx -267.7 vy 0.0 gr true on 55 out 0 press false jump false last 0 trav -36.733 slip -44.267 rel 0 ft -
+P t 106.933 x 11781.8 y 1501.0 vx -154.3 vy 0.0 gr true on 55 out 0 press false jump false last 0 trav -36.767 slip -44.300 rel 0 ft -
+P t 106.967 x 11777.8 y 1501.0 vx -41.0 vy 0.0 gr true on 55 out 0 press false jump false last 0 trav -36.800 slip -44.333 rel 0 ft -
+P t 107.000 x 11775.1 y 1501.0 vx 0.0 vy 0.0 gr true on 55 out 0 press false jump false last 0 trav -36.833 slip -44.367 rel 0 ft -
+P t 107.033 x 11772.5 y 1501.0 vx 0.0 vy 0.0 gr true on 55 out 0 press false jump false last 0 trav -36.867 slip -44.400 rel 0 ft -
+P t 107.067 x 11769.8 y 1501.0 vx 0.0 vy 0.0 gr true on 55 out 0 press false jump false last 0 trav -36.900 slip -44.433 rel 0 ft -
+P t 107.100 x 11767.1 y 1501.0 vx 0.0 vy 0.0 gr true on 55 out 0 press false jump false last 0 trav -36.933 slip -44.467 rel 0 ft -
+P t 107.133 x 11764.5 y 1501.0 vx 0.0 vy 0.0 gr true on 55 out 0 press false jump false last 0 trav -36.967 slip -44.500 rel 0 ft -
+P t 107.167 x 11761.8 y 1501.0 vx 0.0 vy 0.0 gr true on 55 out 0 press false jump false last 0 trav -37.000 slip -44.533 rel 0 ft -
+P t 107.200 x 11759.1 y 1501.0 vx 0.0 vy 0.0 gr true on 55 out 0 press false jump false last 0 trav -37.033 slip -44.567 rel 0 ft -
+P t 107.233 x 11756.5 y 1501.0 vx 0.0 vy 0.0 gr true on 55 out 0 press false jump false last 0 trav -37.067 slip -44.600 rel 0 ft -
+P t 107.267 x 11753.8 y 1501.0 vx 0.0 vy 0.0 gr true on 55 out 0 press false jump false last 0 trav -37.100 slip -44.633 rel 0 ft -
+P t 107.300 x 11751.1 y 1501.0 vx 0.0 vy 0.0 gr true on 55 out 0 press false jump false last 0 trav -37.133 slip -44.667 rel 0 ft -
+P t 107.333 x 11748.5 y 1501.0 vx 0.0 vy 0.0 gr true on 55 out 0 press false jump false last 0 trav -37.167 slip -44.700 rel 0 ft -
+P t 107.367 x 11745.8 y 1501.0 vx 0.0 vy 0.0 gr true on 55 out 0 press false jump false last 0 trav -37.200 slip -44.733 rel 0 ft -
+P t 107.400 x 11743.1 y 1501.0 vx 0.0 vy 0.0 gr true on 55 out 0 press false jump false last 0 trav -37.233 slip -44.767 rel 0 ft -
+P t 107.433 x 11740.5 y 1501.0 vx 0.0 vy 0.0 gr true on 55 out 0 press false jump false last 0 trav -37.267 slip -44.800 rel 0 ft -
+P t 107.467 x 11737.8 y 1501.0 vx 0.0 vy 0.0 gr true on 55 out 0 press false jump false last 0 trav -37.300 slip -44.833 rel 0 ft -
+P t 107.500 x 11735.1 y 1501.0 vx 0.0 vy 0.0 gr true on 55 out 0 press false jump false last 0 trav -37.333 slip -44.867 rel 0 ft -
+P t 107.533 x 11732.5 y 1501.0 vx 0.0 vy 0.0 gr true on 55 out 0 press false jump false last 0 trav -37.367 slip -44.900 rel 0 ft -
+P t 107.567 x 11729.8 y 1501.0 vx 0.0 vy 0.0 gr true on 55 out 0 press false jump false last 0 trav -37.400 slip -44.933 rel 0 ft -
+P t 107.600 x 11727.1 y 1501.0 vx 0.0 vy 0.0 gr true on 55 out 0 press false jump false last 0 trav -37.433 slip -44.967 rel 0 ft -
+P t 107.633 x 11724.5 y 1501.0 vx 0.0 vy 0.0 gr true on 55 out 0 press false jump false last 0 trav -37.467 slip -45.000 rel 0 ft -
+P t 107.667 x 11721.8 y 1501.0 vx 0.0 vy 0.0 gr true on 55 out 0 press false jump false last 0 trav -37.500 slip -45.033 rel 0 ft -
+P t 107.700 x 11719.1 y 1501.0 vx 0.0 vy 0.0 gr true on 55 out 0 press false jump false last 0 trav -37.533 slip -45.067 rel 0 ft -
+P t 107.733 x 11716.5 y 1501.0 vx 0.0 vy 0.0 gr true on 55 out 0 press false jump false last 0 trav -37.567 slip -45.100 rel 0 ft -
+P t 107.767 x 11713.8 y 1501.0 vx 0.0 vy 0.0 gr true on 55 out 0 press false jump false last 0 trav -37.600 slip -45.133 rel 0 ft -
+P t 107.800 x 11711.1 y 1501.0 vx 0.0 vy 0.0 gr true on 55 out 0 press false jump false last 0 trav -37.633 slip -45.167 rel 0 ft -
+P t 107.833 x 11708.5 y 1501.0 vx 0.0 vy 0.0 gr true on 55 out 0 press false jump false last 0 trav -37.667 slip -45.200 rel 0 ft -
+P t 107.867 x 11705.8 y 1501.0 vx 0.0 vy 0.0 gr true on 55 out 0 press false jump false last 0 trav -37.700 slip -45.233 rel 0 ft -
+P t 107.900 x 11703.1 y 1501.0 vx 0.0 vy 0.0 gr true on 55 out 0 press false jump false last 0 trav -37.733 slip -45.267 rel 0 ft -
+P t 107.933 x 11700.5 y 1501.0 vx 0.0 vy 0.0 gr true on 55 out 0 press false jump false last 0 trav -37.767 slip -45.300 rel 0 ft -
+P t 107.967 x 11697.8 y 1501.0 vx 0.0 vy 0.0 gr true on 55 out 0 press false jump false last 0 trav -37.800 slip -45.333 rel 0 ft -
+P t 108.000 x 11695.1 y 1501.0 vx 0.0 vy 0.0 gr true on 55 out 0 press false jump false last 0 trav -37.833 slip -45.367 rel 0 ft -
+P t 108.033 x 11692.5 y 1501.0 vx 0.0 vy 0.0 gr true on 55 out 0 press false jump false last 0 trav -37.867 slip -45.400 rel 0 ft -
+P t 108.067 x 11689.8 y 1501.0 vx 0.0 vy 0.0 gr true on 55 out 0 press false jump false last 0 trav -37.900 slip -45.433 rel 0 ft -
+P t 108.100 x 11687.1 y 1501.0 vx 0.0 vy 0.0 gr true on 55 out 0 press false jump false last 0 trav -37.933 slip -45.467 rel 0 ft -
+P t 108.133 x 11684.5 y 1501.0 vx 0.0 vy 0.0 gr true on 55 out 0 press false jump false last 0 trav -37.967 slip -45.500 rel 0 ft -
+P t 108.167 x 11681.8 y 1501.0 vx 0.0 vy 0.0 gr true on 55 out 0 press false jump false last 0 trav -38.000 slip -45.533 rel 0 ft -
+P t 108.200 x 11679.1 y 1501.0 vx 0.0 vy 0.0 gr true on 55 out 0 press false jump false last 0 trav -38.033 slip -45.567 rel 0 ft -
+P t 108.233 x 11676.5 y 1501.0 vx 0.0 vy 0.0 gr true on 55 out 0 press false jump false last 0 trav -38.067 slip -45.600 rel 0 ft -
+P t 108.267 x 11673.8 y 1501.0 vx 0.0 vy 0.0 gr true on 55 out 0 press false jump false last 0 trav -38.100 slip -45.633 rel 0 ft -
+P t 108.300 x 11671.1 y 1501.0 vx 0.0 vy 0.0 gr true on 55 out 0 press false jump false last 0 trav -38.133 slip -45.667 rel 0 ft -
+P t 108.333 x 11668.5 y 1501.0 vx 0.0 vy 0.0 gr true on 55 out 0 press false jump false last 0 trav -38.167 slip -45.700 rel 0 ft -
+P t 108.367 x 11665.8 y 1501.0 vx 0.0 vy 0.0 gr true on 55 out 0 press false jump false last 0 trav -38.200 slip -45.733 rel 0 ft -
+P t 108.400 x 11663.1 y 1501.0 vx 0.0 vy 0.0 gr true on 55 out 0 press false jump false last 0 trav -38.233 slip -45.767 rel 0 ft -
+P t 108.433 x 11660.5 y 1501.0 vx 0.0 vy 0.0 gr true on 55 out 0 press false jump false last 0 trav -38.267 slip -45.800 rel 0 ft -
+P t 108.467 x 11657.8 y 1501.0 vx 0.0 vy 0.0 gr true on 55 out 0 press false jump false last 0 trav -38.300 slip -45.833 rel 0 ft -
+P t 108.500 x 11655.1 y 1501.0 vx 0.0 vy 0.0 gr true on 55 out 0 press false jump false last 0 trav -38.333 slip -45.867 rel 0 ft -
+ROW {"site":"edgeWait","q":55,"t":105.89999999999655,"x":12053.177777777879,"hold":0.2766208828757517,"lag":0,"kind":"single","flown":{"t":105.89999999999655,"x":12053.177777777879,"hold":0.2766208828757517,"kind":"single"},"landed":53}

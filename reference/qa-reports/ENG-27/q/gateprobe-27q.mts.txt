@@ -1,0 +1,32 @@
+// 2-7 home middle: per-gate judged/refused seconds, per-site land rate, race episodes (hopped off vs carried in), one run
+// node_modules/.bin/tsx gateprobe-27q.mts <tree> <setting> <seed>
+const [tree, setting = 'normal', seed = '1'] = process.argv.slice(2);
+await import(`${tree}/src/game/headlessDom.ts`);
+const { homeRun } = await import(`${tree}/tools/inspect/homeToys.ts`);
+const { GATE_TRACE } = await import(`${tree}/tools/inspect/firsttimer.ts`);
+const DT = 1 / 30;
+const fr: { t: number; x: number; y: number; on: string }[] = [];
+let tt = 0;
+GATE_TRACE.on = true; GATE_TRACE.rows.length = 0;
+const r = homeRun('middle', setting as never, Number(seed), 1, { onFrame: (sim: any) => { const p = sim.p; tt += DT;
+  const q = sim.platforms.find((o: any) => !o.broken && p.x + p.width > o.x && p.x < o.x + o.width && Math.abs(p.y + p.height - o.y) < 6);
+  fr.push({ t: tt, x: p.x, y: p.y, on: q ? (q.type === 'drift' ? 'log' : 'solid') : 'air' }); } });
+const rows = GATE_TRACE.rows.slice(); GATE_TRACE.on = false;
+const sites = [...new Set(rows.map((r: any) => r.site))];
+console.log(`${tree.split('/').pop()} ${setting} ${seed}: finish ${r.finishSeconds} end ${r.end} lives lost ${r.lives}`);
+for (const s of sites) { const rs = rows.filter((r: any) => r.site === s); const ref = rs.filter((r: any) => !r.pressed).length;
+  console.log(`  ${s}: judged ${(rs.length * DT).toFixed(1)} s, refused ${(ref * DT).toFixed(1)} s, pressed ${rs.length - ref}, land rate ${(100 * (rs.length - ref) / rs.length).toFixed(1)}%`); }
+// sites by 250 px: judged s and land rate (race and edgeWait)
+const bins = new Map<string, { n: number; p: number }>();
+for (const r of rows as any[]) { const k = `${r.site} ${Math.floor(r.x / 250) * 250}`; const b = bins.get(k) ?? { n: 0, p: 0 }; b.n++; if (r.pressed) b.p++; bins.set(k, b); }
+console.log('  big sites: ' + [...bins.entries()].sort((a, b) => b[1].n - a[1].n).slice(0, 14).map(([k, b]) => `${k} ${(b.n * DT).toFixed(1)}s ${(100 * b.p / b.n).toFixed(0)}%`).join('; '));
+// race episodes: runs of race rows a frame apart; ended by a press (hop) or not (carried on: where he was next on solid/log/air)
+const race = (rows as any[]).filter((r) => r.site === 'race');
+const eps: { t0: number; t1: number; x0: number; x1: number; end: string }[] = [];
+for (const r of race) { const e = eps[eps.length - 1]; if (e && r.t - e.t1 < DT * 1.5 && e.end === 'open') { e.t1 = r.t; e.x1 = r.x; if (r.pressed) e.end = 'hop'; } else eps.push({ t0: r.t, t1: r.t, x0: r.x, x1: r.x, end: r.pressed ? 'hop' : 'open' }); }
+let carried = 0, carriedS = 0, hopS = 0, hops = 0;
+for (const e of eps) { if (e.end === 'open') { const nx = fr.find((f) => f.t > e.t1 + DT * 0.5 && f.on !== 'log'); e.end = 'carried->' + (nx ? nx.on : '?'); carried++; carriedS += e.t1 - e.t0 + DT; } else { hops++; hopS += e.t1 - e.t0 + DT; } }
+console.log(`  race episodes ${eps.length}: hopped off ${hops} (${hopS.toFixed(1)} s judged before the hop), carried on to the log's end ${carried} (${carriedS.toFixed(1)} s: the log rode him ${'toward the bank'} the whole time)`);
+const ends = new Map<string, number>(); for (const e of eps) ends.set(e.end, (ends.get(e.end) ?? 0) + 1);
+console.log('  episode ends: ' + [...ends.entries()].map(([k, v]) => `${k} ${v}`).join(', '));
+console.log('  longest: ' + eps.sort((a, b) => (b.t1 - b.t0) - (a.t1 - a.t0)).slice(0, 8).map((e) => `t ${e.t0.toFixed(1)} x ${Math.round(e.x0)}->${Math.round(e.x1)} ${(e.t1 - e.t0 + DT).toFixed(1)}s ${e.end}`).join('; '));

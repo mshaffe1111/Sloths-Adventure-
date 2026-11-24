@@ -89,7 +89,6 @@ export const STAGE_DRAWS: Record<string, readonly string[]> = {
   '2-3': ['w2-new'], // (the mooring post and the pond's reed isle, w2NewArt.ts; BUILD-23b)
   '2-5': ['foe:turtle'],
   '2-6': ['foe:goldsnake'],
-  '2-7': ['foe:goldsnake'],
   '2-8': ['foe:goldsnake'],
   '2-9': ['foe:guard', 'foe:turtle'],
   '3-2': ['foe:eagle', 'props2'],

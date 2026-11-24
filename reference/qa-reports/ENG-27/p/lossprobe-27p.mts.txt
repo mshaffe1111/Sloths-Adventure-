@@ -1,0 +1,12 @@
+// where he loses a life on 2-7 home (x, game time, what he last stood on): npx tsx lossprobe.mts <tree> <setting> <seed>
+const [tree, setting = 'normal', seed = '1'] = process.argv.slice(2);
+await import(`${tree}/src/game/headlessDom.ts`);
+const { homeRun } = await import(`${tree}/tools/inspect/homeToys.ts`);
+let t = 0, lives = -1, last = '', out: string[] = [];
+const r = homeRun('middle', setting as never, Number(seed), 1, { onFrame: (sim: any) => {
+  t += 1 / 30; const p = sim.p, e = sim.e as any;
+  if (p.grounded) { const q = sim.platforms.find((q: any) => q.id === sim.standingOn); if (q) last = `#${q.id} ${q.type} x ${Math.round(q.x)}`; }
+  if (lives >= 0 && e.lives < lives) out.push(`t ${t.toFixed(1)} x ${Math.round(p.x)} last on ${last}`);
+  lives = e.lives;
+} } as never);
+console.log(`${tree.split('/').pop()} ${setting} ${seed}: finish ${r.finishSeconds} lives ${r.lives} | losses: ${out.join('; ')}`);

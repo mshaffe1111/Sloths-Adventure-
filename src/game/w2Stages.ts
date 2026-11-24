@@ -31,7 +31,6 @@ import { buildW2Sections, w2Picks, type W2Kit, type W2Look, type W2Plan } from '
 export type { W2Plan } from './w2Sections.ts';
 export const W2_STAGES: Record<string, W2Plan> = {
   '2-6': '2-6',
-  '2-7': '2-7',
   '2-8': '2-8',
   '2-9': '2-9',
 };
@@ -628,77 +627,6 @@ function buildW2Plan(config: LevelConfig, seed: number, plan: W2Plan): Generated
     return { path, xs, px };
   }
 
-  /** a basket on the rope (2-7): `up` rides from the path up to high ground on the right, else from high ground down to the path */
-  function lift(up: boolean, high = G - Math.round(R.r(220, 240))) {
-    const x0l = x;
-    run(R.r(70, 90));
-    const W = 96;
-    let sx: number;
-    const top = up ? high : bankY;
-    if (up) {
-      // the path runs up to the foot of the high ground; the shaft is the last stretch of path before the rock
-      sx = x + 6;
-      run(W + 12);
-      close();
-      open(x, top);
-    } else {
-      close();
-      sx = x + 6;
-      open(x, G);
-      run(W + 12);
-    }
-    P.push({
-      id: pid++, x: sx, y: G, width: W, height: 18, type: 'moving', art: 'lift',
-      // (a brisk basket, and not long at the bottom: at 95 px/s with 1.6 s waits the ride was the longest stretch with nothing to do in 2-7)
-      lift: { top, bottom: G, speed: 130, wait: 1.0, phase: R.r(0, 3), postRight: up },
-    });
-    // flowers up the shaft: the ride collects them (the lower two: a jump from the path reaches them too)
-    for (let i = 1; i <= 2; i++) flower(sx + W / 2, G - ((G - top) * i) / 4 - 40, 'hibiscus');
-    run(R.r(90, 110));
-    expert += (x - x0l) / RUN + (G - top) / 130 + 1.8;
-    pieces.push({ k: up ? 'liftUp' : 'liftDown', x0: x0l, x1: x });
-    return { sx, top };
-  }
-
-  /** a stretch of high ground with a snake on it, about its middle (clear of a flag at the far end) */
-  function guardedHigh(len: number) {
-    rest(len);
-    snake(x - len * 0.5, bankY);
-  }
-
-  /** the mailman on his round: walks back and forth along a stretch of path ahead */
-  const mailman = (a: number, b: number, y = G) => decor.push({ cel: 'po.carry_stand', celWalk: 'po.walk_parcel', x: a, b: y + 2, k: 0.42, walk: [a, b, 9] });
-
-  /** a house door in the bank with its sign: PLEASE BE PATIENT (the village's motto) */
-  const patientDoor = (dx: number, y = G) => {
-    piece('door', dx, y + 6, 170);
-    piece('sign', dx - 150, y + 4, 112, { text: ['PLEASE BE', 'PATIENT'] });
-  };
-
-  /** the village at the end of a stage (2-1, 2-7): the jetty, the sign, the mailbox, doors in the bank, washing, a chimney and Gruntlewick */
-  function villageEnd() {
-    const v0 = x;
-    // the jetty reaches out over the last river, when the village's bank is where one ends
-    if (rivers.some((r) => Math.abs(r.x1 - bankFrom) < 2)) piece('jetty', bankFrom - 50, SURFACE + 26, 210, { flip: true });
-    run(90);
-    piece('sign', x, G + 4, 132, { text: ['PLEASE BE', 'PATIENT'] });
-    run(90);
-    piece('mailbox', x, G + 2, 54);
-    run(90);
-    mailman(x, x + 300);
-    piece('door', x + 60, G + 6, 210);
-    piece('window', x + 230, G - 30, 82);
-    run(200);
-    piece('laundry', x, G + 4, 200);
-    run(150);
-    piece('door', x, G + 6, 190, { flip: true });
-    piece('chimney', x + 120, G - 72, 60);
-    decor.push({ cel: 'tc.scroll', x: x + 220, b: G + 2, k: 0.42, flip: true });
-    // (the shrine a little sooner: with the creek's last hop the walk in came to four seconds and more, 2026-10-28)
-    run(230);
-    expert += (x - v0) / RUN;
-  }
-
   // ----- 2-8 Reed Cages: still water that rises -----
 
   /**
@@ -785,17 +713,6 @@ function buildW2Plan(config: LevelConfig, seed: number, plan: W2Plan): Generated
     run(R.r(145, 160));
     expert += (x - x0s) / RUN + n * 0.35;
     pieces.push({ k: 'stones', x0: x0s, x1: x });
-  }
-
-  /** off the end of high ground, down to the bank's level (a drop, as off a mooring post's high bank) */
-  function dropDown() {
-    const x0 = x;
-    run(R.r(60, 80));
-    close();
-    open(x, G);
-    run(R.r(90, 110));
-    expert += (x - x0) / RUN + 0.4;
-    pieces.push({ k: 'drop', x0, x1: x });
   }
 
   /**
@@ -1035,8 +952,8 @@ function buildW2Plan(config: LevelConfig, seed: number, plan: W2Plan): Generated
     get bankY() { return bankY; },
     get expert() { return expert; },
     addExpert: (s) => { expert += s; },
-    run, open, beat, flag, hint, rest, breath, snakeBank, guardedRest, river, stones, lilyPond, swingRiver, stairs, porchRun, lift, guardedHigh,
-    mailman, patientDoor, villageEnd, floodBasin, cageRoom, bellGate, bellGallery, sandbar, island, postUp, dropDown, channels, startWalk, heart, goldenSeed,
+    run, open, beat, flag, hint, rest, breath, snakeBank, guardedRest, river, stones, lilyPond, swingRiver, stairs, porchRun,
+    floodBasin, cageRoom, bellGate, bellGallery, sandbar, island, postUp, channels, startWalk, heart, goldenSeed,
     piece: (n, px, b, w, extra) => piece(n as W2Decor['n'], px, b, w, extra as Partial<W2Decor>),
     row, arc, flower, turtle, guard, snake,
     mark: (k, x0) => pieces.push({ k, x0, x1: x }),

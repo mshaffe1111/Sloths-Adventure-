@@ -1,0 +1,39 @@
+set off t 63.9 x 16537
+    t 65.0 x 16314 margin 0.47 clock 1.1
+    t 70.0 x 15471 margin 1.16 clock 6.1
+    t 75.0 x 14659 margin 1.65 clock 11.1
+    t 80.0 x 14205 margin -0.29 clock 16.1
+    t 85.0 x 13248 margin 1.17 clock 21.1
+life lost t 86.3 x 12984 margin 1.60 clock 22.4
+  stood t 86.4 x 13128 margin 1.60
+life lost t 88.3 x 12815 margin 1.75 clock 23.4
+  stood t 88.3 x 13128 margin 1.75
+    t 90.0 x 12761 margin 2.56 clock 23.0
+life lost t 94.0 x 12371 margin 1.26 clock 27.0
+  stood t 94.0 x 13128 margin 1.26
+    t 95.0 x 13043 margin 0.84 clock 22.8
+life lost t 95.8 x 12831 margin 1.47 clock 23.6
+  stood t 95.8 x 13128 margin 1.47
+    t 100.0 x 12548 margin 1.19 clock 25.8
+    t 105.0 x 11753 margin 1.56 clock 30.8
+    t 110.0 x 11050 margin 1.31 clock 35.8
+    t 115.0 x 10338 margin 1.12 clock 40.8
+    t 120.0 x 9821 margin -0.39 clock 45.8
+    t 125.0 x 8868 margin 1.04 clock 50.8
+    t 130.0 x 8221 margin 0.41 clock 55.8
+    t 135.0 x 7482 margin 0.41 clock 60.8
+    t 140.0 x 7038 margin -1.60 clock 65.8
+    t 145.0 x 6120 margin -0.40 clock 70.8
+life lost t 145.2 x 6055 margin -0.23 clock 71.0
+  stood t 145.3 x 6258 margin -0.23
+life lost t 147.2 x 5907 margin 0.15 clock 71.7
+  stood t 147.3 x 6258 margin 0.15
+    t 150.0 x 5764 margin 0.75 clock 72.1
+    t 155.0 x 5202 margin -0.45 clock 77.1
+    t 160.0 x 4479 margin -0.57 clock 82.1
+    t 165.0 x 3833 margin -1.21 clock 87.1
+    t 170.0 x 2860 margin 0.36 clock 92.1
+    t 175.0 x 2345 margin -1.16 clock 97.1
+    t 180.0 x 1589 margin -1.05 clock 102.1
+    t 185.0 x 783 margin -0.61 clock 107.1
+verdict {"won":false,"boat":103.44,"him":103.6} end shrine

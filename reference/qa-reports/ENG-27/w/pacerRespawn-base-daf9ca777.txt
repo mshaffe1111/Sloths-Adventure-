@@ -1,0 +1,25 @@
+TAP version 13
+# \# home: 39 race-leg falls judged; 400 frames of ease on the grid; 28 re-placements of the boat on a respawn and 7 on a Game Over continue, every one inside the iris's shut frame
+# \# post: 47 race-leg falls judged; 29 frames of ease on the grid; 30 re-placements of the boat on a respawn and 5 on a Game Over continue, every one inside the iris's shut frame
+# Subtest: 2-7 home: back at a race-leg fall's x, his margin is never better than at the fall (a fall never pays, end to end)
+ok 1 - 2-7 home: back at a race-leg fall's x, his margin is never better than at the fall (a fall never pays, end to end)
+  ---
+  duration_ms: 17944.141265
+  type: 'test'
+  ...
+# Subtest: 2-7 post: back at a race-leg fall's x, his margin is never better than at the fall (a fall never pays, end to end)
+ok 2 - 2-7 post: back at a race-leg fall's x, his margin is never better than at the fall (a fall never pays, end to end)
+  ---
+  duration_ms: 16257.949502
+  type: 'test'
+  ...
+1..2
+# tests 2
+# suites 0
+# pass 2
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 34887.75478
+EXIT 0

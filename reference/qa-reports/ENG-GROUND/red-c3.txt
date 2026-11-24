@@ -1,0 +1,44 @@
+TAP version 13
+# Subtest: the out-and-back toy: the painted underside hangs its roots below the ceiling line (banks and pools), over their own spans only
+not ok 1 - the out-and-back toy: the painted underside hangs its roots below the ceiling line (banks and pools), over their own spans only
+  ---
+  duration_ms: 1333.165253
+  type: 'test'
+  location: '/home/user/Sloths-Adventure-/src/game/groundStack.test.ts:274:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    an end over open air has no corner
+    + actual - expected
+    
+    + [
+    +   'right end x 18726: no corner (3 corner draws)',
+    +   'left end x 13989: no corner (3 corner draws)'
+    + ]
+    - []
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+  actual:
+    0: 'right end x 18726: no corner (3 corner draws)'
+    1: 'left end x 13989: no corner (3 corner draws)'
+  operator: 'deepStrictEqual'
+  stack: |-
+    TestContext.<anonymous> (/home/user/Sloths-Adventure-/src/game/groundStack.test.ts:374:12)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.start (node:internal/test_runner/test:944:17)
+    startSubtestAfterBootstrap (node:internal/test_runner/harness:296:17)
+    run (node:internal/test_runner/harness:307:12)
+    test (node:internal/test_runner/harness:316:12)
+    <anonymous> (/home/user/Sloths-Adventure-/src/game/groundStack.test.ts:274:1)
+  ...
+1..1
+# tests 1
+# suites 0
+# pass 0
+# fail 1
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 2063.037976

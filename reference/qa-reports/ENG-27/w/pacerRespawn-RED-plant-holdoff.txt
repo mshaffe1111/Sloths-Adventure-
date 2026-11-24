@@ -1,0 +1,85 @@
+TAP version 13
+# Subtest: 2-7 home: back at a race-leg fall's x, his margin is never better than at the fall (a fall never pays, end to end)
+not ok 1 - 2-7 home: back at a race-leg fall's x, his margin is never better than at the fall (a fall never pays, end to end)
+  ---
+  duration_ms: 17105.830069
+  type: 'test'
+  location: '/home/user/fzfixplant/tools/inspect/pacerRespawn.test.ts:126:3'
+  failureType: 'testCodeFailure'
+  error: |-
+    home: 6 of 39 race-leg falls paid:
+    middle normal 3 x 7192: 3.56 at the fall -> 3.69 s back at its x (+0.14)
+    middle normal 3 x 7051: 4.12 at the fall -> 4.65 s back at its x (+0.53)
+    middle easy 2 x 13312: 3.61 at the fall -> 3.83 s back at its x (+0.22)
+    middle easy 2 x 1770: 17.19 at the fall -> 18.53 s back at its x (+1.33)
+    expert normal 5 x 4616: 9.10 at the fall -> 9.79 s back at its x (+0.69)
+    ride easy 5 x 7542: -0.47 at the fall -> 0.04 s back at its x (+0.51)
+    + actual - expected
+    
+    + [
+    +   'middle normal 3 x 7192: 3.56 at the fall -> 3.69 s back at its x (+0.14)',
+    +   'middle normal 3 x 7051: 4.12 at the fall -> 4.65 s back at its x (+0.53)',
+    +   'middle easy 2 x 13312: 3.61 at the fall -> 3.83 s back at its x (+0.22)',
+    +   'middle easy 2 x 1770: 17.19 at the fall -> 18.53 s back at its x (+1.33)',
+    +   'expert normal 5 x 4616: 9.10 at the fall -> 9.79 s back at its x (+0.69)',
+    +   'ride easy 5 x 7542: -0.47 at the fall -> 0.04 s back at its x (+0.51)'
+    + ]
+    - []
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+  actual:
+    0: 'middle normal 3 x 7192: 3.56 at the fall -> 3.69 s back at its x (+0.14)'
+    1: 'middle normal 3 x 7051: 4.12 at the fall -> 4.65 s back at its x (+0.53)'
+    2: 'middle easy 2 x 13312: 3.61 at the fall -> 3.83 s back at its x (+0.22)'
+    3: 'middle easy 2 x 1770: 17.19 at the fall -> 18.53 s back at its x (+1.33)'
+    4: 'expert normal 5 x 4616: 9.10 at the fall -> 9.79 s back at its x (+0.69)'
+    5: 'ride easy 5 x 7542: -0.47 at the fall -> 0.04 s back at its x (+0.51)'
+  operator: 'deepStrictEqual'
+  stack: |-
+  ...
+# Subtest: 2-7 post: back at a race-leg fall's x, his margin is never better than at the fall (a fall never pays, end to end)
+not ok 2 - 2-7 post: back at a race-leg fall's x, his margin is never better than at the fall (a fall never pays, end to end)
+  ---
+  duration_ms: 16957.144922
+  type: 'test'
+  location: '/home/user/fzfixplant/tools/inspect/pacerRespawn.test.ts:126:3'
+  failureType: 'testCodeFailure'
+  error: |-
+    post: 4 of 47 race-leg falls paid:
+    middle normal 2 x 1793: -4.51 at the fall -> -3.83 s back at its x (+0.67)
+    middle normal 6 x 11386: 10.87 at the fall -> 10.97 s back at its x (+0.09)
+    middle easy 2 x 8642: 23.98 at the fall -> 24.11 s back at its x (+0.13)
+    ride easy 1 x 3194: -10.83 at the fall -> -9.80 s back at its x (+1.04)
+    + actual - expected
+    
+    + [
+    +   'middle normal 2 x 1793: -4.51 at the fall -> -3.83 s back at its x (+0.67)',
+    +   'middle normal 6 x 11386: 10.87 at the fall -> 10.97 s back at its x (+0.09)',
+    +   'middle easy 2 x 8642: 23.98 at the fall -> 24.11 s back at its x (+0.13)',
+    +   'ride easy 1 x 3194: -10.83 at the fall -> -9.80 s back at its x (+1.04)'
+    + ]
+    - []
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+  actual:
+    0: 'middle normal 2 x 1793: -4.51 at the fall -> -3.83 s back at its x (+0.67)'
+    1: 'middle normal 6 x 11386: 10.87 at the fall -> 10.97 s back at its x (+0.09)'
+    2: 'middle easy 2 x 8642: 23.98 at the fall -> 24.11 s back at its x (+0.13)'
+    3: 'ride easy 1 x 3194: -10.83 at the fall -> -9.80 s back at its x (+1.04)'
+  operator: 'deepStrictEqual'
+  stack: |-
+  ...
+1..2
+# tests 2
+# suites 0
+# pass 0
+# fail 2
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 37320.959928
+EXIT 1

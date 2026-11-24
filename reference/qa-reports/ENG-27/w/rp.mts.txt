@@ -1,0 +1,6 @@
+const [tree, w, s, seed] = process.argv.slice(2);
+await import(`${tree}/src/game/headlessDom.ts`);
+const { homeRun } = await import(`${tree}/tools/inspect/homeToys.ts`);
+const { HOME_CODE, POST_CODE } = await import(`${tree}/src/game/gen2/toyHome.ts`);
+homeRun('expert' as never, s as never, Number(seed), 1, {} as never, w === 'post' ? POST_CODE : HOME_CODE);
+const g = (globalThis as any).__rp; console.log(w, s, seed, JSON.stringify({ calls: g.calls, landed: g.landed, differ: g.differ })); for (const e of g.ex) console.log('  ', e);

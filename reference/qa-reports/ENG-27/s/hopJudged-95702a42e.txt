@@ -1,0 +1,90 @@
+TAP version 13
+#   [bank press] unjudged q\#-1 judged t 99.17 x 9384 lag 0 hold 0.358 | flown t 99.17 x 9384 hold 0.358 single | came down \#64 solid
+#   [bank press] unjudged q\#-1 judged t 125.67 x 6666 lag 0 hold 0.147 | flown t 125.67 x 6666 hold 0.147 double | came down \#75 solid
+#   [bank press] unjudged q\#-1 judged t 156.97 x 3807 lag 0 hold 0.172 | flown t 156.97 x 3807 hold 0.172 double | came down \#87 solid
+#   [bank press] unjudged q\#-1 judged t 177.80 x 2360 lag 0 hold 0.388 | flown t 177.80 x 2360 hold 0.388 single | came down \#93 solid
+# normal seed 5: 17 judged hops pressed (race, unjudged, edgeWait); unjudged or stale 0, flown not as judged 0, came down elsewhere 0
+#   [bank press] unjudged q\#-1 judged t 68.40 x 15543 lag 0 hold 0.148 | flown t 68.40 x 15543 hold 0.148 double | came down \#16 solid
+#   [bank press] unjudged q\#-1 judged t 115.10 x 16799 lag 0 hold 0.171 | flown t 115.10 x 16799 hold 0.171 single | came down \#21 solid
+#   [bank press] unjudged q\#-1 judged t 192.03 x 10376 lag 0 hold 0.310 | flown t 192.03 x 10376 hold 0.310 single | came down \#60 solid
+#   [bank press] unjudged q\#-1 judged t 230.43 x 6251 lag 0 hold 0.169 | flown t 230.43 x 6251 hold 0.169 single | came down \#76 solid
+# normal seed 2: 32 judged hops pressed (edgeWait, upstream, unjudged, race); unjudged or stale 0, flown not as judged 0, came down elsewhere 0
+#   [bank press] unjudged q\#-1 judged t 99.27 x 12209 lag 0 hold 0.372 | flown t 99.27 x 12209 hold 0.372 double | came down \#53 solid
+#   [bank press] unjudged q\#-1 judged t 166.20 x 3834 lag 0 hold 0.386 | flown t 166.20 x 3834 hold 0.386 single | came down \#87 solid
+#   [bank press] unjudged q\#-1 judged t 177.63 x 2407 lag 0 hold 0.188 | flown t 177.63 x 2407 hold 0.188 single | came down \#93 solid
+# easy seed 5: 21 judged hops pressed (edgeWait, upstream, unjudged, race); unjudged or stale 0, flown not as judged 0, came down elsewhere 0
+#   [bank press] unjudged q\#-1 judged t 58.87 x 16398 lag 0 hold 0.298 | flown t 58.87 x 16398 hold 0.298 double | came down \#36 solid
+#   [bank press] unjudged q\#-1 judged t 132.67 x 6474 lag 0 hold 0.351 | flown t 132.67 x 6474 hold 0.351 single | came down \#76 solid
+# easy seed 2: 21 judged hops pressed (edgeWait, upstream, unjudged, race); unjudged or stale 0, flown not as judged 0, came down elsewhere 1
+#   edgeWait q\#-2 judged t 27.70 x 15087 lag 0 hold 0.320 double | flown t 27.70 x 15087 hold 0.320 double | came down \#14 drift
+# Subtest: 2-7 home, middle Normal seed 5: every judged hop is flown as judged and comes down where the gate said; every press from a bank with logs near its edge flies on a judgment of its own frame or comes down on solid (ruling A)
+ok 1 - 2-7 home, middle Normal seed 5: every judged hop is flown as judged and comes down where the gate said; every press from a bank with logs near its edge flies on a judgment of its own frame or comes down on solid (ruling A)
+  ---
+  duration_ms: 1172.445139
+  type: 'test'
+  ...
+# Subtest: 2-7 home, middle Normal seed 2: every judged hop is flown as judged and comes down where the gate said; every press from a bank with logs near its edge flies on a judgment of its own frame or comes down on solid (ruling A)
+ok 2 - 2-7 home, middle Normal seed 2: every judged hop is flown as judged and comes down where the gate said; every press from a bank with logs near its edge flies on a judgment of its own frame or comes down on solid (ruling A)
+  ---
+  duration_ms: 1029.541995
+  type: 'test'
+  ...
+# Subtest: 2-7 home, middle Easy seed 5: every judged hop is flown as judged and comes down where the gate said; every press from a bank with logs near its edge flies on a judgment of its own frame or comes down on solid (ruling A)
+ok 3 - 2-7 home, middle Easy seed 5: every judged hop is flown as judged and comes down where the gate said; every press from a bank with logs near its edge flies on a judgment of its own frame or comes down on solid (ruling A)
+  ---
+  duration_ms: 824.453995
+  type: 'test'
+  ...
+# Subtest: 2-7 home, middle Easy seed 2: every judged hop is flown as judged and comes down where the gate said; every press from a bank with logs near its edge flies on a judgment of its own frame or comes down on solid (ruling A)
+not ok 4 - 2-7 home, middle Easy seed 2: every judged hop is flown as judged and comes down where the gate said; every press from a bank with logs near its edge flies on a judgment of its own frame or comes down on solid (ruling A)
+  ---
+  duration_ms: 565.720936
+  type: 'test'
+  location: '/home/user/wt-dp/tools/inspect/hopJudged.test.ts:36:3'
+  failureType: 'testCodeFailure'
+  error: |-
+    a gate judged one hop and the bot flew another
+    + actual - expected
+    
+    + [
+    +   'edgeWait q#-2 judged t 27.70 x 15087 lag 0 hold 0.320 double | flown t 27.70 x 15087 hold 0.320 double | came down #14 drift'
+    + ]
+    - []
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+  actual:
+    0: 'edgeWait q#-2 judged t 27.70 x 15087 lag 0 hold 0.320 double | flown t 27.70 x 15087 hold 0.320 double | came down #14 drift'
+  operator: 'deepStrictEqual'
+  stack: |-
+    TestContext.<anonymous> (/home/user/wt-dp/tools/inspect/hopJudged.test.ts:55:12)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: a drawn-hop gate decides on the hop as aimed, never on the thumb noise drawn for it (no foresight, ENG-27r)
+ok 5 - a drawn-hop gate decides on the hop as aimed, never on the thumb noise drawn for it (no foresight, ENG-27r)
+  ---
+  duration_ms: 0.37779
+  type: 'test'
+  ...
+# Subtest: a wait holds its aim: drawn once when the wait begins, never redrawn for a lucky hold (ENG-27s, the lead's ruling)
+ok 6 - a wait holds its aim: drawn once when the wait begins, never redrawn for a lucky hold (ENG-27s, the lead's ruling)
+  ---
+  duration_ms: 0.166969
+  type: 'test'
+  ...
+1..6
+# tests 6
+# suites 0
+# pass 5
+# fail 1
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 7547.156341
+hopJudged rc=1

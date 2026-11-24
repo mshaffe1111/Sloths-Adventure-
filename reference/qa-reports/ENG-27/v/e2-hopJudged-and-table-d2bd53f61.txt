@@ -1,0 +1,20 @@
+hopJudged exit 0
+# normal seed 5: 17 judged hops pressed (race, unjudged, edgeWait); unjudged or stale 0, flown not as judged 0, came down elsewhere 0
+# normal seed 2: 36 judged hops pressed (edgeWait, upstream, unjudged, race); unjudged or stale 0, flown not as judged 0, came down elsewhere 0
+# easy seed 5: 22 judged hops pressed (edgeWait, upstream, unjudged, race); unjudged or stale 0, flown not as judged 0, came down elsewhere 0
+# easy seed 2: 26 judged hops pressed (edgeWait, upstream, unjudged, race); unjudged or stale 0, flown not as judged 0, came down elsewhere 0
+# pass 7
+# fail 0
+E2	middle	home normal 1	end shrine at x 300 y 1530	finish 166.4	WON him 86.3 boat 93.89 by 7.6	lives lost 1 (race leg 1 at x 1752)	race presses 12 fall/press 0.00	hops {"single 0.18":1,"double 0.12":9,"single 0.05":1,"single 0.12":1}
+E2	middle	home normal 2	end shrine at x 296 y 1438	finish 241.6	WON him 85.7 boat 92.37 by 6.7	lives lost 3 (race leg 0 at x -)	race presses 13 fall/press 0.00	hops {"double 0.12":10,"single 0.18":1,"single 0.12":1,"single 0.33":1}
+E2	middle	home normal 3	end shrine at x 298 y 1423	finish 215.6	lost him 99.6 boat 92.06 by -7.5	lives lost 5 (race leg 4 at x 7009,7183,7042,5590)	race presses 10 fall/press 0.00	hops {"double 0.12":7,"single 0.08":1,"single 0.33":1,"single 0.18":1}
+E2	middle	home easy 1	end shrine at x 298 y 1519	finish 140.9	WON him 86.4 boat 97.53 by 11.1	lives lost 0 (race leg 0 at x -)	race presses 14 fall/press 0.00	hops {"single 0.47":2,"single 0.09":1,"single 0.20":3,"double 0.14":5,"single 0.14":3}
+E2	middle	home easy 3	end shrine at x 294 y 1422	finish 151	WON him 85.2 boat 96.09 by 10.9	lives lost 0 (race leg 0 at x -)	race presses 12 fall/press 0.00	hops {"double 0.14":6,"single 0.47":2,"single 0.20":3,"single 0.14":1}
+E2	middle	post normal 4	end shrine at x 296 y 1425	finish 207.9	lost him 151.9 boat 100.76 by -51.1	lives lost 2 (race leg 2 at x 11189,7278)	race presses 13 fall/press 0.00	hops {"double 0.12":10,"single 0.08":1,"single 0.05":1,"single 0.18":1}
+E2	middle	post normal 5	end shrine at x 292 y 1472	finish 167.1	WON him 97.8 boat 103.44 by 5.6	lives lost 1 (race leg 1 at x 14141)	race presses 14 fall/press 0.00	hops {"double 0.12":10,"single 0.18":1,"single 0.08":1,"single 0.12":1,"single 0.05":1}
+E2	expert	home normal 1	end shrine at x 300 y 1530	finish 162.1	WON him 79.7 boat 93.89 by 14.2	lives lost 3 (race leg 2 at x 3158,3036)	race presses 10 fall/press 0.00	hops {"single 0.70":5,"double 0.18":4,"single 0.08":1}
+E2	expert	home normal 2	end shrine at x 297 y 1438	finish 183.7	lost him 96.1 boat 92.37 by -3.7	lives lost 3 (race leg 1 at x 12451)	race presses 16 fall/press 0.00	hops {"double 0.18":2,"single 0.18":1,"single 0.08":4,"single 0.70":9}
+E2	expert	home normal 3	end shrine at x 293 y 1423	finish 222.4	lost him 109.9 boat 92.06 by -17.8	lives lost 1 (race leg 0 at x -)	race presses 12 fall/press 0.00	hops {"single 0.70":5,"double 0.18":4,"single 0.18":1,"single 0.08":1,"single 0.13":1}
+E2	expert	post normal 4	end shrine at x 297 y 1425	finish 138	WON him 94.6 boat 100.76 by 6.2	lives lost 1 (race leg 1 at x 6084)	race presses 14 fall/press 0.00	hops {"double 0.18":3,"single 0.08":2,"single 0.70":4,"single 0.18":3,"single 0.13":2}
+E2	expert	post normal 5	end shrine at x 293 y 1472	finish 174.2	lost him 118.2 boat 103.44 by -14.8	lives lost 1 (race leg 1 at x 7399)	race presses 16 fall/press 0.00	hops {"double 0.18":4,"single 0.70":7,"single 0.18":1,"single 0.08":4}
+DONE

@@ -14,6 +14,10 @@
  * The result is a GeneratedStage (what the engine already plays) with the hand-built stages' proto extras, and `gen2` (what was built).
  * Same seed, same stage; Easy and Normal share the seed AND the section sequence (Normal picks, Easy lays the same picks by its rules).
  */
+import { layPacer } from './pacerLay.ts';
+import { raceEndsOf, type RaceEndSaid, type RaceEnds } from '../pacer.ts';
+import { layPost } from './postLay.ts';
+import { layColumnDress } from './columnDressLay.ts';
 import { withSetting } from '../settingDials.ts';
 import { LAID_ASKS } from './walkedSpan.ts';
 import { rollLook } from '../artRoll.ts';
@@ -25,7 +29,7 @@ import { JUMP_CLEAR, jumpEdges } from '../stageMetrics.ts';
 import { APEX, BANDS, bounceLipOverCap, CAP_UP, gapEnvelope, judgedOnArcs, linkArcs, lesserArcs, riseEnvelope, BLOCK_H, SPARE } from './reach.ts';
 import { classify, headroomOf, judgeRoll, NOT_JUDGED_ALL, TAUGHT, verdictLines, type Judged11, type RouteAsk } from './verdicts.ts';
 import { PROMISES_11, realFalls } from './promises11.ts';
-import { gapCatchY, localExtent, reflectLocal, routeAt, routeOf, storeyLimit, TOWER, towerCatches, towerFalls, towerFlagBreaches, towerFlags, towerGateRoofs, towerGates, gateBand, towerSkips, towerVaults, vertical } from './tower.ts';
+import { alongOf, gapCatchY, inMetOrder, localExtent, reflectLocal, routeAt, routeOf, storeyLimit, TOWER, towerCatches, towerFalls, towerFlagBreaches, towerFlags, towerGates, towerSkips, towerVaults, vertical, towerGateRoofs, gateBand } from './tower.ts';
 import { CLIMB_CLEAR } from '../vineTop.ts';
 import { LAND_IN, repairLandings } from './landings.ts';
 import { findW1Pits } from '../w1Pits.ts';
@@ -59,8 +63,8 @@ import { layChase } from './chaseLay.ts';
 import { rollsOf } from './rollLay.ts';
 import { CooldownQueue, pickWeighted, poissonPlace, ShuffleBag, WorldOnce, type RoutePiece } from './variety.ts';
 import { checkCode, formatToken, JOB_OF, LETTER_OF, MARK_OF, parseCode, type CodeToken } from './nodeCode.ts';
-import { askMisses, asksOf, hazardMiss, onClock, TYPE_OF_LETTER, type NodeAsks } from './nodeAsks.ts';
-import { columnFrame, columnWalls, legMarks, legsOf, mixed, reflectLeg, upOrDown, WALL, type Frame, type LaidLeg, type Travel } from './legs.ts';
+import { askMisses, asksOf, hazardMiss, TYPE_OF_LETTER, type NodeAsks, onClock } from './nodeAsks.ts';
+import { columnFrame, columnWalls, legMarks, legOverlaps, legsOf, mixed, reflectLeg, upOrDown, WALL, type Frame, type LaidLeg, type Travel } from './legs.ts';
 import {
   EASY_ENEMY_SHARE,
   EASY_LANDING,
@@ -2564,7 +2568,7 @@ export function layStage(budget: StageBudget, graph: MissionGraph, kit: WorldKit
   const ASIDE = 1 << 20;
   let legK = 0, leftSum: number | undefined, firstLeft = false;
   /** where the leg he is on began in each of the lay's lists */
-  let mark = { p: 0, v: 0, r: 0, z: 0, g: 0, a: 0, h: 0, s: 0, t: 0, rv: 0 };
+  let mark = { p: 0, v: 0, r: 0, z: 0, g: 0, a: 0, h: 0, s: 0, t: 0, rv: 0, rp: 0 };
   const doors: Array<{ side: -1 | 1; y: number }> = [];
   const laidLegs: Array<LaidLeg & { t0: number; t1: number }> = [];
   const wallIds = new Set<number>();
@@ -2613,7 +2617,7 @@ export function layStage(budget: StageBudget, graph: MissionGraph, kit: WorldKit
   };
   const beginLeg = (k: number) => {
     const t = legs[k].travel;
-    mark = { p: k ? platforms.length : 0, v: vines.length, r: ropes.length, z: zones.length, g: gaps.length, a: asks.length, h: heartFalls.length, s: sections.length, t: turns.length, rv: rivers.length };
+    mark = { p: k ? platforms.length : 0, v: vines.length, r: ropes.length, z: zones.length, g: gaps.length, a: asks.length, h: heartFalls.length, s: sections.length, t: turns.length, rv: rivers.length, rp: riverPetals.length };
     flow = upOrDown(t) ? t : 'right';
     tower = vertical(flow);
     doors.length = 0;
@@ -2688,9 +2692,9 @@ export function layStage(budget: StageBudget, graph: MissionGraph, kit: WorldKit
     }
     const mine = sections.slice(mark.s), own = platforms.slice(mark.p);
     if (leftSum !== undefined) {
-      // (a river in a leg laid left: its current and its fairness are read for a player running right; ENG-W2b REPORT, ENGINE-WORTHY, ready by 2-7)
-      if (rivers.length > mark.rv) throw new Error(`gen2 legs: a river in a leg laid left is not mirrored yet (at x ${R(rivers[mark.rv].x0)})`);
-      reflectLeg({ platforms: own, vines: vines.slice(mark.v), ropes: ropes.slice(mark.r), zones: zones.slice(mark.z), gaps: gaps.slice(mark.g), asks: asks.slice(mark.a), heartFalls: heartFalls.slice(mark.h), sections: mine }, leftSum);
+      // (a river in a leg laid left is turned with it, its current flowing the other way and marked as crossed right to left, so its
+      // fairness is judged in its own frame (river.ts RiverZone.way, riverLay.ts riverFaults); the petals riding its logs with it. ENG-27)
+      reflectLeg({ platforms: own, vines: vines.slice(mark.v), ropes: ropes.slice(mark.r), zones: zones.slice(mark.z), gaps: gaps.slice(mark.g), asks: asks.slice(mark.a), heartFalls: heartFalls.slice(mark.h), rivers: rivers.slice(mark.rv), riverPetals: riverPetals.slice(mark.rp), sections: mine }, leftSum);
       cur = { ...cur, x: leftSum - cur.x };
       dir = -1;
     } else dir = 1;
@@ -3118,6 +3122,20 @@ export function layStage(budget: StageBudget, graph: MissionGraph, kit: WorldKit
     exitX = R(shrine.x + 300);
     // (a stage of legs that ends on a run leg: laid left, the shrine and the totem are mirrored with it)
     if (routed) { const sum = leftSum; endLeg(legK); if (sum !== undefined) exitX = sum - exitX; }
+  }
+  // (the start's back (ENG-27): a stage of legs whose later leg lies beyond where its first run leg begins (a leg laid back left, past the
+  // start) has no level edge behind the spawn. A wall stands there, as a mid-stage column's does (legs.ts WALL), from over the first leg to
+  // its foot: he leaves the start only the way the stage goes, never by dropping off its back onto the leg below (the toy's first bot ran
+  // left off the spawn, fell onto the home leg and walked to the shrine, the out leg and the column never entered)
+  const first = laidLegs[0];
+  if (routed && first && !upOrDown(first.travel)) {
+    const back = first.travel === 'right' ? -1 : 1;
+    if (laidLegs.slice(1).some((g) => (back < 0 ? g.x0 < first.x0 - 1 : g.x1 > first.x1 + 1))) {
+      const top = first.y0 - WALL.over;
+      const w = mk(back < 0 ? first.x0 - WALL.w : first.x1, top, WALL.w, 'block', first.y1 - top, M.tower?.wall ?? M.ground.style);
+      wallIds.add(w.id);
+      sections[first.i0]?.seam.push(w);
+    }
   }
   clearClimbs(vines, platforms);
   // (a turn's x is its vine's, where clearClimbs left it)
@@ -3618,7 +3636,7 @@ export function fillSockets(laid: Laid, budget: StageBudget, kit: WorldKit, seed
           // where "hint.1-1.double" itself was on screen)
           const text = tipWords(M.tips, m);
           // (and only inside its section's height band, R-165.236: on a climbing stage x alone said 1-4's teach lines on the start floor)
-          if (text) hints.push({ x: k.x, text, pad: text, keys: text, band: tipBand(sec), ...(M.teachTips?.includes(m) ? { teach: true as const } : {}) });
+          if (text) hints.push({ x: k.x, text, pad: text, keys: text, band: tipBand(sec), ...(M.teachTips?.includes(m) ? { teach: true as const } : M.storyTips?.[m] ? { story: M.storyTips[m] } : {}) });
           fills.push({ section: sec.uid, socket: s.id, role: 'tip', what: m, x: k.x, y: k.y, ...(text ? {} : { unsaid: true }) });
         }
       } else if (s.role === 'roll') {
@@ -3855,17 +3873,31 @@ export function fillSockets(laid: Laid, budget: StageBudget, kit: WorldKit, seed
     const text = M.tips?.water ?? WATER_LINE;
     const signs = (sink.extras.waterWarnings ??= []) as Array<{ x: number; y: number }>;
     let last = -Infinity;
-    for (const g of [...wet].sort((a, b) => a.x0 - b.x0)) {
+    // (in the order he MEETS them, each met at the lip he reaches first (gen2/tower.ts inMetOrder, D130): on a run that is x0, as ever;
+    // on a stage with a route (a tower, a stage of legs) the px along it, so a stacked out-and-back's way home, laid under the way out
+    // and running left, is warned at its near lip (x1) and after the way out, never at the least x: Normal's one line went to 2-7's last
+    // river, clamped to the spawn, BUILD-27d. The line starts WATER_WARN.lead px of way before that lip, never before the spawn; a
+    // leftward one is said from `beforeX` down to the lip (the engine says a line once he is past its x), and a stage with a route
+    // gives each its section's height band, so a storey over the river does not say it)
+    const met = along ?? ((x: number) => x);
+    const from = met(laid.spawn.x, laid.spawn.y) + 40;
+    const ordered = inMetOrder(met, wet, (g) => [{ x: g.x0, y: g.y }, { x: g.x1, y: g.y }]);
+    for (const g of ordered) {
       if (g.x1 - g.x0 < 20) continue;
-      if (signs.length && (!easy || g.x0 - last < every)) continue;
-      const x = R(Math.max(laid.spawn.x + 40, g.x0 - WATER_WARN.lead));
-      hints.push({ x, text, pad: text, keys: text, passX: R(g.x1 + 80) });
+      const left = met(g.x1, g.y) < met(g.x0, g.y);
+      const at = Math.min(met(g.x0, g.y), met(g.x1, g.y));
+      if (signs.length && (!easy || at - last < every)) continue;
+      const lead = Math.max(0, Math.min(WATER_WARN.lead, at - from));
+      const sec = along ? laid.sections.find((q) => q.uid === g.section) : undefined;
+      const band = sec ? { band: tipBand(sec) } : {};
+      const x = R(left ? g.x1 : g.x0 - lead);
+      hints.push(left ? { x, beforeX: R(g.x1 + lead), text, pad: text, keys: text, ...band } : { x, text, pad: text, keys: text, passX: R(g.x1 + 80), ...band });
       // (the sign stands on the near lip: g.y is the higher of the two lips, so where the far side stood higher the sign hung in the air)
-      const sx = g.x0 - 40;
+      const sx = left ? g.x1 + 40 : g.x0 - 40;
       const lip = laid.platforms.filter((q) => q.x <= sx && q.x + q.width >= sx && q.y >= g.y - 1).reduce((m, q) => Math.min(m, q.y), Infinity);
       signs.push({ x: R(sx), y: R(Number.isFinite(lip) ? lip : g.y) });
       fills.push({ section: g.section ?? '', socket: 'water', role: 'tip', what: 'water', x, y: R(g.y) });
-      last = g.x0;
+      last = at;
     }
   }
   // (a flag an emitter's zone has come to cover is taken down: nothing stands in a zone)
@@ -4211,7 +4243,8 @@ function assemble(req: BuildRequest, budget: StageBudget, graph: MissionGraph, s
   };
   ASKS.set(stage, laid.asks ?? []);
   // (each section's own pieces (never its seam: a pit's floor and walls), for a chase's lay on the built stage, chaseLay.ts)
-  if (graph.nodes.some((n) => n.job === 'pressure')) PIECES_OF.set(stage, new Map(laid.sections.map((s) => [s.uid, s.pieces.map((q) => ({ platform: q.platform, main: q.main }))])));
+  // (and a brief's post: its doors stand on the route's own pieces, postLay.ts)
+  if (graph.nodes.some((n) => n.job === 'pressure') || req.kit.manifest.graphs?.briefs?.[budget.id]?.post) PIECES_OF.set(stage, new Map(laid.sections.map((s) => [s.uid, s.pieces.map((q) => ({ platform: q.platform, main: q.main }))])));
   // (a graph with a designer's asks: each node's sections as laid, for the check in applyVerdicts, nodeAsks.ts)
   if (graph.nodes.some((n) => n.asked)) {
     const byId = new Map(req.kit.manifest.sections.map((t) => [t.id, t]));
@@ -4248,7 +4281,22 @@ function layChaseStage(st: Gen2Stage, piecesOf: (uid: string) => ReadonlyArray<{
   settleLaid(st, kit.settle);
   const r = rollsOf(st as never, kit.manifest.rolls, easy);
   if (r.specs.length) st.rolling = r.specs;
-  return [...chase.problems, ...r.problems];
+  // (a brief that names a pacer: laid on the finished ground, its time from the laid race leg, pacerLay.ts)
+  const table = st.gen2.brief?.pacer;
+  const paced = table ? layPacer(st, table, kit.manifest.rivers ?? {}, easy) : { problems: [] };
+  // (and its end lines, from the brief's tip ids, in the world's own words: said once as he reaches the dock, engine.ts sayRaceEnd)
+  const endSpec = st.gen2.brief?.raceEnd;
+  const ended: { ends?: RaceEnds<RaceEndSaid>; problems: string[] } = paced.pacer && endSpec ? raceEndsOf(endSpec, kit.manifest.tips ?? {}) : { problems: [] };
+  if (paced.pacer) st.pacer = ended.ends ? { ...paced.pacer, ends: ended.ends } : paced.pacer;
+  // (a brief's post: doors on the way out, replies home, postLay.ts)
+  const spec = st.gen2.brief?.post;
+  const posted = spec ? layPost(st, spec, piecesOf) : { problems: [] };
+  if (posted.post) st.post = posted.post;
+  // (a brief's column dress: a set piece at every column's foot, behind its ledges, columnDressLay.ts; it moves nothing)
+  const dressSpec = st.gen2.brief?.columnDress;
+  const dressed = dressSpec ? layColumnDress(st.gen2.tower?.legs ?? [], dressSpec) : { problems: [] };
+  if (dressed.dress) st.columnDress = dressed.dress;
+  return [...chase.problems, ...r.problems, ...paced.problems, ...ended.problems, ...posted.problems, ...dressed.problems];
 }
 /** a graph with asks: each node's sections as laid (content type, the double, exit less entry height), read by applyVerdicts */
 const LAID_NODES = new WeakMap<Gen2Stage, Map<string, Array<{ content?: string; double: boolean; dy: number; clocked?: true }>>>();
@@ -4301,6 +4349,12 @@ export const laidAsks = (st: Gen2Stage): NonNullable<Laid['asks']> => ASKS.get(s
 export function checkStage(st: GeneratedStage, budget: StageBudget): ReturnType<typeof validateStage> {
   const cfg = st.config;
   const held = budget.quota.check === cfg.targetCount ? st : { ...st, config: { ...cfg, targetCount: budget.quota.check } };
+  // (a stage of legs: no run leg laid over another (legs.ts legOverlaps; 2-7's design, Pushback 1: a leg laid back left at the ground of
+  // the leg before it lies on top of it). The graph's own fault: refused by name and alone, so no repair swaps a section for it (a swap
+  // cannot mend it, and the swaps spent the pool: refuseNotThrow.test's rule), ENG-27)
+  const legsLaid = (st as Partial<Gen2Stage>).gen2?.tower?.legs;
+  const over = legsLaid ? legOverlaps(legsLaid) : [];
+  if (over.length) return { ...validateStage(held), ok: false, errors: over.map((e) => `legs: ${e}`) };
   // (1-1 links level jumps by the flown arcs too, R-165.61; every other stage exactly as before)
   const res0 = judgedOnArcs(budget.id) ? validateStage(held, { arcs: linkArcs(budget.difficulty, budget.id) }) : validateStage(held);
   // (every log river is held to riverLay's fairness: logs a hop apart and evenly spaced, a beat he can count, a bank to board from and the
@@ -4596,7 +4650,9 @@ export function dropsOf(st: Gen2Stage, pits: Pick<WorldManifest, 'pitPainter'> =
   const zones = st.heartFalls ?? [];
   const extras = (st.proto as { gen2?: { waterWarnings?: Array<{ x: number; y: number }> } }).gen2;
   const signs = extras?.waterWarnings ?? [];
-  const hints = ((st.proto as { hints?: Array<{ x: number; text: string; passX?: number }> }).hints ?? []);
+  const hints = ((st.proto as { hints?: Array<{ x: number; text: string; passX?: number; beforeX?: number; band?: readonly [number, number] }> }).hints ?? []);
+  // (the order he meets things on this stage: x on a run, the route's px on a stage with one, gen2/tower.ts alongOf)
+  const met = alongOf(st), routed = !!st.gen2.tower?.route;
   const death = st.waterY ?? st.config.levelHeight;
   const world = st.gen2.budget.world;
   // (the world's pit painter paints its pit floors, its marked drops and its hurt floors: the manifest's pit rule, never a world number)
@@ -4623,9 +4679,15 @@ export function dropsOf(st: Gen2Stage, pits: Pick<WorldManifest, 'pitPainter'> =
     }
     if (ground) return { ...at, ends: { kind: 'floor', y: R(ground.y) }, look: 'ground' };
     if (river || f.kind === 'water' || (f.kind === 'void' && !st.gen2.softFalls)) {
-      const h = hints.find((q) => q.x <= f.x0 && q.x >= f.x0 - 2 * WATER_WARN.lead && (q.passX ?? Infinity) >= f.x1);
-      const sign = signs.some((q) => Math.abs(q.x - (f.x0 - 40)) <= 2);
-      const warn = h && sign ? { warn: { dotLine: h.text, leadPx: R(f.x0 - h.x), sign: true as const } } : {};
+      // (a fall he meets at its right lip, running left on a stage with a route (fillSockets' water lines): its line is said from
+      // `beforeX` down to that lip, and its sign stands right of it; every other fall, as ever)
+      const left = met(f.x1, f.y) < met(f.x0, f.y);
+      const inBand = (q: { band?: readonly [number, number] }) => !routed || !q.band || (f.y >= q.band[0] && f.y <= q.band[1]);
+      const h = left
+        ? hints.find((q) => q.beforeX !== undefined && q.x >= f.x1 - 2 && q.x <= f.x1 + 2 * WATER_WARN.lead && q.beforeX >= f.x1 && q.beforeX <= f.x1 + 2 * WATER_WARN.lead && inBand(q))
+        : hints.find((q) => q.x <= f.x0 && q.x >= f.x0 - 2 * WATER_WARN.lead && (q.passX ?? Infinity) >= f.x1 && inBand(q));
+      const sign = signs.some((q) => Math.abs(q.x - (left ? f.x1 + 40 : f.x0 - 40)) <= 2);
+      const warn = h && sign ? { warn: { dotLine: h.text, leadPx: R(left ? h.beforeX! - f.x1 : f.x0 - h.x), sign: true as const } } : {};
       return { ...at, ends: { kind: 'life', cause: river || f.kind === 'water' ? 'water' : 'void' }, look: river || f.kind === 'water' || world !== 8 ? 'water-art' : 'void-dark', ...warn } as Drop;
     }
     if (zone) return { ...at, ends: { kind: 'putback', to: 'take-off' }, look: 'pit-floor-art' };

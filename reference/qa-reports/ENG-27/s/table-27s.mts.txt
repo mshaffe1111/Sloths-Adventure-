@@ -1,0 +1,25 @@
+// the four-bot table row (ENG-27s): node_modules/.bin/tsx table-27s.mts <tree> <home|post> <setting> <seed>
+const [tree, where, setting, seed] = process.argv.slice(2);
+await import(`${tree}/src/game/headlessDom.ts`);
+const { homeRun } = await import(`${tree}/tools/inspect/homeToys.ts`);
+const { HOME_CODE, POST_CODE } = await import(`${tree}/src/game/gen2/toyHome.ts`);
+const { pacerMargin, pacerOff } = await import(`${tree}/src/game/pacer.ts`);
+const { HOP_TRACE } = await import(`${tree}/tools/inspect/firsttimer.ts`);
+let t = 0, lives = -1, mLast: number | null = null, piece: any, mMin: number | null = null;
+const falls: any[] = [];
+HOP_TRACE.on = true; HOP_TRACE.rows.length = 0;
+const r = homeRun('middle', setting as never, Number(seed), 1, { onFrame: (sim: any) => {
+  t += 1 / 30; const e = sim.e as any, p = sim.p;
+  piece ??= (e.pieces ?? []).find((q: any) => q.kind === 'pacer');
+  const m = piece && piece.clock !== null ? pacerMargin(piece.pacer, p.x, piece.clock) : null;
+  if (lives >= 0 && e.lives < lives) falls.push({ t, x: p.x, m: mLast, race: !!piece && piece.clock !== null && pacerOff(piece.pacer, p.x, p.y), back: null as any });
+  for (const f of falls) if (!f.back && t > f.t + 0.5 && piece && (p.x - f.x) * piece.pacer.dir >= 0 && p.grounded) f.back = { t, m };
+  lives = e.lives; mLast = m;
+} } as never, where === 'post' ? POST_CODE : HOME_CODE);
+const rows = HOP_TRACE.rows.filter((w: any) => w.site !== 'unjudged');
+HOP_TRACE.on = false;
+const landed = rows.filter((w: any) => w.landed !== undefined && w.landed !== 'lost').length, lost = rows.filter((w: any) => w.landed === 'lost').length;
+const sites: Record<string, number> = {}; for (const w of rows as any[]) sites[w.site] = (sites[w.site] ?? 0) + 1;
+const raceFalls = falls.filter((f) => f.race);
+console.log(`${tree.split('/').pop()} ${where} ${setting} ${seed}: finish ${r.finishSeconds} | race ${JSON.stringify(piece?.verdict ?? null)} | lives lost ${r.lives} (race leg ${raceFalls.length}) | presses at a float ${rows.length} ${JSON.stringify(sites)} | land/press ${(landed / Math.max(1, rows.length)).toFixed(2)} fall/press ${(lost / Math.max(1, rows.length)).toFixed(2)}`);
+for (const f of falls) console.log(`  fall t ${f.t.toFixed(1)} x ${Math.round(f.x)} race leg ${f.race} margin before ${f.m?.toFixed(2)} | back at that x ${f.back ? (f.back.t - f.t).toFixed(1) + ' s later' : 'never'} margin ${f.back?.m?.toFixed(2)} | margin change ${f.back && f.m != null && f.back.m != null ? (f.back.m - f.m).toFixed(2) : '?'} s${f.back && f.m != null && f.back.m != null && f.back.m > f.m ? '  <== FALL PAYS' : ''}`);

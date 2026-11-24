@@ -1,0 +1,66 @@
+== 2-4 child normal seed 2 (boardHop on); fires [(81.1, 6974), (109.1, 10052)]
+  life t 180.3 x 16891.9: last ground t 179.83 x 16759.4 on 76:drift:1@16630-16780; jump 179.83:single; log
+  life t 248.97 x 22028: last ground t 248.5 x 21857.5 on 102:drift:1@21788-21938; jump 248.5:single; log
+  life t 263.8 x 23091.4: last ground t 262.63 x 22834.6 on 92:solid@22488-22828; jump none (walked off); bank-nofire
+  life t 268.47 x 23608.9: last ground t 267.93 x 23446.6 on 105:drift:1@23341-23491; jump 267.93:single; log
+  life t 269.27 x 22909.3: last ground t 268.63 x 22748 on 92:solid@22488-22828; jump 268.63:single; bank-nofire
+  life t 284.97 x 25150.2: last ground t 284.3 x 24962.3 on 107:drift:1@24901-25051; jump 284.3:single; log
+  life t 296.4 x 25210.5: last ground t 295.53 x 24944.1 on 107:drift:1@24847-24997; jump 295.53:double; log
+  life t 304.03 x 25242: last ground t 302.97 x 24928.1 on 108:drift:1@24804-24954; jump 302.97:double; log
+== 2-4 child normal seed 4 (boardHop on); fires [(309.1, 24249)]
+  life t 195.8 x 16993.7: last ground t 195.27 x 16829.4 on 73:drift:1@16675-16825; jump 195.27:single; log
+  life t 204.33 x 16996.4: last ground t 203.43 x 16748.2 on 73:drift:1@16635-16785; jump 203.43:double; log
+  life t 263.33 x 22072.4: last ground t 262.87 x 21929.2 on 102:drift:1@21846-21996; jump 262.87:single; log
+  life t 265.67 x 21312.6: last ground t 265.1 x 21210.6 on 91:solid@20959-21259; jump 265.1:single; bank-nofire
+  life t 308.8 x 24384.5: last ground t 307.93 x 24145 on 95:solid@24023-24135; jump 308.1:single; bank-nofire
+  life t 316.2 x 25161.6: last ground t 316.07 x 25134.3 on 108:drift:1@24976-25126; jump none (walked off); log
+== 2-4 child normal seed 5 (boardHop on); fires [(28.3, 2882), (29.1, 2884), (189.6, 16096), (301.2, 22640), (382.1, 28066), (383.4, 28110)]
+  life t 186.93 x 16912.9: last ground t 186.4 x 16752.5 on 73:drift:1@16648-16798; jump 186.4:single; log
+  life t 248.4 x 21265.7: last ground t 247.77 x 21104.4 on 90:solid@20830-21130; jump 247.77:single; bank-nofire
+  life t 251.73 x 21840: last ground t 251.27 x 21722.2 on 100:drift:1@21607-21757; jump 251.27:single; log
+  life t 288.3 x 23544.4: last ground t 287.83 x 23399.9 on 102:drift:1@23272-23422; jump 287.83:single; log
+  life t 299.97 x 23557.9: last ground t 299.13 x 23330 on 102:drift:1@23225-23375; jump 299.13:double; log
+  life t 327.6 x 25023.3: last ground t 327.13 x 24878.9 on 107:drift:1@24775-24925; jump 327.13:single; log
+  life t 328.67 x 24369.4: last ground t 327.63 x 24120 on 93:solid@23860-24200; jump 327.63:double; bank-nofire
+== 2-4 child normal seed 8 (boardHop on); fires [(270.7, 22815), (331.6, 28184), (332, 28209)]
+  life t 181.5 x 17025.4: last ground t 180.9 x 16828.3 on 76:drift:1@16731-16881; jump 180.9:single; log
+  life t 235.03 x 22054.5: last ground t 234.5 x 21889.4 on 102:drift:1@21802-21952; jump 234.5:single; log
+  life t 268.53 x 23618.4: last ground t 268.07 x 23462.8 on 105:drift:1@23369-23519; jump 268.07:single; log
+  life t 287.67 x 25069.3: last ground t 287.2 x 24947.5 on 106:drift:1@24804-24954; jump 287.2:single; log
+  life t 288.57 x 24421.8: last ground t 287.87 x 24242 on 94:solid@23982-24322; jump 287.87:single; bank-nofire
+== 2-4 child normal seed 16 (boardHop on); fires [(278.8, 22916), (293.8, 24385), (294.2, 24393)]
+  life t 187 x 17072.1: last ground t 186.47 x 16911.7 on 74:drift:1@16784-16934; jump 186.47:single; log
+  life t 196.97 x 16950.8: last ground t 196.83 x 16910.6 on 77:drift:1@16750-16900; jump none (walked off); log
+  life t 251.93 x 22128.4: last ground t 251.47 x 22008.3 on 102:drift:1@21871-22021; jump 251.47:single; log
+  life t 307.53 x 25259.3: last ground t 306.87 x 25059.6 on 108:drift:1@24939-25089; jump 306.87:single; log
+  life t 308.4 x 24543.8: last ground t 307.7 x 24364 on 95:solid@24104-24444; jump 307.7:single; bank-nofire
+== 2-4 child normal seed 18 (boardHop on); fires [(31.8, 2876), (123.3, 10124), (261.8, 16158), (263.9, 16210), (383.3, 24247)]
+  life t 263.1 x 16483.4: last ground t 262.97 x 16459.5 on 76:drift:1@16300-16450; jump none (walked off); log
+  life t 321.03 x 21312.2: last ground t 320.37 x 21128.2 on 91:solid@20957-21257; jump 320.37:single; bank-nofire
+  life t 326.13 x 22109.3: last ground t 325.67 x 21963.5 on 100:drift:1@21824-21974; jump 325.67:single; log
+  life t 381.97 x 25147.9: last ground t 381.3 x 24958.6 on 106:drift:1@24840-24990; jump 381.3:single; log
+== 2-4 child normal seed 20 (boardHop on); fires [(28.6, 2905), (180.7, 16217), (278.3, 22924)]
+  life t 178.5 x 17068.2: last ground t 178.03 x 16922.4 on 74:drift:1@16808-16958; jump 178.03:single; log
+  life t 234.7 x 22183.5: last ground t 234.1 x 22004.7 on 103:drift:1@21903-22053; jump 234.1:single; log
+  life t 259.43 x 22604.2: last ground t 258.5 x 22658 on 93:solid@22643-22983; jump 258.5:double; bank-nofire
+  life t 296.33 x 25315: last ground t 295.67 x 25115.3 on 108:drift:1@25016-25166; jump 295.67:single; log
+== 2-4 child normal seed 21 (boardHop on); fires [(174.6, 15940), (270, 22491)]
+  life t 172.93 x 16817.8: last ground t 172.33 x 16643.5 on 75:drift:1@16590-16740; jump 172.33:single; log
+  life t 232.07 x 21826: last ground t 231.53 x 21662.8 on 97:drift:1@21584-21734; jump 231.53:single; log
+  life t 233.8 x 21068.9: last ground t 233.27 x 20935.5 on 89:solid@20681-20981; jump 233.27:single; bank-nofire
+  life t 268.6 x 23380.1: last ground t 267.93 x 23208.4 on 103:drift:1@23084-23234; jump 267.93:single; log
+  life t 284.33 x 24131.7: last ground t 283.7 x 23957 on 92:solid@23711-24051; jump 283.7:single; bank-nofire
+  life t 287.83 x 24854: last ground t 287.17 x 24667.8 on 104:drift:1@24529-24679; jump 287.17:single; log
+== 2-4 child normal seed 30 (boardHop on); fires [(101, 9998), (112.4, 9967), (191.6, 15926), (249.3, 20882)]
+  life t 187 x 16792.5: last ground t 186.53 x 16646.7 on 72:drift:1@16493-16643; jump 186.53:single; log
+  life t 198.13 x 16878.9: last ground t 197.23 x 16613.6 on 75:drift:1@16493-16643; jump 197.23:double; log
+  life t 249.27 x 21819.3: last ground t 248.6 x 21618.2 on 100:drift:1@21522-21672; jump 248.6:single; log
+  life t 284.87 x 24877.4: last ground t 284.4 x 24729.3 on 105:drift:1@24636-24786; jump 284.4:single; log
+  life t 285.67 x 24131.8: last ground t 284.97 x 23952 on 92:solid@23692-24032; jump 284.97:single; bank-nofire
+== 2-4 child normal seed 33 (boardHop on); fires [(103.9, 9975), (126, 9958)]
+  life t 181.37 x 16678.6: last ground t 180.83 x 16513.2 on 74:drift:1@16468-16618; jump 180.83:single; log
+  life t 262.17 x 22645.8: last ground t 261.53 x 22484.4 on 90:solid@22242-22582; jump 261.53:single; bank-nofire
+  life t 268.47 x 23372.3: last ground t 267.8 x 23200.5 on 103:drift:1@23080-23230; jump 267.8:single; log
+  life t 269.13 x 22663.3: last ground t 268.5 x 22502 on 90:solid@22242-22582; jump 268.5:single; bank-nofire
+  life t 272 x 22663.3: last ground t 271.37 x 22502 on 90:solid@22242-22582; jump 271.37:single; bank-nofire
+totals {'log': 39, 'bank-nofire': 16, 'bank-fire': 0}

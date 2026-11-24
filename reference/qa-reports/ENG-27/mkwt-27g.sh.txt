@@ -1,0 +1,12 @@
+#!/bin/bash
+# usage: mkwt.sh <name> <rev>: a light worktree (no reference/ except the bots' calibration), node_modules linked
+set -e
+S=/tmp/claude-0/-home-user-Sloths-Adventure-/628120d6-a31c-5603-af47-e12fe7711693/scratchpad
+cd /home/user/Sloths-Adventure-
+git worktree add --no-checkout --detach $S/wt/$1 $2 >/dev/null 2>&1
+cd $S/wt/$1
+git sparse-checkout init --no-cone >/dev/null 2>&1
+printf '/*\n!/reference/\n/reference/qa-reports/R-165.59/\n!/android/\n' > "$(git rev-parse --git-path info/sparse-checkout)"
+git checkout -q --detach $2 2>&1 | tail -1
+ln -sf /home/user/Sloths-Adventure-/node_modules node_modules
+du -sh . | cut -f1

@@ -1,0 +1,31 @@
+ok 1 - home toy (planted RED): turned back LEFT at the out leg's own ground, the home leg lies on top of it: refused by name on every roll
+ok 2 - home toy (GREEN): out right, down the column, home left: clean on 6 seeds and both settings, the same stage from the same seed
+ok 3 - home toy (planted): a river crossed right to left is judged in its own frame: the mirror of a fair river is fair, unmarked it is not
+ok 4 - home toy (planted): the start's back is walled when the home leg runs on past it, and the way on never leaves the out leg but by the column
+ok 5 - home toy (planted): the river he is in is found by where he is, never by x alone; a splash on the home leg sets him back on the bank he came from
+ok 6 - home toy (planted): a splash pond sets him back on its own storey, never on the leg laid over it (its banks are the solids at its lips on the fall's height, never the topmost solid at that x)
+ok 7 - home toy (planted): the column's last turn is climbed at the column's foot, and the bots walk home: every seed finishes, no rescue
+ok 8 - pacer: laid on the race leg by the design's rule, every roll and both settings; RED when its time breaks either bound
+ok 9 - pacer (planted): after a fall the floor counts each crossing left, never more than a clean run's margin, post Normal seed 4
+ok 10 - pacer (planted): a river on the race leg that no flown row matches is refused by name, and a stage with no race leg lays none
+ok 11 - pacer: it waits, sets off as he steps onto the race leg, docks, and on a respawn is put back level with him plus the margin's share
+ok 12 - pacer race (the bots): the careful middle player (SKILLS.race) beats it, normal seed 1
+ok 13 - pacer race (the bots): the ride-only player never wins without a fall on the last crossing, normal seed 1
+ok 14 - pacer race (the bots): the careful middle player (SKILLS.race) beats it, normal seed 2
+ok 15 - pacer race (the bots): the ride-only player never wins without a fall on the last crossing, normal seed 2
+ok 16 - pacer race (the bots): the careful middle player (SKILLS.race) beats it, normal seed 3
+ok 17 - pacer race (the bots): the ride-only player never wins without a fall on the last crossing, normal seed 3
+ok 18 - pacer race (the bots): the careful middle player (SKILLS.race) beats it, easy seed 1
+ok 19 - pacer race (the bots): the ride-only player never wins without a fall on the last crossing, easy seed 1
+ok 20 - pacer race (the bots): the careful middle player (SKILLS.race) beats it, easy seed 2
+ok 21 - pacer race (the bots): the ride-only player never wins without a fall on the last crossing, easy seed 2
+ok 22 - pacer race (the bots): the careful middle player (SKILLS.race) beats it, easy seed 3
+ok 23 - pacer race (the bots): the ride-only player never wins without a fall on the last crossing, easy seed 3
+not ok 24 - bot (planted): he reads a gap from where he takes off, so the careful middle player wins post Normal seed 4; RED without it
+not ok 25 - bot (planted): he reads a gap from where he takes off, so the careful middle player wins post Normal seed 5; RED without it
+not ok 26 - bot (planted): a log drifting his way, still mostly under the lip, is boarded by a hop, so the careful middle player wins home Easy seed 1; RED without it
+ok 27 - pacer behind the banks 1: drawn BEFORE the bank's face, where a bank stands over its lane (layer 'under', before the ground in the engine's frame)
+ok 28 - pacer behind the banks 2 (HOME_CODE): swept along its whole leg, nothing of it shows over a bank that stands over its lane; over a river it shows, its waterline on THAT river's surface
+ok 29 - pacer behind the banks 2 (POST_CODE): swept along its whole leg, nothing of it shows over a bank that stands over its lane; over a river it shows, its waterline on THAT river's surface
+ok 30 - pacer behind the banks 3: the leg's rivers stand at different heights, and it rides each one's own surface (never the lowest everywhere)
+ok 31 - pacer seen at both ends: waiting at its race point (before he sets it off) and docked, its whole hull is drawn over the river it lies on; home and post, both settings, seeds 1-6

@@ -60,6 +60,231 @@ names any lay wood in it. A box is a new wall every catch rule must step round: 
 and the bridge laid instead stepped off 9 px past the band's edge, where rule 4's CENTRED bough always lay in the band (647 px fall; tower.test
 red from 2f188c552, run by name filter only). Rule 4 now also tries the bough slid to the box's edge on the side he comes down, when it still
 lies under him (toy: 'towerCatches (planted, ENG-26p)'). After any keepOut change run tower.test.ts WHOLE, not the tests named for the box.
+## 0zq-floor. DRESS-27c/27d (dress27c, landed by DRESS-27d on t-eng-27, 11-23): the view's foot over a stacked leg; a deep river's sheet at a bank
+- **The view's foot stays in an upper leg's earth** (groundStack.ts viewFloor + underReach, protoArt.ts stackViewFloor, engine.ts's camera
+  before the HUD clamp): standing over a ceiling (inside its run, feet above its line) the camera's target never frames below the line
+  less the underside's reach up into the soil (the stand-in band's 56, or the painted strips over their edge). Upright on 2-7's raised
+  out leg the view had framed ~70 units past the soil's end: the stand-in underside's 16-unit column seams (its half-unit overlaps double
+  its alpha), the air under the ceiling and the race leg's backdrop. The soil cannot reach lower (HEADROOM is the lower leg's air), so the
+  camera is the fix. Guard: his feet never below STACK_FEET_MAX (0.85) of the view. Sideways never binds. Planted: stackViewFloor.test.ts.
+- **A deep river's over pass reaches under its banks** (drawRivers: ul/ur for the over pass unless safe or a flood), clipped to the same
+  bank faces in the box's ONE clip (DRESS-27b's polygonInBox): the sheet stopped at the lip's x and the receding face showed lighter water.
+  The foam keeps the river's own span (fa..fz).
+- **Held out (the lead's scope cut, DRESS-27d):** the log-end flip (logLead / LOG_BROKEN_RIGHT) changed shipped 2-1/2-2/2-4/2-5
+  looks; it waits for R-165.415's follow-up. A deep river's logs face the way their id gives, as before.
+- **The stand-in underside is whole layers along the line** (groundStack.ts standInBand, STAND_IN_LAYERS 12, one fill each, the alphas
+  made once per deep colour): it was a 4 x 64 gradient laid a sheared 16-unit column at a time with half-unit overlaps, which doubled its
+  alpha into evenly spaced vertical seams, seen from the race leg too (x9085 upright). W2 has no painted `unders` in groundAtlasData.ts
+  yet, so 2-7 ships the stand-in; the painted strips' column path is unchanged (its own seams are not judged here).
+
+## 0zq-thrift. DRESS-27b (t-eng-27-wip-dress27b, 11-23): 2-7's own per-frame draw breaches fixed in the shared river draw (same picture)
+- **What drew them:** every river, every frame: drawRivers made a box clip, then a ceiling clip (a lidded river), then the bank faces'
+  outline clip; drawRiverWater clipped again under a bed for its soil (600-unit tiles, their overhang counted as drawImage screens) and
+  made 1-3 gradients; drawSafeRiverOver clipped once per log; the over pass made a gradient. 2-7 (many rivers, lidded legs) hit
+  gradients 4.13/5.00, clips 21/24.13, drawImageScreens 7.61/7.90.
+- **The fix (src/game/drawThrift.ts, general):** vGradient (a vertical gradient made once per context and stops: a gradient's points are
+  read at paint time, so one made at world y paints the same under any camera); cropToBox (draw only the part of a picture inside a box by
+  its source rect = the same pixels a clip to the box let through); polygonInBox (Sutherland-Hodgman: a ceiling or face outline cut to
+  the river's box is ONE clip for the same region). groundPaint.ts drawSoilCut (no clip under a bed); groundStack.ts aboveLinesPath
+  (clipAboveLines' outline as points). A TAIL's over-pass clip is folded into the box's right edge.
+- **After (2-7, 16 spots):** gradients 0.25/0.00, clips 10/10, drawImageScreens 6.04/6.56. Proof: drawThrift.test.ts (4, planted).
+- **Traps:** a still diff between two runs is mostly animation (logs drift, reeds sway): judge zooms side by side, not the pixel count.
+  The box's foot is the view's foot + 40 (off screen), so a ceiling below it needs no box. A ceiling that rises over the box's top keeps
+  the old clips (never today: riverLid).
+
+## 0zq-dress. DRESS-27 (t-eng-27-wip-dress, 11-23): 2-7's weir seam, the pole in the pool, the floating porches (World 2's kit, general)
+- **Base:** t-eng-27 + a merge of t-ready-27-wip (the column dress was only on t-build-27; conflicts in pipeline.ts and this note resolved
+  as t-build-27 did). Landing it on t-eng-27 brings READY-27's six commits with it.
+- **The seam (item 1) was in the CUT:** reference/art/hfnext/cut/weir.png (main) has rows 329-331 fully transparent across the falls between
+  the foam and the pool; the sky behind showed as a thin dark line. Fixed in the sheet: reference/qa-reports/DRESS-27/weirseam.py blends
+  each gap pixel from its painted neighbours; the sheet repacked by READY-27's pack-w2-next.py from main's cuts (frames and JSON
+  unchanged; the other frames re-encode within 15/255). seamcheck.py (same folder) finds a see-through row across any frame: RED on the old
+  sheet, GREEN now. The cut on main is still the old one (Content: replace it with the repaired cut).
+- **The pole (item 2):** a 'tree_climb' whose foot stands on a dressed column's floor inside the dress (columnDress.ts dressFeet) is drawn
+  by protoArt.ts down to DRESS_FOOT.rise (56) over the floor, then fades out over 32 px (baked once per climb under a gradient,
+  cachedBake re-bakes on a canvas loss), nothing under it: the dress behind shows its own foam round the foot. engine.ts setClimbFeet at
+  stage start. TRAPS: drawing the dress's foam again IN FRONT of the pole (layer 'world') covered the frog on its stone (Easy) and thickened
+  the see-through pool into a box; fade strips drawn one by one showed seams against white water. Both tried and dropped.
+- **The porches (item 3):** porchPosts.ts: every solid canopy_bridge end over a river gets a post (the world kit's climb pole, 'trunk',
+  24 px wide, protoArt kitPieceAspect) from 6 px under the walk line to 40 px under the surface, drawn BEFORE drawRivers(false) so the
+  water's own surface covers the feet. Only 2-7 lays one today (2-1..2-6 probed both settings: no posts, no dress).
+- **Open (item 4, not fixed):** the low floor's pale band ends in a square notch against a raised bank's dirt: every World 2 step, not
+  2-7 only (2-3 x10600 shows it: qa-reports/DRESS-27/stills/item4-notch-zoom-2-7-and-2-3.jpg). The painted ground's cap at a leg's end.
+- **Proof:** columnDressFoot.test.ts (3), porchPosts.test.ts (2), columnDressLay.test.ts (dressFeet finds the toy column's climb); RED on
+  the base (the exports missing). Stills: qa-reports/DRESS-27/stills/ (2-7 seed 1, both settings, both ways, zooms).
+## 0zq-BOT27. ENG-BOT27 + ENG-BOT27b (t-eng-27-wip-bot27-aim, 11-23): SKILLS.reAim, the CHILD bot's skill only; two faults parked
+- **reAim is the child's alone (ENG-BOT27b, the lead's ruling (3)):** `FirstTimer.reAim` (set on FT_CHILD and FT_CHILD_EASY only) is read
+  with SKILLS.reAim at the upstream gate; middle, expert, adult and kid hold the refused aim as before. On every bot it turned pacerLay's
+  'careful middle beats it, Normal 2' red (116.5 vs 114.04 s): the race is calibrated on the middle, so the middle's play changes only by
+  its own ruling (R-165.413). Toy: riverRide.test.ts 'SKILLS.reAim is the CHILD bot's alone' (every other cast bot flies the planted river
+  identically on and off; RED with the gate reading SKILLS.reAim alone: middle normal moved). Rows and gates: the REPORT's top section.
+- **SKILLS.reAim** (firsttimer.ts, upstream gate only; WaitAim.since): a held aim the gate refuses for his tier's stopReact ends its wait
+  and is drawn again. On a river every log runs at one speed, so from a log the gap to the next never changes: a held tap that cannot
+  reach was held the whole ride back (2-7 child Normal 'water ahead' stall, seeds 6 x 9412, 8 x 8702). The lead's ruling (A) with two
+  conditions, both a toy (D121): never a re-draw inside stopReact; the press judged on the AIMED hop only (gateAirtime strips the thumb).
+  x40 (all bots): 2-7 child N 27->36 (rescues 16->4), 2-7 bar 23->33/40; shipped 2-1/2-2/2-4/2-5 no pass flips to fail.
+- **Parked, unlanded (the lead):** t-eng-27-wip-bot27 be6aa1825: SKILLS.meetLog (an at-him log's tail is floor only if a walk off the lip
+  lands, walkOntoTail) and SKILLS.logEnd (no landing-pause flick off a log his way; LOG_LOOK 30 px on a log). Deaths fell on every tier,
+  passes did not rise, shipped 2-1 child Easy 40->38. For the World 2 river bot list (R-165.413).
+- **Traps:** the draft head (aede72157) alone drowns every bot at the home leg's lower river end (w2.ts:372, ENG-JETTY's band fix): measure
+  2-7 only with that in. A bare toy skips the floor-ahead read for the bot's first ~1.2 s (start-up); plant lip reads at the read itself or
+  start him far back. The home toy (2-97) does not stall the upstream gate. Rescues (stalls) and deaths are different yields: trace both.
+- **Probes** (re-creatable): a frame ring before each life / rescue (onFrame, sim.t, rescueXs), HOP_TRACE rows (no row at a take-off =
+  an unjudged press), a drawHop stub on the FirstTimerRun instance (plants an aim; counts draws).
+
+## 0zq-HUD27. ENG-HUD27 (t-eng-27-wip-hud, 11-23): the HUD bar along the route's legs; 'post:letter' moments
+- **The bar** (routeBar.ts): a stage laid as 2+ legs (gen2 tower.flow 'legs') reads the best route px so far / the route's length
+  (tower.ts routeOf/routeAt + the tail to the totem), where he stands or climbs only (an air frame over the lower leg is not progress),
+  never back. One leg: routeBarOf null, the travel mode's measure exactly. Proof: gen2/hudRoute.test.ts (the toy, the middle bot, the
+  real engine; RED on today's measure 0.000 at the out leg's end). Real 2-7 (middle, Normal, seed 1): 0.31 at the end of the way out.
+- **Moments** (post.ts postMoments): 'post:letter' at the first letter posted, 'post:letter:<n>' at the nth, read from the post piece's
+  `open` after stepPieces (no PieceHost change); wayside.ts `at: 'on'` waits on them.
+- Trap: anything "how far along" on a legs stage must read stage.gen2.tower.route, never x.
+- **First/last met (ENG-HUD27b, D130, R-165.414):** gen2/tower.ts `alongOf(stage)` (route px on a stage with a route, x otherwise) and
+  `firstMet` / `lastMet` / `inMetOrder(stage, items, at)` (`at` a place or a thing's ends, e.g. a drop's two lips). Every "first" or
+  "last" a rule picks uses them, never `.sort(by x)[0]`. With no route they are the x sort exactly (firstMet.test.ts). Users: easyMode's
+  flag fill, verdicts.ts dropVerdicts (its optional `laid` = judgeRoll's `built`). The remaining x picks are listed in
+  reference/qa-reports/ENG-HUD27/REPORT.md (the Lane 2 job); xpickSweep.mjs there finds them.
+- **Dot's water line on a routed stage** (ENG-HUD27b, BUILD-27d's find): fillSockets lays it at the wet gaps in met order, before the
+  lip he reaches first; a leftward one is `{ x: x1, beforeX: x1 + lead }` with its sign at x1 + 40, and on a stage with a route every
+  one carries its section's band; dropsOf matches either way (waterWarnRouted.test.ts). Open: passTips (engine.ts) is rightward only, so
+  a leftward line has no passX; a ridden river that comes first owes no line in the lay but the verdict asks one (the lead's call).
+- **Easy's flag fill** (easyMode.ts, item 3): on a stage with a route it measures gaps, middles and order in route px (routeAt), so
+  a stacked out-and-back keeps flagFurther's order (easyRouted.test.ts; real 2-7 Easy: 11 flags become 16, in order). No route: x as before.
+
+## 0zq-jetty. ENG-JETTY (t-eng-27, 11-23): the race-end line, World 2's finish under a stacked leg, story tips (2-7's three pieces)
+- **Race end (item 1):** brief `GraphBrief.raceEnd = { win: { tip, who }, lose: { tip, who } }` (gen2/types.ts, beside `pacer`; `tip` a key
+  of the world manifest's `tips`, `who` 'Dot' | 'Pokey'). The pipeline (layChaseStage, after layPacer) reads them into `Pacer.ends`
+  (pacer.ts raceEndsOf; a tip with no words is a named lay problem). engine.ts `sayRaceEnd` (after stepPieces, only when the pacer has
+  `ends`) fires on the pacer piece's verdict, set only when HE reaches the dock (the boat docking first says nothing): `raceEndOf` marks the
+  race (a respawn keeps piece and verdict), and each line is a stage tip's once on this device (tipMemory.ts `race:<text>`: a retry's
+  replay of the same finish says nothing, the other finish says its own once; kept only once Dot's guide has shown it).
+- **The speaker path:** `GuideOpts.who` rides App.tsx onGuide -> DotGuide GuideFeed.who -> engineLine -> dotLines.ts engineGuideLine, which
+  makes a STORY line (source 'story', waitMs RACE_END_WAIT_MS 9 s): helpAllows passes it on every help setting while the story switch is
+  on. Dot's line with Dot away (o.dot === false) is not said: her words are never put in Pokey's mouth.
+- **Story tips (item 3):** `WorldManifest.storyTips` (tip id -> 'Dot' | 'Pokey') lays `StageHint.story` (pipeline, beside teachTips); the
+  engine's hint loop sends it as GuideOpts.who. Use it for a once-only story beat (2-7's handover and race). A plain tip is kind 'info'
+  and DROPPED on Tips, Normal's default. reference/qa-reports/ENG-JETTY/storyTipScan.ts lists every listed stage's dropped tips (20 on
+  1b2897cfb), INCLUDING World 2's water warning on Normal (2-1, 2-2, 2-4, 2-5): a safety line, which needs danger/must, not story (open,
+  sent to the lead for release 4; no shipped data changed).
+- **World 2's finish (item 2):** a soft fall drops the solids under its water (its bed) but never a solid in a run leg stacked UNDER the
+  fall's own leg (`under = lows.filter((l) => f.y < l.y0 - 2)`, the band overLowFloor reads); a fall ON the low leg drops its own bed as
+  before. 2-7 seed 2 on t-build-27-wip 7bff04c33: restores Easy 11164+340@1501 and 11616+388@1501, Normal 10955+340@1502, nothing else.
+  TRAP (BUILD-27): every world finish rule that works by x span (drop, fill, reeds) must check the y band on a stacked stage.
+- **Proof:** src/game/raceEnd.test.ts (6; tests 1-3 RED with the hook line removed), src/game/storyTip.test.ts (2; RED with the field's
+  path removed), src/game/gen2/worlds/w2StackedFall.test.ts (1; RED before the fix).
+- **For BUILD-27:** 2-7's win/lose words in the kit's `tips` under two ids (as LINES_25), named in 2-7's brief `raceEnd` with who Dot /
+  Pokey; handover and race in `storyTips` with 'Dot'; words held equal to lines-2-7.md (as w2Arc25.test does).
+
+## 0zq-27w. ENG-27w (t-eng-27-wip-27w, 11-23): 2-7's race is set by design numbers; E as ruled; the gap x pace grid (supersedes 27q's "Open")
+- **The bot:** E+J plus the lead's "smallest" = racePick takes the SHORTEST aimed flight by airtime to a safe landing (hopFlight / gateAirtime in
+  firsttimer.ts; bank 24 px, log RACE_MARGIN; ties: the smaller hold). It moves no 2-7 row: the expert's 0.70 s glide single is the quickest
+  safe flight there (ENG-27/w/racepick-airtimes-expert.txt). Do not look for the expert's losses in E's order again.
+- **The knobs (ENG-27/REPORT.md, ENG-27w):** the gap (river.ts gapFor 72 / RiverRow.gap) makes the race HARDER when smaller, and riverLay
+  refuses under 60 px; the boat's pace is the knob. SET (the lead's rulings): RACE_PACE { normal 0.81, easy 0.9 } (w2.ts) into W2_RACE.margin;
+  the lay's flown ride-only cap is gone, its principle measured instead: pacerLay.test flies the ride-only bot on home 1-3 and post 4-5, both
+  settings, each lost by `under` (2 s) or more. TRAP: the ride-only bot rides some Easy races fast (home E2 112.8 s, post E5 124.2 s): one
+  pace for both settings (81%) let it WIN two Easy races the 19-row grid never flew. Any pace change flies every race the test flies.
+- **The grid tool:** ENG-27/w/table-27w.mts.txt (+ cell.sh.txt): one row in ~3 s, gap set on the W2_RIVERS rows at runtime, pace on the laid
+  boat; summ.py.txt makes the table and marks the pick rule. post N4's middle loss is ~55 s of bank waits before unjudged boarding presses.
+
+## 0zq-R27. READY-27 (t-ready-27-wip from t-eng-27 cf7428424, 11-23): the weir wired; the COLUMN DRESS (a general set piece at every column's foot); a lidded deep river's bed
+- **A deep river under a lid has a bed** (the lead's blocker, 2-7 upright): RIVER_DEEP's flat fill and drawRivers' over-logs water ran to the
+  view's foot, so over a leg laid under it the lid's clip left a flat dark-teal panel down to the ceiling. Now, when riverLid() lids a deep
+  river, both end at its strip's foot (riverArt.ts deepFillFoot) and drawSoil's earth runs on to the ceiling (70 px fade, DEEP_BED_FADE).
+  Open rivers unchanged. Plant: deepRiverLid.test.ts (the engine's drawRivers, both passes). Stills: qa-reports/READY-27/teal-before-after.jpg.
+- **What:** columnDress.ts (spec, laid box, `columnDressFaults`), gen2/columnDressLay.ts (`layColumnDress`: one per column of a legs stage, its
+  middle on the column's middle, its foot `sink` px under the floor; a column narrower than the piece is refused by name), pieces/columnDressPiece.ts
+  (layer 'back', behind the ledges and floor; draws by inventory id through drawW2Next; nothing until the sheet is in). Brief field
+  `columnDress` (gen2/types.ts), stage field `columnDress` (stageGenerator.ts), pipeline.ts layChaseStage after the post, stageManifest asks
+  'w2-next' for a w2-next dress. World 2's data: w2.ts `W2_WEIR` (w2-next#weir, 921x346 = the catalog's on_screen_px, sink 24).
+- **The 2-7 builder:** add `columnDress: W2_WEIR` to 2-7's brief (beside pacer and post). The dev fixture ?fixture=home shows it.
+- **Proof:** gen2/columnDressLay.test.ts (12 rolls both settings; the stage otherwise identical; planted RED: 60 px off its foot, out of its
+  column, one missing, a 5000 px piece refused). Stills: reference/qa-reports/READY-27/*.jpg (beside Pokey, upright and sideways, 2x).
+- **Traps:** CATALOG-MASTER's w2-next rows differ between main (ART-NEXT-b, 9 rows, cut paths) and t-eng-27/t-ready-27 (8 wired rows, no
+  barge): when t-eng-27 takes main, keep the wired rows and main's barge row. Playwright for a still script: PW=/opt/node-tools/node_modules/playwright/index.js.
+
+## 0zq-27q. ENG-27q (t-eng-27-wip-27q b0c6dd586, 11-21): the gates re-aim every frame
+- **gateDraw (firsttimer.ts):** edgeStand, edgeWait, race and upstream draw their hop (drawHop, unchanged) ON the frame they judge it; the one-draw
+  hold (waitHop) and the 0.5 s beat (floatBeat) are deleted. Source of the cadence: BOTS.md keeps stopReact/thumb from KID/ADULT ("no profile measures
+  reaction"), so no calibrated decision time exists: every frame. GATE_TRACE (records only) + hopJudged.test.ts's re-aim test guard it.
+- **Open on it:** hopJudged Normal 2's race row x 8256 (judged log #69, caught on bank #66); pacerLay 13/19; the lead rules the rows before t-eng-27
+  takes it (ENG-27/REPORT.md, ENG-27q). Probe: ENG-27/q/gateprobe-27q.mts.txt (run with the project's node_modules/.bin/tsx, a tree path arg).
+
+
+## 0zq-27f. ENG-27b..f (t-eng-27, 11-21; this entry 2:16 PM ET): 2-7's mail boat (the pacer), the post, 'under'; what the 2-7 builder and the next engineer need
+**Read reference/qa-reports/ENG-27/REPORT.md "EXACT NEXT STEP" first.** One line each:
+- **The pacer** (pacer.ts data and arithmetic, gen2/pacerLay.ts lays it, pieces/pacerPiece.ts runs it, pacerDraw.ts draws it; World 2's table w2.ts W2_RACE). Its time = the careful middle's flown time for the race leg x (1 + share: 7% Normal, 10% Easy), never over the ride-only time less `under` (2 s) (pacerFaults).
+- **Lay (A):** its race point is its BOW; it waits at the far bank of the race leg's first river that holds it whole and docks at the far bank of the last; pacerShoreFaults checks both ends over one river's water. The lane is the lowest surface, the wait river counted.
+- **Marks:** x0, then each crossing's near and far bank, the dock last (riversLeft reads the far banks).
+- **Respawn (Option A, the lead's ruling 11-21, D112; ENG-27k):** a fall never PAYS. The respawn's own time is forgiven (the invariant: his margin the first frame he stands == his margin the frame before the life was lost); re-crossing the river he fell in is play, and that cost is his, which is fair (the lead, after ENG-27k's middle home Normal 2 trace: not a margin kept from the fall point). PacerPiece records his margin (pacer.ts pacerMargin = pacerAt(his x) - clock) at the start of every step it runs; the world holds through the life-lost beat, so after a fall it is the margin the frame before the life was lost. On a respawn on the leg the clock is set so he keeps exactly that margin (pacerKeep) and held level with him until he stands (the respawn's lost time forgiven); a lead bigger than the way from the start leaves the clock negative (the boat waits at its start; the verdict reads the clock). WHY the floor went (new replaces old): the floor per crossing (ruling (1)) and the last-crossing exemption (ruling A(ii)) were mechanisms with toy tests; measured on the merged head every respawn reset the race to 'him plus the floor', both ways: it PAID a trailing player (ride-only home Normal 1: -10.32 -> +3.67, so ride-only won two rows) and TOOK a leader's lead (expert home Normal 2: +17.48 -> +3.48); RED on 90/91 home and 76/78 post race-leg respawns (tools/inspect/pacerRespawn.test.ts, the invariant on the grid). Deleted with it: Pacer.floor, PacerRow.floor, W2_RACE.floor, pacerReplace, riversLeft, middleAt and the lay's marks (they fed only the respawn's share).
+- **The dock:** DOCKED = 0 (he is there at the far bank's edge). A docked boat stays docked: no later fall rewinds it (ruling A (i)).
+- **The draw:** layer 'under' (stagePiece.types.ts; engine.ts draws it over the river's body, BEHIND the ground's earth and every platform), so the boat slips behind each bank (the lead's ruling (a)). pacerWaters is closed at both ends: the wait river starts AT the race point.
+- **The post** (post.ts, gen2/postLay.ts, pieces/postPiece.ts layer 'back', postDraw.ts). PLEASE BE PATIENT doors on the out leg take a letter (a counted petal, mark 'letter') at the engine's pick-up reach; a door stays open after a respawn; the home leg's petals are replies.
+- **w2NextArt.ts:** the w2-next sheet (mail boat x2, door open, letter x2, reply x2, the weir: READY-27 repacked it 3304x371 with reference/qa-reports/READY-27/pack-w2-next.py, every earlier cell kept), by inventory id. Every draw returns false until loaded (no stand-in); stageManifest 'w2-next', stagePreload decodes it.
+- **The home fixture** (homeFixtureStage.ts): `?fixture=home[&seed=n]` or `__play('2-97')`, DEV only, POST_CODE. It is the tests' own toy (gen2/toyHome.ts HOME_CODE / POST_CODE, tools/inspect/homeToys.ts).
+- **w2.ts banks():** a bank lies on the fall's own storey (its height down to LIP_RISE under it), so a pond's put-back on a stacked leg stays on its storey (ENG-27e).
+- **The bot (firsttimer.ts):** SKILLS.race (hops off a log's front when the next log or the bank is in reach); SKILLS.rideOnly (the ride-only claim); SKILLS.fromTakeoff (ENG-27f: jumpFor reads the gap from where he takes off). fromTakeoff moves castBots rows: see the REPORT.
+- **groundStack** (merged from t-eng-ground at 2d4e0752a by ENG-27j): the lead's ruling (b), the lower leg not buried by the upper leg's earth; where a run leg lies wholly under another, the upper leg's earth ends at a ceiling over the lower leg. See §0zq-GROUND below (src/game/groundStack.ts; groundStack.test).
+- **The bot's plants after the merge (ENG-27j):** fromTakeoff's RED lives in tools/inspect/firsttimer.test.ts 'a jump from a STAND over a laid pond' (a bare toy, the bot's jumpFor read), not in pacerLay's races (the merged ground took their pools away). boardLog's race RED half still fails until its toy lands (REPORT ENG-27j B). A fall pays on every race-leg respawn (REPORT ENG-27j F): the lead rules the respawn rule.
+- **Traps:** a fall's x and the respawn x differ by a river: the kept margin is the FALL's, the clock is set from the RESPAWN x (pacerRespawn.test pairs each life lost with its own stand). Any bot change shifts every later random draw, so tier rows move wholesale: diff against a baseline run of the same head.
+
+## 0zq-GROUND. ENG-GROUND, -b, -c (t-eng-ground, 11-21): a leg laid under another leg shows; the out leg's earth ends at a ceiling
+**Read reference/qa-reports/ENG-GROUND/REPORT.md's top section first.** The painted ground runs each bank's soil (protoArt.ts drawBankArt)
+and each river's water, bed and soil (engine.ts drawRivers) on down to the view's foot. Where the lay puts one run leg UNDER another (2-7's
+out-and-back: the race leg under the out leg), that buried the lower leg in the upper leg's earth. Now, only where the lay stacks a leg:
+- **Where it lives (§2).** src/game/groundStack.ts holds the geometry and the two clips. `stackZonesOf(legs)`: a run leg (left or right)
+  wholly under another run leg it shares x with (from the gen2 lay's LaidLeg boxes, `gen2.tower.legs`); engine.ts sets them at a stage's
+  start through protoArt `setGroundStacks`. No zone, no ceiling: a stage whose lay stacks no leg draws exactly as before (1-4's summit and
+  7-4's ruin banks are not legs: R-165.376). `findCeilings(platforms, banks, zones)`: the lower leg's static pieces under earth with
+  HEADROOM (his 48 + a double jump) clear over them; a line HEADROOM + UNDER_HANG (40) over each, SIDE (160) past their ends, pieces a
+  BRIDGE (1100) apart one ceiling, smoothed by a cone (0.6) so it never steps, **no sag** (never dips between two higher stretches: a
+  river-bed piece once hung a column of bank earth over the race leg), a wobble only UP (2..34), never into an upper bank's collider, the
+  ends slanting into the hillside (1.1). `ceilingsFor` memoises it per stage. Banks: protoArt drawGround clips each upper bank's paint
+  (soil, wall art, end pieces) with `clipAbove` (everything but the air under the lines). Rivers: protoArt `riverLid` (ceilingsOverSpan:
+  the lines a river's whole stretch stands over) and `clipAboveLines` in engine.ts drawRivers, so an upper leg's river ends at the
+  ceiling as its banks do. **The underside** (`drawUnderside`) is drawn AFTER the clip is lifted (the lead's ART-UNDER ruling), over the
+  bank's or the river's own span only (each 16-unit column cut at the span's ends), the strip's ragged edge on the line (`edge`) and its
+  roots hanging below into UNDER_HANG. Each column is SHEARED to the line (its edge on the line at both ends; set level it stepped by the
+  line's rise, stairs every 16). Painted when the world's ground sheet has `unders` (groundAtlasData.ts, ids `w<n>#under0..2`;
+  `underFrames(w)` is the hook), the strips taking turns every 512 units; each strip wraps only with itself, so the next one fades in
+  over BLEND (96) before each change (its tail runs on into its head). Where a bank's underside ends over OPEN AIR (no upper bank or
+  upper river beside it, inside the ceiling's run: protoArt drawGround `open`; the stage's rivers come in with `setGroundStacks(zones,
+  rivers)`) the painted corner (`underCorner`, `w<n>#undercorner`: `cx` where the face runs, `edge` where the underside runs) turns it up
+  into the end face, sheared to the line, mirrored for a left end; its top (0.4 of its height) and inner side (0.45 of its body) fade in,
+  baked once per world when the sheet loads (`fadedCorner`; drawn whole it stood as a pasted block). Else the code stand-in (the soil's
+  edge darkened, a 4 x 64 band made once; no corner): allowed on the toy only; 2-7 ships with the painted strip.
+- **The join (w2.ts w2Finish).** A run of falls joined by planks (pieces under 90 deep over the water) is ONE river under a bridge, bank
+  to bank, at one surface (it was a pocket per gap: water in slices, the backdrop under each plank, the middle pocket 20 higher). A fall's
+  bank is found within LIP_RISE of the fall's HEIGHT, and a fall has its river only when one spans it at its height. No shipped stage
+  lays a plank between two pockets (tools/engine/plankscan.ts).
+- **Traps (§3).** (1) Soil and rivers both run to the view's foot: a stacked leg needs BOTH lidded, or a column of water and soil stands
+  over the lower leg. (2) Stacked legs share x: w2Finish (and every finish or lookup) must match banks and rivers at a fall's HEIGHT, never
+  by x alone (ENG-27's riverAt rule). (3) A test that builds an engine must build it BEFORE it sets protoArt's stacks or world: the stage
+  start resets them. (4) The underside drawn INSIDE the clip loses its roots at the line (groundStack.test 6 plants it).
+- **End faces on narrow banks (ENG-GROUND-e, 2d4e0752a).** groundPaint endFace takes the bank's other side (`inner`): below the end
+  piece the wobble's centre keeps FACE_CLEAR (28) out from it, eased over FACE_EASE (120). Without it a 60-wide wall's face swung back past
+  its closed side and the soil outline crossed itself (groundStack.test 'no seam at the floor's end'). Trap: a narrow bank's soil BELOW a
+  lower floor's top still darkens from its own top (a shade seam at the floor's end) and the root-wall picture is stretched (drawWallArt):
+  both are R-165.380's, plant at reference/qa-reports/ENG-GROUND/plant-R-165.380-column-wall.ts.txt.
+- **Proof.** groundStack.test.ts (6: the toy's real gen2 roll both settings; 1-4/7-4 untouched; the engine's own river painter; test 6:
+  the roots below the line, the edge on the line at every column's ends, no hard seam at a strip change, a corner at every open end),
+  w2.test 'bridge over ONE river'. Tools: stackscan.ts (which stages stack), plankscan.ts (planks between pockets).
+- **Integration order.** ART-UNDER's rows (origin/t-art-under: w2.webp + groundAtlasData '2' `unders`/`underCorner`, the GroundSheet
+  type's optional fields) land with the art; this hook draws them with no further change. Never merge t-art-under into an engine branch
+  (it carries t-art-next's lineage); the scratch shoot took only w2.webp and the '2' atlas entry.
+- **Open.** No dusk look exists in the engine for 2-7 or the toy (nothing to shoot "dusk" with); 1-4's summit column can take the same
+  rule once the tower lay marks its storeys as stacked (R-165.376); the stand-in shows faint stripes where its see-through columns overlap
+  (replaced by the painted strip, not patched).
+
+## 0zq-27. ENG-27 (t-eng-27 from 0eefc707e, 11-20 evening; stopped 8:33 PM ET at real context ~427k): 2-7's left leg after a drop
+**Read reference/qa-reports/ENG-27/REPORT.md "EXACT NEXT STEP" first.** Done: the out-and-back toy (gen2/toyHome.ts, tools/inspect/homeToys.ts
+on a listed test row) lays clean; a left leg's rivers are mirrored (legs.ts reflectLeg, RiverZone.way); legOverlaps refuses a leg laid
+back over another; the start's back wall; river.ts riverAt (never find a river by x alone); levelCheck keeps run legs apart; w2Finish's
+splash side on a left leg; bots follow the lay's route on legs. **Traps:** an out-and-back puts one leg UNDER another: every lookup by
+x alone breaks (river under him, past the shrine, wet ahead, fall links); grep for them first. levelCheck's `plats` is rebuilt by
+layout() each walk: per-platform maps belong inside walk(). Open: bots drown on toy seeds 2-3; the column's last-storey rescue; the
+inspector's column-wall phantom; a sealed door's push-back assumes he came from the left (engine.ts:3607).
 ## 0zq-PICK. PICK-W1 (t-pick-w1 from t-int-15 0eefc707e, 11-20 evening): the testers' link plays all of World 1, picked on its front page (R-165.343)
 - WHERE: playRecorder.ts CTEST_STAGES (1-1..1-9, the ONE list; CTEST_LEVEL_ID is deleted), isCtestStage, savedCtestStage/saveCtestStage
   ('sloth_qa_ctest_stage'), ctestPlayed/markCtestPlayed ('sloth_qa_ctest_played', the tile tick). ControlTestGate.tsx: StagePicker,
