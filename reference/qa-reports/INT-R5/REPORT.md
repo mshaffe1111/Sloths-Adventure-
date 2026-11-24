@@ -27,6 +27,7 @@ Session 2 (INT-R5b): started 2:51 PM ET 11-24 (by `date`). Head: release-0.10.3 
    LIST from the shard plan (g-shardplan.log) with each list's time from g-seedlists.log's '== <id> <epoch>' lines; any job within 20% of
    gates.yml's timeout-minutes (seedlists: 45) is raised or split before the PR.
    After ENG-W2FIN + ENG-PLANT: the CI tool line must be 0 FAIL (the todo chaseBots :110 aside) before THE FULL SET starts.
+   Session 2's runs on 0077c62c6 are NOT the full set (the head will change); re-run every gate on the final head.
 4. Gate table into this REPORT; the final head and table to the lead (no clock times). The lead builds the test link and opens the PR.
 
 ## Session 2 (INT-R5b): what it did
@@ -53,7 +54,12 @@ registrycheck, tierBots, buildcheck), each continuing past a red. Sent to the le
 - tipwalk --layouts 4 PASS; storyTipScan --check PASS; registrycheck PASS; tierBots 9/9 PASS; **buildcheck FAIL by 3 ms, run alone on the idle box:
   1-1 Normal p50 69 / p95 153 / max 160 ms (budget p95 150 at CPU x4), Easy p50 58 / p95 90 / max 97 ms** (BUILD-27g on 27e alone: Normal
   127, Easy 67). Measured next against main (cdffdc627) on the same box, alternating, 3 rounds each (tools/bcmp.sh; scratch paths inside):
-  BCMP_PLACEHOLDER
+  **Box noise, not a regression:** head 0077c62c6 PASS 3 of 3 (Normal p50 68/65/70, p95 134/141/141 ms; Easy p95
+  72/81/87); main cdffdc627 on the same box, interleaved: Normal p50 67/84/71, p95 136/**202 (FAIL)**/119 ms; Easy p95 131/96/88. The
+  head's p50 matches main's; main itself fails the gate once in three here. So the first FAIL (153) is the 30-build p95's tail on this box.
+  THE FULL SET runs buildcheck LAST and ALONE (run1.sh); CI runs it on its own runner. Suggestion for the gate's owner (the Critic), not
+  acted on: the p95 of 30 builds swings 119-202 ms on main on an idle 4-core box; more builds per setting would steady the same 150 ms bar
+  without moving it (evidence: tools/bcmp.sh's three rounds above).
 - Bisect of (B) + (C): **the t-build-27e merge (b3195f31e) brings all six back.** Frozen detached
   worktrees, `npx tsx --test tools/inspect/riverRide.test.ts tools/inspect/firsttimer.test.ts` (tools/bisect.sh), run alone after the CI job:
   8d094787c (main + t-build-26 + 2-6 as on main, BEFORE 27e): **30 pass, 0 fail**. b3195f31e (+ t-build-27e @ 801cae9e8, which carries
@@ -62,6 +68,14 @@ registrycheck, tierBots, buildcheck), each continuing past a red. Sent to the le
   river crossings (`git diff --stat 8d094787c b3195f31e -- src tools ':!*.test.ts'`): engine.ts (+172/-), w2.ts (+146), riverArt.ts (+88),
   tower.ts (+54), easyMode.ts (+16), physics.ts (+4); the bot code (tools/inspect/ riverRide's bots) is unchanged by it. Both test files
   are 3-way merges (riverRide.test 22b3a4455, firsttimer.test 5612f4569). Not traced further (ENG-PLANT's job, the lead's ruling).
+
+### Session 2: unresolved, pushback, method update
+- Unresolved: release 4 is NOT green: the CI tool line has 17 reds (11 ENG-W2FIN's, 6 ENG-PLANT's); THE FULL SET not run (waits on
+  ENG-W2FIN, ENG-PLANT, FILL-14b, the lead's ruling). Part 3 (the 2-6 draft out) HELD by the lead.
+- Pushback: none on the rulings. One correction to my own first message: I wrote that t-build-26's riverRide fix 'does not survive the
+  merge' before the bisect; the bisect now proves it (green before 27e, red after).
+- Method update (gates.md 'THE FULL SET' / release.md): a timing gate that FAILs within a few ms of its bar is measured against main on
+  the same box, interleaved, before it is called a regression (tools/bcmp.sh's shape: 3 rounds, alone, after other runs end).
 
 ## Session 1's next step (superseded by session 2's above; kept for the record)
 Head: release-0.10.3 = **4816edd31** (pushed). It is NOT green yet: 2-6's draft test is RED (below). In order:
