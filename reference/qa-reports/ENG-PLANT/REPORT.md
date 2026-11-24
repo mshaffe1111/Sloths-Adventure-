@@ -1,3 +1,86 @@
+# ENG-PLANT-i (ENG-PLANT-c session 7, started 6:28 PM ET 11-24 by `date`; this section written 6:46 PM ET 11-24 by `date`): hand-over (LANES 3b box)
+
+Engine (bots), Opus 5.5 xhigh. Lead: session_01FhBbYN2CVHnFXg7XzqKXpM. Ruling 1 done: the LEAN candidate is built from c4's code and
+pushed (ls-remote confirmed). Runs on detached worktrees per hash (fz-c4, fz-va, fz-vb at scratchpad; no edit under a live run).
+
+## The lean candidate c19 = **9035c553d** (release-0.10.3-wip-plant-c; tools/inspect/firsttimer.ts only)
+Kept, each named: (i) the judged run-up (c13 d29bd7065 + c14 bb5325f24 + c16 e095b5cea, SKILLS.runUp, runPress/runUpCatches; runOut()
+kept only as c16's give-up helper); (ii) c17's refusal of ONLY the sinker case (hopOntoSinker at startJump; pressJudged/pending.judged
+is that rule's 'unjudged', c10/c12's flag: a judged liana press is never refused; UNJUDGED counter); (iii) the ride ONLY in `rideCase`:
+a log running his way, no bank within 80 px of its front, AND (its run ends with no floor within 80 px to hand him on = 'its front goes
+under', or no floor at all, bank or log, within 80 px ahead = 'no floor ahead'); c5's landing stop only in that same case. New helper
+handedAt() (c4's handed check, shared by hopOntoSinker and the ride). Reverted to c4: c5's standingOn 'here', c6/c7's runOut look,
+c8's logAhead, c9's river-stand stopMeant, c11's padRead stopMeant. riverRide.test.ts as c18 (c5's two toys, both known-flip rows).
+
+## Result 1: the 10 known flips (data/i/flip-*-c19.jsonl): **6/10**
+PASS 2-4 adult N 6/8/24/32, child E 23, child N 39. FAIL (1 rescue each): 2-1 child N 11 (water ahead x 30,239: #137, the landing c5
+fixed; #137 is NOT in rideCase), 2-2 adult N 4 (set down 3x 29,392), 2-2 adult N 24 (water x4), 2-4 child E 11 (set down 8x 28,028).
+**c4 itself fails the same 4 at the same x** (data/i/c4-*.jsonl, re-run this session; matches the c4 column of the session-4 table:
+c4 0/10, c5 fixed exactly these rows). So the lean pieces do not move them; one of c5's pieces is needed.
+
+## Result 2: which piece each of the 4 rows needs (c19 + one piece at a time; worktree per variant)
+| variant (on c19 9035c553d) | 2-1 child N 11 | 2-2 adult N 4 | 2-2 adult N 24 | 2-4 child E 11 | 2-1 adult N 1/2/4/6/8/9 (BAR) |
+|---|---|---|---|---|---|
+| c19 alone | FAIL | FAIL | FAIL | FAIL | 6/6 PASS |
+| V-a: + c5's landing stop on every log running his way | PASS | PASS | FAIL | PASS | (not run) |
+| V-b: + c5's standingOn 'here' (river block) | PASS | PASS | FAIL | PASS | **0/6** (set down 3x near 9,100 and 25,600-26,000) |
+| V-ab: both c5 pieces | PASS | PASS | FAIL | PASS | (not run) |
+| V-bc = **c20 d9681e408**: 'here' + c11's padRead stop | PASS | PASS | PASS | PASS | 0/6 (c20: adult E 9, middle E 10 pass) |
+| **V-ac = c21 f96df63e4**: landing stop (every log) + c11's padRead stop | PASS | PASS | PASS | PASS | **8/8 of 2-1's BAR rows** |
+So: 'here' is the piece that broke 2-1's adult Normal rows on c5 (c6-c8's look/logAhead covered it later). **c21 = c19 + c5's landing
+stop (every log running his way; the ride after it still only in rideCase) + c11's padRead stop**; nothing else from c5..c9 or c18.
+Rows: data/i/{va,vb,vab,vbc,vac}-*.jsonl, bar6-c19/vb.jsonl, bar8-*-c20.jsonl, vac-bar-*.jsonl.
+
+## Result 3: c21 f96df63e4 (= the V-ac code) on its exact head: known flips **10/10**; WIDE SAMPLE vs main (data/i/c21-<st>-w.jsonl)
+BAR = adult, child, middle, expert (kid excluded, as session 6's c18 table counted it). Compare: tools/flips.py.txt (main = data/c).
+| stage | differ | PASS->FAIL (BAR) | fail->pass | BAR rows |
+|---|---|---|---|---|
+| 2-1 | 49 | 8 (**3**) | 0 | child E 6 (water ahead 26,039), middle N 7 (25,840), middle N 10 (25,857): the back river. Kid E 2/3/6/7, N 3 |
+| 2-2 | 79 | 2 (**0**) | 5 | (kid E 8, N 2); fail->pass all kid |
+| 2-4 | 71 | 4 (**3**) | 15 | adult E 3 (rescued, no stuck note), adult E 7 (vine 7,311 no way on), child N 6 (water ahead 20,990); kid E 9. fail->pass: adult N 1/3/5/7/9/10 + 9 kid |
+2-1's 3 isolated: c19 alone PASSES all 3; c19 + the landing stop on every log FAILS all 3 at c21's x (data/i/w3-*.jsonl) -> the stand on
+every log is the cause. **c22 = 52bcce623** (supersedes c21): on every log running his way only the pull-back inside his run-out; the
+stand only in rideCase. V-n (= c22's code) passes the 4 flips AND 2-1 child E 6, middle N 7, 10 (data/i/vn-*.jsonl).
+2-4's adult E 7 and child N 6 are the same two BAR rows c18 flipped (so likely the lean core or c4, not the landing pieces): c4 PASSES all three (data/i/b24-c4-*.jsonl), and **c22 passes all three on its exact head** (data/i/b24-adult-easy-c22.jsonl, flip-2-4-child-normal-c22.jsonl): the stand on every log caused them too.
+
+## Result 4: **c22 52bcce623** (HEAD of release-0.10.3-wip-plant-c), exact head: known flips **10/10** (data/i/flip-*-c22.jsonl)
+Kept vs c4, each with its row: run-up (c13/c14/c16; 2-4 adult N 6/8/24/32); c17's sinker-only refusal + its judged flag (2-4 child N 39,
+adult N 6); the ride and the stand ONLY in rideCase (2-1 adult E 5, c18's trace); the landing pull-back inside his run-out on every log
+running his way (2-1 child N 11, 2-2 adult N 4, 2-4 child E 11); c11's padRead stop (2-2 adult N 24). Nothing else from c5..c9 or c18.
+WIDE SAMPLE on c22: **NOT CLEAN: 2 BAR PASS->FAIL** (data/i/c22-<st>-w.jsonl)
+| stage | differ | PASS->FAIL (BAR) | fail->pass | BAR rows |
+|---|---|---|---|---|
+| 2-1 | 46 | 5 (**1**) | 3 | child E 2 (water ahead 26,069, the back river): **c19 and c4 both PASS it** (data/i/ce2-c19/c4.jsonl) -> c22's landing pull-back or c11's padRead stop. Kid E 4, N 3/8/10 |
+| 2-2 | 81 | 1 (**0**) | 5 | (kid N 3) |
+| 2-4 | 71 | 2 (**1**) | 13 | child N 8 (water ahead 10,097; vine 21,474 no way on): NOT yet run on c19/c4. Kid E 2 |
+Down from c21's 6 BAR and c18's 10. hopJudged, pacerLay and the full rows NOT run (ruling 5: only on a clean sample).
+
+## EXACT NEXT STEP (session 8)
+0. Setup: `npm ci --legacy-peer-deps`; one worktree per hash (`git worktree add --detach <dir> <hash>`, node_modules symlinked); no edit
+   in a tree under a live run. Base: **c22 52bcce623**. Main's rows: data/c/main-<st>.jsonl; compare with tools/flips.py.txt
+   (`python3 -I flips.py <dir with main's <st>.jsonl> <dir with c22's <st>.jsonl>`; BAR = adult/child/middle/expert, kid excluded).
+   Messages to the lead carry no clock times.
+1. Isolate c22's two BAR flips, one piece at a time, 2 rows each (cheap): 2-1 child Easy 2 and 2-4 child Normal 8 on (a) c19 9035c553d,
+   (b) c19 + c22's landing pull-back only (worktree from c22 with c11's padRead line removed), (c) c19 + c11 only (fz-vbc minus 'here').
+   If the pull-back breaks them (likely: c19 passes 2-1 child E 2 and the back-river signature matches c21's stand), narrow it to what
+   the 3 flips need (2-1 child N 11 lands 40 px from #137's front): e.g. pull back only when his let-go at his speed NOW (not a full-run
+   runOut) carries him past the front, or only when no floor stands at the front; re-run the 4 flip rows + both BAR rows, then commit
+   c23, push, ls-remote, the 10 known flips on its exact head, and the WIDE SAMPLE (2-1, 2-2, 2-4) vs main. Send the lead each result.
+2. pacerLay (ruling 2's third measure): `npx tsx --test src/game/gen2/pacerLay.test.ts` on c22's exact head; name each red against the
+   base's {8, 22, 23} (release-0.10.3 dfe631913) and c18's {4, 8, 10, 21, 22, 23}.
+3. Ruling 3: RE-PLANT pacerLay 22 (:254, SKILLS.boardLog, home middle Easy 1; stale since 24d6ba567) and 23 (:280, SKILLS.raceSure, home N 2
+   + post N 5; stale since a0ab91d33) each at its SAME bar on its cause laid explicitly, as ENG-27j re-planted fromTakeoff (af127d21e;
+   R-165.432): RED with the skill off, GREEN on. Never loosen a bar (law 22).
+4. Ruling 4: row 8 (middle beats the boat, home Normal 3, 113.7 vs 113.66): trace where the careful middle's 0.04 s goes under
+   BUILD-26j's step-up rule (hunk 14 + stepUpAtLip of firsttimer.ts, d6350d3e7 via b3195f31e; data/h/t8hunk.txt) and send the lead,
+   with it, the careful middle's MARGIN (his time minus the boat's) on EVERY race row on c22. Do NOT change the boat or the rule.
+5. Only on a clean wide sample: hopJudged (`npx tsx --test tools/inspect/hopJudged.test.ts`), then the full rows (2-1, 2-2, 2-4, then
+   2-5, 2-7 with x40 29/40 and the list 69/100, 1-4; data/c/rows.sh.txt), toys, plants, CI line, tierBots 9/9, merge into
+   release-0.10.3 (no force). HARD STOP 9:30 PM ET; at most two heavy runs at a time, each once on the exact head.
+
+Lessons applied: D134 (pushed + ls-remote before hand-over), D115 (a worktree per hash, no edit under a live run), D119 (no heredoc in
+a commit chain), D128 (times from `date`), D133 (one piece at a time, cheapest run first), D135 (c4's own failures named, not carried).
+
 # ENG-PLANT-h (ENG-PLANT-c session 6, started 6:12 PM ET 11-24 by `date`; this section written 6:26 PM ET 11-24 by `date`): hand-over (LANES 3b box)
 
 Engine (bots), Opus 5.5 xhigh. Lead: session_01FhBbYN2CVHnFXg7XzqKXpM. Code: c18 fca50fc81 UNCHANGED (no fix this session: causes first,
