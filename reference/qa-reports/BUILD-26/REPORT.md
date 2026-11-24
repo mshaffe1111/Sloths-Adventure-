@@ -1,26 +1,30 @@
-# ENG-26u (t-build-26-wip-26t; base 4285e263c, code 35ca56b16): rowWheels' trunkCatch plant re-planted at its cause on the lead's word (5ecec4018); the CI tool line GREEN; tierBots' replay RED (120 of 200 calibration runs moved: the recalibration is under way). NOT landed. Started 11:13 AM ET 11-24 (by `date`)
+# ENG-26u (t-build-26-wip-26t; base 4285e263c, code 35ca56b16): rowWheels' trunkCatch plant re-planted at its cause (5ecec4018), the 1-1 calibration recommitted with its causes named (e8e99d167); every named gate GREEN; 2-6 --proven 46/100; 1-4 --proven 96/100 (4 slots out, none from this branch). NOT landed: the lead rules A (land now, the fill as its own packet) or B (fill first). Started 11:13 AM ET 11-24 (by `date`)
 
-## EXACT NEXT STEP (head 5ecec4018 on t-build-26-wip-26t, pushed; t-build-26 is 9e1e30b27, an ancestor: the landing is a fast-forward, no force)
-1. **tierBots' replay (test 9) is RED: 120 of 200 committed 1-1 runs moved** (b26u/tierBots-35ca56b16.txt; tests 1-8 pass, incl. 6 'the
-   committed runs, judged again, give the committed table'). calibration-main.jsonl is unchanged since t-build-26 9e1e30b27 (a07ed1bd7), so
-   the moves come from this branch: the main merge b3e0a8206 (ENG-CAGE-b's FETCH-CLOCK moved 2 child Normal runs on main), floorAt
-   ca3a7d063, and ENG-26t's overSmall strip 997f7e98c/35ca56b16. **The BOTS.md re-run on frozen 5ecec4018 is DONE**
-   (b26u/calibration-5ecec4018.jsonl; `npx tsx tools/inspect/tierBots.ts --stage 1-1 --tiers child,middle,expert --seeds 1-40 --setting both
-   --calibrate`, about 6 min): it reproduces the replay (120 of 200 moved; b26u/calcmp-committed-vs-5ecec4018.txt): finish 119, put-backs 39,
-   lives 0, ends 0, rescues 2 (child N v12 1->0, v14 0->1; child N total 3 -> 3); **the table keeps every verdict** (child E, child N,
-   middle E, middle N fail and expert N pass, as committed; no check flips). Next: NAME the cause by running the same command at 23cdb07e8
-   (before overSmall; IN FLIGHT in ENG-26u's container) and at b3e0a8206 (before floorAt) on frozen trees and comparing (calcmp.py), then recommit calibration-main.jsonl the BOTS.md way (a dated BOTS.md line naming the moved runs and their causes; the
-   table must keep its pass/fail). If the table's verdict CHANGES (a check flips), stop and send it to the lead before recommitting.
-2. **2-6's castBots --proven yield** IN FLIGHT on frozen 5ecec4018 (`castBots.ts --stage 2-6 --seeds 1-100 --setting both --par 2 --proven`,
-   b26u/castBots-2-6-5ecec4018.txt once copied). Then 1-4's the same way (100 listed seeds; slot / old / new for any failing slot to the
-   lead before it lands). 2-6's number to the lead (the bar is 60 of 100).
-3. Land: after tierBots is GREEN on the recommit, push the head to t-build-26 (fast-forward). Send the lead the hash, the gate lines, 2-6's number.
+## EXACT NEXT STEP (head: this REPORT commit over e8e99d167 on t-build-26-wip-26t, pushed; t-build-26 is 9e1e30b27, an ancestor: the landing is a fast-forward, no force)
+1. **The lead's ruling on 1-4's four slots** (sent with the table): A, land now (`git push origin <head>:t-build-26`, after checking t-build-26 is
+   still 9e1e30b27) and the fill as its own packet; or B, the fill first. No tool fills a slot in place: seedlist.ts writes, merges
+   (--merge c.json --in-order) or combines whole lists; castBots on a listed stage plays the n-th proven seed only. A fill: lay candidate
+   seeds past the list (seedlist --merge --in-order), play every bot on them through a planted list, replace slots 26/45/66/69 in order,
+   then seedlist --check, the suite and the tool line on the new list.
+2. Then the lead gets the landed hash.
 
-## Gate lines so far
-- CI tool line (gates.yml line 157) on frozen 5ecec4018: **368 tests, 367 pass, 0 fail, 1 todo** (chaseBots R-165.206) (b26u/toolline-5ecec4018.txt). GREEN.
-- registrycheck on frozen 35ca56b16: PASS (15 stages, 82 s). tipwalk --layouts 4: PASS. (src/tools identical to 5ecec4018 but the one test file.)
-- Unit suite: ENG-26t's on frozen 35ca56b16, 4,077/0/3; 5ecec4018 changes no file the suite reads (only tools/inspect/rowWheels.test.ts).
-- tierBots on frozen 35ca56b16: 8/9, test 9 RED (above).
+## The table (every run on a chattr-frozen tree)
+| gate | head | result | evidence (b26u/) |
+|---|---|---|---|
+| CI tool line (gates.yml line 157) | 5ecec4018 | 368 tests, 367 pass, **0 fail**, 1 todo (chaseBots R-165.206) | toolline-5ecec4018.txt |
+| tierBots | e8e99d167 | **9/9** (on 35ca56b16 before the recommit: 8/9, the replay RED, 120 of 200 moved) | tierBots-e8e99d167.txt, tierBots-35ca56b16.txt |
+| registrycheck | 35ca56b16 | PASS (15 stages, 82 s) | registrycheck-35ca56b16.txt |
+| tipwalk --layouts 4 | 35ca56b16 | PASS | tipwalk-35ca56b16.txt |
+| unit suite | 35ca56b16 (ENG-26t) | 4,077 / 0 fail / 3 todo; since then only rowWheels.test.ts and reference/ changed (no file the suite reads) | ENG-26t's |
+| 2-6 castBots --proven (100 listed, every bot, both settings, floor 100 s) | 5ecec4018 | **46 of 100** (bar 60). kid E 63 (37 rescued), adult E 70 (30 rescued), adult N 99 but 11 under the floor (min 95.9 s), kid N 98, child E 99, middle E 99; child N, middle N, expert N 100. No life lost anywhere | castBots-2-6-5ecec4018.txt, proven-2-6-5ecec4018.json |
+| 1-4 castBots --proven (100 listed) | 5ecec4018 | **96 of 100**: slot 26 (seed 26: child N rescued x1), 45, 66, 69 (middle N rescued x1 each); every other bot and setting 100/100 | castBots-1-4-5ecec4018.txt, proven-1-4-5ecec4018.json |
+| 1-4's four slots, by commit | 9e1e30b27 / b3e0a8206 / 8d2ac35bc / 23cdb07e8 | only 66 out / only 66 out / **all 4 out** / all 4 out: 66 was already out on t-build-26; 26, 45, 69 went out with ENG-26s's relist 8d2ac35bc (re-laid on the merged lay); floorAt and overSmall move none | castBots-1-4-4slots-<hash>.txt |
+| seedlist --check (every list) | not run by ENG-26u | no file it reads changed since 23cdb07e8 (no src/ change; firsttimer.ts is not in its import graph: seedlist -> listRules -> eraRoll/analyze, none imports the bot); last run by ENG-26s on its relists | - |
+
+## The 1-1 recalibration's causes (BOTS.md 11-24 line; e8e99d167)
+committed -> b3e0a8206 (the main merge): exactly child N v1 (437.9 -> 426.8 s) and v12 (390.2 -> 417 s), main's FETCH-CLOCK 5bad38879 (ENG-CAGE-b's
+own numbers). b3e0a8206 -> 23cdb07e8 (floorAt, the relists): none. 23cdb07e8 -> 5ecec4018: 120 (ENG-26t's overSmall strip, firsttimer.ts). No life
+or end moved; rescues child N 3 -> 3 (v12 1 -> 0, v14 0 -> 1); every table verdict as committed. Runs: calibration-<hash>.jsonl; compare: calcmp.py.txt.
 
 ## Done-items so far
 | item | evidence | state |
