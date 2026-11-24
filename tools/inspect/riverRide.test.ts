@@ -104,13 +104,29 @@ for (const [tier, setting] of RUNS) {
   });
 }
 
+// (ENG-PLANT-c 11-24, the lead's ruling (ENG-PLANT session 1): since the judged hops off a log (SKILLS.floatSure) no tier drowns over
+//  the bar on the first one-river roll with the ride skill off, so the plant moved to the fixture's roll 4, measured on the fixed bot
+//  (a64f02ce5, toyfind deep ride 4): on, every tier 0 lives at the river; off, middle Normal 2, middle Easy 3, child Normal 3, child
+//  Easy 1: two tiers over RIDE_LIVES. The bar is unchanged (law 22): at least one tier over it off, every tier within it on)
+const PLANT_SEED = 4;
+test('the ride plant\'s roll: one deep log river, rolled clean', () => {
+  const st = buildGen2Stage({ config: cfg, kit, seed: PLANT_SEED, difficulty: 'normal' });
+  const rivers = st.rivers!.filter((r) => r.speed > 0);
+  assert.equal(rivers.length, 1);
+  assert.ok(!st.gen2.errors?.length, JSON.stringify(st.gen2.errors));
+  assert.equal(rivers[0].safe, undefined, 'deep: a fall costs a life');
+});
 test('planted: with the ride skill off, the middle and child bots drown in the river', () => {
+  for (const [tier, setting] of RUNS) {
+    const r = ride(tier, setting, PLANT_SEED);
+    assert.ok(crossed(r), `ride on, roll ${PLANT_SEED}: ${tier} ${setting}: ${told(r)}`);
+  }
   SKILLS.ride = false;
   const off: string[] = [];
   let failed = 0;
   try {
     for (const [tier, setting] of RUNS) {
-      const r = ride(tier, setting, SEED);
+      const r = ride(tier, setting, PLANT_SEED);
       off.push(`${tier} ${setting}: ${told(r)}`);
       if (!crossed(r)) failed++;
     }
@@ -142,11 +158,17 @@ for (const [tier, setting] of RUNS) {
 //  into the bank as well as one the log carries: without the skill the child walks in and is handed, rightly, so the old claim 'off, never
 //  handed' is gone; what the skill still stops is the middle bot on Normal hopping at the water off the long log's front end: measured on
 //  t-int-11 7b012852e, lives at the river 1 with it, 3 without)
-test('planted: with the handed-to-the-bank skill off, the middle on Normal hops at the water off the long log and drowns over the bar', () => {
+// (ENG-PLANT-c 11-24, the lead's ruling (ENG-PLANT session 1): since the judged hops off a log the middle on Normal crosses the long
+//  log's first roll within the bar without the skill, so the plant moved to the child on Normal on the long kit's roll 12, measured on
+//  the fixed bot (a64f02ce5, toyfind long handed 12): on 0 lives at the river and handed 1, off 4 lives. The bar is unchanged (law 22))
+const HANDED_SEED = 12;
+test('planted: with the handed-to-the-bank skill off, the child on Normal hops at the water off the long log and drowns over the bar', () => {
+  const on = ride('child', 'normal', HANDED_SEED, LONG);
+  assert.ok(on.end === 'shrine' && livesAt(on) <= SKILL_LIVES && on.handed >= 1, `handed on, roll ${HANDED_SEED}: handed ${on.handed}, ${told(on)}`);
   SKILLS.handed = false;
   try {
-    const r = ride('middle', 'normal', SEED_LONG, LONG);
-    assert.ok(livesAt(r) > SKILL_LIVES, `handed off, the middle on Normal still crossed within ${SKILL_LIVES}: handed ${r.handed}, ${told(r)}`);
+    const r = ride('child', 'normal', HANDED_SEED, LONG);
+    assert.ok(livesAt(r) > SKILL_LIVES, `handed off, the child on Normal still crossed within ${SKILL_LIVES}: handed ${r.handed}, ${told(r)}`);
   } finally {
     SKILLS.handed = true;
   }
