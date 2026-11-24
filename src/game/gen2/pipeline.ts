@@ -3436,6 +3436,10 @@ export function fillSockets(laid: Laid, budget: StageBudget, kit: WorldKit, seed
   };
   const tipsSaid = new Set<string>();
   const refuse = M.graphs?.briefs?.[budget.id]?.pick?.refuse;
+  // (a tip in a section that TEACHES a mechanic is that lesson's line: laid as a teach line (StageHint.teach), whether or not the kit
+  //  names it in teachTips. As a plain tip it waited out Tips' 30 s gap after the line before it and came ~1,900 px past the tall
+  //  bank it teaches (seed 15050); a middle player's first two 1-1 runs never saw it (R-165.427, TEACH-11; tools/engine/teachFirstScan.ts))
+  const teachSecs = new Set(M.sections.filter((t) => t.teaches).map((t) => t.id));
   // (lessons from earlier stages need no tip here)
   for (const [m, st] of Object.entries(M.lessons ?? {})) if (stageOrder(st) < stageOrder(budget.id)) tipsSaid.add(m);
 
@@ -3636,7 +3640,7 @@ export function fillSockets(laid: Laid, budget: StageBudget, kit: WorldKit, seed
           // where "hint.1-1.double" itself was on screen)
           const text = tipWords(M.tips, m);
           // (and only inside its section's height band, R-165.236: on a climbing stage x alone said 1-4's teach lines on the start floor)
-          if (text) hints.push({ x: k.x, text, pad: text, keys: text, band: tipBand(sec), ...(M.teachTips?.includes(m) ? { teach: true as const } : M.storyTips?.[m] ? { story: M.storyTips[m] } : {}) });
+          if (text) hints.push({ x: k.x, text, pad: text, keys: text, band: tipBand(sec), ...(M.teachTips?.includes(m) || (teachSecs.has(sec.template) && !M.storyTips?.[m]) ? { teach: true as const } : M.storyTips?.[m] ? { story: M.storyTips[m] } : {}) });
           fills.push({ section: sec.uid, socket: s.id, role: 'tip', what: m, x: k.x, y: k.y, ...(text ? {} : { unsaid: true }) });
         }
       } else if (s.role === 'roll') {

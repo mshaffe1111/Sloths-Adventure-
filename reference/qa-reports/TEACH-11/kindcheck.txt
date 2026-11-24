@@ -1,0 +1,25 @@
+1-1 | Flick up again in the air to jump twice      | before teach Tips:said Help:said | after teach/teach Tips:said Help:said
+1-1 | Jump the little gaps                         | before none | after none
+1-1 | Slide up and across to jump. Keep running an | before teach Tips:said Help:said | after teach/teach Tips:said Help:said
+5-9 | The shrine's shut. Beat the spiders to open  | before must Tips:said Help:said | after must Tips:said Help:said
+6-2 | The water's watching. The roots hide you.    | before info Tips:DROPPED Help:said | after teach/teach Tips:said Help:said
+6-4 | Mud flats. The tide comes back.              | before info Tips:DROPPED Help:said | after teach/teach Tips:said Help:said
+6-5 | The shrine's shut. Chase the hunters off fir | before must Tips:said Help:said | after must Tips:said Help:said
+6-6 | The roots go dark. Only the firefly glows.   | before info Tips:DROPPED Help:said | after teach/teach Tips:said Help:said
+6-9 | The shrine's shut. Fight through to open it. | before must Tips:said Help:said | after must Tips:said Help:said
+7-1 | Brown vines. Still strong enough to climb.   | before info Tips:DROPPED Help:said | after teach/teach Tips:said Help:said
+7-1 | Cracked tiles. They won't hold long.         | before info Tips:DROPPED Help:said | after teach/teach Tips:said Help:said
+7-3 | Brown vines. Still strong enough to climb.   | before info Tips:DROPPED Help:said | after teach/teach Tips:said Help:said
+7-3 | The shrine's sealed. I'll find the relics fi | before info Tips:DROPPED Help:said | after teach/teach Tips:said Help:said
+7-5 | Brown vines. Still strong enough to climb.   | before info Tips:DROPPED Help:said | after teach/teach Tips:said Help:said
+7-5 | Shrine's shut. The guards have to go first.  | before info Tips:DROPPED Help:said | after teach/teach Tips:said Help:said
+7-7 | Brown vines. Still strong enough to climb.   | before info Tips:DROPPED Help:said | after teach/teach Tips:said Help:said
+7-7 | The shrine's sealed. I'll find the relics fi | before info Tips:DROPPED Help:said | after teach/teach Tips:said Help:said
+7-9 | Brown vines. Still strong enough to climb.   | before info Tips:DROPPED Help:said | after teach/teach Tips:said Help:said
+7-9 | Shut tight. I'll have to fight through.      | before info Tips:DROPPED Help:said | after teach/teach Tips:said Help:said
+8-1 | Dark ahead. Stay near the fireflies.         | before info Tips:DROPPED Help:said | after teach/teach Tips:said Help:said
+8-1 | Sleeping bats. Nowhere to hide: go while the | before info Tips:DROPPED Help:said | after teach/teach Tips:said Help:said
+8-2 | Bats! Hide while they're looking. Go when th | before info Tips:DROPPED Help:said | after teach/teach Tips:said Help:said
+8-6 | Too far! Jump twice, then hold to glide.     | before teach Tips:said Help:said | after teach/teach Tips:said Help:said
+8-8 | The shrine's shut. Drive the hunters off fir | before must Tips:said Help:said | after must Tips:said Help:said
+8-9 | The shrine's shut. Fight through to open it. | before must Tips:said Help:said | after must Tips:said Help:said
