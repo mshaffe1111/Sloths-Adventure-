@@ -1,4 +1,15 @@
-# Turnover note: the data analyst (rewritten at the end of every task; last: DATA-1124, the 11-23..11-24 window vs the bots, 11-24)
+# Turnover note: the data analyst (rewritten at the end of every task; last: DATA-1124b, after DATA-1124, the 11-23..11-24 window vs the bots, 11-24)
+
+## DATA-1124b (11-24, t-data-1124): the whole window since 0.10.1
+- **Last read row: 5996.** Window = Sessions rows 5388-5462 + 5500-5996 (F = 2026-11-21T14:37:27-05:00 for 0.10.1, first row 5388;
+  2026-11-22T16:43:02-05:00 for 0.10.2; rows 5463-5499 are a 10-31 build). 3 players: P24 expert, P27 child, **P36 new (middle by the
+  rule)**; 24 runs, 16 finishes. REPORT: the DATA-1124b section at the top of reference/qa-reports/DATA-1124/REPORT.md; aggregates in
+  tools/playtesters/profiles/window-1124b.json (an addendum, same reason as window-1124.json).
+- castBots for 0.10.1 runs: a worktree at origin/release-0.10.1 (4a8c1decd; the build's 2a87f4cd is not in a shallow clone), node
+  deps by `npm install --no-audit --no-fund --legacy-peer-deps` (npm ci fails on peer deps; CI uses install). 1-6 and 1-7's lists differ
+  on later bases. 1-1 logs the real seed: map it to a variant with LIST.seeds.indexOf(seed)+1 (0 = a live roll, not castable).
+- Open: 1-7/1-8 for a middle player (3 runs, 0 finishes); 1-4's y 5000-5999 band (2 of 2 climbers); castBots' Easy stall at 1-2 #82
+  x 18651; no survey is sent when a player leaves, so the stages they quit carry no rating.
 
 ## DATA-1124 (11-24, t-data-1124): what was read and what is open
 - Window: Sessions rows 5700-5996 (build 0.10.2, main cdffdc627; F = 2026-11-22T16:43:02-05:00 from row 5700). 2 players: P24 (expert,
