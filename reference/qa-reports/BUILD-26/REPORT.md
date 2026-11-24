@@ -1,12 +1,13 @@
 # ENG-26t (t-build-26-wip-26t; base t-build-26-wip-26s 23cdb07e8): release 4's branch green. wheelRide fixed at its cause and riverRide re-planted on the lead's word: candidate B 35ca56b16 (riverRide 18/18, wheelRide 2/2 GREEN), the strip-on-logs fork with the lead. NOT landed. Started 10:02 AM ET 11-24 (by `date`)
 
-## EXACT NEXT STEP (the branch head is the REPORT commit over 35ca56b16, pushed; nothing is on t-build-26)
-0. **Read the lead's ruling on the strip fork** (sent this box). The plants (3e212becc) pass: riverRide tests 16-18 GREEN. But the wheel
-   fix 997f7e98c turned test 6 (the toy river's ride-skill plant) RED: GREEN on the base, RED on 997f7e98c, run alone on both frozen
-   trees (b26t/riverRide-ridePlant-*.txt): the strip caught a log's end, so with ride off they crossed (lives 1/0/0/0). CANDIDATE B
-   35ca56b16 (the head): the strip never on a log: riverRide 18/18 + wheelRide 2/2 GREEN (b26t/rr-wr-35ca56b16.txt). Recommended to the
-   lead. If the lead picks B: go on at step 2 on 35ca56b16. If the lead keeps the strip on logs: revert 35ca56b16 and search a toy or
-   2-1 case that still needs SKILLS.ride (the method of b26t/skillsearch.mts.txt), send it, write it on its word (law 22).
+## EXACT NEXT STEP (code head 35ca56b16, the lead's ruling B; the branch head is a REPORT commit over it, pushed; nothing is on t-build-26)
+0. **The lead ruled B (35ca56b16: the strip never on a log): the head.** On frozen 35ca56b16 (scratch tree f5) this box STARTED, in the
+   background: the CI tool line (gates.yml rolled line 157) and the unit suite (CLAUDE.md Checks, one process). Read their logs
+   (b26t/toolline-35ca56b16.txt, b26t/suite-35ca56b16.txt once copied); if absent, re-run both ONCE on a fresh frozen tree at
+   35ca56b16 (the lead: once each, no other runs). Then registrycheck + tipwalk --layouts 4 + tierBots (re-judge the calibration on
+   this bot), then castBots --proven 1-4 and 2-6's --proven yield under the judge, the table to the lead, land on its word.
+   Evidence for the fork: test 6 GREEN on the base, RED on 997f7e98c (b26t/riverRide-ridePlant-*.txt); B: riverRide 18/18 + wheelRide
+   2/2 GREEN (b26t/rr-wr-35ca56b16.txt).
 1. **riverRide's plants: the lead APPROVED both rulings and they are WRITTEN: 3e212becc** (upstream: child N 23 replaces child N 5,
    middle N 26 added, bar 5+ lives; bankUp: child N 40 as a LIVES plant, 5+ more lives off, the both-ways time 2+ s kept). GREEN
    (b26t/riverRide-3e212becc.txt tests 16-18). child N 40's lives margin is exactly the bar (+5, measured on 997f7e98c; on the base
