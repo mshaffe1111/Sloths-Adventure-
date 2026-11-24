@@ -2358,14 +2358,25 @@ export class FirstTimerRun {
       //  same log catches it (2-4 adult Normal 6, 52 of 541 frames; main crossed by an unjudged full-run leap). The hop he can make is
       //  judged: a run along the log (groundStep, his own thumb lag and spread on the run press and the jump press, the take-off still on
       //  the log and before a tailed river's x1 - 10), then a jump, catches it at all three lags: he runs. Else the stand and hop-back stay)
-      if (!SKILLS.runUp || !this.runUpCatches(p, dir, here, v, lags, carry, hold, clock, t, false)) return null;
+      // (and with the steer held from now, as the bot plays it (no lag on a steer from a stand, thumbify): judged from a stand alone, the
+      //  next frame's judge on the run refused it and he flickered run / stand / run on #104 (2-4 adult Normal 6 on candidate 15, t 147.27-
+      //  147.47) until his let-go ran him off the front, x 24,872)
+      if (!SKILLS.runUp || !this.runUpCatches(p, dir, here, v, lags, carry, hold, clock, t, false) || !this.runUpCatches(p, dir, here, v, lags, carry, hold, clock, t, true)) return null;
       this.runUp = { id: here.id, t };
       return side1(dir);
     }
     if (running) {
       // (on the run-up: the press now, judged at his running speed, the run kept through his thumb's lag (no pending.still)); else
       //  on while a later press catches; else the stand and hop-back stay)
-      if (!this.runUpCatches(p, dir, here, v, lags, carry, hold, clock, t, true)) return null;
+      if (!this.runUpCatches(p, dir, here, v, lags, carry, hold, clock, t, true)) {
+        // (a run-up given up: a stop he means (stopMeant: the adult's let-go re-arms every frame otherwise, thumbify R-165.59), and inside
+        //  his run-out of the front he pulls the thumb back (a turn drops the press at once), as the landing stop does (c9); a bare null
+        //  fell to a stand his let-go ran on, off #104's front (2-4 adult Normal 6 on candidate 15, x 24,872))
+        const front = dir > 0 ? here.x + here.width : here.x;
+        if (dir * (front - p.x) < this.runOut()) return side1((-dir) as -1 | 1);
+        this.stopMeant = true;
+        return {};
+      }
       if (!lags.every((lag) => this.runPress(p.x, p.vx, 0, lag, p, dir, here, v, carry, hold, clock, t))) {
         this.runUp = { id: here.id, t };
         return side1(dir);
