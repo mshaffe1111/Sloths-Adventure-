@@ -1,12 +1,24 @@
-# ENG-26u (t-build-26-wip-26t; base 4285e263c, code 35ca56b16): rowWheels' trunkCatch plant re-planted at its cause (5ecec4018), the 1-1 calibration recommitted with its causes named (e8e99d167); every named gate GREEN; 2-6 --proven 46/100; 1-4 --proven 96/100 (4 slots out, none from this branch). NOT landed: the lead rules A (land now, the fill as its own packet) or B (fill first). Started 11:13 AM ET 11-24 (by `date`)
+# ENG-26u (t-build-26-wip-26t; base 4285e263c, code 35ca56b16): rowWheels' trunkCatch plant re-planted at its cause (5ecec4018), the 1-1 calibration recommitted with its causes named (e8e99d167); every named gate GREEN; **LANDED on t-build-26: e8e99d167** (fast-forward from 9e1e30b27, the lead's ruling A); 2-6 --proven 46/100; 1-4 --proven 96/100 (4 slots out, none from this branch: the fill is its own job). Started 11:13 AM ET 11-24 (by `date`)
 
-## EXACT NEXT STEP (head: this REPORT commit over e8e99d167 on t-build-26-wip-26t, pushed; t-build-26 is 9e1e30b27, an ancestor: the landing is a fast-forward, no force)
-1. **The lead's ruling on 1-4's four slots** (sent with the table): A, land now (`git push origin <head>:t-build-26`, after checking t-build-26 is
-   still 9e1e30b27) and the fill as its own packet; or B, the fill first. No tool fills a slot in place: seedlist.ts writes, merges
-   (--merge c.json --in-order) or combines whole lists; castBots on a listed stage plays the n-th proven seed only. A fill: lay candidate
-   seeds past the list (seedlist --merge --in-order), play every bot on them through a planted list, replace slots 26/45/66/69 in order,
-   then seedlist --check, the suite and the tool line on the new list.
-2. Then the lead gets the landed hash.
+## EXACT NEXT STEP
+1. **The 1-4 slot fill (its own small job after the reset, before release 4's integration; the lead's ruling A).** Input below. No tool fills a
+   slot in place: seedlist.ts writes, merges (--merge c.json --in-order --part p.json) or combines whole lists; castBots on a listed stage
+   plays the n-th proven seed only. The fill: lay candidate seeds past 100 (seedlist --merge --in-order), play every bot, both settings, on
+   them through a planted list, replace slots 26/45/66/69 in order (slot / old / new to the lead before it lands), then seedlist 1-4 --check,
+   the suite and the CI tool line on the new list; castBots --proven 1-4 must read 100 of 100.
+2. 2-6 (46 of 100, bar 60): the Easy residue (kid E 37 rescued, adult E 30) and adult Normal under the 100 s floor (11 runs): the lead's call.
+3. ENG-26u's container held the runs; nothing is in flight now. The turnover note (reference/handoffs/engine-core.md) is NOT rewritten (usage; the
+   lead said end): it still owes ENG-26t's overSmall strip rule and the trunkCatch plant's seed 28.
+
+## The fill packet's input: 1-4's four slots (castBots --proven, 100 listed seeds, every bot, both settings)
+| slot | seed | bot out | how | out since (same 4 slots run at each commit, frozen trees) | cause |
+|---|---|---|---|---|---|
+| 26 | 26 | child Normal | shrine, rescued x1 | 8d2ac35bc (in at 9e1e30b27 and b3e0a8206) | ENG-26s's 1-4 relist 8d2ac35bc ('on the head's lay, seeds kept in order'): the re-laid plan on the merged lay |
+| 45 | 45 | middle Normal | shrine, rescued x1 | 8d2ac35bc | the same relist |
+| 66 | 66 | middle Normal | shrine, rescued x1 | already out on t-build-26 9e1e30b27 (and b3e0a8206) | before this branch; not traced further |
+| 69 | 69 | middle Normal | shrine, rescued x1 | 8d2ac35bc | the same relist |
+Neither bot change moved them: floorAt (ca3a7d063, at 23cdb07e8) and ENG-26t's overSmall strip (5ecec4018) give the same 4. Evidence:
+b26u/castBots-1-4-4slots-{9e1e30b27,b3e0a8206,8d2ac35bc,23cdb07e8}.txt, b26u/castBots-1-4-5ecec4018.txt.
 
 ## The table (every run on a chattr-frozen tree)
 | gate | head | result | evidence (b26u/) |
@@ -40,6 +52,21 @@ or end moved; rescues child N 3 -> 3 (v12 1 -> 0, v14 0 -> 1); every table verdi
 
 ## Pushback
 - none on the plant. The cause of seed 1's change (floorAt merge, ENG-26t's guess) is not bisected: the plant now rests on a measured live case, which is what law 22 asks.
+
+## Pushback
+- The packet's 'filled in place by the tool' (1-4): no such tool exists; a fill is a list rebuild (src/) with its own gates. Ruled A by the lead.
+- None on the plant. Seed 1's change is not bisected (the plant now rests on a measured live case, which is what law 22 asks).
+
+## Unresolved
+- 1-4 slots 26/45/66/69 (the fill job above). 2-6 at 46/100. The turnover note (engine-core.md) not rewritten. seedlist --check not re-run
+  by ENG-26u (no file it reads changed since 23cdb07e8; release 4's integration runs it).
+
+## Method update
+- A plant that stops biting: search the live rows with the skill on and off (every tier bot, both settings, both variants, the listed seeds),
+  keep the cases where on is clean and off breaks the old bar, then trace the first divergence (FT_TRACE on vs off) to prove the plant's own
+  premise before proposing it (b26u/tcsearch.mts.txt, tcjudge.py.txt, tcone.mts.txt). 25 minutes here, about 20 of them background.
+- A recalibration's cause: run the BOTS.md command at each merge point on frozen trees and compare (b26u/calcmp.py.txt): three runs named
+  every moved run's commit in 15 minutes.
 
 ## Lessons applied
 D111 (the box), D113 (no foreground wait on a background run), D115 (every run on a chattr-frozen tree: w0 at 35ca56b16, w2 at 5ecec4018; proven/ thawed), D117 (the candidate on -wip-26t only), D119 (no heredoc in a commit chain), law 22 (the plant sent to the lead before it was written; the bar not loosened).
