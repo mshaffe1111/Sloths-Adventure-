@@ -6,7 +6,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { FloodClock, floodFaults, floodSurface, floodTailOff, highRoadFaults, type Flood, type FloodWater } from './flood.ts';
-import { join, newTrail, record, rejoin, setOnBank, stepLine, type Follower } from './follow.ts';
+import { join, newTrail, record, rejoin, setOnBank, stepLine, wallCap, type Follower } from './follow.ts';
 import { FollowPlay } from './followPlay.ts';
 import type { Platform } from './types.ts';
 import { W2_FLOOD, W2_FOLLOW } from './gen2/worlds/w2.ts';
@@ -186,4 +186,32 @@ test('the engine meets the flood (FollowPlay + FloodClock on a toy floor): at th
 test('the engine meets the flood, planted: without floodClosed the tail is left paddling in the low road as it turns deep, so the toy goes RED', () => {
   const g = engineFlood(false);
   assert.ok(g.lost.length >= 1, `RED: ${g.lost.length} left in deep water`);
+});
+
+test('the close sets back only the ones IN the low road: one up on the high road over its water stays with him (RED: the span alone set it back)', () => {
+  const flood = laid(W2_FLOOD.flown.px, false);
+  const w = { ...flood.waters[1], deep: { y: LIP, near: flood.waters[1].deep!.near } };
+  const fp = new FollowPlay(W2_FOLLOW, false, { exitX: 9000, zones: [], covers: [], platforms: [], safeWater: [] }, { x: 1300, y: LIP - 120 });
+  const up = fp.free('duck', { x: 1200, y: LIP - 120 }, { x: 1200, y: LIP - 120 });
+  const wet = fp.free('otter', { x: 1150, y: LIP + 20 }, { x: 1150, y: LIP + 20 });
+  up.state = wet.state = 'follow';
+  // (RED, the rule as first written: everyone over the span, the porch's one too)
+  assert.equal([up, wet].filter((f) => f.x > w.x0 && f.x < w.x1).length, 2, 'RED: the span alone takes the porch one as well');
+  const out = fp.floodClosed(w);
+  assert.deepEqual(out, [wet], 'GREEN: only the one in the water');
+  assert.equal(up.state, 'follow');
+});
+
+test('the wall is where he stood in deep water, never his hop over it: the line follows his hop up off the near bank (RED: air points as the wall)', () => {
+  const t = newTrail(800, LIP, W2_FOLLOW.step);
+  for (let x = 800; x <= 996; x += 4) record(t, { x, y: LIP, grounded: true }, 'walk');
+  // (his hop up off the bank's edge onto the first high road piece 60 px up, over the water's span: the arc starts at the banks' top)
+  [LIP - 1, LIP - 20, LIP - 40, LIP - 58, LIP - 72, LIP - 78, LIP - 70, LIP - 62].forEach((y, k) => record(t, { x: 1004 + k * 8, y, grounded: false }, 'walk'));
+  for (let x = 1064; x <= 1300; x += 4) record(t, { x, y: LIP - 60, grounded: true }, 'walk');
+  const deep = (x: number, y: number) => x > 1000 && x < 1400 && y > LIP - 2;
+  assert.ok(t.pts.some((q) => q.air && deep(q.x, q.y)), 'the toy: an air point of the hop lies in the deep water test');
+  const end = t.pts[t.pts.length - 1].s;
+  assert.equal(wallCap(t, 0, end, deep), end, 'GREEN: the line goes on over the hop');
+  const red = { ...t, pts: t.pts.map((q) => ({ ...q, air: undefined })) };
+  assert.ok(wallCap(red, 0, end, deep) < end, 'RED: with the hop\'s points read as ground, the line waits on the bank');
 });

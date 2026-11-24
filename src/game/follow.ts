@@ -297,14 +297,20 @@ export type DeepAt = (x: number, y: number) => boolean;
 export function wallCap(t: Trail, from: number, to: number, deep: DeepAt): number {
   if (to <= from) return to;
   const p = t.pts;
-  // (from the trail's point at or before `from`, the first point after it in deep water stops it at the point before)
+  // (from the trail's point at or before `from`, the first GROUND point after it in deep water stops it at the last ground point before:
+  //  a hop's arc over the water (his own hop up off the near bank onto the high road starts at the banks' top, over the water's span) is
+  //  never the wall, only where he stood or paddled, and the line never waits in the air; ENG-28's lead-the-line toy, the line stranded)
   let lo = 0, hi = p.length - 1;
   while (lo < hi) {
     const m = (lo + hi + 1) >> 1;
     if (p[m].s <= from) lo = m;
     else hi = m - 1;
   }
-  for (let i = lo + 1; i < p.length && p[i - 1].s < to; i++) if (deep(p[i].x, p[i].y)) return Math.max(from, p[i - 1].s);
+  let ground = p[lo].s;
+  for (let i = lo + 1; i < p.length && p[i - 1].s < to; i++) {
+    if (!p[i - 1].air) ground = p[i - 1].s;
+    if (!p[i].air && deep(p[i].x, p[i].y)) return Math.max(from, Math.min(to, ground));
+  }
   return to;
 }
 

@@ -111,12 +111,13 @@ export class FollowPlay {
   }
 
   /**
-   * A flood's water turned deep (flood.ts FloodClock.step's `closed`): every little one in it (over its span, not yet home) is set on its
-   * NEAR bank, sitting in the reeds, and waits there for him (follow.ts setOnBank; rejoin as a spooked one). Returns the ones set back.
+   * A flood's water turned deep (flood.ts FloodClock.step's `closed`): every little one in it (over its span and at or under its banks'
+   * top, as FloodClock.deepAt reads it; never one up on the high road over it; not yet home) is set on its NEAR bank, sitting in the reeds,
+   * and waits there for him (follow.ts setOnBank; rejoin as a spooked one). Returns the ones set back.
    */
-  floodClosed(w: { x0: number; x1: number; deep?: { near: { x: number; y: number } } }): Follower[] {
+  floodClosed(w: { x0: number; x1: number; lip: number; deep?: { near: { x: number; y: number } } }): Follower[] {
     if (!w.deep) return [];
-    const out = this.line.filter((f) => f.state !== 'home' && f.x > w.x0 && f.x < w.x1);
+    const out = this.line.filter((f) => f.state !== 'home' && f.x > w.x0 && f.x < w.x1 && f.y > w.lip - 2);
     for (const f of out) setOnBank(f, w.deep.near);
     return out;
   }
