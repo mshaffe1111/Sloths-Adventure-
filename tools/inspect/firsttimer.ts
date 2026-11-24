@@ -3330,14 +3330,19 @@ export class FirstTimerRun {
       //  press at once, thumbify), never off. On EVERY log running his way only that pull-back is kept (c5's landing stop narrowed): the
       //  lean candidate c19 fails 2-1 child Normal 11, 2-2 adult Normal 4 and 2-4 child Easy 11 at c4's own x, and each passes with it;
       //  the stand itself stays only in rideCase (c21 stood on every such log and broke 2-1 child Easy 6, middle Normal 7 and 10 at the
-      //  back river, x 25,840-26,040; c5's other piece, the river block's standingOn 'here', broke 2-1 adult Normal 1/2/4/6/8/9: not kept)
+      //  back river, x 25,840-26,040; c5's other piece, the river block's standingOn 'here', broke 2-1 adult Normal 1/2/4/6/8/9: not kept).
+      //  Off rideCase the pull-back comes only where he would walk on (no pad pause below; ENG-PLANT-j, c23): pulled back on landing on a
+      //  small log he pauses on anyway (2-1 child Easy 2, #43 at x 8,565), the turn skipped the pause and its draw, and his path drowned
+      //  him at the back river (26,069); c19 passes it, and the three flips the pull-back is kept for still pass with it narrowed
       const ridden = SKILLS.floatSure && SKILLS.handed && p.grounded ? this.sim.platforms.find((q) => q.id === this.sim.standingOn) : undefined;
+      let pullBack = false;
       if (ridden?.drift && dir !== 0 && ridden.drift.dir === dir) {
         const inRide = this.rideCase(ridden, dir);
         if (inRide) this.landRide = ridden.id;
         const front = dir > 0 ? ridden.x + ridden.width : ridden.x;
-        if (dir * (front - p.x) < this.runOut()) return side(-dir as -1 | 1);
+        pullBack = dir * (front - p.x) < this.runOut();
         if (inRide) {
+          if (pullBack) return side(-dir as -1 | 1);
           this.stopMeant = true;
           return {};
         }
@@ -3349,7 +3354,7 @@ export class FirstTimerRun {
       //  the water, ENG-24 drop toy gap280, middle Normal 17 lives. Every other river keeps it as it was (its bots' plants are measured on
       //  it, riverRide.test; the general change is ENG-24 REPORT's suggestion)
       if (here && here.width < 220 && !this.padPause && !(PAD_SKILL.keepHopping && here.pad) && !(SKILLS.ride && SKILLS.handed && SKILLS.dropOnLog && here.drift && here.drift.dir === dir && this.lianaRiver(here))) this.padPause = { until: t + between(this.r, [0.25, 0.5]), id: here.id };
-      if (!this.padPause) return side(dir);
+      if (!this.padPause) return side(pullBack ? (-dir as -1 | 1) : dir);
     }
     if (this.padPause) {
       const here = this.floorAt(p.x, p.y, 6);
