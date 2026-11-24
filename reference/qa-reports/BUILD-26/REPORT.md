@@ -1,10 +1,9 @@
 # FILL-14 (t-build-26-wip-fill14; base e8e99d167; head 094e09746): 1-4's four failing variants filled IN PLACE by a new general `seedlist --fill`; the fill is right, the gates are PART-RUN at the 28-minute hand-over. Started 2:04 PM ET 11-24 (by `date`)
 
 ## EXACT NEXT STEP (handed over at the 28-minute box; the runs below were left running in FILL-14's container)
-1. Read, if FILL-14's container still holds them (scratchpad out/): the unit suite, 3 shards on frozen 094e09746 (started about 2:21 PM
-   ET, ~35 min) -> out/suite-{0,1,2}.txt; lockall --layouts 16 --check against the base lock (out/lock-base-e8e99d167.json, 3264 builds /
-   102 stages) on frozen 094e09746 -> out/lock-check-094e09746.txt (~10 min). If gone: re-run both on a chattr-frozen worktree of
-   094e09746 (D115; proven/ thawed), the base lock re-recorded on frozen e8e99d167 (10.5 min).
+1. Verdicts on frozen 094e09746 (fill14/): lockall --check vs base e8e99d167: **102/102 stages unchanged, EXIT 0**. Suite shard 1/3:
+   1353 / 1353 pass / 0 fail / 0 todo; shard 3/3: 1467 / 1466 pass / 0 fail / 1 todo. Shard 2/3 UNRUN: stopped by the 30-min background
+   limit at 343 pass / 0 fail. Re-run shard 2/3 (`--test-shard=2/3`, timeout over 40 min) on a frozen worktree of 094e09746.
 2. Then, on the same frozen head: the CI tool line (gates.yml line 157; it holds the two new fill tests); `npx tsx
    tools/engine/paintcheck.ts --stages 1-4` (it builds EVERY listed seed: 101-104 are new to it); `npx tsx tools/engine/registrycheck.ts`.
 3. All green: merge 094e09746 (+ this REPORT commit) into t-build-26 (no force), push, ls-remote; send the lead the hash, the table
@@ -27,8 +26,8 @@ Every other index keeps seed, packed plan, quiet and outro byte for byte; the di
 | the smallest general in-place fill, planted | seedlist.ts --fill <variants> --with part,order; seedlistFile.ts fillSlots + variantIndex; seedlist.test.ts: 2 tests (red on a drop-and-append reorder; red on 'v - 1' and on 'v mod n') | done |
 | seedlist 1-4 --check | seedlist-1-4-check-98e75019d: PASS (100 seeds, verdicts refuse 0); the list file is the same at 094e09746 | PASS |
 | castBots --proven 1-4 = 100/100 | castBots-1-4-98e75019d: **100 of 100**, every bot both settings PASS 100/100, none under the 100 s floor (src and tools/inspect identical at 094e09746: `git diff --stat 98e75019d 094e09746 -- src tools/inspect` empty) | PASS |
-| lockall unchanged | base lock recorded (lockall-base-e8e99d167.txt); the check running at hand-over (step 1) | UNRUN at hand-over |
-| the suite + the CI tool line | suite running at hand-over (step 1); CI tool line not run (step 2); the fill tests alone 2/2 | UNRUN |
+| lockall unchanged | lock-check-094e09746.txt: 102/102 stages unchanged vs e8e99d167 | PASS |
+| the suite + the CI tool line | shards 1 and 3 GREEN, shard 2 UNRUN (step 1); CI tool line not run (step 2) | PART |
 | land on t-build-26 | not landed (step 3) | open |
 
 ## Pushback (finds)
@@ -52,6 +51,7 @@ Every other index keeps seed, packed plan, quiet and outro byte for byte; the di
   note (engine-core.md) not rewritten: its new trap is the variant rule above.
 
 ## Method update
+- seed-list.md:14 'Layout variant N is the list's N-th seed' is true for 1-1 only: other listed stages play index N mod n (lead to fix).
 - Resolve a bot table's slot with the game's pick (variantIndex) before acting. Fast gates on 094e09746: tsc, knowncheck, generality PASS;
   roadmapcheck and timecheck could not run (a shallow clone: they need full history; CI has it).
 
