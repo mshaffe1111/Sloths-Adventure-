@@ -1,14 +1,18 @@
-# ENG-26t (t-build-26-wip-26t; base t-build-26-wip-26s 23cdb07e8): release 4's branch green. wheelRide's red fixed at its cause (candidate 997f7e98c, wheelRide 2/2 GREEN); riverRide's live cases found and new plants sent to the lead (not written: waits for the lead's word). NOT landed. Started 10:02 AM ET 11-24 (by `date`)
+# ENG-26t (t-build-26-wip-26t; base t-build-26-wip-26s 23cdb07e8): release 4's branch green. wheelRide fixed at its cause and riverRide re-planted on the lead's word: candidate B 35ca56b16 (riverRide 18/18, wheelRide 2/2 GREEN), the strip-on-logs fork with the lead. NOT landed. Started 10:02 AM ET 11-24 (by `date`)
 
-## EXACT NEXT STEP (the branch head is the REPORT commit over 997f7e98c, pushed; nothing is on t-build-26)
-1. **riverRide's plants: the lead APPROVED both rulings (its message this box) and they are WRITTEN: 3e212becc** (upstream: child N 23
-   replaces child N 5, middle N 26 added, bar 5+ lives unchanged; bankUp: child N 40 as a LIVES plant, 5+ more lives off, the both-ways
-   time 2+ s kept as a second check). riverRide.test on frozen 3e212becc was STARTED this box (b26t/riverRide-3e212becc.txt if it
-   finished; else re-run it on a fresh frozen tree). Bar: every test GREEN, the plants RED-with-skill-off inside the test. child N 40's
-   lives margin is exactly the bar (+5): if it misses by one, say so to the lead, never lower the bar (law 22). The lead: 2-6's lip
-   family is NOT this job (it goes to the 2-6 Easy residue job, R-165.398, with the trace note below).
-2. **The CI tool line on frozen 997f7e98c** was STARTED in this box (gates.yml rolled line 157; b26t/toolline-997f7e98c.txt if it
-   finished): re-run it on a fresh frozen tree at the head 3e212becc+. Expected reds before step 1: riverRide x2 (the old plants), and the
+## EXACT NEXT STEP (the branch head is the REPORT commit over 35ca56b16, pushed; nothing is on t-build-26)
+0. **Read the lead's ruling on the strip fork** (sent this box). The plants (3e212becc) pass: riverRide tests 16-18 GREEN. But the wheel
+   fix 997f7e98c turned test 6 (the toy river's ride-skill plant) RED: GREEN on the base, RED on 997f7e98c, run alone on both frozen
+   trees (b26t/riverRide-ridePlant-*.txt): the strip caught a log's end, so with ride off they crossed (lives 1/0/0/0). CANDIDATE B
+   35ca56b16 (the head): the strip never on a log: riverRide 18/18 + wheelRide 2/2 GREEN (b26t/rr-wr-35ca56b16.txt). Recommended to the
+   lead. If the lead picks B: go on at step 2 on 35ca56b16. If the lead keeps the strip on logs: revert 35ca56b16 and search a toy or
+   2-1 case that still needs SKILLS.ride (the method of b26t/skillsearch.mts.txt), send it, write it on its word (law 22).
+1. **riverRide's plants: the lead APPROVED both rulings and they are WRITTEN: 3e212becc** (upstream: child N 23 replaces child N 5,
+   middle N 26 added, bar 5+ lives; bankUp: child N 40 as a LIVES plant, 5+ more lives off, the both-ways time 2+ s kept). GREEN
+   (b26t/riverRide-3e212becc.txt tests 16-18). child N 40's lives margin is exactly the bar (+5, measured on 997f7e98c; on the base
+   1 -> 6 too). The lead: 2-6's lip family is NOT this job (the 2-6 Easy residue job, R-165.398, with the trace note below).
+2. **The CI tool line**: a run on frozen 997f7e98c was STARTED this box (superseded by the fork): run it on a fresh frozen tree at the
+   chosen head (gates.yml rolled line 157). Expected reds before step 1: riverRide x2 (the old plants), and the
    t-eng-27 families are not on this branch. Then registrycheck, tipwalk --layouts 4, tierBots (re-judge calibration-main.jsonl on this
    bot: the merge took t-build-26's side; 997f7e98c changes overSmall, so runs may move: recommit the BOTS.md way, each moved run named).
 3. **The unit suite** (3 shards, background) on the same frozen head; then packet steps 4-5 (castBots --proven 1-4, 2-6's --proven yield
