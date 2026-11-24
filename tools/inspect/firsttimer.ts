@@ -3232,8 +3232,7 @@ export class FirstTimerRun {
       const ridden = SKILLS.floatSure && SKILLS.handed && p.grounded ? this.sim.platforms.find((q) => q.id === this.sim.standingOn) : undefined;
       if (ridden?.drift && ridden.drift.dir === dir) {
         const front = dir > 0 ? ridden.x + ridden.width : ridden.x;
-        const runOut = Math.abs(p.vx) * DT * (this.who.releaseMax[1] + 3);
-        return dir * (front - p.x) < runOut + 24 ? side(-dir as -1 | 1) : {};
+        return dir * (front - p.x) < this.runOut() ? side(-dir as -1 | 1) : {};
       }
       // (landed on a small pad or ledge: he stops on it a beat, then flicks on from where he stands if its edge is close)
       const here = this.floorAt(p.x, p.y, 6);
@@ -3367,7 +3366,12 @@ export class FirstTimerRun {
       // 31 px more (his lift-off up to 2 frames late, 19 px, and the 12 px Pokey slides to a stop), so he stands about p25 before the lip:
       // groundPressToLipPx counts only presses made moving)
       const tierEdge = who.aimQ ? this.edgePlan() : null;
-      const look = tierEdge ? (tierEdge.how === 'stand' ? who.aimQ![1] + 31 : tierEdge.aim) : 22 + who.edgeAim;
+      let look = tierEdge ? (tierEdge.how === 'stand' ? who.aimQ![1] + 31 : tierEdge.aim) : 22 + who.edgeAim;
+      // (SKILLS.floatSure, ENG-PLANT-e, the lead's ruling 2: on a log running his way he looks at least his run-out ahead (runOut), so
+      //  the river block's stand comes while his thumb's let-go still stops him on it: 2-4 adult Normal 6 on candidate 5 walked #47's
+      //  back at full run (the default walk, 67 px from its front, inside his press distance's look), the stand came 39 px out and his
+      //  let-go ran him off its front into the water, rescued)
+      if (SKILLS.floatSure && SKILLS.handed && p.grounded && this.sim.platforms.find((q) => q.id === this.sim.standingOn)?.drift?.dir === dir) look = Math.max(look, this.runOut());
       // (and a gap between: a look past the end of the floor he stands on sees the gap only if nothing stands just past that end. A
       // tier bot's press distance (aimQ, up to ~270 px) looked clean over 2-1's 110 px splash creeks onto the far bank, so he walked into
       // the creek, was splashed back and walked in again until rescued: child Easy seed 10, x 2,063, FIX-21)
@@ -4747,6 +4751,12 @@ export class FirstTimerRun {
   private thumbAt(): ThumbAt {
     const t = this.t;
     return { last: this.lastSteer, driftPx: this.driftPx, armed: this.releaseArmed, releaseLeft: this.releaseLeft, travel: this.travelUntil - t, slip: this.driftUntil - t, speed: this.who.thumbSpeed, once: !!this.who.holdQ };
+  }
+
+  /** px he runs on after he lets go at his speed now: his thumb's longest let-go (releaseMax) and the 3 frames he slides to a stop, and
+   *  the gate's 24 px (ENG-PLANT-e: the stand on a log running his way comes at least this far from its front) */
+  private runOut(): number {
+    return Math.abs(this.sim.p.vx) * DT * (this.who.releaseMax[1] + 3) + 24;
   }
 
   private startJump(dir: -1 | 0 | 1, kind: 'single' | 'double', off: boolean): Pad {
