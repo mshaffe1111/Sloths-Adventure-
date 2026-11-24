@@ -28,9 +28,10 @@ Branch t-eng-28-wip, head b0bc6d79e or later (`git fetch origin t-eng-28-wip`, c
    World 2 river stages (tools/inspect/castBots.ts, read its usage line) with ROAD_TRIPS.n printed at the end; must be 0. Not 0 anywhere:
    STOP and tell the lead the stage and count.
 3. Condition 3: `npx tsx --test tools/inspect/tierBots.test.ts` (about 4 min): 9/9, and `git status` shows no calibration file changed.
-4. lockall and the suite ran this session on a frozen worktree at 8cd71852d (results below). Every commit after it touches only
-   tools/inspect/firsttimer.ts, tools/inspect/lineBot.test.ts and this folder (`git diff --stat 8cd71852d..HEAD` proves it): neither gate
-   reads them, so both stand for the final head unless that diff grows past those files; if it does, re-run them on a frozen tree.
+4. lockall PASSED this session on a frozen worktree at 8cd71852d. Every commit after it touches only tools/inspect/firsttimer.ts,
+   tools/inspect/lineBot.test.ts and this folder (`git diff --stat 8cd71852d..HEAD` proves it), which lockall does not read, so it stands
+   for the final head unless that diff grows past those files (then re-run it on a frozen tree). The SUITE did NOT finish (UNRUN, below):
+   run it once on a frozen tree of the final head, run_in_background, timeout 7200000.
 5. The CI tool line on the final head (gates.yml 'rolled', the `npx tsx --test tools/engine/library.test.ts ...` line, 39 files,
    lineBot among them) once lineBot is 8/8; tsc; knowncheck/roadmapcheck if any list moved.
 6. Land: `git branch t-eng-28 <head>`, push (no force), `git ls-remote` equal. Message the lead (no clock times): the hash, and what 2-8's
@@ -55,8 +56,13 @@ Branch t-eng-28-wip, head b0bc6d79e or later (`git fetch origin t-eng-28-wip`, c
 - (c) FIXED, floodLay.test.ts 2/2 GREEN: the toy brick lays a WALL-STEP (a block FLOOD_STEP tall on the near bank's end, its far side at
   the water) and the porch level off its top; the rule unchanged (law 22).
 - Every FLOODDBG trace removed (firsttimer.ts floodRoad, lineBot.test.ts floodRun); `grep -rn FLOODDBG src tools` empty. tsc clean.
-- lockall vs lock-base-90552d3ec.json on frozen /home/user/wt28 at 8cd71852d: RUNNING at hand-over (see the line after). Suite (the CLAUDE.md test line) on the same
-  frozen tree: RUNNING at hand-over. If no result line follows, both are UNRUN: session 6 runs them on a frozen tree (D59). CI tool line, tierBots, ROAD_TRIPS count: NOT RUN (next step).
+- lockall vs lock-base-90552d3ec.json on frozen /home/user/wt28 at 8cd71852d: PASSED, exit 0, 'lock: 102/102 stages unchanged' (its note,
+  not hashed: 36 stages' gen2 'gained verdicts and drops' against the base file; reported as lockall prints it, not read further). Started 4:54, finished 5:04 PM ET. Every later commit touches only firsttimer.ts, lineBot.test.ts
+  and this folder (`git diff --stat 8cd71852d..HEAD`), which lockall does not read: it stands for the final head.
+- Suite (the CLAUDE.md unit line) on the same frozen tree: UNRUN. It hit my own 2300 s timeout and was killed (exit 124, 5:33 PM ET), 0
+  failures in the part that ran. My timeout was too short for this suite run whole (CI shards it). Session 6: run it once on a frozen
+  tree of the final head with run_in_background and a timeout of 7200000 and no inner `timeout` under 6000 s.
+- CI tool line, tierBots, ROAD_TRIPS count: NOT RUN (next step).
 - Lessons applied: D75 (proved in the real engine: the toy showed the walk-across no pure reading could), D59 (both gates waited for, not
   left running), D115 (frozen worktree, proven writable), D119 (commit -m, no heredoc), D120 (pushback sent, the work went on; the
   reply came mid-task and was built), D128 (times from date), law 22 (the lay toy fixed, not the rule; the plant's timing goes to the lead).
