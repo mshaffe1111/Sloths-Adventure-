@@ -37,6 +37,17 @@ test, w2Arc26.test.
 ... the first frames keep him at the spawn" and w2Arc26.test (the file): both the 2-6 draft on the merged w2.ts. qaW123, dotBox,
 towerBots, listedWheelSheet, w2Stages and the rest pass with 2-6 as on main.
 
+**THE LEAD'S RULINGS (end of session 1):** (1) B approved: part 3 takes the 2-6 draft out (w2Arc26.ts, w2Arc26.test.ts, rowWheels.test
+and its tool if unused, rowWheels off gates.yml line 157); release 5 reverts all three 2-6 commits (8d094787c, 4816edd31, part 3) with a
+w2.ts fix. "If the bisect shows wheelChannel's reds are the same w2Finish throw on a 2-6/wheel fixture, they leave with the draft the
+same way... If they are something else, stop and tell me. The release's CI line must be green either way." (2) What's New approved as
+drafted, title 'The Mailman's Route'.
+**STOPPED AND TOLD THE LEAD (session 1, before part 3):** wheelChannel.test.ts is ON MAIN, unchanged by every merged branch
+(`git log origin/main..HEAD -- tools/difficulty/wheelChannel.test.ts` is empty), and lays ENG-26's wheel TOYS (src/game/wheelFixtureStage.ts),
+not 2-6's draft. It was green on main and on t-build-26; it is red since t-eng-27's w2.ts (BUILD-27g's 'inherited' wheelChannel 4).
+Taking it out would remove a shipped gate to get around a defect (LAWS 22). So the CI line needs the w2.ts fix in release 4, not a
+removal; part 3 (the draft only) still holds. Session 2: do part 3 as ruled, then wait for the lead's answer on the w2.ts fix.
+
 ## What merged (packet step 1), in order
 | commit | what |
 |---|---|
