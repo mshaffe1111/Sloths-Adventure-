@@ -241,6 +241,15 @@ test('2-1, a refused hop leaves a way on: the child on Normal (1) is never stood
   const r = castRun('child', 'normal', '2-1', 1);
   assert.ok(crossedClean(r), said(r));
 });
+// (ENG-PLANT-d, the lead's invariant: a bot that refuses a hop never stands on a carrier until it is carried into a rescue. 2-4 adult
+//  Normal 30, traced on candidate 3b 06b5316be: three times he boards a log running his way (x 10,361), vineFromLog refuses the liana
+//  (its catch judged at three thumb lags; his own aim, the middle lag alone, catches once in the three rides, 0.2 s before the drop),
+//  SKILLS.handed holds him standing on it, and the log carries him under at its river end (x 10,767) 430 px short of the bank: set
+//  down 3 times there, rescued. Main has the same stand (two drops, 10,774 and 10,768) and passes by the luck of the vine's swing)
+test('2-4, a bot that refuses a hop is never ridden into a rescue: the adult on Normal (30) is never carried under on a log he stands on', () => {
+  const r = castRun('adult', 'normal', '2-4', 30);
+  assert.ok(crossedClean(r), said(r));
+});
 test('planted: with the against-the-flow skill off, the adult on Normal is rescued at 2-1\'s back river (12) and the child and the middle on Normal lose 5+ more lives (child 4, 23; middle 26)', () => {
   const withIt = UPSTREAM_LIVES.map(([bot, setting, seed]) => castRun(bot, setting, '2-1', seed));
   SKILLS.upstream = false;

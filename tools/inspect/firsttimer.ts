@@ -3543,6 +3543,31 @@ export class FirstTimerRun {
           // (handed to the bank, SKILLS.handed: a log running his way carries him onto the bank it slides under; he rides it in)
           if (SKILLS.handed && here.drift && here.drift.dir === dir) {
             this.edgeWait = -1;
+            // (SKILLS.floatSure, ENG-PLANT-d, the lead's invariant: a bot that refuses a hop never stands on a carrier until it is carried
+            //  into a rescue. A log is handed on only where its run ends under a floor; a tailed river's log goes under at its run's end
+            //  with the bank `tail` px on (riverEnd), so the stand rides him into the water: 2-4 adult Normal 30, x 10,766, set down 3
+            //  times, rescued (vineFromLog refused the liana over the tail each ride). He waits while the hop stays open; before his feet
+            //  reach the under point (his stopReact plus the walk back to the log's rear end), he steps back: the hop onto the log behind
+            //  him when the gate lands it (gateSees, the aim he draws for it), else the walk back toward the log's rear end, never off it)
+            const d = here.drift, endX = dir > 0 ? d.x1 : d.x0;
+            const handedOn = this.sim.platforms.some((q) => q.type !== 'drift' && !q.broken && Math.abs(q.y - p.y) < 70 && q.x - 80 < endX && q.x + q.width + 80 > endX);
+            if (SKILLS.floatSure && !handedOn) {
+              const back = (-dir) as -1 | 1, rear = dir > 0 ? here.x : here.x + here.width;
+              const left = ((endX - dir * 10) - p.x) * dir / d.speed;
+              const walk = Math.abs(p.x - rear) / PHYS.maxRun;
+              if (left < who.stopReact + walk) {
+                const vx = p.vx + (Math.abs(carry) < 400 ? carry : 0);
+                const behind = this.sim.platforms.filter((q) => q !== here && q.type === 'drift' && !q.broken && q.drift?.dir === dir && Math.abs(q.y - p.y) < 70 && back * (q.x + q.width / 2 - (here.x + here.width / 2)) > 0 && Math.abs(q.x - here.x) < 600);
+                const h = this.aim.at(back, t, (k) => this.drawHop(k));
+                if (behind.some((q) => this.gateSees(q, floatAt(rivers, q), p.x, p.y, back, h, t, vx, 24))) {
+                  if (HOP_TRACE.on) { this.judged = null; this.judge('stepBack', behind, [0], back, h.hold, vx, carry, 24, h); }
+                  this.gateHop = h;
+                  this.aim.end();
+                  return this.startJump(back, 'single', false);
+                }
+                if (Math.abs(p.x - rear) > 20) return side(back);
+              }
+            }
             return {};
           }
           // (against the flow, SKILLS.upstream: the next log or the bank in reach, he hops now off the front end, a press made standing on
