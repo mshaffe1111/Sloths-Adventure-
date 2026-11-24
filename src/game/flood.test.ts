@@ -109,7 +109,8 @@ test('forkFaults: the fork at the wall-step, both halves by name: RED on the toy
   assert.match(judge(146, 60), /the middle lands 86 px past its face and has 60 px to its lip, short of his 61 px run-up/);
   assert.equal(judge(147, 60), '');
   // a gap the jump cannot carry is refused by name (the reach from a stand start, the air pushing him on to a full run)
-  assert.match(judge(150, 120), /reaches \d+ px, short of the 120 px gap/);
+  // (past FLOOD_HOP, so no high road chains it: judged straight on W and the next piece)
+  assert.match(forkFaults(fork(150, 120).slice(0, 2), span, W2_FLOOD.climb).join(';'), /reaches \d+ px, short of the 120 px gap/);
 });
 
 test('followers meet the flood: one mid-dip at the close is set on the near bank and rejoins; none walks into deep water', () => {
