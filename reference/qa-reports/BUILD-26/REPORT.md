@@ -17,6 +17,12 @@ platform rects and castBots' 74/100 stand; re-run lockall (dress) and paintcheck
 judged close and wide, upright and sideways; send the lead the paths.
 (c) Ruling 3, the Normal floor: STEP 0 plan to the lead BY 7:00 PM ET, before any change (which section is added or re-laid in
 w2Arc26.ts, how it changes 2-6.md:43's node string and dealExact's deal, which stages it can touch). Lengthen the route, never slow him.
+Facts (b26r/cast-2-6-bde501f86.txt): adult N fastest 98.6 s (5 under 100 s); expert N 105.1, kid N 101.2, middle N 117.4. 2-6.md's
+beat table budgets 168 s ('s': 10+18+10+12+12+24+10+22+22+20+8). 2-6's bricks are its own (feel [STAGE_26], own: true, kit 'w2-26'
+only, listed.ts:22): a re-laid brick touches 2-6 alone (lockall confirms). Method: per-beat times of the 5 under-floor adult N seeds
+(castBots rows; frames26r for one), set against the 's' column; plan to RE-LAY the beats furthest under their design seconds to the
+design's own words (node string and dealExact's deal unchanged: no token added). Only if that can't put the fastest adult near 105 s
+does the plan add a token (a design change: the deal moves; the lead's call).
 (d) Then ruling 4 (adult E 87: the 13 by place and cause), then ruling 5 (landing).
 Proposed countermeasure (lead's call): a face check on the BUILT stage's screen: every collider a player meets side-on must differ from
 the backdrop where it stands (a still pixel check at the soft pit), so 'painted' can never mean 'invisible'.
