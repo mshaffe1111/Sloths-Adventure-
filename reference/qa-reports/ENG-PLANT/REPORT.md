@@ -1,8 +1,24 @@
 # ENG-PLANT REPORT: release 4's six non-throw CI reds (riverRide x5, firsttimer :184)
 
-Session 1: started 3:04 PM ET 11-24 (by `date`), hand-over at the 28-minute box (3:32 PM ET). Engine (bots), Opus 5.5. Lead:
+Session 1: started 3:04 PM ET 11-24 (by `date`), hand-over REPORT pushed 3:27 PM ET (commit 963aa5eb7's time); narrow continue on the
+lead's word (the row verdict below). Engine (bots), Opus 5.5. Lead:
 session_01FhBbYN2CVHnFXg7XzqKXpM. Base: release-0.10.3 bf2479dc2 (the INT-R5b red list); release head at hand-over 40a493b70 (ENG-W2FIN
 landed at 150e6e161). Lead's ruling A (in a message): write the fix at the cause; hard stop moved to 5:30 PM ET.
+
+## ROW VERDICT (narrow continue; written 3:42 PM ET by `date`): PASS -> FAIL on shipped rows: YES. STOPPED, told the lead.
+castBots CLI rows (the CLI's own input, not castRun's 'fake'), every bot, both settings, seeds 1-40, frozen fix ea573b4e4 vs frozen
+main cdffdc627 (tools/rows.sh.txt, tools/flips.py.txt; data/flips-main-vs-fix-partial.txt):
+| Stage | Rows differ | PASS -> FAIL | fail -> pass | PASS -> FAIL by bot |
+|---|---|---|---|---|
+| 2-1 | 207 of 360 | 30 | 13 | kid N 10, kid E 8, child N 5, middle N 2, middle E 2, expert N 2, child E 1 |
+| 2-2 | 282 of 360 | 11 | 16 | kid N 4, kid E 5, adult N 2 |
+| 2-4 | 291 of 360 | 15 | 20 | kid E 7, adult N 6, child E 1+1 (child E 2) |
+| 2-5, 2-7, 1-4 | not compared (runs unfinished at the stop) | | | |
+**Cause: NOT attributed.** This compares the fix against main, so it carries the whole release merge (t-build-26 + t-build-27e: the
+honest aim, boardLog, the step-up rule, the overSmall strip) as well as the fix; 200-290 rows differ per stage, far more than two judged
+presses can move. The successor's first job: the SAME rows on a frozen bf2479dc2 (the unfixed head), then three-way: rows that flip
+main -> head are the merge's (the lead's call, not this fix's); rows that flip head -> fix are the fix's, each traced (re-aim or
+hand-back) or the fix narrowed. Then 2-5, 2-7, 1-4 on all three trees. Nothing lands until the lead rules on the table.
 
 ## EXACT NEXT STEP (session 2 starts here)
 The fix candidate is on **origin/release-0.10.3-wip-plant** (two commits over bf2479dc2: b2f05731c, ea573b4e4; also as
