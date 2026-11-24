@@ -15,9 +15,12 @@
  * its painted box, fails on a ROW that is see-through across the piece: of the
  * columns painted both above it (alpha > 128 within 8 rows) and below it (alpha > 16 within 8 rows), at least 20% of the box's width,
  * 60% or more are fully transparent on that row. Such a row draws as a thin line of whatever is behind, across the screen. Decoded in
- * Chromium (playwright: node has no WebP decoder), so in CI this step runs after the browser install. No known list: a sheet that trips
+ * Chromium (playwright: node has no WebP decoder). No known list: a sheet that trips
  * it goes to the lead with a still (law 22).
- *   node tools/perf/artcheck.mjs                         the gate (sizes, then rows)
+ *   node tools/perf/artcheck.mjs                         the gate (sizes only; what CI runs)
+ *   node tools/perf/artcheck.mjs --rows                  sizes, then the row check: REPORT-ONLY, out of CI until the art inventory
+ *                                                        boxes every shipped frame (the lead, R-165.417: an unfinished gate, never a
+ *                                                        known list; it joins CI when the inventory lands)
  *   node tools/perf/artcheck.mjs --seam <image>          the row check on one image (its sibling .json's frames, if any)
  * Planted, every run: tools/perf/fixtures/weir-seam-old.png (rows 290-370 of the weir cut before its repair) must trip it and the
  * repaired cut (reference/art/hfnext/cut/weir.png) must pass, or the gate fails: a check that cannot bite guards nothing.
@@ -213,6 +216,12 @@ let failed = false;
 if (over.length) {
   console.log(`FAIL: ${over.length} image(s) over ${MAX_SIDE} px on a side (PERFORMANCE-RULES §2.7):\n  ${over.join('\n  ')}`);
   failed = true;
+}
+// (the row check is REPORT-ONLY, by its own flag, until the inventory boxes every frame (the lead, R-165.417): CI runs the sizes only)
+if (!process.argv.includes('--rows')) {
+  if (failed) process.exit(1);
+  console.log('PASS (sizes; the see-through-row check is report-only: --rows)');
+  process.exit(0);
 }
 const t0 = Date.now();
 const PLANT_RED = path.join(root, 'tools', 'perf', 'fixtures', 'weir-seam-old.png'), PLANT_GREEN = path.join(root, 'reference', 'art', 'hfnext', 'cut', 'weir.png');

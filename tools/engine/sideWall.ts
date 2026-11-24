@@ -8,7 +8,8 @@
 // cap, and a block narrower than him gets soil fill only. A breach is a side-on wall the painted ground paints as backdrop soil.
 // Evidence (TOOLS-1124b survey, 3 seeds a stage, both settings, 612 builds): main 0 breaches; 2-6 at b6a35d7e8 96, every one a 24 x 94
 // soft-pit face. The 44 is his body's width, not a number read from the painter (a top-buried clause was tried and dropped: 797 hits on
-// main, all wide banks with a piece resting on them, which draw fine).
+// main, all wide banks with a piece resting on them, which draw fine). Wired into paintcheck.ts with NO known list (the lead, R-165.434).
+// Planted: tools/engine/sideWall.test.ts (a 2-6 face added to main's 2-6 is RED; the stage as built and a body-wide block are GREEN).
 import { footingOf, type FootingInput } from '../../src/game/terrain.ts';
 import type { Platform } from '../../src/game/types.ts';
 
