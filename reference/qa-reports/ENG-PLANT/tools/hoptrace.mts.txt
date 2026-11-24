@@ -1,0 +1,9 @@
+// usage: tsx hoptrace.mts <tree> <stage> <bot> <setting> <seed> <x0> <x1>: HOP_TRACE rows (the gate that judged each hop) with x in [x0,x1]
+const [T, stage, bot, setting, seed, x0, x1] = process.argv.slice(2);
+await import(`${T}/src/game/headlessDom.ts`);
+const { CAST_BOTS } = await import(`${T}/tools/inspect/castBots.ts`);
+const { firstTimer, HOP_TRACE } = await import(`${T}/tools/inspect/firsttimer.ts`);
+HOP_TRACE.on = true; HOP_TRACE.rows.length = 0;
+const r = firstTimer(stage, Number(seed), CAST_BOTS[bot][setting], { cap: 1200, dotSetting: true });
+for (const h of HOP_TRACE.rows) if (h.x >= +x0 && h.x <= +x1) console.log(JSON.stringify(h));
+console.log("end", r.end, "rescues", r.rescues);

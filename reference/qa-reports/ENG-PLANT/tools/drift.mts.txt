@@ -1,0 +1,13 @@
+// usage: tsx drift.mts <tree> <stage> <bot> <setting> <seed> <t> <id>: the drift record of platform <id> and the river zones near it
+const [T, stage, bot, setting, seed, tt, id] = process.argv.slice(2);
+await import(`${T}/src/game/headlessDom.ts`);
+const { CAST_BOTS } = await import(`${T}/tools/inspect/castBots.ts`);
+const { firstTimer } = await import(`${T}/tools/inspect/firsttimer.ts`);
+let done = false;
+firstTimer(stage, Number(seed), CAST_BOTS[bot][setting], { cap: Number(tt) + 1, dotSetting: true, onFrame: (sim: any) => {
+  if (done || sim.t < Number(tt)) return; done = true;
+  const q = sim.e.platforms.find((r: any) => String(r.id) === id);
+  console.log(JSON.stringify(q?.drift));
+  for (const rv of sim.stage.rivers ?? []) if (rv.x1 > q.x - 1500 && rv.x0 < q.x + 1500) console.log('river', JSON.stringify(rv).slice(0, 400));
+  for (const v of sim.e.vines ?? []) if (v.x > q.x - 200 && v.x < q.x + 900) console.log('vine', v.id, v.vineType, 'x', v.x, 'y', v.y, 'len', v.length ?? v.len);
+} });

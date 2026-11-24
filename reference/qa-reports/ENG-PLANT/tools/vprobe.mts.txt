@@ -1,0 +1,22 @@
+// usage: tsx vprobe.mts <tree> <stage> <bot> <setting> <seed> <t0> <t1>: from t0 (unperturbed before it), the first frame on a log where his
+// aim at the mid lag alone (spread 0) catches the liana vineFromLog judges; then it stops (the probe's own decide draws perturb after it)
+const [T, stage, bot, setting, seed, t0, t1] = process.argv.slice(2);
+await import(`${T}/src/game/headlessDom.ts`);
+const { CAST_BOTS } = await import(`${T}/tools/inspect/castBots.ts`);
+const { firstTimer, FirstTimerRun } = await import(`${T}/tools/inspect/firsttimer.ts`);
+const who = CAST_BOTS[bot][setting];
+console.log('thumb', JSON.stringify(who.thumb), 'hold', JSON.stringify(who.hold));
+const P: any = FirstTimerRun.prototype; const orig = P.vineFromLog; let done = false; let n = 0;
+P.vineFromLog = function (p: any, dir: any, t: number) {
+  const r = orig.call(this, p, dir, t);
+  if (r) { console.log(`judged press t ${t.toFixed(3)} x ${p.x.toFixed(1)}`); }
+  else if (!done && t >= +t0 && t <= +t1) {
+    n++;
+    const w = this.who; this.who = { ...w, thumb: [w.thumb[0], 0] };
+    const r2 = orig.call(this, p, dir, t); this.who = w;
+    if (r2) { done = true; console.log(`MID-ONLY catch t ${t.toFixed(3)} x ${p.x.toFixed(1)} (probe calls ${n})`); }
+  }
+  return r;
+};
+const r = firstTimer(stage, Number(seed), who, { cap: +t1 + 1, dotSetting: true });
+console.log('end', r.end, 'probed', n, done ? '' : 'NO mid-only catch in window');

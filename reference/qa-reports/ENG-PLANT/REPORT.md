@@ -1,3 +1,93 @@
+# ENG-PLANT-d (ENG-PLANT-c session 2, started 4:56 PM ET 11-24 by `date`; this section written 5:12 PM ET by `date`): hand-over (LANES 3b box)
+
+Engine (bots), Opus 5.5 xhigh. Lead: session_01FhBbYN2CVHnFXg7XzqKXpM. Candidate 4 = **6b5f43da0** on origin/release-0.10.3-wip-plant-c
+(3b 06b5316be + one change at SKILLS.handed + the toy). NOT on release-0.10.3 (D117). Main rows: data/c/main-*.jsonl (cdffdc627, not re-run).
+
+## EXACT NEXT STEP (session 3)
+1. `git fetch --unshallow origin` (background) and `npm ci --legacy-peer-deps` (plain npm ci fails ERESOLVE, as CI's install line says).
+   `git fetch origin release-0.10.3-wip-plant-c release-0.10.3-wip-plant-c-report`; work on -wip-plant-c at **6b5f43da0** (candidate 4).
+   Freeze with tools/freeze.sh.txt (its `cd` must point at your checkout; worktree + node_modules symlink + chattr, proven writable).
+   Main's rows: data/c/main-*.jsonl; c4's rows: data/d/c4-*.jsonl; compare with data/c/cmp3.py.txt (`cmp3.py <st> main c3b c4`).
+2. **2-1 child Normal 11 (the one 2-1 bar flip, unchanged by c4)**: at x 30,230 edgeWait (t 332.67) / edgeStand (t 335.93) judge a
+   single onto a log running his way (#137/#136); it lands at x 30,394, and he keeps HOLDING RIGHT at full run for 6 frames (vx 285/268
+   alternating, data/d/tr-c3b-2-1-child-N11-x30230.txt t 333.20-333.40) and runs off the log's front at 30,465; the safe river sets him
+   back; 4+ times; rescue. Find what presses forward after the landing (a stack at the frame's returned pad, or HOP_TRACE + a pad log;
+   suspects: the gateHop flight's steer kept past the landing, the ride block's walk-on, padPause/tablePick's walk). The invariant's way
+   on: a judged hop onto a carrier ends in a stand on it (or the gate asks for room for his run-out at the landing vx). Toy each way:
+   2-1 child N 11 crosses clean (RED c4, GREEN fix). Main walks down the 28 px step onto the log's back and stops (tr-main excerpt).
+3. **2-4 on c4 (7 bar flips; 3 are c4's own: adult N 6, adult N 24, child N 39)**. adult N 6 traced (data/d/tr-c4-2-4-adult-N6.txt): the
+   step-back works (HOP_TRACE 'stepBack' t 50.70 lands on #45), then 0.15 s after that landing an UNJUDGED forward hop (no HOP_TRACE row;
+   t 51.57, vx 230-268) takes him back toward #46, the log he left, which goes under: water at x 10,767, x3, rescue x2. Fix at the cause:
+   find the gate that pressed it (stack at the returned pad, t 51.53-51.57) and make every forward gate treat a log that goes under
+   before it can hand him on (its run's end with no floor within 80 px, the c4 predicate `handedOn`) as no landing inside the time he
+   would stand on it; an unjudged hop onto a log is also a hopJudged miss, so run hopJudged on it. Then re-run the toy each way.
+4. Read the c4 2-4 / 2-2 tables below; for each bar flip left, trace one row and name the gate (same method: frames near the stuck x,
+   tools/hoptrace.mts.txt for the gate, tools/drift.mts.txt for the river). Left from 3b on c4: 2-4 adult N 8 (vine 'no way on' 23,078,
+   set down 3x 23,726), adult N 32 (set down 3x 16,714), child E 11 (set down 8x 28,028), child E 23 (vine 8,160, 'water ahead'
+   20,918); c4's own: adult N 24 (vine 21,885, set down 3x 23,567), child N 39 (set down 8x 11,224). The 'on a vine with no way on'
+   notes are a let-go the bot refuses while hanging: the same invariant (a refused let-go is never hung into a rescue).
+5. Polish named on c4: at t 53.3 (2-4 adult N 30) one forward step (vx +60..+173) between the walk back and the hop back. A latch on the
+   step-back (the log's id until its under point) was tried (3b1151499, not pushed) and did NOT remove it: the forward press comes from
+   another path; find it with the same stack method as item 2, fix at its cause.
+6. Then, per the lead's ruling: rule 28 vs main on 2-1, 2-2, 2-4, 2-5, 1-4 (zero bar PASS -> FAIL), 2-7 on its own bar (29/40 at least on
+   x40; the list 69/100 unchanged or better), pacerLay + hopJudged (2-7) since handed/edge gates are shared; the packet's plants
+   (re-plant at the SAME bars or retire with a full search, R-165.432), riverRide + firsttimer tests, gates.yml 'rolled' at 0 fail,
+   tierBots 9/9, timecheck + roadmapcheck; merge into release-0.10.3 (no force); hash + table to the lead.
+   Any stop: tell the lead with the rows; never loosen a bar (law 22).
+
+## The trace (lead's ruling: trace 2-4 adult N 30 first, name the gate that stands)
+- 3b, 2-4 adult Normal 30, river x 10,028-11,196 (`{"x0":10028,"x1":10766,"dir":1,"speed":80,"width":150,"tail":430}`): a TAILED river.
+  The logs run 10,028-10,766 and go under; the last 430 px to the bank (#42 at 11,196) is crossed only by the swing liana at x 10,856.
+- Three rides (t 49.4, 55.3, 61.9): he boards a log running his way (#45, #47, #48), stands on it vx 0 for 4-5 s, the log carries him
+  under at x 10,767 / 10,768 / 10,760: set down 3 times at one spot -> Dot's rescue (row: rescues 1, lives 3, stuck 'set down here 3 times').
+- **The gate that stands: SKILLS.handed** (firsttimer.ts, the ride block: 'a log running his way carries him onto the bank it slides
+  under; he rides it in'), after **SKILLS.vineFromLog refuses** the liana each frame (its catch is judged at three thumb lags: mid and
+  mid +/- half a spread). handed's premise is false on a tailed river: the log is never handed on, it goes under 430 px short.
+- Probe (vprobe.mts: vineFromLog with the spread at 0, i.e. his OWN aim, the press without the judge): ride 1 no catch at all, ride 2 one
+  catch at x 10,750.9 (t 59.30, 0.2 s before the drop), ride 3 none. **So 'take the press he would have made without the judge' cannot
+  save this site; the trace says step back.**
+- Main (cdffdc627) has the same stand (drops at 10,774 and 10,768 on the same logs) and passes only because its 4th ride catches the
+  liana by the judged press at x 10,663 (t 75.0): luck of the swing phase. vineFromLog is byte-identical on main and 3b.
+- 2-1 child Normal 11 (3b's one 2-1 flip): the rescue is at **x 30,230**, not 19,592 (19,592 is upstream's stand carried BACK to the bank
+  #83, no life: the ruling's own 'carried back to the bank he came from', working). At 30,230 HOP_TRACE names **edgeWait** (t 332.67,
+  log #137) and **edgeStand** (t 335.93, log #136): the judged hops DO land, but at full run (vx 267-285) 70 px from the log's front, and
+  he runs straight off its front end 0.2 s later (no stand; the gate's 24 px landing margin ignores his run-out after landing); set down
+  by the safe river 4+ times -> rescue. Main walks down the 28 px step onto the log's back and stops (lives 3, passes). Head passes it
+  too, so 3b's timing exposed it; the gap (a gate landing with no run-out) is head's.
+
+## Candidate 4 (6b5f43da0): the change (general, no stage id)
+At SKILLS.handed, under SKILLS.floatSure: the log is handed on only where its run's end (x1, or x0 flowing left) has a floor within
+80 px. Else (a tailed river) he waits while the hop stays open; once his feet would reach the under point (end - 10 px) within his
+stopReact + the walk back to the log's rear end (/ PHYS.maxRun), he STEPS BACK: the hop onto the log behind him (same flow, within
+600 px) when gateSees lands it (24 px, the aim he draws for it, HOP_TRACE site 'stepBack', flown as gateHop), else the walk toward
+the log's rear end (stops 20 px from it, never off it). No new number by eye: stopReact, maxRun, the 80 px hand-off and the 24 px gate are
+the existing ones.
+- Toy (riverRide.test.ts, after 'a refused hop leaves a way on'): '2-4, a bot that refuses a hop is never ridden into a rescue: the adult
+  on Normal (30) is never carried under on a log he stands on'. **RED on 3b** (`adult normal seed 30: shrine, rescues 1, lives 3, stuck
+  [{"x":10766,"what":"set down here 3 times"}]`), **GREEN on candidate 4** (rescues 0).
+- Frames on c4 (tr-c4-a30): t 52.9 he walks back on #45 (vx -87/-268), 53.4-54.2 hops back onto #48 (x 10,562), 54.4 the liana from #48
+  (vineFromLog's judged press), 57.0 on the bank #43. One rough spot seen: at t 53.3 one forward step (vx +173) between the walk back and
+  the hop back (the condition toggles as the walk lengthens `left`): polish to fix (latch the step-back until he leaves the log).
+
+## Rows: rule 28 vs MAIN (D132), castBots CLI rows, every bot, both settings, seeds 1-40, frozen trees (main cdffdc627, c3b, c4 6b5f43da0)
+| Stage | c4 vs main: bar PASS -> FAIL | which (main | 3b | c4 in data/d/cmp-c4-<st>.txt) | 3b vs main (bar) | passes main / 3b / c4 |
+|---|---|---|---|---|
+| 2-1 | **1** | child N 11 (3b too) | 1 | 329 / 323 / 323 |
+| 2-4 | **7** | adult N 6 (c4 own); adult N 8 (3b too); adult N 24 (c4 own); adult N 32 (3b too); child E 11 (3b too); child E 23 (3b too); child N 39 (c4 own) | 8 | 286 / 291 / 301 |
+| 2-2 | **2** | adult N 4 (3b too); adult N 24 (3b too) | 2 | 330 / 335 / 335 |
+
+Not run on c4: 2-5, 2-7, 1-4 (rule 28 failed on the first three; usage). 2-1 on c4 is row-for-row 3b (no tailed river on 2-1).
+**VERDICT: rule 28 vs main FAILS on c4 (2-1: 1, 2-4: 7, 2-2: 2). Nothing lands. Told the lead with the rows (law 22: no bar moved).**
+
+## Lessons applied
+D113 (no foreground wait: rows by completion notices), D115 (every run on a chattr-frozen tree: pc-main, pc-c3b, pc-c4), D117 (candidate
+on -wip-plant-c), D119 (scripts to files, -m commits), D121 (a toy each way: RED 3b / GREEN c4), D128 (times from `date`), D132 (rule 28
+vs main), law 22 (no bar touched), the lead's R-165.413 ruling (no reAim for the adult: none given).
+## Learned (for the next builder)
+A way on that moves him off a carrier is only half the invariant: every forward gate must then agree the carrier he left is no landing
+(c4's adult N 6 stepped back cleanly and was hopped forward again, unjudged, 0.15 s later). Name both halves in one toy pair.
+Note: LESSONS.md on this branch and on release-0.10.3 ends at D78; D111-D132 are not in it (read from the brief and session 1's REPORT).
+
 # ENG-PLANT-c (session 1, started 4:20 PM ET 11-24 by `date`; this section written 4:51 PM ET by `date`): STOPPED on rule 28, hand-over
 
 Engine (bots), Opus 5.5 xhigh. Lead: session_01FhBbYN2CVHnFXg7XzqKXpM. Base: release-0.10.3 dfe631913 + candidate 2 (merge 80eb07842).

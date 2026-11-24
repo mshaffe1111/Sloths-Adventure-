@@ -1,0 +1,44 @@
+2-4: rows 360, differ 292, PASS->FAIL 14 (bar 7), fail->pass 29; pass main 286 fix 301
+  PASS->FAIL BAR adult N 6: main shrine L4 R0 194.7s | head shrine L2 R0 171.8s | fix shrine L9 R2 214.6s [{'x': 10781, 'what': 'set down here 3 times'}, {'x': 21160, 'what': 'on a vine at 21160,815 with no way on'}, {'x': 21777, 'what': 'drowned going on from here'}] [FIX (head passes)]
+  PASS->FAIL BAR adult N 8: main shrine L3 R0 203.1s | head shrine L3 R1 171.8s | fix shrine L5 R1 174.7s [{'x': 23078, 'what': 'on a vine at 23078,846 with no way on'}, {'x': 23726, 'what': 'set down here 3 times'}] [head too (the merge)]
+  PASS->FAIL BAR adult N 24: main shrine L3 R0 171.8s | head shrine L2 R0 171.9s | fix shrine L3 R1 154.9s [{'x': 21885, 'what': 'on a vine at 21885,755 with no way on'}, {'x': 23567, 'what': 'set down here 3 times'}] [FIX (head passes)]
+  PASS->FAIL BAR adult N 32: main shrine L1 R0 171.9s | head shrine L4 R1 203.2s | fix shrine L5 R1 171.9s [{'x': 16714, 'what': 'set down here 3 times'}] [head too (the merge)]
+  PASS->FAIL BAR child E 11: main shrine L0 R0 237.5s | head shrine L0 R1 241.2s | fix shrine L0 R1 241.2s [{'x': 28028, 'what': 'set down here 8 times'}] [head too (the merge)]
+  PASS->FAIL BAR child E 23: main shrine L0 R0 237.4s | head shrine L0 R2 295.4s | fix shrine L0 R2 295.4s [{'x': 8160, 'what': 'on a vine at 8160,790 with no way on'}, {'x': 20918, 'what': 'water ahead'}, {'x': 22159, 'what': 'a 50 px waist-high step ahead'}] [head too (the merge)]
+  PASS->FAIL BAR child N 39: main shrine L2 R0 358s | head shrine L7 R0 386.1s | fix shrine L3 R1 429.2s [{'x': 11224, 'what': 'set down here 8 times'}, {'x': 21433, 'what': 'on a vine at 21433,795 with no way on'}, {'x': 24436, 'what': 'on a vine at 24436,794 with no way on'}] [FIX (head passes)]
+  PASS->FAIL kid kid E 3: main shrine L0 R0 175.4s | head shrine L0 R1 191.7s | fix shrine L0 R1 191.7s [{'x': 16874, 'what': 'set down here 3 times'}, {'x': 28210, 'what': 'on a vine at 28210,798 with no way on'}] [head too (the merge)]
+  PASS->FAIL kid kid E 8: main shrine L0 R0 172s | head shrine L0 R1 172.2s | fix shrine L0 R1 172.2s [{'x': 7064, 'what': 'on a vine at 7064,859 with no way on'}, {'x': 16822, 'what': 'set down here 3 times'}] [head too (the merge)]
+  PASS->FAIL kid kid E 14: main shrine L0 R0 168.6s | head shrine L0 R2 168.6s | fix shrine L0 R2 168.6s [{'x': 10913, 'what': 'set down here 3 times'}, {'x': 17099, 'what': 'set down here 3 times'}] [head too (the merge)]
+  PASS->FAIL kid kid E 15: main shrine L0 R0 168.8s | head shrine L0 R1 159.3s | fix shrine L0 R1 159.3s [{'x': 24422, 'what': 'on a vine at 24422,829 with no way on'}, {'x': 25154, 'what': 'set down here 3 times'}] [head too (the merge)]
+  PASS->FAIL kid kid E 18: main shrine L0 R0 168.8s | head shrine L0 R1 172.3s | fix shrine L0 R1 172.3s [{'x': 17202, 'what': 'set down here 3 times'}] [head too (the merge)]
+  PASS->FAIL kid kid E 39: main shrine L0 R0 168.6s | head shrine L0 R1 175.7s | fix shrine L0 R1 175.7s [{'x': 10979, 'what': 'set down here 3 times'}, {'x': 22779, 'what': 'on a vine at 22779,785 with no way on'}] [head too (the merge)]
+  PASS->FAIL kid kid E 40: main shrine L0 R0 188.5s | head shrine L0 R1 195.4s | fix shrine L0 R1 195.4s [{'x': 6967, 'what': 'on a vine at 6967,886 with no way on'}, {'x': 8105, 'what': 'on a vine at 8105,827 with no way on'}, {'x': 10796, 'what': 'set down here 3 times'}] [head too (the merge)]
+  fail->pass adult N 1: main shrine L5 R1 171.9s | fix shrine L0 R0 171.8s
+  fail->pass adult N 9: main shrine L3 R1 171.8s | fix shrine L0 R0 183.2s
+  fail->pass adult N 10: main shrine L1 R1 171.6s | fix shrine L4 R0 171.9s
+  fail->pass adult N 11: main shrine L5 R1 203.2s | fix shrine L2 R0 171.8s
+  fail->pass adult N 13: main shrine L2 R1 171.8s | fix shrine L3 R0 183.3s
+  fail->pass adult N 16: main shrine L1 R1 177.7s | fix shrine L4 R0 171.9s
+  fail->pass adult N 17: main shrine L2 R1 171.9s | fix shrine L5 R0 183.3s
+  fail->pass adult N 18: main shrine L4 R1 171.9s | fix shrine L3 R0 183.3s
+  fail->pass adult N 19: main shrine L3 R1 171.9s | fix shrine L1 R0 154.3s
+  fail->pass adult N 22: main shrine L4 R1 203.2s | fix shrine L4 R0 203.2s
+  fail->pass adult N 33: main shrine L3 R1 171.9s | fix shrine L5 R0 214.6s
+  fail->pass adult N 34: main shrine L4 R1 160.4s | fix shrine L2 R0 171.9s
+  fail->pass adult N 36: main shrine L6 R1 183.2s | fix shrine L2 R0 171.8s
+  fail->pass adult N 37: main shrine L2 R1 171.8s | fix shrine L8 R0 217.4s
+  fail->pass adult N 40: main shrine L10 R1 226s | fix shrine L1 R0 171.8s
+  fail->pass kid E 1: main shrine L0 R1 172.2s | fix shrine L0 R0 168.2s
+  fail->pass kid E 4: main shrine L0 R2 175.6s | fix shrine L0 R0 168.6s
+  fail->pass kid E 6: main shrine L0 R1 168.7s | fix shrine L0 R0 168.9s
+  fail->pass kid E 11: main shrine L0 R1 168.6s | fix shrine L0 R0 168.6s
+  fail->pass kid E 22: main shrine L0 R1 172.2s | fix shrine L0 R0 168.6s
+  fail->pass kid E 23: main shrine L0 R1 171.9s | fix shrine L0 R0 168.5s
+  fail->pass kid E 25: main shrine L0 R1 182.4s | fix shrine L0 R0 172.4s
+  fail->pass kid E 26: main shrine L0 R1 168.7s | fix shrine L0 R0 168.6s
+  fail->pass kid E 32: main shrine L0 R1 168.7s | fix shrine L0 R0 175.9s
+  fail->pass kid N 11: main shrine L7 R2 183.3s | fix shrine L6 R0 197.7s
+  fail->pass kid N 13: main shrine L11 R2 226.1s | fix shrine L9 R0 240.4s
+  fail->pass kid N 16: main shrine L6 R1 180.4s | fix shrine L5 R0 197.7s
+  fail->pass kid N 28: main shrine L9 R3 151.9s | fix shrine L8 R0 194.6s
+  fail->pass kid N 39: main shrine L6 R2 203.2s | fix shrine L3 R0 163.4s
