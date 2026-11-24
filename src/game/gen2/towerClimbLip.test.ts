@@ -33,8 +33,14 @@ export function climbLips(platforms: readonly P[], vines: readonly V[]): Array<{
         if (p.x + p.width >= a - 1 && p.x < a) { a = p.x; grew = true; }
       }
     }
-    // (an end is closed by floor at the same height within a stride, or by a wall standing at it)
-    const closed = (x: number, dir: 1 | -1) => platforms.some((p) => (p.type === 'wall' ? p.x <= x + 2 && p.x + p.width >= x - 2 && p.y <= v.bottomY : Math.abs(p.y - v.bottomY) <= 2 && (dir > 0 ? p.x > x && p.x <= x + STRIDE : p.x + p.width < x && p.x + p.width >= x - STRIDE)));
+    // (an end is closed when a run past it lands within a plain hop of the floor he left (the tower's soft pit, TOWER.hop): floor at the same
+    // height or a catch bough a hop down, anywhere in the stride past the end; a wall standing in that stride closes it too)
+    const closed = (x: number, dir: 1 | -1) => platforms.some((p) => {
+      const x0 = dir > 0 ? x : x - STRIDE, x1 = dir > 0 ? x + STRIDE : x;
+      if (p.x + p.width < x0 || p.x > x1) return false;
+      if (p.type === 'wall') return p.y <= v.bottomY;
+      return p.y >= v.bottomY - 2 && p.y <= v.bottomY + TOWER.hop && (dir > 0 ? p.x + p.width > x + 1 : p.x < x - 1);
+    });
     const toLip = Math.min(closed(a, -1) ? Infinity : v.x - a, closed(b, 1) ? Infinity : b - v.x);
     out.push({ x: v.x, y: v.bottomY, toLip, floor: [a, b] });
   }
