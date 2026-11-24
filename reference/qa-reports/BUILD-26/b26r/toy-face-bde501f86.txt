@@ -1,0 +1,20 @@
+Tue Nov 24 16:53:28 EST 2026
+bde501f86
+TAP version 13
+# tower stages read: 1-4, 2-6; floor drops 432; open ends 0 (1-4: 0 catch boughs, 0 open ends; 2-6: 192 catch boughs, 0 open ends)
+# Subtest: a full-speed run along a tower's soft pit never passes under the lip ahead: a face under each end, every tower stage, both settings, listed seeds
+ok 1 - a full-speed run along a tower's soft pit never passes under the lip ahead: a face under each end, every tower stage, both settings, listed seeds
+  ---
+  duration_ms: 19630.481341
+  type: 'test'
+  ...
+1..1
+# tests 1
+# suites 0
+# pass 1
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 22322.188213
+Tue Nov 24 16:53:51 EST 2026

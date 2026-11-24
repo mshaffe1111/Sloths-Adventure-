@@ -1,0 +1,12 @@
+const tree = process.argv[2];
+await import(`${tree}/src/game/headlessDom.ts`);
+const { generateAllLevels } = await import(`${tree}/src/game/worldsData.ts`);
+const { generateStage, setLayoutVariant } = await import(`${tree}/src/game/stageGenerator.ts`);
+const { loadSeedList } = await import(`${tree}/src/game/gen2/seedList.ts`);
+const c = generateAllLevels().find((l: { id: string }) => l.id === '2-6');
+await loadSeedList('2-6');
+setLayoutVariant(63);
+const st = generateStage({ ...c, unlocked: true }, 'normal');
+setLayoutVariant(null);
+for (const p of st.platforms) if (p.x < 1000 && p.x + p.width > 400 && p.y > 4800 && p.y < 5100) console.log(`x ${p.x}-${p.x + p.width} y ${p.y} h ${p.height} ${p.style} ${p.type}`);
+for (const d of st.gen2.drops ?? []) if (d.lipY > 4800 && d.lipY < 5100) console.log('drop', JSON.stringify(d).slice(0, 160));

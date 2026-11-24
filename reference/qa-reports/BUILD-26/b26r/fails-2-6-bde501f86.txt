@@ -1,0 +1,25 @@
+failing rows (rescued, not passed or a life lost): 24
+adult e 19 FAIL 141 resc 1 | 996,1039 t117.2 in a dip 77 px deep, water ahead, the way on is 194 px up
+adult e 26 FAIL 127.2 resc 1 | 995,1040 t103.3 in a dip 82 px deep, water ahead, the way on is 194 px up
+adult e 32 FAIL 150.3 resc 1 | 631,3434 t91.7 water ahead, the way on is 124 px up
+adult e 42 FAIL 130.7 resc 1 | 989,1040 t106.8 in a dip 83 px deep, water ahead, the way on is 194 px up
+adult e 50 FAIL 130.5 resc 1 | 1005,1039 t106.6 in a dip 72 px deep, a drop of 479 px ahead, water ahead, th
+adult e 57 FAIL 127.1 resc 1 | 993,1039 t103.2 in a dip 77 px deep, water ahead, the way on is 194 px up
+adult e 59 FAIL 137.5 resc 1 | 994,1039 t113.7 in a dip 76 px deep, water ahead, the way on is 194 px up
+adult e 83 FAIL 130.6 resc 1 | 995,1039 t106.7 in a dip 75 px deep, water ahead, the way on is 193 px up
+adult e 88 FAIL 130.6 resc 1 | 992,1039 t106.7 in a dip 77 px deep, water ahead, the way on is 194 px up
+adult e 89 FAIL 153 resc 1 | 615,3421 t92 water ahead, the way on is 112 px up
+adult e 91 FAIL 130.7 resc 1 | 987,1040 t106.9 in a dip 86 px deep, a drop of 478 px ahead, water ahead, th
+adult e 92 FAIL 173.8 resc 1 | 648,3446 t113.3 water ahead, the way on is 129 px up
+adult e 94 FAIL 130.4 resc 1 | 1000,1039 t106.6 in a dip 72 px deep, a drop of 479 px ahead, water ahead, th
+adult n 35 FAIL 108 resc 1 | 368,4930 t38.8 fell back down from here 3 times
+adult n 93 FAIL 101.9 resc 1 | 360,4926 t39.7 fell back down from here 3 times
+child n 50 FAIL 219.3 resc 1 | 515,5279 t68.5 in a dip 323 px deep, water ahead, the way on is 294 px down
+kid e 2 FAIL 133.1 resc 1 | 
+kid n 14 FAIL 117.7 resc 1 | 
+kid n 30 FAIL 108.8 resc 1 | 
+kid n 32 FAIL 117.1 resc 1 | 
+kid n 61 FAIL 114.5 resc 1 | 
+kid n 63 FAIL 108.3 resc 1 | 
+kid n 76 FAIL 108.9 resc 1 | 
+kid n 84 FAIL 108.8 resc 1 | 

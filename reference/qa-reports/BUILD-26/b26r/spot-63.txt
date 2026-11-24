@@ -1,0 +1,10 @@
+== wt-toy (fc745749e), 2-6 normal layout variant 63, pieces at x 400-1000, y 4800-5100
+x 233-473 y 4927 h 24 branch solid
+x 787-957 y 4955 h 28 log drift
+x 544.9999999999999-714.9999999999999 y 4955 h 28 log drift
+drop {"x0":473,"x1":1271,"lipY":4927,"ends":{"kind":"putback","to":"take-off"},"look":"safe-water-art"}
+== wt-face (bde501f86), 2-6 normal layout variant 63, pieces at x 400-1000, y 4800-5100
+x 233-473 y 4927 h 24 branch solid
+x 787-957 y 4955 h 28 log drift
+x 544.9999999999999-714.9999999999999 y 4955 h 28 log drift
+drop {"x0":473,"x1":1271,"lipY":4927,"ends":{"kind":"putback","to":"take-off"},"look":"safe-water-art"}

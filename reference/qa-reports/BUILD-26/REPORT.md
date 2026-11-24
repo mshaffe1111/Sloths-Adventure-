@@ -1,3 +1,49 @@
+# BUILD-26r (t-build-26-wip-26q; base t-build-26 40a9c4bd2): THE FACE (the lead's ruling), its toy, lockall, castBots. Started 4:47 PM ET 11-24 (by `date`); this box written 5:06 PM ET
+
+## EXACT NEXT STEP
+**For BUILD-26s (base: this branch's head; the face is in, bde501f86).** --proven 2-6 is **74/100** (from 46). The face fixed kid E
+(63 -> 99) but kid NORMAL fell 98 -> 93: all 7 of its failures are ONE new spot, 'set down here 3 times' at x 494-905, y 4925-4930
+(t 37-46 s; seeds 14, 30, 32, 61, 63, 76, 84; on base only 30 and 43 failed there). (a) Frame-trace kid N 63 (it fails on that spot
+alone). The spot is the MILLRACE, not a face: on normal seed 63 the pieces there are the same on base and face (b26r/spot-63.txt: jetty
+233-473 @4927, drift logs 545-715 and 787-957 @4955 over a put-back river 473-1271; no catch bough, no face). Reading: the face changes
+when he reaches it (the route before it no longer falls through), so the drift logs' phase differs. (a) Frame-trace kid N 63 with
+b26q/frames26.mts.txt, window x 200-1300, y 4850-5000, and name the cause (bot, engine or data; rule 28) BEFORE any fix. (b) Send the
+lead the trace and the count. (c) Then the Normal floor (below), then the residue.
+
+## Done this box (evidence in b26r/)
+| step | result | evidence |
+|---|---|---|
+| the toy (src/game/gen2/towerSoftPit.test.ts): 'a full-speed run along a tower soft pit never passes under the lip ahead', every tower stage, both settings, 24 listed seeds each | RED on base (fc745749e = 40a9c4bd2 code + the toy): **384 open ends**, 2-6: 192 catch boughs, every one open at BOTH ends (the street past is a 24 px branch); 1-4: 0 catch boughs (its floor drops are pit floors, no bough). GREEN with the face: 2-6 192 boughs, **0 open ends** | toy-base-fc745749e.txt, toy-face-bde501f86.txt |
+| THE FACE (pipeline.ts, the tower soft pit's lay; engine tier, every tower stage, both settings) | each end of the catch bough gets a face under the lip that meets it: PIT_WALL.w (24) wide, from that lip's top to the bough's underside, moss_stone, in the seam (the pit join wall's own piece). A lip whose piece already reaches the bough is its own face; with no piece at an end, the face stands a hop over the bough. Both ends: the ruling's 'a sunken step has sides' (whichever way he runs, the lip ahead) | commit bde501f86 |
+| paint (paintcheck --stages 2-6 --unpainted, frozen bde501f86; a probe, not the gate) | PASS, 200 builds, 0 breaches, 0 unpainted (base: the same) | paint-2-6-face-bde501f86.txt |
+| lockall (16 layouts, every stage: record on frozen base fc745749e and on frozen face bde501f86, compared by lockall --check's own code) | **101/102 stages unchanged**; only **2-6** moves, all 32 builds (platforms, collectibles, gen2, proto.dress, proto.decor: the faces, and the storeys above shift a few px, e.g. three vine petals 4 px on normal 0). 2-6 is NOT shipped (origin/main's provenIndex lists 1-1..1-9, 2-1..2-5); 1-4, the shipped tower stage, is unchanged. EXIT 0 with --intended 2-6 | lock-base-fc745749e.txt, lock-face-bde501f86.txt, lock-diff-bde501f86.txt |
+| castBots --proven 2-6 (frozen bde501f86; b26q's cast26 wrapper: castRun's call, castBots' runHolds/stageFloor) | **--proven 74/100** (base 46). kid E 99 (was 63), adult E 87 (70; 13 rescued), adult N 93 (88; under the floor 5, was 11, min 98.6 s), kid N **93 (98: down, one new spot, above)**, child N 99 (100), child E, middle N/E, expert N 100. No life lost | cast-2-6-bde501f86.txt, fails-2-6-bde501f86.txt |
+
+## Shipped stages (D132, rule 28 vs MAIN)
+None moves: lockall's diff names 2-6 alone, which is not on main. Rule 28 vs MAIN therefore has no shipped stage to re-run for the face.
+
+## Still open (in order: the ruling's)
+0. Kid Normal's new spot at y 4927 (EXACT NEXT STEP).
+1. The Normal floor (adult Normal: 5 runs under the 100 s climb floor on bde501f86, min 98.6 s; b26q's base: 11): lengthen the
+   route, a section added or re-laid in w2Arc26.ts, never a slower bot (law 22). The graph is the design's node string verbatim
+   (2-6.md:43) with `dealExact`: the added section is a design change, so STEP 0 (level.md rule 25): send the lead the one-line plan (which
+   beat, which brick, the deal it changes) and wait for GO.
+2. The residue (b26q's list, re-clustered on bde501f86's rows).
+3. Landing (D126/D132): the suite and the CI tool line ONCE on the final head (frozen), then merge into t-build-26 (no force).
+4. Stills of the face (rule 29: only on the head whose bots are green; then judge them upright and sideways, law 2).
+
+## Method used / lessons applied
+- level.md rules 21 (the toy before the fix), 22 (one engine fix, every tower stage), 26-28 (judged on the BUILT stage; RED then GREEN);
+  lessons D115 (every run on a chattr-frozen worktree), D119 (commits by -m), D126 (suite once on the final head), D128 (times from
+  `date`), D132 (rule 28 vs MAIN), R-165.330 (the toy fails if it reads no bough). LESSONS D111-D132 are not in reference/LESSONS.md on
+  this branch (grep finds none); the prompt's named ones applied.
+- Method update (proposed, level.md): a geometric toy on the built stage (a band check) is 30 s and found every open end on 48 builds;
+  write it before the bot run, which takes 4 minutes and needs a slot.
+
+## Pushback
+- The ruling says the FAR end; I laid a face at BOTH ends: on base every 2-6 soft pit is open at both (384 = 2 x 192), and a run back
+  along the bough falls under the near street the same way. Both faces sit under the lips (no new top, nothing over lip level).
+- This container had no node_modules: `npm ci --legacy-peer-deps` (CI's flag) first; npx's tsx ran the toy until then.
 # BUILD-26q (t-build-26-wip-26q; base t-build-26 40a9c4bd2, frozen): 2-6's Easy residue: box 1 = the re-measure and the clusters. Started 4:21 PM ET 11-24 (by `date`); this box written 4:41 PM ET
 
 ## EXACT NEXT STEP

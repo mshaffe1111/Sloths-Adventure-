@@ -1,0 +1,20 @@
+// lockall --check's own comparison (tools/engine/lockall.ts lines 41-57), run on two records lockall --out wrote: base vs head.
+// node lockdiff.mjs base.json head.json [intended,stages]
+import fs from 'node:fs';
+const [, , baseF, headF, intendedArg] = process.argv;
+const was = JSON.parse(fs.readFileSync(baseF, 'utf8'));
+const out = JSON.parse(fs.readFileSync(headF, 'utf8'));
+const intended = new Set((intendedArg ?? '').split(',').filter(Boolean));
+const stages = new Set(Object.keys(out).map((k) => k.split(' ')[0]));
+const byStage = {}, builds = {};
+for (const [k, parts] of Object.entries(out)) {
+  const w = was[k]; if (!w) continue;
+  const diff = [...new Set([...Object.keys(parts), ...Object.keys(w)])].filter((p) => parts[p] !== w[p]);
+  if (diff.length) { const s = k.split(' ')[0]; for (const p of diff) (byStage[s] ??= new Set()).add(p); builds[s] = (builds[s] ?? 0) + 1; }
+}
+const missing = Object.keys(was).filter((k) => !(k in out));
+const bad = Object.keys(byStage).filter((s) => !intended.has(s));
+console.log(`lock: ${Object.keys(was).length} base builds, ${Object.keys(out).length} head builds, ${missing.length} base builds missing on head`);
+console.log(`lock: ${stages.size - Object.keys(byStage).length}/${stages.size} stages unchanged`);
+for (const [s, ps] of Object.entries(byStage)) console.log(`  ${s}${intended.has(s) ? ' (intended)' : ''}: ${builds[s]} builds changed; parts ${[...ps].join(', ')}`);
+console.log(`EXIT ${bad.length ? 1 : 0}`);

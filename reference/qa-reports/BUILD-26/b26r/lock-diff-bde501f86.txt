@@ -1,0 +1,11 @@
+Tue Nov 24 17:04:46 EST 2026
+lock: 3264 base builds, 3264 head builds, 0 base builds missing on head
+lock: 101/102 stages unchanged
+  2-6: 32 builds changed; parts platforms, collectibles, gen2, proto.dress, proto.decor
+EXIT 1
+Tue Nov 24 17:04:54 EST 2026
+--- intended 2-6 (not shipped: not in origin/main's provenIndex, which lists 1-1..1-9, 2-1..2-5):
+lock: 3264 base builds, 3264 head builds, 0 base builds missing on head
+lock: 101/102 stages unchanged
+  2-6 (intended): 32 builds changed; parts platforms, collectibles, gen2, proto.dress, proto.decor
+EXIT 0
