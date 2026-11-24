@@ -250,6 +250,19 @@ test('2-4, a bot that refuses a hop is never ridden into a rescue: the adult on 
   const r = castRun('adult', 'normal', '2-4', 30);
   assert.ok(crossedClean(r), said(r));
 });
+// (ENG-PLANT-e, the lead's ruling 1: every hop off a carrier goes through the landing judge. 2-4 adult Normal 6 on candidate 4 6b5f43da0:
+//  the step-back lands him on #45's very tip; floorAt read no floor at his x, the river block was skipped and the edge code pressed an
+//  unjudged hop back onto #46, a log going under before the bank (t 51.53, no HOP_TRACE row): set down 3 times, rescued twice)
+test('2-4, every hop off a log is judged: the adult on Normal (6) is never sent back onto a log going under', () => {
+  const r = castRun('adult', 'normal', '2-4', 6);
+  assert.ok(crossedClean(r), said(r));
+});
+// (ENG-PLANT-e, the lead's ruling 2: 2-1 child Normal 11 on candidate 4: a judged single lands him 40 px from the front of #137, a log
+//  running his way; the landing walk-on and his thumb's let-go ran him off its front 4+ times, rescued. Main walks onto its back and stops)
+test('2-1, he never runs off the front of the log he just landed on: the child on Normal (11) stops on it', () => {
+  const r = castRun('child', 'normal', '2-1', 11);
+  assert.ok(crossedClean(r), said(r));
+});
 test('planted: with the against-the-flow skill off, the adult on Normal is rescued at 2-1\'s back river (12) and the child and the middle on Normal lose 5+ more lives (child 4, 23; middle 26)', () => {
   const withIt = UPSTREAM_LIVES.map(([bot, setting, seed]) => castRun(bot, setting, '2-1', seed));
   SKILLS.upstream = false;

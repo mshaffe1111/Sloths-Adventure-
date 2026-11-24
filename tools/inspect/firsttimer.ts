@@ -1263,6 +1263,8 @@ export function gateAirtime(q: Platform, at: (t: number) => number, x: number, y
 
 export type HopRow = { site: string; q: number; t: number; x: number; hold: number; lag: number; kind?: 'single' | 'double'; flown?: { t: number; x: number; hold: number; kind: 'single' | 'double' }; landed?: number | 'lost'; landedType?: string };
 export const HOP_TRACE: { on: boolean; rows: HopRow[] } = { on: false, rows: [] };
+/** hops off a carrier refused at startJump because no gate judged them (ENG-PLANT-e, the lead's ruling 1: zero on every row) */
+export const UNJUDGED = { n: 0 };
 export const PRESS_TRACE: { on: boolean; rows: Array<{ want: number; got: number }> } = { on: false, rows: [] };
 export const pressIn = (lag: number): number => (lag <= DT / 2 ? 1 : Math.max(1, Math.ceil(lag / DT - 1e-9)) + 1) * DT;
 /**
@@ -3223,6 +3225,16 @@ export class FirstTimerRun {
     if (this.pending) return this.pending.still ? {} : side(this.pending.dir);
     // (just landed: the thumb comes back down before the next flick)
     if (t - this.lastLand < 0.1) {
+      // (SKILLS.floatSure, ENG-PLANT-e, the lead's ruling 2: landed on a log running his way, he stops pressing on landing, as main's
+      //  walk down onto a log's back stops; the walk-on below kept him running 0.1 s, and his thumb's let-go (releaseMax frames, the
+      //  testers' own) ran him on: 2-1 child Normal 11 landed 40 px from #137's front (x 30,394 on 30,194-30,434) and ran off it 4+ times,
+      //  rescued. Where the front is inside that run-out he pulls the thumb back (a turn drops the press at once, thumbify), never off)
+      const ridden = SKILLS.floatSure && SKILLS.handed && p.grounded ? this.sim.platforms.find((q) => q.id === this.sim.standingOn) : undefined;
+      if (ridden?.drift && ridden.drift.dir === dir) {
+        const front = dir > 0 ? ridden.x + ridden.width : ridden.x;
+        const runOut = Math.abs(p.vx) * DT * (this.who.releaseMax[1] + 3);
+        return dir * (front - p.x) < runOut + 24 ? side(-dir as -1 | 1) : {};
+      }
       // (landed on a small pad or ledge: he stops on it a beat, then flicks on from where he stands if its edge is close)
       const here = this.floorAt(p.x, p.y, 6);
       // (never on a sinking pad once he knows it sinks: KEEP-HOPPING, padRead; never on a drifting log running his way under a liana over
@@ -3422,7 +3434,12 @@ export class FirstTimerRun {
         const pit = !!who.holdQ && !this.floorAt(p.x + dir * (look + 40), p.y, 400);
         const drops = on && on.y > p.y + 50 && !across && !pit;
         // (a log or a lily pad drifting across the gap: he can see it, so he waits at the edge until it is near, up to 6 s)
-        const here = this.floorAt(p.x, p.y, 6);
+        // (SKILLS.floatSure, ENG-PLANT-e, the lead's ruling 1: the log he stands on is the one the ENGINE stands him on (standingOn), not
+        //  only the one under the point at his x: landed on a log's very tip (2-4 adult Normal 6, t 51.47, x 10,598 on #45 x 10,443-10,593)
+        //  floorAt saw no floor, the river block was skipped, and the edge code's decide pressed an UNJUDGED hop back onto #46, a log going
+        //  under before the bank: set down 3 times, rescued. Read as the engine reads him, every hop off a log goes through the river gates)
+        const stood = SKILLS.floatSure && p.grounded ? this.sim.platforms.find((q) => q.id === this.sim.standingOn) : undefined;
+        const here = stood?.type === 'drift' ? stood : this.floorAt(p.x, p.y, 6);
         // (ENG-W2b: a float is near when a hop he makes now, or a beat later as his thumb gets there, comes down on it where it will be,
         // hopLandsOn; drifting logs come out from under the bank at his feet, so every log on the water is looked at, not only those ahead)
         const rivers = (this.sim.stage as { rivers?: RiverZone[] }).rivers;
@@ -4734,6 +4751,14 @@ export class FirstTimerRun {
 
   private startJump(dir: -1 | 0 | 1, kind: 'single' | 'double', off: boolean): Pad {
     const p = this.sim.p, who = this.who;
+    // (SKILLS.floatSure, ENG-PLANT-e, the lead's ruling 1: EVERY hop off a carrier is one the landing judge saw (gateSees set gateHop):
+    //  one gate, no path around it. A press from any other path standing on a drifting log (a decide's queued thumb, the edge code's run
+    //  or stand press, a plan's hop) is refused here, counted (UNJUDGED), and dropped; the river block judges him again next frame)
+    if (SKILLS.floatSure && !this.gateHop && p.grounded && this.sim.platforms.find((q) => q.id === this.sim.standingOn)?.type === 'drift') {
+      UNJUDGED.n++;
+      this.pending = null; this.lateArmed = null;
+      return {};
+    }
     // (a tier bot: where a jump has failed him he holds on longer; any jump may get its second press, at his own delay)
     const overhead = this.climbJump;
     const toX = this.climbToX;
