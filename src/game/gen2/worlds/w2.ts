@@ -142,7 +142,11 @@ export const W2_RACE: PacerRow = {
  *  - runUp: each tier's take-off aim before a lip, its edgeAim (the median of its aimQ), the larger of its settings: child 73
  *    (firsttimer.ts:323; Easy 71, :330), middle 61 (Easy, :317; Normal 58, :311), expert 61 (:305), adult 22 (:292)
  *  - width: Pokey's, 44 px (engine.ts:1222)
- *  So W must be at least 86 + 61 = 147 px wide before a gap (the toy and floodLay.test's brick lay W 150 + gap 60) */
+ *  So W must be at least 86 + 61 = 147 px wide before a gap (the toy and floodLay.test's brick lay W 150 + gap 60)
+ *  THE MODEL, NOT A MEASURE (the lead's ruling C, ENG-28 session 8): the bots land farther than the approved 86 (the middle at 136 past
+ *  W 150's face: a 0.94 s climb, his landing steered back), yet the verdict and the bots agree on both shapes: on W 60 every tier walks off
+ *  W (refused), on W 150 every tier boards P (passed). The verdict refuses 146, so at its edge it errs on the safe side. Calibrating
+ *  `land` against the tier bots is a later job (ROADMAP R-165.424) */
 export const W2_FLOOD: FloodRow = {
   close: { normal: 26, easy: 26 },
   spare: { normal: 4, easy: 8 },

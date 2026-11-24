@@ -140,8 +140,9 @@ interface FloodRun {
   setBack: number;
   home: number;
   /** The road he took AT THE FORK: before the first close he stood grounded on a piece of the HIGH ROAD ONLY, read from the flood's own
-   *  high-road chain (flood.ts highRoad, as floodFaults and the bot read it), never a height. Its first piece, the wall-step W, does not
-   *  count: both roads climb it (the low road walks off it 60 px down), so a stand on W is no choice yet. Set only while no close has
+   *  high-road chain (flood.ts highRoad, as floodFaults and the bot read it), never a height. The fork's shared ends do not count: its
+   *  first piece, the wall-step W (both roads climb it; the low road walks off it 60 px down), and its last piece C (the low road climbs
+   *  out of the walkway onto it: both roads end there), so a stand on either is no choice. Set only while no close has
    *  fired: after the close the high road is the only way on, so a stand there then says nothing about his choice (the lead's rulings,
    *  R-165.432, ENG-28f). */
   high: boolean;
@@ -208,8 +209,9 @@ function floodRun(who: FirstTimer, seed: number, late: number): FloodRun {
     const tops = run.sim.platforms.filter((q) => q.type === 'solid' && q.y < Y - 1).map((q) => ({ x: q.x, w: q.width, y: q.y, h: q.height, q }));
     const road = highRoad(tops, { x0: W0, x1: W1, from: { x: W0, y: Y }, to: { x: W1, y: Y } }, FLOOD_STEP, FLOOD_HOP);
     assert.deepEqual(road.faults, [], 'the toy lays a high road');
-    assert.ok(road.chain.length >= 2, 'the high road: the wall-step and its own pieces');
-    const highOnly = new Set<Platform>(road.chain.slice(1).map((t) => t.q));
+    assert.ok(road.chain.length >= 3, 'the high road: the wall-step, its own pieces and its last piece');
+    // (the fork's shared ends left out: W, chain[0], and C, the chain's last piece; the lead's ruling A, ENG-28 session 8)
+    const highOnly = new Set<Platform>(road.chain.slice(1, -1).map((t) => t.q));
     const on = run.sim.frame.bind(run.sim);
     run.sim.frame = (...a: unknown[]) => {
       const r = on(...(a as [never]));
