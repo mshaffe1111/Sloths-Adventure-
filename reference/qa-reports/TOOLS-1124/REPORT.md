@@ -1,16 +1,24 @@
 # TOOLS-1124: the shell '&' hook (R-165.418) and the see-through-row gate + the weir cut (R-165.417)
 
-EXACT NEXT STEP (the lead's call, then one short packet): the see-through-row check is BUILT and PLANTED but RED on main's own art:
-26 shipped frames trip it and I looked at every one (stills flagged-1.png, flagged-2.png; the list in artcheck-main.log). None I could see is a seam
-like the weir: 17 are the gaps between packed frames in atlases whose frame boxes live in code, not in a sibling .json (so the check
-saw the whole sheet as one piece; ground/w7 and w10 are two 2048 tiles stacked); 6 are pieces made of separate strands on purpose (boss-fx pennant0/1, gust, dashTrail; the
-expand icon's four corners; w6-calm-water's three strips); 3 single images I could NOT settle at contact-sheet scale and want a
-close look by Content: pickups/bell.webp rows 82..83, story/drake/drake-cup.webp rows 544..545, w1-18/hf18-bough.webp rows 527..531. Nothing went on a known list (law 22) and the rule was not loosened to
-pass. A tighter rule (a gap of 4 rows or fewer with solid paint right above and below) drops them but ALSO drops the weir (its foam
-edge is not solid), so it is no fix. My recommendation: feed the check the REAL frame boxes (src/game/art/inventory.ts / each
-atlas's slicing), check only frames whose kind is a solid piece (ground, platform, prop, step, character body), not fx or strands,
-then re-run; until then do not merge the gates.yml artcheck move or the full-tree row check. The hook (item 1) and the weir cut
-(item 3) are done and can land on their own.
+EXACT NEXT STEP (the lead ruled: items 1 and 3 DONE, ship with release 5 from t-tools-1124; the row check's rework APPROVED):
+on t-tools-1124, change artcheck's row check so it reads the REAL frame boxes (each atlas's slicing as the game uses it, or
+src/game/art/inventory.ts) and checks ONLY frames whose INVENTORY kind is a solid piece (ground, platform, step, prop, character body);
+fx, strands, icons and water strips are left out BY THEIR INVENTORY KIND, never by a file list in the gate. An atlas whose frames have
+no inventory kind is named as an INVENTORY GAP (no guessing). Start: replace framesOf() in tools/perf/artcheck.mjs (it now reads a
+sibling .json or else the whole image) with a reader of the inventory's pieces (file, box, kind); keep seamRows()/seamCheck() and the
+built-in weir plant as they are (the plant must still bite). Then run artcheck once and expect GREEN on main's art plus a list of
+inventory gaps; re-run tsc and the CI tool line on that head. Do not repair art in this job.
+
+The three single images, judged at 4x on a dark ground (singles-4x.png): NONE is a seam. pickups/bell.webp rows 82-83 is the bell's
+open mouth (only the rim is painted); story/drake/drake-cup.webp rows 544-545 is the gap between the tail and the foot (95% clear
+across the picture: separate parts); w1-18/hf18-bough.webp rows 530-533 (picture rows; 527-531 painted-box) is the gap between two
+of its three stacked 600x266 variants (BOUGH in src/game/protoArt.ts: rows 0-265, 266-531, 532-797; variant 2's underside ends above
+531 and variant 3's top headroom starts at 532), and the game draws each variant on its own, so nothing shows in 1-8. No game still
+was needed: the band is not inside any drawn piece.
+
+The 26 hits on main, for the record: 17 gaps between packed frames in atlases sliced in code, 6 strands on purpose (boss-fx pennants,
+gust, dashTrail; the expand icon; w6-calm-water), 3 singles above (not seams). Stills flagged-1.png, flagged-2.png; list
+artcheck-main.log. Nothing went on a known list and the rule was not loosened (a tighter rule also missed the weir).
 
 Engine (tooling) member, branch t-tools-1124 cut from origin/main cdffdc627. Items 1 and 3 DONE; item 2 BUILT, PLANTED, and RED on 26 false hits on main's art: the lead decides
 how the check gets real frame boxes (above).
