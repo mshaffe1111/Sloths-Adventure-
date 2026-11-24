@@ -20,6 +20,16 @@ export interface Release {
 
 export const WHATS_NEW: Release[] = [
   {
+    version: '0.10.3',
+    date: '2026-11-24',
+    title: 'The Mailman’s Route',
+    items: [
+      'New stage: The Mailman’s Route. I post the letters, then race the mail boat home.',
+      'Dot warns me before deep water, on every setting.',
+      'The rivers run smoother.',
+    ],
+  },
+  {
     version: '0.10.2',
     date: '2026-11-23',
     title: 'Walk them home',
