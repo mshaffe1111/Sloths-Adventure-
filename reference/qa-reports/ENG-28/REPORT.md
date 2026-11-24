@@ -28,6 +28,13 @@ water's edge, P touching it. The toy then tests the shape the lay makes, and the
 lead's leaning, a LAY verdict: floodFaults refuses a wall-step whose run-up cannot carry the slowest tier across the gap to the next
 piece (named, planted RED/GREEN). The number comes from the trace (the adult lands 6 px past a 60 px W's lip, then the small-ledge pause),
 for example 'no gap after a wall-step under N px wide'. Or (a) and (b) together. Take the ruling before building.
+BUT (a reading, not run by any bot): a 'branch' piece is a SOLID platform 24 px thick (gen2 w6Harness/brickSlots: type 'solid'), not a
+drop-through. On the brick, W fills the near bank's end and the porch is flush against W at the same height, so from the near side there
+is NO way down into the river: climbing W puts him on the porch. The brick's 'fork' has no low road. The toy's 60 px gap is exactly the
+low road's way down (off W, 60 down to the bank strip, then onto the walkway), so (a) as worded would delete the toy's low road and
+every low-road test with it. My advice to the lead: keep the toy's shape (the true fork shape). Make it (b): one lay verdict that a
+fork needs both a way down onto the low road AND, after the wall-step, a gap the slowest tier can cross from a standing climb. The
+brick then lays it (W wide enough for the run-up, or the gap where W's top is long). Prove it with a bot run on the brick before ruling.
 'too late' cannot go GREEN at 22 (nobody has taken a road by the close) and the ruling's option B (an earlier late) is blocked at 19 by
 the ADULT's miss of P. The options as I first put them (superseded by the lead's order above):
   (1) TOY: widen W in floodRun (and the plant) so his climb jump lands with run-up before W's lip. FIRST, check the real lay's W width
