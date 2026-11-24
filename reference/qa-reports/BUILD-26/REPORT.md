@@ -38,7 +38,7 @@ committed -> b3e0a8206 (the main merge): exactly child N v1 (437.9 -> 426.8 s) a
 own numbers). b3e0a8206 -> 23cdb07e8 (floorAt, the relists): none. 23cdb07e8 -> 5ecec4018: 120 (ENG-26t's overSmall strip, firsttimer.ts). No life
 or end moved; rescues child N 3 -> 3 (v12 1 -> 0, v14 0 -> 1); every table verdict as committed. Runs: calibration-<hash>.jsonl; compare: calcmp.py.txt.
 
-## Done-items so far
+## Done-items
 | item | evidence | state |
 |---|---|---|
 | the cause of rowWheels' red | seed 1 no longer meets the flick: 0 middle/expert rescues with the skill off (reproduced, frozen 35ca56b16). The skill still bites elsewhere | traced |
@@ -49,9 +49,6 @@ or end moved; rescues child N 3 -> 3 (v12 1 -> 0, v14 0 -> 1); every table verdi
 | registrycheck on frozen 35ca56b16 (src/tools identical to 5ecec4018 but the one test file) | b26u/registrycheck-35ca56b16.txt: PASS (15 stages, 82 s) | GREEN |
 | tipwalk --layouts 4 on frozen 35ca56b16 | b26u/tipwalk-35ca56b16.txt: PASS | GREEN |
 | the unit suite | ENG-26t's on frozen 35ca56b16: 4,077/0/3. 5ecec4018 changes only tools/inspect/rowWheels.test.ts (not in the suite's globs, imported by no suite file): `git diff --stat 35ca56b16 5ecec4018 -- src tools` | carries (no file it reads changed) |
-
-## Pushback
-- none on the plant. The cause of seed 1's change (floorAt merge, ENG-26t's guess) is not bisected: the plant now rests on a measured live case, which is what law 22 asks.
 
 ## Pushback
 - The packet's 'filled in place by the tool' (1-4): no such tool exists; a fill is a list rebuild (src/) with its own gates. Ruled A by the lead.
