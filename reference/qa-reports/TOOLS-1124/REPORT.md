@@ -1,6 +1,31 @@
 # TOOLS-1124: the shell '&' hook (R-165.418) and the see-through-row gate + the weir cut (R-165.417)
 
-EXACT NEXT STEP (TOOLS-1124c; head after this commit; code head 93738226). The lead ruled (A: --rows report-only, out of CI;
+EXACT NEXT STEP (after TOOLS-1124c): THE LEAD RULES on the two main breaches below. Nothing else is open on this branch. Paintcheck stays
+RED on main (1-6, 8-1) until they are fixed; no known list was added and the rule was not changed.
+
+## Session 3 (TOOLS-1124c): stills on main (cdffdc62) and one gate run on this branch's head
+Stills (real game, dev build of main, Pokey pinned; sidewall/sw.mjs; each *-pair.png is the frame | the same frame with the collider
+outlined in magenta from the engine's camera; boxes.json has the screen boxes). Upright 390x844 and sideways 844x390, close and wide.
+- 1-6 Normal, seed 1 (list index 0), a 24 x 345 'moss_stone' at x 27896, y 865: INVISIBLE. It is the post under a 157 px fragile branch
+  (x 27896, y 850), standing in the floor trough (floor top y 1090). Where the collider stands the screen shows a dark soil slot under
+  the branch, then the backdrop's big boulder (much wider than the post, not a wall shape). Nothing draws a 24 px pillar.
+  REACHABLE: both sides stand open on the walkable floor (left over 27647-27896, right over 27920-28053), 225 / 216 px high, more than his
+  body. Walking the trough, he stops against a wall nothing on screen shows. (sidewall/1-6-*-pair.png, 1-6-port-close-3x.png)
+- 8-1 Normal, seed 38747 (layout 0 builds it; paintcheck labels by the seed built), a 14 x 224 'log' at x 1466, y 526: INVISIBLE. Its
+  left side is flush with the log at 1297-1466, so only its right side is a face: the left wall of an 86 px pit (1480-1566). The bank's
+  painted face and lip end at x 1466; the 14 px strip shows the pit's backdrop. REACHABLE: falling or jumping into the pit he meets the
+  face 14 px out from the visible wall, and on top he can stand on 14 px of pit air past the visible lip. Small offset, but real.
+  (sidewall/8-1-*-pair.png, 8-1-land-close-3x.png)
+- Neither is drawn by another drawer that I could see, so (a) in the lead's choice applies to both: defects on shipped stages, fixed at
+  their root (1-6: the branch's support; 8-1: the sliver the lay leaves at a pit lip). Owner by the cards: Content/Builder; my read is
+  that both are generator output (a lay rule), not hand data, so the root may be in the engine's lay. Not checked: Easy for 1-6 (paintcheck
+  flagged Normal only); 8-1 Easy (14 x 214, open 60) not shot.
+Gates on this branch's head 434d3d09 (npm ci done first, so these count): tsc exit 0. CI tool line (gates.yml, the 'library.test.ts ...'
+line, found by content, run once): 356 tests, 355 pass, 0 fail, 1 todo (chase bots, already OPEN/todo). Not re-run: paintcheck (known RED
+on main's two stages above), the suite, build, perf gates (none of this session's changes are code).
+
+## Session 2 hand-over note (TOOLS-1124b, kept)
+(was the EXACT NEXT STEP for TOOLS-1124c; done above; code head 93738226). The lead ruled (A: --rows report-only, out of CI;
 B: GO, no known list), and both are wired. BUT paintcheck on main is now RED, so this head must NOT merge as it is:
 - R-165.434's check flags MAIN on 2 stages (b/paintcheck-main-sidewall.txt): 1-6 Normal, a 24x345 moss_stone at x 27896, y 865, on all
   100 listed seeds (both its sides); 8-1, a 14x224 'log' at x 1466 (seed 38747, Normal and Easy). My 'main 0' was WRONG: the survey
