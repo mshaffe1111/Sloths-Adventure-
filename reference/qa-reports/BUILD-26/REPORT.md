@@ -1,14 +1,19 @@
-# BUILD-26w (session 7 of BUILD-26q; t-build-26-wip-26q, code head 48b277994 unchanged: no src or tools change this box). Started 6:34 PM ET 11-24 (by `date`); this box written 6:46 PM ET
+# BUILD-26w (session 7 of BUILD-26q; t-build-26-wip-26q, the bot fix a44decc0e on 48b277994's stage). Started 6:34 PM ET 11-24 (by `date`); this box written 6:48 PM ET
 
 ## EXACT NEXT STEP
-**Item 1 (adult E 90) ROOT READ and SENT to the lead; NO fix made (the lead's rule: root first). Item 2 stills SHOT and pushed (paths below);
-ONE ROUGH SPOT found, NOT fixed (beat A: Pokey stands on air on the millpond shore; PRE-EXISTING on base 74df28278 too). Item 3 (ruling 4) NOT started.**
-(a) NEXT, in order: (1) read the lead's reply on the E 90 fix (proposed below). On a GO: lay it in tools/inspect/firsttimer.ts (general, every wheel),
-the planted toy first (RED with it off on 2-6 adult E 90), then re-run adult E 90 and adult E 1-3 (b26w/wheelland.mts.txt prints every step-off
-landing and the bot's way). (2) Beat A's bare ground: find which painter draws 2-6's millpond ground (World 2, 'log' style bank, h 90;
-NOT w1CutArt's pickCut, which only takes logs under THICK_LOG_MAX and moss stones) and why it leaves ~290 px bare past the second boulder
-(head: world x ~548-839 on platform 5, 326-1026 y 7761, Normal layout 0; base: ~300 px past the boulder 919-1029 on platform 2). Send the
-lead the cause before a fix (it may be ENGINE-WORTHY: a painter, every stage with a long log bank). (3) Then ruling 4 exactly as before:
+**The lead GO'd the E 90 bot fix ("general for every wheel"; conditions: planted toy RED off / GREEN on; the new path's trips 0 outside 2-6
+on every listed stage, else STOP and tell the lead; tierBots 9/9; small and self-contained, function and lines NAMED, since release 4's
+bot fix also changes firsttimer.ts on release-0.10.3-wip-plant-c). LAID: a44decc0e, tools/inspect/firsttimer.ts only, +14/-1:
+SKILLS.wheelWay (line 754); field `wheelOff` (1251-1252); intend(): the landing block (2362-2369: grounded, no jump/pending -> relocate on a
+non-bucket, clear) and the in-air way (2421-2422: `if (this.wheelOff) dir = this.wheelOff.way`); wheelRide(): set at the bucket step-off (3774).
+MEASURED on a frozen tree of a44decc0e (b26w/wheelland.mts.txt): adult E 90 shrine 128.7 s, 0 rescues (was 153.3 s, 1 rescue), lands x 849
+way +1; adult E 1 unchanged (124.9 s, 0). NOT yet run: tsc, the toy, the trip count, tierBots, the suite.**
+(a) NEXT, in order: (1) `npx tsc --noEmit -p .`. (2) The planted toy in tools/inspect/wheelRide.test.ts (CI runs it via gates.yml; check
+ciTests): SKILLS.wheelWay = false -> 2-6 adult E 90 rescued >= 1 (back into the wheel); true -> 0 rescues, shrine. (3) The trip count: a
+counter on the step-off set (line 3774) over every listed stage (castBots' list) and both settings: must be 0 outside 2-6, else STOP and tell
+the lead. (4) `npx tsx --test tools/inspect/tierBots.test.ts` (9/9). (5) Beat A's bare ground: find the painter of 2-6's millpond ground
+(World 2, 'log' style bank, h 90; NOT w1CutArt's pickCut) and why ~290 px past the second boulder is bare (head: world x ~548-839 on
+platform 5, 326-1026 y 7761, Normal layout 0; base 74df28278 the same past its boulder): the cause to the lead before a fix. (6) Ruling 4:
 ONE castBots --proven 2-6, lockall (2-6 the only mover), paint --stages 2-6, the suite + the CI tool line ONCE on the final head,
 timecheck; land on t-build-26 (merge, no force); hash and table to the lead.
 
