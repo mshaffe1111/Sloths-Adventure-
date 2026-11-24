@@ -252,9 +252,14 @@ test('planted: with keep-the-road off the edge press hops the porch off the wall
   assert.ok(ROAD_TRIPS.n > on, 'the rule tripped on the low road (the porch in reach, not taken)');
 });
 
-test('lead-the-line, too late for the line (he dawdled 22 s): the bot reads the water and leads them round by the high road, nobody set back', () => {
+// Late 19, not 22 (a re-plant at the SAME bar, the lead's ruling B, ENG-28 session 8): on the fork's passing shape (W 150 + gap 60) the
+// middle hops onto P at 6.93 s at every late (the read sends him round at once), so the late decides only whether he is on P before the
+// close. Measured on the shape, seeds 1/2/3 identical, the middle's margin (the close minus his first stand on P): late 19 +1.10 s (the
+// close at 8.03), late 20 +0.10 s (7.03), late 21 -0.90 s (6.03: on P after it), late 22 -1.90 s (5.03). The widest is late 19 (the adult
+// on P at 4.57 s: +3.47 s). The read-removed plant below runs at the same late 19, so the read is the only difference between them.
+test('lead-the-line, too late for the line (he dawdled 19 s): the bot reads the water and leads them round by the high road, nobody set back', () => {
   for (const [name, who] of WHO) for (const seed of SEEDS) {
-    const r = floodRun(who, seed, 22);
+    const r = floodRun(who, seed, 19);
     assert.equal(r.end, 'shrine', `${name} seed ${seed}: ${JSON.stringify(r)}`);
     assert.equal(r.high, true, `${name} seed ${seed}: the high road: ${JSON.stringify(r)}`);
     assert.equal(r.setBack, 0, `${name} seed ${seed}: ${JSON.stringify(r)}`);
@@ -262,7 +267,7 @@ test('lead-the-line, too late for the line (he dawdled 22 s): the bot reads the 
   }
 });
 
-// Late 19, not 'too late''s 22 (a re-plant at the SAME bar, R-165.432, ENG-28f): with the read removed he keeps the way's own low road, and
+// Late 19, the same late as 'too late' above (each a re-plant from 22 at the SAME bar: this one R-165.432, ENG-28f): with the read removed he keeps the way's own low road, and
 // keep-the-road's step-off now stops him at W's lip first, so at late 22 the close (2.93 s left at the fork read) fell while he and the
 // line were still on the near bank (middle seed 1: he at x 836, the three at 745/711/677) and cut nobody off. At late 19 about 5.9 s are
 // left at the read against the 6.44 s the line needs to cross, so the read still sends him round, and without it the line is out on the
