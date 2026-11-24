@@ -2,7 +2,7 @@
 // own lazy chunk in the build, never in the game's main script) and the stage's line in src/game/gen2/provenIndex.ts (count, version and
 // loader: all the main script holds, the same size whatever the list's length).
 import fs from 'node:fs';
-import { listVersion, type PackedList } from '../../src/game/gen2/seedList.ts';
+import { listVersion, packPlan, type PackedList } from '../../src/game/gen2/seedList.ts';
 import { PROVEN_INDEX } from '../../src/game/gen2/provenIndex.ts';
 
 const DIR = 'src/game/gen2';
@@ -32,4 +32,36 @@ ${Object.keys(lines).sort().map((k) => `  '${k}': { n: ${lines[k].n}, version: '
 `;
   fs.writeFileSync(`${DIR}/provenIndex.ts`, index);
   return Buffer.byteLength(text);
+}
+
+/** a seed a --merge part proved (the list's own filters, re-laid): what a fill or a combine writes into a list without laying it again */
+export interface ProvenCandidate { seed: number; quiet: number; outro: number; replay: Parameters<typeof packPlan>[0] }
+
+/**
+ * A list with named slots filled IN PLACE (the lead's ruling 11-22, FILL-14: a failing slot gets a new seed in place, never a reorder):
+ * slot k (1-based: layout variant k is the list's k-th seed) takes the k-th candidate in the order given; every other slot keeps its
+ * seed, packed plan, quiet and outro at its own index, byte for byte (order is identity: the first run, the QA rolls and the bots'
+ * calibration read variants by index). A new plan's sections join the END of the dict, so no other slot's packed text moves (an entry
+ * only a replaced plan used stays: harmless, and dropping it would renumber every plan after it). Refused by name, nothing written: a
+ * slot off the list or named twice, a candidate already listed or given twice, fewer candidates than slots. Candidates past the slots
+ * are left unused.
+ */
+export function fillSlots(list: PackedList, slots: readonly number[], cands: readonly ProvenCandidate[]): PackedList {
+  const n = list.seeds.length;
+  for (const k of slots) if (!Number.isInteger(k) || k < 1 || k > n) throw new Error(`seedlist fill: slot ${k} is not on the list (1-${n})`);
+  if (new Set(slots).size !== slots.length) throw new Error(`seedlist fill: a slot is named twice (${slots.join(',')})`);
+  if (cands.length < slots.length) throw new Error(`seedlist fill: ${slots.length} slots but ${cands.length} candidates`);
+  const use = cands.slice(0, slots.length);
+  if (new Set(use.map((c) => c.seed)).size !== use.length) throw new Error('seedlist fill: a candidate seed is given twice');
+  const kept = new Set(list.seeds.filter((_, i) => !slots.includes(i + 1)));
+  for (const c of use) if (kept.has(c.seed)) throw new Error(`seedlist fill: seed ${c.seed} is already listed`);
+  const out: PackedList = { dict: [...list.dict], seeds: [...list.seeds], plans: [...list.plans], ...(list.quiet ? { quiet: [...list.quiet] } : {}), ...(list.outro ? { outro: [...list.outro] } : {}) };
+  slots.forEach((k, j) => {
+    const c = use[j];
+    out.seeds[k - 1] = c.seed;
+    out.plans[k - 1] = packPlan(c.replay, out.dict);
+    if (out.quiet) out.quiet[k - 1] = c.quiet;
+    if (out.outro) out.outro[k - 1] = c.outro;
+  });
+  return out;
 }
