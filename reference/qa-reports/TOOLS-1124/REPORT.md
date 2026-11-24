@@ -1,8 +1,19 @@
 # TOOLS-1124: the shell '&' hook (R-165.418) and the see-through-row gate + the weir cut (R-165.417)
 
-EXACT NEXT STEP: NEXTSTEP
+EXACT NEXT STEP (the lead's call, then one short packet): the see-through-row check is BUILT and PLANTED but RED on main's own art:
+26 shipped frames trip it and I looked at every one (stills flagged-1.png, flagged-2.png; the list in artcheck-main.log). None I could see is a seam
+like the weir: 17 are the gaps between packed frames in atlases whose frame boxes live in code, not in a sibling .json (so the check
+saw the whole sheet as one piece; ground/w7 and w10 are two 2048 tiles stacked); 6 are pieces made of separate strands on purpose (boss-fx pennant0/1, gust, dashTrail; the
+expand icon's four corners; w6-calm-water's three strips); 3 single images I could NOT settle at contact-sheet scale and want a
+close look by Content: pickups/bell.webp rows 82..83, story/drake/drake-cup.webp rows 544..545, w1-18/hf18-bough.webp rows 527..531. Nothing went on a known list (law 22) and the rule was not loosened to
+pass. A tighter rule (a gap of 4 rows or fewer with solid paint right above and below) drops them but ALSO drops the weir (its foam
+edge is not solid), so it is no fix. My recommendation: feed the check the REAL frame boxes (src/game/art/inventory.ts / each
+atlas's slicing), check only frames whose kind is a solid piece (ground, platform, prop, step, character body), not fx or strands,
+then re-run; until then do not merge the gates.yml artcheck move or the full-tree row check. The hook (item 1) and the weir cut
+(item 3) are done and can land on their own.
 
-Engine (tooling) member, branch t-tools-1124 cut from origin/main cdffdc627. HEADLINE
+Engine (tooling) member, branch t-tools-1124 cut from origin/main cdffdc627. Items 1 and 3 DONE; item 2 BUILT, PLANTED, and RED on 26 false hits on main's art: the lead decides
+how the check gets real frame boxes (above).
 
 ## 1. R-165.418: the shell '&' hook
 - `tools/team/bgguard.mjs`: a PreToolUse hook on Bash in `.claude/settings.json` (beside modelgate). Refuses a command with a bare
@@ -23,7 +34,7 @@ Engine (tooling) member, branch t-tools-1124 cut from origin/main cdffdc627. HEA
   repaired cut must pass, or the gate fails.
 - Also checked: release 4's repaired sheet (bdb807cc7 w2-next.webp, every frame) PASSES; the sheet before DRESS-27's repair trips on
   `weir` only, rows 329..330.
-- Full run on main's 1,012 shipped images: FULLRUN
+- Full run on main's 1,012 shipped images: 90 s; size part PASS; row part FAIL on 26 frames, all looked at, none a real seam (top).
 
 ## 3. R-165.417 (1): the weir cut
 - `reference/art/hfnext/cut/weir.png` replaced by DRESS-27's weirseam.py output on it (2,116 px filled, rows 326-331 only).
