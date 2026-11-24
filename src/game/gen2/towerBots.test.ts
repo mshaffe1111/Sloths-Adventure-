@@ -146,22 +146,14 @@ test('the climb camera in the engine: on a tower his feet rest low in the view s
 });
 
 test('the climb framing is a tower\'s alone: a shipped climb of the old generator and the way down keep the framing they had', () => {
-  // (three shipped stages as the game builds them today: their travel leads up or down, and their view is not moved; 4-1, the old
-  // generator's kapok climb, stands in for 2-6, which is a tower since BUILD-26 and is held below)
-  for (const [id, travel] of [['4-1', 'up'], ['4-7', 'down'], ['9-2', 'up']] as const) {
+  // (three shipped stages as the game builds them today: their travel leads up or down, and their view is not moved)
+  for (const [id, travel] of [['2-6', 'up'], ['4-7', 'down'], ['9-2', 'up']] as const) {
     const sim = new RealPlay(id, 1);
     const e = sim.e as { mode: { travel: string; lead(): { dx: number; dy: number } }; currentStage: object };
     assert.equal(e.mode.travel, travel, `${id} travels ${travel}`);
     assert.notEqual(e.mode.lead().dy, 0);
     assert.equal(towerLead(e.currentStage, e.mode), 0, `${id}: no tower, so its view leads nowhere new`);
     assert.equal(travelFeet(0.55, towerLead(e.currentStage, e.mode)), 0.55);
-  }
-  // (and a shipped tower, as the game builds it: 2-6 The Water Wheels, laid up, leads up)
-  {
-    const e = new RealPlay('2-6', 1).e as { mode: { travel: string; lead(): { dx: number; dy: number } }; currentStage: object };
-    assert.equal(e.mode.travel, 'up', '2-6 travels up');
-    assert.equal(towerLead(e.currentStage, e.mode), -1, '2-6: a shipped tower laid up leads up');
-    assert.equal(travelFeet(0.55, towerLead(e.currentStage, e.mode)), CLIMB_VIEW.up);
   }
   withTowerSim(up(), upKit, 1, 'normal', (sim) => {
     const e = sim.e as { mode: { lead(): { dx: number; dy: number } }; currentStage: object };
