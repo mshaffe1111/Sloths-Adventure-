@@ -24,6 +24,13 @@ brick (no way down), GREEN on the passing shape the verdict finds. (ii) lineBot'
 run on each: lineBot 8/8, and 'too late' and the plant re-read (a re-plant at the same bar if a late moves). (iii) ROAD_TRIPS, the suite
 in shards, the CI line, lockall (flood.ts is under src: RE-RUN it on a frozen tree), land on t-eng-28 by the 8:00 PM hard stop.
 tierBots re-runs only if firsttimer.ts changes, and it must not ('No bot change').
+POINTER for (i), read this session: pacerFaults (src/game/pacer.ts:119) judges only numbers that gen2/pacerLay.ts computes, and pacerLay
+reads each tier's play from the DESIGN TABLE (the PacerRow in gen2/worlds/w2.ts: `rate.middle`, crossingBank, margin), not from the bots
+(src/ cannot import tools/inspect). The flood verdict has no such tier numbers yet: a landing offset on a wall-step's top, the small-ledge
+pause, the restart speed off it, the run-up. Those are DESIGNER numbers in W2_FLOOD, and Engine never changes a game number (ENGINE.md
+'You never'). So ask the lead FIRST where they come from: a Designer entry in W2_FLOOD (cited), or derived from the engine's own physics
+(Pokey's run from a stand over a W's width) plus the traced landing (6 px past the lip) and pause (0.25-0.5 s, firsttimer.ts:3083).
+Do not invent them.
 
 THE LEAD'S EARLIER RULING (retracted in its part (a); kept for the record; sent BEFORE it read my no-low-road finding below): "BOTH, as you advise. (a) The toy matches
 the brick: W at the water's edge, P touching W (gap 0), as floodLay.test's brick lays on all 8 rolls; then re-read 'too late' and the
