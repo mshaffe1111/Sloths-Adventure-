@@ -45,8 +45,20 @@ test('wheel.ts: the top moves the way he travels, the bottom back toward the jet
     assert.equal(L.streetY, w.cy - w.R + WHEEL.drop);
     assert.ok((w.cx - L.jettyX) * way > 0, 'the jetty stands behind the wheel');
     assert.ok((L.streetX - w.cx) * way > 0, 'the street stands on past it');
-    // the jetty's lip is where the near edge of a bucket floor DROP px over the bottom meets it
-    assert.ok(Math.abs(Math.abs(L.jettyX - w.cx) - (lipOff(w.R) + w.W / 2)) < 1e-9);
+    // the jetty's lip stands WHEEL.jettyClear short of where the near edge of a bucket floor DROP px over the bottom passes (2-6.md NEW 1:
+    // no other solid in the sweep; the rider's body over a bucket's edge clears its end, the TOY below)
+    assert.ok(Math.abs(Math.abs(L.jettyX - w.cx) - (lipOff(w.R) + w.W / 2 + WHEEL.jettyClear)) < 1e-9);
+    assert.ok(WHEEL.jettyClear >= 24, 'the jetty end clears a rider standing as far over a bucket as the engine stands him');
+    // and a bucket floor at the jetty's height never reaches within jettyClear of the jetty's end, on its way up or down
+    let met = 0;
+    for (let k = 0; k < 7200; k++) {
+      const b = bucketAt(w, 0, (turnTime(w) * k) / 7200);
+      if (Math.abs(b.y - L.jettyY) > 1) continue;
+      met++;
+      const near = way > 0 ? b.x : b.x + w.W;
+      assert.ok((near - L.jettyX) * way >= WHEEL.jettyClear - 1.5, `a bucket at the jetty's height ${Math.round((near - L.jettyX) * way)} px from its end`);
+    }
+    assert.ok(met > 0, 'the bucket was met at the jetty height');
     assert.equal(wheelLips(w, 'up', 80).streetY, w.cy - w.R - 80);
     assert.equal(wheelLips(w, 'in').streetX, w.cx + way * WHEEL.streetIn);
   }
@@ -210,29 +222,33 @@ test('PLANTED: a moved jetty, a bough in the sweep, a drowned ledge, no pond, an
 // then hopped in again, every turn. 2-6.md NEW 1: no other solid in the sweep. RED on ccc0d1b1/1af03d233 (the stage's fault).
 test("TOY (ruling 2): a rider held still on a bucket's near end rides up past the jetty, never set back on it (the great wheel, Easy)", () => {
   setDifficulty('easy');
-  const r = new RealPlay('2-6', 1);
-  const jetty: Platform = { id: 1, x: 635, y: 1013, width: 240, height: 24, type: 'solid' };
-  const ax = axleFromJetty(jetty.x + jetty.width, jetty.y, 200, WHEEL.bucketW, 1);
-  const w: Wheel = { cx: ax.cx, cy: ax.cy, R: 200, N: 6, W: WHEEL.bucketW, V: 60, way: 1 };
-  const buckets: Platform[] = [];
-  for (let i = 0; i < w.N; i++) buckets.push({ id: 100 + i, x: 0, y: 0, width: w.W, height: WHEEL.bucketH, type: 'moving', wheel: { w, i } });
-  r.bare([{ id: 2, x: 0, y: w.cy + w.R + 400, width: 4000, height: 200, type: 'solid' }, jetty, ...buckets]);
-  r.t = 0;
-  r.frame();
-  // (bucket 0 is at the bottom at t 0; he stands on its near end, the jetty's side, his MIDDLE on its edge (p.x is his middle in the
-  // engine's collisions), and does nothing. RED there and with his middle 6, 10 or 16 px over it (the trace: 6 px over, x 890 on a bucket
-  // at 896); 4 px in, he rides clean. The cause: the lip hoist (engine.ts, forgive.mantle 26 px): rising, his body meets the jetty's end
-  // from the far side with his feet under its top, and he is hoisted onto it)
-  r.stand(buckets[0].x, buckets[0].y);
-  r.frame();
-  r.frame();
-  const on: number[] = [];
-  const n = Math.round(turnTime(w) / 4 / DT);
-  for (let k = 0; k < n; k++) {
+  // (bucket 0 is at the bottom at t 0; he stands on its near end, the jetty's side, his MIDDLE (p.x is his middle in the engine's
+  // collisions) on its edge and 6, 10, 16 and 19 px over it (19: the furthest over the engine stands him on a bucket on Easy; 20 is not
+  // stood, BUILD-26u; the trace: 6 px over, x 890 on a bucket at 896), and does nothing. RED with the jetty's end at the bucket's near edge at its
+  // height (the lip hoist, engine.ts, forgive.mantle 26 px: rising, his body met the jetty's end from the far side with his feet under its
+  // top, and he was hoisted onto it); GREEN with WHEEL.jettyClear, the jetty's end 24 px short of the bucket's path there)
+  for (const over of [0, 6, 10, 16, 19]) {
+    const r = new RealPlay('2-6', 1);
+    const jetty: Platform = { id: 1, x: 635, y: 1013, width: 240, height: 24, type: 'solid' };
+    const ax = axleFromJetty(jetty.x + jetty.width, jetty.y, 200, WHEEL.bucketW, 1);
+    const w: Wheel = { cx: ax.cx, cy: ax.cy, R: 200, N: 6, W: WHEEL.bucketW, V: 60, way: 1 };
+    const buckets: Platform[] = [];
+    for (let i = 0; i < w.N; i++) buckets.push({ id: 100 + i, x: 0, y: 0, width: w.W, height: WHEEL.bucketH, type: 'moving', wheel: { w, i } });
+    r.bare([{ id: 2, x: 0, y: w.cy + w.R + 400, width: 4000, height: 200, type: 'solid' }, jetty, ...buckets]);
+    r.t = 0;
     r.frame();
-    if (on[on.length - 1] !== r.standingOn) on.push(r.standingOn);
+    r.stand(buckets[0].x - over, buckets[0].y);
+    r.frame();
+    r.frame();
+    assert.equal(r.standingOn, 100, `${over} px over: the engine stands him on the bucket (the stance is one he can take)`);
+    const on: number[] = [];
+    const n = Math.round(turnTime(w) / 4 / DT);
+    for (let k = 0; k < n; k++) {
+      r.frame();
+      if (on[on.length - 1] !== r.standingOn) on.push(r.standingOn);
+    }
+    assert.ok(!on.includes(jetty.id), `${over} px over: set back on the jetty as his bucket rose past its end (what he stood on, in turn: ${on.join(' -> ')})`);
+    assert.equal(r.standingOn, 100, `${over} px over: still in his bucket a quarter turn on`);
+    assert.ok(r.p.y < jetty.y - 100, `${over} px over: carried up past the jetty (feet at ${Math.round(r.p.y)}, the jetty's top ${jetty.y})`);
   }
-  assert.ok(!on.includes(jetty.id), `set back on the jetty as his bucket rose past its end (what he stood on, in turn: ${on.join(' -> ')})`);
-  assert.equal(r.standingOn, 100, 'still in his bucket a quarter turn on');
-  assert.ok(r.p.y < jetty.y - 100, `carried up past the jetty (feet at ${Math.round(r.p.y)}, the jetty's top ${jetty.y})`);
 });

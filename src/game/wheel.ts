@@ -30,6 +30,12 @@ export const WHEEL = {
   pondDepth: 60,
   /** an 'in' or 'up' street's lip: this far past the axle, over the top (px; the flight's STREET_IN_X) */
   streetIn: 20,
+  /** the jetty's end stands this far short of a bucket's near edge at the jetty's height (px; 2-6.md NEW 1, "no other solid in the sweep").
+   *  At 0 the bucket's floor met the jetty's end exactly there, and a rider standing still on a bucket's near end, his body over its edge
+   *  (the engine stands him with his middle up to 19 px over on Easy), met the jetty's end face as the bucket rose and the lip hoist
+   *  (engine.ts, forgive.mantle 26 px) set him back on the jetty: BUILD-26t's toy, wheel.test.ts. Measured on that toy: middle on the edge
+   *  clears at 8 px, 6 px over at 16, 16 px over at 24; at 24 every stance up to 19 px over rides clean (the lead's ruling: about 24 px, every wheel with a jetty, both settings) */
+  jettyClear: 24,
 } as const;
 
 export interface Wheel {
@@ -81,14 +87,14 @@ export type StreetKind = 'edge' | 'in' | 'up';
 /** the jetty's lip and the street's lip (x of the end that faces the wheel, y of the top) for a wheel */
 export function wheelLips(w: Wheel, street: StreetKind, up = 0): { jettyX: number; jettyY: number; streetX: number; streetY: number } {
   const off = lipOff(w.R) + w.W / 2;
-  const jettyX = w.cx - w.way * off, jettyY = w.cy + w.R - WHEEL.drop;
+  const jettyX = w.cx - w.way * (off + WHEEL.jettyClear), jettyY = w.cy + w.R - WHEEL.drop;
   if (street === 'edge') return { jettyX, jettyY, streetX: w.cx + w.way * off, streetY: w.cy - w.R + WHEEL.drop };
   return { jettyX, jettyY, streetX: w.cx + w.way * WHEEL.streetIn, streetY: street === 'up' ? w.cy - w.R - up : w.cy - w.R + WHEEL.drop };
 }
 
 /** the wheel's axle from its jetty's lip (the lay works from the jetty he arrives on) */
 export function axleFromJetty(jettyX: number, jettyY: number, R: number, W: number, way: 1 | -1): { cx: number; cy: number } {
-  return { cx: jettyX + way * (lipOff(R) + W / 2), cy: jettyY - R + WHEEL.drop };
+  return { cx: jettyX + way * (lipOff(R) + W / 2 + WHEEL.jettyClear), cy: jettyY - R + WHEEL.drop };
 }
 
 /** the box a bucket's floor sweeps (px): the rim's circle widened by half a bucket each side and its floor's thickness under it */
