@@ -8,6 +8,26 @@ STATE: lineBot 7/8 on frozen bb04993f3. RED: 'too late' (late 22). The lead's na
 before the first close on a piece of the flood's own high-road chain past the wall-step W (flood.ts highRoad, no y threshold). Under
 it, 'time enough' (low), the keep-the-road plant (off high / on low), the heron tests and the read-removed plant at late 19 are all GREEN.
 tierBots 9/9 on frozen 6556b42ca, no calibration file changed. firsttimer.ts is unchanged since, so that result stands for bb04993f3.
+THE LEAD'S LATEST RULING (word for word, sent BEFORE it read my no-low-road finding below): "BOTH, as you advise. (a) The toy matches
+the brick: W at the water's edge, P touching W (gap 0), as floodLay.test's brick lays on all 8 rolls; then re-read 'too late' and the
+plant at the brick's shape (a re-plant at the same bar if its late moves, derivation in the comment). (b) floodFaults gains a named
+verdict: after a wall-step, a gap to the next high-road piece is refused unless each tier's own modelled play (its landing on the step,
+its small-ledge pause, its run-up) carries the hop across it; planted RED on the old toy shape (W 60 + gap 60, the first-timer adult
+falls short), GREEN on the brick. NO bot change in this job: the pause-then-walk-off at a small ledge before a level gap goes on
+R-165.424's bot-tuning list (I am noting it there). Then lineBot 8/8, ROAD_TRIPS, the suite in shards, the CI line, land on t-eng-28 by
+the 8:00 PM hard stop."
+SESSION 7, FIRST: (a) conflicts with my last finding (the brick's porch is flush against W, so the brick has NO way down onto the low road;
+the toy's gap IS its low road's entry). Read your queue for the lead's answer to that before building (a). Do NOT build (a) as worded
+without that answer, because a gap-0 toy has no low road, and 'time enough', the keep-the-road plant and the read-removed plant all
+need one. (b) and 'no bot change' stand as ruled.
+The lead's earlier order (1)(2), answered read-only this session: (1) floodLay lays no W or P itself. The brick: W 60 wide, flush at
+the water's edge, gap 0. The rule: FLOOD_STEP 60, FLOOD_HOP 60 the widest gap; NO rule ties W's width to the gap. (2) Why no
+edge-press probe ran on W after the pause: the pause ends at firsttimer.ts:3093, and its own flick-on hops only when NO floor stands 80
+px ahead (`!this.floorAt(p.x + dir * 80, p.y, 40)`). P stands 47-80 px ahead, so no hop. Then neither the edge press's floor-ahead read
+(a probe right after `const ahead`) nor its `!ahead` branch ran for that run on W: an earlier branch of the frame's decision moves him
+off the lip at 87 px/s. That branch is NOT yet named (next probe: log each `return` of the decision between :3100 and the edge press for
+__TR runs). That is a bot read for R-165.424's list, per the lead; no bot change in this job.
+
 THE LEAD'S ORDER (word for word): "finish the adult late-19 read-on trace (jump or walk at W's lip, vx at the lip, where he leaves).
 Then (2) FIRST, as you advise: compare the toy's W and the P gap with what floodLay actually lays (W's width, the run-up to the P gap, the
 gap). If the toy is narrower than the lay, the toy is wrong: make it match the lay (that is no loosening; the toy must be the real shape).
