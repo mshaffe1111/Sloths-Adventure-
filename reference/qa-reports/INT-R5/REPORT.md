@@ -2,7 +2,71 @@
 
 Session 1: started 2:31 PM ET 11-24 (by `date`), handed over at the 28-minute box. Lead: session_01FhBbYN2CVHnFXg7XzqKXpM.
 
-## EXACT NEXT STEP (session 3 starts here)
+## EXACT NEXT STEP (session 4 starts here)
+Session 3 (INT-R5c): started 3:20 PM ET 11-24 (by `date`). Head: release-0.10.3 = see `git log -1 origin/release-0.10.3` (session 3
+pushed 41cb842a1 part 3, 575022e30 the stamp fix, 86aad83a7 the FILL-14b merge, 6c1740d2b the TEACH-11 merge, 90faac0ba (ENG-PLANT's
+two REPORT-only commits merged in), then REPORT-only commits). In order:
+0. **Setup (session 3 lost 2 minutes here):** a release tree (`git worktree add -b release-0.10.3 <dir> origin/release-0.10.3`), then
+   `npm ci --no-audit --no-fund --legacy-peer-deps` (plain `npm ci` fails ERESOLVE: no node_modules at all), then
+   `git fetch --unshallow origin` (timecheck and blame need it; about 2 minutes, in the background).
+1. **TEACH-11 is MERGED (6c1740d2b, tsc clean).** If session 3's run on frozen 90faac0ba is not in "Session 3: results" below, run it:
+   the CI tool line (gates.yml:157 read live; expect 384 tests with teachFirstScan.test, the same 6 ENG-PLANT reds + the chaseBots todo),
+   `npx tsx tools/engine/teachFirstScan.ts --check --seeds 20` (CI's form) and `npx tsx tools/engine/seedlist.ts 1-1 --check`.
+2. **ENG-PLANT (lands ON release-0.10.3 itself, about 5:30 PM ET):** `git pull` the release tree; tsc + the CI tool line on a frozen copy:
+   **0 FAIL** is the bar (the todo chaseBots :110 aside). If any red: stop and send it to the lead (no re-plant here, LAWS 22).
+3. **THE FULL SET, once, on the final head** (session 2's step 3 below is the recipe: frozen worktree + chattr, run1.sh then run2.sh, both
+   run_in_background with timeout 7,200,000 ms, never a shell '&'; bars there). rowWheels is gone from the line (part 3). ADD to run1.sh
+   before it runs: `g teachfirst "npx tsx tools/engine/teachFirstScan.ts --check"` (every seed: the lead's ruling, CI runs --seeds 20) and
+   make lockall's `--intended 2-7,1-4` also cover TEACH-11's 18 hint-only stages (their list and how TEACH-11 ran lockall:
+   reference/qa-reports/TEACH-11/REPORT.md; read lockall.ts's --intended first);
+   the lead's ruling: lockall vs main's intended moves are 2-7, 1-4's fill, and TEACH-11's 18 hint-only moves; NAME EACH in the table.
+4. Gate table into this REPORT; the final head and table to the lead (no clock times).
+
+## Session 3 (INT-R5c): what it did
+- **Part 3 (the lead's ruling 1), commit 41cb842a1:** rowWheels.test was never on main (`git ls-tree origin/main`: no rowWheels, no
+  w2Arc26 file), so not a shipped gate. Removed: src/game/gen2/worlds/w2Arc26.test.ts, tools/inspect/rowWheels.test.ts,
+  tools/inspect/rowWheels.ts (only rowWheels.test imported it); rowWheels.test.ts off gates.yml:157. **Kept, the lead agreed:**
+  w2Arc26.ts as the unlisted fixture: three suite tests import its kitLib26/STAGE_26 and cover engine code that ships in release 4
+  (gen2/towerWater.test.ts, ENG-26d 59a5e4794: stacked water by riverAt; gen2/listedWheelSheet.test.ts, ENG-26f 4a0a8677c: a listed
+  stage that lays a wheel preloads the noria; gen2/nodeClock.test.ts, ENG-26c f79e86f2a), plus tools/inspect/b26/probe.ts; and
+  tools/inspect/plantRow.ts (draftRoute.mjs, the DEV page, uses it). **Release 5's revert list to bring 2-6 back: 8d094787c, 4816edd31,
+  41cb842a1.**
+- **timecheck (the lead's ruling 2), commit 575022e30:** REPORT.md:201 'hand-over at 3:19 PM ET' was typed at 3:10 PM in f23e3ae12 (a
+  box end written as a stamp); now 'hand-over at 3:10 PM ET, the commit's real time; first typed 3:19 PM, the box's end, D128'.
+  `node tools/timecheck.mjs` on 575022e30's successor (full history): PASS (557 commits, 84 stamps).
+- **FILL-14b merged (the lead's ruling 3), commit 86aad83a7** (`--no-ff` 40a9c4bd2, t-build-26): one conflict,
+  reference/handoffs/engine-core.md: both new turnover entries kept (0zr-W2FIN, then 0zr-FILL14). Auto-merged: provenIndex.ts (1-4
+  version 698829e6, the lead's number; no 2-6 row), seeds-1-4.ts, seedlist.ts/seedlistFile.ts/seedlist.test.ts, methods/seed-list.md.
+  No 2-6 file came back.
+- **TEACH-11 merged (the lead's ruling 3), commit 6c1740d2b** (`--no-ff` 288cca7d7, t-eng-27 fast-forwarded from 90552d3ec). Two conflicts:
+  .github/workflows/gates.yml:157, the CI tool line (release: cageChannel.test + cageBot.test, no rowWheels; TEACH-11: teachFirstScan.test):
+  the union, teachFirstScan.test after storyTipScan.test as on t-eng-27 (sorted file lists compared: release's + 1, TEACH-11's + 2); the
+  rolled job's new `teachFirstScan.ts --check --seeds 20` step merged clean. reference/handoffs/engine-core.md: both sides' entries kept
+  (release's 0zr-W2FIN/FILL14/26s/26q/26, then t-eng-27's 0zq-teach). tsc clean.
+- **ENG-PLANT's two REPORT-only commits** (963aa5eb7, e86cb8f4a; only reference/qa-reports/ENG-PLANT/) were on origin: merged in, 90faac0ba,
+  pushed (fast-forward).
+
+### Session 3: results (each on a FROZEN detached worktree, chattr +i src/tools, proven writable)
+| Head | Gate | Result |
+|---|---|---|
+| 86aad83a7 (FILL-14b merged) | tsc | clean |
+| 86aad83a7 | the CI tool line (gates.yml:157) | 383 tests: 376 pass, **6 FAIL**, 1 todo (chaseBots :110). The 6 = ENG-PLANT's: firsttimer :184 (2-2 child N 36 / middle N 17) and riverRide :107 :145 :207 :213 :229. The 11 w2Finish reds (ENG-W2FIN) and rowWheels :91 (part 3) are gone. |
+| 86aad83a7 | seedlist 1-4 --check | PASS (100 seeds, each clean on both settings) |
+| 86aad83a7 | castBots 1-4 --seeds 1-100, 4 bots, both, par 4 | proven 100 of 100; every row PASS 100/100, 0 under the 100 s floor; medians = FILL-14b's (adult N 121.6, child N 210.3, middle N 142, expert N 131.5 s) |
+| 575022e30's successor | timecheck (full history) | PASS (557 commits, 84 stamps) |
+| 6c1740d2b (TEACH-11 merged) | tsc | clean |
+| 90faac0ba (TEACH-11 merged + ENG-PLANT REPORT commits) | the CI tool line, teachFirstScan --check --seeds 20, seedlist 1-1 --check | RUNNING at session 3's box (results below when in) |
+
+### Session 3: unresolved, pushback, method update
+- Unresolved: release 4 is NOT green yet: the CI line's 6 ENG-PLANT reds (lands about 5:30 PM ET); THE FULL SET not run (waits on ENG-PLANT).
+- Pushback: one part of ruling 1 not done, the lead agreed: w2Arc26.ts stays (three engine tests' fixture).
+- Slip, named: I read the REPORT lean (EXACT NEXT STEP only) and missed session 1's 'Setup notes' (npm ci ERESOLVE): the first install
+  failed, about 2 minutes lost. Method update: the setup lines now sit in the EXACT NEXT STEP itself (step 0), where a fresh session reads.
+- Lessons applied: D92 (tsc + the CI line after each merge), D111 (28-minute box; extension asked for a running gate), D113/D122 (every
+  long run in the background with a timeout, no foreground wait, no '&'), D115 (frozen worktrees, chattr), D119 (commit messages by -m),
+  D128 (the stamp corrected to the commit's real time), D109 (no clock times to the lead).
+
+## Session 2's next step (superseded by session 3's above; kept for the record)
 Session 2 (INT-R5b): started 2:51 PM ET 11-24 (by `date`). Head: release-0.10.3 = see `git log -1 origin/release-0.10.3` (session 2 pushed
 57d8b8ffb, the bump, then REPORT-only commits). In order:
 1. **Wait for three hashes from the lead (ReadNotifications at every step boundary):** ENG-W2FIN's w2.ts root fix (red class (A); it
