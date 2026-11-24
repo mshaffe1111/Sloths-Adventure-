@@ -164,7 +164,7 @@ jobs:
       - run: npx tsx tools/engine/storyTipScan.ts --check
       # (the first-appearance gate, R-165.427 TEACH-11, storyTipScan's twin: every listed stage, EVERY proven seed, both settings, fresh
       # touch phone: each mechanic Dot teaches with a line has it laid as a teach line (StageHint.teach, so it never waits out Dot's calm
-      # gap) in the first section that shows it, before its first ask; tools/engine/teachFirstScan.test.ts plants four reds; about 2 min)
+      # gap) in the first section that shows it, before its first ask; tools/engine/teachFirstScan.test.ts plants the reds; 2,822 rolls, about 10 min)
       - run: npx tsx tools/engine/teachFirstScan.ts --check
       # (the proven seed lists are checked in the seedlists matrix below, R-165.278)
       # (every stage-table stage registered everywhere: kit, config, routed, levelSeeds, sheets, a drawcheck scenario, a seed list or stand-in,
