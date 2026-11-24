@@ -2403,26 +2403,29 @@ export class FirstTimerRun {
   }
 
   /**
-   * SKILLS.runUp (vineFromLog): does a run along this log, then a jump, catch liana `v` at every lag of `lags`? From a stand the run
-   * press comes after his thumb's lag (each of `lags`, braking meanwhile); on the run (`running`) it is held now. For each, some frame of
-   * the run (on the log) from which the jump caught at all three lags (runPress).
+   * SKILLS.runUp (vineFromLog): does a run along this log, then a jump, catch liana `v` at every lag of `lags`? One plan (run k frames,
+   * then press), flown at each lag of `lags`, his thumb's lag and spread on both presses: from a stand the run press comes after the lag
+   * (braking meanwhile), on the run (`running`) it is held now; then k frames of run on the log, then the jump press after the lag
+   * (runPress). Some k at which every lag catches.
    */
   private runUpCatches(p: RealPlay['p'], dir: -1 | 1, here: Platform, v: Parameters<typeof canGrabSwing>[2], lags: number[], carry: number, hold: number, clock: number, t: number, running: boolean): boolean {
     const rivers = this.sim.stage.rivers;
     const at = floatAt(rivers, here), d = here.drift!;
-    return (running ? [0] : lags).every((rl) => {
-      const b = { x: p.x, y: p.y, vx: p.vx, vy: 0 };
-      let s = 0;
-      for (let f = rl > 0 ? Math.round(hopAim(rl).off / DT) : 0; f > 0; f--) { groundStep(b, DT, 0); s += DT; }
-      for (let k = 0; k < 45; k++) {
-        const x = b.x + at(t + s) - at(t), lx = at(t + s);
-        if (!(x > lx + 10 && x < lx + here.width - 10) || (SKILLS.vineOverTail && !!d.tail && x > d.x1 - 10)) return false;
-        if (lags.every((lag) => this.runPress(b.x, b.vx, s, lag, p, dir, here, v, carry, hold, clock, t))) return true;
-        groundStep(b, DT, dir);
-        s += DT;
-      }
-      return false;
+    const runs = lags.map((lag) => {
+      const b = { x: p.x, y: p.y, vx: p.vx, vy: 0, s: 0 };
+      for (let f = running ? 0 : Math.round(hopAim(lag).off / DT); f > 0; f--) { groundStep(b, DT, 0); b.s += DT; }
+      return b;
     });
+    for (let k = 0; k < 45; k++) {
+      const on = runs.map((b) => {
+        const x = b.x + at(t + b.s) - at(t), lx = at(t + b.s);
+        return x > lx + 10 && x < lx + here.width - 10 && !(SKILLS.vineOverTail && !!d.tail && x > d.x1 - 10);
+      });
+      if (!on.some(Boolean)) return false;
+      if (on.every(Boolean) && runs.every((b, i) => this.runPress(b.x, b.vx, b.s, lags[i], p, dir, here, v, carry, hold, clock, t))) return true;
+      for (const b of runs) { groundStep(b, DT, dir); b.s += DT; }
+    }
+    return false;
   }
 
   private lianaWait(dir: -1 | 1): Pad | null {
