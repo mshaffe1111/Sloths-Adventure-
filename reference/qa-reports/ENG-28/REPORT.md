@@ -1,4 +1,4 @@
-# ENG-28 REPORT (2-8's pieces ahead, Lane 2): session 5 (ENG-28e), started 4:46 PM ET, handed over 5:0X PM ET (both from date)
+# ENG-28 REPORT (2-8's pieces ahead, Lane 2): session 5 (ENG-28e), started 4:46 PM ET, handed over 5:03 PM ET (both from date)
 (Session 2 ENG-28b 2:29-2:50 PM ET; session 3 left no commit; session 4 ENG-28d 4:21-4:42 PM ET; session 5 first, then session 4.)
 
 ## EXACT NEXT STEP (session 6)
@@ -10,10 +10,19 @@ Branch t-eng-28-wip, head b0bc6d79e or later (`git fetch origin t-eng-28-wip`, c
    at x 836 on the near bank at the close (5.03 s), the three behind him at x 745/711/677: all on the bank, before W. At late 19 (the read
    would still send him round: about 5.9 s left at the read against 6.44 s needed) the close DOES split the line in all 6 runs (setBack 3
    middle, 2 adult) but every run still reads `high: true`, because floodRun's `high` is set by ANY grounded stand on the high road,
-   including after the close, when the high road is the only way on. So the plant fails on its criterion, not its event. TWO test choices,
-   the LEAD'S CALL (law 22), send these numbers and ask before committing: (i) late 22 -> 19 (its derivation in the comment); (ii) `high`
-   means the road he took AT THE FORK (set only before the first close), so a split late low road reads `high: false`. Both are needed for
-   the plant as written; with the lead's word, lineBot should go 8/8 (re-run all 8: 'time enough' and 'too late' must stay GREEN).
+   including after the close, when the high road is the only way on. So the plant fails on its criterion, not its event.
+   THE LEAD'S RULING, word for word: "both APPROVED as a re-plant at the SAME bar (R-165.432), not a loosening: the bar stays 'with the
+   read removed, the close splits the line'. (i) late 22 -> 19, with the derivation in the comment (the step-off moved when he reaches the
+   bank; 5.9 s left vs 6.44 s needed). (ii) `high` = the road taken AT THE FORK (set only before the first close), because a stand on the
+   high road after the close is the only way on and says nothing about his choice; write that meaning in the field's doc comment.
+   Conditions: every test that reads `high` re-runs, and NO other verdict changes (if one does, stop and tell me); the plant RED with the
+   read removed and GREEN with it at late 19."
+   DO: in lineBot.test.ts floodRun set `high` only while no close has fired (a `closed` flag set in the floodClosed wrapper) and give the
+   FloodRun interface's `high` that doc comment; the plant's late 22 -> 19 with the derivation. Re-run ALL of lineBot (every test reading
+   `high`: 'time enough', the keep-the-road plant, 'too late', the read-removed plant): 8/8, and no other verdict moved (compare with
+   session 5's: 'time enough' 6/6 low, keep-the-road off high / on low, 'too late' 6/6 high, setBack 0, home 3). Then prove the plant both
+   ways at late 19: RED with the read removed (the test as written: split >= 1) and GREEN with the read on (the same 6 runs with
+   leadLine true: setBack 0; run it once by hand, a scratch copy or an env switch removed after, and give the numbers in the report).
 2. Condition 2 (the lead): ROAD_TRIPS 0 on every listed stage. The rule can only trip after a fork read, and the only read is the flood's
    (needs engine floodClock, set only on a stage with a flood; no listed stage has one). Count it, do not argue it: run the bots over the
    World 2 river stages (tools/inspect/castBots.ts, read its usage line) with ROAD_TRIPS.n printed at the end; must be 0. Not 0 anywhere:
@@ -46,8 +55,8 @@ Branch t-eng-28-wip, head b0bc6d79e or later (`git fetch origin t-eng-28-wip`, c
 - (c) FIXED, floodLay.test.ts 2/2 GREEN: the toy brick lays a WALL-STEP (a block FLOOD_STEP tall on the near bank's end, its far side at
   the water) and the porch level off its top; the rule unchanged (law 22).
 - Every FLOODDBG trace removed (firsttimer.ts floodRoad, lineBot.test.ts floodRun); `grep -rn FLOODDBG src tools` empty. tsc clean.
-- lockall vs lock-base-90552d3ec.json on frozen /home/user/wt28 at 8cd71852d: RESULT_LOCKALL. Suite (the CLAUDE.md test line) on the same
-  frozen tree: RESULT_SUITE. CI tool line, tierBots, ROAD_TRIPS count: NOT RUN (next step).
+- lockall vs lock-base-90552d3ec.json on frozen /home/user/wt28 at 8cd71852d: RUNNING at hand-over (see the line after). Suite (the CLAUDE.md test line) on the same
+  frozen tree: RUNNING at hand-over. If no result line follows, both are UNRUN: session 6 runs them on a frozen tree (D59). CI tool line, tierBots, ROAD_TRIPS count: NOT RUN (next step).
 - Lessons applied: D75 (proved in the real engine: the toy showed the walk-across no pure reading could), D59 (both gates waited for, not
   left running), D115 (frozen worktree, proven writable), D119 (commit -m, no heredoc), D120 (pushback sent, the work went on; the
   reply came mid-task and was built), D128 (times from date), law 22 (the lay toy fixed, not the rule; the plant's timing goes to the lead).
