@@ -30,7 +30,13 @@ code head (recipes in session 6's steps below; the suite in 6 shards of the CLAU
   refuses 146 so it errs on the safe side; calibrating `land` against the tier bots is a later job (R-165.424). No number changed.
 - lineBot 8/8 on frozen 94cf0d86 (every test re-ran; the four heron tests and the read-removed plant unmoved, GREEN as before).
   flood.test + floodLay.test 15/15 on the same tree.
-- RUNS on frozen 94cf0d86: see the hand-over (in progress).
+- RUNS on frozen /home/user/wt28h2 at 94cf0d86 (the code head; every later commit touches only this folder):
+  - tierBots 9/9 (6:10-6:15 PM ET), `git status` clean in the tree (no calibration file changed; firsttimer.ts unchanged anyway).
+  - keep-the-road's trip count (scratch <scratchpad>/rt/roadtrips.ts, never committed: firstTimer seed 1, every tier child/middle/
+    expert/adult, ROAD_TRIPS.n per stage; 6:15-6:16 PM ET): 2-1 0, 2-2 0, 2-3 0, 2-4 0, 2-5 0, 2-6 0, 2-7 0, 1-2 0; TOTAL 0. (Those
+    runs' ends, named and not read further: 2-3 'sealed door' for all four tiers on seed 1, the child 'time' on 2-4/2-6/2-7, every other
+    run 'shrine'; a fresh phone, seed 1, not the proven-seed runs.)
+  - lockall --check and the suite shards: running (see the hand-over).
 
 ## FOR THE LEAD: R-165.424's bot list (no bot change in this job)
 1. The late-18 read at the boundary (re-measured this session on the passing shape, frozen wt28h1, seeds 1/2/3 identical): the MIDDLE
