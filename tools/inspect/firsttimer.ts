@@ -1431,7 +1431,9 @@ export class FirstTimerRun {
   private blockedT = 0;
   private lastX = 0;
   /** a press he has decided on, and when the thumb gets there */
-  private pending: { at: number; dir: -1 | 0 | 1; kind: 'single' | 'double'; off: boolean; still?: boolean; want: number } | null = null;
+  private pending: { at: number; dir: -1 | 0 | 1; kind: 'single' | 'double'; off: boolean; still?: boolean; want: number; judged?: boolean } | null = null;
+  /** the press now coming is one its own catch judge passed (vineFromLog's liana catch): startJump's one-gate check lets it through */
+  private pressJudged = false;
   /** the game time a press decided on (decide) was aimed to reach the engine (pressIn), for the press this frame's pad carries */
   private pressWant: number | undefined;
 
@@ -2345,7 +2347,9 @@ export class FirstTimerRun {
     });
     if (![mid, Math.max(0, mid - sd / 2), mid + sd / 2].every(catches)) return null;
     const out = this.decide(dir, 'single', true, {});
-    if (this.pending) this.pending.still = true;
+    // (ENG-PLANT-e: a judged catch, so startJump's one-gate check (no unjudged hop off a carrier) lets it through when it comes;
+    //  without it candidates 5-9 refused every liana hop off a log, and the tailed river's only way on was gone)
+    if (this.pending) { this.pending.still = true; this.pending.judged = true; }
     return out;
   }
 
@@ -2819,7 +2823,9 @@ export class FirstTimerRun {
       const q = this.pending;
       this.pending = null;
       if (p.grounded || p.climbing || p.isVineSwinging || p.hanging || t - (this.airFrom?.t ?? t) < 0.4) {
+        this.pressJudged = !!q.judged;
         const out = this.startJump(q.dir, q.kind, q.off);
+        this.pressJudged = false;
         this.pressWant = q.want;
         return out;
       }
@@ -4777,7 +4783,7 @@ export class FirstTimerRun {
     // (SKILLS.floatSure, ENG-PLANT-e, the lead's ruling 1: EVERY hop off a carrier is one the landing judge saw (gateSees set gateHop):
     //  one gate, no path around it. A press from any other path standing on a drifting log (a decide's queued thumb, the edge code's run
     //  or stand press, a plan's hop) is refused here, counted (UNJUDGED), and dropped; the river block judges him again next frame)
-    if (SKILLS.floatSure && !this.gateHop && p.grounded && this.sim.platforms.find((q) => q.id === this.sim.standingOn)?.type === 'drift') {
+    if (SKILLS.floatSure && !this.gateHop && !this.pressJudged && p.grounded && this.sim.platforms.find((q) => q.id === this.sim.standingOn)?.type === 'drift') {
       UNJUDGED.n++;
       this.pending = null; this.lateArmed = null;
       return {};
