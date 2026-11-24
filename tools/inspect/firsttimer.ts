@@ -1434,6 +1434,8 @@ export class FirstTimerRun {
   private pending: { at: number; dir: -1 | 0 | 1; kind: 'single' | 'double'; off: boolean; still?: boolean; want: number; judged?: boolean } | null = null;
   /** the press now coming is one its own catch judge passed (vineFromLog's liana catch): startJump's one-gate check lets it through */
   private pressJudged = false;
+  /** ruling 2 (ENG-PLANT-g): the log running his way he landed on (its id): he rides it, never the default walk, while on it */
+  private landRide: number | null = null;
   /** SKILLS.runUp: the run-up vineFromLog sent him on, on this log (its id), last judged at this game time */
   private runUp: { id: number; t: number } | null = null;
   /** the game time a press decided on (decide) was aimed to reach the engine (pressIn), for the press this frame's pad carries */
@@ -3327,6 +3329,7 @@ export class FirstTimerRun {
       //  rescued. Where the front is inside that run-out he pulls the thumb back (a turn drops the press at once, thumbify), never off)
       const ridden = SKILLS.floatSure && SKILLS.handed && p.grounded ? this.sim.platforms.find((q) => q.id === this.sim.standingOn) : undefined;
       if (ridden?.drift && ridden.drift.dir === dir) {
+        this.landRide = ridden.id;
         const front = dir > 0 ? ridden.x + ridden.width : ridden.x;
         if (dir * (front - p.x) < this.runOut()) return side(-dir as -1 | 1);
         this.stopMeant = true;
@@ -3829,6 +3832,30 @@ export class FirstTimerRun {
           return {};
         }
         if (this.foeSeen.get(m.id) && dx < 90) return this.decide(dir, 'single', false, side(dir));
+      }
+    }
+    // (ENG-PLANT-g, the lead's ruling 2: landed on a log running his way, he rides it (a stop he means) instead of this walk, while no
+    //  judged hop (the river block and vineFromLog, above) or bank ahead (a floor, not a log, within 80 px of its front) takes him on;
+    //  the ride never carries him into a rescue (c4's handed check: a floor within 80 px of the run's end, else the walk back to its rear
+    //  in time). The landing stop held only 0.1 s, then this walk ran him along #65 at a full run and his let-go ran him off its front:
+    //  2-1 adult Easy 5 on candidate 12, x 14,766, set down 3 times, rescued (57 of 2-1's 60 flips had the signature))
+    if (this.landRide !== null && SKILLS.floatSure && SKILLS.handed && p.grounded && dir !== 0) {
+      const lr = this.sim.platforms.find((q) => q.id === this.sim.standingOn);
+      if (!lr || lr.id !== this.landRide || !lr.drift || lr.drift.dir !== dir) this.landRide = null;
+      else {
+        const front = dir > 0 ? lr.x + lr.width : lr.x;
+        const bankAhead = this.sim.platforms.some((b) => b.type !== 'drift' && !b.broken && Math.abs(b.y - p.y) < 70 && (dir > 0 ? b.x - front < 80 && b.x + b.width > front : front - (b.x + b.width) < 80 && b.x < front));
+        if (!bankAhead) {
+          const d = lr.drift, endX = dir > 0 ? d.x1 : d.x0;
+          const handedOn = this.sim.platforms.some((q) => q.type !== 'drift' && !q.broken && Math.abs(q.y - p.y) < 70 && q.x - 80 < endX && q.x + q.width + 80 > endX);
+          if (!handedOn) {
+            const rear = dir > 0 ? lr.x : lr.x + lr.width;
+            const left = ((endX - dir * 10) - p.x) * dir / d.speed;
+            if (left < who.stopReact + Math.abs(p.x - rear) / PHYS.maxRun && Math.abs(p.x - rear) > 20) return side((-dir) as -1 | 1);
+          }
+          this.stopMeant = true;
+          return {};
+        }
       }
     }
     return side(dir);
