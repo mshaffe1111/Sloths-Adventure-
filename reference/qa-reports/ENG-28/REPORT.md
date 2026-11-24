@@ -29,16 +29,22 @@ Toys at hand-over: flood + floodLay + follow + river tests 37/37; tsc PASS; gene
 4. The hand build's basin flood (engine.ts 'r.flood' loop with its drain; respawnAtCheckpoint floodAt.clear) stays until w2Stages '2-8'
    is replaced; its deletion (about 25 lines) belongs to that replacement commit. Named so the level job does not meet it unplanned.
 
+## The lead's rulings on the pushback (received at hand-over)
+(1) INT-R5 (release 4's integration) merges main with t-eng-27: the successor merges THAT candidate in once it exists, not the 10-file merge.
+(2) 2-8's two-road section is a Content Lane 2 job before BUILD-28 (filed). (3) FLOOD_HOP 60 accepted for now; 2-8's READY measures it on
+the draft. (4) The hand-built basin stays until 2-8's build replaces it. LANDING: on a NEW branch t-eng-28 (release 5), NOT t-eng-27.
+Base suite: my run was stopped at the lead's word (1,264 results, 0 red); the base evidence is WARN-412's suite on 90552d3ec.
+
 ## EXACT NEXT STEP (session 2)
-a. Base suite verdict: the EXIT line of /tmp/claude-0/-home-user-Sloths-Adventure-/eb4a8039-9fd8-5fc7-a724-0301fa499550/scratchpad/base-suite.log;
-   if that container is gone, cite WARN-412's suite on 90552d3ec (its REPORT) and say so.
+a. Base suite: cite WARN-412's suite on 90552d3ec (the lead's ruling); no re-run.
 b. Engine-level toy (flood.test.ts): FollowPlay + FloodClock on a toy floor (stage.deep = clock.deepAt; safeWater live): the line through
    the low road, the close -> floodClosed sets the paddlers on the near bank; RED without floodClosed (one in deep water).
 c. lead-the-line: grep tools/inspect for 2-3's 'wait-for-the-tail'; add 'lead-the-line' (at the low road's near bank: if the clock's time
    left < the line's tail-off of the rest of the low road + spare, take the high road); toy on floodLay.test's toy (its caged()), RED with
    the read removed.
 d. On FROZEN trees (D115): lockall --layouts 16 base vs head (expect no listed stage moved: no listed brief names a flood, no world row is
-   marked); the full suite + the CI tool line (gates.yml rolled + tierBots); merge into t-eng-27 (no force), push, message the lead.
+   marked); the full suite + the CI tool line (gates.yml rolled + tierBots); land on a NEW branch t-eng-28 (from t-eng-28-wip; merge
+   INT-R5's candidate in once it exists, for main's designed cages), push, message the lead.
 
 ## Lessons applied / Method update
 D130 (lastMet for the start cage; the toy's last cage met lies at a smaller x), D115 (frozen base tree, chattr), D114 (base suite first),
