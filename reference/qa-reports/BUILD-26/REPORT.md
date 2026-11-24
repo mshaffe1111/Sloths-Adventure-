@@ -58,6 +58,11 @@ ON THE NEW HEAD (frozen 96cb4215f, the clearance): 32, 89, 92 all finish, 0 resc
 a rescue; b26q5/placeB-runs.txt). Seed 32's trace (b26q5/frames-adultE32-new-96cb4215f-top-wheel.txt): he hops the 24 px gap, lands
 further in (23 px from the bucket's FRONT end at the top), the same jump reaches the street at 841. So the clearance clears B on these
 seeds; the lead rules whether the flight should also fly the back-end stance (the stance-dependence stays for any rider who walks back).
+LOOK QUESTIONS (the lead, on jetty-2-6-L0-normal-wheel0-sideways-wide.jpg; answered, no fix): (1) the line at x ~660 is GREEN, in the
+BACKDROP (it passes behind the buckets; no stage object at world x 935-980), on a soil tone step (~57 -> ~67); fainter steps at x ~1160
+and ~1500: panel seams in the tower's painted soil, ROUGH, proposed for the backdrop job with R-165.438. (2) the 'in' street's plank in
+front of the upper rim reads as a walkway in front of the wheel, not a clash; rough: a passing bucket's lip peeks ~6-8 px over the plank
+(z-order inside the sweep; reads as a stray rail) and the plank's end has no post. Both to the lead to rule.
 Slip owned: one trace this box was started with a shell '&' (against the box rule); it failed to start and was re-run properly.
 
 # BUILD-26t (session 4 of BUILD-26q; t-build-26-wip-26q, face at 1af03d233, toy on the next commit). Started 5:33 PM ET 11-24 (by `date`); this box written 5:48 PM ET
