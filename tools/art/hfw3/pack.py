@@ -43,7 +43,6 @@ json.dump(frames, open(os.path.join(out, 'w3-grotto.json'), 'w'), indent=1)
 kb = os.path.getsize(os.path.join(out, 'w3-grotto.webp')) / 1024
 print(f'w3-grotto.webp {A.width}x{A.height}, {len(frames)} frames, {kb:.0f} KB (limit 4096 KB, 4096 px)')
 if drop:
-    names = ' | '.join(f"'{n}'" for n in sorted(frames))
     open('src/game/w3GrottoArt.ts', 'w').write(f"""/**
  * World 3's grotto pieces for its first stages (3-1 Into the Grotto, 3-2 Glowworm Path): the shelves, lit rims, fungus mat, sleepy
  * shelves and floor lips (ART-NEXT-c) and the shaft wall, wall shelf, wide shelf, root curtains and roof root (ART-W3), one atlas
@@ -53,7 +52,9 @@ if drop:
 import {{ trackAtlas }} from './atlasLoader.ts';
 import FRAMES from '../assets/w1to4art/w3-grotto.json';
 
-export type W3GrottoPiece = {names};
+// the frame names come from the sheet's own keys, never written out here: a list of names in code made the art-use gate
+// (tools/art/artuse.mjs) count every frame as drawn with no draw site (ART-W3-b, 11-25)
+export type W3GrottoPiece = keyof typeof FRAMES;
 const F: Record<string, {{ x: number; y: number; w: number; h: number }}> = FRAMES;
 export const W3_GROTTO_URL = new URL('../assets/w1to4art/w3-grotto.webp', import.meta.url).href;
 let img: HTMLImageElement | null = null;

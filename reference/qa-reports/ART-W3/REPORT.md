@@ -1,14 +1,34 @@
 # ART-W3 REPORT (R-165.449): World 3 standing + climbing art, 2-9 court art
 
-**EXACT NEXT STEP (ART-W3-b hand-over, session 3 starts here):** every piece is CUT, CATALOGUED and JUDGED; what is left is
-item 5 of the order, the ready-to-drop PACK PROOF, then BUILD-31's drop steps here. Run `npm ci --no-audit --no-fund --legacy-peer-deps`
-and `pip install scipy` first. On a SCRATCH worktree (`git worktree add <scratch>/pk origin/t-art-w3`, never this tree):
-(1) `python3 -I tools/art/hfw3/pack.py` with the 3-1/3-2 pieces (read its header for the args: shelfL-s37, wallR-s23-tile, wallShelf-s23,
-thornBed-s23, thornClump-s23, rootTall-s67, rootShort-s53, rootShort-s67, roofRoot-s37-tile; the 2-9 pieces bell-s23 + bellSwing-s23 and
-courtFar-s11 ship to World 2's sheet/backdrops, not the grotto atlas); (2) `BASE_PATH=/Sloths-Adventure-/ npx vite build` and count the
-build's files (the test link is at 413 of 480) and every asset under 4 MiB; (3) `node tools/perf/artcheck.mjs` and `npx tsc --noEmit -p .`;
-(4) write BUILD-31's drop steps below (which files to copy, the atlas cell names, the inventory status change from 'cut, not placed' to the
-first draw sites); (5) push t-art-w3, ls-remote, send the lead the hash. Do NOT commit the scratch pack to t-art-w3 unless the lead says so.
+**EXACT NEXT STEP (ART-W3-b hand-over):** ART-W3's order is DONE (cut, catalogued, judged by the lead, pack proof run). Nothing is
+left for an art session on 3-1; the next step is BUILD-31's: follow "BUILD-31 DROP STEPS" below in the SAME commit as its draw sites.
+For 2-9 (BUILD-29): the bell pair and courtFar-s11 are cut and catalogued but not packed (pack:false in picks.json): wire them with
+2-9's draw sites (bell: one 2-frame sheet or 2 cells in a World 2 atlas, the same 633x662 box; courtFar: a backdrop beside
+w2evening-far, stageBackdrops.ts '2-9').
+
+**PACK PROOF (ART-W3-b, scratch worktree of t-art-w3, deleted after; nothing of it committed):** `python3 -I tools/art/hfw3/pack.py
+--drop` = src/assets/w1to4art/w3-grotto.webp 4066x1409, 20 frames, 534 KB (547,180 B shipped; limit 4 MiB and 4096 px) + .json +
+src/game/w3GrottoArt.ts. With one scratch import standing in for a draw site: tsc clean; `BASE_PATH=/Sloths-Adventure-/ npx vite build`
+exit 0, the atlas ships as one file (w3-grotto-<hash>.webp), no file over 4 MiB; artcheck PASS; chunkcheck PASS; the TEST LINK build
+(tools/testlink/build.py) 412 files of 480, 68 free, on this branch's base (the lead's link head is at 413: the atlas makes it about 414,
+MIN_ROOM 40 holds). The 20 frames: the 11 ART-NEXT-c HAVE pieces (rimS-s11, rimS-s23, rimShort-s11, rimLong-s11, shelfS-s37, mat-s23,
+sleepy-s23, sleepy-s37, lipA-s23, lipA-s37, lipB-s23) + the 9 ART-W3 primaries (shelfL-s37, wallR-s23-tile, wallShelf-s23,
+thornBed-s23, thornClump-s23, rootTall-s67, rootShort-s53, rootShort-s67, roofRoot-s37-tile).
+**CATCH (fixed in tools/art/hfw3/pack.py):** the drop wrote every frame name into w3GrottoArt.ts's type, so the art-use gate
+(artUse.test.ts) counted all 20 frames as drawn with NO draw site (it passed in the scratch tree). The type is now
+`keyof typeof FRAMES`; re-run, the gate lists each undrawn grotto frame (rootTall-s67, wallR-s23-tile, rootShort-s53, ...), as it must.
+
+**BUILD-31 DROP STEPS:** (1) on BUILD-31's branch, bring reference/art/hfw3/cut/ and tools/art/hfw3/pack.py from t-art-w3 (`git
+checkout origin/t-art-w3 -- reference/art/hfw3/cut tools/art/hfw3/pack.py`) and the ART-NEXT-c cuts (reference/art/hfnext/cut/);
+(2) set `"pack": false` in picks.json on any 3-1/3-2 primary 3-1 does NOT draw (the art-use gate fails a packed frame no code draws;
+its allow-list only shrinks), then `python3 -I tools/art/hfw3/pack.py --drop`; (3) draw with `drawW3Grotto(ctx, name, cx, bottom, w,
+flip)` (bottom = the box's bottom; w = the piece's world width: the catalog's on_screen_px, e.g. shelfL-s37 316, wallShelf-s23 179,
+thornBed-s23 183, rootTall-s67 51, roofRoot-s37-tile 173 per tile; the walk line = walk_y / cpu under the box top); the roof root
+runs as the tile alone and ends INTO a wall or off-screen (its LAY RULE); a root hangs with its top tucked about 12 units under the
+shelf's underside; (4) change each drawn row's status from 'cut, not placed' and used_in from 'none (not placed)' to its draw sites in
+CATALOG-MASTER.csv, rerun `python3 tools/art/catalog_master.py --emit`, and LOWER inventory.test's branch-only count by the rows that
+moved (242 today); (5) run artUse.test, artcheck, chunkcheck, tsc, the full suite, and the test link build (file count) before the
+stills of the real screen.
 
 **ART-W3-b DONE (session 2, head pushed and ls-remote-confirmed; the lead judged the stills, rulings below):**
 - CUT (reference/art/hfw3/cut/, picks.json): thornBed-s23 + -s11, thornClump-s23 (4.5 cut px a unit: 183x72, 186x65, 160x60);

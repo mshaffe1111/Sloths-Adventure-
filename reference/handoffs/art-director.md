@@ -1,5 +1,15 @@
 # Hand-off: the art director role (Content), merged at INT-13 2026-11-19: ART-22P (§0g-22p, 2-2's lavender hyacinth petal, wired), ART-W2A (§0g-w2a, 2-3's follow poses painted and wired) and ART-W2B (§0h, 2-6's noria painted and wired) wrote the same day; before them 2026-11-15 (ART-W2)
 
+## §0i ART-W3 (t-art-w3, 11-25): World 3 standing + climbing art, 2-9 court art. Read reference/qa-reports/ART-W3/REPORT.md first.
+- Cut + catalogued (part W3A, 16 rows, w3-w3a#): shelfL, wallR tile, wallShelf, grotto thorns (bed + clump, made for the DARK), root
+  curtains (slab trimmed: a hanging piece's own anchor doubles up under the real ledge), roof root tile (LAY RULE: ends into a wall or
+  off-screen; the end piece was judged rough and dropped), court bell still + swung (96 px, one box), throne-island far layer (s11 pasted
+  into w2evening-far, edges identical). The barge stays at 2.513 cpu (deck 386; the deck sets the size, the lead's ruling).
+- tools/art/hfw3/: sheet.py (judge takes), cut3.py, catalog3.py, stills.py (scenes: stand, wall, wallshelf, thorn = dark, rootshelf,
+  roof, bell, far, barge), pack.py (the grotto atlas; its type now comes from the JSON keys so the art-use gate sees undrawn frames).
+  The tools need scipy (pip install scipy); without it cut3.py fails silently inside sheet.py.
+- Next: BUILD-31 drops the atlas with its draw sites (REPORT "BUILD-31 DROP STEPS"); BUILD-29 wires the bell and the far layer.
+
 Last tasks: ART-W2B (§0h), ART-W2A (§0g-w2a) and ART-22P (§0g-22p). Before them: ART-W2 (§0f), ART-678b (§0e-b), R-165.85 (cut only), Matt's 15 sheets of 11-09, on branch t-c2-art-cut. The earlier note (from the
 art director, session_01FhBbYLmXQhDLjAzTexXzo3, 11-07) is folded in below; §1 to §7 are still true unless marked.
 
