@@ -1,4 +1,28 @@
-# ENG-DOWNBOT REPORT (lane 2: the down lay's head room, then the bots on a way down to the shrine) — box 4 (session 2, 11-25)
+# ENG-DOWNBOT REPORT (lane 2: the down lay's head room, then the bots on a way down to the shrine) — box 5 (session 3, 11-25)
+**EXACT NEXT STEP (box 5 hand-over):** head **e7c203362** (pushed; code = this head; the REPORT commit sits on it). Ruling 1 (LAY finding 2) is HALF done: the verdict is right and
+planted; the lay meets only its first landing. On this head the w3.test 'a catch hands on to its storey' is **RED BY DESIGN** (the
+planted verdict: on this head it names **5 turns on 5 of 48 rolls: normal 5, 6, 7, 8, 23**, none wall to wall, down from 69 on 33). (1) **The lay for the chain case** (tower.ts towerCatches, going down): on 2abf6faf1 normal 1's catch
+581-1280 @11711 (vine x1124) handed him off its left end onto 11825 (wood over the storey but beside it), then on to 12062, past its
+storey 729-1144 @11889 (32bf092b0's lay clears that roll; the same shape is left on normal 5, 6, 7, 8, 23: read their names with
+probes/errs.mts SEEDS=5,6,7,8,23). **All five share one shape:** the catch at the storey - 178, its first landing wood at the
+storey - 64 (114 under the catch) beside the storey, then on past it (normal 6: 691-1280 @10068, vine x1088, onto 10182, storey
+@10246). The first-landing guard (`passes`, 32bf092b0's, kept) cannot see past the first landing; guarding the WHOLE chain on every put (box 5's
+v2, `handOn(...).state === 'past'` turned on by a put) left open ends: blind drops on 37 of 48 rolls, so it was taken out. Try next,
+measuring each on 48 rolls (probes/handon2.mts for misses, probes/rollhash.mts vs scratch hash of 2abf6faf1 for touched + errors,
+probes/errs.mts for the names): (a) rule 4 going down, for a bough that will cross a climb vine (the catch) or lie under a catch's
+end, try its candidate (x, y) in an order that puts first those whose `handOn` (tower.ts, exported; most = TOWER.see) reads 'ok', then
+'open', never 'past'; (b) rule 2 prefers the storey under a catch's end as the anchor (bridged out at the storey's height) over other
+wood. Read normal 1 with probes/tail.mts SEED=1 Y=11800 first: which rule laid 11825 and why. GREEN = handon2 0 on 48, errors 0,
+head room + 'a catch crosses a vine' GREEN; then count the rolls touched vs 2abf6faf1 (32bf092b0's lay touched 42 of 48).
+(2) Ruling 2 on the FINAL lay: castBots `--seeds 1-20 --json` on three frozen trees (the head, fix A off, fix B off; the patches are
+in the box 4 step below; probes/compare.py head.jsonl off.jsonl lists every row that differs). Two heavy runs at a time. A fix that
+moves no row comes OUT; one that does gets a toy on that row. (3) x40 on the head (the head's 1-20 from (2) is its first half),
+trace two per cause. (4) Stills (draftshoot.mjs pins by fractions only: add spots, e.g. an env of x:y pairs, to pin him on a turn's
+vine top and on its catch). (5) lockall, tierBots 9/9, suite + CI line, land on t-eng-w3 (merge, no force).
+**For READY-31 (stands):** kid clean runs 101-125 s, at or under the 120 s floor: 3-1's build owes length.
+Start 10:29 AM ET 11-25; REPORT pushed 10:47 AM ET (by `date`).
+
+### Box 4's hand-over (superseded by box 5)
 **EXACT NEXT STEP (box 4 hand-over):** head **6b6874dfb** (pushed; code = this head). Rulings 1-4 from the lead's packet stand.
 (1) **castBots x40, both settings, every bot, on 6b6874dfb**: frozen worktree (`git worktree add --detach`, symlink node_modules,
 `chattr -R +i src tools`), two halves as two background tool calls (`GEN2_DRAFT=3-1 npx tsx tools/inspect/castBots.ts --stage 3-1
@@ -29,20 +53,31 @@ a toy each way. (6) lockall vs c1008d8ed (102/102; no listed stage travels down:
 Start 10:10 AM ET 11-25; hand-over 10:26 AM ET (by `date`).
 
 ## Box 5 (session 3, 11-25), on t-eng-w3-wip-downbot from 2abf6faf1 (code 6b6874dfb)
-- **Ruling 1, LAY finding 2, 32bf092b0:** the verdict **'a catch hands on to its storey'** (tower.ts `towerHandOns`, joined to the
-  tower verdicts on down columns in pipeline.ts): per going-down turn whose vine stops on a catch, the catch's run (wood level with it,
-  end to end) has an open end that lands on the turn's storey or above it; named otherwise ('lies over all of its storey', or 'it runs
-  wall to wall: no way off'). **RED first on today's rolls (2abf6faf1):** w3.test 'a catch hands on to its storey' (seeds 1-12 x both)
-  failed on normal 1 (catch 0-1082 @2759 over its storey @2867; normal 1's 581-1280 @11711 over 729-1144 @11889 is in the same
-  roll); probes/handon2.mts: **51 turns on 30 of 48 rolls** (seeds 1-24 x both), **11 of them wall to wall** (no way off at all: a
-  catch run across the whole tower). (probes/handon.mts, the stricter 'lands at the storey's own height': 69 of 489 stopped turns on
-  33 rolls.) **The lay:** towerCatches going down: no wood is laid level with wood across a climb vine, run on with it, that leaves
-  that run with no end landing on the vine's storey or above (rules 1, 2 and 4: `passes` in `fair` and in rule 1). **GREEN:** 0 on
-  48 rolls; head room (24 x both, no blind drop) and 'a catch crosses a vine' (12 x both) still GREEN; tower.test 'towerHandOns'
-  (planted arena: kept as laid; run on past both ends of its storey named; wall to wall named; no catch, or a turn going up, not
-  judged). tsc PASS. **Rolls it touches: 42 of 48** (probes/rollhash.mts, wood + vines per roll, 2abf6faf1 vs 32bf092b0; every
-  roll 0 errors on both). I tried the narrower lay the finding named ((b): rules 1-2 only): it left 2 wall-to-wall catches (n22,
-  n24), 4 rolls with errors, and still touched 42: the catch's own bough (rule 4) chains into the run too. Not kept.
+- **Ruling 1, LAY finding 2: the verdict 'a catch hands on to its storey'** (tower.ts `towerHandOns` + `handOn`, joined to the tower
+  verdicts on down columns in pipeline.ts): per going-down turn whose vine stops on a catch, stepping off the catch's run (wood level
+  with it, end to end), and on off each run he lands on, he comes down at the storey's height before landing below it; named
+  otherwise ('hands him past its storey', or 'it runs wall to wall: no way off'). Unit: tower.test 'towerHandOns' (kept as laid; run
+  on past both ends of its storey named; onto wood over the storey then past it named, then onto it kept; wall to wall named; no
+  catch, or a turn going up, not judged). **RED on today's rolls (2abf6faf1): 69 turns on 33 of 48 rolls (seeds 1-24 x both), 11 of
+  them wall to wall** (a catch across the whole tower: no way off at all), the lead's named case (normal 1, 581-1280 @11711) among
+  them (probes/handon2.mts with VTREE; probes/handon.mts reads the same 69).
+- **My miss, caught and fixed in this box:** the first verdict (32bf092b0) counted ANY landing at or above the storey as handing on;
+  the lead's named case lands at 11825 (over the storey, beside it) and goes on to 12062, so it passed. Caught by running the named
+  case through it before reporting; the verdict now follows the drops (5bd918172). Standard: a verdict's planted case is the lead's
+  named row, checked by name, not only a count.
+- **The lay, first landing (32bf092b0, kept):** towerCatches going down never lays wood level with the wood across a climb vine, run
+  on with it, that leaves that run with no end landing on the vine's storey or above (rules 1, 2 and 4: `passes`). On its own it
+  cleared the first-landing reading (0 on 48), kept head room (no blind drop, 24 x both) and 'a catch crosses a vine' (12 x both)
+  GREEN, 0 errors on 48 rolls, and touched **42 of 48 rolls** (probes/rollhash.mts, wood + vines per roll, vs 2abf6faf1). The
+  narrower form the finding named ((b): rules 1-2 only) left 2 wall-to-wall catches and 4 rolls with errors, still touching 42: the
+  catch's own bough (rule 4) chains into the run too; not kept.
+- **The chain guard tried and taken out (box 5 v2):** refusing every put that turns a vine's catch to 'past' (the whole chain) left
+  38 misses on 24 rolls and errors on 37 of 48 (normal 1: a 351 px blind drop off 581-1032 @11711): with no fair spot left, the end
+  is left open. Not a fix; the next box lays the chain case (EXACT NEXT STEP (1)).
+- **On this head (first-landing lay + chain verdict):** the verdict names 5 turns on 5 of 48 rolls (normal 5, 6, 7, 8, 23; none
+  wall to wall): RED by design until the chain case is laid (EXACT NEXT STEP (1)). tsc PASS; tower.test full 34/34 PASS.
+- **Heavy runs this box:** castBots 1-20 on 32bf092b0 and on fix A off were started and STOPPED unread when the chain miss was found
+  (they measured a lay that was about to change); none of their rows are used.
 
 ## Box 4 (11-25), on t-eng-w3-wip-downbot from 2a8d89ec2 (code 3ba82c8b8)
 - **Ruling 1 (b), the lay, 34085ae19:** tower.ts `vineCuts`/`stopVines`/`towerVineCuts`; pipeline: after clearClimbs, on a down
