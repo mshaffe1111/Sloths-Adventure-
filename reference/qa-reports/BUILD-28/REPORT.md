@@ -53,7 +53,24 @@ THE LEAD'S WORD (its message, verbatim in substance): (y) ACCEPTED as built (gap
    re-flies the carry and the road-taken probe on 2-8's OWN config on the draft row (not 2-3's, catch 17 vs 15.75); (2) the READY report
    names plainly, as a design fact for Matt's playtest: 4 of 6 tiers leave the low road by a double at late 0, so the marsh may see fewer
    kids than the high road. "Carry on: the gates, the 2b toys, the stills, then 1b at my hash."
-5. NEXT, IN ORDER: (1) ReadNotifications. (2) The full unit suite on
+5. THE GATES ON 89a0cf54e (the code of ceab09e20; each in frozen /home/user/wt28s7s, said plainly):
+   PASS: tsc; vite build (BASE_PATH) + chunkcheck; artcheck; knowncheck; generalitycheck; roadmapcheck and timecheck (after git fetch
+   --unshallow); the engine tools' tests 50/0.
+   NOT COMPLETED (my own timeout caps, two heavy runs side by side): drawcheck hit its 900 s cap (exit 124) after 2-5, no breach printed
+   up to there: NOT a pass. The unit suite hit its 1700 s cap (exit 124) at test 2633, not finished, with 3 not ok:
+   pacerLay.test.ts:254 and :280 (2-7's race 'RED without the skill': the pair D135 names as red on the base since 11-23; to be PROVEN on
+   6470cc657 before it is called inherited, D135) and seedListChunk.test.ts:38 (EPERM: mkdtemp under src/, which the chattr freeze
+   refused: a frozen-tree artefact, run it on an unfrozen copy). Not run: clipcheck, paintcheck (3 parts), kbdcheck, buildcheck,
+   seedlist 1-1 --check, tierBots.
+6. EXACT NEXT STEP (the lead's order, its box check): (1) ReadNotifications. (2) Finish the gates at the head with NO timeout cap
+   shorter than the gate's own: the unit suite (the seedListChunk test unfrozen), drawcheck, then clipcheck, paintcheck 3 parts, kbdcheck,
+   buildcheck, seedlist 1-1 --check, tierBots; prove pacerLay :254/:280 on 6470cc657 too. At most two at a time. (3) The 2b toys (a
+   lineBot toy each way: a pop-up onto the high road; with 2b he walks on, without it he stalls and is rescued). (4) The stills of the
+   fork and a marsh dip, upright and sideways (the stills path below). (5) 1b at the lead's hash: B + 2b + draft-fork-jump-bot land
+   with firsttimer.ts (rule 28: ENG-PLANT's known flips + the wide sample). (6) READY-28 on 2-8's OWN config: re-fly the carry
+   (probe-carry, STAGES=2-8 on the draft row) and the road-taken probe there; name the 4-of-6 double off the marsh as a design fact.
+   Older notes, still true:
+    (2) The full unit suite on
    89a0cf54e was STARTED at the box in frozen /home/user/wt28s7s (output: the session's scratchpad suite-s7.txt): read it (or re-run:
    the CLAUDE.md tsx --test line in a frozen worktree at the head); then the rest of the CI tool line (CI #79): vite build + chunkcheck,
    artcheck, drawcheck, clipcheck, knowncheck, generalitycheck, roadmapcheck, timecheck, paintcheck (3 parts), kbdcheck, buildcheck,
