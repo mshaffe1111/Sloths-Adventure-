@@ -313,7 +313,16 @@ export function towerCatches(flow: 'up' | 'down', platforms: readonly Platform[]
   // (going down, his hop's room: no bough within ROOF over a dip's lip or a climb vine's top, the rooms towerLids reads; read again
   //  after each bough, which may itself be a lip)
   let rooms: ReturnType<typeof hopRooms> | undefined;
-  const lidded = (x0: number, x1: number, y: number) => flow === 'down' && inRoom((rooms ??= hopRooms(all, vines, false)), x0, x1, y) !== undefined;
+  // (nor a bough that would itself make a new dip, a lip or its floor, under wood already laid: normal 21's later bough made the lip of a
+  //  dip 158 px under a bough laid before it)
+  const made = (x0: number, x1: number, y: number) => {
+    const near = all.filter((q) => q.type === 'solid' && q.x < x1 + 220 && q.x + q.width > x0 - 220 && q.y > y - ROOF - 160 && q.y < y + 160);
+    const box = { id: 0, x: x0, y, width: x1 - x0, height: 24, type: 'solid' } as Platform;
+    const had = new Set(hopRooms(near, [], false).map((r) => `${r.x0},${r.x1},${r.y}`));
+    const fresh = hopRooms([...near, box], [], false).filter((r) => !had.has(`${r.x0},${r.x1},${r.y}`));
+    return fresh.length > 0 && near.some((q) => inRoom(fresh, q.x, q.x + q.width, q.y) !== undefined);
+  };
+  const lidded = (x0: number, x1: number, y: number) => flow === 'down' && (inRoom((rooms ??= hopRooms(all, vines, false)), x0, x1, y) !== undefined || made(x0, x1, y));
   const put = (x0: number, x1: number, y: number, L: number) => {
     const c = { x: Math.round(x0), y: Math.round(y), w: Math.round(x1 - x0), level: L };
     out.push(c);
