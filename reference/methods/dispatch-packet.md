@@ -141,3 +141,5 @@ about 1-2 s a row, every finished row kept.
 **A hand-over message ends new work (D138, 11-25).** Every brief's BOX line says: once you send your hand-over, you start nothing new; you only finish and record a gate already running. Anything more needs the lead's word, because the next session may already be working from your hand-over hash.
 
 **A lay rule is judged by the bots, not by its own count (CI #81, 11-25).** A rule written to help play (fewer dead ends, no lids, no slots) reports the bots' rescues old vs new on the same rows beside its own verdict count. Its own count going to 0 is not a cure; the rescues going down is.
+
+**A verdict test covers every roll (CI #82, 11-25).** A piece's verdict test (a fairness check over the built stage, no bots) runs on EVERY roll the stage can deal (seeds 1-40, both settings), not a handful: dark.test's seeds 1-4 hid three player-facing holes. If it is too slow, the test names its coverage and the gap goes on the REPORT.
