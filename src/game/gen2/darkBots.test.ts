@@ -43,3 +43,26 @@ test("the dark's skill holds a running JUMP too: the expert's jump into the dark
   assert.ok(r.dark && r.dark.crossed >= 3, `he went over dark rims (${r.dark?.crossed})`);
   assert.deepEqual(r.dark.unlit, []);
 });
+
+test("the dark's stop FACES the rim: the child's stop, taken facing away 40 px in from a rim, turns him to it and its light wakes (GREEN; planted: the turn removed)", async () => {
+  // (castBots x40 on b71163ea, unlit cause 2: the child Normal stood still at x 1014 facing right, 40 px in from the rim at the left end
+  //  of 974-1154; the landing's light 357 px behind him, past GLOW_REACH.back, never woke; he waited it out and went over dark at 42.07 s,
+  //  then, the give-up kept for the run, over it again at 48.53 s 0.34 s after its light woke. This roll's first 50 s hold that stop)
+  if (readied !== DRAFT) readyDraft(DRAFT);
+  const { firstTimer, FT_CHILD } = await import('../../../tools/inspect/firsttimer.ts');
+  const r = firstTimer(DRAFT, 19, FT_CHILD, { cap: 50 });
+  assert.ok(r.dark && r.dark.crossed >= 3, `he went over dark rims (${r.dark?.crossed})`);
+  assert.deepEqual(r.dark.unlit, []);
+  assert.deepEqual(r.dark.gaveUp, []);
+});
+
+test("a dark give-up ends with the visit: with the turn removed (noGlowTurn) he waits out the same rim facing away on BOTH visits (GREEN; planted: the give-up kept for the run)", async () => {
+  // (the give-up kept for the run, the child's second visit to that rim had no stop at all; ended with the visit, he stops again)
+  if (readied !== DRAFT) readyDraft(DRAFT);
+  const { firstTimer, FT_CHILD } = await import('../../../tools/inspect/firsttimer.ts');
+  const r = firstTimer(DRAFT, 19, { ...FT_CHILD, noGlowTurn: true }, { cap: 50 });
+  assert.ok(r.dark, 'the drafted 3-1 has a lit dark (FTRun.dark)');
+  const rims = r.dark.gaveUp.map((g) => g.replace(/ at [\d.]+ s$/, ''));
+  assert.equal(rims.length, 2, `two waited-out stops: ${JSON.stringify(r.dark.gaveUp)}`);
+  assert.equal(rims[0], rims[1], 'both at the same rim, one per visit');
+});
