@@ -22,8 +22,9 @@ of its own, tower.ts:450), 71-424 rule 2 (its bridge, :405), 0-71 rule 1 (wall r
 **48 of 48 rolls, 3,510 going-down catch boughs, every one within LEAP.up (221 px) of wood under it** (by design: a catch is the landing
 between storeys). So 'no bough within a jump of a lower storey' refuses every roll: not the rule. The trap on seed 13 is narrower:
 (i) the bough's end hangs over the storey's dip lip (424-604 ends 4 px past the lip at 600: the dip hop's arc lands on it) and (ii) it
-roofs the next turn vine's top (x171). **Next, in order:** (1) count (i) and (ii) on the 48 rolls (extend lids.mts: a bough end within
-30 px of a dip lip under it; a bough over a turn vine's top within LEAP.up); (2) the bot side, which may be the real cause: after one
+roofs the next turn vine's top (x171). **(1) COUNTED (lids.mts, this box): (i) 176 boughs with an end within 30 px of a dip lip, 40 px to LEAP.up over it; (ii) 243 over
+a climb vine's top, 40 px to LEAP.up over it; rolls with either: 48 of 48** (e.g. normal 1: 781-961@3391 a lip; 986-1166@4029 a vine
+top). The shape is on EVERY roll, as the dip causes are on most rows (780 of 1,140 stuck points). **Next, in order:** (2) the bot side, which may be the real cause: after one
 detour onto the shelf he STANDS at 710-713 ('in a dip 108 px deep'); read why (firsttimer.ts dip / turn-back memory) — the way is to
 walk down into the 70 px dip and hop out under the bough, which the head kid's line did; (3) fix where the count points (lay: the
 dip lip or the vine top kept clear; or bot: the dip walked, not hopped, under a low roof), toy each way (this castBots toy GREEN; a
@@ -39,7 +40,7 @@ on is N down' 137; 'fell back down from here' 84; 'a drop ahead' 75; 'nothing in
 dip' point, any wood within 160 px over the storey across the dip), two traces per cause after that, then the 7 stranded rows.
 (3) Stills, (4) lockall / tierBots 9/9 / suite + CI line / land: as box 6 below. **READY-31 (stands):** length is the 3-1 build's
 (kid N seed 2 clean at 101.4 s; head min kid N 87.2 s over 40 seeds).
-Start 11:18 AM ET 11-25; REPORT written 11:33 AM ET (by `date`).
+Start 11:18 AM ET 11-25; REPORT written 11:35 AM ET (by `date`).
 
 ### Box 6's hand-over (superseded by box 7)
 **EXACT NEXT STEP (box 6 hand-over):** code head **7d12c344b** (pushed; this REPORT + rows commit sits on it: its hash is in the hand-over message, check with `git ls-remote`). **Ruling 1 is DONE**
