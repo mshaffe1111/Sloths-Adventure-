@@ -102,12 +102,15 @@ test("a seam he walks over is no way down: over roll 32's 35 px seam with the wa
   const r = await seamRun(false);
   assert.ok(r.dark && r.dark.crossed >= 20, `he went over dark rims (${r.dark?.crossed})`);
   assert.deepEqual(r.dark.unlit, []);
+  // (ENG-DARK box 12: on the final lay the loop's crossings are lit (the second lights), so the loop is read on all of them: FTRun.dark.loop)
+  assert.ok(r.dark.loop < 10, `no rim gone over again and again (the most over one rim: ${r.dark.loop})`);
 });
 
 test("a seam read as a way down (noSeamWalk, the plant): both sides of the seam point him at the way on under it, and he walks back and forth over one dark rim (RED)", async () => {
   const r = await seamRun(true);
   assert.ok(r.dark, 'the drafted 3-1 has a lit dark (FTRun.dark)');
-  assert.ok(worstRim(r.dark.unlit) >= 10, `one rim gone over dark again and again: ${JSON.stringify(r.dark.unlit.slice(0, 3))}`);
+  // (box 12, the final lay: 31 times over one rim, lit or not; unplanted 3. Box 10's lay: the same loop, its crossings unlit)
+  assert.ok(Math.max(r.dark.loop, worstRim(r.dark.unlit)) >= 10, `one rim gone over again and again (the most over one rim: ${r.dark.loop}; unlit ${JSON.stringify(r.dark.unlit.slice(0, 3))})`);
 });
 
 /** the middle on Normal roll 16 to just past the rim x 920, y 7104 (the right end of 760-920), where box 10 traced his turn press */
