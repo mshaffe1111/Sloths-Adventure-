@@ -221,3 +221,63 @@ for (const [name, prevAbove, vx0, lands] of [
     assert.equal(r.judged, r.on === 18, `the judge says ${r.judged ? 'he lands on the floor #18' : 'something else catches him first'}; the engine set him down on #${r.on}`);
   });
 }
+
+// (ENG-PLANT-CI red 4, the last row: 2-7 home middle Easy 5 race q#91 t 142.467: a take-off off a drifting log. The engine's press frame
+//  carries him with the log first (the logs move, him on them), then steers his own speed on the ground, then adds the log's carry once
+//  (engine.ts groundJump, RIDE.keep): a 268 px/s run off a log at 80 px/s leaves at 365. The judge was handed the sum (348) and steered
+//  it, bleeding it to 330, from where he stood before the frame: it landed him 8 px short, on #91; the engine on #88. The toys: one built
+//  log in a bare world drifting left at 80 px/s, him running left on it, a press near its end; the engine sets him down on a wide floor
+//  at x_E. The judge's verdict on a target 1.5 px either side of x_E (its margin end there) must be the engine's, at both of a held run's
+//  two speeds (268 under the top: the steer then carry; 285 at it: the bleed is the same either way, the frame's ride is not)
+async function carryToy(slow: boolean) {
+  const { RealPlay } = await import('../../src/game/realPlay.ts');
+  const { PHYS } = await import('../../src/game/physics.ts');
+  const { driftX } = await import('../../src/game/river.ts');
+  const { RIDE } = await import('../../src/game/ride.ts');
+  const { hopFlight } = await import('./firsttimer.ts');
+  const rp = new RealPlay('1-1', 1);
+  const e = rp.e as unknown as { standingOnId: number };
+  const Y = 3000, W = 600;
+  const d = { x0: 0, x1: 20000, dir: -1 as const, speed: 80, width: W, offset: 0, baseY: Y };
+  const log = { id: 90, x: 0, y: Y, width: W, height: 30, type: 'drift' as const, drift: d };
+  const floor = { id: 18, x: 0, y: Y + 60, width: 20000, height: 40, type: 'solid' as const };
+  rp.bare([log as never, floor as never]);
+  d.offset = (d.x1 - 10000) / d.speed - rp.t;
+  log.x = driftX(d, rp.t);
+  rp.fly(log.x + W - 30, Y - 1, 0, 0);
+  for (let f = 0; f < 60; f++) {
+    rp.frame({ left: true });
+    const sp = -rp.p.vx;
+    if (rp.p.grounded && e.standingOnId === 90 && rp.p.x - log.x < 90 && (slow ? sp > 260 && sp < 280 : sp > PHYS.maxRun - 0.5)) break;
+  }
+  const at = { x: rp.p.x, y: rp.p.y, vx: rp.p.vx, t: rp.t, on: e.standingOnId };
+  // (the bot's carry, as the gates read it: the log's move over a frame, RIDE.keep of it)
+  const carry = ((driftX(d, at.t + DT) - driftX(d, at.t)) / DT) * RIDE.keep.x;
+  let frames = 0;
+  for (let i = 0; i < 75; i++) {
+    rp.frame({ left: true, jump: true, press: i === 0 });
+    frames++;
+    if (i > 2 && rp.p.grounded) break;
+  }
+  const xE = rp.p.x, landed = e.standingOnId;
+  const h: DrawnHop = { kind: 'single', hold: 5, d2: -1, dblAt: 0, hold2: 0, upOnly: 0 };
+  const judge = (lands: boolean) => {
+    const tw = 300, tx = lands ? xE + 1.5 + 24 - tw : xE + 1.5 - 24;
+    const target = { id: 7, x: tx, y: floor.y, width: tw, height: 40, type: 'solid' as const };
+    return hopFlight(target, () => target.x, at.x, at.y, -1, h, at.t, at.vx + carry, 24, PHYS.doubleV, undefined, undefined, carry);
+  };
+  return { at, carry, xE, landed, frames, lands: judge(true), misses: judge(false) };
+}
+for (const slow of [true, false]) for (const way of ['lands', 'misses'] as const) {
+  test(`the judged take-off off a drifting log flies as the engine's (ENG-PLANT-CI red 4, Easy 5's last row): a held run at ${slow ? '268 px/s, under the top' : '285 px/s, the top'}, the engine's landing 1.5 px ${way === 'lands' ? 'inside' : 'outside'} the target's margin`, async () => {
+    const r = await carryToy(slow);
+    const sp = -r.at.vx;
+    assert.ok(r.at.on === 90 && (slow ? sp > 260 && sp < 280 : sp > 284.5), `the built take-off: on #${r.at.on} at ${sp.toFixed(1)} px/s`);
+    assert.ok(Math.abs(r.carry + 80) < 1e-6, `the log drifts left at 80 px/s (${r.carry})`);
+    assert.equal(r.landed, 18, 'the engine sets him down on the floor');
+    if (way === 'lands') {
+      assert.notEqual(r.lands, null, `the engine lands him 1.5 px inside the target's margin (x ${r.xE.toFixed(2)}); the judge says he does not`);
+      assert.ok(r.lands !== null && Math.abs(r.lands - r.frames * DT) < 1e-6, `the judged airtime ${r.lands?.toFixed(3)} s, the engine's ${(r.frames * DT).toFixed(3)} s`);
+    } else assert.equal(r.misses, null, `the engine sets him down 1.5 px outside the target's margin (x ${r.xE.toFixed(2)}); the judge says he lands on it`);
+  });
+}
