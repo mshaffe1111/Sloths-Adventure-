@@ -16,6 +16,8 @@ lockhints.py); methods/release.md "Before the PR" steps 0-6 and 4b; methods/gate
    summit, 1-6's posts, 8-1's sliver, upright and sideways; look at each as Matt would on a phone) to the lead. Push.
 1b. When the lead sends ENG-PLANT's merged release-0.10.3 hash: merge it into release-0.10.3-wip-fixes (no force), tsc + the CI line, then
    fast-forward release-0.10.3 to it (no force) and go to step 2.
+   (the lead, 11-25 1:40 PM ET: NO separate merger. The hash is ENG-PLANT-CI-f's FINAL head on release-0.10.3-wip-plant-ci, which merges
+   plant-tests 0f95b96ed in (merge-tree CLEAN) and runs the bot fix's final checks once there; take it straight into step 1b.)
 2. What's New (at most 4 short lines, player words; SEND TO THE LEAD before committing): 2-7 The Mailman's Route; Dot warns before deep water;
    fixed: a wall you could not see on 1-6, a dark column of soil at 1-4's start; smoother rivers. package.json -> 0.10.3.
 3. THE FULL SET on that exact head (`git fetch --unshallow` first): run1.sh (lockall vs main --intended 2-7, 1-4's relist and fill, the hint
