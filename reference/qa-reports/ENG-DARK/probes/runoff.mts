@@ -10,7 +10,8 @@ const { awakeLights, darkFlags, darkGaps, darkLandings, darkRims, entryPieces } 
 const { generateStage, setLayoutVariant } = await import(path.join(root, 'src/game/stageGenerator.ts'));
 const { generateAllLevels } = await import(path.join(root, 'src/game/worldsData.ts'));
 const [a, b] = process.argv.slice(2).map(Number);
-let bad = 0, runLit = 0, total = 0;
+let bad = 0, runLit = 0, total = 0, darks = 0, full = 0, awake = 0;
+const share: number[] = [];
 for (let seed = a; seed <= b; seed++) for (const d of ['normal', 'easy'] as const) {
   setLayoutVariant(seed);
   let st: any;
@@ -20,7 +21,8 @@ for (let seed = a; seed <= b; seed++) for (const d of ['normal', 'easy'] as cons
   const runL = new Set<any>();
   for (const z of st.zones ?? []) {
     if (z.kind !== 'dark' || !z.lights?.length) continue;
-    total += z.lights.length;
+    total += z.lights.length; darks++;
+    const aw = z.lights.filter((l: any) => !l.sleep).length; awake += aw; share.push(aw / z.lights.length); if (aw === z.lights.length) full++;
     const mouth = entryPieces(st.platforms, z);
     const m = new Set(darkRims({ platforms: st.platforms, zones: [z] }).filter((r: any) => r.light && mouth.has(r.piece)).map((r: any) => r.light));
     for (const l of awakeLights(st.platforms, z)) if (!m.has(l)) runL.add(l);
@@ -30,4 +32,6 @@ for (let seed = a; seed <= b; seed++) for (const d of ['normal', 'easy'] as cons
   const red = darkLandings({ ...st, zones }, d).filter((x: string) => x.includes('running'));
   console.log(seed, d, 'runWoken', runL.size, 'redWithout', red.length, red[0]?.slice(0, 260) ?? '');
 }
+share.sort((x, y) => x - y);
+console.log('darks', darks, 'fully lit', full, 'lights laid awake', awake, 'of', total, 'median awake share', share[share.length >> 1]?.toFixed(2), 'p90', share[Math.floor(share.length * 0.9)]?.toFixed(2));
 console.log('rolls with a verdict', bad, 'run-woken lights', runLit, 'of', total);

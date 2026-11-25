@@ -123,9 +123,10 @@ const runFly = (drop: number, frac = 1) => {
 /** the run speeds a RUN off is judged at, as fractions of a full run: he leaves an edge at any speed up to it, and the air steer slows or
  *  speeds him on the way down. Judged at full speed alone, the touchdowns between a step off and a full run went unread: the 3-1 x40 on
  *  a5e15a74d went over a sleeping rim 8 times, each one 0-35 px past a touchdown at 154-285 px/s (child Normal 22: off 106's end at
- *  285 px/s, steered to 154 and back to 268, down 174 px onto 590-811 29 px from its left rim), ENG-DARK box 16. Under a step off's
- *  reach (STEP_OFF) the step off's own check (ii) reads it */
-const RUN_FRACS = [1, 0.9, 0.8, 0.7, 0.6, 0.5, 0.4, 0.3, 0.2, 0.1];
+ *  285 px/s, steered to 154 and back to 268, down 174 px onto 590-811 29 px from its left rim), ENG-DARK box 16. Half a run up: down
+ *  to a tenth, the lay woke 1604 of 6168 lights and lit 30 of 970 darks whole (probes/runoff.mts); half to full woke 114 and lit none.
+ *  Under a step off's reach (STEP_OFF) the step off's own check (ii) reads it */
+const RUN_FRACS = [1, 0.9, 0.8, 0.7, 0.6, 0.5];
 /** where a RUN off `from`'s rim going `dir` comes down (a rim with no stop: he runs off it at full speed, ENG-DARK box 14): the first
  *  piece his arc meets (the highest standable piece below his feet whose top his middle crosses within LAND_HALF of its ends), and
  *  where on it he touches down (kept on the piece); null: none */
