@@ -130,14 +130,30 @@ function landingOf(platforms: readonly Platform[], from: Platform, dir: -1 | 1, 
     if (!across || (dir > 0 ? q.x < across.x : q.x + q.width > across.x + across.width)) across = q;
   }
   if (across) return { x: Math.round(dir > 0 ? across.x + 30 : across.x + across.width - 30), y: across.y, on: across, drop: false };
-  // (a drop: the highest piece under the rim, a body's width out, below his feet)
-  const xs = rim + dir * STEP_OFF;
+  return dropLanding(platforms, from, dir, box, 30);
+}
+/** where a STEP off `from`'s rim going `dir` comes down inside the box (a hop rim's other way down: he can step off instead of
+ *  hopping): the highest piece under the rim a body's width out, below his feet, `ahead` px on from where he touches down (0: the
+ *  touchdown itself), kept 20 px inside the piece; null: none */
+function dropLanding(platforms: readonly Platform[], from: Platform, dir: -1 | 1, box: { x0: number; x1: number; top: number; bottom: number }, ahead: number): { x: number; y: number; on: Platform; drop: true } | null {
+  const xs = (dir > 0 ? from.x + from.width : from.x) + dir * STEP_OFF;
   let under: Platform | null = null;
   for (const q of platforms) {
-    if (!inBox(q) || xs < q.x || xs > q.x + q.width || q.y <= from.y + 1) continue;
+    if (q === from || !standable(q) || q.x + q.width < box.x0 || q.x > box.x1 || q.y < box.top || q.y > box.bottom) continue;
+    if (xs < q.x || xs > q.x + q.width || q.y <= from.y + 1) continue;
     if (!under || q.y < under.y) under = q;
   }
-  return under ? { x: Math.round(Math.max(under.x + 20, Math.min(under.x + under.width - 20, xs + dir * 30))), y: under.y, on: under, drop: true } : null;
+  return under ? { x: Math.round(Math.max(under.x + 20, Math.min(under.x + under.width - 20, xs + dir * ahead))), y: under.y, on: under, drop: true } : null;
+}
+/** the light over a hop rim's step-off landing (the lay's second light, glowZone): the nearest of `lights` reaching that landing; null:
+ *  the rim is a drop, has no step-off landing in the box, or no light reaches it */
+function stepLight(platforms: readonly Platform[], r: DarkRim, z: Zone): Light | null {
+  if (r.drop) return null;
+  const s = dropLanding(platforms, r.piece, r.dir, z, 0);
+  if (!s) return null;
+  let light: Light | null = null;
+  for (const l of z.lights ?? []) if (Math.hypot(l.x - s.x, l.y - s.y) <= l.r && (!light || Math.hypot(l.x - s.x, l.y - s.y) < Math.hypot(light.x - s.x, light.y - s.y))) light = l;
+  return light;
 }
 
 /** is (x, y) inside the zone's box? */
@@ -192,10 +208,15 @@ function glowZone(out: StageSink, a: { x: number; y: number }, b: { x: number; y
   let id = (out.extras[GLOW_ID] as number | undefined) ?? 1;
   for (const r of darkRims({ platforms: out.platforms, zones: [probe] })) {
     // (over the landing, but never deeper under the rim than a stop on it reaches (GLOW_REACH.down): a wall-side rim's long drop keeps
-    //  its light where its stop wakes it, still over the landing)
-    const at = { x: r.land.x, y: Math.min(r.land.y - DARK_ZONE.lightUp, r.y + GLOW_REACH.down) };
-    if (z.lights!.some((l) => Math.hypot(l.x - at.x, l.y - at.y) < 70)) continue;
-    z.lights!.push({ x: at.x, y: at.y, r: DARK_GLOW.light, sleep: true, id: id++ });
+    //  its light where its stop wakes it, still over the landing. A HOP rim gets a second light over its step-off landing: a player can
+    //  step off instead of hopping, or turn back there, and that edge is lit too (the lead's ruling, 11-25); it hangs over where he
+    //  touches down, so it reaches the edges he comes down by)
+    const step = r.drop ? null : dropLanding(out.platforms, r.piece, r.dir, z, 0);
+    for (const land of step ? [r.land, step] : [r.land]) {
+      const at = { x: land.x, y: Math.min(land.y - DARK_ZONE.lightUp, r.y + GLOW_REACH.down) };
+      if (z.lights!.some((l) => Math.hypot(l.x - at.x, l.y - at.y) < 70)) continue;
+      z.lights!.push({ x: at.x, y: at.y, r: DARK_GLOW.light, sleep: true, id: id++ });
+    }
   }
   // (the cave mouth is lit: a rim of a piece he reaches from outside the dark has the light over its landing (the one the verdicts read)
   //  laid awake; every other light sleeps)
@@ -284,7 +305,13 @@ export function darkLandings(stage: { platforms: readonly Platform[]; zones?: re
       //  rim's own landing light (darkGaps), then steps off slowly toward u.dir; it passes when the edge he lands toward lies inside that
       //  light. An edge BEHIND that landing (n.dir against u.dir) is not one he lands toward: the slow step carries him away from it, and
       //  he reaches it only by turning back on its piece by choice, never on the drop's way)
-      let lit = !!ud && (n.dir !== u.dir || (!!ud.light && Math.hypot(ud.light.x - n.x, ud.light.y - n.y) <= ud.light.r));
+      //  A step off a HOP rim (ud.drop false) takes no exemption: he steps off it by choice and can turn back on the piece he lands on,
+      //  so every edge there is judged; the lay's second light over that step-off landing (stepLight) lights it when it reaches the
+      //  edge and a stop at the hop rim, facing over it, wakes it (the lead's ruling A on 33 N, 11-25)
+      const sz = ud && !ud.drop ? (stage.zones ?? []).find((z) => z.kind === 'dark' && !!z.lights?.length && inBox(z, ud.x, ud.y)) : undefined;
+      const sl = ud && sz ? stepLight(stage.platforms, ud, sz) : null;
+      let lit = !!ud && ((ud.drop && n.dir !== u.dir) || (!!ud.light && Math.hypot(ud.light.x - n.x, ud.light.y - n.y) <= ud.light.r)
+        || (!!sl && Math.hypot(sl.x - n.x, sl.y - n.y) <= sl.r && Number.isFinite(litAfter(sl, ud.x - ud.dir * 10, ud.y, ud.dir))));
       if (ud && !lit) {
         const p = u.piece;
         for (let x = p.x + 10; x <= p.x + p.width - 10 && !lit; x += 10) {
@@ -371,9 +398,25 @@ export function litAhead(crossings: readonly RimCrossing[], setting: 'normal' | 
 export class RimWatch {
   readonly crossings: RimCrossing[] = [];
   private onPiece: Platform | null = null;
+  /** he left the ground past a rim ABOVE its height (a jump): counted (at the pass) once he sinks below the rim's height or grabs a
+   *  vine, dropped when he lands back on its piece or on higher ground past it (the lead's rulings, 11-25: going over means leaving the
+   *  ground past the rim; a jump UP over the rim onto higher ground is no way into the dark below) */
+  private over: RimCrossing | null = null;
   constructor(readonly rims: readonly DarkRim[]) {}
   step(t: number, p: { x: number; y: number; grounded: boolean; climbing?: boolean }, lit: (l: Light) => number | undefined) {
-    // (on a rim's piece: he is there; past its end he has gone over, in the air or on the game's grace past an edge, whichever comes first)
+    if (this.over) {
+      const o = this.over, rim = o.rim;
+      if (p.climbing) { this.over = null; this.crossings.push({ ...o, climbed: true }); }
+      else if (!p.grounded && p.y > rim.piece.y + 4) { this.over = null; this.crossings.push(o); }
+      else if (p.grounded) {
+        this.over = null;
+        const back = p.x >= rim.piece.x && p.x <= rim.piece.x + rim.piece.width && Math.abs(p.y - rim.piece.y) <= 4;
+        const higher = p.y < rim.piece.y - 4 && (p.x - rim.x) * rim.dir > 0;
+        if (!back && !higher) this.crossings.push(o);
+      } else return;
+    }
+    // (on a rim's piece: he is there; standing past its end on the game's grace he is still on it: a grounded slide he turns back from
+    //  is no going over (the lead's ruling, 11-25))
     const on = p.grounded ? this.rims.find((r) => p.x >= r.piece.x && p.x <= r.piece.x + r.piece.width && Math.abs(p.y - r.piece.y) <= 4)?.piece : undefined;
     if (on) { this.onPiece = on; return; }
     if (!this.onPiece) return;
@@ -381,9 +424,13 @@ export class RimWatch {
     // (standing on other ground, not at the piece's height: he left it some other way (a vine, its other end, a rescue); walking past
     //  its end down there is no crossing of it: the KID's 3-1 draft run counted a rim 281 px over his head)
     if (p.grounded && Math.abs(p.y - from.y) > 4) { this.onPiece = null; return; }
+    if (p.grounded && !p.climbing) return;
     const r = this.rims.find((q) => q.piece === from && (q.dir > 0 ? p.x > from.x + from.width : p.x < from.x));
     if (!r) return;
     this.onPiece = null;
-    this.crossings.push({ rim: r, t, litAt: r.light ? (r.light.sleep ? lit(r.light) : -Infinity) : undefined, ...(p.climbing ? { climbed: true as const } : {}) });
+    const c: RimCrossing = { rim: r, t, litAt: r.light ? (r.light.sleep ? lit(r.light) : -Infinity) : undefined };
+    if (p.climbing) this.crossings.push({ ...c, climbed: true });
+    else if (p.y > from.y + 4) this.crossings.push(c);
+    else this.over = c;
   }
 }

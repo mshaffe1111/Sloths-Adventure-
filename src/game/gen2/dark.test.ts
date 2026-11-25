@@ -228,6 +228,43 @@ test("the cave mouth is lit (ruling (ii)): adult Easy roll 30 drops in from OUTS
   assert.ok(red.some((m) => m.includes('the rim he left outside the dark: the rim at x 175, y 2190')), red.join('; ') || 'nothing named');
 });
 
+test("a hop rim's step-off landing is lit (the lead's ruling A, 11-25): adult Normal roll 33's hop rim x 951, y 7644 steps off onto 704-940, 13 px from its rim BEHIND him: the lay's second light over that touchdown lights it (darkLandings GREEN); the lay without second lights: RED, the step off named", () => {
+  const st = built(33, 'normal');
+  assert.deepEqual(darkLandings(st, 'normal'), []);
+  const hop = darkRims(st).find((q) => q.x === 951 && q.y === 7644);
+  assert.ok(hop && !hop.drop, 'the hop rim on the real row');
+  // (the lay without the second lights: only the lights over the rims' own landings stay)
+  const own = new Set(darkRims(st).map((r) => r.light));
+  const zones: Zone[] = (st.zones ?? []).map((z) => (z.kind !== 'dark' || !z.lights?.length ? z : { ...z, lights: z.lights.filter((l) => own.has(l)) }));
+  const red = darkLandings({ ...st, zones }, 'normal');
+  assert.ok(red.some((m) => m.includes('the rim at x 951, y 7644')), red.join('; ') || 'nothing named');
+});
+
+/** a dark rim with a sleeping light on the real row, and RimWatch fed by hand (the x40's crossing judge) */
+function watchOne(frames: ReadonlyArray<{ dx: number; dy: number; grounded: boolean }>) {
+  ready();
+  const r = new RealPlay(DRAFT, 1, draftCfg());
+  const rim = darkRims(r.stage).find((q) => q.light?.sleep)!;
+  const watch = new RimWatch([rim]);
+  frames.forEach((f, i) => watch.step(10 + i / 30, { x: rim.x + rim.dir * f.dx, y: rim.y + f.dy, grounded: f.grounded }, () => undefined));
+  return watch.crossings;
+}
+
+test("RimWatch: a grounded slide on the edge grace that turns back is no going over (the lead's ruling, 11-25: child Easy 21 x 191 slid 2 px past and turned); a real step off still is", () => {
+  const slide = watchOne([{ dx: -20, dy: 0, grounded: true }, { dx: -5, dy: 0, grounded: true }, { dx: 2, dy: 0, grounded: true }, { dx: 1, dy: 0, grounded: true }, { dx: -10, dy: 0, grounded: true }]);
+  assert.equal(slide.length, 0, 'the grace slide is not counted');
+  const off = watchOne([{ dx: -20, dy: 0, grounded: true }, { dx: 2, dy: 0, grounded: true }, { dx: 6, dy: 1, grounded: false }, { dx: 10, dy: 12, grounded: false }]);
+  assert.equal(off.length, 1, 'leaving the ground past the rim is going over');
+});
+
+test("RimWatch: a jump UP over a rim onto higher ground is no crossing (the lead's ruling, 11-25: middle Easy 1 x 517 passed 161 px above it); the same jump coming down below the rim is", () => {
+  const up = watchOne([{ dx: -30, dy: 0, grounded: true }, { dx: -10, dy: -60, grounded: false }, { dx: 5, dy: -161, grounded: false }, { dx: 30, dy: -130, grounded: false }, { dx: 45, dy: -108, grounded: true }]);
+  assert.equal(up.length, 0, 'the jump up onto higher ground');
+  const down = watchOne([{ dx: -30, dy: 0, grounded: true }, { dx: -10, dy: -60, grounded: false }, { dx: 5, dy: -161, grounded: false }, { dx: 30, dy: -20, grounded: false }, { dx: 40, dy: 30, grounded: false }]);
+  assert.equal(down.length, 1, 'the jump that comes down into the dark below');
+  assert.equal(down[0].t, 10 + 2 / 30, 'counted at the pass');
+});
+
 test("a wall rim's light hangs no deeper than a stop on the rim reaches (GLOW_REACH.down): Normal roll 21's wall-side rim at x 24 is woken (darkGaps GREEN); its light hung over the landing as before, past the reach: RED", () => {
   const st = built(21, 'normal');
   assert.deepEqual(darkGaps(st), []);
