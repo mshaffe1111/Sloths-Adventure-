@@ -35,10 +35,11 @@ Traces (seed, x, frame, what took him):
   the same places at other times: the 4 gains and 9 losses in A are that shuffle, not a new way to fall.
 - B+C's branch, first probe (tools/refuse.mts.txt: every gateSees call in a time window, its caller line, target, answer), c25 middle E 11:
   t 41.73 on log #20, :3400 (padPause flick, judged) REFUSED both targets (#19, #21 false); the tablePick hop put him on #19 (t 42.3). On #19
-  (t 42.3-47.7, carried back to the bank) **no gateSees call at all**: no gate judged any hop off the last log. Inferred, not yet proven:
-  :3398's target list `to` is empty there (no log ahead; the far bank #17, where the rescue set him at 9,571, outside the 80 px solid
-  filter), so tablePick has nothing and 'the ride's gates decide as before', which stand him while the log runs back. The c3b comment
-  at :3406 names this very loop on 2-1 (middle N 25) as what tablePick fixed; on 2-7 the last log leaves tablePick no target.
+  (t 42.3-47.7, carried back to the bank) **no gateSees call and no tablePick call at all** (tools/refuse2.mts.txt: tablePick called once
+  in t 41.5-47.8, at 41.73 on #20 with to=[#19,#21] -> single 0.135, the hop onto #19). So the padPause branch (:3390-3417) is NOT
+  reached on the last log: an earlier branch of the decision stands him while the log runs back (my first guess, an empty `to`, is
+  DISPROVED by this probe). The c3b comment at :3406 names this very loop on 2-1 (middle N 25) as what tablePick fixed; on 2-7's last
+  log tablePick is never asked.
 
 ## For the lead (sent): B+C is ours: I narrow it in the bot (a toy each way) and re-measure, unless you rule otherwise. A is the landing's own
 family reshuffled (not R-165.413: solids, not logs): yours to rule. D is one row: yours to name. No merge.
@@ -49,8 +50,9 @@ family reshuffled (not R-165.413: solids, not logs): yours to rule. D is one row
    Rows: tools/wide.sh-n.txt (castBots --json, one row per line; arg 5 = extra flags, e.g. "--bots adult,child,middle,expert"); a list of
    rows: tools/bis.sh-n.txt (groups file "bot setting seeds"); compare: tools/cmp.py-n.txt; first split: tools/frames.mts.txt + div.py-n.txt.
 1. **Read the lead's reply first** (ReadNotifications). If none: B+C as the default.
-2. B+C: prove the inference: on c25 middle E 11 (on #19 t 42.3-47.7) and expert N 29 (on #37 t 57.1-63.2) log :3398's `to`, tablePick's
-   answer and the branch that returns each frame (refuse.mts pattern: patch FirstTimerRun.prototype methods from the probe; the frozen tree
+2. B+C: find the branch that stands him on the last log: on c25 middle E 11 (on #19 t 42.3-47.7) and expert N 29 (on #37 t 57.1-63.2)
+   log which decision branch returns each frame (patch FirstTimerRun.prototype methods, e.g. decide / startJump / the ride's wait, from
+   the probe as refuse2.mts does) (refuse.mts pattern: patch FirstTimerRun.prototype methods from the probe; the frozen tree
    is never edited); and what the BASE does at the same boarding (fz-base: frames.mts + div.py, its first split is at the first river). Then the narrowing (the
    lead's rule: the fix where the cause is; a toy each way: RED = a hand-back round that ends in a rescue on c25, GREEN on the fix; and the
    other way: the c2m gains child N 5 / middle N 13 still cross without a fall). Re-measure: 2-7 x40 (280) + the run-up rows + the 10 known

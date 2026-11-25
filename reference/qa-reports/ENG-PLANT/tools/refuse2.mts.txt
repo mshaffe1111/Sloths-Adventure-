@@ -1,0 +1,19 @@
+// usage: tsx refuse.mts <tree> <stage> <bot> <setting> <seed> <t0> <t1> : every gateSees call in [t0,t1]: the caller's line, the target, the answer
+const [T, stage, bot, setting, seed, t0, t1] = process.argv.slice(2);
+await import(`${T}/src/game/headlessDom.ts`);
+const { CAST_BOTS } = await import(`${T}/tools/inspect/castBots.ts`);
+const FT: any = await import(`${T}/tools/inspect/firsttimer.ts`);
+const P = FT.FirstTimerRun.prototype; const g0 = P.gateSees; const tp0 = P.tablePick; const tps: string[] = [];
+P.tablePick = function (to: any[], ...a: any[]) { const r = tp0.call(this, to, ...a); if (now >= +t0 && now <= +t1) tps.push(`t${now.toFixed(2)} x${Math.round(this.sim.p.x)} on#${this.sim.e.standingOnId} tablePick to=[${to.map((q: any) => q.type + "#" + q.id).join(",")}] -> ${r ? r.kind + " " + r.hold.toFixed(3) : "none"}`); return r; }; let now = 0; const seen = new Map<string, number>(); const out: string[] = [];
+P.gateSees = function (q: any, ...a: any[]) {
+  const r = g0.call(this, q, ...a);
+  if (now >= +t0 && now <= +t1) {
+    const line = (new Error().stack ?? '').split('\n')[2]?.match(/firsttimer\.ts:(\d+)/)?.[1] ?? '?';
+    const k = `${line} ${q.type}#${q.id} ${r}`; const p = this.sim.p;
+    if (!seen.has(k)) out.push(`t${now.toFixed(2)} x${Math.round(p.x)} on#${this.sim.e.standingOnId} :${line} -> ${q.type}#${q.id}[${Math.round(q.x)}..${Math.round(q.x + q.width)}] margin ${a[7]} = ${r}`);
+    seen.set(k, (seen.get(k) ?? 0) + 1);
+  }
+  return r;
+};
+FT.firstTimer(stage, Number(seed), CAST_BOTS[bot][setting], { cap: 1200, dotSetting: true, onFrame: (sim: any) => { now = sim.t; } });
+console.log(out.join('\n')); console.log(tps.slice(0, 12).join('\n'), '\ntablePick calls', tps.length); console.log('counts', JSON.stringify([...seen]));
