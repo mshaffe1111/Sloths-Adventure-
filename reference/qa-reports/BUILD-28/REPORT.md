@@ -44,9 +44,18 @@
    forkstills-s9.mjs.txt (not yet re-shot): 'porch' = his first tread going left (between the rises' right end and the porch's right
    end: x ~17102); 'top' = the highest rise within 3 x 60 over the porch (not the home pieces at y 680..850). Candidates for the column
    in the stills: the narrow moss_stone blocks high over the fork (104 x 90 at x 16202 y 755; 88 x 90 at x 16930 y 803).
-3. NEXT (session 10): (a) paintcheck parts not finished in session 9 (see gates-s9.txt; parts are 0-BASED, 0/3 1/3 2/3, R-165.330:
-   '3/3' checks nothing), frozen, proven/ writable, two at a time; (b) wait for the lead's 1b hash (tell the lead, then idle); (c) at
-   1b: the reshoot of ruling (ii) FIRST, then item 4 below.
+3. EXACT NEXT STEP (session 10; the lead starts it only once the 1b hash exists):
+   (a) 1b at the lead's hash: git fetch origin t-build-28-wip (re-fetch before EVERY commit, D138); merge the hash (no force), keep both
+       intents in firsttimer.ts; apply draft-1b-B2b-forkjump-popup.patch.txt as ONE engine-piece commit.
+   (b) THE FORK RESHOOT, FIRST (ruling (ii)): forkstills-s9.mjs.txt (copy to a scratch .mjs; FORK_AS=2-3; vite on a FROZEN tree of the 1b
+       head, port checked free, --strictPort, the served tree checked, vite killed after) lip and porch, upright and sideways, LOOKED AT.
+       Column gone: go on. Column still there: a NEW defect: STOP, send the lead the stills, no patch. Then 'top' (the third rise) and the
+       marsh-dip paddle (ruling (iv)).
+   (c) rule 28 on the 1b head: ENG-PLANT's 10 known flips; the wide sample (seeds 1-10, every bot, both settings, 2-1/2-2/2-4: 0 BAR
+       PASS -> FAIL vs main); lockall vs main; the probe 54/54.
+   (d) the gates owed on the 1b head (the 0cdc35b7f runs are in gates-s9.txt; paintcheck 2/3 was NOT run on 0cdc35b7f, the lead's word:
+       hand over after clipcheck and 1/3). Parts are 0-BASED (R-165.330): 0/3, 1/3, 2/3.
+   (e) READY-28 on 2-8's own config (item 5 of the order); MUST-SHOW (ruling (iii)): the low road reads as WATER from the fork, UPRIGHT.
 
 ## EXACT NEXT STEP (session 8, W2-LANE h; code head 0cdc35b7f (= ceab09e20's code); this session adds only files under reference/)
 1. THE 2b TOYS, ON THE DRAFT, READY FOR 1b (DONE): draft-1b-B2b-forkjump-popup.patch.txt is ONE patch that applies on 0cdc35b7f (checked
