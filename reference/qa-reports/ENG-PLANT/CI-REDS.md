@@ -1,6 +1,53 @@
-# ENG-PLANT-CI: the 9 CI-tool-line reds on c27 (session 4 hand-over written 12:57 PM ET 11-25 by `date`; sessions 3, 2 and 1 below it)
+# ENG-PLANT-CI: the 9 CI-tool-line reds on c27 (session 5 hand-over written 1:21 PM ET 11-25 by `date`; sessions 4, 3, 2 and 1 below it)
 
-## EXACT NEXT STEP (session 5)
+## EXACT NEXT STEP (session 6). HEAD = CI-9 (CI-8 3558ba80e + the lip hoist) + this file. Red 4 NOT green yet: ONE row left, traced
+1. **The last red-4 row (2-7 home middle Easy 5, race q#91 t 142.467 x 3034, double hold 0.135, came down on bank #88): the take-off
+   off a drifting log.** data/ci/red4-hoist.txt "easy5": the judged flight (11 candidates printed; #7 = the double flown) matches the
+   run's y FRAME FOR FRAME, x is 3.8 px short at i1 and 8 px at i12: the engine's take-off vx is -365, the judge's -330. **Cause
+   (traced to the line):** the engine (engine.ts groundJump :7434) ground-steers his own speed first (-268 -> -285) and THEN adds the
+   log's carry once (carryVx -80, RIDE.keep.x 1): -365. The race gate (firsttimer.ts ~3767 `vx = p.vx + carry`) hands hopFlight the
+   sum (-348) and takeOffStep's groundSteer bleeds it above maxRun to -330. 8 px further left the engine's ledge forgiveness on #88
+   (feet 25 px above, toward it) catches him; the judge has him land on #91. **Fix (the bot's model = the engine):** hopFlight takes the
+   carry apart (a `carry` argument: takeOffStep steers vx0 without it, then b.vx += carry), every caller that sums p.vx + carry passes
+   the two apart (grep `p.vx + (Math.abs(carry)`, judge()'s `carry`). Toy: one built take-off off a drifting log at full run, the
+   judge's flight vs RealPlay's (judgeFliesEngine's pattern) frame for frame; RED on CI-9, GREEN on the fix. Then hopJudged all 4.
+2. **The lip hoist (CI-9) needs its toy** (the brief: a toy each way, RED on CI-8 and GREEN on CI-9): a tall solid (h >= WALL_H) beside
+   the flight, his body 1-13 px into its face, feet within forgive.mantle under its top: the engine hoists him (engine.ts :2782-2798),
+   the judge must catch; and the same 30 px under (no hoist): neither. ledgeToy in hopJudged.test.ts is the pattern (give others
+   h/mantle/stepHelp as flightOthers does).
+3. Then the final checks, once on the final head (at most two heavy runs at a time): the 10 races (cr margins.mts), the known flips
+   (set1-m.sh + cmp3.py vs c27), the 4 files, the wide sample (wide-m.sh, seeds 1-10, every bot, both settings, 2-1/2-2/2-4 vs main),
+   2-7 x40 (>= 29/40), tierBots 9/9, tsc. **The known flips WILL be re-judged:** CI-8 moved two Easy rows (below); every moved row is
+   bisected and traced (rule 28) or named, or STOP and send the table.
+
+## SESSION 5 END STATE (CI-8 3558ba80e, CI-9 = HEAD)
+**CI-8 (red 4 as briefed):** hopFlight's others loop takes the ledge forgiveness by the engine's three conditions (not a drift log on
+Normal; prev feet < top - 2; miss <= landPx and toward it at >= 30 px/s, b.vx after the move). **Toys (hopJudged.test.ts, ledgeToy: the
+same flight judged and pressed on RealPlay, a bare world, a 12 px ledge, Normal 1-1):** (a) feet 0.3 px above the top before the frame,
+toward it: the engine sets him on the floor #18; RED on CI-7 (judge: caught), GREEN on CI-8. (b) from 5 px above, toward at 60 px/s: both
+catch on the ledge, GREEN on both (the guard: it cannot be RED on CI-7, which catches everything inside the reach). (c) from 5 px above,
+moving away: neither; RED on CI-7, GREEN on CI-8. tsc clean (frozen fz-ci8).
+**CI-8's 4 files (frozen fz-ci8): 64 tests, 56 pass, 8 fail = reds 5-9 + hopJudged Normal 2, Easy 5, Easy 2.** The original red-4 row
+(t 22.133) is gone; three new rows came down on a SOLID the judge did not catch: Easy 2 edgeWait q#80 t 121.40 -> bank #76; Normal 2
+edgeWait q#91 t 156.40 -> bank #87; Easy 5 race q#91 t 142.47 -> bank #88.
+**Traced (data/ci/red4-hoist.txt, hfprobe2 on game time):** Easy 2 and Normal 2 are the WALLS' lip hoist, not onFloor: falling past the
+face of the bank he hopped from, steering away, body 1.5 / 4.3 px into its face, feet 13 / 17 px under its top: hoisted (stepHelp lipL)
+to x 6094 = 6100 - 19 + 13 and x 3216 = 3222 - 19 + 13. CI-7's "taken either way he moves" stood in for that catch. **CI-9 (HEAD):**
+hopFlight takes the engine's lip hoist too (blockBeside, from either face or the step help's LIP_IN, feet <= forgive.mantle under the top,
+vy >= -120, lipHasRoom); FlightOthers carries h, mantle, stepHelp. **hopJudged on CI-9 (dev tree, not frozen): 13 tests, 12 pass;
+Normal 2, Easy 2 GREEN; Easy 5 one row = item 1's take-off carry.** tsc clean on CI-9.
+**CI-8's known flips (data/ci/set1-ci8, data/ci/cmp-ci8.txt, cols c27 / CI-7 / CI-8): 19 of 23 = c27, 4 moved = the 2 named child rows
++ 2-4 child Easy 11 (PASS 239.2 -> 239.7, r0 l0) + 2-4 kid Easy 13 (FAIL 149.2 -> 172.4, r1 l0); 0 BAR PASS -> FAIL.** Both new rows are
+Easy (landPx 12), not yet bisected or traced; re-run on the final head first (CI-9 may move them back).
+**Not run this session:** the races, the wide sample, 2-7 x40, tierBots (red 4 is not green: run them once on the final head).
+Lessons applied: D115 (verdicts on chattr-frozen fz-ci7t / fz-ci8; the HF print only on the unfrozen /home/user/hfc), D119 (commit
+messages from a file), D128 (stamps from date), D134 (pushed and ls-remote'd before the message), D138 (re-fetched before the first
+commit), rule 28 (the three moved rows traced by frame before the hoist; the last traced to its line, not guessed), law 22 (no test
+weakened; toy (b) named as the guard, not claimed RED).
+
+## (session 4 hand-over)
+
+## EXACT NEXT STEP (session 5; DONE in part: see session 5 above)
 1. Red 4 (the lead's order item 2, word for word: "Red 4 (hopJudged Easy 5: edgeWait predicted a fall, but the engine's overSmall
    steered him back onto #18 at 23.6 px past its middle against a 22.5 px threshold): the per-frame hopFlight vs engine comparison. The
    BOT's model matches the ENGINE (judged = flown). A toy each way. Then the races + flips again.").
