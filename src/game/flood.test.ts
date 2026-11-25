@@ -83,6 +83,22 @@ test('highRoadFaults: the first piece is a WALL-STEP on the near bank he walks i
   assert.match(highRoadFaults([back[0], back[1], { ...back[2], h: 20 }, back[3]], span, 60, 60).join(';'), /climbs by a bare edge hop up at x 1100/);
 });
 
+test('highRoad: every piece IN HIS WAY on a porch is met in order (a rise standing ON the porch, never skipped by a jump to its far end)', () => {
+  // (World 2's two-road section's shape, w2.ts W2_FORK: W on the bank's end, a 60 px gap, the porch P, a rise standing on P's far end, porch2
+  //  level with P from P's end out over the far bank)
+  const span = { x0: 1000, x1: 1798, from: { x: 1000, y: LIP }, to: { x: 1798, y: LIP } };
+  const W = { x: 850, w: 150, y: LIP - 60, h: 60 }, P = { x: 1060, w: 500, y: LIP - 60, h: 24 }, rise = { x: 1160, w: 400, y: LIP - 120, h: 60 }, P2 = { x: 1560, w: 400, y: LIP - 60, h: 24 };
+  const ok = highRoad([W, P, rise, P2], span, 60, 60);
+  assert.deepEqual(ok.faults, []);
+  assert.deepEqual(ok.chain, [W, P, rise, P2], 'GREEN: the rise standing on the porch is met and climbed (before the fix the chain was W, P, P2)');
+  // RED: the rise lifted 10 px off the porch (room under it, under his head: a bare edge hop up; 70 px over P, so a 'within a step' filter misses it)
+  assert.match(highRoadFaults([W, P, { ...rise, y: rise.y - 10 }, P2], span, 60, 60).join(';'), /climbs by a bare edge hop up at x 1160 \(70 px up off the piece at x 1060, 10 px of room under it\)/);
+  // RED: a rise standing on the porch taller than a step
+  assert.match(highRoadFaults([W, P, { ...rise, y: rise.y - 10, h: 70 }, P2], span, 60, 60).join(';'), /meets a wall 70 px tall at x 1160/);
+  // GREEN: a thin piece high over the porch (over his head) is not in his way
+  assert.deepEqual(highRoadFaults([W, P, { x: 1160, w: 200, y: LIP - 200, h: 24 }, P2], span, 60, 60), []);
+});
+
 test('forkFaults: the fork at the wall-step, both halves by name: RED on the toy (W 60 + gap 60: every tier walks off, the adult as traced) and the brick (W 60 flush: no way down); GREEN on the shape it finds (W 150 + gap 60)', () => {
   const span = { x0: 1000, x1: 1400, from: { x: 1000, y: LIP }, to: { x: 1410, y: LIP } };
   // the toy fork's high road (tools/inspect/lineBot.test.ts): W, a 60 px gap over the bank strip, P level with W's top, B, C

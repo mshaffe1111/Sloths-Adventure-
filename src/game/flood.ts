@@ -15,6 +15,9 @@
 import { floodLevel } from './river.ts';
 import { JUMP_AIRTIME, PHYS } from './physics.ts';
 
+/** his collider's height (px; engine.ts:1223, the player box 44 x 48): a piece whose bottom is over the road's top by less is in his way */
+const HEAD = 48;
+
 /** a world's flood table (the designer's flown numbers, 2-8.md "FLOWN"; a graph's brief names it: GraphBrief.flood) */
 export interface FloodRow {
   /** T_CLOSE: s after the clock starts that the low road turns deep, by setting (2-8.md:16) */
@@ -196,8 +199,29 @@ export function highRoad<T extends { x: number; w: number; y: number; h?: number
       if (!used) return { chain, faults: [`flood: no high road over the low road at x ${Math.round(span.x0)}-${Math.round(span.x1)} (no piece a step of at most ${step} px off its near bank)`] };
       return { chain, faults: [`flood: the high road breaks at x ${Math.round(at.x)}: no piece or far bank within a step of ${step} px and a hop of ${hop} px from there`] };
     }
-    chain.push(next);
-    at = { x: farOf(next), y: next.y };
+    // (EVERY piece in his way on it is met in order, never skipped by a jump to its far end (the lead's ruling, R-165.430, BUILD-28): a
+    //  piece whose near side lies ahead of where he steps on and before its far end, its bottom over its top and under his head (his
+    //  collider's HEAD px). Standing on it and at most a step tall: a wall-step, he climbs it and goes on from it; taller: a wall; with room
+    //  under it: a bare edge hop up. By name)
+    let cur = next;
+    let enter = beyond(nearOf(cur), at.x) > 0 ? nearOf(cur) : at.x;
+    chain.push(cur);
+    for (;;) {
+      let q: T | undefined;
+      for (const p of tops) {
+        const bottom = p.y + (p.h ?? 0);
+        if (p === cur || beyond(nearOf(p), enter) <= 0 || beyond(nearOf(p), farOf(cur)) >= 0 || bottom > cur.y + 1 || bottom < cur.y - HEAD) continue;
+        if (!q || beyond(nearOf(p), nearOf(q)) < 0) q = p;
+      }
+      if (!q) break;
+      const up = Math.round(cur.y - q.y);
+      if (q.y + (q.h ?? 0) < cur.y - 1) return { chain, faults: [`flood: the high road climbs by a bare edge hop up at x ${Math.round(nearOf(q))} (${up} px up off the piece at x ${Math.round(nearOf(cur))}, ${Math.round(cur.y - q.y - (q.h ?? 0))} px of room under it): every step up is a wall-step he walks into and climbs`] };
+      if (up > step) return { chain, faults: [`flood: the high road meets a wall ${up} px tall at x ${Math.round(nearOf(q))} on the piece at x ${Math.round(nearOf(cur))}: every step up is at most ${step} px`] };
+      chain.push(q);
+      cur = q;
+      enter = nearOf(q);
+    }
+    at = { x: farOf(cur), y: cur.y };
     if (chain.length > tops.length) return { chain, faults: ['flood: the high road loops'] };
   }
 }
