@@ -1426,8 +1426,11 @@ export function stillCoverNear(bushes: ReadonlyArray<{ x: number; w: number; y: 
  *  rests at the front, the furthest-forward take-off the gate judges from (p.x), never past it (session 13's experiment walked to 30).
  *  (ENG-PLANT-CI, rule 28: c26 read 2 frames (19 px) for every tier, 31 px; the kid and the child lift off up to 4 frames late (38 px), so the
  *  child walked past a log's front and stood 9 px beyond its end, where no gate is reached: riverRide's reAim toy phase 1.5, traced. The
- *  adult family (releaseMax [0, 2]) keeps 31; the kid and the child 50) */
-export const frontStandPx = (who: { releaseMax: [number, number] }): number => Math.round(PHYS.maxRun * PHYS.maxRun / (2 * PHYS.groundDec) + who.releaseMax[1] * PHYS.maxRun * DT);
+ *  adult family (releaseMax [0, 2]) keeps 31; the kid and the child 50)
+ *  (ENG-PLANT-CI-c, rule 28: plus the DECISION frame: the walk is judged once a frame, so he lets go up to one frame's run inside the
+ *  number; racefront adult phase 0 let go 23 px from #10's front at 260 px/s and ran 5 px past it. And the stand is a stop he MEANS
+ *  (stopMeant at every front stand): without it the adult's lift-off re-armed every frame (thumbify, R-165.59), 3 frames held. 41 / 60) */
+export const frontStandPx = (who: { releaseMax: [number, number] }): number => Math.round(PHYS.maxRun * PHYS.maxRun / (2 * PHYS.groundDec) + (who.releaseMax[1] + 1) * PHYS.maxRun * DT);
 
 export class FirstTimerRun {
   readonly sim: RealPlay;
@@ -3617,7 +3620,10 @@ export class FirstTimerRun {
         const pit = !!who.holdQ && !this.floorAt(p.x + dir * (look + 40), p.y, 400);
         const drops = on && on.y > p.y + 50 && !across && !pit;
         // (a log or a lily pad drifting across the gap: he can see it, so he waits at the edge until it is near, up to 6 s)
-        const here = this.floorAt(p.x, p.y, 6);
+        // (ENG-PLANT-CI-c, rule 28: the log he stands on is the engine's (standingOnId) when his middle has passed its front; floorAt(p.x)
+        //  read nothing there, so the edge's blind press (decide, jumpFor) fired off the log onto the water: racefront adult phase 0, x 1,210)
+        const stood = p.grounded ? this.sim.platforms.find((q) => q.id === this.e.standingOnId) : undefined;
+        const here = this.floorAt(p.x, p.y, 6) ?? (stood && (stood.type === 'drift' || stood.type === 'moving') ? stood : null);
         // (ENG-W2b: a float is near when a hop he makes now, or a beat later as his thumb gets there, comes down on it where it will be,
         // hopLandsOn; drifting logs come out from under the bank at his feet, so every log on the water is looked at, not only those ahead)
         const rivers = (this.sim.stage as { rivers?: RiverZone[] }).rivers;
@@ -3795,6 +3801,7 @@ export class FirstTimerRun {
                 if (Math.abs(p.x - rear) > 20) return side(back);
               }
             }
+            this.stopMeant = true;
             return {};
           }
           // (against the flow, SKILLS.upstream: the next log or the bank in reach, he hops now off the front end, a press made standing on
@@ -3837,7 +3844,7 @@ export class FirstTimerRun {
               //  re-draw for 1.2 s at 46 px from the front; base re-drew at +0.467 s and hopped). The child's skill only, as before)
               if (SKILLS.reAim && who.reAim && t - this.aim.since > who.stopReact) this.aim.end();
               if (dir * (edgeX - p.x) > frontStandPx(who)) { this.pending = null; this.lateArmed = null; return side(dir); }
-              this.pending = null; this.lateArmed = null; this.clockHeld = true; this.blockedT = 0; return {};
+              this.pending = null; this.lateArmed = null; this.clockHeld = true; this.blockedT = 0; this.stopMeant = true; return {};
             }
             // (SKILLS.floatSure, ENG-PLANT (the lead's ruling A, rule 28): the far bank in reach and no log, the hop onto the bank is the hop
             //  judged, as the race judges its bank hop: pressed only when gateSees lands it on the bank with the gate's 24 px; refused,
@@ -3871,7 +3878,9 @@ export class FirstTimerRun {
             // (c26, the front stand: nothing in reach, he stands at the log's front, where a hop lands when the next log comes round, not
             //  where his look stopped him: 2-7 c25 middle Easy 11 stood on #19 37 px from its rear (x 9,379), handed back to #16, rescued)
             if (!next && !bank && dir * (edgeX - p.x) > frontStandPx(who)) return side(dir);
-            return next || bank ? this.startJump(dir, this.jumpFor(p, dir, here), false) : {};
+            if (next || bank) return this.startJump(dir, this.jumpFor(p, dir, here), false);
+            this.stopMeant = true;
+            return {};
           }
           if (!bank && !next) {
             if (this.edgeWait < 0) this.edgeWait = t;
