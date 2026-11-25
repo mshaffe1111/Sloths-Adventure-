@@ -1,3 +1,75 @@
+# ENG-PLANT-s (ENG-PLANT-c session 17, started 11:34 AM ET 11-25 by the hook's stamp; this top written 11:47 AM ET 11-25): **ruling 3 DONE: the three owed toys, 36e8efe6f PUSHED (ls-remote confirmed), each GREEN on the head and RED with its fix off. The lead's new order (below): WAIT for ENG-PLANT-CI's hash, merge release-0.10.3-wip-plant-ci in (no force), then ruling 4 once on the COMBINED head, then the merge. NO merge yet.**
+
+Engine (bots), Opus 5.5 xhigh. Lead: session_01FhBbYN2CVHnFXg7XzqKXpM. **Code head: 36e8efe6f** = d742d0469 + the toys (test files only:
+tools/inspect/firsttimer.test.ts, src/game/gen2/pacerLay.test.ts; no engine code) on release-0.10.3-wip-plant-c. Data: data/s/. Tools:
+tools/p23-s.mts.txt, p24-s.mts.txt (the probes), bl-s.mts.txt (the laid sweep), toys2324-s.test.ts.txt (the RED-half copy, below).
+
+## EXACT NEXT STEP (this session or session 18)
+0. Setup (session 18 only): `npm ci --no-audit --no-fund --legacy-peer-deps`; `git fetch --unshallow origin` (background); report tree
+   `git worktree add --detach /home/user/rep origin/release-0.10.3-wip-plant-c-report`; tools in /home/user/tl (copy margins.mts.txt,
+   set1-m.sh.txt from tools/).
+1. THE LEAD'S ORDER (received this session, word for word, after rulings 3-5): "Session 16's CI tool line on frozen c27 came back RED: 400
+   tests, 9 fail. The table is in the REPORT at 692b28e58, under 'The CI tool line on c27'. The merge needs that line at 0 fail. To save
+   time I am splitting the work: - YOU keep the three owed toys (ruling 3), exactly as ruled. - A parallel session, ENG-PLANT-CI, takes the
+   9 reds on branch release-0.10.3-wip-plant-ci, cut from d742d0469. When your toys are pushed, merge origin/release-0.10.3-wip-plant-ci
+   into your branch at the hash I send you (no force). Then run ruling 4's final-head checks once on the combined head, and merge into
+   release-0.10.3 on the standing word, only if every item is green. Do NOT touch the 9 reds yourself. If your toys are done before
+   ENG-PLANT-CI is, push and confirm with ls-remote, tell me, and wait (idle costs nothing)."
+   And rulings 4-5 (word for word): "4. On the FINAL head (toys + d742d0469), once each: tsc; the CI tool line at 0 fail; tierBots 9/9; the
+   10 races + the 10 known flips (they must match c27 row for row: the deletion and the toys change no behaviour). 5. THE LEAD'S WORD
+   STANDS: when 3-4 are all green as listed, MERGE into origin/release-0.10.3 (no force; it is at dfe631913). Push, confirm with ls-remote,
+   then send the lead the merge hash and one line per item. Any red or deviation: do NOT merge; stop and tell the lead."
+2. DONE: the toys pushed (36e8efe6f), the lead told. NOW: WAIT for the lead's hash of release-0.10.3-wip-plant-ci. Then: `git fetch origin
+   release-0.10.3-wip-plant-ci`, check the hash is the lead's, `git merge --no-ff <hash>` on release-0.10.3-wip-plant-c (no force; my toys
+   are at firsttimer.test.ts's end and pacerLay.test.ts :250, the 9 reds' lines are elsewhere), push, ls-remote.
+3. Ruling 4 ONCE on a chattr-frozen tree of the COMBINED head (fz-comb), two heavy runs at a time:
+   - tsc: `npx tsc --noEmit -p .`
+   - the CI tool line: `sed -n 157p .github/workflows/gates.yml` (its `- run:` stripped) run from the tree; 0 not ok.
+   - tierBots: `npx tsx --test tools/inspect/tierBots.test.ts`; 9/9.
+   - the 10 races: `npx tsx /home/user/tl/margins.mts <tree>`, diff against data/q/margins-c27.txt (every line identical).
+   - the 10 known flips: `W1CAP=1 bash /home/user/tl/set1.sh <tree> <rep>/reference/qa-reports/ENG-PLANT/data/s/set1-comb`, then each
+     jsonl (sorted) vs data/q/set1-c27/ (identical row for row); W1CAP: no stand past the cap reaching a cycle.
+   If ENG-PLANT-CI's fixes move a race or a flip, that is a deviation: stop and tell the lead, no merge.
+4. Then ruling 5 (merge into release-0.10.3, no force; push; ls-remote; the lead gets the hash and one line per item), only if every item
+   of 3 is green and identical. The lead also has one finding to read (below, 'Named for the lead'); it is not a red of any listed check.
+5. INFORMATIVE, on 36e8efe6f (not the final head): the CI tool line and tierBots were started on fz-fin before the lead's order was read;
+   their results go here: IN FLIGHT when this top was pushed (the CI line 94 ok, 0 not ok so far; tierBots running). Expected on this head: the same 9 reds as c27 (none in the toys' tests).
+
+## Ruling 3: the three owed toys (36e8efe6f)
+| toy | where | GREEN (final head) | RED (fix off) |
+|---|---|---|---|
+| pacerLay 22, boardLog, LAID | firsttimer.test.ts 'in the real engine, laid: a log drifting his way still mostly under the bank's lip...' | ok (data/s/green-boardlog-head.txt) | inside the toy (boardLog is a SKILLS flag, the existing plant): with it off a life is lost at both plant placements (log front 725 and 750 at time 0: 0-120 px past the lip of 240 as he comes to it, checked in the toy) |
+| c23, the pull-back skipped on a small log he pauses on | firsttimer.test.ts 'on the run it was found on, 2-1 child Easy seed 2...' (FT_CHILD_EASY, castBots' options) | ok (data/s/green-c23-head.txt) | the SAME toy on ccca3d305's parent **52bcce623** (scratch tree fz-c22, chattr-frozen): not ok, 'every such landing takes the pause': `{inside: true, pause: false}` (the 200 px log #43 landed 75 px from its front, run-out 91), data/s/red-c23-on-c22.txt |
+| c24, the run-up's jump held as judged | firsttimer.test.ts 'on the run it was found on, 2-4 child Normal seed 8...' (FT_CHILD) | ok (data/s/green-c23c24-head-importmiss.txt, test 2) | the SAME toy on 2a2c44786's parent **ccca3d305** (scratch tree fz-c23, chattr-frozen): not ok, 'every run-up jump held at least as judged': flown 0.065 / 0.093 / 0.114 s against 0.16 (t 79.53, 120.70, 148.17), data/s/red-c24-on-c23.txt |
+- The SAME toy: the two tests' text (from their `test(` line to the end of the file) hashes c370368ffa05 (sha256, 12) in the committed file and
+  in tools/toys2324-s.test.ts.txt (that text + firsttimer.test.ts's first 10 lines, the imports), copied into each scratch tree's
+  tools/inspect/ and run with `--test-name-pattern`.
+- No skill switch added (the lead's ruling; new replaces old): c23 and c24 are proved on their parent commits. Read by what he meets, never
+  where (the c25 toy's pattern): a landing = the run's lastLand inside 0.1 s on a drifting log under 220 px running the way he moved; a
+  run-up press = decide's judged single press in the frame whose last runPress was the direct one (s0 0, from his x) and passed; its
+  jump = the next startJump inside 0.5 s (c24's own window), `this.jump.hold`. The prototypes are wrapped for the run and restored in a finally.
+- The rows on the final head: 2-1 child E 2 shrine, rescues 0 (4 small-log landings, all paused, data/s/p23-head.txt; c22: rescue 1); 2-4
+  child N 8 shrine, rescues 0 (5 run-up jumps, all held 0.16-0.276; c23: rescue 1, data/s/p24-*.txt).
+- pacerLay.test.ts's home Easy seed 1 race (pacerLay 22) keeps its GREEN half (1/1 ok on the head, data/s/pacer22-head.txt); its RED half is
+  re-planted on the laid toy, comment pointing there (as post Normal 4/5 were on fromTakeoff's, ENG-27j; never loosened).
+- The RiverZone trap (af127d21e's note): the toy puts a full RiverZone on the stage (x0, x1, surfaceY, dir, speed); RiverZone's only other
+  clock field, flowT, is a sluice's (river.ts:80, logClock), so floatAt reads the game's clock, as the engine moves the logs. The old probe
+  (46c68a857, starts 500/700, a 600 px river) showed no fall on or off on this head: he never came at the lip at full run; the toy starts at x 100.
+- A miss on the way, caught before the commit: the c23 toy's first run failed on 'FT_CHILD_EASY is not defined' (the import; tsc does
+  not read tools/inspect tests). Fixed and both halves re-run; the import-miss output is kept (data/s/green-c23c24-head-importmiss.txt).
+
+## Named for the lead (not fixed; found building the laid toy)
+The laid sweep (log front 700-1000 at time 0, every 25; tools/bl-s.mts.txt; FT_MIDDLE_EASY): boardLog ON loses 1 life at fronts 975 and
+1000 where OFF loses none (OFF loses 1 at 725 and 750: the plant). Traced at 1000 (tools/blf-s.mts.txt): he stands at the lip (x 959) from
+t 5.1 to 8.8 while log 2 is past it, then an edgeWait single (HOP_TRACE: judged, landed on log 3) boards log 3; the life goes later on the
+river, not at the lip, so it is not boardLog's read (ON and OFF take different paths from the lip on). The toy claims only the boarding
+(no life lost before 3 s on a log) at 725/750 and on == off at 800-950. Proposed for R-165.424's list; the lead rules whether it waits.
+
+Lessons applied: D115 (every run on chattr-frozen trees: fz-c22, fz-c23, fz-fin), D119 (commit message from a file), D128 (stamps from
+`date`), D134 (pushed and ls-remote confirmed before the hand-over), D135 (every red named with an owner), law 3 (each toy's RED read for
+its reason, not its exit code), law 22 (no bar loosened: pacerLay 22's RED half re-planted, not dropped), the card's trap (a test reads
+properties of a pinned roll, never its x positions).
+
 # ENG-PLANT-r (ENG-PLANT-c session 16, started 11:18 AM ET 11-25 by the hook's stamp; this top written 11:27 AM ET 11-25): **item 1 DONE: child N 13 on c27 = the lip family (R-165.398), accepted. The lead's rulings received (word for word below). Ruling 2 DONE: raceSure dead behind floatSure (on == off, same path hash), plant retired, branch deleted: d742d0469 PUSHED. tierBots 9/9 on c27. NEXT: ruling 3 (three owed toys), ruling 4 on the final head, ruling 5 (merge). NO merge yet.**
 
 Engine (bots), Opus 5.5 xhigh. Lead: session_01FhBbYN2CVHnFXg7XzqKXpM. **Code head: d742d0469** (c27 1e4b50a1d + raceSure deleted) on release-0.10.3-wip-plant-c (pushed, ls-remote confirmed).

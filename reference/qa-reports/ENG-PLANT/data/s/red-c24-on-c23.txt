@@ -1,0 +1,64 @@
+TAP version 13
+# Subtest: on the run it was found on, 2-4 child Normal seed 8: the run-up's jump (SKILLS.runUp: runPress passed at every lag, then the judged press) is held at least as long as runPress judged it; the row ends at the shrine with no rescue (c24; RED on c23 ccca3d305: flown at flickHold's draw, 0.065 / 0.093 / 0.114 s against the 0.16 judged, he peaked under the liana's foot and fell in, rescued)
+not ok 1 - on the run it was found on, 2-4 child Normal seed 8: the run-up's jump (SKILLS.runUp: runPress passed at every lag, then the judged press) is held at least as long as runPress judged it; the row ends at the shrine with no rescue (c24; RED on c23 ccca3d305: flown at flickHold's draw, 0.065 / 0.093 / 0.114 s against the 0.16 judged, he peaked under the liana's foot and fell in, rescued)
+  ---
+  duration_ms: 3191.973791
+  type: 'test'
+  location: '/home/user/fz-c23/tools/inspect/toys2324.test.ts:47:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    every run-up jump held at least as judged ([{"t":79.53,"judged":0.16,"flown":0.06456411019992084},{"t":120.7,"judged":0.16,"flown":0.09263053809991106},{"t":148.17,"judged":0.16,"flown":0.11358986222045497},{"t":218.83,"judged":0.16,"flown":0.19338090240644912}])
+    + actual - expected
+    
+    + [
+    +   {
+    +     flown: 0.06456411019992084,
+    +     judged: 0.16,
+    +     t: 79.53
+    +   },
+    +   {
+    +     flown: 0.09263053809991106,
+    +     judged: 0.16,
+    +     t: 120.7
+    +   },
+    +   {
+    +     flown: 0.11358986222045497,
+    +     judged: 0.16,
+    +     t: 148.17
+    +   }
+    + ]
+    - []
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+  actual:
+    0:
+      t: 79.53
+      judged: 0.16
+      flown: 0.06456411019992084
+    1:
+      t: 120.7
+      judged: 0.16
+      flown: 0.09263053809991106
+    2:
+      t: 148.17
+      judged: 0.16
+      flown: 0.11358986222045497
+  operator: 'deepStrictEqual'
+  stack: |-
+    TestContext.<anonymous> (/home/user/fz-c23/tools/inspect/toys2324.test.ts:71:10)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.start (node:internal/test_runner/test:944:17)
+    startSubtestAfterBootstrap (node:internal/test_runner/harness:296:17)
+  ...
+1..1
+# tests 1
+# suites 0
+# pass 0
+# fail 1
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 7326.212627

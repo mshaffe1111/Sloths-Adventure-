@@ -1,0 +1,19 @@
+{"t":71.97,"id":43,"w":200,"ddir":1,"x":8573,"toFront":75,"runOut":91,"pause":false,"vx":[154,41,0]}
+{"t":132.17,"id":67,"w":190,"ddir":1,"x":14326,"toFront":155,"runOut":91,"pause":true,"vx":[285,172,58]}
+{"t":170.1,"id":86,"w":170,"ddir":-1,"x":19645,"toFront":140,"runOut":91,"pause":true,"vx":[172,58,0]}
+{"t":171.1,"id":88,"w":170,"ddir":-1,"x":19733,"toFront":48,"runOut":91,"pause":true,"vx":[285,268,154]}
+{"t":174.17,"id":88,"w":170,"ddir":-1,"x":19647,"toFront":176,"runOut":91,"pause":true,"vx":[172,58,0]}
+{"t":178.37,"id":86,"w":170,"ddir":-1,"x":19850,"toFront":173,"runOut":91,"pause":true,"vx":[154,-6,0]}
+{"t":179.8,"id":86,"w":170,"ddir":-1,"x":19696,"toFront":119,"runOut":91,"pause":true,"vx":[154,41,0]}
+{"t":180.9,"id":88,"w":170,"ddir":-1,"x":19829,"toFront":80,"runOut":91,"pause":true,"vx":[154,41,0]}
+{"t":183.43,"id":86,"w":170,"ddir":-1,"x":20107,"toFront":34,"runOut":91,"pause":true,"vx":[268,154,41]}
+{"t":222.53,"id":112,"w":180,"ddir":1,"x":24847,"toFront":98,"runOut":91,"pause":true,"vx":[172,58,0]}
+{"t":234.83,"id":116,"w":170,"ddir":-1,"x":26036,"toFront":100,"runOut":91,"pause":true,"vx":[172,58,0]}
+{"t":235.97,"id":115,"w":170,"ddir":-1,"x":26162,"toFront":67,"runOut":91,"pause":true,"vx":[172,58,0]}
+{"t":237.63,"id":114,"w":170,"ddir":-1,"x":26247,"toFront":36,"runOut":91,"pause":true,"vx":[268,285,172]}
+{"t":238.63,"id":116,"w":170,"ddir":-1,"x":26411,"toFront":29,"runOut":91,"pause":true,"vx":[285,172,58]}
+{"t":246.67,"id":115,"w":170,"ddir":-1,"x":26072,"toFront":83,"runOut":91,"pause":true,"vx":[172,58,0]}
+{"t":248.23,"id":114,"w":170,"ddir":-1,"x":26166,"toFront":52,"runOut":91,"pause":true,"vx":[268,154,41]}
+{"t":252.17,"id":116,"w":170,"ddir":-1,"x":26148,"toFront":99,"runOut":91,"pause":true,"vx":[172,58,0]}
+{"t":253.1,"id":115,"w":170,"ddir":-1,"x":26282,"toFront":57,"runOut":91,"pause":true,"vx":[285,172,58]}
+END {"end":"shrine","time":316.6,"rescues":1,"lives":[]}

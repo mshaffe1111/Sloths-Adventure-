@@ -1,0 +1,28 @@
+// usage: tsx bl.mts <tree> <bot>: a bank to x 1000 (top 600), a river 1000-2400 with logs his way 28 px down, the far bank past it; he
+// runs from x 100; the log's front at time 0 is swept. ON / OFF = SKILLS.boardLog. Prints lives lost, set-downs, and the take-off x
+const [T, bot] = process.argv.slice(2);
+await import(`${T}/src/game/headlessDom.ts`);
+const ft: any = await import(`${T}/tools/inspect/firsttimer.ts`);
+const bank = { id: 1, x: 0, y: 600, width: 1000, height: 90, type: 'solid' };
+const far = { id: 9, x: 2400, y: 600, width: 3000, height: 90, type: 'solid' };
+const log = (id: number, front: number) => ({ id, x: front - 240, y: 628, width: 240, height: 24, type: 'drift',
+  drift: { x0: 1000, x1: 2400, dir: 1, speed: 60, width: 240, baseY: 628, offset: (front - 1000) / 60 } });
+const go = (on: boolean, f0: number) => {
+  const line = Array.from({ length: 200 }, (_, i) => ({ x: 100 + i * 24, y: 600 }));
+  let lost = 0, downs = 0, last: any = null, off: number | null = null, lives0: number | null = null;
+  const run = new ft.FirstTimerRun('1-1', 1, ft[bot], { route: line, cap: 20, rescueAfter: 1000, onFrame: (sim: any) => {
+    const e = sim.e, p = e.player;
+    lives0 ??= e.lives; if (e.lives < lives0) { lost += lives0 - e.lives; lives0 = e.lives; }
+    if (last && Math.hypot(p.x - last.x, p.y - last.y) >= 100) downs++;
+    if (last?.g && !p.grounded && off === null && p.x > 800) off = Math.round(p.x);
+    last = { x: p.x, y: p.y, g: p.grounded }; const t = run.t; if (t > 2 && t < 9 && Math.round(t * 30) % 3 === 0) { const q = e.platforms.find((k: any) => k.id === e.standingOnId); const L = e.platforms.find((k: any) => k.id === 2); console.log(t.toFixed(1), Math.round(p.x), Math.round(p.y), p.grounded ? "g" : "a", q ? q.id : "-", "vx", Math.round(p.vx), "log2", Math.round(L.x), "lives", e.lives); }
+  } });
+  run.sim.bare([bank, log(2, f0), log(3, f0 - 420), log(4, f0 - 840), far]);
+  const st = run.sim.e.currentStage;
+  st.config.levelHeight = 760; st.rivers = [{ x0: 1000, x1: 2400, surfaceY: 640, dir: 1, speed: 60 }];
+  run.sim.stand(100, 600); run.prog.relocate(run.sim.p);
+  const was = ft.SKILLS.boardLog; ft.SKILLS.boardLog = on;
+  try { run.play(); } finally { ft.SKILLS.boardLog = was; }
+  return `lost ${lost} downs ${downs} off ${off} x ${Math.round(run.sim.p.x)} soft ${run.softFalls.length}`;
+};
+console.log(go(true, 1000));

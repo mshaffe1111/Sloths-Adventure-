@@ -1,0 +1,13 @@
+{"t":71.97,"id":43,"w":200,"ddir":1,"x":8573,"toFront":75,"runOut":91,"pause":true,"vx":[154,41,0]}
+{"t":73.43,"id":44,"w":200,"ddir":1,"x":8905,"toFront":118,"runOut":91,"pause":true,"vx":[268,154,41]}
+{"t":113.8,"id":64,"w":190,"ddir":1,"x":14328,"toFront":86,"runOut":91,"pause":true,"vx":[172,58,0]}
+{"t":161.67,"id":88,"w":170,"ddir":-1,"x":19674,"toFront":78,"runOut":91,"pause":true,"vx":[268,154,41]}
+{"t":162.93,"id":87,"w":170,"ddir":-1,"x":19880,"toFront":122,"runOut":91,"pause":true,"vx":[172,58,0]}
+{"t":198.77,"id":112,"w":180,"ddir":1,"x":24935,"toFront":124,"runOut":91,"pause":true,"vx":[268,285,268]}
+{"t":207.83,"id":116,"w":170,"ddir":-1,"x":25951,"toFront":105,"runOut":91,"pause":true,"vx":[154,41,0]}
+{"t":208.9,"id":115,"w":170,"ddir":-1,"x":26073,"toFront":63,"runOut":91,"pause":true,"vx":[285,268,154]}
+{"t":211.57,"id":114,"w":170,"ddir":-1,"x":26178,"toFront":131,"runOut":91,"pause":true,"vx":[21,0,0]}
+{"t":212.6,"id":116,"w":170,"ddir":-1,"x":26299,"toFront":85,"runOut":91,"pause":true,"vx":[172,58,0]}
+{"t":215.77,"id":115,"w":170,"ddir":-1,"x":26237,"toFront":26,"runOut":91,"pause":true,"vx":[285,268,154]}
+{"t":217.67,"id":114,"w":170,"ddir":-1,"x":26443,"toFront":134,"runOut":91,"pause":true,"vx":[-79,0,0]}
+END {"end":"shrine","time":268.7,"rescues":0,"lives":[]}

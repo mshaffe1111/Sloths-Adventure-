@@ -1,0 +1,13 @@
+// usage: tsx p24.mts <tree> <stage> <BOT> <seed>: every run-up jump (runPress passed at every lag, then decide's judged press) and the hold it flew
+const [T, stage, bot, seed] = process.argv.slice(2);
+await import(`${T}/src/game/headlessDom.ts`);
+const ft: any = await import(`${T}/tools/inspect/firsttimer.ts`);
+const P = ft.FirstTimerRun.prototype;
+const { runPress, decide, startJump } = P;
+let last: any = null, judged: any = null; const rows: any[] = [];
+P.runPress = function (this: any, ...a: any[]) { const ok = runPress.apply(this, a); last = { t: this.t, direct: a[2] === 0 && a[0] === a[4].x, ok, hold: a[9] }; return ok; };
+P.decide = function (this: any, ...a: any[]) { if (this.pressJudged && a[1] === 'single' && a[2] === true && last && last.t === this.t && last.direct && last.ok) judged = { t: this.t, hold: last.hold, x: Math.round(this.sim.p.x) }; return decide.apply(this, a); };
+P.startJump = function (this: any, ...a: any[]) { const out = startJump.apply(this, a); if (judged && this.t - judged.t < 0.5 && this.jump) rows.push({ t: +judged.t.toFixed(2), x: judged.x, judged: +judged.hold.toFixed(3), flown: +this.jump.hold.toFixed(3) }); judged = null; return out; };
+const r = ft.firstTimer(stage, Number(seed), ft[bot], { cap: 1200, dotSetting: true });
+for (const row of rows) console.log(JSON.stringify(row));
+console.log('END', JSON.stringify({ end: r.end, time: r.time, rescues: r.rescues, lives: r.harms.filter((h: any) => h.kind === 'life').map((h: any) => [h.t, h.x]) }));

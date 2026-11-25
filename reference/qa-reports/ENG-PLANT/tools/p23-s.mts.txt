@@ -1,0 +1,22 @@
+// usage: tsx p23.mts <tree> <stage> <BOT> <seed>: landings on a small drifting log (width < 220) and the pause / steer that follows
+const [T, stage, bot, seed] = process.argv.slice(2);
+await import(`${T}/src/game/headlessDom.ts`);
+const ft: any = await import(`${T}/tools/inspect/firsttimer.ts`);
+let run: any = null;
+const P = ft.FirstTimerRun.prototype, play = P.play;
+P.play = function (this: any) { run = this; return play.call(this); };
+let lastOn: number | null = null, seen = new Map<number, any>();
+const r = ft.firstTimer(stage, Number(seed), ft[bot], { cap: 1200, dotSetting: true, onFrame: (sim: any) => {
+  const e = sim.e, p = e.player, q = e.platforms.find((k: any) => k.id === e.standingOnId);
+  const land = p.grounded && q && q.type === 'drift' && q.width < 220 && run.t - run.lastLand < 0.1;
+  if (land) {
+    const key = Math.round(run.lastLand * 30);
+    const front = q.drift.dir > 0 ? q.x + q.width : q.x;
+    const row = seen.get(key) ?? { t: +run.lastLand.toFixed(2), id: q.id, w: q.width, ddir: q.drift.dir, x: Math.round(p.x), toFront: Math.round(q.drift.dir * (front - p.x)), runOut: Math.round(run.runOut()), pause: false, vx: [] as number[] };
+    if (run.padPause?.id === q.id) row.pause = true;
+    row.vx.push(Math.round(p.vx));
+    seen.set(key, row);
+  }
+} });
+for (const row of seen.values()) console.log(JSON.stringify(row));
+console.log('END', JSON.stringify({ end: r.end, time: r.time, rescues: r.rescues, lives: r.harms.filter((h: any) => h.kind === 'life').map((h: any) => [h.t, h.x]) }));

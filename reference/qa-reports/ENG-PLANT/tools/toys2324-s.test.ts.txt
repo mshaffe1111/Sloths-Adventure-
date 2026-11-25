@@ -1,0 +1,74 @@
+// npx tsx --test tools/inspect/firsttimer.test.ts
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import {
+  dotReport, edgesOf, firstHarms, firstTimer, flagsFor, flickHold, FirstTimerRun, FT_ADULT, FT_CHILD, FT_CHILD_EASY, FT_KID, FT_MIDDLE, gauss, LEVEL_REACH, peakStress, Progress, rng, SKILLS, SpotMemory, teaches,
+  type Harm, type Shown, type Try,
+} from './firsttimer.ts';
+import type { Platform } from '../../src/game/types.ts';
+import { PHYS } from '../../src/game/physics.ts';
+
+
+test('on the run it was found on, 2-1 child Easy seed 2: landing on a small log running his way (under 220 px), even inside his run-out of its front, he takes the pad pause and is never pulled back; the row ends at the shrine with no rescue (c23; RED on c22 52bcce623: the pull-back turned him on landing on a 200 px log 75 px from its front, his run-out 91, the pause and its draw skipped, and he was rescued at the back river)', () => {
+  // (the real stage and bot, as castBots rolls them; read by what he meets, never where: a landing (the run's lastLand inside 0.1 s)
+  //  grounded on a drifting log narrower than 220 px whose drift runs the way he landed moving; the pause is the run's padPause on that
+  //  log. The proof of the RED half on c22 is in reference/qa-reports/ENG-PLANT/REPORT.md, ENG-PLANT-s)
+  const P = FirstTimerRun.prototype as unknown as { play: (this: unknown) => unknown };
+  const play = P.play;
+  let run: { t: number; lastLand: number; padPause: { id: number } | null; runOut: () => number } | null = null;
+  P.play = function (this: unknown) { run = this as typeof run; return play.call(this); };
+  const lands = new Map<number, { inside: boolean; pause: boolean }>();
+  let r: ReturnType<typeof firstTimer>;
+  try {
+    r = firstTimer('2-1', 2, FT_CHILD_EASY, { cap: 1200, dotSetting: true, onFrame: (sim) => {
+      const e = (sim as unknown as { e: { player: { x: number; vx: number; grounded: boolean }; platforms: Platform[]; standingOnId: number | null } }).e;
+      const p = e.player, q = e.platforms.find((k) => k.id === e.standingOnId) as (Platform & { drift?: { dir: number } }) | undefined;
+      if (!run || !p.grounded || !q || q.type !== 'drift' || !q.drift || q.width >= 220 || run.t - run.lastLand >= 0.1) return;
+      const key = Math.round(run.lastLand * 30);
+      let row = lands.get(key);
+      if (!row) {
+        if (Math.sign(p.vx) !== q.drift.dir) return;
+        const front = q.drift.dir > 0 ? q.x + q.width : q.x;
+        row = { inside: q.drift.dir * (front - p.x) < run.runOut(), pause: false };
+        lands.set(key, row);
+      }
+      if (run.padPause?.id === q.id) row.pause = true;
+    } });
+  } finally {
+    P.play = play;
+  }
+  const all = [...lands.values()];
+  assert.ok(all.some((l) => l.inside), `he landed on a small log running his way inside his run-out of its front (${JSON.stringify(all)})`);
+  assert.deepEqual(all.filter((l) => !l.pause), [], `every such landing takes the pause (${all.length} landings)`);
+  assert.equal(r.end, 'shrine', `he reaches the shrine (${r.end})`);
+  assert.equal(r.rescues, 0, `no rescue (${r.rescues})`);
+});
+
+test('on the run it was found on, 2-4 child Normal seed 8: the run-up\'s jump (SKILLS.runUp: runPress passed at every lag, then the judged press) is held at least as long as runPress judged it; the row ends at the shrine with no rescue (c24; RED on c23 ccca3d305: flown at flickHold\'s draw, 0.065 / 0.093 / 0.114 s against the 0.16 judged, he peaked under the liana\'s foot and fell in, rescued)', () => {
+  // (the real stage and bot, as castBots rolls them; read by what he does, never where: a run-up press is decide's judged single press
+  //  in the frame whose last runPress was the direct one (from where he stands, s0 0) and passed; the next startJump inside 0.5 s is its
+  //  jump, and this.jump.hold is what he flies. The proof of the RED half on c23 is in reference/qa-reports/ENG-PLANT/REPORT.md, ENG-PLANT-s)
+  type Run = { t: number; pressJudged: boolean; sim: { p: { x: number } }; jump: { hold: number } | null };
+  const P = FirstTimerRun.prototype as unknown as Record<'runPress' | 'decide' | 'startJump', (this: Run, ...a: unknown[]) => unknown>;
+  const { runPress, decide, startJump } = P;
+  let last: { t: number; direct: boolean; ok: boolean; hold: number } | null = null, judged: { t: number; hold: number } | null = null;
+  const jumps: Array<{ t: number; judged: number; flown: number }> = [];
+  P.runPress = function (...a) { const ok = runPress.apply(this, a) as boolean; last = { t: this.t, direct: a[2] === 0 && a[0] === (a[4] as { x: number }).x, ok, hold: a[9] as number }; return ok; };
+  P.decide = function (...a) { if (this.pressJudged && a[1] === 'single' && a[2] === true && last && last.t === this.t && last.direct && last.ok) judged = { t: this.t, hold: last.hold }; return decide.apply(this, a); };
+  P.startJump = function (...a) {
+    const out = startJump.apply(this, a);
+    if (judged && this.t - judged.t < 0.5 && this.jump) jumps.push({ t: +judged.t.toFixed(2), judged: judged.hold, flown: this.jump.hold });
+    judged = null;
+    return out;
+  };
+  let r: ReturnType<typeof firstTimer>;
+  try {
+    r = firstTimer('2-4', 8, FT_CHILD, { cap: 1200, dotSetting: true });
+  } finally {
+    Object.assign(P, { runPress, decide, startJump });
+  }
+  assert.ok(jumps.length >= 1, 'he made a run-up jump');
+  assert.deepEqual(jumps.filter((j) => j.flown < j.judged - 1e-9), [], `every run-up jump held at least as judged (${JSON.stringify(jumps)})`);
+  assert.equal(r.end, 'shrine', `he reaches the shrine (${r.end})`);
+  assert.equal(r.rescues, 0, `no rescue (${r.rescues})`);
+});
