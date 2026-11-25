@@ -22,3 +22,10 @@ one dark brick (gen2/dark.ts; World 6's darkZone lifted). **Replaced this sprint
 
 ## Consequences
 - ENG-SPORE adds the field and its readers; toy: the light off, the bot waits forever (RED); no warn, fairness RED (3-1.md :49-50).
+
+## The light kinds the clock is added to (ENG-DARK-h, code 0dadb295, 11-25; checked against this ADR by the lead)
+A brick lights the dark by pushing `{ x, y, r, sleep?, id? }` into a dark Zone's `lights`: `sleep: true` + a stage-unique `id` = a
+glowworm a stop wakes (glowReaches, GLOW_REACH); `sleep: false` + `id` = one laid AWAKE and drawn lit (the cave mouth: the lights over
+every piece a step off a rim outside the box lands on); no `id` = a plain light (World 6's fireflies). litAfter counts an awake light only
+within GLOW_REACH. ENG-SPORE's clock is the one optional field on top of these; the four verdicts (darkRims, darkGaps, darkFlags,
+darkLandings) read it as this ADR says.
