@@ -35,7 +35,10 @@ export function sideWalls(platforms: readonly Platform[], f: FootingInput, drawn
     if (footingOf(p, f).drawn !== 'painted-bank') continue;
     if (p.width >= BODY_W) continue;
     // (R-165.440: a narrow bank the painted ground gives a look, the same decision the screen draws by, narrowBank.ts: a sliver joined
-    // to the bank it continues, or a post on its floor. A test may pass its own decision to plant the drawer's absence)
+    // to the bank it continues, or a post on its floor. A test may pass its own decision to plant the drawer's absence.
+    // What 'joined' guarantees: the sliver is part of a bank the bank painter draws (one union box, a STANDARD bank end of its world), so
+    // no narrow solid is painted as backdrop soil. It does NOT guarantee the end face reaches the collider: the painter's end face sits
+    // inside the collider below the lip on every World 8 bank end (groundPaint.ts endFace), a general inset tracked as R-165.442.)
     if (drawnBy(p, platforms)) continue;
     const others = solid.filter((q) => q !== p);
     for (const side of ['left', 'right'] as const) {

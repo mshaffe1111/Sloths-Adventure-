@@ -6,7 +6,10 @@
  * the floor trough) and 8-1's 14 x 224 sliver flush beside the log bank it continues (seed 38747). Each is given a look here, by its shape,
  * never by a stage:
  * - 'joined': flush against a painted bank of the same top and bottom (within 2 px), it is that bank's own end: the painter draws the two
- *   as ONE bank (bankList), so the bank's face and lip end where the collider does.
+ *   as ONE bank (bankList, the union box), so the sliver is part of a bank drawn by the bank painter and no narrow solid is painted as
+ *   backdrop soil. What it guarantees is that, and only that: the bank's end is drawn as a STANDARD bank end, like every other bank end
+ *   of its world. It does NOT guarantee the end face reaches the collider: the painter's end face follows the end piece's own profile
+ *   (groundPaint.ts endFace), which on World 8 sits 14-25 px inside the collider below the lip on EVERY bank end (R-165.442, release 5).
  * - 'post': standing alone with a side open over his height and its foot on a solid (a floor under it, or its foot sunk in one): drawn as
  *   World 1's tall live post (the inventory's hf678/w1-livepost-tall, 'support', a made thing), from its top to the floor, its shaft the
  *   collider's width (livePostArt.ts), from under what rests on it, and left out of the painted soil.

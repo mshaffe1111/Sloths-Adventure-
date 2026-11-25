@@ -42,7 +42,7 @@ test('a side-on wall painted as bank soil is caught: 2-6 GREEN as built, RED wit
 
 // R-165.440 (SIDEWALL-FIX): the two shipped breaches get the look their collider has, and the check reads that same decision. Planted:
 // with the drawer's decision taken away (a decision that draws nothing), both are RED; with the real one (narrowBank.ts), GREEN.
-test("1-6's posts and 8-1's sliver: RED without the narrow-bank drawer, GREEN with it; the post's shaft and the joined bank's face meet the collider", async () => {
+test("1-6's posts and 8-1's sliver: RED without the narrow-bank drawer, GREEN with it; the post's shaft meets the collider and the sliver is part of one painted bank", async () => {
   const { generateAllLevels } = await import('../../src/game/worldsData.ts');
   const { generateStage, setLayoutVariant } = await import('../../src/game/stageGenerator.ts');
   const { withGoals } = await import('../../src/game/goals.ts');
@@ -91,7 +91,7 @@ test("1-6's posts and 8-1's sliver: RED without the narrow-bank drawer, GREEN wi
       assert.equal(l?.look, 'joined', '8-1: the sliver is its bank\'s own end');
       const banks = bankList(b.st.platforms, b.st.platforms.filter(paintedBank));
       assert.ok(!banks.includes(p), 'the sliver is no bank of its own');
-      assert.ok(banks.some((q) => Math.abs(q.x + q.width - (p.x + p.width)) < 0.5 && q.y === p.y), "the bank's face stands at the collider's edge");
+      assert.ok(banks.some((q) => Math.abs(q.x + q.width - (p.x + p.width)) < 0.5 && q.y === p.y), "the sliver is part of one painted bank: the merged bank's box ends at the sliver's collider edge (the drawn end face's own inset is R-165.442)");
     }
   }
 });
