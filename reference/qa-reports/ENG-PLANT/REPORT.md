@@ -1,3 +1,39 @@
+# ENG-PLANT-s, job 2 (THE PLANTS, the lead's new job; top written 12:19 PM ET 11-25 by `date`): **branch release-0.10.3-wip-plant-tests CUT from 36e8efe6f (pushed, ls-remote confirmed). Nothing re-planted yet: session 17's box ran out after the CI-REDS.md read. NEXT: everything below, from item 1.**
+
+## EXACT NEXT STEP (session 18, the plants)
+0. Setup: `npm ci --no-audit --no-fund --legacy-peer-deps`; `git fetch --unshallow origin` (background); check out
+   release-0.10.3-wip-plant-tests (head 36e8efe6f); report tree `git worktree add --detach /home/user/rep origin/release-0.10.3-wip-plant-c-report`;
+   every measuring run on a chattr-frozen tree (D115). Read reference/qa-reports/ENG-PLANT/CI-REDS.md on origin/release-0.10.3-wip-plant-ci
+   (the bisects: its table rows 5-9, and session 1's EXACT NEXT STEP item on 5/6 'first try the toy's other rolls and variants at the same bar').
+1. THE LEAD'S JOB (word for word): "LEAD to ENG-PLANT-s, a NEW job while you wait (it puts your idle time to use). The CI-reds lane has fixed
+   reds 1-3, but reds 4-9 are still red, and the merge needs the CI line at 0. Split: - ENG-PLANT-CI-c takes the BOT CODE: CI-4's adult
+   walk-off defect and red 4, on release-0.10.3-wip-plant-ci. - YOU take the PLANTS and the base reds, on a NEW branch
+   release-0.10.3-wip-plant-tests cut from your head 36e8efe6f: - reds 5-6: lianaRide DROP ON A LOG (stale from c19 9035c553) and A VINE FROM
+   A LOG (stale from c22 52bcce62); - reds 7-9: firsttimer :185 boardHop, riverRide :266 upstream, riverRide :282 bankUp (red on the base
+   too); - :282's child Normal 40 on 2-1 (bankUp on: 0 lives, off: 1): trace it (rule 28). Re-plant each at its SAME bar where the planted
+   skill still exists; retire per R-165.432 only with the full search as evidence; name which for each. Read
+   reference/qa-reports/ENG-PLANT/CI-REDS.md on release-0.10.3-wip-plant-ci for the bisects. Test files only, no bot code: if a red needs bot
+   code, STOP and tell me. D135: no red carried. Your box: ... Your successor finishes the plants, and the final merge of all three branches
+   (plant-c with your toys, plant-tests, plant-ci) happens when both lanes are green."
+2. The five plants and where they stand (CI-REDS.md's table; lines on 36e8efe6f):
+   - red 5, lianaRide 'DROP ON A LOG' (gap280; RED half: off lives 0,1,0,0,0,0, bar >= 4): first red at c19 9035c553 (SKILLS.runUp: the
+     judged run-up crosses gap280 without dropOnLog; which press not traced). SKILLS.dropOnLog still exists: re-plant at the same bar.
+   - red 6, lianaRide 'A VINE FROM A LOG' (catch toy; RED half: easy off 0,0,0,0,1): first red at c22 52bcce62 (the landing keeps only the
+     pull-back; not traced). SKILLS.vineFromLog still exists: re-plant at the same bar.
+   - red 7, firsttimer.test.ts :185 boardHop on its runs (2-2 child N 36 / middle N 17): red on the base dfe631913 too.
+   - red 8, riverRide.test.ts :266 upstream ('upstream off, still clean: adult normal seed 12'): red on the base.
+   - red 9, riverRide.test.ts :282 bankUp ('bankUp off, 0 more lives: child normal seed 40'): red on the base; plus the moved row: 2-1
+     child Normal 40, bankUp on 0 lives, off 1: trace which life, where, by take-off (rule 28) before re-planting.
+   For each: (a) the plant's skill still in SKILLS? (b) the same bar on another real row, or laid explicitly (the boardLog toy's pattern,
+   firsttimer.test.ts's last test; fromTakeoff's, af127d21e); (c) only if no row or laid case at the same bar exists after the full search,
+   retire per R-165.432 with the search as evidence. Name re-planted / retired for each. Test files only: a red that needs bot code is a STOP
+   to the lead.
+3. Each change: RED with the skill off and GREEN on, on 36e8efe6f's code; the four files (riverRide, lianaRide, hopJudged, firsttimer) on a
+   frozen tree of the plant-tests head: 0 fail among reds 5-9 (red 4 is ENG-PLANT-CI-c's). Push release-0.10.3-wip-plant-tests, ls-remote,
+   tell the lead the hash and one line per plant.
+
+## Job 1 state (unchanged): toys ACCEPTED at 36e8efe6f; waiting for the lead's call on the final merge of plant-c + plant-tests + plant-ci.
+
 # ENG-PLANT-s (ENG-PLANT-c session 17, started 11:34 AM ET 11-25 by the hook's stamp; this top written 11:47 AM ET 11-25): **ruling 3 DONE: the three owed toys, 36e8efe6f PUSHED (ls-remote confirmed), each GREEN on the head and RED with its fix off. The lead's new order (below): WAIT for ENG-PLANT-CI's hash, merge release-0.10.3-wip-plant-ci in (no force), then ruling 4 once on the COMBINED head, then the merge. NO merge yet.**
 
 Engine (bots), Opus 5.5 xhigh. Lead: session_01FhBbYN2CVHnFXg7XzqKXpM. **Code head: 36e8efe6f** = d742d0469 + the toys (test files only:
