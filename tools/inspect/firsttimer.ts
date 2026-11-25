@@ -1516,6 +1516,8 @@ export class FirstTimerRun {
   private runUp: { id: number; t: number } | null = null;
   /** SKILLS.runUp: the hold the run-up's jump was judged with (runPress: who.hold[0]), and when; startJump holds at least that */
   private runUpHold: { hold: number; t: number } | null = null;
+  /** CI-11: vineFromLog's standing press, judged with this hold at this game time; startJump flies it single, held exactly that */
+  private standHold: { hold: number; t: number } | null = null;
   /** the game time a press decided on (decide) was aimed to reach the engine (pressIn), for the press this frame's pad carries */
   private pressWant: number | undefined;
 
@@ -2434,12 +2436,24 @@ export class FirstTimerRun {
     // (and taken off while still on the log: walking on as the press came, he stepped off its front end into the water, catch toy v3)
     // (he stands while the press comes (pending.still): flown from where the log carries him, at his speed now and at a stand)
     // (the press's frame order: hopAim, ENG-285b)
+    // (CI-11, rule 28, the lead's ruling: the standing press flown as the engine plays it. Its first frames unsteered while his thumb
+    //  still travels (thumbify drops the steer until travelUntil / driftUntil; from a stand a turn from lastSteer -dir arms more): every
+    //  count he can play, from the travel already running (the still frames before the press put lastSteer at 0) to steerFrom's (the
+    //  turn armed too). Its hold as pressed: startJump flies it single, held exactly `hold` (standHold), and the engine holds the press's
+    //  own frame too (age 0: frames with (i - 1) * DT < hold held; hopFrame's i * DT < hold + DT). 2-4 kid Easy 35 on CI-10: judged
+    //  free 0 and hold 0.16 (cut at frame 5); flown free 2 and a drawn 0.097 (cut at frame 4), never in reach of liana #4, in the water)
+    const frees = (lag: number): number[] => {
+      const tp = t + Math.round(hopAim(lag).off / DT) * DT;
+      const n = (from: number) => Math.max(0, Math.ceil((from - tp) / DT - 1e-6));
+      return [...new Set([n(Math.max(tp, this.travelUntil, this.driftUntil)), n(this.steerFrom(dir, t))])];
+    };
     const catches = (lag: number) => [p.vx, 0].every((vx) => {
       const aim = hopAim(lag);
       const x = p.x + (vx + carry) * aim.off, lx = floatAt(rivers, here)(t + aim.off);
       // (a tailed river's log is under past the painted end at x1: no floor to take off from there, SKILLS.vineOverTail)
       const under = SKILLS.vineOverTail && !!d.tail && x > d.x1 - 10;
-      return x > lx + 10 && x < lx + here.width - 10 && !under && hopCatches(v, x, p.y, dir, hold, clock + aim.clock, vx + carry, 0, carry);
+      return x > lx + 10 && x < lx + here.width - 10 && !under
+        && frees(lag).every((free) => hopCatches(v, x, p.y, dir, hold + DT, clock + aim.clock, vx + carry, free, carry));
     });
     const lags = [mid, Math.max(0, mid - sd / 2), mid + sd / 2];
     // (SKILLS.runUp, ENG-PLANT-g: a run-up he is on (sent last frame, this log); else none)
@@ -2483,6 +2497,7 @@ export class FirstTimerRun {
     // (judged here: decide's immediate press (a lag under half a frame) reaches startJump now, so the flag is up for it too; candidate
     //  10 marked only the queued press and 2-4 adult Normal 6 had two liana presses refused, x 21,600 and 24,700, UNJUDGED)
     this.pressJudged = true;
+    this.standHold = { hold, t };
     const out = this.decide(dir, 'single', true, {});
     this.pressJudged = false;
     // (ENG-PLANT-e: a judged catch, so startJump's one-gate check (no unjudged hop off a carrier) lets it through when it comes;
@@ -5127,6 +5142,13 @@ export class FirstTimerRun {
         if (kind === 'double') hold = Math.min(hold, d2 - DT);
       }
       this.runUpHold = null;
+    }
+    // (CI-11: vineFromLog's standing press, single and held exactly as it was judged (catches: the engine's held frames); the draws above
+    //  are kept, so the stream is as ever. On CI-10 it flew its own draw, 0.097 s on 2-4 kid Easy 35 at t 47.600, judged at 0.16)
+    if (this.standHold) {
+      const its = this.pressJudged || (!!this.pending?.still && !!this.pending?.judged);
+      if (its && this.t - this.standHold.t < 0.5) { kind = 'single'; hold = this.standHold.hold; d2 = -1; }
+      this.standHold = null;
     }
     let upOnly = !off && this.r() < who.upOnly ? between(this.r, who.upOnlyT) : 0;
     // (a hop a gate judged, SKILLS.floatSure (rule 28, the lead's ruling): flown as drawn and judged, kind, holds, second press and the
