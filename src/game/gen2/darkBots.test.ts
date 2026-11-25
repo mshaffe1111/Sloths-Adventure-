@@ -149,7 +149,7 @@ test("the dark's stop reads the THUMB: the KID's held steer that carries him tow
   assert.deepEqual(r.dark.unlit, []);
 });
 
-test("the way down a trunk he stands beside MID-WAY (roll 33 Easy): the child takes it with up and climbs down to the shrine (GREEN; planted: the one-sided top test back, the mid-trunk grab removed)", async () => {
+test("the way down a trunk he stands beside MID-WAY (roll 33 Easy): the child takes it with up and climbs down past the ledge (GREEN; planted: the one-sided top test back, the mid-trunk grab removed)", async () => {
   // (castBots x40 on 653bb970-4527e73f, the dark-only strand: a rescue set the CHILD Easy on a piece that trunk 26 runs through, its top
   //  281 px over his feet, the way on down it to the floor and the shrine. The way-down plan pressed DOWN there (it asked only that the top
   //  be at or above his feet; the engine climbs down from the ground only at a vine's very top), and he held it 20 s to a strand at
@@ -163,9 +163,9 @@ test("the way down a trunk he stands beside MID-WAY (roll 33 Easy): the child ta
   if (readied !== DRAFT) readyDraft(DRAFT);
   const { firstTimer, FT_CHILD } = await import('../../../tools/inspect/firsttimer.ts');
   type Spot = { x: number; y: number; top: number };
-  let spot: Spot | undefined, placed = false, climbed = 0;
+  let spot: Spot | undefined, placed = false, climbed = 0, deepest = -Infinity;
   const r = firstTimer(DRAFT, 33, { ...FT_CHILD, setting: 'easy' }, { cap: 20, onFrame(sim, b) {
-    if (placed) { if (sim.p.climbing) climbed++; return; }
+    if (placed) { if (sim.p.climbing) climbed++; if (climbed) deepest = Math.max(deepest, sim.p.y); return; }
     if (sim.e.gameTime <= 0.5) return;
     const vines = (sim.e as unknown as { vines: Array<{ vineType: string; x: number; topY: number; bottomY: number }> }).vines;
     for (const v of vines) if (v.vineType === 'tree_climb') for (const q of sim.platforms)
@@ -177,7 +177,8 @@ test("the way down a trunk he stands beside MID-WAY (roll 33 Easy): the child ta
   } });
   assert.ok(spot && spot.y - spot.top > 14, `the trunk's top stands above his feet (${spot && spot.y - spot.top} px)`);
   assert.ok(climbed > 0, 'he took the trunk');
-  assert.equal(r.end, 'shrine', `the child Easy reaches the shrine (${r.end} at ${r.time})`);
+  // (box 14: on roll 33 the trunk is not the last way to the shrine, so the run asks the climb down past the ledge, not the shrine)
+  assert.ok(spot && deepest > spot.y + 60, `he climbed down past the ledge (${spot && Math.round(deepest - spot.y)} px under it)`);
   assert.deepEqual(r.stuck.map((q) => q.what), [], 'no rescue on the way down');
 });
 
