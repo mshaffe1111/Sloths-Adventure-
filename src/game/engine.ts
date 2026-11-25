@@ -7102,6 +7102,7 @@ export class GameEngine {
     out.flight = !!this.dotRun;
     out.slide = !!this.slideRun?.sliding;
     out.stageId = cfg.id;
+    out.travel = this.mode.travel;
     out.t = this.gameTime;
     out.paused = this.isPaused;
     out.zoom = this.zoom;
