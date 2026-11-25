@@ -310,12 +310,17 @@ export function towerCatches(flow: 'up' | 'down', platforms: readonly Platform[]
   const all: Platform[] = [...platforms];
   const lv = new Map<Platform, number>(platforms.map((p) => [p, level(p)]));
   const out: Array<{ x: number; y: number; w: number; level: number }> = [];
+  // (going down, his hop's room: no bough within ROOF over a dip's lip or a climb vine's top, the rooms towerLids reads; read again
+  //  after each bough, which may itself be a lip)
+  let rooms: ReturnType<typeof hopRooms> | undefined;
+  const lidded = (x0: number, x1: number, y: number) => flow === 'down' && inRoom((rooms ??= hopRooms(all, vines)), x0, x1, y) !== undefined;
   const put = (x0: number, x1: number, y: number, L: number) => {
     const c = { x: Math.round(x0), y: Math.round(y), w: Math.round(x1 - x0), level: L };
     out.push(c);
     const p = { id: -1 - out.length, x: c.x, y: c.y, width: c.w, height: 24, type: 'solid' } as Platform;
     all.push(p);
     lv.set(p, L);
+    rooms = undefined;
   };
   const solid = (but: ReadonlyArray<Platform>) => all.filter((q) => !but.includes(q) && q.type === 'solid');
   // (wood in its way: across other wood at another height with less than his body between the two, over it or under it; `but`: the
@@ -323,7 +328,9 @@ export function towerCatches(flow: 'up' | 'down', platforms: readonly Platform[]
   // under it, and a catch 60 px over the storey laid under it none over that storey's ledge, on 48 of 48 drafted 3-1 rolls)
   const cramped = (x0: number, x1: number, y: number, but: ReadonlyArray<Platform>) => solid(but).some((q) => q.x < x1 && q.x + q.width > x0 && Math.abs(q.y - y) > 1 && Math.abs(q.y - y) < HEAD);
   // (a storey climbed by a jump: the bough, of storey `L` (or of a lower one, if wood of a lower one could jump onto it), with wood of
-  // a higher storey inside a jump of it. Going down a bough is only ever a way on: nothing to guard)
+  // a higher storey inside a jump of it. Going down a bough is only ever a way on (its ends drop him onto the storey under it), so no
+  // storey is guarded here; what is guarded going down is his hop's way: no bough lies in his hop's room over a dip's lip or a climb
+  // vine's top (lidded, hopRooms, the verdict towerLids), where a hop up onto it would be a way back, a dead end)
   /** the storey a bough at (x0-x1, y) is of: `L`, or a lower one if wood of a lower one could jump onto it; -1: it climbs a storey */
   const storeyAt = (x0: number, x1: number, y: number, L: number, but: ReadonlyArray<Platform>): number => {
     if (flow !== 'up') return L;
@@ -362,8 +369,9 @@ export function towerCatches(flow: 'up' | 'down', platforms: readonly Platform[]
     return ![a - 24, b + 24].filter((x) => x >= 20 && x <= width - 20).some((x) => { const l = catchUnder([...all, box], x, y, 100000); return l !== undefined && l <= v.bottomY + 2; });
   };
   /** laid fairly: the storey it is of (storeyAt), or -1 when it is in the way, climbs a storey, lies by a gate or in a kept-out box,
-   *  or (going down) runs a catch on past its storey */
-  const fair = (x0: number, x1: number, y: number, L: number, but: ReadonlyArray<Platform>): number => (cramped(x0, x1, y, but) || byGate(x0, x1, y) || passes(x0, x1, y) ? -1 : storeyAt(x0, x1, y, L, but));
+   *  or (going down) runs a catch on past its storey or lies in his hop's room (hopRooms: a lid over a dip's lip, a roof over a vine's
+   *  top) */
+  const fair = (x0: number, x1: number, y: number, L: number, but: ReadonlyArray<Platform>): number => (cramped(x0, x1, y, but) || byGate(x0, x1, y) || passes(x0, x1, y) || lidded(x0, x1, y) ? -1 : storeyAt(x0, x1, y, L, but));
   for (let pass = 0; pass < 10; pass++) {
     const ends = openEnds(all, floorY, most, width);
     if (!ends.length) break;
@@ -378,7 +386,7 @@ export function towerCatches(flow: 'up' | 'down', platforms: readonly Platform[]
       // (going down, only into the wall on the end's own side, with his head room kept: the right end of a 60 px bridge by the left
       //  wall ran on to the RIGHT wall, a plank across the whole tower 70 px over a storey, ENG-DOWNBOT, drafted 3-1 easy 18)
       const ownSide = flow !== 'down' || (leftEnd ? e.x < TOWER.wall + 40 : e.x > width - TOWER.wall - 40);
-      if ((e.x < TOWER.wall + 40 || e.x > width - TOWER.wall - 40) && ownSide && !sealed(e.p) && !byGate(w0, w1, e.p.y) && (flow !== 'down' || (!cramped(w0, w1, e.p.y, [e.p]) && !passes(w0, w1, e.p.y)))) {
+      if ((e.x < TOWER.wall + 40 || e.x > width - TOWER.wall - 40) && ownSide && !sealed(e.p) && !byGate(w0, w1, e.p.y) && (flow !== 'down' || (!cramped(w0, w1, e.p.y, [e.p]) && !passes(w0, w1, e.p.y) && !lidded(w0, w1, e.p.y)))) {
         put(w0, w1, e.p.y, Le);
         added++;
         continue;
