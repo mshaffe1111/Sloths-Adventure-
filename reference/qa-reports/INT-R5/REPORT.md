@@ -2,7 +2,16 @@
 
 Session 1: started 2:31 PM ET 11-24 (by `date`), handed over at the 28-minute box. Lead: session_01FhBbYN2CVHnFXg7XzqKXpM.
 
-## EXACT NEXT STEP (session 7 starts here; INT-R5d-c hand-over, written 5:57 PM ET 11-25 by `date`)
+## MATT CHOSE A (the lead, 11-25; written 6:05 PM ET by `date`): release 4 = release-0.10.3-lite (main + the two draw fixes)
+Release 4's work moved to **release-0.10.3-lite** (REPORT: reference/qa-reports/INT-R5L/REPORT.md on that branch). This branch and
+release-0.10.3 (c73cb9766) are **release 5's bot line**; nothing more runs here tonight. The c73cb9766 lanes were STOPPED at the lead's
+word; what they recorded (d/fullset-c73cb9766/): L0 tsc, the CI tool line 420/0 fail/1 todo; L1 all 8 PASS (drawcheck, clipcheck 83
+known none new, kbdcheck, vite build, chunkcheck, artcheck, build:store, slot confirm); L3 tipwalk, storyTipScan, teachFirstScan (0
+misses, 3,222 rolls), registrycheck, knowncheck, generality, coverage, unshallow, roadmapcheck, timecheck, paint 0-2 (0 SIDE-ON, 0 SOIL
+OVER, 0 SOIL SHORT), castBots 2-7 seeds 1-100 PASS (281 s); NOT reached: seed lists (stopped mid-run), shardplan, locks, castBots 1-4,
+funcheck, tierBots, the suite, buildcheck. Rule 28 vs main: RED (below). Release 5 re-runs every gate on its own final head.
+
+## Hand-over written before Matt's answer (5:57 PM ET 11-25 by `date`)
 **STATE:** the full set on c73cb9766 is RED (rule 28 vs main: 5 PASS -> FAIL on 2-1/2-2, 4 turned by the bot fix; the RED paragraph
 below). The lead: rows NOT accepted, NO suite, NO buildcheck on c73cb9766; Matt is asked (A) ship tonight WITHOUT 2-7 and the bot fix or
 (B) hold release 4 for Friday. release-0.10.3 sits at c73cb9766 (step 1b's fast-forward, before the red): push NOTHING to it.
