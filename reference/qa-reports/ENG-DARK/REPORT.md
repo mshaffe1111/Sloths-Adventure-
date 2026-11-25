@@ -44,8 +44,14 @@ u.dir -1: (i)'s exemption passes it). The lay fix's second light goes over that 
 951 going -1: about x 897, y 7738); it is about 276 px from rim 940's own landing (994, 7996), so it lights the EDGE he lands by, not
 rim 940's landing: whether the verdict then drops the behind-edge exemption is the lead's reading of 'behind edge lit'. Ask before
 changing darkLandings' meaning.
-(3) The 7 single crossings (box 8: adult 33 N 940,7828; child E 21 191,1562; expert 31 N 929,10127; middle E 1 517,2867; middle E 32
-561,10406; middle 16 N 920,7104; middle 31 N 965,6563): castone each on the new head first (paths moved), then trace or rule.
+(3) The 7 single crossings, RE-MEASURED by box 10 on 404d9420 (castone): STILL THERE, 3: child E 21 x 191, y 1562 (left end of
+191-433) at 24.27 s (shrine 358.9 s, 7 rescues); middle E 1 x 517, y 2867 (right end of 268-517) at 38.27 s (258.2/4); middle N 16 x 920,
+y 7104 (right end of 760-920) at 167.23 s (282.6/5). GONE on the new head (the path moved; not traced, so not 'fixed' by design): adult
+33 N (255/6), expert 31 N (266.7/5), middle E 32 (289.2/5), middle N 31 (258.8/4). Trace the 3 (probes/loop.mts at each rim/time) and fix
+or take to the lead; re-check all 7 after the lay fix.
+The lead was ASKED (box 10, with this evidence) which bar '33 N's behind edge lit' means: (A) the second light + darkLandings drops the
+behind-edge exemption for a step-off from a hop rim; (B) A + the x40 crossing over 940 reads lit (a judge change); (C) other. Box 10
+said it would build A unless the lead says otherwise: read the lead's answer first.
 (4) Add plant 28 to planted-faults.py: the seam check removed (downEnd's `if (d === 0 || this.who.noSeamWalk)` line onward) -> the seam
 GREEN toy goes RED. (5) Re-anchor toys 3, 4, 6 and darkBots test 5 on the FINAL lay (toyscan.mts). (6) ONE fresh x40 vs the bar; (7)
 the gates once; LAND on t-eng-w3 (the lead's ruling 5).
