@@ -1,13 +1,8 @@
 # SIDEWALL-FIX (R-165.440): the two invisible walls on shipped stages, drawn as their colliders
 
-EXACT NEXT STEP (session 3, SIDEWALL-FIX-c, hand-over at the box; code head 424290c3, every gate below run on it):
-1. Still to finish on 424290c3 (each once): paintcheck `--part 2/3` (holds 1-6; was running), the CI tool line (gates.yml line 157, the
-   `npx tsx --test tools/engine/library.test.ts ...` run line, incl. sideWall.test.ts; was running), the suite in 6 shards exactly as
-   deploy.yml runs it (`npx tsx --test --test-shard=i/6 src/audio/*.test.ts src/game/*.test.ts src/components/*.test.ts
-   src/components/**/*.test.ts src/game/gen2/*.test.ts src/game/gen2/worlds/*.test.ts src/game/art/*.test.ts`, i = 1..6, each
-   run_in_background with a timeout up to 7,200,000 ms, at most two heavy runs at once). If the box ends first, a fresh session re-runs
-   ONLY those not marked done in "Gates (session 3)", on 424290c3 (later commits touch REPORT.md only).
-2. Fill the table, push to t-fix-sidewall, `git ls-remote` = HEAD, send the lead the hash and the table. Integration merges it.
+EXACT NEXT STEP: none for Engine. Every gate the lead named PASSED on code head 424290c3 (table below; later commits touch
+REPORT.md only). Integration merges t-fix-sidewall into release 4. Open for others, not this job: R-165.442 (World 8 end-face inset,
+release 5), R-165.443 (1-6 stair boulder drawn past its collider), Content's inventory row hf678/w1-livepost-tall (now drawn on 1-6).
 
 ## Gates (session 3), code head 424290c3
 | Gate | Result |
@@ -16,9 +11,9 @@ EXACT NEXT STEP (session 3, SIDEWALL-FIX-c, hand-over at the box; code head 4242
 | lockall `--layouts 16 --check lock-main-cdffdc62.json` | PASS, exit 0: "102/102 stages unchanged" (ZERO layout moves). Its "gen2 gained verdicts and drops (not hashed)" line lists stages whose gen2 carries verdicts at all (lockall.ts:29), informational, not a diff |
 | paintcheck part 0/3 (34 stages, 1,882 builds, holds 8-1) | PASS, exit 0: 0 new lines (side-on walls have NO known list: any one is a fail line), 170 known painter-size ids seen |
 | paintcheck part 1/3 (34 stages, 2,028 builds) | PASS, exit 0: 0 new lines, 107 known painter-size ids seen |
-| paintcheck part 2/3 (holds 1-6) | running |
-| CI tool line (gates.yml:157) | running |
-| suite, 6 shards (deploy.yml:38) | not started |
+| paintcheck part 2/3 (34 stages, 1,928 builds, holds 1-6) | PASS, exit 0: 0 new lines, 106 known painter-size ids seen |
+| CI tool line (gates.yml:157, incl. sideWall.test.ts) | PASS, exit 0: 353 tests, 352 pass, 0 fail, 1 todo (chaseBots OPEN item, ENG-B4, committed on main); both sideWall tests ok (134, 135) |
+| suite, 6 shards exactly as deploy.yml:38 | PASS, every shard exit 0: 723/610/669/561/688/791 = 4,042 tests, 4,039 pass, 0 fail, 0 cancelled, 3 todo (committed open items: R-165.312 roost boa; the engine wall check with no bottom, twice) |
 
 The lead's rulings (session 3 brief): (1) 1-6 APPROVED: both posts read as vine-wrapped support posts under the branch, drawn last,
 standing on the floor. (2) 8-1 ACCEPTED for release 4: the sliver 'joined' draws as a STANDARD bank end, consistent with every other
@@ -82,8 +77,7 @@ fatter) with its root pad on the floor; 8-1's sliver is no bank of its own and t
   tests 22/22. Probe (2 seeds a listed stage, all 16 layouts on 8-1, both settings): sideWalls 0 on 1-6 and 8-1 with the drawer.
 - BEFORE stills (main cdffdc62) in before/ (20 shots: 1-6 and 8-1, upright and sideways, Normal and Easy, close/wide/top; boxes.json).
   NOT YET LOOKED AT side by side with the after set; the after set was half shot at hand-over.
-- NOT RUN yet: lockall, paintcheck (full), the CI tool line, the suite. No layout code is touched (narrowBank.ts reads geometry only;
-  stageManifest adds a sheet key), so lockall should show 0 moves: that is a claim until step 2 runs.
+- Session 3 ran every gate on 424290c3: all PASS, lockall 0 moves (see "Gates (session 3)").
 - For Content (not mine to edit): the inventory row hf678/w1-livepost-tall still reads "cut, not placed" (in_game false); it is now
   drawn (livePostArt.ts) on 1-6. Tester data for stalls at 1-6 x ~27,900: not looked for (the packet: skip if not in the repo).
 - 1-6 has TWO posts per layout (seed 1: x 27896 and x 45995), both now posts; 1-6 Easy lays none (probe, layouts 0 and 1).
