@@ -299,6 +299,9 @@ export interface FirstTimer {
   /** a seam he walks over read as a way down again (darkBots.test's seam toy only): downEnd steers him at a way-on point under a gap
    *  narrower than his body from both sides, and he walks back and forth over it */
   noSeamWalk?: boolean;
+  /** under a seam run, his facing picks the end he steps off again, not the end the way on comes out past (darkBots.test's roll 11
+   *  toy only): turned by anything else, he walks to and fro over the seam */
+  seamByFacing?: boolean;
   /** at a gap or a face he must clear, his hold is drawn from this quantile of holdQ up (he reads the jump): a tuning field */
   readHold?: number;
   /** and a double up a step gets its second press from dbl2Q's quantiles up to this one (early enough to climb): a tuning field */
@@ -1802,9 +1805,19 @@ export class FirstTimerRun {
       //  forth over it, a dark rim each pass: 3-1 draft adult and kid Normal 32, 31 and 26 crossings, ENG-DARK. Then the steer keeps
       //  him the way he was going. A point under his own piece is left as it was)
       const end = this.ledgeEnds(p, d);
-      // (kept the way he was going: his facing, never 0. With 0 the route's own x steered him, and with the way on under the seam it
-      //  flipped as he crossed it: the adult Normal on rolls 11 and 35 walked to and fro over an 18 px seam 12-17 times, ENG-DARK box 14)
-      return end && (at.x - end.own) * d > 0 && (at.x - end.run) * d <= 0 ? (this.sim.p.facing < 0 ? -1 : 1) : d;
+      if (!end || (at.x - end.own) * d <= 0 || (at.x - end.run) * d > 0) return d;
+      // (then he steps off the end of the whole run (both ways over every seam) that the way on comes out from under: its first later
+      //  point past either end. Kept the way he was facing, any other turn (a dark stop, the route's x) flipped him and the next pass
+      //  kept the new facing: the adult Normal on roll 11 walked to and fro over a 13 px seam to a piece 13 px up 11 times, the way on
+      //  dropping through it and out past the far end, ENG-DARK box 15. His facing only when the way on never comes out in reach)
+      const back = this.who.seamByFacing ? null : this.ledgeEnds(p, d > 0 ? -1 : 1);
+      if (this.who.seamByFacing) return this.sim.p.facing < 0 ? -1 : 1;
+      const lo = Math.min(end.run, back ? back.run : p.x), hi = Math.max(end.run, back ? back.run : p.x);
+      for (let k = j + 1; k < Math.min(pts.length, this.prog.cur + 160); k++) {
+        if (pts[k].x < lo - 8) return -1;
+        if (pts[k].x > hi + 8) return 1;
+      }
+      return this.sim.p.facing < 0 ? -1 : 1;
     }
     return 0;
   }

@@ -228,6 +228,29 @@ test("a seam read as a way down (noSeamWalk, the plant): both sides of the seam 
   assert.ok(Math.max(r.dark.loop, worstRim(r.dark.unlit)) >= 10, `one rim gone over again and again (the most over one rim: ${r.dark.loop}; unlit ${JSON.stringify(r.dark.unlit.slice(0, 3))})`);
 });
 
+/** roll 11's seam (ENG-DARK box 15): the way on drops through a 13 px gap from 355-591 (y 11405) to 604-784, 13 px UP (a step he walks
+ *  over), and comes out past 784 on the storey under it (604-817, y 11552). Steered by his facing, a turn on 355-591 flipped him and he
+ *  walked to and fro over the rim at 604 eleven times (probes/seamscan.mts); he steps off the run's end the way on comes out past */
+async function seam11(seamByFacing: boolean) {
+  if (readied !== DRAFT) readyDraft(DRAFT);
+  const { firstTimer, FT_ADULT } = await import('../../../tools/inspect/firsttimer.ts');
+  return firstTimer(DRAFT, 11, { ...FT_ADULT, setting: 'normal', seamByFacing }, { cap: 200 });
+}
+
+test("the way on under a seam run comes out past its far end: on roll 11's 13 px seam he steps off that end and reaches the shrine, no rim gone over again and again (GREEN; planted: seamByFacing)", async () => {
+  const r = await seam11(false);
+  assert.equal(r.end, 'shrine', `he reached the shrine (${r.end} at ${r.time})`);
+  assert.ok(r.dark && r.dark.crossed >= 20, `he went over dark rims (${r.dark?.crossed})`);
+  assert.deepEqual(r.dark.unlit, []);
+  assert.ok(r.dark.loop < 6, `no rim gone over again and again (the most over one rim: ${r.dark.loop})`);
+});
+
+test("the seam run's end picked by his facing (seamByFacing, the plant): turned on the low side, he walks to and fro over roll 11's seam (RED)", async () => {
+  const r = await seam11(true);
+  assert.ok(r.dark, 'the drafted 3-1 has a lit dark (FTRun.dark)');
+  assert.ok(Math.max(r.dark.loop, worstRim(r.dark.unlit)) >= 8, `one rim gone over again and again (the most over one rim: ${r.dark.loop})`);
+});
+
 /** (ENG-DARK box 12) the turn-room stop, hand-built: on the final lay no bot's own run (middle Normal, rolls 1-40) stops facing away at a
  *  rim's very edge, so he is STOOD there: the middle on Normal roll 1, at 0.5 s set standing 2 px in from the draft's first sleeping rim,
  *  facing away from it, its landing dark (asleepRim, box 14); the run then plays on (12 s). Box 10's real case: roll 16 x 920 on the lay before the second
