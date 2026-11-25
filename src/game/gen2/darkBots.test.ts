@@ -66,3 +66,14 @@ test("a dark give-up ends with the visit: with the turn removed (noGlowTurn) he 
   assert.equal(rims.length, 2, `two waited-out stops: ${JSON.stringify(r.dark.gaveUp)}`);
   assert.equal(rims[0], rims[1], 'both at the same rim, one per visit');
 });
+
+test("the dark's stop reads the THUMB: the KID's held steer that carries him toward a dark rim stops him there (GREEN; planted: glowSteer not read)", async () => {
+  // (castBots x40 on ef811c2a, unlit cause 3: the KID Normal landed on a piece steering left in the air, meant to stand (intended {}),
+  //  and his thumb's late lift-off, re-armed every frame (R-165.59), ran him 90 px left over the dark rim at its left end at 73.90 s with
+  //  its landing dark: the route said right, so glowWait never looked left. This roll's first 80 s hold that run, as castBots plays it)
+  if (readied !== DRAFT) readyDraft(DRAFT);
+  const { firstTimer, FT_KID } = await import('../../../tools/inspect/firsttimer.ts');
+  const r = firstTimer(DRAFT, 16, { ...FT_KID, setting: 'normal' }, { cap: 80, dotSetting: true });
+  assert.ok(r.dark && r.dark.crossed >= 3, `he went over dark rims (${r.dark?.crossed})`);
+  assert.deepEqual(r.dark.unlit, []);
+});

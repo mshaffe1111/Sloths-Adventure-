@@ -3368,6 +3368,19 @@ export class FirstTimerRun {
   }
 
   /**
+   * The dark's stop on the steer his thumb actually presses (glowWait's third half): glowWait starts the stop for a rim in the ROUTE's way,
+   * but the thumb can carry him the other way: the KID's late lift-off re-arms every frame (thumbify, R-165.59), so a steer he let go is
+   * still pressed. On the 3-1 draft's roll 16 he landed on a piece steering left in the air, meant to stand (intended {}), and his held
+   * thumb ran him 90 px left over the dark rim at its left end, no stop at all. A press toward a dark rim on his piece within GLOW_NEAR, its
+   * landing not yet lit DARK_AHEAD: the stop starts; this frame's press stands (the thumb is down), and from the next frame glowWait holds
+   * him: the thumb comes off with its own lag, armed once (thumbify's glowStop clause). A jump press is glowJump's.
+   */
+  private glowSteer(out: Pad): void {
+    if (this.glowStop || out.press || !out.left === !out.right) return;
+    this.glowWait(out.right ? 1 : -1);
+  }
+
+  /**
    * The dark's stop for a JUMP (glowWait's other half): a running jump over a dark rim is pressed before he is within GLOW_NEAR of it (the
    * expert pressed 94 px out and went over with its landing dark, 3-1 draft). Grounded on a dark rim's piece, about to jump toward that rim
    * within GLOW_JUMP, its landing's light asleep or lit under DARK_AHEAD[setting] s: the jump is not pressed; the stop starts (glowWait
@@ -4031,6 +4044,7 @@ export class FirstTimerRun {
     const intended = this.intend();
     const want = this.rollHeld || this.steady || this.runnerAhead() ? intended : this.rhythm(intended);
     const out = this.figTap ? this.tapped(want) : this.thumbify(want);
+    this.glowSteer(out);
     this.wasOnTrunk = !!this.sim.p.climbing;
     if (out.press) this.lastPress = this.t;
     return out;
