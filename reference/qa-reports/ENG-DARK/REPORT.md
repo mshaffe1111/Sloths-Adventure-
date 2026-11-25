@@ -29,6 +29,10 @@ down'; 'a trunk beside him, on a trunk'; 'in a dip # px deep, the way on is # px
 -80.4, child E -25.0, middle N -44.8, middle E -33.0, adult N -5.8, adult E +4.7, expert N -41.6 (expert E not in this lane's print).
 NOT yet known: whether roll 15 strands on a177fde99 (before box 15's seam change) too: box 16's FIRST check is that one-run A/B
 (expert Normal 15, castBots, a177fde99 vs a5e15a74d). Lane 2 not run.
+**PLANTS RECORDED (frozen a5e15a74d, plants-box15.txt): 32 of 33 CAUGHT, 1 MISSED:** "the bots' dark stop skips a jump (glowJump not
+read)" leaves darkBots' "holds a running JUMP" toy GREEN (it was CAUGHT in box 13 on a3117f7c0; the downbot merge and box 14-15's
+changes came after). Not diagnosed (D138): box 16 traces whether the toy's real row still holds a jump into the dark, and re-anchors it.
+The new roll-11 seam plant, the 3 run-off plants, the behind-edge plant and plant 28 are CAUGHT.
 **BOX 16 DOES:** (1) plants on a5e15a74d: every one CAUGHT (none NO TEST / BASE RED / MISSED). (2) the x40 on a5e15a74d (both lanes;
 commit cast-3-1-x40-a5e15a74.jsonl) vs THE BAR with x40verdict.py against cast-3-1-x40-base-c1008d8e.jsonl: shrine 360/360; unlit <= 5
 events, no loop; no rescue kind the base lacks; medians vs base; ENG-DOWNBOT's open items. One line to the lead. (3) box 15's order
