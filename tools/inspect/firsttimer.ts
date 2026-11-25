@@ -302,6 +302,9 @@ export interface FirstTimer {
   /** under a seam run, his facing picks the end he steps off again, not the end the way on comes out past (darkBots.test's roll 11
    *  toy only): turned by anything else, he walks to and fro over the seam */
   seamByFacing?: boolean;
+  /** with the way on straight under his run and never coming out past it, no end of the run picked (darkBots.test's roll 15 toy only):
+   *  he stands over it turning, by a side wall, until stranded */
+  noOpenEnd?: boolean;
   /** at a gap or a face he must clear, his hold is drawn from this quantile of holdQ up (he reads the jump): a tuning field */
   readHold?: number;
   /** and a double up a step gets its second press from dbl2Q's quantiles up to this one (early enough to climb): a tuning field */
@@ -1818,6 +1821,19 @@ export class FirstTimerRun {
         if (pts[k].x > hi + 8) return 1;
       }
       return this.sim.p.facing < 0 ? -1 : 1;
+    }
+    // (the way on straight UNDER his run, never coming out past it in reach (the route's end, the shrine, under wood that runs on to a
+    //  side wall): no point above was off his wood, and with 0 the route's x held him over it, turning and hopping. Carried past the
+    //  piece the way drops onto, the expert on Normal roll 15 landed on 826-1280 (y 11320) by the right wall with the shrine 347 px under
+    //  it, and stood there until stranded (child and middle too, and Easy 27), ENG-DARK box 16. He steps off an OPEN end of the run (one
+    //  his middle can pass before the side wall stops him), the one nearer the way on)
+    const wayOn = this.who.noOpenEnd ? null : this.downPt(p);
+    if (wayOn && wayOn.x >= lo - 8 && wayOn.x <= hi + 8) {
+      const walls = (this.e as unknown as { walls?: { minX: number; maxX: number } }).walls;
+      const openL = !walls || lo - LAND_HALF > walls.minX, openR = !walls || hi + LAND_HALF < walls.maxX;
+      if (openL && openR) return wayOn.x - lo <= hi - wayOn.x ? -1 : 1;
+      if (openL) return -1;
+      if (openR) return 1;
     }
     return 0;
   }
