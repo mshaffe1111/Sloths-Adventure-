@@ -29,7 +29,7 @@ import type { SectionTemplate, WorldKit } from '../../src/game/gen2/types.ts';
 import type { LevelConfig } from '../../src/game/types.ts';
 import type { RiverZone } from '../../src/game/river.ts';
 import type { Platform } from '../../src/game/types.ts';
-import { SKILLS, firstTimer, FirstTimerRun, FT_CHILD, FT_CHILD_EASY, FT_EXPERT, FT_MIDDLE_EASY, HOP_TRACE, type FirstTimer } from './firsttimer.ts';
+import { SKILLS, firstTimer, FirstTimerRun, FT_ADULT, FT_CHILD, FT_CHILD_EASY, FT_EXPERT, FT_MIDDLE, FT_MIDDLE_EASY, HOP_TRACE, type FirstTimer } from './firsttimer.ts';
 import { CAST_BOTS, castRun } from './castBots.ts';
 import { runTier, type Setting, type Tier, type TierRun } from './tierBots.ts';
 
@@ -452,3 +452,36 @@ for (const [name, seed, who] of [['middle Easy 11', 11, FT_MIDDLE_EASY], ['exper
     assert.equal(got.rescues, 0, `rescues ${got.rescues}`);
   });
 }
+
+// (ENG-PLANT-CI-c, rule 28: the race's front stand on a log running HIS way (CI-3/CI-4). Traced on CI-4 4da085f92 with this toy: the
+//  adult let go of the walk 23 px from #10's front at 260 px/s (the walk is judged once a frame) and his thumb's late lift-off re-armed
+//  every frame (no stopMeant: thumbify, R-165.59), 3 frames held, so he ran 5 px past the front; floorAt(p.x) then read nothing and the
+//  edge's blind press fired into the water (set back to the bank): phases 0, 2, 3; 0.5/1.5/3.5 hopped from 3-13 px past it. RED on CI-4.)
+test('on the race leg, a log running his way: every tier walks to its front and stands there, never off it, never into the water (the front stand)', () => {
+  const w = 240, gap = 150, speed = 80, x0 = 1000, x1 = 3600, T = (x1 - x0 + w) / speed, n = Math.round((x1 - x0 + w) / (w + gap));
+  const bad: string[] = [];
+  for (const [name, who] of [['middle', FT_MIDDLE], ['adult', FT_ADULT], ['child', FT_CHILD], ['expert', FT_EXPERT]] as const) for (const ph of [0, 0.5, 1, 1.5, 2, 2.5, 3, 3.5]) {
+    let A: number | null = null, lives = -1, water = false, past = 1e9;
+    const line = Array.from({ length: 260 }, (_, i) => ({ x: 100 + i * 24, y: 600 }));
+    const run = new FirstTimerRun('1-1', 1, who, { route: line, cap: 25, rescueAfter: 1000, onFrame: (sim) => {
+      const e = sim.e as unknown as { lives: number; standingOnId: number | null; player: { x: number; grounded: boolean }; platforms: Array<{ id: number; x: number; width: number; drift?: unknown }> };
+      if (lives < 0) lives = e.lives;
+      if (e.lives < lives) water = true;
+      const here = e.platforms.find((q) => q.id === e.standingOnId);
+      if (A === null && e.player.grounded && here?.drift) A = here.id;
+      if (A !== null && e.player.grounded && here?.id === A) past = Math.min(past, here.x + here.width - e.player.x);
+    } });
+    run.sim.bare([
+      { id: 1, x: 0, y: 600, width: x0, height: 90, type: 'solid' },
+      { id: 2, x: x1, y: 600, width: 1200, height: 90, type: 'solid' },
+      ...Array.from({ length: n }, (_, k) => ({ id: 10 + k, x: 0, y: 628, width: w, height: 24, type: 'drift', drift: { x0, x1, dir: 1, speed, width: w, baseY: 628, offset: ((k * (w + gap)) / speed + ph) % T } })),
+    ] as never);
+    (run.sim.e as unknown as { currentStage: { config: { levelHeight: number } } }).currentStage.config.levelHeight = 720;
+    (run.sim.stage as unknown as { pacer: unknown }).pacer = { x0: 0, x1: 99999, lane: 628, dir: 1, yMin: 0, seconds: 999, middle: 100, rideOnly: 200, under: 0, art: [] };
+    run.sim.stand(700, 600);
+    run.prog.relocate(run.sim.p);
+    run.play();
+    if (water || past < 0) bad.push(`${name} ${ph}: ${water ? 'into the water' : `${Math.round(-past)} px past the front`}`);
+  }
+  assert.deepEqual(bad, [], `every tier stands behind the front of the log he rides on the race leg (${bad.join('; ')})`);
+});
