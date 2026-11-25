@@ -54,6 +54,7 @@ const WHEEL_RIDER = 96;
 import type { ClockDef } from '../stageKit.types.ts';
 import type { RiverZone } from '../river.ts';
 import { CRUMBLE_TILE_W, crumbleTime, keepsClear, tideCrossTime, type Zone } from '../zones.ts';
+import { glowFlags } from './dark.ts';
 import { creakLimb, needless } from './creak.ts';
 import { layChase } from './chaseLay.ts';
 import { rollsOf } from './rollLay.ts';
@@ -3826,6 +3827,8 @@ export function fillSockets(laid: Laid, budget: StageBudget, kit: WorldKit, seed
   }
   // (a flag an emitter's zone has come to cover is taken down: nothing stands in a zone)
   const flags = checkpoints.filter((c) => !flagInZone(sink.zones, c.x, c.y));
+  // (and a flag in the glowworms' dark lights a glow within a second of standing still there: never a blind respawn; gen2/dark.ts)
+  glowFlags(sink, flags);
   return { enemies: sink.enemies, collectibles: C, checkpoints: flags, hints, fills, barren, extras: sink.extras };
 }
 

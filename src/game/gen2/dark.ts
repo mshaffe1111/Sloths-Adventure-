@@ -11,10 +11,12 @@
  *   - darkGaps (the laid stage): every rim in the dark has a light over its landing, and a sleeping one is woken by a stop on the rim's
  *     own piece (glowReaches); else the rim is named;
  *   - litAhead (a run): every rim he went over in the dark, its landing's light was lit DARK_AHEAD[setting] s before; else named (RED).
+ * And a flag in the glowworms' dark (it may stand there: zones.ts keepsClear, the lead's ruling A, 11-25) is never a blind respawn:
+ * darkFlags names one where standing still lights no glow within DARK_FLAG_LIT s, or none over his first landing.
  * No stage, seed or x lives here: every fact is the laid stage's.
  */
 import type { Zone } from '../zones.ts';
-import { glowReaches } from '../zones.ts';
+import { GLOW_REACH, GLOW_STILL, glowReaches, keepsClear } from '../zones.ts';
 import type { Platform } from '../types.ts';
 import type { PropDef, PropEmitter, Socket, StageSink } from './types.ts';
 
@@ -35,6 +37,8 @@ export const DARK_ZONE = { up: 800, down: 400, gapLight: 190, wayLight: 130, eve
 export const DARK_GLOW = { above: 320, below: 260, light: 190 } as const;
 /** STAGE-RULES §4: every gap in the dark reads at least this long ahead (s) */
 export const DARK_AHEAD = { normal: 1, easy: 1.6 } as const;
+/** a flag in the glowworms' dark: standing still where he respawns lights a glow, his first landing's, within this (s; the lead, 11-25) */
+export const DARK_FLAG_LIT = 1;
 
 type Lights = NonNullable<Zone['lights']>;
 type Light = Lights[number];
@@ -199,6 +203,45 @@ export function darkGaps(stage: { platforms: readonly Platform[]; zones?: readon
     if (!wakes) out.push(`dark: a sleeping light no stop wakes: ${at(r)}, the light at x ${Math.round(light.x)}, y ${Math.round(light.y)}`);
   }
   return out;
+}
+
+/** how long a stop at (`x`, `feet`) facing `facing` takes to light `l` (s): Infinity out of reach; an always-lit light 0 */
+export function litAfter(l: Light, x: number, feet: number, facing: -1 | 1): number {
+  if (!l.sleep) return 0;
+  return glowReaches(l, x, feet, facing) ? GLOW_STILL + Math.max(0, (l.x - x) * facing) / GLOW_REACH.speed : Infinity;
+}
+
+/** the glowworm-dark zones a flag at (x, y) stands in */
+const glowDarkAt = (zones: readonly Zone[] | undefined, x: number, y: number) => (zones ?? []).filter((z) => z.kind === 'dark' && !keepsClear(z) && inBox(z, x, y));
+/** does standing still at a flag at (x, y), facing either way, light one of these within DARK_FLAG_LIT s? */
+const flagLit = (lights: readonly Light[], x: number, y: number) => lights.some((l) => Math.min(litAfter(l, x, y, 1), litAfter(l, x, y, -1)) <= DARK_FLAG_LIT + 1e-6);
+
+/**
+ * A flag in the glowworms' dark is never a blind respawn (the lead's ruling with A, 11-25): standing still at it, he lights a glow within
+ * DARK_FLAG_LIT s (and the way on from there is darkGaps' business: every rim's landing woken by a stop on its piece). Names each flag
+ * that fails; empty: kept.
+ */
+export function darkFlags(stage: { zones?: readonly Zone[]; checkpoints?: ReadonlyArray<{ x: number; y: number }> }): string[] {
+  const out: string[] = [];
+  for (const c of stage.checkpoints ?? []) {
+    const zs = glowDarkAt(stage.zones, c.x, c.y);
+    if (zs.length && !flagLit(zs.flatMap((z) => z.lights ?? []), c.x, c.y)) out.push(`dark: a flag at x ${Math.round(c.x)}, y ${Math.round(c.y)} in the glowworms' dark lights no glow within ${DARK_FLAG_LIT} s of standing still`);
+  }
+  return out;
+}
+
+/**
+ * The lay's half of darkFlags (any world's: the pipeline calls it on the stage's last flags): a flag in the glowworms' dark that would
+ * light nothing in time gets a glowworm of its own, hung over it, asleep like the rest.
+ */
+export function glowFlags(out: StageSink, flags: ReadonlyArray<{ x: number; y: number }>): void {
+  let id = (out.extras[GLOW_ID] as number | undefined) ?? 1;
+  for (const c of flags) {
+    const zs = glowDarkAt(out.zones, c.x, c.y);
+    if (!zs.length || flagLit(zs.flatMap((z) => z.lights ?? []), c.x, c.y)) continue;
+    zs[0].lights!.push({ x: Math.round(c.x), y: Math.round(c.y - DARK_ZONE.lightUp), r: DARK_GLOW.light, sleep: true, id: id++ });
+  }
+  out.extras[GLOW_ID] = id;
 }
 
 /** one rim he went over in a run: when (game s), and when its landing's light woke (game s; -Infinity always lit, undefined never) */

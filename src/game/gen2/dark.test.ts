@@ -14,8 +14,8 @@ import { readied, readyDraft } from '../../../tools/engine/draft.ts';
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { RealPlay } from '../realPlay.ts';
-import { GLOW_REACH, glowReaches } from '../zones.ts';
-import { DARK_AHEAD, DARK_EMIT, DARK_PROPS, darkGaps, darkRims, litAhead, RimWatch, type DarkRim } from './dark.ts';
+import { GLOW_REACH, glowReaches, keepsClear, type Zone } from '../zones.ts';
+import { DARK_AHEAD, DARK_EMIT, DARK_PROPS, darkFlags, darkGaps, darkRims, litAhead, RimWatch, type DarkRim } from './dark.ts';
 import { W6S_EMIT, W6S_PROPS } from './worlds/w6Swing.ts';
 import { generateAllLevels } from '../worldsData.ts';
 import { generateStage, setLayoutVariant } from '../stageGenerator.ts';
@@ -44,7 +44,37 @@ test('the brick on a real World 3 row: 3-1\'s drops lie in the dark, every rim\'
     assert.equal(new Set(ids).size, ids.length, `seed ${seed} ${d}: every glowworm has its own id`);
     assert.ok(darkRims(st).length >= dark.length, `seed ${seed} ${d}: rims in the dark`);
     assert.deepEqual(darkGaps(st), [], `seed ${seed} ${d}`);
+    assert.deepEqual(darkFlags(st), [], `seed ${seed} ${d}`);
   }
+});
+
+/** the draft's roll `seed` on `d`, built as the game builds it */
+function built(seed: number, d: 'normal' | 'easy' = 'normal') {
+  ready();
+  setLayoutVariant(seed);
+  try { return generateStage({ ...generateAllLevels().find((c) => c.id === DRAFT && !c.secret)!, unlocked: true }, d); } finally { setLayoutVariant(null); }
+}
+
+test("ruling A: the glowworms' dark is the grotto's air: 3-1's first draft roll builds with its flags standing in it (the fireflies' dark keeps the rule)", () => {
+  const st = built(1);
+  const glow = (st.zones ?? []).filter((z) => z.kind === 'dark' && !keepsClear(z));
+  assert.ok(glow.length, 'a glowworm dark');
+  const inDark = (st.checkpoints ?? []).filter((c) => glow.some((z) => c.x >= z.x0 && c.x <= z.x1 && c.y >= z.top && c.y <= z.bottom));
+  assert.ok(inDark.length >= 3, `flags stand in the glowworms' dark (${inDark.length})`);
+  // (the fireflies' dark, Worlds 6 and 8, keeps 'nothing stands inside')
+  assert.equal(keepsClear({ kind: 'dark', lights: [{ x: 0, y: 0, r: 190 }] }), true);
+  assert.equal(keepsClear({ kind: 'dark', lights: [{ x: 0, y: 0, r: 190, sleep: true, id: 1 }] }), false);
+});
+
+test("darkFlags: a flag in the glowworms' dark with no glow lit within 1 s of standing at it: RED (its glowworms taken away); the roll as laid: GREEN", () => {
+  const st = built(1);
+  assert.deepEqual(darkFlags(st), []);
+  const glow = (st.zones ?? []).filter((z) => z.kind === 'dark' && !keepsClear(z));
+  const c = (st.checkpoints ?? []).find((q) => glow.some((z) => q.x >= z.x0 && q.x <= z.x1 && q.y >= z.top && q.y <= z.bottom))!;
+  // (every glowworm within 600 px of the flag hung 2000 px lower, out of any stop's reach: still a glowworm dark, no glow near the flag)
+  const zones: Zone[] = (st.zones ?? []).map((z) => (z.kind === 'dark' && z.lights ? { ...z, lights: z.lights.map((l) => (Math.hypot(l.x - c.x, l.y - c.y) <= 600 ? { ...l, y: l.y + 2000 } : l)) } : z));
+  const red = darkFlags({ ...st, zones });
+  assert.ok(red.some((m) => m.includes(`x ${Math.round(c.x)}, y ${Math.round(c.y)}`)), red.join('; ') || 'no flag named');
 });
 
 /** a drop rim in the dark on seed 1 whose landing is 110-420 px under it, and a sleeping light far below it in the wake's old reach */
@@ -61,10 +91,15 @@ function shaftRim(r: RealPlay): { rim: DarkRim; far: { x: number; y: number; id?
   throw new Error('no drop rim with a light far below it');
 }
 
-test('the wake reaches below, bounded: a stop at a real rim wakes the light over its landing under him, never one in the shaft far below', () => {
+test('the wake reaches below, bounded: a stop at a real rim wakes the light over its landing under him, never one in the shaft far below (one dark over the whole shaft: the reach bounds it, not a stretch\'s box)', () => {
   ready();
   const r = new RealPlay(DRAFT, 1, draftCfg());
   const { rim, far } = shaftRim(r);
+  // (every stretch's glowworms in ONE dark over the whole way down: a long shaft laid as one stretch, as 3-1's beat 8 is)
+  const zs: Zone[] = r.e.currentStage.zones!;
+  const dark = zs.filter((z) => z.kind === 'dark');
+  const one: Zone = { ...dark[0], x0: Math.min(...dark.map((z) => z.x0)), x1: Math.max(...dark.map((z) => z.x1)), top: Math.min(...dark.map((z) => z.top)), bottom: Math.max(...dark.map((z) => z.bottom)), lights: dark.flatMap((z) => z.lights ?? []) };
+  r.e.currentStage.zones = [...zs.filter((z) => z.kind !== 'dark'), one];
   r.stand(rim.x - rim.dir * 30, rim.y);
   r.p.facing = rim.dir;
   r.wait(GLOW_REACH.fade + 1.2);
