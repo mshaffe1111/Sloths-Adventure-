@@ -1329,6 +1329,16 @@ export const pressIn = (lag: number): number => (lag <= DT / 2 ? 1 : Math.max(1,
  */
 export const hopAim = (lag: number): { off: number; clock: number } => ({ off: pressIn(lag) - DT, clock: pressIn(lag) });
 /**
+ * CI-12 (the lead's ruling (b), ENG-PLANT-CI session 9's (A)): every lag a thumb N(mid, sd) presses at, as decide draws it (the full
+ * gauss; a draw <= DT/2 pressed at once, pressIn), over its whole spread: from that clip (or mid - 3 sd) to mid + 3 sd (the process spread,
+ * 99.7% of draws), one lag per press frame (pressIn bins the lag to its frame, and the judges read only the frame: hopAim). Fixed by the
+ * thumb, never a draw. The KID's thumb [0.09, 0.065] presses at 10 frames (take-off 0 to 0.300 s); the ADULT's [0.03, 0.03] at 5
+ */
+export const thumbLags = ([mid, sd]: [number, number]): number[] => {
+  const lo = Math.round(pressIn(mid - 3 * sd) / DT), hi = Math.round(pressIn(mid + 3 * sd) / DT);
+  return Array.from({ length: hi - lo + 1 }, (_, i) => (lo + i === 1 ? 0 : (lo + i - 1) * DT));
+};
+/**
  * The hold (s, as hopCatches / hopLandsOn count it: frame i is held while i * DT < hold) a press with the bot's own hold `own` gets on the
  * phone's touch layer, whose minimum `minMs` restarts at the take-off AFTER that frame's countdown (inputEngine.ts noteTakeOff, update):
  * so the press frame is held and then the minimum's frames, ceil(min / DT) in all (220 ms: 7 frames, 233 ms). It was max(own, min): a
@@ -2429,8 +2439,9 @@ export class FirstTimerRun {
     const rivers = this.sim.stage.rivers;
     const carry = ((floatAt(rivers, here)(t + DT) - floatAt(rivers, here)(t)) / DT) * RIDE.keep.x;
     const clock = (this.e as unknown as { vineClock: number }).vineClock;
-    // (the press after his thumb's lag, drawn about thumb[0] (decide): it must catch at the lag's middle and half a spread either side,
-    //  as dropWaits aims; a press at the middle alone missed it on the catch toy, middle Normal variant 5)
+    // (the press after his thumb's lag, drawn from the thumb's gauss (decide): it must catch at every lag of the thumb's whole spread (CI-12;
+    //  it was the middle and half a spread either side, as dropWaits aims; a press at the middle alone missed it on the catch toy, middle
+    //  Normal variant 5)
     const [mid, sd] = this.who.thumb;
     const hold = this.pressHold();
     // (and taken off while still on the log: walking on as the press came, he stepped off its front end into the water, catch toy v3)
@@ -2455,7 +2466,10 @@ export class FirstTimerRun {
       return x > lx + 10 && x < lx + here.width - 10 && !under
         && frees(lag).every((free) => hopCatches(v, x, p.y, dir, hold + DT, clock + aim.clock, vx + carry, free, carry));
     });
-    const lags = [mid, Math.max(0, mid - sd / 2), mid + sd / 2];
+    // (CI-12, the lead's ruling (b): judged over the thumb's whole spread (thumbLags), the lags decide draws from. The three lags mid and
+    //  mid -+ sd/2 covered 56% of the kid's draws: 2-4 kid Easy 19 at t 97.700 on CI-11, judged 'catches' at take-off 0.067 / 0.100 /
+    //  0.133 s, drew 0.033 s (a frame before the earliest judged), took off at 0.033 and came down on log #74, never in reach of liana #6)
+    const lags = thumbLags([mid, sd]);
     // (SKILLS.runUp, ENG-PLANT-g: a run-up he is on (sent last frame, this log); else none)
     const running = SKILLS.runUp && !!this.runUp && this.runUp.id === here.id && t - this.runUp.t < DT * 1.5;
     this.runUp = null;
