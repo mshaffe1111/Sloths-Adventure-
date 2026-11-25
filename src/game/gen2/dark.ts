@@ -18,6 +18,8 @@
 import type { Zone } from '../zones.ts';
 import { GLOW_REACH, GLOW_STILL, glowReaches, keepsClear } from '../zones.ts';
 import type { Platform } from '../types.ts';
+import { PHYS } from '../physics.ts';
+import { PAD_FAIR } from './rideLay.ts';
 import type { PropDef, PropEmitter, Socket, StageSink } from './types.ts';
 
 /** the props that lay a dark stretch: its start; its end with the firefly's lights, with none (a room's end), or with glowworms */
@@ -87,13 +89,13 @@ function fireflyZone(out: StageSink, x0: number, y: number, x1: number, lights: 
 const standable = (p: Platform) => p.type === 'solid' || p.type === 'fragile';
 
 /** a rim in the dark: the end of a piece he goes over (`dir` outward), where he lands, and the light over that landing */
-export interface DarkRim { piece: Platform; dir: -1 | 1; x: number; y: number; land: { x: number; y: number }; light: Light | null }
+export interface DarkRim { piece: Platform; dir: -1 | 1; x: number; y: number; land: { x: number; y: number }; light: Light | null; onto: Platform; drop: boolean }
 
 /**
  * Where a step or hop over the rim at (`x`, `y`) going `dir` lands, inside the box: the nearest piece across at about his height
  * (a hop, its near end), else the first piece under the rim a body's width out (a drop). Null: nothing in the box.
  */
-function landingOf(platforms: readonly Platform[], from: Platform, dir: -1 | 1, box: { x0: number; x1: number; top: number; bottom: number }): { x: number; y: number } | null {
+function landingOf(platforms: readonly Platform[], from: Platform, dir: -1 | 1, box: { x0: number; x1: number; top: number; bottom: number }): { x: number; y: number; on: Platform; drop: boolean } | null {
   const rim = dir > 0 ? from.x + from.width : from.x;
   const inBox = (q: Platform) => q !== from && standable(q) && q.x + q.width >= box.x0 && q.x <= box.x1 && q.y >= box.top && q.y <= box.bottom;
   // (a hop across: a piece starting within a long hop out, its top within a step of his)
@@ -105,7 +107,7 @@ function landingOf(platforms: readonly Platform[], from: Platform, dir: -1 | 1, 
     if (d < 0 || d > 320) continue;
     if (!across || (dir > 0 ? q.x < across.x : q.x + q.width > across.x + across.width)) across = q;
   }
-  if (across) return { x: Math.round(dir > 0 ? across.x + 30 : across.x + across.width - 30), y: across.y };
+  if (across) return { x: Math.round(dir > 0 ? across.x + 30 : across.x + across.width - 30), y: across.y, on: across, drop: false };
   // (a drop: the highest piece under the rim, a body's width out, below his feet)
   const xs = rim + dir * 24;
   let under: Platform | null = null;
@@ -113,7 +115,7 @@ function landingOf(platforms: readonly Platform[], from: Platform, dir: -1 | 1, 
     if (!inBox(q) || xs < q.x || xs > q.x + q.width || q.y <= from.y + 1) continue;
     if (!under || q.y < under.y) under = q;
   }
-  return under ? { x: Math.round(Math.max(under.x + 20, Math.min(under.x + under.width - 20, xs + dir * 30))), y: under.y } : null;
+  return under ? { x: Math.round(Math.max(under.x + 20, Math.min(under.x + under.width - 20, xs + dir * 30))), y: under.y, on: under, drop: true } : null;
 }
 
 /** is (x, y) inside the zone's box? */
@@ -136,7 +138,7 @@ export function darkRims(stage: { platforms: readonly Platform[]; zones?: readon
         // (the light nearest the landing that reaches it)
         let light: Light | null = null;
         for (const l of z.lights) if (Math.hypot(l.x - land.x, l.y - land.y) <= l.r && (!light || Math.hypot(l.x - land.x, l.y - land.y) < Math.hypot(light.x - land.x, light.y - land.y))) light = l;
-        out.push({ piece: p, dir, x: Math.round(x), y: p.y, land, light });
+        out.push({ piece: p, dir, x: Math.round(x), y: p.y, land: { x: land.x, y: land.y }, light, onto: land.on, drop: land.drop });
       }
     }
   }
@@ -201,6 +203,42 @@ export function darkGaps(stage: { platforms: readonly Platform[]; zones?: readon
     let wakes = false;
     for (let x = p.x + 10; x <= p.x + p.width - 10 && !wakes; x += 10) wakes = glowReaches(light, x, p.y, r.dir);
     if (!wakes) out.push(`dark: a sleeping light no stop wakes: ${at(r)}, the light at x ${Math.round(light.x)}, y ${Math.round(light.y)}`);
+  }
+  return out;
+}
+
+/** the reaction a landing in the dark is given before he brakes (s): rideLay's PAD_FAIR.react, the fairness reaction a landing on a pad
+ *  already uses (the lead's ruling, 11-25: no new number); Easy scales it by the dark's own Easy factor (DARK_AHEAD, STAGE-RULES §4) */
+export const DARK_LAND_REACT = { normal: PAD_FAIR.react, easy: (PAD_FAIR.react * DARK_AHEAD.easy) / DARK_AHEAD.normal } as const;
+/** how far he runs on after landing at a run before he stands (px): his reaction at run speed, then the brake from full run */
+export const darkStop = (setting: 'normal' | 'easy') => PHYS.maxRun * DARK_LAND_REACT[setting] + PHYS.maxRun ** 2 / (2 * PHYS.groundDec);
+
+/**
+ * 'a drop's landing is at least his stopping distance from the next dark rim, or that rim is already lit when he lands' (the lead's
+ * ruling, 11-25; the darkGaps family): a drop over a dark rim at a run lands him running on, so the end of the piece he lands on, the way
+ * he was going, is a rim he cannot stop short of unless it is darkStop away from where a run's drop comes down, or its landing's light
+ * was woken by the stop he took at the rim above (lit by the time that stop's own landing has read DARK_AHEAD ahead). Names; empty: kept.
+ */
+export function darkLandings(stage: { platforms: readonly Platform[]; zones?: readonly Zone[] }, setting: 'normal' | 'easy'): string[] {
+  const out: string[] = [];
+  const rims = darkRims(stage);
+  const stop = darkStop(setting);
+  for (const r of rims) {
+    if (!r.drop) continue;
+    const n = rims.find((m) => m.piece === r.onto && m.dir === r.dir);
+    if (!n?.light?.sleep || n.light === r.light) continue;
+    // (a run's drop comes down this far out: his run's speed for the fall's time)
+    const xf = r.x + r.dir * PHYS.maxRun * Math.sqrt((2 * Math.max(0, r.onto.y - r.y)) / PHYS.gravDown);
+    const room = (n.x - xf) * r.dir;
+    if (room >= stop) continue;
+    // (lit when he lands: some stop on the rim's piece, facing it, wakes the next rim's light within the time that stop waits for its own)
+    const p = r.piece, nl = n.light;
+    let lit = false;
+    for (let x = p.x + 10; x <= p.x + p.width - 10 && !lit; x += 10) {
+      const own = r.light ? litAfter(r.light, x, p.y, r.dir) : 0;
+      lit = Number.isFinite(own) && litAfter(nl, x, p.y, r.dir) <= own + DARK_AHEAD[setting] + 1e-6;
+    }
+    if (!lit) out.push(`dark: a drop lands him ${Math.round(room)} px from the next dark rim, under his stopping distance ${Math.round(stop)} px (${setting}), its light asleep: ${at(r)} onto ${at(n)}`);
   }
   return out;
 }

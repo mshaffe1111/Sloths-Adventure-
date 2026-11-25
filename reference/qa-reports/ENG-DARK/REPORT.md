@@ -1,4 +1,39 @@
 # ENG-DARK REPORT (the dark + light ring as one gen2 brick; WORLD-3-PLAN F2; R-165.449)
+**EXACT NEXT STEP (ENG-DARK-f box 6 hand-over, 1:05 PM ET by `date`; code head be91c547 on t-eng-dark-wip = 4527e73f + (a); the
+working tree's (b) WIP commit on top of it is named below). Box 7 OWNS EVERY CODE CHANGE. Re-fetch before every commit (D138).**
+(a) **DONE, GREEN (be91c547).** The one condition alone was NOT enough (measured): with the top asked both ways he no longer holds down,
+but the route's next point lies straight down trunk 26 through his piece, so downEnd() turned him left and right at x 1069-1130 to the
+same strand at 295.9 s. From the ground mid-trunk the engine takes a trunk only with UP (engine.ts wantGrab; downAtTop is the top only).
+So the way-down plan (firsttimer.ts, the `this.onTower && e.nearTreeVine ...` block) now: (1) presses DOWN only with the top AT his feet,
+`Math.abs(topY - p.y) <= 14` (the engine's), and (2) with the top above him and the route's next point under him ON the trunk
+(downPt(p), |x - trunk x| <= 16), presses UP to catch it with `grabDown` set, so that climb's way is down (climbDown = grabDown || ...).
+downEnd() now reads the new downPt() (same rule, one place). **child Easy 25: stranded 295.9 s -> shrine 276.7 s, 4 rescues** (base row
+with noGlowWait: shrine 278.8 s, 6). Toy: darkBots.test 'the way down a trunk he stands beside MID-WAY' (castRun child Easy 25 reaches
+the shrine; 8 s): GREEN on be91c547, RED on 4527e73f (castone: stranded 295.9). Plants 19 (the top test one-sided again) and 20 (no
+mid-trunk up grab): both CAUGHT (stranded 295.9 each, scratch copy; the frozen-tree run of all 20 is owed on the final head).
+**Tell ENG-DOWNBOT-g (the lead relays): the change is that whole block plus `grabDown`, `downPt()` and downEnd's body, not one line;
+their lane must not edit them; their tests (w3.test, tower.test, castBots.test down toys) run on the merged head.** Still open from
+box 5: why the goal reads 0 of 1 on that roll (the base 1 of 1); now it reaches the shrine, read castRun's goal once.
+(b) **THE VERDICT AS BOX 5 DESIGNED IT IS THE WRONG MODEL (measured; the lead must hear this before more is built on it).** darkLandings
+is written in gen2/dark.ts (DARK_LAND_REACT = PAD_FAIR.react 0.3 s, Easy x DARK_AHEAD.easy/normal = 1.6 (PAD_FAIR has no Easy scale; the
+dark family's own Easy factor), darkStop = maxRun * react + maxRun^2 / (2 groundDec): **97 px Normal, 149 px Easy**; DarkRim now carries
+`onto` and `drop` from landingOf). It is NOT wired into any test or check yet. probes/landings.mts over rolls 1-40 both settings: **52 of
+80 rolls named, nearly all with NEGATIVE room (-23 / -89 px)**: a full-run drop off a dark rim overshoots the whole shelf below (the
+tower's shelves are narrower than a run's throw), but a dark rim with a sleeping light is one he STOPS at, so he steps off slow: those
+hits are the model's, not the lay's. **And it MISSES the real event** (probes/rim30.mts 30 easy 241 2477): adult Easy 30 dropped off the
+LEFT end of 175-575 (y 2190) and steered right in the air onto 61-241, landing at x 236 running, 5 px from rim 241 (its light id 17 at
+295,2485 asleep). **The rim he dropped from, x 175, is OUTSIDE the dark zone's box (198-1024, y 1864-2835): no dark rim, no stop, no
+light.** A stop at 175 facing left WOULD wake light 17 (120 px behind him, 295 px down: inside GLOW_REACH back 260 / down 420), so the
+owner is **the dark brick's EXTENT** (glowZone: x0 = a.x, x1 = b.x, the two socket ends), not the tower's spacing.
+**Next, in order:** (1) restate the verdict on the right model: for every dark rim n with a sleeping light, every drop that lands on n's
+piece from ANY rim u (dark or not, either way), landing at u.x + du * 24 (a step off; landingOf's drop spot), must be at least
+darkStop(setting) from n along n.dir, or n's light is woken by a stop at u's piece facing du (litAfter within u's own wait + DARK_AHEAD);
+plant RED on roll 30 Easy (u 175, n 241: room about 90 px < 149). (2) Fix in glowZone's extent: the stretch's box takes in every rim
+whose drop lands inside it (a drop INTO the dark is a drop in the dark), so 175 gets its own glowworm and its stop wakes 17; GREEN on
+roll 30 Easy, then the 80 rolls at 0 named; dark.test's seeds 1-4 loop asserts darkLandings == [] beside darkGaps. (3) lockall: only the
+3-1 draft may move ('the lay leaves every other stage'). If (2) cannot clear all 80, tell the lead before touching tower.ts. Then box 5's
+step 3 (freeze, x40 first, plants 20+, tierBots, suite, CI line) and step 4 (land). **The landing will miss 3:30 PM ET unless (1)-(2) take
+under an hour: the lead is told now.**
 **EXACT NEXT STEP (ENG-DARK-e box 5 hand-over, 12:41 PM ET by `date`; code head 4aebc171 on t-eng-dark-wip = f68c5ca1 + (c) the
 'climbed' kind). Box 4 has STOPPED (its x40 on f68c5ca1 recorded, box 4 item 7: unlit 5, all Easy; shrine 359/360; rescues 1,395 vs base
 1,393). Box 6 OWNS EVERY CODE CHANGE (the lead: "YOU own every code change from here"). Re-fetch before every commit (D138).**
