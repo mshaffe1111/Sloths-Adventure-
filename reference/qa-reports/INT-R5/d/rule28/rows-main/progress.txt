@@ -1,0 +1,7 @@
+rows on cdffdc627 4:59 PM ET
+2-1 exit 0 360 rows 342 s
+2-2 exit 0 360 rows 254 s
+2-4 exit 0 360 rows 331 s
+2-5 exit 0 360 rows 354 s
+1-4 exit 0 360 rows 520 s
+rows done 5:29 PM ET

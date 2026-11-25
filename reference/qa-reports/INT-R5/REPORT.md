@@ -21,6 +21,15 @@ tool line count from step 1b (same frozen tree). NEXT: when L1-L4 finish, run2.s
 release.md 4b sums from g-shardplan.log + g-seedlists.log; then the gate table here, push, ls-remote, the head + one line per gate to
 the lead. A container restart loses /home/user/fs-c73: re-run what is not in this REPORT.
 
+**RED, STOPPED (INT-R5d-c, written 5:55 PM ET 11-25 by `date`): rule 28 vs MAIN on c73cb9766 has 5 PASS -> FAIL** (castBots seeds 1-40,
+kid adult child middle expert, both settings; rows and flips in d/rule28/): 2-1 kid E 25 (set down 3x at x 4277), 2-1 kid N 40 (x 25833),
+2-1 **middle N 17** (main pass 223.3 s no rescue -> rescued at x 19869, 'an open drop ahead, water ahead'), 2-2 kid N 15 (x 29179),
+2-2 kid N 40 (x 28807); 0 on 2-4, 2-5, 1-4; fail -> pass 260 (2-1 30, 2-2 24, 2-4 74, 2-5 4, 1-4 128). **Attribution (same rows, frozen
+trees):** all 5 identical on the bot-fix head 9718499a6 (the draw fixes do not cause them); on the release base dfe631913 four PASS
+(2-1 kid E 25, middle N 17; 2-2 kid N 15, kid N 40): **ENG-PLANT-CI's bot fix turns them** (its wide sample was seeds 1-10 only); 2-1
+kid N 40 already FAILS on dfe631913 (x 19848: the release's own change vs main, D132). The suite (run2.sh) is NOT started; lanes L2/L3
+(seed lists, locks, paint 1-2, castBots 2-7/1-4, funcheck, tierBots) finish and are recorded only (D138). Waiting on the lead.
+
 ### Previous box (INT-R5d-b, written 12:15 PM ET 11-25 by `date`)
 INT-R5d-b started 11:35 AM ET 11-25. Branch **release-0.10.3-wip-fixes**, code head still **f7c5b8a2e** (REPORT/stills commits only
 since). Step 1 is DONE and the lead APPROVED the after stills (d/s1-*.jpg). drawcheck and clipcheck on f7c5b8a2e are DONE, both PASS

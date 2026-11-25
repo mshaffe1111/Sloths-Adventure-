@@ -1,0 +1,12 @@
+{"bot":"kid","setting":"normal","stage":"2-1","seed":17,"end":"shrine","pass":true,"time":138.2,"goal":{"got":1,"need":1},"rescues":0,"turnBacks":0,"hits":0,"lives":3,"hitBy":{"water":3},"cast":null,"stuck":[]}
+{"bot":"kid","setting":"normal","stage":"2-1","seed":25,"end":"shrine","pass":true,"time":145.9,"goal":{"got":1,"need":1},"rescues":0,"turnBacks":0,"hits":0,"lives":6,"hitBy":{"water":6},"cast":null,"stuck":[]}
+{"bot":"kid","setting":"normal","stage":"2-1","seed":40,"end":"shrine","pass":false,"time":149.6,"goal":{"got":1,"need":1},"rescues":1,"turnBacks":0,"hits":0,"lives":7,"hitBy":{"water":7},"cast":null,"stuck":[{"x":19848,"what":"set down here 3 times"}]}
+{"bot":"kid","setting":"easy","stage":"2-1","seed":17,"end":"shrine","pass":false,"time":146,"goal":{"got":1,"need":1},"rescues":1,"turnBacks":0,"hits":0,"lives":0,"hitBy":{},"cast":null,"stuck":[{"x":4330,"what":"set down here 3 times"}]}
+{"bot":"kid","setting":"easy","stage":"2-1","seed":25,"end":"shrine","pass":true,"time":146.6,"goal":{"got":1,"need":1},"rescues":0,"turnBacks":0,"hits":0,"lives":0,"hitBy":{},"cast":null,"stuck":[]}
+{"bot":"kid","setting":"easy","stage":"2-1","seed":40,"end":"shrine","pass":true,"time":134.3,"goal":{"got":1,"need":1},"rescues":0,"turnBacks":0,"hits":0,"lives":0,"hitBy":{},"cast":null,"stuck":[]}
+{"bot":"middle","setting":"normal","stage":"2-1","seed":17,"end":"shrine","pass":true,"time":201.4,"goal":{"got":1,"need":1},"rescues":0,"turnBacks":0,"hits":0,"lives":0,"hitBy":{},"cast":null,"stuck":[]}
+{"bot":"middle","setting":"normal","stage":"2-1","seed":25,"end":"shrine","pass":true,"time":213.5,"goal":{"got":1,"need":1},"rescues":0,"turnBacks":0,"hits":0,"lives":2,"hitBy":{"water":2},"cast":null,"stuck":[]}
+{"bot":"middle","setting":"normal","stage":"2-1","seed":40,"end":"shrine","pass":true,"time":193.1,"goal":{"got":1,"need":1},"rescues":0,"turnBacks":0,"hits":0,"lives":1,"hitBy":{"water":1},"cast":null,"stuck":[]}
+{"bot":"middle","setting":"easy","stage":"2-1","seed":17,"end":"shrine","pass":true,"time":208.6,"goal":{"got":1,"need":1},"rescues":0,"turnBacks":0,"hits":0,"lives":0,"hitBy":{},"cast":null,"stuck":[]}
+{"bot":"middle","setting":"easy","stage":"2-1","seed":25,"end":"shrine","pass":true,"time":210.2,"goal":{"got":1,"need":1},"rescues":0,"turnBacks":0,"hits":0,"lives":0,"hitBy":{},"cast":null,"stuck":[]}
+{"bot":"middle","setting":"easy","stage":"2-1","seed":40,"end":"shrine","pass":true,"time":211.5,"goal":{"got":1,"need":1},"rescues":0,"turnBacks":0,"hits":0,"lives":0,"hitBy":{},"cast":null,"stuck":[]}

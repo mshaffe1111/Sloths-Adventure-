@@ -1,0 +1,7 @@
+rows on c73cb9766 5:29 PM ET
+2-1 exit 0 360 rows 423 s
+2-2 exit 0 360 rows 212 s
+2-4 exit 0 360 rows 315 s
+2-5 exit 0 360 rows 205 s
+1-4 exit 0 360 rows 157 s
+rows done 5:51 PM ET
