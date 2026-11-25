@@ -78,6 +78,7 @@ import type { FollowPlay } from '../../src/game/followPlay.ts';
 import { bucketAngle } from '../../src/game/wheel.ts';
 import { WHEEL_FLOWN } from '../../src/game/gen2/wheelFlights.data.ts';
 import { flownKey } from '../../src/game/gen2/wheelLay.ts';
+import { DARK_AHEAD, darkRims, litAhead, RimWatch, type DarkRim } from '../../src/game/gen2/dark.ts';
 
 /**
  * The bot's clock-read skill (METER-2a, R-165.272; METER-COVERAGE §2a "read a stage clock", board + step-off half). A toy test switches
@@ -124,6 +125,10 @@ const SNAP_TAP = 0.08;
 const BONK = { half: 14, margin: 12, band: 8, from: [50, 90], kick: [0, 58], dazedLeft: 0.3, still: 20, clear: 100, sameGround: 24, sees: 220, behind: 200, restomp: 18, lastPush: 0.15, landTol: 3 } as const;
 /** his thumb: from deciding to the press leaving the floor (s) */
 const SNAP_THUMB = 0.1;
+/** the dark's stop (glowWait): he means to stand within this many px of a dark rim (his late lift-off carries him a little nearer), and
+ *  a light that has not woken this many s into his stop he gives up on (GLOW_STILL 0.7 s + the wake's travel is well under it) */
+const GLOW_NEAR = 90;
+const GLOW_GIVEUP = 4;
 
 /**
  * The bot's skills with the little ones that follow him home (ENG-23; 2-3.md "Bot skills"; level.md rule 21, toys first:
@@ -272,6 +277,10 @@ export interface FirstTimer {
    *  thumb by his rhythm (gapQ) on the run to a liana phased to a runner too, stops short and waits for it. Every bot has it: running at
    *  a runner liana's lip (1-8 NEW 4: it swings to meet a full run), his thumb stays down, as on a chase and under a fruit */
   noRunnerHold?: boolean;
+  /** the dark's stop REMOVED (level.md rule 21's planted toy test only, src/game/gen2/dark.test.ts): at a rim in the glowworms' dark he
+   *  walks on over it with its landing still dark. Every bot has it (3-1.md: "Stand still, and the glowworms show the way down"; the
+   *  tag line and Dot teach it): glowWait */
+  noGlowWait?: boolean;
   /** at a gap or a face he must clear, his hold is drawn from this quantile of holdQ up (he reads the jump): a tuning field */
   readHold?: number;
   /** and a double up a step gets its second press from dbl2Q's quantiles up to this one (early enough to climb): a tuning field */
@@ -813,6 +822,9 @@ export interface FTRun {
   harms: Harm[];
   /** Easy's soft falls on land (no life lost: engine.ts softFall) */
   softFalls?: number;
+  /** the dark (gen2/dark.ts; any stage with a lit dark): the rims he went over, and each one whose landing was not lit DARK_AHEAD s
+   *  before he went ('every gap lit 1 s ahead', litAhead's names; empty: GREEN) */
+  dark?: { crossed: number; unlit: string[] };
   /** the spur stones he stood on (a spur pond's dead-end stone, RiverZone.spur: OUT-AND-BACK, FIX-22) */
   spurs?: number;
   /** times a log carried him under a bank and he stepped up onto it, never in the air between (engine.ts drift loop; SKILLS.handed) */
@@ -1254,6 +1266,12 @@ export class FirstTimerRun {
   private glanceAt = -1;
   /** a rear he has seen start (freezePlan): which animal, and when his thumb comes off (his reaction) */
   private rearSeen: { m: unknown; at: number } | null = null;
+  /** the dark's rims (gen2/dark.ts darkRims, read once), the stop he is making at one, and the rims whose light he waited out unlit */
+  private glowRims: DarkRim[] | null = null;
+  private glowStop: { rim: DarkRim; since: number } | null = null;
+  private readonly glowGaveUp = new Set<DarkRim>();
+  /** the dark's rim crossings of this run (gen2/dark.ts RimWatch; null: no lit dark on the stage): FTRun.dark reads them */
+  rimWatch: RimWatch | null | undefined;
   private swingT = 0;
   private ropeStill = 0;
   private climbStill = 0;
@@ -2809,6 +2827,9 @@ export class FirstTimerRun {
     // he has been told of it (castPlan). Any stage by its data
     const fz = this.freezePlan();
     if (fz) return fz;
+    // the glowworms' dark: at a rim whose landing is still dark, he stands until it is lit (glowWait). Any stage by its zones
+    const gw = this.glowWait(dir);
+    if (gw) return gw;
     if (this.punchAt === null) {
       const b = this.snapperPlan(fdir);
       if (b) return b;
@@ -3284,6 +3305,40 @@ export class FirstTimerRun {
     if (!m || m.s.phase !== 'stunned' || Math.abs(m.s.y - p.y) > BONK.clear) return null;
     const mine: -1 | 1 = this.bonkSide ?? (p.x < m.s.x ? -1 : 1);
     return this.steerToLand(this.offItsBack(m, mine === -1 ? 1 : -1), m.s.y, Infinity, BONK.landTol);
+  }
+
+  /**
+   * The dark (gen2/dark.ts; 3-1.md "Stand still, and the glowworms show the way down"; any stage by its zones): grounded on a piece with
+   * a rim in the dark he is heading over, within GLOW_NEAR px of it, its landing's light asleep or lit under DARK_AHEAD[setting] s ago,
+   * the thumb comes off: he stands, still facing the rim (the wake reaches ahead and below, zones.ts glowReaches), until the light has
+   * been lit DARK_AHEAD + his reaction (stopReact); then he goes on. A light that never wakes he waits out GLOW_GIVEUP s, then goes
+   * (litAhead names that crossing). Off the piece, the stop is over. noGlowWait removes the skill (rule 21's plant).
+   */
+  private glowWait(dir: -1 | 0 | 1): Pad | null {
+    if (this.who.noGlowWait) return null;
+    this.glowRims ??= darkRims(this.sim.stage as Parameters<typeof darkRims>[0]).filter((r) => r.light?.sleep && r.light.id !== undefined);
+    if (!this.glowRims.length) return null;
+    const p = this.sim.p;
+    const e = this.e as unknown as { gameTime: number; glowWake: Map<number, number> };
+    const on = (r: DarkRim) => p.grounded && p.x >= r.piece.x && p.x <= r.piece.x + r.piece.width && Math.abs(p.y - r.piece.y) <= 4;
+    const ahead = DARK_AHEAD[this.who.setting];
+    if (this.glowStop) {
+      const { rim, since } = this.glowStop;
+      const woke = e.glowWake.get(rim.light!.id!);
+      if (on(rim) && !(woke !== undefined && e.gameTime >= woke + ahead + this.who.stopReact)) {
+        if (e.gameTime - since <= GLOW_GIVEUP) return {};
+        this.glowGaveUp.add(rim);
+      }
+      this.glowStop = null;
+      return null;
+    }
+    if (dir === 0) return null;
+    const rim = this.glowRims.find((r) => r.dir === dir && on(r) && !this.glowGaveUp.has(r) && (r.x - p.x) * r.dir >= 0 && (r.x - p.x) * r.dir <= GLOW_NEAR);
+    if (!rim) return null;
+    const woke = e.glowWake.get(rim.light!.id!);
+    if (woke !== undefined && e.gameTime >= woke + ahead) return null;
+    this.glowStop = { rim, since: e.gameTime };
+    return {};
   }
 
   /**
@@ -3901,8 +3956,9 @@ export class FirstTimerRun {
     }
     if (steer !== 0 && this.r() < who.slip * DT) this.driftUntil = t + Math.round(between(this.r, who.slipFrames)) * DT;
     // (R-165.59: lastSteer is not moved on while the late lift-off runs, so for KID and ADULT this re-arms every frame and the steer is
-    // never let go once held; a tier bot arms it once per let-go, as the thumb does)
-    if (steer === 0 && this.lastSteer !== 0 && !want.press && !(who.holdQ && this.releaseArmed)) {
+    // never let go once held; a tier bot arms it once per let-go, as the thumb does. At the dark's stop (glowWait) every bot arms it once:
+    // he means to stand, and the KID's re-arming never let him, so he walked off every dark rim)
+    if (steer === 0 && this.lastSteer !== 0 && !want.press && !((who.holdQ || this.glowStop) && this.releaseArmed)) {
       const [lo, hi] = who.releaseMax;
       this.releaseLeft = Math.max(lo, Math.min(hi, Math.round(Math.exp(gauss(this.r, who.release)))));
       this.releaseArmed = true;
@@ -4261,6 +4317,17 @@ export class FirstTimerRun {
   }
 
   /** the whole run, until the shrine, a sealed shrine, or the time cap */
+  /** one frame of the dark's watch: the rims he goes over, with when each landing's light woke (the engine's own glowWake) */
+  private watchRims() {
+    if (this.rimWatch === undefined) {
+      const rims = darkRims(this.sim.stage as Parameters<typeof darkRims>[0]);
+      this.rimWatch = rims.length ? new RimWatch(rims) : null;
+    }
+    if (!this.rimWatch) return;
+    const e = this.e as unknown as { gameTime: number; glowWake: Map<number, number> };
+    this.rimWatch.step(e.gameTime, this.sim.p, (l) => e.glowWake.get(l.id ?? -1));
+  }
+
   play(): this {
     // (three times the stage's own length where it has one (STAGE_SECONDS), as 360 s is for a two-minute stage: World 4's longer stages ran out of time at 360 s while
     // the bot was still making its way up, round 5 2026-10-29)
@@ -4270,6 +4337,7 @@ export class FirstTimerRun {
       this.pressWant = undefined;
       const pad = this.pad();
       this.sim.frame(pad);
+      this.watchRims();
       if (PRESS_TRACE.on && pad.press && this.pressWant !== undefined) PRESS_TRACE.rows.push({ want: this.pressWant, got: this.t });
       this.opts.onFrame?.(this.sim);
       { const on = this.sim.p.grounded ? this.sim.platforms.find((q) => q.id === this.sim.standingOn) : undefined; if (this.wasOnLog && on && on.type !== 'drift') this.handed++; this.wasOnLog = !!on && on.type === 'drift'; }
@@ -4447,6 +4515,7 @@ export function firstTimer(id: string, seed: number, who: FirstTimer, opts: RunO
     ...(who.holdQ ? { secondPressMs: run.secondPressMs, maxX: Math.round(run.maxX), far: Math.round(run.farOn), xTrace: run.xTrace } : {}),
     ...(run.sim.e.cast ? { cast: castTally({ cast: run.sim.e.cast, player0: run.start }, run.knows('trap')) } : {}),
     ...(run.turnBacks ? { turnBacks: run.turnBacks } : {}),
+    ...(run.rimWatch ? { dark: { crossed: run.rimWatch.crossings.length, unlit: litAhead(run.rimWatch.crossings, who.setting) } } : {}),
     ms: Date.now() - t0,
   };
   out.flags = flagsFor(out);
