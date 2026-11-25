@@ -1,4 +1,53 @@
-# BUILD-28 REPORT (W2-LANE: 2-8 "Before the Water Rises"; R-165.430 (2), READY-28, BUILD-28). Session 1 (W2-LANE a), started 9:44 AM ET (from date). Session 2 (W2-LANE b), started 10:07 AM ET (from date). Session 3 (W2-LANE c), started 10:30 AM ET (from date)
+# BUILD-28 REPORT (W2-LANE: 2-8 "Before the Water Rises"; R-165.430 (2), READY-28, BUILD-28). Session 1 (W2-LANE a), started 9:44 AM ET (from date). Session 2 (W2-LANE b), started 10:07 AM ET (from date). Session 3 (W2-LANE c), started 10:30 AM ET (from date). Session 4 (W2-LANE d), started 10:52 AM ET (from date)
+
+## EXACT NEXT STEP (session 4, W2-LANE d; hand-over on the 28-minute box)
+Branch t-build-28-wip, CODE head b3747ddcb (pushed, ls-remote confirmed at 11:04 AM ET from date; this REPORT's commit only adds to
+reference/qa-reports/BUILD-28/). `git fetch origin t-build-28-wip && git checkout t-build-28-wip`, `npm ci --no-audit --no-fund
+--legacy-peer-deps`, ReadNotifications FIRST (the lead may send release-0.10.3's hash for 1b). Every run on a chattr-frozen worktree.
+DONE, THE LEAD'S ORDER STEP 1 (ONE commit b3747ddcb: strandFaults laid + 1d's shape + the W2_FORK marsh, the whole touched set GREEN on a
+   frozen tree of exactly the committed tree: `git stash create` 4b9d19bd2, /home/user/wtw2d-2, its tree == b3747ddcb's tree, checked):
+   - flood.ts FloodRow.step (the line's step: a deeper drop off a high-road end is a wait at the lip); W2_FLOOD.step = W2_FOLLOW.step (90).
+     floodLay.ts lays strandFaults after forkFaults when the high road walks: tops = every solid top; under(x) = the low road's water at
+     its LAID surface (y0; the flood only raises it) over its span, else no ground.
+   - w2.ts W2_FORK (1d, as ruled): W 150 set back 60 (`wall.back`: its lip over the bank, so off W is 60 onto the bank, then 60 off the
+     bank onto the marsh floor), gap 60 (over the bank), ONE porch 2,200 px from the water's edge (porch2 is gone), `rises` [1,400, 600]
+     each a wall-step CENTRED on the piece under it: three up (W, rise1, rise2), three down (rise1's far tread, the porch's far tread, the
+     far bank), every tread 400 px; far 1,120 (the porch's 800 px overhang of the 1,400 marsh + today's 320). W2_FORK_RIVERS.low = {dir 1,
+     speed 0, logW 0, logs 0, safe, flood 'close', marsh {width 1400, floor 60, dips 4, dip 100}} (2-8.md:9). No shipped kit lays it.
+   - ENGINE FIX the shape found (pipeline.ts:3163, 1c's marsh piece missed it): a lowered leg's river shift moved surfaceY, safe, spur and
+     floodMark but NOT RiverZone.marsh {floor, lip}: on the toy's home leg (down 120) the zone's floor read 120 px over the laid floor and
+     floodWaterOf put paddling depth 50 px OVER the banks (floodFaults RED by name: "the water at x 16089-17489 rises to 1468, 50 px over
+     its banks"). Fixed (both move); w2TwoRoad.test now asserts the zone's floor = the laid floor pieces' top (5 pieces), lip = the banks.
+     Only marsh zones are touched: no shipped stage has one (zero moves expected; the 1b lock vs main checks it).
+   - TESTS: w2TwoRoad.test GREEN rewritten for 1d (8 rolls: chain W, P, rise1, rise2, rise1, P; W 60 back; each rise one step on the piece
+     under it, its width; every tread >= 400 both ways; ends over the far bank; strandFaults []; the marsh zone); RED adds W flush on the
+     water (back 0: "...the first ground is 120 px down, deeper than the line's 90 px step"). floodLay.test: its toy W set back 60 on a 420
+     px near bank (on toyHome's 280, W set back left no flag ground: "flags: none before the hard node n9, 10280 px along the way (within
+     2400 px)" RED on its GREEN, traced to this change and fixed, not carried); RED adds W flush on the ride's water (strand, by name); the old
+     planted shapes stay flush (back 0).
+   - MEASURED (frozen tree): flood + floodLay + w2TwoRoad 20/20; riverLay + riverSection + w2 + follow + followArt 53/53; lineBot 12/12;
+     generalitycheck PASS (26/26); tsc 0. LAID (toy 2-96 seed 1 Normal; the home leg runs LEFT): near bank 17489-17909 y 1518; W
+     17549-17699 y 1458; porch 15289-17489 y 1458; rise1 15689-17089 y 1398; rise2 16089-16689 y 1338; far bank 14969-16089; marsh
+     16089-17489, floor pieces 200 wide at y 1578, four 100 px dips.
+NEXT, IN ORDER (the lead's ORDER):
+(1) THE SWIM'S LOCK (Q1 (a)): session 3's result has NOT landed (branch head 757acec41 at 10:52 and 11:04 AM ET): RE-RUN it, a heavy run
+   (session 3's commands above: `npx tsx tools/engine/lockall.ts --layouts 16 --out <S>/lock-pre.json` on a frozen tree at 801430f3a, then
+   `... --check <S>/lock-pre.json` on one at e08716828; about 30 s a stage; zero moves expected, any move is a stop).
+(2) THE PROBE (every tier, both settings, late 0/15/19, seeds 1-3: all home, nobody set back) on 1d's shape. No harness plays the gen2
+   two-road stage yet. Cheapest true route: lineBot.test.ts floodRun (:167) lays its own toy (W at W0-210..W0-60, already set back 60; a
+   400 px marsh W0..W1 via layRiver; a 3-piece high road at :184, solid 4-7). Give it the RULED shape instead: an option that lays W, the
+   porch, the rises and the far bank from W2_FORK (the same arithmetic as w2TwoRoad: W at W0 - back - w, porch W0..W0+porch at Y-60, each
+   rise centred on the one under it, far bank from W0 + marsh.width) and the marsh from W2_FORK_RIVERS.low (W1 = W0 + 1,400; EXIT and the
+   level width grow past the far bank), then the 6 tiers x seeds 1-3 x late 0/15/19, Normal and Easy (who.setting), asserting home 3 and
+   setBack 0, and that some tier takes each road. If it costs more than one box, tell the lead.
+(3) STILLS (condition 4): the line paddling a marsh dip and the fork, upright AND sideways, judged as Matt sees a phone; paths to the lead.
+(4) 1b: no release-0.10.3 hash in notifications at 11:04 AM ET; if none when (1)-(3) are done, tell the lead and wait. (5) READY-28.
+OPEN, named (the lead's ruling): the 80 px tread's strand (a jump, not reproduced in the toy): not chased.
+SESSION 4 NOTES. Lessons applied: D115 (frozen trees /home/user/wtw2d-1, -2 from `git stash create`; probes in <tree>/probe, never
+committed), D119 (no heredoc in the commit chain: message from a file), D128 (times from date), D134 (pushed and ls-remote before the
+hand-over), D135 (the toy's flag red traced to this change and fixed, never 'inherited'), D137 (the box), session 2's lesson (the whole
+touched set GREEN before the push). Learned (for level.md, proposed): a shape change on a LOWERED leg can expose a zone field the shift
+forgets; assert every zone field against the laid pieces in the shape's GREEN test.
 
 ## EXACT NEXT STEP (session 3, W2-LANE c; hand-over on the 28-minute box)
 Branch t-build-28-wip, CODE head 3bcd0a3bf (pushed, ls-remote confirmed; this REPORT's commit only adds to reference/qa-reports/BUILD-28/):
