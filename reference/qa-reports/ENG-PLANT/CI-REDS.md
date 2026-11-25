@@ -1,4 +1,25 @@
-# ENG-PLANT-CI: the 9 CI-tool-line reds on c27 (session 3 hand-over written 12:34 PM ET 11-25 by `date`; sessions 2 and 1 below it)
+# ENG-PLANT-CI: the 9 CI-tool-line reds on c27 (session 3 hand-over written 12:38 PM ET 11-25 by `date`; sessions 2 and 1 below it)
+
+## SESSION 3 END STATE: HEAD = CI-6 12cd548e4 (CI-5 NARROWED, the lead's ruling item 1) + this file. CI-5 36da03dd4 is SUPERSEDED
+**CI-6 (firsttimer.ts, from CI-4's code):** `raceStandPx(who)` = frontStandPx(who) + one frame at maxRun (the decision frame; adult 41,
+kid/child 60) at the two race-leg places only (CI-3's walk in the race branch, CI-4's landing ride stop), and stopMeant where the race
+branch's walk ends (he stands within raceStandPx of a log's front on the race leg). DROPPED from CI-5: the `here` standingOnId fallback,
+the general stopMeant (handed {}, c26's {}, the clockHeld stand), frontStandPx's own change (c26's stands keep 31 / 50).
+**On frozen fz-ci6:** racefront every tier every phase 7-34 px behind the front, no water (CI-4: adult 3 waters, 7/8 past the front);
+the riverRide test 'on the race leg, a log running his way...' GREEN (RED on CI-4); tsc clean.
+**The 10 known flips (data/ci/set1-ci6 vs data/q/set1-c27 and data/ci/set1-ci4): 7 of 10 files = c27 ROW FOR ROW** (2-2 adult N, 2-2 kid
+E, 2-2 kid N, 2-4 adult N, 2-4 child E, 2-4 child N, 2-4 kid E); **the three 2-1 files = CI-4's rows, NOT c27's** (child E2 288.2 s vs
+268.7; child N11 1 life vs 0; kid N19 8 lives vs 6, N21 the same): moved by CI-1..CI-4, before this session, NOT yet traced. CI-5's
+kid FAIL -> PASS rows are gone with the general stopMeant (none named as intended now). The 2-2 adult N4 fault leaves the rows as on
+c27, so per ruling item 2 it is NOT fixed here: for R-165.424's list, the trace is in the SESSION 3 HAND-OVER below (f2986 t 99.53, #79).
+**The 10 races (data/ci/margins-ci6.txt): 10/10 WON.** Margins (s; c27 / CI-4 / CI-6): home N1 7.21/8.41/7.81; N2 31.24/23.34/18.94;
+N3 17.06/12.76/22.76; post N4 17.80/29.20/25.70; post N5 19.70/8.30/27.00 (2 race lives); home E1 19.77/23.67/25.87; E2 18.22/25.32/
+25.32 (2 lives); E3 8.57/13.67/9.37; post E4 22.73/30.83/26.03; E5 29.70/32.60/24.80. Noise measured: rows move 5-19 s between candidates
+(draw-path changes once a run parts), as ruling item 3 asks to name.
+**Session 4 starts at ruling item 1's remainder:** trace the three 2-1 files' moves to CI-1..CI-4 (bisect fz-ci1 acf29a092 / fz-ci2
+82b7f4c8d / fz-ci4 with set1-m.sh's 2-1 lines; CI-1's frontStandPx(child) is the first suspect, as :282's child N40 on CI-1), and either
+make them c27's or name each as an intended move with its trace; then ruling items 2-4 (R-165.424 entry; REPORT with the noise; red 4;
+the final checks). Not run on CI-6 yet: the 4 files, the wide sample, tierBots.
 
 ## SESSION 3 HAND-OVER (ENG-PLANT-CI-c; started 12:19 PM ET 11-25). HEAD = CI-5 36da03dd4 + its test 455d5f7e4 + this file. STOPPED: A NEW FAULT (brief)
 **Item 1, the adult walk-off: TRACED and FIXED in the toy (CI-5 36da03dd4, firsttimer.ts).** racefront adult phase 0 on CI-4 (probe
