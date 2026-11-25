@@ -1,6 +1,6 @@
 # BUILD-28 REPORT (W2-LANE: 2-8 "Before the Water Rises"; R-165.430 (2), READY-28, BUILD-28). Session 1 (W2-LANE a), started 9:44 AM ET (from date). Session 2 (W2-LANE b), started 10:07 AM ET (from date). Session 3 (W2-LANE c), started 10:30 AM ET (from date). Session 4 (W2-LANE d), started 10:52 AM ET (from date). Session 5 (W2-LANE e), started 11:19 AM ET (from the session hook date) Session 6 (W2-LANE f), started 11:41 AM ET (from the session hook date) Session 7 (W2-LANE g), started 12:05 PM ET (from the session hook date)
 
-## EXACT NEXT STEP (session 7, W2-LANE g; head: this REPORT commit on 6470cc657). THE LEAD'S ENTRY PRINCIPLE: the RUN takes the LOW road,
+## EXACT NEXT STEP (session 7, W2-LANE g; heads b433ade6b (engine piece), ceab09e20 (the verdict), + this REPORT commit). THE LEAD'S ENTRY PRINCIPLE: the RUN takes the LOW road,
 ## a JUMP the HIGH road; running off W never lands him on the high road; reaching it always needs a press
 1. THE CARRY, MEASURED (probe-carry.test.ts.txt, copy it to src/game/ to run; output probe-carry-results.txt; RealPlay, the engine's own
    update, on 2-8's and 2-3's configs): W 330 (and W 900) on a bank, a level piece past W's far lip, the bank under the gap and the marsh
@@ -17,22 +17,34 @@
 2. THE CHOICE: (y), the porch's near end beyond the carry. In one paragraph: (y) keeps every ruled number but the gap: W 330 (A2), the
    marsh floor 75 and the porch 135 over it (A3), the climb model (A4), the porch LEVEL with W, the three 60 px steps and 400 px treads,
    strandFaults' drops (W's lip 60 onto the bank, the porch's far tread 60). It changes three numbers: the gap 60 -> 81 (the carry 66 +
-   the lead's FLOOD_LOW_HOP margin 15: the verdict passes 81, refuses 80), back 60 -> 81 (the gap stays over the bank: a short jump or a
-   walk-off lands on the bank, never in the water), near 420 -> 441 (30 px of bank stays before W's face: the fork's place moves 21 px,
+   the lead's FLOOD_LOW_HOP margin 15: the verdict passes 81, refuses 80), back 60 -> 81 (the gap stays over the bank: a walk-off lands on
+   the bank; a short jump at worst in the marsh, the low road), near 420 -> 441 (30 px of bank stays before W's face: the fork's place moves 21 px,
    which floodFaults re-checks on the laid low road). The high road's first link is then a JUMP ACROSS (level, a press): NOT a jump UP,
    because a porch raised over W would make its far tread a 120 px drop onto the far bank, past the line's step 90 (strandFaults). (x)
    (the low road's way down not off W's lip) would re-shape the fork itself: everyone climbs W today and the choice is at its lip; a way
    down elsewhere needs W off the path or a second wall-step, a new look for 2-8.md and A2's W derivation re-done. (y) is the smaller,
    checkable change.
-3. NEXT, IN ORDER (none built yet): (a) ENGINE PIECE, one commit: highRoad (flood.ts:208) accepts the FIRST link off the wall-step as a
-   level JUMP up to FLOOD_FIRST_JUMP (the gap forkFaults (2) already proves each tier crosses at the speed W gives it); every later link
-   stays <= FLOOD_HOP 60; a planted toy in flood.test: W + gap 81 + porch, the old rule refuses it ('the high road breaks'), the new
-   accepts; a gap past the jump still refused. (b) THE VERDICT in forkFaults: FLOOD_WALK_OFF { carry 66 (measured, Easy, thin; the help:
-   onFloor's catch 14 + 6), margin 15 } in floodLay.ts beside FLOOD_LOW_HOP, passed by floodLay; 'a full-run walk-off from W's lip lands
-   on the low road': gap >= 81 by name. Planted in w2TwoRoad.test: RED on 6470cc657's shape (gap 60), GREEN on the new (81/81/441).
-   (c) W2_FORK gap 81, wall.back 81, near 441 (w2.ts:195-200). (d) The probe-fork ROAD check: at late 0 every tier that reads LOW walks
-   the low road (marshT set, highT unset, or a high road reached by a press: log the press frame), then 54/54. (e) 2b toys, stills,
-   1b at the lead's hash, READY-28.
+3. LANDED (pushed; each test run on the exact tree committed):
+   (a) ENGINE PIECE b433ade6b: highRoad (flood.ts) takes `jump`: the fork's link off the wall-step W to a LEVEL piece may be a jump up to
+       `jump` px, and W may stand back on the near bank up to `jump` px before its edge (so the gap stays over the bank); every other
+       link stays a hop <= FLOOD_HOP 60. Planted in flood.test ('THE FORK'S JUMP'): the old rule (jump = hop) refuses W 81 back + gap 81
+       by name (a bare edge hop), the new accepts; a gap of 97 past the jump 96, W farther back than the jump, a jump UP and a later 81 px
+       link stay refused. flood.test 17/0 on b433ade6b ALONE (frozen worktree /home/user/wt28s7e).
+   (b) THE VERDICT ceab09e20: forkFaults (3) 'a full-run walk-off from W's lip lands on the low road' with floodLay FLOOD_WALK_OFF
+       { carry 66 (measured, above), margin 15 } and FLOOD_FORK_JUMP = 66 + 2 x 15 = 96 (the link a short jump past the rule's edge);
+       W2_FORK gap 81, wall.back 81, near 441. Planted (w2TwoRoad.test, both settings, laid by floodLay): RED by name at 6470cc657's gap 60
+       and at 80 (the edge), GREEN at 81. WHY back 81 too: with back 60 the porch's near end stood 21 px over the marsh and strandFaults
+       refused it by name (a turn-back walk-off off its near end: 135 px down, past the line's step 90). tsc 0; w2TwoRoad + floodLay +
+       flood tests 24/0 on ceab09e20's tree.
+   (c) DRAFT, NOT LANDED (firsttimer.ts lands at 1b only, rule 28): draft-fork-jump-bot.patch.txt: the bot reads the high road as floodLay
+       does (highRoad ... FLOOD_FORK_JUMP, firsttimer.ts:2462). WITHOUT it the bot's road breaks at W on the new shape. It applies on top of
+       draft-B2b-reroute-popup.patch.txt (checked).
+4. NEXT, IN ORDER: (1) ReadNotifications. (2) THE PROBE'S ROAD CHECK: probe-fork.test.ts.txt gains, at late 0, the road each tier
+   walks (marshT set and highT unset = LOW; highT set = HIGH, with the frame and kind of the press that put him there: a jump off W, a
+   double off the marsh); a tier that reads LOW must walk the low road; any high road reached must follow a press. Run with B + 2b +
+   draft-fork-jump-bot applied, on ceab09e20 in a frozen worktree: 54/54 again AND the road check. Send the lead: the entry rule, the
+   verdict hashes and the probe's road table. (3) 2b toys, stills of the fork and a marsh dip (upright and sideways), 1b at the lead's
+   hash, READY-28. NOT RUN on ceab09e20: the full suite and the CLAUDE.md gates (CI #79's tool line): run them on the first new head.
 
 ## EXACT NEXT STEP (session 6, W2-LANE f, hand-over on the box; head 3e847107a + this REPORT commit). THE LEAD RULED (c) (verbatim in its
 ## message: a DOUBLE jump up off the low road is his own move onto the high road; his ORDINARY hop must keep the low road)

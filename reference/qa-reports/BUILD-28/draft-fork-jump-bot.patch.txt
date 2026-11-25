@@ -1,0 +1,22 @@
+diff --git a/tools/inspect/firsttimer.ts b/tools/inspect/firsttimer.ts
+index 4650e6d20..aa00ccae8 100644
+--- a/tools/inspect/firsttimer.ts
++++ b/tools/inspect/firsttimer.ts
+@@ -79,7 +79,7 @@ import type { Stage } from './stages.ts';
+ import { liftStop } from '../../src/game/lift.ts';
+ import type { FollowPlay } from '../../src/game/followPlay.ts';
+ import { highRoad, type FloodClock } from '../../src/game/flood.ts';
+-import { FLOOD_HOP, FLOOD_STEP } from '../../src/game/gen2/floodLay.ts';
++import { FLOOD_FORK_JUMP, FLOOD_HOP, FLOOD_STEP } from '../../src/game/gen2/floodLay.ts';
+ import { bucketAngle } from '../../src/game/wheel.ts';
+ import { WHEEL_FLOWN } from '../../src/game/gen2/wheelFlights.data.ts';
+ import { flownKey } from '../../src/game/gen2/wheelLay.ts';
+@@ -2459,7 +2459,7 @@ export class FirstTimerRun {
+     const dir: 1 | -1 = low.deep.near.x < low.x0 ? 1 : -1;
+     const [edge, far] = dir > 0 ? [low.x0, low.x1] : [low.x1, low.x0];
+     const tops = this.sim.platforms.filter((q) => q.type === 'solid' && !q.pad && !q.broken && q.y < low.lip - 1).map((q) => ({ x: q.x, w: q.width, y: q.y, h: q.height, q }));
+-    const road = highRoad(tops, { x0: low.x0, x1: low.x1, from: { x: edge, y: low.lip }, to: { x: far, y: low.lip } }, FLOOD_STEP, FLOOD_HOP);
++    const road = highRoad(tops, { x0: low.x0, x1: low.x1, from: { x: edge, y: low.lip }, to: { x: far, y: low.lip } }, FLOOD_STEP, FLOOD_HOP, FLOOD_FORK_JUMP);
+     if (road.faults.length || !road.chain.length) return;
+     const nearOf = (q: { x: number; w: number }) => (dir > 0 ? q.x : q.x + q.w);
+     const farOf = (q: { x: number; w: number }) => (dir > 0 ? q.x + q.w : q.x);
