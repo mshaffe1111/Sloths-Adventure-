@@ -1,7 +1,7 @@
 // World 2's TWO-ROAD section (w2.ts W2_FORK, w2TwoRoad; 2-8's fork, R-165.430 (2)), laid by gen2 on the out-and-back toy's home leg in
 // place of its first river (gen2/toyHome.ts 'home-practise-ride', as floodLay.test lays its brick there): GREEN on every roll and both
 // settings (layFlood: floodFaults, highRoad and forkFaults all empty); the built pieces in the ruled order (W on the near bank's end, the gap,
-// the porch, the rise and the top standing on it, porch2 out over the far bank); RED, each by name, on W 60 and on no gap. (flood.ts highRoad walks a porch end to end and never meets a
+// the porch, the rise standing on it, porch2 out over the far bank); RED, each by name, on W 60 and on no gap. (flood.ts highRoad walks a porch end to end and never meets a
 // block standing on it, so a rise's wall-step is held here, by the built pieces, not by the verdict: REPORT, ENGINE-WORTHY.)
 import test from 'node:test';
 import assert from 'node:assert/strict';
@@ -62,13 +62,15 @@ test('two roads: GREEN on the toy\'s rolls, both settings: the flood, the high r
       assert.equal(Math.round(W.w), W2_FORK.wall.w, `${at}: W is the wall-step`);
       assert.equal(Math.round(low.lip - W.y), W2_FORK.wall.h, `${at}: W one step up off the bank`);
       assert.equal(Math.round(P.y), Math.round(W.y), `${at}: the porch level with W's top`);
-      // (the rises stand on the porch, each one step, over the water between W and the far bank)
-      const rise = tops.filter((t) => Math.round(P.y - t.y) === W2_FORK.rise.h && Math.round(t.y + (t.h ?? 0)) === Math.round(P.y));
-      const top = tops.filter((t) => Math.round(P.y - t.y) === W2_FORK.rise.h + W2_FORK.top.h);
-      assert.equal(rise.length, 1, `${at}: one rise standing on the porch`);
-      assert.equal(top.length, 1, `${at}: one top, a step over the rise`);
+      // (the rise stands on the porch, one step, over the water between W and the far bank; nothing stands higher)
       const inSpan = (t: { x: number; w: number }) => t.x >= Math.min(span.from.x, span.to.x) && t.x + t.w <= Math.max(span.from.x, span.to.x);
-      assert.ok(inSpan(rise[0]) && inSpan(top[0]), `${at}: the rises stand over the low road's water, out of its lane under the porch`);
+      const rise = tops.filter((t) => Math.round(P.y - t.y) === W2_FORK.rise.h && Math.round(t.y + (t.h ?? 0)) === Math.round(P.y));
+      // (within a step or two over the rise: the out leg stacked far above is no part of it)
+      const higher = tops.filter((t) => t.y < P.y - W2_FORK.rise.h - 1 && t.y > P.y - W2_FORK.rise.h - 2 * FLOOD_STEP - 1 && inSpan(t));
+      assert.equal(rise.length, 1, `${at}: one rise standing on the porch`);
+      assert.deepEqual(higher, [], `${at}: one rise, nothing over it (BUILD-28 session 1: a block on the rise stranded the Easy child)`);
+      assert.ok(inSpan(rise[0]), `${at}: the rise stands over the low road's water, out of its lane under the porch`);
+      assert.equal(Math.round(rise[0].w), W2_FORK.rise.w, `${at}: the rise's tread`);
       assert.ok((dir > 0 ? road.chain.at(-1)!.x + road.chain.at(-1)!.w : road.chain.at(-1)!.x) * dir >= span.to.x * dir, `${at}: the high road ends out over the far bank`);
     }
   }

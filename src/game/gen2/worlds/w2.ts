@@ -163,15 +163,15 @@ export const W2_FLOOD: FloodRow = {
  *     bank so he walks into it), `wall.w` wide: at least the widest tier's landing + run-up (W2_FLOOD.climb: 86 + 61 = 147);
  *   - the GAP after W, `gap` px over the water's first px: the low road walks off W's lip and falls through it (at least his 44 px width),
  *     the high road hops it level onto the porch (at most FLOOD_HOP);
- *   - `porch` P: level with W's top over the water; `rise` and `top`: every further rise a block standing on the porch (a wall-step he
- *     walks into, never a bare edge hop), out of the low road's lane under the porch;
- *   - `porch2`: the porch again past the rises, level with P, out over the far bank: the steps DOWN (top to rise to porch to the far bank,
- *     each FLOOD_STEP px); `far`: the far bank both roads end on.
+ *   - `porch` P: level with W's top over the water; `rise`: every further rise a block standing on the porch (a wall-step he walks
+ *     into, never a bare edge hop), out of the low road's lane under the porch;
+ *   - `porch2`: the porch again past the rise, level with P, out over the far bank: the steps DOWN (rise to porch2 to the far bank, each
+ *     FLOOD_STEP px); `far`: the far bank both roads end on. Two up (W, rise), two down.
  * forkFaults passes it (W 150 with the gap 60); floodLay.test's toy brick is the same fork (W 150 + gap 60). Data only: the 2-8 kit lays it
  * with its rivers holding `W2_FORK.row` (W2_FORK_RIVERS).
  */
 /** the two-road section's numbers (W2_FORK's shape: a builder or a plant passes its own) */
-export interface W2ForkShape { row: string; near: number; far: number; wall: { w: number; h: number }; gap: number; porch: number; rise: { w: number; h: number }; top: { w: number; h: number; at: number }; porch2: number }
+export interface W2ForkShape { row: string; near: number; far: number; wall: { w: number; h: number }; gap: number; porch: number; rise: { w: number; h: number }; porch2: number }
 export const W2_FORK: W2ForkShape = {
   /** the low road's river row (W2_FORK_RIVERS): 'ride's numbers, safe (a fall splashes him back on the near bank), marked 'close' */
   row: 'low',
@@ -179,11 +179,13 @@ export const W2_FORK: W2ForkShape = {
   far: 320,
   wall: { w: 150, h: 60 },
   gap: 60,
-  /** the porch under the rises (px along it from its start): he walks `walk` px, then climbs `rise` (w, FLOOD_STEP tall, standing on
-   *  the porch) and `top` (w, standing on the rise, at `at` along it); porch2 touches P's end and runs `porch2` px, out over the far bank */
+  /** the porch (px): `rise` (w, FLOOD_STEP tall) stands on its far end, so he walks porch - rise.w px on it first; porch2 touches P's end
+   *  and runs `porch2` px, out over the far bank. ONE rise, its tread wide (BUILD-28 session 1's bot probe: a second block standing on the
+   *  rise, 140 wide with 80 px treads, stranded the Easy child (his jump off it landed two steps down, deeper than the line's step, so the
+   *  line waited at its lip); with a 220 px tread it stranded the adult the same way; one 400 px rise: 18 of 18 runs home, every tier,
+   *  both settings) */
   porch: 500,
-  rise: { w: 300, h: 60 },
-  top: { w: 140, h: 60, at: 0.5 },
+  rise: { w: 400, h: 60 },
   porch2: 400,
 };
 /** the low road's row: the river 'ride' (W2_RIVERS: 798 px between the banks), marked for the flood as the road that turns deep */
@@ -201,7 +203,6 @@ export function w2TwoRoad(id: string, job: NodeJob, f: W2ForkShape = W2_FORK): S
       { key: 'wall', shape: 'block', w: one(f.wall.w), place: { kind: 'on', on: 'near', at: [1, 1], h: one(f.wall.h) }, style: 'moss_stone' },
       { key: 'porch', shape: 'branch', w: one(f.porch), place: { kind: 'over', on: 'near', at: past(f.gap), dy: one(-f.wall.h) }, style: 'log', main: false },
       { key: 'rise', shape: 'block', w: one(f.rise.w), place: { kind: 'on', on: 'porch', at: [1, 1], h: one(f.rise.h) }, style: 'moss_stone' },
-      { key: 'top', shape: 'block', w: one(f.top.w), place: { kind: 'on', on: 'rise', at: one(f.top.at), h: one(f.top.h) }, style: 'moss_stone' },
       { key: 'porch2', shape: 'branch', w: one(f.porch2), place: { kind: 'over', on: 'near', at: past(f.gap + f.porch), dy: one(-f.wall.h) }, style: 'log', main: false },
     ],
     entry: { piece: 'near', kind: 'ground' }, exit: { piece: 'far', kind: 'ground' }, exitDy: 0,
