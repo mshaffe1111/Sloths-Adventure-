@@ -3450,7 +3450,8 @@ export class FirstTimerRun {
   private glowRimsOf(): DarkRim[] {
     const st = this.sim.stage as Parameters<typeof darkRims>[0];
     const own = darkRims(st).filter((r) => r.light?.sleep && r.light.id !== undefined);
-    return own.concat(runOffRims(st, this.who.setting).filter((r) => r.light?.id !== undefined && !own.some((o) => o.piece === r.piece && o.dir === r.dir)));
+    // (an edge with its own rim keeps its run-off rim too: he waits there for both lights, ENG-DARK box 16)
+    return own.concat(runOffRims(st, this.who.setting).filter((r) => r.light?.id !== undefined && !own.some((o) => o.piece === r.piece && o.dir === r.dir && o.light === r.light)));
   }
   private glowWait(dir: -1 | 0 | 1): Pad | null {
     if (this.who.noGlowWait) return null;
@@ -3490,10 +3491,11 @@ export class FirstTimerRun {
       return null;
     }
     if (dir === 0) return null;
-    const rim = this.glowRims.find((r) => r.dir === dir && on(r) && !this.glowGaveUp.has(r) && (r.x - p.x) * r.dir >= 0 && (r.x - p.x) * r.dir <= GLOW_NEAR);
+    // (the first rim there whose light is not yet lit DARK_AHEAD: an edge can hold two (its own landing's and a run-off's), and taking
+    //  the first alone, its light lit, he ran off without the second's, ENG-DARK box 16)
+    const unlit = (r: DarkRim) => { const w = e.glowWake.get(r.light!.id!); return !(w !== undefined && e.gameTime >= w + ahead); };
+    const rim = this.glowRims.find((r) => r.dir === dir && on(r) && !this.glowGaveUp.has(r) && (r.x - p.x) * r.dir >= 0 && (r.x - p.x) * r.dir <= GLOW_NEAR && unlit(r));
     if (!rim) return null;
-    const woke = e.glowWake.get(rim.light!.id!);
-    if (woke !== undefined && e.gameTime >= woke + ahead) return null;
     this.glowStop = { rim, since: e.gameTime };
     return {};
   }

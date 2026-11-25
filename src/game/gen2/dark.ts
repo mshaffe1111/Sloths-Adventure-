@@ -406,7 +406,10 @@ function runOffs(platforms: readonly Platform[], rims: readonly DarkRim[], ends:
   for (const u of ends) {
     // (an edge in two overlapping darks is a rim of each: its own stop applies if any of its landings' lights sleeps)
     const uds = rims.filter((m) => m.piece === u.piece && m.dir === u.dir);
-    if (uds.some((m) => m.light?.sleep)) continue;
+    // (an edge with a stop of its own is judged too: the stop ends when ITS landing's light is lit, and he runs off from it like any
+    //  other run. Skipped, the child on Normal 22 stood 63 px from 106's left end until its landing's light woke, ran off at 268 px/s
+    //  and touched down on 590-811 at its sleeping left rim, the middle the same; 8 such went over in the x40 on a5e15a74d, ENG-DARK
+    //  box 16. Its stop then also waits for the rim the run meets (runOffRims, glowWait))
     // (every run speed, RUN_FRACS: one entry per rim met, at the fastest speed that meets it)
     const met = new Set<DarkRim>();
     for (const frac of RUN_FRACS) {
