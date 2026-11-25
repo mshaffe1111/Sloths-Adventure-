@@ -2,21 +2,23 @@
 
 Session 1: started 2:31 PM ET 11-24 (by `date`), handed over at the 28-minute box. Lead: session_01FhBbYN2CVHnFXg7XzqKXpM.
 
-## EXACT NEXT STEP (session 6 starts here; INT-R5d-b box written 11:54 AM ET 11-25 by `date`)
+## EXACT NEXT STEP (session 6 starts here; INT-R5d-b box written 12:15 PM ET 11-25 by `date`)
 INT-R5d-b started 11:35 AM ET 11-25. Branch **release-0.10.3-wip-fixes**, code head still **f7c5b8a2e** (REPORT/stills commits only
-since). Step 1 is DONE (rows below): the CI tool line on f7c5b8a2e = 390 pass, 6 fail, 1 todo, the 6 being EXACTLY ENG-PLANT's
-(firsttimer :184; riverRide :107 :145 :207 :213 :229); the after stills are in d/s1-*.jpg and went to the lead. NEXT, in order:
-1. ReadNotifications. If the lead has sent ENG-PLANT's merged origin/release-0.10.3 hash (c27, the bot fix): `git fetch origin
-   release-0.10.3`, confirm the hash, `git merge --no-ff origin/release-0.10.3 -m ...` into release-0.10.3-wip-fixes (no force; name
-   every conflict), `npx tsc --noEmit -p .`, then the CI tool line (gates.yml:157 read live) on a FROZEN worktree of the merge (`git
+since). Step 1 is DONE and the lead APPROVED the after stills (d/s1-*.jpg). drawcheck and clipcheck on f7c5b8a2e are DONE, both PASS
+(rows below: the lead's early warning, so they do NOT need to run first). NEXT, in order:
+1. WHAT'S NEW, ruled by the lead (approved as proposed): in src/game/whatsNew.ts's top entry (version '0.10.3', already there from
+   57d8b8ffb; package.json is already 0.10.3, nothing to change there) set `date: '2026-11-25'` and add a 4th item, verbatim with
+   the curly apostrophe the entry uses: 'Fixed: a wall I couldn’t see in First Lianas, and a dark column of soil at the start of Up
+   the Kapok.' Then `npx tsc --noEmit -p .` and `npx tsx --test src/game/whatsNew.test.ts src/game/playerText.test.ts` (find
+   playerText's path with git ls-files), commit by -m flags, push, ls-remote.
+2. ReadNotifications. On the lead's ENG-PLANT merged origin/release-0.10.3 hash (c27, the bot fix): `git fetch origin
+   release-0.10.3`, confirm the hash, `git merge --no-ff origin/release-0.10.3` (message by -m flags) into release-0.10.3-wip-fixes
+   (no force; name every conflict), tsc, then the CI tool line (gates.yml:157 read live) on a FROZEN worktree of the merge (`git
    worktree add --detach`, node_modules symlinked, `chattr -R +i src tools`, `chattr -R -i src/game/gen2/proven`): 0 FAIL, the todo
-   chaseBots :110 aside. Then fast-forward release-0.10.3 to it (`git push origin <merge>:release-0.10.3`, no force). If no hash yet:
-   tell the lead step 1 is done and wait.
-2. What's New: the 0.10.3 entry ALREADY exists (57d8b8ffb: package.json 0.10.3, whatsNew.ts top entry dated 2026-11-24, 3 lines).
-   The proposed 4th line and the date question went to the lead; commit ONLY the lead's approved words (curly apostrophes, as the
-   entry uses), then whatsNew.test + playerText.test.
-3. THE FULL SET on that exact head (packet step 3; run1.sh then run2.sh, each run_in_background, timeout 7,200,000 ms), then the
-   gate table here and the head + table to the lead. FIX-SOIL-b's CI line and drawcheck count on this merged tree (CI #77): name them.
+   chaseBots :110 aside. Then fast-forward release-0.10.3 to it (`git push origin <merge>:release-0.10.3`, no force).
+3. THE FULL SET on that exact head (packet step 3; run1.sh then run2.sh, each run_in_background, timeout 7,200,000 ms; drawcheck and
+   clipcheck run again there), then the gate table here and the head + table to the lead. FIX-SOIL-b's CI line and drawcheck count
+   on this merged tree (CI #77): name them.
 Stills tool: reference/qa-reports/INT-R5/tools/int-shots.mjs `<tree> <port> <out> <tag> groundCeilings <1|0> <27,14,16,81,16d>`
 (refuses a busy port, checks the served tree by the marker in src/game/protoArt.ts, kills its vite; pkill the port after anyway).
 
@@ -33,8 +35,10 @@ Stills tool: reference/qa-reports/INT-R5/tools/int-shots.mjs `<tree> <port> <out
 | f7c5b8a2e | `npx tsx --test tools/engine/paintFall.test.ts` | 16/16 (the planted stacked-ceiling test: RED without the ceilings, GREEN with) |
 | bb29e048d | `npx tsx --test src/game/art/*.test.ts` (inventory) | 16/16 |
 | a2b7dde04 | paintcheck part 0/3 (before the engine piece) | PASS (superseded by the sweep on f7c5b8a2e) |
+| f7c5b8a2e (frozen a9cb936da) | `node tools/perf/drawcheck.mjs` (the lead's early warning) | PASS, 42 runs, 0 breaches (1-4, 1-6, 2-7 upright and sideways in it; 8-1 is not on drawcheck's list); 1159 s |
+| f7c5b8a2e (frozen a9cb936da) | `node tools/perf/clipcheck.mjs` (the lead's early warning) | PASS (83 known, none new); 1038 s |
 | f7c5b8a2e (frozen a9cb936da) | the CI tool line (gates.yml:157, live) | 397 tests: 390 pass, **6 fail = ENG-PLANT's** (firsttimer :184; riverRide :107 :145 :207 :213 :229; owner ENG-PLANT, its merge clears them), 1 todo (chaseBots :110). No other red |
-| f7c5b8a2e vs dfe631913 | stills 2-7 bank #1 (Normal x 3881, Easy x 4339; on its top and on the leg under it), 844x390 and 390x844 | base and head IDENTICAL; the soil runs solid to the frame bottom, no backdrop gap (d/s1-2-7-bank1-*-base-dfe63191-vs-f7c5b8a2e.jpg) |
+| f7c5b8a2e vs dfe631913 | stills (APPROVED by the lead) 2-7 bank #1 (Normal x 3881, Easy x 4339; on its top and on the leg under it), 844x390 and 390x844 | base and head IDENTICAL; the soil runs solid to the frame bottom, no backdrop gap (d/s1-2-7-bank1-*-base-dfe63191-vs-f7c5b8a2e.jpg) |
 | f7c5b8a2e | stills 1-4 layout 1 start and summit, both settings, both ways | no soil column at the start; the summit bank reads clean (d/s1-1-4-*.jpg); Easy shows Dot's hint card (the hint stage, expected) |
 | f7c5b8a2e | stills 1-6 posts (Normal) and 8-1 sliver (both settings), both ways | 1-6: both posts read as vine-wrapped support posts (the lead's 11-24 ruling); Easy's 1-6 build has NO narrow post (searched: width <= 30, height >= 150: none). 8-1: a standard World 8 bank end, as ruled; the end-face inset is R-165.442, release 5 (d/s1-1-6-posts-8-1-sliver-*.jpg) |
 | 539885c37 (FIX-SOIL-b) | its CI tool line and drawcheck | NOT RUN by FIX-SOIL-b; they count on this merged tree (CI #77): the CI line here, drawcheck in THE FULL SET |
