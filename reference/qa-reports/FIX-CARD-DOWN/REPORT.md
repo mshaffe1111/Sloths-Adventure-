@@ -1,7 +1,14 @@
 # FIX-CARD-DOWN (R-165.456): on a way down, Dot's card keeps off the drop and sits above Pokey
 
-## EXACT NEXT STEP
-(filled at hand-over)
+## EXACT NEXT STEP (box 1 hand-over; head = this commit on t-fix-card-down; fix code = 8ae26cdd9, unchanged since)
+Box 1 is finishing and will record here: lockall --check (fix tree vs the base lock, 3264 builds of 102 stages) and the suite's 3 shards,
+all on the frozen fix tree. A box-1 line below saying they are recorded means they are done; until then, do not re-run them.
+1. Run the CI tool line on a frozen tree of this head: `npx tsx --test tools/engine/library.test.ts tools/engine/seedlist.test.ts
+   tools/engine/yield.test.ts tools/inspect/travelBots.test.ts tools/engine/paintFall.test.ts`; record pass/fail here.
+2. `git fetch origin t-eng-w3`; if it moved past c1008d8ed, `git merge origin/t-eng-w3` (no force; name any conflict), then on the
+   merged head: tsc, `npx tsx --test src/game/dotGuideDown.test.ts` (8 GREEN), and clipcheck again (no new debt).
+3. Land: `git push origin HEAD:t-eng-w3` (fast-forward/merge, no force), `git ls-remote origin t-eng-w3`; hash to the lead
+   (session_01FhBbYN2CVHnFXg7XzqKXpM), no clock times.
 
 ## What changed (fix 8ae26cdd9 on base c1008d8ed)
 - `GuideView.travel` (src/game/dotGuideView.ts): the stage's travel; the engine fills it from its travel mode
@@ -36,9 +43,14 @@ Sideways after: clear of him, the drop, the petals and the HUD, BUT it sits abou
 says whose it is, and nothing ties them. That is the old hover behaviour on every stage (the law can put the card past him and she
 never follows it), not new to a way down. Proposed (the lead's call; it touches every stage, so it needs the dotbox re-shoot and
 clipcheck): when the law puts a hover card more than about 120 px from her, she flies to its near corner.
+LEAD: stills APPROVED (port-after, land-after). The Dot-follows-her-card point: SEEN, FILED (R-165.460), NOT BUILT, by the lead's ruling.
 
-## Gates
-(filled)
+## Gates (fix tree, frozen src; base c1008d8ed)
+- tsc: clean. Dot's tests (dotGuideDown, dotGuidePlace, dotGuide, dotBox, guideInsets, w5QA6, ciTests): 75 pass, 0 fail.
+- clipcheck: PASS (83 known, the same list; no new debt; 588 s). generalitycheck, knowncheck, roadmapcheck, timecheck: PASS.
+- Note (D115, own it): the fix tree was moved from 8ae26cdd9 to 490450973 while clipcheck read it; that commit adds only report files and
+  src was chattr-frozen and identical, so what clipcheck reads did not change.
+- lockall --check vs base lock: RUNNING (box 1 records). Suite 3 shards: RUNNING (box 1 records). CI tool line: NOT RUN (next step 1).
 
 ## Lessons applied
 D115 (frozen worktrees for the base lock, the tests and the stills), D119, D128, D134, D136 (the stills measure the drawn card's box),
