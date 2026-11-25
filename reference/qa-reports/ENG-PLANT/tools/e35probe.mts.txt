@@ -1,0 +1,10 @@
+// usage: tsx e35probe.mts <tree> : 2-4 kid Easy 35: every runPress the run-up judges for t in [47.3, 47.7] (lag, hold, the swing it
+// judged the catch of, the answer), then his frames to the fall with the swing's place
+const [T] = process.argv.slice(2);
+await import(`${T}/src/game/headlessDom.ts`);
+const { CAST_BOTS } = await import(`${T}/tools/inspect/castBots.ts`);
+const FT = await import(`${T}/tools/inspect/firsttimer.ts`);
+const P = (FT as any).FirstTimerRun.prototype; const rp = P.runPress; let sim: any = null;
+P.runPress = function (...a: any[]) { const r = rp.apply(this, a); const t = a[11]; if (t >= 47.3 && t <= 47.7) { const v = a[7]; console.log(`runPress t${t.toFixed(3)} x0 ${a[0].toFixed(1)} vx0 ${a[1].toFixed(1)} s0 ${a[2]} lag ${a[3]} hold ${(+a[9]).toFixed(3)} carry ${(+a[8]).toFixed(1)} swing ${JSON.stringify(v && { x: v.x, y: v.y, id: v.id, kind: v.kind, len: v.length ?? v.len, anchor: v.anchor }).slice(0, 160)} -> ${r}`); } return r; };
+const r = FT.firstTimer('2-4', 35, CAST_BOTS.kid.easy, { cap: 1200, dotSetting: true, onFrame: (s: any) => { const p = s.p; if (s.t >= 47.45 && s.t <= 48.2) console.log(`f t${s.t.toFixed(3)} x${p.x.toFixed(1)} y${p.y.toFixed(1)} g${p.grounded ? 1 : 0} vx${p.vx.toFixed(0)} vy${p.vy.toFixed(0)} swinging ${!!(p.swing || p.onVine || p.hanging)} hold ${s.input?.jumpHeld ?? '?'}`); } });
+console.log('end', r.end, (r as any).rescues);

@@ -44,11 +44,19 @@ parts and whether c24 falls within 2 s of it): see Result L1b below if filled.
 SKILLS.runUp is the one c5..c24 piece with a switch. **runUp never acts (path identical, runUp off) on 2-1 N 19, N 21, 2-2 E 37, N 3, N 33.**
 It acts on 2-4 E 35 (the fault above: its own jump lands in the water within 0.7 s), and on 2-4 E 20 (f2186, x 16,219, log #77) and E 2
 (f2091, x 16,086, log #77): a run-up started on log #77 with no fall within 2 s; their rescues come 500-900 px and 15 s later, each a
-full-run walk-off off a log's far end (E 20: #79 at x 16,730). E 19, E 12, E 13: see firstsplit.txt if filled. So: ONE new fault
+full-run walk-off off a log's far end (E 20: #79 at x 16,730). E 19 (f3408, #103), E 12 (f3326, #76), E 13 (f3005, #105): a run-up start, no fall within 2 s (filled). So: ONE new fault
 (2-4 kid Easy 35, the run-up's own jump); every other traced fall is R-165.413's walk-off or untimed jump.
 The run-up's judge (firsttimer.ts:2366-2391): runUpCatches / runPress judge a run along the log then a jump that CATCHES a liana/vine
 (canGrabSwing, v) at all three lags; for the kid at E 35 the catch did not happen. Not yet traced: which liana it judged, the hold, and
 why the kid's catch failed (the probe for session 11: log runPress's v, hold and lags at t 47.50, then the frames to f1445).
+
+**E 35 probed (tools/e35probe.mts.txt, data/l/e35probe.txt): the cause.** At t 47.567 the run-up judged, FROM A STAND (x0 10,542.6, vx0 0,
+s0 0, carry 75), a jump catching swing #4 at x 10,690: runPress true at all three lags (0.1225, 0.09, 0.0575), hold 0.160. He jumped
+at t 47.60 with vx 75, the log's carry ALONE, and stayed at 75 through t 47.733 (5 frames). Only then did his steer arrive (188 at 47.80,
+245 at 47.87). He peaked at y 890 near x 10,585 and came down at x 10,650, in the water short of #4. His one step at t 47.50 (vx 86.7) had
+been let go (vx 0 at 47.533-47.567). The judge assumes 'the steer held from now, no lag on a steer from a stand' (firsttimer.ts:2363);
+the kid's steer had dropped and came back about 0.2 s after the take-off. Fix where the cause is: the judged run-up's jump keeps its
+steer held from the judge's frame (as runUpHold keeps the jump's hold), or the judge reads the steer he actually has. RED/GREEN on this row.
 
 ## Ruling 3: row 8, and the careful middle's MARGIN on every race row (his time minus the boat's; below 0 he wins; data/l/margins-*.txt)
 | race row | c24 2a2c44786 | base dfe631913 |
