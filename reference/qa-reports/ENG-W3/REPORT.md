@@ -1,13 +1,17 @@
 # ENG-DOWNBOT REPORT (lane 2: the down lay's head room, then the bots on a way down to the shrine) — box 3 (resumed 11-25)
-**EXACT NEXT STEP:** (1) read the castBots x40 rows on 0cee60a4d (rows/castbots-0cee60a4d.jsonl if this session pushed them; else
-re-run on a chattr-frozen worktree of 0cee60a4d, two halves, background: `GEN2_DRAFT=3-1 npx tsx tools/inspect/castBots.ts --stage 3-1
---seeds 1,3,..,39 --json > odd.jsonl` and `--seeds 2,4,..,40`, about 12 min; then `python3 reference/qa-reports/ENG-W3/probes/tally.py
-odd.jsonl even.jsonl`) against the baseline (rows/castbots-007bd2ca8.jsonl: 7/360 clean, 1,358 rescues); (2) trace the top two stall
-kinds, two seeds each: `TREE=<frozen tree> BOT= SET= SEED= [FT_FRAMES=a,b] GEN2_DRAFT=3-1 npx tsx reference/qa-reports/ENG-W3/probes/
-stall.mts` (wood, route corners; frames on stderr); fix where the cause is, a toy RED off/GREEN on in castBots.test.ts (downArena);
-the known second, 'the jump onto a near-level catch at a step-off', is not yet traced; (3) the LAY finding below goes to the lead
-before any lay change; (4) lockall vs c1008d8ed's lock (102/102), tierBots 9/9, suite + CI tool line on the final head; land on
-t-eng-w3 (merge, no force). Start 9:45 AM ET 11-25 (by `date`).
+**EXACT NEXT STEP (box 3 hand-over):** head **3ba82c8b8** (pushed). (1) Toys OWED for 3ba82c8b8's two changes (firsttimer.ts
+downEnd: applied whenever the way on is below him, not only close across; its wood run seeded from under his feet, not his middle):
+each needs a downArena toy RED with that one change off. My lip arena (wood 600-1500 @500 to the wall, route under it then out past
+the left end) PASSED with both off, so it proves nothing and was not committed; seed 6's real case: on 1056-1280 @3398 the progress
+point stayed at (1110,3712) under his wood (he is 314 px over it, so Progress does not advance) — build the arena so cur stays under
+his wood. (2) castBots x40 on 3ba82c8b8 (frozen tree, two halves, --json, background, ~12 min) vs 0cee60a4d's rows (partial, below)
+and the baseline; tally: probes/tally.py. (3) Trace the next stalls, two seeds each, probes/stall.mts (`TREE= BOT= SET= SEED=
+[FT_FRAMES=a,b] GEN2_DRAFT=3-1`): kid N seed 6 @(493,5929) 'a 15 px waist-high step ahead, a drop of 123 px ahead' (the known
+'near-level catch at a step-off'), seed 3 @(372,5811) 'the way on is 136 px down'. (4) The LAY finding below to the lead. (5) lockall
+vs c1008d8ed (102/102), tierBots 9/9, suite + CI tool line on the final head; land on t-eng-w3 (merge, no force).
+**Stage length flag for 3-1's READY:** with the bots cleaner the kid's fastest clean run is 101 s (Normal), under the 120 s run floor
+(castBots stageFloor: 3-1 reads as a run, 120 s; a way down is not a climb): 3-1's build owes length (design), not the bots.
+Start 9:45 AM ET 11-25; hand-over 10:08 AM ET (by `date`).
 
 ## Box 3 (11-25), on t-eng-w3-wip-downbot (from t-eng-w3-wip-b 007bd2ca8, the paused box 2: the head-room lay + two toys)
 - **Baseline, castBots x40 both settings on 007bd2ca8 (360 rows, rows/castbots-007bd2ca8.jsonl):** 360/360 reach the shrine, only 7/360
@@ -25,6 +29,11 @@ t-eng-w3 (merge, no force). Start 9:45 AM ET 11-25 (by `date`).
   baseline): a turn vine whose top stands ON his wall-to-wall wood (seed 1 @11257, vine x 56 on 0-82) read as 'under his wood', so he
   went for the far end and turned: 'the way on is 93 px down'. Fix (0cee60a4d): a climb vine down from his wood's height is a way off
   it. Toy part 2 (the route on along the floor past the wood's far end): RED 21/21 on 992908c1d, GREEN on 0cee60a4d. c2's run stopped.
+- **0cee60a4d, castBots x40 PARTIAL (166 of 360 rows, the run in this container; rows/castbots-0cee60a4d-partial.jsonl):** kid N
+  17/40 clean, 36 rescues (baseline 5, 73); adult N 17/40, 34 (1, 100); kid E 9/40, 64 (0, 147); adult E 6/40, 78 (0, 161).
+- **3ba82c8b8 (toys OWED):** seed 6 on 0cee60a4d went to and fro on the catch (downEnd only read close across; far across the route's
+  x pulled him back) and then at the lip of 1056-1280 @3398 (his middle past the end: the run came out empty, the answer flipped).
+  Both fixed: kid N seed 6 2 -> 1 rescues, seed 2 1 -> 0 (probe, work tree = 3ba82c8b8).
 - **LAY finding for the lead (not changed):** going down, a turn's vine top stands at the end's fall line and its drop is 347-351 px
   (> TOWER.see 300), so towerCatches owes a catch under that end, and the catch (then run on by rules 1-2) lies ACROSS the vine:
   probes/vinecut.mts: 247 cuts on 24/24 rolls (seeds 1-12 x both). A vine through a shelf is a polish fault and the shelf covers the
