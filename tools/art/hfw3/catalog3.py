@@ -28,6 +28,8 @@ ROOTFIT = ("2 sunlit river: its climbs are reeds and posts; 5 flower garden: flo
            "9 lava and ash: no living roots; 10 stone-and-iron fortress: chains and ladders")
 STATUS = 'cut, not placed (ART-W3): tools/art/hfw3/pack.py packs it with BUILD-31\'s first draw sites'
 DRAW = 'one drawImage of an atlas cell (w3-grotto.webp when packed: tools/art/hfw3/pack.py)'
+THORNFIT = ("1 the home forest has its own brambles (w1-thorn-row); 2 sunlit river: snappers, not thorns; 5 flower garden: rose briars; "
+            "7 sand-stone ruins: spike traps (made); 9 lava and ash: no living thorns; 10 stone-and-iron fortress: iron spikes")
 META = {
     'shelfL': dict(kind='wide grotto shelf: a long grey-green stone slab, moss and a fern tuft at its back end, a short rock underside',
                    layer='platform', float_class='may float', engine_slot='new slot: World 3 wide shelf (about 310 units; the top face the walk line)',
@@ -44,11 +46,11 @@ META = {
     'rootTall': dict(kind='root curtain to climb (tall): three old roots braided into one column hanging from a grotto rock lip, knots for hands, tips tapering',
                      layer='climb', float_class='hangs (from a ledge or the roof)', engine_slot='new slot: World 3 climb root (a vine to climb: straight up and down always climbs)',
                      worlds='USED none | COULD 3 Glow Grotto: the root curtain to climb down (3-1 beat 5, 3-2 beat 4, 3-4\'s sinkhole); 6 Deep Mangrove: mangrove roots; 4 Misty Mountain: cliff roots; 1 home forest: a root under a bank',
-                     no_fit=ROOTFIT, notes=''),
+                     no_fit=ROOTFIT, notes='The take\'s own rock slab is trimmed off (ART-W3-b: under a shelf it read as a second, standable ledge): the braid tucks up under a shelf\'s underside or the roof.'),
     'rootShort': dict(kind='root curtain to climb (short): three old roots braided into one column hanging from a grotto rock lip, knots for hands, tips tapering',
                       layer='climb', float_class='hangs (from a ledge or the roof)', engine_slot='new slot: World 3 climb root (a vine to climb: straight up and down always climbs)',
                       worlds='USED none | COULD 3 Glow Grotto: a short root climb (3-1 Easy\'s walk back up, 3-2 beat 4); 6 Deep Mangrove: mangrove roots; 4 Misty Mountain: cliff roots',
-                      no_fit=ROOTFIT, notes=''),
+                      no_fit=ROOTFIT, notes='The take\'s own rock slab is trimmed off (ART-W3-b): the braid tucks up under a shelf\'s underside.'),
     'roofRoot': dict(kind='roof root (tile): one thick knobbly root running sideways under a cave roof, rootlets hanging, moss on top; tiles left to right',
                      layer='climb', float_class='hangs (under the roof)', engine_slot='new slot: World 3 roof root (a rope to hang and creep under: drawn along the rope\'s sag, rope.ts)',
                      worlds='USED none | COULD 3 Glow Grotto: the roots under the roof (3-2 beats 1, 3, 9, 10; 3-5, 3-7, 3-9); 6 Deep Mangrove: a root over black water',
@@ -57,6 +59,18 @@ META = {
                     layer='climb', float_class='hangs (from the roof)', engine_slot='new slot: World 3 roof root end (the rope\'s end in the rock; mirror for the other end)',
                     worlds='USED none | COULD 3 Glow Grotto: a roof root\'s end (3-2, 3-5, 3-7, 3-9); 6 Deep Mangrove: a root into a bank',
                     no_fit=ROOTFIT, notes=''),
+    'thornBed': dict(kind='grotto thorn bed (long): pale-bone thorns, cold-blue shading, a red-orange danger rim at the tips, on a low dark rock mound with moss',
+                     layer='danger look', float_class='grounded', engine_slot='new slot: World 3 thorns (proto.thorns: hurts; the hurt box is the engine\'s, the art 72 units tall over it)',
+                     worlds='USED none | COULD 3 Glow Grotto: the thorn bed under a dark shelf (3-1 beat 8), any grotto pit; 6 Deep Mangrove: bone-thorn shoals; 8 blue night: pale thorns read in the dark',
+                     no_fit=THORNFIT, notes='Made for the dark (the lead 11-25: the World 1 brambles read too small, brown and low-contrast in the grotto); judged in the DARK still (thornBed-*.jpg). Cut at 4.5 cut px a unit (0.8 Pokey tall).'),
+    'thornClump': dict(kind='grotto thorn clump (short): a tight cluster of pale-bone thorns with red-orange danger tips on a dark rock base',
+                       layer='danger look', float_class='grounded', engine_slot='new slot: World 3 thorns (proto.thorns: hurts; a short patch)',
+                       worlds='USED none | COULD 3 Glow Grotto: a short thorn patch on a shelf or floor; 6 Deep Mangrove; 8 blue night',
+                       no_fit=THORNFIT, notes='Judged in the DARK still (thornClump-s23.jpg). Cut at 4.5 cut px a unit.'),
+    'bellSwing': dict(kind='court bell, SWUNG frame: the same arch, the bronze bell swung out to the left on its rope (the second frame of bell-s23)',
+                      layer='decor near', float_class='grounded', world_best=2, engine_slot='new slot: World 2 court bell, frame 2 (swap with w3-w3a#bell-s23: the same 633x662 box, the arch within 3-5 levels)',
+                      worlds='USED none | COULD 2 Sunlit Riverbank: the court bell rung (2-9); 7 Sand-stone Ruins: a temple bell',
+                      no_fit='as w3-w3a#bell-s23', notes='Edited from bell-s23; cut to the still\'s box so the frames swap without a jump.'),
     'bell': dict(kind='court bell: a bronze bell hung on a carved wooden arch, crocodile-head beam ends, teal lashings, gold studs',
                  layer='decor near', float_class='grounded', world_best=2, engine_slot='new slot: World 2 court bell (2-9 beat 11: over the shrine steps\' landing; two frames, still and swung)',
                  worlds='USED none | COULD 2 Sunlit Riverbank: the River King\'s court bell (2-9, DESIGN-29 art 2); 7 Sand-stone Ruins: a temple bell',
@@ -81,7 +95,9 @@ def row(n, p):
              pokey_scale=f'{H / PU:.2f}', scale_ok='', scale_basis='drawn',
              footing=(f'the top face: walk line y {wy} from x {x0} to {x1} (cut px; {wy / cpu:.0f} world px under the top of the box)'
                       if wy != '' else 'none (not stood on)'))
-    if base_name in ('bell', 'courtFar'): d['made_thing'] = 'y' if base_name == 'bell' else 'n'
+    if base_name in ('bell', 'bellSwing', 'courtFar', 'thornBed', 'thornClump'):
+        d['made_thing'] = 'y' if base_name in ('bell', 'bellSwing') else 'n'
+        if base_name in ('bell', 'bellSwing'): d['world_best'] = 2
     if base_name == 'courtFar': d.update(pokey_scale='', scale_basis='', on_screen_px=f'{im.width}x{im.height} (a far layer)')
     # the scale verdict by catalog_master.py's own rules (add_scale: SCALE_RANGE, TILED, TERRAIN), as catalog2.py writes it
     rng = SCALE_RANGE.get(m['layer']); ps = d.get('pokey_scale')
