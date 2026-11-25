@@ -29,12 +29,24 @@
    - NOT looked at: bank-upright, top-sideways.
    THE MARSH DIP: NOT SHOT: three little ones freed right of the first dip (x 17002..17102) walked over it to him without a paddle frame
    in 400 frames (line ended 16916..16984/1593, 'follow'): the 100 px dips may hold no water the line swims (to check: is the dip a river?).
-2. NEXT (session 10): (a) read where the soil column comes from (the rises' bodies painted down through the porch? a paintcheck-style
-   'floor painted over by a higher bank's soil column', D136) and send it to the lead as a finding with the stills, not a patch (no
-   patching what is being replaced: the 2-8 row is not built). (b) fix 'top' to the third rise (a solid within 3 x 60 over the porch top),
-   shoot it; (c) the dip: find a dip that is water (W2_FORK_RIVERS.low's own river), shoot the paddle; (d) the gates (item 3 below, (c)):
-   clipcheck and paintcheck --part 1/3, 2/3, 3/3 on 0cdc35b7f, frozen, proven/ writable, two at a time; (e) the 1b hash, else tell the
-   lead and wait.
+2. THE LEAD'S RULINGS on c063c6f26 (by message): (i) do NOT bring t-eng-w3's draft machinery onto t-build-28-wip (it enters the
+   release line once, at INT-W3M); 2-8's own-row look is BUILD-28's first look, AFTER 1b. (ii) FAULT (1), the soil column through the
+   porch log, is the soil-pillar defect FIX-SOIL-b fixed (a bank's soil painted to the view bottom over a lower standable piece, the
+   'hung bank' rule); 0cdc35b7f lacks that fix, release 4's fixes head has it. AT 1b, FIRST: reshoot lip and porch, upright and
+   sideways, on the 1b head with this same toy (forkstills-s9.mjs.txt); if the column is still there it is a NEW defect: STOP and send
+   the lead the stills, do not patch it. (iii) FAULT (2): 2-3's config has no marsh, so the toy cannot prove design (3). MUST-SHOW at
+   BUILD-28's first look on 2-8's own row: the low road reads as WATER from the fork, UPRIGHT. (iv) at 1b, with the spots fixed, shoot
+   'top' (the third rise) and the marsh-dip paddle; if the line walks the 100 px dip without paddling on 2-8's own row too, say whether
+   2-8.md means the dip as a walk or a paddle, with the line number. (v) clipcheck and paintcheck on 0cdc35b7f frozen now; the 1b hash
+   comes when release 4's merge lands (this evening).
+   MY OWN SPOT FAULT, named: the porch still's 'log through the rises' faces' was MY pin: the porch's centre (x 16202) lies under the
+   rises (15502..16902 at 1398, 15902..16502 at 1338, headless on the page's config, col.ts), so he was drawn INSIDE them. FIXED in
+   forkstills-s9.mjs.txt (not yet re-shot): 'porch' = his first tread going left (between the rises' right end and the porch's right
+   end: x ~17102); 'top' = the highest rise within 3 x 60 over the porch (not the home pieces at y 680..850). Candidates for the column
+   in the stills: the narrow moss_stone blocks high over the fork (104 x 90 at x 16202 y 755; 88 x 90 at x 16930 y 803).
+3. NEXT (session 10): (a) paintcheck parts not finished in session 9 (see gates-s9.txt; parts are 0-BASED, 0/3 1/3 2/3, R-165.330:
+   '3/3' checks nothing), frozen, proven/ writable, two at a time; (b) wait for the lead's 1b hash (tell the lead, then idle); (c) at
+   1b: the reshoot of ruling (ii) FIRST, then item 4 below.
 
 ## EXACT NEXT STEP (session 8, W2-LANE h; code head 0cdc35b7f (= ceab09e20's code); this session adds only files under reference/)
 1. THE 2b TOYS, ON THE DRAFT, READY FOR 1b (DONE): draft-1b-B2b-forkjump-popup.patch.txt is ONE patch that applies on 0cdc35b7f (checked

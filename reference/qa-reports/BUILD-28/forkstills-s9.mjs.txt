@@ -69,9 +69,9 @@ for (const [tag, w, h] of [['upright', 412, 915], ['sideways', 915, 412]]) {
     if (!W) return { dbg: { id: e.currentStage.config?.id, secs: (e.currentStage.gen2?.sections ?? []).map((s) => s.id ?? s.brick ?? s.kind).slice(0, 12), want: [F.wall.w, F.wall.h], tall: solid.filter((q) => q.height >= 40 && q.height <= 80).map((q) => [Math.round(q.x), Math.round(q.y), q.width, q.height]).slice(0, 20), n: P.length } };
     const lip = W.y + W.height;
     const porch = solid.filter((q) => q.width === F.porch && Math.abs(q.y - W.y) < 2 && q.x + q.width <= W.x).sort((a, c) => c.x - a.x)[0];
-    const above = solid.filter((q) => porch && q.y < porch.y - 1 && q.x >= porch.x - 1 && q.x + q.width <= porch.x + porch.width + 1).sort((a, c) => a.y - c.y);
+    const above = solid.filter((q) => porch && q.y < porch.y - 1 && q.y >= porch.y - 3 * 60 - 2 && q.x >= porch.x - 1 && q.x + q.width <= porch.x + porch.width + 1).sort((a, c) => a.y - c.y);
     const floor = solid.filter((q) => Math.abs(q.y - (lip + FR.marsh.floor)) < 2 && q.x < W.x).sort((a, c) => c.x - a.x);
-    return { W: [W.x, W.y, W.width, W.height], lip, gap: porch ? W.x - (porch.x + porch.width) : null, porch: porch ? [porch.x, porch.y, porch.width] : null, top: above[0] ? [above[0].x, above[0].y, above[0].width] : null, rises: above.length, floor: floor.map((q) => [q.x, q.width]) };
+    return { W: [W.x, W.y, W.width, W.height], lip, gap: porch ? W.x - (porch.x + porch.width) : null, porch: porch ? [porch.x, porch.y, porch.width] : null, top: above[0] ? [above[0].x, above[0].y, above[0].width] : null, rises: above.length, riseR: above.length ? Math.max(...above.map((q) => q.x + q.width)) : null, floor: floor.map((q) => [q.x, q.width]) };
   }, [E, built.F, built.FR]);
   console.log(tag, 'fork', JSON.stringify(fork));
   if (!fork || fork.dbg || !fork.porch) { console.log('the page did not lay the fork (no W or porch on the built stage)'); process.exit(3); }
@@ -81,7 +81,7 @@ for (const [tag, w, h] of [['upright', 412, 915], ['sideways', 915, 412]]) {
   const spots = [
     ['bank', Wx + Ww + 140, fork.lip, -1],
     ['lip', Wx + 30, Wy, -1],
-    ['porch', px + pw / 2, py, -1],
+    ['porch', fork.riseR ? (fork.riseR + px + pw) / 2 : px + pw / 2, py, -1],
     ['top', fork.top ? fork.top[0] + fork.top[2] / 2 : px + pw / 2, fork.top ? fork.top[1] : py, -1],
   ];
   for (const [name, x, y, facing] of spots) {
