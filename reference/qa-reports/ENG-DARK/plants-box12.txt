@@ -8,3 +8,7 @@ MISSED  the way-down plan never takes a trunk mid-way (no up grab)  -> 'MID-WAY'
 CAUGHT  the seam check off: a seam he walks over read as a way down (downEnd)  -> 'a seam he walks over is no way down'
 CAUGHT  the dark stop's turn room off: the turn pressed at the rim's very edge (glowWait)  -> 'the dark stop's turn is never pressed at the rim's very edge'
 plants rc=1
+dbt rc=0
+darkBots.test whole on c5e25be9d (clean worktree, after the plants):
+# pass 11
+# fail 0
