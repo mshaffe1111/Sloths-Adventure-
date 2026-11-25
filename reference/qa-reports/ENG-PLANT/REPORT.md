@@ -13,8 +13,7 @@ every life lost, its river and his last take-off). Each probe imports from a fro
 1. RED 9 (riverRide :282 bankUp, bar: child N 40 off +5 lives AND the both-ways far bank +2 s). 2-1's full search on 36e8efe6f
    (data/t/search1.txt, search2.txt: 9 bot-settings x seeds 1-40, castRun on / upstream off / bankUp off) has NO row at the bar: the most
    bankUp moves is child N 39 2 -> 4, kid N 37 5 -> 7 and rescued, middle N 14 2 -> 3; child N 40 is 1 -> 1. The back rivers (dir -1, a
-   probe of every W2 stage, seeds 1-3) are on 2-1 (2 per roll) and 2-7 (11 per roll) only. 2-7's search (data/t/search27.txt, bankUp
-   on/off, every bot both settings 1-40) WAS RUNNING at the box: 141 of 360 rows done at the hand-over; rows bankUp moves so far: kid normal 1 on dirty L5 R1 buOff dirty L8 R2; kid normal 4 on dirty L6 R1 buOff dirty L8 R1; kid normal 17 on CLEAN L5 R0 buOff dirty L12 R3; kid normal 36 on dirty L13 R1 buOff dirty L12 R1; kid normal 39 on CLEAN L9 R0 buOff CLEAN L1 R0; adult normal 13 on CLEAN L1 R0 buOff CLEAN L0 R0; adult normal 38 on CLEAN L1 R0 buOff CLEAN L0 R0 (kid N 17: on clean 5 lives, off 12 lives and 3 rescues: the one row at the lives bar so far). Next: (a) for each 2-7 row with off +5 lives, trace it
+   probe of every W2 stage, seeds 1-3) are on 2-1 (2 per roll) and 2-7 (11 per roll) only. 2-7's search (data/t/search27.txt, bankUp on/off, every bot both settings 1-40) FINISHED (360 rows, 12:44 PM ET 11-25): ONE row at the lives bar, kid N 17 (on clean 5 lives; off 12 lives, 3 rescues); also off-rescued while clean on: child N 11 (0 -> 3, 1 rescue), child N 36, child E 16; every other move is 1-3 lives either way (47 rows move; 2-7 is all back rivers, so the both-ways time half has no river there). Next: (a) trace kid N 17 on 2-7 (trace40-t with stage 2-7, bot kid)
    (trace40-t with stage 2-7: is each extra life at a back river's far bank, a log carrying him back = bankUp's own place?); (b) if one
    holds, re-plant :282 on it (BANKUP_CASES with the stage: castRun(bot, setting, '2-7', seed); the time half needs 2-7's own crossing, or
    name it dropped and why); (c) if none, RETIRE :282 per R-165.432 (delete the test and BANKUP_CASES; a comment names the search files;
@@ -24,7 +23,7 @@ every life lost, its river and his last take-off). Each probe imports from a fro
    end and went under (no press: the 'take-off' at x 25,371 is the log leaving him); ON, he is up the far bank and loses none. On this
    branch's head 36e8efe6f the row is 1 -> 1: the one life (on and off) is at t 144.07 x 14,467 on a river HIS way, run off log #67's
    front (vx 154), nothing to do with bankUp. So CI-1's move is +1 at bankUp's own bank, far under the bar of 5.
-2. RED 7 (firsttimer :185 boardHop, bar: on stands >= 1 and 0 lives lost within 3 s of a stand at a lip with a log his way across it;
+2. RED 7 (firsttimer :185 boardHop [2-2 child and middle Normal seeds 1-40 DONE at the box, data/t/board22.txt: 80 rows, 39 with a stand at such a lip, boardHop on == off on EVERY row, 0 HOLDS; still to search: 2-2's other bots and Easy, then 2-1, 2-4, 2-5, 2-9], bar: on stands >= 1 and 0 lives lost within 3 s of a stand at a lip with a log his way across it;
    off >= 1 such life; plus the middle N 17 on 0). Not searched yet. Run board-t over 2-2 first (`tsx board.mts 2-2 bot:setting:seed ...`,
    every cast bot, both settings, seeds 1-40; prints HOLDS where on 0 / off >= 1), then 2-1, 2-4, 2-5, 2-9 (the stages with rivers his
    way). Re-plant on a HOLDS row (keep the test's own meet(); the middle check on a row with stands >= 1 and 0 lost); if none anywhere,
