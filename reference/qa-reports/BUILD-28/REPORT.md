@@ -20,6 +20,16 @@ DO (A) NOW, in this order, on a chattr-frozen tree for every run (D115); the pro
      from the bots' measured flights (measure every tier's climb flight on the probe: take-off x, landing x); planted: the old model
      FAILS on the measured child-easy climb.
  Then the probe: target 54/54 (shrine, home 3, setBack 0, 0 rescues) WITH the (B) draft applied in the probe tree only (draft-B-reroute.patch.txt).
+ A1 STARTED (DRAFT, NOT LANDED: draft-A1-marsh-from.patch.txt here, riverLay.ts `from` + W2_FORK_RIVERS.low.from derived = 400).
+     Measured on frozen /home/user/wt28g (930a2dc01 + A1 draft + B draft): the built 2-96 home leg lays the first floor 400 wide at the
+     NEAR edge (dx 0, w 400, then 150s from dx 500; the pipeline's mirror is right, seeds 1-2). Probe 45/54: middle and expert late 0
+     now PASS; still MISS: child-easy late 0 x3 (A2, the climb onto the porch, as expected), child late 0 x3 and middle-easy late 0 x3
+     (NEW: middle-easy takes off at 1354/860, 46 px BEFORE the first dip at W0+400, rises through the porch-alone stretch at x 1377-1381
+     and lands on RISE1's top 1406/680, 180 px up). So `from` = 400 is NOT enough: the dips must start at the porch-alone stretch + the
+     longest take-off-before-the-dip + the arc's rise to the porch's height, measured per tier (the child's pop is not yet traced:
+     TRACE it first, FROM=14.5 TRACE=23.5 WHO=child LATE=0). That number is A3's verdict too (take-off span x apex vs thin pieces
+     with no block on them). Also check that a BLOCK stops a hop from below (no run has tested it: every pop so far was at the thin
+     porch alone). Do NOT land A1 until the probe is 54/54 with A2 and A3.
 (B) AT 1b, YOURS, its own ENGINE PIECE commit AFTER the merge (firsttimer.ts merged once): apply draft-B-reroute.patch.txt; toy RED on
  the old route, GREEN on the fix (the probe's late-15/19 runs are that toy: commit it as a lineBot test); rule 28: ENG-PLANT's 10 known
  flips AND the wide sample (seeds 1-10, every bot, both settings, on 2-1/2-2/2-4: zero BAR PASS -> FAIL vs main's rows).

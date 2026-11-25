@@ -1,0 +1,40 @@
+diff --git a/src/game/gen2/riverLay.ts b/src/game/gen2/riverLay.ts
+index 65ab31093..1c4f128d6 100644
+--- a/src/game/gen2/riverLay.ts
++++ b/src/game/gen2/riverLay.ts
+@@ -57,7 +57,7 @@ export interface RiverRow {
+    * The water stands RIVER_LAY.marshWater under the floor's top; a flood raises it to paddling depth under the FLOOR (floodLay), and the
+    * close covers the floor (deep: a wall the line waits at). The row's logs, speed and look are not read (it is still water)
+    */
+-  marsh?: { width: number; floor: number; dips: number; dip: number };
++  marsh?: { width: number; floor: number; dips: number; dip: number; from?: number };
+ }
+ 
+ /** how high over its log's top a riding petal sits (px): a petal's height over the floor it is laid on (the sections' pickup `dn`) */
+@@ -103,9 +103,11 @@ export function layRiver(row: RiverRow, x0: number, bankY: number, nextId: () =>
+   if (row.marsh) {
+     // (a marsh: its floor's pieces, solid, in the banks' own style (`style`), split by its dips; no logs, still water)
+     const m = row.marsh;
+-    const piece = (m.width - m.dips * m.dip) / (m.dips + 1);
++    // (`from`: the dips start that far in, the first floor runs to it and the floors after each dip share the rest; unset: evenly spaced)
++    const piece = m.from === undefined ? (m.width - m.dips * m.dip) / (m.dips + 1) : (m.width - m.from - m.dips * m.dip) / m.dips;
++    const first = m.from ?? piece;
+     const top = bankY + m.floor;
+-    const floor: Platform[] = Array.from({ length: m.dips + 1 }, (_, i) => ({ id: nextId(), x: x0 + i * (piece + m.dip), y: top, width: piece, height: 200, type: 'solid', ...(style ? { style } : {}) }) as Platform);
++    const floor: Platform[] = Array.from({ length: m.dips + 1 }, (_, i) => ({ id: nextId(), x: x0 + (i ? first + m.dip + (i - 1) * (piece + m.dip) : 0), y: top, width: i ? piece : first, height: 200, type: 'solid', ...(style ? { style } : {}) }) as Platform);
+     const zone: RiverZone = { x0, x1: x0 + m.width, surfaceY: top + RIVER_LAY.marshWater, dir: row.dir, speed: 0, marsh: { floor: top, lip: bankY }, ...(row.safe ? { safe: { backX: x0 - 70, backY: bankY } } : {}), ...(row.flood ? { floodMark: { kind: row.flood, lip: bankY } } : {}) };
+     return { zone, logs: [], floor, petals: [] };
+   }
+diff --git a/src/game/gen2/worlds/w2.ts b/src/game/gen2/worlds/w2.ts
+index e2be367bb..d3a5fc28c 100644
+--- a/src/game/gen2/worlds/w2.ts
++++ b/src/game/gen2/worlds/w2.ts
+@@ -194,7 +194,7 @@ export const W2_FORK: W2ForkShape = {
+ };
+ /** the low road's row: a MARSH (riverLay.ts RiverRow.marsh; 2-8.md:9: 1,400 px with four 100 px dips, its floor 60 px under the banks),
+  *  still water, no logs, marked for the flood as the road that turns deep */
+-export const W2_FORK_RIVERS = { [W2_FORK.row]: { dir: 1, speed: 0, logW: 0, logs: 0, safe: true, flood: 'close' as const, marsh: { width: 1400, floor: 60, dips: 4, dip: 100 } } } satisfies Record<string, RiverRow>;
++export const W2_FORK_RIVERS = { [W2_FORK.row]: { dir: 1, speed: 0, logW: 0, logs: 0, safe: true, flood: 'close' as const, marsh: { width: 1400, floor: 60, dips: 4, dip: 100, from: (W2_FORK.porch - W2_FORK.rises[0].w) / 2 } } } satisfies Record<string, RiverRow>;
+ /** the two-road section `id` for job `job` (its numbers W2_FORK's) */
+ export function w2TwoRoad(id: string, job: NodeJob, f: W2ForkShape = W2_FORK): SectionTemplate {
+   // (a share along the near bank: `d` px past its end; W's place on it: `wall.back` px back from its end)
