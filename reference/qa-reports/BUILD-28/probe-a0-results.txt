@@ -1,0 +1,8 @@
+# {"over":"thin","double":false,"height":48,"feetMin":762.2,"headMin":714.2,"end":{"x":1300,"y":860,"grounded":true,"on":1}}
+# {"over":"thin","double":true,"height":48,"feetMin":683.1,"headMin":635.1,"end":{"x":1300,"y":740,"grounded":true,"on":2}}
+# {"over":"block-on-thin","double":false,"height":48,"feetMin":762.2,"headMin":714.2,"end":{"x":1300,"y":860,"grounded":true,"on":1}}
+# {"over":"block-on-thin","double":true,"height":48,"feetMin":680,"headMin":632,"end":{"x":1300,"y":680,"grounded":true,"on":3}}
+# {"over":"block","double":false,"height":48,"feetMin":762.2,"headMin":714.2,"end":{"x":1300,"y":860,"grounded":true,"on":1}}
+# {"over":"block","double":true,"height":48,"feetMin":680,"headMin":632,"end":{"x":1300,"y":680,"grounded":true,"on":3}}
+# pass 1
+# fail 0

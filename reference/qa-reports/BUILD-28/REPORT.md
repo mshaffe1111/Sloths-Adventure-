@@ -1,4 +1,35 @@
-# BUILD-28 REPORT (W2-LANE: 2-8 "Before the Water Rises"; R-165.430 (2), READY-28, BUILD-28). Session 1 (W2-LANE a), started 9:44 AM ET (from date). Session 2 (W2-LANE b), started 10:07 AM ET (from date). Session 3 (W2-LANE c), started 10:30 AM ET (from date). Session 4 (W2-LANE d), started 10:52 AM ET (from date). Session 5 (W2-LANE e), started 11:19 AM ET (from the session hook date)
+# BUILD-28 REPORT (W2-LANE: 2-8 "Before the Water Rises"; R-165.430 (2), READY-28, BUILD-28). Session 1 (W2-LANE a), started 9:44 AM ET (from date). Session 2 (W2-LANE b), started 10:07 AM ET (from date). Session 3 (W2-LANE c), started 10:30 AM ET (from date). Session 4 (W2-LANE d), started 10:52 AM ET (from date). Session 5 (W2-LANE e), started 11:19 AM ET (from the session hook date) Session 6 (W2-LANE f), started 11:41 AM ET (from the session hook date)
+
+## EXACT NEXT STEP (session 6, W2-LANE f): A0 FAILED: A BLOCK DOES NOT STOP A HOP FROM BELOW. STOPPED before (i), as ruled; the lead rules
+WAIT for the lead's word on the options below; nothing past A0 is built (the lead's order: "If a block does NOT stop him, STOP and tell
+the lead before building (i)"). On the word: (c) -> A2, A3 (single-jump reach), A4, the bot's road re-read, re-probe; (a) -> re-shape first.
+A0, PROVEN (probe-a0.test.ts.txt, its output probe-a0-results.txt; frozen /home/user/wt28h at c52f4ed39, RealPlay('2-1') bare, Normal):
+ the marsh floor at Y+60 (860); over it at the porch's height the porch ALONE (thin, top 740, h 24), the porch with rise1 ON it (a block,
+ top 680, h 60: the (i) shape), or a block ALONE (680-740). He hops straight up from the floor under its middle:
+ - a full held SINGLE jump: feet 860 -> 762.2 (rise 97.8); his head (body 48) to 714.2 in ALL THREE, i.e. into the block's span: NO stop;
+   he falls back to the floor in all three (a top is caught within 14 px under the apex on Normal, 20 on Easy: physics.ts ASSIST.catchDrop 6)
+ - a DOUBLE jump (the second at the first's top): rise 176.9 (feet 683.1). Porch alone: lands ON THE PORCH (740). Block on the porch:
+   rises through both, lands ON THE BLOCK'S TOP (680). Block alone: the same (680).
+ WHY (engine.ts): no piece has a head stop. The solid-block code (engine.ts:2785) stops him only at a block's FACES (blockBeside, from
+ left/right: "nor when he is wholly under it ... he cannot push it from below"); the only underside stop is a shut fig gate's
+ (fieldPlay.ts lid). Every piece is landed on from above.
+ SO (i) DOES NOT FIX (A): it moves the pop-up from the porch (120 over the marsh floor) to rise1's top (180); both are inside a double
+ jump's reach (176.9 + 14 = 190.9 px; 196.9 Easy). Session 5's pop-ups (middle 1156/860 -> 1299/740, 120 up) are double jumps: a single
+ jump (held, or a touch flick: realPlay.ts, 97 px up) reaches 111.8 (117.8 Easy).
+ OPTIONS (each the lead's; none built):
+  (a) the high road over the marsh out of a double jump's reach: every high-road top over the marsh floor at least ~200 px above it
+      (>= 140 over the banks), e.g. the three ups on the near bank before the water, the marsh crossed at Y-180 (240 over its floor), the
+      three downs over the far bank. A new shape for 2-8.md (60 px steps and 2,200 px of high road can stay; the treads move; the near
+      bank grows).
+  (b) an engine head stop on the pieces over the marsh (opt-in, as the fig gate's lid): the porch's underside is 96 px over the marsh
+      floor, 48 over his head: every dip hop under it would stop after 48 px of rise (~80 px of carry at a full run), short of a 100 px
+      dip. Not workable under the ruled porch.
+  (c) MY PICK: keep the ruled shape. A DOUBLE jump up off the low road is the player's own move onto the high road (both roads go home;
+      the high road is the safe one); the choice stays his while his ordinary hop keeps the low road. A3 reads "no high-road top within a
+      SINGLE jump's reach (catch included, Easy's 20) over the low road's floor": the ruled porch passes, 120 > 117.8, by 2 px on Easy
+      (tight: the marsh floor or the porch 10-20 px further apart gives a margin; to name). The bot: its dip hop a single jump (it
+      double-jumps today), and a pop-up onto the high road re-reads his road as HIGH so it walks on (the 12 late-0 rescues). A2 (W for
+      the child-easy's measured climb) and A4 (forkFaults' climb from the measured flights) stand either way.
 
 ## EXACT NEXT STEP (session 5, W2-LANE e; hand-over on the 28-minute box; THE LEAD RULED (A) and (B), verbatim in its message)
 DO (A) NOW, in this order, on a chattr-frozen tree for every run (D115); the probe is probe-fork.test.ts.txt below (copy to <tree>/probe/):

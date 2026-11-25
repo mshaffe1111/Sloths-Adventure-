@@ -1,0 +1,39 @@
+/**
+ * A0 (BUILD-28 session 6, the lead's re-ruling): does a BLOCK stop a hop from below? A toy in the real engine (realPlay.ts RealPlay, the
+ * engine's own update): the marsh floor at Y+60, over it at the porch's height (Y-60) either a THIN piece (h 24, the porch), the porch
+ * with a BLOCK standing on it (rise1, h 60: the (i) shape), or a block alone (h 60, nothing thin under it). He stands on the floor under
+ * the middle of the piece and hops straight up: a full held jump, and a full jump with the second jump at its top (the bots' 180 px apex).
+ * Read: his highest head (feet - height) and where he stands after.
+ */
+import { test } from 'node:test';
+import { RealPlay } from '../src/game/realPlay.ts';
+import type { Platform } from '../src/game/types.ts';
+
+const Y = 800;
+const solid = (id: number, x: number, width: number, y: number, height: number) => ({ id, x, y, width, height, type: 'solid' }) as Platform;
+
+function hop(over: 'thin' | 'block-on-thin' | 'block', double: boolean, dx = 0) {
+  const r = new RealPlay('2-1', 1);
+  const floor = solid(1, 0, 4000, Y + 60, 200);
+  const thin = solid(2, 1000, 600, Y - 60, 24);
+  const block = solid(3, 1000, 600, Y - 120, 60);
+  r.bare([floor, ...(over === 'block' ? [] : [thin]), ...(over === 'thin' ? [] : [block])]);
+  r.stand(1300, Y + 60);
+  for (let i = 0; i < 10; i++) r.frame({});
+  let headMin = 1e9, feetMin = 1e9, second = false;
+  for (let i = 0; i < 90; i++) {
+    const p = r.p;
+    // (the second jump at the first jump's top: a fresh press as he stops rising)
+    const press = i === 0 || (double && !second && i > 3 && p.vy >= -40 && (second = true));
+    r.frame({ press, jump: i < 14 || (double && second && i < 40), right: dx > 0, left: dx < 0 });
+    headMin = Math.min(headMin, r.p.y - r.p.height);
+    feetMin = Math.min(feetMin, r.p.y);
+  }
+  for (let i = 0; i < 30; i++) r.frame({});
+  const p = r.p;
+  return { over, double, height: +p.height.toFixed(1), feetMin: +feetMin.toFixed(1), headMin: +headMin.toFixed(1), end: { x: +p.x.toFixed(1), y: +p.y.toFixed(1), grounded: p.grounded, on: r.e.standingOnId } };
+}
+
+test('A0 a block over the marsh floor and a hop from below', () => {
+  for (const over of ['thin', 'block-on-thin', 'block'] as const) for (const double of [false, true]) console.log(JSON.stringify(hop(over, double)));
+});
