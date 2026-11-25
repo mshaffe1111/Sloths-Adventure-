@@ -57,16 +57,20 @@ Said plainly: the kid (out of the BAR, as the lead counted it from session 6) go
 times' at 2-1's rivers (x 14,700-26,300), and fail->pass on 78; c22's 90-row sample had the same rate (2-1: 4 kid of 90). Not traced
 row by row: the lead decides whether the kid's 31 need a trace before the merge.
 
+## Result 5: pacerLay on c24's exact head (data/j/pacerLay-c24.txt): 21/23; red **{22, 23}** only
+22 (:254) RED half: 'without the skill the plant must lose (81.3 s against 108.37 s)'; 23 (:280) RED half: 'without the skill seed 2
+falls short at x 10683'. Both are the stale plants of ruling 2 (stale since 24d6ba567 / a0ab91d33), not c24's. **Row 8 PASSES on c24**
+(the base release-0.10.3 dfe631913 fails it by 0.04 s; c18 failed it too): ruling 3's margins still owed, and now also why it passes.
+
 ## EXACT NEXT STEP (session 9)
 0. Setup: `npm ci --legacy-peer-deps`; one worktree per hash, node_modules symlinked; single rows: data/j/row.sh.txt. Base: **c24
    2a2c44786**. Main's rows: data/c/main-<st>.jsonl; compare with tools/flips.py.txt (BAR = adult/child/middle/expert, kid excluded).
 1. DONE this session (Result 4: clean). Send the lead the kid's 31 PASS->FAIL for a ruling (trace them or not) with step 2's result.
-2. pacerLay on c24's exact head (`npx tsx --test src/game/gen2/pacerLay.test.ts`): name each red against the base's {8, 22, 23}
-   (release-0.10.3 dfe631913). c24's hold rule touches the run-up only (2-4's tailed liana); 2-7's race rows should not move, check.
+2. DONE this session (Result 5): pacerLay on c24 red only {22, 23}; row 8 passes.
 3. Ruling 2: RE-PLANT pacerLay 22 (:254, SKILLS.boardLog, home middle Easy 1; stale since 24d6ba567) and 23 (:280, SKILLS.raceSure,
    home N 2 + post N 5; stale since a0ab91d33) each at its SAME bar on its cause laid explicitly (as af127d21e re-planted fromTakeoff;
    R-165.432): RED with the skill off, GREEN on. Never loosen a bar (law 22).
-4. Ruling 3: row 8 (the careful middle loses home Normal 3 by 0.04 s, 113.7 vs 113.66, under BUILD-26j's step-up rule, hunk 14 +
+4. Ruling 3: row 8 (PASSES on c24, Result 5; on the base the careful middle loses home Normal 3 by 0.04 s, 113.7 vs 113.66, under BUILD-26j's step-up rule, hunk 14 +
    stepUpAtLip, d6350d3e7 via b3195f31e; data/h/t8hunk.txt): trace where the 0.04 s goes and send the lead the careful middle's
    MARGIN (his time minus the boat's) on EVERY race row on c24. Change neither the boat nor the rule.
 5. Only on a clean wide sample: hopJudged (`npx tsx --test tools/inspect/hopJudged.test.ts`), then the full rows (2-1, 2-2, 2-4, then
