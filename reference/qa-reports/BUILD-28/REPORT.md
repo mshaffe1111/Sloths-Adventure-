@@ -9,8 +9,14 @@ THE LEAD'S RULINGS 2-4 CAME at the end of session 1 (verbatim in 'For the lead' 
    jumping to the farthest-reaching piece (:196). From `at` on piece `cur`, the next piece is the FIRST met ahead (the nearest near side in
    (at.x, farOf(cur) + hop]): a piece standing on cur's top (p.y + p.h within 1 px of cur.y) is a wall-step rise (<= step) and joins the
    chain; a piece over cur with room under it is a bare edge hop up (refused by name, the existing message); level/down continuations as
-   now. General: no stage id. Plants in src/game/flood.test.ts: RED by name on a FLOATING rise over a porch (h short of the porch's top),
-   GREEN on the section (w2TwoRoad.test). Then re-run on a frozen tree: flood + floodLay + w2TwoRoad + tools/inspect/lineBot.test.ts (8/8:
+   now. THE RULE, precisely (session 1's design, not yet coded): a piece is IN HIS WAY on cur when its near side lies ahead of where he
+   enters cur and before farOf(cur), and its BOTTOM (y + h; a thin piece without h: y) is over cur's top and under his head (within his
+   collider's 48 px, engine.ts:1223; his width 44, :1222). Standing on cur (bottom within 1 px of cur.y) and at most `step` tall: a
+   wall-step, it joins the chain and he goes on from its far end. Standing on cur and taller than `step`: refused by name (a wall). Its
+   bottom over cur by more than 1 px (room under it, less than his height): refused as a bare edge hop up (the existing message). NOTE:
+   a naive 'within a step of cur' filter MISSES the lead's plant (the rise lifted 10 px off the porch is 70 px over it); the bottom rule
+   catches it. General: no stage id. Plants in src/game/flood.test.ts: RED by name on that FLOATING rise (the section's rise lifted 10 px),
+   RED on a 70 px rise standing on the porch, GREEN on the section (w2TwoRoad.test, the chain now W, P, the rise, porch2). Then re-run on a frozen tree: flood + floodLay + w2TwoRoad + tools/inspect/lineBot.test.ts (8/8:
    it reads highRoad's chain, :210-214; B, its block on P, now joins the chain: high = chain minus W and the last piece still holds) +
    tsc + generalitycheck. lockall is not needed (no listed stage lays a flood) but say so.
 1c. THE LOW ROAD IS THE DESIGN'S MARSH WALKWAY, never a log river (For the lead 3): lineBot floodRun's shape (a walkway 60 px under the
