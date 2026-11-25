@@ -1,4 +1,62 @@
 # ENG-DARK REPORT (the dark + light ring as one gen2 brick; WORLD-3-PLAN F2; R-165.449)
+**EXACT NEXT STEP (ENG-DARK-i box 9 hand-over, 1:58 PM ET by `date`; head on t-eng-dark-wip = this commit; CODE still 0dadb295's: box 9
+changed no src or tools file. Box 10 OWNS every step below. Re-fetch before every commit (D138).)**
+**THE LEAD'S REDIRECTED ORDER (two messages, word for word in substance; 0dadb295 will NOT land, box 8's x40 failed the bar):**
+(1) trace + fix the 32 N loop (general, a toy each way); (2) kid N 27's strand (195.4 s, 4 rescues; base shrine 158.1 s, 3); (3) the 33 N
+LAY FIX (a second light over the step-off landing when the rim's own landing is a hop; a toy each way; darkLandings/darkGaps [] over all
+80 rolls); (4) the 7 single crossings, each fixed or ruled by the lead with evidence; THEN re-anchor darkBots toys 3, 4, 5, 6 on the
+FINAL lay (below); then ONE fresh x40 vs the bar (shrine 360/360; unlit at or below 5 events with NO loop; no rescue kind the base
+lacks; 33 N's behind edge lit; one line to the lead with the table); then the gates ONCE on that frozen head (plants: all 27 CAUGHT, no
+NO TEST, no BASE RED; tierBots 9/9; the suite 3 shards; the CI line), the every-landing-awake count again, and LAND on t-eng-w3.
+TIME: steps 1-3 with their toys by 4:00 PM ET; the fresh x40's line by 5:00 PM ET; if it cannot land by 7:30 PM ET, tell the lead
+at 5:00 with what is left; HARD STOP 8:00 PM ET.
+**Step 1, the 32 N loop, TRACED (probes/rim.mts, probes/loop.mts; adult Normal 32 on 0dadb295's code), NOT fixed:**
+- The rim x 367, y 9682 is the LEFT end of 367-547@9682; its "landing" is a HOP across a 35 px SEAM onto 79-332@9676 (6 px higher),
+  landing (302, 9676), its light id 54 at (302, 9586) ASLEEP, never woken in the loop. Neither the cave mouth nor the depth cap moved
+  or slept light 54 (it sits 90 above its landing, as the lay always hung it). Light 51 (427, 9592) is AWAKE (cave mouth): it is the light
+  of rim 332, the right end of 79-332, whose hop lands on 367-547.
+- The bot PING-PONGS over the seam: from the vine at x 99 he walks right, over the seam (one frame of air at x 351), stops at x 368,
+  turns, walks left over the seam (the crossing, at x 365: the engine's grace past the edge), stops at x 315, turns right... every 0.67 s
+  (183.30, 183.97, 184.63 ...). He walks the seam without falling: for Pokey it is floor, for isRim (12 px) it is two rims.
+- Why it went dark on 0dadb295: before ruling (ii), rim 332's light 51 slept, so glowWait stopped him at x 315 (17 px from rim 332,
+  facing it) and that stop also woke 54 (13 px behind him, inside GLOW_REACH.back 260): every later pass over 367 was lit. With 51 laid
+  awake, no stop at 315, so 54 never wakes. Experiment (mouth put back to sleep, third worktree): no frame near the rim 182-190 s and
+  unlit [] through 191 s (the path differs).
+- Why glowWait does not stop him at 368: the turn left is decided while his x is 366 (1 px OUTSIDE 367-547 by p.x, though the engine
+  has him standing on it), so glowWait's on(r) is false and no stop starts; the press lands 3 frames later (SNAP_THUMB) and he is over.
+  Experiment: the stop's turn made conditional (turn only when the light is out of reach facing his way): the SAME loop (the turn is
+  not the cause; reverted).
+- MY READING (box 10 checks it first, one experiment): the ping-pong is downEnd() (firsttimer.ts, 'a way DOWN: the end of his ledge to
+  step off ... nearest the way on'): on 79-332 it picks the right end, on 367-547 the left end, because each end's step-off lands on the
+  OTHER piece at his height. A hop across a seam is not a way down. Candidate general fixes, each needs a toy each way: (a) BOT: downEnd
+  never picks an end whose step-off lands at his height (a hop across); (b) LAY/VERDICT: a gap he walks over (narrower than his body,
+  within a step of his height) is not a rim (isRim): this moves lights on every roll, so the 80-roll loop and the x40 judge it; (a) is
+  the smaller change; the lead rules if (a) does not clear the kid's 26 too. First experiment: log downEnd(p)'s return per frame
+  183.0-184.0 in probes/loop.mts (a debug field, never committed in firsttimer).
+**DONE in box 9 (all on 0dadb295's code; commit 51e74b46 + this one):**
+- The plant harness (approved by the lead): the filter is ESCAPED (node reads --test-name-pattern as a regex; "own kind ('climbed')"
+  matched no test, so plants 17/18 read MISSED and had never run from the script since box 5); a plant whose filter runs no test prints
+  NO TEST and fails; a plant whose toy is RED unplanted prints BASE RED and fails (plant 15 read CAUGHT only because its toy was already
+  red); a second argument runs a subset (`planted-faults.py <wt> 17,18`). The countermeasure for 'a check that runs nothing reads as a
+  pass' (two holes, both in this harness).
+- Plants on 0dadb295, unfrozen worktree, the committed script: 27 run in 8 min 39 s, 22 CAUGHT, 5 MISSED (13, 14, 16, 17, 18). With the
+  fixed harness: 17 and 18 CAUGHT; 15 BASE RED.
+- **darkBots.test 6/7 on frozen 0dadb295: test 5 'a dark give-up ends with the visit' FAILS ("two waited-out stops: []").** Box 8 ran
+  dark.test only.
+- The stale toys, measured (plant + the cave mouth put back to sleep, third worktree): toy 4 (plant 14, child roll 19) RED again at its
+  own rim x 974, y 3098 at 42.07 s; toy 6 (plant 16, kid Normal roll 16) RED again at its own rim x 956, y 5113 at 73.90 s; toy 5 (test
+  5) waits at that same rim 974. Those rims are now cave-mouth rims laid awake, so the bots never stop there. Toy 3 (plant 13, expert
+  roll 12) stays green with the mouth asleep too: another cause, not traced. RE-ANCHOR toys 3-6 AFTER steps 1-4 (the lead), by a search
+  over rolls 1-40 (about 10 s a run): a roll and cap where the planted bot crosses a SLEEPING rim unlit and the unplanted bot does not;
+  each toy keeps its name and asserts.
+- tierBots 9/9 on frozen 0dadb295 (3 min 23 s). Holds for the new head only if firsttimer.ts and 1-1 do not move (a bot fix moves it).
+- **The lead's ruling 1, the every-landing-awake count** (probes/awake.mts 1 40, frozen 0dadb295): **0 of 912 glowworm zones over 80
+  rolls** have every landing awake (zones by the share of their rims lit awake: none 372, under half 501, half or more 39, all 0); no
+  zone without a rim; no rim without a light. The probe's own plant (PLANT_AWAKE=1: every glowworm awake) counts 48/48 on rolls 1-2.
+  The lead: "0 of 912 zones all awake, good." Re-count on the final lay.
+- **RUNNING in box 9's container (box 9 finishes and records ONLY this, D138):** the suite on frozen 0dadb295, 3 shards one after another
+  (to surface other reds; the lead: "let it finish, record it, start nothing else on 0dadb295"); the CI line was CUT from the chain.
+  Box 9 commits the result as ENG-DARK/suite-0dadb295.txt (re-fetch, merge, never force).
 **EXACT NEXT STEP (ENG-DARK-h box 8 hand-over, 1:37 PM ET by `date`; FINAL CODE HEAD 0dadb295 on t-eng-dark-wip, FROZEN in box 8's
 container (wt-h, `chattr -R +i src tools reference`). Box 9 OWNS every step below. Re-fetch before every commit (D138).)**
 **RUNNING in box 8's container (box 8 finishes and records ONLY these, D138):** the x40 on frozen 0dadb295, two lanes:
