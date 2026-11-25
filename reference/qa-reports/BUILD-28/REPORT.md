@@ -1,6 +1,34 @@
 # BUILD-28 REPORT (W2-LANE: 2-8 "Before the Water Rises"; R-165.430 (2), READY-28, BUILD-28). Session 1 (W2-LANE a), started 9:44 AM ET (from date). Session 2 (W2-LANE b), started 10:07 AM ET (from date). Session 3 (W2-LANE c), started 10:30 AM ET (from date). Session 4 (W2-LANE d), started 10:52 AM ET (from date). Session 5 (W2-LANE e), started 11:19 AM ET (from the session hook date)
 
-## EXACT NEXT STEP (session 5, W2-LANE e; the PROBE FAILS on the ruled shape, both causes TRACED; a STOP for the lead's ruling)
+## EXACT NEXT STEP (session 5, W2-LANE e; hand-over on the 28-minute box; THE LEAD RULED (A) and (B), verbatim in its message)
+DO (A) NOW, in this order, on a chattr-frozen tree for every run (D115); the probe is probe-fork.test.ts.txt below (copy to <tree>/probe/):
+ A1. ONE ENGINE-PIECE COMMIT (rule 26): riverLay.ts RiverRow.marsh gains `from?: number` (px from the water's near edge in the leg's
+     direction where the dips start; unset = today's even spacing, so every shipped row lays the same: prove with lockall, zero moves).
+     With `from` the first floor piece runs 0..from and the four dips + floors share the rest: piece p = (width - from - dips*dip)/dips
+     after each dip (1,400, from 400: 0-400 floor, dip 400-500, 150 floor, dip 650-750, 150, dip 900-1000, 150, dip 1150-1250, 150 to
+     1,400). W2_FORK_RIVERS.low.marsh.from = 400 (W2_FORK: porch-alone stretch = rises[0] centred: (porch - rises[0].w)/2 = 400;
+     derive it, never a bare 400). Planted test in riverLay/w2TwoRoad: from unset == today's pieces; from 400 == the layout above.
+ A2. W wide enough that child-easy's REAL climb lands ON W: measured flight 252 px from W's face (take-off 771/800, lands 1023/740,
+     W's face at 790); W.w >= 252 - (771..790 offset) + margin; name the margin (one body width, 44: W 300 is my first try) and
+     re-probe; the gap and the porch move with W (w2TwoRoad's arithmetic), the high-road treads stay 400.
+ A3. NEW VERDICT (flood.ts, next to strandFaults), named and planted: 'no low-road dip under a thin piece within his hop's reach' (a hop
+     from the low road's floor must never pass up through a high-road piece): for each dip, the take-off span either side within the
+     hop's reach (FLOOD_HOP) and his apex (measured: 180 px over take-off, child) against every thin high-road piece (h <= the thin
+     limit the engine uses: find it, the porch h 24 passed through) with NO block standing on it over that x. RED on b3747ddcb's shape
+     (dip 200-300 under the porch alone), GREEN on (ii). Laid in floodLay with forkFaults/strandFaults.
+ A4. forkFaults' climb model is WRONG (135 modelled: W2_FLOOD.climb land 62 + runUp 73; 252 flown by child-easy): correct W2_FLOOD.climb
+     from the bots' measured flights (measure every tier's climb flight on the probe: take-off x, landing x); planted: the old model
+     FAILS on the measured child-easy climb.
+ Then the probe: target 54/54 (shrine, home 3, setBack 0, 0 rescues) WITH the (B) draft applied in the probe tree only (draft-B-reroute.patch.txt).
+(B) AT 1b, YOURS, its own ENGINE PIECE commit AFTER the merge (firsttimer.ts merged once): apply draft-B-reroute.patch.txt; toy RED on
+ the old route, GREEN on the fix (the probe's late-15/19 runs are that toy: commit it as a lineBot test); rule 28: ENG-PLANT's 10 known
+ flips AND the wide sample (seeds 1-10, every bot, both settings, on 2-1/2-2/2-4: zero BAR PASS -> FAIL vs main's rows).
+1b HASH: ENG-PLANT-s merges about 1:00 PM ET (the lead sends it). Stills wait for (A)'s shape.
+THE 2-3 'cage1' CARRY-OVER (the lead asked): it touches NO shipped run (castBots, seedlist and lockall play each stage's own build); only
+ lineBot.test.ts builds a toy on '2-3' (lineRun, floodRun). Named, unmeasured: the OLD lineBot toys (start 300, EXIT 3000) run inside
+ 2-3's rooms cage0 (x 187-648) and cage1 (x 2834-3296); whether that changed any old lineBot verdict is not measured. Not fixed here.
+
+### Session 5's probe and trace (kept for its detail)
 Branch t-build-28-wip; CODE head unchanged (b3747ddcb; this commit only adds to reference/qa-reports/BUILD-28/). `git fetch origin
 t-build-28-wip && git checkout t-build-28-wip`, `npm ci --no-audit --no-fund --legacy-peer-deps`, ReadNotifications FIRST: the lead's
 ruling on (A) and (B) below, and release-0.10.3's hash for 1b. Nothing else moves until the ruling (LANES rule 2: a missing piece STOPS).
