@@ -1,0 +1,22 @@
+# usage: cmp.py <new.jsonl> <ref1.jsonl> [<ref2.jsonl>]: BAR (adult/child/middle/expert) seeds all-pass; PASS->FAIL and FAIL->PASS vs each ref
+import json,sys
+BAR={'adult','child','middle','expert'}
+def load(p):
+    d={}
+    for l in open(p):
+        if l.startswith('{'):
+            r=json.loads(l); d[(r['bot'],r['setting'],r['seed'])]=r
+    return d
+N=load(sys.argv[1])
+def seeds(D,keys):
+    ok={}
+    for k in keys:
+        if k[0] in BAR: ok.setdefault(k[2],True); ok[k[2]]=ok[k[2]] and D[k]['pass']
+    return sum(ok.values()),len(ok)
+for ref in sys.argv[2:]:
+    R=load(ref); ks=[k for k in N if k in R]
+    lost=[k for k in ks if k[0] in BAR and R[k]['pass'] and not N[k]['pass']]
+    won=[k for k in ks if k[0] in BAR and not R[k]['pass'] and N[k]['pass']]
+    kl=[k for k in ks if k[0]=='kid' and R[k]['pass']!=N[k]['pass']]
+    f=lambda L:' '.join(f"{k[0]}{k[1][0].upper()}{k[2]}" for k in sorted(L))
+    print(f"vs {ref.split('/')[-1]}: rows {len(ks)}/{len(N)}; BAR seeds all-pass new {seeds(N,ks)} ref {seeds(R,ks)}; BAR PASS->FAIL {len(lost)}: {f(lost)}; FAIL->PASS {len(won)}: {f(won)}; kid moved {len(kl)}: {f(kl)}")

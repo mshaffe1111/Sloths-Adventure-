@@ -47,6 +47,16 @@ line went into the UNFROZEN main checkout at c25 and `git checkout` restored it,
   judged gates (upstream `next` gateSees, the bank branch, tablePick) land the hop when the next log comes round or the bank is in reach,
   so he is not ridden back. The hand-back memory and a dead-end filter become a backstop only if rows still hand back after it.
 
+## The experiment re-measured (EXP_FRONT on c25, main checkout, restored; tools/cmp-o.py.txt): NOT a candidate's rows, the evidence for the ruling
+- **2-7 seeds 1-40, the 4 BAR bots, both settings, 280 rows** (data/o/expfront-2-7-x40.jsonl): **33/40 seeds with every BAR row passing**
+  (landing 29, c25 24). vs c25: BAR PASS -> FAIL 2: child E 11 (traced: A's shuffle, above), **child N 13 (UNTRACED)**; FAIL -> PASS 12
+  (child E 24, N 10, N 20, N 36, N 40; expert N 18, N 29, N 35; middle E 7, E 11, N 15, N 32). vs the landing: PASS -> FAIL 8: adult N 11,
+  N 24, child E 30, N 9 (cluster A, session 12's traces), child N 34 (D), child N 38 (B+C's walk-off shape), child E 11 (A's shuffle),
+  child N 13 (untraced); FAIL -> PASS 12. Kid rows not run (not BAR).
+- **2-1 wide sample, seeds 1-40, all bots, both settings, 360 rows** (data/o/expfront-2-1-w.jsonl) vs main (data/c/main-2-1.jsonl):
+  **BAR PASS -> FAIL 0**, FAIL -> PASS 2 (adult N 16, N 31); 39/40 BAR seeds (main 37). vs c3b: 0 lost, 1 gained. Kid moved 29 vs main
+  (non-BAR; c25's kid rows already move vs main, R-165.413). 2-2 and 2-4 NOT run in this box.
+
 ## EXACT NEXT STEP (session 14)
 0. Setup: `npm ci --no-audit --no-fund --legacy-peer-deps`; `git fetch --unshallow origin` (background). Worktrees in /home/user (this
    container had no /home/user/plant-work: freeze.sh.txt's `cd` needs that dir or edit it to the main checkout): fz-c25 6a64aa41e,
@@ -75,7 +85,10 @@ line went into the UNFROZEN main checkout at c25 and `git checkout` restored it,
        tablePick on a refused held aim, the boarding gates skip a dead-end log, else he stands on the bank by choice) and tablePick drops a
        log whose RIDE brings no bank/log into reach FROM WHERE HE WILL STAND (tools/ridedead-o.mts.txt; it must pass the landing's #21 -> #20
        at t 28.8 and refuse c25 E 11's #20 -> #19 at t 41.73; by the log's front alone it does NOT refuse it: see above).
-3. Re-measure (ruling 3), then the checklist (ruling 4). Push candidates to release-0.10.3-wip-plant-c only with their rows to the lead.
+3. On the candidate's EXACT head (frozen), once each: trace child N 13 (the experiment's untraced 2-7 loss) first; then the re-measure
+   (ruling 3: 2-7 x40 BAR vs the landing and c25, every moved row traced; 2-1/2-2/2-4 wide vs main, zero BAR PASS -> FAIL; the 10 known
+   flips; 1-4 and 2-5 vs main; the race margins, post Normal 5). Run times in this container: 2-7 x40 (280 rows) about 6 min and 2-1 wide
+   (360 rows) about 8 min, two at a time. Then the checklist (ruling 4). Push candidates to release-0.10.3-wip-plant-c only with their rows to the lead.
 
 Lessons applied: D134 (pushed + ls-remote before the hand-over), D128 (stamps from `date` / the hook), D115 (the probe in the UNFROZEN
 checkout, restored, never a frozen tree), D119 (commit message from a file), rule 28 (the cause traced on a second row before the fix).
