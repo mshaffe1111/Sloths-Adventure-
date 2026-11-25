@@ -8,7 +8,9 @@ section lines 43-51); zones.ts:265 spore() and :281 sporeRecipes; ENG-DARK's rep
 LESSONS D125-D136.
 BASE: t-eng-w3 at ENG-DARK's landing (the puff's glow is a light in the dark brick).
 1. Spore puffs as a gen2 zone brick (zones.ts's recipe as data, not copied): cycle 6.4 s, warn 1.0, active 2.2 on 3-1 (the design's numbers).
-2. The puff's light with a clock: it glows over warn + active (3.2 s) through the dark brick's light ring.
+2. The puff's light with a clock: it glows over warn + active (3.2 s) through the dark brick's light ring, using the ONE optional clock field
+   on Zone.lights decided in reference/architecture/ADR-004-timed-lights.md (unset = today's light; darkGaps counts a clocked light only when its
+   window covers DARK_AHEAD plus the drop's air time).
 3. Toy on a REAL World 3 row (3-1's draft): a puff shelf 240 px down, the bot drops in the lit window (38-42% of the cycle, flown); plants:
    no warn -> the fairness verdict RED; the light off -> the bot waits forever (RED).
 4. Stills both ways of a puff lighting a shelf below (the lead judges). lockall (any move traced), tierBots 9/9, the suite + the CI tool
