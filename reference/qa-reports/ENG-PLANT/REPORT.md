@@ -1,29 +1,66 @@
-# ENG-PLANT-q (ENG-PLANT-c session 15, started 10:44 AM ET 11-25 by the hook's stamp; this top written 10:52 AM ET 11-25): c27 built as ruled; **STOPPED on the ruling's condition 2 (NO DEADLOCK): every stand past W1's cap outlasts the logs' drift cycle; the lead has the rows and decides**
+# ENG-PLANT-q (ENG-PLANT-c session 15, started 10:44 AM ET 11-25 by the hook's stamp; this top written 10:57 AM ET 11-25): **c27 = 1e4b50a1d PUSHED** (the lead's rulings: at W1's cap walk to the lip, judge the far bank + logs with the held aim, refused -> tablePick from his own table); toys RED on c26 / GREEN on c27; **every race WON (10/10)**; the full order running
 
-Engine (bots), Opus 5.5 xhigh. Lead: session_01FhBbYN2CVHnFXg7XzqKXpM. **Code head stays c26 = 51ffe7eab** on release-0.10.3-wip-plant-c (c27 is
-NOT pushed there: it is local commit 33e573b35 on c26, kept here as data/q/c27.patch.txt). Data: data/q/. Toy runner: tools/toy27-q.mts.txt <tree>.
+Engine (bots), Opus 5.5 xhigh. Lead: session_01FhBbYN2CVHnFXg7XzqKXpM. **Code head: c27 = 1e4b50a1d** on release-0.10.3-wip-plant-c (pushed,
+`git ls-remote` confirmed; a fast-forward on c26 51ffe7eab). Data: data/q/. Toy runner (tree-agnostic): tools/toy27-q.mts.txt <tree>.
 
 ## EXACT NEXT STEP (session 16)
-0. Setup as session 15 did: `npm ci --no-audit --no-fund --legacy-peer-deps`; `git fetch --unshallow origin` (background); report tree:
-   `git worktree add --detach /home/user/rep origin/release-0.10.3-wip-plant-c-report`; frozen c26: `git worktree add --detach /home/user/fz-c26
-   51ffe7eab`, symlink node_modules, `chattr -R +i src tools`, `chattr -i src/game/gen2/proven`. c27 in the main checkout:
-   `git checkout -B c27work 51ffe7eab && git am <rep>/reference/qa-reports/ENG-PLANT/data/q/c27.patch.txt`.
-1. **Read the lead's answer to session 15's STOP message first** (sent at hand-over; ReadNotifications / the lead's message). Build NOTHING
-   past c27 without the lead's word (condition 2: "do not invent a fallback").
-2. The facts the lead has (data/q/probe-cap-c27.txt, 168 cap frames, every 0.5 s of every stand): at W1's cap no log is EVER judged at these
-   banks, with the held aim or any hold (0.12 / 0.2 / 0.3 / double): the logs run 28 px below the banks and pass under them, never bridging
-   the gap; the way on is the FAR BANK across 120-125 px at the same height. gateSees on that bank from where he stands: x 3631 (5 px back
-   of the lip): the held aim lands; x 6518 (46 px back): nothing lands; x 8093 (81 px back), 5216, 3853, 2359: only a double lands.
-   Options put to the lead (not built): (A) the cap's gate also judges the far bank in view (bankUp's shape); (B) walk to the lip before
-   judging (the front stand's principle on a bank).
-3. On the lead's word: build c28 as ruled; toy = tools/toy27-q.mts.txt's three reads (set-backs 0, the race WON, every stand past the cap
-   < the logs' cycle) RED on c26 AND on c27, GREEN on c28 (hopJudged.test.ts carries c27's toy test: keep it, rename if the rule changes);
-   then the ruling's condition 4 in full on c28's exact head (the 10 known flips; the wide sample 2-1/2-2/2-4 seeds 1-10 vs data/c/main-*;
-   2-7 x40 >= 29/40; every race WON with margins (tools/margins.mts.txt); 1-4 and 2-5 vs main; zero rows stuck or timed out), castBots rows
-   with `W1CAP=1` (c27's castBots writes every stand past the cap per row to stderr: `W1CAP {bot,setting,stage,seed,cap:[{t0,x,dur,cycle}]}`;
-   any dur >= cycle is a STOP row for the lead); then the table to the lead, then child N 13, then the checklist (session 14's item vi).
+0. Setup: `npm ci --no-audit --no-fund --legacy-peer-deps`; `git fetch --unshallow origin` (background); report tree `git worktree add --detach
+   /home/user/rep origin/release-0.10.3-wip-plant-c-report`; frozen c27: `git worktree add --detach /home/user/fz-c27 1e4b50a1d`, symlink
+   node_modules, `chattr -R +i src tools`, `chattr -i src/game/gen2/proven` (and fz-c26 51ffe7eab the same, for RED checks).
+1. The full order on c27's exact head (the lead's ruling condition 4), two heavy runs at a time, each once, every castBots run under
+   `W1CAP=1` (c27's castBots writes each row's stands past the cap to stderr as `W1CAP {bot,setting,stage,seed,cap:[{t0,x,dur,cycle}]}`;
+   any dur >= cycle is a STOP row: send the lead the row with a probe, no fallback):
+   - DONE: every race (tools/margins.mts.txt): 10/10 WON, table below.
+   - DONE: the 10 known flips (tools/set1-m.sh.txt -> data/q/set1-c27/; `python3 -I tools/set1cmp-p.py.txt data/q/set1-c27 data/c` ->
+     data/q/set1-c27-table.txt): **BAR rows PASS 12/12; every row identical to c26's (pass, rescues, lives; sorted diff 0)**; W1CAP: 23
+     rows, zero stands past the cap reaching a cycle.
+   - IN FLIGHT at hand-over (check the pushed files; re-run what is short): the wide sample (tools/wide-m.sh.txt, stages 2-4 then 2-1 then 2-2, seeds 1-10 ->
+     data/q/c27-<stage>-w10.jsonl; 90 rows each; compare tools/cmp-o.py.txt vs data/c/main-<stage>.jsonl: 0 BAR PASS -> FAIL).
+   - TO RUN: 2-7 x40 (adult/child/middle/expert, seeds 1-40, both: 280 rows; >= 29/40 all-pass; c26 33/40: data/p/c26-2-7-x40.jsonl);
+     1-4 and 2-5 seeds 1-40 every bot both (360 rows each) vs data/c/main-1-4.jsonl / main-2-5.jsonl; zero rows ending stuck or timed
+     out ('end' not 'shrine') in every set; zero W1CAP stands >= cycle.
+2. The c27 table to the lead (due 12:15 PM ET), BEFORE the checklist. Then child N 13 on c27 (session 14's item vi), then the checklist
+   (pacerLay 22/23 re-plants as laid toys 23/23; hopJudged (c27's two toys are its last two tests); the toys for c23-c27; the packet's
+   plants or retire per R-165.432; riverRide + firsttimer; the CI tool line 0 fail; tierBots 9/9; timecheck + roadmapcheck). The table again
+   before any merge; MERGE into release-0.10.3 (no force) ONLY on the lead's word. REPORT BY 1:00 PM ET; HARD STOP 3:00 PM ET.
+3. Watch item, TRACED (data/q/race-hE2-c{26,27}.txt, frames per 0.1 s): home Easy 2 WON -18.22 with 3 race lives lost (c26 -21.72, 1).
+   Frame-identical to c26 to t 126.4: at f72 x 6414 (stood from 120.5, W1) c26 went blind at the cap and landed on f76 (Easy); c27 judged
+   its hop 0.6 s later and landed on f76 too (t 127.5). The 2 extra lives come 26 s later on a 0.6 s later phase: he ran off the end of
+   log #91 at full run into the water (t 153.3, x 2700; the game-over reset puts him at x 3398) and off log #89 (t 155.4, x 3210): the
+   ride-on-log section, not c27's cap; c26 met those logs on another phase. Tell the lead in the table as a finding (log-end run-offs on
+   2-7's race logs), not a c27 regression; trace one further only if the lead asks.
+4. FINDING for later (the lead's words, for R-165.424's list): W1 waits 6 s for logs that pass UNDER the banks and can never bridge (2-7's
+   race banks f71/f76, f78/f71, f83, f88-f95: the logs run 28 px below and pass under both banks; the far bank is the way on). A wait
+   only for floats a gate can judge would be faster; NOT in this merge.
 
-## Session 15: c27 measured (the careful middle, Normal; cycle = driftCycle of the logs in view = 11.7 s)
+## Session 15: every race on c27 (data/q/margins-c27.txt; the careful middle; margin = his time - the boat's, below 0 he wins)
+| race | c26 51ffe7eab | c27 1e4b50a1d |
+|---|---|---|
+| home Normal 1 | LOST +11.29 | WON -7.21 |
+| home Normal 2 | WON -34.74 | WON -31.24 |
+| home Normal 3 | WON -11.86 | WON -17.06 |
+| post Normal 4 | WON -12.30 | WON -17.80 |
+| post Normal 5 | LOST +13.10 | WON -19.70 |
+| home Easy 1 | WON -19.77 | WON -19.77 |
+| home Easy 2 | WON -21.72 (1 race life) | WON -18.22 (**3 race lives**) |
+| home Easy 3 | WON -10.57 | WON -8.57 |
+| post Easy 4 | WON -9.53 (1) | WON -22.73 (0) |
+| post Easy 5 | WON -29.70 (1) | WON -29.70 (1) |
+All end 'shrine'. Toys (hopJudged.test.ts, fix-agnostic: a hop off a bank within 2 s of a 6 s stand on it is never set back by the water;
+the race WON; every stand past the cap < the logs' cycle): c26 home N 1 2 set-backs (off f71 x 6518, f83 x 3659) LOST; post N 5 2 (off
+f78) LOST: RED. c27: 0 and 0, WON, WON, no stand past the cap: GREEN (data/q/t-c26.txt, t-c27.txt).
+
+## Session 15: how c27 got here (the two STOPs, both on the ruling's condition 2)
+- c27 v1 (the cap judges the logs only, held aim): every stand past the cap 14-16 s > the logs' 11.7 s cycle (home N 1 rescued off f71);
+  probe data/q/probe-cap-c27.txt: no log is ever judged at those banks (they run 28 px below and pass under them); the far bank is the way on.
+- c27 v2 (the lead's (A)+(B): walk to the lip, judge far bank + logs, held aim): stands 21 s, rescued: the held aim is a short single drawn
+  for the logs (0.111-0.159); his own table lands single 0.329 and doubles 0.118 every frame (data/q/probe2-c27.txt).
+- c27 (the lead's YES: held aim refused -> tablePick, bankUp's exact shape): GREEN as above.
+Lessons applied: D115 (probes only in the unfrozen main checkout, env-gated, restored by git checkout; heavy runs on chattr-frozen fz-c27),
+D119 (commit messages from files), D128 (stamps from date), D134 (c27 pushed and ls-remote'd before any long run), D122/D123 (two heavy
+runs at a time, timeouts set).
+
+## Session 15: c27 v1 measured (superseded) (the careful middle, Normal; cycle = driftCycle of the logs in view = 11.7 s)
 | row | c26 51ffe7eab | c27 33e573b35 (local) |
 |---|---|---|
 | home N 1 | LOST +11.29, 5 set-backs (t 10.0, 67.9, 129.8, 146.7, 164.8) | LOST +12.79; stands past the cap: f71 x 6518 14.1 s (ended by a RESCUE to f76 x 6352), x 3631 15.4 s |

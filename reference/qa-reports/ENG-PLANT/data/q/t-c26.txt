@@ -1,0 +1,2 @@
+home N 1 | hops after a 6 s stand 4 | set back 2 t129.3 off f71 x 6518 set back 6385->6542 ; t164.4 off f83 x 3659 set back 3553->3696 | LOST margin 11.29 | cap n/a
+post N 5 | hops after a 6 s stand 4 | set back 2 t146.6 off f78 x 5205 set back 5072->5232 ; t154.0 off f78 x 5190 set back 5065->5232 | LOST margin 13.10 | cap n/a

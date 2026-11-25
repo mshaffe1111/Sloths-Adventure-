@@ -1,18 +1,30 @@
-From 33e573b356fa73ca2587bd35209394e98ea4ef9b Mon Sep 17 00:00:00 2001
+From 1e4b50a1d0cb7487d78fa26151c7139664fee158 Mon Sep 17 00:00:00 2001
 From: Claude <noreply@anthropic.com>
 Date: Wed, 25 Nov 2026 15:50:50 +0000
-Subject: [PATCH] ENG-PLANT-q c27 (STOPPED: the ruling's NO DEADLOCK fails): at
- W1's cap the gate judges the logs in view with the held aim; refused -> stand
- by choice. Toy RED on c27 too (home N 1 stand 14.1 s > cycle 11.7 s, rescued;
- post N 5 four stands 14-16 s)
+Subject: [PATCH] ENG-PLANT-q candidate c27 (c26 + the lead's rulings at the
+ bank-edge float wait's 6 s cap, W1): he walks to his take-off point at the
+ lip (FRONT_STAND_PX), then the gate judges the far bank in view and the logs
+ in view with the held aim; refused, the hop of his own table the gate lands
+ (tablePick, bankUp's exact shape: a double only where his own table has one);
+ judged -> pressed as judged; nothing lands -> he stands by choice. The wait
+ and its 6 s untouched; W1 no wider; a lift or lily pad alone keeps the old
+ go. c26 went BLIND at the cap (a bank hop no gate judged, 46-81 px back of
+ the lip; the logs there run under the banks and never bridge), fell short,
+ was set back, three rounds: 2-7 race home middle Normal 1 and post middle
+ Normal 5 WON -> LOST. The held aim alone (short singles 0.111-0.159 drawn for
+ the logs) stood 21 s at the lip, rescued. Toy in hopJudged.test.ts (a hop off
+ a bank after a 6 s stand never set back by the water, the race WON, every
+ stand past the cap inside the logs' drift cycle: W1_CAP, castBots W1CAP=1 to
+ stderr): RED on c26 (2 set-backs each, LOST +11.29 / +13.10), GREEN on c27
+ (0, WON -7.21 / -19.70)
 
 Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
 Claude-Session: https://claude.ai/code/session_01FhBbYKakE3aA8mUYQbMFgU
 ---
- tools/inspect/castBots.ts       |  5 ++++-
- tools/inspect/firsttimer.ts     | 34 ++++++++++++++++++++++++++++++++-
- tools/inspect/hopJudged.test.ts | 27 +++++++++++++++++++++++++-
- 3 files changed, 63 insertions(+), 3 deletions(-)
+ tools/inspect/castBots.ts       |  5 +++-
+ tools/inspect/firsttimer.ts     | 52 ++++++++++++++++++++++++++++++++-
+ tools/inspect/hopJudged.test.ts | 35 +++++++++++++++++++++-
+ 3 files changed, 89 insertions(+), 3 deletions(-)
 
 diff --git a/tools/inspect/castBots.ts b/tools/inspect/castBots.ts
 index c78b5079b..54c38360a 100644
@@ -45,7 +57,7 @@ index c78b5079b..54c38360a 100644
        }
      }
 diff --git a/tools/inspect/firsttimer.ts b/tools/inspect/firsttimer.ts
-index ae372fde1..d9fa491a3 100644
+index ae372fde1..846ddc197 100644
 --- a/tools/inspect/firsttimer.ts
 +++ b/tools/inspect/firsttimer.ts
 @@ -48,7 +48,7 @@ import { findTarget } from '../../src/game/dotGuidePerch.ts';
@@ -82,26 +94,44 @@ index ae372fde1..d9fa491a3 100644
    /** the gate's read (gateLands, ENG-27r) */
    private gateSees(q: Platform, at: (t: number) => number, x: number, y: number, dir: -1 | 1, h: DrawnHop, t0: number, vx0: number, margin: number): boolean {
      return this.gateAir(q, at, x, y, dir, h, t0, vx0, margin) !== null;
-@@ -3621,6 +3632,27 @@ export class FirstTimerRun {
+@@ -3621,6 +3632,45 @@ export class FirstTimerRun {
              if (this.edgeWait < 0) this.edgeWait = t;
              // (SKILLS.floatSure: he stands by choice, clockHeld, so the stopped-dead read never decides a hop no gate judged)
              if (t - this.edgeWait < 6) { if (SKILLS.floatSure) { this.clockHeld = true; this.blockedT = 0; this.pending = null; } return {}; }
-+            // (c27, the lead's ruling (SKILLS.floatSure, rule 28: the judged hop is the hop flown): at the wait's 6 s cap he went BLIND (the
-+            //  fall-through to the edge's own press: a hop no gate judged), was set back by the water and waited 6 s again, three rounds
-+            //  (2-7 c26 race home middle Normal 1 at bank f83, post middle Normal 5 at f78: WON -> LOST). Now the cap's go is the gate's:
-+            //  the logs in view are judged with the hop he will press (the aim drawn by the testers' habit, held for the wait) from where he
-+            //  stands; judged -> pressed as judged; refused -> he stands by choice and the gate judges again next frame as the logs move (and
-+            //  the `near` gate above as one comes near). The wait and its 6 s are untouched; a lift or a lily pad alone keeps the old go)
++            // (c27, the lead's ruling (A)+(B) (SKILLS.floatSure, rule 28: the judged hop is the hop flown): at the wait's 6 s cap he went
++            //  BLIND (the fall-through to the edge's own press: a bank hop no gate judged, from wherever the wait stood him, 46-81 px back
++            //  of the lip), fell short, was set back by the water and waited 6 s again, three rounds (2-7 c26 race home middle Normal 1 at
++            //  bank f83, post middle Normal 5 at f78: WON -> LOST). The logs W1 waits for there run under the banks and never bridge the
++            //  gap: the way on is the far bank. Now, at the cap only: (B) he walks to his take-off point at the lip (FRONT_STAND_PX, the
++            //  front stand's on a log); then (A) the gate judges the far bank in view and the logs in view with the hop he will press (the
++            //  aim drawn by the testers' habit, held for the wait: a double only when his own habit draws one) from where he stands; judged
++            //  -> pressed as judged; refused -> he stands by choice and the gate judges again next frame (the `near` gate above as a log
++            //  comes near). The wait and its 6 s are untouched; a lift or a lily pad alone keeps the old go)
 +            const drifts = floats.filter((q) => q.type === 'drift');
 +            if (SKILLS.floatSure && drifts.length) {
++              if (dir * (edgeX - p.x) > FRONT_STAND_PX) { this.pending = null; this.lateArmed = null; return side(dir); }
++              const banks = this.sim.platforms.filter((q) => q !== here && q.type !== 'drift' && q.type !== 'moving' && !q.broken && Math.abs(q.y - p.y) < 70 && (dir > 0 ? q.x >= edgeX && q.x - edgeX < 400 : q.x + q.width <= edgeX && edgeX - (q.x + q.width) < 400));
++              const to = [...banks, ...drifts];
 +              const vx = p.vx + (Math.abs(carry) < 400 ? carry : 0);
 +              const h = this.aim.at(dir as -1 | 1, t, (d) => this.drawHop(d));
-+              if (drifts.some((q) => this.gateSees(q, floatAt(rivers, q), p.x, p.y, dir as -1 | 1, h, t, vx, 24))) {
++              if (to.some((q) => this.gateSees(q, floatAt(rivers, q), p.x, p.y, dir as -1 | 1, h, t, vx, 24))) {
 +                this.edgeWait = -1;
-+                if (HOP_TRACE.on) { this.judged = null; this.judge('edgeCap', drifts, [0], dir as -1 | 1, h.hold, vx, carry, 24, h); }
++                if (HOP_TRACE.on) { this.judged = null; this.judge('edgeCap', to, [0], dir as -1 | 1, h.hold, vx, carry, 24, h); }
 +                this.gateHop = h;
 +                this.aim.end();
-+                return this.startJump(dir, 'single', false);
++                return this.startJump(dir, h.kind, false);
++              }
++              // (the held aim was drawn for the logs when the wait began, a short single by his habit; refused, the hop of his own table
++              //  the gate lands (tablePick, bankUp's step 1, ENG-PLANT-c: a refused hop leaves a WAY ON; a double only where his own table
++              //  has one): c27 (A)+(B) with the held aim alone stood 21 s at the lip of 2-7's home f71 and post f78 (the far bank ~150 px,
++              //  the aim 0.111-0.159), rescued, while his single 0.329 and doubles 0.118 landed every frame)
++              const alt = this.tablePick(to, dir as -1 | 1, vx, 24);
++              if (alt) {
++                this.edgeWait = -1;
++                if (HOP_TRACE.on) { this.judged = null; this.judge('edgeCap', to, [0], dir as -1 | 1, alt.hold, vx, carry, 24, alt); }
++                this.gateHop = alt;
++                this.aim.end();
++                return this.startJump(dir, alt.kind, false);
 +              }
 +              if (HOP_TRACE.on) this.judged = null;
 +              if (W1_CAP.on) this.capNote(t, p.x, drifts);
@@ -111,7 +141,7 @@ index ae372fde1..d9fa491a3 100644
          }
          // (and riding a drifting log: he waits on it until the next log or the bank is near, LV-2 round 2: he used to hop off the end
 diff --git a/tools/inspect/hopJudged.test.ts b/tools/inspect/hopJudged.test.ts
-index 6412765b6..ff970dc55 100644
+index 6412765b6..769fc98a3 100644
 --- a/tools/inspect/hopJudged.test.ts
 +++ b/tools/inspect/hopJudged.test.ts
 @@ -13,7 +13,8 @@ import '../../src/game/headlessDom.ts';
@@ -124,29 +154,37 @@ index 6412765b6..ff970dc55 100644
  
  const DT = 1 / 30;
  const show = (r: HopRow) =>
-@@ -138,3 +139,27 @@ test('the race gate presses the shortest aimed flight that lands safe, by airtim
+@@ -138,3 +139,35 @@ test('the race gate presses the shortest aimed flight that lands safe, by airtim
    const a3 = gateAirtime(q, () => 184, 100, 500, 1, single(0.3), 0, 0, 50, 1e9), a5 = gateAirtime(q, () => 184, 100, 500, 1, single(0.5), 0, 0, 50, 1e9);
    assert.ok(a3 !== null && a5 !== null && a3 > 0 && a5 > a3, `the airtime read is not the flight's: 0.3 s single ${a3}, 0.5 s single ${a5}`);
  });
 +
-+// c27 (the lead's ruling on 2-7's race flips, rule 28: the judged hop is the hop flown). At the bank-edge float wait's 6 s cap (W1) he
-+// went BLIND off the bank, the water set him back on it, he waited 6 s again: three rounds, and the race flipped WON -> LOST (c26: home
-+// middle Normal 1 at bank f83, post middle Normal 5 at f78; ENG-PLANT REPORT session 14). Read by what the engine does, never where: a
-+// set-back is one frame that moves him more than 60 px with no life lost. And NO DEADLOCK (the ruling's condition 2): every by-choice
-+// stand past the cap ends inside a full drift cycle of the logs in view. RED on c26 51ffe7eab (home N 1: 2 set-backs, LOST), GREEN on c27.
-+type RaceSim = { e: { player: { x: number }; lives: number; pieces: { kind: string; verdict?: { won: boolean; him: number; boat: number } }[] } };
++// c27 (the lead's rulings on 2-7's race flips, rule 28: the judged hop is the hop flown). At the bank-edge float wait's 6 s cap (W1) he
++// went BLIND off the bank (a bank hop no gate judged, 46-81 px back of the lip), the water set him back, he waited 6 s again: the race
++// flipped WON -> LOST (c26: home middle Normal 1 at banks f71 and f83, post middle Normal 5 at f78; ENG-PLANT REPORT sessions 14-15).
++// Read by what the engine does, never where: a hop off a bank (not a log) within 2 s of a stand of 6 s or more on it is never set back by
++// the water (one frame moving him more than 60 px with no life lost); the race is WON; and NO DEADLOCK (the ruling's condition 2): every
++// by-choice stand past the cap ends inside a full drift cycle of the logs in view (W1_CAP). RED on c26 51ffe7eab (2 set-backs on each,
++// both LOST), GREEN on c27.
++type RaceSim = { e: { player: { x: number; vx: number; grounded: boolean }; lives: number; standingOnId: number | null; platforms: { id: number; type?: string }[]; pieces: { kind: string; verdict?: { won: boolean; him: number; boat: number } }[] } };
 +for (const [race, code, seed] of [['home', HOME_CODE, 1], ['post', POST_CODE, 5]] as const) {
-+  test(`2-7's race ${race} middle Normal ${seed}: no blind go at the float wait's cap (no set-back by the water), the race WON, no deadlock (c27)`, () => {
-+    let piece: RaceSim['e']['pieces'][number] | undefined, lives: number | undefined, x: number | undefined, setBacks = 0;
++  test(`2-7's race ${race} middle Normal ${seed}: no hop off a bank after the float wait is set back by the water, the race WON, no deadlock (c27)`, () => {
++    let piece: RaceSim['e']['pieces'][number] | undefined, lives: number | undefined, x: number | undefined;
++    let f = 0, still = -1, stood = -1, stoodOn: number | null = null, flight: string | null = null;
++    const setBack: string[] = [];
 +    W1_CAP.on = true; W1_CAP.rows = [];
 +    try {
 +      homeRun('middle', 'normal', seed, 1, { onFrame: (sim) => {
-+        const e = (sim as unknown as RaceSim).e;
++        const e = (sim as unknown as RaceSim).e, t = f++ / 30;
 +        piece ??= e.pieces.find((q) => q.kind === 'pacer');
-+        if (x !== undefined && lives === e.lives && Math.abs(e.player.x - x) > 60) setBacks++;
++        const here = e.player.grounded ? e.platforms.find((q) => q.id === e.standingOnId) : undefined;
++        if (here && here.type !== 'drift' && Math.abs(e.player.vx) < 1) { if (still < 0) still = t; if (t - still >= 6) { stood = t; stoodOn = here.id; } } else still = -1;
++        if (!e.player.grounded && flight === null && x !== undefined && stoodOn !== null && t - stood <= 2) flight = `t ${t.toFixed(1)} off f${stoodOn} x ${Math.round(x)}`;
++        if (x !== undefined && lives === e.lives && Math.abs(e.player.x - x) > 60 && flight) setBack.push(`${flight}: set back ${Math.round(x)} -> ${Math.round(e.player.x)}`);
++        if (e.player.grounded) flight = null;
 +        x = e.player.x; lives = e.lives;
 +      } }, code);
-+      assert.equal(setBacks, 0, `${setBacks} set-backs by the water`);
++      assert.deepEqual(setBack, [], 'a hop off a bank after the float wait, set back by the water');
 +      assert.ok(piece?.verdict?.won, `the race ${piece?.verdict ? `LOST by ${(piece.verdict.him - piece.verdict.boat).toFixed(2)} s` : 'never decided'}`);
 +      for (const r of W1_CAP.rows) assert.ok(r.dur < r.cycle, `a stand past the cap at x ${Math.round(r.x)} lasted ${r.dur.toFixed(2)} s, the logs' cycle ${r.cycle.toFixed(2)} s`);
 +    } finally { W1_CAP.on = false; W1_CAP.rows = []; }

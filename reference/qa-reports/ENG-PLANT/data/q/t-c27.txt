@@ -1,0 +1,2 @@
+home N 1 | hops after a 6 s stand 3 | set back 0  | WON margin -7.21 | cap []
+post N 5 | hops after a 6 s stand 2 | set back 0  | WON margin -19.70 | cap []
