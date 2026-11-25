@@ -1,7 +1,8 @@
 # BUILD-28 REPORT (W2-LANE: 2-8 "Before the Water Rises"; R-165.430 (2), READY-28, BUILD-28). Session 1 (W2-LANE a), started 9:44 AM ET (from date). Session 2 (W2-LANE b), started 10:07 AM ET (from date). Session 3 (W2-LANE c), started 10:30 AM ET (from date)
 
 ## EXACT NEXT STEP (session 3, W2-LANE c; hand-over on the 28-minute box)
-Branch t-build-28-wip, CODE head e08716828 (pushed, ls-remote confirmed; this REPORT's commit only adds to reference/qa-reports/BUILD-28/).
+Branch t-build-28-wip, CODE head 3bcd0a3bf (pushed, ls-remote confirmed; this REPORT's commit only adds to reference/qa-reports/BUILD-28/):
+e08716828 the dip swim (1c part 3), 3bcd0a3bf the strand verdict as a planted function (1e, not yet laid by floodLay).
 `git fetch origin t-build-28-wip && git checkout t-build-28-wip`, `npm ci --no-audit --no-fund --legacy-peer-deps`, ReadNotifications
 FIRST (the lead may answer Q1 below or send release-0.10.3's hash). Every run on a chattr-frozen worktree (recipe in session 1's section).
 1c PART 3, THE DIP SWIM: BUILT (e08716828), the lead's ruling (b) attempt 2. follow.ts `swimY` + stepLine's new last arg `swim`: a little
@@ -40,8 +41,14 @@ NEXT, IN ORDER: 1e the strand verdict (session 2's plan below). SESSION 3 FOUND,
    gap after W, 60 >= his 44 px, then lies over the bank, forkFaults unchanged) and every high-road end over a piece or a bank (porches
    reaching the far bank: 1d). So plant RED: the flush top (220 shape, 120 px off its near edge onto P), W flush on the marsh (120); the
    80 px treads drop 60 per tread, so the walk-off rule does not flag them (say so; their strand stays the unreproduced jump). GREEN: 1d's
-   shape. Where: a new check next to forkFaults (flood.ts), called in floodLay.ts:65 with the line's step from the flood's row (add it to
-   W2_FLOOD or FloodClimb, named, not a literal: generalitycheck). Then 1d + the W2_FORK marsh,
+   shape.
+   BUILT (3bcd0a3bf): flood.ts `strandFaults(chain, tops, under, step)` next to forkFaults; flood.test 'the strand verdict': RED on the
+   top flush on its rise (one fault: 120 px off its left end onto the porch) and on W flush on the marsh's edge (120 px off its right end
+   onto the floor); GREEN on 400 px treads; GREEN on 80 px treads BY THIS RULE (stated in the test). On the frozen tree at 3bcd0a3bf: flood
+   + floodLay + w2TwoRoad + w2 + riverLay 32/32, generalitycheck PASS, tsc 0. LEFT FOR 1e: lay it in floodLay.ts:65 (problems.push, after
+   forkFaults) with `under` from the flood's low water (the marsh floor where it stands, else the water's surface; the banks outside) and
+   the line's step from the flood's row (add it to W2_FLOOD or FloodClimb, named, not a literal: generalitycheck), IN THE SAME COMMIT as 1d's
+   shape: laid on today's W2_FORK it is RED (W flush on the water), so the w2TwoRoad GREEN test goes red until the shape changes. Then 1d + the W2_FORK marsh,
    ONE shape change: W2_FORK_RIVERS.low = {dir 1, speed 0, logW 0, logs 0, safe, flood 'close', marsh {width 1400, floor 60, dips 4, dip
    100}} (2-8.md:9) and three up / three down, treads >= 400 (W stands on the near bank; today's gap 60 + porch 500 + porch2 400 = 960 px over
    the water ends 440 px short of a 1,400 marsh's far bank (it overhangs ride's 798 by 162), so the marsh cannot land alone); w2TwoRoad.test to it; check w2Finish lays no second river over it
