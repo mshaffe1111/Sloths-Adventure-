@@ -1,5 +1,62 @@
-# ENG-PLANT-CI: the 9 CI-tool-line reds on c27 (session 10 hand-over written 3:12 PM ET 11-25 by `date`; sessions 9, 8, 7, 6, 5, 4, 3, 2 and 1 below it)
+# ENG-PLANT-CI: the 9 CI-tool-line reds on c27 (session 11 written 3:42 PM ET 11-25 by `date`; sessions 10 to 1 below it)
 
+## SESSION 11 STATE. Code: CI-14 bfbe09494 (padRead's latch) + the re-plants 6bffbfa7b (tests only). Final checks: see FINAL CHECKS below.
+**Step 1, the moved rows (rule 28), all narrowed.** Each code step changes one branch, so each first parting is at it (git diff:
+CI-11 -> CI-12 = vineFromLog's lags only (thumbLags); CI-12 -> CI-13 = `stopMeant = true` at the ride stand only; CI-13 -> CI-14 =
+padSeen's reset only). Probes: ci-tools/s9-rows (row JSON), s11-d1.py (where two part: press there, teleports after), s11-padread.mts
+(padRead's tagged return + pad states), s10-tag (intend's tagged return), s11-under.mts (the floor under him). Diffs: data/ci/s11/diff*.txt.
+**2-2 adult Normal 4 (B: l0 -> l1): a BOT FAULT, fixed = CI-14.** padRead's 'once he has seen it ready he is going' (padSeen) was set on
+#108 at 133.733 and carried over weight pads #113 / #114 to #109, a floor that stays: CROSS-ON-THE-BREATH was skipped there (it reads only
+with padSeen < 0) and he hopped onto beat row #115 / #116 (pads-deepBeat22: up 2.0, shiver 0.6, under 0.6) at 138.900 with 1.27 s of the
+breath left for the 500 px run to #110 (PAD_FAIR 500 / 230 + 0.3 = 2.47 s; a full breath 2.6 s does cross). It shivered at 139.633; on
+#115 WAIT-FOR-THE-RISE (L4542) stood him because #116, the same row, shivered too; under at 140.233, the life. Not CI-13's branch: CI-13
+moved his arrival 3.5 s to a phase CI-12 never met. **CI-14:** padSeen holds over the pads he hops from the floor where he saw it; the
+first floor that stays after a hop (padSeenHop, set in startJump) reads afresh; a walk over a piece seam keeps it. **Toy** (hopJudged
+'CI-14', 2-2 adult Normal 4, cap 144: every take-off from a floor that stays onto a beat row leaves with the breath to cross to the next
+floor that stays at PAD_FAIR.pace, less a frame and his thumb's mid + 3 sd): RED on CI-13 ('he left floor #109 at t 138.933 onto beat
+pad #115 with 1.27 s of the breath left for a run that needs 2.17 s'), GREEN on CI-14 (s11/toy14-*). The bar first had no thumb
+allowance and failed an honest start on both trees (#49 -> #53 at 69.433, 1.97 s for 2.04: his thumb); set to the read's own allowance.
+
+| row (set1) | step | c27 | before | after | where it parts; what each came to |
+|---|---|---|---|---|---|
+| 2-2 adult N 4 | CI-14 | PASS 143.9 l0 | 156.9 l1 | **149.6 l0** | 138.933 on #109: CI-13 hopped onto beat #115 on a 5.2 s old latch -> under, life 140.30; CI-14 waits at #109's edge for the rise. Fixed. |
+| 2-2 adult N 24 | CI-14 | PASS 166.5 l1 | 166.5 l1 | **159.3 l0** | 148.433 on #111 (stays): CI-13 pressed 148.467 on a latch set 143.30 -> life 149.90 (x 29,901, water); CI-14 reads afresh, no life. The same fault. |
+| 2-2 kid N 3 | CI-14 | FAIL 168.9 r1 | PASS 165.5 l2 | PASS 168.5 l2 | 156.900 on #109: CI-13 hopped onto beat #115 at 157.100 on a latch from 153.63 with 1.30 s up (crossed); CI-14 waits a full breath: +3.0 s, same lives. Honest. |
+| 2-1 kid N 19 | B | FAIL r2 l6 | r2 l6 | r1 l4 | 42.433 at #41's end: CI-13 pressed 42.400 (in the grace), CI-12 42.467 -> water, life (x 8,847). Fewer lives after. |
+| 2-1 kid N 21 | B | FAIL r1 l6 | r1 l6 | r1 l8 | 38.800 on #42: CI-13's stand held, CI-12 ran on, life 38.97 (x 8,826). Then a different run: CI-13's new lives are lianaWait presses off #75 (x 17,565: 78.500 hold 0.067, 79.200 hold 0.16, both missed the liana, 79.00 / 79.80) and two at x 19,5xx-19,8xx (89.47, 90.63, not traced). lianaWait judges the catch at the thumb's MID lag only (firsttimer.ts:2607): the single-lag gap R-165.463 holds for dropWaits. Named, not changed. FAIL both (c27 FAIL). |
+| 2-2 kid E 37 | B | FAIL r1 l0 | 154.3 | 164.4 | 108.500 on #78: CI-12 fell (108.73, x 20,673), CI-13 stood. FAIL both (= c27). |
+| 2-2 kid N 3 | B | FAIL r1 l4 | FAIL r1 l4 | PASS r0 l2 | 117.133 on #81: CI-12 pressed 117.400, later 4 losses at x 28,6xx-28,9xx; CI-13 stood. FAIL -> PASS. |
+| 2-2 kid N 33 | B | FAIL r1 l4 | FAIL r1 l4 | PASS r0 l2 | 107.533 on #80: CI-12 pressed 107.633 -> life 108.83 (x 21,190); CI-13 stood. FAIL -> PASS. |
+| 2-4 adult N 24 | B | PASS l1 | 163.3 l0 | 171.8 l2 (= CI-14) | 32.500 on #34 (CI-13's stand), arrival moved. Life 1: down on log #99 (his way, run end x1 22,367, body to 22,417) at 121.233, walked on (L3506 landing walk, then L4060 intend's last walk) past x1 -> the engine stopped standing him at 121.533, pit (y 1,110): **the bot's floor read (the log's whole body) is not the engine's at a log's run end**. Life 2: lianaWait off #94 (143.6) missed the liana, down on #93's lip (x 24,179, 8 px from its end) at 268 px/s, ran off it (144.57). Named, not changed. |
+| 2-4 adult N 32 | AB | PASS l0 | CI-11 l1, CI-12 l1 | l1 | B: 154.233 on #119, the same press frame (154.300), now the stand's; -0.1 s. A: 56.500 on #49, press 56.600 both (CI-12 judged it standing); life 105.73 (x 21,411) on CI-12. |
+| 2-4 adult N 8 | A | PASS l1 | 163.3 l0 | 171.8 l3 | 56.500 on #49: CI-11 pressed 56.600, CI-12 56.733 (4 frames later). Lives 49-65 s on (105.80 x 21,448; 121.90 x 22,599 = the same run-end read: on log #100, x1 22,502, body to 22,545). |
+| 2-4 child E 11 | A | PASS l0 | 239.7 | 243.9 | 81.967 on #50: 81.933 -> 82.000. CI-11 set down twice later, CI-12 none. |
+| 2-4 child E 23 | A | PASS l0 | 246.8 | 257.9 | 96.767 on #47: 96.733 -> 96.800. CI-12 set down at 192.10, 214.13 (95+ s on). |
+| 2-4 child N 8 | A | PASS l1 | 341.7 l4 | 385.2 l4 | 79.667 on #36: 79.633 -> 79.667. Lives 108+ s on, different places. |
+| 2-4 child N 39 | A | PASS l2 | 345 l5 | 349 l2 | 108.867 on #47: 108.833 -> 108.900. Both lose at x 13,905 (139.97 / 142.47); CI-12 fewer after. |
+| 2-4 kid E 2 | AB | FAIL r1 | A 168.7 | B 172 -> 146.8 | A: 69.733 on #77: 69.900 -> 69.967, both set down at x 16,772. B: 45.200 on #49: CI-12 set down (45.40, x 10,700), CI-13 stood. |
+| 2-4 kid E 12 | AB | FAIL r1 | A 172.7 | B 172.6 -> 168.6 | A: 29.600 on #35: 29.567 -> 29.633, both set down at x 8,5xx. B: 38.333 on #38: CI-12 set down 38.60; CI-13 later at 65.27, 137.03. |
+| 2-4 kid E 13 | AB | FAIL r1 | A PASS 172.2 -> FAIL 149 r1 | B PASS 172 | A: 11.833 on #13: 11.800 -> 11.867; CI-12 set down x3 at x 10,7xx-10,9xx and rescued (the river CI-13 fixed). B: 47.700 on #48: CI-12 pressed 47.900 -> that river; CI-13 stood. |
+| 2-4 kid E 19 | AB | FAIL r1 | A FAIL r1 both | B PASS 151 | A: 11.900 on #13: 11.867 -> 11.933; CI-11 rescued at the 16,8xx river, CI-12 at 10,8xx. B: 46.600 on #47, CI-13's stand (its toy's row). |
+| 2-4 kid E 20 | AB | FAIL r1 | A FAIL r1 both | B PASS 168.6 | A: 72.900 on #77: 73.067 -> 73.167; rescues at different rivers. B: 48.167 on #49: CI-12 later set down x3 at x 24,6xx-25,0xx and rescued; CI-13 none. |
+| 2-4 kid E 35 | AB | PASS | A 171.9 -> 175.2 | B 146.8 | A: 47.100 on #48: 47.067 -> 47.133. B: 42.567 on #49: CI-12 set down 44.03 (x 10,814); CI-13 none. |
+**vs c27 on CI-14:** 0 BAR PASS -> FAIL; 7 FAIL -> PASS (2-2 kid N 3, 33; 2-4 kid E 2, 12, 13, 19, 20); the FAILs left are 2-1 kid N
+19 / 21 and 2-2 kid E 37 (c27 FAIL). **Named, not changed (suggestions, after release 4):** (1) the log run-end floor read (2-4 adult N
+24 x 22,367; adult N 8 x 22,502); (2) lianaWait's single-lag judge (ft:2607, R-165.463's gap; kid N 21, adult N 24); (3) the kid's edge
+look vs his stop (session 10, as ruled). Not traced: 2-1 kid N 21's lives at x 19,5xx-19,8xx (89.47, 90.63).
+
+**Step 2, the re-plants (6bffbfa7b), as ruled.** riverRide 'aims again' and 'honest aim' on REAIM_PHASES = 0, 1, 1.5, 2.5 at gap 80
+(s11/margins-gap80-ci14.txt, ci-tools/s11-margins.mts, a copy patched at the upstream gate's `next`). Per phase on CI-14: on / off,
+the largest margin at which `next` reads a log at the press (and its least over the frames it reads one): 0 hop/back 63 (61); 1
+hop/back 54 (27); 1.5 hop/back 49 (47); 2.5 hop/back 45 (31); the gate's own is 24. Out: 0.25 / 0.5 / 0.75 / 1.25 / 2.25 back either way
+(`next` false at the press, 21-23); 1.75 / 2 / 3 hop either way; 2.75 splits but 26 at the press (kept out). 'aims again': on every
+'hop', off every 'back' (4 of 4). 'honest aim': asserts the first upstream press IS his first hop off a log (press, take-off one frame
+later on all four); its LOUD thumb slips on every steering frame: a slip on frame 0 alone never fired here (the hop starts up-only).
+GREEN on CI-14. **RED halves (unfrozen copy):** 'aims again' with reAim off: 'back back back back' (s11/red344.txt); 'honest aim' with
+the gate flying the drawn thumb (gateAirtime passing h and its ThumbAt): 'phase 0: the press was decided on the drawn noise (as drawn
+4.167@1063.6, loud 17.867@1140.9)' (s11/red355.txt). With the frame-0 slip the plant stayed GREEN (why the thumb was made louder).
+
+## (session 10 hand-over)
 ## EXACT NEXT STEP (session 11). HEAD = CI-13 0e0c4e284 (CI-12 a2a5582c6 = the lead's ruling (b) on (A); CI-13 = (B)'s fix) + this file and data/ci/s10, set1-ci12, set1-ci13, cmp-ci12.txt, cmp-ci13.txt. Both toys planted RED/GREEN; tsc clean on frozen CI-13.
 0. ReadNotifications. Frozen trees (`git worktree add --detach <dir> <hash>`, node_modules symlinked, `chattr -R +i <dir>/src <dir>/tools`,
    `chattr -R -i <dir>/src/game/gen2/proven`, D115): fz-ci11t = 4cccba33e with CI-13's hopJudged.test.ts copied in (for the A rows' and the

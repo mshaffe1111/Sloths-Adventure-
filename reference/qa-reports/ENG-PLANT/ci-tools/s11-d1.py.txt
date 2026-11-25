@@ -1,0 +1,17 @@
+import json, sys
+# d1.py <a.json> <b.json> <la> <lb>: one line: where the two runs part, the press on each side at the part, and each side's teleports
+# (lives / rescues: a jump of > 150 px in one frame) after the part
+A, B = (json.load(open(f)) for f in sys.argv[1:3]); la, lb = sys.argv[3:5]
+fa, fb = A['fr'], B['fr']
+d = next((k for k in range(min(len(fa), len(fb))) if abs(fa[k][1] - fb[k][1]) > 0.005 or abs(fa[k][2] - fb[k][2]) > 0.005 or fa[k][5] != fb[k][5]), None)
+if d is None: print('frames identical'); sys.exit()
+t = fa[d][0]
+def pr(R, t0, t1): return [f"{j['t']:.3f}#{j['on']}{(j['j'] or {}).get('k','-')[0]}{'S' if j['stand'] else ''}" for j in R['jumps'] if t0 <= j['t'] <= t1]
+def tele(fr, t0):
+    out = []
+    for k in range(1, len(fr)):
+        if fr[k][0] < t0: continue
+        if abs(fr[k][1] - fr[k-1][1]) > 150: out.append(f"{fr[k-1][0]:.2f}@x{fr[k-1][1]:.0f}y{fr[k-1][2]:.0f}#{fr[k-1][4]}->x{fr[k][1]:.0f}")
+    return out
+on = fa[d-1][4]
+print(f"part {t:.3f} x {fa[d-1][1]:.0f} on #{on} g{fa[d-1][3]} | {la} {A['end']} {A['time']} r{A['rescues']}: press {' '.join(pr(A, t-0.3, t+0.3)) or '-'}; tp {' '.join(tele(fa, t)[:2]) or '-'}(n{len(tele(fa, t))}) | {lb} {B['end']} {B['time']} r{B['rescues']}: press {' '.join(pr(B, t-0.3, t+0.3)) or '-'}; tp {' '.join(tele(fb, t)[:2]) or '-'}(n{len(tele(fb, t))})")
