@@ -71,7 +71,24 @@ line went into the UNFROZEN main checkout at c25 and `git checkout` restored it,
    re-planted at their same bars as laid toys (23/23); hopJudged; the toys for c23's, c24's and c25's rules; the packet's plants (same
    bars, or retire per R-165.432); riverRide + firsttimer; the CI tool line at 0 fail; tierBots 9/9; timecheck + roadmapcheck. MERGE into
    release-0.10.3 (no force) ONLY on the lead's word: send the table first. REPORT BY 12:00 PM ET; HARD STOP 2:00 PM ET; two heavy runs max.
-2. **Candidate c26 (the lead rules between them; my recommendation is (A)):**
+1b. **THE LEAD'S RULING ON c26 (received this session, word for word): "(A), the front stand. It cuts the hand-back at its cause: he stands
+   where no hop lands. It is the same principle as c24/c25: the judged hop is the hop flown, from where he actually stands. Conditions:
+   1. NARROW (D133): it applies only on a log running back at him (against his way). Anywhere else, the stand is unchanged. No env gate.
+   2. NO BARE 30: the stand point is derived from what the hop judge uses as his take-off (his press distance / half-width), named in one
+   constant with a one-line reason. If 30 px is exactly that, say so in the comment. 3. TOYS FIRST: RED on c25 for middle E 11 and expert
+   N 29, GREEN on c26. 4. Then in this order (D133): the 10 known flips; the WIDE SAMPLE (every bot, both settings, seeds 1-10 on 2-1, 2-2
+   and 2-4: zero BAR PASS -> FAIL vs main's rows); 2-7 x40 against the landing's 29/40, every moved row traced (rule 28); then 1-4 and 2-5
+   full rows vs main; then the race margins. 5. child E 11's new loss is cluster A (lip family R-165.398), as already ruled. Name it in the
+   table; it is not fixed in this merge. child N 38 (the first-river walk-off) is the same: name it and its family. If the x40 lands below
+   29/40, STOP and send me the table before any merge. 6. Then the checklist as written (pacerLay 22/23 re-plants, hopJudged, toys, plants,
+   riverRide/firsttimer, the CI line, tierBots 9/9, timecheck/roadmapcheck). The merge into release-0.10.3 happens ONLY on my word."**
+   Session 14 does, in order: (i) c26 = tools/expfront-o.diff.txt's two lines without the env gate, both inside the upstream block (logs
+   running back at him only, condition 1); the 30 replaced by one named constant derived from the take-off the judge uses (read hopLandsOn /
+   gateSees for the x it launches from: p.x at lag, and his half-width / the tier's press distance; condition 2); (ii) the toy
+   (tools/handBack-o.test.ts.txt) into tools/inspect/riverRide.test.ts, RED on fz-c25, GREEN on c26 (condition 3); commit c26 + toy on
+   release-0.10.3-wip-plant-c, push, freeze its exact head; (iii) condition 4's runs in that order, two at a time; trace child N 13;
+   (iv) the table to the lead (condition 5's names; STOP if below 29/40); (v) the checklist; merge only on the lead's word.
+2. **Candidate c26: RULED (A) (1b above); (B) is NOT built:**
    (child E 11's new loss is traced: cluster A's shuffle, above.) Build the candidate the lead picks:
    **THE TOY IS WRITTEN (fix-agnostic, either candidate): tools/handBack-o.test.ts.txt** (a hand-back read by what he meets: a stand on a
    floor, logs only, a stand on that same floor again; no floor handed back to twice, no rescue; 2-7 middle Easy 11 and expert Normal 29,
