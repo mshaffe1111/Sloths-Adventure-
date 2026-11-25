@@ -1,0 +1,13 @@
+phase 0.00 on hop off back | margin at the press 63, min over frames next 61, max 73 (frames next@24 29/29) | first upstream press 4.167 first on-log hop 4.2
+phase 0.25 on back off back | margin at the press 23(next false), min over frames next 43, max 73 (frames next@24 3/41) | first upstream press 7.1 first on-log hop 5.6
+phase 0.50 on back off back | margin at the press 21(next false), min over frames next 42, max 74 (frames next@24 3/41) | first upstream press 6.833 first on-log hop 5.333
+phase 0.75 on back off back | margin at the press 23(next false), min over frames next 43, max 73 (frames next@24 3/41) | first upstream press 6.6 first on-log hop 5.1
+phase 1.00 on hop off back | margin at the press 54, min over frames next 27, max 74 (frames next@24 25/48) | first upstream press 3.433 first on-log hop 3.467
+phase 1.25 on back off back | margin at the press 23(next false), min over frames next 42, max 74 (frames next@24 3/32) | first upstream press 10.733 first on-log hop 4.733
+phase 1.50 on hop off back | margin at the press 49, min over frames next 47, max 72 (frames next@24 29/29) | first upstream press 3.1 first on-log hop 3.133
+phase 1.75 on hop off hop | margin at the press 50, min over frames next 50, max 74 (frames next@24 26/26) | first upstream press 3 first on-log hop 3.033
+phase 2.00 on hop off hop | margin at the press -, min over frames next -1, max -1 (frames next@24 0/0) | first upstream press 5.267 first on-log hop 3.1
+phase 2.25 on back off back | margin at the press -, min over frames next 66, max 66 (frames next@24 1/1) | first upstream press 4.8 first on-log hop 4.833
+phase 2.50 on hop off back | margin at the press 45, min over frames next 31, max 74 (frames next@24 18/38) | first upstream press 4.7 first on-log hop 4.733
+phase 2.75 on hop off back | margin at the press 26, min over frames next 26, max 69 (frames next@24 29/29) | first upstream press 4.567 first on-log hop 4.6
+phase 3.00 on hop off hop | margin at the press 43, min over frames next 43, max 72 (frames next@24 29/29) | first upstream press 4.533 first on-log hop 4.567

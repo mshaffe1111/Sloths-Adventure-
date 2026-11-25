@@ -281,12 +281,12 @@ const pieces = (phase: number): Platform[] => [
   { id: 2, x: x1, y: 600, width: 1200, height: 90, type: 'solid' } as Platform,
   ...Array.from({ length: n }, (_, k) => ({ id: 10 + k, x: 0, y: 628, width: w, height: 24, type: 'drift', drift: { x0, x1, dir: -1, speed, width: w, baseY: 628, offset: ((k * (w + gap)) / speed + phase) % T } }) as unknown as Platform),
 ];
-const plantedRide = (who: FirstTimer, on: boolean): string[] => {
+const plantedRide = (who: FirstTimer, on: boolean, phases: readonly number[] = [0, 0.5, 1, 1.5, 2, 2.5]): string[] => {
   const was = SKILLS.reAim;
   SKILLS.reAim = on;
   const out: string[] = [];
   try {
-    for (const phase of [0, 0.5, 1, 1.5, 2, 2.5]) {
+    for (const phase of phases) {
       const line = Array.from({ length: 200 }, (_, i) => ({ x: 100 + i * 24, y: 600 }));
       let log: number | null = null, onLog = false, f = 0, fEnd = -1, stubbed = false, prev: { g: boolean; id: number | null } = { g: false, id: null }, end = '';
       const run = new FirstTimerRun('1-1', 1, who, { route: line, cap: 20, rescueAfter: 1000, onFrame: (sim) => {
@@ -318,31 +318,40 @@ const plantedRide = (who: FirstTimer, on: boolean): string[] => {
   return out;
 };
 
+/** the phases of the bare at-him river (gap 80) that test the re-aim (ENG-PLANT-CI session 11, by phase): the gate's `next` reads a log in
+ *  reach with a real margin, and reAim splits them (on = hop, off = back). 0.25-0.75, 1.25 and 2.25 ride back either way (`next` false
+ *  at the press, margin 21-23 under the gate's 24); 1.75, 2 and 3 hop either way; 2.75 splits but its press margin is 26 (kept out) */
+const REAIM_PHASES = [0, 1, 1.5, 2.5] as const;
+const DT_S = 1 / 30;
+
 test('in the real engine: on a log flowing AT him, a held hop the upstream gate refuses is aimed again after his reaction, never held for the whole ride back (SKILLS.reAim; RED with it off)', () => {
   // (ENG-BOT27, 2-7's 'water ahead' stall, traced on the draft (with ENG-JETTY's band hunk), child Normal seeds 6 x 9412 and 8 x 8702: at
   //  an at-him log's front end the wait's drawn aim was a 0.033 s tap the gate never saw reach the next log 80 px off; the gap never
   //  changes on a river (one speed), so he held it, rode back to the bank and boarded again until rescued. Planted: the first hop drawn
   //  while he stands on a log is that tap; every later draw is his own. A bare river of 150 px logs 80 px apart flowing at him, 6 phases)
-  const first = (on: boolean) => plantedRide(FT_CHILD, on).map((r) => r.split('@')[0]);
+  //  Re-planted BY PHASE at gap 80 (the lead's ruling, ENG-PLANT-CI session 11; a gap change scrambles the phases): the kept phases are
+  //  REAIM_PHASES, where the upstream gate's `next` reads a log in reach with a real margin (at the press 63 / 54 / 49 / 45 px, never under
+  //  27 on a frame it reads one; the gate's own is 24) and the skill splits them, on = hop, off = back (s11/margins-gap80-ci14.txt)
+  const first = (on: boolean) => plantedRide(FT_CHILD, on, REAIM_PHASES).map((r) => r.split('@')[0]);
   const on = first(true), off = first(false);
   assert.ok(on.every((s) => s === 'hop'), `with the skill: he aims again and hops off the first log every phase (${on.join(' ')})`);
-  assert.ok(off.filter((s) => s === 'back').length >= 4, `RED: with SKILLS.reAim off he holds the tap and rides back to the bank (${off.join(' ')})`);
+  assert.ok(off.every((s) => s === 'back'), `RED: with SKILLS.reAim off he holds the tap and rides back to the bank (${off.join(' ')})`);
 });
 
 test('SKILLS.reAim keeps the honest aim (D121, the lead\'s two conditions): on a log a re-draw never comes inside his stopReact, and the press is decided on the aimed hop alone, never its drawn thumb noise', () => {
   // (the bare at-him river of the toy above, the first on-log draw planted as the 0.033 s tap; every draw made while he stands on a log
-  //  is timed; a run is flown twice, the on-log draws as drawn and again with a LOUD thumb (a slip of 30 frames with no steer from the
-  //  press, no drift, no late lift-off): the first upstream press (its frame and x, HOP_TRACE) must be the same, the noise only flown
+  //  is timed; a run is flown twice, the on-log draws as drawn and again with a LOUD thumb (a slip of 30 frames on every frame he steers,
+  //  no drift, no late lift-off; a slip on frame 0 alone never fired on the kept phases, whose hop starts up-only: ENG-PLANT-CI session 11): the first upstream press (its frame and x, HOP_TRACE) must be the same, the noise only flown
   //  after it. Planted: a gate that flies the drawn thumb (gateAirtime keeping h.thumb) refuses the loud hop and presses later, RED)
   const loud = (th: { drift: number[]; slip: number[]; release: number[] } | undefined) => ({
-    drift: (th?.drift ?? Array(60).fill(0)).map(() => 0), slip: (th?.slip ?? Array(60).fill(-1)).map((_, i) => (i === 0 ? 30 : -1)), release: (th?.release ?? Array(60).fill(0)).map(() => 0),
+    drift: (th?.drift ?? Array(60).fill(0)).map(() => 0), slip: (th?.slip ?? Array(60).fill(-1)).map(() => 30), release: (th?.release ?? Array(60).fill(0)).map(() => 0),
   });
   const fly = (phase: number, quiet: boolean) => {
     HOP_TRACE.on = true;
     HOP_TRACE.rows.length = 0;
     const line = Array.from({ length: 200 }, (_, i) => ({ x: 100 + i * 24, y: 600 }));
-    let onLog = false, log: number | null = null, stubbed = false, t = 0, prevG = false;
-    const draws: Array<{ t: number; log: number | null }> = [], offs: number[] = [];
+    let onLog = false, log: number | null = null, stubbed = false, t = 0, prevG = false, prevLog = false;
+    const draws: Array<{ t: number; log: number | null }> = [], offs: number[] = [], logOffs: number[] = [];
     try {
       const run = new FirstTimerRun('1-1', 1, FT_CHILD, { route: line, cap: 20, rescueAfter: 1000, onFrame: (sim) => {
         const e = (sim as unknown as { e: { player: { vy: number; grounded: boolean }; platforms: Platform[]; standingOnId: number | null } }).e;
@@ -351,7 +360,9 @@ test('SKILLS.reAim keeps the honest aim (D121, the lead\'s two conditions): on a
         onLog = !!here?.drift && e.player.grounded;
         log = onLog ? here!.id : null;
         if (prevG && !e.player.grounded && e.player.vy < 0) offs.push(t);
+        if (prevLog && !e.player.grounded && e.player.vy < 0) logOffs.push(t);
         prevG = e.player.grounded;
+        prevLog = onLog;
       } });
       const own = run as unknown as { drawHop: (d: -1 | 1) => { kind: string; hold: number; d2: number; thumb?: { drift: number[]; slip: number[]; release: number[] } } };
       const real = own.drawHop.bind(run);
@@ -371,14 +382,17 @@ test('SKILLS.reAim keeps the honest aim (D121, the lead\'s two conditions): on a
       const up = HOP_TRACE.rows.find((r) => r.site === 'upstream');
       let gapMin = Infinity;
       for (let i = 1; i < draws.length; i++) if (draws[i].log === draws[i - 1].log && !offs.some((o) => o > draws[i - 1].t && o <= draws[i].t)) gapMin = Math.min(gapMin, draws[i].t - draws[i - 1].t);
-      return { up: up ? `${up.t.toFixed(3)}@${up.x.toFixed(1)}` : 'none', gapMin, redraws: draws.length };
+      return { up: up ? `${up.t.toFixed(3)}@${up.x.toFixed(1)}` : 'none', upT: up ? up.t : NaN, logOff: logOffs.length ? logOffs[0] : NaN, gapMin, redraws: draws.length };
     } finally {
       HOP_TRACE.on = false;
       HOP_TRACE.rows.length = 0;
     }
   };
-  for (const phase of [0, 0.5, 1, 1.5, 2, 2.5]) {
+  //  (by phase, as the toy above: on REAIM_PHASES the first upstream press IS his first hop off a log, so the t@x compare is the press's own
+  //   decision, never an earlier on-log hop's noise flown after its press; phase 0.5 had padPause's hop first, ENG-PLANT-CI session 7 (b))
+  for (const phase of REAIM_PHASES) {
     const noisy = fly(phase, false), quiet = fly(phase, true);
+    assert.ok(noisy.logOff > noisy.upT && noisy.logOff - noisy.upT < 3 * DT_S + 1e-6, `phase ${phase}: the first upstream press (${noisy.up}) is not his first hop off a log (${noisy.logOff.toFixed(3)})`);
     assert.ok(noisy.redraws >= 2, `phase ${phase}: the planted tap was aimed again (${noisy.redraws} on-log draws)`);
     assert.ok(noisy.gapMin >= FT_CHILD.stopReact - 1e-6, `phase ${phase}: a re-draw on a log came inside stopReact ${FT_CHILD.stopReact} s (${noisy.gapMin.toFixed(3)} s)`);
     assert.notEqual(noisy.up, 'none', `phase ${phase}: an upstream press was judged`);
