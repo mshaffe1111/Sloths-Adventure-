@@ -10,7 +10,11 @@ site kept; tsc 0). kid+adult x40, GEN2_DRAFT=3-1, each DRAFT CHECKED by probes/t
 | trial 1: + dark 3128e21e (0f6bc0f76) | 24/67/29/190 | 310 | 269 | 4 | 41 | 22/3/20/0 |
 | trial 2: + dark FINAL abcf2ec4 (b4a8abcc7) | 19/41/22/135 | 217 | 182 | 4 | 35 | 26/12/23/0 |
 | **trial 2 + route fix (9f482fd46)** | **9/4/10/4** | **27** | **24** | **0** | **4** | **32/37/32/37** |
-All 160 reach the shrine in every run; under the floor 0 (trial 2 + fix: kid N min 111.9 s). Rows: rows/castbots-trial0f6bc0f76-,
+| head + route fix, no dark (bf3c1fef2) | 12/4/10/4 | 30 | 23 | 0 | 7 | 31/37/31/37 |
+All 160 reach the shrine in every run. **Under the floor (castBots' own count): 0 on every trial; on the head alone (no dark) kid N 28,
+kid E 1, adult N 24 of 40 (box 11's head, before the fix: runs under 100 s kid N 22, adult N 20), so 3-1's length on Normal rests on
+the dark: without it the fix makes him faster still (median kid N 95.2 s).** (trial 2 + fix: kid N min 111.9 s; head + fix rows
+rows/castbots-bf3c1fef2-kidadult-1-40.jsonl, draft checked: kid N 39 row 103.2 s R0 = trace on the same tree.) Rows: rows/castbots-trial0f6bc0f76-,
 -trial2b4a8abcc7-, -trial2fix9f482fd46-kidadult-1-40.jsonl. **THE TOP VINE SPOT, TRACED (rule 28, two rows): 110 of trial 2's 182
 read 'in a dip 174/178 px deep'.** Adult Easy 28 at (942,927): off a stopped turn vine's catch 963-1143@753 he drops onto a shelf
 847-1075@927; probes/corners.mts gives the route 933,927 (where the drop lands) -> 1075,927 (the next leg's ENTRY, the shelf's far
@@ -25,7 +29,7 @@ back past where he came in (the same walk without the out leg). **Planted castBo
 4bcd1e51** (corners 933 -> 1075 -> 855, the real ones), **GREEN after**; cases 1-6 green; castBots.test whole file 16/16; tsc 0. **No
 listed stage lays a way down** (probe: 1-1..2-5 on seeds 1-3 both settings; only 1-4 is a tower and it climbs), so no shipped route
 can move. Lead told each number as measured.
-**Next, in order (box 13):** (0) **Record the head-alone x40** (bf3c1fef2, frozen /home/user/wt/fix12, started 1:52 PM ET;
+**Next, in order (box 13):** (0) DONE in this box (the run already going at the hand-over): the head-alone row of the table. Still owed: send it to the lead with the floor note if this box's message did not reach. Old step text: **Record the head-alone x40** (bf3c1fef2, frozen /home/user/wt/fix12, started 1:52 PM ET;
 rows/castbots-bf3c1fef2-kidadult-1-40.jsonl when it ends; if the file is missing the run died with this container: re-run it on a
 frozen bf3c1fef2 tree, `GEN2_DRAFT=3-1 npx tsx tools/inspect/castBots.ts --stage 3-1 --bots kid,adult --seeds 1-40 --par 2 --rows
 <file>`, then causes.mts) and send the lead the head-alone table beside trial 2 + fix (the lead asked for both). (1) **The lead's
