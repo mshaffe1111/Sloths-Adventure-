@@ -1,0 +1,3 @@
+{"bot":"kid","setting":"normal","stage":"2-2","seed":4,"end":"shrine","pass":false,"time":163,"goal":{"got":78,"need":60},"rescues":1,"turnBacks":0,"hits":0,"lives":3,"hitBy":{"water":3},"cast":null,"stuck":[{"x":29562,"what":"set down here 3 times"}]}
+{"bot":"kid","setting":"normal","stage":"2-2","seed":8,"end":"shrine","pass":false,"time":166.8,"goal":{"got":80,"need":61},"rescues":1,"turnBacks":0,"hits":0,"lives":5,"hitBy":{"water":5},"cast":null,"stuck":[{"x":29164,"what":"set down here 3 times"}]}
+{"bot":"kid","setting":"normal","stage":"2-2","seed":6,"end":"shrine","pass":false,"time":171.7,"goal":{"got":79,"need":60},"rescues":1,"turnBacks":0,"hits":0,"lives":6,"hitBy":{"water":6},"cast":null,"stuck":[{"x":28656,"what":"set down here 3 times"}]}

@@ -1,6 +1,34 @@
-# ENG-PLANT-CI: the 9 CI-tool-line reds on c27 (session 11 hand-over written 3:46 PM ET 11-25 by `date`; sessions 10 to 1 below it)
+# ENG-PLANT-CI: the 9 CI-tool-line reds on c27 (session 12 notes; sessions 11 to 1 below it)
 
-## EXACT NEXT STEP (session 12). FINAL HEAD = 4db1da8aa (bot code = CI-14 bfbe09494; the re-plants 6bffbfa7b are test-only). The lead ACCEPTED CI-14, the moved-rows table and the re-plants; the two named items (log run-end floor read; lianaWait's single mid lag) are filed after release 4 with dropWaits.
+## EXACT NEXT STEP (session 13, if one is needed). FINAL HEAD candidate = CI-15 0ec009b4d (bot code: CI-14 + padPause's stand is a stop he means).
+The lead ruled GO on CI-15 and filed (b) (2-2 pad #114 walk-off, padRead walking him across a moving pad) with R-165.465 for after release 4.
+0. ReadNotifications. Frozen tree: `bash ci-tools/s12-mktree.sh.txt ci15 0ec009b4d` (sparse: src tools public; D115).
+1. FINAL CHECKS on frozen CI-15: see SESSION 12 STATE below for what is recorded; run what is not, once each, at most two heavy at a time.
+2. Record each here, push release-0.10.3-wip-plant-ci, `git ls-remote`, the hash and one line per check to the lead. Do NOT merge.
+
+## SESSION 12 STATE (ENG-PLANT-CI-l)
+**Step 1, the 7 rows bisected** (frozen sparse trees c27, CI-1..CI-14, CI-10 = 8134a9a56; s12-rows.sh, table data/ci/s12/bisect-table.txt,
+rows data/ci/s12/<step>-21n/21e/22n.jsonl; CI-14's 7 = the wide sample's exactly):
+- CI-13 flips 2-1 kid N2 (P 153.9 -> F 171.8 r1 l12), N7 (P 153.1 -> F 164.2 r2), E10 (P 137.8 -> F 152.8 r1), 2-2 kid N4 (P 161.0 -> F
+  160.5 r1; CI-14 163 r1), N8 (P 155.6 -> F 163.6 r1). CI-14 flips 2-2 kid N6 (P 184.1 -> F 171.7 r1). CI-10 (the carry) flips 2-1 kid N10
+  (P 167.4 -> F 162.7 r1; CI-13 156.4 r1). (CI-2..CI-6 failed 2-1 N2 and CI-5 four more; CI-7 restored all.)
+- Where they part: at the stepped code (2-1 N2 35.967 on log #44 x 8,893: CI-12 presses off at 36.067, CI-13 stands). None of the rescues
+  is there: each is three lives at one flag 50-110 s later, at a spot where the passing tree also loses lives (s12-tele.py, s12-death.py).
+- What took him (s12-under2.mts, the tag probe s10-tag on an unfrozen tagged copy, s12-tagger.py): (a) 2-1 x 19,4xx-19,9xx (N2 4 lives,
+  CI-12 2; N7 4, CI-12 1), (c) 2-1 x 26,5xx (E10 3, CI-12 1), (d) 2-1 x 15,0xx (N10 on CI-10 3 + rescue, CI-9 4 no rescue): ONE BOT FAULT.
+  He lands on a small log (upstream #85/#86/#87/#116, or #68 running his way off a liana river), padPause returns a bare {} (L3511 on CI-14),
+  the kid's late lift-off re-arms every frame (thumbify R-165.59, no holdQ): 285 px/s off the log's front in 4-6 frames. E.g. CI-13 N2
+  97.000 lands on #85 [19314,19464] (dir -1, 70 px/s) at x 19,408, L3509 {} every frame, off at 97.267, life 97.367; E10 117.100 on
+  #116, off 117.367. (b) 2-2 x 28,4xx-29,1xx (N4, N8, N6): lives off pads #112-#116; N4 144.033: padRead (L3329 {right}) walks him across
+  moving pad #114, the press pends on the edge frame, off. CI-12 lost lives at the same x (140.10, 144.13): pre-existing, by phase.
+- **CI-15 0ec009b4d** (firsttimer.ts padPause: `{ this.stopMeant = true; return {}; }`). Toy hopJudged 'CI-15' (2-1 kid Easy 10, cap 118:
+  no walk-off from a log within two frames of a pause frame on it, unpressed): RED on CI-14 ('off log #116 at t 117.367 x 26505'), GREEN on
+  CI-15 (data/ci/s12/toy15-*.txt). The 7 rows on a probe copy: all PASS (2-1 N2 164.3 l0, N7 168.0 l1, N10 164.0 l0, E10 172.3 l0; 2-2 N4
+  175.8 l3, N6 162.5 l0, N8 184.9 l3); the 2-2 three pass by phase, (b) is not gone.
+**FINAL CHECKS on frozen CI-15** (evidence data/ci/s12/fin15/): PENDING.
+
+
+## (session 11's) EXACT NEXT STEP (session 12), DONE in session 12 (see above). FINAL HEAD = 4db1da8aa (bot code = CI-14 bfbe09494; the re-plants 6bffbfa7b are test-only). The lead ACCEPTED CI-14, the moved-rows table and the re-plants; the two named items (log run-end floor read; lianaWait's single mid lag) are filed after release 4 with dropWaits.
 0. ReadNotifications. Freeze 4db1da8aa (`git worktree add --detach <dir> 4db1da8aa`, node_modules symlinked, `chattr -R +i <dir>/src
    <dir>/tools`, `chattr -R -i <dir>/src/game/gen2/proven`, D115). Every run with run_in_background and timeout 7200000; never a shell '&'.
 1. DONE on frozen 4db1da8aa in session 11 (see FINAL CHECKS RECORDED below): tsc clean; the wide sample (**FAILS the bar**); 2-7 x40.

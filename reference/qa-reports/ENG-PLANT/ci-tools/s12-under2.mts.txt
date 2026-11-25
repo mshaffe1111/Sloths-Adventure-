@@ -1,0 +1,10 @@
+// under2: every frame in [t0,t1]: his x, vx, y, grounded, the floor under him (id, type, extent, a drift's dir / run end / speed)
+const [T, stage, bot, setting, seedS, t0s, t1s] = process.argv.slice(2);
+await import(T + '/src/game/headlessDom.ts');
+const ft: any = await import(T + '/tools/inspect/firsttimer.ts');
+const cb: any = await import(T + '/tools/inspect/castBots.ts');
+ft.firstTimer(stage, Number(seedS), cb.CAST_BOTS[bot][setting], { cap: Number(t1s) + 0.05, dotSetting: true, onFrame: (sim: any) => {
+  if (sim.t < Number(t0s)) return;
+  const p = sim.e.player, q = sim.platforms.find((x: any) => x.id === sim.e.standingOnId);
+  console.log(sim.t.toFixed(3), 'x', p.x.toFixed(0), 'vx', p.vx.toFixed(0), 'y', p.y.toFixed(0), p.grounded ? 'g' : '-', q ? `#${q.id} ${q.type} [${q.x.toFixed(0)},${(q.x + q.width).toFixed(0)}] y${q.y}${q.drift ? ` dir${q.drift.dir} ${q.drift.x0}-${q.drift.x1} v${q.drift.speed}` : ''}` : '');
+} });
