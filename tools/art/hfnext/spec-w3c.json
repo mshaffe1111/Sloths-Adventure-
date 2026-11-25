@@ -1,0 +1,37 @@
+{
+ "tag": "w3-c",
+ "edits": [
+  {
+   "name": "rootTall",
+   "src": "gh:COMMIT:reference/art/hfw3/starts3/rootTall.png",
+   "refs": [
+    "gh:COMMIT:reference/art/hfw3/starts3/ref-w3root.png"
+   ],
+   "w": 384,
+   "h": 1024,
+   "seeds": [
+    41,
+    53,
+    67
+   ],
+   "prompt": "Repaint the first image as a thick braid of old tree roots hanging straight down from a small grotto rock lip at the top, in exactly the hand-painted storybook style of the pieces in the second image: soft painterly gouache shading with gentle gradients, fine thin dark linework; the roots twisted and knobbly like the brown hanging roots in the second image, dark umber bark with paler worn ridges, a little soft grotto moss: three roots twisted round each other into one sturdy climbable column, knobbly bark knots along it, a few thin rootlets and thin streaks of soft moss, tapering to fine tips at the bottom. The stone lip at the top is dark cool grey-green grotto rock. Keep its shape and size. Keep the flat plain grey background around it, with empty grey space on every side.",
+   "neg": "photo, 3d render, blurry, text, letters, watermark, frame, border, scenery, sky, cave background, ground plane, thick black outline, flat vector, clip art, harsh shadow, cast shadow, extra objects, people, animals, sloth, leaves, flowers, rope, snake, wall, tree trunk, hands, fingers, arms, human hand, eggs, pebbles, round blobs, mushrooms"
+  },
+  {
+   "name": "rootShort",
+   "src": "gh:COMMIT:reference/art/hfw3/starts3/rootShort.png",
+   "refs": [
+    "gh:COMMIT:reference/art/hfw3/starts3/ref-w3root.png"
+   ],
+   "w": 384,
+   "h": 768,
+   "seeds": [
+    41,
+    53,
+    67
+   ],
+   "prompt": "Repaint the first image as a thick braid of old tree roots hanging straight down from a small grotto rock lip at the top, in exactly the hand-painted storybook style of the pieces in the second image: soft painterly gouache shading with gentle gradients, fine thin dark linework; the roots twisted and knobbly like the brown hanging roots in the second image, dark umber bark with paler worn ridges, a little soft grotto moss: three roots twisted round each other into one sturdy climbable column, knobbly bark knots along it, a few thin rootlets and thin streaks of soft moss, tapering to fine tips at the bottom. The stone lip at the top is dark cool grey-green grotto rock. Keep its shape and size. Keep the flat plain grey background around it, with empty grey space on every side.",
+   "neg": "photo, 3d render, blurry, text, letters, watermark, frame, border, scenery, sky, cave background, ground plane, thick black outline, flat vector, clip art, harsh shadow, cast shadow, extra objects, people, animals, sloth, leaves, flowers, rope, snake, wall, tree trunk, hands, fingers, arms, human hand, eggs, pebbles, round blobs, mushrooms"
+  }
+ ]
+}

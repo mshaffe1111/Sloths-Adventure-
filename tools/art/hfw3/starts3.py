@@ -144,9 +144,7 @@ def curtain(w, h, top_h, seed, strands=3):
     for _ in range(h // 70):   # rootlets
         y = rnd.randint(top_h + 20, h - 120); x = cx + rnd.choice((-1, 1)) * rnd.randint(30, 60)
         d.line([(x, y), (x + rnd.randint(-40, 40), y + rnd.randint(40, 90))], fill=ROOT_D, width=5)
-    for _ in range(h // 200 + 1):   # moss clumps on the roots
-        y = rnd.randint(top_h, h - 200); x = cx + rnd.randint(-40, 30)
-        d.ellipse([x, y, x + 44, y + 30], fill=MOSS + (255,))
+    # (no moss blobs: batch w3a painted the start's moss ellipses as egg-like lumps, 11-25; the prompt asks for thin moss instead)
     lip = slab(w - 20, top_h - 30, 40, seed + 1)   # the rock the roots hang from
     im.alpha_composite(lip, (10, 0))
     return im
