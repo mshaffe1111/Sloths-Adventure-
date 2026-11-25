@@ -15,8 +15,10 @@ laid before it: a bough that makes a new dip under laid wood is refused too (`ma
 says what the code guards going down (his hop's room), and they agree.** Planted test: tower.test.ts "going down, his hop's room"
 (seed 13's shape as a toy, 9500 px up): **RED on today's lay** (it lays 71-251 @555, 108 px over the vine's top: the seed-13 shelf),
 **GREEN on fe331023**; tower.test 36/36. NOT YET RUN on this head: the suite, lockall, seedlist, castBots. **Next, in order:**
-(2) re-measure on the new lay: castBots.test's seed-13 toy (it lays its own pieces: rebuild it from the NEW roll 13 normal, probes/
-plan13.mts on a frozen tree of fe331023), then A and B each off (the box-7 recipe below: fix A off / fix B off lines) with
+(2) re-measure on the new lay: castBots.test's seed-13 toy (catchOnArena hard-codes today's pieces; READ on fe331023 with
+probes/area.mts: the shelf 0-604 now lies at 9975, **188 px over the storey** (was 10055, 108), clear of his hop, still a double jump's
+reach; the landing catch is 43-223 @10336 (was 83-263); nothing else in 9800-10400 moved: so `thin(9004, 0, 555, 604)` -> y **475** and
+`thin(9010, 83, 836, 180)` -> x **43**, then play it on the head, A off, B off), then A and B each off (the box-7 recipe below: fix A off / fix B off lines) with
 `compare.py` on x40 rows: a fix that cures no shape on the new lay comes OUT (ruling 2); one that does gets a toy on that shape.
 (3) If a bot still stands after a detour: the bot skill (walk down into the dip and hop out), general, a toy each way.
 (4) x40, both settings, every bot, tally (`probes/tally.py`): bar = every bot reaches the shrine on every roll, a rescue a minority
