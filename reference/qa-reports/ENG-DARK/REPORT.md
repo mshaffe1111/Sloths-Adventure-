@@ -1,21 +1,51 @@
 # ENG-DARK REPORT (the dark + light ring as one gen2 brick; WORLD-3-PLAN F2; R-165.449)
-**EXACT NEXT STEP (box 1 END; the lead: no box 2, ENG-DARK-b takes the rest; code head 6ba641166):** (1) **LOCK RED, cause found, fix
-first:** lockall --check on a frozen 6ba641166 vs t-eng-w3 c1008d8e's lock: 65/102 unchanged, exit 1: 37 gen2 stages (1-1..1-9, 2-1..2-5,
-5-7, 5-9, 6-1..6-7, 6-9, 7-1/3/5/6/7/9, 8-1/2/3/5/6/8/9) moved in `proto.gen2` ONLY. Cause: dark.ts `glowFlags` writes
-`out.extras[GLOW_ID] = id` on EVERY stage (even with no glowworm dark), and pipeline.ts:4167 copies non-empty extras into proto.gen2.
-Fix: in glowFlags write the counter only when it hung a glowworm (`if (id !== first) out.extras[GLOW_ID] = id`); re-run dark.test.ts,
-then lockall --check on a frozen head vs the base lock (`$S/lock-base.json`, or record it again on a frozen c1008d8e): PASS = exit 0.
-(2) **PLANTS 10/10 CAUGHT** on frozen 6ba641166 (the list holds 10, not the 11 I said). (3) The bots' skill (noGlowWait),
-castBots on the draft, stills, gates, landing: as below. $S = /tmp/claude-0/-home-user-Sloths-Adventure-/5d4d483a-b0b0-5deb-a175-
-320f496c7653/scratchpad (lock-base.json, lock-check-6ba641166.log, plants-6ba641166.log), if the container still has it.
-The bots' skill: firsttimer.ts `noGlowWait?: boolean` (rule 21 plant only): grounded on a piece with a dark rim (darkRims of the stage,
-once) whose landing light is asleep or woke under DARK_AHEAD[setting] s ago, heading to that rim and within ~60 px: thumb off ({}),
-facing the rim, until woke + DARK_AHEAD + stopReact. MERGE origin/t-eng-w3 first if ENG-DOWNBOT has landed (it was at 7d12c344 on
-t-eng-w3-wip-downbot). Toy each way in dark.test.ts (with: litAhead GREEN; noGlowWait: RED); castBots `GEN2_DRAFT=3-1 npx tsx
-tools/inspect/castBots.ts --stage 3-1 --seeds 1-40 --setting both --json` in lanes, a litAhead count per row (RimWatch in the run loop).
-Stills (tools/engine/draftshoot.mjs, 2x, upright + sideways) of a dark shaft asleep and woken. tierBots 9/9, suite (3 shards) + the CI
-tool line; land on t-eng-w3 (merge, no force); send the lead the hash, the READY measures, the light API.
-Start 11:03 AM ET (by `date`).
+**EXACT NEXT STEP (ENG-DARK-b hand-over, 11:47 AM ET by `date`; code head 653bb970 on t-eng-dark-wip; the lock fix and the bots' skill are IN):**
+(1) **Box 2's runs are still going in box 2's container; box 2 records them here when they end (do not re-run them):** the base lock
+on a frozen t-eng-w3 c1008d8e (`lockall --layouts 16 --out lock-base.json`), then `lockall --layouts 16 --check lock-base.json` on a
+frozen 653bb970 (PASS = exit 0, 102/102 unchanged: World 6 and World 8 above all); castBots on the 3-1 draft x40 both settings every
+bot, 3 lanes (seeds 1-14 / 15-27 / 28-40) on a frozen 653bb970, each row with `dark: {crossed, unlit}`.
+(2) **Box 3 starts on these, in parallel (none needs box 2's runs):** (a) STILLS both ways of a dark shaft with the glow, before and
+after a stop: `tools/engine/draftshoot.mjs` (on t-eng-w3; read its header for the flags), 2x, upright + sideways, a dark rim asleep
+and the same rim after a stop of DARK_AHEAD + 0.5 s; judge them as Matt would on a phone (the glow readable, the next landing visible
+when lit, nothing under the HUD or the phone's edges); send the lead the paths. (b) THE RESCUES: on seed 1 every bot already has 3-5
+rescues, every one 'in a dip ~280 px deep, the way on is ~100 px down' (the down shaft's storeys). Name whether the dark adds any:
+castBots seeds 1-3 every bot both settings on a frozen c1008d8e (no dark) vs the x40 rows here (by `stuck[].what`); two traces per
+cause the dark adds (FT_FRAMES=t0,t1). A down-shaft rescue the base has too is ENG-DOWNBOT's (it lands the down lay and bots on
+t-eng-w3 today): merge origin/t-eng-w3 when it lands and re-run the x40 then. (c) The plants on a frozen 653bb970: `python3
+reference/qa-reports/ENG-DARK/planted-faults.py <frozen dir>` (12 now: box 1's 10 + the glow counter on every stage + the bots' stop
+removed in code): PASS = 12/12 CAUGHT.
+(3) Then: tierBots 9/9, the suite (3 shards) + the CI tool line once on the final head; land on t-eng-w3 (merge origin/t-eng-w3, no
+force); send the lead the hash, the READY measures (below) and that ENG-SPORE can start.
+Box 2 start 11:31 AM ET (by `date`). Box 1 start 11:03 AM ET.
+
+## Box 2 (ENG-DARK-b) done (all on the real 3-1 draft row)
+1. **The lock's cause fixed first (box 1's RED: 37 gen2 stages moved in proto.gen2 only):** dark.ts glowFlags writes its glowworm
+   counter into `extras` only when it hung a glowworm. Planted: dark.test.ts 'the lay leaves every other stage as it was' (1-1 and 6-1,
+   seeds 1-2: no glow key in proto.gen2): RED with the counter written everywhere, GREEN with the fix; and in planted-faults.py.
+   The lockall re-run to zero moves is item (1) above (running). The lesson: anything a lay writes into extras reaches every stage's
+   proto (the lead's note).
+2. **The bots' skill for the dark (firsttimer.ts glowWait; level.md rule 21):** grounded on a piece with a rim in the glowworms' dark
+   he is heading over (darkRims, read once), within GLOW_NEAR 90 px, its landing's light asleep or lit under DARK_AHEAD[setting] s: the
+   thumb comes off and he stands, facing the rim, until the light has been lit DARK_AHEAD + his stopReact; a light that has not woken
+   in GLOW_GIVEUP 4 s he gives up on (litAhead names that crossing). Read before any other plan steers him (read after the freeze, a
+   landing's own steer walked the KID over the next rim). The late lift-off arms ONCE at that stop for every bot (KID and ADULT
+   re-arm it every frame, R-165.59's documented quirk, so a stop never stopped them: the KID's first run walked off 12 of 57 dark rims
+   unlit); elsewhere KID/ADULT play exactly as before. `noGlowWait` removes it (the plant).
+3. **Every bot run watches the dark:** FTRun.dark / the castBots row's `dark: {crossed, unlit}` (RimWatch each frame on the engine's own
+   glowWake; unlit = litAhead's names). RimWatch fixed: a rim's piece he left some other way (a vine, its other end, a rescue) is no
+   crossing when he later walks past its end on ground below (the ADULT Easy run counted a rim 281 px over his head). Toy: RED before,
+   GREEN after.
+4. **Toys each way (src/game/gen2/darkBots.test.ts, the whole ADULT run's first minute on the draft's roll 1 in the real engine):**
+   with the skill every rim he went over was lit 1 s ahead (GREEN); noGlowWait: he walks off into the dark (RED). dark.test.ts +
+   darkBots.test.ts: 11/11 GREEN on 653bb970.
+5. **Seed 1, one run each (before the x40):** first version (the stop read after the freeze), all 9 rows: dark rims crossed 24-78 per
+   run, unlit 0-2 per run. After the read moved: KID and ADULT both settings only: unlit 0, 0, 0, 1 (the 1 was RimWatch's false
+   crossing, fixed in item 3, NOT re-run since: the x40 on 653bb970 measures every bot). Every run reached the shrine with 3-5 rescues,
+   all in the down shaft's storeys (next step (2b)).
+
+## Box 1 END results (kept)
+Plants 10/10 CAUGHT on frozen 6ba641166. lockall --check on frozen 6ba641166 vs c1008d8e's lock: 65/102 unchanged, exit 1 (37 gen2
+stages in proto.gen2 only: the glowFlags counter; fixed in box 2 item 1).
 
 ## Done so far (box 1; all on the real 3-1 draft row, GEN2_DRAFT readied)
 1. **gen2/dark.ts, the one brick:** World 6's darkZone LIFTED (fireflyZone, unchanged code); w6Swing.ts re-exports W6S_PROP/W6S_PROPS/
