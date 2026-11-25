@@ -2,6 +2,27 @@
 
 Merged at INT-14 (11-20, t-int-14): §0zq-25d/§0zq-25c ENG-25c (2-5's snap rows level, the snapper's ground, the straddle), §0zq-NOISE ENG-NOISE (one noise channel), §0zq-PROWL ENG-PROWL (sight.up + the leap), §0zq-small3 ENG-SMALL3 (R-165.317/.319/.321), and PAINT-292 (World 1's painted planks and stones; no section here). Merged at INT-13 (11-19, t-int-13): §0ENG23 ENG-23 (followers, the heron reads the line) and §0zl-168 TIME-168 (timecheck), §0zm-25b ENG-25b (the snapper bot skill, the meter's snap channel) and §0zl-25 ENG-25 (2-5's snap stones and snapper rows), §0zn-26b ENG-26b and §0zm-26 ENG-26 (the water wheel), §0W2A ART-W2A (2-3's painted follow poses), §0zo ART-W2B (the wheel's painted draw), §0zo-285c/§0zo-285b/§0zo-285 ENG-285 (the judges and bots fly the engine's Pokey), §0zp-284 FIX-284/284b (2-2's big pads, the real tap hop), §0zp-24d BUILD-24d, §0zn-24c ENG-24c (the raft look, the glow) and §0zm-24 BUILD-24 (2-4) joined; rewritten at the INT-12 merge (11-18, t-int-12): four members wrote here the same day, so labels are suffixed where they met: §0zm-22p ART-22P (CI's seed-list matrix, R-165.278); §0zl-24 ENG-24 (a liana over a river; its REPORT cites it as §0zl); §0zm BUILD-19b, §0zn ENG-19c and §0zl BUILD-19 (t-build-19, the labels its REPORT cites). Before them FIX-22b (11-15): section 0zk.
 
+## 0zs-SOIL. FIX-SOIL-b (t-fix-soil from main cdffdc627, 11-25; final code head 539885c37): a hung bank's soil stops at its own bottom over a painted underside (R-165.441)
+- THE CAUSE: drawGround paints banks lowest first and drawBankArt ran a bank's soil to the view's bottom, so a HIGH bank's soil was one
+  column over every floor under it (SHIPPED 1-4's summit, every build; 2-6 beat A on t-build-26). paintcheck passed it: it judged the
+  drawer ASSIGNED, not what was drawn (D136).
+- WHERE: src/game/protoArt.ts. bankOpen(p, banks) is drawGround's per-bank side logic (moved unchanged); soilOutline(w, p, open, bottom)
+  is the soil's clip path (a non-hung bank's path is the old one, point for point); soilHangs() decides HUNG: the soil run on down would
+  cover more than SOIL_JOIN (3) units of a lower bank's top or the SOIL_ROOM (48) over it, gap >= 48. groundSoil(banks) exports the
+  regions as painted (paint order, pockets after): the gate reads THAT. groundLine() leaves hung banks out (the depth line).
+  The underside: soilOutline's `under` (edge line: UNDER_WOB 18 clumps, UNDER_CORNER 30 rounding over UNDER_ROUND 110 at open ends,
+  never below the collider), groundPaint.ts drawUnderside (the world's own lip from LIP_MAT 0.37 down: turf underside + roots 1.8x,
+  baked once per bank, at most 4 kept; the turf darkened toward the world's deep tone, UNDER_TURF_SHADE 0.55: World 2's lip has a pale
+  clay rim that stood as a cream stripe across 2-6's earth wall, the lead's ruling), the shade (UNDER_SHADE 50, deep tone 0.7), the ends faded at bottom - underRoom.
+- GATE: tools/engine/paintFall.ts soilOvers (wired into paintcheck, no known list), planted in paintFall.test.ts (CI-run).
+- TRAPS: (1) a bank "over" another by its box is not over it: the end faces curve in up to 80 units at depth; the rule uses the drawn
+  outline, so a floor tucked under an open end's face is NOT hung. (2) A step down beside a bank meets its soil 1 unit past the end
+  (closed side x+1): that is the join, not a breach (SOIL_JOIN). (3) protoArt.ts groundBanks(platforms) is the ONE bank list: drawProtoScene
+  draws it and soilOvers reads it. t-fix-sidewall changes that same drawProtoScene line to narrowBank.ts bankList(...): the merge puts
+  bankList INSIDE groundBanks (one line), never back on the draw line, or the gate judges a list the screen does not draw.
+  (4) paintTile still paints (empty) squares under a hung bank down the whole climb (as main painted the column there): a cheap
+  follow-up is to stop a hung bank's reach at its underside + 80 in paintTile's null test.
+
 ## 0zq-PICK. PICK-W1 (t-pick-w1 from t-int-15 0eefc707e, 11-20 evening): the testers' link plays all of World 1, picked on its front page (R-165.343)
 - WHERE: playRecorder.ts CTEST_STAGES (1-1..1-9, the ONE list; CTEST_LEVEL_ID is deleted), isCtestStage, savedCtestStage/saveCtestStage
   ('sloth_qa_ctest_stage'), ctestPlayed/markCtestPlayed ('sloth_qa_ctest_played', the tile tick). ControlTestGate.tsx: StagePicker,

@@ -1,14 +1,14 @@
-# FIX-SOIL-b (session 2 of FIX-SOIL; t-fix-soil from main cdffdc627). Started 8:58 AM ET 11-25 (by `date`); this box written 10:01 AM ET
+# FIX-SOIL-b (session 2 of FIX-SOIL; t-fix-soil from main cdffdc627). Started 8:58 AM ET 11-25 (by `date`); this box written 10:11 AM ET
 
 
 ## EXACT NEXT STEP
-**FINAL HEAD 003e8b323 (= c22702edc + groundBanks: one bank list for the draw and the gate; no pixel change: the same filter, moved).
-The lead APPROVED the stills (taken on c22702edc) and the depth-line fix. DONE on frozen 003e8b323: lockall vs main's lock 102/102
-stages unchanged (zero moves); paintcheck full sweep PASS (5838 builds, 102 stages, 0 SOIL OVER, 0 new, 0 stale). RUNNING: the suite in
-4 shards (scratch shard0-3.txt) and paintcheck --stages 2-6 on wt-26 (a9439e586 + final patch, GREEN?) then wt-26red (cut off, RED?)
-then --stages 1-4 on wt-red2 (final head, cut off, RED?). NEXT: read those; the CI tool line (gates.yml rolled, scratch ciline.sh);
-drawcheck; gate table here; turnover note (engine-core.md 0zs-SOIL, drafted in scratch handoff-entry.md); push, ls-remote, hash +
-table to the lead. Do NOT merge into the 2-6 branch.**
+**FINAL CODE HEAD 539885c37 (the lead's ruling SHADE: 003e8b323 + the underside turf darkened toward the world's deep tone, 0.55, in
+its one-time bake). Every gate ONCE on it, on frozen scratch wt-final3. RUNNING: paintcheck full sweep, lockall vs main's lock. NEXT, in
+order: (1) read both (zero moves; trace any move); (2) stills on the final head: 1-4 layout 1 both settings both ways (shoot-b.mjs on a
+vite of wt-final3) and 2-6 B/C/A upright AND sideways (scratch shoot26.mjs on a vite of wt-26f = a9439e586 + the final patch); look at
+each on the phone frame; (3) suite in 4 shards (scratch shard0-3.txt), the CI tool line (scratch ciline.sh), drawcheck; (4) gate table
+here, push, ls-remote, hash + paths to the lead. Name the 2-6 lighter soil block (W2-LANE's, not ours) with its still. Do NOT merge into
+the 2-6 branch.**
 
 ## What changed (draw-only; no layout moves: lockall pending)
 - src/game/protoArt.ts: drawGround's per-bank side logic moved, unchanged, into exported bankOpen(); the soil's clip outline into
