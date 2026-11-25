@@ -113,21 +113,35 @@ test("a seam read as a way down (noSeamWalk, the plant): both sides of the seam 
   assert.ok(Math.max(r.dark.loop, worstRim(r.dark.unlit)) >= 10, `one rim gone over again and again (the most over one rim: ${r.dark.loop}; unlit ${JSON.stringify(r.dark.unlit.slice(0, 3))})`);
 });
 
-/** the middle on Normal roll 16 to just past the rim x 920, y 7104 (the right end of 760-920), where box 10 traced his turn press */
+/** (ENG-DARK box 12) the turn-room stop, hand-built: on the final lay no bot's own run (middle Normal, rolls 1-40) stops facing away at a
+ *  rim's very edge, so he is STOOD there: the middle on Normal roll 1, at 0.5 s set standing 2 px in from the draft's first sleeping rim,
+ *  facing away from it, its landing dark; the run then plays on (12 s). Box 10's real case: roll 16 x 920 on the lay before the second
+ *  lights. FTRun.dark.edgeTurns names each turn press nearer the rim than its turn room */
 async function turnRun(noTurnRoom: boolean) {
   if (readied !== DRAFT) readyDraft(DRAFT);
   const { firstTimer, FT_MIDDLE } = await import('../../../tools/inspect/firsttimer.ts');
-  return firstTimer(DRAFT, 16, { ...FT_MIDDLE, setting: 'normal', noTurnRoom }, { cap: 175 });
+  const { darkRims } = await import('./dark.ts');
+  let rim: ReturnType<typeof darkRims>[number] | undefined;
+  const r = firstTimer(DRAFT, 1, { ...FT_MIDDLE, setting: 'normal', noTurnRoom }, { cap: 12, onFrame(sim) {
+    if (rim || sim.e.gameTime <= 0.5) return;
+    rim = darkRims(sim.stage as Parameters<typeof darkRims>[0]).find((q) => q.light?.sleep);
+    assert.ok(rim, 'the draft has a sleeping rim');
+    sim.stand(rim.x - rim.dir * 2, rim.y);
+    sim.p.facing = -rim.dir as -1 | 1;
+    sim.p.vx = 0;
+  } });
+  assert.ok(rim && r.dark, 'he was stood at a sleeping rim in the lit dark');
+  return { dark: r.dark, at: `x ${rim.x}, y ${Math.round(rim.y)}` };
 }
 
-test("the dark stop's turn is never pressed at the rim's very edge: on roll 16 he stops 2 px in from rim x 920 facing away, steps back, then turns, and every rim he went over was lit (GREEN; planted: noTurnRoom)", async () => {
-  const r = await turnRun(false);
-  assert.ok(r.dark && r.dark.crossed >= 10, `he went over dark rims (${r.dark?.crossed})`);
-  assert.deepEqual(r.dark.unlit, []);
+test("the dark stop's turn is never pressed at the rim's very edge: stood 2 px in from a sleeping rim facing away, he steps back, then turns, and no rim is gone over dark (GREEN; planted: noTurnRoom)", async () => {
+  const { dark } = await turnRun(false);
+  assert.deepEqual(dark.edgeTurns, []);
+  assert.deepEqual(dark.unlit, []);
 });
 
-test("the turn pressed at the rim's very edge (noTurnRoom, the plant): the press that turns him carries him off rim x 920 into the dark (RED)", async () => {
-  const r = await turnRun(true);
-  assert.ok(r.dark, 'the drafted 3-1 has a lit dark (FTRun.dark)');
-  assert.ok(r.dark.unlit.some((u) => u.includes('x 920')), `rim x 920 gone over dark: ${JSON.stringify(r.dark.unlit.slice(0, 3))}`);
+test("the turn pressed at the rim's very edge (noTurnRoom, the plant): the press that turns him carries him off that rim into the dark (RED)", async () => {
+  const { dark, at } = await turnRun(true);
+  assert.ok(dark.edgeTurns.some((t) => t.includes(at)), `a turn pressed at the edge of the rim at ${at}: ${JSON.stringify(dark.edgeTurns)}`);
+  assert.ok(dark.unlit.some((u) => u.includes(at)), `the rim at ${at} gone over dark: ${JSON.stringify(dark.unlit.slice(0, 3))}`);
 });
