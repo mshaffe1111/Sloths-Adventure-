@@ -37,6 +37,11 @@ DO (A) NOW, in this order, on a chattr-frozen tree for every run (D115); the pro
      piece ALONE (no block on it) over the low road's floor within his jump height". That needs (i) (rise1, a block, from the water's
      edge, so nothing thin stands alone over the marsh; the treads move) or the porch over the marsh made not thin. THIS IS A
      RE-RULING FOR THE LEAD before A1 is built further (sent with this hand-over).
+ (i) TRIED AS A DROP-IN (probe env RISE0=1 on /home/user/wt28g: rise1 1,400 from the water's edge, rise2 centred on it, the marsh evenly
+     spaced): the toy refuses it before any run: flood.ts highRoad finds no chain of 3+ ("the high road: the wall-step, its own pieces and
+     its last piece"): with rise1 at the edge, W's top (Y-60) faces rise1's 60 px face across the 60 gap, which highRoad's rules
+     (FLOOD_STEP 60 up only by a wall-step walked into, FLOOD_HOP level) do not join. So (i) needs the first up-step re-shaped too
+     (e.g. W itself 120 tall in two wall-steps, or the gap closed so rise1 is walked into from W's top): not a data swap.
 (B) AT 1b, YOURS, its own ENGINE PIECE commit AFTER the merge (firsttimer.ts merged once): apply draft-B-reroute.patch.txt; toy RED on
  the old route, GREEN on the fix (the probe's late-15/19 runs are that toy: commit it as a lineBot test); rule 28: ENG-PLANT's 10 known
  flips AND the wide sample (seeds 1-10, every bot, both settings, on 2-1/2-2/2-4: zero BAR PASS -> FAIL vs main's rows).
