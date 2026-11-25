@@ -1,8 +1,6 @@
 # ENG-DARK REPORT (the dark + light ring as one gen2 brick; WORLD-3-PLAN F2; R-165.449)
 **EXACT NEXT STEP (ENG-DARK-c hand-over, 12:06 PM ET by `date`; code head b71163ea on t-eng-dark-wip: box 2's code + glowJump):**
-(1) **Box 3's runs are still going in box 3's container; box 3 records them here when they end (do not re-run them):** castBots on the
-3-1 draft on a frozen BASE c1008d8e (no dark), seeds 4-21 and 22-40, both settings, every bot (seeds 1-3 done: item 3 below), then the
-per-bot table base vs dark (653bb970's x40, box 2) by rescues and by cause. **Box 2's lockall --check is RECORDED: PASS, 102/102 unchanged on a
+(1) **Box 3's base x40 is DONE and recorded (item 3b below): the dark adds no rescues (1,393 base, 1,393 dark, the same causes).** **Box 2's lockall --check is RECORDED: PASS, 102/102 unchanged on a
 frozen 653bb970 vs c1008d8e ('Box 2's runs' below)**; glowJump (b71163ea) changes only the bots, so the lock is re-run once on the final
 merged head at landing (`lockall --layouts 16 --out lock-base.json` on a frozen t-eng-w3 base, then `--check` on the frozen final head).
 (2) **Box 4: fix cause 2 FIRST (traced below, a toy each way), then ONE castBots x40 on the 3-1 draft on the frozen head with both
@@ -55,7 +53,7 @@ Box 3 start 11:50 AM ET, box 2 11:31 AM ET, box 1 11:03 AM ET (by `date`).
    up; in `3-1-port-rim0-asleep` it covers the ledge under him. In a stage that goes DOWN the way on is below him: the card belongs above
    him. Here the cards fire because the pin moves him into the zone (the zone's line on entry); in play the same line fires on his first
    dark entry, i.e. at his first stop. The card's placement is not this lane's file (the lead's call: an R-number and a lane).
-3. **THE RESCUES, base vs the dark, seeds 1-3 (27 runs each; castBots on a frozen c1008d8e vs box 2's x40 rows on 653bb970; base rows: cast-3-1-base-c1008d8e-s1-3.jsonl):** the
+3. **THE RESCUES, base vs the dark, seeds 1-3 (27 runs each; castBots on a frozen c1008d8e vs box 2's x40 rows on 653bb970; base rows: seeds 1-3 of cast-3-1-x40-base-c1008d8e.jsonl):** the
    layout is the SAME (platforms and flags hashed equal on seeds 1-3, both trees), so every difference is the bots' play in the dark.
    Rescues 90 base -> 102 dark (+12; child Easy +7, middle Easy +4, adult Normal +2, expert/kid/middle Normal about even). The KINDS
    are the same (numbers stripped, base -> dark): 'in a dip N px deep, the way on is N px down' 56 -> 69; 'the way on is N px down'
@@ -64,6 +62,26 @@ Box 3 start 11:50 AM ET, box 2 11:31 AM ET, box 1 11:03 AM ET (by `date`).
    dithers between two storeys (piece 34 and 157: back up a jump, down again) where the base also logged 'the way on is 85 px down'
    at (514, 5699) and recovered without a rescue. Reading so far: the dark adds no rescue kind of its own; it moves when he reaches
    the down shaft's storeys, whose dips are ENG-DOWNBOT's lane. The base x40 (item (1) above) settles the per-bot numbers.
+3b. **THE RESCUES, base vs the dark, ALL 40 seeds (castBots on a frozen c1008d8e, no dark, 360 rows, 0 errors:
+   `cast-3-1-x40-base-c1008d8e.jsonl`; vs box 2's `cast-3-1-x40-653bb970.jsonl`):**
+   | bot | setting | shrine base / dark | clean base / dark | rescues base / dark | time median base / dark (s) |
+   |---|---|---|---|---|---|
+   | kid | normal | 40/40 / 40/40 | 1 / 0 | 156 / 151 | 174.9 / 203.7 |
+   | kid | easy | 40/40 / 40/40 | 0 / 0 | 186 / 192 | 197.3 / 239.5 |
+   | adult | normal | 40/40 / 40/40 | 2 / 1 | 119 / 120 | 164.4 / 193.5 |
+   | adult | easy | 40/40 / 40/40 | 0 / 0 | 180 / 202 | 201.1 / 241.0 |
+   | child | normal | 40/40 / 40/40 | 2 / 1 | 138 / 135 | 320.1 / 306.6 |
+   | child | easy | 40/40 / 39/40 | 0 / 0 | 178 / 179 | 307.7 / 313.7 |
+   | middle | normal | 40/40 / 40/40 | 0 / 3 | 126 / 115 | 207.8 / 230.8 |
+   | middle | easy | 40/40 / 40/40 | 1 / 1 | 186 / 184 | 263.2 / 283.2 |
+   | expert | normal | 40/40 / 40/40 | 1 / 0 | 124 / 115 | 204.3 / 213.6 |
+   **Rescues 1,393 base, 1,393 dark** (per bot -11 to +22, both ways: noise of a moved trajectory); stuck notes 1,709 / 1,680; by cause
+   (numbers stripped) the top six match within a few each ('in a dip N px deep, the way on is N px down' 1,006 / 1,009; 'the way on is N
+   px down' 260 / 256; 'fell back down from here N times' 99 / 99). Kinds only in the dark: 7 notes, only in the base: 4 (rare variants
+   of the same dips). **Verdict: the dark adds no rescues; every one is the down shaft's storeys (ENG-DOWNBOT's lane, as on the base).**
+   What the dark DOES cost is time: the stops add about 20-40 s to the median for kid, adult and middle (Easy most: the 1.6 s ahead).
+   The one strand: child Easy seed 25 stranded at 295.9 s after 4 rescues in the same dips (base: shrine at 278.8 s after 6 rescues):
+   a dip strand on the dark's trajectory, ENG-DOWNBOT's to read with its fix.
 4. **The unlit crossings, cause 1 of 2 FIXED (box 2's x40: 58 unlit, 55 'landing dark'; the expert 26):** traced twice, the expert Normal:
    seed 12, the jump pressed at x 509 for the rim at 594 (94 px out) at 81.27 s; seed 10, pressed at about x 160 for the rim at 70 at
    122.93 s, after a stand broken by small steps every 0.65 s (his stillness never reached GLOW_STILL 0.7 s). A running jump over a dark
