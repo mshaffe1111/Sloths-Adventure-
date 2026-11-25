@@ -30,13 +30,18 @@ RESULT: 6/54 pass (probe-fork-results.txt, section A: only adult and middle-easy
      toy drops the kit (e.kit = undefined); A and B are both with it dropped (with it left in, 15/54 passed: its room changed which
      high-road runs stalled, not why).
 FOR THE LEAD TO RULE (each is outside a data-only change):
- (A) the shape: a hop from the marsh floor (and the climb onto W) must not reach the porch. Options I see, cheapest first: (i) the dips
-     not under the porch (the porch starts past the marsh's last dip; then 2-8.md:9's "three up" climbs off the far end of W, not over
-     the marsh); (ii) the porch high enough that no tier's apex from the floor reaches it (the child's measured apex is 180 px over his
-     take-off: the porch's top >= floor - 180 - clearance, i.e. W and the porch at about 140+ over the bank, against 2-8.md's 60 px
-     steps); (iii) a solid, not a thin, porch over the marsh (a head stop: the dip hops bonk) with W's climb landing ON W (W wider
-     than the child's 252 px climb flight). My pick: (i), it keeps every 2-8.md number and both roads honest; it needs a re-lay of
-     W2_FORK + w2TwoRoad.test + strandFaults' tops, about one box.
+ (A) the shape: a hop from the marsh floor (and the climb onto W) must not reach the porch. WHERE (traced, TOPLINE on): every pop-up
+     is at the FIRST dip (W0+200..W0+300), under the porch ALONE (W0..W0+400, before rise1, a block, stands on it): middle floor
+     1156/860 -> porch 1299/740; expert 1137/860 -> 1358/740; child 1172/860 -> 1370/740; the line follows him up. Past W0+400 rise1
+     sits on the porch and no run popped there. The climb: the child-easy flies 252 px from W's face (over W 150 and the gap 60), against
+     forkFaults' model 135 (W2_FLOOD.climb land 62 + runUp 73). Options I see (each changes a ruled number, so the lead's call):
+     (i) no thin piece alone over the marsh: the first rise starts at the water's edge (a block over the marsh's first stretch, a head
+     stop), which moves the three-up/three-down treads off 400; (ii) the first dip moved out from under the porch-alone stretch (the
+     marsh's dips at W0+400 on), keeping every high-road number, with the marsh's dips re-spaced (2-8.md:9 says four 100 px dips in
+     1,400, not where; layRiver spaces them evenly today, so it needs a marsh option for where the dips start: riverLay.ts, engine); (iii) the porch high enough that no apex from the floor reaches it (the child's apex is 180 px over take-off),
+     against 2-8.md's 60 px steps. And for A1, W wide enough that the child-easy's real climb lands ON W (>= about 260), with forkFaults'
+     climb model checked against the bots' measured flights. My pick: (ii) + the W/climb check: the smallest change, every 2-8.md
+     number kept; then re-probe. About one box with w2TwoRoad.test and the verdicts.
  (B) the bot fix (firsttimer.ts, the reroute's points = the walked top line over the chain): an ENG/bot change outside my lane (or
      mine at 1b, where I already touch firsttimer.ts for the merge) and it must run castBots' known flips (rule 28).
 NOT DONE this session: step 2 (stills): no running stage lays the two-road section (2-8 in the game is still the old stage; 2-96 is a
