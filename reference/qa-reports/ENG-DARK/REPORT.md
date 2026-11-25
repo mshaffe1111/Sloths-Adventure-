@@ -22,6 +22,29 @@ darkBots.test, w3.test, tower.test, castBots.test (the down toys) and lockall. N
 the other lane's lines.
 Box 2 start 11:31 AM ET (by `date`). Box 1 start 11:03 AM ET.
 
+## Box 3 (ENG-DARK-c) so far (start 11:50 AM ET by `date`)
+1. **Plants 12/12 CAUGHT** on a frozen 653bb970 (worktree, `planted-faults.py`, exit 0): box 1's 10 + the glow counter on every stage
+   ('the lay leaves every other stage') + the bots' stop removed ('the dark's skill: he stands').
+2. **STILLS of a dark shaft, asleep and lit (for the lead to judge): `reference/qa-reports/ENG-DARK/stills/`** (2x, JPEG q85), shot on a
+   frozen 653bb970 by `reference/qa-reports/ENG-DARK/darkshoot.mjs` (draftshoot.mjs's harness: vite on a refused-if-busy port, the
+   served tree checked as the worktree by the listener's cwd, the port killed after). 3-1 draft roll 1 (flow down, 42 drop rims with a
+   light). Pokey pinned 30 px inside a real dark rim, facing it. ASLEEP: every wake cleared, his stillness held at 0. LIT: the stop let
+   run; the landing's light woke at +0.76 s / +0.79 s of game time (GLOW_STILL 0.7 + the wake's travel), shot 1.5 s after it woke
+   (DARK_AHEAD Normal 1 + 0.5).
+   - `3-1-port-rim0-asleep.jpg`, `3-1-port-rim0-lit.jpg`, `3-1-land-rim0-asleep.jpg`, `3-1-land-rim0-lit.jpg`: rim (1031, 1944), going
+     right, its landing 281 px below.
+   - `3-1-port-rim1-asleep.jpg`, `3-1-port-rim1-lit.jpg`, `3-1-land-rim1-asleep.jpg`, `3-1-land-rim1-lit.jpg`: rim (385, 6346), going
+     left, its landing 164 px below.
+   **My polish check (as Matt on a phone):** (a) the dark is dark enough to matter and never black: rock and ledges faintly there, the
+   sleeping glowworms read as dim blue worms with a small glow. (b) Lit, the landing under the rim reads in all 4 lit stills; the pool
+   reaches that landing, the shaft below stays dark (the bound shows). (c) Nothing under the HUD (hearts, lives, the log bar, the menu
+   leaf) in either orientation; Pokey and the landings are clear of the phone's edges. (d) **ROUGH, named, not fixed here:** upright, Dot's
+   card sits just UNDER Pokey: in `3-1-port-rim1-lit` ('Too dark to see. Stand still and listen...') it covers the glowworm that just
+   woke (only its head shows over the card), so the cause and effect (he stopped, the worm woke, the way lit) is hidden while the card is
+   up; in `3-1-port-rim0-asleep` it covers the ledge under him. In a stage that goes DOWN the way on is below him: the card belongs above
+   him. Here the cards fire because the pin moves him into the zone (the zone's line on entry); in play the same line fires on his first
+   dark entry, i.e. at his first stop. The card's placement is not this lane's file (the lead's call: an R-number and a lane).
+
 ## Box 2 (ENG-DARK-b) done (all on the real 3-1 draft row)
 1. **The lock's cause fixed first (box 1's RED: 37 gen2 stages moved in proto.gen2 only):** dark.ts glowFlags writes its glowworm
    counter into `extras` only when it hung a glowworm. Planted: dark.test.ts 'the lay leaves every other stage as it was' (1-1 and 6-1,
