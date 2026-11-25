@@ -5,7 +5,7 @@
 per-bot table base vs dark (653bb970's x40, box 2) by rescues and by cause. **Box 2's lockall --check is RECORDED: PASS, 102/102 unchanged on a
 frozen 653bb970 vs c1008d8e ('Box 2's runs' below)**; glowJump (b71163ea) changes only the bots, so the lock is re-run once on the final
 merged head at landing (`lockall --layouts 16 --out lock-base.json` on a frozen t-eng-w3 base, then `--check` on the frozen final head).
-(2) **Box 4: castBots x40 on the 3-1 draft on a frozen b71163ea** (3 lanes: seeds 1-14 / 15-27 / 28-40, both settings, every bot,
+(2) **Box 4: fix cause 2 FIRST (traced below, a toy each way), then ONE castBots x40 on the 3-1 draft on the frozen head with both
 fixes** (not one x40 per fix; 3 lanes: seeds 1-14 / 15-27 / 28-40, both settings, every bot,
 `--rows`; at most two heavy runs at once). PASS: unlit 0 of the 55 'landing dark' (the glowJump fix, item 4 below), shrine >= 359/360,
 rescues not up vs 653bb970's 1,393. **Then cause 2, traced ONCE by box 3 (one more trace owed), child Normal seed 19, rim (974, 3098), the
