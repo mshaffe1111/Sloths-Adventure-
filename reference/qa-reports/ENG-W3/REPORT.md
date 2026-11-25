@@ -10,7 +10,11 @@ only close across; B = its wood run seeded from the wood under his feet. Method:
 hi = p.x`), `probes/multi.mts` (TREE= BOTS=kid:normal,adult:normal SEEDS=1-10) on each and on the head; pick a row where the fix
 removes a rescue at a named spot; the toy runs that real row (readyDraft('3-1'), firstTimer, as probes/multi.mts) and asserts no
 rescue within 120 px of the spot; RED with the fix off, GREEN on. (On 34085ae19 alone fix A off read kid N seed 1 R9 vs R7 on:
-not a bite worth a toy; the route was broken there, so re-measure on 6b6874dfb.)
+not a bite worth a toy; the route was broken there, so re-measure on 6b6874dfb.) **Measured on 6b6874dfb (box 4's last minutes):
+kid N seeds 1-6 with A off and with B off read IDENTICAL to the head, to the tenth of a second (1-6: R 0/0/3/0/1/1, 124.8/115.4/
+167.4/135.5/124.0/129.9 s): on the stopped-vine lay neither fix bites on those rows.** Next: the same A-off / B-off / head compare on
+kid + adult, both settings, seeds 1-20 (three runs: count them against the two-heavy-runs cap); a fix that bites on NO real row gets
+no toy and comes OUT (ruling 2: no fix lands without its toy; level.md 21/23), named in the REPORT.
 (3) **LAY finding 2 to the lead** (below): measure it first (per turn whose vine stops on a catch: does the catch's way off land on
 the turn's own storey? count rolls, seeds 1-24 x both; `probes/tail.mts` SEED= Y= prints legs, turns, vines, corners, wood).
 (4) **Stills of one turn, before (3ba82c8b8) and after (6b6874dfb), upright + sideways** (ruling 1; the lead judges): ENG-W3a's
