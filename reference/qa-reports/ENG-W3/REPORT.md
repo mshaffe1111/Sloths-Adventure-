@@ -1,3 +1,30 @@
+# ENG-DOWNBOT REPORT (lane 2: the down lay's head room, then the bots on a way down to the shrine) — box 8 (session 6, 11-25)
+**EXACT NEXT STEP (box 8 hand-over):** lay code **fe331023** (on 7d12c344b); the planted test and this REPORT are in the hand-over commit (hash in the message). **(1) The lay rule: DONE, RED then GREEN.** Two verdicts,
+tower.ts `towerLids` (wired in pipeline.ts for every going-down column, beside towerHandOns): **'a lid over a dip's lip'** (wood within
+ROOF = JUMP_RISE + body + bough = 180 px over a dip's lip, 30 px either way of the dip) and **'a roof over a vine's top'** (wood within
+ROOF over a climb vine's top, his body's half-width (21) either side of where clearClimbs stands it). One room list (`hopRooms`) is read
+by the verdict and by the lay (towerCatches `fair` + rule 1's going-down run-on: `lidded`); clearClimbs now calls `climbX` (vineTop.ts),
+the same helper the lay uses to read where a vine will stand (behaviour unchanged). **Counted on the 48 drafted 3-1 rolls
+(probes/roomcount.mts, TREE= a frozen tree): today's lay (f079b03b = 7d12c344b + the verdicts unwired) 213 lids + 321 roofs on 48 of
+48 rolls, 0 refused; new lay (fe331023) 0 lids, 0 roofs, 0 of 48 rolls, 0 refused** (build time the same, 44 s for 48). Two lay
+changes the rule needed (each measured): kept out of the room, the first fair bough opened a 347-351 px blind drop on 6 rolls (n3,
+n23, e8, e11, e13, e17): going down a bough whose own ends land in view is now laid first (`landed`), and the highest fair height
+(a head's room under the piece) is a bough height (the 20 px steps passed over it; still: stills/box8-easy8-roof-vs-room.png, today's
+run-on 178 px over e8's vine top vs the blind drop before that height was added); then n21's later bough made a NEW dip under wood
+laid before it: a bough that makes a new dip under laid wood is refused too (`made`). **tower.ts:325-331's 'only ever a way on' now
+says what the code guards going down (his hop's room), and they agree.** Planted test: tower.test.ts "going down, his hop's room"
+(seed 13's shape as a toy, 9500 px up): **RED on today's lay** (it lays 71-251 @555, 108 px over the vine's top: the seed-13 shelf),
+**GREEN on fe331023**; tower.test 36/36. NOT YET RUN on this head: the suite, lockall, seedlist, castBots. **Next, in order:**
+(2) re-measure on the new lay: castBots.test's seed-13 toy (it lays its own pieces: rebuild it from the NEW roll 13 normal, probes/
+plan13.mts on a frozen tree of fe331023), then A and B each off (the box-7 recipe below: fix A off / fix B off lines) with
+`compare.py` on x40 rows: a fix that cures no shape on the new lay comes OUT (ruling 2); one that does gets a toy on that shape.
+(3) If a bot still stands after a detour: the bot skill (walk down into the dip and hop out), general, a toy each way.
+(4) x40, both settings, every bot, tally (`probes/tally.py`): bar = every bot reaches the shrine on every roll, a rescue a minority
+cause. (5) draftshoot stills (normal 6's turn and roll 13's catch, upright + sideways), lockall --intended 3-1 vs main's lock (only
+down columns can move: name every listed stage that moves), seedlist 1-1 --check, tierBots 9/9, the full suite + the CI tool line;
+LAND on t-eng-w3 (merge origin/t-eng-w3 first, no force; ENG-DARK lands there today). **READY-31 still owes length** (kid N clean
+minimum 87.2 s over 40 seeds on 7d12c344b): named, not fixed; re-read on the new lay in (4).
+
 # ENG-DOWNBOT REPORT (lane 2: the down lay's head room, then the bots on a way down to the shrine) — box 7 (session 5, 11-25)
 **EXACT NEXT STEP (box 7 hand-over):** code head **7d12c344b** unchanged; this box adds the seed-13 toy (RED BY DESIGN, below), the
 x40 rows and this REPORT (hash in the hand-over message; check with `git ls-remote`). **(1) The owed toys: NOT buildable as ordered.**

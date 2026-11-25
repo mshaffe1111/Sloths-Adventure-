@@ -16,7 +16,7 @@ import { applyVerdicts, buildGen2Stage, HARD_JOBS, keptFoes, layLocal, layStage,
 import { packPlan, stageParts, unpackPlan } from './seedList.ts';
 import { cfg as runCfg, kit as runKit } from './toyWorld.ts';
 import { ARC_CODE, arcKit, gateKit, hopsUp, towerCfg, upKit, upManifest } from './toyTower.ts';
-import { fallSeconds, flagFurther, gapCatchY, LEAP, leaps, localExtent, openEnds, reflectLocal, routeAt, routeOf, storeyLimit, TOWER, towerCatches, towerFalls, towerFlagBreaches, stopVines, towerHandOns, towerVineCuts, towerFlags, towerGates, towerSkips, towerVaults, vertical } from './tower.ts';
+import { fallSeconds, flagFurther, gapCatchY, LEAP, leaps, localExtent, openEnds, reflectLocal, routeAt, routeOf, storeyLimit, TOWER, towerCatches, towerFalls, towerFlagBreaches, stopVines, towerHandOns, towerVineCuts, towerFlags, towerGates, towerSkips, towerVaults, vertical, towerLids, ROOF } from './tower.ts';
 import { CLIMB_CLEAR, VAULT_GAP } from '../vineTop.ts';
 import type { Gen2Stage } from './types.ts';
 
@@ -697,4 +697,27 @@ test('a built tower whose turn vine stands out of the vault\'s reach of the stor
   applyVerdicts(moved, req);
   assert.ok(moved.gen2.towerMiss?.some((l) => l.startsWith(`tower: straight up at the top of the vine at x ${v.x + away * VAULT_GAP} `)), `named: ${moved.gen2.towerMiss}`);
   assert.ok(rollErrors(moved.gen2).some((l) => /onto no wood$/.test(l)), 'and it fails the roll');
+});
+
+test("going down, his hop's room: no wood within ROOF over a dip's lip or a climb vine's top, and the lay keeps it (ENG-DOWNBOT)", () => {
+  // (drafted 3-1 normal 13's shape, 9500 px up: a storey with a dip (near 600-815, far 197-506, the dip's floor 70 px down), a turn
+  //  vine hanging at x 171 off the far part's end, and the storey over it, 281 px up, whose left end is open. Today's lay hung a shelf
+  //  0-604 108 px over the storey: its end 4 px past the dip's lip, over the vine's top; the kid and the adult stood under it)
+  const W = 1280, FLOOR = 1100;
+  const upper = solid(185, 382, 584, 1), near = solid(600, 663, 215, 2), far = solid(197, 663, 309, 3), dip = solid(506, 733, 94, 4);
+  const next = solid(60, 836, 500, 5), floor = solid(0, FLOOR, W, 6);
+  const vine = { id: 1, x: 171, topY: 663, bottomY: 836, swaySpeed: 1, swayPhase: 0, vineType: 'tree_climb' } as Vine;
+  // (the verdicts, planted: a lid 108 px over the lip, a roof over the vine's top; ROOF px up, neither)
+  const lid = solid(424, 555, 180, 7), roof = solid(100, 555, 120, 8);
+  const named = towerLids([vine], [upper, near, far, dip, next, floor, lid, roof]);
+  assert.equal(named.filter((m) => m.startsWith("tower: a lid over a dip's lip")).length, 1, named.join('; '));
+  assert.equal(named.filter((m) => m.startsWith("tower: a roof over a vine's top")).length, 1, named.join('; '));
+  assert.deepEqual(towerLids([vine], [upper, near, far, dip, next, floor, solid(424, 663 - ROOF, 180, 7), solid(100, 663 - ROOF, 120, 8)]), [], 'ROOF over: kept');
+  // (the lay: the upper storey's open end caught, with nothing in his hop's room and no blind drop)
+  const base = [upper, near, far, dip, next, floor];
+  const cs = towerCatches('down', base, [vine], FLOOR, W);
+  const all = [...base, ...cs.map((c, k) => solid(c.x, c.y, c.w, 200 + k))];
+  assert.ok(cs.length > 0, 'a catch is laid');
+  assert.deepEqual(towerLids([vine], all), [], cs.map((c) => `${c.x}-${c.x + c.w}@${c.y}`).join(', '));
+  assert.deepEqual(towerFalls('down', all, FLOOR, W), []);
 });
