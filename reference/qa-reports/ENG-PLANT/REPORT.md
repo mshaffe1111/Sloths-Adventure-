@@ -36,7 +36,10 @@ tools/p23-s.mts.txt, p24-s.mts.txt (the probes), bl-s.mts.txt (the laid sweep), 
 4. Then ruling 5 (merge into release-0.10.3, no force; push; ls-remote; the lead gets the hash and one line per item), only if every item
    of 3 is green and identical. The lead also has one finding to read (below, 'Named for the lead'); it is not a red of any listed check.
 5. INFORMATIVE, on 36e8efe6f (not the final head): the CI tool line and tierBots were started on fz-fin before the lead's order was read;
-   their results go here: IN FLIGHT when this top was pushed (the CI line 94 ok, 0 not ok so far; tierBots running). Expected on this head: the same 9 reds as c27 (none in the toys' tests).
+   their results (data/s/ciline-fin.txt, tierbots-fin.txt): **the CI line 403 tests, 393 pass, 9 fail = c27's 400 + the 3 toys (ok 225,
+   226, 227); the 9 reds are exactly c27's 9 (firsttimer :185 boardHop on its runs; hopJudged 2-7 home middle N 2 and E 5; lianaRide DROP ON A
+   LOG and A VINE FROM A LOG; riverRide :266 upstream, :282 bankUp, :344 and :355 reAim), ENG-PLANT-CI's to fix; chase bots child (# TODO)
+   not counted. tierBots 9/9.** The toys add no red.
 
 ## Ruling 3: the three owed toys (36e8efe6f)
 | toy | where | GREEN (final head) | RED (fix off) |

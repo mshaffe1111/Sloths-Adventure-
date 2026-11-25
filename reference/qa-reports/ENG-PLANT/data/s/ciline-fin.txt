@@ -1,0 +1,2661 @@
+TAP version 13
+# Subtest: cageVine: a cage beside a climbing vine, in his airKick reach, hangs up it; one at his height, out of reach, or by a swing does not
+ok 1 - cageVine: a cage beside a climbing vine, in his airKick reach, hangs up it; one at his height, out of reach, or by a swing does not
+  ---
+  duration_ms: 0.678204
+  type: 'test'
+  ...
+# Subtest: cageChallenges: a punch at his height, the climb plus a punch up a vine; a retry, never a heart; only beat:cages
+ok 2 - cageChallenges: a punch at his height, the climb plus a punch up a vine; a retry, never a heart; only beat:cages
+  ---
+  duration_ms: 0.744538
+  type: 'test'
+  ...
+# Subtest: 2-3 end to end (seed 1, both settings): its five cages priced by the cage channel, the mooring post's one up its vine; beat:cages a piece
+ok 3 - 2-3 end to end (seed 1, both settings): its five cages priced by the cage channel, the mooring post's one up its vine; beat:cages a piece
+  ---
+  duration_ms: 7494.474805
+  type: 'test'
+  ...
+# Subtest: the vocabulary is read from the code: a new ZoneKind with no table entry fails (a)
+ok 4 - the vocabulary is read from the code: a new ZoneKind with no table entry fails (a)
+  ---
+  duration_ms: 309.011457
+  type: 'test'
+  ...
+# Subtest: beats.ts's families are its off() labels: addAs, a 'beat:' literal and a span's label; a zone span passes its own
+ok 5 - beats.ts's families are its off() labels: addAs, a 'beat:' literal and a span's label; a zone span passes its own
+  ---
+  duration_ms: 0.237805
+  type: 'test'
+  ...
+# Subtest: a symbol the table names must resolve: a renamed channel fails (e)
+ok 6 - a symbol the table names must resolve: a renamed channel fails (e)
+  ---
+  duration_ms: 70.468167
+  type: 'test'
+  ...
+# Subtest: a piece a built stage uses needs a bot AND a channel, or a known-list entry for the missing half (b)
+ok 7 - a piece a built stage uses needs a bot AND a channel, or a known-list entry for the missing half (b)
+  ---
+  duration_ms: 262.714326
+  type: 'test'
+  ...
+# Subtest: the known list only shrinks: a covered entry, or one no built stage uses, fails (d)
+ok 8 - the known list only shrinks: a covered entry, or one no built stage uses, fails (d)
+  ---
+  duration_ms: 187.598839
+  type: 'test'
+  ...
+# Subtest: the meter refuses a piece it has no channel for: unpriced throws, a known one keeps its old price; a refusal is a fault (c)
+ok 9 - the meter refuses a piece it has no channel for: unpriced throws, a known one keeps its old price; a refusal is a fault (c)
+  ---
+  duration_ms: 165.884191
+  type: 'test'
+  ...
+# Subtest: on real stages: a stage with an unpriced piece is refused (4-2's wind), never a flat 2; 1-4's known crumbling branch keeps its 2 bits, marked
+ok 10 - on real stages: a stage with an unpriced piece is refused (4-2's wind), never a flat 2; 1-4's known crumbling branch keeps its 2 bits, marked
+  ---
+  duration_ms: 5652.398259
+  type: 'test'
+  ...
+# Subtest: LET-GO ONTO A LOG: the route boards a liana river from the air and the meter prices the let-go by its share (gap280 41% > long 86%)
+ok 11 - LET-GO ONTO A LOG: the route boards a liana river from the air and the meter prices the let-go by its share (gap280 41% > long 86%)
+  ---
+  duration_ms: 4739.826748
+  type: 'test'
+  ...
+# Subtest: A CATCH OFF A LOG: the catch toy (no bank reaches the liana) prices the jump off the riding log by its window; the route boards from the bank
+ok 12 - A CATCH OFF A LOG: the catch toy (no bank reaches the liana) prices the jump off the riding log by its window; the route boards from the bank
+  ---
+  duration_ms: 947.720466
+  type: 'test'
+  ...
+# Subtest: PLANTED: without its channel a stage laying a liana over a river is refused by the meter and failed by the coverage gate
+ok 13 - PLANTED: without its channel a stage laying a liana over a river is refused by the meter and failed by the coverage gate
+  ---
+  duration_ms: 2278.731672
+  type: 'test'
+  ...
+# Subtest: the leave is lineFaults' own flown safeWindow, priced as a timed press he may wait for
+ok 14 - the leave is lineFaults' own flown safeWindow, priced as a timed press he may wait for
+  ---
+  duration_ms: 604.080513
+  type: 'test'
+  ...
+# Subtest: a crossing with a wide safe window prices low, a tight one high (wider mud; a second heron out of step)
+ok 15 - a crossing with a wide safe window prices low, a tight one high (wider mud; a second heron out of step)
+  ---
+  duration_ms: 1284.998335
+  type: 'test'
+  ...
+# Subtest: the stop: where he and the N little ones all stand inside the reeds (lineInCover), W - N x gap - 20 px; narrower reeds price higher
+ok 16 - the stop: where he and the N little ones all stand inside the reeds (lineInCover), W - N x gap - 20 px; narrower reeds price higher
+  ---
+  duration_ms: 343.832728
+  type: 'test'
+  ...
+# Subtest: a spook adds its fetch cost: 2 x distance / his run, at the meter's replay rate
+ok 17 - a spook adds its fetch cost: 2 x distance / his run, at the meter's replay rate
+  ---
+  duration_ms: 665.958676
+  type: 'test'
+  ...
+# Subtest: a stretch's first crossing: its whole first calm; free where the first look only warns (freeFirst, Easy); nobody following, nothing asked
+ok 18 - a stretch's first crossing: its whole first calm; free where the first look only warns (freeFirst, Easy); nobody following, nothing asked
+  ---
+  duration_ms: 965.832746
+  type: 'test'
+  ...
+# Subtest: the follow toy end to end: the engine's own FollowPlay, line:follow a piece, both settings; without the follow row it is the old refusal
+ok 19 - the follow toy end to end: the engine's own FollowPlay, line:follow a piece, both settings; without the follow row it is the old refusal
+  ---
+  duration_ms: 1006.335158
+  type: 'test'
+  ...
+# Subtest: a hop onto a drifting log is a moving jump: its board window (feet on the log, once a log spacing), not nothing (planted: the old meter priced it 0)
+ok 20 - a hop onto a drifting log is a moving jump: its board window (feet on the log, once a log spacing), not nothing (planted: the old meter priced it 0)
+  ---
+  duration_ms: 10.470922
+  type: 'test'
+  ...
+# Subtest: the step-off is a forced deadline: a single jump's reach over the log's speed, or half the ride, the shorter; Easy no harder
+ok 21 - the step-off is a forced deadline: a single jump's reach over the log's speed, or half the ride, the shorter; Easy no harder
+  ---
+  duration_ms: 0.480284
+  type: 'test'
+  ...
+# Subtest: a miss into the water costs what the water costs: a teaching river splashes him back (soft), a deep one is a life
+ok 22 - a miss into the water costs what the water costs: a teaching river splashes him back (soft), a deep one is a life
+  ---
+  duration_ms: 0.337632
+  type: 'test'
+  ...
+# Subtest: a ride on a stage beat (ride.ts): board while it stands at the near end, once in two periods, plus the still jump; Easy stretches it
+ok 23 - a ride on a stage beat (ride.ts): board while it stands at the near end, once in two periods, plus the still jump; Easy stretches it
+  ---
+  duration_ms: 0.581883
+  type: 'test'
+  ...
+# Subtest: a moving floor on no clock the meter reads is refused, never priced as nothing
+ok 24 - a moving floor on no clock the meter reads is refused, never priced as nothing
+  ---
+  duration_ms: 0.72602
+  type: 'test'
+  ...
+# Subtest: on a real river stage (the hand-built 2-1): every hop onto or off a log is priced, and its river beat is no flat 2
+ok 25 - on a real river stage (the hand-built 2-1): every hop onto or off a log is priced, and its river beat is no flat 2
+  ---
+  duration_ms: 2692.929341
+  type: 'test'
+  ...
+# Subtest: a weight pad is priced from its count: always up when he boards, off before it goes under (its hold, Easy x1.5); never refused
+ok 26 - a weight pad is priced from its count: always up when he boards, off before it goes under (its hold, Easy x1.5); never refused
+  ---
+  duration_ms: 0.683457
+  type: 'test'
+  ...
+# Subtest: a beat pad is priced from its row's breath: board while it is up or shivering, once a breath (RW), off before it goes under (FB)
+ok 27 - a beat pad is priced from its row's breath: board while it is up or shivering, once a breath (RW), off before it goes under (FB)
+  ---
+  duration_ms: 0.260013
+  type: 'test'
+  ...
+# Subtest: a pad whose clock the stage does not list is refused, never priced as nothing
+ok 28 - a pad whose clock the stage does not list is refused, never priced as nothing
+  ---
+  duration_ms: 0.302256
+  type: 'test'
+  ...
+# Subtest: 2-2's spur (FIX-22): its rope shimmy is priced as the self-paced climb it is (METER-COVERAGE \#7), the stage scored, never refused
+ok 29 - 2-2's spur (FIX-22): its rope shimmy is priced as the self-paced climb it is (METER-COVERAGE \#7), the stage scored, never refused
+  ---
+  duration_ms: 1692.012924
+  type: 'test'
+  ...
+# Subtest: one liana bank to bank is one swing, scored at its release, not two
+ok 30 - one liana bank to bank is one swing, scored at its release, not two
+  ---
+  duration_ms: 1.338726
+  type: 'test'
+  ...
+# Subtest: a chain of two lianas is two swings; a ledge-to-ledge swing the check linked is one
+ok 31 - a chain of two lianas is two swings; a ledge-to-ledge swing the check linked is one
+  ---
+  duration_ms: 0.36878
+  type: 'test'
+  ...
+# Subtest: a missed swing costs what the ground under it costs, as a jump does
+ok 32 - a missed swing costs what the ground under it costs, as a jump does
+  ---
+  duration_ms: 0.856319
+  type: 'test'
+  ...
+# Subtest: on the real World 1 stages: one swing a liana the route hangs on, and none charged a life on a soft-pit stage
+ok 33 - on the real World 1 stages: one swing a liana the route hangs on, and none charged a life on a soft-pit stage
+  ---
+  duration_ms: 10432.754657
+  type: 'test'
+  ...
+# Subtest: a release is a timed press in the window the engine flies for that perch: bits = windowBits(period, heldLandings window)
+ok 34 - a release is a timed press in the window the engine flies for that perch: bits = windowBits(period, heldLandings window)
+  ---
+  duration_ms: 12.604561
+  type: 'test'
+  ...
+# Subtest: a route link that leaps a chain's middle liana is flown liana by liana (chainOf), never through a false one
+ok 35 - a route link that leaps a chain's middle liana is flown liana by liana (chainOf), never through a false one
+  ---
+  duration_ms: 24.023049
+  type: 'test'
+  ...
+# Subtest: the catch off a bank: a liana every running jump catches is the whole swing (free); one out of reach is none
+ok 36 - the catch off a bank: a liana every running jump catches is the whole swing (free); one out of reach is none
+  ---
+  duration_ms: 19.823072
+  type: 'test'
+  ...
+# Subtest: a vine snake is a creature in reach by its own warn (its tell), a threat at its liana's release, costing what the swing costs
+ok 37 - a vine snake is a creature in reach by its own warn (its tell), a threat at its liana's release, costing what the swing costs
+  ---
+  duration_ms: 0.389896
+  type: 'test'
+  ...
+# Subtest: a chase is one challenge a stretch, the front's share of his run, and the front overlaps every move inside its stretch
+ok 38 - a chase is one challenge a stretch, the front's share of his run, and the front overlaps every move inside its stretch
+  ---
+  duration_ms: 2.511067
+  type: 'test'
+  ...
+# Subtest: a rolling nut is a hop timed to its roll; a fruit is read in its tell; a teach only bumps; each height its own move
+ok 39 - a rolling nut is a hop timed to its roll; a fruit is read in its tell; a teach only bumps; each height its own move
+  ---
+  duration_ms: 0.658438
+  type: 'test'
+  ...
+# Subtest: a watched stretch: each pass the run to the worst spot's nearest cover plus the calm-in, of the warn; its eye over the stretch
+ok 40 - a watched stretch: each pass the run to the worst spot's nearest cover plus the calm-in, of the warn; its eye over the stretch
+  ---
+  duration_ms: 0.403827
+  type: 'test'
+  ...
+# Subtest: a creature beat finds its member on the member's own ground, not only within 200 px of where it perches (1-7's eagles)
+ok 41 - a creature beat finds its member on the member's own ground, not only within 200 px of where it perches (1-7's eagles)
+  ---
+  duration_ms: 0.17473
+  type: 'test'
+  ...
+# Subtest: on the real World 1 stages: a hand-built chase is scored by its stretches, never as a two-bit hazard a beat
+ok 42 - on the real World 1 stages: a hand-built chase is scored by its stretches, never as a two-bit hazard a beat
+  ---
+  duration_ms: 865.024531
+  type: 'test'
+  ...
+# Subtest: a falling pod's window is its quiet less the time the route keeps him in its column; a crossing as long as the quiet is split
+ok 43 - a falling pod's window is its quiet less the time the route keeps him in its column; a crossing as long as the quiet is split
+  ---
+  duration_ms: 342.609535
+  type: 'test'
+  ...
+# Subtest: the anchor is 1-1 on its fixed layouts (anchor11.ts): a relist of 1-1 that moves every position never moves the scale
+ok 44 - the anchor is 1-1 on its fixed layouts (anchor11.ts): a relist of 1-1 that moves every position never moves the scale
+  ---
+  duration_ms: 1648.210673
+  type: 'test'
+  ...
+# Subtest: PREDATOR READ: the boa is read by its freeze window, flown on the real engine; a shorter rear narrows it; Easy never narrower
+ok 45 - PREDATOR READ: the boa is read by its freeze window, flown on the real engine; a shorter rear narrows it; Easy never narrower
+  ---
+  duration_ms: 5120.209228
+  type: 'test'
+  ...
+# Subtest: PREDATOR READ on a real stage: on 1-9, every awake boa of its cast is a 'predator-read' at creatureBits(freezeWindow), none a plain creature
+ok 46 - PREDATOR READ on a real stage: on 1-9, every awake boa of its cast is a 'predator-read' at creatureBits(freezeWindow), none a plain creature
+  ---
+  duration_ms: 1254.004149
+  type: 'test'
+  ...
+# Subtest: the step toy: its pond is ONE snap run, priced on the engine's window (snapWindow), a heart, both settings; the piece is pad:snap
+ok 47 - the step toy: its pond is ONE snap run, priced on the engine's window (snapWindow), a heart, both settings; the piece is pad:snap
+  ---
+  duration_ms: 2421.610822
+  type: 'test'
+  ...
+# Subtest: the wave toy: its pond is ONE snap run, priced on the engine's window (snapWindow), a heart, both settings; the piece is pad:snap
+ok 48 - the wave toy: its pond is ONE snap run, priced on the engine's window (snapWindow), a heart, both settings; the piece is pad:snap
+  ---
+  duration_ms: 1677.694856
+  type: 'test'
+  ...
+# Subtest: the in-step row reads harder than the wave of 3 on Normal (its window is shorter: 1.37 s vs 1.60 s, 2-5.md's flight 1.40 vs 1.63)
+ok 49 - the in-step row reads harder than the wave of 3 on Normal (its window is shorter: 1.37 s vs 1.60 s, 2-5.md's flight 1.40 vs 1.63)
+  ---
+  duration_ms: 1539.333088
+  type: 'test'
+  ...
+# Subtest: planted: a run of snap stones on a clock the stage does not list is refused (UnpricedPiece pad:snap), never priced as nothing
+ok 50 - planted: a run of snap stones on a clock the stage does not list is refused (UnpricedPiece pad:snap), never priced as nothing
+  ---
+  duration_ms: 758.832596
+  type: 'test'
+  ...
+# Subtest: planted: the coverage table without the snap channel is a coveragecheck fault on a stage that lays snap stones
+ok 51 - planted: the coverage table without the snap channel is a coveragecheck fault on a stage that lays snap stones
+  ---
+  duration_ms: 172.123383
+  type: 'test'
+  ...
+# Subtest: 2-5.md's rows on the channel (its bars, snapClock): the teach and the wave of 5 where the design put them; Easy's beat never over Normal's
+ok 52 - 2-5.md's rows on the channel (its bars, snapClock): the teach and the wave of 5 where the design put them; Easy's beat never over Normal's
+  ---
+  duration_ms: 1.890604
+  type: 'test'
+  ...
+# Subtest: THE ROUTE rides a wheel as ONE move, the jetty to the street: never a hop onto a bucket (PLANTED: the old route hopped on and off them)
+ok 53 - THE ROUTE rides a wheel as ONE move, the jetty to the street: never a hop onto a bucket (PLANTED: the old route hopped on and off them)
+  ---
+  duration_ms: 6053.134575
+  type: 'test'
+  ...
+# Subtest: THE CHANNEL prices the board and the step-off from the flown table, the easiest way; an in-street asks no step-off; both settings
+ok 54 - THE CHANNEL prices the board and the step-off from the flown table, the easiest way; an in-street asks no step-off; both settings
+  ---
+  duration_ms: 6961.58133
+  type: 'test'
+  ...
+# Subtest: PLANTED: a wheel whose row was never flown is refused by the channel, never priced from a guess
+ok 55 - PLANTED: a wheel whose row was never flown is refused by the channel, never priced from a guess
+  ---
+  duration_ms: 1047.263909
+  type: 'test'
+  ...
+# Subtest: PLANTED: without its channel a stage laying a wheel is refused by the meter and failed by the coverage gate
+ok 56 - PLANTED: without its channel a stage laying a wheel is refused by the meter and failed by the coverage gate
+  ---
+  duration_ms: 1241.342851
+  type: 'test'
+  ...
+# Subtest: 1-2's pool is its own: its seven beats, its arrival, its five rests, its exit; no World 1 library section
+ok 57 - 1-2's pool is its own: its seven beats, its arrival, its five rests, its exit; no World 1 library section
+  ---
+  duration_ms: 1.96281
+  type: 'test'
+  ...
+# Subtest: every roll is this level: the fourteen beats in the designed order on both settings, a different rest each time
+ok 58 - every roll is this level: the fourteen beats in the designed order on both settings, a different rest each time
+  ---
+  duration_ms: 0.388256
+  type: 'test'
+  ...
+# Subtest: every roll is clean on its own setting's verdicts (Matt's chain.mount, landing.dead-zone, bounce.no-purpose; hazard.untaught; the flags)
+ok 59 - every roll is clean on its own setting's verdicts (Matt's chain.mount, landing.dead-zone, bounce.no-purpose; hazard.untaught; the flags)
+  ---
+  duration_ms: 0.171028
+  type: 'test'
+  ...
+# Subtest: the thorn bed lies only under the chain beats: never in the twist, the arrival or a rest, and none within 1,300 px of the spawn
+ok 60 - the thorn bed lies only under the chain beats: never in the twist, the arrival or a rest, and none within 1,300 px of the spawn
+  ---
+  duration_ms: 0.612855
+  type: 'test'
+  ...
+# Subtest: every chain inside chain.md §3's bands: cap to cap by the step, stumps 110 | 160 (the lesson and again 160 on both), the pit between pillars 75-110 | 35-70, caps per chain 2-5 | 2-3
+ok 61 - every chain inside chain.md §3's bands: cap to cap by the step, stumps 110 | 160 (the lesson and again 160 on both), the pit between pillars 75-110 | 35-70, caps per chain 2-5 | 2-3
+  ---
+  duration_ms: 3.554223
+  type: 'test'
+  ...
+# Subtest: the caps are his only footing over the thorns from the petals going up on, Normal (each cap its stump's width); the lesson, again and Easy keep their wood
+ok 62 - the caps are his only footing over the thorns from the petals going up on, Normal (each cap its stump's width); the lesson, again and Easy keep their wood
+  ---
+  duration_ms: 2.05666
+  type: 'test'
+  ...
+# Subtest: PLANTED: a pit between pillars out of chain.md's band (Easy's stair, its last pillar slid 12 px in) is caught
+ok 63 - PLANTED: a pit between pillars out of chain.md's band (Easy's stair, its last pillar slid 12 px in) is caught
+  ---
+  duration_ms: 215.81032
+  type: 'test'
+  ...
+# Subtest: PLANTED: a 70 px cap left on a 110 px stump in the long chain (Normal) is bare wood a plain jump could use, and is caught
+ok 64 - PLANTED: a 70 px cap left on a 110 px stump in the long chain (Normal) is bare wood a plain jump could use, and is caught
+  ---
+  duration_ms: 106.936207
+  type: 'test'
+  ...
+# Subtest: petals low on bark the whole way: no petal arc over a gap, every petal within 110 px over a standable top
+ok 65 - petals low on bark the whole way: no petal arc over a gap, every petal within 110 px over a standable top
+  ---
+  duration_ms: 2.409633
+  type: 'test'
+  ...
+# Subtest: the story keeper's lines, verbatim, said where the design says: the lesson's two; the roots line held until the note is in the hollow; main's cut "The petals go up" never laid
+ok 66 - the story keeper's lines, verbatim, said where the design says: the lesson's two; the roots line held until the note is in the hollow; main's cut "The petals go up" never laid
+  ---
+  duration_ms: 1.439727
+  type: 'test'
+  ...
+# Subtest: Dot's thorn lines are 1-2's TEACH lines on every roll, both settings (the kit's teachTips: the lead's blocker 11-12)
+ok 67 - Dot's thorn lines are 1-2's TEACH lines on every roll, both settings (the kit's teachTips: the lead's blocker 11-12)
+  ---
+  duration_ms: 0.333874
+  type: 'test'
+  ...
+# Subtest: PLANTED: the thorn lines laid as ordinary hints are caught (and out of teachTips alone they stay teach lines, TEACH-11)
+ok 68 - PLANTED: the thorn lines laid as ordinary hints are caught (and out of teachTips alone they stay teach lines, TEACH-11)
+  ---
+  duration_ms: 129.471803
+  type: 'test'
+  ...
+# Subtest: Meeca's note lies in the twist's hollow, low against its root, on every roll, both settings (the find's spot: FX's findSpot)
+ok 69 - Meeca's note lies in the twist's hollow, low against its root, on every roll, both settings (the find's spot: FX's findSpot)
+  ---
+  duration_ms: 0.433022
+  type: 'test'
+  ...
+# Subtest: PLANTED: the twist without its findSpot has no note spot, and that is caught
+ok 70 - PLANTED: the twist without its findSpot has no note spot, and that is caught
+  ---
+  duration_ms: 324.717657
+  type: 'test'
+  ...
+# Subtest: the length: at least 2 minutes for a quick player on every roll, under 4 for a first-timer (the time model)
+ok 71 - the length: at least 2 minutes for a quick player on every roll, under 4 for a first-timer (the time model)
+  ---
+  duration_ms: 0.184446
+  type: 'test'
+  ...
+# Subtest: Easy is never harder than Normal: no more caps, no narrower stump, no thorn that costs a heart
+ok 72 - Easy is never harder than Normal: no more caps, no narrower stump, no thorn that costs a heart
+  ---
+  duration_ms: 0.234406
+  type: 'test'
+  ...
+# Subtest: the quiet line (the seed list binds 4 s on Normal) holds on these rolls
+ok 73 - the quiet line (the seed list binds 4 s on Normal) holds on these rolls
+  ---
+  duration_ms: 338.480502
+  type: 'test'
+  ...
+# Subtest: PLANTED: a beat missing from the pool fails the roll by name (the arc cannot be dealt round it)
+ok 74 - PLANTED: a beat missing from the pool fails the roll by name (the arc cannot be dealt round it)
+  ---
+  duration_ms: 6.152225
+  type: 'test'
+  ...
+# Subtest: PLANTED: a line with no words in the kit fails the roll (the tip is never shown)
+ok 75 - PLANTED: a line with no words in the kit fails the roll (the tip is never shown)
+  ---
+  duration_ms: 1857.937817
+  type: 'test'
+  ...
+# Subtest: PLANTED: a thorn hollow laid in the twist is caught (a chain brick in the hollow beat's place)
+ok 76 - PLANTED: a thorn hollow laid in the twist is caught (a chain brick in the hollow beat's place)
+  ---
+  duration_ms: 165.708773
+  type: 'test'
+  ...
+# Subtest: the exit is the stage's own, the last section on every roll
+ok 77 - the exit is the stage's own, the last section on every roll
+  ---
+  duration_ms: 0.148195
+  type: 'test'
+  ...
+# Subtest: in World 1's SHIPPED kit 1-3's pool is its own, every piece: its eight beats, its arrival, its four rests and its exit, and nothing of World 1's library; 1-1's pool is as it was
+ok 78 - in World 1's SHIPPED kit 1-3's pool is its own, every piece: its eight beats, its arrival, its four rests and its exit, and nothing of World 1's library; 1-1's pool is as it was
+  ---
+  duration_ms: 4.422444
+  type: 'test'
+  ...
+# Subtest: the cast rows are w1Cast.ts's, plus the short-patch rows and the top-up tag; a pair's sockets stand 85-130 px apart
+ok 79 - the cast rows are w1Cast.ts's, plus the short-patch rows and the top-up tag; a pair's sockets stand 85-130 px apart
+  ---
+  duration_ms: 0.400081
+  type: 'test'
+  ...
+# Subtest: every roll is the designed level, on both settings: no throw, no error, the arc beat for beat, a purge laid to its quota, three minutes
+ok 80 - every roll is the designed level, on both settings: no throw, no error, the arc beat for beat, a purge laid to its quota, three minutes
+  ---
+  duration_ms: 0.541777
+  type: 'test'
+  ...
+# Subtest: the stage carries its cast: proto.cast.kinds is ['snake'], and Dot says the story keeper's line once
+ok 81 - the stage carries its cast: proto.cast.kinds is ['snake'], and Dot says the story keeper's line once
+  ---
+  duration_ms: 40.059845
+  type: 'test'
+  ...
+# Subtest: the first snake of the stage is asleep on both settings, under the lesson hive
+ok 82 - the first snake of the stage is asleep on both settings, under the lesson hive
+  ---
+  duration_ms: 0.518892
+  type: 'test'
+  ...
+# Subtest: every trap has its handle and a snake under it, at the phone's numbers
+ok 83 - every trap has its handle and a snake under it, at the phone's numbers
+  ---
+  duration_ms: 0.58979
+  type: 'test'
+  ...
+# Subtest: arming: a load is a trap only when an animal of the cast stands under it; the trap is hung over the middle of that animal's patch
+ok 84 - arming: a load is a trap only when an animal of the cast stands under it; the trap is hung over the middle of that animal's patch
+  ---
+  duration_ms: 0.378212
+  type: 'test'
+  ...
+# Subtest: Easy keeps every trap: the snake under a load stays on Easy, softened (Socket.easy stay), and Easy is still never the harder
+ok 85 - Easy keeps every trap: the snake under a load stays on Easy, softened (Socket.easy stay), and Easy is still never the harder
+  ---
+  duration_ms: 0.171278
+  type: 'test'
+  ...
+# Subtest: Dot's trap line is a TEACH line, and she says it three seconds of walking before the first vine, on both settings
+ok 86 - Dot's trap line is a TEACH line, and she says it three seconds of walking before the first vine, on both settings
+  ---
+  duration_ms: 647.44794
+  type: 'test'
+  ...
+# Subtest: the way out: one rope before the totem, a try-it and never the way, a vine between two living trees on its banks; its hollow is one hop deep, so he can walk through it and back
+ok 87 - the way out: one rope before the totem, a try-it and never the way, a vine between two living trees on its banks; its hollow is one hop deep, so he can walk through it and back
+  ---
+  duration_ms: 730.084453
+  type: 'test'
+  ...
+# Subtest: the goal is every vine: Matt's share of the animals (three in four) comes to the snakes the vines send gliding on Normal, so a child who shakes every vine never walks back
+ok 88 - the goal is every vine: Matt's share of the animals (three in four) comes to the snakes the vines send gliding on Normal, so a child who shakes every vine never walks back
+  ---
+  duration_ms: 0.594143
+  type: 'test'
+  ...
+# Subtest: the plain-view rule is the builder's own: a pickup laid in front of a hung load refuses the roll by name
+ok 89 - the plain-view rule is the builder's own: a pickup laid in front of a hung load refuses the roll by name
+  ---
+  duration_ms: 134.831727
+  type: 'test'
+  ...
+# Subtest: the arc is dealt the same on every seed: the lesson and its practice on the ground, the stair and the perch a climb, the two no-trap beats a hazard
+ok 90 - the arc is dealt the same on every seed: the lesson and its practice on the ground, the stair and the perch a climb, the two no-trap beats a hazard
+  ---
+  duration_ms: 29.969744
+  type: 'test'
+  ...
+# Subtest: Normal runs hotter and asks for one real jump; Easy is the same level, flat and gentler
+ok 91 - Normal runs hotter and asks for one real jump; Easy is the same level, flat and gentler
+  ---
+  duration_ms: 626.088885
+  type: 'test'
+  ...
+# Subtest: the shipped kit rolls 1-3 under its own id: the same arc, clean on both settings (not yet the verdicts' clean: it has no flown rows of its own)
+ok 92 - the shipped kit rolls 1-3 under its own id: the same arc, clean on both settings (not yet the verdicts' clean: it has no flown rows of its own)
+  ---
+  duration_ms: 667.053366
+  type: 'test'
+  ...
+# Subtest: the seed list's quiet line holds on the game's own roll: nowhere on 1-3 are 4 s or more with nothing to do (Normal, seeds 1-6)
+ok 93 - the seed list's quiet line holds on the game's own roll: nowhere on 1-3 are 4 s or more with nothing to do (Normal, seeds 1-6)
+  ---
+  duration_ms: 1047.481146
+  type: 'test'
+  ...
+# Subtest: every quiet piece of 1-3's own keeps a root hop near both ends and every few hundred px (the quiet line, by the pieces themselves)
+ok 94 - every quiet piece of 1-3's own keeps a root hop near both ends and every few hundred px (the quiet line, by the pieces themselves)
+  ---
+  duration_ms: 0.601723
+  type: 'test'
+  ...
+# Subtest: a stage with no row is refused by name, and rolls report it as thrown, never clean
+ok 95 - a stage with no row is refused by name, and rolls report it as thrown, never clean
+  ---
+  duration_ms: 1.079549
+  type: 'test'
+  ...
+# Subtest: every listed stage-table stage: its first 6 listed seeds are clean on both settings here, and lay the beats its list holds (Normal)
+ok 96 - every listed stage-table stage: its first 6 listed seeds are clean on both settings here, and lay the beats its list holds (Normal)
+  ---
+  duration_ms: 150998.196752
+  type: 'test'
+  ...
+# Subtest: the seeds it calls clean on both settings are the ones the list search kept (the first 12 seeds of each list's search range)
+ok 97 - the seeds it calls clean on both settings are the ones the list search kept (the first 12 seeds of each list's search range)
+  ---
+  duration_ms: 246715.151189
+  type: 'test'
+  ...
+# Subtest: planted: the summary counts what its names say (clean, thrown, both, refusals per roll once, foes on clean rolls only)
+ok 98 - planted: the summary counts what its names say (clean, thrown, both, refusals per roll once, foes on clean rolls only)
+  ---
+  duration_ms: 0.535157
+  type: 'test'
+  ...
+# Subtest: RED: 1-7's case, a 53 px landing:true log in World 1, draws as code terrain; its painter (the bank) starts at 90
+ok 99 - RED: 1-7's case, a 53 px landing:true log in World 1, draws as code terrain; its painter (the bank) starts at 90
+  ---
+  duration_ms: 5.187505
+  type: 'test'
+  ...
+# Subtest: 49 px log: GREEN where the world's own kit paints thin pieces (World 5, protoArt.ts paintedPlatforms ownKit && thinKit); RED in World 1, whose kit paints only a branch thin
+ok 100 - 49 px log: GREEN where the world's own kit paints thin pieces (World 5, protoArt.ts paintedPlatforms ownKit && thinKit); RED in World 1, whose kit paints only a branch thin
+  ---
+  duration_ms: 1.465358
+  type: 'test'
+  ...
+# Subtest: the rock's edge (isPaintedRock: a moss stone exactly 50): 50 GREEN, 51 and 49 RED with the painter's sizes printed
+ok 101 - the rock's edge (isPaintedRock: a moss stone exactly 50): 50 GREEN, 51 and 49 RED with the painter's sizes printed
+  ---
+  duration_ms: 5.736911
+  type: 'test'
+  ...
+# Subtest: no painter at all is not a breach (listed as unpainted): no size would paint it, so the size is not the cause; it is missing art
+ok 102 - no painter at all is not a breach (listed as unpainted): no size would paint it, so the size is not the cause; it is missing art
+  ---
+  duration_ms: 3.865353
+  type: 'test'
+  ...
+# Subtest: a stage whose painted kit is off (a boss lair) is not judged: no painter runs there (engine.ts paintKit)
+ok 103 - a stage whose painted kit is off (a boss lair) is not judged: no painter runs there (engine.ts paintKit)
+  ---
+  duration_ms: 0.190657
+  type: 'test'
+  ...
+# Subtest: look-alikes (D88): own art, a hollow log, a pushed log, a chase section, a bounce plant, a crumbling limb and a painted bank never breach
+ok 104 - look-alikes (D88): own art, a hollow log, a pushed log, a chase section, a bounce plant, a crumbling limb and a painted bank never breach
+  ---
+  duration_ms: 0.507634
+  type: 'test'
+  ...
+# Subtest: the rule reads the screen's own decision: every breach is a footing terrain draws by code
+ok 105 - the rule reads the screen's own decision: every breach is a footing terrain draws by code
+  ---
+  duration_ms: 6.435215
+  type: 'test'
+  ...
+# Subtest: a World 1 stone keeps its cut piece up to STONE_W_MAX wide (PAINT-292; before it, 260): 255 and 266 wide (an Easy-widened stone, 1-1 seed 791759 Easy x15238) GREEN, one wider RED
+ok 106 - a World 1 stone keeps its cut piece up to STONE_W_MAX wide (PAINT-292; before it, 260): 255 and 266 wide (an Easy-widened stone, 1-1 seed 791759 Easy x15238) GREEN, one wider RED
+  ---
+  duration_ms: 2.009731
+  type: 'test'
+  ...
+# Subtest: PAINT-292: a World 1 log 50-89 px tall is drawn by the thick painted planks (538x50 GREEN; before it, code ground); a 49 px one keeps a ledge
+ok 107 - PAINT-292: a World 1 log 50-89 px tall is drawn by the thick painted planks (538x50 GREEN; before it, code ground); a 49 px one keeps a ledge
+  ---
+  duration_ms: 0.939465
+  type: 'test'
+  ...
+# Subtest: 1-8's reverted knots (VAR-1b, w1Arc18 knot(): moss_stone 50-56 on a bough) are painted, not level A: the cut slab on a bough stage
+ok 108 - 1-8's reverted knots (VAR-1b, w1Arc18 knot(): moss_stone 50-56 on a bough) are painted, not level A: the cut slab on a bough stage
+  ---
+  duration_ms: 0.685363
+  type: 'test'
+  ...
+# Subtest: ranges prints whole heights as runs
+ok 109 - ranges prints whole heights as runs
+  ---
+  duration_ms: 0.156388
+  type: 'test'
+  ...
+# Subtest: a part out of range fails (parts are 0-based: 3/3 is no part)
+ok 110 - a part out of range fails (parts are 0-based: 3/3 is no part)
+  ---
+  duration_ms: 1175.663721
+  type: 'test'
+  ...
+# Subtest: a --stages id that is no stage fails: checked nothing
+ok 111 - a --stages id that is no stage fails: checked nothing
+  ---
+  duration_ms: 1326.82294
+  type: 'test'
+  ...
+# Subtest: a stage with 0 builds fails (an unlisted stage on 0 layouts)
+ok 112 - a stage with 0 builds fails (an unlisted stage on 0 layouts)
+  ---
+  duration_ms: 1503.861585
+  type: 'test'
+  ...
+# Subtest: the shipped table passes the gate: every stage-table stage registered everywhere, every list checked in CI (no known list)
+ok 113 - the shipped table passes the gate: every stage-table stage registered everywhere, every list checked in CI (no known list)
+  ---
+  duration_ms: 86894.560435
+  type: 'test'
+  ...
+# Subtest: planted: a stage taken out of drawcheck's scenarios fails "drawcheck" (D51), and the gate fails on it
+ok 114 - planted: a stage taken out of drawcheck's scenarios fails "drawcheck" (D51), and the gate fails on it
+  ---
+  duration_ms: 1.870408
+  type: 'test'
+  ...
+# Subtest: planted: a listed stage with its list taken away and no stand-in fails "seeds"; a stand-in alone passes
+ok 115 - planted: a listed stage with its list taken away and no stand-in fails "seeds"; a stand-in alone passes
+  ---
+  duration_ms: 0.405272
+  type: 'test'
+  ...
+# Subtest: planted: a kit name listed.ts does not hold fails "kit"; a stage with no row fails "row"
+ok 116 - planted: a kit name listed.ts does not hold fails "kit"; a stage with no row fails "row"
+  ---
+  duration_ms: 0.316648
+  type: 'test'
+  ...
+# Subtest: planted: no config, a hand-built plan shadowing the row, no levelSeeds entry each fail by name
+ok 117 - planted: no config, a hand-built plan shadowing the row, no levelSeeds entry each fail by name
+  ---
+  duration_ms: 0.407849
+  type: 'test'
+  ...
+# Subtest: planted: an unjudged row, a judged scope with no rows, and a scope missing one of Easy's moves each fail "flown"
+ok 118 - planted: an unjudged row, a judged scope with no rows, and a scope missing one of Easy's moves each fail "flown"
+  ---
+  duration_ms: 0.545782
+  type: 'test'
+  ...
+# Subtest: planted: a sheet the rolls draw that the preload list lacks fails "sheets"
+ok 119 - planted: a sheet the rolls draw that the preload list lacks fails "sheets"
+  ---
+  duration_ms: 0.873619
+  type: 'test'
+  ...
+# Subtest: planted on the real builds: a stage whose rolls lay a creature, with the creature sheets taken out of its preload list, is caught
+ok 120 - planted on the real builds: a stage whose rolls lay a creature, with the creature sheets taken out of its preload list, is caught
+  ---
+  duration_ms: 90328.178456
+  type: 'test'
+  ...
+# Subtest: R-165.365 planted: the sheet check reads the FINISHED roll; on the unfinished roll a follow stage (2-3) counts its herons as an eagle
+ok 121 - R-165.365 planted: the sheet check reads the FINISHED roll; on the unfinished roll a follow stage (2-3) counts its herons as an eagle
+  ---
+  duration_ms: 795.74397
+  type: 'test'
+  ...
+# Subtest: planted: gates.yml without a seed-list check for a list fails "ci-seedlist"; a named line or the --lists loop passes
+ok 122 - planted: gates.yml without a seed-list check for a list fails "ci-seedlist"; a named line or the --lists loop passes
+  ---
+  duration_ms: 0.909089
+  type: 'test'
+  ...
+# Subtest: R-165.278: the seed-list shards hold every list exactly once, at most SHARD_LISTS each, for 1..40 lists; the gates.yml matrix line still counts as the loop
+ok 123 - R-165.278: the seed-list shards hold every list exactly once, at most SHARD_LISTS each, for 1..40 lists; the gates.yml matrix line still counts as the loop
+  ---
+  duration_ms: 7.576217
+  type: 'test'
+  ...
+# fixture: no still fork: still fork 0: its ground breaks at 20488 (the cover and the post stand on unbroken ground); still fork 0: no ground for its post within 420 px of the cover's start (on one upright screen with him)
+# Subtest: a listed stage with no list yet fails --check by name, not by a throw (a list taken out of the index, in a scratch worktree)
+ok 124 - a listed stage with no list yet fails --check by name, not by a throw (a list taken out of the index, in a scratch worktree)
+  ---
+  duration_ms: 20730.973799
+  type: 'test'
+  ...
+# Subtest: an id with no row exits 2, by name
+ok 125 - an id with no row exits 2, by name
+  ---
+  duration_ms: 1655.706202
+  type: 'test'
+  ...
+# Subtest: neither tool holds a stage id or a table of its own: both read the listed-stage table
+ok 126 - neither tool holds a stage id or a table of its own: both read the listed-stage table
+  ---
+  duration_ms: 0.876476
+  type: 'test'
+  ...
+# Subtest: searchYield: per graph, seeds tried and kept, and how many each refusing rule refused (a roll once per rule)
+ok 127 - searchYield: per graph, seeds tried and kept, and how many each refusing rule refused (a roll once per rule)
+  ---
+  duration_ms: 18.681363
+  type: 'test'
+  ...
+# Subtest: room for help is the list judge's own rule: planted on 1-1 seed 33825 Easy, as the list's search lays it (dropped by the relist that added it)
+ok 128 - room for help is the list judge's own rule: planted on 1-1 seed 33825 Easy, as the list's search lays it (dropped by the relist that added it)
+  ---
+  duration_ms: 5447.058146
+  type: 'test'
+  ...
+# Subtest: the quiet line sees a laid chase: each stretch and each rolling nut and fruit a beat, judged on the roll as its finish lays it
+ok 129 - the quiet line sees a laid chase: each stretch and each rolling nut and fruit a beat, judged on the roll as its finish lays it
+  ---
+  duration_ms: 3103.362417
+  type: 'test'
+  ...
+# Subtest: the list judges each seed with its row's whole finish, as Play builds it: a finish that throws on a setting is refused by name
+ok 130 - the list judges each seed with its row's whole finish, as Play builds it: a finish that throws on a setting is refused by name
+  ---
+  duration_ms: 549.125536
+  type: 'test'
+  ...
+# Subtest: the list judges each listed seed's dressing rows against its world's inventory: a row the inventory lacks is refused by name
+ok 131 - the list judges each listed seed's dressing rows against its world's inventory: a row the inventory lacks is refused by name
+  ---
+  duration_ms: 666.431835
+  type: 'test'
+  ...
+# Subtest: a lure post as played works on an animal that fears it: the roost boa out of its roost's reach is refused by the list's judge
+ok 132 - a lure post as played works on an animal that fears it: the roost boa out of its roost's reach is refused by the list's judge
+  ---
+  duration_ms: 684.385843
+  type: 'test'
+  ...
+# Subtest: a socket predator stands on its designed piece: read-bare's boa moved onto 's1' is refused by the list's judge (R-165.327)
+ok 133 - a socket predator stands on its designed piece: read-bare's boa moved onto 's1' is refused by the list's judge (R-165.327)
+  ---
+  duration_ms: 443.882994
+  type: 'test'
+  ...
+# Subtest: --fill fills named list indices IN PLACE: every other index keeps its seed, plan, quiet and outro; refusals by name (FILL-14)
+ok 134 - --fill fills named list indices IN PLACE: every other index keeps its seed, plan, quiet and outro; refusals by name (FILL-14)
+  ---
+  duration_ms: 20.881133
+  type: 'test'
+  ...
+# Subtest: --fill names a slot by its layout variant as Play draws it, on both of the game's paths (FILL-14: 1-4 variant 26 is NOT the 26th seed)
+ok 135 - --fill names a slot by its layout variant as Play draws it, on both of the game's paths (FILL-14: 1-4 variant 26 is NOT the 26th seed)
+  ---
+  duration_ms: 2791.860669
+  type: 'test'
+  ...
+# Subtest: 2-1 on Normal: the water warning is laid as a warning (a must) and every laid line is said on Tips
+ok 136 - 2-1 on Normal: the water warning is laid as a warning (a must) and every laid line is said on Tips
+  ---
+  duration_ms: 2024.911293
+  type: 'test'
+  ...
+# Subtest: planted: the marks taken off (the warning laid as plain words), the gate fails by name, the warning as info
+ok 137 - planted: the marks taken off (the warning laid as plain words), the gate fails by name, the warning as info
+  ---
+  duration_ms: 83.69405
+  type: 'test'
+  ...
+# Subtest: 1-1's first proven roll: every mechanic's first appearance is taught first, laid as a teach line, on Normal and Easy
+ok 138 - 1-1's first proven roll: every mechanic's first appearance is taught first, laid as a teach line, on Normal and Easy
+  ---
+  duration_ms: 526.910915
+  type: 'test'
+  ...
+# Subtest: planted: the double teach moved to a section after the first that shows the double is caught
+ok 139 - planted: the double teach moved to a section after the first that shows the double is caught
+  ---
+  duration_ms: 116.514982
+  type: 'test'
+  ...
+# Subtest: planted: the double teach standing past the first double in its own section is caught
+ok 140 - planted: the double teach standing past the first double in its own section is caught
+  ---
+  duration_ms: 66.763517
+  type: 'test'
+  ...
+# Subtest: planted: the double teach laid as a plain tip (the base before TEACH-11) is caught
+ok 141 - planted: the double teach laid as a plain tip (the base before TEACH-11) is caught
+  ---
+  duration_ms: 136.228317
+  type: 'test'
+  ...
+# Subtest: planted: no double teach laid at all is caught
+ok 142 - planted: no double teach laid at all is caught
+  ---
+  duration_ms: 101.41451
+  type: 'test'
+  ...
+# Subtest: the walk: 1-1 rolls late on the base show the double line before the first double, Normal (Tips) and Easy (Help)
+ok 143 - the walk: 1-1 rolls late on the base show the double line before the first double, Normal (Tips) and Easy (Help)
+  ---
+  duration_ms: 2044.212637
+  type: 'test'
+  ...
+# Subtest: planted: the walk catches the double line laid as a plain tip (the base) coming after the first double
+ok 144 - planted: the walk catches the double line laid as a plain tip (the base) coming after the first double
+  ---
+  duration_ms: 1619.727767
+  type: 'test'
+  ...
+# Subtest: the walk finds the climbing rolled stages (1-4 among them) and no run
+ok 145 - the walk finds the climbing rolled stages (1-4 among them) and no run
+  ---
+  duration_ms: 21449.146331
+  type: 'test'
+  ...
+# Subtest: 1-4 with its bands: no miss, on Normal and Easy, built as asked
+ok 146 - 1-4 with its bands: no miss, on Normal and Easy, built as asked
+  ---
+  duration_ms: 1136.08588
+  type: 'test'
+  ...
+# Subtest: planted: 1-4 with the bands off (x alone) fails by name, both judgments
+ok 147 - planted: 1-4 with the bands off (x alone) fails by name, both judgments
+  ---
+  duration_ms: 275.110417
+  type: 'test'
+  ...
+# Subtest: ruleOf names the rule and drops the numbers: two rolls of one rule are one row
+ok 148 - ruleOf names the rule and drops the numbers: two rolls of one rule are one row
+  ---
+  duration_ms: 1.016767
+  type: 'test'
+  ...
+# Subtest: tally: clean counts empty rolls only; stopped counts a roll once per rule; first counts the first line only
+ok 149 - tally: clean counts empty rolls only; stopped counts a roll once per rule; first counts the first line only
+  ---
+  duration_ms: 7.400298
+  type: 'test'
+  ...
+# Subtest: alone: a rule is counted only on rolls nothing else stops
+ok 150 - alone: a rule is counted only on rolls nothing else stops
+  ---
+  duration_ms: 0.163259
+  type: 'test'
+  ...
+# Subtest: easyOnly: the same rule at other numbers is not Easy's own; a rule only Easy breaks is
+ok 151 - easyOnly: the same rule at other numbers is not Easy's own; a rule only Easy breaks is
+  ---
+  duration_ms: 0.11922
+  type: 'test'
+  ...
+# middle: hit on 5/6 seeds without the freeze
+# middle easy: hit on 6/6 seeds without the freeze
+# child easy: hit on 3/6 seeds without the freeze
+# expert: hit on 6/6 seeds without the freeze
+# child normal: unhurt 3/6, beaten by stillness 5/6
+# roost: dropped to the bough below on 14/30 runs (the limb, not the boa)
+# Subtest: the freeze: every tier bot (child on Easy, middle both, expert) freezes in the boa's rear, beats it by stillness and walks on unhurt
+ok 152 - the freeze: every tier bot (child on Easy, middle both, expert) freezes in the boa's rear, beats it by stillness and walks on unhurt
+  ---
+  duration_ms: 3790.43774
+  type: 'test'
+  ...
+# Subtest: PLANTED: the freeze removed, every one of those bots fails the toy (its coil or strike takes a heart)
+ok 153 - PLANTED: the freeze removed, every one of those bots fails the toy (its coil or strike takes a heart)
+  ---
+  duration_ms: 2759.606151
+  type: 'test'
+  ...
+# Subtest: the child on Normal: its reaction (KID's stopReact 0.4 s + its thumb) against the 13 frames (0.43 s) Normal leaves: printed, named in the REPORT
+ok 154 - the child on Normal: its reaction (KID's stopReact 0.4 s + its thumb) against the 13 frames (0.43 s) Normal leaves: printed, named in the REPORT
+  ---
+  duration_ms: 1037.457084
+  type: 'test'
+  ...
+# Subtest: the roost: by an eagle's roost on a creaky limb, every tier walks on: the boa flees in its first rear frame, he is never hit
+ok 155 - the roost: by an eagle's roost on a creaky limb, every tier walks on: the boa flees in its first rear frame, he is never hit
+  ---
+  duration_ms: 3608.272498
+  type: 'test'
+  ...
+# Subtest: PLANTED: the roost taken away, the same bots must stop for the boa (beaten by stillness) or are hit, on every seed: the roost is what lets them walk on
+ok 156 - PLANTED: the roost taken away, the same bots must stop for the boa (beaten by stillness) or are hit, on every seed: the roost is what lets them walk on
+  ---
+  duration_ms: 3685.832645
+  type: 'test'
+  ...
+# Subtest: the bank cage: every bot stops at it, punches it open, and the little one joins his line (2-3 gen2 row, seeds 1-3)
+ok 157 - the bank cage: every bot stops at it, punches it open, and the little one joins his line (2-3 gen2 row, seeds 1-3)
+  ---
+  duration_ms: 4878.948966
+  type: 'test'
+  ...
+# Subtest: the bank cage, skill off (the plant): he walks past it and the run ends at the sealed door with nobody home
+ok 158 - the bank cage, skill off (the plant): he walks past it and the run ends at the sealed door with nobody home
+  ---
+  duration_ms: 858.859103
+  type: 'test'
+  ...
+# Subtest: the mooring post: he climbs the post, punches its cage open from the vine, and the pup joins the line (seeds 1-3)
+ok 159 - the mooring post: he climbs the post, punches its cage open from the vine, and the pup joins the line (seeds 1-3)
+  ---
+  duration_ms: 2906.646841
+  type: 'test'
+  ...
+# Subtest: the mooring post, skill off (the plant): the post cage stays shut
+ok 160 - the mooring post, skill off (the plant): the post cage stays shut
+  ---
+  duration_ms: 204.758679
+  type: 'test'
+  ...
+# Subtest: told of traps, he uses one whose load hangs over an animal: he walks to the handle, punches it, the snake glides off, no hit
+ok 161 - told of traps, he uses one whose load hangs over an animal: he walks to the handle, punches it, the snake glides off, no hit
+  ---
+  duration_ms: 362.878643
+  type: 'test'
+  ...
+# Subtest: a trap over no animal he passes (it is not worth using)
+ok 162 - a trap over no animal he passes (it is not worth using)
+  ---
+  duration_ms: 166.437802
+  type: 'test'
+  ...
+# Subtest: never told of traps, he does not use one (he knows nothing the stage has not told him)
+ok 163 - never told of traps, he does not use one (he knows nothing the stage has not told him)
+  ---
+  duration_ms: 141.425219
+  type: 'test'
+  ...
+# Subtest: coming the other way along the branch he meets the animal before the handle: the trap is not the safe way, and he leaves it
+ok 164 - coming the other way along the branch he meets the animal before the handle: the trap is not the safe way, and he leaves it
+  ---
+  duration_ms: 82.963903
+  type: 'test'
+  ...
+# Subtest: his thumb carried him past the handle he meant to punch: he walks back to it and springs it (W1C's trace, 1-3 seed 1)
+ok 165 - his thumb carried him past the handle he meant to punch: he walks back to it and springs it (W1C's trace, 1-3 seed 1)
+  ---
+  duration_ms: 98.752262
+  type: 'test'
+  ...
+# Subtest: (behaviour check, not a planted test: the stall needs the real roll, A/B in REPORT) a tier bot at a bank's 51 px face on a cast stage hops it
+ok 166 - (behaviour check, not a planted test: the stall needs the real roll, A/B in REPORT) a tier bot at a bank's 51 px face on a cast stage hops it
+  ---
+  duration_ms: 1460.575791
+  type: 'test'
+  ...
+# Subtest: the tower route goes down to a sunk vine's foot before it climbs (a down-then-up leg)
+ok 167 - the tower route goes down to a sunk vine's foot before it climbs (a down-then-up leg)
+  ---
+  duration_ms: 1.671081
+  type: 'test'
+  ...
+# Subtest: the tower route goes on from a turn's top along the leg, never back to an entry beside the vine
+ok 168 - the tower route goes on from a turn's top along the leg, never back to an entry beside the vine
+  ---
+  duration_ms: 1.420262
+  type: 'test'
+  ...
+# Subtest: the tower route takes a turn's vine a hand's reach past the arrival straight, never out to the exit and back
+ok 169 - the tower route takes a turn's vine a hand's reach past the arrival straight, never out to the exit and back
+  ---
+  duration_ms: 0.627427
+  type: 'test'
+  ...
+# Subtest: under a raised row on a tower, KID stops (one late lift-off), hops up and never runs off the floor under it
+ok 170 - under a raised row on a tower, KID stops (one late lift-off), hops up and never runs off the floor under it
+  ---
+  duration_ms: 2296.092732
+  type: 'test'
+  ...
+# Subtest: the length floor is the stage rule's: a climb at 105 s holds, a run stage at 105 s does not (STAGE-RULES.md:77)
+ok 171 - the length floor is the stage rule's: a climb at 105 s holds, a run stage at 105 s does not (STAGE-RULES.md:77)
+  ---
+  duration_ms: 1135.519321
+  type: 'test'
+  ...
+# Subtest: told how to hide, on the kit eagle's screech the bot goes still in the nearest cover (a moss carpet) and is never taken
+ok 172 - told how to hide, on the kit eagle's screech the bot goes still in the nearest cover (a moss carpet) and is never taken
+  ---
+  duration_ms: 355.481957
+  type: 'test'
+  ...
+# Subtest: never told how to hide, the bot walks on in the open under the kit eagle and is taken (the stage must teach it)
+ok 173 - never told how to hide, the bot walks on in the open under the kit eagle and is taken (the stage must teach it)
+  ---
+  duration_ms: 124.086553
+  type: 'test'
+  ...
+# Subtest: the cover a bot heads for: the nearest ground cover at his level, never hanging moss or a hollow's dressing
+ok 174 - the cover a bot heads for: the nearest ground cover at his level, never hanging moss or a hollow's dressing
+  ---
+  duration_ms: 0.322051
+  type: 'test'
+  ...
+# Subtest: castBots --input: touch drives the touch layer (its minimum hold), pad the Jump button (PAD_HOP_MS), fake stays the default (FIX-284)
+ok 175 - castBots --input: touch drives the touch layer (its minimum hold), pad the Jump button (PAD_HOP_MS), fake stays the default (FIX-284)
+  ---
+  duration_ms: 0.891994
+  type: 'test'
+  ...
+# Subtest: a tower takes its own laid route even when the inspector traces it; a stage that is no tower keeps its trace
+ok 176 - a tower takes its own laid route even when the inspector traces it; a stage that is no tower keeps its trace
+  ---
+  duration_ms: 0.340032
+  type: 'test'
+  ...
+# Subtest: at a climbing vine's foot, come in going away from it, the tier bot jumps for the vine and climbs: never off the ledge's end
+ok 177 - at a climbing vine's foot, come in going away from it, the tier bot jumps for the vine and climbs: never off the ledge's end
+  ---
+  duration_ms: 344.579264
+  type: 'test'
+  ...
+# Subtest: fallen from a leg to the floor 379 px under it, Progress rewinds to the way up: he walks to the vine and climbs, never hops under the leg (BUILD-26f, 2-6 adult N 26)
+ok 178 - fallen from a leg to the floor 379 px under it, Progress rewinds to the way up: he walks to the vine and climbs, never hops under the leg (BUILD-26f, 2-6 adult N 26)
+  ---
+  duration_ms: 318.853375
+  type: 'test'
+  ...
+# Subtest: at a lip where the floor goes on a hop UP with no face (a thin bough starting at the lip), a late press is made on the run: he jumps, never walks off under it (BUILD-26j, 1-4 child Easy 37)
+ok 179 - at a lip where the floor goes on a hop UP with no face (a thin bough starting at the lip), a late press is made on the run: he jumps, never walks off under it (BUILD-26j, 1-4 child Easy 37)
+  ---
+  duration_ms: 1781.817189
+  type: 'test'
+  ...
+# Subtest: knocked off a vine field to its floor, the rewind takes the way he can reach (his floor, or up the vine at his feet), never a leg under that floor; with none, the points under him (BUILD-26k, 1-4 child N 8 and 14)
+ok 180 - knocked off a vine field to its floor, the rewind takes the way he can reach (his floor, or up the vine at his feet), never a leg under that floor; with none, the points under him (BUILD-26k, 1-4 child N 8 and 14)
+  ---
+  duration_ms: 1.323734
+  type: 'test'
+  ...
+# Subtest: a vine field's work that gets nowhere (no fig freed, no gate opened, no step on) runs the no-progress clock: a stall on a vine ends in a rescue and a stuck spot, never a silent cap (BUILD-26l, 1-4 adult N 39)
+ok 181 - a vine field's work that gets nowhere (no fig freed, no gate opened, no step on) runs the no-progress clock: a stall on a vine ends in a rescue and a stuck spot, never a silent cap (BUILD-26l, 1-4 adult N 39)
+  ---
+  duration_ms: 414.925812
+  type: 'test'
+  ...
+# Subtest: a pod's tell on the vine he holds, a free vine on both sides: he steps toward the fig he is going for, never away from it (BUILD-26l, 1-4 adult N 32, middle N 14)
+ok 182 - a pod's tell on the vine he holds, a free vine on both sides: he steps toward the fig he is going for, never away from it (BUILD-26l, 1-4 adult N 32, middle N 14)
+  ---
+  duration_ms: 1.341796
+  type: 'test'
+  ...
+# Subtest: a fig whose vine stands far over his row (out of his hands' reach): FigPush lets it go and hands back his own climb, never a push left and right under it holding the clock (BUILD-26n, 1-4 adult N 9, expert N 20 at x 871; child N 38)
+ok 183 - a fig whose vine stands far over his row (out of his hands' reach): FigPush lets it go and hands back his own climb, never a push left and right under it holding the clock (BUILD-26n, 1-4 adult N 9, expert N 20 at x 871; child N 38)
+  ---
+  duration_ms: 1.471312
+  type: 'test'
+  ...
+# MIDDLE strider, stood at the lip (s): without the hold 2.07, 1.50, 0.87, 0.70, 0.50, 0.00; with it 0.00, 0.00, 0.00, 0.00, 0.00, 0.00
+# stood at the lip (s), by the swing's starting moment: plain swing 0.13, 0.00, 2.07, 1.57, 1.10, 0.63; phased 0.00, 0.00, 0.00, 0.00, 0.00, 0.00
+# Subtest: chase bots: the CHILD bot on normal on a laid stretch, three seeds: the front never catches him
+ok 184 - chase bots: the CHILD bot on normal on a laid stretch, three seeds: the front never catches him
+  ---
+  duration_ms: 1561.839987
+  type: 'test'
+  ...
+# Subtest: chase bots: the MIDDLE bot on normal on a laid stretch, three seeds: the front never catches him; he reaches the fork on every seed (a missed gap is a fall: a heart and the flag)
+ok 185 - chase bots: the MIDDLE bot on normal on a laid stretch, three seeds: the front never catches him; he reaches the fork on every seed (a missed gap is a fall: a heart and the flag)
+  ---
+  duration_ms: 745.638237
+  type: 'test'
+  ...
+# Subtest: chase bots: the EXPERT bot on normal on a laid stretch, three seeds: the front never catches him; he reaches the fork on every seed (a missed gap is a fall: a heart and the flag)
+ok 186 - chase bots: the EXPERT bot on normal on a laid stretch, three seeds: the front never catches him; he reaches the fork on every seed (a missed gap is a fall: a heart and the flag)
+  ---
+  duration_ms: 592.97374
+  type: 'test'
+  ...
+# Subtest: chase bots: the MIDDLE bot on easy on a laid stretch, three seeds: the front never catches him; he reaches the fork on every seed (a missed gap is a fall: a heart and the flag)
+ok 187 - chase bots: the MIDDLE bot on easy on a laid stretch, three seeds: the front never catches him; he reaches the fork on every seed (a missed gap is a fall: a heart and the flag)
+  ---
+  duration_ms: 644.325989
+  type: 'test'
+  ...
+# Subtest: chase bots (OPEN, todo): the CHILD bot on Normal reaches the fork on 2 or more of 3 seeds
+not ok 188 - chase bots (OPEN, todo): the CHILD bot on Normal reaches the fork on 2 or more of 3 seeds # TODO measured 1 of 3 (ENG-B4): every miss a fall at a 120 px gap, never a catch
+  ---
+  duration_ms: 540.167072
+  type: 'test'
+  location: '/home/user/fz-fin/tools/inspect/chaseBots.test.ts:110:1'
+  failureType: 'testCodeFailure'
+  error: 'reached the fork on 1 of 3'
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: true
+  actual: false
+  operator: '=='
+  stack: |-
+    TestContext.<anonymous> (/home/user/fz-fin/tools/inspect/chaseBots.test.ts:112:10)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: chase bots, PLANTED (rule 21): a player who stops at every edge past the stop budget is caught without the skill and safe with it
+ok 189 - chase bots, PLANTED (rule 21): a player who stops at every edge past the stop budget is caught without the skill and safe with it
+  ---
+  duration_ms: 362.15635
+  type: 'test'
+  ...
+# Subtest: chase bots read the nut and the fruit: the MIDDLE bot on normal, three seeds: every hazard drops in, none touches him, the front never catches him, he reaches the fork
+ok 190 - chase bots read the nut and the fruit: the MIDDLE bot on normal, three seeds: every hazard drops in, none touches him, the front never catches him, he reaches the fork
+  ---
+  duration_ms: 635.783028
+  type: 'test'
+  ...
+# Subtest: chase bots read the nut and the fruit: the EXPERT bot on normal, three seeds: every hazard drops in, none touches him, the front never catches him, he reaches the fork
+ok 191 - chase bots read the nut and the fruit: the EXPERT bot on normal, three seeds: every hazard drops in, none touches him, the front never catches him, he reaches the fork
+  ---
+  duration_ms: 445.934092
+  type: 'test'
+  ...
+# Subtest: chase bots read the nut and the fruit: the MIDDLE bot on easy, three seeds: every hazard drops in, none touches him, the front never catches him, he reaches the fork
+ok 192 - chase bots read the nut and the fruit: the MIDDLE bot on easy, three seeds: every hazard drops in, none touches him, the front never catches him, he reaches the fork
+  ---
+  duration_ms: 504.994251
+  type: 'test'
+  ...
+# Subtest: chase bots, PLANTED (rule 21): with the nut and fruit reading removed the same player is touched; with it he is not
+ok 193 - chase bots, PLANTED (rule 21): with the nut and fruit reading removed the same player is touched; with it he is not
+  ---
+  duration_ms: 1365.907179
+  type: 'test'
+  ...
+# Subtest: chase bots at the still fork: the MIDDLE bot on normal, three seeds: at a full run onto the fork, he stops in the moss, holds still through the eagle's pass, no heart, and runs on as the next crack sets off
+ok 194 - chase bots at the still fork: the MIDDLE bot on normal, three seeds: at a full run onto the fork, he stops in the moss, holds still through the eagle's pass, no heart, and runs on as the next crack sets off
+  ---
+  duration_ms: 634.884203
+  type: 'test'
+  ...
+# Subtest: chase bots at the still fork: the EXPERT bot on normal, three seeds: at a full run onto the fork, he stops in the moss, holds still through the eagle's pass, no heart, and runs on as the next crack sets off
+ok 195 - chase bots at the still fork: the EXPERT bot on normal, three seeds: at a full run onto the fork, he stops in the moss, holds still through the eagle's pass, no heart, and runs on as the next crack sets off
+  ---
+  duration_ms: 405.610052
+  type: 'test'
+  ...
+# Subtest: chase bots at the still fork: the MIDDLE bot on easy, three seeds: at a full run onto the fork, he stops in the moss, holds still through the eagle's pass, no heart, and runs on as the next crack sets off
+ok 196 - chase bots at the still fork: the MIDDLE bot on easy, three seeds: at a full run onto the fork, he stops in the moss, holds still through the eagle's pass, no heart, and runs on as the next crack sets off
+  ---
+  duration_ms: 323.573868
+  type: 'test'
+  ...
+# Subtest: chase bots, PLANTED (rule 21): at the still fork a player without the hide runs on into the eagle's pass and is dived on; with it he is not
+ok 197 - chase bots, PLANTED (rule 21): at the still fork a player without the hide runs on into the eagle's pass and is dived on; with it he is not
+  ---
+  duration_ms: 994.690105
+  type: 'test'
+  ...
+# Subtest: chase bots and the runner liana: the MIDDLE STRIDER bot on normal, from six moments of its swing: he never stands at the lip, catches it in stride and reaches the far bank
+ok 198 - chase bots and the runner liana: the MIDDLE STRIDER bot on normal, from six moments of its swing: he never stands at the lip, catches it in stride and reaches the far bank
+  ---
+  duration_ms: 1008.22497
+  type: 'test'
+  ...
+# Subtest: chase bots and the runner liana: the EXPERT STRIDER bot on normal, from six moments of its swing: he never stands at the lip, catches it in stride and reaches the far bank
+ok 199 - chase bots and the runner liana: the EXPERT STRIDER bot on normal, from six moments of its swing: he never stands at the lip, catches it in stride and reaches the far bank
+  ---
+  duration_ms: 853.331759
+  type: 'test'
+  ...
+# Subtest: chase bots and the runner liana: the MIDDLE STRIDER bot on easy, from six moments of its swing: he never stands at the lip, catches it in stride and reaches the far bank
+ok 200 - chase bots and the runner liana: the MIDDLE STRIDER bot on easy, from six moments of its swing: he never stands at the lip, catches it in stride and reaches the far bank
+  ---
+  duration_ms: 608.812825
+  type: 'test'
+  ...
+# Subtest: chase bots, PLANTED (rule 21): the runner liana's held thumb removed (noRunnerHold), the MIDDLE strider lifts his thumb on the run in by his rhythm and stands at the lip from some moments; with it, from none
+ok 201 - chase bots, PLANTED (rule 21): the runner liana's held thumb removed (noRunnerHold), the MIDDLE strider lifts his thumb on the run in by his rhythm and stands at the lip from some moments; with it, from none
+  ---
+  duration_ms: 1308.163959
+  type: 'test'
+  ...
+# Subtest: chase bots, PLANTED (rule 21): the liana not phased (the piece off the hook), the same strider stands at the lip to wait for it from some moments; phased, from none
+ok 202 - chase bots, PLANTED (rule 21): the liana not phased (the piece off the hook), the same strider stands at the lip to wait for it from some moments; phased, from none
+  ---
+  duration_ms: 1333.887258
+  type: 'test'
+  ...
+# Subtest: chase bots on EASY: the CHILD bot clears every chase gap Easy's lay allows (CHASE_LAY.easyGap 50 px) on 3 of 3 seeds: no fall, no catch, through
+ok 203 - chase bots on EASY: the CHILD bot clears every chase gap Easy's lay allows (CHASE_LAY.easyGap 50 px) on 3 of 3 seeds: no fall, no catch, through
+  ---
+  duration_ms: 441.789955
+  type: 'test'
+  ...
+# Subtest: chase bots on EASY, PLANTED (rule 21): 10 px past Easy's chase gap the same CHILD drops a seed (the number is the edge of what he clears)
+ok 204 - chase bots on EASY, PLANTED (rule 21): 10 px past Easy's chase gap the same CHILD drops a seed (the number is the edge of what he clears)
+  ---
+  duration_ms: 362.380146
+  type: 'test'
+  ...
+# Subtest: PLANTED: the old bare press (state.jumpPressed set by hand) is LOST on the real input: no lift, no grab, the clip stops
+ok 205 - PLANTED: the old bare press (state.jumpPressed set by hand) is LOST on the real input: no lift, no grab, the clip stops
+  ---
+  duration_ms: 431.487146
+  type: 'test'
+  ...
+# Subtest: the touch pad press lifts him on the next frame (vy < 0, a jump spent), and the clip reads it as a real press
+ok 206 - the touch pad press lifts him on the next frame (vy < 0, a jump spent), and the clip reads it as a real press
+  ---
+  duration_ms: 186.112471
+  type: 'test'
+  ...
+# Subtest: the clock-read skill: every tier boards the ride on a beat while it stands, rides it still and steps off at the far bank (3 seeds)
+ok 207 - the clock-read skill: every tier boards the ride on a beat while it stands, rides it still and steps off at the far bank (3 seeds)
+  ---
+  duration_ms: 1777.71929
+  type: 'test'
+  ...
+# on  middle Normal seed 1: across at 6.2 s, rode it
+# on  middle Normal seed 2: across at 6.3 s, rode it
+# on  middle Normal seed 3: across at 6.6 s, rode it
+# on  middle Easy seed 1: across at 7.5 s, rode it
+# on  middle Easy seed 2: across at 8.2 s, rode it
+# on  middle Easy seed 3: across at 8.0 s, rode it
+# on  child Normal seed 1: across at 6.9 s, rode it
+# on  child Normal seed 2: across at 20.9 s, rode it
+# on  child Normal seed 3: across at 7.7 s, rode it
+# on  child Easy seed 1: across at 24.7 s, rode it
+# on  child Easy seed 2: across at 24.3 s, rode it
+# on  child Easy seed 3: across at 7.2 s, rode it
+# Subtest: planted: with the skill off, the bot walks off the moving ride into the pit (the plant is RED without the skill)
+ok 208 - planted: with the skill off, the bot walks off the moving ride into the pit (the plant is RED without the skill)
+  ---
+  duration_ms: 820.420531
+  type: 'test'
+  ...
+# off middle Normal seed 1: FELL at 3.8 s, rode it
+# off middle Normal seed 2: FELL at 4.3 s, rode it
+# off middle Normal seed 3: FELL at 2.8 s, rode it
+# off middle Easy seed 1: FELL at 3.5 s, rode it
+# off middle Easy seed 2: FELL at 2.4 s, rode it
+# off middle Easy seed 3: FELL at 3.0 s, rode it
+# off child Normal seed 1: FELL at 4.2 s, rode it
+# off child Normal seed 2: FELL at 4.1 s
+# off child Normal seed 3: FELL at 4.4 s, rode it
+# off child Easy seed 1: FELL at 3.3 s
+# off child Easy seed 2: across at 6.8 s, rode it
+# off child Easy seed 3: FELL at 5.4 s, rode it
+# Subtest: spot memory: a single jump that fails at a spot is followed by a double there; two falls back are a loop
+ok 209 - spot memory: a single jump that fails at a spot is followed by a double there; two falls back are a loop
+  ---
+  duration_ms: 1.655518
+  type: 'test'
+  ...
+# Subtest: progress follows him along the route, never jumps to a far part of it, and finds him again after a respawn
+ok 210 - progress follows him along the route, never jumps to a far part of it, and finds him again after a respawn
+  ---
+  duration_ms: 0.632391
+  type: 'test'
+  ...
+# Subtest: after a fall, the way back up is found near him: a level point is taken only within LEVEL_REACH, else the plain nearest (ENG-285; 1-6 kid Normal layout 13 picked one 35,000 px on, BUILD-24b)
+ok 211 - after a fall, the way back up is found near him: a level point is taken only within LEVEL_REACH, else the plain nearest (ENG-285; 1-6 kid Normal layout 13 picked one 35,000 px on, BUILD-24b)
+  ---
+  duration_ms: 0.307125
+  type: 'test'
+  ...
+# Subtest: the thumb: reaction and hold noise as the Gemini research's Stage B, never a flick under 2 frames
+ok 212 - the thumb: reaction and hold noise as the Gemini research's Stage B, never a flick under 2 frames
+  ---
+  duration_ms: 9.819421
+  type: 'test'
+  ...
+# Subtest: Dot: repeats, lines too close (a warning may come at once), lines up 20 s+ with their thing out of reach, re-teaching, wordy lines
+ok 213 - Dot: repeats, lines too close (a warning may come at once), lines up 20 s+ with their thing out of reach, re-teaching, wordy lines
+  ---
+  duration_ms: 0.936977
+  type: 'test'
+  ...
+# Subtest: the first harm of each kind against the first tip that teaches it (on screen a reaction before it)
+ok 214 - the first harm of each kind against the first tip that teaches it (on screen a reaction before it)
+  ---
+  duration_ms: 0.819944
+  type: 'test'
+  ...
+# Subtest: the gates: survival per edge over the tries, and peak stress per burst before a rest
+ok 215 - the gates: survival per edge over the tries, and peak stress per burst before a rest
+  ---
+  duration_ms: 1.582256
+  type: 'test'
+  ...
+# Subtest: in the real engine: a waist-high step is got over with a plain flick; a tall wall stops him and is reported with its height
+ok 216 - in the real engine: a waist-high step is got over with a plain flick; a tall wall stops him and is reported with its height
+  ---
+  duration_ms: 791.436537
+  type: 'test'
+  ...
+# Subtest: in the real engine: after a put-back the game's steer hold is not a wall; the adult runs up to the lip for his next jump (POLISH-9)
+ok 217 - in the real engine: after a put-back the game's steer hold is not a wall; the adult runs up to the lip for his next jump (POLISH-9)
+  ---
+  duration_ms: 1016.023141
+  type: 'test'
+  ...
+# Subtest: in the real engine: a log drifting his way across the lip is the floor his boarding hop is for: a single where a single comes down on it, never a double read past it to the next log (SKILLS.boardHop; RED with it off)
+ok 218 - in the real engine: a log drifting his way across the lip is the floor his boarding hop is for: a single where a single comes down on it, never a double read past it to the next log (SKILLS.boardHop; RED with it off)
+  ---
+  duration_ms: 831.893329
+  type: 'test'
+  ...
+# Subtest: on the runs it was found on, 2-2 child Normal seed 36 and middle Normal seed 17: no life lost in the 3 s after he stands at a lip with a log his way across it (SKILLS.boardHop; the child RED with it off)
+not ok 219 - on the runs it was found on, 2-2 child Normal seed 36 and middle Normal seed 17: no life lost in the 3 s after he stands at a lip with a log his way across it (SKILLS.boardHop; the child RED with it off)
+  ---
+  duration_ms: 5777.094274
+  type: 'test'
+  location: '/home/user/fz-fin/tools/inspect/firsttimer.test.ts:185:1'
+  failureType: 'testCodeFailure'
+  error: 'RED: with SKILLS.boardHop off a life is lost after one (0 of 1 stands)'
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: true
+  actual: false
+  operator: '=='
+  stack: |-
+    TestContext.<anonymous> (/home/user/fz-fin/tools/inspect/firsttimer.test.ts:213:10)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: in the real engine: a jump from a STAND over a laid pond reads the gap from where he stands, so a single that cannot carry his own ground to the lip and the pond is a double (SKILLS.fromTakeoff; RED with it off)
+ok 220 - in the real engine: a jump from a STAND over a laid pond reads the gap from where he stands, so a single that cannot carry his own ground to the lip and the pond is a double (SKILLS.fromTakeoff; RED with it off)
+  ---
+  duration_ms: 905.821443
+  type: 'test'
+  ...
+# Subtest: the findings name the rule each breaks
+ok 221 - the findings name the rule each breaks
+  ---
+  duration_ms: 0.392535
+  type: 'test'
+  ...
+# Subtest: set down at the same place three times, never getting further (a splash-back costs no life), is a loop: he is put past it
+ok 222 - set down at the same place three times, never getting further (a splash-back costs no life), is a loop: he is put past it
+  ---
+  duration_ms: 126.507311
+  type: 'test'
+  ...
+# Subtest: floorAt: a branch far under a high river is floor; a top in its water is not (R-165.390, the engine reads water by x AND y, river.ts riverAt)
+ok 223 - floorAt: a branch far under a high river is floor; a top in its water is not (R-165.390, the engine reads water by x AND y, river.ts riverAt)
+  ---
+  duration_ms: 0.328868
+  type: 'test'
+  ...
+# Subtest: on the run it was found on, 2-4 kid Easy seed 35: no jump off a drifting log comes down in the water (set down by the game before he stands again); the run-up judge counts the thumb travel still to run (c25; RED on c24: a run / pull-back / run flicker left his steer dropped, the judge pressed "held from now" and he flew on the carry alone)
+ok 224 - on the run it was found on, 2-4 kid Easy seed 35: no jump off a drifting log comes down in the water (set down by the game before he stands again); the run-up judge counts the thumb travel still to run (c25; RED on c24: a run / pull-back / run flicker left his steer dropped, the judge pressed "held from now" and he flew on the carry alone)
+  ---
+  duration_ms: 2449.954934
+  type: 'test'
+  ...
+# Subtest: on the run it was found on, 2-1 child Easy seed 2: landing on a small log running his way (under 220 px), even inside his run-out of its front, he takes the pad pause and is never pulled back; the row ends at the shrine with no rescue (c23; RED on c22 52bcce623: the pull-back turned him on landing on a 200 px log 75 px from its front, his run-out 91, the pause and its draw skipped, and he was rescued at the back river)
+ok 225 - on the run it was found on, 2-1 child Easy seed 2: landing on a small log running his way (under 220 px), even inside his run-out of its front, he takes the pad pause and is never pulled back; the row ends at the shrine with no rescue (c23; RED on c22 52bcce623: the pull-back turned him on landing on a 200 px log 75 px from its front, his run-out 91, the pause and its draw skipped, and he was rescued at the back river)
+  ---
+  duration_ms: 5770.929978
+  type: 'test'
+  ...
+# Subtest: on the run it was found on, 2-4 child Normal seed 8: the run-up's jump (SKILLS.runUp: runPress passed at every lag, then the judged press) is held at least as long as runPress judged it; the row ends at the shrine with no rescue (c24; RED on c23 ccca3d305: flown at flickHold's draw, 0.065 / 0.093 / 0.114 s against the 0.16 judged, he peaked under the liana's foot and fell in, rescued)
+ok 226 - on the run it was found on, 2-4 child Normal seed 8: the run-up's jump (SKILLS.runUp: runPress passed at every lag, then the judged press) is held at least as long as runPress judged it; the row ends at the shrine with no rescue (c24; RED on c23 ccca3d305: flown at flickHold's draw, 0.065 / 0.093 / 0.114 s against the 0.16 judged, he peaked under the liana's foot and fell in, rescued)
+  ---
+  duration_ms: 3846.658905
+  type: 'test'
+  ...
+# Subtest: in the real engine, laid: a log drifting his way still mostly under the bank's lip when he comes at it at full run is boarded by a hop, not run onto: no life lost before he has stood 3 s on a log (SKILLS.boardLog; RED with it off: he runs off the lip onto it and off its front into the water; pacerLay's home Easy seed 1 plant laid explicitly)
+ok 227 - in the real engine, laid: a log drifting his way still mostly under the bank's lip when he comes at it at full run is boarded by a hop, not run onto: no life lost before he has stood 3 s on a log (SKILLS.boardLog; RED with it off: he runs off the lip onto it and off its front into the water; pacerLay's home Easy seed 1 plant laid explicitly)
+  ---
+  duration_ms: 1690.494799
+  type: 'test'
+  ...
+# normal seed 5: 31 judged hops pressed (padPause, upstream, edgeWait, bankUp, race, edgeCap); unjudged or stale 0, flown not as judged 0, came down elsewhere 0
+#   [bank press] unjudged q\#-1 judged t 126.50 x 6231 lag 0 hold 0.188 | flown t 126.50 x 6231 hold 0.188 single | came down \#76 solid
+# normal seed 2: 36 judged hops pressed (edgeWait, padPause, upstream, bankUp, race, edgeCap, unjudged); unjudged or stale 0, flown not as judged 0, came down elsewhere 1
+#   padPause q\#50 judged t 83.97 x 12615 lag 0 hold 0.118 double | flown t 83.97 x 12615 hold 0.118 double | came down \#49 drift
+#   [bank press] unjudged q\#-1 judged t 134.73 x 2414 lag 0 hold 0.167 | flown t 134.73 x 2414 hold 0.167 single | came down \#93 solid
+# easy seed 5: 34 judged hops pressed (padPause, upstream, bankUp, edgeWait, race, unjudged); unjudged or stale 0, flown not as judged 0, came down elsewhere 1
+#   edgeWait q\#-2 judged t 21.77 x 16688 lag 0 hold 0.052 single | flown t 21.77 x 16688 hold 0.052 single | came down \#18 drift
+#   [bank press] unjudged q\#-1 judged t 146.50 x 3727 lag 0 hold 0.034 | flown t 146.50 x 3727 hold 0.034 double | came down \#87 solid
+# easy seed 2: 37 judged hops pressed (edgeWait, upstream, padPause, bankUp, race, edgeCap, unjudged); unjudged or stale 0, flown not as judged 0, came down elsewhere 0
+# Subtest: 2-7 home, middle Normal seed 5: every judged hop is flown as judged and comes down where the gate said; every press from a bank with logs near its edge flies on a judgment of its own frame or comes down on solid (ruling A)
+ok 228 - 2-7 home, middle Normal seed 5: every judged hop is flown as judged and comes down where the gate said; every press from a bank with logs near its edge flies on a judgment of its own frame or comes down on solid (ruling A)
+  ---
+  duration_ms: 2165.80399
+  type: 'test'
+  ...
+# Subtest: 2-7 home, middle Normal seed 2: every judged hop is flown as judged and comes down where the gate said; every press from a bank with logs near its edge flies on a judgment of its own frame or comes down on solid (ruling A)
+not ok 229 - 2-7 home, middle Normal seed 2: every judged hop is flown as judged and comes down where the gate said; every press from a bank with logs near its edge flies on a judgment of its own frame or comes down on solid (ruling A)
+  ---
+  duration_ms: 1111.862494
+  type: 'test'
+  location: '/home/user/fz-fin/tools/inspect/hopJudged.test.ts:37:3'
+  failureType: 'testCodeFailure'
+  error: |-
+    a gate judged one hop and the bot flew another
+    + actual - expected
+    
+    + [
+    +   'padPause q#50 judged t 83.97 x 12615 lag 0 hold 0.118 double | flown t 83.97 x 12615 hold 0.118 double | came down #49 drift'
+    + ]
+    - []
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+  actual:
+    0: 'padPause q#50 judged t 83.97 x 12615 lag 0 hold 0.118 double | flown t 83.97 x 12615 hold 0.118 double | came down #49 drift'
+  operator: 'deepStrictEqual'
+  stack: |-
+    TestContext.<anonymous> (/home/user/fz-fin/tools/inspect/hopJudged.test.ts:56:12)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
+  ...
+# Subtest: 2-7 home, middle Easy seed 5: every judged hop is flown as judged and comes down where the gate said; every press from a bank with logs near its edge flies on a judgment of its own frame or comes down on solid (ruling A)
+not ok 230 - 2-7 home, middle Easy seed 5: every judged hop is flown as judged and comes down where the gate said; every press from a bank with logs near its edge flies on a judgment of its own frame or comes down on solid (ruling A)
+  ---
+  duration_ms: 1423.230587
+  type: 'test'
+  location: '/home/user/fz-fin/tools/inspect/hopJudged.test.ts:37:3'
+  failureType: 'testCodeFailure'
+  error: |-
+    a gate judged one hop and the bot flew another
+    + actual - expected
+    
+    + [
+    +   'edgeWait q#-2 judged t 21.77 x 16688 lag 0 hold 0.052 single | flown t 21.77 x 16688 hold 0.052 single | came down #18 drift'
+    + ]
+    - []
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+  actual:
+    0: 'edgeWait q#-2 judged t 21.77 x 16688 lag 0 hold 0.052 single | flown t 21.77 x 16688 hold 0.052 single | came down #18 drift'
+  operator: 'deepStrictEqual'
+  stack: |-
+    TestContext.<anonymous> (/home/user/fz-fin/tools/inspect/hopJudged.test.ts:56:12)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: 2-7 home, middle Easy seed 2: every judged hop is flown as judged and comes down where the gate said; every press from a bank with logs near its edge flies on a judgment of its own frame or comes down on solid (ruling A)
+ok 231 - 2-7 home, middle Easy seed 2: every judged hop is flown as judged and comes down where the gate said; every press from a bank with logs near its edge flies on a judgment of its own frame or comes down on solid (ruling A)
+  ---
+  duration_ms: 1385.873988
+  type: 'test'
+  ...
+# Subtest: a drawn-hop gate decides on the hop as aimed, never on the thumb noise drawn for it (no foresight, ENG-27r)
+ok 232 - a drawn-hop gate decides on the hop as aimed, never on the thumb noise drawn for it (no foresight, ENG-27r)
+  ---
+  duration_ms: 0.391772
+  type: 'test'
+  ...
+# Subtest: a wait holds its aim: drawn once when the wait begins, never redrawn for a lucky hold (ENG-27s, the lead's ruling)
+ok 233 - a wait holds its aim: drawn once when the wait begins, never redrawn for a lucky hold (ENG-27s, the lead's ruling)
+  ---
+  duration_ms: 0.255546
+  type: 'test'
+  ...
+# Subtest: the race gate presses the smallest calibrated hop whose aimed flight lands with the race margin (E, the honest middle, ENG-27v)
+ok 234 - the race gate presses the smallest calibrated hop whose aimed flight lands with the race margin (E, the honest middle, ENG-27v)
+  ---
+  duration_ms: 0.512855
+  type: 'test'
+  ...
+# Subtest: the race gate presses the shortest aimed flight that lands safe, by airtime; ties: the smaller hold (E as ruled, ENG-27w)
+ok 235 - the race gate presses the shortest aimed flight that lands safe, by airtime; ties: the smaller hold (E as ruled, ENG-27w)
+  ---
+  duration_ms: 0.225423
+  type: 'test'
+  ...
+# Subtest: 2-7's race home middle Normal 1: no hop off a bank after the float wait is set back by the water, the race WON, no deadlock (c27)
+ok 236 - 2-7's race home middle Normal 1: no hop off a bank after the float wait is set back by the water, the race WON, no deadlock (c27)
+  ---
+  duration_ms: 1244.759886
+  type: 'test'
+  ...
+# Subtest: 2-7's race post middle Normal 5: no hop off a bank after the float wait is set back by the water, the race WON, no deadlock (c27)
+ok 237 - 2-7's race post middle Normal 5: no hop off a bank after the float wait is set back by the water, the race WON, no deadlock (c27)
+  ---
+  duration_ms: 1918.190346
+  type: 'test'
+  ...
+# Subtest: the harness drives the engine through the real InputEngine: a Pad tap at a run is the real hop (0.43 s, 2-4.md R-165.284), never FakeInput's
+ok 238 - the harness drives the engine through the real InputEngine: a Pad tap at a run is the real hop (0.43 s, 2-4.md R-165.284), never FakeInput's
+  ---
+  duration_ms: 2279.866565
+  type: 'test'
+  ...
+# Subtest: DROP ON A LOG: on gap280 the middle bot lets go onto a log and loses no life; PLANTED: without the skill he drowns
+not ok 239 - DROP ON A LOG: on gap280 the middle bot lets go onto a log and loses no life; PLANTED: without the skill he drowns
+  ---
+  duration_ms: 14054.53451
+  type: 'test'
+  location: '/home/user/fz-fin/tools/inspect/lianaRide.test.ts:56:1'
+  failureType: 'testCodeFailure'
+  error: 'PLANTED, without it: lives 0,1,0,0,0,0 (measured 8 over five on 11-18, 24 over 1-5 on 11-19)'
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: true
+  actual: false
+  operator: '=='
+  stack: |-
+    TestContext.<anonymous> (/home/user/fz-fin/tools/inspect/lianaRide.test.ts:90:10)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
+  ...
+# Subtest: A VINE FROM A LOG: on the catch toy the middle bot jumps from the moving log to the liana; PLANTED: without the skill, never
+not ok 240 - A VINE FROM A LOG: on the catch toy the middle bot jumps from the moving log to the liana; PLANTED: without the skill, never
+  ---
+  duration_ms: 16007.605864
+  type: 'test'
+  location: '/home/user/fz-fin/tools/inspect/lianaRide.test.ts:93:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    easy, PLANTED, without it: 0,0,0,0,1
+    + actual - expected
+    
+    + [
+    +   1
+    + ]
+    - []
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+  actual:
+    0: 1
+  operator: 'deepStrictEqual'
+  stack: |-
+    TestContext.<anonymous> (/home/user/fz-fin/tools/inspect/lianaRide.test.ts:110:12)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: A VINE OVER THE TAIL (ENG-24g, rule 21): on the tail toy the judge's own reach holds and child, middle and expert jump from the moving log to the liana past the logs' end, every run; PLANTED: looking only over the logs' window, he rides into the tail until rescued
+ok 241 - A VINE OVER THE TAIL (ENG-24g, rule 21): on the tail toy the judge's own reach holds and child, middle and expert jump from the moving log to the liana past the logs' end, every run; PLANTED: looking only over the logs' window, he rides into the tail until rescued
+  ---
+  duration_ms: 33264.217689
+  type: 'test'
+  ...
+# Subtest: the bot aims its presses at the frame they reach the engine (ENG-285, R-165.294: the drop aim read the vine and the logs one frame early): every decided press of the middle bot over the gap280 drop, both settings, lands on the game time it aimed at
+ok 242 - the bot aims its presses at the frame they reach the engine (ENG-285, R-165.294: the drop aim read the vine and the logs one frame early): every decided press of the middle bot over the gap280 drop, both settings, lands on the game time it aimed at
+  ---
+  duration_ms: 4102.409757
+  type: 'test'
+  ...
+# Subtest: the bot's liana hop aims (lianaWait, vineFromLog) name the engine's take-off and catch, to the frame: hopAim + hopCatches vs the real engine, every lag, spot and moment (R-165.297)
+ok 243 - the bot's liana hop aims (lianaWait, vineFromLog) name the engine's take-off and catch, to the frame: hopAim + hopCatches vs the real engine, every lag, spot and moment (R-165.297)
+  ---
+  duration_ms: 38989.379875
+  type: 'test'
+  ...
+# Subtest: wait-for-the-tail: the bot crosses clump to clump under the heron with nobody spooked and brings all three home
+ok 244 - wait-for-the-tail: the bot crosses clump to clump under the heron with nobody spooked and brings all three home
+  ---
+  duration_ms: 950.694547
+  type: 'test'
+  ...
+# Subtest: planted: with wait-for-the-tail off the heron catches the line out on the mud (a run the skill crossed clean spooks)
+ok 245 - planted: with wait-for-the-tail off the heron catches the line out on the mud (a run the skill crossed clean spooks)
+  ---
+  duration_ms: 1343.002906
+  type: 'test'
+  ...
+# Subtest: fetch-the-spooked: one spooked back to the stretch start, the bot goes back for it and brings all three home
+ok 246 - fetch-the-spooked: one spooked back to the stretch start, the bot goes back for it and brings all three home
+  ---
+  duration_ms: 183.545107
+  type: 'test'
+  ...
+# Subtest: planted: with fetch-the-spooked off the spooked one is left at its reed and the door stays sealed
+ok 247 - planted: with fetch-the-spooked off the spooked one is left at its reed and the door stays sealed
+  ---
+  duration_ms: 146.873305
+  type: 'test'
+  ...
+# Subtest: hop-back (2-3 gen2 row, seed 5): the line spooked back past the boulder, he hops it on his way back and fetches them, no rescue
+ok 248 - hop-back (2-3 gen2 row, seed 5): the line spooked back past the boulder, he hops it on his way back and fetches them, no rescue
+  ---
+  duration_ms: 858.615653
+  type: 'test'
+  ...
+# Subtest: planted: with hop-back off he stands against the boulder until he is rescued past it
+ok 249 - planted: with hop-back off he stands against the boulder until he is rescued past it
+  ---
+  duration_ms: 499.757396
+  type: 'test'
+  ...
+# Subtest: fetch-clock (2-3 gen2 row, seed 5, beat 7: three clumps, the longest walk back): the child, at his own slow pace, fetches the whole line back with no rescue: the way back is not stuck
+ok 250 - fetch-clock (2-3 gen2 row, seed 5, beat 7: three clumps, the longest walk back): the child, at his own slow pace, fetches the whole line back with no rescue: the way back is not stuck
+  ---
+  duration_ms: 475.365711
+  type: 'test'
+  ...
+# Subtest: planted: with the fetch clock off the child is rescued while he is still walking back for them
+ok 251 - planted: with the fetch clock off the child is rescued while he is still walking back for them
+  ---
+  duration_ms: 345.281876
+  type: 'test'
+  ...
+# Subtest: no-line-go: nobody in his line (the cages left shut), he walks through the reeds that start before the stretch and on to the sealed door, no wait for a look
+ok 252 - no-line-go: nobody in his line (the cages left shut), he walks through the reeds that start before the stretch and on to the sealed door, no wait for a look
+  ---
+  duration_ms: 340.852861
+  type: 'test'
+  ...
+# Subtest: planted: with no-line-go off the middle stands in the clump before the stretch waiting for a look that never comes, until the clock runs out
+ok 253 - planted: with no-line-go off the middle stands in the clump before the stretch waiting for a look that never comes, until the clock runs out
+  ---
+  duration_ms: 564.456893
+  type: 'test'
+  ...
+# \# home: 7 race-leg falls judged; 0 frames of ease on the grid; 4 re-placements of the boat on a respawn and 2 on a Game Over continue, every one inside the iris's shut frame
+# \# post: 8 race-leg falls judged; 154 frames of ease on the grid; 6 re-placements of the boat on a respawn and 1 on a Game Over continue, every one inside the iris's shut frame
+# Subtest: 2-7 home: back at a race-leg fall's x, his margin is never better than at the fall (a fall never pays, end to end)
+ok 254 - 2-7 home: back at a race-leg fall's x, his margin is never better than at the fall (a fall never pays, end to end)
+  ---
+  duration_ms: 32923.811064
+  type: 'test'
+  ...
+# Subtest: 2-7 post: back at a race-leg fall's x, his margin is never better than at the fall (a fall never pays, end to end)
+ok 255 - 2-7 post: back at a race-leg fall's x, his margin is never better than at the fall (a fall never pays, end to end)
+  ---
+  duration_ms: 26234.035121
+  type: 'test'
+  ...
+# Subtest: the keep fixture: one pond of sinking pads (deep water; the spur splash-back, as 2-2's X), rolled clean and fair (padFaults)
+ok 256 - the keep fixture: one pond of sinking pads (deep water; the spur splash-back, as 2-2's X), rolled clean and fair (padFaults)
+  ---
+  duration_ms: 44.041461
+  type: 'test'
+  ...
+# Subtest: keep: middle, normal crosses the pads and reaches the shrine
+ok 257 - keep: middle, normal crosses the pads and reaches the shrine
+  ---
+  duration_ms: 1060.241105
+  type: 'test'
+  ...
+# Subtest: keep: middle, easy crosses the pads and reaches the shrine
+ok 258 - keep: middle, easy crosses the pads and reaches the shrine
+  ---
+  duration_ms: 767.021186
+  type: 'test'
+  ...
+# Subtest: keep: child, normal crosses the pads and reaches the shrine
+ok 259 - keep: child, normal crosses the pads and reaches the shrine
+  ---
+  duration_ms: 1473.780317
+  type: 'test'
+  ...
+# Subtest: keep: child, easy crosses the pads and reaches the shrine
+ok 260 - keep: child, easy crosses the pads and reaches the shrine
+  ---
+  duration_ms: 642.224113
+  type: 'test'
+  ...
+# Subtest: planted: with keepHopping off, the keep pond takes a bot the skill carries across
+ok 261 - planted: with keepHopping off, the keep pond takes a bot the skill carries across
+  ---
+  duration_ms: 25217.256133
+  type: 'test'
+  ...
+# Subtest: the rise fixture: one pond of sinking pads (deep water; the spur splash-back, as 2-2's X), rolled clean and fair (padFaults)
+ok 262 - the rise fixture: one pond of sinking pads (deep water; the spur splash-back, as 2-2's X), rolled clean and fair (padFaults)
+  ---
+  duration_ms: 25.38047
+  type: 'test'
+  ...
+# Subtest: rise: middle, normal crosses the pads and reaches the shrine
+ok 263 - rise: middle, normal crosses the pads and reaches the shrine
+  ---
+  duration_ms: 689.913073
+  type: 'test'
+  ...
+# Subtest: rise: middle, easy crosses the pads and reaches the shrine
+ok 264 - rise: middle, easy crosses the pads and reaches the shrine
+  ---
+  duration_ms: 654.512654
+  type: 'test'
+  ...
+# Subtest: rise: child, normal crosses the pads and reaches the shrine
+ok 265 - rise: child, normal crosses the pads and reaches the shrine
+  ---
+  duration_ms: 1321.28957
+  type: 'test'
+  ...
+# Subtest: rise: child, easy crosses the pads and reaches the shrine
+ok 266 - rise: child, easy crosses the pads and reaches the shrine
+  ---
+  duration_ms: 718.16934
+  type: 'test'
+  ...
+# Subtest: planted: with waitRise off, the rise pond takes a bot the skill carries across
+ok 267 - planted: with waitRise off, the rise pond takes a bot the skill carries across
+  ---
+  duration_ms: 24110.865238
+  type: 'test'
+  ...
+# Subtest: the breath fixture: one pond of sinking pads (deep water; the spur splash-back, as 2-2's X), rolled clean and fair (padFaults)
+ok 268 - the breath fixture: one pond of sinking pads (deep water; the spur splash-back, as 2-2's X), rolled clean and fair (padFaults)
+  ---
+  duration_ms: 30.750889
+  type: 'test'
+  ...
+# Subtest: breath: middle, normal crosses the pads and reaches the shrine
+ok 269 - breath: middle, normal crosses the pads and reaches the shrine
+  ---
+  duration_ms: 602.240415
+  type: 'test'
+  ...
+# Subtest: breath: middle, easy crosses the pads and reaches the shrine
+ok 270 - breath: middle, easy crosses the pads and reaches the shrine
+  ---
+  duration_ms: 571.715861
+  type: 'test'
+  ...
+# Subtest: breath: child, normal crosses the pads and reaches the shrine
+ok 271 - breath: child, normal crosses the pads and reaches the shrine
+  ---
+  duration_ms: 1038.861786
+  type: 'test'
+  ...
+# Subtest: breath: child, easy crosses the pads and reaches the shrine
+ok 272 - breath: child, easy crosses the pads and reaches the shrine
+  ---
+  duration_ms: 844.619531
+  type: 'test'
+  ...
+# Subtest: planted: with breath off, the breath pond takes a bot the skill carries across
+ok 273 - planted: with breath off, the breath pond takes a bot the skill carries across
+  ---
+  duration_ms: 24103.442616
+  type: 'test'
+  ...
+# Subtest: the spur fixture: one pond of sinking pads (deep water; the spur splash-back, as 2-2's X), rolled clean and fair (padFaults)
+ok 274 - the spur fixture: one pond of sinking pads (deep water; the spur splash-back, as 2-2's X), rolled clean and fair (padFaults)
+  ---
+  duration_ms: 19.511401
+  type: 'test'
+  ...
+# Subtest: spur: middle, normal crosses the pads and reaches the shrine
+ok 275 - spur: middle, normal crosses the pads and reaches the shrine
+  ---
+  duration_ms: 659.683865
+  type: 'test'
+  ...
+# Subtest: spur: middle, easy crosses the pads and reaches the shrine
+ok 276 - spur: middle, easy crosses the pads and reaches the shrine
+  ---
+  duration_ms: 486.822268
+  type: 'test'
+  ...
+# Subtest: spur: child, normal crosses the pads and reaches the shrine
+ok 277 - spur: child, normal crosses the pads and reaches the shrine
+  ---
+  duration_ms: 1142.467481
+  type: 'test'
+  ...
+# Subtest: spur: child, easy crosses the pads and reaches the shrine
+ok 278 - spur: child, easy crosses the pads and reaches the shrine
+  ---
+  duration_ms: 737.264955
+  type: 'test'
+  ...
+# Subtest: planted: with outBack off, the spur pond takes a bot the skill carries across
+ok 279 - planted: with outBack off, the spur pond takes a bot the skill carries across
+  ---
+  duration_ms: 22845.622404
+  type: 'test'
+  ...
+# Subtest: OUT-AND-BACK's pin: he is followed out to the stone first, and once he has stood there never back out to it from the way back (FIX-22: 2-2 Easy seed 12, a middle bot hopped stone to pad and back for 20 s)
+ok 280 - OUT-AND-BACK's pin: he is followed out to the stone first, and once he has stood there never back out to it from the way back (FIX-22: 2-2 Easy seed 12, a middle bot hopped stone to pad and back for 20 s)
+  ---
+  duration_ms: 0.748922
+  type: 'test'
+  ...
+# Subtest: the breath toy: put back again and again, the breathing row has just risen as he comes to it, at his own pace (FIX-284)
+ok 281 - the breath toy: put back again and again, the breathing row has just risen as he comes to it, at his own pace (FIX-284)
+  ---
+  duration_ms: 268.740995
+  type: 'test'
+  ...
+# Subtest: in the pit under the far wall, he climbs the stair back to the bank he left from, then goes on over the ledge: no rescue
+ok 282 - in the pit under the far wall, he climbs the stair back to the bank he left from, then goes on over the ledge: no rescue
+  ---
+  duration_ms: 559.713651
+  type: 'test'
+  ...
+# Subtest: he climbs back only out of a pit: on the route he goes on as before, and a pit he can jump out of forward is left forward
+ok 283 - he climbs back only out of a pit: on the route he goes on as before, and a pit he can jump out of forward is left forward
+  ---
+  duration_ms: 202.739971
+  type: 'test'
+  ...
+# Subtest: off a lip he stands, watches and catches a swinging liana at every phase of its swing (the engine's own catch)
+ok 284 - off a lip he stands, watches and catches a swinging liana at every phase of its swing (the engine's own catch)
+  ---
+  duration_ms: 849.655732
+  type: 'test'
+  ...
+# Subtest: the hop model: a hop off the lip as the liana swings toward him is caught; as it swings away, not
+ok 285 - the hop model: a hop off the lip as the liana swings toward him is caught; as it swings away, not
+  ---
+  duration_ms: 0.423977
+  type: 'test'
+  ...
+# Subtest: in a shallow pit whose route is inside a double but whose far wall is over one (1-7's SHORT liana pit), he climbs back: no rescue
+ok 286 - in a shallow pit whose route is inside a double but whose far wall is over one (1-7's SHORT liana pit), he climbs back: no rescue
+  ---
+  duration_ms: 171.97377
+  type: 'test'
+  ...
+# Subtest: a vine snake on his liana: up from the foot -> he climbs high; down from the anchor -> he slides low; past him or none -> neither
+ok 287 - a vine snake on his liana: up from the foot -> he climbs high; down from the anchor -> he slides low; past him or none -> neither
+  ---
+  duration_ms: 0.508182
+  type: 'test'
+  ...
+# Subtest: caught by a liana while he climbs back out of a pit, the climb back is over: the route steers him on, never back
+ok 288 - caught by a liana while he climbs back out of a pit, the climb back is over: the route steers him on, never back
+  ---
+  duration_ms: 58.17698
+  type: 'test'
+  ...
+# Subtest: on a liana 7 s, the let-go comes as it carries him out in front, never at the back of the swing: he lands on the far bank
+ok 289 - on a liana 7 s, the let-go comes as it carries him out in front, never at the back of the swing: he lands on the far bank
+  ---
+  duration_ms: 128.826692
+  type: 'test'
+  ...
+# Subtest: on a liana the steer is the way on past it: a route point on its swing behind him never turns him back, and he lands on the far bank
+ok 290 - on a liana the steer is the way on past it: a route point on its swing behind him never turns him back, and he lands on the far bank
+  ---
+  duration_ms: 479.364546
+  type: 'test'
+  ...
+# Subtest: on a liana after a climb back, a stale way back never turns him round: from every place in the swing he lands on the far bank
+ok 291 - on a liana after a climb back, a stale way back never turns him round: from every place in the swing he lands on the far bank
+  ---
+  duration_ms: 394.027071
+  type: 'test'
+  ...
+# Subtest: out of a pit under a liana, the climb ends on the stair step the liana is caught from most often (the top), not the nearest
+ok 292 - out of a pit under a liana, the climb ends on the stair step the liana is caught from most often (the top), not the nearest
+  ---
+  duration_ms: 119.970065
+  type: 'test'
+  ...
+# Subtest: in a pit under a swinging liana, its foot within a double's rise is no ledge: he climbs back out by the stair
+ok 293 - in a pit under a swinging liana, its foot within a double's rise is no ledge: he climbs back out by the stair
+  ---
+  duration_ms: 106.277397
+  type: 'test'
+  ...
+# Subtest: a tier bot at a plain step's face jumps it though his thumb lifts now and then (no cast on the stage)
+ok 294 - a tier bot at a plain step's face jumps it though his thumb lifts now and then (no cast on the stage)
+  ---
+  duration_ms: 356.968581
+  type: 'test'
+  ...
+# Subtest: in the pit past a crumbled creaky limb, the stair top under the NEXT liana beats the walk back to the first: he climbs to it
+ok 295 - in the pit past a crumbled creaky limb, the stair top under the NEXT liana beats the walk back to the first: he climbs to it
+  ---
+  duration_ms: 436.736248
+  type: 'test'
+  ...
+# Subtest: in the pit past a crumbled creaky limb he climbs the stair, takes the next liana and lands on the far bank: no rescue
+ok 296 - in the pit past a crumbled creaky limb he climbs the stair, takes the next liana and lands on the far bank: no rescue
+  ---
+  duration_ms: 612.720847
+  type: 'test'
+  ...
+# Subtest: set down by the game, he finds his place where he stands and a stale climb back is dropped: he goes on, never back
+ok 297 - set down by the game, he finds his place where he stands and a stale climb back is dropped: he goes on, never back
+  ---
+  duration_ms: 123.184904
+  type: 'test'
+  ...
+# Subtest: the reading follows the kit row: the boa is posted and still-beaten, the snake walks
+ok 298 - the reading follows the kit row: the boa is posted and still-beaten, the snake walks
+  ---
+  duration_ms: 0.594518
+  type: 'test'
+  ...
+# Subtest: a posted animal stillness beats reads as the freeze (L), never a fight (normal)
+ok 299 - a posted animal stillness beats reads as the freeze (L), never a fight (normal)
+  ---
+  duration_ms: 151.971381
+  type: 'test'
+  ...
+# Subtest: a walking animal still reads as a fight or its trick, never the freeze (normal)
+ok 300 - a walking animal still reads as a fight or its trick, never the freeze (normal)
+  ---
+  duration_ms: 130.659991
+  type: 'test'
+  ...
+# Subtest: a posted animal stillness beats reads as the freeze (L), never a fight (easy)
+ok 301 - a posted animal stillness beats reads as the freeze (L), never a fight (easy)
+  ---
+  duration_ms: 136.580889
+  type: 'test'
+  ...
+# Subtest: a walking animal still reads as a fight or its trick, never the freeze (easy)
+ok 302 - a walking animal still reads as a fight or its trick, never the freeze (easy)
+  ---
+  duration_ms: 205.343561
+  type: 'test'
+  ...
+# Subtest: the move letter: a posted animal stillness beats is L, a plain animal F
+ok 303 - the move letter: a posted animal stillness beats is L, a plain animal F
+  ---
+  duration_ms: 0.325656
+  type: 'test'
+  ...
+# Subtest: enemy by a landing: a posted boa is measured from its body, a walking snake from its patrol span
+ok 304 - enemy by a landing: a posted boa is measured from its body, a walking snake from its patrol span
+  ---
+  duration_ms: 346.318506
+  type: 'test'
+  ...
+# Subtest: the fixture: one deep log river, rolled clean
+ok 305 - the fixture: one deep log river, rolled clean
+  ---
+  duration_ms: 81.187092
+  type: 'test'
+  ...
+# Subtest: middle, normal: rides the logs across the river and reaches the shrine
+ok 306 - middle, normal: rides the logs across the river and reaches the shrine
+  ---
+  duration_ms: 1104.316104
+  type: 'test'
+  ...
+# Subtest: middle, easy: rides the logs across the river and reaches the shrine
+ok 307 - middle, easy: rides the logs across the river and reaches the shrine
+  ---
+  duration_ms: 887.111436
+  type: 'test'
+  ...
+# Subtest: child, normal: rides the logs across the river and reaches the shrine
+ok 308 - child, normal: rides the logs across the river and reaches the shrine
+  ---
+  duration_ms: 1170.847756
+  type: 'test'
+  ...
+# Subtest: child, easy: rides the logs across the river and reaches the shrine
+ok 309 - child, easy: rides the logs across the river and reaches the shrine
+  ---
+  duration_ms: 682.766049
+  type: 'test'
+  ...
+# Subtest: the ride plant's roll: one deep log river, rolled clean
+ok 310 - the ride plant's roll: one deep log river, rolled clean
+  ---
+  duration_ms: 32.569874
+  type: 'test'
+  ...
+# Subtest: planted: with the ride skill off, the middle and child bots drown in the river
+ok 311 - planted: with the ride skill off, the middle and child bots drown in the river
+  ---
+  duration_ms: 6776.203993
+  type: 'test'
+  ...
+# Subtest: middle, normal: against the flow (W2_RIVERS.back), hops log to log off each front end and reaches the shrine
+ok 312 - middle, normal: against the flow (W2_RIVERS.back), hops log to log off each front end and reaches the shrine
+  ---
+  duration_ms: 474.064092
+  type: 'test'
+  ...
+# Subtest: middle, normal: the long log (W2_RIVERS.long, laid deep) rides him in and hands him onto the far bank
+ok 313 - middle, normal: the long log (W2_RIVERS.long, laid deep) rides him in and hands him onto the far bank
+  ---
+  duration_ms: 545.779348
+  type: 'test'
+  ...
+# Subtest: middle, easy: against the flow (W2_RIVERS.back), hops log to log off each front end and reaches the shrine
+ok 314 - middle, easy: against the flow (W2_RIVERS.back), hops log to log off each front end and reaches the shrine
+  ---
+  duration_ms: 625.808732
+  type: 'test'
+  ...
+# Subtest: middle, easy: the long log (W2_RIVERS.long, laid deep) rides him in and hands him onto the far bank
+ok 315 - middle, easy: the long log (W2_RIVERS.long, laid deep) rides him in and hands him onto the far bank
+  ---
+  duration_ms: 554.74233
+  type: 'test'
+  ...
+# Subtest: child, normal: against the flow (W2_RIVERS.back), hops log to log off each front end and reaches the shrine
+ok 316 - child, normal: against the flow (W2_RIVERS.back), hops log to log off each front end and reaches the shrine
+  ---
+  duration_ms: 1049.105354
+  type: 'test'
+  ...
+# Subtest: child, normal: the long log (W2_RIVERS.long, laid deep) rides him in and hands him onto the far bank
+ok 317 - child, normal: the long log (W2_RIVERS.long, laid deep) rides him in and hands him onto the far bank
+  ---
+  duration_ms: 1081.174221
+  type: 'test'
+  ...
+# Subtest: child, easy: against the flow (W2_RIVERS.back), hops log to log off each front end and reaches the shrine
+ok 318 - child, easy: against the flow (W2_RIVERS.back), hops log to log off each front end and reaches the shrine
+  ---
+  duration_ms: 799.34427
+  type: 'test'
+  ...
+# Subtest: child, easy: the long log (W2_RIVERS.long, laid deep) rides him in and hands him onto the far bank
+ok 319 - child, easy: the long log (W2_RIVERS.long, laid deep) rides him in and hands him onto the far bank
+  ---
+  duration_ms: 747.13561
+  type: 'test'
+  ...
+# Subtest: planted: with the handed-to-the-bank skill off, the child on Normal hops at the water off the long log and drowns over the bar
+ok 320 - planted: with the handed-to-the-bank skill off, the child on Normal hops at the water off the long log and drowns over the bar
+  ---
+  duration_ms: 2760.730216
+  type: 'test'
+  ...
+# Subtest: 2-1, against the flow and up the far bank on: the adult on Normal (12), the child on Normal (4, 23, 40) and the middle on Normal (26) cross clean
+ok 321 - 2-1, against the flow and up the far bank on: the adult on Normal (12), the child on Normal (4, 23, 40) and the middle on Normal (26) cross clean
+  ---
+  duration_ms: 11879.402915
+  type: 'test'
+  ...
+# Subtest: 2-1, a refused hop leaves a way on: the child on Normal (1) is never stood at the far bank until a rescue
+ok 322 - 2-1, a refused hop leaves a way on: the child on Normal (1) is never stood at the far bank until a rescue
+  ---
+  duration_ms: 2906.564553
+  type: 'test'
+  ...
+# Subtest: 2-4, a bot that refuses a hop is never ridden into a rescue: the adult on Normal (30) is never carried under on a log he stands on
+ok 323 - 2-4, a bot that refuses a hop is never ridden into a rescue: the adult on Normal (30) is never carried under on a log he stands on
+  ---
+  duration_ms: 1273.034837
+  type: 'test'
+  ...
+# Subtest: 2-4, every hop off a log is judged: the adult on Normal (6) is never sent back onto a log going under
+ok 324 - 2-4, every hop off a log is judged: the adult on Normal (6) is never sent back onto a log going under
+  ---
+  duration_ms: 1126.180663
+  type: 'test'
+  ...
+# Subtest: 2-1, he never runs off the front of the log he just landed on: the child on Normal (11) stops on it
+ok 325 - 2-1, he never runs off the front of the log he just landed on: the child on Normal (11) stops on it
+  ---
+  duration_ms: 3428.925989
+  type: 'test'
+  ...
+# Subtest: planted: with the against-the-flow skill off, the adult on Normal is rescued at 2-1's back river (12) and the child and the middle on Normal lose 5+ more lives (child 4, 23; middle 26)
+not ok 326 - planted: with the against-the-flow skill off, the adult on Normal is rescued at 2-1's back river (12) and the child and the middle on Normal lose 5+ more lives (child 4, 23; middle 26)
+  ---
+  duration_ms: 6343.58663
+  type: 'test'
+  location: '/home/user/fz-fin/tools/inspect/riverRide.test.ts:266:1'
+  failureType: 'testCodeFailure'
+  error: 'upstream off, still clean: adult normal seed 12: shrine, rescues 0, lives 1, stuck []'
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: true
+  actual: false
+  operator: '=='
+  stack: |-
+    TestContext.<anonymous> (/home/user/fz-fin/tools/inspect/riverRide.test.ts:272:14)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: planted: with the up-the-far-bank skill off, the child on Normal loses 5+ more lives on 2-1 and reaches the both-ways far bank 2+ s later (40)
+not ok 327 - planted: with the up-the-far-bank skill off, the child on Normal loses 5+ more lives on 2-1 and reaches the both-ways far bank 2+ s later (40)
+  ---
+  duration_ms: 6219.681664
+  type: 'test'
+  location: '/home/user/fz-fin/tools/inspect/riverRide.test.ts:282:1'
+  failureType: 'testCodeFailure'
+  error: 'bankUp off, 0 more lives (at least 5): on child normal seed 40: shrine, rescues 0, lives 1, stuck []; off child normal seed 40: shrine, rescues 0, lives 1, stuck []'
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: true
+  actual: false
+  operator: '=='
+  stack: |-
+    <anonymous> (/home/user/fz-fin/tools/inspect/riverRide.test.ts:288:14)
+    Array.forEach (<anonymous>)
+    TestContext.<anonymous> (/home/user/fz-fin/tools/inspect/riverRide.test.ts:286:18)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: in the real engine: on a log flowing AT him, a held hop the upstream gate refuses is aimed again after his reaction, never held for the whole ride back (SKILLS.reAim; RED with it off)
+not ok 328 - in the real engine: on a log flowing AT him, a held hop the upstream gate refuses is aimed again after his reaction, never held for the whole ride back (SKILLS.reAim; RED with it off)
+  ---
+  duration_ms: 1658.597287
+  type: 'test'
+  location: '/home/user/fz-fin/tools/inspect/riverRide.test.ts:344:1'
+  failureType: 'testCodeFailure'
+  error: 'with the skill: he aims again and hops off the first log every phase (hop back hop back hop hop)'
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: true
+  actual: false
+  operator: '=='
+  stack: |-
+    TestContext.<anonymous> (/home/user/fz-fin/tools/inspect/riverRide.test.ts:351:10)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: SKILLS.reAim keeps the honest aim (D121, the lead's two conditions): on a log a re-draw never comes inside his stopReact, and the press is decided on the aimed hop alone, never its drawn thumb noise
+not ok 329 - SKILLS.reAim keeps the honest aim (D121, the lead's two conditions): on a log a re-draw never comes inside his stopReact, and the press is decided on the aimed hop alone, never its drawn thumb noise
+  ---
+  duration_ms: 270.889975
+  type: 'test'
+  location: '/home/user/fz-fin/tools/inspect/riverRide.test.ts:355:1'
+  failureType: 'testCodeFailure'
+  error: 'phase 0: a re-draw on a log came inside stopReact 0.4 s (0.000 s)'
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: true
+  actual: false
+  operator: '=='
+  stack: |-
+    TestContext.<anonymous> (/home/user/fz-fin/tools/inspect/riverRide.test.ts:406:12)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: SKILLS.reAim is the CHILD bot's alone (ENG-BOT27b, the lead's ruling 11-23): with it on, every other cast bot holds the refused aim exactly as with it off, frame for frame (RED if the switch leaks past FirstTimer.reAim)
+ok 330 - SKILLS.reAim is the CHILD bot's alone (ENG-BOT27b, the lead's ruling 11-23): with it on, every other cast bot holds the refused aim exactly as with it off, frame for frame (RED if the switch leaks past FirstTimer.reAim)
+  ---
+  duration_ms: 6823.421179
+  type: 'test'
+  ...
+# Subtest: 2-7 middle Easy 11: no floor is handed back to twice by a log, and no rescue (the hand-back loop, B+C)
+ok 331 - 2-7 middle Easy 11: no floor is handed back to twice by a log, and no rescue (the hand-back loop, B+C)
+  ---
+  duration_ms: 987.098117
+  type: 'test'
+  ...
+# Subtest: 2-7 expert Normal 29: no floor is handed back to twice by a log, and no rescue (the hand-back loop, B+C)
+ok 332 - 2-7 expert Normal 29: no floor is handed back to twice by a log, and no rescue (the hand-back loop, B+C)
+  ---
+  duration_ms: 994.622749
+  type: 'test'
+  ...
+# Subtest: no route jump passes over a hump, a stair or a shallow dip (1-1, 1-2, 1-3, both settings)
+ok 333 - no route jump passes over a hump, a stair or a shallow dip (1-1, 1-2, 1-3, both settings)
+  ---
+  duration_ms: 6371.058313
+  type: 'test'
+  ...
+# Subtest: inspectJumps reads 1-2's hump as a hop of its own height, a retry, never a pit
+ok 334 - inspectJumps reads 1-2's hump as a hop of its own height, a retry, never a pit
+  ---
+  duration_ms: 3.547765
+  type: 'test'
+  ...
+# Subtest: the inspector builds 1-1, 1-2 and 1-3 as the game does on entry, on both settings (engine.ts:901)
+ok 335 - the inspector builds 1-1, 1-2 and 1-3 as the game does on entry, on both settings (engine.ts:901)
+  ---
+  duration_ms: 399.243952
+  type: 'test'
+  ...
+# Subtest: the route is the check's own on 1-1, 1-2 and 1-3, both settings: no presumed hop (1-1's double test gap is judged on its flown arcs)
+ok 336 - the route is the check's own on 1-1, 1-2 and 1-3, both settings: no presumed hop (1-1's double test gap is judged on its flown arcs)
+  ---
+  duration_ms: 1104.943733
+  type: 'test'
+  ...
+# Subtest: the step fixture: one pond of snap stones over deep water, rolled clean and fair on both settings (snapFaults)
+ok 337 - the step fixture: one pond of snap stones over deep water, rolled clean and fair on both settings (snapFaults)
+  ---
+  duration_ms: 167.696258
+  type: 'test'
+  ...
+# Subtest: planted: the step pond with a bar that bites without its creak is refused by the stage's verdict
+ok 338 - planted: the step pond with a bar that bites without its creak is refused by the stage's verdict
+  ---
+  duration_ms: 46.944011
+  type: 'test'
+  ...
+# Subtest: step: middle, normal crosses unbitten and reaches the shrine (variants 1, 2, 3, 4)
+ok 339 - step: middle, normal crosses unbitten and reaches the shrine (variants 1, 2, 3, 4)
+  ---
+  duration_ms: 2924.506676
+  type: 'test'
+  ...
+# Subtest: step: middle, easy crosses unbitten and reaches the shrine (variants 1, 2, 3, 4)
+ok 340 - step: middle, easy crosses unbitten and reaches the shrine (variants 1, 2, 3, 4)
+  ---
+  duration_ms: 2236.912955
+  type: 'test'
+  ...
+# Subtest: step: child, easy crosses unbitten and reaches the shrine (variants 1, 2, 3, 4)
+ok 341 - step: child, easy crosses unbitten and reaches the shrine (variants 1, 2, 3, 4)
+  ---
+  duration_ms: 3550.257823
+  type: 'test'
+  ...
+# Subtest: planted: with offBefore4 off, the step pond bites a bot the skill carried across unbitten
+ok 342 - planted: with offBefore4 off, the step pond bites a bot the skill carried across unbitten
+  ---
+  duration_ms: 7338.910751
+  type: 'test'
+  ...
+# Subtest: the wave fixture: one pond of snap stones over deep water, rolled clean and fair on both settings (snapFaults)
+ok 343 - the wave fixture: one pond of snap stones over deep water, rolled clean and fair on both settings (snapFaults)
+  ---
+  duration_ms: 91.203708
+  type: 'test'
+  ...
+# Subtest: planted: the wave pond with a bar that bites without its creak is refused by the stage's verdict
+ok 344 - planted: the wave pond with a bar that bites without its creak is refused by the stage's verdict
+  ---
+  duration_ms: 34.916836
+  type: 'test'
+  ...
+# Subtest: wave: middle, normal crosses unbitten and reaches the shrine (variants 1, 2, 3, 4)
+ok 345 - wave: middle, normal crosses unbitten and reaches the shrine (variants 1, 2, 3, 4)
+  ---
+  duration_ms: 2151.442706
+  type: 'test'
+  ...
+# Subtest: wave: middle, easy crosses unbitten and reaches the shrine (variants 1, 2, 3, 4)
+ok 346 - wave: middle, easy crosses unbitten and reaches the shrine (variants 1, 2, 3, 4)
+  ---
+  duration_ms: 1835.209649
+  type: 'test'
+  ...
+# Subtest: wave: child, easy crosses unbitten and reaches the shrine (variants 1, 2, 3, 4)
+ok 347 - wave: child, easy crosses unbitten and reaches the shrine (variants 1, 2, 3, 4)
+  ---
+  duration_ms: 2781.869768
+  type: 'test'
+  ...
+# Subtest: planted: with offBefore4 off, the wave pond bites a bot the skill carried across unbitten
+ok 348 - planted: with offBefore4 off, the wave pond bites a bot the skill carried across unbitten
+  ---
+  duration_ms: 7114.738236
+  type: 'test'
+  ...
+# Subtest: the snapper-asleep fixture: one snapper laid by gen2 on its stones' clock, in the cast, asleep (both settings)
+ok 349 - the snapper-asleep fixture: one snapper laid by gen2 on its stones' clock, in the cast, asleep (both settings)
+  ---
+  duration_ms: 167.44067
+  type: 'test'
+  ...
+# Subtest: snapper-asleep: middle, normal chases it off with a kick, unhurt, and reaches the shrine (variants 1, 2, 3, 4)
+ok 350 - snapper-asleep: middle, normal chases it off with a kick, unhurt, and reaches the shrine (variants 1, 2, 3, 4)
+  ---
+  duration_ms: 3540.155894
+  type: 'test'
+  ...
+# Subtest: snapper-asleep: middle, easy chases it off with a kick, unhurt, and reaches the shrine (variants 1, 2, 3, 4)
+ok 351 - snapper-asleep: middle, easy chases it off with a kick, unhurt, and reaches the shrine (variants 1, 2, 3, 4)
+  ---
+  duration_ms: 2388.901473
+  type: 'test'
+  ...
+# Subtest: snapper-asleep: child, easy chases it off with a kick, unhurt, and reaches the shrine (variants 1, 2, 3, 4)
+ok 352 - snapper-asleep: child, easy chases it off with a kick, unhurt, and reaches the shrine (variants 1, 2, 3, 4)
+  ---
+  duration_ms: 3631.42983
+  type: 'test'
+  ...
+# Subtest: snapper-asleep: expert, normal chases it off with a kick, unhurt, and reaches the shrine (variants 1, 2, 3, 4)
+ok 353 - snapper-asleep: expert, normal chases it off with a kick, unhurt, and reaches the shrine (variants 1, 2, 3, 4)
+  ---
+  duration_ms: 2251.481877
+  type: 'test'
+  ...
+# Subtest: planted: with bonkAfterSnap off, the snapper-asleep is never chased off (the runs the skill cleared)
+ok 354 - planted: with bonkAfterSnap off, the snapper-asleep is never chased off (the runs the skill cleared)
+  ---
+  duration_ms: 5649.570183
+  type: 'test'
+  ...
+# Subtest: the snapper fixture: one snapper laid by gen2 on its stones' clock, in the cast, awake (both settings)
+ok 355 - the snapper fixture: one snapper laid by gen2 on its stones' clock, in the cast, awake (both settings)
+  ---
+  duration_ms: 103.809256
+  type: 'test'
+  ...
+# Subtest: snapper: middle, normal chases it off with a kick, unhurt, and reaches the shrine (variants 1, 2, 3, 4)
+ok 356 - snapper: middle, normal chases it off with a kick, unhurt, and reaches the shrine (variants 1, 2, 3, 4)
+  ---
+  duration_ms: 2808.953118
+  type: 'test'
+  ...
+# Subtest: snapper: middle, easy chases it off with a kick, unhurt, and reaches the shrine (variants 1, 2, 3, 4)
+ok 357 - snapper: middle, easy chases it off with a kick, unhurt, and reaches the shrine (variants 1, 2, 3, 4)
+  ---
+  duration_ms: 2144.091642
+  type: 'test'
+  ...
+# Subtest: snapper: child, easy chases it off with a kick, unhurt, and reaches the shrine (variants 1, 2, 3, 4)
+ok 358 - snapper: child, easy chases it off with a kick, unhurt, and reaches the shrine (variants 1, 2, 3, 4)
+  ---
+  duration_ms: 3516.445489
+  type: 'test'
+  ...
+# Subtest: snapper: expert, normal chases it off with a kick, unhurt, and reaches the shrine (variants 1, 2, 3, 4)
+ok 359 - snapper: expert, normal chases it off with a kick, unhurt, and reaches the shrine (variants 1, 2, 3, 4)
+  ---
+  duration_ms: 1983.771312
+  type: 'test'
+  ...
+# Subtest: planted: with bonkAfterSnap off, the snapper is never chased off (the runs the skill cleared)
+ok 360 - planted: with bonkAfterSnap off, the snapper is never chased off (the runs the skill cleared)
+  ---
+  duration_ms: 5355.043502
+  type: 'test'
+  ...
+# Subtest: (a) bonkBrake: child normal bonks once and keeps his side (never over 38 px past its middle, never down on its far side), variants 1, 2, 3, 4, 5, 6
+ok 361 - (a) bonkBrake: child normal bonks once and keeps his side (never over 38 px past its middle, never down on its far side), variants 1, 2, 3, 4, 5, 6
+  ---
+  duration_ms: 8645.424799
+  type: 'test'
+  ...
+# Subtest: (a) bonkBrake: child easy bonks once and keeps his side (never over 38 px past its middle, never down on its far side), variants 1, 2, 3, 4, 5, 6
+ok 362 - (a) bonkBrake: child easy bonks once and keeps his side (never over 38 px past its middle, never down on its far side), variants 1, 2, 3, 4, 5, 6
+  ---
+  duration_ms: 6810.955752
+  type: 'test'
+  ...
+# Subtest: (a) bonkBrake: middle normal bonks once and keeps his side (never over 38 px past its middle, never down on its far side), variants 1, 2, 3, 4, 5, 6
+ok 363 - (a) bonkBrake: middle normal bonks once and keeps his side (never over 38 px past its middle, never down on its far side), variants 1, 2, 3, 4, 5, 6
+  ---
+  duration_ms: 4355.961038
+  type: 'test'
+  ...
+# Subtest: (a) bonkBrake: middle easy bonks once and keeps his side (never over 38 px past its middle, never down on its far side), variants 1, 2, 3, 4, 5, 6
+ok 364 - (a) bonkBrake: middle easy bonks once and keeps his side (never over 38 px past its middle, never down on its far side), variants 1, 2, 3, 4, 5, 6
+  ---
+  duration_ms: 4432.557637
+  type: 'test'
+  ...
+# Subtest: (a) bonkBrake: expert normal bonks once and keeps his side (never over 38 px past its middle, never down on its far side), variants 1, 2, 3, 4, 5, 6
+ok 365 - (a) bonkBrake: expert normal bonks once and keeps his side (never over 38 px past its middle, never down on its far side), variants 1, 2, 3, 4, 5, 6
+  ---
+  duration_ms: 3736.350451
+  type: 'test'
+  ...
+# Subtest: (a) bonkBrake: adult normal bonks once and keeps his side (never down on its far side), variants 1, 2, 3, 4, 5, 6
+ok 366 - (a) bonkBrake: adult normal bonks once and keeps his side (never down on its far side), variants 1, 2, 3, 4, 5, 6
+  ---
+  duration_ms: 2575.034567
+  type: 'test'
+  ...
+# Subtest: (a) bonkBrake: adult easy bonks once and keeps his side (never down on its far side), variants 1, 2, 3, 4, 5, 6
+ok 367 - (a) bonkBrake: adult easy bonks once and keeps his side (never down on its far side), variants 1, 2, 3, 4, 5, 6
+  ---
+  duration_ms: 2936.108788
+  type: 'test'
+  ...
+# Subtest: (b) letItSnap: child normal lets it snap and kicks it while it recovers, no bonk, variants 1, 2, 3, 4, 5, 6
+ok 368 - (b) letItSnap: child normal lets it snap and kicks it while it recovers, no bonk, variants 1, 2, 3, 4, 5, 6
+  ---
+  duration_ms: 6984.909275
+  type: 'test'
+  ...
+# Subtest: (b) letItSnap: child easy lets it snap and kicks it while it recovers, no bonk, variants 1, 2, 3, 4, 5, 6
+ok 369 - (b) letItSnap: child easy lets it snap and kicks it while it recovers, no bonk, variants 1, 2, 3, 4, 5, 6
+  ---
+  duration_ms: 5374.914904
+  type: 'test'
+  ...
+# Subtest: (b) letItSnap: kid normal never bonks it by choice, is never hurt by it, kicks only in its recovery, variants 1, 2, 3, 4, 5, 6
+ok 370 - (b) letItSnap: kid normal never bonks it by choice, is never hurt by it, kicks only in its recovery, variants 1, 2, 3, 4, 5, 6
+  ---
+  duration_ms: 2692.28494
+  type: 'test'
+  ...
+# Subtest: (b) letItSnap: kid easy never bonks it by choice, is never hurt by it, kicks only in its recovery, variants 1, 2, 3, 4, 5, 6
+ok 371 - (b) letItSnap: kid easy never bonks it by choice, is never hurt by it, kicks only in its recovery, variants 1, 2, 3, 4, 5, 6
+  ---
+  duration_ms: 3438.933868
+  type: 'test'
+  ...
+# Subtest: planted (a): with bonkBrake off, the child's bounce carries him to its far side again (2-5's loop)
+ok 372 - planted (a): with bonkBrake off, the child's bounce carries him to its far side again (2-5's loop)
+  ---
+  duration_ms: 12256.409991
+  type: 'test'
+  ...
+# Subtest: planted (b): with letItSnap off, the child and the kid bonk it by choice (as BUILD-25 saw), at least half the runs
+ok 373 - planted (b): with letItSnap off, the child and the kid bonk it by choice (as BUILD-25 saw), at least half the runs
+  ---
+  duration_ms: 19108.320777
+  type: 'test'
+  ...
+# Subtest: a kit sweeper reads as its watched stretch (E), never a fight (normal)
+ok 374 - a kit sweeper reads as its watched stretch (E), never a fight (normal)
+  ---
+  duration_ms: 124.99574
+  type: 'test'
+  ...
+# Subtest: a kit sweeper reads as its watched stretch (E), never a fight (easy)
+ok 375 - a kit sweeper reads as its watched stretch (E), never a fight (easy)
+  ---
+  duration_ms: 368.237388
+  type: 'test'
+  ...
+# Subtest: along and reached: the travel axis and its direction
+ok 376 - along and reached: the travel axis and its direction
+  ---
+  duration_ms: 2.245615
+  type: 'test'
+  ...
+# Subtest: the first-timer on an up stage (1-4): his furthest on is the best height, not the furthest right
+ok 377 - the first-timer on an up stage (1-4): his furthest on is the best height, not the furthest right
+  ---
+  duration_ms: 1945.560319
+  type: 'test'
+  ...
+# Subtest: the first-timer on a run (1-1): furthest on is still the furthest right
+ok 378 - the first-timer on a run (1-1): furthest on is still the furthest right
+  ---
+  duration_ms: 441.891249
+  type: 'test'
+  ...
+# Subtest: the tier bots on a leftward fixture: the pieces he entered and the piece he is in are counted from the right
+ok 379 - the tier bots on a leftward fixture: the pieces he entered and the piece he is in are counted from the right
+  ---
+  duration_ms: 0.407799
+  type: 'test'
+  ...
+# Subtest: rideWheel ON: every tier boards, rides and steps off the wheel: no scramble, no pond, across in about half a turn
+ok 380 - rideWheel ON: every tier boards, rides and steps off the wheel: no scramble, no pond, across in about half a turn
+  ---
+  duration_ms: 26718.588613
+  type: 'test'
+  ...
+# Subtest: PLANTED: rideWheel OFF, every tier scrambles bucket to bucket instead of riding (RED)
+ok 381 - PLANTED: rideWheel OFF, every tier scrambles bucket to bucket instead of riding (RED)
+  ---
+  duration_ms: 22008.578737
+  type: 'test'
+  ...
+# Subtest: R-165.252: a build over 480 files fails before publish, prints its count and leaves no map or page to publish
+ok 382 - R-165.252: a build over 480 files fails before publish, prints its count and leaves no map or page to publish
+  ---
+  duration_ms: 110.71724
+  type: 'test'
+  ...
+# Subtest: R-165.252 (LINK-ROOM): a build of 440 files, 40 free under the cap, passes and prints its count and room
+ok 383 - R-165.252 (LINK-ROOM): a build of 440 files, 40 free under the cap, passes and prints its count and room
+  ---
+  duration_ms: 98.825919
+  type: 'test'
+  ...
+# Subtest: R-165.252 (LINK-ROOM): a build that leaves under 40 files free fails before publish, though the artifact would still take it
+ok 384 - R-165.252 (LINK-ROOM): a build that leaves under 40 files free fails before publish, though the artifact would still take it
+  ---
+  duration_ms: 182.840939
+  type: 'test'
+  ...
+# Subtest: R-165.252 (LINK-ROOM): a file over 13 MB fails before publish (the artifact takes 16 MB a file; index.js stood at 14.6 MB)
+ok 385 - R-165.252 (LINK-ROOM): a file over 13 MB fails before publish (the artifact takes 16 MB a file; index.js stood at 14.6 MB)
+  ---
+  duration_ms: 256.289561
+  type: 'test'
+  ...
+# Subtest: R-165.252 (LINK-ROOM): the real test-link build keeps 40 files free under the cap and every file under 13 MB (audio packs 15)
+ok 386 - R-165.252 (LINK-ROOM): the real test-link build keeps 40 files free under the cap and every file under 13 MB (audio packs 15)
+  ---
+  duration_ms: 8980.517234
+  type: 'test'
+  ...
+# Subtest: R-165.252: the map is against the last PUBLISHED build, not a pre-build that was never published (D72)
+ok 387 - R-165.252: the map is against the last PUBLISHED build, not a pre-build that was never published (D72)
+  ---
+  duration_ms: 310.980531
+  type: 'test'
+  ...
+# Subtest: R-165.252: --published refuses when there is no build to mark
+ok 388 - R-165.252: --published refuses when there is no build to mark
+  ---
+  duration_ms: 61.104767
+  type: 'test'
+  ...
+# Subtest: R-165.252 (LINK-ROOM): the test link names each new URL(picture) as a ?url import, so it can go in an art pack; nothing else changes
+ok 389 - R-165.252 (LINK-ROOM): the test link names each new URL(picture) as a ?url import, so it can go in an art pack; nothing else changes
+  ---
+  duration_ms: 925.424781
+  type: 'test'
+  ...
+# Subtest: a stamp 10 minutes ahead of its commit fails, with file:line, the stamp and the commit
+ok 390 - a stamp 10 minutes ahead of its commit fails, with file:line, the stamp and the commit
+  ---
+  duration_ms: 270.729698
+  type: 'test'
+  ...
+# Subtest: on the minute passes; the 2-minute grace holds; 3 minutes ahead fails
+ok 391 - on the minute passes; the 2-minute grace holds; 3 minutes ahead fails
+  ---
+  duration_ms: 151.447536
+  type: 'test'
+  ...
+# Subtest: a stamp from an earlier day passes, including a dateless late-night time in an after-midnight commit
+ok 392 - a stamp from an earlier day passes, including a dateless late-night time in an after-midnight commit
+  ---
+  duration_ms: 1.215447
+  type: 'test'
+  ...
+# Subtest: the shapes the repo uses are read, the day taken from the date next to the time or earlier on the line
+ok 393 - the shapes the repo uses are read, the day taken from the date next to the time or earlier on the line
+  ---
+  duration_ms: 0.770796
+  type: 'test'
+  ...
+# Subtest: weekdays, wrapped lines, colons and the one-hour dateless window (shapes met on the lead branch, 11-08..11-18)
+ok 394 - weekdays, wrapped lines, colons and the one-hour dateless window (shapes met on the lead branch, 11-08..11-18)
+  ---
+  duration_ms: 0.48645
+  type: 'test'
+  ...
+# Subtest: quotes of the future fail like any stamp; another zone and plans/deadlines are not stamps
+ok 395 - quotes of the future fail like any stamp; another zone and plans/deadlines are not stamps
+  ---
+  duration_ms: 0.577218
+  type: 'test'
+  ...
+# Subtest: a line only moved or re-indented is not judged again; a stamp corrected later is judged against the later commit and clears
+ok 396 - a line only moved or re-indented is not judged again; a stamp corrected later is judged against the later commit and clears
+  ---
+  duration_ms: 178.815937
+  type: 'test'
+  ...
+# Subtest: only the judged files are read: packets, handoffs, qa REPORT.md, STATE, LESSONS; nothing else
+ok 397 - only the judged files are read: packets, handoffs, qa REPORT.md, STATE, LESSONS; nothing else
+  ---
+  duration_ms: 83.090016
+  type: 'test'
+  ...
+# Subtest: the default range is the merge base with main; --since judges by ET day; bad arguments exit 2
+ok 398 - the default range is the merge base with main; --since judges by ET day; bad arguments exit 2
+  ---
+  duration_ms: 234.6577
+  type: 'test'
+  ...
+# Subtest: the ET clock: November is UTC-5, July UTC-4
+ok 399 - the ET clock: November is UTC-5, July UTC-4
+  ---
+  duration_ms: 0.911668
+  type: 'test'
+  ...
+# Subtest: a stage id before a time is no date: "1-2 at 2:10 PM" committed 11-18 3:00 PM is not a 64,749-minute breach
+ok 400 - a stage id before a time is no date: "1-2 at 2:10 PM" committed 11-18 3:00 PM is not a 64,749-minute breach
+  ---
+  duration_ms: 91.073627
+  type: 'test'
+  ...
+# Subtest: a real stamp still fails: "11-18 3:15 PM ET" committed at 3:09 PM
+ok 401 - a real stamp still fails: "11-18 3:15 PM ET" committed at 3:09 PM
+  ---
+  duration_ms: 133.846357
+  type: 'test'
+  ...
+# Subtest: "10-10 boss" with no time is ignored; a real "11-17 9:00 PM ET" committed 11-18 passes
+ok 402 - "10-10 boss" with no time is ignored; a real "11-17 9:00 PM ET" committed 11-18 passes
+  ---
+  duration_ms: 102.023025
+  type: 'test'
+  ...
+# Subtest: the window's edges: 7 days before and 1 day after are dates; a real day outside it is not judged
+ok 403 - the window's edges: 7 days before and 1 day after are dates; a real day outside it is not judged
+  ---
+  duration_ms: 0.65916
+  type: 'test'
+  ...
+1..403
+# tests 403
+# suites 0
+# pass 393
+# fail 9
+# cancelled 0
+# skipped 0
+# todo 1
+# duration_ms 515318.786233
