@@ -3957,6 +3957,15 @@ export class FirstTimerRun {
           const left = ((endX - dir * 10) - p.x) * dir / d.speed;
           if (left < who.stopReact + Math.abs(p.x - rear) / PHYS.maxRun && Math.abs(p.x - rear) > 20) return side((-dir) as -1 | 1);
         }
+        // (ENG-PLANT-CI, rule 28, the race's FRONT STAND, the second place that held him: on the race leg the log is ridden from its front,
+        //  where the race gate's look reaches past it, never where the landing stop set him down. 2-7 post middle Normal 5 (CI-2): down on
+        //  #51 at a run, the landing stop held him 143 px behind its front for 4.3 s (the race gate never looked), ridden to the far bank:
+        //  the race LOST by 3.20 s. Only where the log is handed on to a floor or he can walk back from its front before it goes under)
+        const pacer = (this.sim.stage as { pacer?: Pacer }).pacer, front = dir > 0 ? lr.x + lr.width : lr.x, fs = frontStandPx(who);
+        if (SKILLS.race && pacer && d.dir === dir && pacerOff(pacer, p.x, p.y) && dir * (front - p.x) > fs) {
+          const fx = front - dir * fs, rear = dir > 0 ? lr.x : lr.x + lr.width;
+          if (this.handedAt(endX, p.y) || ((endX - dir * 10) - fx) * dir / d.speed >= who.stopReact + Math.abs(fx - rear) / PHYS.maxRun) return side(dir);
+        }
         this.stopMeant = true;
         return {};
       }
