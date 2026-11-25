@@ -1,0 +1,7 @@
+tools/div27-u.mts + resc27-u.mts on 36e8efe6f (frozen /home/user/pt), 2-7 kid normal 17:
+on lives 5 rescues 0 [] | off lives 12 rescues 3 [13085,12027,8857] (rescueXs: where he stood when rescued)
+part at frame 2519: t81.70 on x13878 (drift#42 dir-1) off x13883 (air); prev drift#42 dir-1
+trace on: same run as untraced (lives, time); bankUp hops 1: t79.67 x13461 (river [12957,13517] dir -1, its far bank at 13517: bankUp's own place; the paths stay within 0.5 px until t81.70)
+off rescues: t110.67 from x13085 (after 3 rewinds to x13085; heading home -1; past the near end 13015 of [12217,13015] dir -1, a river his way)
+off rescues: t115.53 from x12027 (after 3 rewinds to x12027; heading home; the bank past the near ends of [11159,11957] dir -1 and [10471,11919] dir +1)
+off rescues: t146.33 from x8857 (after 4 lives in [8039,8777] dir -1, a river his way; x 8857 is that river's near bank, his respawn)

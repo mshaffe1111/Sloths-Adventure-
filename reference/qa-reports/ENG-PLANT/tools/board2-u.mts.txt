@@ -1,0 +1,31 @@
+// red 7's search, ENG-PLANT-u: board-t.mts with the off run skipped where on stood at no such lip. usage: tsx board2-u.mts stage bot:setting:seed ...  (firsttimer.test :185's meet(), boardHop on and off)
+import '/home/user/pt/src/game/headlessDom.ts';
+import { CAST_BOTS } from '/home/user/pt/tools/inspect/castBots.ts';
+import { firstTimer, SKILLS } from '/home/user/pt/tools/inspect/firsttimer.ts';
+const [stage, ...rows] = process.argv.slice(2);
+const meet = (on: boolean, who: any, seed: number) => {
+  const was = SKILLS.boardHop; let stood = -1, lost = 0, stands = 0, lives: number | undefined; let end = '';
+  SKILLS.boardHop = on;
+  try {
+    const r: any = firstTimer(stage, seed, who, { cap: 1200, dotSetting: true, onFrame: (sim: any) => {
+      const e = sim.e; const p = e.player, t = sim.t, here = e.platforms.find((q: any) => q.id === e.standingOnId);
+      if (p.grounded && here && here.type !== 'drift' && Math.abs(p.vx) < 10 && here.x + here.width - p.x < 60
+        && e.platforms.some((q: any) => q.type === 'drift' && q.drift?.dir === 1 && q.y - here.y > 6 && q.y - here.y <= 40 && q.x < here.x + here.width && q.x + q.width > here.x + here.width)) {
+        if (t - stood > 3) stands++;
+        stood = t;
+      }
+      if (lives !== undefined && e.lives < lives && stood >= 0 && t - stood < 3) lost++;
+      lives = e.lives;
+    } } as any);
+    end = r?.end ?? '';
+  } finally { SKILLS.boardHop = was; }
+  return `${stands}/${lost}${end && end !== 'shrine' ? ':' + end : ''}`;
+};
+for (const row of rows) {
+  const [bot, setting, s] = row.split(':'); const who = (CAST_BOTS as any)[bot][setting]; if (!who) continue;
+  const on = meet(true, who, Number(s)), os0 = Number(on.split(/[/:]/)[0]);
+  // (a row HOLDS only where he stood at such a lip with the skill on: no stand on, the off run cannot make it hold, so it is skipped)
+  const off = os0 >= 1 ? meet(false, who, Number(s)) : 'skip';
+  const [os, ol] = on.split(/[/:]/).map(Number), fl = off === 'skip' ? 0 : Number(off.split(/[/:]/)[1]);
+  console.log(`${stage} ${bot} ${setting} ${s} | on ${on} | off ${off}${os >= 1 && ol === 0 && fl >= 1 ? ' HOLDS' : ''}`);
+}

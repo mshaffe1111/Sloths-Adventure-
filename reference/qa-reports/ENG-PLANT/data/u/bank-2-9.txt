@@ -1,0 +1,72 @@
+2-9 kid normal 9 | on dirty L29 R6 sealed door | buOff dirty L29 R6 sealed door
+2-9 kid normal 14 | on dirty L19 R4 sealed door | buOff dirty L19 R4 sealed door
+2-9 kid normal 16 | on dirty L20 R2 sealed door | buOff dirty L17 R3 sealed door MOVES
+2-9 kid normal 18 | on dirty L19 R4 sealed door | buOff dirty L19 R4 sealed door
+2-9 kid normal 19 | on dirty L15 R3 sealed door | buOff dirty L15 R3 sealed door
+2-9 kid normal 22 | on dirty L15 R3 sealed door | buOff dirty L15 R3 sealed door
+2-9 kid normal 24 | on dirty L16 R3 sealed door | buOff dirty L16 R3 sealed door
+2-9 kid normal 26 | on dirty L18 R2 sealed door | buOff dirty L18 R2 sealed door
+2-9 kid easy 9 | on dirty L4 R0 sealed door | buOff dirty L4 R0 sealed door
+2-9 kid easy 14 | on dirty L16 R2 sealed door | buOff dirty L16 R2 sealed door
+2-9 kid easy 16 | on dirty L3 R0 sealed door | buOff dirty L3 R0 sealed door
+2-9 kid easy 18 | on dirty L12 R2 sealed door | buOff dirty L12 R2 sealed door
+2-9 kid easy 19 | on dirty L8 R2 sealed door | buOff dirty L8 R2 sealed door
+2-9 kid easy 22 | on dirty L13 R1 sealed door | buOff dirty L13 R1 sealed door
+2-9 kid easy 24 | on dirty L8 R2 sealed door | buOff dirty L8 R2 sealed door
+2-9 kid easy 26 | on dirty L10 R1 sealed door | buOff dirty L10 R1 sealed door
+2-9 adult normal 9 | on dirty L2 R0 sealed door | buOff dirty L2 R0 sealed door
+2-9 adult normal 14 | on dirty L4 R0 sealed door | buOff dirty L4 R0 sealed door
+2-9 adult normal 16 | on dirty L4 R0 sealed door | buOff dirty L4 R0 sealed door
+2-9 adult normal 18 | on dirty L12 R2 sealed door | buOff dirty L12 R2 sealed door
+2-9 adult normal 19 | on dirty L7 R1 sealed door | buOff dirty L6 R1 sealed door MOVES
+2-9 adult normal 22 | on dirty L2 R0 sealed door | buOff dirty L2 R0 sealed door
+2-9 adult normal 24 | on dirty L5 R1 sealed door | buOff dirty L5 R1 sealed door
+2-9 adult normal 26 | on dirty L6 R1 sealed door | buOff dirty L6 R1 sealed door
+2-9 adult easy 9 | on dirty L0 R0 sealed door | buOff dirty L0 R0 sealed door
+2-9 adult easy 14 | on dirty L0 R0 sealed door | buOff dirty L0 R0 sealed door
+2-9 adult easy 16 | on dirty L0 R0 sealed door | buOff dirty L0 R0 sealed door
+2-9 adult easy 18 | on dirty L1 R0 sealed door | buOff dirty L1 R0 sealed door
+2-9 adult easy 19 | on dirty L1 R0 sealed door | buOff dirty L1 R0 sealed door
+2-9 adult easy 22 | on dirty L1 R0 sealed door | buOff dirty L1 R0 sealed door
+2-9 adult easy 24 | on dirty L2 R0 sealed door | buOff dirty L2 R0 sealed door
+2-9 adult easy 26 | on dirty L2 R0 sealed door | buOff dirty L2 R0 sealed door
+2-9 child normal 9 | on dirty L4 R0 sealed door | buOff dirty L4 R0 sealed door
+2-9 child normal 14 | on dirty L4 R0 sealed door | buOff dirty L4 R0 sealed door
+2-9 child normal 16 | on dirty L2 R0 sealed door | buOff dirty L2 R0 sealed door
+2-9 child normal 18 | on dirty L3 R0 sealed door | buOff dirty L3 R0 sealed door
+2-9 child normal 19 | on dirty L3 R0 sealed door | buOff dirty L3 R0 sealed door
+2-9 child normal 22 | on dirty L4 R0 sealed door | buOff dirty L4 R0 sealed door
+2-9 child normal 24 | on dirty L3 R0 sealed door | buOff dirty L3 R0 sealed door
+2-9 child normal 26 | on dirty L4 R0 sealed door | buOff dirty L4 R0 sealed door
+2-9 child easy 9 | on dirty L2 R0 sealed door | buOff dirty L2 R0 sealed door
+2-9 child easy 14 | on dirty L8 R0 sealed door | buOff dirty L8 R0 sealed door
+2-9 child easy 16 | on dirty L0 R0 sealed door | buOff dirty L0 R0 sealed door
+2-9 child easy 18 | on dirty L1 R0 sealed door | buOff dirty L1 R0 sealed door
+2-9 child easy 19 | on dirty L3 R0 sealed door | buOff dirty L3 R0 sealed door
+2-9 child easy 22 | on dirty L3 R0 sealed door | buOff dirty L3 R0 sealed door
+2-9 child easy 24 | on dirty L3 R0 sealed door | buOff dirty L3 R0 sealed door
+2-9 child easy 26 | on dirty L1 R0 sealed door | buOff dirty L1 R0 sealed door
+2-9 middle normal 9 | on dirty L1 R0 sealed door | buOff dirty L1 R0 sealed door
+2-9 middle normal 14 | on dirty L1 R0 sealed door | buOff dirty L1 R0 sealed door
+2-9 middle normal 16 | on dirty L3 R0 sealed door | buOff dirty L4 R0 sealed door MOVES
+2-9 middle normal 18 | on dirty L0 R0 sealed door | buOff dirty L0 R0 sealed door
+2-9 middle normal 19 | on dirty L1 R0 sealed door | buOff dirty L1 R0 sealed door
+2-9 middle normal 22 | on dirty L2 R0 sealed door | buOff dirty L2 R0 sealed door
+2-9 middle normal 24 | on dirty L2 R0 sealed door | buOff dirty L2 R0 sealed door
+2-9 middle normal 26 | on dirty L3 R0 sealed door | buOff dirty L3 R0 sealed door
+2-9 middle easy 9 | on dirty L1 R0 sealed door | buOff dirty L0 R0 sealed door MOVES
+2-9 middle easy 14 | on dirty L3 R0 sealed door | buOff dirty L3 R0 sealed door
+2-9 middle easy 16 | on dirty L5 R0 sealed door | buOff dirty L2 R0 sealed door MOVES
+2-9 middle easy 18 | on dirty L0 R0 sealed door | buOff dirty L1 R0 sealed door MOVES
+2-9 middle easy 19 | on dirty L0 R0 sealed door | buOff dirty L0 R0 sealed door
+2-9 middle easy 22 | on dirty L3 R0 sealed door | buOff dirty L0 R0 sealed door MOVES
+2-9 middle easy 24 | on dirty L1 R0 sealed door | buOff dirty L1 R0 sealed door
+2-9 middle easy 26 | on dirty L4 R0 sealed door | buOff dirty L4 R0 sealed door
+2-9 expert normal 9 | on dirty L1 R0 sealed door | buOff dirty L1 R0 sealed door
+2-9 expert normal 14 | on dirty L0 R0 sealed door | buOff dirty L0 R0 sealed door
+2-9 expert normal 16 | on dirty L2 R0 sealed door | buOff dirty L2 R0 sealed door
+2-9 expert normal 18 | on dirty L2 R0 sealed door | buOff dirty L2 R0 sealed door
+2-9 expert normal 19 | on dirty L0 R0 sealed door | buOff dirty L0 R0 sealed door
+2-9 expert normal 22 | on dirty L0 R0 sealed door | buOff dirty L0 R0 sealed door
+2-9 expert normal 24 | on dirty L1 R0 sealed door | buOff dirty L1 R0 sealed door
+2-9 expert normal 26 | on dirty L0 R0 sealed door | buOff dirty L0 R0 sealed door

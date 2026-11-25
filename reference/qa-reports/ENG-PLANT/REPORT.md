@@ -1,3 +1,70 @@
+# ENG-PLANT-u (session 19, the plants; started 12:45 PM ET 11-25 by `date`; this top written 1:10 PM ET 11-25 by `date`): **red 9 RETIRED per R-165.432 (riverRide's bankUp plant: no live case on any stage that lays a river running back at him) on release-0.10.3-wip-plant-tests 7a42a1ef8 (pushed, ls-remote confirmed). Red 7's search: 2-2 DONE (every bot, both settings, 1-40: boardHop on == off on all 360 rows, 0 HOLDS); 2-1 partial (218 of 360 rows), 2-4 partial (278 of 360), 0 HOLDS among them; 2-5, 2-9, 2-8 not run. Item 3 done (the R-165.424 list below). Nothing merged.**
+
+Engine (bots), Opus 5.5 xhigh. Lead: session_01FhBbYN2CVHnFXg7XzqKXpM. Code: release-0.10.3-wip-plant-tests 7a42a1ef8 (1c4cc8e8b + the red 9
+retirement, test file only). Data: data/u/. Tools (copy each tools/*.txt to /home/user/tl/ without .txt): board-t.mts (red 7's meet(), on
+and off per row), board2-u.mts (the same, the off run skipped where on stood at no such lip), boardresume-u.sh (resumable: runs only the rows not yet in datadir/board-<stage>-*.txt), bankrow-u.mts + bankrun-u.sh
+(red 9's rows on any stage), rivers-u.mts / rivseeds-u.mts (which stages lay rivers of each direction, seeds 1-40), div27-u.mts,
+ev27-u.mts, resc27-u.mts (rule 28 on 2-7 kid N 17), retire9-u.py (the edit that went in), retire7-u.py (red 7's, if it retires). Every probe imports from a frozen tree of
+36e8efe6f at /home/user/pt (src and tools/inspect non-test files are the same at 7a42a1ef8).
+
+## EXACT NEXT STEP (session 20)
+0. Setup: `npm ci --no-audit --no-fund --legacy-peer-deps`; `git fetch --unshallow origin` (background); check out
+   release-0.10.3-wip-plant-tests at 7a42a1ef8 (re-fetch before the first commit, D138); `git worktree add --detach /home/user/pt 36e8efe6f`,
+   symlink node_modules, `chattr -R +i /home/user/pt/src /home/user/pt/tools`; `git worktree add --detach /home/user/rep
+   origin/release-0.10.3-wip-plant-c-report`; `mkdir -p /home/user/tl`; copy board2-u.mts.txt and boardresume-u.sh.txt there (drop .txt).
+1. RED 7 (firsttimer :185 boardHop; bar: on stands >= 1 and 0 lives lost within 3 s of a stand at a lip with a log his way (dir +1) across it;
+   off >= 1 such life; plus the middle N 17 check on a row with stands >= 1 and 0 lost). Finish the search, TWO at a time, each resumes
+   from data/u (D=/home/user/rep/reference/qa-reports/ENG-PLANT/data/u; ALL="kid:normal kid:easy adult:normal adult:easy child:normal
+   child:easy middle:normal middle:easy expert:normal"):
+   `/home/user/tl/boardresume-u.sh $D 2-1 "$ALL"` and `... $D 2-4 "$ALL"`, then `... $D 2-5 "$ALL"` and `... $D 2-9 "$ALL"`, then
+   `SEEDS="9 14 16 18 19 22 24 26" /home/user/tl/boardresume-u.sh $D 2-8 "$ALL"` (2-8 lays rivers on those 8 seeds only). About 17 rows a minute each on 2-1/2-4
+   with both runs; board2-u.mts skips the off run where on stood at no such lip (it cannot hold there; 270 of 2-2's 360 rows), so faster. A row is HOLDS when on stands >= 1, on lost 0, off lost >= 1. Which stages lay a river his way (data/u/
+   rivers-w2.txt): 2-1, 2-2, 2-4, 2-5, 2-9 every roll; 2-8 on 8 of 40; 2-3, 2-6 none; 2-7's rivers all run back (meet() counts dir +1 only).
+   (a) A HOLDS row: re-plant :185 on it (keep the test's meet(); stage from the row; the middle check on a row of that search with stands
+   >= 1 and lost 0). (b) None anywhere: RETIRE the on-the-runs test (:185 to its `});`) per R-165.432, a comment naming the search
+   (data/t/board22.txt, data/u/board-*.txt) and that the skill's code stays; the laid test at :150-:183 STAYS. The edit is ready:
+   copy tools/retire7-u.py.txt to /home/user/tl/retire7-u.py, `python3 /home/user/tl/retire7-u.py "<the search: stages, rows, stands, on == off>"`
+   (dry-run checked on 7a42a1ef8: deletes the test to its `});`, keeps the laid test), then tsc. Commit message from a file (D119).
+2. Then once, on a chattr-frozen tree of the final head (two heavy at a time): `npx tsc --noEmit -p .`; the 4 files
+   `npx tsx --test tools/inspect/lianaRide.test.ts tools/inspect/riverRide.test.ts tools/inspect/firsttimer.test.ts
+   tools/inspect/hopJudged.test.ts`. Only reds 3-4 (ENG-PLANT-CI-d's bot code: hopJudged 2-7 home middle N 2 / E 5, and riverRide :344/:355
+   reAim if they are CI's) may stay red. Push, ls-remote, and send the lead the hash and one line per red (5-9).
+
+## What is done (proven on 36e8efe6f's code; test-file changes on 7a42a1ef8)
+- RED 9 riverRide :282 bankUp: RETIRED (7a42a1ef8). The search, every cast bot, both settings, bankUp on and off:
+  2-1 seeds 1-40 (data/t/search1.txt, search2.txt: the most it moves is child N 39 2 -> 4 lives, kid N 37 5 -> 7; child N 40 1 -> 1);
+  2-7 seeds 1-40 (data/t/search27.txt: one row at the lives bar, kid N 17 5 -> 12 and 0 -> 3 rescues);
+  2-8 and 2-9 on their back-river rolls, seeds 9, 14, 16, 18, 19, 22, 24, 26 (data/u/bank-2-8.txt, bank-2-9.txt: 4 and 7 of 72 rows
+  move, the most +2 lives off (2-8 adult N 16 7 -> 9), none rescued off while clean on; every run there ends at a sealed door: neither
+  stage is listed). Session 18's probe (seeds 1-3) missed 2-8 and 2-9's back rivers; data/u/rivers-w2.txt has seeds 1-40: back rivers on
+  2-1 (every roll), 2-7 (every roll), 2-8 and 2-9 (the same 8 seeds), none on 2-2, 2-3, 2-4, 2-5, 2-6.
+  Rule 28 on 2-7 kid N 17 (data/u/red9-trace-27kN17.txt, red9-events-27kN17.txt, red9-part-27kN17.txt): on and off lose the same 3 lives
+  on the way out (t 45, 57, 65, back rivers); bankUp hops ONCE, t 79.67 x 13,461, at back river [12957,13517]'s far bank (its own place),
+  and the paths stay within 0.5 px until t 81.70; from there they part. Off's 9 lives on the way home (on: 2) are all on rivers running
+  his way (dir -1, heading home): 8 run off a log's front, 1 a hop off a bank's lip (x 5,628): bankUp cannot fire there (it needs a log running back at him). Off's 3 rescues are at
+  near banks on the way home (x 13,085, 12,027, 8,857). Not bankUp's place: retired. The time half: 2-7 lays no both-ways river.
+  The edit: the plant test, BANKUP_CASES, BANKUP_MORE(_S), bothWaysCrossing and the RiverZone import deleted; a retirement note above the
+  clean-crossing test; child N 40 KEPT in that test (KEPT_CLEAN) as a clean crossing with both skills on, so no check is lost; the
+  header's bankUp line says RETIRED. tsc 0 on the edit. The 4 files not yet run on the final head (step 2).
+- RED 7 search so far (data/u/board-2-2-A.txt, board-2-2-B.txt with data/t/board22.txt): 2-2 every bot both settings 1-40, 360 rows,
+  90 with a stand at such a lip, on == off on EVERY row, 0 HOLDS. 2-1 and 2-4: rows in data/u/board-2-1-*.txt, board-2-4-*.txt (partial; the -R files from board2-u.mts, "off skip" where on stood at no such lip;
+  0 HOLDS so far; the resume script skips them).
+
+## For R-165.424's list (the bot-tuning review; not this job)
+- NEW (item 3, the lead's order): with SKILLS.upstream ON, 2-1 kid Easy seeds 1 and 7 are rescued (on: 0 lives, 1 rescue), but they cross
+  CLEAN with it off (0 lives, 0 rescues) (data/t/search1.txt / search2.txt on 36e8efe6f). Also from that search: kid N 31 loses 13 lives
+  with it on, 4 off.
+- boardLog's laid sweep: ON loses 1 life at log fronts 975 and 1000 (later on the river, not at the lip) (ENG-PLANT-s, below).
+- W1 waits 6 s for logs that pass UNDER the banks and can never bridge (2-7's race banks) (session 16, below).
+- c27's child N 13 unjudged hops off a solid's end into the water, cluster A (session 16, below).
+- bankUp: its plant is retired (above); review whether the skill is still needed. boardHop the same if red 7 retires.
+
+Lessons applied: D115 (every probe on the chattr-frozen /home/user/pt), D119 (commit message from a file, no heredoc in the commit
+chain), D128 (stamps from `date`), D134 (pushed and ls-remote confirmed before the hand-over), D138 (branch re-fetched before the commit;
+my searches stopped at the hand-over, their rows pushed, so session 20 resumes them rather than running beside them), law 3 (session 18's
+3-seed river probe re-checked on 40 seeds: it had missed 2-8 and 2-9), law 22 (no bar moved: a plant with no live case retired by the
+lead's ruling, its clean row kept).
+
 # ENG-PLANT-t (session 18, the plants; started 12:21 PM ET 11-25 by the hook's stamp; this top written 12:36 PM ET 11-25 by `date`): **reds 5, 6, 8 RE-PLANTED at their SAME bars and proven (GREEN on the file, RED with the skill off) on release-0.10.3-wip-plant-tests 1c4cc8e8b (pushed, ls-remote confirmed). Reds 7 and 9 OPEN: their searches are set up (below). Nothing merged.**
 
 Engine (bots), Opus 5.5 xhigh. Lead: session_01FhBbYN2CVHnFXg7XzqKXpM. Code: release-0.10.3-wip-plant-tests (36e8efe6f + 2 test-only commits:

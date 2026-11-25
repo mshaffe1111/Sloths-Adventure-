@@ -1,0 +1,50 @@
+2-7 kid normal 17 bankUp ON: end shrine time 166.9 rescues 0 []
+  life t45.27 x13212 heading 1 river [12957,13517] dir-1
+  rescue t45.27 from x13212 to x10932 heading 1 river [12957,13517] dir-1
+  life t56.73 x13892 heading 1 river [13777,14337] dir-1
+  rescue t56.73 from x13892 to x10932 heading 1 river [13777,14337] dir-1
+  life t65.27 x13159 heading 1 river [12957,13517] dir-1
+  rescue t65.27 from x13159 to x10932 heading 1 river [12957,13517] dir-1
+  rescue t67.60 from x11466 to x10401 heading 1 river [10471,11919] dir1
+  rescue t75.73 from x12637 to x12449 heading 1 river [12217,13015] dir-1
+  life t124.67 x8086 heading -1 river [8039,8777] dir-1
+  rescue t124.67 from x8086 to x8857 heading -1 river [8039,8777] dir-1
+  life t135.00 x6173 heading -1 river [5841,6579] dir-1
+  rescue t135.00 from x6173 to x8857 heading -1 river [5841,6579] dir-1
+2-7 kid normal 17 bankUp OFF: end shrine time 178.0 rescues 3 [13085,12027,8857]
+  life t45.27 x13212 heading 1 river [12957,13517] dir-1
+  rescue t45.27 from x13212 to x10932 heading 1 river [12957,13517] dir-1
+  life t56.73 x13892 heading 1 river [13777,14337] dir-1
+  rescue t56.73 from x13892 to x10932 heading 1 river [13777,14337] dir-1
+  life t65.27 x13159 heading 1 river [12957,13517] dir-1
+  rescue t65.27 from x13159 to x10932 heading 1 river [12957,13517] dir-1
+  rescue t67.60 from x11466 to x10401 heading 1 river [10471,11919] dir1
+  rescue t75.73 from x12637 to x12449 heading 1 river [12217,13015] dir-1
+  rescue t107.97 from x12448 to x13085 heading -1 river [12217,13015] dir-1
+  rescue t110.00 from x12542 to x13085 heading -1 river [12217,13015] dir-1
+  rescue t110.67 from x12965 to x13085 heading 1 river [12217,13015] dir-1
+  rescue t110.70 from x13085 to x12208 heading 1 river [12957,13517] dir-1
+  rescue t114.13 from x11200 to x12027 heading -1 river [10471,11919] dir1
+  rescue t114.77 from x11876 to x12027 heading 1 river [10471,11919] dir1
+  rescue t115.53 from x11823 to x12027 heading -1 river [10471,11919] dir1
+  rescue t115.57 from x12027 to x11104 heading 1 river none
+  rescue t124.97 from x9096 to x9289 heading -1 river [9077,9219] dir1
+  life t127.67 x8514 heading -1 river [8039,8777] dir-1
+  rescue t127.67 from x8514 to x8857 heading -1 river [8039,8777] dir-1
+  life t130.63 x8059 heading -1 river [8039,8777] dir-1
+  rescue t130.63 from x8059 to x8857 heading -1 river [8039,8777] dir-1
+  life t131.77 x8633 heading -1 river [8039,8777] dir-1
+  rescue t131.77 from x8633 to x8857 heading -1 river [8039,8777] dir-1
+  life t142.83 x5997 heading -1 river [5841,6579] dir-1
+  rescue t142.83 from x5997 to x8857 heading -1 river [5841,6579] dir-1
+  life t144.30 x8514 heading -1 river [8039,8777] dir-1
+  rescue t144.30 from x8514 to x8857 heading -1 river [8039,8777] dir-1
+  life t146.33 x8351 heading -1 river [8039,8777] dir-1
+  rescue t146.33 from x8351 to x5830 heading -1 river [8039,8777] dir-1
+  life t149.63 x4935 heading -1 river [4883,5621] dir-1
+  rescue t149.63 from x4935 to x5701 heading -1 river [4883,5621] dir-1
+  life t150.77 x5488 heading -1 river [4883,5621] dir-1
+  rescue t150.77 from x5488 to x5701 heading -1 river [4883,5621] dir-1
+  life t169.93 x2252 heading -1 river [1771,2467] dir-1
+  rescue t169.93 from x2252 to x2547 heading -1 river [1771,2467] dir-1
+rivers: [1771,2467]-1 [2727,3423]-1 [4883,5621]-1 [5841,6579]-1 [8039,8777]-1 [8356,8896]-1 [9077,9219]1 [9156,9696]-1 [10036,10171]1 [10471,11919]1 [11159,11957]-1 [12217,13015]-1 [12519,12657]1 [12957,13517]-1 [13777,14337]-1 [15295,15437]1

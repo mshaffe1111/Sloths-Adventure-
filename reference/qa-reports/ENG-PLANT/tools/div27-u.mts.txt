@@ -1,0 +1,24 @@
+// red 9 (rule 28): 2-7 kid Normal 17, bankUp on vs off: the first frame they part (t, x, his dir, the log under him), the rescues' x, and
+// every bankUp hop with the trace on (its t, x). Lives with the trace on are printed to show the trace moves nothing.
+import '/home/user/pt/src/game/headlessDom.ts';
+import { CAST_BOTS } from '/home/user/pt/tools/inspect/castBots.ts';
+import { firstTimer, SKILLS, HOP_TRACE } from '/home/user/pt/tools/inspect/firsttimer.ts';
+const [bot, setting, s, stage] = [process.argv[2] ?? 'kid', process.argv[3] ?? 'normal', Number(process.argv[4] ?? 17), process.argv[5] ?? '2-7'];
+const run = (on: boolean, trace: boolean) => {
+  SKILLS.bankUp = on; HOP_TRACE.on = trace; HOP_TRACE.rows = [];
+  const xs: Array<[number, number, string]> = []; let lives = 0;
+  const r: any = firstTimer(stage, s, (CAST_BOTS as any)[bot][setting], { cap: 1200, dotSetting: true, onFrame: (sim: any) => {
+    const e = sim.e, p = e.player, here = e.platforms.find((q: any) => q.id === e.standingOnId);
+    xs.push([sim.t, p.x, here ? `${here.type}#${here.id}${here.drift ? ' dir' + here.drift.dir : ''}` : 'air']); lives = e.lives;
+  } } as any);
+  const bank = HOP_TRACE.rows.filter((w: any) => w.site === 'bankUp').map((w: any) => `t${w.t.toFixed(2)} x${Math.round(w.x)}`);
+  HOP_TRACE.on = false; SKILLS.bankUp = true;
+  return { r, xs, bank };
+};
+const on = run(true, false), off = run(false, false), onT = run(true, true);
+let i = 0; while (i < Math.min(on.xs.length, off.xs.length) && Math.abs(on.xs[i][1] - off.xs[i][1]) < 0.5) i++;
+const a = on.xs[i] ?? [], b = off.xs[i] ?? [];
+console.log(`${stage} ${bot} ${setting} ${s}: on lives ${on.r.lives} rescues ${on.r.rescues} [${on.r.rescueXs}] | off lives ${off.r.lives} rescues ${off.r.rescues} [${off.r.rescueXs}]`);
+console.log(`part at frame ${i}: t${a[0]?.toFixed(2)} on x${Math.round(a[1])} (${a[2]}) off x${Math.round(b[1])} (${b[2]}); prev ${on.xs[i - 1]?.[2]}`);
+console.log(`trace on: lives ${onT.r.lives} (same as untraced: ${onT.r.lives === on.r.lives && onT.r.time === on.r.time}); bankUp hops ${onT.bank.length}: ${onT.bank.join(', ')}`);
+const rv = (on.r as any).cast ? '' : '';

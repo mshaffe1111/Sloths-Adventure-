@@ -1,0 +1,18 @@
+// red 9 (rule 28): each rescue, on and off, where it happens: t, x, the floor under him (log dir), the river there
+import '/home/user/pt/src/game/headlessDom.ts';
+import { CAST_BOTS } from '/home/user/pt/tools/inspect/castBots.ts';
+import { firstTimer, SKILLS, FirstTimerRun } from '/home/user/pt/tools/inspect/firsttimer.ts';
+const [bot, setting, s, stage] = [process.argv[2] ?? 'kid', process.argv[3] ?? 'normal', Number(process.argv[4] ?? 17), process.argv[5] ?? '2-7'];
+const P: any = (FirstTimerRun as any).prototype, orig = P.rescue; let log: string[] = [];
+P.rescue = function (this: any) {
+  const p = this.sim.p, e = this.sim.e, here = e?.platforms?.find((q: any) => q.id === e.standingOnId), rv = (this.sim.stage.rivers ?? []).filter((b: any) => p.x >= b.x0 - 40 && p.x <= b.x1 + 40);
+  const n = this.rescues, ok = orig.call(this);
+  if (this.rescues > n) log.push(`rescue t${this.t.toFixed(2)} x${Math.round(p.x)} vx${Math.round(p.vx)} grounded ${p.grounded} on ${here ? `${here.type}#${here.id}${here.drift ? ' dir' + here.drift.dir : ''} [${Math.round(here.x)},${Math.round(here.x + here.width)}]` : 'air'} rivers ${rv.map((b: any) => `[${Math.round(b.x0)},${Math.round(b.x1)}]${b.dir}`).join(' ')}`);
+  return ok;
+};
+for (const on of [true, false]) {
+  SKILLS.bankUp = on; log = [];
+  const r: any = firstTimer(stage, s, (CAST_BOTS as any)[bot][setting], { cap: 1200, dotSetting: true });
+  console.log(`${stage} ${bot} ${setting} ${s} bankUp ${on ? 'ON' : 'OFF'}: rescues ${r.rescues} [${r.rescueXs}]`); log.forEach((l) => console.log('  ' + l));
+}
+SKILLS.bankUp = true;

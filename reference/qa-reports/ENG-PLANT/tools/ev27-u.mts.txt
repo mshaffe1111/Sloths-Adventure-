@@ -1,0 +1,19 @@
+// red 9 (rule 28): every life lost and every rescue (a jump of > 120 px in one frame with no life lost), on and off, with the river
+// there (dir; his heading over the last 1 s) and the stage's rivers
+import '/home/user/pt/src/game/headlessDom.ts';
+import { CAST_BOTS } from '/home/user/pt/tools/inspect/castBots.ts';
+import { firstTimer, SKILLS } from '/home/user/pt/tools/inspect/firsttimer.ts';
+const [bot, setting, s, stage] = [process.argv[2] ?? 'kid', process.argv[3] ?? 'normal', Number(process.argv[4] ?? 17), process.argv[5] ?? '2-7'];
+for (const on of [true, false]) {
+  SKILLS.bankUp = on; let lives: number | undefined, px: number | undefined; const hist: number[] = []; const out: string[] = []; let rivers: any[] = [];
+  const r: any = firstTimer(stage, s, (CAST_BOTS as any)[bot][setting], { cap: 1200, dotSetting: true, onFrame: (sim: any) => {
+    const e = sim.e, p = e.player; rivers = sim.stage.rivers ?? []; hist.push(p.x); const head = hist.length > 30 ? Math.sign(p.x - hist[hist.length - 31]) : 0;
+    const rv = (x: number) => { const b = rivers.find((q: any) => x >= q.x0 - 40 && x <= q.x1 + 40); return b ? `[${Math.round(b.x0)},${Math.round(b.x1)}] dir${b.dir}` : 'none'; };
+    if (lives !== undefined && e.lives < lives) out.push(`life t${sim.t.toFixed(2)} x${Math.round(p.x)} heading ${head} river ${rv(p.x)}`);
+    else if (px !== undefined && Math.abs(p.x - px) > 120) out.push(`rescue t${sim.t.toFixed(2)} from x${Math.round(px)} to x${Math.round(p.x)} heading ${Math.sign(hist[hist.length - 2] - hist[Math.max(0, hist.length - 32)])} river ${rv(px)}`);
+    lives = e.lives; px = p.x;
+  } } as any);
+  console.log(`${stage} ${bot} ${setting} ${s} bankUp ${on ? 'ON' : 'OFF'}: end ${r.end} time ${r.time?.toFixed?.(1)} rescues ${r.rescues} [${r.rescueXs}]`); out.forEach((l) => console.log('  ' + l));
+  if (!on) console.log('rivers: ' + rivers.map((q: any) => `[${Math.round(q.x0)},${Math.round(q.x1)}]${q.dir}`).join(' '));
+}
+SKILLS.bankUp = true;

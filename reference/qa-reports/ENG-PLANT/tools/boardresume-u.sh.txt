@@ -1,0 +1,11 @@
+#!/bin/bash
+# usage: boardresume-u.sh datadir stage "bot:setting ..."  (red 7's search, resumable: runs board-t on the rows of seeds 1-40 not yet in
+# datadir/board-<stage>-*.txt and appends them to datadir/board-<stage>-R.txt; SEEDS="9 14 ..." narrows the seeds, e.g. 2-8's river rolls)
+dd=$1; st=$2; bs=$3; rows=()
+cd /home/user/Sloths-Adventure-
+for b in $bs; do for s in ${SEEDS:-$(seq 1 40)}; do
+  k="$st ${b%%:*} ${b##*:} $s |"; grep -qsF "$k" $dd/board-$st-*.txt || rows+=("$b:$s")
+done; done
+[ ${#rows[@]} -eq 0 ] && { echo "$st nothing left"; exit 0; }
+npx tsx /home/user/tl/board2-u.mts "$st" "${rows[@]}" >> $dd/board-$st-R.txt 2>&1
+echo "$st resume done $(TZ=America/New_York date +%T) ran ${#rows[@]} holds $(cat $dd/board-$st-*.txt | grep -c HOLDS)"

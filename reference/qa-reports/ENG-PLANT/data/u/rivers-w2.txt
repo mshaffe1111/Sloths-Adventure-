@@ -1,0 +1,11 @@
+2-1: rolls 40; rivers his way 160 (on 40 rolls), running back at him 80 (on 40 rolls)
+2-2: rolls 40; rivers his way 40 (on 40 rolls), running back at him 0 (on 0 rolls)
+2-3: rolls 40; rivers his way 0 (on 0 rolls), running back at him 0 (on 0 rolls)
+2-4: rolls 40; rivers his way 360 (on 40 rolls), running back at him 0 (on 0 rolls)
+2-5: rolls 40; rivers his way 80 (on 40 rolls), running back at him 0 (on 0 rolls)
+2-6: rolls 40; rivers his way 0 (on 0 rolls), running back at him 0 (on 0 rolls)
+2-7: rolls 40; rivers his way 0 (on 0 rolls), running back at him 440 (on 40 rolls)
+2-8: rolls 40; rivers his way 17 (on 8 rolls), running back at him 25 (on 8 rolls)
+2-9: rolls 40; rivers his way 193 (on 40 rolls), running back at him 48 (on 8 rolls)
+2-8: his way on seeds 9,14,16,18,19,22,24,26; back at him on seeds 9,14,16,18,19,22,24,26
+2-9: his way on seeds 1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40; back at him on seeds 9,14,16,18,19,22,24,26

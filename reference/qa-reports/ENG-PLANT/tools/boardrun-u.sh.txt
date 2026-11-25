@@ -1,0 +1,10 @@
+#!/bin/bash
+# usage: boardrun-u.sh tag stage "bot:setting ..." [stage "bot:setting ..."] ...  (red 7's search: board-t over seeds 1-40 per bot-setting)
+tag=$1; shift
+cd /home/user/Sloths-Adventure-
+while [ $# -gt 1 ]; do
+  st=$1; bs=$2; shift 2; rows=()
+  for b in $bs; do for s in $(seq 1 40); do rows+=("$b:$s"); done; done
+  npx tsx /home/user/tl/board-t.mts "$st" "${rows[@]}" > /home/user/tl/out/board-$st-$tag.txt 2>&1
+  echo "$st $tag done $(TZ=America/New_York date +%T) rows $(grep -c '|' /home/user/tl/out/board-$st-$tag.txt) holds $(grep -c HOLDS /home/user/tl/out/board-$st-$tag.txt)"
+done

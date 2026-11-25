@@ -1,0 +1,14 @@
+// reds 7 and 9: which World 2 stages lay rivers, by direction, seeds 1-40 (the stage as RealPlay rolls it; no bot run)
+import '/home/user/pt/src/game/headlessDom.ts';
+import { RealPlay } from '/home/user/pt/src/game/realPlay.ts';
+for (const id of ['2-1', '2-2', '2-3', '2-4', '2-5', '2-6', '2-7', '2-8', '2-9']) {
+  let fwd = 0, back = 0, rolls = 0, withBack = 0, withFwd = 0, err = '';
+  for (let s = 1; s <= 40; s++) {
+    try {
+      const rv = ((new RealPlay(id, s).stage as any).rivers ?? []).filter((b: any) => b.speed > 0);
+      const f = rv.filter((b: any) => b.dir > 0).length, k = rv.filter((b: any) => b.dir < 0).length;
+      fwd += f; back += k; rolls++; if (k) withBack++; if (f) withFwd++;
+    } catch (e: any) { err = String(e?.message ?? e).slice(0, 80); }
+  }
+  console.log(`${id}: rolls ${rolls}; rivers his way ${fwd} (on ${withFwd} rolls), running back at him ${back} (on ${withBack} rolls)${err ? ' err ' + err : ''}`);
+}

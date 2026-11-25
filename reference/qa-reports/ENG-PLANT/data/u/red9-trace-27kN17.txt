@@ -1,0 +1,17 @@
+  life t56.73 x13892 y824 river [13777,14337] dir-1 v75 | last take-off t56.63 x13864 vx268 from drift#41 dir-1 [13690,13850] y796
+  life t65.27 x13159 y824 river [12957,13517] dir-1 v75 | last take-off t65.17 x13132 vx285 from drift#38 dir-1 [12950,13110] y796
+  life t124.67 x8086 y1537 river [8039,8777] dir-1 v80 | last take-off t124.57 x8114 vx-268 from drift#86 dir-1 [8136,8286] y1509
+  life t135.00 x6173 y1601 river [5841,6579] dir-1 v80 | last take-off t134.90 x6201 vx-285 from drift#96 dir-1 [6221,6371] y1573
+2-7 kid normal 17 bankUp OFF: end shrine lives 12
+  life t45.27 x13212 y824 river [12957,13517] dir-1 v75 | last take-off t45.17 x13184 vx268 from drift#38 dir-1 [13010,13170] y796
+  life t56.73 x13892 y824 river [13777,14337] dir-1 v75 | last take-off t56.63 x13864 vx268 from drift#41 dir-1 [13690,13850] y796
+  life t65.27 x13159 y824 river [12957,13517] dir-1 v75 | last take-off t65.17 x13132 vx285 from drift#38 dir-1 [12950,13110] y796
+  life t127.67 x8514 y1537 river [8039,8777] dir-1 v80 | last take-off t127.57 x8542 vx-285 from drift#87 dir-1 [8562,8712] y1509
+  life t130.63 x8059 y1537 river [8039,8777] dir-1 v80 | last take-off t130.53 x8086 vx-285 from drift#84 dir-1 [8102,8252] y1509
+  life t131.77 x8633 y1537 river [8039,8777] dir-1 v80 | last take-off t131.67 x8661 vx-268 from drift#85 dir-1 [8678,8828] y1509
+  life t142.83 x5997 y1601 river [5841,6579] dir-1 v80 | last take-off t142.73 x6024 vx-285 from drift#98 dir-1 [6038,6188] y1573
+  life t144.30 x8514 y1537 river [8039,8777] dir-1 v80 | last take-off t144.20 x8542 vx-268 from drift#85 dir-1 [8563,8713] y1509
+  life t146.33 x8351 y1537 river [8039,8777] dir-1 v80 | last take-off t146.23 x8378 vx-285 from drift#85 dir-1 [8400,8550] y1509
+  life t149.63 x4935 y1601 river [4883,5621] dir-1 v80 | last take-off t149.53 x4963 vx-285 from drift#100 dir-1 [4980,5130] y1573
+  life t150.77 x5488 y1616 river [4883,5621] dir-1 v80 | last take-off t150.27 x5628 vx-268 from solid#93 [5621,5841] y1545
+  life t169.93 x2252 y1601 river [1771,2467] dir-1 v80 | last take-off t169.83 x2280 vx-268 from drift#115 dir-1 [2296,2536] y1573

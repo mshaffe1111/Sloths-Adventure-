@@ -1,0 +1,8 @@
+// the seeds 1-40 of 2-8 and 2-9 that lay a river of each direction (speed > 0)
+import '/home/user/pt/src/game/headlessDom.ts';
+import { RealPlay } from '/home/user/pt/src/game/realPlay.ts';
+for (const id of ['2-8', '2-9']) {
+  const f: number[] = [], k: number[] = [];
+  for (let s = 1; s <= 40; s++) { const rv = ((new RealPlay(id, s).stage as any).rivers ?? []).filter((b: any) => b.speed > 0); if (rv.some((b: any) => b.dir > 0)) f.push(s); if (rv.some((b: any) => b.dir < 0)) k.push(s); }
+  console.log(`${id}: his way on seeds ${f.join(',')}; back at him on seeds ${k.join(',')}`);
+}

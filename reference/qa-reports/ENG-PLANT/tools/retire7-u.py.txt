@@ -1,0 +1,18 @@
+# red 7's retirement edit (R-165.432) of tools/inspect/firsttimer.test.ts, ONLY if the whole search holds no HOLDS row;
+# argv[1] = the search clause (stages, rows, stands), e.g. "2-2, 2-1, 2-4, 2-5, 2-9 seeds 1-40 and 2-8's 8 river rolls: N rows, M with a stand, on == off on every row"
+import sys, textwrap
+p = '/home/user/Sloths-Adventure-/tools/inspect/firsttimer.test.ts'
+s = open(p).read()
+a = s.index("test('on the runs it was found on, 2-2 child Normal seed 36 and middle Normal seed 17:")
+b = s.index("\n});\n", a) + len("\n});\n")
+body = ("RETIRED 11-25, R-165.432 (the lead's ruling: a plant with no live case anywhere is retired with the search as evidence; the skill's "
+        "code stays; re-plant when a stage needs it; R-165.424 reviews whether it is still needed): the on-the-runs plant of SKILLS.boardHop "
+        "(2-2 child Normal seed 36: no life lost within 3 s of a stand at a lip with a log his way across it, a life lost there with it off; "
+        "the middle Normal seed 17 check) has no live case. Searched on 36e8efe6f, every cast bot, both settings, boardHop on and off, "
+        "this test's own meet(): " + sys.argv[1] + ". Search: reference/qa-reports/ENG-PLANT/data/t/board22.txt and data/u/board-*.txt. "
+        "The laid test above (the read itself, the toy lip) stays: it is the skill's plant")
+lines = textwrap.wrap(body, 136, break_on_hyphens=False)
+note = '// (' + lines[0] + '\n' + ''.join('//  ' + l + '\n' for l in lines[1:])[:-1] + ')\n'
+s = s[:a] + note + s[b:]
+open(p, 'w').write(s)
+print('retired; laid test kept:', "test('in the real engine: a log drifting his way across the lip" in s)

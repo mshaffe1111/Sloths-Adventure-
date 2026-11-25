@@ -1,0 +1,28 @@
+# red 9's retirement edit (R-165.432) of tools/inspect/riverRide.test.ts; argv[1] = the 2-8/2-9 result clause
+import sys, re
+p = '/home/user/Sloths-Adventure-/tools/inspect/riverRide.test.ts'
+s = open(p).read()
+res = sys.argv[1]
+a = s.index("const BANKUP_CASES: Array<")
+b = s.index("test('2-1, against the flow and up the far bank on:")
+note = """// (RETIRED 11-25, R-165.432 (the lead's ruling: a plant with no live case anywhere is retired with the search as evidence; the skill's
+//  code stays; re-plant when a stage needs it; R-165.424 reviews whether it is still needed), ENG-PLANT-u: the up-the-far-bank plant
+//  (SKILLS.bankUp: off, 5+ more lives and the both-ways far bank 2+ s later) has no live case. Searched on 36e8efe6f, every cast bot,
+//  both settings, bankUp on and off: 2-1 seeds 1-40 (the most it moves: child N 39 2 -> 4 lives, kid N 37 5 -> 7; child N 40 1 -> 1);
+//  2-7 seeds 1-40 (one row at the lives bar, kid N 17 5 -> 12, traced (rule 28): every extra life is on the way home, on a river running
+//  his way, where bankUp never fires (a log running back at him), and the 3 rescues are at near banks; its one bankUp hop, x 13,461,
+//  leaves his path within 0.5 px for 2 s); """ + res + """. No other World 2 stage lays a river running back at him (seeds 1-40).
+//  The time half: 2-7 lays no both-ways river. Search: reference/qa-reports/ENG-PLANT/data/t/search1.txt, search2.txt, search27.txt and
+//  data/u/. The child on Normal, seed 40, stays below as a clean crossing with both skills on)
+const KEPT_CLEAN: Array<[string, 'normal' | 'easy', number]> = [['child', 'normal', 40]];
+
+"""
+s = s[:a] + note + s[b:]
+s = s.replace("...UPSTREAM_LIVES, ...BANKUP_CASES]", "...UPSTREAM_LIVES, ...KEPT_CLEAN]", 1)
+c = s.index("test('planted: with the up-the-far-bank skill off,")
+d = s.index("\n});\n", c) + len("\n});\n")
+s = s[:c] + s[d:].lstrip('\n')
+s = s.replace("import type { RiverZone } from '../../src/game/river.ts';\n", "", 1) if s.count('RiverZone') == 1 else s
+s = s.replace("boarding to the both-ways far bank at least 2 s longer without it, measured +3.8 s).", "boarding to the both-ways far bank at least 2 s longer without it, measured +3.8 s; RETIRED 11-25 per R-165.432, no live case: the note above the clean crossings).", 1)
+open(p, 'w').write(s)
+print('BANKUP' in s, 'bothWaysCrossing' in s, s.count('KEPT_CLEAN'), 'RiverZone' in s, 'RETIRED 11-25 per R-165.432' in s)

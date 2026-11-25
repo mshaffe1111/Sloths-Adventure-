@@ -1,0 +1,13 @@
+// usage: tsx bankrow-u.mts stage bot:setting:seed ...   (red 9's search: castRun with bankUp on, then off; CLEAN = shrine, 0 rescues)
+import '/home/user/pt/src/game/headlessDom.ts';
+import { castRun } from '/home/user/pt/tools/inspect/castBots.ts';
+import { SKILLS } from '/home/user/pt/tools/inspect/firsttimer.ts';
+const [stage, ...rows] = process.argv.slice(2);
+for (const row of rows) {
+  const [bot, setting, s] = row.split(':'); const seed = Number(s);
+  const one = (on: boolean) => { SKILLS.bankUp = on; try { const r: any = castRun(bot, setting as any, stage, seed); return r.error ? `ERR ${String(r.error).slice(0, 60)}` : `${r.end === 'shrine' && r.rescues === 0 ? 'CLEAN' : 'dirty'} L${r.lives} R${r.rescues} ${r.end}`; } finally { SKILLS.bankUp = true; } };
+  if (bot === 'expert' && setting === 'easy') continue;
+  const a = one(true), b = one(false);
+  const la = Number(/L(\d+)/.exec(a)?.[1]), lb = Number(/L(\d+)/.exec(b)?.[1]);
+  console.log(`${stage} ${bot} ${setting} ${seed} | on ${a} | buOff ${b}${a === b ? '' : ' MOVES'}${lb - la >= 5 ? ' LIVES5' : ''}${a.startsWith('CLEAN') && !b.startsWith('CLEAN') ? ' RESCUED-OFF' : ''}`);
+}

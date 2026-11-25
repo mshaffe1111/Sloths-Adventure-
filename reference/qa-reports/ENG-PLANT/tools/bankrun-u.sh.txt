@@ -1,0 +1,8 @@
+#!/bin/bash
+# red 9's search on the back-river rolls of 2-8 and 2-9 (seeds 9,14,16,18,19,22,24,26), every cast bot, both settings
+cd /home/user/Sloths-Adventure-
+for st in 2-8 2-9; do rows=()
+  for b in kid:normal kid:easy adult:normal adult:easy child:normal child:easy middle:normal middle:easy expert:normal; do for s in 9 14 16 18 19 22 24 26; do rows+=("$b:$s"); done; done
+  npx tsx /home/user/tl/bankrow-u.mts $st "${rows[@]}" > /home/user/tl/out/bank-$st.txt 2>&1
+  echo "$st bank done $(TZ=America/New_York date +%T) rows $(grep -c '|' /home/user/tl/out/bank-$st.txt) moves $(grep -c MOVES /home/user/tl/out/bank-$st.txt)"
+done
