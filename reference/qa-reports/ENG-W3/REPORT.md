@@ -25,6 +25,15 @@ way. (c) THEN, on the final lay: x40 kid+adult head / A off / B off (compare.py)
 suite, CI tool line, land (box 8's list). **RUN castBots WITH `--par 2 --rows FILE`, NOT `--json`: `--json` ignores --par.** Two runs
 x two workers did 160 rows in about 3 minutes on 4 cores. Frozen trees: `git worktree add --detach`, symlink node_modules,
 `chattr -R +i src tools`. Old-lay tree for area reads: 7d12c344b (no hopRooms there: drop that line).
+**(a) STARTED, read on a scratch tree (put() and rule 4's pick logged at PUTLOG=<y>, wt of ab35ee9b, not committed):** both pieces are
+**towerCatches's, storey level 1.** 488-668@1476 is **rule 4** (a bough of its own, tower.ts:482), 668-1072@1476 is **rule 2** (its bridge,
+:422); easy 28 is the same (513-693 rule 4, 693-1063 rule 2). Rule 4 laid it as the catch for the RIGHT end of storey 253-544@1189
+(fall line e.x 568; x0 478; top 1476, last 1485; ys 1476,1362,...,1273, HEAD 84). **Its first, deepest height is 1476, the storey
+level under it. That is 6 px under the vine-foot storey 207-446@1470 beside it**, so two storeys of near-equal height sit side by side
+with a gap narrower than his body. The old lay laid it at x0 478 (32 px gap). The new lay slid it +10 to 488 (42 px gap), most likely
+because `lidded`/`made` refused 478 (not yet read). Read next: why 478 was refused; why the route (prog.pts) walks 1470 to 534 and drops
+through the bough; whether the 1470/1476 pair (207-446 vs the 1476 level) is itself a lay fault (two storey levels within a step of
+each other beside each other).
 **Learned:** a rule that empties a room can move the next piece into a worse spot. Count the bots' causes old against new before
 calling a lay rule a cure: the room count (534 -> 0) was right, and the bots got worse.
 
