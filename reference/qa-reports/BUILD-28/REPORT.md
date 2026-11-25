@@ -53,7 +53,11 @@
    the CLAUDE.md tsx --test line in a frozen worktree at the head); then the rest of the CI tool line (CI #79): vite build + chunkcheck,
    artcheck, drawcheck, clipcheck, knowncheck, generalitycheck, roadmapcheck, timecheck, paintcheck (3 parts), kbdcheck, buildcheck,
    seedlist 1-1 --check, the engine tools' tests, tierBots. At most two at a time. (3) 2b toys (a lineBot toy each way), the stills of
-   the fork and a marsh dip upright and sideways (find the stills path: no running stage lays the section yet, 2-96 is a test toy),
+   the fork and a marsh dip upright and sideways. THE STILLS PATH (found): tools/engine/towerstills.mjs builds a FIXTURE in the dev page in
+   place of a stage (TOWER_AS sets the stage it borrows: config and art), upright 412x915 and sideways 915x412 at 2x; the two-road toy
+   (w2TwoRoad.test's build: towerCfg + homeKit with w2TwoRoad and W2_FORK_RIVERS) needs the same in-page build with TOWER_AS=2-3 or a
+   World 2 stage, a copy of towerstills that builds that kit (nothing in the repo changes; reload and it is gone). No stage row lays the
+   section yet, so these are the toy's stills, said so plainly to the lead,
    (4) 1b at the lead's hash (B + 2b + the fork-jump read land with firsttimer.ts there: rule 28, ENG-PLANT's known flips + the wide
    sample), then READY-28.
 
