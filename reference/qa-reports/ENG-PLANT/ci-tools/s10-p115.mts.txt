@@ -1,0 +1,12 @@
+// #115's motion: its x / y and keys that change, per frame, in a window. usage: p115.mts <tree> <stage> <bot> <setting> <seed> <id> <t0> <t1>
+const [T, stage, bot, setting, seedS, idS, t0s, t1s] = process.argv.slice(2);
+await import(T + '/src/game/headlessDom.ts');
+const ft: any = await import(T + '/tools/inspect/firsttimer.ts');
+const cb: any = await import(T + '/tools/inspect/castBots.ts');
+let first = true;
+ft.firstTimer(stage, Number(seedS), cb.CAST_BOTS[bot][setting], { cap: Number(t1s) + 0.05, dotSetting: true, onFrame: (sim: any) => {
+  if (sim.t < Number(t0s)) return;
+  const q = sim.platforms.find((x: any) => x.id === Number(idS)); const p = sim.e.player;
+  if (first) { first = false; console.log(JSON.stringify(Object.fromEntries(Object.entries(q).filter(([, v]) => typeof v !== 'object' || v === null))).slice(0, 600)); }
+  console.log(sim.t.toFixed(3), 'q', q.x.toFixed(1), q.y.toFixed(1), q.width, 'vis', q.visible ?? '', q.broken ?? '', q.off ?? '', 'p', p.x.toFixed(1), p.y.toFixed(1), p.grounded ? 1 : 0, sim.e.standingOnId);
+} });

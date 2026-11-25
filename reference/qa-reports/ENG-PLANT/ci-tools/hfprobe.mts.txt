@@ -1,0 +1,20 @@
+// hfprobe.mts <tree> <tier> <setting> <seed> <t0> <t1> <qid>: 2-7 home toy; hopFlight's per-frame flight for float qid judged in [t0,t1]
+// (needs the HF print in the tree's hopFlight), beside the run's own frames and its overSmall per frame
+const [tree, tier, setting, seedS, t0s, t1s, qs] = process.argv.slice(2);
+const T0 = Number(t0s), T1 = Number(t1s), Q = Number(qs);
+await import(`${tree}/src/game/headlessDom.ts`);
+const ft: any = await import(`${tree}/tools/inspect/firsttimer.ts`);
+const ht: any = await import(`${tree}/tools/inspect/homeToys.ts`);
+(globalThis as any).__HF = (q: any, t0: number) => q.id === Q && t0 >= T0 && t0 <= T1;
+const P = ft.FirstTimerRun.prototype, os0 = P.overSmall;
+let lastOS = -1;
+P.overSmall = function (dir: number, leaving?: number) { const r = os0.call(this, dir, leaving); lastOS = r; return r; };
+ft.HOP_TRACE.on = true; ft.HOP_TRACE.rows.length = 0;
+let f = 0;
+ht.homeRun(tier, setting, Number(seedS), 1, { onFrame: (sim: any) => {
+  f++; const e = sim.e, p = e.player, t = f / 30;
+  if (t >= T0 - 0.05 && t <= T1 + 0.6) { const q = e.platforms.find((o: any) => o.id === Q);
+    console.log(`RUN f${f} t${t.toFixed(3)} x${p.x.toFixed(1)} y${p.y.toFixed(1)} vy${p.vy.toFixed(0)} vx${p.vx.toFixed(0)} g${p.grounded ? 1 : 0} on${e.standingOnId} os${lastOS} q${Q} x${q ? q.x.toFixed(1) : '-'} past${q ? (p.x - (q.x + q.width / 2)).toFixed(1) : '-'} in${JSON.stringify(sim.input ?? sim.pad ?? '')}`); }
+  lastOS = -1;
+} });
+for (const r of ft.HOP_TRACE.rows) if (r.t >= T0 - 0.1 && r.t <= T1 + 0.1) console.log(`H ${r.site} q#${r.q} t ${r.t.toFixed(3)} x ${r.x.toFixed(1)} hold ${r.hold.toFixed(3)} landed ${r.landed}`);

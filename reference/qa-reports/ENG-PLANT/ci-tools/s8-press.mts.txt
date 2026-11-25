@@ -1,0 +1,16 @@
+// 2-4 kid Easy 35: the vineFromLog standing press off log 48 at 47.600 as the bot plays it (jump drawn, pads, engine input per frame)
+const T = process.argv[2];
+await import(T + '/src/game/headlessDom.ts');
+const ft: any = await import(T + '/tools/inspect/firsttimer.ts');
+const P = ft.FirstTimerRun.prototype, sj = P.startJump, th = P.thumbify;
+let jmp: any = null; const pads: any[] = [];
+P.startJump = function (this: any, ...a: any[]) { const out = sj.apply(this, a); const t = this.t; if (t > 47.55 && t < 47.65) jmp = { t, args: a, j: { ...this.jump }, travelUntil: this.travelUntil, driftUntil: this.driftUntil, lastSteer: this.lastSteer, upOnlyDraw: this.jump.upOnly }; return out; };
+P.thumbify = function (this: any, want: any) { const out = th.call(this, want); const t = this.t; if (t > 47.45 && t < 47.9) pads.push(`${t.toFixed(3)} want ${want.right ? 'R' : want.left ? 'L' : '-'}${want.jump ? 'J' : ''}${want.press ? 'P' : ''} out ${out.right ? 'R' : out.left ? 'L' : '-'}${out.jump ? 'J' : ''} tU ${this.travelUntil.toFixed(3)} dU ${this.driftUntil.toFixed(3)} last ${this.lastSteer}`); return out; };
+const eng: string[] = [];
+ft.firstTimer('2-4', 35, { ...ft.FT_KID, setting: 'easy' }, { cap: 49, dotSetting: true, onFrame: (sim: any) => {
+  const e = sim.e, p = e.player;
+  if (sim.t > 47.45 && sim.t < 47.9) eng.push(`${sim.t.toFixed(3)} x ${p.x.toFixed(2)} y ${p.y.toFixed(2)} vx ${p.vx.toFixed(1)} vy ${p.vy.toFixed(1)} g ${p.grounded ? 1 : 0} held ${e.input?.state?.jumpHeld ? 1 : 0} L${e.input?.state?.left ? 1 : 0}R${e.input?.state?.right ? 1 : 0}`);
+} });
+console.log('JUMP', JSON.stringify(jmp));
+for (const l of pads) console.log('PAD', l);
+for (const l of eng) console.log('ENG', l);

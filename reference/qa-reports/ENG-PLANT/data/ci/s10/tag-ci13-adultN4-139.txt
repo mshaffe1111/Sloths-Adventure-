@@ -1,0 +1,21 @@
+139.567 L3329 {"right":true} x 29457.7 vx 268 g 1 on 115 [29392,29522] moving pend 0 jump 0
+139.600 L3329 {"right":true} x 29467.2 vx 285 g 1 on 115 [29392,29522] moving pend 0 jump 0
+139.633 L3329 {"right":true} x 29476.1 vx 268 g 1 on 115 [29392,29522] moving pend 0 jump 0
+139.667 L3329 {} x 29485.6 vx 285 g 1 on 115 [29392,29522] moving pend 0 jump 0
+139.700 L3329 {} x 29494.5 vx 268 g 1 on 115 [29392,29522] moving pend 0 jump 0
+139.733 L3329 {} x 29499.7 vx 154 g 1 on 115 [29392,29522] moving pend 0 jump 0
+139.767 L3329 {} x 29501.0 vx 41 g 1 on 115 [29392,29522] moving pend 0 jump 0
+139.800 L3329 {} x 29501.0 vx 0 g 1 on 115 [29392,29522] moving pend 0 jump 0
+139.833 L3329 {} x 29501.0 vx 0 g 1 on 115 [29392,29522] moving pend 0 jump 0
+139.867 L3329 {} x 29501.0 vx 0 g 1 on 115 [29392,29522] moving pend 0 jump 0
+139.900 L3329 {} x 29501.0 vx 0 g 1 on 115 [29392,29522] moving pend 0 jump 0
+139.933 L3329 {} x 29501.0 vx 0 g 1 on 115 [29392,29522] moving pend 0 jump 0
+139.967 L3329 {} x 29501.0 vx 0 g 1 on 115 [29392,29522] moving pend 0 jump 0
+140.000 L3329 {} x 29501.0 vx 0 g 1 on 115 [29392,29522] moving pend 0 jump 0
+140.033 L3329 {} x 29501.0 vx 0 g 1 on 115 [29392,29522] moving pend 0 jump 0
+140.067 L3329 {} x 29501.0 vx 0 g 1 on 115 [29392,29522] moving pend 0 jump 0
+140.100 L3329 {} x 29501.0 vx 0 g 1 on 115 [29392,29522] moving pend 0 jump 0
+140.133 L3329 {} x 29501.0 vx 0 g 1 on 115 [29392,29522] moving pend 0 jump 0
+140.167 L3329 {} x 29501.0 vx 0 g 1 on 115 [29392,29522] moving pend 0 jump 0
+140.200 L3329 {} x 29501.0 vx 0 g 1 on 115 [29392,29522] moving pend 0 jump 0
+140.233 L3302 {"right":true} x 29501.0 vx 0 g 0 on -1  pend 0 jump 0

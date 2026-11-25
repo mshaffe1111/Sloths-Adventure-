@@ -1,0 +1,14 @@
+#!/bin/bash
+# mktree.sh <name> <hash>: a frozen sparse tree (src tools public + top-level files), node_modules symlinked (D115)
+set -e
+n=$1; h=$2; d=/home/user/fz/$n
+cd /home/user/Sloths-Adventure-
+[ -d "$d" ] && { echo "$n exists"; exit 0; }
+git worktree add -q --detach --no-checkout "$d" "$h"
+cd "$d"
+git sparse-checkout set --cone src tools public >/dev/null 2>&1
+git checkout -q --detach "$h"
+ln -s /home/user/Sloths-Adventure-/node_modules node_modules
+chattr -R +i src tools
+chattr -R -i src/game/gen2/proven
+echo "$n $(git rev-parse --short=9 HEAD) frozen"

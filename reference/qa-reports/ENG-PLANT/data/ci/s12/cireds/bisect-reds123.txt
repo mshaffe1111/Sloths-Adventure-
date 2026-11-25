@@ -1,0 +1,14 @@
+c27: ok:on the run it was found on, |ok:planted: with waitRise off, |ok:planted: with the against-th|
+ci1: not ok:on the run it was found on, |ok:planted: with waitRise off, |not ok:planted: with the against-th|
+ci2: not ok:on the run it was found on, |ok:planted: with waitRise off, |not ok:planted: with the against-th|
+ci3: not ok:on the run it was found on, |ok:planted: with waitRise off, |not ok:planted: with the against-th|
+ci4: not ok:on the run it was found on, |ok:planted: with waitRise off, |not ok:planted: with the against-th|
+ci5: not ok:on the run it was found on, |ok:planted: with waitRise off, |not ok:planted: with the against-th|
+ci6: not ok:on the run it was found on, |ok:planted: with waitRise off, |not ok:planted: with the against-th|
+ci7: not ok:on the run it was found on, |ok:planted: with waitRise off, |not ok:planted: with the against-th|
+ci8: not ok:on the run it was found on, |ok:planted: with waitRise off, |not ok:planted: with the against-th|
+ci9: not ok:on the run it was found on, |ok:planted: with waitRise off, |not ok:planted: with the against-th|
+ci10: not ok:on the run it was found on, |ok:planted: with waitRise off, |not ok:planted: with the against-th|
+ci11: not ok:on the run it was found on, |ok:planted: with waitRise off, |not ok:planted: with the against-th|
+ci12: not ok:on the run it was found on, |ok:planted: with waitRise off, |not ok:planted: with the against-th|
+ci13: not ok:on the run it was found on, |ok:planted: with waitRise off, |not ok:planted: with the against-th|

@@ -1,0 +1,24 @@
+import json, sys
+# s9-diff.py <ci10.json> <ci11.json>: the first frame the trees part, the presses at it, what each press came to; CI-11's standing presses
+A, B = (json.load(open(f)) for f in sys.argv[1:3])
+def after(R, t0, n=150):
+    fr = R['fr']; i = next((k for k, f in enumerate(fr) if f[0] > t0 - 1e-6), len(fr))
+    for k in range(i + 1, min(i + n, len(fr))):
+        f, g = fr[k - 1], fr[k]
+        if g[5] is not None and f[5] is None: return f"caught swing #{g[5]} at {g[0]:.3f} (frame {k - i}) x {g[1]:.1f}"
+        if g[3] and not f[3]: return f"down on #{g[4]} at {g[0]:.3f} (frame {k - i}) x {g[1]:.1f} y {g[2]:.0f}"
+    return 'nothing in 5 s'
+def jl(R, a, b): return [f"{j['t']:.3f} x{j['x']:.1f} on#{j['on']} {j['j']['k'] if j['j'] else '-'} h{j['j']['h'] if j['j'] else '-'}{' STAND h' + str(j['sh']) if j['stand'] else ''}" for j in R['jumps'] if a <= j['t'] <= b]
+fa, fb = A['fr'], B['fr']
+d = next((k for k in range(min(len(fa), len(fb))) if abs(fa[k][1] - fb[k][1]) > 0.005 or abs(fa[k][2] - fb[k][2]) > 0.005 or fa[k][5] != fb[k][5]), None)
+print(f"CI-10 {A['end']} {A['time']} r{A['rescues']} stuck {A['stuck']} | CI-11 {B['end']} {B['time']} r{B['rescues']} stuck {B['stuck']}")
+if d is None: print('frames identical'); sys.exit()
+t = fa[d][0]
+print(f"part at frame {d} t {t:.3f}: CI-10 x {fa[d][1]:.2f} y {fa[d][2]:.2f} | CI-11 x {fb[d][1]:.2f} y {fb[d][2]:.2f}; before: x {fa[d-1][1]:.2f} on #{fa[d-1][4]} g{fa[d-1][3]}")
+for n, R in (('CI-10', A), ('CI-11', B)):
+    js = [j for j in R['jumps'] if t - 1.0 <= j['t'] <= t + 0.2]
+    print(f"  {n} presses near: {jl(R, t - 1.0, t + 0.2)}")
+    for j in js: print(f"    {n} {j['t']:.3f} -> {after(R, j['t'])}")
+print('CI-11 standing presses (all):')
+for j in B['jumps']:
+    if j['stand']: print(f"  {j['t']:.3f} x {j['x']:.1f} y {j['y']:.0f} off log #{j['on']} held {j['sh']} -> {after(B, j['t'])}")

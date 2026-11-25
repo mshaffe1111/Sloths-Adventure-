@@ -1,0 +1,44 @@
+ENG 125.333 x 23308.7 y 822.0 vx 0 g 1 on #111 sw -
+VFL 125.333 x 23308.7 vx 0 g 1 on #111 log 23165-23325 vines #10@23506 -> null runUp - stand -
+ENG 125.367 x 23311.2 y 822.0 vx 0 g 1 on #111 sw -
+VFL 125.367 x 23311.2 vx 0 g 1 on #111 log 23167-23327 vines #10@23506 -> null runUp - stand -
+ENG 125.400 x 23310.9 y 822.0 vx -87 g 1 on #111 sw -
+VFL 125.400 x 23310.9 vx -87 g 1 on #111 log 23170-23330 vines #10@23506 -> null runUp - stand -
+ENG 125.433 x 23307.6 y 822.0 vx -173 g 1 on #111 sw -
+VFL 125.433 x 23307.6 vx -173 g 1 on #111 log 23172-23332 vines #10@23506 -> null runUp - stand -
+ENG 125.467 x 23301.4 y 822.0 vx -260 g 1 on #111 sw -
+VFL 125.467 x 23301.4 vx -260 g 1 on #111 log 23175-23335 vines #10@23506 -> null runUp - stand -
+ENG 125.500 x 23299.0 y 822.0 vx -147 g 1 on #111 sw -
+VFL 125.500 x 23299.0 vx -147 g 1 on #111 log 23177-23337 vines #10@23506 -> null runUp - stand -
+ENG 125.533 x 23300.4 y 822.0 vx -33 g 1 on #111 sw -
+VFL 125.533 x 23300.4 vx -33 g 1 on #111 log 23180-23340 vines #10@23506 -> null runUp - stand -
+ENG 125.567 x 23302.9 y 822.0 vx 0 g 1 on #111 sw -
+VFL 125.567 x 23302.9 vx 0 g 1 on #111 log 23182-23342 vines #10@23506 -> null runUp - stand -
+ENG 125.600 x 23305.4 y 822.0 vx 0 g 1 on #111 sw -
+VFL 125.600 x 23305.4 vx 0 g 1 on #111 log 23185-23345 vines #10@23506 -> null runUp - stand -
+ENG 125.633 x 23307.9 y 822.0 vx 0 g 1 on #111 sw -
+VFL 125.633 x 23307.9 vx 0 g 1 on #111 log 23187-23347 vines #10@23506 -> null runUp - stand -
+ENG 125.667 x 23310.4 y 822.0 vx 0 g 1 on #111 sw -
+VFL 125.667 x 23310.4 vx 0 g 1 on #111 log 23190-23350 vines #10@23506 -> null runUp - stand -
+ENG 125.700 x 23312.9 y 822.0 vx 0 g 1 on #111 sw -
+VFL 125.700 x 23312.9 vx 0 g 1 on #111 log 23192-23352 vines #10@23506 -> null runUp - stand -
+ENG 125.733 x 23315.4 y 822.0 vx 0 g 1 on #111 sw -
+VFL 125.733 x 23315.4 vx 0 g 1 on #111 log 23195-23355 vines #10@23506 -> null runUp - stand -
+ENG 125.767 x 23317.9 y 822.0 vx 0 g 1 on #111 sw -
+VFL 125.767 x 23317.9 vx 0 g 1 on #111 log 23197-23357 vines #10@23506 -> null runUp - stand -
+ENG 125.800 x 23320.4 y 822.0 vx 0 g 1 on #111 sw -
+VFL 125.800 x 23320.4 vx 0 g 1 on #111 log 23200-23360 vines #10@23506 -> null runUp - stand -
+ENG 125.833 x 23322.9 y 822.0 vx 0 g 1 on #111 sw -
+VFL 125.833 x 23322.9 vx 0 g 1 on #111 log 23202-23362 vines #10@23506 -> null runUp - stand -
+ENG 125.867 x 23325.4 y 822.0 vx 0 g 1 on #111 sw -
+VFL 125.867 x 23325.4 vx 0 g 1 on #111 log 23205-23365 vines #10@23506 -> null runUp - stand -
+ENG 125.900 x 23327.9 y 822.0 vx 0 g 1 on #111 sw -
+VFL 125.900 x 23327.9 vx 0 g 1 on #111 log 23207-23367 vines #10@23506 -> null runUp - stand -
+ENG 125.933 x 23330.4 y 822.0 vx 0 g 1 on #111 sw -
+VFL 125.933 x 23330.4 vx 0 g 1 on #111 log 23210-23370 vines #10@23506 -> null runUp - stand -
+ENG 125.967 x 23332.9 y 822.0 vx 0 g 1 on #111 sw -
+VFL 125.967 x 23332.9 vx 0 g 1 on #111 log 23212-23372 vines #10@23506 -> null runUp - stand -
+ENG 126.000 x 23335.4 y 822.0 vx 0 g 1 on #111 sw -
+JUMP 126.000 x 23335.4 {"t0":125.99999999999541,"x":23335.41544880555,"y":822,"cur":1144,"kind":"single","hold":0.16,"upOnly":0,"dir":1,"pressed2":false,"dblAt":-207.92845108080655,"d2":-1,"left":false,"harms":0,"running":false}
+VFL 126.000 x 23335.4 vx 0 g 1 on #111 log 23215-23375 vines #10@23506 -> {"right":true,"press":true,"jump":true} runUp - stand -
+ENG 126.033 x 23343.3 y 802.8 vx 162 g 0 on #-1 sw -

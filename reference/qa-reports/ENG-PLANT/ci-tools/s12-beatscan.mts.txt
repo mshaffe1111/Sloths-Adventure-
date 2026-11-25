@@ -1,0 +1,39 @@
+// beatscan: the CI-14 toy's breath check (hopJudged 'CI-14') over whole runs: per seed, the beat-row starts off a floor that stays and the
+// ones short of the breath (left < need - DT - lag). usage: tsx beatscan.mts <tree> <stage> <bot> <setting> <seeds a-b>
+const [T, stage, bot, setting, seedsS] = process.argv.slice(2);
+await import(T + '/src/game/headlessDom.ts');
+const ft: any = await import(T + '/tools/inspect/firsttimer.ts');
+const cb: any = await import(T + '/tools/inspect/castBots.ts');
+const { PAD_FAIR } = await import(T + '/src/game/gen2/rideLay.ts');
+const DT = 1 / 30;
+const who = cb.CAST_BOTS[bot][setting];
+const lagMax = who.thumb[0] + 3 * who.thumb[1];
+const [a, b] = seedsS.split('-').map(Number);
+for (let seed = a; seed <= (b ?? a); seed++) {
+  const starts: any[] = [];
+  let last: any = null, open: any = null;
+  const r = ft.firstTimer(stage, seed, who, { cap: 1200, dotSetting: true, onFrame: (s: any) => {
+    const p = s.e.player;
+    const was = last?.on != null ? s.platforms.find((q: any) => q.id === last.on) : undefined;
+    if (last?.g && !p.grounded && was && !was.pad) open = { t: s.t, from: was, x: last.x };
+    if (open && p.grounded) {
+      const on = s.platforms.find((q: any) => q.id === s.e.standingOnId);
+      if (on?.pad?.by === 'beat' && on.pad.clock && on.id !== open.from.id) {
+        const rd = s.e.clock.read(on.pad.clock, on.pad.shift);
+        const def = (s.stage.clocks ?? []).find((c: any) => c.id === on.pad.clock);
+        const warn = def?.phases.find((ph: any) => ph.name === 'warn')?.seconds ?? 0;
+        const dir = on.x > open.x ? 1 : -1;
+        const edge = dir > 0 ? open.from.x + open.from.width : open.from.x;
+        const row = s.platforms.filter((q: any) => Math.abs(q.y - open.from.y) < 90 && q !== open.from && (dir > 0 ? q.x >= edge - 4 : q.x + q.width <= edge + 4)).sort((x: any, y: any) => (dir > 0 ? x.x - y.x : y.x - x.x));
+        const stays = row.find((q: any) => q.pad?.by !== 'beat');
+        const across = stays ? Math.abs((dir > 0 ? stays.x : stays.x + stays.width) - edge) : Infinity;
+        const left = (rd.phase === 'off' ? rd.left + warn : rd.phase === 'warn' ? rd.left : 0) + (s.t - open.t);
+        starts.push({ t: open.t, from: open.from.id, on: on.id, left, need: across / PAD_FAIR.pace });
+      }
+      open = null;
+    }
+    last = { g: p.grounded, on: s.e.standingOnId, x: p.x };
+  } });
+  const bad = starts.filter((s) => s.left < s.need - DT - lagMax);
+  console.log(`${stage} ${bot} ${setting} ${seed} ${r.end} ${r.time} r${r.rescues} | starts ${starts.length} short ${bad.length} ${bad.map((s) => `#${s.from}->#${s.on}@${s.t.toFixed(2)} ${s.left.toFixed(2)}/${s.need.toFixed(2)}`).join(' ')}`);
+}

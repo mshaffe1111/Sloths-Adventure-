@@ -1,0 +1,7 @@
+#!/bin/bash
+# mkprobe.sh <step>: an unfrozen probe copy of frozen tree <step> with CI-15's three test files (bisect of the CI line's reds 1-3)
+s=$1; d=/home/user/fz/pt-$s; rm -rf $d; mkdir $d
+for f in src public package.json tsconfig.json; do ln -s /home/user/fz/$s/$f $d/$f; done
+ln -s /home/user/Sloths-Adventure-/node_modules $d/node_modules; ln -s /home/user/fz/ci15/reference $d/reference
+cp -r /home/user/fz/$s/tools $d/tools; chmod -R u+w $d/tools
+for t in riverRide firsttimer padRide; do cp /home/user/fz/ci15/tools/inspect/$t.test.ts $d/tools/inspect/; done

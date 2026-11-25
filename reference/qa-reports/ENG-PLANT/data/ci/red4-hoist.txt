@@ -1,0 +1,46 @@
+# red 4 after CI-8: the three hopJudged rows CI-8 moved, engine frames (hfprobe2: game time) and Easy 5's judged flight (HF print, unfrozen copy)
+== easy2
+H edgeWait q#80 t 121.400 x 6248.8 hold 0.188 landed 76
+P #80 drift x 5556.0..5796.0 y 1470 h 28
+P #76 solid x 6100.0..6380.0 y 1442 h 178
+forgive {"coyote":0.167,"buffer":0.2,"landPx":12,"mantle":26} w 44 easy true
+RUN f3704 t121.933 x6101.5 y1411.8 vy523 vx-268 g0 on-1 os0 q80 x6017.3 past-35.9
+RUN f3705 t121.967 x6092.0 y1432.0 vy607 vx-285 g0 on-1 os0 q80 x6014.7 past-42.7
+RUN f3706 t122.000 x6094.0 y1442.0 vy0 vx-268 g1 on76 os0 q80 x6012.0 past-38.0
+RUN f3707 t122.033 x6084.5 y1442.0 vy0 vx-285 g1 on76 q80 x6009.3 past-44.8
+== normal2
+H edgeWait q#91 t 156.400 x 3303.8 hold 0.055 landed 87
+P #91 drift x 2915.3..3155.3 y 1466 h 28
+P #87 solid x 3222.0..3502.0 y 1438 h 190
+forgive {"coyote":0.133,"buffer":0.133,"landPx":8,"mantle":26} w 44 easy false
+RUN f4702 t156.733 x3225.7 y1423.0 vy357 vx-268 g0 on-1 os0 q91 x3163.3 past-57.6
+RUN f4703 t156.767 x3216.2 y1437.7 vy440 vx-285 g0 on-1 os0 q91 x3160.7 past-64.5
+RUN f4704 t156.800 x3216.0 y1438.0 vy0 vx-268 g1 on87 os0 q91 x3158.0 past-62.0
+RUN f4705 t156.833 x3206.5 y1440.8 vy83 vx-285 g0 on-1 q91 x3155.3 past-68.8
+== easy5 (engine)
+P #91 drift x 3184.0..3424.0 y 1537 h 28
+P #88 solid x 2376.0..2744.0 y 1509 h 149.5536842105264
+forgive {"coyote":0.167,"buffer":0.2,"landPx":12,"mantle":26} w 44 easy true
+RUN f4273 t142.433 x3045.3 y1537.0 vy0 vx-285 g1 on90 q91 x2653.3 past272.0
+RUN f4274 t142.467 x3033.7 y1537.0 vy0 vx-268 g1 on90 q91 x2650.7 past263.0
+RUN f4275 t142.500 x3018.9 y1517.8 vy-577 vx-365 g0 on-1 q91 x2648.0 past250.9
+RUN f4276 t142.533 x3007.3 y1500.7 vy-513 vx-348 g0 on-1 os0 q91 x2645.3 past242.0
+RUN f4277 t142.567 x2996.3 y1485.7 vy-450 vx-330 g0 on-1 os0 q91 x2642.7 past233.6
+RUN f4278 t142.600 x2985.8 y1472.8 vy-387 vx-313 g0 on-1 os0 q91 x2640.0 past225.8
+RUN f4279 t142.633 x2976.0 y1462.0 vy-323 vx-296 g0 on-1 os0 q91 x2637.3 past218.7
+RUN f4280 t142.667 x2966.7 y1456.4 vy-167 vx-278 g0 on-1 os0 q91 x2634.7 past212.0
+RUN f4300 t143.333 x2782.5 y1460.5 vy607 vx-268 g0 on-1 os0 q91 x2581.3 past81.2
+RUN f4301 t143.367 x2773.0 y1483.5 vy690 vx-285 g0 on-1 os0 q91 x2578.7 past74.3
+RUN f4302 t143.400 x2758.8 y1509.0 vy0 vx-268 g1 on88 os0 q91 x2576.0 past62.8
+== easy5 (judged flight 7 of 11 at t0 142.467: the double the run flew, y frame for frame; x 3.8 px short at i1, 8 px at i12)
+HF q91 t0 142.467 i1 x3022.7 y1517.8 prev1537.0 vy-577 vx-330 steer-1 held1
+HF q91 t0 142.467 i2 x3012.3 y1500.7 prev1517.8 vy-513 vx-313 steer-1 held1
+HF q91 t0 142.467 i3 x3002.4 y1485.7 prev1500.7 vy-450 vx-296 steer-1 held1
+HF q91 t0 142.467 i4 x2993.1 y1472.8 prev1485.7 vy-387 vx-278 steer-1 held1
+HF q91 t0 142.467 i5 x2983.6 y1462.0 prev1472.8 vy-323 vx-285 steer-1 held1
+HF q91 t0 142.467 i6 x2974.7 y1456.4 prev1462.0 vy-167 vx-268 steer-1 held0
+HF q91 t0 142.467 i12 x2919.4 y1422.0 prev1438.0 vy-478 vx-268 steer-1 held1
+HF q91 t0 142.467 i26 x2790.5 y1460.5 prev1440.3 vy607 vx-268 steer-1 held0
+HF q91 t0 142.467 i27 x2781.0 y1483.5 prev1460.5 vy690 vx-285 steer-1 held0
+HF q91 t0 142.467 i28 x2772.1 y1509.3 prev1483.5 vy773 vx-268 steer-1 held0
+HF q91 t0 142.467 i29 x2762.6 y1537.9 prev1509.3 vy857 vx-285 steer-1 held0

@@ -1,0 +1,74 @@
+ENG 76.033 x 16098.2 y 835.4 vx 216 g 0 on #-1 sw 5
+ENG 76.067 x 16105.1 y 832.9 vx 199 g 0 on #-1 sw 5
+JUMP 76.067 x 16105.1 {"t0":76.06666666666491,"x":16105.086736559331,"y":832.9325605497876,"cur":791,"kind":"single","hold":0.06666666666666667,"upOnly":0,"dir":1,"pressed2":false,"dblAt":-255.78151613939553,"d2":-1,"left":false,"harms":0,"running":false}
+ENG 76.100 x 16109.7 y 825.9 vx 520 g 0 on #-1 sw -
+ENG 76.133 x 16126.4 y 804.1 vx 503 g 0 on #-1 sw -
+ENG 76.167 x 16142.6 y 784.4 vx 485 g 0 on #-1 sw -
+ENG 76.200 x 16158.2 y 766.8 vx 468 g 0 on #-1 sw -
+ENG 76.233 x 16173.2 y 751.3 vx 451 g 0 on #-1 sw -
+ENG 76.267 x 16187.7 y 737.9 vx 433 g 0 on #-1 sw -
+ENG 76.300 x 16201.5 y 726.7 vx 416 g 0 on #-1 sw -
+ENG 76.333 x 16214.8 y 717.5 vx 399 g 0 on #-1 sw -
+ENG 76.367 x 16227.5 y 710.5 vx 381 g 0 on #-1 sw -
+ENG 76.400 x 16239.7 y 705.6 vx 364 g 0 on #-1 sw -
+ENG 76.433 x 16251.2 y 702.8 vx 347 g 0 on #-1 sw -
+ENG 76.467 x 16262.2 y 702.1 vx 329 g 0 on #-1 sw -
+ENG 76.500 x 16272.6 y 703.5 vx 312 g 0 on #-1 sw -
+ENG 76.533 x 16282.4 y 707.7 vx 295 g 0 on #-1 sw -
+ENG 76.567 x 16291.7 y 714.6 vx 277 g 0 on #-1 sw -
+ENG 76.600 x 16301.2 y 724.4 vx 285 g 0 on #-1 sw -
+ENG 76.633 x 16310.1 y 736.9 vx 268 g 0 on #-1 sw -
+ENG 76.667 x 16319.6 y 752.2 vx 285 g 0 on #-1 sw -
+ENG 76.700 x 16328.5 y 770.3 vx 268 g 0 on #-1 sw -
+ENG 76.733 x 16338.0 y 791.1 vx 285 g 0 on #-1 sw -
+ENG 76.767 x 16346.9 y 814.8 vx 268 g 0 on #-1 sw -
+ENG 76.800 x 16356.4 y 841.2 vx 285 g 0 on #-1 sw -
+ENG 76.833 x 16365.4 y 870.4 vx 268 g 0 on #-1 sw -
+ENG 76.867 x 16374.9 y 902.0 vx 285 g 0 on #-1 sw -
+ENG 76.900 x 16383.8 y 904.0 vx 268 g 1 on #75 sw -
+VFL 76.900 x 16383.8 vx 268 g 1 on #75 log 16349-16499 vines #6@16572 -> null runUp - stand -
+ENG 76.933 x 16395.9 y 904.0 vx 285 g 1 on #75 sw -
+VFL 76.933 x 16395.9 vx 285 g 1 on #75 log 16352-16502 vines #6@16572 -> null runUp - stand -
+ENG 76.967 x 16407.5 y 904.0 vx 268 g 1 on #75 sw -
+VFL 76.967 x 16407.5 vx 268 g 1 on #75 log 16354-16504 vines #6@16572 -> null runUp - stand -
+ENG 77.000 x 16419.7 y 904.0 vx 285 g 1 on #75 sw -
+VFL 77.000 x 16419.7 vx 285 g 1 on #75 log 16357-16507 vines #6@16572 -> null runUp - stand -
+ENG 77.033 x 16428.1 y 904.0 vx 172 g 1 on #75 sw -
+VFL 77.033 x 16428.1 vx 172 g 1 on #75 log 16360-16510 vines #6@16572 -> null runUp - stand -
+ENG 77.067 x 16432.7 y 904.0 vx 58 g 1 on #75 sw -
+VFL 77.067 x 16432.7 vx 58 g 1 on #75 log 16362-16512 vines #6@16572 -> null runUp - stand -
+ENG 77.100 x 16435.4 y 904.0 vx 0 g 1 on #75 sw -
+VFL 77.100 x 16435.4 vx 0 g 1 on #75 log 16365-16515 vines #6@16572 -> null runUp - stand -
+ENG 77.133 x 16438.0 y 904.0 vx 0 g 1 on #75 sw -
+VFL 77.133 x 16438.0 vx 0 g 1 on #75 log 16368-16518 vines #6@16572 -> null runUp - stand -
+ENG 77.167 x 16440.7 y 904.0 vx 0 g 1 on #75 sw -
+VFL 77.167 x 16440.7 vx 0 g 1 on #75 log 16370-16520 vines #6@16572 -> null runUp - stand -
+ENG 77.200 x 16443.4 y 904.0 vx 0 g 1 on #75 sw -
+VFL 77.200 x 16443.4 vx 0 g 1 on #75 log 16373-16523 vines #6@16572 -> null runUp - stand -
+ENG 77.233 x 16446.0 y 904.0 vx 0 g 1 on #75 sw -
+VFL 77.233 x 16446.0 vx 0 g 1 on #75 log 16376-16526 vines #6@16572 -> null runUp - stand -
+ENG 77.267 x 16451.6 y 904.0 vx 87 g 1 on #75 sw -
+VFL 77.267 x 16451.6 vx 87 g 1 on #75 log 16378-16528 vines #6@16572 -> null runUp - stand -
+ENG 77.300 x 16460.0 y 904.0 vx 173 g 1 on #75 sw -
+VFL 77.300 x 16460.0 vx 173 g 1 on #75 log 16381-16531 vines #6@16572 -> null runUp - stand -
+ENG 77.333 x 16471.4 y 904.0 vx 260 g 1 on #75 sw -
+VFL 77.333 x 16471.4 vx 260 g 1 on #75 log 16384-16534 vines #6@16572 -> null runUp - stand -
+ENG 77.367 x 16483.5 y 904.0 vx 285 g 1 on #75 sw -
+VFL 77.367 x 16483.5 vx 285 g 1 on #75 log 16386-16536 vines #6@16572 -> null runUp - stand -
+ENG 77.400 x 16495.1 y 904.0 vx 268 g 1 on #75 sw -
+VFL 77.400 x 16495.1 vx 268 g 1 on #75 log 16389-16539 vines #6@16572 -> null runUp - stand -
+ENG 77.433 x 16507.3 y 904.0 vx 285 g 1 on #75 sw -
+VFL 77.433 x 16507.3 vx 285 g 1 on #75 log 16392-16542 vines #6@16572 -> null runUp - stand -
+ENG 77.467 x 16518.9 y 904.0 vx 268 g 1 on #75 sw -
+VFL 77.467 x 16518.9 vx 268 g 1 on #75 log 16394-16544 vines #6@16572 -> null runUp - stand -
+ENG 77.500 x 16531.0 y 904.0 vx 285 g 1 on #75 sw -
+VFL 77.500 x 16531.0 vx 285 g 1 on #75 log 16397-16547 vines #6@16572 -> null runUp - stand -
+ENG 77.533 x 16542.6 y 904.0 vx 268 g 1 on #75 sw -
+VFL 77.533 x 16542.6 vx 268 g 1 on #75 log 16400-16550 vines #6@16572 -> null runUp - stand -
+ENG 77.567 x 16554.8 y 904.0 vx 285 g 1 on #75 sw -
+VFL 77.567 x 16554.8 vx 285 g 1 on #75 log 16402-16552 vines #6@16572 -> null runUp - stand -
+ENG 77.600 x 16566.4 y 904.0 vx 268 g 1 on #75 sw -
+ENG 77.633 x 16578.6 y 906.8 vx 285 g 0 on #-1 sw -
+ENG 77.667 x 16587.5 y 912.3 vx 268 g 0 on #-1 sw -
+ENG 77.700 x 16597.0 y 920.7 vx 285 g 0 on #-1 sw -
+ENG 77.733 x 15737.0 y 876.0 vx 0 g 1 on #-1 sw -
