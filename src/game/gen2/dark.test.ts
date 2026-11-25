@@ -92,20 +92,20 @@ function relay(z: Zone, platforms: Platform[], deeper: number): Zone {
   return out.zones[0];
 }
 /** (ENG-DARK box 14) the SHAPE no real roll deals any more (ENG-DOWNBOT's lay, merged): a DEEP drop. Roll 1 Normal's first sleeping DROP
- *  rim whose landing piece, moved by hand 700 px deeper (and `shift` px along), still takes his drop, with a hand-laid floor 150 px
- *  under that piece (so its own rims have landings in the dark); the dark over it laid again (relay) */
-function deepDrop(shift: (r: DarkRim) => number) {
+ *  rim whose landing piece, moved by hand to `drop` px under the rim (and `shift` px along), still takes his drop as a drop; with
+ *  `floor`, a hand-laid floor that many px under that piece (so its own rims have landings in the dark); the dark laid again (relay) */
+function deepDrop(drop: number, shift: (r: DarkRim) => number, floor: number | null) {
   const st = built(1, 'normal');
   for (const z of st.zones ?? []) {
     if (z.kind !== 'dark' || !z.lights?.length) continue;
     for (const r of darkRims({ platforms: st.platforms, zones: [z] })) {
       if (!r.drop || !r.light?.sleep) continue;
-      const moved: Platform = { ...r.onto, y: r.onto.y + 700, x: r.onto.x + shift(r) };
-      const floor: Platform = { ...r.onto, x: moved.x - 400, width: moved.width + 800, y: moved.y + 150 };
-      const platforms = [...st.platforms.map((p) => (p === r.onto ? moved : p)), floor];
-      const zone = relay(z, platforms, 900);
+      const moved: Platform = { ...r.onto, y: r.y + drop, x: r.onto.x + shift(r) };
+      const under: Platform[] = floor === null ? [] : [{ ...r.onto, x: moved.x - 400, width: moved.width + 800, y: moved.y + floor }];
+      const platforms = [...st.platforms.map((p) => (p === r.onto ? moved : p)), ...under];
+      const zone = relay(z, platforms, Math.max(0, moved.y + (floor ?? 0) + 100 - (z.bottom - DARK_GLOW.below)));
       const rim = darkRims({ platforms, zones: [zone] }).find((q) => q.piece === r.piece && q.dir === r.dir);
-      if (rim?.onto === moved && rim.light?.sleep) return { stage: { platforms, zones: [zone] }, rim, moved };
+      if (rim?.onto === moved && rim.drop && rim.light?.sleep) return { stage: { platforms, zones: [zone] }, rim, moved };
     }
   }
   return null;
@@ -342,8 +342,9 @@ test("RimWatch: a jump UP over a rim onto higher ground is no crossing (the lead
 
 test("a wall rim's light hangs no deeper than a stop on the rim reaches (GLOW_REACH.down): a SHAPE toy, a deep drop on a real rim (deepDrop): its light hangs within the reach and a stop wakes it (darkGaps GREEN); its light hung over the landing as before, past the reach: RED", () => {
   // (Normal roll 21's wall-side rim at x 24 was the real row; on ENG-DOWNBOT's lay (merged, box 14) no roll 1-40 has a drop deeper than a
-  //  stop's reach (probes/anchors.mts), so the toy is hand-built: roll 1's first sleeping drop rim, its landing piece moved 700 px deeper)
-  const d = deepDrop(() => 0);
+  //  stop's reach (probes/anchors.mts), so the toy is hand-built: roll 1's first sleeping drop rim, its landing piece moved to 560 px under it)
+  // (560 px: past the stop's reach (GLOW_REACH.down + DARK_ZONE.lightUp), the light hung at the reach still reaching the landing)
+  const d = deepDrop(560, () => 0, null);
   assert.ok(d, 'a deep drop on a real rim');
   const { stage, rim } = d;
   assert.ok(rim.land.y - DARK_ZONE.lightUp > rim.y + GLOW_REACH.down, `the landing lies past the reach (${Math.round(rim.land.y - rim.y)} px down)`);
@@ -357,8 +358,10 @@ test("a wall rim's light hangs no deeper than a stop on the rim reaches (GLOW_RE
 
 test("an edge BEHIND a dark-rim drop's landing is no edge he lands toward (the lead's ruling (i)): a SHAPE toy, a deep drop on a real rim whose landing piece ends 13 px behind his touchdown, out of that drop's light: darkLandings GREEN; that edge judged as one he lands toward: RED (the plant)", () => {
   // (ENG-DARK box 13: no real row decides the exemption (probes/behind.mts, rolls 1-12); the lead's ruling (box 14): a hand-built SHAPE
-  //  toy on a real rim. The drop is deep (deepDrop: 700 px), so the light over its landing hangs at the stop's reach, far over that edge)
-  const d = deepDrop((r) => (r.dir > 0 ? r.x + 24 - 13 - r.onto.x : r.x - 24 + 13 - r.onto.width - r.onto.x));
+  //  toy on a real rim. The drop is deep (deepDrop: 608 px), so the light over its landing hangs at the stop's reach, out of that edge's reach)
+  // (608 px: the light hung at the stop's reach (GLOW_REACH.down) reaches his landing (188 px under it) and not that edge 13 px behind;
+  //  the floor 400 px under the landing piece gives that edge its own landing, its light out of reach of his landing)
+  const d = deepDrop(608, (r) => (r.dir > 0 ? r.x + 24 - 13 - r.onto.x : r.x - 24 + 13 - r.onto.width - r.onto.x), 400);
   assert.ok(d, 'a deep drop on a real rim');
   const { stage, rim, moved } = d;
   const back = darkRims(stage).find((q) => q.piece === moved && q.dir === -rim.dir);

@@ -1802,7 +1802,9 @@ export class FirstTimerRun {
       //  forth over it, a dark rim each pass: 3-1 draft adult and kid Normal 32, 31 and 26 crossings, ENG-DARK. Then the steer keeps
       //  him the way he was going. A point under his own piece is left as it was)
       const end = this.ledgeEnds(p, d);
-      return end && (at.x - end.own) * d > 0 && (at.x - end.run) * d <= 0 ? 0 : d;
+      // (kept the way he was going: his facing, never 0. With 0 the route's own x steered him, and with the way on under the seam it
+      //  flipped as he crossed it: the adult Normal on rolls 11 and 35 walked to and fro over an 18 px seam 12-17 times, ENG-DARK box 14)
+      return end && (at.x - end.own) * d > 0 && (at.x - end.run) * d <= 0 ? (this.sim.p.facing < 0 ? -1 : 1) : d;
     }
     return 0;
   }
