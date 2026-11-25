@@ -1398,6 +1398,11 @@ export function stillCoverNear(bushes: ReadonlyArray<{ x: number; w: number; y: 
   return best && d(best) < 600 ? best : null;
 }
 
+/** px short of a log's front he lets go of a walk to it (c26, the front stand): his run-on after a let-go at full run, the 12 px slide to a
+ *  stop (maxRun^2 / 2 groundDec) and a lift-off up to 2 frames late (19 px): the 31 of the edge plan's stand (look); he rests at the front,
+ *  the furthest-forward take-off the gate judges from (p.x), never past it (session 13's experiment walked to 30) */
+export const FRONT_STAND_PX = Math.round(PHYS.maxRun * PHYS.maxRun / (2 * PHYS.groundDec) + 2 * PHYS.maxRun * DT);
+
 export class FirstTimerRun {
   readonly sim: RealPlay;
   readonly e: Eng;
@@ -3746,6 +3751,11 @@ export class FirstTimerRun {
               //  front end with a 0.033 s tap the gate never saw reach the next log 80 px off, rode back to the bank and boarded again until
               //  rescued: 2-7 draft child Normal seeds 6 x 9412 and 8 x 8702, the stage's 'water ahead' stall (seeds 1-20 rescues 11 -> 3)
               //  The child's skill only (FirstTimer.reAim, ENG-BOT27b, the lead's ruling): on every bot it moved pacerLay's careful middle)
+              // (c26, the FRONT STAND (the lead's ruling (A), rule 28: the judged hop is the hop flown, from where he actually stands): on a log
+              //  running back at him, refused mid-log, he walks to the front before he stands. The gap branch fires where his tier's press
+              //  distance reaches past the lip, and gateSees judges from p.x, so from mid-log no hop ever landed and the log handed him back
+              //  until rescued: 2-7 c25 expert Normal 29 on #37 76 px behind its front (x 13,079), five hand-backs; handBack toy, riverRide.test)
+              if (dir * (edgeX - p.x) > FRONT_STAND_PX) { this.pending = null; this.lateArmed = null; return side(dir); }
               if (SKILLS.reAim && who.reAim && t - this.aim.since > who.stopReact) this.aim.end();
               this.pending = null; this.lateArmed = null; this.clockHeld = true; this.blockedT = 0; return {};
             }
@@ -3778,6 +3788,9 @@ export class FirstTimerRun {
               this.pending = null; this.lateArmed = null; this.clockHeld = true; this.blockedT = 0; return {};
             }
             this.aim.end();
+            // (c26, the front stand: nothing in reach, he stands at the log's front, where a hop lands when the next log comes round, not
+            //  where his look stopped him: 2-7 c25 middle Easy 11 stood on #19 37 px from its rear (x 9,379), handed back to #16, rescued)
+            if (!next && !bank && dir * (edgeX - p.x) > FRONT_STAND_PX) return side(dir);
             return next || bank ? this.startJump(dir, this.jumpFor(p, dir, here), false) : {};
           }
           if (!bank && !next) {
