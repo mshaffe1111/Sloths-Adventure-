@@ -30,7 +30,7 @@
 import { DT, RealPlay, levelConfig, type Pad } from '../../src/game/realPlay.ts';
 import { glanceView, glancing, hurt, touches } from '../../src/game/predators/core.ts';
 import type { PredatorDef, PredatorState } from '../../src/game/predators/types.ts';
-import { GameEngine } from '../../src/game/engine.ts';
+import { GameEngine, LIP_IN } from '../../src/game/engine.ts';
 import { frontBehind, type ChaseRun } from '../../src/game/chase.ts';
 import { rollRadius } from '../../src/game/rolling.ts';
 import type { Rolling } from '../../src/game/pieces/rollingPiece.ts';
@@ -55,7 +55,7 @@ import { padShows } from '../../src/game/pieces/padPiece.ts';
 import { PAD_FAIR } from '../../src/game/gen2/rideLay.ts';
 import { beatAt, beatOf, type Beat } from '../../src/game/clock.ts';
 import { drowsyJump } from '../../src/game/zones.ts';
-import { airStep, ASSIST, canGrabSwing, DOUBLE_RISE, FORGIVE, secondJumpV, JUMP_RISE, PHYS, SWING, reachJump, reachJumpHeld, TIMED, pressLaunches, groundStep, takeOffStep, vineAmp, vinePeriod } from '../../src/game/physics.ts';
+import { airStep, ASSIST, blockBeside, canGrabSwing, lipHasRoom, WALL_H, DOUBLE_RISE, FORGIVE, secondJumpV, JUMP_RISE, PHYS, SWING, reachJump, reachJumpHeld, TIMED, pressLaunches, groundStep, takeOffStep, vineAmp, vinePeriod } from '../../src/game/physics.ts';
 import { GLIDE, glideBrake } from '../../src/game/glide.ts';
 import { MIN_TOUCH_JUMP_HOLD_MS } from '../../src/game/inputEngine.ts';
 import { handsAlong } from '../../src/game/pieces/vineSnakePiece.ts';
@@ -1057,7 +1057,8 @@ export type DrawnHop = { kind: 'single' | 'double'; hold: number; d2: number; db
  * frames, uses them in place of its own draws (still made, so the main stream is as ever).
  */
 /** what else a judged flight may come down on first (hopFlies): the platforms near, where each is at a game time, his width, Easy, the help */
-export type FlightOthers = { list: Platform[]; at: (q: Platform) => (t: number) => number; w: number; easy: boolean; assist: number; land: number; glide?: boolean };
+/** (`h`, `mantle`, `stepHelp`: his height, forgive.mantle and the engine's step help, for a block's lip hoist: hopFlight) */
+export type FlightOthers = { list: Platform[]; at: (q: Platform) => (t: number) => number; w: number; easy: boolean; assist: number; land: number; glide?: boolean; h?: number; mantle?: number; stepHelp?: boolean };
 export type DrawnThumb = { drift: number[]; slip: number[]; release: number[] };
 /** the thumb at a judgment (FirstTimerRun.thumbify's state): the steer it holds, its drift, the late lift-off armed and left, and when
  *  the travel and a slip end (s from the judgment), with the habit (thumbSpeed, a tier bot's one lift-off per let-go) */
@@ -1145,6 +1146,23 @@ export function hopFlight(q: Platform, at: (t: number) => number, x: number, y: 
         const vy = glideBrake(b.vy, GLIDE.fallSpeed, DT);
         b.y += (vy - b.vy) * DT;
         b.vy = vy;
+      }
+    }
+    // (ENG-PLANT-CI red 4: and a block's lip hoist, the engine's walls (engine.ts, before the floors): a solid WALL_H or taller beside him
+    //  (blockBeside; his body, 19 px each side of his centre, into it), his feet at most forgive.mantle under its top, not rising faster than
+    //  120 px/s, met at its face from outside (his x before the move 2 px clear of it) or, with the step help, his body at most LIP_IN into
+    //  the face on its near half, and room on its top there (lipHasRoom): hoisted onto it. 2-7 home middle Easy 2 t 121.97 (bank #76, hoisted
+    //  to x 6094) and Normal 2 t 156.80 (bank #87, to x 3216), each falling past the face of the bank he hopped from, the body 1.5 / 4.3 px
+    //  into it (data/ci/red4-hoist.txt): the old forgiveness ("taken either way he moves") had stood in for this catch)
+    if (others?.mantle !== undefined && others.h !== undefined && b.vy >= -120) {
+      for (const o of others.list) {
+        if (o === q || o.broken || o.type !== 'solid' || o.height < WALL_H) continue;
+        if (!blockBeside(b.y, others.h, o) || b.x + 19 <= o.x || b.x - 19 >= o.x + o.width) continue;
+        const px = b.x - b.vx * DT;
+        const fromL = px + 19 <= o.x + 2, fromR = px - 19 >= o.x + o.width - 2;
+        const lipL = !!others.stepHelp && !fromL && !fromR && b.x + 19 - o.x <= LIP_IN && b.x < o.x + o.width / 2;
+        const lipR = !!others.stepHelp && !fromL && !fromR && o.x + o.width - (b.x - 19) <= LIP_IN && b.x >= o.x + o.width / 2;
+        if ((fromL || fromR || lipL || lipR) && b.y <= o.y + others.mantle && lipHasRoom(others.list, o, fromL || lipL ? -1 : 1, others.h)) return null;
       }
     }
     // (ENG-27o: anything else he comes down on first catches him there, by the engine's own catch (engine.ts onFloor: the side a centre
@@ -5012,9 +5030,9 @@ export class FirstTimerRun {
   /** the platforms a judged hop from here may come down on first (hopFlies, ENG-27o) */
   private flightOthers(): FlightOthers {
     const p = this.sim.p, rivers = (this.sim.stage as { rivers?: RiverZone[] }).rivers;
-    const e = this.e as unknown as { assistNow?: () => number; easy?: boolean; forgive?: { landPx: number }; skills?: { has: (k: string) => boolean }; kit?: { holding?: unknown } };
+    const e = this.e as unknown as { assistNow?: () => number; easy?: boolean; stepHelp?: boolean; forgive?: { landPx: number; mantle: number }; skills?: { has: (k: string) => boolean }; kit?: { holding?: unknown } };
     const list = this.sim.platforms.filter((o) => !o.broken && o.y > p.y - 160 && o.y < p.y + 220 && (o.drift ? o.drift.x1 > p.x - 700 && o.drift.x0 < p.x + 700 : o.x < p.x + 700 && o.x + o.width > p.x - 700));
-    return { list, at: (o) => floatAt(rivers, o), w: p.width, easy: !!e.easy, assist: e.assistNow?.() ?? 0, land: e.forgive?.landPx ?? 0, glide: !!e.skills?.has('glide') && !e.kit?.holding };
+    return { list, at: (o) => floatAt(rivers, o), w: p.width, easy: !!e.easy, assist: e.assistNow?.() ?? 0, land: e.forgive?.landPx ?? 0, glide: !!e.skills?.has('glide') && !e.kit?.holding, h: p.height, mantle: e.forgive?.mantle, stepHelp: !!e.stepHelp };
   }
 
   /** the thumb now, for hopFlies (ENG-27o): thumbify's state, its ends counted from now */
