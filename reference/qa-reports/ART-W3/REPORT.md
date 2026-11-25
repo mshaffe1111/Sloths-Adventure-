@@ -1,11 +1,18 @@
 # ART-W3 REPORT (R-165.449): World 3 standing + climbing art, 2-9 court art
 
-**EXACT NEXT STEP:** sandbox 6b0719adb6a90bbe997e1e17 (hf_sandbox handle hfsb2:mshaffe111:6b0719adb6a90bbe997e1e17) runs 3 specs back to
-back: spec-w3a (q.log), spec-w3b 2-9 bell + far (q2.log), spec-w3c root redo (q3.log). Per READY-<group>: `hf_sandbox_fs cat /w/<group>.tar.pN
---max-bytes 100000` for N < the READY count, `python3 -I tools/art/hf1113/pull.py /w/<group>.tar <scratch>/<group>.tar`, untar, judge with
-`python3 -I tools/art/hfw3/sheet.py <dir> <out.jpg>`, cut picks with tools/art/hfw3/cut3.py (K 1), add to reference/art/hfw3/cut/picks.json,
-`python3 -I tools/art/hfw3/catalog3.py && python3 tools/art/catalog_master.py --emit`, stills `tools/art/hfw3/stills.py`. TERMINATE the
-sandbox after the w3c pull. Then: HF-SPEND line, inventory.test count (226 + the W3A rows), pack.py dry-run proof, gates.
+**EXACT NEXT STEP:** sandbox job 6b0719adb6a90bbe997e1e17 (handle hfsb2:mshaffe111:6b0719adb6a90bbe997e1e17, created 12:24 PM ET, 2 h
+timeout) runs spec-w3a (q.log; done: shelfL, wallR, wallShelf, rootTall, rootShort; left: roofRoot, roofEnd), then chain p-3: spec-w3d grotto
+thorns, spec-w3b 2-9 bell + far, spec-w3c root redo (q-spec-*.log), then touches /w/ALL_DONE. For each new READY-<group> (roofRoot,
+roofEnd, thornBed, thornClump, bell, courtFar, rootTall, rootShort): `hf_sandbox_fs cat /w/<group>.tar.pN --max-bytes 100000` for N <
+the READY count, `python3 -I tools/art/hf1113/pull.py /w/<group>.tar <scratch>/<group>.tar`, untar, judge with
+`python3 -I tools/art/hfw3/sheet.py <dir> <out.jpg>` (sheet.py GAME needs thornBed/thornClump/courtFar sizes added), cut picks with
+tools/art/hfw3/cut3.py (K 1), add to reference/art/hfw3/cut/picks.json (+ META in catalog3.py for the thorns), then `python3 -I
+tools/art/hfw3/catalog3.py && python3 tools/art/catalog_master.py --emit`; stills `python3 -I tools/art/hfw3/stills.py
+reference/art/hfw3/cut <scratch>` -> reference/qa-reports/ART-W3/stills/. The bell's SWUNG frame is an edit of the picked bell take (a
+round 2). TERMINATE the sandbox after the last pull (`hf_sandbox terminate`). Then: HF-SPEND line, inventory.test count (226 + the W3A
+rows), pack.py dry-run proof (file count, size, artcheck, tsc), gates.
+LEAD APPROVED (stills 602ce38f7): shelfL-s37, wallR-s23-tile, wallShelf-s23, the barge REUSED. Thorns: grotto batch (spec-w3d), the W1
+bramble the named fallback.
 
 Pokey drawn 89.1 px. "Drawn" = the inventory's pokey_scale x 89.1 / h, measured from src/game/art/inventory/w3.json on main.
 w3-next pieces are CUT and in the catalog (ART-NEXT-c) but their files are on origin/t-art-next, not packed into the build.
