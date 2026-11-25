@@ -38,6 +38,12 @@ from box 4's 7b1aa3ba only in ENG-W3/REPORT.md), frozen, never pushed: the landi
    visit' RED).
 2. **t-eng-w3 is still c1008d8e** (ENG-DOWNBOT not landed); `git merge-tree` of t-eng-dark-wip with d4e1688e: **no conflict**
    (pipeline.ts and firsttimer.ts auto-merge).
+3. **tierBots 9/9 on ef811c2a** (exit 0). Suite shard 1 on ef811c2a STOPPED (exit 143) unread: the head moved (item 4; D118).
+4. **STOPPED BEFORE LANDING (order item 3: the x40 shows a new fault).** Box 4's x40 on ef811c2a left **13 unlit** (its commit
+   f68c5ca1: 'unlit 58 -> 13'); box 4 named cause 3 (the kid's held steer runs him over a dark rim the route never faced) and pushed a
+   CODE fix (f68c5ca1: firsttimer.ts glowSteer, darkBots toy C on roll 16, plant 16) while its session reads 'causes 3-4'. The lead is
+   told; every heavy run here waits for ONE named frozen code head. Plants 15/15 and tierBots 9/9 above do NOT carry to it (they re-run
+   once there, with plant 16).
 
 ## Box 4 (ENG-DARK-d) (start 12:08 PM ET by `date`)
 1. **UNLIT CAUSE 2: the BOT (b), not the wake. FIXED (98992ca5, merged at ef811c2a).** Traced on the real row (child Normal, 3-1 draft
