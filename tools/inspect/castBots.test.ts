@@ -287,6 +287,45 @@ test('a way down: on wood over the way on, he walks off its end where the way co
   assert.deepEqual(miss, []);
 });
 
+// (a stopped turn vine's catch hands on, off its near end, to a storey that runs on UNDER it and then back past where he landed: the way on
+//  is the storey's far end, past a 70 px dip with a shelf 108 px over the storey, then down the next turn's vine. Its shape is drafted
+//  3-1's (castBots normal seed 13 by x 713, ENG-DOWNBOT; no stage's numbers in the bots). He reads, wherever the way on is below him, the
+//  end of his own wood that it comes out past ('downEnd': fix A, every height, not only close across; fix B, his wood seeded from what
+//  is under his feet), and reaches the storey after it)
+function catchOnArena(who: FirstTimer, k: number, seen: (sim: { p: { x: number; y: number; grounded: boolean }; standingOn: number | null }) => void) {
+  const line = (a: { x: number; y: number }, b: { x: number; y: number }) => {
+    const n = Math.max(1, Math.round(Math.hypot(b.x - a.x, b.y - a.y) / 24));
+    return Array.from({ length: n }, (_, i) => ({ x: Math.round(a.x + ((b.x - a.x) * (i + 1)) / n), y: Math.round(a.y + ((b.y - a.y) * (i + 1)) / n) }));
+  };
+  const corners = [{ x: 549, y: 382 }, { x: 761, y: 382 }, { x: 795, y: 520 }, { x: 737, y: 520 }, { x: 699, y: 663 }, { x: 815, y: 663 }, { x: 205, y: 663 }, { x: 171, y: 836 }, { x: 255, y: 836 }];
+  const route = [corners[0], ...corners.slice(1).flatMap((c, i) => line(corners[i], c))];
+  downArena({
+    who, k, at: { x: 549, y: 382 }, cap: 30,
+    platforms: [thin(9001, 185, 382, 584), thin(9002, 843, 347, 180), thin(9003, 729, 520, 180), thin(9004, 0, 555, 604), thin(9005, 843, 634, 294),
+      thin(9006, 197, 663, 309), thin(9007, 600, 663, 215), thin(9008, 506, 733, 94), thin(9009, 729, 807, 522), thin(9010, 83, 836, 180), thin(9011, -400, 1600, 2400)],
+    vines: [{ x: 795, topY: 382, bottomY: 520 }, { x: 171, topY: 663, bottomY: 836 }],
+    route, seen,
+  });
+}
+test('a way down: off the catch of a stopped vine onto a storey that runs on under it, he goes for its far end and on down', async () => {
+  // (the kid and the adult, the rows the two fixes bite on: fix A off, the kid walked off the catch onto the near part of the storey,
+  //  hopped the dip onto the shelf over it, dropped back and stood by the catch's foot until rescued; fix B off, the adult did. A rescue
+  //  here is the arena's own: he is set down further on, a jump of 100+ px in one frame)
+  const m = await import('./firsttimer.ts');
+  const miss: string[] = [];
+  for (const who of [m.FT_KID, m.FT_ADULT]) for (let k = 1; k <= 3; k++) {
+    let on = false, rescued = false, last = '', px = NaN, py = NaN;
+    catchOnArena(who, k, (sim) => {
+      if (on) return;
+      if (!rescued && !Number.isNaN(px) && (Math.abs(sim.p.x - px) > 100 || Math.abs(sim.p.y - py) > 100)) { rescued = true; last = `${Math.round(px)},${Math.round(py)}->${Math.round(sim.p.x)},${Math.round(sim.p.y)}`; }
+      px = sim.p.x; py = sim.p.y;
+      if (sim.p.grounded && !rescued) { last = `${sim.standingOn} by x ${Math.round(sim.p.x)}`; if (sim.standingOn === 9010) on = true; }
+    });
+    if (!on || rescued) miss.push(`${who.name} thumb ${k}: ${rescued ? 'rescued' : 'never'} down to the storey after (last on ${last})`);
+  }
+  assert.deepEqual(miss, []);
+});
+
 // (STAGE-RULES.md:77: "at least 2 minutes for a quick player, on every roll ... Climbs count 20 s short". castBots held every stage to a
 //  flat 120 s, so 1-4 (a climb) failed the rule's own 100 s: the floor is read from eraRoll.ts RULES and isClimb, R-165.206, D19)
 test('the length floor is the stage rule\'s: a climb at 105 s holds, a run stage at 105 s does not (STAGE-RULES.md:77)', () => {

@@ -1,4 +1,34 @@
-# ENG-DOWNBOT REPORT (lane 2: the down lay's head room, then the bots on a way down to the shrine) — box 6 (session 4, 11-25)
+# ENG-DOWNBOT REPORT (lane 2: the down lay's head room, then the bots on a way down to the shrine) — box 7 (session 5, 11-25)
+**EXACT NEXT STEP (box 7 hand-over):** code head **7d12c344b** unchanged; this box adds the seed-13 toy (RED BY DESIGN, below), the
+x40 rows and this REPORT (hash in the hand-over message; check with `git ls-remote`). **(1) The owed toys: NOT buildable as ordered.**
+castBots.test 'a way down: off the catch of a stopped vine onto a storey that runs on under it, he goes for its far end and on down'
+lays seed 13 normal's shape by x 713 (y -9500; its pieces, both vines and the real route's corners, every 24 px) and plays kid + adult,
+3 thumbs: **it is RED on the head, RED with A off, RED with B off: on all three trees both bots stand by the catch's foot (x 705-716)
+until the arena's rescue sets them on.** So on the real row fixes A and B do not cure the stand; they dodge it: with A on, the kid
+leaves the catch with a jump that carries him over the near part of the storey into the dip and up onto its far part (real trace,
+`probes/trace13.mts`, kid N 13: 87.0 (696,10037) air, 87.5 (558,10191) air, 88.0 (419,10163) on 197-506); with A off he walks
+off the catch onto 600-815, jumps the dip and **lands on the shelf over it** (branch 0-604@10055, 108 px over the storey, its right end
+4 px past the dip's lip), walks back off the shelf's right end and stands at 710-713 until rescued (18 s). **The cause is the shelf**
+(it was there before ruling 1: e7c203362 lays it too): a lid 108 px over the storey and its dip, in a full jump's reach from the near
+side, a dead end (its only way off is back onto the near side), and it roofs the next turn's vine top (x171 10163->10336). In the
+first draft of the arena (every bot) **CHILD easy ended ON the shelf over that vine top on all three trees.** Next: (a) find what lays
+it (style 'branch', ids 191/169/130, 0-71 + 71-424 + 424-604 @10055; not on the route: legs (79,9624)->(769,9882), (815,10163)->
+(197,10163); grep src/game/gen2/tower.ts for wood laid between a leg's storey and the next); (b) if it is the tower lay (ours), the
+fix is in the lay (no lid over a storey's dip within a jump's rise, and none over a turn vine's top), the toy goes GREEN, then
+re-measure A and B on top (a fix that moves no row comes out); if a pieces lane lays it, STOP and send the lead a still (ruling).
+**(2) x40 DONE on 7d12c344b** (rows/castbots-7d12c344b-1-20.jsonl + -kidadult-21-40 + -cme-21-40; tally `python3 probes/tally.py`
+on all three): **360 rows, 299 with a rescue, 59 clean; 7 never reach the shrine** (child N 8, 15; middle N 15; expert N 15; child E
+27, 28; middle E 27: the three 21-40 strand at x 1225 'fell back down from here 8 times' after 'the way on is 347 px down'). Rescues
+by bot: kid N 34, kid E 115, adult N 33, adult E 160, child N 72, child E 91, middle N 74, middle E 148, expert N 89. Causes (stuck
+points): **'in a dip, the way on is N down' 393; 'in a dip, a drop ahead, the way on is N down' 219; 'in a dip N deep' 168**; 'the way
+on is N down' 137; 'fell back down from here' 84; 'a drop ahead' 75; 'nothing in the way' 53; 'open drop' 11. **The bar is far off**
+(rescues are the common path). The dip causes are 780 of 1,140: test first whether they share the shelf shape (a probe: per 'in a
+dip' point, any wood within 160 px over the storey across the dip), two traces per cause after that, then the 7 stranded rows.
+(3) Stills, (4) lockall / tierBots 9/9 / suite + CI line / land: as box 6 below. **READY-31 (stands):** length is the 3-1 build's
+(kid N seed 2 clean at 101.4 s; head min kid N 87.2 s over 40 seeds).
+Start 11:18 AM ET 11-25; REPORT written 11:29 AM ET (by `date`).
+
+### Box 6's hand-over (superseded by box 7)
 **EXACT NEXT STEP (box 6 hand-over):** code head **7d12c344b** (pushed; this REPORT + rows commit sits on it: its hash is in the hand-over message, check with `git ls-remote`). **Ruling 1 is DONE**
 (measured below: 'a catch hands on to its storey' GREEN on 48/48, head room and 'a catch crosses a vine' GREEN, 0 errors on 48;
 the planted toy is red on e7c203362, green on 7d12c344b). Next, in order: **(2) Ruling 2 on this FINAL lay: the three runs are DONE and committed; the TOYS are owed.** How they were run (to re-run one): two heavy runs at a time,
