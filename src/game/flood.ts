@@ -129,8 +129,8 @@ export function floodFaults(f: Flood): string[] {
  * bank with room under it, is a BARE EDGE HOP up off the bank, which nobody is shown and the tier bots' edge press does not aim at: refused
  * by name. By name; empty: walkable.
  */
-export function highRoadFaults(tops: ReadonlyArray<{ x: number; w: number; y: number; h?: number }>, span: { x0: number; x1: number; from: { x: number; y: number }; to: { x: number; y: number } }, step: number, hop: number): string[] {
-  return highRoad(tops, span, step, hop).faults;
+export function highRoadFaults(tops: ReadonlyArray<{ x: number; w: number; y: number; h?: number }>, span: { x0: number; x1: number; from: { x: number; y: number }; to: { x: number; y: number } }, step: number, hop: number, jump = hop): string[] {
+  return highRoad(tops, span, step, hop, jump).faults;
 }
 
 /**
@@ -205,7 +205,7 @@ export function lowHopFaults(chain: ReadonlyArray<{ x: number; w: number; y: num
 
 /** the high road itself (highRoadFaults' walk): its pieces in the order he meets them (the bot's way round, lead-the-line), and the faults
  *  by name (empty: walkable) */
-export function highRoad<T extends { x: number; w: number; y: number; h?: number }>(tops: ReadonlyArray<T>, span: { x0: number; x1: number; from: { x: number; y: number }; to: { x: number; y: number } }, step: number, hop: number): { chain: T[]; faults: string[] } {
+export function highRoad<T extends { x: number; w: number; y: number; h?: number }>(tops: ReadonlyArray<T>, span: { x0: number; x1: number; from: { x: number; y: number }; to: { x: number; y: number } }, step: number, hop: number, jump = hop): { chain: T[]; faults: string[] } {
   const dir = span.to.x >= span.from.x ? 1 : -1;
   const nearOf = (p: { x: number; w: number }) => (dir > 0 ? p.x : p.x + p.w);
   const farOf = (p: { x: number; w: number }) => (dir > 0 ? p.x + p.w : p.x);
@@ -223,7 +223,13 @@ export function highRoad<T extends { x: number; w: number; y: number; h?: number
     let next: T | undefined;
     let bare: T | undefined;
     for (const p of tops) {
-      if (beyond(nearOf(p), at.x) > hop || beyond(farOf(p), at.x) <= (used ? 1 : -hop - 1) || Math.abs(p.y - at.y) > step) continue;
+      // (the FORK's link, off the wall-step W to a LEVEL piece, may be a jump up to `jump` px (the lead's entry principle, BUILD-28 session
+      //  7: a run off W takes the low road, a press the high road, so that gap is wider than his full-run walk-off carry, floodLay
+      //  FLOOD_WALK_OFF; forkFaults proves each tier's jump crosses it); every other link is a hop of at most `hop`. So W may stand back
+      //  on the near bank up to `jump` px before its edge: the gap stays over the bank, and a walk-off back off the porch's near end
+      //  lands on the bank, within the line's step: strandFaults)
+      const reach = used === 1 && Math.abs(p.y - at.y) <= 1 ? Math.max(hop, jump) : hop;
+      if (beyond(nearOf(p), at.x) > reach || beyond(farOf(p), at.x) <= (used ? 1 : -Math.max(hop, jump) - 1) || Math.abs(p.y - at.y) > step) continue;
       if (p.y < at.y - 1 && !(beyond(nearOf(p), at.x) <= 0 && p.h !== undefined && p.y + p.h >= at.y - 1)) {
         if (!bare || beyond(farOf(p), farOf(bare)) > 0) bare = p;
         continue;

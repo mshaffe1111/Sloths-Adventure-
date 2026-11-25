@@ -99,6 +99,25 @@ test('highRoad: every piece IN HIS WAY on a porch is met in order (a rise standi
   assert.deepEqual(highRoadFaults([W, P, { x: 1160, w: 200, y: LIP - 200, h: 24 }, P2], span, 60, 60), []);
 });
 
+test('highRoad: THE FORK\'S JUMP (BUILD-28 session 7, the lead\'s entry principle): the link off the wall-step W to a LEVEL piece may be a jump up to `jump` px; the old rule (every link a hop) refuses it; any other link, a wider gap or a piece up stays refused', () => {
+  // (W2_FORK's (y) shape: W 330 standing 81 px back from the water's edge, the porch level with W from the edge: an 81 px gap over the
+  //  bank, past the full-run walk-off carry 66 + its margin 15, floodLay FLOOD_WALK_OFF)
+  const span = { x0: 1000, x1: 2400, from: { x: 1000, y: LIP }, to: { x: 2400, y: LIP } };
+  const W = { x: 589, w: 330, y: LIP - 60, h: 60 };
+  const P = (gap: number) => ({ x: 919 + gap, w: 2200, y: LIP - 60, h: 24 });
+  assert.match(highRoad([W, P(81)], span, 60, 60).faults.join('; '), /the high road starts with a bare edge hop at x 1000/, 'RED: the old rule, W at most a hop back, every link a hop');
+  const ok = highRoad([W, P(81)], span, 60, 60, 96);
+  assert.deepEqual(ok.faults, [], 'GREEN: the fork\'s jump of 81 within 96');
+  assert.deepEqual(ok.chain, [W, P(81)]);
+  assert.match(highRoad([W, P(97)], span, 60, 60, 96).faults.join('; '), /the high road breaks at x 919/, 'RED: a gap past the jump');
+  assert.match(highRoad([{ ...W, x: 573 }, P(81)], span, 60, 60, 96).faults.join('; '), /bare edge hop at x 1000/, 'RED: W farther back than the jump');
+  // (a piece UP across the jump is no jump link: refused)
+  assert.notDeepEqual(highRoad([W, { ...P(81), y: LIP - 120 }], span, 60, 60, 96).faults, [], 'RED: a jump UP is not the fork\'s link');
+  // (only the link off W: a later gap wider than a hop still breaks the road)
+  const P1 = { x: 1000, w: 600, y: LIP - 60, h: 24 }, P2 = { x: 1681, w: 1500, y: LIP - 60, h: 24 };
+  assert.match(highRoad([{ ...W, x: 610 }, P1, P2], span, 60, 60, 96).faults.join('; '), /the high road breaks at x 1600/, 'RED: a later 81 px gap');
+});
+
 test('highRoad: a stair up and back down (a top standing on the rise standing on the porch) is a road, never a loop: the rise is met again past the top', () => {
   // (session 1's first two-road shape, W2-LANE b's trace (BUILD-28): rise 300 on P's far end, the top 140 at its middle, 80 px treads. Before
   //  the fix the walk met W, P, the rise, the top, the rise again (its far tread), and refused it as 'the high road loops': the chain was
