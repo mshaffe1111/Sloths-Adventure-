@@ -4,20 +4,27 @@ Session 1: started 2:31 PM ET 11-24 (by `date`), handed over at the 28-minute bo
 
 ## EXACT NEXT STEP (INT-R5d, session 4: read this first)
 INT-R5d started 10:42 AM ET 11-25 (by `date`). Packet: packets/2026-11-25/INT-R5d.md (the lead's branch). Branch
-**release-0.10.3-wip-fixes** = origin/release-0.10.3 dfe631913 + t-fix-sidewall 1558489a2 (merge 0492396b) + t-fix-soil 849f4875b
-(merge a2b7dde04) + the inventory row (bb29e048d). Step 1 (the fixes merged early) is IN PROGRESS. NEXT, in order:
-1. Gates on the merged head (frozen detached worktrees in the scratchpad, chattr +i src tools, proven writable; the inventory commit
-   bb29e048d changes no engine input: the 'live post' slot has no reader and its status never read 'needs fix'):
-   (a) lockall `--layouts 16 --check reference/qa-reports/SIDEWALL-FIX/lock-main-cdffdc62.json` on dfe631913 (the release base) AND
-   on a2b7dde04; the two logs must list the SAME stages moved (the release's own); any difference is a move by the fixes: trace it.
-   (b) paintcheck `--part 0/3`, `1/3`, `2/3` on a2b7dde04: GREEN with BOTH rules (sideWall, soilOvers), no known list.
-   (c) then the CI tool line (gates.yml:157, read live) on bb29e048d; expect ONLY ENG-PLANT's 6 reds (firsttimer :184, riverRide
-   :107 :145 :207 :213 :229, owner ENG-PLANT) that its merge clears; any other red is the fixes' or the merge's: trace it.
-   (d) stills on bb29e048d (scratch int-shots.mjs = SIDEWALL-FIX tools/sw2.mjs + a 1-4 layout 1 start/summit job): 1-4 start and
-   summit, 1-6's two posts, 8-1's sliver; Normal and Easy, 844x390 and 390x844; look at each as Matt would; paths to the lead.
-2. Send the lead: the hash, the conflicts (below), the gate lines, the still paths. FIX-SOIL-b's own gate table on 539885c37 was NOT
-   yet on t-fix-soil (849f4875b, its REPORT says 'RUNNING: paintcheck full sweep, lockall'): re-fetch and read it; tell the lead.
-3. Step 1b when the lead sends ENG-PLANT's merged release-0.10.3 hash: the packet's 1b, then steps 2-4.
+**release-0.10.3-wip-fixes**: dfe631913 (release-0.10.3) + t-fix-sidewall (merge 0492396b) + t-fix-soil 849f4875b (merge a2b7dde04) +
+inventory row bb29e048d + groundBanks one place 7ee9b7bcb + 2-7 gap stills d63ae3dd3 + **the lead's ruled ENGINE PIECE f7c5b8a2e**
+(a bank a stacked ceiling runs under is never hung; paintcheck sets the stage's stack zones; soilShorts; the planted unit test).
+NEXT, in order (scratchpad trees are lost with the container: rebuild with `git worktree add --detach`, node_modules symlinked,
+`chattr -R +i src tools`, `chattr -R -i src/game/gen2/proven`; ONE vite per port, pkill it after each tree: a surviving vite served the
+base tree to the head's first 2-7 shots):
+1. Plant: `npx tsx tools/engine/paintcheck.ts --stages 2-7` on f7c5b8a2e with bankOpen's ceiling test removed (the old rule) = RED
+   (SOIL SHORT lines), on f7c5b8a2e = GREEN (0 SHORT, 0 OVER). (Earlier draft of the rule: RED 4,040 lines on the old rule; it
+   also flagged open-end faces on the fix, 1,815 lines of 8-32 units; narrowed in f7c5b8a2e: the soil must END under the foot and be
+   short across more than his width.)
+2. On f7c5b8a2e: paintcheck --part 0/3, 1/3, 2/3 (GREEN: sideWall, soilOvers, soilShorts; no known list); lockall --layouts 16
+   --check reference/qa-reports/SIDEWALL-FIX/lock-main-cdffdc62.json: the moved-stage list must equal the release base's
+   (dfe631913: 70/102 unchanged; 32 moved, all the release's own: 1-4 layout + 1-1..9-x proto.hints + 2-7); the CI tool line
+   (gates.yml:157); tsc.
+3. Stills on f7c5b8a2e (scratch int-shots.mjs = SIDEWALL-FIX sw2.mjs + a 1-4 start/summit job + JOBSET=stack for 2-7 at bank #1:
+   Normal x 3881, Easy x 4339): 2-7 after (gap closed, as base), 1-4 start and summit, 1-6's two posts, 8-1's sliver; Normal and Easy,
+   844x390 and 390x844; look at each as Matt would; save to reference/qa-reports/INT-R5/d/; paths to the lead.
+4. Push, ls-remote, the hash + gate lines + still paths to the lead. Then step 1b (ENG-PLANT's hash from the lead) and steps 2-4.
+Gates so far: tsc clean on a2b7dde04, 7ee9b7bcb, f7c5b8a2e; paintcheck part 0/3 PASS on a2b7dde04 (both rules; 1-4, 8-1 in it;
+superseded by the fix); lockall base dfe631913 = 70/102 unchanged; paintFall.test.ts 16/16 on f7c5b8a2e; src/game/art 16/16.
+FIX-SOIL-b's own gate table on 539885c37 was not on t-fix-soil (849f4875b); the lead takes this branch's gates as the ones that count.
 
 ## Step 1 (INT-R5d): the conflicts and their resolutions
 - Merge t-fix-sidewall (0492396b), all text, union: gates.yml:157 the CI tool line (the release's line + tools/engine/sideWall.test.ts);
