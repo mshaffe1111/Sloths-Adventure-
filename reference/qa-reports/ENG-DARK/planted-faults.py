@@ -20,7 +20,7 @@ PLANTS = [
     ('no glowworm over a landing (the glow stretch lays none)', 'src/game/gen2/dark.ts',
      '    z.lights!.push({ x: at.x, y: at.y, r: DARK_GLOW.light, sleep: true, id: id++ });', '    void at;', 'the brick on a real World 3 row'),
     ('a glowworm hung 500 px over its landing (out of any stop\'s reach)', 'src/game/gen2/dark.ts',
-     'const at = { x: r.land.x, y: Math.min(r.land.y - DARK_ZONE.lightUp, r.y + GLOW_REACH.down) };', 'const at = { x: r.land.x, y: r.land.y - 500 };', 'the brick on a real World 3 row'),
+     'const at = { x: land.x, y: Math.min(land.y - DARK_ZONE.lightUp, r.y + GLOW_REACH.down) };', 'const at = { x: land.x, y: land.y - 500 };', 'the brick on a real World 3 row'),
     ('litAhead asks nothing (need 0)', 'src/game/gen2/dark.ts',
      'const need = DARK_AHEAD[setting];', 'const need = 0 * DARK_AHEAD[setting];', 'stood still until the landing woke'),
     ('litAhead counts a landing never lit as lit', 'src/game/gen2/dark.ts',
@@ -54,7 +54,7 @@ PLANTS = [
      '    this.glowSteer(out);\n', '', "stop reads the THUMB", 'src/game/gen2/darkBots.test.ts'),
     # (ENG-DARK-e) the lead's ruling: a climb down a trunk past a rim is its own kind, never 'went over', not counted by 'lit 1 s ahead'
     ("RimWatch hides a climb inside 'went over' (no 'climbed' kind)", 'src/game/gen2/dark.ts',
-     '...(p.climbing ? { climbed: true as const } : {})', '...({})', "own kind ('climbed')"),
+     '    if (p.climbing) this.crossings.push({ ...c, climbed: true });', '    if (p.climbing) this.crossings.push(c);', "own kind ('climbed')"),
     ("litAhead counts a climb past a rim as a blind drop", 'src/game/gen2/dark.ts',
      '    if (c.climbed) continue;\n', '', "own kind ('climbed')"),
     # (ENG-DARK-f) child Easy 25's strand: the tower's way-down plan asked the vine's top one way only, and pressed down mid-trunk
@@ -72,9 +72,9 @@ PLANTS = [
     ("ruling (i) off: a dark-rim drop's edge inside its own light does not pass", 'src/game/gen2/dark.ts',
      '(!!ud.light && Math.hypot(ud.light.x - n.x, ud.light.y - n.y) <= ud.light.r)', 'false', 'the brick on a real World 3 row'),
     ("an edge behind a dark-rim drop's landing judged as one he lands toward", 'src/game/gen2/dark.ts',
-     'let lit = !!ud && (n.dir !== u.dir || ', 'let lit = !!ud && (', 'the brick on a real World 3 row'),
+     'let lit = !!ud && ((ud.drop && n.dir !== u.dir) || (!!ud.light', 'let lit = !!ud && ((!!ud.light', 'the brick on a real World 3 row'),
     ("a wall rim's light hung over its landing past the stop's reach (the depth bound off)", 'src/game/gen2/dark.ts',
-     'y: Math.min(r.land.y - DARK_ZONE.lightUp, r.y + GLOW_REACH.down) }', 'y: r.land.y - DARK_ZONE.lightUp }', "a wall rim's light hangs no deeper"),
+     'y: Math.min(land.y - DARK_ZONE.lightUp, r.y + GLOW_REACH.down) }', 'y: land.y - DARK_ZONE.lightUp }', "a wall rim's light hangs no deeper"),
     ("an awake light counts as lit from anywhere (no reach)", 'src/game/gen2/dark.ts',
      '  if (!glowReaches(l, x, feet, facing)) return Infinity;', '  if (l.sleep && !glowReaches(l, x, feet, facing)) return Infinity;', 'darkFlags: a flag'),
     # (ENG-DARK-l, box 12) plant 28: box 10's seam check (downEnd's ledgeEnds) off: a seam under his feet read as a way down again
@@ -86,6 +86,9 @@ PLANTS = [
      'if (!this.who.noTurnRoom && stop.turn !== 1) {', 'if (false) {', "the dark stop's turn is never pressed at the rim's very edge",
      'src/game/gen2/darkBots.test.ts'),
 ]
+# (ENG-DARK box 13) ONLY='a|b': run only the plants whose name holds one of these (a re-anchor's check; the full proof runs them all)
+import os
+if os.environ.get('ONLY'): PLANTS = [q for q in PLANTS if any(k in q[0] for k in os.environ['ONLY'].split('|'))]
 missed = 0
 base: dict = {}
 # (an optional second argument runs only those plants, 1-based: '17,18')
