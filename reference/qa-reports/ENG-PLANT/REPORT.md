@@ -24,7 +24,7 @@ Engine (bots), Opus 5.5 xhigh. Lead: session_01FhBbYN2CVHnFXg7XzqKXpM. **Code he
      main; every row identical to c26's** (1-4 BAR all-pass 40/40, 2-5 40/40). Not 'shrine': 1-4 none; 2-5 the kid on Normal, 31 rows
      'stranded', the same 31 on c26 (main 29): the kid is no bar bot and c27 moved none of them; named to the lead. W1CAP: no stand past
      the cap reaching a cycle in any set (2-1 / 2-2 / 2-4 / 2-7 / 1-4 / 2-5: zero stands past the cap at all; the known flips: none >= cycle).
-2. DONE: the c27 table sent to the lead (session 15's hand-over message). **NEXT: read the lead's answer**, then child N 13 on c27 (session 14's item vi), then the checklist
+2. DONE: the c27 table sent to the lead. **The lead's answer (received after the hand-over, word for word): "the c27 table is ACCEPTED: every race WON, the known flips 12/12, the wide sample 0 BAR PASS -> FAIL, 2-7 x40 33/40 (bar 29), 1-4/2-5 clean, no deadlock. Named and accepted, not fixed in this merge: home E 2's 3 race lives (runs off the ends of logs #91/#89: lip family R-165.398); 2-5 kid Normal 31 stranded (the same 31 as c26; main 29; the kid is no bar bot); W1's wait for logs that never bridge. All three go on R-165.424's list."** NEXT: child N 13 on c27 (session 14's item vi), then the checklist
    (pacerLay 22/23 re-plants as laid toys 23/23; hopJudged (c27's two toys are its last two tests); the toys for c23-c27; the packet's
    plants or retire per R-165.432; riverRide + firsttimer; the CI tool line 0 fail; tierBots 9/9; timecheck + roadmapcheck). The table again
    before any merge; MERGE into release-0.10.3 (no force) ONLY on the lead's word. REPORT BY 1:00 PM ET; HARD STOP 3:00 PM ET.
