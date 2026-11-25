@@ -1,6 +1,6 @@
 # ENG-29 REPORT: 2-9's NEW 1 (the court's tempo) and NEW 2 (the drum you hear), built ahead (R-165.449)
 
-## EXACT NEXT STEP (session 1 hand-over, head 14ebbfa5e)
+## EXACT NEXT STEP (session 1 hand-over; NEW 1 (a)(b) and NEW 2 (a) pushed)
 Re-fetch t-eng-29-wip first (session 1 may push ONE REPORT-only commit with the merge's suite verdict). Then NEW 1 step (c), the toy on a REAL row:
 1. `src/game/gen2/tempoToy.test.ts` (new): a stageTable row by `withTestStage` (src/game/gen2/listed.ts:84) whose kit is World 2's with 2-4's
    liana-over-a-river section (kit 'w2-24', w2Arc24.ts) plus a STONE row (2-5's snap jaws, kit 'w2-25' / w2Arc25.ts: its ClockDef on the stage's
@@ -14,7 +14,7 @@ Re-fetch t-eng-29-wip first (session 1 may push ONE REPORT-only commit with the 
    saveEngineHarness.ts run/standAt/step + flagResume.ts flagFor), after a flag resume the liana's ONE is on the bar:
    `tempoFaults` clean on the engine's vines AND vineAngle(v, e.vineClock) at gameTime k*bar equals the straight run's; RED with the engine's
    test seam `vineClock` set off the bar (vineShift 0.3 s): 'off the bar'. (vineClock already IS gameTime + a test-only shift, ENG-285.)
-3. Then NEW 2 (the drum), see Plan below. tsc + the touched tests; push; ls-remote.
+3. Then NEW 2 (b): the conductor's drumTick on the audio clock + the engine's call + its planted RED (Plan below; drum.ts is done). tsc + the touched tests; push; ls-remote.
 OPEN QUESTIONS: (a) ANSWERED in session 1: the lock in gen2's FINISH does not invalidate the river checks: lianaDrops
 (riverLay.ts:326-342) judges every relative phase of swing and logs (j over one log spacing, m frames) with the period vinePeriod gives,
 which is TIMED.period under withSetting = the bar. What NO check proves yet is the LOCKED relation's own let-go window (2-9.md:21: 2.00 s
