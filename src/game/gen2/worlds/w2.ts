@@ -154,6 +154,62 @@ export const W2_FLOOD: FloodRow = {
   climb: { land: { child: 62, middle: 86, expert: 86, adult: 86 }, runUp: { child: 73, middle: 61, expert: 61, adult: 22 }, pause: [0.25, 0.5], width: 44 },
 };
 
+/**
+ * World 2's TWO-ROAD section (2-8's fork "the fork the water decides", reference/design/2-8.md beat 8; R-165.430 (2); the lead's ruled
+ * shape, ENG-28 sessions 4-8): the low road is a river marked 'close' (the flood turns it deep at the close: gen2/floodLay.ts), the high road
+ * stands over it. In the order he meets them:
+ *   - `near`: the bank both roads start from, wide enough for the line bunched behind him (7 x W2_FOLLOW.gap = 238 px) and W on its end;
+ *   - `wall` W: a WALL-STEP FLOOD_STEP px tall on the near bank's end (both roads climb it: flood.ts highRoad's first piece, its face on the
+ *     bank so he walks into it), `wall.w` wide: at least the widest tier's landing + run-up (W2_FLOOD.climb: 86 + 61 = 147);
+ *   - the GAP after W, `gap` px over the water's first px: the low road walks off W's lip and falls through it (at least his 44 px width),
+ *     the high road hops it level onto the porch (at most FLOOD_HOP);
+ *   - `porch` P: level with W's top over the water; `rise` and `top`: every further rise a block standing on the porch (a wall-step he
+ *     walks into, never a bare edge hop), out of the low road's lane under the porch;
+ *   - `porch2`: the porch again past the rises, level with P, out over the far bank: the steps DOWN (top to rise to porch to the far bank,
+ *     each FLOOD_STEP px); `far`: the far bank both roads end on.
+ * forkFaults passes it (W 150 with the gap 60); floodLay.test's toy brick is the same fork (W 150 + gap 60). Data only: the 2-8 kit lays it
+ * with its rivers holding `W2_FORK.row` (W2_FORK_RIVERS).
+ */
+/** the two-road section's numbers (W2_FORK's shape: a builder or a plant passes its own) */
+export interface W2ForkShape { row: string; near: number; far: number; wall: { w: number; h: number }; gap: number; porch: number; rise: { w: number; h: number }; top: { w: number; h: number; at: number }; porch2: number }
+export const W2_FORK: W2ForkShape = {
+  /** the low road's river row (W2_FORK_RIVERS): 'ride's numbers, safe (a fall splashes him back on the near bank), marked 'close' */
+  row: 'low',
+  near: 420,
+  far: 320,
+  wall: { w: 150, h: 60 },
+  gap: 60,
+  /** the porch under the rises (px along it from its start): he walks `walk` px, then climbs `rise` (w, FLOOD_STEP tall, standing on
+   *  the porch) and `top` (w, standing on the rise, at `at` along it); porch2 touches P's end and runs `porch2` px, out over the far bank */
+  porch: 500,
+  rise: { w: 300, h: 60 },
+  top: { w: 140, h: 60, at: 0.5 },
+  porch2: 400,
+};
+/** the low road's row: the river 'ride' (W2_RIVERS: 798 px between the banks), marked for the flood as the road that turns deep */
+export const W2_FORK_RIVERS = { [W2_FORK.row]: { ...W2_RIVERS.ride, flood: 'close' as const } } satisfies Record<string, RiverRow>;
+/** the two-road section `id` for job `job` (its numbers W2_FORK's) */
+export function w2TwoRoad(id: string, job: NodeJob, f: W2ForkShape = W2_FORK): SectionTemplate {
+  // (a share along the near bank: `d` px past its end)
+  const past = (d: number): R2 => [1 + d / f.near, 1 + d / f.near];
+  const one = (v: number): R2 => [v, v];
+  return {
+    id, name: `${id} (the two roads)`, archetypes: 'any', phases: ['ki', 'sho', 'ten', 'ketsu'], difficulty: 3, jobs: [job], content: 'water',
+    pieces: [
+      { key: 'near', shape: 'bank', w: one(f.near), place: { kind: 'start' }, style: 'log', main: true },
+      { key: 'far', shape: 'bank', w: one(f.far), place: { kind: 'river', after: 'near', row: f.row }, style: 'log', main: true, landing: true },
+      { key: 'wall', shape: 'block', w: one(f.wall.w), place: { kind: 'on', on: 'near', at: [1, 1], h: one(f.wall.h) }, style: 'moss_stone' },
+      { key: 'porch', shape: 'branch', w: one(f.porch), place: { kind: 'over', on: 'near', at: past(f.gap), dy: one(-f.wall.h) }, style: 'log', main: false },
+      { key: 'rise', shape: 'block', w: one(f.rise.w), place: { kind: 'on', on: 'porch', at: [1, 1], h: one(f.rise.h) }, style: 'moss_stone' },
+      { key: 'top', shape: 'block', w: one(f.top.w), place: { kind: 'on', on: 'rise', at: one(f.top.at), h: one(f.top.h) }, style: 'moss_stone' },
+      { key: 'porch2', shape: 'branch', w: one(f.porch2), place: { kind: 'over', on: 'near', at: past(f.gap + f.porch), dy: one(-f.wall.h) }, style: 'log', main: false },
+    ],
+    entry: { piece: 'near', kind: 'ground' }, exit: { piece: 'far', kind: 'ground' }, exitDy: 0,
+    sockets: [],
+    mirrorable: false,
+  };
+}
+
 /** World 2's POST art (post.ts PostArt; 2-7's doors): the PLEASE BE PATIENT door shut (w2-props) and open, a letter and a reply, two
  *  flutter frames each (ART-NEXT-b, the inventory's w2-next rows) */
 export const W2_POST_ART: PostArt = {
