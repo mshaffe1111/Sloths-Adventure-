@@ -1,0 +1,6 @@
+set-down f305 t10.17 fell@x2655,y821 -> placed x2438 | left solid#8[2188..2508] at f290 t9.67 x2526 JUMP vx268 vy-577 | hop none
+set-down f508 t16.93 fell@x3916,y847 -> placed x3716 | left solid#13[3486..3786] at f495 t16.50 x3805 JUMP vx285 vy-577 | hop none
+set-down f2464 t81.37 fell@x19553,y862 -> placed x19317 | left drift:-1#88[19388..19538] at f2422 t80.73 x19477 JUMP vx-170 vy-577 | hop {"site":"edgeWait","q":88,"t":79.69999999999804,"x":19384.766666666706,"hold":0.11565649899627245,"lag":0,"kind":"single","flown":{"t":79.69999999999804,"x":19384.766666666706,"hold":0.11565649899627245,"kind":"single"},
+set-down f2559 t83.77 fell@x19833,y843 -> placed x19317 | left drift:-1#86[19643..19793] at f2533 t83.67 x19805 walk-off vx285 vy83 | hop none
+set-down f3948 t130.07 fell@x30746,y925 -> placed x30228 | left drift:1#136[30469..30709] at f3945 t129.97 x30727 walk-off vx268 vy83 | hop none
+end shrine pass undefined rescues 0 stuck []

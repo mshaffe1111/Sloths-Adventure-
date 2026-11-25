@@ -40,6 +40,16 @@ first of the three set-downs. **With SKILLS.runUp off on the same tree the path 
 was wrong for the kid (FT_KID). The other 10 c4-pass rows: data/l/firstsplit.txt (each new skill off in turn, the first frame the path
 parts and whether c24 falls within 2 s of it): see Result L1b below if filled.
 
+### Result L1b: where c5..c24's run-up first moves the 11 c4-pass rows (data/l/firstsplit.txt; floatSure and handed off are wider than c5..c24: both predate c4)
+SKILLS.runUp is the one c5..c24 piece with a switch. **runUp never acts (path identical, runUp off) on 2-1 N 19, N 21, 2-2 E 37, N 3, N 33.**
+It acts on 2-4 E 35 (the fault above: its own jump lands in the water within 0.7 s), and on 2-4 E 20 (f2186, x 16,219, log #77) and E 2
+(f2091, x 16,086, log #77): a run-up started on log #77 with no fall within 2 s; their rescues come 500-900 px and 15 s later, each a
+full-run walk-off off a log's far end (E 20: #79 at x 16,730). E 19, E 12, E 13: see firstsplit.txt if filled. So: ONE new fault
+(2-4 kid Easy 35, the run-up's own jump); every other traced fall is R-165.413's walk-off or untimed jump.
+The run-up's judge (firsttimer.ts:2366-2391): runUpCatches / runPress judge a run along the log then a jump that CATCHES a liana/vine
+(canGrabSwing, v) at all three lags; for the kid at E 35 the catch did not happen. Not yet traced: which liana it judged, the hold, and
+why the kid's catch failed (the probe for session 11: log runPress's v, hold and lags at t 47.50, then the frames to f1445).
+
 ## Ruling 3: row 8, and the careful middle's MARGIN on every race row (his time minus the boat's; below 0 he wins; data/l/margins-*.txt)
 | race row | c24 2a2c44786 | base dfe631913 |
 |---|---|---|

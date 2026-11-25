@@ -1,0 +1,6 @@
+set-down f1044 t34.80 fell@x9138,y822 -> placed x8505 | left drift:1#42[8898..9098] at f1041 t34.70 x9120 walk-off vx268 vy83 | hop none
+set-down f1065 t35.50 fell@x8628,y824 -> placed x8505 | left drift:1#42[8898..9098] at f1045 t34.83 x8505 JUMP vx0 vy-577 | hop {"site":"unjudged","q":-1,"t":34.80000000000059,"x":8505,"hold":0.25494771090870116,"lag":0,"flown":{"t":34.80000000000059,"x":8505,"hold":0.25494771090870116,"kind":"single"},"landed":-1,"landedType":"solid"}
+set-down f1813 t60.43 fell@x14966,y905 -> placed x14261 | left drift:1#65[14733..14923] at f1810 t60.33 x14947 walk-off vx268 vy83 | hop none
+set-down f3226 t107.53 fell@x26059,y944 -> placed x25797 | left drift:-1#113[25855..26025] at f3223 t107.43 x26041 walk-off vx268 vy83 | hop {"site":"edgeWait","q":113,"t":106.49999999999652,"x":25814.733333333348,"hold":0.10745999186152681,"lag":0,"kind":"single","flown":{"t":106.49999999999652,"x":25814.733333333348,"hold":0.10745999186152681,"kind":"single
+set-down f3280 t109.33 fell@x26169,y944 -> placed x25797 | left drift:-1#112[25961..26131] at f3277 t109.23 x26150 walk-off vx285 vy83 | hop none
+end shrine pass undefined rescues 0 stuck []

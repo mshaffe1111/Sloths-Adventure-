@@ -6,3 +6,22 @@
 2-1:normal:21 handed split f1169 t39.00 | c24: 39.000 8416.0 829.0 1 0.0 3 - | off: 39.000 8834.5 854.4 0 267.7 3 - | c24 falls within 2 s: None
 2-2:easy:37 runUp identical
 2-2:easy:37 floatSure split f3291 t109.73 | c24: 109.733 20387.0 559.8 0 267.7 3 - | off: 109.733 20387.0 537.8 0 267.7 3 - | c24 falls within 2 s: None
+2-2:easy:37 handed split f3255 t108.53 | c24: 108.533 20607.8 585.0 1 267.7 3 drift1#78 | off: 108.533 20610.9 565.8 0 360.0 3 - | c24 falls within 2 s: (3262, '108.767', '20673.1')
+2-2:normal:3 runUp identical
+2-2:normal:3 floatSure split f3503 t116.03 | c24: 116.033 20494.8 571.8 0 342.7 2 - | off: 116.033 20492.3 591.0 1 267.7 2 drift1#80 | c24 falls within 2 s: None
+2-2:normal:3 handed split f3535 t117.10 | c24: 117.100 20830.1 591.0 1 267.7 2 drift1#81 | off: 117.100 20832.6 571.8 0 342.7 2 - | c24 falls within 2 s: None
+2-2:normal:33 runUp identical
+2-2:normal:33 floatSure split f3224 t107.50 | c24: 107.500 20766.2 625.0 1 267.7 3 drift1#80 | off: 107.500 20768.7 605.8 0 342.7 3 - | c24 falls within 2 s: None
+2-2:normal:33 handed split f3227 t107.60 | c24: 107.600 20801.6 625.0 1 285.0 3 drift1#80 | off: 107.600 20803.5 605.8 0 342.7 3 - | c24 falls within 2 s: (3287, '108.833', '21189.6')
+2-4:easy:35 runUp split f1424 t47.50 | c24: 47.500 10537.6 975.0 1 86.7 3 drift1#48 | off: 47.500 10534.7 975.0 1 0.0 3 drift1#48 | c24 falls within 2 s: (1444, '48.167', '10649.9')
+2-4:easy:35 floatSure split f1238 t41.30 | c24: 41.300 10215.0 927.8 0 267.7 3 - | off: 41.300 10215.5 947.0 1 285.0 3 solid#42 | c24 falls within 2 s: None
+2-4:easy:35 handed split f402 t13.43 | c24: 13.433 3578.0 974.0 1 0.0 3 solid#10 | off: 13.433 3578.0 954.8 0 0.0 3 - | c24 falls within 2 s: None
+2-4:easy:20 runUp split f2186 t72.90 | c24: 72.900 16219.1 958.0 1 267.7 3 drift1#77 | off: 72.900 16215.9 958.0 1 171.7 3 drift1#77 | c24 falls within 2 s: None
+2-4:easy:20 floatSure split f1039 t34.67 | c24: 34.667 8394.3 942.0 1 0.0 3 drift1#39 | off: 34.667 8391.4 942.0 1 -86.7 3 drift1#39 | c24 falls within 2 s: None
+2-4:easy:20 handed split f394 t13.17 | c24: 13.167 3578.0 864.8 0 0.0 3 - | off: 13.167 3578.0 884.0 1 0.0 3 solid#10 | c24 falls within 2 s: None
+2-4:easy:2 runUp split f2091 t69.73 | c24: 69.733 16085.9 945.0 1 267.7 3 drift1#77 | off: 69.733 16082.7 945.0 1 171.7 3 drift1#77 | c24 falls within 2 s: None
+2-4:easy:2 floatSure split f1386 t46.23 | c24: 46.233 10412.2 923.0 1 154.3 3 drift1#48 | off: 46.233 10416.6 923.0 1 285.0 3 drift1#48 | c24 falls within 2 s: None
+2-4:easy:2 handed split f407 t13.60 | c24: 13.600 3578.0 900.0 1 0.0 3 solid#10 | off: 13.600 3578.0 880.8 0 0.0 3 - | c24 falls within 2 s: None
+2-4:easy:19 runUp split f3408 t113.63 | c24: 113.633 21594.5 853.0 1 86.7 3 drift1#103 | off: 113.633 21591.6 853.0 1 0.0 3 drift1#103 | c24 falls within 2 s: None
+2-4:easy:19 floatSure split f338 t11.30 | c24: 11.300 3004.3 901.0 1 171.7 3 drift1#13 | off: 11.300 3007.5 901.0 1 267.7 3 drift1#13 | c24 falls within 2 s: None
+2-4:easy:19 handed split f338 t11.30 | c24: 11.300 3004.3 901.0 1 171.7 3 drift1#13 | off: 11.300 3007.5 901.0 1 267.7 3 drift1#13 | c24 falls within 2 s: None
