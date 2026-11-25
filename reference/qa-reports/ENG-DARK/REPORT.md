@@ -1,4 +1,57 @@
 # ENG-DARK REPORT (the dark + light ring as one gen2 brick; WORLD-3-PLAN F2; R-165.449)
+**EXACT NEXT STEP (ENG-DARK-k box 11 hand-over, 2:57 PM ET by `date`; head on t-eng-dark-wip = this commit; CODE = this commit (rulings
+1-4 built). Box 12 OWNS every step below. Re-fetch before every commit (D138).)**
+**THE LEAD'S RULINGS ON BOX 10 (received by box 11, word for word in substance):** (1) 33 N: (A): the lay hangs the second light over
+the step-off landing when a rim's own landing is a hop, and darkLandings DROPS the behind-edge exemption (i) for a step-off from a hop
+rim; the x40 bar stays 'unlit at or below 5, no loop'; a toy each way; darkLandings/darkGaps [] over all 80 rolls. (2) child E 21 x 191
+(a 2 px grounded slide on the edge grace, then back): NOT going over; RimWatch counts going over only when he leaves the ground past the
+rim; a toy each way. (3) middle E 1 x 517 (a jump UP 161 px above the rim onto higher ground): NOT a crossing; same judge fix; a toy.
+(4) middle N 16 x 920, a REAL fall (glowWait's turn press at the very edge): fix in the bot, general (no turn press within his slide of
+the edge; turn on the spot or step back first), a toy each way on its shape. (5) darkBots test 5 + toys 3, 4, 6: RE-ANCHOR on the FINAL
+lay at rolls where each planted bot crosses a SLEEPING rim unlit and the unplanted one does not; names and asserts kept; the harness's
+NO TEST / BASE RED guards on. (6) src/game/gen2/proven stays WRITABLE after chattr (D115 practice; seedListChunk.test writes there); no
+engine change. THEN one x40 on the frozen final head vs THE BAR (shrine 360/360; unlit at or below 5 events, no loop; no rescue kind the
+base lacks), one line to the lead; then ONCE: plants (all CAUGHT, none NO TEST / BASE RED), darkBots.test green, tierBots 9/9, the suite
+shards + the CI tool line; LAND on t-eng-w3 (merge what it holds: FIX-CARD-DOWN, ENG-NOISE; no force; conflicts named), then dark.test,
+darkBots.test and lockall on the merged head. TIME (lead): rulings 1-4 with toys by 4:30 PM ET; the x40 line by 6:00 PM ET; LANDED by
+8:00 PM ET, or at 6:00 PM tell the lead what is left. HARD STOP 8:30 PM ET.
+**DONE in box 11 (commits 3b619fd57 + this one):**
+- Ruling 1 (gen2/dark.ts): `dropLanding(platforms, from, dir, box, ahead)` split out of landingOf (landingOf calls it with ahead 30,
+  unchanged). glowZone: a HOP rim (r.drop false) also gets a light over its step-off TOUCHDOWN (dropLanding ahead 0: rim + dir*STEP_OFF,
+  kept 20 px inside the piece), same height rule, same 70 px skip. NOT at landingOf's +30 point (box 10's 'about x 897'): measured,
+  there roll 32 N's hop rim 764,5649 hung nothing (within 70 px of light 41 at 880,5758, which misses the edge 712,5848 by 0.6 px), RED.
+  At the touchdown: 33 N's second light is id 45 at (920, 7738), 92 px from the edge 940,7828. darkLandings: `stepLight(platforms, rim,
+  zone)` (the light nearest a hop rim's touchdown reaching it); a step off a hop rim takes NO (i) exemption; lit if its own landing light
+  covers the edge, or stepLight covers the edge and a stop at the rim facing over it wakes it (litAfter finite), or the old timing loop.
+  probes/verdicts.mts 1 40: **darkLandings/darkGaps/darkFlags [] over all 80 rolls**, 776 awake, 4,679 asleep (+9 lights).
+  Toy (dark.test): 'a hop rim's step-off landing is lit': roll 33 N GREEN; the lay without second lights (only rims' own landing lights
+  kept): RED naming the rim at x 951, y 7644. PASS.
+- Rulings 2+3 (RimWatch.step): a grounded step past the piece's end at its height stays ON the piece (no count). Leaving the ground past
+  the rim counts at once if he is below the rim's height (+4), or on a vine (climbed); a pass ABOVE it is held (`over`) and counted (at the
+  pass's time) once he sinks below the rim or grabs a vine; dropped when he lands back on the piece or on higher ground past the rim.
+  Toys (dark.test, hand-fed frames on roll 1's first sleeping rim): 'a grounded slide on the edge grace ... no going over; a real step
+  off still is' PASS both ways; 'a jump UP over a rim onto higher ground is no crossing; the same jump coming down below the rim is' PASS
+  both ways. The old climb toy ('climbed' vs 'went over') still PASS.
+- Ruling 4 (firsttimer.ts glowWait): new `GLOW_TURN_ROOM` = the slide of a TURN_FRAMES (3) frame turn press from a standstill + its
+  slide after (from PHYS: 28 px). In the stop, facing away, before the turn press (stop.turn !== 1): nearer the rim than
+  min(GLOW_TURN_ROOM, piece.width/2) he presses AWAY (steps back; he faces away, so no turn); then stands until |vx| <= 5; then the turn
+  press as before. Plant field `noTurnRoom`. castone on this code: **middle N 16 shrine 322.1 s, 5 rescues, crossed 21, unlit []**
+  (box 10 on 404d9420: 282.6/5, 1 unlit at 920); **child E 21 358.9/7 unlit []** (358.9/7); **middle E 1 288/5 unlit []** (258.2/4).
+  NOTE for the x40: middle N 16 +40 s and middle E 1 +30 s and +1 rescue vs box 10; not traced (the second lights add stops).
+- darkBots.test: 2 toys appended ('the dark stop's turn is never pressed at the rim's very edge' GREEN PASS; its plant 'noTurnRoom' RED
+  FAILS: on the FINAL lay roll 16 no longer reaches the edge turn even planted (probes/turnroom.mts middle normal 16 1: shrine, 5, unlit
+  []). It needs RE-ANCHORING with toys 3, 4, 6 and test 5 (ruling 5).
+- dark.test whole on this code (run once, unfrozen tree, no edits during it): **15/15 pass**. darkBots.test whole NOT run in box 11.
+**BOX 12 DOES, in order:** (a) RE-ANCHOR (ruling 5) on this lay with toyscan.mts (extend it with a 'noturnroom' flag for the new plant):
+test 5 + toys 3, 4, 6 + the turn-room RED, each at a roll where the planted bot crosses a SLEEPING rim unlit and the unplanted one
+does not; names and asserts kept. (b) planted-faults.py: plant 28 (the seam check, box 10's step 4) and plant 29 (the turn room:
+glowWait's `if (!this.who.noTurnRoom && stop.turn !== 1) {...}` block removed -> the turn-room RED goes GREEN-fails). (c) freeze; ONE
+x40 vs THE BAR; one line to the lead. (d) the gates once; LAND on t-eng-w3; dark.test, darkBots.test, lockall on the merged head.
+**FOR ENG-DOWNBOT's merge, the exact downEnd/glowWait changes:** downEnd as box 10 wrote below (the d / noSeamWalk / ledgeEnds check
+before its return; ledgeEnds; LAND_HALF import; FirstTimer `noSeamWalk`). glowWait (box 11): consts `TURN_FRAMES = 3` and
+`GLOW_TURN_ROOM` after GLOW_GIVEUP; FirstTimer `noTurnRoom` after noGlowTurn; in the stop's turn branch, before `stop.turn = 1;`:
+`if (!this.who.noTurnRoom && stop.turn !== 1) { if ((rim.x - p.x) * rim.dir < Math.min(GLOW_TURN_ROOM, rim.piece.width / 2)) return
+rim.dir > 0 ? { left: true } : { right: true }; if (Math.abs(p.vx) > 5) return {}; }` (+ its comment).
 **EXACT NEXT STEP (ENG-DARK-j box 10 hand-over, 2:13 PM ET by `date`; head on t-eng-dark-wip = this commit; CODE 404d9420 (the bot fix);
 no lay change yet. Box 11 OWNS every step below. Re-fetch before every commit (D138).)**
 **DONE in box 10, the lead's ruling 1, fix (a) (commit 404d9420), measured by castone on the new head:**

@@ -109,3 +109,22 @@ test("a seam read as a way down (noSeamWalk, the plant): both sides of the seam 
   assert.ok(r.dark, 'the drafted 3-1 has a lit dark (FTRun.dark)');
   assert.ok(worstRim(r.dark.unlit) >= 10, `one rim gone over dark again and again: ${JSON.stringify(r.dark.unlit.slice(0, 3))}`);
 });
+
+/** the middle on Normal roll 16 to just past the rim x 920, y 7104 (the right end of 760-920), where box 10 traced his turn press */
+async function turnRun(noTurnRoom: boolean) {
+  if (readied !== DRAFT) readyDraft(DRAFT);
+  const { firstTimer, FT_MIDDLE } = await import('../../../tools/inspect/firsttimer.ts');
+  return firstTimer(DRAFT, 16, { ...FT_MIDDLE, setting: 'normal', noTurnRoom }, { cap: 175 });
+}
+
+test("the dark stop's turn is never pressed at the rim's very edge: on roll 16 he stops 2 px in from rim x 920 facing away, steps back, then turns, and every rim he went over was lit (GREEN; planted: noTurnRoom)", async () => {
+  const r = await turnRun(false);
+  assert.ok(r.dark && r.dark.crossed >= 10, `he went over dark rims (${r.dark?.crossed})`);
+  assert.deepEqual(r.dark.unlit, []);
+});
+
+test("the turn pressed at the rim's very edge (noTurnRoom, the plant): the press that turns him carries him off rim x 920 into the dark (RED)", async () => {
+  const r = await turnRun(true);
+  assert.ok(r.dark, 'the drafted 3-1 has a lit dark (FTRun.dark)');
+  assert.ok(r.dark.unlit.some((u) => u.includes('x 920')), `rim x 920 gone over dark: ${JSON.stringify(r.dark.unlit.slice(0, 3))}`);
+});

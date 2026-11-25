@@ -129,6 +129,11 @@ const SNAP_THUMB = 0.1;
  *  a light that has not woken this many s into his stop he gives up on (GLOW_STILL 0.7 s + the wake's travel is well under it) */
 const GLOW_NEAR = 90;
 const GLOW_GIVEUP = 4;
+/** ...and the stop's turn to face the rim is pressed only this far in from it: a turn press his thumb holds TURN_FRAMES frames from a
+ *  standstill, and the slide after it (traced on the 3-1 draft, middle Normal roll 16: pressed 2.4 px from rim x 920, the press turned
+ *  him AND carried him off it). Nearer, he steps back first (the lead's ruling 4, 11-25) */
+const TURN_FRAMES = 3;
+const GLOW_TURN_ROOM = Math.ceil(((PHYS.groundAcc / 30) * (TURN_FRAMES * (TURN_FRAMES + 1)) / 2) / 30 + (PHYS.groundAcc * TURN_FRAMES / 30) ** 2 / (2 * PHYS.groundDec));
 /** ...and a running jump over a dark rim is pressed up to this many px before it (traced on the 3-1 draft: the expert pressed 94 px out,
  *  just past GLOW_NEAR, and jumped into the dark): a jump toward a dark rim on his piece within a jump's carry stops him first (glowJump) */
 const GLOW_JUMP = 200;
@@ -286,6 +291,8 @@ export interface FirstTimer {
   noGlowWait?: boolean;
   /** the dark stop's turn to face the rim REMOVED (darkBots.test's give-up toy only): he stands the way he was facing (glowWait) */
   noGlowTurn?: boolean;
+  /** the dark stop's turn pressed at the rim's very edge again (darkBots.test's turn-room toy only): no step back first (glowWait) */
+  noTurnRoom?: boolean;
   /** a seam he walks over read as a way down again (darkBots.test's seam toy only): downEnd steers him at a way-on point under a gap
    *  narrower than his body from both sides, and he walks back and forth over it */
   noSeamWalk?: boolean;
@@ -3391,6 +3398,12 @@ export class FirstTimerRun {
       if (on(rim) && !(woke !== undefined && e.gameTime >= woke + ahead + this.who.stopReact)) {
         if (e.gameTime - since <= GLOW_GIVEUP) {
           if (p.facing !== rim.dir && stop.turn !== 2 && !this.who.noGlowTurn) {
+            // (never a turn press within its own slide of the edge: he steps back from the rim first (no further than the piece's
+            //  middle), stands still, then turns: the press that turns him also moves him)
+            if (!this.who.noTurnRoom && stop.turn !== 1) {
+              if ((rim.x - p.x) * rim.dir < Math.min(GLOW_TURN_ROOM, rim.piece.width / 2)) return rim.dir > 0 ? { left: true } : { right: true };
+              if (Math.abs(p.vx) > 5) return {};
+            }
             stop.turn = 1;
             return rim.dir > 0 ? { right: true } : { left: true };
           }
