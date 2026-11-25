@@ -58,6 +58,15 @@ been let go (vx 0 at 47.533-47.567). The judge assumes 'the steer held from now,
 the kid's steer had dropped and came back about 0.2 s after the take-off. Fix where the cause is: the judged run-up's jump keeps its
 steer held from the judge's frame (as runUpHold keeps the jump's hold), or the judge reads the steer he actually has. RED/GREEN on this row.
 
+**E 35, the thumb (tools/e35thumb.mts.txt, data/l/e35thumb.txt): THE CAUSE, exactly.** t 47.467: the run-up starts (wants right, runUp
+#48). t 47.500: the run-up gives up and pulls the thumb back (wants LEFT: 'inside his run-out of the front he pulls the thumb back',
+firsttimer.ts:2374-2377); the turn arms the thumb's travel (travelUntil 47.680). t 47.533: the run-up restarts (wants right, runUp #48);
+the second turn pushes travelUntil to 47.711, so the steer is dropped (out {}). t 47.567: the run-up's judge (runPress: true at all 3 lags,
+'the steer held from now') sends the jump. The thumb still travelling drops his steer to t 47.711, and he flies on the carry alone. A
+run / pull-back / run flicker (the one the comment at :2363 names for candidate 15) whose two turns' thumb travel the judge never reads.
+Fix where the cause is (for the lead's ruling): the run-up's judge counts the thumb's travel still to run (steer from max(t + lag,
+travelUntil, driftUntil)), or presses no run-up jump while the thumb travels. No other row in the 31 shows this act.
+
 ## Ruling 3: row 8, and the careful middle's MARGIN on every race row (his time minus the boat's; below 0 he wins; data/l/margins-*.txt)
 | race row | c24 2a2c44786 | base dfe631913 |
 |---|---|---|
@@ -93,8 +102,8 @@ rule changed (the lead decides the calibration).
    (sent before the hand-over). WAIT for the ruling. If 'fix it': c25 = c24 + the run-up's judge reads the steer he actually has at the
    judge's frame. At E 35 his steer was off (vx 0 at t 47.533-47.567, before the judge's frame), and it stayed off for 5 frames after
    the take-off. That is the thumb's own state (a let-go, release/releaseMax, or a slip; thumbify), which the gate hops fly through
-   hopFlies and the run-up's runPress does not (it assumes 'the steer held from now', firsttimer.ts:2363). Confirm which of the two first
-   (log thumbify's state at t 47.50-47.73). Then: a toy RED/GREEN, 2-4 kid E 35 PASS, the run-up's own rows (2-4 adult N 6/8/24/32,
+   hopFlies and the run-up's runPress does not (it assumes 'the steer held from now', firsttimer.ts:2363). CONFIRMED: the thumb's TRAVEL after
+   the run-up's own run / pull-back / run flicker (data/l/e35thumb.txt), not a let-go or a slip. Then: a toy RED/GREEN, 2-4 kid E 35 PASS, the run-up's own rows (2-4 adult N 6/8/24/32,
    child E 23, child N 39, child N 8), the 10 known flips, a 2-4 wide sample vs data/j/c24-2-4-w.jsonl (the run-up acts on 2-4; it was
    identical on the 2-1/2-2 rows traced), then ruling 4 on c25's exact head.
 2. Ruling 2: re-plant pacerLay 22 (boardLog, home middle Easy 1: the lip-log run-off, needs a full RiverZone for floatAt, see

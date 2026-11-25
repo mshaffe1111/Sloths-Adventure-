@@ -1,0 +1,11 @@
+t47.433 want {} -> out {} travelUntil 44.894 driftUntil 24.633 releaseLeft 0 runUp null pending null
+t47.467 want {"right":true} -> out {"right":true} travelUntil 44.894 driftUntil 24.633 releaseLeft 0 runUp {"id":48,"t":47.466666666666534} pending null
+t47.500 want {"left":true} -> out {} travelUntil 47.680 driftUntil 24.633 releaseLeft 0 runUp null pending null
+t47.533 want {"right":true} -> out {} travelUntil 47.711 driftUntil 24.633 releaseLeft 0 runUp {"id":48,"t":47.533333333333196} pending null
+t47.567 want {"right":true,"press":true,"jump":true} -> out {"press":true,"jump":true} travelUntil 47.711 driftUntil 24.633 releaseLeft 0 runUp null pending null
+t47.600 want {"right":true,"jump":true} -> out {"jump":true} travelUntil 47.711 driftUntil 24.633 releaseLeft 0 runUp null pending null
+t47.633 want {"right":true,"jump":true} -> out {"jump":true} travelUntil 47.711 driftUntil 24.633 releaseLeft 0 runUp null pending null
+t47.667 want {"right":true,"jump":true} -> out {"jump":true} travelUntil 47.711 driftUntil 24.633 releaseLeft 0 runUp null pending null
+t47.700 want {"right":true,"jump":true} -> out {"jump":true} travelUntil 47.711 driftUntil 24.633 releaseLeft 0 runUp null pending null
+t47.733 want {"right":true} -> out {"right":true} travelUntil 47.711 driftUntil 24.633 releaseLeft 0 runUp null pending null
+t47.767 want {"right":true} -> out {"right":true} travelUntil 47.711 driftUntil 24.633 releaseLeft 0 runUp null pending null

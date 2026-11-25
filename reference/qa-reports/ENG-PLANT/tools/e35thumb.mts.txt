@@ -1,0 +1,8 @@
+// usage: tsx e35thumb.mts <tree> : 2-4 kid Easy 35: what the bot wants and what his thumb gives (thumbify) for t in [47.43, 47.77]
+const [T] = process.argv.slice(2);
+await import(`${T}/src/game/headlessDom.ts`);
+const { CAST_BOTS } = await import(`${T}/tools/inspect/castBots.ts`);
+const FT = await import(`${T}/tools/inspect/firsttimer.ts`);
+const P = (FT as any).FirstTimerRun.prototype; const th = P.thumbify;
+P.thumbify = function (want: any) { const t = this.t; const out = th.call(this, want); if (t >= 47.43 && t <= 47.77) console.log(`t${t.toFixed(3)} want ${JSON.stringify(want)} -> out ${JSON.stringify(out)} travelUntil ${this.travelUntil?.toFixed?.(3)} driftUntil ${this.driftUntil?.toFixed?.(3)} releaseLeft ${this.releaseLeft} runUp ${JSON.stringify(this.runUp)} pending ${JSON.stringify(this.pending)?.slice(0, 90)}`); return out; };
+FT.firstTimer('2-4', 35, CAST_BOTS.kid.easy, { cap: 1200, dotSetting: true });
