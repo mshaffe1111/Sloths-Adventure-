@@ -272,36 +272,25 @@ test('bot (planted): a log drifting his way, still mostly under the lip, is boar
   assert.ok(!off.won, `RED: without the skill the plant must lose (${off.him} s against ${off.boat} s)`);
 });
 
-// (the racing hop off a log is judged as it is flown, SKILLS.raceSure (firsttimer.ts, the race leg's hop off a log running his way):
-//  the far bank within 80 px of the log's end was taken with no landing check, and the press drew its own hold (holdQ, as short as a
-//  frame), so a tap off the log's front came down 19 px short of a bank 28 px up. Planted on the exact falls (level.md rule 21, RED
-//  with the skill off): home middle Normal seed 2 fell at x 10683, 6551 and 3959, post Normal seed 5 at x 12371 (ENG-27k traced all
-//  ten of the two losing rows' falls: k/falls-*-27k.txt; RED and GREEN here: ENG-27/l/falls-*-27l.txt, ENG-27l)
-test('bot (planted): the racing hop off a log lands where it was judged to, so the bank 28 px up is reached, not fallen short of; RED without it', async () => {
+// (the racing hop off a log lands where it was judged: the falls ENG-27k traced short of a bank 28 px up (home middle Normal seed 2 at
+//  x 10683, 6551 and 3959; post Normal seed 5 at x 12371) do not come back. Its RED half (SKILLS.raceSure off) is RETIRED per R-165.432
+//  (the lead's ruling, ENG-PLANT-r): under SKILLS.floatSure the race leg's hop is judged by the float gate, raceSure's branch could not
+//  run (on == off, the same path frame for frame on both rows, ENG-PLANT data/r/racesure-c27.txt), and the dead branch was deleted)
+test('bot: the racing hop off a log lands where it was judged to, so the bank 28 px up is reached, not fallen short of', async () => {
   const { homeRun } = await import('../../../tools/inspect/homeToys.ts');
-  const { SKILLS } = await import('../../../tools/inspect/firsttimer.ts');
-  const falls = (seed: number, code: string, on: boolean) => {
-    const was = SKILLS.raceSure;
+  const falls = (seed: number, code: string) => {
     const at: number[] = [];
     let piece: PacerPiece | undefined, lives: number | undefined;
-    try {
-      SKILLS.raceSure = on;
-      homeRun('middle', 'normal', seed, 1, { onFrame: (sim: { e: unknown }) => {
-        const e = sim.e as { pieces: unknown[]; lives: number; player: { x: number } };
-        piece ??= e.pieces.find((q) => (q as PacerPiece).kind === 'pacer') as PacerPiece | undefined;
-        if (lives !== undefined && e.lives < lives && piece && piece.clock !== null) at.push(Math.round(e.player.x));
-        lives = e.lives;
-      } } as never, code);
-    } finally {
-      SKILLS.raceSure = was;
-    }
+    homeRun('middle', 'normal', seed, 1, { onFrame: (sim: { e: unknown }) => {
+      const e = sim.e as { pieces: unknown[]; lives: number; player: { x: number } };
+      piece ??= e.pieces.find((q) => (q as PacerPiece).kind === 'pacer') as PacerPiece | undefined;
+      if (lives !== undefined && e.lives < lives && piece && piece.clock !== null) at.push(Math.round(e.player.x));
+      lives = e.lives;
+    } } as never, code);
     return at;
   };
   for (const [seed, code, xs] of [[2, HOME_CODE, [10683, 6551, 3959]], [5, POST_CODE, [12371]]] as const) {
-    const on = falls(seed, code, true), off = falls(seed, code, false);
-    for (const x of xs) {
-      assert.ok(off.some((f) => Math.abs(f - x) < 30), `RED: without the skill seed ${seed} falls short at x ${x} (falls ${off.join(', ')})`);
-      assert.ok(!on.some((f) => Math.abs(f - x) < 30), `seed ${seed}: no fall short of the bank at x ${x} (falls ${on.join(', ')})`);
-    }
+    const on = falls(seed, code);
+    for (const x of xs) assert.ok(!on.some((f) => Math.abs(f - x) < 30), `seed ${seed}: no fall short of the bank at x ${x} (falls ${on.join(', ')})`);
   }
 });

@@ -760,7 +760,7 @@ export interface DotReport {
  */
 /** the log a racing hop wants on each side of where it lands (px): the flights' careful middle player (2-7.md FLOWN) */
 const RACE_MARGIN = 50;
-export const SKILLS = { trunkCatch: true, ride: true, upstream: true, bankUp: true, handed: true, dropOnLog: true, vineFromLog: true, vineOverTail: true, bonkAfterSnap: true, rideWheel: true, bonkBrake: true, letItSnap: true, race: true, rideOnly: false, fromTakeoff: true, boardLog: true, boardHop: true, raceSure: true, floatSure: true, reAim: true, runUp: true };
+export const SKILLS = { trunkCatch: true, ride: true, upstream: true, bankUp: true, handed: true, dropOnLog: true, vineFromLog: true, vineOverTail: true, bonkAfterSnap: true, rideWheel: true, bonkBrake: true, letItSnap: true, race: true, rideOnly: false, fromTakeoff: true, boardLog: true, boardHop: true, floatSure: true, reAim: true, runUp: true };
 /**
  * (ENG-26e) `trunkCatch`, a thumb gone to the climb: a jump that catches a trunk straight off the ground (no frame in the air, so no landing
  * ends it) is over the frame he holds the trunk, its hold and its second press with it; the climb is his. With it off the jump runs on
@@ -1491,8 +1491,6 @@ export class FirstTimerRun {
   private wheelSeen = -1;
   private wheelDelay = 0;
   private wheelHop = 0;
-  /** SKILLS.raceSure: the racing hop off a log is flown as it was judged, a single held this long (s; 0: no racing hop) */
-  private raceHop = 0;
   /** a pond's pad ahead first read ready (s), or -1 (padRead's reaction) */
   private padSeen = -1;
   /** with KEEP-HOPPING off: the pad he stops on and until when (padRead) */
@@ -3541,7 +3539,7 @@ export class FirstTimerRun {
       if (SKILLS.bankUp && under?.type === 'drift' && under.drift && under.drift.dir !== dir) {
         const front = dir > 0 ? under.x + under.width : under.x;
         const up = this.sim.platforms.find((q) => q.type !== 'drift' && !q.broken && q.y < p.y - 6 && q.y > p.y - 70 && (dir > 0 ? q.x >= front - 2 && q.x - p.x < 90 : q.x + q.width <= front + 2 && p.x - (q.x + q.width) < 90));
-        // (SKILLS.floatSure, ENG-PLANT (the lead's ruling A, rule 28): the hop up the face is the hop judged, as raceSure judges the race's
+        // (SKILLS.floatSure, ENG-PLANT (the lead's ruling A, rule 28): the hop up the face is the hop judged, as the race judges its
         //  bank hop: drawn once for the wait, pressed only when gateSees lands it on the bank with the gate's 24 px; refused, he stands and
         //  the log hands him back. Pressed blind (jumpFor) off a log running back at him, the log carried him away through his thumb's lag
         //  and he came down short of the face: 2-1 adult Normal seed 12, three lives at the both-ways back river and rescued (riverRide.test))
@@ -3684,15 +3682,7 @@ export class FirstTimerRun {
           // player does (2-7.md FLOWN: a hop the first frame its landing is sure, wanting 50 px of log each side); riding every log in is
           // the ride-only player, who loses the race by its rule)
           const pacer = (this.sim.stage as { pacer?: Pacer }).pacer;
-          const sure = (q: Platform) => hopLandsOn(q, floatAt(rivers, q), p.x, p.y, dir as -1 | 1, who.hold[0], t, p.vx + (Math.abs(carry) < 400 ? carry : 0), RACE_MARGIN);
-          // (SKILLS.raceSure, ENG-27l M1: the bank too is asked whether the hop comes down on it (hopLandsOn, its rise read), and the hop
-          //  flown is held at least as long as the hop judged (who.hold[0]): the bank within 80 px of the log's end was taken with no landing
-          //  check and the press drew its own hold (holdQ, as short as a frame), so a tap off a log's front came down 19 px short of a bank
-          //  28 px up, four falls on the race leg (2-7 home middle Normal 2 x 10683, 6551, 3959; post Normal 5 x 12371; k/falls-*-27k.txt).
-          //  A single forced at exactly that hold, the bank asked 50 px in, rode too many logs in and lost five races (l/race-variantA-27l.txt).
-          //  Not sure: he rides on, and the log hands him to the bank, SKILLS.handed)
           const bankIn = (q: Platform) => q !== here && q.type !== 'drift' && !q.broken && Math.abs(q.y - p.y) < 70 && (dir > 0 ? q.x - edgeX < 80 && q.x + q.width > edgeX : edgeX - (q.x + q.width) < 80 && q.x < edgeX);
-          const reach = SKILLS.raceSure ? this.sim.platforms.some((q) => bankIn(q) && hopLandsOn(q, floatAt(rivers, q), p.x, p.y, dir as -1 | 1, who.hold[0], t, p.vx + (Math.abs(carry) < 400 ? carry : 0))) : bank;
           // (SKILLS.floatSure, the lead's ruling (rule 28): the hop he will fly, drawn once for the ride by the testers' habit (a double
           //  as often as they press one), is the hop judged, from where he stands, onto the bank or the next log; not sure, he rides on.
           //  It was judged a single held who.hold[0] and flown as jumpFor and the draws made it: every race row a double, hopJudged.test)
@@ -3730,16 +3720,6 @@ export class FirstTimerRun {
               this.aim.end();
               return this.startJump(dir, this.jumpFor(p, dir, here), false);
             }
-          } else if (raceLegal && (reach || this.sim.platforms.some((q) => q !== here && q.type === 'drift' && !q.broken && Math.abs(q.y - p.y) < 70 && Math.abs(q.x - here.x) < 600 && sure(q)))) {
-            this.edgeWait = -1;
-            if (SKILLS.raceSure) this.raceHop = who.hold[0];
-            if (HOP_TRACE.on) {
-              const vx = p.vx + (Math.abs(carry) < 400 ? carry : 0);
-              this.judged = null;
-              this.judge('race', this.sim.platforms.filter(bankIn), [0], dir as -1 | 1, who.hold[0], vx, 0);
-              if (!this.judged) this.judge('race', this.sim.platforms.filter((q) => q !== here && q.type === 'drift' && !q.broken && Math.abs(q.y - p.y) < 70 && Math.abs(q.x - here.x) < 600), [0], dir as -1 | 1, who.hold[0], vx, 0, RACE_MARGIN);
-            }
-            return this.startJump(dir, this.jumpFor(p, dir, here), false);
           }
           // (handed to the bank, SKILLS.handed: a log running his way carries him onto the bank it slides under; he rides it in)
           if (SKILLS.handed && here.drift && here.drift.dir === dir) {
@@ -3810,7 +3790,7 @@ export class FirstTimerRun {
               this.pending = null; this.lateArmed = null; this.clockHeld = true; this.blockedT = 0; return {};
             }
             // (SKILLS.floatSure, ENG-PLANT (the lead's ruling A, rule 28): the far bank in reach and no log, the hop onto the bank is the hop
-            //  judged, as raceSure judges the race's bank hop: pressed only when gateSees lands it on the bank with the gate's 24 px; refused,
+            //  judged, as the race judges its bank hop: pressed only when gateSees lands it on the bank with the gate's 24 px; refused,
             //  he stands and the log hands him back. Pressed blind (jumpFor) off a log running back at him, the log carried him away through
             //  his thumb's lag and he came down short of the bank: 2-1 adult Normal seed 12, x 25,440 -> 25,607 into the water, three lives
             //  at the both-ways back river and rescued (riverRide.test; it crossed clean only by the phase the run reached it at))
@@ -5032,13 +5012,6 @@ export class FirstTimerRun {
       hold = Math.max(hold, this.wheelHop);
       d2 = -1;
       this.wheelHop = 0;
-    }
-    // (a racing hop off a log, SKILLS.raceSure: held at least as long as the hop judged (hopLandsOn with who.hold[0]), as the liana's
-    //  and the wheel's hops are; the draws above are kept, so the stream is as ever)
-    if (this.raceHop > 0) {
-      hold = Math.max(hold, this.raceHop);
-      if (kind === 'double') hold = Math.min(hold, d2 - DT);
-      this.raceHop = 0;
     }
     // (the run-up's jump, SKILLS.runUp: held at least as long as runPress judged it (who.hold[0]), as the race's, the liana's and the
     //  wheel's hops are; a shorter draw (0.093 s on 2-4 child Normal 8, t 120.77) peaked at y 895 under liana #4's foot (859) and fell in)
