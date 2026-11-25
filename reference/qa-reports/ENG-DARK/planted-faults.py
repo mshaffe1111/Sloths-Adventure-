@@ -53,6 +53,11 @@ PLANTS = [
      '...(p.climbing ? { climbed: true as const } : {})', '...({})', "own kind ('climbed')"),
     ("litAhead counts a climb past a rim as a blind drop", 'src/game/gen2/dark.ts',
      '    if (c.climbed) continue;\n', '', "own kind ('climbed')"),
+    # (ENG-DARK-f) child Easy 25's strand: the tower's way-down plan asked the vine's top one way only, and pressed down mid-trunk
+    ("the way-down plan's top test one-sided again", 'tools/inspect/firsttimer.ts',
+     '      if (Math.abs(e.nearTreeVine.topY - p.y) <= 14) return { down: true };', '      if (e.nearTreeVine.topY <= p.y + 14) return { down: true };', "MID-WAY", 'src/game/gen2/darkBots.test.ts'),
+    ("the way-down plan never takes a trunk mid-way (no up grab)", 'tools/inspect/firsttimer.ts',
+     '      if (e.nearTreeVine.topY < p.y - 14 && under &&', '      if (false && under &&', "MID-WAY", 'src/game/gen2/darkBots.test.ts'),
 ]
 missed = 0
 for plant in PLANTS:

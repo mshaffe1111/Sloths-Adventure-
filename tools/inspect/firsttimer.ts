@@ -1318,6 +1318,8 @@ export class FirstTimerRun {
   /** he follows a tower's own route (towerRoute.ts): corners, no jump arcs, so he reads a stair of ledges himself */
   private onTower = false;
   private climbDown = false;
+  /** the way-down plan caught a trunk mid-way with UP to climb DOWN it (the next climb's way is down, once) */
+  private grabDown = false;
   private climbTurned = false;
   /** he was on a trunk when the last choice was made */
   private wasOnTrunk = false;
@@ -1756,13 +1758,16 @@ export class FirstTimerRun {
    *  him (the route drops off a ledge's end there, towerRoute.ts dropTo). 0 on any other stage, or when it is straight under him */
   private downEnd(p: { x: number; y: number }): -1 | 0 | 1 {
     if ((this.sim.stage as { gen2?: { tower?: { flow?: string } } }).gen2?.tower?.flow !== 'down') return 0;
+    const at = this.downPt(p);
+    if (!at) return 0;
+    const dx = at.x - p.x;
+    return dx > 8 ? 1 : dx < -8 ? -1 : 0;
+  }
+  /** the way on's first point (of the next 80) that lies under him (40+ px down) */
+  private downPt(p: { x: number; y: number }): Pt | null {
     const pts = this.prog.pts;
-    for (let j = this.prog.cur; j < Math.min(pts.length, this.prog.cur + 80); j++) {
-      if (pts[j].y <= p.y + 40) continue;
-      const dx = pts[j].x - p.x;
-      return dx > 8 ? 1 : dx < -8 ? -1 : 0;
-    }
-    return 0;
+    for (let j = this.prog.cur; j < Math.min(pts.length, this.prog.cur + 80); j++) if (pts[j].y > p.y + 40) return pts[j];
+    return null;
   }
   private pitWayBack(tgt: Pt | null): -1 | 0 | 1 {
     const p = this.sim.p;
@@ -2603,8 +2608,9 @@ export class FirstTimerRun {
       if (this.climbVine !== e.nearTreeVine || !this.wasOnTrunk) {
         this.climbVine = e.nearTreeVine;
         // (never down a trunk whose top is where her mark stands: he caught it to go up for it, markClimb.ts)
-        this.climbDown = !!(tgt && tgt.y > p.y + 40 && Math.abs(tgt.x - p.x) < 60) && !(e.nearTreeVine && markUp(e.nearTreeVine, p, this.sim.collectibles as never, dir));
+        this.climbDown = this.grabDown || !!(tgt && tgt.y > p.y + 40 && Math.abs(tgt.x - p.x) < 60) && !(e.nearTreeVine && markUp(e.nearTreeVine, p, this.sim.collectibles as never, dir));
         this.climbTurned = false;
+        this.grabDown = false;
       }
       if (this.climbStill < 0.4) return this.climbDown ? { down: true } : { up: true };
       this.climbStill = 0;
@@ -2855,8 +2861,20 @@ export class FirstTimerRun {
     // (a way DOWN turns on a vine whose top stands at his ledge's end (or that runs past a catch he landed on): with the way on under
     //  him, straight down takes it, as the plain
     //  action does (STAGE-RULES §1: straight down on a vine always climbs; towerFly.ts presses the same); without it he hopped off the
-    //  end past the vine, ENG-W3a's drafted 3-1. A climb never comes here)
-    if (this.onTower && e.nearTreeVine && p.grounded && !p.climbing && tgt && tgt.y > p.y + 60 && e.nearTreeVine.topY <= p.y + 14 && e.nearTreeVine.bottomY > p.y + 60 && (this.sim.stage as { gen2?: { tower?: { flow?: string } } }).gen2?.tower?.flow === 'down') return { down: true };
+    //  end past the vine, ENG-W3a's drafted 3-1. A climb never comes here. The top must be AT his feet, both ways, as the engine's
+    //  downAtTop asks (engine.ts: from the ground only the vine's very top climbs down): one-sided, he held down mid-trunk 20 s beside a
+    //  vine whose top stood 281 px above him and never moved, ENG-DARK child Easy 25)
+    if (this.onTower && e.nearTreeVine && p.grounded && !p.climbing && tgt && tgt.y > p.y + 60 && e.nearTreeVine.bottomY > p.y + 60 && (this.sim.stage as { gen2?: { tower?: { flow?: string } } }).gen2?.tower?.flow === 'down') {
+      if (Math.abs(e.nearTreeVine.topY - p.y) <= 14) return { down: true };
+      // (a trunk that runs on up past his ledge, the way on going down it (the route's next point under him on the trunk): from the
+      //  ground mid-trunk only UP takes a trunk (engine.ts wantGrab), and the climb then goes down; without it the route's point under
+      //  him turned him at the trunk, left and right, until rescued, ENG-DARK child Easy 25)
+      const under = this.downPt(p);
+      if (e.nearTreeVine.topY < p.y - 14 && under && Math.abs(under.x - e.nearTreeVine.x) <= 16) {
+        this.grabDown = true;
+        return { up: true };
+      }
+    }
     // a trunk he is touching, and the way goes up (or he is stopped beside it): straight up
     // (holding up at the top of the trunk he just came up takes him nowhere: after a moment he lets the trunk be and goes on as on
     // open ground, a hop up to the ledge above, round 5 2026-10-29)

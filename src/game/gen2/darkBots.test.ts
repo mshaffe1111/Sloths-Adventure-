@@ -77,3 +77,14 @@ test("the dark's stop reads the THUMB: the KID's held steer that carries him tow
   assert.ok(r.dark && r.dark.crossed >= 3, `he went over dark rims (${r.dark?.crossed})`);
   assert.deepEqual(r.dark.unlit, []);
 });
+
+test("the way down a trunk he stands beside MID-WAY: the child takes it with up and climbs down to the shrine (GREEN; planted: the one-sided top test back, the mid-trunk grab removed)", async () => {
+  // (castBots x40 on 653bb970-4527e73f, the dark-only strand: a rescue set the CHILD Easy on a piece that trunk 26 runs through, its top
+  //  281 px over his feet, the way on down it to the floor and the shrine. The way-down plan pressed DOWN there (it asked only that the top
+  //  be at or above his feet; the engine climbs down from the ground only at a vine's very top), and he held it 20 s to a strand at
+  //  295.9 s; with the top asked both ways alone the route's point under him turned him at the trunk until stranded. The whole run)
+  if (readied !== DRAFT) readyDraft(DRAFT);
+  const { castRun } = await import('../../../tools/inspect/castBots.ts');
+  const r = castRun('child', 'easy', DRAFT, 25);
+  assert.equal(r.end, 'shrine', `the child Easy roll 25 reaches the shrine (${r.end} at ${r.time})`);
+});
