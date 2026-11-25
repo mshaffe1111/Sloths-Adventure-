@@ -2,29 +2,62 @@
 
 Session 1: started 2:31 PM ET 11-24 (by `date`), handed over at the 28-minute box. Lead: session_01FhBbYN2CVHnFXg7XzqKXpM.
 
-## EXACT NEXT STEP (INT-R5d, session 4: read this first)
+## EXACT NEXT STEP (session 5 starts here; INT-R5d handed over at the lead's word, box written 11:32 AM ET 11-25)
 INT-R5d started 10:42 AM ET 11-25 (by `date`). Packet: packets/2026-11-25/INT-R5d.md (the lead's branch). Branch
-**release-0.10.3-wip-fixes**: dfe631913 (release-0.10.3) + t-fix-sidewall (merge 0492396b) + t-fix-soil 849f4875b (merge a2b7dde04) +
-inventory row bb29e048d + groundBanks one place 7ee9b7bcb + 2-7 gap stills d63ae3dd3 + **the lead's ruled ENGINE PIECE f7c5b8a2e**
-(a bank a stacked ceiling runs under is never hung; paintcheck sets the stage's stack zones; soilShorts; the planted unit test).
-NEXT, in order (scratchpad trees are lost with the container: rebuild with `git worktree add --detach`, node_modules symlinked,
-`chattr -R +i src tools`, `chattr -R -i src/game/gen2/proven`; ONE vite per port, pkill it after each tree: a surviving vite served the
-base tree to the head's first 2-7 shots):
-1. Plant: `npx tsx tools/engine/paintcheck.ts --stages 2-7` on f7c5b8a2e with bankOpen's ceiling test removed (the old rule) = RED
-   (SOIL SHORT lines), on f7c5b8a2e = GREEN (0 SHORT, 0 OVER). (Earlier draft of the rule: RED 4,040 lines on the old rule; it
-   also flagged open-end faces on the fix, 1,815 lines of 8-32 units; narrowed in f7c5b8a2e: the soil must END under the foot and be
-   short across more than his width.)
-2. On f7c5b8a2e: paintcheck --part 0/3, 1/3, 2/3 (GREEN: sideWall, soilOvers, soilShorts; no known list); lockall --layouts 16
-   --check reference/qa-reports/SIDEWALL-FIX/lock-main-cdffdc62.json: the moved-stage list must equal the release base's
-   (dfe631913: 70/102 unchanged; 32 moved, all the release's own: 1-4 layout + 1-1..9-x proto.hints + 2-7); the CI tool line
-   (gates.yml:157); tsc.
-3. Stills on f7c5b8a2e (scratch int-shots.mjs = SIDEWALL-FIX sw2.mjs + a 1-4 start/summit job + JOBSET=stack for 2-7 at bank #1:
-   Normal x 3881, Easy x 4339): 2-7 after (gap closed, as base), 1-4 start and summit, 1-6's two posts, 8-1's sliver; Normal and Easy,
-   844x390 and 390x844; look at each as Matt would; save to reference/qa-reports/INT-R5/d/; paths to the lead.
-4. Push, ls-remote, the hash + gate lines + still paths to the lead. Then step 1b (ENG-PLANT's hash from the lead) and steps 2-4.
-Gates so far: tsc clean on a2b7dde04, 7ee9b7bcb, f7c5b8a2e; paintcheck part 0/3 PASS on a2b7dde04 (both rules; 1-4, 8-1 in it;
-superseded by the fix); lockall base dfe631913 = 70/102 unchanged; paintFall.test.ts 16/16 on f7c5b8a2e; src/game/art 16/16.
-FIX-SOIL-b's own gate table on 539885c37 was not on t-fix-soil (849f4875b); the lead takes this branch's gates as the ones that count.
+**release-0.10.3-wip-fixes**, code head **f7c5b8a2e** (then REPORT-only commits): dfe631913 (release-0.10.3) + t-fix-sidewall (merge
+0492396b) + t-fix-soil 849f4875b (merge a2b7dde04) + inventory row bb29e048d + groundBanks one place 7ee9b7bcb + 2-7 gap stills
+d63ae3dd3 + the lead's ruled ENGINE PIECE f7c5b8a2e (ruled well done). NEXT, in order:
+1. The CI tool line (gates.yml:157, read live; it now carries sideWall.test.ts and paintFall.test.ts with the planted stacked test) on
+   a FROZEN worktree of the branch head (`git worktree add --detach`, node_modules symlinked, `chattr -R +i src tools`, `chattr -R -i
+   src/game/gen2/proven`). Expect ONLY ENG-PLANT's 6 reds (firsttimer :184; riverRide :107 :145 :207 :213 :229; owner ENG-PLANT, its
+   merge clears them); any other red is the merges' or the engine piece's: trace it at its cause (D135: never 'inherited').
+2. The after stills on the branch head (scratch int-shots.mjs is lost with the container: rebuild it from
+   reference/qa-reports/SIDEWALL-FIX/tools/sw2.mjs + a 1-4 layout 1 start/summit job + a 2-7 layout 0 job at bank #1, Normal x 3881
+   (y 747), Easy x 4339 (y 742), pinned on its top and on the leg under it). ONE vite per port and pkill it after each tree: a vite
+   that outlived its run served the BASE tree to my first head shots. Set: 2-7 bank #1 (gap closed, as on base: compare with
+   d/gap-*.jpg), 1-4 start and summit, 1-6's two posts, 8-1's sliver; Normal and Easy, 844x390 and 390x844; look at each as Matt
+   would; save to reference/qa-reports/INT-R5/d/; paths to the lead.
+3. Step 1b when the lead sends ENG-PLANT's merged release-0.10.3 hash: merge it into release-0.10.3-wip-fixes (no force), tsc + the
+   CI line (0 FAIL, the todo chaseBots :110 aside), fast-forward release-0.10.3 (no force); then steps 2-4 of the packet (What's New
+   to the lead FIRST; THE FULL SET with drawcheck; the gate table). FIX-SOIL-b's CI tool line and drawcheck were NOT RUN on its
+   539885c37: they count on THIS merged tree instead (CI #77: a release fix's gates count on the merged release tree); name that in
+   the gate table.
+
+## Gate table, step 1 (INT-R5d; each on a FROZEN detached worktree, chattr +i src tools, proven writable)
+| head | gate | result |
+|---|---|---|
+| a2b7dde04, 7ee9b7bcb, f7c5b8a2e | `npx tsc --noEmit -p .` | clean, every head |
+| dfe631913 (release base) | lockall `--layouts 16 --check SIDEWALL-FIX/lock-main-cdffdc62.json` | 70/102 unchanged; 32 moved = the release's own (1-4's relist and fill, 2-7, the hint stages' proto.hints) |
+| a2b7dde04 (the two fixes merged) | the same lockall | move list IDENTICAL to the base's (diff empty): ZERO moves from the two fixes |
+| f7c5b8a2e (+ the engine piece) | the same lockall | move list IDENTICAL to the base's: ZERO moves |
+| f7c5b8a2e | paintcheck `--part 0/3`, `1/3`, `2/3` (sideWall, soilOvers, soilShorts; no known list) | PASS 3/3: 1,882 + 2,196 + 1,928 = 6,006 builds of 102 stages, both settings, 0 SIDE-ON, 0 SOIL OVER, 0 SOIL SHORT (1-4, 1-6, 2-7, 8-1 in it) |
+| f7c5b8a2e with bankOpen's ceiling test removed (the 7ee9b7bcb rule) | paintcheck `--stages 2-7` (THE PLANT) | FAIL, 3,719 SOIL SHORT lines (normal seed 1 bank #1 x 3881: short 307 across 568) |
+| f7c5b8a2e | paintcheck `--stages 2-7` | PASS: 0 SOIL SHORT, 0 SOIL OVER, 0 SIDE-ON |
+| f7c5b8a2e | `npx tsx --test tools/engine/paintFall.test.ts` | 16/16 (the planted stacked-ceiling test: RED without the ceilings, GREEN with) |
+| bb29e048d | `npx tsx --test src/game/art/*.test.ts` (inventory) | 16/16 |
+| a2b7dde04 | paintcheck part 0/3 (before the engine piece) | PASS (superseded by the sweep on f7c5b8a2e) |
+| - | the CI tool line; the after stills | NOT RUN in session 4 (the lead's box): next step 1 and 2 |
+| 539885c37 (FIX-SOIL-b) | its CI tool line and drawcheck | NOT RUN by FIX-SOIL-b; they count on this merged tree (CI #77): the CI line here, drawcheck in THE FULL SET |
+
+## The engine piece f7c5b8a2e (the lead's ruling, after the stills showed the gap)
+- What the merge broke: on 2-7 the soil fix hung the upper leg's banks (soil stopped at their own bottom over its underside) while the
+  release's stacked-leg ceiling clipped the earth and drew its own underside at its line, 120+ lower: the backdrop between (stills
+  d/gap-2-7-*-normal-*-base-vs-7ee9b7bcb.jpg, base left, merged head right). A headless probe found 249 such banks in 12 builds
+  (every hung bank on 2-7 is under a ceiling); confirmed live: bankOpen on the head's dev server returned underside true for bank #1.
+- The fix: protoArt.ts groundCeilings() (one place for the painted ground's ceilings); bankOpen/groundSoil/groundLine take them; a
+  bank a ceiling runs under is never hung (the ceiling owns its end). paintFall.ts: soilOvers judges the soil clipped at the ceiling;
+  soilShorts (new); paintcheck sets setGroundStacks(stackZonesOf(gen2.tower.legs), rivers) per build as engine.ts does (D136).
+- Named: the rule's first draft also fired on open-end faces leaning in on the fix (1,815 lines of 8-32 units on 2-7); narrowed before
+  the plant: the soil must END under the foot (within his height, the line lower still) across more than his width.
+
+## Lessons applied / to log (INT-R5d)
+- Applied: D115 (every run on a frozen worktree), D119 (commit messages by -m, no heredoc in a commit chain), D128 (stamps from
+  `date`), D134 (pushed and ls-remote-confirmed before every report), D135 (no red called inherited), D136 (the gate now reads the
+  soil as drawn on a stacked stage), D137 (the 28-minute box; handed over at the lead's word with the two running gates finished).
+- NEW, my miss, caught before it reached the lead as a finding: the base tree's vite survived its run (npx's child outlives
+  `vite.kill()`), and the head's run on the same port with --strictPort reused it, so the "head" stills were the base's. Proposed
+  countermeasure (a check): shoot scripts pkill their port after each tree and refuse to start on a busy port; the shot log prints
+  the served tree's `git rev-parse HEAD` from a file vite serves (or the page reads a build stamp) and the run fails on a mismatch.
 
 ## Step 1 (INT-R5d): the conflicts and their resolutions
 - Merge t-fix-sidewall (0492396b), all text, union: gates.yml:157 the CI tool line (the release's line + tools/engine/sideWall.test.ts);
