@@ -6,6 +6,7 @@ import {
   type Harm, type Shown, type Try,
 } from './firsttimer.ts';
 import type { Platform } from '../../src/game/types.ts';
+import { PHYS } from '../../src/game/physics.ts';
 
 const shown = (t0: number, t1: number | null, text: string, o: Partial<Shown> = {}): Shown => ({ key: `k:${text}`, text, kind: 'teach', source: 'engine', t0, t1, far: 0, near: 0, ...o });
 const tryAt = (x: number, t0: number, ok: boolean, o: Partial<Try> = {}): Try => ({ x, y: 580, dir: 1, t0, t1: t0 + 0.6, kind: 'single', ok, hurt: !ok, running: true, hold: 0.15, ...o });
@@ -306,4 +307,21 @@ test('floorAt: a branch far under a high river is floor; a top in its water is n
   assert.equal(floorAt(1445, 3738)?.id, 1, 'a branch 2,500 px under the high river, over no water of its own, is floor');
   assert.equal(floorAt(1000, 1249), null, 'a top 10 px under the high river\'s surface is in its water: no floor');
   assert.equal(floorAt(1000, 6000)?.id, 3, 'a top over the low river\'s surface is floor');
+});
+
+test('on the run it was found on, 2-4 kid Easy seed 35: no jump off a drifting log comes down in the water (set down by the game before he stands again); the run-up judge counts the thumb travel still to run (c25; RED on c24: a run / pull-back / run flicker left his steer dropped, the judge pressed "held from now" and he flew on the carry alone)', () => {
+  // (the real stage and bot, as castBots rolls them; read by what he meets, never where: every jump off a drifting log (on it, grounded,
+  //  one frame; the next up at a jump's launch speed, PHYS.jumpV), and every set-down by the game (a step of 100 px or more in one frame,
+  //  as FirstTimerRun reads one) before he stands on a floor again. RED on c24 2a2c44786 (ENG-PLANT REPORT, session 11): the run-up's
+  //  jump off log #48; a walk-off after a landing is R-165.413's, not this)
+  let flying = false, offs = 0, downs = 0, last: { x: number; y: number; on: boolean } | null = null;
+  firstTimer('2-4', 35, { ...FT_KID, setting: 'easy' }, { cap: 180, dotSetting: true, onFrame: (sim) => {
+    const e = (sim as unknown as { e: { player: { x: number; y: number; vy: number; grounded: boolean }; platforms: Platform[]; standingOnId: number | null } }).e;
+    const p = e.player, here = e.platforms.find((q) => q.id === e.standingOnId);
+    if (last && Math.hypot(p.x - last.x, p.y - last.y) >= 100 && flying) downs++;
+    if (last?.on && !p.grounded && p.vy < -0.8 * PHYS.jumpV) { flying = true; offs++; } else if (p.grounded) flying = false;
+    last = { x: p.x, y: p.y, on: p.grounded && !!here && here.type === 'drift' };
+  } });
+  assert.ok(offs >= 1, `he jumped off a drifting log (${offs})`);
+  assert.equal(downs, 0, `no jump off a log came down in the water (${downs} of ${offs})`);
 });
