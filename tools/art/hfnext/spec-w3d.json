@@ -1,0 +1,37 @@
+{
+ "tag": "w3-d",
+ "edits": [
+  {
+   "name": "thornBed",
+   "src": "gh:COMMIT:reference/art/hfw3/starts5/thornBed.png",
+   "refs": [
+    "gh:COMMIT:reference/art/hfnext/starts2/ref-w3.png"
+   ],
+   "w": 1024,
+   "h": 384,
+   "seeds": [
+    11,
+    23,
+    37
+   ],
+   "prompt": "Repaint the first image as a bed of wicked sharp cave thorns growing from a low mound of dark grotto rock, seen exactly side-on, in exactly the hand-painted storybook style of the pieces in the second image: soft painterly gouache shading with gentle gradients, fine thin dark linework. The thorns are long, hooked and needle-sharp, pale bone white with cold blue shadows, each tip edged with a hot red-orange danger glow so they clearly read as dangerous against dark rock. The rock mound under them is dark cool grey-green grotto stone with a little moss. Keep its shape and size. Keep the flat plain grey background around it, with empty grey space on every side.",
+   "neg": "photo, 3d render, blurry, text, letters, watermark, frame, border, scenery, sky, cave background, ground plane, thick black outline, flat vector, clip art, cast shadow, extra objects, people, animals, sloth, crayons, pencils, candles, flames, fire, crystals, flowers, leaves"
+  },
+  {
+   "name": "thornClump",
+   "src": "gh:COMMIT:reference/art/hfw3/starts5/thornClump.png",
+   "refs": [
+    "gh:COMMIT:reference/art/hfnext/starts2/ref-w3.png"
+   ],
+   "w": 768,
+   "h": 384,
+   "seeds": [
+    11,
+    23,
+    37
+   ],
+   "prompt": "Repaint the first image as a bed of wicked sharp cave thorns growing from a low mound of dark grotto rock, seen exactly side-on, in exactly the hand-painted storybook style of the pieces in the second image: soft painterly gouache shading with gentle gradients, fine thin dark linework. The thorns are long, hooked and needle-sharp, pale bone white with cold blue shadows, each tip edged with a hot red-orange danger glow so they clearly read as dangerous against dark rock. The rock mound under them is dark cool grey-green grotto stone with a little moss. Keep its shape and size. Keep the flat plain grey background around it, with empty grey space on every side.",
+   "neg": "photo, 3d render, blurry, text, letters, watermark, frame, border, scenery, sky, cave background, ground plane, thick black outline, flat vector, clip art, cast shadow, extra objects, people, animals, sloth, crayons, pencils, candles, flames, fire, crystals, flowers, leaves"
+  }
+ ]
+}
