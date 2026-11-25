@@ -105,6 +105,8 @@ Everything else is yours on his standing permission (11-07).
    get_session (status_bucket reads "failed" when a turn died, for example on a usage limit; a clean finish sends no event).
    **Every check-in also reads every running session's AGE (created_at) and REAL context (context_usage.used_tokens, filled while it is
    idle): past 28 minutes of work or 300k, it hands over THAT check-in; a gate already running is finished, no new work (D137, CI #76).**
+   **A redirect that changes what a RUNNING session does now is sent with send_message priority 'next' (joins its running turn); a
+   message with no priority waits for its turn to end (D140).**
    **The catch-ahead list names every cause any lane has booked to another lane's landing ('expected to fall at the merge'): each is a
    measurement owed today, on a trial merge (CI #83).**
 8b. **Machine load (Matt, 10-29: helpers get their own machine; 6 in one container meant 30+ min tests and a full disk).** Every
