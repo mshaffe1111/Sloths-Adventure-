@@ -99,6 +99,17 @@ test('highRoad: every piece IN HIS WAY on a porch is met in order (a rise standi
   assert.deepEqual(highRoadFaults([W, P, { x: 1160, w: 200, y: LIP - 200, h: 24 }, P2], span, 60, 60), []);
 });
 
+test('highRoad: a stair up and back down (a top standing on the rise standing on the porch) is a road, never a loop: the rise is met again past the top', () => {
+  // (session 1's first two-road shape, W2-LANE b's trace (BUILD-28): rise 300 on P's far end, the top 140 at its middle, 80 px treads. Before
+  //  the fix the walk met W, P, the rise, the top, the rise again (its far tread), and refused it as 'the high road loops': the chain was
+  //  longer than the pieces. RED on that guard; a loop is no ground gained)
+  const span = { x0: 1000, x1: 1798, from: { x: 1000, y: LIP }, to: { x: 1798, y: LIP } };
+  const W = { x: 850, w: 150, y: LIP - 60, h: 60 }, P = { x: 1060, w: 500, y: LIP - 60, h: 20 }, rise = { x: 1260, w: 300, y: LIP - 120, h: 60 }, top = { x: 1340, w: 140, y: LIP - 180, h: 60 }, P2 = { x: 1560, w: 400, y: LIP - 60, h: 20 };
+  const r = highRoad([W, P, rise, top, P2], span, 60, 60);
+  assert.deepEqual(r.faults, []);
+  assert.deepEqual(r.chain, [W, P, rise, top, rise, P2], 'up W, P, the rise, the top; down the rise\'s far tread, porch2');
+});
+
 test('forkFaults: the fork at the wall-step, both halves by name: RED on the toy (W 60 + gap 60: every tier walks off, the adult as traced) and the brick (W 60 flush: no way down); GREEN on the shape it finds (W 150 + gap 60)', () => {
   const span = { x0: 1000, x1: 1400, from: { x: 1000, y: LIP }, to: { x: 1410, y: LIP } };
   // the toy fork's high road (tools/inspect/lineBot.test.ts): W, a 60 px gap over the bank strip, P level with W's top, B, C

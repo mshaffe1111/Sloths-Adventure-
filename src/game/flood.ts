@@ -221,8 +221,13 @@ export function highRoad<T extends { x: number; w: number; y: number; h?: number
       cur = q;
       enter = nearOf(q);
     }
+    // (a loop is no ground gained. A piece met AGAIN further along is not one: he comes back down onto a block past the far end of the block
+    //  standing on it (three up, three down: the top, then the rise's far tread). Counting pieces (the chain longer than the tops) refused
+    //  every such stair, W2-LANE b's trace of the 80 px treads, BUILD-28)
+    const was = at.x;
     at = { x: farOf(cur), y: cur.y };
-    if (chain.length > tops.length) return { chain, faults: ['flood: the high road loops'] };
+    // (the first piece may stand back on the near bank, its far side short of the edge: no ground gained there by design)
+    if (used && beyond(at.x, was) <= 0) return { chain, faults: ['flood: the high road loops'] };
   }
 }
 
