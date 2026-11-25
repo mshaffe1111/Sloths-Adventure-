@@ -73,6 +73,18 @@ test("the dark's stop FACES the rim: the child's stop, taken facing away 40 px i
   assert.deepEqual(r.dark.gaveUp, []);
 });
 
+/** (ENG-DARK box 14) the draft's first rim in the dark with a glowworm, its light laid ASLEEP for the toy and the bot's rim list re-read:
+ *  box 14's lay wakes the landings a run off a rim with no stop comes down near (awakeLights), and that woke roll 1's first sleeping rim
+ *  (x 846, y 927, left end of 846-1099), which the give-up and turn-room toys were built on; `undo` puts the lay back */
+function asleepRim(sim: { stage: unknown }, b: unknown, darkRims: (st: never) => Array<{ x: number; y: number; dir: -1 | 1; light: { id?: number; sleep?: boolean } | null }>) {
+  const rim = darkRims(sim.stage as never).find((q) => q.light?.id !== undefined);
+  assert.ok(rim?.light, 'the draft has a rim with a glowworm');
+  const was = rim.light.sleep;
+  rim.light.sleep = true;
+  (b as { glowRims: unknown }).glowRims = null;
+  return { rim, undo: () => { rim.light!.sleep = was; } };
+}
+
 test("a dark give-up ends with the visit: with the turn removed (noGlowTurn) he waits out the same rim facing away on BOTH visits (GREEN; planted: the give-up kept for the run)", async () => {
   // (the give-up kept for the run, the child's second visit to that rim had no stop at all; ended with the visit, he stops again)
   // (ENG-DARK box 12: on the final lay a stop facing away always wakes its light (every landing's light is within GLOW_REACH.back of a
@@ -82,17 +94,18 @@ test("a dark give-up ends with the visit: with the turn removed (noGlowTurn) he 
   if (readied !== DRAFT) readyDraft(DRAFT);
   const { firstTimer, FT_CHILD } = await import('../../../tools/inspect/firsttimer.ts');
   const { darkRims } = await import('./dark.ts');
-  let rim: ReturnType<typeof darkRims>[number] | undefined, stood = 0;
-  const r = firstTimer(DRAFT, 1, { ...FT_CHILD, noGlowTurn: true }, { cap: 20, onFrame(sim) {
+  let rim: ReturnType<typeof darkRims>[number] | undefined, stood = 0, undo = () => {};
+  const r = firstTimer(DRAFT, 1, { ...FT_CHILD, noGlowTurn: true }, { cap: 20, onFrame(sim, b) {
     if (rim?.light?.id !== undefined) (sim.e as unknown as { glowWake: Map<number, number> }).glowWake.delete(rim.light.id);
     if (stood >= 2 || sim.e.gameTime <= (stood ? 12 : 0.5)) return;
-    rim ??= darkRims(sim.stage as Parameters<typeof darkRims>[0]).find((q) => q.light?.sleep);
+    if (!rim) ({ rim, undo } = asleepRim(sim, b, darkRims as never) as unknown as { rim: ReturnType<typeof darkRims>[number]; undo: () => void });
     assert.ok(rim, 'the draft has a sleeping rim');
     sim.stand(rim.x - rim.dir * 40, rim.y);
     sim.p.facing = -rim.dir as -1 | 1;
     sim.p.vx = 0;
     stood++;
   } });
+  undo();
   assert.equal(stood, 2, 'he was stood at the rim twice');
   assert.ok(r.dark, 'the drafted 3-1 has a lit dark (FTRun.dark)');
   const rims = r.dark.gaveUp.map((g) => g.replace(/ at [\d.]+ s$/, ''));
@@ -136,7 +149,7 @@ test("the dark's stop reads the THUMB: the KID's held steer that carries him tow
   assert.deepEqual(r.dark.unlit, []);
 });
 
-test("the way down a trunk he stands beside MID-WAY: the child takes it with up and climbs down to the shrine (GREEN; planted: the one-sided top test back, the mid-trunk grab removed)", async () => {
+test("the way down a trunk he stands beside MID-WAY (roll 33 Easy): the child takes it with up and climbs down to the shrine (GREEN; planted: the one-sided top test back, the mid-trunk grab removed)", async () => {
   // (castBots x40 on 653bb970-4527e73f, the dark-only strand: a rescue set the CHILD Easy on a piece that trunk 26 runs through, its top
   //  281 px over his feet, the way on down it to the floor and the shrine. The way-down plan pressed DOWN there (it asked only that the top
   //  be at or above his feet; the engine climbs down from the ground only at a vine's very top), and he held it 20 s to a strand at
@@ -145,11 +158,13 @@ test("the way down a trunk he stands beside MID-WAY: the child takes it with up 
   //  Easy on roll 1 is placed (placeAt: the route's progress and the checkpoint follow) at 0.5 s 10 px beside the deepest trunk that runs
   //  past a ledge mid-way, its top above his feet (277 px on this lay), the way on down it to the shrine; GREEN he takes it with up, climbs
   //  down and reaches the shrine in 20 s with no rescue; with either plant he stands at the trunk until rescued (shrine at 24.6-29.6 s))
+  // (ENG-DARK box 14: ENG-DOWNBOT's lay (merged) leaves roll 1 Easy no trunk past a ledge mid-way; of rolls 1-40 Easy only roll 33 has
+  //  one (probes/anchors.mts), so the toy stands on roll 33 Easy)
   if (readied !== DRAFT) readyDraft(DRAFT);
   const { firstTimer, FT_CHILD } = await import('../../../tools/inspect/firsttimer.ts');
   type Spot = { x: number; y: number; top: number };
   let spot: Spot | undefined, placed = false, climbed = 0;
-  const r = firstTimer(DRAFT, 1, { ...FT_CHILD, setting: 'easy' }, { cap: 20, onFrame(sim, b) {
+  const r = firstTimer(DRAFT, 33, { ...FT_CHILD, setting: 'easy' }, { cap: 20, onFrame(sim, b) {
     if (placed) { if (sim.p.climbing) climbed++; return; }
     if (sim.e.gameTime <= 0.5) return;
     const vines = (sim.e as unknown as { vines: Array<{ vineType: string; x: number; topY: number; bottomY: number }> }).vines;
@@ -164,6 +179,49 @@ test("the way down a trunk he stands beside MID-WAY: the child takes it with up 
   assert.ok(climbed > 0, 'he took the trunk');
   assert.equal(r.end, 'shrine', `the child Easy reaches the shrine (${r.end} at ${r.time})`);
   assert.deepEqual(r.stuck.map((q) => q.what), [], 'no rescue on the way down');
+});
+
+test("a RUN off an edge with no stop onto a piece whose dark rim is within his slide: he stops at the edge and creeps off it, and goes over that rim lit (GREEN; planted: runOffRims not read)", async () => {
+  // (the 3-1 trial merge of ENG-DOWNBOT: the adult Normal 12 ran off a ledge with no dark stop at 268 px/s, flew 92 px, landed 7 px from a
+  //  sleeping rim and went over it dark; 74 such crossings in 44 of 76 runs. Box 14's lay wakes every such landing (awakeLights), so no
+  //  real roll deals it: the toy is hand-built on Normal roll 3's real edge x 442, y 5351 (no stop there), whose run comes down 36 px from
+  //  the rim at x 214, y 5811: the lay's run-off lights are put back to sleep (the lay before box 14) and the adult stood 200 px in,
+  //  steering at the edge (glowWait read first), for 14 s)
+  if (readied !== DRAFT) readyDraft(DRAFT);
+  const { firstTimer, FT_ADULT } = await import('../../../tools/inspect/firsttimer.ts');
+  const { awakeLights, darkRims, entryPieces, runOffRims } = await import('./dark.ts');
+  type Bot = { sim: { p: { x: number } }; intend(): object; glowWait(d: number): object | null; glowRims: unknown };
+  let edge: ReturnType<typeof runOffRims>[number] | undefined, offVx: number | null = null;
+  const slept: Array<{ sleep?: boolean }> = [];
+  const r = firstTimer(DRAFT, 3, { ...FT_ADULT, setting: 'normal' }, { cap: 14, onFrame(sim, b) {
+    if (edge) {
+      const p = sim.p;
+      if (offVx === null && !p.grounded && (p.x < edge.piece.x || p.x > edge.piece.x + edge.piece.width) && Math.abs(p.y - edge.y) < 40) offVx = Math.round(p.vx);
+      return;
+    }
+    if (sim.e.gameTime <= 0.5) return;
+    const st = sim.stage as Parameters<typeof darkRims>[0];
+    for (const z of st.zones ?? []) if (z.kind === 'dark' && z.lights?.length) {
+      const mouth = entryPieces(st.platforms, z);
+      const m = new Set(darkRims({ platforms: st.platforms, zones: [z] }).filter((q) => q.light && mouth.has(q.piece)).map((q) => q.light));
+      for (const l of awakeLights(st.platforms, z)) if (!m.has(l)) { l.sleep = true; slept.push(l); }
+    }
+    const bot = b as Bot, intend = bot.intend;
+    bot.glowRims = null;
+    edge = runOffRims(st, 'normal').find((q) => q.x === 442 && q.y === 5351);
+    assert.ok(edge && edge.land.y === 5811, 'the run off x 442, y 5351 comes down by the rim at x 214, y 5811');
+    const at = edge;
+    sim.stand(at.x - at.dir * 200, at.y);
+    sim.p.facing = at.dir;
+    sim.p.vx = 0;
+    bot.intend = function (this: Bot) { return this.glowWait(at.dir) ?? (at.dir > 0 ? { right: true } : { left: true }); };
+    void intend;
+  } });
+  for (const l of slept) l.sleep = false;
+  assert.ok(edge && r.dark, 'he was stood at the edge');
+  assert.ok(offVx !== null && Math.abs(offVx) <= 120, `he went off the edge at a walk (${offVx} px/s)`);
+  assert.ok(r.dark.crossed >= 1, `he went over dark rims (${r.dark.crossed})`);
+  assert.deepEqual(r.dark.unlit.filter((u) => u.includes('the rim at x 214, y 5811')), [], 'the rim his run lands near was lit');
 });
 
 /** roll 32's seam: a way-on point under a 35 px gap between two pieces at his height (79-332 and 367-547 on this lay) he walks over */
@@ -192,21 +250,22 @@ test("a seam read as a way down (noSeamWalk, the plant): both sides of the seam 
 
 /** (ENG-DARK box 12) the turn-room stop, hand-built: on the final lay no bot's own run (middle Normal, rolls 1-40) stops facing away at a
  *  rim's very edge, so he is STOOD there: the middle on Normal roll 1, at 0.5 s set standing 2 px in from the draft's first sleeping rim,
- *  facing away from it, its landing dark; the run then plays on (12 s). Box 10's real case: roll 16 x 920 on the lay before the second
+ *  facing away from it, its landing dark (asleepRim, box 14); the run then plays on (12 s). Box 10's real case: roll 16 x 920 on the lay before the second
  *  lights. FTRun.dark.edgeTurns names each turn press nearer the rim than its turn room */
 async function turnRun(noTurnRoom: boolean) {
   if (readied !== DRAFT) readyDraft(DRAFT);
   const { firstTimer, FT_MIDDLE } = await import('../../../tools/inspect/firsttimer.ts');
   const { darkRims } = await import('./dark.ts');
-  let rim: ReturnType<typeof darkRims>[number] | undefined;
-  const r = firstTimer(DRAFT, 1, { ...FT_MIDDLE, setting: 'normal', noTurnRoom }, { cap: 12, onFrame(sim) {
+  let rim: ReturnType<typeof darkRims>[number] | undefined, undo = () => {};
+  const r = firstTimer(DRAFT, 1, { ...FT_MIDDLE, setting: 'normal', noTurnRoom }, { cap: 12, onFrame(sim, b) {
     if (rim || sim.e.gameTime <= 0.5) return;
-    rim = darkRims(sim.stage as Parameters<typeof darkRims>[0]).find((q) => q.light?.sleep);
+    ({ rim, undo } = asleepRim(sim, b, darkRims as never) as unknown as { rim: ReturnType<typeof darkRims>[number]; undo: () => void });
     assert.ok(rim, 'the draft has a sleeping rim');
     sim.stand(rim.x - rim.dir * 2, rim.y);
     sim.p.facing = -rim.dir as -1 | 1;
     sim.p.vx = 0;
   } });
+  undo();
   assert.ok(rim && r.dark, 'he was stood at a sleeping rim in the lit dark');
   return { dark: r.dark, at: `x ${rim.x}, y ${Math.round(rim.y)}` };
 }

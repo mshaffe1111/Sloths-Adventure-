@@ -79,6 +79,7 @@ import { bucketAngle } from '../../src/game/wheel.ts';
 import { WHEEL_FLOWN } from '../../src/game/gen2/wheelFlights.data.ts';
 import { flownKey } from '../../src/game/gen2/wheelLay.ts';
 import { DARK_AHEAD, darkRims, litAhead, RimWatch, runOffRims, type DarkRim, type RimCrossing } from '../../src/game/gen2/dark.ts';
+import { GLOW_STILL } from '../../src/game/zones.ts';
 /** the most times he went over one rim in the dark (climbs not counted; FTRun.dark.loop): a walk back and forth over one rim (ENG-DARK box 12,
  *  the seam toy's record: since RimWatch reads a grounded step over a seam as on the piece, the loop shows here, lit or not) */
 const rimLoop = (cs: readonly RimCrossing[]) => Math.max(0, ...[...cs.filter((c) => !c.climbed).reduce((m, c) => m.set(c.rim, (m.get(c.rim) ?? 0) + 1), new Map<DarkRim, number>()).values()]);
@@ -3430,6 +3431,19 @@ export class FirstTimerRun {
     if (this.glowStop) {
       const stop = this.glowStop, { rim, since } = stop;
       const woke = e.glowWake.get(rim.light!.id!);
+      if (rim.runOff) {
+        // (a RUN off an edge where no stop applies, its landing piece holding a sleeping rim within his slide (runOffRims): he stands
+        //  GLOW_STILL and his reaction (lights in reach wake), then, that rim's light still asleep, creeps off it, the steer pressed every
+        //  other frame (he stops within a frame of letting go), so he goes over at a walk and touches down a body's width out: the step
+        //  off the lay proves fair (darkLandings), never 92 px out at a run (ENG-DARK box 14). Off the piece, the stop ends)
+        if (!on(rim) || (woke !== undefined && e.gameTime >= woke + ahead + this.who.stopReact)) {
+          this.glowStop = null;
+          return null;
+        }
+        if (stop.turn !== 2 && (e.gameTime - since < GLOW_STILL + this.who.stopReact || Math.abs(p.vx) > 5)) return {};
+        stop.turn = 2;
+        return Math.round(e.gameTime * 30) % 2 ? (rim.dir > 0 ? { right: true } : { left: true }) : {};
+      }
       if (on(rim) && !(woke !== undefined && e.gameTime >= woke + ahead + this.who.stopReact)) {
         if (e.gameTime - since <= GLOW_GIVEUP) {
           if (p.facing !== rim.dir && stop.turn !== 2 && !this.who.noGlowTurn) {
