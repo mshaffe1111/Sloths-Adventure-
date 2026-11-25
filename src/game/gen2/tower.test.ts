@@ -16,7 +16,7 @@ import { applyVerdicts, buildGen2Stage, HARD_JOBS, keptFoes, layLocal, layStage,
 import { packPlan, stageParts, unpackPlan } from './seedList.ts';
 import { cfg as runCfg, kit as runKit } from './toyWorld.ts';
 import { ARC_CODE, arcKit, gateKit, hopsUp, towerCfg, upKit, upManifest } from './toyTower.ts';
-import { fallSeconds, flagFurther, gapCatchY, LEAP, leaps, localExtent, openEnds, reflectLocal, routeAt, routeOf, storeyLimit, TOWER, towerCatches, towerFalls, towerFlagBreaches, stopVines, towerVineCuts, towerFlags, towerGates, towerSkips, towerVaults, vertical } from './tower.ts';
+import { fallSeconds, flagFurther, gapCatchY, LEAP, leaps, localExtent, openEnds, reflectLocal, routeAt, routeOf, storeyLimit, TOWER, towerCatches, towerFalls, towerFlagBreaches, stopVines, towerHandOns, towerVineCuts, towerFlags, towerGates, towerSkips, towerVaults, vertical } from './tower.ts';
 import { CLIMB_CLEAR, VAULT_GAP } from '../vineTop.ts';
 import type { Gen2Stage } from './types.ts';
 
@@ -634,6 +634,20 @@ test("stopVines and towerVineCuts ('a catch crosses a vine'): wood across a clim
   stopVines([w], [from, storey, solid(408, 840, 180, 4), shelf]);
   assert.equal(w.bottomY, 753);
   assert.deepEqual(towerVineCuts([w], [from, storey, shelf]), []);
+});
+
+test("towerHandOns ('a catch hands on to its storey'): a stopped vine's catch whose ends land on its storey is kept; one run on over ALL of its storey, or wall to wall, is named (the lead's ruling on LAY finding 2, ENG-DOWNBOT)", () => {
+  const turn = { x: 500, from: 580, to: 927 };
+  const from = solid(200, 580, 300, 1), storey = solid(300, 927, 600, 2), low = solid(0, 1280, 1280, 5);
+  // (as laid at its best: the catch 180 px wide under the end; off its left end he lands on the storey)
+  assert.deepEqual(towerHandOns([turn], [from, storey, low, solid(408, 753, 180, 3)], 1280), []);
+  // (the catch run on past both ends of its storey: off either end he lands past it, on the storey below)
+  assert.deepEqual(towerHandOns([turn], [from, storey, low, solid(408, 753, 180, 3), solid(250, 753, 158, 4), solid(588, 753, 400, 6)], 1280), ['tower: a catch passes its storey: the catch at x 250-988, y 753, where the vine at x 500 stops, lies over all of its storey at y 927 (off its ends he lands at y 1280 and 1280)']);
+  // (run on wall to wall: no way off)
+  assert.match(towerHandOns([turn], [from, storey, low, solid(0, 753, 1280, 3)], 1280)[0], /it runs wall to wall: no way off\)$/);
+  // (a vine with no catch across it, and a turn going up, are not judged)
+  assert.deepEqual(towerHandOns([turn], [from, storey, low], 1280), []);
+  assert.deepEqual(towerHandOns([{ x: 500, from: 927, to: 580 }], [from, storey, low, solid(0, 753, 1280, 3)], 1280), []);
 });
 
 test('towerVaults: straight up at a vine\'s top must land on wood whichever way he faces; 1-4\'s turn-back as laid passes, and a planted bough out of the vault\'s reach, or none at all, is named (B14c, 11-13)', () => {

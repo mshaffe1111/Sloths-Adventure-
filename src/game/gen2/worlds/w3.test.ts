@@ -19,7 +19,7 @@ import { generateStage, setLayoutVariant } from '../../stageGenerator.ts';
 import { validateStage } from '../../levelCheck.ts';
 import { footingsFor } from '../../terrain.ts';
 import { MODEL_FAST, modelStage } from '../../stageTime.ts';
-import { routeAt, towerVineCuts } from '../tower.ts';
+import { routeAt, towerHandOns, towerVineCuts } from '../tower.ts';
 import type { Platform, Vine } from '../../types.ts';
 import { buildGen2Stage } from '../pipeline.ts';
 import { LISTED, playFinish } from '../listed.ts';
@@ -153,6 +153,16 @@ test("a catch crosses a vine: going down no wood lies across a climb vine; the v
     for (const v of vines.filter((q) => q.vineType === 'tree_climb' && q.bottomY < floorY - 1)) {
       assert.ok(platforms.some((p) => p.type === 'solid' && Math.abs(p.y - v.bottomY) <= 2 && p.x - 2 < v.x && p.x + p.width + 2 > v.x), `${d} ${seed}: the vine at x ${v.x} (y ${v.topY}-${v.bottomY}) ends on no wood`);
     }
+  }
+});
+
+test("a catch hands on to its storey: going down, a stopped vine's catch is never run on over ALL of its storey; off one of its ends he lands on that storey, so its leg is never skipped (the lead's ruling on LAY finding 2, ENG-DOWNBOT)", () => {
+  // (before: 51 stopped turns on 30 of 48 rolls (seeds 1-24 x both) passed their storey, normal 1's catch 581-1280 at y 11711 over
+  //  its storey 729-1144 at y 11889 among them; 11 of the 51 ran wall to wall, with no way off)
+  for (const d of BOTH) for (const seed of Array.from({ length: 12 }, (_, i) => i + 1)) {
+    const st = draftRaw(seed, d);
+    const T = st.gen2.tower as unknown as { turns: Array<{ x: number; from: number; to: number }>; width: number };
+    assert.deepEqual(towerHandOns(T.turns, st.platforms as Platform[], T.width), [], `${d} ${seed}`);
   }
 });
 

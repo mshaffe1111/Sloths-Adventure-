@@ -341,8 +341,27 @@ export function towerCatches(flow: 'up' | 'down', platforms: readonly Platform[]
   const hop = Math.max(0, reachJump(0, true)) + LEAP.slack;
   const byGate = (x0: number, x1: number, y: number) => gates.some((g) => y <= g.y + GATE_LEVEL && y >= g.y - LEAP.up && Math.max(0, x0 - (g.x + g.width), g.x - x1) <= hop)
     || keepOut.some((k) => x0 < k.x1 && x1 > k.x0 && y >= k.y0 && y <= k.y1);
-  /** laid fairly: the storey it is of (storeyAt), or -1 when it is in the way, climbs a storey, lies by a gate or in a kept-out box */
-  const fair = (x0: number, x1: number, y: number, L: number, but: ReadonlyArray<Platform>): number => (cramped(x0, x1, y, but) || byGate(x0, x1, y) ? -1 : storeyAt(x0, x1, y, L, but));
+  // (going down, a turn's catch hands him on to its own storey: no wood is laid level with the wood across a climb vine (the catch the
+  //  vine will stop on, stopVines), run on with it, that leaves that run with no end landing on the vine's storey or above it: over ALL
+  //  of the storey he would land past it off both ends, skipping its leg, or wall to wall with no way off (the verdict towerHandOns,
+  //  the lead's ruling on LAY finding 2, ENG-DOWNBOT: 51 such turns on 30 of 48 drafted 3-1 rolls))
+  const climbs = flow === 'down' ? vines.filter((v) => v.vineType === 'tree_climb') : [];
+  const passes = (x0: number, x1: number, y: number): boolean => {
+    if (!climbs.length) return false;
+    const box = { id: 0, x: x0, y, width: x1 - x0, height: 24, type: 'solid' } as Platform;
+    const lvl = [...solid([]), box].filter((q) => Math.abs(q.y - y) <= 1);
+    let a = x0, b = x1, grew = true;
+    while (grew) {
+      grew = false;
+      for (const q of lvl) if (q.x <= b + 2 && q.x + q.width >= a - 2 && (q.x < a || q.x + q.width > b)) { a = Math.min(a, q.x); b = Math.max(b, q.x + q.width); grew = true; }
+    }
+    const v = climbs.find((q) => a + 6 < q.x && b - 6 > q.x && y > q.topY + 10 && y < q.bottomY - 10);
+    if (!v) return false;
+    return ![a - 24, b + 24].filter((x) => x >= 20 && x <= width - 20).some((x) => { const l = catchUnder([...all, box], x, y, 100000); return l !== undefined && l <= v.bottomY + 2; });
+  };
+  /** laid fairly: the storey it is of (storeyAt), or -1 when it is in the way, climbs a storey, lies by a gate or in a kept-out box,
+   *  or (going down) runs a catch on past its storey */
+  const fair = (x0: number, x1: number, y: number, L: number, but: ReadonlyArray<Platform>): number => (cramped(x0, x1, y, but) || byGate(x0, x1, y) || passes(x0, x1, y) ? -1 : storeyAt(x0, x1, y, L, but));
   for (let pass = 0; pass < 10; pass++) {
     const ends = openEnds(all, floorY, most, width);
     if (!ends.length) break;
@@ -357,7 +376,7 @@ export function towerCatches(flow: 'up' | 'down', platforms: readonly Platform[]
       // (going down, only into the wall on the end's own side, with his head room kept: the right end of a 60 px bridge by the left
       //  wall ran on to the RIGHT wall, a plank across the whole tower 70 px over a storey, ENG-DOWNBOT, drafted 3-1 easy 18)
       const ownSide = flow !== 'down' || (leftEnd ? e.x < TOWER.wall + 40 : e.x > width - TOWER.wall - 40);
-      if ((e.x < TOWER.wall + 40 || e.x > width - TOWER.wall - 40) && ownSide && !sealed(e.p) && !byGate(w0, w1, e.p.y) && (flow !== 'down' || !cramped(w0, w1, e.p.y, [e.p]))) {
+      if ((e.x < TOWER.wall + 40 || e.x > width - TOWER.wall - 40) && ownSide && !sealed(e.p) && !byGate(w0, w1, e.p.y) && (flow !== 'down' || (!cramped(w0, w1, e.p.y, [e.p]) && !passes(w0, w1, e.p.y)))) {
         put(w0, w1, e.p.y, Le);
         added++;
         continue;
@@ -544,6 +563,33 @@ export function stopVines(vines: readonly Vine[], platforms: readonly Platform[]
 /** a way down's vines, each one wood lies across by name (empty: kept): the verdict 'a catch crosses a vine' (stopVines) */
 export function towerVineCuts(vines: readonly Vine[], platforms: readonly Platform[]): string[] {
   return vineCuts(vines, platforms).map(({ v, p }) => `tower: a catch crosses a vine: the piece at x ${Math.round(p.x)}-${Math.round(p.x + p.width)}, y ${Math.round(p.y)} lies across the vine at x ${Math.round(v.x)} (y ${Math.round(v.topY)}-${Math.round(v.bottomY)})`);
+}
+
+/**
+ * Going down, a stopped vine's catch hands him on to the turn's own storey (the lead's ruling on LAY finding 2, ENG-DOWNBOT 11-25):
+ * the catch is the wood the vine stops on (stopVines) with any wood run on level with it, end to end; stepping off at least one of
+ * its open ends, a body's width past it, lands him on that storey (or on wood above it), never past it. A catch run on over ALL of
+ * its storey sends him off both ends onto a lower storey, so that storey's leg is skipped; a catch run on wall to wall has no way off.
+ * Each turn whose catch hands him past its storey, by name (empty: kept). `turns`: each going-down turn's vine x and storeys.
+ */
+export function towerHandOns(turns: ReadonlyArray<{ x: number; from: number; to: number }>, platforms: readonly Platform[], width: number): string[] {
+  const out: string[] = [];
+  const solid = platforms.filter((p) => p.type === 'solid');
+  for (const t of turns) {
+    if (!(t.to > t.from)) continue;
+    // (the catch: the highest wood the vine stops on between its storeys, as vineCuts reads wood across a vine)
+    const c = solid.filter((p) => p.x + 6 < t.x && p.x + p.width - 6 > t.x && p.y > t.from + 10 && p.y < t.to - 10).sort((a, b) => a.y - b.y)[0];
+    if (!c) continue;
+    let x0 = c.x, x1 = c.x + c.width, grew = true;
+    while (grew) {
+      grew = false;
+      for (const q of solid) if (Math.abs(q.y - c.y) <= 1 && q.x <= x1 + 2 && q.x + q.width >= x0 - 2 && (q.x < x0 || q.x + q.width > x1)) { x0 = Math.min(x0, q.x); x1 = Math.max(x1, q.x + q.width); grew = true; }
+    }
+    const lands = [x0 - 24, x1 + 24].filter((x) => x >= 20 && x <= width - 20).map((x) => catchUnder(platforms, x, c.y, 100000));
+    if (lands.some((y) => y !== undefined && y <= t.to + 2)) continue;
+    out.push(`tower: a catch passes its storey: the catch at x ${Math.round(x0)}-${Math.round(x1)}, y ${Math.round(c.y)}, where the vine at x ${Math.round(t.x)} stops, lies over all of its storey at y ${Math.round(t.to)} (${lands.length ? `off its ends he lands at y ${lands.map((y) => (y === undefined ? 'nothing' : Math.round(y))).join(' and ')}` : 'it runs wall to wall: no way off'})`);
+  }
+  return out;
 }
 
 /**
