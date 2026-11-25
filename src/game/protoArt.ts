@@ -8,6 +8,8 @@
 import { drawPickup, pickupReady } from './pickupSprites.ts';
 import { stageLooks } from './stagePlan.ts';
 import { drawW1Pits, paintedBank, sideOverHollow, waterAcross } from './w1Pits.ts';
+import { bankList, narrowPosts } from './narrowBank.ts';
+import { drawLivePosts } from './livePostArt.ts';
 import { drawHollowLog } from './w1NewArt.ts';
 import { drawCutArt } from './w1CutArt.ts';
 import { drawCrumbleTile } from './crumbleArt.ts';
@@ -1859,7 +1861,9 @@ export function drawProtoScene(
   const vis = (p: Platform) => p.x + p.width > view.x0 - 80 && p.x < view.x1 + 80 && p.y + p.height > vy0 - 200 && p.y < vy1 + 200;
   // (the banks of earth: w1Pits.ts paintedBank, the same rule its pits' walls are found by; on a bough stage never a chase section: the
   // chase draws its own, live, and the baked squares stay whole while it falls)
-  const banks = groundLook === 'bough' ? platforms.filter((p) => !p.broken && boughPiece(p)) : platforms.filter(paintedBank);
+  // (a bank narrower than Pokey: a sliver flush with the bank it continues is drawn as that bank's own end, one box; a post standing alone
+  // is left to livePostArt.ts, drawn at the end of the scene: narrowBank.ts, R-165.440, the look follows the collider)
+  const banks = groundLook === 'bough' ? platforms.filter((p) => !p.broken && boughPiece(p)) : bankList(platforms, platforms.filter(paintedBank));
   // World 1's pits (R-6.38): the drop under the ground (its shade, floors and steps draw over it), the lips and leaf bed over it
   // (a bough stage: no pit is painted; a gap in the bough is air over the mist, its ends the bough's own, drawBoughGround)
   const bough = groundLook === 'bough';
@@ -2034,6 +2038,8 @@ export function drawProtoScene(
     if (!vis(p) || !p.push || p.art) continue; // (a pushed boulder is World 4's to paint: w4Play.ts)
     drawLogArt(ctx, p, t - (st.movedAt.get(p.id) ?? -9) < 0.2);
   }
+  // (a narrow bank standing alone: its post, over the cut pieces and rocks, under what rests on it: livePostArt.ts, R-165.440)
+  if (!bough) drawLivePosts(ctx, narrowPosts(platforms), view);
   void trees;
   return true;
 }

@@ -9,6 +9,8 @@
 //   with 0 builds FAILS, R-165.330: a gate never passes having checked nothing)
 // Breaches there the day the gate started are on paintcheck.known.json (shrink-only, law 5; R-165.292's owner: the lead).
 // Prints every breach: stage, setting, seed, x, style, size, what it draws as and the heights its painter draws.
+// Also (R-165.434, tools/engine/sideWall.ts): a solid Pokey meets SIDE-ON that the painted ground paints as bank soil, the backdrop's
+// look (an invisible wall: 2-6's soft-pit faces, b6a35d7e8). No known list: it started at 0 on main, and every breach fails.
 import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -32,6 +34,7 @@ const { loadSeedList, provenSeeds } = await import('../../src/game/gen2/seedList
 const { PROVEN_INDEX } = await import('../../src/game/gen2/provenIndex.ts');
 const { stagePaintInput } = await import('./paintStage.ts');
 const { paintFalls } = await import('./paintFall.ts');
+const { sideWalls } = await import('./sideWall.ts');
 
 const arg = (k: string) => { const i = process.argv.indexOf(k); return i > 0 ? process.argv[i + 1] : undefined; };
 const N = Number(arg('--layouts') ?? 16);
@@ -95,6 +98,12 @@ for (const c of levels) {
       const line = `${c.id} ${setting} seed ${seed} x ${b.x}: '${b.style}' ${b.type} ${b.w}x${b.h} draws as code '${b.drawn}'; its painter draws h ${b.painter} (nearest ${b.nearest})`;
       if (!seen.has(id)) seen.set(id, line);
       if (!known.has(id)) newLines.push(line);
+    }
+    // (R-165.434: a side-on wall painted as backdrop soil, tools/engine/sideWall.ts. No known list: main had 0 the day it started,
+    // so every one fails)
+    for (const w of sideWalls(st.platforms, inp.f)) {
+      row.hit++;
+      newLines.push(`${c.id} ${setting} seed ${seed} x ${w.x} y ${w.y}: SIDE-ON WALL '${w.style}' ${w.w}x${w.h}, its ${w.side} side open ${w.open} px: ${w.why} (R-165.434)`);
     }
     for (const u of r.unpainted) unpaintedSeen.set(`${c.id} '${u.style}' h${u.h} -> ${u.drawn}`, `${setting} seed ${seed} x ${u.x}`);
   }
