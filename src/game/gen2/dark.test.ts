@@ -370,16 +370,17 @@ test("a wall rim's light hangs no deeper than a stop on the rim reaches (GLOW_RE
 
 test("an edge BEHIND a dark-rim drop's landing is no edge he lands toward (the lead's ruling (i)): a SHAPE toy, a deep drop on a real rim whose landing piece ends 13 px behind his touchdown, out of that drop's light: darkLandings GREEN; that edge judged as one he lands toward: RED (the plant)", () => {
   // (ENG-DARK box 13: no real row decides the exemption (probes/behind.mts, rolls 1-12); the lead's ruling (box 14): a hand-built SHAPE
-  //  toy on a real rim. The drop is deep (deepDrop: 608 px), so the light over its landing hangs at the stop's reach, out of that edge's reach)
-  // (608 px: the light hung at the stop's reach (GLOW_REACH.down) reaches his landing (188 px under it) and not that edge 13 px behind;
-  //  the floor 400 px under the landing piece gives that edge its own landing, its light out of reach of his landing)
+  //  toy on a real rim. The drop is deep (deepDrop: 640 px), so the light over its landing hangs at the stop's reach, out of that edge's reach)
+  // (640 px: the light hung at the stop's reach (GLOW_REACH.down) hangs 220 px over his landing, past its radius from that edge 13 px
+  //  behind (box 15: at 608 px it hung 188 px over it, and a 190 px light 188 px up reaches an edge 13 px aside: no rim held the shape);
+  //  the floor 400 px under the landing piece gives that edge its own landing, its light out of the stop's reach)
   // (box 15: on roll 1's first sleeping drop rim the light nearest that landing was another rim's, 90 px over it, and it reached that
   //  edge: the builder now takes the first real drop rim of rolls 1-10 whose shape holds (deepDrop's check))
   const behind = (q: { stage: { platforms: Platform[]; zones: Zone[] }; rim: DarkRim; moved: Platform }) => {
     const b = darkRims(q.stage).find((m) => m.piece === q.moved && m.dir === -q.rim.dir);
     return !!b?.light?.sleep && Math.hypot(q.rim.light!.x - b.x, q.rim.light!.y - b.y) > q.rim.light!.r;
   };
-  const d = deepDrop(608, (r) => (r.dir > 0 ? r.x + 24 - 13 - r.onto.x : r.x - 24 + 13 - r.onto.width - r.onto.x), 400, behind, 10);
+  const d = deepDrop(640, (r) => (r.dir > 0 ? r.x + 24 - 13 - r.onto.x : r.x - 24 + 13 - r.onto.width - r.onto.x), 400, behind, 10);
   assert.ok(d, 'a deep drop on a real rim');
   const { stage, rim, moved } = d;
   const back = darkRims(stage).find((q) => q.piece === moved && q.dir === -rim.dir);
