@@ -3,10 +3,11 @@
 ## EXACT NEXT STEP (session 2 hand-over, 2:18 PM ET; NEW 1 (c) and the resume toy DONE; NEW 2 (b)'s pure schedule DONE; all pushed)
 Re-fetch t-eng-29-wip first. The lead's answer on the drum (2-9.md:74): GAME TIME (built so: drum.ts DrumSchedule). Then, in order:
 1. NEW 2 (b), the wiring (the schedule itself is done and proven, see Session 2): (a) conductor.ts: a `drumBus` GainNode to the sfx bus and
-   `drumTick(tempo, easy, gameNow, doubled = false)`: `const r = this.drum.step({ beats: tempo.beats, beat: tempoBeat(tempo, easy) }, gameNow,
-   core.ctx.currentTime, doubled)`; each cue `(c.kind === 'boom' ? taiko : woodblock)(core, this.drumBus, c.at, vel)` (instruments.ts:509, :447;
+   `drumTick(beat: DrumBeat, gameNow, doubled = false)`: `const r = this.drum.step(beat, gameNow, core.ctx.currentTime, doubled)`; each cue `(c.kind === 'boom' ? taiko : woodblock)(core, this.drumBus, c.at, vel)` (instruments.ts:509, :447;
    never fx()); on `r.cut` or `drumHold(gameNow)` returning true: fade the bus out in ~20 ms, disconnect it, make a new one (the cut hits
-   never sound). Guard every call for no audio core (headless). (b) src/game/audio.ts facade: `sound.drumTick(...)`, `sound.drumHold(g)`.
+   never sound). Guard every call for no audio core (headless). TRAP: the conductor takes a DrumBeat ({ beats, beat }) the ENGINE computes
+   (tempo.ts tempoBeat); never import src/game/tempo.ts into src/audio (it pulls river/physics/wheel into the audio chunk: chunkplan/chunkcheck).
+   (b) src/game/audio.ts facade: `sound.drumTick(beat, gameNow, doubled?)`, `sound.drumHold(g)`.
    (c) engine.ts: after `this.clock.step(dt)` (:1806) `if (stage.tempo) sound.drumTick(tempo, easy, this.gameTime)`; in the `if (this.down)`
    branch (:1802) the same call (game time stands: the backstop); and where a life is lost (where `this.down` is set) `sound.drumHold(this.gameTime)`
    (the toy 'without the engine's hold' shows why the hold must come from the engine). No stage id, seed or x (generalitycheck). (d) Tests:
