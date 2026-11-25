@@ -1730,8 +1730,17 @@ export class FirstTimerRun {
   private downEnd(p: { x: number; y: number }): -1 | 0 | 1 {
     if ((this.sim.stage as { gen2?: { tower?: { flow?: string } } }).gen2?.tower?.flow !== 'down') return 0;
     const pts = this.prog.pts;
-    for (let j = this.prog.cur; j < Math.min(pts.length, this.prog.cur + 80); j++) {
-      if (pts[j].y <= p.y + 40) continue;
+    // (the run of wood he stands on: the way on under it is no way off it. On wood that lies over the way on (a catch run on over the
+    //  storey under it) the first point under him was straight under, and he stood there turning until rescued: he walks off the end
+    //  where the way comes out from under his wood, ENG-DOWNBOT)
+    const feet = this.sim.platforms.filter((q) => !q.broken && q.type !== 'bouncy' && Math.abs(q.y - p.y) <= 4);
+    let lo = p.x, hi = p.x;
+    for (let grew = true; grew; ) {
+      grew = false;
+      for (const q of feet) if (q.x <= hi + 2 && q.x + q.width >= lo - 2 && (q.x < lo || q.x + q.width > hi)) { lo = Math.min(lo, q.x); hi = Math.max(hi, q.x + q.width); grew = true; }
+    }
+    for (let j = this.prog.cur; j < Math.min(pts.length, this.prog.cur + 160); j++) {
+      if (pts[j].y <= p.y + 40 || (pts[j].x > lo + 8 && pts[j].x < hi - 8)) continue;
       const dx = pts[j].x - p.x;
       return dx > 8 ? 1 : dx < -8 ? -1 : 0;
     }

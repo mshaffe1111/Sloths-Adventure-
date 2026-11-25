@@ -230,6 +230,25 @@ test('a way down: at a turn vine whose top stands at his ledge\'s end, he presse
   assert.deepEqual(miss, []);
 });
 
+// (he stands on wide wood that lies OVER the way on: the way goes down under it and comes out past its right end. He walks off the
+//  end where the way comes out; he stood over the way, turning, until rescued: the drafted way down's catches run on over the storey
+//  under them, 'in a dip 173 px deep, the way on is 178 px down', ENG-DOWNBOT)
+test('a way down: on wood over the way on, he walks off its end where the way comes out from under it', async () => {
+  const miss: string[] = [];
+  for (const who of await ALL()) for (let k = 1; k <= 3; k++) {
+    let off: number | null = null;
+    downArena({
+      who, k, at: { x: 400, y: 500 },
+      platforms: [thin(9001, 100, 500, 700), thin(9002, 300, 760, 300), thin(9003, -400, 1100, 3000)],
+      route: [...Array.from({ length: 6 }, (_, i) => ({ x: 400 + i * 40, y: 760 })), ...Array.from({ length: 12 }, (_, i) => ({ x: 640 + i * 40, y: 1100 }))],
+      seen: (sim) => { if (off === null && sim.p.y > 510) off = sim.p.x; },
+    });
+    // (which end: 10 px under the wood he is still by the end he left, a little steer back in the air allowed)
+    if (off === null || off < 700) miss.push(`${who.name}${who.setting === 'easy' ? ' easy' : ''} thumb ${k}: ${off === null ? 'never left the wood' : `off at x ${Math.round(off)}, not its right end`}`);
+  }
+  assert.deepEqual(miss, []);
+});
+
 // (STAGE-RULES.md:77: "at least 2 minutes for a quick player, on every roll ... Climbs count 20 s short". castBots held every stage to a
 //  flat 120 s, so 1-4 (a climb) failed the rule's own 100 s: the floor is read from eraRoll.ts RULES and isClimb, R-165.206, D19)
 test('the length floor is the stage rule\'s: a climb at 105 s holds, a run stage at 105 s does not (STAGE-RULES.md:77)', () => {
