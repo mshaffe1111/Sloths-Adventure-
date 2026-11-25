@@ -996,10 +996,10 @@ const side1 = (d: -1 | 1): Pad => (d > 0 ? { right: true } : { left: true });
  * One frame of a hop off the ground (frame i = 1 is the press's), the jump held `hold` s (then the engine's cut, PHYS.cutV): the press frame
  * steered on the ground (physics.ts takeOffStep), the rest with the engine's air tick (airStep). (hopCatches, hopLandsOn: one flight)
  */
-function hopFrame(b: { x: number; y: number; vx: number; vy: number }, i: number, dir: -1 | 1, hold: number): void {
+function hopFrame(b: { x: number; y: number; vx: number; vy: number }, i: number, dir: -1 | 1, hold: number, free = 0): void {
   const held = i * DT < hold;
   if (!held && b.vy < -PHYS.cutV) b.vy = -PHYS.cutV;
-  (i === 1 ? takeOffStep : airStep)(b, DT, dir, held);
+  (i === 1 ? takeOffStep : airStep)(b, DT, i <= free ? 0 : dir, held);
 }
 /**
  * Does a hop off (x, y) toward `dir` (at `vx0`, a run by default), the jump held `hold` s, meet liana `v` where the engine catches
@@ -1008,14 +1008,15 @@ function hopFrame(b: { x: number; y: number; vx: number; vy: number }, i: number
  * looks, then he moves), so his place after frame i meets the vine at t0 + i * DT. Flown frame by frame (hopFrame) until he is 200 px
  * under the take-off. (FirstTimerRun.lianaWait, vineFromLog; pitClimb.test.ts; lianaRide.test.ts pins it against the engine)
  */
-export function hopCatches(v: Parameters<typeof canGrabSwing>[2], x: number, y: number, dir: -1 | 1, hold: number, t0: number, vx0 = dir * PHYS.maxRun): boolean {
-  return hopCatchAt(v, x, y, dir, hold, t0, vx0) > 0;
+export function hopCatches(v: Parameters<typeof canGrabSwing>[2], x: number, y: number, dir: -1 | 1, hold: number, t0: number, vx0 = dir * PHYS.maxRun, free = 0): boolean {
+  return hopCatchAt(v, x, y, dir, hold, t0, vx0, free) > 0;
 }
-/** hopCatches' hop: the frame after the press's on which the engine has him on the liana (1: the one after it), or -1 */
-export function hopCatchAt(v: Parameters<typeof canGrabSwing>[2], x: number, y: number, dir: -1 | 1, hold: number, t0: number, vx0 = dir * PHYS.maxRun): number {
+/** hopCatches' hop: the frame after the press's on which the engine has him on the liana (1: the one after it), or -1; the first `free`
+ *  frames (the press's is 1) flown with no steer (the thumb still travelling or slipped: FirstTimerRun.steerFrom, SKILLS.runUp) */
+export function hopCatchAt(v: Parameters<typeof canGrabSwing>[2], x: number, y: number, dir: -1 | 1, hold: number, t0: number, vx0 = dir * PHYS.maxRun, free = 0): number {
   const b = { x, y, vx: vx0, vy: -PHYS.jumpV };
   for (let i = 1; i < 60; i++) {
-    hopFrame(b, i, dir, hold);
+    hopFrame(b, i, dir, hold, free);
     if (canGrabSwing(b.x, b.y, v, t0 + i * DT)) return i;
     if (b.y > y + 200) return -1;
   }
@@ -2411,11 +2412,15 @@ export class FirstTimerRun {
     const at = floatAt(rivers, here), d = here.drift!;
     const aim = hopAim(lag);
     const b = { x: x0, y: p.y, vx: vx0, vy: 0 };
-    for (let f = Math.round(aim.off / DT); f > 0; f--) groundStep(b, DT, dir);
+    // (c25: his steer only from steerFrom (the thumb's travel and slip still to run): before it he brakes on the log and flies the
+    //  hop's first frames unsteered, as thumbify drops them; 2-4 kid Easy 35 flew on the carry alone, judged 'held from now')
+    const from = this.steerFrom(dir, t), n = Math.round(aim.off / DT);
+    for (let j = 0; j < n; j++) groundStep(b, DT, t + s0 + j * DT >= from - 1e-6 ? dir : 0);
     const when = t + s0 + aim.off;
+    const free = Math.max(0, Math.ceil((from - (t + s0 + n * DT)) / DT - 1e-6));
     const x = b.x + at(when) - at(t), lx = at(when);
     const under = SKILLS.vineOverTail && !!d.tail && x > d.x1 - 10;
-    return x > lx + 10 && x < lx + here.width - 10 && !under && hopCatches(v, x, p.y, dir, hold, clock + s0 + aim.clock, b.vx + carry);
+    return x > lx + 10 && x < lx + here.width - 10 && !under && hopCatches(v, x, p.y, dir, hold, clock + s0 + aim.clock, b.vx + carry, free);
   }
 
   /**
@@ -2427,6 +2432,7 @@ export class FirstTimerRun {
   private runUpCatches(p: RealPlay['p'], dir: -1 | 1, here: Platform, v: Parameters<typeof canGrabSwing>[2], lags: number[], carry: number, hold: number, clock: number, t: number, running: boolean): boolean {
     const rivers = this.sim.stage.rivers;
     const at = floatAt(rivers, here), d = here.drift!;
+    const from = this.steerFrom(dir, t);
     const runs = lags.map((lag) => {
       const b = { x: p.x, y: p.y, vx: p.vx, vy: 0, s: 0 };
       for (let f = running ? 0 : Math.round(hopAim(lag).off / DT); f > 0; f--) { groundStep(b, DT, 0); b.s += DT; }
@@ -2439,9 +2445,22 @@ export class FirstTimerRun {
       });
       if (!on.some(Boolean)) return false;
       if (on.every(Boolean) && runs.every((b, i) => this.runPress(b.x, b.vx, b.s, lags[i], p, dir, here, v, carry, hold, clock, t))) return true;
-      for (const b of runs) { groundStep(b, DT, dir); b.s += DT; }
+      // (c25: the run press steers only from steerFrom: the thumb still travelling, he brakes)
+      for (const b of runs) { groundStep(b, DT, t + b.s >= from - 1e-6 ? dir : 0); b.s += DT; }
     }
     return false;
+  }
+
+  /**
+   * SKILLS.runUp, c25 (the lead's GO, rule 28: the judged hop is the hop flown): the game time from which a steer `dir` wanted at `t`
+   * reaches the stick: the thumb's travel still to run (travelUntil: a turn already made; a turn this want makes now, from lastSteer the
+   * other way, arms (2 * 16 + driftPx) / thumbSpeed, as thumbify does) and any slip already drawn (driftUntil). 2-4 kid Easy 35 on c24: a
+   * run / pull-back / run flicker on log #48 left travelUntil at 47.711 when the judge pressed at 47.567 'with the steer held from now';
+   * he flew on the log's carry alone and came down in the water short of swing #4.
+   */
+  private steerFrom(dir: -1 | 1, t: number): number {
+    const turn = !this.figTap && this.lastSteer === -dir ? t + (2 * 16 + this.driftPx) / this.who.thumbSpeed : -1;
+    return Math.max(t, this.travelUntil, this.driftUntil, turn);
   }
 
   private lianaWait(dir: -1 | 1): Pad | null {
