@@ -188,9 +188,14 @@ const said = (r: ReturnType<typeof castRun>) => `${r.bot} ${r.setting} seed ${r.
 //  (1 -> 1 life), so it left the plant; the search of 2-1 (every cast bot, both settings, seeds 1-40, skill on and off,
 //  BUILD-26/b26t/skilljudge-23cdb07e8.txt) found 12 live cases. Measured on 997f7e98c: child N 4 1 -> 9, child N 23 0 -> 8, middle N 26
 //  0 -> 8 (a second tier); adult N 12 0 -> 5 and rescued)
-const UPSTREAM_CASES: Array<[string, 'normal' | 'easy', number]> = [['adult', 'normal', 12]];
-const UPSTREAM_LIVES: Array<[string, 'normal' | 'easy', number]> = [['child', 'normal', 4], ['child', 'normal', 23], ['middle', 'normal', 26]];
-/** with the against-the-flow skill off, at least this many more lives than with it (measured +8 on each of UPSTREAM_LIVES) */
+// (ENG-PLANT-t 11-25, R-165.432 re-plant at the SAME bar: on 36e8efe6f the adult on Normal, seed 12, crosses clean without the skill (1 -> 1
+//  life, 0 rescues) and child N 4 and 23 lose 1 more, middle N 26 3 more. The search of 2-1 (every cast bot, both settings, seeds 1-40,
+//  skill on and off, castRun as here: reference/qa-reports/ENG-PLANT/data/t/search1.txt, search2.txt) found the live cases: RESCUED off
+//  while clean on: adult N 16 (4 -> 4 lives, 0 -> 1 rescue), kid N 2, 23, 38, child E 11, 15; 5+ MORE LIVES: child N 11 (0 -> 7),
+//  child N 15 (0 -> 14), middle N 16 (0 -> 6) (and child N 9, 28, 40, +5; middle N 15, +5))
+const UPSTREAM_CASES: Array<[string, 'normal' | 'easy', number]> = [['adult', 'normal', 16]];
+const UPSTREAM_LIVES: Array<[string, 'normal' | 'easy', number]> = [['child', 'normal', 11], ['child', 'normal', 15], ['middle', 'normal', 16]];
+/** with the against-the-flow skill off, at least this many more lives than with it (measured +8 on each of UPSTREAM_LIVES on 11-24; +7, +14, +6 on the re-planted rows 11-25) */
 const UPSTREAM_MORE = 5;
 // (ENG-285c, the lead's ruling 2 (A): on the final judge model the child on Easy, seeds 20 and 23, crosses clean without the skill, and
 //  bankUp moves no life and no rescue anywhere (2-1 every cast bot both settings 1-40; 2-2 lays no river running back at him; the toy
@@ -226,7 +231,7 @@ function bothWaysCrossing(bot: string, setting: 'normal' | 'easy', seed: number)
   return { seconds: banked! - boarded!, boarded: boarded!, end: r.end };
 }
 
-test('2-1, against the flow and up the far bank on: the adult on Normal (12), the child on Normal (4, 23, 40) and the middle on Normal (26) cross clean', () => {
+test('2-1, against the flow and up the far bank on: the adult on Normal (16), the child on Normal (11, 15, 40) and the middle on Normal (16) cross clean', () => {
   for (const [bot, setting, seed] of [...UPSTREAM_CASES, ...UPSTREAM_LIVES, ...BANKUP_CASES]) {
     const r = castRun(bot, setting, '2-1', seed);
     assert.ok(crossedClean(r), said(r));
@@ -263,7 +268,7 @@ test('2-1, he never runs off the front of the log he just landed on: the child o
   const r = castRun('child', 'normal', '2-1', 11);
   assert.ok(crossedClean(r), said(r));
 });
-test('planted: with the against-the-flow skill off, the adult on Normal is rescued at 2-1\'s back river (12) and the child and the middle on Normal lose 5+ more lives (child 4, 23; middle 26)', () => {
+test('planted: with the against-the-flow skill off, the adult on Normal is rescued on 2-1 (16) and the child and the middle on Normal lose 5+ more lives (child 11, 15; middle 16)', () => {
   const withIt = UPSTREAM_LIVES.map(([bot, setting, seed]) => castRun(bot, setting, '2-1', seed));
   SKILLS.upstream = false;
   try {
