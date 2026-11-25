@@ -1,3 +1,33 @@
+# ENG-DOWNBOT REPORT (lane 2: the down lay's head room, then the bots on a way down to the shrine) — box 9 (session 7, 11-25)
+**EXACT NEXT STEP (box 9 hand-over):** code **fe331023** unchanged (this box: the seed-13 toy moved, rows, a probe; hash in the
+message). **(1) Toy: DONE.** castBots.test 'a way down: off the catch of a stopped vine' on the new pieces (9004 y 475: the shelf 188 px
+over the storey; 9010 x 43; route end 215,836; read with probes/area.mts on the head): **GREEN on the head, GREEN with A off, GREEN with
+B off** (it guards the shape, not the fixes; its comment says so). **(2) x40 kid+adult on ab35ee9b (= fe331023 + the toy), committed:
+rows/castbots-ab35ee9b-kidadult-1-40.jsonl and -Aoff-.** All 160 end at the shrine. **The new lay did NOT cut rescues: it RAISED
+them. Kid+adult rescues: old lay (7d12c344b) 342, new lay 446. Normal: 67 -> 88 (pass 31 -> 27). Easy: 275 -> 358 (pass 4 -> 0).**
+Kid N clean minimum 87.8 s (the length debt stands). **Fix A: 33 of 160 rows differ, 8 better and 8 worse (rescues 446 vs 444).** It
+cures adult N 10 (R0 vs R2, 'the way on is 214 px down' at x 1180) and kid N 10, and it harms kid N 16 (R1 vs R0) and adult E 28 (R10
+vs R6). By ruling 2 it CURES something, so it stays and owes a toy on adult N 10's shape. Not built: see (3) first. **Fix B: NOT RUN.**
+**(3) The top cause, TRACED (probes/trace.mts; kid E 5 and adult E 28): it is the LAY, both traces.** On easy, stuck spots 'in a dip
+281/287 px deep' went 68 -> 172 (of 360). Shape (kid E 5, y 1470): a vine down onto storey 207-446@1470, then a bough **488-668@1476,
+6 px under the storey, 42 px past its end** (+668-1072@1476), and the way on 132 px down (93-457 / 457-724 @1602). **The route
+(prog.pts) walks 1470 to x 534 and drops at 540-572, THROUGH that bough.** He goes to and fro across the gap (429-482, 20 s) until
+rescued. downEnd splits his wood there too (feet |dy| <= 4, joins <= 2 px): from 207-446 the drop reads 'right', from 488-1072 it reads
+'left'. Adult E 28 does it 3 times (1472/1478 g6/g81, 2008/2014 g84/g9, 2570/2576 g12/g87); kid E 5 3 times at the same heights. **The
+same shape is on the OLD lay with the bough 10-20 px further left** (easy 5: 478-658@1476, a 32 px gap; easy 28: 493-673@1478, 22 px).
+The new lay leaves exactly 42 px, his body width. **Next, in order:** (a) read which rule lays the 6-px bough and why it lies under the
+route's drop (PUTLOG on a scratch tree, the box-8 method; Y=1476 easy 5, Y=1478 easy 28). Then count the shape on the 48 drafted rolls:
+a piece within a step (<= 8 px) under a storey's level, its near end within 50 px of the storey's end, the route's drop over it.
+(b) Fix it where it lives, with a planted tower.test RED on fe331023 and GREEN after. Lay: no catch bough under the route's own drop,
+and none within a step of a storey's level beside its end. If the lay is right and only the route is stale, fix the route. A bot fix
+in downEnd (join wood he walks across: a gap under his body width, a step he walks) only if a player would walk it, with a toy each
+way. (c) THEN, on the final lay: x40 kid+adult head / A off / B off (compare.py), every bot x40 (tally.py), lockall, seedlist, tierBots,
+suite, CI tool line, land (box 8's list). **RUN castBots WITH `--par 2 --rows FILE`, NOT `--json`: `--json` ignores --par.** Two runs
+x two workers did 160 rows in about 3 minutes on 4 cores. Frozen trees: `git worktree add --detach`, symlink node_modules,
+`chattr -R +i src tools`. Old-lay tree for area reads: 7d12c344b (no hopRooms there: drop that line).
+**Learned:** a rule that empties a room can move the next piece into a worse spot. Count the bots' causes old against new before
+calling a lay rule a cure: the room count (534 -> 0) was right, and the bots got worse.
+
 # ENG-DOWNBOT REPORT (lane 2: the down lay's head room, then the bots on a way down to the shrine) — box 8 (session 6, 11-25)
 **EXACT NEXT STEP (box 8 hand-over):** lay code **fe331023** (on 7d12c344b); the planted test and this REPORT are in the hand-over commit (hash in the message). **(1) The lay rule: DONE, RED then GREEN.** Two verdicts,
 tower.ts `towerLids` (wired in pipeline.ts for every going-down column, beside towerHandOns): **'a lid over a dip's lip'** (wood within
