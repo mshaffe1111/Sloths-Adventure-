@@ -2,7 +2,14 @@
 
 Session 1: started 2:31 PM ET 11-24 (by `date`), handed over at the 28-minute box. Lead: session_01FhBbYN2CVHnFXg7XzqKXpM.
 
-## EXACT NEXT STEP (session 6 starts here; INT-R5d-b box written 12:15 PM ET 11-25 by `date`)
+## EXACT NEXT STEP (session 7 starts here; INT-R5d-c, started 4:12 PM ET 11-25 by `date`)
+**INT-R5d-c: item 1 below is DONE at 0597cd057** (pushed, ls-remote confirmed): the lead re-ruled the 4th line to option A, 89 chars
+('Fixed: a wall I couldn’t see in First Lianas, and dark soil at the start of Up the Kapok.'), because the first ruled line (101)
+broke whatsNew.test.ts:32's 90 cap (test untouched); date 2026-11-25; tsc clean; whatsNew.test + playerText.test 79/79. NEXT is item 2:
+WAIT for the lead's bot-fix hash (release-0.10.3-wip-plant-ci's FINAL head, no separate merger), then items 2-3 below. Step 3 adds
+(packet INT-R5d step 3, D132) castBots vs MAIN on 2-1, 2-2, 2-4, 2-5, 1-4 (zero bar-relevant PASS -> FAIL) and release.md 4b sums.
+
+### Previous box (INT-R5d-b, written 12:15 PM ET 11-25 by `date`)
 INT-R5d-b started 11:35 AM ET 11-25. Branch **release-0.10.3-wip-fixes**, code head still **f7c5b8a2e** (REPORT/stills commits only
 since). Step 1 is DONE and the lead APPROVED the after stills (d/s1-*.jpg). drawcheck and clipcheck on f7c5b8a2e are DONE, both PASS
 (rows below: the lead's early warning, so they do NOT need to run first). NEXT, in order:
