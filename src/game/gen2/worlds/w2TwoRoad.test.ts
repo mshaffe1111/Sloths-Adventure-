@@ -126,3 +126,12 @@ test('two roads: THE LOW ROAD\'S HOP: RED by name on the marsh floor 60 px under
   }
   assert.ok(FLOOD_LOW_HOP.reach + FLOOD_LOW_HOP.margin <= W2_FORK.wall.h + W2_FORK_RIVERS[W2_FORK.row].marsh.floor, 'the ruled porch clears the reach + margin');
 });
+
+test('two roads: THE CLIMB MODEL from the bots\' flights: the old derived child (62) passes W 150, which the child-easy\'s measured climb (233 past the face) flies over; the ruled W passes it', () => {
+  const W = (w: number) => [{ x: 1000 - W2_FORK.wall.back - w, w, y: 740 }, { x: 1000 - W2_FORK.wall.back + W2_FORK.gap, w: W2_FORK.porch, y: 740 }];
+  const span = { from: { x: 1000 }, to: { x: 2400 } };
+  const old = { ...W2_FLOOD.climb, land: { ...W2_FLOOD.climb.land, child: 62 } };
+  assert.deepEqual(forkFaults(W(150), span, old), [], 'the old model passed W 150');
+  assert.match(forkFaults(W(150), span, W2_FLOOD.climb).join('; '), /the child lands 233 px past its face/, 'RED: the measured climb on W 150');
+  assert.deepEqual(forkFaults(W(W2_FORK.wall.w), span, W2_FLOOD.climb), [], `GREEN: W ${W2_FORK.wall.w}`);
+});

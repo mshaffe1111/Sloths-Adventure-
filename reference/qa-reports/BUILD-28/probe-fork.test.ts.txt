@@ -124,10 +124,12 @@ function floodRun(who: FirstTimer, seed: number, late: number, marsh?: MarshToy)
     const W0 = 1000;
     const F = W2_FORK, FR = W2_FORK_RIVERS.low;
     const W1 = marsh?.fork ? W0 + FR.marsh.width : 1400;
+    // (the marsh floor's depth: the ruled row's in the fork toy, 60 in the old toys)
+    const MF = marsh?.fork ? FR.marsh.floor : 60;
     const EXIT = marsh?.fork ? W0 + F.gap - F.wall.back + F.porch + 600 : 3000;
     const route = Array.from({ length: Math.ceil((EXIT + 100 - START) / 24) + 1 }, (_, i) => {
       const x = START + i * 24;
-      return { x, y: x > W0 && x < W1 ? Y + 60 : Y };
+      return { x, y: x > W0 && x < W1 ? Y + MF : Y };
     });
     const run = new FirstTimerRun('2-3', 1, who, { route, cap: 200 });
     const e = run.e as unknown as Record<string, any>;
@@ -138,7 +140,7 @@ function floodRun(who: FirstTimer, seed: number, late: number, marsh?: MarshToy)
     const pX = W0 + F.gap - F.wall.back, r1 = F.rises[0], r2 = F.rises[1], r1X = pX + (F.porch - r1.w) / 2, r2X = r1X + (r1.w - r2.w) / 2;
     const forkHigh = marsh?.fork ? [solid(4, W0 - F.wall.back - F.wall.w, F.wall.w, Y - F.wall.h, F.wall.h), solid(5, pX, F.porch, Y - F.wall.h, 24), solid(6, r1X, r1.w, Y - F.wall.h - r1.h, r1.h), solid(7, r2X, r2.w, Y - F.wall.h - r1.h - r2.h, r2.h)] : undefined;
     const dipsAt = low ? low.floor.slice(1).map((q, i) => [low.floor[i].x + low.floor[i].width, q.x] as const) : [];
-    run.sim.bare([solid(1, 0, W0, Y), ...(low ? (marsh!.floorOff ? [] : low.floor) : [solid(2, W0, W1 - W0, Y + 60)]), solid(3, W1, 6000 - W1, Y), ...(forkHigh ?? [solid(4, W0 - 60 - FORK_W, FORK_W, Y - 60, 60), solid(5, W0, 100, Y - 60, 20), solid(6, W0 + 100, W1 - W0 - 160, Y - 120, 60), solid(7, W1 - 60, 220, Y - 60, 20)])]);
+    run.sim.bare([solid(1, 0, W0, Y), ...(low ? (marsh!.floorOff ? [] : low.floor) : [solid(2, W0, W1 - W0, Y + MF)]), solid(3, W1, 6000 - W1, Y), ...(forkHigh ?? [solid(4, W0 - 60 - FORK_W, FORK_W, Y - 60, 60), solid(5, W0, 100, Y - 60, 20), solid(6, W0 + 100, W1 - W0 - 160, Y - 120, 60), solid(7, W1 - 60, 220, Y - 60, 20)])]);
     const cages = [420, 470, 520].map((x, i) => ({ id: 300 + i, x, y: Y - 26, type: 'cage', collected: true, critter: (['duck', 'otter', 'capy'] as const)[i] }) as Collectible);
     const exit = { id: 400, x: EXIT, y: Y - 40, type: 'exit_totem', collected: false } as Collectible;
     e.collectibles = [...cages, exit];
@@ -201,6 +203,7 @@ function floodRun(who: FirstTimer, seed: number, late: number, marsh?: MarshToy)
       return out;
     };
     let high = false, marshT = -1, highT = -1, stuck = '';
+    let climb: { off: number; land: number; face: number; y: number } | null = null;
     let walked = false, paddled = false, flat = false, dry = false;
     let off: { x: number; y: number } | null = null;
     let stood = { x: 0, y: 0 };
@@ -216,8 +219,9 @@ function floodRun(who: FirstTimer, seed: number, late: number, marsh?: MarshToy)
       const p = run.sim.p;
       // (his take-off is the last ground he stood on)
       if (low && !p.grounded && !off) off = stood;
+      if (low && p.grounded && off && !climb && Math.abs((off as any).y - Y) < 2 && p.y < Y - 30 && marsh?.fork) climb = { off: Math.round((off as any).x), land: Math.round(p.x), face: W0 - F.wall.back - F.wall.w, y: Math.round(p.y) };
       if (low && p.grounded && off) {
-        if (Math.abs(p.y - off.y) <= SAME_GROUND && Math.abs(off.y - (Y + 60)) < 2 && dipsAt.some(([a, b]) => Math.min(off!.x, p.x) < a && Math.max(off!.x, p.x) > b)) flat = true;
+        if (Math.abs(p.y - off.y) <= SAME_GROUND && Math.abs(off.y - (Y + MF)) < 2 && dipsAt.some(([a, b]) => Math.min(off!.x, p.x) < a && Math.max(off!.x, p.x) > b)) flat = true;
         off = null;
       }
       if (process.env.TRACE && marsh?.fork && Math.round(run.t * 30) % +(process.env.EVERY ?? 6) === 0 && run.t < +process.env.TRACE && run.t > +(process.env.FROM ?? 0)) console.log(`t ${run.t.toFixed(1)} p ${Math.round(p.x)}/${Math.round(p.y)} g ${p.grounded ? 1 : 0} vx ${Math.round(p.vx ?? 0)} | ${(e.follow.line as Follower[]).map((f) => `${Math.round(f.x)}/${Math.round(f.y)}/${f.state}${f.paddle ? 'P' : ''}`).join(' ')}`);
@@ -226,14 +230,14 @@ function floodRun(who: FirstTimer, seed: number, late: number, marsh?: MarshToy)
         if (f.x <= W0 || f.x >= W1) continue;
         if (f.paddle && dipsAt.some(([a, b]) => f.x > a && f.x < b)) paddled = true;
         if (f.state === 'follow' && !f.paddle && dipsAt.some(([a, b]) => f.x > a + 1 && f.x < b - 1)) dry = true;
-        if (!f.paddle && Math.abs(f.y - (Y + 60)) < 2) walked = true;
+        if (!f.paddle && Math.abs(f.y - (Y + MF)) < 2) walked = true;
       }
       if (!shut && p.grounded && [...highOnly].some((q) => Math.abs(q.y - p.y) < 2 && p.x + p.width / 2 > q.x && p.x - p.width / 2 < q.x + q.width)) { high = true; if (highT < 0) highT = run.t; }
-      if (low && p.grounded && Math.abs(p.y - (Y + 60)) < 2 && p.x > W0 && p.x < W1 && marshT < 0) marshT = run.t;
+      if (low && p.grounded && Math.abs(p.y - (Y + MF)) < 2 && p.x > W0 && p.x < W1 && marshT < 0) marshT = run.t;
       return r;
     };
     run.play();
-    return { end: run.end, setBack, home: e.follow.home(), high, t: +run.t.toFixed(1), ...(low ? { walked, paddled, flat, dry } : {}), ...(marsh?.fork ? { marshT: +marshT.toFixed(1), highT: +highT.toFixed(1), chain: road.chain.map((c) => (c.q as Platform).id).join('>'), px: Math.round(run.sim.p.x), rescues: (run as any).rescues, stuck: (run as any).stuck.map((k: any) => `${k.x}/${k.y}@${k.t}${k.rescued ? 'R' : ''}:${String(k.what).slice(0, 60)}`).join(' ; '), line: (e.follow.line as Follower[]).map((f) => `${Math.round(f.x)}/${Math.round(f.y)}/${f.state}`).join(' ') } : {}) } as FloodRun;
+    return { end: run.end, setBack, home: e.follow.home(), high, t: +run.t.toFixed(1), ...(low ? { walked, paddled, flat, dry } : {}), ...(marsh?.fork ? { climb, marshT: +marshT.toFixed(1), highT: +highT.toFixed(1), chain: road.chain.map((c) => (c.q as Platform).id).join('>'), px: Math.round(run.sim.p.x), rescues: (run as any).rescues, stuck: (run as any).stuck.map((k: any) => `${k.x}/${k.y}@${k.t}${k.rescued ? 'R' : ''}:${String(k.what).slice(0, 60)}`).join(' ; '), line: (e.follow.line as Follower[]).map((f) => `${Math.round(f.x)}/${Math.round(f.y)}/${f.state}`).join(' ') } : {}) } as FloodRun;
   } finally {
     Math.random = mr;
   }
@@ -245,7 +249,7 @@ test('PROBE-ALL the ruled fork', { skip: !!process.env.WHO }, () => {
   for (const [name, who] of TIERS) for (const seed of SEEDS) for (const late of [0, 15, 19]) {
     const r = floodRun(who, seed, late, { fork: true, dips: 4, dip: 100 }) as any;
     const ok = r.end === 'shrine' && r.home === 3 && r.setBack === 0 && r.rescues === 0;
-    console.log(`${ok ? 'ok  ' : 'MISS'} ${name} s${seed} late ${late}: end ${r.end} home ${r.home} setBack ${r.setBack} road ${r.high ? 'HIGH' : (r.marshT >= 0 ? 'low' : '-')} t ${r.t} marshT ${r.marshT} highT ${r.highT} paddled ${r.paddled} dry ${r.dry}${ok ? '' : ` px ${r.px} line ${r.line}`} rescues ${r.rescues} STUCK ${r.stuck}`);
+    console.log(`${ok ? 'ok  ' : 'MISS'} ${name} s${seed} late ${late}: climb ${JSON.stringify(r.climb)} end ${r.end} home ${r.home} setBack ${r.setBack} road ${r.high ? 'HIGH' : (r.marshT >= 0 ? 'low' : '-')} t ${r.t} marshT ${r.marshT} highT ${r.highT} paddled ${r.paddled} dry ${r.dry}${ok ? '' : ` px ${r.px} line ${r.line}`} rescues ${r.rescues} STUCK ${r.stuck}`);
     if (!ok) miss.push(`${name} s${seed} late ${late}`);
   }
   console.log('chain', (floodRun(FT_MIDDLE, 1, 0, { fork: true, dips: 4, dip: 100 }) as any).chain);

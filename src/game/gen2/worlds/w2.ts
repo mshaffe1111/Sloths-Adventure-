@@ -146,12 +146,17 @@ export const W2_RACE: PacerRow = {
  *  THE MODEL, NOT A MEASURE (the lead's ruling C, ENG-28 session 8): the bots land farther than the approved 86 (the middle at 136 past
  *  W 150's face: a 0.94 s climb, his landing steered back), yet the verdict and the bots agree on both shapes: on W 60 every tier walks off
  *  W (refused), on W 150 every tier boards P (passed). The verdict refuses 146, so at its edge it errs on the safe side. Calibrating
- *  `land` against the tier bots is a later job (ROADMAP R-165.424) */
+ *  `land` against the tier bots is a later job (ROADMAP R-165.424)
+ *  CORRECTED FROM THE BOTS' FLIGHTS (BUILD-28 session 6, the lead's A4): the child's `land` is its FARTHEST measured climb, 233 px past
+ *  W's face (the child-easy's double-press climb, take-off 771 at the face 790, centre down at 1023: session 5's probe; 219 in session 6's),
+ *  where the derived 62 stood: the derived model passed W 150 while the child-easy flew over W and the gap onto the porch. The other tiers'
+ *  measured landings are inside their derived ones (child Normal 56, middle-easy 84, middle 75, expert 75, adult 56: probe-fork-results-s6),
+ *  so they keep them (the stricter side) */
 export const W2_FLOOD: FloodRow = {
   close: { normal: 26, easy: 26 },
   spare: { normal: 4, easy: 8 },
   flown: { px: 2000 + 1400, tailOff: { normal: 22.0, easy: 17.9 } },
-  climb: { land: { child: 62, middle: 86, expert: 86, adult: 86 }, runUp: { child: 73, middle: 61, expert: 61, adult: 22 }, pause: [0.25, 0.5], width: 44 },
+  climb: { land: { child: 233, middle: 86, expert: 86, adult: 86 }, runUp: { child: 73, middle: 61, expert: 61, adult: 22 }, pause: [0.25, 0.5], width: 44 },
   /** the line's step (W2_FOLLOW.step): off any end of the high road, ground within it (flood.ts strandFaults) */
   step: W2_FOLLOW.step,
 };
@@ -187,7 +192,10 @@ export const W2_FORK: W2ForkShape = {
   near: 420,
   /** the porch's 800 px over the far bank (2,200 - the marsh's 1,400) + 320 to gather on */
   far: 1120,
-  wall: { w: 150, h: 60, back: 60 },
+  /** W 330 (BUILD-28 session 6, the lead's A2): the child's farthest measured climb lands 233 px past W's face (W2_FLOOD.climb.land) and
+   *  needs its 73 px run-up before the lip (forkFaults: at least 306), + a 24 px margin; 30 px of the 420 px bank stay before W's face
+   *  (the climbs take off 19 px before it), so the fork's place, and the flood's flown leg, are unchanged */
+  wall: { w: 330, h: 60, back: 60 },
   gap: 60,
   porch: 2200,
   rises: [{ w: 1400, h: 60 }, { w: 600, h: 60 }],

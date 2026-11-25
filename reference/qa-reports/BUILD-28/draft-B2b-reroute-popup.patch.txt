@@ -1,0 +1,64 @@
+diff --git a/tools/inspect/firsttimer.ts b/tools/inspect/firsttimer.ts
+index 4650e6d20..33355e72b 100644
+--- a/tools/inspect/firsttimer.ts
++++ b/tools/inspect/firsttimer.ts
+@@ -1489,6 +1489,9 @@ export class FirstTimerRun {
+   private roadRead = false;
+   /** KEEP-THE-ROAD: the pieces of the road he did not take at the fork he read (null: no fork read) */
+   private otherRoad: Set<Platform> | null = null;
++  /** the fork he read (floodRoad): its high road (`only`: its pieces but the shared first, W), its far end, the low road's pieces, and
++   *  whether he is on the high road now; a stand on `only` while he keeps the low road re-reads his road as HIGH (a pop-up) */
++  private forkRead: { chain: Platform[]; only: Set<Platform>; dir: 1 | -1; far: number; low: Set<Platform>; high: boolean } | null = null;
+   private lineLookEnd = -Infinity;
+   private lineGo: unknown = null;
+   private lineWait: unknown = null;
+@@ -2451,6 +2454,11 @@ export class FirstTimerRun {
+    * make it (the time left is under the rear-most one's tail-off of the rest of the low road) the way on goes round by the high road.
+    */
+   private floodRoad(p: PlayerState): void {
++    // (a POP-UP, BUILD-28 session 6, the lead's ruling (c): on the low road his own double jump stood him on the high road: that is his
++    //  road now, so the way on goes round by it from where he stands and the low road's pieces become the other road. It used to keep
++    //  the high road as the other road and stall on it, rescued: the probe's 11 late-0 double-jump runs)
++    const k = this.forkRead;
++    if (k && !k.high && p.grounded && this.sim.platforms.some((q) => k.only.has(q) && Math.abs(q.y - p.y) < 2 && p.x >= q.x && p.x <= q.x + q.width)) this.goHigh(k, p.x);
+     const c = (this.e as unknown as { floodClock: FloodClock | null }).floodClock;
+     const fp = this.e.follow as FollowPlay | null | undefined;
+     if (this.roadRead || !c || !fp || c.at === undefined || !p.grounded) return;
+@@ -2470,18 +2478,32 @@ export class FirstTimerRun {
+     this.roadRead = true;
+     // (his road from here is the way's own, the low road, unless the read below sends him round: the high road's pieces are the other's)
+     this.otherRoad = new Set(road.chain.map((t) => t.q));
++    this.forkRead = {
++      chain: road.chain.map((t) => t.q), only: new Set(road.chain.slice(1).map((t) => t.q)), dir, far: farOf(road.chain[road.chain.length - 1]),
++      low: new Set(this.sim.platforms.filter((q) => q.y > low.lip + 1 && q.x >= low.x0 - 1 && q.x + q.width <= low.x1 + 1)), high: false,
++    };
+     if (!LINE_SKILL.leadLine) return;
+     const left = c.f.close - (c.since((this.e as unknown as { gameTime: number }).gameTime) ?? 0);
+     const going = fp.line.filter((f) => f.state === 'follow' || f.state === 'join');
+     const tail = going.length ? Math.min(...going.map((f) => f.x * dir)) * dir : p.x;
+     const rate = c.f.tailOff > 0 ? c.f.px / c.f.tailOff : Infinity;
+     if (left >= ((far - tail) * dir) / rate) return;
+-    // (they can't make it: round by the high road, its pieces' tops every 24 px)
++    // (they can't make it: round by the high road)
++    this.goHigh(this.forkRead, fork);
++  }
++
++  /** round by the fork's high road from `from` to its far end: its WALKED top every 24 px (over each x the highest chain top there, so a
++   *  chain that climbs and comes down over the same pieces, three up and three down, is one walk out, never each piece's whole span in
++   *  turn); the other road is then the low road's own pieces, laid under the banks within its span */
++  private goHigh(k: NonNullable<FirstTimerRun['forkRead']>, from: number): void {
++    k.high = true;
+     const pts: Pt[] = [];
+-    for (const q of road.chain) for (let x = nearOf(q); (farOf(q) - x) * dir >= 0; x += 24 * dir) pts.push({ x, y: q.y });
+-    this.prog.reroute(this.prog.cur, fork, farOf(road.chain[road.chain.length - 1]), dir, pts);
+-    // (round by the high road: the other road is the low road's own pieces, laid under the banks within its span)
+-    this.otherRoad = new Set(this.sim.platforms.filter((q) => q.y > low.lip + 1 && q.x >= low.x0 - 1 && q.x + q.width <= low.x1 + 1));
++    for (let x = from; (k.far - x) * k.dir >= 0; x += 24 * k.dir) {
++      const on = k.chain.filter((q) => x >= q.x && x <= q.x + q.width);
++      if (on.length) pts.push({ x, y: Math.min(...on.map((q) => q.y)) });
++    }
++    this.prog.reroute(this.prog.cur, from, k.far, k.dir, pts);
++    this.otherRoad = k.low;
+   }
+ 
+   /**

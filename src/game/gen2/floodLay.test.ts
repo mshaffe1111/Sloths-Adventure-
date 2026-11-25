@@ -9,7 +9,7 @@ import { buildGen2Stage } from './pipeline.ts';
 import { towerCfg } from './toyTower.ts';
 import { HOME_BRICKS, HOME_CODE, homeKit } from './toyHome.ts';
 import { FLOOD_PADDLE, FLOOD_STEP, layFlood } from './floodLay.ts';
-import { W2_FLOOD, W2_RIVERS } from './worlds/w2.ts';
+import { W2_FLOOD, W2_FORK, W2_RIVERS } from './worlds/w2.ts';
 import { floodTailOff, type FloodRow } from '../flood.ts';
 import type { Collectible } from '../types.ts';
 import type { SectionTemplate, WorldKit } from './types.ts';
@@ -21,10 +21,10 @@ const RIVERS = { ...W2_RIVERS, ride: { ...W2_RIVERS.ride, flood: 'close' as cons
  *  FLOOD_STEP px tall, `fork.w` wide, its far side at the water's edge: he walks into it and climbs, flood.ts highRoad's first piece), a
  *  `fork.gap` px gap (the low road's way down: he falls through it), then a porch level with W's top over the river, ending over the far
  *  bank. W stands `fork.back` px back from the water's edge, so its gap lies over the bank (BUILD-28 1d: off W's lip the first ground is
- *  the bank, a step down, never the water: strandFaults). The passing shape is W 150 + gap 60 (forkFaults: W at least the widest tier's landing + run-up,
- *  86 + 61; the gap his 44 px width up to FLOOD_HOP). (A porch alone, FLOOD_STEP px over the bank's end, is a bare edge hop up: refused by
+ *  the bank, a step down, never the water: strandFaults). The passing shape is the ruled W2_FORK's W + gap (forkFaults: W at least the widest tier's landing + run-up,
+ *  233 + 73 (BUILD-28 session 6); the gap his 44 px width up to FLOOD_HOP). (A porch alone, FLOOD_STEP px over the bank's end, is a bare edge hop up: refused by
  *  name, ENG-28 session 4's widened rule) */
-const FORK = { w: 150, gap: 60, back: 60 };
+const FORK = { w: W2_FORK.wall.w, gap: W2_FORK.gap, back: W2_FORK.wall.back };
 /** the near bank, widened from toyHome's 280 to the two-road section's own (w2.ts W2_FORK.near: the line bunched behind him and W on it,
  *  set back; on 280 W set back left no flag's ground before the hard node): the porch's place past its end is a share of it */
 const NEAR_W = 420;
