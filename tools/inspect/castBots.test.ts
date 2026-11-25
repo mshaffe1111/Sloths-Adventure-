@@ -308,9 +308,10 @@ function catchOnArena(who: FirstTimer, k: number, seen: (sim: { p: { x: number; 
   });
 }
 test('a way down: off the catch of a stopped vine onto a storey that runs on under it, he goes for its far end and on down', async () => {
-  // (the kid and the adult, the rows the two fixes bite on: fix A off, the kid walked off the catch onto the near part of the storey,
-  //  hopped the dip onto the shelf over it, dropped back and stood by the catch's foot until rescued; fix B off, the adult did. A rescue
-  //  here is the arena's own: he is set down further on, a jump of 100+ px in one frame)
+  // (the kid and the adult. On the old lay (shelf 108 px over the storey) the kid with fix A off, and the adult with fix B off, walked
+  //  off the catch onto the near part of the storey, hopped the dip onto the shelf over it, dropped back and stood by the catch's foot
+  //  until rescued. On the lay that keeps his hop's room (shelf 188 px over) it is GREEN with A off and with B off too: it guards the
+  //  shape, not the two fixes. A rescue here is the arena's own: he is set down further on, a jump of 100+ px in one frame)
   const m = await import('./firsttimer.ts');
   const miss: string[] = [];
   for (const who of [m.FT_KID, m.FT_ADULT]) for (let k = 1; k <= 3; k++) {
