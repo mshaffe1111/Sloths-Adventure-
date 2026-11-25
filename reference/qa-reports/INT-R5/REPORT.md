@@ -3,11 +3,23 @@
 Session 1: started 2:31 PM ET 11-24 (by `date`), handed over at the 28-minute box. Lead: session_01FhBbYN2CVHnFXg7XzqKXpM.
 
 ## EXACT NEXT STEP (session 7 starts here; INT-R5d-c, started 4:12 PM ET 11-25 by `date`)
-**INT-R5d-c: item 1 below is DONE at 0597cd057** (pushed, ls-remote confirmed): the lead re-ruled the 4th line to option A, 89 chars
-('Fixed: a wall I couldn’t see in First Lianas, and dark soil at the start of Up the Kapok.'), because the first ruled line (101)
-broke whatsNew.test.ts:32's 90 cap (test untouched); date 2026-11-25; tsc clean; whatsNew.test + playerText.test 79/79. NEXT is item 2:
-WAIT for the lead's bot-fix hash (release-0.10.3-wip-plant-ci's FINAL head, no separate merger), then items 2-3 below. Step 3 adds
-(packet INT-R5d step 3, D132) castBots vs MAIN on 2-1, 2-2, 2-4, 2-5, 1-4 (zero bar-relevant PASS -> FAIL) and release.md 4b sums.
+**INT-R5d-c (written 4:59 PM ET 11-25 by `date`):** item 1 DONE at 0597cd057 (What's New: the lead re-ruled the 4th line to
+option A, 89 chars, 'Fixed: a wall I couldn’t see in First Lianas, and dark soil at the start of Up the Kapok.'; the first ruled
+line, 101, broke whatsNew.test.ts:32's 90 cap, test untouched; 79/79). **Step 1b DONE:** the lead's bot-fix hash 9718499a6
+(release-0.10.3-wip-plant-ci; differs from its verified 39673e40c only under reference/) merged --no-ff into release-0.10.3-wip-fixes
+= **c73cb9766** (base dfe631913, NO conflicts); on a frozen full worktree of c73cb9766: tsc clean, the CI tool line (gates.yml:157)
+421 tests, 420 pass, 0 fail, 1 todo (chaseBots); **release-0.10.3 fast-forwarded to c73cb9766** (no force, ls-remote confirmed).
+**THE FULL SET on c73cb9766 is RUNNING** (frozen /home/user/int-c73, chattr +i src tools, proven writable; main /home/user/int-main
+at cdffdc627, frozen; out /home/user/fs-c73) in lanes, because run1.sh in one line runs past the 7,200,000 ms limit:
+tools/lane.sh runs run1.sh's OWN g-lines by name: L1 drawcheck clipcheck kbdcheck vitebuild chunkcheck artcheck buildstore slotconfirm;
+L2 seedlists shardplan lockbase lockall lockhints; L3 tipwalk storytipscan teachfirst registrycheck knowncheck generalitycheck
+coveragecheck unshallow roadmapcheck timecheck paint0-2 castbots27 castbots14 funcheck fundiff tierbots; L4 tools/rows28.sh (rule 28
+vs MAIN, D132: castBots seeds 1-40, kid adult child middle expert, both settings, on 2-1 2-2 2-4 2-5 1-4, main then head). tsc and the
+tool line count from step 1b (same frozen tree). NEXT: when L1-L4 finish, run2.sh (the suite, 3 shards; pacerLay 23/23), then
+`lane.sh ... L9 buildcheck` LAST and ALONE; flips: `python3 ENG-PLANT/tools/flips.py.txt /home/user/fs-c73/rows-main
+/home/user/fs-c73/rows-head` (0 PASS -> FAIL); castbots27 rows vs ENG-PLANT data/ci/s12/fin15/x40-2-7.jsonl (the landing rows);
+release.md 4b sums from g-shardplan.log + g-seedlists.log; then the gate table here, push, ls-remote, the head + one line per gate to
+the lead. A container restart loses /home/user/fs-c73: re-run what is not in this REPORT.
 
 ### Previous box (INT-R5d-b, written 12:15 PM ET 11-25 by `date`)
 INT-R5d-b started 11:35 AM ET 11-25. Branch **release-0.10.3-wip-fixes**, code head still **f7c5b8a2e** (REPORT/stills commits only
