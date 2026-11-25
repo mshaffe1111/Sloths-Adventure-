@@ -16,7 +16,8 @@ READY is measured on that head, LANES rule 2).
    data field, brick), how 3-1 meets the 2-MINUTE floor (the kid's fastest clean run was 87-125 s on the probe WITHOUT the dark; ENG-DARK's base-vs-dark x40 adds a median 20-40 s, so RE-MEASURE on the dark head first: say how every tier's fastest
    clean run is over 120 s without padding: more shaft, not slower moves), the hand build's deletion list (protoStage '3-1' :2301-2354,
    HAND_STAGES :62, w3Sections '3-1' :31/:44, the pinning tests re-pointed with their assertions kept).
-1. After GO: lay 3-1 by its design on real bricks (the stage-table row travelling down), the hand build DELETED. A NEW engine gap STOPS and
+1. After GO: FIRST drop ART-W3's ready pack (t-art-w3: tools/art/hfw3/pack.py -> src/assets/w1to4art/w3-grotto.webp + .json and the loader
+   src/game/w3GrottoArt.ts) in the SAME commit as your first draw sites (the art-use gate refuses a packed frame nothing draws). Then lay 3-1 by its design on real bricks (the stage-table row travelling down), the hand build DELETED. A NEW engine gap STOPS and
    comes to the lead (a pieces lane builds it; never inside the level).
 2. The words from lines-3.md, verbatim, held in a test; no placeholder ships. Dot teaches the dark before beat 1 (rule 6).
 3. FIRST LOOK, the design's risk first (:41, the shaft upright and sideways): stills at 2x of beats 1, 3, 6 and the shrine, upright and
