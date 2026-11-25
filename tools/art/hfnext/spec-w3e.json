@@ -1,0 +1,19 @@
+{
+ "tag": "w3-e",
+ "edits": [
+  {
+   "name": "bellSwing",
+   "src": "gh:COMMIT:reference/art/hfw3/takes/bell/bell-s23.webp",
+   "refs": [],
+   "w": 768,
+   "h": 768,
+   "seeds": [
+    11,
+    23,
+    37
+   ],
+   "prompt": "Keep this exact court bell picture unchanged: the same carved wooden arch, the same posts, crocodile heads, teal lashings, gold studs, plank foot, colours, style and position. Change only the bronze bell: it has just been struck and swings to the right on its rope, the bell and its rope tilted about 25 degrees from straight down, pivoting at the rope's top on the beam, the clapper swung against the bell's left rim. Keep the flat plain grey background around it.",
+   "neg": "photo, 3d render, blurry, text, letters, watermark, frame, border, scenery, sky, people, animals, sloth, motion blur lines, sound waves, second bell, broken arch"
+  }
+ ]
+}
