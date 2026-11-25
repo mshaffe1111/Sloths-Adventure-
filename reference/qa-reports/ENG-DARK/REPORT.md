@@ -1,4 +1,32 @@
 # ENG-DARK REPORT (the dark + light ring as one gen2 brick; WORLD-3-PLAN F2; R-165.449)
+**EXACT NEXT STEP (ENG-DARK-o box 15 hand-over, 5:03 PM ET by `date`; head on t-eng-dark-wip = this commit; CODE a5e15a74d. Box 16 OWNS
+every step below. Re-fetch before every commit (D138).)**
+**STEP 1 (box 14's A-C) on a5e15a74d's code, frozen worktrees:** dark.test 17/17 and darkBots.test 14/14 WHOLE green; tsc clean.
+- Two SHAPE toys were red on a177fde99 (their builders found no shape), both rebuilt (dark.test):
+  - hop rim (`hopStep`): a hand floor HOP_FLOOR 540 px under the step-off piece's back end, the wood between taken out: that edge's own
+    light hangs past a hop stop's reach (GLOW_REACH.down), so only the second light lights it (before: all 61 shapes of rolls 1-10 lit
+    that edge with its own light woken by the stop, so no lay went RED without the second lights).
+  - behind edge (`deepDrop(608, ..., behind, 10 rolls, clear)`): the edge now 60 px behind the touchdown (BEHIND; asserted under
+    darkStop), the wood between rim and landing cleared. Why: at 608 px the capped light hangs 188 px over the landing, and a 190 px
+    light there reaches an edge 13 px aside; past 608 px no drop lands on that piece; and on roll 1 a piece 346 px down dropped onto
+    the same landing, its own light 90 px over it was the landing's (darkRims' nearest).
+- runoff probe (scratchpad copy + a fully-lit count), rolls 1-40 x both settings on the frozen code: verdicts 0 on all 80; the run-off
+  rule wakes 83 of 6152 lights (box 14 saw 978 before `stops`); darks fully lit: 0 of 968.
+**STEP 2 DONE (roll 11, same seam family, fixed general):** the route drops through a 13 px seam from 355-591 (y 11405) to 604-784
+(13 px UP, a step) and comes out past 784 on 604-817 (y 11552). By facing, a turn on 355-591 flipped him and he went over the rim at 604
+eleven times. downEnd now: under a seam run, he steps off the run's END (both ways over every seam, ledgeEnds) that the way on comes out
+past (its first later point outside the run); his facing only when it never comes out in reach. Frozen probe: roll 11 adult N loop 1,
+shrine 169.5 s, unlit 0 (was loop 11, shrine 151.1 s: say it at the x40 medians); rolls 6 and 35 loop 1, shrine. Toys (darkBots.test):
+roll 11 GREEN (shrine, loop < 6, unlit []) / seamByFacing RED (loop >= 8; probe: 11). Plant added to planted-faults.py.
+**RUNNING AT HAND-OVER (box 15 finishes and records only these two on this branch, D138; if they are not here, box 16 re-runs them):** planted-faults.py on frozen a5e15a74d (33
+plants; 2 CAUGHT so far); x40 lane 1 (seeds 1-20, both settings, --par 2) on frozen a5e15a74d -> x40-a5e15a74-1.jsonl. Lane 2 (21-40)
+NOT started (two heavy runs at a time).
+**BOX 16 DOES:** (1) plants on a5e15a74d: every one CAUGHT (none NO TEST / BASE RED / MISSED). (2) the x40 on a5e15a74d (both lanes;
+commit cast-3-1-x40-a5e15a74.jsonl) vs THE BAR with x40verdict.py against cast-3-1-x40-base-c1008d8e.jsonl: shrine 360/360; unlit <= 5
+events, no loop; no rescue kind the base lacks; medians vs base; ENG-DOWNBOT's open items. One line to the lead. (3) box 15's order
+step 4: gates ONCE, then LAND on t-eng-w3 (88592a9c4).
+Lessons applied: D115 (every probe/test on a frozen worktree; plants and x40 in separate worktrees), D119, D128, D134/D138.
+
 **EXACT NEXT STEP (ENG-DARK-n box 14 hand-over, 4:44 PM ET by `date`; head on t-eng-dark-wip = this commit; CODE 548057919. Box 15 OWNS
 every step below. Re-fetch before every commit (D138). Run NO gate and NO x40 until steps A and B below are green.)**
 **STEP 1 DONE:** origin/t-eng-w3-wip-downbot f1d519f25 MERGED for real: 6255af91c (pushed), one conflict, downEnd, resolved as box 13's trial
