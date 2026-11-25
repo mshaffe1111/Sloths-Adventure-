@@ -13,6 +13,26 @@ frozen 0dadb295. (4) LAND (order item 7): t-eng-w3 is still c1008d8e, already in
 force); ENG-DOWNBOT-i lands after and removes its fix B; lockall on the frozen final merged head (`lockall --layouts 16 --out
 lock-base.json` on frozen c1008d8e, `--check` on the merged head: no listed stage moves). Send the lead the hash, what 3-1/3-2's READY
 can measure, the light API line for ENG-SPORE (ADR-004).
+**BOX 8'S x40 ON FROZEN 0dadb295 (recorded after the hand-over, 1:44 PM ET by `date`; rows cast-3-1-x40-0dadb295.jsonl, 360): IT FAILS THE BAR.**
+- shrine **359/360**: kid Normal 27 STRANDED at 195.4 s, 4 rescues (base c1008d8e: shrine 158.1 s, 3). A new strand; box 4's child Easy 25
+  strand is gone (box 6's (a)).
+- unlit **66 lines = 9 events in 9 runs** (box 4's f68c5ca1: 5; base 0):
+  - LOOPS, both on 32 N, the rim x 367, y 9682 (left end of 367-547), crossed with its landing dark every 0.67-0.8 s: adult 31 times
+    (from 183.3 s), kid 26 times (from 239.2 s). Expert 32 N crossed it once.
+  - Once each: adult 33 N x 940, y 7828 (THE BEHIND EDGE, below); child Easy 21 x 191, y 1562; expert 31 N x 929, y 10127; middle Easy 1
+    x 517, y 2867; middle Easy 32 x 561, y 10406; middle 16 N x 920, y 7104; middle 31 N x 965, y 6563 (twice).
+- gaveUp 0. Rescues 1,368 (base 1,393). Rescue kinds the base lacks: 2 ('a drop of N px ahead, a trunk beside him, the way on is N px
+  down', and the same 'in a dip'). Box 4's f68c5ca1 had these and more, so they are not new to this head, but they still fail the bar.
+- **The lead's condition on 32 N / 33 N (no rescue from turning back at those landings): NOT MET at 33 N.** Adult 33 N went over the
+  behind edge x 940, y 7828 (right end of 704-940) with its landing dark at 184.47 s. The rows carry no rescue height, so whether a
+  rescue followed cannot be read from them. 33 N's rescues near x 931-981 were already there on f68c5ca1 (x 935-972).
+  32 N: no crossing of the behind edge x 712; rescues near it (x 650-732) were also there on f68c5ca1.
+  Per the lead's own rule, the lay fix comes in before the landing: a second light over the step-off landing when the rim's own
+  landing is a hop.
+- **Not traced (box 8 stopped at the hand-over): the 32 N loop over x 367, the 7 single crossings, and the kid 27 N strand.** First
+  look for box 9: the loop rim's light (awake? at the depth bound? did the mouth or depth change move it?) with `castone` on adult 32 N.
+  Then the lay fix, then a fresh x40 on the new final head. The plants, tierBots, the suite and the CI line all follow the new head.
+
 **DONE in box 8 (0dadb295), dark.test 12/12 (2 min 13 s), tsc clean:**
 - (i) darkLandings: a drop off a DARK rim passes when the edge he lands toward lies inside the drop rim's own landing light (or, as
   before, the stop wakes that edge's own light in time). An edge BEHIND the landing (n.dir against u.dir) is not one he lands toward:
