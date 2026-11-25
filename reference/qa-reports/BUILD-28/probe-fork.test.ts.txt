@@ -1,0 +1,258 @@
+/**
+ * The bot's line skills (firsttimer.ts LINE_SKILL; 2-3.md "Bot skills"; level.md rule 21, toys first): the real first-timer bot (the
+ * middle and adult thumbs) on a toy marsh in the real engine, each skill switched off to prove the bot needs it.
+ *   - WAIT-FOR-THE-TAIL: two reed clumps (300 px) over 400 px of open mud under one heron; three little ones follow him. With the skill
+ *     he crosses with nobody spooked; without it (he runs straight on) the look catches the line out on the mud.
+ *   - FETCH-THE-SPOOKED: one little one is spooked back to the stretch's start before he sets off; with the skill he goes back for it
+ *     and brings all three home (the door opens); without it the door stays sealed.
+ */
+import { test } from 'node:test';
+import assert from 'node:assert/strict';
+import { DT } from '../src/game/realPlay.ts';
+import { FirstTimerRun, FT_ADULT, FT_CHILD, FT_CHILD_EASY, FT_EXPERT, FT_MIDDLE, FT_MIDDLE_EASY, LINE_SKILL, ROAD_TRIPS, freshPhone, rng, type FirstTimer } from '../tools/inspect/firsttimer.ts';
+import { SAME_GROUND, spook, type Follower } from '../src/game/follow.ts';
+import { W2_FLOOD, W2_FOLLOW, W2_FORK, W2_FORK_RIVERS } from '../src/game/gen2/worlds/w2.ts';
+import { FloodClock, floodTailOff, highRoad, type Flood } from '../src/game/flood.ts';
+import { FLOOD_HOP, FLOOD_STEP, floodWaterOf } from '../src/game/gen2/floodLay.ts';
+import { layRiver } from '../src/game/gen2/riverLay.ts';
+import type { RiverZone } from '../src/game/river.ts';
+import type { WatchZone } from '../src/game/watcher.ts';
+import type { Collectible, Platform } from '../src/game/types.ts';
+
+const Y = 800;
+const START = 300;
+const EXIT = 3000;
+
+interface LineRun { end: string; spooks: number; home: number; t: number }
+
+/** the bot plays the toy marsh: 3 cages by the start, then clumps A and B under a heron, then the exit (the goal: 3 home) */
+function lineRun(who: FirstTimer, seed: number, preSpook = false): LineRun {
+  freshPhone(who.setting);
+  const mr = Math.random;
+  Math.random = rng(seed * 104729 + 7);
+  try {
+    const route = Array.from({ length: Math.ceil((EXIT + 100 - START) / 24) + 1 }, (_, i) => ({ x: START + i * 24, y: Y }));
+    const run = new FirstTimerRun('2-3', 1, who, { route, cap: 200 });
+    const e = run.e as unknown as Record<string, any>;
+    const floor: Platform = { id: 1, x: 0, y: Y, width: 6000, height: 200, type: 'solid' } as Platform;
+    run.sim.bare([floor]);
+    const cages = [420, 470, 520].map((x, i) => ({ id: 300 + i, x, y: Y - 26, type: 'cage', collected: true, critter: (['duck', 'otter', 'capy'] as const)[i] }) as Collectible);
+    const exit = { id: 400, x: EXIT, y: Y - 40, type: 'exit_totem', collected: false } as Collectible;
+    e.collectibles = [...cages, exit];
+    const st = e.currentStage;
+    st.exitTotemX = EXIT;
+    st.exitTotemY = Y;
+    st.config = { ...st.config, objectiveType: 'rescue', targetCount: 3, levelWidth: 6000 };
+    e.walls = e.mode.bounds({ levelWidth: 6000, exit: { x: EXIT, y: Y }, spawn: { x: START, y: Y } });
+    const A = { x: 1000, w: 300, y: Y, kind: 'wide' as const };
+    const B = { x: 1700, w: 300, y: Y, kind: 'wide' as const };
+    const zone: WatchZone = { x0: 900, x1: 2100, calm: [5, 5] };
+    e.proto = { hints: [], covers: [], beats: [], movedPickups: [], bushes: [A, B], watch: [zone], follow: W2_FOLLOW };
+    run.sim.stand(START, Y);
+    e.startFollow();
+    // (the three little ones already out of their cages, bunched behind him: the toy is the crossing, not the punch)
+    for (const c of cages) e.follow.free(c.critter, { x: c.x - 300, y: Y }, { x: c.x - 300, y: Y });
+    for (let i = 0; i < 30; i++) run.sim.frame({});
+    run.prog.relocate(run.sim.p);
+    let spooks = 0;
+    const line = e.follow.line as Follower[];
+    if (preSpook) {
+      spook(line[1], 60);
+      line[1].x = 60;
+      line[1].back = true;
+    }
+    const step = e.follow.step.bind(e.follow);
+    e.follow.step = (...a: unknown[]) => {
+      const ev = step(...a);
+      spooks += (ev.spooked as Follower[]).length;
+      return ev;
+    };
+    run.play();
+    return { end: run.end, spooks, home: e.follow.home(), t: +run.t.toFixed(1) };
+  } finally {
+    Math.random = mr;
+  }
+}
+
+const WHO: Array<[string, FirstTimer]> = [['middle', FT_MIDDLE], ['adult', FT_ADULT]];
+const SEEDS = [1, 2, 3];
+/** every tier (the marsh's swim, the lead's condition 2) */
+const TIERS: Array<[string, FirstTimer]> = [['child-easy', FT_CHILD_EASY], ['child', FT_CHILD], ['middle-easy', FT_MIDDLE_EASY], ['middle', FT_MIDDLE], ['adult', FT_ADULT], ['expert', FT_EXPERT]];
+
+/**
+ * LEAD-THE-LINE (ENG-28; 2-8.md "Bots"): a toy fork in the real engine. The low road: a walkway 60 px under the banks over 400 px of water
+ * marked to close (deep at 26 s); the high road, flood.ts highRoad's chain: W, a block 60 px tall and FORK_W wide on the near bank (a wall-step he walks
+ * into and climbs), P a thin piece level with W's top across a 60 px gap, B a block 60 px over P standing on its level (a wall-step out of
+ * the low road's lane), C a thin piece level with P on to the far bank. Three little ones behind him; the clock started `late` s before he
+ * sets off (the last cage freed that long ago: he dawdled). Counted: the little ones the close sets on the near bank (a split line) and
+ * which road he took. The toy's spawn and flags stand on its own floor (a lost heart puts him and the line back there).
+ */
+/** the wall-step W's width: the fork's passing shape with the 60 px gap after it (the lead's ruling, ENG-28 session 7; flood.ts forkFaults:
+ *  W at least the widest tier's landing + run-up, W2_FLOOD.climb 86 + 61). W 60 is refused by name: every tier lands past its lip */
+const FORK_W = 150;
+interface FloodRun {
+  end: string;
+  setBack: number;
+  home: number;
+  /** The road he took AT THE FORK: before the first close he stood grounded on a piece of the HIGH ROAD ONLY, read from the flood's own
+   *  high-road chain (flood.ts highRoad, as floodFaults and the bot read it), never a height. The fork's shared ends do not count: its
+   *  first piece, the wall-step W (both roads climb it; the low road walks off it 60 px down), and its last piece C (the low road climbs
+   *  out of the walkway onto it: both roads end there), so a stand on either is no choice. Set only while no close has
+   *  fired: after the close the high road is the only way on, so a stand there then says nothing about his choice (the lead's rulings,
+   *  R-165.432, ENG-28f). */
+  high: boolean;
+  t: number;
+  /** (a marsh toy) a little one stood on the marsh's floor, out over the water, not paddling */
+  walked?: boolean;
+  /** (a marsh toy) a little one paddled in one of its dips */
+  paddled?: boolean;
+  /** (a marsh toy) he hopped a dip from the floor and landed on the floor beyond it (at its take-off height, follow.ts SAME_GROUND): the
+   *  hop the line swims (follow.ts swimY). A hop off the floor that lands higher (onto the fork's last piece) is his arc, and theirs */
+  flat?: boolean;
+  /** (a marsh toy) a little one was over a dip in the AIR (on his arc, not paddling and not on the floor) */
+  dry?: boolean;
+}
+/** the low road laid by gen2's own piece (riverLay layRiver, RiverRow.marsh: the floor 60 px under the banks, as the hand walkway) instead
+ *  of the hand walkway, `dips` gaps `dip` px wide in it; plants: `floorOff` lays the marsh's water with no floor, `closeOff` its flood
+ *  with no close (it rises, never turns deep), `swimOff` the line's straight swim over a dip (follow.ts swimY) off: it hops the dip on his arc */
+interface MarshToy { fork?: boolean; dips: number; dip: number; floorOff?: boolean; closeOff?: boolean; swimOff?: boolean }
+function floodRun(who: FirstTimer, seed: number, late: number, marsh?: MarshToy): FloodRun {
+  freshPhone(who.setting);
+  const mr = Math.random;
+  Math.random = rng(seed * 7919 + 3);
+  try {
+    const W0 = 1000;
+    const F = W2_FORK, FR = W2_FORK_RIVERS.low;
+    const W1 = marsh?.fork ? W0 + FR.marsh.width : 1400;
+    const EXIT = marsh?.fork ? W0 + F.gap - F.wall.back + F.porch + 600 : 3000;
+    const route = Array.from({ length: Math.ceil((EXIT + 100 - START) / 24) + 1 }, (_, i) => {
+      const x = START + i * 24;
+      return { x, y: x > W0 && x < W1 ? Y + 60 : Y };
+    });
+    const run = new FirstTimerRun('2-3', 1, who, { route, cap: 200 });
+    const e = run.e as unknown as Record<string, any>;
+    const solid = (id: number, x: number, width: number, y: number, height = 200) => ({ id, x, y, width, height, type: 'solid' }) as Platform;
+    let nid = 50;
+    const low = marsh ? layRiver(marsh.fork ? FR : { dir: 1, speed: 0, logW: 0, logs: 0, safe: true, flood: 'close', marsh: { width: W1 - W0, floor: 60, dips: marsh.dips, dip: marsh.dip } }, W0, Y, () => nid++) : undefined;
+    // (the RULED fork, w2.ts W2_FORK, laid as gen2's pipeline lays it (probe/shape.test.ts dump, seeds 1-2): W set back, the porch from the gap, each rise centred on the one under it)
+    const pX = W0 + F.gap - F.wall.back, r1 = F.rises[0], r2 = F.rises[1], r1X = pX + (F.porch - r1.w) / 2, r2X = r1X + (r1.w - r2.w) / 2;
+    const forkHigh = marsh?.fork ? [solid(4, W0 - F.wall.back - F.wall.w, F.wall.w, Y - F.wall.h, F.wall.h), solid(5, pX, F.porch, Y - F.wall.h, 24), solid(6, r1X, r1.w, Y - F.wall.h - r1.h, r1.h), solid(7, r2X, r2.w, Y - F.wall.h - r1.h - r2.h, r2.h)] : undefined;
+    const dipsAt = low ? low.floor.slice(1).map((q, i) => [low.floor[i].x + low.floor[i].width, q.x] as const) : [];
+    run.sim.bare([solid(1, 0, W0, Y), ...(low ? (marsh!.floorOff ? [] : low.floor) : [solid(2, W0, W1 - W0, Y + 60)]), solid(3, W1, 6000 - W1, Y), ...(forkHigh ?? [solid(4, W0 - 60 - FORK_W, FORK_W, Y - 60, 60), solid(5, W0, 100, Y - 60, 20), solid(6, W0 + 100, W1 - W0 - 160, Y - 120, 60), solid(7, W1 - 60, 220, Y - 60, 20)])]);
+    const cages = [420, 470, 520].map((x, i) => ({ id: 300 + i, x, y: Y - 26, type: 'cage', collected: true, critter: (['duck', 'otter', 'capy'] as const)[i] }) as Collectible);
+    const exit = { id: 400, x: EXIT, y: Y - 40, type: 'exit_totem', collected: false } as Collectible;
+    e.collectibles = [...cages, exit];
+    const st = e.currentStage;
+    st.exitTotemX = EXIT;
+    st.exitTotemY = Y;
+    st.config = { ...st.config, objectiveType: 'rescue', targetCount: 3, levelWidth: 6000 };
+    e.walls = e.mode.bounds({ levelWidth: 6000, exit: { x: EXIT, y: Y }, spawn: { x: START, y: Y } });
+    // (a lost heart puts him back on the toy's own floor, as every stage's spawn and flags stand on theirs: left at 2-3's spawn, 217 px
+    //  over this floor, the line was regrouped in the air there and its trail held at the drop for good, a 'stranded' run, ENG-28e)
+    st.spawnX = START;
+    st.spawnY = Y;
+    st.checkpoints = [];
+    e.checkpoint = { x: START, y: Y };
+    const river: RiverZone = low ? low.zone : { x0: W0, x1: W1, surfaceY: Y + 90, dir: 1, speed: 0, safe: { backX: W0 - 40, backY: Y }, floodMark: { kind: 'close', lip: Y } };
+    st.rivers = [river];
+    const easy = who.setting === 'easy';
+    const px = W1 - cages[2].x;
+    const flood: Flood = {
+      start: { id: cages[2].id, x: cages[2].x, y: Y }, close: easy ? W2_FLOOD.close.easy : W2_FLOOD.close.normal, px,
+      waters: [low ? { ...floodWaterOf(river, 0, 26), ...(marsh!.closeOff ? {} : { deep: { y: Y, near: { x: W0 - 40, y: Y } } }) } : { river: 0, x0: W0, x1: W1, y0: Y + 90, y1: Y + 70, seconds: 26, lip: Y, deep: { y: Y, near: { x: W0 - 40, y: Y } } }],
+      tailOff: floodTailOff(W2_FLOOD, px, easy), spare: easy ? W2_FLOOD.spare.easy : W2_FLOOD.spare.normal,
+    };
+    st.flood = flood;
+    e.floodClock = new FloodClock(flood);
+    e.proto = { hints: [], covers: [], beats: [], movedPickups: [], bushes: [], watch: [], follow: W2_FOLLOW };
+    // (the fork toy runs past x 3000: 2-3's own puzzle rooms ("cage1" at about 3104) are not this toy's)
+    if (marsh?.fork && process.env.ROOMS) console.log("ROOMS", JSON.stringify((e.kit?.rooms ?? []).map((r: any) => [r.spec.id, r.box])), typeof e.currentStage.kit);
+    if (marsh?.fork) { e.kit = undefined; e.currentStage.kit = undefined; }
+    // (TOPLINE=1, a plant to test cause B: the bot's high-road route as the walked top line (the highest chain top over each x), not each
+    //  chain piece's whole span in chain order)
+    if (marsh?.fork && process.env.TOPLINE) {
+      const rr = run.prog.reroute.bind(run.prog);
+      (run.prog as any).reroute = (cur: number, a: number, b: number, d: number, pts: Array<{ x: number; y: number }>) => {
+        const tops = run.sim.platforms.filter((q) => q.type === 'solid' && q.y < Y - 1 && q.y > Y - 300);
+        const line: Array<{ x: number; y: number }> = [];
+        for (let x = Math.min(a, b); x <= Math.max(a, b); x += 24) {
+          const on = tops.filter((q) => x >= q.x && x <= q.x + q.width);
+          if (on.length) line.push({ x, y: Math.min(...on.map((q) => q.y)) });
+        }
+        return rr(cur, a, b, d, d > 0 ? line : line.reverse());
+      };
+    }
+    run.sim.stand(START, Y);
+    e.startFollow();
+    // (planted: the line hops a dip on his arc again, the straight swim off)
+    if (marsh?.swimOff) (e.follow as unknown as { swimAcross: unknown }).swimAcross = () => false;
+    for (const c of cages) e.follow.free(c.critter, { x: c.x - 300, y: Y }, { x: c.x - 300, y: Y });
+    for (let i = 0; i < 30; i++) run.sim.frame({});
+    run.prog.relocate(run.sim.p);
+    // (the last cage burst `late` s ago: the clock has run that long)
+    e.floodClock.freed(flood.start.id, e.gameTime - late);
+    let setBack = 0;
+    let shut = false;
+    const closed = e.follow.floodClosed.bind(e.follow);
+    e.follow.floodClosed = (w: unknown) => {
+      shut = true;
+      const out = closed(w) as Follower[];
+      setBack += out.length;
+      return out;
+    };
+    let high = false, marshT = -1, highT = -1, stuck = '';
+    let walked = false, paddled = false, flat = false, dry = false;
+    let off: { x: number; y: number } | null = null;
+    let stood = { x: 0, y: 0 };
+    const tops = run.sim.platforms.filter((q) => q.type === 'solid' && q.y < Y - 1).map((q) => ({ x: q.x, w: q.width, y: q.y, h: q.height, q }));
+    const road = highRoad(tops, { x0: W0, x1: W1, from: { x: W0, y: Y }, to: { x: W1, y: Y } }, FLOOD_STEP, FLOOD_HOP);
+    assert.deepEqual(road.faults, [], 'the toy lays a high road');
+    assert.ok(road.chain.length >= 3, 'the high road: the wall-step, its own pieces and its last piece');
+    // (the fork's shared ends left out: W, chain[0], and C, the chain's last piece; the lead's ruling A, ENG-28 session 8)
+    const highOnly = new Set<Platform>(road.chain.slice(1, -1).map((t) => t.q));
+    const on = run.sim.frame.bind(run.sim);
+    run.sim.frame = (...a: unknown[]) => {
+      const r = on(...(a as [never]));
+      const p = run.sim.p;
+      // (his take-off is the last ground he stood on)
+      if (low && !p.grounded && !off) off = stood;
+      if (low && p.grounded && off) {
+        if (Math.abs(p.y - off.y) <= SAME_GROUND && Math.abs(off.y - (Y + 60)) < 2 && dipsAt.some(([a, b]) => Math.min(off!.x, p.x) < a && Math.max(off!.x, p.x) > b)) flat = true;
+        off = null;
+      }
+      if (process.env.TRACE && marsh?.fork && Math.round(run.t * 30) % +(process.env.EVERY ?? 6) === 0 && run.t < +process.env.TRACE && run.t > +(process.env.FROM ?? 0)) console.log(`t ${run.t.toFixed(1)} p ${Math.round(p.x)}/${Math.round(p.y)} g ${p.grounded ? 1 : 0} vx ${Math.round(p.vx ?? 0)} | ${(e.follow.line as Follower[]).map((f) => `${Math.round(f.x)}/${Math.round(f.y)}/${f.state}${f.paddle ? 'P' : ''}`).join(' ')}`);
+      if (p.grounded) stood = { x: p.x, y: p.y };
+      if (low) for (const f of e.follow.line as Follower[]) {
+        if (f.x <= W0 || f.x >= W1) continue;
+        if (f.paddle && dipsAt.some(([a, b]) => f.x > a && f.x < b)) paddled = true;
+        if (f.state === 'follow' && !f.paddle && dipsAt.some(([a, b]) => f.x > a + 1 && f.x < b - 1)) dry = true;
+        if (!f.paddle && Math.abs(f.y - (Y + 60)) < 2) walked = true;
+      }
+      if (!shut && p.grounded && [...highOnly].some((q) => Math.abs(q.y - p.y) < 2 && p.x + p.width / 2 > q.x && p.x - p.width / 2 < q.x + q.width)) { high = true; if (highT < 0) highT = run.t; }
+      if (low && p.grounded && Math.abs(p.y - (Y + 60)) < 2 && p.x > W0 && p.x < W1 && marshT < 0) marshT = run.t;
+      return r;
+    };
+    run.play();
+    return { end: run.end, setBack, home: e.follow.home(), high, t: +run.t.toFixed(1), ...(low ? { walked, paddled, flat, dry } : {}), ...(marsh?.fork ? { marshT: +marshT.toFixed(1), highT: +highT.toFixed(1), chain: road.chain.map((c) => (c.q as Platform).id).join('>'), px: Math.round(run.sim.p.x), rescues: (run as any).rescues, stuck: (run as any).stuck.map((k: any) => `${k.x}/${k.y}@${k.t}${k.rescued ? 'R' : ''}:${String(k.what).slice(0, 60)}`).join(' ; '), line: (e.follow.line as Follower[]).map((f) => `${Math.round(f.x)}/${Math.round(f.y)}/${f.state}`).join(' ') } : {}) } as FloodRun;
+  } finally {
+    Math.random = mr;
+  }
+}
+
+
+test('PROBE-ALL the ruled fork', { skip: !!process.env.WHO }, () => {
+  const miss: string[] = [];
+  for (const [name, who] of TIERS) for (const seed of SEEDS) for (const late of [0, 15, 19]) {
+    const r = floodRun(who, seed, late, { fork: true, dips: 4, dip: 100 }) as any;
+    const ok = r.end === 'shrine' && r.home === 3 && r.setBack === 0 && r.rescues === 0;
+    console.log(`${ok ? 'ok  ' : 'MISS'} ${name} s${seed} late ${late}: end ${r.end} home ${r.home} setBack ${r.setBack} road ${r.high ? 'HIGH' : (r.marshT >= 0 ? 'low' : '-')} t ${r.t} marshT ${r.marshT} highT ${r.highT} paddled ${r.paddled} dry ${r.dry}${ok ? '' : ` px ${r.px} line ${r.line}`} rescues ${r.rescues} STUCK ${r.stuck}`);
+    if (!ok) miss.push(`${name} s${seed} late ${late}`);
+  }
+  console.log('chain', (floodRun(FT_MIDDLE, 1, 0, { fork: true, dips: 4, dip: 100 }) as any).chain);
+  assert.deepEqual(miss, []);
+});
+
+test('TRACE one', { skip: !process.env.WHO }, () => {
+  const who = TIERS.find(([n]) => n === process.env.WHO)![1];
+  console.log(JSON.stringify(floodRun(who, 1, +(process.env.LATE ?? 0), { fork: true, dips: 4, dip: 100 })));
+});

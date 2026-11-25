@@ -1,0 +1,111 @@
+PROBE on the ruled fork (W2_FORK + W2_FORK_RIVERS.low) in lineBot's floodRun toy (2-3's kit dropped), code ed70f9481 (= b3747ddcb's code). Pass = shrine, home 3, setBack 0, rescues 0.
+== A: the bot as it is today: 6/54 pass (every late 15/19 run fails: cause B; late 0 fails for child-easy, child, middle, expert: cause A) ==
+MISS child-easy s1 late 0: end shrine home 3 setBack 0 road HIGH t 39.7 marshT -1 highT 6.5  px 3764 rescues 1 STUCK 1857/620@10.9R:water ahead, the way on is 240 px down
+MISS child-easy s1 late 15: end time home 0 setBack 0 road HIGH t 200 marshT -1 highT 6.5  px 2354 rescues 6 STUCK 3114/800@20.3R:the way on is 120 px up ; 2308/620@51.1R:nothing in the way the bot ca
+MISS child-easy s1 late 19: end time home 0 setBack 0 road HIGH t 200 marshT -1 highT 6.5  px 2354 rescues 6 STUCK 3114/800@20.3R:the way on is 120 px up ; 2308/620@51.1R:nothing in the way the bot ca
+MISS child-easy s2 late 0: end shrine home 3 setBack 0 road HIGH t 39.7 marshT -1 highT 6.5  px 3764 rescues 1 STUCK 1857/620@10.9R:water ahead, the way on is 240 px down
+MISS child-easy s2 late 15: end time home 0 setBack 0 road HIGH t 200 marshT -1 highT 6.5  px 2354 rescues 6 STUCK 3114/800@20.3R:the way on is 120 px up ; 2308/620@51.1R:nothing in the way the bot ca
+MISS child-easy s2 late 19: end time home 0 setBack 0 road HIGH t 200 marshT -1 highT 6.5  px 2354 rescues 6 STUCK 3114/800@20.3R:the way on is 120 px up ; 2308/620@51.1R:nothing in the way the bot ca
+MISS child-easy s3 late 0: end shrine home 3 setBack 0 road HIGH t 39.7 marshT -1 highT 6.5  px 3764 rescues 1 STUCK 1857/620@10.9R:water ahead, the way on is 240 px down
+MISS child-easy s3 late 15: end time home 0 setBack 0 road HIGH t 200 marshT -1 highT 6.5  px 2354 rescues 6 STUCK 3114/800@20.3R:the way on is 120 px up ; 2308/620@51.1R:nothing in the way the bot ca
+MISS child-easy s3 late 19: end time home 0 setBack 0 road HIGH t 200 marshT -1 highT 6.5  px 2354 rescues 6 STUCK 3114/800@20.3R:the way on is 120 px up ; 2308/620@51.1R:nothing in the way the bot ca
+MISS child s1 late 0: end shrine home 3 setBack 0 road HIGH t 66.2 marshT 15.1 highT 18.4  px 3769 rescues 1 STUCK 1837/620@28.4R:water ahead, the way on is 240 px down
+MISS child s1 late 15: end time home 0 setBack 0 road HIGH t 200 marshT -1 highT 11.4  px 2479 rescues 4 STUCK 3084/740@43.2:nothing in the way the bot can see ; 3077/740@54.6R:nothing in the way the 
+MISS child s1 late 19: end time home 0 setBack 0 road - t 200 marshT -1 highT -1  px 2479 rescues 4 STUCK 3084/740@43.2:nothing in the way the bot can see ; 3077/740@54.6R:nothing in the way the bot c
+MISS child s2 late 0: end shrine home 3 setBack 0 road HIGH t 66.2 marshT 15.1 highT 18.4  px 3769 rescues 1 STUCK 1837/620@28.4R:water ahead, the way on is 240 px down
+MISS child s2 late 15: end time home 0 setBack 0 road HIGH t 200 marshT -1 highT 11.4  px 2479 rescues 4 STUCK 3084/740@43.2:nothing in the way the bot can see ; 3077/740@54.6R:nothing in the way the 
+MISS child s2 late 19: end time home 0 setBack 0 road - t 200 marshT -1 highT -1  px 2479 rescues 4 STUCK 3084/740@43.2:nothing in the way the bot can see ; 3077/740@54.6R:nothing in the way the bot c
+MISS child s3 late 0: end shrine home 3 setBack 0 road HIGH t 66.2 marshT 15.1 highT 18.4  px 3769 rescues 1 STUCK 1837/620@28.4R:water ahead, the way on is 240 px down
+MISS child s3 late 15: end time home 0 setBack 0 road HIGH t 200 marshT -1 highT 11.4  px 2479 rescues 4 STUCK 3084/740@43.2:nothing in the way the bot can see ; 3077/740@54.6R:nothing in the way the 
+MISS child s3 late 19: end time home 0 setBack 0 road - t 200 marshT -1 highT -1  px 2479 rescues 4 STUCK 3084/740@43.2:nothing in the way the bot can see ; 3077/740@54.6R:nothing in the way the bot c
+ok   middle-easy s1 late 0: end shrine home 3 setBack 0 road HIGH t 22.7 marshT 7.1 highT 11.3  rescues 0 STUCK 
+MISS middle-easy s1 late 15: end time home 0 setBack 0 road HIGH t 200 marshT -1 highT 7.1  px 2704 rescues 7 STUCK 3099/740@16.4R:nothing in the way the bot can see ; 2318/620@42.1R:water ahead ; 269
+MISS middle-easy s1 late 19: end time home 0 setBack 0 road HIGH t 200 marshT -1 highT 7.1  px 2704 rescues 7 STUCK 3099/740@16.4R:nothing in the way the bot can see ; 2318/620@42.1R:water ahead ; 269
+ok   middle-easy s2 late 0: end shrine home 3 setBack 0 road HIGH t 22.7 marshT 7.1 highT 11.3  rescues 0 STUCK 
+MISS middle-easy s2 late 15: end time home 0 setBack 0 road HIGH t 200 marshT -1 highT 7.1  px 2704 rescues 7 STUCK 3099/740@16.4R:nothing in the way the bot can see ; 2318/620@42.1R:water ahead ; 269
+MISS middle-easy s2 late 19: end time home 0 setBack 0 road HIGH t 200 marshT -1 highT 7.1  px 2704 rescues 7 STUCK 3099/740@16.4R:nothing in the way the bot can see ; 2318/620@42.1R:water ahead ; 269
+ok   middle-easy s3 late 0: end shrine home 3 setBack 0 road HIGH t 22.7 marshT 7.1 highT 11.3  rescues 0 STUCK 
+MISS middle-easy s3 late 15: end time home 0 setBack 0 road HIGH t 200 marshT -1 highT 7.1  px 2704 rescues 7 STUCK 3099/740@16.4R:nothing in the way the bot can see ; 2318/620@42.1R:water ahead ; 269
+MISS middle-easy s3 late 19: end time home 0 setBack 0 road HIGH t 200 marshT -1 highT 7.1  px 2704 rescues 7 STUCK 3099/740@16.4R:nothing in the way the bot can see ; 2318/620@42.1R:water ahead ; 269
+MISS middle s1 late 0: end shrine home 3 setBack 0 road HIGH t 41.4 marshT 8.6 highT 10.6  px 3769 rescues 1 STUCK 1812/620@14.5R:a drop of 60 px ahead, water ahead, the way on is 240 px dow
+MISS middle s1 late 15: end time home 0 setBack 0 road HIGH t 200 marshT -1 highT 7.3  px 2337 rescues 7 STUCK 3096/740@19.6R:nothing in the way the bot can see ; 2696/680@49.1R:nothing in the way the
+MISS middle s1 late 19: end time home 0 setBack 0 road HIGH t 200 marshT -1 highT 7.3  px 2337 rescues 7 STUCK 3096/740@19.6R:nothing in the way the bot can see ; 2696/680@49.1R:nothing in the way the
+MISS middle s2 late 0: end shrine home 3 setBack 0 road HIGH t 41.4 marshT 8.6 highT 10.6  px 3769 rescues 1 STUCK 1812/620@14.5R:a drop of 60 px ahead, water ahead, the way on is 240 px dow
+MISS middle s2 late 15: end time home 0 setBack 0 road HIGH t 200 marshT -1 highT 7.3  px 2337 rescues 7 STUCK 3096/740@19.6R:nothing in the way the bot can see ; 2696/680@49.1R:nothing in the way the
+MISS middle s2 late 19: end time home 0 setBack 0 road HIGH t 200 marshT -1 highT 7.3  px 2337 rescues 7 STUCK 3096/740@19.6R:nothing in the way the bot can see ; 2696/680@49.1R:nothing in the way the
+MISS middle s3 late 0: end shrine home 3 setBack 0 road HIGH t 41.4 marshT 8.6 highT 10.6  px 3769 rescues 1 STUCK 1812/620@14.5R:a drop of 60 px ahead, water ahead, the way on is 240 px dow
+MISS middle s3 late 15: end time home 0 setBack 0 road HIGH t 200 marshT -1 highT 7.3  px 2337 rescues 7 STUCK 3096/740@19.6R:nothing in the way the bot can see ; 2696/680@49.1R:nothing in the way the
+MISS middle s3 late 19: end time home 0 setBack 0 road HIGH t 200 marshT -1 highT 7.3  px 2337 rescues 7 STUCK 3096/740@19.6R:nothing in the way the bot can see ; 2696/680@49.1R:nothing in the way the
+ok   adult s1 late 0: end shrine home 3 setBack 0 road low t 22.3 marshT 4.7 highT -1  rescues 0 STUCK 
+MISS adult s1 late 15: end time home 0 setBack 0 road HIGH t 200 marshT -1 highT 4.6  px 2714 rescues 8 STUCK 3105/740@13.2R:nothing in the way the bot can see ; 2711/680@38.4R:nothing in the way the 
+MISS adult s1 late 19: end time home 0 setBack 0 road HIGH t 200 marshT -1 highT 4.6  px 2714 rescues 8 STUCK 3105/740@13.2R:nothing in the way the bot can see ; 2711/680@38.4R:nothing in the way the 
+ok   adult s2 late 0: end shrine home 3 setBack 0 road low t 22.3 marshT 4.7 highT -1  rescues 0 STUCK 
+MISS adult s2 late 15: end time home 0 setBack 0 road HIGH t 200 marshT -1 highT 4.6  px 2714 rescues 8 STUCK 3105/740@13.2R:nothing in the way the bot can see ; 2711/680@38.4R:nothing in the way the 
+MISS adult s2 late 19: end time home 0 setBack 0 road HIGH t 200 marshT -1 highT 4.6  px 2714 rescues 8 STUCK 3105/740@13.2R:nothing in the way the bot can see ; 2711/680@38.4R:nothing in the way the 
+ok   adult s3 late 0: end shrine home 3 setBack 0 road low t 22.3 marshT 4.7 highT -1  rescues 0 STUCK 
+MISS adult s3 late 15: end time home 0 setBack 0 road HIGH t 200 marshT -1 highT 4.6  px 2714 rescues 8 STUCK 3105/740@13.2R:nothing in the way the bot can see ; 2711/680@38.4R:nothing in the way the 
+MISS adult s3 late 19: end time home 0 setBack 0 road HIGH t 200 marshT -1 highT 4.6  px 2714 rescues 8 STUCK 3105/740@13.2R:nothing in the way the bot can see ; 2711/680@38.4R:nothing in the way the 
+MISS expert s1 late 0: end shrine home 3 setBack 0 road HIGH t 38.3 marshT 6.5 highT 8  px 3779 rescues 1 STUCK 1781/680@10.5R:a 60 px waist-high step ahead, water ahead, the way on is 18
+MISS expert s1 late 15: end time home 0 setBack 0 road HIGH t 200 marshT -1 highT 5.6  px 2703 rescues 7 STUCK 3115/800@15.3R:the way on is 120 px up ; 2715/680@41.3R:nothing in the way the bot can se
+MISS expert s1 late 19: end time home 0 setBack 0 road HIGH t 200 marshT -1 highT 5.6  px 2703 rescues 7 STUCK 3115/800@15.3R:the way on is 120 px up ; 2715/680@41.3R:nothing in the way the bot can se
+MISS expert s2 late 0: end shrine home 3 setBack 0 road HIGH t 38.3 marshT 6.5 highT 8  px 3779 rescues 1 STUCK 1781/680@10.5R:a 60 px waist-high step ahead, water ahead, the way on is 18
+MISS expert s2 late 15: end time home 0 setBack 0 road HIGH t 200 marshT -1 highT 5.6  px 2703 rescues 7 STUCK 3115/800@15.3R:the way on is 120 px up ; 2715/680@41.3R:nothing in the way the bot can se
+MISS expert s2 late 19: end time home 0 setBack 0 road HIGH t 200 marshT -1 highT 5.6  px 2703 rescues 7 STUCK 3115/800@15.3R:the way on is 120 px up ; 2715/680@41.3R:nothing in the way the bot can se
+MISS expert s3 late 0: end shrine home 3 setBack 0 road HIGH t 38.3 marshT 6.5 highT 8  px 3779 rescues 1 STUCK 1781/680@10.5R:a 60 px waist-high step ahead, water ahead, the way on is 18
+MISS expert s3 late 15: end time home 0 setBack 0 road HIGH t 200 marshT -1 highT 5.6  px 2703 rescues 7 STUCK 3115/800@15.3R:the way on is 120 px up ; 2715/680@41.3R:nothing in the way the bot can se
+MISS expert s3 late 19: end time home 0 setBack 0 road HIGH t 200 marshT -1 highT 5.6  px 2703 rescues 7 STUCK 3115/800@15.3R:the way on is 120 px up ; 2715/680@41.3R:nothing in the way the bot can se
+== B: plant TOPLINE=1, the bot's high-road route as the walked top line: 42/54 pass; the 12 left are exactly A's late-0 runs (cause A) ==
+MISS child-easy s1 late 0: end shrine home 3 setBack 0 road HIGH t 39.7 marshT -1 highT 6.5  px 3764 rescues 1 STUCK 1857/620@10.9R:water ahead, the way on is 240 px down
+ok   child-easy s1 late 15: end shrine home 3 setBack 0 road HIGH t 27.6 marshT -1 highT 6.5  rescues 0 STUCK 
+ok   child-easy s1 late 19: end shrine home 3 setBack 0 road HIGH t 27.6 marshT -1 highT 6.5  rescues 0 STUCK 
+MISS child-easy s2 late 0: end shrine home 3 setBack 0 road HIGH t 39.7 marshT -1 highT 6.5  px 3764 rescues 1 STUCK 1857/620@10.9R:water ahead, the way on is 240 px down
+ok   child-easy s2 late 15: end shrine home 3 setBack 0 road HIGH t 27.6 marshT -1 highT 6.5  rescues 0 STUCK 
+ok   child-easy s2 late 19: end shrine home 3 setBack 0 road HIGH t 27.6 marshT -1 highT 6.5  rescues 0 STUCK 
+MISS child-easy s3 late 0: end shrine home 3 setBack 0 road HIGH t 39.7 marshT -1 highT 6.5  px 3764 rescues 1 STUCK 1857/620@10.9R:water ahead, the way on is 240 px down
+ok   child-easy s3 late 15: end shrine home 3 setBack 0 road HIGH t 27.6 marshT -1 highT 6.5  rescues 0 STUCK 
+ok   child-easy s3 late 19: end shrine home 3 setBack 0 road HIGH t 27.6 marshT -1 highT 6.5  rescues 0 STUCK 
+MISS child s1 late 0: end shrine home 3 setBack 0 road HIGH t 66.2 marshT 15.1 highT 18.4  px 3769 rescues 1 STUCK 1837/620@28.4R:water ahead, the way on is 240 px down
+ok   child s1 late 15: end shrine home 3 setBack 0 road HIGH t 52.7 marshT -1 highT 11.4  rescues 0 STUCK 
+ok   child s1 late 19: end shrine home 3 setBack 0 road - t 52.7 marshT -1 highT -1  rescues 0 STUCK 
+MISS child s2 late 0: end shrine home 3 setBack 0 road HIGH t 66.2 marshT 15.1 highT 18.4  px 3769 rescues 1 STUCK 1837/620@28.4R:water ahead, the way on is 240 px down
+ok   child s2 late 15: end shrine home 3 setBack 0 road HIGH t 52.7 marshT -1 highT 11.4  rescues 0 STUCK 
+ok   child s2 late 19: end shrine home 3 setBack 0 road - t 52.7 marshT -1 highT -1  rescues 0 STUCK 
+MISS child s3 late 0: end shrine home 3 setBack 0 road HIGH t 66.2 marshT 15.1 highT 18.4  px 3769 rescues 1 STUCK 1837/620@28.4R:water ahead, the way on is 240 px down
+ok   child s3 late 15: end shrine home 3 setBack 0 road HIGH t 52.7 marshT -1 highT 11.4  rescues 0 STUCK 
+ok   child s3 late 19: end shrine home 3 setBack 0 road - t 52.7 marshT -1 highT -1  rescues 0 STUCK 
+ok   middle-easy s1 late 0: end shrine home 3 setBack 0 road HIGH t 22.7 marshT 7.1 highT 11.3  rescues 0 STUCK 
+ok   middle-easy s1 late 15: end shrine home 3 setBack 0 road HIGH t 21 marshT -1 highT 7.1  rescues 0 STUCK 
+ok   middle-easy s1 late 19: end shrine home 3 setBack 0 road HIGH t 21 marshT -1 highT 7.1  rescues 0 STUCK 
+ok   middle-easy s2 late 0: end shrine home 3 setBack 0 road HIGH t 22.7 marshT 7.1 highT 11.3  rescues 0 STUCK 
+ok   middle-easy s2 late 15: end shrine home 3 setBack 0 road HIGH t 21 marshT -1 highT 7.1  rescues 0 STUCK 
+ok   middle-easy s2 late 19: end shrine home 3 setBack 0 road HIGH t 21 marshT -1 highT 7.1  rescues 0 STUCK 
+ok   middle-easy s3 late 0: end shrine home 3 setBack 0 road HIGH t 22.7 marshT 7.1 highT 11.3  rescues 0 STUCK 
+ok   middle-easy s3 late 15: end shrine home 3 setBack 0 road HIGH t 21 marshT -1 highT 7.1  rescues 0 STUCK 
+ok   middle-easy s3 late 19: end shrine home 3 setBack 0 road HIGH t 21 marshT -1 highT 7.1  rescues 0 STUCK 
+MISS middle s1 late 0: end shrine home 3 setBack 0 road HIGH t 41.4 marshT 8.6 highT 10.6  px 3769 rescues 1 STUCK 1812/620@14.5R:a drop of 60 px ahead, water ahead, the way on is 240 px dow
+ok   middle s1 late 15: end shrine home 3 setBack 0 road HIGH t 24.6 marshT -1 highT 7.3  rescues 0 STUCK 
+ok   middle s1 late 19: end shrine home 3 setBack 0 road HIGH t 24.6 marshT -1 highT 7.3  rescues 0 STUCK 
+MISS middle s2 late 0: end shrine home 3 setBack 0 road HIGH t 41.4 marshT 8.6 highT 10.6  px 3769 rescues 1 STUCK 1812/620@14.5R:a drop of 60 px ahead, water ahead, the way on is 240 px dow
+ok   middle s2 late 15: end shrine home 3 setBack 0 road HIGH t 24.6 marshT -1 highT 7.3  rescues 0 STUCK 
+ok   middle s2 late 19: end shrine home 3 setBack 0 road HIGH t 24.6 marshT -1 highT 7.3  rescues 0 STUCK 
+MISS middle s3 late 0: end shrine home 3 setBack 0 road HIGH t 41.4 marshT 8.6 highT 10.6  px 3769 rescues 1 STUCK 1812/620@14.5R:a drop of 60 px ahead, water ahead, the way on is 240 px dow
+ok   middle s3 late 15: end shrine home 3 setBack 0 road HIGH t 24.6 marshT -1 highT 7.3  rescues 0 STUCK 
+ok   middle s3 late 19: end shrine home 3 setBack 0 road HIGH t 24.6 marshT -1 highT 7.3  rescues 0 STUCK 
+ok   adult s1 late 0: end shrine home 3 setBack 0 road low t 22.3 marshT 4.7 highT -1  rescues 0 STUCK 
+ok   adult s1 late 15: end shrine home 3 setBack 0 road HIGH t 21.5 marshT -1 highT 4.6  rescues 0 STUCK 
+ok   adult s1 late 19: end shrine home 3 setBack 0 road HIGH t 21.5 marshT -1 highT 4.6  rescues 0 STUCK 
+ok   adult s2 late 0: end shrine home 3 setBack 0 road low t 22.3 marshT 4.7 highT -1  rescues 0 STUCK 
+ok   adult s2 late 15: end shrine home 3 setBack 0 road HIGH t 21.5 marshT -1 highT 4.6  rescues 0 STUCK 
+ok   adult s2 late 19: end shrine home 3 setBack 0 road HIGH t 21.5 marshT -1 highT 4.6  rescues 0 STUCK 
+ok   adult s3 late 0: end shrine home 3 setBack 0 road low t 22.3 marshT 4.7 highT -1  rescues 0 STUCK 
+ok   adult s3 late 15: end shrine home 3 setBack 0 road HIGH t 21.5 marshT -1 highT 4.6  rescues 0 STUCK 
+ok   adult s3 late 19: end shrine home 3 setBack 0 road HIGH t 21.5 marshT -1 highT 4.6  rescues 0 STUCK 
+MISS expert s1 late 0: end shrine home 3 setBack 0 road HIGH t 38.3 marshT 6.5 highT 8  px 3779 rescues 1 STUCK 1781/680@10.5R:a 60 px waist-high step ahead, water ahead, the way on is 18
+ok   expert s1 late 15: end shrine home 3 setBack 0 road HIGH t 22 marshT -1 highT 5.6  rescues 0 STUCK 
+ok   expert s1 late 19: end shrine home 3 setBack 0 road HIGH t 22 marshT -1 highT 5.6  rescues 0 STUCK 
+MISS expert s2 late 0: end shrine home 3 setBack 0 road HIGH t 38.3 marshT 6.5 highT 8  px 3779 rescues 1 STUCK 1781/680@10.5R:a 60 px waist-high step ahead, water ahead, the way on is 18
+ok   expert s2 late 15: end shrine home 3 setBack 0 road HIGH t 22 marshT -1 highT 5.6  rescues 0 STUCK 
+ok   expert s2 late 19: end shrine home 3 setBack 0 road HIGH t 22 marshT -1 highT 5.6  rescues 0 STUCK 
+MISS expert s3 late 0: end shrine home 3 setBack 0 road HIGH t 38.3 marshT 6.5 highT 8  px 3779 rescues 1 STUCK 1781/680@10.5R:a 60 px waist-high step ahead, water ahead, the way on is 18
+ok   expert s3 late 15: end shrine home 3 setBack 0 road HIGH t 22 marshT -1 highT 5.6  rescues 0 STUCK 
+ok   expert s3 late 19: end shrine home 3 setBack 0 road HIGH t 22 marshT -1 highT 5.6  rescues 0 STUCK 

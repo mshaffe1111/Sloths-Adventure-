@@ -1,6 +1,53 @@
-# BUILD-28 REPORT (W2-LANE: 2-8 "Before the Water Rises"; R-165.430 (2), READY-28, BUILD-28). Session 1 (W2-LANE a), started 9:44 AM ET (from date). Session 2 (W2-LANE b), started 10:07 AM ET (from date). Session 3 (W2-LANE c), started 10:30 AM ET (from date). Session 4 (W2-LANE d), started 10:52 AM ET (from date)
+# BUILD-28 REPORT (W2-LANE: 2-8 "Before the Water Rises"; R-165.430 (2), READY-28, BUILD-28). Session 1 (W2-LANE a), started 9:44 AM ET (from date). Session 2 (W2-LANE b), started 10:07 AM ET (from date). Session 3 (W2-LANE c), started 10:30 AM ET (from date). Session 4 (W2-LANE d), started 10:52 AM ET (from date). Session 5 (W2-LANE e), started 11:19 AM ET (from the session hook date)
 
-## EXACT NEXT STEP (session 4, W2-LANE d; hand-over on the 28-minute box)
+## EXACT NEXT STEP (session 5, W2-LANE e; the PROBE FAILS on the ruled shape, both causes TRACED; a STOP for the lead's ruling)
+Branch t-build-28-wip; CODE head unchanged (b3747ddcb; this commit only adds to reference/qa-reports/BUILD-28/). `git fetch origin
+t-build-28-wip && git checkout t-build-28-wip`, `npm ci --no-audit --no-fund --legacy-peer-deps`, ReadNotifications FIRST: the lead's
+ruling on (A) and (B) below, and release-0.10.3's hash for 1b. Nothing else moves until the ruling (LANES rule 2: a missing piece STOPS).
+THE PROBE (the lead's ORDER step 1), BUILT: probe-fork.test.ts.txt here (lineBot.test.ts's floodRun with a `fork` option laying the RULED
+shape exactly as gen2 builds it: W 150 at W0-210..W0-60 top Y-60, the porch W0..W0+2,200 top Y-60 h 24, rise1 1,400 centred top Y-120,
+rise2 600 centred top Y-180, the far bank from W1, the marsh by layRiver(W2_FORK_RIVERS.low) = 5 floors of 200 with four 100 px dips, EXIT
+W0+2,800; checked against a dump of the built 2-96 two-road section, seeds 1-2: the same dx/w/dy/h). To run it: copy it to <frozen
+tree>/probe/fork.test.ts, `npx tsx --test --test-name-pattern=PROBE-ALL probe/fork.test.ts`; TRACE=<s> FROM=<s> EVERY=<frames> WHO=<tier>
+LATE=<s> prints one run's path and line. PASS = shrine, home 3, setBack 0 AND rescues 0 (a harness rescue is the bot unable to go on).
+RESULT: 6/54 pass (probe-fork-results.txt, section A: only adult and middle-easy late 0). Two causes, each traced to the frame:
+ (A) THE SHAPE: the porch's near end is a thin piece 60 px over the bank and 120 px over the marsh floor, and he passes up through a thin
+     piece from below. So the low road cannot be kept: (A1) the CLIMB onto W overshoots W and the gap: child-easy late 0 takes off at W's
+     face (771/800), apex 620, lands 1023/740 ON THE PORCH (6.6 s) and never reaches the marsh; (A2) the DIP HOP from the marsh floor goes
+     up through the porch: middle late 0 on the floor at 1156/860 (9.4-10.0 s) hops the first dip and lands 1299/740 ON THE PORCH (10.6 s).
+     Child, middle and expert late 0 all go marsh -> porch this way. Only the adult's low hops stay under it (adult late 0: low, 22.3 s, pass).
+     Then the bot (read: LOW, so keep-the-road holds the high road's pieces as "the other road", firsttimer.ts:2472) stands on the other
+     road and will not walk it on: stuck on rise1/rise2's top ("water ahead, the way on is 240 px down") and rescued, every late-0 run but
+     the adult's (12 runs). A PLAYER is not stuck there (the high road goes home), but a player who chooses the low road is put on the high
+     road by his own hop: the choice 2-8 is built on is not his.
+ (B) THE BOT: on the high-road reroute (firsttimer.ts:2480-2481) the route is each chain piece's WHOLE span in chain order; the ruled chain
+     revisits pieces (4>5>6>7>6>5: three up, three down on the same porch and rise1), so the route runs the porch 1000->3200, then back to
+     rise1 at 1400...; his progress stalls at the porch's end (adult late 15 at 3105/740, "nothing in the way the bot can see") and the
+     harness rescues him 8 times to 'time'. ALL 36 late-15/19 runs fail this way, every tier. PROVEN: the plant
+     TOPLINE=1 (the route as the walked top line, the highest chain top over each x) turns ALL 36 late-15/19 runs to pass (42/54,
+     section B); the 12 left are exactly (A)'s late-0 runs.
+ TOY NOTE (not the stage): FirstTimerRun('2-3') carries 2-3's kit; its room "cage1" (x 2834-3296) lies over the porch's far end; the fork
+     toy drops the kit (e.kit = undefined); A and B are both with it dropped (with it left in, 15/54 passed: its room changed which
+     high-road runs stalled, not why).
+FOR THE LEAD TO RULE (each is outside a data-only change):
+ (A) the shape: a hop from the marsh floor (and the climb onto W) must not reach the porch. Options I see, cheapest first: (i) the dips
+     not under the porch (the porch starts past the marsh's last dip; then 2-8.md:9's "three up" climbs off the far end of W, not over
+     the marsh); (ii) the porch high enough that no tier's apex from the floor reaches it (the child's measured apex is 180 px over his
+     take-off: the porch's top >= floor - 180 - clearance, i.e. W and the porch at about 140+ over the bank, against 2-8.md's 60 px
+     steps); (iii) a solid, not a thin, porch over the marsh (a head stop: the dip hops bonk) with W's climb landing ON W (W wider
+     than the child's 252 px climb flight). My pick: (i), it keeps every 2-8.md number and both roads honest; it needs a re-lay of
+     W2_FORK + w2TwoRoad.test + strandFaults' tops, about one box.
+ (B) the bot fix (firsttimer.ts, the reroute's points = the walked top line over the chain): an ENG/bot change outside my lane (or
+     mine at 1b, where I already touch firsttimer.ts for the merge) and it must run castBots' known flips (rule 28).
+NOT DONE this session: step 2 (stills): no running stage lays the two-road section (2-8 in the game is still the old stage; 2-96 is a
+test-only toy), and the shape is about to change under (A): stills now would be stills of what is replaced (D40). Step 3 (1b): no
+release-0.10.3 hash in notifications at 11:31 AM ET. Step 4 (READY-28): blocked on (A), (B), 1b.
+SESSION 5 NOTES. Lessons applied: D115 (the probe on a chattr-frozen worktree /home/user/wt28e at ed70f9481), D125/D129 shape (the probe
+measured before anything is built on the shape), D128 (times from date), D134 (pushed and ls-remote before the hand-over). Learned (for
+level.md, proposed): a bot probe must count harness RESCUES as misses: 3 'shrine, home 3' runs per late-0 tier were rescues; and a toy
+that runs past its own base stage's rooms must drop that stage's kit.
+
+## EXACT NEXT STEP (session 4, W2-LANE d; superseded by session 5 above)
 Branch t-build-28-wip, CODE head b3747ddcb (pushed, ls-remote confirmed at 11:04 AM ET from date; this REPORT's commit only adds to
 reference/qa-reports/BUILD-28/). `git fetch origin t-build-28-wip && git checkout t-build-28-wip`, `npm ci --no-audit --no-fund
 --legacy-peer-deps`, ReadNotifications FIRST (the lead may send release-0.10.3's hash for 1b). Every run on a chattr-frozen worktree.
