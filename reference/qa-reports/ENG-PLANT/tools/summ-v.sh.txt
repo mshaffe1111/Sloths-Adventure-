@@ -1,0 +1,7 @@
+#!/bin/bash
+# usage: summ-v.sh  (red 7's search: per stage rows, stands, lives lost on, off runs, rows where off lost != on lost, HOLDS)
+R=/home/user/rep/reference/qa-reports/ENG-PLANT/data
+for st in 2-2 2-1 2-4 2-5 2-9 2-8; do
+  f="$R/u/board-$st-*.txt"; [ $st = 2-2 ] && f="$f $R/t/board22.txt"
+  cat $f 2>/dev/null | grep "^$st " | sed -E "s/:[a-z]+( [a-z]+)?//g" | sort -u -k2,4 | awk -v st=$st '{split($7,a,"/"); split($10,b,"/"); n++; if(a[1]>0) s++; if(a[2]>0) l++; if($10!="skip") o++; if($10!="skip" && a[2]!=b[2]) d++; if($0 ~ /HOLDS/) h++} END {print st, n+0, "rows,", s+0, "with a stand,", l+0, "lost on,", o+0, "off runs,", d+0, "differ,", h+0, "HOLDS"}'
+done

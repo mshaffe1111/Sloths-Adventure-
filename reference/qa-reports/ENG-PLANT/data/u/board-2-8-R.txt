@@ -1,0 +1,72 @@
+2-8 kid normal 9 | on 0/0:sealed door | off skip
+2-8 kid normal 14 | on 0/0:sealed door | off skip
+2-8 kid normal 16 | on 0/0:sealed door | off skip
+2-8 kid normal 18 | on 0/0:sealed door | off skip
+2-8 kid normal 19 | on 0/0:sealed door | off skip
+2-8 kid normal 22 | on 0/0:sealed door | off skip
+2-8 kid normal 24 | on 0/0:sealed door | off skip
+2-8 kid normal 26 | on 0/0:sealed door | off skip
+2-8 kid easy 9 | on 0/0:sealed door | off skip
+2-8 kid easy 14 | on 1/1:sealed door | off 1/1:sealed door
+2-8 kid easy 16 | on 0/0:sealed door | off skip
+2-8 kid easy 18 | on 0/0:sealed door | off skip
+2-8 kid easy 19 | on 0/0:sealed door | off skip
+2-8 kid easy 22 | on 0/0:sealed door | off skip
+2-8 kid easy 24 | on 0/0:sealed door | off skip
+2-8 kid easy 26 | on 0/0:sealed door | off skip
+2-8 adult normal 9 | on 0/0:sealed door | off skip
+2-8 adult normal 14 | on 0/0:sealed door | off skip
+2-8 adult normal 16 | on 1/0:sealed door | off 1/0:sealed door
+2-8 adult normal 18 | on 0/0:sealed door | off skip
+2-8 adult normal 19 | on 0/0:sealed door | off skip
+2-8 adult normal 22 | on 0/0:sealed door | off skip
+2-8 adult normal 24 | on 0/0:sealed door | off skip
+2-8 adult normal 26 | on 1/0:sealed door | off 1/0:sealed door
+2-8 adult easy 9 | on 0/0:sealed door | off skip
+2-8 adult easy 14 | on 2/0:sealed door | off 2/0:sealed door
+2-8 adult easy 16 | on 2/0:sealed door | off 2/0:sealed door
+2-8 adult easy 18 | on 0/0:sealed door | off skip
+2-8 adult easy 19 | on 0/0:sealed door | off skip
+2-8 adult easy 22 | on 0/0:sealed door | off skip
+2-8 adult easy 24 | on 0/0:sealed door | off skip
+2-8 adult easy 26 | on 0/0:sealed door | off skip
+2-8 child normal 9 | on 1/0:sealed door | off 1/0:sealed door
+2-8 child normal 14 | on 3/0:sealed door | off 3/0:sealed door
+2-8 child normal 16 | on 1/0:sealed door | off 1/0:sealed door
+2-8 child normal 18 | on 1/0:sealed door | off 1/0:sealed door
+2-8 child normal 19 | on 1/0:sealed door | off 1/0:sealed door
+2-8 child normal 22 | on 4/2:sealed door | off 4/2:sealed door
+2-8 child normal 24 | on 2/0:sealed door | off 2/0:sealed door
+2-8 child normal 26 | on 2/0:sealed door | off 2/0:sealed door
+2-8 child easy 9 | on 1/0:sealed door | off 1/0:sealed door
+2-8 child easy 14 | on 0/0:sealed door | off skip
+2-8 child easy 16 | on 1/1:sealed door | off 1/1:sealed door
+2-8 child easy 18 | on 0/0:sealed door | off skip
+2-8 child easy 19 | on 0/0:sealed door | off skip
+2-8 child easy 22 | on 3/0:sealed door | off 3/0:sealed door
+2-8 child easy 24 | on 1/0:sealed door | off 1/0:sealed door
+2-8 child easy 26 | on 1/0:sealed door | off 1/0:sealed door
+2-8 middle normal 9 | on 0/0:sealed door | off skip
+2-8 middle normal 14 | on 3/0:sealed door | off 3/0:sealed door
+2-8 middle normal 16 | on 1/0:sealed door | off 1/0:sealed door
+2-8 middle normal 18 | on 0/0:sealed door | off skip
+2-8 middle normal 19 | on 1/0:sealed door | off 1/0:sealed door
+2-8 middle normal 22 | on 3/0:sealed door | off 3/0:sealed door
+2-8 middle normal 24 | on 1/0:sealed door | off 1/0:sealed door
+2-8 middle normal 26 | on 1/0:sealed door | off 1/0:sealed door
+2-8 middle easy 9 | on 1/0:sealed door | off 1/0:sealed door
+2-8 middle easy 14 | on 2/0:sealed door | off 2/0:sealed door
+2-8 middle easy 16 | on 2/1:sealed door | off 2/1:sealed door
+2-8 middle easy 18 | on 2/0:sealed door | off 2/0:sealed door
+2-8 middle easy 19 | on 1/0:sealed door | off 1/0:sealed door
+2-8 middle easy 22 | on 3/0:sealed door | off 3/0:sealed door
+2-8 middle easy 24 | on 0/0:sealed door | off skip
+2-8 middle easy 26 | on 1/0:sealed door | off 1/0:sealed door
+2-8 expert normal 9 | on 0/0:sealed door | off skip
+2-8 expert normal 14 | on 2/1:sealed door | off 2/1:sealed door
+2-8 expert normal 16 | on 1/0:sealed door | off 1/0:sealed door
+2-8 expert normal 18 | on 0/0:sealed door | off skip
+2-8 expert normal 19 | on 1/0:sealed door | off 1/0:sealed door
+2-8 expert normal 22 | on 0/0:sealed door | off skip
+2-8 expert normal 24 | on 0/0:sealed door | off skip
+2-8 expert normal 26 | on 0/0:sealed door | off skip

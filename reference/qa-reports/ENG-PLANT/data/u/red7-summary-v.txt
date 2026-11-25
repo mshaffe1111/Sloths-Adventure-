@@ -1,0 +1,6 @@
+2-2 360 rows, 90 with a stand, 5 lost on, 360 off runs, 0 differ, 0 HOLDS
+2-1 360 rows, 194 with a stand, 11 lost on, 281 off runs, 0 differ, 0 HOLDS
+2-4 360 rows, 214 with a stand, 4 lost on, 330 off runs, 0 differ, 0 HOLDS
+2-5 360 rows, 151 with a stand, 2 lost on, 151 off runs, 0 differ, 0 HOLDS
+2-9 360 rows, 175 with a stand, 12 lost on, 175 off runs, 0 differ, 0 HOLDS
+2-8 72 rows, 34 with a stand, 5 lost on, 34 off runs, 0 differ, 0 HOLDS
