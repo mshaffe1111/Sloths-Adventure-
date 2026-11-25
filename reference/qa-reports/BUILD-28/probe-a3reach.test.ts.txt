@@ -1,0 +1,31 @@
+/** A3's reach, FLOWN (BUILD-28 session 6): the highest THIN top a SINGLE full held jump from a floor lands him on, per setting, straight up
+ *  and from a full run (the take-off under the piece's near end), in the real engine (RealPlay bare). */
+import { test } from 'node:test';
+import { RealPlay } from '../src/game/realPlay.ts';
+import { freshPhone } from '../tools/inspect/firsttimer.ts';
+import type { Platform } from '../src/game/types.ts';
+
+const F = 860;
+const solid = (id: number, x: number, width: number, y: number, height: number) => ({ id, x, y, width, height, type: 'solid' }) as Platform;
+function on(setting: 'normal' | 'easy', h: number, run: boolean): boolean {
+  freshPhone(setting);
+  const r = new RealPlay('2-1', 1);
+  r.bare([solid(1, 0, 4000, F, 200), solid(2, 1300, 600, F - h, process.env.BLOCK ? 60 : 24)]);
+  r.stand(run ? 1000 : 1500, F);
+  for (let i = 0; i < 5; i++) r.frame({});
+  let pressed = false, t0 = 0;
+  for (let i = 0; i < 120; i++) {
+    const go = !pressed && (!run || r.p.x >= 1290);
+    if (go) { pressed = true; t0 = i; }
+    r.frame({ right: run, press: go, jump: pressed && i - t0 < 14 });
+    if (r.p.grounded && r.e.standingOnId === 2) return true;
+  }
+  return false;
+}
+test('A3 single-jump thin reach', () => {
+  for (const setting of ['normal', 'easy'] as const) for (const run of [false, true]) {
+    let best = 0;
+    for (let h = 100; h <= 130; h++) if (on(setting, h, run)) best = h;
+    console.log(`REACH ${setting} ${run ? 'run' : 'stand'}: highest ${process.env.BLOCK ? "block" : "thin"} top landed ${best} px over the take-off floor`);
+  }
+});

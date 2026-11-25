@@ -1,5 +1,41 @@
 # BUILD-28 REPORT (W2-LANE: 2-8 "Before the Water Rises"; R-165.430 (2), READY-28, BUILD-28). Session 1 (W2-LANE a), started 9:44 AM ET (from date). Session 2 (W2-LANE b), started 10:07 AM ET (from date). Session 3 (W2-LANE c), started 10:30 AM ET (from date). Session 4 (W2-LANE d), started 10:52 AM ET (from date). Session 5 (W2-LANE e), started 11:19 AM ET (from the session hook date) Session 6 (W2-LANE f), started 11:41 AM ET (from the session hook date)
 
+## EXACT NEXT STEP (session 6, W2-LANE f, hand-over on the box; head 3e847107a + this REPORT commit). THE LEAD RULED (c) (verbatim in its
+## message: a DOUBLE jump up off the low road is his own move onto the high road; his ORDINARY hop must keep the low road)
+DONE AND PUSHED (each on a chattr-frozen tree):
+ A3 (cdb9e4dea): flood.ts lowHopFaults 'no high-road top within a SINGLE jump's reach of the low road's floor', laid by floodLay with
+     FLOOD_LOW_HOP { reach 117.8 DERIVED (reach.ts APEX single-hold 97.8 + engine catch 14 + Easy's ASSIST.catchDrop 6), margin 15 } (flown
+     reach, probe-a3reach.test.ts.txt: 115 Normal, 117 Easy, thin or block, standing or running). THE MARGIN: the marsh floor 60 -> 75 under
+     the banks (W2_FORK_RIVERS), not the porch higher: one data number (2-8.md names no floor depth) vs W's height, the level hop and the
+     design's 60 px steps; 75 is inside the line's drop (W2_FOLLOW.step 90). Planted (w2TwoRoad.test): RED by name at 60 (porch 120 over the
+     floor), GREEN at 75 (135), both settings.
+ A4 + A2 (0403ad42d, 3e847107a): W2_FLOOD.climb.land.child 62 -> 233 (its FARTHEST measured climb past W's face: the child-easy's double
+     climb, session 5's 771 -> 1023 at face 790; session 6's 219; the other tiers' measured landings sit inside their derived ones: child 56,
+     middle-easy 84, middle 75, expert 75, adult 56, so they keep them). W 150 -> 330 = 233 + 73 (run-up) + a 24 px MARGIN; near stays 420
+     (30 px of bank before W's face; the climbs take off 19 px before it), so the fork's place and the flood's flown leg are unchanged.
+     Planted (w2TwoRoad.test): the old model (child 62) passes W 150, the measured one refuses it by name, the ruled W passes; flood.test's
+     edge moved to the child's (305 refused by name, 306 passes). w2TwoRoad + floodLay + flood tests: 22 pass, 0 fail (frozen wt28n,
+     3e847107a).
+ THE BOT (draft, NOT landed: draft-B2b-reroute-popup.patch.txt, firsttimer.ts, B's walked top line + 2b: a stand on a high-road piece
+     while he keeps the low road re-reads his road as HIGH, goHigh from where he stands, the other road the low road's pieces). 2a (dip hops
+     single) NOT done: PUSHBACK sent (the bots' doubles are the testers' calibrated dblShare, R-165.59); the lead's word pending.
+ THE PROBE (probe-fork.test.ts.txt now reads the marsh floor from the data and records each climb): 54/54 (shrine, home 3, setBack 0,
+     0 rescues) on 0403ad42d + B+2b (frozen wt28m; probe-fork-results-s6.txt). Also 54/54 on cdb9e4dea (W 150) + B+2b.
+ !! READ BEFORE CALLING IT GREEN: the 54 pass, but the LOW ROAD is hardly walked. Late 0 (the line can make the low road): with W 330 ALL 6
+     tiers take the HIGH road (adult highT 4.1, marshT -1: off W by a JUMP across the 60 px gap onto the porch, not a walk-off; middle and
+     expert reach the marsh, then pop up by a double); with W 150 only the adult walked it (22.3 s), the rest popped up from the marsh by a
+     double. The pass criterion does not check the road. The fork's choice point is W's lip (walk off: low; hop the level 60 px gap: high),
+     so the bots' road at late 0 is a BOT behaviour to trace: TRACE=10 FROM=2 WHO=adult LATE=0 on wt28m (why the adult hops the gap off W
+     330 where it walked off W 150: its lip aim with room to run?). The lead to rule whether a late-0 bot must walk the low road (a road
+     check in the probe) and whether 2a comes back for that.
+NEXT, IN ORDER: (1) ReadNotifications: the lead's word on 2a and on the late-0 road. (2) The trace above. (3) The toys: 2b RED/GREEN (a
+ lineBot toy: a pop-up onto the high road; with 2b he walks on, without it he stalls and is rescued) and B's (session 5's); commit them with
+ the firsttimer.ts change at 1b only (rule 28: ENG-PLANT's 10 known flips + the wide sample, seeds 1-10, every bot, both settings, on
+ 2-1/2-2/2-4: zero BAR PASS -> FAIL vs main). (4) Stills of the fork and a marsh dip, upright and sideways (no running stage lays the
+ section yet: 2-96 is a test toy; find the stills path first). (5) 1b at the lead's hash, then READY-28 with the full gate list.
+ NOT RUN on this head: the full suite and the CLAUDE.md gates (tsc only, and the three fork test files). The draft-A1 marsh-from patch is
+ DROPPED (not needed under (c); no unused engine code).
+
 ## EXACT NEXT STEP (session 6, W2-LANE f): A0 FAILED: A BLOCK DOES NOT STOP A HOP FROM BELOW. STOPPED before (i), as ruled; the lead rules
 WAIT for the lead's word on the options below; nothing past A0 is built (the lead's order: "If a block does NOT stop him, STOP and tell
 the lead before building (i)"). On the word: (c) -> A2, A3 (single-jump reach), A4, the bot's road re-read, re-probe; (a) -> re-shape first.
