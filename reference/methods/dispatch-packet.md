@@ -133,3 +133,5 @@ hand-over or a usage limit is lost. Run row sets with --json (one row per line) 
 about 1-2 s a row, every finished row kept.
 
 **Release fixes are checked on the release tree, early (CI #77, 11-25).** A fix for a release is often cut from main, but the release tree can hold features main lacks (2-7's stacked legs). Integration merges every release fix into the release tree AS SOON AS its own gates pass (not after the last fix lands), and the fix's gates count only on that merged head.
+
+**The CI tool line runs on every candidate (CI #79, 11-25).** On a job that tries candidate after candidate (a bot fix, an engine rule), every pushed candidate runs the CI tool line (about 10 minutes) beside its rows and toys, and a new red stops the next candidate until it is traced. The end checklist only re-runs it on the final head. A red found at the end costs a bisect on the critical path.
