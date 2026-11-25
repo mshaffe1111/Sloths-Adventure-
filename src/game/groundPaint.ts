@@ -229,6 +229,87 @@ export function drawLip(ctx: C, w: number, x0: number, x1: number, y: number, vi
   return true;
 }
 
+/** where a lip's underside starts, as a share of its height: in every world's lips the moss band ends at row 79-81 of 160, and from about
+ *  row 59 it is the turf's rooty underside (R-165.441) */
+export const LIP_MAT = 0.37;
+/** the underside's art at its two ends fades out over this many units (no straight end on a strip) */
+const UNDER_FADE = 28;
+/** the band's bottom (row 80 of 160 in every world): the roots under it are hung a little longer under a bank than along its top */
+const LIP_BAND = 0.5;
+/** how much longer (R-165.441: at the top's length, 20-25 units, they read as a fringe, not roots) */
+const ROOTS_LONG = 1.8;
+/** baked undersides kept (one a floating bank; a stage has one or two), the oldest let go */
+const UNDER_KEEP = 4;
+/** how fine an underside is baked (canvas px a world unit: the ground's squares are painted at about 2-3) */
+const UNDER_RES = 3;
+const underBakes = new Map<string, HTMLCanvasElement | null>();
+
+/**
+ * A bank's painted underside where open space lies under it (R-165.441, protoArt.ts drawBankArt): the lip's own turf underside (the moss
+ * band's rooty lower half and the roots hanging from it) laid along the soil's bottom edge `edge(x)` over x0..x1, `hide` units of it up
+ * under the soil, which the caller draws next, so the soil's edge covers where it starts. Faded out at both ends. Baked once per bank
+ * (`key`: its world, place and size) and drawn as one image; false until the sheet has loaded, or where the page cannot bake it.
+ */
+export function drawUnderside(ctx: C, w: number, key: string, x0: number, x1: number, edge: (x: number) => number, hide: number): boolean {
+  const s = sheet(w);
+  if (!s || x1 - x0 < 2 * UNDER_FADE) return false;
+  const { img, g } = s;
+  const ls = g.lips ?? [g.lip];
+  const k = g.lip.w / LIP_W;
+  const sy0 = Math.round(g.lip.h * LIP_MAT), sb = Math.round(g.lip.h * LIP_BAND);
+  // (in world units: the band's part, then its roots hung ROOTS_LONG long)
+  const bandH = (sb - sy0) / k, rootH = ((g.lip.h - LIP_INSET - sb) / k) * ROOTS_LONG;
+  let lo = Infinity, hi = -Infinity;
+  for (let x = x0; x <= x1; x += 2) { const y = edge(x); lo = Math.min(lo, y); hi = Math.max(hi, y); }
+  const oy = lo - hide, H = hi - lo + hide + bandH + rootH + 2, W = x1 - x0;
+  const id = `${w}:${key}`;
+  let cv = underBakes.get(id);
+  if (cv && canvasLost(cv, 'bank underside')) cv = undefined;
+  if (cv === undefined) {
+    cv = null;
+    try {
+      const c = document.createElement('canvas');
+      c.width = Math.ceil(W * UNDER_RES);
+      c.height = Math.ceil(H * UNDER_RES);
+      const b = c.getContext('2d')!;
+      b.scale(UNDER_RES, UNDER_RES);
+      // (in slices 2 units wide, each hung from the edge where it is: the strip follows the soil's bottom, its own painted edge and
+      // roots under it)
+      for (let x = x0; x < x1; ) {
+        const t = Math.floor(x / LIP_W);
+        const xe = Math.min(x1, x + 2, (t + 1) * LIP_W);
+        const l = ls[(((t + 1) % ls.length) + ls.length) % ls.length];
+        const sx = l.x + (x - t * LIP_W) * k, top = edge((x + xe) / 2) - hide - oy;
+        b.drawImage(img, sx, l.y + sy0, (xe - x) * k, sb - sy0, x - x0, top, xe - x + 0.3, bandH + 0.3);
+        b.drawImage(img, sx, l.y + sb, (xe - x) * k, g.lip.h - LIP_INSET - sb, x - x0, top + bandH, xe - x + 0.3, rootH);
+        x = xe;
+      }
+      b.setTransform(1, 0, 0, 1, 0, 0);
+      b.globalCompositeOperation = 'destination-in';
+      const f = UNDER_FADE / W;
+      const gr = b.createLinearGradient(0, 0, c.width, 0);
+      gr.addColorStop(0, 'rgba(0,0,0,0)');
+      gr.addColorStop(f, 'rgba(0,0,0,1)');
+      gr.addColorStop(1 - f, 'rgba(0,0,0,1)');
+      gr.addColorStop(1, 'rgba(0,0,0,0)');
+      b.fillStyle = gr;
+      b.fillRect(0, 0, c.width, c.height);
+      cv = c;
+    } catch {
+      cv = null;
+    }
+    underBakes.set(id, cv);
+    for (const [k2, old] of underBakes) {
+      if (underBakes.size <= UNDER_KEEP) break;
+      if (old) old.width = old.height = 0;
+      underBakes.delete(k2);
+    }
+  }
+  if (!cv) return false;
+  ctx.drawImage(cv, x0, oy, W, H);
+  return true;
+}
+
 /**
  * How far inside its frame a lip is sampled at its top and bottom, in sheet pixels. Lips 0 and 1 are packed right under the soil fills,
  * and the sheet row above them is opaque soil in every world: drawn to the frame's top edge, the filter pulled that row in, and every

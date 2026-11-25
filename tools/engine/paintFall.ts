@@ -12,7 +12,8 @@
 // missing art, a catalog and STAGE-RULES §4 question for Content, listed by the sweep as `unpainted` so it is seen, not hidden); a stage
 // whose painted kit is off (a boss lair: engine.ts paintKit), where no painter runs at all.
 import { footingOf, type FootingInput } from '../../src/game/terrain.ts';
-import { paintedPlatforms } from '../../src/game/protoArt.ts';
+import { groundSoil, paintedPlatforms, soilCover, SOIL_JOIN, SOIL_ROOM } from '../../src/game/protoArt.ts';
+import { paintedBank } from '../../src/game/w1Pits.ts';
 import type { Platform } from '../../src/game/types.ts';
 
 /** what terrain draws by code (terrain.ts terrainLook): the ground, step, pillar and earth bodies, the code-drawn thin ledge sprites
@@ -95,4 +96,43 @@ export function paintFalls(platforms: Platform[], f: FootingInput, cache: Map<st
     breaches.push({ id: p.id, x: Math.round(p.x), y: Math.round(p.y), w: Math.round(p.width), h: p.height, style: p.style ?? '-', type: p.type, drawn, painter: ranges(hs), nearest });
   }
   return { breaches, unpainted };
+}
+
+// R-165.441 (D136): a painted bank's top, or the room for him over it, under a LATER-painted bank's soil. drawGround paints the banks
+// lowest first and a bank's soil ran on down out of sight, so a high bank's soil was one column over every floor under it (SHIPPED 1-4's
+// summit: a dark pillar through the sky the whole height of the climb, the start floor's lip cut; 2-6 beat A: a porch's lip erased),
+// and the rule above passed both: it reads which drawer a block is ASSIGNED to, never what reaches the screen. This one reads the soil
+// as drawn: protoArt.ts groundSoil, the outlines drawGround cuts each bank's soil to, in its paint order.
+// Not a breach, on purpose: where two banks' soils meet (SOIL_JOIN units, a unit past an end either side), and a tuck (a gap under his
+// height: a pit's floor under its walls, painted first so the walls' faces cover its ends).
+export interface SoilOver {
+  /** the later-painted bank whose soil covers */
+  over: { id: number; x: number; y: number; w: number; h: number };
+  /** the bank whose top (or the room for him over it) is covered */
+  under: { id: number; x: number; y: number; w: number };
+  /** units of that top covered */
+  covered: number;
+  /** the room between the two (the under bank's top less the over bank's bottom) */
+  gap: number;
+}
+
+/** every painted bank's top under a later-painted bank's soil, on a built stage with its paint state set (paintStage.ts) */
+export function soilOvers(platforms: Platform[], regions = groundSoil(platforms.filter(paintedBank))): SoilOver[] {
+  const out: SoilOver[] = [];
+  const box = regions.map((r) => {
+    let x0 = Infinity, x1 = -Infinity, y1 = -Infinity;
+    for (const [x, y] of r.pts) { x0 = Math.min(x0, x); x1 = Math.max(x1, x); y1 = Math.max(y1, y); }
+    return { x0, x1, y1 };
+  });
+  for (let i = 0; i < regions.length; i++) {
+    const a = regions[i].p;
+    for (let j = 0; j < i; j++) {
+      const b = regions[j].p;
+      const gap = b.y - (a.y + a.height);
+      if (b === a || gap < SOIL_ROOM || box[i].y1 < b.y - SOIL_ROOM || Math.min(box[i].x1, b.x + b.width) - Math.max(box[i].x0, b.x) <= SOIL_JOIN) continue;
+      const n = soilCover(regions[i].pts, b);
+      if (n > SOIL_JOIN) out.push({ over: { id: a.id, x: Math.round(a.x), y: Math.round(a.y), w: Math.round(a.width), h: a.height }, under: { id: b.id, x: Math.round(b.x), y: Math.round(b.y), w: Math.round(b.width) }, covered: n, gap: Math.round(gap) });
+    }
+  }
+  return out;
 }

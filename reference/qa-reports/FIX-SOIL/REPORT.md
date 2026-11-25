@@ -1,3 +1,13 @@
+# FIX-SOIL-b (session 2 of FIX-SOIL; t-fix-soil from main cdffdc627). Started 8:58 AM ET 11-25 (by `date`); this box written 9:23 AM ET
+
+## EXACT NEXT STEP
+**The cut is LAID (WIP, this commit): protoArt.ts bankOpen/soilOutline/soilHangs/groundSoil, the hung bank's underside (groundPaint.ts
+drawUnderside), paintFall.ts soilOvers wired into paintcheck, 3 planted tests in paintFall.test.ts (14/14 GREEN). Proven so far: 1-4
+paintcheck GREEN with the cut (200/200 builds), RED with the cut off (335 breach lines: the plant tree). NEXT: (1) finish the underside's
+look on the 1-4 stills (before set: main's dev server; after set: the working tree), (2) commit, freeze, the stills to the lead,
+(3) the gates on the final head: tsc, paintcheck 3 parts, lockall vs main's lock (made on frozen cdffdc627: 3264 builds, scratch
+lock-main-cdffdc627.json), the suite in shards, the CI tool line, drawcheck, 2-6 at a9439e586 + this patch RED/GREEN.**
+
 # FIX-SOIL (BUILD-26y, session 9 of BUILD-26q; t-fix-soil cut from main cdffdc627). Started 7:06 PM ET 11-24 (by `date`); this box written 7:13 PM ET
 
 ## EXACT NEXT STEP
