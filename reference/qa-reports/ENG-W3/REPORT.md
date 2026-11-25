@@ -1,4 +1,26 @@
 # ENG-DOWNBOT REPORT (lane 2: the down lay's head room, then the bots on a way down to the shrine) — box 11 (session 9, 11-25)
+**EXACT NEXT STEP (box 11 hand-over, 1:25 PM ET):** code **3b9eed8d** (the route fix) + this commit (castBots.test case (6) made a toy
+each way: vine at the left wall and the right wall; RED on 571d6e2a9 both ways, the left by the test, the mirror by its corners
+[(746,500) -> (1236,900) under 746-1210]; GREEN after; tsc 0 errors on 3b9eed8d). **THE ROUTE FIX, MEASURED (kid+adult x40 on the
+draft, frozen 3b9eed8d, rows/castbots-3b9eed8d-kidadult-1-40.jsonl; draft checked: 80 rows identical to 571d6e2a9's): rescues 251 ->
+171, all 160 reach the shrine.** kN R29 -> 22 (pass 19 -> 24), kE 76 -> 36 (pass 4 -> 14), aN 25 -> 18 (pass 22 -> 25), aE 121 -> 95
+(pass 2 -> 1). **Easy passes 6 -> 15 of 80.** Kid N clean minimum 87.8 s (unchanged). **Causes (probes/causes.mts): slot 4 -> 1, vine 197
+-> 145, rest 51 -> 25.** **FIX A ON THE FIX (rows/castbots-3b9eed8d-Aoff-kidadult-1-40.jsonl): 171 vs 175, 6 rows differ.** The route
+fix now cures adult N 10 by itself (that row no longer differs). A still cures adult N 29 (R1 vs R3), adult N 39 (R0 vs R1), kid N 29
+(R2 vs R3), kid N 39 (R0 vs R1); it costs kid N 5 (R1 vs R0). **So A STAYS (ruling 2); its toy moves to seed 39's shape** ('in a dip
+173 px deep, the way on is 108 px down' at x 691/697). **Next, in order (box 12):** (1) Fix A's toy on seed 39 normal (read with
+probes/area.mts and trace.mts, TREE=/home/user/wt/fix and an A-off tree; the A-off patch is 'fix A off' in box 4's step): a
+castBots.test 'a way down' arena, RED with A off, GREEN on the head. (2) The second 'rest' cause, 'in a dip N px deep' (12 of 25;
+causes.mts PRINT=rest): **kid N 10 at (587,6128)** lands moving left off 427-607@5950's right end onto 495-740@6128 and STANDS STILL
+(vx 0, 14 s) until rescued. The route goes on (637,6128) -> (738,6148) -> off the right end at 740 to the 6246 storey: its next point
+is only 20 px down, so downEnd (dy > 40) is never asked. Read why the bot gives no input there (the steering's 'dip' reading), fix it
+where it lives, general, a toy each way. Do NOT touch firsttimer.ts's way-down block, grabDown, downPt or downEnd (ENG-DARK's). (3)
+Items (c) and (d) of the order: every bot x40 both settings, lockall, seedlist, tierBots 9/9, the suite (shards) and the CI tool
+line on the final head. Then LAND on t-eng-w3 after ENG-DARK-g lands: merge origin/t-eng-w3 (no force). downEnd conflicts: keep
+ENG-DARK's downPt split and every line of theirs plus fix A, and drop only fix B (the `under` seeding line and its comment; `let lo =
+p.x, hi = p.x;`). The lead approved this; name it in the merge commit. Run dark.test, darkBots.test with MID-WAY, plants and lockall
+on the merged head, then re-run kid+adult x40 and the causes there. **Frozen trees here: /home/user/wt/{head,aoff,boff,fix,fixaoff}**
+(container-local).
 **(a) FIX A / FIX B OFF, x40 kid+adult ON THE DRAFT (GEN2_DRAFT=3-1, frozen 571d6e2a9 trees, --par 2 --rows; DRAFT CHECKED: 122 and
 155 of 160 rows identical to the head's, a non-draft run differs in nearly every row): rows/castbots-571d6e2a9-Aoff- and
 -Boff-kidadult-1-40.jsonl.** Rescues head 251 / A off 264 / B off 250 (kN 29/30/29, kE 76/84/76, aN 25/27/24, aE 121/123/121; pass kN

@@ -207,18 +207,21 @@ test('a way down: the route turns straight down a turn vine, and drops ledge by 
   // floor at the far wall): the way walks the wood to the vine at his own height, then straight down it; never a slant from the exit
   // through the floor to the vine's foot (the bots stood under the slant, 'in a dip 174 px deep, the way on is 90 px down', rescued:
   // ENG-DOWNBOT, the drafted way down, the top 'rest' cause)
-  const floor = [plat(0, 500, 70), plat(70, 500, 614), plat(684, 500, 596), plat(0, 900, 1280)];
-  const walled = { gen2: { plan: [{}, { join: 'turn' }], tower: { flow: 'down', route: { legs: [{ entry: { x: 114, y: 500 }, exit: { x: 684, y: 500 } }, { entry: { x: 44, y: 900 }, exit: { x: 1200, y: 900 } }], spawn: { x: 114, y: 500 } }, turns: [{ x: 44, from: 500, to: 900 }] } },
-    vines: [{ x: 44, topY: 500, bottomY: 900, vineType: 'tree_climb' }], platforms: floor };
-  const wc = towerCorners(walled as never, { x: 114, y: 500 })!;
-  for (let i = 0; i + 1 < wc.length; i++) {
-    const a = wc[i], b = wc[i + 1];
-    if (b.y - a.y <= 60) continue;
-    const xm = a.x + ((b.x - a.x) * 40) / (b.y - a.y);
-    const under = floor.find((p) => Math.abs(p.y - a.y) <= 4 && xm > p.x + 16 && xm < p.x + p.width - 16 && Math.abs(xm - 44) > 12);
-    assert.equal(under, undefined, `the way runs under the wood he stands on (${under?.x}-${(under?.x ?? 0) + (under?.width ?? 0)} @${under?.y}) from (${a.x}, ${a.y}) to (${b.x}, ${b.y}): ${JSON.stringify(wc)}`);
+  // (each way: the vine at the left wall (normal 7, 5513) and at the right wall (adult normal 10, 7999))
+  const floor = [plat(0, 500, 70), plat(70, 500, 614), plat(684, 500, 526), plat(1210, 500, 70), plat(0, 900, 1280)];
+  for (const [vx, entry, exit, on] of [[44, 114, 684, 1200], [1236, 424, 746, 200]]) {
+    const walled = { gen2: { plan: [{}, { join: 'turn' }], tower: { flow: 'down', route: { legs: [{ entry: { x: entry, y: 500 }, exit: { x: exit, y: 500 } }, { entry: { x: vx, y: 900 }, exit: { x: on, y: 900 } }], spawn: { x: entry, y: 500 } }, turns: [{ x: vx, from: 500, to: 900 }] } },
+      vines: [{ x: vx, topY: 500, bottomY: 900, vineType: 'tree_climb' }], platforms: floor };
+    const wc = towerCorners(walled as never, { x: entry, y: 500 })!;
+    for (let i = 0; i + 1 < wc.length; i++) {
+      const a = wc[i], b = wc[i + 1];
+      if (b.y - a.y <= 60) continue;
+      const xm = a.x + ((b.x - a.x) * 40) / (b.y - a.y);
+      const under = floor.find((p) => Math.abs(p.y - a.y) <= 4 && xm > p.x + 16 && xm < p.x + p.width - 16 && Math.abs(xm - vx) > 12);
+      assert.equal(under, undefined, `the way runs under the wood he stands on (${under?.x}-${(under?.x ?? 0) + (under?.width ?? 0)} @${under?.y}) from (${a.x}, ${a.y}) to (${b.x}, ${b.y}): ${JSON.stringify(wc)}`);
+    }
+    assert.equal(at(wc, vx, 900), at(wc, vx, 500) + 1, `the way is not across to the vine's top on his wood, then straight down it (vine x ${vx}): ${JSON.stringify(wc)}`);
   }
-  assert.equal(at(wc, 44, 900), at(wc, 44, 500) + 1, `the way is not across to the vine's top on his wood, then straight down it: ${JSON.stringify(wc)}`);
 });
 
 // A way DOWN in the real engine (firsttimer.ts, ENG-W3a's skills; toys ENG-DOWNBOT, no stage's numbers: a carrier stage, its ground
