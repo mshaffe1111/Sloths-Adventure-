@@ -18,12 +18,17 @@ tower.ts:293-460, rules 1 wall run-on 0-71, 4 a bough of its own, 2 bridges). **
 a way on: nothing to guard": this roll breaks that.** A bough laid HEAD (108) over the storey under it is in a jump's reach from that
 storey, so it is a way back UP onto a dead end, and here it also roofs the storey's dip lip and the next turn vine's top. **Next
 (the lay, ours, general):** (a) DONE (put() logged on a scratch tree, PUTLOG=10055): **all three are towerCatches's, storey level 21: 424-604 rule 4 (a bough
-of its own, tower.ts:450), 71-424 rule 2 (its bridge, :405), 0-71 rule 1 (wall run-on, :382)**; (b) the rule: going down, no catch bough lies within a jump's rise (LEAP, read generously, as the up rule) over wood of a
-LOWER storey unless a walk-off from its every open end lands back on the way, and none over a turn vine's top (the vine's top is
-the way on); if no fair height is left the roll is refused as today; (c) planted toys: tower.test (the lay: on the 48 drafted
-rolls, no going-down bough within LEAP over a lower storey's wood; RED now) and this castBots toy (GREEN after); (d) re-measure
-A and B on top (each: RED with it off, GREEN on, on a shape it CURES; a fix that moves no row comes out, ruling 2), then the
-x40 again. If (b) refuses many rolls, STOP and send the lead the count before going on.
+of its own, tower.ts:450), 71-424 rule 2 (its bridge, :405), 0-71 rule 1 (wall run-on, :382)**; **(b) MEASURED, and the broad rule is WRONG:** probes/lids.mts (scratch tree logging puts: PUTALL) on the 48 drafted rolls:
+**48 of 48 rolls, 3,510 going-down catch boughs, every one within LEAP.up (221 px) of wood under it** (by design: a catch is the landing
+between storeys). So 'no bough within a jump of a lower storey' refuses every roll: not the rule. The trap on seed 13 is narrower:
+(i) the bough's end hangs over the storey's dip lip (424-604 ends 4 px past the lip at 600: the dip hop's arc lands on it) and (ii) it
+roofs the next turn vine's top (x171). **Next, in order:** (1) count (i) and (ii) on the 48 rolls (extend lids.mts: a bough end within
+30 px of a dip lip under it; a bough over a turn vine's top within LEAP.up); (2) the bot side, which may be the real cause: after one
+detour onto the shelf he STANDS at 710-713 ('in a dip 108 px deep'); read why (firsttimer.ts dip / turn-back memory) — the way is to
+walk down into the 70 px dip and hop out under the bough, which the head kid's line did; (3) fix where the count points (lay: the
+dip lip or the vine top kept clear; or bot: the dip walked, not hopped, under a low roof), toy each way (this castBots toy GREEN; a
+tower.test for a lay rule), then A and B re-measured on a shape each CURES (or out, ruling 2), then x40 again. If the fix is a lay
+rule that refuses rolls, STOP and send the lead the count first.
 **(2) x40 DONE on 7d12c344b** (rows/castbots-7d12c344b-1-20.jsonl + -kidadult-21-40 + -cme-21-40; tally `python3 probes/tally.py`
 on all three): **360 rows, 299 with a rescue, 59 clean; 7 never reach the shrine** (child N 8, 15; middle N 15; expert N 15; child E
 27, 28; middle E 27: the three 21-40 strand at x 1225 'fell back down from here 8 times' after 'the way on is 347 px down'). Rescues
@@ -34,7 +39,7 @@ on is N down' 137; 'fell back down from here' 84; 'a drop ahead' 75; 'nothing in
 dip' point, any wood within 160 px over the storey across the dip), two traces per cause after that, then the 7 stranded rows.
 (3) Stills, (4) lockall / tierBots 9/9 / suite + CI line / land: as box 6 below. **READY-31 (stands):** length is the 3-1 build's
 (kid N seed 2 clean at 101.4 s; head min kid N 87.2 s over 40 seeds).
-Start 11:18 AM ET 11-25; REPORT written 11:31 AM ET (by `date`).
+Start 11:18 AM ET 11-25; REPORT written 11:33 AM ET (by `date`).
 
 ### Box 6's hand-over (superseded by box 7)
 **EXACT NEXT STEP (box 6 hand-over):** code head **7d12c344b** (pushed; this REPORT + rows commit sits on it: its hash is in the hand-over message, check with `git ls-remote`). **Ruling 1 is DONE**
