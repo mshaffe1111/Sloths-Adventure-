@@ -19,7 +19,8 @@ import { generateStage, setLayoutVariant } from '../../stageGenerator.ts';
 import { validateStage } from '../../levelCheck.ts';
 import { footingsFor } from '../../terrain.ts';
 import { MODEL_FAST, modelStage } from '../../stageTime.ts';
-import { routeAt } from '../tower.ts';
+import { routeAt, towerVineCuts } from '../tower.ts';
+import type { Platform, Vine } from '../../types.ts';
 import { buildGen2Stage } from '../pipeline.ts';
 import { LISTED, playFinish } from '../listed.ts';
 import { DRAFT_TABLE, STAGE_TABLE, draftRow } from './stageTable.ts';
@@ -135,6 +136,22 @@ test('head room on the way down: no piece of 24 raw rolls has wood across it les
     for (const a of P) for (const b of P) {
       const across = Math.min(a.x + a.width, b.x + b.width) - Math.max(a.x, b.x), over = a.y - b.y;
       assert.ok(!(across > 30 && over > 1 && over < 84), `${d} ${seed}: x ${a.x}-${a.x + a.width}, y ${a.y} lies ${over} px under x ${b.x}-${b.x + b.width}, y ${b.y}`);
+    }
+  }
+});
+
+test("a catch crosses a vine: going down no wood lies across a climb vine; the vine stops ON the catch, whose ends hand him on within TOWER.see (the lead's ruling (b), ENG-DOWNBOT)", () => {
+  // (before: 247 vines cut on 24 of 24 rolls (seeds 1-12 x both): a turn's drop is 347-351 px, past TOWER.see, so a catch is owed under
+  //  the end the turn's vine hangs from, and the catch, 173 px down and 180 px wide, lay across the vine)
+  for (const d of BOTH) for (const seed of Array.from({ length: 12 }, (_, i) => i + 1)) {
+    const st = draftRaw(seed, d);
+    const floorY = st.gen2.tower!.floorY;
+    const { vines, platforms } = st as unknown as { vines: Vine[]; platforms: Platform[] };
+    assert.deepEqual(towerVineCuts(vines, platforms), [], `${d} ${seed}`);
+    assert.ok(!(st.gen2.errors ?? []).some((e) => e.includes('a catch crosses a vine') || e.includes('blind drop')), `${d} ${seed}: ${(st.gen2.errors ?? []).find((e) => e.includes('a catch crosses a vine') || e.includes('blind drop'))}`);
+    // (every climb vine over the floor ends ON wood: he climbs down onto it, never off its foot into the air)
+    for (const v of vines.filter((q) => q.vineType === 'tree_climb' && q.bottomY < floorY - 1)) {
+      assert.ok(platforms.some((p) => p.type === 'solid' && Math.abs(p.y - v.bottomY) <= 2 && p.x - 2 < v.x && p.x + p.width + 2 > v.x), `${d} ${seed}: the vine at x ${v.x} (y ${v.topY}-${v.bottomY}) ends on no wood`);
     }
   }
 });

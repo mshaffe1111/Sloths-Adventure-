@@ -16,7 +16,7 @@ import { applyVerdicts, buildGen2Stage, HARD_JOBS, keptFoes, layLocal, layStage,
 import { packPlan, stageParts, unpackPlan } from './seedList.ts';
 import { cfg as runCfg, kit as runKit } from './toyWorld.ts';
 import { ARC_CODE, arcKit, gateKit, hopsUp, towerCfg, upKit, upManifest } from './toyTower.ts';
-import { fallSeconds, flagFurther, gapCatchY, LEAP, leaps, localExtent, openEnds, reflectLocal, routeAt, routeOf, storeyLimit, TOWER, towerCatches, towerFalls, towerFlagBreaches, towerFlags, towerGates, towerSkips, towerVaults, vertical } from './tower.ts';
+import { fallSeconds, flagFurther, gapCatchY, LEAP, leaps, localExtent, openEnds, reflectLocal, routeAt, routeOf, storeyLimit, TOWER, towerCatches, towerFalls, towerFlagBreaches, stopVines, towerVineCuts, towerFlags, towerGates, towerSkips, towerVaults, vertical } from './tower.ts';
 import { CLIMB_CLEAR, VAULT_GAP } from '../vineTop.ts';
 import type { Gen2Stage } from './types.ts';
 
@@ -618,6 +618,22 @@ test('a sealed piece (a gate bough) in a built tower: nothing of the lay lies be
 
 test("the flag rule's numbers are Matt's on a tower too (ROLLED_FLAGS, the one definition)", () => {
   assert.deepEqual({ ...ROLLED_FLAGS }, { first: 700, min: 900, max: 4000, lethal: 2300, last: 2000, before: 2400, clear: 1500 });
+});
+
+test("stopVines and towerVineCuts ('a catch crosses a vine'): wood across a climb vine between its top and foot is named, and the vine stops on it; wood it hangs from or ends on is not across it (ENG-DOWNBOT)", () => {
+  const vine = (): Vine => ({ id: 1, x: 500, topY: 580, bottomY: 927, swaySpeed: 1.1, swayPhase: 0, vineType: 'tree_climb' }) as Vine;
+  const from = solid(200, 580, 300, 1), storey = solid(300, 927, 600, 2), shelf = solid(408, 753, 180, 3);
+  // (the turn as laid before: the catch owed under the end, 173 px down, across the vine)
+  const v = vine();
+  assert.deepEqual(towerVineCuts([v], [from, storey]), [], 'the ledge it hangs from and the storey it ends on are not across it');
+  assert.deepEqual(towerVineCuts([v], [from, storey, shelf]), ['tower: a catch crosses a vine: the piece at x 408-588, y 753 lies across the vine at x 500 (y 580-927)']);
+  assert.equal(towerVineCuts([v], [from, storey, { ...shelf, x: 300, width: 196 }]).length, 0, 'wood ending 4 px short of the vine is not across it');
+  assert.equal(towerVineCuts([{ ...v, vineType: 'swing_liana' } as Vine], [from, storey, shelf]).length, 0, 'a swing liana is not a climb');
+  // (the fix: the vine stops ON the highest wood across it)
+  const w = vine();
+  stopVines([w], [from, storey, solid(408, 840, 180, 4), shelf]);
+  assert.equal(w.bottomY, 753);
+  assert.deepEqual(towerVineCuts([w], [from, storey, shelf]), []);
 });
 
 test('towerVaults: straight up at a vine\'s top must land on wood whichever way he faces; 1-4\'s turn-back as laid passes, and a planted bough out of the vault\'s reach, or none at all, is named (B14c, 11-13)', () => {

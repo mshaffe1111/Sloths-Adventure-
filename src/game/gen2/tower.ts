@@ -520,6 +520,32 @@ export function towerVaults(vines: readonly Vine[], platforms: readonly Platform
   return out;
 }
 
+/** the sound wood across a climb vine between its top and its foot, each pair (a body's 6 px in from the wood's ends, 10 px clear of the
+ *  vine's top and foot: wood the vine merely stands on or hangs from is not across it) */
+export function vineCuts(vines: readonly Vine[], platforms: readonly Platform[]): Array<{ v: Vine; p: Platform }> {
+  const out: Array<{ v: Vine; p: Platform }> = [];
+  for (const v of vines) {
+    if (v.vineType !== 'tree_climb') continue;
+    for (const p of platforms) if (p.type === 'solid' && p.x + 6 < v.x && p.x + p.width - 6 > v.x && p.y > v.topY + 10 && p.y < v.bottomY - 10) out.push({ v, p });
+  }
+  return out;
+}
+
+/**
+ * Going down, a climb vine stops on the highest wood across it (the lead's ruling (b), ENG-DOWNBOT 11-25): a turn's drop is 347-351 px,
+ * past TOWER.see, so towerCatches owes a catch under the end the vine hangs from, and the catch lay across the vine (247 cuts on 24 of
+ * 24 drafted 3-1 rolls: a vine through a shelf). The catch is a landing on the way down: he climbs down onto it and walks off its end,
+ * whose drop towerFalls holds within TOWER.see like every other end's.
+ */
+export function stopVines(vines: readonly Vine[], platforms: readonly Platform[]): void {
+  for (const { v, p } of vineCuts(vines, platforms)) v.bottomY = Math.min(v.bottomY, p.y);
+}
+
+/** a way down's vines, each one wood lies across by name (empty: kept): the verdict 'a catch crosses a vine' (stopVines) */
+export function towerVineCuts(vines: readonly Vine[], platforms: readonly Platform[]): string[] {
+  return vineCuts(vines, platforms).map(({ v, p }) => `tower: a catch crosses a vine: the piece at x ${Math.round(p.x)}-${Math.round(p.x + p.width)}, y ${Math.round(p.y)} lies across the vine at x ${Math.round(v.x)} (y ${Math.round(v.topY)}-${Math.round(v.bottomY)})`);
+}
+
 /**
  * A tower's falls, each miss by name (empty: kept). Stepping off either end of any piece he can stand on, a body's width past it:
  *   - going UP, sound wood catches him within TOWER.fall px (STAGE-RULES §2 "Falls in climbs": a miss costs a storey, never the climb);
