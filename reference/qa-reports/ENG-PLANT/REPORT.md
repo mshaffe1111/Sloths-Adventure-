@@ -37,8 +37,12 @@ line went into the UNFROZEN main checkout at c25 and `git checkout` restored it,
   baselines data/n/landing-801cae9e8-2-7-x40.jsonl and data/m/c24-2-7-x40.jsonl = c25 row for row):
   **6 of the 7 B+C losses PASS again**: middle E 7 (F208r1 -> P191r0), E 11 (F226r1 -> P171), N 32 (F222r1 -> P206), expert N 18
   (F189r1 -> P173), N 29 (F204r1 -> P154), N 35 (F198r1 -> P190). **child N 38 still FAILS** (F386r3 -> F391r3: session 12's other shape,
-  the walk-off at vx 268 off bank #17 into the first river, not the stand). **ONE NEW LOSS: child E 11 P257r0 -> F285r1** (untraced: trace
-  it first in session 14). The other 27 rows hold their pass/fail; most times drop (expert N 29 204 -> 154, middle N 38 284 -> 185).
+  the walk-off at vx 268 off bank #17 into the first river, not the stand). **ONE NEW LOSS: child E 11 P257r0 -> F285r1, TRACED: cluster A's
+  shuffle, not the stand** (data/o/frames-{c25,expfront}-cE11.txt, trace-expfront-cE11.txt): first split t 40.50 on log #20 at x 9,315,
+  the front-stand line (c25 stands, EXP walks to the front). c25 is handed back TWICE at that river (#20 -> bank #16 t 44.9; #19 -> #16
+  t 47.8) and crosses at t 52.0; EXP goes #20 -> #19 (41.1) -> bank #17 (42.9), no hand-back, 9 s earlier. Then the lip family takes him
+  at the solids: walk-offs at full run, 'hop none', off solid #25 [10,786..11,086] (t 116.97, vx 268) and #27 [11,437..11,655] (t 120.93,
+  vx 285), 'set down here 8 times', rescue at 11,016: cluster A (R-165.398, ruled not fixed before the merge), moved by the earlier crossing. The other 27 rows hold their pass/fail; most times drop (expert N 29 204 -> 154, middle N 38 284 -> 185).
 - So the narrowing that meets the ruling's invariant at its cause: on a log running back at him, the stand is AT THE FRONT; from there the
   judged gates (upstream `next` gateSees, the bank branch, tablePick) land the hop when the next log comes round or the bank is in reach,
   so he is not ridden back. The hand-back memory and a dead-end filter become a backstop only if rows still hand back after it.
@@ -58,9 +62,7 @@ line went into the UNFROZEN main checkout at c25 and `git checkout` restored it,
    bars, or retire per R-165.432); riverRide + firsttimer; the CI tool line at 0 fail; tierBots 9/9; timecheck + roadmapcheck. MERGE into
    release-0.10.3 (no force) ONLY on the lead's word: send the table first. REPORT BY 12:00 PM ET; HARD STOP 2:00 PM ET; two heavy runs max.
 2. **Candidate c26 (the lead rules between them; my recommendation is (A)):**
-   FIRST (either way): trace the experiment's one new loss, child E 11 (c25 P257r0 -> EXP_FRONT F285r1): apply tools/expfront-o.diff.txt to
-   a local commit (never the shared branch before the lead has rows, D117), freeze it, tools/trace-n.mts.txt on 2-7 child easy 11 on it
-   and on fz-c25; first split by tools/frames.mts.txt + div.py-n.txt. Then build the chosen candidate:
+   (child E 11's new loss is traced: cluster A's shuffle, above.) Build the candidate the lead picks:
    (A) the front stand: tools/expfront-o.diff.txt WITHOUT the env gate (two lines in the upstream block; a comment naming E 11 x 9,379 /
        N 29 x 13,079, the gap branch's tier look, and the ruling). Toys (tools/inspect/*.test.ts, as riverRide's): RED on c25 middle E 11
        and expert N 29 (a hand-back round ending in a rescue), GREEN on c26; the c2m gains child N 5 and middle N 13 still cross.

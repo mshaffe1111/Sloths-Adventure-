@@ -1,0 +1,5 @@
+set-downs 16 rescueXs [11016] time 284.7
+  before: set-down f3514 t117.13 fell@x11144,y772 -> placed x11016 | left solid#25[10786..11086] at f3509 t116.97 x11107 walk-off vx268 vy83 | hop none
+  before: set-down f3634 t121.13 fell@x11726,y768 -> placed x11016 | left solid#27[11437..11655] at f3628 t120.93 x11680 walk-off vx285 vy83 | hop none
+RESCUE: set-down f3635 t121.17 fell@x11016,y730 -> placed x12959 | left solid#27[11437..11655] at f3628 t120.93 x11680 walk-off vx285 vy83 | hop none
+end shrine pass undefined rescues 1 stuck [[12574,121.1,"set down here 8 times"]]
