@@ -111,6 +111,25 @@ code-checked plan (ENGINE-NEEDS.md); "add a level" in one step; every lead keeps
 3. **The lead manages; members engineer.** The lead decides scope, priority, time and the bar, judges the evidence and unsticks; it does not do the work or design the code. A member's technical fork goes back as 'decide it within your budget and show me the evidence', unless it changes scope, the bar, a shipped stage or Matt's taste.
 4. **The scoreboard in every report to Matt:** levels on his link this week vs the plan; hours per level vs 2 h; pieces landed ahead; **2-HOUR PROGRESS** (Matt 11-23, R-165.409): what was done today toward the 2-hour level (reference/plans/TWO-HOUR-PLAN.md and its schedule).
 
+## RIGHT NOW (11-25 evening, written about 5:20 PM ET; refreshed at the wrap; this block wins over everything below, R-165.242)
+THE WEEK (Matt R-165.449, R-165.461/.462 answered 'A' at 4:23 PM): finish World 2 (release 4 tonight; LAND-26, 2-8, 2-9 -> release 5 Friday);
+THURSDAY ENG-BOTSIM (packets/2026-11-26/ENG-BOTSIM.md: can the bots ask the engine instead of their own physics copy; a YES/NO with numbers);
+World 3's pieces land, then 3-1 and 3-2 built as the PROOF of the 2-hour level (3-3/3-4 this weekend only if they come in near 2 h);
+World 4 pitched, picked and designed by Sunday. THE BUDGET PLAN (WEEK-1125.md): 16% gone by 2:15 PM Wed; at most 4 helpers, high effort
+except new engine pieces / the hardest bot faults / merges; check-ins every 30 min, SHORT; a daily budget (end Wed <= 26%, Thu 43%, Fri 60%,
+Sat 77%, Sun 92%); the nightly spend number to Matt. The lead ROTATES at tonight's wrap (this session is at about 430k+ context).
+RELEASE 4: release-0.10.3 = c73cb9766 (2-7 + the two draw fixes + the bot fix CI-15 0ec009b4d, ALL GREEN; What's New line A committed).
+INT-R5d-c (session_01FhBbYMmgrFPPBizXMjxXFi) runs THE FULL SET (about 2 h from 5:00 PM). Then: the test link (build.py on release-0.10.3;
+republish EnK5 in place; under 480 files), Matt's 'push' (one question), the PR via create_pull_request (not a draft), the deploy + APK check.
+WORLD 3 on t-eng-w3 = 88592a9c4 (FIX-CARD-DOWN + ENG-NOISE landed). 3-1's ONE LANE (dark + the bots' way down merged on t-eng-dark-wip;
+ENG-DARK-p session_01FhBbYNEYtZNguUhvJ2SuiR): x40 on a5e15a74d FAILS (5 strands 'the way on is 347 px down'; 2 new from box 15's seam change,
+3 older), being traced; it lands Thursday when an x40 passes; BUILD-31 Thursday afternoon at the earliest (packet BUILD-31 + FIX-CARD-DOWN in).
+THE OTHER PACKETS (corrected against main, CI #84): ENG-SPORE, ENG-VINE, ENG-LURE, ENG-ROOT, ENG-MOON, METER-W3; BUILD-29, LAND-26 (11-25).
+2-9: t-eng-29-wip dc8abfbd4 (tempo + drum wired, gates green but pacerLay's base set + one comment red in w2TempoToy.ts): ENG-29-d Thursday:
+the comment fix, then the 1b merge (W2-LANE's, resolved as 791735cfa) and the bots on 2-9. 2-8: parked at t-build-28-wip a95077e37 until 1b.
+TODAY'S LESSONS: D139 (check a pieces packet against main), D140 (redirects with priority 'next'), D141 (the CI line on every candidate);
+CI #83 (an expected cure is measured that day), #84, #85 (the suite's 2-hour limit). Filed for after release 4: R-165.460, .463, .464, .465.
+
 ## RIGHT NOW (11-24 evening, written 6:36 PM ET by `date`; refreshed at the nightly wrap; this block wins over everything below, R-165.242)
 RELEASE 4 (0.10.3) MOVED TO WEDNESDAY (the lead's call 5:45 PM: the bot fix was not clean; no bar bent to fit the night). Its path:
 ENG-PLANT (the shipped-stage bot regressions from 2-7's floatSure: rule 28 vs MAIN, D132) -> a LEAN candidate from c4 (run-up judge +
