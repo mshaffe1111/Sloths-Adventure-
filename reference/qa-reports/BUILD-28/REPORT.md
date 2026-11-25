@@ -26,8 +26,22 @@ FIRST (the lead may answer Q1 below or send release-0.10.3's hash). Every run on
    CONDITION 4 (stills, upright AND sideways): NOT DONE; needs the marsh on a stage (W2_FORK's low road, built WITH 1d below). Look for:
    the first little one is on his arc when he lands (the hop is open until then) and drops to the surface on the landing frame; `dry`
    false says none was over the dip in the air on a floor-to-floor hop in the toy, but judge the frames.
-NEXT, IN ORDER: 1e the strand verdict (session 2's plan below, unchanged: trace the Easy child's strand on gen2's own section geometry
-   first, then the walk-off model; plant RED on the flush top (220 shape) and the 80 px treads, GREEN on 400). Then 1d + the W2_FORK marsh,
+NEXT, IN ORDER: 1e the strand verdict (session 2's plan below). SESSION 3 FOUND, read from code (flood.ts forkFaults :142, floodLay.ts
+   :55-65, w2.ts W2_FORK, lineBot.test.ts floodRun), not yet measured: (i) the 80 px child strand did not reproduce in session 2's toy and
+   the toy already plays the Easy child on the Easy setting (lineBot.test.ts:201 who.setting) and already has ENG-28e's respawn fix
+   (0908b5c57 is in session 1's e1d8d74c5), so neither explains it; a gen2 trace needs the stage built by w2TwoRoad (w2TwoRoad.test.ts
+   `build`, toy home kit, SWAP 'home-practise-ride') played by a first-timer, which no harness does yet: if it costs more than one box, tell
+   the lead and build the verdict on the walk-off model alone, as session 2 planned. (ii) THE WALK-OFF VERDICT (carry 0, both ways): for
+   every piece of road.chain (W and C included) and each end, the first ground under x just outside the edge (a solid top, else the
+   marsh's floor or water) is at most the line's step (W2_FOLLOW.step 90) below the piece's top. It is RED on TODAY's gen2 geometry, not
+   only on the planted shapes: W stands flush on the water's edge, so on the marsh his walk off W's lip (the low road's way down, forkFaults'
+   gap) drops 120 px (W's top Y-60 to the floor Y+60) and the line WAITS at W's lip: the low road strands the line. GREEN needs W set back
+   60 from the water (session 2's note; floodRun's own toy: W off its lip 60 onto the bank, then the bank's edge 60 onto the floor; the
+   gap after W, 60 >= his 44 px, then lies over the bank, forkFaults unchanged) and every high-road end over a piece or a bank (porches
+   reaching the far bank: 1d). So plant RED: the flush top (220 shape, 120 px off its near edge onto P), W flush on the marsh (120); the
+   80 px treads drop 60 per tread, so the walk-off rule does not flag them (say so; their strand stays the unreproduced jump). GREEN: 1d's
+   shape. Where: a new check next to forkFaults (flood.ts), called in floodLay.ts:65 with the line's step from the flood's row (add it to
+   W2_FLOOD or FloodClimb, named, not a literal: generalitycheck). Then 1d + the W2_FORK marsh,
    ONE shape change: W2_FORK_RIVERS.low = {dir 1, speed 0, logW 0, logs 0, safe, flood 'close', marsh {width 1400, floor 60, dips 4, dip
    100}} (2-8.md:9) and three up / three down, treads >= 400 (W stands on the near bank; today's gap 60 + porch 500 + porch2 400 = 960 px over
    the water ends 440 px short of a 1,400 marsh's far bank (it overhangs ride's 798 by 162), so the marsh cannot land alone); w2TwoRoad.test to it; check w2Finish lays no second river over it
