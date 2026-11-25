@@ -1,16 +1,14 @@
 # ART-W3 REPORT (R-165.449): World 3 standing + climbing art, 2-9 court art
 
-**EXACT NEXT STEP:** sandbox job 6b0719adb6a90bbe997e1e17 (handle hfsb2:mshaffe111:6b0719adb6a90bbe997e1e17, created 12:24 PM ET, 2 h
-timeout) runs spec-w3a (q.log; done: shelfL, wallR, wallShelf, rootTall, rootShort; left: roofRoot, roofEnd), then chain p-3: spec-w3d grotto
-thorns, spec-w3b 2-9 bell + far, spec-w3c root redo (q-spec-*.log), then touches /w/ALL_DONE. For each new READY-<group> (roofRoot,
-roofEnd, thornBed, thornClump, bell, courtFar, rootTall, rootShort): `hf_sandbox_fs cat /w/<group>.tar.pN --max-bytes 100000` for N <
-the READY count, `python3 -I tools/art/hf1113/pull.py /w/<group>.tar <scratch>/<group>.tar`, untar, judge with
-`python3 -I tools/art/hfw3/sheet.py <dir> <out.jpg>` (sheet.py GAME needs thornBed/thornClump/courtFar sizes added), cut picks with
-tools/art/hfw3/cut3.py (K 1), add to reference/art/hfw3/cut/picks.json (+ META in catalog3.py for the thorns), then `python3 -I
-tools/art/hfw3/catalog3.py && python3 tools/art/catalog_master.py --emit`; stills `python3 -I tools/art/hfw3/stills.py
-reference/art/hfw3/cut <scratch>` -> reference/qa-reports/ART-W3/stills/. The bell's SWUNG frame is an edit of the picked bell take (a
-round 2). TERMINATE the sandbox after the last pull (`hf_sandbox terminate`). Then: HF-SPEND line, inventory.test count (226 + the W3A
-rows), pack.py dry-run proof (file count, size, artcheck, tsc), gates.
+**EXACT NEXT STEP:** generation is DONE and the sandbox is TERMINATED (~$2.46, HF-SPEND.md; balance ~$38.79). Every take is in
+reference/art/hfw3/takes/<group>/. Next: judge with `python3 -I tools/art/hfw3/sheet.py reference/art/hfw3/takes/<group> <out.jpg>`
+(add thornBed/thornClump/bellSwing/courtFar sizes to its GAME), cut picks with tools/art/hfw3/cut3.py (K 1), add them to
+reference/art/hfw3/cut/picks.json (+ META in catalog3.py for the thorns), `python3 -I tools/art/hfw3/catalog3.py && python3
+tools/art/catalog_master.py --emit`, stills with tools/art/hfw3/stills.py, inventory.test count (226 + the W3A rows), pack.py dry-run proof.
+ART-W3's first looks (not cut, not judged at game size): thorns bed s11/s23 + clump s23 read as danger (clump s37 crayon-thick);
+roots redo tall s67/s41, short s53/s67 clean (no hands, no lumps; s41/s53 tall lips may touch the frame: read FRAME EDGE); far s11 or
+s37 (s23 lost the drum; the far layer must keep w2evening-far's outer edges so it tiles: paste the edited middle back with a feather);
+bell s23 is the still the swung frame was edited from; bellSwing s11/s23/s37 NOT looked at.
 TAKES are committed raw under reference/art/hfw3/takes/<group>/ (pulled by ART-W3; ART-W3 does no cutting after its hand-over: the lead).
 BARGE CATCH (the lead): at the catalog's 2.53 cut px a unit it draws 505 px wide, over an upright phone's 440 and over 2-9.md's 384-390:
 the DECK must be 384-390 px and the whole barge must fit an upright phone beside Pokey: set the w2-next#barge row's ship size (cpu) to
