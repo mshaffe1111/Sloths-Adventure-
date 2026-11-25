@@ -29,7 +29,10 @@ Engine (bots), Opus 5.5 xhigh. Lead: session_01FhBbYN2CVHnFXg7XzqKXpM. **Code he
    main); 2-7 x40 (at or above 29/40); EVERY race WON with the margins; 1-4 and 2-5 vs main; zero rows ending stuck or timed out
    anywhere. 5. Then child N 13's trace, then the checklist. The merge waits for my word."**
    **Session 15 does, in order:** (i) read the code after W1 (firsttimer.ts c26 :3620-3624, `if (floats.length && !near) {...}`):
-   find what runs when `t - this.edgeWait >= 6` (the fall-through to the edge's own press / walk-off: data/p/probe-*-W.txt: W1's last frame is at 6.03 s, the
+   find what runs when `t - this.edgeWait >= 6` (read at hand-over, not yet probed: on a BANK the fall-through skips the ride-on-log
+   section (:3627ff, `here.type === 'drift'` only) and the upstream block (`here.drift` only), sets `this.edgeWait = -1` and reaches the
+   edge's own press at :3802ff (`if (!drops && tierEdge) { const kind = this.jumpFor(p, dir, here); ...`: a hop no gate judged, or a
+   'late' walk-off): the blind go c27 replaces at the cap; confirm with a probe there first (the fall-through to the edge's own press / walk-off: data/p/probe-*-W.txt: W1's last frame is at 6.03 s, the
    go 0.2 s (home N 1) to 0.6 s (post N 5) later). c27 = at the cap, gateSees (the drawn hop, `this.aim.at` + `drawHop`, margin 24, as the `near` branch above it
    at :3596-3618 does) on the floats in view: judged -> startJump as judged; refused -> stand by choice (clockHeld, pending/lateArmed
    null), no blind go. Nothing before the cap moves (condition 1). (ii) NO DEADLOCK (condition 2): in the toy and in every row, count
