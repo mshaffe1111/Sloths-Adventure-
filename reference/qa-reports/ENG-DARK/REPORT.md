@@ -62,8 +62,14 @@ up off a rim's piece to higher ground is a crossing (a judge reading, not built)
 165.8 167.8): A REAL FALL: walking left at 268 px/s from a piece at about y 7098 he crossed a small gap at x ~943 (one frame of air) onto
 760-920@7104 (y 7104, 6 px lower), stopped at x 918 (167.13 s), turned right at 167.27 s with NO light woken (45, 42, 43 asleep, 41
 awake) and fell through that gap to y 7244 (140 px). The seam is walked over going left (downhill 6 px) but not going right from a
-standstill (uphill 6 px). Next: why he turned right (downEnd / glowWait / the steer: run downend.mts middle normal 16 920 7104 166 168,
-whose args are bot setting seed rimX rimY t0 t1) and whether rim 920's stop should have held him.
+standstill (uphill 6 px). WHY, measured (downend.mts middle normal 16 920 7104 166.5 167.5; seam.mts ... 167.1): the gap is
+920 -> 970 (760-920@7104 and 970-1212@7098), 50 px, WIDER than his body (2*LAND_HALF 42), so the seam rule rightly leaves it: the
+route drops through it (978,7098 -> 945,7223 -> 820,7244 onto 716-962@7244). At 267 px/s he crossed it leftward, landed at x 924 (ON
+THE ENGINE'S GRACE, 4 px past 920), and downEnd turned him back right toward the way on (pick 1 from 167.07 s): the RIGHT way. The fault:
+glowWait never stopped him at rim 920 because he stood at x 919-924, at or past the piece's end (floor '-' at 924 and 920): THE SAME
+1-PX MISS box 9 found at rim 367 (glowWait's on(r) reads p.x against the piece; the engine has him standing on it). NEXT FIX (general,
+a toy each way): glowWait's 'on the rim's piece' reads the engine's standing piece (e.standingOnId) or allows LAND_HALF past its end;
+then re-measure middle N 16, and check rim 367 on 32 N stays clean.
 The lead was ASKED (box 10, with this evidence) which bar '33 N's behind edge lit' means: (A) the second light + darkLandings drops the
 behind-edge exemption for a step-off from a hop rim; (B) A + the x40 crossing over 940 reads lit (a judge change); (C) other. Box 10
 said it would build A unless the lead says otherwise: read the lead's answer first.
