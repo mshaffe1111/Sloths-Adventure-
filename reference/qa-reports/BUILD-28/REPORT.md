@@ -4,16 +4,25 @@
 Branch t-build-28-wip, head = this REPORT's commit; CODE head e1d8d74c5 (later commits touch only reference/qa-reports/BUILD-28/).
 `git fetch origin t-build-28-wip && git checkout t-build-28-wip`, `npm ci --no-audit --no-fund --legacy-peer-deps`. Run ReadNotifications
 first: the lead may have ruled For the lead 2-4 (below) or sent release-0.10.3's hash.
-STEP 1 IS DONE (the section, its verdict proof and its bot run on every tier and both settings). Next, in order:
-1. IF the lead sent release-0.10.3's hash (its ruling, received in session 1): step 1b, merge origin/release-0.10.3 AT THAT HASH into
-   t-build-28-wip (no force); name every conflict; in tools/inspect/firsttimer.ts keep BOTH intents (ENG-PLANT's c25: the judged run-up
-   with the thumb travel, the sinker-only refusal, the narrow ride, the landing pull-back, the padRead stop; AND ENG-28's keep-the-road,
-   step-off, lead-the-line); then tsc, the CI tool line (gates.yml 'rolled'), lineBot 8/8, flood + floodLay + w2TwoRoad, ENG-PLANT's 10
-   known flips (its REPORT) as a spot check. Then READY-28 (step 2) on that head: the 2-8 DRAFT is a stage row + arc kit that lays this
-   section at the fork (that draft is the build's first lay, not a missing piece: confirm with the lead before laying it).
-   IF NOT YET: do not merge (ENG-PLANT's fix is still merging into release). Use the time on what needs no base: (a) the bot probe on
-   seeds 2-3 for every tier (session 1 ran seed 1 on the final shape: the bots were seed-identical on every earlier shape), (b) the
-   probe with the LOW road as gen2 lays it (a log river, not floodRun's walkway: For the lead 3), if the lead has not ruled it.
+THE LEAD'S RULINGS 2-4 CAME at the end of session 1 (verbatim in 'For the lead' below): step 1 reopens as 1a, 1c, 1d, in this order:
+1a. FIX flood.ts highRoad (:166-206; the gate hole, For the lead 2): it judges EVERY piece on the chain in the order he meets them, never
+   jumping to the farthest-reaching piece (:196). From `at` on piece `cur`, the next piece is the FIRST met ahead (the nearest near side in
+   (at.x, farOf(cur) + hop]): a piece standing on cur's top (p.y + p.h within 1 px of cur.y) is a wall-step rise (<= step) and joins the
+   chain; a piece over cur with room under it is a bare edge hop up (refused by name, the existing message); level/down continuations as
+   now. General: no stage id. Plants in src/game/flood.test.ts: RED by name on a FLOATING rise over a porch (h short of the porch's top),
+   GREEN on the section (w2TwoRoad.test). Then re-run on a frozen tree: flood + floodLay + w2TwoRoad + tools/inspect/lineBot.test.ts (8/8:
+   it reads highRoad's chain, :210-214; B, its block on P, now joins the chain: high = chain minus W and the last piece still holds) +
+   tsc + generalitycheck. lockall is not needed (no listed stage lays a flood) but say so.
+1c. THE LOW ROAD IS THE DESIGN'S MARSH WALKWAY, never a log river (For the lead 3): lineBot floodRun's shape (a walkway 60 px under the
+   banks the line walks and paddles, W standing back so every drop is one step). NO gen2 piece lays a walkway in water today (grep
+   'walkway|marsh' in src/game/gen2: none), so it is a NEW piece: asked the lead who builds it (an ENGINE PIECE commit here, level.md
+   rule 26's amendment, or Lane 2). Do not lay it inside the section by hand-placed solids.
+1d. LENGTHEN THE HIGH ROAD to the design's long dry way round (For the lead 4; 2-8.md:9: three carved steps up, 2,200 px of porches, three
+   down; the low road 1,400 px). MEASURED CAVEAT (session 1): stacked steps with short treads strand bots (80 px tread: the Easy child;
+   220 px: the adult; their jump off one step lands two down, deeper than the line's 90 px step, so the line waits at the lip). Lay every
+   tread at least 400 px (the measured safe one) and re-run the probe (every tier, both settings, late 0/15/19, seeds 1-3).
+Then the probe on the final section (6 tiers x 3 lates x seeds 1-3), w2TwoRoad.test updated to the new shape, frozen checks, push; then
+step 1b (the merge) when the lead sends release-0.10.3's hash; then READY-28 on that head.
 2. A missing piece STOPS the job and goes to the lead (LANES rule 2).
 Every run on a chattr-frozen worktree (`git worktree add --detach <dir> <hash>`, `ln -s <repo>/node_modules <dir>/node_modules`,
 `chattr -R +i <dir>/src <dir>/tools`, `chattr -R -i <dir>/src/game/gen2/proven`). Session 1's: /home/user/wtw2b at e1d8d74c5 (and
@@ -56,7 +65,7 @@ REPORT BY 12:30 PM ET (step 1 done and READY-28's numbers); HARD STOP for steps 
   | expert Normal | shrine, home 3, LOW, 19.3 | shrine, home 3, LOW, 19.3 | shrine, home 3, HIGH, 17.5 |
   | middle Normal | shrine, home 3, LOW, 20.7 | shrine, home 3, LOW, 20.7 | shrine, home 3, HIGH, 18.5 |
   | adult Normal | shrine, home 3, high, 16.0 | shrine, home 3, high, 16.0 | shrine, home 3, high, 16.4 |
-  setBack 0 in all 18. (*'high' is read only before the close: the child reaches the fork after it at late 19.) The middle and the expert
+  setBack 0 in all 18; seeds 2 and 3 (36 more runs) identical to seed 1 for every tier: 54 of 54 home. (*'high' is read only before the close: the child reaches the fork after it at late 19.) The middle and the expert
   read the fork as designed (low with time, high when late). On the FIRST shape seeds 1-3 (and 1-2) were identical for every tier.
 - **Read from code, not measured (for ruling 3):** follow.ts:53 'he is climbing, riding or grabbing, or dropped further than a step: the
   newest ground point is a WAIT', W2_FOLLOW.step = 90 (w2.ts:57): off W (60 over the bank) into a log river the drop to the water is 60 +
@@ -81,6 +90,15 @@ REPORT BY 12:30 PM ET (step 1 done and READY-28's numbers); HARD STOP for steps 
    middle's high run 18.5 s against its low run 20.7 s; the adult, the Easy middle and both children go high even with time to spare).
    2-8.md wants the low road the short one (+7.2 s Normal by the high). Rule the dial: (a) a longer high road (porch2 runs on past the far
    bank before its step down: a section number), (b) leave it to READY-28's measure on the draft.
+
+**THE LEAD'S RULINGS on 2-4 (received at the end of session 1, verbatim):** "(2) the gate hole is real: FIX IT NOW as step 1a (READY is not
+the build, and it is 2-8's own just-landed piece): highRoad judges EVERY piece on the chain in order (each rise a wall-step standing on the
+porch, out of the low lane; no jump to the farthest-reaching piece), planted RED on a floating rise, GREEN on your section; general, no
+stage id; flood + floodLay + w2TwoRoad re-run. (3) the low road is the DESIGN's marsh path (2-8.md: LOW 1,400 px of marsh path with four
+100 px dips the line paddles through), i.e. the WALKWAY lineBot measured, NOT a log river: lay the walkway/marsh piece there; a ride is
+never the low road. (4) LENGTHEN the high road to the design's long dry way round (2,200 px of porches: three up, the porches, three down),
+so the choice is real: low is quicker but the flood closes it, high is longer but always open; READY-28 then measures the dial
+(lead-the-line's late, both settings, every tier). Then the probe on child/expert and Easy as you planned."
 
 ## Lessons applied (session 1)
 D115 (every check on a chattr-frozen worktree of the commit; the probes in a folder outside src/tools, never committed), D119 (no heredoc
