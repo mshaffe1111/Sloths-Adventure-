@@ -6,7 +6,13 @@ planted verdict: on this head it names **5 turns on 5 of 48 rolls: normal 5, 6, 
 storey 729-1144 @11889 (32bf092b0's lay clears that roll; the same shape is left on normal 5, 6, 7, 8, 23: read their names with
 probes/errs.mts SEEDS=5,6,7,8,23). **All five share one shape:** the catch at the storey - 178, its first landing wood at the
 storey - 64 (114 under the catch) beside the storey, then on past it (normal 6: 691-1280 @10068, vine x1088, onto 10182, storey
-@10246). The first-landing guard (`passes`, 32bf092b0's, kept) cannot see past the first landing; guarding the WHOLE chain on every put (box 5's
+@10246). **Normal 6 read (probes/tail.mts SEED=6 Y=10250, e7c203362):** storey above 404-634 + 757-1062 @9895 with a dip
+634-757 @9965; vine x1088 9895->10246, stopped on the catch run 691-996 + 996-1176 + 1176-1280 @10068; its storey is only 857-1108
+@10246, all under the run. 996-1176 is the vine end's own bough, 1176-1280 its run-on to the wall, and **691-996 is the catch for the
+DIP's right end (x 781), laid level with the vine's catch so it merged into it**; the first-landing guard let it pass because its left
+end (x 667) first lands on 470-700 @10182 (over the storey, beside it). The storey itself is 76 px from x 781 and 281 px under the dip
+(within TOWER.see): (b) below, a rule-2 bridge of the STOREY out under the dip's end, is the likely lay; find why rule 2 did not take
+it (anchor order, overGap, fair) before changing anything. The first-landing guard (`passes`, 32bf092b0's, kept) cannot see past the first landing; guarding the WHOLE chain on every put (box 5's
 v2, `handOn(...).state === 'past'` turned on by a put) left open ends: blind drops on 37 of 48 rolls, so it was taken out. Try next,
 measuring each on 48 rolls (probes/handon2.mts for misses, probes/rollhash.mts vs scratch hash of 2abf6faf1 for touched + errors,
 probes/errs.mts for the names): (a) rule 4 going down, for a bough that will cross a climb vine (the catch) or lie under a catch's
