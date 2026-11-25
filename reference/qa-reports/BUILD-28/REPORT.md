@@ -1,4 +1,40 @@
-# BUILD-28 REPORT (W2-LANE: 2-8 "Before the Water Rises"; R-165.430 (2), READY-28, BUILD-28). Session 1 (W2-LANE a), started 9:44 AM ET (from date). Session 2 (W2-LANE b), started 10:07 AM ET (from date). Session 3 (W2-LANE c), started 10:30 AM ET (from date). Session 4 (W2-LANE d), started 10:52 AM ET (from date). Session 5 (W2-LANE e), started 11:19 AM ET (from the session hook date) Session 6 (W2-LANE f), started 11:41 AM ET (from the session hook date) Session 7 (W2-LANE g), started 12:05 PM ET (from the session hook date) Session 8 (W2-LANE h), started 12:49 PM ET (from the session hook date)
+# BUILD-28 REPORT (W2-LANE: 2-8 "Before the Water Rises"; R-165.430 (2), READY-28, BUILD-28). Session 1 (W2-LANE a), started 9:44 AM ET (from date). Session 2 (W2-LANE b), started 10:07 AM ET (from date). Session 3 (W2-LANE c), started 10:30 AM ET (from date). Session 4 (W2-LANE d), started 10:52 AM ET (from date). Session 5 (W2-LANE e), started 11:19 AM ET (from the session hook date) Session 6 (W2-LANE f), started 11:41 AM ET (from the session hook date) Session 7 (W2-LANE g), started 12:05 PM ET (from the session hook date) Session 8 (W2-LANE h), started 12:49 PM ET (from the session hook date) Session 9 (W2-LANE i), started 1:15 PM ET (from the session hook date)
+
+## EXACT NEXT STEP (session 9, W2-LANE i; code head 0cdc35b7f; this session adds only files under reference/)
+1. THE STILLS: SHOT ON THE REAL PAGE, 8 of them, reference/qa-reports/BUILD-28/stills-s9/fork-s1-{bank,lip,porch,top}-{upright,sideways}.jpg
+   (412 x 915 / 915 x 412 at 2x, seed 1 Normal), script forkstills-s9.mjs.txt (copy to a scratch .mjs; vite on the frozen tree, port 5199
+   --strictPort; checked free first, the served tree checked (/proc/<vite>/cwd = the frozen worktree, its w2.ts served with W2_FORK), vite
+   killed after the tree).
+   WHY SESSION 8's PAGE PLAYED THE REAL 2-3 (found): the hand-built W2 plan W2_STAGES['2-3'] (w2Stages.ts:32) shadows the planted list;
+   draftReady.ts (t-eng-w3) lifts it with `delete W2_STAGES[id]`, forkstills did not. With it lifted, the play build then refused the toy
+   (2-3's rescue objective: "not enough cages for the quota"), because the app's level list is made at its first render; fixed the
+   draftshoot way: the toy's sprint objective readied BEFORE the game's entry (main.tsx served with a boot import first).
+   WHAT PLAYED: '2-3' as the toy, travel left, gen2, 99 platforms. THE FORK READ OFF THE BUILT STAGE: W 330 x 60 at x 17383 top 1458, the
+   GAP 81, the porch 2200 wide level with W (x 15102), the marsh floor 5 pieces of 200 with 100 px dips (x 15902..17302). (x differs from
+   the headless 17570: 2-3's config, not w2TwoRoad.test's towerCfg.)
+   NOT ON 2-8's OWN ROW (said plainly): 0cdc35b7f has NO DRAFT_TABLE / draftReady / draftBoot (they are on t-eng-w3 only) and no 2-8 row,
+   and window.__play('2-8') finds no level (it stays on the start screen, no console error). So these are the TOY on 2-3's config and
+   world art, as session 8 named. The 2-8 draft row needs t-eng-w3's draft machinery in this branch: the lead's call.
+   LOOKED AT (as Matt on a phone), and what they show:
+   - lip-sideways (the clearest fork read): Pokey on W's mossy stone, the porch log level with him to the left, the 81 px gap a narrow
+     slot between them; a sliver of water in a dip below the log. FAULT: a soil column painted from the frame's top to its bottom STRAIGHT
+     THROUGH the porch log (x ~165..420 in the still).
+   - porch-upright and porch-sideways: the same fault, worse: Pokey stands on the log in front of a full-height soil pillar; the porch log
+     runs through the faces of the raised grass banks (the rises over it). Rough: not Matt's bar.
+   - lip-upright: a heavy soil ceiling across the top third; below W and the porch the low road reads as SOLID DIRT, no marsh water
+     visible from the fork (design (3): "the water's depth on the low road is visible from the fork": NOT MET on this toy).
+   - bank-sideways: reads well: the bank, W one step up, the porch beyond; the river and a plank bridge behind him.
+   - top-upright: WRONG SPOT: my 'top' takes the highest solid over the porch's span, which is the home jetty (boat, otter), not the third
+     rise; Pokey drawn faded there. The three steps up and down are NOT yet shot.
+   - NOT looked at: bank-upright, top-sideways.
+   THE MARSH DIP: NOT SHOT: three little ones freed right of the first dip (x 17002..17102) walked over it to him without a paddle frame
+   in 400 frames (line ended 16916..16984/1593, 'follow'): the 100 px dips may hold no water the line swims (to check: is the dip a river?).
+2. NEXT (session 10): (a) read where the soil column comes from (the rises' bodies painted down through the porch? a paintcheck-style
+   'floor painted over by a higher bank's soil column', D136) and send it to the lead as a finding with the stills, not a patch (no
+   patching what is being replaced: the 2-8 row is not built). (b) fix 'top' to the third rise (a solid within 3 x 60 over the porch top),
+   shoot it; (c) the dip: find a dip that is water (W2_FORK_RIVERS.low's own river), shoot the paddle; (d) the gates (item 3 below, (c)):
+   clipcheck and paintcheck --part 1/3, 2/3, 3/3 on 0cdc35b7f, frozen, proven/ writable, two at a time; (e) the 1b hash, else tell the
+   lead and wait.
 
 ## EXACT NEXT STEP (session 8, W2-LANE h; code head 0cdc35b7f (= ceab09e20's code); this session adds only files under reference/)
 1. THE 2b TOYS, ON THE DRAFT, READY FOR 1b (DONE): draft-1b-B2b-forkjump-popup.patch.txt is ONE patch that applies on 0cdc35b7f (checked
