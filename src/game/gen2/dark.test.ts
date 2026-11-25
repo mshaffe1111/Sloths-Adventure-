@@ -94,8 +94,9 @@ function relay(z: Zone, platforms: Platform[], deeper: number): Zone {
 /** (ENG-DARK box 14) the SHAPE no real roll deals any more (ENG-DOWNBOT's lay, merged): a DEEP drop. Roll 1 Normal's first sleeping DROP
  *  rim whose landing piece, moved by hand to `drop` px under the rim (and `shift` px along), still takes his drop as a drop; with
  *  `floor`, a hand-laid floor that many px under that piece (so its own rims have landings in the dark); the dark laid again (relay) */
-function deepDrop(drop: number, shift: (r: DarkRim) => number, floor: number | null) {
-  const st = built(1, 'normal');
+function deepDrop(drop: number, shift: (r: DarkRim) => number, floor: number | null, ok: (d: { stage: { platforms: Platform[]; zones: Zone[] }; rim: DarkRim; moved: Platform }) => boolean = () => true, seeds = 1) {
+  for (let seed = 1; seed <= seeds; seed++) {
+  const st = built(seed, 'normal');
   for (const z of st.zones ?? []) {
     if (z.kind !== 'dark' || !z.lights?.length) continue;
     for (const r of darkRims({ platforms: st.platforms, zones: [z] })) {
@@ -105,8 +106,10 @@ function deepDrop(drop: number, shift: (r: DarkRim) => number, floor: number | n
       const platforms = [...st.platforms.map((p) => (p === r.onto ? moved : p)), ...under];
       const zone = relay(z, platforms, Math.max(0, moved.y + (floor ?? 0) + 100 - (z.bottom - DARK_GLOW.below)));
       const rim = darkRims({ platforms, zones: [zone] }).find((q) => q.piece === r.piece && q.dir === r.dir);
-      if (rim?.onto === moved && rim.drop && rim.light?.sleep) return { stage: { platforms, zones: [zone] }, rim, moved };
+      const d = rim?.onto === moved && rim.drop && rim.light?.sleep ? { stage: { platforms, zones: [zone] }, rim, moved } : null;
+      if (d && ok(d)) return d;
     }
+  }
   }
   return null;
 }
@@ -264,6 +267,7 @@ test("the cave mouth is lit (ruling (ii)): adult Easy roll 30 drops in from OUTS
 /** (ENG-DARK box 14) the hop rim's SHAPE: on Normal rolls 1-10, a hop rim in the dark whose step-off piece (the highest under a body's
  *  width out), moved by hand along so its back end lies 13 px behind his touchdown, is a sleeping rim no other light shows: the dark
  *  laid again (relay) with that piece moved; `own` the same lay with only the lights over the rims' own landings (no second lights) */
+const HOP_FLOOR = 540;
 function hopStep() {
   for (let seed = 1; seed <= 10; seed++) {
     const st = built(seed, 'normal');
@@ -276,8 +280,16 @@ function hopStep() {
         for (const p of st.platforms) if ((p.type === 'solid' || p.type === 'fragile') && p !== h.piece && xs >= p.x && xs <= p.x + p.width && p.y > h.y + 1 && p.y <= z.bottom && (!q || p.y < q.y)) q = p;
         if (!q) continue;
         const moved: Platform = { ...q, x: h.dir > 0 ? xs - 13 : xs + 13 - q.width };
-        const platforms = st.platforms.map((p) => (p === q ? moved : p));
-        const zone = relay(z, platforms, 0);
+        // (box 15: a hand floor HOP_FLOOR px under the step-off piece's back end, the wood between taken out, so that edge's own light
+        //  hangs past the reach of a stop on the hop rim (GLOW_REACH.down): only the second light can light it. Without it, every hop
+        //  rim of rolls 1-10 had that edge's own light near enough to wake with the stop, and no lay went RED without the second lights)
+        const bx = h.dir > 0 ? moved.x : moved.x + moved.width, side = -h.dir;
+        const lo = Math.min(bx, bx + side * 160), hi = Math.max(bx, bx + side * 160);
+        const sq = q;
+        const between = (p: Platform) => p !== sq && p !== h.piece && p.y > moved.y && p.y <= moved.y + HOP_FLOOR && p.x < hi && p.x + p.width > lo;
+        const floor: Platform = { ...q, x: lo - 240, width: hi - lo + 480, y: moved.y + HOP_FLOOR };
+        const platforms = [...st.platforms.filter((p) => !between(p)).map((p) => (p === q ? moved : p)), floor];
+        const zone = relay(z, platforms, Math.max(0, floor.y + 100 - (z.bottom - DARK_GLOW.below)));
         const stage = { platforms, zones: [zone] };
         const hop = darkRims(stage).find((r) => r.piece === h.piece && r.dir === h.dir && !r.drop);
         const back = darkRims(stage).find((r) => r.piece === moved && r.dir === -h.dir && r.light?.sleep);
@@ -361,7 +373,13 @@ test("an edge BEHIND a dark-rim drop's landing is no edge he lands toward (the l
   //  toy on a real rim. The drop is deep (deepDrop: 608 px), so the light over its landing hangs at the stop's reach, out of that edge's reach)
   // (608 px: the light hung at the stop's reach (GLOW_REACH.down) reaches his landing (188 px under it) and not that edge 13 px behind;
   //  the floor 400 px under the landing piece gives that edge its own landing, its light out of reach of his landing)
-  const d = deepDrop(608, (r) => (r.dir > 0 ? r.x + 24 - 13 - r.onto.x : r.x - 24 + 13 - r.onto.width - r.onto.x), 400);
+  // (box 15: on roll 1's first sleeping drop rim the light nearest that landing was another rim's, 90 px over it, and it reached that
+  //  edge: the builder now takes the first real drop rim of rolls 1-10 whose shape holds (deepDrop's check))
+  const behind = (q: { stage: { platforms: Platform[]; zones: Zone[] }; rim: DarkRim; moved: Platform }) => {
+    const b = darkRims(q.stage).find((m) => m.piece === q.moved && m.dir === -q.rim.dir);
+    return !!b?.light?.sleep && Math.hypot(q.rim.light!.x - b.x, q.rim.light!.y - b.y) > q.rim.light!.r;
+  };
+  const d = deepDrop(608, (r) => (r.dir > 0 ? r.x + 24 - 13 - r.onto.x : r.x - 24 + 13 - r.onto.width - r.onto.x), 400, behind, 10);
   assert.ok(d, 'a deep drop on a real rim');
   const { stage, rim, moved } = d;
   const back = darkRims(stage).find((q) => q.piece === moved && q.dir === -rim.dir);
