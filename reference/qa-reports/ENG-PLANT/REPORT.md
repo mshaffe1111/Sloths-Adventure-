@@ -89,12 +89,14 @@ rule changed (the lead decides the calibration).
 0. Setup: `npm ci --no-audit --no-fund --legacy-peer-deps`; worktrees (node_modules symlinked): fz-c24 2a2c44786, fz-c4 6b5f43da0,
    fz-main cdffdc627. Tools: tools/kidfall.mts.txt (6th arg: skills off, comma list), kidclass.py.txt, kidall.sh.txt, firstsplit.py.txt,
    trace.mts.txt, margins.mts.txt, row8*.mts.txt, rows-l.sh.txt. Code head still **c24 2a2c44786**.
-1. Ruling 1: the lead has the 2-4 kid Easy 35 run-up trace (above). WAIT for the lead's ruling on it before any merge. Meanwhile finish
-   data/l/firstsplit.txt (python3 tools/firstsplit.py.txt fz-c24 trace.mts out; about 4 min) for the other 10 rows that pass on c4:
-   a skill whose split is followed by a fall within 2 s where the fall is the skill's own act (a jump from a stand, a turn, a stop on a
-   sinker) = a NEW fault (send its trace); a split that only shifts when he boards and the fall is a full-run walk-off = R-165.413.
-   So far: 2-1 N 19: runUp identical (no act); floatSure parts at f1123 (x 8,485, a jump off solid #37 he does not take with it off) and
-   he walks off log #42's far end at x 8,817 (f1156) at vx 268; handed parts at f1182 and he walks off at 8,702 (f1211).
+1. Ruling 1 DONE except the lead's ruling: all 31 traced; data/l/firstsplit.txt complete; the lead has the 2-4 kid Easy 35 trace and probe
+   (sent before the hand-over). WAIT for the ruling. If 'fix it': c25 = c24 + the run-up's judge reads the steer he actually has at the
+   judge's frame. At E 35 his steer was off (vx 0 at t 47.533-47.567, before the judge's frame), and it stayed off for 5 frames after
+   the take-off. That is the thumb's own state (a let-go, release/releaseMax, or a slip; thumbify), which the gate hops fly through
+   hopFlies and the run-up's runPress does not (it assumes 'the steer held from now', firsttimer.ts:2363). Confirm which of the two first
+   (log thumbify's state at t 47.50-47.73). Then: a toy RED/GREEN, 2-4 kid E 35 PASS, the run-up's own rows (2-4 adult N 6/8/24/32,
+   child E 23, child N 39, child N 8), the 10 known flips, a 2-4 wide sample vs data/j/c24-2-4-w.jsonl (the run-up acts on 2-4; it was
+   identical on the 2-1/2-2 rows traced), then ruling 4 on c25's exact head.
 2. Ruling 2: re-plant pacerLay 22 (boardLog, home middle Easy 1: the lip-log run-off, needs a full RiverZone for floatAt, see
    af127d21e's note) and 23 (raceSure: a racing hop off a log toward a bank 28 px up within 80 px of the log's end; the press's own
    short hold came down 19 px short) as explicit toys in tools/inspect/firsttimer.test.ts the way af127d21e did fromTakeoff: RED with
