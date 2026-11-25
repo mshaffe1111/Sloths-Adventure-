@@ -1,4 +1,35 @@
-# BUILD-28 REPORT (W2-LANE: 2-8 "Before the Water Rises"; R-165.430 (2), READY-28, BUILD-28). Session 1 (W2-LANE a), started 9:44 AM ET (from date). Session 2 (W2-LANE b), started 10:07 AM ET (from date). Session 3 (W2-LANE c), started 10:30 AM ET (from date). Session 4 (W2-LANE d), started 10:52 AM ET (from date). Session 5 (W2-LANE e), started 11:19 AM ET (from the session hook date) Session 6 (W2-LANE f), started 11:41 AM ET (from the session hook date) Session 7 (W2-LANE g), started 12:05 PM ET (from the session hook date)
+# BUILD-28 REPORT (W2-LANE: 2-8 "Before the Water Rises"; R-165.430 (2), READY-28, BUILD-28). Session 1 (W2-LANE a), started 9:44 AM ET (from date). Session 2 (W2-LANE b), started 10:07 AM ET (from date). Session 3 (W2-LANE c), started 10:30 AM ET (from date). Session 4 (W2-LANE d), started 10:52 AM ET (from date). Session 5 (W2-LANE e), started 11:19 AM ET (from the session hook date) Session 6 (W2-LANE f), started 11:41 AM ET (from the session hook date) Session 7 (W2-LANE g), started 12:05 PM ET (from the session hook date) Session 8 (W2-LANE h), started 12:49 PM ET (from the session hook date)
+
+## EXACT NEXT STEP (session 8, W2-LANE h; code head 0cdc35b7f (= ceab09e20's code); this session adds only files under reference/)
+1. THE 2b TOYS, ON THE DRAFT, READY FOR 1b (DONE): draft-1b-B2b-forkjump-popup.patch.txt is ONE patch that applies on 0cdc35b7f (checked
+   with git apply --check): B (the walked top line) + 2b (the pop-up re-read) + the fork-jump read in firsttimer.ts, as the three earlier
+   drafts, PLUS `LINE_SKILL.popUp` (the skill switch for the 2b line, the way keepRoad/leadLine are switched, level.md rule 21) and
+   lineBot.test.ts with the probe's ruled-fork toy (floodRun's `fork`: W2_FORK and W2_FORK_RIVERS.low laid as gen2 lays them) and two toys:
+   GREEN 'pop-up: ... he walks on round by it, home, nobody set back, no rescue': the four tiers whose double pops him up at late 0
+   (child-easy, child, middle, expert) x seeds 1-3 on the ruled fork (gap 81): 12/12 shrine, home 3, setBack 0, rescues 0, each on the
+   marsh floor first, 12/12 up by a PRESS off the marsh. RED 'planted: with the pop-up re-read off': 3 of the 12 stall and are rescued
+   (child seeds 1-3: rescues 1, 66.1 s against 57.7 s with the skill). lineBot.test.ts 14/0 on the frozen draft (the 12 old toys and the
+   2 new); tsc 0 on the draft.
+   NAMED PLAINLY: on the new shape (gap 81) the stall without 2b is the CHILD's only. The other 9 pop-up runs (child-easy, middle, expert)
+   do not stall without it: they keep the low road as their way, come back down to it and finish 1-2 s SOONER (child-easy 25.0 vs 27.3 s,
+   middle 24.4 vs 26.5 s, expert 21.2 vs 22.1 s). Session 6's 11 stalls were on the old gap 60. So with 2b a popped-up bot goes round by the
+   high road even where dropping back was quicker: that is ruling (c)'s model (his own move makes his road), not a speed choice. For the
+   lead to judge; it changes no verdict (every run home, nobody set back).
+2. THE STILLS (the fork and a marsh dip, upright and sideways): forkstills.mjs.txt is written (the two-road toy built in the dev page the
+   way towerstills.mjs builds its fixture, borrowing 2-3's config and art; spots bank, lip (the 81 px gap below him), porch, top (three
+   up, three down), and the marsh dip shot the frame a little one paddles in it). NOT YET SHOT at this step: my two heavy slots hold the
+   gates (item 3). To run: cp reference/qa-reports/BUILD-28/forkstills.mjs.txt <scratch>/forkstills.mjs; a background command
+   `npx vite --port 5199 --strictPort`; then `node <scratch>/forkstills.mjs 5199 <out> 1`. The marsh's water carries its flood mark
+   from riverLay (the row's flood 'close'), not from layFlood, so the line's swim (FollowPlay.swimAcross: water with a lip) is there on the
+   toy with no flood clock laid.
+3. THE OWED GATES on 0cdc35b7f, in frozen /home/user/wt28s8g (src and tools chattr +i, src/game/gen2/proven LEFT WRITABLE: the frozen-tree
+   path D115 names, so seedListChunk.test's mkdtemp under proven/ is not refused), each with NO cap shorter than its own (timeout 90 min):
+   the unit suite (the CLAUDE.md tsx --test line) and drawcheck, both started 12:55 PM ET (the output files' birth time, stat), side by side. Then clipcheck and paintcheck
+   (3 parts), two at a time. pacerLay :254/:280 are release 4's (D135) and clear at 1b.
+4. THEN: 1b at the lead's hash (release-0.10.3's final head after release 4's bot fix): merge it (no force), keep both intents in
+   firsttimer.ts, apply draft-1b-B2b-forkjump-popup.patch.txt as ONE engine-piece commit, rule 28 (ENG-PLANT's 10 known flips, the wide
+   sample seeds 1-10 every bot both settings on 2-1/2-2/2-4: 0 BAR PASS -> FAIL vs main), lockall vs main, the probe 54/54. If no hash
+   has come, tell the lead and wait. 5. READY-28 on 2-8's own config (the lead's order, item 5).
 
 ## EXACT NEXT STEP (session 7, W2-LANE g; heads b433ade6b (engine piece), ceab09e20 (the verdict), + this REPORT commit). THE LEAD'S ENTRY PRINCIPLE: the RUN takes the LOW road,
 ## a JUMP the HIGH road; running off W never lands him on the high road; reaching it always needs a press
