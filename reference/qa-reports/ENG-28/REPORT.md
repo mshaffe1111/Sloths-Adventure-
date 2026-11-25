@@ -2,6 +2,13 @@
 (Session 2 ENG-28b 2:29-2:50 PM ET; session 3 left no commit; session 4 ENG-28d 4:21-4:42 PM ET; session 5 ENG-28e 4:46-5:03 PM ET;
 session 6 ENG-28f 5:35-5:47 PM ET; session 7 ENG-28g 5:54-6:05 PM ET; session 8 ENG-28h 6:07-6:33 PM ET. Sessions newest first.)
 
+## SESSION 10 (ENG-28j), started 9:13 AM ET (from date): suite shard 5 DONE
+- Suite shard 5 on ours (frozen worktree /home/user/wt28j at 94cf0d86, chattr +i src tools, proven/ writable; list rebuilt: 631 files,
+  shard 5 = 112 files), 9:14-9:29 AM ET (14.8 min): 859 tests, 857 pass, 0 FAIL, 0 cancelled, 2 todo (w4RealReach.test.ts and
+  w4Runtime.test.ts: the boulder fixer's TODOs, 'the engine's wall check has no bottom'). Bar met.
+- Every shard 0-5 now run once on frozen 94cf0d86: only red = pacerLay :254 :280 (shard 2; the base's own, R-165.439, owner ENG-PLANT).
+- Lessons applied: D115 (frozen tree), D119 (no heredoc in a commit chain), D122 (explicit timeout), D128 (stamps from date), D134 (push and ls-remote before hand-over).
+
 ## EXACT NEXT STEP (session 10)
 Branch t-eng-28-wip: CODE head 94cf0d86 (every later commit touches only this folder; `git diff --stat 94cf0d86..origin/t-eng-28-wip`
 must show only reference/qa-reports/ENG-28/). `git fetch origin t-eng-28-wip`, confirm, `npm ci --no-audit --no-fund --legacy-peer-deps`.
