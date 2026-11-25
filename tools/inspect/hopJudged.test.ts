@@ -376,3 +376,49 @@ test('a stand on a log running his way is a stop he means: 2-4 kid Easy 19, down
   } });
   for (const o of offs) assert.ok(!o.down, `he walked off log #${o.from} at t ${o.t.toFixed(3)} x ${o.x.toFixed(1)} with no take-off and was set down from the water`);
 });
+
+// CI-14 (ENG-PLANT-CI session 11, CI-13's moved row 2-2 adult Normal 4, traced in s11/): padRead's 'once he has seen it ready he is going'
+//  (padSeen) was set on floor #108 at 133.733 and carried over weight pads #113 and #114 to the next floor that stays, #109: there the
+//  CROSS-ON-THE-BREATH read was skipped and he hopped onto beat row #115 / #116 (clock pads-deepBeat22: up 2.0, shiver 0.6, under 0.6) at
+//  138.900 with 1.3 s of the breath left for the 500 px run to #110 (PAD_FAIR: 500 / 230 + 0.3 = 2.47 s); it went under with him on #115
+//  at 140.233 and he lost the life. The real stage and bot: every take-off from a floor that stays onto a beat row leaves with the breath
+//  left to cross the row to the next floor that stays at the fair pace (PAD_FAIR.pace; his reaction is already spent), less what the read
+//  itself allows after it: a frame and his thumb's lag (mid + 3 sd, as thumbLags). An honest start (#49 onto #53 at 69.433: 1.97 s for 2.04)
+//  is 0.07 s short, his thumb; the stale read was 0.87 s short
+test('a beat row is started from a floor that stays only on a breath that crosses it: 2-2 adult Normal 4, off #109 onto #115 / #116 (CI-14)', async () => {
+  const ft = await import('./firsttimer.ts');
+  const { PAD_FAIR } = await import('../../src/game/gen2/rideLay.ts');
+  type Q = { id: number; x: number; y: number; width: number; pad?: { by?: string; clock?: string; shift?: number } };
+  type S = { t: number; e: { player: { x: number; y: number; grounded: boolean }; standingOnId: number | null; clock: { read: (c: string, s?: number) => { phase: string; left: number } } }; platforms: Q[]; stage: { clocks?: { id: string; phases: { name: string; seconds: number }[] }[] } };
+  const starts: { t: number; from: number; left: number; need: number; on: number | null }[] = [];
+  let last: { g: boolean; on: number | null; x: number } | null = null;
+  let open: { t: number; from: Q; x: number } | null = null;
+  ft.firstTimer('2-2', 4, { ...ft.FT_ADULT, setting: 'normal' }, { cap: 144, dotSetting: true, onFrame: (sim) => {
+    const s = sim as unknown as S;
+    const p = s.e.player;
+    const was = last?.on != null ? s.platforms.find((q) => q.id === last!.on) : undefined;
+    // (a take-off from a floor that stays: grounded on a floor with no pad, then airborne, going up)
+    if (last?.g && !p.grounded && was && !was.pad) open = { t: s.t, from: was, x: last.x };
+    if (open && p.grounded) {
+      const on = s.platforms.find((q) => q.id === s.e.standingOnId);
+      if (on?.pad?.by === 'beat' && on.pad.clock && on.id !== open.from.id) {
+        const r = s.e.clock.read(on.pad.clock, on.pad.shift);
+        const def = (s.stage.clocks ?? []).find((c) => c.id === on.pad!.clock);
+        const warn = def?.phases.find((ph) => ph.name === 'warn')?.seconds ?? 0;
+        const dir = on.x > open.x ? 1 : -1;
+        const edge = dir > 0 ? open.from.x + open.from.width : open.from.x;
+        const row = s.platforms.filter((q) => Math.abs(q.y - open!.from.y) < 90 && q !== open!.from && (dir > 0 ? q.x >= edge - 4 : q.x + q.width <= edge + 4)).sort((a, b) => (dir > 0 ? a.x - b.x : b.x - a.x));
+        const stays = row.find((q) => q.pad?.by !== 'beat');
+        const across = stays ? Math.abs((dir > 0 ? stays.x : stays.x + stays.width) - edge) : Infinity;
+        // (the breath left at the take-off: he was in the air from open.t to now, so add that back)
+        const left = (r.phase === 'off' ? r.left + warn : r.phase === 'warn' ? r.left : 0) + (s.t - open.t);
+        starts.push({ t: open.t, from: open.from.id, left, need: across / PAD_FAIR.pace, on: on.id });
+      }
+      open = null;
+    }
+    last = { g: p.grounded, on: s.e.standingOnId, x: p.x };
+  } });
+  assert.ok(starts.some((b) => b.from === 109), `he never started beat row #115 / #116 off #109 by t 144 (${starts.map((b) => '#' + b.from + '@' + b.t.toFixed(2)).join(' ')})`);
+  const lagMax = ft.FT_ADULT.thumb[0] + 3 * ft.FT_ADULT.thumb[1];
+  for (const b of starts) assert.ok(b.left >= b.need - DT - lagMax, `he left floor #${b.from} at t ${b.t.toFixed(3)} onto beat pad #${b.on} with ${b.left.toFixed(2)} s of the breath left for a run that needs ${b.need.toFixed(2)} s`);
+});

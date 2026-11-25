@@ -1571,6 +1571,8 @@ export class FirstTimerRun {
   private wheelHop = 0;
   /** a pond's pad ahead first read ready (s), or -1 (padRead's reaction) */
   private padSeen = -1;
+  /** he has hopped since padSeen was set (CI-14: the next floor that stays he reaches is a new edge, read afresh) */
+  private padSeenHop = false;
   /** with KEEP-HOPPING off: the pad he stops on and until when (padRead) */
   private padStop: { id: number; until: number } | null = null;
   private offDelay = 0;
@@ -4461,6 +4463,12 @@ export class FirstTimerRun {
     // the plain edge's jump then went blind onto a beat pad; BUILD-22, the rise toy's child-Normal trace)
     const here = (p.grounded ? this.sim.platforms.find((q) => q.id === this.sim.standingOn) : undefined) ?? this.floorAt(p.x, p.y, 6);
     if (!here) { this.padSeen = -1; return null; }
+    // (CI-14, rule 28: 'once he has seen it ready he is going' holds from the floor where he saw it, over the pads he hops; a NEW floor that
+    //  stays is a new edge and its breath is read afresh. Carried from #108 (set 133.733) over weight pads #113 and #114 to #109, the stale
+    //  read skipped CROSS-ON-THE-BREATH there and he started beat row #115 / #116 with 1.3 s of breath left for a 500 px run that needs
+    //  2.47 s (PAD_FAIR); it went under with him on #115: 2-2 adult Normal 4, ENG-PLANT-CI session 11, s11/)
+    //  (a hop, not a seam: walking from one floor piece onto the next is the same edge)
+    if (!here.pad && this.padSeen >= 0 && this.padSeenHop) this.padSeen = -1;
     const shows = (q: Platform) => padShows(q) ?? { solid: !q.broken, tell: 0 };
     const edgeX = dir > 0 ? here.x + here.width : here.x;
     const toEdge = dir > 0 ? edgeX - p.x : p.x - edgeX;
@@ -4493,7 +4501,7 @@ export class FirstTimerRun {
       const lag = react + (stay ? Math.max(0, toEdge - 40) / PHYS.maxRun : 0) + SNAP_THUMB;
       if (!this.snapGo(p, dir, here, next, lag)) { this.padSeen = -1; return approach(); }
       if (stay) {
-        if (this.padSeen < 0) this.padSeen = t;
+        if (this.padSeen < 0) { this.padSeen = t; this.padSeenHop = false; }
         if (t - this.padSeen < who.stopReact) return approach();
       }
       // (the hop: as soon as his own press, or a tap, from where he stands comes down on the next floor; never a walk to the lip first)
@@ -4542,7 +4550,7 @@ export class FirstTimerRun {
     if (!ready) { this.padSeen = -1; return approach(); }
     // (from a floor that stays, he goes after his own reaction to it being ready; on a pad he is already going)
     if (!here.pad) {
-      if (this.padSeen < 0) this.padSeen = t;
+      if (this.padSeen < 0) { this.padSeen = t; this.padSeenHop = false; }
       if (t - this.padSeen < who.stopReact) return approach();
     }
     // (the hop: he presses where a flown hop comes down on it whatever he holds, a tap or a full hold, after his thumb's lag; where no
@@ -5128,6 +5136,7 @@ export class FirstTimerRun {
 
   private startJump(dir: -1 | 0 | 1, kind: 'single' | 'double', off: boolean): Pad {
     const p = this.sim.p, who = this.who;
+    if (this.padSeen >= 0) this.padSeenHop = true;
     // (a tier bot: where a jump has failed him he holds on longer; any jump may get its second press, at his own delay)
     const overhead = this.climbJump;
     const toX = this.climbToX;
