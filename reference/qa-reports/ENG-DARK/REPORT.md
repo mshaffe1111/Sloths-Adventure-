@@ -1,10 +1,26 @@
 # ENG-DARK REPORT (the dark + light ring as one gen2 brick; WORLD-3-PLAN F2; R-165.449)
-**EXACT NEXT STEP (ENG-DARK-l box 12 hand-over, 3:21 PM ET by `date`; head on t-eng-dark-wip = this commit; CODE c5e25be9d (move code
+**EXACT NEXT STEP (ENG-DARK-l box 12 hand-over, 3:22 PM ET by `date`; head on t-eng-dark-wip = this commit; CODE f69e18fb0 (move code
 unchanged since box 11's 0ef63c154: e0db872f4 adds RECORDS only). Box 13 OWNS every step below. Re-fetch before every commit (D138).)**
-**STEP 1 (re-anchor) BUILT; its proof RUNNING at hand-over (box 12 finishes and records ONLY this, D138):** in a clean worktree of
-c5e25be9d: planted-faults.py plants 12,13,14,15,16,19,20,28,29 (every darkBots plant; BASE RED / NO TEST guards on), then darkBots.test
-whole. Box 12 commits the result as reference/qa-reports/ENG-DARK/plants-box12.txt and one line to the lead. If it is not there, box 13
-runs it first: `python3 reference/qa-reports/ENG-DARK/planted-faults.py <clean wt> 12,13,14,15,16,19,20,28,29`, then darkBots.test.
+**THE LEAD RULED (A):** hand-built toys on roll 1's REAL first sleeping rim in the real engine; no rolls 41-80 (cost); the REPORT says
+the final lay no longer deals those faults on rolls 1-40, so each guard is a SHAPE toy; tests 8/9 on FTRun.dark.loop accepted.
+**THE PLANTS on c5e25be9d (box 12, clean worktree, BASE RED / NO TEST guards on; plants-box12.txt):** CAUGHT 12, 15, 28, 29; **MISSED
+13 (toy 3, the expert's jump), 14 (toy 4, facing: FIXED after, in f69e18fb0, hand-built; plant 14 probed RED), 16 (toy 6, the KID's
+thumb), 19 and 20 (test 7, the trunk MID-WAY: castRun child Easy 25 reaches the shrine with either plant)**. darkBots.test whole on
+c5e25be9d was running at hand-over (box 12 records it in plants-box12.txt).
+**BOX 13 DOES FIRST (step 1 is NOT done):** re-anchor toy 3, toy 6 and test 7 so plants 13, 16, 19, 20 are CAUGHT, each like toys 4/5/
+10/11 (hand-built on roll 1's real rims: onFrame + RealPlay.stand; the toy's name and asserts kept) unless a real roll is found: a scan
+of the expert Normal/Easy 1-40 cap 600 with plant 13 applied was RUNNING in box 12's container (box 12 commits it as
+scan-box12-jump.log if it finishes). Shapes: toy 3, the expert running at a dark rim, its light asleep, the route's jump over it (plant
+13: he jumps into the dark); toy 6, the KID landing near a rim with a held steer toward it (plant 16: he runs off); test 7, the child
+stood beside a trunk mid-way, its top above him, the way on down it. Then plants 12-16, 19, 20, 28, 29 all CAUGHT and darkBots.test
+whole GREEN; THEN the steps below.
+**THEN, in order:** (b) FREEZE the head (a worktree, `chattr -R +i src tools reference` except src/game/gen2/proven, ruling 6) and run
+ONE x40 vs THE BAR (shrine 360/360; unlit at or below 5 events, NO loop: FTRun.dark.loop / the rows; no rescue kind the base lacks):
+`GEN2_DRAFT=3-1 npx tsx tools/inspect/castBots.ts --stage 3-1 --seeds 1-20 | 21-40 --setting both --par 2 --rows ...` (box 8's line), two
+lanes; commit cast-3-1-x40-<head>.jsonl; median shrine time per tier x setting vs cast-3-1-x40-base-c1008d8e.jsonl (box 11 saw middle
+N 16 +40 s, middle E 1 +30 s: say if general); one line to the lead. (c) ONCE on that head: tierBots 9/9, the suite shards + the CI
+tool line (timeout 7200000). (d) LAND on t-eng-w3 as box 11's note says (merge, no force, conflicts named; dark.test, darkBots.test,
+lockall on the merged head; push; the hash to the lead). Kid N 12 planted noTurnRoom showed loop 13: watch the x40's loop column.
 **DONE in box 12:**
 - Plants 28 (seam check off: downEnd `if (d === 0 || this.who.noSeamWalk) return d;` -> `|| true`; test 'a seam he walks over is no way
   down') and 29 (turn room off: glowWait `if (!this.who.noTurnRoom && stop.turn !== 1) {` -> `if (false) {`; test 'the dark stop's turn
@@ -28,13 +44,6 @@ runs it first: `python3 reference/qa-reports/ENG-DARK/planted-faults.py <clean w
 - Toys 3, 4, 6 unchanged (pass unplanted); their plants 13, 14, 16 are in the running proof.
 - Told the lead (a ruling asked, before building): A hand-built toys / B widen rolls / C other. Built A (cheap, reversible); if the lead
   rules otherwise, revert d4570feee and c5e25be9d's test edits.
-**BOX 13 DOES, in order:** (a) read plants-box12.txt; any MISSED / NO TEST / BASE RED is fixed first. (b) FREEZE the head (a worktree,
-`chattr -R +i src tools reference` except src/game/gen2/proven, ruling 6) and run ONE x40 vs THE BAR (shrine 360/360; unlit at or
-below 5 events, NO loop: read FTRun.dark.loop / the rows; no rescue kind the base lacks): `GEN2_DRAFT=3-1 npx tsx tools/inspect/castBots.ts
---stage 3-1 --seeds 1-20 | 21-40 --setting both --par 2 --rows ...` (box 8's line), two lanes; commit as cast-3-1-x40-<head>.jsonl;
-median shrine time per tier x setting vs cast-3-1-x40-base-c1008d8e.jsonl (box 11 saw middle N 16 +40 s, middle E 1 +30 s: say if
-general); one line to the lead. (c) ONCE on that head: tierBots 9/9, the suite shards + the CI tool line (timeout 7200000). (d) LAND
-on t-eng-w3 as box 11's note says (merge, no force, conflicts named; dark.test, darkBots.test, lockall on the merged head; push; hash).
 **EXACT NEXT STEP (ENG-DARK-k box 11 hand-over, 2:57 PM ET by `date`; head on t-eng-dark-wip = this commit; CODE = this commit (rulings
 1-4 built). Box 12 OWNS every step below. Re-fetch before every commit (D138).)**
 **THE LEAD'S RULINGS ON BOX 10 (received by box 11, word for word in substance):** (1) 33 N: (A): the lay hangs the second light over

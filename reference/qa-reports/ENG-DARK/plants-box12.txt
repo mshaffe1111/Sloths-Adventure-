@@ -1,0 +1,10 @@
+CAUGHT  the bots' dark stop removed (glowWait never stops him)  -> 'the dark's skill: he stands'
+MISSED  the bots' dark stop skips a jump (glowJump not read)  -> 'holds a running JUMP'
+MISSED  the dark stop never turns him to face the rim  -> 'stop FACES the rim'
+CAUGHT  a dark give-up kept for the whole run  -> 'give-up ends with the visit'
+MISSED  the dark stop never reads the pressed steer (glowSteer not called)  -> 'stop reads the THUMB'
+MISSED  the way-down plan's top test one-sided again  -> 'MID-WAY'
+MISSED  the way-down plan never takes a trunk mid-way (no up grab)  -> 'MID-WAY'
+CAUGHT  the seam check off: a seam he walks over read as a way down (downEnd)  -> 'a seam he walks over is no way down'
+CAUGHT  the dark stop's turn room off: the turn pressed at the rim's very edge (glowWait)  -> 'the dark stop's turn is never pressed at the rim's very edge'
+plants rc=1
