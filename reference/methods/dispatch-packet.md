@@ -139,3 +139,5 @@ about 1-2 s a row, every finished row kept.
 **Hugging Face jobs start in the 'Hugging Face' environment (11-25).** create_session takes environment_id env_01XHDWWRRuUac8x7qDbVLwZz for any job that generates art; the Default environment has no Hugging Face access. The packet names the environment, and the member confirms access with the cheapest read before planning a batch.
 
 **A hand-over message ends new work (D138, 11-25).** Every brief's BOX line says: once you send your hand-over, you start nothing new; you only finish and record a gate already running. Anything more needs the lead's word, because the next session may already be working from your hand-over hash.
+
+**A lay rule is judged by the bots, not by its own count (CI #81, 11-25).** A rule written to help play (fewer dead ends, no lids, no slots) reports the bots' rescues old vs new on the same rows beside its own verdict count. Its own count going to 0 is not a cure; the rescues going down is.
