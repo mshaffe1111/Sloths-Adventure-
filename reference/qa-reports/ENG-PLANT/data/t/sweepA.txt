@@ -1,0 +1,8 @@
+drop gap280 seed 1 normal | on: L0c1g1f0 L0c1g1f0 L0c0g0f0 L0c1g1f0 L0c1g1f0 L0c1g1f0 L0c1g1f0 L0c1g1f0 | off: L0c1g1f0 L1c1g1f0 L0c0g0f0 L0c1g1f0 L0c1g1f0 L0c1g1f0 L1c2g1f0 L3c1g0f0
+sparse no clean seed
+drop ride seed 1 normal | on: L0c1g1f0 L0c1g1f0 L0c1g1f1 L0c1g1f1 L0c1g1f0 L0c1g1f0 L0c1g1f0 L0c1g1f0 | off: L0c1g1f0 L0c1g1f0 L0c1g1f1 L0c1g0f1 L0c1g1f0 L0c1g1f0 L0c2g1f0 L0c1g1f0
+drop deep seed 1 normal | on: L0c1g1f0 L0c1g1f1 L0c1g1f1 L0c1g1f1 L0c1g1f1 L0c1g1f0 L0c1g1f0 L0c1g1f0 | off: L0c1g1f0 L3c3g1f2 L0c1g1f1 L0c1g1f1 L1c1g1f1 L1c2g2f0 L0c1g1f0 L1c2g2f0
+drop back seed 1 normal | on: L0c1g0f0 L0c1g0f0 L0c1g0f0 L0c1g0f1 L0c1g0f0 L0c1g0f0 L0c1g0f0 L0c1g0f0 | off: L0c1g0f0 L0c1g0f0 L0c1g0f0 L0c1g0f1 L0c1g0f0 L0c1g0f0 L0c1g0f0 L0c1g0f0
+drop twin seed 1 normal | on: L0c1g1f0 L0c1g1f1 L0c1g1f1 L0c1g1f0 L0c1g1f0 L0c1g1f0 L0c1g1f0 L0c1g1f0 | off: L0c1g1f0 L0c1g1f1 L0c1g1f1 L0c1g1f0 L0c1g1f0 L0c1g1f0 L0c1g1f0 L0c1g1f0
+drop long seed 1 normal | on: L0c1g1f0 L0c1g1f1 L1c1g1f0 L0c1g1f0 L0c1g1f1 L0c1g1f0 L0c1g1f0 L0c1g1f0 | off: L0c1g1f0 L0c1g1f1 L0c1g1f0 L3c4g1f0 L0c1g1f1 L0c1g1f0 L2c3g1f0 L3c2g0f0
+drop raft seed 1 normal | on: L0c1g1f0 L0c1g1f1 L0c1g1f0 L0c1g1f0 L0c1g1f1 L0c1g1f0 L0c1g1f0 L0c1g1f1 | off: L0c1g0f0 L0c1g1f1 L0c1g0f0 L2c1g0f0 L0c1g0f1 L0c1g1f0 L0c1g1f0 L0c1g1f1

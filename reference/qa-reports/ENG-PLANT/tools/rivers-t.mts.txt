@@ -1,0 +1,8 @@
+import '/home/user/pt/src/game/headlessDom.ts';
+import { RealPlay } from '/home/user/pt/src/game/realPlay.ts';
+for (const id of ['2-1', '2-2', '2-3', '2-4', '2-5', '2-6', '2-7', '2-8', '2-9', '2-10']) {
+  try {
+    const counts = [1, 2, 3].map((seed) => { const sim: any = new RealPlay(id, seed); const rv = (sim.stage?.rivers ?? []).filter((b: any) => b.speed > 0); return `${rv.filter((b: any) => b.dir > 0).length}+/${rv.filter((b: any) => b.dir < 0).length}-`; });
+    console.log(id, counts.join(' '));
+  } catch (e: any) { console.log(id, 'ERR', String(e.message).slice(0, 80)); }
+}

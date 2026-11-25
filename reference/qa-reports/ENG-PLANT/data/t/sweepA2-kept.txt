@@ -1,0 +1,6 @@
+drop gap280 seed 2 normal | on: L0c1g1f0 L0c1g1f0 L0c1g1f0 L0c1g1f0 L0c1g1f0 L0c1g1f0 | off: L0c1g1f0 L1c2g1f0 L1c1g0f0 L2c2g1f0 L1c2g1f0 L1c2g1f0
+drop gap280 seed 3 normal | on: L0c1g1f0 L0c1g1f1 L1c1g1f0 L1c1g1f0 L0c1g1f0 L0c1g1f0 | off: L1c2g1f0 L1c2g1f1 L1c1g1f0 L4c4g1f0 L1c2g1f0 L1c2g1f0
+drop gap280 seed 4 normal | on: L0c1g1f0 L0c1g1f0 L0c1g1f0 L0c1g1f0 L0c1g1f0 L0c1g1f0 | off: L2c2g0f0 L0c1g1f0 L1c2g1f0 L2c3g1f0 L1c1g0f0 L1c2g1f0
+drop gap280 seed 5 normal | on: L0c1g1f0 L0c1g1f0 L0c1g1f0 L0c1g1f1 L0c1g1f0 L0c1g1f0 | off: L0c1g1f0 L2c2g1f0 L0c1g1f0 L1c2g1f1 L1c1g0f0 L2c2g1f0
+drop gap280 seed 6 normal | on: L0c1g1f0 L0c1g1f0 L1c1g1f0 L1c1g1f1 L0c1g1f0 L1c1g1f0 | off: L1c2g1f0 L1c2g1f0 L1c1g1f0 L4c3g1f1 L1c2g1f0 L2c2g1f0
+drop gap280 seed 7 normal | on: L0c1g1f0 L0c1g1f0 L0c1g1f0 L0c1g1f0 L0c1g1f0 L0c1g1f0 | off: L4c4g1f0 L0c1g1f0 L3c4g1f0 L0c1g1f0 L0c1g1f0 L1c2g1f0

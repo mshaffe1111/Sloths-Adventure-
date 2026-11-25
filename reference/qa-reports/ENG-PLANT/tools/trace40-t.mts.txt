@@ -1,0 +1,19 @@
+// rule 28: 2-1 child Normal 40, bankUp on and off: every life lost (t, x), his last take-off (t, x, from what) and the rivers there
+import '/home/user/pt/src/game/headlessDom.ts';
+import { CAST_BOTS } from '/home/user/pt/tools/inspect/castBots.ts';
+import { firstTimer, SKILLS } from '/home/user/pt/tools/inspect/firsttimer.ts';
+const [bot, setting, s, stage] = [process.argv[2] ?? 'child', process.argv[3] ?? 'normal', Number(process.argv[4] ?? 40), process.argv[5] ?? '2-1'];
+for (const on of [true, false]) {
+  SKILLS.bankUp = on;
+  let lives: number | undefined, last: any = null, was = true, out: string[] = [], rivers: any[] = [];
+  const r: any = firstTimer(stage, s, (CAST_BOTS as any)[bot][setting], { cap: 1200, dotSetting: true, onFrame: (sim: any) => {
+    const e = sim.e, p = e.player; rivers = (sim.stage.rivers ?? []);
+    if (was && !p.grounded) { const here = e.platforms.find((q: any) => q.id === e.standingOnId) ?? last?.here; last = { t: sim.t, x: p.x, vx: p.vx, from: here ? `${here.type}#${here.id}${here.drift ? ' dir' + here.drift.dir : ''} [${Math.round(here.x)},${Math.round(here.x + here.width)}] y${Math.round(here.y)}` : '?' }; }
+    if (p.grounded) { const here = e.platforms.find((q: any) => q.id === e.standingOnId); if (last) last.here = here; }
+    was = p.grounded;
+    if (lives !== undefined && e.lives < lives) { const rv = rivers.find((b: any) => p.x >= b.x0 - 40 && p.x <= b.x1 + 40); out.push(`life t${sim.t.toFixed(2)} x${Math.round(p.x)} y${Math.round(p.y)} river ${rv ? `[${Math.round(rv.x0)},${Math.round(rv.x1)}] dir${rv.dir} v${rv.speed}` : 'none'} | last take-off t${last?.t?.toFixed(2)} x${Math.round(last?.x)} vx${Math.round(last?.vx)} from ${last?.from}`); }
+    lives = e.lives;
+  } } as any);
+  console.log(`${stage} ${bot} ${setting} ${s} bankUp ${on ? 'ON' : 'OFF'}: end ${r?.end} lives ${out.length}`); out.forEach((l) => console.log('  ' + l));
+}
+SKILLS.bankUp = true;

@@ -1,0 +1,55 @@
+TAP version 13
+# Subtest: DROP ON A LOG: on gap280 the middle bot lets go onto a log and loses no life; PLANTED: without the skill he drowns
+not ok 1 - DROP ON A LOG: on gap280 the middle bot lets go onto a log and loses no life; PLANTED: without the skill he drowns
+  ---
+  duration_ms: 1980.574025
+  type: 'test'
+  location: '/home/user/fz/tools/inspect/lianaRide.red.test.ts:67:1'
+  failureType: 'testCodeFailure'
+  error: 'v3: caught the liana 1 times and no let-go came down on a log'
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: true
+  actual: false
+  operator: '=='
+  stack: |-
+    <anonymous> (/home/user/fz/tools/inspect/lianaRide.red.test.ts:89:18)
+    Array.map (<anonymous>)
+    on (/home/user/fz/tools/inspect/lianaRide.red.test.ts:77:33)
+    TestContext.<anonymous> (/home/user/fz/tools/inspect/lianaRide.red.test.ts:99:14)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.start (node:internal/test_runner/test:944:17)
+    startSubtestAfterBootstrap (node:internal/test_runner/harness:296:17)
+  ...
+# Subtest: A VINE FROM A LOG: on the catch toy the middle bot jumps from the moving log to the liana; PLANTED: without the skill, never
+not ok 2 - A VINE FROM A LOG: on the catch toy the middle bot jumps from the moving log to the liana; PLANTED: without the skill, never
+  ---
+  duration_ms: 4453.932872
+  type: 'test'
+  location: '/home/user/fz/tools/inspect/lianaRide.red.test.ts:104:1'
+  failureType: 'testCodeFailure'
+  error: 'normal, with the skill: catches off a log 0,0,0,0,0'
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: true
+  actual: false
+  operator: '=='
+  stack: |-
+    TestContext.<anonymous> (/home/user/fz/tools/inspect/lianaRide.red.test.ts:120:12)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
+  ...
+1..2
+# tests 2
+# suites 0
+# pass 0
+# fail 2
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 7115.480914

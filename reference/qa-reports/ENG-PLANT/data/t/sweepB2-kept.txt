@@ -1,0 +1,11 @@
+catch twin seed 2 easy | on: L0c1g0f1 L0c1g0f1 L0c1g0f1 L0c1g0f1 L0c0g0f0 | off: L0c0g0f0 L0c0g0f0 L0c0g0f0 L0c0g0f0 L0c0g0f0
+catch twin seed 2 normal | on: L0c1g1f1 L0c1g0f1 L1c1g1f1 L0c1g1f1 L0c1g0f1 | off: L0c0g0f0 L0c0g0f0 L0c0g0f0 L0c0g0f0 L0c0g0f0
+catch twin seed 3 easy | on: L0c1g0f1 L0c0g0f0 L1c1g0f1 L0c0g0f0 L0c0g0f0 | off: L0c0g0f0 L0c0g0f0 L1c0g0f0 L0c0g0f0 L0c0g0f0
+catch twin seed 3 normal | on: L1c1g1f1 L0c0g0f0 L0c1g1f1 L0c1g0f1 L0c1g0f1 | off: L0c0g0f0 L0c0g0f0 L0c0g0f0 L0c0g0f0 L0c0g0f0
+catch twin seed 4 easy | on: L0c0g0f0 L0c1g0f1 L0c1g0f1 L0c1g0f1 L0c0g0f0 | off: L0c0g0f0 L0c0g0f0 L0c0g0f0 L0c0g0f0 L0c0g0f0
+catch twin seed 4 normal | on: L0c1g1f1 L0c1g1f1 L0c1g1f1 L0c1g0f1 L0c1g0f1 | off: L0c0g0f0 L0c0g0f0 L0c0g0f0 L0c0g0f0 L0c0g0f0
+catch twin seed 5 easy | on: L0c1g0f1 L0c1g0f1 L0c1g0f1 L0c1g0f1 L0c0g0f0 | off: L0c0g0f0 L0c0g0f0 L0c0g0f0 L0c0g0f0 L0c0g0f0
+catch twin seed 5 normal | on: L0c1g1f1 L0c1g1f1 L0c1g1f1 L1c1g1f1 L0c1g0f1 | off: L0c0g0f0 L0c0g0f0 L0c0g0f0 L0c0g0f0 L0c0g0f0
+catch twin seed 6 easy | on: L0c1g0f1 L0c0g0f0 L1c1g0f1 L0c1g0f1 L0c0g0f0 | off: L0c0g0f0 L0c0g0f0 L1c0g0f0 L0c0g0f0 L0c0g0f0
+catch twin seed 6 normal | on: L1c1g1f1 L0c0g0f0 L0c1g1f1 L0c1g1f1 L0c1g0f1 | off: L0c0g0f0 L0c0g0f0 L0c0g0f0 L0c0g0f0 L0c0g0f0
+catch twin seed 7 easy | on: L1c1g0f1 L0c1g0f1 L0c1g0f1 L0c1g0f1 L0c0g0f0 | off: L1c0g0f0 L0c0g0f0 L0c0g0f0 L0c0g0f0 L0c0g0f0

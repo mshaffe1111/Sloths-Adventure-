@@ -1,0 +1,20 @@
+// usage: tsx skillrow.mts both|noboth bot:setting:seed ...   (2-1; runs: on, upstream off, bankUp off)
+import '/home/user/pt/src/game/headlessDom.ts';
+import { castRun, CAST_BOTS } from '/home/user/pt/tools/inspect/castBots.ts';
+import { firstTimer, SKILLS } from '/home/user/pt/tools/inspect/firsttimer.ts';
+const [mode, STAGE, ...rows] = process.argv.slice(2);
+function both(bot: string, setting: any, seed: number) {
+  let back: any, boarded: number | undefined, banked: number | undefined;
+  firstTimer('2-1', seed, (CAST_BOTS as any)[bot][setting], { cap: 1200, dotSetting: true, onFrame: (sim: any) => {
+    if (back === undefined) { const rv = (sim.stage.rivers ?? []) as any[]; const f = rv.filter((b) => b.dir < 0 && b.speed > 0 && rv.some((w) => w.dir > 0 && w.speed > 0 && b.x0 > w.x1 && b.x0 - w.x1 < 600)); back = f.length === 1 ? f[0] : null; }
+    if (!back || !sim.p.grounded) return;
+    if (boarded === undefined && sim.p.x > back.x0 && sim.p.x < back.x1) boarded = sim.t;
+    if (boarded !== undefined && banked === undefined && sim.p.x > back.x1 + 4 && sim.p.x < back.x1 + 400) banked = sim.t;
+  } } as any);
+  return boarded !== undefined && banked !== undefined ? (banked - boarded).toFixed(2) : 'none';
+}
+for (const row of rows) {
+  const [bot, setting, s] = row.split(':'); const seed = Number(s);
+  const one = (k: string | null) => { if (k) (SKILLS as any)[k] = false; try { const r: any = castRun(bot, setting as any, STAGE, seed); return `${r.end === 'shrine' && r.rescues === 0 ? 'CLEAN' : 'dirty'} L${r.lives} R${r.rescues}${mode === 'both' ? ' bw' + both(bot, setting, seed) : ''}`; } finally { if (k) (SKILLS as any)[k] = true; } };
+  console.log(`${bot} ${setting} ${seed} | on ${one(null)} | buOff ${one('bankUp')}`);
+}

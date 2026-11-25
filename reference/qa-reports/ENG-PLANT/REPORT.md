@@ -1,3 +1,56 @@
+# ENG-PLANT-t (session 18, the plants; started 12:21 PM ET 11-25 by the hook's stamp; this top written 12:36 PM ET 11-25 by `date`): **reds 5, 6, 8 RE-PLANTED at their SAME bars and proven (GREEN on the file, RED with the skill off) on release-0.10.3-wip-plant-tests 1c4cc8e8b (pushed, ls-remote confirmed). Reds 7 and 9 OPEN: their searches are set up (below). Nothing merged.**
+
+Engine (bots), Opus 5.5 xhigh. Lead: session_01FhBbYN2CVHnFXg7XzqKXpM. Code: release-0.10.3-wip-plant-tests (36e8efe6f + 2 test-only commits:
+4ed405627 lianaRide, 1c4cc8e8b riverRide). Data: data/t/. Tools: tools/drop-t.mts.txt (the liana toy sweep), skillrow-t.mts.txt (2-1 on /
+upstream off / bankUp off per row), board-t.mts.txt (firsttimer.test :185's meet(), boardHop on/off per row), trace40-t.mts.txt (rule 28:
+every life lost, its river and his last take-off). Each probe imports from a frozen tree at /home/user/pt (36e8efe6f); copy to
+/home/user/tl/*.mts and fix the tree path.
+
+## EXACT NEXT STEP (session 19)
+0. Setup: `npm ci --no-audit --no-fund --legacy-peer-deps`; `git fetch --unshallow origin` (background); check out
+   release-0.10.3-wip-plant-tests at 1c4cc8e8b; frozen tree of 36e8efe6f at /home/user/pt (`git worktree add --detach /home/user/pt 36e8efe6f`,
+   symlink node_modules, `chattr -R +i src tools`); report tree `git worktree add --detach /home/user/rep origin/release-0.10.3-wip-plant-c-report`.
+1. RED 9 (riverRide :282 bankUp, bar: child N 40 off +5 lives AND the both-ways far bank +2 s). 2-1's full search on 36e8efe6f
+   (data/t/search1.txt, search2.txt: 9 bot-settings x seeds 1-40, castRun on / upstream off / bankUp off) has NO row at the bar: the most
+   bankUp moves is child N 39 2 -> 4, kid N 37 5 -> 7 and rescued, middle N 14 2 -> 3; child N 40 is 1 -> 1. The back rivers (dir -1, a
+   probe of every W2 stage, seeds 1-3) are on 2-1 (2 per roll) and 2-7 (11 per roll) only. 2-7's search (data/t/search27.txt, bankUp
+   on/off, every bot both settings 1-40) WAS RUNNING at the box: 141 of 360 rows done at the hand-over; rows bankUp moves so far: kid normal 1 on dirty L5 R1 buOff dirty L8 R2; kid normal 4 on dirty L6 R1 buOff dirty L8 R1; kid normal 17 on CLEAN L5 R0 buOff dirty L12 R3; kid normal 36 on dirty L13 R1 buOff dirty L12 R1; kid normal 39 on CLEAN L9 R0 buOff CLEAN L1 R0; adult normal 13 on CLEAN L1 R0 buOff CLEAN L0 R0; adult normal 38 on CLEAN L1 R0 buOff CLEAN L0 R0 (kid N 17: on clean 5 lives, off 12 lives and 3 rescues: the one row at the lives bar so far). Next: (a) for each 2-7 row with off +5 lives, trace it
+   (trace40-t with stage 2-7: is each extra life at a back river's far bank, a log carrying him back = bankUp's own place?); (b) if one
+   holds, re-plant :282 on it (BANKUP_CASES with the stage: castRun(bot, setting, '2-7', seed); the time half needs 2-7's own crossing, or
+   name it dropped and why); (c) if none, RETIRE :282 per R-165.432 (delete the test and BANKUP_CASES; a comment names the search files;
+   the skill's code stays) and take 40 off :234's title.
+   Rule 28 (the lead's item), DONE: on the CI lane's head 4e42b73ab, 2-1 child N 40 bankUp OFF loses ONE life at t 273.23, x 25,383, in
+   the back river [25,363, 25,903] (dir -1, 80 px/s): he stood on log #114 running back at him (vx 0), it carried him to the river's near
+   end and went under (no press: the 'take-off' at x 25,371 is the log leaving him); ON, he is up the far bank and loses none. On this
+   branch's head 36e8efe6f the row is 1 -> 1: the one life (on and off) is at t 144.07 x 14,467 on a river HIS way, run off log #67's
+   front (vx 154), nothing to do with bankUp. So CI-1's move is +1 at bankUp's own bank, far under the bar of 5.
+2. RED 7 (firsttimer :185 boardHop, bar: on stands >= 1 and 0 lives lost within 3 s of a stand at a lip with a log his way across it;
+   off >= 1 such life; plus the middle N 17 on 0). Not searched yet. Run board-t over 2-2 first (`tsx board.mts 2-2 bot:setting:seed ...`,
+   every cast bot, both settings, seeds 1-40; prints HOLDS where on 0 / off >= 1), then 2-1, 2-4, 2-5, 2-9 (the stages with rivers his
+   way). Re-plant on a HOLDS row (keep the test's own meet(); the middle check on a row with stands >= 1 and 0 lost); if none anywhere,
+   RETIRE per R-165.432 with the search files (the laid boardHop test at :150-:183 stays: it is the skill's laid plant).
+3. Then once, on a frozen tree of the final head: tsc; the 4 files (lianaRide, riverRide, firsttimer, hopJudged). Only reds 3-4 (CI-c's
+   bot code: hopJudged 2-7 home middle N 2 / E 5, and riverRide :344/:355 reAim if they are CI-c's) may stay red. Push, ls-remote, and
+   send the lead the hash and one line per red (5-9).
+
+## What is done (proven on this head)
+- RED 5 lianaRide DROP ON A LOG: RE-PLANTED on the toy's roll 2 (was roll 1, fixtureSeed's first). Sweep of the drop toy on 36e8efe6f
+  (data/t/sweepA.txt, sweepA2-kept.txt; per variant L lives, c catches, g let-gos onto a log): roll 1 v1-6 off 0,1,0,0,0,0 (stale since
+  c19); roll 2 on 0 lives, 6 of 6 catch each onto a log, off 0,1,1,2,1,1 = 6 (bar >= 4); rolls 4 and 5 hold too (off 7, 6); roll 3 fails
+  the on bar (2 lives). Other ROWS do not hold (ride, back, twin, raft: off 0-2 over 8 variants). The roll is fixed in the test and
+  asserted clean by fixtureSeed's own criteria (cleanRoll).
+- RED 6 lianaRide A VINE FROM A LOG: RE-PLANTED on roll 2 (data/t/sweepB2-kept.txt): Normal on 5 of 5 off a log, off 0; Easy on 4 of 5,
+  off 0 (bar: on >= 4 of 5, off none). Roll 1's Easy v5 catches off a log with the skill off (stale since c22); rolls 3 and 6 fail Easy's on
+  bar; roll 5 Normal holds.
+- Proof (frozen tree of 4ed405627, data/t/liana-green.txt, liana-red.txt): the two tests GREEN 2/2; a copy with SKILLS.dropOnLog and
+  vineFromLog forced off RED 2/2 ('v3: caught the liana 1 times and no let-go came down on a log'; 'normal, with the skill: catches off a
+  log 0,0,0,0,0').
+- RED 8 riverRide :266 upstream: RE-PLANTED on the live rows of the 2-1 search: CASES adult N 16 (on clean 4 lives; off rescued once;
+  adult N 12 is now 1 -> 1 clean); LIVES child N 11 (0 -> 7), child N 15 (0 -> 14), middle N 16 (0 -> 6) (child N 4, 23, middle N 26 are
+  now +1, +1, +3). Other live rows: rescued kid N 2, 23, 38, child E 11, 15; +5 child N 9, 28, 40, middle N 15. :234's on-test title
+  follows the lists. Proof (frozen tree of 1c4cc8e8b, data/t/up-green.txt, up-red.txt): GREEN 6/6 (the plant and its on-test among them); the copy with SKILLS.upstream forced off RED on exactly those two ('adult normal seed 16: shrine, rescues 1'; 'upstream off, 0 more lives ... child normal seed 11'). NOTE: the 4 toy tests 'against the flow (W2_RIVERS.back)' stay GREEN with the skill forced off: they are not this skill's plant (for R-165.424).
+- Found (for R-165.424, not this job): with upstream ON, kid E 1 and 7 are rescued and clean with it off; kid N 31 13 lives on vs 4 off.
+
 # ENG-PLANT-s, job 2 (THE PLANTS, the lead's new job; top written 12:19 PM ET 11-25 by `date`): **branch release-0.10.3-wip-plant-tests CUT from 36e8efe6f (pushed, ls-remote confirmed). Nothing re-planted yet: session 17's box ran out after the CI-REDS.md read. NEXT: everything below, from item 1.**
 
 ## EXACT NEXT STEP (session 18, the plants)

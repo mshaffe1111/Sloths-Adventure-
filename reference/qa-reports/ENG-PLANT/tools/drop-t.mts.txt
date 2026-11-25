@@ -1,0 +1,32 @@
+import '/home/user/pt/src/game/headlessDom.ts';
+import { SKILLS } from '/home/user/pt/tools/inspect/firsttimer.ts';
+import { fixtureSeed, lianaRun, TOY_RIVERS, toyStage } from '/home/user/pt/tools/inspect/lianaRiverToys.ts';
+const toy = (process.argv[2] ?? 'drop') as any;
+const rows = (process.argv[3] ?? 'gap280').split(',');
+const easyRow = (process.argv[4] ?? 'deep') as any;
+const seedsArg = process.argv[5] ?? 'first';
+const vars = (process.argv[6] ?? '1,2,3,4,5,6').split(',').map(Number);
+const settings = (process.argv[7] ?? 'normal').split(',') as any[];
+const skill = toy === 'drop' ? 'dropOnLog' : 'vineFromLog';
+const clean = (row: any, seed: number) => ['normal', 'easy'].every((d) => { const st = toyStage(toy, row, seed, d as any, easyRow); return !st.gen2.errors?.length && (st.rivers ?? []).filter((r) => r.speed > 0).length === 1 && st.vines.some((v) => v.vineType === 'swing_liana'); });
+for (const row of rows) {
+  let seeds: number[] = [];
+  if (seedsArg === 'first') { const s = fixtureSeed(toy, row as any, ['normal', 'easy'], easyRow); if (s !== null) seeds = [s]; }
+  else for (let s = Number(seedsArg.split('-')[0]); s <= Number(seedsArg.split('-')[1]); s++) if (clean(row, s)) seeds.push(s);
+  if (!seeds.length) { console.log(row, 'no clean seed'); continue; }
+  for (const seed of seeds) for (const setting of settings) {
+    const out: Record<string, string> = {};
+    for (const on of [true, false]) {
+      const was = (SKILLS as any)[skill]; (SKILLS as any)[skill] = on;
+      try {
+        out[on ? 'on' : 'off'] = vars.map((v) => {
+          let catches = 0, sw = false;
+          const r: any = lianaRun(toy, row as any, 'middle', setting, seed, v, easyRow, { realInput: true, onFrame: (sim: any) => { if (sim.p.isVineSwinging && !sw) catches++; sw = !!sim.p.isVineSwinging; } } as any);
+          const lost = r.pieces.find((q: any) => q.id === `toy-liana-${toy}`)?.lives ?? 0;
+          return `${r.end === 'shrine' ? '' : r.end + ':'}L${lost}c${catches}g${r.ontoLog}f${r.fromLog}`;
+        }).join(' ');
+      } finally { (SKILLS as any)[skill] = was; }
+    }
+    console.log(`${toy} ${row} seed ${seed} ${setting} | on: ${out.on} | off: ${out.off}`);
+  }
+}

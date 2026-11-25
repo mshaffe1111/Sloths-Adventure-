@@ -1,0 +1,78 @@
+TAP version 13
+# Subtest: middle, normal: against the flow (W2_RIVERS.back), hops log to log off each front end and reaches the shrine
+ok 1 - middle, normal: against the flow (W2_RIVERS.back), hops log to log off each front end and reaches the shrine
+  ---
+  duration_ms: 695.629784
+  type: 'test'
+  ...
+# Subtest: middle, easy: against the flow (W2_RIVERS.back), hops log to log off each front end and reaches the shrine
+ok 2 - middle, easy: against the flow (W2_RIVERS.back), hops log to log off each front end and reaches the shrine
+  ---
+  duration_ms: 593.854291
+  type: 'test'
+  ...
+# Subtest: child, normal: against the flow (W2_RIVERS.back), hops log to log off each front end and reaches the shrine
+ok 3 - child, normal: against the flow (W2_RIVERS.back), hops log to log off each front end and reaches the shrine
+  ---
+  duration_ms: 903.031193
+  type: 'test'
+  ...
+# Subtest: child, easy: against the flow (W2_RIVERS.back), hops log to log off each front end and reaches the shrine
+ok 4 - child, easy: against the flow (W2_RIVERS.back), hops log to log off each front end and reaches the shrine
+  ---
+  duration_ms: 578.140389
+  type: 'test'
+  ...
+# Subtest: 2-1, against the flow and up the far bank on: the adult on Normal (16), the child on Normal (11, 15, 40) and the middle on Normal (16) cross clean
+not ok 5 - 2-1, against the flow and up the far bank on: the adult on Normal (16), the child on Normal (11, 15, 40) and the middle on Normal (16) cross clean
+  ---
+  duration_ms: 1564.286009
+  type: 'test'
+  location: '/home/user/fz2/tools/inspect/riverRide.red.test.ts:235:1'
+  failureType: 'testCodeFailure'
+  error: 'adult normal seed 16: shrine, rescues 1, lives 4, stuck [{"x":19759,"what":"set down here 3 times"}]'
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: true
+  actual: false
+  operator: '=='
+  stack: |-
+    TestContext.<anonymous> (/home/user/fz2/tools/inspect/riverRide.red.test.ts:238:12)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+  ...
+# Subtest: planted: with the against-the-flow skill off, the adult on Normal is rescued on 2-1 (16) and the child and the middle on Normal lose 5+ more lives (child 11, 15; middle 16)
+not ok 6 - planted: with the against-the-flow skill off, the adult on Normal is rescued on 2-1 (16) and the child and the middle on Normal lose 5+ more lives (child 11, 15; middle 16)
+  ---
+  duration_ms: 7230.238923
+  type: 'test'
+  location: '/home/user/fz2/tools/inspect/riverRide.red.test.ts:272:1'
+  failureType: 'testCodeFailure'
+  error: 'upstream off, 0 more lives (at least 5): on child normal seed 11: shrine, rescues 0, lives 7, stuck []; off child normal seed 11: shrine, rescues 0, lives 7, stuck []'
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: true
+  actual: false
+  operator: '=='
+  stack: |-
+    <anonymous> (/home/user/fz2/tools/inspect/riverRide.red.test.ts:282:14)
+    Array.forEach (<anonymous>)
+    TestContext.<anonymous> (/home/user/fz2/tools/inspect/riverRide.red.test.ts:280:20)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    node:internal/test_runner/test:981:31
+    node:internal/process/task_queues:149:7
+    AsyncResource.runInAsyncScope (node:async_hooks:214:14)
+  ...
+1..6
+# tests 6
+# suites 0
+# pass 4
+# fail 2
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 12505.617094
