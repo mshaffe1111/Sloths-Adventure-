@@ -1,4 +1,65 @@
 # ENG-DARK REPORT (the dark + light ring as one gen2 brick; WORLD-3-PLAN F2; R-165.449)
+**EXACT NEXT STEP (ENG-DARK-h box 8 hand-over, 1:37 PM ET by `date`; FINAL CODE HEAD 0dadb295 on t-eng-dark-wip, FROZEN in box 8's
+container (wt-h, `chattr -R +i src tools reference`). Box 9 OWNS every step below. Re-fetch before every commit (D138).)**
+**RUNNING in box 8's container (box 8 finishes and records ONLY these, D138):** the x40 on frozen 0dadb295, two lanes:
+`GEN2_DRAFT=3-1 npx tsx tools/inspect/castBots.ts --stage 3-1 --seeds 1-20 | 21-40 --setting both --par 2 --rows ...`. Box 8 commits
+the rows as cast-3-1-x40-0dadb295.jsonl and the verdict (unlit 0 or each traced; shrine 360/360; no rescue kind the base lacks).
+**Box 9 does, on 0dadb295 (2 heavy runs at most):** (1) plants: a worktree of 0dadb295 NOT chattr'd (planted-faults.py writes and
+restores), `python3 reference/qa-reports/ENG-DARK/planted-faults.py <wt>`: 27 plants, all CAUGHT (7 new: cave mouth asleep, every light
+awake, no room asked of an outside drop, (i) off, a behind edge judged, the depth bound off, an awake light lit from anywhere; plant 4's
+anchor moved with the depth bound). The 80-roll loop makes each 'the brick on a real World 3 row' plant about 2.5 min. (2) tierBots
+9/9 (`npx tsx --test tools/inspect/tierBots.test.ts`), (3) the suite (3 shards) and the CI line (gates.yml, read from the tree), all on a
+frozen 0dadb295. (4) LAND (order item 7): t-eng-w3 is still c1008d8e, already in this branch (merge is a fast-forward or no-op; no
+force); ENG-DOWNBOT-i lands after and removes its fix B; lockall on the frozen final merged head (`lockall --layouts 16 --out
+lock-base.json` on frozen c1008d8e, `--check` on the merged head: no listed stage moves). Send the lead the hash, what 3-1/3-2's READY
+can measure, the light API line for ENG-SPORE (ADR-004).
+**DONE in box 8 (0dadb295), dark.test 12/12 (2 min 13 s), tsc clean:**
+- (i) darkLandings: a drop off a DARK rim passes when the edge he lands toward lies inside the drop rim's own landing light (or, as
+  before, the stop wakes that edge's own light in time). An edge BEHIND the landing (n.dir against u.dir) is not one he lands toward:
+  the slow step carries him away; he reaches it only by turning back by choice. **This last line is MY reading of 'the edge he lands
+  toward'; it is what clears 32 N and 33 N (below). The lead may overrule: then those two need a lay fix (a second light over the
+  step-off landing of a rim whose own landing is a hop).**
+- (ii) glowZone: entryPieces(platforms, box) = every piece a step off a rim OUTSIDE the box comes down on; the light the verdicts read
+  over the landing of each rim of such a piece is laid awake (sleep false, id kept). **My reading of 'a light over a piece that an
+  outside rim steps onto': the lights of that piece's rims (what lights its edges); that is what makes box 7's B column pass.**
+  Count, rolls 1-40 both: **776 lights awake, 3,811 asleep (17%, about 10 a roll)**: more than one mouth per stretch, because the
+  tower's side rims outside the box step onto many pieces. The lead should hear this number.
+- The engine draws an awake glowworm (id, sleep false) as one awake GLOW_AWAKE_AGE 60 s (hanging lit); before, only sleeping ones were
+  drawn, so the mouth's light had no source. Firefly lights (no id) are untouched.
+- litAfter: an awake light counts only within the stop's reach (found when darkFlags' plant went GREEN: an awake light anywhere in the
+  zone made every flag lit). Same reach as a sleeping one.
+- Item 3: a light hangs no deeper than GLOW_REACH.down under its rim (`Math.min(land.y - lightUp, rim.y + GLOW_REACH.down)`).
+  21 N, 21 E, 40 E darkGaps: 0. Planted RED on roll 21 N (its light at the old spot: named).
+- Item 4: dark.test's loop is all 80 rolls: per stretch the pin 'every light inside the dark sleeps, EXCEPT the landings you reach
+  from outside it: the cave mouth is lit' (awake == the mouth's set exactly; some light still sleeps), ids unique, darkGaps,
+  darkFlags, darkLandings all []. Planted: roll 30 Easy, the mouth's lights put back to sleep: darkLandings names u 175,2190 (RED).
+- **Item 2, the 9 traced** (probes/trace9.mts; every one: the drop rim's own landing is a HOP across, so its light lights the hop):
+
+| roll | drop rim u -> edge n | room | n is | passes by |
+|---|---|---|---|---|
+| 9 E | 895,2000 right -> 1022,2266 | 103 | ahead | (ii): n's piece is a cave-mouth piece, its light awake |
+| 13 N, 13 E | 976,1620 left -> 1035,1714 | 83 | behind | (ii) cave mouth (and behind) |
+| 19 N | 456,6042 right -> 432,6261 | 48 | behind | (ii): n's light is shared with a cave-mouth rim's (and behind) |
+| 22 N | 987,1681 left -> 1040,1802 | 77 | behind | (ii) cave mouth (and behind) |
+| 26 E | 389,1475 left -> 258,1740 | 107 | ahead | (ii) cave mouth |
+| 27 E | 291,2146 right -> 219,2242 | 96 | behind | (ii) cave mouth (and behind) |
+| 32 N | 764,5649 right -> 712,5848 | 76 | behind | the behind reading only |
+| 33 N | 951,7644 left -> 940,7828 | 13 | behind | the behind reading only |
+
+- probes/verdicts.mts 1-40 on 0dadb295's code before the behind line: LAND 2 (32 N, 33 N), GAPS 0, FLAGS 0; with it: all 0 (dark.test).
+- **The light API line for ENG-SPORE (ADR-004; ADR-004 is not on this branch, so check it against the Architect's text):** a brick
+  lights the dark by pushing `{ x, y, r, sleep?, id? }` into a `dark` Zone's `lights` (zones.ts). `sleep: true` + a stage-unique `id`
+  (gen2/dark.ts GLOW_ID counter in sink.extras, as glowFlags does) = a glowworm a stop wakes (glowReaches, GLOW_REACH); `sleep: false`
+  + `id` = one laid awake, drawn lit (the cave mouth); no `id` = a plain light (World 6's fireflies). The verdicts read every light in
+  the zone: darkRims takes the nearest light that reaches a landing; litAfter counts an awake one only within GLOW_REACH; darkGaps,
+  darkFlags, darkLandings on the laid stage, RimWatch + litAhead on a run. A carried kit light (kit.lights(), the mushroom) is drawn
+  by the engine but read by NO verdict: if a spore's light must count for 'lit 1 s ahead', it goes into the zone's lights (or the
+  verdicts learn kit lights: an Engine packet).
+- **Item 5 stills** (seed 1, Pokey on the mouth piece, stillness held at 0): stills/3-1-land-mouth.jpg reads as the cave mouth (the awake
+  glowworm lights the two steps by him; two sleeping ones below with their z's). stills/3-1-port-mouth.jpg: the same pair, but Dot's
+  real first-time line ('Too dark to see. Stand still and listen...') covers the middle; the awake one and a sleeping one show above
+  and below it.
+
 **EXACT NEXT STEP (ENG-DARK-g box 7 hand-over, 1:19 PM ET by `date`; head on t-eng-dark-wip = be91c547 (a) + darkLandings RESTATED, not
 wired; glowZone UNCHANGED from base (the growth is out). Box 8 OWNS EVERY CODE CHANGE. Re-fetch before every commit (D138).)**
 **WAITING ON THE LEAD'S RULING (sent with the numbers): (i)+(ii), (i) alone, or (iii) below. Do not build past it.**
