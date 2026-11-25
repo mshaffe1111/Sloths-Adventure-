@@ -1,4 +1,44 @@
-# ENG-PLANT-CI: the 9 CI-tool-line reds on c27 (session 7 hand-over written 1:59 PM ET 11-25 by `date`; sessions 6, 5, 4, 3, 2 and 1 below it)
+# ENG-PLANT-CI: the 9 CI-tool-line reds on c27 (session 8 hand-over written 2:16 PM ET 11-25 by `date`; sessions 7, 6, 5, 4, 3, 2 and 1 below it)
+
+## EXACT NEXT STEP (session 9). HEAD = 4cccba33e (CI-11 + its toy) + this file. Step 1's code and toy are DONE; left of step 1: the moved rows.
+0. Frozen trees: `git worktree add --detach <dir> <hash>`, node_modules symlinked, `chattr -R +i <dir>/src <dir>/tools` (D115). CI-11 =
+   4cccba33e (fz-ci11b this session); CI-10 = 8134a9a56. Probes: ci-tools/s8-press*.mts.txt (`npx tsx <probe> <tree>` from inside the tree).
+1. **CI-11's moved rows (rule 28; the lead: every moved row traced; one that cannot be narrowed: STOP and send the table).** Run
+   ci-tools/set1-m.sh on a frozen 4cccba33e (out data/ci/set1-ci11) AND on a frozen 8134a9a56 (data/ci/set1-ci10; no CI-9/10 set
+   exists, set1-ci8 is the last) as the two heavy runs at once; cmp3.py ci10 vs ci11 (the rows CI-11 moves) and ci11 vs c27 (the known
+   flips); every row that moves from CI-10 is CI-11's: trace each (the standing vineFromLog press: its t, x, log, liana, judged catch,
+   engine frame of the catch or where he came down; s8-press2.mts is the base: set the window to the row's press). 2-4 is where it acts
+   (vineFromLog: a drifting log under a liana); 2-1/2-2 rows should not move (say so if any does, traced). Only then step 2.
+2. The re-plants (riverRide :344 / :355), unchanged from session 7's step 2 below, on CI-11's head.
+3. The final checks ONCE on the final head, session 7's step 3 below (the 4 files incl. the new hopJudged CI-11 toy).
+
+## SESSION 8 END STATE (4cccba33e = CI-10 8134a9a56 + CI-11 + the toy + s8 evidence)
+**Root (s8-press on CI-10, data/ci/s8/press-ci10.txt, 2-4 kid Easy 35):** vineFromLog judged at 47.500 with the steer from frame 1 and
+hold 0.16 in hopFrame's count (held while i * DT < 0.16: frames 1-4, cut at 5). The bot pressed at 47.600 (pad RJP -> out -J: the thumb
+still travelling to travelUntil 47.647, set by the R -> L turn at 47.467) and flew startJump's OWN draw, hold 0.0967 (the standing press is
+not a liana hop, so nothing raised it; off = true, upOnly 0). The engine: frames 1-2 vx 75 (the carry, unsteered), steer from frame 3,
+held frames 1-3 (pads at age 0, 0.033, 0.067), cut at frame 4 (vy -166.7). **And the count:** the engine holds the press's own frame
+(age 0): frame i held while (i - 1) * DT < hold, one frame more than hopFrame's i * DT < hold.
+**CI-11 (tools/inspect/firsttimer.ts):** (1) the standing catch flies every free count he can play at the press (from the travel/slip
+already running: max(press, travelUntil, driftUntil); and steerFrom's, the turn armed too), every lag, both speeds: `frees(lag)`, the
+`every` kept; (2) its hold in the engine's count (hopCatches(..., hold + DT, ...)); (3) startJump flies it single, held EXACTLY the
+judged hold (standHold, set before decide; taken only by that press: pressJudged or pending still+judged, inside 0.5 s; the draws kept,
+so the stream is as ever); the run-up branch clears standHold (its own press keeps runUpHold's max). tsc clean.
+**On CI-11 (s8/press-ci11a.txt, draft 7d87016c4; 4cccba33e adds only the run-up's standHold clear):** the judge catches at 46.900; pressed
+47.067 from x 10502.2 on #48 (no travel: travelUntil 44.89), hold 0.16 pinned: engine held frames 1-5, cut at 6 (the judged count), steer
+from frame 1, **caught swing #4 at 47.400 (frame 10)**; then down on #44 x 11095.4 (main's first crossing lands there too).
+**Toy (hopJudged.test.ts, the row's own shape, the real stage and bot: every standing vineFromLog press must end on a liana):** RED on
+CI-10 (8134a9a56 + the test file, unfrozen copy red-ci10: "the standing press at t 47.600 from x 10545.1 on #48 was judged to catch; the
+engine: grounded on #-1 at x 10190.0 y 947.0, frame 14" = the set-down from the water), GREEN on 4cccba33e (s8/toy-*.txt).
+**firsttimer.test.ts 2-4 kid Easy seed 35 (:288-303 here, the lead's :312): GREEN on 4cccba33e** (s8/ft312-ci11-4cccba33e.txt).
+**Traced vs main (s7/water-main.txt vs s8/water-ci11a.txt):** main 7 jumps off logs, 0 in the water, reached x 23,901 at t 157; CI-11
+7, 0, reached x 29,056 at t 159: equal on the bar, further on. Same state as CI-10 to 46.900 (CI-10 decided only at 47.500); the
+divergence is CI-11's own press (47.067, caught #4 frame 10, traced above). Main's first jump differs (off #46 at 42.6) by CI-9/10's
+earlier changes, not CI-11; both first crossings land on #44 x 11095.4.
+**Not done:** the guard toy (a standing press both trees catch; optional: the lead's ruling names only RED/GREEN), CI-11's moved rows
+(set1 + cmp3), steps 2 and 3.
+
+## (session 7 hand-over)
 
 ## EXACT NEXT STEP (session 8). HEAD = 8134a9a56 (CI-10 0db82fb25 + the plant-tests merge 0f95b96ed) + this file. **The lead RULED (reply to session 7): (c) BUILD CI-11; (a)+(b) RE-PLANT as below, ACCEPTED. Order: CI-11, then the re-plants, then the final checks ONCE on the merged head.**
 0. Read the lead's answer first (ReadNotifications). Frozen trees: `git worktree add --detach <dir> <hash>`, node_modules symlinked,
