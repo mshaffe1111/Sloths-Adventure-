@@ -69,7 +69,11 @@ THE ENGINE'S GRACE, 4 px past 920), and downEnd turned him back right toward the
 glowWait never stopped him at rim 920 because he stood at x 919-924, at or past the piece's end (floor '-' at 924 and 920): THE SAME
 1-PX MISS box 9 found at rim 367 (glowWait's on(r) reads p.x against the piece; the engine has him standing on it). NEXT FIX (general,
 a toy each way): glowWait's 'on the rim's piece' reads the engine's standing piece (e.standingOnId) or allows LAND_HALF past its end;
-then re-measure middle N 16, and check rim 367 on 32 N stays clean.
+then re-measure middle N 16, and check rim 367 on 32 N stays clean. THE LINE: firsttimer.ts glowWait
+`const on = (r: DarkRim) => p.grounded && p.x >= r.piece.x && p.x <= r.piece.x + r.piece.width && ...` (about :3385 on 404d9420). Trace
+first with loop.mts at 30 fps (no awk thinning) 167.0-167.3: he stood at 918-919 ON the piece facing away (-1) when downEnd turned him
+(+1); read why that frame's glowWait(1) started no stop (its own conditions after on(r)) before changing on(r). RimWatch also counts a
+grounded step past the end as a crossing, so a stop must hold him at or before x 920.
 The lead was ASKED (box 10, with this evidence) which bar '33 N's behind edge lit' means: (A) the second light + darkLandings drops the
 behind-edge exemption for a step-off from a hop rim; (B) A + the x40 crossing over 940 reads lit (a judge change); (C) other. Box 10
 said it would build A unless the lead says otherwise: read the lead's answer first.
