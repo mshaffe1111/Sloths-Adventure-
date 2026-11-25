@@ -388,15 +388,16 @@ export function darkLandings(stage: { platforms: readonly Platform[]; zones?: re
 function runOffs(platforms: readonly Platform[], rims: readonly DarkRim[], ends: ReadonlyArray<{ piece: Platform; dir: -1 | 1; x: number }>, stop: number) {
   const out: Array<{ u: { piece: Platform; dir: -1 | 1; x: number }; ud: DarkRim | undefined; n: DarkRim; run: { on: Platform; x: number }; room: number }> = [];
   for (const u of ends) {
-    const ud = rims.find((m) => m.piece === u.piece && m.dir === u.dir);
-    if (ud?.light?.sleep) continue;
+    // (an edge in two overlapping darks is a rim of each: a stop applies if any of its landings' lights sleeps; any awake one shows)
+    const uds = rims.filter((m) => m.piece === u.piece && m.dir === u.dir);
+    if (uds.some((m) => m.light?.sleep)) continue;
     const run = runOnto(platforms, u.piece, u.dir);
     if (!run) continue;
     for (const n of rims) {
       if (n.piece !== run.on || n.dir !== u.dir || !n.light?.sleep) continue;
       const room = (n.x - run.x) * n.dir;
-      if (room >= stop || (ud?.light && Math.hypot(ud.light.x - n.x, ud.light.y - n.y) <= ud.light.r)) continue;
-      out.push({ u, ud, n, run, room });
+      if (room >= stop || uds.some((m) => m.light && Math.hypot(m.light.x - n.x, m.light.y - n.y) <= m.light.r)) continue;
+      out.push({ u, ud: uds[0], n, run, room });
     }
   }
   return out;

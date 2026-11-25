@@ -242,6 +242,22 @@ test("a hop rim's step-off landing is lit (the lead's ruling A, 11-25): adult No
   assert.ok(red.some((m) => m.includes('the rim at x 951, y 7644')), red.join('; ') || 'nothing named');
 });
 
+test("a RUN off a rim with no stop is judged where it lands (darkLandings (iii), ENG-DARK box 14): Normal roll 3 runs off x 442, y 5351 (no stop there) and comes down 36 px from the sleeping rim at x 214, y 5811; the lay wakes that light (GREEN); asleep again: RED, the running step off named", () => {
+  // (the 3-1 trial merge of ENG-DOWNBOT: the adult Normal 12 ran off a ledge with no dark stop at 268 px/s, flew 92 px and landed 7 px
+  //  from a sleeping rim, which he went over dark: 74 such crossings in 44 of 76 runs. darkLandings modelled only a slow step off)
+  const st = built(3, 'normal');
+  assert.deepEqual(darkLandings(st, 'normal'), []);
+  const run = new Set<object>();
+  for (const z of st.zones ?? []) if (z.kind === 'dark' && z.lights?.length) {
+    const mouth = mouthLights(st, z);
+    for (const l of awakeLights(st.platforms, z)) if (!mouth.has(l)) run.add(l);
+  }
+  assert.ok(run.size >= 1, 'the lay woke a light for a running step off');
+  const zones: Zone[] = (st.zones ?? []).map((z) => (!z.lights ? z : { ...z, lights: z.lights.map((l) => (run.has(l) ? { ...l, sleep: true } : l)) }));
+  const red = darkLandings({ ...st, zones }, 'normal');
+  assert.ok(red.some((m) => m.includes('a running step off') && m.includes('the rim at x 442, y 5351') && m.includes('onto the rim at x 214, y 5811')), red.join('; ') || 'nothing named');
+});
+
 /** a dark rim with a sleeping light on the real row, and RimWatch fed by hand (the x40's crossing judge) */
 function watchOne(frames: ReadonlyArray<{ dx: number; dy: number; grounded: boolean }>) {
   ready();
