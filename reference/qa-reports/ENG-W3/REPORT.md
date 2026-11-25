@@ -19,7 +19,7 @@ deep' 105, 'in a dip N px deep, the way on is N px down' 101, 'the way on is N p
 ran WITHOUT GEN2_DRAFT=3-1, so it played a 3-1 that is not the draft; caught when probes/trace.mts, which readies the draft, gave kid N
 36 99.4 s on both trees and that row said 125.4 s; its numbers went out in 50634dc8a and were withdrawn in ab0ae1ea0). **Countermeasure
 proposed to the lead:** castBots refuses `--stage` on a draft that is not readied (a check first, so no run can play the wrong stage).
-tsc on 571d6e2a9: 0 errors. tower.test whole file on 571d6e2a9: see the line below (started at the hand-over).
+tsc on 571d6e2a9: 0 errors. tower.test whole file on 571d6e2a9: 37 pass, 0 fail.
 **Next, in order (box 11):** (a) order item 2 on 571d6e2a9, every run with GEN2_DRAFT=3-1: kid+adult x40 with Fix A off and with Fix
 B off (the patches: grep 'fix A off' in this REPORT; compare.py vs this box's rows). A stays only with a toy on the shape it cures
 (adult N 10's way on 214 px down, if A still cures it); B comes out if it cures nothing (ruling 2). (b) the 'rest' 51: list them
