@@ -305,6 +305,9 @@ export interface FirstTimer {
   /** with the way on straight under his run and never coming out past it, no end of the run picked (darkBots.test's roll 15 toy only):
    *  he stands over it turning, by a side wall, until stranded */
   noOpenEnd?: boolean;
+  /** landed ahead on the way's own floor, still followed by the point over his head (darkBots.test's roll 26 toy only): he climbs the
+   *  trunk beside him back up and falls again until rescued */
+  noLandAhead?: boolean;
   /** at a gap or a face he must clear, his hold is drawn from this quantile of holdQ up (he reads the jump): a tuning field */
   readHold?: number;
   /** and a double up a step gets its second press from dbl2Q's quantiles up to this one (early enough to climb): a tuning field */
@@ -520,6 +523,15 @@ export class Progress {
     if (more) this.hi = this.cur;
     if (this.cur > this.best) this.best = this.cur;
     return more;
+  }
+  /** put him at point `k` ahead (up to the next pin he has not stood at), never followed back before it (`floor`): he came down on
+   *  the way's own ground further on. False when `k` is not ahead or lies past that pin */
+  ahead(k: number): boolean {
+    if (k <= this.cur || this.cap(k) !== k) return false;
+    this.cur = this.floor = k;
+    if (k > this.hi) this.hi = k;
+    if (k > this.best) this.best = k;
+    return true;
   }
   /** how far he stands from the point he is at along the way (0 with no route) */
   off(p: Pt): number {
@@ -1836,6 +1848,26 @@ export class FirstTimerRun {
       if (openR) return 1;
     }
     return 0;
+  }
+  /**
+   * Landed AHEAD on the way's own ground (a way down): run past the piece the way drops onto, he came down on the floor the way reaches
+   * further on, under the point he was at. Followed by the nearest point, that point over his head pulled him up the trunk beside him,
+   * and he climbed, ran off and fell back again until rescued: the middle on Normal 26 off 5 (y 1188) past 6 (224-460, y 1469) onto
+   * 0-703 (y 1599), the way's floor 15 points on ('a trunk beside him, on a trunk', 6 rows of the 3-1 x40 on 89ef9a985), ENG-DARK box 16.
+   * He is put at the first point ahead (of the next 80) on the run of wood he stands on (both ways over every seam, ledgeEnds), when the
+   * point he was at is 60+ px over him and the way does not go under his floor before it
+   */
+  private landedAhead(p: { x: number; y: number }): boolean {
+    if (this.who.noLandAhead || (this.sim.stage as { gen2?: { tower?: { flow?: string } } }).gen2?.tower?.flow !== 'down') return false;
+    const pts = this.prog.pts, cur = this.prog.cur;
+    if (!pts.length || pts[cur].y >= p.y - 60) return false;
+    const r = this.ledgeEnds(p, 1), l = this.ledgeEnds(p, -1);
+    if (!r || !l) return false;
+    for (let k = cur + 1; k < Math.min(pts.length, cur + 80); k++) {
+      if (pts[k].y > p.y + 40) return false;
+      if (Math.abs(pts[k].y - p.y) <= 4 && pts[k].x >= l.run && pts[k].x <= r.run) return this.prog.ahead(k);
+    }
+    return false;
   }
   /** going `d`: the end of the piece under his feet (`own`) and of the ledge it runs on into over every seam he walks over (`run`: a gap
    *  narrower than his body to a piece within a step of his height, STEP_UP.min); null: no piece under his feet */
@@ -4325,7 +4357,8 @@ export class FirstTimerRun {
   /** after a frame: landings, progress, stuck spots, game over */
   private after() {
     const sim = this.sim, p = sim.p, e = this.e, t = this.t;
-    const more = this.prog.step(p);
+    let more = this.prog.step(p);
+    if (p.grounded && this.airFrom && this.landedAhead(p)) more = true;
     // landings: did the jump get him on?
     const held = p.climbing || p.isVineSwinging || p.hanging;
     if (!p.grounded && !held && !this.airFrom) this.airFrom = { t, x: p.x, y: p.y, cur: this.prog.cur };

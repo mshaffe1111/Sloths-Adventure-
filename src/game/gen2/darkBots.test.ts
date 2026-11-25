@@ -273,6 +273,28 @@ test("no end picked under that run (noOpenEnd, the plant): the expert stands ove
   assert.notEqual(r.end, 'shrine', `stranded by the wall (${r.end} at ${r.time})`);
 });
 
+/** roll 26's way down (ENG-DARK box 16): the middle on Normal runs off 5 (y 1188) past 6 (224-460, y 1469), where the way drops, onto
+ *  0-703 (y 1599), the floor the way reaches 15 points on. Followed by the nearest point (on 6, over his head) he climbed the trunk at
+ *  x 244 back up, ran off and fell again, three times, then a rescue ('a trunk beside him, on a trunk', 'fell back down from here 8
+ *  times'); landed ahead, he is put on the way at his floor (landedAhead) */
+async function ahead26(noLandAhead: boolean) {
+  if (readied !== DRAFT) readyDraft(DRAFT);
+  const { firstTimer } = await import('../../../tools/inspect/firsttimer.ts');
+  const { CAST_BOTS } = await import('../../../tools/inspect/castBots.ts');
+  return firstTimer(DRAFT, 26, { ...CAST_BOTS.middle.normal!, noLandAhead }, { cap: 30 });
+}
+
+test("landed ahead on the way's own floor: on Normal roll 26 the middle walks on from where he came down, never back up the trunk (GREEN; planted: noLandAhead)", async () => {
+  const r = await ahead26(false);
+  assert.ok(!r.stuck.some((s) => /on a trunk|fell back down/.test(s.what)), `no climb back up and fall again (${JSON.stringify(r.stuck.map((s) => s.what))})`);
+  assert.equal(r.rescues, 0, `no rescue in his first 30 s (${r.rescues})`);
+});
+
+test("followed by the point over his head (noLandAhead, the plant): the middle climbs roll 26's trunk back up and falls again until rescued (RED)", async () => {
+  const r = await ahead26(true);
+  assert.ok(r.stuck.some((s) => /fell back down/.test(s.what)), `fell back down again and again (${JSON.stringify(r.stuck.map((s) => s.what))})`);
+});
+
 /** (ENG-DARK box 12) the turn-room stop, hand-built: on the final lay no bot's own run (middle Normal, rolls 1-40) stops facing away at a
  *  rim's very edge, so he is STOOD there: the middle on Normal roll 1, at 0.5 s set standing 2 px in from the draft's first sleeping rim,
  *  facing away from it, its landing dark (asleepRim, box 14); the run then plays on (12 s). Box 10's real case: roll 16 x 920 on the lay before the second
