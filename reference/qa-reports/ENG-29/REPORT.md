@@ -22,7 +22,7 @@ Normal, 2.40 s Easy at the lock): add it to the toy in (1) as a done-item (liana
 (b) 2-9.md:21 says 'Locked (river 5 frames ahead of the swing;
 Easy 0)': TempoSpec has ONE lock; if the design means a per-setting lock, add `easyLock` (or the river's offset) and a test.
 
-## Plan for NEW 2, the drum (not started; hooks read in session 1)
+## Plan for NEW 2, the drum (hooks read in session 1; the pure part DONE: see the last line)
 - A pure scheduler, src/audio/drum.ts: `drumHits(tempo, easy, g0, g1, doubled)` -> the hits with game time g in [g0, g1): ONE (beat index
   % tempo.beats === 0) a 'boom', the rest a 'tok'; doubled = every half beat (the twist, data on the cue). Test it alone (counts, kinds, every
   g on k*B exactly, both settings).
@@ -64,3 +64,7 @@ tsc on the merge: clean. The suite (6 shards, frozen worktree): running.
   (stageGenerator.ts) for NEW 2's drum. RiverRow.easy + riverRowOn (riverLay.ts), read at both of the pipeline's river-row reads: a court
   river's own Easy numbers (its speed never stretches). No listed stage names a tempo or an `easy` row, so nothing laid today changes
   (lockall to prove it in step 4). tsc clean; tempo.test + riverLay.test 8/8.
+- NEW 2 (a), session 1: src/audio/drum.ts `drumHits(beat, g0, g1, doubled)` (ONE a boom, the rest a tok; hit k exactly k * step, by index, so a
+  minute drifts by nothing) and src/audio/drum.test.ts: a minute on both settings, every hit on its beat; windows a frame apart schedule every
+  hit once; the twist doubles (8 a bar, ONE the boom). 2/2. Not yet: the conductor's drumTick on the audio clock, the engine's call, the
+  planted RED (on the frame / wall time), the no-'drum'-Sound test.
