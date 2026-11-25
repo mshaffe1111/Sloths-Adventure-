@@ -1,0 +1,28 @@
+// usage: tsx ridedead.mts <tree> <stage> <bot> <setting> <seed> <t1,t2,...> <G>: at each time, for every drift log within 600 px ahead,
+// rideDead over its ride (sampled 0.1 s until it wraps, cap 8 s): a non-drift floor within 80 px of its front, or another log's rear within G px ahead
+const [T, stage, bot, setting, seed, ts, Gs] = process.argv.slice(2);
+await import(`${T}/src/game/headlessDom.ts`);
+const { CAST_BOTS } = await import(`${T}/tools/inspect/castBots.ts`);
+const FT = await import(`${T}/tools/inspect/firsttimer.ts`);
+const RV = await import(`${T}/src/game/river.ts`);
+const G = Number(Gs); const want = ts.split(',').map(Number); let k = 0;
+const fx = (rivers: any, q: any) => (t: number) => q.drift ? RV.driftX(q.drift, RV.logClock(rivers, q.drift, t)) : q.x;
+FT.firstTimer(stage, Number(seed), CAST_BOTS[bot][setting], { cap: 1200, dotSetting: true, onFrame: (sim: any) => {
+  if (k >= want.length || sim.t < want[k]) return; k++;
+  const p = sim.p, rivers = sim.stage.rivers, P = sim.platforms; const dir = 1;
+  const on = P.find((q: any) => q.id === sim.e.standingOnId);
+  console.log(`t${sim.t.toFixed(2)} x${Math.round(p.x)} on#${on?.id}`);
+  for (const q of P.filter((q: any) => q.type === 'drift' && !q.broken && Math.abs(q.y - p.y) < 70 && Math.abs(q.x - p.x) < 600 && q !== on)) {
+    let firstOk: string | null = null; let prev = fx(rivers, q)(sim.t);
+    for (let s = 0; s <= 8; s += 0.1) {
+      const tt = sim.t + s, qx = fx(rivers, q)(tt);
+      if (Math.abs(qx - prev) > 100) { firstOk = firstOk ?? `wrap@+${s.toFixed(1)}`; break; } prev = qx;
+      const front = dir > 0 ? qx + q.width : qx;
+      const bank = P.find((b: any) => b.type !== 'drift' && !b.broken && Math.abs(b.y - q.y) < 70 && b.x - front < 80 && b.x + b.width > front);
+      const nxt = P.find((r: any) => r !== q && r.type === 'drift' && !r.broken && Math.abs(r.y - q.y) < 70 && (() => { const g = fx(rivers, r)(tt) - front; return g > -r.width / 2 && g <= G; })());
+      if (bank || nxt) { firstOk = `+${s.toFixed(1)} ${bank ? 'bank#' + bank.id : 'log#' + nxt.id + ' gap ' + Math.round(fx(rivers, nxt)(tt) - front)}`; break; }
+    }
+    const qx0 = fx(rivers, q)(sim.t);
+    console.log(`  log#${q.id} drift${q.drift.dir} [${Math.round(qx0)}..${Math.round(qx0 + q.width)}] -> ${firstOk && !firstOk.startsWith('wrap') ? 'OK ' + firstOk : 'DEAD (' + (firstOk ?? 'cap') + ')'}`);
+  }
+} });

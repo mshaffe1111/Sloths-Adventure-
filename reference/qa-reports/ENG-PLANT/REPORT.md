@@ -1,7 +1,7 @@
-# ENG-PLANT-o (ENG-PLANT-c session 13, started 9:58 AM ET 11-25 by the hook's stamp): expert N 29 confirmed, a SECOND shape; the landing's way across; hand-over (LANES 3b box)
+# ENG-PLANT-o (ENG-PLANT-c session 13, started 9:58 AM ET 11-25 by the hook's stamp): expert N 29 confirmed (a second shape, same block); the ROOT under both: he stands mid-log where no hop lands; a front-stand experiment crosses E 11 and N 29 clean; hand-over (LANES 3b box)
 
 Engine (bots), Opus 5.5 xhigh. Lead: session_01FhBbYN2CVHnFXg7XzqKXpM. **Code head UNCHANGED: c25 = 6a64aa41e** (no code commit; the probe
-line went into the UNFROZEN main checkout at c25 and `git checkout` restored it, 0 diffs). Data: data/o/. Tools: tools/proberide-o.diff.txt.
+line went into the UNFROZEN main checkout at c25 and `git checkout` restored it, 0 diffs). Data: data/o/. Tools: tools/proberide-o.diff.txt, ridedead-o.mts.txt, expfront-o.diff.txt.
 
 ## Confirm on expert N 29 (the ruling's "confirm on a second row first"): the SAME block, a SECOND shape
 - Probe (data/o/probe-e29-c25.txt): c25 expert Normal 29 on log #37 t 57.67-63.17 (x 13,079 -> 12,682; log drift -1, his dir +1), 166 frames:
@@ -21,6 +21,28 @@ line went into the UNFROZEN main checkout at c25 and `git checkout` restored it,
   in its ride. A dead end is a log whose RIDE (until it hands him back) brings no bank and no log into reach, not one with nothing ahead now.
   A filter on "now" would have refused the landing's own #21 -> #20 hop.
 
+## The root under BOTH shapes: he stands MID-LOG, where no hop lands (probe + a 2-line experiment, main checkout, restored)
+- **E 11 is not a dead-end log** (tools/ridedead-o.mts.txt: each log's ride sampled 0.1 s by floatAt until it wraps; data/o/ridedead-*.txt):
+  at the c3b tablePick (t 41.70) log #19 [9,391..9,541] has bank #17 within 80 px of its FRONT, and at t 44.0 log #21 has come round 80 px
+  ahead of #19's front. But he landed 37 px from #19's REAR (x 9,379 on [9,342..9,492]) and the ride block stands him there: the gap branch
+  (:3562) fires mid-log because the tier bot's look (his press distance, :3504) reaches past the lip; `lands` / gateSees judge from p.x, so
+  from 113 px behind the front neither the bank nor #21 (when it comes round) is ever in a hop. N 29 the same: on #37 [12,995..13,155] at
+  x 13,079, 76 px behind its front; the held aim refused from there all ride. The landing stood ~30 px from #20's front (t 30.7) and hopped
+  when #19 came round.
+- **Experiment EXP_FRONT** (tools/expfront-o.diff.txt, env-gated, 2 lines in the upstream block: refused with the next log in reach
+  (:3749) or nothing in reach (:3781), he walks to 30 px from the log's front (side(dir)) instead of standing where he is):
+  **c25 middle E 11: 0 rescues, time 171.3 (was rescued, f1870); c25 expert N 29: 0 rescues, 0 set-downs, time 154.0 (was 204.2, rescued).**
+  (data/o/expfront-*.txt).
+- **The 7 B+C seeds (7, 11, 18, 29, 32, 35, 38) x middle/child/expert, both settings, 35 rows, EXP_FRONT on c25** (data/o/expfront-bc.jsonl;
+  baselines data/n/landing-801cae9e8-2-7-x40.jsonl and data/m/c24-2-7-x40.jsonl = c25 row for row):
+  **6 of the 7 B+C losses PASS again**: middle E 7 (F208r1 -> P191r0), E 11 (F226r1 -> P171), N 32 (F222r1 -> P206), expert N 18
+  (F189r1 -> P173), N 29 (F204r1 -> P154), N 35 (F198r1 -> P190). **child N 38 still FAILS** (F386r3 -> F391r3: session 12's other shape,
+  the walk-off at vx 268 off bank #17 into the first river, not the stand). **ONE NEW LOSS: child E 11 P257r0 -> F285r1** (untraced: trace
+  it first in session 14). The other 27 rows hold their pass/fail; most times drop (expert N 29 204 -> 154, middle N 38 284 -> 185).
+- So the narrowing that meets the ruling's invariant at its cause: on a log running back at him, the stand is AT THE FRONT; from there the
+  judged gates (upstream `next` gateSees, the bank branch, tablePick) land the hop when the next log comes round or the bank is in reach,
+  so he is not ridden back. The hand-back memory and a dead-end filter become a backstop only if rows still hand back after it.
+
 ## EXACT NEXT STEP (session 14)
 0. Setup: `npm ci --no-audit --no-fund --legacy-peer-deps`; `git fetch --unshallow origin` (background). Worktrees in /home/user (this
    container had no /home/user/plant-work: freeze.sh.txt's `cd` needs that dir or edit it to the main checkout): fz-c25 6a64aa41e,
@@ -35,21 +57,17 @@ line went into the UNFROZEN main checkout at c25 and `git checkout` restored it,
    re-planted at their same bars as laid toys (23/23); hopJudged; the toys for c23's, c24's and c25's rules; the packet's plants (same
    bars, or retire per R-165.432); riverRide + firsttimer; the CI tool line at 0 fail; tierBots 9/9; timecheck + roadmapcheck. MERGE into
    release-0.10.3 (no force) ONLY on the lead's word: send the table first. REPORT BY 12:00 PM ET; HARD STOP 2:00 PM ET; two heavy runs max.
-2. **Candidate c26 (one commit, general, narrow by construction):**
-   (a) `rideDead(q, dir, t)`: q a drift log running back at him (q.drift.dir !== dir); sample its ride t' = t .. t + (time until q's rear
-       reaches the floor he boarded from, or q's run end), step 0.1 s, positions by floatAt(rivers, x)(t'): dead when at NO t' a non-drift
-       floor is within 80 px of q's front (|dy| < 70, as `bank`) and NO other drift log is ahead of q's front within the hop the gate can
-       land (take the reach from the landing's hops, e.g. #20 -> #19 at t 31.3; or call gateSees from q's front at t' with his table).
-       It must PASS the landing's #21 -> #20 hop (t 28.8) and REFUSE c25 E 11's #20 -> #19 (t 41.73): check both before wiring it.
-   (b) tablePick (:3411 padPause, :3771 bank branch, :3548) drops rideDead targets: unconditional (the ruling's words; such a log can only
-       hand him back, so rows without that loop do not move).
-   (c) Hand-back memory: `boardedFrom` = the non-drift floor he left for a log running back at him; standing on that same floor again
-       after riding such a log = one hand-back (count per floor id; cleared when he stands on another non-drift floor or respawns). After
-       one: (i) shape 2: in the upstream `next` branch (:3733) a refused held aim -> tablePick(logs without rideDead) and press it (as
-       :3771 does for the bank); (ii) the boarding gates (edgeWait drifts :3597, padPause `to` :3400, upstream `logs`) skip rideDead logs;
-       (iii) none lands: he stands on the BANK by choice (clockHeld) while the logs come round, never re-boards into the same round.
-   (d) Toys (tools/inspect/*.test.ts, as riverRide's): RED on c25 middle E 11 and expert N 29 (a hand-back round ending in a rescue), GREEN
-       on c26; the c2m gains child N 5 and middle N 13 still cross.
+2. **Candidate c26 (the lead rules between them; my recommendation is (A)):**
+   FIRST (either way): trace the experiment's one new loss, child E 11 (c25 P257r0 -> EXP_FRONT F285r1): apply tools/expfront-o.diff.txt to
+   a local commit (never the shared branch before the lead has rows, D117), freeze it, tools/trace-n.mts.txt on 2-7 child easy 11 on it
+   and on fz-c25; first split by tools/frames.mts.txt + div.py-n.txt. Then build the chosen candidate:
+   (A) the front stand: tools/expfront-o.diff.txt WITHOUT the env gate (two lines in the upstream block; a comment naming E 11 x 9,379 /
+       N 29 x 13,079, the gap branch's tier look, and the ruling). Toys (tools/inspect/*.test.ts, as riverRide's): RED on c25 middle E 11
+       and expert N 29 (a hand-back round ending in a rescue), GREEN on c26; the c2m gains child N 5 and middle N 13 still cross.
+   (B) as ruled word for word, if the lead keeps it: hand-back memory (boardedFrom; after one hand-back the upstream `next` branch takes
+       tablePick on a refused held aim, the boarding gates skip a dead-end log, else he stands on the bank by choice) and tablePick drops a
+       log whose RIDE brings no bank/log into reach FROM WHERE HE WILL STAND (tools/ridedead-o.mts.txt; it must pass the landing's #21 -> #20
+       at t 28.8 and refuse c25 E 11's #20 -> #19 at t 41.73; by the log's front alone it does NOT refuse it: see above).
 3. Re-measure (ruling 3), then the checklist (ruling 4). Push candidates to release-0.10.3-wip-plant-c only with their rows to the lead.
 
 Lessons applied: D134 (pushed + ls-remote before the hand-over), D128 (stamps from `date` / the hook), D115 (the probe in the UNFROZEN

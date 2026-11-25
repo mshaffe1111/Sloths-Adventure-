@@ -1,0 +1,19 @@
+t26.60 x9128 on#undefined
+  log#19 drift-1 [9068..9218] -> OK +0.0 log#21 gap 80
+  log#20 drift-1 [9528..9678] -> OK +0.0 bank#17
+  log#21 drift-1 [9298..9448] -> OK +0.0 log#20 gap 80
+t27.80 x9294 on#undefined
+  log#19 drift-1 [8984..9134] -> OK +0.0 log#21 gap 80
+  log#20 drift-1 [9444..9594] -> OK +0.0 bank#17
+  log#21 drift-1 [9214..9364] -> OK +0.0 log#20 gap 80
+  log#22 drift-1 [9832..9982] -> OK +0.0 log#24 gap 80
+t28.80 x9404 on#undefined
+  log#19 drift-1 [8914..9064] -> OK +0.0 log#21 gap 80
+  log#20 drift-1 [9374..9524] -> OK +0.0 bank#17
+  log#21 drift-1 [9144..9294] -> OK +0.0 log#20 gap 80
+  log#22 drift-1 [9762..9912] -> OK +0.0 log#24 gap 80
+  log#24 drift-1 [9992..10142] -> OK +0.0 log#23 gap 80
+t30.70 x9362 on#20
+  log#19 drift-1 [9471..9621] -> OK +0.0 bank#17
+  log#21 drift-1 [9011..9161] -> OK +0.0 log#20 gap 80
+  log#24 drift-1 [9859..10009] -> OK +0.0 log#23 gap 80

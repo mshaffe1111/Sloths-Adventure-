@@ -1,0 +1,20 @@
+diff --git a/tools/inspect/firsttimer.ts b/tools/inspect/firsttimer.ts
+index b60f66940..4bb9e18be 100644
+--- a/tools/inspect/firsttimer.ts
++++ b/tools/inspect/firsttimer.ts
+@@ -3746,6 +3746,7 @@ export class FirstTimerRun {
+               //  front end with a 0.033 s tap the gate never saw reach the next log 80 px off, rode back to the bank and boarded again until
+               //  rescued: 2-7 draft child Normal seeds 6 x 9412 and 8 x 8702, the stage's 'water ahead' stall (seeds 1-20 rescues 11 -> 3)
+               //  The child's skill only (FirstTimer.reAim, ENG-BOT27b, the lead's ruling): on every bot it moved pacerLay's careful middle)
++              if (process.env.EXP_FRONT && dir * (edgeX - p.x) > 30) { this.pending = null; this.lateArmed = null; return side(dir); }
+               if (SKILLS.reAim && who.reAim && t - this.aim.since > who.stopReact) this.aim.end();
+               this.pending = null; this.lateArmed = null; this.clockHeld = true; this.blockedT = 0; return {};
+             }
+@@ -3778,6 +3779,7 @@ export class FirstTimerRun {
+               this.pending = null; this.lateArmed = null; this.clockHeld = true; this.blockedT = 0; return {};
+             }
+             this.aim.end();
++            if (process.env.EXP_FRONT && !next && !bank && dir * (edgeX - p.x) > 30) return side(dir);
+             return next || bank ? this.startJump(dir, this.jumpFor(p, dir, here), false) : {};
+           }
+           if (!bank && !next) {
