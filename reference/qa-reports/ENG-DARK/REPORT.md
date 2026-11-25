@@ -1,26 +1,68 @@
 # ENG-DARK REPORT (the dark + light ring as one gen2 brick; WORLD-3-PLAN F2; R-165.449)
-**EXACT NEXT STEP (ENG-DARK-b hand-over, 11:47 AM ET by `date`; code head 653bb970 on t-eng-dark-wip; the lock fix and the bots' skill are IN):**
-(1) **Box 2's runs ENDED and are recorded below ('Box 2's runs': lockall PASS 102/102; x40 castBots); do not re-run them:** the base lock
-on a frozen t-eng-w3 c1008d8e (`lockall --layouts 16 --out lock-base.json`), then `lockall --layouts 16 --check lock-base.json` on a
-frozen 653bb970 (PASS = exit 0, 102/102 unchanged: World 6 and World 8 above all); castBots on the 3-1 draft x40 both settings every
-bot, 3 lanes (seeds 1-14 / 15-27 / 28-40) on a frozen 653bb970, each row with `dark: {crossed, unlit}`.
-(2) **Box 3 starts on these, in parallel (none needs box 2's runs):** (a) STILLS both ways of a dark shaft with the glow, before and
-after a stop: `tools/engine/draftshoot.mjs` (on t-eng-w3; read its header for the flags), 2x, upright + sideways, a dark rim asleep
-and the same rim after a stop of DARK_AHEAD + 0.5 s; judge them as Matt would on a phone (the glow readable, the next landing visible
-when lit, nothing under the HUD or the phone's edges); send the lead the paths. (b) THE RESCUES: on seed 1 every bot already has 3-5
-rescues, every one 'in a dip ~280 px deep, the way on is ~100 px down' (the down shaft's storeys). Name whether the dark adds any:
-castBots seeds 1-3 every bot both settings on a frozen c1008d8e (no dark) vs the x40 rows here (by `stuck[].what`); two traces per
-cause the dark adds (FT_FRAMES=t0,t1). A down-shaft rescue the base has too is ENG-DOWNBOT's (it lands the down lay and bots on
-t-eng-w3 today): merge origin/t-eng-w3 when it lands and re-run the x40 then. (c) The plants on a frozen 653bb970: `python3
-reference/qa-reports/ENG-DARK/planted-faults.py <frozen dir>` (12 now: box 1's 10 + the glow counter on every stage + the bots' stop
-removed in code): PASS = 12/12 CAUGHT.
-(3) Then: tierBots 9/9, the suite (3 shards) + the CI tool line once on the final head; land on t-eng-w3 (merge origin/t-eng-w3, no
-force); send the lead the hash, the READY measures (below) and that ENG-SPORE can start.
+**EXACT NEXT STEP (ENG-DARK-c hand-over, 12:05 PM ET by `date`; code head b71163ea on t-eng-dark-wip: box 2's code + glowJump):**
+(1) **Box 3's runs are still going in box 3's container; box 3 records them here when they end (do not re-run them):** castBots on the
+3-1 draft on a frozen BASE c1008d8e (no dark), seeds 4-21 and 22-40, both settings, every bot (seeds 1-3 done: item 3 below), then the
+per-bot table base vs dark (653bb970's x40, box 2) by rescues and by cause. **Box 2's lockall --check is RECORDED: PASS, 102/102 unchanged on a
+frozen 653bb970 vs c1008d8e ('Box 2's runs' below)**; glowJump (b71163ea) changes only the bots, so the lock is re-run once on the final
+merged head at landing (`lockall --layouts 16 --out lock-base.json` on a frozen t-eng-w3 base, then `--check` on the frozen final head).
+(2) **Box 4: castBots x40 on the 3-1 draft on a frozen b71163ea** (3 lanes: seeds 1-14 / 15-27 / 28-40, both settings, every bot,
+`--rows`; at most two heavy runs at once). PASS: unlit 0 of the 55 'landing dark' (the glowJump fix, item 4 below), shrine >= 359/360,
+rescues not up vs 653bb970's 1,393. Then TRACE the other unlit kind, 'woke too late' (3 in the x40: he went over 0.34-0.73 s after the
+landing's light woke; rows: kid/adult/middle, `grep 'after it'` in cast-3-1-x40-653bb970.jsonl), two traces (FT_FRAMES=t0,t1 with
+`reference/qa-reports/ENG-DARK/onerun.mts`), fix with a toy each way if the stop ends early. Any 'landing dark' left after glowJump:
+trace two, same way.
+(3) Then: the plants on a frozen final head (`planted-faults.py`, 13 now: PASS 13/13 CAUGHT), tierBots 9/9, the suite (3 shards) +
+the CI tool line once on the final head; land on t-eng-w3 by the lead's landing rule below; send the lead the hash, the READY measures
+and that ENG-SPORE can start (the light API: reference/architecture/ADR-004-timed-lights.md on the lead's branch).
+(4) **Still open for the lead (named, not this lane's file): Dot's card upright sits just under Pokey and hides the glowworm that just
+woke** (stills item 2(d) below).
 **The lead's landing rule (ENG-DOWNBOT-f lands on t-eng-w3 today too; both lanes touch tools/inspect/firsttimer.ts and the gen2 lay):**
 whoever lands SECOND merges origin/t-eng-w3 first and runs the OTHER lane's tests on the merged head before pushing: dark.test,
 darkBots.test, w3.test, tower.test, castBots.test (the down toys) and lockall. Name every conflict here; never resolve one by dropping
 the other lane's lines.
-Box 2 start 11:31 AM ET (by `date`). Box 1 start 11:03 AM ET.
+Box 3 start 11:50 AM ET, box 2 11:31 AM ET, box 1 11:03 AM ET (by `date`).
+
+## Box 3 (ENG-DARK-c) so far (start 11:50 AM ET by `date`)
+1. **Plants 12/12 CAUGHT** on a frozen 653bb970 (worktree, `planted-faults.py`, exit 0): box 1's 10 + the glow counter on every stage
+   ('the lay leaves every other stage') + the bots' stop removed ('the dark's skill: he stands').
+2. **STILLS of a dark shaft, asleep and lit (for the lead to judge): `reference/qa-reports/ENG-DARK/stills/`** (2x, JPEG q85), shot on a
+   frozen 653bb970 by `reference/qa-reports/ENG-DARK/darkshoot.mjs` (draftshoot.mjs's harness: vite on a refused-if-busy port, the
+   served tree checked as the worktree by the listener's cwd, the port killed after). 3-1 draft roll 1 (flow down, 42 drop rims with a
+   light). Pokey pinned 30 px inside a real dark rim, facing it. ASLEEP: every wake cleared, his stillness held at 0. LIT: the stop let
+   run; the landing's light woke at +0.76 s / +0.79 s of game time (GLOW_STILL 0.7 + the wake's travel), shot 1.5 s after it woke
+   (DARK_AHEAD Normal 1 + 0.5).
+   - `3-1-port-rim0-asleep.jpg`, `3-1-port-rim0-lit.jpg`, `3-1-land-rim0-asleep.jpg`, `3-1-land-rim0-lit.jpg`: rim (1031, 1944), going
+     right, its landing 281 px below.
+   - `3-1-port-rim1-asleep.jpg`, `3-1-port-rim1-lit.jpg`, `3-1-land-rim1-asleep.jpg`, `3-1-land-rim1-lit.jpg`: rim (385, 6346), going
+     left, its landing 164 px below.
+   **My polish check (as Matt on a phone):** (a) the dark is dark enough to matter and never black: rock and ledges faintly there, the
+   sleeping glowworms read as dim blue worms with a small glow. (b) Lit, the landing under the rim reads in all 4 lit stills; the pool
+   reaches that landing, the shaft below stays dark (the bound shows). (c) Nothing under the HUD (hearts, lives, the log bar, the menu
+   leaf) in either orientation; Pokey and the landings are clear of the phone's edges. (d) **ROUGH, named, not fixed here:** upright, Dot's
+   card sits just UNDER Pokey: in `3-1-port-rim1-lit` ('Too dark to see. Stand still and listen...') it covers the glowworm that just
+   woke (only its head shows over the card), so the cause and effect (he stopped, the worm woke, the way lit) is hidden while the card is
+   up; in `3-1-port-rim0-asleep` it covers the ledge under him. In a stage that goes DOWN the way on is below him: the card belongs above
+   him. Here the cards fire because the pin moves him into the zone (the zone's line on entry); in play the same line fires on his first
+   dark entry, i.e. at his first stop. The card's placement is not this lane's file (the lead's call: an R-number and a lane).
+3. **THE RESCUES, base vs the dark, seeds 1-3 (27 runs each; castBots on a frozen c1008d8e vs box 2's x40 rows on 653bb970; base rows: cast-3-1-base-c1008d8e-s1-3.jsonl):** the
+   layout is the SAME (platforms and flags hashed equal on seeds 1-3, both trees), so every difference is the bots' play in the dark.
+   Rescues 90 base -> 102 dark (+12; child Easy +7, middle Easy +4, adult Normal +2, expert/kid/middle Normal about even). The KINDS
+   are the same (numbers stripped, base -> dark): 'in a dip N px deep, the way on is N px down' 56 -> 69; 'the way on is N px down'
+   20 -> 29; 'a trunk beside him...' 9 -> 8; 'fell back down from here N times' 5 -> 5; no kind the base lacks. Traced: adult Normal
+   seed 2 (base clean, 129.5 s; dark 173.4 s, 1 rescue at (784, 6177) at 81.2 s): a clean 2 s dark stop at (698, 5554), then he
+   dithers between two storeys (piece 34 and 157: back up a jump, down again) where the base also logged 'the way on is 85 px down'
+   at (514, 5699) and recovered without a rescue. Reading so far: the dark adds no rescue kind of its own; it moves when he reaches
+   the down shaft's storeys, whose dips are ENG-DOWNBOT's lane. The base x40 (item (1) above) settles the per-bot numbers.
+4. **The unlit crossings, cause 1 of 2 FIXED (box 2's x40: 58 unlit, 55 'landing dark'; the expert 26):** traced twice, the expert Normal:
+   seed 12, the jump pressed at x 509 for the rim at 594 (94 px out) at 81.27 s; seed 10, pressed at about x 160 for the rim at 70 at
+   122.93 s, after a stand broken by small steps every 0.65 s (his stillness never reached GLOW_STILL 0.7 s). A running jump over a dark
+   rim is pressed before he is within GLOW_NEAR 90, so glowWait never stopped him. **Fix (firsttimer.ts glowJump, read at the top of
+   startJump before any jump state moves):** a jump toward a dark rim on his piece within GLOW_JUMP 200 px whose landing is not yet lit
+   DARK_AHEAD starts the dark stop instead (glowWait then holds him until lit + stopReact). Not by widening GLOW_NEAR (a press from further
+   out would escape the same way). **Toy (darkBots.test 'holds a running JUMP'), the expert on the draft's roll 12, first 85 s:** RED on
+   653bb970 (the rim at 594, 4355 gone over with its landing dark at 81.60 s), GREEN on b71163ea; **plant 13** (glowJump not read):
+   CAUGHT (RED). dark.test + darkBots.test **12/12 GREEN on a frozen b71163ea**. The x40 that proves it on every bot: item (2) above.
+5. Owned: for about 4 minutes three runs went at once (the two base lanes + the targeted dark tests), past 'at most two heavy runs'.
 
 ## Box 2 (ENG-DARK-b) done (all on the real 3-1 draft row)
 1. **The lock's cause fixed first (box 1's RED: 37 gen2 stages moved in proto.gen2 only):** dark.ts glowFlags writes its glowworm
