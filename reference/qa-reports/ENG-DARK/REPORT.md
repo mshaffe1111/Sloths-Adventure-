@@ -70,10 +70,15 @@ glowWait never stopped him at rim 920 because he stood at x 919-924, at or past 
 1-PX MISS box 9 found at rim 367 (glowWait's on(r) reads p.x against the piece; the engine has him standing on it). NEXT FIX (general,
 a toy each way): glowWait's 'on the rim's piece' reads the engine's standing piece (e.standingOnId) or allows LAND_HALF past its end;
 then re-measure middle N 16, and check rim 367 on 32 N stays clean. THE LINE: firsttimer.ts glowWait
-`const on = (r: DarkRim) => p.grounded && p.x >= r.piece.x && p.x <= r.piece.x + r.piece.width && ...` (about :3385 on 404d9420). Trace
-first with loop.mts at 30 fps (no awk thinning) 167.0-167.3: he stood at 918-919 ON the piece facing away (-1) when downEnd turned him
-(+1); read why that frame's glowWait(1) started no stop (its own conditions after on(r)) before changing on(r). RimWatch also counts a
-grounded step past the end as a crossing, so a stop must hold him at or before x 920.
+`const on = (r: DarkRim) => p.grounded && p.x >= r.piece.x && p.x <= r.piece.x + r.piece.width && ...` (about :3385 on 404d9420). TRACED
+by box 10 at 30 fps (probes/glowwait.mts middle normal 16 920 7104 166.95 167.3, wraps glowWait from outside): glowWait DID start the
+stop at rim 920 (167.10 s, x 919.0, facing -1, sliding left), then pressed RIGHT to face the rim (turn 1, 167.13-167.20; he had slid to
+917.6, 2.4 px from the edge). The press turned him AND moved him: at 167.23 x 920.5 facing +1, vx 87 (standingOnId still 105: the
+engine's grace). on(rim) went false (p.x > 920), the stop was dropped (ret null), and he walked off (air at 167.30). RimWatch counted the
+crossing at 920.5 (a grounded step past the end). So the FAULT IS THE TURN PRESS AT THE RIM'S VERY EDGE, not downEnd. A general fix
+(a toy each way, roll 16 middle Normal): a stop whose turn would carry him past the rim (he stands within a turn's slide of it, about
+3-6 px) first steps him back from it, or turns without the press moving him; reading on(r) from standingOnId alone is NOT enough
+(RimWatch already counts 920.5 as over). Box 9 found the turn not the cause at 367; here it IS the cause.
 The lead was ASKED (box 10, with this evidence) which bar '33 N's behind edge lit' means: (A) the second light + darkLandings drops the
 behind-edge exemption for a step-off from a hop rim; (B) A + the x40 crossing over 940 reads lit (a judge change); (C) other. Box 10
 said it would build A unless the lead says otherwise: read the lead's answer first.
