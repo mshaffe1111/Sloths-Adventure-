@@ -1,4 +1,51 @@
 # ENG-DARK REPORT (the dark + light ring as one gen2 brick; WORLD-3-PLAN F2; R-165.449)
+**EXACT NEXT STEP (ENG-DARK-m box 13 hand-over, 4:13 PM ET by `date`; head on t-eng-dark-wip = this commit; CODE a3117f7c0 (toys +
+the onFrame bot argument; move code unchanged since f69e18fb0). Box 14 OWNS every step below. Re-fetch before every commit (D138).)**
+**WAITING ON THE LEAD (asked at hand-over, one choice):** the trial merge of ENG-DOWNBOT (f1d519f25) into a3117f7c0 cures the loop
+but makes 74 unlit crossings in 44 of 76 runs. (A) fix in my lane on a merged head (bot stop + darkLandings for a RUNNING step-off);
+(B, recommended) ENG-DOWNBOT lands on t-eng-w3 first, box 14 lands on top, fixes and runs the x40 there; (C) land a3117f7c0 now, the
+74 unlit named as a defect. Run NO gates on a3117f7c0 until the lead rules (D140).
+**STEP 1 DONE (a3117f7c0, plants-box13.txt):** every darkBots plant CAUGHT (12-16, 19, 20, 28, 29), darkBots.test whole 11/11.
+- Toy 3 is on a REAL row again (lead, box 12's scan-box12-jump.txt): expert Easy roll 2, cap 26: unplanted crossed 4, unlit [];
+  plant 13: the rim at the right end of 225-484 gone over dark at 22.97 s. NOT a shape toy.
+- SHAPE TOYS (the lead's ruling A; on the final lay no run of rolls 1-40 decides them): toy 4 and test 5 (box 12), tests 10/11
+  (box 12), and box 13's toy 6 and test 7:
+  - toy 6 (the KID's held thumb): roll 1, the draft's first sleeping rim (its light held asleep until 0.5 s); stood 200 px in,
+    steering at it; at 130 px out his plan means to stand (intended {}, glowWait read first) until 4 s; the KID's late lift-off
+    re-arms and carries him. GREEN crossed 4, unlit []; plant 16: over at 1.57 s with its landing dark. Needs the bot: onFrame now
+    gets (sim, bot) (firsttimer.ts, no move change) and the toy swaps bot.intend on that run only.
+  - test 7 (the trunk MID-WAY): the child Easy on roll 1 placed (bot.placeAt: route progress + checkpoint follow) at 0.5 s 10 px
+    beside the deepest trunk that runs past a ledge (top 277 px above his feet, the way on down it to the shrine). GREEN: takes it,
+    shrine 9.9 s, no rescue (cap 20); plant 19: rescued, shrine 26 s; plant 20: rescued, shrine 24.6-29.6 s.
+- The 4 dark.ts plants that printed NO ANCHOR (anchors from before box 11's rewrite; hidden until now) are re-anchored: 3 CAUGHT
+  (hung 500 px; RimWatch hides a climb; the depth bound off). The behind-edge exemption plant is MISSED: no real row decides it
+  (probes/behind.mts: rolls 1-12 Normal, each sleeping rim light moved out of reach in turn: darkLandings [] planted and not). It
+  needs a shape toy on a hand-built stage, or the exemption removed as dead code (an engine change: a new x40). The lead decides.
+  planted-faults.py takes ONLY='name|name' to run a subset.
+**THE x40 ON FROZEN a3117f7c0 (cast-3-1-x40-a3117f7c.jsonl, x40-verdict-a3117f7c.txt, x40verdict.py; 6 min a lane, two lanes):**
+shrine 360/360; unlit 0; gaveUp 0; edgeTurns 0. FAILS AS WORDED: loop >= 10 on 72/360 (max 34), every crossing lit; 2 combined
+rescue kinds the base lacks (5 rescues; box 9's same two). Medians vs base +20 to +39 s on 8 of 9 rows (child N +0.6): box 11's
++30-40 s IS general; clean runs +25.7 s (the dark's stops, accepted by the lead), looping runs +36.2 s.
+- The loop, traced (probes/loopwho.mts): always pieces 260-509 (y 4298) and 266-505 (y 8635), each followed by a 48 px gap to a
+  piece 6 px lower (553-733, y 8641). The route's way on goes DOWN that gap; at walking speed he carries over it onto the lower piece,
+  the ROUTE's way flips, he walks back, every 0.65-0.8 s for 20-25 s. No dark stop involved (glowStop null). The seam rule counts a
+  gap as walk-over only under 2 x LAND_HALF (42 px), so this 48 px slot with a 6 px drop is not a seam to it.
+**THE TRIAL (the lead's check; trial-downbot-a3117f7c-f1d519f2.jsonl; probes/trial-downEnd-resolution.diff.txt, probes/rerun.mts):**
+merge of origin/t-eng-w3-wip-downbot f1d519f25 into a3117f7c0, NOT pushed as code. One conflict: downEnd (firsttimer.ts): resolved
+as ENG-DOWNBOT's wood-run body (the branch version, newer than its saved downEnd-resolution.ts.txt) with the box 12 seam rule
+applied to the point it picks; ledgeEnds and downPt kept (test 7's mid-trunk grab calls downPt). tsc clean. The 76 looping/rescued
+runs: shrine 76/76; loops >= 10 72 -> 3 (kid N 35: 15, adult N 35: 17, child N 6: 12); combined kinds 5 -> 1; rescues 330 -> 10;
+median -81 s. NEW: 74 unlit crossings in 44 runs. Traced adult N 12 at 4.73 s: the new route goes LEFT, he runs off an edge with no
+dark stop (y 753) at 268 px/s, flies 92 px, lands 7 px from the sleeping rim at the left end of 809-1036 and goes over it dark.
+darkLandings models only a slow step-off (STEP_OFF 24 px after the stop), so no lay check covers a RUNNING step-off from an edge
+where no stop applies. Not traced: the other 43 runs (grouped: 2 each at many rims, no single spot).
+**THEN, after the ruling:** the x40 on the head that will land (bar: shrine 360/360; unlit <= 5, no loop (>= 10); no rescue kind
+the base lacks); tierBots 9/9, the suite shards + the CI line ONCE on it (timeout 7200000); LAND on t-eng-w3 (merge, no force,
+conflicts named; dark.test, darkBots.test, lockall on the merged head; push; the hash to the lead).
+**Changes ENG-DOWNBOT's merge must keep (downEnd/glowWait/RimWatch):** downEnd's seam rule (box 12: `if (d === 0 ||
+this.who.noSeamWalk) return d;` then ledgeEnds' own/run test) on the point downEnd picks; ledgeEnds; downPt (test 7); glowWait's turn
+room (`if (!this.who.noTurnRoom && stop.turn !== 1) {`), glowEdgeTurns; RimWatch's over/climbed/grace rules (dark.ts 398-436).
+
 **EXACT NEXT STEP (ENG-DARK-l box 12 hand-over, 3:22 PM ET by `date`; head on t-eng-dark-wip = this commit; CODE f69e18fb0 (move code
 unchanged since box 11's 0ef63c154: e0db872f4 adds RECORDS only). Box 13 OWNS every step below. Re-fetch before every commit (D138).)**
 **THE LEAD RULED (A):** hand-built toys on roll 1's REAL first sleeping rim in the real engine; no rolls 41-80 (cost); the REPORT says
