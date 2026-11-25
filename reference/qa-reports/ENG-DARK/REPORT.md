@@ -47,6 +47,34 @@ Box 2 start 11:31 AM ET (by `date`). Box 1 start 11:03 AM ET.
    crossing, fixed in item 3, NOT re-run since: the x40 on 653bb970 measures every bot). Every run reached the shrine with 3-5 rescues,
    all in the down shaft's storeys (next step (2b)).
 
+## Box 2's runs (recorded by box 2 after its hand-over; nothing new started)
+**castBots x40 on the 3-1 draft, both settings, every bot, frozen 653bb970 (rows: reference/qa-reports/ENG-DARK/
+cast-3-1-x40-653bb970.jsonl, 360 rows, 0 errors):**
+| bot | setting | shrine | clean (0 rescues) | rescues (runs) | dark rims crossed | unlit (runs) |
+|---|---|---|---|---|---|---|
+| kid | normal | 40/40 | 0 | 151 (40) | 1954 | 3 (2) |
+| kid | easy | 40/40 | 0 | 192 (40) | 2854 | 1 (1) |
+| adult | normal | 40/40 | 1 | 120 (39) | 2052 | 0 |
+| adult | easy | 40/40 | 0 | 202 (40) | 3547 | 2 (2) |
+| child | normal | 40/40 | 1 | 135 (39) | 1094 | 5 (4) |
+| child | easy | 39/40 | 0 | 179 (40) | 1424 | 4 (4) |
+| middle | normal | 40/40 | 3 | 115 (37) | 1034 | 6 (5) |
+| middle | easy | 40/40 | 1 | 184 (39) | 1463 | 11 (9) |
+| expert | normal | 40/40 | 0 | 115 (40) | 1028 | 26 (10) |
+
+- **Shrine 359/360**; the one miss: child Easy seed 25 'stranded' at 295.9 s after 4 rescues (last stuck: 'the way on is 131 px
+  down' at x 1110; 'in a dip 281 px deep, a trunk beside him, the way on is 70 px down' at x 1107).
+- **'Every gap lit 1 s ahead' (litAhead): 58 of 16,450 dark crossings unlit (0.35%), in 37 of 360 runs**: 55 'landing dark', 3 'woke
+  too late'. The expert is the worst (26 in 10 runs): e.g. seed 10 rim 70,6672 at 123.27 s; seed 12 rims 594,4355 and 644,6744. NOT
+  yet traced (box 3: two traces per kind; likely a press from beyond GLOW_NEAR (a running jump over the gap) or a landing past the rim's
+  90 px with speed).
+- **RESCUES ARE THE BIG RED: 1,393 in 357 of 360 runs; only 6 runs clean** (adult N 6, middle N 2/26/28, child N 26, middle E 37).
+  Causes (stuck[].what, numbers stripped): 'in a dip N px deep, the way on is N px down' 1009; 'the way on is N px down' 256; 'fell
+  back down from here N times' 99; 'a trunk beside him, the way on is N px down' 93; 'in a dip, a drop of N px ahead, the way on is N
+  px down' 75; the rest under 60. Every top cause is the down shaft's storeys. NOT shown yet whether the dark adds any: box 3's (2b)
+  (the same castBots on a frozen c1008d8e, no dark, seeds 1-3, by cause) answers it; ENG-DOWNBOT's landing on t-eng-w3 is what these
+  wait on if the base has them too.
+
 ## Box 1 END results (kept)
 Plants 10/10 CAUGHT on frozen 6ba641166. lockall --check on frozen 6ba641166 vs c1008d8e's lock: 65/102 unchanged, exit 1 (37 gen2
 stages in proto.gen2 only: the glowFlags counter; fixed in box 2 item 1).
