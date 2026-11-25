@@ -422,3 +422,42 @@ test('a beat row is started from a floor that stays only on a breath that crosse
   const lagMax = ft.FT_ADULT.thumb[0] + 3 * ft.FT_ADULT.thumb[1];
   for (const b of starts) assert.ok(b.left >= b.need - DT - lagMax, `he left floor #${b.from} at t ${b.t.toFixed(3)} onto beat pad #${b.on} with ${b.left.toFixed(2)} s of the breath left for a run that needs ${b.need.toFixed(2)} s`);
 });
+
+// CI-15 (ENG-PLANT-CI session 12, the wide sample's 4 BAR PASS -> FAIL vs main, traced by frame): padPause's 'he stops on it a beat' is a
+//  bare {}; a bot with no holdQ (the kid, the adult) never lets go of one (thumbify's late lift-off re-arms every frame, R-165.59), so on
+//  a small log he ran on at 285 px/s off its front into the water. 2-1 kid Easy 10 on CI-14: landed on upstream log #116 56 px from its
+//  front at 117.100, padPause {} every frame, off the front at 117.367 with no press, his 3rd life at one flag, rescued. The real stage
+//  and bot: while a pause runs on a log he never leaves it unpressed (a walk-off within two frames of a pause frame on that log)
+test('a pause on a small log is a stop he means: he never runs off its front while it runs: 2-1 kid Easy 10, log #116 (CI-15)', async () => {
+  const ft = await import('./firsttimer.ts');
+  const { CAST_BOTS } = await import('./castBots.ts');
+  type Q = { id: number; drift?: unknown };
+  type S = { t: number; e: { player: { x: number; grounded: boolean }; standingOnId: number | null }; platforms: Q[] };
+  type R = { t: number; sim: { p: { grounded: boolean } }; padPause: { until: number; id: number } | null };
+  const P = ft.FirstTimerRun.prototype as unknown as { intend: (this: R) => { left?: boolean; right?: boolean; jump?: boolean }; startJump: (this: R, ...a: unknown[]) => unknown };
+  const it = P.intend, sj = P.startJump;
+  const pauses: { t: number; on: number }[] = [], presses: number[] = [], offs: string[] = [];
+  P.intend = function (this: R) {
+    const o = it.call(this), pp = this.padPause;
+    if (pp && this.t < pp.until && this.sim.p.grounded && !o.left && !o.right && !o.jump) pauses.push({ t: this.t, on: pp.id });
+    return o;
+  };
+  P.startJump = function (this: R, ...a: unknown[]) { presses.push(this.t); return sj.apply(this, a); };
+  let last: { g: boolean; on: number | null } | null = null;
+  try {
+    ft.firstTimer('2-1', 10, CAST_BOTS.kid.easy!, { cap: 118, dotSetting: true, onFrame: (sim) => {
+      const s = sim as unknown as S, p = s.e.player;
+      if (last?.g && last.on != null && !p.grounded) {
+        const q = s.platforms.find((x) => x.id === last!.on);
+        const paused = pauses.some((b) => b.on === last!.on && s.t - b.t <= 2 * DT + 1e-6);
+        if (q?.drift && paused && !presses.some((j) => s.t - j <= 2 * DT + 1e-6)) offs.push(`off log #${q.id} at t ${s.t.toFixed(3)} x ${p.x.toFixed(0)}`);
+      }
+      last = { g: p.grounded, on: s.e.standingOnId };
+    } });
+  } finally {
+    P.intend = it;
+    P.startJump = sj;
+  }
+  assert.ok(pauses.length > 0, 'no pause by t 118: the toy reads nothing');
+  assert.deepEqual(offs, [], `he ran off a log while its pause ran, unpressed: ${offs.join('; ')}`);
+});

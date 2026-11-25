@@ -3508,7 +3508,12 @@ export class FirstTimerRun {
     if (this.padPause) {
       const here = this.floorAt(p.x, p.y, 6);
       if (!here || here.id !== this.padPause.id) this.padPause = null;
-      else if (t < this.padPause.until) return {};
+      // (CI-15, rule 28: the pause is a stop he MEANS (stopMeant, as the ride stand's, CI-13, and padRead's, c11): a bare {} is never let
+      //  go by a bot with no holdQ (the kid, the adult; thumbify's late lift-off re-arms every frame, R-165.59), so 'he stops on it a beat'
+      //  ran him on at 285 px/s off the small log's front into the water. 2-1 kid Easy 10 on CI-14: landed on upstream log #116 56 px from
+      //  its front at 117.100, ran off it at 117.367, his 3rd life at one flag, rescued; the same off #85 / #86 / #87 at x 19,4xx (2-1 kid
+      //  Normal 2 and 7) and off #68 at x 15,0xx (2-1 kid Normal 10, CI-10): ENG-PLANT-CI session 12)
+      else if (t < this.padPause.until) { this.stopMeant = true; return {}; }
       else {
         this.padPause = null;
         if (dir !== 0 && !this.floorAt(p.x + dir * 80, p.y, 40)) {
