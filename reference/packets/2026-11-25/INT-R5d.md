@@ -8,8 +8,14 @@ READ LEAN: packets/2026-11-24/INT-R5.md (the release's shape); reference/qa-repo
 lockhints.py); methods/release.md "Before the PR" steps 0-6 and 4b; methods/gates.md THE FULL SET; PLAY-STORE-RULES §6; LESSONS D111-D136
 (the lead's branch); the three branches' REPORTs: ENG-PLANT (release-0.10.3-wip-plant-c-report), SIDEWALL-FIX (t-fix-sidewall), FIX-SOIL
 (t-fix-soil).
-1. BASE: origin/release-0.10.3 AFTER ENG-PLANT's merge (the lead gives the hash). Merge t-fix-sidewall, then t-fix-soil (both cut from main
-   cdffdc627; draw-only: lockall must show NO layout move from them). Name every conflict and its resolution. tsc + the CI tool line right after.
+1. STEP 1 EARLY (start before ENG-PLANT's merge; catch the conflicts now, R-165.450): a new branch release-0.10.3-wip-fixes from
+   origin/release-0.10.3's CURRENT head. Merge t-fix-sidewall, then t-fix-soil (final head 539885c37 + its stills; both cut from main
+   cdffdc627; draw-only). The soil fix moved both painters onto one exported bank list (groundBanks): put sideWall's bankList inside it in ONE
+   place. Name every conflict and its resolution. Then on the merged head: tsc; the CI tool line; paintcheck full sweep GREEN with BOTH rules
+   (sideWall and soilOvers, no known list); lockall vs main with ZERO moves from the two fixes; stills of the two fixes TOGETHER (1-4 start and
+   summit, 1-6's posts, 8-1's sliver, upright and sideways; look at each as Matt would on a phone) to the lead. Push.
+1b. When the lead sends ENG-PLANT's merged release-0.10.3 hash: merge it into release-0.10.3-wip-fixes (no force), tsc + the CI line, then
+   fast-forward release-0.10.3 to it (no force) and go to step 2.
 2. What's New (at most 4 short lines, player words; SEND TO THE LEAD before committing): 2-7 The Mailman's Route; Dot warns before deep water;
    fixed: a wall you could not see on 1-6, a dark column of soil at 1-4's start; smoother rivers. package.json -> 0.10.3.
 3. THE FULL SET on that exact head (`git fetch --unshallow` first): run1.sh (lockall vs main --intended 2-7, 1-4's relist and fill, the hint
