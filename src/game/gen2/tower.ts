@@ -450,18 +450,24 @@ export function towerCatches(flow: 'up' | 'down', platforms: readonly Platform[]
           if (bx >= 24 && bx <= width - 24 - TOWER.catchW && fwd >= SLIDE.out && back >= SLIDE.back) xs.push(bx);
         }
       }
-      let laid = false;
+      // (going down, a bough whose own ends both land in view (within `most`, or at a wall) first: kept out of his hop's room the first
+      //  fair bough lay 287 px down beside the storey under it, its near end a 347 px blind drop with no fair wood under it, on 6 of 48
+      //  drafted 3-1 rolls, where a bough a little higher, off the vine's top, landed both ends, ENG-DOWNBOT)
+      const landed = (bx: number, y: number) => {
+        const box = { id: 0, x: bx, y, width: TOWER.catchW, height: 24, type: 'solid' } as Platform;
+        return [bx - 24, bx + TOWER.catchW + 24].every((x) => x < 20 || x > width - 20 || all.some((q) => q.type === 'solid' && Math.abs(q.y - y) <= 1 && x >= q.x && x <= q.x + q.width) || (catchUnder([...all, box], x, y, most) !== undefined));
+      };
+      let pick: { bx: number; y: number; L: number } | undefined;
       for (const y of ys) {
         for (const bx of xs) {
           const L = fair(bx, bx + TOWER.catchW, y, Le, []);
           if (L < 0) continue;
-          put(bx, bx + TOWER.catchW, y, L);
-          added++;
-          laid = true;
-          break;
+          if (!pick) pick = { bx, y, L };
+          if (flow !== 'down' || landed(bx, y)) { pick = { bx, y, L }; break; }
         }
-        if (laid) break;
+        if (pick && (flow !== 'down' || landed(pick.bx, pick.y))) break;
       }
+      if (pick) { put(pick.bx, pick.bx + TOWER.catchW, pick.y, pick.L); added++; }
     }
     if (!added) break;
   }
