@@ -37,9 +37,14 @@ Traces (seed, x, frame, what took him):
   t 41.73 on log #20, :3400 (padPause flick, judged) REFUSED both targets (#19, #21 false); the tablePick hop put him on #19 (t 42.3). On #19
   (t 42.3-47.7, carried back to the bank) **no gateSees call and no tablePick call at all** (tools/refuse2.mts.txt: tablePick called once
   in t 41.5-47.8, at 41.73 on #20 with to=[#19,#21] -> single 0.135, the hop onto #19). So the padPause branch (:3390-3417) is NOT
-  reached on the last log: an earlier branch of the decision stands him while the log runs back (my first guess, an empty `to`, is
-  DISPROVED by this probe). The c3b comment at :3406 names this very loop on 2-1 (middle N 25) as what tablePick fixed; on 2-7's last
-  log tablePick is never asked.
+  reached on the last log. Third probe (tools/branch.mts.txt: every FirstTimerRun method called in a window, by caller line; t 42.5-47.5,
+  151 frames): 143 frames run edgePlan :3503 -> the gap branch `if (!ahead)` :3562 (floorAt :3568, :3571) and return with NO further
+  bot method call (no gateAir, no tablePick, no startJump). Most likely (to confirm): the ride block :3623 (on a drift log): `bank` = a solid
+  within 80 px of the log's edge (false), `next` = a log that lands (false: the last log), raceLegal needs the log drifting HIS way
+  (false: these logs run back at him), so he rides, waiting for the log to bring the bank near; on these rivers it carries him AWAY, to
+  the bank he boarded from. The ride rule is old; what ENG-PLANT changed is where he boards: c3b's tablePick (:3411) put him on #19 at
+  41.73 when the padPause flick off #20 was refused (:3400 false on #19 and #21). The c3b comment at :3406 names this very loop on 2-1
+  (middle N 25) as what tablePick fixed.
 
 ## For the lead (sent): B+C is ours: I narrow it in the bot (a toy each way) and re-measure, unless you rule otherwise. A is the landing's own
 family reshuffled (not R-165.413: solids, not logs): yours to rule. D is one row: yours to name. No merge.
@@ -50,7 +55,7 @@ family reshuffled (not R-165.413: solids, not logs): yours to rule. D is one row
    Rows: tools/wide.sh-n.txt (castBots --json, one row per line; arg 5 = extra flags, e.g. "--bots adult,child,middle,expert"); a list of
    rows: tools/bis.sh-n.txt (groups file "bot setting seeds"); compare: tools/cmp.py-n.txt; first split: tools/frames.mts.txt + div.py-n.txt.
 1. **Read the lead's reply first** (ReadNotifications). If none: B+C as the default.
-2. B+C: find the branch that stands him on the last log: on c25 middle E 11 (on #19 t 42.3-47.7) and expert N 29 (on #37 t 57.1-63.2)
+2. B+C: confirm the ride block :3623 is the branch that stands him on the last log (log its bank/next/raceLegal and the line it returns at): on c25 middle E 11 (on #19 t 42.3-47.7) and expert N 29 (on #37 t 57.1-63.2)
    log which decision branch returns each frame (patch FirstTimerRun.prototype methods, e.g. decide / startJump / the ride's wait, from
    the probe as refuse2.mts does) (refuse.mts pattern: patch FirstTimerRun.prototype methods from the probe; the frozen tree
    is never edited); and what the BASE does at the same boarding (fz-base: frames.mts + div.py, its first split is at the first river). Then the narrowing (the

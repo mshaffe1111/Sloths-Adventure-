@@ -1,0 +1,16 @@
+// usage: tsx branch.mts <tree> <stage> <bot> <setting> <seed> <t0> <t1> : every FirstTimerRun method called in [t0,t1], counted by its caller line
+const [T, stage, bot, setting, seed, t0, t1] = process.argv.slice(2);
+await import(`${T}/src/game/headlessDom.ts`);
+const { CAST_BOTS } = await import(`${T}/tools/inspect/castBots.ts`);
+const FT: any = await import(`${T}/tools/inspect/firsttimer.ts`);
+const P = FT.FirstTimerRun.prototype; let now = 0; const seen = new Map<string, number>();
+for (const k of Object.getOwnPropertyNames(P)) {
+  const d = Object.getOwnPropertyDescriptor(P, k); if (k === 'constructor' || !d || typeof d.value !== 'function') continue;
+  const f0 = d.value;
+  P[k] = function (...a: any[]) {
+    if (now >= +t0 && now <= +t1) { const line = (new Error().stack ?? '').split('\n')[2]?.match(/firsttimer\.ts:(\d+)/)?.[1] ?? 'ext'; const key = `${k}<-:${line}`; seen.set(key, (seen.get(key) ?? 0) + 1); }
+    return f0.apply(this, a);
+  };
+}
+FT.firstTimer(stage, Number(seed), CAST_BOTS[bot][setting], { cap: 1200, dotSetting: true, onFrame: (sim: any) => { now = sim.t; } });
+console.log([...seen].sort((a, b) => b[1] - a[1]).map(([k, n]) => `${k} x${n}`).join(' | '));
