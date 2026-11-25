@@ -2391,6 +2391,10 @@ export class FirstTimerRun {
     this.takeIn();
     this.hiding = false;
     this.fetching = false;
+    // the glowworms' dark: at a rim whose landing is still dark, he stands until it is lit (glowWait), before any other plan steers him
+    // (placed after the freeze, a landing's own steer walked the KID straight over the next rim, 3-1 draft seed 1). Any stage by its zones
+    const gw = this.glowWait(dir);
+    if (gw) return gw;
 
     // a puzzle room: stand at its entrance a moment, then on past it
     if (this.puzzleWait) {
@@ -2827,9 +2831,6 @@ export class FirstTimerRun {
     // he has been told of it (castPlan). Any stage by its data
     const fz = this.freezePlan();
     if (fz) return fz;
-    // the glowworms' dark: at a rim whose landing is still dark, he stands until it is lit (glowWait). Any stage by its zones
-    const gw = this.glowWait(dir);
-    if (gw) return gw;
     if (this.punchAt === null) {
       const b = this.snapperPlan(fdir);
       if (b) return b;

@@ -277,6 +277,9 @@ export class RimWatch {
     if (on) { this.onPiece = on; return; }
     if (!this.onPiece) return;
     const from = this.onPiece;
+    // (standing on other ground, not at the piece's height: he left it some other way (a vine, its other end, a rescue); walking past
+    //  its end down there is no crossing of it: the KID's 3-1 draft run counted a rim 281 px over his head)
+    if (p.grounded && Math.abs(p.y - from.y) > 4) { this.onPiece = null; return; }
     const r = this.rims.find((q) => q.piece === from && (q.dir > 0 ? p.x > from.x + from.width : p.x < from.x));
     if (!r) return;
     this.onPiece = null;

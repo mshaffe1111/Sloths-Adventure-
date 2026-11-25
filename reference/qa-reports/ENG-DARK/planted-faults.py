@@ -31,9 +31,17 @@ PLANTS = [
     ('World 6 copies its own dark (not the lifted one)', 'src/game/gen2/worlds/w6Swing.ts',
      "export { DARK_PROP as W6S_PROP, DARK_PROPS as W6S_PROPS, DARK_ZONE, darkEnds, DARK_EMIT as W6S_EMIT } from '../dark.ts';",
      "export { DARK_PROP as W6S_PROP, DARK_ZONE, darkEnds } from '../dark.ts';\nexport const W6S_PROPS = [...DARK_PROPS]; export const W6S_EMIT = { ...DARK_EMIT };", 'World 6 lays the one lifted dark'),
+    # (ENG-DARK-b) the lock's cause planted back: box 1's lockall moved 37 gen2 stages' proto.gen2 with it
+    ('the glow counter written into every stage\'s extras again', 'src/game/gen2/dark.ts',
+     '  if (id !== first) out.extras[GLOW_ID] = id;', '  out.extras[GLOW_ID] = id;', 'the lay leaves every other stage'),
+    # (ENG-DARK-b) the bots' skill removed in the code, not by its flag: the GREEN toy goes RED
+    ("the bots' dark stop removed (glowWait never stops him)", 'tools/inspect/firsttimer.ts',
+     '    if (this.who.noGlowWait) return null;', '    if (this.who || this.who.noGlowWait) return null;', "the dark's skill: he stands", 'src/game/gen2/darkBots.test.ts'),
 ]
 missed = 0
-for name, f, old, new, test in PLANTS:
+for plant in PLANTS:
+    name, f, old, new, test = plant[:5]
+    tf = plant[5] if len(plant) > 5 else TEST
     p = wt / f
     s = p.read_text()
     if old not in s:
@@ -45,7 +53,7 @@ for name, f, old, new, test in PLANTS:
         new_s = s.replace(old, new, 1)
     p.write_text(new_s)
     try:
-        r = subprocess.run(['npx', 'tsx', '--test', f'--test-name-pattern={test}', TEST], cwd=wt, capture_output=True, text=True, timeout=900)
+        r = subprocess.run(['npx', 'tsx', '--test', f'--test-name-pattern={test}', tf], cwd=wt, capture_output=True, text=True, timeout=900)
         red = '# fail 0' not in r.stdout
         print(f"{'CAUGHT' if red else 'MISSED'}  {name}  -> '{test}'")
         missed += 0 if red else 1

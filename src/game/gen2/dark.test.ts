@@ -139,6 +139,26 @@ function walkOff(wait: number) {
   return { rim, crossings: watch.crossings, at: `rim ${rim.x},${rim.y} dir ${rim.dir}; he ended at ${Math.round(r.p.x)},${Math.round(r.p.y)} ${r.p.grounded ? 'grounded' : 'in the air'}` };
 }
 
+test("RimWatch: a rim's piece he left some other way is no crossing when he later walks past its end on ground below it", () => {
+  ready();
+  const r = new RealPlay(DRAFT, 1, draftCfg());
+  const rims = darkRims(r.stage);
+  const watch = new RimWatch(rims);
+  const e = r.e as unknown as Wakes;
+  const lit = (l: { id?: number }) => e.glowWake.get(l.id!);
+  // (a rim with a piece under it reaching past its end, a piece with no dark rim of its own (out of the dark, as the KID's was): he
+  //  stands on the rim's piece, then on that lower piece, and walks past the rim's x)
+  const pick = rims.map((rim) => ({ rim, under: r.stage.platforms.find((q) => q.y > rim.y + 100 && q.y < rim.y + 600 && (q.type === 'solid' || q.type === 'fragile') && !rims.some((o) => o.piece === q) && rim.x + rim.dir * 40 >= q.x + 10 && rim.x + rim.dir * 40 <= q.x + q.width - 10 && rim.x - rim.dir * 20 >= q.x && rim.x - rim.dir * 20 <= q.x + q.width) })).find((c) => c.under);
+  assert.ok(pick, 'a rim with ground under it reaching past its end');
+  const { rim, under } = pick!;
+  r.stand(rim.x - rim.dir * 30, rim.y);
+  for (let i = 0; i < 5; i++) { r.frame(); watch.step(e.gameTime, r.p, lit); }
+  r.stand(rim.x - rim.dir * 20, under!.y);
+  for (let i = 0; i < 20; i++) { r.frame(rim.dir > 0 ? { right: true } : { left: true }); watch.step(e.gameTime, r.p, lit); }
+  assert.ok((r.p.x - rim.x) * rim.dir > 0 && Math.abs(r.p.y - under!.y) <= 2, `he walked past the rim's x on the ground below (${Math.round(r.p.x)},${Math.round(r.p.y)})`);
+  assert.equal(watch.crossings.length, 0, watch.crossings.map((c) => `${c.rim.x},${c.rim.y}`).join(' '));
+});
+
 test("'every gap lit 1 s ahead' (litAhead): walked off a dark rim at once, before its landing's light: RED", () => {
   ready();
   const { rim, crossings, at } = walkOff(0);
