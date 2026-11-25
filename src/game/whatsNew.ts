@@ -20,6 +20,16 @@ export interface Release {
 
 export const WHATS_NEW: Release[] = [
   {
+    version: '0.10.3',
+    date: '2026-11-25',
+    title: 'Two little fixes',
+    items: [
+      'Fixed: a wall I couldn’t see in First Lianas.',
+      'The two tall posts in First Lianas now look like posts wrapped in vines.',
+      'Fixed: a dark column of soil at the start of Up the Kapok.',
+    ],
+  },
+  {
     version: '0.10.2',
     date: '2026-11-23',
     title: 'Walk them home',
