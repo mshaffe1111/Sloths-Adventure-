@@ -8,7 +8,7 @@
  *
  * Nothing here names a stage, a seed or a place: a tower's width is its world's data (WorldManifest.tower).
  */
-import { PHYS, DOUBLE_RISE, reachJump } from '../physics.ts';
+import { PHYS, DOUBLE_RISE, JUMP_RISE, reachJump } from '../physics.ts';
 import type { Platform, Vine } from '../types.ts';
 import type { LocalLayout } from './pipeline.ts';
 import { ledgeOut, vaultSide } from '../vineTop.ts';
@@ -626,6 +626,57 @@ export function towerHandOns(turns: ReadonlyArray<{ x: number; from: number; to:
     const h = handOn(platforms, c.x, c.x + c.width, c.y, t.to, width);
     if (h.state === 'ok') continue;
     out.push(`tower: a catch passes its storey: the catch at x ${Math.round(h.run.a)}-${Math.round(h.run.b)}, y ${Math.round(c.y)}, where the vine at x ${Math.round(t.x)} stops, hands him past its storey at y ${Math.round(t.to)} (${h.first.length ? `off its ends he lands at y ${h.first.map((y) => (y === undefined ? 'nothing' : Math.round(y))).join(' and ')}, and never comes down at its storey's height` : 'it runs wall to wall: no way off'})`);
+  }
+  return out;
+}
+
+/** the room a hop or a climb-off needs over the wood it leaves (px): a plain jump's rise, his body and a bough's thickness. Going down
+ *  nothing lies lower than this over a dip's lip (his hop across the dip lands on it, or he hits his head on it) or over a climb
+ *  vine's top (a jump at the top lands on it, the climb-off vault hits it): towerLids. Seed 13 normal of drafted 3-1 laid a shelf
+ *  108 px over a storey, its end 4 px past the dip's lip and roofing the next turn vine's top: a dead end in a jump's reach, and the
+ *  kid and the adult stood under it until rescued (ENG-DOWNBOT) */
+export const ROOF = Math.ceil(JUMP_RISE) + BODY_H + 24;
+/** how far along past a dip's lip, or either side of a climb vine, that room is kept (px): his run-up to the lip, his body on the vine */
+const ROOF_SIDE = 30;
+
+/** the rooms (each `[x0, x1]` along, `y` the wood it is kept over) a hop or a climb-off needs: over every dip (two pieces level, 20-200 px
+ *  apart, wood 20-150 px lower across the gap: the storey's hop) from ROOF_SIDE before the near lip to ROOF_SIDE past the far one, and
+ *  over every climb vine's top, ROOF_SIDE either side of it */
+export function hopRooms(platforms: readonly Platform[], vines: readonly Vine[]): Array<{ x0: number; x1: number; y: number; what: 'dip' | 'vine'; at: number }> {
+  const out: Array<{ x0: number; x1: number; y: number; what: 'dip' | 'vine'; at: number }> = [];
+  const solid = platforms.filter((p) => p.type === 'solid');
+  for (const a of solid) {
+    const ar = a.x + a.width;
+    // (the nearest piece level with it to its right: the far lip)
+    let b: Platform | undefined;
+    for (const q of solid) if (q !== a && Math.abs(q.y - a.y) < 4 && q.x - ar > 20 && q.x - ar < 200 && (!b || q.x < b.x)) b = q;
+    if (!b || solid.some((q) => q !== a && q !== b && Math.abs(q.y - a.y) < 4 && q.x < b!.x && q.x + q.width > ar)) continue;
+    if (!solid.some((d) => d.y > a.y + 20 && d.y < a.y + 150 && d.x <= ar + 4 && d.x + d.width >= b!.x - 4)) continue;
+    out.push({ x0: ar - ROOF_SIDE, x1: b.x + ROOF_SIDE, y: a.y, what: 'dip', at: ar });
+  }
+  for (const v of vines) if (v.vineType === 'tree_climb') out.push({ x0: v.x - ROOF_SIDE, x1: v.x + ROOF_SIDE, y: v.topY, what: 'vine', at: v.x });
+  return out;
+}
+
+/** the room (hopRooms) wood at `x0-x1`, `y` lies in: over its wood by more than a step (4 px) and less than ROOF */
+export function inRoom(rooms: ReturnType<typeof hopRooms>, x0: number, x1: number, y: number): ReturnType<typeof hopRooms>[number] | undefined {
+  return rooms.find((r) => x0 < r.x1 && x1 > r.x0 && y < r.y - 4 && y > r.y - ROOF);
+}
+
+/**
+ * Going down, his hop's room, each miss by name (empty: kept): two verdicts, read with the rooms the lay keeps (hopRooms, towerCatches):
+ *   - 'a lid over a dip's lip': wood within ROOF over a dip's lip, ROOF_SIDE either way of it (his hop across lands on it or hits it);
+ *   - 'a roof over a vine's top': wood within ROOF over a climb vine's top (a jump at the top lands on it, the climb-off hits it).
+ */
+export function towerLids(vines: readonly Vine[], platforms: readonly Platform[]): string[] {
+  const out: string[] = [];
+  const rooms = hopRooms(platforms, vines);
+  for (const q of platforms) {
+    if (q.type !== 'solid') continue;
+    const r = inRoom(rooms, q.x, q.x + q.width, q.y);
+    if (!r) continue;
+    const at = `wood at x ${Math.round(q.x)}-${Math.round(q.x + q.width)}, y ${Math.round(q.y)}, lies ${Math.round(r.y - q.y)} px over`;
+    out.push(r.what === 'dip' ? `tower: a lid over a dip's lip: ${at} the lip at x ${Math.round(r.at)} (y ${Math.round(r.y)}), in his hop (${ROOF} px)` : `tower: a roof over a vine's top: ${at} the top of the vine at x ${Math.round(r.at)} (y ${Math.round(r.y)}), in his climb-off (${ROOF} px)`);
   }
   return out;
 }
