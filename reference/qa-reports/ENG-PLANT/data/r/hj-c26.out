@@ -1,0 +1,99 @@
+TAP version 13
+#   [bank press] unjudged q\#-1 judged t 125.43 x 6665 lag 0 hold 0.346 | flown t 125.43 x 6665 hold 0.346 single | came down \#75 solid
+#   [bank press] unjudged q\#-1 judged t 150.53 x 3814 lag 0 hold 0.251 | flown t 150.53 x 3814 hold 0.251 single | came down \#87 solid
+#   [bank press] unjudged q\#-1 judged t 163.83 x 2397 lag 0 hold 0.037 | flown t 163.83 x 2397 hold 0.037 double | came down \#93 solid
+#   [bank press] unjudged q\#-1 judged t 173.07 x 958 lag 0 hold 0.124 | flown t 173.07 x 958 hold 0.124 double | came down \#98 solid
+# normal seed 5: 32 judged hops pressed (padPause, upstream, edgeWait, bankUp, race, unjudged); unjudged or stale 0, flown not as judged 0, came down elsewhere 0
+#   [bank press] unjudged q\#-1 judged t 113.40 x 7672 lag 0 hold 0.401 | flown t 113.40 x 7672 hold 0.401 single | came down \#71 solid
+#   [bank press] unjudged q\#-1 judged t 118.50 x 6233 lag 0 hold 0.132 | flown t 118.50 x 6233 hold 0.132 single | came down \#76 solid
+#   [bank press] unjudged q\#-1 judged t 136.10 x 3659 lag 0 hold 0.115 | flown t 136.10 x 3659 hold 0.115 single | came down \#-1 solid
+# normal seed 2: 33 judged hops pressed (edgeWait, padPause, upstream, bankUp, race, unjudged); unjudged or stale 0, flown not as judged 0, came down elsewhere 1
+#   padPause q\#50 judged t 83.97 x 12615 lag 0 hold 0.118 double | flown t 83.97 x 12615 hold 0.118 double | came down \#49 drift
+#   [bank press] unjudged q\#-1 judged t 134.73 x 2414 lag 0 hold 0.167 | flown t 134.73 x 2414 hold 0.167 single | came down \#93 solid
+# easy seed 5: 34 judged hops pressed (padPause, upstream, bankUp, edgeWait, race, unjudged); unjudged or stale 0, flown not as judged 0, came down elsewhere 1
+#   edgeWait q\#-2 judged t 21.77 x 16688 lag 0 hold 0.052 single | flown t 21.77 x 16688 hold 0.052 single | came down \#18 drift
+#   [bank press] unjudged q\#-1 judged t 124.83 x 6414 lag 0 hold 0.140 | flown t 124.83 x 6414 hold 0.140 single | came down \#76 solid
+# easy seed 2: 36 judged hops pressed (edgeWait, upstream, padPause, bankUp, race, unjudged); unjudged or stale 0, flown not as judged 0, came down elsewhere 0
+# Subtest: 2-7 home, middle Normal seed 5: every judged hop is flown as judged and comes down where the gate said; every press from a bank with logs near its edge flies on a judgment of its own frame or comes down on solid (ruling A)
+ok 1 - 2-7 home, middle Normal seed 5: every judged hop is flown as judged and comes down where the gate said; every press from a bank with logs near its edge flies on a judgment of its own frame or comes down on solid (ruling A)
+  ---
+  duration_ms: 1427.400609
+  type: 'test'
+  ...
+# Subtest: 2-7 home, middle Normal seed 2: every judged hop is flown as judged and comes down where the gate said; every press from a bank with logs near its edge flies on a judgment of its own frame or comes down on solid (ruling A)
+not ok 2 - 2-7 home, middle Normal seed 2: every judged hop is flown as judged and comes down where the gate said; every press from a bank with logs near its edge flies on a judgment of its own frame or comes down on solid (ruling A)
+  ---
+  duration_ms: 792.2703
+  type: 'test'
+  location: '/home/user/fz-c26/tools/inspect/hopJudged.test.ts:36:3'
+  failureType: 'testCodeFailure'
+  error: |-
+    a gate judged one hop and the bot flew another
+    + actual - expected
+    
+    + [
+    +   'padPause q#50 judged t 83.97 x 12615 lag 0 hold 0.118 double | flown t 83.97 x 12615 hold 0.118 double | came down #49 drift'
+    + ]
+    - []
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+  actual:
+    0: 'padPause q#50 judged t 83.97 x 12615 lag 0 hold 0.118 double | flown t 83.97 x 12615 hold 0.118 double | came down #49 drift'
+  operator: 'deepStrictEqual'
+  stack: |-
+    TestContext.<anonymous> (/home/user/fz-c26/tools/inspect/hopJudged.test.ts:55:12)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
+  ...
+# Subtest: 2-7 home, middle Easy seed 5: every judged hop is flown as judged and comes down where the gate said; every press from a bank with logs near its edge flies on a judgment of its own frame or comes down on solid (ruling A)
+not ok 3 - 2-7 home, middle Easy seed 5: every judged hop is flown as judged and comes down where the gate said; every press from a bank with logs near its edge flies on a judgment of its own frame or comes down on solid (ruling A)
+  ---
+  duration_ms: 784.033317
+  type: 'test'
+  location: '/home/user/fz-c26/tools/inspect/hopJudged.test.ts:36:3'
+  failureType: 'testCodeFailure'
+  error: |-
+    a gate judged one hop and the bot flew another
+    + actual - expected
+    
+    + [
+    +   'edgeWait q#-2 judged t 21.77 x 16688 lag 0 hold 0.052 single | flown t 21.77 x 16688 hold 0.052 single | came down #18 drift'
+    + ]
+    - []
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+  actual:
+    0: 'edgeWait q#-2 judged t 21.77 x 16688 lag 0 hold 0.052 single | flown t 21.77 x 16688 hold 0.052 single | came down #18 drift'
+  operator: 'deepStrictEqual'
+  stack: |-
+    TestContext.<anonymous> (/home/user/fz-c26/tools/inspect/hopJudged.test.ts:55:12)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: 2-7 home, middle Easy seed 2: every judged hop is flown as judged and comes down where the gate said; every press from a bank with logs near its edge flies on a judgment of its own frame or comes down on solid (ruling A)
+ok 4 - 2-7 home, middle Easy seed 2: every judged hop is flown as judged and comes down where the gate said; every press from a bank with logs near its edge flies on a judgment of its own frame or comes down on solid (ruling A)
+  ---
+  duration_ms: 785.39479
+  type: 'test'
+  ...
+1..4
+# tests 4
+# suites 0
+# pass 2
+# fail 2
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 7575.295982

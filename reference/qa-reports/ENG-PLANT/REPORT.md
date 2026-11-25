@@ -71,8 +71,24 @@ those x with the shipped bot); (b) another bar the lead names. My recommendation
 | timecheck | PASS (611 commits, 93 stamps; full history, after the unshallow) |
 | roadmapcheck | PASS |
 | tierBots 9/9 | **PASS 9/9** (fz-c27, data/r/tierbots-c27.out) |
-| the CI tool line (43 files; includes riverRide, firsttimer, hopJudged and the packet's plants: riverRide :119 ride, :165 handed, :266 upstream, :282 bankUp; firsttimer :150/:185 boardHop, :218 fromTakeoff) | IN FLIGHT on fz-c27 (94 ok, 0 not ok when session 16 handed over; session 16 appends the result when it finishes, a running gate finished only, D137). Ruling 4 runs it again on the final head |
+| the CI tool line (43 files; includes riverRide, firsttimer, hopJudged and the packet's plants: riverRide :119 ride, :165 handed, :266 upstream, :282 bankUp; firsttimer :150/:185 boardHop, :218 fromTakeoff) | **RED: 400 tests, 390 pass, 9 fail, 1 todo (chaseBots)** (fz-c27, data/r/ciline-c27.out; finished after the hand-over). The 9, below |
 | the toys for c23-c27 | c25 (firsttimer :312), c26 (riverRide :449), c27 (hopJudged's last two): in the CI line. **c23 and c24: NEVER BUILT** (ordered in session 8's item 5: 'a toy for each of c23's and c24's rules: the pull-back skipped on a small log he pauses on; the run-up's jump held as judged'; ccca3d305 / 2a2c44786 touch no test). Their rows (2-1 child E 2, 2-4 child N 8) PASS in the known flips (BAR 12/12) but no toy is RED on c22/c23 and GREEN on c23/c24 |
+
+
+## The CI tool line on c27 1e4b50a1d: the 9 reds (finished after the hand-over; what is known, nothing more measured)
+| red (file:line) | what fails | on the base release-0.10.3 dfe631913 | on c26 |
+|---|---|---|---|
+| firsttimer.test :185 boardHop on its runs (2-2 child N 36 / middle N 17) | RED half: 'with boardHop off a life is lost after one (0 of 1 stands)' | RED (ENG-28's table: R-165.432) | not run |
+| riverRide :266 planted: against-the-flow (upstream) off | RED half: 'upstream off, still clean: adult normal seed 12' | RED (ENG-28's table) | not run |
+| riverRide :282 planted: up-the-far-bank (bankUp) off | RED half: 'bankUp off, 0 more lives: child normal seed 40' | RED (ENG-28's table) | not run |
+| hopJudged :37, 2-7 home middle Normal 2 | 'padPause q#50 judged t 83.97 x 12615 ... double \| came down #49 drift' | not measured (hopJudged not in ENG-28's table) | **RED, the same row** (data/r/hj-c26.out): not c27's |
+| hopJudged :37, 2-7 home middle Easy 5 | a gate judged one hop and the bot flew another | not measured | **RED** on c26 too: not c27's |
+| lianaRide :~80 DROP ON A LOG planted (gap280) | RED half: 'PLANTED, without it: lives 0,1,0,0,0,0' | not measured (lianaRide not in ENG-28's table) | not run |
+| lianaRide :93 A VINE FROM A LOG planted | RED half: 'easy, PLANTED, without it: 0,0,0,0,1' | not measured | not run |
+| riverRide :344 reAim (RED with it off) | GREEN half: 'with the skill: he aims again and hops off the first log every phase' | not in ENG-28's riverRide reds (which covered riverRide): likely PASS there, so likely moved inside ENG-PLANT; unmeasured | not run |
+| riverRide :355 reAim keeps the honest aim | 'phase 0: a re-draw on a log came inside stopReact 0.4 s (0.000 s)' | as :344 | not run |
+The lead's ruling 4 needs the CI line at 0 fail. The three plants (:185, :266, :282) are the packet's plants (re-plant at the same bars or
+retire per R-165.432 with the full search). The other six need rule 28 (the first candidate each turns red on, traced) before any merge.
 
 Lessons applied: D115 (every run on chattr-frozen fz-c27; tools in /home/user/tl), D119 (commit messages from a file), D128 (stamps from
 date), D134 (pushed and ls-remote'd before the hand-over), D135 (the stale plant named with its cause, not carried as 'inherited'), D133
