@@ -7,7 +7,8 @@
    20,
    903
   ],
-  "scene": "stand"
+  "scene": "stand",
+  "pack": false
  },
  "shelfL-s37": {
   "file": "shelfL-s37.png",
@@ -43,7 +44,8 @@
    16,
    505
   ],
-  "scene": "wallshelf"
+  "scene": "wallshelf",
+  "pack": false
  },
  "thornBed-s23": {
   "file": "thornBed-s23.png",
@@ -55,7 +57,8 @@
   "file": "thornBed-s11.png",
   "cpu": 4.5,
   "walk": null,
-  "scene": "thorn"
+  "scene": "thorn",
+  "pack": false
  },
  "thornClump-s23": {
   "file": "thornClump-s23.png",
@@ -73,7 +76,8 @@
   "file": "rootTall-s41.png",
   "cpu": 3,
   "walk": null,
-  "scene": "rootshelf"
+  "scene": "rootshelf",
+  "pack": false
  },
  "rootShort-s53": {
   "file": "rootShort-s53.png",
@@ -99,21 +103,24 @@
   "cpu": 6.896,
   "walk": null,
   "scene": "bell",
-  "world": 2
+  "world": 2,
+  "pack": false
  },
  "bellSwing-s23": {
   "file": "bellSwing-s23.png",
   "cpu": 6.896,
   "walk": null,
   "scene": "bell",
-  "world": 2
+  "world": 2,
+  "pack": false
  },
  "courtFar-s11": {
   "file": "courtFar-s11.webp",
   "cpu": 1,
   "walk": null,
   "scene": "far",
-  "world": 2
+  "world": 2,
+  "pack": false
  },
  "barge": {
   "file": "../../hfnext/cut/barge.png",
@@ -124,6 +131,7 @@
    1050
   ],
   "scene": "barge",
-  "world": 2
+  "world": 2,
+  "pack": false
  }
 }
