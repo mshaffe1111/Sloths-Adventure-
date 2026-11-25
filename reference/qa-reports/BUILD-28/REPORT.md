@@ -30,6 +30,13 @@ DO (A) NOW, in this order, on a chattr-frozen tree for every run (D115); the pro
      TRACE it first, FROM=14.5 TRACE=23.5 WHO=child LATE=0). That number is A3's verdict too (take-off span x apex vs thin pieces
      with no block on them). Also check that a BLOCK stops a hop from below (no run has tested it: every pop so far was at the thin
      porch alone). Do NOT land A1 until the probe is 54/54 with A2 and A3.
+ CHILD TRACED (A1 draft, late 0): he misses the first dip's hop (20.8 s in the air at 1474/877, in the dip), is set back on the near
+     bank (953/800 at 21.2), comes again, and at 23.2 s JUMPS FROM CONTINUOUS FLOOR at about x 1150 (no dip there under A1) and rises to
+     1212/737 through the porch-alone stretch onto the high road. So ANY jump from the marsh floor under the thin porch alone pops him up,
+     not only a dip hop: (ii) moves the dips but cannot satisfy the verdict the lead asked for. A3 as it must read: "no thin high-road
+     piece ALONE (no block on it) over the low road's floor within his jump height". That needs (i) (rise1, a block, from the water's
+     edge, so nothing thin stands alone over the marsh; the treads move) or the porch over the marsh made not thin. THIS IS A
+     RE-RULING FOR THE LEAD before A1 is built further (sent with this hand-over).
 (B) AT 1b, YOURS, its own ENGINE PIECE commit AFTER the merge (firsttimer.ts merged once): apply draft-B-reroute.patch.txt; toy RED on
  the old route, GREEN on the fix (the probe's late-15/19 runs are that toy: commit it as a lineBot test); rule 28: ENG-PLANT's 10 known
  flips AND the wide sample (seeds 1-10, every bot, both settings, on 2-1/2-2/2-4: zero BAR PASS -> FAIL vs main's rows).
