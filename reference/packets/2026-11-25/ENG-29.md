@@ -12,8 +12,8 @@ as its step 1b on t-build-28-wip (origin/release-0.10.3 at ENG-PLANT's merge + t
    with its phase on a beat; Easy keeps the liana's bar (easyStretch); the lay's check names the row that is off, in words; the lianas keep the
    stage clock after a flag resume (the vineClock seek): planted toys RED/GREEN on a real row.
 2. NEW 2, the DRUM you hear: a `drum` cue scheduled on the AUDIO clock at the beat (conductor.ts lookahead), never on the frame; ONE a BOOM, 2-4
-   a tok; doubled in the twist; holds through a lost life's down. A placeholder synthesized sound is fine (the real sound is ART-SOUND's);
-   the test proves the schedule, not the timbre.
+   a tok; doubled in the twist; holds through a lost life's down. Use the game's OWN shipped drums, no placeholder and no new sound job:
+   BOOM = instruments.ts taiko (:509, the sampled bdrum), tok = woodblock or rim (:564); the test proves the schedule, the lead's ear the mix.
 3. The bots: castBots on NEW 1's toy row FIRST (rule 21: the pad bot at the RUN pitch, 190 px a beat, is new ground); any bot gap is fixed
    WITH the piece (a toy each way), never left for the level.
 4. lockall (no listed stage moves), tierBots 9/9, the suite + the CI tool line; land on t-eng-29 (no force). Send the lead the hash and what
