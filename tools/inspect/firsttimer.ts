@@ -1857,6 +1857,8 @@ export class FirstTimerRun {
    * He is put at the first point ahead (of the next 80) on the run of wood he stands on (both ways over every seam, ledgeEnds), when the
    * point he was at is 60+ px over him and the way does not go under his floor before it
    */
+  /** the floor he was put on the way at by landedAhead, and the point: walking it to that point he is not off the way */
+  private aheadRun: { k: number; y: number; lo: number; hi: number } | null = null;
   private landedAhead(p: { x: number; y: number }): boolean {
     if (this.who.noLandAhead || (this.sim.stage as { gen2?: { tower?: { flow?: string } } }).gen2?.tower?.flow !== 'down') return false;
     const pts = this.prog.pts, cur = this.prog.cur;
@@ -1865,7 +1867,11 @@ export class FirstTimerRun {
     if (!r || !l) return false;
     for (let k = cur + 1; k < Math.min(pts.length, cur + 80); k++) {
       if (pts[k].y > p.y + 40) return false;
-      if (Math.abs(pts[k].y - p.y) <= 4 && pts[k].x >= l.run && pts[k].x <= r.run) return this.prog.ahead(k);
+      if (Math.abs(pts[k].y - p.y) <= 4 && pts[k].x >= l.run && pts[k].x <= r.run) {
+        if (!this.prog.ahead(k)) return false;
+        this.aheadRun = { k, y: p.y, lo: l.run, hi: r.run };
+        return true;
+      }
     }
     return false;
   }
@@ -4392,7 +4398,11 @@ export class FirstTimerRun {
     // fallen off the way (a miss in a climb drops him to a branch or the floor far under where he was): once he stands there a moment,
     // he finds his place along the way again and heads back to the way up, as a person climbs back (round 5, 2026-10-29: the bot kept
     // heading for the point straight over his head, never walked back to the trunk, and the tall climbs ran out the clock)
-    if (this.prog.off(p) > 260 && !held) {
+    // (and not while he walks his own floor to the point he was put at on landing ahead (landedAhead): 452 px from it on roll 26, he
+    //  read as off the way, was put back at the point over his head and counted a fall back, ENG-DARK box 16)
+    const onRun = this.aheadRun && this.prog.cur === this.aheadRun.k && Math.abs(p.y - this.aheadRun.y) <= 4 && p.x >= this.aheadRun.lo - 24 && p.x <= this.aheadRun.hi + 24;
+    if (!onRun) this.aheadRun = null;
+    if (this.prog.off(p) > 260 && !held && !onRun) {
       this.offRoute += DT;
       if (this.offRoute > 0.5 && p.grounded) {
         const top = this.prog.best;
