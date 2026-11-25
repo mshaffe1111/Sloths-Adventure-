@@ -2,26 +2,23 @@
 
 Session 1: started 2:31 PM ET 11-24 (by `date`), handed over at the 28-minute box. Lead: session_01FhBbYN2CVHnFXg7XzqKXpM.
 
-## EXACT NEXT STEP (session 5 starts here; INT-R5d handed over at the lead's word, box written 11:32 AM ET 11-25)
-INT-R5d started 10:42 AM ET 11-25 (by `date`). Packet: packets/2026-11-25/INT-R5d.md (the lead's branch). Branch
-**release-0.10.3-wip-fixes**, code head **f7c5b8a2e** (then REPORT-only commits): dfe631913 (release-0.10.3) + t-fix-sidewall (merge
-0492396b) + t-fix-soil 849f4875b (merge a2b7dde04) + inventory row bb29e048d + groundBanks one place 7ee9b7bcb + 2-7 gap stills
-d63ae3dd3 + the lead's ruled ENGINE PIECE f7c5b8a2e (ruled well done). NEXT, in order:
-1. The CI tool line (gates.yml:157, read live; it now carries sideWall.test.ts and paintFall.test.ts with the planted stacked test) on
-   a FROZEN worktree of the branch head (`git worktree add --detach`, node_modules symlinked, `chattr -R +i src tools`, `chattr -R -i
-   src/game/gen2/proven`). Expect ONLY ENG-PLANT's 6 reds (firsttimer :184; riverRide :107 :145 :207 :213 :229; owner ENG-PLANT, its
-   merge clears them); any other red is the merges' or the engine piece's: trace it at its cause (D135: never 'inherited').
-2. The after stills on the branch head (scratch int-shots.mjs is lost with the container: rebuild it from
-   reference/qa-reports/SIDEWALL-FIX/tools/sw2.mjs + a 1-4 layout 1 start/summit job + a 2-7 layout 0 job at bank #1, Normal x 3881
-   (y 747), Easy x 4339 (y 742), pinned on its top and on the leg under it). ONE vite per port and pkill it after each tree: a vite
-   that outlived its run served the BASE tree to my first head shots. Set: 2-7 bank #1 (gap closed, as on base: compare with
-   d/gap-*.jpg), 1-4 start and summit, 1-6's two posts, 8-1's sliver; Normal and Easy, 844x390 and 390x844; look at each as Matt
-   would; save to reference/qa-reports/INT-R5/d/; paths to the lead.
-3. Step 1b when the lead sends ENG-PLANT's merged release-0.10.3 hash: merge it into release-0.10.3-wip-fixes (no force), tsc + the
-   CI line (0 FAIL, the todo chaseBots :110 aside), fast-forward release-0.10.3 (no force); then steps 2-4 of the packet (What's New
-   to the lead FIRST; THE FULL SET with drawcheck; the gate table). FIX-SOIL-b's CI tool line and drawcheck were NOT RUN on its
-   539885c37: they count on THIS merged tree instead (CI #77: a release fix's gates count on the merged release tree); name that in
-   the gate table.
+## EXACT NEXT STEP (session 6 starts here; INT-R5d-b box written 11:54 AM ET 11-25 by `date`)
+INT-R5d-b started 11:35 AM ET 11-25. Branch **release-0.10.3-wip-fixes**, code head still **f7c5b8a2e** (REPORT/stills commits only
+since). Step 1 is DONE (rows below): the CI tool line on f7c5b8a2e = 390 pass, 6 fail, 1 todo, the 6 being EXACTLY ENG-PLANT's
+(firsttimer :184; riverRide :107 :145 :207 :213 :229); the after stills are in d/s1-*.jpg and went to the lead. NEXT, in order:
+1. ReadNotifications. If the lead has sent ENG-PLANT's merged origin/release-0.10.3 hash (c27, the bot fix): `git fetch origin
+   release-0.10.3`, confirm the hash, `git merge --no-ff origin/release-0.10.3 -m ...` into release-0.10.3-wip-fixes (no force; name
+   every conflict), `npx tsc --noEmit -p .`, then the CI tool line (gates.yml:157 read live) on a FROZEN worktree of the merge (`git
+   worktree add --detach`, node_modules symlinked, `chattr -R +i src tools`, `chattr -R -i src/game/gen2/proven`): 0 FAIL, the todo
+   chaseBots :110 aside. Then fast-forward release-0.10.3 to it (`git push origin <merge>:release-0.10.3`, no force). If no hash yet:
+   tell the lead step 1 is done and wait.
+2. What's New: the 0.10.3 entry ALREADY exists (57d8b8ffb: package.json 0.10.3, whatsNew.ts top entry dated 2026-11-24, 3 lines).
+   The proposed 4th line and the date question went to the lead; commit ONLY the lead's approved words (curly apostrophes, as the
+   entry uses), then whatsNew.test + playerText.test.
+3. THE FULL SET on that exact head (packet step 3; run1.sh then run2.sh, each run_in_background, timeout 7,200,000 ms), then the
+   gate table here and the head + table to the lead. FIX-SOIL-b's CI line and drawcheck count on this merged tree (CI #77): name them.
+Stills tool: reference/qa-reports/INT-R5/tools/int-shots.mjs `<tree> <port> <out> <tag> groundCeilings <1|0> <27,14,16,81,16d>`
+(refuses a busy port, checks the served tree by the marker in src/game/protoArt.ts, kills its vite; pkill the port after anyway).
 
 ## Gate table, step 1 (INT-R5d; each on a FROZEN detached worktree, chattr +i src tools, proven writable)
 | head | gate | result |
@@ -36,7 +33,10 @@ d63ae3dd3 + the lead's ruled ENGINE PIECE f7c5b8a2e (ruled well done). NEXT, in 
 | f7c5b8a2e | `npx tsx --test tools/engine/paintFall.test.ts` | 16/16 (the planted stacked-ceiling test: RED without the ceilings, GREEN with) |
 | bb29e048d | `npx tsx --test src/game/art/*.test.ts` (inventory) | 16/16 |
 | a2b7dde04 | paintcheck part 0/3 (before the engine piece) | PASS (superseded by the sweep on f7c5b8a2e) |
-| - | the CI tool line; the after stills | NOT RUN in session 4 (the lead's box): next step 1 and 2 |
+| f7c5b8a2e (frozen a9cb936da) | the CI tool line (gates.yml:157, live) | 397 tests: 390 pass, **6 fail = ENG-PLANT's** (firsttimer :184; riverRide :107 :145 :207 :213 :229; owner ENG-PLANT, its merge clears them), 1 todo (chaseBots :110). No other red |
+| f7c5b8a2e vs dfe631913 | stills 2-7 bank #1 (Normal x 3881, Easy x 4339; on its top and on the leg under it), 844x390 and 390x844 | base and head IDENTICAL; the soil runs solid to the frame bottom, no backdrop gap (d/s1-2-7-bank1-*-base-dfe63191-vs-f7c5b8a2e.jpg) |
+| f7c5b8a2e | stills 1-4 layout 1 start and summit, both settings, both ways | no soil column at the start; the summit bank reads clean (d/s1-1-4-*.jpg); Easy shows Dot's hint card (the hint stage, expected) |
+| f7c5b8a2e | stills 1-6 posts (Normal) and 8-1 sliver (both settings), both ways | 1-6: both posts read as vine-wrapped support posts (the lead's 11-24 ruling); Easy's 1-6 build has NO narrow post (searched: width <= 30, height >= 150: none). 8-1: a standard World 8 bank end, as ruled; the end-face inset is R-165.442, release 5 (d/s1-1-6-posts-8-1-sliver-*.jpg) |
 | 539885c37 (FIX-SOIL-b) | its CI tool line and drawcheck | NOT RUN by FIX-SOIL-b; they count on this merged tree (CI #77): the CI line here, drawcheck in THE FULL SET |
 
 ## The engine piece f7c5b8a2e (the lead's ruling, after the stills showed the gap)
