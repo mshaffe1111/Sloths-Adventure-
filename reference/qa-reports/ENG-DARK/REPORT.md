@@ -1,36 +1,40 @@
 # ENG-DARK REPORT (the dark + light ring as one gen2 brick; WORLD-3-PLAN F2; R-165.449)
-**EXACT NEXT STEP (ENG-DARK-l box 12 hand-over, 3:13 PM ET by `date`; head on t-eng-dark-wip = this commit; CODE e0db872f4 (records
-only: no move or lay change since box 11's 0ef63c154). Box 13 OWNS every step below. Re-fetch before every commit (D138).)**
-**DONE in box 12:** (1) plants 28 (the seam check off: downEnd's `noSeamWalk` line -> `|| true`; test 'a seam he walks over is no
-way down') and 29 (the turn room off: glowWait's `if (!this.who.noTurnRoom && stop.turn !== 1) {` -> `if (false) {`; test 'the dark
-stop's turn is never pressed at the rim's very edge'), both darkBots.test.ts, in planted-faults.py (29 plants; commit 7bd941ab0). NOT
-yet run. (2) toyscan.mts: `<bot> <a-b> <cap> [noturn|<plant field>] [normal|easy] [both]`; prints crossed, unlit, loop, edgeTurns,
-gaveUp, and with 'both' the unplanted line too. (3) firsttimer.ts (e0db872f4, tsc clean): FTRun.dark gains `edgeTurns` (each dark
-stop's turn press nearer the rim than min(GLOW_TURN_ROOM, piece.width/2), rim + px in + time; pushed at `stop.turn = 1`) and `loop`
-(rimLoop: the most times one rim was gone over, climbs not counted). Records only. (4) Seam toys (darkBots tests 8, 9) RE-ANCHORED
-(46f6e6a42): on the final lay the plant's loop is LIT (the second lights), so unlit stays [] and the old RED read nothing. Roll 32 adult
-Normal cap 200: planted crossed 76, loop 31; unplanted crossed 25, loop 3. Test 8 adds `loop < 10`; test 9 asks
-`max(loop, worstRim(unlit)) >= 10` (the old threshold). Both PASS. PUSHBACK: test 9's assert changed (the order named only test 5 and
-toys 3, 4, 6); same name, same threshold, read on all crossings instead of unlit ones.
-**darkBots.test whole on 0ef63c154 (box 12, once): 8 pass, 3 fail:** test 5 (give-up: 0 waited-out stops, wants 2), test 9 (seam RED,
-now fixed above), test 11 (turn-room RED: rim x 920 never gone over dark). Toys 3, 4, 6 PASS unplanted; their plants 13, 14, 16 NOT yet
-run on the final lay.
-**MEASURED (frozen worktrees of 0ef63c154 / e0db872f4, rolls 1-40):** middle Normal cap 300, noTurnRoom planted and not: 0 unlit, 0
-edgeTurns on every roll, both ways (only roll 19 differs, 17 vs 18 crossings). Child noGlowTurn cap 50 and cap 300: 0 give-ups on any
-roll. So on the final lay the faults test 5 and toys 10/11 guard (a facing-away stop the light never wakes; a turn press at the edge)
-did not occur for those bots on rolls 1-40.
-**RUNNING at hand-over (box 12 finishes and records ONLY these, D138):** the same two scans over EVERY bot x both settings, whole runs
-(cap 600), printing only rows with an edge turn (noTurnRoom) / a give-up (noGlowTurn): scratchpad scan_turnall.log and scan_giveall.log,
-to be committed as reference/qa-reports/ENG-DARK/scan-box12-turnall.log and scan-box12-giveall.log.
-**BOX 13 DOES, in order:** (a) read the two logs. If a bot/setting/roll shows edgeTurns planted and none unplanted, anchor toys 10/11
-there (GREEN: edgeTurns [] and unlit []; RED: edgeTurns non-empty, unlit if it falls; rename 'rim x 920' to the found rim). If a roll
-shows the same rim given up twice with noGlowTurn, anchor test 5 there (asserts kept). (b) If NONE shows (likely for the turn room):
-my recommendation to the lead, ONE message before building: hand-built toys like dark.test's RimWatch toys: put him on roll 1's first
-sleeping rim 2 px in, facing away, standing, its light asleep; step the bot: GREEN = the first press is AWAY and no press toward the rim
-until he is >= min(GLOW_TURN_ROOM, half the piece) in and |vx| <= 5; plant 29 = the first press is toward the rim at 2 px. The same
-shape for test 5 (two visits to a rim whose light cannot wake, noGlowTurn). (c) run plants 12-16, 19, 20, 28, 29 (darkBots plants) in
-a clean worktree of the head; all CAUGHT, none NO TEST / BASE RED; then darkBots.test whole GREEN. (d) then the order's step 2 on
-(frozen head: the x40 vs THE BAR, medians per tier vs base, one line to the lead), step 3, step 4 as box 11's note below says.
+**EXACT NEXT STEP (ENG-DARK-l box 12 hand-over, 3:21 PM ET by `date`; head on t-eng-dark-wip = this commit; CODE c5e25be9d (move code
+unchanged since box 11's 0ef63c154: e0db872f4 adds RECORDS only). Box 13 OWNS every step below. Re-fetch before every commit (D138).)**
+**STEP 1 (re-anchor) BUILT; its proof RUNNING at hand-over (box 12 finishes and records ONLY this, D138):** in a clean worktree of
+c5e25be9d: planted-faults.py plants 12,13,14,15,16,19,20,28,29 (every darkBots plant; BASE RED / NO TEST guards on), then darkBots.test
+whole. Box 12 commits the result as reference/qa-reports/ENG-DARK/plants-box12.txt and one line to the lead. If it is not there, box 13
+runs it first: `python3 reference/qa-reports/ENG-DARK/planted-faults.py <clean wt> 12,13,14,15,16,19,20,28,29`, then darkBots.test.
+**DONE in box 12:**
+- Plants 28 (seam check off: downEnd `if (d === 0 || this.who.noSeamWalk) return d;` -> `|| true`; test 'a seam he walks over is no way
+  down') and 29 (turn room off: glowWait `if (!this.who.noTurnRoom && stop.turn !== 1) {` -> `if (false) {`; test 'the dark stop's turn
+  is never pressed at the rim's very edge'), both darkBots.test.ts (7bd941ab0; 29 plants).
+- FTRun.dark gains RECORDS (e0db872f4, tsc clean, no move change): `edgeTurns` (each dark stop's turn press nearer the rim than
+  min(GLOW_TURN_ROOM, piece.width/2): rim, px in, time; pushed at `stop.turn = 1`) and `loop` (rimLoop: most times one rim gone over,
+  climbs not counted). toyscan.mts takes any plant field, a setting, 'both'.
+- darkBots.test on 0ef63c154 (once): 8 pass, 3 fail (test 5, the seam RED 9, the turn-room RED 11). Toys 3, 4, 6 PASS unplanted.
+- MEASURED on the final lay (scan-box12-rolls.log, -turnall.log, -giveall.log): middle Normal 1-40 noTurnRoom: 0 unlit and 0 edge turns
+  planted or not; child noGlowTurn cap 50 / 300: 0 give-ups on any roll; all bots x settings (stopped after kid easy): give-ups none;
+  edge turns planted on child N 19 (13 px in, no fall), kid N 12 (7, and loop 13) and kid N 38 (7), none falling. Why no give-up: a stop
+  is within GLOW_NEAR (90 px) of its rim and every landing's light is within GLOW_REACH.back (260) of it, so facing away still wakes it.
+- Seam toys (tests 8, 9; 46f6e6a42): the plant's loop is now LIT (the second lights). Roll 32 adult N cap 200: planted crossed 76, loop
+  31; unplanted 25, loop 3. Test 8 adds `loop < 10`; test 9 asks `max(loop, worstRim(unlit)) >= 10` (old threshold). PASS both ways.
+- Turn-room toys (tests 10, 11; d4570feee) HAND-BUILT (probes/edgeturn.mts): the middle Normal roll 1 stood (RealPlay.stand at 0.5 s) 2
+  px in from the draft's first sleeping rim (x 846, y 927, dir -1) facing away; GREEN: he steps back to 44 px in, edgeTurns [] and
+  unlit []; noTurnRoom: the turn pressed 2 px in and that rim gone over dark (asserts both). Renamed (no 'roll 16 / x 920'). PASS both.
+- Test 5 (c5e25be9d) HAND-BUILT (probes/giveup.mts): the child noGlowTurn roll 1 stood 40 px in from the same rim facing away at 0.5 s
+  and 12 s, that rim's light held asleep (its glowWake entry cleared every frame): two give-ups at one rim (4.57 s, 16.07 s); plant 15
+  applied (probed): one. Name and asserts kept. PASS.
+- Toys 3, 4, 6 unchanged (pass unplanted); their plants 13, 14, 16 are in the running proof.
+- Told the lead (a ruling asked, before building): A hand-built toys / B widen rolls / C other. Built A (cheap, reversible); if the lead
+  rules otherwise, revert d4570feee and c5e25be9d's test edits.
+**BOX 13 DOES, in order:** (a) read plants-box12.txt; any MISSED / NO TEST / BASE RED is fixed first. (b) FREEZE the head (a worktree,
+`chattr -R +i src tools reference` except src/game/gen2/proven, ruling 6) and run ONE x40 vs THE BAR (shrine 360/360; unlit at or
+below 5 events, NO loop: read FTRun.dark.loop / the rows; no rescue kind the base lacks): `GEN2_DRAFT=3-1 npx tsx tools/inspect/castBots.ts
+--stage 3-1 --seeds 1-20 | 21-40 --setting both --par 2 --rows ...` (box 8's line), two lanes; commit as cast-3-1-x40-<head>.jsonl;
+median shrine time per tier x setting vs cast-3-1-x40-base-c1008d8e.jsonl (box 11 saw middle N 16 +40 s, middle E 1 +30 s: say if
+general); one line to the lead. (c) ONCE on that head: tierBots 9/9, the suite shards + the CI tool line (timeout 7200000). (d) LAND
+on t-eng-w3 as box 11's note says (merge, no force, conflicts named; dark.test, darkBots.test, lockall on the merged head; push; hash).
 **EXACT NEXT STEP (ENG-DARK-k box 11 hand-over, 2:57 PM ET by `date`; head on t-eng-dark-wip = this commit; CODE = this commit (rulings
 1-4 built). Box 12 OWNS every step below. Re-fetch before every commit (D138).)**
 **THE LEAD'S RULINGS ON BOX 10 (received by box 11, word for word in substance):** (1) 33 N: (A): the lay hangs the second light over
