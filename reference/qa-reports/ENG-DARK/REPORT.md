@@ -1,5 +1,5 @@
 # ENG-DARK REPORT (the dark + light ring as one gen2 brick; WORLD-3-PLAN F2; R-165.449)
-**EXACT NEXT STEP (ENG-DARK-e box 5 hand-over, 12:42 PM ET by `date`; code head 4aebc171 on t-eng-dark-wip = f68c5ca1 + (c) the
+**EXACT NEXT STEP (ENG-DARK-e box 5 hand-over, 12:41 PM ET by `date`; code head 4aebc171 on t-eng-dark-wip = f68c5ca1 + (c) the
 'climbed' kind). Box 4 has STOPPED (its x40 on f68c5ca1 recorded, box 4 item 7: unlit 5, all Easy; shrine 359/360; rescues 1,395 vs base
 1,393). Box 6 OWNS EVERY CODE CHANGE (the lead: "YOU own every code change from here"). Re-fetch before every commit (D138).**
 **THE LEAD'S RULINGS to box 5, word for word:**
