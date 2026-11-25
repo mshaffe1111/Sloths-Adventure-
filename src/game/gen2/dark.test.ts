@@ -94,7 +94,7 @@ function relay(z: Zone, platforms: Platform[], deeper: number): Zone {
 /** (ENG-DARK box 14) the SHAPE no real roll deals any more (ENG-DOWNBOT's lay, merged): a DEEP drop. Roll 1 Normal's first sleeping DROP
  *  rim whose landing piece, moved by hand to `drop` px under the rim (and `shift` px along), still takes his drop as a drop; with
  *  `floor`, a hand-laid floor that many px under that piece (so its own rims have landings in the dark); the dark laid again (relay) */
-function deepDrop(drop: number, shift: (r: DarkRim) => number, floor: number | null, ok: (d: { stage: { platforms: Platform[]; zones: Zone[] }; rim: DarkRim; moved: Platform }) => boolean = () => true, seeds = 1) {
+function deepDrop(drop: number, shift: (r: DarkRim) => number, floor: number | null, ok: (d: { stage: { platforms: Platform[]; zones: Zone[] }; rim: DarkRim; moved: Platform }) => boolean = () => true, seeds = 1, clear = false) {
   for (let seed = 1; seed <= seeds; seed++) {
   const st = built(seed, 'normal');
   for (const z of st.zones ?? []) {
@@ -103,7 +103,9 @@ function deepDrop(drop: number, shift: (r: DarkRim) => number, floor: number | n
       if (!r.drop || !r.light?.sleep) continue;
       const moved: Platform = { ...r.onto, y: r.y + drop, x: r.onto.x + shift(r) };
       const under: Platform[] = floor === null ? [] : [{ ...r.onto, x: moved.x - 400, width: moved.width + 800, y: moved.y + floor }];
-      const platforms = [...st.platforms.map((p) => (p === r.onto ? moved : p)), ...under];
+      // (`clear`: the wood between the rim and that deep landing over it taken out, so no other rim drops onto it with its own light)
+      const between = (p: Platform) => clear && p !== r.piece && p !== r.onto && p.y > r.y && p.y < moved.y && p.x < moved.x + moved.width + 100 && p.x + p.width > moved.x - 100;
+      const platforms = [...st.platforms.filter((p) => !between(p)).map((p) => (p === r.onto ? moved : p)), ...under];
       const zone = relay(z, platforms, Math.max(0, moved.y + (floor ?? 0) + 100 - (z.bottom - DARK_GLOW.below)));
       const rim = darkRims({ platforms, zones: [zone] }).find((q) => q.piece === r.piece && q.dir === r.dir);
       const d = rim?.onto === moved && rim.drop && rim.light?.sleep ? { stage: { platforms, zones: [zone] }, rim, moved } : null;
@@ -374,7 +376,8 @@ test("an edge BEHIND a dark-rim drop's landing is no edge he lands toward (the l
   // (608 px: the light hung at the stop's reach (GLOW_REACH.down) hangs 188 px over his landing; that edge lies BEHIND px behind, out
   //  of its radius (box 15: 13 px behind, as box 14 had it, lies inside a 190 px light 188 px up, and a drop deeper than 608 px no
   //  longer lands on that piece: no rim held the shape); the floor 400 px under the landing piece gives that edge its own landing,
-  //  its light out of the stop's reach)
+  //  its light out of the stop's reach; the wood between taken out (clear): on roll 1 a piece 346 px down dropped onto that landing too,
+  //  its own light 90 px over it, and that light was the landing's)
   // (box 15: on roll 1's first sleeping drop rim the light nearest that landing was another rim's, 90 px over it, and it reached that
   //  edge: the builder now takes the first real drop rim of rolls 1-10 whose shape holds (deepDrop's check))
   const BEHIND = 60;
@@ -382,7 +385,7 @@ test("an edge BEHIND a dark-rim drop's landing is no edge he lands toward (the l
     const b = darkRims(q.stage).find((m) => m.piece === q.moved && m.dir === -q.rim.dir);
     return !!b?.light?.sleep && Math.hypot(q.rim.light!.x - b.x, q.rim.light!.y - b.y) > q.rim.light!.r;
   };
-  const d = deepDrop(608, (r) => (r.dir > 0 ? r.x + 24 - BEHIND - r.onto.x : r.x - 24 + BEHIND - r.onto.width - r.onto.x), 400, behind, 10);
+  const d = deepDrop(608, (r) => (r.dir > 0 ? r.x + 24 - BEHIND - r.onto.x : r.x - 24 + BEHIND - r.onto.width - r.onto.x), 400, behind, 10, true);
   assert.ok(d, 'a deep drop on a real rim');
   const { stage, rim, moved } = d;
   const back = darkRims(stage).find((q) => q.piece === moved && q.dir === -rim.dir);
