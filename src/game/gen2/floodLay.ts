@@ -5,12 +5,15 @@
  * rises to paddling depth (FLOOD_PADDLE px under its banks' top) over the close, and the one marked 'close' (the fork's low road) turns
  * deep at the close (brim-full: a wall the line waits at). A little one in it then is set on its NEAR bank: the bank he meets first.
  * The check is flood.ts floodFaults (the close against the line's prompt tail-off of the laid low road, at the setting's flown rate, plus
- * the spare), highRoadFaults (a high road over the low road the line can walk: steps of at most FLOOD_STEP px), forkFaults (its wall-step)
- * and strandFaults (off either end of every piece, ground within the line's step, FloodRow.step). Each refusal by name.
+ * the spare), highRoadFaults (a high road over the low road the line can walk: steps of at most FLOOD_STEP px), forkFaults (its wall-step),
+ * strandFaults (off either end of every piece, ground within the line's step, FloodRow.step) and lowHopFaults (no high-road top
+ * within a single jump of the low road's floor: FLOOD_LOW_HOP). Each refusal by name.
  * No stage id, world number, seed or x.
  */
-import { floodFaults, floodTailOff, forkFaults, highRoad, strandFaults, type Flood, type FloodRow, type FloodWater } from '../flood.ts';
+import { floodFaults, floodTailOff, forkFaults, highRoad, lowHopFaults, strandFaults, type Flood, type FloodRow, type FloodWater } from '../flood.ts';
 import { alongOf, lastMet } from './tower.ts';
+import { APEX } from './reach.ts';
+import { ASSIST } from '../physics.ts';
 import type { Gen2Stage } from './types.ts';
 import type { RiverZone } from '../river.ts';
 
@@ -21,6 +24,12 @@ export const FLOOD_STEP = 60;
 /** the widest gap between two pieces of the high road (px): a hop he and the line both make, never a jump over open water (the carved
  *  steps and porches touch; a gap is a step's tread at most) */
 export const FLOOD_HOP = 60;
+/** the low road's hop (flood.ts lowHopFaults; BUILD-28 session 6, the lead's ruling (c)): no high-road top within a SINGLE jump's reach of
+ *  the low road's floor, plus a margin. `reach` DERIVED: a single full held jump's rise (reach.ts APEX single-hold, 97.8, flown) + the
+ *  engine's landing catch under the apex (engine.ts onFloor catchDrop: 14 on Normal) + Easy's added catch (physics.ts ASSIST.catchDrop),
+ *  117.8 (flown, BUILD-28 probe-a3reach: the highest top a single jump lands him on, thin or block, standing or from a full run: 115
+ *  Normal, 117 Easy). `margin`: the lead's ruling, at least 15 px over it */
+export const FLOOD_LOW_HOP = { reach: APEX['single-hold'].px + 14 + ASSIST.catchDrop, margin: 15 } as const;
 /** where a set-back little one sits on the near bank, back from the water's edge (px) */
 export const FLOOD_SIT = 40;
 
@@ -66,7 +75,10 @@ export function layFlood(st: Gen2Stage, row: FloodRow, easy: boolean): { flood?:
     //  either end of every piece of it, ground within the line's step (strandFaults): the first ground under x is a solid top, else the low
     //  road's water at its laid surface (the flood only raises it) over its span, else none)
     const under = (x: number): number => (x >= low.x0 && x <= low.x1 ? low.y0 : Infinity);
-    problems.push(...road.faults, ...(road.faults.length ? [] : [...forkFaults(road.chain, span, row.climb), ...strandFaults(road.chain, tops, under, row.step)]));
+    // (and no piece of it within his single jump of the low road's walked floor (a marsh's): his ordinary hop keeps the low road)
+    const marsh = st.rivers![low.river].marsh;
+    const hop = marsh ? lowHopFaults(road.chain, { x0: low.x0, x1: low.x1, y: marsh.floor }, FLOOD_LOW_HOP) : [];
+    problems.push(...road.faults, ...(road.faults.length ? [] : [...forkFaults(road.chain, span, row.climb), ...strandFaults(road.chain, tops, under, row.step), ...hop]));
   }
   const flood: Flood = { start: { id: last.id, x: last.x, y: last.y }, close, waters, tailOff: floodTailOff(row, Math.max(0, px), easy), spare: easy ? row.spare.easy : row.spare.normal, px: Math.max(0, px) };
   return { flood, problems: [...problems, ...floodFaults(flood)] };

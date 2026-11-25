@@ -186,6 +186,23 @@ export function strandFaults(chain: ReadonlyArray<{ x: number; w: number; y: num
   return out;
 }
 
+/**
+ * THE LOW ROAD'S HOP (BUILD-28 session 6, the lead's ruling (c)): his ORDINARY hop from the low road's floor never lands him on the high
+ * road, so the choice of road stays his (a DOUBLE jump up off it is his own move onto the high road: both go home). No piece stops a hop
+ * from below, thin or block (A0, BUILD-28's probe-a0: the engine stops him only at a block's faces), so every piece of `chain` standing
+ * over the low road's walked floor (`floor`: its x span and its top) has its top more than `hop.reach` (a single full jump's rise plus the
+ * engine's landing catch, the most generous setting) plus `hop.margin` over that floor. By name; empty: fair. Laid by floodLay.
+ */
+export function lowHopFaults(chain: ReadonlyArray<{ x: number; w: number; y: number }>, floor: { x0: number; x1: number; y: number }, hop: { reach: number; margin: number }): string[] {
+  const out: string[] = [];
+  for (const q of chain) {
+    if (q.x + q.w <= floor.x0 || q.x >= floor.x1) continue;
+    const over = Math.round((floor.y - q.y) * 10) / 10;
+    if (over < hop.reach + hop.margin) out.push(`flood: the high road's piece at x ${Math.round(q.x)}-${Math.round(q.x + q.w)} stands ${over} px over the low road's floor (x ${Math.round(floor.x0)}-${Math.round(floor.x1)}), within a single jump's reach ${hop.reach} px + its ${hop.margin} px margin: his ordinary hop off the low road lands him on the high road`);
+  }
+  return out;
+}
+
 /** the high road itself (highRoadFaults' walk): its pieces in the order he meets them (the bot's way round, lead-the-line), and the faults
  *  by name (empty: walkable) */
 export function highRoad<T extends { x: number; w: number; y: number; h?: number }>(tops: ReadonlyArray<T>, span: { x0: number; x1: number; from: { x: number; y: number }; to: { x: number; y: number } }, step: number, hop: number): { chain: T[]; faults: string[] } {

@@ -165,7 +165,7 @@ export const W2_FLOOD: FloodRow = {
  *   - `wall` W: a WALL-STEP FLOOD_STEP px tall on the near bank, `wall.back` px back from the water's edge (both roads climb it: flood.ts
  *     highRoad's first piece, its face on the bank so he walks into it), `wall.w` wide: at least the widest tier's landing + run-up
  *     (W2_FLOOD.climb: 86 + 61 = 147). Set back, its lip is a step over the BANK, not over the marsh: off W he lands on the bank (60 px),
- *     then off the bank's edge onto the marsh floor (60), each within the line's step (strandFaults; flush on the water's edge it was one
+ *     then off the bank's edge onto the marsh floor (75, W2_FORK_RIVERS), each within the line's step (strandFaults; flush on the water's edge it was one
  *     120 px drop and the line waited at W's lip: BUILD-28 1e);
  *   - the GAP after W, `gap` px (over the bank when `gap` <= `wall.back`): the low road walks off W's lip and drops through it (at least his
  *     44 px width), the high road hops it level onto the porch (at most FLOOD_HOP);
@@ -192,9 +192,12 @@ export const W2_FORK: W2ForkShape = {
   porch: 2200,
   rises: [{ w: 1400, h: 60 }, { w: 600, h: 60 }],
 };
-/** the low road's row: a MARSH (riverLay.ts RiverRow.marsh; 2-8.md:9: 1,400 px with four 100 px dips, its floor 60 px under the banks),
- *  still water, no logs, marked for the flood as the road that turns deep */
-export const W2_FORK_RIVERS = { [W2_FORK.row]: { dir: 1, speed: 0, logW: 0, logs: 0, safe: true, flood: 'close' as const, marsh: { width: 1400, floor: 60, dips: 4, dip: 100 } } } satisfies Record<string, RiverRow>;
+/** the low road's row: a MARSH (riverLay.ts RiverRow.marsh; 2-8.md:9: 1,400 px with four 100 px dips), still water, no logs, marked for
+ *  the flood as the road that turns deep. Its floor 75 px under the banks (BUILD-28 session 6, the lead's ruling (c)): the porch, a step
+ *  over the banks (W2_FORK.wall.h), then stands 135 px over it, out of a single jump's reach plus its margin (floodLay FLOOD_LOW_HOP:
+ *  117.8 + 15; at 60 under the banks the porch's 120 px was inside it and his dip hop put him on the high road); within the line's drop
+ *  (W2_FOLLOW.step 90) */
+export const W2_FORK_RIVERS = { [W2_FORK.row]: { dir: 1, speed: 0, logW: 0, logs: 0, safe: true, flood: 'close' as const, marsh: { width: 1400, floor: 75, dips: 4, dip: 100 } } } satisfies Record<string, RiverRow>;
 /** the two-road section `id` for job `job` (its numbers W2_FORK's) */
 export function w2TwoRoad(id: string, job: NodeJob, f: W2ForkShape = W2_FORK): SectionTemplate {
   // (a share along the near bank: `d` px past its end; W's place on it: `wall.back` px back from its end)

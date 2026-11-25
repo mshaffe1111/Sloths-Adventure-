@@ -9,7 +9,7 @@ import '../../headlessDom.ts';
 import { buildGen2Stage } from '../pipeline.ts';
 import { towerCfg } from '../toyTower.ts';
 import { HOME_BRICKS, HOME_CODE, homeKit } from '../toyHome.ts';
-import { FLOOD_HOP, FLOOD_STEP, layFlood } from '../floodLay.ts';
+import { FLOOD_HOP, FLOOD_LOW_HOP, FLOOD_STEP, layFlood } from '../floodLay.ts';
 import { forkFaults, highRoad, strandFaults } from '../../flood.ts';
 import { W2_FLOOD, W2_FORK, W2_FORK_RIVERS, W2_RIVERS, w2TwoRoad, type W2ForkShape } from './w2.ts';
 import type { Collectible } from '../../types.ts';
@@ -17,13 +17,13 @@ import type { WorldKit } from '../types.ts';
 
 const ID = '2-96';
 const SWAP = 'home-practise-ride';
-const kit = (f: W2ForkShape): WorldKit => {
+const kit = (f: W2ForkShape, fork: typeof W2_FORK_RIVERS = W2_FORK_RIVERS): WorldKit => {
   const k = homeKit(ID, HOME_CODE);
   const briefs = k.manifest.graphs!.briefs!;
   const sections = [k.manifest.sections[0], ...HOME_BRICKS.map((b) => (b.id === SWAP ? w2TwoRoad(b.id, b.jobs![0], f) : b))];
-  return { ...k, manifest: { ...k.manifest, rivers: { ...W2_RIVERS, ...W2_FORK_RIVERS, twin: { ...W2_RIVERS.twin, flood: 'rise' as const } }, sections, graphs: { ...k.manifest.graphs!, briefs: { [ID]: { ...briefs[ID], pacer: undefined } } } } };
+  return { ...k, manifest: { ...k.manifest, rivers: { ...W2_RIVERS, ...fork, twin: { ...W2_RIVERS.twin, flood: 'rise' as const } }, sections, graphs: { ...k.manifest.graphs!, briefs: { [ID]: { ...briefs[ID], pacer: undefined } } } } };
 };
-const build = (seed: number, difficulty: 'normal' | 'easy', f: W2ForkShape = W2_FORK) => buildGen2Stage({ config: { ...towerCfg(ID, 'sprint'), unlocked: true }, kit: kit(f), seed, difficulty });
+const build = (seed: number, difficulty: 'normal' | 'easy', f: W2ForkShape = W2_FORK, fork: typeof W2_FORK_RIVERS = W2_FORK_RIVERS) => buildGen2Stage({ config: { ...towerCfg(ID, 'sprint'), unlocked: true }, kit: kit(f, fork), seed, difficulty });
 
 /** two cages (floodLay.test's): one on the out leg at the column's lip, one past the column on the home leg, at a smaller x (met later) */
 function caged(st: ReturnType<typeof build>): void {
@@ -110,5 +110,19 @@ test('two roads: RED by name on W 60 (every tier walks off) and on no gap (no wa
   assert.match(faults({ ...W2_FORK, wall: { ...W2_FORK.wall, w: 60 } }), /the adult lands 86 px past its face .* walks off into the 60 px gap/, 'RED: W 60');
   assert.match(faults({ ...W2_FORK, gap: 0 }), /no way down onto the low road: the gap after it is 0 px/, 'RED: no gap');
   // (W flush on the water's edge (BUILD-28 1e): off its lip onto the marsh floor is one 120 px drop, deeper than the line's step)
-  assert.match(faults({ ...W2_FORK, wall: { ...W2_FORK.wall, back: 0 } }), /off the (left|right) end of the high road's piece at x \d+-\d+ the first ground is 120 px down, deeper than the line's 90 px step/, 'RED: W flush on the water');
+  assert.match(faults({ ...W2_FORK, wall: { ...W2_FORK.wall, back: 0 } }), new RegExp(`off the (left|right) end of the high road's piece at x \\d+-\\d+ the first ground is ${W2_FORK.wall.h + W2_FORK_RIVERS[W2_FORK.row].marsh.floor} px down, deeper than the line's 90 px step`), 'RED: W flush on the water');
+});
+
+test('two roads: THE LOW ROAD\'S HOP: RED by name on the marsh floor 60 px under the banks (b3747ddcb: the porch 120 px over it, inside a single jump), GREEN on 75', () => {
+  const fork = (floor: number) => ({ [W2_FORK.row]: { ...W2_FORK_RIVERS[W2_FORK.row], marsh: { ...W2_FORK_RIVERS[W2_FORK.row].marsh, floor } } }) as typeof W2_FORK_RIVERS;
+  for (const difficulty of ['normal', 'easy'] as const) {
+    const lay = (floor: number) => {
+      const st = build(1, difficulty, W2_FORK, fork(floor));
+      caged(st);
+      return layFlood(st, W2_FLOOD, difficulty === 'easy').problems.join('; ');
+    };
+    assert.match(lay(60), /the high road's piece at x \d+-\d+ stands 120 px over the low road's floor \(x \d+-\d+\), within a single jump's reach 117.8 px \+ its 15 px margin: his ordinary hop off the low road lands him on the high road/, `${difficulty}: RED at 60`);
+    assert.equal(lay(W2_FORK_RIVERS[W2_FORK.row].marsh.floor), '', `${difficulty}: GREEN at the ruled ${W2_FORK_RIVERS[W2_FORK.row].marsh.floor}`);
+  }
+  assert.ok(FLOOD_LOW_HOP.reach + FLOOD_LOW_HOP.margin <= W2_FORK.wall.h + W2_FORK_RIVERS[W2_FORK.row].marsh.floor, 'the ruled porch clears the reach + margin');
 });
