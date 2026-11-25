@@ -1,17 +1,19 @@
 # ENG-DARK REPORT (the dark + light ring as one gen2 brick; WORLD-3-PLAN F2; R-165.449)
-**EXACT NEXT STEP (ENG-DARK-e box 5 hand-over, 12:38 PM ET by `date`; code head d191cb2b on t-eng-dark-wip = f68c5ca1 + (c) the
+**EXACT NEXT STEP (ENG-DARK-e box 5 hand-over, 12:36 PM ET by `date`; code head d191cb2b on t-eng-dark-wip = f68c5ca1 + (c) the
 'climbed' kind). Box 4 has STOPPED; its x40 on f68c5ca1 is recorded (box 4 item 7: unlit 5, all Easy; shrine 359/360; rescues 1,395 vs
 the base 1,393). The lead's order for box 5 on (word for word in its message): (a) trace child Easy 25's strand, every bot reaches the
 shrine on every roll; (b) the NEW verdict 'a drop's landing is at least his stopping distance from the next dark rim, or that rim is
 already lit when he lands', planted RED on adult Easy 30, fixed in the lay that owns it (the tower's: tell ENG-DOWNBOT-g and the lead);
 (c) RimWatch's own kind 'climbed'; (d) plants (now 18), tierBots, the suite, the CI line on the final head; (e) LAND on t-eng-w3.**
 (c) **DONE at d191cb2b** (box 5 item 5). (a) and (b) are next, in this order:
-(a) **child Easy 25 (box 5 item 6 has the trace so far):** run `GEN2_DRAFT=3-1 npx tsx reference/qa-reports/ENG-DARK/probes/strand.mts
-child easy 25 270` on a frozen d191cb2b and add to the probe, per frame from 275.9 s, the bot's glowStop (rim, since), the route's dir
-and the plan it took (firsttimer.ts glowWait :3331; glowJump; the stuck clock) to name what holds him still 93 px from the right end
-of 1020-1200 (y 11734) for 20 s with gaveUp [] (glowWait gives up at GLOW_GIVEUP 4 s, so it is likely NOT the dark stop itself); and why
-goal is 0 of 1 (the base 1 of 1): which rescue skipped the goal. Fix the cause where it lives (a bot fault: firsttimer; a lay fault: the
-dark brick), a toy RED before / GREEN after, a plant.
+(a) **child Easy 25 (box 5 item 6): ROOT CAUSE FOUND, a bot fault in the TOWER's way-down plan** (firsttimer.ts:2859 asks a vine top
+at or ABOVE his feet; the engine climbs down from the ground only at the top, engine.ts:2204: mid-trunk his down press never starts the
+climb). The fix is one condition made two-sided (`Math.abs(nearTreeVine.topY - p.y) <= 14`). **The lead and ENG-DOWNBOT-g were told
+in box 5's hand-over message; make the fix only on the lead's word** (it is ENG-DOWNBOT's code; if it lands from their lane first, take
+it in the merge). Then: a toy (castBots child Easy roll 25 reaches the shrine; RED on d191cb2b), a plant (the one-sided test back),
+and the row's other 3 bots on roll 25 unchanged. Also name why goal is 0 of 1 (the base 1 of 1): which rescue skipped the goal.
+Toy RED before / GREEN after on this row, a plant. Probes: `probes/strand.mts` (track, NOWAIT=1 removes the stop), `probes/strand2.mts`
+(the bot's glowWait/glowJump patched to log; the pad each 2 s): `GEN2_DRAFT=3-1 npx tsx <probe> child easy 25 276` from the tree.
 (b) **the verdict `darkLandings` in gen2/dark.ts beside darkGaps (proposed; box 5 item 7 has the numbers):** for every dark rim r whose
 landing is a DROP (landingOf's drop branch: the landing piece q lower than r's piece), and q's end on r's side `dir` is itself a dark
 rim n: his farthest landing xf = r.x + dir * PHYS.maxRun * sqrt(2 h / PHYS.gravDown) (h = q.y - r.y: walked off at full run, steering
@@ -94,8 +96,20 @@ from box 4's 7b1aa3ba only in ENG-W3/REPORT.md), frozen, never pushed: the landi
    the dark's stops are what changed the run. The end: a rescue at 275.9 s (the stuck clock from 255.9 s at (1110, 11345) 'the way on is
    131 px down') puts him on 1020-1200 at y 11734; the exit totem is at (1225, 11804) on the floor 0-1280 70 px below; he stands still
    facing right at x 1107 (93 px from that piece's right end) for 20 s, vx 0, gaveUp [] (so not a waited-out dark stop: glowWait gives
-   up at 4 s and names it); the next rescue finds no route point past him -> 'stranded'. Open: what holds him (next step (a)), and why
-   the goal is 0 of 1.
+   up at 4 s and names it); the next rescue finds no route point past him -> 'stranded'. **What holds him (probes/strand2.mts, the bot's
+   own calls patched to log): NOT the dark stop** (glowWait called 597 times from 276 s, dir 1, returned null every time; no glowStop).
+   He holds **DOWN** for the whole 20 s (the pad: down true, nothing else). The plan that presses it: firsttimer.ts:2859 'a way DOWN
+   turns on a vine whose top stands at his ledge's end' (onTower, e.nearTreeVine, grounded, the target over 60 px down, the vine's top
+   within 14 px of his feet, its foot over 60 px below): the engine never starts the climb from where he stands and nothing lets the
+   press go (the trunk-UP plan beside it has trunkUpT / trunkIgnoreUntil; the way-down press has none). That plan is the tower's
+   going-down bot code (on t-eng-w3 since 6341043b; ENG-DOWNBOT's WIP d4e1688e does not change it). **ROOT CAUSE (a BOT fault, the
+   tower's):** the near vine is 26 (tree_climb, x 1112, top 11453, foot 11804): its top is 281 px ABOVE his feet (11734), its foot at the
+   floor. The bot's plan asks only `nearTreeVine.topY <= p.y + 14` (a top at or above his feet: one-sided) and `bottomY > p.y + 60`
+   (11804 > 11794, by 10 px); the engine climbs down from the ground only at the vine's very top (engine.ts:2204 downAtTop:
+   `p.y <= nearTreeVine.topY + 14`), so from mid-trunk his down press can never start the climb, and he holds it until the rescue clock
+   runs out. The fix (not made: the tower's code; the lead and ENG-DOWNBOT-g are told first): the plan's test is the engine's,
+   two-sided (`Math.abs(nearTreeVine.topY - p.y) <= 14`), so mid-trunk he takes the way on (walk off 1020-1200's right end, 70 px down,
+   to the exit at 1225). Open: why the goal is 0 of 1 (the base 1 of 1).
 7. **(b) numbers for the verdict:** PHYS (physics.ts): maxRun 285, groundDec 3400, gravDown 2500: the brake from full run is 12 px; a
    287 px drop takes 0.48 s, 137 px of air at full run. Adult Easy 30 (box 4 item 5): dropped from the storey at 2190 steering right,
    landed at x 236 running vx 268, 5 px from the rim at the right end of 61-241 (y 2477). The 5 unlit on f68c5ca1 are all Easy (needs
