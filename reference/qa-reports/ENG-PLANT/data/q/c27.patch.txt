@@ -1,0 +1,157 @@
+From 33e573b356fa73ca2587bd35209394e98ea4ef9b Mon Sep 17 00:00:00 2001
+From: Claude <noreply@anthropic.com>
+Date: Wed, 25 Nov 2026 15:50:50 +0000
+Subject: [PATCH] ENG-PLANT-q c27 (STOPPED: the ruling's NO DEADLOCK fails): at
+ W1's cap the gate judges the logs in view with the held aim; refused -> stand
+ by choice. Toy RED on c27 too (home N 1 stand 14.1 s > cycle 11.7 s, rescued;
+ post N 5 four stands 14-16 s)
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
+Claude-Session: https://claude.ai/code/session_01FhBbYKakE3aA8mUYQbMFgU
+---
+ tools/inspect/castBots.ts       |  5 ++++-
+ tools/inspect/firsttimer.ts     | 34 ++++++++++++++++++++++++++++++++-
+ tools/inspect/hopJudged.test.ts | 27 +++++++++++++++++++++++++-
+ 3 files changed, 63 insertions(+), 3 deletions(-)
+
+diff --git a/tools/inspect/castBots.ts b/tools/inspect/castBots.ts
+index c78b5079b..54c38360a 100644
+--- a/tools/inspect/castBots.ts
++++ b/tools/inspect/castBots.ts
+@@ -14,7 +14,7 @@
+  */
+ import path from 'node:path';
+ import { spawn } from 'node:child_process';
+-import { firstTimer, FT_ADULT, FT_CHILD, FT_CHILD_EASY, FT_EXPERT, FT_KID, FT_MIDDLE, FT_MIDDLE_EASY, type FirstTimer, type FTRun } from './firsttimer.ts';
++import { firstTimer, FT_ADULT, FT_CHILD, FT_CHILD_EASY, FT_EXPERT, FT_KID, FT_MIDDLE, FT_MIDDLE_EASY, W1_CAP, type FirstTimer, type FTRun } from './firsttimer.ts';
+ import { RULES, isClimb } from './eraRoll.ts';
+ import { RealPlay, levelConfig } from '../../src/game/realPlay.ts';
+ import { PAD_HOP_MS } from '../../src/game/padControl.ts';
+@@ -76,6 +76,7 @@ if (process.argv[1] && path.resolve(process.argv[1]) === path.resolve(import.met
+   const input = (arg('--input') ?? 'fake') as CastInput;
+   if (!['fake', 'touch', 'pad'].includes(input)) throw new Error(`--input ${input}: fake, touch or pad`);
+   const rows: CastRun[] = [];
++  W1_CAP.on = process.env.W1CAP === '1';
+   if (process.argv.includes('--json') || par <= 1) {
+     for (const bot of bots) for (const setting of settings) {
+       if (!CAST_BOTS[bot]?.[setting]) continue;
+@@ -85,6 +86,8 @@ if (process.argv[1] && path.resolve(process.argv[1]) === path.resolve(import.met
+           row = { bot, setting, stage, seed, end: 'stranded', pass: false, time: 0, goal: null, rescues: 0, turnBacks: 0, hits: 0, lives: 0, hitBy: {}, cast: null, stuck: [], error: String(err).slice(0, 200) };
+         }
+         if (process.argv.includes('--json')) console.log(JSON.stringify(row));
++        // (c27's NO DEADLOCK check: every by-choice stand past the bank-edge float wait's cap, this row's, to stderr; W1CAP=1 only)
++        if (W1_CAP.on) { console.error(`W1CAP ${JSON.stringify({ bot, setting, stage, seed, cap: W1_CAP.rows })}`); W1_CAP.rows = []; }
+         rows.push(row);
+       }
+     }
+diff --git a/tools/inspect/firsttimer.ts b/tools/inspect/firsttimer.ts
+index ae372fde1..d9fa491a3 100644
+--- a/tools/inspect/firsttimer.ts
++++ b/tools/inspect/firsttimer.ts
+@@ -48,7 +48,7 @@ import { findTarget } from '../../src/game/dotGuidePerch.ts';
+ 
+ /** a move tip about one of these is over once none is in view (as DotGuide.tsx has it) */
+ const GONE_TOPICS = new Set<TopicId>(['trunk', 'vine', 'rope', 'log', 'foe']);
+-import { driftX, DRIFT_CATCH, lianasOver, LOG_DROP, logClock, onRiver, riverAt, riverEnd, type RiverZone } from '../../src/game/river.ts';
++import { driftCycle, driftX, DRIFT_CATCH, lianasOver, LOG_DROP, logClock, onRiver, riverAt, riverEnd, type RiverZone } from '../../src/game/river.ts';
+ import { pacerOff, type Pacer } from '../../src/game/pacer.ts';
+ import { RIDE } from '../../src/game/ride.ts';
+ import { padShows } from '../../src/game/pieces/padPiece.ts';
+@@ -1266,6 +1266,10 @@ export type HopRow = { site: string; q: number; t: number; x: number; hold: numb
+ export const HOP_TRACE: { on: boolean; rows: HopRow[] } = { on: false, rows: [] };
+ /** hops off a carrier refused at startJump because no gate judged them (ENG-PLANT-e, the lead's ruling 1: zero on every row) */
+ export const UNJUDGED = { n: 0 };
++/** TEST (c27, the lead's ruling's NO DEADLOCK): when on, every by-choice stand past W1's cap (the bank-edge float wait's 6 s): the cap's
++ *  game time (t0), his x, the longest it lasted (dur, s) and the longest drift cycle of the logs in view (cycle, s, driftCycle). Records
++ *  only: no decision reads it (castBots --json writes it to stderr per row under W1CAP=1) */
++export const W1_CAP: { on: boolean; rows: { t0: number; x: number; dur: number; cycle: number }[] } = { on: false, rows: [] };
+ export const PRESS_TRACE: { on: boolean; rows: Array<{ want: number; got: number }> } = { on: false, rows: [] };
+ export const pressIn = (lag: number): number => (lag <= DT / 2 ? 1 : Math.max(1, Math.ceil(lag / DT - 1e-9)) + 1) * DT;
+ /**
+@@ -1911,6 +1915,13 @@ export class FirstTimerRun {
+       && (dir > 0 ? q.x < edgeX && q.x + q.width > edgeX : q.x + q.width > edgeX && q.x < edgeX));
+   }
+ 
++  /** W1_CAP (records only): a by-choice stand past W1's cap at game time t, x, with these logs in view */
++  private capNote(t: number, x: number, drifts: Platform[]) {
++    const t0 = this.edgeWait + 6, dur = t - t0, cycle = Math.max(0, ...drifts.map((q) => (q.drift ? driftCycle(q.drift) : 0)));
++    const last = W1_CAP.rows[W1_CAP.rows.length - 1];
++    if (last && last.t0 === t0) { last.dur = Math.max(last.dur, dur); last.cycle = Math.max(last.cycle, cycle); } else W1_CAP.rows.push({ t0, x, dur, cycle });
++  }
++
+   /** the gate's read (gateLands, ENG-27r) */
+   private gateSees(q: Platform, at: (t: number) => number, x: number, y: number, dir: -1 | 1, h: DrawnHop, t0: number, vx0: number, margin: number): boolean {
+     return this.gateAir(q, at, x, y, dir, h, t0, vx0, margin) !== null;
+@@ -3621,6 +3632,27 @@ export class FirstTimerRun {
+             if (this.edgeWait < 0) this.edgeWait = t;
+             // (SKILLS.floatSure: he stands by choice, clockHeld, so the stopped-dead read never decides a hop no gate judged)
+             if (t - this.edgeWait < 6) { if (SKILLS.floatSure) { this.clockHeld = true; this.blockedT = 0; this.pending = null; } return {}; }
++            // (c27, the lead's ruling (SKILLS.floatSure, rule 28: the judged hop is the hop flown): at the wait's 6 s cap he went BLIND (the
++            //  fall-through to the edge's own press: a hop no gate judged), was set back by the water and waited 6 s again, three rounds
++            //  (2-7 c26 race home middle Normal 1 at bank f83, post middle Normal 5 at f78: WON -> LOST). Now the cap's go is the gate's:
++            //  the logs in view are judged with the hop he will press (the aim drawn by the testers' habit, held for the wait) from where he
++            //  stands; judged -> pressed as judged; refused -> he stands by choice and the gate judges again next frame as the logs move (and
++            //  the `near` gate above as one comes near). The wait and its 6 s are untouched; a lift or a lily pad alone keeps the old go)
++            const drifts = floats.filter((q) => q.type === 'drift');
++            if (SKILLS.floatSure && drifts.length) {
++              const vx = p.vx + (Math.abs(carry) < 400 ? carry : 0);
++              const h = this.aim.at(dir as -1 | 1, t, (d) => this.drawHop(d));
++              if (drifts.some((q) => this.gateSees(q, floatAt(rivers, q), p.x, p.y, dir as -1 | 1, h, t, vx, 24))) {
++                this.edgeWait = -1;
++                if (HOP_TRACE.on) { this.judged = null; this.judge('edgeCap', drifts, [0], dir as -1 | 1, h.hold, vx, carry, 24, h); }
++                this.gateHop = h;
++                this.aim.end();
++                return this.startJump(dir, 'single', false);
++              }
++              if (HOP_TRACE.on) this.judged = null;
++              if (W1_CAP.on) this.capNote(t, p.x, drifts);
++              this.pending = null; this.lateArmed = null; this.clockHeld = true; this.blockedT = 0; return {};
++            }
+           }
+         }
+         // (and riding a drifting log: he waits on it until the next log or the bank is near, LV-2 round 2: he used to hop off the end
+diff --git a/tools/inspect/hopJudged.test.ts b/tools/inspect/hopJudged.test.ts
+index 6412765b6..ff970dc55 100644
+--- a/tools/inspect/hopJudged.test.ts
++++ b/tools/inspect/hopJudged.test.ts
+@@ -13,7 +13,8 @@ import '../../src/game/headlessDom.ts';
+ import test from 'node:test';
+ import assert from 'node:assert/strict';
+ import { homeRun } from './homeToys.ts';
+-import { HOP_TRACE, WaitAim, gateAirtime, gateLands, racePick, type DrawnHop, type HopRow, type ThumbAt } from './firsttimer.ts';
++import { HOME_CODE, POST_CODE } from '../../src/game/gen2/toyHome.ts';
++import { HOP_TRACE, W1_CAP, WaitAim, gateAirtime, gateLands, racePick, type DrawnHop, type HopRow, type ThumbAt } from './firsttimer.ts';
+ 
+ const DT = 1 / 30;
+ const show = (r: HopRow) =>
+@@ -138,3 +139,27 @@ test('the race gate presses the shortest aimed flight that lands safe, by airtim
+   const a3 = gateAirtime(q, () => 184, 100, 500, 1, single(0.3), 0, 0, 50, 1e9), a5 = gateAirtime(q, () => 184, 100, 500, 1, single(0.5), 0, 0, 50, 1e9);
+   assert.ok(a3 !== null && a5 !== null && a3 > 0 && a5 > a3, `the airtime read is not the flight's: 0.3 s single ${a3}, 0.5 s single ${a5}`);
+ });
++
++// c27 (the lead's ruling on 2-7's race flips, rule 28: the judged hop is the hop flown). At the bank-edge float wait's 6 s cap (W1) he
++// went BLIND off the bank, the water set him back on it, he waited 6 s again: three rounds, and the race flipped WON -> LOST (c26: home
++// middle Normal 1 at bank f83, post middle Normal 5 at f78; ENG-PLANT REPORT session 14). Read by what the engine does, never where: a
++// set-back is one frame that moves him more than 60 px with no life lost. And NO DEADLOCK (the ruling's condition 2): every by-choice
++// stand past the cap ends inside a full drift cycle of the logs in view. RED on c26 51ffe7eab (home N 1: 2 set-backs, LOST), GREEN on c27.
++type RaceSim = { e: { player: { x: number }; lives: number; pieces: { kind: string; verdict?: { won: boolean; him: number; boat: number } }[] } };
++for (const [race, code, seed] of [['home', HOME_CODE, 1], ['post', POST_CODE, 5]] as const) {
++  test(`2-7's race ${race} middle Normal ${seed}: no blind go at the float wait's cap (no set-back by the water), the race WON, no deadlock (c27)`, () => {
++    let piece: RaceSim['e']['pieces'][number] | undefined, lives: number | undefined, x: number | undefined, setBacks = 0;
++    W1_CAP.on = true; W1_CAP.rows = [];
++    try {
++      homeRun('middle', 'normal', seed, 1, { onFrame: (sim) => {
++        const e = (sim as unknown as RaceSim).e;
++        piece ??= e.pieces.find((q) => q.kind === 'pacer');
++        if (x !== undefined && lives === e.lives && Math.abs(e.player.x - x) > 60) setBacks++;
++        x = e.player.x; lives = e.lives;
++      } }, code);
++      assert.equal(setBacks, 0, `${setBacks} set-backs by the water`);
++      assert.ok(piece?.verdict?.won, `the race ${piece?.verdict ? `LOST by ${(piece.verdict.him - piece.verdict.boat).toFixed(2)} s` : 'never decided'}`);
++      for (const r of W1_CAP.rows) assert.ok(r.dur < r.cycle, `a stand past the cap at x ${Math.round(r.x)} lasted ${r.dur.toFixed(2)} s, the logs' cycle ${r.cycle.toFixed(2)} s`);
++    } finally { W1_CAP.on = false; W1_CAP.rows = []; }
++  });
++}
+-- 
+2.43.0
+

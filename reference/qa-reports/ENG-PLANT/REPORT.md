@@ -1,9 +1,44 @@
-# ENG-PLANT-p (ENG-PLANT-c session 14, started 10:22 AM ET 11-25 by the hook's stamp): c26 built (the front stand, the lead's ruling (A)); toys RED on c25 / GREEN on c26; the known flips 12/12; wide 0 BAR PASS->FAIL; 2-7 x40 33/40; **the race FLIPS: post Normal 5 and home Normal 1 LOST**
+# ENG-PLANT-q (ENG-PLANT-c session 15, started 10:44 AM ET 11-25 by the hook's stamp; this top written 10:52 AM ET 11-25): c27 built as ruled; **STOPPED on the ruling's condition 2 (NO DEADLOCK): every stand past W1's cap outlasts the logs' drift cycle; the lead has the rows and decides**
+
+Engine (bots), Opus 5.5 xhigh. Lead: session_01FhBbYN2CVHnFXg7XzqKXpM. **Code head stays c26 = 51ffe7eab** on release-0.10.3-wip-plant-c (c27 is
+NOT pushed there: it is local commit 33e573b35 on c26, kept here as data/q/c27.patch.txt). Data: data/q/. Toy runner: tools/toy27-q.mts.txt <tree>.
+
+## EXACT NEXT STEP (session 16)
+0. Setup as session 15 did: `npm ci --no-audit --no-fund --legacy-peer-deps`; `git fetch --unshallow origin` (background); report tree:
+   `git worktree add --detach /home/user/rep origin/release-0.10.3-wip-plant-c-report`; frozen c26: `git worktree add --detach /home/user/fz-c26
+   51ffe7eab`, symlink node_modules, `chattr -R +i src tools`, `chattr -i src/game/gen2/proven`. c27 in the main checkout:
+   `git checkout -B c27work 51ffe7eab && git am <rep>/reference/qa-reports/ENG-PLANT/data/q/c27.patch.txt`.
+1. **Read the lead's answer to session 15's STOP message first** (sent at hand-over; ReadNotifications / the lead's message). Build NOTHING
+   past c27 without the lead's word (condition 2: "do not invent a fallback").
+2. The facts the lead has (data/q/probe-cap-c27.txt, 168 cap frames, every 0.5 s of every stand): at W1's cap no log is EVER judged at these
+   banks, with the held aim or any hold (0.12 / 0.2 / 0.3 / double): the logs run 28 px below the banks and pass under them, never bridging
+   the gap; the way on is the FAR BANK across 120-125 px at the same height. gateSees on that bank from where he stands: x 3631 (5 px back
+   of the lip): the held aim lands; x 6518 (46 px back): nothing lands; x 8093 (81 px back), 5216, 3853, 2359: only a double lands.
+   Options put to the lead (not built): (A) the cap's gate also judges the far bank in view (bankUp's shape); (B) walk to the lip before
+   judging (the front stand's principle on a bank).
+3. On the lead's word: build c28 as ruled; toy = tools/toy27-q.mts.txt's three reads (set-backs 0, the race WON, every stand past the cap
+   < the logs' cycle) RED on c26 AND on c27, GREEN on c28 (hopJudged.test.ts carries c27's toy test: keep it, rename if the rule changes);
+   then the ruling's condition 4 in full on c28's exact head (the 10 known flips; the wide sample 2-1/2-2/2-4 seeds 1-10 vs data/c/main-*;
+   2-7 x40 >= 29/40; every race WON with margins (tools/margins.mts.txt); 1-4 and 2-5 vs main; zero rows stuck or timed out), castBots rows
+   with `W1CAP=1` (c27's castBots writes every stand past the cap per row to stderr: `W1CAP {bot,setting,stage,seed,cap:[{t0,x,dur,cycle}]}`;
+   any dur >= cycle is a STOP row for the lead); then the table to the lead, then child N 13, then the checklist (session 14's item vi).
+
+## Session 15: c27 measured (the careful middle, Normal; cycle = driftCycle of the logs in view = 11.7 s)
+| row | c26 51ffe7eab | c27 33e573b35 (local) |
+|---|---|---|
+| home N 1 | LOST +11.29, 5 set-backs (t 10.0, 67.9, 129.8, 146.7, 164.8) | LOST +12.79; stands past the cap: f71 x 6518 14.1 s (ended by a RESCUE to f76 x 6352), x 3631 15.4 s |
+| post N 5 | LOST +13.10, 7 set-backs | LOST +46.00; stands past the cap: x 8093 16.2 s, 5216 15.8 s, 3853 15.6 s, 2359 14.0 s |
+Every stand > 11.7 s: the ruling's STOP. (The toy's set-back read also counts the race's own early ones at t 10.0 / 21.7 and 67.9 / 60.0 on
+both trees: a session-16 toy narrows set-backs to those off a bank W1 held him on, or the lead rules the toy reads the race verdict +
+the stand bound only.) Lessons applied: D115 (probe only in the unfrozen main checkout, env-gated, restored with git checkout), D119 (no
+heredoc in a commit chain: commit message from a file), D128 (stamps from date), D134 (pushed and ls-remote'd before the hand-over message).
+
+# (previous) ENG-PLANT-p (ENG-PLANT-c session 14, started 10:22 AM ET 11-25 by the hook's stamp): c26 built (the front stand, the lead's ruling (A)); toys RED on c25 / GREEN on c26; the known flips 12/12; wide 0 BAR PASS->FAIL; 2-7 x40 33/40; **the race FLIPS: post Normal 5 and home Normal 1 LOST**
 
 Engine (bots), Opus 5.5 xhigh. Lead: session_01FhBbYN2CVHnFXg7XzqKXpM. **Code head: c26 = 51ffe7eab** on release-0.10.3-wip-plant-c
 (pushed, `git ls-remote` confirmed). Data: data/p/. Tools: tools/set1cmp-p.py.txt (a set1 row vs main's row).
 
-## EXACT NEXT STEP (session 15)
+## (session 14's) EXACT NEXT STEP (session 15, done: c27 built, STOPPED)
 0. Setup: `npm ci --no-audit --no-fund --legacy-peer-deps`; `git fetch --unshallow origin` (background). Freeze (no /home/user/plant-work
    here: from the main checkout) `git worktree add --detach /home/user/fz-c26 51ffe7eab`, symlink node_modules, `chattr -R +i src tools`,
    `chattr -i src/game/gen2/proven`; the same for fz-c25 6a64aa41e (and fz-27e 801cae9e8 for 2-7 traces). Rows: tools/wide.sh-n.txt

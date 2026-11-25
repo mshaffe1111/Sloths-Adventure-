@@ -1,0 +1,16 @@
+// usage: tsx toy27.mts <tree> : c27's toy, tree-agnostic (set-backs, verdict, W1_CAP stands if the tree has it)
+const [T] = process.argv.slice(2);
+await import(`${T}/src/game/headlessDom.ts`);
+const { homeRun } = await import(`${T}/tools/inspect/homeToys.ts`);
+const ft = await import(`${T}/tools/inspect/firsttimer.ts`);
+const { HOME_CODE, POST_CODE } = await import(`${T}/src/game/gen2/toyHome.ts`);
+for (const [race, code, seed] of [['home', HOME_CODE, 1], ['post', POST_CODE, 5]] as const) {
+  let piece: any, lives: any, x: any, setBacks = 0; const sb: string[] = [];
+  if (ft.W1_CAP) { ft.W1_CAP.on = true; ft.W1_CAP.rows = []; }
+  let f = 0;
+  homeRun('middle', 'normal', seed, 1, { onFrame: (sim: any) => { const e = sim.e; f++; piece ??= e.pieces.find((q: any) => q.kind === 'pacer');
+    if (x !== undefined && lives === e.lives && Math.abs(e.player.x - x) > 60) { setBacks++; sb.push(`t${(f / 30).toFixed(1)} ${Math.round(x)}->${Math.round(e.player.x)}`); }
+    x = e.player.x; lives = e.lives; } } as any, code);
+  const v = piece?.verdict;
+  console.log(`${race} N ${seed} | setBacks ${setBacks} ${sb.join(' ')} | ${v ? (v.won ? 'WON' : 'LOST') + ' margin ' + (v.him - v.boat).toFixed(2) : 'none'} | cap ${ft.W1_CAP ? JSON.stringify(ft.W1_CAP.rows.map((r: any) => [Math.round(r.x), +r.t0.toFixed(2), +r.dur.toFixed(2), +r.cycle.toFixed(2)])) : 'n/a'}`);
+}
