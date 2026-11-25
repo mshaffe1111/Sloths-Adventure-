@@ -2825,8 +2825,10 @@ export function layStage(budget: StageBudget, graph: MissionGraph, kit: WorldKit
         if (!row) throw new Error(`gen2 section ${tpl.id}: ${lp.key} lays river row "${lp.river.row}" and world ${budget.world} has no river row of that name`);
         const near = pieceOf(lp.river.from), far = pieceOf(lp.key);
         if (far.x < near.x) throw new Error(`gen2 section ${tpl.id}: ${lp.key}'s river runs right to left, which is not laid yet`);
-        const r = layRiver(row, near.x + near.width, near.y, () => pid++);
+        const r = layRiver(row, near.x + near.width, near.y, () => pid++, near.style);
         if (Math.abs(r.zone.x1 - far.x) > 1) throw new Error(`gen2 section ${tpl.id}: ${lp.key}'s river ends at ${r.zone.x1}, its far bank starts at ${far.x}`);
+        // (a marsh's floor (RiverRow.marsh): solid ground in the water, in the near bank's style)
+        platforms.push(...r.floor);
         platforms.push(...r.logs);
         placed.seam.push(...r.logs);
         rivers.push(r.zone);

@@ -11,6 +11,7 @@
 import { floodFaults, floodTailOff, forkFaults, highRoad, type Flood, type FloodRow, type FloodWater } from '../flood.ts';
 import { alongOf, lastMet } from './tower.ts';
 import type { Gen2Stage } from './types.ts';
+import type { RiverZone } from '../river.ts';
 
 /** paddling depth: the flood stops this far under its banks' top (2-8.md:39: "stops 10 px under them") */
 export const FLOOD_PADDLE = 10;
@@ -22,6 +23,14 @@ export const FLOOD_HOP = 60;
 /** where a set-back little one sits on the near bank, back from the water's edge (px) */
 export const FLOOD_SIT = 40;
 
+/** a flood-marked river's water (river `i` of the stage, `close` s): it rises to paddling depth, and never sinks: water already at or over
+ *  it stays where it lies; a marsh's paddling depth is under its FLOOR's top (RiverZone.marsh): over it the floor would be under water
+ *  before the close. The deep (the near bank by `along`) is laid by layFlood on the one marked 'close' */
+export function floodWaterOf(r: RiverZone, i: number, close: number): FloodWater {
+  const lip = r.floodMark!.lip;
+  return { river: i, x0: r.x0, x1: r.x1, y0: r.surfaceY, y1: Math.min(r.surfaceY, (r.marsh?.floor ?? lip) + FLOOD_PADDLE), seconds: close, lip };
+}
+
 export function layFlood(st: Gen2Stage, row: FloodRow, easy: boolean): { flood?: Flood; problems: string[] } {
   const marked = (st.rivers ?? []).map((r, i) => ({ r, i })).filter((q) => q.r.floodMark);
   if (!marked.length) return { problems: ['flood: the brief names a flood, but no water is laid from a row marked for it'] };
@@ -32,8 +41,7 @@ export function layFlood(st: Gen2Stage, row: FloodRow, easy: boolean): { flood?:
   const close = easy ? row.close.easy : row.close.normal;
   const waters: FloodWater[] = marked.map(({ r, i }) => {
     const lip = r.floodMark!.lip;
-    // (it rises to paddling depth, and never sinks: water already at or over it stays where it lies)
-    const w: FloodWater = { river: i, x0: r.x0, x1: r.x1, y0: r.surfaceY, y1: Math.min(r.surfaceY, lip + FLOOD_PADDLE), seconds: close, lip };
+    const w = floodWaterOf(r, i, close);
     if (r.floodMark!.kind === 'close') {
       const nearX = along(r.x0, lip) <= along(r.x1, lip) ? r.x0 : r.x1;
       w.deep = { y: lip, near: { x: nearX === r.x0 ? r.x0 - FLOOD_SIT : r.x1 + FLOOD_SIT, y: lip } };

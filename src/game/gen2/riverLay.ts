@@ -50,6 +50,14 @@ export interface RiverRow {
   /** a FLOOD mark (data; flood.ts, gen2/floodLay.ts; 2-8's water, reference/design/2-8.md NEW 1): on a stage whose brief names a flood,
    *  'rise' rises to paddling depth on the flood clock, 'close' is the low road (it rises, then turns deep at the close). Unset: no flood */
   flood?: 'rise' | 'close';
+  /**
+   * a MARSH (data; unset: none; 2-8's low road, reference/design/2-8.md:9 "LOW 1,400 px of marsh path with four 100 px dips"): instead
+   * of logs, a walkable FLOOR `floor` px under the banks' top across `width` px of water, split by `dips` gaps `dip` px wide (evenly spaced,
+   * the floor's pieces equal) where the water shows: he hops them, the line paddles them (follow.ts: splash-back water under its path).
+   * The water stands RIVER_LAY.marshWater under the floor's top; a flood raises it to paddling depth under the FLOOR (floodLay), and the
+   * close covers the floor (deep: a wall the line waits at). The row's logs, speed and look are not read (it is still water)
+   */
+  marsh?: { width: number; floor: number; dips: number; dip: number };
 }
 
 /** how high over its log's top a riding petal sits (px): a petal's height over the floor it is laid on (the sections' pickup `dn`) */
@@ -72,6 +80,9 @@ export const RIVER_LAY = {
   /** a tail's margin past the farthest a rider reaches off a log's end (px; rideReach): two frames of the fastest run on the fastest
    *  river ((PHYS.maxRun 285 + RIVER_LAY.speed 143) / 30 = 14.3 px a frame), for a take-off a frame off the flight's */
   tailMargin: 30,
+  /** a marsh's water under its floor's top before any flood (px; the line's walkway toy, lineBot.test.ts floodRun: the walkway 60 under
+   *  the banks, the water 90) */
+  marshWater: 30,
 } as const;
 
 /** the gap a row's logs keep */
@@ -79,7 +90,7 @@ export const rowGap = (row: Pick<RiverRow, 'dir' | 'speed' | 'gap'>): number => 
 /** the logs' window: from the near bank to where they go under (the far bank, or the painted end before a tail) */
 export const carrierWidth = (row: RiverRow): number => (row.logs + 1) * (row.logW + rowGap(row)) - row.logW;
 /** the water's width, bank to bank (the logs' window and its tail) */
-export const riverWidth = (row: RiverRow): number => carrierWidth(row) + (row.tail ?? 0);
+export const riverWidth = (row: RiverRow): number => (row.marsh ? row.marsh.width : carrierWidth(row) + (row.tail ?? 0));
 /** how long he waits at the bank between two logs (s) */
 export const riverBeat = (row: RiverRow): number => (row.logW + rowGap(row)) / row.speed;
 
@@ -88,7 +99,16 @@ export const riverBeat = (row: RiverRow): number => (row.logW + rowGap(row)) / r
  * `bankY`, and its logs (platforms 'drift', ids from `nextId`) across the logs' window (carrierWidth: the water less its tail). The zone's
  * `safe` sets him back 70 px short of the edge on the near bank.
  */
-export function layRiver(row: RiverRow, x0: number, bankY: number, nextId: () => number): { zone: RiverZone; logs: Platform[]; petals: Array<{ log: Platform; dx: number; dy: number }> } {
+export function layRiver(row: RiverRow, x0: number, bankY: number, nextId: () => number, style?: string): { zone: RiverZone; logs: Platform[]; floor: Platform[]; petals: Array<{ log: Platform; dx: number; dy: number }> } {
+  if (row.marsh) {
+    // (a marsh: its floor's pieces, solid, in the banks' own style (`style`), split by its dips; no logs, still water)
+    const m = row.marsh;
+    const piece = (m.width - m.dips * m.dip) / (m.dips + 1);
+    const top = bankY + m.floor;
+    const floor: Platform[] = Array.from({ length: m.dips + 1 }, (_, i) => ({ id: nextId(), x: x0 + i * (piece + m.dip), y: top, width: piece, height: 200, type: 'solid', ...(style ? { style } : {}) }) as Platform);
+    const zone: RiverZone = { x0, x1: x0 + m.width, surfaceY: top + RIVER_LAY.marshWater, dir: row.dir, speed: 0, marsh: { floor: top, lip: bankY }, ...(row.safe ? { safe: { backX: x0 - 70, backY: bankY } } : {}), ...(row.flood ? { floodMark: { kind: row.flood, lip: bankY } } : {}) };
+    return { zone, logs: [], floor, petals: [] };
+  }
   const gap = rowGap(row);
   const width = carrierWidth(row);
   const tail = row.tail ?? 0;
@@ -104,7 +124,7 @@ export function layRiver(row: RiverRow, x0: number, bankY: number, nextId: () =>
   }
   const zone: RiverZone = { x0, x1: x1 + tail, surfaceY: bankY + surfaceBelowBank, dir: row.dir, speed: row.speed, ...(row.safe ? { safe: { backX: x0 - 70, backY: bankY } } : {}), ...(tail ? { tail } : {}), ...(row.flood ? { floodMark: { kind: row.flood, lip: bankY } } : {}) };
   const petals = logs.slice(0, Math.max(0, row.petals ?? 0)).map((log) => ({ log, dx: Math.round(log.width / 2), dy: -PETAL_SIT }));
-  return { zone, logs, petals };
+  return { zone, logs, floor: [], petals };
 }
 
 /**
