@@ -37,6 +37,13 @@ the HOP landing), and darkLandings (:269) passes an edge BEHIND the landing by (
 to read lit, check on probes/rim.mts 33 normal 940 7828 which light the crossing of rim 940 reads and whether the stop that wakes it
 happens: the second light only helps if a stop wakes it or it becomes that rim's r.light. If it needs a verdict/judge change (the
 crossing judged by the landing he actually comes down on), that is a meaning change: say so to the lead before building it.
+33 N's SHAPE, read (probes/rim.mts 33 normal 940 7828; layout only): rim 940 (right end of 704-940@7828) is itself a DROP onto
+691-1054@7996, its light id 43 (1018, 8079) asleep. THE HOP RIM is rim 951, the LEFT end of 951-1199@7644: its own landing is a hop onto
+632-812@7650 (139 px across, 6 px down), but a step off it (x 927) lands on 704-940@7828, 13 px from rim 940 BEHIND him (n.dir +1,
+u.dir -1: (i)'s exemption passes it). The lay fix's second light goes over that step-off landing (landingOf's drop formula from rim
+951 going -1: about x 897, y 7738); it is about 276 px from rim 940's own landing (994, 7996), so it lights the EDGE he lands by, not
+rim 940's landing: whether the verdict then drops the behind-edge exemption is the lead's reading of 'behind edge lit'. Ask before
+changing darkLandings' meaning.
 (3) The 7 single crossings (box 8: adult 33 N 940,7828; child E 21 191,1562; expert 31 N 929,10127; middle E 1 517,2867; middle E 32
 561,10406; middle 16 N 920,7104; middle 31 N 965,6563): castone each on the new head first (paths moved), then trace or rule.
 (4) Add plant 28 to planted-faults.py: the seam check removed (downEnd's `if (d === 0 || this.who.noSeamWalk)` line onward) -> the seam
