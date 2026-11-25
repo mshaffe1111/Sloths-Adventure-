@@ -1,0 +1,94 @@
+[
+ {
+  "diff": "normal",
+  "file": "/tmp/claude-0/-home-user-Sloths-Adventure-/f9e2f691-8996-5505-a4ff-e8eb307011ec/scratchpad/post2-before/1-6-land-normal-close.png",
+  "stage": "1-6",
+  "orient": "land-normal",
+  "shot": "close",
+  "seed": 1,
+  "piece": {
+   "x": 45995,
+   "y": 912,
+   "w": 24,
+   "h": 345,
+   "style": "moss_stone",
+   "type": "solid"
+  },
+  "screenBox": {
+   "x": 356.6888979010247,
+   "y": 212.4938271604938,
+   "w": 17.333333333333332,
+   "h": 249.16666666666666,
+   "zoom": 0.7222222222222222
+  }
+ },
+ {
+  "diff": "normal",
+  "file": "/tmp/claude-0/-home-user-Sloths-Adventure-/f9e2f691-8996-5505-a4ff-e8eb307011ec/scratchpad/post2-before/1-6-land-normal-wide.png",
+  "stage": "1-6",
+  "orient": "land-normal",
+  "shot": "wide",
+  "seed": 1,
+  "piece": {
+   "x": 45995,
+   "y": 912,
+   "w": 24,
+   "h": 345,
+   "style": "moss_stone",
+   "type": "solid"
+  },
+  "screenBox": {
+   "x": 573.3555524805872,
+   "y": 299.16049139180694,
+   "w": 17.333333333333332,
+   "h": 249.16666666666666,
+   "zoom": 0.7222222222222222
+  }
+ },
+ {
+  "diff": "normal",
+  "file": "/tmp/claude-0/-home-user-Sloths-Adventure-/f9e2f691-8996-5505-a4ff-e8eb307011ec/scratchpad/post2-before/1-6-port-normal-close.png",
+  "stage": "1-6",
+  "orient": "port-normal",
+  "shot": "close",
+  "seed": 1,
+  "piece": {
+   "x": 45995,
+   "y": 912,
+   "w": 24,
+   "h": 345,
+   "style": "moss_stone",
+   "type": "solid"
+  },
+  "screenBox": {
+   "x": 168.40909418753918,
+   "y": 492.7727273787955,
+   "w": 21.272727272727273,
+   "h": 305.79545454545456,
+   "zoom": 0.8863636363636364
+  }
+ },
+ {
+  "diff": "normal",
+  "file": "/tmp/claude-0/-home-user-Sloths-Adventure-/f9e2f691-8996-5505-a4ff-e8eb307011ec/scratchpad/post2-before/1-6-port-normal-wide.png",
+  "stage": "1-6",
+  "orient": "port-normal",
+  "shot": "wide",
+  "seed": 1,
+  "piece": {
+   "x": 45995,
+   "y": 912,
+   "w": 24,
+   "h": 345,
+   "style": "moss_stone",
+   "type": "solid"
+  },
+  "screenBox": {
+   "x": 434.3181804048712,
+   "y": 492.7727272727273,
+   "w": 21.272727272727273,
+   "h": 305.79545454545456,
+   "zoom": 0.8863636363636364
+  }
+ }
+]
