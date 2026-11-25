@@ -110,7 +110,7 @@ test('highRoad: a stair up and back down (a top standing on the rise standing on
   assert.deepEqual(r.chain, [W, P, rise, top, rise, P2], 'up W, P, the rise, the top; down the rise\'s far tread, porch2');
 });
 
-test('forkFaults: the fork at the wall-step, both halves by name: RED on the toy (W 60 + gap 60: every tier walks off, the adult as traced) and the brick (W 60 flush: no way down); GREEN on the shape it finds (W 150 + gap 60)', () => {
+test('forkFaults: the fork at the wall-step, both halves by name: RED on the toy (W 60 + gap 60: every tier walks off, the adult as traced) and the brick (W 60 flush: no way down); GREEN on the shape it finds (W 306 + gap 60, the child\'s measured climb)', () => {
   const span = { x0: 1000, x1: 1400, from: { x: 1000, y: LIP }, to: { x: 1410, y: LIP } };
   // the toy fork's high road (tools/inspect/lineBot.test.ts): W, a 60 px gap over the bank strip, P level with W's top, B, C
   const fork = (wW: number, gap: number) => {
@@ -130,11 +130,15 @@ test('forkFaults: the fork at the wall-step, both halves by name: RED on the toy
   const brick = judge(60, 0);
   assert.match(brick, /no way down onto the low road: the gap after it is 0 px, under his 44 px width/);
   assert.doesNotMatch(brick, /walks off/, 'a flush porch: he walks on');
-  // GREEN: the shape the verdict finds: W at least the widest tier's land + run-up (86 + 61 = 147), a 60 px gap (his width up to FLOOD_HOP)
-  assert.equal(judge(150, 60), '');
-  // the edge of it, planted: 146 px refuses the middle and the expert by name, 147 passes them
+  // GREEN: the shape the verdict finds: W at least the widest tier's land + run-up (the child's measured climb, BUILD-28 session 6: 233 +
+  // 73 = 306), a 60 px gap (his width up to FLOOD_HOP)
+  const edge = W2_FLOOD.climb.land.child + W2_FLOOD.climb.runUp.child;
+  assert.equal(edge, 306);
+  assert.equal(judge(330, 60), '');
+  // the edge of it, planted: 305 px refuses the child by name, 306 passes; 146 still refuses the middle and the expert by name
+  assert.match(judge(edge - 1, 60), /the child lands 233 px past its face and has 72 px to its lip, short of his 73 px run-up/);
+  assert.equal(judge(edge, 60), '');
   assert.match(judge(146, 60), /the middle lands 86 px past its face and has 60 px to its lip, short of his 61 px run-up/);
-  assert.equal(judge(147, 60), '');
   // a gap the jump cannot carry is refused by name (the reach from a stand start, the air pushing him on to a full run)
   // (past FLOOD_HOP, so no high road chains it: judged straight on W and the next piece)
   assert.match(forkFaults(fork(150, 120).slice(0, 2), span, W2_FLOOD.climb).join(';'), /reaches \d+ px, short of the 120 px gap/);
