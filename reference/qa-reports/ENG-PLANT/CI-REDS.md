@@ -1,16 +1,20 @@
 # ENG-PLANT-CI: the 9 CI-tool-line reds on c27 (session 7 hand-over written 1:59 PM ET 11-25 by `date`; sessions 6, 5, 4, 3, 2 and 1 below it)
 
-## EXACT NEXT STEP (session 8). HEAD = 8134a9a56 (CI-10 0db82fb25 + the plant-tests merge 0f95b96ed) + this file. **STOPPED on (c) for the lead's ruling (sent): vineFromLog's standing catch is the root, a NEW code change.**
+## EXACT NEXT STEP (session 8). HEAD = 8134a9a56 (CI-10 0db82fb25 + the plant-tests merge 0f95b96ed) + this file. **The lead RULED (reply to session 7): (c) BUILD CI-11; (a)+(b) RE-PLANT as below, ACCEPTED. Order: CI-11, then the re-plants, then the final checks ONCE on the merged head.**
 0. Read the lead's answer first (ReadNotifications). Frozen trees: `git worktree add --detach <dir> <hash>`, node_modules symlinked,
    `chattr -R +i <dir>/src <dir>/tools` (D115). Probes: ci-tools/s7-*.mts.txt (run `npx tsx <probe> <tree>` from inside the tree).
-1. **(c) 2-4 kid Easy 35, firsttimer.test.ts:312 (STILL RED on 8134a9a56's code = CI-10).** If the lead says build it (CI-11):
+1. **(c) 2-4 kid Easy 35, firsttimer.test.ts:312 (STILL RED on 8134a9a56's code = CI-10). RULED: build CI-11 (law 22: narrowing CI-10 would
+   put back a known 2.5 px error to hide the row):**
    vineFromLog's STANDING catch (firsttimer.ts `catches`, the `[p.vx, 0].every` at ~:2434, `hopCatches(..., vx + carry, 0, carry)`)
    flies the press as the engine plays it: the kid's thumb travel (no steer for the first 2 frames from a stand: the engine's vx stayed
    = the carry 75 on frames 1-2, own steer from frame 3) and the hold as pressed (the engine's cut shows at frame 4, the model's at 5).
    The run-up branch (~:2509) already passes `free`; find how it computes `free` and the hold and use the same for the standing press.
    Planted toy FIRST (hopJudged.test.ts, ledgeToy/carryToy pattern: a log his way under a liana, him standing, the catch judged vs
    RealPlay pressed at the same frame): RED on CI-10 (judged catch, engine misses), GREEN on CI-11; plus a guard where both catch.
-   Then :312 must go GREEN; then the final checks (step 3) on the CI-11 head. If the lead rules otherwise, do that.
+   The lead: the toy is 2-4 kid Easy 35's OWN shape (him standing on a log his way at 75 px/s, a liana ahead): RED on CI-10 (judged
+   'catches', the engine misses), GREEN on CI-11 (the judge refuses the press, or flies it as the engine does). Then :312 GREEN, and
+   2-4 kid Easy 35 traced against main (7 jumps off logs, 0 in the water): equal or better, or the difference explained frame by
+   frame. CI-11 moves rows: every moved row traced (rule 28); one that cannot be narrowed: STOP and send the table.
 2. **(a)+(b) RE-PLANT riverRide :344 / :355 (the lead's ruling applies: the engine = CI-10, so re-plant, never weaken).** By PHASE at
    gap 80 (a gap change scrambles the phases, s7/sweep-ci10.txt): measure for every phase 0..3 step 0.25 the `next` margin on the first
    log (the largest hopLandsOn margin at which ft:3672's `lands` still reads a log in reach for who.hold[0], from where he stands, each
@@ -47,7 +51,7 @@ to the pixel; the judge's error is vineFromLog's own flight: free = 0 (steers fr
 with free 2 = the engine's x to the pixel on frames 1-6) and its hold 0.16 cut at frame 5 (the engine's at frame 4), so the judged
 flight is higher and faster and catches at frame 8. Pre-existing on CI-9 (the same free 0); CI-9 refused the press only because its
 take-off stood 2.5 px behind (the missing ride step). Narrowing CI-10 would put that 2.5 px error back to hide the row. **Outcome:
-neither re-plant nor narrow: the root is a new fix (vineFromLog's standing catch flown as pressed); STOPPED for the lead's ruling.**
+neither re-plant nor narrow: the root is a new fix (vineFromLog's standing catch flown as pressed); the lead ruled: build CI-11.**
 **The lip hoist (the lead's ruling):** hopJudged's Easy 2 and Normal 2 rows ARE the hoist's planted RED/GREEN on real rows (RED on
 CI-8, GREEN on CI-9); no separate hoist toy; ci-tools/hoist-toy.ts.txt removed.
 **Step 2 DONE:** origin/release-0.10.3-wip-plant-tests (0f95b96ed) merged, no force, auto-merged clean (test files only:
