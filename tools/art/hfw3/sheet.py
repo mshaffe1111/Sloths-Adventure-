@@ -9,7 +9,8 @@ d, out = sys.argv[1], sys.argv[2]
 # game length (px, long side) per piece, from the designs: boat ~240, letter 28, door as w2-props#door (86 tall), weir ~400 wide,
 # reeds as reedTall (130 tall), barge 387 long
 GAME = {'shelfL': ('w', 320), 'wallR': ('h', 356), 'wallShelf': ('w', 270), 'rootTall': ('h', 356), 'rootShort': ('h', 223),
-        'roofRoot': ('w', 350), 'roofEnd': ('w', 175), 'bell': ('h', 90)}
+        'roofRoot': ('w', 350), 'roofEnd': ('w', 175), 'bell': ('h', 90),
+        'thornBed': ('w', 300), 'thornClump': ('w', 147), 'bellSwing': ('h', 90)}   # thorns: starts5.py's 3 canvas px a unit
 # edges a piece runs off on purpose (a wall into rock, a root along the roof): not a frame cut
 OPEN = {'wallR': {'top', 'bottom', 'right'}, 'wallShelf': {'top', 'bottom', 'right'}, 'roofRoot': {'left', 'right'}, 'roofEnd': {'top', 'right', 'left'}}
 import numpy as np

@@ -44,5 +44,93 @@
    505
   ],
   "scene": "wallshelf"
+ },
+ "thornBed-s23": {
+  "file": "thornBed-s23.png",
+  "cpu": 4.5,
+  "walk": null,
+  "scene": "thorn"
+ },
+ "thornBed-s11": {
+  "file": "thornBed-s11.png",
+  "cpu": 4.5,
+  "walk": null,
+  "scene": "thorn"
+ },
+ "thornClump-s23": {
+  "file": "thornClump-s23.png",
+  "cpu": 4.5,
+  "walk": null,
+  "scene": "thorn"
+ },
+ "rootTall-s67": {
+  "file": "rootTall-s67.png",
+  "cpu": 3,
+  "walk": null,
+  "scene": "rootshelf"
+ },
+ "rootTall-s41": {
+  "file": "rootTall-s41.png",
+  "cpu": 3,
+  "walk": null,
+  "scene": "rootshelf"
+ },
+ "rootShort-s53": {
+  "file": "rootShort-s53.png",
+  "cpu": 3,
+  "walk": null,
+  "scene": "rootshelf"
+ },
+ "rootShort-s67": {
+  "file": "rootShort-s67.png",
+  "cpu": 3,
+  "walk": null,
+  "scene": "rootshelf"
+ },
+ "roofRoot-s37-tile": {
+  "file": "roofRoot-s37-tile.png",
+  "cpu": 3,
+  "walk": null,
+  "scene": "roof",
+  "root_y": 95
+ },
+ "roofEnd-s23": {
+  "file": "roofEnd-s23.png",
+  "cpu": 3,
+  "walk": null,
+  "scene": "roofend",
+  "root_y": 68
+ },
+ "bell-s23": {
+  "file": "bell-s23.png",
+  "cpu": 9.46,
+  "walk": null,
+  "scene": "bell",
+  "world": 2
+ },
+ "bellSwing-s23": {
+  "file": "bellSwing-s23.png",
+  "cpu": 9.46,
+  "walk": null,
+  "scene": "bell",
+  "world": 2
+ },
+ "courtFar-s11": {
+  "file": "courtFar-s11.webp",
+  "cpu": 1,
+  "walk": null,
+  "scene": "far",
+  "world": 2
+ },
+ "barge": {
+  "file": "../../hfnext/cut/barge.png",
+  "cpu": 2.513,
+  "walk": [
+   222,
+   525,
+   1050
+  ],
+  "scene": "barge",
+  "world": 2
  }
 }

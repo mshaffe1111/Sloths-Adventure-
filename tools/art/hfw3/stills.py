@@ -89,13 +89,49 @@ def scene(n, w, h):
         pokey_at(S, w * 0.4, fy)
     elif kind == 'roofend':
         floor(S, fy)
-        S.alpha_composite(g, (0, max(0, fy - 190 - round(p['root_y'] * k)))); pokey_at(S, g.width + 40, fy)
+        ey = max(0, fy - 190 - round(p['root_y'] * k)); rr = picks['roofRoot-s37-tile']; rk = 1 / rr['cpu']   # ART-W3-b: joined to the tile
+        t = Image.open(os.path.join(C, rr['file'])).convert('RGBA'); t = t.resize((round(t.width * rk), round(t.height * rk)), Image.LANCZOS)
+        xx = g.width - 10; ty = ey + round(p['root_y'] * k) - round(rr['root_y'] * rk)
+        while xx < w:
+            S.alpha_composite(t, (xx, ty)); xx += t.width - 8
+        S.alpha_composite(g, (0, ey)); pokey_at(S, g.width + 40, fy)
     elif kind == 'barge':
         d = ImageDraw.Draw(S); wl = fy - 10
         d.rectangle((0, wl, w, h), fill=(60, 50, 110, 255))
         x = (w - g.width) // 2; deck = wl - 28   # the deck at a log's height over the water (river.ts LOG_HEIGHT 28)
         y = deck - round(p['walk'][0] * k)
         S.alpha_composite(g, (x, y)); pokey_at(S, x + (p['walk'][1] + (p['walk'][2] - p['walk'][1]) * 0.4) * k, deck)
+    elif kind == 'thorn':   # ART-W3-b: the DARK still (3-1 beat 8: a thorn bed under a dark shelf): the grotto dark over all but
+        # a soft light round Pokey (a MOCK-UP of the dark; ENG-DARK draws the real one), the bed half in his light, half out of it
+        floor(S, fy); px = w * 0.28; pokey_at(S, px, fy)
+        S.alpha_composite(g, (round(px + 70), fy - g.height + 6))
+        dk = Image.new('L', (w, h), 200); dd = ImageDraw.Draw(dk)
+        for i in range(40):   # soft edge: 40 rings from dark to clear
+            r = 230 - i * 3; dd.ellipse((px - r, fy - 50 - r, px + r, fy - 50 + r), fill=max(0, 200 - i * 6))
+        S.alpha_composite(Image.merge('RGBA', (*[Image.new('L', (w, h), 6)] * 3, dk)))
+    elif kind == 'rootshelf':   # ART-W3-b: the root hangs from under the wide shelf (shelfL-s37), Pokey on the floor under it and on the shelf
+        sh = Image.open(os.path.join(C, picks['shelfL-s37']['file'])).convert('RGBA'); sk = 1 / picks['shelfL-s37']['cpu']
+        sh = sh.resize((round(sh.width * sk), round(sh.height * sk)), Image.LANCZOS); swy = picks['shelfL-s37']['walk'][0] * sk
+        floor(S, fy); top = max(40, fy - g.height - 4)   # ART-W3-b: the slab is trimmed off: the braid's top tucks 12 units up
+        cx = sh.width - 70   # the root's centre on the shelf (shelf px)
+        import numpy as _np
+        und = int(_np.where(_np.asarray(sh)[:, cx, 3] > 128)[0].max())   # the shelf's underside at that column
+        sx = w // 2 - sh.width + 70; sy = top + 12 - und; rx = sx + cx - g.width // 2
+        S.alpha_composite(g, (rx, top)); S.alpha_composite(sh, (sx, sy))
+        pokey_at(S, rx + g.width // 2 - 45, fy); pokey_at(S, sx + sh.width * 0.45, sy + swy)
+    elif kind == 'bell':   # ART-W3-b: the bell on the shrine landing beside the barge on the river (2-9), both at game size
+        d = ImageDraw.Draw(S); wl = fy - 10
+        d.rectangle((0, wl, w, h), fill=(60, 50, 110, 255))
+        bp = picks['barge']; bg_ = Image.open(os.path.join(C, bp['file'])).convert('RGBA'); bk = 1 / bp['cpu']
+        bg_ = bg_.resize((round(bg_.width * bk), round(bg_.height * bk)), Image.LANCZOS)
+        bank = w - 170; d.rectangle((bank, wl - 28, w, h), fill=(48, 36, 52, 255)); d.line((bank, wl - 28, w, wl - 28), fill=(96, 80, 70, 255), width=3)
+        S.alpha_composite(bg_, (bank - bg_.width - 6, wl - 28 - round(bp['walk'][0] * bk)))
+        S.alpha_composite(g, (bank + 70, wl - 28 - g.height)); pokey_at(S, bank + 40, wl - 28)
+    elif kind == 'far':   # ART-W3-b: the far layer itself as the backdrop, Pokey on a bank in front
+        im = Image.open(os.path.join(C, p['file'])).convert('RGBA'); kk = max(h / im.height, w / im.width)
+        im = im.resize((round(im.width * kk), round(im.height * kk)), Image.LANCZOS)
+        S = im.crop(((im.width - w) // 2, im.height - h, (im.width - w) // 2 + w, im.height)); d = ImageDraw.Draw(S)
+        d.rectangle((0, fy, w, h), fill=(34, 26, 44, 255)); pokey_at(S, w * 0.3, fy)
     else:   # beside
         floor(S, fy); S.alpha_composite(g, (w // 2, fy - g.height + p.get('sink', 0))); pokey_at(S, w // 2 - 70, fy)
     ImageDraw.Draw(S).text((6, 4), f'{n} at game size, Pokey 89 px (MOCK-UP, not the game)', fill=(255, 230, 90))
