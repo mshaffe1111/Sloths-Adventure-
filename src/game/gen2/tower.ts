@@ -388,7 +388,10 @@ export function towerCatches(flow: 'up' | 'down', platforms: readonly Platform[]
       const gapTo = (q: Platform) => (e.x < q.x ? q.x - e.x : e.x - (q.x + q.width));
       // (going down, the next nearest wood is tried when the nearest's bridge is not fair (its head room above all): the nearest
       //  6 px off, 70 px under the bough he stood on, left a 306 px blind drop with fair wood 194 px down, ENG-DOWNBOT)
-      const anchors = all.filter((q) => q !== e.p && !sealed(q) && q.type === 'solid' && q.y >= lo && q.y <= hi && (e.x < q.x || e.x > q.x + q.width)).sort((a, b) => gapTo(a) - gapTo(b) || a.y - b.y);
+      // (going down, never the wood a climb vine stops on, its catch: a bridge to it runs that catch on, and the dip's end beside a
+      //  vine's stop was bridged level with its catch onto a shelf over the storey and on past it, ENG-DOWNBOT, LAY finding 2)
+      const isCatch = (q: Platform) => climbs.some((v) => q.x + 6 < v.x && q.x + q.width - 6 > v.x && q.y > v.topY + 10 && q.y < v.bottomY - 10);
+      const anchors = all.filter((q) => q !== e.p && !sealed(q) && q.type === 'solid' && q.y >= lo && q.y <= hi && (e.x < q.x || e.x > q.x + q.width) && !isCatch(q)).sort((a, b) => gapTo(a) - gapTo(b) || a.y - b.y);
       let bridged = false;
       for (const anchor of flow === 'down' ? anchors : anchors.slice(0, 1)) {
         const left = e.x < anchor.x;

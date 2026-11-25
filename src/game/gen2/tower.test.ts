@@ -654,6 +654,21 @@ test("towerHandOns ('a catch hands on to its storey'): a stopped vine's catch wh
   assert.deepEqual(towerHandOns([{ x: 500, from: 927, to: 580 }], [from, storey, low, solid(0, 753, 1280, 3)], 1280), []);
 });
 
+test("towerCatches going down never bridges a dip's end onto a stopped vine's catch: it would run that catch on past its storey (normal 6's shape, the lead's ruling 1 on LAY finding 2, ENG-DOWNBOT)", () => {
+  const W = 1280, FLOOR = 3000;
+  // (drafted 3-1 normal 6, 9,000 px up: a dip whose right end (x 781) is 76 px short of the storey and 281 px over it; the vine at
+  //  x 1088 comes down beside it onto its own catch, 178 px over the storey; a shelf 64 px over the storey is bridged out from the
+  //  dip's left end first, so the storey's bridge under the right end has no head room, and the vine's catch was the next anchor)
+  const vine = { id: 1, x: 1088, topY: 895, bottomY: 1246, swaySpeed: 1.1, swayPhase: 0, vineType: 'tree_climb' } as Vine;
+  const dip = solid(634, 965, 123, 1), shelf = solid(290, 1182, 180, 2), own = solid(996, 1068, 180, 3), storey = solid(857, 1246, 251, 4), floor = solid(0, FLOOR, W, 5);
+  const base = [dip, shelf, own, storey, floor];
+  const cs = towerCatches('down', base, [vine], FLOOR, W);
+  const all = [...base, ...cs.map((c, k) => solid(c.x, c.y, c.w, 100 + k))];
+  assert.ok(!cs.some((c) => Math.abs(c.y - own.y) <= 1 && c.x < own.x && c.x + c.w >= own.x - 2), `no wood run on level with the vine's catch: ${cs.map((c) => `${c.x}-${c.x + c.w}@${c.y}`).join(' ')}`);
+  assert.deepEqual(towerHandOns([{ x: 1088, from: 895, to: 1246 }], all, W), [], "the vine's catch hands him on to its storey");
+  assert.deepEqual(towerFalls('down', all, FLOOR, W), [], "every end is caught, the dip's included");
+});
+
 test('towerVaults: straight up at a vine\'s top must land on wood whichever way he faces; 1-4\'s turn-back as laid passes, and a planted bough out of the vault\'s reach, or none at all, is named (B14c, 11-13)', () => {
   // (1-4 Easy, library14 seed 1, t-b14@cbe090f0: the storey 640-1197, the turn's vine at 1179, the storey above back left from 1153)
   const vine = (x: number): Vine => ({ id: 1, x, topY: 7320, bottomY: 7601, swaySpeed: 1.1, swayPhase: 0, vineType: 'tree_climb' }) as Vine;
