@@ -18,7 +18,7 @@ READY is measured on that head, LANES rule 2).
    clean run is over 120 s without padding: more shaft, not slower moves), the hand build's deletion list (protoStage '3-1' :2301-2354,
    HAND_STAGES :62, w3Sections '3-1' :31/:44, the pinning tests re-pointed with their assertions kept).
 1. After GO: FIRST drop ART-W3's ready pack (t-art-w3: tools/art/hfw3/pack.py -> src/assets/w1to4art/w3-grotto.webp + .json and the loader
-   src/game/w3GrottoArt.ts) in the SAME commit as your first draw sites (the art-use gate refuses a packed frame nothing draws). Then lay 3-1 by its design on real bricks (the stage-table row travelling down), the hand build DELETED. A NEW engine gap STOPS and
+   src/game/w3GrottoArt.ts) in the SAME commit as your first draw sites (the art-use gate refuses a packed frame nothing draws). ART-W3-b's catch (8cf28b534): the gate now lists EACH undrawn grotto frame (20 frames packed: 11 ART-NEXT-c + 9 ART-W3); draw each one 3-1 uses in that commit and set pack:false on the rest, never a draw site added only to pass the gate. The drop steps are at the top of t-art-w3's ART-W3 REPORT. Then lay 3-1 by its design on real bricks (the stage-table row travelling down), the hand build DELETED. A NEW engine gap STOPS and
    comes to the lead (a pieces lane builds it; never inside the level).
 2. The words from lines-3.md, verbatim, held in a test; no placeholder ships. Dot teaches the dark before beat 1 (rule 6).
 3. FIRST LOOK, the design's risk first (:41, the shaft upright and sideways): stills at 2x of beats 1, 3, 6 and the shrine, upright and

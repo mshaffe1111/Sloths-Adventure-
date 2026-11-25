@@ -20,7 +20,9 @@ head, LANES rule 2). NOT before: the tempo and the drum are this level's two new
    field, brick), how 2-9 meets the 2-MINUTE floor on every tier (the arc says about 190 s Normal: name each tier's fastest clean run), the
    hand build's deletion list (:79-82: w2Stages '2-9', COURT_GOAL_29, W2_PUZZLES, targetCount, w2Sections '2-9', levelSeeds, stageSheets
    'foe:guard', journalMet's royal_guard (who meets it now, or its retirement), the pinning tests re-pointed with their assertions kept).
-1. After GO: drop the court's art pack in the SAME commit as its first draw sites (the art-use gate refuses a packed frame nothing draws). Lay
+1. After GO: drop the court's art pack in the SAME commit as its first draw sites (the art-use gate refuses a packed frame nothing draws):
+   the bell still + swung (96 px, one shared box) and courtFar-s11 are cut and catalogued on t-art-w3 but NOT packed; the barge is w2-next#barge
+   at cpu 2.513 (deck 386, whole 507: upright the camera follows; the lead's ruling); the 2-9 wiring note is at the top of the ART-W3 REPORT. Lay
    2-9 by its design on real bricks, the hand build DELETED. A NEW engine gap STOPS and comes to the lead (a pieces lane builds it; never
    inside the level).
 2. The words from lines-2-9.md, verbatim, held in a test; no placeholder ships. Dot teaches the beat before beat 1 (rule 6), 800 px+ ahead.
