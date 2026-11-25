@@ -18,15 +18,32 @@ Engine (bots), Opus 5.5 xhigh. Lead: session_01FhBbYN2CVHnFXg7XzqKXpM. **Code he
    tell me before you change anything outside c26. 3. On c27 (if any): the toys, the 10 known flips, the wide sample (seeds 1-10,
    2-1/2-2/2-4), 2-7 x40 (at or above 29/40) AND the race margins (every race WON again, margins reported) BEFORE anything else. 4. Then
    child N 13's trace, 1-4/2-5 vs main, and the checklist. The merge still waits for my word. I accept FRONT_STAND_PX = 31 as derived."**
-2. **Ruling item 1 is DONE (below, "The race flips traced"): the cause is the PHASE plus an OLDER wait rule, not c26's line.** The rule is
-   NAMED and was sent to the lead with this push; **nothing outside c26 changes until the lead's word (ruling item 2).** Read
-   ReadNotifications first. Until the word comes (never idle, D120): (a) 1-4 and 2-5 full rows are DONE (360 each, 0 BAR PASS -> FAIL vs
-   main, identical to c25: data/p/c26-1-4.jsonl, c26-2-5.jsonl, c26-2-5-cmp.txt). (b) child N 13: FIRST PASS done (frames only, below); confirm it on the castBots run (the frames
-   tool, tools/row-frames-p.mts.txt, ends at 360 s; castBots' row runs on to 392.6) and probe the walk-off's own line ('hop none'). (c) On the lead's word: build what it rules in the bot (the wait rule or c27), a toy
-   RED on c26 at home N 1 / post N 5 and GREEN on the fix, then ruling item 3's list in its order, every race WON again with margins.
-   Checklist (pacerLay 22/23 re-planted as laid toys 23/23, hopJudged, the toys for c23-c26's rules, the packet's plants, riverRide +
-   firsttimer, the CI tool line 0 fail, tierBots 9/9, timecheck + roadmapcheck) after. MERGE into release-0.10.3 (no force) ONLY on the
-   lead's word. REPORT BY 12:30 PM ET; HARD STOP 2:30 PM ET.
+2. **Ruling item 1 DONE (below): the cause is the phase plus the OLDER bank-edge float wait (W1), not c26's line. THE LEAD'S RULING ON
+   IT (received this session, word for word): "your proposal is APPROVED as c27. When the bank-edge float wait (W1) hits its 6 s cap, he
+   goes only on a hop a gate judges (the floatSure principle, the same as every log hop since c24/c25), or he keeps waiting by choice.
+   Never a blind go into the water. It is the same root as the whole job: the judged hop is the hop flown. Conditions: 1. NARROW: only
+   the cap's blind go changes. W1's wait itself and the 6 s before the cap are untouched. Nothing else moves. 2. NO DEADLOCK: a bot that
+   waits must never wait forever. If no judged hop comes in a full drift cycle of the floats in view, tell me with the row; do not
+   invent a fallback. 3. TOYS: RED on c26 at home N 1 and post N 5, GREEN on c27. 4. W1 is SHARED by every river stage, so the full
+   order runs on c27: the 10 known flips; the WIDE SAMPLE (seeds 1-10, every bot, both settings, 2-1/2-2/2-4: zero BAR PASS -> FAIL vs
+   main); 2-7 x40 (at or above 29/40); EVERY race WON with the margins; 1-4 and 2-5 vs main; zero rows ending stuck or timed out
+   anywhere. 5. Then child N 13's trace, then the checklist. The merge waits for my word."**
+   **Session 15 does, in order:** (i) read the code after W1 (firsttimer.ts c26 :3620-3624, `if (floats.length && !near) {...}`):
+   find what runs when `t - this.edgeWait >= 6` (the fall-through to the edge's own press / walk-off: data/p/probe-*-W.txt: W1's last frame is at 6.03 s, the
+   go 0.2 s (home N 1) to 0.6 s (post N 5) later). c27 = at the cap, gateSees (the drawn hop, `this.aim.at` + `drawHop`, margin 24, as the `near` branch above it
+   at :3596-3618 does) on the floats in view: judged -> startJump as judged; refused -> stand by choice (clockHeld, pending/lateArmed
+   null), no blind go. Nothing before the cap moves (condition 1). (ii) NO DEADLOCK (condition 2): in the toy and in every row, count
+   the longest by-choice stand past the cap; if any reaches a full drift cycle of the floats in view (the river's period from
+   floatAt) with no judged hop, STOP and send the lead that row; no fallback. (iii) Toys in tools/inspect/riverRide.test.ts (or
+   homeToys' test file if the race toys live there; a new file needs gates.yml's CI tool line): home N 1 and post N 5, "no go at W1's cap
+   that no gate judged / the race WON", RED on fz-c26, GREEN on c27; commit c27 + toys on release-0.10.3-wip-plant-c, push, freeze.
+   (iv) Condition 4's full order on c27's exact head, two heavy runs at a time, each once: the 10 known flips (tools/set1-m.sh.txt);
+   the wide sample (2-1/2-2/2-4 seeds 1-10 vs data/c/main-*.jsonl); 2-7 x40 (>= 29/40; c26 33); margins (tools/margins.mts.txt: all 10
+   WON, margins listed vs c26 data/p/margins-c26.txt and c25 data/m/margins-c25.txt); 1-4 and 2-5 vs main; and zero rows ending stuck
+   ('end' not 'shrine') or timed out in every row set. (v) The table to the lead. (vi) child N 13 on c27, then the checklist (pacerLay 22/23
+   re-planted as laid toys 23/23, hopJudged, the toys for c23-c27's rules, the packet's plants, riverRide + firsttimer, the CI tool line
+   0 fail, tierBots 9/9, timecheck + roadmapcheck). MERGE into release-0.10.3 (no force) ONLY on the lead's word. REPORT BY 12:30 PM ET;
+   HARD STOP 2:30 PM ET.
 
 ## The race flips traced (ruling item 1; data/p/race-{hN1,pN5}-{c25,c26}.txt frames per 0.1 s, data/p/probe-{hN1,pN5}-c26-W.txt)
 - **Probe** (env-gated in the unfrozen main checkout at c26, restored; the run is byte-identical to the frozen c26 run): a line at each of
