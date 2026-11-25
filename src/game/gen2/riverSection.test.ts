@@ -12,7 +12,7 @@ import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { buildGen2Stage, checkStage, dropsOf, layLocal, planBudget, rngFor } from './pipeline.ts';
 import { LOG_DROP, surfaceBelowBank } from '../river.ts';
-import { riverFaults, riverWidth } from './riverLay.ts';
+import { riverFaults, riverRowOn, riverWidth } from './riverLay.ts';
 import { cfg as toyCfg, kit as toyKit, meadow } from './toyWorld.ts';
 import { W2_GROUND, W2_RIVERS } from './worlds/w2.ts';
 import { W6_GROUND } from './worlds/w6.ts';
@@ -44,7 +44,7 @@ for (const [name, ground] of [['World 2', W2_GROUND], ['World 6', W6_GROUND]] as
       for (const row of Object.keys(W2_RIVERS) as Array<keyof typeof W2_RIVERS>) {
         const L = layLocal(riverSection([row]), budgetOf(k, s), rngFor(3, 1), false, { rivers: k.manifest.rivers });
         const a = L.pieces.find((p) => p.key === 'near')!, b = L.pieces.find((p) => p.key === `far-${row}`)!;
-        assert.equal(b.x - (a.x + a.w), riverWidth(W2_RIVERS[row]), `${row}: the water is the row's width`);
+        assert.equal(b.x - (a.x + a.w), riverWidth(riverRowOn(W2_RIVERS[row], s)), `${row}: the water is the width of the row this setting lays (its own Easy numbers, riverRowOn)`);
         assert.equal(b.y, a.y, `${row}: the banks are level`);
         assert.deepEqual(b.river, { row, from: 'near' });
         const g = L.gaps.find((q) => q.river === row)!;

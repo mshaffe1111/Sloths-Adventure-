@@ -12,6 +12,7 @@ import type { Platform, Vine } from './types.ts';
 import type { ClockDef } from './stageKit.types.ts';
 import { driftCycle, onRiver, type RiverZone } from './river.ts';
 import { vinePeriod } from './physics.ts';
+import { bucketPeriod, type Wheel } from './wheel.ts';
 
 /** a stage's tempo (data: the stage's brief, gen2 GraphBrief.tempo) */
 export interface TempoSpec {
@@ -53,10 +54,16 @@ const s4 = (s: number): string => s.toFixed(4).replace(/\.?0+$/, '');
 
 type TempoStage = { platforms: readonly Platform[]; rivers?: readonly RiverZone[]; vines?: readonly Vine[]; clocks?: readonly ClockDef[] };
 
+/** the wheels a stage's buckets ride (wheelLay.ts stageWheels; here so the check reads only the platforms) */
+const wheelsOf = (platforms: readonly Platform[]): Wheel[] => [...new Set(platforms.filter((p) => p.wheel).map((p) => p.wheel!.w))];
+
 /**
  * Every clock of a laid stage that is off its tempo, in words. Rivers: a log every whole number of beats, each log's knock (its cycle's start,
  * river.ts logKnocks) on a beat. Lianas (a swinging one, not a still or climbing vine): its swing is the bar and its phase the lock. Stage
- * clocks: a period of whole beats, its offset on a beat, and Easy's stretch the tempo's own.
+ * clocks: a period of whole beats, its offset on a beat, and Easy's stretch the tempo's own. A piece on a clock: its stagger (a wave's stone a
+ * count later, Platform.pad.shift) on a beat; a BREATHING row (a pad on a beat that sinks) is named, for every put-back turns its breath
+ * to meet him (breathAim.ts), off the court's bar. Wheels (2-6's noria, wheel.ts): a bucket every whole number of beats, bucket 0 at the
+ * bottom on a beat (its `phase`). The wheel's Easy numbers, like a river's, are its own row's data.
  */
 export function tempoFaults(st: TempoStage, tempo: TempoSpec, easy: boolean): string[] {
   const out: string[] = [];
@@ -98,6 +105,24 @@ export function tempoFaults(st: TempoStage, tempo: TempoSpec, easy: boolean): st
     if (beatsIn(period, B) === null) out.push(`${at}: a cycle of ${s3(period)} s is not a whole number of beats (${beat})`);
     const off = offBeat(c.offset * k, B);
     if (off > TEMPO_EPS) out.push(`${at}: its offset falls ${s3(off)} s off the beat`);
+  }
+  const stretchOf = new Map((st.clocks ?? []).map((c) => [c.id, easy ? c.easyStretch : 1]));
+  for (const p of st.platforms) {
+    if (p.pad?.by !== 'beat') continue;
+    const at = `the ${p.pad.on === 'bites' ? 'snap stone' : 'breathing pad'} at x ${Math.round(p.x)} (clock '${p.pad.clock}')`;
+    if (p.pad.on !== 'bites') {
+      out.push(`${at}: a breathing row is turned at every put-back (breathAim.ts), so it cannot keep the court's bar`);
+      continue;
+    }
+    const off = offBeat((p.pad.shift ?? 0) * (stretchOf.get(p.pad.clock) ?? 1), B);
+    if (off > TEMPO_EPS) out.push(`${at}: its stagger of ${s3(p.pad.shift ?? 0)} s puts its bite ${s3(off)} s off the beat`);
+  }
+  for (const w of wheelsOf(st.platforms)) {
+    const at = `the wheel at x ${Math.round(w.cx)} (R ${s3(w.R)}, ${w.N} buckets, ${s3(w.V)} px/s, a bucket every ${s3(bucketPeriod(w))} s)`;
+    if (beatsIn(bucketPeriod(w), B) === null) out.push(`${at}: a bucket every ${s3(bucketPeriod(w))} s is not a whole number of beats (${beat}: ${s3(bucketPeriod(w) / B)} beats)`);
+    // (bucket 0 is at the bottom where (V/R) t + phase is a whole turn: at t = -phase R / V)
+    const off = offBeat(-(w.phase ?? 0) * (w.R / w.V), B);
+    if (off > TEMPO_EPS) out.push(`${at}: its buckets pass the bottom ${s3(off)} s off the beat`);
   }
   return out;
 }

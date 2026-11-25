@@ -8,6 +8,7 @@ import { layRiver, type RiverRow } from './gen2/riverLay.ts';
 import { tempoBar, tempoBeat, tempoFaults, type TempoSpec } from './tempo.ts';
 import type { ClockDef } from './stageKit.types.ts';
 import type { Platform, Vine } from './types.ts';
+import type { Wheel } from './wheel.ts';
 
 /** the court's tempo as the design writes it: one liana swing (2.85 s Normal, 3.3 s Easy) is a bar of four */
 const COURT: TempoSpec = { beats: 4, bar: 2.85, easyStretch: 3.3 / 2.85, lock: 0 };
@@ -50,4 +51,36 @@ test('tempo (planted): a log\'s knock off the beat, and a clock off its beats or
   assert.match(tempoFaults(court(false, undefined, undefined, { offset: 0.3 }), COURT, false).join('; '), /the clock 'jaws': its offset falls 0\.3 s off the beat/);
   assert.match(tempoFaults(court(false, undefined, undefined, { phases: [{ name: 'off', seconds: 2 }, { name: 'on', seconds: 0.7125 }] }), COURT, false).join('; '), /the clock 'jaws': a cycle of 2\.71[23] s is not a whole number of beats/);
   assert.match(tempoFaults(court(true, undefined, undefined, { easyStretch: 1.5 }), COURT, true).join('; '), /the clock 'jaws': Easy stretches it 1\.5, not the bar's 1\.158/);
+});
+
+/** a piece on the clock 'jaws': a snap stone (bites on four) with its wave's stagger, or a breathing pad (sinks and rises) */
+const onJaws = (x: number, shift: number, on?: 'bites'): Platform =>
+  ({ id: 500 + x, x, y: 500, width: 80, height: 20, type: 'solid', pad: { by: 'beat', clock: 'jaws', look: 'snap', ...(on ? { on } : {}), ...(shift ? { shift } : {}) } }) as Platform;
+
+test('tempo: a wave\'s stones a whole beat apart keep the beat; a stagger off the beat, and a BREATHING row, are named (ENG-29b)', () => {
+  for (const easy of [false, true]) {
+    const st = court(easy);
+    st.platforms.push(onJaws(2000, 0, 'bites'), onJaws(2110, -0.7125, 'bites'), onJaws(2220, -1.425, 'bites'));
+    assert.deepEqual(tempoFaults(st, COURT, easy), [], `${easy ? 'easy' : 'normal'}: a wave a count of one beat later each`);
+  }
+  const off = court(false);
+  off.platforms.push(onJaws(2000, -0.890625, 'bites'));
+  assert.match(tempoFaults(off, COURT, false).join('; '), /the snap stone at x 2000 \(clock 'jaws'\): its stagger of -0\.891 s puts its bite 0\.178 s off the beat/);
+  // (on Easy the stagger stretches with its clock: still off by the same share of a beat)
+  assert.match(tempoFaults(off, COURT, true).join('; '), /the snap stone at x 2000 \(clock 'jaws'\): its stagger of -0\.891 s puts its bite 0\.206 s off the beat/);
+  const breath = court(false);
+  breath.platforms.push(onJaws(2000, 0));
+  assert.match(tempoFaults(breath, COURT, false).join('; '), /the breathing pad at x 2000 \(clock 'jaws'\): a breathing row is turned at every put-back \(breathAim\.ts\)/);
+});
+
+test('tempo: the wheel (2-6\'s noria, 2-9.md: one bucket a bar) keeps the beat; another rim or speed, or its buckets off the beat, are named (ENG-29b)', () => {
+  const wheel = (o: Partial<Wheel> = {}): Platform[] => {
+    const w: Wheel = { cx: 3000, cy: 300, R: 180, N: 6, W: 70, V: 66.14, way: 1, ...o };
+    return Array.from({ length: w.N }, (_, i) => ({ id: 900 + i, x: 0, y: 0, width: w.W, height: 14, type: 'solid', wheel: { w, i } }) as Platform);
+  };
+  const on = (easy: boolean, o?: Partial<Wheel>) => { const st = court(easy); st.platforms.push(...wheel(o)); return tempoFaults(st, COURT, easy); };
+  assert.deepEqual(on(false), [], 'Normal R180 N6 V 66.14: a bucket every 2.85 s');
+  assert.deepEqual(on(true, { R: 160, V: 50.77 }), [], 'Easy R160 V 50.77: a bucket every 3.3 s, Easy\'s own row');
+  assert.match(on(false, { R: 170 }).join('; '), /the wheel at x 3000 \(R 170, 6 buckets, 66\.14 px\/s, a bucket every 2\.692 s\): a bucket every 2\.692 s is not a whole number of beats/);
+  assert.match(on(false, { phase: 0.5 }).join('; '), /the wheel at x 3000 .*: its buckets pass the bottom 0\.\d+ s off the beat/);
 });

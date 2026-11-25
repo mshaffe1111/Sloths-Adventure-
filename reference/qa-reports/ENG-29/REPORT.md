@@ -1,26 +1,37 @@
 # ENG-29 REPORT: 2-9's NEW 1 (the court's tempo) and NEW 2 (the drum you hear), built ahead (R-165.449)
 
-## EXACT NEXT STEP (session 1 hand-over; NEW 1 (a)(b) and NEW 2 (a) pushed)
-Re-fetch t-eng-29-wip first (session 1 may push ONE REPORT-only commit with the merge's suite verdict). Then NEW 1 step (c), the toy on a REAL row:
-1. `src/game/gen2/tempoToy.test.ts` (new): a stageTable row by `withTestStage` (src/game/gen2/listed.ts:84) whose kit is World 2's with 2-4's
-   liana-over-a-river section (kit 'w2-24', w2Arc24.ts) plus a STONE row (2-5's snap jaws, kit 'w2-25' / w2Arc25.ts: its ClockDef on the stage's
-   `clocks`), and a `court` river row `{ dir: 1, speed: 80, logW: 156, gap: 72, logs: 3, easy: { speed: 70, logW: 159 } }` (W2_RIVERS gets
-   `court` with this; Content's numbers from 2-9.md:18), the brief carrying `tempo: { beats: 4, bar: 2.85, easyStretch: 3.3 / 2.85, lock: 0 }`.
-   Pattern to copy: src/game/gen2/floodLay.test.ts:17-40 (a kit whose brief names the piece, built by buildGen2Stage). GREEN: gen2.errors []
-   on seeds 1-4, both settings, AND tempoFaults(st, tempo, easy) [] AND every laid liana's swingPhase === lock. RED, each by name in
-   gen2.errors: the court row's speed 80 -> 82 ('a log every 2.78 s is not a whole number of beats'); the liana unlocked (re-set swingPhase
-   0.618 after the lay: 'not locked to the bar'); the stone clock's offset off a beat.
-2. The resume toy (the third RED of 2-9.md's NEW 1): on that stage in the real engine (src/game/lianaClock.test.ts's harness:
-   saveEngineHarness.ts run/standAt/step + flagResume.ts flagFor), after a flag resume the liana's ONE is on the bar:
-   `tempoFaults` clean on the engine's vines AND vineAngle(v, e.vineClock) at gameTime k*bar equals the straight run's; RED with the engine's
-   test seam `vineClock` set off the bar (vineShift 0.3 s): 'off the bar'. (vineClock already IS gameTime + a test-only shift, ENG-285.)
-3. Then NEW 2 (b): the conductor's drumTick on the audio clock + the engine's call + its planted RED (Plan below; drum.ts is done). tsc + the touched tests; push; ls-remote.
-OPEN QUESTIONS: (a) ANSWERED in session 1: the lock in gen2's FINISH does not invalidate the river checks: lianaDrops
-(riverLay.ts:326-342) judges every relative phase of swing and logs (j over one log spacing, m frames) with the period vinePeriod gives,
-which is TIMED.period under withSetting = the bar. What NO check proves yet is the LOCKED relation's own let-go window (2-9.md:21: 2.00 s
-Normal, 2.40 s Easy at the lock): add it to the toy in (1) as a done-item (lianaDrops at the locked offset only) or name it for READY-29.
-(b) 2-9.md:21 says 'Locked (river 5 frames ahead of the swing;
-Easy 0)': TempoSpec has ONE lock; if the design means a per-setting lock, add `easyLock` (or the river's offset) and a test.
+## EXACT NEXT STEP (session 2 hand-over, 2:11 PM ET; NEW 1 (c) the toy on a real row DONE and pushed)
+Re-fetch t-eng-29-wip first. The lead's answer on the drum (2-9.md:74): GAME TIME. Then, in order:
+1. The resume toy (packet NEW 1's third RED): on the toy row (src/game/gen2/worlds/w2TempoToy.ts `tempoRow`/`tempoKit`/`tempoCfg`, TEMPO_ID;
+   plant its seed list as snapRow.test.ts:184-190 does: packPlan + plantSeedList + withFixtureConfig) in the real engine (src/game/lianaClock.test.ts's
+   harness: saveEngineHarness.ts run/standAt/step + flagResume.ts flagFor): after a flag resume every liana's ONE is on the bar (tempoFaults
+   clean on the engine's vines AND vineAngle(v, e.vineClock) at gameTime k*bar equals the straight run's); RED with the engine's test seam
+   `vineClock` shifted off the bar (vineShift 0.3 s): 'off the bar'.
+2. NEW 2 (b): the conductor's `drumTick(gameNow, audioNow)` (conductor.ts:659 beside `this.amb?.update(now + LOOKAHEAD)`; drum.ts drumHits
+   is done) scheduling each hit with g in [scheduledTo, gameNow + LOOKAHEAD) at audio time audioNow + (g - gameNow), taiko (instruments.ts:509)
+   for BOOM, woodblock (:447) or rim (:420) for tok, never fx(); the engine calls it each step with gameTime when stage.tempo is set. THE LOST
+   LIFE: game time stands through the 0.75 s down (engine.ts DOWN_SECS), so no new hit is scheduled and the next BOOM/tok falls on the clocks'
+   next beat (never a burst of missed beats, never drifting). Toys: 60 s both settings, every hit within a frame of its beat; a life lost
+   mid-bar, the next hit on the logs' and lianas' next beat (RED if the drum keeps WALL time); RED scheduled on the frame; a tempo stage raises
+   no heroNoise 'drum' Sound.
+3. Step 4: lockall (no listed stage moves: `court` is a new W2_RIVERS row no listed stage names), tsc, the suite shards + the CI tool line ONCE
+   on the frozen head. Push; hash to the lead. Then the 1b merge the lead names, the planted toys re-run on it, and only then the bots (packet step 3).
+STILL OPEN (name for READY-29 if not done): (a) the LOCKED let-go window (2-9.md:21: 2.00 s Normal, 2.40 s Easy): lianaDrops judges every
+relative phase, not the locked one alone; (b) 2-9.md:21's 'river 5 frames ahead of the swing; Easy 0': TempoSpec has one `lock`.
+
+## Session 2 (ENG-29-b), NEW 1 (c): the toy on a REAL row (level.md rule 23) and two checks the tempo lacked
+- src/game/gen2/worlds/w2TempoToy.ts (the row; world data, generalitycheck exempt): 2-4's kit cut to its arrival, first drop and drop-ride-drop
+  (every river on `court`), a pond of two snap stones on the court's bar (count 0.7125 s, Easy the court's stretch), a rest and the jetty; graph
+  'A Tr Pf R S E' under BRIEF_24 with the court's tempo; World 2's finish. W2_RIVERS gets `court` (2-9.md:18: 80/156/72, Easy 70/159).
+- src/game/gen2/tempoToy.test.ts 5/5: GREEN seeds 1-4 both settings (gen2.errors [], tempoFaults [], 9 lianas at the lock, 3+ court rivers,
+  the stones' clock). RED by name in gen2.errors: speed 82 ('a log every 2.78 s is not a whole number of beats'); the stones' bar 3 s; a
+  wave's stagger 0.178 s off. RED by the check gen2 runs (no data path sets them): a liana re-set to 0.618; the stones' clock offset 0.3 s
+  (Easy 0.347 s). The same stage WITHOUT the tempo fails the check (the lay is what locks the lianas).
+- tempo.ts, caught ahead: a stone's stagger (a wave's Platform.pad.shift) on a beat, a BREATHING row named (breathAim.ts turns it at every
+  put-back, off the bar), and the WHEEL (the packet's 'the wheel' was unchecked): a bucket every whole number of beats, bucket 0 at the
+  bottom on a beat. tempo.test.ts 6/6 (2-9.md's wheel rows GREEN both settings; R 170 and phase 0.5 named).
+- riverSection.test.ts: the every-row test judged Easy by Normal's width; a row with its own Easy numbers lays Easy's (riverRowOn). 15/15.
+- Gates on this commit: tsc clean; generalitycheck PASS; riverLay + riverSection + tempo + tempoToy green. The suite: not yet (step 3 above).
 
 ## Plan for NEW 2, the drum (hooks read in session 1; the pure part DONE: see the last line)
 - A pure scheduler, src/audio/drum.ts: `drumHits(tempo, easy, g0, g1, doubled)` -> the hits with game time g in [g0, g1): ONE (beat index

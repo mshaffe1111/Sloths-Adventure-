@@ -101,6 +101,9 @@ export const W2_RIVERS = {
   back: { dir: -1, speed: 70, logW: 150, logs: 2, gap: 80 },
   twin: { dir: 1, speed: 80, logW: 150, logs: 3 },
   long: { dir: 1, speed: 80, logW: 240, logs: 2 },
+  /** 2-9's COURT (reference/design/2-9.md:18, NEW 1 the tempo): a log every bar, 2.85 s (228 px at 80 px/s), the knock ONE; Easy its own
+   *  numbers, never Normal's stretched (riverLay.ts riverRowOn): 70 px/s, 159 px logs, 3.3 s, Easy's bar (tempo.ts) */
+  court: { dir: 1, speed: 80, logW: 156, gap: 72, logs: 3, easy: { speed: 70, logW: 159 } },
 } as const satisfies Record<string, RiverRow>;
 
 /** an inventory id on World 2's next sheet (w2NextArt.ts), its frame named on its own (so tools/art/artuse.mjs sees the piece drawn) */
