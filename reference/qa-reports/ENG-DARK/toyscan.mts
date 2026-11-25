@@ -23,6 +23,6 @@ for (let seed = a; seed <= (b ?? a); seed++) {
   const rims = g.map((s) => s.replace(/ at [\d.]+ s$/, ''));
   const twice = rims.some((x, i) => rims.indexOf(x) !== i);
   const u: string[] = r.dark?.unlit ?? [];
-  console.log(seed, planted ? 'plant' : 'base ', 'crossed', r.dark?.crossed, 'unlit', u.length, 'worst', worst(u), 'gaveUp', g.length, twice ? 'SAME RIM TWICE' : '', JSON.stringify(g).slice(0, 160), JSON.stringify(u.slice(0, 2)).slice(0, 200));
+  console.log(seed, planted ? 'plant' : 'base ', 'crossed', r.dark?.crossed, 'unlit', u.length, 'worst', worst(u), 'loop', r.dark?.loop, 'edgeTurns', r.dark?.edgeTurns.length, JSON.stringify(r.dark?.edgeTurns.slice(0, 2)), 'gaveUp', g.length, twice ? 'SAME RIM TWICE' : '', JSON.stringify(g).slice(0, 160), JSON.stringify(u.slice(0, 2)).slice(0, 200));
   }
 }

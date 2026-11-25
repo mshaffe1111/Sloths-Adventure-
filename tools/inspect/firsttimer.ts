@@ -78,7 +78,10 @@ import type { FollowPlay } from '../../src/game/followPlay.ts';
 import { bucketAngle } from '../../src/game/wheel.ts';
 import { WHEEL_FLOWN } from '../../src/game/gen2/wheelFlights.data.ts';
 import { flownKey } from '../../src/game/gen2/wheelLay.ts';
-import { DARK_AHEAD, darkRims, litAhead, RimWatch, type DarkRim } from '../../src/game/gen2/dark.ts';
+import { DARK_AHEAD, darkRims, litAhead, RimWatch, type DarkRim, type RimCrossing } from '../../src/game/gen2/dark.ts';
+/** the most times he went over one rim in the dark (climbs not counted; FTRun.dark.loop): a walk back and forth over one rim (ENG-DARK box 12,
+ *  the seam toy's record: since RimWatch reads a grounded step over a seam as on the piece, the loop shows here, lit or not) */
+const rimLoop = (cs: readonly RimCrossing[]) => Math.max(0, ...[...cs.filter((c) => !c.climbed).reduce((m, c) => m.set(c.rim, (m.get(c.rim) ?? 0) + 1), new Map<DarkRim, number>()).values()]);
 
 /**
  * The bot's clock-read skill (METER-2a, R-165.272; METER-COVERAGE §2a "read a stage clock", board + step-off half). A toy test switches
@@ -841,7 +844,7 @@ export interface FTRun {
    *  before he went ('every gap lit 1 s ahead', litAhead's names; empty: GREEN), and each stop he waited out GLOW_GIVEUP s unlit (the rim
    *  and when he gave up; a give-up lasts the visit, so a rim waited out on two visits is named twice); `climbed`: rims he passed on a
    *  climb (a trunk grab past the end: RimCrossing.climbed, its own kind; `crossed` counts the ones he went over) */
-  dark?: { crossed: number; climbed: number; unlit: string[]; gaveUp: string[] };
+  dark?: { crossed: number; climbed: number; unlit: string[]; gaveUp: string[]; edgeTurns: string[]; loop: number };
   /** the spur stones he stood on (a spur pond's dead-end stone, RiverZone.spur: OUT-AND-BACK, FIX-22) */
   spurs?: number;
   /** times a log carried him under a bank and he stepped up onto it, never in the air between (engine.ts drift loop; SKILLS.handed) */
@@ -1289,6 +1292,9 @@ export class FirstTimerRun {
   private readonly glowGaveUp = new Set<DarkRim>();
   /** each stop waited out unlit: the rim and the time (FTRun.dark.gaveUp) */
   readonly glowGiveUps: string[] = [];
+  /** each dark stop's turn press made nearer the rim than its turn room, min(GLOW_TURN_ROOM, half the piece) (FTRun.dark.edgeTurns:
+   *  the press that turns him also moves him, so a press there can carry him off; ENG-DARK box 12, the turn-room toy's record) */
+  readonly glowEdgeTurns: string[] = [];
   /** the dark's rim crossings of this run (gen2/dark.ts RimWatch; null: no lit dark on the stage): FTRun.dark reads them */
   rimWatch: RimWatch | null | undefined;
   private swingT = 0;
@@ -3405,6 +3411,7 @@ export class FirstTimerRun {
               if (Math.abs(p.vx) > 5) return {};
             }
             stop.turn = 1;
+            if ((rim.x - p.x) * rim.dir < Math.min(GLOW_TURN_ROOM, rim.piece.width / 2)) this.glowEdgeTurns.push(`the rim at x ${rim.x}, y ${Math.round(rim.y)}, ${Math.round((rim.x - p.x) * rim.dir)} px in at ${e.gameTime.toFixed(2)} s`);
             return rim.dir > 0 ? { right: true } : { left: true };
           }
           if (stop.turn === 1) {
@@ -4639,7 +4646,7 @@ export function firstTimer(id: string, seed: number, who: FirstTimer, opts: RunO
     ...(who.holdQ ? { secondPressMs: run.secondPressMs, maxX: Math.round(run.maxX), far: Math.round(run.farOn), xTrace: run.xTrace } : {}),
     ...(run.sim.e.cast ? { cast: castTally({ cast: run.sim.e.cast, player0: run.start }, run.knows('trap')) } : {}),
     ...(run.turnBacks ? { turnBacks: run.turnBacks } : {}),
-    ...(run.rimWatch ? { dark: { crossed: run.rimWatch.crossings.filter((c) => !c.climbed).length, climbed: run.rimWatch.crossings.filter((c) => c.climbed).length, unlit: litAhead(run.rimWatch.crossings, who.setting), gaveUp: run.glowGiveUps } } : {}),
+    ...(run.rimWatch ? { dark: { crossed: run.rimWatch.crossings.filter((c) => !c.climbed).length, climbed: run.rimWatch.crossings.filter((c) => c.climbed).length, unlit: litAhead(run.rimWatch.crossings, who.setting), gaveUp: run.glowGiveUps, edgeTurns: run.glowEdgeTurns, loop: rimLoop(run.rimWatch.crossings) } } : {}),
     ms: Date.now() - t0,
   };
   out.flags = flagsFor(out);
