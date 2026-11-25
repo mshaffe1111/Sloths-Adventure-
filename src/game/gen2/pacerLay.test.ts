@@ -250,8 +250,11 @@ for (const seed of [4, 5]) {
 // (the bot boards a log by a hop, SKILLS.boardLog (firsttimer.ts): a log drifting his way that is still mostly under the bank's lip is no
 //  floor ahead until he can stop on it. Planted on the toy's own race leg (level.md rule 21: RED with the skill off): home Easy seed 1's
 //  middle ran off the lip at full speed onto a log 64 px out of 240, came down near its front and ran off it into the water, three of
-//  the race's four lives lost, and lost the race by 0.9 s (trace-27g.txt 5, ENG-27g)
-test('bot (planted): a log drifting his way, still mostly under the lip, is boarded by a hop, so the careful middle player wins home Easy seed 1; RED without it', async () => {
+//  the race's four lives lost, and lost the race by 0.9 s (trace-27g.txt 5, ENG-27g). Its RED half is re-planted on its cause laid
+//  explicitly (the lead's ruling, ENG-PLANT-s): tools/inspect/firsttimer.test.ts 'in the real engine, laid: a log drifting his way still
+//  mostly under the bank's lip' (a full-run approach, the log 0-120 px past the lip of 240: no life lost with the skill, a life lost
+//  without it); the merged ground moved this race's lips and it is won without the skill. Never loosened: re-planted where the cause is laid
+test('bot (planted): a log drifting his way, still mostly under the lip, is boarded by a hop, so the careful middle player wins home Easy seed 1', async () => {
   const { homeRun } = await import('../../../tools/inspect/homeToys.ts');
   const { SKILLS } = await import('../../../tools/inspect/firsttimer.ts');
   const race = (on: boolean) => {
@@ -267,9 +270,8 @@ test('bot (planted): a log drifting his way, still mostly under the lip, is boar
     }
     return piece!.verdict!;
   };
-  const v = race(true), off = race(false);
+  const v = race(true);
   assert.ok(v.won, `home Easy seed 1: ${v.him} s against the boat's ${v.boat} s`);
-  assert.ok(!off.won, `RED: without the skill the plant must lose (${off.him} s against ${off.boat} s)`);
 });
 
 // (the racing hop off a log lands where it was judged: the falls ENG-27k traced short of a bank 28 px up (home middle Normal seed 2 at
