@@ -1,4 +1,47 @@
-# ENG-PLANT-CI: the 9 CI-tool-line reds on c27 (session 11 written 3:42 PM ET 11-25 by `date`; sessions 10 to 1 below it)
+# ENG-PLANT-CI: the 9 CI-tool-line reds on c27 (session 11 hand-over written 3:46 PM ET 11-25 by `date`; sessions 10 to 1 below it)
+
+## EXACT NEXT STEP (session 12). FINAL HEAD = 4db1da8aa (bot code = CI-14 bfbe09494; the re-plants 6bffbfa7b are test-only). The lead ACCEPTED CI-14, the moved-rows table and the re-plants; the two named items (log run-end floor read; lianaWait's single mid lag) are filed after release 4 with dropWaits.
+0. ReadNotifications. Freeze 4db1da8aa (`git worktree add --detach <dir> 4db1da8aa`, node_modules symlinked, `chattr -R +i <dir>/src
+   <dir>/tools`, `chattr -R -i <dir>/src/game/gen2/proven`, D115). Every run with run_in_background and timeout 7200000; never a shell '&'.
+1. DONE on frozen 4db1da8aa in session 11 (see FINAL CHECKS RECORDED below): tsc clean; the wide sample (**FAILS the bar**); 2-7 x40.
+   **BLOCKER, the lead rules first:** the wide sample has 4 BAR PASS -> FAIL vs MAIN (2-1 kid Easy 10, 2-1 kid Normal 2 and 10, 2-2 kid
+   Normal 4) and 7 vs c27 (those 4 + 2-1 kid Normal 7, 2-2 kid Normal 6 and 8); all 4 vs main PASS on c27 too, so NEW with the CI work
+   (CI-1 .. CI-14), not inherited. Not traced (session 11 stopped at the 300k line). To do (rule 28, D132): run the 7 rows (castBots
+   --stage <st> --bots kid --setting <s> --seeds <n> --rows) on frozen CI-10 8134a9a56, CI-11 4cccba33e, CI-12 a2a5582c6, CI-13 0e0c4e284,
+   CI-14 bfbe09494 (and c27's base if CI-10 already fails) to find the step that flips each; then ci-tools/s9-rows + s11-d1.py on that
+   pair: where it parts, the press there, what took him. A bot fault: fix where it lives with a toy each way; then the wide sample again.
+2. LEFT, once each on that frozen tree, at most two heavy runs at a time:
+   (a) the CI tool line (.github/workflows/gates.yml line 157; it runs the 4 files riverRide, lianaRide, hopJudged incl. the CI-11/12/13/14
+       toys, firsttimer): 0 fail, and each of the 4 files' results named;
+   (b) pacerLay: `npx tsx --test src/game/gen2/pacerLay.test.ts`: 23/23;
+   (c) the 10 races: margins.mts (`git show origin/release-0.10.3-wip-plant-c-report:reference/qa-reports/ENG-PLANT/tools/margins.mts.txt`,
+       run `npx tsx margins.mts <tree>`): every race WON, the margins listed;
+   (d) the known flips: ci-tools/set1-m.sh.txt on the tree, then `python3 ci-tools/cmp3.py.txt <c27 set1> data/ci/set1-ci14 <new set1>`
+       (c27's set1: `git archive origin/release-0.10.3-wip-plant-c-report reference/qa-reports/ENG-PLANT/data/q/set1-c27 | tar -x`):
+       must equal set1-ci14 row for row (the bot code is the same), = c27 except the traced rows in SESSION 11 STATE;
+   (e) tierBots: `npx tsx --test tools/inspect/tierBots.test.ts`: 9/9.
+3. Record each in this file, push release-0.10.3-wip-plant-ci, `git ls-remote`, send the lead the hash and one line per check. Do NOT
+   merge into release-0.10.3.
+
+## FINAL CHECKS RECORDED (session 11, frozen 4db1da8aa = the final bot code; evidence data/ci/fin/)
+- **tsc:** clean (exit 0, no output; fin/tsc.txt).
+- **The wide sample** (castBots --par 2 --rows, seeds 1-10, every bot, both settings, 2-1 / 2-2 / 2-4, 270 rows; fin/wide-*.jsonl;
+  compare ci-tools/s11-widecmp.py.txt): **FAILS the bar.** vs MAIN (cdffdc627, unmoved since; its rows data/c/main-*.jsonl on the
+  c-report branch): **4 BAR PASS -> FAIL**: 2-1 kid Easy 10 (PASS 139.4 r0 -> FAIL 152.8 r1), 2-1 kid Normal 2 (140.5 r0 -> 171.8 r1),
+  2-1 kid Normal 10 (150.7 r0 -> 156.4 r1), 2-2 kid Normal 4 (139.4 r0 -> 163 r1); 24 FAIL -> PASS; 269 of 270 rows moved (the release
+  branch's engine and bots vs main). vs c27 (data/q/c27-*-w10.jsonl; the file's header still says 'vs main'): 7 PASS -> FAIL (those 4 +
+  2-1 kid Normal 7, 2-2 kid Normal 6 and 8), 10 FAIL -> PASS. All 4 vs main PASS on c27 (137.8 / 153.9 / 167.7 / 161 r0): new with
+  CI-1 .. CI-14. NOT traced (the 300k line): see the EXACT NEXT STEP's blocker.
+- **2-7 x40** (castBots --stage 2-7 --seeds 1-40 --setting both --par 2; fin/x40-*): **31/40** seeds with adult, child, middle and expert
+  all PASS both settings, no rescue (the bar's count: c27's was 33/40; >= 29 met, 2 fewer than c27). With the kid too: 4/40
+  (--proven: [2, 8, 9, 28]). Per tier: kid N 11/40, kid E 27/40, adult N 39 E 40, child N 35 E 38, middle N 39 E 39, expert N 40 (no expert Easy cast row; all in
+  fin/x40-summary.txt). Not compared row for row with c27's x40 (not run).
+- Not run in session 11: the CI tool line (incl. the 4 files), pacerLay, the 10 races, the known flips on 4db1da8aa, tierBots.
+Lessons applied: D115 (frozen trees for every verdict, probes on unfrozen copies), D119 (commit messages from files), D128 (stamps from
+`date`), D132 (the wide sample vs MAIN, which found the 4), D133 (one candidate, one toy), D134 (pushed and ls-remote'd before the
+hand-over), D135 (the 4 not called inherited: checked against c27, they are new), D137/D138 (stopped at the lead's word; the hand-over
+ends new work), rule 28, law 22 (no test weakened: the CI-14 toy is new; 'honest aim''s thumb made louder, both RED halves proved).
+One slip, corrected: two toy runs were first started with a shell '&' (stopped and re-run as separate background runs).
 
 ## SESSION 11 STATE. Code: CI-14 bfbe09494 (padRead's latch) + the re-plants 6bffbfa7b (tests only). Final checks: see FINAL CHECKS below.
 **Step 1, the moved rows (rule 28), all narrowed.** Each code step changes one branch, so each first parting is at it (git diff:

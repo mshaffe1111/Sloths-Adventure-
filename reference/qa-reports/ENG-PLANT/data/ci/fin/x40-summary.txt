@@ -1,0 +1,10 @@
+proven: 4 of 40 seeds (every bot passes, none under 120 s) -> /tmp/claude-0/-home-user-Sloths-Adventure-/701e4
+kid    normal PASS 11/40; under the floor 0; time median 166.2 s (min 142.4); hits 0 lives 233 (water 233); cl
+kid    easy   PASS 27/40; under the floor 0; time median 141.7 s (min 125.6); hits 0 lives 0 (none); cleared n
+adult  normal PASS 39/40; under the floor 0; time median 146.1 s (min 138.2); hits 0 lives 7 (water 7); cleare
+adult  easy   PASS 40/40; under the floor 0; time median 151.4 s (min 141.2); hits 0 lives 0 (none); cleared n
+child  normal PASS 35/40; under the floor 0; time median 388 s (min 318.8); hits 0 lives 61 (water 61); cleare
+child  easy   PASS 38/40; under the floor 0; time median 267 s (min 229.6); hits 0 lives 0 (none); cleared non
+middle normal PASS 39/40; under the floor 0; time median 196.2 s (min 174.5); hits 0 lives 37 (water 37); clea
+middle easy   PASS 39/40; under the floor 0; time median 185.8 s (min 175.8); hits 0 lives 0 (none); cleared n
+expert normal PASS 40/40; under the floor 0; time median 167.5 s (min 149.1); hits 0 lives 16 (water 16); clea
