@@ -1,25 +1,49 @@
 # ENG-29 REPORT: 2-9's NEW 1 (the court's tempo) and NEW 2 (the drum you hear), built ahead (R-165.449)
 
-## EXACT NEXT STEP (session 2 hand-over, 2:18 PM ET; NEW 1 (c) and the resume toy DONE; NEW 2 (b)'s pure schedule DONE; all pushed)
-Re-fetch t-eng-29-wip first. The lead's answer on the drum (2-9.md:74): GAME TIME (built so: drum.ts DrumSchedule). Then, in order:
-1. NEW 2 (b), the wiring (the schedule itself is done and proven, see Session 2): (a) conductor.ts: a `drumBus` GainNode to the sfx bus and
-   `drumTick(beat: DrumBeat, gameNow, doubled = false)`: `const r = this.drum.step(beat, gameNow, core.ctx.currentTime, doubled)`; each cue `(c.kind === 'boom' ? taiko : woodblock)(core, this.drumBus, c.at, vel)` (instruments.ts:509, :447;
-   never fx()); on `r.cut` or `drumHold(gameNow)` returning true: fade the bus out in ~20 ms, disconnect it, make a new one (the cut hits
-   never sound). Guard every call for no audio core (headless). TRAP: the conductor takes a DrumBeat ({ beats, beat }) the ENGINE computes
-   (tempo.ts tempoBeat); never import src/game/tempo.ts into src/audio (it pulls river/physics/wheel into the audio chunk: chunkplan/chunkcheck).
-   (b) src/game/audio.ts facade: `sound.drumTick(beat, gameNow, doubled?)`, `sound.drumHold(g)`.
-   (c) engine.ts: after `this.clock.step(dt)` (:1806) `if (stage.tempo) sound.drumTick(tempo, easy, this.gameTime)`; in the `if (this.down)`
-   branch (:1802) the same call (game time stands: the backstop); and where a life is lost (where `this.down` is set) `sound.drumHold(this.gameTime)`
-   (the toy 'without the engine's hold' shows why the hold must come from the engine). No stage id, seed or x (generalitycheck). (d) Tests:
-   an engine toy on the tempo row (tempoResume.test.ts's runToy) with a spy on `sound` (drumTick called every step with the engine's
-   gameTime, drumHold on a life lost, never on a stage with no tempo); a tempo stage raises no heroNoise 'drum' Sound. (e) The on-frame
-   RED is still owed: model a late frame (two steps in one audio moment) and show a drum scheduled at the step that passes the beat lands a
-   frame+ late while DrumSchedule's lookahead does not (or name it for READY-29).
-2. Step 4: lockall (no listed stage moves: `court` is a new W2_RIVERS row no listed stage names), tsc, the suite shards + the CI tool line
-   ONCE on the frozen head. Push; hash to the lead. Then the 1b merge the lead names, the planted toys re-run on it, and only then the bots.
+## EXACT NEXT STEP (session 3 hand-over; NEW 2 WIRED (the drum you hear), the gates on the frozen head below; all pushed)
+Re-fetch t-eng-29-wip first. Then, in order:
+1. The 1b merge: merge the release-4 hash the lead names (it brings the bot fix: pacerLay 23/23) into t-eng-29-wip (no force); resolve by
+   hand; tsc. Re-run the planted toys on the merge: tempo.test, tempoToy.test, tempoResume.test, drum.test, drumBus.test, drumEngine.test
+   (each GREEN, and each planted RED still RED). Then lockall against the merge's own base and the suite shards + the CI tool line once:
+   pacerLay must now be 23/23 (any red is a stop).
+2. Only then packet step 3: the bots on 2-9.
 STILL OPEN (name for READY-29 if not done): (a) the LOCKED let-go window (2-9.md:21: 2.00 s Normal, 2.40 s Easy): lianaDrops judges every
 relative phase, not the locked one alone; (b) 2-9.md:21's 'river 5 frames ahead of the swing; Easy 0': TempoSpec has one `lock`; (c) the
-twist's `doubled` has no data path yet (DrumSchedule takes it; nothing lays a twist cue).
+twist's `doubled` has no data path yet (DrumSchedule and drumTick take it; nothing lays a twist cue, the engine passes none); (d) the drum
+is only heard on the real page: no listening check yet (a clip of 2-9's court with sound, both settings, for the lead's ear); (e) hitstop
+and the boss's slow motion step game time slower than the audio clock for a moment: the hits already ahead (at most 3 frames) sound a
+little early there; 2-9 has no hitstop or slow motion on the court today.
+
+## Session 3 (ENG-29-c), NEW 2 (b): the drum WIRED, on the audio clock (9b60aeac0)
+- src/audio/conductor.ts: `drumTick(beat, gameNow, doubled?)` and `drumHold(gameNow)`; a `drumBus` GainNode (0.55) to the effects bus;
+  each cue `(boom ? taiko : woodblock)(core, bus, at, boom 0.9 / tok 0.6)` (instruments.ts, never fx()). A cut (game time stands or goes
+  back, or the engine's hold): the bus fades to 0 in 20 ms, is let go (disconnected 80 ms on) and the next hit gets a new bus, so the
+  cut hits never sound. No core (headless), muted, or the context not running: nothing (the schedule starts again from game time, a
+  jump, never a burst). The conductor takes the ENGINE's DrumBeat: nothing in src/audio imports the game.
+- src/game/audio.ts: `sound.drumTick`, `sound.drumHold` (type-only import of DrumBeat).
+- src/game/engine.ts: `drumStep()` (the stage's tempo -> its beat on this run's setting via tempo.ts tempoBeat, made once per tempo)
+  after `this.clock.step(dt)` and in the `if (this.down)` branch after stepDown (game time standing: the backstop); `sound.drumHold(gameTime)`
+  in loseLife where the down is set, on a stage with a tempo. No stage id, seed or x (generalitycheck PASS, 26 literals, 26 known).
+- drum.ts, two fixes the on-frame model found: (1) DRUM_AHEAD 2 -> 3 frames: the loop (engine.ts) catches a late frame up in up to
+  THREE steps in one audio moment, so a 2-frame stall's hits were never on the audio clock before it (they sounded up to 16.7 ms late);
+  the down's drumHold cuts what is ahead, so the longer lookahead never sounds through a lost life. (2) the clocks' distance (audio less
+  game time) is the least over the last DRUM_ANCHOR = 4 running steps, not the step alone: a late frame's first catch-up step sees game
+  time a frame behind the audio clock, and a hit entering the lookahead then was anchored a frame late. Reset on a stand, a back, a jump
+  and a hold.
+- Tests (all GREEN; each RED planted and seen RED, then removed):
+  - drum.test.ts 7/7: the new 'late frames' test, a minute of the real loop (a late frame every 7 or every 3 frames, 1 then 2 frames
+    late, in turn), both settings: every hit within 1 ms of its beat, every beat 1-59 s once. RED by name: ON THE FRAME (the step that passes
+    the beat: 'the hit at game x s sounds y ms late', the worst a frame or more); anchored on the step alone; two frames ahead.
+  - drumBus.test.ts 3/3 (new): the conductor on a fake core: one bus to the effects bus, every hit at its beat on the audio clock, ONE the
+    boom; the hold fades the bus in 20 ms and lets it go; through the down nothing; after it, a NEW bus and every hit on a beat of the new
+    distance. Headless / muted / suspended: nothing, nothing thrown. The layering: no value import of ../game/ and no tempo.ts in src/audio
+    (RED planted: `import { tempoBeat } from '../game/tempo.ts'` in drum.ts names 'drum.ts').
+  - drumEngine.test.ts 2/2 (new): the toy's real row in the real engine with a spy on `sound`: 120 steps, a drumTick each with the engine's
+    gameTime and the court's Normal beat (0.7125 s); loseLife('pit'): drumHold once at that game time; 10 down steps: drumTick each, game
+    time standing; no heroNoise 'drum'. 1-1 (no tempo): no drumTick, no drumHold, a life lost included. RED planted: the hold removed;
+    the down-branch call removed (each fails the first test).
+- The chunk: BASE_PATH build + chunkcheck PASS; the drum's code is in assets/audio-*.js (99,927 B) and tempo.ts's code ('whole number of
+  beats') is in assets/oldgen-*.js, not the audio chunk.
 
 ## Session 2 (ENG-29-b), NEW 1 (c): the toy on a REAL row (level.md rule 23) and two checks the tempo lacked
 - src/game/gen2/worlds/w2TempoToy.ts (the row; world data, generalitycheck exempt): 2-4's kit cut to its arrival, first drop and drop-ride-drop
@@ -73,7 +97,9 @@ Three files conflicted, each resolved by hand:
    beside the fixes' CAGE_SKILL, `vineReaches()`, `under()` and the cage move. No line of either side dropped.
 3. tools/inspect/lineBot.test.ts (2 hunks): the import takes both sides' names (FT_CHILD and ROAD_TRIPS); both sides' appended tests kept
    (no duplicate top-level names).
-tsc on the merge: clean. The suite (6 shards, frozen worktree): running.
+tsc on the merge: clean. The suite (6 shards, frozen worktree) on the merge 791735cfa: 4,199 tests, 4,193 pass, 3 fail = pacerLay rows
+{8, 22, 23} = R-165.439's base set (release 4's bot fix makes pacerLay 23/23; the 1b merge brings it). (The record as the lead
+gave it; the 3 more of 4,199 that are neither pass nor fail were not broken out.)
 
 ## NEW 1 so far (session 1)
 - (a) cb6610802: src/game/tempo.ts, the pure check `tempoFaults(st, tempo, easy)`: rivers (a log every whole number of beats, each log's knock
