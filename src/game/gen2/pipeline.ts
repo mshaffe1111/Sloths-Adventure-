@@ -26,7 +26,7 @@ import { APEX, BANDS, bounceLipOverCap, CAP_UP, gapEnvelope, judgedOnArcs, linkA
 import { classify, headroomOf, judgeRoll, NOT_JUDGED_ALL, TAUGHT, verdictLines, type Judged11, type RouteAsk } from './verdicts.ts';
 import { PROMISES_11, realFalls } from './promises11.ts';
 import { gapCatchY, localExtent, reflectLocal, routeAt, routeOf, storeyLimit, TOWER, towerCatches, towerFalls, towerFlagBreaches, towerFlags, towerGates, stopVines, towerHandOns, towerLids, towerSkips, towerVaults, towerVineCuts, vertical } from './tower.ts';
-import { CLIMB_CLEAR } from '../vineTop.ts';
+import { CLIMB_CLEAR, climbX } from '../vineTop.ts';
 import { LAND_IN, repairLandings } from './landings.ts';
 import { findW1Pits } from '../w1Pits.ts';
 import type { Drop, JudgedStage } from './verdicts.types.ts';
@@ -3290,11 +3290,7 @@ export { CLIMB_CLEAR };
  * 2026-10-29). The vault off the vine's top still lands on the bough.
  */
 export function clearClimbs(vines: Vine[], platforms: readonly Platform[]): void {
-  for (const v of vines) {
-    if (v.vineType !== 'tree_climb') continue;
-    const face = platforms.find((p) => p.type === 'solid' && Math.abs(p.y - v.topY) <= 2 && (Math.abs(p.x - v.x) <= 2 || Math.abs(p.x + p.width - v.x) <= 2));
-    if (face) v.x += Math.abs(face.x - v.x) <= 2 ? -CLIMB_CLEAR : CLIMB_CLEAR;
-  }
+  for (const v of vines) v.x = climbX(v, platforms);
 }
 
 /** a stage id's place in the game ('5-7' -> 507), for lessons taught by an earlier stage */
