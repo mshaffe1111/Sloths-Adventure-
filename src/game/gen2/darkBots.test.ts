@@ -37,9 +37,12 @@ test("the dark's skill REMOVED (noGlowWait, rule 21's plant): he walks off into 
 test("the dark's skill holds a running JUMP too: the expert's jump into the dark waits for the landing's light (GREEN; planted: glowJump removed)", async () => {
   // (castBots x40 on 653bb970: the expert went over the rim at the right end of a piece with its landing dark, the jump pressed 94 px
   //  out, just past GLOW_NEAR; this roll's first 85 s hold that jump)
+  // (ENG-DARK box 13: on the final lay roll 12's first 85 s no longer hold it; box 12's scan (scan-box12-jump.txt, plant 13 on rolls 1-40)
+  //  found it on real rows again, the earliest the expert Easy roll 2: the jump over the rim at the right end of 225-484 at 22.97 s with its
+  //  landing dark; unplanted, the first 26 s go over 4 dark rims, every one lit. A REAL row, not a shape toy)
   if (readied !== DRAFT) readyDraft(DRAFT);
   const { firstTimer, FT_EXPERT } = await import('../../../tools/inspect/firsttimer.ts');
-  const r = firstTimer(DRAFT, 12, FT_EXPERT, { cap: 85 });
+  const r = firstTimer(DRAFT, 2, { ...FT_EXPERT, setting: 'easy' }, { cap: 26 });
   assert.ok(r.dark && r.dark.crossed >= 3, `he went over dark rims (${r.dark?.crossed})`);
   assert.deepEqual(r.dark.unlit, []);
 });
@@ -101,10 +104,35 @@ test("the dark's stop reads the THUMB: the KID's held steer that carries him tow
   // (castBots x40 on ef811c2a, unlit cause 3: the KID Normal landed on a piece steering left in the air, meant to stand (intended {}),
   //  and his thumb's late lift-off, re-armed every frame (R-165.59), ran him 90 px left over the dark rim at its left end at 73.90 s with
   //  its landing dark: the route said right, so glowWait never looked left. This roll's first 80 s hold that run, as castBots plays it)
+  // (ENG-DARK box 13: on the final lay no run of rolls 1-40 is carried by the thumb at a dark rim his route turns from (plant 16 changed
+  //  no run), so the toy is hand-built on the draft's first sleeping rim: the KID on roll 1, its light held asleep until 0.5 s, is stood
+  //  200 px in from it and steers at it; at 130 px out he means to stand (intended {}, glowWait read first, as intend reads it) until 4 s,
+  //  then his own plan; his late lift-off re-arms every frame and carries him on; planted, it carries him over that rim with its landing dark)
   if (readied !== DRAFT) readyDraft(DRAFT);
   const { firstTimer, FT_KID } = await import('../../../tools/inspect/firsttimer.ts');
-  const r = firstTimer(DRAFT, 16, { ...FT_KID, setting: 'normal' }, { cap: 80, dotSetting: true });
-  assert.ok(r.dark && r.dark.crossed >= 3, `he went over dark rims (${r.dark?.crossed})`);
+  const { darkRims } = await import('./dark.ts');
+  type Bot = { sim: { p: { x: number } }; intend(): object; glowWait(d: number): object | null };
+  let rim: ReturnType<typeof darkRims>[number] | undefined, stood = false, meant = -1;
+  const r = firstTimer(DRAFT, 1, { ...FT_KID, setting: 'normal' }, { cap: 12, dotSetting: true, onFrame(sim, b) {
+    rim ??= darkRims(sim.stage as Parameters<typeof darkRims>[0]).find((q) => q.light?.sleep);
+    assert.ok(rim?.light?.id !== undefined, 'the draft has a sleeping rim');
+    if (!stood) (sim.e as unknown as { glowWake: Map<number, number> }).glowWake.delete(rim.light.id);
+    if (stood || sim.e.gameTime <= 0.5) return;
+    stood = true;
+    const at = rim, bot = b as Bot, intend = bot.intend;
+    sim.stand(at.x - at.dir * 200, at.y);
+    sim.p.facing = at.dir;
+    sim.p.vx = 0;
+    bot.intend = function (this: Bot) {
+      if (sim.e.gameTime > 4) return intend.call(this);
+      const out = (at.x - this.sim.p.x) * at.dir;
+      if (meant < 0 && out > 130) return at.dir > 0 ? { right: true } : { left: true };
+      if (meant < 0) meant = Math.round(out);
+      return this.glowWait(0) ?? {};
+    };
+  } });
+  assert.ok(meant > 0, `he meant to stand on the rim's piece (${meant} px out)`);
+  assert.ok(r.dark && r.dark.crossed >= 1, `he went over dark rims (${r.dark?.crossed})`);
   assert.deepEqual(r.dark.unlit, []);
 });
 
@@ -113,10 +141,29 @@ test("the way down a trunk he stands beside MID-WAY: the child takes it with up 
   //  281 px over his feet, the way on down it to the floor and the shrine. The way-down plan pressed DOWN there (it asked only that the top
   //  be at or above his feet; the engine climbs down from the ground only at a vine's very top), and he held it 20 s to a strand at
   //  295.9 s; with the top asked both ways alone the route's point under him turned him at the trunk until stranded. The whole run)
+  // (ENG-DARK box 13: on the final lay castRun child Easy 25 reaches the shrine with either plant, so the toy is hand-built: the child
+  //  Easy on roll 1 is placed (placeAt: the route's progress and the checkpoint follow) at 0.5 s 10 px beside the deepest trunk that runs
+  //  past a ledge mid-way, its top above his feet (277 px on this lay), the way on down it to the shrine; GREEN he takes it with up, climbs
+  //  down and reaches the shrine in 20 s with no rescue; with either plant he stands at the trunk until rescued (shrine at 24.6-29.6 s))
   if (readied !== DRAFT) readyDraft(DRAFT);
-  const { castRun } = await import('../../../tools/inspect/castBots.ts');
-  const r = castRun('child', 'easy', DRAFT, 25);
-  assert.equal(r.end, 'shrine', `the child Easy roll 25 reaches the shrine (${r.end} at ${r.time})`);
+  const { firstTimer, FT_CHILD } = await import('../../../tools/inspect/firsttimer.ts');
+  type Spot = { x: number; y: number; top: number };
+  let spot: Spot | undefined, placed = false, climbed = 0;
+  const r = firstTimer(DRAFT, 1, { ...FT_CHILD, setting: 'easy' }, { cap: 20, onFrame(sim, b) {
+    if (placed) { if (sim.p.climbing) climbed++; return; }
+    if (sim.e.gameTime <= 0.5) return;
+    const vines = (sim.e as unknown as { vines: Array<{ vineType: string; x: number; topY: number; bottomY: number }> }).vines;
+    for (const v of vines) if (v.vineType === 'tree_climb') for (const q of sim.platforms)
+      if (q.x <= v.x && v.x <= q.x + q.width && v.topY < q.y - 14 && v.bottomY > q.y + 60 && (!spot || q.y > spot.y)) spot = { x: v.x, y: q.y, top: v.topY };
+    assert.ok(spot, 'the draft has a trunk that runs past a ledge mid-way');
+    (b as { placeAt(x: number, y: number): void }).placeAt(spot.x + 10, spot.y);
+    sim.p.vx = 0;
+    placed = true;
+  } });
+  assert.ok(spot && spot.y - spot.top > 14, `the trunk's top stands above his feet (${spot && spot.y - spot.top} px)`);
+  assert.ok(climbed > 0, 'he took the trunk');
+  assert.equal(r.end, 'shrine', `the child Easy reaches the shrine (${r.end} at ${r.time})`);
+  assert.deepEqual(r.stuck.map((q) => q.what), [], 'no rescue on the way down');
 });
 
 /** roll 32's seam: a way-on point under a 35 px gap between two pieces at his height (79-332 and 367-547 on this lay) he walks over */
