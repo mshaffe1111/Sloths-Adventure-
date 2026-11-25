@@ -52,7 +52,12 @@ NEXT, IN ORDER: 1e the strand verdict (session 2's plan below). SESSION 3 FOUND,
    ONE shape change: W2_FORK_RIVERS.low = {dir 1, speed 0, logW 0, logs 0, safe, flood 'close', marsh {width 1400, floor 60, dips 4, dip
    100}} (2-8.md:9) and three up / three down, treads >= 400 (W stands on the near bank; today's gap 60 + porch 500 + porch2 400 = 960 px over
    the water ends 440 px short of a 1,400 marsh's far bank (it overhangs ride's 798 by 162), so the marsh cannot land alone); w2TwoRoad.test to it; check w2Finish lays no second river over it
-   (hasRiver, w2.ts:411). Then the stills (condition 4), the probe (6 tiers x late 0/15/19 x seeds 1-3, both settings), 1b, READY-28.
+   (hasRiver, w2.ts:411). 1d READ (session 3, w2.ts:200-207): W is `on` near at [1, 1] (flush on the bank's end; set it back 60, check
+   gen2's 'on' placement for how `at` reads), the porch `over` near at past(gap), the rise `on` porch at [1, 1], porch2 `over` near at
+   past(gap + porch). Treads >= 400 with three up (W, rise1, rise2) and three down (rise2, rise1, the porch to the far bank): the porch's
+   tread 400 + rise1 1,200 (400 | rise2 400 | 400) + its far tread 400 = 2,000 px of porch from the water's edge, 600 past a 1,400 marsh:
+   wider than today's far bank (320), so `far` must grow (strandFaults reads the ground past the porch's end) or the porch end sooner;
+   the design's numbers (2-8.md:9) decide. Then the stills (condition 4), the probe (6 tiers x late 0/15/19 x seeds 1-3, both settings), 1b, READY-28.
 SESSION 3 NOTES. Lessons applied: D115 (frozen trees /home/user/wtw2c-c1..c3, -pre), D119, D128 (times from date), D134 (pushed and
 ls-remote before the hand-over), session 2's lesson (the whole touched set GREEN before the push: two test-design misses in my own new
 assertions, caught on the frozen run and fixed before any push: the take-off read from the first air frame, and 'paddled' alone cannot tell
