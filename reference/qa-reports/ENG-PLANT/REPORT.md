@@ -5,8 +5,8 @@ Data: data/r/. Tools: tools/rowframes-r.mts.txt (row-frames at castBots' cap 120
 lip-r.mts.txt, racesure-r.mts.txt (pacerLay :280's two rows, raceSure on vs off, a path hash).
 
 ## EXACT NEXT STEP (session 17)
-0. Setup as session 15's item 0 (rep worktree; fz-c27 = 1e4b50a1d frozen, node_modules symlinked). The code changes go in the main
-   checkout (unfrozen), committed on release-0.10.3-wip-plant-c (a fast-forward on c27), then a new frozen tree of that head for the runs.
+0. Setup as session 15's item 0 (rep worktree; node_modules symlinked). The head is now **d742d0469**: check out the main checkout there
+   (the toys go in it, committed on release-0.10.3-wip-plant-c as fast-forwards), and freeze a tree of the FINAL head for ruling 4's runs.
 1. **THE LEAD'S RULINGS (received this session, word for word):**
    "1. child N 13 = the lip family (cluster A): ACCEPTED, named. Thank you for correcting session 14's misread.
    2. raceSure: if your on-vs-off run confirms on == off on the path hash for the :280 rows, raceSure is DEAD code behind floatSure. Matt's
@@ -35,6 +35,9 @@ lip-r.mts.txt, racesure-r.mts.txt (pacerLay :280's two rows, raceSure on vs off,
    ccca3d305, c24 = 2a2c44786 (their commit messages name each rule and row). TRAP for the deletion: grep every `SKILLS.floatSure = false`
    (toys whose RED half turns floatSure off may have flown the else-if's old race hop); the lead's item 4 says the deletion changes no
    behaviour, so every such RED half must still go red the same way, or stop and tell the lead.
+   (Session 16 checked it: no test sets floatSure off.) c23's and c24's fixes have no skill flag of their own to turn off (c24's hold is in
+   firsttimer.ts at '(the run-up's jump, SKILLS.runUp: held at least as long as runPress judged it'; SKILLS.runUp turns off the whole
+   run-up): a toy needs its fix switchable alone, as every planted skill is (a SKILLS flag, on by default), named in its commit.
 4. Every item of ruling 4 green: MERGE (ruling 5).
 
 ## Item 1: child Normal 13 on c27, rule 28 (the castBots run itself)
@@ -68,7 +71,7 @@ those x with the shipped bot); (b) another bar the lead names. My recommendation
 | timecheck | PASS (611 commits, 93 stamps; full history, after the unshallow) |
 | roadmapcheck | PASS |
 | tierBots 9/9 | **PASS 9/9** (fz-c27, data/r/tierbots-c27.out) |
-| the CI tool line (43 files; includes riverRide, firsttimer, hopJudged and the packet's plants: riverRide :119 ride, :165 handed, :266 upstream, :282 bankUp; firsttimer :150/:185 boardHop, :218 fromTakeoff) | IN FLIGHT (94 ok, 0 not ok so far) |
+| the CI tool line (43 files; includes riverRide, firsttimer, hopJudged and the packet's plants: riverRide :119 ride, :165 handed, :266 upstream, :282 bankUp; firsttimer :150/:185 boardHop, :218 fromTakeoff) | IN FLIGHT on fz-c27 (94 ok, 0 not ok when session 16 handed over; session 16 appends the result when it finishes, a running gate finished only, D137). Ruling 4 runs it again on the final head |
 | the toys for c23-c27 | c25 (firsttimer :312), c26 (riverRide :449), c27 (hopJudged's last two): in the CI line. **c23 and c24: NEVER BUILT** (ordered in session 8's item 5: 'a toy for each of c23's and c24's rules: the pull-back skipped on a small log he pauses on; the run-up's jump held as judged'; ccca3d305 / 2a2c44786 touch no test). Their rows (2-1 child E 2, 2-4 child N 8) PASS in the known flips (BAR 12/12) but no toy is RED on c22/c23 and GREEN on c23/c24 |
 
 Lessons applied: D115 (every run on chattr-frozen fz-c27; tools in /home/user/tl), D119 (commit messages from a file), D128 (stamps from
