@@ -1,19 +1,16 @@
 # SIDEWALL-FIX (R-165.440): the two invisible walls on shipped stages, drawn as their colliders
 
-EXACT NEXT STEP (hand-over at the 28-minute box, head below; code is DONE and pushed, the PROOF is not):
-1. AFTER stills: `cd <a frozen worktree of this branch's head> && node reference/qa-reports/SIDEWALL-FIX/tools/sw2.mjs <out>/shots-after 5242`
-   (dev server + Playwright, 844x390 and 390x844, Normal and Easy via localStorage sloth_difficulty, 1-6 layout 0 at x 27896 close/wide,
-   8-1 layout 0 = seed 38747 at x 1466 close/top/wide; about 15 min; the main set took 900 s and was cut by its timeout only AFTER it
-   wrote all 20 shots and boxes.json). If this container still has it, /tmp/claude-0/.../scratchpad/shots-after may already be whole.
-   Then `python3 reference/qa-reports/SIDEWALL-FIX/tools/pairs.py <dir holding shots-before and shots-after> reference/qa-reports/SIDEWALL-FIX/pairs`
-   (before | after | after with the collider in magenta); copy before/ there as shots-before. LOOK at every pair (polish bar: the post
-   stands on the floor, its shaft where he stops, the branch over its top; 8-1's face and lip reach the pit's edge). Fix anything rough.
-2. lockall, each run once on FROZEN trees (D115): on origin/main cdffdc62 `npx tsx tools/engine/lockall.ts --layouts 16 --out lock-main.json`,
-   on this head `--check lock-main.json` (no --intended): expect EVERY stage unchanged (drawing only).
-3. paintcheck, all three parts (`--part 0/3`, `1/3`, `2/3`, about 18 min together; run in background): expect PASS with ZERO side-wall
-   lines (no known list was added).
-4. tsc, the CI tool line (gates.yml rolled, the 'library.test.ts ...' line) once on the final head; the unit suite in 3 shards. Then
-   fill "Gates" and "Polish check" below, push, ls-remote, report to the lead.
+EXACT NEXT STEP (hand-over 2, at the context cap; code head 29cc04d4):
+1. THE LEAD RULES ON 8-1 (finding below): the sliver merge is in, but it changes NO pixels, and the check now reads 8-1 GREEN on a look
+   that did not change. Choose: (a) a painter fix: the bank end's face (groundPaint.ts endFace: the end piece's own face profile, which
+   sits 14-25 px INSIDE the collider on 8-1's World 8 ends) moved out so its outermost point meets the collider at the lip. That changes
+   EVERY bank end in every world: Content/Engine with stills of each world's ends; or (b) a narrower rule for 8-1. Until the ruling, the
+   check's 'joined' pass is NOT proof: sideWall.ts must not count 'joined' as drawn until the face meets the collider (either make
+   narrowLook's 'joined' conditional on a painter that reaches the edge, or drop 'joined' from the drawn set so 8-1 is RED again).
+2. 1-6 is DONE in the look (after/1-6-*.png, crops/1-6-post-close-after.png, crops/1-6-both-posts-after.png): the lead judges it.
+   The before stills of the second post (x 45995) were still shooting at hand-over (scratchpad post2-before; tools/sw3.mjs on main).
+3. Then lockall check (main's lock was being written at hand-over in this container: scratchpad lock-main.json; if gone, re-run on a
+   frozen tree of cdffdc62 with `--out`), `--check` on this head; paintcheck 3 parts; the CI tool line; the suite. Push, ls-remote.
 
 Engine member, branch t-fix-sidewall cut from origin/main cdffdc62. Drawing only: no layout code was touched.
 
@@ -45,6 +42,22 @@ RED; 60 wide GREEN) still passes unchanged. Test 2 (new): with the drawer's deci
 Normal and Easy) are RED; with it, GREEN; every caught 1-6 block is a post whose drawn shaft covers its collider (no more than 12 px
 fatter) with its root pad on the floor; 8-1's sliver is no bank of its own and the merged bank's face stands at the collider's edge.
 2/2 pass (d096f933).
+
+## Hand-over 2 findings (the after stills)
+- 1-6, first try (d096f933): the post was HIDDEN. 1-6's stair (ids 130-132 at x 28053) is drawn by drawCutArt as a w1-cut boulder 503 x 166
+  world units, about 200 px past its own collider into the trough, after the post (a one-frame draw log on the real page, tools/trace in
+  the scratchpad). That boulder is the "backdrop boulder" TOOLS saw. Fix (29cc04d4): the post is drawn LAST in drawProtoScene (after the
+  cut pieces and rocks), starting under what rests on it (the branch's underside, 874), so it never paints over the branch. After
+  stills (after/): it stands on the floor, vine-wrapped, shaft about the collider's width, under the branch, both posts, upright and
+  sideways. It reads as a support post. NOTE: the cut boulder drawn 200 px past its collider is a separate look-vs-collider mismatch
+  (art where nothing is solid). He walks in front of it, so it is not a wall, but it is worth an R-number.
+- 8-1: the before and after pixels in the collider strip are IDENTICAL (every column, all shots). The baked ground chunks draw this bank,
+  and the merged bank's right end at 1480 paints the same as the sliver's own end did: the end face follows the end piece's profile
+  (groundPaint.ts endFace), which on World 8 sits 14-25 px inside the end x below the lip (crops/8-1-face-inset-after.png: the face and
+  its moss curtain end left of the collider; the strip shows pit). So the gap is the painter's end-face inset, on EVERY bank end, and the
+  sliver only made it 14 px worse. The merge is right in principle (one bank, not two) but fixes nothing on screen.
+- The check: sideWall.ts skips a 'joined' sliver as drawn, so paintcheck would read 8-1 GREEN with the look unchanged. That is a false
+  green; it must not be taken as proof (step 1).
 
 ## Status
 - Code head 002161a1 (pushed). Planted test 2/2; tsc 0; generalitycheck PASS; knowncheck PASS; artUse + art inventory + manifest/preload
