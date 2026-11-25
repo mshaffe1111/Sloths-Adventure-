@@ -251,6 +251,28 @@ test("the seam run's end picked by his facing (seamByFacing, the plant): turned 
   assert.ok(Math.max(r.dark.loop, worstRim(r.dark.unlit)) >= 8, `one rim gone over again and again (the most over one rim: ${r.dark.loop})`);
 });
 
+/** roll 15's run by the wall (ENG-DARK box 16): the expert on Normal runs off 10758 at full speed, carries past the piece the way drops
+ *  onto (842-1080, y 11039) and lands on 826-1280 (y 11320), wood that runs on to the right side wall, the shrine 347 px straight under
+ *  it. The way on never comes out past that run, so downEnd read no end and he stood over the shrine turning until stranded (child and
+ *  middle on Normal 15 and Easy 27 the same); he steps off the run's open end (826) */
+async function wall15(noOpenEnd: boolean) {
+  if (readied !== DRAFT) readyDraft(DRAFT);
+  const { firstTimer } = await import('../../../tools/inspect/firsttimer.ts');
+  const { CAST_BOTS } = await import('../../../tools/inspect/castBots.ts');
+  return firstTimer(DRAFT, 15, { ...CAST_BOTS.expert.normal!, noOpenEnd }, { cap: 200 });
+}
+
+test("the way on straight under a run that ends at a side wall: on Normal roll 15 the expert steps off its open end and reaches the shrine (GREEN; planted: noOpenEnd)", async () => {
+  const r = await wall15(false);
+  assert.equal(r.end, 'shrine', `he reached the shrine (${r.end} at ${r.time}; ${JSON.stringify(r.stuck.slice(-2).map((s) => s.what))})`);
+  assert.ok(!r.stuck.some((s) => /fell back down/.test(s.what)), `never fell back down again and again (${JSON.stringify(r.stuck.map((s) => s.what))})`);
+});
+
+test("no end picked under that run (noOpenEnd, the plant): the expert stands over the shrine by roll 15's right wall until stranded (RED)", async () => {
+  const r = await wall15(true);
+  assert.notEqual(r.end, 'shrine', `stranded by the wall (${r.end} at ${r.time})`);
+});
+
 /** (ENG-DARK box 12) the turn-room stop, hand-built: on the final lay no bot's own run (middle Normal, rolls 1-40) stops facing away at a
  *  rim's very edge, so he is STOOD there: the middle on Normal roll 1, at 0.5 s set standing 2 px in from the draft's first sleeping rim,
  *  facing away from it, its landing dark (asleepRim, box 14); the run then plays on (12 s). Box 10's real case: roll 16 x 920 on the lay before the second

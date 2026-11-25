@@ -86,6 +86,10 @@ PLANTS = [
     ("the seam run's end by his facing (downEnd)", 'tools/inspect/firsttimer.ts',
      '      if (this.who.seamByFacing) return this.sim.p.facing < 0 ? -1 : 1;', '      return this.sim.p.facing < 0 ? -1 : 1;',
      'the way on under a seam run comes out past its far end', 'src/game/gen2/darkBots.test.ts'),
+    # (ENG-DARK box 16) no end of his run picked when the way on lies straight under it (roll 15 expert N: stranded by the right wall)
+    ("no open end picked under a run with the way on under it (downEnd)", 'tools/inspect/firsttimer.ts',
+     '    const wayOn = this.who.noOpenEnd ? null : this.downPt(p);', '    const wayOn = null as Pt | null;',
+     'the way on straight under a run that ends at a side wall', 'src/game/gen2/darkBots.test.ts'),
     # (ENG-DARK box 14) the RUNNING step off: the verdict, the lay that lights it, and the bot's stop at a lit edge whose run meets a rim
     ("darkLandings asks nothing of a running step off ((iii) off)", 'src/game/gen2/dark.ts',
      '    if (stops) continue;\n    out.push(', '    if (stops || true) continue;\n    out.push(', 'a RUN off a rim with no stop is judged where it lands'),
