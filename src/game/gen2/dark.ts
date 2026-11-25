@@ -223,8 +223,8 @@ export function entryPieces(platforms: readonly Platform[], box: { x0: number; x
  *   - the cave mouth: a rim of a piece he reaches from outside the dark (entryPieces) has the light over its landing (the one the
  *     verdicts read) awake (the lead's ruling (ii), 11-25);
  *   - a RUN off a rim where no stop applies (outside the dark, or its landing's light awake) comes down far out at full speed: each
- *     dark rim of the piece it lands on, the way he runs, nearer his stopping distance (Easy's, the longer) than the touchdown, unless
- *     the awake light over the rim he left reaches it, has its light awake too, and so on from the rims that wakes (darkLandings' (iii),
+ *     dark rim of the piece it lands on, the way he runs, nearer his stopping distance (Easy's, the longer) than the touchdown, has
+ *     its light awake too, and so on from the rims that wakes (darkLandings' (iii),
  *     runOffs; ENG-DARK box 14).
  */
 export function awakeLights(platforms: readonly Platform[], z: Zone): Set<Light> {
@@ -381,14 +381,14 @@ export function darkLandings(stage: { platforms: readonly Platform[]; zones?: re
 /**
  * Every RUN off a rim where no stop applies (outside the dark; or in it with its landing's light awake, or with no landing in the box:
  * the bot's stop and the player's are only where that light sleeps, glowWait) that comes down nearer than `stop` to a sleeping dark rim
- * the way he runs: he runs off at full speed and touches down far out (runOnto), not a body's width out, and slides on. Passes when the
- * awake light over the rim he left reaches that rim's edge. (ENG-DARK box 14: the 3-1 trial ran off a ledge at 268 px/s, flew 92 px
+ * the way he runs: he runs off at full speed and touches down far out (runOnto), not a body's width out, and slides on: only that
+ * rim's own landing light awake is fair (the lay's, awakeLights). (ENG-DARK box 14: the 3-1 trial ran off a ledge at 268 px/s, flew 92 px
  * and landed 7 px from a sleeping rim.) One entry per (rim left, rim met).
  */
 function runOffs(platforms: readonly Platform[], rims: readonly DarkRim[], ends: ReadonlyArray<{ piece: Platform; dir: -1 | 1; x: number }>, stop: number) {
   const out: Array<{ u: { piece: Platform; dir: -1 | 1; x: number }; ud: DarkRim | undefined; n: DarkRim; run: { on: Platform; x: number }; room: number }> = [];
   for (const u of ends) {
-    // (an edge in two overlapping darks is a rim of each: a stop applies if any of its landings' lights sleeps; any awake one shows)
+    // (an edge in two overlapping darks is a rim of each: a stop applies if any of its landings' lights sleeps)
     const uds = rims.filter((m) => m.piece === u.piece && m.dir === u.dir);
     if (uds.some((m) => m.light?.sleep)) continue;
     const run = runOnto(platforms, u.piece, u.dir);
@@ -396,7 +396,10 @@ function runOffs(platforms: readonly Platform[], rims: readonly DarkRim[], ends:
     for (const n of rims) {
       if (n.piece !== run.on || n.dir !== u.dir || !n.light?.sleep) continue;
       const room = (n.x - run.x) * n.dir;
-      if (room >= stop || uds.some((m) => m.light && Math.hypot(m.light.x - n.x, m.light.y - n.y) <= m.light.r)) continue;
+      // (no pass for an awake light over the rim he left that shows this edge: touching down this near it at a run he cannot stop
+      //  however well he sees it (roll 1 adult Normal: touched down 10 px from x 673, y 3850 under the lit landing of x 556, went over
+      //  it dark); only this rim's own landing light awake is fair, the lay's (awakeLights))
+      if (room >= stop) continue;
       out.push({ u, ud: uds[0], n, run, room });
     }
   }
