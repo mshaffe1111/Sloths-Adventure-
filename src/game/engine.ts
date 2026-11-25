@@ -112,7 +112,7 @@ import { driftCycle, driftProgress, driftX, floodLevel, lianasOver, logClock, lo
 import { GLOW_SHOWN, letGoLands, letGoTable, type LetGoTable } from './letGoCue.ts';
 import { heard, NOISE } from './noise.ts';
 import { mayRegrow, regrowDelay } from './regrow.ts';
-import { zoneEffect, windPush, zoneDrag, columnHit, inZone, ventLift, drowsyLevel, drowsySpeed, drowsyJump, GLOW_STILL, GLOW_REACH } from './zones.ts';
+import { zoneEffect, windPush, zoneDrag, columnHit, inZone, ventLift, drowsyLevel, drowsySpeed, drowsyJump, GLOW_STILL, GLOW_REACH, glowReaches } from './zones.ts';
 import { drawGlowworm, drawThornVine, drawW3Decor, drawW3Fern, drawW3Piece, GLOWWORM_H, w3FernHeight } from './w3Art.ts';
 import { inReach, VINE, vinePeriod, vinePhase, vineSees } from './thornVine.ts';
 import { drawAbyss, drawLandingShadow, W4Play } from './w4Play.ts';
@@ -2021,7 +2021,8 @@ export class GameEngine {
       let want = 0;
       for (const z of zones ?? []) {
         if (z.kind !== 'dark') continue;
-        const out = Math.max(z.x0 - p.x, p.x - z.x1, 0);
+        // (by its box, up and down too: a dark stretch in a shaft darkens its own storeys, not every storey over and under it; ENG-DARK)
+        const out = Math.max(z.x0 - p.x, p.x - z.x1, z.top - p.y, p.y - z.bottom, 0);
         want = Math.max(want, Math.max(0, 1 - out / 220));
       }
       if (this.lanternRun) want = this.lanternRun.night();
@@ -9213,7 +9214,7 @@ export class GameEngine {
         }
       }
     }
-    const dark = (zones ?? []).filter((z) => z.kind === 'dark' && z.lights?.some((l) => l.sleep) && p.x >= z.x0 - 120 && p.x <= z.x1 + 120);
+    const dark = (zones ?? []).filter((z) => z.kind === 'dark' && z.lights?.some((l) => l.sleep) && p.x >= z.x0 - 120 && p.x <= z.x1 + 120 && p.y >= z.top - 120 && p.y <= z.bottom + 120);
     if (!dark.length) {
       this.glowStill = 0;
       return;
@@ -9225,8 +9226,9 @@ export class GameEngine {
     for (const z of dark) {
       for (const l of z.lights!) {
         if (!l.sleep || l.id === undefined || this.glowWake.has(l.id)) continue;
-        if (l.x < p.x - GLOW_REACH.back || l.x > p.x + GLOW_REACH.ahead) continue;
-        this.glowWake.set(l.id, this.gameTime + Math.max(0, l.x - p.x) / GLOW_REACH.speed);
+        // (in reach ahead and behind, and up and down from his feet: zones.ts glowReaches, ENG-DARK)
+        if (!glowReaches(l, p.x, p.y, p.facing)) continue;
+        this.glowWake.set(l.id, this.gameTime + Math.max(0, (l.x - p.x) * (p.facing < 0 ? -1 : 1)) / GLOW_REACH.speed);
         woke++;
       }
     }

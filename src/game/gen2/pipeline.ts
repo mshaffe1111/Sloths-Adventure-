@@ -53,7 +53,7 @@ import { sweepBox } from '../wheel.ts';
 const WHEEL_RIDER = 96;
 import type { ClockDef } from '../stageKit.types.ts';
 import type { RiverZone } from '../river.ts';
-import { CRUMBLE_TILE_W, crumbleTime, tideCrossTime, type Zone } from '../zones.ts';
+import { CRUMBLE_TILE_W, crumbleTime, keepsClear, tideCrossTime, type Zone } from '../zones.ts';
 import { creakLimb, needless } from './creak.ts';
 import { layChase } from './chaseLay.ts';
 import { rollsOf } from './rollLay.ts';
@@ -3830,8 +3830,8 @@ export function fillSockets(laid: Laid, budget: StageBudget, kit: WorldKit, seed
 }
 
 /** levelCheck's zone rules: an animal inside a zone's box (30 px either side, 60 below), a flag inside it */
-const foeInZone = (zones: readonly Zone[], x: number, y: number) => zones.some((z) => x > z.x0 - 30 && x < z.x1 + 30 && y > z.top && y < z.bottom + 60);
-const flagInZone = (zones: readonly Zone[], x: number, y: number) => zones.some((z) => x >= z.x0 - 1 && x <= z.x1 + 1 && y > z.top && y < z.bottom);
+const foeInZone = (zones: readonly Zone[], x: number, y: number) => zones.some((z) => keepsClear(z) && x > z.x0 - 30 && x < z.x1 + 30 && y > z.top && y < z.bottom + 60);
+const flagInZone = (zones: readonly Zone[], x: number, y: number) => zones.some((z) => keepsClear(z) && x >= z.x0 - 1 && x <= z.x1 + 1 && y > z.top && y < z.bottom);
 
 /** the quota items a section's node asks for, shared out among the node's sections in turn */
 function graphObjectives(laid: Laid, sec: PlacedSection): number {

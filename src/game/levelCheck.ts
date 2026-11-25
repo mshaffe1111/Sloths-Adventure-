@@ -24,7 +24,7 @@ import { checkRooms, kitSolved, type KitWall } from './puzzleCheck.ts';
 import { hopLimit, lianasOver, lianasOverLogs, onRiver } from './river.ts';
 import { logCatches } from './gen2/riverLay.ts';
 import { skillGuaranteedAt, skillHeldAt } from './skills.ts';
-import { idleTime, isDamaging, sporeClearTime, SPORE_CLEAR_MIN, isStatic, tideCrossTime, CRUMBLE_TILE_W, CRUMBLE_RUN_MAX, CRUMBLE_STEP } from './zones.ts';
+import { idleTime, isDamaging, sporeClearTime, SPORE_CLEAR_MIN, isStatic, keepsClear, tideCrossTime, CRUMBLE_TILE_W, CRUMBLE_RUN_MAX, CRUMBLE_STEP } from './zones.ts';
 import {
   PHYS,
   SAFE,
@@ -1141,10 +1141,10 @@ function validateStageOn(stage: GeneratedStage, opts: CheckOptions): CheckResult
     }
     if (z.active > 3.0) errors.push(`${at}: stays active ${z.active}s, longer than a player should have to wait`);
     if (z.kind === 'wind' && z.force > 160) errors.push(`${at}: gust of ${z.force} px/s is too strong`);
-    for (const e of stage.enemies) {
+    for (const e of keepsClear(z) ? stage.enemies : []) {
       if (e.x > z.x0 - 30 && e.x < z.x1 + 30 && e.y > (isDamaging(z) ? z.baseY - 150 : z.top) && e.y < z.bottom + 60) errors.push(`enemy #${e.id} stands inside the ${at}`);
     }
-    for (const c of stage.checkpoints ?? []) {
+    for (const c of keepsClear(z) ? stage.checkpoints ?? [] : []) {
       if (c.x > z.x0 && c.x < z.x1 && c.y > z.top && c.y < z.bottom) errors.push(`a checkpoint flag stands inside the ${at}`);
     }
     // every gap the zone covers: a plain jump must cross it, and a headwind must still leave the double jump a way over

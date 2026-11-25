@@ -23,6 +23,7 @@
  * none (castRows: a brief that names no cast lays from the whole list, so no brick of the way down has an animal socket).
  */
 import { G } from '../../protoStage.ts';
+import { DARK_EMIT, DARK_GLOW_PROPS, darkEnds } from '../dark.ts';
 import type { CreatureDef, SectionTemplate, WorldKit, WorldManifest } from '../types.ts';
 import { W1_KIT } from './w1.ts';
 
@@ -100,7 +101,8 @@ export const w3Drops: SectionTemplate = {
   entry: { piece: 'a', kind: 'ledge' },
   exit: { piece: 'c', kind: 'ledge' },
   exitDy: 260,
-  sockets: [{ id: 'petal', role: 'pickup', on: 'b', t: 0.5, dn: 34 }, { id: 'flag', role: 'flag', on: 'c', t: 0.6 }],
+  // (in the dark: a glowworm over every landing, asleep until he stops at a rim; gen2/dark.ts, ENG-DARK)
+  sockets: [...darkEnds('a', 'c', 'glow'), { id: 'petal', role: 'pickup', on: 'b', t: 0.5, dn: 34 }, { id: 'flag', role: 'flag', on: 'c', t: 0.6 }],
   mirrorable: false,
 };
 
@@ -140,7 +142,7 @@ export function w3Manifest(): WorldManifest {
     rollRanges: W1_KIT.rollRanges,
     corridor: { top: G - 260, bottom: G + 60, soft: 80 },
     themeShare: [1, 1],
-    creatures: [...W3_CAST], props: [], pairs: [], decor: [],
+    creatures: [...W3_CAST], props: [...DARK_GLOW_PROPS], pairs: [], decor: [],
     flowers: ['orchid', 'hibiscus'],
     sections: [...W3_DOWN],
     handBuilt: [],
@@ -150,7 +152,7 @@ export function w3Manifest(): WorldManifest {
   };
 }
 
-/** World 3's kit: its manifest, nothing to emit (World 3's dark, glowworms and spores come with their own pieces) */
+/** World 3's kit: its manifest, and the dark's emitters (gen2/dark.ts: the glowworms' stretch; the spores come with their own piece) */
 export function w3World(): WorldKit {
-  return { manifest: w3Manifest(), emit: {} };
+  return { manifest: w3Manifest(), emit: { ...DARK_EMIT } };
 }

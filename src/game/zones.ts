@@ -77,8 +77,28 @@ export const idleTime = (z: Pick<Zone, 'period' | 'warn' | 'active'>) => z.perio
 
 /** World 3: how long Pokey must stand still for the glowworms near him to wake (s) */
 export const GLOW_STILL = 0.7;
-/** World 3: sleeping glowworms this far ahead of him (and a little behind) wake when he stands still, the far ones a moment later */
-export const GLOW_REACH = { back: 260, ahead: 1050, speed: 900, fade: 0.6 } as const;
+/**
+ * World 3: sleeping glowworms this far ahead of him (and a little behind) wake when he stands still, the far ones a moment later; and only
+ * this far UP and DOWN from his feet (ENG-DARK, 3-1.md: read by x alone, a stop at a shaft's rim woke a light 3000 px below and the whole
+ * shaft with it; bounded, a stop wakes the landing under the rim, the next one waits for the next stop)
+ */
+export const GLOW_REACH = { back: 260, ahead: 1050, up: 240, down: 420, speed: 900, fade: 0.6 } as const;
+
+/**
+ * does a stop at (`x`, his feet `feet`), facing `facing`, reach this sleeping light? Ahead is the way he faces (a way down runs both ways
+ * storey by storey); the engine's wake, the dark brick's verdict and the bots' wait all read this one test
+ */
+export function glowReaches(l: { x: number; y: number }, x: number, feet: number, facing: number = 1): boolean {
+  const ahead = (l.x - x) * (facing < 0 ? -1 : 1);
+  return ahead >= -GLOW_REACH.back && ahead <= GLOW_REACH.ahead && l.y >= feet - GLOW_REACH.up && l.y <= feet + GLOW_REACH.down;
+}
+
+/**
+ * may nothing stand inside this zone (a flag, an animal: pipeline flagInZone / foeInZone, levelCheck)? Every zone but the glowworms' dark:
+ * that is a grotto's own air, not a hazard (its lights sleep until he stops; ENG-DARK, the lead's ruling A pending): 3-1's flags and 3-2's
+ * prowlers stand in it. The fireflies' dark (Worlds 6 and 8) keeps the rule, unchanged.
+ */
+export const keepsClear = (z: Pick<Zone, 'kind' | 'lights'>) => !(z.kind === 'dark' && !!z.lights?.some((l) => l.sleep));
 
 /** webs, darkness and crumbling ruins never change: they are simply on */
 export const isStatic = (z: Pick<Zone, 'kind'>) => z.kind === 'web' || z.kind === 'dark' || z.kind === 'crumble';
