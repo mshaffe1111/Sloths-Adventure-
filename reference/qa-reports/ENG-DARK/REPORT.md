@@ -1,5 +1,31 @@
 # ENG-DARK REPORT (the dark + light ring as one gen2 brick; WORLD-3-PLAN F2; R-165.449)
-**EXACT NEXT STEP (ENG-DARK-d, 12:27 PM ET by `date`; code head f68c5ca1 on t-eng-dark-wip = b71163ea + the cause-2 fix + the cause-3 fix):**
+**EXACT NEXT STEP (ENG-DARK-e box 5 hand-over, 12:38 PM ET by `date`; code head d191cb2b on t-eng-dark-wip = f68c5ca1 + (c) the
+'climbed' kind). Box 4 has STOPPED; its x40 on f68c5ca1 is recorded (box 4 item 7: unlit 5, all Easy; shrine 359/360; rescues 1,395 vs
+the base 1,393). The lead's order for box 5 on (word for word in its message): (a) trace child Easy 25's strand, every bot reaches the
+shrine on every roll; (b) the NEW verdict 'a drop's landing is at least his stopping distance from the next dark rim, or that rim is
+already lit when he lands', planted RED on adult Easy 30, fixed in the lay that owns it (the tower's: tell ENG-DOWNBOT-g and the lead);
+(c) RimWatch's own kind 'climbed'; (d) plants (now 18), tierBots, the suite, the CI line on the final head; (e) LAND on t-eng-w3.**
+(c) **DONE at d191cb2b** (box 5 item 5). (a) and (b) are next, in this order:
+(a) **child Easy 25 (box 5 item 6 has the trace so far):** run `GEN2_DRAFT=3-1 npx tsx reference/qa-reports/ENG-DARK/probes/strand.mts
+child easy 25 270` on a frozen d191cb2b and add to the probe, per frame from 275.9 s, the bot's glowStop (rim, since), the route's dir
+and the plan it took (firsttimer.ts glowWait :3331; glowJump; the stuck clock) to name what holds him still 93 px from the right end
+of 1020-1200 (y 11734) for 20 s with gaveUp [] (glowWait gives up at GLOW_GIVEUP 4 s, so it is likely NOT the dark stop itself); and why
+goal is 0 of 1 (the base 1 of 1): which rescue skipped the goal. Fix the cause where it lives (a bot fault: firsttimer; a lay fault: the
+dark brick), a toy RED before / GREEN after, a plant.
+(b) **the verdict `darkLandings` in gen2/dark.ts beside darkGaps (proposed; box 5 item 7 has the numbers):** for every dark rim r whose
+landing is a DROP (landingOf's drop branch: the landing piece q lower than r's piece), and q's end on r's side `dir` is itself a dark
+rim n: his farthest landing xf = r.x + dir * PHYS.maxRun * sqrt(2 h / PHYS.gravDown) (h = q.y - r.y: walked off at full run, steering
+on); RED when (n.x - xf) * dir < STOP_PX and n's light sleeps and is not r's own light and no stand spot on r's piece facing r.dir wakes
+both (glowReaches r.light and n.light). **STOP_PX is a game number: ask the lead before choosing it** (the brake alone, PHYS.maxRun^2 /
+(2 PHYS.groundDec) = 12 px; with a person's reaction at run speed, 0.25 s, about 83 px). Plant it RED on the 3-1 draft's roll 30 Easy
+(the rim at the right end of 61-241, y 2477, the landing 5 px from it at vx 268, box 4 item 5); read the other 4 unlit (child Easy 1, 20,
+23, middle Easy 12: all on pieces 73-249 px wide) against it. The lay fix: if the pair is the dark brick's, glowZone hangs n's
+glowworm where the stop at r wakes it too (the lay's half, like glowFlags); if it is the tower's spacing, tell ENG-DOWNBOT-g and the lead.
+Then: (d) the gates on the FINAL head, (e) LAND (box 4's step (4) below holds the landing procedure). **(b) changes the lay, so the
+5-unlit x40 on f68c5ca1 no longer describes the landing head: ask the lead whether a fresh x40 is owed on the final head.**
+LANDED by 2:30 PM ET; HARD STOP 4:00 PM ET.
+
+**(superseded by box 5's step above; kept for its landing procedure) EXACT NEXT STEP (ENG-DARK-d, 12:27 PM ET by `date`; code head f68c5ca1 on t-eng-dark-wip = b71163ea + the cause-2 fix + the cause-3 fix):**
 (1) **Box 4 fixed unlit causes 2 and 3, both BOT faults (box 4 items 1 and 4).** ef811c2a's x40 is recorded (item 2: unlit 58 -> 13,
 rescues 1,391 vs base 1,393, gaveUp 0, shrine 359/360). **The x40 on a frozen f68c5ca1 is RUNNING in box 4's container (item 7); box 4
 records it; do not re-run it.**
@@ -56,6 +82,24 @@ from box 4's 7b1aa3ba only in ENG-W3/REPORT.md), frozen, never pushed: the landi
    CODE fix (f68c5ca1: firsttimer.ts glowSteer, darkBots toy C on roll 16, plant 16) while its session reads 'causes 3-4'. The lead is
    told; every heavy run here waits for ONE named frozen code head. Plants 15/15 and tierBots 9/9 above do NOT carry to it (they re-run
    once there, with plant 16).
+5. **(c) the 'climbed' kind: DONE (d191cb2b).** gen2/dark.ts: RimCrossing gains `climbed?: true`; RimWatch.step reads the player's
+   `climbing` the frame he passes the rim's end (a trunk grab past it) and records the crossing as kind `climbed`; litAhead skips it.
+   FTRun.dark gains `climbed` (count); `crossed` now counts only the rims he went over. Toy (dark.test): a real 3-1 draft rim, the same
+   pass climbing -> kind 'climbed', litAhead []; as a drop -> 'went over', litAhead RED (GREEN in the edit tree; RimWatch tests 2/2).
+   Plants 17 (RimWatch hides the climb) and 18 (litAhead counts it) added to planted-faults.py, not yet run (with the 18 on the final
+   head). Not yet proved on a live run: that the engine's `climbing` is true on the frame of a trunk snap past a rim (middle Easy 4 on
+   ef811c2a, 112.80 s, is the row: run it on ef811c2a + this change, its unlit should become climbed 1). tsc clean.
+6. **(a) child Easy 25's strand, traced so far (frozen f68c5ca1, probes/strand.mts):** reproduces: stranded 295.9 s, rescues 4, goal 0 of
+   1. **With the dark stop removed (NOWAIT=1: noGlowWait) he reaches the shrine at 278.8 s with 6 rescues: the base row exactly**, so
+   the dark's stops are what changed the run. The end: a rescue at 275.9 s (the stuck clock from 255.9 s at (1110, 11345) 'the way on is
+   131 px down') puts him on 1020-1200 at y 11734; the exit totem is at (1225, 11804) on the floor 0-1280 70 px below; he stands still
+   facing right at x 1107 (93 px from that piece's right end) for 20 s, vx 0, gaveUp [] (so not a waited-out dark stop: glowWait gives
+   up at 4 s and names it); the next rescue finds no route point past him -> 'stranded'. Open: what holds him (next step (a)), and why
+   the goal is 0 of 1.
+7. **(b) numbers for the verdict:** PHYS (physics.ts): maxRun 285, groundDec 3400, gravDown 2500: the brake from full run is 12 px; a
+   287 px drop takes 0.48 s, 137 px of air at full run. Adult Easy 30 (box 4 item 5): dropped from the storey at 2190 steering right,
+   landed at x 236 running vx 268, 5 px from the rim at the right end of 61-241 (y 2477). The 5 unlit on f68c5ca1 are all Easy (needs
+   1.6 s) and all at rims of short pieces: 709-798 (89 px), 821-898 (77), 268-517 (249), 61-241 (180), 772-845 (73).
 
 ## Box 4 (ENG-DARK-d) (start 12:08 PM ET by `date`)
 1. **UNLIT CAUSE 2: the BOT (b), not the wake. FIXED (98992ca5, merged at ef811c2a).** Traced on the real row (child Normal, 3-1 draft
