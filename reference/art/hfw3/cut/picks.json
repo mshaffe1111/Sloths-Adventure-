@@ -94,23 +94,16 @@
   "scene": "roof",
   "root_y": 95
  },
- "roofEnd-s23": {
-  "file": "roofEnd-s23.png",
-  "cpu": 3,
-  "walk": null,
-  "scene": "roofend",
-  "root_y": 68
- },
  "bell-s23": {
   "file": "bell-s23.png",
-  "cpu": 9.46,
+  "cpu": 6.896,
   "walk": null,
   "scene": "bell",
   "world": 2
  },
  "bellSwing-s23": {
   "file": "bellSwing-s23.png",
-  "cpu": 9.46,
+  "cpu": 6.896,
   "walk": null,
   "scene": "bell",
   "world": 2

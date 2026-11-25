@@ -54,7 +54,7 @@ META = {
     'roofRoot': dict(kind='roof root (tile): one thick knobbly root running sideways under a cave roof, rootlets hanging, moss on top; tiles left to right',
                      layer='climb', float_class='hangs (under the roof)', engine_slot='new slot: World 3 roof root (a rope to hang and creep under: drawn along the rope\'s sag, rope.ts)',
                      worlds='USED none | COULD 3 Glow Grotto: the roots under the roof (3-2 beats 1, 3, 9, 10; 3-5, 3-7, 3-9); 6 Deep Mangrove: a root over black water',
-                     no_fit=ROOTFIT, notes=''),
+                     no_fit=ROOTFIT, notes='LAY RULE (the lead 11-25): a roof root runs as this tile alone and ends INTO a wall or off-screen, never in the open (the end piece roofEnd-s23 was judged rough and is not catalogued: two roots at the join, a pale knob like an egg).'),
     'roofEnd': dict(kind='roof root end: the thick root growing out of a knob of grotto rock at the cave roof, rootlets gripping the stone',
                     layer='climb', float_class='hangs (from the roof)', engine_slot='new slot: World 3 roof root end (the rope\'s end in the rock; mirror for the other end)',
                     worlds='USED none | COULD 3 Glow Grotto: a roof root\'s end (3-2, 3-5, 3-7, 3-9); 6 Deep Mangrove: a root into a bank',
@@ -71,7 +71,7 @@ META = {
                       layer='decor near', float_class='grounded', world_best=2, engine_slot='new slot: World 2 court bell, frame 2 (swap with w3-w3a#bell-s23: the same 633x662 box, the arch within 3-5 levels)',
                       worlds='USED none | COULD 2 Sunlit Riverbank: the court bell rung (2-9); 7 Sand-stone Ruins: a temple bell',
                       no_fit='as w3-w3a#bell-s23', notes='Edited from bell-s23; cut to the still\'s box so the frames swap without a jump.'),
-    'bell': dict(kind='court bell: a bronze bell hung on a carved wooden arch, crocodile-head beam ends, teal lashings, gold studs',
+    'bell': dict(kind='court bell: a bronze bell hung on a carved wooden arch, crocodile-head beam ends, teal lashings, gold studs (96 px tall, 1.08 Pokey: the lead 11-25, the signature beat\'s landmark; 2-9.md\'s 70 read small upright)',
                  layer='decor near', float_class='grounded', world_best=2, engine_slot='new slot: World 2 court bell (2-9 beat 11: over the shrine steps\' landing; two frames, still and swung)',
                  worlds='USED none | COULD 2 Sunlit Riverbank: the River King\'s court bell (2-9, DESIGN-29 art 2); 7 Sand-stone Ruins: a temple bell',
                  no_fit='1 nothing made in the home forest; 3 dark grotto; 4 slate and mist; 5 flower garden; 6 mangrove; 8 blue night; 9 lava; 10 iron fortress (iron, not bronze and wood)',
@@ -95,6 +95,8 @@ def row(n, p):
              pokey_scale=f'{H / PU:.2f}', scale_ok='', scale_basis='drawn',
              footing=(f'the top face: walk line y {wy} from x {x0} to {x1} (cut px; {wy / cpu:.0f} world px under the top of the box)'
                       if wy != '' else 'none (not stood on)'))
+    if base_name == 'roofRoot': d['footing'] = ('none (hung from, not stood on). LAY RULE (the lead 11-25): runs as this tile alone and ends INTO a '
+                                             'wall or off-screen, never in the open')
     if base_name in ('bell', 'bellSwing', 'courtFar', 'thornBed', 'thornClump'):
         d['made_thing'] = 'y' if base_name in ('bell', 'bellSwing') else 'n'
         if base_name in ('bell', 'bellSwing'): d['world_best'] = 2
