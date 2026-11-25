@@ -169,21 +169,6 @@ export function darkRims(stage: { platforms: readonly Platform[]; zones?: readon
 function glowZone(out: StageSink, a: { x: number; y: number }, b: { x: number; y: number }): Zone {
   const y0 = Math.min(a.y, b.y), y1 = Math.max(a.y, b.y);
   const z: Zone = { kind: 'dark', x0: Math.round(a.x), x1: Math.round(b.x), top: y0 - DARK_GLOW.above, bottom: y1 + DARK_GLOW.below, baseY: y1, dir: 1, period: 1, warn: 0, active: 1, force: 0, offset: 0, lights: [] };
-  // (a drop INTO the dark is a drop in the dark: the box widens to take in every rim at its height whose step off comes down on a piece
-  //  in it, so that rim gets its own glowworm and its stop; again until none is left out. Its height stays: a rim above the box drops
-  //  further than a stop on it can wake a light over its landing, GLOW_REACH.down)
-  const onIn = (q: Platform) => q.x + q.width >= z.x0 && q.x <= z.x1 && q.y >= z.top && q.y <= z.bottom;
-  for (let grew = true, k = 0; grew && k < 8; k++) {
-    grew = false;
-    for (const u of rimEnds(out.platforms)) {
-      if (u.piece.y < z.top || u.piece.y > z.bottom || inBox(z, u.x, u.piece.y)) continue;
-      const q = stepOnto(out.platforms, u.piece, u.dir);
-      if (!q || !onIn(q)) continue;
-      z.x0 = Math.min(z.x0, Math.floor(u.x));
-      z.x1 = Math.max(z.x1, Math.ceil(u.x));
-      grew = true;
-    }
-  }
   // (the rims are read with a stand-in light that covers everything, so every rim's landing is found; then one glowworm over each landing)
   const probe: Zone = { ...z, lights: [{ x: 0, y: 0, r: 1e9 }] };
   let id = (out.extras[GLOW_ID] as number | undefined) ?? 1;

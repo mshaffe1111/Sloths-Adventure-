@@ -9,19 +9,21 @@ const root = process.cwd();
 await import(path.join(root, 'src/game/headlessDom.ts'));
 const { readyDraft } = await import(path.join(root, 'tools/engine/draft.ts'));
 readyDraft('3-1');
-const { darkLandings, darkRims } = await import(path.join(root, 'src/game/gen2/dark.ts'));
+const { darkLandings, darkRims, darkGaps, darkFlags } = await import(path.join(root, 'src/game/gen2/dark.ts'));
 const { generateStage, setLayoutVariant } = await import(path.join(root, 'src/game/stageGenerator.ts'));
 const { generateAllLevels } = await import(path.join(root, 'src/game/worldsData.ts'));
 const [a, b] = process.argv.slice(2).map(Number);
 const re = /him (-?\d+) px.*?\((normal|easy)\), its light asleep(, the rim he left outside the dark)?: the rim at x (\d+), y (\d+) \((left|right).*?onto the rim at x (\d+), y (\d+)/;
-const tot = { A: 0, B: 0, C: 0 }, rolls = { A: 0, B: 0, C: 0 };
+const tot = { A: 0, B: 0, C: 0, gaps: 0, flags: 0 }, rolls = { A: 0, B: 0, C: 0, gaps: 0, flags: 0 };
 for (let seed = a; seed <= b; seed++) for (const d of ['normal', 'easy'] as const) {
   setLayoutVariant(seed);
   let st: any;
   try { st = generateStage({ ...generateAllLevels().find((c: any) => c.id === '3-1' && !c.secret)!, unlocked: true }, d); } finally { setLayoutVariant(null); }
   const rims = darkRims(st);
   const hits = darkLandings(st, d);
-  const n = { A: hits.length, B: 0, C: 0 };
+  const g = darkGaps(st), fl = darkFlags(st);
+  for (const x of g) console.log(seed, d, 'GAPS', x.slice(0, 150));
+  const n = { A: hits.length, B: 0, C: 0, gaps: g.length, flags: fl.length };
   for (const h of hits) {
     const m = re.exec(h);
     if (!m) { n.B++; n.C++; console.log(seed, d, 'UNPARSED', h.slice(0, 120)); continue; }
@@ -31,6 +33,6 @@ for (let seed = a; seed <= b; seed++) for (const d of ['normal', 'easy'] as cons
     const seen = ud?.light && Math.hypot(ud.light.x - nx, ud.light.y - ny) <= ud.light.r;
     if (!seen) { n.C++; console.log(seed, d, 'C', `u ${ux},${uy} n ${nx},${ny} room ${m[1]}`); }
   }
-  for (const k of ['A', 'B', 'C'] as const) { tot[k] += n[k]; if (n[k]) rolls[k]++; }
+  for (const k of ['A', 'B', 'C', 'gaps', 'flags'] as const) { tot[k] += n[k]; if (n[k]) rolls[k]++; }
 }
 console.log('hits', JSON.stringify(tot), 'rolls named', JSON.stringify(rolls), 'of', (b - a + 1) * 2);

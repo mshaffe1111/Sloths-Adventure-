@@ -1,4 +1,39 @@
 # ENG-DARK REPORT (the dark + light ring as one gen2 brick; WORLD-3-PLAN F2; R-165.449)
+**EXACT NEXT STEP (ENG-DARK-g box 7 hand-over, 1:19 PM ET by `date`; head on t-eng-dark-wip = be91c547 (a) + darkLandings RESTATED, not
+wired; glowZone UNCHANGED from base (the growth is out). Box 8 OWNS EVERY CODE CHANGE. Re-fetch before every commit (D138).)**
+**WAITING ON THE LEAD'S RULING (sent with the numbers): (i)+(ii), (i) alone, or (iii) below. Do not build past it.**
+- darkLandings (gen2/dark.ts) is now box 6's restated model. Helpers: rimEnds, stepOnto, isRim, STEP_OFF 24 (landingOf uses it too).
+  The model: a step off ANY rim (dark or not) onto a dark rim n's piece must land darkStop(setting) from n along n.dir, OR the drop's
+  rim is a dark rim whose stop wakes n's light within its own wait + DARK_AHEAD. A rim outside the dark passes on room only.
+  NOT in any test yet. dark.test 10/10 on this head.
+- **RED as planted:** roll 30 Easy names u 175,2190 onto n 241,2477, room 90 < 149 (the real event).
+- **Measured, rolls 1-40 both settings** (probes/landvar.mts: A = the rule as ruled; B = A's hits whose drop rim is outside every dark
+  box; C = B + dark-rim hits whose target edge lies OUTSIDE the drop rim's own landing light; gaps = darkGaps; flags = darkFlags):
+
+| glowZone | A | B (outside) | C | darkGaps | rolls named A/B/C |
+|---|---|---|---|---|---|
+| base (no growth) | 669 | 581 | 590 | 3 | 80/80/80 |
+| widen x only, height kept (b43526c5) | 1328 | 953 | 1001 | not run | 80/80/80 |
+| widen x + top while the landing light stays within GLOW_REACH.down | 1076 | 2 | 146 | **237 (63 rolls)** | 80/2/56 |
+| widen x + top, unbounded | 1140 | 2 | not run | breaks seed 1 N (dark.test) | 80/2/- |
+
+- **Why growth fails:** widening the box takes in EVERY rim now inside it, not just the one we grew for. The new wall-side rims
+  (x 34-40) and long drops get lights 500-700 px below, which no stop wakes (GLOW_REACH.down 420).
+- **Why A cannot reach 0 without the tower:** a dark rim's step off on the 114 px shelf step lands 90 px from the next rim. That
+  rim's light is about 480 px below the drop rim, out of a stop's reach. This is the tower's ordinary stair. tower.ts is NOT touched.
+**The options put to the lead:**
+- (i) A dark-rim drop passes when n's edge lies inside the drop rim's own landing light: the face-the-rim stop lights the edge he
+  lands toward. Base: 9 dark-rim hits are left; list them with landvar's 'C' lines.
+- (ii) Outside drops: in glowZone, a light over a piece that an outside rim steps onto is laid AWAKE (sleep false). darkLandings and
+  darkGaps already pass awake lights. No cascade, no tower change. It breaks dark.test's pin "every light is a sleeping glowworm",
+  which is a design rule.
+- (iii) Drop the lay rule; the x40's unlit count is the measure.
+**On the ruling:**
+1. Change darkLandings to the ruled model.
+2. Wire darkLandings == [] into dark.test's seeds 1-4 loop. Add a roll-30-Easy test, RED without the fix.
+3. Run landvar 1 40: every column 0, darkGaps 3 or fewer and each one traced.
+4. lockall (only the 3-1 draft may move).
+5. Then box 5's freeze, x40, plants 20+, tierBots, suite and CI line, and the landing.
 **EXACT NEXT STEP (ENG-DARK-f box 6 hand-over, 1:00 PM ET by `date`; code head be91c547 on t-eng-dark-wip = 4527e73f + (a); the
 (b) WIP 84d3bcdb on top: darkLandings written, not wired, the wrong model, below). Box 7 OWNS EVERY CODE CHANGE. Re-fetch before every commit (D138).**
 (a) **DONE, GREEN (be91c547).** The one condition alone was NOT enough (measured): with the top asked both ways he no longer holds down,
