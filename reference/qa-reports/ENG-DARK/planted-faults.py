@@ -37,6 +37,9 @@ PLANTS = [
     # (ENG-DARK-b) the bots' skill removed in the code, not by its flag: the GREEN toy goes RED
     ("the bots' dark stop removed (glowWait never stops him)", 'tools/inspect/firsttimer.ts',
      '    if (this.who.noGlowWait) return null;', '    if (this.who || this.who.noGlowWait) return null;', "the dark's skill: he stands", 'src/game/gen2/darkBots.test.ts'),
+    # (ENG-DARK-c) the stop for a running jump removed: the expert's jump pressed 94 px out goes into the dark again
+    ("the bots' dark stop skips a jump (glowJump not read)", 'tools/inspect/firsttimer.ts',
+     '    if (gj) return gj;', '    void gj;', "holds a running JUMP", 'src/game/gen2/darkBots.test.ts'),
 ]
 missed = 0
 for plant in PLANTS:
