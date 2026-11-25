@@ -5,7 +5,7 @@
 // he walks off is a walk for the line, never a wait (2-8.md:59, Pushback 5).
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { FloodClock, floodFaults, floodSurface, floodTailOff, forkFaults, highRoad, highRoadFaults, type Flood, type FloodWater } from './flood.ts';
+import { FloodClock, floodFaults, floodSurface, floodTailOff, forkFaults, highRoad, highRoadFaults, strandFaults, type Flood, type FloodWater } from './flood.ts';
 import { join, newTrail, record, rejoin, setOnBank, stepLine, wallCap, type Follower } from './follow.ts';
 import { FollowPlay } from './followPlay.ts';
 import type { Platform } from './types.ts';
@@ -302,4 +302,28 @@ test('the high road over a flood is no paddle: his hop between two pieces above 
   assert.equal(g.surf(1200, LIP + 20), LIP, 'GREEN: under the banks the line still paddles');
   const red = mk();
   assert.equal(red.surf(1095, LIP - 90), LIP, 'RED: with no lip the hop\'s arc is snapped down to the deep water');
+});
+
+// THE STRAND VERDICT (BUILD-28 1e, the walk-off model, carry 0): a marsh toy 1,400 px wide (its floor 60 under the banks), W set back 60
+// from the water on the near bank, a porch from the water's edge to the far bank, two blocks standing on it (three up, three down)
+test('the strand verdict: RED on a top flush on its rise and on W flush on the marsh\'s edge; GREEN on 400 px treads (and, by the walk-off rule, on 80 px ones)', () => {
+  const Y = 800, W0 = 1000, W1 = 2400;
+  const under = (x: number) => (x > W0 && x < W1 ? Y + 60 : Y);
+  const pc = (x: number, w: number, y: number) => ({ x, w, y });
+  const W = pc(W0 - 210, 150, Y - 60), P = pc(W0, W1 - W0, Y - 60);
+  const faults = (...more: Array<{ x: number; w: number; y: number }>) => {
+    const chain = [W, P, ...more];
+    return strandFaults(chain, chain, under, W2_FOLLOW.step);
+  };
+  // (GREEN: 400 px treads, every drop one step of 60)
+  assert.deepEqual(faults(pc(W0 + 100, 1200, Y - 120), pc(W0 + 500, 400, Y - 180)), []);
+  // (the 80 px treads drop 60 each: the walk-off rule passes them; session 1's strand there was a jump past a tread, not reproduced)
+  assert.deepEqual(faults(pc(W0 + 100, 300, Y - 120), pc(W0 + 180, 140, Y - 180)), []);
+  // (RED: the top flush on its rise's near edge, the adult's trace: 120 px off it onto the porch)
+  const flush = faults(pc(W0 + 100, 1200, Y - 120), pc(W0 + 100, 400, Y - 180));
+  assert.equal(flush.length, 1, flush.join('; '));
+  assert.match(flush[0], /left end of the high road's piece at x 1100-1500 the first ground is 120 px down/);
+  // (RED: W flush on the water's edge with the gap over the marsh (today's gen2 fork): his walk off W's lip onto the floor is 120 px)
+  const wFlush = strandFaults([pc(W0 - 150, 150, Y - 60), pc(W0 + 60, W1 - W0 - 60, Y - 60)], [], under, W2_FOLLOW.step);
+  assert.ok(wFlush.some((f) => /right end of the high road's piece at x 850-1000 the first ground is 120 px down/.test(f)), wFlush.join('; '));
 });

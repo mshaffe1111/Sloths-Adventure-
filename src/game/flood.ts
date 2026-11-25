@@ -164,6 +164,26 @@ export function forkFaults(chain: ReadonlyArray<{ x: number; w: number; y: numbe
   return out;
 }
 
+/**
+ * THE STRAND VERDICT (BUILD-28 1e, the walk-off model, carry 0). He can walk off EITHER end of any piece of the high road (traced: the
+ * adult turned back on the top and walked off its near edge), and the line follows him down only a drop of at most its step (follow.ts
+ * record: deeper is a WAIT at the lip, and he goes on alone). So just outside each end of each piece of `chain`, the first ground under it
+ * (a top in `tops` at or below the piece's top, else `under(x)`: the low road's floor or water there, or a bank) lies at most `step` below
+ * the piece's top. By name; empty: fair. Not yet laid by floodLay: it lands with 1d's shape (W set back from the water, porches to the far
+ * bank), as today's W flush on the water's edge fails it.
+ */
+export function strandFaults(chain: ReadonlyArray<{ x: number; w: number; y: number }>, tops: ReadonlyArray<{ x: number; w: number; y: number }>, under: (x: number) => number, step: number): string[] {
+  const out: string[] = [];
+  for (const q of chain) {
+    for (const [x, side] of [[q.x - 1, 'left'], [q.x + q.w + 1, 'right']] as const) {
+      let g = under(x);
+      for (const t of tops) if (t !== q && x >= t.x && x <= t.x + t.w && t.y >= q.y - 0.5 && t.y < g) g = t.y;
+      if (g - q.y > step) out.push(`flood: off the ${side} end of the high road's piece at x ${Math.round(q.x)}-${Math.round(q.x + q.w)} the first ground is ${Math.round(g - q.y)} px down, deeper than the line's ${step} px step: he walks off it and the line waits at its lip (stranded)`);
+    }
+  }
+  return out;
+}
+
 /** the high road itself (highRoadFaults' walk): its pieces in the order he meets them (the bot's way round, lead-the-line), and the faults
  *  by name (empty: walkable) */
 export function highRoad<T extends { x: number; w: number; y: number; h?: number }>(tops: ReadonlyArray<T>, span: { x0: number; x1: number; from: { x: number; y: number }; to: { x: number; y: number } }, step: number, hop: number): { chain: T[]; faults: string[] } {
