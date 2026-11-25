@@ -128,3 +128,6 @@ candidate runs THOSE rows first (minutes), and only then the full table: 3b's 2-
 shipped stage the gate can touch (about a quarter of the full table) before stacking another candidate; eight candidates judged on 10 rows
 alone broke 60 shipped 2-1 rows unseen (11-24). A rule that refuses every path a judge cannot see is wrong until the judge can see them:
 refuse the traced bad case only.
+**Rows that survive a hand-over (ENG-PLANT-m, approved 11-25):** castBots --rows writes nothing until the whole run ends, so a run cut off by a
+hand-over or a usage limit is lost. Run row sets with --json (one row per line) in lanes (tools/wide-m.sh.txt on release-0.10.3-wip-plant-c):
+about 1-2 s a row, every finished row kept.
