@@ -5092,11 +5092,6 @@ export class FirstTimerRun {
     this.nextStop = null;
     if (bonk) { this.jump.bonk = bonk.id; this.jump.bonkDir = bonk.dir; if (bonk.beside) this.jump.bonkUp = true; }
     if (snapFrom !== undefined && snapFrom >= 0) this.jump.snapFrom = snapFrom;
-    // (ENG-PLANT-CI, rule 28, the hop judged is the hop flown: a hop a gate judged off a drifting log is flown as the judge flies it
-    //  (hopFlight reads overSmall for the judged landing only), so in the air he never steers back onto the log he leaves, as a snap
-    //  stone's hop never does. 2-7 home middle Normal 2 (c26 on): padPause judged a double off #49 onto #50 at t 83.97; at t 84.33 overSmall
-    //  read #49 under him past its middle and steered back (right), and he came down on #49's end, traced frame by frame)
-    else if (gate && this.sim.platforms.find((q) => q.id === this.sim.standingOn)?.type === 'drift') this.jump.snapFrom = this.sim.standingOn;
     if (gate) { this.jump.dblAt = gate.dblAt; this.jump.hold2 = gate.hold2; }
     this.flyThumb = gate?.thumb ? { th: gate.thumb, k: 0 } : null;
     if (this.lianaHop) {
