@@ -1,0 +1,50 @@
+// FIX-SOIL-b stills: 1-4 (or any climb) at the start, 1/3 and 2/3 of the way up, on the summit bank, and just under it (the underside)
+import fs from 'node:fs';
+const PWm = await import('/opt/node22/lib/node_modules/playwright/index.js'); const chromium = PWm.chromium ?? PWm.default.chromium;
+const [port, out, diff = 'normal', layout = '1', orient = 'sideways', tag = 'x', stage = '1-4'] = process.argv.slice(2);
+fs.mkdirSync(out, { recursive: true });
+const b = await chromium.launch();
+const E = "(typeof window.__engine === 'function' ? window.__engine() : window.__engine)";
+const vp = orient === 'upright' ? { width: 412, height: 915 } : { width: 915, height: 412 };
+const ctx = await b.newContext({ viewport: vp, deviceScaleFactor: 1 });
+await ctx.addInitScript((d) => { try { localStorage.setItem('sloth_difficulty', d); } catch {} }, diff);
+const p = await ctx.newPage();
+p.on('pageerror', (e) => console.log('ERR', e.message));
+await p.goto(`http://127.0.0.1:${port}/?lessons=off`);
+await p.waitForTimeout(2500);
+await p.evaluate(([s, l]) => window.__play(s, l), [stage, Number(layout)]);
+await p.waitForTimeout(4000);
+await p.waitForFunction((E) => { const e = eval(E); return !!(e && e.currentStage && e.player && e.platforms); }, E, { timeout: 90000 });
+await p.waitForFunction(() => document.documentElement.dataset.hudCard !== '1', null, { timeout: 30000 }).catch(() => {});
+await p.waitForTimeout(2500);
+const info = await p.evaluate((E) => {
+  const e = eval(E); e.isPaused = true;
+  for (const hh of e.currentStage?.proto?.hints ?? []) hh.shown = true;
+  const pb = (q) => (q.height >= 90 || !!q.soil) && !q.push && !q.broken && !q.art && !q.hollow;
+  const banks = e.platforms.filter(pb).sort((a, b) => a.y - b.y);
+  return { seed: e.currentStage.gen2?.seed ?? e.currentStage.proto?.gen2?.seed, top: banks.slice(0, 2).map((q) => ({ id: q.id, x: Math.round(q.x), x1: Math.round(q.x + q.width), y: Math.round(q.y), h: q.height })), start: { x: Math.round(e.player.x), y: Math.round(e.player.y) } };
+}, E);
+console.log(JSON.stringify(info));
+const frame = async (n) => { for (let i = 0; i < n; i++) { await p.evaluate((E) => { const e = eval(E); e.update(1 / 30); e.clearGuide?.(); e.render(); }, E); await p.evaluate(() => new Promise((r) => requestAnimationFrame(() => r(0)))); } };
+await frame(10);
+await p.screenshot({ path: `${out}/${tag}-0start-${diff}-L${layout}-${orient}.jpg`, type: 'jpeg', quality: 82 });
+const place = async (pick) => p.evaluate(([E, pick]) => {
+  const e = eval(E);
+  const pb = (q) => (q.height >= 90 || !!q.soil) && !q.push && !q.broken && !q.art && !q.hollow;
+  const top = e.platforms.filter(pb).sort((a, b) => a.y - b.y)[0];
+  const sy = e.player.spawnY ?? e.currentStage.spawnY;
+  let q;
+  if (pick === 'summit') q = top;
+  else if (pick === 'under') q = e.platforms.filter((q) => q.width >= 60 && !q.broken && q.y > top.y + top.height + 90 && q.y < top.y + top.height + 520).sort((a, b) => Math.abs(a.x + a.width / 2 - (top.x + top.width / 2)) - Math.abs(b.x + b.width / 2 - (top.x + top.width / 2)))[0];
+  else { const ty = sy - (sy - top.y) * pick; q = e.platforms.filter((q) => q.width >= 60 && !q.broken && Math.abs(q.y - ty) < 900).sort((a, b) => Math.abs(a.y - ty) - Math.abs(b.y - ty))[0]; }
+  if (!q) return null;
+  Object.assign(e.player, { x: q.x + q.width / 2 - e.player.width / 2, y: q.y - e.player.height - 2, vx: 0, vy: 0, grounded: false, invincibleTimer: 9 });
+  return { id: q.id, x: Math.round(q.x), y: Math.round(q.y) };
+}, [E, pick]);
+for (const [name, pick] of [['1third', 1 / 3], ['2twothirds', 2 / 3], ['3under', 'under'], ['4summit', 'summit']]) {
+  const at = await place(pick);
+  await frame(45);
+  console.log(`${name}: ${JSON.stringify(at)}`);
+  await p.screenshot({ path: `${out}/${tag}-${name}-${diff}-L${layout}-${orient}.jpg`, type: 'jpeg', quality: 82 });
+}
+await b.close();
