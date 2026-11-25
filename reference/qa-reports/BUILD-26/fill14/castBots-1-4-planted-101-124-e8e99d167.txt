@@ -1,0 +1,14 @@
+14:10:23
+proven: 24 of 24 seeds (every bot passes, none under 100 s) -> /tmp/claude-0/-home-user-Sloths-Adventure-/ab733d37-2afe-5bbe-adb4-13235428449f/scratchpad/out/proven-cand.json
+castBots 1-4, seeds 1-24; the floor 100 s (STAGE-RULES.md:77: a climb, 20 s short)
+kid    normal PASS 24/24; under the floor 0; time median 132.3 s (min 123.8); hits 38 lives 2 (other 40); cleared none; told of traps 0/24; first trap sprung 0/24; traps sprung 0/0; turned back 0; left 0
+kid    easy   PASS 24/24; under the floor 0; time median 124 s (min 119.6); hits 0 lives 0 (none); cleared none; told of traps 0/24; first trap sprung 0/24; traps sprung 0/0; turned back 0; left 0
+adult  normal PASS 24/24; under the floor 0; time median 120.1 s (min 116.5); hits 34 lives 2 (other 36); cleared none; told of traps 0/24; first trap sprung 0/24; traps sprung 0/0; turned back 0; left 0
+adult  easy   PASS 24/24; under the floor 0; time median 111.7 s (min 108.6); hits 0 lives 0 (none); cleared none; told of traps 0/24; first trap sprung 0/24; traps sprung 0/0; turned back 0; left 0
+child  normal PASS 24/24; under the floor 0; time median 207.1 s (min 195.5); hits 28 lives 0 (other 28); cleared none; told of traps 0/24; first trap sprung 0/24; traps sprung 0/0; turned back 0; left 0
+child  easy   PASS 24/24; under the floor 0; time median 163.8 s (min 153.4); hits 0 lives 0 (none); cleared none; told of traps 0/24; first trap sprung 0/24; traps sprung 0/0; turned back 0; left 0
+middle normal PASS 24/24; under the floor 0; time median 142.1 s (min 131.2); hits 44 lives 1 (other 45); cleared none; told of traps 0/24; first trap sprung 0/24; traps sprung 0/0; turned back 0; left 0
+middle easy   PASS 24/24; under the floor 0; time median 131.9 s (min 123.7); hits 0 lives 0 (none); cleared none; told of traps 0/24; first trap sprung 0/24; traps sprung 0/0; turned back 0; left 0
+expert normal PASS 24/24; under the floor 0; time median 130.3 s (min 125.8); hits 28 lives 1 (other 29); cleared none; told of traps 0/24; first trap sprung 0/24; traps sprung 0/0; turned back 0; left 0
+EXIT 0
+14:11:57

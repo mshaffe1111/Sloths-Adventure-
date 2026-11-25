@@ -1,0 +1,6 @@
+== 2-3: origin/t-build-23 66775dabf + 9346f3948's firsttimer.ts hunk only, vs BUILD-23e's committed rows
+rows: committed 360, new 360, compared 360, missing []
+moved: 0
+== 2-5: head c1fe87a6e+ vs BUILD-25d's rows (74b72c84b)
+rows: committed 360, new 360, compared 360, missing []
+moved: 0

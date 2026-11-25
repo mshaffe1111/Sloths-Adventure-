@@ -264,3 +264,46 @@ test('the findings name the rule each breaks', () => {
   assert.equal(f[0].rule, 'opening');
   assert.ok(f.some((x) => x.rule === 'plainWalk' && x.kind === 'stuck'));
 });
+
+test('set down at the same place three times, never getting further (a splash-back costs no life), is a loop: he is put past it', () => {
+  // (ENG-CAGE: 2-3's sinking-pad pond set the kid Normal down at its near bank every 20 s to the 1200 s cap; each relocate wound his
+  //  progress back, so the walk on to the pond counted as progress and no rescue came. Planted: before the rule this run reaches the cap
+  //  at the pond's lip, set down every few seconds)
+  const ground: Platform = { id: 1, x: 0, y: 580, width: 4000, height: 90, type: 'solid' } as Platform;
+  const line = Array.from({ length: 160 }, (_, i) => ({ x: 100 + i * 24, y: 580 }));
+  let downs = 0;
+  const run = new FirstTimerRun('1-1', 1, FT_ADULT, {
+    route: line, cap: 60, onFrame: (sim) => {
+      // (the game's splash-back: reaching x 1500 he is set back down at x 1000, as a pond's near bank does)
+      // (only as he walks in over the lip: the rescue puts him on at about x 1590, past it)
+      if (sim.p.x > 1500 && sim.p.x < 1540 && downs < 12) {
+        downs++;
+        sim.stand(1000, 580);
+      }
+    },
+  });
+  run.sim.bare([ground]);
+  run.sim.stand(100, 580);
+  run.prog.relocate(run.sim.p);
+  run.play();
+  const loop = run.stuck.find((s) => /set down here \d+ times/.test(s.what));
+  assert.ok(loop, `no set-down loop noted (set down ${downs} times): ${JSON.stringify(run.stuck)}`);
+  assert.ok(run.rescues >= 1 && run.sim.p.x > 1700, `put past it: rescues ${run.rescues}, x ${Math.round(run.sim.p.x)}, set down ${downs} times`);
+  assert.ok(downs <= 4, `set down ${downs} times before he was put past (three are a loop)`);
+});
+
+test('floorAt: a branch far under a high river is floor; a top in its water is not (R-165.390, the engine reads water by x AND y, river.ts riverAt)', () => {
+  // (a climb stage: one river high up the stage (surface y 1239) and another at its foot (6348), their windows over the same x; the
+  //  climb's branches between them stand in neither. Read by x alone, every branch under the high river's window was 'under the water':
+  //  no floor under him or ahead, so he jumped 166 px short of a lip and ran off the next lip in the landing's beat, 2-6 kid N 32 and 34)
+  const branch = (id: number, x: number, y: number, width: number) => ({ id, x, y, width, height: 24, type: 'solid' }) as unknown as Platform;
+  const fake = {
+    sim: { stage: { rivers: [{ x0: 681, x1: 1521, surfaceY: 1239 }, { x0: 766, x1: 1526, surfaceY: 6348 }] },
+      platforms: [branch(1, 1333, 3738, 240), branch(2, 900, 1249, 200), branch(3, 900, 6000, 200)] },
+    solid: () => true,
+  };
+  const floorAt = (x: number, y: number, down = 40) => (FirstTimerRun.prototype.floorAt as (this: unknown, x: number, y: number, down?: number) => Platform | null).call(fake, x, y, down);
+  assert.equal(floorAt(1445, 3738)?.id, 1, 'a branch 2,500 px under the high river, over no water of its own, is floor');
+  assert.equal(floorAt(1000, 1249), null, 'a top 10 px under the high river\'s surface is in its water: no floor');
+  assert.equal(floorAt(1000, 6000)?.id, 3, 'a top over the low river\'s surface is floor');
+});

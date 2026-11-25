@@ -1,0 +1,130 @@
+TAP version 13
+# Subtest: the fixture: one deep log river, rolled clean
+ok 1 - the fixture: one deep log river, rolled clean
+  ---
+  duration_ms: 102.925148
+  type: 'test'
+  ...
+# Subtest: middle, normal: rides the logs across the river and reaches the shrine
+ok 2 - middle, normal: rides the logs across the river and reaches the shrine
+  ---
+  duration_ms: 1922.933895
+  type: 'test'
+  ...
+# Subtest: middle, easy: rides the logs across the river and reaches the shrine
+ok 3 - middle, easy: rides the logs across the river and reaches the shrine
+  ---
+  duration_ms: 1616.825863
+  type: 'test'
+  ...
+# Subtest: child, normal: rides the logs across the river and reaches the shrine
+ok 4 - child, normal: rides the logs across the river and reaches the shrine
+  ---
+  duration_ms: 2684.214669
+  type: 'test'
+  ...
+# Subtest: child, easy: rides the logs across the river and reaches the shrine
+ok 5 - child, easy: rides the logs across the river and reaches the shrine
+  ---
+  duration_ms: 1619.767076
+  type: 'test'
+  ...
+# Subtest: planted: with the ride skill off, the middle and child bots drown in the river
+ok 6 - planted: with the ride skill off, the middle and child bots drown in the river
+  ---
+  duration_ms: 4810.286376
+  type: 'test'
+  ...
+# Subtest: middle, normal: against the flow (W2_RIVERS.back), hops log to log off each front end and reaches the shrine
+ok 7 - middle, normal: against the flow (W2_RIVERS.back), hops log to log off each front end and reaches the shrine
+  ---
+  duration_ms: 871.532757
+  type: 'test'
+  ...
+# Subtest: middle, normal: the long log (W2_RIVERS.long, laid deep) rides him in and hands him onto the far bank
+ok 8 - middle, normal: the long log (W2_RIVERS.long, laid deep) rides him in and hands him onto the far bank
+  ---
+  duration_ms: 871.189831
+  type: 'test'
+  ...
+# Subtest: middle, easy: against the flow (W2_RIVERS.back), hops log to log off each front end and reaches the shrine
+ok 9 - middle, easy: against the flow (W2_RIVERS.back), hops log to log off each front end and reaches the shrine
+  ---
+  duration_ms: 869.955169
+  type: 'test'
+  ...
+# Subtest: middle, easy: the long log (W2_RIVERS.long, laid deep) rides him in and hands him onto the far bank
+ok 10 - middle, easy: the long log (W2_RIVERS.long, laid deep) rides him in and hands him onto the far bank
+  ---
+  duration_ms: 755.120249
+  type: 'test'
+  ...
+# Subtest: child, normal: against the flow (W2_RIVERS.back), hops log to log off each front end and reaches the shrine
+ok 11 - child, normal: against the flow (W2_RIVERS.back), hops log to log off each front end and reaches the shrine
+  ---
+  duration_ms: 1258.2393
+  type: 'test'
+  ...
+# Subtest: child, normal: the long log (W2_RIVERS.long, laid deep) rides him in and hands him onto the far bank
+ok 12 - child, normal: the long log (W2_RIVERS.long, laid deep) rides him in and hands him onto the far bank
+  ---
+  duration_ms: 1572.782253
+  type: 'test'
+  ...
+# Subtest: child, easy: against the flow (W2_RIVERS.back), hops log to log off each front end and reaches the shrine
+ok 13 - child, easy: against the flow (W2_RIVERS.back), hops log to log off each front end and reaches the shrine
+  ---
+  duration_ms: 932.937249
+  type: 'test'
+  ...
+# Subtest: child, easy: the long log (W2_RIVERS.long, laid deep) rides him in and hands him onto the far bank
+ok 14 - child, easy: the long log (W2_RIVERS.long, laid deep) rides him in and hands him onto the far bank
+  ---
+  duration_ms: 702.829526
+  type: 'test'
+  ...
+# Subtest: planted: with the handed-to-the-bank skill off, the middle on Normal hops at the water off the long log and drowns over the bar
+ok 15 - planted: with the handed-to-the-bank skill off, the middle on Normal hops at the water off the long log and drowns over the bar
+  ---
+  duration_ms: 1037.284348
+  type: 'test'
+  ...
+# Subtest: 2-1, against the flow and up the far bank on: the adult on Normal (12), the child on Normal (4, 23, 40) and the middle on Normal (26) cross clean
+ok 16 - 2-1, against the flow and up the far bank on: the adult on Normal (12), the child on Normal (4, 23, 40) and the middle on Normal (26) cross clean
+  ---
+  duration_ms: 15751.071529
+  type: 'test'
+  ...
+# Subtest: planted: with the against-the-flow skill off, the adult on Normal is rescued at 2-1's back river (12) and the child and the middle on Normal lose 5+ more lives (child 4, 23; middle 26)
+ok 17 - planted: with the against-the-flow skill off, the adult on Normal is rescued at 2-1's back river (12) and the child and the middle on Normal lose 5+ more lives (child 4, 23; middle 26)
+  ---
+  duration_ms: 10889.114857
+  type: 'test'
+  ...
+# Subtest: planted: with the up-the-far-bank skill off, the child on Normal loses 5+ more lives on 2-1 and reaches the both-ways far bank 2+ s later (40)
+ok 18 - planted: with the up-the-far-bank skill off, the child on Normal loses 5+ more lives on 2-1 and reaches the both-ways far bank 2+ s later (40)
+  ---
+  duration_ms: 6772.225128
+  type: 'test'
+  ...
+# Subtest: rideWheel ON: every tier boards, rides and steps off the wheel: no scramble, no pond, across in about half a turn
+ok 19 - rideWheel ON: every tier boards, rides and steps off the wheel: no scramble, no pond, across in about half a turn
+  ---
+  duration_ms: 36966.353319
+  type: 'test'
+  ...
+# Subtest: PLANTED: rideWheel OFF, every tier scrambles bucket to bucket instead of riding (RED)
+ok 20 - PLANTED: rideWheel OFF, every tier scrambles bucket to bucket instead of riding (RED)
+  ---
+  duration_ms: 25999.455895
+  type: 'test'
+  ...
+1..20
+# tests 20
+# suites 0
+# pass 20
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 70071.464275

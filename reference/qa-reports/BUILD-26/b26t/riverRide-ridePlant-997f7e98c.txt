@@ -1,0 +1,30 @@
+TAP version 13
+# Subtest: planted: with the ride skill off, the middle and child bots drown in the river
+not ok 1 - planted: with the ride skill off, the middle and child bots drown in the river
+  ---
+  duration_ms: 4825.636573
+  type: 'test'
+  location: '/tmp/claude-0/-home-user-Sloths-Adventure-/62fccdc6-a8bc-5c66-9d10-d2bfa99c8ea7/scratchpad/f3/tools/inspect/riverRide.test.ts:106:1'
+  failureType: 'testCodeFailure'
+  error: 'with no ride skill every tier still crossed within 2 lives: middle normal: ended shrine, at the river {"id":"toy-one-river","lives":1,"putbacks":0,"seconds":13} (at most 2 lives), stuck []; middle easy: ended shrine, at the river {"id":"toy-one-river","lives":0,"putbacks":0,"seconds":9} (at most 2 lives), stuck []; child normal: ended shrine, at the river {"id":"toy-one-river","lives":0,"putbacks":0,"seconds":12.5} (at most 2 lives), stuck []; child easy: ended shrine, at the river {"id":"toy-one-river","lives":0,"putbacks":0,"seconds":11.5} (at most 2 lives), stuck []'
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: true
+  actual: false
+  operator: '=='
+  stack: |-
+    TestContext.<anonymous> (/tmp/claude-0/-home-user-Sloths-Adventure-/62fccdc6-a8bc-5c66-9d10-d2bfa99c8ea7/scratchpad/f3/tools/inspect/riverRide.test.ts:116:12)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.start (node:internal/test_runner/test:944:17)
+    startSubtestAfterBootstrap (node:internal/test_runner/harness:296:17)
+  ...
+1..1
+# tests 1
+# suites 0
+# pass 0
+# fail 1
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 6414.249772

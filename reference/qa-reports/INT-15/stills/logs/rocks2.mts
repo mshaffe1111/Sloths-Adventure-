@@ -1,0 +1,13 @@
+const R = process.env.ROOT!;
+const { } = await import(R + '/src/game/headlessDom.ts');
+const { generateAllLevels } = await import(R + '/src/game/worldsData.ts');
+const { generateStage, setLayoutVariant } = await import(R + '/src/game/stageGenerator.ts');
+const { withGoals } = await import(R + '/src/game/goals.ts');
+const [id, lay, setting = 'normal'] = process.argv.slice(2);
+const c = generateAllLevels().find((l: any) => l.id === id)!;
+setLayoutVariant(+lay);
+const st: any = withGoals(generateStage({ ...c, unlocked: true } as any, setting));
+setLayoutVariant(null);
+const rock = (p: any) => (p.height === 50 && p.style === 'moss_stone') || p.art === 'rock';
+console.log(id, 'L' + lay, 'seed', st.gen2?.seed, 'width', st.config.levelWidth, 'plats', st.platforms.length);
+console.log(st.platforms.filter(rock).sort((a: any, b: any) => a.x - b.x).map((p: any) => `${Math.round(p.x)}@${Math.round(p.y)}`).join(' '));

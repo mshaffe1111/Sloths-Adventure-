@@ -1,0 +1,50 @@
+verdicts moved on 0 builds
+kinds of change: {'ends same kind (floor), other field': 1243}
+1-1: 16 entries moved; e.g.
+    1-1 normal 1: x 6116-6371 lip 1180: {"kind": "floor", "y": 1250} ground -> {"kind": "floor", "y": 1215} ground
+    1-1 normal 2: x 5208-5462 lip 1391: {"kind": "floor", "y": 1527} ground -> {"kind": "floor", "y": 1459} ground
+    1-1 normal 3: x 7143-7398 lip 1167: {"kind": "floor", "y": 1237} ground -> {"kind": "floor", "y": 1202} ground
+1-6: 338 entries moved; e.g.
+    1-6 normal 1: x 2800-3132 lip 751: {"kind": "floor", "y": 976} ground -> {"kind": "floor", "y": 927} ground
+    1-6 normal 1: x 5613-6149 lip 878: {"kind": "floor", "y": 1103} ground -> {"kind": "floor", "y": 1046} ground
+    1-6 normal 1: x 7449-8005 lip 879: {"kind": "floor", "y": 1104} ground -> {"kind": "floor", "y": 1047} ground
+1-7: 93 entries moved; e.g.
+    1-7 normal 1: x 20794-21144 lip 713: {"kind": "floor", "y": 938} ground -> {"kind": "floor", "y": 889} ground
+    1-7 normal 1: x 21684-22019 lip 713: {"kind": "floor", "y": 938} ground -> {"kind": "floor", "y": 889} ground
+    1-7 normal 1: x 30468-30815 lip 700: {"kind": "floor", "y": 925} ground -> {"kind": "floor", "y": 876} ground
+1-8: 16 entries moved; e.g.
+    1-8 normal 1: x 13881-14417 lip 776: {"kind": "floor", "y": 1001} ground -> {"kind": "floor", "y": 944} ground
+    1-8 normal 2: x 14000-14549 lip 767: {"kind": "floor", "y": 1007} ground -> {"kind": "floor", "y": 947} ground
+    1-8 normal 3: x 13874-14430 lip 764: {"kind": "floor", "y": 989} ground -> {"kind": "floor", "y": 932} ground
+2-1: 74 entries moved; e.g.
+    2-1 normal 1: x 4761-5297 lip 785: {"kind": "floor", "y": 1010} ground -> {"kind": "floor", "y": 953} ground
+    2-1 normal 2: x 3695-4024 lip 734: {"kind": "floor", "y": 959} ground -> {"kind": "floor", "y": 910} ground
+    2-1 normal 2: x 4844-5400 lip 838: {"kind": "floor", "y": 1063} ground -> {"kind": "floor", "y": 1006} ground
+2-5: 32 entries moved; e.g.
+    2-5 normal 1: x 12070-12530 lip 602: {"kind": "floor", "y": 827} ground -> {"kind": "floor", "y": 770} ground
+    2-5 normal 2: x 12193-12653 lip 604: {"kind": "floor", "y": 829} ground -> {"kind": "floor", "y": 772} ground
+    2-5 normal 3: x 11925-12385 lip 553: {"kind": "floor", "y": 778} ground -> {"kind": "floor", "y": 721} ground
+5-7: 29 entries moved; e.g.
+    5-7 normal 3: x 5093-5268 lip 534: {"kind": "floor", "y": 644} ground -> {"kind": "floor", "y": 589} ground
+    5-7 normal 3: x 27458-27634 lip 571: {"kind": "floor", "y": 681} ground -> {"kind": "floor", "y": 626} ground
+    5-7 normal 4: x 5533-5713 lip 520: {"kind": "floor", "y": 630} ground -> {"kind": "floor", "y": 575} ground
+5-9: 25 entries moved; e.g.
+    5-9 normal 1: x 12369-12542 lip 535: {"kind": "floor", "y": 645} ground -> {"kind": "floor", "y": 590} ground
+    5-9 normal 1: x 22353-22516 lip 535: {"kind": "floor", "y": 645} ground -> {"kind": "floor", "y": 590} ground
+    5-9 normal 3: x 5162-5363 lip 529: {"kind": "floor", "y": 639} ground -> {"kind": "floor", "y": 584} ground
+8-2: 126 entries moved; e.g.
+    8-2 normal 4: x 13189-13352 lip 507: {"kind": "floor", "y": 627} ground -> {"kind": "floor", "y": 567} ground
+    8-2 easy 1: x 3577-4084 lip 580: {"kind": "floor", "y": 805} ground -> {"kind": "floor", "y": 748} ground
+    8-2 easy 1: x 4999-5508 lip 580: {"kind": "floor", "y": 805} ground -> {"kind": "floor", "y": 748} ground
+8-5: 25 entries moved; e.g.
+    8-5 normal 7: x 27980-28140 lip 495: {"kind": "floor", "y": 615} ground -> {"kind": "floor", "y": 555} ground
+    8-5 easy 2: x 10423-10686 lip 377: {"kind": "floor", "y": 556} ground -> {"kind": "floor", "y": 496} ground
+    8-5 easy 2: x 19143-19412 lip 358: {"kind": "floor", "y": 537} ground -> {"kind": "floor", "y": 477} ground
+8-6: 455 entries moved; e.g.
+    8-6 normal 1: x 12828-13198 lip 545: {"kind": "floor", "y": 770} ground -> {"kind": "floor", "y": 695} ground
+    8-6 normal 1: x 13492-13811 lip 545: {"kind": "floor", "y": 770} ground -> {"kind": "floor", "y": 695} ground
+    8-6 normal 2: x 9821-9986 lip 548: {"kind": "floor", "y": 668} ground -> {"kind": "floor", "y": 608} ground
+8-9: 14 entries moved; e.g.
+    8-9 normal 8: x 5538-5704 lip 584: {"kind": "floor", "y": 704} ground -> {"kind": "floor", "y": 644} ground
+    8-9 normal 14: x 5557-5725 lip 528: {"kind": "floor", "y": 648} ground -> {"kind": "floor", "y": 588} ground
+    8-9 normal 16: x 5908-6069 lip 532: {"kind": "floor", "y": 652} ground -> {"kind": "floor", "y": 592} ground

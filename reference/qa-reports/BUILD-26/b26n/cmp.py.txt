@@ -1,0 +1,24 @@
+import json,sys
+from collections import defaultdict
+def load(f):
+    d={}
+    for l in open(f):
+        l=l.strip()
+        if not l: continue
+        r=json.loads(l); d[(r['bot'],r['setting'],r['seed'])]=r
+    return d
+a=load(sys.argv[1]); b=load(sys.argv[2])
+pa=defaultdict(int); pb=defaultdict(int); flips=[]; moved=defaultdict(int)
+for k in sorted(set(a)|set(b)):
+    x,y=a.get(k),b.get(k)
+    if x and x['pass']: pa[k[:2]]+=1
+    if y and y['pass']: pb[k[:2]]+=1
+    if x and y and x['pass']!=y['pass']:
+        st=y.get('stuck') or []
+        flips.append(f"{k[0]} {k[1][0].upper()} {k[2]}: {x['time']}{'' if x['pass'] else ' FAIL'} -> {y['time']}{'' if y['pass'] else ' FAIL r'+str(y.get('rescues'))} {(st[-1].get('what','')[:60]+' @'+str(st[-1].get('x'))+','+str(st[-1].get('y'))) if st else ''}")
+    elif x and y and abs(x['time']-y['time'])>0.05: moved[k[:2]]+=1
+print('| tier | cut 5 RE-JUDGED | candidate | time-only moves |'); print('|---|---|---|---|')
+for t in sorted(set(k[:2] for k in a)|set(k[:2] for k in b)):
+    mark=' **DROP**' if pb[t]<pa[t] else ''
+    print(f"| {t[0]} {t[1][0].upper()} | {pa[t]} | {pb[t]}{mark} | {moved[t]} |")
+print('flips:'); print('\n'.join(flips) or 'none')

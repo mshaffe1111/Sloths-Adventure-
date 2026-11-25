@@ -1,0 +1,25 @@
+== 5981c26c0
+1-4 seed 1: clean true SAME
+1-4 seed 2: clean true SAME
+1-4 seed 3: clean true SAME
+1-4 seed 4: clean true SAME
+1-4 seed 5: clean true SAME
+1-4 seed 6: clean true SAME
+GREEN
+== 2f188c552
+1-4 seed 1: clean true DIFFERS
+1-4 seed 2: clean true DIFFERS
+1-4 seed 3: clean true SAME
+1-4 seed 4: clean true SAME
+1-4 seed 5: clean true DIFFERS
+1-4 seed 6: clean true DIFFERS
+RED 4
+== 7d3330aad
+1-4 seed 1: clean true DIFFERS
+1-4 seed 2: clean true DIFFERS
+1-4 seed 3: clean true SAME
+1-4 seed 4: clean true SAME
+1-4 seed 5: clean true DIFFERS
+1-4 seed 6: clean true DIFFERS
+RED 4
+done

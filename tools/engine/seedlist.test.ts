@@ -304,3 +304,53 @@ test("a socket predator stands on its designed piece: read-bare's boa moved onto
     assert.deepEqual(asPlayedBreaches(cfg, row.kit, [seed], moved).filter((l) => l.includes(`(${d}): the`)), want.map((l) => `1-9 seed ${seed}: ${l}`), `${d}: --check`);
   }
 });
+
+test('--fill fills named list indices IN PLACE: every other index keeps its seed, plan, quiet and outro; refusals by name (FILL-14)', async () => {
+  const { fillSlots } = await import('./seedlistFile.ts');
+  const { packPlan, unpackPlan } = await import('../../src/game/gen2/seedList.ts');
+  const replay = (seed: number, t: string) => ({ seed, rerolls: seed % 3, plan: [{ template: t, join: 'walk' as const, mirrored: seed % 2 === 1, node: 'n1' }, { template: `${t}-b`, join: 'jump' as const, mirrored: false, node: 'n2', salt: seed }], foes: [['s1/a', 'boa']] as Array<[string, string]> });
+  const dict: string[] = [];
+  const seeds = [11, 12, 13, 14, 15, 16];
+  const old = { dict, seeds: [...seeds], plans: seeds.map((s) => packPlan(replay(s, 'old'), dict)), quiet: seeds.map((s) => s / 10), outro: seeds.map((s) => s * 100) };
+  const before = JSON.parse(JSON.stringify(old));
+  const cand = (seed: number) => ({ seed, quiet: 2.5, outro: 900, replay: replay(seed, `new${seed}`) });
+  const L = fillSlots(old, [1, 4], [cand(101), cand(102), cand(103)]);
+  assert.deepEqual(old, before, 'the old list is not touched');
+  assert.equal(L.seeds.length, 6);
+  assert.deepEqual(L.seeds, [11, 101, 13, 14, 102, 16], 'indices 1 and 4 take the first two candidates in order; the third is unused');
+  for (const i of [0, 2, 3, 5]) {
+    assert.equal(L.seeds[i], old.seeds[i]); assert.equal(L.plans[i], old.plans[i]); assert.equal(L.quiet![i], old.quiet[i]); assert.equal(L.outro![i], old.outro[i]);
+    assert.deepEqual(unpackPlan(L.plans[i], L.dict), unpackPlan(old.plans[i], old.dict), `index ${i} replays as before`);
+  }
+  assert.deepEqual(L.dict.slice(0, old.dict.length), old.dict, 'the dict only grows at its end');
+  assert.deepEqual(unpackPlan(L.plans[1], L.dict), cand(101).replay);
+  assert.deepEqual(unpackPlan(L.plans[4], L.dict), cand(102).replay);
+  assert.deepEqual([L.quiet![1], L.outro![4]], [2.5, 900]);
+  // refused by name, nothing returned
+  assert.throws(() => fillSlots(old, [-1], [cand(101)]), /index -1 is not on the list/);
+  assert.throws(() => fillSlots(old, [6], [cand(101)]), /index 6 is not on the list/);
+  assert.throws(() => fillSlots(old, [1, 1], [cand(101), cand(102)]), /named twice/);
+  assert.throws(() => fillSlots(old, [1, 4], [cand(101)]), /2 slots but 1 candidates/);
+  assert.throws(() => fillSlots(old, [1], [cand(13)]), /seed 13 is already listed/);
+  assert.throws(() => fillSlots(old, [1, 4], [cand(101), cand(101)]), /given twice/);
+  // an index may take back its own seed, never another index's
+  assert.deepEqual(fillSlots(old, [1], [cand(12)]).seeds, old.seeds);
+});
+
+test('--fill names a slot by its layout variant as Play draws it, on both of the game\'s paths (FILL-14: 1-4 variant 26 is NOT the 26th seed)', async () => {
+  await import('../../src/game/headlessDom.ts');
+  const { variantIndex } = await import('./seedlistFile.ts');
+  const { provenList } = await import('../../src/game/gen2/seedList.ts');
+  const { RealPlay } = await import('../../src/game/realPlay.ts');
+  for (const [id, v] of [['1-4', 1], ['1-4', 26], ['1-1', 11]] as const) {
+    const L = provenList(id)!;
+    const i = await variantIndex(id, v);
+    const g = (new RealPlay(id, v).stage as unknown as { gen2: { seed: number; rerolls: number } }).gen2;
+    assert.equal(L.plans[i].split('|')[0], `${g.seed}:${g.rerolls}`, `${id} variant ${v}: the plan Play replays is the list's index ${i}`);
+  }
+  // (the two paths, pinned: a listed row draws index v mod n (seedList.ts provenSeedFor); 1-1 draws index v - 1 (testlink1_1.ts
+  // play11Seed). A change to either moves every variant the QA rolls, the calibration and a fill name: this goes red first)
+  assert.equal(await variantIndex('1-4', 26), 26, '1-4 variant 26 is list index 26 (its 27th seed), not 25');
+  assert.equal(await variantIndex('1-4', provenList('1-4')!.seeds.length), 0, '1-4 variant n wraps to index 0');
+  assert.equal(await variantIndex('1-1', 11), 10, '1-1 variant 11 is list index 10 (play11Seed)');
+});

@@ -1,0 +1,68 @@
+| tier | cut 5 RE-JUDGED | candidate | time-only moves |
+|---|---|---|---|
+| adult E | 36 | 40 | 24 |
+| adult N | 34 | 40 | 32 |
+| child E | 36 | 40 | 28 |
+| child N | 39 | 40 | 34 |
+| expert N | 37 | 40 | 34 |
+| kid E | 32 | 40 | 18 |
+| kid N | 19 | 40 | 17 |
+| middle E | 37 | 40 | 29 |
+| middle N | 34 | 40 | 33 |
+flips:
+adult E 10: 136.5 FAIL -> 113.3 
+adult E 17: 116.4 FAIL -> 116.2 
+adult E 19: 115 FAIL -> 114.9 
+adult E 37: 140.1 FAIL -> 116.3 
+adult N 5: 145.3 FAIL -> 127.4 
+adult N 23: 130 FAIL -> 123.6 
+adult N 32: 167.3 FAIL -> 139.2 
+adult N 34: 148.5 FAIL -> 130.6 
+adult N 36: 121.8 FAIL -> 121.4 
+adult N 39: 129 FAIL -> 117.8 
+child E 6: 169.5 FAIL -> 171.7 
+child E 10: 177.4 FAIL -> 166.9 
+child E 23: 183.7 FAIL -> 166.1 
+child E 24: 172.6 FAIL -> 155.7 
+child N 10: 266.2 FAIL -> 253.4 a trunk beside him, the way on is 281 px down @649,None
+expert N 8: 168.5 FAIL -> 129 
+expert N 32: 161.5 FAIL -> 129.5 
+expert N 34: 157.5 FAIL -> 130.5 
+kid E 2: 123 FAIL -> 122.9 
+kid E 10: 150.6 FAIL -> 128 
+kid E 11: 127.8 FAIL -> 125.9 
+kid E 24: 125 FAIL -> 124.9 
+kid E 31: 131.2 FAIL -> 131.3 
+kid E 35: 120 FAIL -> 123.6 
+kid E 37: 147.5 FAIL -> 125 
+kid E 40: 120.1 FAIL -> 121.9 
+kid N 7: 130.9 FAIL -> 133.8 
+kid N 9: 140.7 FAIL -> 137.1 
+kid N 10: 128 FAIL -> 134.9 
+kid N 11: 137.9 FAIL -> 133.9 
+kid N 12: 144.6 FAIL -> 127.3 
+kid N 13: 130.8 FAIL -> 130.8 
+kid N 17: 136.6 FAIL -> 130 
+kid N 18: 133.9 FAIL -> 129.8 
+kid N 19: 147.2 FAIL -> 133.7 
+kid N 20: 126.6 FAIL -> 134 
+kid N 21: 127.7 FAIL -> 125.6 
+kid N 22: 140.2 FAIL -> 130.3 
+kid N 23: 133.8 FAIL -> 133.6 
+kid N 24: 128.3 FAIL -> 138.4 
+kid N 33: 134.3 FAIL -> 127.4 
+kid N 34: 137.3 FAIL -> 133.4 
+kid N 35: 131.6 FAIL -> 131.1 
+kid N 36: 134.8 FAIL -> 142.6 
+kid N 37: 139 FAIL -> 127.3 
+kid N 39: 134.4 FAIL -> 127.3 
+kid N 40: 134.5 FAIL -> 131 
+middle E 10: 158.9 FAIL -> 127.5 
+middle E 19: 152.2 FAIL -> 135.5 
+middle E 37: 168.4 FAIL -> 134.5 
+middle N 1: 199.8 FAIL -> 140.9 
+middle N 10: 186.9 FAIL -> 144.4 
+middle N 12: 161.6 FAIL -> 129.5 
+middle N 15: 165.9 FAIL -> 132 
+middle N 22: 159.2 FAIL -> 136.9 
+middle N 36: 184.4 FAIL -> 172.8 

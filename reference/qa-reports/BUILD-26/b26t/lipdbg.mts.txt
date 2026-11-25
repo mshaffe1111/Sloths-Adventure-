@@ -1,0 +1,15 @@
+const T = process.argv[2];
+await import(`${T}/src/game/headlessDom.ts`);
+const ft = await import(`${T}/tools/inspect/firsttimer.ts`);
+const { wheelRun, fixtureSeed } = await import(`${T}/tools/inspect/wheelToys.ts`);
+const P = (ft as any).FirstTimerRun.prototype;
+const o2 = P.overSmall; P.overSmall = function (d: any, l: any) { const r = o2.call(this, d, l); const p = this.sim.p; if (this.t > 8.6 && this.t < 9.1) console.log("overSmall", this.t.toFixed(3), "x", p.x.toFixed(1), "vy", Math.round(p.vy), "dir", d, "->", r, "onTower", this.onTower); return r; };
+const o3 = P.thumbify; P.thumbify = function (w: any) { const r = o3.call(this, w); if (this.t > 8.8 && this.t < 9.05) console.log("thumbify", this.t.toFixed(3), JSON.stringify(w), "->", JSON.stringify(r), "travelUntil", this.travelUntil.toFixed(3), "drift", this.driftPx.toFixed(1)); return r; };
+const orig = P.lipBrake;
+P.lipBrake = function (p: any, t: number) {
+  const r = orig.call(this, p, t);
+  if (t > 8.9 && t < 9.2) console.log('lipBrake', t.toFixed(3), 'x', p.x.toFixed(1), 'vx', Math.round(p.vx), 'g', p.grounded, 'lastLand', this.lastLand?.toFixed?.(3), 'on', this.sim.standingOn, '->', JSON.stringify(r));
+  return r;
+};
+const run = wheelRun('sparse', 'middle', 'easy', fixtureSeed('sparse'), 1, { onFrame: () => {} });
+console.log('end', run.end);

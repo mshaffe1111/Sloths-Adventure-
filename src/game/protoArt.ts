@@ -8,6 +8,8 @@
 import { drawPickup, pickupReady } from './pickupSprites.ts';
 import { stageLooks } from './stagePlan.ts';
 import { drawW1Pits, paintedBank, sideOverHollow, waterAcross } from './w1Pits.ts';
+import { bankList, narrowPosts } from './narrowBank.ts';
+import { drawLivePosts } from './livePostArt.ts';
 import { drawHollowLog } from './w1NewArt.ts';
 import { drawCutArt } from './w1CutArt.ts';
 import { drawCrumbleTile } from './crumbleArt.ts';
@@ -23,7 +25,7 @@ import { KIT_FRAMES } from './kitAtlasData.ts';
 import { assignRockLooks, isPaintedRock, KIT_BOULDER, rockFramesOf, rockSheet, ROCK_SEAT, type RockLook } from './rockLooks.ts';
 import { PROTO2_FRAMES } from './proto2AtlasData.ts';
 import { PROTO3_FRAMES } from './proto3AtlasData.ts';
-import { DEPTH_DARK, drawEnd, drawLip, drawSoil, endFace, warmGround, type DepthAt } from './groundPaint.ts';
+import { DEPTH_DARK, drawEnd, drawLip, drawSoil, drawUnderside as drawHungUnderside, endFace, warmGround, type DepthAt } from './groundPaint.ts';
 import { GROUND_FRAMES } from './groundAtlasData.ts';
 import { canvasLost } from './canvasLost.ts';
 import { drawW8Fungus } from './w8FungusArt.ts';
@@ -57,6 +59,7 @@ let stageWorld = 1;
 import { fitTrunks, type DecoTrunk } from './trunkFit.ts';
 import { drawDrapedPair } from './pairArt.ts';
 import { drawFieldVine } from './vineFieldArt.ts';
+import { cachedLinearGradient } from './gradCache.ts';
 import { DRESS_FOOT, cachedBake, footCut, type DressFoot } from './columnDress.ts';
 export { fitTrunks };
 type DecoLeaves = { x: number; y: number; w: number; flip?: boolean; kind?: 'bushWide' | 'fernClump' | 'bushTall' };
@@ -92,7 +95,7 @@ export function setGroundStacks(z: readonly StackZone[] | undefined, rivers?: Re
  */
 export function riverLid(platforms: Platform[], x0: number, x1: number, surfaceY: number): Ceiling[] | null {
   if (!stackZones.length) return null;
-  const banks = groundLook === 'bough' ? platforms.filter((p) => !p.broken && boughPiece(p)) : platforms.filter(paintedBank);
+  const banks = groundLook === 'bough' ? platforms.filter((p) => !p.broken && boughPiece(p)) : groundBanks(platforms);
   const cs = ceilingsFor(platforms, banks, bankSig(banks), stackZones, stackWaters);
   const over = cs.length ? ceilingsOverSpan(x0, x1, surfaceY, cs) : [];
   return over.length ? over : null;
@@ -103,7 +106,7 @@ export function riverLid(platforms: Platform[], x0: number, x1: number, surfaceY
  */
 export function stackViewFloor(platforms: Platform[], x0: number, x1: number, heroX: number, feetY: number): number | null {
   if (!stackZones.length) return null;
-  const banks = groundLook === 'bough' ? platforms.filter((p) => !p.broken && boughPiece(p)) : platforms.filter(paintedBank);
+  const banks = groundLook === 'bough' ? platforms.filter((p) => !p.broken && boughPiece(p)) : groundBanks(platforms);
   const cs = ceilingsFor(platforms, banks, bankSig(banks), stackZones, stackWaters);
   return cs.length ? viewFloor(cs, x0, x1, heroX, feetY, underReach(kitWorld)) : null;
 }
@@ -996,13 +999,148 @@ export function stripSpan(from: number, to: number, tw: number, x0 = -Infinity, 
   return { start: from + skip * step, end: Math.min(to, x1) };
 }
 
+/** how drawGround paints a bank's sides (drawBankArt): each side open (its painted end) or closed (straight down where the next bank meets
+ *  it), the lower bank a side steps down to, and the rest drawBankArt's comments name */
+export interface BankOpen {
+  left: boolean; right: boolean; leftStep?: number; rightStep?: number; bare?: boolean; lipless?: boolean; shadeFrom?: number; underL?: number; underR?: number;
+  /** open space under the bank down to a lower bank (soilHangs): its soil stops at its own bottom, over a painted underside (R-165.441) */
+  underside?: boolean;
+}
+
+/** room for him under a bank: his collider's height (engine.ts, 48) */
+export const SOIL_ROOM = 48;
+/** a bank's soil over a lower bank's top by no more than this is where the two soils meet (a unit past an end, either side), not over it */
+export const SOIL_JOIN = 3;
+/** how far up into an open end's face a bank's underside rounds, and over how much of its width (world units) */
+const UNDER_CORNER = 30, UNDER_ROUND = 110;
+/** the underside's line: up to this far above the bank's bottom in clumps, never under it (his head clears the drawn soil under it) */
+const UNDER_WOB = 18;
+/** how much of the underside's turf (groundPaint.ts drawUnderside) is tucked up under the soil's edge (world units) */
+const UNDER_HIDE = 4;
+/** how far up from the underside its shade reaches (world units) */
+const UNDER_SHADE = 50;
+/** the underside's line at x for a bank whose bottom is `foot` (world-anchored, so two touching banks' undersides meet with no step) */
+/** how far up into an open end's face the underside rounds on bank p (less on a short bank) */
+const underRoom = (p: Platform) => Math.max(4, Math.min(UNDER_CORNER, (p.height - 6) / 3));
+const underY = (x: number, foot: number) => foot - UNDER_WOB * (0.5 + 0.28 * Math.sin(x / 47 + 1.3) + 0.14 * Math.sin(x / 19 + 4.1) + 0.08 * Math.sin(x / 7.3 + 2.2));
+
+/**
+ * The outline drawBankArt cuts a bank's soil to, as one closed path (its top under the lip, each side, its bottom), and the soil's x range.
+ * The soil runs down to `viewBottom` (out of sight), or, with `open.underside`, stops at the bank's own bottom: there the sides stop where
+ * the underside meets them (an open end's face rounding into it) and the underside runs between them with a soft wobble (R-165.441).
+ * Exported, as the regions the paint gate reads (groundSoil): the soil a gate judges is the soil drawn.
+ */
+export function soilOutline(w: number, p: Platform, open: BankOpen, viewBottom: number): {
+  pts: Array<[number, number]>; x0: number; x1: number; bottom: number;
+  /** with `open.underside`: where the underside runs, and its line */
+  under?: { xl: number; xr: number; edge: (x: number) => number };
+} {
+  const foot = p.y + p.height;
+  const bottom = open.underside ? foot : Math.max(foot, viewBottom);
+  const soilTop = p.y + 6;
+  // the outline of the bank's soil: straight down where it meets the next bank (a unit under it, so no hairline), the end's face where
+  // it drops away
+  // (a side that steps down to a lower bank: the end's face only down to that bank's top, then straight down under it, where the two
+  // banks' soils are the one world-anchored texture and meet with no join)
+  const side = (right: boolean): Array<[number, number]> => {
+    const x = right ? p.x + p.width : p.x, d = right ? 1 : -1;
+    if (!(right ? open.right : open.left)) return [[x + d, soilTop], [x + d, bottom]];
+    const step = right ? open.rightStep : open.leftStep;
+    const face = endFace(w, x, p.y, bottom, right, right ? p.x : p.x + p.width);
+    if (step === undefined) return face;
+    // (a short step, a plinth: the face stops at the lower bank's top; the full end's fade into the air left a see-through box)
+    const cut = faceCut(p.y, step);
+    const pts = face.filter((q) => q[1] < cut);
+    return [...pts, [pts.length ? pts[pts.length - 1][0] : x, cut], [x + d, cut], [x + d, bottom]];
+  };
+  let R = side(true);
+  let L = side(false);
+  const clampY = (pt: [number, number]): [number, number] => [pt[0], Math.max(soilTop, pt[1])];
+  if (!open.underside) {
+    const pts: Array<[number, number]> = [clampY(L[0]), ...R.map(clampY), [R[R.length - 1][0], bottom + 2], [L[L.length - 1][0], bottom + 2]];
+    for (let i = L.length - 1; i >= 0; i--) pts.push(clampY(L[i]));
+    return { pts, x0: Math.min(...L.map((q) => q[0])), x1: Math.max(...R.map((q) => q[0])), bottom };
+  }
+  // (the underside: each side down to where it meets it, an open end's face rounding into it UNDER_CORNER up, a closed side at its line)
+  const room = underRoom(p);
+  const upTo = (pts: Array<[number, number]>, openSide: boolean): Array<[number, number]> => {
+    const out: Array<[number, number]> = [];
+    for (let i = 0; i < pts.length; i++) {
+      const [x, y] = pts[i];
+      const end = openSide ? foot - room : underY(x, foot);
+      if (y < end) { out.push(pts[i]); continue; }
+      const prev = out[out.length - 1];
+      if (!prev) out.push([x, end]);
+      else out.push([prev[0] + ((x - prev[0]) * (end - prev[1])) / (y - prev[1] || 1), end]);
+      return out;
+    }
+    return out;
+  };
+  R = upTo(R, open.right).map(clampY);
+  L = upTo(L, open.left).map(clampY);
+  const [xr, yr] = R[R.length - 1], [xl, yl] = L[L.length - 1];
+  const dR = yr - underY(xr, foot), dL = yl - underY(xl, foot);
+  const ease = (t: number) => (t >= 1 ? 0 : 0.5 + 0.5 * Math.cos(Math.PI * t));
+  const edge = (x: number) => Math.max(soilTop + 4, underY(x, foot) + dR * ease((xr - x) / UNDER_ROUND) + dL * ease((x - xl) / UNDER_ROUND));
+  const under: Array<[number, number]> = [];
+  for (let x = xr - 4; x > xl + 2; x -= 4) under.push([x, edge(x)]);
+  const pts: Array<[number, number]> = [L[0], ...R, ...under];
+  for (let i = L.length - 1; i >= 0; i--) pts.push(L[i]);
+  return { pts, x0: Math.min(...L.map((q) => q[0])), x1: Math.max(...R.map((q) => q[0])), bottom, under: { xl, xr, edge } };
+}
+
+/** whether (x, y) is inside a closed outline (even-odd, as the canvas fills it) */
+export function insideOutline(pts: ReadonlyArray<[number, number]>, x: number, y: number): boolean {
+  let inside = false;
+  for (let i = 0, j = pts.length - 1; i < pts.length; j = i++) {
+    const [xi, yi] = pts[i], [xj, yj] = pts[j];
+    if ((yi > y) !== (yj > y) && x < ((xj - xi) * (y - yi)) / (yj - yi) + xi) inside = !inside;
+  }
+  return inside;
+}
+
+/** how many whole units of b's top, or of the room for him over it (SOIL_ROOM), a soil outline covers (R-165.441) */
+export function soilCover(pts: ReadonlyArray<[number, number]>, b: Platform, air?: (x: number, y: number) => boolean): number {
+  let x0 = Infinity, x1 = -Infinity, y0 = Infinity;
+  for (const [x, y] of pts) { x0 = Math.min(x0, x); x1 = Math.max(x1, x); y0 = Math.min(y0, y); }
+  if (y0 > b.y) return 0;
+  let n = 0;
+  for (let x = Math.max(x0, b.x) + 0.5; x < Math.min(x1, b.x + b.width); x += 1)
+    if ([b.y - 1, b.y - SOIL_ROOM / 2, b.y - SOIL_ROOM + 1].some((y) => insideOutline(pts, x, y) && !air?.(x, y))) n++;
+  return n;
+}
+
+const hangsMemo = new WeakMap<Platform, { sig: number; r: boolean }>();
+/**
+ * R-165.441: whether bank p's soil, run on down out of sight, would cover a lower bank's top or the room for him over it (more than where two
+ * soils meet, SOIL_JOIN) with a gap of at least his height between them: open space under p down to a floor. drawGround paints the banks
+ * lowest first, so that soil was painted over the floor: SHIPPED 1-4's summit bank stood as one dark column the whole height of the
+ * climb, through the sky, cutting the start floor's lip, and 2-6's top bank erased a lower porch's lip. Such a bank's soil stops at its own
+ * bottom over a painted underside. A tuck (a gap under his height: a pit's floor under its walls) is not open space and runs on as before.
+ */
+export function soilHangs(p: Platform, open: BankOpen, banks: readonly Platform[], sig = bankSig(banks)): boolean {
+  const hit = hangsMemo.get(p);
+  if (hit && hit.sig === sig) return hit.r;
+  const foot = p.y + p.height;
+  const under = banks.filter((q) => q !== p && q.y - foot >= SOIL_ROOM && Math.min(p.x + p.width + 2, q.x + q.width) - Math.max(p.x - 2, q.x) > SOIL_JOIN);
+  let r = false;
+  if (under.length) {
+    const { pts } = soilOutline(kitWorld, p, { ...open, underside: false }, Math.max(...under.map((q) => q.y)) + 2);
+    r = under.some((q) => soilCover(pts, q) > SOIL_JOIN);
+  }
+  hangsMemo.set(p, { sig, r });
+  return r;
+}
+
 /**
  * A bank of earth (hf-art-ground, 2026-10-29; polish report VI-8): the world's painted soil (groundPaint.ts) from the bank's top all the way
  * down, darkening with depth, the painted top lip along it, and where it drops away the painted bank end, its face carrying on down with a
  * wobble (never a ruler-straight cut). A moss floor (`moss`) is the World 1 kit's moss strip. `view`: only what is on screen.
+ * (`open.underside`, R-165.441: open space under it down to a lower bank: the soil stops at its own bottom, shaded under it, the lip's
+ * hanging roots under it, its ends faded into the soil above it)
  */
 export function drawBankArt(
-  ctx: CanvasRenderingContext2D, p: Platform, open: { left: boolean; right: boolean; leftStep?: number; rightStep?: number; bare?: boolean; lipless?: boolean; shadeFrom?: number; underL?: number; underR?: number }, moss: boolean, viewBottom = 0, view?: { x0: number; x1: number; y0?: number },
+  ctx: CanvasRenderingContext2D, p: Platform, open: BankOpen, moss: boolean, viewBottom = 0, view?: { x0: number; x1: number; y0?: number },
   high?: { foot: number; runTop: number; left: boolean; right: boolean },
 ): boolean {
   if (!protoArtReady()) return false;
@@ -1020,36 +1158,20 @@ export function drawBankArt(
   }
   const w = kitWorld;
   if (!warmGround(w)) return false;
-  const bottom = Math.max(p.y + p.height, viewBottom);
   const soilTop = p.y + 6;
-  // the outline of the bank's soil: straight down where it meets the next bank (a unit under it, so no hairline), the end's face where
-  // it drops away
-  // (a side that steps down to a lower bank: the end's face only down to that bank's top, then straight down under it, where the two
-  // banks' soils are the one world-anchored texture and meet with no join)
-  const side = (right: boolean): Array<[number, number]> => {
-    const x = right ? p.x + p.width : p.x, d = right ? 1 : -1;
-    if (!(right ? open.right : open.left)) return [[x + d, soilTop], [x + d, bottom]];
-    const step = right ? open.rightStep : open.leftStep;
-    const face = endFace(w, x, p.y, bottom, right, right ? p.x : p.x + p.width);
-    if (step === undefined) return face;
-    // (a short step, a plinth: the face stops at the lower bank's top; the full end's fade into the air left a see-through box)
-    const cut = faceCut(p.y, step);
-    const pts = face.filter((q) => q[1] < cut);
-    return [...pts, [pts.length ? pts[pts.length - 1][0] : x, cut], [x + d, cut], [x + d, bottom]];
-  };
-  const R = side(true);
-  const L = side(false);
-  const clampY = (pt: [number, number]): [number, number] => [pt[0], Math.max(soilTop, pt[1])];
+  const outline = soilOutline(w, p, open, viewBottom);
+  const { bottom } = outline;
+  // (its underside: the lip's own turf underside and roots along the soil's bottom edge, under the soil drawn next, whose edge covers where
+  // it starts)
+  const un = outline.under;
+  if (un) drawHungUnderside(ctx, w, [p.x, p.y, p.width, p.height, un.xl, un.xr].map(Math.round).join(','), un.xl, un.xr, un.edge, UNDER_HIDE);
   ctx.save();
   ctx.beginPath();
-  ctx.moveTo(...clampY(L[0]));
-  for (const pt of R) ctx.lineTo(...clampY(pt));
-  ctx.lineTo(R[R.length - 1][0], bottom + 2);
-  ctx.lineTo(L[L.length - 1][0], bottom + 2);
-  for (let i = L.length - 1; i >= 0; i--) ctx.lineTo(...clampY(L[i]));
+  ctx.moveTo(...outline.pts[0]);
+  for (let i = 1; i < outline.pts.length; i++) ctx.lineTo(...outline.pts[i]);
   ctx.closePath();
   ctx.clip();
-  let x0 = Math.min(...L.map((q) => q[0])), x1 = Math.max(...R.map((q) => q[0]));
+  let { x0, x1 } = outline;
   if (view) {
     x0 = Math.max(x0, view.x0 - 20);
     x1 = Math.min(x1, view.x1 + 20);
@@ -1065,6 +1187,15 @@ export function drawBankArt(
   if (w === 7 && view && high === undefined) drawW7Face(ctx, p, bottom, view);
   // (Worlds 8-10: pieces painted into their own soil, set into the face: w810FaceArt.ts)
   if (w >= 8 && view) drawW810Face(ctx, w, p, bottom, view);
+  // (its underside in shade, as under an overhang: from nothing UNDER_SHADE up to the world's deep tone at its edge)
+  const deep = open.underside ? GROUND_FRAMES[w]?.deep : undefined;
+  if (deep && typeof ctx.createLinearGradient === 'function') {
+    const gr = ctx.createLinearGradient(0, bottom - UNDER_SHADE, 0, bottom);
+    gr.addColorStop(0, `rgba(${deep[0]},${deep[1]},${deep[2]},0)`);
+    gr.addColorStop(1, `rgba(${deep[0]},${deep[1]},${deep[2]},0.7)`);
+    ctx.fillStyle = gr;
+    ctx.fillRect(x0, bottom - UNDER_SHADE, x1 - x0, UNDER_SHADE + 2);
+  }
   ctx.restore();
   // (a World 7 high ledge is faced with the old temple's carved wall to its own edge, w7TempleArt.ts; the painted end then wraps its
   // soil round the wall's corner, over the stone, where the soil's outline slopes back in: inside that outline the corner showed the
@@ -1100,7 +1231,12 @@ export function drawBankArt(
     const short = step !== undefined && step - p.y < SHORT_STEP;
     // (the rock darkened with depth as this bank's soil is: drawSoil's view above, the ground's line where there is one)
     const depth: [number, number] = groundDepth ? groundDepth(x) : [sy - DEPTH_ABOVE * depthView, sy + DEPTH_BELOW * depthView];
-    drawEnd(ctx, w, x, p.y, right, step === undefined ? undefined : short ? step : step + 26, short ? 0 : undefined, depth);
+    const cut = step === undefined ? undefined : short ? step : step + 26;
+    // (over an underside the rock fades into the soil by where the face rounds into it: the piece runs 300 down, and is not cut to the
+    // soil's outline, so below that it hung in the air)
+    const lift = open.underside ? outline.bottom - underRoom(p) : undefined;
+    if (lift !== undefined && (cut === undefined || cut > lift)) drawEnd(ctx, w, x, p.y, right, lift, Math.min(46, (lift - p.y) / 2), depth);
+    else drawEnd(ctx, w, x, p.y, right, cut, short ? 0 : undefined, depth);
   };
   if (open.bare) return true;
   if (open.right) end(true, open.rightStep);
@@ -1115,6 +1251,18 @@ export function drawBankArt(
  * The face of a river bank behind a climb (2-6, the village dug into the bank): the world's painted soil across the view, shaded back so
  * the porches and posts in front stand out, with the grassy lip along its top. False until the sheets have loaded.
  */
+/**
+ * True when drawEarthWall will paint the whole view this frame: its sheets are in and the wall reaches past every edge of the view by
+ * more than `slack` (the world's shake and snap, in world units, which move the wall against the screen). Its soil is opaque, so
+ * nothing drawn before it can show: the caller leaves the backdrop and the layers behind the wall undrawn (PERFORMANCE-RULES §8, the
+ * overdraw on 2-6's climb, ENG-26r). drawEarthWall draws from 10 units outside the view, so `slack` must stay under 10.
+ */
+export function earthWallCovers(wall: { x0: number; x1: number; top: number; bottom: number }, view: { x0: number; x1: number; y0: number; y1: number }, slack: number): boolean {
+  if (!(slack < 10)) return false;
+  if (wall.x0 > view.x0 - 10 || wall.x1 < view.x1 + 10 || wall.top > view.y0 - 10 || wall.bottom < view.y1 + 10) return false;
+  return protoArtReady() && warmGround(kitWorld);
+}
+
 export function drawEarthWall(ctx: CanvasRenderingContext2D, wall: { x0: number; x1: number; top: number; bottom: number }, view: { x0: number; x1: number; y0: number; y1: number }): boolean {
   if (!protoArtReady() || !warmGround(kitWorld)) return false;
   const a = Math.max(wall.x0, view.x0 - 10), b = Math.min(wall.x1, view.x1 + 10);
@@ -1217,15 +1365,16 @@ function drawWallChunks(
   const col = `${Math.round(deep[0] * (1 - sa) + sr * sa)},${Math.round(deep[1] * (1 - sa) + sg * sa)},${Math.round(deep[2] * (1 - sa) + sb * sa)}`;
   const y0 = view.y0 + (view.y1 - view.y0) * 0.5;
   if (bottom > y0) {
-    const gr = ctx.createLinearGradient(0, y0, 0, view.y1);
-    gr.addColorStop(0, `rgba(${col},0)`);
-    gr.addColorStop(1, `rgba(${col},${DEPTH_DARK})`);
-    ctx.fillStyle = gr;
+    // (its span is the view's lower half: built once per view height at the origin and drawn translated to the view, gradCache.ts;
+    // the context is saved above and restored below, so the translation ends with it)
+    const h = view.y1 - y0;
+    ctx.translate(0, y0);
+    ctx.fillStyle = cachedLinearGradient(ctx, 0, 0, 0, h, [[0, `rgba(${col},0)`], [1, `rgba(${col},${DEPTH_DARK})`]]);
     const t = Math.max(top, y0);
-    ctx.fillRect(a, t, b - a, Math.min(bottom, view.y1) - t);
+    ctx.fillRect(a, t - y0, b - a, Math.min(bottom, view.y1) - t);
     if (bottom > view.y1) {
       ctx.fillStyle = `rgba(${col},${DEPTH_DARK})`;
-      ctx.fillRect(a, view.y1, b - a, bottom - view.y1);
+      ctx.fillRect(a, h, b - a, bottom - view.y1);
     }
   }
   ctx.restore();
@@ -1440,10 +1589,14 @@ const LINE_REACH = 240;
  * The line the soil's darkening is laid out from along the ground (paintTile sets it while it paints a square): at each x, the tops of the banks
  * within LINE_REACH, each weighed by how much of that reach it covers, so the line eases across a pit or a step instead of jumping at a
  * bank's edge (a pit's floor darkened from its own, lower top was a lighter column between the banks: the W3 bands, 2026-10-30).
+ * A hung bank (open space under it, R-165.441) is left out.
  */
 let groundDepth: DepthAt | null = null;
-function groundLine(banks: Platform[]): DepthAt {
-  const tops = banks.filter((q) => !q.soil);
+export function groundLine(banks: Platform[], cs: readonly Ceiling[] = []): DepthAt {
+  // (a hung bank, R-165.441, is not the ground: its top, 10,000 units over 1-4's start floor, pulled that floor's line up and its soil's
+  // darkening stepped at LINE_REACH from the summit, a lighter block with a straight side under the start)
+  const sig = bankSig(banks);
+  const tops = banks.filter((q) => !q.soil && !bankOpen(q, banks, sig, cs)?.open.underside);
   return (x) => {
     let sum = 0, wt = 0, near = Infinity, nearY = 0;
     for (const q of tops) {
@@ -1468,7 +1621,7 @@ function groundLine(banks: Platform[]): DepthAt {
 function drawGround(ctx: CanvasRenderingContext2D, platforms: Platform[], banks: Platform[], view: { x0: number; x1: number; y0?: number; y1?: number }) {
   const vis = (p: Platform) => p.x + p.width > view.x0 - 80 && p.x < view.x1 + 80;
   // (a leg the lay stacks under another: the upper leg's earth ends at a ceiling over it, groundStack.ts. None where no leg is stacked)
-  const cs = stackZones.length ? ceilingsFor(platforms, banks, bankSig(banks), stackZones, stackWaters) : [];
+  const cs = groundCeilings(platforms, banks);
   // the pits: a piece with a bank 60 or more higher on either side, close by. Their inside is shaded (pitShade) once the pieces in them
   // are drawn and before the banks either side, so a gap reads as a gap and not as more of the same lit soil
   const tall = banks.filter((q) => q.height >= 90 && !q.soil);
@@ -1497,22 +1650,12 @@ function drawGround(ctx: CanvasRenderingContext2D, platforms: Platform[], banks:
     for (const [k, o] of pits) if (!shaded.has(k) && o.top >= y - 2) { shaded.add(k); if (!waterAcross(o.x0, o.x1)) pitShade(ctx, o); }
   };
   // (the lowest first: a pit's floor and its step go under the banks either side, whose faces then cover their ends)
-  for (const p of [...banks].sort((a, b) => b.y - a.y)) {
+  const sig = bankSig(banks);
+  for (const p of paintOrder(banks)) {
     if (!vis(p)) continue;
     shadeUpTo(p.y);
-    // (a pit's wall under a bank's end is that bank's soil already)
-    if (p.soil && banks.some((q) => q !== p && !q.soil && Math.abs(q.y + q.height - p.y) < 3 && q.x <= p.x + 2 && q.x + q.width >= p.x + p.width - 2)) continue;
-    // (a side is closed where the next bank meets it, or where a piece stands right on top of its end: a pit's floor runs on under the
-    // walls, and its end pieces' lip corners showed through the banks' undercut faces above it)
-    const touches = (side: 'l' | 'r') => {
-      const ex = side === 'l' ? p.x : p.x + p.width;
-      return banks.some((q) => q !== p && ((q.y <= p.y + 2 && (side === 'l' ? Math.abs(q.x + q.width - p.x) < 2 : Math.abs(p.x + p.width - q.x) < 2)) ||
-        (q.y < p.y && q.y + q.height >= p.y - 4 && q.x <= ex + 1 && q.x + q.width >= ex - 1)));
-    };
-    // the high canopy: a wall face on the side that faces the yard
-    // (a hollow's hurt floor, gen2 pit 'hurt', 150-170 down, is the floor of a pit, not a yard: the bank beside it keeps its painted face,
-    // as the bank across the pit does; as a wall it stood as one straight cut line down the pit's side, EN-W's stills 11-11)
-    const isWall = banks.some((q) => q !== p && q.pit !== 'hurt' && Math.abs(q.x + q.width - p.x) < 2 && q.y - p.y > 150);
+    const how = bankOpen(p, banks, sig, cs);
+    if (!how) continue;
     // (a bank a stacked leg runs under: all its paint is clipped clear of the air under the ceiling, its underside drawn on its soil)
     const over = cs.length ? ceilingsOver(p, cs) : [];
     if (over.length) {
@@ -1524,7 +1667,7 @@ function drawGround(ctx: CanvasRenderingContext2D, platforms: Platform[], banks:
     // (World 7's high ledges are faced with the temple wall: no root wall beside it)
     // (World 5: the bank's soil covers the trunk piece, all but the 14 units it starts left of the face, which showed as a pale sliver of
     // root flare against the dirt edge, right where Meeca stands at room 5's far wall: warmup-5m, 2026-11-01. Cut to the face there)
-    if (isWall && !high) {
+    if (how.isWall && !high) {
       const wallBottom = banks.find((q) => Math.abs(q.x + q.width - p.x) < 2)!.y + 6;
       if (kitWorld === 5) {
         ctx.save();
@@ -1535,10 +1678,6 @@ function drawGround(ctx: CanvasRenderingContext2D, platforms: Platform[], banks:
         ctx.restore();
       } else drawWallArt(ctx, p.x, p.y, wallBottom, 230);
     }
-    // (a side whose neighbour is lower is a step down to it, not a drop)
-    // (a low step standing on a pit's floor steps down to the floor it stands on, its end faded out into the floor's soil)
-    const floor = p.soil ? banks.find((q) => q !== p && Math.abs(q.y - (p.y + p.height)) < 3 && q.x <= p.x + 2 && q.x + q.width >= p.x + p.width - 2)?.y : undefined;
-    const lower = (side: 'l' | 'r') => stepDownTo(p, banks, side) ?? floor;
     // (every bank, moss floors too, is the painted ground: the moss strip is for the journal's small scenes)
     // (a World 7 high ledge's sides over a floor HIGH_LEDGE or more below: the soil wraps round the wall's corner there, w7TempleArt.ts)
     const drop = (side: 'l' | 'r') => {
@@ -1546,12 +1685,7 @@ function drawGround(ctx: CanvasRenderingContext2D, platforms: Platform[], banks:
       return !q || q.y - p.y >= HIGH_LEDGE;
     };
     const wall = high && { ...high, left: drop('l'), right: drop('r') };
-    // (a side over a hollow's hurt floor (gen2 pit 'hurt') is closed: its soil runs straight down to the floor, and the hollow's inside,
-    // its torn lips and its thorn bed are drawn over it by World 1's pit painter, w1Pits.ts. Open, its end's face was cut back under the
-    // end piece down to the floor and the pit showed a box-shaped cave there and a grey-green sliver, EN-W's Roughs 1-3, 11-11)
-    const overHollow = (side: 'l' | 'r') => sideOverHollow(p, banks, side);
-    const lips = p.pit === 'hurt' ? banks.filter((q) => q !== p && q.y < p.y && (Math.abs(q.x + q.width - p.x) < 2 || Math.abs(p.x + p.width - q.x) < 2)).map((q) => q.y) : [];
-    drawBankArt(ctx, p, { left: !touches('l') && !isWall && !overHollow('l'), right: !touches('r') && !overHollow('r'), leftStep: lower('l'), rightStep: lower('r'), bare: !!p.soil || isPocket(p, banks), lipless: p.pit === 'hurt', shadeFrom: lips.length ? Math.max(...lips) : undefined, underL: lipUnder(p, banks, false), underR: lipUnder(p, banks, true) }, false, view.y1 ?? 0, view, wall || undefined);
+    drawBankArt(ctx, p, how.open, false, view.y1 ?? 0, view, wall || undefined);
     if (over.length) {
       ctx.restore();
       // (its underside AFTER the ceiling's clip, over its own x span only: the painted strip's edge on the line and its roots hanging
@@ -1602,6 +1736,84 @@ function drawGround(ctx: CanvasRenderingContext2D, platforms: Platform[], banks:
     ctx.restore();
   }
   shadeUpTo(-Infinity);
+}
+
+/** the banks of earth drawGround paints (w1Pits.ts paintedBank) on a stage that is not a bough stage: drawProtoScene draws these, and the
+ *  paint gate reads the same list (R-165.441, paintFall.ts soilOvers), so the soil it judges is the soil drawn */
+/** the stacked legs' ceilings over the painted ground (groundStack.ts ceilingsFor, from the zones engine.ts sets at a stage's start):
+ *  drawGround clips each bank's earth clear of the air under them, and the paint gate reads the same (tools/engine/paintFall.ts).
+ *  None where no leg is stacked. */
+export function groundCeilings(platforms: readonly Platform[], banks: readonly Platform[] = groundBanks(platforms)): Ceiling[] {
+  return stackZones.length ? ceilingsFor(platforms, banks, bankSig(banks), stackZones, stackWaters) : [];
+}
+
+export function groundBanks(platforms: readonly Platform[]): Platform[] {
+  // (a bank narrower than Pokey: a sliver flush with the bank it continues is drawn as that bank's own end, one box; a post standing alone
+  // is left to livePostArt.ts, drawn at the end of the scene: narrowBank.ts, R-165.440, the look follows the collider)
+  return bankList(platforms, platforms.filter(paintedBank));
+}
+
+/** the order drawGround paints the banks in: the lowest first (a pit's floor and its step go under the banks either side, whose faces then
+ *  cover their ends) */
+export function paintOrder(banks: readonly Platform[]): Platform[] {
+  return [...banks].sort((a, b) => b.y - a.y);
+}
+
+/**
+ * How drawGround paints bank p among the banks: its sides (BankOpen) and whether it faces a yard as a wall; null where it is not painted
+ * itself (a pit's wall under a bank's end is that bank's soil already).
+ */
+export function bankOpen(p: Platform, banks: readonly Platform[], sig = bankSig(banks), cs: readonly Ceiling[] = []): { open: BankOpen; isWall: boolean } | null {
+  // (a pit's wall under a bank's end is that bank's soil already)
+  if (p.soil && banks.some((q) => q !== p && !q.soil && Math.abs(q.y + q.height - p.y) < 3 && q.x <= p.x + 2 && q.x + q.width >= p.x + p.width - 2)) return null;
+  // (a side is closed where the next bank meets it, or where a piece stands right on top of its end: a pit's floor runs on under the
+  // walls, and its end pieces' lip corners showed through the banks' undercut faces above it)
+  const touches = (side: 'l' | 'r') => {
+    const ex = side === 'l' ? p.x : p.x + p.width;
+    return banks.some((q) => q !== p && ((q.y <= p.y + 2 && (side === 'l' ? Math.abs(q.x + q.width - p.x) < 2 : Math.abs(p.x + p.width - q.x) < 2)) ||
+      (q.y < p.y && q.y + q.height >= p.y - 4 && q.x <= ex + 1 && q.x + q.width >= ex - 1)));
+  };
+  // the high canopy: a wall face on the side that faces the yard
+  // (a hollow's hurt floor, gen2 pit 'hurt', 150-170 down, is the floor of a pit, not a yard: the bank beside it keeps its painted face,
+  // as the bank across the pit does; as a wall it stood as one straight cut line down the pit's side, EN-W's stills 11-11)
+  const isWall = banks.some((q) => q !== p && q.pit !== 'hurt' && Math.abs(q.x + q.width - p.x) < 2 && q.y - p.y > 150);
+  // (a side whose neighbour is lower is a step down to it, not a drop)
+  // (a low step standing on a pit's floor steps down to the floor it stands on, its end faded out into the floor's soil)
+  const floor = p.soil ? banks.find((q) => q !== p && Math.abs(q.y - (p.y + p.height)) < 3 && q.x <= p.x + 2 && q.x + q.width >= p.x + p.width - 2)?.y : undefined;
+  const lower = (side: 'l' | 'r') => stepDownTo(p, banks, side) ?? floor;
+  // (a side over a hollow's hurt floor (gen2 pit 'hurt') is closed: its soil runs straight down to the floor, and the hollow's inside,
+  // its torn lips and its thorn bed are drawn over it by World 1's pit painter, w1Pits.ts. Open, its end's face was cut back under the
+  // end piece down to the floor and the pit showed a box-shaped cave there and a grey-green sliver, EN-W's Roughs 1-3, 11-11)
+  const overHollow = (side: 'l' | 'r') => sideOverHollow(p, banks, side);
+  const lips = p.pit === 'hurt' ? banks.filter((q) => q !== p && q.y < p.y && (Math.abs(q.x + q.width - p.x) < 2 || Math.abs(p.x + p.width - q.x) < 2)).map((q) => q.y) : [];
+  const open: BankOpen = { left: !touches('l') && !isWall && !overHollow('l'), right: !touches('r') && !overHollow('r'), leftStep: lower('l'), rightStep: lower('r'), bare: !!p.soil || isPocket(p, banks), lipless: p.pit === 'hurt', shadeFrom: lips.length ? Math.max(...lips) : undefined, underL: lipUnder(p, banks, false), underR: lipUnder(p, banks, true) };
+  // (R-165.441: open space under it down to a lower bank: its soil stops at its own bottom, over a painted underside)
+  // (never a bank a stacked leg's ceiling runs under: its earth runs on down to the ceiling's line, where drawGround clips it and draws
+  // the ceiling's own underside, groundStack.ts. Hung as well, its soil stopped at its own bottom over a second underside with the
+  // backdrop between the two: 2-7's upper leg once the soil fix met the release's stacked legs, INT-R5d 11-25. The ceiling owns its end)
+  if (!(cs.length && ceilingsOver(p, cs).length) && soilHangs(p, open, banks, sig)) open.underside = true;
+  return { open, isWall };
+}
+
+/**
+ * The ground's soil as drawGround paints it (R-165.441's gate reads it, tools/engine/paintFall.ts soilOvers): every painted bank's soil
+ * outline in paint order, run on down to `deep` where it runs out of sight, then the dip pockets' soil, painted after every bank. Set the
+ * stage's paint state first (kit world: the end faces are each world's own).
+ */
+export function groundSoil(banks: readonly Platform[], deep = Math.max(0, ...banks.map((q) => q.y + q.height)) + 100, cs: readonly Ceiling[] = []): Array<{ p: Platform; pts: Array<[number, number]> }> {
+  const sig = bankSig(banks);
+  const out: Array<{ p: Platform; pts: Array<[number, number]> }> = [];
+  for (const p of paintOrder(banks)) {
+    const how = bankOpen(p, banks, sig, cs);
+    if (how) out.push({ p, pts: soilOutline(kitWorld, p, how.open, deep).pts });
+  }
+  // (a dip pocket's soil, edge to edge under its lip: drawGround's second pass)
+  for (const p of banks) {
+    if (!isPocket(p, banks)) continue;
+    const a = p.x - POCKET_SIDE, b = p.x + p.width + POCKET_SIDE, t = p.y + 6, d = Math.max(p.y + p.height, deep);
+    out.push({ p, pts: [[p.x - 2, t], [p.x + p.width + 2, t], [p.x + p.width + 2, p.y + 20], [b, p.y + 20], [b, d], [a, d], [a, p.y + 20], [p.x - 2, p.y + 20]] });
+  }
+  return out;
 }
 
 /**
@@ -1721,7 +1933,7 @@ export function releaseGroundChunks() {
   releaseWallChunks();
 }
 
-function bankSig(banks: Platform[]): number {
+function bankSig(banks: readonly Platform[]): number {
   let h = banks.length;
   for (const p of banks) h = (Math.imul(h, 31) + Math.round(p.x * 7 + p.y * 13 + p.width * 17 + p.height * 19)) | 0;
   return h;
@@ -1816,7 +2028,7 @@ function paintTile(platforms: Platform[], banks: Platform[], cx: number, cy: num
     drawBoughGround(g, banks, boughJoins, { x0: x - CHUNK_PAD - 300, x1: x + CHUNK + CHUNK_PAD + 300 }, true);
     return cv;
   }
-  groundDepth = groundLine(banks);
+  groundDepth = groundLine(banks, groundCeilings(platforms, banks));
   drawGround(g, platforms, banks, { x0: x - CHUNK_PAD - 300, x1: x + CHUNK + CHUNK_PAD + 300, y0: y - CHUNK_PAD, y1: y + CHUNK + CHUNK_PAD + 4 });
   groundDepth = null;
   return cv;
@@ -1845,7 +2057,7 @@ export function drawProtoScene(
   const vis = (p: Platform) => p.x + p.width > view.x0 - 80 && p.x < view.x1 + 80 && p.y + p.height > vy0 - 200 && p.y < vy1 + 200;
   // (the banks of earth: w1Pits.ts paintedBank, the same rule its pits' walls are found by; on a bough stage never a chase section: the
   // chase draws its own, live, and the baked squares stay whole while it falls)
-  const banks = groundLook === 'bough' ? platforms.filter((p) => !p.broken && boughPiece(p)) : platforms.filter(paintedBank);
+  const banks = groundLook === 'bough' ? platforms.filter((p) => !p.broken && boughPiece(p)) : groundBanks(platforms);
   // World 1's pits (R-6.38): the drop under the ground (its shade, floors and steps draw over it), the lips and leaf bed over it
   // (a bough stage: no pit is painted; a gap in the bough is air over the mist, its ends the bough's own, drawBoughGround)
   const bough = groundLook === 'bough';
@@ -2020,6 +2232,8 @@ export function drawProtoScene(
     if (!vis(p) || !p.push || p.art) continue; // (a pushed boulder is World 4's to paint: w4Play.ts)
     drawLogArt(ctx, p, t - (st.movedAt.get(p.id) ?? -9) < 0.2);
   }
+  // (a narrow bank standing alone: its post, over the cut pieces and rocks, under what rests on it: livePostArt.ts, R-165.440)
+  if (!bough) drawLivePosts(ctx, narrowPosts(platforms), view);
   void trees;
   return true;
 }

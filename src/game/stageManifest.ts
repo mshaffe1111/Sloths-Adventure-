@@ -24,6 +24,8 @@
  * 279-730 ms freezes as 'props2', the eagle's, the turtle's and the golden snake's sheets arrived mid-run.
  */
 import { stageAnims, stageExtras, type StageDraws } from './sheetWarm.ts';
+import { narrowPosts } from './narrowBank.ts';
+import type { Platform } from './types.ts';
 
 /** the sheets every stage draws or may draw from its first frame, whatever it holds */
 export const ALWAYS: readonly string[] = ['hud', 'perch', 'hero-clips', 'pickups'];
@@ -67,6 +69,8 @@ export function builtStageKeys(st: BuiltStage): string[] {
   if (x.rope) out.add('rope');
   // (a vine snake on a liana: its hanging and hissing poses, vineSnakeArt.ts)
   if ((st.vines ?? []).some((v) => !!(v as { snake?: unknown }).snake)) out.add('vine-snake');
+  // (a bank narrower than Pokey standing alone, drawn as the live post: narrowBank.ts, livePostArt.ts, R-165.440)
+  if (narrowPosts(st.platforms as unknown as readonly Platform[]).length) out.add('live-post');
   // (the art director's cut World 1 pieces, gen2 1-1's stones, stumps and planks: w1CutArt.ts)
   if (st.platforms.some((p) => (p as { cut?: string }).cut)) out.add('w1-cut');
   // (World 1's moss cover, the Spanish moss on a mossy liana and the perched eagle on its snag: w17Art.ts, 1-7)

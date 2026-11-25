@@ -1,0 +1,42 @@
+# ART-SHEETS-c strip: plain | before (4f0853b96) | mean (e41c738bf) | after (graded file), game size (89.1/200) and 2x.
+# usage (cwd = a tree with node_modules + the frame tables): python3 -I strip.py NAME AFTER_WEBP OUTDIR
+import io, json, re, subprocess, sys
+from PIL import Image, ImageDraw
+name, after, outd = sys.argv[1:4]
+CL = json.load(open(sys.argv[4])).get(name, {}).get('clamped', {}) if len(sys.argv) > 4 else {}
+cap = 'CLAMPED: ' + ', '.join(f"{g} (Ll/Ld/a/b {v['from']} -> {v['to']})" for g, v in CL.items()) if CL else 'no clamped pose'
+src = open('tools/art/hfnext/sheetgrade.py').read()
+JS = eval('(' + re.search(r'JS = \((.*?)\)\nFRAMES', src, re.S).group(1) + ')')
+F = json.loads(subprocess.run(['npx', 'tsx', '-e', JS], capture_output=True, text=True, check=True).stdout)
+F['climb2'] = json.load(open('src/assets/hero/hero-climb2.json'))['frames']
+SHEET = {'rope': 'hero-rope', 'swim': 'pokey-swim', 'vine': 'hero-vine', 'story': 'hero-story', 'studies': 'hero-studies', 'atlas': 'hero-atlas', 'climb2': 'hero-climb2'}
+PICK = {'atlas': 'run_a run_f idle_a climb_b punch_3 mega kick jump_up fall hurt duck land guard face_happy face_hurt',
+        'story': 'look_a talk_a think sneak_a shock point_a sad_a tired resolve thumbs alarm cheer_c scared sleep away away_a away_b farewell face_neutral face_cry',
+        'studies': 's1_05 s1_09 s1_12 s3_05 s3_09 s3_13 s4_01 s4_04 s4_08 s5_14 s5_15',
+        'swim': 'first0 surf0 surf3 tread2 tread5 under0 under4 under7'}
+fr = F[name]; names = list(fr)
+picks = PICK.get(name, ' '.join(names[i] for i in sorted(set(int(j * (len(names) - 1) / 5) for j in range(6))))).split()
+gitimg = lambda rev, p: Image.open(io.BytesIO(subprocess.run(['git', 'show', f'{rev}:{p}'], capture_output=True, check=True).stdout)).convert('RGBA')
+p = f'src/assets/hero/{SHEET[name]}.webp'
+cols = [('before 4f0853b96', gitimg('4f0853b96', p)), ('mean e41c738bf', gitimg('e41c738bf', p)), ('after affine/group', Image.open(after).convert('RGBA'))]
+plain = gitimg('4f0853b96', 'src/assets/hero/hero-standard.webp').crop((674, 478, 674 + 127, 478 + 209))
+BG = (92, 112, 86, 255)
+for tag, sc in (('game', 89.1 / 200), ('2x', 2 * 89.1 / 200)):
+    cells = []
+    for n in picks:
+        r = fr[n]; row = [plain] + [im.crop((r['x'], r['y'], r['x'] + r['w'], r['y'] + r['h'])) for _, im in cols]
+        cells.append((n, [c.resize((max(1, round(c.width * sc)), max(1, round(c.height * sc))), Image.LANCZOS) for c in row]))
+    cw = [max(c[1][i].width for c in cells) + 8 for i in range(4)]; rh = [max(x.height for x in c[1]) + 14 for c in cells]
+    capl = [cap[i:i + 150] for i in range(0, len(cap), 150)]
+    out = Image.new('RGBA', (max(sum(cw) + 90, 6 * 150), sum(rh) + 16 + 12 * len(capl)), BG); d = ImageDraw.Draw(out)
+    for i, (lbl) in enumerate(['plain'] + [c[0] for c in cols]):
+        d.text((90 + sum(cw[:i]), 2), lbl, fill=(255, 255, 255, 255))
+    y = 16
+    for (n, row), h in zip(cells, rh):
+        d.text((2, y + 2), n, fill=(255, 255, 255, 255)); x = 90
+        for i, c in enumerate(row):
+            out.alpha_composite(c, (x, y + 12)); x += cw[i]
+        y += h
+    for j, t in enumerate(capl):
+        d.text((2, y + 2 + 12 * j), t, fill=(255, 240, 160, 255))
+    o = f'{outd}/{name}-strip-{tag}.jpg'; out.convert('RGB').save(o, quality=92); print(o, out.size)

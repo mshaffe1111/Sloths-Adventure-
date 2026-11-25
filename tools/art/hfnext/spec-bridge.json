@@ -1,0 +1,67 @@
+{
+ "tag": "bridge",
+ "dir": "reference/art/hfnext/bridge/",
+ "w": 480,
+ "h": 576,
+ "neg": "camera movement, zoom, pan, tracking shot, background change, scenery, extra limbs, extra characters, human hands, fingers, blurry, deformed, text, watermark, flicker, morphing, changing art style, leaving the frame, sliding feet, walking, stepping, shadow, ground, floor line, changing colours, losing the bag, losing the strap",
+ "gens": [
+  {
+   "name": "B1-s11",
+   "bridge": "B1",
+   "seed": 11,
+   "frames": 17,
+   "prompt": "A cute cartoon sloth with a brown satchel on a strap across his chest and bandage-wrapped forearms, standing on a flat plain grey background, the camera locked still. Standing in place with his feet planted, he slowly turns his head and body from a three-quarter view to face the camera, calm and gentle."
+  },
+  {
+   "name": "B2-s11",
+   "bridge": "B2",
+   "seed": 11,
+   "frames": 17,
+   "prompt": "A cute cartoon sloth with a brown satchel on a strap across his chest and bandage-wrapped forearms, standing on a flat plain grey background, the camera locked still. Standing in place with his feet planted, he turns to face the camera, closes his eyes contentedly and rests one paw on his round belly."
+  },
+  {
+   "name": "B3-s11",
+   "bridge": "B3",
+   "seed": 11,
+   "frames": 17,
+   "prompt": "A cute cartoon sloth with a brown satchel on a strap across his chest and bandage-wrapped forearms, standing on a flat plain grey background, the camera locked still. Standing in place with his feet planted, he turns to face the camera and raises one paw up beside his head to wave hello."
+  },
+  {
+   "name": "B4-s11",
+   "bridge": "B4",
+   "seed": 11,
+   "frames": 25,
+   "prompt": "A cute cartoon sloth with a brown satchel on a strap across his chest and bandage-wrapped forearms, standing on a flat plain grey background, the camera locked still. He slowly and gently sits down on the spot, his bottom settling to the ground and his legs folding in front of him, getting sleepy, eyes closing.",
+   "neg": "camera movement, zoom, pan, tracking shot, background change, scenery, extra limbs, extra characters, human hands, fingers, blurry, deformed, text, watermark, flicker, morphing, changing art style, leaving the frame, walking, stepping, shadow, ground, floor line, changing colours, losing the bag, losing the strap"
+  },
+  {
+   "name": "B1-s23",
+   "bridge": "B1",
+   "seed": 23,
+   "frames": 17,
+   "prompt": "A cute cartoon sloth with a brown satchel on a strap across his chest and bandage-wrapped forearms, standing on a flat plain grey background, the camera locked still. Standing in place with his feet planted, he slowly turns his head and body from a three-quarter view to face the camera, calm and gentle."
+  },
+  {
+   "name": "B2-s23",
+   "bridge": "B2",
+   "seed": 23,
+   "frames": 17,
+   "prompt": "A cute cartoon sloth with a brown satchel on a strap across his chest and bandage-wrapped forearms, standing on a flat plain grey background, the camera locked still. Standing in place with his feet planted, he turns to face the camera, closes his eyes contentedly and rests one paw on his round belly."
+  },
+  {
+   "name": "B3-s23",
+   "bridge": "B3",
+   "seed": 23,
+   "frames": 17,
+   "prompt": "A cute cartoon sloth with a brown satchel on a strap across his chest and bandage-wrapped forearms, standing on a flat plain grey background, the camera locked still. Standing in place with his feet planted, he turns to face the camera and raises one paw up beside his head to wave hello."
+  },
+  {
+   "name": "B4-s23",
+   "bridge": "B4",
+   "seed": 23,
+   "frames": 25,
+   "prompt": "A cute cartoon sloth with a brown satchel on a strap across his chest and bandage-wrapped forearms, standing on a flat plain grey background, the camera locked still. He slowly and gently sits down on the spot, his bottom settling to the ground and his legs folding in front of him, getting sleepy, eyes closing.",
+   "neg": "camera movement, zoom, pan, tracking shot, background change, scenery, extra limbs, extra characters, human hands, fingers, blurry, deformed, text, watermark, flicker, morphing, changing art style, leaving the frame, walking, stepping, shadow, ground, floor line, changing colours, losing the bag, losing the strap"
+  }
+ ]
+}

@@ -1,0 +1,42 @@
+// usage: tsx toyfind.mts <tree> <row: deep|long|back> <skill> <seedFrom> <seedTo>  -> per fixture seed, per tier: lives at the river, end, handed; skill on and off
+const [T, row, skill, a, b] = process.argv.slice(2);
+await import(`${T}/src/game/headlessDom.ts`);
+const { withTestStage } = await import(`${T}/src/game/gen2/listed.ts`);
+const { buildGen2Stage, keptFoes } = await import(`${T}/src/game/gen2/pipeline.ts`);
+const { packPlan, plantSeedList } = await import(`${T}/src/game/gen2/seedList.ts`);
+const { withFixtureConfig } = await import(`${T}/src/game/realPlay.ts`);
+const { cfg: toyCfg, kit: toyKit, meadow } = await import(`${T}/src/game/gen2/toyWorld.ts`);
+const { w2Finish, W2_RIVERS } = await import(`${T}/src/game/gen2/worlds/w2.ts`);
+const { SKILLS } = await import(`${T}/tools/inspect/firsttimer.ts`);
+const { runTier } = await import(`${T}/tools/inspect/tierBots.ts`);
+const ID = '2-91';
+const riverOf = (row: string): any => ({
+  id: 'toy-one-river', name: 'one river', archetypes: 'any', phases: ['ki', 'sho', 'ten', 'ketsu'], difficulty: 2, maxPerStage: 1,
+  pieces: [
+    { key: 'near', shape: 'bank', w: [340, 340], place: { kind: 'start' }, main: true },
+    { key: 'far', shape: 'bank', w: [420, 420], place: { kind: 'river', after: 'near', row }, main: true, landing: true },
+  ],
+  entry: { piece: 'near', kind: 'ground' }, exit: { piece: 'far', kind: 'ground' }, exitDy: 0, sockets: [], mirrorable: false,
+});
+const kit: any = { ...toyKit, manifest: { ...toyKit.manifest, world: 2, rivers: W2_RIVERS, creatures: [], props: [], pairs: [], tips: {},
+  sections: [{ ...meadow, phases: ['start', 'rest', 'ki', 'sho', 'ten', 'ketsu', 'goal'], mirrorable: false, sockets: meadow.sockets.filter((k: any) => k.role !== 'prop') }, riverOf(row)] } };
+const cfg: any = { ...toyCfg(ID, 'sprint'), unlocked: true };
+function ride(tier: string, setting: string, seed: number) {
+  const st = buildGen2Stage({ config: cfg, kit, seed, difficulty: 'normal' });
+  const dict: string[] = [];
+  const packed = packPlan({ seed: st.gen2.seed, rerolls: st.gen2.rerolls, plan: st.gen2.plan, foes: [...keptFoes(st)] }, dict);
+  return withTestStage({ [ID]: { kit: () => kit, world: (s: any, _sq: any, d: any) => w2Finish(s, d), seeds: [] } }, () => {
+    const undo = plantSeedList(ID, { dict, seeds: [seed], plans: [packed] });
+    try { return withFixtureConfig(cfg, () => runTier(tier as any, setting as any, 1, ID)); } finally { undo(); }
+  });
+}
+const RUNS = [['middle', 'normal'], ['middle', 'easy'], ['child', 'normal'], ['child', 'easy']];
+const at = (r: any) => r.pieces.find((q: any) => q.id === 'toy-one-river');
+for (let seed = Number(a); seed <= Number(b); seed++) {
+  const st = buildGen2Stage({ config: cfg, kit, seed, difficulty: 'normal' });
+  if (st.gen2.errors?.length || st.rivers?.filter((r: any) => r.speed > 0).length !== 1) continue;
+  for (const [tier, setting] of RUNS) {
+    const f = (on: boolean) => { (SKILLS as any)[skill] = on; try { const r: any = ride(tier, setting, seed); return { end: r.end, lives: at(r)?.lives ?? null, handed: r.handed, stuck: r.stuck.filter((k: any) => k.piece === 'toy-one-river').length }; } finally { (SKILLS as any)[skill] = true; } };
+    console.log(JSON.stringify({ row, skill, seed, tier, setting, on: f(true), off: f(false) }));
+  }
+}

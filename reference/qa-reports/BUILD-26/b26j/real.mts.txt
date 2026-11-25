@@ -1,0 +1,25 @@
+import '../src/game/headlessDom.ts';
+import { setDifficulty } from '../src/game/difficulty.ts';
+import { FirstTimerRun, FT_MIDDLE_EASY, FT_CHILD_EASY, FT_KID, FT_ADULT } from '../tools/inspect/firsttimer.ts';
+const WHO: Record<string, any> = { middle: FT_MIDDLE_EASY, child: FT_CHILD_EASY, kid: { ...FT_KID, setting: 'easy' }, adult: { ...FT_ADULT, setting: 'easy' } };
+// the two step-up lips on 1-4 Easy, on the stage as built: E 10 (s14:b 520-960 @5045 -> s14:c 960-1208 @5005, walking right) and
+// E 37 (#44 360-760 @2684 -> #45 72-360 @2644, walking left); each a thin ledge 40 px up that starts AT the lip. A drop = he goes
+// 60 px under the lip's floor while still between the lip and the ledge's far end (walked off under it)
+setDifficulty('easy');
+const CASES: Record<string, any> = {
+  e10: { seed: 10, who: FT_MIDDLE_EASY, x: 600, y: 5045, facing: 1, drop: (p: any) => p.y > 5105 && p.x > 950 && p.x < 1210 },
+  e37: { seed: 37, who: FT_CHILD_EASY, x: 700, y: 2684, facing: -1, drop: (p: any) => p.y > 2744 && p.x < 370 && p.x > 60 },
+};
+const [which, n, arm, wn] = [process.argv[2], Number(process.argv[3] ?? 20), process.argv[4] ?? 'arm', process.argv[5]];
+const c = CASES[which]; let drops = 0; const out: string[] = [];
+for (let trial = 1; trial <= n; trial++) {
+  let dropAt: string | null = null;
+  const run: any = new FirstTimerRun('1-4', c.seed, wn ? WHO[wn] : c.who, { trial, cap: 9, rescueAfter: 100, onFrame: (s: any) => {
+    if (!dropAt && c.drop(s.p)) dropAt = `x ${Math.round(s.p.x)} y ${Math.round(s.p.y)}`; } });
+  run.sim.stand(c.x, c.y); run.sim.p.facing = c.facing; run.lastSteer = c.facing;
+  if (arm === 'plant') run.stepUpAt = () => null;
+  run.prog.relocate(run.sim.p); run.play();
+  if (dropAt) drops++;
+  out.push(`trial ${trial} ${dropAt ? 'DROP ' + dropAt : 'ok'} end x ${Math.round(run.sim.p.x)} y ${Math.round(run.sim.p.y)}`);
+}
+console.log(out.join('\n')); console.log(`${which} ${wn ?? ''} ${arm}: drops ${drops}/${n}`);

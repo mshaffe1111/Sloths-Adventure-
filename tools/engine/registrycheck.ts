@@ -9,7 +9,8 @@
  *              in protoStage.ts HAND_STAGES shadowing it, new replaces old)
  *   attempts   levelSeeds.ts LEVEL_ATTEMPTS has it
  *   sheets     every creature and the bush sheet its rolls draw, both settings, is in its preload list (stageSheets.ts): the first 3 seeds
- *              of its list (else the first 3 of seeds 1-24 that build), as the seed-list search builds them (libstage.ts buildStage)
+ *              of its list (else the first 3 of seeds 1-24 that build), as the seed-list search builds them (libstage.ts buildStage),
+ *              FINISHED as Play draws them (listed.ts playFinish, R-165.365)
  *   drawcheck  it is a scenario of tools/perf/limits.json (drawcheck plays it, PERFORMANCE-RULES §8; D51)
  *   seeds      a proven seed list (provenIndex.ts) or a stand-in seed (its row's `standIn`, seedList.ts standIn)
  *   flown      its row is judged on a Normal scope (reach.ts JUDGED) and that scope has a flown row for every move Easy's rows fly
@@ -31,7 +32,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { STAGE_TABLE } from '../../src/game/gen2/worlds/stageTable.ts';
-import { listedStage } from '../../src/game/gen2/listed.ts';
+import { listedStage, playFinish } from '../../src/game/gen2/listed.ts';
 import { FLOWN_ARCS, JUDGED } from '../../src/game/gen2/reach.ts';
 import { PROVEN_INDEX } from '../../src/game/gen2/provenIndex.ts';
 import { loadSeedList, provenSeeds } from '../../src/game/gen2/seedList.ts';
@@ -70,7 +71,12 @@ const levels = () => generateAllLevels();
 const SHEETS_ON = { hand: true, paint: true, ctest: false } as const;
 
 /** the sheet keys the stage's first three listed seeds (else seeds 1-3) draw on either setting that stageSheets does not preload */
-export async function realSheetMisses(id: string, preload: (cfg: Parameters<typeof stageSheets>[0]) => string[] = (cfg) => stageSheets(cfg, SHEETS_ON)): Promise<string[]> {
+/** a roll as Play draws it: the row's finish (listed.ts playFinish, the one listJudge uses, listRules.ts) on a copy of the built roll.
+ * R-165.365: the check read the roll BEFORE its finish, so a follow stage (2-3: finish23 sets proto.follow) counted its herons as an eagle. */
+export type SheetFinish = (id: string, st: ReturnType<typeof buildStage>, d: (typeof SETTINGS)[number]) => ReturnType<typeof buildStage>;
+export const PLAY_FINISH: SheetFinish = (id, st, d) => { const row = listedStage(id); return row ? playFinish(row, structuredClone(st), d) : st; };
+
+export async function realSheetMisses(id: string, preload: (cfg: Parameters<typeof stageSheets>[0]) => string[] = (cfg) => stageSheets(cfg, SHEETS_ON), finish: SheetFinish = PLAY_FINISH): Promise<string[]> {
   const cfg = levels().find((l) => l.id === id);
   if (!cfg) return [];
   if (PROVEN_INDEX[id]) await loadSeedList(id);
@@ -83,7 +89,7 @@ export async function realSheetMisses(id: string, preload: (cfg: Parameters<type
   for (const seed of tries) {
     if (checked >= 3) break;
     let both;
-    try { both = SETTINGS.map((d) => [d, buildStage(id, seed, d)] as const); } catch (e) { if (listed.length) out.add(`(listed seed ${seed} threw: ${String((e as Error).message).slice(0, 80)})`); continue; }
+    try { both = SETTINGS.map((d) => [d, finish(id, buildStage(id, seed, d), d)] as const); } catch (e) { if (listed.length) out.add(`(listed seed ${seed} threw: ${String((e as Error).message).slice(0, 80)})`); continue; }
     checked++;
     for (const [d, st] of both) for (const k of [...stageAnims(st).map((n) => `foe:${n}`), ...(stageExtras(st).props2 ? ['props2'] : [])]) if (!want.has(k)) out.add(`${k} (seed ${seed} ${d})`);
   }

@@ -1,0 +1,4 @@
+committed rows 360 merged-head rows 360
+passes committed {('adult', 'easy'): 40, ('adult', 'normal'): 39, ('child', 'easy'): 40, ('child', 'normal'): 40, ('expert', 'normal'): 40, ('kid', 'easy'): 0, ('kid', 'normal'): 0, ('middle', 'easy'): 40, ('middle', 'normal'): 40}
+passes merged    {('adult', 'easy'): 40, ('adult', 'normal'): 39, ('child', 'easy'): 40, ('child', 'normal'): 40, ('expert', 'normal'): 40, ('kid', 'easy'): 0, ('kid', 'normal'): 0, ('middle', 'easy'): 40, ('middle', 'normal'): 40}
+ROWS DIFFERING 0 of 360

@@ -1,0 +1,10 @@
+  13.60 single from 307,10195 hold 0.20 up 0.00 -> 472,10195 ok
+  14.27 single from 478,10195 hold 0.11 up 0.11 -> 600,10275 FELL BACK
+  14.90 single from 662,10275 hold 0.12 up 0.00 -> 662,10195 ok
+  37.00 single from 915,7951 hold 0.23 up 0.00 -> 1072,7911 ok
+  57.87 single from 546,6618 hold 0.28 up 0.00 -> 353,6668 ok
+  75.67 single from 344,5005 hold 0.15 up 0.00 -> 215,4965 ok
+  97.13 single from 564,3061 hold 0.12 up 0.00 -> 444,3021 ok
+  111.20 single from 399,2019 hold 0.24 up 0.11 -> 242,1979 ok
+== 1-4 adult normal seed 9 reach GRAB: shrine 123.7 s rescues 1
+   t 49.5 x 508 y 7230 dur 0 fell back down from here 3 times

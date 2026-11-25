@@ -30,6 +30,7 @@ import type { PostArt } from '../../post.ts';
 import type { ColumnDressSpec } from '../../columnDress.ts';
 import { G } from '../../protoStage.ts';
 import { surfaceBelowBank, type RiverZone } from '../../river.ts';
+import { WHEEL } from '../../wheel.ts';
 import type { W2Decor } from '../../riverArt.ts';
 import type { Platform } from '../../types.ts';
 import type { Difficulty, GraphBrief, NodeJob, SectionPiece, SectionTemplate, Socket, WorldKit, WorldManifest } from '../types.ts';
@@ -351,7 +352,21 @@ export function w2Finish<T extends FinishStage>(st: T, _difficulty?: Difficulty)
   const overLowFloor = (x0: number, x1: number) => lows.some((l) => solids.some((p) => p.y >= l.y0 - 2 && p.y <= l.y1 + 2 && p.x <= x0 + 1 && p.x + p.width >= x1 - 1));
   // (a fall has its river when one spans it AT ITS HEIGHT, its surface just under the fall's lip: where one leg runs under another, the
   //  upper leg's log river spans the lower leg's falls in x, and they were left with no water at all, ENG-GROUND-b, the toy's race leg)
-  const hasRiver = (f: (typeof sorted)[number]) => had.some((r) => r.x0 < f.x1 - 1 && r.x1 > f.x0 + 1 && r.surfaceY >= f.y - 20 && r.surfaceY <= f.y + surfaceBelowBank + LIP_RISE + 20);
+  // (a fall over a water wheel's sweep (place `wheel`, wheelLay.ts layWheel) has its river already: the wheel's own pond, still water
+  //  under the whole sweep, laid with the wheel and held to the flight by wheelFaults. The fall runs from the jetty's lip to the sweep's
+  //  far end at the street's height; the street stands over the jetty and reaches in over the top by design, so the fall has no bank at
+  //  that end and its pond lies a wheel's height under its lip, not at it (ENG-W2FIN, R-165.431: the rule above threw on every wheel).
+  //  The wheel is known by its OWN jetty's lip at the fall's end and its OWN street at the fall's height, and the pond by its surface under
+  //  that wheel (wheel.ts WHEEL.pond), so another storey's fall over the pond in x is still held to its own height and its own banks)
+  const byId = new Map(st.platforms.map((p) => [p.id, p] as const));
+  const wheels = [...new Set(st.platforms.flatMap((p) => (p.wheel ? [p.wheel.w] : [])))];
+  const wheelPond = (f: (typeof sorted)[number]) => wheels.some((w) => {
+    const jetty = w.lay && byId.get(w.lay.jetty), street = w.lay && byId.get(w.lay.streetId);
+    if (!jetty || !street || Math.abs(street.y - f.y) > 2) return false;
+    if (w.way > 0 ? Math.abs(jetty.x + jetty.width - f.x0) > 2 : Math.abs(jetty.x - f.x1) > 2) return false;
+    return had.some((r) => r.wheelPond && Math.abs(r.surfaceY - (w.cy + w.R + WHEEL.pond)) <= 2 && r.x0 <= f.x0 + 1 && r.x1 >= f.x1 - 1);
+  });
+  const hasRiver = (f: (typeof sorted)[number]) => wheelPond(f) || had.some((r) => r.x0 < f.x1 - 1 && r.x1 > f.x0 + 1 && r.surfaceY >= f.y - 20 && r.surfaceY <= f.y + surfaceBelowBank + LIP_RISE + 20);
   const water = (f: (typeof sorted)[number]) => (f.kind === 'water' || f.kind === 'soft') && !hasRiver(f);
   const taken = new Set<(typeof sorted)[number]>();
   for (const f of sorted) {

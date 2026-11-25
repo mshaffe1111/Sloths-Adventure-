@@ -1,0 +1,100 @@
+TAP version 13
+# Subtest: THE ROUTE rides a wheel as ONE move, the jetty to the street: never a hop onto a bucket (PLANTED: the old route hopped on and off them)
+not ok 1 - THE ROUTE rides a wheel as ONE move, the jetty to the street: never a hop onto a bucket (PLANTED: the old route hopped on and off them)
+  ---
+  duration_ms: 1821.124223
+  type: 'test'
+  location: '/home/user/w2fin/tools/difficulty/wheelChannel.test.ts:40:1'
+  failureType: 'testCodeFailure'
+  error: 'World 2 finish: the fall at x=335-731 has no bank at one end'
+  code: 'ERR_TEST_FAILURE'
+  stack: |-
+    w2Finish (/home/user/w2fin/src/game/gen2/worlds/w2.ts:333:31)
+    world (/home/user/w2fin/tools/difficulty/wheelChannel.test.ts:34:72)
+    playFinish (/home/user/w2fin/src/game/gen2/listed.ts:72:31)
+    generateStageOn (/home/user/w2fin/src/game/stageGenerator.ts:2952:9)
+    <anonymous> (/home/user/w2fin/src/game/stageGenerator.ts:2891:40)
+    withSetting (/home/user/w2fin/src/game/settingDials.ts:45:12)
+    generateStage (/home/user/w2fin/src/game/stageGenerator.ts:2891:10)
+    new GameEngine (/home/user/w2fin/src/game/engine.ts:1063:101)
+    new RealPlay (/home/user/w2fin/src/game/realPlay.ts:156:15)
+    <anonymous> (/home/user/w2fin/tools/difficulty/wheelChannel.test.ts:42:21)
+  ...
+# Subtest: THE CHANNEL prices the board and the step-off from the flown table, the easiest way; an in-street asks no step-off; both settings
+not ok 2 - THE CHANNEL prices the board and the step-off from the flown table, the easiest way; an in-street asks no step-off; both settings
+  ---
+  duration_ms: 538.798843
+  type: 'test'
+  location: '/home/user/w2fin/tools/difficulty/wheelChannel.test.ts:56:1'
+  failureType: 'testCodeFailure'
+  error: 'World 2 finish: the fall at x=335-731 has no bank at one end'
+  code: 'ERR_TEST_FAILURE'
+  stack: |-
+    w2Finish (/home/user/w2fin/src/game/gen2/worlds/w2.ts:333:31)
+    world (/home/user/w2fin/tools/difficulty/wheelChannel.test.ts:34:72)
+    playFinish (/home/user/w2fin/src/game/gen2/listed.ts:72:31)
+    generateStageOn (/home/user/w2fin/src/game/stageGenerator.ts:2952:9)
+    <anonymous> (/home/user/w2fin/src/game/stageGenerator.ts:2891:40)
+    withSetting (/home/user/w2fin/src/game/settingDials.ts:45:12)
+    generateStage (/home/user/w2fin/src/game/stageGenerator.ts:2891:10)
+    new GameEngine (/home/user/w2fin/src/game/engine.ts:1063:101)
+    new RealPlay (/home/user/w2fin/src/game/realPlay.ts:156:15)
+    scoreStage (/home/user/w2fin/tools/difficulty/score.ts:1075:14)
+  ...
+# Subtest: PLANTED: a wheel whose row was never flown is refused by the channel, never priced from a guess
+not ok 3 - PLANTED: a wheel whose row was never flown is refused by the channel, never priced from a guess
+  ---
+  duration_ms: 426.055451
+  type: 'test'
+  location: '/home/user/w2fin/tools/difficulty/wheelChannel.test.ts:79:1'
+  failureType: 'testCodeFailure'
+  error: 'World 2 finish: the fall at x=335-731 has no bank at one end'
+  code: 'ERR_TEST_FAILURE'
+  stack: |-
+    w2Finish (/home/user/w2fin/src/game/gen2/worlds/w2.ts:333:31)
+    world (/home/user/w2fin/tools/difficulty/wheelChannel.test.ts:34:72)
+    playFinish (/home/user/w2fin/src/game/gen2/listed.ts:72:31)
+    generateStageOn (/home/user/w2fin/src/game/stageGenerator.ts:2952:9)
+    <anonymous> (/home/user/w2fin/src/game/stageGenerator.ts:2891:40)
+    withSetting (/home/user/w2fin/src/game/settingDials.ts:45:12)
+    generateStage (/home/user/w2fin/src/game/stageGenerator.ts:2891:10)
+    new GameEngine (/home/user/w2fin/src/game/engine.ts:1063:101)
+    new RealPlay (/home/user/w2fin/src/game/realPlay.ts:156:15)
+    <anonymous> (/home/user/w2fin/tools/difficulty/wheelChannel.test.ts:81:21)
+  ...
+# Subtest: PLANTED: without its channel a stage laying a wheel is refused by the meter and failed by the coverage gate
+not ok 4 - PLANTED: without its channel a stage laying a wheel is refused by the meter and failed by the coverage gate
+  ---
+  duration_ms: 427.739199
+  type: 'test'
+  location: '/home/user/w2fin/tools/difficulty/wheelChannel.test.ts:92:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    The validation function is expected to return "true". Received false
+    
+    Caught error:
+    
+    Error: World 2 finish: the fall at x=335-731 has no bank at one end
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  stack: |-
+    <anonymous> (/home/user/w2fin/tools/difficulty/wheelChannel.test.ts:98:14)
+    <anonymous> (/home/user/w2fin/tools/difficulty/wheelChannel.test.ts:36:47)
+    withFixtureConfig (/home/user/w2fin/src/game/realPlay.ts:120:16)
+    <anonymous> (/home/user/w2fin/tools/difficulty/wheelChannel.test.ts:36:18)
+    withTestStage (/home/user/w2fin/src/game/gen2/listed.ts:95:12)
+    onToy (/home/user/w2fin/tools/difficulty/wheelChannel.test.ts:34:10)
+    TestContext.<anonymous> (/home/user/w2fin/tools/difficulty/wheelChannel.test.ts:93:3)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+  ...
+1..4
+# tests 4
+# suites 0
+# pass 0
+# fail 4
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 7279.398619

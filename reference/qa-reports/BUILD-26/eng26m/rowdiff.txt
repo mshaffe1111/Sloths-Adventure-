@@ -1,0 +1,66 @@
+kid normal    OLD 24/40  REL 18/40  DROP  lost [12,13,18,34,3,7,19] won [16]
+kid easy      OLD 34/40  REL 32/40  DROP  lost [37,10] won []
+adult normal  OLD 40/40  REL 39/40  DROP  lost [36] won []
+adult easy    OLD 40/40  REL 36/40  DROP  lost [17,37,10,19] won []
+child normal  OLD 28/40  REL 35/40  ok  lost [24,32,26,30] won [20,36,40,5,2,10,34,7,15,19,39]
+child easy    OLD 28/40  REL 33/40  ok  lost [12,3] won [4,8,28,40,17,21,29]
+middle normal OLD 39/40  REL 37/40  DROP  lost [29,6,15] won [23]
+middle easy   OLD 39/40  REL 37/40  DROP  lost [29,37,10] won [4]
+expert normal OLD 40/40  REL 40/40  ok  lost [] won []
+
+NEW misses (passed on OLD, not on REL):
+  kid normal 12: OLD PASS 140.6s -> REL shrine rescued x1 stuck@1036
+  adult normal 36: OLD PASS 129.7s -> REL shrine rescued x1 stuck@1036
+  child normal 24: OLD PASS 182.2s -> REL shrine rescued x1 stuck@463
+  child normal 32: OLD PASS 200.6s -> REL shrine rescued x1 stuck@60,388
+  child easy 12: OLD PASS 157.2s -> REL shrine rescued x1 stuck@1044
+  kid normal 13: OLD PASS 142s -> REL shrine rescued x1 stuck@1036
+  kid easy 37: OLD PASS 125.8s -> REL shrine rescued x1 stuck@607
+  adult easy 17: OLD PASS 124.5s -> REL shrine rescued x1 stuck@1115
+  adult easy 37: OLD PASS 110.8s -> REL shrine rescued x1 stuck@610
+  middle normal 29: OLD PASS 158.5s -> REL shrine rescued x1 stuck@61
+  middle easy 29: OLD PASS 128.3s -> REL shrine rescued x1 stuck@111,135
+  middle easy 37: OLD PASS 133.6s -> REL shrine rescued x1 stuck@592
+  kid normal 18: OLD PASS 131.8s -> REL shrine rescued x1 stuck@1036
+  kid normal 34: OLD PASS 156.9s -> REL shrine rescued x1 stuck@1036
+  kid easy 10: OLD PASS 121.9s -> REL shrine rescued x1 stuck@607
+  adult easy 10: OLD PASS 110.8s -> REL shrine rescued x1 stuck@610
+  child normal 26: OLD PASS 213.7s -> REL time goal 0/1
+  child normal 30: OLD PASS 205.1s -> REL shrine rescued x1 stuck@996,936
+  middle normal 6: OLD PASS 160.3s -> REL shrine rescued x1 stuck@801
+  middle easy 10: OLD PASS 129.4s -> REL shrine rescued x1 stuck@583
+  kid normal 3: OLD PASS 127.5s -> REL shrine rescued x1 stuck@182
+  kid normal 7: OLD PASS 140.7s -> REL shrine rescued x1 stuck@1036
+  kid normal 19: OLD PASS 150.5s -> REL shrine rescued x1 stuck@1036
+  adult easy 19: OLD PASS 129.9s -> REL shrine rescued x1 stuck@1115
+  child easy 3: OLD PASS 167.7s -> REL shrine rescued x1 stuck@442
+  middle normal 15: OLD PASS 134.3s -> REL shrine rescued x1 stuck@1183,1187
+
+misses on REL that also missed on OLD (same or other cause):
+  kid normal 20: OLD shrine rescued x1 stuck@1036 | REL shrine rescued x1 stuck@1036
+  kid normal 24: OLD shrine rescued x1 stuck@1036 | REL shrine rescued x1 stuck@1036
+  kid normal 36: OLD shrine rescued x1 stuck@1036 | REL shrine rescued x1 stuck@1036
+  kid normal 40: OLD shrine rescued x1 stuck@1036 | REL shrine rescued x1 stuck@1036
+  kid easy 24: OLD shrine rescued x1 stuck@1115 | REL shrine rescued x1 stuck@1115
+  kid easy 40: OLD shrine rescued x1 stuck@1115 | REL shrine rescued x1 stuck@1115
+  child easy 20: OLD shrine rescued x1 stuck@82 | REL shrine rescued x1 stuck@81,255
+  kid normal 9: OLD shrine rescued x1 stuck@1036 | REL shrine rescued x1 stuck@1036
+  kid normal 17: OLD shrine rescued x1 stuck@1036 | REL shrine rescued x1 stuck@1036
+  kid normal 21: OLD shrine rescued x1 stuck@1036 | REL shrine rescued x1 stuck@1036
+  kid normal 33: OLD shrine rescued x1 stuck@1036 | REL shrine rescued x1 stuck@1036
+  kid normal 37: OLD shrine rescued x1 stuck@1036 | REL shrine rescued x1 stuck@1036
+  child normal 37: OLD shrine rescued x1 stuck@914,794 | REL shrine rescued x1 stuck@144,168
+  kid normal 10: OLD shrine rescued x1 stuck@1036 | REL shrine rescued x1 stuck@1036
+  kid normal 22: OLD shrine rescued x1 stuck@1036 | REL shrine rescued x1 stuck@1036
+  kid easy 2: OLD shrine rescued x1 stuck@1115 | REL shrine rescued x1 stuck@1115
+  child easy 2: OLD shrine rescued x2 stuck@910,1186 | REL shrine rescued x1 stuck@90
+  child easy 10: OLD shrine rescued x1 stuck@90 | REL shrine rescued x1 stuck@604
+  child easy 30: OLD shrine rescued x2 stuck@760,90,1070 | REL shrine rescued x1 stuck@1190
+  child easy 38: OLD shrine rescued x1 stuck@90 | REL shrine rescued x2 stuck@66,387
+  kid normal 11: OLD shrine rescued x1 stuck@1036 | REL shrine rescued x1 stuck@1036
+  kid normal 23: OLD shrine rescued x1 stuck@1036 | REL shrine rescued x1 stuck@1036
+  kid normal 35: OLD shrine rescued x1 stuck@1036 | REL shrine rescued x1 stuck@1036
+  kid normal 39: OLD shrine rescued x1 stuck@1036 | REL shrine rescued x1 stuck@1036
+  kid easy 11: OLD shrine rescued x1 stuck@1115 | REL shrine rescued x1 stuck@1115
+  kid easy 31: OLD shrine rescued x1 stuck@1115 | REL shrine rescued x1 stuck@1115
+  kid easy 35: OLD shrine rescued x1 stuck@1115 | REL shrine rescued x1 stuck@1115

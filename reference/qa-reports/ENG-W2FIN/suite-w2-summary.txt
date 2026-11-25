@@ -1,0 +1,7 @@
+World 2 / wheel / tower src tests (23 files) on frozen 78bf17d60
+# tests 160
+# pass 158
+# fail 2
+not ok 127 - beat 4's millrace lays 2-1's ride logs (soft), crossed either way, fair; beat 10 its bounce; the crest its totem
+not ok 128 - 2-6: the climb up the bank village, with the bank behind it, doors on the porches and Gruntlewick at the top
+suite exit 1

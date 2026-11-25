@@ -1,0 +1,12 @@
+== head cfdca80e3 vs 0eefc707e (16 layouts, both settings, 102 stages)
+lock: 3264 builds compared (0 missing), 102/102 stages unchanged
+drops (gen2.drops + verdicts fingerprint): 3264 builds compared, MOVED: 1-1 (16: normal 1; normal 2; normal 3; normal 4), 1-6 (32: normal 1; normal 2; normal 3; normal 4), 1-7 (32: normal 1; normal 2; normal 3; normal 4), 1-8 (16: normal 1; normal 2; normal 3; normal 4), 2-1 (32: normal 1; normal 2; normal 3; normal 4), 2-5 (32: normal 1; normal 2; normal 3; normal 4), 5-7 (14: normal 3; normal 4; normal 5; normal 6), 5-9 (17: normal 1; normal 3; normal 4; normal 5), 8-2 (9: normal 4; easy 1; easy 5; easy 6), 8-5 (11: normal 7; easy 2; easy 4; easy 6), 8-6 (32: normal 1; normal 2; normal 3; normal 4), 8-9 (4: normal 8; normal 14; normal 16; easy 2)
+exit=1
+== head cfdca80e3 vs e67e01113
+lock: 3264 builds compared (0 missing), 102/102 stages unchanged
+drops (gen2.drops + verdicts fingerprint): 3264 builds compared, MOVED: 1-1 (16: normal 1; normal 2; normal 3; normal 4), 1-6 (32: normal 1; normal 2; normal 3; normal 4), 1-7 (32: normal 1; normal 2; normal 3; normal 4), 1-8 (16: normal 1; normal 2; normal 3; normal 4), 2-1 (32: normal 1; normal 2; normal 3; normal 4), 2-5 (32: normal 1; normal 2; normal 3; normal 4), 5-7 (14: normal 3; normal 4; normal 5; normal 6), 5-9 (17: normal 1; normal 3; normal 4; normal 5), 8-2 (9: normal 4; easy 1; easy 5; easy 6), 8-5 (11: normal 7; easy 2; easy 4; easy 6), 8-6 (32: normal 1; normal 2; normal 3; normal 4), 8-9 (4: normal 8; normal 14; normal 16; easy 2)
+exit=1
+== base vs base drops: 0eefc707e vs e67e01113
+lock: 3264 builds compared (0 missing), 102/102 stages unchanged
+drops (gen2.drops + verdicts fingerprint): 3264 builds compared, identical on every build
+exit=0

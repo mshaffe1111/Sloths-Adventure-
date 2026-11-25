@@ -111,7 +111,7 @@ import { stageClock, type StageClock } from './clock.ts';
 import { moveRide } from './ridePlay.ts';
 /** how far inside a bank's end the water drawn over him stays (its painted face leans up to about this far) */
 const ZONE_INSET = 14;
-import { drawLadder, drawLily, drawLogComing, drawRiverFoam, drawRiverLog, drawRiverTailEnd, TAIL_END, drawReedClump, drawRiverWater, drawSafeRiverOver, safeLogLine, riverWaterOutline, drawW2Cage, drawW2Decor, drawW2Lift, riverArtReady, RIVER_UNDER_BANK, deepFillFoot, riverPaintFoot } from './riverArt.ts';
+import { drawLadder, drawLily, drawLogComing, drawRiverFoam, drawRiverLog, drawRiverTailEnd, TAIL_END, drawReedClump, drawRiverWater, drawSafeRiverOver, safeLogLine, riverWaterOutline, drawW2Cage, drawW2Decor, drawW2Lift, riverArtReady, RIVER_UNDER_BANK, w2Sheet, deepFillFoot, riverPaintFoot } from './riverArt.ts';
 import type { RiverZone } from './river.ts';
 import { rideHidden, ridersOf, stepRiders, type Riders } from './ridePickups.ts';
 import { RIDE } from './ride.ts';
@@ -208,7 +208,7 @@ import { maxHearts } from './secret.ts';
 import { drawLeafCover, drawPushLog, drawSeed, markSeedFound, seedFound, waterArt, type ProtoExtras } from './protoStage.ts';
 import { CHEER_SECONDS, footfallsBetween, hasClip, heroClipsEnabled, heroClipsLive, resetHeroClips, warmHeroClips } from './heroClips.ts';
 import { releaseDecorPics } from './envKit.ts';
-import { bushHeight, drawBranchArt, drawBushArt, drawEarthWall, setLianaTops, drawCurtainArt, drawHollowArt, drawProtoScene, drawSeedArt, hasKit, releaseGroundChunks, paintedKitEnabled, setDecoTrunks, setDepthView, setGroundPaint, setKitWorld, setRockLooks, setGroundLook, setBoughJoins, paintedPlatforms, protoArtReady, type ProtoSceneState , setGroundStacks, riverLid, riverUnderside, drawKitColumn, setClimbFeet, stackViewFloor } from './protoArt.ts';
+import { bushHeight, drawBranchArt, drawBushArt, drawEarthWall, earthWallCovers, setLianaTops, drawCurtainArt, drawHollowArt, drawProtoScene, drawSeedArt, hasKit, releaseGroundChunks, paintedKitEnabled, setDecoTrunks, setDepthView, setGroundPaint, setKitWorld, setRockLooks, setGroundLook, setBoughJoins, paintedPlatforms, protoArtReady, type ProtoSceneState , setGroundStacks, riverLid, riverUnderside, drawKitColumn, setClimbFeet, stackViewFloor } from './protoArt.ts';
 import { dressFeet } from './columnDress.ts';
 import { drawPorchPosts, porchPosts, type PorchPost } from './porchPosts.ts';
 import { drawFx, fxFrame } from './bossFx.ts';
@@ -237,6 +237,9 @@ import { FieldPlay, type FieldHost } from './fieldPlay.ts';
 import { beatClock } from './beat.ts';
 import { FollowPlay } from './followPlay.ts';
 import { drawFollowers, drawHerons } from './followArt.ts';
+import { W2_FRAMES } from './w2PropsData.ts';
+import { drawEdgeMarks, edgeMarks, safeInsets, stillMarks, type EdgeMark, type MarkView } from './edgeMarker.ts';
+import { lineFaces, type Face } from './followFaces.ts';
 import { aimBreaths, noteArrivals, type BreathWatch } from './breathAim.ts';
 import type { PodCost } from './podfall.ts';
 import { raceEndLine, type RaceEndWho } from './pacer.ts';
@@ -1119,7 +1122,6 @@ export class GameEngine {
     this.watch = newWatch();
     this.watch.dur = 5; // the first pass waits a little longer, for the hint to be read
     this.floodClock = this.currentStage.flood ? new FloodClock(this.currentStage.flood) : null;
-    this.startFollow();
     this.bushRustle.clear();
     this.glowStill = 0;
     this.glowWake.clear();
@@ -1248,6 +1250,9 @@ export class GameEngine {
       targetScaleX: 1,
       targetScaleY: 1,
     };
+    // (the little ones that follow him start behind him: so once he stands at the start (BUILD-23: called before the player was made, every
+    //  real stage carrying proto.follow threw in the constructor; ENG-23's toys started it again after, on a made engine)
+    this.startFollow();
 
     // Initialize Camera
     this.camera = {
@@ -7143,6 +7148,46 @@ export class GameEngine {
     return [...n].sort((a, b) => b[1] - a[1])[0]?.[0];
   }
 
+  /** on a stage whose little ones follow him (followPlay.ts): each one's face for the HUD's goal slots (followFaces.ts); null elsewhere */
+  /** the edge marks this frame (edgeMarker.ts), in a reused array and view: no allocation per frame */
+  private marks: EdgeMark[] = [];
+  private markView: MarkView = { camX: 0, camY: 0, vw: 0, vh: 0, zoom: 1, w: 0, h: 0, ins: { top: 0, right: 0, bottom: 0, left: 0 } };
+  /**
+   * A little one spooked back off the screen: an arrow at the edge on its side, at its height, with its face (R-165.372). How many, and
+   * where (the reused array: read it before the next frame). None on a stage without a following line.
+   */
+  public spookMarks(): { n: number; marks: readonly EdgeMark[] } {
+    return { n: this.countMarks(), marks: this.marks };
+  }
+  private drawSpookMarks(ctx: CanvasRenderingContext2D, dpr: number): void {
+    const img = w2Sheet();
+    if (!img || !this.follow) return;
+    const n = this.countMarks();
+    if (!n) return;
+    ctx.save();
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    drawEdgeMarks(ctx, img, W2_FRAMES, this.marks, n, this.gameTime, stillMarks());
+    ctx.restore();
+  }
+  /** spookMarks without the returned object (the draw's own call: nothing allocated) */
+  private countMarks(): number {
+    if (!this.follow) return 0;
+    const v = this.markView;
+    v.camX = this.camera.x;
+    v.camY = this.camera.y;
+    v.vw = this.camera.viewportWidth;
+    v.vh = this.camera.viewportHeight;
+    v.zoom = this.zoom;
+    v.w = this.viewCssW || v.vw * v.zoom;
+    v.h = this.viewCssH || v.vh * v.zoom;
+    v.ins = safeInsets(v.w, v.h);
+    return edgeMarks(this.follow.line, v, this.marks);
+  }
+
+  public lineFaces(): Face[] | null {
+    return this.follow ? lineFaces(this.follow.line, this.follow.stage.covers) : null;
+  }
+
   public guideView(out: GuideView): GuideView {
     const p = this.player;
     const cam = this.camera;
@@ -7548,7 +7593,12 @@ export class GameEngine {
     // as sideways and not a soft, 2.2x crop of their misty middle; their painted sky fills the room above: scenery.ts stripTop)
     const vw = this.camera.viewportWidth, vh = this.camera.viewportHeight;
     const stripVh = vh > vw ? (WORLD_VIEW_H * vw) / PORTRAIT_VIEW_W : vh;
-    if (!ownScene) {
+    // 2-6: when the bank's opaque earth wall fills the whole view (sheets in, past every edge by more than the shake and the snap), the
+    // backdrop and the rivers under the wall are hidden under it: they are left undrawn (protoArt.ts earthWallCovers; 2-6's draw budget,
+    // ENG-26r: the backdrop, its vignette and the rivers' soil were drawn in full and then covered, 4 to 6 screens of image a frame)
+    const wallView = { x0: this.camera.x, x1: this.camera.x + vw, y0: this.camera.y, y1: this.camera.y + vh };
+    const walled = !!this.proto?.bankWall && earthWallCovers(this.proto.bankWall, wallView, Math.max(Math.abs(shakeX), Math.abs(shakeY)) + 1);
+    if (!ownScene && !walled) {
       renderScenery(ctx, world.id, this.camera.x - shakeX, this.camera.y - shakeY, vw, vh, this.gameTime, this.quality > 0, stripVh);
       // the falling petals or leaves drift behind the stage, so the ground and its soil hide them (scenery.ts renderDrift; BUILD-24c)
       setWeatherAvoid(this.player.x - this.camera.x, this.player.y - 28 - this.camera.y);
@@ -7579,14 +7629,16 @@ export class GameEngine {
     this.drawWaterAndFlags(ctx, world);
     // 6-8: the root wall and the hides and arches behind the climb
     if (this.proto?.stilt) drawStiltDecor(ctx, this.proto.stilt, { x0: this.camera.x, x1: this.camera.x + this.camera.viewportWidth, y0: this.camera.y, y1: this.camera.y + this.camera.viewportHeight });
-    // the posts under a plank deck over a river, drawn before the water so its surface covers their feet (porchPosts.ts, DRESS-27)
-    this.drawPorchPostsNow(ctx);
-    this.drawRivers(ctx, world, false);
+    // the posts under a plank deck over a river, drawn before the water so its surface covers their feet (porchPosts.ts, DRESS-27); both
+    // left undrawn when the bank's opaque earth wall fills the view (protoArt.ts earthWallCovers, ENG-26r), as the rivers are
+    if (!walled) {
+      this.drawPorchPostsNow(ctx);
+      this.drawRivers(ctx, world, false);
+    }
     // World 5's petals drift behind the stage, as every world's weather does (w5Play drawDrift; BUILD-24c)
     this.w5?.drawDrift(ctx, this.gameTime, { x0: this.camera.x, x1: this.camera.x + this.camera.viewportWidth, y0: this.camera.y, y1: this.camera.y + this.camera.viewportHeight });
     // 2-6: the river bank the village is dug into, behind the whole climb
-    if (this.proto?.bankWall)
-      drawEarthWall(ctx, this.proto.bankWall, { x0: this.camera.x, x1: this.camera.x + this.camera.viewportWidth, y0: this.camera.y, y1: this.camera.y + this.camera.viewportHeight });
+    if (this.proto?.bankWall) drawEarthWall(ctx, this.proto.bankWall, wallView);
 
     // the bounce mushrooms wear the gold rim too (they sit in the scenery's colours): about the painted cap itself, and none while the
     // cap is not in (a rim over nothing read as an empty pickup ring, F12: bounceArt.ts bounceAuraBox)
@@ -8169,6 +8221,8 @@ export class GameEngine {
       }
       ctx.restore();
     }
+    // (a little one spooked back off the screen: its edge marker, under the iris)
+    if (this.follow) this.drawSpookMarks(ctx, dpr);
     this.drawIris(ctx);
 
     if (this.entrance && this.boss && this.bossDef && this.currentStage.arena) {

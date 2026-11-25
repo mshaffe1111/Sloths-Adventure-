@@ -1,0 +1,6 @@
+{
+ "idle-yawn": {"take": "B1-s23", "bridge": 16, "own": 49, "replace": false, "pin_feet": false},
+ "look-around": {"take": "B1-s23", "bridge": 16, "own": 49, "replace": false, "pin_feet": false},
+ "belly-scratch": {"take": "SC-s19", "bridge": 41, "own": 0, "replace": true, "pin_feet": true},
+ "wave": {"take": "B3-s11", "bridge": 16, "own": 49, "replace": false, "pin_feet": true}
+}

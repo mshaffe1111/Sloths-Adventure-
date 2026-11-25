@@ -3,11 +3,21 @@ import assert from 'node:assert/strict';
 import { STRETCH_FALLBACK, STRETCH_WORDS, stretchChoices } from './ctestStretches.ts';
 import { FACES, REQUIRED, readyToSend, surveyQuestions, surveyRow } from './ControlTestGate.tsx';
 import { w1World } from '../game/gen2/worlds/w1.ts';
+import { SECTIONS_12 } from '../game/gen2/worlds/w1Arc12.ts';
+import { SECTIONS_14 } from '../game/gen2/worlds/w1Arc14.ts';
+import { SECTIONS_15 } from '../game/gen2/worlds/w1Arc15.ts';
+import { SECTIONS_16 } from '../game/gen2/worlds/w1Arc16.ts';
+import { SECTIONS_17 } from '../game/gen2/worlds/w1Arc17.ts';
+import { SECTIONS_18 } from '../game/gen2/worlds/w1Arc18.ts';
+import { SECTIONS_19 } from '../game/gen2/worlds/w1Arc19.ts';
 import { generateAllLevels } from '../game/worldsData.ts';
 import { generateStage } from '../game/stageGenerator.ts';
 import { clearPlay11, newPlay11 } from '../game/testlink1_1.ts';
 
-const sections = (): string[] => w1World().manifest.sections.map((s) => s.id);
+/** every World 1 section a stage can lay: the world's shared ones and each arc's own (1-2, 1-4 .. 1-9 lay only their own: R-165.343,
+ *  before which the table was checked against the shared ones alone and those stages' chips all fell back to the generic four) */
+const ALL_SECTIONS = [...w1World().manifest.sections, ...SECTIONS_12, ...SECTIONS_14, ...SECTIONS_15, ...SECTIONS_16, ...SECTIONS_17, ...SECTIONS_18, ...SECTIONS_19];
+const sections = (): string[] => [...new Set(ALL_SECTIONS.map((s) => s.id))];
 
 test('ctest survey: every World 1 section has plain words (or is marked walking-only), and the table names no section that is gone', () => {
   const ids = sections();
@@ -16,8 +26,9 @@ test('ctest survey: every World 1 section has plain words (or is marked walking-
   const stale = Object.keys(STRETCH_WORDS).filter((id) => !ids.includes(id));
   assert.deepEqual(stale, [], 'these are no longer World 1 sections');
   // a walking-only section is never offered; anything a tester can find hard is
-  for (const s of w1World().manifest.sections) {
-    if (STRETCH_WORDS[s.id] === null) assert.ok((s.difficulty ?? 1) <= 1 || s.phases.includes('rest') || s.phases.includes('goal') || s.phases.includes('start'), `${s.id} is skipped but is a challenge`);
+  for (const s of ALL_SECTIONS) {
+    const calm = (s.phases ?? []).some((p) => p === 'rest' || p === 'goal' || p === 'start') || (s.jobs ?? []).some((j) => j === 'rest' || j === 'arrive' || j === 'exit');
+    if (STRETCH_WORDS[s.id] === null) assert.ok((s.difficulty ?? 1) <= 1 || calm, `${s.id} is skipped but is a challenge`);
   }
 });
 
@@ -49,7 +60,7 @@ test("ctest survey: real gen2 1-1 runs (proven seeds, both settings) list at lea
       for (const l of labels) assert.ok(l.split(':')[0] in STRETCH_WORDS, `${l} has no words`);
       const choices = stretchChoices(labels);
       assert.ok(choices.length >= 4, choices.join(', '));
-      assert.ok(choices.length <= 10, choices.join(', '));
+      assert.ok(choices.length <= 6, choices.join(', '));
     }
   } finally {
     clearPlay11();
@@ -79,14 +90,16 @@ test('ctest survey: Send waits for the three required answers, and only those', 
   assert.equal(readyToSend({ hard: ['Running'], tips: ['Yes'], next: ['Yes'] }), false);
 });
 
-test("ctest survey: the front page shows the moves of the stage the link plays (1-5's creaky limbs; 1-4's climb and 1-3's traps kept), each a real pose of Pokey's sheet", async () => {
+test("ctest survey: the front page shows the moves of the stage picked (every World 1 stage has a page; 1-5's creaky limbs, 1-4's climb and 1-3's traps kept), each a real pose of Pokey's sheet", async () => {
   const { CTEST_PAGES, ctestPage } = await import('./ControlTestGate.tsx');
-  const { CTEST_LEVEL_ID } = await import('../game/playRecorder.ts');
+  const { CTEST_STAGES } = await import('../game/playRecorder.ts');
   const { STD_FRAMES } = await import('../game/heroStandardData.ts');
-  assert.ok(CTEST_PAGES[CTEST_LEVEL_ID], `the link's stage ${CTEST_LEVEL_ID} has a front page`);
-  assert.equal(ctestPage(), CTEST_PAGES[CTEST_LEVEL_ID]);
-  // (the link plays 1-5, Where She Walked: Matt 11-13 8:48 PM ET, "Make the test link level 5")
-  assert.equal(CTEST_LEVEL_ID, '1-5');
+  // (the link offers all of World 1: Matt 11-20 2:39 PM ET, R-165.343; before it one stage, 1-5: Matt 11-13 8:48 PM ET)
+  for (const id of CTEST_STAGES) {
+    assert.ok(CTEST_PAGES[id], `the link's stage ${id} has a front page`);
+    assert.equal(ctestPage(id), CTEST_PAGES[id]);
+  }
+  assert.deepEqual(Object.keys(CTEST_PAGES).sort(), [...CTEST_STAGES].sort(), 'a page for every stage offered, and none for a stage not offered');
   assert.deepEqual(CTEST_PAGES['1-5'].moves.map((m) => m.name), ['Run', 'Jump', 'Climb', 'Creaky limbs']);
   assert.deepEqual(CTEST_PAGES['1-4'].moves.map((m) => m.name), ['Climb', 'Two hands', 'Push the figs', 'Heads up']);
   assert.deepEqual(CTEST_PAGES['1-3'].moves.map((m) => m.name), ['Run', 'Jump', 'Punch', 'Drop a trap']);
@@ -96,7 +109,7 @@ test("ctest survey: the front page shows the moves of the stage the link plays (
   assert.equal(CTEST_PAGES['1-3'].alt, 'Pokey on the forest floor near a golden snake and a hive');
   for (const [id, pg] of Object.entries(CTEST_PAGES)) {
     assert.ok(pg.moves.length <= 4, `${id}: the page holds four cards`);
-    assert.ok(pg.alt.length > 0 && !/1-1|mossy logs/.test(pg.alt), `${id}: its own still's words`);
+    assert.ok(pg.alt.length > 0 && !/1-\d|mossy logs/.test(pg.alt), `${id}: its own still's words`);
     for (const m of pg.moves) {
       assert.ok(STD_FRAMES[m.frame], `${id} ${m.name}: ${m.frame} is on the sheet`);
       assert.ok(m.how.length <= 70, `${id} ${m.name}: one short line`);
@@ -143,10 +156,10 @@ test('a key typed into a text box is the text, never the game (the notes ate P, 
   assert.match(inp, /private handleKeyDown = \(e: KeyboardEvent\) => \{[\s\S]{0,300}TEXTAREA[\s\S]{0,80}return;/);
 });
 
-test("1-3's chips are the story keeper's words (11-12 1:40 PM, and the two snakes on a log's, 2:10 PM), each beat once", () => {
+test("1-3's chips are the story keeper's words (11-12; trimmed to six, KEEPER-PICK 11-21: the awake snakes one chip, the punch one chip)", () => {
   const want: Record<string, string> = {
-    'w1-13-lesson': 'the first hive', 'w1-13-again': 'the snake on watch', 'w1-13-stone-stair': 'the stone on the steps', 'w1-13-other-way': 'the branches with no vine',
-    'w1-13-perch': 'the high branch', 'w1-13-gallery': 'three traps in a row', 'w1-13-two-snakes': 'the two snakes on a log', 'w1-13-finale': 'the last two snakes',
+    'w1-13-lesson': 'the first hive', 'w1-13-again': 'the snakes on watch', 'w1-13-stone-stair': 'the snakes on watch', 'w1-13-other-way': 'punching the snakes',
+    'w1-13-perch': 'the high branch', 'w1-13-gallery': 'three traps in a row', 'w1-13-two-snakes': 'the two snakes on a log', 'w1-13-finale': 'punching the snakes',
   };
   for (const [id, words] of Object.entries(want)) assert.equal(STRETCH_WORDS[id], words, id);
 });

@@ -1,0 +1,83 @@
+"""ART-NEXT-d/e (lead's polish point, R-165.354): colour steps between consecutive frames of each idle clip, mean Lab dE76, feet-anchored
+as the game draws them. Two numbers per step: px = mean per-pixel dE over the pixels solid (alpha > 200) in both frames (motion shows
+in it); MEAN = dE between the two frames' mean body colours (motion-free; the colour pop). The seams are the steps where a bridge meets
+the plain pose or the clip (tools/art/hfnext/bridges.json, written by bridgebake.py, says where each clip's bridges are):
+ bridged clip  plain -> bridge in (step 0), bridge in -> clip f0, clip LAST -> bridge out, bridge out -> plain (step N-2)
+ --replace     plain -> take (step 0), take -> plain (step N-2)
+The bar (ART-NEXT-e, D108 gate): each seam's MEAN step <= max(2 x the median MEAN step inside its clip's bridges, 0.5) and < 1.0.
+ONE SLOTH (ART-REGRADE, R-165.377; heroClipsBody.test.ts): each frame's mean FUR colour (solid px, not the outline L < 25, not the eyes'
+whites L > 85 and chroma < 12; tools/art/hfnext/regrade.py's mask) against the plain pose's (hero-standard.webp, the idle crop): every
+frame <= 2.0 dE, and the clip's own frames pooled (the bridges left out) <= 1.0 dE. The whole-body mean is NOT the measure there: the
+old clips carry about 5x the plain pose's outline px, which no colour fix should touch.
+    python3 -I tools/art/hfnext/clipde.py [clip,...]        print the table
+    python3 -I tools/art/hfnext/clipde.py --write           also write src/game/heroClipsSeams.json (read by heroClipsSeams.test.ts)
+    python3 -I tools/art/hfnext/clipde.py --check           exit 1 if that JSON is stale
+"""
+import hashlib, json, subprocess, sys
+import numpy as np
+from PIL import Image
+CL = json.loads(subprocess.run(['npx', 'tsx', '-e', "import {HERO_CLIPS} from './src/game/heroClipsData.ts'; console.log(JSON.stringify(HERO_CLIPS))"],
+                               capture_output=True, text=True, check=True).stdout)
+IDLE = json.loads(subprocess.run(['npx', 'tsx', '-e', "import {IDLE_CLIPS} from './src/game/heroClips.ts'; console.log(JSON.stringify(IDLE_CLIPS))"],
+                                 capture_output=True, text=True, check=True).stdout)
+LAY = json.load(open('tools/art/hfnext/bridges.json'))
+OUT = 'src/game/heroClipsSeams.json'
+args = [a for a in sys.argv[1:] if not a.startswith('--')]
+clips = args[0].split(',') if args else IDLE
+
+
+def lab(rgb):
+    c = rgb / 255.0; c = np.where(c > 0.04045, ((c + 0.055) / 1.055) ** 2.4, c / 12.92)
+    xyz = c @ np.array([[0.4124, 0.3576, 0.1805], [0.2126, 0.7152, 0.0722], [0.0193, 0.1192, 0.9505]]).T / np.array([0.9505, 1.0, 1.089])
+    f = np.where(xyz > 0.008856, np.cbrt(xyz), 7.787 * xyz + 16 / 116)
+    return np.stack([116 * f[..., 1] - 16, 500 * (f[..., 0] - f[..., 1]), 200 * (f[..., 1] - f[..., 2])], -1)
+
+
+def seams(n, lay):
+    """(seam steps, inner-bridge steps) for a clip of n frames; step k is frame k -> k+1."""
+    if lay['replace']:
+        assert lay['bridge'] == n, f"bridges.json says {lay['bridge']} frames, the sheet has {n}"
+        return [0, n - 2], list(range(1, n - 2))
+    b, o = lay['bridge'], lay['own']
+    assert 2 * b + o == n, f"bridges.json says 2 x {b} + {o} frames, the sheet has {n}"
+    return [0, b - 1, b + o - 1, n - 2], list(range(1, b - 1)) + list(range(b + o, n - 2))
+
+
+def fur_mean(f):
+    L = lab(f[..., :3])[f[..., 3] > 200]; C = np.hypot(L[:, 1], L[:, 2]); return L[(L[:, 0] >= 25) & ~((L[:, 0] > 85) & (C < 12))]
+
+
+STDP = 'src/assets/hero/hero-standard.webp'
+PF = fur_mean(np.asarray(Image.open(STDP).convert('RGBA')).astype(np.float32)[478:478 + 209, 674:674 + 127]).mean(0)   # bridgebake's plain crop
+res = {}
+for nm in clips:
+    c = CL[nm]; p = f'src/assets/hero/clips/{nm}.webp'
+    im = np.asarray(Image.open(p).convert('RGBA')).astype(np.float32)
+    fr = [im[(k // c['cols']) * c['h']:(k // c['cols'] + 1) * c['h'], (k % c['cols']) * c['w']:(k % c['cols'] + 1) * c['w']] for k in range(c['n'])]
+    L = [lab(f[..., :3]) for f in fr]
+    px = []
+    for k in range(c['n'] - 1):
+        m = (fr[k][..., 3] > 200) & (fr[k + 1][..., 3] > 200)
+        px.append(float(np.linalg.norm(L[k][m] - L[k + 1][m], axis=1).mean()))
+    mu = [L[k][fr[k][..., 3] > 200].mean(0) for k in range(c['n'])]          # each frame's mean body colour (motion-free)
+    dm = [float(np.linalg.norm(mu[k + 1] - mu[k])) for k in range(c['n'] - 1)]
+    sm, inn = seams(c['n'], LAY[nm])
+    med = float(np.median([dm[k] for k in inn]))
+    lim = min(max(2 * med, 0.5), 1.0)
+    FU = [fur_mean(f) for f in fr]; fd = [float(np.linalg.norm(u.mean(0) - PF)) for u in FU]
+    lay = LAY[nm]; own = range(1, c['n'] - 1) if lay['replace'] else range(lay['bridge'], lay['bridge'] + lay['own'])
+    pooled = float(np.linalg.norm(np.concatenate([FU[k] for k in own]).mean(0) - PF))
+    res[nm] = {'sheet_sha256': hashlib.sha256(open(p, 'rb').read()).hexdigest(), 'n': c['n'], 'bridge_median': round(med, 3),
+               'seams': {str(k): round(dm[k], 3) for k in sm},
+               'body': {'frame_max': round(max(fd), 3), 'frame_max_at': int(np.argmax(fd)), 'own_pooled': round(pooled, 3)}}
+    print(f"{nm:14s} n {c['n']} bridge median {med:4.2f} limit {lim:4.2f} | seams MEAN " +
+          ' '.join(f"s{k} {dm[k]:4.2f}{'' if dm[k] <= lim else '!'}" for k in sm) +
+          f" | px 0->1 {px[0]:4.2f} N-2->N-1 {px[-1]:4.2f} | inner max {max(dm[k] for k in inn):4.2f}; plain->mid-clip {float(np.linalg.norm(mu[c['n'] // 2] - mu[0])):4.2f}"
+          f"\n{'':14s} FUR to plain: frame max {max(fd):4.2f} (f{int(np.argmax(fd))}), own frames pooled {pooled:4.2f}")
+if '--write' in sys.argv or '--check' in sys.argv:
+    assert clips == IDLE, 'write/check measure every idle clip'
+    txt = json.dumps({'bar': {'times_median': 2, 'floor': 0.5, 'ceiling': 1.0}, 'body_bar': {'frame_max': 2.0, 'own_pooled': 1.0},
+                      'plain_sha256': hashlib.sha256(open(STDP, 'rb').read()).hexdigest(), 'clips': res}, indent=1) + '\n'
+    if '--check' in sys.argv:
+        sys.exit(0 if open(OUT).read() == txt else f'{OUT} is stale: re-run tools/art/hfnext/clipde.py --write')
+    open(OUT, 'w').write(txt); print('wrote', OUT)

@@ -1,0 +1,24 @@
+diff --git a/src/game/groundPaint.ts b/src/game/groundPaint.ts
+index ce3574f6..f08632e9 100644
+--- a/src/game/groundPaint.ts
++++ b/src/game/groundPaint.ts
+@@ -238,6 +238,9 @@ const UNDER_FADE = 28;
+ const LIP_BAND = 0.5;
+ /** how much longer (R-165.441: at the top's length, 20-25 units, they read as a fringe, not roots) */
+ const ROOTS_LONG = 1.8;
++/** the underside's turf is in the overhang's shade: darkened toward the world's deep tone by this much (World 2's lip has a pale clay rim
++ *  under its grass, which under a bank stood as a cream stripe across 2-6's earth wall) */
++const UNDER_TURF_SHADE = 0.55;
+ /** baked undersides kept (one a floating bank; a stage has one or two), the oldest let go */
+ const UNDER_KEEP = 4;
+ /** how fine an underside is baked (canvas px a world unit: the ground's squares are painted at about 2-3) */
+@@ -285,6 +288,9 @@ export function drawUnderside(ctx: C, w: number, key: string, x0: number, x1: nu
+         x = xe;
+       }
+       b.setTransform(1, 0, 0, 1, 0, 0);
++      b.globalCompositeOperation = 'source-atop';
++      b.fillStyle = `rgba(${g.deep[0]},${g.deep[1]},${g.deep[2]},${UNDER_TURF_SHADE})`;
++      b.fillRect(0, 0, c.width, c.height);
+       b.globalCompositeOperation = 'destination-in';
+       const f = UNDER_FADE / W;
+       const gr = b.createLinearGradient(0, 0, c.width, 0);

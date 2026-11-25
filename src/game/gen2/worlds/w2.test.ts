@@ -225,3 +225,61 @@ test('World 2 finish: a soft gap between two thin pieces over a lower leg\'s flo
   assert.ok(open >= 16, `the toy's descent has its soft gaps over the race leg's floor (${open})`);
   assert.deepEqual(bad.slice(0, 12), [], `${bad.length} faults`);
 });
+
+// ENG-W2FIN (R-165.431, release 4's CI line): a fall over a water wheel's sweep (place `wheel`) runs from the jetty's lip to the sweep's
+// far end at the street's height; the street stands over the jetty and reaches in over the top by design, so the fall has no bank at the
+// far end and its water is the wheel's pond, a wheel's height under its lip (wheelLay.ts layWheel). The finish's height rule (2-7,
+// ENG-GROUND-b) read it as a fall with no river and threw 'no bank at one end' on every wheel (wheelChannel.test's four, the 2-6 draft).
+// The wheel's own fall takes its pond as its river (no new river over the sweep, nothing taken out); any OTHER fall over the pond in x
+// (another storey's) is still held to its own height and its own banks. Hand-built from the one wheel lay, every row, both settings,
+// both ways round. Planted RED on 0077c62c6: reference/qa-reports/ENG-W2FIN/red.txt.
+const { layWheel, streetFromJetty, wheelSpan, wheelFaults } = await import('../wheelLay.ts');
+const { W2_WHEELS } = await import('./w2.ts');
+type WheelFall = { x0: number; x1: number; y: number; kind: string };
+/** a wheel laid between its jetty and its street, the way pipeline.ts lays place `wheel` (its gap: the jetty's lip to the sweep's far end
+ *  or the street, whichever is further, at the street's height), turned `way` */
+function wheelToy(row: keyof typeof W2_WHEELS, d: 'normal' | 'easy', way: 1 | -1) {
+  const R0 = W2_WHEELS[row];
+  const at = streetFromJetty(R0, d);
+  const jetty: Platform = { id: 1, x: way > 0 ? 1000 : 3000, y: 2000, width: 300, height: 24, type: 'solid' };
+  const lip = way > 0 ? jetty.x + jetty.width : jetty.x;
+  const street: Platform = { id: 2, x: way > 0 ? lip + at.dx : lip - at.dx - 340, y: jetty.y + at.dy, width: 340, height: 24, type: 'solid' };
+  let id = 10;
+  const laid = layWheel(R0, row, jetty, street, d, () => id++);
+  const len = Math.max(at.dx, wheelSpan(R0, d, 0, jetty.y).x1);
+  const fall: WheelFall = { x0: way > 0 ? lip : lip - len, x1: way > 0 ? lip + len : lip, y: street.y, kind: 'soft' };
+  return { jetty, street, laid, fall, st: { platforms: [jetty, street, ...laid.buckets], rivers: [laid.zone], gen2: { falls: [fall] as WheelFall[] } } };
+}
+const WHEEL_ROWS = Object.keys(W2_WHEELS) as Array<keyof typeof W2_WHEELS>;
+test("World 2 finish: a fall over a water wheel's sweep takes the wheel's pond as its river (every row, both settings, both ways round)", () => {
+  const bad: string[] = [];
+  for (const row of WHEEL_ROWS) for (const d of ['normal', 'easy'] as const) for (const way of [1, -1] as const) {
+    const at = `${row} ${d} way ${way}`;
+    const { st, laid } = wheelToy(row, d, way);
+    const n = st.platforms.length;
+    try { w2Finish(st as never, d); } catch (e) { bad.push(`${at}: ${(e as Error).message}`); continue; }
+    if (st.rivers.length !== 1 || st.rivers[0] !== laid.zone) bad.push(`${at}: ${st.rivers.length} rivers over the sweep (only the wheel's pond belongs there)`);
+    if (st.platforms.length !== n) bad.push(`${at}: ${n - st.platforms.length} pieces taken out`);
+    const faults = wheelFaults(st, d);
+    if (faults.length) bad.push(`${at}: ${faults[0]}`);
+  }
+  assert.deepEqual(bad, []);
+});
+test("World 2 finish: another storey's fall over a wheel's pond is still held to its own height and its own banks (2-7's height rule)", () => {
+  const bad: string[] = [];
+  for (const row of WHEEL_ROWS) for (const d of ['normal', 'easy'] as const) for (const way of [1, -1] as const) {
+    const at = `${row} ${d} way ${way}`;
+    const { st, laid, fall } = wheelToy(row, d, way);
+    // (a storey 600 over the street, its soft fall inside the pond in x: its banks earth (90 deep), one each side)
+    const y = fall.y - 600, x0 = Math.round((fall.x0 + fall.x1) / 2) - 60, x1 = x0 + 120;
+    const up = [{ id: 3, x: x0 - 300, y, width: 300, height: 90, type: 'solid' }, { id: 4, x: x1, y, width: 300, height: 90, type: 'solid' }] as Platform[];
+    const withBanks = { ...st, platforms: [...st.platforms, ...up], rivers: [laid.zone], gen2: { falls: [fall, { x0, x1, y, kind: 'soft' }] } };
+    w2Finish(withBanks as never, d);
+    const own = withBanks.rivers.filter((r) => r !== laid.zone);
+    if (own.length !== 1 || own[0].x0 !== x0 || own[0].x1 !== x1 || own[0].surfaceY !== y + surfaceBelowBank) bad.push(`${at}: the upper fall's river ${JSON.stringify(own.map((r) => [r.x0, r.x1, r.surfaceY]))}, not its own at its height (${x0}-${x1}, ${y + surfaceBelowBank})`);
+    // (and with no far bank it throws: the pond under it is not its river)
+    const noBank = { ...st, platforms: [...st.platforms, up[0]], rivers: [laid.zone], gen2: { falls: [fall, { x0, x1, y, kind: 'soft' }] } };
+    try { w2Finish(noBank as never, d); bad.push(`${at}: an upper fall with no far bank over the pond did not throw`); } catch (e) { if (!/no bank at one end/.test((e as Error).message)) bad.push(`${at}: ${(e as Error).message}`); }
+  }
+  assert.deepEqual(bad, []);
+});

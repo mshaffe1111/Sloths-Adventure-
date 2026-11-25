@@ -74,8 +74,10 @@ import { DRESS_URL, dressNewReady, dressNewUrl, dressReady } from './dressArt.ts
 import { gateArtReady, gateUrl, pitWaterReady, pitWaterUrl, STAGE_ART_URL, stageArtReady } from './stageArt.ts';
 import { W1_PIT_URLS, w1PitsReady } from './w1Pits.ts';
 import { W1_CLUE_URL, W1_NEW_URL, w1ClueReady, w1NewReady } from './w1NewArt.ts';
+import { W2_NEW_URL, w2NewReady } from './w2NewArt.ts';
 import { W1_CUT_URL, w1CutReady } from './w1CutArt.ts';
 import { VINE_SNAKE_URLS, vineSnakeArtReady } from './vineSnakeArt.ts';
+import { LIVE_POST_URL, livePostReady } from './livePostArt.ts';
 import { W1_CREEK_URL, W1_MUD_SPLASH_URL, w1CreekReady } from './w1Creek.ts';
 import type { LevelConfig } from './types.ts';
 
@@ -228,6 +230,9 @@ export function start(keys: readonly string[]): string[] {
     } else if (k === 'w1-cut') {
       w1CutReady();
       urls.push(W1_CUT_URL);
+    } else if (k === 'live-post') {
+      livePostReady();
+      urls.push(LIVE_POST_URL);
     } else if (k === 'vine-snake') {
       vineSnakeArtReady();
       urls.push(...VINE_SNAKE_URLS);
@@ -245,6 +250,9 @@ export function start(keys: readonly string[]): string[] {
       w1NewReady();
       w1ClueReady();
       urls.push(W1_NEW_URL, W1_CLUE_URL);
+    } else if (k === 'w2-new') {
+      w2NewReady();
+      urls.push(W2_NEW_URL);
     } else if (k === 'hud') {
       hudArtReady();
       urls.push(HUD_ATLAS_URL);

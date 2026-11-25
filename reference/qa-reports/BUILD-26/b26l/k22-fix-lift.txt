@@ -1,0 +1,123 @@
+f 106.53 693,3412 vx -87 vy 0 G on 51 pad null
+f 106.57 686,3411 vx -173 vy 0 G on 51 pad null
+f 106.60 676,3409 vx -260 vy 0 G on 51 pad null
+f 106.63 665,3407 vx -285 vy 0 G on 51 pad null
+f 106.67 655,3406 vx -268 vy 0 G on 51 pad null
+f 106.70 645,3404 vx -285 vy 0 G on 51 pad null
+f 106.73 635,3402 vx -268 vy 0 G on 51 pad null
+f 106.77 628,3400 vx -154 vy 0 G on 51 pad null
+f 106.80 626,3399 vx -41 vy 0 G on 51 pad null
+f 106.83 625,3397 vx 0 vy 0 G on 51 pad null
+f 106.87 624,3395 vx 0 vy 0 G on 51 pad null
+f 106.90 623,3394 vx 0 vy 0 G on 51 pad null
+f 106.93 622,3392 vx 0 vy 0 G on 51 pad null
+f 106.97 624,3390 vx 87 vy 0 G on 51 pad null
+f 107.00 629,3388 vx 173 vy 0 G on 51 pad null
+f 107.03 637,3386 vx 260 vy 0 G on 51 pad null
+f 107.07 646,3385 vx 285 vy 0 G on 51 pad null
+f 107.10 654,3383 vx 268 vy 0 G on 51 pad null
+f 107.13 662,3381 vx 285 vy 0 G on 51 pad null
+f 107.17 670,3379 vx 268 vy 0 G on 51 pad null
+f 107.20 675,3377 vx 154 vy 0 G on 51 pad null
+f 107.23 675,3375 vx 41 vy 0 G on 51 pad null
+f 107.27 675,3374 vx 0 vy 0 G on 51 pad null
+f 107.30 674,3372 vx 0 vy 0 G on 51 pad null
+f 107.33 673,3370 vx 0 vy 0 G on 51 pad null
+f 107.37 673,3368 vx 0 vy 0 G on 51 pad null
+f 107.40 669,3366 vx -87 vy 0 G on 51 pad null
+f 107.43 663,3364 vx -173 vy 0 G on 51 pad null
+f 107.47 653,3362 vx -260 vy 0 G on 51 pad null
+f 107.50 643,3360 vx -285 vy 0 G on 51 pad null
+f 107.53 634,3358 vx -268 vy 0 G on 51 pad null
+f 107.57 624,3356 vx -285 vy 0 G on 51 pad null
+f 107.60 614,3355 vx -268 vy 0 G on 51 pad null
+f 107.63 609,3353 vx -154 vy 0 G on 51 pad null
+f 107.67 607,3351 vx -41 vy 0 G on 51 pad null
+f 107.70 606,3349 vx 0 vy 0 G on 51 pad null
+f 107.73 606,3347 vx 0 vy 0 G on 51 pad null
+f 107.77 605,3345 vx 0 vy 0 G on 51 pad null
+f 107.80 605,3343 vx 0 vy 0 G on 51 pad null
+f 107.83 607,3341 vx 87 vy 0 G on 51 pad null
+f 107.87 613,3339 vx 173 vy 0 G on 51 pad null
+f 107.90 621,3337 vx 260 vy 0 G on 51 pad null
+f 107.93 630,3335 vx 285 vy 0 G on 51 pad null
+f 107.97 639,3333 vx 268 vy 0 G on 51 pad null
+f 108.00 648,3331 vx 285 vy 0 G on 51 pad null
+f 108.03 657,3329 vx 268 vy 0 G on 51 pad null
+f 108.07 662,3327 vx 154 vy 0 G on 51 pad null
+f 108.10 663,3325 vx 41 vy 0 G on 51 pad null
+f 108.13 663,3323 vx 0 vy 0 G on 51 pad null
+f 108.17 663,3321 vx 0 vy 0 G on 51 pad null
+f 108.20 663,3319 vx 0 vy 0 G on 51 pad null
+f 108.23 662,3317 vx 0 vy 0 G on 51 pad null
+f 108.27 660,3315 vx -87 vy 0 G on 51 pad null
+f 108.30 654,3313 vx -173 vy 0 G on 51 pad null
+f 108.33 645,3311 vx -260 vy 0 G on 51 pad null
+f 108.37 635,3309 vx -285 vy 0 G on 51 pad null
+f 108.40 627,3307 vx -268 vy 0 G on 51 pad null
+f 108.43 617,3305 vx -285 vy 0 G on 51 pad null
+f 108.47 608,3303 vx -268 vy 0 G on 51 pad null
+f 108.50 603,3301 vx -154 vy 0 G on 51 pad null
+f 108.53 602,3299 vx -41 vy 0 G on 51 pad null
+f 108.57 602,3297 vx 0 vy 0 G on 51 pad null
+f 108.60 602,3295 vx 0 vy 0 G on 51 pad null
+f 108.63 602,3293 vx 0 vy 0 G on 51 pad null
+f 108.67 602,3291 vx 0 vy 0 G on 51 pad null
+f 108.70 605,3289 vx 87 vy 0 G on 51 pad null
+f 108.73 611,3287 vx 173 vy 0 G on 51 pad null
+f 108.77 620,3285 vx 260 vy 0 G on 51 pad null
+f 108.80 630,3283 vx 285 vy 0 G on 51 pad null
+f 108.83 639,3281 vx 268 vy 0 G on 51 pad null
+f 108.87 649,3279 vx 285 vy 0 G on 51 pad null
+f 108.90 658,3277 vx 268 vy 0 G on 51 pad null
+f 108.93 664,3275 vx 154 vy 0 G on 51 pad null
+f 108.97 666,3273 vx 41 vy 0 G on 51 pad null
+f 109.00 666,3271 vx 0 vy 0 G on 51 pad null
+f 109.03 666,3269 vx 0 vy 0 G on 51 pad null
+f 109.07 667,3267 vx 0 vy 0 G on 51 pad null
+f 109.10 667,3266 vx 0 vy 0 G on 51 pad null
+f 109.13 665,3264 vx -87 vy 0 G on 51 pad null
+f 109.17 660,3262 vx -173 vy 0 G on 51 pad null
+f 109.20 652,3260 vx -260 vy 0 G on 51 pad null
+f 109.23 643,3258 vx -285 vy 0 G on 51 pad null
+f 109.27 634,3256 vx -268 vy 0 G on 51 pad null
+f 109.30 625,3254 vx -285 vy 0 G on 51 pad null
+f 109.33 617,3252 vx -268 vy 0 G on 51 pad null
+f 109.37 608,3250 vx -285 vy 0 G on 51 pad null
+f 109.40 600,3248 vx -268 vy 0 G on 51 pad null
+f 109.43 591,3246 vx -285 vy 0 G on 51 pad null
+f 109.47 583,3244 vx -268 vy 0 G on 51 pad null
+f 109.50 574,3243 vx -285 vy 0 G on 51 pad null
+f 109.53 566,3244 vx -268 vy 83 on -1 pad null
+f 109.57 557,3249 vx -268 vy 167 on -1 pad null
+f 109.60 548,3257 vx -268 vy 250 on -1 pad null
+f 109.63 539,3269 vx -268 vy 333 on -1 pad null
+f 109.67 530,3282 vx -268 vy 417 on -1 pad null
+f 109.70 521,3299 vx -268 vy 500 on -1 pad null
+f 109.73 512,3319 vx -268 vy 583 on -1 pad null
+f 109.77 506,3341 vx -181 vy 667 on -1 pad null
+f 109.80 503,3366 vx -94 vy 750 on -1 pad null
+f 109.83 503,3394 vx -8 vy 833 on -1 pad null
+f 109.87 505,3424 vx 49 vy 917 on -1 pad null
+f 109.90 508,3456 vx 106 vy 950 on -1 pad null
+f 109.93 513,3460 vx 162 vy 0 G on 46 pad null
+f 109.97 522,3460 vx 249 vy 0 G on 46 pad null
+f 110.00 531,3460 vx 285 vy 0 G on 46 pad null
+f 110.03 540,3460 vx 268 vy 0 G on 46 pad null
+f 110.07 550,3460 vx 285 vy 0 G on 46 pad null
+f 110.10 559,3460 vx 268 vy 0 G on 46 pad null
+f 110.13 568,3460 vx 285 vy 0 G on 46 pad null
+f 110.17 577,3460 vx 268 vy 0 G on 46 pad null
+f 110.20 587,3460 vx 285 vy 0 G on 46 pad null
+f 110.23 595,3460 vx 268 vy 0 G on 46 pad null
+f 110.27 605,3460 vx 285 vy 0 G on 46 pad null
+f 110.30 614,3460 vx 268 vy 0 G on 46 pad null
+f 110.33 623,3460 vx 285 vy 0 G on 46 pad null
+f 110.37 632,3460 vx 268 vy 0 G on 46 pad null
+f 110.40 642,3460 vx 285 vy 0 G on 46 pad null
+f 110.43 651,3460 vx 268 vy 0 G on 46 pad null
+f 110.47 660,3460 vx 285 vy 0 G on 46 pad null
+f 110.50 669,3460 vx 268 vy 0 G on 46 pad null
+f 110.53 679,3463 vx 285 vy 83 on -1 pad null
+f 110.57 688,3468 vx 268 vy 167 on -1 pad null
+f 110.60 697,3477 vx 285 vy 250 on -1 pad null

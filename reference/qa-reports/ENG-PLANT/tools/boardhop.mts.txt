@@ -1,0 +1,29 @@
+// usage: tsx boardhop.mts <tree> <seedFrom> <seedTo> bot:setting ...  -> firsttimer.test :184's meet() on 2-2, boardHop on and off
+const [T, a, b, ...bots] = process.argv.slice(2);
+await import(`${T}/src/game/headlessDom.ts`);
+const { SKILLS, firstTimer } = await import(`${T}/tools/inspect/firsttimer.ts`);
+const { CAST_BOTS } = await import(`${T}/tools/inspect/castBots.ts`);
+const meet = (on: boolean, who: any, seed: number) => {
+  const was = SKILLS.boardHop;
+  let stood = -1, lost = 0, stands = 0, lives: number | undefined, end = '';
+  SKILLS.boardHop = on;
+  try {
+    const r: any = firstTimer('2-2', seed, who, { cap: 1200, dotSetting: true, onFrame: (sim: any) => {
+      const e = sim.e; const p = e.player, t = sim.t, here = e.platforms.find((q: any) => q.id === e.standingOnId);
+      if (p.grounded && here && here.type !== 'drift' && Math.abs(p.vx) < 10 && here.x + here.width - p.x < 60
+        && e.platforms.some((q: any) => q.type === 'drift' && q.drift?.dir === 1 && q.y - here.y > 6 && q.y - here.y <= 40 && q.x < here.x + here.width && q.x + q.width > here.x + here.width)) {
+        if (t - stood > 3) stands++;
+        stood = t;
+      }
+      if (lives !== undefined && e.lives < lives && stood >= 0 && t - stood < 3) lost++;
+      lives = e.lives;
+    } });
+    end = r.end;
+  } finally { SKILLS.boardHop = was; }
+  return { stands, lost, end };
+};
+for (let seed = Number(a); seed <= Number(b); seed++) for (const bs of bots) {
+  const [bot, setting] = bs.split(':');
+  const who = CAST_BOTS[bot][setting];
+  console.log(JSON.stringify({ bot, setting, seed, on: meet(true, who, seed), off: meet(false, who, seed) }));
+}

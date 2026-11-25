@@ -1,0 +1,24 @@
+const W = process.env.WT!;
+await import(W + '/src/game/headlessDom.ts');
+const { setDifficulty } = await import(W + '/src/game/difficulty.ts');
+const FT: any = await import(W + '/tools/inspect/firsttimer.ts');
+const FP: any = await import(W + '/tools/inspect/figPush.ts');
+setDifficulty('normal');
+const out: string[] = [];
+let run: any, last = -1;
+const orig = FP.FigPush.prototype.step;
+FP.FigPush.prototype.step = function (v: any, p: any, t: number) {
+  const pad = orig.call(this, v, p, t);
+  const b = Math.floor(t * 2);
+  if (pad && b !== last) {
+    last = b;
+    const h = v.hands; const tg = this.target;
+    const shut = v.field.gates.filter((g: any) => FP && g).length;
+    out.push(`t ${t.toFixed(1)} at ${Math.round(p.x)},${Math.round(p.y)} hands ${h?.a?.id}@${Math.round(h?.a?.x)}${h?.b ? '+' + h.b.id + '@' + Math.round(h.b.x) : ''} target ${tg ? tg.id + ' vine ' + tg.vine + ' y ' + Math.round(tg.y) : '-'} pad ${JSON.stringify(pad)} dodge ${t < this.dodgeUntil} changed ${this.changedAt.toFixed(1)}`);
+  }
+  return pad;
+};
+run = new FT.FirstTimerRun('1-4', Number(process.argv[2]), FT[process.env.BOT!], {});
+const res = run.play();
+console.log(out.join('\n'));
+console.log(JSON.stringify({ t: +run.t.toFixed(1), rescues: res.rescues, rescueXs: run.rescueXs, stuck: res.stuck }));

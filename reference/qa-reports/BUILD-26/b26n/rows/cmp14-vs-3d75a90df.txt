@@ -1,0 +1,18 @@
+| tier | cut 5 RE-JUDGED | candidate | time-only moves |
+|---|---|---|---|
+| adult E | 40 | 40 | 0 |
+| adult N | 38 | 40 | 0 |
+| child E | 40 | 40 | 0 |
+| child N | 38 | 40 | 0 |
+| expert N | 39 | 40 | 0 |
+| kid E | 40 | 40 | 0 |
+| kid N | 40 | 40 | 0 |
+| middle E | 40 | 40 | 0 |
+| middle N | 39 | 40 | 0 |
+flips:
+adult N 9: 159.8 FAIL -> 164.2 in a dip 381 px deep @153,None
+adult N 32: 153.6 FAIL -> 139.2 
+child N 10: 275.7 FAIL -> 253.4 a trunk beside him, the way on is 281 px down @649,None
+child N 38: 259.1 FAIL -> 253.5 in a dip 380 px deep, a trunk beside him, the way on is 294  @648,None
+expert N 20: 202.5 FAIL -> 157.2 
+middle N 36: 202.5 FAIL -> 172.8 

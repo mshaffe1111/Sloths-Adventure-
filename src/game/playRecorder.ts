@@ -84,10 +84,51 @@ export function qaBuild(): boolean {
 /** the control test is on: #ctest in the address (the only part a shared Claude link passes on) or ?ctest=1, in any build, the live
  *  site included: the testers' link opens it there (Matt, 2026-10-29: "Only for that link. The full game should be unaffected"), and a
  *  player without that link never sees it */
-/** the stage the testers' link (#ctest on the live site) plays, ONE data value (R-165.157): 1-5, Where She Walked (Matt, 11-13 8:48 PM ET:
- *  "Make the test link level 5. Its the best level so far"); 1-3 before it (Matt, 11-12 2:39 PM ET), 1-1 before that. Its front page:
- *  ControlTestGate.tsx CTEST_PAGES */
-export const CTEST_LEVEL_ID: string = '1-5';
+/** the stages the testers' link (#ctest on the live site) offers, ONE data value: all of World 1, the tester picks one on the front page
+ *  (R-165.343, Matt 11-20 2:39 PM ET: the testers play all of World 1, with a stage picker). One stage before it: 1-5 (Matt 11-13), 1-3,
+ *  1-1. Each one's front page: ControlTestGate.tsx CTEST_PAGES */
+export const CTEST_STAGES: readonly string[] = ['1-1', '1-2', '1-3', '1-4', '1-5', '1-6', '1-7', '1-8', '1-9'];
+/** a stage the testers' link offers */
+export const isCtestStage = (id: string): boolean => CTEST_STAGES.includes(id);
+const PICK_KEY = 'sloth_qa_ctest_stage';
+/** the stage this tester picked last (kept on the device, as the name is), or the first one */
+export function savedCtestStage(): string {
+  try {
+    const had = localStorage.getItem(PICK_KEY);
+    if (had && isCtestStage(had)) return had;
+  } catch {
+    /* ignore */
+  }
+  return CTEST_STAGES[0];
+}
+export function saveCtestStage(id: string): void {
+  try {
+    localStorage.setItem(PICK_KEY, id);
+  } catch {
+    /* ignore */
+  }
+}
+const PLAYED_KEY = 'sloth_qa_ctest_played';
+/** the stages this device has finished on the testers' link (reached the shrine), so the picker can tick them and testers spread out
+ *  over all nine (the lead, 11-20: the data wanted is every stage) */
+export function ctestPlayed(): string[] {
+  try {
+    const had = JSON.parse(localStorage.getItem(PLAYED_KEY) ?? '[]');
+    return Array.isArray(had) ? had.filter((x): x is string => typeof x === 'string' && isCtestStage(x)) : [];
+  } catch {
+    return [];
+  }
+}
+/** a testers' stage finished on this device */
+export function markCtestPlayed(id: string): void {
+  if (!isCtestStage(id)) return;
+  try {
+    const had = ctestPlayed();
+    if (!had.includes(id)) localStorage.setItem(PLAYED_KEY, JSON.stringify([...had, id]));
+  } catch {
+    /* ignore */
+  }
+}
 
 export function ctestEnabled(): boolean {
   if (STORE) return false;

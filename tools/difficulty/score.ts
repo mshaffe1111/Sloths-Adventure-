@@ -48,6 +48,7 @@ import { safeWindow } from '../../src/game/gen2/lineFaults.ts';
 import { lineInCover, type FollowRow } from '../../src/game/follow.ts';
 import type { FollowStage } from '../../src/game/followPlay.ts';
 import { WATCH, type Bush } from '../../src/game/watcher.ts';
+import { MOVES } from '../../src/game/fight.ts';
 /** the rolling nuts and fruit (rolling.ts, BUILD-18's 1-8): read from the game where the tree has it; a tree without it builds no stage
  *  with `rolling`, so nothing here asks for it */
 const ROLLING: any = await import(new URL('../../src/game/rolling.ts', import.meta.url).href).catch(() => null);
@@ -697,6 +698,36 @@ export function lineCrossings(fs: FollowStage, row: FollowRow, setting: Setting,
   }
   return out;
 }
+/**
+ * The CAGE channel (BUILD-23d; ENG-CAGE REPORT NEXT STEP 1; reference/design/meter-coverage.json beat:cages). Any world's reed cage, by its
+ * data: one standing at his height is a self-paced stop and punch (he stands at it, his blows land as he taps, no clock, nothing hurts):
+ * priced as a puzzle beat, CAGE_BITS.punch. One hung up a climbing vine (2-3's mooring post: the route never climbs it, it leads nowhere)
+ * is the climb up to it plus the punch from the vine (the engine's airKick: fight.ts MOVES, its box the way he faces against the cage's
+ * 48 px box): CAGE_BITS.vine. A retry, never a heart: a missed blow costs a second.
+ */
+export const CAGE_BITS = { punch: OTHER_BITS.puzzle, vine: OTHER_BITS.climb + OTHER_BITS.puzzle } as const;
+
+/** the climbing vine a cage hangs up, in reach of his airKick from it (null: it stands at his height) */
+export function cageVine(c: { x: number; y: number }, vines: readonly any[]): any | null {
+  const k = MOVES.airKick.to;
+  const reach = (dx: number) => dx > k.x - 24 + 8 && dx < k.x + k.w + 24 - 8;
+  return vines.find((v) => !v.isSwingingVine && v.vineType !== 'swing_liana' && (reach(c.x - v.x) || reach(v.x - c.x)) && c.y > v.topY && c.y < v.bottomY - 60) ?? null;
+}
+
+/** the cage channel's challenges: each 'beat:cages' beat (beats.ts: where the route meets a cage), priced by where the cage hangs */
+export function cageChallenges(st: any, beats: readonly Beat[]): Array<Omit<Challenge, 'overlap' | 'novelty' | 'points'>> {
+  const out: Array<Omit<Challenge, 'overlap' | 'novelty' | 'points'>> = [];
+  const cages = (st.collectibles ?? []).filter((c: any) => c.type === 'cage');
+  for (const b of beats) {
+    if (b.fam !== 'beat:cages') continue;
+    let c: any = null;
+    for (const q of cages) if (Math.abs(q.x - b.x) <= 120 && (!c || Math.abs(q.x - b.x) < Math.abs(c.x - b.x))) c = q;
+    const v = c ? cageVine(c, st.vines ?? []) : null;
+    out.push({ t: b.t, x: b.x, ys: [b.y, b.y], kind: v ? 'cage-vine' : 'cage', bits: v ? CAGE_BITS.vine : CAGE_BITS.punch, cost: 'retry', stakes: 1, threat: false, note: `${b.what}${v ? ': up the climbing vine, punched from it' : ': punched at his height'}` });
+  }
+  return out;
+}
+
 /** the line channel's challenges on a follow stage (see lineCrossings); `firstCalm` read per crossing from its herons */
 export function lineChallenges(fs: FollowStage, row: FollowRow, samples: Sample[], setting: Setting, cages: readonly number[], target: number): Array<Omit<Challenge, 'overlap' | 'novelty' | 'points'>> {
   const out: Array<Omit<Challenge, 'overlap' | 'novelty' | 'points'>> = [];
@@ -1129,6 +1160,8 @@ export function scoreStage(id: string, setting: Setting, seed: number, seen: Map
       const u = b.fam === 'move:climb' || b.fam === 'move:rope' ? { bits: OTHER_BITS.climb, note: '' } : unpriced(b.fam ?? `beat:${b.what}`, `${id} x ${Math.round(b.x)}`, OTHER_BITS.climb);
       add({ t: b.t, x: b.x, ys: [b.y, b.y], kind: 'climb', bits: u.bits, cost: 'retry', stakes: 1, threat: false, note: b.what + u.note });
     } else if (b.letter === 'P') {
+      // (a cage: the cage channel prices it, cageChallenges below)
+      if (b.fam === 'beat:cages') continue;
       add({ t: b.t, x: b.x, ys: [b.y, b.y], kind: 'puzzle', bits: OTHER_BITS.puzzle, cost: 'retry', stakes: 1, threat: false, note: b.what });
     }
   }
@@ -1142,6 +1175,7 @@ export function scoreStage(id: string, setting: Setting, seed: number, seen: Map
   for (const c of wheelChallenges(st, route, samples, setting, id)) add(c);
   for (const c of lianaChallenges(st, route, setting, softPits)) add(c);
   for (const c of watchChallenges(members, rp.e.cast?.covers ?? [], samples, setting, st.vines ?? [])) add(c);
+  for (const c of cageChallenges(st, br.beats)) add(c);
   // the little ones that follow him home (METER-4): the line's crossings under the herons, from the engine's own FollowPlay (its stage:
   // the zones, reeds, ground and water the game built), N from the cages on the way, at most the stage's goal
   const fp = rp.e.follow as { row: FollowRow; stage: FollowStage } | null | undefined;

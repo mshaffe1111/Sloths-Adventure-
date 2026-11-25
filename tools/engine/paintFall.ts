@@ -12,7 +12,8 @@
 // missing art, a catalog and STAGE-RULES §4 question for Content, listed by the sweep as `unpainted` so it is seen, not hidden); a stage
 // whose painted kit is off (a boss lair: engine.ts paintKit), where no painter runs at all.
 import { footingOf, type FootingInput } from '../../src/game/terrain.ts';
-import { paintedPlatforms } from '../../src/game/protoArt.ts';
+import { groundBanks, groundCeilings, groundSoil, insideOutline, paintedPlatforms, soilCover, SOIL_JOIN, SOIL_ROOM } from '../../src/game/protoArt.ts';
+import { ceilingAt, ceilingsOver, type Ceiling } from '../../src/game/groundStack.ts';
 import type { Platform } from '../../src/game/types.ts';
 
 /** what terrain draws by code (terrain.ts terrainLook): the ground, step, pillar and earth bodies, the code-drawn thin ledge sprites
@@ -95,4 +96,89 @@ export function paintFalls(platforms: Platform[], f: FootingInput, cache: Map<st
     breaches.push({ id: p.id, x: Math.round(p.x), y: Math.round(p.y), w: Math.round(p.width), h: p.height, style: p.style ?? '-', type: p.type, drawn, painter: ranges(hs), nearest });
   }
   return { breaches, unpainted };
+}
+
+// R-165.441 (D136): a painted bank's top, or the room for him over it, under a LATER-painted bank's soil. drawGround paints the banks
+// lowest first and a bank's soil ran on down out of sight, so a high bank's soil was one column over every floor under it (SHIPPED 1-4's
+// summit: a dark pillar through the sky the whole height of the climb, the start floor's lip cut; 2-6 beat A: a porch's lip erased),
+// and the rule above passed both: it reads which drawer a block is ASSIGNED to, never what reaches the screen. This one reads the soil
+// as drawn: protoArt.ts groundSoil, the outlines drawGround cuts each bank's soil to, in its paint order.
+// Not a breach, on purpose: where two banks' soils meet (SOIL_JOIN units, a unit past an end either side), and a tuck (a gap under his
+// height: a pit's floor under its walls, painted first so the walls' faces cover its ends).
+export interface SoilOver {
+  /** the later-painted bank whose soil covers */
+  over: { id: number; x: number; y: number; w: number; h: number };
+  /** the bank whose top (or the room for him over it) is covered */
+  under: { id: number; x: number; y: number; w: number };
+  /** units of that top covered */
+  covered: number;
+  /** the room between the two (the under bank's top less the over bank's bottom) */
+  gap: number;
+}
+
+/** every painted bank's top under a later-painted bank's soil, on a built stage with its paint state set (paintStage.ts) */
+/** a stage with a stacked leg (2-7): the soil as drawn is clipped clear of the air under each ceiling over its bank (protoArt.ts drawGround
+ *  clipAbove), so a point under the ceiling's line is no soil; set the stage's stack zones first, as engine.ts does (paintcheck.ts) */
+const airUnder = (cs: readonly Ceiling[]) => (x: number, y: number) => cs.some((c) => y >= ceilingAt(c, x));
+
+export function soilOvers(platforms: Platform[], regions = groundSoil(groundBanks(platforms), undefined, groundCeilings(platforms)), cs: readonly Ceiling[] = groundCeilings(platforms)): SoilOver[] {
+  const out: SoilOver[] = [];
+  const box = regions.map((r) => {
+    let x0 = Infinity, x1 = -Infinity, y1 = -Infinity;
+    for (const [x, y] of r.pts) { x0 = Math.min(x0, x); x1 = Math.max(x1, x); y1 = Math.max(y1, y); }
+    return { x0, x1, y1 };
+  });
+  for (let i = 0; i < regions.length; i++) {
+    const a = regions[i].p;
+    for (let j = 0; j < i; j++) {
+      const b = regions[j].p;
+      const gap = b.y - (a.y + a.height);
+      if (b === a || gap < SOIL_ROOM || box[i].y1 < b.y - SOIL_ROOM || Math.min(box[i].x1, b.x + b.width) - Math.max(box[i].x0, b.x) <= SOIL_JOIN) continue;
+      const over = cs.length ? ceilingsOver(a, cs) : [];
+      const n = soilCover(regions[i].pts, b, over.length ? airUnder(over) : undefined);
+      if (n > SOIL_JOIN) out.push({ over: { id: a.id, x: Math.round(a.x), y: Math.round(a.y), w: Math.round(a.width), h: a.height }, under: { id: b.id, x: Math.round(b.x), y: Math.round(b.y), w: Math.round(b.width) }, covered: n, gap: Math.round(gap) });
+    }
+  }
+  return out;
+}
+
+// (INT-R5d, 11-25: R-165.441 x the stacked legs) a bank a stacked leg's ceiling runs under whose drawn soil stops SHORT of that ceiling's
+// line: the backdrop shows between its bottom and the ceiling's underside. The soil fix (cut from main, no stacked leg) hung 2-7's upper-leg
+// banks: their soil stopped at their own bottom over a second underside, 120+ over the line where the release drew the ceiling's own
+// underside (normal layout 0, bank #1 x 3881-4521: bottom 917, the line 1039 and down). Read from the soil as drawn (groundSoil with
+// the stage's ceilings): sampled across the bank, clear of its ends (an end's face curves in), where the line runs under its collider.
+export interface SoilShort {
+  bank: { id: number; x: number; y: number; w: number; h: number };
+  /** units of the bank's width whose soil stops short of the ceiling's line */
+  short: number;
+  /** the most backdrop between the soil and the line (units) */
+  gap: number;
+}
+const SHORT_STEP = 8, SHORT_END = 40, SHORT_MIN = 48;
+// (where a bank's soil ENDS: under its collider's foot, within his height, with the line lower still. A soil that runs on (drawn to the
+// line and clipped there) never ends there except where an open end's face leans in past x, a few samples at most: a breach needs more
+// than his width, SHORT_MIN, of the bank short)
+export function soilShorts(platforms: Platform[], cs: readonly Ceiling[] = groundCeilings(platforms), regions = groundSoil(groundBanks(platforms), undefined, cs)): SoilShort[] {
+  const out: SoilShort[] = [];
+  if (!cs.length) return out;
+  for (const { p, pts } of regions) {
+    const over = ceilingsOver(p, cs);
+    if (!over.length) continue;
+    const foot = p.y + p.height, high = Math.max(p.y + 10, foot - 40);
+    let short = 0, gap = 0;
+    for (let x = p.x + SHORT_END; x <= p.x + p.width - SHORT_END; x += SHORT_STEP) {
+      const lines = over.filter((c) => x >= c.x0 && x <= c.x1).map((c) => ceilingAt(c, x));
+      if (!lines.length) continue;
+      const line = Math.min(...lines);
+      if (line <= foot + 2) continue;
+      const low = Math.min(line - 2, foot + SOIL_ROOM);
+      if (!insideOutline(pts, x, high) || insideOutline(pts, x, low)) continue;
+      // (where it ends, over that line)
+      let y = low;
+      while (y > high && !insideOutline(pts, x, y)) y -= 2;
+      short += SHORT_STEP; gap = Math.max(gap, Math.round(line - y));
+    }
+    if (short > SHORT_MIN) out.push({ bank: { id: p.id, x: Math.round(p.x), y: Math.round(p.y), w: Math.round(p.width), h: p.height }, short, gap });
+  }
+  return out;
 }

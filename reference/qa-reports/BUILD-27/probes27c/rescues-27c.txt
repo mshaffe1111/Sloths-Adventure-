@@ -1,0 +1,18 @@
+adult normal seed 30: end shrine t 140.8 rescues 1 at x [8864] beats at-him/keep-running
+  stuck: [{"x":5933,"y":1474,"t":114.1,"what":"set down here 3 times","step":null,"rescued":false}]
+  lives: water@5922,1534 t99.3 [doors/stilts]; water@6098,1549 t110.8 [doors/stilts]; water@8253,1609 t114.1 [at-him/keep-running]
+middle normal seed 9: end shrine t 288.8 rescues 1 at x [14144] beats upstream/reed-bank
+  stuck: [{"x":13888,"y":800,"t":153.1,"what":"an open drop ahead, water ahead","step":null,"rescued":true}]
+  lives: water@13045,828 t73.0 [upstream/with]; water@13835,830 t92.3 [upstream/reed-bank]; water@13832,830 t111.9 [upstream/reed-bank]; water@13228,848 t125.2 [upstream/with]; water@4995,1609 t259.7 [jetty/stilts]
+middle normal seed 10: end shrine t 269.3 rescues 1 at x [9757] beats at-him/bend
+  stuck: [{"x":9455,"y":748,"t":43,"what":"water ahead","step":null,"rescued":true}]
+  lives: water@13162,805 t89.1 [upstream/with]; water@6467,1611 t188.4 [doors/stilts]; water@6564,1600 t204.1 [doors/stilts]; water@8223,1633 t207.9 [doors/keep-running]; water@8679,1641 t210.6 [at-him/keep-running]; water@5523,1604 t235.4 [jetty/stilts]
+middle normal seed 20: end shrine t 211.5 rescues 1 at x [6818] beats doors/stilts
+  stuck: [{"x":6818,"y":1555,"t":150.2,"what":"nothing in the way the bot can see","step":null,"rescued":true}]
+  lives: water@5384,1630 t177.3 [jetty/stilts]
+middle easy seed 22: end shrine t 233.1 rescues 1 at x [14629] beats upstream/reed-bank
+  stuck: [{"x":14620,"y":780,"t":96.6,"what":"an open drop ahead, water ahead","step":null,"rescued":true}]
+  lives: 
+child easy seed 8: end shrine t 290.1 rescues 1 at x [11055] beats porches/bend
+  stuck: [{"x":12684,"y":731,"t":105.4,"what":"set down here 8 times","step":null,"rescued":false}]
+  lives: 

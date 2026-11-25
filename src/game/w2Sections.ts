@@ -18,7 +18,7 @@ import { stream } from './protoStage.ts';
 import type { RoomTips } from './puzzleKit.ts';
 import type { Collectible, LevelConfig, Platform, Vine } from './types.ts';
 
-export type W2Plan = '2-3' | '2-6' | '2-7' | '2-8' | '2-9';
+export type W2Plan = '2-6' | '2-8' | '2-9';
 type Critter = 'capy' | 'duck' | 'otter';
 type Stream = ReturnType<typeof stream>;
 
@@ -52,11 +52,6 @@ export interface W2Kit {
   swingRiver(n: number, opts?: { safe?: boolean; island?: number; flow?: number; frames?: boolean }): void;
   stairs(rise: number, up: boolean): void;
   porchRun(n: number, water: boolean, tail?: number, safe?: boolean): { path: Platform | null; xs: number; px: number };
-  lift(up: boolean, high?: number): { sx: number; top: number };
-  guardedHigh(len: number): void;
-  mailman(a: number, b: number, y?: number): void;
-  patientDoor(dx: number, y?: number): void;
-  villageEnd(): void;
   floodBasin(islands: number, cageAt: number[], seconds: number, opts?: { safe?: boolean; across?: boolean; need?: number; tips?: RoomTips }): void;
   cageRoom(o: { need: number; mode: 'bank' | 'across' | 'high'; critter: Critter; safe?: boolean; tips?: RoomTips }): void;
   bellGate(tips: RoomTips): { gateX: number; bellX: number };
@@ -64,8 +59,6 @@ export interface W2Kit {
   sandbar(dirA: 1 | -1, dirB: 1 | -1, speed: number, logW: number, opts?: { safe?: boolean; flowers?: number; tag?: string }): void;
   island(len: number): void;
   postUp(): void;
-  /** off the end of high ground, down to the bank */
-  dropDown(): void;
   channels(n: number, opts?: { safe?: boolean; flowers?: boolean }): void;
   heart(x: number, y: number): void;
   goldenSeed(x: number, y: number): void;
@@ -94,8 +87,6 @@ export interface W2Kit {
 
 /** the flavours each stage rolls among (2-6 is World 1's climbing stage built up the bank houses: protoStage.ts buildKapok) */
 export const W2_FLAVOURS: Record<Exclude<W2Plan, '2-6'>, readonly string[]> = {
-  '2-3': ['posts', 'ponds', 'snakes', 'vines'],
-  '2-7': ['porches', 'lifts', 'swings', 'logs'],
   '2-8': ['islands', 'channels', 'reeds', 'logs'],
   '2-9': ['lilies', 'porches', 'sandbars', 'gates'],
 };
@@ -112,12 +103,10 @@ export interface W2Picks {
  * Which flavour each stage takes for a draw of 0..3. The draw is the layout number's own (the same for every stage of the world), and the
  * tables pair the stages that share a world's ideas so that one roll never gives them the same kind of way across (the 200-roll tool
  * compares each stage with the same roll of the others: "no two stages of a world alike", STAGE-RULES §2): 2-3 and 2-8 (the cages),
- * 2-4 and 2-7 (swings and lifts). (2-1, 2-2, 2-4 and 2-5 are gen2's: gen2/worlds/w2.ts, w2Arc24.ts, w2Arc25.ts)
+ * (2-1, 2-2, 2-4, 2-5 and 2-7 are gen2's: gen2/worlds/w2.ts, w2Arc24.ts, w2Arc25.ts, w2Arc27.ts)
  */
 const BY_DRAW: Record<Exclude<W2Plan, '2-6'>, readonly string[]> = {
-  '2-3': ['posts', 'ponds', 'snakes', 'vines'],
   '2-8': ['channels', 'reeds', 'logs', 'islands'],
-  '2-7': ['porches', 'lifts', 'swings', 'logs'],
   '2-9': ['porches', 'lilies', 'sandbars', 'gates'],
 };
 
@@ -171,7 +160,7 @@ const pause = (k: W2Kit) => k.rest(k.R.r(300, 340), false);
 /** the river's ways across, and the banks between them, as the dealers deal them */
 type Kind =
   | 'with' | 'back' | 'wide' | 'sandbar' | 'stones' | 'pond' | 'channels' | 'snake' | 'post' | 'swing2' | 'swing3'
-  | 'frames' | 'porches' | 'lift' | 'high';
+  | 'porches' | 'high';
 /** Dot's tip the first time a kind comes in a stage (before it: STAGE-RULES §1 "Teaching"), as [touch, pad, keys] */
 const TEACH: Partial<Record<Kind, [string, string?, string?]>> = {
   with: ['Deep water now. Stay on the logs!'],
@@ -184,9 +173,7 @@ const TEACH: Partial<Record<Kind, [string, string?, string?]>> = {
   post: ['Climb the post to get up the bank!', 'Climb the post: hold Up to get up the bank!', 'Climb the post: hold W or Up to get up the bank!'],
   swing2: ['Jump into a vine to grab it. Let go at the front!'],
   swing3: ['Jump into a vine to grab it. Let go at the front!'],
-  frames: ['Swing across on the rope frames!'],
   porches: ['Up the steps, and hop along the porches!'],
-  lift: ['Step into the basket. It carries you up!'],
 };
 /** kinds that teach the same thing (a tip said for one is not said again for the other) */
 const SAME: Partial<Record<Kind, string>> = { swing2: 'swing', swing3: 'swing', with: 'logs', wide: 'logs' };
@@ -238,19 +225,10 @@ class Crossings {
     else if (kind === 'post') k.postUp();
     else if (kind === 'swing2') k.swingRiver(2);
     else if (kind === 'swing3') k.swingRiver(3);
-    else if (kind === 'frames') k.swingRiver(n % 3 === 2 ? 3 : 2, { frames: true });
     else if (kind === 'porches') {
       // (the porches along the bank, at its own height: the carved steps up and down either side were four and more seconds of plain
-      // walking, every roll of 2-7, 2026-10-28; the steps stay in the Learn)
+      // walking, 2026-10-28)
       k.porchRun(3, true);
-    } else {
-      // up by the basket, along the high road (a snake on it, then porches out over the water at its height), and a drop off its end
-      // (the ride down had nothing to do in it: with the walk on, five seconds and more, 2026-10-28. The rise stays past a double jump:
-      // at 150-170 px the kid bot jumped for the top instead of riding, and missed)
-      k.lift(true);
-      k.guardedHigh(k.R.r(240, 280));
-      k.porchRun(2, true);
-      k.dropDown();
     }
   }
   /** a golden seed over a short stretch of bank: the top of a double jump from its middle */
@@ -278,11 +256,11 @@ class Crossings {
       const known = among.find((kd) => kd !== kind && !this.tooSoon(kd) && kd !== 'post');
       if (known) kind = known;
     }
-    // (a snake's bank is its own breath; a post's drop off the high bank and the walk on are too, and so is the basket's ride down)
+    // (a snake's bank is its own breath; a post's drop off the high bank and the walk on are too)
     const after = this.last;
     this.last = kind;
     const x0 = this.k.x;
-    if (kind !== 'snake' && kind !== 'post' && after !== 'lift' && after !== 'snake' && !walked) {
+    if (kind !== 'snake' && kind !== 'post' && after !== 'snake' && !walked) {
       if (i % 3 === 2) pause(this.k);
       else this.k.breath();
     }
@@ -298,175 +276,6 @@ class Crossings {
 }
 
 const PLANS: Record<Exclude<W2Plan, '2-6'>, (k: W2Kit, flavour: string, rng: Rng) => void> = {
-  // ======================================================================================================================
-  // 2-3 Stuck in the Reeds: little ones in reed cages hung over the water on ropes, each over its pulley with a counter-basket on the
-  // bank (Matt's sheet). Stones in the basket lift a cage out of the water, and all the way up its floor drops open. Learn with one
-  // stone over water that costs nothing; then the cages come in a rolled order (a heavier one, two stones; stones on a reed island across
-  // a channel, thrown over; a basket hung high, the stones flicked up into it), and between the cages the reeds: the mooring posts up
-  // onto the high banks, lily ponds and stepping stones, or snakes in the reeds and sandbars, by the roll.
-  '2-3': (k, flavour, rng) => {
-    const { R } = k;
-    const critters = R.shuffle<Critter>(['capy', 'duck', 'otter']);
-    const STONE = k.STONE;
-    // the four cages after the first, in the roll's order (each with its own tip the first time its kind comes)
-    type Cage = 'heavy' | 'across' | 'high' | 'high1';
-    const orders: Record<string, Cage[]> = {
-      posts: ['heavy', 'across', 'high', 'high1'],
-      ponds: ['across', 'heavy', 'high1', 'high'],
-      snakes: ['heavy', 'high', 'across', 'high1'],
-      vines: ['across', 'high1', 'heavy', 'high'],
-    };
-    const told = new Set<string>();
-    const cage = (c: Cage, i: number) => {
-      const critter = critters[i % 3];
-      const first = !told.has(c === 'high1' ? 'high' : c);
-      told.add(c === 'high1' ? 'high' : c);
-      // (a puzzle never costs a life, STAGE-RULES §3: a slip into a cage's pool is a splash and back to the bank, LV-8: 2-3 drowned the
-      // first-timer in the second cage's pool at 19 s)
-      if (c === 'heavy') k.cageRoom({ need: STONE * 2, mode: 'bank', critter, safe: true, tips: first ? { enter: 'A heavy one! It barely moves.', nudge: 'One stone lifts it halfway.', move: 'Two stones in the basket.' } : undefined });
-      else if (c === 'across')
-        k.cageRoom({ need: STONE, mode: 'across', critter, safe: true, tips: first ? { enter: 'The stones are on the island.', hold: 'Hands full! Flick toward the bank to throw it.', nudge: 'Too far to carry it over.', move: 'Throw one over to the bank.' } : undefined });
-      else k.cageRoom({ need: c === 'high' ? STONE * 2 : STONE, mode: 'high', critter, safe: true, tips: first ? { enter: 'The basket hangs high.', nudge: 'Too high to drop it in.', move: 'Flick up to throw!' } : undefined });
-    };
-    /** the reeds between two cages, by the roll */
-    const kinds: Record<string, Kind[]> = {
-      posts: ['post', 'post', 'post', 'with'],
-      ponds: ['pond', 'stones', 'pond', 'stones'],
-      snakes: ['snake', 'snake', 'channels', 'snake'],
-      vines: ['swing2', 'swing3', 'swing2', 'stones'],
-    };
-    const cross = new Crossings(k, { speed: 58 });
-    const turns = new Turns<Kind>(rng, kinds[flavour], flavour === 'posts' || flavour === 'snakes' ? 0 : 1);
-    const order = orders[flavour];
-    k.beat('Learn: a cage on a rope', () => {
-      k.run(R.r(160, 200));
-      k.hint(150, 'Little ones are stuck in reed cages. Free them!');
-      k.cageRoom({
-        need: STONE, mode: 'bank', safe: true, critter: critters[0],
-        tips: { enter: 'A little one, in a cage on a rope!', hold: 'Tap by the basket to drop it in.', open: 'Up it comes! The little one is free!', nudge: 'That basket pulls the rope.', move: 'Drop a stone in the basket.', mech: 'cageLift' },
-      });
-      k.breath();
-      // the reeds' first way across costs no life
-      if (flavour === 'posts') {
-        cross.go('post');
-        narrow(k, 1, 55, { safe: true });
-        cross.know('with');
-      } else if (flavour === 'ponds') {
-        k.hint(k.x + 20, 'Lily pads hold you. Hop across!');
-        k.lilyPond(4, false, undefined, { safe: true });
-        cross.know('pond');
-      } else if (flavour === 'snakes') {
-        k.hint(k.x + 20, 'Reed islands. Hop from one to the next!');
-        k.channels(3, { safe: true });
-        cross.know('channels');
-      } else {
-        k.hint(k.x + 20, 'Swing over the water! Jump into a vine to grab it.');
-        k.swingRiver(2, { safe: true });
-        cross.know('swing2');
-      }
-      k.flag();
-    });
-    k.beat(`Develop: ${order[0] === 'heavy' ? 'a heavier cage' : 'stones across the water'}`, () => {
-      k.breath();
-      cage(order[0], 1);
-      k.heart(k.x - 40, k.G - 60);
-      cross.deal(turns, 2);
-    });
-    k.beat('Twist: stones across the water', () => {
-      k.breath();
-      cage(order[1], 2);
-      k.heart(k.x - 40, k.G - 60);
-      cross.deal(turns, 2, false);
-      cross.seedBank();
-      k.flag();
-    });
-    k.beat('Finish: the high baskets', () => {
-      k.breath();
-      cage(order[2], 3);
-      k.heart(k.x - 40, k.G - 60);
-      cross.deal(turns, 2, false);
-      k.breath();
-      cage(order[3], 4);
-      let n = 0;
-      const target = k.EXPERT_SECONDS + (flavour === 'ponds' ? 2 : 12);
-      while (k.expert < target && n < 14) {
-        cross.step(turns.next(), n, turns.kinds);
-        if (++n % 2 === 0) k.flag();
-      }
-      k.rest(R.r(300, 400), false);
-    });
-  },
-
-  // ======================================================================================================================
-  // 2-7 The Mailman's Route: the long way round the river, the way the mailman goes: up the carved steps, along the porches over the
-  // water, into the basket of a rope lift and up the bank, over the river on the logs and on the rope-swing frames, and past every door
-  // marked PLEASE BE PATIENT to the end of his round. The round he takes is rolled: the porches, the lifts and the high road, or the
-  // swing frames.
-  '2-7': (k, flavour, rng) => {
-    const { R } = k;
-    // the mailman's round, by the roll: the porches and the carved steps; the basket lifts and the high road; the rope-swing frames over
-    // the river; or the river itself, the logs and the sandbars
-    const kinds: Record<string, Kind[]> = {
-      porches: ['porches', 'porches', 'with', 'porches'],
-      lifts: ['lift', 'snake', 'lift', 'with', 'lift'],
-      swings: ['frames', 'frames', 'frames', 'back'],
-      logs: ['with', 'back', 'snake', 'sandbar', 'with'],
-    };
-    const cross = new Crossings(k, { speed: 66 });
-    cross.know('porches');
-    const turns = new Turns<Kind>(rng, kinds[flavour], 0);
-    k.beat('Learn: up the steps, along the porches', () => {
-      k.run(R.r(140, 170));
-      k.hint(140, 'Follow the mailman’s route round the village!');
-      k.mailman(160, 380);
-      k.stairs(Math.round(R.r(110, 130)), true);
-      k.hint(k.x - 100, 'Hop along the porches');
-      // the first porches: over the water, but a splash only puts him back on the steps
-      k.porchRun(3, true, undefined, true);
-      k.patientDoor(k.x - 60);
-      k.dropDown();
-      k.flag();
-      k.piece('mailbox', k.x - 40, k.G + 2, 54);
-    });
-    k.beat(`Develop: the round, ${flavour}`, () => {
-      cross.step(turns.next(), 0, turns.kinds);
-      k.heart(k.x - 60, k.G - 60);
-      cross.step(turns.next(), 1, turns.kinds);
-      cross.step(turns.next(), 2, turns.kinds);
-      k.flag();
-      k.piece('mailbox', k.x - 40, k.G + 2, 54);
-    });
-    k.beat('Twist: up the bank and over the river', () => {
-      k.breath();
-      // every round goes up by the basket lift once, and over the river on the swing frames once
-      if (flavour !== 'lifts') cross.go('lift');
-      k.breath();
-      k.patientDoor(k.x - 110);
-      if (flavour !== 'swings') cross.go('frames');
-      k.heart(k.x - 40, k.G - 60);
-      // a golden seed above the next lift's crane: a double jump from the basket at the top
-      const lf = k.lift(true);
-      k.goldenSeed(lf.sx + 48, lf.top - 175);
-      k.porchRun(2, true);
-      // (down off the high ground's end: a drop, not the carved steps' long walk)
-      k.dropDown();
-      k.flag();
-    });
-    k.beat('Finish: the end of the round', () => {
-      let n = 0;
-      const target = k.EXPERT_SECONDS - 4 + (flavour === 'logs' ? 26 : flavour === 'lifts' ? 8 : 14);
-      while (k.expert < target && n < 16) {
-        cross.step(turns.next(), n, turns.kinds);
-        if (++n % 2 === 0) k.flag();
-      }
-      // (a short bank to the village with a low rise in it: its walk is the easy walk out, and the two together were over four seconds
-      // with nothing to do on some rolls)
-      k.breath();
-      k.heart(k.x - 60, k.G - 60);
-      k.villageEnd();
-    });
-  },
-
   // ======================================================================================================================
   // 2-8 Reed Cages: more little ones caught in the reeds, in reed cages hung on pulleys off the islands of still water that rises once he
   // steps in. Each cage's island has its pile of river stones and its counter-basket: a stone in, and the cage comes up out of the water
