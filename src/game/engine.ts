@@ -4488,7 +4488,7 @@ export class GameEngine {
   }
 
   /**
-   * A blow's noise into the cast's one channel (ENG-NOISE; castPlay.ts take, the noise way): his punch at his place, a kick or a mega the same: once a
+   * A blow's noise into the cast's one channel (ENG-NOISE; castPlay.ts noise): his punch at his place, a kick or a mega the same: once a
    * swing, when its strike is over. A blow that rang a sounding thing makes no noise of its own: that thing's sound is the only one (its
    * own noise would call a hunter to HIM, not to the stone: 3-3.md). Heard only from the world that teaches noise (castPlay.ts)
    */
@@ -4496,7 +4496,7 @@ export class GameEngine {
     a.noised = true;
     if (a.rang || !this.cast) return;
     const p = this.player;
-    this.cast.take({ way: 'noise', ...punchNoise(p.x, p.y, this.gameTime) });
+    this.cast.noise(punchNoise(p.x, p.y, this.gameTime));
   }
 
   /** the strike starts: the swoosh, the step forward, the shake of a mega punch */
