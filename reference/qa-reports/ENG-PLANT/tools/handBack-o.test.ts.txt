@@ -1,0 +1,31 @@
+// ENG-PLANT (the lead's ruling on 2-7's B+C, rule 28): a bot is never ridden into a rescue and never repeats an identical round. Read by
+// what he meets, never where: a hand-back is a stand on a floor (not a log), then logs only, then a stand on that same floor again; a
+// floor handed back to twice is the loop (c25: middle Easy 11 rode log #19 back to bank #16 three times, rescued; expert Normal 29 rode
+// #37 back to #33 five times, rescued: ENG-PLANT REPORT sessions 12-13). RED on c25 6a64aa41e, GREEN on c26.
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import type { Platform } from '../../src/game/types.ts';
+import { firstTimer, FT_EXPERT, FT_MIDDLE_EASY, type FirstTimer } from './firsttimer.ts';
+
+function rounds(seed: number, who: FirstTimer, cap: number): { handBacks: number; worst: number; rescues: number } {
+  const back = new Map<number, number>();
+  let floor: number | null = null, rode = false, handBacks = 0;
+  const r = firstTimer('2-7', seed, who, { cap, dotSetting: true, onFrame: (sim) => {
+    const e = (sim as unknown as { e: { player: { grounded: boolean }; platforms: Platform[]; standingOnId: number | null } }).e;
+    if (!e.player.grounded) return;
+    const here = e.platforms.find((q) => q.id === e.standingOnId);
+    if (!here) return;
+    if (here.type === 'drift') { if (floor !== null) rode = true; return; }
+    if (rode && here.id === floor) { handBacks++; back.set(here.id, (back.get(here.id) ?? 0) + 1); }
+    floor = here.id; rode = false;
+  } });
+  return { handBacks, worst: Math.max(0, ...back.values()), rescues: (r as { rescues?: number }).rescues ?? 0 };
+}
+
+for (const [name, seed, who] of [['middle Easy 11', 11, FT_MIDDLE_EASY], ['expert Normal 29', 29, FT_EXPERT]] as const) {
+  test(`2-7 ${name}: no floor is handed back to twice by a log, and no rescue (the hand-back loop, B+C)`, () => {
+    const got = rounds(seed, who, 120);
+    assert.ok(got.worst <= 1, `a floor handed back to ${got.worst} times (${got.handBacks} hand-backs)`);
+    assert.equal(got.rescues, 0, `rescues ${got.rescues}`);
+  });
+}

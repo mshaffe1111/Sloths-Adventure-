@@ -63,6 +63,11 @@ line went into the UNFROZEN main checkout at c25 and `git checkout` restored it,
    release-0.10.3 (no force) ONLY on the lead's word: send the table first. REPORT BY 12:00 PM ET; HARD STOP 2:00 PM ET; two heavy runs max.
 2. **Candidate c26 (the lead rules between them; my recommendation is (A)):**
    (child E 11's new loss is traced: cluster A's shuffle, above.) Build the candidate the lead picks:
+   **THE TOY IS WRITTEN (fix-agnostic, either candidate): tools/handBack-o.test.ts.txt** (a hand-back read by what he meets: a stand on a
+   floor, logs only, a stand on that same floor again; no floor handed back to twice, no rescue; 2-7 middle Easy 11 and expert Normal 29,
+   cap 120). **RED on c25** (data/o/toy-handBack-c25.txt: E 11 'a floor handed back to 5 times (6 hand-backs)', N 29 '5 times (5)'),
+   **GREEN under EXP_FRONT** (data/o/toy-handBack-expfront.txt, 2/2). Land its two tests inside tools/inspect/riverRide.test.ts (already on
+   gates.yml:157's CI tool line; a new file needs that line too, or src/game/ciTests.test.ts fails).
    (A) the front stand: tools/expfront-o.diff.txt WITHOUT the env gate (two lines in the upstream block; a comment naming E 11 x 9,379 /
        N 29 x 13,079, the gap branch's tier look, and the ruling). Toys (tools/inspect/*.test.ts, as riverRide's): RED on c25 middle E 11
        and expert N 29 (a hand-back round ending in a rescue), GREEN on c26; the c2m gains child N 5 and middle N 13 still cross.
