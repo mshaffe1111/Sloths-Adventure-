@@ -19,7 +19,10 @@ tools/p23-s.mts.txt, p24-s.mts.txt (the probes), bl-s.mts.txt (the laid sweep), 
    10 races + the 10 known flips (they must match c27 row for row: the deletion and the toys change no behaviour). 5. THE LEAD'S WORD
    STANDS: when 3-4 are all green as listed, MERGE into origin/release-0.10.3 (no force; it is at dfe631913). Push, confirm with ls-remote,
    then send the lead the merge hash and one line per item. Any red or deviation: do NOT merge; stop and tell the lead."
-2. DONE: the toys pushed (36e8efe6f), the lead told. NOW: WAIT for the lead's hash of release-0.10.3-wip-plant-ci. Then: `git fetch origin
+2. DONE: the toys pushed (36e8efe6f), the lead told. **The lead's answer (word for word): "the three toys are ACCEPTED: each is RED on
+   the commit before its fix and GREEN on the head, all test-only, with no new switch. The boardLog finding (a life lost later on the river
+   at log fronts 975/1000, not at the lip) goes on R-165.424's list and does NOT hold the merge: the toy claims no such placement, and c27's
+   races, flips and wide sample stand. Wait for ENG-PLANT-CI's hash; I will send it the moment it lands."** NOW: WAIT for the lead's hash of release-0.10.3-wip-plant-ci. Then: `git fetch origin
    release-0.10.3-wip-plant-ci`, check the hash is the lead's, `git merge --no-ff <hash>` on release-0.10.3-wip-plant-c (no force; my toys
    are at firsttimer.test.ts's end and pacerLay.test.ts :250, the 9 reds' lines are elsewhere), push, ls-remote.
 3. Ruling 4 ONCE on a chattr-frozen tree of the COMBINED head (fz-comb), two heavy runs at a time:
