@@ -40,8 +40,12 @@ gen2/noiseRow.test.ts (a toy kit). 3-5.md/3-3.md's "NOT wired: no caller outside
    dy x T.rise: 392-407 px on 3-1's rolls), so the toy takes the fall as laid within 10 px and prints it. A walk-off lands about 140 px
    in, so the sleeper sits at t 0.55 (about 300 px past the landing, measured on the landing frame).
 3. **Gates (box 2, on frozen d05aa5321):** tsc PASS. Locks recorded from frozen worktrees: BASE c1008d8ed and MAIN cdffdc627 are the same
-   lock (3264 builds, 102/102 stages unchanged: t-eng-w3's base moves no listed stage against main). Running at the hand-over: lockall
-   --check vs BASE (and the same lock vs MAIN), tierBots, the CI tool line, the suite in 3 shards; their lines go to the lead from box 2.
+   lock (3264 builds, 102/102 stages unchanged: t-eng-w3's base moves no listed stage against main). Box 2's gate lines, all GREEN on
+   frozen d05aa5321: tsc PASS; lockall --check 102/102 unchanged vs BASE and vs MAIN; tierBots 9/9; the CI tool line (gates.yml:157)
+   350/351 pass, 1 todo, 0 fail; the suite 4,054/4,057 pass, 3 todo, 0 fail (shards 1182 pass/0 fail/2 todo, 1499/0/1 todo, 1373/0);
+   seedListChunk passed with only src/game/gen2/proven unfrozen.
+   Box 3: merged origin/t-eng-w3 (0f49129dd, FIX-CARD-DOWN) into t-eng-noise-wip with no conflicts (merge 1b78d0c8); on the merged
+   head tsc PASS; w3Noise + castNoise + noiseRow 21/21; dotGuideDown 8/8 (the card fix that rode in).
 
 ## Polish check
 Nothing drawn changed (no art, sprite, screen or text): the seam is a type and a method; the toys are a test. A struck stone still has
