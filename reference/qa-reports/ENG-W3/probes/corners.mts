@@ -12,4 +12,4 @@ const c = towerCorners(st, { x: st.spawnX, y: st.spawnY }) ?? [];
 const y0 = Number(process.env.Y0), y1 = Number(process.env.Y1);
 console.log(c.filter((p: any) => p.y >= y0 && p.y <= y1).map((p: any) => `${Math.round(p.x)},${Math.round(p.y)}`).join(' '));
 const g = st.gen2;
-console.log('legs', g.tower.route.legs.filter((l: any) => l.entry.y >= y0 && l.entry.y <= y1).map((l: any) => `${l.entry.x},${l.entry.y}->${l.exit.x},${l.exit.y}`).join(' '));
+console.log("legs", g.tower.route.legs.filter((l: any) => Math.max(l.entry.y, l.exit.y) >= y0 && Math.min(l.entry.y, l.exit.y) <= y1).map((l: any) => `${l.entry.x},${l.entry.y}->${l.exit.x},${l.exit.y}`).join(" "), "turns", g.tower.turns.filter((t: any) => t.to >= y0 && t.from <= y1).map((t: any) => `${t.x}:${t.from}->${t.to}`).join(" "), "plan", g.plan.length, g.tower.route.legs.length);

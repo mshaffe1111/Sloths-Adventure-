@@ -1,0 +1,27 @@
+  private downEnd(p: { x: number; y: number }): -1 | 0 | 1 {
+    if ((this.sim.stage as { gen2?: { tower?: { flow?: string } } }).gen2?.tower?.flow !== 'down') return 0;
+    // (the run of wood he stands on: the way on under it is no way off it. On wood that lies over the way on (a catch run on over the
+    //  storey under it) the first point under him was straight under, and he stood there turning until rescued: he walks off the end
+    //  where the way comes out from under his wood, ENG-DOWNBOT)
+    const feet = this.sim.platforms.filter((q) => !q.broken && q.type !== 'bouncy' && Math.abs(q.y - p.y) <= 4);
+    let lo = p.x, hi = p.x;
+    for (let grew = true; grew; ) {
+      grew = false;
+      for (const q of feet) if (q.x <= hi + 2 && q.x + q.width >= lo - 2 && (q.x < lo || q.x + q.width > hi)) { lo = Math.min(lo, q.x); hi = Math.max(hi, q.x + q.width); grew = true; }
+    }
+    // (a climb vine down from his wood's height is a way off it too: read as under his wood, he went for the far end of wall-to-wall
+    //  wood and stood turning over the bottom storey, 'the way on is 93 px down')
+    const downVines = this.sim.vines.filter((v) => v.vineType === 'tree_climb' && !v.off && Math.abs(v.topY - p.y) <= 20 && v.bottomY > p.y + 40);
+    const offWood = (q: Pt) => q.x <= lo + 8 || q.x >= hi - 8 || downVines.some((v) => Math.abs(v.x - q.x) <= 12);
+    const at = this.downPt(p, offWood, 160);
+    if (!at) return 0;
+    const dx = at.x - p.x;
+    return dx > 8 ? 1 : dx < -8 ? -1 : 0;
+  }
+  /** the way on's first point (of the next 80) that lies under him (40+ px down); with `keep`, the first such point it keeps, of the
+   *  next `n` (downEnd: the first that is a way off his wood) */
+  private downPt(p: { x: number; y: number }, keep: (q: Pt) => boolean = () => true, n = 80): Pt | null {
+    const pts = this.prog.pts;
+    for (let j = this.prog.cur; j < Math.min(pts.length, this.prog.cur + n); j++) if (pts[j].y > p.y + 40 && keep(pts[j])) return pts[j];
+    return null;
+  }

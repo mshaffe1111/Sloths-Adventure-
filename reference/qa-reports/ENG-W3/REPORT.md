@@ -1,3 +1,50 @@
+# ENG-DOWNBOT REPORT (lane 2: the down lay's head room, then the bots on a way down to the shrine) — box 12 (session 10, 11-25)
+**EXACT NEXT STEP (box 12 hand-over, 1:56 PM ET):** code **bf3c1fef2** (the route's out-and-back fix) + this commit (REPORT, rows,
+probes). **STEP 0 (the lead's catch-ahead), MEASURED: ENG-DARK's way-down block does NOT cure the vine cause; the ROUTE does.** Trial
+merges (scratch, not pushed; downEnd resolved as ruled: ENG-DARK's downEnd/downPt split and lines kept, downPt takes an optional keep
+test and look-ahead that only downEnd passes (its wood run, minus fix B's `under` seeding: `let lo = p.x, hi = p.x;`), fix A's call
+site kept; tsc 0). kid+adult x40, GEN2_DRAFT=3-1, each DRAFT CHECKED by probes/trace.mts on one row = the row:
+| tree | rescues kN/kE/aN/aE | total | vine | slot | rest | PASS kN/kE/aN/aE |
+|---|---|---|---|---|---|---|
+| head 3b9eed8d (box 11) | 22/36/18/95 | 171 | 145 | 1 | 25 | 24/14/25/1 |
+| trial 1: + dark 3128e21e (0f6bc0f76) | 24/67/29/190 | 310 | 269 | 4 | 41 | 22/3/20/0 |
+| trial 2: + dark FINAL abcf2ec4 (b4a8abcc7) | 19/41/22/135 | 217 | 182 | 4 | 35 | 26/12/23/0 |
+| **trial 2 + route fix (9f482fd46)** | **9/4/10/4** | **27** | **24** | **0** | **4** | **32/37/32/37** |
+All 160 reach the shrine in every run; under the floor 0 (trial 2 + fix: kid N min 111.9 s). Rows: rows/castbots-trial0f6bc0f76-,
+-trial2b4a8abcc7-, -trial2fix9f482fd46-kidadult-1-40.jsonl. **THE TOP VINE SPOT, TRACED (rule 28, two rows): 110 of trial 2's 182
+read 'in a dip 174/178 px deep'.** Adult Easy 28 at (942,927): off a stopped turn vine's catch 963-1143@753 he drops onto a shelf
+847-1075@927; probes/corners.mts gives the route 933,927 (where the drop lands) -> 1075,927 (the next leg's ENTRY, the shelf's far
+end) -> 855,927 -> off its near end; he turns at 932-942 (vx +-173 a second) 20 s until rescued. Kid Easy 5 at (446,3397): corners
+495 -> 353 -> 563, the same. **Why the route goes out and back:** towerCorners pushes the leg's entry after the turn's drop lands him
+on the leg's own wood, and its out-and-back filter dropped a corner only when the way came back to BETWEEN (1-4's bough), not back
+PAST where he landed. **Why he turns:** Progress.step takes the nearest point within cur-25..cur+40 (ties to the later), and the two
+legs lie side by side on one floor, so the cursor flips between them and target() points left, then right. On the head he cleared
+the shelf at speed off the catch; on the merge the dark's stop (glowWait) holds him about 2.5 s on the catch, he walks off with no
+run-up and lands on it. **FIX (towerRoute.ts towerCorners, a way down only):** the filter also drops the corner when the way comes
+back past where he came in (the same walk without the out leg). **Planted castBots.test route case (7), both mirror ways: RED on
+4bcd1e51** (corners 933 -> 1075 -> 855, the real ones), **GREEN after**; cases 1-6 green; castBots.test whole file 16/16; tsc 0. **No
+listed stage lays a way down** (probe: 1-1..2-5 on seeds 1-3 both settings; only 1-4 is a tower and it climbs), so no shipped route
+can move. Lead told each number as measured.
+**Next, in order (box 13):** (0) **Record the head-alone x40** (bf3c1fef2, frozen /home/user/wt/fix12, started 1:52 PM ET;
+rows/castbots-bf3c1fef2-kidadult-1-40.jsonl when it ends; if the file is missing the run died with this container: re-run it on a
+frozen bf3c1fef2 tree, `GEN2_DRAFT=3-1 npx tsx tools/inspect/castBots.ts --stage 3-1 --bots kid,adult --seeds 1-40 --par 2 --rows
+<file>`, then causes.mts) and send the lead the head-alone table beside trial 2 + fix (the lead asked for both). (1) **The lead's
+toy (a): the seed-39-shaped arena with the route BUILT by towerRoutePts** (probes/shelfArena.wip.ts.txt; its corners match the real
+row's corner for corner: 700,329 947,329 981,423 897,423 859,610 804,610 766,751 583,751 545,876 320,876 286,1157). It is NOT yet
+green on bf3c1fef2: past the shelf he walks the 285-813@502 wood left at speed and at x 329 the run's own 'fell back down from here
+3 times' fires (firsttimer.ts ~4128: prog.off > 260 for 0.5 s, relocate(level), three relocations with best unchanged) and puts him
+at 283,1157, though the real row (kid N 39 on bf3c1fef2, trace) walks the same wood off its 285 end onto 171-351@2075 and passes.
+Find what the arena lacks (start state, CAST_BOTS vs FT_KID, the real route's points before the arena's start) before trusting it;
+then RED on 4bcd1e51, GREEN on the head, both ways. (2) Step 1 (fix A's toy, seed 39: A off he stands at 680-691 on 285-813@1902, the
+route 859,2010 off his wood's right end) is likely the same arena once (1) is faithful: run it on /home/user/wt/aoff (4bcd1e51 + fix
+A off, f3624ae47; rebuild if gone: the patch moves the downEnd call back inside the `dy > 40 && |dx| < 120 && this.way` block as
+`p.grounded ? this.downEnd(p) : 0`). (3) Step 2 (adult E pass 2 -> 1) and step 3 (rest cause 2, kid N 10 at (587,6128); FIRST check
+whether it is the same out-and-back family: probes/corners.mts SET=normal SEED=10 Y0=5900 Y1=6300) on the trial 2 + fix rows, since
+those are what will land. (4) Trace the 24 vine spots left (causes.mts PRINT=vine on trial 2 + fix). (5) The landing after ENG-DARK-i
+lands on t-eng-w3 (the lead's word): merge origin/t-eng-w3 (no force), downEnd exactly as trial 2 (its trees are container-local;
+the resolved downEnd + downPt, verbatim: probes/downEnd-resolution.ts.txt), then dark.test,
+darkBots.test with MID-WAY, plants, lockall, kid+adult x40 and causes on the merged head.
+
 # ENG-DOWNBOT REPORT (lane 2: the down lay's head room, then the bots on a way down to the shrine) — box 11 (session 9, 11-25)
 **EXACT NEXT STEP (box 11 hand-over, 1:25 PM ET):** code **3b9eed8d** (the route fix) + this commit (castBots.test case (6) made a toy
 each way: vine at the left wall and the right wall; RED on 571d6e2a9 both ways, the left by the test, the mirror by its corners
