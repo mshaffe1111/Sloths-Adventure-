@@ -235,13 +235,15 @@ export function darkFlags(stage: { zones?: readonly Zone[]; checkpoints?: Readon
  * light nothing in time gets a glowworm of its own, hung over it, asleep like the rest.
  */
 export function glowFlags(out: StageSink, flags: ReadonlyArray<{ x: number; y: number }>): void {
-  let id = (out.extras[GLOW_ID] as number | undefined) ?? 1;
+  const first = (out.extras[GLOW_ID] as number | undefined) ?? 1;
+  let id = first;
   for (const c of flags) {
     const zs = glowDarkAt(out.zones, c.x, c.y);
     if (!zs.length || flagLit(zs.flatMap((z) => z.lights ?? []), c.x, c.y)) continue;
     zs[0].lights!.push({ x: Math.round(c.x), y: Math.round(c.y - DARK_ZONE.lightUp), r: DARK_GLOW.light, sleep: true, id: id++ });
   }
-  out.extras[GLOW_ID] = id;
+  // (the counter is written only where a glowworm was hung: a stage with no glowworm dark keeps its extras, so its build is unchanged)
+  if (id !== first) out.extras[GLOW_ID] = id;
 }
 
 /** one rim he went over in a run: when (game s), and when its landing's light woke (game s; -Infinity always lit, undefined never) */

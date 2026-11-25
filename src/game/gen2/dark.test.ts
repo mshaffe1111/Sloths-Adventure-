@@ -48,6 +48,16 @@ test('the brick on a real World 3 row: 3-1\'s drops lie in the dark, every rim\'
   }
 });
 
+test("the lay leaves every other stage as it was: a stage with no glowworm dark (World 1's, World 6's firefly dark) builds with no glowworm counter in its gen2 extras (lockall moved 37 stages' proto.gen2 when glowFlags wrote it everywhere)", () => {
+  for (const id of ['1-1', '6-1']) for (const seed of [1, 2]) {
+    setLayoutVariant(seed);
+    let st;
+    try { st = generateStage({ ...generateAllLevels().find((c) => c.id === id && !c.secret)!, unlocked: true }, 'normal'); } finally { setLayoutVariant(null); }
+    const gen2 = (st as { proto?: { gen2?: Record<string, unknown> } }).proto?.gen2 ?? {};
+    assert.ok(!Object.keys(gen2).some((k) => /glow/i.test(k)), `${id} seed ${seed}: gen2 extras ${JSON.stringify(Object.keys(gen2))}`);
+  }
+});
+
 /** the draft's roll `seed` on `d`, built as the game builds it */
 function built(seed: number, d: 'normal' | 'easy' = 'normal') {
   ready();
