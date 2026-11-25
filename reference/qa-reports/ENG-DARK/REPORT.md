@@ -16,6 +16,10 @@ reference/qa-reports/ENG-DARK/planted-faults.py <frozen dir>` (12 now: box 1's 1
 removed in code): PASS = 12/12 CAUGHT.
 (3) Then: tierBots 9/9, the suite (3 shards) + the CI tool line once on the final head; land on t-eng-w3 (merge origin/t-eng-w3, no
 force); send the lead the hash, the READY measures (below) and that ENG-SPORE can start.
+**The lead's landing rule (ENG-DOWNBOT-f lands on t-eng-w3 today too; both lanes touch tools/inspect/firsttimer.ts and the gen2 lay):**
+whoever lands SECOND merges origin/t-eng-w3 first and runs the OTHER lane's tests on the merged head before pushing: dark.test,
+darkBots.test, w3.test, tower.test, castBots.test (the down toys) and lockall. Name every conflict here; never resolve one by dropping
+the other lane's lines.
 Box 2 start 11:31 AM ET (by `date`). Box 1 start 11:03 AM ET.
 
 ## Box 2 (ENG-DARK-b) done (all on the real 3-1 draft row)
