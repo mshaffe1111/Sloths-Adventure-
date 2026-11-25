@@ -14,7 +14,7 @@ run-on 178 px over e8's vine top vs the blind drop before that height was added)
 laid before it: a bough that makes a new dip under laid wood is refused too (`made`). **tower.ts:325-331's 'only ever a way on' now
 says what the code guards going down (his hop's room), and they agree.** Planted test: tower.test.ts "going down, his hop's room"
 (seed 13's shape as a toy, 9500 px up): **RED on today's lay** (it lays 71-251 @555, 108 px over the vine's top: the seed-13 shelf),
-**GREEN on fe331023**; tower.test 36/36. NOT YET RUN on this head: the suite, lockall, seedlist, castBots. **Next, in order:**
+**GREEN on fe331023**; tower.test 36/36. **The full suite on 9ff47e11 (frozen tree) did NOT finish: stopped at its 25-minute background limit at test 2,999, 0 failures so far (the one 'not ok' is the known TODO R-165.312); RE-RUN it whole with a 2-hour background timeout.** NOT YET RUN on this head: lockall, seedlist, castBots. **Next, in order:**
 (2) re-measure on the new lay: castBots.test's seed-13 toy (catchOnArena hard-codes today's pieces; READ on fe331023 with
 probes/area.mts: the shelf 0-604 now lies at 9975, **188 px over the storey** (was 10055, 108), clear of his hop, still a double jump's
 reach; the landing catch is 43-223 @10336 (was 83-263); nothing else in 9800-10400 moved: so `thin(9004, 0, 555, 604)` -> y **475** and
