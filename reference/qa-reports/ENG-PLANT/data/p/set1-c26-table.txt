@@ -1,0 +1,24 @@
+2-1 child  easy     2 | new PASS r0 l0     | main PASS r0 l0     | 
+2-1 child  normal  11 | new PASS r0 l0     | main PASS r0 l3     | 
+2-1 kid    normal  19 | new FAIL r2 l6     | main PASS r0 l2     | set down here 3 times 8815
+2-1 kid    normal  21 | new FAIL r1 l6     | main PASS r0 l4     | set down here 3 times 25732
+2-2 adult  normal   4 | new PASS r0 l0     | main PASS r0 l1     | 
+2-2 adult  normal  24 | new PASS r0 l1     | main PASS r0 l1     | 
+2-2 kid    easy    37 | new FAIL r1 l0     | main PASS r0 l0     | set down here 3 times 14275
+2-2 kid    normal   3 | new FAIL r1 l4     | main PASS r0 l3     | set down here 3 times 28929
+2-2 kid    normal  33 | new FAIL r1 l4     | main PASS r0 l3     | set down here 3 times 21178
+2-4 adult  normal   6 | new PASS r0 l0     | main PASS r0 l4     | 
+2-4 adult  normal  24 | new PASS r0 l1     | main PASS r0 l3     | 
+2-4 adult  normal   8 | new PASS r0 l1     | main PASS r0 l3     | 
+2-4 adult  normal  32 | new PASS r0 l0     | main PASS r0 l1     | 
+2-4 child  easy    23 | new PASS r0 l0     | main PASS r0 l0     | 
+2-4 child  easy    11 | new PASS r0 l0     | main PASS r0 l0     | 
+2-4 child  normal   8 | new PASS r0 l1     | main PASS r0 l2     | 
+2-4 child  normal  39 | new PASS r0 l2     | main PASS r0 l2     | 
+2-4 kid    easy    12 | new FAIL r1 l0     | main PASS r0 l0     | on a vine at 7062,894 with no way on 7062
+2-4 kid    easy    19 | new FAIL r1 l0     | main PASS r0 l0     | set down here 3 times 16777
+2-4 kid    easy    35 | new PASS r0 l0     | main PASS r0 l0     | 
+2-4 kid    easy     2 | new FAIL r1 l0     | main PASS r0 l0     | set down here 3 times 17053
+2-4 kid    easy    13 | new FAIL r1 l0     | main PASS r0 l0     | set down here 3 times 23944
+2-4 kid    easy    20 | new FAIL r1 l0     | main PASS r0 l0     | set down here 3 times 17149
+BAR rows PASS 12/12

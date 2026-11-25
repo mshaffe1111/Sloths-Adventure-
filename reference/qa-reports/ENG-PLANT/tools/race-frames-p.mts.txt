@@ -1,0 +1,10 @@
+// usage: tsx race-frames.mts <tree> <race home|post> <setting> <seed>: the careful middle's race, one line per 0.1 s (t, x, on, vx)
+const [T, race, setting, seed] = process.argv.slice(2);
+await import(`${T}/src/game/headlessDom.ts`);
+const { homeRun } = await import(`${T}/tools/inspect/homeToys.ts`);
+const { HOME_CODE, POST_CODE } = await import(`${T}/src/game/gen2/toyHome.ts`);
+let f = 0;
+homeRun('middle', setting as 'normal', Number(seed), 1, { onFrame: (sim: any) => { const e = sim.e; if (f++ % 3) return;
+  const on = e.platforms.find((q: any) => q.id === e.standingOnId);
+  console.log(`${(f / 30).toFixed(1)} x ${e.player.x.toFixed(0)} vx ${e.player.vx.toFixed(0)} on ${on ? (on.type === 'drift' ? 'log' : 'f') + on.id : '-'} lives ${e.lives}`);
+} }, race === 'home' ? HOME_CODE : POST_CODE);

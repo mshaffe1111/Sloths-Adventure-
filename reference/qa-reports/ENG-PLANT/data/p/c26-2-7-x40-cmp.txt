@@ -1,0 +1,3 @@
+vs landing-801cae9e8-2-7-x40.jsonl: rows 280/280; BAR seeds all-pass new (33, 40) ref (29, 40); BAR PASS->FAIL 8: adultN11 adultN24 childE11 childE30 childN9 childN13 childN34 childN38; FAIL->PASS 12: childE5 childE28 childE32 childE33 childN5 childN11 childN18 childN19 childN22 childN36 middleN7 middleN13; kid moved 0: 
+vs c24-2-7-x40.jsonl: rows 280/280; BAR seeds all-pass new (33, 40) ref (24, 40); BAR PASS->FAIL 2: childE11 childN13; FAIL->PASS 12: childE24 childN10 childN20 childN36 childN40 expertN18 expertN29 expertN35 middleE7 middleE11 middleN15 middleN32; kid moved 0: 
+vs expfront-2-7-x40.jsonl: rows 280/280; BAR seeds all-pass new (33, 40) ref (33, 40); BAR PASS->FAIL 0: ; FAIL->PASS 0: ; kid moved 0: 

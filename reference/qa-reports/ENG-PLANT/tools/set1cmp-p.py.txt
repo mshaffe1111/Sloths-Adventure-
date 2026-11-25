@@ -1,0 +1,22 @@
+# usage: set1cmp.py <rowsdir> <maindir>: each set1 row on the candidate vs main's row (pass, rescues, lives); BAR = adult/child/middle/expert
+import json,sys,glob
+BAR={'adult','child','middle','expert'}
+def load(p):
+    d={}
+    for l in open(p):
+        if l.startswith('{'):
+            r=json.loads(l); d[(r['bot'],r['setting'],r['seed'])]=r
+    return d
+mains={}
+s=lambda r:(('PASS' if r['pass'] else 'FAIL')+f" r{r['rescues']} l{r['lives']}") if r else '-'
+bar_ok=bar_n=0
+for f in sorted(glob.glob(sys.argv[1]+'/*.jsonl')):
+    for l in open(f):
+        if not l.startswith('{'): continue
+        r=json.loads(l); st=r['stage']
+        if st not in mains: mains[st]=load(f"{sys.argv[2]}/main-{st}.jsonl")
+        m=mains[st].get((r['bot'],r['setting'],r['seed']))
+        if r['bot'] in BAR: bar_n+=1; bar_ok+=r['pass']
+        note=(r['stuck'][0]['what']+' '+str(r['stuck'][0]['x'])) if not r['pass'] and r['stuck'] else ''
+        print(f"{st} {r['bot']:6} {r['setting']:6} {r['seed']:3} | new {s(r):14} | main {s(m):14} | {note}")
+print(f"BAR rows PASS {bar_ok}/{bar_n}")
