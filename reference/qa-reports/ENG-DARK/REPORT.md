@@ -1,4 +1,31 @@
 # ENG-DARK REPORT (the dark + light ring as one gen2 brick; WORLD-3-PLAN F2; R-165.449)
+**EXACT NEXT STEP (ENG-DARK-p box 16, 5:14 PM ET by `date`; head on t-eng-dark-wip = this commit; CODE a5e15a74d). THE x40 ON a5e15a74d
+FAILS THE BAR: NOT LANDED, no gates run (the order: "if the bar is NOT met, stop with the table"). Waiting on the lead's ruling.**
+**THE x40 ON FROZEN a5e15a74d (lane 1 box 15, lane 2 box 16; cast-3-1-x40-a5e15a74-lane1/-lane2.jsonl; x40-verdict-a5e15a74.txt;
+x40verdict.py vs cast-3-1-x40-base-c1008d8e.jsonl). Draft checked: castone.mts on the frozen tree = the row, expert N 15 (lane 1) and
+adult E 30 (lane 2).**
+| bar | result | met |
+|---|---|---|
+| shrine 360/360 | 355/360: STRANDED child N 15, middle N 15, expert N 15, child E 27, middle E 27 | NO |
+| unlit <= 5 events | 8 (child N 1; middle E 15; kid N 29; child N 22; child E 22 x2; middle N 22; middle E 22) | NO |
+| no loop (10+ crossings of one rim) | max loop 6 (middle N 26) | yes |
+| no rescue kind the base lacks | 4 lacked: 'a drop of # px ahead, a trunk beside him, the way on is # px down' (+2 longer forms with a waist-high step / a dip); 'a trunk beside him, on a trunk' | NO |
+| gaveUp / edgeTurns | 1 (child N 21, rim x 215, y 11280, reached the shrine) / 0 | - |
+- Medians vs base (new / base, delta, rescues new/base): kid N 149.7/174.7 -25.0 48/156; kid E 206.3/197.0 +9.3 106/186; child N
+  242.4/320.1 -77.7 49/138; child E 271.5/306.4 -34.8 95/178; middle N 171.5/207.7 -36.2 51/126; middle E 231.0/261.5 -30.5 122/186;
+  adult N 151.7/164.4 -12.7 48/119; adult E 204.9/200.3 +4.6 109/180; expert N 166.4/202.4 -36.0 49/124 (expert plays Normal only).
+- **The 5 strands are ONE signature:** 'the way on is 347 px down' then 'fell back down from here 8 times' (Normal 15 and Easy 27).
+  **A/B on frozen a177fde99 (box 14's head, before box 15's seam-run end in downEnd; castone.mts, one run each):** expert N 15 SHRINE
+  127.2 s (a5e15a74d: stranded), middle E 27 SHRINE 184.4 s (a5e15a74d: stranded); child N 15, middle N 15, child E 27 STRAND on
+  a177fde99 too. So box 15's seam change (firsttimer.ts downEnd, the only non-test change a177fde99..a5e15a74d) newly strands 2, and
+  3 strand without it: the 347 px way down on rolls 15/27 is an older fault (the lay or the down route), not the seam rule alone.
+- ENG-DOWNBOT's open items, judged on these rows: rest/vine kinds are inside the base's kinds except the 4 above; fix A's toy, adult
+  E's row and the vine spots were NOT traced (the bar failed first).
+- Plants: box 15's plants run on a5e15a74d did NOT land on this branch (only lane 1 did); not re-run (the bar failed; no gate on a
+  failed head, D140).
+**Next (the lead's call):** trace roll 15 Normal / 27 Easy at the 347 px way down (probes/trace9.mts or corners on a5e15a74d and
+a177fde99) and fix the owner; then a new x40 on the new head.
+
 **EXACT NEXT STEP (ENG-DARK-o box 15 hand-over, 5:03 PM ET by `date`; head on t-eng-dark-wip = this commit; CODE a5e15a74d. Box 16 OWNS
 every step below. Re-fetch before every commit (D138).)**
 **STEP 1 (box 14's A-C) on a5e15a74d's code, frozen worktrees:** dark.test 17/17 and darkBots.test 14/14 WHOLE green; tsc clean.
