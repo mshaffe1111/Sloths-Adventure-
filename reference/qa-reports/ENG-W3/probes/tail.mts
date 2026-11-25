@@ -1,0 +1,18 @@
+const T = process.env.TREE!;
+await import(`${T}/src/game/headlessDom.ts`);
+const { readyDraft } = await import(`${T}/tools/engine/draft.ts`);
+const { generateAllLevels } = await import(`${T}/src/game/worldsData.ts`);
+const { buildGen2Stage } = await import(`${T}/src/game/gen2/pipeline.ts`);
+const { LISTED } = await import(`${T}/src/game/gen2/listed.ts`);
+const { towerCorners } = await import(`${T}/tools/inspect/towerRoute.ts`);
+readyDraft('3-1');
+const cfg = generateAllLevels().find((c: any) => c.id === '3-1' && !c.secret)!;
+const st: any = buildGen2Stage({ config: cfg, kit: LISTED['3-1'].kit(), seed: Number(process.env.SEED), difficulty: process.env.SET ?? 'normal' });
+const Y = Number(process.env.Y);
+const tw = st.gen2.tower;
+console.log('legs', tw.route.legs.filter((l: any) => l.entry.y > Y - 600).map((l: any) => `(${l.entry.x},${l.entry.y})->(${l.exit.x},${l.exit.y})`).join(' '));
+console.log('turns', tw.turns.filter((t: any) => t.to > Y - 600).map((t: any) => `x${t.x} ${t.from}->${t.to}`).join(' '), 'totem', st.exitTotemX, st.exitTotemY, 'plan joins', st.gen2.plan.map((p: any) => p.join ?? '-').join(''));
+console.log('vines', st.vines.filter((v: any) => v.bottomY > Y - 600).map((v: any) => `x${v.x} ${v.topY}-${v.bottomY}`).join(' '));
+const c = towerCorners(st, tw.route.spawn);
+console.log('corners', c.filter((q: any) => q.y > Y - 600).map((q: any) => `(${Math.round(q.x)},${Math.round(q.y)})`).join(' '));
+console.log('wood', st.platforms.filter((p: any) => p.y > Y - 380 && p.y < Y + 10).sort((a: any, b: any) => a.y - b.y || a.x - b.x).map((p: any) => `${p.type[0]}${p.x}-${p.x + p.width}@${p.y}`).join(' '));

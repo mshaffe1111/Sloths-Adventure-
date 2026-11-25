@@ -1,4 +1,63 @@
-# ENG-DOWNBOT REPORT (lane 2: the down lay's head room, then the bots on a way down to the shrine) — box 3 (resumed 11-25)
+# ENG-DOWNBOT REPORT (lane 2: the down lay's head room, then the bots on a way down to the shrine) — box 4 (session 2, 11-25)
+**EXACT NEXT STEP (box 4 hand-over):** head **6b6874dfb** (pushed; code = this head). Rulings 1-4 from the lead's packet stand.
+(1) **castBots x40, both settings, every bot, on 6b6874dfb**: frozen worktree (`git worktree add --detach`, symlink node_modules,
+`chattr -R +i src tools`), two halves as two background tool calls (`GEN2_DRAFT=3-1 npx tsx tools/inspect/castBots.ts --stage 3-1
+--seeds 1-20 --json > a.jsonl`, then 21-40; NO shell '&'), ~12 min; tally `python3 probes/tally.py rows...`; compare with
+rows/castbots-0cee60a4d-partial.jsonl (kid N 17/40 clean) and the probe below (kid N seeds 1-6: 3 clean, R 0/0/3/0/1/1).
+(2) **Owed toys for 3ba82c8b8 on a REAL row (ruling 2), still owed**: A = downEnd called whenever the way on is below (dy > 40), not
+only close across; B = its wood run seeded from the wood under his feet. Method: two scratch trees from the head, one fix off each
+(A: move the call back inside the `dy > 40 && |dx| < 120 && this.way` block as `p.grounded ? this.downEnd(p) : 0`; B: `let lo = p.x,
+hi = p.x`), `probes/multi.mts` (TREE= BOTS=kid:normal,adult:normal SEEDS=1-10) on each and on the head; pick a row where the fix
+removes a rescue at a named spot; the toy runs that real row (readyDraft('3-1'), firstTimer, as probes/multi.mts) and asserts no
+rescue within 120 px of the spot; RED with the fix off, GREEN on. (On 34085ae19 alone fix A off read kid N seed 1 R9 vs R7 on:
+not a bite worth a toy; the route was broken there, so re-measure on 6b6874dfb.)
+(3) **LAY finding 2 to the lead** (below): measure it first (per turn whose vine stops on a catch: does the catch's way off land on
+the turn's own storey? count rolls, seeds 1-24 x both; `probes/tail.mts` SEED= Y= prints legs, turns, vines, corners, wood).
+(4) **Stills of one turn, before (3ba82c8b8) and after (6b6874dfb), upright + sideways** (ruling 1; the lead judges): ENG-W3a's
+harness draftshoot.mjs was never committed: a still harness for the draft is owed (vite + tools/engine/runs/stills-at.mjs need the
+game to build the draft; find how ENG-W3a did it or ask the lead). Rule 29: shoot on the head going to the lead.
+(5) Trace the stalls left after (1), two per cause: kid N seed 3 (389,5811) 'the way on is 136 px down' (the known one), seed 6
+(491,5929) 'a 15 px waist-high step ahead, a drop of 123 px', seed 5 (1086,8407) 'in a dip 174 px deep'. Fix where the cause is,
+a toy each way. (6) lockall vs c1008d8ed (102/102; no listed stage travels down: only the 3-1 draft has travel 'down'), tierBots
+9/9, the suite + the CI tool line on the final head; LAND on t-eng-w3 (merge, no force).
+**For READY-31:** kid N seed 2 clean at 115.4 s and seed 1 at 124.8 s (probe, 6b6874dfb): runs still at or under the 120 s floor:
+3-1's build owes length (design, not the bots).
+Start 10:10 AM ET 11-25; hand-over 10:26 AM ET (by `date`).
+
+## Box 4 (11-25), on t-eng-w3-wip-downbot from 2a8d89ec2 (code 3ba82c8b8)
+- **Ruling 1 (b), the lay, 34085ae19:** tower.ts `vineCuts`/`stopVines`/`towerVineCuts`; pipeline: after clearClimbs, on a down
+  tower (or a down leg's frame), each climb vine stops on the highest solid wood across it (6 px in from its ends, 10 px clear of the
+  vine's top and foot); the verdict **'a catch crosses a vine'** joins towerMiss on down columns. **RED on today's rolls:** w3.test 'a
+  catch crosses a vine' (12 rolls x both) failed on normal 1 with 7+ named cuts (e.g. 987-1167 @753 across the vine at 1079, 580-927);
+  the probe on the parent read 113 cuts on 12 of 12 rolls (seeds 1-6 x both), every catch 173 px under the turn's top, 180 px wide.
+  **GREEN after:** the same test (no cut, no blind drop, every climb vine over the floor ends ON wood); tower.test 'stopVines and
+  towerVineCuts' (a planted shelf across a vine is named; wood it hangs from or ends on is not; a liana is not; the stop lands on the
+  highest wood). tsc PASS. The catch's own ends hand on within TOWER.see by towerFalls (every end in a down column, unchanged).
+- **The lay alone made the bots WORSE (34085ae19, partial x40, 66 rows, rows/castbots-34085ae19-partial.jsonl):** kid N 0/40 clean,
+  295 rescues, 1 stranded; kid E 0/26, 234. Cause (traced, two seeds): the bots' way down (towerRoute.ts) ran on down the vine's old
+  line through the catch; on the catch every bot turned, 'the way on is 84 px down'. Run stopped (no use measuring the rest).
+- **Route fix 1, 54d493301:** a turn vine that stops over the storey on is followed to its foot, then dropTo toward the leg's exit.
+  Toy castBots.test 'drops ledge by ledge' part (4): RED without ('the way never goes down the vine onto the catch'), GREEN with.
+  Probe kid N seeds 1-6: 2 clean; seed 1 STRANDED on the last catch.
+- **Route fix 2, 6b6874dfb:** (a) dropTo takes the other end when nothing lies under the near one (seed 1's last catch 615-1256
+  @12062 ran on into the wall by the shrine: the near end had no landing, the way slanted through the catch; stranded). (b) seed 1 N
+  then read 'the way on is 132 px up': the catch at 11711 (581-1280) lies over ALL of its storey (729-1144 @11889), so off its end he
+  lands past that storey (11825, then 12062) and the way pointed back up to the storey's leg. The route now passes a leg whose storey
+  lies over where the drop landed. Toy part (5): RED with the pass off ('the way climbs back to the storey he dropped past'), GREEN
+  on. All 4 way-down toys GREEN. **Probe kid N seeds 1-6 (work tree = 6b6874dfb, not frozen): seeds 1, 2, 4 clean (124.8, 115.4,
+  135.5 s); seed 3 R3, 5 R1, 6 R1.**
+- **LAY finding 2 for the lead (not changed; measure first, step 3):** with the vine stopped, a turn's catch can lie over ALL of the
+  storey the vine led to (seed 1 N above: the rule-4 bough plus its run-ons 581-1280), so the catch hands on within 300 but PAST its
+  storey: that storey's leg (its beat) is skipped. Options: (a) the verdict 'a catch hands on to its storey' (the drop off a stopped
+  vine's catch lands on the turn's storey) with the lay trying another catch spot first; (b) a stopped vine's catch is never run on
+  over its storey (rules 1-2 skip it). Recommend (a)+(b): the verdict first (RED), then the lay.
+- **Mistakes (this box):** (1) I launched the first x40 halves with a shell '&' inside one command, against the brief ('NEVER a shell
+  &'); caught at once, both killed, relaunched as two background tool calls; nothing was read from the bad runs. Standard: launch
+  every parallel run as its own background tool call (the brief's rule; no new rule needed, it was mine to keep). (2) The seeds 1-6
+  probe on 6b6874dfb ran from the work tree while I took towerRoute.ts's pass out for the RED check (D115's pattern): the module had
+  loaded before the edit, but its numbers are a probe only; (1) above re-measures on a frozen tree.
+
+### Box 3's hand-over (superseded by box 4)
 **EXACT NEXT STEP (box 3 hand-over):** head **3ba82c8b8** (pushed). (1) Toys OWED for 3ba82c8b8's two changes (firsttimer.ts
 downEnd: applied whenever the way on is below him, not only close across; its wood run seeded from under his feet, not his middle):
 each needs a downArena toy RED with that one change off. My lip arena (wood 600-1500 @500 to the wall, route under it then out past
