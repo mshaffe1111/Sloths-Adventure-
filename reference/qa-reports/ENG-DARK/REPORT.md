@@ -29,6 +29,14 @@ no lay change yet. Box 11 OWNS every step below. Re-fetch before every commit (D
 (2) The 33 N LAY FIX (gen2/dark.ts lay): a second light over the step-off landing when the rim's own landing is a hop (landingOf gives
 the hop; stepOnto gives the step-off piece). A toy each way in dark.test; darkLandings/darkGaps [] over all 80 rolls (probes/verdicts.mts).
 Check roll 32's seam toys still RED/GREEN after it (the lay fix may light rim 367's step-off landing; the planted RED reads unlit).
+POINTERS (box 10 read, not built): the lay is glowZone (dark.ts :186): one sleeping light per darkRims(probe) landing, at
+{land.x, min(land.y - lightUp, r.y + GLOW_REACH.down)}, skipped within 70 px of another. A rim with `drop: false` is a hop (landingOf
+:120); its step-off piece is stepOnto(platforms, r.piece, r.dir) (:109); the drop landing x is landingOf's own formula (clamp
+rim + dir*(STEP_OFF+30) into the piece 20 px in). The x40's crossing judge (RimWatch.step :375) reads ONLY r.light (the light nearest
+the HOP landing), and darkLandings (:269) passes an edge BEHIND the landing by (i) (`n.dir !== u.dir`). So for '33 N's behind edge lit'
+to read lit, check on probes/rim.mts 33 normal 940 7828 which light the crossing of rim 940 reads and whether the stop that wakes it
+happens: the second light only helps if a stop wakes it or it becomes that rim's r.light. If it needs a verdict/judge change (the
+crossing judged by the landing he actually comes down on), that is a meaning change: say so to the lead before building it.
 (3) The 7 single crossings (box 8: adult 33 N 940,7828; child E 21 191,1562; expert 31 N 929,10127; middle E 1 517,2867; middle E 32
 561,10406; middle 16 N 920,7104; middle 31 N 965,6563): castone each on the new head first (paths moved), then trace or rule.
 (4) Add plant 28 to planted-faults.py: the seam check removed (downEnd's `if (d === 0 || this.who.noSeamWalk)` line onward) -> the seam
