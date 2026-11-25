@@ -16,6 +16,7 @@
  */
 import { layPacer } from './pacerLay.ts';
 import { layFlood } from './floodLay.ts';
+import { layTempo } from '../tempo.ts';
 import { raceEndsOf, type RaceEndSaid, type RaceEnds } from '../pacer.ts';
 import { layPost } from './postLay.ts';
 import { layColumnDress } from './columnDressLay.ts';
@@ -48,7 +49,7 @@ import { fastFloor, MODEL_FAST, MODEL_TYPICAL, modelStage, targetSeconds, TIME, 
 import type { Collectible, Enemy, LevelConfig, Platform, Rope, Vine } from '../types.ts';
 import { goalCountsPetals, heldEasyGoal } from '../goals.ts';
 import { ROPE_MIN_GAP, ROPE_OVERLAP, ROPE_RISE } from '../rope.ts';
-import { layRiver, riverFaults, riverWidth } from './riverLay.ts';
+import { layRiver, riverFaults, riverRowOn, riverWidth } from './riverLay.ts';
 import { layPads, padFaults, padRowWidth, snapFaults, PAD_LAY } from './rideLay.ts';
 import { castDef } from '../predators/registry.ts';
 import { checkOnClock } from '../predators/core.ts';
@@ -1435,7 +1436,7 @@ export function layLocal(tpl: SectionTemplate, budget: StageBudget, rng: Rng, mi
       // a RIVER (ENG-W2b; riverLay.ts): the far bank the row's river width past `after`, level with it (the logs sit evenly round the window
       // only at that width); the water between is laid in layStage, where the ropes are hung, from the same row. Nothing under the water:
       // the river zone takes a fall (a life on a deep row, set back on `after` on a safe one). The crossing is asked as a ride, never a jump
-      const row = lo.rivers?.[pl.row];
+      const row = lo.rivers?.[pl.row] && riverRowOn(lo.rivers[pl.row], budget.difficulty);
       if (!row) throw new Error(`gen2 section ${tpl.id}: ${pc.key} lays river row "${pl.row}" and world ${budget.world} has no river row of that name (WorldManifest.rivers)`);
       if (mirrored) throw new Error(`gen2 section ${tpl.id}: ${pc.key} lays a river in a mirrored section, which is not mirrored yet (its current is the row's)`);
       // (`after` a LIANA (ENG-24, reference/design/2-4.md NEW 1): the liana's landing is the river. The water runs from the bank the liana
@@ -2867,7 +2868,7 @@ export function layStage(budget: StageBudget, graph: MissionGraph, kit: WorldKit
       // the check, so levelCheck and riverFaults judge the logs the game plays)
       for (const lp of L.pieces) {
         if (!lp.river) continue;
-        const row = M.rivers?.[lp.river.row];
+        const row = M.rivers?.[lp.river.row] && riverRowOn(M.rivers[lp.river.row], budget.difficulty);
         if (!row) throw new Error(`gen2 section ${tpl.id}: ${lp.key} lays river row "${lp.river.row}" and world ${budget.world} has no river row of that name`);
         const near = pieceOf(lp.river.from), far = pieceOf(lp.key);
         // (a tower's storey that runs left lays it the other way round, crossed right to left (riverLay layRiver way -1, ENG-26c); a run's
@@ -4306,7 +4307,11 @@ function layChaseStage(st: Gen2Stage, piecesOf: (uid: string) => ReadonlyArray<{
   const dressSpec = st.gen2.brief?.columnDress;
   const dressed = dressSpec ? layColumnDress(st.gen2.tower?.legs ?? [], dressSpec) : { problems: [] };
   if (dressed.dress) st.columnDress = dressed.dress;
-  return [...chase.problems, ...r.problems, ...paced.problems, ...ended.problems, ...flooded.problems, ...posted.problems, ...dressed.problems];
+  // (a brief's tempo, last: every liana locked to the bar, then every clock the stage laid held to it, each one off named, tempo.ts)
+  const tempo = st.gen2.brief?.tempo;
+  const timed = tempo ? layTempo(st, tempo, easy) : { problems: [] };
+  if (tempo) st.tempo = tempo;
+  return [...chase.problems, ...r.problems, ...paced.problems, ...ended.problems, ...flooded.problems, ...posted.problems, ...dressed.problems, ...timed.problems];
 }
 /** a graph with asks: each node's sections as laid (content type, the double, exit less entry height), read by applyVerdicts */
 const LAID_NODES = new WeakMap<Gen2Stage, Map<string, Array<{ content?: string; double: boolean; dy: number; clocked?: true }>>>();

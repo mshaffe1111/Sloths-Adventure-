@@ -763,6 +763,10 @@ export interface GraphBrief {
   /** a FLOOD CLOCK (flood.ts, gen2/floodLay.ts; 2-8's rising river): the world's flown table its close is checked against; the waters it
    *  raises are the stage's rivers laid from rows with a `flood` mark. Absent: no flood, the stage laid as it always was */
   flood?: import('../flood.ts').FloodRow;
+  /** a TEMPO (tempo.ts; 2-9's court, reference/design/2-9.md NEW 1): one bar every clock of the stage keeps: every liana locked to it (its
+   *  swing the bar, its phase the lock), every river, stage clock and beat a whole number of beats with its phase on a beat, each one off
+   *  named (tempo.ts tempoFaults). Absent: no tempo, the stage laid as it always was */
+  tempo?: import('../tempo.ts').TempoSpec;
   /** the pacer race's END lines (pacer.ts RaceEnds; 2-7's jetty): a tip id of the world's for a win and for a loss, each with who says
    *  it; one is said once, as he reaches the dock (engine.ts sayRaceEnd). Absent: the race ends unsaid. Read only with `pacer` */
   raceEnd?: import('../pacer.ts').RaceEnds<import('../pacer.ts').RaceEndLine>;

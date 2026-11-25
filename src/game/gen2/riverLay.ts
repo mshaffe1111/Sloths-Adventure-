@@ -50,7 +50,13 @@ export interface RiverRow {
   /** a FLOOD mark (data; flood.ts, gen2/floodLay.ts; 2-8's water, reference/design/2-8.md NEW 1): on a stage whose brief names a flood,
    *  'rise' rises to paddling depth on the flood clock, 'close' is the low road (it rises, then turns deep at the close). Unset: no flood */
   flood?: 'rise' | 'close';
+  /** its EASY numbers (data; reference/design/2-9.md NEW 1, ENG-29): a court river keeps the tempo's Easy bar with numbers of its own (Normal
+   *  80 px/s, 156 px logs = 2.85 s; Easy 70/159 = 3.3 s), because a river's speed never stretches on Easy. Unset: Easy lays the row's own */
+  easy?: Partial<Pick<RiverRow, 'speed' | 'logW' | 'gap'>>;
 }
+
+/** the row a setting lays: Easy's own numbers over the row's (RiverRow.easy), else the row */
+export const riverRowOn = (row: RiverRow, difficulty: Difficulty): RiverRow => (difficulty === 'easy' && row.easy ? { ...row, ...row.easy } : row);
 
 /** how high over its log's top a riding petal sits (px): a petal's height over the floor it is laid on (the sections' pickup `dn`) */
 export const PETAL_SIT = 34;

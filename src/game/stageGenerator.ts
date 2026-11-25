@@ -77,6 +77,8 @@ export interface GeneratedStage {
   clusters?: import('./vineField.ts').VineCluster[];
   /** the stage's beats (clock.ts ClockDef; beat.ts): every hazard on a beat names one, and the engine runs them on game time */
   clocks?: import('./stageKit.types.ts').ClockDef[];
+  /** the stage's tempo (tempo.ts; gen2 GraphBrief.tempo): the bar its clocks keep, which the drum plays (NEW 2, ENG-29). Absent: none */
+  tempo?: import('./tempo.ts').TempoSpec;
   /** pods that fall down a vine field's columns, each on a stage beat (podfall.ts; run by fieldPlay.ts) */
   pods?: import('./podfall.ts').PodColumn[];
   /** boughs shut by the clusters under them: each freed lifts it a notch, the last opens it (vineField.ts ClusterGate) */

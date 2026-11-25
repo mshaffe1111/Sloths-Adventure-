@@ -101,3 +101,17 @@ export function tempoFaults(st: TempoStage, tempo: TempoSpec, easy: boolean): st
   }
   return out;
 }
+
+/**
+ * Lay a stage's tempo (gen2's finish, the brief's `tempo`): every swinging liana swings the bar on this setting with its phase the lock (so
+ * its ONE falls on every bar of game time, which the lianas keep after a flag resume: engine.ts vineClock is the game's clock, R-165.295),
+ * then every clock is held to the bar. Returns what is off, in words (tempoFaults).
+ */
+export function layTempo(st: TempoStage & { vines?: Vine[] }, tempo: TempoSpec, easy: boolean): { problems: string[] } {
+  for (const v of st.vines ?? []) {
+    if (v.vineType === 'tree_climb' || !v.isSwingingVine || v.swingAmp === 0) continue;
+    v.swingPeriod = tempoBar(tempo, easy);
+    v.swingPhase = tempo.lock;
+  }
+  return { problems: tempoFaults(st, tempo, easy) };
+}
