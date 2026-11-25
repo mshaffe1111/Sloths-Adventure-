@@ -5,10 +5,11 @@
  * rises to paddling depth (FLOOD_PADDLE px under its banks' top) over the close, and the one marked 'close' (the fork's low road) turns
  * deep at the close (brim-full: a wall the line waits at). A little one in it then is set on its NEAR bank: the bank he meets first.
  * The check is flood.ts floodFaults (the close against the line's prompt tail-off of the laid low road, at the setting's flown rate, plus
- * the spare) and highRoadFaults (a high road over the low road the line can walk: steps of at most FLOOD_STEP px). Each refusal by name.
+ * the spare), highRoadFaults (a high road over the low road the line can walk: steps of at most FLOOD_STEP px), forkFaults (its wall-step)
+ * and strandFaults (off either end of every piece, ground within the line's step, FloodRow.step). Each refusal by name.
  * No stage id, world number, seed or x.
  */
-import { floodFaults, floodTailOff, forkFaults, highRoad, type Flood, type FloodRow, type FloodWater } from '../flood.ts';
+import { floodFaults, floodTailOff, forkFaults, highRoad, strandFaults, type Flood, type FloodRow, type FloodWater } from '../flood.ts';
 import { alongOf, lastMet } from './tower.ts';
 import type { Gen2Stage } from './types.ts';
 import type { RiverZone } from '../river.ts';
@@ -61,8 +62,11 @@ export function layFlood(st: Gen2Stage, row: FloodRow, easy: boolean): { flood?:
     const span = { x0: low.x0, x1: low.x1, from: { x: nearIsX0 ? low.x0 : low.x1, y: low.lip }, to: { x: nearIsX0 ? low.x1 : low.x0, y: low.lip } };
     // (the banks themselves are not the high road: only what stands over the water)
     const road = highRoad(tops.filter((t) => t.y < low.lip - 1), span, FLOOD_STEP, FLOOD_HOP);
-    // (and its fork at the wall-step: a way down onto the low road, and a gap after it each tier's play crosses: forkFaults)
-    problems.push(...road.faults, ...(road.faults.length ? [] : forkFaults(road.chain, span, row.climb)));
+    // (and its fork at the wall-step: a way down onto the low road, and a gap after it each tier's play crosses: forkFaults; and off
+    //  either end of every piece of it, ground within the line's step (strandFaults): the first ground under x is a solid top, else the low
+    //  road's water at its laid surface (the flood only raises it) over its span, else none)
+    const under = (x: number): number => (x >= low.x0 && x <= low.x1 ? low.y0 : Infinity);
+    problems.push(...road.faults, ...(road.faults.length ? [] : [...forkFaults(road.chain, span, row.climb), ...strandFaults(road.chain, tops, under, row.step)]));
   }
   const flood: Flood = { start: { id: last.id, x: last.x, y: last.y }, close, waters, tailOff: floodTailOff(row, Math.max(0, px), easy), spare: easy ? row.spare.easy : row.spare.normal, px: Math.max(0, px) };
   return { flood, problems: [...problems, ...floodFaults(flood)] };

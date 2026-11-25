@@ -19,17 +19,19 @@ const ID = '2-96';
 const RIVERS = { ...W2_RIVERS, ride: { ...W2_RIVERS.ride, flood: 'close' as const }, twin: { ...W2_RIVERS.twin, flood: 'rise' as const } };
 /** the ride crossing with a HIGH ROAD and its FORK (the lead's ruling, ENG-28 session 7): a WALL-STEP on the near bank's end (a block
  *  FLOOD_STEP px tall, `fork.w` wide, its far side at the water's edge: he walks into it and climbs, flood.ts highRoad's first piece), a
- *  `fork.gap` px gap over the water's first px (the low road's way down: he falls through it), then a porch level with W's top over the rest of
- *  the river, ending over the far bank. The passing shape is W 150 + gap 60 (forkFaults: W at least the widest tier's landing + run-up,
+ *  `fork.gap` px gap (the low road's way down: he falls through it), then a porch level with W's top over the river, ending over the far
+ *  bank. W stands `fork.back` px back from the water's edge, so its gap lies over the bank (BUILD-28 1d: off W's lip the first ground is
+ *  the bank, a step down, never the water: strandFaults). The passing shape is W 150 + gap 60 (forkFaults: W at least the widest tier's landing + run-up,
  *  86 + 61; the gap his 44 px width up to FLOOD_HOP). (A porch alone, FLOOD_STEP px over the bank's end, is a bare edge hop up: refused by
  *  name, ENG-28 session 4's widened rule) */
-const FORK = { w: 150, gap: 60 };
-/** toyHome's near bank (bank('near', 280)): the porch's place past its end is a share of it */
-const NEAR_W = 280;
+const FORK = { w: 150, gap: 60, back: 60 };
+/** the near bank, widened from toyHome's 280 to the two-road section's own (w2.ts W2_FORK.near: the line bunched behind him and W on it,
+ *  set back; on 280 W set back left no flag's ground before the hard node): the porch's place past its end is a share of it */
+const NEAR_W = 420;
 const withPorch = (porch: boolean, fork = FORK): SectionTemplate[] => HOME_BRICKS.map((b) => (b.id !== 'home-practise-ride' || !porch ? b : {
-  ...b, pieces: [...b.pieces,
-    { key: 'stand', shape: 'block', w: [fork.w, fork.w], place: { kind: 'on', on: 'near', at: [1, 1], h: [FLOOD_STEP, FLOOD_STEP] }, style: 'moss_stone' },
-    { key: 'porch', shape: 'branch', w: [880, 880], place: { kind: 'over', on: 'near', at: [1 + fork.gap / NEAR_W, 1 + fork.gap / NEAR_W], dy: [-FLOOD_STEP, -FLOOD_STEP] }, style: 'log', main: false }],
+  ...b, pieces: [...b.pieces.map((p) => (p.key === 'near' ? { ...p, w: [NEAR_W, NEAR_W] as [number, number] } : p)),
+    { key: 'stand', shape: 'block', w: [fork.w, fork.w], place: { kind: 'on', on: 'near', at: [(NEAR_W - fork.w - fork.back) / (NEAR_W - fork.w), (NEAR_W - fork.w - fork.back) / (NEAR_W - fork.w)], h: [FLOOD_STEP, FLOOD_STEP] }, style: 'moss_stone' },
+    { key: 'porch', shape: 'branch', w: [880, 880], place: { kind: 'over', on: 'near', at: [1 + (fork.gap - fork.back) / NEAR_W, 1 + (fork.gap - fork.back) / NEAR_W], dy: [-FLOOD_STEP, -FLOOD_STEP] }, style: 'log', main: false }],
 }));
 const floodKit = (porch: boolean, flood?: FloodRow, fork = FORK): WorldKit => {
   const k = homeKit(ID, HOME_CODE);
@@ -87,12 +89,17 @@ test('flood lay: RED with T_CLOSE 3 s early, with no high road, with no cage, ea
   assert.match(layFlood(build(1, 'normal'), W2_FLOOD, false).problems.join('; '), /no cage to start its clock/, 'RED: no cage');
   // RED, planted on the old brick (W 60 flush against the porch: no way down onto the low road) and on the old toy's numbers (W 60, gap 60:
   // every tier lands past W's lip and walks off into the gap), each by name (flood.ts forkFaults)
-  const flush = build(1, 'normal', true, undefined, { w: 60, gap: 0 });
+  const flush = build(1, 'normal', true, undefined, { w: 60, gap: 0, back: 0 });
   caged(flush);
   assert.match(layFlood(flush, W2_FLOOD, false).problems.join('; '), /no way down onto the low road: the gap after it is 0 px/, 'RED: the flush brick');
-  const narrow = build(1, 'normal', true, undefined, { w: 60, gap: 60 });
+  const narrow = build(1, 'normal', true, undefined, { w: 60, gap: 60, back: 0 });
   caged(narrow);
   assert.match(layFlood(narrow, W2_FLOOD, false).problems.join('; '), /the adult lands 86 px past its face .* walks off into the 60 px gap/, 'RED: W 60 + gap 60');
+  // RED, planted: the passing W flush on the water's edge (BUILD-28 1e): off its lip the first ground is the river, deeper than the line's
+  // step, so the line waits there (flood.ts strandFaults, laid by floodLay)
+  const edge = build(1, 'normal', true, undefined, { ...FORK, back: 0 });
+  caged(edge);
+  assert.match(layFlood(edge, W2_FLOOD, false).problems.join('; '), /off the (left|right) end of the high road's piece at x \d+-\d+ the first ground is \d+ px down, deeper than the line's 90 px step/, 'RED: W flush on the water');
   // (through the pipeline: a brief that names the flood lays it, and refuses this base's caged-less roll by name (designed cages are
   //  main's 2-3 piece, pipeline.ts 'objective' sockets allowing 'cage'; not on this base: REPORT Pushback 1))
   const piped = build(1, 'normal', true, W2_FLOOD);

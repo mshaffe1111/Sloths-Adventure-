@@ -152,58 +152,64 @@ export const W2_FLOOD: FloodRow = {
   spare: { normal: 4, easy: 8 },
   flown: { px: 2000 + 1400, tailOff: { normal: 22.0, easy: 17.9 } },
   climb: { land: { child: 62, middle: 86, expert: 86, adult: 86 }, runUp: { child: 73, middle: 61, expert: 61, adult: 22 }, pause: [0.25, 0.5], width: 44 },
+  /** the line's step (W2_FOLLOW.step): off any end of the high road, ground within it (flood.ts strandFaults) */
+  step: W2_FOLLOW.step,
 };
 
 /**
  * World 2's TWO-ROAD section (2-8's fork "the fork the water decides", reference/design/2-8.md beat 8; R-165.430 (2); the lead's ruled
- * shape, ENG-28 sessions 4-8): the low road is a river marked 'close' (the flood turns it deep at the close: gen2/floodLay.ts), the high road
- * stands over it. In the order he meets them:
- *   - `near`: the bank both roads start from, wide enough for the line bunched behind him (7 x W2_FOLLOW.gap = 238 px) and W on its end;
- *   - `wall` W: a WALL-STEP FLOOD_STEP px tall on the near bank's end (both roads climb it: flood.ts highRoad's first piece, its face on the
- *     bank so he walks into it), `wall.w` wide: at least the widest tier's landing + run-up (W2_FLOOD.climb: 86 + 61 = 147);
- *   - the GAP after W, `gap` px over the water's first px: the low road walks off W's lip and falls through it (at least his 44 px width),
- *     the high road hops it level onto the porch (at most FLOOD_HOP);
- *   - `porch` P: level with W's top over the water; `rise`: every further rise a block standing on the porch (a wall-step he walks
- *     into, never a bare edge hop), out of the low road's lane under the porch;
- *   - `porch2`: the porch again past the rise, level with P, out over the far bank: the steps DOWN (rise to porch2 to the far bank, each
- *     FLOOD_STEP px); `far`: the far bank both roads end on. Two up (W, rise), two down.
- * forkFaults passes it (W 150 with the gap 60); floodLay.test's toy brick is the same fork (W 150 + gap 60). Data only: the 2-8 kit lays it
- * with its rivers holding `W2_FORK.row` (W2_FORK_RIVERS).
+ * shape, ENG-28 sessions 4-8, BUILD-28 1d): the low road is a MARSH marked 'close' (2-8.md:9: 1,400 px of marsh path with four 100 px dips;
+ * the flood turns it deep at the close: gen2/floodLay.ts), the high road stands over it: three carved steps up, 2,200 px of porches, three
+ * down (2-8.md:9). In the order he meets them:
+ *   - `near`: the bank both roads start from, wide enough for the line bunched behind him (7 x W2_FOLLOW.gap = 238 px) and W on it;
+ *   - `wall` W: a WALL-STEP FLOOD_STEP px tall on the near bank, `wall.back` px back from the water's edge (both roads climb it: flood.ts
+ *     highRoad's first piece, its face on the bank so he walks into it), `wall.w` wide: at least the widest tier's landing + run-up
+ *     (W2_FLOOD.climb: 86 + 61 = 147). Set back, its lip is a step over the BANK, not over the marsh: off W he lands on the bank (60 px),
+ *     then off the bank's edge onto the marsh floor (60), each within the line's step (strandFaults; flush on the water's edge it was one
+ *     120 px drop and the line waited at W's lip: BUILD-28 1e);
+ *   - the GAP after W, `gap` px (over the bank when `gap` <= `wall.back`): the low road walks off W's lip and drops through it (at least his
+ *     44 px width), the high road hops it level onto the porch (at most FLOOD_HOP);
+ *   - `porch` P: level with W's top, from `gap` past W's lip, out over the marsh and on over the far bank;
+ *   - `rises`: each a block (a wall-step he walks into, never a bare edge hop) standing CENTRED on the piece under it (the porch, then the
+ *     rise before), so the high road is W, P and the rises up, then each rise's far tread and the porch's far tread down onto the far bank:
+ *     with the porch 2,200 and the rises 1,400 and 600 every tread is 400 px (BUILD-28 session 1's probe: 80 and 220 px treads stranded the
+ *     Easy child and the adult; 400 px treads brought every tier home);
+ *   - `far`: the far bank both roads end on: the porch overhangs the 1,400 px marsh by 800 px, so it reaches past the porch's end (the
+ *     last step down lands on it: strandFaults) with today's 320 px to gather on.
+ * forkFaults and strandFaults pass it on every roll (w2TwoRoad.test). Data only: the 2-8 kit lays it with its rivers holding `W2_FORK.row`
+ * (W2_FORK_RIVERS).
  */
 /** the two-road section's numbers (W2_FORK's shape: a builder or a plant passes its own) */
-export interface W2ForkShape { row: string; near: number; far: number; wall: { w: number; h: number }; gap: number; porch: number; rise: { w: number; h: number }; porch2: number }
+export interface W2ForkShape { row: string; near: number; far: number; wall: { w: number; h: number; back: number }; gap: number; porch: number; rises: ReadonlyArray<{ w: number; h: number }> }
 export const W2_FORK: W2ForkShape = {
-  /** the low road's river row (W2_FORK_RIVERS): 'ride's numbers, safe (a fall splashes him back on the near bank), marked 'close' */
+  /** the low road's river row (W2_FORK_RIVERS): a marsh, still, safe (a fall splashes him back on the near bank), marked 'close' */
   row: 'low',
   near: 420,
-  far: 320,
-  wall: { w: 150, h: 60 },
+  /** the porch's 800 px over the far bank (2,200 - the marsh's 1,400) + 320 to gather on */
+  far: 1120,
+  wall: { w: 150, h: 60, back: 60 },
   gap: 60,
-  /** the porch (px): `rise` (w, FLOOD_STEP tall) stands on its far end, so he walks porch - rise.w px on it first; porch2 touches P's end
-   *  and runs `porch2` px, out over the far bank. ONE rise, its tread wide (BUILD-28 session 1's bot probe: a second block standing on the
-   *  rise, 140 wide with 80 px treads, stranded the Easy child (his jump off it landed two steps down, deeper than the line's step, so the
-   *  line waited at its lip); with a 220 px tread it stranded the adult the same way; one 400 px rise: 18 of 18 runs home, every tier,
-   *  both settings) */
-  porch: 500,
-  rise: { w: 400, h: 60 },
-  porch2: 400,
+  porch: 2200,
+  rises: [{ w: 1400, h: 60 }, { w: 600, h: 60 }],
 };
-/** the low road's row: the river 'ride' (W2_RIVERS: 798 px between the banks), marked for the flood as the road that turns deep */
-export const W2_FORK_RIVERS = { [W2_FORK.row]: { ...W2_RIVERS.ride, flood: 'close' as const } } satisfies Record<string, RiverRow>;
+/** the low road's row: a MARSH (riverLay.ts RiverRow.marsh; 2-8.md:9: 1,400 px with four 100 px dips, its floor 60 px under the banks),
+ *  still water, no logs, marked for the flood as the road that turns deep */
+export const W2_FORK_RIVERS = { [W2_FORK.row]: { dir: 1, speed: 0, logW: 0, logs: 0, safe: true, flood: 'close' as const, marsh: { width: 1400, floor: 60, dips: 4, dip: 100 } } } satisfies Record<string, RiverRow>;
 /** the two-road section `id` for job `job` (its numbers W2_FORK's) */
 export function w2TwoRoad(id: string, job: NodeJob, f: W2ForkShape = W2_FORK): SectionTemplate {
-  // (a share along the near bank: `d` px past its end)
+  // (a share along the near bank: `d` px past its end; W's place on it: `wall.back` px back from its end)
   const past = (d: number): R2 => [1 + d / f.near, 1 + d / f.near];
   const one = (v: number): R2 => [v, v];
+  const back = (f.near - f.wall.w - f.wall.back) / (f.near - f.wall.w);
   return {
     id, name: `${id} (the two roads)`, archetypes: 'any', phases: ['ki', 'sho', 'ten', 'ketsu'], difficulty: 3, jobs: [job], content: 'water',
     pieces: [
       { key: 'near', shape: 'bank', w: one(f.near), place: { kind: 'start' }, style: 'log', main: true },
       { key: 'far', shape: 'bank', w: one(f.far), place: { kind: 'river', after: 'near', row: f.row }, style: 'log', main: true, landing: true },
-      { key: 'wall', shape: 'block', w: one(f.wall.w), place: { kind: 'on', on: 'near', at: [1, 1], h: one(f.wall.h) }, style: 'moss_stone' },
-      { key: 'porch', shape: 'branch', w: one(f.porch), place: { kind: 'over', on: 'near', at: past(f.gap), dy: one(-f.wall.h) }, style: 'log', main: false },
-      { key: 'rise', shape: 'block', w: one(f.rise.w), place: { kind: 'on', on: 'porch', at: [1, 1], h: one(f.rise.h) }, style: 'moss_stone' },
-      { key: 'porch2', shape: 'branch', w: one(f.porch2), place: { kind: 'over', on: 'near', at: past(f.gap + f.porch), dy: one(-f.wall.h) }, style: 'log', main: false },
+      { key: 'wall', shape: 'block', w: one(f.wall.w), place: { kind: 'on', on: 'near', at: one(back), h: one(f.wall.h) }, style: 'moss_stone' },
+      { key: 'porch', shape: 'branch', w: one(f.porch), place: { kind: 'over', on: 'near', at: past(f.gap - f.wall.back), dy: one(-f.wall.h) }, style: 'log', main: false },
+      // (each rise centred on the piece under it: the porch, then the rise before)
+      ...f.rises.map((r, i) => ({ key: `rise${i + 1}`, shape: 'block' as const, w: one(r.w), place: { kind: 'on' as const, on: i ? `rise${i}` : 'porch', at: one(0.5), h: one(r.h) }, style: 'moss_stone' as const })),
     ],
     entry: { piece: 'near', kind: 'ground' }, exit: { piece: 'far', kind: 'ground' }, exitDy: 0,
     sockets: [],

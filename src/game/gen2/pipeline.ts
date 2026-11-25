@@ -3159,8 +3159,9 @@ export function layStage(budget: StageBudget, graph: MissionGraph, kit: WorldKit
       //  roll the shift moved, and whatever asks where a rope's ledge is (the level check, the engine's own jump from it) was wrong)
       for (const r of ropes) { r.y += down; r.g0 += down; r.g1 += down; }
       // (a river's surface and where a splash sets him back (and a spur's stone, FIX-22: left behind, the bots never stood on it), and each
-      // log's float line: its platform moved with the rest)
-      for (const r of rivers) { r.surfaceY += down; if (r.safe) r.safe.backY += down; if (r.spur) r.spur.y += down; if (r.floodMark) r.floodMark.lip += down; }
+      // log's float line: its platform moved with the rest; a marsh's floor and lip too (BUILD-28: left behind, the flood read its paddling
+      // depth off a floor 120 px over the laid one, 50 px over the banks: w2TwoRoad.test)
+      for (const r of rivers) { r.surfaceY += down; if (r.safe) r.safe.backY += down; if (r.spur) r.spur.y += down; if (r.floodMark) r.floodMark.lip += down; if (r.marsh) { r.marsh.floor += down; r.marsh.lip += down; } }
       for (const q of platforms) if (q.drift) q.drift.baseY += down;
       for (const w of stageWheels(platforms)) w.cy += down;
       for (const g of gaps) g.y += down;

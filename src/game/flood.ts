@@ -29,6 +29,9 @@ export interface FloodRow {
   flown: { px: number; tailOff: { normal: number; easy: number } };
   /** the FORK's wall-step numbers: each tier's modelled play from its landing on the wall-step W to the next high-road piece (forkFaults) */
   climb: FloodClimb;
+  /** px: the line's step (the world's follow row's `step`, follow.ts): a drop deeper than it off an end of a high-road piece is a WAIT at
+   *  the lip, so the line is stranded there (strandFaults) */
+  step: number;
 }
 
 /** the tiers the fork is judged for (the bots' own: child, middle, expert, and the first-timer adult) */
@@ -169,8 +172,7 @@ export function forkFaults(chain: ReadonlyArray<{ x: number; w: number; y: numbe
  * adult turned back on the top and walked off its near edge), and the line follows him down only a drop of at most its step (follow.ts
  * record: deeper is a WAIT at the lip, and he goes on alone). So just outside each end of each piece of `chain`, the first ground under it
  * (a top in `tops` at or below the piece's top, else `under(x)`: the low road's floor or water there, or a bank) lies at most `step` below
- * the piece's top. By name; empty: fair. Not yet laid by floodLay: it lands with 1d's shape (W set back from the water, porches to the far
- * bank), as today's W flush on the water's edge fails it.
+ * the piece's top. By name; empty: fair. Laid by floodLay (gen2/floodLay.ts) after forkFaults, with the row's `step` (FloodRow.step).
  */
 export function strandFaults(chain: ReadonlyArray<{ x: number; w: number; y: number }>, tops: ReadonlyArray<{ x: number; w: number; y: number }>, under: (x: number) => number, step: number): string[] {
   const out: string[] = [];

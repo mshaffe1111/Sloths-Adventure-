@@ -1,8 +1,8 @@
-// World 2's TWO-ROAD section (w2.ts W2_FORK, w2TwoRoad; 2-8's fork, R-165.430 (2)), laid by gen2 on the out-and-back toy's home leg in
-// place of its first river (gen2/toyHome.ts 'home-practise-ride', as floodLay.test lays its brick there): GREEN on every roll and both
-// settings (layFlood: floodFaults, highRoad and forkFaults all empty); the built pieces in the ruled order (W on the near bank's end, the gap,
-// the porch, the rise standing on it, porch2 out over the far bank); RED, each by name, on W 60 and on no gap. (flood.ts highRoad meets the rise standing on the porch and judges
-// it as a wall-step, BUILD-28 step 1a: the chain is W, P, the rise, porch2.)
+// World 2's TWO-ROAD section (w2.ts W2_FORK, w2TwoRoad; 2-8's fork, R-165.430 (2), BUILD-28 1d), laid by gen2 on the out-and-back toy's
+// home leg in place of its first river (gen2/toyHome.ts 'home-practise-ride', as floodLay.test lays its brick there): GREEN on every roll and
+// both settings (layFlood: floodFaults, highRoad, forkFaults and strandFaults all empty); the built pieces in the ruled order (W set back on
+// the near bank, the gap, the porch over the marsh, the rises standing centred, every tread at least 400 px, down the way it came up onto
+// the far bank); RED, each by name, on W 60, on no gap and on W flush on the water (a 120 px drop: the line stranded at W's lip).
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import '../../headlessDom.ts';
@@ -10,7 +10,7 @@ import { buildGen2Stage } from '../pipeline.ts';
 import { towerCfg } from '../toyTower.ts';
 import { HOME_BRICKS, HOME_CODE, homeKit } from '../toyHome.ts';
 import { FLOOD_HOP, FLOOD_STEP, layFlood } from '../floodLay.ts';
-import { forkFaults, highRoad } from '../../flood.ts';
+import { forkFaults, highRoad, strandFaults } from '../../flood.ts';
 import { W2_FLOOD, W2_FORK, W2_FORK_RIVERS, W2_RIVERS, w2TwoRoad, type W2ForkShape } from './w2.ts';
 import type { Collectible } from '../../types.ts';
 import type { WorldKit } from '../types.ts';
@@ -56,23 +56,47 @@ test('two roads: GREEN on the toy\'s rolls, both settings: the flood, the high r
       assert.deepEqual(r.problems, [], at);
       assert.deepEqual(road.faults, [], `${at}: the high road walks`);
       assert.deepEqual(forkFaults(road.chain, span, W2_FLOOD.climb), [], `${at}: the fork (W ${W2_FORK.wall.w}, gap ${W2_FORK.gap})`);
-      assert.equal(road.chain.length, 4, `${at}: the high road is W, the porch, the rise and porch2, each met in order (lead-the-line reads it minus its shared ends)`);
+      const n = W2_FORK.rises.length;
+      assert.equal(road.chain.length, 2 + 2 * n, `${at}: the high road is W, the porch, the rises up, then each rise and the porch again down (a piece met again further along: highRoad)`);
       const dir = span.to.x >= span.from.x ? 1 : -1;
+      const near = (t: { x: number; w: number }) => (dir > 0 ? t.x : t.x + t.w);
+      const far = (t: { x: number; w: number }) => (dir > 0 ? t.x + t.w : t.x);
       const [W, P] = road.chain;
       assert.equal(Math.round(W.w), W2_FORK.wall.w, `${at}: W is the wall-step`);
       assert.equal(Math.round(low.lip - W.y), W2_FORK.wall.h, `${at}: W one step up off the bank`);
+      assert.equal(Math.round((span.from.x - far(W)) * dir), W2_FORK.wall.back, `${at}: W stands back from the water's edge, its lip over the bank`);
       assert.equal(Math.round(P.y), Math.round(W.y), `${at}: the porch level with W's top`);
-      // (the rise stands on the porch, one step, over the water between W and the far bank; nothing stands higher)
+      // (the rises: each a step up, standing on the piece before it, the ruled width; then met again on the way down)
+      const ups = road.chain.slice(2, 2 + n);
+      ups.forEach((r, i) => {
+        const under = i ? ups[i - 1] : P;
+        assert.equal(Math.round(under.y - r.y), W2_FORK.rises[i].h, `${at}: rise ${i + 1} one step up`);
+        assert.equal(Math.round(r.y + (r.h ?? 0)), Math.round(under.y), `${at}: rise ${i + 1} stands on the piece under it (a wall-step)`);
+        assert.equal(Math.round(r.w), W2_FORK.rises[i].w, `${at}: rise ${i + 1}'s width`);
+      });
+      assert.deepEqual(road.chain.slice(2 + n), [...ups.slice(0, -1).reverse(), P], `${at}: down the way it came up: each rise's far tread, then the porch's`);
+      // (every tread at least 400 px, both ways: BUILD-28 session 1's probe, 80 and 220 px treads stranded the line)
+      const stack = [P, ...ups];
+      for (let i = 0; i + 1 < stack.length; i++) {
+        const [lo, hi] = [stack[i], stack[i + 1]];
+        assert.ok((near(hi) - near(lo)) * dir >= 400 && (far(lo) - far(hi)) * dir >= 400, `${at}: the treads either side of rise ${i + 1} at least 400 px`);
+      }
+      assert.ok(ups.at(-1)!.w >= 400, `${at}: the top's tread at least 400 px`);
+      // (nothing stands over the top within two steps in the span: the out leg stacked far above is no part of it)
+      const top = ups.at(-1)!;
       const inSpan = (t: { x: number; w: number }) => t.x >= Math.min(span.from.x, span.to.x) && t.x + t.w <= Math.max(span.from.x, span.to.x);
-      const rise = tops.filter((t) => Math.round(P.y - t.y) === W2_FORK.rise.h && Math.round(t.y + (t.h ?? 0)) === Math.round(P.y));
-      // (within a step or two over the rise: the out leg stacked far above is no part of it)
-      const higher = tops.filter((t) => t.y < P.y - W2_FORK.rise.h - 1 && t.y > P.y - W2_FORK.rise.h - 2 * FLOOD_STEP - 1 && inSpan(t));
-      assert.equal(rise.length, 1, `${at}: one rise standing on the porch`);
-      assert.deepEqual(higher, [], `${at}: one rise, nothing over it (BUILD-28 session 1: a block on the rise stranded the Easy child)`);
-      assert.ok(inSpan(rise[0]), `${at}: the rise stands over the low road's water, out of its lane under the porch`);
-      assert.equal(road.chain[2], rise[0], `${at}: the verdict met the rise (highRoad judges every piece in his way)`);
-      assert.equal(Math.round(rise[0].w), W2_FORK.rise.w, `${at}: the rise's tread`);
-      assert.ok((dir > 0 ? road.chain.at(-1)!.x + road.chain.at(-1)!.w : road.chain.at(-1)!.x) * dir >= span.to.x * dir, `${at}: the high road ends out over the far bank`);
+      const higher = tops.filter((t) => t.y < top.y - 1 && t.y > top.y - 2 * FLOOD_STEP - 1 && inSpan(t));
+      assert.deepEqual(higher, [], `${at}: nothing over the top`);
+      assert.ok(far(P) * dir >= span.to.x * dir, `${at}: the high road ends out over the far bank`);
+      // (the marsh: its zone reads the floor it laid (a shifted leg moves both: pipeline.ts), four dips, the floor a step under the banks)
+      const zone = st.rivers!.find((q) => q.floodMark?.kind === 'close')!;
+      const floor = st.platforms.filter((p) => p.type === 'solid' && p.x >= low.x0 - 1 && p.x + p.width <= low.x1 + 1 && Math.round(p.y) === Math.round(zone.marsh!.floor));
+      assert.equal(floor.length, W2_FORK_RIVERS[W2_FORK.row].marsh.dips + 1, `${at}: the marsh's floor pieces under its zone's floor`);
+      assert.equal(Math.round(zone.marsh!.lip), Math.round(low.lip), `${at}: the marsh's lip is the banks' top`);
+      assert.equal(Math.round(zone.marsh!.floor - low.lip), W2_FORK_RIVERS[W2_FORK.row].marsh.floor, `${at}: the floor ${W2_FORK_RIVERS[W2_FORK.row].marsh.floor} px under the banks`);
+      // (THE STRAND VERDICT, laid by floodLay: off every end of every piece, ground within the line's step)
+      const all = st.platforms.filter((p) => p.type === 'solid' && !p.pad && !p.broken).map((p) => ({ x: p.x, w: p.width, y: p.y }));
+      assert.deepEqual(strandFaults(road.chain, [...road.chain, ...all], (x) => (x >= low.x0 && x <= low.x1 ? low.y0 : Infinity), W2_FLOOD.step), [], `${at}: nobody stranded`);
     }
   }
 });
@@ -85,4 +109,6 @@ test('two roads: RED by name on W 60 (every tier walks off) and on no gap (no wa
   };
   assert.match(faults({ ...W2_FORK, wall: { ...W2_FORK.wall, w: 60 } }), /the adult lands 86 px past its face .* walks off into the 60 px gap/, 'RED: W 60');
   assert.match(faults({ ...W2_FORK, gap: 0 }), /no way down onto the low road: the gap after it is 0 px/, 'RED: no gap');
+  // (W flush on the water's edge (BUILD-28 1e): off its lip onto the marsh floor is one 120 px drop, deeper than the line's step)
+  assert.match(faults({ ...W2_FORK, wall: { ...W2_FORK.wall, back: 0 } }), /off the (left|right) end of the high road's piece at x \d+-\d+ the first ground is 120 px down, deeper than the line's 90 px step/, 'RED: W flush on the water');
 });
