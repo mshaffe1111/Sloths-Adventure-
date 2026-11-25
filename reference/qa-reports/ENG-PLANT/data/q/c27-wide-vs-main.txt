@@ -1,0 +1,6 @@
+vs main-2-1.jsonl: rows 90/90; BAR seeds all-pass new (10, 10) ref (10, 10); BAR PASS->FAIL 0: ; FAIL->PASS 0: ; kid moved 7: kidE4 kidE7 kidE9 kidN3 kidN7 kidN8 kidN9
+vs c26-2-1-w10.jsonl: rows 90/90; BAR seeds all-pass new (10, 10) ref (10, 10); BAR PASS->FAIL 0: ; FAIL->PASS 0: ; kid moved 0: 
+vs main-2-2.jsonl: rows 90/90; BAR seeds all-pass new (10, 10) ref (10, 10); BAR PASS->FAIL 0: ; FAIL->PASS 0: ; kid moved 7: kidE3 kidE7 kidN3 kidN6 kidN8 kidN9 kidN10
+vs c26-2-2-w10.jsonl: rows 90/90; BAR seeds all-pass new (10, 10) ref (10, 10); BAR PASS->FAIL 0: ; FAIL->PASS 0: ; kid moved 0: 
+vs main-2-4.jsonl: rows 90/90; BAR seeds all-pass new (10, 10) ref (4, 10); BAR PASS->FAIL 0: ; FAIL->PASS 6: adultN1 adultN3 adultN5 adultN7 adultN9 adultN10; kid moved 13: kidE2 kidE4 kidE6 kidN1 kidN2 kidN3 kidN4 kidN5 kidN6 kidN7 kidN8 kidN9 kidN10
+vs c26-2-4-w10.jsonl: rows 90/90; BAR seeds all-pass new (10, 10) ref (10, 10); BAR PASS->FAIL 0: ; FAIL->PASS 0: ; kid moved 0: 

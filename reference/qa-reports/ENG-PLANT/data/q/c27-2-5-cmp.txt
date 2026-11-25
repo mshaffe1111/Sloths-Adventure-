@@ -1,0 +1,2 @@
+vs main-2-5.jsonl: rows 360/360; BAR seeds all-pass new (40, 40) ref (40, 40); BAR PASS->FAIL 0: ; FAIL->PASS 0: ; kid moved 3: kidE14 kidE28 kidE35
+vs c26-2-5.jsonl: rows 360/360; BAR seeds all-pass new (40, 40) ref (40, 40); BAR PASS->FAIL 0: ; FAIL->PASS 0: ; kid moved 0: 

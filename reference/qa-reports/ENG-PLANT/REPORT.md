@@ -1,4 +1,4 @@
-# ENG-PLANT-q (ENG-PLANT-c session 15, started 10:44 AM ET 11-25 by the hook's stamp; this top written 10:57 AM ET 11-25): **c27 = 1e4b50a1d PUSHED** (the lead's rulings: at W1's cap walk to the lip, judge the far bank + logs with the held aim, refused -> tablePick from his own table); toys RED on c26 / GREEN on c27; **every race WON (10/10)**; the full order running
+# ENG-PLANT-q (ENG-PLANT-c session 15, started 10:44 AM ET 11-25 by the hook's stamp; this top written 11:09 AM ET 11-25): **c27 = 1e4b50a1d PUSHED; condition 4 COMPLETE on its exact head, all green; the table sent to the lead** (toys RED c26 / GREEN c27; races 10/10 WON; known flips, wide, 2-7 x40 33/40, 1-4, 2-5 all identical to c26 except the two races)
 
 Engine (bots), Opus 5.5 xhigh. Lead: session_01FhBbYN2CVHnFXg7XzqKXpM. **Code head: c27 = 1e4b50a1d** on release-0.10.3-wip-plant-c (pushed,
 `git ls-remote` confirmed; a fast-forward on c26 51ffe7eab). Data: data/q/. Toy runner (tree-agnostic): tools/toy27-q.mts.txt <tree>.
@@ -14,12 +14,17 @@ Engine (bots), Opus 5.5 xhigh. Lead: session_01FhBbYN2CVHnFXg7XzqKXpM. **Code he
    - DONE: the 10 known flips (tools/set1-m.sh.txt -> data/q/set1-c27/; `python3 -I tools/set1cmp-p.py.txt data/q/set1-c27 data/c` ->
      data/q/set1-c27-table.txt): **BAR rows PASS 12/12; every row identical to c26's (pass, rescues, lives; sorted diff 0)**; W1CAP: 23
      rows, zero stands past the cap reaching a cycle.
-   - IN FLIGHT at hand-over (check the pushed files; re-run what is short): the wide sample (tools/wide-m.sh.txt, stages 2-4 then 2-1 then 2-2, seeds 1-10 ->
-     data/q/c27-<stage>-w10.jsonl; 90 rows each; compare tools/cmp-o.py.txt vs data/c/main-<stage>.jsonl: 0 BAR PASS -> FAIL).
-   - TO RUN: 2-7 x40 (adult/child/middle/expert, seeds 1-40, both: 280 rows; >= 29/40 all-pass; c26 33/40: data/p/c26-2-7-x40.jsonl);
-     1-4 and 2-5 seeds 1-40 every bot both (360 rows each) vs data/c/main-1-4.jsonl / main-2-5.jsonl; zero rows ending stuck or timed
-     out ('end' not 'shrine') in every set; zero W1CAP stands >= cycle.
-2. The c27 table to the lead (due 12:15 PM ET), BEFORE the checklist. Then child N 13 on c27 (session 14's item vi), then the checklist
+   - DONE: the wide sample (tools/wide-m.sh.txt, 2-4 / 2-1 / 2-2 seeds 1-10, 90 rows each -> data/q/c27-<stage>-w10.jsonl; data/q/c27-wide-vs-main.txt):
+     **0 BAR PASS -> FAIL vs main on all three; every row identical to c26's (vs c26: PASS->FAIL 0, FAIL->PASS 0, kid moved 0)**; every
+     row ends 'shrine'; W1CAP: zero stands past the cap reaching a cycle (2-4: no stand past the cap at all).
+   - DONE: 2-7 x40 (adult/child/middle/expert, seeds 1-40, both, 280 rows -> data/q/c27-2-7-x40.jsonl; data/q/c27-2-7-x40-cmp.txt):
+     **33/40 all-pass (bar >= 29; c26 33); vs c26 PASS->FAIL 0, FAIL->PASS 0**; 271 rows identical in time, 9 moved (-4.1 .. +3.6 s, and
+     child Normal 38 +26.0 s with 1 more life lost, FAIL on c26 too); every row ends 'shrine'; W1CAP: no stand past the cap at all.
+   - DONE: 1-4 and 2-5 seeds 1-40, every bot, both (360 rows each -> data/q/c27-1-4.jsonl, c27-2-5p.jsonl; -cmp.txt): **0 BAR PASS -> FAIL vs
+     main; every row identical to c26's** (1-4 BAR all-pass 40/40, 2-5 40/40). Not 'shrine': 1-4 none; 2-5 the kid on Normal, 31 rows
+     'stranded', the same 31 on c26 (main 29): the kid is no bar bot and c27 moved none of them; named to the lead. W1CAP: no stand past
+     the cap reaching a cycle in any set (2-1 / 2-2 / 2-4 / 2-7 / 1-4 / 2-5: zero stands past the cap at all; the known flips: none >= cycle).
+2. DONE: the c27 table sent to the lead (session 15's hand-over message). **NEXT: read the lead's answer**, then child N 13 on c27 (session 14's item vi), then the checklist
    (pacerLay 22/23 re-plants as laid toys 23/23; hopJudged (c27's two toys are its last two tests); the toys for c23-c27; the packet's
    plants or retire per R-165.432; riverRide + firsttimer; the CI tool line 0 fail; tierBots 9/9; timecheck + roadmapcheck). The table again
    before any merge; MERGE into release-0.10.3 (no force) ONLY on the lead's word. REPORT BY 1:00 PM ET; HARD STOP 3:00 PM ET.
