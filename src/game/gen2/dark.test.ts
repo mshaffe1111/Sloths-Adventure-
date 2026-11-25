@@ -15,7 +15,7 @@ import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { RealPlay } from '../realPlay.ts';
 import { GLOW_REACH, glowReaches, keepsClear, type Zone } from '../zones.ts';
-import { awakeLights, DARK_AHEAD, DARK_EMIT, DARK_GLOW, DARK_PROPS, DARK_ZONE, darkFlags, darkGaps, darkLandings, darkRims, entryPieces, litAhead, RimWatch, type DarkRim } from './dark.ts';
+import { awakeLights, DARK_AHEAD, DARK_EMIT, DARK_GLOW, DARK_PROPS, DARK_ZONE, darkFlags, darkGaps, darkLandings, darkRims, darkStop, entryPieces, litAhead, RimWatch, type DarkRim } from './dark.ts';
 import type { Platform } from '../types.ts';
 import type { StageSink } from './types.ts';
 import { W6S_EMIT, W6S_PROPS } from './worlds/w6Swing.ts';
@@ -368,24 +368,27 @@ test("a wall rim's light hangs no deeper than a stop on the rim reaches (GLOW_RE
   assert.ok(red.some((m) => m.includes(`a sleeping light no stop wakes: ${named(rim)}`)), red.join('; ') || 'nothing named');
 });
 
-test("an edge BEHIND a dark-rim drop's landing is no edge he lands toward (the lead's ruling (i)): a SHAPE toy, a deep drop on a real rim whose landing piece ends 13 px behind his touchdown, out of that drop's light: darkLandings GREEN; that edge judged as one he lands toward: RED (the plant)", () => {
+test("an edge BEHIND a dark-rim drop's landing is no edge he lands toward (the lead's ruling (i)): a SHAPE toy, a deep drop on a real rim whose landing piece ends 60 px behind his touchdown (BEHIND), out of that drop's light: darkLandings GREEN; that edge judged as one he lands toward: RED (the plant)", () => {
   // (ENG-DARK box 13: no real row decides the exemption (probes/behind.mts, rolls 1-12); the lead's ruling (box 14): a hand-built SHAPE
-  //  toy on a real rim. The drop is deep (deepDrop: 640 px), so the light over its landing hangs at the stop's reach, out of that edge's reach)
-  // (640 px: the light hung at the stop's reach (GLOW_REACH.down) hangs 220 px over his landing, past its radius from that edge 13 px
-  //  behind (box 15: at 608 px it hung 188 px over it, and a 190 px light 188 px up reaches an edge 13 px aside: no rim held the shape);
-  //  the floor 400 px under the landing piece gives that edge its own landing, its light out of the stop's reach)
+  //  toy on a real rim. The drop is deep (deepDrop: 608 px), so the light over its landing hangs at the stop's reach, out of that edge's reach)
+  // (608 px: the light hung at the stop's reach (GLOW_REACH.down) hangs 188 px over his landing; that edge lies BEHIND px behind, out
+  //  of its radius (box 15: 13 px behind, as box 14 had it, lies inside a 190 px light 188 px up, and a drop deeper than 608 px no
+  //  longer lands on that piece: no rim held the shape); the floor 400 px under the landing piece gives that edge its own landing,
+  //  its light out of the stop's reach)
   // (box 15: on roll 1's first sleeping drop rim the light nearest that landing was another rim's, 90 px over it, and it reached that
   //  edge: the builder now takes the first real drop rim of rolls 1-10 whose shape holds (deepDrop's check))
+  const BEHIND = 60;
   const behind = (q: { stage: { platforms: Platform[]; zones: Zone[] }; rim: DarkRim; moved: Platform }) => {
     const b = darkRims(q.stage).find((m) => m.piece === q.moved && m.dir === -q.rim.dir);
     return !!b?.light?.sleep && Math.hypot(q.rim.light!.x - b.x, q.rim.light!.y - b.y) > q.rim.light!.r;
   };
-  const d = deepDrop(640, (r) => (r.dir > 0 ? r.x + 24 - 13 - r.onto.x : r.x - 24 + 13 - r.onto.width - r.onto.x), 400, behind, 10);
+  const d = deepDrop(608, (r) => (r.dir > 0 ? r.x + 24 - BEHIND - r.onto.x : r.x - 24 + BEHIND - r.onto.width - r.onto.x), 400, behind, 10);
   assert.ok(d, 'a deep drop on a real rim');
   const { stage, rim, moved } = d;
   const back = darkRims(stage).find((q) => q.piece === moved && q.dir === -rim.dir);
   assert.ok(back?.light?.sleep, "the landing piece's back end is a sleeping rim");
-  assert.equal(Math.round((back.x - (rim.x + rim.dir * 24)) * back.dir), 13, 'it lies 13 px behind his touchdown');
+  assert.equal(Math.round((back.x - (rim.x + rim.dir * 24)) * back.dir), BEHIND, `it lies ${BEHIND} px behind his touchdown`);
+  assert.ok(BEHIND < darkStop('normal'), 'inside his stopping distance: judged were it an edge he lands toward');
   assert.ok(Math.hypot(rim.light!.x - back.x, rim.light!.y - back.y) > rim.light!.r, "the drop's own light does not reach it");
   assert.deepEqual(darkLandings(stage, 'normal').filter((m) => m.includes(named(rim)) && m.includes(`onto ${named(back)}`)), []);
 });
