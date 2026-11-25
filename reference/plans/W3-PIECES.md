@@ -37,3 +37,6 @@ The cut, if needed (Friday evening's question): 3-8 and 3-9 to the next week, or
 No World 3 design has a two-road fork. 3-5's 'quiet way vs loud way' is a choice by MOVE (climb, hang, land on moss vs a big drop): READY-35
 flies a full-run walk-off, a single and a double from every beat's top and shows which way each takes (a plain run-off must never be the
 only way down past a sleeper). 3-7's secret is off the main route: its entry (a hang to the fern) is flown the same way.
+
+## Catch-ahead for the creature stages (ENG-NOISE's finding, Wed 2:12 PM)
+3-1's section budget (2.3 x tension ~0.72 = ~1.66) cannot pay World 3's ocelot (threat 3): no socket on 3-1 lays it. Every World 3 stage that casts the ocelot or the jaguar (3-2, 3-3, 3-5, 3-8, 3-9) needs heat or a node threat ask that pays threat 3. READY-3x checks it on the draft (the creature is laid on every roll) BEFORE the build starts; a stage whose brief cannot pay it goes back to its designer, never a budget raised in the build.
