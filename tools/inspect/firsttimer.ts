@@ -1734,7 +1734,10 @@ export class FirstTimerRun {
     //  storey under it) the first point under him was straight under, and he stood there turning until rescued: he walks off the end
     //  where the way comes out from under his wood, ENG-DOWNBOT)
     const feet = this.sim.platforms.filter((q) => !q.broken && q.type !== 'bouncy' && Math.abs(q.y - p.y) <= 4);
-    let lo = p.x, hi = p.x;
+    // (seeded from the wood under his feet, a half body either side of his middle: at the lip his middle is past the end, the run came
+    //  out empty, and the answer flipped with each step, to and fro at a shelf's end, ENG-DOWNBOT)
+    const under = feet.filter((q) => p.x >= q.x - 24 && p.x <= q.x + q.width + 24);
+    let lo = under.length ? Math.min(...under.map((q) => q.x)) : p.x, hi = under.length ? Math.max(...under.map((q) => q.x + q.width)) : p.x;
     for (let grew = true; grew; ) {
       grew = false;
       for (const q of feet) if (q.x <= hi + 2 && q.x + q.width >= lo - 2 && (q.x < lo || q.x + q.width > hi)) { lo = Math.min(lo, q.x); hi = Math.max(hi, q.x + q.width); grew = true; }
@@ -2368,11 +2371,13 @@ export class FirstTimerRun {
         // (kept until he stands on other ground (the engine's standingOnId) or 6 s pass: at the lip his middle is past the ledge and it
         // no longer reads as his floor)
         if (who.holdQ && this.dropOff) dir = this.dropOff.dir;
-        // (a way DOWN: the end of his ledge to step off is the one whose landing lies nearest the way on, never just the way he was
-        //  going: the run's rule walked him off the far end of a shelf into the storey under the way, and he stood there, ENG-W3a)
-        const end = p.grounded ? this.downEnd(p) : 0;
-        if (end) dir = end;
       }
+      // (a way DOWN: the end of his ledge to step off is the one whose landing lies nearest the way on, never just the way he was
+      //  going: the run's rule walked him off the far end of a shelf into the storey under the way, and he stood there, ENG-W3a.
+      //  Whenever the way on is below him, not only close across: read only close across, the route's x walked him back toward a way
+      //  on under his wood each time he was 120 px from it, and he went to and fro on a catch over the storey, ENG-DOWNBOT)
+      const end = p.grounded && dy > 40 && !p.isVineSwinging ? this.downEnd(p) : 0;
+      if (end) dir = end;
     }
     // (fallen into a pit the way on cannot be reached from: back up its stair the way he came, pitWayBack)
     const back = this.pitWayBack(tgt);
