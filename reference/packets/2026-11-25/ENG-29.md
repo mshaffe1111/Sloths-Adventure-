@@ -6,7 +6,8 @@ seed or x in engine code (generalitycheck); a landing runs the suite AND the CI 
 READ LEAN: `git show origin/t-design-29:reference/design/2-9.md` (lines 55-80: the beat B = 0.7125 s Normal / 0.825 s Easy, one liana
 swing = one bar of four; NEW 1 and NEW 2 exactly as written); level.md rules 21, 23 (a planted toy on a REAL row); LAWS headlines; LESSONS
 D125-D136 (the lead's branch).
-BASE: t-eng-28 (World 2's latest engine; 2-8's pieces landed).
+BASE (lookahead, the lead 9:50 AM): NOT t-eng-28 alone (it lacks 269 main commits and 2-3/2-7). Start from the merged head W2-LANE makes
+as its step 1b on t-build-28-wip (origin/release-0.10.3 at ENG-PLANT's merge + t-eng-28); the lead gives you that hash. Cut t-eng-29-wip from it.
 1. NEW 1, the court's TEMPO: the stage brief's `tempo`; every court clock (logs, pads, stones, the wheel, the lianas) a whole number of beats
    with its phase on a beat; Easy keeps the liana's bar (easyStretch); the lay's check names the row that is off, in words; the lianas keep the
    stage clock after a flag resume (the vineClock seek): planted toys RED/GREEN on a real row.
