@@ -139,6 +139,18 @@ export class FollowPlay {
     return null;
   };
 
+  /** a straight swim at height y over (x0, x1) is FLOOD water the line paddles (follow.ts swimY): somewhere on it a flood's water (one
+   *  with a `lip`) is under it and nothing stands there (surf), and no other water is; 2-3's rivers (no lip) never swim */
+  readonly swimAcross = (x0: number, x1: number, y: number): boolean => {
+    let wet = false;
+    for (let x = x0; x <= x1; x += 8) {
+      if (this.surf(x, y) === null) continue;
+      if (!this.stage.safeWater.some((w) => w.lip !== undefined && x >= w.x0 && x <= w.x1)) return false;
+      wet = true;
+    }
+    return wet;
+  };
+
   /**
    * One frame, after he has moved. `on`: the platform he stands on. `roll`: [0, 1) for the herons' calms. Returns what happened, for the
    * engine's sounds and Dot: a heron's warning, little ones spooked, little ones that came home.
@@ -155,7 +167,7 @@ export class FollowPlay {
     }
     this.last = { x: p.x, y: p.y };
     const before = this.home();
-    stepLine(this.trail, this.line, this.pace, this.row.gap, dt, this.surf, this.row.scamper, this.stage.deep);
+    stepLine(this.trail, this.line, this.pace, this.row.gap, dt, this.surf, this.row.scamper, this.stage.deep, this.swimAcross);
     for (const f of [...this.line]) rejoin(this.line, f, p.x, this.row.rejoin);
     home(this.line, this.stage.exitX - dir * this.row.home, dir);
     // the herons

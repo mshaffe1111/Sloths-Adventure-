@@ -217,7 +217,26 @@ export type SurfaceAt = (x: number, y: number) => number | null;
  * closer than `gap`, never past a WAIT. A freed one drops from its cage, then goes straight to the end of the line; a spooked one runs
  * straight back at `scamper` to its stretch's start and waits there. `surf`: the splash-back water under a point (it paddles there).
  */
-export function stepLine(t: Trail, line: Follower[], pace: number, gap: number, dt: number, surf?: SurfaceAt, scamper = 300, wall?: DeepAt): void {
+/** is a straight line at height y over (x0, x1) a flood's water the line paddles (FollowPlay.swimAcross: water with a lip only) */
+export type SwimAcross = (x0: number, x1: number, y: number) => boolean;
+
+/**
+ * A little one mid-hop on a hop that LANDED at its take-off height (within SAME_GROUND) over a flood's water a straight line there
+ * paddles (a marsh's dip, 2-8.md:9): the straight line's y at x, so `surf` paddles it at the surface instead of carrying it on his arc
+ * over still water. The trail is untouched: its s (the pace, the read, who is late) is the hop's. A hop still in the air (no landing yet)
+ * stays his arc. The lead's ruling (b), BUILD-28.
+ */
+export function swimY(t: Trail, s: number, x: number, swim: SwimAcross): number | null {
+  const sp = airSpan(t, s);
+  if (!sp || sp.to === Infinity) return null;
+  const a = trailAt(t, sp.from);
+  const b = trailAt(t, sp.to);
+  if (Math.abs(b.y - a.y) > SAME_GROUND || !swim(Math.min(a.x, b.x), Math.max(a.x, b.x), a.y)) return null;
+  const k = b.x !== a.x ? Math.max(0, Math.min(1, (x - a.x) / (b.x - a.x))) : 0;
+  return a.y + (b.y - a.y) * k;
+}
+
+export function stepLine(t: Trail, line: Follower[], pace: number, gap: number, dt: number, surf?: SurfaceAt, scamper = 300, wall?: DeepAt, swim?: SwimAcross): void {
   let lead = t.s;
   const cap = trailCap(t);
   for (const f of line) {
@@ -242,6 +261,9 @@ export function stepLine(t: Trail, line: Follower[], pace: number, gap: number, 
       const q = trailAt(t, f.s);
       f.x = q.x;
       f.y = q.y;
+      // (a same-height hop over a flood's water is swum straight across at the surface, swimY)
+      const sy = swim ? swimY(t, f.s, f.x, swim) : null;
+      if (sy !== null) f.y = sy;
       lead = Math.min(lead, f.s);
     } else if (f.state === 'join') {
       if (f.land && f.y < f.land.y - 0.5) {

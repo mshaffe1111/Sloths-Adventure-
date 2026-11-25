@@ -9,8 +9,8 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { DT } from '../../src/game/realPlay.ts';
-import { FirstTimerRun, FT_ADULT, FT_MIDDLE, LINE_SKILL, ROAD_TRIPS, freshPhone, rng, type FirstTimer } from './firsttimer.ts';
-import { spook, type Follower } from '../../src/game/follow.ts';
+import { FirstTimerRun, FT_ADULT, FT_CHILD, FT_CHILD_EASY, FT_EXPERT, FT_MIDDLE, FT_MIDDLE_EASY, LINE_SKILL, ROAD_TRIPS, freshPhone, rng, type FirstTimer } from './firsttimer.ts';
+import { SAME_GROUND, spook, type Follower } from '../../src/game/follow.ts';
 import { W2_FLOOD, W2_FOLLOW } from '../../src/game/gen2/worlds/w2.ts';
 import { FloodClock, floodTailOff, highRoad, type Flood } from '../../src/game/flood.ts';
 import { FLOOD_HOP, FLOOD_STEP, floodWaterOf } from '../../src/game/gen2/floodLay.ts';
@@ -76,6 +76,8 @@ function lineRun(who: FirstTimer, seed: number, preSpook = false): LineRun {
 
 const WHO: Array<[string, FirstTimer]> = [['middle', FT_MIDDLE], ['adult', FT_ADULT]];
 const SEEDS = [1, 2, 3];
+/** every tier (the marsh's swim, the lead's condition 2) */
+const TIERS: Array<[string, FirstTimer]> = [['child-easy', FT_CHILD_EASY], ['child', FT_CHILD], ['middle-easy', FT_MIDDLE_EASY], ['middle', FT_MIDDLE], ['adult', FT_ADULT], ['expert', FT_EXPERT]];
 
 test('wait-for-the-tail: the bot crosses clump to clump under the heron with nobody spooked and brings all three home', () => {
   for (const [name, who] of WHO) for (const seed of SEEDS) {
@@ -152,11 +154,16 @@ interface FloodRun {
   walked?: boolean;
   /** (a marsh toy) a little one paddled in one of its dips */
   paddled?: boolean;
+  /** (a marsh toy) he hopped a dip from the floor and landed on the floor beyond it (at its take-off height, follow.ts SAME_GROUND): the
+   *  hop the line swims (follow.ts swimY). A hop off the floor that lands higher (onto the fork's last piece) is his arc, and theirs */
+  flat?: boolean;
+  /** (a marsh toy) a little one was over a dip in the AIR (on his arc, not paddling and not on the floor) */
+  dry?: boolean;
 }
 /** the low road laid by gen2's own piece (riverLay layRiver, RiverRow.marsh: the floor 60 px under the banks, as the hand walkway) instead
  *  of the hand walkway, `dips` gaps `dip` px wide in it; plants: `floorOff` lays the marsh's water with no floor, `closeOff` its flood
- *  with no close (it rises, never turns deep) */
-interface MarshToy { dips: number; dip: number; floorOff?: boolean; closeOff?: boolean }
+ *  with no close (it rises, never turns deep), `swimOff` the line's straight swim over a dip (follow.ts swimY) off: it hops the dip on his arc */
+interface MarshToy { dips: number; dip: number; floorOff?: boolean; closeOff?: boolean; swimOff?: boolean }
 function floodRun(who: FirstTimer, seed: number, late: number, marsh?: MarshToy): FloodRun {
   freshPhone(who.setting);
   const mr = Math.random;
@@ -203,6 +210,8 @@ function floodRun(who: FirstTimer, seed: number, late: number, marsh?: MarshToy)
     e.proto = { hints: [], covers: [], beats: [], movedPickups: [], bushes: [], watch: [], follow: W2_FOLLOW };
     run.sim.stand(START, Y);
     e.startFollow();
+    // (planted: the line hops a dip on his arc again, the straight swim off)
+    if (marsh?.swimOff) (e.follow as unknown as { swimAcross: unknown }).swimAcross = () => false;
     for (const c of cages) e.follow.free(c.critter, { x: c.x - 300, y: Y }, { x: c.x - 300, y: Y });
     for (let i = 0; i < 30; i++) run.sim.frame({});
     run.prog.relocate(run.sim.p);
@@ -218,7 +227,9 @@ function floodRun(who: FirstTimer, seed: number, late: number, marsh?: MarshToy)
       return out;
     };
     let high = false;
-    let walked = false, paddled = false;
+    let walked = false, paddled = false, flat = false, dry = false;
+    let off: { x: number; y: number } | null = null;
+    let stood = { x: 0, y: 0 };
     const tops = run.sim.platforms.filter((q) => q.type === 'solid' && q.y < Y - 1).map((q) => ({ x: q.x, w: q.width, y: q.y, h: q.height, q }));
     const road = highRoad(tops, { x0: W0, x1: W1, from: { x: W0, y: Y }, to: { x: W1, y: Y } }, FLOOD_STEP, FLOOD_HOP);
     assert.deepEqual(road.faults, [], 'the toy lays a high road');
@@ -229,16 +240,24 @@ function floodRun(who: FirstTimer, seed: number, late: number, marsh?: MarshToy)
     run.sim.frame = (...a: unknown[]) => {
       const r = on(...(a as [never]));
       const p = run.sim.p;
+      // (his take-off is the last ground he stood on)
+      if (low && !p.grounded && !off) off = stood;
+      if (low && p.grounded && off) {
+        if (Math.abs(p.y - off.y) <= SAME_GROUND && Math.abs(off.y - (Y + 60)) < 2 && dipsAt.some(([a, b]) => Math.min(off!.x, p.x) < a && Math.max(off!.x, p.x) > b)) flat = true;
+        off = null;
+      }
+      if (p.grounded) stood = { x: p.x, y: p.y };
       if (low) for (const f of e.follow.line as Follower[]) {
         if (f.x <= W0 || f.x >= W1) continue;
         if (f.paddle && dipsAt.some(([a, b]) => f.x > a && f.x < b)) paddled = true;
+        if (f.state === 'follow' && !f.paddle && dipsAt.some(([a, b]) => f.x > a + 1 && f.x < b - 1)) dry = true;
         if (!f.paddle && Math.abs(f.y - (Y + 60)) < 2) walked = true;
       }
       if (!shut && p.grounded && [...highOnly].some((q) => Math.abs(q.y - p.y) < 2 && p.x + p.width / 2 > q.x && p.x - p.width / 2 < q.x + q.width)) high = true;
       return r;
     };
     run.play();
-    return { end: run.end, setBack, home: e.follow.home(), high, t: +run.t.toFixed(1), ...(low ? { walked, paddled } : {}) };
+    return { end: run.end, setBack, home: e.follow.home(), high, t: +run.t.toFixed(1), ...(low ? { walked, paddled, flat, dry } : {}) };
   } finally {
     Math.random = mr;
   }
@@ -313,13 +332,14 @@ test('planted: with the read removed the bot takes the low road late and the clo
 // covering it. Each claim planted: the floor off (the line has nothing to walk), the close off (nothing turns deep).
 test('the marsh low road: gen2\'s piece with no dips is the walkway the line was measured on (the same run, every tier and seed)', () => {
   for (const [name, who] of WHO) for (const seed of SEEDS) {
-    const { walked, paddled: _p, ...r } = floodRun(who, seed, 0, { dips: 0, dip: 0 });
+    const { walked, paddled: _p, flat: _f, dry: _d, ...r } = floodRun(who, seed, 0, { dips: 0, dip: 0 });
     assert.deepEqual(r, floodRun(who, seed, 0), `${name} seed ${seed}: the marsh against the hand walkway`);
     assert.equal(walked, true, `${name} seed ${seed}: the line walked the marsh's floor`);
   }
 });
 
-test('the marsh low road with a dip: he leads the line over its floor, home, nobody set back; RED with the floor off', () => {
+test('the marsh low road with a dip: he leads the line over its floor and it swims the dip, home, nobody set back; RED with the floor off, RED with the swim off', () => {
+  let flats = 0;
   for (const [name, who] of WHO) for (const seed of SEEDS) {
     const r = floodRun(who, seed, 0, { dips: 1, dip: 100 });
     const at = `${name} seed ${seed}: ${JSON.stringify(r)}`;
@@ -328,12 +348,31 @@ test('the marsh low road with a dip: he leads the line over its floor, home, nob
     assert.equal(r.setBack, 0, at);
     assert.equal(r.home, 3, at);
     assert.equal(r.walked, true, `${at}: the line walked the floor`);
-    // (NOT YET: the line paddling the dip. Measured (W2-LANE b): middle seed 1 paddled false: his hop over the dip rises over the banks'
-    //  top, and a flood's water paddles only at or under its banks (followPlay.ts surf), so the line hops the dip on his arc with him.
-    //  The fix is follow.ts's trail (a same-height hop over flood water becomes a swim across), 2-3's piece: the lead's ruling first)
+    // (his hop over the dip rises over the banks' top, where a flood's water never paddles (followPlay.ts surf): the line SWIMS the dip
+    //  because follow.ts swimY holds a little one on a same-height hop over flood water at the straight line's height, the lead's ruling
+    //  (b); planted below)
+    // (a hop off the floor that lands higher, the middle tier's leap over the dip straight onto the fork's last piece, is his arc: the
+    //  rule is narrow, the lead's condition 1)
+    if (r.flat) flats++;
+    if (r.flat) assert.equal(r.paddled && !r.dry, true, `${at}: he hopped the dip floor to floor and the line swam it, never in the air over it`);
   }
+  assert.ok(flats >= 1, 'some tier hopped the dip floor to floor');
   const off = floodRun(FT_MIDDLE, 1, 0, { dips: 1, dip: 100, floorOff: true });
   assert.equal(off.walked, false, `planted, the floor off: ${JSON.stringify(off)}`);
+  const hop = floodRun(FT_ADULT, 1, 0, { dips: 1, dip: 100, swimOff: true });
+  assert.equal(hop.flat && hop.dry, true, `planted, the swim off (the line hops the dip on his arc): ${JSON.stringify(hop)}`);
+});
+
+// (the lead's condition 2 on the swim: pace. swimY changes only a little one's height on the hop, never where it is along the trail, so
+//  every run must be the hop's: the same end, road, set-backs, home and time; measured on every tier, seeds 1-3, late 0, 15 and 19)
+test('the marsh\'s dip swim is pace-neutral: every tier, seeds 1-3, late 0/15/19, the same run as the hop on his arc', () => {
+  for (const [name, who] of TIERS) for (const seed of SEEDS) for (const late of [0, 15, 19]) {
+    const { paddled, dry, ...swim } = floodRun(who, seed, late, { dips: 1, dip: 100 });
+    const { paddled: _b, dry: _c, ...hop } = floodRun(who, seed, late, { dips: 1, dip: 100, swimOff: true });
+    const at = `${name} seed ${seed} late ${late}: ${JSON.stringify({ paddled, dry, ...swim })}`;
+    assert.deepEqual(swim, hop, `${at}: the swim against the hop`);
+    if (swim.flat && !swim.high && swim.setBack === 0) assert.equal(paddled && !dry, true, `${at}: he hopped the dip floor to floor and the line swam it`);
+  }
 });
 
 test('the marsh\'s close: with the read removed and late 19 the close turns the marsh deep and splits the line; RED with the close off', () => {
