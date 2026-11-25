@@ -71,8 +71,9 @@ PLANTS = [
      '      if (room >= stop) continue;', '      if (room >= stop || !rims.some((m) => m.piece === u.piece)) continue;', 'the cave mouth is lit'),
     ("ruling (i) off: a dark-rim drop's edge inside its own light does not pass", 'src/game/gen2/dark.ts',
      '(!!ud.light && Math.hypot(ud.light.x - n.x, ud.light.y - n.y) <= ud.light.r)', 'false', 'the brick on a real World 3 row'),
+    # (box 14) the behind-edge exemption: no real row decides it (box 13); its SHAPE toy, a deep drop on a real rim (the lead's ruling)
     ("an edge behind a dark-rim drop's landing judged as one he lands toward", 'src/game/gen2/dark.ts',
-     'let lit = !!ud && ((ud.drop && n.dir !== u.dir) || (!!ud.light', 'let lit = !!ud && ((!!ud.light', 'the brick on a real World 3 row'),
+     'let lit = !!ud && ((ud.drop && n.dir !== u.dir) || (!!ud.light', 'let lit = !!ud && ((!!ud.light', 'an edge BEHIND a dark-rim drop'),
     ("a wall rim's light hung over its landing past the stop's reach (the depth bound off)", 'src/game/gen2/dark.ts',
      'y: Math.min(land.y - DARK_ZONE.lightUp, r.y + GLOW_REACH.down) }', 'y: land.y - DARK_ZONE.lightUp }', "a wall rim's light hangs no deeper"),
     ("an awake light counts as lit from anywhere (no reach)", 'src/game/gen2/dark.ts',
@@ -80,6 +81,14 @@ PLANTS = [
     # (ENG-DARK-l, box 12) plant 28: box 10's seam check (downEnd's ledgeEnds) off: a seam under his feet read as a way down again
     ('the seam check off: a seam he walks over read as a way down (downEnd)', 'tools/inspect/firsttimer.ts',
      'if (d === 0 || this.who.noSeamWalk) return d;', 'if (d === 0 || true) return d;', 'a seam he walks over is no way down',
+     'src/game/gen2/darkBots.test.ts'),
+    # (ENG-DARK box 14) the RUNNING step off: the verdict, the lay that lights it, and the bot's stop at a lit edge whose run meets a rim
+    ("darkLandings asks nothing of a running step off ((iii) off)", 'src/game/gen2/dark.ts',
+     '    if (stops) continue;\n    out.push(', '    if (stops || true) continue;\n    out.push(', 'a RUN off a rim with no stop is judged where it lands'),
+    ("the lay lights no running step off's landing (awakeLights' run-offs off)", 'src/game/gen2/dark.ts',
+     '      if (stops) continue;\n      n.light!.sleep = false;', '      if (stops || true) continue;\n      n.light!.sleep = false;', 'the brick on a real World 3 row'),
+    ("the bot's dark stop skips a run off a lit edge (runOffRims not read)", 'tools/inspect/firsttimer.ts',
+     '.filter((r) => r.light?.id !== undefined && !own.some(', '.filter((r) => false && r.light?.id !== undefined && !own.some(', 'a RUN off a lit edge in the dark',
      'src/game/gen2/darkBots.test.ts'),
     # plant 29: box 11's turn room off (glowWait presses the turn wherever he stands, the rim's very edge included)
     ("the dark stop's turn room off: the turn pressed at the rim's very edge (glowWait)", 'tools/inspect/firsttimer.ts',
