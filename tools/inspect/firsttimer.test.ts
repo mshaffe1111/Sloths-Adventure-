@@ -2,7 +2,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {
-  dotReport, edgesOf, firstHarms, firstTimer, flagsFor, flickHold, FirstTimerRun, FT_ADULT, FT_CHILD, FT_KID, FT_MIDDLE, gauss, LEVEL_REACH, peakStress, Progress, rng, SKILLS, SpotMemory, teaches,
+  dotReport, edgesOf, firstHarms, firstTimer, flagsFor, flickHold, FirstTimerRun, FT_ADULT, FT_CHILD, FT_CHILD_EASY, FT_KID, FT_MIDDLE, FT_MIDDLE_EASY, gauss, LEVEL_REACH, peakStress, Progress, rng, SKILLS, SpotMemory, teaches,
   type Harm, type Shown, type Try,
 } from './firsttimer.ts';
 import type { Platform } from '../../src/game/types.ts';
@@ -324,4 +324,118 @@ test('on the run it was found on, 2-4 kid Easy seed 35: no jump off a drifting l
   } });
   assert.ok(offs >= 1, `he jumped off a drifting log (${offs})`);
   assert.equal(downs, 0, `no jump off a log came down in the water (${downs} of ${offs})`);
+});
+
+test('on the run it was found on, 2-1 child Easy seed 2: landing on a small log running his way (under 220 px), even inside his run-out of its front, he takes the pad pause and is never pulled back; the row ends at the shrine with no rescue (c23; RED on c22 52bcce623: the pull-back turned him on landing on a 200 px log 75 px from its front, his run-out 91, the pause and its draw skipped, and he was rescued at the back river)', () => {
+  // (the real stage and bot, as castBots rolls them; read by what he meets, never where: a landing (the run's lastLand inside 0.1 s)
+  //  grounded on a drifting log narrower than 220 px whose drift runs the way he landed moving; the pause is the run's padPause on that
+  //  log. The proof of the RED half on c22 is in reference/qa-reports/ENG-PLANT/REPORT.md, ENG-PLANT-s)
+  const P = FirstTimerRun.prototype as unknown as { play: (this: unknown) => unknown };
+  const play = P.play;
+  let run: { t: number; lastLand: number; padPause: { id: number } | null; runOut: () => number } | null = null;
+  P.play = function (this: unknown) { run = this as typeof run; return play.call(this); };
+  const lands = new Map<number, { inside: boolean; pause: boolean }>();
+  let r: ReturnType<typeof firstTimer>;
+  try {
+    r = firstTimer('2-1', 2, FT_CHILD_EASY, { cap: 1200, dotSetting: true, onFrame: (sim) => {
+      const e = (sim as unknown as { e: { player: { x: number; vx: number; grounded: boolean }; platforms: Platform[]; standingOnId: number | null } }).e;
+      const p = e.player, q = e.platforms.find((k) => k.id === e.standingOnId) as (Platform & { drift?: { dir: number } }) | undefined;
+      if (!run || !p.grounded || !q || q.type !== 'drift' || !q.drift || q.width >= 220 || run.t - run.lastLand >= 0.1) return;
+      const key = Math.round(run.lastLand * 30);
+      let row = lands.get(key);
+      if (!row) {
+        if (Math.sign(p.vx) !== q.drift.dir) return;
+        const front = q.drift.dir > 0 ? q.x + q.width : q.x;
+        row = { inside: q.drift.dir * (front - p.x) < run.runOut(), pause: false };
+        lands.set(key, row);
+      }
+      if (run.padPause?.id === q.id) row.pause = true;
+    } });
+  } finally {
+    P.play = play;
+  }
+  const all = [...lands.values()];
+  assert.ok(all.some((l) => l.inside), `he landed on a small log running his way inside his run-out of its front (${JSON.stringify(all)})`);
+  assert.deepEqual(all.filter((l) => !l.pause), [], `every such landing takes the pause (${all.length} landings)`);
+  assert.equal(r.end, 'shrine', `he reaches the shrine (${r.end})`);
+  assert.equal(r.rescues, 0, `no rescue (${r.rescues})`);
+});
+
+test('on the run it was found on, 2-4 child Normal seed 8: the run-up\'s jump (SKILLS.runUp: runPress passed at every lag, then the judged press) is held at least as long as runPress judged it; the row ends at the shrine with no rescue (c24; RED on c23 ccca3d305: flown at flickHold\'s draw, 0.065 / 0.093 / 0.114 s against the 0.16 judged, he peaked under the liana\'s foot and fell in, rescued)', () => {
+  // (the real stage and bot, as castBots rolls them; read by what he does, never where: a run-up press is decide's judged single press
+  //  in the frame whose last runPress was the direct one (from where he stands, s0 0) and passed; the next startJump inside 0.5 s is its
+  //  jump, and this.jump.hold is what he flies. The proof of the RED half on c23 is in reference/qa-reports/ENG-PLANT/REPORT.md, ENG-PLANT-s)
+  type Run = { t: number; pressJudged: boolean; sim: { p: { x: number } }; jump: { hold: number } | null };
+  const P = FirstTimerRun.prototype as unknown as Record<'runPress' | 'decide' | 'startJump', (this: Run, ...a: unknown[]) => unknown>;
+  const { runPress, decide, startJump } = P;
+  let last: { t: number; direct: boolean; ok: boolean; hold: number } | null = null, judged: { t: number; hold: number } | null = null;
+  const jumps: Array<{ t: number; judged: number; flown: number }> = [];
+  P.runPress = function (...a) { const ok = runPress.apply(this, a) as boolean; last = { t: this.t, direct: a[2] === 0 && a[0] === (a[4] as { x: number }).x, ok, hold: a[9] as number }; return ok; };
+  P.decide = function (...a) { if (this.pressJudged && a[1] === 'single' && a[2] === true && last && last.t === this.t && last.direct && last.ok) judged = { t: this.t, hold: last.hold }; return decide.apply(this, a); };
+  P.startJump = function (...a) {
+    const out = startJump.apply(this, a);
+    if (judged && this.t - judged.t < 0.5 && this.jump) jumps.push({ t: +judged.t.toFixed(2), judged: judged.hold, flown: this.jump.hold });
+    judged = null;
+    return out;
+  };
+  let r: ReturnType<typeof firstTimer>;
+  try {
+    r = firstTimer('2-4', 8, FT_CHILD, { cap: 1200, dotSetting: true });
+  } finally {
+    Object.assign(P, { runPress, decide, startJump });
+  }
+  assert.ok(jumps.length >= 1, 'he made a run-up jump');
+  assert.deepEqual(jumps.filter((j) => j.flown < j.judged - 1e-9), [], `every run-up jump held at least as judged (${JSON.stringify(jumps)})`);
+  assert.equal(r.end, 'shrine', `he reaches the shrine (${r.end})`);
+  assert.equal(r.rescues, 0, `no rescue (${r.rescues})`);
+});
+
+test('in the real engine, laid: a log drifting his way still mostly under the bank\'s lip when he comes at it at full run is boarded by a hop, not run onto: no life lost before he has stood 3 s on a log (SKILLS.boardLog; RED with it off: he runs off the lip onto it and off its front into the water; pacerLay\'s home Easy seed 1 plant laid explicitly)', () => {
+  // (pacerLay.test.ts's boardLog race (home Easy seed 1, the careful middle player) lost its RED half when the merged ground moved its
+  //  lips; its cause is laid here, as fromTakeoff's was (af127d21e). The bank's top at 600 to the lip at x 1000, a river 1000-2400 (a full
+  //  RiverZone on the stage: surfaceY, dir, speed; the ride wait's floatAt reads it, the bare {x0, x1} first toy fell on and off alike,
+  //  af127d21e), its 240 px logs 28 px under the lip (river.ts LOG_DROP) on its clock, 420 px apart, the far bank past it. He runs from
+  //  x 100. A log's front at x f0 at time 0: at 725 and 750 the log is 0-120 px past the lip as he comes to it (checked below), the
+  //  plant's shape (64 px out of 240); from 800 to 950 it is past the lip or clear of it, the read is the same on as off)
+  const bank = { id: 1, x: 0, y: 600, width: 1000, height: 90, type: 'solid' } as Platform;
+  const far = { id: 9, x: 2400, y: 600, width: 3000, height: 90, type: 'solid' } as Platform;
+  const log = (id: number, front: number) => ({ id, x: front - 240, y: 628, width: 240, height: 24, type: 'drift',
+    drift: { x0: 1000, x1: 2400, dir: 1, speed: 60, width: 240, baseY: 628, offset: (front - 1000) / 60 } }) as unknown as Platform;
+  const go = (on: boolean, f0: number) => {
+    const line = Array.from({ length: 200 }, (_, i) => ({ x: 100 + i * 24, y: 600 }));
+    let lives0: number | null = null, lost = 0, onLog: number | null = null, past: number | null = null;
+    const run = new FirstTimerRun('1-1', 1, FT_MIDDLE_EASY, { route: line, cap: 20, rescueAfter: 1000, onFrame: (sim) => {
+      const e = (sim as unknown as { e: { player: { x: number; grounded: boolean }; lives: number; platforms: Platform[]; standingOnId: number | null } }).e;
+      const p = e.player, q = e.platforms.find((k) => k.id === e.standingOnId);
+      if (past === null && p.x >= 940) { const under = e.platforms.filter((k) => k.type === 'drift' && k.x < 1000).map((k) => k.x + k.width - 1000); past = under.length ? Math.max(...under) : -1; }
+      lives0 ??= e.lives;
+      if (onLog !== null && run.t - onLog >= 3) return;
+      if (e.lives < lives0) { lost += lives0 - e.lives; lives0 = e.lives; }
+      if (onLog === null && p.grounded && q?.type === 'drift') onLog = run.t;
+    } });
+    run.sim.bare([bank, log(2, f0), log(3, f0 - 420), log(4, f0 - 840), far]);
+    const st = (run.sim as unknown as { e: { currentStage: { config: { levelHeight: number }; rivers: unknown[] } } }).e.currentStage;
+    st.config.levelHeight = 760;
+    st.rivers = [{ x0: 1000, x1: 2400, surfaceY: 640, dir: 1, speed: 60 }];
+    run.sim.stand(100, 600);
+    run.prog.relocate(run.sim.p);
+    const was = SKILLS.boardLog;
+    SKILLS.boardLog = on;
+    try {
+      run.play();
+    } finally {
+      SKILLS.boardLog = was;
+    }
+    return { lost, boarded: onLog !== null, past };
+  };
+  for (const f0 of [725, 750]) {
+    const a = go(true, f0), b = go(false, f0);
+    assert.ok(a.past !== null && a.past > 0 && a.past < 120 && b.past === a.past, `front ${f0}: a log 0-120 px past the lip (of 240) as he comes to it (${a.past}, ${b.past})`);
+    assert.ok(a.boarded && a.lost === 0, `front ${f0}: boarded with no life lost (${JSON.stringify(a)})`);
+    assert.ok(b.lost >= 1, `RED: front ${f0}, with SKILLS.boardLog off he runs onto it and into the water (${JSON.stringify(b)})`);
+  }
+  for (let f0 = 800; f0 <= 950; f0 += 50) {
+    const a = go(true, f0), b = go(false, f0);
+    assert.ok(a.boarded && a.lost === 0 && b.boarded && b.lost === 0, `front ${f0}: no log under the lip, boarded with no life lost on as off (${JSON.stringify([a, b])})`);
+  }
 });
