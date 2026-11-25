@@ -22,8 +22,10 @@ FIRST (the lead may answer Q1 below or send release-0.10.3's hash). Every run on
    measures other work. Started instead: the pre-swim code 801430f3a recorded vs e08716828 checked, `npx tsx tools/engine/lockall.ts
    --layouts 16 --out <S>/lock-pre.json` (frozen tree at 801430f3a) then `... --check <S>/lock-pre.json` (frozen tree at e08716828); about
    30 s a stage, NOT finished at hand-over: RE-RUN IT (lockall fingerprints the BUILD; the swim touches only play, follow.ts stepLine and
-   FollowPlay, so zero moves are expected; any move is a stop). Q1 TO THE LEAD (sent): lock against main at the 1b merge on
-   release-0.10.3 instead?
+   FollowPlay, so zero moves are expected; any move is a stop). THE LEAD RULED Q1 (verbatim): "Q1 YES. For the swim, the lock
+   is pre-swim 801430f3a vs e08716828 (it isolates the change; zero moves expected). The lock vs main runs once at the 1b merge on
+   release-0.10.3, so every shipped stage is checked against what ships." So TWO locks: (a) the swim's, 801430f3a recorded vs e08716828
+   checked (running at hand-over); (b) at 1b, lockall vs main on the merged head, every move traced (rule 28).
    CONDITION 4 (stills, upright AND sideways): NOT DONE; needs the marsh on a stage (W2_FORK's low road, built WITH 1d below). Look for:
    the first little one is on his arc when he lands (the hop is open until then) and drops to the surface on the landing frame; `dry`
    false says none was over the dip in the air on a floor-to-floor hop in the toy, but judge the frames.
