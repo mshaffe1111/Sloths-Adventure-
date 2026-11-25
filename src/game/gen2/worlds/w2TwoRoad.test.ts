@@ -1,8 +1,8 @@
 // World 2's TWO-ROAD section (w2.ts W2_FORK, w2TwoRoad; 2-8's fork, R-165.430 (2)), laid by gen2 on the out-and-back toy's home leg in
 // place of its first river (gen2/toyHome.ts 'home-practise-ride', as floodLay.test lays its brick there): GREEN on every roll and both
 // settings (layFlood: floodFaults, highRoad and forkFaults all empty); the built pieces in the ruled order (W on the near bank's end, the gap,
-// the porch, the rise standing on it, porch2 out over the far bank); RED, each by name, on W 60 and on no gap. (flood.ts highRoad walks a porch end to end and never meets a
-// block standing on it, so a rise's wall-step is held here, by the built pieces, not by the verdict: REPORT, ENGINE-WORTHY.)
+// the porch, the rise standing on it, porch2 out over the far bank); RED, each by name, on W 60 and on no gap. (flood.ts highRoad meets the rise standing on the porch and judges
+// it as a wall-step, BUILD-28 step 1a: the chain is W, P, the rise, porch2.)
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import '../../headlessDom.ts';
@@ -56,7 +56,7 @@ test('two roads: GREEN on the toy\'s rolls, both settings: the flood, the high r
       assert.deepEqual(r.problems, [], at);
       assert.deepEqual(road.faults, [], `${at}: the high road walks`);
       assert.deepEqual(forkFaults(road.chain, span, W2_FLOOD.climb), [], `${at}: the fork (W ${W2_FORK.wall.w}, gap ${W2_FORK.gap})`);
-      assert.ok(road.chain.length >= 3, `${at}: the high road is W, the porch and more (lead-the-line reads it minus its shared ends): ${road.chain.length}`);
+      assert.equal(road.chain.length, 4, `${at}: the high road is W, the porch, the rise and porch2, each met in order (lead-the-line reads it minus its shared ends)`);
       const dir = span.to.x >= span.from.x ? 1 : -1;
       const [W, P] = road.chain;
       assert.equal(Math.round(W.w), W2_FORK.wall.w, `${at}: W is the wall-step`);
@@ -70,6 +70,7 @@ test('two roads: GREEN on the toy\'s rolls, both settings: the flood, the high r
       assert.equal(rise.length, 1, `${at}: one rise standing on the porch`);
       assert.deepEqual(higher, [], `${at}: one rise, nothing over it (BUILD-28 session 1: a block on the rise stranded the Easy child)`);
       assert.ok(inSpan(rise[0]), `${at}: the rise stands over the low road's water, out of its lane under the porch`);
+      assert.equal(road.chain[2], rise[0], `${at}: the verdict met the rise (highRoad judges every piece in his way)`);
       assert.equal(Math.round(rise[0].w), W2_FORK.rise.w, `${at}: the rise's tread`);
       assert.ok((dir > 0 ? road.chain.at(-1)!.x + road.chain.at(-1)!.w : road.chain.at(-1)!.x) * dir >= span.to.x * dir, `${at}: the high road ends out over the far bank`);
     }
