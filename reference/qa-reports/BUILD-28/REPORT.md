@@ -1,6 +1,43 @@
-# BUILD-28 REPORT (W2-LANE: 2-8 "Before the Water Rises"; R-165.430 (2), READY-28, BUILD-28). Session 1 (W2-LANE a), started 9:44 AM ET (from date). Session 2 (W2-LANE b), started 10:07 AM ET (from date)
+# BUILD-28 REPORT (W2-LANE: 2-8 "Before the Water Rises"; R-165.430 (2), READY-28, BUILD-28). Session 1 (W2-LANE a), started 9:44 AM ET (from date). Session 2 (W2-LANE b), started 10:07 AM ET (from date). Session 3 (W2-LANE c), started 10:30 AM ET (from date)
 
-## EXACT NEXT STEP (session 2, W2-LANE b; hand-over on the 28-minute box)
+## EXACT NEXT STEP (session 3, W2-LANE c; hand-over on the 28-minute box)
+Branch t-build-28-wip, CODE head e08716828 (pushed, ls-remote confirmed; this REPORT's commit only adds to reference/qa-reports/BUILD-28/).
+`git fetch origin t-build-28-wip && git checkout t-build-28-wip`, `npm ci --no-audit --no-fund --legacy-peer-deps`, ReadNotifications
+FIRST (the lead may answer Q1 below or send release-0.10.3's hash). Every run on a chattr-frozen worktree (recipe in session 1's section).
+1c PART 3, THE DIP SWIM: BUILT (e08716828), the lead's ruling (b) attempt 2. follow.ts `swimY` + stepLine's new last arg `swim`: a little
+   one mid-hop on a hop that LANDED at its take-off height (SAME_GROUND 12) over a flood's water a straight line there paddles takes that
+   line's y, so surf paddles it at the surface; the trail is untouched (its s, the read, who is late = the hop's); a hop still in the air
+   stays his arc. followPlay.ts `swimAcross` (lip water only; 2-3's lip-less rivers never swim), passed to stepLine. lineBot.test.ts:
+   floodRun's marsh toy reports `flat` (he hopped a dip floor to floor) and `dry` (a little one over a dip in the AIR); 'the marsh low road
+   with a dip': flat -> paddled and never dry, some tier flat; PLANTED: swimOff (instance override of swimAcross) -> adult seed 1 flat AND
+   dry (RED off, GREEN on). NEW 'the marsh's dip swim is pace-neutral' (the lead's condition 2): 6 tiers (child-easy, child, middle-easy,
+   middle, adult, expert) x seeds 1-3 x late 0/15/19: the swim's run deepEquals the hop's (end, setBack, home, high, t, walked, flat), and
+   flat -> paddled and never dry: GREEN. MEASURED late 0, the dip toy: child 36.2 s, middle-easy 19.5, adult 16.7, expert 18.5 all PADDLE the
+   dip, shrine, home 3, setBack 0; child-easy takes the high road (19.2); MIDDLE (normal, 18.9) does NOT paddle: he leaps from the floor
+   (x 1076, y 860) over the dip straight UP onto the fork's last piece C (x 1330, y 740): not a same-height hop, so his arc stands (the
+   narrow rule, condition 1). On the frozen tree at e08716828: lineBot + follow + flood + followArt + floodLay 53/53, generalitycheck PASS
+   (26/26), tsc 0.
+   CONDITION 3 (lockall): origin/main cdffdc627 is NOT an ancestor of this branch (51 commits on the branch), so a lock against main
+   measures other work. Started instead: the pre-swim code 801430f3a recorded vs e08716828 checked, `npx tsx tools/engine/lockall.ts
+   --layouts 16 --out <S>/lock-pre.json` (frozen tree at 801430f3a) then `... --check <S>/lock-pre.json` (frozen tree at e08716828); about
+   30 s a stage, NOT finished at hand-over: RE-RUN IT (lockall fingerprints the BUILD; the swim touches only play, follow.ts stepLine and
+   FollowPlay, so zero moves are expected; any move is a stop). Q1 TO THE LEAD (sent): lock against main at the 1b merge on
+   release-0.10.3 instead?
+   CONDITION 4 (stills, upright AND sideways): NOT DONE; needs the marsh on a stage (W2_FORK's low road, built WITH 1d below). Look for:
+   the first little one is on his arc when he lands (the hop is open until then) and drops to the surface on the landing frame; `dry`
+   false says none was over the dip in the air on a floor-to-floor hop in the toy, but judge the frames.
+NEXT, IN ORDER: 1e the strand verdict (session 2's plan below, unchanged: trace the Easy child's strand on gen2's own section geometry
+   first, then the walk-off model; plant RED on the flush top (220 shape) and the 80 px treads, GREEN on 400). Then 1d + the W2_FORK marsh,
+   ONE shape change: W2_FORK_RIVERS.low = {dir 1, speed 0, logW 0, logs 0, safe, flood 'close', marsh {width 1400, floor 60, dips 4, dip
+   100}} (2-8.md:9) and three up / three down, treads >= 400 (W stands on the near bank; today's gap 60 + porch 500 + porch2 400 = 960 px over
+   the water ends 440 px short of a 1,400 marsh's far bank (it overhangs ride's 798 by 162), so the marsh cannot land alone); w2TwoRoad.test to it; check w2Finish lays no second river over it
+   (hasRiver, w2.ts:411). Then the stills (condition 4), the probe (6 tiers x late 0/15/19 x seeds 1-3, both settings), 1b, READY-28.
+SESSION 3 NOTES. Lessons applied: D115 (frozen trees /home/user/wtw2c-c1..c3, -pre), D119, D128 (times from date), D134 (pushed and
+ls-remote before the hand-over), session 2's lesson (the whole touched set GREEN before the push: two test-design misses in my own new
+assertions, caught on the frozen run and fixed before any push: the take-off read from the first air frame, and 'paddled' alone cannot tell
+the swim from the hop because the adult's low arc dips under the banks' top, so the claim is 'never in the air over the dip').
+
+## EXACT NEXT STEP (session 2, W2-LANE b; superseded by session 3's above, kept for its detail)
 Branch t-build-28-wip, CODE head 801430f3a (this REPORT's commit only adds to reference/qa-reports/BUILD-28/). `git fetch origin
 t-build-28-wip && git checkout t-build-28-wip`, `npm ci --no-audit --no-fund --legacy-peer-deps`. Run ReadNotifications FIRST: the lead
 may have ruled the dip paddle (below) or sent release-0.10.3's hash. Every run on a chattr-frozen worktree (session 1's recipe below).
