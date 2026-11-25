@@ -131,3 +131,5 @@ refuse the traced bad case only.
 **Rows that survive a hand-over (ENG-PLANT-m, approved 11-25):** castBots --rows writes nothing until the whole run ends, so a run cut off by a
 hand-over or a usage limit is lost. Run row sets with --json (one row per line) in lanes (tools/wide-m.sh.txt on release-0.10.3-wip-plant-c):
 about 1-2 s a row, every finished row kept.
+
+**Release fixes are checked on the release tree, early (CI #77, 11-25).** A fix for a release is often cut from main, but the release tree can hold features main lacks (2-7's stacked legs). Integration merges every release fix into the release tree AS SOON AS its own gates pass (not after the last fix lands), and the fix's gates count only on that merged head.
