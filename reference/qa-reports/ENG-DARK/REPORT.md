@@ -1,4 +1,36 @@
 # ENG-DARK REPORT (the dark + light ring as one gen2 brick; WORLD-3-PLAN F2; R-165.449)
+**EXACT NEXT STEP (ENG-DARK-l box 12 hand-over, 3:13 PM ET by `date`; head on t-eng-dark-wip = this commit; CODE e0db872f4 (records
+only: no move or lay change since box 11's 0ef63c154). Box 13 OWNS every step below. Re-fetch before every commit (D138).)**
+**DONE in box 12:** (1) plants 28 (the seam check off: downEnd's `noSeamWalk` line -> `|| true`; test 'a seam he walks over is no
+way down') and 29 (the turn room off: glowWait's `if (!this.who.noTurnRoom && stop.turn !== 1) {` -> `if (false) {`; test 'the dark
+stop's turn is never pressed at the rim's very edge'), both darkBots.test.ts, in planted-faults.py (29 plants; commit 7bd941ab0). NOT
+yet run. (2) toyscan.mts: `<bot> <a-b> <cap> [noturn|<plant field>] [normal|easy] [both]`; prints crossed, unlit, loop, edgeTurns,
+gaveUp, and with 'both' the unplanted line too. (3) firsttimer.ts (e0db872f4, tsc clean): FTRun.dark gains `edgeTurns` (each dark
+stop's turn press nearer the rim than min(GLOW_TURN_ROOM, piece.width/2), rim + px in + time; pushed at `stop.turn = 1`) and `loop`
+(rimLoop: the most times one rim was gone over, climbs not counted). Records only. (4) Seam toys (darkBots tests 8, 9) RE-ANCHORED
+(46f6e6a42): on the final lay the plant's loop is LIT (the second lights), so unlit stays [] and the old RED read nothing. Roll 32 adult
+Normal cap 200: planted crossed 76, loop 31; unplanted crossed 25, loop 3. Test 8 adds `loop < 10`; test 9 asks
+`max(loop, worstRim(unlit)) >= 10` (the old threshold). Both PASS. PUSHBACK: test 9's assert changed (the order named only test 5 and
+toys 3, 4, 6); same name, same threshold, read on all crossings instead of unlit ones.
+**darkBots.test whole on 0ef63c154 (box 12, once): 8 pass, 3 fail:** test 5 (give-up: 0 waited-out stops, wants 2), test 9 (seam RED,
+now fixed above), test 11 (turn-room RED: rim x 920 never gone over dark). Toys 3, 4, 6 PASS unplanted; their plants 13, 14, 16 NOT yet
+run on the final lay.
+**MEASURED (frozen worktrees of 0ef63c154 / e0db872f4, rolls 1-40):** middle Normal cap 300, noTurnRoom planted and not: 0 unlit, 0
+edgeTurns on every roll, both ways (only roll 19 differs, 17 vs 18 crossings). Child noGlowTurn cap 50 and cap 300: 0 give-ups on any
+roll. So on the final lay the faults test 5 and toys 10/11 guard (a facing-away stop the light never wakes; a turn press at the edge)
+did not occur for those bots on rolls 1-40.
+**RUNNING at hand-over (box 12 finishes and records ONLY these, D138):** the same two scans over EVERY bot x both settings, whole runs
+(cap 600), printing only rows with an edge turn (noTurnRoom) / a give-up (noGlowTurn): scratchpad scan_turnall.log and scan_giveall.log,
+to be committed as reference/qa-reports/ENG-DARK/scan-box12-turnall.log and scan-box12-giveall.log.
+**BOX 13 DOES, in order:** (a) read the two logs. If a bot/setting/roll shows edgeTurns planted and none unplanted, anchor toys 10/11
+there (GREEN: edgeTurns [] and unlit []; RED: edgeTurns non-empty, unlit if it falls; rename 'rim x 920' to the found rim). If a roll
+shows the same rim given up twice with noGlowTurn, anchor test 5 there (asserts kept). (b) If NONE shows (likely for the turn room):
+my recommendation to the lead, ONE message before building: hand-built toys like dark.test's RimWatch toys: put him on roll 1's first
+sleeping rim 2 px in, facing away, standing, its light asleep; step the bot: GREEN = the first press is AWAY and no press toward the rim
+until he is >= min(GLOW_TURN_ROOM, half the piece) in and |vx| <= 5; plant 29 = the first press is toward the rim at 2 px. The same
+shape for test 5 (two visits to a rim whose light cannot wake, noGlowTurn). (c) run plants 12-16, 19, 20, 28, 29 (darkBots plants) in
+a clean worktree of the head; all CAUGHT, none NO TEST / BASE RED; then darkBots.test whole GREEN. (d) then the order's step 2 on
+(frozen head: the x40 vs THE BAR, medians per tier vs base, one line to the lead), step 3, step 4 as box 11's note below says.
 **EXACT NEXT STEP (ENG-DARK-k box 11 hand-over, 2:57 PM ET by `date`; head on t-eng-dark-wip = this commit; CODE = this commit (rulings
 1-4 built). Box 12 OWNS every step below. Re-fetch before every commit (D138).)**
 **THE LEAD'S RULINGS ON BOX 10 (received by box 11, word for word in substance):** (1) 33 N: (A): the lay hangs the second light over
