@@ -113,21 +113,30 @@ function stepOnto(platforms: readonly Platform[], from: Platform, dir: -1 | 1): 
   return under;
 }
 
-/** how far out (px) a RUN off a rim carries him before he has fallen `drop` px: full run (PHYS.maxRun) held, gravDown to maxFall */
-const runFly = (drop: number) => {
+/** how far out (px) a RUN off a rim carries him before he has fallen `drop` px: `frac` of a full run (PHYS.maxRun) held, gravDown to
+ *  maxFall */
+const runFly = (drop: number, frac = 1) => {
   const cap = PHYS.maxFall ** 2 / (2 * PHYS.gravDown);
   const t = drop <= cap ? Math.sqrt((2 * drop) / PHYS.gravDown) : PHYS.maxFall / PHYS.gravDown + (drop - cap) / PHYS.maxFall;
-  return PHYS.maxRun * t;
+  return PHYS.maxRun * frac * t;
 };
+/** the run speeds a RUN off is judged at, as fractions of a full run: he leaves an edge at any speed up to it, and the air steer slows or
+ *  speeds him on the way down. Judged at full speed alone, the touchdowns between a step off and a full run went unread: the 3-1 x40 on
+ *  a5e15a74d went over a sleeping rim 8 times, each one 0-35 px past a touchdown at 154-285 px/s (child Normal 22: off 106's end at
+ *  285 px/s, steered to 154 and back to 268, down 174 px onto 590-811 29 px from its left rim), ENG-DARK box 16. Under a step off's
+ *  reach (STEP_OFF) the step off's own check (ii) reads it */
+const RUN_FRACS = [1, 0.9, 0.8, 0.7, 0.6, 0.5, 0.4, 0.3, 0.2, 0.1];
 /** where a RUN off `from`'s rim going `dir` comes down (a rim with no stop: he runs off it at full speed, ENG-DARK box 14): the first
  *  piece his arc meets (the highest standable piece below his feet whose top his middle crosses within LAND_HALF of its ends), and
  *  where on it he touches down (kept on the piece); null: none */
-function runOnto(platforms: readonly Platform[], from: Platform, dir: -1 | 1): { on: Platform; x: number } | null {
+function runOnto(platforms: readonly Platform[], from: Platform, dir: -1 | 1, frac = 1): { on: Platform; x: number } | null {
   const rim = dir > 0 ? from.x + from.width : from.x;
   let best: { on: Platform; x: number } | null = null;
   for (const q of platforms) {
     if (q === from || !standable(q) || q.y <= from.y + 1 || (best && q.y >= best.on.y)) continue;
-    const x = rim + dir * runFly(q.y - from.y);
+    const fly = runFly(q.y - from.y, frac);
+    if (fly < STEP_OFF) continue;
+    const x = rim + dir * fly;
     if (x < q.x - LAND_HALF || x > q.x + q.width + LAND_HALF) continue;
     best = { on: q, x: Math.max(q.x, Math.min(q.x + q.width, x)) };
   }
@@ -397,16 +406,21 @@ function runOffs(platforms: readonly Platform[], rims: readonly DarkRim[], ends:
     // (an edge in two overlapping darks is a rim of each: its own stop applies if any of its landings' lights sleeps)
     const uds = rims.filter((m) => m.piece === u.piece && m.dir === u.dir);
     if (uds.some((m) => m.light?.sleep)) continue;
-    const run = runOnto(platforms, u.piece, u.dir);
-    if (!run) continue;
-    for (const n of rims) {
-      if (n.piece !== run.on || n.dir !== u.dir || !n.light?.sleep) continue;
-      const room = (n.x - run.x) * n.dir;
-      if (room >= stop) continue;
-      let stops = false;
-      const p = u.piece;
-      for (let x = p.x + 10; uds.length && x <= p.x + p.width - 10 && !stops; x += 10) stops = Number.isFinite(litAfter(n.light, x, p.y, u.dir));
-      out.push({ u, uds, n, run, room, stops });
+    // (every run speed, RUN_FRACS: one entry per rim met, at the fastest speed that meets it)
+    const met = new Set<DarkRim>();
+    for (const frac of RUN_FRACS) {
+      const run = runOnto(platforms, u.piece, u.dir, frac);
+      if (!run) continue;
+      for (const n of rims) {
+        if (met.has(n) || n.piece !== run.on || n.dir !== u.dir || !n.light?.sleep) continue;
+        const room = (n.x - run.x) * n.dir;
+        if (room >= stop) continue;
+        met.add(n);
+        let stops = false;
+        const p = u.piece;
+        for (let x = p.x + 10; uds.length && x <= p.x + p.width - 10 && !stops; x += 10) stops = Number.isFinite(litAfter(n.light, x, p.y, u.dir));
+        out.push({ u, uds, n, run, room, stops });
+      }
     }
   }
   return out;
