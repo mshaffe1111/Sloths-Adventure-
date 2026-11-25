@@ -182,38 +182,14 @@ test('in the real engine: a log drifting his way across the lip is the floor his
   }
 });
 
-test('on the runs it was found on, 2-2 child Normal seed 36 and middle Normal seed 17: no life lost in the 3 s after he stands at a lip with a log his way across it (SKILLS.boardHop; the child RED with it off)', () => {
-  // (the real stage and bots, as castBots rolls them; read by what he meets, never where: every stand at a bank's lip, a log drifting his
-  //  way across it a step down, and a life lost within 3 s of one. Off, the child took the double over log 79 into the water; a single
-  //  wherever a log crossed the lip (this skill's first cut) dropped the middle short of log 79's front, where the double reached log 80)
-  const meet = (on: boolean, who = FT_CHILD, seed = 36) => {
-    const was = SKILLS.boardHop;
-    let stood = -1, lost = 0, stands = 0, lives: number | undefined;
-    SKILLS.boardHop = on;
-    try {
-      firstTimer('2-2', seed, who, { cap: 1200, dotSetting: true, onFrame: (sim) => {
-        const e = (sim as unknown as { e: { player: { x: number; vx: number; grounded: boolean }; platforms: Platform[]; standingOnId: number | null; lives: number } }).e;
-        const p = e.player, t = sim.t, here = e.platforms.find((q) => q.id === e.standingOnId);
-        if (p.grounded && here && here.type !== 'drift' && Math.abs(p.vx) < 10 && here.x + here.width - p.x < 60
-          && e.platforms.some((q) => q.type === 'drift' && q.drift?.dir === 1 && q.y - here.y > 6 && q.y - here.y <= 40 && q.x < here.x + here.width && q.x + q.width > here.x + here.width)) {
-          if (t - stood > 3) stands++;
-          stood = t;
-        }
-        if (lives !== undefined && e.lives < lives && stood >= 0 && t - stood < 3) lost++;
-        lives = e.lives;
-      } });
-    } finally {
-      SKILLS.boardHop = was;
-    }
-    return { stands, lost };
-  };
-  const v = meet(true), off = meet(false);
-  assert.ok(v.stands >= 1, `he stood at such a lip (${v.stands})`);
-  assert.equal(v.lost, 0, `with the skill: no life lost after one (${v.stands} stands)`);
-  assert.ok(off.lost >= 1, `RED: with SKILLS.boardHop off a life is lost after one (${off.lost} of ${off.stands} stands)`);
-  const mid = meet(true, FT_MIDDLE, 17);
-  assert.ok(mid.stands >= 1 && mid.lost === 0, `the middle, seed 17: no life lost after such a stand (${mid.lost} of ${mid.stands})`);
-});
+// (RETIRED 11-25, R-165.432 (the lead's ruling: a plant with no live case anywhere is retired with the search as evidence; the skill's code
+//  stays; re-plant when a stage needs it; R-165.424 reviews whether it is still needed): the on-the-runs plant of SKILLS.boardHop (2-2
+//  child Normal seed 36: no life lost within 3 s of a stand at a lip with a log his way across it, a life lost there with it off; the
+//  middle Normal seed 17 check) has no live case. Searched on 36e8efe6f, every cast bot, both settings, boardHop on and off, this test's
+//  own meet(): 2-2, 2-1, 2-4, 2-5 and 2-9 seeds 1-40 and 2-8's 8 river rolls (seeds 9, 14, 16, 18, 19, 22, 24, 26): 1872 rows, 858 with a
+//  stand at such a lip, 0 where the skill holds; the lives lost after a stand are the same on and off on every row that ran off (2-7's
+//  rivers all run back at him; 2-3 and 2-6 lay none). Search: reference/qa-reports/ENG-PLANT/data/t/board22.txt and data/u/board-*.txt. The
+//  laid test above (the read itself, the toy lip) stays: it is the skill's plant)
 
 test('in the real engine: a jump from a STAND over a laid pond reads the gap from where he stands, so a single that cannot carry his own ground to the lip and the pond is a double (SKILLS.fromTakeoff; RED with it off)', () => {
   // (re-planted by ENG-27j on its cause laid EXPLICITLY, the lead's ruling 11-21: the race plants it was first planted on (2-7's toy,
