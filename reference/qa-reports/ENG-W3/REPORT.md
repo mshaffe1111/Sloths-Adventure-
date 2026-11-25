@@ -1,25 +1,33 @@
 # ENG-DOWNBOT REPORT (lane 2: the down lay's head room, then the bots on a way down to the shrine) — box 10 (session 8, 11-25)
-**EXACT NEXT STEP (box 10 hand-over, 12:59 PM ET):** code **571d6e2a9** (the no-slot lay rule). Order item 1 is DONE; items 2-5 are
+**EXACT NEXT STEP (box 10 hand-over, 1:05 PM ET):** code **571d6e2a9** (the no-slot lay rule). Order item 1 is DONE; items 2-5 are
 left. **(1) THE NO-SLOT LAY RULE, DONE (tower.ts `slotted` in `fair` and rule 1, going down only; `SLOT = { step: 8, walk: 21,
 clear: 66 }`):** a bough within 8 px in height of the wood beside it lies a crack from it (gap <= 21 px, under half his body) or his
 body plus a **24 px margin** clear (>= 66 px; the margin is the 24 px he steps past a lip before he drops, SLIDE.back's note).
 **Planted tower.test 'going down, no slot': RED on c9c80a0e (207-446@1470 | 478-658@1476 gap 32), GREEN after (the catch lies
 458-638@1476, a 12 px crack).** slots.mts (now takes DY0/DY1) on 571d6e2a9: **slots 47 on 25 of 48, by gap 0:18 10:28 20:1: 40-60 px
 107 -> 0**. roomcount.mts: **lids 0, roofs 0, refused 0 of 48.** Other bands on c9c80a0e (info, not in the rule): dy 0 (same level)
-45 slots (30-60 px: 18; a section's own hop gaps may be among them); dy 9-19: 16 (40-60 px: 8). **THE CURE TEST (CI #81): my first x40 was VOID (box 10's own miss): castBots ran WITHOUT `GEN2_DRAFT=3-1`, so it played a
-3-1 that is not the draft (caught: probes/trace.mts, which readies the draft, gave kid N 36 99.4 s R0 on BOTH trees while that row said
-125.4 s). Its rows are removed and every number from them withdrawn (the '446 -> 105', the cause split, the 'slower' finding). The
-re-run with GEN2_DRAFT=3-1 on the frozen 571d6e2a9 tree: see the result line below.** Countermeasure proposed to the lead: castBots
-refuses `--stage` on a draft that is not readied (a check first, so no run can play the wrong stage again).
-**Next, in order:** (a) trace kid N 36 on both
-trees (probes/trace.mts; trees: `git worktree add --detach` of 571d6e2a9 and c9c80a0e, symlink node_modules, `chattr -R +i src
-tools`): is the 26 s a longer route (prog.pts length, storeys passed) or a soft stall under the rescue clock (stood still or to and
-fro)? A stall is a cause to fix (name its shape); a longer route is recorded (it helps the length debt). (b) adult N worse (39 -> 50):
-trace adult N 12 (3 stuck, 'the way on is N px down'); fix where it lives (lay rule planted in tower.test, or a bot fix with a toy
-each way), never a slot back. (c) the 26 rescues with no stuck record: read what castBots counts there. (d) order item 2: Fix A / Fix
-B measured off on 571d6e2a9 (kid+adult x40 each; the patches: grep 'fix A off' in this REPORT); A's toy on adult N 10's shape if A
-still cures it, else A out (ruling 2); B out if it cures nothing. (e) items 3-5 (every bot x40, gates, land on t-eng-w3 after
-ENG-DARK-f; re-count causes on the merged head, the lead's note). **If 4:00 PM will slip, tell the lead by 3:15 PM.**
+45 slots (30-60 px: 18; a section's own hop gaps may be among them); dy 9-19: 16 (40-60 px: 8). **THE CURE TEST (CI #81), kid+adult x40 ON THE DRAFT (GEN2_DRAFT=3-1, frozen 571d6e2a9 tree, --par 2 --rows, 2 runs):
+rows/castbots-571d6e2a9-kidadult-1-40.jsonl. Rescues: old lay (7d12c344b) 342, today (ab35ee9b) 446, NEW 251: DOWN against both, and
+down in every bot and setting.** All 160 reach the shrine. New / today / old: kid N 29 / 49 / 34 (pass 19 / 11 / 15); kid E 76 / 163 /
+115 (pass 4 / 0 / 3); adult N 25 / 39 / 33 (pass 22 / 16 / 16); adult E 121 / 195 / 160 (pass 2 / 0 / 1). **Kid N clean minimum 87.8 s
+(unchanged; with the dark about 20-40 s longer).** **Causes split (the lead's note; probes/causes.mts, x only, rows carry no y; a spot
+near a slot and a vine counts as slot): today 446 = slot 290, by a climb vine's x 131, rest 32; NEW 251 = slot 4, vine 197, rest 51.**
+So the rule cures the slot causes (290 -> 4). The top cause now stands at a climb vine's x (197 of 252 spots; ENG-DARK-f's way-down
+block, firsttimer.ts, is expected to reach these at the merge), and 'rest' rose 32 -> 51 (owed a look). Top texts: 'in a dip N px
+deep' 105, 'in a dip N px deep, the way on is N px down' 101, 'the way on is N px down' 32; top rows adult E 24 and 28 (5 each).
+**The bar is not met on Easy** (6 of 80 pass; rescues are still the common path there). **My first x40 this box was VOID** (castBots
+ran WITHOUT GEN2_DRAFT=3-1, so it played a 3-1 that is not the draft; caught when probes/trace.mts, which readies the draft, gave kid N
+36 99.4 s on both trees and that row said 125.4 s; its numbers went out in 50634dc8a and were withdrawn in ab0ae1ea0). **Countermeasure
+proposed to the lead:** castBots refuses `--stage` on a draft that is not readied (a check first, so no run can play the wrong stage).
+tsc on 571d6e2a9: 0 errors. tower.test whole file on 571d6e2a9: see the line below (started at the hand-over).
+**Next, in order (box 11):** (a) order item 2 on 571d6e2a9, every run with GEN2_DRAFT=3-1: kid+adult x40 with Fix A off and with Fix
+B off (the patches: grep 'fix A off' in this REPORT; compare.py vs this box's rows). A stays only with a toy on the shape it cures
+(adult N 10's way on 214 px down, if A still cures it); B comes out if it cures nothing (ruling 2). (b) the 'rest' 51: list them
+(causes.mts with the spots printed) and trace the top two (probes/trace.mts). (c) do NOT touch firsttimer.ts's way-down block,
+grabDown, downPt or downEnd (ENG-DARK-f's, the lead's ruling). (d) items 3-5: every bot x40 both settings, lockall, seedlist,
+tierBots 9/9, the suite (shards, 2 h timeout) and the CI tool line on the final head; land on t-eng-w3 after merging origin/t-eng-w3
+(ENG-DARK-f's block: run dark.test, darkBots.test, plants; re-run the x40 rows and re-count causes on the merged head). **If 4:00 PM
+will slip, tell the lead by 3:15 PM.**
 
 # ENG-DOWNBOT REPORT (lane 2: the down lay's head room, then the bots on a way down to the shrine) — box 9 (session 7, 11-25)
 **EXACT NEXT STEP (box 9 hand-over):** code **fe331023** unchanged (this box: the seed-13 toy moved, rows, a probe; hash in the
