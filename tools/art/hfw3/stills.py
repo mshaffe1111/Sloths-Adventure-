@@ -66,7 +66,13 @@ def scene(n, w, h):
             S.alpha_composite(g, (x, yy))
         floor(S, fy); pokey_at(S, x - 80, fy)
     elif kind == 'wallshelf':
-        x = w - g.width + 20; y = fy - 200 - round(p['walk'][0] * k)
+        wall = Image.open(os.path.join(C, picks.get('wallR-s23-tile', {}).get('file', 'wallR-s23-tile.png'))).convert('RGBA')
+        wall = wall.resize((round(wall.width / 3), round(wall.height / 3)), Image.LANCZOS)
+        wx = w - wall.width + 30
+        for yy in range(-wall.height // 2, h, wall.height):
+            S.alpha_composite(wall, (wx, yy))
+        stub = p['walk'][2] * k   # the stub's face sits on the wall's face (about 12 px into the wall tile)
+        x = round(wx + 14 - stub); y = fy - 200 - round(p['walk'][0] * k)
         floor(S, fy); S.alpha_composite(g, (x, y))
         wy, x0, x1 = (v * k for v in p['walk'])
         pokey_at(S, x + x0 + (x1 - x0) * 0.35, y + wy)

@@ -1,0 +1,48 @@
+{
+ "shelfL-s11": {
+  "file": "shelfL-s11.png",
+  "cpu": 3,
+  "walk": [
+   67,
+   20,
+   903
+  ],
+  "scene": "stand"
+ },
+ "shelfL-s37": {
+  "file": "shelfL-s37.png",
+  "cpu": 3,
+  "walk": [
+   58,
+   20,
+   928
+  ],
+  "scene": "stand"
+ },
+ "wallR-s23-tile": {
+  "file": "wallR-s23-tile.png",
+  "cpu": 3,
+  "walk": null,
+  "scene": "wall"
+ },
+ "wallShelf-s23": {
+  "file": "wallShelf-s23.png",
+  "cpu": 3,
+  "walk": [
+   84,
+   16,
+   492
+  ],
+  "scene": "wallshelf"
+ },
+ "wallShelf-s37": {
+  "file": "wallShelf-s37.png",
+  "cpu": 3,
+  "walk": [
+   52,
+   16,
+   505
+  ],
+  "scene": "wallshelf"
+ }
+}
