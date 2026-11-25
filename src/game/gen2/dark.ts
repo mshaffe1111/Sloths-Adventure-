@@ -91,6 +91,27 @@ const standable = (p: Platform) => p.type === 'solid' || p.type === 'fragile';
 /** a rim in the dark: the end of a piece he goes over (`dir` outward), where he lands, and the light over that landing */
 export interface DarkRim { piece: Platform; dir: -1 | 1; x: number; y: number; land: { x: number; y: number }; light: Light | null; onto: Platform; drop: boolean }
 
+/** a step off a rim comes down a body's width out (px) */
+const STEP_OFF = 24;
+/** is this end of `p` a rim (it does not run on into a neighbour at his height)? */
+const isRim = (platforms: readonly Platform[], p: Platform, dir: -1 | 1) => {
+  const x = dir > 0 ? p.x + p.width : p.x;
+  return !platforms.some((q) => q !== p && standable(q) && x + dir * 12 >= q.x && x + dir * 12 <= q.x + q.width && Math.abs(q.y - p.y) <= 8);
+};
+/** every rim of every standable piece on the stage, in the dark or not */
+function rimEnds(platforms: readonly Platform[]): Array<{ piece: Platform; dir: -1 | 1; x: number }> {
+  const out: Array<{ piece: Platform; dir: -1 | 1; x: number }> = [];
+  for (const p of platforms) if (standable(p)) for (const dir of [-1, 1] as const) if (isRim(platforms, p, dir)) out.push({ piece: p, dir, x: dir > 0 ? p.x + p.width : p.x });
+  return out;
+}
+/** the piece a step off `from`'s rim going `dir` comes down on: the highest standable piece under a body's width out; null: none */
+function stepOnto(platforms: readonly Platform[], from: Platform, dir: -1 | 1): Platform | null {
+  const xs = (dir > 0 ? from.x + from.width : from.x) + dir * STEP_OFF;
+  let under: Platform | null = null;
+  for (const q of platforms) if (q !== from && standable(q) && xs >= q.x && xs <= q.x + q.width && q.y > from.y + 1 && (!under || q.y < under.y)) under = q;
+  return under;
+}
+
 /**
  * Where a step or hop over the rim at (`x`, `y`) going `dir` lands, inside the box: the nearest piece across at about his height
  * (a hop, its near end), else the first piece under the rim a body's width out (a drop). Null: nothing in the box.
@@ -109,7 +130,7 @@ function landingOf(platforms: readonly Platform[], from: Platform, dir: -1 | 1, 
   }
   if (across) return { x: Math.round(dir > 0 ? across.x + 30 : across.x + across.width - 30), y: across.y, on: across, drop: false };
   // (a drop: the highest piece under the rim, a body's width out, below his feet)
-  const xs = rim + dir * 24;
+  const xs = rim + dir * STEP_OFF;
   let under: Platform | null = null;
   for (const q of platforms) {
     if (!inBox(q) || xs < q.x || xs > q.x + q.width || q.y <= from.y + 1) continue;
@@ -131,8 +152,7 @@ export function darkRims(stage: { platforms: readonly Platform[]; zones?: readon
       for (const dir of [-1, 1] as const) {
         const x = dir > 0 ? p.x + p.width : p.x;
         if (!inBox(z, x, p.y)) continue;
-        // (an end that runs on into a neighbour at his height is no rim)
-        if (stage.platforms.some((q) => q !== p && standable(q) && x + dir * 12 >= q.x && x + dir * 12 <= q.x + q.width && Math.abs(q.y - p.y) <= 8)) continue;
+        if (!isRim(stage.platforms, p, dir)) continue;
         const land = landingOf(stage.platforms, p, dir, z);
         if (!land) continue;
         // (the light nearest the landing that reaches it)
@@ -149,6 +169,21 @@ export function darkRims(stage: { platforms: readonly Platform[]; zones?: readon
 function glowZone(out: StageSink, a: { x: number; y: number }, b: { x: number; y: number }): Zone {
   const y0 = Math.min(a.y, b.y), y1 = Math.max(a.y, b.y);
   const z: Zone = { kind: 'dark', x0: Math.round(a.x), x1: Math.round(b.x), top: y0 - DARK_GLOW.above, bottom: y1 + DARK_GLOW.below, baseY: y1, dir: 1, period: 1, warn: 0, active: 1, force: 0, offset: 0, lights: [] };
+  // (a drop INTO the dark is a drop in the dark: the box widens to take in every rim at its height whose step off comes down on a piece
+  //  in it, so that rim gets its own glowworm and its stop; again until none is left out. Its height stays: a rim above the box drops
+  //  further than a stop on it can wake a light over its landing, GLOW_REACH.down)
+  const onIn = (q: Platform) => q.x + q.width >= z.x0 && q.x <= z.x1 && q.y >= z.top && q.y <= z.bottom;
+  for (let grew = true, k = 0; grew && k < 8; k++) {
+    grew = false;
+    for (const u of rimEnds(out.platforms)) {
+      if (u.piece.y < z.top || u.piece.y > z.bottom || inBox(z, u.x, u.piece.y)) continue;
+      const q = stepOnto(out.platforms, u.piece, u.dir);
+      if (!q || !onIn(q)) continue;
+      z.x0 = Math.min(z.x0, Math.floor(u.x));
+      z.x1 = Math.max(z.x1, Math.ceil(u.x));
+      grew = true;
+    }
+  }
   // (the rims are read with a stand-in light that covers everything, so every rim's landing is found; then one glowworm over each landing)
   const probe: Zone = { ...z, lights: [{ x: 0, y: 0, r: 1e9 }] };
   let id = (out.extras[GLOW_ID] as number | undefined) ?? 1;
@@ -214,31 +249,39 @@ export const DARK_LAND_REACT = { normal: PAD_FAIR.react, easy: (PAD_FAIR.react *
 export const darkStop = (setting: 'normal' | 'easy') => PHYS.maxRun * DARK_LAND_REACT[setting] + PHYS.maxRun ** 2 / (2 * PHYS.groundDec);
 
 /**
- * 'a drop's landing is at least his stopping distance from the next dark rim, or that rim is already lit when he lands' (the lead's
- * ruling, 11-25; the darkGaps family): a drop over a dark rim at a run lands him running on, so the end of the piece he lands on, the way
- * he was going, is a rim he cannot stop short of unless it is darkStop away from where a run's drop comes down, or its landing's light
- * was woken by the stop he took at the rim above (lit by the time that stop's own landing has read DARK_AHEAD ahead). Names; empty: kept.
+ * 'every drop onto a dark rim's piece lands at least his stopping distance from that rim, or a stop at the drop's own rim wakes its
+ * light' (the lead's ruling, 11-25, box 6's model): a step off ANY rim (in the dark or not, either way) comes down a body's width out,
+ * and from there he may run on either way, so each dark rim of the piece he lands on, its light asleep, is darkStop away from that spot
+ * along the rim's way, or the rim he stepped off is itself a dark rim whose stop, facing the drop, wakes that light by the time it has
+ * woken its own landing's and DARK_AHEAD more. A rim outside every dark box gives no stop, so it can only pass on room. Names; empty: kept.
  */
 export function darkLandings(stage: { platforms: readonly Platform[]; zones?: readonly Zone[] }, setting: 'normal' | 'easy'): string[] {
   const out: string[] = [];
   const rims = darkRims(stage);
+  const ends = rimEnds(stage.platforms);
   const stop = darkStop(setting);
-  for (const r of rims) {
-    if (!r.drop) continue;
-    const n = rims.find((m) => m.piece === r.onto && m.dir === r.dir);
-    if (!n?.light?.sleep || n.light === r.light) continue;
-    // (a run's drop comes down this far out: his run's speed for the fall's time)
-    const xf = r.x + r.dir * PHYS.maxRun * Math.sqrt((2 * Math.max(0, r.onto.y - r.y)) / PHYS.gravDown);
-    const room = (n.x - xf) * r.dir;
-    if (room >= stop) continue;
-    // (lit when he lands: some stop on the rim's piece, facing it, wakes the next rim's light within the time that stop waits for its own)
-    const p = r.piece, nl = n.light;
-    let lit = false;
-    for (let x = p.x + 10; x <= p.x + p.width - 10 && !lit; x += 10) {
-      const own = r.light ? litAfter(r.light, x, p.y, r.dir) : 0;
-      lit = Number.isFinite(own) && litAfter(nl, x, p.y, r.dir) <= own + DARK_AHEAD[setting] + 1e-6;
+  const seen = new Set<string>();
+  for (const n of rims) {
+    if (!n.light?.sleep) continue;
+    const nl = n.light;
+    for (const u of ends) {
+      if (u.piece === n.piece || stepOnto(stage.platforms, u.piece, u.dir) !== n.piece) continue;
+      const room = (n.x - (u.x + u.dir * STEP_OFF)) * n.dir;
+      if (room >= stop) continue;
+      const ud = rims.find((m) => m.piece === u.piece && m.dir === u.dir);
+      let lit = false;
+      if (ud) {
+        const p = u.piece;
+        for (let x = p.x + 10; x <= p.x + p.width - 10 && !lit; x += 10) {
+          const own = ud.light ? litAfter(ud.light, x, p.y, u.dir) : 0;
+          lit = Number.isFinite(own) && litAfter(nl, x, p.y, u.dir) <= own + DARK_AHEAD[setting] + 1e-6;
+        }
+      }
+      const key = `${u.x},${u.piece.y},${n.x},${n.y}`;
+      if (lit || seen.has(key)) continue;
+      seen.add(key);
+      out.push(`dark: a step off lands him ${Math.round(room)} px from a dark rim, under his stopping distance ${Math.round(stop)} px (${setting}), its light asleep${ud ? '' : ', the rim he left outside the dark'}: the rim at x ${Math.round(u.x)}, y ${Math.round(u.piece.y)} (${u.dir > 0 ? 'right' : 'left'} end of ${Math.round(u.piece.x)}-${Math.round(u.piece.x + u.piece.width)}) onto ${at(n)}`);
     }
-    if (!lit) out.push(`dark: a drop lands him ${Math.round(room)} px from the next dark rim, under his stopping distance ${Math.round(stop)} px (${setting}), its light asleep: ${at(r)} onto ${at(n)}`);
   }
   return out;
 }
