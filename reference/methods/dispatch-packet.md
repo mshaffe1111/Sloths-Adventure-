@@ -149,3 +149,5 @@ about 1-2 s a row, every finished row kept.
 **A pieces packet is checked against main before it goes out (CI #84, 11-25).** A design's 'exists' or 'NOT wired' line is a claim from the day it was written. Before an engine-pieces packet is dispatched, each item it builds is checked on origin/main (git grep, file:line) and marked EXISTS / PARTIAL / MISSING in the packet; the job builds only what is missing and starts from what exists. ENG-NOISE was sent to build what main had had for six days.
 
 **The suite's run settings (CI #85, 11-25).** 'The suite' always means: in shards, run_in_background WITH timeout 7200000 (the 30-minute default stops a shard before its summary), on a chattr-frozen tree with src/game/gen2/proven left writable. A shard stopped by a limit is NOT a result.
+
+**A budget cut never removes a per-candidate gate (D141, 11-25).** 'Run each heavy check ONCE' means once per CANDIDATE: the CI tool line (about 10 minutes) still runs on every candidate (CI #79). Release 4's briefs left it to the end and three reds waited five candidates.
