@@ -5,7 +5,12 @@ Branch t-build-28-wip, head = this REPORT's commit; CODE head 1530aa374 (later c
 `git fetch origin t-build-28-wip && git checkout t-build-28-wip`, `npm ci --no-audit --no-fund --legacy-peer-deps`. Read the lead's
 answers first (ReadNotifications): two rulings were asked (below, "For the lead" 1 and 3).
 STEP 1 IS DONE BUT ITS BOT RUN (the section data and its verdict proof are green; the bot run on it is not done). Next, in order:
-1. THE BOT RUN ON THE SECTION (step 1's last part). No bot drives a gen2-laid toy (castBots and FirstTimerRun take a stage id; floodLay.test's
+0. THE LEAD'S RULING ON THE BASE (received): step 1b, merge origin/release-0.10.3 into t-build-28-wip at the hash the lead SENDS (not
+   before: ENG-PLANT's bot fix is still merging into it), no force; name every conflict; in tools/inspect/firsttimer.ts keep BOTH intents
+   (ENG-PLANT's c25: the judged run-up with the thumb travel, the sinker-only refusal, the narrow ride, the landing pull-back, the padRead
+   stop; AND ENG-28's keep-the-road, step-off, lead-the-line); then tsc, the CI tool line, lineBot 8/8, flood + floodLay, ENG-PLANT's 10
+   known flips (its REPORT) as a spot check; then READY-28 on that head.
+1. THE BOT RUN ON THE SECTION (step 1's last part; Normal middle/adult DONE in session 1, below: rulings 3 and 4 decide what is next). No bot drives a gen2-laid toy (castBots and FirstTimerRun take a stage id; floodLay.test's
    brick has no bot, ENG-28 REPORT "R-165.424's bot list" 3). Do it as a scratch probe first (never commit a probe), then as a test if the
    lead wants it kept: copy tools/inspect/lineBot.test.ts floodRun (:151-227) and feed `run.sim.bare([...])` (:165) the BUILT section's
    high road instead of the hand toy's solids 4-7: build the toy with w2TwoRoad as w2TwoRoad.test.ts does (seed 1, both settings), take
@@ -40,7 +45,21 @@ REPORT BY 12:30 PM ET (step 1 done and READY-28's numbers); HARD STOP for steps 
 - **Checks on frozen 1530aa374:** `npx tsc --noEmit -p .` exit 0; `npx tsx --test w2TwoRoad.test.ts floodLay.test.ts flood.test.ts
   w2.test.ts` 25 tests, 25 pass, 0 fail; `npx tsx tools/engine/generalitycheck.ts` PASS (26 literals, 26 known). Not run (no reason to
   yet: nothing listed moved, no stage laid): the suite, drawcheck, castBots. No listed stage uses the section, so the lock cannot move.
-- **Not done:** step 1's bot run (EXACT NEXT STEP 1); step 2 (no draft head: For the lead 1); step 3 (waits for the GO).
+- **The bot run on the section's high road (a scratch probe, never committed: /home/user/wtw2a/probe28/probe.test.ts, a copy of
+  lineBot.test.ts floodRun with its hand high road replaced by the section's pieces at their built sizes: W 150 x 60 with its far side at
+  the water's edge, P W0+60 +500 @60, rise W0+260 +300 @120, top W0+340 +140 @180, porch2 W0+560 +400 @60; the water 798 px, W1 = W0+798;
+  floodRun's WALKWAY low road kept; frozen 1530aa374):** 18 runs (middle and adult, Normal, late 0/15/19, seeds 1-3): every run ends
+  'shrine', home 3, setBack 0. MIDDLE: low road at late 0 and 15 (t 22.0 s), HIGH at late 19 (t 18.8 s); seeds identical. ADULT: HIGH at
+  EVERY late (t 25.4 at late 0, 25.8 at 15, 17.1 at 19); seeds identical. Two things differ from ENG-28's toy (W back 60 from the water,
+  400 px of water, lineBot.test 'time enough' asserts high = false for BOTH at late 0): (a) the adult never takes the low road on this
+  section; (b) the middle's high-road run (18.8 s) is SHORTER than its low-road run (22.0 s): on this shape the high road spans the same
+  x as the low road, so the 'short road' is not short (2-8.md:15 wants the high road +7.2 s Normal). The times mix the bot's own waits for
+  the line, so read them as a sign, not a measure. Not run: the child and the expert, Easy (FT_MIDDLE and FT_ADULT are the toy's two).
+- **Read from code, not measured (for ruling 3):** follow.ts:53 'he is climbing, riding or grabbing, or dropped further than a step: the
+  newest ground point is a WAIT', W2_FOLLOW.step = 90 (w2.ts:57): off W (60 over the bank) into a log river the drop to the water is 60 +
+  LOG_DROP 28 + 14 = 102 px and a ride is a WAIT, so on gen2's log-river low road the line may not follow him at all. Measure it on the
+  draft before ruling (a probe like the one above with gen2's river).
+- **Not done:** the child/expert and Easy bot runs; step 2 (no draft head: the lead's ruling below); step 3 (waits for the GO).
 
 ## FOR THE LEAD (asked in a message; a question never ends a box)
 1. **The base (a missing piece, LANES rule 2).** t-eng-28 fda48b3d8 has the flood (flood.ts, floodLay.ts) and no 2-3 or 2-7 (stageTable
@@ -59,6 +78,11 @@ REPORT BY 12:30 PM ET (step 1 done and READY-28's numbers); HARD STOP for steps 
    WALKWAY 60 px under the banks (solid 2) with W standing 60 px BACK from the water (the gap over the bank's last 60 px). 2-8.md:9 says
    "LOW 1,400 px of marsh path with four 100 px dips". Rule which low road 2-8 lays: (a) World 2's log river, as gen2 lays it today (the
    bot's read is then re-measured on logs at READY-28), or (b) a marsh walkway the water closes (a new gen2 piece: Lane 2, before BUILD-28).
+
+4. **The fork's choice on this shape (measured, the probe above):** the high road spans the low road's own x, so it is no longer than the
+   low road (the middle's high run 18.8 s against its low run 22.0 s; the adult goes high at every late). 2-8.md wants the low road the
+   short one (+7.2 s Normal by the high). Rule the dial: (a) a longer high road (porch2 runs on past the far bank before its steps down:
+   a section number), or (b) the low road's water shorter than the high road's span, or (c) leave it to READY-28's measure on the draft.
 
 ## Lessons applied (session 1)
 D115 (every check on a chattr-frozen worktree of the commit), D119 (no heredoc in a commit chain: commits are single -m lines), D128
