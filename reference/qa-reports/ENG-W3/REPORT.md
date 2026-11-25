@@ -1,17 +1,33 @@
-# ENG-DOWNBOT REPORT (lane 2: the down lay's head room, then the bots on a way down) — PAUSED (the lead's call: the slot went to 2-7)
-**EXACT NEXT STEP (box 2 pause, resume Wednesday from here):** STEP 0 is DONE (below). Nothing is running (both runs were stopped at the
-pause; their partial output was not kept). (1) Two heavy runs, each on a chattr-frozen worktree (D115), both run_in_background:
-(a) `npx tsx tools/engine/lockall.ts --layouts 16 --out lock-base.json` on c1008d8ed (about 8 minutes beside one other run: it reached 7-4
-in 7 min), then `--layouts 16 --check lock-base.json` on the candidate head; the bar is 102/102 unchanged. (b) `GEN2_DRAFT=3-1 npx tsx
-tools/inspect/castBots.ts --stage 3-1 --seeds 1-40 --par 3 --rows rows.jsonl` on the candidate head (first full run; never finished yet).
-(2) towerRoute.ts / firsttimer.ts on what stalls, a toy per new skill RED off. (3) Toys still owed for ENG-W3a's other skills: downEnd
-(step off toward the way on, firsttimer.ts ~1730 and ~2358), the drop that ignores a near-level catch (~2917), the own route always on a
-way down (~1475); each built on castBots.test.ts `downArena` (it clears the carrier's water and deepens it: a 2-2 carrier's water put him
-back and its 900 px floor killed a two-storey fall). (4) Item 3: rule 28 x40, suite + CI tool line + tierBots on a frozen head, land.
-Start 12:53 PM ET (by `date`). Box 1: 12:53-1:21 PM ET. **Box 2 (ENG-DOWNBOT-b): 1:13-1:23 PM ET (by `date`), paused by the lead.**
-Hours used: about 0.7 of the 2 h (box 1 0.5, box 2 0.2). Left: the lockall verdict, the bots (item 2), item 3.
+# ENG-DOWNBOT REPORT (lane 2: the down lay's head room, then the bots on a way down to the shrine) — box 3 (resumed 11-25)
+**EXACT NEXT STEP:** (1) read the castBots x40 rows on 992908c1d (reference/qa-reports/ENG-W3/rows/castbots-992908c1d.jsonl when
+pushed; else re-run: `GEN2_DRAFT=3-1 npx tsx tools/inspect/castBots.ts --stage 3-1 --seeds <odd|even> --json` on a chattr-frozen
+worktree, two halves, then `python3 reference/qa-reports/ENG-W3/probes/tally.py <rows>`); (2) trace the top two stall kinds with
+`TREE=<frozen tree> BOT= SET= SEED= GEN2_DRAFT=3-1 npx tsx reference/qa-reports/ENG-W3/probes/stall.mts` (wood + route corners at each
+stall), fix where the cause is, a toy RED off/GREEN on in castBots.test.ts (downArena); (3) the LAY finding below (vines cut by catch
+wood) goes to the lead to rule before any lay change; (4) lockall vs c1008d8ed's lock (102/102), tierBots 9/9, suite + CI tool line
+on the final head; land on t-eng-w3 (merge, no force). Start 9:45 AM ET 11-25 (by `date`).
 
-## Box 2 done (candidate on t-eng-w3-wip-b)
+## Box 3 (11-25), on t-eng-w3-wip-downbot (from t-eng-w3-wip-b 007bd2ca8, the paused box 2: the head-room lay + two toys)
+- **Baseline, castBots x40 both settings on 007bd2ca8 (360 rows, rows/castbots-007bd2ca8.jsonl):** 360/360 reach the shrine, only 7/360
+  clean (no rescue); 1,358 rescues. Stalls: 996 'in a dip N px deep, the way on is N px down', 354 'the way on is N px down'.
+- **Cause 1 (route, towerRoute.ts):** going down, the route ran a slant from a leg's exit straight to the turn vine's foot when the lay
+  had run that storey's wood on past the exit toward the vine: the way pointed under the wood he stood on (kid N seed 1 @7758:
+  exit 737, wood on to 1210, vine 1236; seed 1 @10604 the same). Fix: walk the run of wood to its end by the vine first (runOf, shared
+  with dropTo). Toy 'drops ledge by ledge' part (3): RED without (the slant 700->1030 under 700-1000), GREEN with. kid N seed 1: 2 -> 0
+  rescues (7133509b).
+- **Cause 2 (bot skill, firsttimer.ts downEnd):** on wood that lies OVER the way on (a catch under a turn's end, run on across the
+  storey: seed 6 329-1026 @3284 over 397-622 @3462; seed 8 282-975 @3253 over 350-568 @3431) the first route point under him was
+  straight under, downEnd gave 0 and he turned on the spot till rescued. Fix: step toward the first point of the way on that lies past
+  his run of wood's ends. Toy 'on wood over the way on, he walks off its end where the way comes out' 7 bots x 3: RED 21/21 never left
+  the wood without; GREEN 21/21 with (992908c1d).
+- **LAY finding for the lead (not changed):** going down, a turn's vine top stands at the end's fall line and its drop is 347-351 px
+  (> TOWER.see 300), so towerCatches owes a catch under that end, and the catch (then run on by rules 1-2) lies ACROSS the vine:
+  probes/vinecut.mts: 247 cuts on 24/24 rolls (seeds 1-12 x both). A vine through a shelf is a polish fault and the shelf covers the
+  storey the vine leads to. Options: (a) down storeys <= 300 apart at a turn (no catch owed); (b) the vine stops at the catch, the
+  catch hands on within 300; (c) the verdict counts a climb vine at the fall line as the catch (a rule change: the Designer's).
+  Recommend (b) or (a); the bots now cope either way.
+
+## Box 2 (11-23, paused by the lead; candidate t-eng-w3-wip-b 007bd2ca8)
 - **STEP 0:** CI tool line (gates.yml rolled, 21 files) on FROZEN c1008d8ed: **228 tests, 227 pass, 0 fail, 1 todo** (the base's todo);
   ENG-W3a's '228, 0 fail' was measured on e8c21ef12, whose tools/engine draft files differ from c1008d8ed, so it was re-run.
 - **Toys, castBots.test.ts (no stage's numbers), GREEN on the candidate, each RED in a fresh worktree with its skill off:**
