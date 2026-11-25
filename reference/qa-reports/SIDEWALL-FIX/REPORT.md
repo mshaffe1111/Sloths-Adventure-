@@ -1,11 +1,24 @@
 # SIDEWALL-FIX (R-165.440): the two invisible walls on shipped stages, drawn as their colliders
 
-EXACT NEXT STEP (session 3, SIDEWALL-FIX-c; the lead's rulings applied):
-1. GATES on the final head (the commit after "SIDEWALL-FIX-c: 'joined' says what it guarantees"), each once, results in "Gates (session 3)"
-   below: lockall `npx tsx tools/engine/lockall.ts --layouts 16 --check reference/qa-reports/SIDEWALL-FIX/lock-main-cdffdc62.json`
-   (ZERO moves; any move goes to the lead first); paintcheck `--part 1/3`, `2/3`, `3/3` (GREEN, side-wall rule, no side-wall known
-   list); the CI tool line (gates.yml, the `npx tsx --test tools/engine/library.test.ts ...` run line); the suite in shards; tsc.
-2. Push to t-fix-sidewall, `git ls-remote` = HEAD, send the lead the hash and the gate table. Integration merges it into release 4.
+EXACT NEXT STEP (session 3, SIDEWALL-FIX-c, hand-over at the box; code head 424290c3, every gate below run on it):
+1. Still to finish on 424290c3 (each once): paintcheck `--part 2/3` (holds 1-6; was running), the CI tool line (gates.yml line 157, the
+   `npx tsx --test tools/engine/library.test.ts ...` run line, incl. sideWall.test.ts; was running), the suite in 6 shards exactly as
+   deploy.yml runs it (`npx tsx --test --test-shard=i/6 src/audio/*.test.ts src/game/*.test.ts src/components/*.test.ts
+   src/components/**/*.test.ts src/game/gen2/*.test.ts src/game/gen2/worlds/*.test.ts src/game/art/*.test.ts`, i = 1..6, each
+   run_in_background with a timeout up to 7,200,000 ms, at most two heavy runs at once). If the box ends first, a fresh session re-runs
+   ONLY those not marked done in "Gates (session 3)", on 424290c3 (later commits touch REPORT.md only).
+2. Fill the table, push to t-fix-sidewall, `git ls-remote` = HEAD, send the lead the hash and the table. Integration merges it.
+
+## Gates (session 3), code head 424290c3
+| Gate | Result |
+|---|---|
+| tsc `npx tsc --noEmit -p .` | PASS, exit 0 |
+| lockall `--layouts 16 --check lock-main-cdffdc62.json` | PASS, exit 0: "102/102 stages unchanged" (ZERO layout moves). Its "gen2 gained verdicts and drops (not hashed)" line lists stages whose gen2 carries verdicts at all (lockall.ts:29), informational, not a diff |
+| paintcheck part 0/3 (34 stages, 1,882 builds, holds 8-1) | PASS, exit 0: 0 new lines (side-on walls have NO known list: any one is a fail line), 170 known painter-size ids seen |
+| paintcheck part 1/3 (34 stages, 2,028 builds) | PASS, exit 0: 0 new lines, 107 known painter-size ids seen |
+| paintcheck part 2/3 (holds 1-6) | running |
+| CI tool line (gates.yml:157) | running |
+| suite, 6 shards (deploy.yml:38) | not started |
 
 The lead's rulings (session 3 brief): (1) 1-6 APPROVED: both posts read as vine-wrapped support posts under the branch, drawn last,
 standing on the floor. (2) 8-1 ACCEPTED for release 4: the sliver 'joined' draws as a STANDARD bank end, consistent with every other
