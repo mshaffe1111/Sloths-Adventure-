@@ -15,9 +15,12 @@
    on fz-ci12 / fz-ci13):** they part at 101.033 on #80 (y 611, drifting his way): CI-12 walked on and hopped to #81 at 101.133 (down
    101.767, x 20,828.7); CI-13's ride stand held (stopMeant) and he rode #80 at 75 px/s. He reaches x 29,000 3.5 s later (137.933 vs
    134.433); hop off #109 at 138.900, down on #115 at 139.600 (x 29,467, y 584), stood still on it 139.800-140.200 at x 29,501 (#115 does
-   not drift), fell at 140.300 (y 601): the life; respawned on #108 at x 27,932. **Left:** what #115 is (sinking or crumbling?), which
-   intend branch stood him on it (s10-tag on a tagged copy of 0e0c4e284, 139.5-140.3), and whether CI-12 met #115 in another state (it
-   passed there at 134.4). Then the rest of B's (2-1 kid N 19, 2-2 kid E 37,
+   not drift), fell at 140.300 (y 601): the life; respawned on #108 at x 27,932. **Tagged (s10/tag-ci13-adultN4-139.txt, a tagged copy of
+   0e0c4e284):** #115 is type 'moving' ([29,392, 29,522], x unmoved); padRead's clock-ride read stood him on it (L3329 `return held`,
+   clockHeld, stopMeant) from 139.667; at 140.233 it left him (not grounded, x unmoved) and he fell. **Not CI-13's branch:** CI-13 moved
+   his arrival 3.5 s, to a phase of #115 CI-12 never met. **Left:** what #115 does at 140.2 (its motion: run the stage, print #115's x / y
+   / state 139.5-140.4) and whether padRead's read of it is wrong at that phase (a bot fault: fix it where it lives, with a toy) or the
+   row's honest life (then a named, traced row). Then the rest of B's (2-1 kid N 19, 2-2 kid E 37,
    2-2 kid N 3 and 33 FAIL -> PASS, 2-4 adult N 32, 2-4 kid E 2/12/13/19/20/35) and A's 12 (CI-11 vs CI-12: adult N 8/32, child E 11/23,
    child N 8/39, kid E 2/12/13/19/20/35), one line each.
 2. Then the re-plants (riverRide :344/:355 by phase at gap 80, as ruled before), then the final checks ONCE on the frozen final head: the 4

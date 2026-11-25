@@ -11,7 +11,7 @@ P.intend = function (this: any) {
   const o = it.call(this);
   if (this.t >= t0 && this.t <= t1) {
     const p = this.sim.p, on = this.sim.standingOn, q = this.sim.platforms.find((x: any) => x.id === on);
-    console.log(this.t.toFixed(3), 'L' + (globalThis as any).__TG, JSON.stringify(o), 'x', p.x.toFixed(1), 'vx', p.vx.toFixed(0), 'g', p.grounded ? 1 : 0, 'on', on, q ? `[${q.x.toFixed(0)},${(q.x + q.width).toFixed(0)}]` : '', 'pend', this.pending ? 1 : 0, 'jump', this.jump ? 1 : 0);
+    console.log(this.t.toFixed(3), 'L' + (globalThis as any).__TG, JSON.stringify(o), 'x', p.x.toFixed(1), 'vx', p.vx.toFixed(0), 'g', p.grounded ? 1 : 0, 'on', on, q ? `[${q.x.toFixed(0)},${(q.x + q.width).toFixed(0)}] ${q.type}${q.crumble ? " crumble" : ""}${q.sink ? " sink" : ""}${q.drift ? " drift" : ""}${q.broken ? " broken" : ""}` : '', 'pend', this.pending ? 1 : 0, 'jump', this.jump ? 1 : 0);
   }
   return o;
 };
