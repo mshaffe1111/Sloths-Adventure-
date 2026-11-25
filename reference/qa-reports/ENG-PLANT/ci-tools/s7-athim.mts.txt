@@ -1,0 +1,40 @@
+// at-him log (flowing against his run): the engine's press frame off it vs the judge models (old: carry summed and steered; CI-10 no ride; CI-10 with ride)
+const T = process.argv[2];
+await import(T + '/src/game/headlessDom.ts');
+const { RealPlay } = await import(T + '/src/game/realPlay.ts');
+const { airStep, takeOffStep, PHYS } = await import(T + '/src/game/physics.ts');
+const { driftX } = await import(T + '/src/game/river.ts');
+const DT = 1 / 30;
+for (const [label, runF] of [['stand', 0], ['walk4', 4], ['run12', 12], ['run30', 30]] as const) {
+  const rp = new RealPlay('1-1', 1);
+  const e = rp.e as unknown as { standingOnId: number };
+  const Y = 3000, speed = 75, W = 600;
+  const d = { x0: 0, x1: 20000, dir: -1 as const, speed, width: W, offset: 0, baseY: Y };
+  const log = { id: 90, x: 0, y: Y, width: W, height: 24, type: 'drift' as const, drift: d };
+  const floor = { id: 18, x: 0, y: Y + 400, width: 20000, height: 40, type: 'solid' as const };
+  rp.bare([log as never, floor as never]);
+  d.offset = (d.x1 - 10000) / speed - rp.t;
+  log.x = driftX(d as never, rp.t);
+  rp.fly(log.x + 40, Y - 1, 0, 0);
+  for (let i = 0; i < 20; i++) rp.frame({});
+  for (let i = 0; i < runF; i++) rp.frame({ right: true });
+  const prev = { x: rp.p.x, y: rp.p.y, vx: rp.p.vx };
+  const on = e.standingOnId, g = rp.p.grounded, carry = -speed;
+  const eng: { x: number; y: number; vx: number }[] = [];
+  for (let i = 0; i < 24; i++) { rp.frame({ right: true, jump: true, press: i === 0 }); eng.push({ x: rp.p.x, y: rp.p.y, vx: rp.p.vx }); }
+  const fly = (vx0: number, c: number, ride: number) => {
+    const b = { x: prev.x + ride, y: prev.y, vx: vx0 - c, vy: -PHYS.jumpV };
+    const out: typeof eng = [];
+    for (let i = 1; i <= eng.length; i++) { if (i === 1) takeOffStep(b, DT, 1, true, c); else airStep(b, DT, 1, true); out.push({ ...b }); }
+    return out;
+  };
+  const models = { old: fly(prev.vx + carry, 0, 0), ci10noRide: fly(prev.vx + carry, carry, -999), ci10: fly(prev.vx + carry, carry, 0) };
+  // (ci10noRide: CI-10 minus the ride step: undo b.x += carry*dt by starting carry*dt ahead)
+  models.ci10noRide = fly(prev.vx + carry, carry, -carry * DT);
+  const out = [`${label} on ${on} g ${g} pre x ${prev.x.toFixed(2)} vx ${prev.vx.toFixed(1)} | eng f1 x ${eng[0].x.toFixed(2)} vx ${eng[0].vx.toFixed(1)} f12 x ${eng[11].x.toFixed(2)}`];
+  for (const [k, m] of Object.entries(models)) {
+    let mx = 0, my = 0; for (let i = 0; i < 12; i++) { mx = Math.max(mx, Math.abs(m[i].x - eng[i].x)); my = Math.max(my, Math.abs(m[i].y - eng[i].y)); }
+    out.push(`  ${k}: f1 x ${m[0].x.toFixed(2)} vx ${m[0].vx.toFixed(1)} | max|dx| 12f ${mx.toFixed(2)} max|dy| ${my.toFixed(2)}`);
+  }
+  console.log(out.join('\n'));
+}

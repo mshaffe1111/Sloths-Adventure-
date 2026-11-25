@@ -1,0 +1,38 @@
+// riverRide.test.ts :344's plantedRide, one phase, child, reAim on: every on-log draw, gate verdict (HOP_TRACE judged rows), and the end
+const T = process.argv[2], phase = Number(process.argv[3] ?? 0.5);
+await import(T + '/src/game/headlessDom.ts');
+const ft = await import(T + '/tools/inspect/firsttimer.ts');
+const { FirstTimerRun, FT_CHILD, SKILLS, HOP_TRACE } = ft as any;
+const w = 150, gap = 80, speed = 75, x0 = 1000, x1 = 2840, TT = (x1 - x0 + w) / speed, n = Math.round((x1 - x0 + w) / (w + gap));
+const pieces = (ph: number) => [
+  { id: 1, x: 0, y: 600, width: x0, height: 90, type: 'solid' },
+  { id: 2, x: x1, y: 600, width: 1200, height: 90, type: 'solid' },
+  ...Array.from({ length: n }, (_, k) => ({ id: 10 + k, x: 0, y: 628, width: w, height: 24, type: 'drift', drift: { x0, x1, dir: -1, speed, width: w, baseY: 628, offset: ((k * (w + gap)) / speed + ph) % TT } })),
+];
+SKILLS.reAim = true; HOP_TRACE.on = true; HOP_TRACE.rows.length = 0;
+const line = Array.from({ length: 200 }, (_, i) => ({ x: 100 + i * 24, y: 600 }));
+let log: number | null = null, onLog = false, f = 0, stubbed = false, end = '', prev = { g: false, id: null as number | null };
+const ev: string[] = [];
+const run = new FirstTimerRun('1-1', 1, FT_CHILD, { route: line, cap: 20, rescueAfter: 1000, onFrame: (sim: any) => {
+  const e = sim.e; f++;
+  const here = e.platforms.find((q: any) => q.id === e.standingOnId);
+  onLog = !!here?.drift && e.player.grounded;
+  if (onLog && log === null) { log = here.id; ev.push(`f${f} t${sim.t.toFixed(3)} boarded log ${log} x ${e.player.x.toFixed(1)}`); }
+  if (log !== null && !end) {
+    if (prev.g && prev.id === log && !e.player.grounded && e.player.vy < 0) end = 'hop';
+    else if (e.player.grounded && here?.id === 1) end = 'back';
+    if (end) ev.push(`f${f} t${sim.t.toFixed(3)} END ${end} x ${e.player.x.toFixed(1)}`);
+  }
+  if (log !== null && !end && f % 3 === 0) {
+    const L = e.platforms.find((q: any) => q.id === log), nx = e.platforms.filter((q: any) => q.drift && q.x > L.x + 1).sort((a: any, b: any) => a.x - b.x)[0];
+    ev.push(`f${f} x ${e.player.x.toFixed(1)} vx ${e.player.vx.toFixed(0)} g ${e.player.grounded ? 1 : 0} on ${e.standingOnId} logFront ${(L.x + L.width).toFixed(1)} next ${nx ? nx.x.toFixed(1) : '-'}`);
+  }
+  prev = { g: e.player.grounded, id: here?.id ?? null };
+} });
+const own = run as any; const real = own.drawHop.bind(run);
+own.drawHop = (d: number) => { const h = real(d); const t = run.sim.t; if (!stubbed && onLog) { stubbed = true; ev.push(`t${t.toFixed(3)} DRAW(planted tap) on ${log}`); return { ...h, kind: 'single', hold: 0.033, d2: -1 }; } if (onLog) ev.push(`t${t.toFixed(3)} DRAW ${h.kind} hold ${h.hold.toFixed(3)}`); return h; };
+run.sim.bare(pieces(phase));
+run.sim.e.currentStage.config.levelHeight = 720;
+run.sim.stand(700, 600); run.prog.relocate(run.sim.p); run.play();
+console.log(ev.slice(0, 80).join('\n'));
+console.log('ROWS', JSON.stringify(HOP_TRACE.rows.slice(0, 4).map((r: any) => ({ site: r.site, q: r.q, t: +r.t.toFixed(3), x: +r.x.toFixed(1), land: r.land ?? r.landed ?? r.result }))));

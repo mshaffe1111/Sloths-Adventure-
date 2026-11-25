@@ -1,0 +1,28 @@
+// 2-4 kid Easy 35 on CI-10: the vineFromLog press off log 48 (t 47.600): the engine's flight and pads vs CI-10's hopCatchAt flight
+const T = process.argv[2];
+await import(T + '/src/game/headlessDom.ts');
+const ft: any = await import(T + '/tools/inspect/firsttimer.ts');
+const { PHYS, takeOffStep, airStep, canGrabSwing } = await import(T + '/src/game/physics.ts') as any;
+const DT = 1 / 30;
+const P = ft.FirstTimerRun.prototype, dc = P.decide;
+let cap: any = null; const eng: any[] = [];
+P.decide = function (this: any, ...a: any[]) { const t = this.sim.t; if (t > 47.4 && t < 47.55 && !cap) { cap = { t, hold: this.pressHold(), x: this.sim.p.x }; } return dc.apply(this, a); };
+let pre: any = null, rec = false, n = 0;
+ft.firstTimer('2-4', 35, { ...ft.FT_KID, setting: 'easy' }, { cap: 49, dotSetting: true, onFrame: (sim: any) => {
+  const e = sim.e, p = e.player;
+  if (!rec && sim.t > 47.55 && sim.t < 47.62 && p.grounded) pre = { t: sim.t, x: p.x, y: p.y, vx: p.vx, on: e.standingOnId, log: e.platforms.find((q: any) => q.id === e.standingOnId) };
+  if (pre && !rec && !p.grounded) rec = true;
+  if (rec && n === 0) {
+    const v = sim.vines.find((q: any) => (q.vineType === 'swing_liana' || q.isSwingingVine) && !q.off && q.x > pre.x - 30 && q.x - pre.x < 420);
+    const clock0 = e.vineClock - DT, carry = 75;
+    for (const free of [0, 1, 2]) {
+      const b = { x: pre.x, y: pre.y, vx: 0, vy: -PHYS.jumpV }, xs: number[] = []; let caught = -1;
+      for (let i = 1; i < 40; i++) { const held = i * DT < 0.16; if (!held && b.vy < -PHYS.cutV) b.vy = -PHYS.cutV; if (i === 1) takeOffStep(b, DT, i <= free ? 0 : 1, held, carry); else airStep(b, DT, i <= free ? 0 : 1, held); xs.push(+b.x.toFixed(2)); if (caught < 0 && canGrabSwing(b.x, b.y, v, clock0 + i * DT)) caught = i; }
+      console.log(`vine id ${v?.id} model free ${free}: catch frame ${caught} | x f1-6 ${xs.slice(0, 6).join(' ')} | vine x ${v?.x?.toFixed?.(1)}`);
+      console.log(`  api hopCatchAt free ${free}: ${ft.hopCatchAt(v, pre.x, pre.y, 1, 0.16, clock0, carry, free, carry)}`);
+    }
+  }
+  if (rec && n < 22) { n++; const v4 = sim.vines.find((q: any) => q.id === 4); eng.push({ g: [-1, 0, 1].map((k) => canGrabSwing(p.x, p.y, v4, e.vineClock + k * DT) ? 1 : 0).join(""), off: !!v4?.off, ty: v4?.vineType, near: e.nearSwingVine?.id ?? null, cd: +e.vineCooldownTimer.toFixed(3), last: e.lastReleasedVineId, clk: +e.vineClock.toFixed(3), t: +sim.t.toFixed(3), x: +p.x.toFixed(2), y: +p.y.toFixed(2), vx: +p.vx.toFixed(1), swing: !!p.isVineSwinging, pad: JSON.stringify(sim.lastPad ?? e.lastPad ?? '') }); }
+} });
+console.log('decide', JSON.stringify(cap), 'pre', JSON.stringify({ t: pre?.t, x: pre?.x, y: pre?.y, vx: pre?.vx, on: pre?.on }));
+for (const r of eng.slice(5, 11)) console.log('eng', JSON.stringify(r));

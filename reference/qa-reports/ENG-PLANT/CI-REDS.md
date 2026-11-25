@@ -1,6 +1,65 @@
-# ENG-PLANT-CI: the 9 CI-tool-line reds on c27 (session 6 hand-over written 1:42 PM ET 11-25 by `date`; sessions 5, 4, 3, 2 and 1 below it)
+# ENG-PLANT-CI: the 9 CI-tool-line reds on c27 (session 7 hand-over written 1:59 PM ET 11-25 by `date`; sessions 6, 5, 4, 3, 2 and 1 below it)
 
-## EXACT NEXT STEP (session 7). HEAD = CI-10 0db82fb25 (CI-9 + the take-off carry) + this file. **STOPPED per the order: the carry fix moved 3 tests it has not yet narrowed (table below). The lead decides before any more is built.**
+## EXACT NEXT STEP (session 8). HEAD = 8134a9a56 (CI-10 0db82fb25 + the plant-tests merge 0f95b96ed) + this file. **STOPPED on (c) for the lead's ruling (sent): vineFromLog's standing catch is the root, a NEW code change.**
+0. Read the lead's answer first (ReadNotifications). Frozen trees: `git worktree add --detach <dir> <hash>`, node_modules symlinked,
+   `chattr -R +i <dir>/src <dir>/tools` (D115). Probes: ci-tools/s7-*.mts.txt (run `npx tsx <probe> <tree>` from inside the tree).
+1. **(c) 2-4 kid Easy 35, firsttimer.test.ts:312 (STILL RED on 8134a9a56's code = CI-10).** If the lead says build it (CI-11):
+   vineFromLog's STANDING catch (firsttimer.ts `catches`, the `[p.vx, 0].every` at ~:2434, `hopCatches(..., vx + carry, 0, carry)`)
+   flies the press as the engine plays it: the kid's thumb travel (no steer for the first 2 frames from a stand: the engine's vx stayed
+   = the carry 75 on frames 1-2, own steer from frame 3) and the hold as pressed (the engine's cut shows at frame 4, the model's at 5).
+   The run-up branch (~:2509) already passes `free`; find how it computes `free` and the hold and use the same for the standing press.
+   Planted toy FIRST (hopJudged.test.ts, ledgeToy/carryToy pattern: a log his way under a liana, him standing, the catch judged vs
+   RealPlay pressed at the same frame): RED on CI-10 (judged catch, engine misses), GREEN on CI-11; plus a guard where both catch.
+   Then :312 must go GREEN; then the final checks (step 3) on the CI-11 head. If the lead rules otherwise, do that.
+2. **(a)+(b) RE-PLANT riverRide :344 / :355 (the lead's ruling applies: the engine = CI-10, so re-plant, never weaken).** By PHASE at
+   gap 80 (a gap change scrambles the phases, s7/sweep-ci10.txt): measure for every phase 0..3 step 0.25 the `next` margin on the first
+   log (the largest hopLandsOn margin at which ft:3672's `lands` still reads a log in reach for who.hold[0], from where he stands, each
+   frame of the ride; ride.mts is the base), keep the phases whose margin is real (say the number; phase 0.5's is under 24 on CI-10)
+   and where reAim on = 'hop', off = 'back'; :344 keeps "every kept phase hops on, >= 4 of them back off" only if 6 such phases exist
+   (else the count the lead approves). :355 on the same kept phases: the first upstream press must be the first on-log hop (assert it),
+   so the t@x compare tests the decision, not an earlier hop's noise. Prove the RED halves on the new rows: :344 with reAim off; :355
+   with its plant (gateAirtime keeping h.thumb) in an UNFROZEN copy. One commit, the evidence in this file.
+3. Then the final checks ONCE on the final head (session 5's list, the lead's order): the 4 files ALL GREEN; the 10 races (cr
+   margins.mts); the known flips (set1-m.sh + cmp3.py vs c27; 2-4 child E 11 and kid E 13 traced); the wide sample (wide-m.sh, seeds
+   1-10, every bot, both settings, 2-1/2-2/2-4: 0 BAR PASS -> FAIL vs main); 2-7 x40 (>= 29/40); tierBots 9/9; tsc; the CI tool line.
+   At most two heavy runs at a time. Then push, ls-remote, the hash to the lead. Do NOT merge into release-0.10.3.
+
+## SESSION 7 END STATE (8134a9a56 = HEAD's code: CI-10 + plant-tests)
+**Probe (s7-athim, RealPlay, a log at 75 px/s flowing AT him, pressed at a stand / 4-frame walk / 12 and 30-frame runs, 12 frames):**
+CI-10's take-off = the engine **0.00 px** every case; the old (CI-9) model 6.19-13.83 px off; CI-10 without the ride step 2.50 px off.
+The ride step and the carry order are right for logs both ways (carryToy proved his way).
+**(a) riverRide :344 'aims again', phase 0.5 (s7/ride-ci9.txt, ride-ci10.txt):** boarded log 17 at t 2.000 on both; the planted tap at
+2.600. CI-9: the upstream gate's `next` (ft:3672 `lands`, who.hold[0] single, margin 24, ft:3760) read log 16 in reach from 49 px
+behind the front ONLY by the old over-reach; reAim re-drew at 3.067 and 3.533 (double 0.125), hop at 3.567 from x 1026.1, landed
+on 16 (HOP_TRACE upstream q16 landed 16). CI-10: `next` false the whole ride, so the reAim branch (ft:3871-3886) is never reached; he
+stands and is handed back to the bank at 3.967 (x 994.0): the designed out-of-reach case. **Outcome: RE-PLANT** (the row no longer
+tests the claim). Gap sweep (s7/sweep-ci10.txt): gap 80 on = hop back hop hop hop hop, off = back back back back hop back; gap 70 on
+has a 'back', off only 3 'back'; gap 60 the same: by phase, not gap.
+**(b) riverRide :355 'honest aim', phase 0.5:** the same root. Riding back first, the first upstream press is at 6.833 in BOTH runs
+(the decision is the same frame) after an earlier on-log hop (padPause q15 at 5.300) that the loud run flies with its noise after its
+press, as designed: the 0.6 px (1288.3 vs 1288.9) is that hop's, not the press decision. **Outcome: RE-PLANT with (a).**
+**(c) firsttimer :312, 2-4 kid Easy 35 (s7/water-*.txt):** main: 7 jumps off logs, 0 in the water. CI-9: 6, 0 (off log 48 at
+48.767 by a run-up, landed on 49). CI-10: 9, 1: **vineFromLog's standing press** (decide at ft:2486 at 47.500, judged `catches` at all
+3 lags; pressed 47.600 from x 10545.1, vx 0, on log 48 flowing his way at 75) for liana 4: the engine never comes in grab reach
+(canGrabSwing false on every engine frame, clock -1/0/+1 frame; no cooldown, swungOff -1) and he is set down from the water at 48.067.
+**Would the engine land it: NO.** Frame by frame (s7-vine): the engine's frames 1-2 (x +5.00, +2.50 at vx 75) are CI-10's ride + carry
+to the pixel; the judge's error is vineFromLog's own flight: free = 0 (steers from frame 1; the engine's kid from frame 3: the model
+with free 2 = the engine's x to the pixel on frames 1-6) and its hold 0.16 cut at frame 5 (the engine's at frame 4), so the judged
+flight is higher and faster and catches at frame 8. Pre-existing on CI-9 (the same free 0); CI-9 refused the press only because its
+take-off stood 2.5 px behind (the missing ride step). Narrowing CI-10 would put that 2.5 px error back to hide the row. **Outcome:
+neither re-plant nor narrow: the root is a new fix (vineFromLog's standing catch flown as pressed); STOPPED for the lead's ruling.**
+**The lip hoist (the lead's ruling):** hopJudged's Easy 2 and Normal 2 rows ARE the hoist's planted RED/GREEN on real rows (RED on
+CI-8, GREEN on CI-9); no separate hoist toy; ci-tools/hoist-toy.ts.txt removed.
+**Step 2 DONE:** origin/release-0.10.3-wip-plant-tests (0f95b96ed) merged, no force, auto-merged clean (test files only:
+pacerLay.test.ts, firsttimer.test.ts, lianaRide.test.ts, riverRide.test.ts) = 8134a9a56; **tsc clean on frozen fz-m1 (8134a9a56).**
+**Not run:** the 4 files on 8134a9a56 (they go once on the final head), the races, the known flips, the wide sample, 2-7 x40,
+tierBots, the CI tool line (STOPPED on (c)).
+Lessons applied: D115 (every verdict on chattr-frozen fz-ci9 / fz-ci10 / fz-main / fz-m1), D119 (commit messages from a file, no
+heredoc in the commit chain), D120 (the question sent, the independent merge + tsc done before the box), D128 (stamps from `date`),
+D134 (pushed and confirmed before the hand-over message), D138 (the hand-over ends new work), rule 28 (each moved test traced on its
+row by frame against the engine).
+
+## (session 6 hand-over) EXACT NEXT STEP (session 7). HEAD = CI-10 0db82fb25 (CI-9 + the take-off carry) + this file. **STOPPED per the order: the carry fix moved 3 tests it has not yet narrowed (table below). The lead decides before any more is built.**
 1. **Trace the 3 new reds on CI-10 (rule 28, by frame, the engine as the truth), one line each: is the judge now the engine (the toy's
    expectation was set on the old model: re-judged with the lead's word, never weakened) or is the change wrong (narrow it).**
    (a) riverRide.test.ts:344 reAim 'aims again' ("with the skill: he aims again and hops off the first log every phase (hop back hop hop
