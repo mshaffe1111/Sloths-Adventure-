@@ -11,11 +11,19 @@ off the catch onto 600-815, jumps the dip and **lands on the shelf over it** (br
 4 px past the dip's lip), walks back off the shelf's right end and stands at 710-713 until rescued (18 s). **The cause is the shelf**
 (it was there before ruling 1: e7c203362 lays it too): a lid 108 px over the storey and its dip, in a full jump's reach from the near
 side, a dead end (its only way off is back onto the near side), and it roofs the next turn's vine top (x171 10163->10336). In the
-first draft of the arena (every bot) **CHILD easy ended ON the shelf over that vine top on all three trees.** Next: (a) find what lays
-it (style 'branch', ids 191/169/130, 0-71 + 71-424 + 424-604 @10055; not on the route: legs (79,9624)->(769,9882), (815,10163)->
-(197,10163); grep src/game/gen2/tower.ts for wood laid between a leg's storey and the next); (b) if it is the tower lay (ours), the
-fix is in the lay (no lid over a storey's dip within a jump's rise, and none over a turn vine's top), the toy goes GREEN, then
-re-measure A and B on top (a fix that moves no row comes out); if a pieces lane lays it, STOP and send the lead a still (ruling).
+first draft of the arena (every bot) **CHILD easy ended ON the shelf over that vine top on all three trees.** **What lays it (read this box): OUR lay, not a pieces lane's.** The storey is section s25 (w3-walk, x 197-815: near 600-815, far
+197-506, its hop's gap filled as the dip 506-600@10233; its petals at 382,10129); the shelf carries no section fill and no tower
+record (turns/route/runouts), and lies 173 px under storey 185-769@9882: the going-down band of **towerCatches** (src/game/gen2/
+tower.ts:293-460, rules 1 wall run-on 0-71, 4 a bough of its own, 2 bridges). **tower.ts:325-326 says "Going down a bough is only ever
+a way on: nothing to guard": this roll breaks that.** A bough laid HEAD (108) over the storey under it is in a jump's reach from that
+storey, so it is a way back UP onto a dead end, and here it also roofs the storey's dip lip and the next turn vine's top. **Next
+(the lay, ours, general):** (a) DONE (put() logged on a scratch tree, PUTLOG=10055): **all three are towerCatches's, storey level 21: 424-604 rule 4 (a bough
+of its own, tower.ts:450), 71-424 rule 2 (its bridge, :405), 0-71 rule 1 (wall run-on, :382)**; (b) the rule: going down, no catch bough lies within a jump's rise (LEAP, read generously, as the up rule) over wood of a
+LOWER storey unless a walk-off from its every open end lands back on the way, and none over a turn vine's top (the vine's top is
+the way on); if no fair height is left the roll is refused as today; (c) planted toys: tower.test (the lay: on the 48 drafted
+rolls, no going-down bough within LEAP over a lower storey's wood; RED now) and this castBots toy (GREEN after); (d) re-measure
+A and B on top (each: RED with it off, GREEN on, on a shape it CURES; a fix that moves no row comes out, ruling 2), then the
+x40 again. If (b) refuses many rolls, STOP and send the lead the count before going on.
 **(2) x40 DONE on 7d12c344b** (rows/castbots-7d12c344b-1-20.jsonl + -kidadult-21-40 + -cme-21-40; tally `python3 probes/tally.py`
 on all three): **360 rows, 299 with a rescue, 59 clean; 7 never reach the shrine** (child N 8, 15; middle N 15; expert N 15; child E
 27, 28; middle E 27: the three 21-40 strand at x 1225 'fell back down from here 8 times' after 'the way on is 347 px down'). Rescues
@@ -26,7 +34,7 @@ on is N down' 137; 'fell back down from here' 84; 'a drop ahead' 75; 'nothing in
 dip' point, any wood within 160 px over the storey across the dip), two traces per cause after that, then the 7 stranded rows.
 (3) Stills, (4) lockall / tierBots 9/9 / suite + CI line / land: as box 6 below. **READY-31 (stands):** length is the 3-1 build's
 (kid N seed 2 clean at 101.4 s; head min kid N 87.2 s over 40 seeds).
-Start 11:18 AM ET 11-25; REPORT written 11:29 AM ET (by `date`).
+Start 11:18 AM ET 11-25; REPORT written 11:31 AM ET (by `date`).
 
 ### Box 6's hand-over (superseded by box 7)
 **EXACT NEXT STEP (box 6 hand-over):** code head **7d12c344b** (pushed; this REPORT + rows commit sits on it: its hash is in the hand-over message, check with `git ls-remote`). **Ruling 1 is DONE**
