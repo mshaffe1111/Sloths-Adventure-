@@ -2488,6 +2488,7 @@ export class FirstTimerRun {
         return side1(dir);
       }
       this.runUpHold = { hold, t };
+      this.standHold = null;
       this.pressJudged = true;
       const go = this.decide(dir, 'single', true, side1(dir));
       this.pressJudged = false;

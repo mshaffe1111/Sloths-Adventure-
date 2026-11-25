@@ -281,3 +281,40 @@ for (const slow of [true, false]) for (const way of ['lands', 'misses'] as const
     } else assert.equal(r.misses, null, `the engine sets him down 1.5 px outside the target's margin (x ${r.xE.toFixed(2)}); the judge says he lands on it`);
   });
 }
+
+// CI-11 (rule 28, the lead's ruling on ENG-PLANT-CI session 7's (c)): vineFromLog's STANDING catch is the catch flown. Its own shape,
+//  2-4 kid Easy 35: him standing on log #48 drifting his way at 75 px/s, liana #4 ahead. On CI-10 the judge flew the press with his steer
+//  from its first frame and a 0.16 s hold, said 'catches' at t 47.500; the bot pressed at 47.600 with his thumb still travelling (2
+//  frames unsteered) and its own drawn hold (0.097 s), the engine never had him in reach of #4, and he was set down from the water at
+//  48.067. The real stage and bot, as castBots rolls them: every standing press vineFromLog judged (its pending still and judged, or
+//  pressed at once under pressJudged with no run-up) must end on a liana, never grounded or set down first.
+test('a vine from a log pressed from a stand is the catch flown: 2-4 kid Easy 35, standing on a log drifting his way at 75 px/s under liana #4 (CI-11)', async () => {
+  const ft = await import('./firsttimer.ts');
+  type Run = { t: number; e: { lives: number }; sim: { p: { x: number }; standingOn: number }; pending: { still?: boolean; judged?: boolean } | null; pressJudged: boolean; runUpHold: unknown };
+  const P = ft.FirstTimerRun.prototype as unknown as { startJump: (this: Run, ...a: unknown[]) => unknown };
+  const sj = P.startJump;
+  type Row = { t: number; x: number; on: number; n: number; caught: number | null; down: string | null };
+  const rows: Row[] = [];
+  let open: Row | null = null;
+  P.startJump = function (this: Run, ...a: unknown[]) {
+    const stand = (this.pressJudged && !this.runUpHold) || (!!this.pending?.still && !!this.pending?.judged);
+    const out = sj.apply(this, a);
+    if (stand) rows.push((open = { t: this.t, x: this.sim.p.x, on: this.sim.standingOn, n: 0, caught: null, down: null }));
+    return out;
+  };
+  try {
+    ft.firstTimer('2-4', 35, { ...ft.FT_KID, setting: 'easy' }, { cap: 49, dotSetting: true, onFrame: (sim) => {
+      if (!open) return;
+      const e = (sim as unknown as { e: { player: { x: number; y: number; grounded: boolean; isVineSwinging?: boolean; swingVineId?: number }; standingOnId: number | null } }).e;
+      const p = e.player;
+      open.n++;
+      if (p.isVineSwinging) { open.caught = p.swingVineId ?? -1; open = null; }
+      else if (open.n > 2 && p.grounded) { open.down = `grounded on #${e.standingOnId} at x ${p.x.toFixed(1)} y ${p.y.toFixed(1)}, frame ${open.n}`; open = null; }
+      else if (open.n > 60) { open.down = 'no liana in 60 frames'; open = null; }
+    } });
+  } finally {
+    P.startJump = sj;
+  }
+  assert.ok(rows.length >= 1, 'vineFromLog pressed from a stand at least once (the shape is in the row)');
+  for (const r of rows) assert.ok(r.caught !== null, `the standing press at t ${r.t.toFixed(3)} from x ${r.x.toFixed(1)} on #${r.on} was judged to catch; the engine: ${r.down}`);
+});
