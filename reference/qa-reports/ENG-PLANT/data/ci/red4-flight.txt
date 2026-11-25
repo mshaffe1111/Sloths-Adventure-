@@ -1,0 +1,34 @@
+# red 4, 2-7 home middle Easy 5, edgeWait t 21.767 x 16687.8 off bank #14 toward log #18 (ci-tools/hfprobe.mts on /home/user/bis = CI-7 + hf-print.diff)
+## the trace's thumbed flight for #18 (flight 2: hopFlight with the drawn thumb, release 1,1,1,1,1,1,0,2,1), state before each frame's move
+i1 t21.767 x16687.8 y721.0 vy-640 pre1 steer1 lx16670.3 past-57.5 w150 th 1/0/0/-22.767
+i2 t21.800 x16696.7 y701.8 vy-577 pre1 steer1 lx16668.0 past-46.3 w150 th 1/0/0/-22.767
+i3 t21.833 x16706.2 y684.7 vy-513 pre1 steer1 lx16665.7 past-34.4 w150 th 1/0/0/-22.767
+i4 t21.867 x16715.2 y679.1 vy-167 pre1 steer1 lx16663.3 past-23.2 w150 th 1/0/0/-22.767
+i5 t21.900 x16724.7 y675.7 vy-103 pre1 steer1 lx16661.0 past-11.3 w150 th 1/0/0/-22.767
+i6 t21.933 x16733.6 y674.3 vy-40 pre0 steer1 lx16658.7 past-0.1 w150 th 1/0/1/-22.767
+i7 t21.967 x16743.1 y675.1 vy23 pre0 steer0 lx16656.3 past11.8 w150 th 0/0/1/-22.767
+i8 t22.000 x16752.6 y678.7 vy107 pre-1 steer-1 lx16654.0 past23.6 w150 th -1/0/0/-22.767
+i9 t22.033 x16759.2 y685.0 vy190 pre-1 steer-1 lx16651.7 past32.5 w150 th -1/0/0/-22.767
+i10 t22.067 x16762.9 y694.1 vy273 pre-1 steer-1 lx16649.3 past38.6 w150 th -1/0/0/-22.767
+i11 t22.100 x16763.8 y706.0 vy357 pre-1 steer-1 lx16647.0 past41.8 w150 th -1/0/0/-22.767
+i12 t22.133 x16761.7 y720.7 vy440 pre-1 steer-1 lx16644.7 past42.0 w150 th -1/0/0/-22.767
+## the run (after each frame; os = the run's overSmall that frame)
+RUN f651 t21.700 x16669.4 y721.0 vy0 vx285 g1 on14 os-1 q18 x16675.0 past-80.6
+RUN f652 t21.733 x16678.3 y721.0 vy0 vx268 g1 on14 os-1 q18 x16672.7 past-69.3
+RUN f653 t21.767 x16687.8 y721.0 vy0 vx285 g1 on14 os-1 q18 x16670.3 past-57.5
+RUN f654 t21.800 x16696.7 y701.8 vy-577 vx268 g0 on-1 os-1 q18 x16668.0 past-46.3
+RUN f655 t21.833 x16706.2 y684.7 vy-513 vx285 g0 on-1 os0 q18 x16665.7 past-34.4
+RUN f656 t21.867 x16715.2 y679.1 vy-167 vx268 g0 on-1 os0 q18 x16663.3 past-23.2
+RUN f657 t21.900 x16724.7 y675.7 vy-103 vx285 g0 on-1 os0 q18 x16661.0 past-11.3
+RUN f658 t21.933 x16733.6 y674.3 vy-40 vx268 g0 on-1 os0 q18 x16658.7 past-0.1
+RUN f659 t21.967 x16743.1 y675.1 vy23 vx285 g0 on-1 os1 q18 x16656.3 past11.8
+RUN f660 t22.000 x16752.6 y678.7 vy107 vx285 g0 on-1 os1 q18 x16654.0 past23.6
+RUN f661 t22.033 x16759.2 y685.0 vy190 vx198 g0 on-1 os2 q18 x16651.7 past32.5
+RUN f662 t22.067 x16762.9 y694.1 vy273 vx112 g0 on-1 os2 q18 x16649.3 past38.6
+RUN f663 t22.100 x16763.8 y706.0 vy357 vx25 g0 on-1 os2 q18 x16647.0 past41.8
+RUN f664 t22.133 x16761.7 y720.7 vy440 vx-62 g0 on-1 os2 q18 x16644.7 past42.0
+RUN f665 t22.167 x16757.8 y738.1 vy523 vx-118 g0 on-1 os2 q18 x16642.3 past40.4
+RUN f666 t22.200 x16753.0 y749.0 vy0 vx0 g1 on18 os2 q18 x16640.0 past38.0
+RUN f667 t22.233 x16747.8 y749.0 vy0 vx-87 g1 on18 os-1 q18 x16637.7 past35.1
+## where the flight stops
+CATCH i12 by #14 solid x16454.0..16734.0 y721 side0.360 reach12 w44 drop20 b.x16757.8 b.y738.1 prev720.7

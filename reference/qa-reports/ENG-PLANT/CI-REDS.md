@@ -3,11 +3,22 @@
 ## EXACT NEXT STEP (session 5)
 1. Red 4 (the lead's order item 2, word for word: "Red 4 (hopJudged Easy 5: edgeWait predicted a fall, but the engine's overSmall
    steered him back onto #18 at 23.6 px past its middle against a 22.5 px threshold): the per-frame hopFlight vs engine comparison. The
-   BOT's model matches the ENGINE (judged = flown). A toy each way. Then the races + flips again."). Build the probe on frozen
-   /home/user/fz-ci7 (b0f55fc13): copy hopFlight (firsttimer.ts:1078) into a probe with a per-frame print (b.x, b.vy, steer before and
-   after the thumb, past vs 0.15 w, the log's x), fly it for #18 with Easy 5's edgeWait args (t 21.77, x 16688; HOP_TRACE's row gives
-   the hop, thumb and ThumbAt), and print the run's own frames beside it (rowprobe.mts W0=21.7 W1=22.3, plus the run's overSmall result
-   per frame); the first frame they part names the wrong side. Fix general, a toy each way, on CI-7.
+   BOT's model matches the ENGINE (judged = flown). A toy each way. Then the races + flips again.").
+   **TRACED in session 4 (data/ci/red4-flight.txt; ci-tools/hfprobe.mts + hf-print.diff on an unfrozen CI-7 copy): the overSmall steer is
+   NOT the part.** The trace's thumbed flight for #18 (judge(), firsttimer.ts:1977, hopFlight with this.thumbAt() and the drawn release
+   1,1,1,1,1,1,0,2,1) matches the run FRAME FOR FRAME to t 22.133 (x 16752.6 past 23.6 at 22.000, steer back LEFT from there, the same
+   x/y/vy each frame). It then STOPS at i12 (b.x 16757.8, b.y 738.1, prev 720.7): hopFlight's "anything else catches him first" (ft:1150-
+   1167, `others`) says bank #14 (solid 16454..16734, y 721, the bank he hopped from) catches him by the ledge forgiveness (side 0.360 x
+   w 44 + reach 12 = 27.8 px; his centre 23.8 px past its end), so no flight lands on #18 and the row reads q -2. The ENGINE (engine.ts
+   onFloor, :2879-2887) takes that forgiveness only if `playerPrevFeet < plat.y - 2` (feet at least 2 px ABOVE the top before the frame:
+   720.7 vs 719, NO) and the jump carries him TOWARD it at 30 px/s or more (`(missL > 0 ? p.vx : -p.vx) >= 30`), and never for a drift log
+   on Normal; so the engine does not catch him on #14 and he lands on #18 at f666 t 22.200 x 16753. **Fix (the bot's model = the engine):
+   in hopFlight's others loop, outside the side tolerance apply the engine's own three conditions (not a drift log on Normal, prev feet
+   < o.y - 2, miss <= landPx and the velocity toward it >= 30; b.vx after the move) instead of "taken either way he moves" (ENG-27o's
+   comment: re-check its Easy 5 x 12053 case against the engine with the same probe; if it was caught by the side tolerance, the comment
+   is wrong, not the engine).** Toys each way (pure hopFlight vs the engine's onFloor on one built case each): (a) prev feet within 2 px
+   of a bank's top, centre past its end inside side+landPx: the engine does not catch, the model must not; (b) from above, moving toward
+   it at >= 30 px/s, inside landPx: both catch; (c) moving away: neither. Then hopJudged (all 4 runs; red 4 GREEN), the races + the flips.
 2. Then on the final head, once each (at most two heavy runs at a time): the races (margins.mts, 10), the known flips (ci-tools/set1-m.sh
    + cmp3.py vs c27: 21 rows = c27, the 2 named child rows below may differ; 0 BAR PASS -> FAIL), the 4 files (only reds 5-9 red), the
    wide sample (wide-m.sh on the c-report branch, seeds 1-10, every bot, both settings, 2-1/2-2/2-4: 0 BAR PASS -> FAIL vs main), 2-7 x40
@@ -29,6 +40,8 @@ the two child rows part from c27 at WaitAim.fresh (CI-1's honest aim).
 **CI-7 (frozen fz-ci7 b0f55fc13; data/ci/set1-ci7, cmp3.py): the 10 known-flip files, 23 rows: 21 = c27 ROW FOR ROW (kid N19 back to c27;
 2-2/2-4 unchanged), the 2 moved = the two named child rows above; 0 BAR PASS -> FAIL.** riverRide on CI-7: 29 tests, 27 pass, 2 fail =
 :266 (red 7) and :282 (red 9), the plants lane's; the reAim toys (reds 1-2) and the race-leg front-stand toy GREEN. tsc clean.
+**The 4 files on CI-7 (frozen fz-ci7): 61 tests, 55 pass, 6 fail = reds 4-9 exactly** (hopJudged Easy 5 = red 4 unchanged: edgeWait q#-2
+t 21.77 x 16688 came down #18; firsttimer :185; lianaRide DROP ON A LOG + A VINE FROM A LOG; riverRide :266, :282); reds 1-3 GREEN.
 The races are not re-run on CI-7: the middle (the racer) is not the reAim tier and its stand stays 31, raceStandPx is unchanged, so CI-7
 cannot move a race; they are re-run once on the final head (next step 2).
 Lessons applied (session 4): D115 (verdicts on chattr-frozen trees; toggles only on /home/user/bis, one run at a time), D119 (commit
