@@ -1630,6 +1630,12 @@ function drawGround(ctx: CanvasRenderingContext2D, platforms: Platform[], banks:
   shadeUpTo(-Infinity);
 }
 
+/** the banks of earth drawGround paints (w1Pits.ts paintedBank) on a stage that is not a bough stage: drawProtoScene draws these, and the
+ *  paint gate reads the same list (R-165.441, paintFall.ts soilOvers), so the soil it judges is the soil drawn */
+export function groundBanks(platforms: readonly Platform[]): Platform[] {
+  return platforms.filter(paintedBank);
+}
+
 /** the order drawGround paints the banks in: the lowest first (a pit's floor and its step go under the banks either side, whose faces then
  *  cover their ends) */
 export function paintOrder(banks: readonly Platform[]): Platform[] {
@@ -1931,7 +1937,7 @@ export function drawProtoScene(
   const vis = (p: Platform) => p.x + p.width > view.x0 - 80 && p.x < view.x1 + 80 && p.y + p.height > vy0 - 200 && p.y < vy1 + 200;
   // (the banks of earth: w1Pits.ts paintedBank, the same rule its pits' walls are found by; on a bough stage never a chase section: the
   // chase draws its own, live, and the baked squares stay whole while it falls)
-  const banks = groundLook === 'bough' ? platforms.filter((p) => !p.broken && boughPiece(p)) : platforms.filter(paintedBank);
+  const banks = groundLook === 'bough' ? platforms.filter((p) => !p.broken && boughPiece(p)) : groundBanks(platforms);
   // World 1's pits (R-6.38): the drop under the ground (its shade, floors and steps draw over it), the lips and leaf bed over it
   // (a bough stage: no pit is painted; a gap in the bough is air over the mist, its ends the bough's own, drawBoughGround)
   const bough = groundLook === 'bough';

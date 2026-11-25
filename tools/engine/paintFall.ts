@@ -12,8 +12,7 @@
 // missing art, a catalog and STAGE-RULES §4 question for Content, listed by the sweep as `unpainted` so it is seen, not hidden); a stage
 // whose painted kit is off (a boss lair: engine.ts paintKit), where no painter runs at all.
 import { footingOf, type FootingInput } from '../../src/game/terrain.ts';
-import { groundSoil, paintedPlatforms, soilCover, SOIL_JOIN, SOIL_ROOM } from '../../src/game/protoArt.ts';
-import { paintedBank } from '../../src/game/w1Pits.ts';
+import { groundBanks, groundSoil, paintedPlatforms, soilCover, SOIL_JOIN, SOIL_ROOM } from '../../src/game/protoArt.ts';
 import type { Platform } from '../../src/game/types.ts';
 
 /** what terrain draws by code (terrain.ts terrainLook): the ground, step, pillar and earth bodies, the code-drawn thin ledge sprites
@@ -117,7 +116,7 @@ export interface SoilOver {
 }
 
 /** every painted bank's top under a later-painted bank's soil, on a built stage with its paint state set (paintStage.ts) */
-export function soilOvers(platforms: Platform[], regions = groundSoil(platforms.filter(paintedBank))): SoilOver[] {
+export function soilOvers(platforms: Platform[], regions = groundSoil(groundBanks(platforms))): SoilOver[] {
   const out: SoilOver[] = [];
   const box = regions.map((r) => {
     let x0 = Infinity, x1 = -Infinity, y1 = -Infinity;
