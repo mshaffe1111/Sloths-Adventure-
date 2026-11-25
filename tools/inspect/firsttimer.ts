@@ -1159,10 +1159,19 @@ export function hopFlight(q: Platform, at: (t: number) => number, x: number, y: 
         const ox = others.at(o)(t0 + i * DT);
         const side = drift ? DRIFT_CATCH.side + (others.easy ? DRIFT_CATCH.easySide : 0) : 0.26 + ASSIST.landSide * others.assist;
         const drop = drift ? DRIFT_CATCH.drop : 14 + ASSIST.catchDrop * others.assist;
-        // (and the ledge-landing forgiveness, a foot short by up to landPx (a log's too on Easy), taken either way he moves: Easy 5
-        //  x 12053, his centre 18 px past the bank's end, moving away, caught and nudged on, o/diag-easy5-q55-27o.txt)
-        const reach = drift && !others.easy ? 0 : others.land;
-        if (b.x + others.w * side + reach > ox && b.x - others.w * side - reach < ox + o.width && prev <= o.y + drop && b.y >= o.y) return null;
+        // (and the ledge-landing forgiveness, a foot short by up to landPx (a log's too on Easy), by the engine's own three conditions
+        //  (engine.ts onFloor): never a drifting log on Normal; his feet at least 2 px above its top before the frame (prev; the engine's
+        //  playerPrevFeet, p.y - p.vy * dt, is the same y); and the jump carrying him toward it at 30 px/s or more (b.vx after the move).
+        //  ENG-PLANT-CI red 4, 2-7 home middle Easy 5 (hopJudged): "taken either way he moves" caught him on bank #14 with his feet 0.3 px above its
+        //  top before the frame (720.7 vs 721), centre 23.8 px past its end; the engine does not, and he lands on #18 (data/ci/red4-flight.txt))
+        const sx = others.w * side;
+        if (!(b.x + sx > ox && b.x - sx < ox + o.width)) {
+          if ((drift && !others.easy) || !(prev < o.y - 2)) continue;
+          const missL = ox - (b.x + sx);
+          const missR = b.x - sx - (ox + o.width);
+          if (Math.max(missL, missR) > others.land || (missL > 0 ? b.vx : -b.vx) < 30) continue;
+        }
+        if (prev <= o.y + drop && b.y >= o.y) return null;
       }
     }
     if (b.vy >= 0 && prev <= q.y && b.y >= q.y) {

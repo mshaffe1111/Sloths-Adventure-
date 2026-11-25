@@ -171,3 +171,53 @@ for (const [race, code, seed] of [['home', HOME_CODE, 1], ['post', POST_CODE, 5]
     } finally { W1_CAP.on = false; W1_CAP.rows = []; }
   });
 }
+
+// (ENG-PLANT-CI red 4: the judged flight's "anything else catches him first" takes the ledge-landing forgiveness by the ENGINE's own
+//  conditions (engine.ts onFloor): his feet at least 2 px above the top before the frame, and the jump carrying him toward it at 30 px/s
+//  or more. 2-7 home middle Easy 5 t 22.133: the judge had him caught on bank #14 (feet 0.3 px above its top before the frame, centre
+//  23.8 px past its end) and read a fall; the engine landed him on #18. The toys: one built ledge each, the same flight flown by hopFlight
+//  and pressed on the REAL engine (realPlay.ts, a bare world: the ledge thin, no wall, and a wide floor under it). The ledge stands where
+//  the flight's first frame below `y0 + 40` puts his centre `miss` px past its right end, outside the side catch, inside landPx)
+async function ledgeToy(prevAbove: number, vx0: number) {
+  const { RealPlay } = await import('../../src/game/realPlay.ts');
+  const { airStep, takeOffStep, ASSIST, PHYS } = await import('../../src/game/physics.ts');
+  const { hopFlight } = await import('./firsttimer.ts');
+  const rp = new RealPlay('1-1', 1);
+  const e = rp.e as unknown as { forgive: { landPx: number }; assistNow(): number; easy: boolean; standingOnId: number };
+  const w = rp.p.width, land = e.forgive.landPx, assist = e.assistNow();
+  const side = 0.26 + ASSIST.landSide * assist;
+  const x0 = 5000, y0 = 3000;
+  // (the flight with no steer (upOnly past it: his speed kept, the engine's refined controls) and the jump held all the way)
+  const b = { x: x0, y: y0, vx: vx0, vy: -PHYS.jumpV };
+  let prevK = 0;
+  for (let i = 1; i < 75; i++) {
+    const prev = b.y;
+    (i === 1 ? takeOffStep : airStep)(b, DT, 0, true);
+    if (b.vy >= 0 && b.y > y0 + 40) { prevK = prev; break; }
+  }
+  const miss = land - 3, top = prevK + prevAbove;
+  const bank = { id: 14, x: b.x - w * side - miss - 300, y: top, width: 300, height: 12, type: 'solid' as const };
+  const floor = { id: 18, x: x0 - 1500, y: top + 160, width: 3000, height: 40, type: 'solid' as const };
+  const h: DrawnHop = { kind: 'single', hold: 5, d2: -1, dblAt: 0, hold2: 0, upOnly: 5 };
+  const others = { list: [bank, floor], at: (o: { x: number }) => () => o.x, w, easy: e.easy, assist, land, glide: false };
+  const judged = hopFlight(floor, () => floor.x, x0, y0, vx0 < 0 ? -1 : 1, h, 0, vx0, 24, PHYS.doubleV, undefined, others) !== null;
+  rp.bare([bank, floor]);
+  rp.fly(x0, y0, vx0, -PHYS.jumpV);
+  let on = -1;
+  for (let i = 0; i < 90 && on < 0; i++) {
+    rp.frame({ jump: true });
+    if (rp.p.grounded) on = e.standingOnId;
+  }
+  return { judged, on, miss, prevAbove };
+}
+for (const [name, prevAbove, vx0, lands] of [
+  ['(a) his feet 0.3 px above the top before the frame, moving toward it: the engine does not catch him, the judge must not', 0.3, -60, 18],
+  ['(b) from 5 px above, moving toward it at 60 px/s: both catch him on it (the guard: the forgiveness the engine gives stays)', 5, -60, 14],
+  ['(c) from 5 px above, moving away at 60 px/s: neither catches him', 5, 60, 18],
+] as const) {
+  test(`the judged flight's ledge forgiveness is the engine's (ENG-PLANT-CI red 4): ${name}`, async () => {
+    const r = await ledgeToy(prevAbove, vx0);
+    assert.equal(r.on, lands, `the built ledge: the engine set him down on #${r.on}, the case wants #${lands}`);
+    assert.equal(r.judged, r.on === 18, `the judge says ${r.judged ? 'he lands on the floor #18' : 'something else catches him first'}; the engine set him down on #${r.on}`);
+  });
+}
