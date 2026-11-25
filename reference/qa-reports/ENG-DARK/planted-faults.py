@@ -82,6 +82,10 @@ PLANTS = [
     ('the seam check off: a seam he walks over read as a way down (downEnd)', 'tools/inspect/firsttimer.ts',
      'if (d === 0 || this.who.noSeamWalk) return d;', 'if (d === 0 || true) return d;', 'a seam he walks over is no way down',
      'src/game/gen2/darkBots.test.ts'),
+    # (ENG-DARK box 15) the seam run's end picked by his facing again, not the end the way on comes out past (roll 11 adult N, loop 11)
+    ("the seam run's end by his facing (downEnd)", 'tools/inspect/firsttimer.ts',
+     '      if (this.who.seamByFacing) return this.sim.p.facing < 0 ? -1 : 1;', '      return this.sim.p.facing < 0 ? -1 : 1;',
+     'the way on under a seam run comes out past its far end', 'src/game/gen2/darkBots.test.ts'),
     # (ENG-DARK box 14) the RUNNING step off: the verdict, the lay that lights it, and the bot's stop at a lit edge whose run meets a rim
     ("darkLandings asks nothing of a running step off ((iii) off)", 'src/game/gen2/dark.ts',
      '    if (stops) continue;\n    out.push(', '    if (stops || true) continue;\n    out.push(', 'a RUN off a rim with no stop is judged where it lands'),
