@@ -15,7 +15,7 @@ import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { RealPlay } from '../realPlay.ts';
 import { GLOW_REACH, glowReaches, keepsClear, type Zone } from '../zones.ts';
-import { DARK_AHEAD, DARK_EMIT, DARK_PROPS, DARK_ZONE, darkFlags, darkGaps, darkLandings, darkRims, entryPieces, litAhead, RimWatch, type DarkRim } from './dark.ts';
+import { awakeLights, DARK_AHEAD, DARK_EMIT, DARK_PROPS, DARK_ZONE, darkFlags, darkGaps, darkLandings, darkRims, entryPieces, litAhead, RimWatch, type DarkRim } from './dark.ts';
 import type { Platform } from '../types.ts';
 import { W6S_EMIT, W6S_PROPS } from './worlds/w6Swing.ts';
 import { generateAllLevels } from '../worldsData.ts';
@@ -47,10 +47,12 @@ test("the brick on a real World 3 row, EVERY roll (1-40, both settings): 3-1's d
     const dark = (st.zones ?? []).filter((z) => z.kind === 'dark');
     assert.ok(dark.length >= 3, `seed ${seed} ${d}: the drops lie in the dark (${dark.length} stretches)`);
     for (const z of dark) {
-      const mouth = mouthLights(st, z);
+      // (awake: the cave mouth's (mouthLights, a subset) and the landings a run off a rim with no stop comes down too near (box 14))
+      const awake = awakeLights(st.platforms, z), mouth = mouthLights(st, z);
+      assert.ok([...mouth].every((l) => awake.has(l)), `seed ${seed} ${d}: the cave mouth is lit`);
       assert.ok(z.lights!.length && z.lights!.every((l) => l.id !== undefined), `seed ${seed} ${d}: every light is a glowworm with an id`);
-      const wrong = z.lights!.filter((l) => !l.sleep !== mouth.has(l));
-      assert.deepEqual(wrong.map((l) => `${l.x},${l.y} ${l.sleep ? 'asleep at the cave mouth' : 'awake inside the dark'}`), [], `seed ${seed} ${d}: every light sleeps but the cave mouth's`);
+      const wrong = z.lights!.filter((l) => !l.sleep !== awake.has(l));
+      assert.deepEqual(wrong.map((l) => `${l.x},${l.y} ${l.sleep ? 'asleep at the cave mouth or a run-off landing' : 'awake inside the dark'}`), [], `seed ${seed} ${d}: every light sleeps but the cave mouth's and the run-off landings'`);
       assert.ok(z.lights!.some((l) => l.sleep), `seed ${seed} ${d}: a glowworm dark still (some light sleeps)`);
     }
     const ids = dark.flatMap((z) => z.lights!.map((l) => l.id));

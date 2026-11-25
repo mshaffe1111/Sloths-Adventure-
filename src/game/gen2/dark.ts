@@ -19,7 +19,7 @@
 import type { Zone } from '../zones.ts';
 import { GLOW_REACH, GLOW_STILL, glowReaches, keepsClear } from '../zones.ts';
 import type { Platform } from '../types.ts';
-import { PHYS } from '../physics.ts';
+import { LAND_HALF, PHYS } from '../physics.ts';
 import { PAD_FAIR } from './rideLay.ts';
 import type { PropDef, PropEmitter, Socket, StageSink } from './types.ts';
 
@@ -90,7 +90,7 @@ function fireflyZone(out: StageSink, x0: number, y: number, x1: number, lights: 
 const standable = (p: Platform) => p.type === 'solid' || p.type === 'fragile';
 
 /** a rim in the dark: the end of a piece he goes over (`dir` outward), where he lands, and the light over that landing */
-export interface DarkRim { piece: Platform; dir: -1 | 1; x: number; y: number; land: { x: number; y: number }; light: Light | null; onto: Platform; drop: boolean }
+export interface DarkRim { piece: Platform; dir: -1 | 1; x: number; y: number; land: { x: number; y: number }; light: Light | null; onto: Platform; drop: boolean; runOff?: true }
 
 /** a step off a rim comes down a body's width out (px) */
 const STEP_OFF = 24;
@@ -111,6 +111,27 @@ function stepOnto(platforms: readonly Platform[], from: Platform, dir: -1 | 1): 
   let under: Platform | null = null;
   for (const q of platforms) if (q !== from && standable(q) && xs >= q.x && xs <= q.x + q.width && q.y > from.y + 1 && (!under || q.y < under.y)) under = q;
   return under;
+}
+
+/** how far out (px) a RUN off a rim carries him before he has fallen `drop` px: full run (PHYS.maxRun) held, gravDown to maxFall */
+const runFly = (drop: number) => {
+  const cap = PHYS.maxFall ** 2 / (2 * PHYS.gravDown);
+  const t = drop <= cap ? Math.sqrt((2 * drop) / PHYS.gravDown) : PHYS.maxFall / PHYS.gravDown + (drop - cap) / PHYS.maxFall;
+  return PHYS.maxRun * t;
+};
+/** where a RUN off `from`'s rim going `dir` comes down (a rim with no stop: he runs off it at full speed, ENG-DARK box 14): the first
+ *  piece his arc meets (the highest standable piece below his feet whose top his middle crosses within LAND_HALF of its ends), and
+ *  where on it he touches down (kept on the piece); null: none */
+function runOnto(platforms: readonly Platform[], from: Platform, dir: -1 | 1): { on: Platform; x: number } | null {
+  const rim = dir > 0 ? from.x + from.width : from.x;
+  let best: { on: Platform; x: number } | null = null;
+  for (const q of platforms) {
+    if (q === from || !standable(q) || q.y <= from.y + 1 || (best && q.y >= best.on.y)) continue;
+    const x = rim + dir * runFly(q.y - from.y);
+    if (x < q.x - LAND_HALF || x > q.x + q.width + LAND_HALF) continue;
+    best = { on: q, x: Math.max(q.x, Math.min(q.x + q.width, x)) };
+  }
+  return best;
 }
 
 /**
@@ -197,6 +218,32 @@ export function entryPieces(platforms: readonly Platform[], box: { x0: number; x
   return out;
 }
 
+/**
+ * The lights of a glowworm dark laid AWAKE (every other light sleeps), read with all of them asleep:
+ *   - the cave mouth: a rim of a piece he reaches from outside the dark (entryPieces) has the light over its landing (the one the
+ *     verdicts read) awake (the lead's ruling (ii), 11-25);
+ *   - a RUN off a rim where no stop applies (outside the dark, or its landing's light awake) comes down far out at full speed: each
+ *     dark rim of the piece it lands on, the way he runs, nearer his stopping distance (Easy's, the longer) than the touchdown, unless
+ *     the awake light over the rim he left reaches it, has its light awake too, and so on from the rims that wakes (darkLandings' (iii),
+ *     runOffs; ENG-DARK box 14).
+ */
+export function awakeLights(platforms: readonly Platform[], z: Zone): Set<Light> {
+  const own = z.lights ?? [];
+  const copy = own.map((l) => ({ ...l, sleep: true }));
+  const asleep: Zone = { ...z, lights: copy };
+  const mouth = entryPieces(platforms, asleep);
+  for (const r of darkRims({ platforms, zones: [asleep] })) if (r.light && mouth.has(r.piece)) r.light.sleep = false;
+  const ends = rimEnds(platforms), stop = darkStop('easy');
+  for (let woke = true; woke; ) {
+    woke = false;
+    for (const { n } of runOffs(platforms, darkRims({ platforms, zones: [asleep] }), ends, stop)) {
+      n.light!.sleep = false;
+      woke = true;
+    }
+  }
+  return new Set(own.filter((_, i) => !copy[i].sleep));
+}
+
 /** the glowworms' dark stretch between the ends `a` and `b`: a box over both ends' ground, one light over every rim's landing, asleep
  *  but at the cave mouth (entryPieces) */
 function glowZone(out: StageSink, a: { x: number; y: number }, b: { x: number; y: number }): Zone {
@@ -204,7 +251,6 @@ function glowZone(out: StageSink, a: { x: number; y: number }, b: { x: number; y
   const z: Zone = { kind: 'dark', x0: Math.round(a.x), x1: Math.round(b.x), top: y0 - DARK_GLOW.above, bottom: y1 + DARK_GLOW.below, baseY: y1, dir: 1, period: 1, warn: 0, active: 1, force: 0, offset: 0, lights: [] };
   // (the rims are read with a stand-in light that covers everything, so every rim's landing is found; then one glowworm over each landing)
   const probe: Zone = { ...z, lights: [{ x: 0, y: 0, r: 1e9 }] };
-  const mouth = entryPieces(out.platforms, z);
   let id = (out.extras[GLOW_ID] as number | undefined) ?? 1;
   for (const r of darkRims({ platforms: out.platforms, zones: [probe] })) {
     // (over the landing, but never deeper under the rim than a stop on it reaches (GLOW_REACH.down): a wall-side rim's long drop keeps
@@ -218,9 +264,9 @@ function glowZone(out: StageSink, a: { x: number; y: number }, b: { x: number; y
       z.lights!.push({ x: at.x, y: at.y, r: DARK_GLOW.light, sleep: true, id: id++ });
     }
   }
-  // (the cave mouth is lit: a rim of a piece he reaches from outside the dark has the light over its landing (the one the verdicts read)
-  //  laid awake; every other light sleeps)
-  for (const r of darkRims({ platforms: out.platforms, zones: [z] })) if (r.light && mouth.has(r.piece)) r.light.sleep = false;
+  // (the cave mouth is lit, and every landing a run off a rim with no stop comes down too near: awakeLights; every other light sleeps)
+  const awake = awakeLights(out.platforms, z);
+  for (const l of z.lights!) if (awake.has(l)) l.sleep = false;
   out.extras[GLOW_ID] = id;
   z.lights!.sort((p, q) => p.y - q.y || p.x - q.x);
   return z;
@@ -325,7 +371,47 @@ export function darkLandings(stage: { platforms: readonly Platform[]; zones?: re
       out.push(`dark: a step off lands him ${Math.round(room)} px from a dark rim, under his stopping distance ${Math.round(stop)} px (${setting}), its light asleep${ud ? '' : ', the rim he left outside the dark'}: the rim at x ${Math.round(u.x)}, y ${Math.round(u.piece.y)} (${u.dir > 0 ? 'right' : 'left'} end of ${Math.round(u.piece.x)}-${Math.round(u.piece.x + u.piece.width)}) onto ${at(n)}`);
     }
   }
+  // (iii) a RUN off a rim where no stop applies comes down far out at full speed (runOffs, ENG-DARK box 14)
+  for (const { u, ud, n, room } of runOffs(stage.platforms, rims, ends, stop)) {
+    out.push(`dark: a running step off lands him ${Math.round(room)} px from a dark rim, under his stopping distance ${Math.round(stop)} px (${setting}), its light asleep, the rim he left ${ud ? 'lit' : 'with no stop'}: the rim at x ${Math.round(u.x)}, y ${Math.round(u.piece.y)} (${u.dir > 0 ? 'right' : 'left'} end of ${Math.round(u.piece.x)}-${Math.round(u.piece.x + u.piece.width)}) onto ${at(n)}`);
+  }
   return out;
+}
+
+/**
+ * Every RUN off a rim where no stop applies (outside the dark; or in it with its landing's light awake, or with no landing in the box:
+ * the bot's stop and the player's are only where that light sleeps, glowWait) that comes down nearer than `stop` to a sleeping dark rim
+ * the way he runs: he runs off at full speed and touches down far out (runOnto), not a body's width out, and slides on. Passes when the
+ * awake light over the rim he left reaches that rim's edge. (ENG-DARK box 14: the 3-1 trial ran off a ledge at 268 px/s, flew 92 px
+ * and landed 7 px from a sleeping rim.) One entry per (rim left, rim met).
+ */
+function runOffs(platforms: readonly Platform[], rims: readonly DarkRim[], ends: ReadonlyArray<{ piece: Platform; dir: -1 | 1; x: number }>, stop: number) {
+  const out: Array<{ u: { piece: Platform; dir: -1 | 1; x: number }; ud: DarkRim | undefined; n: DarkRim; run: { on: Platform; x: number }; room: number }> = [];
+  for (const u of ends) {
+    const ud = rims.find((m) => m.piece === u.piece && m.dir === u.dir);
+    if (ud?.light?.sleep) continue;
+    const run = runOnto(platforms, u.piece, u.dir);
+    if (!run) continue;
+    for (const n of rims) {
+      if (n.piece !== run.on || n.dir !== u.dir || !n.light?.sleep) continue;
+      const room = (n.x - run.x) * n.dir;
+      if (room >= stop || (ud?.light && Math.hypot(ud.light.x - n.x, ud.light.y - n.y) <= ud.light.r)) continue;
+      out.push({ u, ud, n, run, room });
+    }
+  }
+  return out;
+}
+
+/**
+ * The bot's stop for a run off (glowWait): each rim where no stop applies whose run lands within `setting`'s stopping distance of a
+ * sleeping dark rim (runOffs), as a rim to stop at whose light is that sleeping rim's: he stands at the edge he would run off until
+ * that light is lit, then goes (the lay lights those, glowZone; this covers a lay that does not). runOff marks it: never a jump's stop.
+ */
+export function runOffRims(stage: { platforms: readonly Platform[]; zones?: readonly Zone[] }, setting: 'normal' | 'easy'): DarkRim[] {
+  const rims = darkRims(stage);
+  return runOffs(stage.platforms, rims, rimEnds(stage.platforms), darkStop(setting)).map(({ u, n, run }) => ({
+    piece: u.piece, dir: u.dir, x: Math.round(u.x), y: u.piece.y, land: { x: Math.round(run.x), y: run.on.y }, light: n.light, onto: run.on, drop: true, runOff: true,
+  }));
 }
 
 /** how long a stop at (`x`, `feet`) facing `facing` takes to light `l` (s): Infinity out of reach; an always-lit light (the cave mouth's)

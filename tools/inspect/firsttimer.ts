@@ -78,7 +78,7 @@ import type { FollowPlay } from '../../src/game/followPlay.ts';
 import { bucketAngle } from '../../src/game/wheel.ts';
 import { WHEEL_FLOWN } from '../../src/game/gen2/wheelFlights.data.ts';
 import { flownKey } from '../../src/game/gen2/wheelLay.ts';
-import { DARK_AHEAD, darkRims, litAhead, RimWatch, type DarkRim, type RimCrossing } from '../../src/game/gen2/dark.ts';
+import { DARK_AHEAD, darkRims, litAhead, RimWatch, runOffRims, type DarkRim, type RimCrossing } from '../../src/game/gen2/dark.ts';
 /** the most times he went over one rim in the dark (climbs not counted; FTRun.dark.loop): a walk back and forth over one rim (ENG-DARK box 12,
  *  the seam toy's record: since RimWatch reads a grounded step over a seam as on the piece, the loop shows here, lit or not) */
 const rimLoop = (cs: readonly RimCrossing[]) => Math.max(0, ...[...cs.filter((c) => !c.climbed).reduce((m, c) => m.set(c.rim, (m.get(c.rim) ?? 0) + 1), new Map<DarkRim, number>()).values()]);
@@ -3410,9 +3410,17 @@ export class FirstTimerRun {
    * walks him on to the rim). A give-up ends with the visit: grounded off that rim's piece (a rescue, a fall, the way on), he stops at it
    * again (kept for the run, the same child came back to that rim and went over it 0.34 s after its light woke, with no stop).
    */
+  /** the rims his dark stop is made at (glowWait): every dark rim whose landing's light sleeps, and every edge with no stop whose RUN
+   *  off lands within his stopping distance of a sleeping rim (runOffRims, marked runOff: he stands there until that rim's light is lit,
+   *  so he goes off it from a stand, ENG-DARK box 14; never a jump's stop, glowJump) */
+  private glowRimsOf(): DarkRim[] {
+    const st = this.sim.stage as Parameters<typeof darkRims>[0];
+    const own = darkRims(st).filter((r) => r.light?.sleep && r.light.id !== undefined);
+    return own.concat(runOffRims(st, this.who.setting).filter((r) => r.light?.id !== undefined && !own.some((o) => o.piece === r.piece && o.dir === r.dir)));
+  }
   private glowWait(dir: -1 | 0 | 1): Pad | null {
     if (this.who.noGlowWait) return null;
-    this.glowRims ??= darkRims(this.sim.stage as Parameters<typeof darkRims>[0]).filter((r) => r.light?.sleep && r.light.id !== undefined);
+    this.glowRims ??= this.glowRimsOf();
     if (!this.glowRims.length) return null;
     const p = this.sim.p;
     const e = this.e as unknown as { gameTime: number; glowWake: Map<number, number> };
@@ -3477,10 +3485,10 @@ export class FirstTimerRun {
    */
   private glowJump(dir: -1 | 0 | 1): Pad | null {
     if (this.who.noGlowWait || dir === 0 || this.glowStop || !this.sim.p.grounded) return null;
-    this.glowRims ??= darkRims(this.sim.stage as Parameters<typeof darkRims>[0]).filter((r) => r.light?.sleep && r.light.id !== undefined);
+    this.glowRims ??= this.glowRimsOf();
     const p = this.sim.p;
     const e = this.e as unknown as { gameTime: number; glowWake: Map<number, number> };
-    const rim = this.glowRims.find((r) => r.dir === dir && !this.glowGaveUp.has(r) && p.x >= r.piece.x && p.x <= r.piece.x + r.piece.width
+    const rim = this.glowRims.find((r) => !r.runOff && r.dir === dir && !this.glowGaveUp.has(r) && p.x >= r.piece.x && p.x <= r.piece.x + r.piece.width
       && Math.abs(p.y - r.piece.y) <= 4 && (r.x - p.x) * r.dir >= 0 && (r.x - p.x) * r.dir <= GLOW_JUMP);
     if (!rim) return null;
     const woke = e.glowWake.get(rim.light!.id!);
