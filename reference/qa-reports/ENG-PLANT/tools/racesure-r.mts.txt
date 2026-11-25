@@ -1,0 +1,17 @@
+// usage: tsx racesure-r.mts <tree>: pacerLay :280's two rows (home middle Normal 2, post middle Normal 5) with SKILLS.raceSure on and off,
+// floatSure as shipped; prints each row's race verdict, lives lost on the race leg (x), and a frame-hash of his path: on == off means no live case
+const T = process.argv[2];
+await import(`${T}/src/game/headlessDom.ts`);
+const { homeRun } = await import(`${T}/tools/inspect/homeToys.ts`);
+const { SKILLS } = await import(`${T}/tools/inspect/firsttimer.ts`);
+const { HOME_CODE, POST_CODE } = await import(`${T}/src/game/gen2/toyHome.ts`);
+const crypto = await import('node:crypto');
+for (const [seed, code] of [[2, HOME_CODE], [5, POST_CODE]] as const) for (const on of [true, false]) {
+  const was = SKILLS.raceSure; const h = crypto.createHash('sha1'); const at: number[] = []; let piece: any, lives: number | undefined;
+  try { SKILLS.raceSure = on;
+    homeRun('middle', 'normal', seed, 1, { onFrame: (sim: any) => { const e = sim.e; piece ??= e.pieces.find((q: any) => q.kind === 'pacer');
+      h.update(`${Math.round(e.player.x * 10)},${Math.round(e.player.y * 10)};`);
+      if (lives !== undefined && e.lives < lives && piece && piece.clock !== null) at.push(Math.round(e.player.x)); lives = e.lives; } } as never, code);
+  } finally { SKILLS.raceSure = was; }
+  console.log(`seed ${seed} raceSure ${on ? 'on ' : 'off'} won ${piece?.verdict?.won} him ${piece?.verdict?.him} boat ${piece?.verdict?.boat} falls [${at.join(', ')}] path ${h.digest('hex').slice(0, 12)}`);
+}

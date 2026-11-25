@@ -1,25 +1,41 @@
-# ENG-PLANT-r (ENG-PLANT-c session 16, started 11:18 AM ET 11-25 by the hook's stamp; this top written 11:27 AM ET 11-25): **item 1 DONE: child N 13 on c27 is the lip family as the lead named it (R-165.398), not new. NO MERGE: a DEVIATION for the lead: pacerLay 23's skill (SKILLS.raceSure) cannot fire on c27 (floatSure takes the race hop first), so "re-plant 23 at its same bar as a laid toy" cannot be done honestly; the lead rules (retire per R-165.432, or another bar)**
+# ENG-PLANT-r (ENG-PLANT-c session 16, started 11:18 AM ET 11-25 by the hook's stamp; this top written 11:27 AM ET 11-25): **item 1 DONE: child N 13 on c27 = the lip family (R-165.398), accepted. The lead's rulings received (word for word below). Ruling 2 DONE: raceSure dead behind floatSure (on == off, same path hash), plant retired, branch deleted: d742d0469 PUSHED. tierBots 9/9 on c27. NEXT: ruling 3 (three owed toys), ruling 4 on the final head, ruling 5 (merge). NO merge yet.**
 
-Engine (bots), Opus 5.5 xhigh. Lead: session_01FhBbYN2CVHnFXg7XzqKXpM. **Code head unchanged: c27 = 1e4b50a1d** on release-0.10.3-wip-plant-c.
+Engine (bots), Opus 5.5 xhigh. Lead: session_01FhBbYN2CVHnFXg7XzqKXpM. **Code head: d742d0469** (c27 1e4b50a1d + raceSure deleted) on release-0.10.3-wip-plant-c (pushed, ls-remote confirmed).
 Data: data/r/. Tools: tools/rowframes-r.mts.txt (row-frames at castBots' cap 1200), trace-all-r.mts.txt (trace-n, every set-down printed),
 lip-r.mts.txt, racesure-r.mts.txt (pacerLay :280's two rows, raceSure on vs off, a path hash).
 
 ## EXACT NEXT STEP (session 17)
-0. Setup as session 15's item 0 (rep worktree; fz-c27 = 1e4b50a1d frozen, node_modules symlinked). The runs below were in this container:
-   anything marked IN FLIGHT died with it; run it once on fz-c27.
-1. DONE: item 1 (below). Nothing to send unless the lead asks.
-2. WAIT for the lead's ruling on pacerLay 23 (sent in the hand-over). Do NOT merge before it (the lead's item 3: any deviation, stop).
-3. Then the checklist's open items, each once on c27's exact head (status table below); the two owed toys for c23 and c24 (the table's
-   row: each RED on the candidate before it, GREEN on it; riverRide.test.ts as the others); and the re-plant of pacerLay 22 (boardLog: LIVE
-   code, firsttimer.ts:3529-3536, `underLip`), owed and never built by any session: its RED half on its cause laid explicitly in
-   tools/inspect/firsttimer.test.ts the way af127d21e laid fromTakeoff (:218, sim.bare + a read) and :150 laid boardHop's log (drift
-   {x0,x1,dir,speed,width,baseY,offset} on its river's clock). Cause (pacerLay.test.ts:250-253): home Easy seed 1, the careful middle ran
-   off the lip at full speed onto a log 64 px out of 240, came down near its front, ran off it into the water. Same bar: skill on, he does
-   not run onto it (waits, then hops on); off, he runs off the lip onto it and off its front into the water. TRAP (af127d21e's note,
-   boardlog-probe-27j.ts.txt): a bare {x0,x1} river fell on and off alike; the ride wait's floatAt needs a full RiverZone. pacerLay :254
-   keeps its GREEN half (v.won); then pacerLay.test.ts on the new head, and firsttimer.test.ts again (the file changed).
-4. Every item GREEN as listed and the lead's ruling on 23 applied: MERGE (item 3 of the lead's order), no force; ls-remote; the hash and
-   one line per item to the lead.
+0. Setup as session 15's item 0 (rep worktree; fz-c27 = 1e4b50a1d frozen, node_modules symlinked). The code changes go in the main
+   checkout (unfrozen), committed on release-0.10.3-wip-plant-c (a fast-forward on c27), then a new frozen tree of that head for the runs.
+1. **THE LEAD'S RULINGS (received this session, word for word):**
+   "1. child N 13 = the lip family (cluster A): ACCEPTED, named. Thank you for correcting session 14's misread.
+   2. raceSure: if your on-vs-off run confirms on == off on the path hash for the :280 rows, raceSure is DEAD code behind floatSure. Matt's
+   standing rule is that new replaces old and the old path is DELETED. So: RETIRE pacerLay 23's raceSure plant per R-165.432 with this
+   evidence, AND delete raceSure's dead branch and its skill flag (the else-if at :3733 and its readers at :3695/:3735) in one commit. :280
+   keeps its GREEN half. If the run shows ANY difference, stop and tell me; then it is not dead.
+   3. The owed toys are REQUIRED before the merge (no fix lands without its toy): pacerLay 22's laid toy (boardLog, with the RiverZone trap
+   from af127d21e's note), c23's toy (the pull-back skipped on a small log he pauses on) and c24's toy (the run-up's jump held as judged).
+   Each is RED with its fix off and GREEN on, on its real row (2-1 child E 2, 2-4 child N 8).
+   4. Then on the FINAL head (toys + the deletion): tsc, the CI tool line at 0 fail, tierBots 9/9, and the 10 races + the 10 known flips
+   once (they must match c27 row for row; the deletion and the toys change no behaviour).
+   5. THE LEAD'S WORD STANDS: when 1-4 are all green as listed, MERGE into origin/release-0.10.3 (no force). Push, confirm with ls-remote,
+   and send me the hash plus one line per item. Any red: stop and tell me.
+   If your box runs out, put this in the EXACT NEXT STEP word for word; session 17 carries it."
+2. **Ruling 2 DONE: d742d0469** (pushed on release-0.10.3-wip-plant-c, a fast-forward on c27, ls-remote confirmed). The run (racesure-r
+   on fz-c27, data/r/racesure-c27.txt): raceSure on == off on both :280 rows, the same path hash (home middle Normal 2 WON 82.8 vs 114.04,
+   path 9d720689ce2a both; post Normal 5 WON 108 vs 127.7, 673d4a196d9e both; no fall either way): DEAD. Deleted in one commit: the else-if
+   (was :3733), `reach` (:3695), `sure` (:3687, read only there), the raceHop field and its hold (:1494, :5036-5042), SKILLS.raceSure; two
+   comments reworded. No test turns floatSure off (grep: only tools/engine/runs/snapbounce.ts takes skills off by arg). pacerLay :280 keeps
+   its GREEN half (1/1 pass on the main checkout at d742d0469); RED half retired with the evidence in the test's comment. tsc clean.
+   **NEXT: ruling 3 (the three owed toys), then ruling 4 on the FINAL head, then ruling 5 (merge).** Every run on a frozen tree of the head.
+3. Pointers (session 16, read only): pacerLay 22's cause pacerLay.test.ts:250-253; boardLog's line firsttimer.ts:3529-3536 (`underLip`);
+   the probe af127d21e's note names: reference/qa-reports/ENG-27/boardlog-probe-27j.ts.txt (46c68a857; it bare-lays bank/log/far and sets
+   `st.rivers = [{x0,x1,surfaceY,dir,speed}]`, which has every RiverZone field (src/game/river.ts:44), so find what floatAt still lacks
+   before trusting a toy); laid patterns firsttimer.test.ts:150 (boardHop's log on its river's clock) and :218 (fromTakeoff). c23 =
+   ccca3d305, c24 = 2a2c44786 (their commit messages name each rule and row). TRAP for the deletion: grep every `SKILLS.floatSure = false`
+   (toys whose RED half turns floatSure off may have flown the else-if's old race hop); the lead's item 4 says the deletion changes no
+   behaviour, so every such RED half must still go red the same way, or stop and tell the lead.
+4. Every item of ruling 4 green: MERGE (ruling 5).
 
 ## Item 1: child Normal 13 on c27, rule 28 (the castBots run itself)
 - The run: rowframes-r (firstTimer exactly as castRun: FT_CHILD, cap 1200, dotSetting) ends `shrine 392.6, rescues 1, harms 1, stuck
@@ -38,7 +54,7 @@ lip-r.mts.txt, racesure-r.mts.txt (pacerLay :280's two rows, raceSure on vs off,
 firsttimer.ts on c27: the race-leg hop off a log running his way is `if (SKILLS.floatSure && raceLegal) {...} else if (raceLegal && (reach
 || ...))` (:3700, :3733). raceSure is read only at :3695 (`reach`, used only by the else-if) and :3735 (`raceHop`, set only in the
 else-if; read at :5038). floatSure is on in SKILLS (:763) and is this job's fix, so on every race-leg hop the else-if never runs and
-raceSure on == off. (The run that shows it, racesure-r on fz-c27: IN FLIGHT at this push.)
+raceSure on == off. The run: on == off on both rows, the same path hash (above, EXACT NEXT STEP item 2). The lead ruled (a) plus the deletion: done, d742d0469.
 So its RED half ("without the skill seed 2 falls short at x 10683") cannot come back on c27, and a laid toy at the same bar would have to
 turn floatSure off: a toy of a path no run takes (R-165.432: "a plant with no live case proves nothing"). The lead's choices: (a) RETIRE
 raceSure's plant per R-165.432 with this as the evidence (the skill's code stays; review at R-165.424); :280 keeps its GREEN half (no fall at
@@ -48,10 +64,10 @@ those x with the shipped bot); (b) another bar the lead names. My recommendation
 | item | result |
 |---|---|
 | child N 13 (item 1) | lip family, named (above) |
-| pacerLay 22/23 re-planted as laid toys (23/23) | NOT DONE: 23 = the deviation (lead's ruling); 22 owed (step 3) |
+| pacerLay 22/23 re-planted as laid toys (23/23) | 23: RETIRED + raceSure deleted (ruling 2, d742d0469; :280 GREEN half 1/1). 22: owed (ruling 3) |
 | timecheck | PASS (611 commits, 93 stamps; full history, after the unshallow) |
 | roadmapcheck | PASS |
-| tierBots 9/9 | IN FLIGHT |
+| tierBots 9/9 | **PASS 9/9** (fz-c27, data/r/tierbots-c27.out) |
 | the CI tool line (43 files; includes riverRide, firsttimer, hopJudged and the packet's plants: riverRide :119 ride, :165 handed, :266 upstream, :282 bankUp; firsttimer :150/:185 boardHop, :218 fromTakeoff) | IN FLIGHT (94 ok, 0 not ok so far) |
 | the toys for c23-c27 | c25 (firsttimer :312), c26 (riverRide :449), c27 (hopJudged's last two): in the CI line. **c23 and c24: NEVER BUILT** (ordered in session 8's item 5: 'a toy for each of c23's and c24's rules: the pull-back skipped on a small log he pauses on; the run-up's jump held as judged'; ccca3d305 / 2a2c44786 touch no test). Their rows (2-1 child E 2, 2-4 child N 8) PASS in the known flips (BAR 12/12) but no toy is RED on c22/c23 and GREEN on c23/c24 |
 

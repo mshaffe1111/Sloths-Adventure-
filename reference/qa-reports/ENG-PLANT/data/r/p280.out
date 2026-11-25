@@ -1,0 +1,16 @@
+TAP version 13
+# Subtest: bot: the racing hop off a log lands where it was judged to, so the bank 28 px up is reached, not fallen short of
+ok 1 - bot: the racing hop off a log lands where it was judged to, so the bank 28 px up is reached, not fallen short of
+  ---
+  duration_ms: 5600.904169
+  type: 'test'
+  ...
+1..1
+# tests 1
+# suites 0
+# pass 1
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 7885.307324
