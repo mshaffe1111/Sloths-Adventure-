@@ -1,0 +1,120 @@
+diff --git a/src/game/follow.ts b/src/game/follow.ts
+index 312a6b585..fa50a2d53 100644
+--- a/src/game/follow.ts
++++ b/src/game/follow.ts
+@@ -115,12 +115,14 @@ function holdAtGround(t: Trail): void {
+  * go over a drop that deep. `hold`: a climb, grab or ride: the last GROUND point becomes a WAIT (a hop that ended on a vine is cut back to
+  * where he took off). After a WAIT nothing more is added until he stands again on that ground, or a step below it.
+  */
+-export function record(t: Trail, p: { x: number; y: number; grounded: boolean }, mode: TrailMode): void {
++/** `swim`: is a straight line at height y over (x0, x1) FLOOD water the line paddles (FollowPlay.swimAcross); `keep`: the farthest along the
++ *  trail a little one stands (its points are never moved) */
++export function record(t: Trail, p: { x: number; y: number; grounded: boolean }, mode: TrailMode, swim?: (x0: number, x1: number, y: number) => boolean, keep = -Infinity): void {
+   if (mode === 'hold') {
+     if (!t.held) holdAtGround(t);
+     return;
+   }
+-  const l = t.pts[t.pts.length - 1];
++  let l = t.pts[t.pts.length - 1];
+   const step = t.step ?? Infinity;
+   if (t.held) {
+     // (back on the ground he left them on, or a step below it; until then the line stays at the foot or the lip)
+@@ -135,6 +137,17 @@ export function record(t: Trail, p: { x: number; y: number; grounded: boolean },
+       holdAtGround(t);
+       return;
+     }
++    // (a hop that lands at its take-off height over flood water a straight line there paddles (a marsh's dip, 2-8.md:9): the line swims
++    //  straight across at the surface, never hops it on his arc; the arc's points a little one already stands on are kept. The lead's
++    //  ruling (b), BUILD-28)
++    const o = t.pts[i];
++    if (swim && Math.abs(p.y - o.y) <= SAME_GROUND && swim(Math.min(o.x, p.x), Math.max(o.x, p.x), o.y)) {
++      let k = t.pts.length - 1;
++      while (k > i && t.pts[k].s > keep) k--;
++      t.pts.length = k + 1;
++      t.s = t.pts[k].s;
++      l = t.pts[k];
++    }
+   }
+   const d = Math.hypot(p.x - l.x, p.y - l.y);
+   if (d < 0.5) {
+diff --git a/src/game/followPlay.ts b/src/game/followPlay.ts
+index d85a5bcf3..66ffdaf4c 100644
+--- a/src/game/followPlay.ts
++++ b/src/game/followPlay.ts
+@@ -139,6 +139,18 @@ export class FollowPlay {
+     return null;
+   };
+ 
++  /** a straight swim at height y over (x0, x1) is FLOOD water the line paddles (follow.ts record): somewhere on it a flood's water (one
++   *  with a `lip`) is under it and nothing stands there (surf), and no other water is; 2-3's rivers (no lip) never swim */
++  readonly swimAcross = (x0: number, x1: number, y: number): boolean => {
++    let wet = false;
++    for (let x = x0; x <= x1; x += 8) {
++      if (this.surf(x, y) === null) continue;
++      if (!this.stage.safeWater.some((w) => w.lip !== undefined && x >= w.x0 && x <= w.x1)) return false;
++      wet = true;
++    }
++    return wet;
++  };
++
+   /**
+    * One frame, after he has moved. `on`: the platform he stands on. `roll`: [0, 1) for the herons' calms. Returns what happened, for the
+    * engine's sounds and Dot: a heron's warning, little ones spooked, little ones that came home.
+@@ -151,7 +163,7 @@ export class FollowPlay {
+     } else {
+       // (in the air, by his hop or off an edge, is a walk: the trail judges the drop when he lands, record)
+       const hold = !!p.climbing || !!p.isVineSwinging || !!p.hanging || (p.grounded && rides(on));
+-      record(this.trail, p, hold ? 'hold' : 'walk');
++      record(this.trail, p, hold ? 'hold' : 'walk', this.swimAcross, this.line.reduce((m, f) => (f.state === 'follow' ? Math.max(m, f.s) : m), -Infinity));
+     }
+     this.last = { x: p.x, y: p.y };
+     const before = this.home();
+diff --git a/tools/inspect/lineBot.test.ts b/tools/inspect/lineBot.test.ts
+index d7a021aad..611596dba 100644
+--- a/tools/inspect/lineBot.test.ts
++++ b/tools/inspect/lineBot.test.ts
+@@ -156,7 +156,7 @@ interface FloodRun {
+ /** the low road laid by gen2's own piece (riverLay layRiver, RiverRow.marsh: the floor 60 px under the banks, as the hand walkway) instead
+  *  of the hand walkway, `dips` gaps `dip` px wide in it; plants: `floorOff` lays the marsh's water with no floor, `closeOff` its flood
+  *  with no close (it rises, never turns deep) */
+-interface MarshToy { dips: number; dip: number; floorOff?: boolean; closeOff?: boolean }
++interface MarshToy { dips: number; dip: number; floorOff?: boolean; closeOff?: boolean; swimOff?: boolean }
+ function floodRun(who: FirstTimer, seed: number, late: number, marsh?: MarshToy): FloodRun {
+   freshPhone(who.setting);
+   const mr = Math.random;
+@@ -203,6 +203,8 @@ function floodRun(who: FirstTimer, seed: number, late: number, marsh?: MarshToy)
+     e.proto = { hints: [], covers: [], beats: [], movedPickups: [], bushes: [], watch: [], follow: W2_FOLLOW };
+     run.sim.stand(START, Y);
+     e.startFollow();
++    // (planted: the line hops a dip on his arc again, follow.ts record's swim off)
++    if (marsh?.swimOff) (e.follow as { swimAcross: unknown }).swimAcross = () => false;
+     for (const c of cages) e.follow.free(c.critter, { x: c.x - 300, y: Y }, { x: c.x - 300, y: Y });
+     for (let i = 0; i < 30; i++) run.sim.frame({});
+     run.prog.relocate(run.sim.p);
+@@ -319,7 +321,7 @@ test('the marsh low road: gen2\'s piece with no dips is the walkway the line was
+   }
+ });
+ 
+-test('the marsh low road with a dip: he leads the line over its floor, home, nobody set back; RED with the floor off', () => {
++test('the marsh low road with a dip: he leads the line over its floor and it swims the dip, home, nobody set back; RED with the floor off, RED with the swim off', () => {
+   for (const [name, who] of WHO) for (const seed of SEEDS) {
+     const r = floodRun(who, seed, 0, { dips: 1, dip: 100 });
+     const at = `${name} seed ${seed}: ${JSON.stringify(r)}`;
+@@ -328,12 +330,14 @@ test('the marsh low road with a dip: he leads the line over its floor, home, nob
+     assert.equal(r.setBack, 0, at);
+     assert.equal(r.home, 3, at);
+     assert.equal(r.walked, true, `${at}: the line walked the floor`);
+-    // (NOT YET: the line paddling the dip. Measured (W2-LANE b): middle seed 1 paddled false: his hop over the dip rises over the banks'
+-    //  top, and a flood's water paddles only at or under its banks (followPlay.ts surf), so the line hops the dip on his arc with him.
+-    //  The fix is follow.ts's trail (a same-height hop over flood water becomes a swim across), 2-3's piece: the lead's ruling first)
++    // (his hop over the dip rises over the banks' top, where a flood's water never paddles (followPlay.ts surf): the line SWIMS the dip
++    //  because follow.ts record lays a same-height hop over flood water as a straight swim, the lead's ruling (b); planted below)
++    assert.equal(r.paddled, true, `${at}: the line paddled the dip`);
+   }
+   const off = floodRun(FT_MIDDLE, 1, 0, { dips: 1, dip: 100, floorOff: true });
+   assert.equal(off.walked, false, `planted, the floor off: ${JSON.stringify(off)}`);
++  const hop = floodRun(FT_MIDDLE, 1, 0, { dips: 1, dip: 100, swimOff: true });
++  assert.equal(hop.paddled, false, `planted, the swim off (the line hops the dip on his arc): ${JSON.stringify(hop)}`);
+ });
+ 
+ test('the marsh\'s close: with the read removed and late 19 the close turns the marsh deep and splits the line; RED with the close off', () => {

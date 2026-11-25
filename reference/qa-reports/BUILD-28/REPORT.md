@@ -28,6 +28,16 @@ may have ruled the dip paddle (below) or sent release-0.10.3's hash. Every run o
    (the strand verdict) as planned." Where: follow.ts record (:118; the landing branch :130 knows the take-off point i) takes a predicate
    from FollowPlay.step (followPlay.ts:154) that says a straight line at the take-off height over (x0, x1) is LIP water it paddles (a new
    FollowPlay method next to surf, :132, reading only safeWater entries with `lip`); keep the points up to the farthest follower's s.
+   ATTEMPT 1 (session 2, NOT committed; its diff: reference/qa-reports/BUILD-28/swim-attempt-1.diff): record cut the arc to a straight
+   swim on landing, keeping points with s <= the farthest 'follow' one's s, FollowPlay.swimAcross the predicate. RESULT on a frozen tree:
+   lineBot + follow + flood + followArt + floodLay 53/54, 2-3's follow tests GREEN, but the dip test still paddled false (middle seed 1):
+   the first little one, one gap (34 px) behind him, is already ON his arc when he lands, so 'keep the points a follower stands on'
+   keeps the arc, and the rest walk it too. NEXT (attempt 2, pace-neutral, nothing in the trail moved): leave the trail as it is; in
+   stepLine/FollowPlay, a follower whose trail position lies on an AIR stretch between two ground points at the same height (SAME_GROUND)
+   whose straight line is lip water (swimAcross) takes the straight line's y at its x, so surf paddles it at the surface. Its s advances
+   exactly as on the hop, so the read and late counts are unchanged vs the hop BY CONSTRUCTION (the lead's condition 2: still measure it:
+   lineBot floodRun every tier, seeds 1-3, plus the 100 px dip); the swim-off plant is the same instance override the diff carries.
+   Then the lead's 3 (lockall vs main) and 4 (stills upright and sideways of the line paddling a dip, judged as Matt would, paths to the lead).
    Still to do for 1c either way: the W2_FORK low road ON the marsh (W2_FORK_RIVERS.low: {dir 1, speed 0, logW 0, logs 0, safe,
    flood 'close', marsh {width 1400, floor 60, dips 4, dip 100}} per 2-8.md:9; W set back 60 from the water as floodRun's, so every drop
    is <= 90) with w2TwoRoad.test to it (do it WITH 1d, one shape change); check w2Finish lays no second river over it (hasRiver at
