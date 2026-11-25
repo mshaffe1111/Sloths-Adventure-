@@ -157,8 +157,9 @@ test("a catch crosses a vine: going down no wood lies across a climb vine; the v
 });
 
 test("a catch hands on to its storey: going down, a stopped vine's catch is never run on over ALL of its storey; off one of its ends he lands on that storey, so its leg is never skipped (the lead's ruling on LAY finding 2, ENG-DOWNBOT)", () => {
-  // (before: 51 stopped turns on 30 of 48 rolls (seeds 1-24 x both) passed their storey, normal 1's catch 581-1280 at y 11711 over
-  //  its storey 729-1144 at y 11889 among them; 11 of the 51 ran wall to wall, with no way off)
+  // (before: 69 stopped turns on 33 of 48 rolls (seeds 1-24 x both) passed their storey, normal 1's catch 581-1280 at y 11711 among
+  //  them (off it onto 11825, over the storey but beside it, then on to 12062, past its storey 729-1144 at y 11889); 11 of the 69 ran
+  //  wall to wall, with no way off)
   for (const d of BOTH) for (const seed of Array.from({ length: 12 }, (_, i) => i + 1)) {
     const st = draftRaw(seed, d);
     const T = st.gen2.tower as unknown as { turns: Array<{ x: number; from: number; to: number }>; width: number };
