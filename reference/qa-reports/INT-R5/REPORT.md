@@ -2,7 +2,45 @@
 
 Session 1: started 2:31 PM ET 11-24 (by `date`), handed over at the 28-minute box. Lead: session_01FhBbYN2CVHnFXg7XzqKXpM.
 
-## EXACT NEXT STEP (session 4 starts here)
+## EXACT NEXT STEP (INT-R5d, session 4: read this first)
+INT-R5d started 10:42 AM ET 11-25 (by `date`). Packet: packets/2026-11-25/INT-R5d.md (the lead's branch). Branch
+**release-0.10.3-wip-fixes** = origin/release-0.10.3 dfe631913 + t-fix-sidewall 1558489a2 (merge 0492396b) + t-fix-soil 849f4875b
+(merge a2b7dde04) + the inventory row (bb29e048d). Step 1 (the fixes merged early) is IN PROGRESS. NEXT, in order:
+1. Gates on the merged head (frozen detached worktrees in the scratchpad, chattr +i src tools, proven writable; the inventory commit
+   bb29e048d changes no engine input: the 'live post' slot has no reader and its status never read 'needs fix'):
+   (a) lockall `--layouts 16 --check reference/qa-reports/SIDEWALL-FIX/lock-main-cdffdc62.json` on dfe631913 (the release base) AND
+   on a2b7dde04; the two logs must list the SAME stages moved (the release's own); any difference is a move by the fixes: trace it.
+   (b) paintcheck `--part 0/3`, `1/3`, `2/3` on a2b7dde04: GREEN with BOTH rules (sideWall, soilOvers), no known list.
+   (c) then the CI tool line (gates.yml:157, read live) on bb29e048d; expect ONLY ENG-PLANT's 6 reds (firsttimer :184, riverRide
+   :107 :145 :207 :213 :229, owner ENG-PLANT) that its merge clears; any other red is the fixes' or the merge's: trace it.
+   (d) stills on bb29e048d (scratch int-shots.mjs = SIDEWALL-FIX tools/sw2.mjs + a 1-4 layout 1 start/summit job): 1-4 start and
+   summit, 1-6's two posts, 8-1's sliver; Normal and Easy, 844x390 and 390x844; look at each as Matt would; paths to the lead.
+2. Send the lead: the hash, the conflicts (below), the gate lines, the still paths. FIX-SOIL-b's own gate table on 539885c37 was NOT
+   yet on t-fix-soil (849f4875b, its REPORT says 'RUNNING: paintcheck full sweep, lockall'): re-fetch and read it; tell the lead.
+3. Step 1b when the lead sends ENG-PLANT's merged release-0.10.3 hash: the packet's 1b, then steps 2-4.
+
+## Step 1 (INT-R5d): the conflicts and their resolutions
+- Merge t-fix-sidewall (0492396b), all text, union: gates.yml:157 the CI tool line (the release's line + tools/engine/sideWall.test.ts);
+  gates.md row 8c (the fix's side-on-wall sentence) with the release's rows 8d/8e; handoffs/engine-core.md (0zs-SIDEWALL on top).
+- Merge t-fix-soil (a2b7dde04), src/game/protoArt.ts, 4 hunks + 2 follow-ons:
+  - drawBankArt: the soil fix's soilOutline(); the release's ENG-GROUND-e endFace `inner` argument (right ? p.x : p.x + p.width) carried
+    into soilOutline's one endFace call (else it would silently drop the release's narrow-wall fix).
+  - drawGround (2 hunks): the soil fix's bankOpen() (how.open, how.isWall), then the release's stacked-leg ceiling clip (ceilingsOver,
+    clipAbove) and, after drawBankArt, the release's ceiling underside (groundStack drawUnderside), as on the release.
+  - drawProtoScene: groundBanks(platforms); groundBanks now returns the sidewall fix's bankList(platforms, platforms.filter(paintedBank)):
+    ONE place, read by the painter and by the paint gate (paintFall.ts soilOvers).
+  - imports: two different drawUnderside (groundPaint's hung-bank underside, R-165.441; groundStack's stacked-leg ceiling); groundPaint's
+    is imported as drawHungUnderside.
+  - handoffs/engine-core.md: 0zs-SOIL on top.
+  - tsc clean on a2b7dde04.
+- Watch (engine's call, not mine): on 2-7 (stacked out-and-back legs) a bank over the lower leg can be BOTH hung (soilHangs, the soil
+  fix, cut from main where no leg is stacked) and under a ceiling (the release's clip + underside). The soil fix never met a stacked
+  leg; paintcheck's soilOvers on 2-7 and a 2-7 still at a stacked zone answer it.
+- Inventory (bb29e048d): hf678/w1-livepost-tall 'cut, not placed' -> placed on 1-6 (engine slot, footing, layer support, about 131x380
+  units on 1-6, pokey_scale 4.26, used in, status); CATALOG-MASTER.csv + catalog-rows-hf678.csv the same row; inventory/*.json
+  re-emitted (only that row changes, checked); src/game/art tests 16/16.
+
+## EXACT NEXT STEP (session 4 starts here; written by INT-R5c, kept for history)
 Session 3 (INT-R5c): started 3:20 PM ET 11-24 (by `date`). Head: release-0.10.3 = see `git log -1 origin/release-0.10.3` (session 3
 pushed 41cb842a1 part 3, 575022e30 the stamp fix, 86aad83a7 the FILL-14b merge, 6c1740d2b the TEACH-11 merge, 90faac0ba (ENG-PLANT's
 two REPORT-only commits merged in), then REPORT-only commits). In order:
