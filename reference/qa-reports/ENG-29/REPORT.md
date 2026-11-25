@@ -22,13 +22,21 @@ Normal, 2.40 s Easy at the lock): add it to the toy in (1) as a done-item (liana
 (b) 2-9.md:21 says 'Locked (river 5 frames ahead of the swing;
 Easy 0)': TempoSpec has ONE lock; if the design means a per-setting lock, add `easyLock` (or the river's offset) and a test.
 
-## Plan for NEW 2, the drum (not started)
-- src/audio/cues.ts: a `drum` cue; conductor.ts schedules it on the AUDIO clock at the beat (its LOOKAHEAD 0.6 s, conductor.ts:30), never
-  on the frame: BOOM on ONE = instruments.ts `taiko` (:509, the sampled bdrum), tok on 2-4 = `woodblock` (:447) or `rim` (:420).
-- The engine hands the conductor the stage's tempo (stage.tempo, set by gen2's finish) and gameTime -> the audio time map; doubled in the
-  twist (data on the cue); holds through a lost life's down (gameTime stands 0.75 s, engine.ts DOWN_SECS); NOT a heroNoise drum
-  (heroNoise.ts:26 `drum` stuns predators: a test that a tempo stage raises no 'drum' Sound).
-- Toy: over 60 s both settings every scheduled hit is within one frame of the beat; RED with the drum timed on wall time / the frame.
+## Plan for NEW 2, the drum (not started; hooks read in session 1)
+- A pure scheduler, src/audio/drum.ts: `drumHits(tempo, easy, g0, g1, doubled)` -> the hits with game time g in [g0, g1): ONE (beat index
+  % tempo.beats === 0) a 'boom', the rest a 'tok'; doubled = every half beat (the twist, data on the cue). Test it alone (counts, kinds, every
+  g on k*B exactly, both settings).
+- The audio clock: Conductor (src/audio/conductor.ts:88) already runs a lookahead scheduler in its tick (`this.amb?.update(now + LOOKAHEAD)`,
+  :659; LOOKAHEAD 0.6 s, :30). Add `drumTick(gameNow, audioNow)` beside it: schedule every hit with g in [scheduledTo, gameNow + LOOKAHEAD)
+  at audio time `audioNow + (g - gameNow)` with instruments.ts `taiko` (:509, sampled bdrum) for BOOM and `woodblock` (:447) or `rim` (:420)
+  for tok (DrumVoice: (core, dst, t, vel)); never through `fx()` (:393), which plays NOW and drops by MIN_GAP. The engine calls it each step
+  with gameTime when stage.tempo is set (stageGenerator.ts `tempo`, set by gen2's finish).
+- A lost life's down: gameTime stands (engine.ts DOWN_SECS 0.75 s): scheduledTo stays, so nothing past gameNow + LOOKAHEAD is ever
+  scheduled twice and no beat is skipped; ASK THE LEAD whether 'holds through the down' means the drum keeps time over it (game time
+  stands, so the next hits wait) or plays on in wall time; the stage clock standing argues for the first.
+- NOT a heroNoise drum (heroNoise.ts:26 `drum: { r: 620, stun: 3 }`): a test that a tempo stage raises no 'drum' Sound.
+- Toy: 60 s on both settings, every scheduled audio time minus its beat's audio time within one frame (1/30 s); RED with the drum scheduled
+  on the frame (audioNow at the step that passes the beat) or on wall time.
 
 ## Step 0: the merge (1:47 PM ET)
 t-eng-29-wip cut from origin/t-eng-28 = fda48b3d8; merged origin/release-0.10.3-wip-fixes = 4c73ac2ae (no force). Merge commit 791735cfa.
