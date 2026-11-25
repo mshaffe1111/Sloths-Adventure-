@@ -12,6 +12,7 @@
 import type { Tone } from '../audio/voiceLine.ts';
 import { Conductor } from '../audio/conductor.ts';
 import type { AmbientType } from '../audio/ambience.ts';
+import type { DrumBeat } from '../audio/drum.ts';
 import { enemyIndex, hitArg, type Material } from '../audio/combat.ts';
 import { CALM, type MusicState } from '../audio/adaptive.ts';
 import { PUZZLE_KIND } from '../audio/sfxGame.ts';
@@ -150,6 +151,14 @@ class SoundEngine {
   setLowHealth(on: boolean) {
     this.lowHealth = on;
     this.c.setLowHealth(on && this.inPlay);
+  }
+  /** the court's drum (2-9.md NEW 2): every engine step on a stage with a tempo, its beat (tempo.ts tempoBeat) and game time */
+  drumTick(beat: DrumBeat, gameNow: number, doubled = false) {
+    this.c.drumTick(beat, gameNow, doubled);
+  }
+  /** a life is lost: game time stops here, and the drum's hits not yet sounded are cut */
+  drumHold(gameNow: number) {
+    this.c.drumHold(gameNow);
   }
   /** what is happening, for the music to follow (see audio/adaptive.ts): danger 0..1, dark 0..1, exit 0..1, puzzle 0..1, boss phase, mood */
   setMusicState(s: Partial<MusicState>) {

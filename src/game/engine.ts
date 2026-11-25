@@ -180,6 +180,8 @@ import {
 } from './rules.ts';
 import { InputEngine } from './inputEngine.ts';
 import { sound } from './audio.ts';
+import type { DrumBeat } from '../audio/drum.ts';
+import { tempoBeat, type TempoSpec } from './tempo.ts';
 import { FIND_BY_ID } from './finds.ts';
 import { bossMaterial, materialFor } from '../audio/combat.ts';
 import { FEET, endStagger, isPredator, staggerPredator, stepPredator, stepSpider, turtleGuard } from './predatorAI.ts';
@@ -633,6 +635,16 @@ export class GameEngine {
   private readonly breathLags = new Map<string, number>();
   private breathWatch: BreathWatch[] = [];
   private get gameTime(): number { return this.clock.time(); }
+  /** the court's drum (2-9.md NEW 2, R-165.449): the stage's beat on this run's setting, made once per tempo */
+  private drumBeat: { t: TempoSpec; b: DrumBeat } | null = null;
+  /** every step on a stage with a tempo (after the clock's step, and through a lost life's down, where game time stands): the drum's
+   *  hits are put on the audio clock where game time will reach them (audio/drum.ts DrumSchedule) */
+  private drumStep() {
+    const t = this.currentStage.tempo;
+    if (!t) return;
+    if (this.drumBeat?.t !== t) this.drumBeat = { t, b: { beats: t.beats, beat: tempoBeat(t, this.easy) } };
+    sound.drumTick(this.drumBeat.b, this.gameTime);
+  }
   private set gameTime(t: number) { this.clock.seek(t); }
   private standingOnId: number = -1;
   private riverHinted = false;
@@ -1801,9 +1813,11 @@ export class GameEngine {
     // a life lost: the world holds for the beat (AN-1; in update, so the bots that play the engine directly have it too)
     if (this.down) {
       this.stepDown(dt);
+      this.drumStep();
       return;
     }
     this.clock.step(dt);
+    this.drumStep();
     // (a breathing row aimed at his last put-back: when he reaches its mark, the pace he came back at is kept for the next: breathAim.ts)
     if (this.breathWatch.length) this.breathWatch = noteArrivals(this.breathWatch, this.player.x + this.player.width / 2, this.clock.time(), this.breathLags);
     this.irisOpen = Math.max(0, this.irisOpen - dt);
@@ -5834,6 +5848,8 @@ export class GameEngine {
     this.player.vx = 0;
     this.camera.trauma = Math.max(this.camera.trauma, 0.25);
     this.down = { t: 0, reason, last };
+    // (game time stops here: the drum's hits not yet sounded are cut, put back on their beats when it runs again)
+    if (this.currentStage.tempo) sound.drumHold(this.gameTime);
   }
 
   /** the life-lost beat, one frame: when it is over, the flag (or the Game Over card) */

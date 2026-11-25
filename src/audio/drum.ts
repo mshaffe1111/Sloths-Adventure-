@@ -21,19 +21,26 @@ export function drumHits(b: DrumBeat, g0: number, g1: number, doubled = false): 
   return out;
 }
 
-/** how far ahead of game time the drum is scheduled (s): two frames. The engine calls the drum every step, so the lookahead only has to
- *  ride out one late frame; a longer one (the ambience's 0.6 s) would leave hits sounding on wall time through a lost life's down */
-export const DRUM_AHEAD = 2 / 30;
+/** how far ahead of game time the drum is scheduled (s): three frames. The engine calls the drum every step and catches a late frame up in
+ *  up to three steps in one audio moment (engine.ts loop: a stall of two frames is the most it plays through), so every hit a stall passes
+ *  was already on the audio clock (drum.test.ts: two frames ahead lands a 2-frame stall's hits late). A lost life's down cuts what is ahead
+ *  (the engine's drumHold), so a longer lookahead never sounds on wall time through it */
+export const DRUM_AHEAD = 3 / 30;
 
 /** game time that moves more than this in one step has jumped (s): a seek, never play (one step is 1/30 s) */
 export const DRUM_JUMP = 0.25;
+
+/** how many steps the anchor between the clocks remembers: the engine catches a late frame up in up to three steps in one audio moment
+ *  (engine.ts loop), so the step before them still holds the clocks' true distance */
+export const DRUM_ANCHOR = 4;
 
 /** a hit to start on the audio clock: its beat on game time, its kind, and the audio time it sounds at */
 export interface DrumCue extends DrumHit { at: number }
 
 /**
  * The drum's schedule (2-9.md NEW 2; the lead's ruling: GAME TIME). Called every engine step with the game's time and the audio clock's:
- * each hit is put on the audio clock at audioNow + (g - gameNow), re-anchored every step, so it sounds when the game reaches its beat,
+ * each hit is put on the audio clock at g + the clocks' distance (audio less game time, the least over the last DRUM_ANCHOR steps, so a
+ * late frame's catch-up steps do not push it a frame late), re-anchored every step, so it sounds when the game reaches its beat,
  * in step with the logs and the lianas (which run on game time). While game time STANDS (a lost life's 0.75 s down, engine.ts stepDown)
  * nothing new is scheduled and any hit not yet sounded is cut (`cut`: the conductor drops the drum's bus), to be put back on the audio
  * clock when game time runs again: the next hit falls on the clocks' next beat, never a burst of beats, never drifting off them. Game time
@@ -44,6 +51,11 @@ export class DrumSchedule {
   private to = NaN;
   private last = NaN;
   private pending: DrumCue[] = [];
+  /** audio time less game time on the last DRUM_ANCHOR running steps: the least is the clocks' distance (a late frame's first catch-up
+   *  step sees game time a frame behind the audio clock for one moment; anchored on it alone, a hit entering then would sound a frame late) */
+  private offs: number[] = [];
+  /** `anchor`: the steps the clocks' distance is the least over (DRUM_ANCHOR; 1 is the step alone, which drum.test.ts shows lands late) */
+  constructor(private readonly anchor = DRUM_ANCHOR) {}
 
   step(b: DrumBeat, gameNow: number, audioNow: number, doubled = false, ahead = DRUM_AHEAD): { play: DrumCue[]; cut: boolean } {
     if (!Number.isNaN(this.last) && gameNow <= this.last + 1e-9) {
@@ -51,14 +63,20 @@ export class DrumSchedule {
       const cut = this.hold(gameNow, audioNow);
       if (gameNow < this.last - 1e-9) this.to = gameNow;
       this.last = gameNow;
+      this.offs = [];
       return { play: [], cut };
     }
     this.pending = this.pending.filter((h) => h.at > audioNow);
     // (a first step, or game time that JUMPED (a stage started again, a resume at a flag): from now, never a burst of the beats behind it.
     // Otherwise from what is owed: a beat the game passed inside this step (one cut at a hold, met as game time runs again) sounds now,
     // at most a step late, never skipped)
-    const from = Number.isNaN(this.to) || gameNow - this.last > DRUM_JUMP ? gameNow : Math.max(this.to, this.last);
-    const play = drumHits(b, from, gameNow + ahead, doubled).map((h) => ({ ...h, at: Math.max(audioNow, audioNow + (h.g - gameNow)) }));
+    const jumped = Number.isNaN(this.to) || gameNow - this.last > DRUM_JUMP;
+    const from = jumped ? gameNow : Math.max(this.to, this.last);
+    if (jumped) this.offs = [];
+    this.offs.push(audioNow - gameNow);
+    if (this.offs.length > this.anchor) this.offs.shift();
+    const off = Math.min(...this.offs);
+    const play = drumHits(b, from, gameNow + ahead, doubled).map((h) => ({ ...h, at: Math.max(audioNow, h.g + off) }));
     this.pending.push(...play);
     this.to = Math.max(from, gameNow + ahead);
     this.last = gameNow;
@@ -72,6 +90,7 @@ export class DrumSchedule {
    */
   hold(gameNow: number, audioNow: number): boolean {
     this.pending = this.pending.filter((h) => h.at > audioNow);
+    this.offs = [];
     if (!this.pending.length) return false;
     this.to = Math.min(Number.isNaN(this.to) ? Infinity : this.to, ...this.pending.map((h) => Math.max(h.g, gameNow)));
     this.pending = [];

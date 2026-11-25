@@ -111,3 +111,68 @@ test('drum (planted RED): without the engine\'s hold the stand is seen a step la
   const f = drumOff(b, play(b, 20, [[10 * b.beat - 0.02, 23]], late), 19);
   assert.match(f.join('; '), /the tok for the beat at game time 8\.250 s sounds -0\.7\d\d s off it/);
 });
+
+// ---- the on-frame RED (ENG-29 NEW 2 (e)): the real loop (engine.ts loop) draws a frame every 1/30 s of wall time; a LATE frame comes one
+// or two frames late and catches up in two or three steps in ONE audio moment. The truth: game time keeps wall time (the catch-up), so a
+// hit at game time g is due at the audio clock's g + its start. A drum scheduled ON THE FRAME (at the step that passes its beat) lands a
+// frame or more late; DrumSchedule's lookahead lands every hit on its beat; anchored on the step alone (no memory of the clocks' distance),
+// a hit that enters the lookahead on a catch-up step's first step lands a frame late; two frames ahead, a 2-frame stall's hits land late.
+type Sched = (b: DrumBeat, gameNow: number, audioNow: number) => Array<{ g: number; at: number }>;
+const DT = 1 / 30;
+const START = 5; // the audio clock's time as the stage starts
+/** a minute of the loop with a late frame now and then (1, then 2 frames late, in turn); every hit sounded, with its g and audio time */
+function loop(sched: Sched, b: DrumBeat, every = 7): Array<{ g: number; at: number }> {
+  const out: Array<{ g: number; at: number }> = [];
+  let late = 0;
+  for (let f = 1; f <= 60 * 30; ) {
+    const lag = f % every === 0 ? 1 + (late++ % 2) : 0;
+    const audioNow = START + (f + lag) * DT;
+    for (let k = 0; k <= lag; k++) out.push(...sched(b, (f + k) * DT, audioNow));
+    f += lag + 1;
+  }
+  return out;
+}
+/** every hit not on its beat, in words (none: on the beat); and every beat from 1 s to 59 s sounded exactly once */
+function offBeat(hits: Array<{ g: number; at: number }>, b: DrumBeat): string[] {
+  const out: string[] = [];
+  for (const h of hits) {
+    const late = h.at - (START + h.g);
+    if (Math.abs(late) > 1e-3) out.push(`the hit at game ${h.g.toFixed(4)} s sounds ${(late * 1000).toFixed(1)} ms ${late > 0 ? 'late' : 'early'}`);
+  }
+  const want = drumHits(b, 1, 59).map((x) => x.g.toFixed(6));
+  const got = hits.filter((h) => h.g >= 1 - 1e-9 && h.g < 59 - 1e-9).map((h) => h.g.toFixed(6));
+  if (got.join() !== want.join()) out.push(`${got.length} hits from 1 s to 59 s, ${want.length} beats`);
+  return out;
+}
+const onFrame = (): Sched => {
+  let last = 0;
+  return (b, gameNow, audioNow) => {
+    const h = drumHits(b, last, gameNow).map((x) => ({ g: x.g, at: audioNow }));
+    last = gameNow;
+    return h;
+  };
+};
+const lookahead = (anchor?: number, ahead?: number): Sched => {
+  const s = new DrumSchedule(anchor);
+  return (b, gameNow, audioNow) => s.step(b, gameNow, audioNow, false, ahead).play;
+};
+
+test('drum on late frames: the schedule lands every hit on its beat on both settings; RED on the frame, and RED anchored on the step alone', () => {
+  for (const b of [NORMAL, EASY]) {
+    for (const every of [7, 3]) {
+      assert.deepEqual(offBeat(loop(lookahead(), b, every), b), [], `the schedule, beat ${b.beat} s, a late frame every ${every}`);
+      // (planted: on the frame, at the step that passes the beat: late, by name, a frame and more on the beats a late frame passes)
+      const red = offBeat(loop(onFrame(), b, every), b);
+      assert.ok(red.length > 0, 'on the frame is RED');
+      assert.match(red[0], /^the hit at game \d+\.\d{4} s sounds \d+\.\d ms late$/);
+      const worst = Math.max(...red.map((r) => Number(/sounds ([\d.]+) ms/.exec(r)?.[1] ?? 0)));
+      assert.ok(worst >= DT * 1000, `on the frame, the worst is a frame or more late (${worst} ms)`);
+      // (planted: the clocks' distance from the step alone: a hit entering on a catch-up's first step a frame late)
+      const alone = offBeat(loop(lookahead(1), b, every), b);
+      assert.ok(alone.length > 0 && alone.every((r) => / late$/.test(r)), `anchored on the step alone is RED: ${alone.length}`);
+      // (planted: two frames ahead, as session 2 had it: a 2-frame stall's hits were never on the audio clock before it, so they sound late)
+      const short = offBeat(loop(lookahead(undefined, 2 / 30), b, every), b);
+      assert.ok(short.length > 0 && short.every((r) => / late$/.test(r)), `two frames ahead is RED: ${short.length}`);
+    }
+  }
+});
