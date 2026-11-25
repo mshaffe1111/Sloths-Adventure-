@@ -1,0 +1,14 @@
+// aimprobe.mts <tree> <bot> <setting> <stage> <seed> <t0> <t1>: WaitAim draws, notes and fresh() refusals between t0 and t1
+const [tree, bot, setting, stage, seedS, t0s, t1s] = process.argv.slice(2);
+const t0 = Number(t0s), t1 = Number(t1s);
+await import(`${tree}/src/game/headlessDom.ts`);
+const ft: any = await import(`${tree}/tools/inspect/firsttimer.ts`);
+const cb: any = await import(`${tree}/tools/inspect/castBots.ts`);
+const who = cb.CAST_BOTS[bot][setting];
+const P = ft.WaitAim.prototype; const at0 = P.at, fr0 = P.fresh, no0 = P.note;
+const caller = () => (new Error().stack ?? '').split('\n').slice(3, 5).map((s) => s.trim().replace(/.*firsttimer\.ts:/, 'ft:').replace(/\)$/, '')).join(' < ');
+P.at = function (dir: number, t: number, draw: any) { const d0 = this.draws; const h = at0.call(this, dir, t, draw); if (t >= t0 && t <= t1 && this.draws !== d0) console.log(`DRAW t ${t.toFixed(3)} dir ${dir} log ${this.onLog} ${h.kind} ${h.hold.toFixed(3)} | ${caller()}`); return h; };
+P.fresh = function (t: number) { const r = fr0.call(this, t); if (r && t >= t0 && t <= t1) console.log(`FRESH t ${t.toFixed(3)} log ${this.onLog} drawn t ${this.drawn?.t.toFixed(3)} | ${caller()}`); return r; };
+P.note = function (dir: number, t: number, h: any) { if (t >= t0 && t <= t1) console.log(`NOTE t ${t.toFixed(3)} log ${this.onLog} ${h.kind} | ${caller()}`); return no0.call(this, dir, t, h); };
+let f = 0;
+ft.firstTimer(stage, Number(seedS), who, { cap: Math.ceil(t1) + 2, dotSetting: true, onFrame: (sim: any) => { f++; const e = sim.e; if (f / 30 >= t0 && f / 30 <= t1 && f % 3 === 0) console.log(`f${f} t${(f / 30).toFixed(2)} x${e.player.x.toFixed(0)} vx${e.player.vx.toFixed(0)} g${e.player.grounded ? 1 : 0} on${e.standingOnId}`); } } as any);

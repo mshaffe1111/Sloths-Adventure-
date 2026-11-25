@@ -1,4 +1,41 @@
-# ENG-PLANT-CI: the 9 CI-tool-line reds on c27 (session 3 hand-over written 12:38 PM ET 11-25 by `date`; sessions 2 and 1 below it)
+# ENG-PLANT-CI: the 9 CI-tool-line reds on c27 (session 4 hand-over written 12:57 PM ET 11-25 by `date`; sessions 3, 2 and 1 below it)
+
+## EXACT NEXT STEP (session 5)
+1. Red 4 (the lead's order item 2, word for word: "Red 4 (hopJudged Easy 5: edgeWait predicted a fall, but the engine's overSmall
+   steered him back onto #18 at 23.6 px past its middle against a 22.5 px threshold): the per-frame hopFlight vs engine comparison. The
+   BOT's model matches the ENGINE (judged = flown). A toy each way. Then the races + flips again."). Build the probe on frozen
+   /home/user/fz-ci7 (b0f55fc13): copy hopFlight (firsttimer.ts:1078) into a probe with a per-frame print (b.x, b.vy, steer before and
+   after the thumb, past vs 0.15 w, the log's x), fly it for #18 with Easy 5's edgeWait args (t 21.77, x 16688; HOP_TRACE's row gives
+   the hop, thumb and ThumbAt), and print the run's own frames beside it (rowprobe.mts W0=21.7 W1=22.3, plus the run's overSmall result
+   per frame); the first frame they part names the wrong side. Fix general, a toy each way, on CI-7.
+2. Then on the final head, once each (at most two heavy runs at a time): the races (margins.mts, 10), the known flips (ci-tools/set1-m.sh
+   + cmp3.py vs c27: 21 rows = c27, the 2 named child rows below may differ; 0 BAR PASS -> FAIL), the 4 files (only reds 5-9 red), the
+   wide sample (wide-m.sh on the c-report branch, seeds 1-10, every bot, both settings, 2-1/2-2/2-4: 0 BAR PASS -> FAIL vs main), 2-7 x40
+   (at or above 29/40), tierBots 9/9 and tsc. Push, ls-remote, send the lead the hash and one line per item.
+Setup in a fresh container: `npm ci --no-audit --no-fund --legacy-peer-deps`, frozen trees as below (git worktree add --detach, symlink
+node_modules, chattr -R +i src tools, chattr -i src/game/gen2/proven); tools from ci-tools/*.txt (use the repo's node_modules/.bin/tsx).
+
+## SESSION 4 END STATE: HEAD = CI-7 b0f55fc13 (CI-6 + the kid's front stand narrowed) + this file. Order item 1 CONVERGED
+**The bisect (data/ci/bisect-21.txt; frozen fz-base d742d0469 = c27's head, fz-ci1 246d90533, fz-ci2 82b7f4c8d, fz-ci3 fa132c831,
+fz-ci6 cc4251ece; 6-11 s a row):** c27's head reproduces c27 exactly; **CI-1 moves all three rows**; CI-2 moves child N11 again (CI-1
+369.0 s 2 lives -> 357.2 s 1 life); CI-3 = CI-4 = CI-6 on all three (their code is race-leg only: SKILLS.race, the pacer; 2-1 has none).
+Inside CI-1, one toggle at a time on CI-6 (var.sh): kid N19 returns to c27 EXACTLY with ft:3847 (the refused-log front stand) at 31;
+the two child rows part from c27 at WaitAim.fresh (CI-1's honest aim).
+| row | c27 | CI-6 | the candidate and the line | first parting (data/ci/partings-21.txt) | judged |
+|---|---|---|---|---|---|
+| 2-1 kid Normal 19 | FAIL 156.4 s r2 l6 | FAIL 159.2 s r3 l8 | CI-1, frontStandPx(kid) 31 -> 50 at the refused-log front stand (CI-6 ft:3847) | f2981 t 99.37, log #86 (drift BACK at him), x 19565, 40 px behind its front: c27 walks to 31 and hops on to #85 (t 99.50, lands); CI-6: 40 <= 50, no walk, he stands still and is ridden back | **NOT INTENDED**: the 50 is a let-go at FULL run; standing still there is no run-on to cover, so he stands where no hop is judged landing. No kid case was traced for CI-1 (its case: the child's reAim toy phase 1.5). **Narrowed in CI-7: c26StandPx = frontStandPx for the child (SKILLS.reAim's tier), 31 for every other tier, at c26's three front stands (ft:3693, 3854, 3888); raceStandPx untouched** |
+| 2-1 child Easy 2 | PASS 268.7 s r0 l0 | PASS 288.2 s r0 l0 | CI-1, the honest aim: tablePick's `if (this.aim.fresh(t)) return null` (ft:2035 on CI-7), from ft:3474 | f2172 t 72.37, log #43 (drift his way), x 8602: the wait's draw (CI-7 ft:3462) single 0.038 refused, tablePick IN THE SAME FRAME (0.000 s apart) refused by fresh; c27 re-picked padPause's double 0.219 onto #44 | **INTENDED, named**: the traced case's own shape (riverRide's honest-aim toy phase 0: "a re-draw 0.000 s apart"); +19.5 s, 0 lives, PASS |
+| 2-1 child Normal 11 | PASS 376.1 s r0 l0 | PASS 357.2 s r0 l1 | the same (ft:2035), then CI-2 (the judged hop: CI-1 l2 -> CI-2 l1) | f4504 t 150.10, log #64 (his way), x 14292: the same shape (draw single 0.091, tablePick refused 0.000 s apart); c27 hopped on to #65 | **INTENDED, named**; the life is downstream, 52 s later on another draw path: t 202.67 the upstream hop off #86 at x 19689 judged q -2 (the aim judged landing, the drawn thumb noise falls: the child's own fumble), in the water at x 19953 f6109 |
+**CI-7 (frozen fz-ci7 b0f55fc13; data/ci/set1-ci7, cmp3.py): the 10 known-flip files, 23 rows: 21 = c27 ROW FOR ROW (kid N19 back to c27;
+2-2/2-4 unchanged), the 2 moved = the two named child rows above; 0 BAR PASS -> FAIL.** riverRide on CI-7: 29 tests, 27 pass, 2 fail =
+:266 (red 7) and :282 (red 9), the plants lane's; the reAim toys (reds 1-2) and the race-leg front-stand toy GREEN. tsc clean.
+The races are not re-run on CI-7: the middle (the racer) is not the reAim tier and its stand stays 31, raceStandPx is unchanged, so CI-7
+cannot move a race; they are re-run once on the final head (next step 2).
+Lessons applied (session 4): D115 (verdicts on chattr-frozen trees; toggles only on /home/user/bis, one run at a time), D119 (commit
+messages from a file), D128 (stamps from date), D133 (narrowed to the traced tier, no sweep), D134 (pushed and ls-remote'd before the
+message), D138 (re-fetched before the first commit), rule 28 (every moved row bisected to its candidate and line and traced by frame
+before the fix), law 22 (no test weakened).
+
 
 ## SESSION 3 END STATE: HEAD = CI-6 12cd548e4 (CI-5 NARROWED, the lead's ruling item 1) + this file. CI-5 36da03dd4 is SUPERSEDED
 **CI-6 (firsttimer.ts, from CI-4's code):** `raceStandPx(who)` = frontStandPx(who) + one frame at maxRun (the decision frame; adult 41,
