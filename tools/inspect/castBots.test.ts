@@ -246,6 +246,20 @@ test('a way down: on wood over the way on, he walks off its end where the way co
     // (which end: 10 px under the wood he is still by the end he left, a little steer back in the air allowed)
     if (off === null || off < 700) miss.push(`${who.name}${who.setting === 'easy' ? ' easy' : ''} thumb ${k}: ${off === null ? 'never left the wood' : `off at x ${Math.round(off)}, not its right end`}`);
   }
+  // (and a vine down from his own wood is a way off it: wall-to-wall wood, a turn vine whose top stands on it, the way on straight
+  //  down the vine, then on along the floor past his wood's far end; with the vine read as 'under his wood' he went for that far end
+  //  and stood turning at the bottom storey, 'the way on is 93 px down', ENG-DOWNBOT)
+  for (const who of await ALL()) for (let k = 1; k <= 3; k++) {
+    let on = false;
+    downArena({
+      who, k, at: { x: 500, y: 500 },
+      platforms: [thin(9001, 0, 500, 1200), thin(9003, -400, 900, 3000)],
+      vines: [{ x: 160, topY: 500, bottomY: 900 }],
+      route: [...Array.from({ length: 9 }, (_, i) => ({ x: 500 - i * 40, y: 500 })), ...Array.from({ length: 10 }, (_, i) => ({ x: 160, y: 540 + i * 40 })), ...Array.from({ length: 36 }, (_, i) => ({ x: 200 + i * 40, y: 900 }))],
+      seen: (sim) => { if (sim.p.grounded && sim.standingOn === 9003) on = true; },
+    });
+    if (!on) miss.push(`${who.name}${who.setting === 'easy' ? ' easy' : ''} thumb ${k}: never down the vine off his wall-to-wall wood`);
+  }
   assert.deepEqual(miss, []);
 });
 

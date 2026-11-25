@@ -1739,8 +1739,12 @@ export class FirstTimerRun {
       grew = false;
       for (const q of feet) if (q.x <= hi + 2 && q.x + q.width >= lo - 2 && (q.x < lo || q.x + q.width > hi)) { lo = Math.min(lo, q.x); hi = Math.max(hi, q.x + q.width); grew = true; }
     }
+    // (a climb vine down from his wood's height is a way off it too: read as under his wood, he went for the far end of wall-to-wall
+    //  wood and stood turning over the bottom storey, 'the way on is 93 px down')
+    const downVines = this.sim.vines.filter((v) => v.vineType === 'tree_climb' && !v.off && Math.abs(v.topY - p.y) <= 20 && v.bottomY > p.y + 40);
+    const offWood = (q: Pt) => q.x <= lo + 8 || q.x >= hi - 8 || downVines.some((v) => Math.abs(v.x - q.x) <= 12);
     for (let j = this.prog.cur; j < Math.min(pts.length, this.prog.cur + 160); j++) {
-      if (pts[j].y <= p.y + 40 || (pts[j].x > lo + 8 && pts[j].x < hi - 8)) continue;
+      if (pts[j].y <= p.y + 40 || !offWood(pts[j])) continue;
       const dx = pts[j].x - p.x;
       return dx > 8 ? 1 : dx < -8 ? -1 : 0;
     }
