@@ -6,14 +6,12 @@ body plus a **24 px margin** clear (>= 66 px; the margin is the 24 px he steps p
 **Planted tower.test 'going down, no slot': RED on c9c80a0e (207-446@1470 | 478-658@1476 gap 32), GREEN after (the catch lies
 458-638@1476, a 12 px crack).** slots.mts (now takes DY0/DY1) on 571d6e2a9: **slots 47 on 25 of 48, by gap 0:18 10:28 20:1: 40-60 px
 107 -> 0**. roomcount.mts: **lids 0, roofs 0, refused 0 of 48.** Other bands on c9c80a0e (info, not in the rule): dy 0 (same level)
-45 slots (30-60 px: 18; a section's own hop gaps may be among them); dy 9-19: 16 (40-60 px: 8). **THE CURE TEST (CI #81), kid+adult
-x40, rows/castbots-571d6e2a9-kidadult-1-40.jsonl (frozen tree, --par 2 --rows, 2 runs): rescues 342 (old lay 7d12c344b) / 446
-(today, ab35ee9b) -> 105. All 160 reach the shrine.** By bot (new vs today): kid N 34 vs 49 (pass 23 vs 11), kid E 2 vs 163 (38 vs 0),
-adult N **50 vs 39 (13 vs 16, WORSE)**, adult E 19 vs 195 (23 vs 0). **Causes split (probes/causes.mts, x only: rows carry no y):
-today 446 = slot 290, vine-top 131, rest 32; new 105 = slot 0, vine 0, rest 79 stuck spots (+26 rescues with no stuck record).** Top
-cause now 'the way on is N px down' (64 of 79). **Kid N clean minimum 115.8 s (was 87.8).** **NEW FINDING, owed a trace: the lay is
-SLOWER on clean runs. Clean median kid N 98 -> 140 s, adult N 99 -> 141 s (easy now 141/140 too)**; same seed, 0 rescues both: kid N
-36 99.4 -> 125.4 s, kid N 39 98.6 -> 166.2 s (R0 -> R1); kid N 37 149.8 -> 287.6 s. **Next, in order:** (a) trace kid N 36 on both
+45 slots (30-60 px: 18; a section's own hop gaps may be among them); dy 9-19: 16 (40-60 px: 8). **THE CURE TEST (CI #81): my first x40 was VOID (box 10's own miss): castBots ran WITHOUT `GEN2_DRAFT=3-1`, so it played a
+3-1 that is not the draft (caught: probes/trace.mts, which readies the draft, gave kid N 36 99.4 s R0 on BOTH trees while that row said
+125.4 s). Its rows are removed and every number from them withdrawn (the '446 -> 105', the cause split, the 'slower' finding). The
+re-run with GEN2_DRAFT=3-1 on the frozen 571d6e2a9 tree: see the result line below.** Countermeasure proposed to the lead: castBots
+refuses `--stage` on a draft that is not readied (a check first, so no run can play the wrong stage again).
+**Next, in order:** (a) trace kid N 36 on both
 trees (probes/trace.mts; trees: `git worktree add --detach` of 571d6e2a9 and c9c80a0e, symlink node_modules, `chattr -R +i src
 tools`): is the 26 s a longer route (prog.pts length, storeys passed) or a soft stall under the rescue clock (stood still or to and
 fro)? A stall is a cause to fix (name its shape); a longer route is recorded (it helps the length debt). (b) adult N worse (39 -> 50):
