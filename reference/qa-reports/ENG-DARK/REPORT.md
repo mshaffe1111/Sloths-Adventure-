@@ -1,27 +1,39 @@
 # ENG-DARK REPORT (the dark + light ring as one gen2 brick; WORLD-3-PLAN F2; R-165.449)
-**EXACT NEXT STEP (ENG-DARK-d hand-over, 12:19 PM ET by `date`; code head ef811c2a on t-eng-dark-wip = b71163ea + the cause-2 fix):**
-(1) **Unlit cause 2 is FIXED and it was the BOT (b), not the wake (box 4 item 1 below).** Box 4's x40 is RUNNING in box 4's container
-on a frozen ef811c2a (`GEN2_DRAFT=3-1 castBots --stage 3-1 --setting both --par 2 --rows`, every bot): lanes seeds 1-14 and 15-27 started
-12:16 PM ET; lane 28-40 starts when the first ends (two heavy runs at most). **Box 4 records it here when it ends; nothing else (do not
-re-run it).** Its PASS: litAhead unlit = 0 (or each one traced), gaveUp named per bot, shrine >= 359/360, rescues vs box 3's base x40
-(1,393, `cast-3-1-x40-base-c1008d8e.jsonl`) with no rescue kind the base lacks.
-(2) **The next box, in ITS own container, while (1) runs (2 heavy at most there too):** on a frozen ef811c2a (worktree, node_modules
-linked, `chattr -R +i src tools reference`): the plants (`python3 reference/qa-reports/ENG-DARK/planted-faults.py <wt>`, now **15**:
-box 4 added 14 'the dark stop never turns him to face the rim' and 15 'a dark give-up kept for the whole run'; PASS 15/15 CAUGHT), then
-tierBots (`npx tsx --test tools/inspect/tierBots.test.ts`, 9/9), then the suite (3 shards) + the CI tool line. If (1) shows a new kind,
-its fix moves the head and these re-run once on the new head.
-(3) LAND on t-eng-w3 (still c1008d8e at 12:16 PM ET; ENG-DOWNBOT-f not landed): merge origin/t-eng-w3 first, no force; if ENG-DOWNBOT-f
+**EXACT NEXT STEP (ENG-DARK-d, 12:27 PM ET by `date`; code head f68c5ca1 on t-eng-dark-wip = b71163ea + the cause-2 fix + the cause-3 fix):**
+(1) **Box 4 fixed unlit causes 2 and 3, both BOT faults (box 4 items 1 and 4).** ef811c2a's x40 is recorded (item 2: unlit 58 -> 13,
+rescues 1,391 vs base 1,393, gaveUp 0, shrine 359/360). **The x40 on a frozen f68c5ca1 is RUNNING in box 4's container (item 7); box 4
+records it; do not re-run it.**
+(2) **OPEN, for the lead (box 4 items 5-6):** cause 4, a landing AT the next dark rim (adult Easy 30: lands running 5 px from it; the stop
+cannot hold him): bot (the air steer into the dark) or lay (darkGaps does not ask the landing's distance to the next dark rim)? And: does a
+trunk grab past a rim count as going over for 'lit 1 s ahead'? Then two traces per remaining kind (child Easy 1/20/23, middle Easy 12 on
+f68c5ca1 if they persist), and the dark-only strand (child Easy 25, 295.9 s, on 653bb970, ef811c2a, not in the base).
+(3) **Gates on the FINAL head (in its own container if box 4's x40 still runs; 2 heavy at most):** a frozen worktree (node_modules linked,
+`chattr -R +i src tools reference`): plants (`python3 reference/qa-reports/ENG-DARK/planted-faults.py <wt>`, now **16**: box 4 added 14
+'the dark stop never turns him to face the rim', 15 'a dark give-up kept for the whole run', 16 'the dark stop never reads the pressed
+steer'; PASS 16/16 CAUGHT), tierBots (`npx tsx --test tools/inspect/tierBots.test.ts`, 9/9; firsttimer.ts changed, 1-1 has no dark so
+glowWait/glowSteer return before any random draw), the suite (3 shards) + the CI tool line.
+(4) LAND on t-eng-w3 (still c1008d8e at 12:27 PM ET; ENG-DOWNBOT-f not landed): merge origin/t-eng-w3 first, no force; if ENG-DOWNBOT-f
 landed first, run its tests (w3.test, tower.test, castBots.test down toys) and ours (dark.test, darkBots.test) on the merged head, name
 every conflict here, never drop the other lane's lines; lockall once on the frozen final merged head (`lockall --layouts 16 --out
-lock-base.json` on frozen t-eng-w3, then `--check` on the frozen merged head: no listed stage moves). **KNOWN LANDING RISK (box 4's
-preview, item 3 below):** ENG-DOWNBOT's lay moves the 3-1 rolls, and on a merge with its WIP (7b1aa3ba) toy B goes RED (roll 19 holds no
-give-up: gaveUp 2 expected, 0 actual; toy A and the 3 old toys GREEN). On the merged head, re-pick the roll of toy B (and of toy A if
-plant 14 is MISSED there) with `npx tsx reference/qa-reports/ENG-DARK/toyscan.mts FT_CHILD 1-40 50 noturn` (B: a seed printing 'SAME RIM
-TWICE'; A: a seed where the old code, plant 14 applied, is unlit), change only the seed and its comment, and re-run darkBots.test and
-plants 14-15 there. The x40 numbers stay those of ef811c2a's lay (the lead's landing rule asks the other lane's tests and lockall on the
-merged head, not a second x40). Send the lead the hash, the READY
-measures and the ENG-SPORE light API line (sections below). LANDED by 2:30 PM ET; HARD STOP 4:00 PM ET.
-(4) **STILLS APPROVED by the lead.** Dot's card upright under Pokey is **R-165.456** (FIX-CARD-DOWN, its own job), not this lane's.
+lock-base.json` on frozen t-eng-w3, then `--check` on the frozen merged head: no listed stage moves). **KNOWN LANDING RISK (item 3):**
+ENG-DOWNBOT's lay moves the 3-1 rolls; on a merge with its WIP (7b1aa3ba) toy B went RED (roll 19 holds no give-up; the rest GREEN). On
+the merged head re-pick the rolls of toys A/B/C where they no longer hold with `npx tsx reference/qa-reports/ENG-DARK/toyscan.mts FT_CHILD
+1-40 50 noturn` (B: 'SAME RIM TWICE'; A and C: a seed whose old code (plant 14 / 16 applied) is unlit), change only the seed and its
+comment, re-run darkBots.test and plants 14-16 there. Send the lead the hash, the READY measures and the ENG-SPORE light API line
+(sections below). LANDED by 2:30 PM ET; HARD STOP 4:00 PM ET.
+**THE LEAD'S RULINGS on box 4's open questions (word for word; box 5 carries them):**
+- (3) adult Easy 30 (a drop lands him running 5 px from the NEXT dark rim at full speed): treat it as LAY FAIRNESS first, because a player
+  who drops onto a ledge cannot stop 5 px short of a dark edge either. A NEW named verdict in the darkGaps family: 'a drop's landing is at
+  least his stopping distance from the next dark rim, or that rim is already lit when he lands'. Plant it RED on that roll. Fix it in the
+  lay that owns it (the dark brick's extent or glow, or the tower's spacing; if it is the tower's, tell ENG-DOWNBOT-g and me). Only if the
+  verdict passes and he still runs over does the bot's air steer get fixed.
+- (4) A CLIMB down a trunk past a rim is not a blind drop, so it does not count against 'lit 1 s ahead'. But RimWatch must record it as its
+  own kind ('climbed'), never hidden inside 'went over'.
+- (5) child Easy 25's strand (added by the dark, absent from the base) MUST be traced before landing: every bot reaches the shrine on every
+  roll.
+- Box 5 (ENG-DARK-e) is running from 92f2d827 with gates on a frozen ef811c2a; box 4 finishes ONLY the x40 on a frozen f68c5ca1, records
+  it, and stops. Box 5 takes everything after that (the head is f68c5ca1: its gates belong on the final head).
+(5) **STILLS APPROVED by the lead.** Dot's card upright under Pokey is **R-165.456** (FIX-CARD-DOWN, its own job), not this lane's.
 **The lead's landing rule (ENG-DOWNBOT-f lands on t-eng-w3 today too; both lanes touch tools/inspect/firsttimer.ts and the gen2 lay):**
 whoever lands SECOND merges origin/t-eng-w3 first and runs the OTHER lane's tests on the merged head before pushing: dark.test,
 darkBots.test, w3.test, tower.test, castBots.test (the down toys) and lockall. Name every conflict here; never resolve one by dropping
@@ -51,12 +63,49 @@ Box 4 start 12:08 PM ET, box 3 11:50 AM ET, box 2 11:31 AM ET, box 1 11:03 AM ET
    - darkBots.test **5/5 GREEN** in the edit tree before the commit (the 3 old toys unchanged: adult roll 1, its plant, the expert's jump).
    - Note (no change): RimWatch counts 'went over' when he passes the rim on the game's grace past an edge (box 1's rule); at 42.07 s
      the no-turn child stood at x 969 grounded, 5 px past the rim, and stepped back. Kept as ruled; the light still has to be on.
-2. **The x40 on ef811c2a: RUNNING (next step (1)).** Results recorded here when the lanes end.
+2. **THE x40 ON ef811c2a (frozen worktree, 3 lanes, 360 rows, 0 errors: `cast-3-1-x40-ef811c2a.jsonl`)** vs box 2's dark x40 on
+   653bb970 and box 3's base on c1008d8e:
+   | bot | setting | shrine base / 653bb970 / ef811c2a | clean | rescues | unlit 653bb970 / ef811c2a | gaveUp | time median (s) |
+   |---|---|---|---|---|---|---|---|
+   | kid | normal | 40 / 40 / 40 | 1/0/0 | 156/151/154 | 3 / 2 | 0 | 174.7/202.8/205.4 |
+   | kid | easy | 40 / 40 / 40 | 0/0/0 | 186/192/192 | 1 / 1 | 0 | 197.0/239.2/239.2 |
+   | adult | normal | 40 / 40 / 40 | 2/1/2 | 119/120/120 | 0 / 0 | 0 | 164.4/193.4/193.4 |
+   | adult | easy | 40 / 40 / 40 | 0/0/0 | 180/202/200 | 2 / 2 | 0 | 200.3/239.8/239.8 |
+   | child | normal | 40 / 40 / 40 | 2/1/1 | 138/135/136 | 5 / 0 | 0 | 320.1/303.6/303.6 |
+   | child | easy | 40 / 39 / 39 | 0/0/0 | 178/179/179 | 4 / 4 | 0 | 306.4/313.6/315.0 |
+   | middle | normal | 40 / 40 / 40 | 0/3/3 | 126/115/114 | 6 / 0 | 0 | 207.7/230.7/229.5 |
+   | middle | easy | 40 / 40 / 40 | 1/1/1 | 186/184/184 | 11 / 4 | 0 | 261.5/279.3/285.7 |
+   | expert | normal | 40 / 40 / 40 | 1/0/0 | 124/115/112 | 26 / 0 | 0 | 202.4/212.9/225.6 |
+   **Unlit 58 -> 13** (all 'landing dark'; the expert 26 -> 0: glowJump; the child Normal 5 -> 0: the turn). **gaveUp 0** in all 360.
+   **Rescues 1,391** (base 1,393). **Shrine 359/360: child Easy 25 stranded at 295.9 s, IDENTICAL on 653bb970 and absent from the base:
+   a dark-only miss, NOT yet traced.** Kinds only here: the same rare 'a trunk beside him' variants box 3 named (7 notes); none new.
+   9 of the 13 unlit were the same crossings on 653bb970 (neither fix touched them): a third cause.
 3. **Landing preview (caught before it happens):** `git merge-tree` of ef811c2a with ENG-DOWNBOT's WIP (t-eng-w3-wip-downbot 7b1aa3ba):
    **no conflict** (firsttimer.ts auto-merges; it changes 38 files, towerRoute.ts and the going-down lay among them). On a throwaway merge
    of the two (not pushed), darkBots.test **4/5**: toy B RED (its roll's give-up is gone on the new lay), the rest GREEN. Procedure for the
    landing: next step (3); the scan tool `reference/qa-reports/ENG-DARK/toyscan.mts` (tsc clean; not yet run: the x40 holds the two heavy
    slots).
+4. **UNLIT CAUSE 3: the BOT. FIXED (f68c5ca1).** Traced, kid Normal roll 16 (rim at the left end of 956-1136, 73.90 s): he drops onto the
+   piece steering LEFT in the air, his plan says stand (intended {} every frame), but his thumb's late lift-off re-arms every frame (the
+   KID's thumb, thumbify R-165.59), so the left press is never let go: he runs 90 px over the rim at full speed, `stop -` on every frame.
+   glowWait never looked: the route said RIGHT (dir 1), and the stop only guards rims in the route's way. **Fix (firsttimer.ts glowSteer,
+   read in pad() on the pad the thumb actually presses):** a press toward a dark rim on his piece within GLOW_NEAR, its landing not lit
+   DARK_AHEAD, starts the stop (this frame's press stands; from the next frame glowWait holds him and the thumb comes off with its own lag,
+   armed once). **Toy C** (darkBots.test 'the dark's stop reads the THUMB', kid Normal roll 16, first 80 s, as castBots plays it):
+   **RED on ef811c2a** (the x40's row), **GREEN on f68c5ca1**; **plant 16** (glowSteer not called). darkBots.test **6/6 GREEN**.
+5. **The 13 ef811c2a unlit re-run one by one on the fix (frozen tree, each to its crossing + 15 s): 8 LIT, 5 remain, ALL Easy** (needs
+   1.6 s): adult Easy 30 (241, 2477 at 31.00 s), child Easy 1 (517, 2867), child Easy 20 (798, 8084), child Easy 23 (772, 10112), middle
+   Easy 12 (821, 4074). **Traced once, adult Easy 30: cause 4, a landing AT the next dark rim:** he drops from the storey above (2190)
+   steering right in the air, lands at x 236 running (vx 268) 5 px from the rim at the right end of 61-241; the stop starts that frame
+   (stop 241) but he slides past the end on the game's grace and the stop ends (off the piece). No stop can hold a run in 5 px. **Bot or
+   lay is the lead's question:** the bot's air steer runs him toward the dark (a kid falling in the dark with nothing lit ahead would not
+   push on), or the lay drops him within a stop's distance of the next dark rim (darkGaps does not ask how far the landing is from the
+   next rim). The other 4 are untraced (two traces per kind owed).
+6. **Named, not changed (the lead's ruling): a trunk grab counts as going over.** Middle Easy 4 on ef811c2a, 112.80 s: standing 27 px in
+   from the rim at the left end of 70-480, pad down, he snaps 53 px onto a trunk at x 44 past the rim and climbs; RimWatch counts it 'went
+   over' (it counts any pass of the rim's end not grounded on its piece). A climb down is not a drop; whether 'lit 1 s ahead' should
+   count it is a ruling, not a bot fix (law 22). On f68c5ca1 that crossing is lit (the run moved).
+7. **The x40 on f68c5ca1: RUNNING** in box 4's container (2 lanes, seeds 1-20 and 21-40). Results below when it ends.
 
 ## Box 3 (ENG-DARK-c) so far (start 11:50 AM ET by `date`)
 1. **Plants 12/12 CAUGHT** on a frozen 653bb970 (worktree, `planted-faults.py`, exit 0): box 1's 10 + the glow counter on every stage
