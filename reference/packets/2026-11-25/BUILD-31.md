@@ -3,6 +3,7 @@ Level build, Opus 5.5 xhigh. A FRESH member. **A 2-hour level (Matt R-165.449): 
 (the cut rule: what is not landed is handed over cleanly).** Hand over on the 28-minute clock or at 300k with the EXACT NEXT STEP pushed and
 ls-remote-confirmed first (D134). run_in_background for long runs (castBots --json in lanes), NEVER a shell '&'; chattr-frozen worktrees (D115);
 no heredoc in a commit chain (D119); stamps from `date` (D128); a landing runs the suite AND the CI tool line (D126).
+DESIGN UPDATE (the lead, 11-25, ENG-DARK (b)): every light inside the dark sleeps EXCEPT the landings reached from outside it (the cave mouth is lit); stillness wakes the way down inside. Read ENG-DARK's REPORT for the rule.
 READ FIRST: reference/methods/level.md (the Building rules FIRST: 21, 23, 25, 27, 28, 29 above all), LEVEL-BAR.md, STAGE-RULES §0-5b, LAWS +
 LESSONS once (D125-D137). The design WHOLE: `git show origin/t-design-31-32:reference/design/3-1.md` (72 lines: the flown numbers :10-14, the
 arc :19, THE NODE STRING :33, first appearances :34, the phone both ways :41, the engine :43-51, the hand build it replaces :51). The lines:
