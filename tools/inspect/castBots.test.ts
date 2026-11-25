@@ -222,6 +222,23 @@ test('a way down: the route turns straight down a turn vine, and drops ledge by 
     }
     assert.equal(at(wc, vx, 900), at(wc, vx, 500) + 1, `the way is not across to the vine's top on his wood, then straight down it (vine x ${vx}): ${JSON.stringify(wc)}`);
   }
+  // (7) off a stopped vine's catch he drops onto a shelf, and the next leg comes in at the shelf's far end and goes back the way he came:
+  //  the way out to that end and back past where he landed (flat, one floor) runs both ways over the same wood, the route's cursor
+  //  flipped between the two legs and he turned there, 'in a dip 174 px deep', until rescued: the drafted way down's top vine cause on
+  //  the merge with the dark (castBots Easy seed 28 at (942,927), seed 5 at (446,3397), ENG-DOWNBOT). Both ways: the far end left and right
+  for (const m of [1, -1]) {
+    const X = (x: number) => (m > 0 ? x : 1280 - x), P = (x: number, y: number, w: number) => plat(m > 0 ? x : 1280 - x - w, y, w);
+    const shelf = { gen2: { plan: [{}, { join: 'turn' }], tower: { flow: 'down', route: { legs: [{ entry: { x: X(100), y: 500 }, exit: { x: X(1000), y: 500 } }, { entry: { x: X(1075), y: 847 }, exit: { x: X(382), y: 1111 } }], spawn: { x: X(100), y: 500 } }, turns: [{ x: X(1055), from: 500, to: 847 }] } },
+      vines: [{ x: X(1055), topY: 500, bottomY: 673, vineType: 'tree_climb' }],
+      platforms: [P(0, 500, 1029), P(963, 673, 180), P(847, 847, 228), P(570, 965, 710), P(286, 1111, 663), P(0, 1400, 1280)] };
+    const sc = towerCorners(shelf as never, { x: X(100), y: 500 })!;
+    for (let i = 1; i + 1 < sc.length; i++) {
+      const a = sc[i - 1], b = sc[i], d = sc[i + 1];
+      const flat = Math.abs(b.y - a.y) <= 60 && Math.abs(d.y - b.y) <= 60;
+      assert.ok(!(flat && (b.x - a.x) * (d.x - b.x) < 0), `the way goes out along one floor to (${b.x}, ${b.y}) and back past (${a.x}, ${a.y}) to (${d.x}, ${d.y}) (far end ${m > 0 ? 'right' : 'left'}): ${JSON.stringify(sc)}`);
+    }
+    assert.ok(sc.some((q) => Math.abs(q.y - 965) < 1), `the way never reaches the storey under the shelf: ${JSON.stringify(sc)}`);
+  }
 });
 
 // A way DOWN in the real engine (firsttimer.ts, ENG-W3a's skills; toys ENG-DOWNBOT, no stage's numbers: a carrier stage, its ground

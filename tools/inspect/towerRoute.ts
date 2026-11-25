@@ -144,7 +144,12 @@ export function towerCorners(stage: StageLike, spawn: Pt): Pt[] | null {
   for (let i = 1; i + 1 < c.length; ) {
     const a = c[i - 1], b = c[i], d = c[i + 1];
     const flat = Math.abs(b.y - a.y) <= HOP && Math.abs(d.y - b.y) <= HOP;
-    if (flat && (b.x - a.x) * (d.x - b.x) < 0 && Math.min(a.x, b.x) <= d.x && d.x <= Math.max(a.x, b.x)) c.splice(i, 1);
+    // (a way DOWN: and back PAST where he came in, too. A drop off a stopped vine's catch lands him on a shelf whose leg comes in at its
+    //  far end and goes back the way he came: out to that end and back over the same wood, the route's cursor flipped between the two
+    //  legs and he turned on the shelf until rescued, 'in a dip 174 px deep', the top vine cause once the dark's stop held him on the
+    //  catch (castBots Easy seeds 28 and 5, ENG-DOWNBOT). From where he lands, the way back past it is the same walk without the out leg)
+    const back = Math.min(a.x, b.x) <= d.x && d.x <= Math.max(a.x, b.x);
+    if (flat && (b.x - a.x) * (d.x - b.x) < 0 && (back || down)) c.splice(i, 1);
     else i++;
   }
   return c;
