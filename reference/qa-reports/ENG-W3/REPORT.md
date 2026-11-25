@@ -42,6 +42,11 @@ px) to about his body width (40-60 px: 26 old, 107 new). That matches easy stuck
 cause is session 6's `landed` / slide (rule 4 prefers a bough whose ends land, read only at its own height).** Next: the rule (no slot
 of 25-60 px between pieces within a step: lay it flush, at most a walkable gap, or a body and a margin clear), planted RED in tower.test
 on this slot shape (kid E 5 at y 1470 as a toy), GREEN after, slots.mts 40-60 bins -> 0 with towerLids still 0 and 0 refused, then (c).
+**Lead's ruling (in my lane, NOT mine to edit):** ENG-DARK-f fixes firsttimer.ts:2859 (the tower's way-down plan holds DOWN beside a
+vine whose top is at or above his feet, but the engine climbs down only from the vine's very top), with a toy and a plant, landing on
+t-eng-w3. Do NOT edit that line. At the merge, take its version and re-run the x40 rows on the merged head. A stand of that shape
+found before then is named 'fixed by ENG-DARK-f'. **Neither trace here is that shape:** at the slot he walks to and fro at +-285 vx,
+the vine (x227) 200 px away; adult E 28's slots (y 1472) and its 4352 stand have no vine within the window (area.mts).
 **Learned:** a rule that empties a room can move the next piece into a worse spot. Count the bots' causes old against new before
 calling a lay rule a cure: the room count (534 -> 0) was right, and the bots got worse.
 
