@@ -52,7 +52,7 @@ for (const [tag, w, h] of [['upright', 412, 915], ['sideways', 915, 412]]) {
     const P = e.platforms ?? e.currentStage.platforms;
     const solid = P.filter((q) => q.type === 'solid');
     const W = solid.find((q) => q.width === F.wall.w && q.height === F.wall.h);
-    if (!W) return null;
+    if (!W) return { dbg: { id: e.currentStage.config?.id, secs: (e.currentStage.gen2?.sections ?? []).map((s) => s.id ?? s.brick ?? s.kind).slice(0, 12), want: [F.wall.w, F.wall.h], tall: solid.filter((q) => q.height >= 40 && q.height <= 80).map((q) => [Math.round(q.x), Math.round(q.y), q.width, q.height]).slice(0, 20), n: P.length } };
     const lip = W.y + W.height;
     const porch = solid.filter((q) => q.width === F.porch && Math.abs(q.y - W.y) < 2 && q.x > W.x).sort((a, c) => a.x - c.x)[0];
     const above = solid.filter((q) => porch && q.y < porch.y - 1 && q.x >= porch.x - 1 && q.x + q.width <= porch.x + porch.width + 1).sort((a, c) => a.y - c.y);
@@ -60,7 +60,7 @@ for (const [tag, w, h] of [['upright', 412, 915], ['sideways', 915, 412]]) {
     return { W: [W.x, W.y, W.width, W.height], lip, gap: porch ? porch.x - (W.x + W.width) : null, porch: porch ? [porch.x, porch.y, porch.width] : null, top: above[0] ? [above[0].x, above[0].y, above[0].width] : null, rises: above.length, floor: floor.map((q) => [q.x, q.width]) };
   }, [E, built.F, built.FR]);
   console.log(tag, 'fork', JSON.stringify(fork));
-  if (!fork || !fork.porch) { console.log('the page did not lay the fork (no W or porch on the built stage)'); process.exit(3); }
+  if (!fork || fork.dbg || !fork.porch) { console.log('the page did not lay the fork (no W or porch on the built stage)'); process.exit(3); }
   const [Wx, Wy, Ww] = fork.W, [px, py, pw] = fork.porch;
   const fl = fork.floor;
   const dip = fl.length >= 2 ? { a: fl[0][0] + fl[0][1], b: fl[1][0] } : null;

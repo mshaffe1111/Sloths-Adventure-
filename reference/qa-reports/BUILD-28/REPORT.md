@@ -15,17 +15,26 @@
    middle 24.4 vs 26.5 s, expert 21.2 vs 22.1 s). Session 6's 11 stalls were on the old gap 60. So with 2b a popped-up bot goes round by the
    high road even where dropping back was quicker: that is ruling (c)'s model (his own move makes his road), not a speed choice. For the
    lead to judge; it changes no verdict (every run home, nobody set back).
-2. THE STILLS (the fork and a marsh dip, upright and sideways): forkstills.mjs.txt is written (the two-road toy built in the dev page the
-   way towerstills.mjs builds its fixture, borrowing 2-3's config and art; spots bank, lip (the 81 px gap below him), porch, top (three
-   up, three down), and the marsh dip shot the frame a little one paddles in it). NOT YET SHOT at this step: my two heavy slots hold the
-   gates (item 3). To run: cp reference/qa-reports/BUILD-28/forkstills.mjs.txt <scratch>/forkstills.mjs; a background command
-   `npx vite --port 5199 --strictPort`; then `node <scratch>/forkstills.mjs 5199 <out> 1`. The marsh's water carries its flood mark
-   from riverLay (the row's flood 'close'), not from layFlood, so the line's swim (FollowPlay.swimAcross: water with a lip) is there on the
-   toy with no flood clock laid.
+2. THE STILLS: NOT SHOT (said plainly). forkstills.mjs.txt (the in-page toy build, towerstills' way) RUNS but the page does not play
+   the toy: with FORK_AS=2-3 the toy builds clean in the page (no errors), yet after window.__play('2-3') the stage is the REAL 2-3 (125
+   platforms, no gen2 sections, no 330 x 60 block): the LISTED/plantSeedList override that works for towerstills' 1-4 does not take for
+   2-3 (cause not found). FORK_AS=2-4: the toy refuses to build on 2-4's config (verdict drop.look-lies x3: soft drops drawn void-dark).
+   THE TOY'S REAL SHAPE, headless (forktoy-headless.ts.txt, w2TwoRoad.test's build, seed 1 Normal): W 330 x 60 at x 17570 (top 1458),
+   the marsh (the flood-marked river) 16089..17489, so the gap 17489 -> 17570 = 81 and the fork is on the HOME leg, travel LEFT (dir -1):
+   the script's spot logic (porch at q.x > W.x, facing 1) is wrong for it and must read the way left (porch's x + width at W.x - gap).
+   The solids there: 1400 x 60 at x 15689 top 1398, 600 x 60 at x 16089 top 1338 (read the porch and rises from these; my F.porch
+   width match finds nothing). NEXT: find why __play('2-3') ignores the planted list (try FORK_AS=1-4, which towerstills proves, for
+   the geometry stills, then a World 2 stage), fix the spots for travel left, shoot, LOOK at each upright and sideways as Matt would.
 3. THE OWED GATES on 0cdc35b7f, in frozen /home/user/wt28s8g (src and tools chattr +i, src/game/gen2/proven LEFT WRITABLE: the frozen-tree
-   path D115 names, so seedListChunk.test's mkdtemp under proven/ is not refused), each with NO cap shorter than its own (timeout 90 min):
-   the unit suite (the CLAUDE.md tsx --test line) and drawcheck, both started 12:55 PM ET (the output files' birth time, stat), side by side. Then clipcheck and paintcheck
-   (3 parts), two at a time. pacerLay :254/:280 are release 4's (D135) and clear at 1b.
+   path D115 names, so seedListChunk.test's mkdtemp under proven/ is not refused), no cap shorter than the gate's own:
+   DRAWCHECK: PASS, 956 s, all 19 listed stages (ctest-mix14 .. 2-5), upright and sideways, exit 0 (the run session 7 cut at 900 s).
+   THE UNIT SUITE: started 12:55 PM ET, STILL RUNNING at this hand-over (1,283 results, 0 not ok so far); session 8 records its end in ONE
+   commit touching only reference/qa-reports/BUILD-28/gates-s8.txt (D138: a running gate is finished and recorded; no other work).
+   NOT RUN: clipcheck, paintcheck (3 parts), kbdcheck, buildcheck, seedlist 1-1 --check, tierBots. pacerLay :254/:280 are release 4's
+   (D135) and clear at 1b.
+   EXACT NEXT STEP for session 9: (a) git fetch origin t-build-28-wip and re-fetch before EVERY commit (session 8's gates-s8.txt commit
+   may land after you start). (b) The stills (item 2's NEXT). (c) clipcheck and paintcheck --part 1/3, 2/3, 3/3 on 0cdc35b7f's code,
+   frozen, proven/ writable, two at a time, no short caps. (d) The lead's 1b hash (item 4), else tell the lead and wait.
 4. THEN: 1b at the lead's hash (release-0.10.3's final head after release 4's bot fix): merge it (no force), keep both intents in
    firsttimer.ts, apply draft-1b-B2b-forkjump-popup.patch.txt as ONE engine-piece commit, rule 28 (ENG-PLANT's 10 known flips, the wide
    sample seeds 1-10 every bot both settings on 2-1/2-2/2-4: 0 BAR PASS -> FAIL vs main), lockall vs main, the probe 54/54. If no hash

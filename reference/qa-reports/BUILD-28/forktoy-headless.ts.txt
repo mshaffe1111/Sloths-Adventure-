@@ -1,0 +1,14 @@
+import '/home/user/Sloths-Adventure-/src/game/headlessDom.ts';
+import { buildGen2Stage } from '/home/user/Sloths-Adventure-/src/game/gen2/pipeline.ts';
+import { towerCfg } from '/home/user/Sloths-Adventure-/src/game/gen2/toyTower.ts';
+import { HOME_BRICKS, HOME_CODE, homeKit } from '/home/user/Sloths-Adventure-/src/game/gen2/toyHome.ts';
+import { W2_FORK, W2_FORK_RIVERS, W2_RIVERS, w2TwoRoad } from '/home/user/Sloths-Adventure-/src/game/gen2/worlds/w2.ts';
+const ID = '2-96';
+const k = homeKit(ID, HOME_CODE);
+const briefs = k.manifest.graphs!.briefs!;
+const sections = [k.manifest.sections[0], ...HOME_BRICKS.map((b) => (b.id === 'home-practise-ride' ? w2TwoRoad(b.id, b.jobs![0], W2_FORK) : b))];
+const kit = { ...k, manifest: { ...k.manifest, rivers: { ...W2_RIVERS, ...W2_FORK_RIVERS, twin: { ...W2_RIVERS.twin, flood: 'rise' as const } }, sections, graphs: { ...k.manifest.graphs!, briefs: { [ID]: { ...briefs[ID], pacer: undefined } } } } };
+const st = buildGen2Stage({ config: { ...towerCfg(ID, 'sprint'), unlocked: true }, kit, seed: 1, difficulty: 'normal' });
+console.log('errors', st.gen2.errors, 'n', st.platforms.length, 'sections', (st.gen2 as any).sections?.length);
+console.log(st.platforms.filter((q) => q.type === 'solid' && (q.width === 330 || q.height === 60 || q.width === 135)).map((q) => [Math.round(q.x), Math.round(q.y), q.width, q.height]).slice(0, 12));
+console.log('rivers', (st.rivers ?? []).map((r: any) => [Math.round(r.x0), Math.round(r.x1), !!r.floodMark]));
