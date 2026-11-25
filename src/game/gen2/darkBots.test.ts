@@ -202,16 +202,18 @@ test("a RUN off a lit edge in the dark whose touchdown lies within his slide of 
   assert.deepEqual(r.dark.unlit.filter((u) => u.includes('the rim at x 673, y 3850')), [], 'the rim his run lands near was lit');
 });
 
-/** roll 32's seam: a way-on point under a 35 px gap between two pieces at his height (79-332 and 367-547 on this lay) he walks over */
+/** roll 6's seam: a way-on point under a 22 px gap from 271-451 (y 5914) to 473-708, 15 px lower, a step he walks over both ways (box 14:
+ *  on ENG-DOWNBOT's lay roll 32's 35 px seam no longer has the way on under it; rolls 6, 11 and 35 looped 17-30 times at such a seam with
+ *  the 8 px test, probes/seamscan.mts) */
 async function seamRun(noSeamWalk: boolean) {
   if (readied !== DRAFT) readyDraft(DRAFT);
   const { firstTimer, FT_ADULT } = await import('../../../tools/inspect/firsttimer.ts');
-  return firstTimer(DRAFT, 32, { ...FT_ADULT, setting: 'normal', noSeamWalk }, { cap: 200 });
+  return firstTimer(DRAFT, 6, { ...FT_ADULT, setting: 'normal', noSeamWalk }, { cap: 200 });
 }
 /** the most times one rim was gone over with its landing dark */
 const worstRim = (unlit: readonly string[]) => Math.max(0, ...[...unlit.reduce((m, u) => m.set(u.replace(/ at [\d.]+ s .*$/, ''), (m.get(u.replace(/ at [\d.]+ s .*$/, '')) ?? 0) + 1), new Map<string, number>()).values()]);
 
-test("a seam he walks over is no way down: over roll 32's 35 px seam with the way on under it, he goes on and every rim he went over was lit (GREEN; planted: noSeamWalk)", async () => {
+test("a seam he walks over is no way down: over roll 6's 22 px seam (a 15 px step) with the way on under it, he goes on and every rim he went over was lit (GREEN; planted: noSeamWalk)", async () => {
   const r = await seamRun(false);
   assert.ok(r.dark && r.dark.crossed >= 20, `he went over dark rims (${r.dark?.crossed})`);
   assert.deepEqual(r.dark.unlit, []);
@@ -222,7 +224,7 @@ test("a seam he walks over is no way down: over roll 32's 35 px seam with the wa
 test("a seam read as a way down (noSeamWalk, the plant): both sides of the seam point him at the way on under it, and he walks back and forth over one dark rim (RED)", async () => {
   const r = await seamRun(true);
   assert.ok(r.dark, 'the drafted 3-1 has a lit dark (FTRun.dark)');
-  // (box 12, the final lay: 31 times over one rim, lit or not; unplanted 3. Box 10's lay: the same loop, its crossings unlit)
+  // (box 14, roll 6: 30 times over one rim with the plant, lit; box 12's roll 32 on its lay: 31, unplanted 3)
   assert.ok(Math.max(r.dark.loop, worstRim(r.dark.unlit)) >= 10, `one rim gone over again and again (the most over one rim: ${r.dark.loop}; unlit ${JSON.stringify(r.dark.unlit.slice(0, 3))})`);
 });
 

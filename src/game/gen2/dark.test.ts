@@ -261,16 +261,42 @@ test("the cave mouth is lit (ruling (ii)): adult Easy roll 30 drops in from OUTS
   assert.ok(red.some((m) => m.includes('the rim he left outside the dark: the rim at x 175, y 2190')), red.join('; ') || 'nothing named');
 });
 
-test("a hop rim's step-off landing is lit (the lead's ruling A, 11-25): adult Normal roll 33's hop rim x 951, y 7644 steps off onto 704-940, 13 px from its rim BEHIND him: the lay's second light over that touchdown lights it (darkLandings GREEN); the lay without second lights: RED, the step off named", () => {
-  const st = built(33, 'normal');
-  assert.deepEqual(darkLandings(st, 'normal'), []);
-  const hop = darkRims(st).find((q) => q.x === 951 && q.y === 7644);
-  assert.ok(hop && !hop.drop, 'the hop rim on the real row');
-  // (the lay without the second lights: only the lights over the rims' own landings stay)
-  const own = new Set(darkRims(st).map((r) => r.light));
-  const zones: Zone[] = (st.zones ?? []).map((z) => (z.kind !== 'dark' || !z.lights?.length ? z : { ...z, lights: z.lights.filter((l) => own.has(l)) }));
-  const red = darkLandings({ ...st, zones }, 'normal');
-  assert.ok(red.some((m) => m.includes('the rim at x 951, y 7644')), red.join('; ') || 'nothing named');
+/** (ENG-DARK box 14) the hop rim's SHAPE: on Normal rolls 1-10, a hop rim in the dark whose step-off piece (the highest under a body's
+ *  width out), moved by hand along so its back end lies 13 px behind his touchdown, is a sleeping rim no other light shows: the dark
+ *  laid again (relay) with that piece moved; `own` the same lay with only the lights over the rims' own landings (no second lights) */
+function hopStep() {
+  for (let seed = 1; seed <= 10; seed++) {
+    const st = built(seed, 'normal');
+    for (const z of st.zones ?? []) {
+      if (z.kind !== 'dark' || !z.lights?.length) continue;
+      for (const h of darkRims({ platforms: st.platforms, zones: [z] })) {
+        if (h.drop) continue;
+        const xs = h.x + h.dir * 24;
+        let q: Platform | null = null;
+        for (const p of st.platforms) if ((p.type === 'solid' || p.type === 'fragile') && p !== h.piece && xs >= p.x && xs <= p.x + p.width && p.y > h.y + 1 && p.y <= z.bottom && (!q || p.y < q.y)) q = p;
+        if (!q) continue;
+        const moved: Platform = { ...q, x: h.dir > 0 ? xs - 13 : xs + 13 - q.width };
+        const platforms = st.platforms.map((p) => (p === q ? moved : p));
+        const zone = relay(z, platforms, 0);
+        const stage = { platforms, zones: [zone] };
+        const hop = darkRims(stage).find((r) => r.piece === h.piece && r.dir === h.dir && !r.drop);
+        const back = darkRims(stage).find((r) => r.piece === moved && r.dir === -h.dir && r.light?.sleep);
+        if (!hop || !back) continue;
+        const ownL = new Set(darkRims(stage).map((r) => r.light));
+        const own = { platforms, zones: [{ ...zone, lights: zone.lights!.filter((l) => ownL.has(l)) }] };
+        if (darkLandings(own, 'normal').some((m) => m.includes(named(hop)) && m.includes(`onto ${named(back)}`))) return { seed, stage, own, hop, back };
+      }
+    }
+  }
+  return null;
+}
+
+test("a hop rim's step-off landing is lit (the lead's ruling A, 11-25): a SHAPE toy on a real hop rim (hopStep): its step-off piece ends 13 px behind his touchdown; the lay's second light over that touchdown lights it (darkLandings GREEN); the lay without the second lights: RED, the hop rim named", () => {
+  // (adult Normal roll 33's hop rim x 951, y 7644 stepping off onto 704-940 was the real row; on ENG-DOWNBOT's lay (merged, box 14) no
+  //  hop rim of rolls 1-40 goes red without the second lights (probes/anchors.mts), so the toy is hand-built on a real hop rim)
+  const h = hopStep();
+  assert.ok(h, 'a hop rim whose step-off edge behind him no other light shows (rolls 1-10)');
+  assert.deepEqual(darkLandings(h.stage, 'normal').filter((m) => m.includes(named(h.hop)) && m.includes(`onto ${named(h.back)}`)), []);
 });
 
 test("a RUN off a rim with no stop is judged where it lands (darkLandings (iii), ENG-DARK box 14): Normal roll 3 runs off x 442, y 5351 (no stop there) and comes down 36 px from the sleeping rim at x 214, y 5811; the lay wakes that light (GREEN); asleep again: RED, the running step off named", () => {

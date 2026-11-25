@@ -30,7 +30,7 @@
 import { DT, RealPlay, levelConfig, type Pad } from '../../src/game/realPlay.ts';
 import { glanceView, glancing, hurt, touches } from '../../src/game/predators/core.ts';
 import type { PredatorDef, PredatorState } from '../../src/game/predators/types.ts';
-import { GameEngine } from '../../src/game/engine.ts';
+import { GameEngine, STEP_UP } from '../../src/game/engine.ts';
 import { frontBehind, type ChaseRun } from '../../src/game/chase.ts';
 import { rollRadius } from '../../src/game/rolling.ts';
 import type { Rolling } from '../../src/game/pieces/rollingPiece.ts';
@@ -1807,7 +1807,7 @@ export class FirstTimerRun {
     return 0;
   }
   /** going `d`: the end of the piece under his feet (`own`) and of the ledge it runs on into over every seam he walks over (`run`: a gap
-   *  narrower than his body to a piece within a step of his height); null: no piece under his feet */
+   *  narrower than his body to a piece within a step of his height, STEP_UP.min); null: no piece under his feet */
   private ledgeEnds(p: { x: number; y: number }, d: -1 | 1): { own: number; run: number } | null {
     const at = (q: Platform, y: number) => this.solid(q) && q.type !== 'bouncy' && Math.abs(q.y - y) <= 8;
     const end = (q: Platform) => (d > 0 ? q.x + q.width : q.x);
@@ -1818,7 +1818,10 @@ export class FirstTimerRun {
     for (let n = 0; n < 40; n++) {
       const e = end(cur), y = cur.y, from: Platform = cur;
       const gap = (q: Platform) => ((d > 0 ? q.x : q.x + q.width) - e) * d;
-      const next: Platform | undefined = this.sim.platforms.find((q) => q !== from && at(q, y) && gap(q) >= -1 && gap(q) < 2 * LAND_HALF && (end(q) - e) * d > 0);
+      // (across the gap, a piece within a step he walks over (under STEP_UP.min, the rise a plain walk takes with no jump), not within 8 px:
+      //  a 22 px gap to a piece 15 px lower was no seam to the 8 px test, and the adult Normal on rolls 6, 11 and 35 walked to and fro over
+      //  it 17-30 times, the way on under the gap (ENG-DARK box 14))
+      const next: Platform | undefined = this.sim.platforms.find((q) => q !== from && this.solid(q) && q.type !== 'bouncy' && Math.abs(q.y - y) < STEP_UP.min && gap(q) >= -1 && gap(q) < 2 * LAND_HALF && (end(q) - e) * d > 0);
       if (!next) break;
       cur = next;
     }
