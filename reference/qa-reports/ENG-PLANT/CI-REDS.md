@@ -1,4 +1,45 @@
-# ENG-PLANT-CI: the 9 CI-tool-line reds on c27 (session 1, started 11:37 AM ET 11-25 by the hook's stamp; this file written 11:49 AM ET 11-25, updated 11:55 AM ET 11-25)
+# ENG-PLANT-CI: the 9 CI-tool-line reds on c27 (session 2 hand-over written 12:14 PM ET 11-25 by `date`; session 1's text below it)
+
+## SESSION 2 HAND-OVER (ENG-PLANT-CI-b; started 11:58 AM ET 11-25). HEAD = CI-4 4da085f92 = a CANDIDATE, NOT DONE: do not merge it yet
+Branch release-0.10.3-wip-plant-ci: acf29a092 (session 1) -> 82b7f4c8d CI-2 RE-APPLIED (the lead's ruling: the judged hop is the hop
+flown) -> fa132c831 CI-3 (the race front stand in the race branch) -> 4da085f92 CI-4 (the race front stand in the landing ride stop)
+-> this file. Probes: reference/qa-reports/ENG-PLANT/ci-tools/race-probe.mts.txt and racefront.mts.txt (copy to /home/user/tl/*.mts).
+
+**Post middle Normal 5's 3.20 s race loss on CI-2, TRACED (race-probe on frozen CI-1 acf29a092 vs CI-2 82b7f4c8d):** the runs part at
+t 75.13 (the race double off #44 onto #43: CI-1's overSmall let go over #44 for 3 frames; CI-2 does not, as ruled) and land 2.4 px
+apart; the drift-log timing then compounds. The LOSS: on #51 (a log running his way, the race leg) he came down at a run at 84.97 and
+the LANDING RIDE STOP (landRide, ENG-PLANT-i, firsttimer.ts ~3950: a log running his way with no floor ahead is ridden, 'a stop he
+means') stood him 143 px behind its front for 4.3 s. That stop sits OUTSIDE the race branch, so the race gate never looked; from the
+front the double onto #52 lands (CI-1 took it from the front at 84.13). Ridden to bank #50, raced from #51 at 89.63: LOST by 3.20 s
+(130.9 vs the boat 127.7). **A separate bot fault CI-2 exposes, not the race's margin**: c26 gave the FRONT STAND only to a log running
+BACK at him. CI-3 adds it in the race branch, CI-4 in the landing stop, on the race leg only (SKILLS.race, the pacer off), and walks only
+where the log is handed on to a floor or he can walk back from the front before it goes under (the handed stand's own check).
+
+**Measured on CI-4 (frozen fz-ci4):** post middle Normal 5 WON 119.4 vs 127.7 (margin 8.3 s; CI-1 108.0, margin 19.7 s: MOVED, not yet
+traced); home middle Normal 1 WON 107.5 vs 115.91 (margin 8.4 s; CI-1 not measured yet). The toy (racefront, the race leg's logs his
+way, gap 150, 8 phases, 4 tiers): CI-2 the middle stands 46-184 px behind the front in phases 0-1.5 (the landing stop); CI-4 every
+tier waits within 2-33 px of the front in every phase. CI-3's four files (fz-ci3): 60 tests, 6 fail = reds 4-9 exactly; reds 1-3 GREEN,
+both race tests WON; :282's child Normal 40 the same as CI-1 (bankUp on 0 lives, off 1). CI-4's four files: see the line below.
+**CI-4's four files (frozen fz-ci4): 60 tests, 54 pass, 6 fail = reds 4-9 exactly** (hopJudged 9/10: Easy 5 only; firsttimer :185, lianaRide
+DROP ON A LOG + A VINE FROM A LOG, riverRide :266 adult N12 'still clean', :282 child N40 on 0 / off 1); reds 1-3 GREEN; both race tests WON.
+
+## EXACT NEXT STEP (session 3)
+0. Setup as session 1's step 0; frozen trees: fz-ci1 acf29a092, fz-ci2 82b7f4c8d, fz-ci4 4da085f92 (chattr; D115).
+1. The toy each way, as TESTS (riverRide.test.ts, from racefront.mts.txt; read by what he does, never where): (a) race leg, a log his
+   way: every tier waits within frontStandPx(who) + 12 px of the front, never mid-log: RED on CI-2 (middle 46-184 px back), GREEN on CI-4;
+   (b) the same river with NO pacer (not a race): the landing stop stands him where he lands, as c27 (no row moved off the race leg);
+   (c) a race-leg log whose run ends in the water with no floor (racefront's 4th arg `tail` > 0, short river): no walk to its front.
+2. TRACE first: the ADULT in the toy goes 5-13 px PAST the front (minFront -5..-13; ends 'handed' 3.47 s, 'hop', 'log') on CI-3 and
+   CI-4 (CI-2 never walked): which floor 'handed' is, and whether the walk's let-go (frontStandPx 31) overruns. If it walks him off, fix
+   before anything else.
+3. The post margin move 19.7 -> 8.3 s (and home Normal 1 vs CI-1): race-probe CI-1 vs CI-4, the first frame they part and why (CI-2 parts
+   from CI-1 at t 75.13; CI-3/4 part from CI-2 at t 69.63, the front-stand walk on #44, then a race double at 69.83).
+4. The brief's CI line on CI-4: the 10 races (every race WON, margins vs c27) + the 10 known flips (ENG-PLANT's tools/margins.mts.txt,
+   set1-m.sh.txt on release-0.10.3-wip-plant-c-report), each moved row traced to CI-2/3/4. Then red 4, reds 5-9, :282 as session 1's
+   steps 2-3; then the final head's checks (tsc, CI tool line 0 fail, tierBots 9/9, wide sample 0 BAR PASS -> FAIL vs main).
+
+## SESSION 1 (kept)
+ENG-PLANT-CI: the 9 CI-tool-line reds on c27 (session 1, started 11:37 AM ET 11-25 by the hook's stamp; this file written 11:49 AM ET 11-25, updated 11:55 AM ET 11-25)
 
 Engine (bots), Opus 5.5 xhigh. Lead: session_01FhBbYN2CVHnFXg7XzqKXpM. Branch **release-0.10.3-wip-plant-ci** (cut from d742d0469 = c27 +
 raceSure deleted). ENG-PLANT-s merges this branch into its own; this branch never merges into release-0.10.3.

@@ -1,0 +1,22 @@
+// race-probe.mts <tree> <out> [tier setting seed code]: per-frame x/standing/lives on 2-7's race toy + every judged hop (HOP_TRACE)
+import { writeFileSync } from 'node:fs';
+const [tree, out, tier = 'middle', setting = 'normal', seedS = '5', codeName = 'POST_CODE'] = process.argv.slice(2);
+await import(`${tree}/src/game/headlessDom.ts`);
+const ft = await import(`${tree}/tools/inspect/firsttimer.ts`);
+const toys = await import(`${tree}/tools/inspect/homeToys.ts`);
+const th = await import(`${tree}/src/game/gen2/toyHome.ts`);
+const lines: string[] = [];
+let f = 0;
+ft.HOP_TRACE.on = true; ft.HOP_TRACE.rows.length = 0;
+let seen = 0, piece: any;
+const r = toys.homeRun(tier, setting, Number(seedS), 1, { onFrame: (sim: any) => {
+  const e = sim.e, t = (f++ / 30).toFixed(3);
+  piece ??= e.pieces.find((q: any) => q.kind === 'pacer');
+  const run = sim.run ?? sim;
+  if (process.env.PL && process.env.PL.split(',').includes(String(f - 1))) lines.push('P ' + (f - 1) + ' ' + e.platforms.filter((q: any) => Math.abs(q.x + q.width / 2 - e.player.x) < 700).map((q: any) => `#${q.id}:${q.type ?? '-'}:${Math.round(q.x)}..${Math.round(q.x + q.width)}@${Math.round(q.y)}`).join(' '));
+  lines.push(`F ${f - 1} t ${t} x ${e.player.x.toFixed(1)} y ${e.player.y.toFixed(1)} vx ${e.player.vx.toFixed(1)} g ${e.player.grounded ? 1 : 0} on ${e.standingOnId} L ${e.lives}`);
+  while (seen < ft.HOP_TRACE.rows.length) { const h = ft.HOP_TRACE.rows[seen++]; lines.push(`H ${h.site} q#${h.q} t ${h.t.toFixed(2)} x ${Math.round(h.x)} hold ${h.hold.toFixed(3)} ${h.kind ?? ''} flown ${h.flown ? h.flown.kind + ' ' + h.flown.hold.toFixed(3) : '-'} landed ${h.landed}`); }
+} }, th[codeName]);
+lines.push(`END ${JSON.stringify({ end: r.end, fin: r.finishSeconds, lives: r.lives, verdict: piece?.verdict })}`);
+writeFileSync(out, lines.join('\n') + '\n');
+console.log(lines[lines.length - 1]);
