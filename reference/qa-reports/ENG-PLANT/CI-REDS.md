@@ -1,4 +1,67 @@
-# ENG-PLANT-CI: the 9 CI-tool-line reds on c27 (session 8 hand-over written 2:16 PM ET 11-25 by `date`; sessions 7, 6, 5, 4, 3, 2 and 1 below it)
+# ENG-PLANT-CI: the 9 CI-tool-line reds on c27 (session 9 hand-over written 2:53 PM ET 11-25 by `date`; sessions 8, 7, 6, 5, 4, 3, 2 and 1 below it)
+
+## EXACT NEXT STEP (session 10). HEAD = 62cc029ae + session 9's evidence (NO code change; CI-11 = 4cccba33e). Step 1 (the moved rows) is RUN and every moved row TRACED to where it parts; ONE row, 2-4 kid Easy 19 (PASS on CI-10 -> FAIL r1 on CI-11), is narrowed to two causes: (A) to the line, (B) to `intend` only. **STOPPED for the lead's ruling on (A)** (it decides whether CI-11 stands as built).
+0. ReadNotifications: the lead's ruling on (A). Frozen trees: fz-ci10 = 8134a9a56, fz-ci11 = 4cccba33e (`git worktree add --detach`, node_modules
+   symlinked, `chattr -R +i src tools`, src/game/gen2/proven left writable, D115). Probes (run `npx tsx <probe> <tree> ...` from inside the
+   tree): ci-tools/s9-rows.mts.txt (one castBots row, every frame and press, as JSON; reproduces every set1 row's time exactly), s9-diff.py
+   (where two trees part, the presses there, what each came to, every CI-11 standing press), s9-win.py (presses and set-downs in a window),
+   s9-vfl.mts (vineFromLog per frame: its return, the lianas in reach), s9-judge.mts (a standing press: the judge's own flights beside the
+   engine's frames), s9-who.mts (which bot methods return a pad, per frame).
+1. **(B) narrow it to its branch:** in an UNFROZEN copy of 4cccba33e, tag each `return` in `intend` (firsttimer.ts:2935-) after the
+   vineFromLog call, run 2-4 kid Easy 19 from 77.2 to 77.4 s: which branch returns {right: true} while he stands on log #75 at x 16,438
+   (the log spans 16,368-16,518; liana #6 hangs at x 16,572, 134 px ahead and 54 px past the log's front) and runs him off the front into
+   the water (set down at 77.733). Then the same river on CI-10 (it crossed at 84.667: off log #72 x 16,464, hold 0.293, caught #6 at
+   85.000): which gate pressed there, and is it the one CI-11's judge now refuses?
+2. (A) as the lead rules (see "SESSION 9 END STATE" (A)), then re-run set1 on the new head if the code moves (2 heavy runs), cmp3 and s9-diff.
+3. Then steps 2 (the re-plants) and 3 (the final checks ONCE) of session 8's list below, unchanged.
+
+## SESSION 9 END STATE (no code change; data/ci/set1-ci10, set1-ci11, cmp-ci11.txt, s9/)
+**set1 on frozen CI-10 (8134a9a56) and CI-11 (4cccba33e), cmp3:** CI-11 moves **12 of 23 rows vs CI-10, ALL on 2-4** (2-1 and 2-2: 0 rows
+move, as expected: vineFromLog's standing press acts on 2-4's log-under-liana rivers). **vs c27: 0 BAR PASS -> FAIL** (6 rows = c27, 17 move;
+data/ci/cmp-ci11.txt). One BAR PASS -> FAIL vs CI-10: **2-4 kid Easy 19** (c27 FAILs it too: FAIL 168.8 r1).
+**The 12 moved rows (s9/moved-ci10-ci11.txt; each parts at a CI-11 standing vineFromLog press, held its judged 0.16 or 0.2, CI-11's own change):**
+| row | CI-10 | CI-11 | parts at | CI-10's press there | CI-11's standing press | each came to |
+|---|---|---|---|---|---|---|
+| adult N 24 | PASS 163.4 l0 | PASS 163.3 l0 | 80.900 | 80.633 x16179 #76 h0.235 | 80.633 same x, h0.2 | both caught #5 at 80.900, 0.3 px apart |
+| adult N 32 | PASS 171.9 l1 | PASS 163.3 l1 | 37.800 | 37.800 x8141.6 #37 | 37.767 x8130.2 #37 | both caught #3 at 38.067 |
+| child E 11 | PASS 239.2 | PASS 239.7 | 81.967 | 82.033 x10723 #50 h0.109 | 81.933 x10716 #50 | both caught #4 (82.400 / 82.333) |
+| child E 23 | PASS 256.4 | PASS 246.8 | 96.767 | 96.967 x10444 #47 double | 96.733 x10425 #47 | both caught #4 (97.233 / 97.000) |
+| child N 8 | PASS 330.7 l2 | PASS 341.7 l4 | 120.000 | none (stood on) | 119.967 x10793 #46 | CI-11 caught #4 at 120.267 |
+| child N 39 | PASS 350.8 l4 | PASS 345 l5 | 108.867 | none | 108.833 x10887 #47 | CI-11 caught #4 at 109.167 |
+| kid E 2 | FAIL r1 | PASS | 69.900 | 69.867 x16133 #77 h0.228 | 69.900 x16146 #77 | both caught #5 at 70.200 |
+| kid E 12 | PASS 181 | PASS 172.7 | 29.600 | 29.667 x7134 #35 h0.240 | 29.567 x7127 #35 | both caught #2 (30.100 / 30.133) |
+| kid E 13 | FAIL r1 | PASS | 11.833 | 11.867 x3062 #13 h0.146 | 11.800 x3057 #13 | both caught #1 at 12.300 |
+| **kid E 19** | PASS 178.8 | **FAIL 169 r1** | 11.900 | 11.933 x3054 #13 h0.121 | 11.867 x3049 #13 | both caught #1; rescue later, below |
+| kid E 20 | FAIL r1 | FAIL r1 | 113.567 | 113.700 x21939 #106 h0.066 | 113.533 x21926 #106 | CI-10 down on #107; CI-11 caught #8 |
+| kid E 35 | FAIL r1 | PASS | 47.100 | none | 47.067 x10502 #48 | CI-11 caught #4 (session 8's trace) |
+**kid E 19's rescue (s9/win-ci11-kidE19-72-100.txt, win-ci10-kidE19-74-91.txt):** 'set down here 3 times' at x 16,822, the river under liana
+#6 (x 16,572). CI-10 crossed it once (set down at 77.2, then 84.667 off #72 caught #6). CI-11 set down FOUR times: 77.733, 85.300, 91.067,
+99.000. Two causes:
+**(A) a standing press judged to catch, flown at a lag the judge never flies (1 of kid E 19's 4; 6 presses in 5 rows: kid E 2 126.000,
+kid E 13 84.433, kid E 19 97.700, kid E 20 126.033, child N 39 181.867 — each judged to catch, each came down on the next log 17 frames
+later or in the water).** s9/judge-ci11-*.txt: vineFromLog judges `catches` at the three lags [mid, mid - sd/2, mid + sd/2] = 0.090, 0.057,
+0.122 s (thumb [0.09, 0.065]; firsttimer.ts:2462 `lags`), i.e. take-off offsets 0.067 / 0.100 / 0.133 s, and EVERY one catches (frame 8-12,
+free 0, both vx). But decide (firsttimer.ts:4921) draws the lag from the full gauss: the five presses came at offset **0.000** (kid E 2, 13:
+a draw <= DT/2, pressed on the deciding frame itself, inside the vineFromLog call) or **0.033** (kid E 19, 20, child N 39: a draw in
+(0.017, 0.033]), one or two frames before the earliest judged lag. kid E 19 at 97.700, frame by frame (s9/judge-ci11-kideasy19.txt): the
+engine is the model's flight shifted one frame early and 2.7 px back (the log's carry, 80 px/s; y and held frames equal to the model's on
+every frame: held 1-5, 884.8 / 867.7 / 852.7 / 839.8 / 829.0); the probe's clockless canGrabSwing reads it in reach at 97.933-98.067 but
+the engine never catches (the swinging liana is elsewhere on its clock then); the judged flights catch at frame 11-12; he came down on #74 at 98.267, ran on and off its front (set down 99.000). **Not CI-11's flight model (hold and free counts
+match the engine to the frame); it is the judge's lag coverage:** the three lags cover about 56% of the kid/child's draws (z -0.88 to
++0.66); about 19% press earlier, 25% later, unjudged. kid E 35 (the toy's row) drew inside it. **The lead's ruling is needed:** (a) judge
+the press at the lag decide will draw (draw it in vineFromLog, judge that lag, hand it to decide: the hop judged is the hop flown; risk: a
+re-draw each frame is the bot choosing its own thumb); (b) widen the judged lags to the thumb's whole spread (as the full gauss is clipped:
+fewer presses judged good, the kid waits more); or (c) the miss is the kid's honest fast thumb, and the toy's claim narrows to presses
+drawn inside the judged lags (the CI-11 toy's 'every standing press ends on a liana' is then not a law of the design). My view: (b),
+because (a) lets the bot pick its lag, and (c) keeps a judge that passes presses it never flew (law 22).
+**(B) refused, then run off the front (3 of kid E 19's 4: 77.733, 85.300, 91.067).** s9/vfl-ci11-kidE19-76.txt: hop from the bank at 76.067
+(x 16,105), down on log #75 at 76.900 x 16,384, stopped by 77.133 at x 16,438; vineFromLog returns null EVERY frame (no standing catch
+judged, no run-up; liana #6 at 16,572 in reach); from 77.233 `intend` itself returns {right: true} (s9/who-ci11-k19-77.txt: no other bot
+method returns a pad that frame) and he runs off #75's front at about x 16,597 into the water, set down at 77.733. **Not yet narrowed
+past `intend`** (next step 1). CI-10 at the same river pressed (84.667 off #72 h0.293, caught #6): which gate, not yet traced.
+**Not run (session 9):** steps 2 and 3. Time used: step 1 only.
+
+## (session 8 hand-over)
 
 ## EXACT NEXT STEP (session 9). HEAD = 4cccba33e (CI-11 + its toy) + this file. Step 1's code and toy are DONE; left of step 1: the moved rows.
 0. Frozen trees: `git worktree add --detach <dir> <hash>`, node_modules symlinked, `chattr -R +i <dir>/src <dir>/tools` (D115). CI-11 =

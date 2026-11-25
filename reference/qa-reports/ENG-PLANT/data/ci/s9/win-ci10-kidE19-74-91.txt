@@ -1,0 +1,10 @@
+J 74.133 x15350 y826 on#66 single h0.074 -> down #67 74.667 x15493 y876
+J 75.633 x15760 y876 on#67 single h0.142 -> down #73 76.233 x15926 y904
+J 76.267 x15938 y904 on#73 single h0.067 -> down #73 76.700 x16070 y904
+J 82.833 x16135 y831 on#-1 single h0.265 -> down #72 83.700 x16381 y904
+J 84.667 x16464 y904 on#72 single h0.293 -> caught #6 85.000 x16604
+J 87.333 x16700 y770 on#-1 single h0.177 -> down #69 88.133 x16944 y826
+J 88.967 x17116 y826 on#69 single h0.205 -> down #70 89.667 x17310 y876
+J 90.700 x17596 y876 on#70 single h0.209 -> down #77 91.400 x17789 y923
+SETDOWN 77.200 from x16135 y921 on#-1 to x15737
+SETDOWN 85.000 from x16544 y807 on#-1 to x16604

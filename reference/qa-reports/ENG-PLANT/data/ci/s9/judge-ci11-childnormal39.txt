@@ -1,0 +1,95 @@
+JUDGE pressAt 181.867 off 0.034 {"t":181.83333333332558,"x":16810.74444444439,"y":937,"vx":0,"dir":1,"log":76,"logX":16700.333333332557,"v":{"id":6,"x":17011},"clock":181.83333333332558,"travelUntil":170.4478080907927,"driftUntil":95.73333333333048,"steerFrom":181.83333333332558,"thumb":[0.09,0.065],"hold":0.16,"carryRaw":99.99999999996362,"keep":1}
+MODEL lag 0.090 off 0.100 vx 0 free 0 (frees 0) catch@9: 1:16830.3,917.8H 2:16838.4,900.7H 3:16847.9,885.7H 4:16856.8,872.8H 5:16866.3,862.0H 6:16875.3,856.4 7:16884.8,853.0 8:16893.7,851.7 9:16903.2,852.4*
+MODEL lag 0.090 off 0.100 vx 0 free 0 (frees 0) catch@9: 1:16830.3,917.8H 2:16838.4,900.7H 3:16847.9,885.7H 4:16856.8,872.8H 5:16866.3,862.0H 6:16875.3,856.4 7:16884.8,853.0 8:16893.7,851.7 9:16903.2,852.4*
+MODEL lag 0.057 off 0.067 vx 0 free 0 (frees 0) catch@9: 1:16827.0,917.8H 2:16835.1,900.7H 3:16844.6,885.7H 4:16853.5,872.8H 5:16863.0,862.0H 6:16871.9,856.4 7:16881.4,853.0 8:16890.3,851.7 9:16899.8,852.4*
+MODEL lag 0.057 off 0.067 vx 0 free 0 (frees 0) catch@9: 1:16827.0,917.8H 2:16835.1,900.7H 3:16844.6,885.7H 4:16853.5,872.8H 5:16863.0,862.0H 6:16871.9,856.4 7:16881.4,853.0 8:16890.3,851.7 9:16899.8,852.4*
+MODEL lag 0.122 off 0.133 vx 0 free 0 (frees 0) catch@8: 1:16833.6,917.8H 2:16841.7,900.7H 3:16851.2,885.7H 4:16860.2,872.8H 5:16869.7,862.0H 6:16878.6,856.4 7:16888.1,853.0 8:16897.0,851.7*
+MODEL lag 0.122 off 0.133 vx 0 free 0 (frees 0) catch@8: 1:16833.6,917.8H 2:16841.7,900.7H 3:16851.2,885.7H 4:16860.2,872.8H 5:16869.7,862.0H 6:16878.6,856.4 7:16888.1,853.0 8:16897.0,851.7*
+PAD 181.833 want - out -
+PAD 181.867 want RJ out RJ
+PAD 181.900 want RJ out RJ
+PAD 181.933 want RJ out RJ
+PAD 181.967 want RJ out RJ
+PAD 182.000 want RJ out RJ
+PAD 182.033 want R out R
+PAD 182.067 want R out R
+PAD 182.100 want R out R
+PAD 182.133 want R out R
+PAD 182.167 want R out R
+PAD 182.200 want R out R
+PAD 182.233 want R out R
+PAD 182.267 want R out R
+PAD 182.300 want R out R
+PAD 182.333 want R out R
+PAD 182.367 want R out R
+PAD 182.400 want R out R
+PAD 182.433 want R out R
+PAD 182.467 want R out R
+PAD 182.467 want R out R
+PAD 182.467 want R out R
+PAD 182.467 want R out R
+PAD 182.467 want R out R
+PAD 182.467 want R out R
+PAD 182.467 want R out R
+PAD 182.467 want R out R
+PAD 182.467 want R out R
+PAD 182.467 want R out R
+PAD 182.467 want R out R
+PAD 182.467 want R out R
+PAD 182.467 want R out R
+PAD 182.467 want R out R
+PAD 182.467 want R out R
+PAD 182.467 want R out R
+PAD 182.467 want R out R
+PAD 182.467 want R out R
+PAD 182.467 want R out R
+PAD 182.467 want R out R
+PAD 182.467 want R out R
+PAD 182.467 want R out R
+PAD 182.467 want R out R
+PAD 182.467 want R out R
+ENG 181.867 x 16814.08 y 937.00 vx 0.0 vy 0.0 g 1 held 0 grab 0 sw -
+ENG 181.900 x 16823.63 y 917.78 vx 186.7 vy -576.7 g 0 held 1 grab 0 sw -
+ENG 181.933 x 16831.74 y 900.67 vx 243.3 vy -513.3 g 0 held 1 grab 0 sw -
+ENG 181.967 x 16841.24 y 885.67 vx 285.0 vy -450.0 g 0 held 1 grab 0 sw -
+ENG 182.000 x 16850.17 y 872.78 vx 267.7 vy -386.7 g 0 held 1 grab 0 sw -
+ENG 182.033 x 16859.67 y 862.00 vx 285.0 vy -323.3 g 0 held 1 grab 0 sw -
+ENG 182.067 x 16868.59 y 856.44 vx 267.7 vy -166.7 g 0 held 0 grab 0 sw -
+ENG 182.100 x 16878.09 y 853.00 vx 285.0 vy -103.3 g 0 held 0 grab 0 sw -
+ENG 182.133 x 16887.01 y 851.67 vx 267.7 vy -40.0 g 0 held 0 grab 0 sw -
+ENG 182.167 x 16896.51 y 852.44 vx 285.0 vy 23.3 g 0 held 0 grab 0 sw -
+ENG 182.200 x 16905.43 y 856.00 vx 267.7 vy 106.7 g 0 held 0 grab 0 sw -
+ENG 182.233 x 16914.93 y 862.33 vx 285.0 vy 190.0 g 0 held 0 grab 0 sw -
+ENG 182.267 x 16923.86 y 871.44 vx 267.7 vy 273.3 g 0 held 0 grab 0 sw -
+ENG 182.300 x 16933.36 y 883.33 vx 285.0 vy 356.7 g 0 held 0 grab 0 sw -
+ENG 182.333 x 16942.28 y 898.00 vx 267.7 vy 440.0 g 0 held 0 grab 0 sw -
+ENG 182.367 x 16951.78 y 915.44 vx 285.0 vy 523.3 g 0 held 0 grab 0 sw -
+ENG 182.400 x 16960.70 y 935.67 vx 267.7 vy 606.7 g 0 held 0 grab 0 sw -
+ENG 182.433 x 16970.20 y 958.67 vx 285.0 vy 690.0 g 0 held 0 grab 0 sw -
+ENG 182.467 x 16979.12 y 984.44 vx 0.0 vy 773.3 g 0 held 0 grab 0 sw -
+ENG 182.467 x 16979.12 y 984.44 vx 0.0 vy 773.3 g 0 held 0 grab 0 sw -
+ENG 182.467 x 16979.12 y 984.44 vx 0.0 vy 773.3 g 0 held 0 grab 0 sw -
+ENG 182.467 x 16979.12 y 984.44 vx 0.0 vy 773.3 g 0 held 0 grab 0 sw -
+ENG 182.467 x 16979.12 y 984.44 vx 0.0 vy 773.3 g 0 held 0 grab 0 sw -
+ENG 182.467 x 16979.12 y 984.44 vx 0.0 vy 773.3 g 0 held 0 grab 0 sw -
+ENG 182.467 x 16979.12 y 984.44 vx 0.0 vy 773.3 g 0 held 0 grab 0 sw -
+ENG 182.467 x 16979.12 y 984.44 vx 0.0 vy 773.3 g 0 held 0 grab 0 sw -
+ENG 182.467 x 16979.12 y 984.44 vx 0.0 vy 773.3 g 0 held 0 grab 0 sw -
+ENG 182.467 x 16979.12 y 984.44 vx 0.0 vy 773.3 g 0 held 0 grab 0 sw -
+ENG 182.467 x 16979.12 y 984.44 vx 0.0 vy 773.3 g 0 held 0 grab 0 sw -
+ENG 182.467 x 16979.12 y 984.44 vx 0.0 vy 773.3 g 0 held 0 grab 0 sw -
+ENG 182.467 x 16979.12 y 984.44 vx 0.0 vy 773.3 g 0 held 0 grab 0 sw -
+ENG 182.467 x 16979.12 y 984.44 vx 0.0 vy 773.3 g 0 held 0 grab 0 sw -
+ENG 182.467 x 16979.12 y 984.44 vx 0.0 vy 773.3 g 0 held 0 grab 0 sw -
+ENG 182.467 x 16979.12 y 984.44 vx 0.0 vy 773.3 g 0 held 0 grab 0 sw -
+ENG 182.467 x 16979.12 y 984.44 vx 0.0 vy 773.3 g 0 held 0 grab 0 sw -
+ENG 182.467 x 16979.12 y 984.44 vx 0.0 vy 773.3 g 0 held 0 grab 0 sw -
+ENG 182.467 x 16979.12 y 984.44 vx 0.0 vy 773.3 g 0 held 0 grab 0 sw -
+ENG 182.467 x 16979.12 y 984.44 vx 0.0 vy 773.3 g 0 held 0 grab 0 sw -
+ENG 182.467 x 16979.12 y 984.44 vx 0.0 vy 773.3 g 0 held 0 grab 0 sw -
+ENG 182.467 x 16979.12 y 984.44 vx 0.0 vy 773.3 g 0 held 0 grab 0 sw -
+ENG 182.467 x 16979.12 y 984.44 vx 0.0 vy 773.3 g 0 held 0 grab 0 sw -
+ENG 182.467 x 16024.00 y 909.00 vx 0.0 vy 0.0 g 0 held 0 grab 0 sw -
+ENG 182.500 x 16024.00 y 909.00 vx 0.0 vy 0.0 g 1 held 0 grab 0 sw -
+ENG 182.533 x 16024.00 y 909.00 vx 0.0 vy 0.0 g 1 held 0 grab 0 sw -
+ENG 182.567 x 16024.00 y 909.00 vx 0.0 vy 0.0 g 1 held 0 grab 0 sw -
