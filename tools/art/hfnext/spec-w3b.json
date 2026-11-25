@@ -1,0 +1,35 @@
+{
+ "tag": "w3-b",
+ "edits": [
+  {
+   "name": "bell",
+   "src": "gh:COMMIT:reference/art/hfw3/starts4/bell.png",
+   "refs": [
+    "gh:COMMIT:reference/art/hfw3/starts4/ref-w2court.png"
+   ],
+   "w": 768,
+   "h": 768,
+   "seeds": [
+    11,
+    23,
+    37
+   ],
+   "prompt": "Repaint the first image as a royal court bell, seen exactly side-on, in exactly the hand-painted storybook style of the pieces in the second image: soft painterly gouache shading with gentle gradients, fine thin dark linework, warm natural wood. A carved wooden arch of two sturdy posts and a curved crossbeam, each end of the beam carved as a small crocodile head, teal cord lashings round the posts, little gold studs along the beam, standing on a plank foot; a shining bronze bell hangs from the middle of the beam on a short rope, warm gold highlights, a gold band round its rim, a clapper below. Keep its shape and size. Keep the flat plain grey background around it, with empty grey space on every side.",
+   "neg": "photo, 3d render, blurry, text, letters, watermark, frame, border, scenery, sky, ground plane, thick black outline, flat vector, clip art, harsh shadow, cast shadow, extra objects, people, animals, sloth, water, metal frame, chain"
+  },
+  {
+   "name": "courtFar",
+   "src": "gh:COMMIT:reference/art/hfw3/starts4/courtFar.png",
+   "refs": [],
+   "w": 1664,
+   "h": 1004,
+   "seeds": [
+    11,
+    23,
+    37
+   ],
+   "prompt": "Keep this whole dusk river village scene exactly as it is, the same painted style, colours, palms, huts, water and sky, except the middle: remove the small far hut, the rope bridge and the setting sun there, and in their place across the lake paint a small dark island in silhouette with a great king's throne made of twisted tree roots on it, a big hollow log drum beside the throne with a crocodile's long tail resting across the drum, and four glowing orange lanterns on poles around them, their warm light reflected in the water. Soft dusk glow behind the island. The same flat dusky purple and orange silhouette style as the rest of the picture.",
+   "neg": "photo, 3d render, text, letters, watermark, frame, border, people, crocodile head, sloth, bright daylight"
+  }
+ ]
+}
