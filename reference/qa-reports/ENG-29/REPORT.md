@@ -1,12 +1,21 @@
 # ENG-29 REPORT: 2-9's NEW 1 (the court's tempo) and NEW 2 (the drum you hear), built ahead (R-165.449)
 
-## EXACT NEXT STEP (session 3 hand-over; NEW 2 WIRED (the drum you hear), the gates on the frozen head below; all pushed)
+## EXACT NEXT STEP (session 3 hand-over; NEW 2 WIRED; the gates ran ONCE on the frozen head 39cd60123: ONE red outside the base set, STOPPED)
 Re-fetch t-eng-29-wip first. Then, in order:
+0. THE RED (not mine to wave through; the order said stop): src/game/gen2/listed.test.ts:52 'nothing in the game calls withTestStage: tests
+   only' fails on src/game/gen2/worlds/w2TempoToy.ts (session 2's 1f919f98e). The file never CALLS it: two doc comments NAME it (:6 'The row a
+   test builds with `withTestStage({ [TEMPO_ID]: tempoRow() }, ...)`', :18 'withTestStage refuses a listed one'), and the rule's scan is a
+   plain text match. The fix (the file, never the rule, LAWS 22): reword both comments without the word (e.g. ':6 the row a test lays
+   through listed.ts's test seam', ':18 the test seam refuses a listed one'); then listed.test.ts GREEN, and the planted RED: the word put
+   back names the file. Comment-only, so no stage, roll or chunk can move; re-run the suite shard that holds listed.test.ts and the
+   text-scanning tests the lead names (or the suite, the lead's call on the budget).
 1. The 1b merge: merge the release-4 hash the lead names (it brings the bot fix: pacerLay 23/23) into t-eng-29-wip (no force); resolve by
    hand; tsc. Re-run the planted toys on the merge: tempo.test, tempoToy.test, tempoResume.test, drum.test, drumBus.test, drumEngine.test
    (each GREEN, and each planted RED still RED). Then lockall against the merge's own base and the suite shards + the CI tool line once:
-   pacerLay must now be 23/23 (any red is a stop).
+   pacerLay must now be 23/23 and listed.test green (any red is a stop).
 2. Only then packet step 3: the bots on 2-9.
+3. At ENG-29's end: rewrite reference/handoffs/engine-core.md's tempo/drum entry (the drum's path: engine drumStep -> sound -> conductor
+   drumTick -> DrumSchedule; the layering trap; DRUM_AHEAD 3 frames and why; the hold at loseLife). Not done in session 3.
 STILL OPEN (name for READY-29 if not done): (a) the LOCKED let-go window (2-9.md:21: 2.00 s Normal, 2.40 s Easy): lianaDrops judges every
 relative phase, not the locked one alone; (b) 2-9.md:21's 'river 5 frames ahead of the swing; Easy 0': TempoSpec has one `lock`; (c) the
 twist's `doubled` has no data path yet (DrumSchedule and drumTick take it; nothing lays a twist cue, the engine passes none); (d) the drum
@@ -42,7 +51,21 @@ little early there; 2-9 has no hitstop or slow motion on the court today.
     gameTime and the court's Normal beat (0.7125 s); loseLife('pit'): drumHold once at that game time; 10 down steps: drumTick each, game
     time standing; no heroNoise 'drum'. 1-1 (no tempo): no drumTick, no drumHold, a life lost included. RED planted: the hold removed;
     the down-branch call removed (each fails the first test).
-- The chunk: BASE_PATH build + chunkcheck PASS; the drum's code is in assets/audio-*.js (99,927 B) and tempo.ts's code ('whole number of
+- Gates ONCE on the frozen head 39cd60123 (a worktree at that hash, `git status` empty after every run):
+  - tsc: clean.
+  - lockall (base: the merge 791735cfa, before every ENG-29 commit, 3,264 builds of 102 stages; --layouts 16, nothing intended):
+    102/102 stages unchanged, exit 0. (Its line 'gen2 gained verdicts and drops (not hashed)' lists every gen2 stage carrying verdicts,
+    lockall.ts:29; not a change.)
+  - The suite, 6 shards (the CLAUDE.md glob, 657 files, round robin): 4,223 tests, 4,216 pass, 4 fail, 3 todo. The 4: pacerLay.test.ts
+    :190 (the 'normal seed 3' row), :254, :280 = the base set (D135's lines), AND listed.test.ts:52 on w2TempoToy.ts (step 0 above: a NEW
+    red, session 2's, not in the base set).
+  - The CI tool line (library, seedlist, yield, travelBots, paintFall): 57/57.
+  - tierBots: 9/9.
+  - BASE_PATH build: exit 0; chunkcheck: PASS.
+- Session 1's '3 more neither pass nor fail' is most likely the same 3 todo this run counts (not checked on 791735cfa).
+- My own slips this session (LESSONS rules I broke, no harm landed): one shell '&' (npm ci, the first call; the order says never) and one
+  heredoc in the same && chain as `git commit` (9b60aeac0's message; D119). Both after that went through files and run_in_background.
+- The chunk (on 9b60aeac0, the same code): BASE_PATH build + chunkcheck PASS; the drum's code is in assets/audio-*.js (99,927 B) and tempo.ts's code ('whole number of
   beats') is in assets/oldgen-*.js, not the audio chunk.
 
 ## Session 2 (ENG-29-b), NEW 1 (c): the toy on a REAL row (level.md rule 23) and two checks the tempo lacked
