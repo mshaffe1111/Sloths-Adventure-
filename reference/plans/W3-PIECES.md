@@ -32,3 +32,8 @@ Engine pieces left: 5 M (DARK, VINE, MOON, LIGHT, ROOT) + METER-W3 (M) + about 8
 engine time; split over chains A, B and C it is about 7 h each, so the pieces can be done by Saturday if three engine lanes run from
 Thursday. The nine builds at 2 h each are 18 h of build time on top. That is the risk: if the pieces run late, 3-8 and 3-9 slip past Sunday.
 The cut, if needed (Friday evening's question): 3-8 and 3-9 to the next week, or 3-7's fern to a simpler find.
+
+## Catch-ahead from 2-8's fork (CI #80, level.md rule 24, 11-25)
+No World 3 design has a two-road fork. 3-5's 'quiet way vs loud way' is a choice by MOVE (climb, hang, land on moss vs a big drop): READY-35
+flies a full-run walk-off, a single and a double from every beat's top and shows which way each takes (a plain run-off must never be the
+only way down past a sleeper). 3-7's secret is off the main route: its entry (a hang to the fern) is flown the same way.
