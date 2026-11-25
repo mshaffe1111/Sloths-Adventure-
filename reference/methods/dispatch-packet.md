@@ -143,3 +143,5 @@ about 1-2 s a row, every finished row kept.
 **A lay rule is judged by the bots, not by its own count (CI #81, 11-25).** A rule written to help play (fewer dead ends, no lids, no slots) reports the bots' rescues old vs new on the same rows beside its own verdict count. Its own count going to 0 is not a cure; the rescues going down is.
 
 **A verdict test covers every roll (CI #82, 11-25).** A piece's verdict test (a fairness check over the built stage, no bots) runs on EVERY roll the stage can deal (seeds 1-40, both settings), not a handful: dark.test's seeds 1-4 hid three player-facing holes. If it is too slow, the test names its coverage and the gap goes on the REPORT.
+
+**An expected cure is measured the day it is expected (CI #83, 11-25).** When a lane's open cause is booked to ANOTHER lane's landing ('expected to fall at the merge'), a trial merge (not pushed) of that lane's current head measures it the same day, and the result goes to the lead in one line. 3-1's vine cause, booked to ENG-DARK's merge, nearly doubled on the first trial.

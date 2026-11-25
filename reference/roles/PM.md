@@ -105,6 +105,8 @@ Everything else is yours on his standing permission (11-07).
    get_session (status_bucket reads "failed" when a turn died, for example on a usage limit; a clean finish sends no event).
    **Every check-in also reads every running session's AGE (created_at) and REAL context (context_usage.used_tokens, filled while it is
    idle): past 28 minutes of work or 300k, it hands over THAT check-in; a gate already running is finished, no new work (D137, CI #76).**
+   **The catch-ahead list names every cause any lane has booked to another lane's landing ('expected to fall at the merge'): each is a
+   measurement owed today, on a trial merge (CI #83).**
 8b. **Machine load (Matt, 10-29: helpers get their own machine; 6 in one container meant 30+ min tests and a full disk).** Every
    member is its own session, so it has its own machine: heavy work (the full suite, clipcheck, drawcheck, a seed-list build) runs
    there, never in yours. A release gate runs at xhigh (create_session's effort field; no max since 11-14). The Agent tool is only for the lead's own lookups, never for a member (R-165.74). At most one heavy job in
