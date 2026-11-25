@@ -3755,6 +3755,17 @@ export class FirstTimerRun {
               this.aim.end();
               return this.startJump(dir, this.jumpFor(p, dir, here), false);
             }
+            // (ENG-PLANT-CI, rule 28, the race's FRONT STAND (c26's front stand, the lead's ruling (A), on the race leg's log running HIS
+            //  way): refused mid-log, he walks to the log's front before he rides, where the hop onto the next log lands ("he hops now off
+            //  its front end"), never where his landing set him down. 2-7 post middle Normal 5 (CI-2): down on #51 143 px behind its front,
+            //  every pick refused for 4.3 s, ridden to the far bank, the race LOST by 3.20 s; from the front the double onto #52 lands.
+            //  Only where the log is handed on to a floor, or he can walk back from its front before it goes under (the handed stand's own
+            //  rule below: a bot never stands on a carrier until it carries him into a rescue))
+            if (here.drift && dir * (edgeX - p.x) > frontStandPx(who)) {
+              const d = here.drift, endX = dir > 0 ? d.x1 : d.x0, fx = edgeX - dir * frontStandPx(who), rear = dir > 0 ? here.x : here.x + here.width;
+              const handedOn = this.sim.platforms.some((q) => q.type !== 'drift' && !q.broken && Math.abs(q.y - p.y) < 70 && q.x - 80 < endX && q.x + q.width + 80 > endX);
+              if (handedOn || ((endX - dir * 10) - fx) * dir / d.speed >= who.stopReact + Math.abs(fx - rear) / PHYS.maxRun) { this.pending = null; this.lateArmed = null; return side(dir); }
+            }
           }
           // (handed to the bank, SKILLS.handed: a log running his way carries him onto the bank it slides under; he rides it in)
           if (SKILLS.handed && here.drift && here.drift.dir === dir) {
