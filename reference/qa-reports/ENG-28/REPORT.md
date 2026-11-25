@@ -7,6 +7,7 @@ session 6 ENG-28f 5:35-5:47 PM ET; session 7 ENG-28g 5:54-6:05 PM ET; session 8 
   shard 5 = 112 files), 9:14-9:29 AM ET (14.8 min): 859 tests, 857 pass, 0 FAIL, 0 cancelled, 2 todo (w4RealReach.test.ts and
   w4Runtime.test.ts: the boulder fixer's TODOs, 'the engine's wall check has no bottom'). Bar met.
 - Every shard 0-5 now run once on frozen 94cf0d86: only red = pacerLay :254 :280 (shard 2; the base's own, R-165.439, owner ENG-PLANT).
+- landed t-eng-28 = fda48b3d8f4b23dd225399174308e4e6ce90922d (new branch, no force; ls-remote equal), 9:30 AM ET.
 - Lessons applied: D115 (frozen tree), D119 (no heredoc in a commit chain), D122 (explicit timeout), D128 (stamps from date), D134 (push and ls-remote before hand-over).
 
 ## EXACT NEXT STEP (session 10)
