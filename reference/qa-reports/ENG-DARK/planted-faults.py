@@ -77,6 +77,14 @@ PLANTS = [
      'y: Math.min(r.land.y - DARK_ZONE.lightUp, r.y + GLOW_REACH.down) }', 'y: r.land.y - DARK_ZONE.lightUp }', "a wall rim's light hangs no deeper"),
     ("an awake light counts as lit from anywhere (no reach)", 'src/game/gen2/dark.ts',
      '  if (!glowReaches(l, x, feet, facing)) return Infinity;', '  if (l.sleep && !glowReaches(l, x, feet, facing)) return Infinity;', 'darkFlags: a flag'),
+    # (ENG-DARK-l, box 12) plant 28: box 10's seam check (downEnd's ledgeEnds) off: a seam under his feet read as a way down again
+    ('the seam check off: a seam he walks over read as a way down (downEnd)', 'tools/inspect/firsttimer.ts',
+     'if (d === 0 || this.who.noSeamWalk) return d;', 'if (d === 0 || true) return d;', 'a seam he walks over is no way down',
+     'src/game/gen2/darkBots.test.ts'),
+    # plant 29: box 11's turn room off (glowWait presses the turn wherever he stands, the rim's very edge included)
+    ("the dark stop's turn room off: the turn pressed at the rim's very edge (glowWait)", 'tools/inspect/firsttimer.ts',
+     'if (!this.who.noTurnRoom && stop.turn !== 1) {', 'if (false) {', "the dark stop's turn is never pressed at the rim's very edge",
+     'src/game/gen2/darkBots.test.ts'),
 ]
 missed = 0
 base: dict = {}
