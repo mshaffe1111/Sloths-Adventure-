@@ -1,0 +1,3 @@
+# ENG-PLANT-o: the temporary ride probe (one line inserted after `const raceLegal` at firsttimer.ts :3644 on c25, UNFROZEN main checkout;
+# run: PROBE_RIDE=57,63.4 npx tsx tools/trace-n.mts.txt <tree> 2-7 expert normal 29; then `git checkout tools/inspect/firsttimer.ts`, 0 diffs)
+          if (process.env.PROBE_RIDE) { const [a, b] = process.env.PROBE_RIDE.split(",").map(Number); if (t >= a && t <= b) console.log(`PROBE t${t.toFixed(2)} x${Math.round(p.x)} here#${here.id}[${Math.round(here.x)}..${Math.round(here.x + here.width)}] drift${here.drift?.dir} dir${dir} bank=${bank} next=${next} reach=${reach} raceLegal=${!!raceLegal} upstreamBlock=${!!(here.drift && here.drift.dir !== dir)}`); }

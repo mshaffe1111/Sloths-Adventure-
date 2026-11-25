@@ -1,3 +1,60 @@
+# ENG-PLANT-o (ENG-PLANT-c session 13, started 9:58 AM ET 11-25 by the hook's stamp): expert N 29 confirmed, a SECOND shape; the landing's way across; hand-over (LANES 3b box)
+
+Engine (bots), Opus 5.5 xhigh. Lead: session_01FhBbYN2CVHnFXg7XzqKXpM. **Code head UNCHANGED: c25 = 6a64aa41e** (no code commit; the probe
+line went into the UNFROZEN main checkout at c25 and `git checkout` restored it, 0 diffs). Data: data/o/. Tools: tools/proberide-o.diff.txt.
+
+## Confirm on expert N 29 (the ruling's "confirm on a second row first"): the SAME block, a SECOND shape
+- Probe (data/o/probe-e29-c25.txt): c25 expert Normal 29 on log #37 t 57.67-63.17 (x 13,079 -> 12,682; log drift -1, his dir +1), 166 frames:
+  bank false, reach false, raceLegal false, **next TRUE on 165 of 166** (false once, t 57.70). Then the hop off solid #33 (t 76.70, edgeWait
+  double, hold 0.086) falls: rescue f2316 t 77.20 at 12,758; stuck [12712, 57.2, 'water ahead']; time 204.2.
+- Both rows stand inside the upstream block (firsttimer.ts :3721, `SKILLS.upstream && here.drift.dir !== dir`), at two different lines:
+  - **Shape 1, middle E 11 (session 12): the front log, bank false AND next false** -> the block's last line `return next || bank ? ... : {}`
+    (:3780) stands him; the log carries him back to bank #16. He got there by c3b's padPause tablePick (:3411) off #20.
+  - **Shape 2, expert N 29: next TRUE** (a log ahead that `lands` passes with who.hold[0]) but the HELD drawn aim is refused by gateSees on
+    every frame (one river, one speed: refused once is refused all ride); the `floatSure && next` branch stands him holding it (:3741-3743).
+    reAim (end the held aim after stopReact, :3741) is the CHILD's skill only, and this branch has NO tablePick (the bank branch :3771 and
+    padPause :3411 have one) -> handed back to bank #33, 5 rounds, rescued.
+- **How the landing (801cae9e8) crosses E 11's river** (data/o/frames-L-mE11.txt, frames per 0.1 s): bank #16 (t 26.1, x 8,990) -> log #19
+  (26.7, 9,148) -> #21 (27.9, 9,304) -> #20 (28.9, 9,425; the FRONT log, nothing ahead) **stood 1.9 s, carried back 9,425 -> 9,360**, until
+  **#19 came round to the front** (31.4, 9,519) -> bank #17 (32.6, 9,663). The river's three logs (#19-#21, about 70 px/s back at him) WRAP:
+  the same id reappears ahead. So "no next log NOW" is momentary: the landing boarded a front log and waited for the next to come round
+  in its ride. A dead end is a log whose RIDE (until it hands him back) brings no bank and no log into reach, not one with nothing ahead now.
+  A filter on "now" would have refused the landing's own #21 -> #20 hop.
+
+## EXACT NEXT STEP (session 14)
+0. Setup: `npm ci --no-audit --no-fund --legacy-peer-deps`; `git fetch --unshallow origin` (background). Worktrees in /home/user (this
+   container had no /home/user/plant-work: freeze.sh.txt's `cd` needs that dir or edit it to the main checkout): fz-c25 6a64aa41e,
+   fz-27e 801cae9e8 (landing), fz-c2m 80eb07842, fz-c3b a64f02ce5; node_modules symlinked. Rows: tools/wide.sh-n.txt (castBots --json).
+1. **THE LEAD'S RULINGS (session 13's brief; they win):** (1) B+C is OURS: NARROW it in the bot. The invariant: a bot is never ridden into a
+   rescue and never repeats an identical round: after one hand-back to the bank he boarded from he takes a way on that lands (a judged
+   press, the run-up, or a log the gate judges), and tablePick never delivers him onto a log whose run carries him back with no bank or
+   next log in reach. A toy each way (RED on c25 middle E 11 / expert N 29, GREEN on the fix). (2) A and D: NAMED as the lip family
+   (R-165.398), pre-existing, moved by the earlier path split; on R-165.424's list; NOT fixed before the merge. (3) Re-measure on the fix:
+   2-7 seeds 1-40 BAR rows vs the landing rows (every moved row traced), the 2-1/2-2/2-4 wide sample vs main (zero BAR PASS -> FAIL), the
+   10 known flips, 1-4 and 2-5 vs main, the race margins (tell the lead if post Normal 5 flips). (4) Then the checklist: pacerLay 22/23
+   re-planted at their same bars as laid toys (23/23); hopJudged; the toys for c23's, c24's and c25's rules; the packet's plants (same
+   bars, or retire per R-165.432); riverRide + firsttimer; the CI tool line at 0 fail; tierBots 9/9; timecheck + roadmapcheck. MERGE into
+   release-0.10.3 (no force) ONLY on the lead's word: send the table first. REPORT BY 12:00 PM ET; HARD STOP 2:00 PM ET; two heavy runs max.
+2. **Candidate c26 (one commit, general, narrow by construction):**
+   (a) `rideDead(q, dir, t)`: q a drift log running back at him (q.drift.dir !== dir); sample its ride t' = t .. t + (time until q's rear
+       reaches the floor he boarded from, or q's run end), step 0.1 s, positions by floatAt(rivers, x)(t'): dead when at NO t' a non-drift
+       floor is within 80 px of q's front (|dy| < 70, as `bank`) and NO other drift log is ahead of q's front within the hop the gate can
+       land (take the reach from the landing's hops, e.g. #20 -> #19 at t 31.3; or call gateSees from q's front at t' with his table).
+       It must PASS the landing's #21 -> #20 hop (t 28.8) and REFUSE c25 E 11's #20 -> #19 (t 41.73): check both before wiring it.
+   (b) tablePick (:3411 padPause, :3771 bank branch, :3548) drops rideDead targets: unconditional (the ruling's words; such a log can only
+       hand him back, so rows without that loop do not move).
+   (c) Hand-back memory: `boardedFrom` = the non-drift floor he left for a log running back at him; standing on that same floor again
+       after riding such a log = one hand-back (count per floor id; cleared when he stands on another non-drift floor or respawns). After
+       one: (i) shape 2: in the upstream `next` branch (:3733) a refused held aim -> tablePick(logs without rideDead) and press it (as
+       :3771 does for the bank); (ii) the boarding gates (edgeWait drifts :3597, padPause `to` :3400, upstream `logs`) skip rideDead logs;
+       (iii) none lands: he stands on the BANK by choice (clockHeld) while the logs come round, never re-boards into the same round.
+   (d) Toys (tools/inspect/*.test.ts, as riverRide's): RED on c25 middle E 11 and expert N 29 (a hand-back round ending in a rescue), GREEN
+       on c26; the c2m gains child N 5 and middle N 13 still cross.
+3. Re-measure (ruling 3), then the checklist (ruling 4). Push candidates to release-0.10.3-wip-plant-c only with their rows to the lead.
+
+Lessons applied: D134 (pushed + ls-remote before the hand-over), D128 (stamps from `date` / the hook), D115 (the probe in the UNFROZEN
+checkout, restored, never a frozen tree), D119 (commit message from a file), rule 28 (the cause traced on a second row before the fix).
+
 # ENG-PLANT-n (ENG-PLANT-c session 12, started 9:38 AM ET 11-25 by `date`): 2-7's lost seeds clustered, traced and bisected; hand-over (LANES 3b box)
 
 Engine (bots), Opus 5.5 xhigh. Lead: session_01FhBbYN2CVHnFXg7XzqKXpM. **Code head UNCHANGED: c25 = 6a64aa41e** on
