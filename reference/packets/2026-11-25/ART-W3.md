@@ -1,5 +1,5 @@
 # ART-W3: World 3's standing + climbing art (WORLD-3-PLAN F4) and 2-9's court art, on Hugging Face, cut at scale into the inventory (R-165.449)
-Art (core tier), Opus 5.5 high. A FRESH member. **BUDGET 2.5 h; HF cap $12 for this job (the lead's call; balance about $50; keep $10 in
+Art (core tier), Opus 5.5 high. A FRESH member, started in the HUGGING FACE environment (env_01XHDWWRRuUac8x7qDbVLwZz; the Default one has no HF access). **BUDGET 2.5 h; HF cap $12 for this job (the lead's call; balance about $50; keep $10 in
 reserve; log every job in reference/art/HF-SPEND.md with what it bought). HARD STOP start + 4 h.** The Hugging Face token NEVER goes in
 code, commits, files, messages or memory (law 8). Hand over on the 28-minute clock, pushed and ls-remote-confirmed first (D134).
 READ LEAN: reference/roles/ (art card); `git show origin/t-plan-w3:reference/plans/WORLD-3-PLAN.md` (§3 the art, F4: 38 pieces to stand on,
