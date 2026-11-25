@@ -36,8 +36,13 @@ export function towerCorners(stage: StageLike, spawn: Pt): Pt[] | null {
     const at = out[out.length - 1];
     // (a way DOWN: the turn's vine top stands just past his ledge's end, so the way on from there is straight down it: a point at the
     //  vine level with the ledge read as a gap to jump, and he jumped past the vine and fell two storeys, ENG-W3a's drafted 3-1)
-    if (T!.flow === 'down' && t.to > t.from) out.push({ x: t.x, y: t.to });
-    else out.push({ x: t.x, y: at.y }, { x: t.x, y: t.from }, { x: t.x, y: t.to });
+    if (T!.flow === 'down' && t.to > t.from) {
+      // (first along the wood he stands on to its end by the vine, when the lay ran it on past the leg's exit: a slant from the exit
+      //  to the vine's foot runs under that wood, and he stood over it, 'the way on is 105 px down', ENG-DOWNBOT)
+      const run = runOf(at);
+      if (run && (t.x < run[0] || t.x > run[1])) out.push({ x: t.x < run[0] ? run[0] + 8 : run[1] - 8, y: at.y });
+      out.push({ x: t.x, y: t.to });
+    } else out.push({ x: t.x, y: at.y }, { x: t.x, y: t.from }, { x: t.x, y: t.to });
   };
   // (a leg that rises or drops inside its own section (a vine field, a climb between two ledges): across to the nearest vine that
   // leads on, up or down it, and on again, storey by storey, never the straight line from its entry to its exit, which cuts through
@@ -49,18 +54,25 @@ export function towerCorners(stage: StageLike, spawn: Pt): Pt[] | null {
   // gen2's towerFalls; a climb never comes here)
   const down = T.flow === 'down';
   const wood = (stage.platforms ?? []).filter((p) => p.type !== 'fragile' && p.type !== 'bouncy');
+  /** the run of wood he walks along at his height (its x ends), or null when he stands on none */
+  const runOf = (at: Pt): [number, number] | null => {
+    const on = wood.filter((p) => at.x >= p.x - 2 && at.x <= p.x + p.width + 2 && Math.abs(p.y - at.y) <= 4);
+    if (!on.length) return null;
+    let lo = Math.min(...on.map((p) => p.x)), hi = Math.max(...on.map((p) => p.x + p.width));
+    for (let grew = true; grew; ) {
+      grew = false;
+      for (const p of wood) if (Math.abs(p.y - at.y) <= 4 && p.x <= hi + 2 && p.x + p.width >= lo - 2 && (p.x < lo || p.x + p.width > hi)) { lo = Math.min(lo, p.x); hi = Math.max(hi, p.x + p.width); grew = true; }
+    }
+    return [lo, hi];
+  };
   const dropTo = (a: Pt, b: Pt): Pt => {
     let at = a;
     for (let n = 0; n < 12 && b.y - at.y > HOP; n++) {
-      const on = wood.filter((p) => at.x >= p.x - 2 && at.x <= p.x + p.width + 2 && Math.abs(p.y - at.y) <= 4);
-      if (!on.length) break;
-      const dir = b.x < at.x ? -1 : 1;
       // (the run of wood he walks along at this height, to its end the way on lies)
-      let lo = Math.min(...on.map((p) => p.x)), hi = Math.max(...on.map((p) => p.x + p.width));
-      for (let grew = true; grew; ) {
-        grew = false;
-        for (const p of wood) if (Math.abs(p.y - at.y) <= 4 && p.x <= hi + 2 && p.x + p.width >= lo - 2 && (p.x < lo || p.x + p.width > hi)) { lo = Math.min(lo, p.x); hi = Math.max(hi, p.x + p.width); grew = true; }
-      }
+      const run = runOf(at);
+      if (!run) break;
+      const dir = b.x < at.x ? -1 : 1;
+      const [lo, hi] = run;
       const off = dir < 0 ? lo - 30 : hi + 30;
       const under = wood.filter((p) => off >= p.x && off <= p.x + p.width && p.y > at.y + 4).sort((p, q) => p.y - q.y)[0];
       if (!under) break;

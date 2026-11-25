@@ -162,6 +162,23 @@ test('a way down: the route turns straight down a turn vine, and drops ledge by 
     assert.equal(through, undefined, `the way drops through the ledge at y ${through?.y} from (${a.x}, ${a.y}) to (${b.x}, ${b.y}): ${JSON.stringify(c)}`);
   }
   for (const p of platforms.slice(1)) assert.ok(c.some((q) => Math.abs(q.y - p.y) < 1 && q.x >= p.x && q.x <= p.x + p.width), `he never lands on the ledge at y ${p.y}: ${JSON.stringify(c)}`);
+  // (3) the leg's exit short of its wood's end (the lay ran the storey on past it toward the turn's vine): the way walks the wood to
+  // its end, then down the vine; never a slant from the exit down to the vine's foot under the wood he stands on (the bots stood
+  // over it, 'the way on is 105 px down', rescued: ENG-DOWNBOT, the drafted way down)
+  const runOn = [plat(0, 500, 700), plat(700, 500, 300), plat(0, 900, 1100)];
+  const ranOn = { gen2: { plan: [{}, { join: 'turn' }], tower: { flow: 'down', route: { legs: [{ entry: { x: 100, y: 500 }, exit: { x: 700, y: 500 } }, { entry: { x: 1050, y: 900 }, exit: { x: 200, y: 900 } }], spawn: { x: 100, y: 500 } }, turns: [{ x: 1030, from: 500, to: 900 }] } },
+    vines: [{ x: 1030, topY: 500, bottomY: 900, vineType: 'tree_climb' }], platforms: runOn };
+  const r = towerCorners(ranOn as never, { x: 100, y: 500 })!;
+  for (const [cs, wood] of [[r, runOn], [c, platforms]] as const) for (let i = 0; i + 1 < cs.length; i++) {
+    const a = cs[i], b = cs[i + 1];
+    if (b.y - a.y <= 60) continue;
+    // (40 px under the height it leaves, the way is in the air or at the wood's very end (he steps off it there, 16 px: under half his
+    //  body), never under that wood)
+    const xm = a.x + ((b.x - a.x) * 40) / (b.y - a.y);
+    const over = wood.find((p) => Math.abs(p.y - a.y) <= 4 && xm > p.x + 16 && xm < p.x + p.width - 16);
+    assert.equal(over, undefined, `the way runs under the wood he stands on (${over?.x}-${(over?.x ?? 0) + (over?.width ?? 0)} @${over?.y}) from (${a.x}, ${a.y}) to (${b.x}, ${b.y}): ${JSON.stringify(cs)}`);
+  }
+  assert.ok(r.some((q) => q.y === 500 && q.x >= 960 && q.x <= 1000), `he never walks the wood to its end by the vine: ${JSON.stringify(r)}`);
 });
 
 // A way DOWN in the real engine (firsttimer.ts, ENG-W3a's skills; toys ENG-DOWNBOT, no stage's numbers: a carrier stage, its ground
