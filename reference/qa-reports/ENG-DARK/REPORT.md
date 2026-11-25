@@ -5,7 +5,7 @@ the base 1,393). The lead's order for box 5 on (word for word in its message): (
 shrine on every roll; (b) the NEW verdict 'a drop's landing is at least his stopping distance from the next dark rim, or that rim is
 already lit when he lands', planted RED on adult Easy 30, fixed in the lay that owns it (the tower's: tell ENG-DOWNBOT-g and the lead);
 (c) RimWatch's own kind 'climbed'; (d) plants (now 18), tierBots, the suite, the CI line on the final head; (e) LAND on t-eng-w3.**
-(c) **DONE at d191cb2b** (box 5 item 5). (a) and (b) are next, in this order:
+(c) **DONE at d191cb2b and proved on the live row** (box 5 item 5). (a) and (b) are next, in this order:
 (a) **child Easy 25 (box 5 item 6): ROOT CAUSE FOUND, a bot fault in the TOWER's way-down plan** (firsttimer.ts:2859 asks a vine top
 at or ABOVE his feet; the engine climbs down from the ground only at the top, engine.ts:2204: mid-trunk his down press never starts the
 climb). The fix is one condition made two-sided (`Math.abs(nearTreeVine.topY - p.y) <= 14`). **The lead and ENG-DOWNBOT-g were told
@@ -89,8 +89,10 @@ from box 4's 7b1aa3ba only in ENG-W3/REPORT.md), frozen, never pushed: the landi
    FTRun.dark gains `climbed` (count); `crossed` now counts only the rims he went over. Toy (dark.test): a real 3-1 draft rim, the same
    pass climbing -> kind 'climbed', litAhead []; as a drop -> 'went over', litAhead RED (GREEN in the edit tree; RimWatch tests 2/2).
    Plants 17 (RimWatch hides the climb) and 18 (litAhead counts it) added to planted-faults.py, not yet run (with the 18 on the final
-   head). Not yet proved on a live run: that the engine's `climbing` is true on the frame of a trunk snap past a rim (middle Easy 4 on
-   ef811c2a, 112.80 s, is the row: run it on ef811c2a + this change, its unlit should become climbed 1). tsc clean.
+   head). tsc clean. **PROVED on the live row:** ef811c2a + this change only (frozen), castBots' own runner (`probes/castone.mts`,
+   castRun: cap 1200, Dot's setting) on middle Easy roll 4: shrine 370.5 s, rescues 8 (the x40 row exactly: the run is unchanged), dark
+   crossed 18 + **climbed 2** = the row's 20, **unlit []** (was 1: the trunk grab at 112.80 s). The engine's `climbing` is set on the
+   snap's frame.
 6. **(a) child Easy 25's strand, traced so far (frozen f68c5ca1, probes/strand.mts):** reproduces: stranded 295.9 s, rescues 4, goal 0 of
    1. **With the dark stop removed (NOWAIT=1: noGlowWait) he reaches the shrine at 278.8 s with 6 rescues: the base row exactly**, so
    the dark's stops are what changed the run. The end: a rescue at 275.9 s (the stuck clock from 255.9 s at (1110, 11345) 'the way on is
