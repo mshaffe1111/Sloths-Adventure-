@@ -179,6 +179,21 @@ test('a way down: the route turns straight down a turn vine, and drops ledge by 
     assert.equal(over, undefined, `the way runs under the wood he stands on (${over?.x}-${(over?.x ?? 0) + (over?.width ?? 0)} @${over?.y}) from (${a.x}, ${a.y}) to (${b.x}, ${b.y}): ${JSON.stringify(cs)}`);
   }
   assert.ok(r.some((q) => q.y === 500 && q.x >= 960 && q.x <= 1000), `he never walks the wood to its end by the vine: ${JSON.stringify(r)}`);
+  // (4) the turn's vine stops on a catch over the storey on (gen2 stopVines, the lead's ruling (b)): the way goes down the vine onto the
+  // catch, then off the catch's end toward the leg's exit and down to the storey; never on down the vine's old line through the catch
+  // (every bot stood on the catch turning, 'the way on is 84 px down', ENG-DOWNBOT 11-25: kid Normal 0 of 40 clean)
+  const caught = [plat(0, 500, 720), plat(670, 680, 180), plat(0, 900, 1280)];
+  const stopped = { gen2: { plan: [{}, { join: 'turn' }], tower: { flow: 'down', route: { legs: [{ entry: { x: 100, y: 500 }, exit: { x: 700, y: 500 } }, { entry: { x: 760, y: 900 }, exit: { x: 200, y: 900 } }], spawn: { x: 100, y: 500 } }, turns: [{ x: 760, from: 500, to: 900 }] } },
+    vines: [{ x: 760, topY: 500, bottomY: 680, vineType: 'tree_climb' }], platforms: caught };
+  const sc = towerCorners(stopped as never, { x: 100, y: 500 })!;
+  assert.ok(at(sc, 760, 680) >= 0, `the way never goes down the vine onto the catch: ${JSON.stringify(sc)}`);
+  for (let i = 0; i + 1 < sc.length; i++) {
+    const a = sc[i], b = sc[i + 1];
+    if (b.y - a.y <= 60) continue;
+    const through = caught.find((p) => p.y > a.y + 4 && p.y < b.y - 4 && [a.x + ((b.x - a.x) * (p.y - a.y)) / (b.y - a.y)].some((x) => x > p.x && x < p.x + p.width));
+    assert.equal(through, undefined, `the way drops through the catch at y ${through?.y} from (${a.x}, ${a.y}) to (${b.x}, ${b.y}): ${JSON.stringify(sc)}`);
+  }
+  assert.ok(sc.some((q) => q.y === 900 && q.x < 670), `he never comes off the catch's end toward the leg's exit: ${JSON.stringify(sc)}`);
 });
 
 // A way DOWN in the real engine (firsttimer.ts, ENG-W3a's skills; toys ENG-DOWNBOT, no stage's numbers: a carrier stage, its ground

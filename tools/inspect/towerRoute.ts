@@ -32,7 +32,7 @@ export function towerCorners(stage: StageLike, spawn: Pt): Pt[] | null {
   const out: Pt[] = [{ x: spawn.x, y: spawn.y }];
   let ti = 0;
   // (from where he is to a turn's foot: across first at his own height, then the climb straight up or down the vine)
-  const climb = (t: { x: number; from: number; to: number }) => {
+  const climb = (t: { x: number; from: number; to: number }, toward?: Pt) => {
     const at = out[out.length - 1];
     // (a way DOWN: the turn's vine top stands just past his ledge's end, so the way on from there is straight down it: a point at the
     //  vine level with the ledge read as a gap to jump, and he jumped past the vine and fell two storeys, ENG-W3a's drafted 3-1)
@@ -41,7 +41,14 @@ export function towerCorners(stage: StageLike, spawn: Pt): Pt[] | null {
       //  to the vine's foot runs under that wood, and he stood over it, 'the way on is 105 px down', ENG-DOWNBOT)
       const run = runOf(at);
       if (run && (t.x < run[0] || t.x > run[1])) out.push({ x: t.x < run[0] ? run[0] + 8 : run[1] - 8, y: at.y });
-      out.push({ x: t.x, y: t.to });
+      // (a vine that stops on a catch over the storey on (gen2 tower.ts stopVines, the lead's ruling (b)): down it onto the catch, then
+      //  off the catch's end toward where the way goes on (the leg's exit), down to the storey; straight on down the vine's old line
+      //  ran through the catch, and every bot stood on it turning, 'the way on is 84 px down', ENG-DOWNBOT)
+      const v = vines.find((q) => Math.abs(q.x - t.x) <= 2 && Math.abs(q.topY - t.from) <= 6);
+      if (v && v.bottomY < t.to - HOP) {
+        out.push({ x: t.x, y: v.bottomY });
+        dropTo({ x: t.x, y: v.bottomY }, { x: toward?.x ?? t.x, y: t.to });
+      } else out.push({ x: t.x, y: t.to });
     } else out.push({ x: t.x, y: at.y }, { x: t.x, y: t.from }, { x: t.x, y: t.to });
   };
   // (a leg that rises or drops inside its own section (a vine field, a climb between two ledges): across to the nearest vine that
@@ -109,11 +116,11 @@ export function towerCorners(stage: StageLike, spawn: Pt): Pt[] | null {
     out.push({ x: b.x, y: b.y });
   };
   T.route.legs.forEach((leg, k) => {
-    if (g.plan[k]?.join === 'turn' && T.turns[ti]) climb(T.turns[ti++]);
+    if (g.plan[k]?.join === 'turn' && T.turns[ti]) climb(T.turns[ti++], leg.exit);
     out.push({ x: leg.entry.x, y: leg.entry.y });
     within(leg.entry, leg.exit);
   });
-  if (T.turns[ti]) climb(T.turns[ti]);
+  if (T.turns[ti]) climb(T.turns[ti], stage.exitTotemX !== undefined ? { x: stage.exitTotemX, y: stage.exitTotemY ?? T.turns[ti].to } : undefined);
   if (stage.exitTotemX !== undefined) out.push({ x: stage.exitTotemX, y: stage.exitTotemY ?? out[out.length - 1].y });
   // (a corner on top of the one before it adds nothing)
   const c = out.filter((p, i) => i === 0 || Math.abs(p.x - out[i - 1].x) + Math.abs(p.y - out[i - 1].y) > 0.5);
