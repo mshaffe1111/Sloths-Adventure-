@@ -25,7 +25,31 @@ rows data/ci/s12/<step>-21n/21e/22n.jsonl; CI-14's 7 = the wide sample's exactly
   no walk-off from a log within two frames of a pause frame on it, unpressed): RED on CI-14 ('off log #116 at t 117.367 x 26505'), GREEN on
   CI-15 (data/ci/s12/toy15-*.txt). The 7 rows on a probe copy: all PASS (2-1 N2 164.3 l0, N7 168.0 l1, N10 164.0 l0, E10 172.3 l0; 2-2 N4
   175.8 l3, N6 162.5 l0, N8 184.9 l3); the 2-2 three pass by phase, (b) is not gone.
-**FINAL CHECKS on frozen CI-15** (evidence data/ci/s12/fin15/): PENDING.
+**FINAL CHECKS on frozen CI-15 0ec009b4d** (evidence data/ci/s12/fin15/; the wide sample and x40 on the sparse tree, the rest on the full one):
+- **wide sample** (castBots --par 2, seeds 1-10, every bot, both settings, 2-1/2-2/2-4, 270 rows): **0 BAR PASS -> FAIL vs main** (31 FAIL ->
+  PASS; wide-vs-main.txt), 0 vs c27 (14 FAIL -> PASS). **2-7 x40: 32/40** (bar 29; CI-14 31, c27 33); with the kid 30/40 (was 4); kid N
+  38/40 E 39/40 (was 11, 27). vs CI-14 row for row: only kid and adult rows moved (child/middle/expert identical); 1 PASS -> FAIL, kid E 17
+  (FAIL on main too, r1): traced: parts at 5.100 on #4 (the pause holds); at x 10,1xx on upstream log #23 the river block's wait stands
+  (L3957 / L3690, clockHeld; return {}) are bare stands the kid never lets go: off the front, set down 3 times, rescued. Same family as
+  CI-15, pre-existing; not fixed (not a bar row; for after release 4 with the lead's R-165.465 filing).
+- **tierBots 9/9**; **pacerLay 23/23**; **the 10 races WON** (-17.06 to -33.43 s); **known flips (set1)**: 23/23 PASS (CI-14's 3 FAILs now
+  PASS), child rows = CI-14, no PASS -> FAIL (set1-cmp3.txt: columns c27 | CI-14 | CI-15); **tsc clean**.
+- **The CI tool line: RED, 4 fail** (414 tests; ciline.txt; a first run on the sparse tree was invalid: tools/difficulty read reference/,
+  ciline-sparse-invalid.txt). 3 were ALSO red on CI-14 (cireds/ci14-4reds.txt; no session had run the line since the plant-tests merge);
+  bisected with CI-15's own test files on each step's bot code (cireds/bisect-reds123.txt): c27 GREEN; (1) firsttimer :305 child pad pause
+  and (3) the riverRide upstream plant RED from CI-1 246d90533; (2) the padRide waitRise plant RED from CI-14. The lead ruled (A): fix or
+  re-plant each, then the line once on the frozen final head.
+  - (4) NEW with CI-15, the CI-14 toy: re-pointed onto the case read by what he meets (a beat-row start off a floor that stays reached
+    over pads with the latch seen on another floor), cap 152: RED on CI-13 (#109 at 138.933, 1.27 s for 2.17), GREEN CI-14 / CI-15.
+  - (1) a TEST READ fault: he lands at 169.900 moving right (172 px/s) on #87, a log running LEFT; the next frame the carry put his speed
+    at -75 and the read counted it as a landing on a log running his way. Fixed: a landing is judged once, on its first grounded frame.
+    RED on c22 (its planted proof, ENG-PLANT-s), GREEN on c27 and CI-15 (cireds/t1-*).
+  - (3) re-planted at the same bar from a search on CI-15 (data/ci/s12/up/, 360 rows): rescued off child N 17; 5+ lives child N 3, 15,
+    middle N 16; adult N 16 and child N 11 kept as clean crossings. ON and planted tests GREEN on CI-15.
+  - (2) the rise fixture: 0 live cases in 200 runs (tiers x settings x variants 1-40; rise/fixture-search-ci15.txt). Re-planted on 2-2
+    (the stages that lay beat pads: 2-2 and 2-5 only, s12-padstages): child N 6, 22, 24 clean with waitRise, rescued without (search
+    rise/, stopped once 2-2 gave live cases: 2-2 239 rows, 2-5 64 rows, nothing moved on 2-5); seed 24's extra lives at the pads (beat
+    #86/#87, weight #114-#116; s12-padlives). The fixture's crossing tests stay; its plant gives way to the 2-2 plant. GREEN on CI-15.
 
 
 ## (session 11's) EXACT NEXT STEP (session 12), DONE in session 12 (see above). FINAL HEAD = 4db1da8aa (bot code = CI-14 bfbe09494; the re-plants 6bffbfa7b are test-only). The lead ACCEPTED CI-14, the moved-rows table and the re-plants; the two named items (log run-end floor read; lianaWait's single mid lag) are filed after release 4 with dropWaits.
