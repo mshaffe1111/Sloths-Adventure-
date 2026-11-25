@@ -1,0 +1,5 @@
+# box 12, frozen 0ef63c154: noGlowTurn, whole runs cap 600, rows with a give-up only; STOPPED after kid easy: none
+== FT_CHILD normal
+== FT_CHILD easy
+== FT_KID normal
+== FT_KID easy

@@ -1,0 +1,17 @@
+# box 12 (ENG-DARK-l): FT_EXPERT 1-40 cap 600, Normal then Easy, plant 13 applied (glowJump not read) on c5e25be9d; rows with an unlit crossing only. Unplanted rows NOT run (box 13: check the chosen roll unplanted)
+== normal
+4 plant crossed 16 unlit 1 worst 1 loop 1 edgeTurns 0 [] gaveUp 0  [] ["dark: went over the rim at x 637, y 3371 (right end of 379-637) at 41.57 s with its landing dark (needs 1 s)"]
+5 plant crossed 19 unlit 1 worst 1 loop 1 edgeTurns 0 [] gaveUp 0  [] ["dark: went over the rim at x 887, y 9291 (left end of 887-1118) at 153.17 s with its landing dark (needs 1 s)"]
+10 plant crossed 20 unlit 1 worst 1 loop 1 edgeTurns 0 [] gaveUp 0  [] ["dark: went over the rim at x 740, y 6128 (right end of 495-740) at 97.00 s with its landing dark (needs 1 s)"]
+15 plant crossed 14 unlit 1 worst 1 loop 1 edgeTurns 0 [] gaveUp 0  [] ["dark: went over the rim at x 511, y 9614 (right end of 251-511) at 216.13 s with its landing dark (needs 1 s)"]
+16 plant crossed 22 unlit 1 worst 1 loop 1 edgeTurns 0 [] gaveUp 0  [] ["dark: went over the rim at x 680, y 4820 (right end of 451-680) at 70.67 s with its landing dark (needs 1 s)"]
+17 plant crossed 15 unlit 2 worst 1 loop 1 edgeTurns 0 [] gaveUp 0  [] ["dark: went over the rim at x 514, y 3381 (right end of 265-514) at 47.23 s with its landing dark (needs 1 s)","dark: went over the rim at x 529, y 4272 (right end of 303-529) at 88.17 s with its lan
+27 plant crossed 18 unlit 1 worst 1 loop 1 edgeTurns 0 [] gaveUp 0  [] ["dark: went over the rim at x 680, y 4293 (right end of 439-680) at 51.87 s with its landing dark (needs 1 s)"]
+28 plant crossed 21 unlit 1 worst 1 loop 1 edgeTurns 0 [] gaveUp 0  [] ["dark: went over the rim at x 636, y 10362 (right end of 388-636) at 200.23 s with its landing dark (needs 1 s)"]
+32 plant crossed 21 unlit 1 worst 1 loop 2 edgeTurns 0 [] gaveUp 0  [] ["dark: went over the rim at x 526, y 4331 (right end of 290-526) at 57.87 s with its landing dark (needs 1 s)"]
+== easy
+2 plant crossed 19 unlit 1 worst 1 loop 1 edgeTurns 0 [] gaveUp 0  [] ["dark: went over the rim at x 484, y 2536 (right end of 225-484) at 22.97 s with its landing dark (needs 1.6 s)"]
+4 plant crossed 18 unlit 1 worst 1 loop 1 edgeTurns 0 [] gaveUp 0  [] ["dark: went over the rim at x 425, y 9973 (right end of 171-425) at 359.70 s with its landing dark (needs 1.6 s)"]
+10 plant crossed 19 unlit 1 worst 1 loop 1 edgeTurns 0 [] gaveUp 0  [] ["dark: went over the rim at x 809, y 2042 (left end of 809-1051) at 42.27 s with its landing dark (needs 1.6 s)"]
+18 plant crossed 25 unlit 1 worst 1 loop 2 edgeTurns 0 [] gaveUp 0  [] ["dark: went over the rim at x 611, y 8600 (right end of 354-611) at 295.97 s with its landing dark (needs 1.6 s)"]
+30 plant crossed 25 unlit 1 worst 1 loop 2 edgeTurns 0 [] gaveUp 0  [] ["dark: went over the rim at x 878, y 11656 (left end of 878-1136) at 309.07 s with its landing dark (needs 1.6 s)"]

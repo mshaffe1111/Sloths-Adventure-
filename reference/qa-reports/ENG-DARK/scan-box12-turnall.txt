@@ -1,0 +1,8 @@
+# box 12 (ENG-DARK-l), frozen e0db872f4: noTurnRoom planted, whole runs cap 600, rows with an edge turn only; STOPPED after kid easy (hand-built toys chosen)
+== FT_CHILD normal
+19 plant crossed 19 unlit 0 worst 0 loop 1 edgeTurns 2 ["the rim at x 1051, y 5123, 13 px in at 111.90 s","the rim at x 1051, y 5123, 22 px in at 111.93 s"] gaveUp 0  [] []
+== FT_CHILD easy
+== FT_KID normal
+12 plant crossed 35 unlit 0 worst 0 loop 13 edgeTurns 7 ["the rim at x 1026, y 2808, 20 px in at 26.53 s","the rim at x 1026, y 2808, 25 px in at 26.57 s"] gaveUp 0  [] []
+38 plant crossed 20 unlit 0 worst 0 loop 1 edgeTurns 7 ["the rim at x 1027, y 1723, 17 px in at 15.33 s","the rim at x 1027, y 1723, 22 px in at 15.37 s"] gaveUp 0  [] []
+== FT_KID easy

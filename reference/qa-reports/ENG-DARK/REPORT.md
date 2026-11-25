@@ -10,7 +10,7 @@ c5e25be9d was running at hand-over (box 12 records it in plants-box12.txt).
 **BOX 13 DOES FIRST (step 1 is NOT done):** re-anchor toy 3, toy 6 and test 7 so plants 13, 16, 19, 20 are CAUGHT, each like toys 4/5/
 10/11 (hand-built on roll 1's real rims: onFrame + RealPlay.stand; the toy's name and asserts kept) unless a real roll is found: a scan
 of the expert Normal/Easy 1-40 cap 600 with plant 13 applied was RUNNING in box 12's container (box 12 commits it as
-scan-box12-jump.log if it finishes). Shapes: toy 3, the expert running at a dark rim, its light asleep, the route's jump over it (plant
+scan-box12-jump.txt if it finishes). Shapes: toy 3, the expert running at a dark rim, its light asleep, the route's jump over it (plant
 13: he jumps into the dark); toy 6, the KID landing near a rim with a held steer toward it (plant 16: he runs off); test 7, the child
 stood beside a trunk mid-way, its top above him, the way on down it. Then plants 12-16, 19, 20, 28, 29 all CAUGHT and darkBots.test
 whole GREEN; THEN the steps below.
@@ -29,7 +29,7 @@ lockall on the merged head; push; the hash to the lead). Kid N 12 planted noTurn
   min(GLOW_TURN_ROOM, piece.width/2): rim, px in, time; pushed at `stop.turn = 1`) and `loop` (rimLoop: most times one rim gone over,
   climbs not counted). toyscan.mts takes any plant field, a setting, 'both'.
 - darkBots.test on 0ef63c154 (once): 8 pass, 3 fail (test 5, the seam RED 9, the turn-room RED 11). Toys 3, 4, 6 PASS unplanted.
-- MEASURED on the final lay (scan-box12-rolls.log, -turnall.log, -giveall.log): middle Normal 1-40 noTurnRoom: 0 unlit and 0 edge turns
+- MEASURED on the final lay (scan-box12-rolls.txt, -turnall.txt, -giveall.txt): middle Normal 1-40 noTurnRoom: 0 unlit and 0 edge turns
   planted or not; child noGlowTurn cap 50 / 300: 0 give-ups on any roll; all bots x settings (stopped after kid easy): give-ups none;
   edge turns planted on child N 19 (13 px in, no fall), kid N 12 (7, and loop 13) and kid N 38 (7), none falling. Why no give-up: a stop
   is within GLOW_NEAR (90 px) of its rim and every landing's light is within GLOW_REACH.back (260) of it, so facing away still wakes it.
