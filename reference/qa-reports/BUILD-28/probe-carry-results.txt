@@ -1,0 +1,16 @@
+{"stage":"2-8","setting":"normal","porchH":24,"gap":44,"wW":330,"wV":268,"lipV":268,"airF":2,"on":"PORCH (high)","setOn":"x 963->972 feet 748.3->740.0 (8.3 under the top)"}
+{"stage":"2-8","setting":"normal","porchH":24,"gap":44,"wW":900,"wV":268,"lipV":268,"airF":2,"on":"PORCH (high)","setOn":"x 964->973 feet 748.3->740.0 (8.3 under the top)"}
+{"stage":"2-8","setting":"normal","porchH":60,"gap":50,"wW":330,"wV":268,"lipV":268,"airF":2,"on":"PORCH (high)","setOn":"x 963->984 feet 748.3->740.0 (8.3 under the top)"}
+{"stage":"2-8","setting":"normal","porchH":60,"gap":52,"wW":900,"wV":268,"lipV":268,"airF":2,"on":"PORCH (high)","setOn":"x 964->986 feet 748.3->740.0 (8.3 under the top)"}
+{"stage":"2-8","setting":"easy","porchH":24,"gap":66,"wW":330,"wV":285,"lipV":268,"airF":3,"on":"PORCH (high)","setOn":"x 981->990 feet 756.7->740.0 (16.7 under the top)"}
+{"stage":"2-8","setting":"easy","porchH":24,"gap":66,"wW":900,"wV":285,"lipV":268,"airF":3,"on":"PORCH (high)","setOn":"x 982->992 feet 756.7->740.0 (16.7 under the top)"}
+{"stage":"2-8","setting":"easy","porchH":60,"gap":58,"wW":330,"wV":285,"lipV":268,"airF":2,"on":"PORCH (high)","setOn":"x 972->992 feet 748.3->740.0 (8.3 under the top)"}
+{"stage":"2-8","setting":"easy","porchH":60,"gap":60,"wW":900,"wV":285,"lipV":268,"airF":2,"on":"PORCH (high)","setOn":"x 973->994 feet 748.3->740.0 (8.3 under the top)"}
+{"stage":"2-3","setting":"normal","porchH":24,"gap":64,"wW":330,"wV":285,"lipV":268,"airF":3,"on":"PORCH (high)","setOn":"x 981->990 feet 756.7->740.0 (16.7 under the top)"}
+{"stage":"2-3","setting":"normal","porchH":24,"gap":54,"wW":900,"wV":268,"lipV":268,"airF":3,"on":"PORCH (high)","setOn":"x 973->982 feet 756.7->740.0 (16.7 under the top)"}
+{"stage":"2-3","setting":"normal","porchH":60,"gap":58,"wW":330,"wV":285,"lipV":268,"airF":2,"on":"PORCH (high)","setOn":"x 972->992 feet 748.3->740.0 (8.3 under the top)"}
+{"stage":"2-3","setting":"normal","porchH":60,"gap":52,"wW":900,"wV":268,"lipV":268,"airF":2,"on":"PORCH (high)","setOn":"x 964->986 feet 748.3->740.0 (8.3 under the top)"}
+{"stage":"2-3","setting":"easy","porchH":24,"gap":66,"wW":330,"wV":285,"lipV":268,"airF":3,"on":"PORCH (high)","setOn":"x 981->990 feet 756.7->740.0 (16.7 under the top)"}
+{"stage":"2-3","setting":"easy","porchH":24,"gap":66,"wW":900,"wV":285,"lipV":268,"airF":3,"on":"PORCH (high)","setOn":"x 982->992 feet 756.7->740.0 (16.7 under the top)"}
+{"stage":"2-3","setting":"easy","porchH":60,"gap":58,"wW":330,"wV":285,"lipV":268,"airF":2,"on":"PORCH (high)","setOn":"x 972->992 feet 748.3->740.0 (8.3 under the top)"}
+{"stage":"2-3","setting":"easy","porchH":60,"gap":60,"wW":900,"wV":285,"lipV":268,"airF":2,"on":"PORCH (high)","setOn":"x 973->994 feet 748.3->740.0 (8.3 under the top)"}

@@ -1,4 +1,38 @@
-# BUILD-28 REPORT (W2-LANE: 2-8 "Before the Water Rises"; R-165.430 (2), READY-28, BUILD-28). Session 1 (W2-LANE a), started 9:44 AM ET (from date). Session 2 (W2-LANE b), started 10:07 AM ET (from date). Session 3 (W2-LANE c), started 10:30 AM ET (from date). Session 4 (W2-LANE d), started 10:52 AM ET (from date). Session 5 (W2-LANE e), started 11:19 AM ET (from the session hook date) Session 6 (W2-LANE f), started 11:41 AM ET (from the session hook date)
+# BUILD-28 REPORT (W2-LANE: 2-8 "Before the Water Rises"; R-165.430 (2), READY-28, BUILD-28). Session 1 (W2-LANE a), started 9:44 AM ET (from date). Session 2 (W2-LANE b), started 10:07 AM ET (from date). Session 3 (W2-LANE c), started 10:30 AM ET (from date). Session 4 (W2-LANE d), started 10:52 AM ET (from date). Session 5 (W2-LANE e), started 11:19 AM ET (from the session hook date) Session 6 (W2-LANE f), started 11:41 AM ET (from the session hook date) Session 7 (W2-LANE g), started 12:05 PM ET (from the session hook date)
+
+## EXACT NEXT STEP (session 7, W2-LANE g; head: this REPORT commit on 6470cc657). THE LEAD'S ENTRY PRINCIPLE: the RUN takes the LOW road,
+## a JUMP the HIGH road; running off W never lands him on the high road; reaching it always needs a press
+1. THE CARRY, MEASURED (probe-carry.test.ts.txt, copy it to src/game/ to run; output probe-carry-results.txt; RealPlay, the engine's own
+   update, on 2-8's and 2-3's configs): W 330 (and W 900) on a bank, a level piece past W's far lip, the bank under the gap and the marsh
+   75 under it; he runs W holding right and never presses. The widest gap a FULL-RUN WALK-OFF still lands him across (its near end past
+   W's lip): Easy 66 (thin, the built porch) / 60 (block), on BOTH stages; Normal 44 / 52 on 2-8, 64 / 58 on 2-3. A walk-off is the same
+   move for every tier (no press; the bot's speed at the lip is the engine's, 268 px/s in the air off a 285 run), so the carry is per
+   setting, not per tier: the worst is EASY, 66 px. THE HELP THAT LANDS HIM, NAMED: the landing-from-above catch (engine.ts:2887,
+   onFloor: catchDrop = 14 + ASSIST.catchDrop 6 x assistNow(); Easy's assistNow is 1 on every stage, so 20 px; Normal is
+   easeAssist(stage): 2-8 0.29 -> 15.75, 2-3 0.5 -> 17): the frame before he is set on the porch his feet are 16.7 px under its top (3
+   frames in the air at 66). NOT the lip hoist (forgive.mantle 26): the porch is a thin branch, under WALL_H 50.
+   !! A PROBE FIDELITY FAULT: probe-fork runs the fork on 2-3's config (FirstTimerRun('2-3')), whose Normal catch is 17, not 2-8's 15.75:
+   the adult's walk-off onto the porch at gap 60 (session 6's trace) does NOT happen on 2-8 Normal (carry 44) but DOES on Easy (66 > 60)
+   on every stage. The probe should run on 2-8's config once 2-8 has a row; until then its Normal is 2-3's (more forgiving).
+2. THE CHOICE: (y), the porch's near end beyond the carry. In one paragraph: (y) keeps every ruled number but the gap: W 330 (A2), the
+   marsh floor 75 and the porch 135 over it (A3), the climb model (A4), the porch LEVEL with W, the three 60 px steps and 400 px treads,
+   strandFaults' drops (W's lip 60 onto the bank, the porch's far tread 60). It changes three numbers: the gap 60 -> 81 (the carry 66 +
+   the lead's FLOOD_LOW_HOP margin 15: the verdict passes 81, refuses 80), back 60 -> 81 (the gap stays over the bank: a short jump or a
+   walk-off lands on the bank, never in the water), near 420 -> 441 (30 px of bank stays before W's face: the fork's place moves 21 px,
+   which floodFaults re-checks on the laid low road). The high road's first link is then a JUMP ACROSS (level, a press): NOT a jump UP,
+   because a porch raised over W would make its far tread a 120 px drop onto the far bank, past the line's step 90 (strandFaults). (x)
+   (the low road's way down not off W's lip) would re-shape the fork itself: everyone climbs W today and the choice is at its lip; a way
+   down elsewhere needs W off the path or a second wall-step, a new look for 2-8.md and A2's W derivation re-done. (y) is the smaller,
+   checkable change.
+3. NEXT, IN ORDER (none built yet): (a) ENGINE PIECE, one commit: highRoad (flood.ts:208) accepts the FIRST link off the wall-step as a
+   level JUMP up to FLOOD_FIRST_JUMP (the gap forkFaults (2) already proves each tier crosses at the speed W gives it); every later link
+   stays <= FLOOD_HOP 60; a planted toy in flood.test: W + gap 81 + porch, the old rule refuses it ('the high road breaks'), the new
+   accepts; a gap past the jump still refused. (b) THE VERDICT in forkFaults: FLOOD_WALK_OFF { carry 66 (measured, Easy, thin; the help:
+   onFloor's catch 14 + 6), margin 15 } in floodLay.ts beside FLOOD_LOW_HOP, passed by floodLay; 'a full-run walk-off from W's lip lands
+   on the low road': gap >= 81 by name. Planted in w2TwoRoad.test: RED on 6470cc657's shape (gap 60), GREEN on the new (81/81/441).
+   (c) W2_FORK gap 81, wall.back 81, near 441 (w2.ts:195-200). (d) The probe-fork ROAD check: at late 0 every tier that reads LOW walks
+   the low road (marshT set, highT unset, or a high road reached by a press: log the press frame), then 54/54. (e) 2b toys, stills,
+   1b at the lead's hash, READY-28.
 
 ## EXACT NEXT STEP (session 6, W2-LANE f, hand-over on the box; head 3e847107a + this REPORT commit). THE LEAD RULED (c) (verbatim in its
 ## message: a DOUBLE jump up off the low road is his own move onto the high road; his ORDINARY hop must keep the low road)

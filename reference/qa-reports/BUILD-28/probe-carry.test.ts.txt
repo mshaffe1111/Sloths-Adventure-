@@ -1,0 +1,51 @@
+/**
+ * BUILD-28 session 7 (the lead's entry principle: the RUN takes the LOW road, a JUMP the HIGH road): the FULL-RUN WALK-OFF CARRY off W's
+ * far lip onto a piece level with W's top, in the real engine (realPlay.ts RealPlay, the engine's own update), both settings, a thin porch
+ * (h 24, the built branch) and a block (h 60). The bank under the gap to the porch's near end (the real fork: the gap over the bank), the
+ * marsh floor 75 under the bank past it. He runs W from a stand at its face, holds right, never presses jump: a walk-off at the speed W
+ * gave him. Read: where he stands after, and on the frame he is set on the porch, his feet the frame before (which help took him).
+ */
+import { test } from 'node:test';
+import { RealPlay } from './realPlay.ts';
+import { setDifficulty } from './difficulty.ts';
+import type { Platform } from './types.ts';
+
+const BANK = 800;
+const solid = (id: number, x: number, width: number, y: number, height: number) => ({ id, x, y, width, height, type: 'solid' }) as Platform;
+
+function walkOff(stage: string, setting: 'normal' | 'easy', porchH: number, gap: number, wW = 330, from = 0) {
+  setDifficulty(setting);
+  const r = new RealPlay(stage, 1);
+  const lip = 940;
+  const porchX = lip + gap;
+  const bank = solid(1, 0, porchX, BANK, 200);
+  const marsh = solid(2, porchX, 4000, BANK + 75, 200);
+  const w = solid(3, lip - wW, wW, BANK - 60, 60);
+  const porch = solid(4, porchX, 1200, BANK - 60, porchH);
+  r.bare([bank, marsh, w, porch]);
+  r.stand(lip - wW + 22 + from, BANK - 60);
+  for (let i = 0; i < 6; i++) r.frame({});
+  let lipV = 0, wV = 0, prev = { x: r.p.x, y: r.p.y }, setOn = '', airF = 0;
+  for (let i = 0; i < 150; i++) {
+    r.frame({ right: true });
+    const p = r.p;
+    if (!lipV && p.x > lip) lipV = Math.round(p.vx);
+    if (p.grounded && r.e.standingOnId === 3) wV = Math.round(p.vx);
+    if (p.x > lip && !p.grounded) airF++;
+    if (!setOn && p.grounded && r.e.standingOnId === 4) setOn = `x ${prev.x.toFixed(0)}->${p.x.toFixed(0)} feet ${prev.y.toFixed(1)}->${p.y.toFixed(1)} (${(prev.y - porch.y).toFixed(1)} under the top)`;
+    if (p.grounded && p.x > lip + 30) break;
+    prev = { x: p.x, y: p.y };
+  }
+  const on = r.e.standingOnId;
+  return { stage, setting, porchH, gap, wW, wV, lipV, airF, on: on === 4 ? 'PORCH (high)' : on === 1 ? 'bank (low)' : on === 2 ? 'marsh (low)' : String(on), setOn };
+}
+
+test('the full-run walk-off carry off W 330 onto a level piece', () => {
+  // (the LAST gap each case still lands him on the porch: his carry; W 330 from a stand at its face, and W 900: a full run, 285 px/s)
+  for (const stage of (process.env.STAGES ?? '2-8,2-3').split(',')) for (const setting of ['normal', 'easy'] as const) for (const porchH of [24, 60]) for (const wW of [330, 900]) {
+    let last: ReturnType<typeof walkOff> | undefined;
+    for (let gap = 30; gap <= 140; gap += 2) { const o = walkOff(stage, setting, porchH, gap, wW); if (o.on.startsWith('PORCH')) last = o; }
+    console.log(JSON.stringify(last ?? { stage, setting, porchH, wW, on: 'never' }));
+  }
+  setDifficulty('normal');
+});
