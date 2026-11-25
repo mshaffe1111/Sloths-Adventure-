@@ -18,9 +18,11 @@
    not drift), fell at 140.300 (y 601): the life; respawned on #108 at x 27,932. **Tagged (s10/tag-ci13-adultN4-139.txt, a tagged copy of
    0e0c4e284):** #115 is type 'moving' ([29,392, 29,522], x unmoved); padRead's clock-ride read stood him on it (L3329 `return held`,
    clockHeld, stopMeant) from 139.667; at 140.233 it left him (not grounded, x unmoved) and he fell. **Not CI-13's branch:** CI-13 moved
-   his arrival 3.5 s, to a phase of #115 CI-12 never met. **Left:** what #115 does at 140.2 (its motion: run the stage, print #115's x / y
-   / state 139.5-140.4) and whether padRead's read of it is wrong at that phase (a bot fault: fix it where it lives, with a toy) or the
-   row's honest life (then a named, traced row). Then the rest of B's (2-1 kid N 19, 2-2 kid E 37,
+   his arrival 3.5 s, to a phase of #115 CI-12 never met. **#115 is a LILY pad** (ci-tools/s10-p115.mts.txt, s10/p115-ci13-adultN4.txt:
+   {type 'moving', lily: true}, x 29,392 y 584 w 130, never moves): he stood on it from 139.767 and it BROKE under him at 140.233 (`broken`
+   true), he fell (y 600.7) and lost the life. So padRead stood him on a sinking lily until it broke. **Left:** padRead's read at 139.667
+   (why stand on #115 rather than go on: the next pad's state, the beat row's breath; a tagged copy, inside padRead) -> a bot fault (fix
+   where it lives, with a toy each way) or the row's honest life (a named, traced row). Then the rest of B's (2-1 kid N 19, 2-2 kid E 37,
    2-2 kid N 3 and 33 FAIL -> PASS, 2-4 adult N 32, 2-4 kid E 2/12/13/19/20/35) and A's 12 (CI-11 vs CI-12: adult N 8/32, child E 11/23,
    child N 8/39, kid E 2/12/13/19/20/35), one line each.
 2. Then the re-plants (riverRide :344/:355 by phase at gap 80, as ruled before), then the final checks ONCE on the frozen final head: the 4
