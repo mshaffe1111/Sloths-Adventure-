@@ -219,18 +219,17 @@ export function litAhead(crossings: readonly RimCrossing[], setting: 'normal' | 
 }
 
 /**
- * A run's rim crossings from its frames (the harness's watcher): he goes over a rim the first frame he is off the ground past its end,
- * his feet within a step of its top. `lit(light)`: the game time the light woke (-Infinity for one always lit, undefined still asleep).
+ * A run's rim crossings from its frames (the harness's watcher): he goes over a rim the first frame he is past its piece's end, having
+ * stood on the piece (on the ground or off it: the game's grace keeps him 'grounded' a moment past an edge). `lit(light)`: the game time the light woke (-Infinity for one always lit, undefined still asleep).
  */
 export class RimWatch {
   readonly crossings: RimCrossing[] = [];
   private onPiece: Platform | null = null;
   constructor(readonly rims: readonly DarkRim[]) {}
   step(t: number, p: { x: number; y: number; grounded: boolean }, lit: (l: Light) => number | undefined) {
-    if (p.grounded) {
-      this.onPiece = this.rims.find((r) => p.x >= r.piece.x - 2 && p.x <= r.piece.x + r.piece.width + 2 && Math.abs(p.y - r.piece.y) <= 4)?.piece ?? null;
-      return;
-    }
+    // (on a rim's piece: he is there; past its end he has gone over, in the air or on the game's grace past an edge, whichever comes first)
+    const on = p.grounded ? this.rims.find((r) => p.x >= r.piece.x && p.x <= r.piece.x + r.piece.width && Math.abs(p.y - r.piece.y) <= 4)?.piece : undefined;
+    if (on) { this.onPiece = on; return; }
     if (!this.onPiece) return;
     const from = this.onPiece;
     const r = this.rims.find((q) => q.piece === from && (q.dir > 0 ? p.x > from.x + from.width : p.x < from.x));
