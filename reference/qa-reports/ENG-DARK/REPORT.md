@@ -1,6 +1,6 @@
 # ENG-DARK REPORT (the dark + light ring as one gen2 brick; WORLD-3-PLAN F2; R-165.449)
-**EXACT NEXT STEP (ENG-DARK-f box 6 hand-over, 1:05 PM ET by `date`; code head be91c547 on t-eng-dark-wip = 4527e73f + (a); the
-working tree's (b) WIP commit on top of it is named below). Box 7 OWNS EVERY CODE CHANGE. Re-fetch before every commit (D138).**
+**EXACT NEXT STEP (ENG-DARK-f box 6 hand-over, 1:00 PM ET by `date`; code head be91c547 on t-eng-dark-wip = 4527e73f + (a); the
+(b) WIP 84d3bcdb on top: darkLandings written, not wired, the wrong model, below). Box 7 OWNS EVERY CODE CHANGE. Re-fetch before every commit (D138).**
 (a) **DONE, GREEN (be91c547).** The one condition alone was NOT enough (measured): with the top asked both ways he no longer holds down,
 but the route's next point lies straight down trunk 26 through his piece, so downEnd() turned him left and right at x 1069-1130 to the
 same strand at 295.9 s. From the ground mid-trunk the engine takes a trunk only with UP (engine.ts wantGrab; downAtTop is the top only).
