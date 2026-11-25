@@ -18,12 +18,15 @@ after the light woke from an incidental pause, with no stop at all (unlit #2, th
 npx tsx reference/qa-reports/ENG-DARK/onerun.mts child normal 19` in a frozen worktree (its default cap is 360 s; castBots runs past
 it). Fix candidates (a toy each way on this row): the stop is taken WHERE it wakes the landing (within GLOW_NEAR of the rim, facing it;
 a stand that cannot reach the light steps nearer instead of waiting out GLOW_GIVEUP), and a give-up ends with the visit (a rescue or
-leaving the piece clears it), never for the whole run. Second trace owed: middle Normal 13 (rim 248, 8746 at 112.50 s) or 29.
+leaving the piece clears it), never for the whole run. **The lead's question for this kind (bot fault or lay fault?) is still open
+here:** if a stand ON the rim's piece facing the rim (x 1014, 40 px in) cannot wake its landing's light, darkGaps passed a rim no stop
+on its piece wakes from that spot: then the verdict has a hole, plant it (a RED roll where the only stand spots miss the light) before
+the fix. Second trace owed: middle Normal 13 (rim 248, 8746 at 112.50 s) or 29.
 (3) Then: the plants on a frozen final head (`planted-faults.py`, 13 now: PASS 13/13 CAUGHT), tierBots 9/9, the suite (3 shards) +
 the CI tool line once on the final head; land on t-eng-w3 by the lead's landing rule below; send the lead the hash, the READY measures
 and that ENG-SPORE can start (the light API: reference/architecture/ADR-004-timed-lights.md on the lead's branch).
-(4) **Still open for the lead (named, not this lane's file): Dot's card upright sits just under Pokey and hides the glowworm that just
-woke** (stills item 2(d) below).
+(4) **STILLS APPROVED by the lead.** Dot's card upright under Pokey (stills item 2(d)) is filed as **R-165.456** (FIX-CARD-DOWN, its own
+job: on a down stage the card sits above him); not this lane's.
 **The lead's landing rule (ENG-DOWNBOT-f lands on t-eng-w3 today too; both lanes touch tools/inspect/firsttimer.ts and the gen2 lay):**
 whoever lands SECOND merges origin/t-eng-w3 first and runs the OTHER lane's tests on the merged head before pushing: dark.test,
 darkBots.test, w3.test, tower.test, castBots.test (the down toys) and lockall. Name every conflict here; never resolve one by dropping
@@ -69,7 +72,8 @@ Box 3 start 11:50 AM ET, box 2 11:31 AM ET, box 1 11:03 AM ET (by `date`).
    DARK_AHEAD starts the dark stop instead (glowWait then holds him until lit + stopReact). Not by widening GLOW_NEAR (a press from further
    out would escape the same way). **Toy (darkBots.test 'holds a running JUMP'), the expert on the draft's roll 12, first 85 s:** RED on
    653bb970 (the rim at 594, 4355 gone over with its landing dark at 81.60 s), GREEN on b71163ea; **plant 13** (glowJump not read):
-   CAUGHT (RED). dark.test + darkBots.test **12/12 GREEN on a frozen b71163ea**. The x40 that proves it on every bot: item (2) above.
+   CAUGHT (RED). dark.test + darkBots.test **12/12 GREEN on a frozen b71163ea**. **The lead's question (bot or lay?): a BOT fault** for
+   both expert traces: no stop was ever started (the press came first), so the light was never asked; the lay's own verdict holds there. The x40 that proves it on every bot: item (2) above.
 5. Owned: for about 4 minutes three runs went at once (the two base lanes + the targeted dark tests), past 'at most two heavy runs'.
 
 ## Box 2 (ENG-DARK-b) done (all on the real 3-1 draft row)
