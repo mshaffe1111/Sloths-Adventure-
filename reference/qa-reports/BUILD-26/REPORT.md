@@ -1,3 +1,31 @@
+# BUILD-26x (session 8 of BUILD-26q; t-build-26-wip-26q on 6c7c494a1). Started 6:55 PM ET 11-24 (by `date`); this box written 7:04 PM ET
+
+## EXACT NEXT STEP
+**Beat A's cause and the gate hole are READ and SENT to the lead (ruling step 1). NOTHING is fixed: WAIT for the lead's GO, then step 2.**
+CAUSE (proven on the real page, b26x/beatA-base-vs-no91.jpg): not platform 5, not the boulder, door, lantern, earth wall, wheel or face
+posts (each toggled off, the gap stays: b26x/beatA-toggles.jpg). It is the climb's TOP bank P#91 ('log', x 463-883, y 360, h 90).
+protoArt.ts drawBankArt draws a bank's soil from its top to `bottom = max(p.y + p.height, viewBottom)` (the bottom of every ground
+square, paintTile/drawGround), and drawGround paints banks LOWEST FIRST (~line 1440, written so pit floors tuck under the walls). So
+P#91's soil is a 7,400 px column painted over every floor under it: it covers P5's lip and top at about 530-839 (the column, narrowed by
+its end faces). With P#91 taken out of e.platforms the lip is whole. (The lighter soil block under the right shore goes with it too.)
+REACH (b26x/scanStack.ts.txt: every stage, layouts 1-2, both settings; painted banks A over B, x overlap > 30, room for him between,
+gap >= 48 = his height): ONLY 2-6 (12 pairs, also P5 over P1 x 326-640) and 1-4 (5 pairs: top bank #56 x 137-557 y 360 over the
+start floor #1 y 10888). 1-4 is SHIPPED and it shows: real page, 1-4 layout 1 (seed 9937) Normal, a dark soil pillar down the sky over
+the start floor, its lip cut, Pokey inside it (b26x/1-4-base-vs-no56.jpg, top; bottom = #56 removed). NOT yet checked on main.
+GATE HOLE: paintcheck/paintFall.ts (R-165.292) judges the footing DECISION per block (footingOf + paintedPlatforms: which drawer is
+assigned), never what reaches the screen. P5 is assigned to the painted ground (bankPainted, h 90), so it is not code terrain and not a
+breach; --unpainted lists only styles no painter draws at any height. Nothing reads draw order, so a top painted over by a later bank passes.
+PROPOSED (sent, awaiting GO): (a) drawGround: a bank's soil is cut out (evenodd clip) over any lower painted bank he can stand on under
+it (B.y - (A.y + A.h) >= his height, x overlap), from B's lip top down: B's lip, top and soil show; tucks (gap < 48) unchanged; no stage
+id. Draw-only: no layout moves (lockall unaffected); pixel movers 2-6 and SHIPPED 1-4 (the lead's call). (b) planted check: protoArt.ts
+exports the soil regions as drawGround uses them; paintFall.ts adds "a painted bank's top under a LATER-painted bank's soil = breach";
+RED on 6c7c494a1 (2-6 P5 under P#91, 1-4 #1 under #56), GREEN after (a); a two-bank plant in paintFall.test.ts (CI-run).
+AFTER THE GO, in order: (1) lay (a)+(b), plant RED then GREEN; (2) re-shoot beat A both settings, upright and sideways
+(b26w/beatstills.mjs.txt) and 1-4's start floor; to the lead; (3) ruling 4: ONE castBots --proven 2-6, lockall (2-6 the only mover),
+paint --stages 2-6, the suite + the CI tool line ONCE on the final head, timecheck; land on t-build-26 (merge, no force); hash + table.
+ALSO NAMED (no work tonight, R-165.438's polish list): C Easy sideways, Pokey's 'PLEASE BE PATIENT' bubble sits over a HUD heart.
+Probe: b26x/probeA.mjs.txt (`node probeA.mjs <vite port> <out> normal`; playwright from /opt/node22/lib/node_modules/playwright/index.js).
+
 # BUILD-26w (session 7 of BUILD-26q; t-build-26-wip-26q, the bot fix a44decc0e on 48b277994's stage). Started 6:34 PM ET 11-24 (by `date`); this box written 6:54 PM ET
 
 ## EXACT NEXT STEP

@@ -1,0 +1,29 @@
+// scratch (not committed): every painted bank whose top lies under a HIGHER painted bank's soil (x overlap), all stages, layouts 1-2
+import '../../src/game/headlessDom.ts';
+(globalThis as Record<string, unknown>).Image = class { onload: null | (() => void) = null; onerror = null; width = 1; height = 1; naturalWidth = 1; naturalHeight = 1; complete = true; set src(_u: string) { this.onload?.(); } decode() { return { then: (ok: () => void) => ok() }; } };
+const { generateAllLevels } = await import('../../src/game/worldsData.ts');
+const { generateStage, setLayoutVariant } = await import('../../src/game/stageGenerator.ts');
+const { easyStage } = await import('../../src/game/easyMode.ts');
+const { withGoals } = await import('../../src/game/goals.ts');
+const { stagePaintInput } = await import('./paintStage.ts');
+const { paintedBank } = await import('../../src/game/w1Pits.ts');
+const only = process.argv[2]?.split(',');
+for (const c of generateAllLevels().filter((c) => !c.secret && (!only || only.includes(c.id)))) {
+  const hits: string[] = [];
+  for (const setting of ['normal', 'easy'] as const) for (const v of [1, 2]) {
+    setLayoutVariant(v);
+    let st: any;
+    try { st = setting === 'easy' ? easyStage(withGoals(generateStage({ ...c, unlocked: true }, 'easy'))) : withGoals(generateStage({ ...c, unlocked: true }, 'normal')); } catch { setLayoutVariant(null); continue; }
+    setLayoutVariant(null);
+    if (!stagePaintInput(st, c) || st.groundLook === 'bough') continue;
+    const banks = st.platforms.filter(paintedBank);
+    for (const b of banks) for (const a of banks) {
+      if (a === b || !(b.y > a.y + 6)) continue;
+      const ov = Math.min(a.x + a.width, b.x + b.width) - Math.max(a.x, b.x);
+      const gap = b.y - (a.y + a.height); if (ov > 30 && gap >= 48) hits.push(`gap ${Math.round(gap)} ${setting} L${v} top#${a.id} ${Math.round(a.x)}-${Math.round(a.x + a.width)} y${Math.round(a.y)} over #${b.id} ${Math.round(b.x)}-${Math.round(b.x + b.width)} y${Math.round(b.y)} ov ${Math.round(ov)}`);
+    }
+  }
+  if (hits.length) console.log(`${c.id}: ${hits.length} pairs; e.g. ${hits[0]}`);
+  process.stderr.write(`${c.id} `);
+}
+console.log('done');

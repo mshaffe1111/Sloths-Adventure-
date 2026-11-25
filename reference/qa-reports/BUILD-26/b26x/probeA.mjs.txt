@@ -1,0 +1,42 @@
+// beat A probe: list in-engine pieces at y 7600-7800, then shots with layers toggled
+import fs from 'node:fs';
+const PWm = await import('/opt/node22/lib/node_modules/playwright/index.js'); const chromium = PWm.chromium ?? PWm.default.chromium;
+const [port, out, diff = 'normal'] = process.argv.slice(2);
+fs.mkdirSync(out, { recursive: true });
+const b = await chromium.launch();
+const E = "(typeof window.__engine === 'function' ? window.__engine() : window.__engine)";
+const ctx = await b.newContext({ viewport: { width: 915, height: 412 }, deviceScaleFactor: 1 });
+await ctx.addInitScript((d) => { try { localStorage.setItem('sloth_difficulty', d); } catch {} }, diff);
+const p = await ctx.newPage();
+p.on('pageerror', (e) => console.log('ERR', e.message));
+await p.goto(`http://127.0.0.1:${port}/?lessons=off`);
+await p.waitForTimeout(2500);
+await p.evaluate(() => window.__play('2-6', 0));
+await p.waitForTimeout(4000);
+await p.waitForFunction((E) => { const e = eval(E); return !!(e && e.currentStage && e.player && e.platforms); }, E, { timeout: 60000 });
+await p.waitForFunction(() => document.documentElement.dataset.hudCard !== '1', null, { timeout: 30000 }).catch(() => {});
+await p.waitForTimeout(2000);
+const info = await p.evaluate((E) => {
+  const e = eval(E); e.isPaused = true;
+  const near = e.platforms.filter((q) => q.y > 7500 && q.y < 7800 && q.x < 1300 && q.x + q.width > 200 && !q.wheel)
+    .map((q) => ({ id: q.id, t: q.type, s: q.style, x: Math.round(q.x), x1: Math.round(q.x + q.width), y: Math.round(q.y), h: q.height, art: q.art, soil: q.soil, push: q.push, broken: q.broken, hollow: q.hollow, pit: q.pit, layer: q.layer, keys: Object.keys(q).join(',') }));
+  const p5 = e.platforms.find((q) => Math.abs(q.y - 7761) < 30 && q.x < 700 && q.x + q.width > 900 && q.height >= 90);
+  const pw = e.player.width, ph = e.player.height;
+  Object.assign(e.player, { x: 790 - pw / 2, y: p5.y - ph - 2, vx: 0, vy: 0, grounded: false, invincibleTimer: 9 });
+  for (const hh of e.currentStage?.proto?.hints ?? []) hh.shown = true;
+  for (let i = 0; i < 60; i++) e.update(1 / 30);
+  return { seed: e.currentStage.gen2?.seed, near, bankWall: e.proto?.bankWall, protoKeys: Object.keys(e.proto ?? {}).join(',') };
+}, E);
+console.log(JSON.stringify(info));
+for (let i = 0; i < 10; i++) { await p.evaluate((E) => { const e = eval(E); e.update(1 / 30); e.clearGuide?.(); e.render(); }, E); await p.evaluate(() => new Promise((r) => requestAnimationFrame(() => r(0)))); }
+await p.screenshot({ path: `${out}/base-${diff}.jpg`, type: 'jpeg', quality: 80 });
+const EXP = {
+  no91: "e.platforms = e.platforms.filter((q) => q.id !== 91); e.clearGroundCache?.()",
+};
+for (const [k, code] of Object.entries(EXP)) {
+  await p.evaluate(([E, code]) => { const e = eval(E); e._snap = { bw: e.proto.bankWall, pieces: e.pieces, posts: e.facePosts, decor: e.proto.decor, dress: e.proto.dress, plats: e.platforms, rivers: e.currentStage.rivers }; eval(code); }, [E, code]);
+  for (let i = 0; i < 14; i++) { await p.evaluate((E) => { const e = eval(E); e.render(); }, E); await p.evaluate(() => new Promise((r) => requestAnimationFrame(() => r(0)))); }
+  await p.screenshot({ path: `${out}/${k}-${diff}.jpg`, type: 'jpeg', quality: 80 });
+  await p.evaluate((E) => { const e = eval(E); const s = e._snap; e.proto.bankWall = s.bw; e.pieces = s.pieces; e.facePosts = s.posts; e.proto.decor = s.decor; e.proto.dress = s.dress; e.platforms = s.plats; e.currentStage.rivers = s.rivers; }, E);
+}
+await b.close();
