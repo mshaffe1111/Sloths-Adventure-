@@ -39,12 +39,23 @@
    (c) DRAFT, NOT LANDED (firsttimer.ts lands at 1b only, rule 28): draft-fork-jump-bot.patch.txt: the bot reads the high road as floodLay
        does (highRoad ... FLOOD_FORK_JUMP, firsttimer.ts:2462). WITHOUT it the bot's road breaks at W on the new shape. It applies on top of
        draft-B2b-reroute-popup.patch.txt (checked).
-4. NEXT, IN ORDER: (1) ReadNotifications. (2) THE PROBE'S ROAD CHECK: probe-fork.test.ts.txt gains, at late 0, the road each tier
-   walks (marshT set and highT unset = LOW; highT set = HIGH, with the frame and kind of the press that put him there: a jump off W, a
-   double off the marsh); a tier that reads LOW must walk the low road; any high road reached must follow a press. Run with B + 2b +
-   draft-fork-jump-bot applied, on ceab09e20 in a frozen worktree: 54/54 again AND the road check. Send the lead: the entry rule, the
-   verdict hashes and the probe's road table. (3) 2b toys, stills of the fork and a marsh dip (upright and sideways), 1b at the lead's
-   hash, READY-28. NOT RUN on ceab09e20: the full suite and the CLAUDE.md gates (CI #79's tool line): run them on the first new head.
+4. THE PROBE WITH THE ROAD CHECK: 54/54 (shrine, home 3, setBack 0, 0 rescues, AND the road check) on 89a0cf54e + B + 2b +
+   draft-fork-jump-bot (frozen /home/user/wt28s7p; probe-fork.test.ts.txt, output probe-fork-results-s7.txt). The check (new in the
+   probe): at late 0 he reaches the marsh floor (marshT set), and any high road reached is by a PRESS (a press within 0.1 s before the
+   take-off or in the air), with where the flight left from. LATE 0, every tier walks onto the low road: the adult (22.4 s, marshT 4.4)
+   and middle-easy (22.0 s) walk it home; child-easy, child, middle and expert reach the marsh floor and then pop up onto the high road
+   by a PRESS off the marsh (a double: (c), the player's own move; the bots' calibrated dblShare, 2a dropped). LATE 15 / 19: 30 high
+   roads reached by a PRESS off W (a jump across the 81 px gap). NO high road reached without a press in any of the 54 (0 NO-PRESS).
+   NAMED PLAINLY: 4 of 6 tiers leave the low road at late 0 by a double off the marsh floor; the low road is walked home by 2 of 6.
+   The probe still runs the fork on 2-3's config (Normal catch 17, not 2-8's 15.75): the more forgiving side.
+5. NEXT, IN ORDER: (1) ReadNotifications; the lead's word on the entry rule, (y) and the road table. (2) The full unit suite on
+   89a0cf54e was STARTED at the box in frozen /home/user/wt28s7s (output: the session's scratchpad suite-s7.txt): read it (or re-run:
+   the CLAUDE.md tsx --test line in a frozen worktree at the head); then the rest of the CI tool line (CI #79): vite build + chunkcheck,
+   artcheck, drawcheck, clipcheck, knowncheck, generalitycheck, roadmapcheck, timecheck, paintcheck (3 parts), kbdcheck, buildcheck,
+   seedlist 1-1 --check, the engine tools' tests, tierBots. At most two at a time. (3) 2b toys (a lineBot toy each way), the stills of
+   the fork and a marsh dip upright and sideways (find the stills path: no running stage lays the section yet, 2-96 is a test toy),
+   (4) 1b at the lead's hash (B + 2b + the fork-jump read land with firsttimer.ts there: rule 28, ENG-PLANT's known flips + the wide
+   sample), then READY-28.
 
 ## EXACT NEXT STEP (session 6, W2-LANE f, hand-over on the box; head 3e847107a + this REPORT commit). THE LEAD RULED (c) (verbatim in its
 ## message: a DOUBLE jump up off the low road is his own move onto the high road; his ORDINARY hop must keep the low road)

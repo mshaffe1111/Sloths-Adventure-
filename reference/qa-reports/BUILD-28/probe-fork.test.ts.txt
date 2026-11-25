@@ -13,7 +13,7 @@ import { FirstTimerRun, FT_ADULT, FT_CHILD, FT_CHILD_EASY, FT_EXPERT, FT_MIDDLE,
 import { SAME_GROUND, spook, type Follower } from '../src/game/follow.ts';
 import { W2_FLOOD, W2_FOLLOW, W2_FORK, W2_FORK_RIVERS } from '../src/game/gen2/worlds/w2.ts';
 import { FloodClock, floodTailOff, highRoad, type Flood } from '../src/game/flood.ts';
-import { FLOOD_HOP, FLOOD_STEP, floodWaterOf } from '../src/game/gen2/floodLay.ts';
+import { FLOOD_FORK_JUMP, FLOOD_HOP, FLOOD_STEP, floodWaterOf } from '../src/game/gen2/floodLay.ts';
 import { layRiver } from '../src/game/gen2/riverLay.ts';
 import type { RiverZone } from '../src/game/river.ts';
 import type { WatchZone } from '../src/game/watcher.ts';
@@ -206,9 +206,11 @@ function floodRun(who: FirstTimer, seed: number, late: number, marsh?: MarshToy)
     let climb: { off: number; land: number; face: number; y: number } | null = null;
     let walked = false, paddled = false, flat = false, dry = false;
     let off: { x: number; y: number } | null = null;
+    // (THE ROAD CHECK, BUILD-28 session 7: the flight that first set him on the high road: where it left from and whether a press made it)
+    let fromY = 0, pressT = -9, offT = -9, highBy = '';
     let stood = { x: 0, y: 0 };
     const tops = run.sim.platforms.filter((q) => q.type === 'solid' && q.y < Y - 1).map((q) => ({ x: q.x, w: q.width, y: q.y, h: q.height, q }));
-    const road = highRoad(tops, { x0: W0, x1: W1, from: { x: W0, y: Y }, to: { x: W1, y: Y } }, FLOOD_STEP, FLOOD_HOP);
+    const road = highRoad(tops, { x0: W0, x1: W1, from: { x: W0, y: Y }, to: { x: W1, y: Y } }, FLOOD_STEP, FLOOD_HOP, FLOOD_FORK_JUMP);
     assert.deepEqual(road.faults, [], 'the toy lays a high road');
     assert.ok(road.chain.length >= 3, 'the high road: the wall-step, its own pieces and its last piece');
     // (the fork's shared ends left out: W, chain[0], and C, the chain's last piece; the lead's ruling A, ENG-28 session 8)
@@ -217,8 +219,9 @@ function floodRun(who: FirstTimer, seed: number, late: number, marsh?: MarshToy)
     run.sim.frame = (...a: unknown[]) => {
       const r = on(...(a as [never]));
       const p = run.sim.p;
+      if ((a[0] as { press?: boolean } | undefined)?.press) pressT = run.t;
       // (his take-off is the last ground he stood on)
-      if (low && !p.grounded && !off) off = stood;
+      if (low && !p.grounded && !off) { off = stood; fromY = stood.y; offT = run.t; }
       if (low && p.grounded && off && !climb && Math.abs((off as any).y - Y) < 2 && p.y < Y - 30 && marsh?.fork) climb = { off: Math.round((off as any).x), land: Math.round(p.x), face: W0 - F.wall.back - F.wall.w, y: Math.round(p.y) };
       if (low && p.grounded && off) {
         if (Math.abs(p.y - off.y) <= SAME_GROUND && Math.abs(off.y - (Y + MF)) < 2 && dipsAt.some(([a, b]) => Math.min(off!.x, p.x) < a && Math.max(off!.x, p.x) > b)) flat = true;
@@ -232,12 +235,12 @@ function floodRun(who: FirstTimer, seed: number, late: number, marsh?: MarshToy)
         if (f.state === 'follow' && !f.paddle && dipsAt.some(([a, b]) => f.x > a + 1 && f.x < b - 1)) dry = true;
         if (!f.paddle && Math.abs(f.y - (Y + MF)) < 2) walked = true;
       }
-      if (!shut && p.grounded && [...highOnly].some((q) => Math.abs(q.y - p.y) < 2 && p.x + p.width / 2 > q.x && p.x - p.width / 2 < q.x + q.width)) { high = true; if (highT < 0) highT = run.t; }
+      if (!shut && p.grounded && [...highOnly].some((q) => Math.abs(q.y - p.y) < 2 && p.x + p.width / 2 > q.x && p.x - p.width / 2 < q.x + q.width)) { high = true; if (highT < 0) { highT = run.t; highBy = `${pressT >= offT - 0.1 ? 'PRESS' : 'NO-PRESS'} off ${Math.abs(fromY - (Y - F.wall.h)) < 2 ? 'W' : Math.abs(fromY - (Y + MF)) < 2 ? 'marsh' : Math.abs(fromY - Y) < 2 ? 'bank' : Math.round(fromY)}`; } }
       if (low && p.grounded && Math.abs(p.y - (Y + MF)) < 2 && p.x > W0 && p.x < W1 && marshT < 0) marshT = run.t;
       return r;
     };
     run.play();
-    return { end: run.end, setBack, home: e.follow.home(), high, t: +run.t.toFixed(1), ...(low ? { walked, paddled, flat, dry } : {}), ...(marsh?.fork ? { climb, marshT: +marshT.toFixed(1), highT: +highT.toFixed(1), chain: road.chain.map((c) => (c.q as Platform).id).join('>'), px: Math.round(run.sim.p.x), rescues: (run as any).rescues, stuck: (run as any).stuck.map((k: any) => `${k.x}/${k.y}@${k.t}${k.rescued ? 'R' : ''}:${String(k.what).slice(0, 60)}`).join(' ; '), line: (e.follow.line as Follower[]).map((f) => `${Math.round(f.x)}/${Math.round(f.y)}/${f.state}`).join(' ') } : {}) } as FloodRun;
+    return { end: run.end, setBack, home: e.follow.home(), high, t: +run.t.toFixed(1), ...(low ? { walked, paddled, flat, dry } : {}), ...(marsh?.fork ? { climb, marshT: +marshT.toFixed(1), highT: +highT.toFixed(1), highBy, chain: road.chain.map((c) => (c.q as Platform).id).join('>'), px: Math.round(run.sim.p.x), rescues: (run as any).rescues, stuck: (run as any).stuck.map((k: any) => `${k.x}/${k.y}@${k.t}${k.rescued ? 'R' : ''}:${String(k.what).slice(0, 60)}`).join(' ; '), line: (e.follow.line as Follower[]).map((f) => `${Math.round(f.x)}/${Math.round(f.y)}/${f.state}`).join(' ') } : {}) } as FloodRun;
   } finally {
     Math.random = mr;
   }
@@ -248,8 +251,10 @@ test('PROBE-ALL the ruled fork', { skip: !!process.env.WHO }, () => {
   const miss: string[] = [];
   for (const [name, who] of TIERS) for (const seed of SEEDS) for (const late of [0, 15, 19]) {
     const r = floodRun(who, seed, late, { fork: true, dips: 4, dip: 100 }) as any;
-    const ok = r.end === 'shrine' && r.home === 3 && r.setBack === 0 && r.rescues === 0;
-    console.log(`${ok ? 'ok  ' : 'MISS'} ${name} s${seed} late ${late}: climb ${JSON.stringify(r.climb)} end ${r.end} home ${r.home} setBack ${r.setBack} road ${r.high ? 'HIGH' : (r.marshT >= 0 ? 'low' : '-')} t ${r.t} marshT ${r.marshT} highT ${r.highT} paddled ${r.paddled} dry ${r.dry}${ok ? '' : ` px ${r.px} line ${r.line}`} rescues ${r.rescues} STUCK ${r.stuck}`);
+    // (the ROAD CHECK: at late 0 the line can make the low road, so he walks it (reaches the marsh floor); any high road reached is by a press)
+    const road = (late > 0 || r.marshT >= 0) && (r.highT < 0 || r.highBy.startsWith('PRESS'));
+    const ok = r.end === 'shrine' && r.home === 3 && r.setBack === 0 && r.rescues === 0 && road;
+    console.log(`${ok ? 'ok  ' : 'MISS'} ${name} s${seed} late ${late}: ROAD ${road ? 'ok' : 'FAIL'} highBy ${r.highBy || '-'} climb ${JSON.stringify(r.climb)} end ${r.end} home ${r.home} setBack ${r.setBack} road ${r.high ? 'HIGH' : (r.marshT >= 0 ? 'low' : '-')} t ${r.t} marshT ${r.marshT} highT ${r.highT} paddled ${r.paddled} dry ${r.dry}${ok ? '' : ` px ${r.px} line ${r.line}`} rescues ${r.rescues} STUCK ${r.stuck}`);
     if (!ok) miss.push(`${name} s${seed} late ${late}`);
   }
   console.log('chain', (floodRun(FT_MIDDLE, 1, 0, { fork: true, dips: 4, dip: 100 }) as any).chain);
