@@ -30,14 +30,16 @@ DROP ON A LOG + A VINE FROM A LOG, riverRide :266 adult N12 'still clean', :282 
    (b) the same river with NO pacer (not a race): the landing stop stands him where he lands, as c27 (no row moved off the race leg);
    (c) a race-leg log whose run ends in the water with no floor (racefront's 4th arg `tail` > 0, short river): no walk to its front.
 2. **CI-3/CI-4 DEFECT, TRACED (fix FIRST; the candidates are not mergeable until it is):** the front-stand walk runs the ADULT OFF the
-   log's front. racefront adult phase 0 on fz-ci4 (`ONLY=adult DBG=1 DBGT=adult DBGP=0 F0=70 F1=106 FS=2`): stood 40 px behind #10's
-   front (f70, vx 0); 40 > frontStandPx 31, so the walk; full run 260-268 px/s by f74 (fr 23), fr 5 at f76, off the front at f78, a press
-   in the air (up to y 538), into the water at f102, set back to bank #1 (x 850; 'handed#1' in the toy's end tag = the set-back). Same in
-   phases 2 and 3; phases 0.5/1.5/3.5 'hop' from 3-13 px past the front. frontStandPx (12 px slide + releaseMax[1] frames at full run)
-   has no room for the frame the let-go is decided on (up to 9.5 px at full run) and was sized for a stand reached at a run, not a walk
-   started from a stand. Fix it general (the walk lets go where his stop from his CURRENT speed, his late frames and one decision frame
-   end before the front, never at the front), and find which gate pressed in the air off the front (no gate should). c26's upstream
-   front stand uses the same number: check it with the same toy flowing at him (racefront with dir -1) before calling the fix done.
+   log's front. racefront adult phase 0 (`ONLY=adult DBG=1 DBGT=adult DBGP=0 F0=70 F1=106 FS=2` for frames; `PDBG=1` for intend vs pad
+   per frame): stood 40 px behind #10's front (f70), 40 > frontStandPx 31, so the walk. intend {right} from x 1142; the PAD lags it 3
+   frames (pad {} at 1142-1146, {right} from 1149); intend lets go at x 1174 (about 29 px from the front, ~1203) but the pad keeps {right}
+   3 MORE frames (1174, 1186, 1198) at 260-268 px/s: no slowing at all; at x 1210 (past the front) `pending` is set and a press fires at
+   x 1222 in the air (which gate set it: NOT traced; no gate should press past the front onto nothing), into the water, set back to bank
+   #1 (x 850: the toy's 'handed#1'). Same in phases 2 and 3; phases 0.5/1.5/3.5 'hop' from 3-13 px past the front. So frontStandPx
+   (12 px slide + releaseMax[1] = 2 frames for the adult) is short of the pad's measured release lag here (3 frames + the decision
+   frame). Fix it general: the walk lets go where his stop from his CURRENT speed with the pad's real release lag ends before the front
+   (read how rhythm/thumbify delays a let-go for each tier: firsttimer.ts rhythm() ~4825), and find the gate that pressed off the front.
+   c26's upstream front stand uses the same number: check it with the toy flowing at him (racefront with dir -1) too.
 3. The post margin move 19.7 -> 8.3 s (and home Normal 1 vs CI-1): race-probe CI-1 vs CI-4, the first frame they part and why (CI-2 parts
    from CI-1 at t 75.13; CI-3/4 part from CI-2 at t 69.63, the front-stand walk on #44, then a race double at 69.83).
 4. The brief's CI line on CI-4: the 10 races (every race WON, margins vs c27) + the 10 known flips (ENG-PLANT's tools/margins.mts.txt,
