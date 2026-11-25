@@ -1,4 +1,59 @@
 # ENG-DARK REPORT (the dark + light ring as one gen2 brick; WORLD-3-PLAN F2; R-165.449)
+**EXACT NEXT STEP (ENG-DARK-p box 16 HAND-OVER on the lead's order (Matt off for Thanksgiving Eve), 5:57 PM ET by `date`; head on
+t-eng-dark-wip = this commit; CODE CANDIDATE 119680d33 (c7). The lane resumes when Matt starts the next day. Re-fetch before every
+commit (D138).)** Box 16 read the lead's hand-over order about 30 minutes late (no ReadNotifications at the step boundaries: D113/D140
+again, mine) and in that time built c5-c7 and started c7's x40. That x40 was finished and recorded only.
+**WHERE IT STANDS: c7's x40 = (frozen worktree, both lanes, cast-3-1-x40-119680d3-lane1/-lane2.jsonl, x40-verdict-119680d3.txt) shrine 360/360; unlit 3 (child E 8:
+x 515, y 4375; kid N 29: x 582, y 3380; child E 34: x 1210, y 6186), <= 5; max loop 7 (middle N 26), no 10+; gaveUp 3; edgeTurns 0;
+rescue CLAUSES the base lacks: none; rescue KINDS (whole combinations) the base lacks: 4, all 'a trunk beside him' + a drop + the
+way down (on every x40 since ef811c2a; the lead's ruling, item 4); rescues 620. Medians vs base: kid N -25.1, kid E +9.3, child N
+-80.9, child E -39.0, middle N -42.1, middle E -33.3, adult N -12.6, adult E +4.6, expert N -48.1. c5 (89ef9a985, before landedAhead):
+shrine 360/360, unlit 3, loop 6, 'on a trunk' the one clause the base lacked. NOT YET PROVEN (box 17): toys for 89ef9a985,
+dark.test/darkBots.test WHOLE, plants, gates, the CI line.**
+**DONE IN BOX 16 (each traced to the line, rule 28; a toy each way + a plant for each bot change):**
+1. **a5e15a74d's x40 (both lanes) FAILED:** shrine 355/360, unlit 8, 4 rescue kinds the base lacks (table further down).
+2. **Roll 15 '347 px down' strand (5 rows: Normal 15 child/middle/expert, Easy 27 child/middle):** the expert ran off 10758 at full
+   speed, carried past the piece the way drops onto (842-1080, y 11039) and landed on 826-1280 (y 11320), wood that runs on to the
+   right side wall, the shrine 347 px straight under it. Progress snapped to the route's last point (the exit, under his wood), and
+   downEnd found no way-on point off the wood, so it returned 0 and he hovered over the shrine until stranded. A/B on a177fde99: expert N 15 and
+   middle E 27 reach the shrine there, child N 15, middle N 15 and child E 27 strand there too. **So box 15's seam change only moved
+   which rows meet it (timing); the fault is older and lives in downEnd.** FIX e0f880835: with the way on straight under his run, he
+   steps off the run's OPEN end (one his middle passes before the side wall, engine `walls`), the nearer one. Toys (darkBots.test, real
+   row expert N 15): GREEN shrine / planted `noOpenEnd` stranded; plant in planted-faults.py. All 5 rows reach the shrine.
+   **Box 15's seam change is NOT narrowed:** it did not cause the strand (above), and its own roll-11 toys stand.
+3. **The unlit events (8 -> 3):** all one family, a run off an edge touching down at the next sleeping rim at 154-285 px/s. Trace (child N 22): rim 699
+   (106's left end) has its own stop; he waits until ITS landing light wakes (that light also shows the edge at 590, so the step-off
+   check passes), runs off from 63 px back at 268 px/s and touches down on 590-811 29 px from its sleeping left rim. runOffs skipped
+   every edge with its own stop. FIX 89ef9a985 (dark.ts runOffs: an edge with its own stop is judged as a run off too; firsttimer.ts
+   glowRimsOf keeps the run-off rim on such an edge, glowWait stops at the first rim there whose light is not yet lit, not the first
+   rim). Also 3ac460474: runOffs judges every run speed from half to full run (RUN_FRACS); a tenth to full lit 30 of 970 darks whole
+   (1604 lights woken), half to full keeps 0 whole. Lay on 89ef9a985 (probes/runoff.mts, now counting darks fully lit): verdicts 0 on 80
+   rolls; darks 968, FULLY LIT 0; lights laid awake 2044 of 6152 (a5e15a74d 2005); median awake share 0.33 (same).
+   **NO TOY YET for 89ef9a985's two changes (the lay's edge-with-own-stop run off, glowWait's second rim): box 17 writes them**
+   (dark.test: Normal 22's run off 106's left end (699, 5658) judged RED with the change's line reverted; darkBots.test: child N 22 unlit
+   [] GREEN / with glowWait's `find` taking the first rim, RED) + plants.
+4. **'on a trunk' (the one rescue clause the base lacks; 6 rows: child E 18, middle E 12, expert N 14, middle N 26, middle N 32,
+   middle E 22):** run off 5 (y 1188) past 6 (224-460, y 1469) onto 0-703 (y 1599), the floor the way reaches 15 points on; Progress
+   kept him at the point over his head (on 6), he climbed the trunk at x 244 back up and fell again until rescued. FIX ca6133968 +
+   119680d33 (landedAhead: landed AHEAD on the way's own floor in a down tower, he is put at that point, never followed back before
+   it, and walking that floor to it is not off the way). Toys (real row middle N 26, 30 s): GREEN no rescue / planted `noLandAhead`
+   fell back down; plant added. The 6 rows: 'on a trunk' gone, rescues 19 -> 11.
+   The other 4 'kinds the base lacks' are new COMBINATIONS of clauses the base has ('a trunk beside him' + a drop + the way down), on
+   every x40 since ef811c2a: **the lead rules whether the bar reads kinds as clause sets** (clause level: c5 lacked only 'on a trunk').
+**BOX 17 DOES, in order:** (a) the toys + plants for 89ef9a985 (item 3). (b) the MISSED glowJump plant (box 15: 32/33): re-anchor
+darkBots' 'holds a running JUMP' toy on a real row: scan FT_EXPERT with plant 13 on a copy of the head (box 12's candidates, earliest
+first: Normal 4 at 41.57 s, 27 at 51.87 s, 17 at 47.23 s, 16 at 70.67 s, 10 at 97.00 s; scan-box12-jump.txt), pick one RED planted
+and GREEN unplanted, cap just past the event; else a shape toy. (c) dark.test + darkBots.test WHOLE and plants (all CAUGHT) on the
+frozen head. (d) the x40 on the frozen head (2 lanes) vs THE BAR (c7's line above is the reference). (e) gates ONCE (castBots.test,
+tierBots 9/9, the CI tool line on a FULL tree, the suite shards), then LAND on t-eng-w3 (88592a9c4) as box 15's order step 4.
+Still open, under the bar (unlit 3 <= 5): kid N 29 (582, 3380) and middle E 15 (1005, 8877; landed 1230 at -113 px/s and ran
+225 px left over the rim, no stop) and expert N 6 (592, 6620): trace if the lead asks.
+Worktrees (container-local, frozen): wt-x40b a5e15a74d, wt-a177 a177fde99, wt-c1..c7. Probes used: probes/runoff.mts (fully-lit
+count added); scratchpad wayon.mts / track2.mts / rorims.mts (box 17 can rebuild: route points from run.prog at t; the pad per frame
+on CAST_BOTS; runOffRims + darkRims in a y band).
+Lessons applied: D113/D140 (missed: read the hand-over late, named above), D115 (every run on a frozen tree; one race named in item 4's rows,
+re-run on frozen c7 by the x40), D119, D128, D134, D138, D141 (the CI line on every candidate: NOT run, the hand-over came first).
+
 **EXACT NEXT STEP (ENG-DARK-p box 16, 5:14 PM ET by `date`; head on t-eng-dark-wip = this commit; CODE a5e15a74d). THE x40 ON a5e15a74d
 FAILS THE BAR: NOT LANDED, no gates run (the order: "if the bar is NOT met, stop with the table"). Waiting on the lead's ruling.**
 **THE x40 ON FROZEN a5e15a74d (lane 1 box 15, lane 2 box 16; cast-3-1-x40-a5e15a74-lane1/-lane2.jsonl; x40-verdict-a5e15a74.txt;
