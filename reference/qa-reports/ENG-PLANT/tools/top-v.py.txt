@@ -1,0 +1,8 @@
+# usage: python3 top-v.py <top-file>  (prepends the session-20 top to the REPORT on the report worktree)
+import sys
+p = '/home/user/rep/reference/qa-reports/ENG-PLANT/REPORT.md'
+s = open(p).read()
+assert s.startswith('# ENG-PLANT-u'), 'REPORT top moved'
+top = open(sys.argv[1]).read().rstrip('\n') + '\n\n'
+open(p, 'w').write(top + s)
+print('top added', top.count('\n'), 'lines')

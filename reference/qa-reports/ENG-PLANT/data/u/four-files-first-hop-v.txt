@@ -1,0 +1,238 @@
+TAP version 13
+# Subtest: spot memory: a single jump that fails at a spot is followed by a double there; two falls back are a loop
+ok 1 - spot memory: a single jump that fails at a spot is followed by a double there; two falls back are a loop
+  ---
+  duration_ms: 3.243414
+  type: 'test'
+  ...
+# Subtest: progress follows him along the route, never jumps to a far part of it, and finds him again after a respawn
+ok 2 - progress follows him along the route, never jumps to a far part of it, and finds him again after a respawn
+  ---
+  duration_ms: 0.80212
+  type: 'test'
+  ...
+# Subtest: after a fall, the way back up is found near him: a level point is taken only within LEVEL_REACH, else the plain nearest (ENG-285; 1-6 kid Normal layout 13 picked one 35,000 px on, BUILD-24b)
+ok 3 - after a fall, the way back up is found near him: a level point is taken only within LEVEL_REACH, else the plain nearest (ENG-285; 1-6 kid Normal layout 13 picked one 35,000 px on, BUILD-24b)
+  ---
+  duration_ms: 0.432932
+  type: 'test'
+  ...
+# Subtest: the thumb: reaction and hold noise as the Gemini research's Stage B, never a flick under 2 frames
+ok 4 - the thumb: reaction and hold noise as the Gemini research's Stage B, never a flick under 2 frames
+  ---
+  duration_ms: 12.269317
+  type: 'test'
+  ...
+# Subtest: Dot: repeats, lines too close (a warning may come at once), lines up 20 s+ with their thing out of reach, re-teaching, wordy lines
+ok 5 - Dot: repeats, lines too close (a warning may come at once), lines up 20 s+ with their thing out of reach, re-teaching, wordy lines
+  ---
+  duration_ms: 0.889208
+  type: 'test'
+  ...
+# Subtest: the first harm of each kind against the first tip that teaches it (on screen a reaction before it)
+ok 6 - the first harm of each kind against the first tip that teaches it (on screen a reaction before it)
+  ---
+  duration_ms: 0.70089
+  type: 'test'
+  ...
+# Subtest: the gates: survival per edge over the tries, and peak stress per burst before a rest
+ok 7 - the gates: survival per edge over the tries, and peak stress per burst before a rest
+  ---
+  duration_ms: 0.408374
+  type: 'test'
+  ...
+# Subtest: in the real engine: a waist-high step is got over with a plain flick; a tall wall stops him and is reported with its height
+ok 8 - in the real engine: a waist-high step is got over with a plain flick; a tall wall stops him and is reported with its height
+  ---
+  duration_ms: 468.337639
+  type: 'test'
+  ...
+# Subtest: in the real engine: after a put-back the game's steer hold is not a wall; the adult runs up to the lip for his next jump (POLISH-9)
+ok 9 - in the real engine: after a put-back the game's steer hold is not a wall; the adult runs up to the lip for his next jump (POLISH-9)
+  ---
+  duration_ms: 564.501194
+  type: 'test'
+  ...
+# Subtest: in the real engine: a log drifting his way across the lip is the floor his boarding hop is for: a single where a single comes down on it, never a double read past it to the next log (SKILLS.boardHop; RED with it off)
+ok 10 - in the real engine: a log drifting his way across the lip is the floor his boarding hop is for: a single where a single comes down on it, never a double read past it to the next log (SKILLS.boardHop; RED with it off)
+  ---
+  duration_ms: 636.843353
+  type: 'test'
+  ...
+# Subtest: in the real engine: a jump from a STAND over a laid pond reads the gap from where he stands, so a single that cannot carry his own ground to the lip and the pond is a double (SKILLS.fromTakeoff; RED with it off)
+ok 11 - in the real engine: a jump from a STAND over a laid pond reads the gap from where he stands, so a single that cannot carry his own ground to the lip and the pond is a double (SKILLS.fromTakeoff; RED with it off)
+  ---
+  duration_ms: 694.476449
+  type: 'test'
+  ...
+# Subtest: the findings name the rule each breaks
+ok 12 - the findings name the rule each breaks
+  ---
+  duration_ms: 1.028432
+  type: 'test'
+  ...
+# Subtest: set down at the same place three times, never getting further (a splash-back costs no life), is a loop: he is put past it
+ok 13 - set down at the same place three times, never getting further (a splash-back costs no life), is a loop: he is put past it
+  ---
+  duration_ms: 124.312945
+  type: 'test'
+  ...
+# Subtest: floorAt: a branch far under a high river is floor; a top in its water is not (R-165.390, the engine reads water by x AND y, river.ts riverAt)
+ok 14 - floorAt: a branch far under a high river is floor; a top in its water is not (R-165.390, the engine reads water by x AND y, river.ts riverAt)
+  ---
+  duration_ms: 0.644379
+  type: 'test'
+  ...
+# Subtest: on the run it was found on, 2-4 kid Easy seed 35: no jump off a drifting log comes down in the water (set down by the game before he stands again); the run-up judge counts the thumb travel still to run (c25; RED on c24: a run / pull-back / run flicker left his steer dropped, the judge pressed "held from now" and he flew on the carry alone)
+ok 15 - on the run it was found on, 2-4 kid Easy seed 35: no jump off a drifting log comes down in the water (set down by the game before he stands again); the run-up judge counts the thumb travel still to run (c25; RED on c24: a run / pull-back / run flicker left his steer dropped, the judge pressed "held from now" and he flew on the carry alone)
+  ---
+  duration_ms: 2045.518674
+  type: 'test'
+  ...
+# Subtest: on the run it was found on, 2-1 child Easy seed 2: landing on a small log running his way (under 220 px), even inside his run-out of its front, he takes the pad pause and is never pulled back; the row ends at the shrine with no rescue (c23; RED on c22 52bcce623: the pull-back turned him on landing on a 200 px log 75 px from its front, his run-out 91, the pause and its draw skipped, and he was rescued at the back river)
+ok 16 - on the run it was found on, 2-1 child Easy seed 2: landing on a small log running his way (under 220 px), even inside his run-out of its front, he takes the pad pause and is never pulled back; the row ends at the shrine with no rescue (c23; RED on c22 52bcce623: the pull-back turned him on landing on a 200 px log 75 px from its front, his run-out 91, the pause and its draw skipped, and he was rescued at the back river)
+  ---
+  duration_ms: 3808.55028
+  type: 'test'
+  ...
+# Subtest: on the run it was found on, 2-4 child Normal seed 8: the run-up's jump (SKILLS.runUp: runPress passed at every lag, then the judged press) is held at least as long as runPress judged it; the row ends at the shrine with no rescue (c24; RED on c23 ccca3d305: flown at flickHold's draw, 0.065 / 0.093 / 0.114 s against the 0.16 judged, he peaked under the liana's foot and fell in, rescued)
+ok 17 - on the run it was found on, 2-4 child Normal seed 8: the run-up's jump (SKILLS.runUp: runPress passed at every lag, then the judged press) is held at least as long as runPress judged it; the row ends at the shrine with no rescue (c24; RED on c23 ccca3d305: flown at flickHold's draw, 0.065 / 0.093 / 0.114 s against the 0.16 judged, he peaked under the liana's foot and fell in, rescued)
+  ---
+  duration_ms: 3468.534364
+  type: 'test'
+  ...
+# Subtest: in the real engine, laid: a log drifting his way still mostly under the bank's lip when he comes at it at full run is boarded by a hop, not run onto: no life lost before he has stood 3 s on a log (SKILLS.boardLog; RED with it off: he runs off the lip onto it and off its front into the water; pacerLay's home Easy seed 1 plant laid explicitly)
+ok 18 - in the real engine, laid: a log drifting his way still mostly under the bank's lip when he comes at it at full run is boarded by a hop, not run onto: no life lost before he has stood 3 s on a log (SKILLS.boardLog; RED with it off: he runs off the lip onto it and off its front into the water; pacerLay's home Easy seed 1 plant laid explicitly)
+  ---
+  duration_ms: 1179.17787
+  type: 'test'
+  ...
+# normal seed 5: 31 judged hops pressed (padPause, upstream, edgeWait, bankUp, race, edgeCap); unjudged or stale 0, flown not as judged 0, came down elsewhere 0
+#   [bank press] unjudged q\#-1 judged t 126.50 x 6231 lag 0 hold 0.188 | flown t 126.50 x 6231 hold 0.188 single | came down \#76 solid
+# normal seed 2: 36 judged hops pressed (edgeWait, padPause, upstream, bankUp, race, edgeCap, unjudged); unjudged or stale 0, flown not as judged 0, came down elsewhere 1
+#   padPause q\#50 judged t 83.97 x 12615 lag 0 hold 0.118 double | flown t 83.97 x 12615 hold 0.118 double | came down \#49 drift
+#   [bank press] unjudged q\#-1 judged t 134.73 x 2414 lag 0 hold 0.167 | flown t 134.73 x 2414 hold 0.167 single | came down \#93 solid
+# easy seed 5: 34 judged hops pressed (padPause, upstream, bankUp, edgeWait, race, unjudged); unjudged or stale 0, flown not as judged 0, came down elsewhere 1
+#   edgeWait q\#-2 judged t 21.77 x 16688 lag 0 hold 0.052 single | flown t 21.77 x 16688 hold 0.052 single | came down \#18 drift
+#   [bank press] unjudged q\#-1 judged t 146.50 x 3727 lag 0 hold 0.034 | flown t 146.50 x 3727 hold 0.034 double | came down \#87 solid
+# easy seed 2: 37 judged hops pressed (edgeWait, upstream, padPause, bankUp, race, edgeCap, unjudged); unjudged or stale 0, flown not as judged 0, came down elsewhere 0
+# Subtest: 2-7 home, middle Normal seed 5: every judged hop is flown as judged and comes down where the gate said; every press from a bank with logs near its edge flies on a judgment of its own frame or comes down on solid (ruling A)
+ok 19 - 2-7 home, middle Normal seed 5: every judged hop is flown as judged and comes down where the gate said; every press from a bank with logs near its edge flies on a judgment of its own frame or comes down on solid (ruling A)
+  ---
+  duration_ms: 1577.003155
+  type: 'test'
+  ...
+# Subtest: 2-7 home, middle Normal seed 2: every judged hop is flown as judged and comes down where the gate said; every press from a bank with logs near its edge flies on a judgment of its own frame or comes down on solid (ruling A)
+not ok 20 - 2-7 home, middle Normal seed 2: every judged hop is flown as judged and comes down where the gate said; every press from a bank with logs near its edge flies on a judgment of its own frame or comes down on solid (ruling A)
+  ---
+  duration_ms: 939.434907
+  type: 'test'
+  location: '/home/user/ft/tools/inspect/hopJudged.test.ts:37:3'
+  failureType: 'testCodeFailure'
+  error: |-
+    a gate judged one hop and the bot flew another
+    + actual - expected
+    
+    + [
+    +   'padPause q#50 judged t 83.97 x 12615 lag 0 hold 0.118 double | flown t 83.97 x 12615 hold 0.118 double | came down #49 drift'
+    + ]
+    - []
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+  actual:
+    0: 'padPause q#50 judged t 83.97 x 12615 lag 0 hold 0.118 double | flown t 83.97 x 12615 hold 0.118 double | came down #49 drift'
+  operator: 'deepStrictEqual'
+  stack: |-
+    TestContext.<anonymous> (/home/user/ft/tools/inspect/hopJudged.test.ts:56:12)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
+  ...
+# Subtest: 2-7 home, middle Easy seed 5: every judged hop is flown as judged and comes down where the gate said; every press from a bank with logs near its edge flies on a judgment of its own frame or comes down on solid (ruling A)
+not ok 21 - 2-7 home, middle Easy seed 5: every judged hop is flown as judged and comes down where the gate said; every press from a bank with logs near its edge flies on a judgment of its own frame or comes down on solid (ruling A)
+  ---
+  duration_ms: 1006.154184
+  type: 'test'
+  location: '/home/user/ft/tools/inspect/hopJudged.test.ts:37:3'
+  failureType: 'testCodeFailure'
+  error: |-
+    a gate judged one hop and the bot flew another
+    + actual - expected
+    
+    + [
+    +   'edgeWait q#-2 judged t 21.77 x 16688 lag 0 hold 0.052 single | flown t 21.77 x 16688 hold 0.052 single | came down #18 drift'
+    + ]
+    - []
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+  actual:
+    0: 'edgeWait q#-2 judged t 21.77 x 16688 lag 0 hold 0.052 single | flown t 21.77 x 16688 hold 0.052 single | came down #18 drift'
+  operator: 'deepStrictEqual'
+  stack: |-
+    TestContext.<anonymous> (/home/user/ft/tools/inspect/hopJudged.test.ts:56:12)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: 2-7 home, middle Easy seed 2: every judged hop is flown as judged and comes down where the gate said; every press from a bank with logs near its edge flies on a judgment of its own frame or comes down on solid (ruling A)
+ok 22 - 2-7 home, middle Easy seed 2: every judged hop is flown as judged and comes down where the gate said; every press from a bank with logs near its edge flies on a judgment of its own frame or comes down on solid (ruling A)
+  ---
+  duration_ms: 1205.216505
+  type: 'test'
+  ...
+# Subtest: a drawn-hop gate decides on the hop as aimed, never on the thumb noise drawn for it (no foresight, ENG-27r)
+ok 23 - a drawn-hop gate decides on the hop as aimed, never on the thumb noise drawn for it (no foresight, ENG-27r)
+  ---
+  duration_ms: 0.373723
+  type: 'test'
+  ...
+# Subtest: a wait holds its aim: drawn once when the wait begins, never redrawn for a lucky hold (ENG-27s, the lead's ruling)
+ok 24 - a wait holds its aim: drawn once when the wait begins, never redrawn for a lucky hold (ENG-27s, the lead's ruling)
+  ---
+  duration_ms: 0.177689
+  type: 'test'
+  ...
+# Subtest: the race gate presses the smallest calibrated hop whose aimed flight lands with the race margin (E, the honest middle, ENG-27v)
+ok 25 - the race gate presses the smallest calibrated hop whose aimed flight lands with the race margin (E, the honest middle, ENG-27v)
+  ---
+  duration_ms: 0.466411
+  type: 'test'
+  ...
+# Subtest: the race gate presses the shortest aimed flight that lands safe, by airtime; ties: the smaller hold (E as ruled, ENG-27w)
+ok 26 - the race gate presses the shortest aimed flight that lands safe, by airtime; ties: the smaller hold (E as ruled, ENG-27w)
+  ---
+  duration_ms: 0.21278
+  type: 'test'
+  ...
+# Subtest: 2-7's race home middle Normal 1: no hop off a bank after the float wait is set back by the water, the race WON, no deadlock (c27)
+ok 27 - 2-7's race home middle Normal 1: no hop off a bank after the float wait is set back by the water, the race WON, no deadlock (c27)
+  ---
+  duration_ms: 809.641577
+  type: 'test'
+  ...
+# Subtest: 2-7's race post middle Normal 5: no hop off a bank after the float wait is set back by the water, the race WON, no deadlock (c27)
+ok 28 - 2-7's race post middle Normal 5: no hop off a bank after the float wait is set back by the water, the race WON, no deadlock (c27)
+  ---
+  duration_ms: 1152.572084
+  type: 'test'
+  ...
+1..28
+# tests 28
+# suites 0
+# pass 26
+# fail 2
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 25326.678409
+exit 1

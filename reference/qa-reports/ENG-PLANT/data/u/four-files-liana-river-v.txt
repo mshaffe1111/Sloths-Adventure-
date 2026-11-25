@@ -1,0 +1,241 @@
+TAP version 13
+# Subtest: the harness drives the engine through the real InputEngine: a Pad tap at a run is the real hop (0.43 s, 2-4.md R-165.284), never FakeInput's
+ok 1 - the harness drives the engine through the real InputEngine: a Pad tap at a run is the real hop (0.43 s, 2-4.md R-165.284), never FakeInput's
+  ---
+  duration_ms: 1851.150196
+  type: 'test'
+  ...
+# Subtest: DROP ON A LOG: on gap280 the middle bot lets go onto a log and loses no life; PLANTED: without the skill he drowns
+ok 2 - DROP ON A LOG: on gap280 the middle bot lets go onto a log and loses no life; PLANTED: without the skill he drowns
+  ---
+  duration_ms: 10005.029215
+  type: 'test'
+  ...
+# Subtest: A VINE FROM A LOG: on the catch toy the middle bot jumps from the moving log to the liana; PLANTED: without the skill, never
+ok 3 - A VINE FROM A LOG: on the catch toy the middle bot jumps from the moving log to the liana; PLANTED: without the skill, never
+  ---
+  duration_ms: 13437.690943
+  type: 'test'
+  ...
+# Subtest: A VINE OVER THE TAIL (ENG-24g, rule 21): on the tail toy the judge's own reach holds and child, middle and expert jump from the moving log to the liana past the logs' end, every run; PLANTED: looking only over the logs' window, he rides into the tail until rescued
+ok 4 - A VINE OVER THE TAIL (ENG-24g, rule 21): on the tail toy the judge's own reach holds and child, middle and expert jump from the moving log to the liana past the logs' end, every run; PLANTED: looking only over the logs' window, he rides into the tail until rescued
+  ---
+  duration_ms: 29452.77048
+  type: 'test'
+  ...
+# Subtest: the bot aims its presses at the frame they reach the engine (ENG-285, R-165.294: the drop aim read the vine and the logs one frame early): every decided press of the middle bot over the gap280 drop, both settings, lands on the game time it aimed at
+ok 5 - the bot aims its presses at the frame they reach the engine (ENG-285, R-165.294: the drop aim read the vine and the logs one frame early): every decided press of the middle bot over the gap280 drop, both settings, lands on the game time it aimed at
+  ---
+  duration_ms: 4520.894843
+  type: 'test'
+  ...
+# Subtest: the bot's liana hop aims (lianaWait, vineFromLog) name the engine's take-off and catch, to the frame: hopAim + hopCatches vs the real engine, every lag, spot and moment (R-165.297)
+ok 6 - the bot's liana hop aims (lianaWait, vineFromLog) name the engine's take-off and catch, to the frame: hopAim + hopCatches vs the real engine, every lag, spot and moment (R-165.297)
+  ---
+  duration_ms: 38336.059619
+  type: 'test'
+  ...
+# Subtest: the fixture: one deep log river, rolled clean
+ok 7 - the fixture: one deep log river, rolled clean
+  ---
+  duration_ms: 54.560286
+  type: 'test'
+  ...
+# Subtest: middle, normal: rides the logs across the river and reaches the shrine
+ok 8 - middle, normal: rides the logs across the river and reaches the shrine
+  ---
+  duration_ms: 769.586508
+  type: 'test'
+  ...
+# Subtest: middle, easy: rides the logs across the river and reaches the shrine
+ok 9 - middle, easy: rides the logs across the river and reaches the shrine
+  ---
+  duration_ms: 662.528547
+  type: 'test'
+  ...
+# Subtest: child, normal: rides the logs across the river and reaches the shrine
+ok 10 - child, normal: rides the logs across the river and reaches the shrine
+  ---
+  duration_ms: 1022.602942
+  type: 'test'
+  ...
+# Subtest: child, easy: rides the logs across the river and reaches the shrine
+ok 11 - child, easy: rides the logs across the river and reaches the shrine
+  ---
+  duration_ms: 680.346881
+  type: 'test'
+  ...
+# Subtest: the ride plant's roll: one deep log river, rolled clean
+ok 12 - the ride plant's roll: one deep log river, rolled clean
+  ---
+  duration_ms: 38.429969
+  type: 'test'
+  ...
+# Subtest: planted: with the ride skill off, the middle and child bots drown in the river
+ok 13 - planted: with the ride skill off, the middle and child bots drown in the river
+  ---
+  duration_ms: 5666.881711
+  type: 'test'
+  ...
+# Subtest: middle, normal: against the flow (W2_RIVERS.back), hops log to log off each front end and reaches the shrine
+ok 14 - middle, normal: against the flow (W2_RIVERS.back), hops log to log off each front end and reaches the shrine
+  ---
+  duration_ms: 450.958327
+  type: 'test'
+  ...
+# Subtest: middle, normal: the long log (W2_RIVERS.long, laid deep) rides him in and hands him onto the far bank
+ok 15 - middle, normal: the long log (W2_RIVERS.long, laid deep) rides him in and hands him onto the far bank
+  ---
+  duration_ms: 506.187636
+  type: 'test'
+  ...
+# Subtest: middle, easy: against the flow (W2_RIVERS.back), hops log to log off each front end and reaches the shrine
+ok 16 - middle, easy: against the flow (W2_RIVERS.back), hops log to log off each front end and reaches the shrine
+  ---
+  duration_ms: 551.279654
+  type: 'test'
+  ...
+# Subtest: middle, easy: the long log (W2_RIVERS.long, laid deep) rides him in and hands him onto the far bank
+ok 17 - middle, easy: the long log (W2_RIVERS.long, laid deep) rides him in and hands him onto the far bank
+  ---
+  duration_ms: 466.95448
+  type: 'test'
+  ...
+# Subtest: child, normal: against the flow (W2_RIVERS.back), hops log to log off each front end and reaches the shrine
+ok 18 - child, normal: against the flow (W2_RIVERS.back), hops log to log off each front end and reaches the shrine
+  ---
+  duration_ms: 976.593853
+  type: 'test'
+  ...
+# Subtest: child, normal: the long log (W2_RIVERS.long, laid deep) rides him in and hands him onto the far bank
+ok 19 - child, normal: the long log (W2_RIVERS.long, laid deep) rides him in and hands him onto the far bank
+  ---
+  duration_ms: 970.684065
+  type: 'test'
+  ...
+# Subtest: child, easy: against the flow (W2_RIVERS.back), hops log to log off each front end and reaches the shrine
+ok 20 - child, easy: against the flow (W2_RIVERS.back), hops log to log off each front end and reaches the shrine
+  ---
+  duration_ms: 736.744552
+  type: 'test'
+  ...
+# Subtest: child, easy: the long log (W2_RIVERS.long, laid deep) rides him in and hands him onto the far bank
+ok 21 - child, easy: the long log (W2_RIVERS.long, laid deep) rides him in and hands him onto the far bank
+  ---
+  duration_ms: 728.245252
+  type: 'test'
+  ...
+# Subtest: planted: with the handed-to-the-bank skill off, the child on Normal hops at the water off the long log and drowns over the bar
+ok 22 - planted: with the handed-to-the-bank skill off, the child on Normal hops at the water off the long log and drowns over the bar
+  ---
+  duration_ms: 2514.289203
+  type: 'test'
+  ...
+# Subtest: 2-1, against the flow and up the far bank on: the adult on Normal (16), the child on Normal (11, 15, 40) and the middle on Normal (16) cross clean
+ok 23 - 2-1, against the flow and up the far bank on: the adult on Normal (16), the child on Normal (11, 15, 40) and the middle on Normal (16) cross clean
+  ---
+  duration_ms: 10739.811031
+  type: 'test'
+  ...
+# Subtest: 2-1, a refused hop leaves a way on: the child on Normal (1) is never stood at the far bank until a rescue
+ok 24 - 2-1, a refused hop leaves a way on: the child on Normal (1) is never stood at the far bank until a rescue
+  ---
+  duration_ms: 2699.960249
+  type: 'test'
+  ...
+# Subtest: 2-4, a bot that refuses a hop is never ridden into a rescue: the adult on Normal (30) is never carried under on a log he stands on
+ok 25 - 2-4, a bot that refuses a hop is never ridden into a rescue: the adult on Normal (30) is never carried under on a log he stands on
+  ---
+  duration_ms: 1204.989862
+  type: 'test'
+  ...
+# Subtest: 2-4, every hop off a log is judged: the adult on Normal (6) is never sent back onto a log going under
+ok 26 - 2-4, every hop off a log is judged: the adult on Normal (6) is never sent back onto a log going under
+  ---
+  duration_ms: 1045.106162
+  type: 'test'
+  ...
+# Subtest: 2-1, he never runs off the front of the log he just landed on: the child on Normal (11) stops on it
+ok 27 - 2-1, he never runs off the front of the log he just landed on: the child on Normal (11) stops on it
+  ---
+  duration_ms: 2114.433122
+  type: 'test'
+  ...
+# Subtest: planted: with the against-the-flow skill off, the adult on Normal is rescued on 2-1 (16) and the child and the middle on Normal lose 5+ more lives (child 11, 15; middle 16)
+ok 28 - planted: with the against-the-flow skill off, the adult on Normal is rescued on 2-1 (16) and the child and the middle on Normal lose 5+ more lives (child 11, 15; middle 16)
+  ---
+  duration_ms: 12994.549559
+  type: 'test'
+  ...
+# Subtest: in the real engine: on a log flowing AT him, a held hop the upstream gate refuses is aimed again after his reaction, never held for the whole ride back (SKILLS.reAim; RED with it off)
+not ok 29 - in the real engine: on a log flowing AT him, a held hop the upstream gate refuses is aimed again after his reaction, never held for the whole ride back (SKILLS.reAim; RED with it off)
+  ---
+  duration_ms: 1035.220791
+  type: 'test'
+  location: '/home/user/ft/tools/inspect/riverRide.test.ts:321:1'
+  failureType: 'testCodeFailure'
+  error: 'with the skill: he aims again and hops off the first log every phase (hop back hop back hop hop)'
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: true
+  actual: false
+  operator: '=='
+  stack: |-
+    TestContext.<anonymous> (/home/user/ft/tools/inspect/riverRide.test.ts:328:10)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: SKILLS.reAim keeps the honest aim (D121, the lead's two conditions): on a log a re-draw never comes inside his stopReact, and the press is decided on the aimed hop alone, never its drawn thumb noise
+not ok 30 - SKILLS.reAim keeps the honest aim (D121, the lead's two conditions): on a log a re-draw never comes inside his stopReact, and the press is decided on the aimed hop alone, never its drawn thumb noise
+  ---
+  duration_ms: 159.188178
+  type: 'test'
+  location: '/home/user/ft/tools/inspect/riverRide.test.ts:332:1'
+  failureType: 'testCodeFailure'
+  error: 'phase 0: a re-draw on a log came inside stopReact 0.4 s (0.000 s)'
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: true
+  actual: false
+  operator: '=='
+  stack: |-
+    TestContext.<anonymous> (/home/user/ft/tools/inspect/riverRide.test.ts:383:12)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: SKILLS.reAim is the CHILD bot's alone (ENG-BOT27b, the lead's ruling 11-23): with it on, every other cast bot holds the refused aim exactly as with it off, frame for frame (RED if the switch leaks past FirstTimer.reAim)
+ok 31 - SKILLS.reAim is the CHILD bot's alone (ENG-BOT27b, the lead's ruling 11-23): with it on, every other cast bot holds the refused aim exactly as with it off, frame for frame (RED if the switch leaks past FirstTimer.reAim)
+  ---
+  duration_ms: 6319.133275
+  type: 'test'
+  ...
+# Subtest: 2-7 middle Easy 11: no floor is handed back to twice by a log, and no rescue (the hand-back loop, B+C)
+ok 32 - 2-7 middle Easy 11: no floor is handed back to twice by a log, and no rescue (the hand-back loop, B+C)
+  ---
+  duration_ms: 905.200025
+  type: 'test'
+  ...
+# Subtest: 2-7 expert Normal 29: no floor is handed back to twice by a log, and no rescue (the hand-back loop, B+C)
+ok 33 - 2-7 expert Normal 29: no floor is handed back to twice by a log, and no rescue (the hand-back loop, B+C)
+  ---
+  duration_ms: 749.37401
+  type: 'test'
+  ...
+1..33
+# tests 33
+# suites 0
+# pass 31
+# fail 2
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 159916.671204
+exit 1

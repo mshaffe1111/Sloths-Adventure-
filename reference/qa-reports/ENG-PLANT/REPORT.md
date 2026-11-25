@@ -1,3 +1,29 @@
+# ENG-PLANT-v (session 20, the plants; started 1:11 PM ET 11-25 by the hook; this top written 1:36 PM ET 11-25 by `date`): **RED 7 RETIRED per R-165.432 (the lead accepted it) on release-0.10.3-wip-plant-tests 0f95b96ed (pushed, ls-remote confirmed). The plants lane is DONE: reds 5, 6, 8 GREEN; reds 7, 9 RETIRED. The 4 files on a chattr-frozen tree of 0f95b96ed: 61 tests, 57 pass, 4 fail = reds 1-4 exactly, all the CI lane's bot code (reds 1-2 riverRide reAim, now :321/:332, GREEN on plant-ci by CI-1's code; reds 3-4 hopJudged 2-7 home middle N 2 / E 5). Nothing merged.**
+
+## EXACT NEXT STEP (whoever the lead names)
+Nothing is left in the plants lane. The lead names the merger of plant-c, plant-tests (0f95b96ed) and plant-ci once the CI lane is green.
+On the merged head, the 4 files must show 0 fail (reds 1-4 come green from plant-ci's bot code); re-run red 5, 6, 8's tests there, since
+CI's bot code moves the bots (lianaRide DROP ON A LOG / A VINE FROM A LOG; riverRide tests 23 and 28, the 2-1 upstream lists).
+
+## What session 20 did
+- RED 7 search finished with the resumable runner (tools/boardresume-u.sh.txt + board2-u.mts.txt; summary tools/summ-v.sh.txt,
+  data/u/red7-summary-v.txt). Every cast bot, both settings, boardHop on and off, the test's own meet(), on 36e8efe6f's code:
+  2-2 360 rows / 90 with a stand / 0 HOLDS; 2-1 360 / 194 / 0; 2-4 360 / 214 / 0; 2-5 360 / 151 / 0; 2-9 360 / 175 / 0;
+  2-8's river rolls (seeds 9 14 16 18 19 22 24 26) 72 / 34 / 0. Total 1872 rows, 858 stands, 1331 off runs; on every row that ran
+  off, the lives lost after a stand are the same on and off. Run endings: 2-5 kid Normal 'stranded' on 31 of 40 seeds (the lead: on
+  R-165.424 already); every 2-9 and 2-8 run ends at a sealed door (2-8: all 106 runs, 72 on + 34 off; neither stage is built).
+- The retirement (tools/retire7-u.py.txt) deletes the on-the-runs test (:185 to its `});`, 32 lines) and leaves a comment naming the
+  search; the laid test at :150-183 STAYS and is GREEN (firsttimer test 10). Identifiers all still used; tsc exit 0. The test title is
+  named only in old run logs (ENG-27/w, ENG-W2FIN), no gate list.
+- The 4 files (data/u/four-files-liana-river-v.txt, four-files-first-hop-v.txt; `--test-concurrency=1`, two runs):
+  lianaRide + riverRide 33 tests, 31 pass, fail = riverRide 29 'aimed again ... (SKILLS.reAim)' and 30 'reAim keeps the honest aim'
+  (reds 1-2); firsttimer + hopJudged 28 tests, 26 pass, fail = hopJudged 2-7 home middle Normal 2 and middle Easy 5 (reds 3-4).
+  Red 5 (lianaRide 2) and red 6 (lianaRide 3) GREEN; red 8 riverRide 23 (the on-test) and 28 (the plant) GREEN.
+- NOTE for the lead: the order said "only reds 3-4 may be red"; on plant-tests reds 1-2 are red too, because their fix is CI-1's
+  bot code on plant-ci (CI-REDS.md:89, :229-230), not on this branch. None is a plants-lane red.
+- Lessons applied: D119 (commit messages from a file), D115 (every run on a chattr-frozen tree), D128 (stamps from `date`), D134 (pushed
+  and ls-remote before the message), D138 (re-fetched before the commit; nothing started after the hand-over).
+
 # ENG-PLANT-u (session 19, the plants; started 12:45 PM ET 11-25 by `date`; this top written 1:10 PM ET 11-25 by `date`): **red 9 RETIRED per R-165.432 (riverRide's bankUp plant: no live case on any stage that lays a river running back at him) on release-0.10.3-wip-plant-tests 7a42a1ef8 (pushed, ls-remote confirmed). Red 7's search: 2-2 DONE (every bot, both settings, 1-40: boardHop on == off on all 360 rows, 0 HOLDS); 2-1 partial (218 of 360 rows), 2-4 partial (278 of 360), 0 HOLDS among them; 2-5, 2-9, 2-8 not run. Item 3 done (the R-165.424 list below). Nothing merged.**
 
 Engine (bots), Opus 5.5 xhigh. Lead: session_01FhBbYN2CVHnFXg7XzqKXpM. Code: release-0.10.3-wip-plant-tests 7a42a1ef8 (1c4cc8e8b + the red 9
