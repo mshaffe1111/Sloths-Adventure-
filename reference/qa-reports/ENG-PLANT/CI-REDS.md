@@ -1,10 +1,15 @@
 # ENG-PLANT-CI: the 9 CI-tool-line reds on c27 (session 12 notes; sessions 11 to 1 below it)
 
-## EXACT NEXT STEP (session 13, if one is needed). FINAL HEAD candidate = CI-15 0ec009b4d (bot code: CI-14 + padPause's stand is a stop he means).
-The lead ruled GO on CI-15 and filed (b) (2-2 pad #114 walk-off, padRead walking him across a moving pad) with R-165.465 for after release 4.
-0. ReadNotifications. Frozen tree: `bash ci-tools/s12-mktree.sh.txt ci15 0ec009b4d` (sparse: src tools public; D115).
-1. FINAL CHECKS on frozen CI-15: see SESSION 12 STATE below for what is recorded; run what is not, once each, at most two heavy at a time.
-2. Record each here, push release-0.10.3-wip-plant-ci, `git ls-remote`, the hash and one line per check to the lead. Do NOT merge.
+## EXACT NEXT STEP (after session 12). FINAL HEAD = 39673e40c (bot code = CI-15 0ec009b4d; after it only the 4 test files below). ALL CHECKS GREEN.
+Nothing left for this job but the lead's merge decision (this branch is never merged into release-0.10.3 by a member).
+- Bot code: CI-15 0ec009b4d (CI-14 + padPause's stand is a stop he means). Checks on frozen CI-15 (the bot code is the same at the head):
+  wide sample 0 BAR PASS -> FAIL vs main; 2-7 x40 32/40; tierBots 9/9; pacerLay 23/23; the 10 races WON; known flips 23/23 PASS.
+- Tests after CI-15 (the lead's ruling (A)): the CI-14 toy re-pointed (hopJudged); firsttimer :305's landing read; the upstream plant
+  re-planted (riverRide); the waitRise plant re-planted on 2-2 (padRide). On frozen 39673e40c: **the CI tool line 414 tests, 413 pass,
+  0 fail, 1 todo (chaseBots, known)** (data/ci/s12/final/ciline.txt); **tsc clean** (final/tsc.txt).
+- Filed by the lead for after release 4: (b) the 2-2 pad #114 walk-off (R-165.465); suggested with it: the river block's wait stands
+  (L3957 / L3690, clockHeld) are bare stands the kid never lets go (2-7 kid E 17), the same family as CI-15; a root fix in thumbify
+  (R-165.59: every bare {} a no-holdQ bot is handed is a stop he means) would replace the per-stand stopMeant lines.
 
 ## SESSION 12 STATE (ENG-PLANT-CI-l)
 **Step 1, the 7 rows bisected** (frozen sparse trees c27, CI-1..CI-14, CI-10 = 8134a9a56; s12-rows.sh, table data/ci/s12/bisect-table.txt,
@@ -25,7 +30,7 @@ rows data/ci/s12/<step>-21n/21e/22n.jsonl; CI-14's 7 = the wide sample's exactly
   no walk-off from a log within two frames of a pause frame on it, unpressed): RED on CI-14 ('off log #116 at t 117.367 x 26505'), GREEN on
   CI-15 (data/ci/s12/toy15-*.txt). The 7 rows on a probe copy: all PASS (2-1 N2 164.3 l0, N7 168.0 l1, N10 164.0 l0, E10 172.3 l0; 2-2 N4
   175.8 l3, N6 162.5 l0, N8 184.9 l3); the 2-2 three pass by phase, (b) is not gone.
-**FINAL CHECKS on frozen CI-15 0ec009b4d** (evidence data/ci/s12/fin15/; the wide sample and x40 on the sparse tree, the rest on the full one):
+**FINAL CHECKS** (CI-15's bot code; the CI line and tsc on the final head 39673e40c, see the top) **on frozen CI-15 0ec009b4d** (evidence data/ci/s12/fin15/; the wide sample and x40 on the sparse tree, the rest on the full one):
 - **wide sample** (castBots --par 2, seeds 1-10, every bot, both settings, 2-1/2-2/2-4, 270 rows): **0 BAR PASS -> FAIL vs main** (31 FAIL ->
   PASS; wide-vs-main.txt), 0 vs c27 (14 FAIL -> PASS). **2-7 x40: 32/40** (bar 29; CI-14 31, c27 33); with the kid 30/40 (was 4); kid N
   38/40 E 39/40 (was 11, 27). vs CI-14 row for row: only kid and adult rows moved (child/middle/expert identical); 1 PASS -> FAIL, kid E 17
@@ -50,6 +55,16 @@ rows data/ci/s12/<step>-21n/21e/22n.jsonl; CI-14's 7 = the wide sample's exactly
     (the stages that lay beat pads: 2-2 and 2-5 only, s12-padstages): child N 6, 22, 24 clean with waitRise, rescued without (search
     rise/, stopped once 2-2 gave live cases: 2-2 239 rows, 2-5 64 rows, nothing moved on 2-5); seed 24's extra lives at the pads (beat
     #86/#87, weight #114-#116; s12-padlives). The fixture's crossing tests stay; its plant gives way to the 2-2 plant. GREEN on CI-15.
+- **The CI tool line on frozen 39673e40c (the final head): 414 tests, 413 pass, 0 fail, 1 todo; tsc clean.**
+Lessons applied: D115 (every verdict on a chattr-frozen tree; probes on unfrozen copies), D119 (commit messages from files), D128 (stamps
+from `date`), D132 (the wide sample vs MAIN first), D133 (one candidate, one toy), D134 (pushed and ls-remote'd before each message),
+D135 (the 3 old reds bisected, not called inherited), D138 (stopped for the lead's ruling (A) before the re-plants), CI #79 (the CI line
+run on the candidate), rule 28 (every flip traced to what took him), law 22 (no test weakened: (1) a read fault shown by frame, RED kept
+on c22; (2) (3) re-planted at the same bar from searches; (4) re-pointed, RED kept on CI-13).
+Slips, both caught and corrected: (i) one search started with a shell '&' (stopped, re-run as separate background runs; the same slip as
+session 11: a member's command should never hold '&', even inside a subshell); (ii) the first CI-line run was on a SPARSE tree (src tools
+public), and tools/difficulty read reference/ (ENOENT, 3 false reds): a test run needs the FULL tree; sparse trees serve castBots only
+(checked: no runtime read of reference/ from src or tools/inspect; CI-14's 7 rows on the sparse tree = the full-tree wide sample).
 
 
 ## (session 11's) EXACT NEXT STEP (session 12), DONE in session 12 (see above). FINAL HEAD = 4db1da8aa (bot code = CI-14 bfbe09494; the re-plants 6bffbfa7b are test-only). The lead ACCEPTED CI-14, the moved-rows table and the re-plants; the two named items (log run-end floor read; lianaWait's single mid lag) are filed after release 4 with dropWaits.
