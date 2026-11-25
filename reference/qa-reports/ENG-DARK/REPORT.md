@@ -49,6 +49,14 @@ changing darkLandings' meaning.
 y 7104 (right end of 760-920) at 167.23 s (282.6/5). GONE on the new head (the path moved; not traced, so not 'fixed' by design): adult
 33 N (255/6), expert 31 N (266.7/5), middle E 32 (289.2/5), middle N 31 (258.8/4). Trace the 3 (probes/loop.mts at each rim/time) and fix
 or take to the lead; re-check all 7 after the lay fix.
+CHILD E 21, TRACED by box 10 (probes/loop.mts child easy 21 191 1562 21 24.6; rim.mts 21 easy 191 1562): rim 191's own landing is a drop
+onto 77-443@1725, light 6 (137, 1635) asleep. He walked right on 77-443, jumped UP at x ~231, came back left in the air and landed on
+191-433 at x 211 (24.10 s) moving left at about 173 px/s, slid to x 189 (2 px past the rim, STILL GROUNDED at y 1562, the engine's grace)
+and turned right (24.30 s). He never went over: RimWatch.step counts any grounded step past the piece's end as a crossing. Not a step
+off, so darkLandings (drops only) does not cover the arrival. Two readings for the lead, neither built: (a) the judge: a grace overshoot he
+comes back from grounded, never leaving the piece's height, is no crossing (a meaning change of the x40's count); (b) the bot: a jump
+onto a dark rim's piece lands at least his stopping distance from its rim (glowWait has 20 px at 173 px/s). Middle E 1 and middle N 16
+not traced yet: check first whether they are the same overshoot.
 The lead was ASKED (box 10, with this evidence) which bar '33 N's behind edge lit' means: (A) the second light + darkLandings drops the
 behind-edge exemption for a step-off from a hop rim; (B) A + the x40 crossing over 940 reads lit (a judge change); (C) other. Box 10
 said it would build A unless the lead says otherwise: read the lead's answer first.
