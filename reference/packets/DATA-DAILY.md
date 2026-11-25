@@ -19,7 +19,7 @@ is Pacific time; H the gzipped data). The window = the rows after the last read'
    the window says about 2-6/2-7's open bot rows (R-165.413: a kid on moving logs; R-165.398: the lip family) if any World 2 runs exist.
 4. **Opportunities:** where players quit, die again and again at one place, skip or take help, take far longer than the bots, or say
    they loved it (survey chips): each a candidate design or polish item, ranked by players affected.
-5. Rebuild tools/playtesters/profiles with the window (aggregates only) on a branch t-data-<mmdd>; the REPORT at
+5. Rebuild tools/playtesters/profiles with the window (aggregates only) on a branch t-data-<mmdd> CUT FROM origin/main (never from the lead's branch, which is reference-only and far behind main); map every logged seed with tools/playtesters/variantOf.ts (R-165.444: logged seed n is list variant n-1) and run castBots on the build the players had; the REPORT at
    reference/qa-reports/DATA-<mmdd>/REPORT.md: the gap list (biggest bot/player gap first) and the opportunities, each with its evidence;
    update analyst.md's 'last read row'. Send the lead the top three of each.
 Lead: session_01FhBbYN2CVHnFXg7XzqKXpM. Messages carry no clock times.
