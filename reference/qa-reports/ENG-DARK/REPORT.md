@@ -55,8 +55,15 @@ onto 77-443@1725, light 6 (137, 1635) asleep. He walked right on 77-443, jumped 
 and turned right (24.30 s). He never went over: RimWatch.step counts any grounded step past the piece's end as a crossing. Not a step
 off, so darkLandings (drops only) does not cover the arrival. Two readings for the lead, neither built: (a) the judge: a grace overshoot he
 comes back from grounded, never leaving the piece's height, is no crossing (a meaning change of the x40's count); (b) the bot: a jump
-onto a dark rim's piece lands at least his stopping distance from its rim (glowWait has 20 px at 173 px/s). Middle E 1 and middle N 16
-not traced yet: check first whether they are the same overshoot.
+onto a dark rim's piece lands at least his stopping distance from its rim (glowWait has 20 px at 173 px/s). MIDDLE E 1, read (loop.mts middle easy 1 517 2867 36.8 38.8): a
+JUMP UP, not a way down: in the air from 268-517@2867 going right at 285 px/s, he passed x 517 at y 2706 (161 px ABOVE the rim) at 38.27 s
+and landed on a higher piece at (562, 2759). RimWatch counts any pass of the end x after leaving the piece; the lead rules whether a jump
+up off a rim's piece to higher ground is a crossing (a judge reading, not built). MIDDLE N 16, read (loop.mts middle normal 16 920 7104
+165.8 167.8): A REAL FALL: walking left at 268 px/s from a piece at about y 7098 he crossed a small gap at x ~943 (one frame of air) onto
+760-920@7104 (y 7104, 6 px lower), stopped at x 918 (167.13 s), turned right at 167.27 s with NO light woken (45, 42, 43 asleep, 41
+awake) and fell through that gap to y 7244 (140 px). The seam is walked over going left (downhill 6 px) but not going right from a
+standstill (uphill 6 px). Next: why he turned right (downEnd / glowWait / the steer: run downend.mts middle normal 16 920 7104 166 168,
+whose args are bot setting seed rimX rimY t0 t1) and whether rim 920's stop should have held him.
 The lead was ASKED (box 10, with this evidence) which bar '33 N's behind edge lit' means: (A) the second light + darkLandings drops the
 behind-edge exemption for a step-off from a hop rim; (B) A + the x40 crossing over 940 reads lit (a judge change); (C) other. Box 10
 said it would build A unless the lead says otherwise: read the lead's answer first.
