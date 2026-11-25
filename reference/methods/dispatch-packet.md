@@ -137,3 +137,5 @@ about 1-2 s a row, every finished row kept.
 **The CI tool line runs on every candidate (CI #79, 11-25).** On a job that tries candidate after candidate (a bot fix, an engine rule), every pushed candidate runs the CI tool line (about 10 minutes) beside its rows and toys, and a new red stops the next candidate until it is traced. The end checklist only re-runs it on the final head. A red found at the end costs a bisect on the critical path.
 
 **Hugging Face jobs start in the 'Hugging Face' environment (11-25).** create_session takes environment_id env_01XHDWWRRuUac8x7qDbVLwZz for any job that generates art; the Default environment has no Hugging Face access. The packet names the environment, and the member confirms access with the cheapest read before planning a batch.
+
+**A hand-over message ends new work (D138, 11-25).** Every brief's BOX line says: once you send your hand-over, you start nothing new; you only finish and record a gate already running. Anything more needs the lead's word, because the next session may already be working from your hand-over hash.
