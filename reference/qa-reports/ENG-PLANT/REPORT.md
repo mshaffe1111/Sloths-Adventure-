@@ -21,8 +21,8 @@ Engine (bots), Opus 5.5 xhigh. Lead: session_01FhBbYN2CVHnFXg7XzqKXpM. **Code he
 2. **Ruling item 1 is DONE (below, "The race flips traced"): the cause is the PHASE plus an OLDER wait rule, not c26's line.** The rule is
    NAMED and was sent to the lead with this push; **nothing outside c26 changes until the lead's word (ruling item 2).** Read
    ReadNotifications first. Until the word comes (never idle, D120): (a) 1-4 and 2-5 full rows are DONE (360 each, 0 BAR PASS -> FAIL vs
-   main, identical to c25: data/p/c26-1-4.jsonl, c26-2-5.jsonl, c26-2-5-cmp.txt). (b) trace child N 13 on c26 (2-7; the experiment's untraced loss; watch the child's run-on:
-   releaseMax 4 can carry him past the front at 31). (c) On the lead's word: build what it rules in the bot (the wait rule or c27), a toy
+   main, identical to c25: data/p/c26-1-4.jsonl, c26-2-5.jsonl, c26-2-5-cmp.txt). (b) child N 13: FIRST PASS done (frames only, below); confirm it on the castBots run (the frames
+   tool, tools/row-frames-p.mts.txt, ends at 360 s; castBots' row runs on to 392.6) and probe the walk-off's own line ('hop none'). (c) On the lead's word: build what it rules in the bot (the wait rule or c27), a toy
    RED on c26 at home N 1 / post N 5 and GREEN on the fix, then ruling item 3's list in its order, every race WON again with margins.
    Checklist (pacerLay 22/23 re-planted as laid toys 23/23, hopJudged, the toys for c23-c26's rules, the packet's plants, riverRide +
    firsttimer, the CI tool line 0 fail, tierBots 9/9, timecheck + roadmapcheck) after. MERGE into release-0.10.3 (no force) ONLY on the
@@ -104,7 +104,12 @@ Engine (bots), Opus 5.5 xhigh. Lead: session_01FhBbYN2CVHnFXg7XzqKXpM. **Code he
 - vs the landing, PASS -> FAIL 8: **adult N 11, N 24, child E 30, N 9: cluster A, the lip family (R-165.398)** (session 12's traces);
   **child N 34: D** (session 12); **child N 38: the first-river walk-off, off bank #17 [8,181..8,481] at vx 268 (session 12's trace; filed under
   B+C by place, but its shape is a full-run walk-off off a bank's lip, cluster A's: family the lip family, R-165.398; not the stand)**; **child E 11: cluster A's shuffle (R-165.398)**, moved by the earlier
-  crossing (session 13's trace, data/o/trace-expfront-cE11.txt); **child N 13: UNTRACED.** Not fixed in this merge.
+  crossing (session 13's trace, data/o/trace-expfront-cE11.txt); **child N 13: cluster A, the lip family (R-165.398), first pass (frames, data/p/frames-cN13-{c25,c26}.txt,
+  0.1 s): split at t 83.1 on log #22 (c25 stands at x 9,542; c26's front stand walks him to 9,584, hop to log #24 at 84.0); c26 then reaches
+  the second river 74 s earlier (t 125.5; c25 199.5), falls off log #43 at x 13,959 (t 127.5), respawns at f28, and loops 8 rounds on the
+  solids f26-f31 (x 10,541-11,901, t 128-174): full-run walk-offs (vx 268-285) set back to f26 each time, then rescued to 14,472. The
+  band and shape of child E 11's cluster A (walk-offs off solids #25-#27, 10,786-11,655), moved by the earlier path; not a stand on a log.**
+  Not fixed in this merge.
 - vs the landing, FAIL -> PASS 12: child E 5, E 28, E 32, E 33, N 5, N 11, N 18, N 19, N 22, N 36; middle N 7, N 13.
 - vs c25, FAIL -> PASS 12: child E 24, N 10, N 20, N 36, N 40; expert N 18, N 29, N 35; middle E 7, E 11, N 15, N 32 (B+C's six among them).
 

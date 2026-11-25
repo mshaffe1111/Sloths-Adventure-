@@ -1,0 +1,10 @@
+// usage: tsx row-frames.mts <tree> <stage> <BOT export, e.g. FT_CHILD> <seed>: one line per 0.1 s (t, x, vx, on, lives)
+const [T, stage, bot, seed] = process.argv.slice(2);
+await import(`${T}/src/game/headlessDom.ts`);
+const ft = await import(`${T}/tools/inspect/firsttimer.ts`);
+let f = 0;
+const r = ft.firstTimer(stage, Number(seed), (ft as any)[bot], { dotSetting: true, onFrame: (sim: any) => { const e = sim.e; if (f++ % 3) return;
+  const on = e.platforms.find((q: any) => q.id === e.standingOnId);
+  console.log(`${(f / 30).toFixed(1)} x ${e.player.x.toFixed(0)} vx ${e.player.vx.toFixed(0)} on ${on ? (on.type === 'drift' ? 'log' : 'f') + on.id : '-'} lives ${e.lives}`);
+} });
+console.log('END', JSON.stringify({ end: (r as any).end, time: (r as any).time, rescues: (r as any).rescues, lives: (r as any).lives }));
