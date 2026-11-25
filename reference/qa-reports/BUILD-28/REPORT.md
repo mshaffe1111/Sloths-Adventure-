@@ -1,7 +1,7 @@
 # BUILD-28 REPORT (W2-LANE: 2-8 "Before the Water Rises"; R-165.430 (2), READY-28, BUILD-28). Session 1 (W2-LANE a), started 9:44 AM ET (from date)
 
 ## EXACT NEXT STEP (session 1)
-Branch t-build-28-wip, head = this REPORT's commit; CODE head b74fadfe8 (later commits touch only reference/qa-reports/BUILD-28/).
+Branch t-build-28-wip, head = this REPORT's commit; CODE head ee048f86c (later commits touch only reference/qa-reports/BUILD-28/).
 `git fetch origin t-build-28-wip && git checkout t-build-28-wip`, `npm ci --no-audit --no-fund --legacy-peer-deps`. Run ReadNotifications
 first: the lead may have ruled For the lead 2-4 (below) or sent release-0.10.3's hash.
 THE LEAD'S RULINGS 2-4 CAME at the end of session 1 (verbatim in 'For the lead' below): step 1 reopens as 1a, 1c, 1d, in this order:
@@ -127,3 +127,5 @@ Frozen /home/user/wtw2b at e1d8d74c5: `npx tsc --noEmit -p .` exit 0; w2TwoRoad 
 - Other callers: firsttimer.ts:2462 floodRoad takes the chain as the high road's piece set (otherRoad): the rise now joins it (more
   correct); lineBot.test.ts:214 reads high = chain minus its ends (B joins nothing new on its toy: B starts at P's far end, so it was met
   before too).
+- ee048f86c: w2TwoRoad.test now holds the verdict's chain exactly W, P, the rise, porch2 (chain[2] is the rise) and its header no longer
+  calls the rise unjudged. Frozen /home/user/wtw2d at ee048f86c: w2TwoRoad 2/2, tsc exit 0.
