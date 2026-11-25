@@ -377,10 +377,19 @@ export function towerCatches(flow: 'up' | 'down', platforms: readonly Platform[]
     if (!v) return false;
     return ![a - 24, b + 24].filter((x) => x >= 20 && x <= width - 20).some((x) => { const l = catchUnder([...all, box], x, y, 100000); return l !== undefined && l <= v.bottomY + 2; });
   };
+  // (going down, no slot beside it: a bough within a step of the wood beside it (SLOT.step px in height) lies flush with it, a
+  //  walkable crack from it (SLOT.walk) or his body and a margin clear of it (SLOT.clear). A gap about his body's width between two
+  //  near-level pieces is one he can neither fall through nor read as an end: the kid and the adult went to and fro over a 42 px gap
+  //  between a catch and the vine-foot storey 6 px over it for 20 s until rescued, the top rescue cause of the drafted 3-1 lay
+  //  (slots of 40-60 px 26 -> 107 on 48 rolls, ENG-DOWNBOT box 10))
+  const slotted = (x0: number, x1: number, y: number, but: ReadonlyArray<Platform>) => flow === 'down' && solid(but).some((q) => {
+    const gap = Math.max(q.x - x1, x0 - (q.x + q.width));
+    return Math.abs(q.y - y) <= SLOT.step && gap > SLOT.walk && gap < SLOT.clear;
+  });
   /** laid fairly: the storey it is of (storeyAt), or -1 when it is in the way, climbs a storey, lies by a gate or in a kept-out box,
    *  or (going down) runs a catch on past its storey or lies in his hop's room (hopRooms: a lid over a dip's lip, a roof over a vine's
    *  top) */
-  const fair = (x0: number, x1: number, y: number, L: number, but: ReadonlyArray<Platform>): number => (cramped(x0, x1, y, but) || byGate(x0, x1, y) || passes(x0, x1, y) || lidded(x0, x1, y) ? -1 : storeyAt(x0, x1, y, L, but));
+  const fair = (x0: number, x1: number, y: number, L: number, but: ReadonlyArray<Platform>): number => (cramped(x0, x1, y, but) || slotted(x0, x1, y, but) || byGate(x0, x1, y) || passes(x0, x1, y) || lidded(x0, x1, y) ? -1 : storeyAt(x0, x1, y, L, but));
   for (let pass = 0; pass < 10; pass++) {
     const ends = openEnds(all, floorY, most, width);
     if (!ends.length) break;
@@ -395,7 +404,7 @@ export function towerCatches(flow: 'up' | 'down', platforms: readonly Platform[]
       // (going down, only into the wall on the end's own side, with his head room kept: the right end of a 60 px bridge by the left
       //  wall ran on to the RIGHT wall, a plank across the whole tower 70 px over a storey, ENG-DOWNBOT, drafted 3-1 easy 18)
       const ownSide = flow !== 'down' || (leftEnd ? e.x < TOWER.wall + 40 : e.x > width - TOWER.wall - 40);
-      if ((e.x < TOWER.wall + 40 || e.x > width - TOWER.wall - 40) && ownSide && !sealed(e.p) && !byGate(w0, w1, e.p.y) && (flow !== 'down' || (!cramped(w0, w1, e.p.y, [e.p]) && !passes(w0, w1, e.p.y) && !lidded(w0, w1, e.p.y)))) {
+      if ((e.x < TOWER.wall + 40 || e.x > width - TOWER.wall - 40) && ownSide && !sealed(e.p) && !byGate(w0, w1, e.p.y) && (flow !== 'down' || (!cramped(w0, w1, e.p.y, [e.p]) && !slotted(w0, w1, e.p.y, [e.p]) && !passes(w0, w1, e.p.y) && !lidded(w0, w1, e.p.y)))) {
         put(w0, w1, e.p.y, Le);
         added++;
         continue;
@@ -490,6 +499,11 @@ export function towerCatches(flow: 'up' | 'down', platforms: readonly Platform[]
  *  past the end's fall line, the way he walks off (the centred bough has catchW / 2), and `back` px behind it (he steps 24 px past
  *  the lip before he drops) */
 const SLIDE = { out: 60, back: 30 } as const;
+
+/** a way down's no-slot lay (towerCatches, `slotted`): within `step` px in height of the wood beside it, a bough's gap to that wood
+ *  is at most `walk` (a crack he walks across: under half his body, so his middle never leaves wood) or at least `clear` (his body,
+ *  2 x BODY_HALF = 42 px, plus a 24 px margin: he steps 24 px past a lip before he drops, SLIDE.back's note) */
+const SLOT = { step: 8, walk: 21, clear: 42 + 24 } as const;
 
 /** how far under a gate's top a piece still counts as level with it (px) */
 const GATE_LEVEL = 30;

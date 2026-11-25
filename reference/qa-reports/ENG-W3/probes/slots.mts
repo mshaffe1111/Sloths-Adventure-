@@ -1,7 +1,8 @@
 // going down: 'slots' on every drafted 3-1 roll, seeds 1-24 x both settings: two solid pieces side by side within a step of each other
 // in height (1-8 px apart), the gap between them 1-60 px (his body is 42 px: he can neither fall through it nor read it as an end).
-// TREE= the tree to read (ENG-DOWNBOT box 9; the shape of the top stuck cause on the new lay, kid easy 5 and adult easy 28)
+// DY0, DY1: the height band (default 1-8; box 10 also read 0-0 and 9-19). TREE= the tree to read (ENG-DOWNBOT box 9; the shape of the top stuck cause on the new lay, kid easy 5 and adult easy 28)
 const T = process.env.TREE!;
+const DY0 = Number(process.env.DY0 ?? 1), DY1 = Number(process.env.DY1 ?? 8); // the height band (px apart; default 1-8)
 await import(`${T}/src/game/headlessDom.ts`);
 const { readyDraft } = await import(`${T}/tools/engine/draft.ts`);
 const { generateAllLevels } = await import(`${T}/src/game/worldsData.ts`);
@@ -16,7 +17,7 @@ for (const set of ['normal', 'easy']) for (let seed = 1; seed <= 24; seed++) {
   let here = 0;
   for (const a of ps) for (const b of ps) {
     const dy = Math.abs(a.y - b.y), gap = b.x - (a.x + a.width);
-    if (dy < 1 || dy > 8 || gap < 1 || gap > 60) continue;
+    if (dy < DY0 || dy > DY1 || gap < 1 || gap > 60) continue;
     here++; const g = Math.round(gap / 10) * 10; gaps.set(g, (gaps.get(g) ?? 0) + 1);
     if (eg.length < 6) eg.push(`${set[0]}${seed}: ${a.x}-${a.x + a.width}@${a.y} | ${b.x}-${b.x + b.width}@${b.y} gap ${gap}`);
   }

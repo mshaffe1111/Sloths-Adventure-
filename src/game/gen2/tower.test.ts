@@ -721,3 +721,27 @@ test("going down, his hop's room: no wood within ROOF over a dip's lip or a clim
   assert.deepEqual(towerLids([vine], all), [], cs.map((c) => `${c.x}-${c.x + c.w}@${c.y}`).join(', '));
   assert.deepEqual(towerFalls('down', all, FLOOR, W), []);
 });
+
+test('going down, no slot: a catch beside near-level wood lies flush, a crack from it, or his body and a margin clear (ENG-DOWNBOT)', () => {
+  // (drafted 3-1 easy 5's shape, 1189-1602 px down: a storey 253-544 whose right end is open, a climb vine at x 227 down to the
+  //  vine-foot storey 207-446 281 px under it, the way on 132 px under that (0-724). A section's gap beside the vine-foot storey's end
+  //  keeps its bridge off here (the toy's stand-in for what kept it off on the roll). The lay caught the end with a bough 6 px under
+  //  the vine-foot storey and 32 px past its end (478-658; 488-658, 42 px, on fe331023's roll): a gap about his body's width that he
+  //  can neither fall through nor read as an end; the kid and the adult went to and fro over it for 20 s until rescued)
+  const W = 1280, FLOOR = 2400;
+  const base = [solid(253, 1189, 291, 1), solid(207, 1470, 239, 2), solid(0, 1602, 93, 3), solid(93, 1602, 364, 4), solid(457, 1602, 267, 5), solid(0, FLOOR, W, 6)];
+  const vine = { id: 1, x: 227, topY: 1189, bottomY: 1470, swaySpeed: 1, swayPhase: 0, vineType: 'tree_climb' } as Vine;
+  const cs = towerCatches('down', base, [vine], FLOOR, W, [{ x0: 446, x1: 600, y: 1470 }]);
+  const all = [...base, ...cs.map((c, k) => solid(c.x, c.y, c.w, 200 + k))];
+  // (SLOT in tower.ts: within 8 px in height, a gap of at most 21 px (a crack) or at least 66 (his body, 42, and a 24 px margin))
+  const slots: string[] = [];
+  for (const a of all) for (const b of all) {
+    const gap = b.x - (a.x + a.width);
+    if (Math.abs(a.y - b.y) <= 8 && gap > 21 && gap < 66) slots.push(`${a.x}-${a.x + a.width}@${a.y} | ${b.x}-${b.x + b.width}@${b.y} gap ${gap}`);
+  }
+  const lay = cs.map((c) => `${c.x}-${c.x + c.w}@${c.y}`).join(', ');
+  assert.ok(cs.some((c) => c.x < 568 && c.x + c.w > 568 && c.y > 1189 && c.y < 1602), `the open end is caught over the way on: ${lay}`);
+  assert.deepEqual(slots, [], lay);
+  assert.deepEqual(towerFalls('down', all, FLOOR, W), []);
+  assert.deepEqual(towerLids([vine], all), [], lay);
+});
