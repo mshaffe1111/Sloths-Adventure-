@@ -182,8 +182,8 @@ test('in play: his punch wakes a sleeper within 240 px; one 300 px off sleeps on
 
 test('planted: his punch off the channel -> the sleeper 200 px off sleeps on', () => {
   const r = punchBy(200, (c) => {
-    const noise = c.noise.bind(c);
-    c.noise = (n) => (n.from === 'punch' ? undefined : noise(n));
+    const take = c.take.bind(c);
+    c.take = (e) => (e.way === 'noise' && e.from === 'punch' ? undefined : take(e));
   });
   assert.deepEqual(r.heard, []);
   assert.ok(!r.awake);

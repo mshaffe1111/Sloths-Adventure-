@@ -4,6 +4,15 @@
  * has (predatorAI.ts).
  */
 import type { LurePost } from './predators/lure.ts';
+import type { Sound } from './heroNoise.ts';
+
+/**
+ * What the engine hands a stage's cast on its ONE channel (ENG-NOISE; 3-5.md 'The engine order' 1): a WAY that reaches the animals from a
+ * place, `{ way, x, y, r }` (and `t`, the game time it was made), heard on the cast's next step in the order made (CastPlay.take).
+ * Noises are the first way: a heroNoise.ts Sound (`from` says what made it: his punch, a struck or fired sounding thing; his landing
+ * comes in through the step itself). A way nothing emits yet has no member here (D40): ENG-LIGHT adds `{ way: 'light' }` with its caller.
+ */
+export type CastEvent = { way: 'noise' } & Sound;
 
 /**
  * One drop trap as a stage lays it: a load (a hive, a stone) hung over an animal's ground, and the handle that lets it go (a vine he
