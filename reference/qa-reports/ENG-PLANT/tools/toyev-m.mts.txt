@@ -1,0 +1,9 @@
+import { firstTimer, FT_KID } from '../../tools/inspect/firsttimer.ts';
+const [st, seed, set] = [process.argv[2], Number(process.argv[3]), process.argv[4] ?? 'easy'];
+let off = -1, offX = 0, offId = -1, last: { x: number; y: number; on: boolean; id: number } | null = null;
+firstTimer(st, seed, { ...FT_KID, setting: set as 'easy' }, { cap: 180, dotSetting: true, onFrame: (sim: any) => {
+  const e = sim.e, p = e.player, t = sim.t, here = e.platforms.find((q: any) => q.id === e.standingOnId);
+  if (last && Math.hypot(p.x - last.x, p.y - last.y) >= 100) console.log(`setdown t ${t.toFixed(2)} from ${last.x.toFixed(0)},${last.y.toFixed(0)} to ${p.x.toFixed(0)},${p.y.toFixed(0)} lastOff t ${off.toFixed(2)} x ${offX.toFixed(0)} log ${offId} swing ${e.player.swingId ?? '-'}`);
+  if (last?.on && !p.grounded && p.vy < 0) { off = t; offX = p.x; offId = last.id; console.log(`off t ${t.toFixed(2)} x ${p.x.toFixed(0)} vx ${p.vx.toFixed(0)} log ${last.id}`); }
+  last = { x: p.x, y: p.y, on: p.grounded && !!here && here.type === 'drift', id: here?.id ?? -1 };
+} });

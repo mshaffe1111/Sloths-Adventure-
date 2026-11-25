@@ -1,0 +1,94 @@
+  3.80 single from 1051,976 hold 0.07 up 0.00 -> 1180,979 ok
+  4.80 single from 1336,979 hold 0.07 up 0.00 -> 1456,974 ok
+  8.50 single from 2260,974 hold 0.07 up 0.00 -> 2316,924 ok
+  9.73 single from 2473,932 hold 0.18 up 0.00 -> 2657,974 ok
+  10.60 single from 2804,974 hold 0.16 up 0.00 -> 2958,919 ok
+  12.63 single from 3259,916 hold 0.21 up 0.00 -> 3512,1002 FELL BACK
+  13.80 single from 3578,974 hold 0.07 up 0.00 -> 3634,924 ok
+  15.03 single from 3782,927 hold 0.26 up 0.00 -> 3975,974 ok
+  17.43 single from 4525,974 hold 0.13 up 0.00 -> 4600,922 ok
+  18.53 single from 4615,922 hold 0.16 up 0.00 -> 4708,872 ok
+  21.40 single from 5237,978 hold 0.11 up 0.00 -> 5312,928 ok
+  24.53 single from 6057,980 hold 0.13 up 0.00 -> 6158,947 ok
+  25.57 single from 6218,947 hold 0.07 up 0.13 -> 6224,897 ok
+  26.77 single from 6369,897 hold 0.17 up 0.18 -> 6555,947 ok
+  27.93 single from 6794,947 hold 0.16 up 0.00 -> 6928,889 ok
+  30.33 single from 7240,893 hold 0.09 up 0.00 -> 7501,947 ok
+  31.40 single from 7528,947 hold 0.14 up 0.00 -> 7621,897 ok
+  32.40 single from 7768,939 hold 0.14 up 0.00 -> 7897,897 ok
+  32.83 single from 7943,897 hold 0.16 up 0.00 -> 8075,843 ok
+  34.80 single from 8336,850 hold 0.11 up 0.00 -> 8610,897 ok
+  36.13 single from 8785,897 hold 0.24 up 0.00 -> 8979,947 ok
+  37.80 single from 9264,947 hold 0.27 up 0.13 -> 9438,947 ok
+  39.20 single from 9562,947 hold 0.11 up 0.00 -> 9637,897 ok
+  40.27 single from 9775,914 hold 0.12 up 0.14 -> 9930,947 ok
+  41.77 single from 10206,947 hold 0.07 up 0.18 -> 10323,975 ok
+  43.23 single from 10478,983 hold 0.11 up 0.00 -> 10616,975 ok
+setdown t 44.07 from 10814,992 to 10190,947 lastOff t -1.00 x 0 log -1 swing -
+  44.50 single from 10190,947 hold 0.07 up 0.08 -> 10265,947 ok
+off t 48.77 x 10633 vx 248 log 48
+  49.30 single from 10622,975 hold 0.16 up 0.00 -> 10780,975 ok
+  50.73 single from 11043,947 hold 0.22 up 0.00 -> 11162,897 ok
+  51.60 single from 11254,900 hold 0.09 up 0.12 -> 11410,947 ok
+  54.27 single from 11997,969 hold 0.22 up 0.00 -> 12082,917 ok
+  55.40 single from 12082,917 hold 0.15 up 0.12 -> 12157,867 ok
+  57.37 single from 12571,971 hold 0.15 up 0.00 -> 12670,918 ok
+  58.50 single from 12836,918 hold 0.09 up 0.14 -> 12984,968 ok
+  59.40 single from 13132,968 hold 0.07 up 0.00 -> 13212,927 ok
+  60.83 single from 13433,927 hold 0.31 up 0.14 -> 13609,927 ok
+  61.97 single from 13802,927 hold 0.07 up 0.00 -> 13922,927 ok
+  63.47 single from 14162,927 hold 0.24 up 0.12 -> 14338,927 ok
+  64.70 single from 14523,927 hold 0.23 up 0.00 -> 14614,876 ok
+  65.73 single from 14614,876 hold 0.18 up 0.09 -> 14707,826 ok
+  68.00 single from 15158,927 hold 0.29 up 0.00 -> 15333,927 ok
+  69.03 single from 15399,927 hold 0.07 up 0.00 -> 15455,877 ok
+  70.00 single from 15575,877 hold 0.07 up 0.00 -> 15722,927 ok
+  71.03 single from 15879,927 hold 0.16 up 0.00 -> 16057,891 ok
+  73.80 single from 16332,875 hold 0.10 up 0.00 -> 16575,955 FELL BACK
+off t 74.50 x 16732 vx 348 log 78
+  74.97 single from 16717,955 hold 0.13 up 0.17 -> 16864,955 ok
+setdown t 75.80 from 17067,972 to 15937,927 lastOff t 74.50 x 16732 log 78 swing -
+  76.57 single from 15991,927 hold 0.11 up 0.09 -> 16138,955 ok
+off t 77.27 x 16322 vx 348 log 75
+  77.87 single from 16307,955 hold 0.22 up 0.00 -> 16491,955 ok
+  78.90 single from 16663,972 hold 0.18 up 0.00 -> 16674,832 ok
+  81.50 single from 16896,823 hold 0.18 up 0.00 -> 17152,877 ok
+  82.53 single from 17263,877 hold 0.14 up 0.09 -> 17438,927 ok
+  85.40 single from 18086,927 hold 0.20 up 0.14 -> 18161,874 ok
+  86.47 single from 18168,874 hold 0.15 up 0.09 -> 18252,824 ok
+  88.40 single from 18657,926 hold 0.15 up 0.16 -> 18731,874 ok
+  93.00 single from 19720,751 hold 0.30 up 0.10 -> 19813,701 ok
+  95.60 single from 20384,838 hold 0.15 up 0.00 -> 20532,830 ok
+  96.73 single from 20592,830 hold 0.07 up 0.13 -> 20630,780 ok
+  97.87 single from 20768,780 hold 0.15 up 0.00 -> 20943,830 ok
+off t 99.13 x 21312 vx 365 log 102
+  99.30 single from 21297,858 hold 0.20 up 0.00 -> 21421,763 ok
+  102.53 single from 21465,750 hold 0.33 up 0.00 -> 21743,858 FELL BACK
+  103.77 single from 21930,866 hold 0.07 up 0.00 -> 22049,858 ok
+  105.07 single from 22242,866 hold 0.17 up 0.00 -> 22382,830 ok
+  106.07 single from 22382,830 hold 0.11 up 0.00 -> 22457,780 ok
+  107.07 single from 22595,788 hold 0.07 up 0.09 -> 22732,830 ok
+off t 107.73 x 22949 vx 343 log 109
+  107.97 single from 22935,858 hold 0.16 up 0.00 -> 23067,745 ok
+  122.47 single from 22871,778 hold 0.26 up 0.00 -> 22808,858 FELL BACK
+  123.80 single from 22973,861 hold 0.13 up 0.00 -> 23111,858 ok
+  125.00 single from 23311,875 hold 0.07 up 0.00 -> 23422,858 ok
+  126.23 single from 23632,866 hold 0.08 up 0.12 -> 23752,858 ok
+setdown t 127.07 from 23961,875 to 22678,830 lastOff t 107.73 x 22949 log 109 swing -
+  127.50 single from 22678,830 hold 0.08 up 0.16 -> 22734,830 FELL BACK
+  144.50 single from 24001,830 hold 0.25 up 0.00 -> 24114,780 ok
+  145.30 single from 24197,780 hold 0.16 up 0.00 -> 24388,767 ok
+  147.37 single from 24687,763 hold 0.20 up 0.00 -> 24927,858 FELL BACK
+setdown t 148.17 from 25077,875 to 24298,830 lastOff t 107.73 x 22949 log 109 swing -
+  150.47 single from 24668,791 hold 0.11 up 0.00 -> 24948,858 FELL BACK
+  151.80 single from 25088,875 hold 0.07 up 0.18 -> 25197,858 ok
+  153.00 single from 25397,866 hold 0.07 up 0.00 -> 25517,858 ok
+  154.30 single from 25622,830 hold 0.21 up 0.19 -> 25697,780 ok
+  155.60 single from 25811,780 hold 0.07 up 0.16 -> 25958,830 ok
+  158.30 single from 26556,864 hold 0.23 up 0.16 -> 26650,810 ok
+  159.40 single from 26650,810 hold 0.16 up 0.12 -> 26725,760 ok
+  161.40 single from 27139,861 hold 0.17 up 0.00 -> 27251,809 ok
+  164.50 single from 27836,860 hold 0.14 up 0.00 -> 27929,810 ok
+  165.60 single from 28058,827 hold 0.19 up 0.00 -> 28233,860 ok
+off t 166.57 x 28507 vx 355 log 129
+  169.60 single from 28783,806 hold 0.07 up 0.00 -> 29060,860 ok

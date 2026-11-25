@@ -1,0 +1,95 @@
+  4.00 single from 1060,987 hold 0.22 up 0.14 -> 1234,990 ok
+  4.83 single from 1344,990 hold 0.08 up 0.00 -> 1462,984 ok
+  8.73 single from 2260,984 hold 0.19 up 0.00 -> 2362,934 ok
+  9.57 single from 2445,934 hold 0.07 up 0.00 -> 2593,984 ok
+  10.80 single from 2804,984 hold 0.16 up 0.00 -> 2994,951 ok
+  12.77 single from 3274,929 hold 0.26 up 0.00 -> 3506,1012 FELL BACK
+  13.97 single from 3578,984 hold 0.11 up 0.18 -> 3616,934 ok
+  15.00 single from 3745,934 hold 0.11 up 0.10 -> 3902,984 ok
+  17.80 single from 4525,984 hold 0.15 up 0.00 -> 4615,931 ok
+  18.53 single from 4615,931 hold 0.07 up 0.00 -> 4626,881 ok
+  21.77 single from 5236,986 hold 0.16 up 0.00 -> 5329,936 ok
+  24.87 single from 6083,985 hold 0.07 up 0.00 -> 6193,985 ok
+  26.43 single from 6317,985 hold 0.26 up 0.00 -> 6410,935 ok
+  27.40 single from 6566,985 hold 0.07 up 0.00 -> 6677,985 ok
+off t 29.70 x 7142 vx 157 log 35
+  30.10 single from 7134,1013 hold 0.24 up 0.00 -> 7308,898 ok
+  44.60 single from 7100,907 hold 0.27 up 0.00 -> 7164,1013 FELL BACK
+setdown t 45.40 from 7329,1030 to 6955,985 lastOff t 29.70 x 7142 log 35 swing -
+  46.07 single from 6955,985 hold 0.26 up 0.18 -> 7065,1013 ok
+  50.10 single from 7330,918 hold 0.20 up 0.00 -> 7605,985 FELL BACK
+  51.40 single from 7630,985 hold 0.10 up 0.00 -> 7706,935 ok
+  52.87 single from 7786,935 hold 0.11 up 0.16 -> 7942,985 ok
+  53.80 single from 7980,985 hold 0.07 up 0.13 -> 8008,935 ok
+  54.80 single from 8137,935 hold 0.25 up 0.00 -> 8347,867 ok
+  69.50 single from 8187,840 hold 0.19 up 0.00 -> 8313,1013 FELL BACK
+setdown t 70.33 from 8589,1030 to 8079,985 lastOff t 29.70 x 7142 log 35 swing -
+  70.70 single from 8082,985 hold 0.09 up 0.00 -> 8166,935 ok
+  71.43 single from 8173,935 hold 0.07 up 0.14 -> 8313,975 ok
+  74.33 single from 8461,947 hold 0.23 up 0.00 -> 8711,935 ok
+  75.53 single from 8859,935 hold 0.18 up 0.18 -> 9044,985 ok
+  78.27 single from 9571,985 hold 0.08 up 0.00 -> 9627,935 ok
+  79.27 single from 9756,935 hold 0.07 up 0.00 -> 9904,985 ok
+  81.17 single from 10299,993 hold 0.07 up 0.16 -> 10428,1013 ok
+  82.20 single from 10637,1021 hold 0.07 up 0.12 -> 10756,1013 ok
+  83.43 single from 10945,1016 hold 0.15 up 0.18 -> 11063,985 ok
+  84.37 single from 11063,985 hold 0.08 up 0.19 -> 11082,935 ok
+  85.60 single from 11229,935 hold 0.28 up 0.00 -> 11423,985 ok
+  88.20 single from 11994,985 hold 0.21 up 0.10 -> 12093,934 ok
+  89.13 single from 12093,934 hold 0.09 up 0.20 -> 12112,884 ok
+  91.30 single from 12577,988 hold 0.07 up 0.00 -> 12637,936 ok
+  93.60 single from 13153,989 hold 0.07 up 0.13 -> 13271,989 ok
+  95.17 single from 13585,989 hold 0.07 up 0.12 -> 13705,989 ok
+  96.60 single from 13926,989 hold 0.28 up 0.13 -> 14100,989 ok
+  97.70 single from 14284,989 hold 0.07 up 0.00 -> 14404,989 ok
+  98.83 single from 14633,989 hold 0.07 up 0.10 -> 14661,938 ok
+  100.37 single from 14726,938 hold 0.35 up 0.00 -> 14846,888 ok
+  102.43 single from 15303,967 hold 0.09 up 0.00 -> 15406,967 ok
+  103.67 single from 15406,967 hold 0.26 up 0.00 -> 15518,917 ok
+  104.60 single from 15619,925 hold 0.13 up 0.11 -> 15774,967 ok
+  106.13 single from 16014,967 hold 0.21 up 0.00 -> 16198,995 ok
+off t 106.33 x 16272 vx 365 log 76
+  110.07 single from 16334,920 hold 0.24 up 0.00 -> 16594,995 FELL BACK
+off t 111.03 x 16693 vx 348 log 76
+  111.33 single from 16679,995 hold 0.16 up 0.00 -> 16827,883 ok
+  114.63 single from 16909,860 hold 0.23 up 0.00 -> 17144,967 FELL BACK
+  115.73 single from 17144,967 hold 0.34 up 0.14 -> 17237,917 ok
+  116.67 single from 17357,925 hold 0.08 up 0.12 -> 17494,967 ok
+  119.40 single from 18091,967 hold 0.21 up 0.10 -> 18175,912 ok
+  120.27 single from 18175,912 hold 0.07 up 0.17 -> 18194,862 ok
+  122.47 single from 18654,965 hold 0.20 up 0.00 -> 18783,912 ok
+  123.67 single from 18939,912 hold 0.14 up 0.00 -> 19114,962 ok
+  126.97 single from 19726,784 hold 0.18 up 0.00 -> 19828,734 ok
+  130.30 single from 20490,861 hold 0.12 up 0.00 -> 20565,811 ok
+  131.37 single from 20703,819 hold 0.13 up 0.00 -> 20859,861 ok
+off t 132.50 x 21186 vx 365 log 101
+  135.57 single from 21386,819 hold 0.37 up 0.00 -> 21664,889 FELL BACK
+off t 136.70 x 21764 vx 80 log 102
+setdown t 137.13 from 21864,891 to 21008,861 lastOff t 136.70 x 21764 log 102 swing -
+  137.13 single from 21759,889 hold 0.08 up 0.00 -> 21008,861 ok
+setdown t 138.47 from 21308,906 to 21008,861 lastOff t 136.70 x 21764 log 102 swing -
+  139.03 single from 21011,861 hold 0.11 up 0.00 -> 21156,889 ok
+setdown t 139.80 from 21412,906 to 21008,861 lastOff t 136.70 x 21764 log 102 swing -
+setdown t 139.83 from 21008,861 to 22263,861 lastOff t 136.70 x 21764 log 102 swing -
+  140.40 single from 22263,861 hold 0.37 up 0.08 -> 22393,811 ok
+  141.33 single from 22467,811 hold 0.18 up 0.18 -> 22653,861 ok
+off t 141.63 x 22745 vx 343 log 109
+  144.80 single from 22969,814 hold 0.07 up 0.00 -> 23235,889 FELL BACK
+  145.83 single from 23374,892 hold 0.14 up 0.12 -> 23518,764 ok
+  149.30 single from 23535,757 hold 0.07 up 0.00 -> 23812,889 FELL BACK
+  151.03 single from 23902,861 hold 0.29 up 0.00 -> 24015,811 ok
+  151.70 single from 24048,811 hold 0.16 up 0.00 -> 24260,812 ok
+  153.93 single from 24592,818 hold 0.14 up 0.00 -> 24853,889 FELL BACK
+off t 154.87 x 24976 vx 360 log 113
+  155.10 single from 24961,889 hold 0.16 up 0.00 -> 25107,773 ok
+  158.50 single from 25161,755 hold 0.10 up 0.00 -> 25424,889 FELL BACK
+  160.17 single from 25522,861 hold 0.24 up 0.00 -> 25635,811 ok
+  161.37 single from 25656,811 hold 0.24 up 0.13 -> 25848,861 ok
+  163.90 single from 26465,861 hold 0.07 up 0.00 -> 26516,809 ok
+  165.03 single from 26551,809 hold 0.16 up 0.00 -> 26644,759 ok
+  167.03 single from 27049,860 hold 0.22 up 0.00 -> 27161,806 ok
+  170.23 single from 27736,860 hold 0.31 up 0.09 -> 27838,810 ok
+  171.30 single from 27949,818 hold 0.22 up 0.13 -> 28132,860 ok
+off t 172.50 x 28420 vx 157 log 129
+  172.90 single from 28412,888 hold 0.16 up 0.00 -> 28582,810 ok
+  176.33 single from 28685,776 hold 0.19 up 0.00 -> 28929,860 FELL BACK

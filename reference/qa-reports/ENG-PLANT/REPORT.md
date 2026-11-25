@@ -1,3 +1,96 @@
+# ENG-PLANT-m (ENG-PLANT-c session 11, started 9:15 AM ET 11-25 by the session's first stamp): c25 built, pushed and proven on its rows; hand-over (LANES 3b box)
+
+Engine (bots), Opus 5.5 xhigh. Lead: session_01FhBbYN2CVHnFXg7XzqKXpM. **Code head: c25 = 6fb42bd1d (the fix) + 6a64aa41e (its toy, test
+only) on release-0.10.3-wip-plant-c** (pushed, ls-remote confirmed). Frozen worktrees this session: fz-c25 (6a64aa41e), fz-c24 (2a2c44786).
+Data: data/m/. Tools: tools/*-m.
+
+## c25 (the lead's GO): the run-up's judge counts the thumb travel still to run
+- `steerFrom(dir, t)` (firsttimer.ts, by runUpCatches) = the latest of now, `travelUntil` (a turn already made), the turn this want makes
+  from `lastSteer` the other way (`t + (2 * 16 + driftPx) / thumbSpeed`, as thumbify arms it; not for a tap bot), and `driftUntil` (a slip
+  already drawn).
+- `runPress`: the ground frames before it brake (groundStep dir 0); the hop's first `free` frames fly unsteered (hopCatches / hopCatchAt /
+  hopFrame take a new `free` argument, default 0: every other caller unchanged). `runUpCatches`: the run frames before it brake.
+- 'Where no run-up catches for his own press, he does not start one': the start branch already needs runUpCatches true from a stand and
+  on the run; with the travel counted, a run-up that cannot catch for his press is not started.
+
+## Proof (fz-c25 6a64aa41e; c24 2a2c44786)
+| check | c24 | c25 |
+|---|---|---|
+| toy, firsttimer.test 'on the run it was found on, 2-4 kid Easy seed 35' (no jump off a drifting log comes down in the water before he stands again) | **RED** (1 of 7) | **GREEN** (0 of 6) |
+| 2-4 kid Easy 35 (castBots row) | FAIL, rescued 1 (10,860) | **PASS**, rescues 0 |
+| the run-up's own rows: 2-4 adult N 6/8/24/32, child E 23, child N 39, child N 8 | PASS (lives 0/2/2/0, 0, 2, 2) | **PASS 7/7** (lives 0/1/1/0, 0, 2, 1) |
+| the 10 known flips: + 2-1 child N 11, 2-2 adult N 4/24, 2-4 child E 11; and 2-1 child E 2 | PASS | **PASS 10/10 + E 2** |
+| the 11 c4-pass kid rows | 11 FAIL | 10 FAIL at the SAME places (R-165.413, the lead's ruling 1), **E 35 PASS** |
+| race margins (tools/margins.mts.txt, data/m/margins-c25.txt) | 10/10 WON, post N 5 -0.10 | **identical, 10/10 WON, post N 5 -0.10: no flip** |
+Table: data/m/set1-c25-table.txt (c25 / c24 / main per row). Traces (tools/toyev-m.mts.txt, FT_TRACE): c24 E 35 off log #48 at t 47.60,
+vx 75 (the carry alone), set down 48.17; c25 E 35 off #48 at t 48.77, x 10,633, vx 248 (the steer arrived), no set-down (data/m/c25-e35-trace.txt).
+- The toy's first cut (any lift off a log, a set-down within 2.5 s) fired on c25 too: a log's bob read as a take-off (t 74.50), then a good
+  hop (74.97, landed 16,864) and a walk-off at 17,067: R-165.413's 16,777-17,149 cluster, not a jump into water. Tightened to a take-off
+  at a jump's launch speed (vy < -0.8 PHYS.jumpV) and a set-down before he stands again; RED/GREEN above on the tightened toy.
+- 2-4 kid E 12 looked moved (castBots' first 'stuck' note: on a vine at 7,062): its whole stuck list is IDENTICAL on c24 and c25; the
+  rescue on both is the set-down at 21,866 (R-165.413).
+
+## 2-4 wide sample (seeds 1-40, 5 bots, both settings) on fz-c25
+Rows: data/m/c25-2-4-w.jsonl (360, castBots --json row by row, tools/wide-m.sh.txt); flips: data/m/c25-flips-2-4-2-7.txt (tools/flips.py.txt).
+| 2-4 | adult E/N | child E/N | middle E/N | expert N | kid E/N |
+|---|---|---|---|---|---|
+| main cdffdc627 (data/c) | 40/16 | 40/40 | 40/40 | 40 | 30/0 |
+| c24 (data/j/c24-2-4-w) | 40/40 | 40/40 | 40/40 | 40 | 29/40 |
+| **c25** | **40/40** | **40/40** | **40/40** | **40** | **31/39** |
+- **BAR (adult/child/middle/expert) PASS->FAIL: 0 vs c24, 0 vs main.** vs c24: differ 85, fail->pass kid E 32, E 35; PASS->FAIL kid N 26
+  (main fails it too: rescues 3). vs main: PASS->FAIL 7, all kid Easy (2, 12, 13, 18, 19, 20, 40), every one in the 31 traced to
+  R-165.413 (the lead's ruling 1); fail->pass 71.
+- **kid N 26 traced (one run; data/m/n26-*, the probe tools/n26probe-m.diff.txt):** both trees identical to t 84.37. On log #72 (x
+  16,631) he is running LEFT (vx -268, lastSteer -1) with liana #? to the RIGHT (dir +1). c24 at t 84.40 starts a run-up right: the turn
+  arms 0.188 s of thumb travel, his steer drops (pad {} 84.40-84.53), the judge presses at 84.57 'held from now' with the travel still
+  running (right arrives 84.60): E 35's shape, and on THIS draw the hop still caught (84.93, swinging). c25 counts that travel (steerFrom
+  t + 0.188; runUpCatches from a stand false at all three lags) and starts no run-up (the ruled 'if no run-up catches for his press, he
+  does not start one'); he runs on left to 84.50, stops at 16,606, stands on #72 and is carried: 'no jump, ground 16,704 -> LIFE LOST'
+  (85.67), then an untimed hop (96.30) and a stand (104.97) at the same place: the third set-down, the rescue. The place is main's
+  (main: set down 3 times at 16,866) and the 31's 16,777-17,149 cluster. For the lead: c25 refuses a marginal run-up that c24's luckier
+  draw made; what drowns him after is the stand on a carried log (not c25's piece). Rule 28 asks two runs per cause: no second row of it
+  in the 360.
+
+## 2-7 on c25 (seeds 1-100; the list as castBots rolls it; data/m/c25-2-7-1-100.jsonl)
+| 2-7 c25 | adult E/N | child E/N | middle E/N | expert N | kid E/N | seeds with EVERY BAR row passing |
+|---|---|---|---|---|---|---|
+| x40 (seeds 1-40) | 40/38 | 38/33 | 38/38 | 37 | 24/8 | **24/40 (bar 29/40: BELOW)** |
+| the list (1-100) | 100/97 | 90/89 | 98/95 | 96 | 49/21 | **69/100 (bar 69/100: AT the bar)** |
+main's data/c/main-2-7 rows are an older 2-7 (adult E 11/40): not comparable for 2-7. The 18 failing BAR rows on 1-40: every one a
+rescue (r 1-4), all reach the shrine: child N 9, 10, 20, 34, 36, 38, 40; child E 24, 30; adult N 11, 24; middle E 7, 11; middle N 15, 32;
+expert N 18, 29, 35 (places 9,101-14,183 'water ahead' / 'set down here 8 times'; child N 34 at 2,528). 
+**c24 2a2c44786 on the same 2-7 BAR rows (seeds 1-40, 280 of 280 rows run; data/m/c24-2-7-x40.jsonl): 24/40 seeds with every BAR row passing.** c24 -> c25 on the rows both ran: PASS->FAIL 0 []; fail->pass 0 [].
+
+## 1-4 and 2-5 on c25 (seeds 1-40, 5 bots, both settings; data/m/c25-1-4.jsonl, c25-2-5.jsonl; flips: data/m/c25-flips-vs-main.txt)
+| stage | rows | differ vs main | PASS->FAIL (BAR) | fail->pass | c25 pass counts |
+|---|---|---|---|---|---|
+| 1-4 | 360 | 225 | **0** (0) | 128 | every bot and setting 40/40 |
+| 2-5 | 360 | 261 | **0** (0) | 3 (kid E 14, 28, 35: as c24) | BAR 40/40 everywhere; kid E 3/40, kid N 0/40 (main 0/0) |
+
+
+## EXACT NEXT STEP (session 12)
+0. Setup: `npm ci --no-audit --no-fund --legacy-peer-deps`; `git fetch --unshallow origin` (background); worktrees (node_modules symlinked):
+   fz-c25 at the code head below, fz-main cdffdc627. Tools: tools/wide-m.sh.txt (castBots --json, ONE ROW PER LINE as each lands: it
+   survives a hand-over; castBots --rows writes only at the end), set1-m.sh.txt, cmp1-m.py.txt, flips.py.txt, margins.mts.txt.
+   Rows run four lanes (two heavy runs of two lanes), seeds split in quarters: about 1-2 s a row.
+1. **The lead's call first (sent with the hand-over): 2-7 x40 on c25 is 24/40 seeds with every BAR row passing (bar 29/40); the list
+   1-100 is 69/100 (at the bar).** c24 on the same rows: 24/40 (280 of 280 rows; c24 -> c25 BAR PASS->FAIL 0, fail->pass 0): the x40 shortfall is NOT c25's: c24 has the same 24/40, row for row. Do not merge c25 under the x40 bar without the lead's word.
+2. Ruling 4's rows on c25's code head are DONE this session (2-4 wide, 2-7 1-100, 1-4, 2-5; tables above; c24's 2-7 BAR x40 for
+   the comparison). Rerun only if a later commit touches code (item 4's test-only check).
+3. Re-plant pacerLay 22 (:254 boardLog, home middle Easy 1) and 23 (:280 raceSure) RED halves as explicit laid toys in
+   tools/inspect/firsttimer.test.ts (af127d21e's pattern; the fromTakeoff toy at firsttimer.test.ts:217; boardLog needs a full RiverZone
+   for floatAt, ENG-27/boardlog-probe-27j.ts.txt); GREEN halves stay in pacerLay at the SAME bars; pacerLay 23/23 on the head.
+4. hopJudged; toys for c23's and c24's rules (RED on c22 52bcce623 / c23 ccca3d305 trees, GREEN on the head); the plants; riverRide +
+   firsttimer tests; the CI tool line (gates.yml, find by content) at 0 fail; tierBots 9/9; timecheck + roadmapcheck; MERGE into
+   release-0.10.3 (no force), ls-remote, hash + full table to the lead. Every commit after 6a64aa41e must be test-only
+   (`git diff --stat 6a64aa41e HEAD -- . ':!*.test.ts'` empty) or the rows above rerun on the new head.
+
+Lessons applied: D134 (pushed + ls-remote before the hand-over, hash in it), D128 (times from `date`), D119 (the commit message from a
+file, no heredoc in a commit chain), D115 (a frozen worktree per hash; the toy copied into fz-c24 for its RED and restored by checkout
+before anything else ran there), rule 28 (E 35 traced on both trees; E 12's apparent move checked and found identical), D121 (the toy
+end to end where the player feels it), D135 (no red carried unnamed: the 10 kid rows still failing are R-165.413's, ruled by the lead).
+A rows run that could not finish in the session would have been lost (castBots --rows writes at the end): restarted row by row.
+
 # ENG-PLANT-l (ENG-PLANT-c session 10, started 8:56 AM ET 11-25 by `date`): rulings 1 and 3 measured; 2-5 rows clean; hand-over (LANES 3b box)
 
 Engine (bots), Opus 5.5 xhigh. Lead: session_01FhBbYN2CVHnFXg7XzqKXpM. Code head UNCHANGED: **c24 2a2c44786** (nothing pushed to

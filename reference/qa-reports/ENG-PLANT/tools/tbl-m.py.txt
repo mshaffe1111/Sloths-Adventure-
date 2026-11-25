@@ -1,0 +1,7 @@
+import json, sys, collections
+# usage: tbl.py <st> <file>...: pass counts per bot/setting
+c = collections.Counter(); n = collections.Counter()
+for f in sys.argv[2:]:
+    for r in map(json.loads, open(f)):
+        k = (r['bot'], r['setting']); n[k] += 1; c[k] += bool(r['pass'])
+print(sys.argv[1], ' '.join(f"{b}/{s[0].upper()} {c[(b,s)]}/{n[(b,s)]}" for b, s in sorted(n)))

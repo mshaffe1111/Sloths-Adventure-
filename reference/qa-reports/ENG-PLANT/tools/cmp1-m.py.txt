@@ -1,0 +1,10 @@
+import json, sys, glob, os
+S, D = sys.argv[1], sys.argv[2]
+def load(p): return {(r['bot'], r['setting'], r['seed']): r for r in map(json.loads, open(p))} if os.path.exists(p) else {}
+c24 = {'2-4': load(f'{S}/ref/c24-2-4-w.jsonl')}
+for f in sorted(glob.glob(f'{D}/*.jsonl')):
+    st = os.path.basename(f)[:3]; m = load(f'{S}/ref/main-{st}.jsonl')
+    for k, r in load(f).items():
+        a = m.get(k, {}); b = c24.get(st, {}).get(k, {})
+        fmt = lambda x: ('PASS' if x.get('pass') else 'FAIL') + f" r{x.get('rescues')} l{x.get('lives')}" if x else '-'
+        print(f"{st} {k[0]:6} {k[1]:6} {k[2]:3} | c25 {fmt(r):14} | c24 {fmt(b):14} | main {fmt(a):14} | {(r.get('stuck') or [{}])[0].get('what','') if not r.get('pass') else ''} {(r.get('stuck') or [{}])[0].get('x','') if not r.get('pass') else ''}")

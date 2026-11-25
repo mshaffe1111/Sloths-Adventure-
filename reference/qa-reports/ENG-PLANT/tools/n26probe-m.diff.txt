@@ -1,0 +1,12 @@
+diff --git a/tools/inspect/firsttimer.ts b/tools/inspect/firsttimer.ts
+index b60f66940..044e08bd0 100644
+--- a/tools/inspect/firsttimer.ts
++++ b/tools/inspect/firsttimer.ts
+@@ -2355,6 +2355,7 @@ export class FirstTimerRun {
+     const lags = [mid, Math.max(0, mid - sd / 2), mid + sd / 2];
+     // (SKILLS.runUp, ENG-PLANT-g: a run-up he is on (sent last frame, this log); else none)
+     const running = SKILLS.runUp && !!this.runUp && this.runUp.id === here.id && t - this.runUp.t < DT * 1.5;
++    if (process.env.FT_PROBE && t > 84.2 && t < 84.6) { const ra = this.runUpCatches(p, dir, here, v, lags, carry, hold, clock, t, true); console.error(`P t ${t.toFixed(2)} dir ${dir} x ${p.x.toFixed(0)} vx ${p.vx.toFixed(0)} running ${running} last ${this.lastSteer} travel ${(this.travelUntil - t).toFixed(3)} slip ${(this.driftUntil - t).toFixed(3)} from ${(this.steerFrom(dir, t) - t).toFixed(3)} runUpCatches(run) ${ra} log ${here.id}`); }
+     this.runUp = null;
+     if (!running && !lags.every(catches)) {
+       // (SKILLS.runUp, ENG-PLANT-g: from a stand a PERFECT thumb catches 2-4's tailed-river liana 0 of ~560 frames; a running jump off the

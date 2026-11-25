@@ -1,0 +1,5 @@
+#!/bin/bash
+# usage: lane2.sh <tree> <seeds> <tag>: 1-4 then 2-5 rows, row by row (wide-m.sh)
+S=$(dirname $0)/..
+$S/tools/wide.sh $1 1-4 $2 $S/data/c25-1-4-$3.jsonl
+$S/tools/wide.sh $1 2-5 $2 $S/data/c25-2-5-$3.jsonl
