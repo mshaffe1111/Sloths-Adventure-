@@ -95,7 +95,7 @@ export function setGroundStacks(z: readonly StackZone[] | undefined, rivers?: Re
  */
 export function riverLid(platforms: Platform[], x0: number, x1: number, surfaceY: number): Ceiling[] | null {
   if (!stackZones.length) return null;
-  const banks = groundLook === 'bough' ? platforms.filter((p) => !p.broken && boughPiece(p)) : platforms.filter(paintedBank);
+  const banks = groundLook === 'bough' ? platforms.filter((p) => !p.broken && boughPiece(p)) : groundBanks(platforms);
   const cs = ceilingsFor(platforms, banks, bankSig(banks), stackZones, stackWaters);
   const over = cs.length ? ceilingsOverSpan(x0, x1, surfaceY, cs) : [];
   return over.length ? over : null;
@@ -106,7 +106,7 @@ export function riverLid(platforms: Platform[], x0: number, x1: number, surfaceY
  */
 export function stackViewFloor(platforms: Platform[], x0: number, x1: number, heroX: number, feetY: number): number | null {
   if (!stackZones.length) return null;
-  const banks = groundLook === 'bough' ? platforms.filter((p) => !p.broken && boughPiece(p)) : platforms.filter(paintedBank);
+  const banks = groundLook === 'bough' ? platforms.filter((p) => !p.broken && boughPiece(p)) : groundBanks(platforms);
   const cs = ceilingsFor(platforms, banks, bankSig(banks), stackZones, stackWaters);
   return cs.length ? viewFloor(cs, x0, x1, heroX, feetY, underReach(kitWorld)) : null;
 }
