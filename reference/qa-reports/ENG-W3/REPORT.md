@@ -1,3 +1,28 @@
+# ENG-DOWNBOT REPORT (lane 2: the down lay's head room, then the bots on a way down to the shrine) — box 10 (session 8, 11-25)
+**EXACT NEXT STEP (box 10 hand-over, 12:59 PM ET):** code **571d6e2a9** (the no-slot lay rule). Order item 1 is DONE; items 2-5 are
+left. **(1) THE NO-SLOT LAY RULE, DONE (tower.ts `slotted` in `fair` and rule 1, going down only; `SLOT = { step: 8, walk: 21,
+clear: 66 }`):** a bough within 8 px in height of the wood beside it lies a crack from it (gap <= 21 px, under half his body) or his
+body plus a **24 px margin** clear (>= 66 px; the margin is the 24 px he steps past a lip before he drops, SLIDE.back's note).
+**Planted tower.test 'going down, no slot': RED on c9c80a0e (207-446@1470 | 478-658@1476 gap 32), GREEN after (the catch lies
+458-638@1476, a 12 px crack).** slots.mts (now takes DY0/DY1) on 571d6e2a9: **slots 47 on 25 of 48, by gap 0:18 10:28 20:1: 40-60 px
+107 -> 0**. roomcount.mts: **lids 0, roofs 0, refused 0 of 48.** Other bands on c9c80a0e (info, not in the rule): dy 0 (same level)
+45 slots (30-60 px: 18; a section's own hop gaps may be among them); dy 9-19: 16 (40-60 px: 8). **THE CURE TEST (CI #81), kid+adult
+x40, rows/castbots-571d6e2a9-kidadult-1-40.jsonl (frozen tree, --par 2 --rows, 2 runs): rescues 342 (old lay 7d12c344b) / 446
+(today, ab35ee9b) -> 105. All 160 reach the shrine.** By bot (new vs today): kid N 34 vs 49 (pass 23 vs 11), kid E 2 vs 163 (38 vs 0),
+adult N **50 vs 39 (13 vs 16, WORSE)**, adult E 19 vs 195 (23 vs 0). **Causes split (probes/causes.mts, x only: rows carry no y):
+today 446 = slot 290, vine-top 131, rest 32; new 105 = slot 0, vine 0, rest 79 stuck spots (+26 rescues with no stuck record).** Top
+cause now 'the way on is N px down' (64 of 79). **Kid N clean minimum 115.8 s (was 87.8).** **NEW FINDING, owed a trace: the lay is
+SLOWER on clean runs. Clean median kid N 98 -> 140 s, adult N 99 -> 141 s (easy now 141/140 too)**; same seed, 0 rescues both: kid N
+36 99.4 -> 125.4 s, kid N 39 98.6 -> 166.2 s (R0 -> R1); kid N 37 149.8 -> 287.6 s. **Next, in order:** (a) trace kid N 36 on both
+trees (probes/trace.mts; trees: `git worktree add --detach` of 571d6e2a9 and c9c80a0e, symlink node_modules, `chattr -R +i src
+tools`): is the 26 s a longer route (prog.pts length, storeys passed) or a soft stall under the rescue clock (stood still or to and
+fro)? A stall is a cause to fix (name its shape); a longer route is recorded (it helps the length debt). (b) adult N worse (39 -> 50):
+trace adult N 12 (3 stuck, 'the way on is N px down'); fix where it lives (lay rule planted in tower.test, or a bot fix with a toy
+each way), never a slot back. (c) the 26 rescues with no stuck record: read what castBots counts there. (d) order item 2: Fix A / Fix
+B measured off on 571d6e2a9 (kid+adult x40 each; the patches: grep 'fix A off' in this REPORT); A's toy on adult N 10's shape if A
+still cures it, else A out (ruling 2); B out if it cures nothing. (e) items 3-5 (every bot x40, gates, land on t-eng-w3 after
+ENG-DARK-f; re-count causes on the merged head, the lead's note). **If 4:00 PM will slip, tell the lead by 3:15 PM.**
+
 # ENG-DOWNBOT REPORT (lane 2: the down lay's head room, then the bots on a way down to the shrine) — box 9 (session 7, 11-25)
 **EXACT NEXT STEP (box 9 hand-over):** code **fe331023** unchanged (this box: the seed-13 toy moved, rows, a probe; hash in the
 message). **(1) Toy: DONE.** castBots.test 'a way down: off the catch of a stopped vine' on the new pieces (9004 y 475: the shelf 188 px
