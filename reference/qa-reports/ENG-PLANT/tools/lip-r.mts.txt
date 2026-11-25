@@ -1,0 +1,12 @@
+// usage: tsx lip-r.mts <tree>: 2-7 child Normal 13 (castBots settings); prints f26-f31 extents and every frame he leaves a solid in t 128-174 (x, vx, vy, the solid's right edge, jump pressed?)
+const T = process.argv[2];
+await import(`${T}/src/game/headlessDom.ts`);
+const ft = await import(`${T}/tools/inspect/firsttimer.ts`);
+let f = 0; let prevOn: any = null; let shown = false;
+const r = ft.firstTimer('2-7', 13, (ft as any).FT_CHILD, { cap: 1200, dotSetting: true, onFrame: (sim: any) => { const e = sim.e; f++; const t = f / 30;
+  if (!shown) { shown = true; for (const q of e.platforms) if (q.id >= 26 && q.id <= 31 && q.type !== 'drift') console.log('plat', q.id, q.type, 'x', Math.round(q.x), '..', Math.round(q.x + q.w), 'y', Math.round(q.y)); }
+  const on = e.platforms.find((q: any) => q.id === e.standingOnId);
+  if (t >= 128 && t <= 174 && prevOn && !on) console.log('left', t.toFixed(2), 'f' + prevOn.id, 'edge', Math.round(prevOn.x + prevOn.w), 'x', Math.round(e.player.x), 'w', Math.round(e.player.w ?? 0), 'vx', Math.round(e.player.vx), 'vy', Math.round(e.player.vy));
+  prevOn = on && on.type !== 'drift' ? on : on ? null : prevOn && !on ? null : prevOn; if (on) prevOn = on;
+} });
+console.log('END', (r as any).end, (r as any).time, (r as any).rescues);

@@ -1,0 +1,18 @@
+set-downs 16 rescueXs [10530] time 392.6
+  sd: set-down f2890 t96.33 fell@x11210,y756 -> placed x10530 | left solid#28[10964..11134] at f2875 t95.83 x11083 JUMP vx285 vy-577 | hop none
+  sd: set-down f3409 t113.63 fell@x12742,y766 -> placed x12562 | left solid#33[12332..12632] at f3393 t113.10 x12612 JUMP vx87 vy-577 | hop none
+  sd: set-down f3447 t114.90 fell@x12691,y771 -> placed x12562 | left solid#33[12332..12632] at f3434 t114.47 x12588 JUMP vx87 vy-577 | hop none
+  sd: set-down f3850 t127.57 fell@x13968,y790 -> placed x11054 | left drift:-1#43[13777..13937] at f3824 t127.47 x13948 walk-off vx87 vy83 | hop none
+  sd: set-down f3961 t131.27 fell@x11480,y769 -> placed x10530 | left solid#29[11228..11398] at f3944 t130.70 x11397 JUMP vx0 vy-577 | hop none
+  sd: set-down f4018 t133.17 fell@x10676,y775 -> placed x10530 | left solid#26[10300..10600] at f4003 t132.67 x10554 JUMP vx87 vy-577 | hop none
+  sd: set-down f4041 t133.93 fell@x10652,y772 -> placed x10530 | left solid#26[10300..10600] at f4036 t133.77 x10615 walk-off vx285 vy83 | hop none
+  sd: set-down f4468 t148.17 fell@x12013,y763 -> placed x10530 | left solid#31[11756..11926] at f4452 t147.63 x11892 JUMP vx285 vy-577 | hop none
+  sd: set-down f4529 t150.20 fell@x10688,y775 -> placed x10530 | left solid#26[10300..10600] at f4514 t149.70 x10567 JUMP vx87 vy-577 | hop none
+  sd: set-down f4788 t158.83 fell@x11748,y778 -> placed x10530 | left solid#30[11493..11663] at f4773 t158.33 x11625 JUMP vx87 vy-577 | hop none
+  sd: set-down f5135 t170.40 fell@x11746,y778 -> placed x10530 | left solid#30[11493..11663] at f5120 t169.90 x11619 JUMP vx241 vy-577 | hop none
+  sd: set-down f5215 t173.07 fell@x10945,y756 -> placed x10530 | left solid#27[10702..10872] at f5200 t172.57 x10826 JUMP vx87 vy-577 | hop none
+RESCUE: set-down f5216 t173.10 fell@x10530,y730 -> placed x14464 | left solid#27[10702..10872] at f5200 t172.57 x10826 JUMP vx87 vy-577 | hop none
+  sd: set-down f7960 t264.57 fell@x11936,y1544 -> placed x12150 | left solid#64[12080..12340] at f7944 t264.03 x12069 JUMP vx-87 vy-577 | hop none
+  sd: set-down f8348 t277.50 fell@x10856,y1557 -> placed x11012 | left solid#65[10942..11282] at f8333 t277.00 x10978 JUMP vx-87 vy-577 | hop none
+  sd: set-down f8389 t278.87 fell@x10864,y1549 -> placed x11012 | left solid#65[10942..11282] at f8376 t278.43 x10967 JUMP vx-87 vy-577 | hop {"site":"unjudged","q":-1,"t":278.40000000000583,"x":10969.733333333335,"hold":0.06079103760514408,"lag":0,"flown":{"t":278.40000000000583,"x":10969.73333333333
+end shrine pass undefined rescues 1 stuck [[13962,173.1,"set down here 8 times"]]

@@ -1,3 +1,65 @@
+# ENG-PLANT-r (ENG-PLANT-c session 16, started 11:18 AM ET 11-25 by the hook's stamp; this top written 11:27 AM ET 11-25): **item 1 DONE: child N 13 on c27 is the lip family as the lead named it (R-165.398), not new. NO MERGE: a DEVIATION for the lead: pacerLay 23's skill (SKILLS.raceSure) cannot fire on c27 (floatSure takes the race hop first), so "re-plant 23 at its same bar as a laid toy" cannot be done honestly; the lead rules (retire per R-165.432, or another bar)**
+
+Engine (bots), Opus 5.5 xhigh. Lead: session_01FhBbYN2CVHnFXg7XzqKXpM. **Code head unchanged: c27 = 1e4b50a1d** on release-0.10.3-wip-plant-c.
+Data: data/r/. Tools: tools/rowframes-r.mts.txt (row-frames at castBots' cap 1200), trace-all-r.mts.txt (trace-n, every set-down printed),
+lip-r.mts.txt, racesure-r.mts.txt (pacerLay :280's two rows, raceSure on vs off, a path hash).
+
+## EXACT NEXT STEP (session 17)
+0. Setup as session 15's item 0 (rep worktree; fz-c27 = 1e4b50a1d frozen, node_modules symlinked). The runs below were in this container:
+   anything marked IN FLIGHT died with it; run it once on fz-c27.
+1. DONE: item 1 (below). Nothing to send unless the lead asks.
+2. WAIT for the lead's ruling on pacerLay 23 (sent in the hand-over). Do NOT merge before it (the lead's item 3: any deviation, stop).
+3. Then the checklist's open items, each once on c27's exact head (status table below); the two owed toys for c23 and c24 (the table's
+   row: each RED on the candidate before it, GREEN on it; riverRide.test.ts as the others); and the re-plant of pacerLay 22 (boardLog: LIVE
+   code, firsttimer.ts:3529-3536, `underLip`), owed and never built by any session: its RED half on its cause laid explicitly in
+   tools/inspect/firsttimer.test.ts the way af127d21e laid fromTakeoff (:218, sim.bare + a read) and :150 laid boardHop's log (drift
+   {x0,x1,dir,speed,width,baseY,offset} on its river's clock). Cause (pacerLay.test.ts:250-253): home Easy seed 1, the careful middle ran
+   off the lip at full speed onto a log 64 px out of 240, came down near its front, ran off it into the water. Same bar: skill on, he does
+   not run onto it (waits, then hops on); off, he runs off the lip onto it and off its front into the water. TRAP (af127d21e's note,
+   boardlog-probe-27j.ts.txt): a bare {x0,x1} river fell on and off alike; the ride wait's floatAt needs a full RiverZone. pacerLay :254
+   keeps its GREEN half (v.won); then pacerLay.test.ts on the new head, and firsttimer.test.ts again (the file changed).
+4. Every item GREEN as listed and the lead's ruling on 23 applied: MERGE (item 3 of the lead's order), no force; ls-remote; the hash and
+   one line per item to the lead.
+
+## Item 1: child Normal 13 on c27, rule 28 (the castBots run itself)
+- The run: rowframes-r (firstTimer exactly as castRun: FT_CHILD, cap 1200, dotSetting) ends `shrine 392.6, rescues 1, harms 1, stuck
+  [13962, "set down here 8 times"]` = c27's castBots row (data/q/c27-2-7-x40.jsonl) = c26's row. Frames 0-360 s byte-identical to session
+  14's c26 trace (data/p/frames-cN13-c26.txt, 3,608 lines; cmp 0). c27 does not move this row.
+- Every set-down (trace-all-r, data/r/traceall-cN13-c27.txt): the loop t 128-174 on solids #26-#31 (x 10,300-11,926; the steps up are
+  19 px, the gaps 92-102 px) has 8 set-downs, each placed back at x 10,530, then the rescue to 14,464: **7 are JUMPs with 'hop none'** (no
+  gate judged them; off #29 at x 11,397 vx 0, #26 at 10,554 and 10,567 vx 87, #31 at 11,892 vx 285, #30 at 11,625 vx 87 and 11,619 vx 241,
+  #27 at 10,826 vx 87; each comes down in the next gap) **and 1 is a full-run walk-off** (#26 at 10,615, vx 285, 15 px past its lip).
+- Named: **cluster A, the lip family (R-165.398)**, word for word the lead's naming (session 12's ruling): "a walk-off at full run or an
+  unjudged hop off a solid's end into the water", cluster A's place (solids #26-#30, 'set down here 3-8 times'). Not a new fault.
+  Correction to session 14's first pass: from 0.1 s frames it read "full-run walk-offs"; by take-off 7 of the 8 are unjudged hops (the
+  frames show vx in the air, not the take-off). Both shapes are in the lead's definition. Goes on R-165.424's list with the other three.
+
+## The deviation: pacerLay 23 (:280, SKILLS.raceSure)
+firsttimer.ts on c27: the race-leg hop off a log running his way is `if (SKILLS.floatSure && raceLegal) {...} else if (raceLegal && (reach
+|| ...))` (:3700, :3733). raceSure is read only at :3695 (`reach`, used only by the else-if) and :3735 (`raceHop`, set only in the
+else-if; read at :5038). floatSure is on in SKILLS (:763) and is this job's fix, so on every race-leg hop the else-if never runs and
+raceSure on == off. (The run that shows it, racesure-r on fz-c27: IN FLIGHT at this push.)
+So its RED half ("without the skill seed 2 falls short at x 10683") cannot come back on c27, and a laid toy at the same bar would have to
+turn floatSure off: a toy of a path no run takes (R-165.432: "a plant with no live case proves nothing"). The lead's choices: (a) RETIRE
+raceSure's plant per R-165.432 with this as the evidence (the skill's code stays; review at R-165.424); :280 keeps its GREEN half (no fall at
+those x with the shipped bot); (b) another bar the lead names. My recommendation: (a). 22 (boardLog) is live code and is re-plantable (step 3).
+
+## The checklist on c27's exact head (1e4b50a1d; fz-c27 frozen)
+| item | result |
+|---|---|
+| child N 13 (item 1) | lip family, named (above) |
+| pacerLay 22/23 re-planted as laid toys (23/23) | NOT DONE: 23 = the deviation (lead's ruling); 22 owed (step 3) |
+| timecheck | PASS (611 commits, 93 stamps; full history, after the unshallow) |
+| roadmapcheck | PASS |
+| tierBots 9/9 | IN FLIGHT |
+| the CI tool line (43 files; includes riverRide, firsttimer, hopJudged and the packet's plants: riverRide :119 ride, :165 handed, :266 upstream, :282 bankUp; firsttimer :150/:185 boardHop, :218 fromTakeoff) | IN FLIGHT (94 ok, 0 not ok so far) |
+| the toys for c23-c27 | c25 (firsttimer :312), c26 (riverRide :449), c27 (hopJudged's last two): in the CI line. **c23 and c24: NEVER BUILT** (ordered in session 8's item 5: 'a toy for each of c23's and c24's rules: the pull-back skipped on a small log he pauses on; the run-up's jump held as judged'; ccca3d305 / 2a2c44786 touch no test). Their rows (2-1 child E 2, 2-4 child N 8) PASS in the known flips (BAR 12/12) but no toy is RED on c22/c23 and GREEN on c23/c24 |
+
+Lessons applied: D115 (every run on chattr-frozen fz-c27; tools in /home/user/tl), D119 (commit messages from a file), D128 (stamps from
+date), D134 (pushed and ls-remote'd before the hand-over), D135 (the stale plant named with its cause, not carried as 'inherited'), D133
+(no candidate stacked), rule 28 (the moved row traced by take-off on the castBots run itself), law 22 (no bar loosened: 23's retirement is
+the lead's call with the evidence, not mine).
+
 # ENG-PLANT-q (ENG-PLANT-c session 15, started 10:44 AM ET 11-25 by the hook's stamp; this top written 11:09 AM ET 11-25): **c27 = 1e4b50a1d PUSHED; condition 4 COMPLETE on its exact head, all green; the table sent to the lead** (toys RED c26 / GREEN c27; races 10/10 WON; known flips, wide, 2-7 x40 33/40, 1-4, 2-5 all identical to c26 except the two races)
 
 Engine (bots), Opus 5.5 xhigh. Lead: session_01FhBbYN2CVHnFXg7XzqKXpM. **Code head: c27 = 1e4b50a1d** on release-0.10.3-wip-plant-c (pushed,

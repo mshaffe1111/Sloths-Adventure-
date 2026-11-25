@@ -1,0 +1,31 @@
+plat 26 solid x 10300 .. NaN y 730
+plat 27 solid x 10702 .. NaN y 711
+plat 28 solid x 10964 .. NaN y 711
+plat 29 solid x 11228 .. NaN y 711
+plat 30 solid x 11493 .. NaN y 692
+plat 31 solid x 11756 .. NaN y 692
+left 129.63 f28 edge NaN x 11128 w 0 vx 87 vy -577
+left 131.47 f29 edge NaN x 11397 w 0 vx 0 vy -577
+left 133.43 f26 edge NaN x 10554 w 0 vx 87 vy -577
+left 134.10 f26 edge NaN x 10541 w 0 vx 0 vy -577
+left 134.53 f26 edge NaN x 10615 w 0 vx 285 vy 83
+left 135.40 f26 edge NaN x 10567 w 0 vx 87 vy -577
+left 138.67 f27 edge NaN x 10844 w 0 vx 87 vy -577
+left 141.63 f28 edge NaN x 11108 w 0 vx 87 vy -577
+left 144.17 f29 edge NaN x 11300 w 0 vx 260 vy -577
+left 147.17 f30 edge NaN x 11681 w 0 vx 285 vy 83
+left 148.40 f31 edge NaN x 11892 w 0 vx 285 vy -577
+left 150.47 f26 edge NaN x 10567 w 0 vx 87 vy -577
+left 152.37 f26 edge NaN x 10611 w 0 vx 258 vy -577
+left 153.73 f27 edge NaN x 10864 w 0 vx 285 vy -577
+left 155.67 f28 edge NaN x 11093 w 0 vx 87 vy -577
+left 157.03 f29 edge NaN x 11376 w 0 vx 285 vy -577
+left 159.10 f30 edge NaN x 11625 w 0 vx 87 vy -577
+left 161.30 f26 edge NaN x 10567 w 0 vx 87 vy -577
+left 164.70 f27 edge NaN x 10865 w 0 vx 285 vy -577
+left 166.77 f28 edge NaN x 11110 w 0 vx 87 vy -577
+left 168.10 f29 edge NaN x 11388 w 0 vx 285 vy -577
+left 170.67 f30 edge NaN x 11619 w 0 vx 241 vy -577
+left 172.07 f26 edge NaN x 10586 w 0 vx 87 vy -577
+left 173.33 f27 edge NaN x 10826 w 0 vx 87 vy -577
+END shrine 392.6 1
