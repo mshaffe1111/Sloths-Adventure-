@@ -15,9 +15,11 @@ Re-fetch t-eng-29-wip first (session 1 may push ONE REPORT-only commit with the 
    `tempoFaults` clean on the engine's vines AND vineAngle(v, e.vineClock) at gameTime k*bar equals the straight run's; RED with the engine's
    test seam `vineClock` set off the bar (vineShift 0.3 s): 'off the bar'. (vineClock already IS gameTime + a test-only shift, ENG-285.)
 3. Then NEW 2 (the drum), see Plan below. tsc + the touched tests; push; ls-remote.
-OPEN QUESTIONS to check while doing (1): (a) the lock is applied in gen2's FINISH (layChaseStage), after riverFaults/lianaRiverFaults judged
-the liana: do those try every phase (physics.ts PHASES) or the laid one? If the laid one, layTempo must run before them (move it to where
-the lianas are hung, pipeline.ts ~1510-1525, which also sets chainPhase). (b) 2-9.md:21 says 'Locked (river 5 frames ahead of the swing;
+OPEN QUESTIONS: (a) ANSWERED in session 1: the lock in gen2's FINISH does not invalidate the river checks: lianaDrops
+(riverLay.ts:326-342) judges every relative phase of swing and logs (j over one log spacing, m frames) with the period vinePeriod gives,
+which is TIMED.period under withSetting = the bar. What NO check proves yet is the LOCKED relation's own let-go window (2-9.md:21: 2.00 s
+Normal, 2.40 s Easy at the lock): add it to the toy in (1) as a done-item (lianaDrops at the locked offset only) or name it for READY-29.
+(b) 2-9.md:21 says 'Locked (river 5 frames ahead of the swing;
 Easy 0)': TempoSpec has ONE lock; if the design means a per-setting lock, add `easyLock` (or the river's offset) and a test.
 
 ## Plan for NEW 2, the drum (not started)
