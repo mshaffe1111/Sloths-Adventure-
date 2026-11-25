@@ -124,3 +124,4 @@ Every gate in the table, in order. Run the full unit suite in the background (it
 - `node tools/art/icons/checkbase.mjs reference/qa-reports/<job>`: fails an "after" sheet shot on a stale or work-in-progress base (D23). Added 2026-11-02 (icons-painted, R-1.1).
 
 - The suite (CI #85, 11-25): shards with run_in_background AND timeout 7200000, on a tree frozen except src/game/gen2/proven; a shard stopped by a time limit is not a result.
+- Test runs on FULL trees (ENG-PLANT-CI-l, 11-25): the CI tool line and the suite read reference/ files; a sparse tree gives false reds. Sparse trees for castBots runs only.
