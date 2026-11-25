@@ -11,7 +11,8 @@ its end faces). With P#91 taken out of e.platforms the lip is whole. (The lighte
 REACH (b26x/scanStack.ts.txt: every stage, layouts 1-2, both settings; painted banks A over B, x overlap > 30, room for him between,
 gap >= 48 = his height): ONLY 2-6 (12 pairs, also P5 over P1 x 326-640) and 1-4 (5 pairs: top bank #56 x 137-557 y 360 over the
 start floor #1 y 10888). 1-4 is SHIPPED and it shows: real page, 1-4 layout 1 (seed 9937) Normal, a dark soil pillar down the sky over
-the start floor, its lip cut, Pokey inside it (b26x/1-4-base-vs-no56.jpg, top; bottom = #56 removed). NOT yet checked on main.
+the start floor, its lip cut, Pokey inside it (b26x/1-4-base-vs-no56.jpg, top; bottom = #56 removed). MAIN (cdffdc627, scan only,
+no still): the same draw rule (both lines) and 1-4 the same pair (8 pairs; L1 top #56 x 484-904 y 360 over #1 x 0-640, overlap 156): LIVE.
 GATE HOLE: paintcheck/paintFall.ts (R-165.292) judges the footing DECISION per block (footingOf + paintedPlatforms: which drawer is
 assigned), never what reaches the screen. P5 is assigned to the painted ground (bankPainted, h 90), so it is not code terrain and not a
 breach; --unpainted lists only styles no painter draws at any height. Nothing reads draw order, so a top painted over by a later bank passes.
