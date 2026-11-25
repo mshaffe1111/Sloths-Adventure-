@@ -13,7 +13,7 @@ READY is measured on that head, LANES rule 2).
 0. STEP 0 (rule 25), to the lead, then wait for GO: (a) in the BACKGROUND the engine gates on your base (tsc, planted tests, CI tool line,
    generality, coverage): any red is the engine's, tell the lead at once; (b) READY-31 on the draft: yield first (D125), drawcheck on the draft
    (D131), the bots' x40 on the draft row, met order (D130), first appearances taught; (c) THE PLAN: the node string, one line per beat (piece,
-   data field, brick), how 3-1 meets the 2-MINUTE floor (the kid's fastest clean run was 101-125 s on the probe: say how every tier's fastest
+   data field, brick), how 3-1 meets the 2-MINUTE floor (the kid's fastest clean run was 87-125 s on the probe WITHOUT the dark; ENG-DARK's base-vs-dark x40 adds a median 20-40 s, so RE-MEASURE on the dark head first: say how every tier's fastest
    clean run is over 120 s without padding: more shaft, not slower moves), the hand build's deletion list (protoStage '3-1' :2301-2354,
    HAND_STAGES :62, w3Sections '3-1' :31/:44, the pinning tests re-pointed with their assertions kept).
 1. After GO: lay 3-1 by its design on real bricks (the stage-table row travelling down), the hand build DELETED. A NEW engine gap STOPS and
