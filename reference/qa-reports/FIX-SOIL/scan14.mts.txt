@@ -1,0 +1,40 @@
+// scratch: on the checked-out tree, every painted bank B whose top lies under a later-painted bank A's soil (x overlap, gap >= 48):
+// listed stages on every listed seed, the rest layouts 1-2, both settings
+const R = '/home/user/Sloths-Adventure-';
+await import(`${R}/src/game/headlessDom.ts`);
+(globalThis as Record<string, unknown>).Image = class { onload: null | (() => void) = null; onerror = null; width = 1; height = 1; naturalWidth = 1; naturalHeight = 1; complete = true; set src(_u: string) { this.onload?.(); } decode() { return { then: (ok: () => void) => ok() }; } };
+const { generateAllLevels } = await import(`${R}/src/game/worldsData.ts`);
+const { generateStage, setLayoutVariant } = await import(`${R}/src/game/stageGenerator.ts`);
+const { easyStage } = await import(`${R}/src/game/easyMode.ts`);
+const { withGoals } = await import(`${R}/src/game/goals.ts`);
+const { loadSeedList, provenSeeds } = await import(`${R}/src/game/gen2/seedList.ts`);
+const { PROVEN_INDEX } = await import(`${R}/src/game/gen2/provenIndex.ts`);
+const { stagePaintInput } = await import(`${R}/tools/engine/paintStage.ts`);
+const { paintedBank } = await import(`${R}/src/game/w1Pits.ts`);
+const only = process.argv[2]?.split(',');
+const listed = new Set(Object.keys(PROVEN_INDEX));
+for (const c of generateAllLevels().filter((c: any) => !c.secret && (!only || only.includes(c.id)))) {
+  const hasList = listed.has(c.id) && (await loadSeedList(c.id));
+  const runs = hasList ? provenSeeds(c.id).map((s: number, i: number) => ({ v: i, seed: s })) : [1, 2].map((v) => ({ v, seed: v }));
+  const rows: string[] = [];
+  let builds = 0;
+  for (const setting of ['normal', 'easy'] as const) for (const { v } of runs) {
+    setLayoutVariant(v);
+    let st: any;
+    try { st = setting === 'easy' ? easyStage(withGoals(generateStage({ ...c, unlocked: true }, 'easy'))) : withGoals(generateStage({ ...c, unlocked: true }, 'normal')); } catch { setLayoutVariant(null); continue; }
+    setLayoutVariant(null);
+    builds++;
+    if (!stagePaintInput(st, c) || st.groundLook === 'bough') continue;
+    const seed = (st.gen2 ?? st.proto?.gen2)?.seed ?? `L${v}`;
+    const banks = st.platforms.filter(paintedBank);
+    const pairs: string[] = [];
+    for (const b of banks) for (const a of banks) {
+      if (a === b || !(b.y > a.y)) continue;
+      const ov = Math.min(a.x + a.width, b.x + b.width) - Math.max(a.x, b.x);
+      const gap = b.y - (a.y + a.height);
+      if (ov > 0 && gap >= 48) pairs.push(`#${a.id}(${Math.round(a.x)}-${Math.round(a.x + a.width)} y${Math.round(a.y)} h${a.height}) over #${b.id}(${Math.round(b.x)}-${Math.round(b.x + b.width)} y${Math.round(b.y)}) ov ${Math.round(ov)} gap ${Math.round(gap)}`);
+    }
+    if (pairs.length) rows.push(`  ${setting} v${v} seed ${seed}: ${pairs.length} pairs: ${pairs.slice(0, 3).join('; ')}`);
+  }
+  console.log(`${c.id}: ${rows.length}/${builds} builds${rows.length ? '\n' + rows.join('\n') : ''}`);
+}
