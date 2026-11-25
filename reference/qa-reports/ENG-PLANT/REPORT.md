@@ -48,23 +48,34 @@ Traces (seed, x, frame, what took him):
   41.73 when the padPause flick off #20 was refused (:3400 false on #19 and #21). The c3b comment at :3406 names this very loop on 2-1
   (middle N 25) as what tablePick fixed.
 
-## For the lead (sent): B+C is ours: I narrow it in the bot (a toy each way) and re-measure, unless you rule otherwise. A is the landing's own
-family reshuffled (not R-165.413: solids, not logs): yours to rule. D is one row: yours to name. No merge.
+## The lead's rulings (received): B+C ours, narrowed in the bot (a toy each way) and re-measured; A and D named as the lip family (R-165.398),
+not fixed before the merge, on R-165.424's bot list. Word for word in the EXACT NEXT STEP, item 1. No merge.
 
 ## EXACT NEXT STEP (session 13)
 0. Setup as session 12: `npm ci --no-audit --no-fund --legacy-peer-deps`; `git fetch --unshallow origin` (background); frozen trees with
    tools/freeze.sh.txt's lines (node_modules symlinked; about 1 min each): fz-c25 6a64aa41e, fz-c2m 80eb07842, fz-c3b a64f02ce5, fz-base dfe631913.
    Rows: tools/wide.sh-n.txt (castBots --json, one row per line; arg 5 = extra flags, e.g. "--bots adult,child,middle,expert"); a list of
    rows: tools/bis.sh-n.txt (groups file "bot setting seeds"); compare: tools/cmp.py-n.txt; first split: tools/frames.mts.txt + div.py-n.txt.
-1. **Read the lead's reply first** (ReadNotifications). If none: B+C as the default.
+1. **THE LEAD'S RULINGS (received this session; word for word):** "B+C is OURS: NARROW it in the bot: a bot handed back to the bank it
+   boarded from does not re-board into the same refusal loop; after one hand-back he takes a way on that lands (the judged press, the run-up,
+   or the next log the gate judges), never a second identical round; instrument which gate refused first (c1's bank-hop refusal at
+   firsttimer.ts:3529 or c3's 'else stand'), a toy each way (RED on c25 middle E 11 / expert N 29, GREEN on the fix). Re-measure: 2-7 seeds
+   1-40 BAR rows AND the 2-1/2-2/2-4 wide sample (shared gate), plus the 10 known flips. A and D: NAMED as the lip family (R-165.398: a
+   walk-off at full run or an unjudged hop off a solid's end into the water), pre-existing on the landing tree, moved by the earlier path
+   split: NOT fixed before the merge; they go on R-165.424's bot list. The bar for the merge: every moved 2-7 row traced (done for A/D), B+C
+   narrowed and re-measured, the list at 69/100 or better, zero BAR PASS -> FAIL on 2-1/2-2/2-4/2-5/1-4 vs main."
+   (Session 12's probes, sent to the lead after this ruling was written: the gate asked first on the last log is NONE: no gateSees /
+   tablePick / startJump; the stand is the old ride block :3623, bank/next/reach/raceLegal all false, confirmed on middle E 11; the refusal
+   one log earlier is c2's padPause flick :3400, and c3b's tablePick :3411 hopped him onto the last log. Confirm on expert N 29 first.)
 2. B+C: the branch is the ride block :3623 (confirmed on middle E 11); confirm the same on expert N 29 (on #37 t 57.1-63.2) with the
    same temporary log line (after `const raceLegal`, PROBE_RIDE window; restore by checkout, 0 diffs), then design the narrowing: on c25 middle E 11 (on #19 t 42.3-47.7) and expert N 29 (on #37 t 57.1-63.2)
    log which decision branch returns each frame (patch FirstTimerRun.prototype methods, e.g. decide / startJump / the ride's wait, from
    the probe as refuse2.mts does) (refuse.mts pattern: patch FirstTimerRun.prototype methods from the probe; the frozen tree
    is never edited); and what the BASE does at the same boarding (fz-base: frames.mts + div.py, its first split is at the first river). Then the narrowing (the
    lead's rule: the fix where the cause is; a toy each way: RED = a hand-back round that ends in a rescue on c25, GREEN on the fix; and the
-   other way: the c2m gains child N 5 / middle N 13 still cross without a fall). Re-measure: 2-7 x40 (280) + the run-up rows + the 10 known
-   flips + 2-4 wide + 1-4 + 2-5 (any code commit reruns them, the brief's rule).
+   other way: the c2m gains child N 5 / middle N 13 still cross without a fall). Re-measure as ruled (item 1): 2-7 x40 BAR rows +
+   the 2-1/2-2/2-4 wide sample + the 10 known flips; the merge bar: the list 69/100 or better, 0 BAR PASS->FAIL on 2-1/2-2/2-4/2-5/1-4 vs main
+   (any code commit reruns them, the brief's rule).
 3. Then the brief's list in order: pacerLay 22/23 laid toys; hopJudged; the c23/c24 toys; the plants; riverRide + firsttimer; the CI tool
    line at 0 fail; tierBots 9/9; timecheck + roadmapcheck; MERGE only on the lead's word.
 
