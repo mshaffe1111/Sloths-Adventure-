@@ -1,0 +1,16 @@
+diff --git a/tools/inspect/firsttimer.ts b/tools/inspect/firsttimer.ts
+index 445297f7c..258436dd0 100644
+--- a/tools/inspect/firsttimer.ts
++++ b/tools/inspect/firsttimer.ts
+@@ -2379,7 +2379,10 @@ export class FirstTimerRun {
+         this.stopMeant = true;
+         return {};
+       }
+-      if (!lags.every((lag) => this.runPress(p.x, p.vx, 0, lag, p, dir, here, v, carry, hold, clock, t))) {
++      // (no run-up jump while his thumb still travels: runPress judges 'the steer held from now', and a run / pull-back / run flicker's
++      //  two turns drop the steer to travelUntil; pressed then, he flew on the carry alone and fell short of swing #4 (2-4 kid Easy 35,
++      //  log #48, t 47.567, steer back at 47.711; ENG-PLANT-l, data/l/e35thumb.txt). He runs on and the judge reads the next frame)
++      if (t < this.travelUntil || t < this.driftUntil || !lags.every((lag) => this.runPress(p.x, p.vx, 0, lag, p, dir, here, v, carry, hold, clock, t))) {
+         this.runUp = { id: here.id, t };
+         return side1(dir);
+       }

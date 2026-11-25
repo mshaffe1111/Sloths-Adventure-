@@ -95,31 +95,53 @@ rule changed (the lead decides the calibration).
 | 2-7 (seeds 1-100: x40 = 1-40, the list = 1-100), 1-4 | running on fz-c24 (tools/rows-l.sh.txt, par 2) when this was written | | | | |
 
 ## EXACT NEXT STEP (session 11)
-0. Setup: `npm ci --no-audit --no-fund --legacy-peer-deps`; worktrees (node_modules symlinked): fz-c24 2a2c44786, fz-c4 6b5f43da0,
-   fz-main cdffdc627. Tools: tools/kidfall.mts.txt (6th arg: skills off, comma list), kidclass.py.txt, kidall.sh.txt, firstsplit.py.txt,
-   trace.mts.txt, margins.mts.txt, row8*.mts.txt, rows-l.sh.txt. Code head still **c24 2a2c44786**.
-1. Ruling 1 DONE except the lead's ruling: all 31 traced; data/l/firstsplit.txt complete; the lead has the 2-4 kid Easy 35 trace and probe
-   (sent before the hand-over). WAIT for the ruling. If 'fix it': c25 = c24 + the run-up's judge reads the steer he actually has at the
-   judge's frame. At E 35 his steer was off (vx 0 at t 47.533-47.567, before the judge's frame), and it stayed off for 5 frames after
-   the take-off. That is the thumb's own state (a let-go, release/releaseMax, or a slip; thumbify), which the gate hops fly through
-   hopFlies and the run-up's runPress does not (it assumes 'the steer held from now', firsttimer.ts:2363). CONFIRMED: the thumb's TRAVEL after
-   the run-up's own run / pull-back / run flicker (data/l/e35thumb.txt), not a let-go or a slip. Then: a toy RED/GREEN, 2-4 kid E 35 PASS, the run-up's own rows (2-4 adult N 6/8/24/32,
-   child E 23, child N 39, child N 8), the 10 known flips, a 2-4 wide sample vs data/j/c24-2-4-w.jsonl (the run-up acts on 2-4; it was
-   identical on the 2-1/2-2 rows traced), then ruling 4 on c25's exact head.
-2. Ruling 2: re-plant pacerLay 22 (boardLog, home middle Easy 1: the lip-log run-off, needs a full RiverZone for floatAt, see
-   af127d21e's note) and 23 (raceSure: a racing hop off a log toward a bank 28 px up within 80 px of the log's end; the press's own
-   short hold came down 19 px short) as explicit toys in tools/inspect/firsttimer.test.ts the way af127d21e did fromTakeoff: RED with
-   the skill off, GREEN on, the SAME bars; pacerLay's race halves keep their GREEN half; pacerLay 23/23.
-3. Ruling 4: 2-7 (seeds 1-100: x40 = seeds 1-40 BAR seeds all-pass >= 29/40; the list = 1-100 >= 69/100) and 1-4 rows vs main
-   (data/c/main-*.jsonl; tools/flips.py.txt reads <dir>/<st>.jsonl): if data/l/c24-2-7-w.jsonl / c24-1-4-w.jsonl are not here, run
-   tools/rows-l.sh.txt with only 2-7:1-100 and 1-4:1-40 (about 30 min, par 2). Then hopJudged, the toys for c23's and c24's rules
-   (RED/GREEN), riverRide + firsttimer tests, the CI tool line (gates.yml, find by content) at 0 fail, tierBots 9/9, timecheck +
-   roadmapcheck, MERGE into release-0.10.3 (no force), ls-remote, hash + full table to the lead. REPORT BY 11:00 AM ET; HARD STOP 12:30 PM ET.
+**THE LEAD'S RULINGS (word for word, received at the end of session 10):**
+> (1) 2-4 kid Easy 35 is a REAL fault from c24's run-up, not R-165.413: FIX it at the cause: trace the run-up judge (which liana it
+> aimed at, why the kid's catch fails), then make the run-up judge the kid's OWN press (his lag and spread on the run press and the jump
+> press); if no run-up catches for his press, he does not start one. Toy RED on c24 (2-4 kid E 35), GREEN on the fix; re-run the 11
+> c4-pass kid rows and the known flips + the BAR rows of the wide sample that the run-up touches. The other kid rows traced to
+> R-165.413 are accepted as named. (2) The race margins: accepted as measured; pacerLay passes; I make NO calibration change before
+> release 4 (2-7's race is what Matt has played). post Normal 5 at -0.10 s is a WATCH item I file for a 2-7 race review; tell me if any
+> later change flips it. (3) Then as ruled: re-plant 22/23, 2-7 (x40 29/40 or better, the list 69/100 or better) and 1-4 rows vs main,
+> hopJudged, the toys, the plants, riverRide + firsttimer, the CI line, tierBots, merge. No clock times.
+
+> GO c25 as proposed: the run-up's judge counts the thumb travel still to run (the steer starts at the latest of the press lag, the
+> travel and any slip), so the judged hop is the hop flown (rule 28's clause). Proof as you list: the toy RED/GREEN, E35 passing, the
+> run-up's own rows, the 10 known flips, a 2-4 wide sample; then ruling 4 on c25's exact head and the merge. Write this GO into the
+> EXACT NEXT STEP, push, ls-remote-confirm, send me the hash, and end: session 11 starts from it. No clock times.
+
+0. Setup: `npm ci --no-audit --no-fund --legacy-peer-deps`; `git fetch --unshallow origin` (background); worktrees (node_modules
+   symlinked): fz-c24 2a2c44786, fz-c4 6b5f43da0, fz-main cdffdc627. Tools: tools/kidfall.mts.txt (6th arg: skills off), kidclass.py.txt,
+   firstsplit.py.txt, trace.mts.txt, e35probe.mts.txt, e35thumb.mts.txt, margins.mts.txt, row8*.mts.txt, rows-l.sh.txt; single rows:
+   data/j/row.sh.txt. Code head: **c24 2a2c44786** (release-0.10.3-wip-plant-c).
+1. **c25 (the GO): the run-up's judge counts the thumb travel still to run.** In runUpCatches / runPress (firsttimer.ts:2366-2441) the
+   steer starts at max(t + lag, this.travelUntil, this.driftUntil), not at t + lag ('the steer held from now', :2363), on the run press
+   and the jump press; the judged hop is the hop flown. Where no run-up catches for his own press, he does not start one (ruling 1).
+   The cause it fixes (data/l/e35thumb.txt): 2-4 kid E 35, log #48, run / pull-back / run flicker, travelUntil 47.711, jump pressed at
+   47.567, flown on the carry alone, short of swing #4 (x 10,690) in the water at 10,650. NOTE: data/l/c25-runUpTravel.diff.txt is a
+   DIFFERENT variant I tried before the GO (no run-up press while the thumb travels; E 35 passes on it, rescues 0); its 13-row check was
+   still running at the hand-over. It is NOT the ruled fix: build the ruled one (the judge counts the travel); use the variant only as
+   a comparison if the ruled one fails a row.
+2. Proof on c25's exact head (frozen worktree): a toy RED on c24 / GREEN on c25 (the travel still to run at the judge's frame: a stand
+   on a log, a swing ahead, travelUntil past t + lag: the judge refuses or times the press so the flown hop catches); 2-4 kid E 35
+   PASS; the 11 c4-pass kid rows (2-1 N 19, N 21; 2-2 E 37, N 3, N 33; 2-4 E 2, E 12, E 13, E 19, E 20, E 35); the run-up's own rows
+   (2-4 adult N 6/8/24/32, child E 23, child N 39, child N 8) and the 10 known flips (+ 2-1 child E 2); a 2-4 wide sample (seeds 1-40,
+   5 bots, both settings) vs data/j/c24-2-4-w.jsonl and data/c/main-2-4.jsonl: 0 BAR PASS->FAIL. post Normal 5's margin (-0.10 s on
+   c24; tools/margins.mts.txt): tell the lead if c25 flips it.
+3. Ruling 2: re-plant pacerLay 22 (boardLog, home middle Easy 1: the lip-log run-off; a full RiverZone for floatAt, af127d21e's note)
+   and 23 (raceSure: a racing hop off a log toward a bank 28 px up within 80 px of its end, the press's own short hold 19 px short) as
+   explicit toys in tools/inspect/firsttimer.test.ts the way af127d21e did fromTakeoff: RED with the skill off, GREEN on, the SAME
+   bars; pacerLay 23/23.
+4. Ruling 4 on c25's exact head: 2-5 (c24's was clean: data/l/c24-flips-2-5.txt), 2-7 (seeds 1-100: x40 = the BAR seeds 1-40 all
+   passing >= 29/40; the list 1-100 >= 69/100) and 1-4 rows vs main (tools/rows-l.sh.txt; flips.py.txt reads <dir>/<st>.jsonl); hopJudged,
+   the toys for c23's and c24's rules (RED/GREEN), riverRide + firsttimer tests, the CI tool line (gates.yml, find by content) at 0 fail,
+   tierBots 9/9, timecheck + roadmapcheck; MERGE into release-0.10.3 (no force), ls-remote, hash + full table to the lead. REPORT BY
+   11:00 AM ET; HARD STOP 12:30 PM ET. At most two heavy runs at a time, each once on the exact head.
 
 Lessons applied: D134 (pushed + ls-remote before the hand-over, hash in it), D128 (times from `date`), D115 (a frozen worktree per hash,
-no edit under a live run), D135 (c4's own result per row named; nothing carried as 'inherited'), D119 (no heredoc in a commit chain),
-rule 28 (every moved kid row traced, not two). Not run this session: the full unit suite (not in the lead's ruling 4 list; Integration's
-FULL SET runs it on the merged head) — named so, not skipped silently.
+no edit under a live run: c25's variant built in its own fz-c25), D135 (c4's own result per row named), D119 (no heredoc in a commit
+chain), rule 28 (every moved kid row traced; the one new fault traced to its frame). Not run this session: the full unit suite (not in
+the lead's ruling-4 list; Integration's FULL SET runs it), named so.
 
 # ENG-PLANT-j (ENG-PLANT-c session 8, started 6:47 PM ET 11-24 by `date`; this section written 7:06 PM ET 11-24 by `date`): hand-over (LANES 3b box)
 
