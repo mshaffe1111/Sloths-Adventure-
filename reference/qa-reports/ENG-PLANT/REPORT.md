@@ -6,22 +6,47 @@ Engine (bots), Opus 5.5 xhigh. Lead: session_01FhBbYN2CVHnFXg7XzqKXpM. **Code he
 ## EXACT NEXT STEP (session 15)
 0. Setup: `npm ci --no-audit --no-fund --legacy-peer-deps`; `git fetch --unshallow origin` (background). Freeze (no /home/user/plant-work
    here: from the main checkout) `git worktree add --detach /home/user/fz-c26 51ffe7eab`, symlink node_modules, `chattr -R +i src tools`,
-   `chattr -i src/game/gen2/proven`; the same for fz-c25 6a64aa41e and fz-27e 801cae9e8 (landing) for traces. Rows: tools/wide.sh-n.txt
-   (castBots --json; arg 5 = extra flags), in lanes; compare: tools/cmp-o.py.txt (BAR seeds, PASS->FAIL / FAIL->PASS per ref).
-1. **THE LEAD'S RULING (wins; session 13's 1b word for word):** c26 = (A) the front stand. Conditions 1-3 DONE; condition 4 DONE
-   except 1-4 / 2-5 (below) and THE RACE FLIP; the table is below and went to the lead with this push. **Check ReadNotifications first:
-   the lead's word on the race flip decides what comes next.** Until it arrives (never wait idle, D120), in this order:
-   (a) 1-4 and 2-5 full rows vs main: if data/p/c26-1-4-{a,b}.jsonl and c26-2-5-{a,b}.jsonl hold 180 rows each, compare (tools/cmp-o.py.txt
-   vs data/c/main-1-4.jsonl, main-2-5.jsonl, and data/m/c25-1-4.jsonl, c25-2-5.jsonl); else re-run them on fz-c26 (wide.sh-n, two lanes
-   each, seeds 1-20 / 21-40), zero BAR PASS -> FAIL vs main is the bar. (b) TRACE the race flips (rule 28: two traces, one line each):
-   home N 1 at bank f83 (x ~3,660, t 164.4-177.6, data/p/race-hN1-c26.txt: the hop handed straight back, then two 6 s edge waits) and
-   post N 5 (tools/race-frames-p.mts.txt <tree> post normal 5 on fz-c25 and fz-c26, then cmp the two files for the first split and where
-   the 13 s goes). Name whether the front stand's own lines fire there (a log running back at him) or the run only arrives on another
-   phase. (c) trace child N 13 on c26 (2-7, the experiment's untraced loss; watch the child's run-on: releaseMax 4 can carry him past
-   the front at 31). (d) Send the lead the traces. Condition 6 (the checklist: pacerLay 22/23 re-planted as laid toys 23/23, hopJudged,
-   the toys for c23-c26's rules, the packet's plants, riverRide + firsttimer, the CI tool line 0 fail, tierBots 9/9, timecheck +
-   roadmapcheck) only on the lead's word after the race flip; the margins are pacerLay's own race runs (margins.mts.txt: pacerLay.test.ts raceRun), so pacerLay must be re-read on c26. MERGE into
-   release-0.10.3 (no force) ONLY on the lead's word. HARD STOP 2:30 PM ET.
+   `chattr -i src/game/gen2/proven`; the same for fz-c25 6a64aa41e (and fz-27e 801cae9e8 for 2-7 traces). Rows: tools/wide.sh-n.txt
+   (castBots --json; arg 5 = extra flags), in lanes; compare: tools/cmp-o.py.txt. Race frames: tools/race-frames-p.mts.txt <tree> <home|post>
+   <setting> <seed>; margins: tools/margins.mts.txt <tree>. Probes only in the UNFROZEN main checkout, env-gated, `git checkout` after (D115).
+1. **THE LEAD'S RULING ON THE RACE FLIPS (received this session, word for word): "they BLOCK the merge. pacerLay's race runs are 2-7's own
+   proof that the race is fair, so a WON -> LOST flip is bar-relevant, not a watch item. The fix goes in the bot, where the cause is. The
+   race's numbers do NOT change (law 22). Order: 1. Trace home N 1 at bank f83 to the line that fires. Is it c26's front-stand line? Or
+   does the run only arrive there on another phase of the logs, so the wait rule that costs 6 s twice is what loses? Then trace post N 5
+   the same way. 2. If the front stand's own line fires at f83: narrow c26 again (c27) so it never stands him where the very next log hands
+   him straight back. Toy it RED on c26 at home N 1, GREEN on c27. If the cause is the phase plus an older wait rule: name that rule, and
+   tell me before you change anything outside c26. 3. On c27 (if any): the toys, the 10 known flips, the wide sample (seeds 1-10,
+   2-1/2-2/2-4), 2-7 x40 (at or above 29/40) AND the race margins (every race WON again, margins reported) BEFORE anything else. 4. Then
+   child N 13's trace, 1-4/2-5 vs main, and the checklist. The merge still waits for my word. I accept FRONT_STAND_PX = 31 as derived."**
+2. **Ruling item 1 is DONE (below, "The race flips traced"): the cause is the PHASE plus an OLDER wait rule, not c26's line.** The rule is
+   NAMED and was sent to the lead with this push; **nothing outside c26 changes until the lead's word (ruling item 2).** Read
+   ReadNotifications first. Until the word comes (never idle, D120): (a) 1-4 and 2-5 full rows are DONE (360 each, 0 BAR PASS -> FAIL vs
+   main, identical to c25: data/p/c26-1-4.jsonl, c26-2-5.jsonl, c26-2-5-cmp.txt). (b) trace child N 13 on c26 (2-7; the experiment's untraced loss; watch the child's run-on:
+   releaseMax 4 can carry him past the front at 31). (c) On the lead's word: build what it rules in the bot (the wait rule or c27), a toy
+   RED on c26 at home N 1 / post N 5 and GREEN on the fix, then ruling item 3's list in its order, every race WON again with margins.
+   Checklist (pacerLay 22/23 re-planted as laid toys 23/23, hopJudged, the toys for c23-c26's rules, the packet's plants, riverRide +
+   firsttimer, the CI tool line 0 fail, tierBots 9/9, timecheck + roadmapcheck) after. MERGE into release-0.10.3 (no force) ONLY on the
+   lead's word. REPORT BY 12:30 PM ET; HARD STOP 2:30 PM ET.
+
+## The race flips traced (ruling item 1; data/p/race-{hN1,pN5}-{c25,c26}.txt frames per 0.1 s, data/p/probe-{hN1,pN5}-c26-W.txt)
+- **Probe** (env-gated in the unfrozen main checkout at c26, restored; the run is byte-identical to the frozen c26 run): a line at each of
+  firsttimer.ts's two 6 s edge waits. **W1 = the bank-edge float wait** (c26 :3621-3623, inside the gap branch: `if (floats.length &&
+  !near) { edgeWait ...; if (t - this.edgeWait < 6) { clockHeld ...; return {} } }`: "a log or a lily pad drifting across the gap: he
+  can see it, so he waits at the edge until it is near, up to 6 s"); W2 = the upstream block's `!bank && !next` wait (:3797-3798).
+  **W1 fired 1,606 frames on home N 1 and 1,790 on post N 5; W2 0 on both. c26's two front-stand lines sit in the upstream block, which
+  needs him standing on a log; at f83 and f78 he stands on a BANK, so they cannot fire there.**
+- **home N 1, bank f83 (x ~3,660):** W1 from t 158.17 (logs #85/#90 drifting, none `near`); at 6.00 s (t 164.17) the wait ENDS with no
+  log near and he goes blind (hop at 164.4, vx -143); at 164.8 he is set back to the bank (x 3,572 in the air -> 3,696 on f83, no life
+  lost), W1 again 165.33 -> 171.33 (6 s), goes, set back to 3,647, W1 again 171.53 -> 177.53, goes, lands. c25 reached f83 at the same
+  time and crossed at 165.5 on its first go. 12 s lost: two blind goes after the 6 s cap.
+- **post N 5, bank f78 (x ~5,200):** W1 140.00 -> 146.03, goes blind at 146.6, set back to 5,232 (147.1), W1 147.27 -> 153.30, goes at
+  154.0, set back to 5,232 (154.5), W1 155.60 -> 161.6, goes, lands on f83 at 162.8. c25 crossed f78 at about t 143. ~19 s lost there.
+- **How the run reaches those banks on another phase:** c26 splits from c25 where the front stand fires on the way OUT (home N 1 log #11
+  at t 16.7; post N 5 log #10 at t 11.7: he walks to the front and hops on early), and arrives at the far turn earlier; the logs are on
+  another phase when he reaches f83 / f78 coming home, and the old wait's 6 s cap then sends him blind into the water.
+- **The rule, named (ruling item 2):** the bank-edge float wait's 6 s cap, then a go no gate judged: when no log comes `near` in 6 s he
+  goes anyway, and is set back to the bank; each round costs 6 s more. Older than c26 (the floatSure-era edge wait). **Not changed: the
+  lead's word first.**
 
 ## c26 (51ffe7eab; c25 6a64aa41e + 13 lines in tools/inspect/firsttimer.ts, the toy in tools/inspect/riverRide.test.ts)
 - **Condition 1, NARROW:** both lines sit inside the upstream block (`SKILLS.upstream && here.drift && here.drift.dir !== dir`: a log
@@ -56,9 +81,8 @@ Engine (bots), Opus 5.5 xhigh. Lead: session_01FhBbYN2CVHnFXg7XzqKXpM. **Code he
    -11.86, post E 4 -20.73 -> -9.53, ...). Where home N 1 loses (tools/race-frames-p.mts.txt, data/p/race-hN1-c25.txt / -c26.txt, frames per 0.1 s): c26 splits at t 16.7 on
    log #11 (x 15,032: the front stand walks him on; c25 stands) and reaches the far turn 20 s AHEAD (x 18,300 at t 39.9; c25 t 59.9); both
    are held at bank f71 (x ~6,510) to t ~136 (the lead evaporates there); both reach bank f83 (x ~3,660) at t ~158. c25 leaves f83 at 165.9;
-   **c26 hops at t 164.4, is back on f83 at 164.9 (x 3,652 -> 3,693: a log running back at him handed him straight back), then stands
-   twice ~6 s (the edge wait) and leaves at 177.6: 12 s lost there, at a BANK, after a hand-back.** Not yet traced: which log he took at
-   164.4, where on it he landed, and why the wait (no next / no bank in reach) is 6 s twice; post N 5 not traced at all.
+   **c26 hops at t 164.4, is back on f83 at 164.9 (x 3,652 -> 3,693: set back to the bank after a blind go), then stands
+   twice ~6 s (the edge wait) and leaves at 177.6: 12 s lost there, at a BANK, after a blind go set back.** Traced to the line (both rows): "The race flips traced" above: the old bank-edge float wait, not c26's line.
 4. **2-7 seeds 1-40, the 4 BAR bots, both settings, 280 rows (data/p/c26-2-7-x40.jsonl): 33/40 seeds with every BAR row passing
    (landing 29, c25 24): not below 29, no STOP.** Pass/fail IDENTICAL to session 13's experiment row for row (0 moved vs
    data/o/expfront-2-7-x40.jsonl). vs the landing: PASS -> FAIL 8, FAIL -> PASS 12; vs c25: PASS -> FAIL 2, FAIL -> PASS 12 (the lists
@@ -73,7 +97,8 @@ Engine (bots), Opus 5.5 xhigh. Lead: session_01FhBbYN2CVHnFXg7XzqKXpM. **Code he
 | wide sample seeds 1-10, all bots, both settings: BAR PASS -> FAIL vs main | (2-4 0) | **2-1 0, 2-2 0, 2-4 0** |
 | 2-7 x40 BAR seeds all-pass (landing 801cae9e8: 29/40) | 24/40 | **33/40** |
 | race margins (careful middle; below 0 he wins) | 10/10 WON, post N 5 -0.10 | **8/10: post N 5 LOST +13.10, home N 1 LOST +11.29** |
-| 1-4 and 2-5 full rows vs main | (data/m: c25) | running at hand-over (data/p/c26-1-4-*.jsonl, c26-2-5-*.jsonl) |
+| 1-4 full rows (360) vs main: BAR PASS -> FAIL | 0 | **0** (40/40 BAR seeds; identical to c25 row for row) |
+| 2-5 full rows vs main: BAR PASS -> FAIL | 0 | **0** (360/360 rows, 40/40 BAR seeds; identical to c25 row for row; kid vs main 3, c25's) |
 
 2-7 x40 moved rows, named with their family (condition 5):
 - vs the landing, PASS -> FAIL 8: **adult N 11, N 24, child E 30, N 9: cluster A, the lip family (R-165.398)** (session 12's traces);
