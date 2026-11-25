@@ -1,4 +1,4 @@
-# ENG-PLANT-j (ENG-PLANT-c session 8, started 6:47 PM ET 11-24 by `date`; this section written 6:59 PM ET 11-24 by `date`): hand-over (LANES 3b box)
+# ENG-PLANT-j (ENG-PLANT-c session 8, started 6:47 PM ET 11-24 by `date`; this section written 7:06 PM ET 11-24 by `date`): hand-over (LANES 3b box)
 
 Engine (bots), Opus 5.5 xhigh. Lead: session_01FhBbYN2CVHnFXg7XzqKXpM. Ruling 1 done for both of c22's BAR flips: each isolated to one
 piece, traced to its cause, narrowed, and the narrowing committed (c23, c24; pushed, ls-remote confirmed). One worktree per hash or
@@ -45,12 +45,22 @@ n2 chosen: it is the traced cause (n1 passes too, but its bound is the speed-now
   at least it (0.5 s window, reset on every startJump), as raceHop does for the race's hop. Exact head: known flips **10/10** (2-4 adult N 6/8/24/32, child E 23, child N 39, 2-1 child N 11, 2-2 adult N 4/24, 2-4 child E 11), 2-1 child
   E 2 PASS, **2-4 child N 8 PASS**. data/j/c24-*.jsonl. WIDE SAMPLE: started on c24's exact head (fz-c24), see Result 4 if filled.
 
+## Result 4: WIDE SAMPLE on c24 2a2c44786 (exact head, fz-c24): **CLEAN: 0 BAR PASS->FAIL** (data/j/c24-<st>-w.jsonl)
+Full width this time: seeds 1-40, all 5 bots, both settings = 360 rows per stage (session 7's c22 sample was 90 rows per stage).
+Compare: tools/flips.py.txt vs data/c/main-<st>.jsonl; the whole table: data/j/c24-flips-vs-main.txt. BAR = adult/child/middle/expert.
+| stage | differ | PASS->FAIL (BAR) | fail->pass (BAR) | kid PASS->FAIL | kid fail->pass |
+|---|---|---|---|---|---|
+| 2-1 | 176 | 19 (**0**) | 14 (**2**) | 19 | 12 |
+| 2-2 | 311 | 4 (**0**) | 22 (**3**) | 4 | 19 |
+| 2-4 | 296 | 8 (**0**) | 71 (**24**) | 8 | 47 |
+Said plainly: the kid (out of the BAR, as the lead counted it from session 6) goes PASS->FAIL on 31 rows, mostly 'set down here 3
+times' at 2-1's rivers (x 14,700-26,300), and fail->pass on 78; c22's 90-row sample had the same rate (2-1: 4 kid of 90). Not traced
+row by row: the lead decides whether the kid's 31 need a trace before the merge.
+
 ## EXACT NEXT STEP (session 9)
 0. Setup: `npm ci --legacy-peer-deps`; one worktree per hash, node_modules symlinked; single rows: data/j/row.sh.txt. Base: **c24
    2a2c44786**. Main's rows: data/c/main-<st>.jsonl; compare with tools/flips.py.txt (BAR = adult/child/middle/expert, kid excluded).
-1. The WIDE SAMPLE on c24 (2-1, 2-2, 2-4; tools/rows.sh.txt's castBots line, seeds 1-40, all 5 bots, both settings, --par 2) vs
-   main (data/c/main-<st>.jsonl) with tools/flips.py.txt, IF Result 4 below is not filled in. The bar: ZERO BAR PASS->FAIL, every
-   moved row traced (law 22: never loosen a bar). Any BAR flip: isolate it on c22/c23/c24 one row at a time, as Result 1 did.
+1. DONE this session (Result 4: clean). Send the lead the kid's 31 PASS->FAIL for a ruling (trace them or not) with step 2's result.
 2. pacerLay on c24's exact head (`npx tsx --test src/game/gen2/pacerLay.test.ts`): name each red against the base's {8, 22, 23}
    (release-0.10.3 dfe631913). c24's hold rule touches the run-up only (2-4's tailed liana); 2-7's race rows should not move, check.
 3. Ruling 2: RE-PLANT pacerLay 22 (:254, SKILLS.boardLog, home middle Easy 1; stale since 24d6ba567) and 23 (:280, SKILLS.raceSure,
