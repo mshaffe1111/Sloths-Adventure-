@@ -1,8 +1,11 @@
 # ART-W3 REPORT (R-165.449): World 3 standing + climbing art, 2-9 court art
 
-**EXACT NEXT STEP:** wait for the lead's word on the 3-1 rows below; then build the HF spec for 3-1's MISSING rows only
-(M1 shaft wall, M2 root curtain climb x3, M3 shelf L), img2img from w3-next#rimLong-s11 / lipA-s23 (stone) and
-hf678/w17-moss-liana (roots) on Qwen-Image-Edit-2511 (tools/art/hfnext/ pipeline, ART-NEXT-b's spec form), magenta key.
+**EXACT NEXT STEP:** sandbox 6b0719adb6a90bbe997e1e17 (hf_sandbox handle hfsb2:mshaffe111:6b0719adb6a90bbe997e1e17) runs 3 specs back to
+back: spec-w3a (q.log), spec-w3b 2-9 bell + far (q2.log), spec-w3c root redo (q3.log). Per READY-<group>: `hf_sandbox_fs cat /w/<group>.tar.pN
+--max-bytes 100000` for N < the READY count, `python3 -I tools/art/hf1113/pull.py /w/<group>.tar <scratch>/<group>.tar`, untar, judge with
+`python3 -I tools/art/hfw3/sheet.py <dir> <out.jpg>`, cut picks with tools/art/hfw3/cut3.py (K 1), add to reference/art/hfw3/cut/picks.json,
+`python3 -I tools/art/hfw3/catalog3.py && python3 tools/art/catalog_master.py --emit`, stills `tools/art/hfw3/stills.py`. TERMINATE the
+sandbox after the w3c pull. Then: HF-SPEND line, inventory.test count (226 + the W3A rows), pack.py dry-run proof, gates.
 
 Pokey drawn 89.1 px. "Drawn" = the inventory's pokey_scale x 89.1 / h, measured from src/game/art/inventory/w3.json on main.
 w3-next pieces are CUT and in the catalog (ART-NEXT-c) but their files are on origin/t-art-next, not packed into the build.
