@@ -56,6 +56,8 @@ Compare: tools/flips.py.txt vs data/c/main-<st>.jsonl; the whole table: data/j/c
 Said plainly: the kid (out of the BAR, as the lead counted it from session 6) goes PASS->FAIL on 31 rows, mostly 'set down here 3
 times' at 2-1's rivers (x 14,700-26,300), and fail->pass on 78; c22's 90-row sample had the same rate (2-1: 4 kid of 90). Not traced
 row by row: the lead decides whether the kid's 31 need a trace before the merge.
+c23 ccca3d305 on 2-1 (360 rows, data/j/c23-2-1-w.jsonl) is IDENTICAL to c24 (0 rows differ): c24's hold rule moves no 2-1 row;
+every 2-1 move, the kid's 19 included, comes from c23 or earlier.
 
 ## Result 5: pacerLay on c24's exact head (data/j/pacerLay-c24.txt): 21/23; red **{22, 23}** only
 22 (:254) RED half: 'without the skill the plant must lose (81.3 s against 108.37 s)'; 23 (:280) RED half: 'without the skill seed 2
