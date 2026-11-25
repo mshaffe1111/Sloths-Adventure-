@@ -1,12 +1,9 @@
 # ENG-NOISE (11-25) REPORT: the cast's one channel as a { way, x, y, r } seam; the noise toys re-proved on a REAL World 3 row
-**EXACT NEXT STEP (box 1 handed over on the 28-minute clock):** in src/game/gen2/worlds/w3Noise.test.ts make the DROP toy's section build its
-own 400 px drop (the way down stacks storeys 110-150 px apart: no roll of 40 has a clear 400 px column over a floor, so 'no roll lays the
-moss toy'): `sectionOf` for 'moss'/'stone' = two pieces, `top` (branch, w [200, 240], place start) and `floor` (bank, w [TOY_W, TOY_W], place
-{ kind: 'jump', after: 'top', dy: [400, 400], gapPx: [8, 20] }, landing: true, quiet on moss), sleeper socket on `floor` at the t that puts it
-300 px past where he lands; `dropOnto` stands him at top's far end (teleported(cast)) and walks him off (frames with right held) instead of
-sim.fly; built()'s 'fits' for the drops = the floor's start 300 px short of the sleeper. Run the file (about 90 s): want 7/7, then the GREEN
-and planted lines into the table below. Then item 3 (the gates) on a chattr-frozen worktree of the head, then merge t-eng-w3's head (no
-force), re-run w3Noise + castNoise + noiseRow there, push to t-eng-w3, send the lead the hash and one line per toy.
+**EXACT NEXT STEP (box 2, 2:25 PM ET):** the three toys are GREEN on the real 3-1 draft row with their plants caught (w3Noise.test.ts 7/7;
+with castNoise + noiseRow 21/21). Next: item 3, the gates ONCE on a chattr-frozen worktree of the toy commit's head: lockall --check vs
+the BASE lock (c1008d8ed) and vs MAIN's (cdffdc627), both recorded in the scratchpad from frozen worktrees (ZERO moves wanted: the seam
+is byte-identical); tierBots 9/9; tsc; the suite in 3 shards; the CI tool line (gates.yml:157). Then merge origin/t-eng-w3 (no force),
+re-run w3Noise + castNoise + noiseRow on the merged head, push to t-eng-w3, ls-remote, send the lead the hash and one line per gate.
 Branch t-eng-noise-wip from t-eng-w3 c1008d8ed (BASE). Started 1:45 PM ET (hook stamp); lead's re-scope approved (toys by 3:30 PM, landed by 5:00 PM, stop 6:00 PM ET).
 
 ## What main ALREADY has for noise (ENG-NOISE 11-19: 015e4209 + b85e5aee, report c59928a4 on t-eng-noise): ENG-LURE and the 3-3/3-5 builders start here
@@ -24,14 +21,20 @@ gen2/noiseRow.test.ts (a toy kit). 3-5.md/3-3.md's "NOT wired: no caller outside
    Test castNoise.test.ts 'the seam': GREEN on 70392a065; RED with the seam stashed (take is not a function). castNoise + noiseRow: 14/14.
 2. **Toys on the 3-1 DRAFT row** (src/game/gen2/worlds/w3Noise.test.ts): readyDraft('3-1') (kit w3, travel down), World 3's own ocelot row
    (W3_CAST) and def (registry castDef('ocelot', 3), asserted on the cast member), ONE test-only section added to that row's pool in the test
-   (W3_DOWN, the draft row and w3.ts untouched). On the head of this commit (run alone, 4/7; the 3 drop tests wait on the next step):
+   (W3_DOWN, the draft row and w3.ts untouched). Box 2 (the drop toy): 7/7 run alone; with castNoise + noiseRow 21/21:
 | Toy (3-1 draft, Normal) | GREEN | Plant (the real code's piece off, in the file) |
 |---|---|---|
 | struck stone calls World 3's ocelot | drawn 0.10 s after the strike from 420 px, goal = the stone (929), closest 4 px; heard [bell] only | `ring` -> null: never drawn, never sent: RED caught |
 | punch wakes a sleeper in 240 px | 200 px: woke; 300 px: slept; heard [punch] | punch dropped at the seam (`take`): sleeps on: RED caught |
-| 400 px drop: moss vs stone | NOT YET (next step) | quiet ignored (hero.quiet false): written, not yet run on a roll |
+| 400 px drop: moss vs stone | he walks off the section's own top (a 392 px fall as the roll lays it): moss slept, heard []; stone woke, heard [landing]; the sleeper 303/305 px from where he landed | the ground's quiet ignored (hero.quiet false): woke, heard [landing]: RED caught |
    Harness notes: a teleport (stand/fly) is not a fall: `teleported(cast)` resets the cast's fall as a flag's respawn does (calm);
    the call row's stone must sit inside the ocelot's own patch (patrolMin/MaxX: flags and jumps cut patches on the way down).
+   The drop toy builds its own drop (no roll of 3-1's way down has a clear 400 px column: its storeys stack 110-150 px apart): a top
+   branch and an 800 px floor `jump` dy 400 under it, 8-20 px across. Three things the real row taught (each in the file): the section
+   must fit one storey (1140 px; 1000 px of floor made it 1231, 860 made 1165); the tower lays every other storey right to left, so the
+   top stands on either side (dropTop looks both ways, he walks off toward the floor); the roll's tempo scales a laid drop (pipeline.ts
+   dy x T.rise: 392-407 px on 3-1's rolls), so the toy takes the fall as laid within 10 px and prints it. A walk-off lands about 140 px
+   in, so the sleeper sits at t 0.55 (about 300 px past the landing, measured on the landing frame).
 3. **Gates:** not run yet (box 2: lockall vs main AND base, tierBots 9/9, suite 3 shards + the CI tool line, the CLAUDE.md list, frozen head).
 
 ## Polish check
@@ -50,7 +53,7 @@ no look of its own and rings with the stand-in sound (11-19's, named then): ENG-
 - Design: correct 3-5.md:62-64 and 3-3.md:53-54 "NOT wired" to the file:line list above, so ENG-LURE/ENG-VINE packets start from fact.
 
 ## Unresolved
-The drop toy (moss vs stone), the gates, the landing on t-eng-w3, the turnover note. Lessons applied: D113 (waits in the background), D115, D119, D120 (the pushback did not end the box), D128, D134, D138.
+The gates, the landing on t-eng-w3, the turnover note. Lessons applied: D113 (waits in the background), D115, D119, D120 (the pushback did not end the box), D128, D134, D138.
 
 ## Method update
 level.md (proposed): an engine packet's "NOT wired" line carries the `git grep` it was read from, re-run on the packet's BASE the day it is

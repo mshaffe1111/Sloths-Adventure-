@@ -50,15 +50,41 @@ const TOY_W = 1000;
  * W3_CAST's and its def the registry's). Its phases keep it past the opening seconds (no animal stands there)
  */
 const TOY_THREAT = 1;
-/** the ONE test-only section a toy adds to the row's pool: a long stone (or moss) floor, the stone and the animal on it */
-const sectionOf = (row: Row): SectionTemplate => ({
-  id: `w3-noise-toy-${row}`, name: `a ${row} toy`, archetypes: 'any', phases: ['ten', 'ketsu'], difficulty: 2, maxPerStage: 1,
-  pieces: [{ key: 'floor', shape: 'bank', w: [TOY_W, TOY_W], place: { kind: 'start' }, main: true, ...(row === 'moss' ? { quiet: true } : {}) }],
-  sockets: row === 'call'
-    ? [soundSocket('stone', 'floor', [0.2, 0.2]), { id: 'prowler', role: 'enemy', on: 'floor', t: [0.62, 0.62], maxThreat: TOY_THREAT, chance: 1 }]
-    : [{ id: 'sleeper', role: 'enemy', on: 'floor', t: [0.75, 0.75], maxThreat: TOY_THREAT, chance: 1 }],
-  entry: { piece: 'floor', kind: 'ground' }, exit: { piece: 'floor', kind: 'ground' }, exitDy: 0, mirrorable: false,
-});
+/** the drop toys' fall: a 400 px drop (LOUD.landing: carries 180 + 200 x 0.9 = 360 px) */
+const DROP = 400;
+/** the drops' floor: the top (up to 240 px), its gap (up to 20) and this floor make one storey (1140 px) */
+const DROP_W = 800;
+/** where the drops' sleeper lies along the floor (t, from the top's side): about 300 px past where a walk-off from the top lands (he
+ *  comes down about 140 px in) */
+const SLEEP_T = 0.55;
+const dropRow = (row: Row) => row === 'moss' || row === 'stone';
+/**
+ * the ONE test-only section a toy adds to the row's pool: a long stone (or moss) floor, the stone and the animal on it. The drops build their
+ * own 400 px fall (a top branch, the floor DROP px under it): 3-1's way down stacks its storeys 110-150 px apart, so no roll has a clear
+ * 400 px column over a floor
+ */
+const sectionOf = (row: Row): SectionTemplate => {
+  const head = { id: `w3-noise-toy-${row}`, name: `a ${row} toy`, archetypes: 'any' as const, phases: ['ten', 'ketsu'] as SectionTemplate['phases'],
+    difficulty: 2, maxPerStage: 1, mirrorable: false };
+  if (row === 'call' || row === 'punch') return {
+    ...head,
+    pieces: [{ key: 'floor', shape: 'bank', w: [TOY_W, TOY_W], place: { kind: 'start' }, main: true }],
+    sockets: row === 'call'
+      ? [soundSocket('stone', 'floor', [0.2, 0.2]), { id: 'prowler', role: 'enemy', on: 'floor', t: [0.62, 0.62], maxThreat: TOY_THREAT, chance: 1 }]
+      : [{ id: 'sleeper', role: 'enemy', on: 'floor', t: [0.75, 0.75], maxThreat: TOY_THREAT, chance: 1 }],
+    entry: { piece: 'floor', kind: 'ground' }, exit: { piece: 'floor', kind: 'ground' }, exitDy: 0,
+  };
+  return {
+    ...head,
+    pieces: [
+      { key: 'top', shape: 'branch', w: [200, 240], place: { kind: 'start' }, main: true },
+      { key: 'floor', shape: 'bank', w: [DROP_W, DROP_W], place: { kind: 'jump', after: 'top', dy: [DROP, DROP], gapPx: [8, 20] }, landing: true, main: true,
+        ...(row === 'moss' ? { quiet: true } : {}) },
+    ],
+    sockets: [{ id: 'sleeper', role: 'enemy', on: 'floor', t: [SLEEP_T, SLEEP_T], maxThreat: TOY_THREAT, chance: 1 }],
+    entry: { piece: 'top', kind: 'ledge' }, exit: { piece: 'floor', kind: 'ground' }, exitDy: DROP,
+  };
+};
 const kitOf = (row: Row): WorldKit => {
   const k = realKit();
   const ocelot: CreatureDef = { ...W3_OCELOT, threat: TOY_THREAT, ...(row === 'call' ? {} : { extra: { ...W3_OCELOT.extra, asleep: true } }) };
@@ -80,18 +106,27 @@ const kitOf = (row: Row): WorldKit => {
   };
 };
 
-/** the toy's floor: the laid piece the toy section's animal stands on */
-const toyFloor = (platforms: readonly Platform[], e: { x: number; y: number; width?: number }, footY: number) =>
-  platforms.find((p) => p.x <= e.x && p.x + p.width >= e.x && Math.abs(p.y - (e.y + footY)) < 3 && p.width >= TOY_W);
+/** the toy's floor: the laid piece the toy section's animal stands on (a drop's: with the section's top DROP px over it) */
+const toyFloor = (platforms: readonly Platform[], e: { x: number; y: number; width?: number }, footY: number, row: Row) =>
+  platforms.find((p) => p.x <= e.x && p.x + p.width >= e.x && Math.abs(p.y - (e.y + footY)) < 3 &&
+    (dropRow(row) ? p.width === DROP_W && !!dropTop(platforms, p) : p.width >= TOY_W));
 
 const builds = new Map<Row, { st: ReturnType<typeof buildGen2Stage>; kit: WorldKit; seed: number }>();
 /** the first clean roll (seeds 1-40, Normal) that lays the row's toy, built once per row */
 /** the harness moves him (stand, fly): a teleport is not a fall, so his fall starts where he is put (as a flag's respawn does: calm) */
 const teleported = (cast: CastPlay) => { (cast as unknown as { fall: FallState }).fall = newFall(); };
-/** a 400 px drop 300 px short of (or past) the sleeper onto the toy floor, with nothing over that column (the way down stacks storeys) */
-const dropX = (platforms: readonly Platform[], floor: Platform, ex: number): number | undefined =>
-  [ex - 300, ex + 300].find((x) => x > floor.x + 30 && x < floor.x + floor.width - 30 &&
-    !platforms.some((p) => p !== floor && p.x - 30 <= x && p.x + p.width + 30 >= x && p.y > floor.y - 440 && p.y < floor.y));
+/** the roll's tempo scales a laid drop (pipeline.ts: dy x T.rise; 3-1's rolls lay this one 392-407 px): the toy takes it within this */
+const DROP_TOL = 10;
+/**
+ * the drops' top: the laid branch the toy floor hangs about DROP px under, 8-20 px across (the section's own gapPx). The tower lays every
+ * other storey right to left, so the top may stand on either side of the floor
+ */
+const dropTop = (platforms: readonly Platform[], floor: Platform): Platform | undefined =>
+  platforms.find((p) => {
+    if (p === floor || Math.abs(floor.y - p.y - DROP) > DROP_TOL) return false;
+    const gap = p.x < floor.x ? floor.x - (p.x + p.width) : p.x - (floor.x + floor.width);
+    return gap >= 8 && gap <= 20;
+  });
 function built(row: Row) {
   const had = builds.get(row);
   if (had) return had;
@@ -99,12 +134,12 @@ function built(row: Row) {
   for (let seed = 1; seed <= 40; seed++) {
     const st = buildGen2Stage({ config: cfg, kit, seed, difficulty: 'normal' });
     if (st.gen2.errors?.length) continue;
-    const e = st.enemies.find((q) => q.type === 'ocelot' && toyFloor(st.platforms, q, W3_OCELOT.footY ?? 0));
-    const fl = e && toyFloor(st.platforms, e, W3_OCELOT.footY ?? 0);
+    const e = st.enemies.find((q) => q.type === 'ocelot' && toyFloor(st.platforms, q, W3_OCELOT.footY ?? 0, row));
+    const fl = e && toyFloor(st.platforms, e, W3_OCELOT.footY ?? 0, row);
     const stone = st.proto?.cast?.sounds?.[0];
-    // (the call: the stone inside the ocelot's own patch, so it can come under it; the drops: a clear 400 px column onto the floor)
+    // (the call: the stone inside the ocelot's own patch, so it can come under it; the drops: toyFloor holds the section's top DROP px over it)
     const fits = !!e && !!fl && (row === 'call' ? !!stone && stone.x >= e.patrolMinX && stone.x <= e.patrolMaxX
-      : row === 'punch' ? true : dropX(st.platforms, fl, e.x + e.width / 2) !== undefined);
+      : true);
     if (fits) {
       builds.set(row, { st, kit, seed });
       return builds.get(row)!;
@@ -128,7 +163,7 @@ function inPlay<T>(row: Row, f: (q: Played) => T, plant?: (c: CastPlay) => void)
       // (a real stage: its own config, readied, handed to the real engine; no fixture)
       const sim = new RealPlay(DRAFT, seed, cfg);
       const eng = (sim as unknown as { e: { enemies: Enemy[]; platforms: Platform[]; cast: CastPlay } }).e;
-      const e = eng.enemies.find((q) => q.type === 'ocelot' && q.kit && toyFloor(eng.platforms, q.kit, 0))!;
+      const e = eng.enemies.find((q) => q.type === 'ocelot' && q.kit && toyFloor(eng.platforms, q.kit, 0, row))!;
       assert.ok(e?.kit, 'the toy\'s ocelot is the creature kit\'s (in the cast)');
       const member = (eng.cast as unknown as { members: Array<{ e: Enemy; def: PredatorDef }> }).members.find((m) => m.e === e);
       assert.deepEqual(member?.def, castDef('ocelot', 3), 'World 3\'s own ocelot (the registry\'s def, run by the cast)');
@@ -141,7 +176,7 @@ function inPlay<T>(row: Row, f: (q: Played) => T, plant?: (c: CastPlay) => void)
         return r;
       };
       plant?.(cast);
-      const floor = toyFloor(eng.platforms, e.kit, 0)!;
+      const floor = toyFloor(eng.platforms, e.kit, 0, row)!;
       return f({ sim, e, cast, heard, floor, stone: cast.sounds[0] });
     }
   } finally {
@@ -159,8 +194,8 @@ test('the row: 3-1\'s draft on World 3\'s own kit; the toy section laid by gen2 
   assert.ok(call.proto!.cast!.kinds.includes('ocelot'));
   for (const [row, quiet] of [['moss', true], ['stone', false]] as const) {
     const { st } = built(row);
-    const e = st.enemies.find((q) => q.type === 'ocelot' && toyFloor(st.platforms, q, W3_OCELOT.footY ?? 0))!;
-    assert.equal(!!toyFloor(st.platforms, e, W3_OCELOT.footY ?? 0)!.quiet, quiet, `${row}: the toy floor is ${quiet ? '' : 'not '}quiet`);
+    const e = st.enemies.find((q) => q.type === 'ocelot' && toyFloor(st.platforms, q, W3_OCELOT.footY ?? 0, row))!;
+    assert.equal(!!toyFloor(st.platforms, e, W3_OCELOT.footY ?? 0, row)!.quiet, quiet, `${row}: the toy floor is ${quiet ? '' : 'not '}quiet`);
     assert.equal(st.platforms.filter((p) => p.quiet).length, quiet ? 1 : 0, `${row}: only the piece that says so is quiet`);
   }
 });
@@ -241,21 +276,32 @@ test('planted: his punch off the channel (the seam drops it) -> the sleeper 200 
   assert.ok(!r.awake);
 });
 
-/** he drops 400 px onto the toy floor, 300 px short of the sleeper: is it awake after he lands? */
+/** he stands at the top's far end and walks off it (right held): a 400 px drop onto the toy floor, about 300 px short of the sleeper */
 function dropOnto(row: 'moss' | 'stone', plant?: (c: CastPlay) => void) {
   return inPlay(row, ({ sim, e, cast, heard, floor }) => {
     assert.ok(e.kit!.asleep, 'it starts asleep');
-    const x = dropX((sim as unknown as { e: { platforms: Platform[] } }).e.platforms, floor, e.kit!.x)!;
-    assert.ok(x !== undefined, 'a clear 400 px column onto the toy floor, 300 px from the sleeper');
-    sim.fly(x, floor.y - 400);
+    const top = dropTop((sim as unknown as { e: { platforms: Platform[] } }).e.platforms, floor);
+    assert.ok(top, `the section's top, ${DROP} px over the toy floor`);
+    // (toward the floor: the top's end over it, facing it)
+    const dir = top.x < floor.x ? 1 : -1;
+    sim.stand(dir > 0 ? top.x + top.width - 40 : top.x + 40, top.y);
     teleported(cast);
-    let landed = false;
-    for (let f = 0; f < 30 * 2; f++) {
-      sim.frame();
-      landed ||= sim.p.grounded;
+    sim.p.facing = dir;
+    for (let f = 0; f < 5; f++) sim.frame();
+    assert.ok(e.kit!.asleep && sim.p.grounded && Math.abs(sim.p.y - top.y) < 2, 'he stands on the top; the sleeper sleeps');
+    heard.length = 0;
+    let off = NaN;
+    let landX = NaN;
+    let by = NaN;
+    for (let f = 0; f < 30 * 3 && Number.isNaN(landX); f++) {
+      sim.frame(dir > 0 ? { right: true } : { left: true });
+      if (Number.isNaN(off) && !sim.p.grounded) off = sim.p.y;
+      if (!Number.isNaN(off) && sim.p.grounded) (landX = sim.p.x + sim.p.width / 2), (by = Math.abs(e.kit!.x - landX));
     }
-    assert.ok(landed && Math.abs(sim.p.y - floor.y) < 2, 'he landed on the toy floor');
-    return { awake: !e.kit!.asleep, heard: [...heard] };
+    assert.ok(!Number.isNaN(landX) && Math.abs(sim.p.y - floor.y) < 2, 'he walked off the top and landed on the toy floor');
+    const fell = floor.y - top.y;
+    for (let f = 0; f < 15; f++) sim.frame();
+    return { awake: !e.kit!.asleep, heard: [...heard], fell, by };
   }, plant);
 }
 
@@ -266,7 +312,11 @@ test('in play: a 400 px drop onto moss wakes nothing; onto stone it wakes World 
   const stone = dropOnto('stone');
   assert.deepEqual(stone.heard, ['landing'], 'stone: the landing is heard');
   assert.ok(stone.awake, 'stone: it wakes (a 400 px fall carries 360 px)');
-  t.diagnostic(`drop 400 px: moss ${moss.awake ? 'woke' : 'slept'} [${moss.heard}], stone ${stone.awake ? 'woke' : 'slept'} [${stone.heard}]`);
+  for (const [k, r] of [['moss', moss], ['stone', stone]] as const) {
+    assert.ok(Math.abs(r.fell - DROP) <= DROP_TOL, `${k}: the fall is the section's own ${DROP} px as the roll lays it (${r.fell} px)`);
+    assert.ok(Math.abs(r.by - 300) <= 30, `${k}: the sleeper lies about 300 px past where he lands (${r.by.toFixed(0)} px)`);
+  }
+  t.diagnostic(`drop: moss (${moss.fell} px) ${moss.awake ? 'woke' : 'slept'} [${moss.heard}] (sleeper ${moss.by.toFixed(0)} px off), stone (${stone.fell} px) ${stone.awake ? 'woke' : 'slept'} [${stone.heard}] (${stone.by.toFixed(0)} px off)`);
 });
 
 test('planted: the ground\'s quiet ignored (the cast hears every landing as on stone) -> the sleeper by the moss wakes', (t) => {
@@ -276,5 +326,5 @@ test('planted: the ground\'s quiet ignored (the cast hears every landing as on s
   });
   assert.ok(r.awake, 'moss ignored: the 400 px drop wakes it');
   assert.deepEqual(r.heard, ['landing']);
-  t.diagnostic(`planted: moss ignored -> ${r.awake ? 'woke' : 'slept'} [${r.heard}]`);
+  t.diagnostic(`planted: moss ignored -> ${r.awake ? 'woke' : 'slept'} [${r.heard}] (sleeper ${r.by.toFixed(0)} px off)`);
 });
