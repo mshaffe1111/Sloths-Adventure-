@@ -95,7 +95,7 @@ def scene(n, w, h):
         d.rectangle((0, wl, w, h), fill=(60, 50, 110, 255))
         x = (w - g.width) // 2; deck = wl - 28   # the deck at a log's height over the water (river.ts LOG_HEIGHT 28)
         y = deck - round(p['walk'][0] * k)
-        S.alpha_composite(g, (x, y)); pokey_at(S, x + g.width * 0.45, deck)
+        S.alpha_composite(g, (x, y)); pokey_at(S, x + (p['walk'][1] + (p['walk'][2] - p['walk'][1]) * 0.4) * k, deck)
     else:   # beside
         floor(S, fy); S.alpha_composite(g, (w // 2, fy - g.height + p.get('sink', 0))); pokey_at(S, w // 2 - 70, fy)
     ImageDraw.Draw(S).text((6, 4), f'{n} at game size, Pokey 89 px (MOCK-UP, not the game)', fill=(255, 230, 90))

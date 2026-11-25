@@ -32,10 +32,10 @@ def row(n, file, **v):
 def ps(hw): return f'{hw / PU:.2f}'
 new = [
     row('barge', 'barge', kind="set piece (the King's Barge: a long low plank hull, a flat deck, a carved croc prow, a reed canopy at the stern, gold + teal trim)",
-        walk_y=222, walk_x0=80, walk_x1=1050, flat='y', float_class='drifts',
+        walk_y=222, walk_x0=525, walk_x1=1050, flat='y', float_class='drifts',
         worlds="USED 2 Sunlit Riverbank: 2-9 the River King's Court, the barge carries him to the shrine (DESIGN-29 beat 10) | COULD 6 Deep Mangrove: a swamp lord's barge on the black water; 5 Orchid Sanctuary: a garden pleasure boat on the lily pond",
         engine_slot="new slot: World 2 barge (DESIGN-29: a `barge` row, one long log 384 px, Normal 80 px/s; the deck top = the log's top, the hull below drawn under the river line)",
-        footing='the deck top: walk line y 222 from x 80 to 1050 (cut px: 970 px = the 384 px barge log)', layer='platform',
+        footing=('the deck: walk line y 222 from x 525 to 1050 (cut px): it starts at the canopy\'s front post (canopy and stern ornament span x 2-455) plus Pokey\'s half-width, so he never walks inside the canopy (the lead 11-25, ART-W3; BUILD-29: or draw the canopy behind him and stand him on the whole 384 px log, x 80-1050)'), layer='platform',
         on_screen_px='505x141 (world px: 2.53 cut px a unit, the deck walk 384 px; the canopy and the croc stand over the deck ends)',
         pokey_scale=ps(141), scale_ok='y', scale_basis='drawn (terrain: no cap)',
         notes="For 2-9 (DESIGN-29 beat 10). Take barge-s41. The lead picked s23; s23 (and s11, s37) are cut off by the take's frame (s23: paint on 44% of the left edge, the stern and canopy sliced flat; 14% of the right, the croc's snout): s41 is the only take whole on all four sides (its stern scroll's tip touches the frame by 1-2 px). The canopy's five poles stand on the deck: draw the barge behind him (he walks in front of the poles). No throne under the canopy in s41 (s23 had one)."),
