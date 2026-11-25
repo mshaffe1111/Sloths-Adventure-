@@ -1,14 +1,13 @@
-# FIX-SOIL-b (session 2 of FIX-SOIL; t-fix-soil from main cdffdc627). Started 8:58 AM ET 11-25 (by `date`); this box written 9:35 AM ET
+# FIX-SOIL-b (session 2 of FIX-SOIL; t-fix-soil from main cdffdc627). Started 8:58 AM ET 11-25 (by `date`); this box written 10:01 AM ET
 
 
 ## EXACT NEXT STEP
 **FINAL HEAD 003e8b323 (= c22702edc + groundBanks: one bank list for the draw and the gate; no pixel change: the same filter, moved).
-The lead APPROVED the stills (taken on c22702edc) and the depth-line fix. RUNNING on frozen 003e8b323 (scratch wt-final2): paintcheck
-full sweep and lockall --check vs main's lock. Built and frozen, not yet run: 2-6 at a9439e586 + the final patch (wt-26) and with the
-cut off (wt-26red); 1-4 with the cut off on the final head (wt-red2). NEXT, in order: (1) read paintcheck + lockall (zero moves); any
-other SOIL OVER stage to the lead with a still first; (2) paintcheck --stages 2-6 on wt-26 (GREEN) and wt-26red (RED), --stages 1-4 on
-wt-red2 (RED); (3) the suite in 4 shards (scratch shard0-3.txt, timeout each), the CI tool line (gates.yml rolled, scratch ciline.sh),
-drawcheck; (4) gate table here, turnover note (engine-core.md 0zs-SOIL, drafted in scratch handoff-entry.md), push, ls-remote, hash +
+The lead APPROVED the stills (taken on c22702edc) and the depth-line fix. DONE on frozen 003e8b323: lockall vs main's lock 102/102
+stages unchanged (zero moves); paintcheck full sweep PASS (5838 builds, 102 stages, 0 SOIL OVER, 0 new, 0 stale). RUNNING: the suite in
+4 shards (scratch shard0-3.txt) and paintcheck --stages 2-6 on wt-26 (a9439e586 + final patch, GREEN?) then wt-26red (cut off, RED?)
+then --stages 1-4 on wt-red2 (final head, cut off, RED?). NEXT: read those; the CI tool line (gates.yml rolled, scratch ciline.sh);
+drawcheck; gate table here; turnover note (engine-core.md 0zs-SOIL, drafted in scratch handoff-entry.md); push, ls-remote, hash +
 table to the lead. Do NOT merge into the 2-6 branch.**
 
 ## What changed (draw-only; no layout moves: lockall pending)
