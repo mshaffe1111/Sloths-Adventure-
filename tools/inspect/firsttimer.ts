@@ -129,6 +129,9 @@ const SNAP_THUMB = 0.1;
  *  a light that has not woken this many s into his stop he gives up on (GLOW_STILL 0.7 s + the wake's travel is well under it) */
 const GLOW_NEAR = 90;
 const GLOW_GIVEUP = 4;
+/** ...and a running jump over a dark rim is pressed up to this many px before it (traced on the 3-1 draft: the expert pressed 94 px out,
+ *  just past GLOW_NEAR, and jumped into the dark): a jump toward a dark rim on his piece within a jump's carry stops him first (glowJump) */
+const GLOW_JUMP = 200;
 
 /**
  * The bot's skills with the little ones that follow him home (ENG-23; 2-3.md "Bot skills"; level.md rule 21, toys first:
@@ -3343,6 +3346,26 @@ export class FirstTimerRun {
   }
 
   /**
+   * The dark's stop for a JUMP (glowWait's other half): a running jump over a dark rim is pressed before he is within GLOW_NEAR of it (the
+   * expert pressed 94 px out and went over with its landing dark, 3-1 draft). Grounded on a dark rim's piece, about to jump toward that rim
+   * within GLOW_JUMP, its landing's light asleep or lit under DARK_AHEAD[setting] s: the jump is not pressed; the stop starts (glowWait
+   * holds him until the landing has been lit DARK_AHEAD + stopReact), then the jump is planned again. noGlowWait removes it with the rest.
+   */
+  private glowJump(dir: -1 | 0 | 1): Pad | null {
+    if (this.who.noGlowWait || dir === 0 || this.glowStop || !this.sim.p.grounded) return null;
+    this.glowRims ??= darkRims(this.sim.stage as Parameters<typeof darkRims>[0]).filter((r) => r.light?.sleep && r.light.id !== undefined);
+    const p = this.sim.p;
+    const e = this.e as unknown as { gameTime: number; glowWake: Map<number, number> };
+    const rim = this.glowRims.find((r) => r.dir === dir && !this.glowGaveUp.has(r) && p.x >= r.piece.x && p.x <= r.piece.x + r.piece.width
+      && Math.abs(p.y - r.piece.y) <= 4 && (r.x - p.x) * r.dir >= 0 && (r.x - p.x) * r.dir <= GLOW_JUMP);
+    if (!rim) return null;
+    const woke = e.glowWake.get(rim.light!.id!);
+    if (woke !== undefined && e.gameTime >= woke + DARK_AHEAD[this.who.setting]) return null;
+    this.glowStop = { rim, since: e.gameTime };
+    return {};
+  }
+
+  /**
    * The freeze (1-9.md "be the bait"; any stage by its cast's data): an animal of the cast that is not a sweeper starts its rear (the kit's
    * 'tell') with him within its engage on its ground; once told to freeze, after his reaction (stopReact, then a thumb's lag) he takes
    * the thumb off, and keeps it off while it rears and strikes, until it is beaten (it leaves) or its strike is over. By a lure post it
@@ -3993,6 +4016,9 @@ export class FirstTimerRun {
 
   /** a flick up: short, sometimes straight up for a moment; a second flick only where a single one failed before */
   private startJump(dir: -1 | 0 | 1, kind: 'single' | 'double', off: boolean): Pad {
+    // (the dark: a jump toward a dark rim whose landing is still dark waits for its light, read before the jump's own state moves)
+    const gj = this.glowJump(dir);
+    if (gj) return gj;
     const p = this.sim.p, who = this.who;
     // (a tier bot: where a jump has failed him he holds on longer; any jump may get its second press, at his own delay)
     const overhead = this.climbJump;

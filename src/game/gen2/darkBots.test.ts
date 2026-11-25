@@ -33,3 +33,13 @@ test("the dark's skill REMOVED (noGlowWait, rule 21's plant): he walks off into 
   assert.ok(r.dark.unlit.length >= 1, 'a rim gone over with its landing dark');
   assert.match(r.dark.unlit[0], /landing dark|after its light woke/);
 });
+
+test("the dark's skill holds a running JUMP too: the expert's jump into the dark waits for the landing's light (GREEN; planted: glowJump removed)", async () => {
+  // (castBots x40 on 653bb970: the expert went over the rim at the right end of a piece with its landing dark, the jump pressed 94 px
+  //  out, just past GLOW_NEAR; this roll's first 85 s hold that jump)
+  if (readied !== DRAFT) readyDraft(DRAFT);
+  const { firstTimer, FT_EXPERT } = await import('../../../tools/inspect/firsttimer.ts');
+  const r = firstTimer(DRAFT, 12, FT_EXPERT, { cap: 85 });
+  assert.ok(r.dark && r.dark.crossed >= 3, `he went over dark rims (${r.dark?.crossed})`);
+  assert.deepEqual(r.dark.unlit, []);
+});
