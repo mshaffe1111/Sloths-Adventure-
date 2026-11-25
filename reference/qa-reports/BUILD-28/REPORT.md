@@ -1,6 +1,47 @@
-# BUILD-28 REPORT (W2-LANE: 2-8 "Before the Water Rises"; R-165.430 (2), READY-28, BUILD-28). Session 1 (W2-LANE a), started 9:44 AM ET (from date)
+# BUILD-28 REPORT (W2-LANE: 2-8 "Before the Water Rises"; R-165.430 (2), READY-28, BUILD-28). Session 1 (W2-LANE a), started 9:44 AM ET (from date). Session 2 (W2-LANE b), started 10:07 AM ET (from date)
 
-## EXACT NEXT STEP (session 1)
+## EXACT NEXT STEP (session 2, W2-LANE b; hand-over on the 28-minute box)
+Branch t-build-28-wip, CODE head 9cbb42f27 (this REPORT's commit only adds to reference/qa-reports/BUILD-28/). `git fetch origin
+t-build-28-wip && git checkout t-build-28-wip`, `npm ci --no-audit --no-fund --legacy-peer-deps`. Run ReadNotifications FIRST: the lead
+may have ruled the dip paddle (below) or sent release-0.10.3's hash. Every run on a chattr-frozen worktree (session 1's recipe below).
+1c. THE MARSH LOW ROAD: BUILT except the dip paddle (two commits): dc5987822 "ENGINE PIECE (marsh low road), part 1": RiverRow.marsh
+   {width, floor, dips, dip} (riverLay.ts) lays a solid FLOOR `floor` px under the banks in the near bank's style, split by `dips` gaps
+   `dip` wide (equal pieces), no logs, speed 0; the zone's surface RIVER_LAY.marshWater (30) under the floor's top; RiverZone.marsh
+   {floor, lip} (river.ts); riverWidth = marsh.width; layRiver returns `floor` and pipeline.ts pushes it; floodLay.ts floodWaterOf: the
+   flood rises to paddling depth under the FLOOR (layFlood uses it). 9cbb42f27 part 2: lineBot.test.ts floodRun(who, seed, late, marsh?)
+   lays its low road from gen2's layRiver(marsh) + floodWaterOf. MEASURED (frozen trees): no dips = the SAME run as the hand walkway (deep
+   equal, middle + adult, seeds 1-3); one 100 px dip: shrine, low road, setBack 0, home 3, the line WALKED the floor, RED with the floor
+   off (walked false); the close (read removed, late 19) splits the line, RED with the close off (setBack 0 everywhere). lineBot 11/11 on
+   9cbb42f27; flood + floodLay + riverLay + riverSection + w2TwoRoad + w2 45/45 and generalitycheck PASS (26/26) on dc5987822; tsc 0.
+   OPEN (asked of the lead with options; recommended b): THE LINE DOES NOT PADDLE THE DIP (middle seed 1 paddled false): his hop over a dip
+   rises over the banks' top and a flood's water paddles only at or under its banks (followPlay.ts:135 surf), so the line hops the dip on
+   his arc. (a) accept; (b) follow.ts record: a hop landing at its take-off height over FLOOD (lip) water that a straight line at that
+   height paddles becomes that straight swim (2-3's lip-less rivers untouched; points a follower stands on kept), planted RED with it off,
+   then restore the `paddled` assertion in lineBot 'the marsh low road with a dip' (the comment there says where). On (b): build it as
+   part 3. Still to do for 1c either way: the W2_FORK low road ON the marsh (W2_FORK_RIVERS.low: {dir 1, speed 0, logW 0, logs 0, safe,
+   flood 'close', marsh {width 1400, floor 60, dips 4, dip 100}} per 2-8.md:9; W set back 60 from the water as floodRun's, so every drop
+   is <= 90) with w2TwoRoad.test to it (do it WITH 1d, one shape change); check w2Finish lays no second river over it (hasRiver at
+   w2.ts:411 should take it: surface lip+90 inside its window, read it on the built stage) and the floor's paint (stills at READY).
+1e. THE STRAND VERDICT. TRACED (scratch probe /home/user/wtw2f/tools/inspect/probe28.test.ts, never committed: floodRun with water 798,
+   W W0-150 +150 @60 h60, P W0+60 +500 @60 h20, rise W0+160 +400 @120 h60, top W0+160 +140 @180 h60, porch2 W0+560 +400 @60 h20; FT_ADULT
+   seed 1 late 0: 'stranded', home 0, high, t 34.7, as session 1's 34.9). THE ADULT DID NOT OVERSHOOT: on the top he ran right to x 1265
+   (6.23 s), turned BACK (vx -268; the lead-the-line read sending him to the low road), WALKED OFF THE TOP'S NEAR EDGE (x 1160: the top
+   stands flush on the rise's near edge, so the drop is 120 px, two steps, no tread), landed on P (7.03 s, x 1064), walked off P's near
+   end into the gap and down to the walkway (7.37 s, x 1019), and ran the low road home alone; the line waited at the top's lip (follow.ts:
+   a drop deeper than the step 90 is a WAIT). THE MODEL: carry 0 strands too: any EDGE of a high-road piece he can walk off, EITHER way,
+   whose first ground beneath is more than the line's step (W2_FOLLOW.step 90) down strands the line; and a jump off an edge carries him
+   past a narrow tread (session 1's child on the 80 px treads: still to trace: the probe's '80' shape {rise W0+260 +300, top W0+340} hit
+   floodRun's own 'flood: the high road loops' assert from step 1a's highRoad: READ WHY FIRST, it may be a highRoad false refusal of a
+   block standing on a block). So the verdict: for each high-road piece and each of its ends, the ground beneath from the edge out to the
+   edge + CARRY must lie within the step of its top, CARRY = the tier's measured run-off (0 for a walk-off, the trace's for a jump; derive
+   it from the 80 px trace, name it in the comment as W2_FLOOD.climb does). Plant RED on the 80 px shape AND on the flush top (the 220
+   shape), GREEN on 1d's 400 px treads. In flood.ts forkFaults or highRoad (floodLay already runs both).
+1d. Then THE LONG HIGH ROAD (three up / three down, treads >= 400, ~2,200 px of porches against the marsh's 1,400; the lead's (4)):
+   w2TwoRoad + the probe (6 tiers x late 0/15/19 x seeds 1-3), every run shrine, home 3, setBack 0; middle/expert low with time, high late.
+1b. The merge when the lead sends the hash (unchanged, below). THEN READY-28 (step 2), unchanged.
+REPORT BY 12:30 PM ET; HARD STOP for READY: 2:30 PM ET.
+
+## EXACT NEXT STEP (session 1; superseded by session 2's above, kept for its detail)
 Branch t-build-28-wip, head = this REPORT's commit; CODE head ee048f86c (later commits touch only reference/qa-reports/BUILD-28/).
 `git fetch origin t-build-28-wip && git checkout t-build-28-wip`, `npm ci --no-audit --no-fund --legacy-peer-deps`. Run ReadNotifications
 first: the lead may have ruled For the lead 2-4 (below) or sent release-0.10.3's hash.
