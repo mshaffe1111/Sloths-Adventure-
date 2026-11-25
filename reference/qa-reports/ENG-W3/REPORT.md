@@ -35,7 +35,13 @@ rule 4 took 488.** `landed` counts run-on wood only at the bough's own height (|
 through the bough; whether the 1470/1476 pair (207-446 vs the 1476 level) is itself a lay fault (two storey levels within a step of
 each other beside each other). **Candidate lay rule (to plant and measure, not yet written):** no gap narrower than his body plus a
 margin between two pieces within a step of each other in height (he can neither fall through it nor read it as an end). Lay the catch
-flush with the storey beside it, or a body's width clear of it. Count it on the 48 rolls first, then a tower.test RED on fe331023.
+flush with the storey beside it, or a body's width clear of it. **COUNTED (probes/slots.mts: two solid pieces 1-8 px apart in height, side by side, a gap of 1-60 px; 48 drafted rolls):
+old lay (7d12c344b) 209 slots on 48 of 48 rolls, by gap 0:50 10:92 20:25 30:17 40:9 50:10 60:6 (mostly 0-20 px, walked across);
+new lay (ab35ee9b) 156 on 45 of 48, by gap 0:17 10:27 30:5 40:58 50:38 60:11.** The new lay moved most slots from walkable (0-20
+px) to about his body width (40-60 px: 26 old, 107 new). That matches easy stuck spots 'in a dip 281/287' going 68 -> 172. **So the
+cause is session 6's `landed` / slide (rule 4 prefers a bough whose ends land, read only at its own height).** Next: the rule (no slot
+of 25-60 px between pieces within a step: lay it flush, at most a walkable gap, or a body and a margin clear), planted RED in tower.test
+on this slot shape (kid E 5 at y 1470 as a toy), GREEN after, slots.mts 40-60 bins -> 0 with towerLids still 0 and 0 refused, then (c).
 **Learned:** a rule that empties a room can move the next piece into a worse spot. Count the bots' causes old against new before
 calling a lay rule a cure: the room count (534 -> 0) was right, and the bots got worse.
 
