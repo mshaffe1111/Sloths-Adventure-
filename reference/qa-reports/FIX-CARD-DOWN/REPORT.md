@@ -50,7 +50,11 @@ LEAD: stills APPROVED (port-after, land-after). The Dot-follows-her-card point: 
 - clipcheck: PASS (83 known, the same list; no new debt; 588 s). generalitycheck, knowncheck, roadmapcheck, timecheck: PASS.
 - Note (D115, own it): the fix tree was moved from 8ae26cdd9 to 490450973 while clipcheck read it; that commit adds only report files and
   src was chattr-frozen and identical, so what clipcheck reads did not change.
-- lockall --check vs base lock: RUNNING (box 1 records). Suite 3 shards: RUNNING (box 1 records). CI tool line: NOT RUN (next step 1).
+- lockall --check vs base lock: RUNNING (box 1 records). Suite 3 shards: RUNNING (box 1 records).
+- CI tool line (box 2, 11-25 2:20 PM ET, frozen worktree of 689596d12, src and tools chattr +i): the FULL line, gates.yml:157 (42 words,
+  identical on the fix tree), not only the 5 files step 1 names: 351 tests, 350 pass, 0 fail, 1 todo (chase bots' CHILD on Normal,
+  OPEN, known), exit 0. The 5 files alone: 50/50. Pushback: step 1 listed the CLAUDE.md tool line, which is shorter than CI's (D96).
+- t-eng-w3 at box 2's start: still c1008d8ed, so no merge is needed yet; checked again just before the landing.
 
 ## Lessons applied
 D115 (frozen worktrees for the base lock, the tests and the stills), D119, D128, D134, D136 (the stills measure the drawn card's box),
