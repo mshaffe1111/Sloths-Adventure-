@@ -354,3 +354,25 @@ test('a vine from a log pressed from a stand is judged at every lag his thumb dr
   assert.ok(rows.length >= 1, 'vineFromLog pressed from a stand at least once (the shape is in the row)');
   for (const r of rows) assert.ok(r.caught !== null, `the standing press at t ${r.t.toFixed(3)} from x ${r.x.toFixed(1)} on #${r.on} was judged to catch; the engine: ${r.down}`);
 });
+
+// CI-13 (ENG-PLANT-CI session 9's (B), traced in session 10, s10/tag-*): on a log running his way he rides in (SKILLS.handed), the
+//  stand at its front is a stop he MEANS. intend returned that stand as a bare {} and a bot with no holdQ (the kid, the adult) never lets
+//  go of a bare {} (thumbify's late lift-off re-arms every frame, R-165.59): 2-4 kid Easy 19 on CI-12, down on log #48 at 47.400, walked
+//  on (intend's last walk) and was handed the stand at 47.833 52 px from #48's front, ran on at 285 px/s, decided the edge's jump past the
+//  front (48.033) and walked off it at 48.100 into the water, set down (the same branches on CI-11 at 77.367 off #75). The real stage and
+//  bot: he never walks off a log he stands on (grounded on it, then airborne with no take-off) into the water (set down within 20 frames)
+test('a stand on a log running his way is a stop he means: 2-4 kid Easy 19, down on log #48 at 47.4, handed the stand 52 px from its front (CI-13)', async () => {
+  const ft = await import('./firsttimer.ts');
+  type E = { player: { x: number; y: number; vy: number; grounded: boolean; isVineSwinging?: boolean }; standingOnId: number | null };
+  const offs: { t: number; x: number; from: number; n: number; down: boolean }[] = [];
+  let last: { x: number; on: number | null; g: boolean; swing: boolean } | null = null;
+  ft.firstTimer('2-4', 19, { ...ft.FT_KID, setting: 'easy' }, { cap: 49, dotSetting: true, onFrame: (sim) => {
+    const s = sim as unknown as { t: number; e: E; platforms: { id: number; drift?: unknown }[] };
+    const p = s.e.player;
+    for (const o of offs) if (!o.down && o.n < 20) { o.n++; if (last && !p.isVineSwinging && !last.swing && Math.abs(p.x - last.x) > 60) o.down = true; }
+    const was = last ? s.platforms.find((q) => q.id === last!.on) : undefined;
+    if (last?.g && was?.drift && !p.grounded && p.vy >= 0 && !p.isVineSwinging) offs.push({ t: s.t, x: p.x, from: was.id, n: 0, down: false });
+    last = { x: p.x, on: s.e.standingOnId, g: p.grounded, swing: !!p.isVineSwinging };
+  } });
+  for (const o of offs) assert.ok(!o.down, `he walked off log #${o.from} at t ${o.t.toFixed(3)} x ${o.x.toFixed(1)} with no take-off and was set down from the water`);
+});

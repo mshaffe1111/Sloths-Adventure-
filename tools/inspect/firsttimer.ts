@@ -3872,6 +3872,11 @@ export class FirstTimerRun {
                 if (Math.abs(p.x - rear) > 20) return side(back);
               }
             }
+            // (CI-13, rule 28: the ride is a stop he MEANS (stopMeant, as padRead's ride stand and the race's front stand): a bare {} is
+            //  never let go by a bot with no holdQ (the kid, the adult; thumbify's late lift-off re-arms every frame, R-165.59). 2-4 kid Easy
+            //  19 on CI-12: handed this stand on log #48 52 px from its front at 47.833, ran on at 285 px/s and off the front into the water
+            //  at 48.100, set down; on CI-11 the same off #75 at 77.633)
+            this.stopMeant = true;
             return {};
           }
           // (against the flow, SKILLS.upstream: the next log or the bank in reach, he hops now off the front end, a press made standing on
