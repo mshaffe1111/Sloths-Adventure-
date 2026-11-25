@@ -1,0 +1,45 @@
+# FIX-CARD-DOWN (R-165.456): on a way down, Dot's card keeps off the drop and sits above Pokey
+
+## EXACT NEXT STEP
+(filled at hand-over)
+
+## What changed (fix 8ae26cdd9 on base c1008d8ed)
+- `GuideView.travel` (src/game/dotGuideView.ts): the stage's travel; the engine fills it from its travel mode
+  (`out.travel = this.mode.travel`, src/game/engine.ts guideView), which comes from LevelConfig.travel. No stage id.
+- `aheadZone` (src/game/dotGuidePerch.ts): when `travel === 'down'` the way-ahead keep-out (the law, and its soft high part) is the
+  drop below him: 1.5 jumps either side, from just over the ledge he stands on (falling: from his head) to the bottom of the screen;
+  on a vine, the stretch under him as well as over him. Every other travel takes the old branches untouched.
+- `hoverOrder`: on a way down, above first, then behind, in front, under last.
+- Who else this touches: any stage whose data says `travel: 'down'` (3-1, and stagePlan's 'The Long Drop'). Meeca's thought cloud
+  (engine.ts mcProbe) has no travel and keeps its shape.
+
+## Planted check: src/game/dotGuideDown.test.ts
+- A way down, 390x844, 360x740, 844x390, 740x360: Pokey high on a ledge (where a way down's camera holds him), next ledge below.
+  The card may not cover the ledge below and the air over it; upright its bottom is above his head; sideways it sits beside him above
+  his feet. A run (travel unset vs 'right'): the same scene places the card at exactly the same box.
+- RED on the base: 4 fail (all four way-down cases: the card sat under him, on the landing). GREEN with the fix: 8 pass.
+- Sideways, honestly: on a 390-tall screen the band from the HUD to his head is shorter than the card, so it cannot sit wholly above
+  his head; it sits in the band beside him, above his feet, off the drop.
+
+## Stills (3-1's first stop; THE DARK IS NOT ON THIS BASE: t-eng-w3 has no dark yet, so the grotto is lit)
+`node reference/qa-reports/FIX-CARD-DOWN/cardshoot.mjs <tree> <out> <port> <tag>` (served tree checked; base tree c1008d8ed frozen,
+fix tree 8ae26cdd9 frozen). Pokey pinned at the lip of the ledge he starts on (seed 1), facing the nearest ledge below; the real line said
+through the guide (engineLine). Boxes in cards-before.json / cards-after.json. Stills in stills/, each captioned "no dark on this base".
+| still | card (css px) | Pokey | ledge below | verdict |
+|---|---|---|---|---|
+| 3-1-port-before | 16,323-342,414 | 117,244-156,287 | 162,696-360,779 | UNDER his feet, over the drop (the fault) |
+| 3-1-port-after | 48,122-374,212 | same | same | ABOVE his head, under the HUD; drop and ledge clear |
+| 3-1-land-before | 256,218-550,302 | 321,152-353,187 | 358,520-519,588 | UNDER his feet, over the drop |
+| 3-1-land-after | 534,74-828,158 | same | same | beside him (ahead, top band), bottom above his feet; drop clear |
+Polish check (looked at as on a phone): upright after is clean: the card reads under the HUD, his face and the whole drop are clear.
+Sideways after: clear of him, the drop, the petals and the HUD, BUT it sits about 190 px from Dot, who stays behind him; her name tag
+says whose it is, and nothing ties them. That is the old hover behaviour on every stage (the law can put the card past him and she
+never follows it), not new to a way down. Proposed (the lead's call; it touches every stage, so it needs the dotbox re-shoot and
+clipcheck): when the law puts a hover card more than about 120 px from her, she flies to its near corner.
+
+## Gates
+(filled)
+
+## Lessons applied
+D115 (frozen worktrees for the base lock, the tests and the stills), D119, D128, D134, D136 (the stills measure the drawn card's box),
+CI #78 (cardshoot refuses a busy port, checks the served tree, kills it after).
