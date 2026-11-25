@@ -4,7 +4,11 @@ src/game/gen2/dark.test.ts RED. Run in a FROZEN worktree of the commit under tes
     git worktree add --detach <dir> <hash>; ln -s <repo>/node_modules <dir>/node_modules
     python3 reference/qa-reports/ENG-DARK/planted-faults.py <dir>
 Each plant is applied, the test run, the file restored (git checkout). Prints CAUGHT / MISSED per plant; exit 1 on any MISSED."""
-import subprocess, sys, pathlib
+import subprocess, sys, pathlib, re
+# (ENG-DARK-i) node reads --test-name-pattern as a REGEX: a name with ( ) [ ] . ? + * matched NO test, and a plant that runs no test
+#  printed MISSED as if the test stayed green (plants 17/18, "own kind ('climbed')", never ran from box 5 to box 8). The filter is
+#  escaped, and a plant whose filter runs no test prints NO TEST and fails the run.
+pat = lambda name: re.sub(r'[.*+?^${}()|\[\]\\]', lambda m: '\\' + m.group(0), name)
 
 wt = pathlib.Path(sys.argv[1]).resolve()
 TEST = 'src/game/gen2/dark.test.ts'
@@ -75,9 +79,19 @@ PLANTS = [
      '  if (!glowReaches(l, x, feet, facing)) return Infinity;', '  if (l.sleep && !glowReaches(l, x, feet, facing)) return Infinity;', 'darkFlags: a flag'),
 ]
 missed = 0
-for plant in PLANTS:
+base: dict = {}
+# (an optional second argument runs only those plants, 1-based: '17,18')
+ONLY = {int(n) for n in sys.argv[2].split(',')} if len(sys.argv) > 2 else None
+for k, plant in enumerate(PLANTS, 1):
+    if ONLY and k not in ONLY: continue
     name, f, old, new, test = plant[:5]
     tf = plant[5] if len(plant) > 5 else TEST
+    # (ENG-DARK-i) the toy must be GREEN unplanted first: a toy already red reads CAUGHT whatever the plant does (plant 15 on 0dadb295)
+    if (tf, test) not in base:
+        b = subprocess.run(['npx', 'tsx', '--test', f'--test-name-pattern={pat(test)}', tf], cwd=wt, capture_output=True, text=True, timeout=900)
+        base[(tf, test)] = '# fail 0' in b.stdout and bool(sum(int(n) for n in re.findall(r'^# (?:pass|fail) (\d+)$', b.stdout, re.M)))
+    if not base[(tf, test)]:
+        print(f"BASE RED  {name}  -> '{test}' (the toy fails or runs nothing unplanted)"); missed += 1; continue
     p = wt / f
     s = p.read_text()
     if old not in s:
@@ -89,7 +103,10 @@ for plant in PLANTS:
         new_s = s.replace(old, new, 1)
     p.write_text(new_s)
     try:
-        r = subprocess.run(['npx', 'tsx', '--test', f'--test-name-pattern={test}', tf], cwd=wt, capture_output=True, text=True, timeout=900)
+        r = subprocess.run(['npx', 'tsx', '--test', f'--test-name-pattern={pat(test)}', tf], cwd=wt, capture_output=True, text=True, timeout=900)
+        ran = sum(int(n) for n in re.findall(r'^# (?:pass|fail) (\d+)$', r.stdout, re.M))
+        if not ran:
+            print(f"NO TEST  {name}  -> '{test}' (the filter runs no test)"); missed += 1; continue
         red = '# fail 0' not in r.stdout
         print(f"{'CAUGHT' if red else 'MISSED'}  {name}  -> '{test}'")
         missed += 0 if red else 1
