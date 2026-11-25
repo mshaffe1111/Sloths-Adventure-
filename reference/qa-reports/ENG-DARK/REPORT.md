@@ -122,7 +122,25 @@ from box 4's 7b1aa3ba only in ENG-W3/REPORT.md), frozen, never pushed: the landi
    from the rim at the left end of 70-480, pad down, he snaps 53 px onto a trunk at x 44 past the rim and climbs; RimWatch counts it 'went
    over' (it counts any pass of the rim's end not grounded on its piece). A climb down is not a drop; whether 'lit 1 s ahead' should
    count it is a ruling, not a bot fix (law 22). On f68c5ca1 that crossing is lit (the run moved).
-7. **The x40 on f68c5ca1: RUNNING** in box 4's container (2 lanes, seeds 1-20 and 21-40). Results below when it ends.
+7. **THE x40 ON f68c5ca1 (frozen worktree, 2 lanes, 360 rows, exit 0: `cast-3-1-x40-f68c5ca1.jsonl`)**, vs box 2's 653bb970 and box 3's base:
+   | bot | setting | shrine base / 653bb970 / f68c5ca1 | clean | rescues | unlit 653bb970 / f68c5ca1 | gaveUp | time median (s) |
+   |---|---|---|---|---|---|---|---|
+   | kid | normal | 40 / 40 / 40 | 1/0/0 | 156/151/158 | 3 / 0 | 0 | 174.7/202.8/209.1 |
+   | kid | easy | 40 / 40 / 40 | 0/0/0 | 186/192/192 | 1 / 0 | 0 | 197.0/239.2/239.2 |
+   | adult | normal | 40 / 40 / 40 | 2/1/2 | 119/120/120 | 0 / 0 | 0 | 164.4/193.4/193.4 |
+   | adult | easy | 40 / 40 / 40 | 0/0/0 | 180/202/200 | 2 / 1 | 0 | 200.3/239.8/239.8 |
+   | child | normal | 40 / 40 / 40 | 2/1/1 | 138/135/136 | 5 / 0 | 0 | 320.1/303.6/303.6 |
+   | child | easy | 40 / 39 / 39 | 0/0/0 | 178/179/179 | 4 / 3 | 0 | 306.4/313.6/315.0 |
+   | middle | normal | 40 / 40 / 40 | 0/3/3 | 126/115/114 | 6 / 0 | 0 | 207.7/230.7/229.5 |
+   | middle | easy | 40 / 40 / 40 | 1/1/1 | 186/184/184 | 11 / 1 | 0 | 261.5/279.3/280.8 |
+   | expert | normal | 40 / 40 / 40 | 1/0/0 | 124/115/112 | 26 / 0 | 0 | 202.4/212.9/225.9 |
+   **Unlit 58 (653bb970) -> 13 (ef811c2a) -> 5 (f68c5ca1)**, exactly item 5's five, all Easy, all 'landing dark': adult Easy 30 (241, 2477
+   at 31.00 s: cause 4, traced; the lead's ruling (3) above), child Easy 1 (517, 2867 at 47.53 s), child Easy 20 (798, 8084 at 164.50 s),
+   child Easy 23 (772, 10112 at 321.67 s), middle Easy 12 (821, 4074 at 72.00 s): those four untraced. **gaveUp 0** in all 360.
+   **Rescues 1,395** (base 1,393, 653bb970 1,393; per bot -12 to +20, both ways). **Shrine 359/360: child Easy 25 stranded at 295.9 s,
+   the same as 653bb970 and ef811c2a, absent from the base (the lead's ruling (5): traced before landing).** Stuck notes 1,686 (base
+   1,709); kinds only here: the same rare 'a trunk beside him' variants (7 notes); only in the base: 3 notes; no new kind.
+   Box 4 stops here (the lead's word); box 5 (ENG-DARK-e) takes the gates on f68c5ca1, the rulings and the landing.
 
 ## Box 3 (ENG-DARK-c) so far (start 11:50 AM ET by `date`)
 1. **Plants 12/12 CAUGHT** on a frozen 653bb970 (worktree, `planted-faults.py`, exit 0): box 1's 10 + the glow counter on every stage
