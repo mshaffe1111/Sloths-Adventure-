@@ -1436,6 +1436,13 @@ export const frontStandPx = (who: { releaseMax: [number, number] }): number => M
  *  edge's blind press (no floor at p.x) fired into the water. Adult 41, kid and child 60 */
 export const raceStandPx = (who: { releaseMax: [number, number] }): number => frontStandPx(who) + Math.round(PHYS.maxRun * DT);
 
+/** px short of a log's front he lets go of a walk at c26's three front stands (the bank's float wait at the cap, the refused log running
+ *  back at him, nothing in reach): frontStandPx for the CHILD (SKILLS.reAim's tier: CI-1's traced case, riverRide's reAim toy phase 1.5),
+ *  c26's 31 for every other tier (the lead's ruling, D133 narrow; ENG-PLANT-CI-d, rule 28: the kid's 50 is a let-go at FULL run, but on
+ *  2-1 kid Normal 19 (f2981, t 99.37) he stood still 40 px behind log #86's front (a log running back at him), inside 50, so he never
+ *  walked to the front and no hop was judged landing; c27 walked to 31 and hopped on to #85. No kid case was traced) */
+export const c26StandPx = (who: { releaseMax: [number, number]; reAim?: boolean }): number => frontStandPx(SKILLS.reAim && who.reAim ? who : { releaseMax: [0, 2] });
+
 export class FirstTimerRun {
   readonly sim: RealPlay;
   readonly e: Eng;
@@ -3683,7 +3690,7 @@ export class FirstTimerRun {
             //  comes near). The wait and its 6 s are untouched; a lift or a lily pad alone keeps the old go)
             const drifts = floats.filter((q) => q.type === 'drift');
             if (SKILLS.floatSure && drifts.length) {
-              if (dir * (edgeX - p.x) > frontStandPx(who)) { this.pending = null; this.lateArmed = null; return side(dir); }
+              if (dir * (edgeX - p.x) > c26StandPx(who)) { this.pending = null; this.lateArmed = null; return side(dir); }
               const banks = this.sim.platforms.filter((q) => q !== here && q.type !== 'drift' && q.type !== 'moving' && !q.broken && Math.abs(q.y - p.y) < 70 && (dir > 0 ? q.x >= edgeX && q.x - edgeX < 400 : q.x + q.width <= edgeX && edgeX - (q.x + q.width) < 400));
               const to = [...banks, ...drifts];
               const vx = p.vx + (Math.abs(carry) < 400 ? carry : 0);
@@ -3844,7 +3851,7 @@ export class FirstTimerRun {
               //  stale aim and rode back to the bank: riverRide's reAim toy, phases 0.5 and 1.5 'back' (traced: intend {right}, rhythm {}, no
               //  re-draw for 1.2 s at 46 px from the front; base re-drew at +0.467 s and hopped). The child's skill only, as before)
               if (SKILLS.reAim && who.reAim && t - this.aim.since > who.stopReact) this.aim.end();
-              if (dir * (edgeX - p.x) > frontStandPx(who)) { this.pending = null; this.lateArmed = null; return side(dir); }
+              if (dir * (edgeX - p.x) > c26StandPx(who)) { this.pending = null; this.lateArmed = null; return side(dir); }
               this.pending = null; this.lateArmed = null; this.clockHeld = true; this.blockedT = 0; return {};
             }
             // (SKILLS.floatSure, ENG-PLANT (the lead's ruling A, rule 28): the far bank in reach and no log, the hop onto the bank is the hop
@@ -3878,7 +3885,7 @@ export class FirstTimerRun {
             this.aim.end();
             // (c26, the front stand: nothing in reach, he stands at the log's front, where a hop lands when the next log comes round, not
             //  where his look stopped him: 2-7 c25 middle Easy 11 stood on #19 37 px from its rear (x 9,379), handed back to #16, rescued)
-            if (!next && !bank && dir * (edgeX - p.x) > frontStandPx(who)) return side(dir);
+            if (!next && !bank && dir * (edgeX - p.x) > c26StandPx(who)) return side(dir);
             return next || bank ? this.startJump(dir, this.jumpFor(p, dir, here), false) : {};
           }
           if (!bank && !next) {
