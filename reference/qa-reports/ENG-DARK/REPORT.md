@@ -18,7 +18,8 @@ no lay change yet. Box 11 OWNS every step below. Re-fetch before every commit (D
 - Variants measured and NOT kept (unlit [] too, but slower): a wood run joined over seams + the first way-on point off it ("broad"):
   adult 282.9 s/8, kid 271.5/7; the same only when a seam joins ("scoped"): 288/8, 272.7/7.
 - darkBots.test: 2 new toys on roll 32 (GREEN 'a seam he walks over is no way down'; RED with noSeamWalk: one rim dark 10+ times): 2/2
-  pass (12 s). The whole darkBots.test NOT run on this head (box 9: test 5 red, to be re-anchored).
+  pass (12 s). The WHOLE darkBots.test on 404d9420 (unfrozen, 36 s): **8/9, test 5 red** ('a dark give-up ends with the visit'; the
+  known stale toy, re-anchored on the final lay), every other test green.
 - **kid Normal 27 (ruling 3's first item), measured (probes/plantone.mts):** with noSeamWalk (0dadb295's downEnd exactly) it STRANDS at
   195.4 s as box 8's row did ('fell back down from here 3 times' at x 1155, y 10670; crossed 70); with the fix: **shrine 202.4 s, 4
   rescues, crossed 19, unlit []** (base 158.1/3). One field turns the strand on and off: the seam rule. Not traced frame by frame.
