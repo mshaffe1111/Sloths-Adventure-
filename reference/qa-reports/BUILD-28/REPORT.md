@@ -48,7 +48,12 @@
    roads reached by a PRESS off W (a jump across the 81 px gap). NO high road reached without a press in any of the 54 (0 NO-PRESS).
    NAMED PLAINLY: 4 of 6 tiers leave the low road at late 0 by a double off the marsh floor; the low road is walked home by 2 of 6.
    The probe still runs the fork on 2-3's config (Normal catch 17, not 2-8's 15.75): the more forgiving side.
-5. NEXT, IN ORDER: (1) ReadNotifications; the lead's word on the entry rule, (y) and the road table. (2) The full unit suite on
+THE LEAD'S WORD (its message, verbatim in substance): (y) ACCEPTED as built (gap 81, back 81, near 441, the first link a jump ACROSS,
+   highRoad's `jump` with its toy, forkFaults (3) RED 60/80 GREEN 81, the road-taken probe 54/54). Two notes FOR READY-28: (1) READY-28
+   re-flies the carry and the road-taken probe on 2-8's OWN config on the draft row (not 2-3's, catch 17 vs 15.75); (2) the READY report
+   names plainly, as a design fact for Matt's playtest: 4 of 6 tiers leave the low road by a double at late 0, so the marsh may see fewer
+   kids than the high road. "Carry on: the gates, the 2b toys, the stills, then 1b at my hash."
+5. NEXT, IN ORDER: (1) ReadNotifications. (2) The full unit suite on
    89a0cf54e was STARTED at the box in frozen /home/user/wt28s7s (output: the session's scratchpad suite-s7.txt): read it (or re-run:
    the CLAUDE.md tsx --test line in a frozen worktree at the head); then the rest of the CI tool line (CI #79): vite build + chunkcheck,
    artcheck, drawcheck, clipcheck, knowncheck, generalitycheck, roadmapcheck, timecheck, paintcheck (3 parts), kbdcheck, buildcheck,
