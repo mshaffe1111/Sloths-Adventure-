@@ -58,9 +58,25 @@ test("the dark's stop FACES the rim: the child's stop, taken facing away 40 px i
 
 test("a dark give-up ends with the visit: with the turn removed (noGlowTurn) he waits out the same rim facing away on BOTH visits (GREEN; planted: the give-up kept for the run)", async () => {
   // (the give-up kept for the run, the child's second visit to that rim had no stop at all; ended with the visit, he stops again)
+  // (ENG-DARK box 12: on the final lay a stop facing away always wakes its light (every landing's light is within GLOW_REACH.back of a
+  //  stop inside GLOW_NEAR), so no run of rolls 1-40 gives up; the toy is hand-built: the child on roll 1 is stood 40 px in from the
+  //  draft's first sleeping rim facing away at 0.5 s and again at 12 s, that rim's light held asleep (its wake cleared every frame):
+  //  a light that cannot wake, met on two visits)
   if (readied !== DRAFT) readyDraft(DRAFT);
   const { firstTimer, FT_CHILD } = await import('../../../tools/inspect/firsttimer.ts');
-  const r = firstTimer(DRAFT, 19, { ...FT_CHILD, noGlowTurn: true }, { cap: 50 });
+  const { darkRims } = await import('./dark.ts');
+  let rim: ReturnType<typeof darkRims>[number] | undefined, stood = 0;
+  const r = firstTimer(DRAFT, 1, { ...FT_CHILD, noGlowTurn: true }, { cap: 20, onFrame(sim) {
+    if (rim?.light?.id !== undefined) (sim.e as unknown as { glowWake: Map<number, number> }).glowWake.delete(rim.light.id);
+    if (stood >= 2 || sim.e.gameTime <= (stood ? 12 : 0.5)) return;
+    rim ??= darkRims(sim.stage as Parameters<typeof darkRims>[0]).find((q) => q.light?.sleep);
+    assert.ok(rim, 'the draft has a sleeping rim');
+    sim.stand(rim.x - rim.dir * 40, rim.y);
+    sim.p.facing = -rim.dir as -1 | 1;
+    sim.p.vx = 0;
+    stood++;
+  } });
+  assert.equal(stood, 2, 'he was stood at the rim twice');
   assert.ok(r.dark, 'the drafted 3-1 has a lit dark (FTRun.dark)');
   const rims = r.dark.gaveUp.map((g) => g.replace(/ at [\d.]+ s$/, ''));
   assert.equal(rims.length, 2, `two waited-out stops: ${JSON.stringify(r.dark.gaveUp)}`);
