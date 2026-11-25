@@ -1,6 +1,7 @@
 # FIX-CARD-DOWN (R-165.456): on a way down, Dot's card keeps off the drop and sits above Pokey
 
-## EXACT NEXT STEP (box 1 hand-over; head = this commit on t-fix-card-down; fix code = 8ae26cdd9, unchanged since)
+## EXACT NEXT STEP (box 2: steps 1 and the suite DONE, below; t-eng-w3 still c1008d8ed, so step 2 has no merge; step 3 waits on the lead's ruling on shard 2's path-only fail)
+## (box 1 hand-over text follows; fix code = 8ae26cdd9, unchanged since)
 Box 1 is finishing and will record here: lockall --check (fix tree vs the base lock, 3264 builds of 102 stages) and the suite's 3 shards,
 all on the frozen fix tree. A box-1 line below saying they are recorded means they are done; until then, do not re-run them.
 1. Run the CI tool line on a frozen tree of this head: `npx tsx --test tools/engine/library.test.ts tools/engine/seedlist.test.ts
@@ -50,7 +51,17 @@ LEAD: stills APPROVED (port-after, land-after). The Dot-follows-her-card point: 
 - clipcheck: PASS (83 known, the same list; no new debt; 588 s). generalitycheck, knowncheck, roadmapcheck, timecheck: PASS.
 - Note (D115, own it): the fix tree was moved from 8ae26cdd9 to 490450973 while clipcheck read it; that commit adds only report files and
   src was chattr-frozen and identical, so what clipcheck reads did not change.
-- lockall --check vs base lock: RUNNING (box 1 records). Suite 3 shards: RUNNING (box 1 records).
+- lockall --check vs base lock (box 1, by message to the lead; box 1 did not push): PASS, 102/102 stages unchanged.
+- Suite, 3 shards (box 2, done 11-25 3:28 PM ET; frozen worktree of 689596d12, src identical to 8ae26cdd9, chattr +i except
+  src/game/gen2/proven; timeout 7200000; box 1's shards were cut by the 30-min background limit, not by a failure):
+  shard 1: 1314 tests, 1313 pass, 0 fail, 1 todo (4-3 real engine, known). shard 3: 1355 tests, 1355 pass, 0 fail.
+  shard 2: 1388 tests, 1385 pass, 2 todo (R-165.312 and a subtest), 1 FAIL, exit 1: ctestPicker.test.ts "the survey names 1-4",
+  assert 'nothing of the old single stage' (!/1-5|Where She Walked/ on the end screen's whole html).
+  ROOT CAUSE, the worktree PATH, not the code: the html carries the hero still as url(file:///tmp/claude-0/.../53436dbe-3541-564a-...),
+  and "3541-564a" contains "1-5". Proof: the same test FAILS on the base c1008d8ed at the same scratchpad path (so not the fix), and the
+  whole file passes 7/7 on a frozen worktree of 689596d12 at /home/user/wt-fcd (no "1-5" in the path). CI's runner path has none.
+  Proposed (a test fix, outside this packet): match the end screen's text (tags stripped), not raw html with asset URLs; or drop
+  url(...) before the regex. A Critic packet, the lead's call.
 - CI tool line (box 2, 11-25 2:20 PM ET, frozen worktree of 689596d12, src and tools chattr +i): the FULL line, gates.yml:157 (42 words,
   identical on the fix tree), not only the 5 files step 1 names: 351 tests, 350 pass, 0 fail, 1 todo (chase bots' CHILD on Normal,
   OPEN, known), exit 0. The 5 files alone: 50/50. Pushback: step 1 listed the CLAUDE.md tool line, which is shorter than CI's (D96).
