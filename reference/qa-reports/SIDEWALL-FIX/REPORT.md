@@ -9,7 +9,7 @@ EXACT NEXT STEP (hand-over 2, at the context cap; code head 29cc04d4):
    narrowLook's 'joined' conditional on a painter that reaches the edge, or drop 'joined' from the drawn set so 8-1 is RED again).
 2. 1-6 is DONE in the look (after/1-6-*.png, crops/1-6-post-close-after.png, crops/1-6-both-posts-after.png): the lead judges it.
    The before stills of the second post (x 45995) were still shooting at hand-over (scratchpad post2-before; tools/sw3.mjs on main).
-3. Then lockall check (main's lock was being written at hand-over in this container: scratchpad lock-main.json; if gone, re-run on a
+3. Then lockall check against reference/qa-reports/SIDEWALL-FIX/lock-main-cdffdc62.json (main cdffdc62, --layouts 16, written on a frozen tree; or re-run on a
    frozen tree of cdffdc62 with `--out`), `--check` on this head; paintcheck 3 parts; the CI tool line; the suite. Push, ls-remote.
 
 Engine member, branch t-fix-sidewall cut from origin/main cdffdc62. Drawing only: no layout code was touched.
