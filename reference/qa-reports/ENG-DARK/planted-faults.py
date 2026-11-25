@@ -48,6 +48,11 @@ PLANTS = [
     # (ENG-DARK-d) unlit cause 3: the stop reads only the route's way, never the steer the thumb presses
     ("the dark stop never reads the pressed steer (glowSteer not called)", 'tools/inspect/firsttimer.ts',
      '    this.glowSteer(out);\n', '', "stop reads the THUMB", 'src/game/gen2/darkBots.test.ts'),
+    # (ENG-DARK-e) the lead's ruling: a climb down a trunk past a rim is its own kind, never 'went over', not counted by 'lit 1 s ahead'
+    ("RimWatch hides a climb inside 'went over' (no 'climbed' kind)", 'src/game/gen2/dark.ts',
+     '...(p.climbing ? { climbed: true as const } : {})', '...({})', "own kind ('climbed')"),
+    ("litAhead counts a climb past a rim as a blind drop", 'src/game/gen2/dark.ts',
+     '    if (c.climbed) continue;\n', '', "own kind ('climbed')"),
 ]
 missed = 0
 for plant in PLANTS:

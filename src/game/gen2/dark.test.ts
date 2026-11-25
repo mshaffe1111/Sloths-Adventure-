@@ -159,6 +159,30 @@ test("RimWatch: a rim's piece he left some other way is no crossing when he late
   assert.equal(watch.crossings.length, 0, watch.crossings.map((c) => `${c.rim.x},${c.rim.y}`).join(' '));
 });
 
+test("RimWatch: a climb down a trunk past a dark rim is its own kind ('climbed'), never 'went over', and 'lit 1 s ahead' does not count it; the same pass as a drop: RED", () => {
+  // (the lead's ruling, 11-25: castBots x40 on ef811c2a, middle Easy roll 4, 112.80 s: standing 27 px in from a rim, pad down, he snapped
+  //  53 px onto a trunk past it and climbed; RimWatch counted 'went over' with its landing dark. A climb is not a blind drop.)
+  ready();
+  const r = new RealPlay(DRAFT, 1, draftCfg());
+  const rim = darkRims(r.stage).find((q) => q.light?.sleep);
+  assert.ok(rim, 'a dark rim with a sleeping light on the real row');
+  const pass = (climbing: boolean) => {
+    const watch = new RimWatch([rim!]);
+    const dark = () => undefined;
+    watch.step(10, { x: rim!.x - rim!.dir * 27, y: rim!.y, grounded: true }, dark);
+    watch.step(10.1, { x: rim!.x + rim!.dir * 26, y: rim!.y + 12, grounded: false, climbing }, dark);
+    return watch.crossings;
+  };
+  const climbed = pass(true);
+  assert.equal(climbed.length, 1, 'the pass is recorded');
+  assert.equal(climbed[0].climbed, true, "its kind is 'climbed'");
+  assert.deepEqual(litAhead(climbed, 'easy'), [], "'lit 1 s ahead' does not count a climb");
+  const dropped = pass(false);
+  assert.equal(dropped.length, 1);
+  assert.equal(dropped[0].climbed, undefined, "a drop is 'went over'");
+  assert.equal(litAhead(dropped, 'easy').length, 1, 'the same pass as a drop, its landing dark: RED');
+});
+
 test("'every gap lit 1 s ahead' (litAhead): walked off a dark rim at once, before its landing's light: RED", () => {
   ready();
   const { rim, crossings, at } = walkOff(0);

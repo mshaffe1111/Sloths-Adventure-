@@ -246,8 +246,9 @@ export function glowFlags(out: StageSink, flags: ReadonlyArray<{ x: number; y: n
   if (id !== first) out.extras[GLOW_ID] = id;
 }
 
-/** one rim he went over in a run: when (game s), and when its landing's light woke (game s; -Infinity always lit, undefined never) */
-export interface RimCrossing { rim: DarkRim; t: number; litAt: number | undefined }
+/** one rim he went over in a run: when (game s), and when its landing's light woke (game s; -Infinity always lit, undefined never);
+ *  `climbed`: he passed its end on a climb (a trunk or vine he holds), not a drop: its own kind, never 'went over' (the lead's ruling, 11-25) */
+export interface RimCrossing { rim: DarkRim; t: number; litAt: number | undefined; climbed?: true }
 
 /**
  * 'every gap lit 1 s ahead', a run's half (names; empty: GREEN): every rim in the dark he went over, its landing's light was lit at
@@ -257,6 +258,8 @@ export function litAhead(crossings: readonly RimCrossing[], setting: 'normal' | 
   const need = DARK_AHEAD[setting];
   const out: string[] = [];
   for (const c of crossings) {
+    // (a climb down a trunk past a rim is no blind drop: he holds on and sees as he goes; RimWatch records it as its own kind)
+    if (c.climbed) continue;
     const lead = c.litAt === undefined ? -Infinity : c.t - c.litAt;
     if (lead < need - 1e-6) out.push(`dark: went over ${at(c.rim)} at ${c.t.toFixed(2)} s ${c.litAt === undefined ? 'with its landing dark' : `${lead.toFixed(2)} s after its light woke`} (needs ${need} s)`);
   }
@@ -265,13 +268,14 @@ export function litAhead(crossings: readonly RimCrossing[], setting: 'normal' | 
 
 /**
  * A run's rim crossings from its frames (the harness's watcher): he goes over a rim the first frame he is past its piece's end, having
- * stood on the piece (on the ground or off it: the game's grace keeps him 'grounded' a moment past an edge). `lit(light)`: the game time the light woke (-Infinity for one always lit, undefined still asleep).
+ * stood on the piece (on the ground or off it: the game's grace keeps him 'grounded' a moment past an edge); passed on a climb (a
+ * trunk grab past the rim, PlayerState.climbing), the crossing is kind `climbed`. `lit(light)`: the game time the light woke (-Infinity for one always lit, undefined still asleep).
  */
 export class RimWatch {
   readonly crossings: RimCrossing[] = [];
   private onPiece: Platform | null = null;
   constructor(readonly rims: readonly DarkRim[]) {}
-  step(t: number, p: { x: number; y: number; grounded: boolean }, lit: (l: Light) => number | undefined) {
+  step(t: number, p: { x: number; y: number; grounded: boolean; climbing?: boolean }, lit: (l: Light) => number | undefined) {
     // (on a rim's piece: he is there; past its end he has gone over, in the air or on the game's grace past an edge, whichever comes first)
     const on = p.grounded ? this.rims.find((r) => p.x >= r.piece.x && p.x <= r.piece.x + r.piece.width && Math.abs(p.y - r.piece.y) <= 4)?.piece : undefined;
     if (on) { this.onPiece = on; return; }
@@ -283,6 +287,6 @@ export class RimWatch {
     const r = this.rims.find((q) => q.piece === from && (q.dir > 0 ? p.x > from.x + from.width : p.x < from.x));
     if (!r) return;
     this.onPiece = null;
-    this.crossings.push({ rim: r, t, litAt: r.light ? (r.light.sleep ? lit(r.light) : -Infinity) : undefined });
+    this.crossings.push({ rim: r, t, litAt: r.light ? (r.light.sleep ? lit(r.light) : -Infinity) : undefined, ...(p.climbing ? { climbed: true as const } : {}) });
   }
 }

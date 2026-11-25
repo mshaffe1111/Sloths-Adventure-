@@ -829,8 +829,9 @@ export interface FTRun {
   softFalls?: number;
   /** the dark (gen2/dark.ts; any stage with a lit dark): the rims he went over, and each one whose landing was not lit DARK_AHEAD s
    *  before he went ('every gap lit 1 s ahead', litAhead's names; empty: GREEN), and each stop he waited out GLOW_GIVEUP s unlit (the rim
-   *  and when he gave up; a give-up lasts the visit, so a rim waited out on two visits is named twice) */
-  dark?: { crossed: number; unlit: string[]; gaveUp: string[] };
+   *  and when he gave up; a give-up lasts the visit, so a rim waited out on two visits is named twice); `climbed`: rims he passed on a
+   *  climb (a trunk grab past the end: RimCrossing.climbed, its own kind; `crossed` counts the ones he went over) */
+  dark?: { crossed: number; climbed: number; unlit: string[]; gaveUp: string[] };
   /** the spur stones he stood on (a spur pond's dead-end stone, RiverZone.spur: OUT-AND-BACK, FIX-22) */
   spurs?: number;
   /** times a log carried him under a bank and he stepped up onto it, never in the air between (engine.ts drift loop; SKILLS.handed) */
@@ -4578,7 +4579,7 @@ export function firstTimer(id: string, seed: number, who: FirstTimer, opts: RunO
     ...(who.holdQ ? { secondPressMs: run.secondPressMs, maxX: Math.round(run.maxX), far: Math.round(run.farOn), xTrace: run.xTrace } : {}),
     ...(run.sim.e.cast ? { cast: castTally({ cast: run.sim.e.cast, player0: run.start }, run.knows('trap')) } : {}),
     ...(run.turnBacks ? { turnBacks: run.turnBacks } : {}),
-    ...(run.rimWatch ? { dark: { crossed: run.rimWatch.crossings.length, unlit: litAhead(run.rimWatch.crossings, who.setting), gaveUp: run.glowGiveUps } } : {}),
+    ...(run.rimWatch ? { dark: { crossed: run.rimWatch.crossings.filter((c) => !c.climbed).length, climbed: run.rimWatch.crossings.filter((c) => c.climbed).length, unlit: litAhead(run.rimWatch.crossings, who.setting), gaveUp: run.glowGiveUps } } : {}),
     ms: Date.now() - t0,
   };
   out.flags = flagsFor(out);
