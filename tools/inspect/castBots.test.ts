@@ -194,6 +194,15 @@ test('a way down: the route turns straight down a turn vine, and drops ledge by 
     assert.equal(through, undefined, `the way drops through the catch at y ${through?.y} from (${a.x}, ${a.y}) to (${b.x}, ${b.y}): ${JSON.stringify(sc)}`);
   }
   assert.ok(sc.some((q) => q.y === 900 && q.x < 670), `he never comes off the catch's end toward the leg's exit: ${JSON.stringify(sc)}`);
+  // (5) the catch lies over ALL of the turn's storey: off its end he lands past that storey, on the floor under it. The way goes on from
+  // where he lands and never climbs back to the storey he dropped past (seed 1's last catches: 'the way on is 132 px up', ENG-DOWNBOT)
+  const over = [plat(0, 500, 720), plat(600, 680, 680), plat(800, 900, 400), plat(0, 1100, 1280)];
+  const passed = { gen2: { plan: [{}, { join: 'turn' }, { join: 'walk' }], tower: { flow: 'down', route: { legs: [{ entry: { x: 100, y: 500 }, exit: { x: 700, y: 500 } }, { entry: { x: 1200, y: 900 }, exit: { x: 800, y: 900 } }, { entry: { x: 600, y: 1100 }, exit: { x: 100, y: 1100 } }], spawn: { x: 100, y: 500 } }, turns: [{ x: 760, from: 500, to: 900 }] } },
+    vines: [{ x: 760, topY: 500, bottomY: 680, vineType: 'tree_climb' }], platforms: over };
+  const pc = towerCorners(passed as never, { x: 100, y: 500 })!;
+  const landed = pc.findIndex((q) => q.y === 1100);
+  assert.ok(landed > 0, `he never lands on the floor past the storey: ${JSON.stringify(pc)}`);
+  assert.deepEqual(pc.slice(landed).filter((q) => q.y < 1100 - 60), [], `the way climbs back to the storey he dropped past: ${JSON.stringify(pc)}`);
 });
 
 // A way DOWN in the real engine (firsttimer.ts, ENG-W3a's skills; toys ENG-DOWNBOT, no stage's numbers: a carrier stage, its ground

@@ -31,6 +31,9 @@ export function towerCorners(stage: StageLike, spawn: Pt): Pt[] | null {
   if (!g || !T || !T.route?.legs?.length) return null;
   const out: Pt[] = [{ x: spawn.x, y: spawn.y }];
   let ti = 0;
+  /** a way down: the wood the way dropped to past a turn's storey (climb): a leg whose storey lies over it is passed, never climbed
+   *  back to (seed 1's last catches: the way pointed 132 px up to the storey he had dropped past, and he turned on the catch, ENG-DOWNBOT) */
+  let past: number | undefined;
   // (from where he is to a turn's foot: across first at his own height, then the climb straight up or down the vine)
   const climb = (t: { x: number; from: number; to: number }, toward?: Pt) => {
     const at = out[out.length - 1];
@@ -47,7 +50,9 @@ export function towerCorners(stage: StageLike, spawn: Pt): Pt[] | null {
       const v = vines.find((q) => Math.abs(q.x - t.x) <= 2 && Math.abs(q.topY - t.from) <= 6);
       if (v && v.bottomY < t.to - HOP) {
         out.push({ x: t.x, y: v.bottomY });
-        dropTo({ x: t.x, y: v.bottomY }, { x: toward?.x ?? t.x, y: t.to });
+        const land = dropTo({ x: t.x, y: v.bottomY }, { x: toward?.x ?? t.x, y: t.to });
+        // (off the catch he can land PAST the turn's storey (the catch lies over all of it): the way goes on from where he lands)
+        if (land.y > t.to + HOP) past = land.y;
       } else out.push({ x: t.x, y: t.to });
     } else out.push({ x: t.x, y: at.y }, { x: t.x, y: t.from }, { x: t.x, y: t.to });
   };
@@ -78,10 +83,14 @@ export function towerCorners(stage: StageLike, spawn: Pt): Pt[] | null {
       // (the run of wood he walks along at this height, to its end the way on lies)
       const run = runOf(at);
       if (!run) break;
-      const dir = b.x < at.x ? -1 : 1;
       const [lo, hi] = run;
-      const off = dir < 0 ? lo - 30 : hi + 30;
-      const under = wood.filter((p) => off >= p.x && off <= p.x + p.width && p.y > at.y + 4).sort((p, q) => p.y - q.y)[0];
+      // (the end toward where the way goes on first; when nothing lies under it (the wood runs on into the wall), the other end: the
+      //  last catch of a way down ran on into the wall by the shrine, the way slanted through it, and he was stranded on it, ENG-DOWNBOT)
+      const toward = b.x < at.x ? -1 : 1;
+      const offAt = (d: number) => (d < 0 ? lo - 30 : hi + 30);
+      const underAt = (d: number) => wood.filter((p) => offAt(d) >= p.x && offAt(d) <= p.x + p.width && p.y > at.y + 4).sort((p, q) => p.y - q.y)[0];
+      const dir = underAt(toward) ? toward : -toward;
+      const off = offAt(dir), under = underAt(dir);
       if (!under) break;
       // (to the end of the wood, then down to where he lands past it: a point in the air level with the wood read as a gap to jump,
       // and he jumped it onto the catch beyond, ENG-W3a)
@@ -117,6 +126,8 @@ export function towerCorners(stage: StageLike, spawn: Pt): Pt[] | null {
   };
   T.route.legs.forEach((leg, k) => {
     if (g.plan[k]?.join === 'turn' && T.turns[ti]) climb(T.turns[ti++], leg.exit);
+    if (past !== undefined && Math.max(leg.entry.y, leg.exit.y) < past - HOP) return;
+    past = undefined;
     out.push({ x: leg.entry.x, y: leg.entry.y });
     within(leg.entry, leg.exit);
   });
