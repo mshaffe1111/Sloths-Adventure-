@@ -30,16 +30,18 @@ flew him off from there and he landed. CI-5 (`here` = the log by standingOnId): 
 front, vx 0, for 9+ s (t 99.6 -> 108.5+, carried his way), 6 s behind CI-4 from then; the life is a sinking pad (#116 x 29,664, t 143.5).
 So the blind press hid a run past the log's front at full run; judged, he stands past the front where no hop is judged landing.
 
-## EXACT NEXT STEP (session 4; only on the lead's word after this STOP)
-0. Trees: fz-ci4 4da085f92, fz-ci5 36da03dd4 (chattr). Tools: ci-tools/*.txt -> /home/user/tl/*.mts; set1-m.sh + margins.mts from
-   release-0.10.3-wip-plant-c-report reference/qa-reports/ENG-PLANT/tools/; c27's flips: that branch's data/q/set1-c27/.
-1. 2-2 adult N4 f2960-2990 on fz-ci5: which gate ran him at #79's front at full run (wrap run.intend/decide/startJump with stack lines,
-   as racefront-decide does); fix general: the run-up to a press at a log's front lets go where his stop ends before the front (the same
-   rule as the front stand: frontStandPx(who) with the decision frame), and a stand already past a log's front walks back to it.
-2. Then 2-4 adult N6 and 2-1 child N11 the same way (first frame CI-4 vs CI-5 part, rowprobe ALL=1 both trees, python diff).
-3. Then on the new candidate: racefront + the new test, the 10 races, the 10 flips (each moved row traced), then red 4 (hopJudged Easy
-   5: per-frame hopFlight vs engine overSmall, bot model to match the engine), then the final head's checks (4 files = reds 5-9 only,
-   wide sample 0 BAR PASS -> FAIL vs main, tierBots 9/9, tsc).
+## EXACT NEXT STEP (session 4): THE LEAD'S RULING after the STOP, word for word
+"LEAD RULING (D133: narrow, never sweep). Good STOP and a clean trace.
+1. CI-5 is TOO WIDE: it moves 8 of 10 known-flip files, and 3 rows lose a life. The likely sweeper is `here` falling back to standingOnId on EVERY drift/moving floor, plus stopMeant at EVERY front stand. Session 4 NARROWS CI-5 to the traced cases only: the race-leg front stand (CI-3/CI-4's place), counting the decision frame there. The aim: the known flips match c27 row for row, except the intended kid FAIL -> PASS rows, each named.
+2. The 2-2 adult N 4 fault (he runs past log #79's front, and the blind press was hiding it) exists on main's path too, just masked. If the narrowed CI-5 leaves 2-2/2-4/2-1's rows as on c27, it does NOT get fixed in this merge: it goes on R-165.424's list with your trace. Only if the narrowing cannot avoid moving those rows do you fix it, and then STOP and tell me first.
+3. The race margins: the bar is every race WON. Margins are reported, not gated. 3.6 s WON is WON. Name the noise you measured (5-17 s between candidates) in the REPORT.
+4. Then red 4 (bot model = engine), then the final checks as in your brief (the 4 files with only reds 5-9 left, the wide sample, tierBots, tsc).
+Hand over on your box with this word for word in the EXACT NEXT STEP. If session 4's narrowing also fails to converge, STOP and send me the table: I will then decide the scope of this merge."
+How (session 3's notes): trees fz-ci4 4da085f92, fz-ci5 36da03dd4 (chattr). Tools: ci-tools/*.txt -> /home/user/tl/*.mts; set1-m.sh +
+margins.mts from release-0.10.3-wip-plant-c-report reference/qa-reports/ENG-PLANT/tools/; c27's flips: that branch's data/q/set1-c27/.
+Compare each set1 jsonl (sorted by seed: pass, lives, time, rescues) vs c27 AND vs data/ci/set1-ci4. The narrowing: drop the `here`
+standingOnId fallback; stopMeant and the decision frame only where the race-leg walk (SKILLS.race, the pacer on, the log his way) ends;
+c26's frontStandPx untouched elsewhere; racefront + the new riverRide test must stay GREEN. The 2-2 adult N4 trace for R-165.424: above.
 
 ## SESSION 2 HAND-OVER (ENG-PLANT-CI-b; started 11:58 AM ET 11-25). HEAD = CI-4 4da085f92 = a CANDIDATE, NOT DONE: do not merge it yet
 Branch release-0.10.3-wip-plant-ci: acf29a092 (session 1) -> 82b7f4c8d CI-2 RE-APPLIED (the lead's ruling: the judged hop is the hop
