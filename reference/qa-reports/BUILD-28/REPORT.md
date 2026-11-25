@@ -44,6 +44,11 @@ FOR THE LEAD TO RULE (each is outside a data-only change):
      number kept; then re-probe. About one box with w2TwoRoad.test and the verdicts.
  (B) the bot fix (firsttimer.ts, the reroute's points = the walked top line over the chain): an ENG/bot change outside my lane (or
      mine at 1b, where I already touch firsttimer.ts for the merge) and it must run castBots' known flips (rule 28).
+DRAFT FOR (B), READY, NOT LANDED (draft-B-reroute.patch.txt here, 6+/2-, firsttimer.ts only): the reroute's points = the walked top
+     line over the chain (over each x the highest chain top). Measured on frozen /home/user/wt28f (ed70f9481 + the patch): the probe
+     42/54 (the same 42 as the TOPLINE plant; the 12 left are (A)'s late-0 runs); lineBot.test.ts 12 pass 0 fail. It cannot move a
+     listed stage: the read is a flood's, ROAD_TRIPS 0 on every listed stage (firsttimer.ts:145); castBots' known flips still run with it
+     at 1b (rule 28). Land it only on the lead's word (whose lane).
 NOT DONE this session: step 2 (stills): no running stage lays the two-road section (2-8 in the game is still the old stage; 2-96 is a
 test-only toy), and the shape is about to change under (A): stills now would be stills of what is replaced (D40). Step 3 (1b): no
 release-0.10.3 hash in notifications at 11:31 AM ET. Step 4 (READY-28): blocked on (A), (B), 1b.

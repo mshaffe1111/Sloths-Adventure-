@@ -1,0 +1,20 @@
+diff --git a/tools/inspect/firsttimer.ts b/tools/inspect/firsttimer.ts
+index 4650e6d20..d6e2b179c 100644
+--- a/tools/inspect/firsttimer.ts
++++ b/tools/inspect/firsttimer.ts
+@@ -2476,9 +2476,13 @@ export class FirstTimerRun {
+     const tail = going.length ? Math.min(...going.map((f) => f.x * dir)) * dir : p.x;
+     const rate = c.f.tailOff > 0 ? c.f.px / c.f.tailOff : Infinity;
+     if (left >= ((far - tail) * dir) / rate) return;
+-    // (they can't make it: round by the high road, its pieces' tops every 24 px)
++    // (they can't make it: round by the high road, its WALKED top every 24 px: over each x the highest chain top there, so a chain that
++    //  climbs and comes down over the same pieces (three up, three down) is one walk out, never each piece's whole span in turn)
+     const pts: Pt[] = [];
+-    for (const q of road.chain) for (let x = nearOf(q); (farOf(q) - x) * dir >= 0; x += 24 * dir) pts.push({ x, y: q.y });
++    for (let x = nearOf(road.chain[0]); (farOf(road.chain[road.chain.length - 1]) - x) * dir >= 0; x += 24 * dir) {
++      const on = road.chain.filter((q) => x >= q.x && x <= q.x + q.w);
++      if (on.length) pts.push({ x, y: Math.min(...on.map((q) => q.y)) });
++    }
+     this.prog.reroute(this.prog.cur, fork, farOf(road.chain[road.chain.length - 1]), dir, pts);
+     // (round by the high road: the other road is the low road's own pieces, laid under the banks within its span)
+     this.otherRoad = new Set(this.sim.platforms.filter((q) => q.y > low.lip + 1 && q.x >= low.x0 - 1 && q.x + q.width <= low.x1 + 1));
