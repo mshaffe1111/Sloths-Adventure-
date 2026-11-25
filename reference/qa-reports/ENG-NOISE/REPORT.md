@@ -1,9 +1,13 @@
 # ENG-NOISE (11-25) REPORT: the cast's one channel as a { way, x, y, r } seam; the noise toys re-proved on a REAL World 3 row
-**EXACT NEXT STEP (box 2, 2:25 PM ET):** the three toys are GREEN on the real 3-1 draft row with their plants caught (w3Noise.test.ts 7/7;
-with castNoise + noiseRow 21/21). Next: item 3, the gates ONCE on a chattr-frozen worktree of the toy commit's head: lockall --check vs
-the BASE lock (c1008d8ed) and vs MAIN's (cdffdc627), both recorded in the scratchpad from frozen worktrees (ZERO moves wanted: the seam
-is byte-identical); tierBots 9/9; tsc; the suite in 3 shards; the CI tool line (gates.yml:157). Then merge origin/t-eng-w3 (no force),
-re-run w3Noise + castNoise + noiseRow on the merged head, push to t-eng-w3, ls-remote, send the lead the hash and one line per gate.
+**EXACT NEXT STEP (box 2 handed over on the 28-minute clock, 2:30 PM ET):** item 1 is DONE (the three toys GREEN on the real 3-1 draft
+row, plants caught: w3Noise 7/7, with castNoise + noiseRow 21/21, at d05aa5321). Item 2, the gates, is RUNNING in box 2 on a chattr-frozen
+worktree of d05aa5321 (this hand-over commit adds only this REPORT): lockall --out head --check BASE, then the head lock compared to MAIN's
+by lockall's own rule; tierBots; the CI tool line (gates.yml:157); the suite in 3 shards. Box 2 finishes and records ONLY those (D138) and
+sends the lead one line per gate. Box 3, once the lead forwards them all green: (1) `git fetch origin t-eng-w3 t-eng-noise-wip`, check out
+t-eng-noise-wip's head, merge origin/t-eng-w3 (no force; it stood at c1008d8ed = BASE at this hand-over, so a no-op unless FIX-CARD-DOWN,
+ENG-DARK or ENG-DOWNBOT landed; name every conflict); (2) if the merge brought code: tsc, w3Noise + castNoise + noiseRow, the CI tool line on
+the merged head; else w3Noise + castNoise + noiseRow alone; (3) the gate lines into item 3 below, push t-eng-noise-wip, then
+`git push origin HEAD:t-eng-w3`, ls-remote both; (4) rewrite reference/handoffs/engine-core.md; send the lead the landed hash.
 Branch t-eng-noise-wip from t-eng-w3 c1008d8ed (BASE). Started 1:45 PM ET (hook stamp); lead's re-scope approved (toys by 3:30 PM, landed by 5:00 PM, stop 6:00 PM ET).
 
 ## What main ALREADY has for noise (ENG-NOISE 11-19: 015e4209 + b85e5aee, report c59928a4 on t-eng-noise): ENG-LURE and the 3-3/3-5 builders start here
@@ -35,7 +39,9 @@ gen2/noiseRow.test.ts (a toy kit). 3-5.md/3-3.md's "NOT wired: no caller outside
    top stands on either side (dropTop looks both ways, he walks off toward the floor); the roll's tempo scales a laid drop (pipeline.ts
    dy x T.rise: 392-407 px on 3-1's rolls), so the toy takes the fall as laid within 10 px and prints it. A walk-off lands about 140 px
    in, so the sleeper sits at t 0.55 (about 300 px past the landing, measured on the landing frame).
-3. **Gates:** not run yet (box 2: lockall vs main AND base, tierBots 9/9, suite 3 shards + the CI tool line, the CLAUDE.md list, frozen head).
+3. **Gates (box 2, on frozen d05aa5321):** tsc PASS. Locks recorded from frozen worktrees: BASE c1008d8ed and MAIN cdffdc627 are the same
+   lock (3264 builds, 102/102 stages unchanged: t-eng-w3's base moves no listed stage against main). Running at the hand-over: lockall
+   --check vs BASE (and the same lock vs MAIN), tierBots, the CI tool line, the suite in 3 shards; their lines go to the lead from box 2.
 
 ## Polish check
 Nothing drawn changed (no art, sprite, screen or text): the seam is a type and a method; the toys are a test. A struck stone still has
