@@ -1,16 +1,24 @@
 # ENG-DARK REPORT (the dark + light ring as one gen2 brick; WORLD-3-PLAN F2; R-165.449)
-**EXACT NEXT STEP (ENG-DARK-c hand-over, 12:05 PM ET by `date`; code head b71163ea on t-eng-dark-wip: box 2's code + glowJump):**
+**EXACT NEXT STEP (ENG-DARK-c hand-over, 12:06 PM ET by `date`; code head b71163ea on t-eng-dark-wip: box 2's code + glowJump):**
 (1) **Box 3's runs are still going in box 3's container; box 3 records them here when they end (do not re-run them):** castBots on the
 3-1 draft on a frozen BASE c1008d8e (no dark), seeds 4-21 and 22-40, both settings, every bot (seeds 1-3 done: item 3 below), then the
 per-bot table base vs dark (653bb970's x40, box 2) by rescues and by cause. **Box 2's lockall --check is RECORDED: PASS, 102/102 unchanged on a
 frozen 653bb970 vs c1008d8e ('Box 2's runs' below)**; glowJump (b71163ea) changes only the bots, so the lock is re-run once on the final
 merged head at landing (`lockall --layouts 16 --out lock-base.json` on a frozen t-eng-w3 base, then `--check` on the frozen final head).
 (2) **Box 4: castBots x40 on the 3-1 draft on a frozen b71163ea** (3 lanes: seeds 1-14 / 15-27 / 28-40, both settings, every bot,
+fixes** (not one x40 per fix; 3 lanes: seeds 1-14 / 15-27 / 28-40, both settings, every bot,
 `--rows`; at most two heavy runs at once). PASS: unlit 0 of the 55 'landing dark' (the glowJump fix, item 4 below), shrine >= 359/360,
-rescues not up vs 653bb970's 1,393. Then TRACE the other unlit kind, 'woke too late' (3 in the x40: he went over 0.34-0.73 s after the
-landing's light woke; rows: kid/adult/middle, `grep 'after it'` in cast-3-1-x40-653bb970.jsonl), two traces (FT_FRAMES=t0,t1 with
-`reference/qa-reports/ENG-DARK/onerun.mts`), fix with a toy each way if the stop ends early. Any 'landing dark' left after glowJump:
-trace two, same way.
+rescues not up vs 653bb970's 1,393. **Then cause 2, traced ONCE by box 3 (one more trace owed), child Normal seed 19, rim (974, 3098), the
+left end of piece 974-1154; identical on 653bb970 and b71163ea (glowJump does not touch it):** he lands on the piece 2 px from the rim
+at 37.0 s; at 37.6 s he is carried 41 px right with NO pad (vx 154, pad {}: find what moves him), then stands STILL at x 1014 from 37.8
+to 41.6 s (3.8 s) and the rim's landing light NEVER wakes (so from that spot/facing glowReaches misses it: check his facing and the
+light's x against GLOW_REACH.back 260); at GLOW_GIVEUP 4 s he gives up and walks off at 42.07 s, landing dark (unlit #1). glowGaveUp is
+then PERMANENT for the run: back at the same rim after the rescue he dithers (run-ups right and left) and goes over at 48.53 s 0.34 s
+after the light woke from an incidental pause, with no stop at all (unlit #2, the 'woke too late' kind). Trace: `FT_FRAMES=36,42.2
+npx tsx reference/qa-reports/ENG-DARK/onerun.mts child normal 19` in a frozen worktree (its default cap is 360 s; castBots runs past
+it). Fix candidates (a toy each way on this row): the stop is taken WHERE it wakes the landing (within GLOW_NEAR of the rim, facing it;
+a stand that cannot reach the light steps nearer instead of waiting out GLOW_GIVEUP), and a give-up ends with the visit (a rescue or
+leaving the piece clears it), never for the whole run. Second trace owed: middle Normal 13 (rim 248, 8746 at 112.50 s) or 29.
 (3) Then: the plants on a frozen final head (`planted-faults.py`, 13 now: PASS 13/13 CAUGHT), tierBots 9/9, the suite (3 shards) +
 the CI tool line once on the final head; land on t-eng-w3 by the lead's landing rule below; send the lead the hash, the READY measures
 and that ENG-SPORE can start (the light API: reference/architecture/ADR-004-timed-lights.md on the lead's branch).
