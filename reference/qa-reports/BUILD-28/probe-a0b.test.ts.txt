@@ -1,0 +1,36 @@
+/**
+ * A0b (BUILD-28 session 6): the room a dip hop has under a porch that were solid from below. The engine has no head stop on a piece
+ * (A0), so it is MODELLED here by hand after each frame (not engine code): his head never above the porch's underside (Y-36, 96 px over
+ * the marsh floor), his rise stopped there. He runs right along the marsh floor (Y+60) at a full run and presses a full jump at each
+ * take-off x before a 100 px dip (1300-1400); read: across (stands on the far floor) or in (falls into the dip). Control: no ceiling.
+ */
+import { test } from 'node:test';
+import { RealPlay } from '../src/game/realPlay.ts';
+import type { Platform } from '../src/game/types.ts';
+
+const Y = 800;
+const solid = (id: number, x: number, width: number, y: number, height: number) => ({ id, x, y, width, height, type: 'solid' }) as Platform;
+
+function dipHop(press: number, lid: boolean) {
+  const r = new RealPlay('2-1', 1);
+  r.bare([solid(1, 0, 1300, Y + 60, 200), solid(2, 1400, 2600, Y + 60, 200), solid(3, 1300, 100, Y + 200, 60)]);
+  r.stand(900, Y + 60);
+  for (let i = 0; i < 5; i++) r.frame({});
+  let pressed = false, rise = 0, t0 = -1;
+  for (let i = 0; i < 150; i++) {
+    const p = r.p;
+    const go = !pressed && p.x >= press;
+    if (go) { pressed = true; t0 = i; }
+    r.frame({ right: true, press: go, jump: pressed && i - t0 < 14 });
+    const q = r.p;
+    if (lid && q.x > 1000 && q.x < 2000 && q.y - q.height < Y - 36) { q.y = Y - 36 + q.height; if (q.vy < 0) q.vy = 0; }
+    if (pressed) rise = Math.max(rise, Y + 60 - q.y);
+    if (pressed && q.x > 1500) break;
+  }
+  const p = r.p;
+  return `${lid ? 'LID ' : 'open'} press at ${press}: ${p.y > Y + 61 ? 'IN the dip' : 'across'} (end ${p.x.toFixed(0)}/${p.y.toFixed(0)}, rise ${rise.toFixed(1)})`;
+}
+
+test('A0b a dip hop under a porch solid from below', () => {
+  for (const lid of [false, true]) for (const press of [1150, 1200, 1240, 1260, 1280, 1285, 1290, 1300, 1310, 1320, 1330, 1340, 1350]) console.log(dipHop(press, lid));
+});

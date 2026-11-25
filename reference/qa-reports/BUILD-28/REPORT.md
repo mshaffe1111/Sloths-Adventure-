@@ -16,6 +16,13 @@ A0, PROVEN (probe-a0.test.ts.txt, its output probe-a0-results.txt; frozen /home/
  SO (i) DOES NOT FIX (A): it moves the pop-up from the porch (120 over the marsh floor) to rise1's top (180); both are inside a double
  jump's reach (176.9 + 14 = 190.9 px; 196.9 Easy). Session 5's pop-ups (middle 1156/860 -> 1299/740, 120 up) are double jumps: a single
  jump (held, or a touch flick: realPlay.ts, 97 px up) reaches 111.8 (117.8 Easy).
+ THE LEAD'S RE-RULING CROSSED (A1: the porch SOLID FROM BELOW, replacing (i)): A0 above answers it too: a non-thin piece (the 60 px
+ block) does not stop him either; the engine has NO solid-from-below piece (only the fig gate's lid). So it needs a new engine head stop.
+ A0b, ITS COST MEASURED (probe-a0b.test.ts.txt, output probe-a0b-results.txt; the head stop MODELLED by hand after each frame, not engine
+ code): the marsh floor 860, the porch's underside 764 (96 px over it, 48 over his head), a 100 px dip at 1300-1400; he runs at a full
+ run and presses a full jump at x. NO lid: across from every press 1200-1350 (1150 too early). WITH the lid: rise 48, across only from a
+ press at 1290-1350 (10 px before the edge to the coyote's end, ~60 px, ~0.2 s), INTO the dip from 1150-1285. So a solid porch over the
+ marsh cuts each dip hop's take-off window from ~150 px to ~60 px, at all four dips (a fall: a set-back to the near bank).
  OPTIONS (each the lead's; none built):
   (a) the high road over the marsh out of a double jump's reach: every high-road top over the marsh floor at least ~200 px above it
       (>= 140 over the banks), e.g. the three ups on the near bank before the water, the marsh crossed at Y-180 (240 over its floor), the
