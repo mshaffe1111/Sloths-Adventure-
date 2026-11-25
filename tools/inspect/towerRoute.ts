@@ -44,6 +44,10 @@ export function towerCorners(stage: StageLike, spawn: Pt): Pt[] | null {
       //  to the vine's foot runs under that wood, and he stood over it, 'the way on is 105 px down', ENG-DOWNBOT)
       const run = runOf(at);
       if (run && (t.x < run[0] || t.x > run[1])) out.push({ x: t.x < run[0] ? run[0] + 8 : run[1] - 8, y: at.y });
+      // (the vine's top stands ON that wood (a storey wall to wall, its way down a vine from its floor): across to it at his own height
+      //  first; a slant from the leg's exit ran through the floor to the vine's foot and every bot stood under it, 'in a dip 174 px deep,
+      //  the way on is 90 px down', the drafted way down's top 'rest' cause, ENG-DOWNBOT)
+      else if (run && Math.abs(t.x - at.x) > 8) out.push({ x: t.x, y: at.y });
       // (a vine that stops on a catch over the storey on (gen2 tower.ts stopVines, the lead's ruling (b)): down it onto the catch, then
       //  off the catch's end toward where the way goes on (the leg's exit), down to the storey; straight on down the vine's old line
       //  ran through the catch, and every bot stood on it turning, 'the way on is 84 px down', ENG-DOWNBOT)

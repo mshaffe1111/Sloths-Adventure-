@@ -32,6 +32,8 @@ for (const r of rows) {
   for (const s of r.stuck) {
     const c = m.slots.some(([a, b]) => s.x >= a - 30 && s.x <= b + 30) ? 'slot' : m.vines.some((v) => Math.abs(v - s.x) <= 48) ? 'vine' : 'rest';
     tally[k][c]++;
+    // (PRINT=<cause> lists each spot of that cause: bot, setting, seed, x and what the bot read there)
+    if (process.env.PRINT === c) console.log(`  ${k} ${r.seed} x ${s.x}: ${s.what}`);
   }
 }
 const all = { rows: 0, rescues: 0, slot: 0, vine: 0, rest: 0 } as Record<string, number>;

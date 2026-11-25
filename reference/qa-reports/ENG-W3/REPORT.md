@@ -1,3 +1,21 @@
+# ENG-DOWNBOT REPORT (lane 2: the down lay's head room, then the bots on a way down to the shrine) — box 11 (session 9, 11-25)
+**(a) FIX A / FIX B OFF, x40 kid+adult ON THE DRAFT (GEN2_DRAFT=3-1, frozen 571d6e2a9 trees, --par 2 --rows; DRAFT CHECKED: 122 and
+155 of 160 rows identical to the head's, a non-draft run differs in nearly every row): rows/castbots-571d6e2a9-Aoff- and
+-Boff-kidadult-1-40.jsonl.** Rescues head 251 / A off 264 / B off 250 (kN 29/30/29, kE 76/84/76, aN 25/27/24, aE 121/123/121; pass kN
+19/20/19, aN 22/21/23). **FIX A STAYS:** 38 rows differ; it still cures **adult N 10** (head R0 100.2 s; A off R1 'the way on is 214 px
+down' at x 1180) and nets 13. Its toy on that shape is owed. **FIX B COMES OUT (ruling 2):** 5 rows differ, none better on the head
+(adult N 19: head R1, B off R0). Its line is in downEnd's body (ENG-DARK's by the lead's ruling; their branch splits downEnd into
+downEnd + downPt): taken out AT THE MERGE, where downEnd conflicts anyway (told the lead). **(b) THE TOP 'REST' CAUSE, TRACED (kid N 7,
+kid E 12 twice; probes/causes.mts PRINT=rest lists all 51): it is the ROUTE, towerRoute.ts climb().** 34 of 51 rest spots read 'in a
+dip N px deep, the way on is N px down' (N 174/178 px: one storey), at x 450-770. Shape (normal 7, y 5513): a storey wall to wall
+(0-70, 70-684, 684-1037, 1037-1219, 1219-1280 @5513), its only way down a climb vine at x 44 (top 5513, level with the floor, foot
+5860). The leg's exit is 684. Going down, climb() lays an across point only when the vine stands PAST his wood's end; this vine stands
+ON it, so the route slanted from (684,5513) through the floor to (44,5860), and he stood at 584-607 turning, under the slant, until
+rescued. Easy 12 has it twice (5757, vine x 44; 8769, vine x 1236 mirrored). **FIX (towerRoute.ts climb, going down): when the vine's
+top stands on his run, across to it at his own height first, then straight down.** Planted castBots.test 'a way down: the route turns
+straight down a turn vine...' case (6): **RED on 571d6e2a9** (the way runs under 70-684 @500 from (684,500) to (44,900)), **GREEN
+after** (cases 1-5 still green).
+
 # ENG-DOWNBOT REPORT (lane 2: the down lay's head room, then the bots on a way down to the shrine) — box 10 (session 8, 11-25)
 **EXACT NEXT STEP (box 10 hand-over, 1:05 PM ET):** code **571d6e2a9** (the no-slot lay rule). Order item 1 is DONE; items 2-5 are
 left. **(1) THE NO-SLOT LAY RULE, DONE (tower.ts `slotted` in `fair` and rule 1, going down only; `SLOT = { step: 8, walk: 21,
