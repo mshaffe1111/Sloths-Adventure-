@@ -437,6 +437,9 @@ export function towerCatches(flow: 'up' | 'down', platforms: readonly Platform[]
       //  and HEAD over the storey laid under it later (a storey is TOWER.clear under the one it leaves: a catch 193 px down stood 81 px
       //  over the next storey's floor, by its turn vine's top)
       if (flow === 'down') for (let y = Math.min(top - 20, e.p.y + TOWER.clear - HEAD); y >= e.p.y + HEAD; y -= 20) ys.push(y);
+      // (and the highest fair height itself, a head's room under the piece: the 20 px steps passed over the only height that kept his
+      //  hop's room over a vine's top 267 px under and a head's room under both storeys, drafted 3-1 easy 8, ENG-DOWNBOT)
+      if (flow === 'down') ys.push(e.p.y + HEAD);
       // (going down, at each height the bough may also lie further along, still under where he lands: SLIDE.out px of it past the
       //  end's fall line the way he walks off, SLIDE.back px of it behind; the centred one first, then the nearest. With his head
       //  room kept both ways (cramped) the centred bough alone found no fair height under 7 of 48 drafted 3-1 rolls' ends (a shelf
