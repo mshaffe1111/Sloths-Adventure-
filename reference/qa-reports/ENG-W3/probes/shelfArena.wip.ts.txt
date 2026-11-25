@@ -1,0 +1,35 @@
+// WIP (box 12, NOT a test yet): seed-39-shaped arena whose route is built by towerRoutePts; insert before '// (STAGE-RULES.md:77' in tools/inspect/castBots.test.ts
+// (a stopped turn vine's catch; off its near end he drops onto a storey whose next leg comes in at its far end and goes back past where
+//  he landed, on down off the storey's near end. Its shape is drafted 3-1's (castBots normal seed 39 by x 889: 796-1183@2010 under the
+//  catch 889-1069@1823; ENG-DOWNBOT; no stage's numbers in the bots). The way is the one the route makes (towerRoutePts from the
+//  tower's legs and turns): out to the far end and back over the same wood, the route's cursor flipped between the two legs and he
+//  turned there until rescued, 'in a dip 174 px deep'. Both ways: the far end right, and mirrored)
+async function shelfArena(who: FirstTimer, k: number, m: 1 | -1, seen: (sim: { p: { x: number; y: number; grounded: boolean }; standingOn: number | null }) => void) {
+  const { towerRoutePts } = await import('./towerRoute.ts');
+  const X = (x: number) => (m > 0 ? x : 1280 - x), P = (id: number, x: number, y: number, w: number) => thin(id, m > 0 ? x : 1280 - x - w, y, w);
+  const platforms = [P(9001, 0, 329, 955), P(9002, 889, 423, 180), P(9003, 285, 502, 528), P(9005, 796, 610, 387), P(9007, 171, 675, 180),
+    P(9008, 575, 751, 540), P(9010, 0, 876, 212), P(9011, 312, 876, 968), P(9012, 494, 1049, 514), P(9013, -400, 1157, 3000)];
+  const vines = [{ x: X(981), topY: 329, bottomY: 423 }, { x: X(286), topY: 876, bottomY: 1157 }];
+  const stage = { gen2: { plan: [{}, { join: 'turn' }], tower: { flow: 'down', route: { legs: [{ entry: { x: X(700), y: 329 }, exit: { x: X(955), y: 329 } }, { entry: { x: X(1001), y: 610 }, exit: { x: X(312), y: 876 } }], spawn: { x: X(700), y: 329 } },
+    turns: [{ x: X(981), from: 329, to: 610 }, { x: X(286), from: 876, to: 1157 }] } }, platforms, vines: vines.map((v) => ({ ...v, vineType: 'tree_climb' })) };
+  const route = towerRoutePts(stage as never, { x: X(700), y: 329 })!;
+  downArena({ who, k, at: { x: X(700), y: 329 }, cap: 30, platforms, vines, route, seen });
+}
+test('a way down: off a stopped vine\'s catch onto a storey whose leg comes in at its far end, he goes on down, never turning on it', async () => {
+  // (the kid and the adult, a few thumbs, both ways. RED on 4bcd1e51 (the route went out to the far end and back past where he landed),
+  //  GREEN with the route's out-and-back filter. A rescue here is the arena's own: he is set down further on, 100+ px in one frame)
+  const m = await import('./firsttimer.ts');
+  const miss: string[] = [];
+  for (const mm of [1, -1] as const) for (const who of [m.FT_KID, m.FT_ADULT]) for (let k = 1; k <= 3; k++) {
+    let on = false, rescued = false, last = '', px = NaN, py = NaN;
+    await shelfArena(who, k, mm, (sim) => {
+      if (on) return;
+      if (!rescued && !Number.isNaN(px) && (Math.abs(sim.p.x - px) > 100 || Math.abs(sim.p.y - py) > 100)) { rescued = true; last = `${Math.round(px)},${Math.round(py)}->${Math.round(sim.p.x)},${Math.round(sim.p.y)}`; }
+      px = sim.p.x; py = sim.p.y;
+      if (sim.p.grounded && !rescued) { last = `${sim.standingOn} by x ${Math.round(sim.p.x)}`; if (sim.standingOn === 9011) on = true; }
+    });
+    if (!on || rescued) miss.push(`${who.name} thumb ${k}${mm < 0 ? ' mirrored' : ''}: ${rescued ? 'rescued' : 'never'} down to the storey two drops on (last on ${last})`);
+  }
+  assert.deepEqual(miss, []);
+});
+

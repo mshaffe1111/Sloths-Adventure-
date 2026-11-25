@@ -19,7 +19,8 @@ import { generateStage, setLayoutVariant } from '../../stageGenerator.ts';
 import { validateStage } from '../../levelCheck.ts';
 import { footingsFor } from '../../terrain.ts';
 import { MODEL_FAST, modelStage } from '../../stageTime.ts';
-import { routeAt } from '../tower.ts';
+import { routeAt, towerHandOns, towerVineCuts } from '../tower.ts';
+import type { Platform, Vine } from '../../types.ts';
 import { buildGen2Stage } from '../pipeline.ts';
 import { LISTED, playFinish } from '../listed.ts';
 import { DRAFT_TABLE, STAGE_TABLE, draftRow } from './stageTable.ts';
@@ -122,6 +123,47 @@ test("the last flag is within 2000 px of way of the shrine, the floor's walk to 
     const at = (st.checkpoints ?? []).map((c) => routeAt(R, c.x, c.y));
     assert.ok(R.length - Math.max(...at) <= 2000, `${d} ${seed}: ${Math.round(R.length - Math.max(...at))} px`);
     assert.equal(Math.round(routeAt(R, st.exitTotemX, st.exitTotemY)), Math.round(R.length), `${d} ${seed}: the shrine is the route's end`);
+  }
+});
+
+test('head room on the way down: no piece of 24 raw rolls has wood across it less than his body over it, none refused for a blind drop (ENG-DOWNBOT)', () => {
+  // (before ENG-DOWNBOT: 1,156 such pairs on 48 of 48 rolls: bridges run on 70 px under a shelf, catches 51-60 px over the next storey,
+  //  a run-on across the whole tower; head room alone then refused 7 of 48 for blind drops of 301-382 px, so the catch search widened)
+  for (const d of BOTH) for (const seed of Array.from({ length: 24 }, (_, i) => i + 1)) {
+    const st = draftRaw(seed, d);
+    assert.ok(!(st.gen2.errors ?? []).some((e) => e.includes('blind drop')), `${d} ${seed}: ${(st.gen2.errors ?? []).find((e) => e.includes('blind drop'))}`);
+    const P = st.platforms.filter((p) => p.type !== 'fragile' && p.type !== 'block' && p.y < st.gen2.tower!.floorY - 1);
+    for (const a of P) for (const b of P) {
+      const across = Math.min(a.x + a.width, b.x + b.width) - Math.max(a.x, b.x), over = a.y - b.y;
+      assert.ok(!(across > 30 && over > 1 && over < 84), `${d} ${seed}: x ${a.x}-${a.x + a.width}, y ${a.y} lies ${over} px under x ${b.x}-${b.x + b.width}, y ${b.y}`);
+    }
+  }
+});
+
+test("a catch crosses a vine: going down no wood lies across a climb vine; the vine stops ON the catch, whose ends hand him on within TOWER.see (the lead's ruling (b), ENG-DOWNBOT)", () => {
+  // (before: 247 vines cut on 24 of 24 rolls (seeds 1-12 x both): a turn's drop is 347-351 px, past TOWER.see, so a catch is owed under
+  //  the end the turn's vine hangs from, and the catch, 173 px down and 180 px wide, lay across the vine)
+  for (const d of BOTH) for (const seed of Array.from({ length: 12 }, (_, i) => i + 1)) {
+    const st = draftRaw(seed, d);
+    const floorY = st.gen2.tower!.floorY;
+    const { vines, platforms } = st as unknown as { vines: Vine[]; platforms: Platform[] };
+    assert.deepEqual(towerVineCuts(vines, platforms), [], `${d} ${seed}`);
+    assert.ok(!(st.gen2.errors ?? []).some((e) => e.includes('a catch crosses a vine') || e.includes('blind drop')), `${d} ${seed}: ${(st.gen2.errors ?? []).find((e) => e.includes('a catch crosses a vine') || e.includes('blind drop'))}`);
+    // (every climb vine over the floor ends ON wood: he climbs down onto it, never off its foot into the air)
+    for (const v of vines.filter((q) => q.vineType === 'tree_climb' && q.bottomY < floorY - 1)) {
+      assert.ok(platforms.some((p) => p.type === 'solid' && Math.abs(p.y - v.bottomY) <= 2 && p.x - 2 < v.x && p.x + p.width + 2 > v.x), `${d} ${seed}: the vine at x ${v.x} (y ${v.topY}-${v.bottomY}) ends on no wood`);
+    }
+  }
+});
+
+test("a catch hands on to its storey: going down, a stopped vine's catch is never run on over ALL of its storey; off one of its ends he lands on that storey, so its leg is never skipped (the lead's ruling on LAY finding 2, ENG-DOWNBOT)", () => {
+  // (before: 69 stopped turns on 33 of 48 rolls (seeds 1-24 x both) passed their storey, normal 1's catch 581-1280 at y 11711 among
+  //  them (off it onto 11825, over the storey but beside it, then on to 12062, past its storey 729-1144 at y 11889); 11 of the 69 ran
+  //  wall to wall, with no way off)
+  for (const d of BOTH) for (const seed of Array.from({ length: 12 }, (_, i) => i + 1)) {
+    const st = draftRaw(seed, d);
+    const T = st.gen2.tower as unknown as { turns: Array<{ x: number; from: number; to: number }>; width: number };
+    assert.deepEqual(towerHandOns(T.turns, st.platforms as Platform[], T.width), [], `${d} ${seed}`);
   }
 });
 
