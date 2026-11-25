@@ -1,6 +1,6 @@
 # ENG-DARK REPORT (the dark + light ring as one gen2 brick; WORLD-3-PLAN F2; R-165.449)
 **EXACT NEXT STEP (ENG-DARK-b hand-over, 11:47 AM ET by `date`; code head 653bb970 on t-eng-dark-wip; the lock fix and the bots' skill are IN):**
-(1) **Box 2's runs are still going in box 2's container; box 2 records them here when they end (do not re-run them):** the base lock
+(1) **Box 2's runs ENDED and are recorded below ('Box 2's runs': lockall PASS 102/102; x40 castBots); do not re-run them:** the base lock
 on a frozen t-eng-w3 c1008d8e (`lockall --layouts 16 --out lock-base.json`), then `lockall --layouts 16 --check lock-base.json` on a
 frozen 653bb970 (PASS = exit 0, 102/102 unchanged: World 6 and World 8 above all); castBots on the 3-1 draft x40 both settings every
 bot, 3 lanes (seeds 1-14 / 15-27 / 28-40) on a frozen 653bb970, each row with `dark: {crossed, unlit}`.
@@ -48,6 +48,11 @@ Box 2 start 11:31 AM ET (by `date`). Box 1 start 11:03 AM ET.
    all in the down shaft's storeys (next step (2b)).
 
 ## Box 2's runs (recorded by box 2 after its hand-over; nothing new started)
+**lockall: PASS.** Base lock recorded on a frozen t-eng-w3 c1008d8e (102 stages, 3,264 builds); `lockall --layouts 16 --check` on a
+frozen 653bb970: **102/102 stages unchanged, exit 0** (Worlds 6 and 8 included: box 1's 37-stage move is gone). Its info line, not
+hashed: 'gen2 gained verdicts and drops' on the same 37 gen2 stages (the new darkGaps/darkFlags verdicts listed on every gen2 stage;
+no build moved). Re-run it after the merge with t-eng-w3 at landing (the lead's landing rule).
+
 **castBots x40 on the 3-1 draft, both settings, every bot, frozen 653bb970 (rows: reference/qa-reports/ENG-DARK/
 cast-3-1-x40-653bb970.jsonl, 360 rows, 0 errors):**
 | bot | setting | shrine | clean (0 rescues) | rescues (runs) | dark rims crossed | unlit (runs) |
