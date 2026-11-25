@@ -201,3 +201,15 @@ test('R-165.441: the gate reads the soil as drawn, not the blocks: a bank whose 
   assert.deepEqual(soilOvers(st), []);
   assert.equal(bankOpen(ledge, st)!.open.underside, undefined);
 });
+
+test('R-165.441: a hung bank is not the ground: the soil\'s darkening line under it is the floor\'s own (1-4\'s start: a shade step at the summit\'s reach)', async () => {
+  const { groundLine } = await import('../../src/game/protoArt.ts');
+  const top = bank(484, 360, 420, 120), floor = bank(0, 11265, 1280, 200);
+  const st = [top, floor];
+  paintOn(st);
+  const line = groundLine(st);
+  // (the plant: the same line with the summit standing as ground, as before, steps where the summit's reach starts)
+  assert.notDeepEqual(groundLine([floor, { ...top, height: 11265 - 360 + 200 } as Platform])(500), line(500));
+  assert.deepEqual(line(500), line(0), 'under the summit the line is the floor\'s');
+  assert.deepEqual(line(700), line(1200));
+});

@@ -1504,10 +1504,14 @@ const LINE_REACH = 240;
  * The line the soil's darkening is laid out from along the ground (paintTile sets it while it paints a square): at each x, the tops of the banks
  * within LINE_REACH, each weighed by how much of that reach it covers, so the line eases across a pit or a step instead of jumping at a
  * bank's edge (a pit's floor darkened from its own, lower top was a lighter column between the banks: the W3 bands, 2026-10-30).
+ * A hung bank (open space under it, R-165.441) is left out.
  */
 let groundDepth: DepthAt | null = null;
-function groundLine(banks: Platform[]): DepthAt {
-  const tops = banks.filter((q) => !q.soil);
+export function groundLine(banks: Platform[]): DepthAt {
+  // (a hung bank, R-165.441, is not the ground: its top, 10,000 units over 1-4's start floor, pulled that floor's line up and its soil's
+  // darkening stepped at LINE_REACH from the summit, a lighter block with a straight side under the start)
+  const sig = bankSig(banks);
+  const tops = banks.filter((q) => !q.soil && !bankOpen(q, banks, sig)?.open.underside);
   return (x) => {
     let sum = 0, wt = 0, near = Infinity, nearY = 0;
     for (const q of tops) {
