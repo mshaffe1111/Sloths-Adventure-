@@ -311,6 +311,10 @@ test('on the run it was found on, 2-1 child Easy seed 2: landing on a small log 
   let run: { t: number; lastLand: number; padPause: { id: number } | null; runOut: () => number } | null = null;
   P.play = function (this: unknown) { run = this as typeof run; return play.call(this); };
   const lands = new Map<number, { inside: boolean; pause: boolean }>();
+  // (a landing is judged once, on its first grounded frame: 'the way he landed moving' is his speed THERE. ENG-PLANT-CI session 12: on
+  //  CI-1 .. CI-15 he lands at 169.900 moving right (172 px/s) on #87, a log running LEFT at 70 px/s (against him); the next frame the
+  //  log's carry put his speed at -75 and the read took it for a landing on a log running his way, 9 px 'past its front', no pause)
+  const judged = new Set<number>();
   let r: ReturnType<typeof firstTimer>;
   try {
     r = firstTimer('2-1', 2, FT_CHILD_EASY, { cap: 1200, dotSetting: true, onFrame: (sim) => {
@@ -320,6 +324,8 @@ test('on the run it was found on, 2-1 child Easy seed 2: landing on a small log 
       const key = Math.round(run.lastLand * 30);
       let row = lands.get(key);
       if (!row) {
+        if (judged.has(key)) return;
+        judged.add(key);
         if (Math.sign(p.vx) !== q.drift.dir) return;
         const front = q.drift.dir > 0 ? q.x + q.width : q.x;
         row = { inside: q.drift.dir * (front - p.x) < run.runOut(), pause: false };

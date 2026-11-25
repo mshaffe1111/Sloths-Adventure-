@@ -1,0 +1,23 @@
+// childpause: firsttimer.test.ts:305's read (2-1 child Easy 2): every landing on a small log running his way, inside his run-out or not,
+// and whether padPause took it; usage: tsx childpause.mts <tree>
+const [T] = process.argv.slice(2);
+await import(T + '/src/game/headlessDom.ts');
+const ft: any = await import(T + '/tools/inspect/firsttimer.ts');
+const P = ft.FirstTimerRun.prototype, play = P.play;
+let run: any = null;
+P.play = function (this: any) { run = this; return play.call(this); };
+const lands = new Map<number, any>();
+ft.firstTimer('2-1', 2, ft.FT_CHILD_EASY, { cap: 1200, dotSetting: true, onFrame: (sim: any) => {
+  const e = sim.e, p = e.player, q = e.platforms.find((k: any) => k.id === e.standingOnId);
+  if (!run || !p.grounded || !q || q.type !== 'drift' || !q.drift || q.width >= 220 || run.t - run.lastLand >= 0.1) return;
+  const key = Math.round(run.lastLand * 30);
+  let row = lands.get(key);
+  if (!row) {
+    if (Math.sign(p.vx) !== q.drift.dir) return;
+    const front = q.drift.dir > 0 ? q.x + q.width : q.x;
+    row = { t: +run.lastLand.toFixed(3), log: q.id, x: Math.round(p.x), toFront: Math.round(q.drift.dir * (front - p.x)), runOut: Math.round(run.runOut()), inside: q.drift.dir * (front - p.x) < run.runOut(), pause: false, vx: Math.round(p.vx) };
+    lands.set(key, row);
+  }
+  if (run.padPause?.id === q.id) row.pause = true;
+} });
+for (const r of lands.values()) console.log(JSON.stringify(r));

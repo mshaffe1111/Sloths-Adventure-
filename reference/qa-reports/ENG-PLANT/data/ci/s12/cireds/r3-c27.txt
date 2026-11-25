@@ -1,0 +1,28 @@
+TAP version 13
+# Subtest: on the run it was found on, 2-1 child Easy seed 2: landing on a small log running his way (under 220 px), even inside his run-out of its front, he takes the pad pause and is never pulled back; the row ends at the shrine with no rescue (c23; RED on c22 52bcce623: the pull-back turned him on landing on a 200 px log 75 px from its front, his run-out 91, the pause and its draw skipped, and he was rescued at the back river)
+ok 1 - on the run it was found on, 2-1 child Easy seed 2: landing on a small log running his way (under 220 px), even inside his run-out of its front, he takes the pad pause and is never pulled back; the row ends at the shrine with no rescue (c23; RED on c22 52bcce623: the pull-back turned him on landing on a 200 px log 75 px from its front, his run-out 91, the pause and its draw skipped, and he was rescued at the back river)
+  ---
+  duration_ms: 3497.185634
+  type: 'test'
+  ...
+# Subtest: planted: with waitRise off, the rise pond takes a bot the skill carries across
+ok 2 - planted: with waitRise off, the rise pond takes a bot the skill carries across
+  ---
+  duration_ms: 20875.192262
+  type: 'test'
+  ...
+# Subtest: planted: with the against-the-flow skill off, the adult on Normal is rescued on 2-1 (16) and the child and the middle on Normal lose 5+ more lives (child 11, 15; middle 16)
+ok 3 - planted: with the against-the-flow skill off, the adult on Normal is rescued on 2-1 (16) and the child and the middle on Normal lose 5+ more lives (child 11, 15; middle 16)
+  ---
+  duration_ms: 12830.16072
+  type: 'test'
+  ...
+1..3
+# tests 3
+# suites 0
+# pass 3
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 25577.855876
