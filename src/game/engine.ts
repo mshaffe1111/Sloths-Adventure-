@@ -104,6 +104,8 @@ import { stageClock, type StageClock } from './clock.ts';
 import { moveRide } from './ridePlay.ts';
 /** how far inside a bank's end the water drawn over him stays (its painted face leans up to about this far) */
 const ZONE_INSET = 14;
+/** a glowworm laid awake (the cave mouth's) is drawn as one awake this long (s): past its first wave, hanging lit */
+const GLOW_AWAKE_AGE = 60;
 import { drawLadder, drawLily, drawLogComing, drawRiverFoam, drawRiverLog, drawRiverTailEnd, TAIL_END, drawReedClump, drawRiverWater, drawSafeRiverOver, safeLogLine, riverWaterOutline, drawW2Cage, drawW2Decor, drawW2Lift, riverArtReady, RIVER_UNDER_BANK, w2Sheet } from './riverArt.ts';
 import type { RiverZone } from './river.ts';
 import { rideHidden, ridersOf, stepRiders, type Riders } from './ridePickups.ts';
@@ -7702,13 +7704,14 @@ export class GameEngine {
     this.kit?.drawBack(ctx, { x0: this.camera.x, x1: this.camera.x + this.camera.viewportWidth });
     if (this.mc) drawMeecaBack(ctx, this.mc, { x0: this.camera.x, x1: this.camera.x + this.camera.viewportWidth }, this.gameTime);
     this.markKeepOuts();
-    // World 3's glowworms, hanging over the dark (asleep until he stands still: stepGlowworms)
+    // World 3's glowworms, hanging over the dark (asleep until he stands still: stepGlowworms); the cave mouth's are laid awake
+    // (gen2/dark.ts entryPieces) and hang lit from the start
     for (const z of this.currentStage.zones ?? []) {
       if (z.kind !== 'dark' || !z.lights) continue;
       for (const l of z.lights) {
-        if (!l.sleep || !this.onScreen(l.x, l.y, 200)) continue;
-        const at = this.glowWake.get(l.id ?? -1);
-        drawGlowworm(ctx, l.x, l.y - GLOWWORM_H / 2, at === undefined || this.gameTime < at ? -1 : this.gameTime - at, this.gameTime, l.id ?? 0);
+        if (l.id === undefined || !this.onScreen(l.x, l.y, 200)) continue;
+        const at = l.sleep ? this.glowWake.get(l.id) : -GLOW_AWAKE_AGE;
+        drawGlowworm(ctx, l.x, l.y - GLOWWORM_H / 2, at === undefined || this.gameTime < at ? -1 : this.gameTime - at, this.gameTime, l.id);
       }
     }
     // trunk hollows (1-4): over the trunk, glowing once he is close enough to see in

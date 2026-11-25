@@ -5,7 +5,8 @@
  *   - FIREFLY ('darkTo', Worlds 6 and 8): always lit, over the middle of every gap at the dark's ground, and dimmer ones along the way;
  *   - BARE ('darkToBare'): none (a room's own glow);
  *   - GLOW ('darkToGlow', World 3): sleeping glowworms (zones.ts GLOW_REACH: standing still wakes those within reach, up AND down from
- *     his feet), one over the landing of every rim in the stretch: a stop at a rim wakes the landing under it, never the whole shaft.
+ *     his feet), one over the landing of every rim in the stretch: a stop at a rim wakes the landing under it, never the whole shaft;
+ *     every light sleeps but the cave mouth's (entryPieces: the landings he reaches from outside the dark are laid awake).
  *
  * THE VERDICT 'every gap lit 1 s ahead' (GAME-MAP B9; STAGE-RULES §4's dark rule: Normal 1 s, Easy 1.6 s), in two halves by name:
  *   - darkGaps (the laid stage): every rim in the dark has a light over its landing, and a sleeping one is woken by a stop on the rim's
@@ -165,18 +166,40 @@ export function darkRims(stage: { platforms: readonly Platform[]; zones?: readon
   return out;
 }
 
-/** the glowworms' dark stretch between the ends `a` and `b`: a box over both ends' ground, one sleeping light over every rim's landing */
+/**
+ * The ENTRY landings of a dark box: every piece a step off a rim OUTSIDE the box comes down on. He arrives there from the light
+ * outside, with no stop in the dark behind him to wake what lies ahead, so the lights over the landings of that piece's rims are laid
+ * awake: the cave mouth is lit (the lead's ruling (ii), 11-25). Only those: every other light in the dark sleeps.
+ */
+export function entryPieces(platforms: readonly Platform[], box: { x0: number; x1: number; top: number; bottom: number }): Set<Platform> {
+  const out = new Set<Platform>();
+  for (const u of rimEnds(platforms)) {
+    if (u.x >= box.x0 && u.x <= box.x1 && u.piece.y >= box.top && u.piece.y <= box.bottom) continue;
+    const on = stepOnto(platforms, u.piece, u.dir);
+    if (on) out.add(on);
+  }
+  return out;
+}
+
+/** the glowworms' dark stretch between the ends `a` and `b`: a box over both ends' ground, one light over every rim's landing, asleep
+ *  but at the cave mouth (entryPieces) */
 function glowZone(out: StageSink, a: { x: number; y: number }, b: { x: number; y: number }): Zone {
   const y0 = Math.min(a.y, b.y), y1 = Math.max(a.y, b.y);
   const z: Zone = { kind: 'dark', x0: Math.round(a.x), x1: Math.round(b.x), top: y0 - DARK_GLOW.above, bottom: y1 + DARK_GLOW.below, baseY: y1, dir: 1, period: 1, warn: 0, active: 1, force: 0, offset: 0, lights: [] };
   // (the rims are read with a stand-in light that covers everything, so every rim's landing is found; then one glowworm over each landing)
   const probe: Zone = { ...z, lights: [{ x: 0, y: 0, r: 1e9 }] };
+  const mouth = entryPieces(out.platforms, z);
   let id = (out.extras[GLOW_ID] as number | undefined) ?? 1;
   for (const r of darkRims({ platforms: out.platforms, zones: [probe] })) {
-    const at = { x: r.land.x, y: r.land.y - DARK_ZONE.lightUp };
+    // (over the landing, but never deeper under the rim than a stop on it reaches (GLOW_REACH.down): a wall-side rim's long drop keeps
+    //  its light where its stop wakes it, still over the landing)
+    const at = { x: r.land.x, y: Math.min(r.land.y - DARK_ZONE.lightUp, r.y + GLOW_REACH.down) };
     if (z.lights!.some((l) => Math.hypot(l.x - at.x, l.y - at.y) < 70)) continue;
     z.lights!.push({ x: at.x, y: at.y, r: DARK_GLOW.light, sleep: true, id: id++ });
   }
+  // (the cave mouth is lit: a rim of a piece he reaches from outside the dark has the light over its landing (the one the verdicts read)
+  //  laid awake; every other light sleeps)
+  for (const r of darkRims({ platforms: out.platforms, zones: [z] })) if (r.light && mouth.has(r.piece)) r.light.sleep = false;
   out.extras[GLOW_ID] = id;
   z.lights!.sort((p, q) => p.y - q.y || p.x - q.x);
   return z;
@@ -234,11 +257,14 @@ export const DARK_LAND_REACT = { normal: PAD_FAIR.react, easy: (PAD_FAIR.react *
 export const darkStop = (setting: 'normal' | 'easy') => PHYS.maxRun * DARK_LAND_REACT[setting] + PHYS.maxRun ** 2 / (2 * PHYS.groundDec);
 
 /**
- * 'every drop onto a dark rim's piece lands at least his stopping distance from that rim, or a stop at the drop's own rim wakes its
- * light' (the lead's ruling, 11-25, box 6's model): a step off ANY rim (in the dark or not, either way) comes down a body's width out,
- * and from there he may run on either way, so each dark rim of the piece he lands on, its light asleep, is darkStop away from that spot
- * along the rim's way, or the rim he stepped off is itself a dark rim whose stop, facing the drop, wakes that light by the time it has
- * woken its own landing's and DARK_AHEAD more. A rim outside every dark box gives no stop, so it can only pass on room. Names; empty: kept.
+ * 'every drop onto a dark rim's piece lands at least his stopping distance from that rim, or he sees that rim's edge' (the lead's
+ * rulings, 11-25): a step off ANY rim (in the dark or not) comes down a body's width out, and each dark rim of the piece he lands on,
+ * its light asleep, is darkStop away from that spot along the rim's way, or:
+ *   - (i) the rim he stepped off is itself a dark rim: judged as he plays it, the face-the-rim stop, then a slow step off. It passes when
+ *     the edge he lands toward lies inside that rim's own landing light (the light darkGaps proves the stop wakes), or that stop wakes
+ *     the edge's own light by the time it has woken its own and DARK_AHEAD more; an edge behind the landing is not one he lands toward;
+ *   - (ii) a rim outside the dark gives no stop: the lay lights its landing (entryPieces: the cave mouth is lit, its lights awake), so
+ *     it passes on room or an awake light only. Names; empty: kept.
  */
 export function darkLandings(stage: { platforms: readonly Platform[]; zones?: readonly Zone[] }, setting: 'normal' | 'easy'): string[] {
   const out: string[] = [];
@@ -254,8 +280,12 @@ export function darkLandings(stage: { platforms: readonly Platform[]; zones?: re
       const room = (n.x - (u.x + u.dir * STEP_OFF)) * n.dir;
       if (room >= stop) continue;
       const ud = rims.find((m) => m.piece === u.piece && m.dir === u.dir);
-      let lit = false;
-      if (ud) {
+      // (a drop off a DARK rim is judged as he plays it (the lead's ruling (i), 11-25): he makes the face-the-rim stop, which wakes the
+      //  rim's own landing light (darkGaps), then steps off slowly toward u.dir; it passes when the edge he lands toward lies inside that
+      //  light. An edge BEHIND that landing (n.dir against u.dir) is not one he lands toward: the slow step carries him away from it, and
+      //  he reaches it only by turning back on its piece by choice, never on the drop's way)
+      let lit = !!ud && (n.dir !== u.dir || (!!ud.light && Math.hypot(ud.light.x - n.x, ud.light.y - n.y) <= ud.light.r));
+      if (ud && !lit) {
         const p = u.piece;
         for (let x = p.x + 10; x <= p.x + p.width - 10 && !lit; x += 10) {
           const own = ud.light ? litAfter(ud.light, x, p.y, u.dir) : 0;
@@ -271,10 +301,11 @@ export function darkLandings(stage: { platforms: readonly Platform[]; zones?: re
   return out;
 }
 
-/** how long a stop at (`x`, `feet`) facing `facing` takes to light `l` (s): Infinity out of reach; an always-lit light 0 */
+/** how long a stop at (`x`, `feet`) facing `facing` takes to light `l` (s): Infinity out of reach; an always-lit light (the cave mouth's)
+ *  0, but only within the same reach: an awake light far off lights nothing where he stands */
 export function litAfter(l: Light, x: number, feet: number, facing: -1 | 1): number {
-  if (!l.sleep) return 0;
-  return glowReaches(l, x, feet, facing) ? GLOW_STILL + Math.max(0, (l.x - x) * facing) / GLOW_REACH.speed : Infinity;
+  if (!glowReaches(l, x, feet, facing)) return Infinity;
+  return l.sleep ? GLOW_STILL + Math.max(0, (l.x - x) * facing) / GLOW_REACH.speed : 0;
 }
 
 /** the glowworm-dark zones a flag at (x, y) stands in */

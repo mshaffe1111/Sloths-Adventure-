@@ -15,7 +15,8 @@ import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { RealPlay } from '../realPlay.ts';
 import { GLOW_REACH, glowReaches, keepsClear, type Zone } from '../zones.ts';
-import { DARK_AHEAD, DARK_EMIT, DARK_PROPS, darkFlags, darkGaps, darkRims, litAhead, RimWatch, type DarkRim } from './dark.ts';
+import { DARK_AHEAD, DARK_EMIT, DARK_PROPS, DARK_ZONE, darkFlags, darkGaps, darkLandings, darkRims, entryPieces, litAhead, RimWatch, type DarkRim } from './dark.ts';
+import type { Platform } from '../types.ts';
 import { W6S_EMIT, W6S_PROPS } from './worlds/w6Swing.ts';
 import { generateAllLevels } from '../worldsData.ts';
 import { generateStage, setLayoutVariant } from '../stageGenerator.ts';
@@ -31,20 +32,33 @@ test('the brick: World 6 lays the one lifted dark (its props and emitters ARE ge
   assert.equal(W6S_EMIT, DARK_EMIT);
 });
 
-test('the brick on a real World 3 row: 3-1\'s drops lie in the dark, every rim\'s landing has a sleeping light a stop on its piece wakes (darkGaps), seeds 1-4 both settings', () => {
+/** the cave mouth (the lead's ruling (ii), 11-25): the lights over the landings of the rims of each piece he reaches from outside the box */
+function mouthLights(st: { platforms: readonly Platform[]; zones?: readonly Zone[] }, z: Zone) {
+  const mouth = entryPieces(st.platforms, z);
+  return new Set(darkRims({ platforms: st.platforms, zones: [z] }).filter((r) => r.light && mouth.has(r.piece)).map((r) => r.light!));
+}
+
+test("the brick on a real World 3 row, EVERY roll (1-40, both settings): 3-1's drops lie in the dark; every light inside the dark sleeps, EXCEPT the landings you reach from outside it: the cave mouth is lit; and the verdicts hold: darkGaps, darkFlags, darkLandings", () => {
   ready();
-  for (const seed of [1, 2, 3, 4]) for (const d of ['normal', 'easy'] as const) {
+  for (let seed = 1; seed <= 40; seed++) for (const d of ['normal', 'easy'] as const) {
     setLayoutVariant(seed);
     let st;
     try { st = generateStage({ ...generateAllLevels().find((c) => c.id === DRAFT && !c.secret)!, unlocked: true }, d); } finally { setLayoutVariant(null); }
     const dark = (st.zones ?? []).filter((z) => z.kind === 'dark');
     assert.ok(dark.length >= 3, `seed ${seed} ${d}: the drops lie in the dark (${dark.length} stretches)`);
-    assert.ok(dark.every((z) => z.lights!.length && z.lights!.every((l) => l.sleep && l.id !== undefined)), `seed ${seed} ${d}: every light is a sleeping glowworm with an id`);
+    for (const z of dark) {
+      const mouth = mouthLights(st, z);
+      assert.ok(z.lights!.length && z.lights!.every((l) => l.id !== undefined), `seed ${seed} ${d}: every light is a glowworm with an id`);
+      const wrong = z.lights!.filter((l) => !l.sleep !== mouth.has(l));
+      assert.deepEqual(wrong.map((l) => `${l.x},${l.y} ${l.sleep ? 'asleep at the cave mouth' : 'awake inside the dark'}`), [], `seed ${seed} ${d}: every light sleeps but the cave mouth's`);
+      assert.ok(z.lights!.some((l) => l.sleep), `seed ${seed} ${d}: a glowworm dark still (some light sleeps)`);
+    }
     const ids = dark.flatMap((z) => z.lights!.map((l) => l.id));
     assert.equal(new Set(ids).size, ids.length, `seed ${seed} ${d}: every glowworm has its own id`);
     assert.ok(darkRims(st).length >= dark.length, `seed ${seed} ${d}: rims in the dark`);
     assert.deepEqual(darkGaps(st), [], `seed ${seed} ${d}`);
     assert.deepEqual(darkFlags(st), [], `seed ${seed} ${d}`);
+    assert.deepEqual(darkLandings(st, d), [], `seed ${seed} ${d}`);
   }
 });
 
@@ -200,4 +214,29 @@ test("'every gap lit 1 s ahead' (litAhead): stood still until the landing woke a
   assert.ok(crossings[0].litAt !== undefined, 'its light woke while he stood');
   assert.deepEqual(litAhead(crossings, 'normal'), []);
   assert.equal(litAhead(crossings, 'easy').length, 1, 'the same wait is short of Easy\'s 1.6 s');
+});
+
+test("the cave mouth is lit (ruling (ii)): adult Easy roll 30 drops in from OUTSIDE the dark (x 175) onto a piece whose rim light is laid awake: darkLandings GREEN; that entry landing asleep: RED, the drop named", () => {
+  const st = built(30, 'easy');
+  assert.deepEqual(darkLandings(st, 'easy'), []);
+  const zones: Zone[] = (st.zones ?? []).map((z) => {
+    if (z.kind !== 'dark' || !z.lights) return z;
+    const mouth = mouthLights(st, z);
+    return { ...z, lights: z.lights.map((l) => (mouth.has(l) ? { ...l, sleep: true } : l)) };
+  });
+  const red = darkLandings({ ...st, zones }, 'easy');
+  assert.ok(red.some((m) => m.includes('the rim he left outside the dark: the rim at x 175, y 2190')), red.join('; ') || 'nothing named');
+});
+
+test("a wall rim's light hangs no deeper than a stop on the rim reaches (GLOW_REACH.down): Normal roll 21's wall-side rim at x 24 is woken (darkGaps GREEN); its light hung over the landing as before, past the reach: RED", () => {
+  const st = built(21, 'normal');
+  assert.deepEqual(darkGaps(st), []);
+  const rim = darkRims(st).find((r) => r.x === 24 && Math.round(r.y) === 10481);
+  assert.ok(rim?.light?.sleep, 'the wall-side rim at x 24, y 10481 with a sleeping light');
+  assert.ok(rim.light.y <= rim.y + GLOW_REACH.down, `its light ${Math.round(rim.light.y - rim.y)} px under the rim`);
+  const deep = { ...rim.light, y: rim.land.y - DARK_ZONE.lightUp };
+  assert.ok(deep.y > rim.y + GLOW_REACH.down, 'the old spot lies past the reach');
+  const zones: Zone[] = (st.zones ?? []).map((z) => (z.lights?.includes(rim.light!) ? { ...z, lights: z.lights.map((l) => (l === rim.light ? deep : l)) } : z));
+  const red = darkGaps({ ...st, zones });
+  assert.ok(red.some((m) => m.includes('a sleeping light no stop wakes: the rim at x 24, y 10481')), red.join('; ') || 'nothing named');
 });

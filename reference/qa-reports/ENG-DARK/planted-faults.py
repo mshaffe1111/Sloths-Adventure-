@@ -16,7 +16,7 @@ PLANTS = [
     ('no glowworm over a landing (the glow stretch lays none)', 'src/game/gen2/dark.ts',
      '    z.lights!.push({ x: at.x, y: at.y, r: DARK_GLOW.light, sleep: true, id: id++ });', '    void at;', 'the brick on a real World 3 row'),
     ('a glowworm hung 500 px over its landing (out of any stop\'s reach)', 'src/game/gen2/dark.ts',
-     'const at = { x: r.land.x, y: r.land.y - DARK_ZONE.lightUp };', 'const at = { x: r.land.x, y: r.land.y - 500 };', 'the brick on a real World 3 row'),
+     'const at = { x: r.land.x, y: Math.min(r.land.y - DARK_ZONE.lightUp, r.y + GLOW_REACH.down) };', 'const at = { x: r.land.x, y: r.land.y - 500 };', 'the brick on a real World 3 row'),
     ('litAhead asks nothing (need 0)', 'src/game/gen2/dark.ts',
      'const need = DARK_AHEAD[setting];', 'const need = 0 * DARK_AHEAD[setting];', 'stood still until the landing woke'),
     ('litAhead counts a landing never lit as lit', 'src/game/gen2/dark.ts',
@@ -58,6 +58,21 @@ PLANTS = [
      '      if (Math.abs(e.nearTreeVine.topY - p.y) <= 14) return { down: true };', '      if (e.nearTreeVine.topY <= p.y + 14) return { down: true };', "MID-WAY", 'src/game/gen2/darkBots.test.ts'),
     ("the way-down plan never takes a trunk mid-way (no up grab)", 'tools/inspect/firsttimer.ts',
      '      if (e.nearTreeVine.topY < p.y - 14 && under &&', '      if (false && under &&', "MID-WAY", 'src/game/gen2/darkBots.test.ts'),
+    # (ENG-DARK-h) the lead's rulings (i) and (ii), the wall rim's light depth, the 80-roll loop
+    ("the cave mouth laid asleep (ruling (ii) off)", 'src/game/gen2/dark.ts',
+     'if (r.light && mouth.has(r.piece)) r.light.sleep = false;', 'if (false && r.light && mouth.has(r.piece)) r.light.sleep = false;', 'the cave mouth is lit'),
+    ("every light in the dark laid awake (not only the cave mouth's)", 'src/game/gen2/dark.ts',
+     'if (r.light && mouth.has(r.piece)) r.light.sleep = false;', 'if (r.light) r.light.sleep = false;', 'the brick on a real World 3 row'),
+    ("darkLandings asks no room of a drop in from outside", 'src/game/gen2/dark.ts',
+     '      if (room >= stop) continue;', '      if (room >= stop || !rims.some((m) => m.piece === u.piece)) continue;', 'the cave mouth is lit'),
+    ("ruling (i) off: a dark-rim drop's edge inside its own light does not pass", 'src/game/gen2/dark.ts',
+     '(!!ud.light && Math.hypot(ud.light.x - n.x, ud.light.y - n.y) <= ud.light.r)', 'false', 'the brick on a real World 3 row'),
+    ("an edge behind a dark-rim drop's landing judged as one he lands toward", 'src/game/gen2/dark.ts',
+     'let lit = !!ud && (n.dir !== u.dir || ', 'let lit = !!ud && (', 'the brick on a real World 3 row'),
+    ("a wall rim's light hung over its landing past the stop's reach (the depth bound off)", 'src/game/gen2/dark.ts',
+     'y: Math.min(r.land.y - DARK_ZONE.lightUp, r.y + GLOW_REACH.down) }', 'y: r.land.y - DARK_ZONE.lightUp }', "a wall rim's light hangs no deeper"),
+    ("an awake light counts as lit from anywhere (no reach)", 'src/game/gen2/dark.ts',
+     '  if (!glowReaches(l, x, feet, facing)) return Infinity;', '  if (l.sleep && !glowReaches(l, x, feet, facing)) return Infinity;', 'darkFlags: a flag'),
 ]
 missed = 0
 for plant in PLANTS:
