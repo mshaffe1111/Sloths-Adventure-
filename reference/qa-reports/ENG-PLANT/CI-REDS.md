@@ -1,4 +1,44 @@
-# ENG-PLANT-CI: the 9 CI-tool-line reds on c27 (session 5 hand-over written 1:21 PM ET 11-25 by `date`; sessions 4, 3, 2 and 1 below it)
+# ENG-PLANT-CI: the 9 CI-tool-line reds on c27 (session 6 hand-over written 1:42 PM ET 11-25 by `date`; sessions 5, 4, 3, 2 and 1 below it)
+
+## EXACT NEXT STEP (session 7). HEAD = CI-10 0db82fb25 (CI-9 + the take-off carry) + this file. **STOPPED per the order: the carry fix moved 3 tests it has not yet narrowed (table below). The lead decides before any more is built.**
+1. **Trace the 3 new reds on CI-10 (rule 28, by frame, the engine as the truth), one line each: is the judge now the engine (the toy's
+   expectation was set on the old model: re-judged with the lead's word, never weakened) or is the change wrong (narrow it).**
+   (a) riverRide.test.ts:344 reAim 'aims again' ("with the skill: he aims again and hops off the first log every phase (hop back hop hop
+   hop hop)") and (b) :355 reAim 'honest aim' ("phase 0.5: the press was decided on the drawn noise (as drawn 6.833@1288.3, loud
+   6.833@1288.9)"): BOTH GREEN on v-ci10a (CI-10 with the press frame's ride step `b.x += carry * dt` taken out of physics.ts
+   takeOffStep), so the RIDE STEP moves them. The toy logs flow AT him: check on RealPlay that the press frame off a log flowing against
+   him carries him back 2.67 px first (carryToy proves it only for a log flowing his way at a full run); a toy that way first.
+   (c) firsttimer.test.ts:312 (2-4 kid Easy seed 35: "no jump off a log came down in the water (1 of 9)"): STILL RED on v-ci10a, so the
+   steer-then-carry order moves it (alone or with the ride step: not split further). Find the water row (seed 35, the log hop judged
+   'lands' that came down in the water) and fly it judged vs RealPlay frame by frame.
+2. **The lip-hoist toy (item 2) is NOT done:** the draft (ci-tools/hoist-toy.ts.txt: a jump straight up beside a 300 px block, his body
+   4 px into its left face, the floor 100 px under the take-off) is GREEN on CI-8 (v-ci8 = 3558ba80e) AND CI-10 at 10 and 20 px under
+   the top, so something else in CI-8's judge catches him there (not traced: hfprobe it on v-ci8). Build the case ONLY the hoist catches
+   (RED on CI-8, GREEN on CI-9/CI-10); (b) 30 px under (neither) is GREEN on both, the guard. A first build had the floor 260 px under
+   the take-off, past hopFlight's 200 px cut-off: always null (my error, fixed in the draft).
+3. Then item 3 (trace 2-4 child E 11 and kid E 13 on the final head) and item 4 (the final checks), as in session 5's step 3 below.
+
+## SESSION 6 END STATE (CI-10 0db82fb25 = HEAD's code)
+**CI-10 (item 1):** physics.ts takeOffStep(b, dt, dir, hold, carry): the press frame off a floor that carries him (a drifting log)
+first rides it (`b.x += carry * dt`), then steers his own speed on the ground, then adds the carry once, then the air move, as the
+engine does (engine.ts :2654 the ground steer, :7434 groundJump's carryVx; the logs move him before both, :1930-1940). hopFlight,
+hopFlies, gateLands/gateAirtime, gateSees/gateAir, tablePick, hopLandsOn, hopCatches/hopCatchAt and judge() take `carry` (vx0 stays
+the sum the callers already pass; b.vx starts at vx0 - carry); every gate that summed p.vx + carry (9 `const vx` sites, 12 gate
+calls, 4 tablePick calls, the edgeWait `lands`, the two vine-from-log run-up hops) passes it. **Probe (s6/carryprobe.mts, a bare log
+at 80 px/s, him at a full run on it):** at 285 px/s the old and new vx are the same (the bleed is a fixed step) but the judge stood
+2.67 px behind every frame (the press frame's ride); at 268 px/s the old judge also left at 348 -> 330 vs the engine's 365.
+**Toys (hopJudged.test.ts carryToy, the engine's landing 1.5 px inside / outside a target's margin, at a held run's two speeds):
+4/4 RED on CI-9 (frozen fz-ci9), 4/4 GREEN on CI-10.**
+**The 4 files on CI-10 (frozen fz-ci10): 68 tests, 60 pass, 8 fail = reds 5-9 (lianaRide :56 :93, firsttimer :185, riverRide :266
+:282) + 3 NEW (riverRide :344, :355, firsttimer :312: step 1). hopJudged: every test GREEN (the 13 + ledgeToy 3 + carryToy 4).**
+judgeFliesEngine.test.ts + pitClimb.test.ts on CI-10: 20/20. tsc clean on fz-ci10.
+**Not run:** the races, the known flips, the wide sample, 2-7 x40, tierBots (STOPPED at step 1's reds); items 2-3.
+Lessons applied: D115 (verdicts on chattr-frozen fz-ci9 / fz-ci10; the split on the unfrozen v-ci10a), D119 (commit messages from a
+file), D128 (stamps from date), D134 (pushed and ls-remote'd before the message), D138 (re-fetched before the first commit), rule 28
+(the take-off traced frame by frame before the fix; the 3 new reds split by half before calling them), law 22 (no test weakened; the
+hoist draft kept OUT of the suite because it does not prove what it claims), law 0 (the toy I built wrong is named, not hidden).
+
+## (session 5 hand-over)
 
 ## EXACT NEXT STEP (session 6). HEAD = CI-9 (CI-8 3558ba80e + the lip hoist) + this file. Red 4 NOT green yet: ONE row left, traced
 1. **The last red-4 row (2-7 home middle Easy 5, race q#91 t 142.467 x 3034, double hold 0.135, came down on bank #88): the take-off
