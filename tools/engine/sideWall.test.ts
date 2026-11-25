@@ -69,8 +69,10 @@ test("1-6's posts and 8-1's sliver: RED without the narrow-bank drawer, GREEN wi
   assert.deepEqual(sideWalls(a.st.platforms, a.inp.f), [], "1-6 with the drawer: every narrow bank has a look");
   const posts = narrowPosts(a.st.platforms);
   assert.equal(posts.length, new Set(red6.map((w) => w.id)).size, 'every caught block is a post');
-  for (const { p, floor } of posts) {
-    const b = livePostBox(p, floor);
+  for (const { p, top, floor } of posts) {
+    const b = livePostBox(p, top, floor);
+    assert.ok(top >= p.y && top < floor - 48, `its top under what rests on it: ${top}`);
+    assert.ok(!a.st.platforms.some((q) => q !== p && q.y < top && q.y + q.height > top && q.x < p.x + p.width && q.x + q.width > p.x), 'the post never paints over what rests on it');
     const sx = b.w / LIVE_POST_PX.w;
     const shaft0 = b.x + (LIVE_POST_PX.mid - LIVE_POST_PX.shaft / 2) * sx, shaft1 = shaft0 + LIVE_POST_PX.shaft * sx;
     assert.ok(shaft0 <= p.x + 0.5 && shaft1 >= p.x + p.width - 0.5 && shaft1 - shaft0 <= p.width + 12, `the post's shaft covers the collider, no fatter than 12 px over: ${shaft0}-${shaft1} vs ${p.x}-${p.x + p.width}`);

@@ -9,7 +9,7 @@
  *   as ONE bank (bankList), so the bank's face and lip end where the collider does.
  * - 'post': standing alone with a side open over his height and its foot on a solid (a floor under it, or its foot sunk in one): drawn as
  *   World 1's tall live post (the inventory's hf678/w1-livepost-tall, 'support', a made thing), from its top to the floor, its shaft the
- *   collider's width (livePostArt.ts), and left out of the painted soil.
+ *   collider's width (livePostArt.ts), from under what rests on it, and left out of the painted soil.
  * Only a block he can meet side-on (a side open over his height) is given a look; a narrow bank with both sides closed draws as it always
  * has. A narrow open block with neither shape (floating in the air) keeps the painted bank, and the side-wall check fails it.
  * sideWall.ts reads this same decision, so the check and the screen cannot disagree. Pure geometry; one pass per stage, memoised.
@@ -20,7 +20,7 @@ import { paintedBank } from './w1Pits.ts';
 /** his body's collider (physics.ts BODY_H; engine.ts's 44 px width) */
 export const BODY_H = 48, BODY_W = 44;
 
-export type NarrowLook = { look: 'joined'; into: Platform } | { look: 'post'; floor: number };
+export type NarrowLook = { look: 'joined'; into: Platform } | { look: 'post'; top: number; floor: number };
 
 /** the longest run of y in [y0, y1) not covered by the given spans */
 export function longestOpen(y0: number, y1: number, spans: Array<readonly [number, number]>): number {
@@ -51,10 +51,14 @@ function lookOf(p: Platform, platforms: readonly Platform[]): NarrowLook | null 
   // (its foot on a solid: the highest top under its own top by at least his height, at most 2 px under its foot; a post never floats)
   let floor = Infinity;
   for (const q of solids) if (q !== p && q.x < p.x + p.width && q.x + q.width > p.x && q.y >= p.y + BODY_H && q.y <= p.y + p.height + 2) floor = Math.min(floor, q.y);
-  return Number.isFinite(floor) ? { look: 'post', floor } : null;
+  if (!Number.isFinite(floor)) return null;
+  // (its top: under what rests on it (1-6's fragile branch), so the post stands under the branch and never paints over it)
+  let top = p.y;
+  for (const q of solids) if (q !== p && q.x < p.x + p.width && q.x + q.width > p.x && q.y <= p.y + 2 && q.y + q.height > p.y && q.y + q.height < floor - BODY_H) top = Math.max(top, q.y + q.height);
+  return { look: 'post', top, floor };
 }
 
-const memo = new WeakMap<readonly Platform[], { n: number; looks: Map<Platform, NarrowLook>; posts: Array<{ p: Platform; floor: number }>; banks: Map<number, Platform[]> }>();
+const memo = new WeakMap<readonly Platform[], { n: number; looks: Map<Platform, NarrowLook>; posts: Array<{ p: Platform; top: number; floor: number }>; banks: Map<number, Platform[]> }>();
 function looksFor(platforms: readonly Platform[]) {
   let m = memo.get(platforms);
   if (!m || m.n !== platforms.length) {
@@ -63,8 +67,8 @@ function looksFor(platforms: readonly Platform[]) {
       const l = lookOf(p, platforms);
       if (l) looks.set(p, l);
     }
-    const posts: Array<{ p: Platform; floor: number }> = [];
-    for (const [p, l] of looks) if (l.look === 'post') posts.push({ p, floor: l.floor });
+    const posts: Array<{ p: Platform; top: number; floor: number }> = [];
+    for (const [p, l] of looks) if (l.look === 'post') posts.push({ p, top: l.top, floor: l.floor });
     m = { n: platforms.length, looks, posts, banks: new Map() };
     memo.set(platforms, m);
   }
@@ -76,8 +80,8 @@ export function narrowLook(p: Platform, platforms: readonly Platform[]): NarrowL
   return looksFor(platforms).looks.get(p) ?? null;
 }
 
-/** the posts among the stage's platforms (each with the floor top it stands on; the same array every frame) */
-export function narrowPosts(platforms: readonly Platform[]): ReadonlyArray<{ p: Platform; floor: number }> {
+/** the posts among the stage's platforms (each with its drawn top and the floor top it stands on; the same array every frame) */
+export function narrowPosts(platforms: readonly Platform[]): ReadonlyArray<{ p: Platform; top: number; floor: number }> {
   return looksFor(platforms).posts;
 }
 

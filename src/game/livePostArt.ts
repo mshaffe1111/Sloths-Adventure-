@@ -7,8 +7,9 @@
  * the collider's width plus 8 px, so what he meets is what he sees. The picture's own shape is kept within 20% (the width follows the
  * height when the collider would squash it further). The pattern is BUILD-26t's face posts (2-6, facePostArt.ts on t-build-26).
  *
- * Drawn by the painted ground (protoArt.ts drawProtoScene) right after its soil, before the stage's 'back' layer: behind every ledge, so
- * the branch it holds up sits over its top. Nothing is drawn until the picture has loaded (stagePreload.ts decodes it before a stage that
+ * Drawn by the painted ground (protoArt.ts drawProtoScene) LAST, after its cut pieces and rocks: it is a solid on his plane, and 1-6's
+ * stair is a cut boulder drawn 200 px past its own collider into the trough, which hid the post (the first after-stills). It starts under
+ * what rests on it (the branch's underside), so it never paints over the branch it holds up. Nothing is drawn until the picture has loaded (stagePreload.ts decodes it before a stage that
  * has a post: stageSheets.ts 'live-post'); nothing is ever drawn in its place. One drawImage per post in view, no allocation a frame.
  */
 import { trackAtlas } from './atlasLoader.ts';
@@ -32,20 +33,20 @@ export function livePostReady(): boolean {
   return ready && !!img;
 }
 
-/** where a post is drawn: its box in the world (the picture's top at the block's top, its root pad's top at the floor's top) */
-export function livePostBox(p: Platform, floor: number): { x: number; y: number; w: number; h: number } {
+/** where a post is drawn: its box in the world (the picture's top at `top`, under what rests on it; its root pad's top at the floor's top) */
+export function livePostBox(p: Platform, top: number, floor: number): { x: number; y: number; w: number; h: number } {
   const P = LIVE_POST_PX;
-  const sy = (floor - p.y) / P.pad;
+  const sy = (floor - top) / P.pad;
   const sx = Math.min(1.2 * sy, Math.max(0.8 * sy, (p.width + 8) / P.shaft));
-  return { x: p.x + p.width / 2 - P.mid * sx, y: p.y, w: P.w * sx, h: P.h * sy };
+  return { x: p.x + p.width / 2 - P.mid * sx, y: top, w: P.w * sx, h: P.h * sy };
 }
 
 /** each post in view drawn standing on its floor */
-export function drawLivePosts(ctx: CanvasRenderingContext2D, posts: ReadonlyArray<{ p: Platform; floor: number }>, view: { x0: number; x1: number; y0?: number; y1?: number }): void {
+export function drawLivePosts(ctx: CanvasRenderingContext2D, posts: ReadonlyArray<{ p: Platform; top: number; floor: number }>, view: { x0: number; x1: number; y0?: number; y1?: number }): void {
   if (!posts.length || !livePostReady()) return;
   const y0 = view.y0 ?? -Infinity, y1 = view.y1 ?? Infinity;
-  for (const { p, floor } of posts) {
-    const b = livePostBox(p, floor);
+  for (const { p, top, floor } of posts) {
+    const b = livePostBox(p, top, floor);
     if (b.x > view.x1 || b.x + b.w < view.x0 || b.y > y1 || b.y + b.h < y0) continue;
     ctx.drawImage(img!, 0, 0, LIVE_POST_PX.w, LIVE_POST_PX.h, b.x, b.y, b.w, b.h);
   }

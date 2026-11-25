@@ -14,6 +14,7 @@ for (let i = 0; i < 120 && !/Local:|ready in/.test(vout); i++) await sleep(500);
 // piece: the flagged block; shots: where Pokey is pinned (his feet)
 const JOBS = [
   { st: '1-6', layout: 0, piece: { x: 27896, y: 865, w: 24, h: 345 }, shots: { close: { x: 27860, y: 1090 }, wide: { x: 27560, y: 970 } } },
+  { st: '1-6', tag: 'post2', layout: 0, piece: { x: 45995, y: 912, w: 24, h: 345 }, shots: { close: { x: 45959, y: 1137 }, wide: { x: 45659, y: 1017 } } },
   { st: '8-1', layout: 0, piece: { x: 1466, y: 526, w: 14, h: 224 }, shots: { close: { x: 1505, y: 640 }, top: { x: 1440, y: 526 }, wide: { x: 1180, y: 482 } } },
 ];
 const browser = await chromium.launch();
@@ -60,7 +61,7 @@ for (const o of ORIENTS) {
         const z = e.zoom ?? 1;
         return { x: c.left + (pc.x - e.camera.x) * z, y: c.top + (pc.y - e.camera.y) * z, w: pc.w * z, h: pc.h * z, zoom: z };
       }, j.piece);
-      const f = `${out}/${j.st}-${o.id}-${name}.png`;
+      const f = `${out}/${j.st}${j.tag ? '-' + j.tag : ''}-${o.id}-${name}.png`;
       await page.screenshot({ path: f });
       log.push({ diff: info.diff, file: f, stage: j.st, orient: o.id, shot: name, seed: info.seed, piece: info.piece, screenBox: box });
       console.log('shot', f, info.diff, JSON.stringify(box), 'seed', info.seed, JSON.stringify(info.piece));
@@ -72,3 +73,4 @@ for (const o of ORIENTS) {
 fs.writeFileSync(`${out}/boxes.json`, JSON.stringify(log, null, 1));
 await browser.close();
 vite.kill();
+process.exit(0);

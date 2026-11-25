@@ -1756,7 +1756,7 @@ export function drawProtoScene(
   // (the banks of earth: w1Pits.ts paintedBank, the same rule its pits' walls are found by; on a bough stage never a chase section: the
   // chase draws its own, live, and the baked squares stay whole while it falls)
   // (a bank narrower than Pokey: a sliver flush with the bank it continues is drawn as that bank's own end, one box; a post standing alone
-  // is left to livePostArt.ts, drawn below over the soil: narrowBank.ts, R-165.440, the look follows the collider)
+  // is left to livePostArt.ts, drawn at the end of the scene: narrowBank.ts, R-165.440, the look follows the collider)
   const banks = groundLook === 'bough' ? platforms.filter((p) => !p.broken && boughPiece(p)) : bankList(platforms, platforms.filter(paintedBank));
   // World 1's pits (R-6.38): the drop under the ground (its shade, floors and steps draw over it), the lips and leaf bed over it
   // (a bough stage: no pit is painted; a gap in the bough is air over the mist, its ends the bough's own, drawBoughGround)
@@ -1768,7 +1768,6 @@ export function drawProtoScene(
     else drawGround(ctx, platforms, banks, view);
   }
   if (stageWorld === 1 && !bough) drawW1Pits(ctx, platforms, view, 'over', drawChaseBroken);
-  if (!bough) drawLivePosts(ctx, narrowPosts(platforms), view);
   afterGround?.();
   // the climb trunks: the painted kapok trunk with its vine, stacked from the ground up to the branch it reaches
   const tf = frameOf('trunk').f;
@@ -1894,6 +1893,8 @@ export function drawProtoScene(
     if (!vis(p) || !p.push || p.art) continue; // (a pushed boulder is World 4's to paint: w4Play.ts)
     drawLogArt(ctx, p, t - (st.movedAt.get(p.id) ?? -9) < 0.2);
   }
+  // (a narrow bank standing alone: its post, over the cut pieces and rocks, under what rests on it: livePostArt.ts, R-165.440)
+  if (!bough) drawLivePosts(ctx, narrowPosts(platforms), view);
   void trees;
   return true;
 }
