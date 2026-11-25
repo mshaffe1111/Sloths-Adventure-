@@ -1,11 +1,11 @@
 # BUILD-28 REPORT (W2-LANE: 2-8 "Before the Water Rises"; R-165.430 (2), READY-28, BUILD-28). Session 1 (W2-LANE a), started 9:44 AM ET (from date)
 
 ## EXACT NEXT STEP (session 1)
-Branch t-build-28-wip, head = this REPORT's commit; CODE head e1d8d74c5 (later commits touch only reference/qa-reports/BUILD-28/).
+Branch t-build-28-wip, head = this REPORT's commit; CODE head b74fadfe8 (later commits touch only reference/qa-reports/BUILD-28/).
 `git fetch origin t-build-28-wip && git checkout t-build-28-wip`, `npm ci --no-audit --no-fund --legacy-peer-deps`. Run ReadNotifications
 first: the lead may have ruled For the lead 2-4 (below) or sent release-0.10.3's hash.
 THE LEAD'S RULINGS 2-4 CAME at the end of session 1 (verbatim in 'For the lead' below): step 1 reopens as 1a, 1c, 1d, in this order:
-1a. FIX flood.ts highRoad (:166-206; the gate hole, For the lead 2): it judges EVERY piece on the chain in the order he meets them, never
+1a. DONE in session 1 (code b74fadfe8; checks below, 'Step 1a'): FIX flood.ts highRoad (:166-206; the gate hole, For the lead 2): it judges EVERY piece on the chain in the order he meets them, never
    jumping to the farthest-reaching piece (:196). From `at` on piece `cur`, the next piece is the FIRST met ahead (the nearest near side in
    (at.x, farOf(cur) + hop]): a piece standing on cur's top (p.y + p.h within 1 px of cur.y) is a wall-step rise (<= step) and joins the
    chain; a piece over cur with room under it is a bare edge hop up (refused by name, the existing message); level/down continuations as
@@ -114,3 +114,16 @@ drawcheck come first on the draft: named, not started: no draft head), LANES rul
 
 ## Checks on e1d8d74c5
 Frozen /home/user/wtw2b at e1d8d74c5: `npx tsc --noEmit -p .` exit 0; w2TwoRoad + floodLay + flood + w2.test 25 tests, 25 pass, 0 fail; generalitycheck PASS.
+
+## Step 1a (session 1, code b74fadfe8; frozen /home/user/wtw2c)
+- flood.ts highRoad: after each piece it takes, it walks that piece and meets, in order, every piece IN HIS WAY on it (near side ahead of
+  where he stepped on and before its far end; bottom over its top and under his head, HEAD 48 px = the collider, engine.ts:1223):
+  standing on it and <= step: a wall-step, it joins the chain; taller: 'meets a wall N px tall'; room under it: 'climbs by a bare edge hop
+  up ... (N px of room under it)'. General, no stage id. The section's chain is now W, P, the rise, porch2.
+- Plants (src/game/flood.test.ts, new test 'highRoad: every piece IN HIS WAY on a porch is met in order'): GREEN chain [W, P, rise, P2];
+  RED the rise lifted 10 px ('... 70 px up off the piece at x 1060, 10 px of room under it': a within-a-step filter would miss it); RED
+  a 70 px rise standing on the porch ('meets a wall 70 px tall'); GREEN a thin piece over his head is not in his way.
+- Checks on frozen b74fadfe8: flood + floodLay + w2TwoRoad 18/18; generalitycheck PASS; lineBot: 8/8 pass (exit 0); tsc: exit 0.
+- Other callers: firsttimer.ts:2462 floodRoad takes the chain as the high road's piece set (otherRoad): the rise now joins it (more
+  correct); lineBot.test.ts:214 reads high = chain minus its ends (B joins nothing new on its toy: B starts at P's far end, so it was met
+  before too).
