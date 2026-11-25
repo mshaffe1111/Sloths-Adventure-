@@ -13,7 +13,8 @@ import '../../src/game/headlessDom.ts';
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { homeRun } from './homeToys.ts';
-import { HOP_TRACE, WaitAim, gateAirtime, gateLands, racePick, type DrawnHop, type HopRow, type ThumbAt } from './firsttimer.ts';
+import { HOME_CODE, POST_CODE } from '../../src/game/gen2/toyHome.ts';
+import { HOP_TRACE, W1_CAP, WaitAim, gateAirtime, gateLands, racePick, type DrawnHop, type HopRow, type ThumbAt } from './firsttimer.ts';
 
 const DT = 1 / 30;
 const show = (r: HopRow) =>
@@ -138,3 +139,35 @@ test('the race gate presses the shortest aimed flight that lands safe, by airtim
   const a3 = gateAirtime(q, () => 184, 100, 500, 1, single(0.3), 0, 0, 50, 1e9), a5 = gateAirtime(q, () => 184, 100, 500, 1, single(0.5), 0, 0, 50, 1e9);
   assert.ok(a3 !== null && a5 !== null && a3 > 0 && a5 > a3, `the airtime read is not the flight's: 0.3 s single ${a3}, 0.5 s single ${a5}`);
 });
+
+// c27 (the lead's rulings on 2-7's race flips, rule 28: the judged hop is the hop flown). At the bank-edge float wait's 6 s cap (W1) he
+// went BLIND off the bank (a bank hop no gate judged, 46-81 px back of the lip), the water set him back, he waited 6 s again: the race
+// flipped WON -> LOST (c26: home middle Normal 1 at banks f71 and f83, post middle Normal 5 at f78; ENG-PLANT REPORT sessions 14-15).
+// Read by what the engine does, never where: a hop off a bank (not a log) within 2 s of a stand of 6 s or more on it is never set back by
+// the water (one frame moving him more than 60 px with no life lost); the race is WON; and NO DEADLOCK (the ruling's condition 2): every
+// by-choice stand past the cap ends inside a full drift cycle of the logs in view (W1_CAP). RED on c26 51ffe7eab (2 set-backs on each,
+// both LOST), GREEN on c27.
+type RaceSim = { e: { player: { x: number; vx: number; grounded: boolean }; lives: number; standingOnId: number | null; platforms: { id: number; type?: string }[]; pieces: { kind: string; verdict?: { won: boolean; him: number; boat: number } }[] } };
+for (const [race, code, seed] of [['home', HOME_CODE, 1], ['post', POST_CODE, 5]] as const) {
+  test(`2-7's race ${race} middle Normal ${seed}: no hop off a bank after the float wait is set back by the water, the race WON, no deadlock (c27)`, () => {
+    let piece: RaceSim['e']['pieces'][number] | undefined, lives: number | undefined, x: number | undefined;
+    let f = 0, still = -1, stood = -1, stoodOn: number | null = null, flight: string | null = null;
+    const setBack: string[] = [];
+    W1_CAP.on = true; W1_CAP.rows = [];
+    try {
+      homeRun('middle', 'normal', seed, 1, { onFrame: (sim) => {
+        const e = (sim as unknown as RaceSim).e, t = f++ / 30;
+        piece ??= e.pieces.find((q) => q.kind === 'pacer');
+        const here = e.player.grounded ? e.platforms.find((q) => q.id === e.standingOnId) : undefined;
+        if (here && here.type !== 'drift' && Math.abs(e.player.vx) < 1) { if (still < 0) still = t; if (t - still >= 6) { stood = t; stoodOn = here.id; } } else still = -1;
+        if (!e.player.grounded && flight === null && x !== undefined && stoodOn !== null && t - stood <= 2) flight = `t ${t.toFixed(1)} off f${stoodOn} x ${Math.round(x)}`;
+        if (x !== undefined && lives === e.lives && Math.abs(e.player.x - x) > 60 && flight) setBack.push(`${flight}: set back ${Math.round(x)} -> ${Math.round(e.player.x)}`);
+        if (e.player.grounded) flight = null;
+        x = e.player.x; lives = e.lives;
+      } }, code);
+      assert.deepEqual(setBack, [], 'a hop off a bank after the float wait, set back by the water');
+      assert.ok(piece?.verdict?.won, `the race ${piece?.verdict ? `LOST by ${(piece.verdict.him - piece.verdict.boat).toFixed(2)} s` : 'never decided'}`);
+      for (const r of W1_CAP.rows) assert.ok(r.dur < r.cycle, `a stand past the cap at x ${Math.round(r.x)} lasted ${r.dur.toFixed(2)} s, the logs' cycle ${r.cycle.toFixed(2)} s`);
+    } finally { W1_CAP.on = false; W1_CAP.rows = []; }
+  });
+}

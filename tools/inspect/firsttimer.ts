@@ -48,7 +48,7 @@ import { findTarget } from '../../src/game/dotGuidePerch.ts';
 
 /** a move tip about one of these is over once none is in view (as DotGuide.tsx has it) */
 const GONE_TOPICS = new Set<TopicId>(['trunk', 'vine', 'rope', 'log', 'foe']);
-import { driftX, DRIFT_CATCH, lianasOver, LOG_DROP, logClock, onRiver, riverAt, riverEnd, type RiverZone } from '../../src/game/river.ts';
+import { driftCycle, driftX, DRIFT_CATCH, lianasOver, LOG_DROP, logClock, onRiver, riverAt, riverEnd, type RiverZone } from '../../src/game/river.ts';
 import { pacerOff, type Pacer } from '../../src/game/pacer.ts';
 import { RIDE } from '../../src/game/ride.ts';
 import { padShows } from '../../src/game/pieces/padPiece.ts';
@@ -1266,6 +1266,10 @@ export type HopRow = { site: string; q: number; t: number; x: number; hold: numb
 export const HOP_TRACE: { on: boolean; rows: HopRow[] } = { on: false, rows: [] };
 /** hops off a carrier refused at startJump because no gate judged them (ENG-PLANT-e, the lead's ruling 1: zero on every row) */
 export const UNJUDGED = { n: 0 };
+/** TEST (c27, the lead's ruling's NO DEADLOCK): when on, every by-choice stand past W1's cap (the bank-edge float wait's 6 s): the cap's
+ *  game time (t0), his x, the longest it lasted (dur, s) and the longest drift cycle of the logs in view (cycle, s, driftCycle). Records
+ *  only: no decision reads it (castBots --json writes it to stderr per row under W1CAP=1) */
+export const W1_CAP: { on: boolean; rows: { t0: number; x: number; dur: number; cycle: number }[] } = { on: false, rows: [] };
 export const PRESS_TRACE: { on: boolean; rows: Array<{ want: number; got: number }> } = { on: false, rows: [] };
 export const pressIn = (lag: number): number => (lag <= DT / 2 ? 1 : Math.max(1, Math.ceil(lag / DT - 1e-9)) + 1) * DT;
 /**
@@ -1909,6 +1913,13 @@ export class FirstTimerRun {
     const edgeX = dir > 0 ? here.x + here.width : here.x;
     return this.sim.platforms.some((q) => q.type === 'drift' && !q.broken && q.drift?.dir === dir && q.y - here.y > 6 && q.y - here.y <= 40
       && (dir > 0 ? q.x < edgeX && q.x + q.width > edgeX : q.x + q.width > edgeX && q.x < edgeX));
+  }
+
+  /** W1_CAP (records only): a by-choice stand past W1's cap at game time t, x, with these logs in view */
+  private capNote(t: number, x: number, drifts: Platform[]) {
+    const t0 = this.edgeWait + 6, dur = t - t0, cycle = Math.max(0, ...drifts.map((q) => (q.drift ? driftCycle(q.drift) : 0)));
+    const last = W1_CAP.rows[W1_CAP.rows.length - 1];
+    if (last && last.t0 === t0) { last.dur = Math.max(last.dur, dur); last.cycle = Math.max(last.cycle, cycle); } else W1_CAP.rows.push({ t0, x, dur, cycle });
   }
 
   /** the gate's read (gateLands, ENG-27r) */
@@ -3621,6 +3632,45 @@ export class FirstTimerRun {
             if (this.edgeWait < 0) this.edgeWait = t;
             // (SKILLS.floatSure: he stands by choice, clockHeld, so the stopped-dead read never decides a hop no gate judged)
             if (t - this.edgeWait < 6) { if (SKILLS.floatSure) { this.clockHeld = true; this.blockedT = 0; this.pending = null; } return {}; }
+            // (c27, the lead's ruling (A)+(B) (SKILLS.floatSure, rule 28: the judged hop is the hop flown): at the wait's 6 s cap he went
+            //  BLIND (the fall-through to the edge's own press: a bank hop no gate judged, from wherever the wait stood him, 46-81 px back
+            //  of the lip), fell short, was set back by the water and waited 6 s again, three rounds (2-7 c26 race home middle Normal 1 at
+            //  bank f83, post middle Normal 5 at f78: WON -> LOST). The logs W1 waits for there run under the banks and never bridge the
+            //  gap: the way on is the far bank. Now, at the cap only: (B) he walks to his take-off point at the lip (FRONT_STAND_PX, the
+            //  front stand's on a log); then (A) the gate judges the far bank in view and the logs in view with the hop he will press (the
+            //  aim drawn by the testers' habit, held for the wait: a double only when his own habit draws one) from where he stands; judged
+            //  -> pressed as judged; refused -> he stands by choice and the gate judges again next frame (the `near` gate above as a log
+            //  comes near). The wait and its 6 s are untouched; a lift or a lily pad alone keeps the old go)
+            const drifts = floats.filter((q) => q.type === 'drift');
+            if (SKILLS.floatSure && drifts.length) {
+              if (dir * (edgeX - p.x) > FRONT_STAND_PX) { this.pending = null; this.lateArmed = null; return side(dir); }
+              const banks = this.sim.platforms.filter((q) => q !== here && q.type !== 'drift' && q.type !== 'moving' && !q.broken && Math.abs(q.y - p.y) < 70 && (dir > 0 ? q.x >= edgeX && q.x - edgeX < 400 : q.x + q.width <= edgeX && edgeX - (q.x + q.width) < 400));
+              const to = [...banks, ...drifts];
+              const vx = p.vx + (Math.abs(carry) < 400 ? carry : 0);
+              const h = this.aim.at(dir as -1 | 1, t, (d) => this.drawHop(d));
+              if (to.some((q) => this.gateSees(q, floatAt(rivers, q), p.x, p.y, dir as -1 | 1, h, t, vx, 24))) {
+                this.edgeWait = -1;
+                if (HOP_TRACE.on) { this.judged = null; this.judge('edgeCap', to, [0], dir as -1 | 1, h.hold, vx, carry, 24, h); }
+                this.gateHop = h;
+                this.aim.end();
+                return this.startJump(dir, h.kind, false);
+              }
+              // (the held aim was drawn for the logs when the wait began, a short single by his habit; refused, the hop of his own table
+              //  the gate lands (tablePick, bankUp's step 1, ENG-PLANT-c: a refused hop leaves a WAY ON; a double only where his own table
+              //  has one): c27 (A)+(B) with the held aim alone stood 21 s at the lip of 2-7's home f71 and post f78 (the far bank ~150 px,
+              //  the aim 0.111-0.159), rescued, while his single 0.329 and doubles 0.118 landed every frame)
+              const alt = this.tablePick(to, dir as -1 | 1, vx, 24);
+              if (alt) {
+                this.edgeWait = -1;
+                if (HOP_TRACE.on) { this.judged = null; this.judge('edgeCap', to, [0], dir as -1 | 1, alt.hold, vx, carry, 24, alt); }
+                this.gateHop = alt;
+                this.aim.end();
+                return this.startJump(dir, alt.kind, false);
+              }
+              if (HOP_TRACE.on) this.judged = null;
+              if (W1_CAP.on) this.capNote(t, p.x, drifts);
+              this.pending = null; this.lateArmed = null; this.clockHeld = true; this.blockedT = 0; return {};
+            }
           }
         }
         // (and riding a drifting log: he waits on it until the next log or the bank is near, LV-2 round 2: he used to hop off the end
