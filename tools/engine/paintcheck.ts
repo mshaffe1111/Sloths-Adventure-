@@ -8,6 +8,8 @@
 //   npx tsx tools/engine/paintcheck.ts --part 0/3                one of three shares (CI; 0-based, 0/3..2/3; a part, run or stage
 //   with 0 builds FAILS, R-165.330: a gate never passes having checked nothing)
 // Breaches there the day the gate started are on paintcheck.known.json (shrink-only, law 5; R-165.292's owner: the lead).
+// Also (R-165.441, paintFall.ts soilOvers): a painted bank's top, or the room for him over it, under a LATER-painted bank's soil (what
+// drawGround paints: protoArt.ts groundSoil). No known list: it started at 0 with its fix, and every breach fails.
 // Prints every breach: stage, setting, seed, x, style, size, what it draws as and the heights its painter draws.
 // Also (R-165.434, tools/engine/sideWall.ts): a solid Pokey meets SIDE-ON that the painted ground paints as bank soil, the backdrop's
 // look (an invisible wall: 2-6's soft-pit faces, b6a35d7e8). No known list: it started at 0 on main, and every breach fails.
@@ -32,6 +34,7 @@ const { easyStage } = await import('../../src/game/easyMode.ts');
 const { withGoals } = await import('../../src/game/goals.ts');
 const { loadSeedList, provenSeeds } = await import('../../src/game/gen2/seedList.ts');
 const { PROVEN_INDEX } = await import('../../src/game/gen2/provenIndex.ts');
+const { soilOvers } = await import('./paintFall.ts');
 const { stagePaintInput } = await import('./paintStage.ts');
 const { paintFalls } = await import('./paintFall.ts');
 const { sideWalls } = await import('./sideWall.ts');
@@ -106,6 +109,11 @@ for (const c of levels) {
       newLines.push(`${c.id} ${setting} seed ${seed} x ${w.x} y ${w.y}: SIDE-ON WALL '${w.style}' ${w.w}x${w.h}, its ${w.side} side open ${w.open} px: ${w.why} (R-165.434)`);
     }
     for (const u of r.unpainted) unpaintedSeen.set(`${c.id} '${u.style}' h${u.h} -> ${u.drawn}`, `${setting} seed ${seed} x ${u.x}`);
+    // (R-165.441: a top under a later bank's soil, paintFall.ts soilOvers; a bough stage's ground is its bough, drawBoughGround)
+    if (st.groundLook !== 'bough') for (const o of soilOvers(st.platforms)) {
+      row.hit++;
+      newLines.push(`${c.id} ${setting} seed ${seed} x ${o.under.x}: SOIL OVER A TOP: bank #${o.over.id} (x ${o.over.x}-${o.over.x + o.over.w} y ${o.over.y} h ${o.over.h})'s soil covers ${o.covered} units of bank #${o.under.id}'s top (x ${o.under.x}-${o.under.x + o.under.w} y ${o.under.y}), ${o.gap} under it (R-165.441)`);
+    }
   }
   process.stderr.write(`${c.id} `);
 }

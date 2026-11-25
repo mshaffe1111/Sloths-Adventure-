@@ -1,0 +1,47 @@
+// scratch: 1-4 stills on the running page: the start, then Pokey placed on pieces at 3 heights up the climb; prints the summit pair
+import fs from 'node:fs';
+const PWm = await import('/opt/node22/lib/node_modules/playwright/index.js'); const chromium = PWm.chromium ?? PWm.default.chromium;
+const [port, out, diff = 'normal', layout = '1', orient = 'sideways', dsf = '1', tag = 'x'] = process.argv.slice(2);
+fs.mkdirSync(out, { recursive: true });
+const b = await chromium.launch();
+const E = "(typeof window.__engine === 'function' ? window.__engine() : window.__engine)";
+const vp = orient === 'upright' ? { width: 412, height: 915 } : { width: 915, height: 412 };
+const ctx = await b.newContext({ viewport: vp, deviceScaleFactor: Number(dsf) });
+await ctx.addInitScript((d) => { try { localStorage.setItem('sloth_difficulty', d); } catch {} }, diff);
+const p = await ctx.newPage();
+p.on('pageerror', (e) => console.log('ERR', e.message));
+await p.goto(`http://127.0.0.1:${port}/?lessons=off`);
+await p.waitForTimeout(2500);
+await p.evaluate((l) => window.__play('1-4', l), Number(layout));
+await p.waitForTimeout(4000);
+await p.waitForFunction((E) => { const e = eval(E); return !!(e && e.currentStage && e.player && e.platforms); }, E, { timeout: 60000 });
+await p.waitForFunction(() => document.documentElement.dataset.hudCard !== '1', null, { timeout: 30000 }).catch(() => {});
+await p.waitForTimeout(2500);
+const info = await p.evaluate((E) => {
+  const e = eval(E); e.isPaused = true;
+  for (const hh of e.currentStage?.proto?.hints ?? []) hh.shown = true;
+  const pb = (q) => (q.height >= 90 || !!q.soil) && !q.push && !q.broken && !q.art && !q.hollow;
+  const banks = e.platforms.filter(pb);
+  const top = banks.filter((q) => q.y < 1000).map((q) => ({ id: q.id, x: Math.round(q.x), x1: Math.round(q.x + q.width), y: Math.round(q.y), h: q.height }));
+  const start = { x: Math.round(e.player.x), y: Math.round(e.player.y) };
+  return { seed: e.currentStage.gen2?.seed ?? e.currentStage.proto?.gen2?.seed, top, start };
+}, E);
+console.log(JSON.stringify(info));
+const frame = async (n) => { for (let i = 0; i < n; i++) { await p.evaluate((E) => { const e = eval(E); e.update(1 / 30); e.clearGuide?.(); e.render(); }, E); await p.evaluate(() => new Promise((r) => requestAnimationFrame(() => r(0)))); } };
+await frame(10);
+await p.screenshot({ path: `${out}/${tag}-start-${diff}-L${layout}-${orient}.jpg`, type: 'jpeg', quality: 80 });
+// up the climb: a standable piece near each of 3 heights under the summit's x
+const ys = await p.evaluate((E) => { const e = eval(E); const sy = e.player.y; return [0.66, 0.33, 0.03].map((f) => 360 + (sy - 360) * f); }, E);
+for (const [k, ty] of ys.entries()) {
+  const at = await p.evaluate(([E, ty]) => {
+    const e = eval(E);
+    const q = e.platforms.filter((q) => q.width >= 60 && !q.broken && Math.abs(q.y - ty) < 900).sort((a, b) => Math.abs(a.y - ty) - Math.abs(b.y - ty))[0];
+    if (!q) return null;
+    Object.assign(e.player, { x: q.x + q.width / 2 - e.player.width / 2, y: q.y - e.player.height - 2, vx: 0, vy: 0, grounded: false, invincibleTimer: 9 });
+    return { id: q.id, x: Math.round(q.x), y: Math.round(q.y) };
+  }, [E, ty]);
+  await frame(45);
+  console.log(`h${k}: ${JSON.stringify(at)}`);
+  await p.screenshot({ path: `${out}/${tag}-climb${k}-${diff}-L${layout}-${orient}.jpg`, type: 'jpeg', quality: 80 });
+}
+await b.close();
