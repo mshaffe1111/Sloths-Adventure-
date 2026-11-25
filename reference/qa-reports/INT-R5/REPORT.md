@@ -2,7 +2,25 @@
 
 Session 1: started 2:31 PM ET 11-24 (by `date`), handed over at the 28-minute box. Lead: session_01FhBbYN2CVHnFXg7XzqKXpM.
 
-## EXACT NEXT STEP (session 7 starts here; INT-R5d-c, started 4:12 PM ET 11-25 by `date`)
+## EXACT NEXT STEP (session 7 starts here; INT-R5d-c hand-over, written 5:57 PM ET 11-25 by `date`)
+**STATE:** the full set on c73cb9766 is RED (rule 28 vs main: 5 PASS -> FAIL on 2-1/2-2, 4 turned by the bot fix; the RED paragraph
+below). The lead: rows NOT accepted, NO suite, NO buildcheck on c73cb9766; Matt is asked (A) ship tonight WITHOUT 2-7 and the bot fix or
+(B) hold release 4 for Friday. release-0.10.3 sits at c73cb9766 (step 1b's fast-forward, before the red): push NOTHING to it.
+**Option A's base is READY: release-0.10.3-lite = 2b5f0d6c8** (pushed): main cdffdc627 + t-fix-sidewall 1558489a2 (d2943b94c, clean) +
+t-fix-soil 375f5a562 (e73e7d4dc; conflicts: protoArt.ts drawProtoScene resolved as step 1, groundBanks returns bankList(...), ONE place;
+engine-core.md SOIL section on top) + 0.10.3 and a What's New DRAFT (3 lines: whatsNew.test needs 3-8, so line A alone fails; the
+lead rules the words). tsc clean, whatsNew/playerText 79/79.
+**NEXT on (A):** the lead's ruled What's New on release-0.10.3-lite (-m commit), then THE FULL SET on its exact head, frozen
+(`git worktree add --detach`, node_modules link, chattr -R +i src tools, -i src/game/gen2/proven): lane.sh L1/L2/L3 as on c73cb9766 but
+lockall `--intended` EMPTY (main + two draw fixes: ZERO moves expected; edit only the lane's g-line copy, never run1.sh's), castbots27
+dropped (no 2-7 on main), rows28.sh main vs head on 2-1 2-2 2-4 2-5 1-4 (draw-only: rows identical expected), then run2.sh, then
+buildcheck LAST and ALONE; the CI tool line + tsc on the frozen tree first; FIX-SOIL-b's CI line and drawcheck count there. Then the
+table, the head to the lead; the lead decides how release-0.10.3 is reset (no force without the lead's word).
+**NEXT on (B):** nothing on this branch tonight; the bot owner fixes the 4 rows; the integration re-runs from step 1b.
+**Running in INT-R5d-c's container (finish and record only, D138):** lanes L2 (seed lists, shardplan, locks) and L3 (castBots 2-7/1-4,
+funcheck, fundiff, tierBots) on c73cb9766; out /home/user/fs-c73. Recorded so far: L1 all 8 PASS; L3 tipwalk..paint2 all PASS.
+
+### Earlier in this box (INT-R5d-c)
 **INT-R5d-c (written 4:59 PM ET 11-25 by `date`):** item 1 DONE at 0597cd057 (What's New: the lead re-ruled the 4th line to
 option A, 89 chars, 'Fixed: a wall I couldn’t see in First Lianas, and dark soil at the start of Up the Kapok.'; the first ruled
 line, 101, broke whatsNew.test.ts:32's 90 cap, test untouched; 79/79). **Step 1b DONE:** the lead's bot-fix hash 9718499a6
