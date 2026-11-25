@@ -11,6 +11,10 @@ tools/art/hfw3/catalog3.py && python3 tools/art/catalog_master.py --emit`; still
 reference/art/hfw3/cut <scratch>` -> reference/qa-reports/ART-W3/stills/. The bell's SWUNG frame is an edit of the picked bell take (a
 round 2). TERMINATE the sandbox after the last pull (`hf_sandbox terminate`). Then: HF-SPEND line, inventory.test count (226 + the W3A
 rows), pack.py dry-run proof (file count, size, artcheck, tsc), gates.
+TAKES are committed raw under reference/art/hfw3/takes/<group>/ (pulled by ART-W3; ART-W3 does no cutting after its hand-over: the lead).
+BARGE CATCH (the lead): at the catalog's 2.53 cut px a unit it draws 505 px wide, over an upright phone's 440 and over 2-9.md's 384-390:
+the DECK must be 384-390 px and the whole barge must fit an upright phone beside Pokey: set the w2-next#barge row's ship size (cpu) to
+that, or name why the deck already is, and reshoot barge-have.jpg upright and sideways.
 LEAD APPROVED (stills 602ce38f7): shelfL-s37, wallR-s23-tile, wallShelf-s23, the barge REUSED. Thorns: grotto batch (spec-w3d), the W1
 bramble the named fallback.
 
