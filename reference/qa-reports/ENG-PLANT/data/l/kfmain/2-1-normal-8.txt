@@ -1,0 +1,5 @@
+set-down f1056 t35.20 fell@x8799,y895 -> placed x8411 | left drift:1#43[8588..8758] at f1053 t35.10 x8780 walk-off vx285 vy83 | hop none
+set-down f3116 t103.10 fell@x24932,y853 -> placed x24133 | left drift:1#109[24752..24902] at f3090 t103.00 x24922 walk-off vx268 vy83 | hop none
+set-down f3204 t105.27 fell@x24677,y853 -> placed x24133 | left drift:1#107[24482..24632] at f3178 t105.17 x24650 walk-off vx285 vy83 | hop none
+set-down f3938 t129.73 fell@x30230,y894 -> placed x29741 | left drift:1#131[29955..30195] at f3935 t129.63 x30212 walk-off vx268 vy83 | hop none
+end shrine pass undefined rescues 0 stuck []

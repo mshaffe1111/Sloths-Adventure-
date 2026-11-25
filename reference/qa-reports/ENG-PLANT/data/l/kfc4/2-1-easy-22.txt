@@ -1,0 +1,9 @@
+set-down f488 t16.27 fell@x3977,y887 -> placed x3747 | left solid#12[3517..3817] at f472 t15.73 x3838 JUMP vx285 vy-577 | hop none
+set-down f2779 t92.63 fell@x19946,y777 -> placed x19565 | left drift:-1#85[19740..19910] at f2776 t92.53 x19927 walk-off vx285 vy83 | hop none
+set-down f3541 t118.03 fell@x25953,y928 -> placed x25777 | left drift:-1#113[25745..25915] at f3538 t117.93 x25934 walk-off vx268 vy83 | hop none
+set-down f3609 t120.30 fell@x26269,y928 -> placed x25777 | left drift:-1#114[26064..26234] at f3606 t120.20 x26250 walk-off vx285 vy83 | hop {"site":"upstream","q":114,"t":119.23333333332913,"x":26032.244444444466,"hold":0.06666666666666667,"lag":0,"kind":"single","flown":{"t":119.23333333332913,"x":26032.244444444466,"hold":0.06666666666666667,"kind":"single
+set-down f3669 t122.30 fell@x26110,y928 -> placed x25777 | left drift:-1#114[25904..26074] at f3666 t122.20 x26092 walk-off vx268 vy83 | hop {"site":"padPause","q":114,"t":121.16666666666235,"x":25869.744444444455,"hold":0.19940789840526224,"lag":0,"kind":"single","flown":{"t":121.16666666666235,"x":25869.744444444455,"hold":0.19940789840526224,"kind":"single
+set-down f3701 t123.37 fell@x26025,y928 -> placed x25777 | left drift:-1#114[25818..25988] at f3698 t123.27 x26006 walk-off vx285 vy83 | hop {"site":"unjudged","q":-1,"t":122.29999999999562,"x":25777,"hold":0.2787480937988354,"lag":0,"flown":{"t":122.29999999999562,"x":25777,"hold":0.2787480937988354,"kind":"single"},"landed":114,"landedType":"drift"}
+set-down f3702 t123.40 fell@x25777,y883 -> placed x26357 | left drift:-1#114[25818..25988] at f3702 t123.40 x26357 JUMP vx0 vy-577 | hop none
+set-down f4278 t142.60 fell@x31155,y894 -> placed x30567 | left drift:1#133[30874..31114] at f4275 t142.50 x31136 walk-off vx285 vy83 | hop none
+end shrine pass undefined rescues 1 stuck [[26265,123.4,"set down here 3 times"]]

@@ -1,0 +1,8 @@
+#!/bin/bash
+# usage: kidall.sh <tree> <outdir> : kidfall on the kid's 31 PASS->FAIL rows (c24 vs main)
+T=$1; O=$2; mkdir -p $O; cd $T
+for r in 2-1:normal:2 2-1:normal:8 2-1:normal:12 2-1:normal:24 2-1:normal:30 2-1:normal:34 2-1:easy:4 2-1:easy:22 2-1:easy:30 2-1:easy:32 2-1:easy:36 2-1:normal:3 2-1:normal:11 2-1:normal:19 2-1:normal:21 2-1:normal:27 2-1:normal:35 2-1:easy:9 2-1:easy:21 2-2:normal:10 2-2:normal:3 2-2:normal:33 2-2:easy:37 2-4:easy:2 2-4:easy:12 2-4:easy:18 2-4:easy:20 2-4:easy:40 2-4:easy:13 2-4:easy:19 2-4:easy:35; do
+  IFS=: read st se sd <<< "$r"
+  npx tsx /tmp/claude-0/-home-user-Sloths-Adventure-/e86b2f58-ff27-5379-b180-b3785b55ae43/scratchpad/tools/kidfall.mts $T $st kid $se $sd > $O/$st-$se-$sd.txt 2>&1
+done
+echo done $(TZ=America/New_York date +%l:%M)

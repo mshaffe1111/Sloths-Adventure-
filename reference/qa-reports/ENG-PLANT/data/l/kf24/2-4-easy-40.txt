@@ -1,0 +1,9 @@
+set-down f2001 t66.70 fell@x8444,y1003 -> placed x7978 | left drift:1#37[8240..8400] at f1998 t66.60 x8425 walk-off vx268 vy83 | hop none
+set-down f2045 t68.17 fell@x8318,y1003 -> placed x7978 | left drift:1#36[8118..8278] at f2042 t68.07 x8300 walk-off vx285 vy83 | hop none
+set-down f4272 t142.40 fell@x23387,y887 -> placed x22582 | left drift:1#111[23186..23346] at f4269 t142.30 x23368 walk-off vx268 vy83 | hop none
+set-down f4616 t153.87 fell@x24713,y887 -> placed x24202 | left drift:1#112[24506..24666] at f4613 t153.77 x24694 walk-off vx268 vy83 | hop none
+set-down f4739 t157.97 fell@x25015,y887 -> placed x24202 | left drift:1#112[24813..24973] at f4736 t157.87 x24996 walk-off vx285 vy83 | hop none
+set-down f4836 t161.20 fell@x25025,y887 -> placed x24202 | left drift:1#117[24824..24984] at f4833 t161.10 x25007 walk-off vx268 vy83 | hop none
+set-down f4938 t164.60 fell@x25054,y887 -> placed x24202 | left drift:1#116[24847..25007] at f4935 t164.50 x25035 walk-off vx268 vy83 | hop none
+set-down f4939 t164.63 fell@x24202,y842 -> placed x25549 | left drift:1#116[24847..25007] at f4935 t164.50 x25035 walk-off vx268 vy83 | hop none
+end shrine pass undefined rescues 1 stuck [[6967,32.9,"on a vine at 6967,886 with no way on"],[8105,54,"on a vine at 8105,827 with no way on"],[25060,164.6,"set down here 3 times"]]

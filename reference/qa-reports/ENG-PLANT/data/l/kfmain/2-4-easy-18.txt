@@ -1,0 +1,3 @@
+set-down f2231 t74.37 fell@x16855,y977 -> placed x16049 | left drift:1#79[16658..16808] at f2228 t74.27 x16837 walk-off vx268 vy83 | hop none
+set-down f2327 t77.57 fell@x16900,y977 -> placed x16049 | left drift:1#78[16704..16854] at f2324 t77.47 x16881 walk-off vx268 vy83 | hop none
+end shrine pass undefined rescues 0 stuck []

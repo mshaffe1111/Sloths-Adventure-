@@ -1,0 +1,9 @@
+set-down f1280 t42.67 fell@x7284,y912 -> placed x6854 | left solid#26[6504..6924] at f821 t27.37 x6819 JUMP vx268 vy-577 | hop none
+set-down f2271 t75.70 fell@x10549,y921 -> placed x10102 | left drift:1#46[10343..10503] at f2268 t75.60 x10530 walk-off vx285 vy83 | hop none
+set-down f3118 t103.93 fell@x16597,y921 -> placed x15737 | left drift:1#71[16401..16551] at f3115 t103.83 x16578 walk-off vx268 vy83 | hop none
+set-down f3364 t112.13 fell@x16826,y921 -> placed x15737 | left drift:1#75[16637..16787] at f3361 t112.03 x16808 walk-off vx268 vy83 | hop none
+set-down f3400 t113.33 fell@x16089,y921 -> placed x15737 | left drift:1#71[15893..16043] at f3397 t113.23 x16071 walk-off vx268 vy83 | hop none
+set-down f4756 t158.53 fell@x23334,y870 -> placed x22475 | left drift:1#105[23129..23289] at f4753 t158.43 x23316 walk-off vx285 vy83 | hop none
+set-down f4855 t161.83 fell@x23347,y870 -> placed x22475 | left drift:1#110[23144..23304] at f4852 t161.73 x23329 walk-off vx285 vy83 | hop none
+set-down f5674 t189.13 fell@x25157,y870 -> placed x24095 | left drift:1#114[24956..25116] at f5671 t189.03 x25138 walk-off vx268 vy83 | hop none
+end shrine pass undefined rescues 0 stuck [[8208,53.8,"water ahead"],[22890,163.9,"water ahead, the way on is 63 px up"]]

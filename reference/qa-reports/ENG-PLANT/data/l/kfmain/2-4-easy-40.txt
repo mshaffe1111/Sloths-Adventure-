@@ -1,0 +1,7 @@
+set-down f2001 t66.70 fell@x8444,y1003 -> placed x7978 | left drift:1#37[8240..8400] at f1998 t66.60 x8425 walk-off vx268 vy83 | hop none
+set-down f2360 t78.67 fell@x10538,y1003 -> placed x10102 | left drift:1#45[10334..10494] at f2357 t78.57 x10520 walk-off vx268 vy83 | hop none
+set-down f2855 t95.17 fell@x13145,y1009 -> placed x12998 | left solid#54[12768..13068] at f2840 t94.67 x13024 JUMP vx285 vy-577 | hop none
+set-down f2919 t97.30 fell@x13560,y1009 -> placed x13414 | left solid#56[13164..13484] at f2904 t96.80 x13440 JUMP vx285 vy-577 | hop none
+set-down f4383 t146.10 fell@x23670,y887 -> placed x22582 | left drift:1#111[23463..23623] at f4380 t146.00 x23652 walk-off vx268 vy83 | hop none
+set-down f4826 t160.87 fell@x25006,y887 -> placed x24202 | left drift:1#117[24799..24959] at f4823 t160.77 x24988 walk-off vx285 vy83 | hop none
+end shrine pass undefined rescues 0 stuck [[8191,54,"water ahead"]]

@@ -1,0 +1,10 @@
+// usage: tsx row8.mts <tree> [skillOff,...] : home Normal 3's careful middle (pacerLay row 8) with the named SKILLS off: margin and race falls (x)
+const [T, offs] = process.argv.slice(2);
+await import(`${T}/src/game/headlessDom.ts`);
+const { homeRun } = await import(`${T}/tools/inspect/homeToys.ts`);
+const { SKILLS } = await import(`${T}/tools/inspect/firsttimer.ts`);
+const { HOME_CODE } = await import(`${T}/src/game/gen2/toyHome.ts`);
+for (const k of (offs ?? '').split(',').filter(Boolean)) (SKILLS as any)[k] = false;
+let piece: any, lives: number | undefined; const falls: string[] = [];
+homeRun('middle', 'normal', 3, 1, { onFrame: (sim: any) => { const e = sim.e; piece ??= e.pieces.find((q: any) => q.kind === 'pacer'); if (lives !== undefined && e.lives < lives && piece?.clock != null) falls.push(`x${Math.round(e.player.x)} t${sim.t.toFixed(2)}`); lives = e.lives; } } as never, HOME_CODE);
+const v = piece.verdict; console.log(`off [${offs ?? ''}] him ${v.him} boat ${v.boat} margin ${(v.him - v.boat).toFixed(2)} ${v.won ? 'WON' : 'LOST'} falls ${falls.join(' ; ')}`);

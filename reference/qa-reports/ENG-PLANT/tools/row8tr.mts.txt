@@ -1,0 +1,9 @@
+// usage: tsx row8tr.mts <tree> : home Normal 3's careful middle, one line per frame: t x y grounded vx standing-on, the race clock
+const [T] = process.argv.slice(2);
+await import(`${T}/src/game/headlessDom.ts`);
+const { homeRun } = await import(`${T}/tools/inspect/homeToys.ts`);
+const { HOME_CODE } = await import(`${T}/src/game/gen2/toyHome.ts`);
+const L: string[] = []; let piece: any;
+homeRun('middle', 'normal', 3, 1, { onFrame: (sim: any) => { const e = sim.e, p = sim.p; piece ??= e.pieces.find((q: any) => q.kind === 'pacer'); const h = e.platforms.find((q: any) => q.id === e.standingOnId);
+  L.push(`${sim.t.toFixed(3)} ${p.x.toFixed(1)} ${p.y.toFixed(1)} ${p.grounded ? 1 : 0} ${p.vx.toFixed(1)} ${h ? h.type + '#' + h.id : '-'} ${piece?.clock ?? '-'}`); } } as never, HOME_CODE);
+console.log(L.join('\n'));

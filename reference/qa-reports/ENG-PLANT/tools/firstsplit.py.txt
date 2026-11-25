@@ -1,0 +1,18 @@
+# usage: python3 firstsplit.py <tree> <trace.mts> <outdir> : for each kid row that passes on c4 and fails on c24, and each new skill off,
+# the first frame the path parts from c24's and whether c24 falls (a set-down: a >= 100 px move) within 2 s of it
+import subprocess, sys, os
+T, TR, O = sys.argv[1:4]
+rows = ['2-1:normal:19', '2-1:normal:21', '2-2:easy:37', '2-2:normal:3', '2-2:normal:33', '2-4:easy:35', '2-4:easy:20', '2-4:easy:2', '2-4:easy:19', '2-4:easy:12', '2-4:easy:13']
+def run(st, se, sd, off=''):
+    r = subprocess.run(['npx', 'tsx', TR, T, st, 'kid', se, sd] + ([off] if off else []), cwd=T, capture_output=True, text=True)
+    return r.stdout.split('\n')
+for row in rows:
+    st, se, sd = row.split(':'); on = run(st, se, sd)
+    for off in ['runUp', 'floatSure', 'handed']:
+        b = run(st, se, sd, off); i = next((k for k, (x, y) in enumerate(zip(on, b)) if x != y), None)
+        if i is None: print(row, off, 'identical'); continue
+        t0 = float(on[i].split()[0]); fall = None
+        for k in range(i, min(len(on) - 1, i + 60)):
+            p, q = on[k].split(), on[k + 1].split()
+            if abs(float(q[1]) - float(p[1])) + abs(float(q[2]) - float(p[2])) >= 100: fall = (k + 1, q[0], p[1]); break
+        print(row, off, f'split f{i} t{t0:.2f} | c24: {on[i][:60]} | off: {b[i][:60]} | c24 falls within 2 s: {fall}', flush=True)

@@ -1,0 +1,3 @@
+set-down f4089 t136.30 fell@x24521,y892 -> placed x24417 | left solid#98[24140..24306] at f4067 t135.57 x24327 walk-off vx268 vy83 | hop none
+set-down f5260 t175.33 fell@x28986,y900 -> placed x28571 | left solid#129[28341..28641] at f4788 t159.60 x28532 JUMP vx285 vy-577 | hop none
+end shrine pass undefined rescues 0 stuck [[28571,162.3,"water ahead"]]

@@ -1,0 +1,6 @@
+set-down f1278 t42.60 fell@x10474,y992 -> placed x10190 | left drift:1#49[10269..10429] at f1275 t42.50 x10455 walk-off vx285 vy83 | hop {"site":"edgeWait","q":49,"t":41.266666666666886,"x":10206.033333333307,"hold":0.06666666666666667,"lag":0,"kind":"single","flown":{"t":41.266666666666886,"x":10206.033333333307,"hold":0.06666666666666667,"kind":"single"
+set-down f1316 t43.87 fell@x10563,y992 -> placed x10190 | left drift:1#49[10364..10524] at f1313 t43.77 x10545 walk-off vx268 vy83 | hop none
+set-down f3179 t105.97 fell@x23532,y875 -> placed x22678 | left drift:1#112[23333..23493] at f3176 t105.87 x23514 walk-off vx268 vy83 | hop none
+set-down f3271 t109.03 fell@x23535,y875 -> placed x22678 | left drift:1#111[23331..23491] at f3268 t108.93 x23517 walk-off vx285 vy83 | hop none
+set-down f4010 t133.67 fell@x25376,y875 -> placed x24298 | left drift:1#116[25175..25335] at f4007 t133.57 x25357 walk-off vx268 vy83 | hop none
+end shrine pass undefined rescues 0 stuck [[24413,116.8,"on a vine at 24413,757 with no way on"]]

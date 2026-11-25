@@ -1,0 +1,16 @@
+# usage: python3 kidclass.py <kidfall dir> : per row, each rescue's three set-downs (frame, fall x, how he left, what from, the hop's judge)
+import glob, re, os, sys
+for f in sorted(glob.glob(sys.argv[1] + '/*.txt')):
+    L = open(f).read().strip().split('\n'); end = L[-1]
+    m = re.search(r'rescues (\d+)', end); resc = m.group(1) if m else '?'
+    m = re.search(r'stuck (\[.*\])', end); stuck = eval(m.group(1)) if m else []
+    print(os.path.basename(f)[:-4], 'rescues', resc)
+    sds = [l for l in L[:-1] if l.startswith('set-down')]
+    for s in stuck:
+        if 'set down' not in s[2]: continue
+        # the set-downs before the rescue's time, the last three not counting the rescue's own placement
+        prior = [l for l in sds if float(re.search(r' t([\d.]+) ', l).group(1)) <= s[1] + 0.05]
+        prior = [l for l in prior if 'vx0 ' not in l][-3:]
+        for l in prior:
+            g = lambda p: (re.search(p, l) or [None, '?'])[1]
+            print(f"   rescue@{s[0]} | f{g(r'set-down f(\d+)')} fell x{g(r'fell@x(\d+)')} | {g(r'\| left (\S+)')} {g(r' (JUMP|walk-off) ')} vx{g(r'vx(-?\d+)')} | hop {g(r'\"site\":\"([^\"]+)\"') if 'hop {' in l else 'none'}")

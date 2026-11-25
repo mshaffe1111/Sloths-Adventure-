@@ -1,0 +1,5 @@
+set-down f3306 t110.20 fell@x23933,y901 -> placed x22759 | left drift:1#113[23732..23892] at f3303 t110.10 x23914 walk-off vx268 vy83 | hop none
+set-down f3343 t111.43 fell@x23101,y901 -> placed x22759 | left drift:1#109[22896..23056] at f3340 t111.33 x23083 walk-off vx285 vy83 | hop none
+set-down f3390 t113.00 fell@x22989,y901 -> placed x22759 | left drift:1#108[22782..22942] at f3387 t112.90 x22970 walk-off vx285 vy83 | hop {"site":"unjudged","q":-1,"t":111.43333333332957,"x":22759,"hold":0.19152954494534014,"lag":0,"flown":{"t":111.43333333332957,"x":22759,"hold":0.19152954494534014,"kind":"single"},"landed":108,"landedType":"drift"}
+set-down f3391 t113.03 fell@x22759,y856 -> placed x24064 | left drift:1#108[22782..22942] at f3387 t112.90 x22970 walk-off vx285 vy83 | hop {"site":"unjudged","q":-1,"t":111.43333333332957,"x":22759,"hold":0.19152954494534014,"lag":0,"flown":{"t":111.43333333332957,"x":22759,"hold":0.19152954494534014,"kind":"single"},"landed":108,"landedType":"drift"}
+end shrine pass undefined rescues 1 stuck [[23944,113,"set down here 3 times"]]

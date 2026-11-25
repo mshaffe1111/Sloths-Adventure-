@@ -1,0 +1,134 @@
+2-1-easy-21 rescues 1
+   rescue@14740 | f1906 fell x14580 | drift:1#66[14350..14540] walk-off vx285 | hop none
+   rescue@14740 | f1929 fell x14365 | solid#60[13819..14239] JUMP vx260 | hop unjudged
+   rescue@14740 | f1930 fell x14169 | solid#60[13819..14239] JUMP vx260 | hop unjudged
+2-1-easy-22 rescues 1
+   rescue@26265 | f3609 fell x26269 | drift:-1#114[26064..26234] walk-off vx285 | hop upstream
+   rescue@26265 | f3669 fell x26110 | drift:-1#114[25904..26074] walk-off vx268 | hop padPause
+   rescue@26265 | f3701 fell x26025 | drift:-1#114[25818..25988] walk-off vx285 | hop unjudged
+2-1-easy-30 rescues 1
+   rescue@25413 | f3459 fell x25420 | drift:1#112[25200..25380] walk-off vx285 | hop none
+   rescue@25413 | f3502 fell x25285 | drift:1#111[25063..25243] walk-off vx285 | hop none
+   rescue@25413 | f3551 fell x25419 | drift:1#111[25194..25374] walk-off vx268 | hop none
+2-1-easy-32 rescues 1
+   rescue@25708 | f3300 fell x25717 | drift:1#112[25496..25676] walk-off vx268 | hop none
+   rescue@25708 | f3317 fell x25012 | drift:1#112[25496..25676] JUMP vx87 | hop unjudged
+   rescue@25708 | f3369 fell x25402 | drift:1#114[25176..25356] walk-off vx268 | hop padPause
+2-1-easy-36 rescues 2
+   rescue@15034 | f1886 fell x15042 | drift:1#66[14809..14999] walk-off vx285 | hop none
+   rescue@15034 | f1903 fell x14549 | solid#63[14066..14486] JUMP vx173 | hop unjudged
+   rescue@15034 | f1962 fell x14974 | drift:1#69[14737..14927] walk-off vx285 | hop none
+   rescue@20328 | f2865 fell x19976 | drift:-1#90[20088..20258] JUMP vx87 | hop unjudged
+   rescue@20328 | f2933 fell x20336 | drift:-1#89[20133..20303] walk-off vx268 | hop padPause
+   rescue@20328 | f2934 fell x19817 | drift:-1#89[20133..20303] walk-off vx268 | hop padPause
+2-1-easy-4 rescues 1
+   rescue@25295 | f3332 fell x24842 | solid#104[24451..24751] JUMP vx173 | hop unjudged
+   rescue@25295 | f3359 fell x24922 | drift:1#109[24698..24878] walk-off vx268 | hop unjudged
+   rescue@25295 | f3360 fell x24681 | drift:1#109[24698..24878] walk-off vx268 | hop unjudged
+2-1-easy-9 rescues 1
+   rescue@15189 | f2207 fell x15193 | drift:1#67[14956..15146] walk-off vx285 | hop none
+   rescue@15189 | f2309 fell x15179 | drift:1#66[14949..15139] walk-off vx268 | hop none
+   rescue@15189 | f2329 fell x14449 | drift:1#66[14949..15139] JUMP vx87 | hop unjudged
+2-1-normal-11 rescues 2
+   rescue@19813 | f2760 fell x19703 | drift:-1#88[19511..19661] walk-off vx285 | hop edgeWait
+   rescue@19813 | f2848 fell x19764 | drift:-1#88[19411..19561] JUMP vx84 | hop edgeWait
+   rescue@19813 | f2849 fell x19317 | drift:-1#88[19411..19561] JUMP vx84 | hop edgeWait
+2-1-normal-12 rescues 1
+   rescue@24890 | f2747 fell x19336 | drift:-1#84[19144..19294] walk-off vx285 | hop edgeWait
+   rescue@24890 | f3544 fell x24356 | drift:1#107[24157..24307] walk-off vx285 | hop none
+   rescue@24890 | f3644 fell x24777 | drift:1#108[24584..24734] walk-off vx285 | hop none
+2-1-normal-19 rescues 3
+   rescue@8815 | f1157 fell x8817 | drift:1#42[8610..8780] walk-off vx268 | hop none
+   rescue@8815 | f1181 fell x8625 | drift:1#41[8424..8594] walk-off vx154 | hop unjudged
+   rescue@8815 | f1212 fell x8702 | drift:1#41[8497..8667] walk-off vx268 | hop unjudged
+   rescue@19599 | f3168 fell x19501 | drift:-1#85[19312..19462] walk-off vx285 | hop edgeWait
+   rescue@19599 | f3232 fell x19407 | drift:-1#85[19216..19366] walk-off vx285 | hop edgeWait
+   rescue@19599 | f3233 fell x19150 | drift:-1#85[19216..19366] walk-off vx285 | hop edgeWait
+   rescue@25755 | f3939 fell x25753 | drift:-1#112[25396..25546] walk-off vx285 | hop none
+   rescue@25755 | f4109 fell x25436 | drift:-1#114[25245..25395] walk-off vx285 | hop none
+   rescue@25755 | f4169 fell x24581 | drift:1#109[24386..24536] walk-off vx285 | hop none
+2-1-normal-2 rescues 1
+   rescue@25814 | f3405 fell x25817 | drift:-1#113[25459..25609] walk-off vx268 | hop edgeWait
+   rescue@25814 | f3549 fell x25507 | drift:-1#115[25318..25468] walk-off vx268 | hop edgeWait
+   rescue@25814 | f3588 fell x24629 | drift:1#112[24433..24583] walk-off vx268 | hop edgeWait
+2-1-normal-21 rescues 1
+   rescue@25732 | f3787 fell x25722 | drift:-1#114[25530..25680] walk-off vx285 | hop padPause
+   rescue@25732 | f3902 fell x25025 | drift:1#110[24790..24940] JUMP vx80 | hop none
+   rescue@25732 | f3947 fell x24688 | drift:1#112[24490..24640] walk-off vx268 | hop edgeWait
+2-1-normal-24 rescues 2
+   rescue@19779 | f3418 fell x19780 | drift:-1#85[19583..19733] walk-off vx285 | hop none
+   rescue@19779 | f3504 fell x19446 | drift:-1#86[19257..19407] walk-off vx285 | hop edgeWait
+   rescue@19779 | f3581 fell x19556 | drift:-1#85[19361..19511] walk-off vx268 | hop edgeWait
+   rescue@24750 | f4251 fell x24662 | drift:1#109[24459..24609] walk-off vx285 | hop edgeWait
+   rescue@24750 | f4309 fell x24525 | drift:1#112[24330..24480] walk-off vx285 | hop edgeWait
+   rescue@24750 | f4310 fell x24289 | drift:1#112[24330..24480] walk-off vx285 | hop edgeWait
+2-1-normal-27 rescues 1
+   rescue@9036 | f1196 fell x8932 | drift:1#44[8727..8897] walk-off vx268 | hop unjudged
+   rescue@9036 | f1244 fell x9044 | drift:1#44[8839..9009] walk-off vx268 | hop unjudged
+   rescue@9036 | f1245 fell x8708 | drift:1#44[8839..9009] walk-off vx268 | hop unjudged
+2-1-normal-3 rescues 1
+   rescue@25586 | f3823 fell x25590 | drift:-1#115[25239..25389] walk-off vx285 | hop edgeWait
+   rescue@25586 | f4003 fell x25474 | drift:-1#113[25293..25443] walk-off vx172 | hop edgeWait
+   rescue@25586 | f4052 fell x24494 | drift:1#111[24292..24442] walk-off vx268 | hop edgeWait
+2-1-normal-30 rescues 1
+   rescue@15044 | f1942 fell x15043 | drift:1#68[14838..14998] walk-off vx268 | hop none
+   rescue@15044 | f2015 fell x14993 | drift:1#67[14786..14946] walk-off vx268 | hop none
+   rescue@15044 | f2097 fell x14622 | drift:1#69[14414..14574] walk-off vx285 | hop edgeWait
+2-1-normal-34 rescues 1
+   rescue@25739 | f3308 fell x24612 | drift:1#110[24414..24564] walk-off vx268 | hop none
+   rescue@25739 | f3602 fell x25620 | drift:-1#113[25269..25419] walk-off vx285 | hop edgeWait
+   rescue@25739 | f3603 fell x24235 | drift:-1#113[25269..25419] walk-off vx285 | hop edgeWait
+2-1-normal-35 rescues 1
+   rescue@25711 | f3371 fell x25719 | drift:-1#115[25529..25679] walk-off vx268 | hop padPause
+   rescue@25711 | f3667 fell x25628 | drift:-1#115[25432..25582] walk-off vx285 | hop padPause
+   rescue@25711 | f3849 fell x25492 | drift:-1#114[25297..25447] walk-off vx268 | hop padPause
+2-1-normal-8 rescues 1
+   rescue@25590 | f3393 fell x25296 | drift:-1#111[25099..25249] walk-off vx268 | hop edgeWait
+   rescue@25590 | f3496 fell x24672 | drift:1#108[24472..24622] walk-off vx268 | hop padPause
+   rescue@25590 | f3497 fell x24133 | drift:1#108[24472..24622] walk-off vx268 | hop padPause
+2-2-easy-37 rescues 1
+   rescue@14275 | f2360 fell x14284 | moving#55[14088..14258] walk-off vx285 | hop none
+2-2-normal-10 rescues 1
+   rescue@29620 | f330 fell x2925 | moving#11[2720..2900] walk-off vx268 | hop none
+   rescue@29620 | f4472 fell x28802 | moving#113[28630..28760] walk-off vx285 | hop none
+   rescue@29620 | f4600 fell x28800 | moving#113[28630..28760] walk-off vx285 | hop none
+2-2-normal-3 rescues 1
+   rescue@28929 | f4638 fell x28674 | moving#113[28459..28639] walk-off vx285 | hop none
+   rescue@28929 | f4826 fell x28923 | moving#114[28759..28889] walk-off vx285 | hop none
+   rescue@28929 | f4827 fell x27709 | moving#114[28759..28889] walk-off vx285 | hop none
+2-2-normal-33 rescues 1
+   rescue@21178 | f3288 fell x21190 | drift:1#81[20946..21146] walk-off vx285 | hop none
+   rescue@21178 | f3468 fell x20499 | drift:1#81[20251..20451] walk-off vx285 | hop none
+   rescue@21178 | f3516 fell x19469 | moving#84[19298..19428] walk-off vx268 | hop none
+2-4-easy-12 rescues 1
+   rescue@21866 | f4154 fell x21308 | drift:1#105[21117..21267] walk-off vx268 | hop none
+   rescue@21866 | f4194 fell x21412 | drift:1#105[21223..21373] walk-off vx268 | hop none
+   rescue@21866 | f4195 fell x21008 | drift:1#105[21223..21373] walk-off vx268 | hop none
+2-4-easy-13 rescues 1
+   rescue@23944 | f3343 fell x23101 | drift:1#109[22896..23056] walk-off vx285 | hop none
+   rescue@23944 | f3390 fell x22989 | drift:1#108[22782..22942] walk-off vx285 | hop unjudged
+   rescue@23944 | f3391 fell x22759 | drift:1#108[22782..22942] walk-off vx285 | hop unjudged
+2-4-easy-18 rescues 1
+   rescue@17134 | f2575 fell x17142 | drift:1#76[16945..17095] walk-off vx285 | hop none
+   rescue@17134 | f2657 fell x16730 | drift:1#79[16534..16684] walk-off vx285 | hop none
+   rescue@17134 | f2704 fell x16434 | drift:1#77[16239..16389] walk-off vx285 | hop none
+2-4-easy-19 rescues 1
+   rescue@16777 | f2595 fell x16037 | drift:1#75[15846..15996] walk-off vx268 | hop edgeWait
+   rescue@16777 | f2646 fell x15969 | drift:1#74[15772..15922] walk-off vx285 | hop unjudged
+   rescue@16777 | f2647 fell x15737 | drift:1#74[15772..15922] walk-off vx285 | hop unjudged
+2-4-easy-2 rescues 1
+   rescue@17053 | f2269 fell x17055 | drift:1#73[16866..17016] walk-off vx285 | hop none
+   rescue@17053 | f2358 fell x16669 | drift:1#76[16473..16623] walk-off vx285 | hop none
+   rescue@17053 | f2374 fell x16074 | solid#69[15696..16016] walk-off vx268 | hop edgeWait
+2-4-easy-20 rescues 1
+   rescue@17149 | f2651 fell x16730 | drift:1#79[16533..16683] walk-off vx285 | hop none
+   rescue@17149 | f2685 fell x16400 | drift:1#77[16203..16353] walk-off vx268 | hop none
+   rescue@17149 | f2686 fell x16064 | drift:1#77[16203..16353] walk-off vx268 | hop none
+2-4-easy-35 rescues 1
+   rescue@10860 | f1445 fell x10650 | drift:1#48[10419..10579] JUMP vx75 | hop none
+   rescue@10860 | f1523 fell x10856 | drift:1#48[10649..10809] walk-off vx268 | hop none
+   rescue@10860 | f1524 fell x10190 | drift:1#48[10649..10809] JUMP vx87 | hop none
+2-4-easy-40 rescues 1
+   rescue@25060 | f4836 fell x25025 | drift:1#117[24824..24984] walk-off vx268 | hop none
+   rescue@25060 | f4938 fell x25054 | drift:1#116[24847..25007] walk-off vx268 | hop none
+   rescue@25060 | f4939 fell x24202 | drift:1#116[24847..25007] walk-off vx268 | hop none

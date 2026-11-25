@@ -1,0 +1,24 @@
+// usage: tsx kidfall.mts <tree> <stage> <bot> <setting> <seed> : one line per set-down (a respawn or splash-back moved him >= 100 px):
+// the frame he left the ground before it, the platform he left (type, drift, id, its x span), jump or walk-off, his vx/vy, where he fell,
+// and the last HOP_TRACE row (the gate that judged a hop) within 300 px before the leave, when the tree has one
+const [T, stage, bot, setting, seed, offs] = process.argv.slice(2);
+await import(`${T}/src/game/headlessDom.ts`);
+const { CAST_BOTS } = await import(`${T}/tools/inspect/castBots.ts`);
+const FT = await import(`${T}/tools/inspect/firsttimer.ts`);
+for (const k of (offs ?? "").split(",").filter(Boolean)) (FT as any).SKILLS[k] = false;
+const HT = (FT as any).HOP_TRACE; if (HT) { HT.on = true; HT.rows.length = 0; }
+let f = 0, last: any = null, leave: any = null, prev: any = null; const out: string[] = [];
+const desc = (h: any) => h ? `${h.type}${h.drift ? ':' + h.drift.dir : ''}#${h.id}[${Math.round(h.x)}..${Math.round(h.x + (h.w ?? h.width))}]` : '-';
+const r = FT.firstTimer(stage, Number(seed), CAST_BOTS[bot][setting], { cap: 1200, dotSetting: true, onFrame: (sim: any) => {
+  f++; const p = sim.p; const e = sim.e;
+  const h = e.platforms.find((q: any) => q.id === e.standingOnId);
+  if (p.grounded && h) last = { h: desc(h), t: sim.t, x: p.x };
+  if (prev && prev.g && !p.grounded) leave = { f, t: sim.t, x: p.x, y: p.y, vx: p.vx, vy: p.vy, from: last?.h, how: p.vy < -1 ? 'JUMP' : 'walk-off' };
+  if (prev && Math.hypot(p.x - prev.x, p.y - prev.y) >= 100) {
+    const hop = HT ? [...HT.rows].reverse().find((q: any) => leave && q.x <= leave.x + 20 && q.x >= leave.x - 300) : null;
+    out.push(`set-down f${f} t${sim.t.toFixed(2)} fell@x${Math.round(prev.x)},y${Math.round(prev.y)} -> placed x${Math.round(p.x)} | left ${leave?.from} at f${leave?.f} t${leave?.t.toFixed(2)} x${Math.round(leave?.x)} ${leave?.how} vx${leave?.vx.toFixed(0)} vy${leave?.vy.toFixed(0)} | hop ${hop ? JSON.stringify(hop).slice(0, 220) : 'none'}`);
+  }
+  prev = { x: p.x, y: p.y, g: p.grounded };
+} });
+console.log(out.join('\n'));
+console.log('end', r.end, 'pass', (r as any).pass, 'rescues', (r as any).rescues, 'stuck', JSON.stringify((r as any).stuck?.map((s: any) => [s.x, s.t, s.what])));

@@ -1,0 +1,12 @@
+set-down f285 t9.50 fell@x2450,y813 -> placed x2330 | left solid#7[2080..2400] at f267 t8.90 x2294 JUMP vx285 vy-577 | hop none
+set-down f313 t10.43 fell@x2568,y806 -> placed x2330 | left solid#7[2080..2400] at f293 t9.77 x2394 JUMP vx285 vy-577 | hop none
+set-down f519 t17.30 fell@x3842,y855 -> placed x3624 | left solid#12[3394..3694] at f501 t16.70 x3685 JUMP vx268 vy-577 | hop none
+set-down f1170 t39.00 fell@x8826,y874 -> placed x8416 | left drift:1#42[8617..8787] at f1167 t38.90 x8807 walk-off vx285 vy83 | hop none
+set-down f2129 t70.20 fell@x14394,y904 -> placed x14115 | left drift:1#66[14186..14346] at f2103 t70.10 x14367 walk-off vx285 vy83 | hop none
+set-down f3258 t107.83 fell@x23746,y828 -> placed x23586 | left solid#101[23336..23656] at f3243 t107.33 x23620 JUMP vx268 vy-577 | hop none
+set-down f3406 t112.00 fell@x24567,y854 -> placed x24345 | left solid#105[24125..24425] at f3368 t111.50 x24427 JUMP vx268 vy-577 | hop {"site":"edgeWait","q":-2,"t":111.4666666666629,"x":24417.92222222226,"hold":0.06666666666666667,"lag":0,"kind":"single","flown":{"t":111.4666666666629,"x":24417.92222222226,"hold":0.06666666666666667,"kind":"single"},"l
+set-down f3448 t113.37 fell@x24652,y839 -> placed x24345 | left drift:1#109[24454..24604] at f3444 t113.27 x24625 walk-off vx285 vy83 | hop {"site":"edgeWait","q":-2,"t":111.4666666666629,"x":24417.92222222226,"hold":0.06666666666666667,"lag":0,"kind":"single","flown":{"t":111.4666666666629,"x":24417.92222222226,"hold":0.06666666666666667,"kind":"single"},"l
+set-down f3787 t123.17 fell@x25722,y839 -> placed x24345 | left drift:-1#114[25530..25680] at f3761 t123.07 x25695 walk-off vx285 vy83 | hop {"site":"padPause","q":114,"t":122.19999999999563,"x":25505.1777777778,"hold":0.17206741905328723,"lag":0,"kind":"single","flown":{"t":122.19999999999563,"x":25505.1777777778,"hold":0.17206741905328723,"kind":"single"},"
+set-down f3902 t126.23 fell@x25025,y833 -> placed x24345 | left drift:1#110[24790..24940] at f3866 t125.80 x24946 JUMP vx80 vy-577 | hop none
+set-down f3947 t127.70 fell@x24688,y839 -> placed x25849 | left drift:1#112[24490..24640] at f3943 t127.60 x24660 walk-off vx268 vy83 | hop {"site":"edgeWait","q":-2,"t":111.4666666666629,"x":24417.92222222226,"hold":0.06666666666666667,"lag":0,"kind":"single","flown":{"t":111.4666666666629,"x":24417.92222222226,"hold":0.06666666666666667,"kind":"single"},"l
+end shrine pass undefined rescues 1 stuck [[25732,127.7,"set down here 3 times"]]

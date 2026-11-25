@@ -1,0 +1,6 @@
+off [] him 106.8 boat 113.66 margin -6.86 WON falls x2429 t178.67
+off [floatSure] him 92.4 boat 113.66 margin -21.26 WON falls x7190 t136.50 ; x5686 t149.53
+off [handed] him 99.2 boat 113.66 margin -14.46 WON falls x10830 t95.83 ; x9428 t111.40
+off [runUp] him 106.8 boat 113.66 margin -6.86 WON falls x2429 t178.67
+off [vineOverTail] him 106.8 boat 113.66 margin -6.86 WON falls x2429 t178.67
+off [] him 113.7 boat 113.66 margin 0.04 LOST falls x3174 t202.83 ; x3102 t203.93 ; x1709 t216.87

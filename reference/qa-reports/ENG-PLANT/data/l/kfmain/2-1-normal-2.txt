@@ -1,0 +1,9 @@
+set-down f424 t14.13 fell@x3824,y846 -> placed x3625 | left solid#12[3395..3695] at f408 t13.60 x3686 JUMP vx285 vy-577 | hop none
+set-down f1097 t36.57 fell@x9237,y925 -> placed x8517 | left drift:1#41[9031..9201] at f1094 t36.47 x9219 walk-off vx268 vy83 | hop none
+set-down f1857 t61.13 fell@x14884,y936 -> placed x14125 | left drift:1#67[14676..14836] at f1831 t61.03 x14856 walk-off vx268 vy83 | hop none
+set-down f2373 t78.33 fell@x18435,y885 -> placed x18276 | left solid#76[18046..18346] at f2358 t77.83 x18311 JUMP vx285 vy-577 | hop none
+set-down f2562 t83.87 fell@x19503,y898 -> placed x19234 | left solid#82[18934..19354] at f2523 t83.33 x19359 JUMP vx268 vy-577 | hop none
+set-down f2613 t85.53 fell@x19610,y898 -> placed x19234 | left solid#82[18934..19354] at f2586 t84.67 x19371 walk-off vx285 vy83 | hop none
+set-down f3972 t130.10 fell@x30300,y987 -> placed x30086 | left drift:1#133[30017..30257] at f3969 t130.00 x30282 walk-off vx285 vy83 | hop none
+set-down f4004 t131.17 fell@x30378,y987 -> placed x30086 | left drift:1#133[30103..30343] at f4001 t131.07 x30359 walk-off vx268 vy83 | hop none
+end shrine pass undefined rescues 0 stuck []

@@ -1,0 +1,8 @@
+#!/bin/bash
+# usage: rows-l.sh <frozen tree> <outdir>: castBots rows, every bot, both settings: 2-5 seeds 1-40, 2-7 seeds 1-100, 1-4 seeds 1-40
+T=$1; O=$2; mkdir -p $O; cd $T
+for spec in 2-5:1-40 2-7:1-100 1-4:1-40; do
+  st=${spec%%:*}; sd=${spec##*:}
+  npx tsx tools/inspect/castBots.ts --stage $st --seeds $sd --bots kid,adult,child,middle,expert --setting both --par 2 --rows $O/$st.jsonl > $O/$st.log 2>&1
+  echo "$st exit $? $(wc -l < $O/$st.jsonl) rows $(TZ=America/New_York date +%l:%M)" >> $O/progress.txt
+done

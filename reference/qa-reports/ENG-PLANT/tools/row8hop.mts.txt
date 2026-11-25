@@ -1,0 +1,10 @@
+// usage: tsx row8hop.mts <tree> <t0> <t1> [skillOff] : home Normal 3's careful middle: HOP_TRACE rows (the judge of each hop) with t in [t0,t1]
+const [T, t0, t1, off] = process.argv.slice(2);
+await import(`${T}/src/game/headlessDom.ts`);
+const { homeRun } = await import(`${T}/tools/inspect/homeToys.ts`);
+const { HOP_TRACE, SKILLS } = await import(`${T}/tools/inspect/firsttimer.ts`);
+const { HOME_CODE } = await import(`${T}/src/game/gen2/toyHome.ts`);
+if (off) (SKILLS as any)[off] = false;
+HOP_TRACE.on = true; HOP_TRACE.rows.length = 0;
+homeRun('middle', 'normal', 3, 1, {} as never, HOME_CODE);
+for (const h of HOP_TRACE.rows) if ((h.flown?.t ?? h.t) >= +t0 && (h.flown?.t ?? h.t) <= +t1) console.log(JSON.stringify(h).slice(0, 300));
