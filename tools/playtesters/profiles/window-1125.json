@@ -1,0 +1,1403 @@
+{
+ "window": "Sessions rows 5997-6127 (build 0.10.2, F 2026-11-22T16:43:02-05:00, main cdffdc627); 131 rows, 0 unread, 5 sessions, 2 players, 6 runs; aggregates only",
+ "botsOn": "a worktree at cdffdc627 (the build the players had; lists 6b772e6e and e98480ba match the runs)",
+ "variantRule": "castBots variant = the 0-based index of the logged gen2 seed among the list plans (tools/playtesters/variantOf.ts proves each by building it); NOT the logged seed",
+ "surveys": {
+  "P24 1-4 normal": "long=About right, knew=Always, fun=5",
+  "P24 1-6 normal": "long=About right, knew=Always, fun=5",
+  "P27": "none sent (left/quit)"
+ },
+ "phones": {
+  "P24": "median 30.0 fps, 1 stall over 100 ms in 7 min",
+  "P27": "median 30.3 fps, 58 stalls over 100 ms in 33 min (26 draw-bound, d >= 100 ms), all on 1-4"
+ },
+ "runs": [
+  {
+   "player": "P24",
+   "stage": "1-6",
+   "setting": "normal",
+   "seed": "16",
+   "variant": 15,
+   "list": "e98480ba",
+   "build": "cdffdc62",
+   "end": "left",
+   "finish_s": null,
+   "play_s": 15,
+   "lives": 0,
+   "putbacks": 0,
+   "hurts": 0,
+   "note": "opened and left before the first section"
+  },
+  {
+   "player": "P24",
+   "stage": "1-6",
+   "setting": "normal",
+   "seed": "31",
+   "variant": 30,
+   "list": "e98480ba",
+   "build": "cdffdc62",
+   "end": "finish",
+   "finish_s": 236,
+   "play_s": 235,
+   "lives": 0,
+   "putbacks": 4,
+   "hurts": 4,
+   "hurts_at": {
+    "w1-16-chain (x 13498-15762)": 4
+   },
+   "troughs": {
+    "x 27400-28400": "3.9 s, no stop, no turn-back",
+    "x 45500-46500": "5.4 s, no stop (4 back samples on the gorge swing)"
+   }
+  },
+  {
+   "player": "P24",
+   "stage": "1-4",
+   "setting": "normal",
+   "seed": "30117",
+   "variant": 21,
+   "list": "6b772e6e",
+   "build": "cdffdc62",
+   "end": "finish",
+   "finish_s": 183,
+   "play_s": 185,
+   "lives": 0,
+   "putbacks": 0,
+   "hurts": 2,
+   "falls_150px": 6,
+   "hurts_at": {
+    "y 4517": 1,
+    "y 2466": 1
+   }
+  },
+  {
+   "player": "P27",
+   "stage": "1-4",
+   "setting": "normal",
+   "seed": "52",
+   "variant": 51,
+   "list": "6b772e6e",
+   "build": "cdffdc62",
+   "end": "left",
+   "finish_s": null,
+   "play_s": 17,
+   "lives": 0,
+   "putbacks": 0,
+   "hurts": 0,
+   "best_y": 11024,
+   "note": "left on the start floor; next run a minute later"
+  },
+  {
+   "player": "P27",
+   "stage": "1-4",
+   "setting": "normal",
+   "seed": "62405",
+   "variant": 53,
+   "list": "6b772e6e",
+   "build": "cdffdc62",
+   "end": "left",
+   "finish_s": null,
+   "play_s": 1788,
+   "lives": 3,
+   "putbacks": 0,
+   "hurts": 15,
+   "falls_150px": 26,
+   "best_y": 7056,
+   "hurts_at": {
+    "w1-14-under-fire, grown-beat pod x430 (lands y 7293; 4 of 9 while climbing its vine)": 9,
+    "w1-14-under-fire, grown-beat pod x670 (lands y 7293)": 4,
+    "w1-14-push, steady pod x786 (lands y 8159)": 2
+   },
+   "lives_at": {
+    "w1-14-under-fire": 3
+   },
+   "sound": "muted or hidden on all 336 fps samples"
+  },
+  {
+   "player": "P27",
+   "stage": "1-4",
+   "setting": "normal",
+   "seed": "6",
+   "variant": 5,
+   "list": "6b772e6e",
+   "build": "cdffdc62",
+   "end": "quit",
+   "finish_s": null,
+   "play_s": 182,
+   "lives": 0,
+   "putbacks": 0,
+   "hurts": 0,
+   "falls_150px": 2,
+   "best_y": 8520
+  }
+ ],
+ "castBots": [
+  {
+   "bot": "kid",
+   "setting": "normal",
+   "stage": "1-4",
+   "seed": 5,
+   "end": "shrine",
+   "pass": true,
+   "time": 126.2,
+   "goal": {
+    "got": 1,
+    "need": 1
+   },
+   "rescues": 0,
+   "turnBacks": 0,
+   "hits": 2,
+   "lives": 0,
+   "hitBy": {
+    "other": 2
+   },
+   "stuck": []
+  },
+  {
+   "bot": "kid",
+   "setting": "normal",
+   "stage": "1-4",
+   "seed": 21,
+   "end": "shrine",
+   "pass": false,
+   "time": 146.4,
+   "goal": {
+    "got": 1,
+    "need": 1
+   },
+   "rescues": 1,
+   "turnBacks": 0,
+   "hits": 2,
+   "lives": 0,
+   "hitBy": {
+    "other": 2
+   },
+   "stuck": [
+    {
+     "x": 1036,
+     "what": "fell back down from here 3 times"
+    }
+   ]
+  },
+  {
+   "bot": "kid",
+   "setting": "normal",
+   "stage": "1-4",
+   "seed": 51,
+   "end": "shrine",
+   "pass": false,
+   "time": 150.8,
+   "goal": {
+    "got": 1,
+    "need": 1
+   },
+   "rescues": 1,
+   "turnBacks": 0,
+   "hits": 3,
+   "lives": 0,
+   "hitBy": {
+    "other": 3
+   },
+   "stuck": [
+    {
+     "x": 1036,
+     "what": "fell back down from here 3 times"
+    }
+   ]
+  },
+  {
+   "bot": "kid",
+   "setting": "normal",
+   "stage": "1-4",
+   "seed": 53,
+   "end": "shrine",
+   "pass": true,
+   "time": 123.2,
+   "goal": {
+    "got": 1,
+    "need": 1
+   },
+   "rescues": 0,
+   "turnBacks": 0,
+   "hits": 1,
+   "lives": 0,
+   "hitBy": {
+    "other": 1
+   },
+   "stuck": []
+  },
+  {
+   "bot": "kid",
+   "setting": "easy",
+   "stage": "1-4",
+   "seed": 5,
+   "end": "shrine",
+   "pass": true,
+   "time": 119.7,
+   "goal": {
+    "got": 1,
+    "need": 1
+   },
+   "rescues": 0,
+   "turnBacks": 0,
+   "hits": 0,
+   "lives": 0,
+   "hitBy": {},
+   "stuck": []
+  },
+  {
+   "bot": "kid",
+   "setting": "easy",
+   "stage": "1-4",
+   "seed": 21,
+   "end": "shrine",
+   "pass": true,
+   "time": 119.8,
+   "goal": {
+    "got": 1,
+    "need": 1
+   },
+   "rescues": 0,
+   "turnBacks": 0,
+   "hits": 0,
+   "lives": 0,
+   "hitBy": {},
+   "stuck": []
+  },
+  {
+   "bot": "kid",
+   "setting": "easy",
+   "stage": "1-4",
+   "seed": 51,
+   "end": "shrine",
+   "pass": false,
+   "time": 145.5,
+   "goal": {
+    "got": 1,
+    "need": 1
+   },
+   "rescues": 1,
+   "turnBacks": 0,
+   "hits": 0,
+   "lives": 0,
+   "hitBy": {},
+   "stuck": [
+    {
+     "x": 1115,
+     "what": "fell back down from here 3 times"
+    }
+   ]
+  },
+  {
+   "bot": "kid",
+   "setting": "easy",
+   "stage": "1-4",
+   "seed": 53,
+   "end": "shrine",
+   "pass": true,
+   "time": 124.6,
+   "goal": {
+    "got": 1,
+    "need": 1
+   },
+   "rescues": 0,
+   "turnBacks": 0,
+   "hits": 0,
+   "lives": 0,
+   "hitBy": {},
+   "stuck": []
+  },
+  {
+   "bot": "adult",
+   "setting": "normal",
+   "stage": "1-4",
+   "seed": 5,
+   "end": "shrine",
+   "pass": true,
+   "time": 117.6,
+   "goal": {
+    "got": 1,
+    "need": 1
+   },
+   "rescues": 0,
+   "turnBacks": 0,
+   "hits": 0,
+   "lives": 0,
+   "hitBy": {},
+   "stuck": []
+  },
+  {
+   "bot": "adult",
+   "setting": "normal",
+   "stage": "1-4",
+   "seed": 21,
+   "end": "shrine",
+   "pass": true,
+   "time": 125.3,
+   "goal": {
+    "got": 1,
+    "need": 1
+   },
+   "rescues": 0,
+   "turnBacks": 0,
+   "hits": 1,
+   "lives": 0,
+   "hitBy": {
+    "other": 1
+   },
+   "stuck": []
+  },
+  {
+   "bot": "adult",
+   "setting": "normal",
+   "stage": "1-4",
+   "seed": 51,
+   "end": "shrine",
+   "pass": true,
+   "time": 119.5,
+   "goal": {
+    "got": 1,
+    "need": 1
+   },
+   "rescues": 0,
+   "turnBacks": 0,
+   "hits": 2,
+   "lives": 0,
+   "hitBy": {
+    "other": 2
+   },
+   "stuck": []
+  },
+  {
+   "bot": "adult",
+   "setting": "normal",
+   "stage": "1-4",
+   "seed": 53,
+   "end": "shrine",
+   "pass": true,
+   "time": 122.3,
+   "goal": {
+    "got": 1,
+    "need": 1
+   },
+   "rescues": 0,
+   "turnBacks": 0,
+   "hits": 1,
+   "lives": 0,
+   "hitBy": {
+    "other": 1
+   },
+   "stuck": []
+  },
+  {
+   "bot": "adult",
+   "setting": "easy",
+   "stage": "1-4",
+   "seed": 5,
+   "end": "shrine",
+   "pass": true,
+   "time": 110.3,
+   "goal": {
+    "got": 1,
+    "need": 1
+   },
+   "rescues": 0,
+   "turnBacks": 0,
+   "hits": 0,
+   "lives": 0,
+   "hitBy": {},
+   "stuck": []
+  },
+  {
+   "bot": "adult",
+   "setting": "easy",
+   "stage": "1-4",
+   "seed": 21,
+   "end": "shrine",
+   "pass": true,
+   "time": 111.6,
+   "goal": {
+    "got": 1,
+    "need": 1
+   },
+   "rescues": 0,
+   "turnBacks": 0,
+   "hits": 0,
+   "lives": 0,
+   "hitBy": {},
+   "stuck": []
+  },
+  {
+   "bot": "adult",
+   "setting": "easy",
+   "stage": "1-4",
+   "seed": 51,
+   "end": "shrine",
+   "pass": true,
+   "time": 113.2,
+   "goal": {
+    "got": 1,
+    "need": 1
+   },
+   "rescues": 0,
+   "turnBacks": 0,
+   "hits": 0,
+   "lives": 0,
+   "hitBy": {},
+   "stuck": []
+  },
+  {
+   "bot": "adult",
+   "setting": "easy",
+   "stage": "1-4",
+   "seed": 53,
+   "end": "shrine",
+   "pass": true,
+   "time": 111.3,
+   "goal": {
+    "got": 1,
+    "need": 1
+   },
+   "rescues": 0,
+   "turnBacks": 0,
+   "hits": 0,
+   "lives": 0,
+   "hitBy": {},
+   "stuck": []
+  },
+  {
+   "bot": "child",
+   "setting": "normal",
+   "stage": "1-4",
+   "seed": 5,
+   "end": "shrine",
+   "pass": false,
+   "time": 259.2,
+   "goal": {
+    "got": 1,
+    "need": 1
+   },
+   "rescues": 3,
+   "turnBacks": 0,
+   "hits": 0,
+   "lives": 0,
+   "hitBy": {},
+   "stuck": [
+    {
+     "x": 580,
+     "what": "a drop of 420 px ahead, a trunk beside him, the way on is 141 px up"
+    },
+    {
+     "x": 428,
+     "what": "fell back down from here 8 times"
+    },
+    {
+     "x": 497,
+     "what": "fell back down from here 8 times"
+    }
+   ]
+  },
+  {
+   "bot": "child",
+   "setting": "normal",
+   "stage": "1-4",
+   "seed": 21,
+   "end": "shrine",
+   "pass": false,
+   "time": 217,
+   "goal": {
+    "got": 1,
+    "need": 1
+   },
+   "rescues": 2,
+   "turnBacks": 0,
+   "hits": 2,
+   "lives": 0,
+   "hitBy": {
+    "other": 2
+   },
+   "stuck": [
+    {
+     "x": 212,
+     "what": "the way on is 281 px down"
+    },
+    {
+     "x": 244,
+     "what": "fell back down from here 8 times"
+    },
+    {
+     "x": 350,
+     "what": "fell back down from here 8 times"
+    }
+   ]
+  },
+  {
+   "bot": "child",
+   "setting": "normal",
+   "stage": "1-4",
+   "seed": 51,
+   "end": "shrine",
+   "pass": false,
+   "time": 323.3,
+   "goal": {
+    "got": 1,
+    "need": 1
+   },
+   "rescues": 2,
+   "turnBacks": 0,
+   "hits": 1,
+   "lives": 0,
+   "hitBy": {
+    "other": 1
+   },
+   "stuck": [
+    {
+     "x": 1047,
+     "what": "an open drop ahead, a trunk beside him, the way on is 141 px up"
+    },
+    {
+     "x": 1008,
+     "what": "the way on is 116 px up"
+    },
+    {
+     "x": 1192,
+     "what": "fell back down from here 8 times"
+    },
+    {
+     "x": 1129,
+     "what": "the way on is 70 px up"
+    }
+   ]
+  },
+  {
+   "bot": "child",
+   "setting": "normal",
+   "stage": "1-4",
+   "seed": 53,
+   "end": "shrine",
+   "pass": false,
+   "time": 287,
+   "goal": {
+    "got": 1,
+    "need": 1
+   },
+   "rescues": 1,
+   "turnBacks": 0,
+   "hits": 1,
+   "lives": 0,
+   "hitBy": {
+    "other": 1
+   },
+   "stuck": [
+    {
+     "x": 1036,
+     "what": "fell back down from here 8 times"
+    }
+   ]
+  },
+  {
+   "bot": "child",
+   "setting": "easy",
+   "stage": "1-4",
+   "seed": 5,
+   "end": "shrine",
+   "pass": false,
+   "time": 163.9,
+   "goal": {
+    "got": 1,
+    "need": 1
+   },
+   "rescues": 1,
+   "turnBacks": 0,
+   "hits": 0,
+   "lives": 0,
+   "hitBy": {},
+   "stuck": [
+    {
+     "x": 1190,
+     "what": "fell back down from here 8 times"
+    }
+   ]
+  },
+  {
+   "bot": "child",
+   "setting": "easy",
+   "stage": "1-4",
+   "seed": 21,
+   "end": "shrine",
+   "pass": false,
+   "time": 197.5,
+   "goal": {
+    "got": 1,
+    "need": 1
+   },
+   "rescues": 2,
+   "turnBacks": 0,
+   "hits": 0,
+   "lives": 0,
+   "hitBy": {},
+   "stuck": [
+    {
+     "x": 20,
+     "what": "the way on is 281 px down"
+    },
+    {
+     "x": 255,
+     "what": "fell back down from here 8 times"
+    },
+    {
+     "x": 853,
+     "what": "the way on is 69 px up"
+    },
+    {
+     "x": 1190,
+     "what": "fell back down from here 8 times"
+    }
+   ]
+  },
+  {
+   "bot": "child",
+   "setting": "easy",
+   "stage": "1-4",
+   "seed": 51,
+   "end": "shrine",
+   "pass": false,
+   "time": 354.7,
+   "goal": {
+    "got": 1,
+    "need": 1
+   },
+   "rescues": 3,
+   "turnBacks": 0,
+   "hits": 0,
+   "lives": 0,
+   "hitBy": {},
+   "stuck": [
+    {
+     "x": 736,
+     "what": "the way on is 321 px down"
+    },
+    {
+     "x": 738,
+     "what": "the way on is 321 px down"
+    },
+    {
+     "x": 664,
+     "what": "fell back down from here 8 times"
+    },
+    {
+     "x": 1020,
+     "what": "the way on is 281 px down"
+    }
+   ]
+  },
+  {
+   "bot": "child",
+   "setting": "easy",
+   "stage": "1-4",
+   "seed": 53,
+   "end": "shrine",
+   "pass": false,
+   "time": 220.6,
+   "goal": {
+    "got": 1,
+    "need": 1
+   },
+   "rescues": 2,
+   "turnBacks": 0,
+   "hits": 0,
+   "lives": 0,
+   "hitBy": {},
+   "stuck": [
+    {
+     "x": 664,
+     "what": "the way on is 314 px down"
+    },
+    {
+     "x": 473,
+     "what": "fell back down from here 8 times"
+    },
+    {
+     "x": 454,
+     "what": "fell back down from here 8 times"
+    }
+   ]
+  },
+  {
+   "bot": "middle",
+   "setting": "normal",
+   "stage": "1-4",
+   "seed": 5,
+   "end": "shrine",
+   "pass": false,
+   "time": 296.8,
+   "goal": {
+    "got": 1,
+    "need": 1
+   },
+   "rescues": 1,
+   "turnBacks": 0,
+   "hits": 0,
+   "lives": 0,
+   "hitBy": {},
+   "stuck": [
+    {
+     "x": 1123,
+     "what": "nothing in the way the bot can see"
+    },
+    {
+     "x": 521,
+     "what": "fell back down from here 8 times"
+    }
+   ]
+  },
+  {
+   "bot": "middle",
+   "setting": "normal",
+   "stage": "1-4",
+   "seed": 21,
+   "end": "shrine",
+   "pass": false,
+   "time": 291.5,
+   "goal": {
+    "got": 1,
+    "need": 1
+   },
+   "rescues": 4,
+   "turnBacks": 0,
+   "hits": 0,
+   "lives": 0,
+   "hitBy": {},
+   "stuck": [
+    {
+     "x": 140,
+     "what": "the way on is 281 px down"
+    },
+    {
+     "x": 118,
+     "what": "the way on is 281 px down"
+    },
+    {
+     "x": 688,
+     "what": "the way on is 321 px down"
+    },
+    {
+     "x": 748,
+     "what": "fell back down from here 8 times"
+    }
+   ]
+  },
+  {
+   "bot": "middle",
+   "setting": "normal",
+   "stage": "1-4",
+   "seed": 51,
+   "end": "shrine",
+   "pass": true,
+   "time": 159.6,
+   "goal": {
+    "got": 1,
+    "need": 1
+   },
+   "rescues": 0,
+   "turnBacks": 0,
+   "hits": 1,
+   "lives": 0,
+   "hitBy": {
+    "other": 1
+   },
+   "stuck": []
+  },
+  {
+   "bot": "middle",
+   "setting": "normal",
+   "stage": "1-4",
+   "seed": 53,
+   "end": "shrine",
+   "pass": false,
+   "time": 188.5,
+   "goal": {
+    "got": 1,
+    "need": 1
+   },
+   "rescues": 2,
+   "turnBacks": 0,
+   "hits": 4,
+   "lives": 0,
+   "hitBy": {
+    "other": 4
+   },
+   "stuck": [
+    {
+     "x": 488,
+     "what": "fell back down from here 8 times"
+    },
+    {
+     "x": 1140,
+     "what": "the way on is 321 px down"
+    },
+    {
+     "x": 996,
+     "what": "fell back down from here 8 times"
+    }
+   ]
+  },
+  {
+   "bot": "middle",
+   "setting": "easy",
+   "stage": "1-4",
+   "seed": 5,
+   "end": "shrine",
+   "pass": true,
+   "time": 167.7,
+   "goal": {
+    "got": 1,
+    "need": 1
+   },
+   "rescues": 0,
+   "turnBacks": 0,
+   "hits": 0,
+   "lives": 0,
+   "hitBy": {},
+   "stuck": []
+  },
+  {
+   "bot": "middle",
+   "setting": "easy",
+   "stage": "1-4",
+   "seed": 21,
+   "end": "shrine",
+   "pass": true,
+   "time": 144,
+   "goal": {
+    "got": 1,
+    "need": 1
+   },
+   "rescues": 0,
+   "turnBacks": 0,
+   "hits": 0,
+   "lives": 0,
+   "hitBy": {},
+   "stuck": []
+  },
+  {
+   "bot": "middle",
+   "setting": "easy",
+   "stage": "1-4",
+   "seed": 51,
+   "end": "shrine",
+   "pass": true,
+   "time": 135,
+   "goal": {
+    "got": 1,
+    "need": 1
+   },
+   "rescues": 0,
+   "turnBacks": 0,
+   "hits": 0,
+   "lives": 0,
+   "hitBy": {},
+   "stuck": []
+  },
+  {
+   "bot": "middle",
+   "setting": "easy",
+   "stage": "1-4",
+   "seed": 53,
+   "end": "shrine",
+   "pass": true,
+   "time": 165.6,
+   "goal": {
+    "got": 1,
+    "need": 1
+   },
+   "rescues": 0,
+   "turnBacks": 0,
+   "hits": 0,
+   "lives": 0,
+   "hitBy": {},
+   "stuck": []
+  },
+  {
+   "bot": "expert",
+   "setting": "normal",
+   "stage": "1-4",
+   "seed": 5,
+   "end": "time",
+   "pass": false,
+   "time": 1200,
+   "goal": {
+    "got": 0,
+    "need": 1
+   },
+   "rescues": 0,
+   "turnBacks": 0,
+   "hits": 1,
+   "lives": 0,
+   "hitBy": {
+    "other": 1
+   },
+   "stuck": []
+  },
+  {
+   "bot": "expert",
+   "setting": "normal",
+   "stage": "1-4",
+   "seed": 21,
+   "end": "shrine",
+   "pass": false,
+   "time": 234.1,
+   "goal": {
+    "got": 1,
+    "need": 1
+   },
+   "rescues": 4,
+   "turnBacks": 0,
+   "hits": 3,
+   "lives": 0,
+   "hitBy": {
+    "other": 3
+   },
+   "stuck": [
+    {
+     "x": 224,
+     "what": "the way on is 281 px down"
+    },
+    {
+     "x": 112,
+     "what": "the way on is 281 px down"
+    },
+    {
+     "x": 130,
+     "what": "the way on is 281 px down"
+    },
+    {
+     "x": 244,
+     "what": "fell back down from here 8 times"
+    }
+   ]
+  },
+  {
+   "bot": "expert",
+   "setting": "normal",
+   "stage": "1-4",
+   "seed": 51,
+   "end": "shrine",
+   "pass": true,
+   "time": 158.3,
+   "goal": {
+    "got": 1,
+    "need": 1
+   },
+   "rescues": 0,
+   "turnBacks": 0,
+   "hits": 2,
+   "lives": 0,
+   "hitBy": {
+    "other": 2
+   },
+   "stuck": []
+  },
+  {
+   "bot": "expert",
+   "setting": "normal",
+   "stage": "1-4",
+   "seed": 53,
+   "end": "shrine",
+   "pass": false,
+   "time": 250.1,
+   "goal": {
+    "got": 1,
+    "need": 1
+   },
+   "rescues": 2,
+   "turnBacks": 0,
+   "hits": 4,
+   "lives": 0,
+   "hitBy": {
+    "other": 4
+   },
+   "stuck": [
+    {
+     "x": 1085,
+     "what": "the way on is 321 px down"
+    },
+    {
+     "x": 986,
+     "what": "in a dip 261 px deep, the way on is 314 px down"
+    },
+    {
+     "x": 348,
+     "what": "fell back down from here 8 times"
+    }
+   ]
+  },
+  {
+   "bot": "kid",
+   "setting": "normal",
+   "stage": "1-6",
+   "seed": 15,
+   "end": "shrine",
+   "pass": true,
+   "time": 230.8,
+   "goal": {
+    "got": 94,
+    "need": 30
+   },
+   "rescues": 0,
+   "turnBacks": 0,
+   "hits": 0,
+   "lives": 1,
+   "hitBy": {
+    "pit": 1
+   },
+   "stuck": []
+  },
+  {
+   "bot": "kid",
+   "setting": "normal",
+   "stage": "1-6",
+   "seed": 30,
+   "end": "shrine",
+   "pass": false,
+   "time": 284.7,
+   "goal": {
+    "got": 93,
+    "need": 30
+   },
+   "rescues": 1,
+   "turnBacks": 0,
+   "hits": 0,
+   "lives": 0,
+   "hitBy": {},
+   "stuck": [
+    {
+     "x": 29128,
+     "what": "fell into this pit 3 times (its far wall 225 px up)"
+    }
+   ]
+  },
+  {
+   "bot": "kid",
+   "setting": "easy",
+   "stage": "1-6",
+   "seed": 15,
+   "end": "shrine",
+   "pass": true,
+   "time": 209.3,
+   "goal": {
+    "got": 96,
+    "need": 20
+   },
+   "rescues": 0,
+   "turnBacks": 0,
+   "hits": 0,
+   "lives": 0,
+   "hitBy": {},
+   "stuck": []
+  },
+  {
+   "bot": "kid",
+   "setting": "easy",
+   "stage": "1-6",
+   "seed": 30,
+   "end": "shrine",
+   "pass": true,
+   "time": 206,
+   "goal": {
+    "got": 98,
+    "need": 21
+   },
+   "rescues": 0,
+   "turnBacks": 0,
+   "hits": 0,
+   "lives": 0,
+   "hitBy": {},
+   "stuck": []
+  },
+  {
+   "bot": "adult",
+   "setting": "normal",
+   "stage": "1-6",
+   "seed": 15,
+   "end": "shrine",
+   "pass": true,
+   "time": 250.5,
+   "goal": {
+    "got": 109,
+    "need": 30
+   },
+   "rescues": 0,
+   "turnBacks": 0,
+   "hits": 0,
+   "lives": 0,
+   "hitBy": {},
+   "stuck": [
+    {
+     "x": 44772,
+     "what": "the way on is 92 px down"
+    }
+   ]
+  },
+  {
+   "bot": "adult",
+   "setting": "normal",
+   "stage": "1-6",
+   "seed": 30,
+   "end": "shrine",
+   "pass": true,
+   "time": 233.3,
+   "goal": {
+    "got": 108,
+    "need": 30
+   },
+   "rescues": 0,
+   "turnBacks": 0,
+   "hits": 0,
+   "lives": 0,
+   "hitBy": {},
+   "stuck": []
+  },
+  {
+   "bot": "adult",
+   "setting": "easy",
+   "stage": "1-6",
+   "seed": 15,
+   "end": "shrine",
+   "pass": true,
+   "time": 219.1,
+   "goal": {
+    "got": 117,
+    "need": 20
+   },
+   "rescues": 0,
+   "turnBacks": 0,
+   "hits": 0,
+   "lives": 0,
+   "hitBy": {},
+   "stuck": []
+  },
+  {
+   "bot": "adult",
+   "setting": "easy",
+   "stage": "1-6",
+   "seed": 30,
+   "end": "shrine",
+   "pass": true,
+   "time": 205.8,
+   "goal": {
+    "got": 115,
+    "need": 21
+   },
+   "rescues": 0,
+   "turnBacks": 0,
+   "hits": 0,
+   "lives": 0,
+   "hitBy": {},
+   "stuck": []
+  },
+  {
+   "bot": "child",
+   "setting": "normal",
+   "stage": "1-6",
+   "seed": 15,
+   "end": "shrine",
+   "pass": true,
+   "time": 466.8,
+   "goal": {
+    "got": 89,
+    "need": 30
+   },
+   "rescues": 0,
+   "turnBacks": 0,
+   "hits": 0,
+   "lives": 2,
+   "hitBy": {
+    "pit": 2
+   },
+   "stuck": []
+  },
+  {
+   "bot": "child",
+   "setting": "normal",
+   "stage": "1-6",
+   "seed": 30,
+   "end": "shrine",
+   "pass": false,
+   "time": 642.1,
+   "goal": {
+    "got": 82,
+    "need": 30
+   },
+   "rescues": 1,
+   "turnBacks": 0,
+   "hits": 0,
+   "lives": 2,
+   "hitBy": {
+    "pit": 2
+   },
+   "stuck": [
+    {
+     "x": 29128,
+     "what": "fell into this pit 8 times (its far wall 225 px up)"
+    }
+   ]
+  },
+  {
+   "bot": "child",
+   "setting": "easy",
+   "stage": "1-6",
+   "seed": 15,
+   "end": "shrine",
+   "pass": true,
+   "time": 375.3,
+   "goal": {
+    "got": 93,
+    "need": 20
+   },
+   "rescues": 0,
+   "turnBacks": 0,
+   "hits": 0,
+   "lives": 0,
+   "hitBy": {},
+   "stuck": []
+  },
+  {
+   "bot": "child",
+   "setting": "easy",
+   "stage": "1-6",
+   "seed": 30,
+   "end": "shrine",
+   "pass": true,
+   "time": 356.6,
+   "goal": {
+    "got": 94,
+    "need": 21
+   },
+   "rescues": 0,
+   "turnBacks": 0,
+   "hits": 0,
+   "lives": 0,
+   "hitBy": {},
+   "stuck": []
+  },
+  {
+   "bot": "middle",
+   "setting": "normal",
+   "stage": "1-6",
+   "seed": 15,
+   "end": "shrine",
+   "pass": true,
+   "time": 270.6,
+   "goal": {
+    "got": 97,
+    "need": 30
+   },
+   "rescues": 0,
+   "turnBacks": 0,
+   "hits": 0,
+   "lives": 0,
+   "hitBy": {},
+   "stuck": []
+  },
+  {
+   "bot": "middle",
+   "setting": "normal",
+   "stage": "1-6",
+   "seed": 30,
+   "end": "shrine",
+   "pass": true,
+   "time": 297.1,
+   "goal": {
+    "got": 96,
+    "need": 30
+   },
+   "rescues": 0,
+   "turnBacks": 0,
+   "hits": 0,
+   "lives": 0,
+   "hitBy": {},
+   "stuck": []
+  },
+  {
+   "bot": "middle",
+   "setting": "easy",
+   "stage": "1-6",
+   "seed": 15,
+   "end": "shrine",
+   "pass": true,
+   "time": 261.2,
+   "goal": {
+    "got": 98,
+    "need": 20
+   },
+   "rescues": 0,
+   "turnBacks": 0,
+   "hits": 0,
+   "lives": 0,
+   "hitBy": {},
+   "stuck": []
+  },
+  {
+   "bot": "middle",
+   "setting": "easy",
+   "stage": "1-6",
+   "seed": 30,
+   "end": "shrine",
+   "pass": true,
+   "time": 269.8,
+   "goal": {
+    "got": 96,
+    "need": 21
+   },
+   "rescues": 0,
+   "turnBacks": 0,
+   "hits": 0,
+   "lives": 0,
+   "hitBy": {},
+   "stuck": []
+  },
+  {
+   "bot": "expert",
+   "setting": "normal",
+   "stage": "1-6",
+   "seed": 15,
+   "end": "shrine",
+   "pass": true,
+   "time": 263,
+   "goal": {
+    "got": 91,
+    "need": 30
+   },
+   "rescues": 0,
+   "turnBacks": 0,
+   "hits": 0,
+   "lives": 1,
+   "hitBy": {
+    "pit": 1
+   },
+   "stuck": []
+  },
+  {
+   "bot": "expert",
+   "setting": "normal",
+   "stage": "1-6",
+   "seed": 30,
+   "end": "shrine",
+   "pass": true,
+   "time": 259.5,
+   "goal": {
+    "got": 98,
+    "need": 30
+   },
+   "rescues": 0,
+   "turnBacks": 0,
+   "hits": 0,
+   "lives": 2,
+   "hitBy": {
+    "pit": 2
+   },
+   "stuck": []
+  }
+ ]
+}

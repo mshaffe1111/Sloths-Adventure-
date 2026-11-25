@@ -1,0 +1,824 @@
+{
+ "window": "DATA-1124 (R-165.421): Sessions rows 5700-5996, build 0.10.2 (main cdffdc627), arrived 11-23 12:32 PM to 11-24 10:38 AM ET",
+ "note": "Aggregates only. Two players (P24 expert tier, P27 child tier; stable P-numbers by first arrival over the whole tab). 5 runs, none on 1-1 and none in World 2, so the gen2_1_1 tier files are unchanged. n is tiny: every number here is a hint, not a law.",
+ "players": {
+  "P27": {
+   "stages": [
+    "1-4"
+   ],
+   "playMin": 94.0,
+   "jumpHoldMs": {
+    "n": 444,
+    "p10": 22,
+    "p25": 106,
+    "p50": 274,
+    "p75": 573,
+    "p90": 947
+   },
+   "secondPressDelayMs": {
+    "n": 20,
+    "p10": 544,
+    "p25": 1844,
+    "p50": 2334,
+    "p75": 7514,
+    "p90": 8854
+   },
+   "punchesPerMinute": 6.17,
+   "misreadPerMinute": 0.21,
+   "touch": {
+    "portrait": {
+     "strokes": 2648,
+     "mix": {
+      "drag": 0.738,
+      "tap": 0.187,
+      "flick": 0.045,
+      "hold": 0.03
+     },
+     "tapMs": {
+      "n": 494,
+      "p10": 31,
+      "p25": 47,
+      "p50": 83,
+      "p75": 134,
+      "p90": 175
+     },
+     "flickPxPerMs": {
+      "n": 120,
+      "p10": 0.262,
+      "p25": 0.289,
+      "p50": 0.334,
+      "p75": 0.405,
+      "p90": 0.48
+     },
+     "jumpFlickOffVerticalDeg": {
+      "n": 67,
+      "p10": 1.7,
+      "p25": 4.5,
+      "p50": 7.8,
+      "p75": 15.1,
+      "p90": 17.8
+     },
+     "twoFingerShare": 0.006
+    },
+    "landscape": null
+   },
+   "steering": {
+    "moveHoldMs": {
+     "n": 1020,
+     "p10": 54,
+     "p25": 139,
+     "p50": 336,
+     "p75": 592,
+     "p90": 889
+    },
+    "moveGapMs": {
+     "n": 1017,
+     "p10": 552,
+     "p25": 908,
+     "p50": 1501,
+     "p75": 3728,
+     "p90": 9762
+    },
+    "reversalShare": 0.37,
+    "reversalGapMs": {
+     "n": 377,
+     "p10": 234,
+     "p25": 910,
+     "p50": 1999,
+     "p75": 4763,
+     "p90": 11154
+    },
+    "dragToMovePx": {
+     "n": 1020,
+     "p10": 16,
+     "p25": 17,
+     "p50": 18,
+     "p75": 21,
+     "p90": 27
+    },
+    "standStillMs": {
+     "n": 1026,
+     "p10": 432,
+     "p25": 824,
+     "p50": 1186,
+     "p75": 2079,
+     "p90": 4184
+    },
+    "duckMs": {
+     "n": 20,
+     "p10": 17,
+     "p25": 189,
+     "p50": 345,
+     "p75": 603,
+     "p90": 1878
+    },
+    "climbMs": {
+     "n": 287,
+     "p10": 806,
+     "p25": 1746,
+     "p50": 2718,
+     "p75": 5698,
+     "p90": 15455
+    },
+    "climbSpeedPxPerS": {
+     "n": 2067,
+     "p10": 212.1,
+     "p25": 219.7,
+     "p50": 221.4,
+     "p75": 227.3,
+     "p90": 250.0
+    }
+   }
+  },
+  "P24": {
+   "stages": [
+    "1-2",
+    "1-5"
+   ],
+   "playMin": 4.3,
+   "jumpHoldMs": {
+    "n": 135,
+    "p10": 93,
+    "p25": 118,
+    "p50": 150,
+    "p75": 198,
+    "p90": 391
+   },
+   "secondPressDelayMs": {
+    "n": 14,
+    "p10": 374,
+    "p25": 407,
+    "p50": 493,
+    "p75": 692,
+    "p90": 817
+   },
+   "punchesPerMinute": 0.23,
+   "misreadPerMinute": 0.0,
+   "touch": {
+    "portrait": {
+     "strokes": 158,
+     "mix": {
+      "drag": 0.785,
+      "flick": 0.209,
+      "tap": 0.006
+     },
+     "tapMs": {
+      "n": 1,
+      "p10": 115,
+      "p25": 115,
+      "p50": 115,
+      "p75": 115,
+      "p90": 115
+     },
+     "flickPxPerMs": {
+      "n": 33,
+      "p10": 0.326,
+      "p25": 0.439,
+      "p50": 0.796,
+      "p75": 1.161,
+      "p90": 1.57
+     },
+     "jumpFlickOffVerticalDeg": {
+      "n": 19,
+      "p10": 10.1,
+      "p25": 27.7,
+      "p50": 32.5,
+      "p75": 37.6,
+      "p90": 43.1
+     },
+     "twoFingerShare": 0.0
+    },
+    "landscape": null
+   },
+   "steering": {
+    "moveHoldMs": {
+     "n": 165,
+     "p10": 144,
+     "p25": 278,
+     "p50": 643,
+     "p75": 1526,
+     "p90": 2536
+    },
+    "moveGapMs": {
+     "n": 163,
+     "p10": 204,
+     "p25": 258,
+     "p50": 307,
+     "p75": 439,
+     "p90": 698
+    },
+    "reversalShare": 0.17,
+    "reversalGapMs": {
+     "n": 28,
+     "p10": 33,
+     "p25": 58,
+     "p50": 256,
+     "p75": 338,
+     "p90": 515
+    },
+    "dragToMovePx": {
+     "n": 165,
+     "p10": 17,
+     "p25": 18,
+     "p50": 20,
+     "p75": 23,
+     "p90": 37
+    },
+    "standStillMs": {
+     "n": 50,
+     "p10": 101,
+     "p25": 167,
+     "p50": 235,
+     "p75": 367,
+     "p90": 634
+    },
+    "duckMs": {
+     "n": 1,
+     "p10": 1567,
+     "p25": 1567,
+     "p50": 1567,
+     "p75": 1567,
+     "p90": 1567
+    },
+    "climbMs": {
+     "n": 11,
+     "p10": 168,
+     "p25": 366,
+     "p50": 599,
+     "p75": 666,
+     "p90": 666
+    },
+    "climbSpeedPxPerS": {
+     "n": 33,
+     "p10": 217.8,
+     "p25": 218.8,
+     "p50": 220.0,
+     "p75": 223.9,
+     "p90": 242.4
+    }
+   }
+  }
+ },
+ "runs": [
+  {
+   "player": "P27",
+   "stage": "1-4",
+   "setting": "easy",
+   "variant": 28,
+   "end": "finish",
+   "finishGameS": 2782,
+   "playS": 3339,
+   "falls150": 56,
+   "fallPx": 17883,
+   "lives": 0,
+   "putbacks": 0,
+   "stallBand": {
+    "y": "5000-5999",
+    "seconds": 582,
+    "falls": 18
+   }
+  },
+  {
+   "player": "P27",
+   "stage": "1-4",
+   "setting": "easy",
+   "variant": 90,
+   "end": "left",
+   "playS": 1927,
+   "falls150": 38,
+   "fallPx": 9765,
+   "lives": 0,
+   "putbacks": 0,
+   "highestY": 4018,
+   "stallBand": {
+    "y": "5000-5999",
+    "seconds": 828,
+    "falls": 24
+   }
+  },
+  {
+   "player": "P27",
+   "stage": "1-4",
+   "setting": "easy",
+   "variant": null,
+   "unlistedSeed": true,
+   "end": "left",
+   "playS": 372,
+   "falls150": 4,
+   "fallPx": 896,
+   "highestY": 8801
+  },
+  {
+   "player": "P24",
+   "stage": "1-2",
+   "setting": "normal",
+   "variant": 83,
+   "end": "finish",
+   "finishGameS": 115,
+   "playS": 114,
+   "falls150": 10,
+   "lives": 0,
+   "putbacks": 0,
+   "hurts": 0
+  },
+  {
+   "player": "P24",
+   "stage": "1-5",
+   "setting": "normal",
+   "variant": 63,
+   "end": "finish",
+   "finishGameS": 145,
+   "playS": 144,
+   "falls150": 14,
+   "lives": 0,
+   "putbacks": 1,
+   "hurts": 1,
+   "hitAt": "w1-15-big-sign (trap tendril, then the snake)"
+  }
+ ],
+ "bots": [
+  {
+   "stage": "1-2",
+   "seed": 83,
+   "bot": "kid",
+   "setting": "normal",
+   "end": "shrine",
+   "pass": true,
+   "rescues": 0,
+   "hits": 0,
+   "lives": 0,
+   "time": 121,
+   "stuck": []
+  },
+  {
+   "stage": "1-2",
+   "seed": 83,
+   "bot": "kid",
+   "setting": "easy",
+   "end": "shrine",
+   "pass": true,
+   "rescues": 0,
+   "hits": 0,
+   "lives": 0,
+   "time": 125,
+   "stuck": []
+  },
+  {
+   "stage": "1-2",
+   "seed": 83,
+   "bot": "adult",
+   "setting": "normal",
+   "end": "shrine",
+   "pass": true,
+   "rescues": 0,
+   "hits": 0,
+   "lives": 0,
+   "time": 122,
+   "stuck": []
+  },
+  {
+   "stage": "1-2",
+   "seed": 83,
+   "bot": "adult",
+   "setting": "easy",
+   "end": "shrine",
+   "pass": true,
+   "rescues": 0,
+   "hits": 0,
+   "lives": 0,
+   "time": 124,
+   "stuck": []
+  },
+  {
+   "stage": "1-2",
+   "seed": 83,
+   "bot": "child",
+   "setting": "normal",
+   "end": "shrine",
+   "pass": true,
+   "rescues": 0,
+   "hits": 0,
+   "lives": 0,
+   "time": 308,
+   "stuck": []
+  },
+  {
+   "stage": "1-2",
+   "seed": 83,
+   "bot": "child",
+   "setting": "easy",
+   "end": "shrine",
+   "pass": true,
+   "rescues": 0,
+   "hits": 0,
+   "lives": 0,
+   "time": 251,
+   "stuck": []
+  },
+  {
+   "stage": "1-2",
+   "seed": 83,
+   "bot": "middle",
+   "setting": "normal",
+   "end": "shrine",
+   "pass": true,
+   "rescues": 0,
+   "hits": 0,
+   "lives": 0,
+   "time": 168,
+   "stuck": []
+  },
+  {
+   "stage": "1-2",
+   "seed": 83,
+   "bot": "middle",
+   "setting": "easy",
+   "end": "shrine",
+   "pass": true,
+   "rescues": 0,
+   "hits": 0,
+   "lives": 0,
+   "time": 164,
+   "stuck": []
+  },
+  {
+   "stage": "1-2",
+   "seed": 83,
+   "bot": "expert",
+   "setting": "normal",
+   "end": "shrine",
+   "pass": true,
+   "rescues": 0,
+   "hits": 0,
+   "lives": 0,
+   "time": 145,
+   "stuck": []
+  },
+  {
+   "stage": "1-4",
+   "seed": 28,
+   "bot": "kid",
+   "setting": "normal",
+   "end": "shrine",
+   "pass": true,
+   "rescues": 0,
+   "hits": 2,
+   "lives": 0,
+   "time": 122,
+   "stuck": []
+  },
+  {
+   "stage": "1-4",
+   "seed": 90,
+   "bot": "kid",
+   "setting": "normal",
+   "end": "shrine",
+   "pass": false,
+   "rescues": 1,
+   "hits": 0,
+   "lives": 0,
+   "time": 151,
+   "stuck": [
+    "fell back down from here 3 times"
+   ]
+  },
+  {
+   "stage": "1-4",
+   "seed": 28,
+   "bot": "kid",
+   "setting": "easy",
+   "end": "shrine",
+   "pass": true,
+   "rescues": 0,
+   "hits": 0,
+   "lives": 0,
+   "time": 120,
+   "stuck": []
+  },
+  {
+   "stage": "1-4",
+   "seed": 90,
+   "bot": "kid",
+   "setting": "easy",
+   "end": "shrine",
+   "pass": true,
+   "rescues": 0,
+   "hits": 0,
+   "lives": 0,
+   "time": 122,
+   "stuck": []
+  },
+  {
+   "stage": "1-4",
+   "seed": 28,
+   "bot": "adult",
+   "setting": "normal",
+   "end": "shrine",
+   "pass": true,
+   "rescues": 0,
+   "hits": 2,
+   "lives": 0,
+   "time": 118,
+   "stuck": []
+  },
+  {
+   "stage": "1-4",
+   "seed": 90,
+   "bot": "adult",
+   "setting": "normal",
+   "end": "shrine",
+   "pass": true,
+   "rescues": 0,
+   "hits": 1,
+   "lives": 0,
+   "time": 120,
+   "stuck": []
+  },
+  {
+   "stage": "1-4",
+   "seed": 28,
+   "bot": "adult",
+   "setting": "easy",
+   "end": "shrine",
+   "pass": true,
+   "rescues": 0,
+   "hits": 0,
+   "lives": 0,
+   "time": 111,
+   "stuck": []
+  },
+  {
+   "stage": "1-4",
+   "seed": 90,
+   "bot": "adult",
+   "setting": "easy",
+   "end": "shrine",
+   "pass": true,
+   "rescues": 0,
+   "hits": 0,
+   "lives": 0,
+   "time": 110,
+   "stuck": []
+  },
+  {
+   "stage": "1-4",
+   "seed": 28,
+   "bot": "child",
+   "setting": "normal",
+   "end": "shrine",
+   "pass": false,
+   "rescues": 2,
+   "hits": 2,
+   "lives": 0,
+   "time": 305,
+   "stuck": [
+    "the way on is 281 px down",
+    "fell back down from here 8 times"
+   ]
+  },
+  {
+   "stage": "1-4",
+   "seed": 90,
+   "bot": "child",
+   "setting": "normal",
+   "end": "shrine",
+   "pass": true,
+   "rescues": 0,
+   "hits": 0,
+   "lives": 0,
+   "time": 270,
+   "stuck": []
+  },
+  {
+   "stage": "1-4",
+   "seed": 28,
+   "bot": "child",
+   "setting": "easy",
+   "end": "shrine",
+   "pass": false,
+   "rescues": 2,
+   "hits": 0,
+   "lives": 0,
+   "time": 248,
+   "stuck": [
+    "fell back down from here 8 times",
+    "fell back down from here 8 times"
+   ]
+  },
+  {
+   "stage": "1-4",
+   "seed": 90,
+   "bot": "child",
+   "setting": "easy",
+   "end": "shrine",
+   "pass": false,
+   "rescues": 1,
+   "hits": 0,
+   "lives": 0,
+   "time": 212,
+   "stuck": [
+    "the way on is 281 px down"
+   ]
+  },
+  {
+   "stage": "1-4",
+   "seed": 28,
+   "bot": "middle",
+   "setting": "normal",
+   "end": "time",
+   "pass": false,
+   "rescues": 1,
+   "hits": 5,
+   "lives": 1,
+   "time": 1200,
+   "stuck": [
+    "the way on is 281 px down"
+   ]
+  },
+  {
+   "stage": "1-4",
+   "seed": 90,
+   "bot": "middle",
+   "setting": "normal",
+   "end": "shrine",
+   "pass": true,
+   "rescues": 0,
+   "hits": 6,
+   "lives": 1,
+   "time": 204,
+   "stuck": []
+  },
+  {
+   "stage": "1-4",
+   "seed": 28,
+   "bot": "middle",
+   "setting": "easy",
+   "end": "shrine",
+   "pass": true,
+   "rescues": 0,
+   "hits": 0,
+   "lives": 0,
+   "time": 134,
+   "stuck": []
+  },
+  {
+   "stage": "1-4",
+   "seed": 90,
+   "bot": "middle",
+   "setting": "easy",
+   "end": "shrine",
+   "pass": true,
+   "rescues": 0,
+   "hits": 0,
+   "lives": 0,
+   "time": 164,
+   "stuck": []
+  },
+  {
+   "stage": "1-4",
+   "seed": 28,
+   "bot": "expert",
+   "setting": "normal",
+   "end": "shrine",
+   "pass": false,
+   "rescues": 2,
+   "hits": 1,
+   "lives": 0,
+   "time": 200,
+   "stuck": [
+    "the way on is 281 px down",
+    "the way on is 281 px down"
+   ]
+  },
+  {
+   "stage": "1-4",
+   "seed": 90,
+   "bot": "expert",
+   "setting": "normal",
+   "end": "shrine",
+   "pass": true,
+   "rescues": 0,
+   "hits": 2,
+   "lives": 0,
+   "time": 132,
+   "stuck": []
+  },
+  {
+   "stage": "1-5",
+   "seed": 63,
+   "bot": "kid",
+   "setting": "normal",
+   "end": "shrine",
+   "pass": true,
+   "rescues": 0,
+   "hits": 0,
+   "lives": 0,
+   "time": 139,
+   "stuck": []
+  },
+  {
+   "stage": "1-5",
+   "seed": 63,
+   "bot": "kid",
+   "setting": "easy",
+   "end": "shrine",
+   "pass": true,
+   "rescues": 0,
+   "hits": 0,
+   "lives": 0,
+   "time": 127,
+   "stuck": []
+  },
+  {
+   "stage": "1-5",
+   "seed": 63,
+   "bot": "adult",
+   "setting": "normal",
+   "end": "shrine",
+   "pass": true,
+   "rescues": 0,
+   "hits": 0,
+   "lives": 0,
+   "time": 136,
+   "stuck": []
+  },
+  {
+   "stage": "1-5",
+   "seed": 63,
+   "bot": "adult",
+   "setting": "easy",
+   "end": "shrine",
+   "pass": true,
+   "rescues": 0,
+   "hits": 0,
+   "lives": 0,
+   "time": 129,
+   "stuck": []
+  },
+  {
+   "stage": "1-5",
+   "seed": 63,
+   "bot": "child",
+   "setting": "normal",
+   "end": "shrine",
+   "pass": true,
+   "rescues": 0,
+   "hits": 0,
+   "lives": 1,
+   "time": 391,
+   "stuck": []
+  },
+  {
+   "stage": "1-5",
+   "seed": 63,
+   "bot": "child",
+   "setting": "easy",
+   "end": "shrine",
+   "pass": true,
+   "rescues": 0,
+   "hits": 0,
+   "lives": 0,
+   "time": 268,
+   "stuck": []
+  },
+  {
+   "stage": "1-5",
+   "seed": 63,
+   "bot": "middle",
+   "setting": "normal",
+   "end": "shrine",
+   "pass": true,
+   "rescues": 0,
+   "hits": 1,
+   "lives": 0,
+   "time": 196,
+   "stuck": []
+  },
+  {
+   "stage": "1-5",
+   "seed": 63,
+   "bot": "middle",
+   "setting": "easy",
+   "end": "shrine",
+   "pass": true,
+   "rescues": 0,
+   "hits": 0,
+   "lives": 0,
+   "time": 175,
+   "stuck": []
+  },
+  {
+   "stage": "1-5",
+   "seed": 63,
+   "bot": "expert",
+   "setting": "normal",
+   "end": "shrine",
+   "pass": true,
+   "rescues": 0,
+   "hits": 0,
+   "lives": 0,
+   "time": 171,
+   "stuck": []
+  }
+ ]
+}

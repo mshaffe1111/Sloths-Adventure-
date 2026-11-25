@@ -1,50 +1,62 @@
-# Turnover note: the data analyst (rewritten at the end of every task; last: METER-2 step 0, the meter's coverage table, 11-15)
+# Turnover note: the data analyst (rewritten at the end of every task; last: DATA-1125, the 11-24 afternoon runs vs the bots, 11-25)
 
-## METER-2 step 0 (11-15, t-meter-2): what the meter can and can't measure
-- reference/design/METER-COVERAGE.md: one row per mechanic on GAME-MAP (all ten worlds), the bots and the meter channel that cover it,
-  with file:line. Read its §0 first. The two facts that matter most: the tier bots read no stage clock (only the eagle watch and
-  drifting floats), and METER-1's score.ts:638-639 prices every timed hazard at a flat 2 bits (a silent default).
-- Next: METER-2a (the coverage gate, the ride and dwell channels, the bots' clock read), on the lead's approval of §4.
-- Tester data is still gen2 1-1 only (P24-P33). The first World 2 window needs ride/pad recorder lines (a game-code packet) to fit them.
+## DATA-1125 (11-25, t-data-1125): rows 5997-6127
+- **Last read row: 6127.** 131 rows, build 0.10.2 only, 2 players (P24 expert, P27 child), 6 runs: 1-4 Normal x4, 1-6 Normal x2.
+  REPORT: reference/qa-reports/DATA-1125/REPORT.md; aggregates: tools/playtesters/profiles/window-1125.json (addendum).
+- **The variant rule was wrong (fixed here):** castBots/RealPlay variant = the 0-based index of the logged gen2 seed among the list's
+  plan keys, never the logged seed. Use `printf '<stage> <seed> <list>\n' | npx tsx tools/playtesters/variantOf.ts` (it proves each
+  by building it). Re-rolled entries (24 of 1-4's 100) look like live rolls and ARE castable. DATA-1124/1124b's casts are one off.
+- Open: re-cast DATA-1124/1124b (REPORT §6 EXACT NEXT STEP); 1-4 w1-14-under-fire for the child (3 lives, 30 min); castBots files
+  pod hits as `other`; expert bot timeout on 1-4 #5 Normal.
 
-## Open
-- The 11-10 window is CLOSED and fully read: attempt 1 (rows 2-4552) plus the attempt-3 delta (rows 4553-4592, pulled 11-11 2:09 AM
-  ET). Next window: rerun on a full pull; a delta pull of only new rows works when every new session starts at part 1 (check it).
-- Not built yet in report.py: fps and launch by device model, and the touch-style skill signals (LOG_EVENTS "Skill from play").
+## DATA-1124b (11-24, t-data-1124): the whole window since 0.10.1
+- Last read row then: 5996. Window = Sessions rows 5388-5462 + 5500-5996 (F = 2026-11-21T14:37:27-05:00 for 0.10.1, first row 5388;
+  2026-11-22T16:43:02-05:00 for 0.10.2; rows 5463-5499 are a 10-31 build). 3 players: P24 expert, P27 child, **P36 new (middle by the
+  rule)**; 24 runs, 16 finishes. REPORT: the DATA-1124b section at the top of reference/qa-reports/DATA-1124/REPORT.md; aggregates in
+  tools/playtesters/profiles/window-1124b.json (an addendum, same reason as window-1124.json).
+- castBots for 0.10.1 runs: a worktree at origin/release-0.10.1 (4a8c1decd; the build's 2a87f4cd is not in a shallow clone), node
+  deps by `npm install --no-audit --no-fund --legacy-peer-deps` (npm ci fails on peer deps; CI uses install). 1-6 and 1-7's lists differ
+  on later bases. 1-1 logs the real seed: map it to a variant with LIST.seeds.indexOf(seed)+1 (0 = a live roll, not castable).
+- Open: 1-7/1-8 for a middle player (3 runs, 0 finishes); 1-4's y 5000-5999 band (2 of 2 climbers); castBots' Easy stall at 1-2 #82
+  x 18651; no survey is sent when a player leaves, so the stages they quit carry no rating.
+
+## DATA-1124 (11-24, t-data-1124): what was read and what is open
+- Window: Sessions rows 5700-5996 (build 0.10.2, main cdffdc627; F = 2026-11-22T16:43:02-05:00 from row 5700). 2 players: P24 (expert,
+  1-2 and 1-5 Normal) and P27 (child, 1-4 Easy x3). No 1-1, no World 2. REPORT: reference/qa-reports/DATA-1124/REPORT.md.
+- Aggregates: tools/playtesters/profiles/window-1124.json (an addendum). players/ and tiers/ were NOT rebuilt: --profiles rebuilds
+  from the rows it is given, so a new-rows-only pull would wipe P1-P33. Fold the addendum in at the next whole-tab rebuild.
+- Open for the lead: climb sections by height (ENG), a child climb mode for castBots (no Easy rescue; fall rate from the window),
+  1-2 #83 at 115 s (under the 2-minute floor), more expert runs off 1-1 before any expert retune.
+- METER-2 (11-15): reference/design/METER-COVERAGE.md is still the meter's coverage table; METER-2a waits on the lead.
 
 ## Where things live
-- The sheet "Sloths control tests", tab Sessions: A Arrived, B Player, C Session, D Part, E Device, F Version (build time ISO), G Seconds,
-  H Data. About 5 KB per row, 4,552 rows on 11-09. The Drive export fails ("File too large"). Sheets get_values in 1,000-row ranges
-  works: each result is saved to a tool-results file, so no row enters the conversation. Move those files to scratch, outside the repo.
-- tools/playtesters/report.py takes a folder of those JSON files: `python3 -I tools/playtesters/report.py <folder>`, plus
-  `--delta "<m/d/Y H:M:S ET>"` and `--self-test`.
-- Window reports: reference/qa-reports/window-<date>/WINDOW.md, and REPORT.md (the task report).
+- The sheet "Sloths control tests" (find it by title with Drive search_files), tab Sessions: A Arrived (Pacific), B Player,
+  C Session, D Part, E Device, F Version (build time ISO), G Seconds, H Data. 5,996 rows on 11-24. Rows are NOT in build order
+  (a 10-31 build sits at rows 5463-5499 between 11-21 rows): find a window's first row from column F alone (a cheap pull), then A:H.
+- Sheets get_values results land in a tool-results file (about 3 KB a row): move it into the scratchpad, never the repo.
+- Stable P-numbers without the whole tab: pull Sessions!A2:C<first-1> (arrived, player cell, session; about 340 KB) and rank keys by
+  first arrival (code after " · ", else name); the window's own keys come from the `tester` event. 11-24: 36 keys before the window.
+- tools/playtesters/report.py: `python3 -I tools/playtesters/report.py <folder>` (+ `--delta`, `--profiles`, `--self-test`). Its
+  P-numbers are local to the rows it is given. The STAGES section (11-24) covers every stage but 1-1.
+- Bots on a player's layout: `npx tsx tools/inspect/castBots.ts --stage <id> --seeds <variants> --bots kid,adult,child,middle,expert
+  --setting both --par 6 --json`. WRONG until 11-25: the variant is NOT the logged seed: use tools/playtesters/variantOf.ts (DATA-1125). Check the run's `list` against src/game/gen2/provenIndex.ts first. About 2 min for 36.
 
 ## Rulings and facts to keep
-- The Arrived column is Pacific time (the spreadsheet's timeZone). report.py adds 3 h to print ET.
-- Players are joined by tester code (the `tester` event, or the Player cell after " · "), else by name. They print only as P-numbers in
-  order of first arrival, so P-numbers stay stable across pulls as long as no older row appears. Before 11-06 there are no codes, so
-  before-side player counts are counts of names.
-- Sides: a gen2/env build commit on main at or after e92bdcdb = since; dev, an unknown commit or a commit not on main = other. With no
-  commit, a build time before 2026-11-06 18:32:50 ET = before.
-- The top horizontal speed is 520 px/s (SWING.leapMax, physics.ts:373), not 430. Any section time under length/520 is a counting bug.
-- `move double` / `move bounce` = first use per stage start (playRecorder.ts:409-416). Count runs, never uses.
-- On Easy, softFall stands in for a life, so it weighs 3. On Normal, softFall is the double-gap put-back and weighs 1.
-- `skipOffer` is the "Skip tips" button on Dot's first tip (DotGuide.tsx:409-424): not a glitch, not help; report.py counts it
-  under teaching. `stuckHelp` watches jumping at a wall only (engine.ts:4524-4548): it cannot fire on a put-back loop, and no
-  help-after-put-backs exists.
-- The tap-read-as-punch rule (corrected 11-11): a punch NOT taken back (no punchCancel within 150 ms) followed by a jump PRESS (`i jump`)
-  within 0.6 s among the next 5 intents. `jumpUp` is the jump RELEASE (TouchController.tsx:50); the action finger jabs on landing and a
-  flick takes it back by design (touchGestures.ts:487-499, CT-17). Window: 154 of 700.
-- Bot inputs: `--profiles <dir>` writes players/, tiers/ and index.json (fields: profiles/README.md). Lip distances need the layouts:
-  tools/playtesters/layouts.ts rebuilds them the game's way (npx tsx; list must match). p.x is Pokey's MIDDLE and p.y is his feet.
-- 1-1 has nothing to punch (0 stomps and 0 hurts in 95 runs), so every punch intent there is a misread.
+- Arrived is Pacific; report.py adds 3 h. Players join by tester code, else name; print only P-numbers. Before 11-06: names only.
+- Top horizontal speed 520 px/s (SWING.leapMax). `move double`/`move bounce` = first use per stage start: count runs, not uses.
+- Easy softFall weighs 3, Normal 1. `skipOffer` is teaching, not a glitch. stuckHelp watches wall-jumping only.
+- Tap read as punch: a kept punch then a jump PRESS (`i jump`) within 0.6 s among the next 5 intents. `jumpUp` is the release.
+- 1-1 has nothing to punch. Climb speed is the engine's (about 220 px/s for P24 and P27): not a skill signal.
+- **On a climb, section ids are wrong**: placed sections carry x0/x1 only, so 1-4 logs 3 ids over 11,000 px of height. Read climbs by
+  height (y grows downward; 1-4 runs from y 11321 at the bottom to 342 at the top). report.py flags it.
+- **Climb lines carry vy 0** (4,836 of 4,836): climb speed is dy/dt between climb lines (report.py fixed, self-test planted).
+- A fall = a drop of 150 px or more from the highest point since the last footing to the next footing. On Easy climbs no softFall or
+  lostLife line marks it: falls are the only cost the log shows.
+- roadmapcheck needs full history: on a shallow clone it exits 2 with no verdict; say so, never call it a pass.
 
 ## Traps I hit
-- Read the intent's source before counting it: `jumpUp` looked like a jump and was the release (11-11).
-- Every hand-made table must sum to report.py's own total; quote that total beside it (V1, 11-09: a dropped 1-life row).
-- The 11-07 report summed section time per slice, not per run, and never closed the last section. Both are fixed. Don't bring them back.
-- Slices that hold a respawn span x far faster than the top speed. Exclude them from speed checks.
-- Dot's hints show once per device, so judge teaching on each player's FIRST run only.
-- Privacy: never print the Player cell, the device line or survey `note`/`lookedNote`. Grep the diff for the four persona names and the
-  6-letter code shape before every commit.
+- I wrote a count into a code comment before measuring it (2,485; the measure was 4,836). Measure first, then write the number.
+- A scratch script that parses states must use the first letter (`c/U` is a climb): exact matches dropped half the lines.
+- Every hand-made table must sum to report.py's own total. Validate a counter against what it physically should be before reading it.
+- Privacy: never print the Player cell, the device line or survey `note`/`lookedNote` (read survey chips by key only). Grep the diff
+  for the four persona names and the 6-letter code shape before every commit.
