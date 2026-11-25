@@ -21,6 +21,14 @@ roll 11 GREEN (shrine, loop < 6, unlit []) / seamByFacing RED (loop >= 8; probe:
 **RUNNING AT HAND-OVER (box 15 finishes and records only these two on this branch, D138; if they are not here, box 16 re-runs them):** planted-faults.py on frozen a5e15a74d (33
 plants; 2 CAUGHT so far); x40 lane 1 (seeds 1-20, both settings, --par 2) on frozen a5e15a74d -> x40-a5e15a74-1.jsonl. Lane 2 (21-40)
 NOT started (two heavy runs at a time).
+**x40 LANE 1 RECORDED (seeds 1-20, both settings, frozen a5e15a74d; rows cast-3-1-x40-a5e15a74-lane1.jsonl; x40verdict.py vs the base's
+seeds 1-20): FAILS THE BAR ALREADY.** shrine 177/180: Normal roll 15 child, middle and expert STRANDED ('the way on is 347 px down',
+'fell back down from here 8 times'; kid and adult N 15 reached it). Unlit 2 (child N 1: x 648, y 9051, 0.49 s after waking; middle E 15:
+x 1005, y 8877, landing dark). Max loop 4. Rescue kinds the base lacks 3 ('a drop of # px ahead, a trunk beside him, the way on is # px
+down'; 'a trunk beside him, on a trunk'; 'in a dip # px deep, the way on is # px up'). Medians vs base: kid N -30.0, kid E +8.1, child N
+-80.4, child E -25.0, middle N -44.8, middle E -33.0, adult N -5.8, adult E +4.7, expert N -41.6 (expert E not in this lane's print).
+NOT yet known: whether roll 15 strands on a177fde99 (before box 15's seam change) too: box 16's FIRST check is that one-run A/B
+(expert Normal 15, castBots, a177fde99 vs a5e15a74d). Lane 2 not run.
 **BOX 16 DOES:** (1) plants on a5e15a74d: every one CAUGHT (none NO TEST / BASE RED / MISSED). (2) the x40 on a5e15a74d (both lanes;
 commit cast-3-1-x40-a5e15a74.jsonl) vs THE BAR with x40verdict.py against cast-3-1-x40-base-c1008d8e.jsonl: shrine 360/360; unlit <= 5
 events, no loop; no rescue kind the base lacks; medians vs base; ENG-DOWNBOT's open items. One line to the lead. (3) box 15's order
