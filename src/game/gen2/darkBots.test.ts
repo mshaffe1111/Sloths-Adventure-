@@ -48,10 +48,24 @@ test("the dark's stop FACES the rim: the child's stop, taken facing away 40 px i
   // (castBots x40 on b71163ea, unlit cause 2: the child Normal stood still at x 1014 facing right, 40 px in from the rim at the left end
   //  of 974-1154; the landing's light 357 px behind him, past GLOW_REACH.back, never woke; he waited it out and went over dark at 42.07 s,
   //  then, the give-up kept for the run, over it again at 48.53 s 0.34 s after its light woke. This roll's first 50 s hold that stop)
+  // (ENG-DARK box 12: on the final lay every landing's light is within GLOW_REACH.back of a stop, so a stop facing away wakes it and no
+  //  run of rolls 1-40 needs the turn; the toy is hand-built: the child on roll 1 stood 40 px in from the draft's first sleeping rim facing
+  //  away at 0.5 s, that rim's light held asleep while he faces away from it (a light behind him past his reach, as on b71163ea))
   if (readied !== DRAFT) readyDraft(DRAFT);
   const { firstTimer, FT_CHILD } = await import('../../../tools/inspect/firsttimer.ts');
-  const r = firstTimer(DRAFT, 19, FT_CHILD, { cap: 50 });
-  assert.ok(r.dark && r.dark.crossed >= 3, `he went over dark rims (${r.dark?.crossed})`);
+  const { darkRims } = await import('./dark.ts');
+  let rim: ReturnType<typeof darkRims>[number] | undefined;
+  const r = firstTimer(DRAFT, 1, FT_CHILD, { cap: 12, onFrame(sim) {
+    if (rim?.light?.id !== undefined && sim.p.facing !== rim.dir) (sim.e as unknown as { glowWake: Map<number, number> }).glowWake.delete(rim.light.id);
+    if (rim || sim.e.gameTime <= 0.5) return;
+    rim = darkRims(sim.stage as Parameters<typeof darkRims>[0]).find((q) => q.light?.sleep);
+    assert.ok(rim, 'the draft has a sleeping rim');
+    sim.stand(rim.x - rim.dir * 40, rim.y);
+    sim.p.facing = -rim.dir as -1 | 1;
+    sim.p.vx = 0;
+  } });
+  assert.ok(rim && r.dark, 'he was stood at a sleeping rim in the lit dark');
+  assert.ok(r.dark.crossed >= 1, `he went over the rim (${r.dark.crossed})`);
   assert.deepEqual(r.dark.unlit, []);
   assert.deepEqual(r.dark.gaveUp, []);
 });
