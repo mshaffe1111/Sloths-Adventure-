@@ -1,4 +1,45 @@
-# ENG-PLANT-CI: the 9 CI-tool-line reds on c27 (session 2 hand-over written 12:14 PM ET 11-25 by `date`; session 1's text below it)
+# ENG-PLANT-CI: the 9 CI-tool-line reds on c27 (session 3 hand-over written 12:34 PM ET 11-25 by `date`; sessions 2 and 1 below it)
+
+## SESSION 3 HAND-OVER (ENG-PLANT-CI-c; started 12:19 PM ET 11-25). HEAD = CI-5 36da03dd4 + its test 455d5f7e4 + this file. STOPPED: A NEW FAULT (brief)
+**Item 1, the adult walk-off: TRACED and FIXED in the toy (CI-5 36da03dd4, firsttimer.ts).** racefront adult phase 0 on CI-4 (probe
+ci-tools/racefront.mts.txt, `ONLY=adult DBG=1 DBGT=adult DBGP=0 F0=200 F1=100 PDBG=1`; it now prints stopMeant/releaseLeft/lastSteer):
+(a) the walk let go 23 px from #10's front at 260 px/s: the walk is judged once a frame, so it lets go up to one frame's run (9.5 px)
+INSIDE frontStandPx; (b) the stand it falls to (the handed stand's `return {}`, and c26's front stand `{}`) set no stopMeant, so the
+adult's late lift-off (no holdQ: thumbify re-arms every frame, R-165.59) held {right} 3 frames (stopMeant false, releaseLeft 0 each frame,
+lastSteer 1), 5 px past the front; (c) THE GATE THAT PRESSED IN THE AIR: ft:3922, the edge's generic blind press
+(`if (!drops) return this.decide(dir, this.jumpFor(...))`, decide's stack in ci-tools/racefront-decide.mts.txt), reached because
+`here = floorAt(p.x)` reads NOTHING once his middle passes the log's front while he still stands on it. CI-5: frontStandPx counts the
+decision frame ((releaseMax[1] + 1) frames: adult 41, child/kid 60); stopMeant at every front stand (handed {}, c26's {}, the
+clockHeld stand); `here` falls back to the engine's standingOnId when it is a drift/moving floor. racefront on CI-5: every tier, every
+phase, 5-34 px behind the front, no water (adult 15-28; CI-4 adult 13 past to 5 behind, 3 waters). **Test** riverRide.test.ts 'on the race
+leg, a log running his way...' (appended; reds 5-9's tests untouched): RED on CI-4 (adult 7/8 phases past the front), GREEN on CI-5.
+Upstream (racefront-up.mts.txt, logs AT him): CI-4 -> CI-5 middle 0.5 and 1.5 hop -> handed (rides back to the bank; he stands 10 px
+further back), expert 1 'hop 7 px past the front' -> handed, adult 0 log -> handed.
+**The races on CI-5 (frozen fz-ci5; data/ci/margins-ci5.txt, CI-4's in margins-ci4.txt): 10/10 WON.** Margin (s; c27 / CI-4 / CI-5):
+home N1 7.21/8.41/4.41; N2 31.24/23.34/21.94; N3 17.06/12.76/20.26; post N4 17.80/29.20/17.90; **post N5 19.70/8.30/3.60**;
+home E1 19.77/23.67/19.57; E2 18.22/25.32/24.22; E3 8.57/13.67/30.27; post E4 22.73/30.83/26.03; E5 29.70/32.60/30.80.
+Post N5 CI-4 vs CI-5 part at t 71.70 on #45 (CI-5 lets go of the front-stand walk a frame earlier); both at q#55 at t 89.63 within 2 px;
+the 4.7 s goes after that (draw-path, not traced). Rows move +-5 to 17 s between candidates: **post N5's 3.6 s is inside that spread.**
+**The 10 known flips (set1-m.sh, data/ci/set1-ci4 and set1-ci5, vs data/q/set1-c27 on the c-report branch):** CI-4 already differs from
+c27 on the three 2-1 files (child E2 288.2 s, child N11 1 life, kid N19 8 lives: CI-1..4, NOT traced). CI-5 moves 8 of 10 files vs CI-4:
+the KID rows FAIL -> PASS (2-4 kid Easy 2,12,13,19,20; 2-2 kid Normal 3,33; 2-1 kid Normal 19: the stand is a stop he means, the
+intended move); **three rows LOSE A LIFE: 2-2 adult N4 (0 -> 1, +16.4 s), 2-4 adult N6 (0 -> 1, +8.6 s), 2-1 child N11 (1 -> 2).**
+**THE NEW FAULT (2-2 adult N4, traced, ci-tools/rowprobe.mts.txt `ALL=1`):** the runs part at f2986 t 99.53 on log #79 (drift, his way):
+he RAN at 268 px/s past its front (x 20265, front 20258: 7 px past; not a front stand: a run at the lip). CI-4: the blind press (ft:3922)
+flew him off from there and he landed. CI-5 (`here` = the log by standingOnId): the log's judged gates hold him STANDING 13 px PAST the
+front, vx 0, for 9+ s (t 99.6 -> 108.5+, carried his way), 6 s behind CI-4 from then; the life is a sinking pad (#116 x 29,664, t 143.5).
+So the blind press hid a run past the log's front at full run; judged, he stands past the front where no hop is judged landing.
+
+## EXACT NEXT STEP (session 4; only on the lead's word after this STOP)
+0. Trees: fz-ci4 4da085f92, fz-ci5 36da03dd4 (chattr). Tools: ci-tools/*.txt -> /home/user/tl/*.mts; set1-m.sh + margins.mts from
+   release-0.10.3-wip-plant-c-report reference/qa-reports/ENG-PLANT/tools/; c27's flips: that branch's data/q/set1-c27/.
+1. 2-2 adult N4 f2960-2990 on fz-ci5: which gate ran him at #79's front at full run (wrap run.intend/decide/startJump with stack lines,
+   as racefront-decide does); fix general: the run-up to a press at a log's front lets go where his stop ends before the front (the same
+   rule as the front stand: frontStandPx(who) with the decision frame), and a stand already past a log's front walks back to it.
+2. Then 2-4 adult N6 and 2-1 child N11 the same way (first frame CI-4 vs CI-5 part, rowprobe ALL=1 both trees, python diff).
+3. Then on the new candidate: racefront + the new test, the 10 races, the 10 flips (each moved row traced), then red 4 (hopJudged Easy
+   5: per-frame hopFlight vs engine overSmall, bot model to match the engine), then the final head's checks (4 files = reds 5-9 only,
+   wide sample 0 BAR PASS -> FAIL vs main, tierBots 9/9, tsc).
 
 ## SESSION 2 HAND-OVER (ENG-PLANT-CI-b; started 11:58 AM ET 11-25). HEAD = CI-4 4da085f92 = a CANDIDATE, NOT DONE: do not merge it yet
 Branch release-0.10.3-wip-plant-ci: acf29a092 (session 1) -> 82b7f4c8d CI-2 RE-APPLIED (the lead's ruling: the judged hop is the hop
