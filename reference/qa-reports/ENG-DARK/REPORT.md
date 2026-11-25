@@ -1,4 +1,39 @@
 # ENG-DARK REPORT (the dark + light ring as one gen2 brick; WORLD-3-PLAN F2; R-165.449)
+**EXACT NEXT STEP (ENG-DARK-j box 10 hand-over, 2:13 PM ET by `date`; head on t-eng-dark-wip = this commit; CODE 404d9420 (the bot fix);
+no lay change yet. Box 11 OWNS every step below. Re-fetch before every commit (D138).)**
+**DONE in box 10, the lead's ruling 1, fix (a) (commit 404d9420), measured by castone on the new head:**
+- 32 N adult: unlit 31 -> **0** (shrine 245.8 s, 6 rescues; 0dadb295 243.2/6; base c1008d8e 233.9/5). 32 N kid: 26 -> **0** (285.6 s, 8;
+  0dadb295 299.4/9; base 235.7/7). Fix (b) (the lay's seam) NOT needed for the loop; not built.
+- Cause, measured (probes/downend.mts, which wraps downEnd from outside): the route's way-on point under him was x 337-343 (y 9719-9741),
+  INSIDE the 35 px seam between 79-332@9676 and 367-547@9682 (the route drops through it to 341-574@9806, sealed under 367-547 and
+  547-721: probes/seam.mts). downEnd pointed him at it from both pieces; he walked over the seam each way.
+- **THE downEnd CHANGE, exactly (for ENG-DOWNBOT's saved resolution, t-eng-w3-wip-downbot probes/downEnd-resolution.ts.txt):** in
+  downEnd, after `const dx = at.x - p.x;` the return became: `const d = dx > 8 ? 1 : dx < -8 ? -1 : 0; if (d === 0 ||
+  this.who.noSeamWalk) return d; const end = this.ledgeEnds(p, d); return end && (at.x - end.own) * d > 0 && (at.x - end.run) * d <= 0
+  ? 0 : d;` (+ its comment). NEW private `ledgeEnds(p, d): {own, run} | null` right after downEnd: own = the end going d of the piece
+  at his feet (top within 8 px, p.x within LAND_HALF of it); run = the end after joining every next piece at that height (top within
+  8 px) whose near end is less than 2*LAND_HALF out. downPt UNCHANGED. `LAND_HALF` added to the physics.ts import. NEW FirstTimer field
+  `noSeamWalk` (the plant). DOWNBOT re-applies by keeping its own body and adding the d / noSeamWalk / ledgeEnds check before its own
+  `return`, against its own `at` (its wood run joins gaps of 2 px and tops within 4 px, so it does NOT join this seam: 35 px, 6 px).
+- Variants measured and NOT kept (unlit [] too, but slower): a wood run joined over seams + the first way-on point off it ("broad"):
+  adult 282.9 s/8, kid 271.5/7; the same only when a seam joins ("scoped"): 288/8, 272.7/7.
+- darkBots.test: 2 new toys on roll 32 (GREEN 'a seam he walks over is no way down'; RED with noSeamWalk: one rim dark 10+ times): 2/2
+  pass (12 s). The whole darkBots.test NOT run on this head (box 9: test 5 red, to be re-anchored).
+- **kid Normal 27 (ruling 3's first item), measured (probes/plantone.mts):** with noSeamWalk (0dadb295's downEnd exactly) it STRANDS at
+  195.4 s as box 8's row did ('fell back down from here 3 times' at x 1155, y 10670; crossed 70); with the fix: **shrine 202.4 s, 4
+  rescues, crossed 19, unlit []** (base 158.1/3). One field turns the strand on and off: the seam rule. Not traced frame by frame.
+- adult 33 N on the new head: shrine 255 s, 6 rescues, unlit [] (0dadb295: 276/7, 1 unlit at the behind edge x 940, y 7828). The path
+  moved; the LAY FIX is still owed by the ruling (the behind edge is not lit by design yet).
+**BOX 11 DOES, in order (the lead's ruling 3-5):**
+(1) Send the lead kid 27's evidence above to rule (fixed by (a)), unless the lead asks for the 1155,10670 trace.
+(2) The 33 N LAY FIX (gen2/dark.ts lay): a second light over the step-off landing when the rim's own landing is a hop (landingOf gives
+the hop; stepOnto gives the step-off piece). A toy each way in dark.test; darkLandings/darkGaps [] over all 80 rolls (probes/verdicts.mts).
+Check roll 32's seam toys still RED/GREEN after it (the lay fix may light rim 367's step-off landing; the planted RED reads unlit).
+(3) The 7 single crossings (box 8: adult 33 N 940,7828; child E 21 191,1562; expert 31 N 929,10127; middle E 1 517,2867; middle E 32
+561,10406; middle 16 N 920,7104; middle 31 N 965,6563): castone each on the new head first (paths moved), then trace or rule.
+(4) Add plant 28 to planted-faults.py: the seam check removed (downEnd's `if (d === 0 || this.who.noSeamWalk)` line onward) -> the seam
+GREEN toy goes RED. (5) Re-anchor toys 3, 4, 6 and darkBots test 5 on the FINAL lay (toyscan.mts). (6) ONE fresh x40 vs the bar; (7)
+the gates once; LAND on t-eng-w3 (the lead's ruling 5).
 **EXACT NEXT STEP (ENG-DARK-i box 9 hand-over, 1:58 PM ET by `date`; head on t-eng-dark-wip = this commit; CODE still 0dadb295's: box 9
 changed no src or tools file. Box 10 OWNS every step below. Re-fetch before every commit (D138).)**
 **THE LEAD'S REDIRECTED ORDER (two messages, word for word in substance; 0dadb295 will NOT land, box 8's x40 failed the bar):**
