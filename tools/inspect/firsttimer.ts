@@ -1203,11 +1203,30 @@ export class WaitAim {
   draws = 0;
   /** when the held aim was drawn (SKILLS.reAim reads its age) */
   since = -1;
+  /** (ENG-PLANT-CI, rule 28, SKILLS.reAim's honest aim: on a log a re-draw never comes inside his stopReact) set every frame by the run:
+   *  the log he stands on (null: none) and his reaction (0: the tier has no reAim). A new wait opened on the SAME log inside his
+   *  reaction from the last draw there keeps that aim (no draw): padPause's flick refused, then the upstream gate's wait 0.2 s later
+   *  drew afresh (riverRide's honest-aim toy, phase 0 on candidate 2, traced) */
+  onLog: number | null = null;
+  react = 0;
+  private drawn: { hop: DrawnHop; dir: number; t: number; log: number } | null = null;
+  /** his reaction has not passed since the last draw on the log he stands on (the reAim tier only) */
+  fresh(t: number): boolean {
+    return this.react > 0 && this.onLog !== null && !!this.drawn && this.drawn.log === this.onLog && t - this.drawn.t < this.react - 1e-9;
+  }
   at(dir: -1 | 1, t: number, draw: (dir: -1 | 1) => DrawnHop): DrawnHop {
-    if (!this.hop || this.dir !== dir || t - this.last > 1.5 * DT) { this.hop = draw(dir); this.dir = dir; this.draws++; this.since = t; }
+    if (!this.hop || this.dir !== dir || t - this.last > 1.5 * DT) {
+      if (this.fresh(t) && this.drawn!.dir === dir) { this.hop = this.drawn!.hop; this.dir = dir; this.since = this.drawn!.t; }
+      else {
+        this.hop = draw(dir); this.dir = dir; this.draws++; this.since = t;
+        if (this.onLog !== null) this.drawn = { hop: this.hop, dir, t, log: this.onLog };
+      }
+    }
     this.last = t;
     return this.hop;
   }
+  /** a draw made outside a wait (tablePick's thumb) on the log he stands on: the reaction counts from it too */
+  note(dir: -1 | 1, t: number, hop: DrawnHop): void { if (this.onLog !== null) this.drawn = { hop, dir, t, log: this.onLog }; }
   /** the wait is over: he pressed, or the target left reach */
   end(): void { this.hop = null; }
 }
@@ -1403,9 +1422,12 @@ export function stillCoverNear(bushes: ReadonlyArray<{ x: number; w: number; y: 
 }
 
 /** px short of a log's front he lets go of a walk to it (c26, the front stand): his run-on after a let-go at full run, the 12 px slide to a
- *  stop (maxRun^2 / 2 groundDec) and a lift-off up to 2 frames late (19 px): the 31 of the edge plan's stand (look); he rests at the front,
- *  the furthest-forward take-off the gate judges from (p.x), never past it (session 13's experiment walked to 30) */
-export const FRONT_STAND_PX = Math.round(PHYS.maxRun * PHYS.maxRun / (2 * PHYS.groundDec) + 2 * PHYS.maxRun * DT);
+ *  stop (maxRun^2 / 2 groundDec) and his OWN latest lift-off (releaseMax[1] frames at full run, as the stop read at the bonk does); he
+ *  rests at the front, the furthest-forward take-off the gate judges from (p.x), never past it (session 13's experiment walked to 30).
+ *  (ENG-PLANT-CI, rule 28: c26 read 2 frames (19 px) for every tier, 31 px; the kid and the child lift off up to 4 frames late (38 px), so the
+ *  child walked past a log's front and stood 9 px beyond its end, where no gate is reached: riverRide's reAim toy phase 1.5, traced. The
+ *  adult family (releaseMax [0, 2]) keeps 31; the kid and the child 50) */
+export const frontStandPx = (who: { releaseMax: [number, number] }): number => Math.round(PHYS.maxRun * PHYS.maxRun / (2 * PHYS.groundDec) + who.releaseMax[1] * PHYS.maxRun * DT);
 
 export class FirstTimerRun {
   readonly sim: RealPlay;
@@ -1993,8 +2015,15 @@ export class FirstTimerRun {
       for (const q of targets) { const v = this.gateAir(q, floatAt(rivers, q), p.x, p.y, dir, c, t, vx, margin); if (v !== null && (a === null || v < a)) a = v; }
       return a;
     };
+    // (ENG-PLANT-CI, rule 28, SKILLS.reAim's honest aim: a player who sees his hop will not reach presses harder only once he has SEEN it
+    //  refused, his reaction after the aim was drawn on this log; inside it the child keeps the aim (the gates' reAim decides after it).
+    //  c3b drew the pick's thumb in the same frame as the refused aim: riverRide's honest-aim toy, phase 0, a re-draw 0.000 s apart, traced)
+    if (this.aim.fresh(t)) return null;
     const pick = racePick(cands, air);
-    return pick ? { ...pick, thumb: this.drawHop(dir).thumb } : null;
+    if (!pick) return null;
+    const drawn = this.drawHop(dir);
+    this.aim.note(dir, t, drawn);
+    return { ...pick, thumb: drawn.thumb };
   }
 
   /** a single pressed now from (p.x, p.y) comes down on a drifting log, where the log will be then (hopLandsOn): SKILLS.boardHop's test */
@@ -2843,6 +2872,12 @@ export class FirstTimerRun {
   /** what he means to do this frame (before the thumb's own fumbles) */
   private intend(): Pad {
     const sim = this.sim, p = sim.p, e = this.e, t = this.t, who = this.who;
+    // (SKILLS.reAim's honest aim, the child only: the log he stands on and his reaction, read by every wait's draw (WaitAim.fresh))
+    {
+      const on = p.grounded ? sim.platforms.find((q) => q.id === e.standingOnId) : undefined;
+      this.aim.onLog = on && on.type === 'drift' ? on.id : null;
+      this.aim.react = SKILLS.reAim && who.reAim ? who.stopReact : 0;
+    }
     // (a spur's dead-end stone stood on: counted, FTRun.spurs)
     if (p.grounded) for (const r of (sim.stage as Stage).rivers ?? []) if (r.spur && Math.abs(p.x - r.spur.x) < 70 && Math.abs(p.y - r.spur.y) < 10) this.spursMet.add(r.x0);
     const tgt = p.isVineSwinging ? this.pastLiana(p) : this.prog.target(p);
@@ -3641,7 +3676,7 @@ export class FirstTimerRun {
             //  comes near). The wait and its 6 s are untouched; a lift or a lily pad alone keeps the old go)
             const drifts = floats.filter((q) => q.type === 'drift');
             if (SKILLS.floatSure && drifts.length) {
-              if (dir * (edgeX - p.x) > FRONT_STAND_PX) { this.pending = null; this.lateArmed = null; return side(dir); }
+              if (dir * (edgeX - p.x) > frontStandPx(who)) { this.pending = null; this.lateArmed = null; return side(dir); }
               const banks = this.sim.platforms.filter((q) => q !== here && q.type !== 'drift' && q.type !== 'moving' && !q.broken && Math.abs(q.y - p.y) < 70 && (dir > 0 ? q.x >= edgeX && q.x - edgeX < 400 : q.x + q.width <= edgeX && edgeX - (q.x + q.width) < 400));
               const to = [...banks, ...drifts];
               const vx = p.vx + (Math.abs(carry) < 400 ? carry : 0);
@@ -3785,8 +3820,12 @@ export class FirstTimerRun {
               //  running back at him, refused mid-log, he walks to the front before he stands. The gap branch fires where his tier's press
               //  distance reaches past the lip, and gateSees judges from p.x, so from mid-log no hop ever landed and the log handed him back
               //  until rescued: 2-7 c25 expert Normal 29 on #37 76 px behind its front (x 13,079), five hand-backs; handBack toy, riverRide.test)
-              if (dir * (edgeX - p.x) > FRONT_STAND_PX) { this.pending = null; this.lateArmed = null; return side(dir); }
+              // (ENG-PLANT-CI, rule 28: the reAim expiry comes BEFORE the front stand's walk. On c26 the walk returned first, so a refused aim
+              //  was never ended while the walk was asked for; the child's rhythm (intend -> rhythm) eats that walk, so he stood mid-log with the
+              //  stale aim and rode back to the bank: riverRide's reAim toy, phases 0.5 and 1.5 'back' (traced: intend {right}, rhythm {}, no
+              //  re-draw for 1.2 s at 46 px from the front; base re-drew at +0.467 s and hopped). The child's skill only, as before)
               if (SKILLS.reAim && who.reAim && t - this.aim.since > who.stopReact) this.aim.end();
+              if (dir * (edgeX - p.x) > frontStandPx(who)) { this.pending = null; this.lateArmed = null; return side(dir); }
               this.pending = null; this.lateArmed = null; this.clockHeld = true; this.blockedT = 0; return {};
             }
             // (SKILLS.floatSure, ENG-PLANT (the lead's ruling A, rule 28): the far bank in reach and no log, the hop onto the bank is the hop
@@ -3820,7 +3859,7 @@ export class FirstTimerRun {
             this.aim.end();
             // (c26, the front stand: nothing in reach, he stands at the log's front, where a hop lands when the next log comes round, not
             //  where his look stopped him: 2-7 c25 middle Easy 11 stood on #19 37 px from its rear (x 9,379), handed back to #16, rescued)
-            if (!next && !bank && dir * (edgeX - p.x) > FRONT_STAND_PX) return side(dir);
+            if (!next && !bank && dir * (edgeX - p.x) > frontStandPx(who)) return side(dir);
             return next || bank ? this.startJump(dir, this.jumpFor(p, dir, here), false) : {};
           }
           if (!bank && !next) {
