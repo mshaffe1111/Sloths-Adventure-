@@ -28,6 +28,22 @@ a toy each way. (6) lockall vs c1008d8ed (102/102; no listed stage travels down:
 3-1's build owes length (design, not the bots).
 Start 10:10 AM ET 11-25; hand-over 10:26 AM ET (by `date`).
 
+## Box 5 (session 3, 11-25), on t-eng-w3-wip-downbot from 2abf6faf1 (code 6b6874dfb)
+- **Ruling 1, LAY finding 2, 32bf092b0:** the verdict **'a catch hands on to its storey'** (tower.ts `towerHandOns`, joined to the
+  tower verdicts on down columns in pipeline.ts): per going-down turn whose vine stops on a catch, the catch's run (wood level with it,
+  end to end) has an open end that lands on the turn's storey or above it; named otherwise ('lies over all of its storey', or 'it runs
+  wall to wall: no way off'). **RED first on today's rolls (2abf6faf1):** w3.test 'a catch hands on to its storey' (seeds 1-12 x both)
+  failed on normal 1 (catch 0-1082 @2759 over its storey @2867; normal 1's 581-1280 @11711 over 729-1144 @11889 is in the same
+  roll); probes/handon2.mts: **51 turns on 30 of 48 rolls** (seeds 1-24 x both), **11 of them wall to wall** (no way off at all: a
+  catch run across the whole tower). (probes/handon.mts, the stricter 'lands at the storey's own height': 69 of 489 stopped turns on
+  33 rolls.) **The lay:** towerCatches going down: no wood is laid level with wood across a climb vine, run on with it, that leaves
+  that run with no end landing on the vine's storey or above (rules 1, 2 and 4: `passes` in `fair` and in rule 1). **GREEN:** 0 on
+  48 rolls; head room (24 x both, no blind drop) and 'a catch crosses a vine' (12 x both) still GREEN; tower.test 'towerHandOns'
+  (planted arena: kept as laid; run on past both ends of its storey named; wall to wall named; no catch, or a turn going up, not
+  judged). tsc PASS. **Rolls it touches: 42 of 48** (probes/rollhash.mts, wood + vines per roll, 2abf6faf1 vs 32bf092b0; every
+  roll 0 errors on both). I tried the narrower lay the finding named ((b): rules 1-2 only): it left 2 wall-to-wall catches (n22,
+  n24), 4 rolls with errors, and still touched 42: the catch's own bough (rule 4) chains into the run too. Not kept.
+
 ## Box 4 (11-25), on t-eng-w3-wip-downbot from 2a8d89ec2 (code 3ba82c8b8)
 - **Ruling 1 (b), the lay, 34085ae19:** tower.ts `vineCuts`/`stopVines`/`towerVineCuts`; pipeline: after clearClimbs, on a down
   tower (or a down leg's frame), each climb vine stops on the highest solid wood across it (6 px in from its ends, 10 px clear of the

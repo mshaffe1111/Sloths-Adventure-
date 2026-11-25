@@ -1,11 +1,11 @@
-// probe (ENG-DOWNBOT): tower.ts towerHandOns ('a catch hands on to its storey') on the raw draft rolls. TREE= [N=24] GEN2_DRAFT=3-1 npx tsx <this>
+// probe (ENG-DOWNBOT): tower.ts towerHandOns ('a catch hands on to its storey') on the raw draft rolls. TREE= [VTREE=<tree whose verdict to read>] [N=24] GEN2_DRAFT=3-1 npx tsx <this>
 const T = process.env.TREE!;
 await import(`${T}/src/game/headlessDom.ts`);
 const { readyDraft } = await import(`${T}/tools/engine/draft.ts`);
 const { generateAllLevels } = await import(`${T}/src/game/worldsData.ts`);
 const { buildGen2Stage } = await import(`${T}/src/game/gen2/pipeline.ts`);
 const { LISTED } = await import(`${T}/src/game/gen2/listed.ts`);
-const { towerHandOns } = await import(`${T}/src/game/gen2/tower.ts`);
+const { towerHandOns } = await import(`${process.env.VTREE ?? T}/src/game/gen2/tower.ts`);
 readyDraft('3-1');
 const cfg = generateAllLevels().find((c: any) => c.id === '3-1' && !c.secret)!;
 let n = 0, walls = 0; const rolls: string[] = [];

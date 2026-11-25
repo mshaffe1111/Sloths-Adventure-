@@ -341,23 +341,17 @@ export function towerCatches(flow: 'up' | 'down', platforms: readonly Platform[]
   const hop = Math.max(0, reachJump(0, true)) + LEAP.slack;
   const byGate = (x0: number, x1: number, y: number) => gates.some((g) => y <= g.y + GATE_LEVEL && y >= g.y - LEAP.up && Math.max(0, x0 - (g.x + g.width), g.x - x1) <= hop)
     || keepOut.some((k) => x0 < k.x1 && x1 > k.x0 && y >= k.y0 && y <= k.y1);
-  // (going down, a turn's catch hands him on to its own storey: no wood is laid level with the wood across a climb vine (the catch the
-  //  vine will stop on, stopVines), run on with it, that leaves that run with no end landing on the vine's storey or above it: over ALL
-  //  of the storey he would land past it off both ends, skipping its leg, or wall to wall with no way off (the verdict towerHandOns,
-  //  the lead's ruling on LAY finding 2, ENG-DOWNBOT: 51 such turns on 30 of 48 drafted 3-1 rolls))
+  // (going down, a turn's catch hands him on to its own storey: no wood is laid that leaves the catch of a climb vine (the highest wood
+  //  across it, where the vine will stop, stopVines) handing him past the vine's storey (handOn 'past': every way off it, run after
+  //  run, lands below that storey, or it runs wall to wall), when it did not before. Rules 1, 2 and 4 (the verdict towerHandOns, the
+  //  lead's ruling on LAY finding 2, ENG-DOWNBOT: 51 such turns on 30 of 48 drafted 3-1 rolls, 11 of them wall to wall))
   const climbs = flow === 'down' ? vines.filter((v) => v.vineType === 'tree_climb') : [];
+  const catchOf = (wood: readonly Platform[], v: Vine) => wood.filter((p) => p.type === 'solid' && p.x + 6 < v.x && p.x + p.width - 6 > v.x && p.y > v.topY + 10 && p.y < v.bottomY - 10).sort((a, b) => a.y - b.y)[0];
+  const past = (wood: readonly Platform[], v: Vine) => { const c = catchOf(wood, v); return !!c && handOn(wood, c.x, c.x + c.width, c.y, v.bottomY, width, most).state === 'past'; };
   const passes = (x0: number, x1: number, y: number): boolean => {
     if (!climbs.length) return false;
-    const box = { id: 0, x: x0, y, width: x1 - x0, height: 24, type: 'solid' } as Platform;
-    const lvl = [...solid([]), box].filter((q) => Math.abs(q.y - y) <= 1);
-    let a = x0, b = x1, grew = true;
-    while (grew) {
-      grew = false;
-      for (const q of lvl) if (q.x <= b + 2 && q.x + q.width >= a - 2 && (q.x < a || q.x + q.width > b)) { a = Math.min(a, q.x); b = Math.max(b, q.x + q.width); grew = true; }
-    }
-    const v = climbs.find((q) => a + 6 < q.x && b - 6 > q.x && y > q.topY + 10 && y < q.bottomY - 10);
-    if (!v) return false;
-    return ![a - 24, b + 24].filter((x) => x >= 20 && x <= width - 20).some((x) => { const l = catchUnder([...all, box], x, y, 100000); return l !== undefined && l <= v.bottomY + 2; });
+    const after = [...all, { id: 0, x: x0, y, width: x1 - x0, height: 24, type: 'solid' } as Platform];
+    return climbs.some((v) => v.bottomY > y - 1 && past(after, v) && !past(all, v));
   };
   /** laid fairly: the storey it is of (storeyAt), or -1 when it is in the way, climbs a storey, lies by a gate or in a kept-out box,
    *  or (going down) runs a catch on past its storey */
@@ -565,11 +559,49 @@ export function towerVineCuts(vines: readonly Vine[], platforms: readonly Platfo
   return vineCuts(vines, platforms).map(({ v, p }) => `tower: a catch crosses a vine: the piece at x ${Math.round(p.x)}-${Math.round(p.x + p.width)}, y ${Math.round(p.y)} lies across the vine at x ${Math.round(v.x)} (y ${Math.round(v.topY)}-${Math.round(v.bottomY)})`);
 }
 
+/** the run of sound wood at height `y` that the span x0-x1 is part of: wood level with it (1 px), end to end (2 px) */
+function runOf(solid: readonly Platform[], x0: number, x1: number, y: number): { a: number; b: number; y: number } {
+  let a = x0, b = x1, grew = true;
+  while (grew) {
+    grew = false;
+    for (const q of solid) if (Math.abs(q.y - y) <= 1 && q.x <= b + 2 && q.x + q.width >= a - 2 && (q.x < a || q.x + q.width > b)) { a = Math.min(a, q.x); b = Math.max(b, q.x + q.width); grew = true; }
+  }
+  return { a, b, y };
+}
+
+/**
+ * Where stepping off the ends of the run of wood at (x0-x1, y) takes him, a body's width past each end, run after run he lands on:
+ * 'ok' when he comes down onto wood at the storey's height `to` (2 px) before any landing below it; 'open' when none does but a drop
+ * is past `most` (going down a catch is still owed there, towerCatches); else 'past' (every way off lands below the storey, or there
+ * is none). `first`: the landings off the run's own ends (none: it runs wall to wall).
+ */
+export function handOn(platforms: readonly Platform[], x0: number, x1: number, y: number, to: number, width: number, most = Infinity): { state: 'ok' | 'open' | 'past'; run: { a: number; b: number; y: number }; first: Array<number | undefined> } {
+  const solid = platforms.filter((p) => p.type === 'solid');
+  const run = runOf(solid, x0, x1, y);
+  const offs = (r: { a: number; b: number; y: number }) => [r.a - 24, r.b + 24].filter((x) => x >= 20 && x <= width - 20).map((x) => ({ x, l: catchUnder(platforms, x, r.y, 100000) }));
+  const first = offs(run).map((o) => o.l);
+  let open = false;
+  const todo = [run], seen = new Set([`${run.a} ${run.y}`]);
+  for (let k = 0; k < todo.length && k < 60; k++) {
+    for (const { x, l } of offs(todo[k])) {
+      if (l === undefined) continue;
+      if (l - todo[k].y > most) { open = true; continue; }
+      if (Math.abs(l - to) <= 2) return { state: 'ok', run, first };
+      if (l > to + 2) continue;
+      const q = platforms.find((p) => p.type !== 'fragile' && Math.abs(p.y - l) < 0.5 && x >= p.x && x <= p.x + p.width)!;
+      const r = q.type === 'solid' ? runOf(solid, q.x, q.x + q.width, l) : { a: q.x, b: q.x + q.width, y: l };
+      if (!seen.has(`${r.a} ${r.y}`)) { seen.add(`${r.a} ${r.y}`); todo.push(r); }
+    }
+  }
+  return { state: open ? 'open' : 'past', run, first };
+}
+
 /**
  * Going down, a stopped vine's catch hands him on to the turn's own storey (the lead's ruling on LAY finding 2, ENG-DOWNBOT 11-25):
- * the catch is the wood the vine stops on (stopVines) with any wood run on level with it, end to end; stepping off at least one of
- * its open ends, a body's width past it, lands him on that storey (or on wood above it), never past it. A catch run on over ALL of
- * its storey sends him off both ends onto a lower storey, so that storey's leg is skipped; a catch run on wall to wall has no way off.
+ * the catch is the wood the vine stops on (stopVines) with any wood run on level with it, end to end; stepping off its ends, and on
+ * off whatever he lands on, he comes down onto wood at the storey's height before he lands below it (handOn). A catch run on over
+ * ALL of its storey sends him past it (normal 1: off the catch 581-1280 at y 11711 onto 11825, then 12062, past its storey 729-1144
+ * at y 11889), so that storey's leg is skipped; a catch run on wall to wall has no way off.
  * Each turn whose catch hands him past its storey, by name (empty: kept). `turns`: each going-down turn's vine x and storeys.
  */
 export function towerHandOns(turns: ReadonlyArray<{ x: number; from: number; to: number }>, platforms: readonly Platform[], width: number): string[] {
@@ -580,14 +612,9 @@ export function towerHandOns(turns: ReadonlyArray<{ x: number; from: number; to:
     // (the catch: the highest wood the vine stops on between its storeys, as vineCuts reads wood across a vine)
     const c = solid.filter((p) => p.x + 6 < t.x && p.x + p.width - 6 > t.x && p.y > t.from + 10 && p.y < t.to - 10).sort((a, b) => a.y - b.y)[0];
     if (!c) continue;
-    let x0 = c.x, x1 = c.x + c.width, grew = true;
-    while (grew) {
-      grew = false;
-      for (const q of solid) if (Math.abs(q.y - c.y) <= 1 && q.x <= x1 + 2 && q.x + q.width >= x0 - 2 && (q.x < x0 || q.x + q.width > x1)) { x0 = Math.min(x0, q.x); x1 = Math.max(x1, q.x + q.width); grew = true; }
-    }
-    const lands = [x0 - 24, x1 + 24].filter((x) => x >= 20 && x <= width - 20).map((x) => catchUnder(platforms, x, c.y, 100000));
-    if (lands.some((y) => y !== undefined && y <= t.to + 2)) continue;
-    out.push(`tower: a catch passes its storey: the catch at x ${Math.round(x0)}-${Math.round(x1)}, y ${Math.round(c.y)}, where the vine at x ${Math.round(t.x)} stops, lies over all of its storey at y ${Math.round(t.to)} (${lands.length ? `off its ends he lands at y ${lands.map((y) => (y === undefined ? 'nothing' : Math.round(y))).join(' and ')}` : 'it runs wall to wall: no way off'})`);
+    const h = handOn(platforms, c.x, c.x + c.width, c.y, t.to, width);
+    if (h.state === 'ok') continue;
+    out.push(`tower: a catch passes its storey: the catch at x ${Math.round(h.run.a)}-${Math.round(h.run.b)}, y ${Math.round(c.y)}, where the vine at x ${Math.round(t.x)} stops, hands him past its storey at y ${Math.round(t.to)} (${h.first.length ? `off its ends he lands at y ${h.first.map((y) => (y === undefined ? 'nothing' : Math.round(y))).join(' and ')}, and never comes down at its storey's height` : 'it runs wall to wall: no way off'})`);
   }
   return out;
 }

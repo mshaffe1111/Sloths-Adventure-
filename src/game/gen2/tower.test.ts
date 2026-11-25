@@ -642,7 +642,11 @@ test("towerHandOns ('a catch hands on to its storey'): a stopped vine's catch wh
   // (as laid at its best: the catch 180 px wide under the end; off its left end he lands on the storey)
   assert.deepEqual(towerHandOns([turn], [from, storey, low, solid(408, 753, 180, 3)], 1280), []);
   // (the catch run on past both ends of its storey: off either end he lands past it, on the storey below)
-  assert.deepEqual(towerHandOns([turn], [from, storey, low, solid(408, 753, 180, 3), solid(250, 753, 158, 4), solid(588, 753, 400, 6)], 1280), ['tower: a catch passes its storey: the catch at x 250-988, y 753, where the vine at x 500 stops, lies over all of its storey at y 927 (off its ends he lands at y 1280 and 1280)']);
+  assert.deepEqual(towerHandOns([turn], [from, storey, low, solid(408, 753, 180, 3), solid(250, 753, 158, 4), solid(588, 753, 400, 6)], 1280), ['tower: a catch passes its storey: the catch at x 250-988, y 753, where the vine at x 500 stops, hands him past its storey at y 927 (off its ends he lands at y 1280 and 1280, and never comes down at its storey\'s height)']);
+  // (off its end onto wood over the storey, then on off that wood: past the storey (normal 1's 11711 onto 11825, then 12062), or onto it)
+  const run = [from, storey, low, solid(408, 753, 180, 3), solid(250, 753, 158, 4), solid(588, 753, 400, 6)];
+  assert.equal(towerHandOns([turn], [...run, solid(150, 860, 90, 7)], 1280).length, 1, 'onto 860, then past the storey to 1280');
+  assert.deepEqual(towerHandOns([turn], [...run, solid(150, 860, 170, 7)], 1280), [], 'onto 860, then off its right end onto the storey');
   // (run on wall to wall: no way off)
   assert.match(towerHandOns([turn], [from, storey, low, solid(0, 753, 1280, 3)], 1280)[0], /it runs wall to wall: no way off\)$/);
   // (a vine with no catch across it, and a turn going up, are not judged)
