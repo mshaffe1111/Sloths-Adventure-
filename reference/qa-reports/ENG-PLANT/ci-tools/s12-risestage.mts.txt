@@ -1,0 +1,18 @@
+// risestage: the waitRise plant search on a real stage: castRun on and off (PAD_SKILL.waitRise), per bot:setting and seed
+// usage: tsx upsearch.mts <tree> <bot:setting,...> <seeds a-b>; one JSON line per row
+const [T, combos, seedsS, STAGE] = process.argv.slice(2);
+await import(T + '/src/game/headlessDom.ts');
+const ft: any = await import(T + '/tools/inspect/firsttimer.ts');
+const { castRun }: any = await import(T + '/tools/inspect/castBots.ts');
+const [a, b] = seedsS.split('-').map(Number);
+const k = (r: any) => ({ end: r.end, rescues: r.rescues, lives: r.lives, time: r.time });
+for (const c of combos.split(',')) {
+  const [bot, setting] = c.split(':');
+  for (let seed = a; seed <= b; seed++) {
+    const on = castRun(bot, setting, STAGE, seed);
+    ft.PAD_SKILL.waitRise = false;
+    let off: any;
+    try { off = castRun(bot, setting, STAGE, seed); } finally { ft.PAD_SKILL.waitRise = true; }
+    console.log(JSON.stringify({ bot, setting, seed, on: k(on), off: k(off) }));
+  }
+}
