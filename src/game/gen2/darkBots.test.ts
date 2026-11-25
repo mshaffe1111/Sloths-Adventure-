@@ -182,47 +182,24 @@ test("the way down a trunk he stands beside MID-WAY (roll 33 Easy): the child ta
   assert.deepEqual(r.stuck.map((q) => q.what), [], 'no rescue on the way down');
 });
 
-test("a RUN off an edge with no stop onto a piece whose dark rim is within his slide: he stops at the edge and creeps off it, and goes over that rim lit (GREEN; planted: runOffRims not read)", async () => {
-  // (the 3-1 trial merge of ENG-DOWNBOT: the adult Normal 12 ran off a ledge with no dark stop at 268 px/s, flew 92 px, landed 7 px from a
-  //  sleeping rim and went over it dark; 74 such crossings in 44 of 76 runs. Box 14's lay wakes every such landing (awakeLights), so no
-  //  real roll deals it: the toy is hand-built on Normal roll 3's real edge x 442, y 5351 (no stop there), whose run comes down 36 px from
-  //  the rim at x 214, y 5811: the lay's run-off lights are put back to sleep (the lay before box 14) and the adult stood 200 px in,
-  //  steering at the edge (glowWait read first), for 14 s)
+test("a RUN off a lit edge in the dark whose touchdown lies within his slide of a sleeping rim: he stops at that edge until that rim's light is lit, then runs on, and goes over it lit (adult Normal roll 1: x 556, y 3672 onto x 673, y 3850) (GREEN; planted: runOffRims not read)", async () => {
+  // (the 3-1 trial merge of ENG-DOWNBOT: the adult ran off a ledge with no dark stop at 268 px/s, flew 92 px, landed 7 px from a sleeping
+  //  rim and went over it dark: 74 such crossings in 44 of 76 runs. On the merged lay this roll's adult runs off the lit edge x 556,
+  //  y 3672 (its own landing's light is the cave mouth's, so it is no dark stop of its own), touches down 10 px from the rim at x 673,
+  //  y 3850 and went over it dark at 36.30 s. A stop on 376-556 wakes that rim's light (runOffs' stops), so the bot stops there)
   if (readied !== DRAFT) readyDraft(DRAFT);
   const { firstTimer, FT_ADULT } = await import('../../../tools/inspect/firsttimer.ts');
-  const { awakeLights, darkRims, entryPieces, runOffRims } = await import('./dark.ts');
-  type Bot = { sim: { p: { x: number } }; intend(): object; glowWait(d: number): object | null; glowRims: unknown };
-  let edge: ReturnType<typeof runOffRims>[number] | undefined, offVx: number | null = null;
-  const slept: Array<{ sleep?: boolean }> = [];
-  const r = firstTimer(DRAFT, 3, { ...FT_ADULT, setting: 'normal' }, { cap: 14, onFrame(sim, b) {
-    if (edge) {
-      const p = sim.p;
-      if (offVx === null && !p.grounded && (p.x < edge.piece.x || p.x > edge.piece.x + edge.piece.width) && Math.abs(p.y - edge.y) < 40) offVx = Math.round(p.vx);
-      return;
-    }
-    if (sim.e.gameTime <= 0.5) return;
-    const st = sim.stage as Parameters<typeof darkRims>[0];
-    for (const z of st.zones ?? []) if (z.kind === 'dark' && z.lights?.length) {
-      const mouth = entryPieces(st.platforms, z);
-      const m = new Set(darkRims({ platforms: st.platforms, zones: [z] }).filter((q) => q.light && mouth.has(q.piece)).map((q) => q.light));
-      for (const l of awakeLights(st.platforms, z)) if (!m.has(l)) { l.sleep = true; slept.push(l); }
-    }
-    const bot = b as Bot, intend = bot.intend;
-    bot.glowRims = null;
-    edge = runOffRims(st, 'normal').find((q) => q.x === 442 && q.y === 5351);
-    assert.ok(edge && edge.land.y === 5811, 'the run off x 442, y 5351 comes down by the rim at x 214, y 5811');
-    const at = edge;
-    sim.stand(at.x - at.dir * 200, at.y);
-    sim.p.facing = at.dir;
-    sim.p.vx = 0;
-    bot.intend = function (this: Bot) { return this.glowWait(at.dir) ?? (at.dir > 0 ? { right: true } : { left: true }); };
-    void intend;
+  const { runOffRims } = await import('./dark.ts');
+  let stopped = false, listed = false;
+  const r = firstTimer(DRAFT, 1, { ...FT_ADULT, setting: 'normal' }, { cap: 40, onFrame(sim, b) {
+    if (!listed) listed = runOffRims(sim.stage as Parameters<typeof runOffRims>[0], 'normal').some((q) => q.x === 556 && q.y === 3672 && q.land.y === 3850);
+    const g = (b as { glowStop: { rim: { x: number; y: number; runOff?: true } } | null }).glowStop;
+    if (g?.rim.runOff && g.rim.x === 556 && g.rim.y === 3672) stopped = true;
   } });
-  for (const l of slept) l.sleep = false;
-  assert.ok(edge && r.dark, 'he was stood at the edge');
-  assert.ok(offVx !== null && Math.abs(offVx) <= 120, `he went off the edge at a walk (${offVx} px/s)`);
-  assert.ok(r.dark.crossed >= 1, `he went over dark rims (${r.dark.crossed})`);
-  assert.deepEqual(r.dark.unlit.filter((u) => u.includes('the rim at x 214, y 5811')), [], 'the rim his run lands near was lit');
+  assert.ok(listed, 'the edge x 556, y 3672 is a run-off stop (runOffRims)');
+  assert.ok(stopped, 'he stopped at it');
+  assert.ok(r.dark && r.dark.crossed >= 1, `he went over dark rims (${r.dark?.crossed})`);
+  assert.deepEqual(r.dark.unlit.filter((u) => u.includes('the rim at x 673, y 3850')), [], 'the rim his run lands near was lit');
 });
 
 /** roll 32's seam: a way-on point under a 35 px gap between two pieces at his height (79-332 and 367-547 on this lay) he walks over */
