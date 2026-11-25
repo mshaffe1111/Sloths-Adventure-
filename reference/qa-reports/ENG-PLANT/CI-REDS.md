@@ -1,4 +1,59 @@
-# ENG-PLANT-CI: the 9 CI-tool-line reds on c27 (session 9 hand-over written 2:53 PM ET 11-25 by `date`; sessions 8, 7, 6, 5, 4, 3, 2 and 1 below it)
+# ENG-PLANT-CI: the 9 CI-tool-line reds on c27 (session 10 hand-over written 3:12 PM ET 11-25 by `date`; sessions 9, 8, 7, 6, 5, 4, 3, 2 and 1 below it)
+
+## EXACT NEXT STEP (session 11). HEAD = CI-13 0e0c4e284 (CI-12 a2a5582c6 = the lead's ruling (b) on (A); CI-13 = (B)'s fix) + this file and data/ci/s10, set1-ci12, set1-ci13, cmp-ci12.txt, cmp-ci13.txt. Both toys planted RED/GREEN; tsc clean on frozen CI-13.
+0. ReadNotifications. Frozen trees (`git worktree add --detach <dir> <hash>`, node_modules symlinked, `chattr -R +i <dir>/src <dir>/tools`,
+   `chattr -R -i <dir>/src/game/gen2/proven`, D115): fz-ci11t = 4cccba33e with CI-13's hopJudged.test.ts copied in (for the A rows' and the
+   toys' RED), fz-ci12 = a2a5582c6, fz-ci13 = 0e0c4e284. c27's set1: `git archive origin/release-0.10.3-wip-plant-c-report
+   reference/qa-reports/ENG-PLANT/data/q/set1-c27 | tar -x -C <dir>`. Probes: ci-tools/s9-rows.mts.txt (one row, every frame and press, JSON),
+   s9-diff.py.txt (where two trees part), s10-tag.mts.txt (which `return` in intend each frame took, on a copy tagged by the python in
+   "SESSION 10 END STATE" (B); run from inside the tagged copy).
+1. **CI-13's moved rows (rule 28; one that cannot be narrowed: STOP and send the lead the table).** s10/moved-ci11-ci12-ci13.txt: (A) moved
+   12 rows CI-11 -> CI-12 (all 2-4), (B) moved 14 CI-12 -> CI-13 (2-1, 2-2 and 2-4). vs c27: 0 BAR PASS -> FAIL on CI-12 and on CI-13.
+   **First the three that lose MORE lives (both PASS/FAIL kept, but each a moved row with a cost): 2-2 adult Normal 4 (l0 -> l1, B), 2-4
+   adult Normal 24 (l0 -> l2, B), 2-1 kid Normal 21 (FAIL l6 -> l8, B).** s9-rows on fz-ci12 and fz-ci13, s9-diff: where each parts, the
+   stand / press there (is it CI-13's stopMeant at the ride stand?), what each came to. Then the rest of B's (2-1 kid N 19, 2-2 kid E 37,
+   2-2 kid N 3 and 33 FAIL -> PASS, 2-4 adult N 32, 2-4 kid E 2/12/13/19/20/35) and A's 12 (CI-11 vs CI-12: adult N 8/32, child E 11/23,
+   child N 8/39, kid E 2/12/13/19/20/35), one line each.
+2. Then the re-plants (riverRide :344/:355 by phase at gap 80, as ruled before), then the final checks ONCE on the frozen final head: the 4
+   files (riverRide, lianaRide, hopJudged incl. the CI-11/12/13 toys, firsttimer) ALL GREEN; pacerLay.test 23/23; the 10 races WON; the known
+   flips (= c27 except named, traced rows); the wide sample (seeds 1-10, every bot, both settings, 2-1/2-2/2-4: 0 BAR PASS -> FAIL vs MAIN);
+   2-7 x40 >= 29/40; tierBots 9/9; tsc; the CI tool line. At most TWO heavy runs at a time. Push, ls-remote, hash + one line per check.
+
+## SESSION 10 END STATE (code: CI-12 a2a5582c6, CI-13 0e0c4e284)
+**(A) CI-12, the lead's ruling (b):** `thumbLags(thumb)` (firsttimer.ts, by hopAim): every lag decide's draw presses at (the full gauss, a
+draw <= DT/2 pressed at once) over the thumb's whole spread, from that clip (or mid - 3 sd) to mid + 3 sd (the process spread, 99.7%), one
+lag per press frame (pressIn bins the lag to its frame; the judges read only the frame). KID / CHILD [0.09, 0.065]: 10 frames, take-off 0 to
+0.300 s (was 3: 0.067 / 0.100 / 0.133); ADULT / MIDDLE / EXPERT [0.03, 0.03]: 5 frames, 0 to 0.133 (was 3: 0 / 0.033 / 0.067). vineFromLog's
+`lags` = thumbLags, so the standing judge AND the run-up judge (runUpCatches / runPress read the same `lags`) cover it. **Not changed:**
+dropWaits (firsttimer.ts:2373) still judges mid and mid -+ sd/2, the same pattern (the ruling names :2462; D133 one candidate); a
+suggestion for the lead. **Toy** (hopJudged 'CI-12', the row's own shape, 2-4 kid Easy 19, cap 99): RED on CI-11 (s10/toy12-on-ci11.txt:
+'the standing press at t 97.700 from x 16434.6 on #73 was judged to catch; the engine: grounded on #74 at x 16588.6 y 904.0, frame 17'),
+GREEN on CI-12 (s10/toy12-on-ci12.txt). On CI-12 the 16,822 river is crossed (84.533 off #72) but kid E 19 still FAILs r1: the rescue moved
+to x 10,796 (set down 48.200, 49.567, 51.133), (B) at an earlier river.
+**(B) traced to the line (s10/tag-ci12-kidE19-47.txt, tag-ci11-kidE19-77.txt; every `return` in intend tagged in an unfrozen copy):** the
+same four branches on both trees. CI-12, log #48 drifting his way: down at 47.400, the landing brake (L3504 {left}), intend's last walk-on
+(L4050 `return side(dir)`) 47.533-47.800, then **SKILLS.handed's ride stand (L3875 `return {}`) from 47.833, x 10,691.5, 52 px from #48's
+front: a bare {}, and a bot with no holdQ (the kid, the adult) never lets go of a bare {} (stopMeant unset: thumbify re-arms the late
+lift-off every frame, R-165.59)**, so he ran on at 285 px/s; at 48.033, x 10,761.7 (past the front at 10,758), the edge's jump was decided
+(L3999 `decide(dir, jumpFor)`) with his lag pending; off the front at 48.100, set down 48.200. CI-11 off #75 at 77.633: L4036 / L3861 /
+L3985 / L3456 (its lines 14 lower), the same. **A bot fault, general: CI-13 sets stopMeant at the ride stand** (as padRead's ride stand,
+c11, and the race's front stand). **Named, not changed:** the kid's edge look (22 + edgeAim 32 = 54 px) is barely over his stop
+(frontStandPx 50; + a decision frame = raceStandPx 60): a ride stand first reached under 50 px can still run off the front; no row seen yet.
+**Toy** (hopJudged 'CI-13', 2-4 kid Easy 19, cap 49: he never walks off a log he stands on, airborne with no take-off, into the water): RED
+on CI-12 ('he walked off log #48 at t 48.100 x 10785.2 with no take-off and was set down from the water'), GREEN on CI-13 (the fix in an
+unfrozen copy of CI-12, the same code as 0e0c4e284 to the line). **2-4 kid Easy 19 on CI-13: PASS 151 r0** (c27 FAIL 168.8 r1).
+**set1 (frozen fz-ci12, fz-ci13; cmp-ci12.txt / cmp-ci13.txt vs c27):** CI-13 PASSES all six 2-4 kid Easy rows (c27 failed 2, 12, 13, 19,
+20) and 2-2 kid Normal 3 and 33 (c27 FAIL); 0 BAR PASS -> FAIL vs c27; 1 of 23 rows = c27 (A moved 12, B moved 14; table in
+s10/moved-ci11-ci12-ci13.txt). **tsc clean on frozen CI-13** (s10/tsc-ci13.txt). The tagging python (for s10-tag.mts.txt): for each line
+of intend (from `  private intend(): Pad {` to `  private snapperPlan(`) matching `^(.*?)\breturn (.+);(\s*(//.*)?)$`, write
+`\1return (globalThis as any).__tgv(<line>, (\2));\3`.
+**Not run (session 10):** the moved rows' traces, the re-plants, the 4 files, pacerLay, the races, the known flips, the wide sample, 2-7
+x40, tierBots, the CI tool line. Lessons applied: D115 (verdicts on frozen fz-ci11t / fz-ci12 / fz-ci13; probes on unfrozen copies),
+D119 (commit messages from a file), D128 (stamp from `date`), D132 (moved rows to go vs main in the final wide sample), D133 (each fix one
+candidate, one toy), D134 (pushed and ls-remote'd before the hand-over), D138 (the hand-over ends new work), rule 28, law 22 (no test
+weakened: both toys new, nothing re-scoped).
+
+## (session 9 hand-over)
 
 ## EXACT NEXT STEP (session 10). HEAD = 62cc029ae + session 9's evidence (NO code change; CI-11 = 4cccba33e). Step 1 (the moved rows) is RUN and every moved row TRACED to where it parts; ONE row, 2-4 kid Easy 19 (PASS on CI-10 -> FAIL r1 on CI-11), is narrowed to two causes: (A) to the line, (B) to `intend` only. **STOPPED for the lead's ruling on (A)** (it decides whether CI-11 stands as built).
 0. ReadNotifications: the lead's ruling on (A). Frozen trees: fz-ci10 = 8134a9a56, fz-ci11 = 4cccba33e (`git worktree add --detach`, node_modules

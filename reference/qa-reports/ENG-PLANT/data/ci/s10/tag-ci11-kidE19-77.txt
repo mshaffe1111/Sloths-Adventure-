@@ -1,0 +1,27 @@
+76.867 L3176 {"right":true} x 16374.9 vx 285 g 0 on -1  pend 0 jump 1
+76.900 L3490 {"right":true} x 16383.8 vx 268 g 1 on 75 [16349,16499] pend 0 jump 0
+76.933 L3490 {"right":true} x 16395.9 vx 285 g 1 on 75 [16352,16502] pend 0 jump 0
+76.967 L3490 {"right":true} x 16407.5 vx 268 g 1 on 75 [16354,16504] pend 0 jump 0
+77.000 L3490 {"left":true} x 16419.7 vx 285 g 1 on 75 [16357,16507] pend 0 jump 0
+77.033 L4036 {"right":true} x 16428.1 vx 172 g 1 on 75 [16360,16510] pend 0 jump 0
+77.067 L4036 {"right":true} x 16432.7 vx 58 g 1 on 75 [16362,16512] pend 0 jump 0
+77.100 L4036 {"right":true} x 16435.4 vx 0 g 1 on 75 [16365,16515] pend 0 jump 0
+77.133 L4036 {"right":true} x 16438.0 vx 0 g 1 on 75 [16368,16518] pend 0 jump 0
+77.167 L4036 {"right":true} x 16440.7 vx 0 g 1 on 75 [16370,16520] pend 0 jump 0
+77.200 L4036 {"right":true} x 16443.4 vx 0 g 1 on 75 [16373,16523] pend 0 jump 0
+77.233 L4036 {"right":true} x 16446.0 vx 0 g 1 on 75 [16376,16526] pend 0 jump 0
+77.267 L4036 {"right":true} x 16451.6 vx 87 g 1 on 75 [16378,16528] pend 0 jump 0
+77.300 L4036 {"right":true} x 16460.0 vx 173 g 1 on 75 [16381,16531] pend 0 jump 0
+77.333 L4036 {"right":true} x 16471.4 vx 260 g 1 on 75 [16384,16534] pend 0 jump 0
+77.367 L3861 {} x 16483.5 vx 285 g 1 on 75 [16386,16536] pend 0 jump 0
+77.400 L3861 {} x 16495.1 vx 268 g 1 on 75 [16389,16539] pend 0 jump 0
+77.433 L3861 {} x 16507.3 vx 285 g 1 on 75 [16392,16542] pend 0 jump 0
+77.467 L3861 {} x 16518.9 vx 268 g 1 on 75 [16394,16544] pend 0 jump 0
+77.500 L3861 {} x 16531.0 vx 285 g 1 on 75 [16397,16547] pend 0 jump 0
+77.533 L3861 {} x 16542.6 vx 268 g 1 on 75 [16400,16550] pend 0 jump 0
+77.567 L3985 {"right":true} x 16554.8 vx 285 g 1 on 75 [16402,16552] pend 1 jump 0
+77.600 L3456 {"right":true} x 16566.4 vx 268 g 1 on 75 [16405,16555] pend 1 jump 0
+77.633 L3288 {"right":true} x 16578.6 vx 285 g 0 on -1  pend 1 jump 0
+77.667 L3288 {"right":true} x 16587.5 vx 268 g 0 on -1  pend 1 jump 0
+77.700 L3288 {"right":true} x 16597.0 vx 285 g 0 on -1  pend 1 jump 0
+77.733 L3456 {"right":true} x 15737.0 vx 0 g 1 on -1  pend 1 jump 0
