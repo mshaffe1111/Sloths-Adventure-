@@ -1,0 +1,17 @@
+import sys,json
+# usage: div.py <a frames> <b frames>: first frame where position/velocity differ; context; the hop sites near it on each tree
+def rd(fn):
+    fr=[];hops=[];end=''
+    for l in open(fn):
+        if l.startswith('HOPS '): hops=json.loads(l[5:])
+        elif l.startswith('END'): end=l.strip()
+        else: fr.append(l.split())
+    return fr,hops,end
+a,ha,ea=rd(sys.argv[1]); b,hb,eb=rd(sys.argv[2])
+print('A',ea,'| B',eb)
+i=next((i for i in range(min(len(a),len(b))) if a[i][2:6]!=b[i][2:6]),None)
+if i is None: print('no divergence over',min(len(a),len(b)),'frames'); sys.exit()
+print('first divergence frame',a[i][0],'t',a[i][1])
+for j in range(max(0,i-2),i+2): print('  A',' '.join(a[j]),'| B',' '.join(b[j][2:]))
+t=float(a[i][1])
+print('  A hops near:',[h for h in ha if t-3<=h[1]<=t+1]); print('  B hops near:',[h for h in hb if t-3<=h[1]<=t+1])

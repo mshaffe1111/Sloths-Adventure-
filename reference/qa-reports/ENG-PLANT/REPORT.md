@@ -1,3 +1,61 @@
+# ENG-PLANT-n (ENG-PLANT-c session 12, started 9:38 AM ET 11-25 by `date`): 2-7's lost seeds clustered, traced and bisected; hand-over (LANES 3b box)
+
+Engine (bots), Opus 5.5 xhigh. Lead: session_01FhBbYN2CVHnFXg7XzqKXpM. **Code head UNCHANGED: c25 = 6a64aa41e** on
+release-0.10.3-wip-plant-c (no code commit this session). Frozen trees: fz-27e (801cae9e8), fz-base (dfe631913), fz-c2m (80eb07842 = c1+c2
+on the base), fz-c3b (a64f02ce5), fz-c4 (6b5f43da0), fz-c25 (6a64aa41e), fz-l0 (5a6847ffe, unused). Data: data/n/. Tools: tools/*-n, trace-n, frames.
+
+## 2-7 x40 (seeds 1-40, the 4 BAR bots, both settings, 280 rows; castBots --json, lanes)
+- **Landing t-build-27e 801cae9e8: 29/40 seeds with every BAR row passing: reproduced exactly** (data/n/landing-801cae9e8-2-7-x40.jsonl).
+  (The landing report's 29/40 was taken on 5a6847ffe with other failing seeds; 801cae9e8 gives 29/40 too, on its own rows.)
+- c25: 24/40. Landing -> c25: **17 BAR rows PASS -> FAIL (11 seeds lost), 11 fail -> pass (6 seeds gained), child N 36 fails on both.**
+- **Bisect of all 28 moved rows** (data/n/bisect-L-base-c4-c25.txt, bis-*.jsonl): landing -> base dfe631913 moves 2 (child E 32, child N 19:
+  fail -> pass, a merge effect in our favour); **every one of the 17 losses moves inside ENG-PLANT**: c1+c2 merged on the base (80eb07842)
+  7 lost / 8 gained; **c3 + 3b (a64f02ce5) 10 lost / 1 gained**; c4 0; c4 -> c25 0 (c24 = c25 row for row, session 11).
+
+## The clusters (by place and cause; two traces each; frames from trace-n / frames, data/n/divergences.txt, handback-loops.txt)
+| cluster | place | lost (piece) | gained | cause |
+|---|---|---|---|---|
+| **B+C: the hand-back loop** | the two rivers whose logs drift back at him: 8,400-9,400 and 12,700-14,200 ('water ahead') | 7: middle E 7 (c2m), E 11 (c3b), N 32 (c2m); child N 38 (c3b); expert N 18, 29, 35 (c3b) | 5 at c2m (child N 5, 11, 18; middle N 7, 13: falls in the same rivers saved) | **ENG-PLANT's own**: on the last log no hop is pressed; the log carries him back to the bank he boarded from; he boards again; round after round until the stuck clock rescues him (4 traced; other shapes at the same place below) |
+| **A: the solids' ends** | solids #26-#30 at 10,400-12,800 ('set down here 3-8 times') | 9: adult N 11, N 24, child E 30, N 20, N 40 (c2m); child E 24, N 9, N 10, middle N 15 (c3b) | 4 (child E 5, 28, 33 at c2m; child N 22 at c3b) | pre-existing: a walk-off at full run or an unjudged jump ('hop none') off a solid's end into the water, on the landing too; moved only because the run splits earlier (below) |
+| **D** | home leg 2,500-3,700, y 1,607 | 1: child N 34 (c3b) | 0 | walk-off left off solid #106, then 'nothing in the way the bot can see', 4 rescues; ONE row (no second in 280) |
+Traces (seed, x, frame, what took him):
+- B, c25 middle E 11: on log #19 at 9,370 (t 42.3) no hop for 5.4 s, carried back to bank #16 at 9,004 (t 47.7); 3 rounds (edgeWait 48.4,
+  55.2, 61.2); rescue f1870 at 9,171. c2m middle N 32: #19 at 8,831 (t 32.8) carried back to #16 at 8,487 (t 38.8); rounds; rescue f1584 at 8,634.
+- C, c3b expert N 18: on log #39 at 13,291 (t 53.2) no hop for 7.5 s, carried back to bank #34 at 12,811 (t 60.7); 4 rounds (edgeWait 60.7,
+  62.7, 66.6, 69.1); rescue f2198 at 12,997. c25 expert N 29: #37 at 13,074 (t 57.1), back to bank #33 at 12,674 (t 63.2); 5 rounds; rescue f2316.
+- Same rivers, other shapes (c25): middle E 7: 20 s 'open drop, water ahead' at bank #17 (9,987), then an edgeWait hop at vx 87 off
+  its end falls short, rescue f2104 (the loop not checked); child N 38: walk-off at vx 268 off bank #17 [8181..8481] into the first river
+  (f2251), then three 20 s stands ('water ahead' / 'nothing in the way'), 3 rescues (f2855, f3455, f4055); expert N 35 (14,183) not traced.
+- A, c25 child N 20: walk-off at vx 285 off solid #27 [10705..10875], then a jump at vx 87 off #28 [10981..11151], 'hop none', 8 set-downs,
+  rescue f3874 at 11,244. c25 adult N 11: jump at vx 87 off #28 [11133..11303], 'hop none', rescue f1272 at 11,396; adult N 24: jump vx 87 off #29 [11541..11711], 'hop none', rescue f2202 at 11,798. **Same on base** (its pass/fail
+  = the landing's here): child N 22 walk-off vx 285 off #30 [11397..11567], rescue f5343 at 11,892; child E 28 walk-off vx 268 off #26, rescue f2461.
+- Why A moves: the first split, base -> c4, is at the FIRST river, 40-60 s before: child N 20 f2012 (x 8,567, log #19), middle E 11 f814
+  (9,122), expert N 18 f703 (8,496): the new tree presses a judged padPause hop where the base walks on (c2's judged flick / c3b's tablePick);
+  c2m -> c3b on expert N 18 splits at f869 (9,349, padPause tablePick vs the base's upstream hop a frame later). After that the run meets
+  the same places at other times: the 4 gains and 9 losses in A are that shuffle, not a new way to fall.
+- B+C's branch is NOT yet instrumented: 'no hop pressed on the last log' fits c1's line 3529 (bank hop pressed only when gateSees lands it
+  with 24 px; refused, he stands and the log hands him back) and c3's 'else stand (handed back)'; the next step proves which gate refused.
+
+## For the lead (sent): B+C is ours: I narrow it in the bot (a toy each way) and re-measure, unless you rule otherwise. A is the landing's own
+family reshuffled (not R-165.413: solids, not logs): yours to rule. D is one row: yours to name. No merge.
+
+## EXACT NEXT STEP (session 13)
+0. Setup as session 12: `npm ci --no-audit --no-fund --legacy-peer-deps`; `git fetch --unshallow origin` (background); frozen trees with
+   tools/freeze.sh.txt's lines (node_modules symlinked; about 1 min each): fz-c25 6a64aa41e, fz-c2m 80eb07842, fz-c3b a64f02ce5, fz-base dfe631913.
+   Rows: tools/wide.sh-n.txt (castBots --json, one row per line; arg 5 = extra flags, e.g. "--bots adult,child,middle,expert"); a list of
+   rows: tools/bis.sh-n.txt (groups file "bot setting seeds"); compare: tools/cmp.py-n.txt; first split: tools/frames.mts.txt + div.py-n.txt.
+1. **Read the lead's reply first** (ReadNotifications). If none: B+C as the default.
+2. B+C: instrument the refusal (which gate: firsttimer.ts:3529 bank hop, :3390-3400 padPause flick, :3649 tablePick) on c25 middle E 11
+   (board #19 t 42.3) and expert N 29 (board #37 t 57.1): the gateSees margin each frame he stands on the last log. Then the narrowing (the
+   lead's rule: the fix where the cause is; a toy each way: RED = a hand-back round that ends in a rescue on c25, GREEN on the fix; and the
+   other way: the c2m gains child N 5 / middle N 13 still cross without a fall). Re-measure: 2-7 x40 (280) + the run-up rows + the 10 known
+   flips + 2-4 wide + 1-4 + 2-5 (any code commit reruns them, the brief's rule).
+3. Then the brief's list in order: pacerLay 22/23 laid toys; hopJudged; the c23/c24 toys; the plants; riverRide + firsttimer; the CI tool
+   line at 0 fail; tierBots 9/9; timecheck + roadmapcheck; MERGE only on the lead's word.
+
+Lessons applied: D134 (pushed + ls-remote before the hand-over), D128 (times from `date`), D119 (commit message from a file), D115 (a frozen
+tree per hash), rule 28 (every moved row bisected, two traces per cluster), D135 (no red carried unnamed: A and D named for the lead).
+
 # ENG-PLANT-m (ENG-PLANT-c session 11, started 9:15 AM ET 11-25 by the session's first stamp): c25 built, pushed and proven on its rows; hand-over (LANES 3b box)
 
 Engine (bots), Opus 5.5 xhigh. Lead: session_01FhBbYN2CVHnFXg7XzqKXpM. **Code head: c25 = 6fb42bd1d (the fix) + 6a64aa41e (its toy, test

@@ -1,0 +1,26 @@
+import json,sys,glob
+# usage: cmp.py <A glob> <B glob> : BAR rows seeds 1-40; PASS->FAIL, fail->pass, seeds with every BAR row passing
+BAR={'adult','child','middle','expert'}
+def load(g):
+    d={}
+    for f in sorted(glob.glob(g)):
+        for l in open(f):
+            l=l.strip()
+            if l:
+                r=json.loads(l)
+                if r['bot'] in BAR and r['seed']<=40: d[(r['bot'],r['setting'],r['seed'])]=r
+    return d
+a,b=load(sys.argv[1]),load(sys.argv[2])
+def yld(d):
+    s={}
+    for k,r in d.items(): s.setdefault(k[2],[]).append(r['pass'])
+    return sum(all(v) for v in s.values()),len(s)
+print('A',len(a),'rows yield %d/%d'%yld(a),'| B',len(b),'rows yield %d/%d'%yld(b))
+ks=sorted(set(a)&set(b))
+def st(r): return 'resc%d lives%d t%.0f %s'%(r['rescues'],r['lives'],r['time'],';'.join('%s %s'%(s['x'],s['what'][:22]) for s in (r.get('stuck') or [])[:3]))
+for k in ks:
+    if a[k]['pass'] and not b[k]['pass']: print('PASS->FAIL',k[0],k[1][0].upper(),k[2],'|',st(b[k]))
+for k in ks:
+    if not a[k]['pass'] and b[k]['pass']: print('fail->pass',k[0],k[1][0].upper(),k[2],'| A:',st(a[k]))
+for k in ks:
+    if not a[k]['pass'] and not b[k]['pass']: print('fail both ',k[0],k[1][0].upper(),k[2],'| A:',st(a[k]),'| B:',st(b[k]))

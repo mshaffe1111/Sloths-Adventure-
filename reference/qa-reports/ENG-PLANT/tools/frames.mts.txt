@@ -1,0 +1,16 @@
+// usage: tsx frames.mts <tree> <stage> <bot> <setting> <seed> <out> : one line per frame (f t x y vx vy grounded standingOn) + HOP_TRACE rows (sites) at the end
+import { writeFileSync } from 'node:fs';
+const [T, stage, bot, setting, seed, out] = process.argv.slice(2);
+await import(`${T}/src/game/headlessDom.ts`);
+const { CAST_BOTS } = await import(`${T}/tools/inspect/castBots.ts`);
+const FT = await import(`${T}/tools/inspect/firsttimer.ts`);
+const HT = (FT as any).HOP_TRACE; if (HT) { HT.on = true; HT.rows.length = 0; }
+const L: string[] = []; let f = 0;
+const r = FT.firstTimer(stage, Number(seed), CAST_BOTS[bot][setting], { cap: 1200, dotSetting: true, onFrame: (sim: any) => {
+  f++; const p = sim.p;
+  L.push(`${f} ${sim.t.toFixed(3)} ${p.x.toFixed(2)} ${p.y.toFixed(2)} ${p.vx.toFixed(1)} ${p.vy.toFixed(1)} ${p.grounded ? 1 : 0} ${sim.e.standingOnId ?? '-'}`);
+} });
+L.push('HOPS ' + JSON.stringify((HT?.rows ?? []).map((q: any) => [q.site, +q.t.toFixed(2), Math.round(q.x), q.kind, q.hold ? +q.hold.toFixed(3) : null])));
+L.push(`END ${r.end} rescues ${(r as any).rescues} rescueXs ${JSON.stringify((r as any).rescueXs)}`);
+writeFileSync(out, L.join('\n') + '\n');
+console.log(out, f, 'frames', r.end, 'rescues', (r as any).rescues);

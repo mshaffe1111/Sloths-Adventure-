@@ -1,0 +1,30 @@
+A 280 rows yield 29/40 | B 280 rows yield 24/40
+PASS->FAIL adult N 11 | resc1 lives0 t143 11408 set down here 3 times
+PASS->FAIL adult N 24 | resc1 lives2 t158 14149 set down here 3 times
+PASS->FAIL child E 24 | resc1 lives0 t250 12337 set down here 8 times
+PASS->FAIL child E 30 | resc1 lives0 t272 12805 set down here 8 times
+PASS->FAIL child N 9 | resc1 lives1 t395 11679 set down here 8 times;13382 water ahead;14069 water ahead
+PASS->FAIL child N 10 | resc1 lives2 t396 11886 set down here 8 times
+PASS->FAIL child N 20 | resc1 lives0 t341 11547 set down here 8 times
+PASS->FAIL child N 34 | resc4 lives7 t739 3628 nothing in the way the;3459 an open drop ahead, wa;2719 nothing in the way the
+PASS->FAIL child N 38 | resc3 lives0 t386 8414 water ahead;9040 nothing in the way the;9231 water ahead
+PASS->FAIL child N 40 | resc1 lives1 t387 11647 set down here 8 times
+PASS->FAIL expert N 18 | resc1 lives0 t189 12911 water ahead
+PASS->FAIL expert N 29 | resc1 lives1 t204 12712 water ahead
+PASS->FAIL expert N 35 | resc1 lives0 t198 14183 an open drop ahead, wa
+PASS->FAIL middle E 7 | resc1 lives0 t208 9378 water ahead;9987 an open drop ahead, wa
+PASS->FAIL middle E 11 | resc1 lives0 t226 9101 water ahead
+PASS->FAIL middle N 15 | resc1 lives3 t256 11807 set down here 8 times;13264 an open drop ahead, wa;13279 water ahead
+PASS->FAIL middle N 32 | resc1 lives0 t222 8487 water ahead;13949 water ahead
+fail->pass child E 5 | A: resc1 lives0 t246 11774 set down here 8 times;13736 water ahead
+fail->pass child E 28 | A: resc1 lives0 t244 12000 set down here 8 times
+fail->pass child E 32 | A: resc1 lives0 t258 12570 set down here 8 times
+fail->pass child E 33 | A: resc1 lives0 t285 12433 set down here 8 times
+fail->pass child N 5 | A: resc1 lives3 t416 8967 water ahead
+fail->pass child N 11 | A: resc1 lives4 t458 8614 an open drop ahead, wa;13294 set down here 8 times
+fail->pass child N 18 | A: resc1 lives4 t475 13677 water ahead;13028 an open drop ahead, wa;12006 an open drop ahead, wa
+fail->pass child N 19 | A: resc1 lives4 t389 9506 water ahead;13303 set down here 8 times
+fail->pass child N 22 | A: resc1 lives7 t505 11891 set down here 8 times
+fail->pass middle N 7 | A: resc1 lives2 t232 13277 water ahead;13374 water ahead
+fail->pass middle N 13 | A: resc1 lives1 t230 8478 an open drop ahead, wa;14124 an open drop ahead, wa
+fail both  child N 36 | A: resc1 lives7 t477 14314 set down here 8 times | B: resc1 lives1 t395 11645 set down here 8 times

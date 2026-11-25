@@ -1,0 +1,5 @@
+#!/bin/bash
+# usage: bis.sh <tree> <groups file: "bot setting seeds" per line> <out.jsonl>: castBots --json per group, one row per line as each lands
+T=$1; G=$2; O=$3; cd $T || exit 9
+while read -r b s seeds; do [ -z "$b" ] && continue; npx tsx tools/inspect/castBots.ts --json --stage 2-7 --bots $b --setting $s --seeds $seeds >> $O 2>> $O.err; done < $G
+echo "$(basename $O) done $(wc -l < $O) rows $(TZ=America/New_York date +%l:%M)"

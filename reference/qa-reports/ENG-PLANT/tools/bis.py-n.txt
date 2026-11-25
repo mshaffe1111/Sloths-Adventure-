@@ -1,0 +1,15 @@
+import json,glob
+def load(f):
+    d={}
+    for l in open(f):
+        l=l.strip()
+        if l: r=json.loads(l); d[(r['bot'],r['setting'],r['seed'])]=r
+    return d
+L=load('/dev/stdin') if False else {}
+for f in sorted(glob.glob('l27e-q*.jsonl')): L.update(load(f))
+C=load('c25-2-7-1-100.jsonl'); B=load('bis-base.jsonl'); C4=load('bis-c4.jsonl')
+def s(r): return ('P' if r['pass'] else 'F')+'%d/%d'%(r['rescues'],r['lives'])
+print('row            L 801cae9e8  base dfe631913  c4 6b5f43da0  c25')
+for k in sorted(B):
+    print('%-6s %s %2d   %-8s %-8s %-8s %-8s %s'%(k[0],k[1][0].upper(),k[2],s(L[k]),s(B[k]),s(C4[k]),s(C[k]),
+      ' moved@'+('base' if L[k]['pass']!=B[k]['pass'] else 'c4' if B[k]['pass']!=C4[k]['pass'] else 'c4->c25' if C4[k]['pass']!=C[k]['pass'] else '-')))
