@@ -28,7 +28,19 @@ DONE AND PUSHED (each on a chattr-frozen tree):
      so the bots' road at late 0 is a BOT behaviour to trace: TRACE=10 FROM=2 WHO=adult LATE=0 on wt28m (why the adult hops the gap off W
      330 where it walked off W 150: its lip aim with room to run?). The lead to rule whether a late-0 bot must walk the low road (a road
      check in the probe) and whether 2a comes back for that.
-NEXT, IN ORDER: (1) ReadNotifications: the lead's word on 2a and on the late-0 road. (2) The trace above. (3) The toys: 2b RED/GREEN (a
+ TRACED (the adult, late 0, W 330, wt28m, EVERY=2): he does NOT hop: he climbs W (lands 684), RUNS W at 285 px/s and WALKS OFF its lip
+     (940) at a full run: airborne 960/743, 979/757, then GROUNDED ON THE PORCH at 997/740 (the porch's near end 1000, the gap 60). So a
+     full-run walk-off from W's lip carries over the 60 px gap onto the porch (the engine's landing help takes him up from about 17-26 px
+     under its top: which help is NOT yet named: onFloor's catch 14 + the ledge forgiveness (landPx 8, physics.ts FORGIVE) or another;
+     trace the frames 4.0-4.1 at EVERY=1 first). With W 150 the adult landed 56 px from the face, 94 px from the lip, too short a run to
+     carry, and dropped through. A SHAPE FAULT under (c): his ORDINARY move (walking off W at a run) puts him on the high road; the gap
+     must also be wider than a full-run walk-off's carry onto a level piece, yet it is the high road's first hop (<= FLOOD_HOP 60). FOR
+     THE LEAD (not built): (x) the low road's way down not off W's far lip (e.g. W's near side, or a gap the high road does not hop:
+     the porch from a second wall-step), (y) the porch's near end farther (gap > carry) with the high road's first hop made a step up,
+     (z) W back to a width a run cannot build speed on (fails A2's child-easy). A verdict for it ('a full-run walk-off from W's lip lands
+     on the low road') belongs in forkFaults, planted, once the carry is measured.
+NEXT, IN ORDER: (1) ReadNotifications: the lead's word on the walk-off shape fault above (2a is DROPPED: the lead accepted the pushback;
+ 2b only, a toy each way, plus the toy that a single jump off the floor never reaches the porch). (2) The trace above. (3) The toys: 2b RED/GREEN (a
  lineBot toy: a pop-up onto the high road; with 2b he walks on, without it he stalls and is rescued) and B's (session 5's); commit them with
  the firsttimer.ts change at 1b only (rule 28: ENG-PLANT's 10 known flips + the wide sample, seeds 1-10, every bot, both settings, on
  2-1/2-2/2-4: zero BAR PASS -> FAIL vs main). (4) Stills of the fork and a marsh dip, upright and sideways (no running stage lays the
