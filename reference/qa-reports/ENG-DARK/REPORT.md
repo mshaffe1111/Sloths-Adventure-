@@ -1,31 +1,45 @@
 # ENG-DARK REPORT (the dark + light ring as one gen2 brick; WORLD-3-PLAN F2; R-165.449)
-**EXACT NEXT STEP (ENG-DARK-e box 5 hand-over, 12:36 PM ET by `date`; code head d191cb2b on t-eng-dark-wip = f68c5ca1 + (c) the
-'climbed' kind). Box 4 has STOPPED; its x40 on f68c5ca1 is recorded (box 4 item 7: unlit 5, all Easy; shrine 359/360; rescues 1,395 vs
-the base 1,393). The lead's order for box 5 on (word for word in its message): (a) trace child Easy 25's strand, every bot reaches the
-shrine on every roll; (b) the NEW verdict 'a drop's landing is at least his stopping distance from the next dark rim, or that rim is
-already lit when he lands', planted RED on adult Easy 30, fixed in the lay that owns it (the tower's: tell ENG-DOWNBOT-g and the lead);
-(c) RimWatch's own kind 'climbed'; (d) plants (now 18), tierBots, the suite, the CI line on the final head; (e) LAND on t-eng-w3.**
-(c) **DONE at d191cb2b and proved on the live row** (box 5 item 5). (a) and (b) are next, in this order:
-(a) **child Easy 25 (box 5 item 6): ROOT CAUSE FOUND, a bot fault in the TOWER's way-down plan** (firsttimer.ts:2859 asks a vine top
-at or ABOVE his feet; the engine climbs down from the ground only at the top, engine.ts:2204: mid-trunk his down press never starts the
-climb). The fix is one condition made two-sided (`Math.abs(nearTreeVine.topY - p.y) <= 14`). **The lead and ENG-DOWNBOT-g were told
-in box 5's hand-over message; make the fix only on the lead's word** (it is ENG-DOWNBOT's code; if it lands from their lane first, take
-it in the merge). Then: a toy (castBots child Easy roll 25 reaches the shrine; RED on d191cb2b), a plant (the one-sided test back),
-and the row's other 3 bots on roll 25 unchanged. Also name why goal is 0 of 1 (the base 1 of 1): which rescue skipped the goal.
-Toy RED before / GREEN after on this row, a plant. Probes: `probes/strand.mts` (track, NOWAIT=1 removes the stop), `probes/strand2.mts`
-(the bot's glowWait/glowJump patched to log; the pad each 2 s): `GEN2_DRAFT=3-1 npx tsx <probe> child easy 25 276` from the tree.
-(b) **the verdict `darkLandings` in gen2/dark.ts beside darkGaps (proposed; box 5 item 7 has the numbers):** for every dark rim r whose
-landing is a DROP (landingOf's drop branch: the landing piece q lower than r's piece), and q's end on r's side `dir` is itself a dark
-rim n: his farthest landing xf = r.x + dir * PHYS.maxRun * sqrt(2 h / PHYS.gravDown) (h = q.y - r.y: walked off at full run, steering
-on); RED when (n.x - xf) * dir < STOP_PX and n's light sleeps and is not r's own light and no stand spot on r's piece facing r.dir wakes
-both (glowReaches r.light and n.light). **STOP_PX is a game number: ask the lead before choosing it** (the brake alone, PHYS.maxRun^2 /
-(2 PHYS.groundDec) = 12 px; with a person's reaction at run speed, 0.25 s, about 83 px). Plant it RED on the 3-1 draft's roll 30 Easy
-(the rim at the right end of 61-241, y 2477, the landing 5 px from it at vx 268, box 4 item 5); read the other 4 unlit (child Easy 1, 20,
-23, middle Easy 12: all on pieces 73-249 px wide) against it. The lay fix: if the pair is the dark brick's, glowZone hangs n's
-glowworm where the stop at r wakes it too (the lay's half, like glowFlags); if it is the tower's spacing, tell ENG-DOWNBOT-g and the lead.
-Then: (d) the gates on the FINAL head, (e) LAND (box 4's step (4) below holds the landing procedure). **(b) changes the lay, so the
-5-unlit x40 on f68c5ca1 no longer describes the landing head: ask the lead whether a fresh x40 is owed on the final head.**
-LANDED by 2:30 PM ET; HARD STOP 4:00 PM ET.
+**EXACT NEXT STEP (ENG-DARK-e box 5 hand-over, 12:42 PM ET by `date`; code head 4aebc171 on t-eng-dark-wip = f68c5ca1 + (c) the
+'climbed' kind). Box 4 has STOPPED (its x40 on f68c5ca1 recorded, box 4 item 7: unlit 5, all Easy; shrine 359/360; rescues 1,395 vs base
+1,393). Box 6 OWNS EVERY CODE CHANGE (the lead: "YOU own every code change from here"). Re-fetch before every commit (D138).**
+**THE LEAD'S RULINGS to box 5, word for word:**
+- "(b): (A). The stopping distance is the brake PLUS a person's reaction at run speed, because a kid landing in the dark needs a beat to
+  see he is down. Use the game's existing fairness reaction constant if one exists (name it). If none exists, use 0.25 s, named as one
+  constant with a one-line reason. Easy uses Easy's own reaction scale, as the other fairness verdicts do. So about 83 px on Normal. Plant
+  it RED on adult Easy 30's landing, then fix it in the owning lay; if the tower's spacing owns it, tell ENG-DOWNBOT-g and me."
+- "YES: a fresh x40 is owed on the FINAL head (rule 28: the lay changes)."
+- "(a) child Easy 25: keep tracing to the line. A rescue that puts him on the piece over the exit, where he then stands 20 s with no way
+  on, is a strand whoever causes it. If it is the rescue's placement (the game), that is player-facing and comes first."
+- "3. Then NAME the final code head, and freeze it. On it: one x40 (both settings, every bot: unlit 0 or each traced; shrine 360/360; no
+  rescue kind the base lacks), plants 16+, tierBots, the suite (3 shards) and the CI line. Run at most two heavy runs at a time in your
+  container: the x40 lanes first, then the rest. 4. LAND as your packet says (the toy-B re-pick on the merged head with ENG-DOWNBOT's
+  lay). If the landing will miss 2:30 PM, tell me by 1:45 PM with what is left. A late landing is better than a fault in 3-1."
+**WHERE EACH STANDS AND THE NEXT ACTION:**
+(c) **DONE and proved on the live row** (box 5 item 5: middle Easy 4, 18 went over + 2 climbed, unlit 1 -> 0, the run unchanged).
+(a) **ROOT CAUSE FOUND (box 5 item 6): NOT the rescue's placement as a game fault (firsttimer's rescue() is the harness's stand-in, not
+the game's) and NOT the dark stop: a BOT fault in the tower's way-down plan**, firsttimer.ts:2859: it presses DOWN beside a vine whose top
+is at or ABOVE his feet (`nearTreeVine.topY <= p.y + 14`, one-sided), while the engine climbs down from the ground only at the vine's top
+(engine.ts:2204 downAtTop: `p.y <= nearTreeVine.topY + 14`). Mid-trunk (vine 26: top 11453, his feet 11734) the press never starts a
+climb and nothing lets it go. **Next:** make the plan's test the engine's (`Math.abs(nearTreeVine.topY - p.y) <= 14`) in the edit tree;
+prove on a frozen copy with `GEN2_DRAFT=3-1 npx tsx reference/qa-reports/ENG-DARK/probes/castone.mts child easy 25` (shrine expected;
+on 4aebc171: stranded 295.9 s); then the toy (darkBots.test or castBots.test: castRun child Easy roll 25 reaches the shrine; RED on
+4aebc171) and a plant (the one-sided test back). It is the tower's code: **tell ENG-DOWNBOT-g (through the lead) in the same message as
+the fix**, so their lane takes the same line. Also name why its goal read 0 of 1 (the base 1 of 1) once it reaches the shrine.
+(b) **the verdict `darkLandings` (gen2/dark.ts, beside darkGaps; box 5 item 7 has the numbers):** for every dark rim r whose landing is a
+DROP (landingOf's drop branch) onto a piece q whose end on r's side `dir` is itself a dark rim n: the far landing xf = r.x + dir *
+PHYS.maxRun * sqrt(2 h / PHYS.gravDown) (h = q.y - r.y); RED when (n.x - xf) * dir < STOP and n's light sleeps, is not r's own light, and
+no stand spot on r's piece facing r.dir wakes both. STOP = PHYS.maxRun^2 / (2 PHYS.groundDec) (12 px) + PHYS.maxRun * reaction. **No
+single game-wide fairness reaction constant exists** (searched src/game: w7Slide.ts:323 a local `react = c.easy ? 0.6 : 0.35`; rideLay.ts
+PAD_FAIR.react 0.3; sovereignReach.ts OPENING_RULE.react 0.8; bossBot.ts HUMAN.react 0.4 is a bot's): per the ruling, a new named
+constant 0.25 s with a one-line reason, and Easy's own scale (read how the other fairness verdicts scale Easy first, e.g. w7Slide's 0.6 /
+0.35, and name the one you follow). Plant RED on the 3-1 draft's roll 30 Easy (the rim at the right end of 61-241, y 2477); read the other
+4 unlit (child Easy 1, 20, 23, middle Easy 12) against it; fix in the owning lay (the dark brick's glowZone: hang n's glowworm where the
+stop at r wakes it too; or the tower's spacing: tell ENG-DOWNBOT-g and the lead at once). Wire it where darkGaps is read (levelCheck /
+pipeline), so a roll that fails it is refused or re-laid like darkGaps.
+Then: NAME and freeze the final head; the x40 there FIRST (2 lanes: `GEN2_DRAFT=3-1 castBots --stage 3-1 --setting both --par 2 --rows`,
+seeds 1-20 and 21-40, as box 4 ran it), then plants (18), tierBots, the suite (3 shards), the CI line (gates.yml line 157, read from
+the tree: box 5's runner reads it so nothing is dropped); then LAND (box 4's step (4) below: merge origin/t-eng-w3, the toy A/B/C
+re-pick, ENG-DOWNBOT's tests, lockall). LANDED by 2:30 PM ET (tell the lead by 1:45 PM ET if not); HARD STOP 4:00 PM ET.
 
 **(superseded by box 5's step above; kept for its landing procedure) EXACT NEXT STEP (ENG-DARK-d, 12:27 PM ET by `date`; code head f68c5ca1 on t-eng-dark-wip = b71163ea + the cause-2 fix + the cause-3 fix):**
 (1) **Box 4 fixed unlit causes 2 and 3, both BOT faults (box 4 items 1 and 4).** ef811c2a's x40 is recorded (item 2: unlit 58 -> 13,
