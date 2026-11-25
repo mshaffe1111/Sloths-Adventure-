@@ -16,7 +16,11 @@
    the top, so something else in CI-8's judge catches him there (not traced: hfprobe it on v-ci8). Build the case ONLY the hoist catches
    (RED on CI-8, GREEN on CI-9/CI-10); (b) 30 px under (neither) is GREEN on both, the guard. A first build had the floor 260 px under
    the take-off, past hopFlight's 200 px cut-off: always null (my error, fixed in the draft).
-3. Then item 3 (trace 2-4 child E 11 and kid E 13 on the final head) and item 4 (the final checks), as in session 5's step 3 below.
+3. Then item 3 (trace 2-4 child E 11 and kid E 13 on the final head) and item 4 (the final checks), as in session 5's step 3 below,
+   **with the lead's change to step 4 (message to session 6): after steps 1-3 and BEFORE the final checks, merge
+   origin/release-0.10.3-wip-plant-tests (0f95b96ed or later: test files only; reds 5, 6, 8 re-planted GREEN, reds 7, 9 retired per
+   R-165.432; the lead's merge-tree with 0db82fb25: CLEAN) into release-0.10.3-wip-plant-ci (no force; named in the commit), tsc, then
+   the final checks ONCE on that merged head: the 4 files ALL GREEN there (reds 1-9: none left). Do NOT merge into release-0.10.3.**
 
 ## SESSION 6 END STATE (CI-10 0db82fb25 = HEAD's code)
 **CI-10 (item 1):** physics.ts takeOffStep(b, dt, dir, hold, carry): the press frame off a floor that carries him (a drifting log)
