@@ -9,7 +9,7 @@ import '../../headlessDom.ts';
 import { buildGen2Stage } from '../pipeline.ts';
 import { towerCfg } from '../toyTower.ts';
 import { HOME_BRICKS, HOME_CODE, homeKit } from '../toyHome.ts';
-import { FLOOD_HOP, FLOOD_LOW_HOP, FLOOD_STEP, layFlood } from '../floodLay.ts';
+import { FLOOD_FORK_JUMP, FLOOD_HOP, FLOOD_LOW_HOP, FLOOD_STEP, FLOOD_WALK_OFF, layFlood } from '../floodLay.ts';
 import { forkFaults, highRoad, strandFaults } from '../../flood.ts';
 import { W2_FLOOD, W2_FORK, W2_FORK_RIVERS, W2_RIVERS, w2TwoRoad, type W2ForkShape } from './w2.ts';
 import type { Collectible } from '../../types.ts';
@@ -42,7 +42,7 @@ function roads(st: ReturnType<typeof build>, easy: boolean) {
   const nearIsX0 = low.deep!.near.x < low.x0;
   const span = { x0: low.x0, x1: low.x1, from: { x: nearIsX0 ? low.x0 : low.x1, y: low.lip }, to: { x: nearIsX0 ? low.x1 : low.x0, y: low.lip } };
   const tops = st.platforms.filter((p) => p.type === 'solid' && !p.pad && !p.broken && p.y < low.lip - 1).map((p) => ({ x: p.x, w: p.width, y: p.y, h: p.height }));
-  return { r, low, span, tops, road: highRoad(tops, span, FLOOD_STEP, FLOOD_HOP) };
+  return { r, low, span, tops, road: highRoad(tops, span, FLOOD_STEP, FLOOD_HOP, FLOOD_FORK_JUMP) };
 }
 
 test('two roads: GREEN on the toy\'s rolls, both settings: the flood, the high road and the fork all fair; the pieces in the ruled order', () => {
@@ -55,7 +55,7 @@ test('two roads: GREEN on the toy\'s rolls, both settings: the flood, the high r
       const { r, low, span, tops, road } = roads(st, difficulty === 'easy');
       assert.deepEqual(r.problems, [], at);
       assert.deepEqual(road.faults, [], `${at}: the high road walks`);
-      assert.deepEqual(forkFaults(road.chain, span, W2_FLOOD.climb), [], `${at}: the fork (W ${W2_FORK.wall.w}, gap ${W2_FORK.gap})`);
+      assert.deepEqual(forkFaults(road.chain, span, W2_FLOOD.climb, FLOOD_WALK_OFF), [], `${at}: the fork (W ${W2_FORK.wall.w}, gap ${W2_FORK.gap})`);
       const n = W2_FORK.rises.length;
       assert.equal(road.chain.length, 2 + 2 * n, `${at}: the high road is W, the porch, the rises up, then each rise and the porch again down (a piece met again further along: highRoad)`);
       const dir = span.to.x >= span.from.x ? 1 : -1;
@@ -107,7 +107,7 @@ test('two roads: RED by name on W 60 (every tier walks off) and on no gap (no wa
     caged(st);
     return layFlood(st, W2_FLOOD, false).problems.join('; ');
   };
-  assert.match(faults({ ...W2_FORK, wall: { ...W2_FORK.wall, w: 60 } }), /the adult lands 86 px past its face .* walks off into the 60 px gap/, 'RED: W 60');
+  assert.match(faults({ ...W2_FORK, wall: { ...W2_FORK.wall, w: 60 } }), new RegExp(`the adult lands 86 px past its face .* walks off into the ${W2_FORK.gap} px gap`), 'RED: W 60');
   assert.match(faults({ ...W2_FORK, gap: 0 }), /no way down onto the low road: the gap after it is 0 px/, 'RED: no gap');
   // (W flush on the water's edge (BUILD-28 1e): off its lip onto the marsh floor is one 120 px drop, deeper than the line's step)
   assert.match(faults({ ...W2_FORK, wall: { ...W2_FORK.wall, back: 0 } }), new RegExp(`off the (left|right) end of the high road's piece at x \\d+-\\d+ the first ground is ${W2_FORK.wall.h + W2_FORK_RIVERS[W2_FORK.row].marsh.floor} px down, deeper than the line's 90 px step`), 'RED: W flush on the water');
@@ -134,4 +134,18 @@ test('two roads: THE CLIMB MODEL from the bots\' flights: the old derived child 
   assert.deepEqual(forkFaults(W(150), span, old), [], 'the old model passed W 150');
   assert.match(forkFaults(W(150), span, W2_FLOOD.climb).join('; '), /the child lands 233 px past its face/, 'RED: the measured climb on W 150');
   assert.deepEqual(forkFaults(W(W2_FORK.wall.w), span, W2_FLOOD.climb), [], `GREEN: W ${W2_FORK.wall.w}`);
+});
+
+test('two roads: THE RUN TAKES THE LOW ROAD (BUILD-28 session 7, the lead\'s entry principle): a full-run walk-off from W\'s lip lands on the low road: RED by name on 6470cc657\'s gap 60 (inside the carry 66 + 15), GREEN on the ruled 81, both settings', () => {
+  for (const difficulty of ['normal', 'easy'] as const) {
+    const lay = (gap: number) => {
+      const st = build(1, difficulty, { ...W2_FORK, gap });
+      caged(st);
+      return layFlood(st, W2_FLOOD, difficulty === 'easy').problems.join('; ');
+    };
+    assert.match(lay(60), /a full-run walk-off from the wall-step at x \d+-\d+'s lip lands on the high road: the gap after it is 60 px, inside his walk-off carry 66 px \+ its 15 px margin/, `${difficulty}: RED at 60`);
+    assert.match(lay(80), /the gap after it is 80 px, inside his walk-off carry/, `${difficulty}: RED at 80, the verdict's edge`);
+    assert.equal(lay(W2_FORK.gap), '', `${difficulty}: GREEN at the ruled ${W2_FORK.gap}`);
+  }
+  assert.ok(W2_FORK.gap >= FLOOD_WALK_OFF.carry + FLOOD_WALK_OFF.margin && W2_FORK.gap <= FLOOD_FORK_JUMP, 'the ruled gap: past the walk-off rule, within the fork\'s jump');
 });

@@ -30,6 +30,15 @@ export const FLOOD_HOP = 60;
  *  117.8 (flown, BUILD-28 probe-a3reach: the highest top a single jump lands him on, thin or block, standing or from a full run: 115
  *  Normal, 117 Easy). `margin`: the lead's ruling, at least 15 px over it */
 export const FLOOD_LOW_HOP = { reach: APEX['single-hold'].px + 14 + ASSIST.catchDrop, margin: 15 } as const;
+/** THE WALK-OFF CARRY (BUILD-28 session 7, the lead's entry principle: the RUN takes the low road, a JUMP the high road): `carry`, the
+ *  widest gap past the wall-step's lip a full-run walk-off (no press) still lands him across onto a thin piece level with it: 66 px,
+ *  MEASURED (reference/qa-reports/BUILD-28/probe-carry.test.ts.txt: Easy, on 2-8 and 2-3 alike; Normal 44 on 2-8, 64 on 2-3; a block 60).
+ *  The help that lands him: the landing-from-above catch (engine.ts onFloor, catchDrop 14 + ASSIST.catchDrop 6 x assistNow(), 1 on Easy
+ *  on every stage): his feet 16.7 px under the top the frame before. `margin`: the lead's 15, as FLOOD_LOW_HOP's. forkFaults (3) */
+export const FLOOD_WALK_OFF = { carry: 66, margin: 15 } as const;
+/** the fork's link off the wall-step (flood.ts highRoad `jump`): a level jump past the walk-off rule's edge by at most one more margin
+ *  (the gap stays a short jump the line makes; forkFaults proves each tier's jump crosses it) */
+export const FLOOD_FORK_JUMP = FLOOD_WALK_OFF.carry + 2 * FLOOD_WALK_OFF.margin;
 /** where a set-back little one sits on the near bank, back from the water's edge (px) */
 export const FLOOD_SIT = 40;
 
@@ -70,7 +79,7 @@ export function layFlood(st: Gen2Stage, row: FloodRow, easy: boolean): { flood?:
     const nearIsX0 = low.deep!.near.x < low.x0;
     const span = { x0: low.x0, x1: low.x1, from: { x: nearIsX0 ? low.x0 : low.x1, y: low.lip }, to: { x: nearIsX0 ? low.x1 : low.x0, y: low.lip } };
     // (the banks themselves are not the high road: only what stands over the water)
-    const road = highRoad(tops.filter((t) => t.y < low.lip - 1), span, FLOOD_STEP, FLOOD_HOP);
+    const road = highRoad(tops.filter((t) => t.y < low.lip - 1), span, FLOOD_STEP, FLOOD_HOP, FLOOD_FORK_JUMP);
     // (and its fork at the wall-step: a way down onto the low road, and a gap after it each tier's play crosses: forkFaults; and off
     //  either end of every piece of it, ground within the line's step (strandFaults): the first ground under x is a solid top, else the low
     //  road's water at its laid surface (the flood only raises it) over its span, else none)
@@ -78,7 +87,7 @@ export function layFlood(st: Gen2Stage, row: FloodRow, easy: boolean): { flood?:
     // (and no piece of it within his single jump of the low road's walked floor (a marsh's): his ordinary hop keeps the low road)
     const marsh = st.rivers![low.river].marsh;
     const hop = marsh ? lowHopFaults(road.chain, { x0: low.x0, x1: low.x1, y: marsh.floor }, FLOOD_LOW_HOP) : [];
-    problems.push(...road.faults, ...(road.faults.length ? [] : [...forkFaults(road.chain, span, row.climb), ...strandFaults(road.chain, tops, under, row.step), ...hop]));
+    problems.push(...road.faults, ...(road.faults.length ? [] : [...forkFaults(road.chain, span, row.climb, FLOOD_WALK_OFF), ...strandFaults(road.chain, tops, under, row.step), ...hop]));
   }
   const flood: Flood = { start: { id: last.id, x: last.x, y: last.y }, close, waters, tailOff: floodTailOff(row, Math.max(0, px), easy), spare: easy ? row.spare.easy : row.spare.normal, px: Math.max(0, px) };
   return { flood, problems: [...problems, ...floodFaults(flood)] };

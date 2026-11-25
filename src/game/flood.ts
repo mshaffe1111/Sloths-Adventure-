@@ -140,9 +140,11 @@ export function highRoadFaults(tops: ReadonlyArray<{ x: number; w: number; y: nu
  *     stops him, he restarts from a stand (PHYS.groundAcc to PHYS.maxRun) and needs `runUp` px of W before its far lip to take off from.
  *     Short of it he walks off the lip and a walk-off crosses no gap; with it, a full jump at the speed his run reached (the air pushing
  *     him on to PHYS.maxRun over JUMP_AIRTIME) must carry him from his take-off past the gap.
+ * (3) with `walkOff`: a full-run walk-off from W's far lip lands on the LOW road: a next piece level with W starts at least the carry
+ *     plus its margin past the lip (the lead's entry principle: the run takes the low road, a jump the high road).
  * `chain` is highRoad's (W first, the next piece second). By name; empty: fair.
  */
-export function forkFaults(chain: ReadonlyArray<{ x: number; w: number; y: number }>, span: { from: { x: number }; to: { x: number } }, climb: FloodClimb): string[] {
+export function forkFaults(chain: ReadonlyArray<{ x: number; w: number; y: number }>, span: { from: { x: number }; to: { x: number } }, climb: FloodClimb, walkOff?: { carry: number; margin: number }): string[] {
   const [w, next] = chain;
   if (!w || !next) return [];
   const dir = span.to.x >= span.from.x ? 1 : -1;
@@ -151,6 +153,9 @@ export function forkFaults(chain: ReadonlyArray<{ x: number; w: number; y: numbe
   const at = `the wall-step at x ${Math.round(w.x)}-${Math.round(w.x + w.w)}`;
   const out: string[] = [];
   if (gap < climb.width) out.push(`flood: ${at} has no way down onto the low road: the gap after it is ${gap} px, under his ${climb.width} px width (the low road falls through it)`);
+  // (3) THE RUN TAKES THE LOW ROAD (the lead's entry principle, BUILD-28 session 7): a full-run walk-off from W's lip, no press, never
+  //     lands him on the next piece (level with W): the gap past his walk-off carry (floodLay FLOOD_WALK_OFF) plus its margin
+  if (walkOff && Math.abs(next.y - w.y) <= 1 && gap < walkOff.carry + walkOff.margin) out.push(`flood: a full-run walk-off from ${at}'s lip lands on the high road: the gap after it is ${gap} px, inside his walk-off carry ${walkOff.carry} px + its ${walkOff.margin} px margin (a run takes the low road; the high road needs a press)`);
   for (const tier of Object.keys(climb.land) as FloodTier[]) {
     const room = w.w - climb.land[tier];
     const runUp = climb.runUp[tier];

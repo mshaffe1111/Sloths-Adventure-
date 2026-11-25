@@ -189,14 +189,19 @@ export interface W2ForkShape { row: string; near: number; far: number; wall: { w
 export const W2_FORK: W2ForkShape = {
   /** the low road's river row (W2_FORK_RIVERS): a marsh, still, safe (a fall splashes him back on the near bank), marked 'close' */
   row: 'low',
-  near: 420,
+  /** 441 = 420 + 21 (BUILD-28 session 7): W stands 21 px farther back (back 81), so 30 px of bank stay before its face */
+  near: 441,
   /** the porch's 800 px over the far bank (2,200 - the marsh's 1,400) + 320 to gather on */
   far: 1120,
   /** W 330 (BUILD-28 session 6, the lead's A2): the child's farthest measured climb lands 233 px past W's face (W2_FLOOD.climb.land) and
    *  needs its 73 px run-up before the lip (forkFaults: at least 306), + a 24 px margin; 30 px of the 420 px bank stay before W's face
    *  (the climbs take off 19 px before it), so the fork's place, and the flood's flown leg, are unchanged */
-  wall: { w: 330, h: 60, back: 60 },
-  gap: 60,
+  /** back 81 = the gap (BUILD-28 session 7): the gap stays over the bank, so a walk-off back off the porch's near end lands on the bank
+   *  (strandFaults; with back 60 its near end stood 21 px over the marsh, a 135 px drop) */
+  wall: { w: 330, h: 60, back: 81 },
+  /** 81 (BUILD-28 session 7, the lead's entry principle: the RUN takes the low road, a JUMP the high road): his full-run walk-off carry
+   *  off W's lip, 66 px (floodLay FLOOD_WALK_OFF, measured), + the 15 px margin; the porch from the bank's edge as before */
+  gap: 81,
   porch: 2200,
   rises: [{ w: 1400, h: 60 }, { w: 600, h: 60 }],
 };
