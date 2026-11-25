@@ -1,7 +1,7 @@
 # BUILD-26x (session 8 of BUILD-26q; t-build-26-wip-26q on 6c7c494a1). Started 6:55 PM ET 11-24 (by `date`); this box written 7:04 PM ET
 
 ## EXACT NEXT STEP
-**Beat A's cause and the gate hole are READ and SENT to the lead (ruling step 1). NOTHING is fixed: WAIT for the lead's GO, then step 2.**
+**Beat A's cause and the gate hole are READ and SENT to the lead (ruling step 1). NOTHING is fixed. The lead GO'd (a) and (b) and judged 1-4 a SHIPPED LIVE defect; BUILD-26y lays them: start at AFTER THE GO (1).**
 CAUSE (proven on the real page, b26x/beatA-base-vs-no91.jpg): not platform 5, not the boulder, door, lantern, earth wall, wheel or face
 posts (each toggled off, the gap stays: b26x/beatA-toggles.jpg). It is the climb's TOP bank P#91 ('log', x 463-883, y 360, h 90).
 protoArt.ts drawBankArt draws a bank's soil from its top to `bottom = max(p.y + p.height, viewBottom)` (the bottom of every ground
