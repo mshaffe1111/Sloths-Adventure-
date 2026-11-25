@@ -24,8 +24,13 @@ no lay change yet. Box 11 OWNS every step below. Re-fetch before every commit (D
   rescues, crossed 19, unlit []** (base 158.1/3). One field turns the strand on and off: the seam rule. Not traced frame by frame.
 - adult 33 N on the new head: shrine 255 s, 6 rescues, unlit [] (0dadb295: 276/7, 1 unlit at the behind edge x 940, y 7828). The path
   moved; the LAY FIX is still owed by the ruling (the behind edge is not lit by design yet).
+**THE LEAD'S RULINGS ON BOX 10 (message read in box 10):** (a) ACCEPTED; (b) stays UNBUILT. Kid N 27 RULED FIXED by (a); do NOT trace
+the 1155,10670 fall (the fresh x40 judges it; a rescue kind the base lacks there gets traced then). 33 N: KEEP the lay fix ('a player
+can turn back exactly as box 8's adult did'): the second light over the step-off landing when the rim's own landing is a hop, a toy each
+way, darkLandings/darkGaps [] over all 80 rolls. (That ruling was sent BEFORE box 10's A/B/C question on the behind-edge exemption,
+below: read the lead's answer to it before changing darkLandings' meaning.)
 **BOX 11 DOES, in order (the lead's ruling 3-5):**
-(1) Send the lead kid 27's evidence above to rule (fixed by (a)), unless the lead asks for the 1155,10670 trace.
+(1) DONE by the lead's ruling: kid 27 fixed by (a).
 (2) The 33 N LAY FIX (gen2/dark.ts lay): a second light over the step-off landing when the rim's own landing is a hop (landingOf gives
 the hop; stepOnto gives the step-off piece). A toy each way in dark.test; darkLandings/darkGaps [] over all 80 rolls (probes/verdicts.mts).
 Check roll 32's seam toys still RED/GREEN after it (the lay fix may light rim 367's step-off landing; the planted RED reads unlit).
