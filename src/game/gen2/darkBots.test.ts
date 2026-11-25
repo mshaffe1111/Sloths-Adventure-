@@ -88,3 +88,24 @@ test("the way down a trunk he stands beside MID-WAY: the child takes it with up 
   const r = castRun('child', 'easy', DRAFT, 25);
   assert.equal(r.end, 'shrine', `the child Easy roll 25 reaches the shrine (${r.end} at ${r.time})`);
 });
+
+/** roll 32's seam: a way-on point under a 35 px gap between two pieces at his height (79-332 and 367-547 on this lay) he walks over */
+async function seamRun(noSeamWalk: boolean) {
+  if (readied !== DRAFT) readyDraft(DRAFT);
+  const { firstTimer, FT_ADULT } = await import('../../../tools/inspect/firsttimer.ts');
+  return firstTimer(DRAFT, 32, { ...FT_ADULT, setting: 'normal', noSeamWalk }, { cap: 200 });
+}
+/** the most times one rim was gone over with its landing dark */
+const worstRim = (unlit: readonly string[]) => Math.max(0, ...[...unlit.reduce((m, u) => m.set(u.replace(/ at [\d.]+ s .*$/, ''), (m.get(u.replace(/ at [\d.]+ s .*$/, '')) ?? 0) + 1), new Map<string, number>()).values()]);
+
+test("a seam he walks over is no way down: over roll 32's 35 px seam with the way on under it, he goes on and every rim he went over was lit (GREEN; planted: noSeamWalk)", async () => {
+  const r = await seamRun(false);
+  assert.ok(r.dark && r.dark.crossed >= 20, `he went over dark rims (${r.dark?.crossed})`);
+  assert.deepEqual(r.dark.unlit, []);
+});
+
+test("a seam read as a way down (noSeamWalk, the plant): both sides of the seam point him at the way on under it, and he walks back and forth over one dark rim (RED)", async () => {
+  const r = await seamRun(true);
+  assert.ok(r.dark, 'the drafted 3-1 has a lit dark (FTRun.dark)');
+  assert.ok(worstRim(r.dark.unlit) >= 10, `one rim gone over dark again and again: ${JSON.stringify(r.dark.unlit.slice(0, 3))}`);
+});

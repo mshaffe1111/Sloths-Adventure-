@@ -53,7 +53,7 @@ import { RIDE } from '../../src/game/ride.ts';
 import { padShows } from '../../src/game/pieces/padPiece.ts';
 import { PAD_FAIR } from '../../src/game/gen2/rideLay.ts';
 import { beatAt, beatOf, type Beat } from '../../src/game/clock.ts';
-import { airStep, canGrabSwing, DOUBLE_RISE, JUMP_RISE, PHYS, SWING, reachJump, reachJumpHeld, TIMED, pressLaunches, groundStep, takeOffStep, vineAmp, vinePeriod } from '../../src/game/physics.ts';
+import { airStep, canGrabSwing, DOUBLE_RISE, JUMP_RISE, LAND_HALF, PHYS, SWING, reachJump, reachJumpHeld, TIMED, pressLaunches, groundStep, takeOffStep, vineAmp, vinePeriod } from '../../src/game/physics.ts';
 import { MIN_TOUCH_JUMP_HOLD_MS } from '../../src/game/inputEngine.ts';
 import { handsAlong } from '../../src/game/pieces/vineSnakePiece.ts';
 import { onVine, type SnakeNow } from '../../src/game/vineSnake.ts';
@@ -286,6 +286,9 @@ export interface FirstTimer {
   noGlowWait?: boolean;
   /** the dark stop's turn to face the rim REMOVED (darkBots.test's give-up toy only): he stands the way he was facing (glowWait) */
   noGlowTurn?: boolean;
+  /** a seam he walks over read as a way down again (darkBots.test's seam toy only): downEnd steers him at a way-on point under a gap
+   *  narrower than his body from both sides, and he walks back and forth over it */
+  noSeamWalk?: boolean;
   /** at a gap or a face he must clear, his hold is drawn from this quantile of holdQ up (he reads the jump): a tuning field */
   readHold?: number;
   /** and a double up a step gets its second press from dbl2Q's quantiles up to this one (early enough to climb): a tuning field */
@@ -1761,7 +1764,33 @@ export class FirstTimerRun {
     const at = this.downPt(p);
     if (!at) return 0;
     const dx = at.x - p.x;
-    return dx > 8 ? 1 : dx < -8 ? -1 : 0;
+    const d = dx > 8 ? 1 : dx < -8 ? -1 : 0;
+    if (d === 0 || this.who.noSeamWalk) return d;
+    // (a hop across is no way down: his ledge runs on over every gap narrower than his body to a piece at his height (he cannot fall
+    //  through one; the engine lands him within LAND_HALF of an edge), so a way-on point past his own piece's end but under that run
+    //  is no way off that end. Read as a way down, the seam's two sides each pointed him at the point under it, and he walked back and
+    //  forth over it, a dark rim each pass: 3-1 draft adult and kid Normal 32, 31 and 26 crossings, ENG-DARK. Then the steer keeps
+    //  him the way he was going. A point under his own piece is left as it was)
+    const end = this.ledgeEnds(p, d);
+    return end && (at.x - end.own) * d > 0 && (at.x - end.run) * d <= 0 ? 0 : d;
+  }
+  /** going `d`: the end of the piece under his feet (`own`) and of the ledge it runs on into over every seam he walks over (`run`: a gap
+   *  narrower than his body to a piece within a step of his height); null: no piece under his feet */
+  private ledgeEnds(p: { x: number; y: number }, d: -1 | 1): { own: number; run: number } | null {
+    const at = (q: Platform, y: number) => this.solid(q) && q.type !== 'bouncy' && Math.abs(q.y - y) <= 8;
+    const end = (q: Platform) => (d > 0 ? q.x + q.width : q.x);
+    const first = this.sim.platforms.find((q) => at(q, p.y) && p.x >= q.x - LAND_HALF && p.x <= q.x + q.width + LAND_HALF);
+    if (!first) return null;
+    let cur: Platform = first;
+    const own = end(cur);
+    for (let n = 0; n < 40; n++) {
+      const e = end(cur), y = cur.y, from: Platform = cur;
+      const gap = (q: Platform) => ((d > 0 ? q.x : q.x + q.width) - e) * d;
+      const next: Platform | undefined = this.sim.platforms.find((q) => q !== from && at(q, y) && gap(q) >= -1 && gap(q) < 2 * LAND_HALF && (end(q) - e) * d > 0);
+      if (!next) break;
+      cur = next;
+    }
+    return { own, run: end(cur) };
   }
   /** the way on's first point (of the next 80) that lies under him (40+ px down) */
   private downPt(p: { x: number; y: number }): Pt | null {
