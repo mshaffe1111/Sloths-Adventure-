@@ -487,3 +487,51 @@ test('a pause on a small log is a stop he means: he never runs off its front whi
   assert.ok(pauses.length > 0, 'no pause by t 118: the toy reads nothing');
   assert.deepEqual(offs, [], `he ran off a log while its pause ran, unpressed: ${offs.join('; ')}`);
 });
+
+// R-165.465 (ENG-THUMB, the root fix): thumbify's late lift-off re-armed every frame for a bot with no holdQ (the kid, the adult), so a
+//  BARE stand (intend's {}: nothing steered, pressed, held or climbed) was never let go unless a per-stand stopMeant line said so (c11's
+//  ride read, CI-13's handed ride, CI-15's pad pause and five more, each one {}). The real stage and bot, 2-2 kid Normal 15 to t 95: on
+//  c73cb9766 bare runs of up to 8 frames (x 17,171 from 91.93) kept the steer held through every frame. (a) inside a run of bare frames
+//  the steer is held at most releaseMax[1] frames (the thumb lets go once); (b) the late lift-off is still his: a bare run straight after
+//  a steered frame holds that steer its first releaseMax[0] frames (a drift or a turn's travel may drop one: 90% at least)
+test('a bare stand is a stop the thumb lets go, its late lift-off kept: 2-2 kid Normal 15 to t 95 (R-165.465)', async () => {
+  const ft = await import('./firsttimer.ts');
+  const { CAST_BOTS } = await import('./castBots.ts');
+  const who = CAST_BOTS.kid.normal!;
+  type Pd = { left?: boolean; right?: boolean };
+  type R = { t: number };
+  const P = ft.FirstTimerRun.prototype as unknown as { intend: (this: R) => Pd; pad: (this: R) => Pd };
+  const it = P.intend, pd = P.pad;
+  let meant: Pd = {};
+  const frames: { t: number; bare: boolean; steer: boolean }[] = [];
+  P.intend = function (this: R) { meant = it.call(this); return meant; };
+  P.pad = function (this: R) {
+    const o = pd.call(this);
+    frames.push({ t: this.t, bare: !Object.values(meant).some(Boolean), steer: !!(o.left || o.right) });
+    return o;
+  };
+  try {
+    ft.firstTimer('2-2', 15, who, { cap: 95, dotSetting: true });
+  } finally {
+    P.intend = it;
+    P.pad = pd;
+  }
+  const [lo, hi] = who.releaseMax;
+  const long: string[] = [];
+  let lifts = 0, kept = 0;
+  for (let i = 0; i < frames.length;) {
+    if (!frames[i].bare) { i++; continue; }
+    let j = i;
+    while (j < frames.length && frames[j].bare) j++;
+    const held = frames.slice(i, j).filter((f) => f.steer).length;
+    if (held > hi) long.push(`t ${frames[i].t.toFixed(3)}: ${held} of ${j - i} bare frames steered`);
+    if (i > 0 && frames[i - 1].steer && j - i > lo) {
+      lifts++;
+      if (frames.slice(i, i + lo).every((f) => f.steer)) kept++;
+    }
+    i = j;
+  }
+  assert.ok(frames.length > 2000 && lifts > 10, `the toy reads too little: ${frames.length} frames, ${lifts} let-gos into a stand`);
+  assert.deepEqual(long, [], `a bare stand never let go (more than releaseMax[1] = ${hi} frames steered): ${long.slice(0, 6).join('; ')}`);
+  assert.ok(kept >= 0.9 * lifts, `the late lift-off is gone: ${kept} of ${lifts} let-gos into a stand held the steer ${lo} frame(s)`);
+});

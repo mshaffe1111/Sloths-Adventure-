@@ -1471,7 +1471,7 @@ export const frontStandPx = (who: { releaseMax: [number, number] }): number => M
 
 /** px short of a log's front he lets go of the RACE LEG's front-stand walk (CI-3/CI-4's places only; the lead's ruling, D133 narrow):
  *  frontStandPx plus the DECISION frame (the walk is judged once a frame, so he lets go up to one frame's run inside the number), and
- *  the stand there is a stop he MEANS (stopMeant: the adult's late lift-off otherwise re-arms every frame, thumbify R-165.59). ENG-PLANT-CI-c,
+ *  the stand there is a stop he MEANS (a bare stand, let go: thumbify, R-165.465; once the stopMeant line). ENG-PLANT-CI-c,
  *  rule 28: racefront adult phase 0 on CI-4 let go 23 px from #10's front at 260 px/s, held {right} 3 frames, ran 5 px past it, and the
  *  edge's blind press (no floor at p.x) fired into the water. Adult 41, kid and child 60 */
 export const raceStandPx = (who: { releaseMax: [number, number] }): number => frontStandPx(who) + Math.round(PHYS.maxRun * DT);
@@ -1558,7 +1558,6 @@ export class FirstTimerRun {
   private releaseArmed = false;
   /** this frame's empty steer is a stop he means (the tower's rise over him, "stopped first"): the thumb lifts off once, late by the
    *  calibrated release draw, as a tier bot's does; every other let-go keeps KID and ADULT's held steer (thumbify, R-165.59) */
-  private stopMeant = false;
   /** FT_FRAMES only: what intend() asked for this frame, before the thumb (the frame trace's 'meant') */
   private meantPad: Pad = {};
   private driftPx = 0;
@@ -2493,12 +2492,11 @@ export class FirstTimerRun {
       // (on the run-up: the press now, judged at his running speed, the run kept through his thumb's lag (no pending.still)); else
       //  on while a later press catches; else the stand and hop-back stay)
       if (!this.runUpCatches(p, dir, here, v, lags, carry, hold, clock, t, true)) {
-        // (a run-up given up: a stop he means (stopMeant: the adult's let-go re-arms every frame otherwise, thumbify R-165.59), and inside
+        // (a run-up given up: a stop he means (a bare stand, let go: thumbify, R-165.465), and inside
         //  his run-out of the front he pulls the thumb back (a turn drops the press at once), as the landing stop does (c9); a bare null
         //  fell to a stand his let-go ran on, off #104's front (2-4 adult Normal 6 on candidate 15, x 24,872))
         const front = dir > 0 ? here.x + here.width : here.x;
         if (dir * (front - p.x) < this.runOut()) return side1((-dir) as -1 | 1);
-        this.stopMeant = true;
         return {};
       }
       if (!lags.every((lag) => this.runPress(p.x, p.vx, 0, lag, p, dir, here, v, carry, hold, clock, t))) {
@@ -3326,10 +3324,9 @@ export class FirstTimerRun {
       const held = this.padRead(p, dir, t);
       if (held) {
         this.clockHeld = !held.left && !held.right && !held.jump;
-        // (c11's piece kept in the lean candidate (ENG-PLANT-i): a stand on a ride read is a stop he MEANS: a bot with no holdQ (the
-        //  adult, the kid) never lets go of a bare {} otherwise (thumbify, R-165.59): 2-2 adult Normal 24 landed on lift #117, padRead
+        // (c11's piece kept in the lean candidate (ENG-PLANT-i): a stand on a ride read is a stop he MEANS (a bare stand, let go:
+        //  thumbify, R-165.465; once this line's stopMeant): 2-2 adult Normal 24 landed on lift #117, padRead
         //  stood him and his thumb ran him off its front, rescued; it fails on the lean candidate with c5's pieces alone and passes with this)
-        if (this.clockHeld) this.stopMeant = true;
         return held;
       }
     }
@@ -3494,7 +3491,6 @@ export class FirstTimerRun {
         pullBack = dir * (front - p.x) < this.runOut();
         if (inRide) {
           if (pullBack) return side(-dir as -1 | 1);
-          this.stopMeant = true;
           return {};
         }
       }
@@ -3510,12 +3506,12 @@ export class FirstTimerRun {
     if (this.padPause) {
       const here = this.floorAt(p.x, p.y, 6);
       if (!here || here.id !== this.padPause.id) this.padPause = null;
-      // (CI-15, rule 28: the pause is a stop he MEANS (stopMeant, as the ride stand's, CI-13, and padRead's, c11): a bare {} is never let
+      // (CI-15, rule 28: the pause is a stop he MEANS (a bare stand, let go: thumbify, R-165.465; once this line's stopMeant): a bare {} was never let
       //  go by a bot with no holdQ (the kid, the adult; thumbify's late lift-off re-arms every frame, R-165.59), so 'he stops on it a beat'
       //  ran him on at 285 px/s off the small log's front into the water. 2-1 kid Easy 10 on CI-14: landed on upstream log #116 56 px from
       //  its front at 117.100, ran off it at 117.367, his 3rd life at one flag, rescued; the same off #85 / #86 / #87 at x 19,4xx (2-1 kid
       //  Normal 2 and 7) and off #68 at x 15,0xx (2-1 kid Normal 10, CI-10): ENG-PLANT-CI session 12)
-      else if (t < this.padPause.until) { this.stopMeant = true; return {}; }
+      else if (t < this.padPause.until) return {};
       else {
         this.padPause = null;
         if (dir !== 0 && !this.floorAt(p.x + dir * 80, p.y, 40)) {
@@ -3621,7 +3617,7 @@ export class FirstTimerRun {
       const over = this.sim.platforms.some((q) => this.solid(q) && q.y < p.y - 30 && q.y > p.y - STAIR_HOP && p.x >= q.x + 12 && p.x <= q.x + q.width - 12 && rise.y <= q.y + 20);
       // (BUILD-26g, 1-4 A/B: KID and ADULT's held steer re-armed its late lift-off every frame, so this stop never let go of the run, he
       // walked on under the raised row and off its floor's end; the stop is a lift a real thumb makes, once)
-      if (over) { this.stopMeant = true; return Math.abs(p.vx) > 40 ? {} : this.decide(0, this.mem.plan(p.x, p.y), false, {}); }
+      if (over) return Math.abs(p.vx) > 40 ? {} : this.decide(0, this.mem.plan(p.x, p.y), false, {});
     }
     if (dir !== 0) {
       // (the ride-only player, SKILLS.rideOnly, off unless a test asks: the race's planted loser (2-7.md FLOWN: he boards, then lets the
@@ -3846,7 +3842,6 @@ export class FirstTimerRun {
             //  every pick refused for 4.3 s, ridden to the far bank, the race LOST by 3.20 s; from the front the double onto #52 lands.
             //  Only where the log is handed on to a floor, or he can walk back from its front before it goes under (the handed stand's own
             //  rule below: a bot never stands on a carrier until it carries him into a rescue))
-            if (here.drift && dir * (edgeX - p.x) <= raceStandPx(who)) this.stopMeant = true;
             if (here.drift && dir * (edgeX - p.x) > raceStandPx(who)) {
               const d = here.drift, endX = dir > 0 ? d.x1 : d.x0, fx = edgeX - dir * raceStandPx(who), rear = dir > 0 ? here.x : here.x + here.width;
               const handedOn = this.sim.platforms.some((q) => q.type !== 'drift' && !q.broken && Math.abs(q.y - p.y) < 70 && q.x - 80 < endX && q.x + q.width + 80 > endX);
@@ -3881,11 +3876,10 @@ export class FirstTimerRun {
                 if (Math.abs(p.x - rear) > 20) return side(back);
               }
             }
-            // (CI-13, rule 28: the ride is a stop he MEANS (stopMeant, as padRead's ride stand and the race's front stand): a bare {} is
+            // (CI-13, rule 28: the ride is a stop he MEANS (a bare stand, let go: thumbify, R-165.465; once this line's stopMeant): a bare {} was
             //  never let go by a bot with no holdQ (the kid, the adult; thumbify's late lift-off re-arms every frame, R-165.59). 2-4 kid Easy
             //  19 on CI-12: handed this stand on log #48 52 px from its front at 47.833, ran on at 285 px/s and off the front into the water
             //  at 48.100, set down; on CI-11 the same off #75 at 77.633)
-            this.stopMeant = true;
             return {};
           }
           // (against the flow, SKILLS.upstream: the next log or the bank in reach, he hops now off the front end, a press made standing on
@@ -4057,7 +4051,6 @@ export class FirstTimerRun {
           const fx = front - dir * fs, rear = dir > 0 ? lr.x : lr.x + lr.width;
           if (this.handedAt(endX, p.y) || ((endX - dir * 10) - fx) * dir / d.speed >= who.stopReact + Math.abs(fx - rear) / PHYS.maxRun) return side(dir);
         }
-        this.stopMeant = true;
         return {};
       }
     }
@@ -5010,7 +5003,7 @@ export class FirstTimerRun {
     // nothing steered, pressed, held or climbed) is a stop he means, so every bot's thumb lifts once with its late lift-off there; the
     // per-stand stopMeant lines (c11's ride read, CI-13's handed ride, CI-15's pad pause and the five like them) each patched one {})
     const bare = !Object.values(want).some(Boolean);
-    if (steer === 0 && this.lastSteer !== 0 && !want.press && !((who.holdQ || bare || this.stopMeant) && this.releaseArmed)) {
+    if (steer === 0 && this.lastSteer !== 0 && !want.press && !((who.holdQ || bare) && this.releaseArmed)) {
       const [lo, hi] = who.releaseMax;
       const n = Math.max(lo, Math.min(hi, Math.round(Math.exp(gauss(this.r, who.release)))));
       this.releaseLeft = pre ? pre.release[k] : n;
@@ -5035,7 +5028,6 @@ export class FirstTimerRun {
     this.figTap = false;
     this.rollHeld = false;
     this.steady = false;
-    this.stopMeant = false;
     const intended = this.intend();
     if (TRACE_FRAMES) this.meantPad = intended;
     const want = this.rollHeld || this.steady || this.runnerAhead() ? intended : this.rhythm(intended);
@@ -5589,7 +5581,7 @@ export class FirstTimerRun {
         }
         this.wasSwinging = sw;
       }
-      if (TRACE_FRAMES && this.t > TRACE_FRAMES[0] && this.t < TRACE_FRAMES[1]) process.stderr.write(`    f ${this.t.toFixed(2)} ${Math.round(this.sim.p.x)},${Math.round(this.sim.p.y)} g${+this.sim.p.grounded} vx${Math.round(this.sim.p.vx)} pad ${JSON.stringify(pad)} meant ${JSON.stringify(this.meantPad)}${this.stopMeant ? ' stop' : ''} on ${this.e.standingOnId}\n`);
+      if (TRACE_FRAMES && this.t > TRACE_FRAMES[0] && this.t < TRACE_FRAMES[1]) process.stderr.write(`    f ${this.t.toFixed(2)} ${Math.round(this.sim.p.x)},${Math.round(this.sim.p.y)} g${+this.sim.p.grounded} vx${Math.round(this.sim.p.vx)} pad ${JSON.stringify(pad)} meant ${JSON.stringify(this.meantPad)} on ${this.e.standingOnId}\n`);
       this.frames++;
       e.guideView(this.view);
       this.dot.tick(this.view, this.t, (tp) => this.far(tp));
