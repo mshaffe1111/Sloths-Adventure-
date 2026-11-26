@@ -16,6 +16,16 @@ pieces differ); its stuck spots x 391-871, none at the run-on. Easy 38: its left
 Lead (box 25's shard line, c18 38e4892e1): 1: 704/0. 2: 658/3 (only w3 Easy 6). 3: 685/0 +1 TODO R-165.312. 4: 717/0. 5: 675/0 +1 TODO
 (4-3's wall check). 6: 666/0. KID_RUNS_59 did not show on c18. After the fix every shard must read 0 fail with the same two TODOs.
 BROKEN AND OWNED: the c18/c19 lay hashes ran with a shell '&' and a wait (the brief forbids it); every other run is run_in_background.
+c20's x40 (frozen wt20, cast-3-1-x40-b8352246-lane1/-lane2.jsonl, x40-verdict-b8352246.txt): ON THE BAR: shrine 360/360, unlit 1
+(child E 28, the same event as c17), max loop 7 (middle N 26), gaveUp 2, no new rescue kind (3 the base lacks, as c17), rescues 585 vs
+c17 579. RULE 28, every moved row (vs c17 2432cfde, the same code as c18): 6, all Easy, none Normal. Easy 6 x4 (adult 214.3->237.7 r3->4,
+child 242.7->301.4 r2->3, kid 196.1->239.6 r2->4, middle 192.7->241.1 r2->4): the game now builds RAW roll 6 (refused on c18, so c17
+played its reroll); raw 6 on c20 = raw 6 on c18 less the 7 stacked non-catching boughs (1122-1256, y 3111) plus the run-on 1241-1280,
+y 2830; the child's rescues (onerun, wt20) at (507, 3111) (391, 7434) (1173, 7854) (842, 10453) (903, 12530), the draft's known kinds,
+none at the run-on. Easy 34 x2 (child 243.3->249.6, middle 186.3->185.6, rescues 2->2, stuck x 408-590): its one lay change is the end at
+1196, y 9767 run on into the wall (1196-1280) where c18 laid a catch 1082-1256, y 10048 under it. Lays moved (lays-c18-vs-b8352246.txt):
+Easy 4 5 6 14 17 23 34 35 38, no Normal; Easy 14 = the end at 1199, y 2774 run on (1199-1280) for the catch 1081-1256, y 3055; its rows
+do not move. The other lays' rows do not move.
 **EXACT NEXT STEP (box 26, in progress):** c20's x40 (frozen wt20, cast-3-1-x40-b8352246-lane1/-lane2) -> x40verdict vs the bar;
 lays c18 vs c20; every moved row traced vs c17; then merge t-eng-w3 (88592a9c4) into the wip = THE candidate; the gates ONCE on it
 (tsc, CI line, suite 6 shards, tierBots 9/9, dark/darkBots/castBots, lockall --check vs t-eng-w3, generalitycheck, plants 50/50);
