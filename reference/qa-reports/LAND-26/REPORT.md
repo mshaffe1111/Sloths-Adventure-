@@ -1,5 +1,41 @@
 # LAND-26: 2-6 back on release 4's line (release 5), beat A's soil block (R-165.451)
 
+## EXACT NEXT STEP (session 6 LAND-26-f hand-over, 5:58 PM ET Thu 11-26; branch t-land-26; code still 1caf50a93)
+**2-7's DEPTH STEP red is REAL BY THE BAR (the lead ruled C; the bar stays 48) and goes to the lead's soil-fix route; this box changed
+no gate, no bar, no game file.** The next box, in this order:
+1. **The 2-7 line check (judge the screen first, law 2):** 2-7's flagged strips (49-73 px by the gate) MEASURE 1.2-2.8 brightness on
+   screen (data/depth27), the size of a planted 16-24 px step, not the ~4.1 a 48 px step gives on 2-6's soil (data/plant451). Find why
+   BEFORE any fix: apply tools/plantHook451.protoArt.diff.txt's hook spot in a SCRATCH tree (never on t-land-26) to log the live
+   groundDepth at x 15864 / 15880 (2-7 Normal seed 84450 = layout 67) and x 3432 / 3448 (seed 35 = layout 34), against
+   tools/runs27.mts.txt's bands (runs at 15856-15872: vt 981; 15872-16688: vt 1031; 3424-3440: vt 1028; 3440-3456: vt 971). Same line =
+   the soil contrast there is low (the red stands as the bar's, the lead routes the soil fix); different line = the gate reads a line not
+   drawn on 2-7's stacked legs (D136): report to the lead, the gate's reading is the fix, ruled first.
+2. Then the lead's route for 2-7 (2-6 lands with part 1/3 green, or on the lead's written ruling). Re-run paintcheck part 1/3 ONCE on the
+   final head.
+3. The gates still owed on the final head (record ONE line each): the CI tool line, paint sweep 2/3, tierBots (running on frozen
+   1caf50a93 at this hand-over, box 6 records them, D138), the suite shards 1-3 (CLAUDE.md list, --test-shard), drawcheck, clipcheck;
+   KID_RUNS_59 is the release line's inherited red. Then land on t-land-26 (no force); the hash and one line per gate to the lead.
+
+### Session 6 (LAND-26-f): what was done
+- **Stills 2x upright, frozen 1caf50a93 (data/depth27/, tools/shoot27.mjs.txt):** Normal seed 35 x 3440 (gate 57 px; x 3424 73 px at
+  the cliff lip): step -2.0 (lip -1.0; the lip's roots alone read -5.4..+8.6 within 96 px); Normal seed 84450 x 15872 (50 px): +1.2
+  (soil within 96 px max 2.4); Easy seed 5 x 16832 (49 px): +2.8 (max 2.8; contrast crop). **No straight-sided block shows on any**
+  (the lead looked at s35 too). Probe tools/runs27.mts.txt reproduces the sweep's lines exactly.
+- **The bands are ramps, and so is the planted RED:** seed 35 moves 73, 57, 47, 32, 19, 17 px per strip; seed 84450 15, 17, 30, 39, 44,
+  50 then flat; 2-6's planted old line (tools/plantBands451.mts.txt) 129, 136, 143, 151, 160, 170, 181, 192, 205 then flat. So the
+  lead's first ruling (A: flag a block, not a ramp) would have turned the planted RED green: withdrawn before any change; only SIZE
+  separates them.
+- **C, the bar from what SHOWS (the lead's ruling), on a neutral stage:** one-strip steps planted on 2-6 layout 0 Normal beat A's floor
+  (scratch hook, tools/plantHook451.protoArt.diff.txt; tools/plantShoot451.mjs.txt; data/plant451/): J 0 1.5, 16 2.4, 24 2.8, 32 3.3,
+  40 3.7, 48 4.1, 64 5.1, 80 6.0, 96 6.8, 128 8.3, 160 9.5, 205 10.5. Looked at: 24 does not show; 32-48 a faint straight line; 64
+  plain; 128+ a block. **The largest step that does not show is ~24-32: 48 stands (no evidence to raise it); the planted RED (205)
+  stays RED; 2-7 stays RED by the bar.**
+- Named, not this gate: **R-165.484** a faint vertical seam in the soil art's grain on 2-7 Easy seed 5 at x ~16800 (data/depth27 crop).
+- Gates on frozen 1caf50a93: tsc PASS (0); teachFirstScan --check --seeds 20 PASS (0 misses, 640 rolls, 16 stages); the CI tool line,
+  paint sweep 2/3, tierBots: running at this hand-over.
+- Lapse, owned: I started one scratch dev server with a shell '&' (the brief forbids it); killed at once and restarted with
+  run_in_background; no run used it.
+
 ## EXACT NEXT STEP (session 5 LAND-26-e; branch t-land-26)
 **STOPPED ON A RED (the lead's order: any other red, stop and hand over): the paint sweep part 1/3 FAILS on 2-7, 108 DEPTH STEP lines
 (see the table). Needs the lead's ruling before any fix; head 1caf50a93 is NOT landed as passing.** Then: the gates still running in
