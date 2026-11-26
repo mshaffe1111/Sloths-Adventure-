@@ -109,6 +109,9 @@ Everything else is yours on his standing permission (11-07).
    message with no priority waits for its turn to end (D140).**
    **The catch-ahead list names every cause any lane has booked to another lane's landing ('expected to fall at the merge'): each is a
    measurement owed today, on a trial merge (CI #83).**
+   **After every ROADMAP edit the lead runs roadmapcheck and reads EVERY line, not the last (CI #91, 11-26).** On a shallow clone the
+   check stopped before any row was read; until R-165.489 makes it check rows there too, run it on a full clone or read the row rules
+   (10 columns: ID | What | Tier | What we get | Time 'N h (past job)' | Value A-F | Size S/M/L | State | Owner | Source).
    **A build's start time is given from its BASE line, never from memory (CI #90, 11-26).** Before any build start time goes to Matt, and at
    every check-in that names a NEXT build, list EVERY prerequisite in that build packet (its BASE line, its ART and its LINES file) with its state (landed hash / running
    session + ETA / NOT STARTED). A NOT STARTED piece is started at once or the time is not given (3-1's spore brick was missed all day).
