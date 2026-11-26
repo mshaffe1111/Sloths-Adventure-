@@ -32,6 +32,16 @@ d/rule28/rows-main/ on origin/release-0.10.3-wip-fixes. Rebuild frozen trees (D1
    and goalsEasy.test.ts pins easyGoal 5 and the old runs: a player-facing goal and a test bar, so the lead rules first (CI #89). Seed 3
    gets 5 both trials (sealed door): a goal of 13 would seal that kid's door. Rule 20: re-pin only after the full suite on the final head.
 5. Then the final checks once on the frozen final head (box 1's list, as hand-over 4 step 3), the CI line on EVERY candidate (D141).
+6. **C11's CI line (recorded after the hand-over; it was already running; d/ciline-c11.txt): exit 1, 425 / 430, 4 reds.** Expected:
+   305 (the old waitRise plant: this head re-bars it, GREEN here) and 353 (riverRide, ruling 4 pending). **NEW vs C10: 231 and 254.**
+   - **231** (firsttimer.test.ts:305, c23, 2-1 child Easy 2: 'landing on a small log running his way (under 220 px), even inside his
+     run-out of its front, he takes the pad pause and is never pulled back'): on C11 a landing reads `{ inside: true, pause: false }`,
+     the pull-back instead of the pause. It directly contradicts C11's narrowing (no feet floor where a pull-back is due) and C11's
+     toy A in that shape: NOT traced (hand-over). NEXT: trace that landing on a frozen C11 (his middle past the log's front or on it?) and
+     on C10; the two rules (c23's pause and C11's kept pull-back) must be made one rule from the traces, or a ruling.
+   - **254** (hopJudged.test.ts:392, ruling 2's 'a beat row is started (CI-14)'): 'he left floor #50 at t 75.533 onto beat pad #55 with
+     1.87 s of the breath left for a run that needs 2.04 s'. Red on C9, GREEN on C10, red again on C11: ruling 2 is live again.
+   **C11 is NOT a clean candidate.**
 - **The three C10 rows (the lead's ruling, traced on frozen C10 with tag.py, FT_FRAMES and a probe of the feet floor):**
   - 2-1 child N 20 (d/frames-c10-2-1-childnormal20.txt): 81.23 lands on #41 (8,444-8,614, drifting his way) at x 8,627, his middle 13 px
     past its front, the floatSure pull-back due; C10's feet floor sent him past it to the edge plan's stand (why 4044, `standing` until -1,
