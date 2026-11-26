@@ -73,7 +73,81 @@ Head: see the hand-over message (pushed to t-eng-sim, ls-remote confirmed). Box 
   to 4 places. PASS 1/1. Plant (the bot lets the jump go after the press frame, i.e. not verbatim): RED at press 2 hold 0.12, the frame.
 - **NO row moved:** the same 10 rows (kid Easy, one seed of every world), base c73cb9766 vs ee33a442b: byte-identical.
 
-## Pushback## Pushback
+## Step 3: THE ONE-PAGE PLAN (box 3; READY only, NOT started: the lead GOs it after ENG-THUMB lands)
+**Order of work, each a candidate with its own checks (D141: the CI tool line on every one):**
+0. **Base, 0.5 h.** Merge ENG-THUMB's landed head (the lead names it) into t-eng-sim, so the judges move from the code release 5 ships.
+   Re-run the probe-equality gate and pressPlan.test on the merge (the gate's MEMOS list re-read: ENG-THUMB adds rng().fork()).
+1. **THE JUDGES AS ONE FAMILY, 8-10 h** (the spike sized 11-12 h; the core is in, so each judge is a plan builder + planFlies, not new
+   machinery). Every judge has the same shape after the move: it builds candidate PressPlans (pressPlan spec: press frame, hold, steer),
+   planFlies each at every lag of the thumb's spread (thumbLags, as decide draws it), takes the first plan whose spread all meets the goal,
+   setPlan()s it; the bot plays it verbatim (planNext). The ONE invariant (pressPlan.test.ts) then covers rule 28 for all of them; each
+   judge's "judged == flown" toy retires ONLY after the invariant row for that judge is in and planted RED. The toys, per judge:
+   a. **vineFromLog standing + run-up, 2 h.** Prototype exists (proto-ci10-s2.patch). Toys: hopJudged.test :291 (standing = the catch
+      flown), :327 (judged at every lag), :364 (a stand on a log is a stop he means: KEPT, a stop is bot logic); lianaRide.test :104 (a vine
+      from a log), :125 (over the tail, rule 21), :178 (the aims name the engine's take-off and catch: RETIRES, the probe is the engine);
+      firsttimer.test's runUp rows. Retires runUpCatches / runPress' model flight.
+   b. **hopFlight + the gate family + the landing stop, 3.5-4 h** (the biggest: 14 / 6 mentions + hopLandsOn 2 / 7, floatSure 0 / 7).
+      hopLandsOn, floatSure, gateLands, gateAirtime, the race gate: each candidate hop x 3 lags on the probe, early exit on the first miss
+      (the spike: about 30 ms a candidate). Toys: hopJudged.test :37 (2-7 every judged hop is flown: becomes an invariant row), :63 (no
+      foresight: KEPT, the gate decides on the hop as aimed), :77 (a wait holds its aim: KEPT), :97 / :124 (the race gate's choice: KEPT,
+      re-pinned on the probe's answers), :152 (2-7 race float wait), :218 (ledge forgiveness CI-8) and :272 (take-off carry CI-10): RETIRE
+      (the engine's physics by construction); :457 (a pause on a small log: KEPT); riverRide.test's floatSure / gateAirtime rows (18 tests,
+      the gate ones re-pinned). Retires the model block (hopFrame .. gateAirtime, about 320 lines) and physics.ts takeOffStep / groundStep
+      once no caller is left (ENG-THUMB's C6 peek is a groundStep caller: see the fault list).
+   c. **lianaWait + dropWaits, 1.5-2 h.** The let-go flown by the engine (the logs' clock is in the probe) instead of the model's
+      timedLaunch. Toys: lianaRide.test :67 (drop on a log, planted), :151 (aims at the frame they reach the engine: RETIRES into the
+      invariant); chaseBots / coveragecheck rows that name lianaWait re-read (they test the wait, not the flight: expected KEPT).
+   d. **padRead's flights, 1.5-2 h.** The flight part only (the hop off a pad, the snap-stone tap, the shiver hop); the latch (CI-14
+      padSeen) and the beat-row read stay bot logic. Toys: hopJudged.test :392 (a beat row from a floor that stays), padRide.test (5: the
+      fixture rows, the waitRise plant, OUT-AND-BACK's pin, the breath toy): KEPT as outcome rows, re-measured.
+   e. **hopCatches family, 1 h** (pitClimb, lianaWait's catch). Toys: pitClimb.test (16), lianaRide.test's catch rows: outcome rows KEPT.
+   f. **Cost check, in the family's last candidate:** the x40 of one World 2 stage kid + adult timed against today (the spike: 1.4x on
+      2-4); a gate over 3x is a finding before step 3 closes, not after.
+2. **THE PRESS-TIMING CALIBRATION, 4-5 h.** WHERE inside a catch window a planned press aims (first frame, middle, or a band of width w)
+   is FITTED, never hand-set: the spike's kid Normal moved 61 -> 88 water lives with one judge on an exact answer, because an exact
+   answer presses on a moving window's FIRST frame and a drawn lag then falls outside it. Data: the testers' press fields
+   (tools/playtesters/profiles players/ + tiers/: secondPressDelayMs, latePressAfterLeavingLedgeMs, latePressPastLipPx,
+   latePressShareOfLipJumps, groundPressToLipPx, groundPressFromStandstillShare, airPressWithoutFirstJump; 42 profiles) and R-165.59's
+   outcome targets (tierBots calibrate(): finishSeconds p50 12%, livesPerRun / putbacksPerRun max(30%, 0.3), secondPressDelayMs p50
+   25%, the top hurting pieces). Tool: `tierBots --stage 1-1 --tiers child,middle,expert --seeds 1-40 --setting both --calibrate` per
+   candidate band; kid / adult checked on the 2-4 x40 against the old judge's pinned rows (kid Normal 61 lives, Easy 33/40).
+   **THE HONEST LIMIT:** no tester data measures a press INSIDE A MOVING WINDOW (a drifting log under a swinging liana, a sinking pad), and
+   1-1 has few moving windows, so the fit there is indirect. **How it is measured, not assumed:** (i) a sensitivity sweep on 2-4 and 2-2
+   (band = first frame, middle, w = 1/4, 1/2, full) printed per tier: how far the rows move across the sweep IS the size of the unknown,
+   shown to the lead with the chosen band; (ii) the one direct measure is a person's press against a window's open and close: the play
+   recorder (playRecorder) on Matt's test link already records presses with the frame; a 2-4 river run by Matt or a tester, read for
+   press-minus-window-open, replaces the assumption the day it exists. Until (ii), the report names the band as FITTED ON 1-1 OUTCOMES +
+   THE SWEEP, never as measured.
+3. **THE RE-BASELINE, 9-13 h, paid ONCE (the spike's size kept: it is compute-bound and the spike's own 4-6 h under-size is D-logged).**
+   a. every shipped stage's proven seed list: `seedlist.ts <stage> --check` (1-1 is in the CI line); each lost seed traced to a judge
+      (rule 28 trace) or re-proven, never dropped silently;
+   b. `lockall --layouts 16 --check`: expect 102/102 UNCHANGED (layouts do not use the bots); any change is a finding, not a re-baseline;
+   c. the calibration re-run and `reference/qa-reports/R-165.59/calibration-main.jsonl` recommitted with tierBots.test (R-165.317: the 200
+      runs replay exactly; BOTS.md);
+   d. rule 28 rows vs main at the next release, Worlds 1-2 and 3-1 / 3-2: castBots x40 per stage both settings, each PASS -> FAIL traced
+      to a judge (law 22) or accepted under a lead's ruling; each fail -> pass listed (ENG-THUMB's one fix moved 203);
+   e. the known lists (knowncheck) and the CI tool line's pinned rows (riverRide, padRide, lianaRide, chaseBots, pitClimb, hopJudged) re-pinned
+      in the same change, each with the old and new value;
+   f. lands as ONE change after release 5 merges, at the time the lead names (between World 3's proof builds).
+**Hours, checked against real time:** steps 1-2 were sized 7 h and took about 1.5 h of member time (boxes 1-2 + box 3's checks), because
+they moved the spike's working code. Step 3 is new code against about 60 toy and outcome rows (above), so I cut the spike's 11-12 h only to 8-10 h,
+keep the calibration (4-5 h: each band is a 200-run tierBots pass, about 4 min, plus the 2-4 / 2-2 sweep) and the re-baseline (9-13 h,
+compute-bound); with the merge, **22-29 h left** (spike: 24-30 h for the same steps). The judges' hours are the risk; the gate's cost
+check (1f) is where an over-run shows first.
+**Today's bot faults: what the switch REPLACES (patch now only if a traced row needs it; D40) and what it does NOT (fix now, it stays):**
+- REPLACED: **ENG-THUMB's C6 padRead peek** (rng().fork() to read the next lag, then the hop flown by physics groundStep from where that
+  lag takes him off): step 1d flies every lag of the spread on the probe, so the groundStep flight retires; the peek itself (reading his
+  own next draw) is replaced by flying the spread (no foresight, ENG-27r). That moves 2-2's rows again: re-baselined in 3d, not patched.
+- REPLACED: **padRead's two other fixed-lag spots** (the snap-stone tap, the shiver hop): 1d (the lead's D40 ruling stands: leave them).
+- NOT REPLACED: **2-8's child 'PRESS off bank' / 'PRESS off W' water look**: the bot's 'water ahead' read (riverAt 120 px ahead) and the
+  fork's road choice (W2-LANE-h's fork-jump patch, never landed) are a ROUTE decision: which press to make, not how it flies. The
+  switch would fly the wrong press exactly. Fix now; it stays.
+- NOT REPLACED (as sized): **2-6's rideWheel boarding** (wheelRide): not in the spike's family. The boarding hop onto a moving bucket is
+  a moving-window flight and COULD join the family (about +1.5 h, item 1g), but the stance, the walk-up and the 'not yet... NOW' window
+  read stay bot logic. Today's fix stays; I recommend adding 1g only if a wheel row is red at step 3's base.
+- NOT REPLACED: **CI-14's padSeen latch** (memory), the stops CI-13 / CI-15 except where the stop is part of a plan.
+
+## Pushback
 - physics `framesFlown` (on the packet's list) is the reach MEMO's own cost counter (read only by reachFill.test.ts R-165.207); a probe
   that builds a reach table leaves the table built (a pure function of the jump numbers), so saving the counter alone would make it lie.
   It is a MEMO in the gate with the tables (reachTables, dropReachCache, chainCache), not a save/load.
