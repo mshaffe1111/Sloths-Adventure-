@@ -1,0 +1,12 @@
+// rise.mts <tree>: 2-2 child Normal seeds 1-40, waitRise on and off: clean (shrine, 0 rescues) on / off, lives, rescues
+const T = process.argv[2];
+await import(`${T}/src/game/headlessDom.ts`);
+const { PAD_SKILL } = await import(`${T}/tools/inspect/firsttimer.ts`);
+const { castRun } = await import(`${T}/tools/inspect/castBots.ts`);
+const s = (r: any) => `${r.end === 'shrine' && r.rescues === 0 ? 'CLEAN' : 'not'} res ${r.rescues} lives ${r.lives}`;
+for (let seed = 1; seed <= 40; seed++) {
+  PAD_SKILL.waitRise = true; const on = castRun('child', 'normal', '2-2', seed);
+  PAD_SKILL.waitRise = false; const off = castRun('child', 'normal', '2-2', seed);
+  PAD_SKILL.waitRise = true;
+  console.log(`seed ${seed} on ${s(on)} | off ${s(off)}`);
+}

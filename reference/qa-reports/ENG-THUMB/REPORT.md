@@ -1,5 +1,53 @@
 # ENG-THUMB: the kid-bot root fix (R-165.465) and release 5's rule-28 rows
 
+## Box 4 (ENG-THUMB-d; written 2:43 PM ET 11/26 by `date`; C9 rows and CI line running at this writing)
+Branch t-eng-thumb-wip. **Code = C9 e106d4a6e** (C6 + C7 + C8 + C9). Tools: as box 3 (tools/*.txt), main's rows as box 1. Evidence in d/.
+**The lead has 3 rulings in hand (sent): (1) 2-1 middle E 9 under C8, (2) hopJudged 'a beat row is started' (CI-14) allowance,
+(3) padRide 'planted: waitRise off' has no live case.** No ruling needed for anything else below.
+- **C6 vs main, five bots, 1-40, both settings** (d/rows-c6b/): 2-4 0, 2-5 0, 1-4 0 PASS -> FAIL (fail -> pass 74 / 45 / 128). With box 3's
+  2-2 (3) and 2-1 (1): C6 = 4.
+- **C7 d8cc9e0f7, child E 21 (2-2):** why-line (d/why-c6-2-2-childeasy21.txt): an edge drawn 'late' walks him off #92 (x 24,042-24,362)
+  on a late press (:4023 arms, :3485 walks); the press is due after he meets the teaching river (42 px down), which SPLASHES HIM BACK to
+  24,292 with no loseLife or softFall, so respawned() never ran and the armed press and its edge outlived the put-back: he walked off the
+  same lip at once on the stale press, 6 times in 255-265 s, set down 8, rescued. **Fix (firsttimer.ts, the set-down-by-the-game branch):**
+  a put-back by the game spends `edge` and `lateArmed` (edgePlan's own contract: 'kept until he jumps or is put back'). **Toy**
+  (hopJudged.test.ts 'a put-back by the game spends the edge plan', 2-2 child E 21 to t 266): **RED on C6** (6 stale late presses),
+  **GREEN on C7**. **Cures child E 21 AND child E 37** (2-2 on C8: both PASS).
+- **C8 dbb1a02dd, step 3, middle N 17 (2-1):** at #85's lip (19,607) his look (12 px) read log #90 (150 px, drifting 70 px/s AGAINST his
+  way, 69 px past the lip and going under the bank) as floor ahead (underLip covered only logs drifting his way), so he stepped down onto
+  its last px and the landing's walk-on (:3522) ran him off it, LIFE LOST 111.47 (d/why-c7-2-1-middlenormal17.txt). **Fix:** underLip
+  covers a drifting log either way (against him it only shrinks). **Toy** ('a log going under the bank is no floor ahead', 2-1 middle N 17
+  to t 120): **RED on C7** (onto #90 with -5 px of it ahead at 111.30), **GREEN on C8**. N 17: PASS 189.9 s, 0 lives.
+- **C8 vs main** (d/rows-c8/): 2-2 1 (middle N 7), 2-1 1 (**middle E 9, new**), 2-4 / 2-5 / 1-4 0.
+- **Ruling 1, 2-1 middle E 9 (C8's reshuffle; d/why-c8-2-1-middleeasy9.txt):** C8 takes #83's edge 36 px earlier (at 110.10 his look meets
+  #88, 43 of 170 px past the lip, going under), as the rule says; every hop after moves, and he reaches #88's front with the bank 140 px
+  off and #87 80 px ahead, holds the one refused upstream aim (:3922 aim.at; the middle has no reAim) and rides #88 600 px back until it
+  goes under: splashed back twice, 'water ahead', rescued. The fault is SKILLS.reAim's, ruled child-only (ENG-BOT27b: on every bot it
+  moved pacerLay's careful middle). A narrower C8 that spares E 9 would be a condition picked to dodge a row (law 22). (A) keep C8 + reAim
+  for the middle (re-run pacerLay, tierBots, all rows), or (B) drop C8, N 17 a STOP with the frames.
+- **C9 e106d4a6e, middle N 7 (2-2; d/why-c8-2-2-middlenormal7.txt):** a life lost at 10,194 past the spur's stone pin (point 559, x 9,242),
+  the flag 1,895 px behind it: Progress.pinFloor ('kept through a respawn') let relocate pick no point before the stone, so his place
+  stayed at 9,242, every 0.5 s rewind (off > 260) counted as a fall from one top: 8, 'fell back down from here 8 times', rescued.
+  **Fix (Progress.relocate):** with no point at or past the floor within OFF_WAY (the 260 px the rewind reads, now one constant), the pins
+  past the point nearest him roll back (his to stand at again) and he is placed there. **Toys:** padRide.test.ts 'OUT-AND-BACK's pin and a
+  respawn' each way (set down beside the way back: floor holds; set down 1,900 px behind the spur: placed there, the stone again first):
+  **RED on C8** ('placed at x 12'), **GREEN on C9**; hopJudged.test.ts 'set down behind a stood pin' (2-2 middle N 7 to t 75): **RED on
+  C8, GREEN on C9**.
+- **CI tool line (D141; never run on C1-C6):** C6 exit 1, 3 reds (d/ciline-c6.txt), **all 3 GREEN on base c73cb9766** (ENG-THUMB's), all
+  3 still red on C8:
+  1. castBots.test 'under a raised row on a tower, KID stops': the plant forced `stopMeant`, a field C2 deleted, so it planted nothing.
+     Re-pointed to `releaseArmed` (the same fault: the lift-off re-arms every frame). GREEN on C8 (in C9).
+  2. **Ruling 2**, hopJudged.test 'a beat row is started ... (CI-14)': 2-2 adult N 4 leaves #50 at 75.533 with 1.8667 s for a need of
+     2.0435 (read at 75.067 with 2.3333 >= need + react - DT; stopReact 0.3; his lag within mid + 3 sd presses on frame 5, pressIn 0.167
+     s). The test subtracts the raw lag (0.12 s); with pressIn(mid + 3 sd) (its comment: 'as thumbLags') the bar is 1.8435 and it passes.
+     Proposed; a test bar, the lead's.
+  3. **Ruling 3**, padRide.test 'planted: with waitRise off' (child N 6, 22, 24): on C8 all 40 seeds of 2-2 child N are clean with it OFF
+     (d/rise-c8-2-2-childnormal.txt): no live case at the rescue bar; by lives the skill still works (seeds 1, 4, 6, 7, 20, 26, 39 lose
+     1-5 more off). (a) re-plant search at the same bar on other bots/stages, or (b) the bar by lives.
+- **Lessons applied:** D115 (frozen chattr trees, proven writable), D119 (no heredoc in a commit chain), D128 (stamps by `date`), D134/D138
+  (hand-over pushed and confirmed first), D140 (ReadNotifications at each boundary), D141 (the CI line on every candidate: it found 3 reds
+  five candidates old).
+
 ## EXACT NEXT STEP (hand-over 3, box 3; written 2:13 PM ET 11/26 by `date`)
 Branch t-eng-thumb-wip, head = the commit that adds this text. **Code = C6 39ee096b7 (C4a + step 2, the peek).** Tools: tools/*.txt as
 before (copy out, strip `.txt`; ciline.sh's cmd = gates.yml:157's `- run:` line saved to a file and its path set in ciline.sh), plus
