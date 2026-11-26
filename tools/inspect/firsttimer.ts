@@ -761,7 +761,7 @@ export interface DotReport {
  */
 /** the log a racing hop wants on each side of where it lands (px): the flights' careful middle player (2-7.md FLOWN) */
 const RACE_MARGIN = 50;
-export const SKILLS = { trunkCatch: true, ride: true, upstream: true, bankUp: true, handed: true, dropOnLog: true, vineFromLog: true, vineOverTail: true, bonkAfterSnap: true, rideWheel: true, boardWatch: true, bonkBrake: true, letItSnap: true, race: true, rideOnly: false, fromTakeoff: true, boardLog: true, boardHop: true, floatSure: true, reAim: true, runUp: true };
+export const SKILLS = { trunkCatch: true, ride: true, upstream: true, bankUp: true, handed: true, dropOnLog: true, vineFromLog: true, vineOverTail: true, bonkAfterSnap: true, rideWheel: true, boardWatch: true, stepOff: true, bonkBrake: true, letItSnap: true, race: true, rideOnly: false, fromTakeoff: true, boardLog: true, boardHop: true, floatSure: true, reAim: true, runUp: true };
 /**
  * (ENG-26e) `trunkCatch`, a thumb gone to the climb: a jump that catches a trunk straight off the ground (no frame in the air, so no landing
  * ends it) is over the frame he holds the trunk, its hold and its second press with it; the climb is his. With it off the jump runs on
@@ -780,6 +780,10 @@ export const SKILLS = { trunkCatch: true, ride: true, upstream: true, bankUp: tr
  * `boardWatch` (LAND-26c, R-165.478): stopped nearer the jetty's lip than the board was flown (wheelFlights.ts BOARD_BACK), he hops in
  * only when his own hop (hopBoards: every lag and hold it can have) comes down inside a bucket, up to a bucket period; with it off he hops
  * at once, and from 17 px short of the lip the hop can carry past the bucket's end (wheelBoard.test.ts). Always on outside a test.
+ * `stepOff` (LAND-26d, R-165.478): the step-off window was flown from the bucket's middle; in it he goes only when his own hop from where
+ * he stands (stepOffLands: every lag and hold, the bucket's carry kept) comes down on the street, else he waits in the window, or rides on
+ * and settles (behind the middle, he walks up to it); with it off he goes at the window from wherever he stands, and from a bucket's
+ * trailing end the hop falls short (2-6 adult Easy 12 and 13: wheelStepOff.test.ts). Always on outside a test.
  */
 /**
  * (ENG-24, reference/design/2-4.md NEW 2) `dropOnLog`, drop on a log: on a liana hung over a log river, he lets go at the swing's forward
@@ -4740,6 +4744,22 @@ export class FirstTimerRun {
    * SKILLS.rideWheel (ENG-26): the jetty, the bucket and the step-off as a person who has watched the wheel plays them. Returns a pad to
    * hold, or null when he is on neither a wheel's jetty (going its way) nor in a bucket.
    */
+  /** SKILLS.stepOff (LAND-26d, R-165.478): his hop off bucket `i` toward the wheel's way, pressed at every lag his thumb presses at
+   *  (thumbLags, hopAim's clock: the bucket carries him meanwhile) and held every hold the press can have (at least `hop`, wheelRide's
+   *  wheelHop), keeping the bucket's sideways speed (RIDE.keep), comes down on the street (hopLandsOn, the engine's catch, no margin) */
+  private stepOffLands(w: Wheel, i: number, streetId: number | undefined, hop: number, now: number): boolean {
+    const street = this.sim.platforms.find((q) => q.id === streetId);
+    if (!street) return true;
+    const p = this.sim.p, who = this.who, b0 = bucketAt(w, i, now);
+    const min = Math.max(hop, this.pressHold());
+    const holds = [min, ...(who.holdQ ? who.holdQ.map((h) => Math.min(1.5, h)) : [who.hold[0] + 1.5 * who.hold[1], Math.min(0.45, who.hold[0] + 3 * who.hold[1])]).filter((h) => h > min)];
+    return thumbLags(who.thumb).every((lag) => {
+      const t1 = now + hopAim(lag).clock, b1 = bucketAt(w, i, t1), b2 = bucketAt(w, i, t1 + DT);
+      const way = w.way as -1 | 1;
+      return holds.every((hold) => hopLandsOn(street, () => street.x, p.x + b1.x - b0.x, p.y + b1.y - b0.y, way, hold, t1, 0, 0, (b2.x - b1.x) / DT));
+    });
+  }
+
   private wheelRide(p: PlayerState, dir: -1 | 0 | 1, t: number): Pad | null {
     if (!p.grounded) return null;
     // (the floor the engine has him on: at a bucket's front end his middle is past it, and the look under his middle finds none)
@@ -4776,7 +4796,8 @@ export class FirstTimerRun {
         // (the kid: toward the middle from outside his stand distance of it, a brake inside it (a press toward the middle carried him past it
         // and off the far end, a full swing every ~0.9 s))
         if (!who.holdQ) {
-          if (Math.abs(off) > 22 + who.edgeAim) return off > 0 ? { left: true } : { right: true };
+          // (and behind the middle, where the step-off falls short, he goes up to it: the step-off, SKILLS.stepOff)
+          if (Math.abs(off) > 22 + who.edgeAim || (SKILLS.stepOff && off * w.way < -16)) return off > 0 ? { left: true } : { right: true };
           return stand();
         }
         return Math.abs(off) > 16 ? (off > 0 ? { left: true } : { right: true }) : {};
@@ -4790,6 +4811,11 @@ export class FirstTimerRun {
       // (the kid's step-off waits for the brake to have him still: a hop decided while a brake's press still carried him went off the wrong
       // end (the wheel toy, top kid Normal v2, 15.4 s))
       if (!who.holdQ && Math.abs(p.vx) > BONK.still) return stand();
+      // (the window was flown from the bucket's middle: from where he stands it may fall short (2-6 adult Easy 12, the top wheel: off -37
+      // at the window where off +36 made the street; back in a bucket, round and round to a rescue. LAND-26d, R-165.478). The hop judged is
+      // the hop flown (level.md rule 28): he goes while the window is open when his own hop, at every lag his thumb presses at and every
+      // hold it can have, comes down on the street (stepOffLands); none in the window and he rides on and settles)
+      if (SKILLS.stepOff && !this.stepOffLands(w, here.wheel.i, lay.streetId, lay.street === 'edge' ? who.hold[0] : 0.5, e.gameTime)) return stand();
       this.wheelSeen = -1;
       // (a street at the sweep's edge: a hop off toward it, the flight's tap; off the top: a single jump held to its top, the way on held,
       // the flight's jump)
