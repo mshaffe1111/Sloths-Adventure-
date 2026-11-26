@@ -1,0 +1,22 @@
+// every bounce plant on every stage (Normal, 4 layouts): the first piece under its cap; open backdrop under it shows the stalk to the view's foot
+const T = process.env.TREE!;
+await import(T + '/src/game/headlessDom.ts');
+const { generateAllLevels } = await import(T + '/src/game/worldsData.ts');
+const { generateStage, setLayoutVariant } = await import(T + '/src/game/stageGenerator.ts');
+const { withGoals } = await import(T + '/src/game/goals.ts');
+const R = Math.round; const hits = new Map<string, string[]>();
+for (const c of generateAllLevels()) {
+  for (const v of [1, 2, 3, 4]) {
+    setLayoutVariant(v); let st: any;
+    try { st = withGoals(generateStage({ ...c, unlocked: true }, 'normal')); } catch { setLayoutVariant(null); continue; }
+    setLayoutVariant(null);
+    for (const b of st.platforms.filter((p: any) => p.type === 'bouncy')) {
+      const cx = b.x + b.width / 2;
+      const under = st.platforms.filter((p: any) => p !== b && p.type !== 'bouncy' && p.x <= cx && p.x + p.width >= cx && p.y >= b.y - 2).sort((a: any, q: any) => a.y - q.y)[0];
+      const open = !under || under.height < 90 || under.y - b.y > 140;
+      if (open) { const k = c.id; const a = hits.get(k) ?? []; a.push(`v${v} x${R(cx)} y${R(b.y)} under ${under ? `${R(under.y - b.y)}px h${R(under.height)}` : 'nothing'}`); hits.set(k, a); }
+    }
+  }
+}
+for (const [k, a] of hits) console.log(k, a.length, a.slice(0, 3).join('; '));
+console.log('stages with an open stalk:', hits.size);
