@@ -10,7 +10,7 @@
  * within a single jump of the low road's floor: FLOOD_LOW_HOP). Each refusal by name.
  * No stage id, world number, seed or x.
  */
-import { floodFaults, floodTailOff, forkFaults, highRoad, lowHopFaults, strandFaults, type Flood, type FloodRow, type FloodWater } from '../flood.ts';
+import { bankLandFaults, floodFaults, floodTailOff, forkFaults, highRoad, lowHopFaults, strandFaults, type Flood, type FloodRow, type FloodWater } from '../flood.ts';
 import { alongOf, lastMet } from './tower.ts';
 import { APEX } from './reach.ts';
 import { ASSIST } from '../physics.ts';
@@ -39,6 +39,8 @@ export const FLOOD_WALK_OFF = { carry: 66, margin: 15 } as const;
 /** the fork's link off the wall-step (flood.ts highRoad `jump`): a level jump past the walk-off rule's edge by at most one more margin
  *  (the gap stays a short jump the line makes; forkFaults proves each tier's jump crosses it) */
 export const FLOOD_FORK_JUMP = FLOOD_WALK_OFF.carry + 2 * FLOOD_WALK_OFF.margin;
+/** THE BANK'S LANDING's margin (flood.ts bankLandFaults, BUILD-28 session 12): the lead's 15, as FLOOD_WALK_OFF's */
+export const FLOOD_BANK_LAND = { margin: 15 } as const;
 /** where a set-back little one sits on the near bank, back from the water's edge (px) */
 export const FLOOD_SIT = 40;
 
@@ -87,7 +89,9 @@ export function layFlood(st: Gen2Stage, row: FloodRow, easy: boolean): { flood?:
     // (and no piece of it within his single jump of the low road's walked floor (a marsh's): his ordinary hop keeps the low road)
     const marsh = st.rivers![low.river].marsh;
     const hop = marsh ? lowHopFaults(road.chain, { x0: low.x0, x1: low.x1, y: marsh.floor }, FLOOD_LOW_HOP) : [];
-    problems.push(...road.faults, ...(road.faults.length ? [] : [...forkFaults(road.chain, span, row.climb, FLOOD_WALK_OFF), ...strandFaults(road.chain, tops, under, row.step), ...hop]));
+    // (and every walk-off off the near bank's edge, creep to full run, lands on the marsh's first landing: bankLandFaults)
+    const land = marsh ? bankLandFaults(span.from, nearIsX0 ? 1 : -1, tops, marsh.floor, row.climb.width, FLOOD_BANK_LAND.margin) : [];
+    problems.push(...road.faults, ...(road.faults.length ? [] : [...forkFaults(road.chain, span, row.climb, FLOOD_WALK_OFF), ...strandFaults(road.chain, tops, under, row.step), ...hop, ...land]));
   }
   const flood: Flood = { start: { id: last.id, x: last.x, y: last.y }, close, waters, tailOff: floodTailOff(row, Math.max(0, px), easy), spare: easy ? row.spare.easy : row.spare.normal, px: Math.max(0, px) };
   return { flood, problems: [...problems, ...floodFaults(flood)] };

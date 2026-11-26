@@ -9,8 +9,8 @@ import '../../headlessDom.ts';
 import { buildGen2Stage } from '../pipeline.ts';
 import { towerCfg } from '../toyTower.ts';
 import { HOME_BRICKS, HOME_CODE, homeKit } from '../toyHome.ts';
-import { FLOOD_FORK_JUMP, FLOOD_HOP, FLOOD_LOW_HOP, FLOOD_STEP, FLOOD_WALK_OFF, layFlood } from '../floodLay.ts';
-import { forkFaults, highRoad, strandFaults } from '../../flood.ts';
+import { FLOOD_BANK_LAND, FLOOD_FORK_JUMP, FLOOD_HOP, FLOOD_LOW_HOP, FLOOD_STEP, FLOOD_WALK_OFF, layFlood } from '../floodLay.ts';
+import { forkFaults, highRoad, strandFaults, walkOffLand } from '../../flood.ts';
 import { W2_FLOOD, W2_FORK, W2_FORK_RIVERS, W2_RIVERS, w2TwoRoad, type W2ForkShape } from './w2.ts';
 import type { Collectible } from '../../types.ts';
 import type { WorldKit } from '../types.ts';
@@ -148,4 +148,18 @@ test('two roads: THE RUN TAKES THE LOW ROAD (BUILD-28 session 7, the lead\'s ent
     assert.equal(lay(W2_FORK.gap), '', `${difficulty}: GREEN at the ruled ${W2_FORK.gap}`);
   }
   assert.ok(W2_FORK.gap >= FLOOD_WALK_OFF.carry + FLOOD_WALK_OFF.margin && W2_FORK.gap <= FLOOD_FORK_JUMP, 'the ruled gap: past the walk-off rule, within the fork\'s jump');
+});
+
+test("two roads: THE BANK'S LANDING (BUILD-28 session 12, the lead's rule: any walk-off off the near bank's edge lands on the floor): laid by floodLay, RED by name with the marsh's first landing 1 px short, GREEN at the need, both settings", () => {
+  const need = Math.ceil(walkOffLand(W2_FORK_RIVERS[W2_FORK.row].marsh.floor) + W2_FLOOD.climb.width / 2 + FLOOD_BANK_LAND.margin);
+  const rivers = (first: number) => ({ [W2_FORK.row]: { ...W2_FORK_RIVERS[W2_FORK.row], marsh: { ...W2_FORK_RIVERS[W2_FORK.row].marsh, first } } }) as unknown as typeof W2_FORK_RIVERS;
+  for (const d of ['normal', 'easy'] as const) {
+    const faults = (first: number) => {
+      const st = build(1, d, W2_FORK, rivers(first));
+      caged(st);
+      return layFlood(st, W2_FLOOD, d === 'easy').problems.join('; ');
+    };
+    assert.match(faults(need - 1), new RegExp(`its first landing reaches ${need - 1} px, short of ${need}`), `RED ${d}`);
+    assert.doesNotMatch(faults(need), /first landing/, `GREEN ${d}`);
+  }
 });

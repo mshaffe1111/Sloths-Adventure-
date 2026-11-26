@@ -81,30 +81,23 @@ test('planted: each fairness rule names the river built to break it', () => {
   has(bankless, /no bank at one end/);
 });
 
-test("a marsh's `open` (data, off by default): with it the marsh opens on water at the near bank's foot; without it the old shape", () => {
-  const row = (open?: number): RiverRow => ({ dir: 1, speed: 0, logW: 0, logs: 0, safe: true, marsh: { width: 1400, floor: 75, dips: 4, dip: 100, ...(open === undefined ? {} : { open }) } });
+test("a marsh's FIRST LANDING `first` (data, off by default): with it the floor's piece at the near bank's foot is that wide and the dips and the other pieces split the rest; without it the old shape", () => {
+  const row = (first?: number): RiverRow => ({ dir: 1, speed: 0, logW: 0, logs: 0, safe: true, marsh: { width: 1400, floor: 75, dips: 4, dip: 100, ...(first === undefined ? {} : { first }) } });
   const x0 = 1000;
   const bankY = 580;
-  const lay = (open?: number) => {
+  const lay = (first?: number) => {
     let id = 1;
-    return layRiver(row(open), x0, bankY, () => id++);
+    return layRiver(row(first), x0, bankY, () => id++);
   };
   const pieces = (f: Platform[]) => f.map((p) => [p.x, p.x + p.width]);
-  // without it (unset, or 0): the floor's first piece starts at the bank's foot, five equal pieces, four 100 px dips (2-8.md:9)
-  for (const off of [lay(), lay(0)]) {
-    assert.deepEqual(pieces(off.floor), [[1000, 1200], [1300, 1500], [1600, 1800], [1900, 2100], [2200, 2400]]);
-    assert.equal(off.zone.x0, x0);
-  }
-  // with it: water from the bank's foot `open` px wide, then the same pieces and dips sharing the rest, the far end unmoved
-  const on = lay(220);
-  assert.equal(on.floor.length, 5);
-  assert.equal(on.floor[0].x, x0 + 220, 'the first piece starts past the open dip');
-  assert.ok(!on.floor.some((p) => p.x < x0 + 220 && p.x + p.width > x0), 'no floor in the open dip');
-  assert.equal(on.floor.at(-1)!.x + on.floor.at(-1)!.width, x0 + 1400, 'the marsh ends where it did');
-  for (let i = 1; i < on.floor.length; i++) assert.equal(on.floor[i].x - (on.floor[i - 1].x + on.floor[i - 1].width), 100, `dip ${i}`);
-  assert.ok(on.floor.every((p) => p.width === on.floor[0].width && p.y === bankY + 75));
-  // the water is there to see at his feet: the zone starts at the bank's foot, under the floor's top
+  // without it: five equal pieces from the bank's foot, four 100 px dips (2-8.md:9)
+  assert.deepEqual(pieces(lay().floor), [[1000, 1200], [1300, 1500], [1600, 1800], [1900, 2100], [2200, 2400]]);
+  // with it: the first landing 120 px from the bank's foot, then a 100 px dip; the other four share the rest, the far end unmoved
+  const on = lay(120);
+  assert.deepEqual(pieces(on.floor), [[1000, 1120], [1220, 1440], [1540, 1760], [1860, 2080], [2180, 2400]]);
+  assert.ok(on.floor.every((p) => p.y === bankY + 75));
+  // the water: the zone from the bank's foot, under the floor's top (seen in the first dip, 120 px from the bank)
   assert.ok(on.zone.x0 === x0 && on.zone.surfaceY === bankY + 75 + RIVER_LAY.marshWater);
-  // an open that leaves no floor is named
-  assert.throws(() => lay(1000), /has no floor left with open 1000/);
+  // a first landing that leaves no floor for the rest is named
+  assert.throws(() => lay(1000), /cannot lay a first landing 1000 px/);
 });
