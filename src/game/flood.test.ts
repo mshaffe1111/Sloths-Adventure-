@@ -55,6 +55,49 @@ test('FloodClock: only the start cage starts it, once; the dip stops at paddling
   assert.equal(floodSurface(f, f.waters[0], undefined), dip.y0);
 });
 
+/** a TEACH water (RiverRow.flood 'teach', ENG-FLOOD28 P1): the dip's span, its own rise over 4 s (no part of the clock) */
+const teach: FloodWater = { ...dip, x0: 300, x1: 500, seconds: 4, own: true };
+const teaching = (): Flood => ({ ...laid(W2_FLOOD.flown.px, false), waters: [teach, dip, low(26)] });
+
+test('FloodClock: a TEACH water rises on its OWN start (the first frame he is over it), once, to paddling depth; it never drains and nothing resets it; the clock and its waters are untouched', () => {
+  const f = teaching();
+  const c = new FloodClock(f);
+  assert.deepEqual(c.over(250, 5), [], 'short of its span: no start');
+  assert.deepEqual(c.over(300, 5), [], 'on its edge: no start (over it, x0 < x < x1)');
+  assert.equal(c.step(6).levels[0], teach.y0, 'nothing rises before he is over it');
+  assert.deepEqual(c.over(301, 10), [teach], 'over it: it starts');
+  assert.deepEqual(c.over(400, 11), [], 'once');
+  assert.equal(c.at, undefined, 'the clock itself is not started by a teach');
+  const mid = c.step(12).levels;
+  assert.ok(mid[0] < teach.y0 && mid[0] > teach.y1, `rising (${mid[0]})`);
+  assert.deepEqual(mid.slice(1), [dip.y0, low(26).y0], 'the clock\'s waters stay put');
+  assert.equal(c.step(14).levels[0], teach.y1, 'paddling depth at its own seconds');
+  // (he goes on, far past it, and back: it never drains, and a second time over it is no restart)
+  c.over(5000, 20);
+  assert.equal(c.step(200).levels[0], teach.y1, 'never drains');
+  c.over(400, 300);
+  assert.equal(c.step(301).levels[0], teach.y1, 'no restart');
+  // (the clock starts later: it never moves the teach, and the teach never turns deep)
+  assert.equal(c.freed(7, 400), true);
+  const late = c.step(400 + 26);
+  assert.equal(late.levels[0], teach.y1);
+  assert.deepEqual(late.closed, [f.waters[2]], 'only the low road turns deep');
+  assert.equal(c.deepAt(400, LIP, 430), false, 'the teach is never a wall');
+  // (a teach marked deep is refused by name)
+  assert.match(floodFaults({ ...f, waters: [{ ...teach, deep: { y: LIP, near: { x: 290, y: LIP } } }, dip, low(26)] }).join('; '), /the teach water at x 300-500 turns deep/);
+  assert.deepEqual(floodFaults(f), [], 'a teach beside the clock\'s waters is fair');
+});
+
+test('FloodClock, planted: with the teach water\'s own start removed (no `over`) it stays at its laid level as he crosses it (RED), and a water with no teach mark never starts on him', () => {
+  const off = new FloodClock(teaching());
+  off.over = () => [];
+  for (let t = 0; t <= 30; t += 1) off.over(250 + t * 20, t);
+  assert.equal(off.step(30).levels[0], teach.y0, 'RED: never rose');
+  const plain = new FloodClock({ ...teaching(), waters: [{ ...teach, own: undefined }, dip, low(26)] });
+  for (let t = 0; t <= 30; t += 1) plain.over(250 + t * 20, t);
+  assert.equal(plain.step(30).levels[0], teach.y0, 'a clock water waits for the clock, never for him');
+});
+
 test('highRoadFaults: steps of 60 px are walkable by the line; a 100 px step or a missing road is refused', () => {
   const span = { x0: 1000, x1: 1400, from: { x: 990, y: LIP }, to: { x: 1410, y: LIP } };
   const steps = [{ x: 990, w: 60, y: LIP - 60, h: 60 }, { x: 1050, w: 300, y: LIP - 120, h: 60 }, { x: 1350, w: 60, y: LIP - 60, h: 20 }];

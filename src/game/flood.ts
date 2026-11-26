@@ -32,6 +32,9 @@ export interface FloodRow {
   /** px: the line's step (the world's follow row's `step`, follow.ts): a drop deeper than it off an end of a high-road piece is a WAIT at
    *  the lip, so the line is stranded there (strandFaults) */
   step: number;
+  /** s a TEACH water (RiverRow.flood 'teach') takes to rise to paddling depth from its own start, by setting (the designer's flown number;
+   *  unset: a teach water is refused by name, gen2/floodLay.ts) */
+  teach?: { normal: number; easy: number };
 }
 
 /** the tiers the fork is judged for (the bots' own: child, middle, expert, and the first-timer adult) */
@@ -68,6 +71,12 @@ export interface FloodWater {
    * its NEAR bank (`near`: the bank on the clock's start side, by met order; where it sits in the reeds and waits for him)
    */
   deep?: { y: number; near: { x: number; y: number } };
+  /**
+   * a TEACH water (RiverRow.flood 'teach'): it rises on its OWN start, never the clock's: the first frame he is over its span (x0..x1, on
+   * the ground or in the air: on approach, the way 2-8's hand-built basin rose), from y0 to paddling depth y1 over `seconds`. It never
+   * drains and never turns deep; a respawn keeps it (FloodClock.over)
+   */
+  own?: true;
 }
 
 /** a laid flood (GeneratedStage.flood) */
@@ -90,7 +99,7 @@ export function floodTailOff(row: FloodRow, px: number, easy: boolean): number {
   return (px * t) / row.flown.px;
 }
 
-/** a water's surface `since` s after the clock started (undefined: not started) */
+/** a water's surface `since` s after its start (the clock's, or a teach water's own: FloodClock.sinceOf; undefined: not started) */
 export function floodSurface(f: Pick<Flood, 'close'>, w: FloodWater, since: number | undefined): number {
   if (since === undefined) return w.y0;
   if (w.deep && since >= f.close) return w.deep.y;
@@ -109,6 +118,7 @@ export function floodFaults(f: Flood): string[] {
   const R = (v: number) => Math.round(v * 10) / 10;
   const deep = f.waters.filter((w) => w.deep);
   if (deep.length !== 1) out.push(`flood: ${deep.length} waters turn deep: the low road is the only one (every other stops at paddling depth)`);
+  for (const w of deep) if (w.own) out.push(`flood: the teach water at x ${Math.round(w.x0)}-${Math.round(w.x1)} turns deep: a teach only rises to paddling depth`);
   for (const w of f.waters) {
     if (w.y1 < w.lip - 1e-6) out.push(`flood: the water at x ${Math.round(w.x0)}-${Math.round(w.x1)} rises to ${Math.round(w.y1)}, ${Math.round(w.lip - w.y1)} px over its banks: paddling depth stays under them`);
     if (!(w.seconds > 0)) out.push(`flood: the water at x ${Math.round(w.x0)}-${Math.round(w.x1)} rises in ${w.seconds} s`);
@@ -311,11 +321,30 @@ export function highRoad<T extends { x: number; w: number; y: number; h?: number
 /**
  * The runtime clock: started once, when the start cage is freed (never reset: a respawn keeps it; nothing drains). Each step gives every
  * water's surface and the waters that turned deep this step (the engine sets the rivers' surfaces and the line's set-backs from them).
+ * A TEACH water (FloodWater.own) has its own start instead: the first frame he is over its span (`over`, which the engine calls every frame
+ * he plays), also once and never reset.
  */
 export class FloodClock {
   at: number | undefined;
   private closed = new Set<FloodWater>();
+  /** each teach water's own start (game time) */
+  private own = new Map<FloodWater, number>();
   constructor(readonly f: Flood) {}
+  /** he is at x at game time `t`: every teach water whose span holds x and has not started starts now (once). Its waters that started */
+  over(x: number, t: number): FloodWater[] {
+    const out: FloodWater[] = [];
+    for (const w of this.f.waters) if (w.own && !this.own.has(w) && x > w.x0 && x < w.x1) {
+      this.own.set(w, t);
+      out.push(w);
+    }
+    return out;
+  }
+  /** s since water `w` started (the clock's start; a teach water's own), undefined: not started */
+  sinceOf(w: FloodWater, now: number): number | undefined {
+    if (!w.own) return this.since(now);
+    const at = this.own.get(w);
+    return at === undefined ? undefined : now - at;
+  }
   /** the cage with collectible id `id` was freed at game time `t` (only the start cage starts it; once) */
   freed(id: number, t: number): boolean {
     if (id !== this.f.start.id || this.at !== undefined) return false;
@@ -331,9 +360,9 @@ export class FloodClock {
     return this.f.waters.some((w) => floodDeep(this.f, w, since) && x > w.x0 && x < w.x1 && y > w.lip - 2);
   }
   step(now: number): { levels: number[]; closed: FloodWater[] } {
-    const since = this.since(now);
     const closed: FloodWater[] = [];
     const levels = this.f.waters.map((w) => {
+      const since = this.sinceOf(w, now);
       if (floodDeep(this.f, w, since) && !this.closed.has(w)) {
         this.closed.add(w);
         closed.push(w);

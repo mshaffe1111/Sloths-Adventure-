@@ -4328,6 +4328,8 @@ function dialMisses(st: Gen2Stage, M: WorldManifest, easy: boolean): string[] {
   const propTags = new Map(M.props.map((p) => [p.id, p.tags]));
   // (a node's hazard ask is a fall the node lays on its route: a hole under the route is the earth's, never the node's hazard, DropSite)
   const falls = (st.gen2.drops ?? []).filter((d) => !d.site).map((d) => ({ x0: d.x0, x1: d.x1, kind: d.ends.kind === 'putback' ? 'soft' : d.ends.kind === 'life' ? (d.ends as { cause: string }).cause : 'hurt' }));
+  // (a hazard on the flood's clock, `@flood`: the waters laid from rows marked for it, when the brief names a flood (floodLay.ts))
+  const floods = st.gen2.brief?.flood ? (st.rivers ?? []).filter((r) => r.floodMark).map((r) => ({ x0: r.x0, x1: r.x1 })) : undefined;
   const out: string[] = [];
   nodes.forEach((n, k) => {
     if (!n.asked) return;
@@ -4345,7 +4347,7 @@ function dialMisses(st: Gen2Stage, M: WorldManifest, easy: boolean): string[] {
     };
     if (!laidNodes && (n.asked.shape || n.asked.content || n.asked.move)) out.push(`node ${n.id} "${token}": its sections' heights were not kept for the check`);
     out.push(...askMisses(n.asked, laidNode, M.creatures, easy));
-    if (secs.length) out.push(...hazardMiss(n.asked, n.id, token, [Math.min(...secs.map((q) => q.x0)), Math.max(...secs.map((q) => q.x1))], falls));
+    if (secs.length) out.push(...hazardMiss(n.asked, n.id, token, [Math.min(...secs.map((q) => q.x0)), Math.max(...secs.map((q) => q.x1))], falls, floods));
   });
   return out;
 }

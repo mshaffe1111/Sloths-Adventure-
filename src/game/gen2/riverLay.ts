@@ -48,8 +48,10 @@ export interface RiverRow {
    */
   tail?: number;
   /** a FLOOD mark (data; flood.ts, gen2/floodLay.ts; 2-8's water, reference/design/2-8.md NEW 1): on a stage whose brief names a flood,
-   *  'rise' rises to paddling depth on the flood clock, 'close' is the low road (it rises, then turns deep at the close). Unset: no flood */
-  flood?: 'rise' | 'close';
+   *  'rise' rises to paddling depth on the flood clock, 'close' is the low road (it rises, then turns deep at the close), 'teach' rises to
+   *  paddling depth on its OWN start (the first frame he is over its span, before any cage: the rising water's teach, 2-8.md beat 2) over
+   *  the flood table's `teach` s, and never drains (a respawn keeps it; it never turns deep). Unset: no flood */
+  flood?: 'rise' | 'close' | 'teach';
   /**
    * a MARSH (data; unset: none; 2-8's low road, reference/design/2-8.md:9 "LOW 1,400 px of marsh path with four 100 px dips"): instead
    * of logs, a walkable FLOOR `floor` px under the banks' top across `width` px of water, split by `dips` gaps `dip` px wide (evenly spaced,

@@ -1975,8 +1975,10 @@ export class GameEngine {
     this.riders = ridersOf(this.collectibles, this.platforms, this.riders);
     if (this.riders.list.length) stepRiders(this.riders);
     // a laid flood (flood.ts, gen2/floodLay.ts): its clock raises its waters to paddling depth; the low road turns deep at the close and the
-    // little ones in it are set on its near bank (followPlay.ts floodClosed). Nothing drains, and a respawn keeps it
+    // little ones in it are set on its near bank (followPlay.ts floodClosed). Nothing drains, and a respawn keeps it. A teach water (its
+    // mark 'teach') starts on its own, the first frame he is over it (FloodClock.over)
     if (this.floodClock) {
+      if (!this.isGameOver) this.floodClock.over(p.x, this.gameTime);
       const { levels, closed } = this.floodClock.step(this.gameTime);
       const rivers = this.currentStage.rivers ?? [];
       this.floodClock.f.waters.forEach((w, i) => {

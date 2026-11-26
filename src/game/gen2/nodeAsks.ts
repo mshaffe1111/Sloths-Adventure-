@@ -59,6 +59,9 @@ export const LATER_CONTENT: Readonly<Record<string, string>> = Object.fromEntrie
 
 /** the hazard kinds the lay reads from the built stage's falls (any other id is a world's own hazard, Later) */
 export const HAZARDS = ['soft', 'water', 'hurt', 'void'] as const;
+/** the named clock a hazard can keep that the lay checks: the FLOOD's (`:#soft@flood`): the node's span holds a water laid from a row
+ *  marked for the flood (RiverRow.flood: 'teach', 'rise' or 'close'), on a stage whose brief names a flood (GraphBrief.flood) */
+export const FLOOD_CLOCK = 'flood';
 
 export type ElementStatus = 'laid' | 'checked' | 'later';
 /** every element of the key, what it does today (one source: NODE-KEY.html's cards and the tests read it) */
@@ -76,6 +79,7 @@ export const ELEMENTS: ReadonlyArray<{ element: string; mark: string; status: El
   { element: 'threat :&kind*n!', mark: ':&snake*2', status: 'laid', how: "the node's enemy sockets take only its kinds, up to their counts; each kind's count is checked" },
   { element: 'threat asleep z', mark: ':&snake*1z', status: 'checked', how: "asleep only where the world lays that kind asleep (tag 'sleeper'); awake only where it does not" },
   { element: 'hazard :#soft :#water :#hurt :#void', mark: ':#hurt', status: 'checked', how: "a fall of that kind lies in the node's span, or the roll fails by name" },
+  { element: 'hazard on the flood :#kind@flood', mark: ':#soft@flood', status: 'checked', how: "a fall of that kind in the node's span over a water marked for the flood (RiverRow.flood), on a stage whose brief names a flood, or the roll fails by name" },
   { element: 'hazard on a clock :#kind@clock', mark: ':#pods@beat', status: 'later', how: "named clocks are B14's pods (t-b14): the roll fails by name" },
   { element: 'reward :+find', mark: ':+seed', status: 'checked', how: 'the find laid in the node is that one' },
   { element: 'reward :$n', mark: ':$8', status: 'checked', how: 'the pickups laid in the node number exactly n' },
@@ -172,16 +176,22 @@ export function askMisses(a: NodeAsks | undefined, n: LaidNode, cast: ReadonlyAr
     if (d.reward?.pickups !== undefined && n.pickups !== d.reward.pickups) miss(`reward $${d.reward.pickups}`, `laid ${n.pickups} pickups`);
     if (d.beat !== undefined) miss(`beat t${d.beat}`, 'Later: no clock piece in this tree keeps a beat');
     if (d.points !== undefined) miss(`points p${d.points}`, 'Later: the meter does not score a node inside the lay');
-    if (d.hazard?.clock) miss(`hazard #${d.hazard.kind}@${d.hazard.clock}`, "Later: named clocks are B14's pods (t-b14)");
-    else if (d.hazard && !(HAZARDS as readonly string[]).includes(d.hazard.kind)) miss(`hazard #${d.hazard.kind}`, "Later: no world hazard of that id is laid by a node yet");
+    if (d.hazard?.clock && d.hazard.clock !== FLOOD_CLOCK) miss(`hazard #${d.hazard.kind}@${d.hazard.clock}`, "Later: named clocks are B14's pods (t-b14)");
+    else if (d.hazard && !(HAZARDS as readonly string[]).includes(d.hazard.kind)) miss(`hazard #${d.hazard.kind}${d.hazard.clock ? `@${d.hazard.clock}` : ''}`, "Later: no world hazard of that id is laid by a node yet");
   }
   return out;
 }
 
-/** a node's hazard ask against the built stage's falls over its span (x0..x1): each fall's kind as the drops name it */
-export function hazardMiss(a: NodeAsks | undefined, id: string, token: string, span: readonly [number, number], falls: ReadonlyArray<{ x0: number; x1: number; kind: string }>): string[] {
+/** a node's hazard ask against the built stage's falls over its span (x0..x1): each fall's kind as the drops name it. On the flood
+ *  (`@flood`): also a water marked for the flood over the span (`floods`: the stage's flood-marked waters; undefined: its brief names no
+ *  flood) */
+export function hazardMiss(a: NodeAsks | undefined, id: string, token: string, span: readonly [number, number], falls: ReadonlyArray<{ x0: number; x1: number; kind: string }>, floods?: ReadonlyArray<{ x0: number; x1: number }>): string[] {
   const h = a?.dials?.hazard;
-  if (!h || h.clock || !(HAZARDS as readonly string[]).includes(h.kind)) return [];
+  if (!h || (h.clock && h.clock !== FLOOD_CLOCK) || !(HAZARDS as readonly string[]).includes(h.kind)) return [];
+  const mark = `#${h.kind}${h.clock ? `@${h.clock}` : ''}`;
   const over = falls.filter((f) => f.x1 > span[0] && f.x0 < span[1]);
-  return over.some((f) => f.kind === h.kind) ? [] : [`node ${id} "${token}": hazard #${h.kind}: ${over.length ? `laid ${[...new Set(over.map((f) => f.kind))].join(', ')}` : 'no fall in its span'}`];
+  const out = over.some((f) => f.kind === h.kind) ? [] : [`node ${id} "${token}": hazard ${mark}: ${over.length ? `laid ${[...new Set(over.map((f) => f.kind))].join(', ')}` : 'no fall in its span'}`];
+  if (h.clock === FLOOD_CLOCK && !floods?.some((w) => w.x1 > span[0] && w.x0 < span[1]))
+    out.push(`node ${id} "${token}": hazard ${mark}: ${floods ? 'no water marked for the flood in its span' : "the stage's brief names no flood"}`);
+  return out;
 }

@@ -73,7 +73,7 @@ export interface RiverZone {
    */
   flood?: { y1: number; seconds: number; trigger: number; y0?: number };
   /** a gen2 flood's water (RiverRow.flood, gen2/floodLay.ts; flood.ts FloodClock raises it): its mark and its banks' top (`lip`) */
-  floodMark?: { kind: 'rise' | 'close'; lip: number };
+  floodMark?: { kind: 'rise' | 'close' | 'teach'; lip: number };
   /** a MARSH (RiverRow.marsh, riverLay layRiver): a walkable floor in the water, its top `floor` (y), under banks whose top is `lip` (y);
    *  the water starts under the floor's top (a flood raises it to paddling depth under the FLOOR, and its close covers the floor) */
   marsh?: { floor: number; lip: number };

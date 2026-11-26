@@ -33,12 +33,12 @@ const withPorch = (porch: boolean, fork = FORK): SectionTemplate[] => HOME_BRICK
     { key: 'stand', shape: 'block', w: [fork.w, fork.w], place: { kind: 'on', on: 'near', at: [(NEAR_W - fork.w - fork.back) / (NEAR_W - fork.w), (NEAR_W - fork.w - fork.back) / (NEAR_W - fork.w)], h: [FLOOD_STEP, FLOOD_STEP] }, style: 'moss_stone' },
     { key: 'porch', shape: 'branch', w: [880, 880], place: { kind: 'over', on: 'near', at: [1 + (fork.gap - fork.back) / NEAR_W, 1 + (fork.gap - fork.back) / NEAR_W], dy: [-FLOOD_STEP, -FLOOD_STEP] }, style: 'log', main: false }],
 }));
-const floodKit = (porch: boolean, flood?: FloodRow, fork = FORK): WorldKit => {
+const floodKit = (porch: boolean, flood?: FloodRow, fork = FORK, rivers: typeof RIVERS = RIVERS): WorldKit => {
   const k = homeKit(ID, HOME_CODE);
   const briefs = k.manifest.graphs!.briefs!;
-  return { ...k, manifest: { ...k.manifest, rivers: RIVERS, sections: [k.manifest.sections[0], ...withPorch(porch, fork)], graphs: { ...k.manifest.graphs!, briefs: { [ID]: { ...briefs[ID], pacer: undefined, ...(flood ? { flood } : {}) } } } } };
+  return { ...k, manifest: { ...k.manifest, rivers, sections: [k.manifest.sections[0], ...withPorch(porch, fork)], graphs: { ...k.manifest.graphs!, briefs: { [ID]: { ...briefs[ID], pacer: undefined, ...(flood ? { flood } : {}) } } } } };
 };
-const build = (seed: number, difficulty: 'normal' | 'easy', porch = true, flood?: FloodRow, fork = FORK) => buildGen2Stage({ config: { ...towerCfg(ID, 'sprint'), unlocked: true }, kit: floodKit(porch, flood, fork), seed, difficulty });
+const build = (seed: number, difficulty: 'normal' | 'easy', porch = true, flood?: FloodRow, fork = FORK, rivers: typeof RIVERS = RIVERS) => buildGen2Stage({ config: { ...towerCfg(ID, 'sprint'), unlocked: true }, kit: floodKit(porch, flood, fork, rivers), seed, difficulty });
 
 /** two cages: one on the out leg at the column's lip, one past the column on the home leg, at a smaller x (met later) */
 function caged(st: ReturnType<typeof build>): { out: Collectible; home: Collectible } {
@@ -104,4 +104,32 @@ test('flood lay: RED with T_CLOSE 3 s early, with no high road, with no cage, ea
   //  main's 2-3 piece, pipeline.ts 'objective' sockets allowing 'cage'; not on this base: REPORT Pushback 1))
   const piped = build(1, 'normal', true, W2_FLOOD);
   assert.match(piped.gen2.errors.join('; '), /flood: no cage to start its clock/);
+});
+
+/** the toy's rows with the twin marked 'teach' (ENG-FLOOD28, P1: the rising water's teach), and a flood table naming its rise (the toy's
+ *  own seconds, by setting: the designer's flown number is 2-8's own, W2_FLOOD.teach) */
+const TEACH_RIVERS = { ...RIVERS, twin: { ...W2_RIVERS.twin, flood: 'teach' as const } } as unknown as typeof RIVERS;
+const TEACH_ROW: FloodRow = { ...W2_FLOOD, teach: { normal: 6, easy: 8 } };
+
+test("flood lay: a water marked 'teach' is laid as its OWN rise (FloodWater.own, the table's teach s, paddling depth), no part of the clock; RED by name with no teach rise in the table", () => {
+  for (const difficulty of ['normal', 'easy'] as const) {
+    for (let seed = 1; seed <= 4; seed++) {
+      const at = `${difficulty} seed ${seed}`;
+      const st = build(seed, difficulty, true, undefined, FORK, TEACH_RIVERS);
+      assert.deepEqual(st.gen2.errors, [], at);
+      caged(st);
+      const marks = (st.rivers ?? []).map((r) => r.floodMark?.kind);
+      assert.ok(marks.includes('teach') && marks.includes('close'), `${at}: the twin laid from its 'teach' row (${marks.join(', ')})`);
+      const r = layFlood(st, TEACH_ROW, difficulty === 'easy');
+      assert.deepEqual(r.problems, [], at);
+      const own = r.flood!.waters.filter((w) => w.own);
+      assert.equal(own.length, 1, `${at}: one teach water`);
+      assert.equal(own[0].seconds, difficulty === 'easy' ? 8 : 6, `${at}: it rises over the table's teach s, never the close`);
+      assert.ok(!own[0].deep, `${at}: a teach never turns deep`);
+      assert.equal(own[0].y1, Math.min(own[0].y0, own[0].lip + FLOOD_PADDLE), `${at}: to paddling depth`);
+      assert.equal(st.rivers![own[0].river].floodMark!.kind, 'teach', `${at}: its own river`);
+      // RED, planted: the table with no teach rise refuses the teach water by name (never a silent rise on the clock's close)
+      assert.match(layFlood(st, W2_FLOOD, difficulty === 'easy').problems.join('; '), /a water is laid from a row marked 'teach', but the flood table names no teach rise/, `${at}: RED`);
+    }
+  }
 });

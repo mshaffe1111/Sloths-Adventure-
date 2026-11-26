@@ -4,6 +4,9 @@
  * route's order, never x, D130); the waters it raises are the stage's rivers laid from rows with a `flood` mark (RiverRow.flood): every one
  * rises to paddling depth (FLOOD_PADDLE px under its banks' top) over the close, and the one marked 'close' (the fork's low road) turns
  * deep at the close (brim-full: a wall the line waits at). A little one in it then is set on its NEAR bank: the bank he meets first.
+ * A water marked 'teach' (the rising water's teach, 2-8.md beat 2: before any cage) is no part of the clock: it rises to paddling depth on
+ * its OWN start, the first frame he is over it (FloodWater.own, flood.ts FloodClock.over), over the flood table's `teach` s, never drains
+ * and never turns deep; a table with no `teach` refuses it by name.
  * The check is flood.ts floodFaults (the close against the line's prompt tail-off of the laid low road, at the setting's flown rate, plus
  * the spare), highRoadFaults (a high road over the low road the line can walk: steps of at most FLOOD_STEP px), forkFaults (its wall-step),
  * strandFaults (off either end of every piece, ground within the line's step, FloodRow.step) and lowHopFaults (no high-road top
@@ -52,9 +55,17 @@ export function floodWaterOf(r: RiverZone, i: number, close: number): FloodWater
   return { river: i, x0: r.x0, x1: r.x1, y0: r.surfaceY, y1: Math.min(r.surfaceY, (r.marsh?.floor ?? lip) + FLOOD_PADDLE), seconds: close, lip };
 }
 
+/** a TEACH water (RiverRow.flood 'teach'): river `i` rises to paddling depth over `seconds` from its OWN start (FloodWater.own) */
+export function teachWaterOf(r: RiverZone, i: number, seconds: number): FloodWater {
+  return { ...floodWaterOf(r, i, seconds), own: true };
+}
+
 export function layFlood(st: Gen2Stage, row: FloodRow, easy: boolean): { flood?: Flood; problems: string[] } {
   const marked = (st.rivers ?? []).map((r, i) => ({ r, i })).filter((q) => q.r.floodMark);
   if (!marked.length) return { problems: ['flood: the brief names a flood, but no water is laid from a row marked for it'] };
+  const teach = row.teach ? (easy ? row.teach.easy : row.teach.normal) : undefined;
+  if (teach === undefined && marked.some((q) => q.r.floodMark!.kind === 'teach'))
+    return { problems: ["flood: a water is laid from a row marked 'teach', but the flood table names no teach rise (FloodRow.teach)"] };
   const cages = st.collectibles.filter((c) => c.type === 'cage');
   const last = lastMet(st, cages, (c) => ({ x: c.x, y: c.y }));
   if (!last) return { problems: ['flood: no cage to start its clock (it starts at the last cage he meets)'] };
@@ -62,6 +73,7 @@ export function layFlood(st: Gen2Stage, row: FloodRow, easy: boolean): { flood?:
   const close = easy ? row.close.easy : row.close.normal;
   const waters: FloodWater[] = marked.map(({ r, i }) => {
     const lip = r.floodMark!.lip;
+    if (r.floodMark!.kind === 'teach') return teachWaterOf(r, i, teach!);
     const w = floodWaterOf(r, i, close);
     if (r.floodMark!.kind === 'close') {
       const nearX = along(r.x0, lip) <= along(r.x1, lip) ? r.x0 : r.x1;
