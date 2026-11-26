@@ -11,6 +11,10 @@ Recreate the old-code tree: `git worktree add --detach ../bs-ci10 8134a9a56`, `l
    or a wider one) is a fidelity number to calibrate, separate from physics. Then kid Easy seed 8 (the one new rescue).
 2. **Snapshot cost:** count how many of the ~750 copied objects are the stage's fixed data (platforms that never move, vines' shape,
    art), freeze them (or mark them shared in engineFork's SHARE), and re-time the probe (target: under 1 ms for snapshot + restore).
+   STARTED (tools/inspect/botsim/snapSize.ts, 2-4 seed 35 at 8 s): best of 20 snapshot 1.18 ms + restore 1.14 ms (the x40's mean probe
+   was 8-10 ms: GC and the frames flown); the objects by engine field: currentStage 345, drawPlats 169, proto 106, swingVines 14, the
+   rest 1-3 each. Left: which of currentStage / drawPlats / proto change in play (a drifting log's x, a crumble's state) and which never
+   do; share the never-changing ones; re-time; and time the frames flown per probe (early exit at the catch or the set-down).
 3. **Item 4:** finish THE ANSWER below with 1 and 2 (it stands as YES, gated on 1's cause and 2's cost); send it to the lead.
 
 ## THE ANSWER (item 4, DRAFT: final after next steps 1-2): YES, with two halves and one engine seam
