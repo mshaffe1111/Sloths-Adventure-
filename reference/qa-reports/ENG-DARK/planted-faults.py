@@ -94,6 +94,10 @@ PLANTS = [
     ("every ledge over him a step up going down (wayRises not read)", 'tools/inspect/firsttimer.ts',
      "this.stepUp(here, dir) && this.wayRises(p) ? 'double' : 'single';", "this.stepUp(here, dir) ? 'double' : 'single';",
      "a ledge over him is a step up only where the way rises", 'src/game/gen2/darkBots.test.ts'),
+    # (ENG-DARK box 22) the dark stop held by the piece's span alone (c15 x40: 7 of 9 unlit, the stop dropped at the lip, his middle past the end)
+    ("the dark stop dropped at the lip (standingOnId not read)", 'tools/inspect/firsttimer.ts',
+     "const held = (r: DarkRim) => on(r) || (!this.who.noLipHold && p.grounded && e.standingOnId === r.piece.id);", "const held = on;",
+     "a dark stop holds at the lip", 'src/game/gen2/darkBots.test.ts'),
     # (ENG-DARK box 16) landed ahead on the way's floor, still followed by the point over his head (roll 26 middle N: up the trunk again)
     ("landed ahead, never put on the way at his floor (landedAhead)", 'tools/inspect/firsttimer.ts',
      '    if (p.grounded && this.airFrom && this.landedAhead(p)) more = true;', '',

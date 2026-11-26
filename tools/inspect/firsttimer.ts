@@ -311,6 +311,9 @@ export interface FirstTimer {
   /** going down, a ledge over him read as a step up whatever way the route runs (darkBots.test's roll 19 toy only): at a dip's lip with a
    *  bough overhead and the way on level across the dip, he doubles at the bough */
   noLevelRead?: boolean;
+  /** his dark stop held only while his middle is over the rim's piece (darkBots.test's lip toy only): at the lip, his middle past the
+   *  end and the engine still standing him on it, the stop drops and he walks over the rim dark */
+  noLipHold?: boolean;
   /** at a gap or a face he must clear, his hold is drawn from this quantile of holdQ up (he reads the jump): a tuning field */
   readHold?: number;
   /** and a double up a step gets its second press from dbl2Q's quantiles up to this one (early enough to climb): a tuning field */
@@ -3517,14 +3520,18 @@ export class FirstTimerRun {
     this.glowRims ??= this.glowRimsOf();
     if (!this.glowRims.length) return null;
     const p = this.sim.p;
-    const e = this.e as unknown as { gameTime: number; glowWake: Map<number, number> };
+    const e = this.e as unknown as { gameTime: number; glowWake: Map<number, number>; standingOnId: number };
     const on = (r: DarkRim) => p.grounded && p.x >= r.piece.x && p.x <= r.piece.x + r.piece.width && Math.abs(p.y - r.piece.y) <= 4;
+    // (a stop is held while the engine stands him on the rim's piece (standingOnId), his middle past its end at the lip as well: the
+    //  engine keeps him standing to STAND_SIDE of his width past an end (more with Easy's assist), and the span alone dropped the stop
+    //  there, 8-15 px past the end: he walked over the rim dark. 7 of the 9 unlit crossings of c15's 3-1 x40, ENG-DARK box 22)
+    const held = (r: DarkRim) => on(r) || (!this.who.noLipHold && p.grounded && e.standingOnId === r.piece.id);
     const ahead = DARK_AHEAD[this.who.setting];
-    if (this.glowGaveUp.size && p.grounded) for (const r of this.glowGaveUp) if (!on(r)) this.glowGaveUp.delete(r);
+    if (this.glowGaveUp.size && p.grounded) for (const r of this.glowGaveUp) if (!held(r)) this.glowGaveUp.delete(r);
     if (this.glowStop) {
       const stop = this.glowStop, { rim, since } = stop;
       const woke = e.glowWake.get(rim.light!.id!);
-      if (on(rim) && !(woke !== undefined && e.gameTime >= woke + ahead + this.who.stopReact)) {
+      if (held(rim) && !(woke !== undefined && e.gameTime >= woke + ahead + this.who.stopReact)) {
         if (e.gameTime - since <= GLOW_GIVEUP) {
           if (p.facing !== rim.dir && stop.turn !== 2 && !this.who.noGlowTurn) {
             // (never a turn press within its own slide of the edge: he steps back from the rim first (no further than the piece's

@@ -491,3 +491,31 @@ test("every ledge over him read as a step up (noLevelRead, the plant): the SHAPE
   const { read } = await shapeRead(true, 0);
   assert.equal(read, 'double', 'the bough 188 px over his floor read as a step up');
 });
+
+/** the lip (ENG-DARK box 22, 7 of the 9 unlit crossings of c15's x40): the child on Easy, roll 8, comes onto 251-515 (y 4375) toward its
+ *  dark right rim; his stop starts at 102.67 s, his slide carries his middle past the end (to x 524) while the engine still stands him on
+ *  the piece (standingOnId), and the stop read the piece's span alone: it dropped and he walked over the rim at 103.37 s, its landing
+ *  dark. The stop is held while the engine stands him on the rim's piece. The run to 110 s: the frames of a stop held at that rim with
+ *  his middle past its end, and the rim's crossings */
+async function lip8(noLipHold: boolean) {
+  if (readied !== DRAFT) readyDraft(DRAFT);
+  const { firstTimer } = await import('../../../tools/inspect/firsttimer.ts');
+  const { CAST_BOTS } = await import('../../../tools/inspect/castBots.ts');
+  let past = 0;
+  const r = firstTimer(DRAFT, 8, { ...CAST_BOTS.child.easy!, noLipHold }, { cap: 110, dotSetting: true, onFrame(sim, b) {
+    const g = (b as unknown as { glowStop: { rim: { x: number; y: number } } | null }).glowStop;
+    if (g && g.rim.x === 515 && Math.round(g.rim.y) === 4375 && sim.p.grounded && sim.p.x > 515) past++;
+  } });
+  return { past, unlit: (r.dark?.unlit ?? []).filter((u) => u.includes('the rim at x 515, y 4375')) };
+}
+
+test("a dark stop holds at the lip: his middle past the rim's end, the engine still standing him on its piece (child Easy roll 8, the rim at x 515, y 4375): he stands there until its landing is lit, and does not go over it dark (GREEN; planted: noLipHold)", async () => {
+  const { past, unlit } = await lip8(false);
+  assert.ok(past > 0, 'the stop was held with his middle past the end');
+  assert.deepEqual(unlit, [], 'he did not go over that rim with its landing dark');
+});
+
+test("the stop read by the piece's span alone (noLipHold, the plant): at roll 8's lip he walks over the rim at x 515, y 4375 dark (RED)", async () => {
+  const { unlit } = await lip8(true);
+  assert.equal(unlit.length, 1, `he went over that rim dark (${JSON.stringify(unlit)})`);
+});
