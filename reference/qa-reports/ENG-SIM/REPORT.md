@@ -72,6 +72,10 @@ Head: see the hand-over message (pushed to t-eng-sim, ls-remote confirmed). Box 
   in its own run from the same moment, 1-1 kid Easy) played by the bot ends exactly as planFlies said: the same frame, the same x / y / vx
   to 4 places. PASS 1/1. Plant (the bot lets the jump go after the press frame, i.e. not verbatim): RED at press 2 hold 0.12, the frame.
 - **NO row moved:** the same 10 rows (kid Easy, one seed of every world), base c73cb9766 vs ee33a442b: byte-identical.
+- **Step 2's checks (box 3, ONE run each, a chattr-frozen worktree of a82a602c = ee33a442b's code + REPORT only; src and tools frozen except
+  src/game/gen2/proven):** the CI tool line (gates.yml line 157) PASS: 432 tests, 431 pass, 0 fail, 1 todo (chaseBots' CHILD-on-Normal
+  fork, OPEN, ENG-B4), 1,045 s (sharing 4 cores with the suite); tsc PASS; generalitycheck PASS (70 engine files, 26 literals, 26 known);
+  timecheck c73cb9766..a82a602c PASS (9 commits, 1 stamp). The suite in 3 shards (651 files, CLAUDE.md's src globs, 217 each): SUITE_PENDING
 
 ## Step 3: THE ONE-PAGE PLAN (box 3; READY only, NOT started: the lead GOs it after ENG-THUMB lands)
 **Order of work, each a candidate with its own checks (D141: the CI tool line on every one):**
