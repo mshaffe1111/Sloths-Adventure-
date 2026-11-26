@@ -26,10 +26,18 @@ none at the run-on. Easy 34 x2 (child 243.3->249.6, middle 186.3->185.6, rescues
 1196, y 9767 run on into the wall (1196-1280) where c18 laid a catch 1082-1256, y 10048 under it. Lays moved (lays-c18-vs-b8352246.txt):
 Easy 4 5 6 14 17 23 34 35 38, no Normal; Easy 14 = the end at 1199, y 2774 run on (1199-1280) for the catch 1081-1256, y 3055; its rows
 do not move. The other lays' rows do not move.
-**EXACT NEXT STEP (box 26, in progress):** c20's x40 (frozen wt20, cast-3-1-x40-b8352246-lane1/-lane2) -> x40verdict vs the bar;
-lays c18 vs c20; every moved row traced vs c17; then merge t-eng-w3 (88592a9c4) into the wip = THE candidate; the gates ONCE on it
-(tsc, CI line, suite 6 shards, tierBots 9/9, dark/darkBots/castBots, lockall --check vs t-eng-w3, generalitycheck, plants 50/50);
-land by pushing that merge to t-eng-w3 (a fast-forward, no force).
+**EXACT NEXT STEP (ENG-DARK-z box 26 HAND-OVER, 6:56 PM ET by `date`): THE CANDIDATE = 93e05e98d** (merge of t-eng-w3 88592a9c4 into
+t-eng-dark-wip at c20 b83522463 + the REPORT; clean, engine.ts auto-merged as in box 25's trial). Code since c18: tower.ts rule 1 only
+(+ the toy in tower.test.ts, plants 48-50 in planted-faults.py). GATES ON FROZEN 93e05e98d (chattr'd worktree), box 26 so far: tsc 0;
+generalitycheck PASS (26 literals, 26 known); suite shards 1-3 and 4-6 RUNNING (two lanes, each shard in turn, deploy.yml:38
+--test-shard=i/6). STILL TO RUN on the same frozen candidate, two at a time: the CI tool line (gates.yml:157, full tree); tierBots
+(`npx tsx --test tools/inspect/tierBots.test.ts`, 9/9); dark.test, darkBots.test, castBots.test each alone; lockall (`--layouts 16 --out`
+on frozen t-eng-w3 88592a9c4, then `--check` on the candidate: no stage may move, 3-1 being a draft); plants
+`python3 reference/qa-reports/ENG-DARK/planted-faults.py <UNFROZEN worktree of 93e05e98d>` 50/50 CAUGHT (48-50 new). The shard bar (the lead,
+c18): every shard 0 fail, the two standing TODOs (shard 3 R-165.312, shard 5 4-3's wall check); KID_RUNS_59 is the release line's
+inherited red (R-165.473) and is the ONLY red allowed. All green -> LAND: `git push origin 93e05e98d:refs/heads/t-eng-w3` (a fast-forward
+of 88592a9c4, never a force), confirm with `git ls-remote`, send the lead the hash and each shard's totals. Anything red: trace it,
+never re-point a bar.
 
 **BOX 25 STOP (ENG-DARK-y, after the hand-over; the landing NOT done): a suite red, traced.** Suite shard 2/6 on frozen c18 38e4892e1:
 658 pass / 3 fail, all in src/game/gen2/worlds/w3.test.ts (:108 every roll clean, :129 head room on the way down, :143 a catch crosses a
