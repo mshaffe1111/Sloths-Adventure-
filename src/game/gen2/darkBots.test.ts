@@ -310,12 +310,12 @@ test("followed by the point over his head (noLandAhead, the plant): the middle c
  *  rim's very edge, so he is STOOD there: the middle on Normal roll 1, at 0.5 s set standing 2 px in from the draft's first sleeping rim,
  *  facing away from it, its landing dark (asleepRim, box 14); the run then plays on (12 s). Box 10's real case: roll 16 x 920 on the lay before the second
  *  lights. FTRun.dark.edgeTurns names each turn press nearer the rim than its turn room */
-async function turnRun(noTurnRoom: boolean) {
+async function turnRun(noTurnRoom: boolean, noLipHold = false) {
   if (readied !== DRAFT) readyDraft(DRAFT);
   const { firstTimer, FT_MIDDLE } = await import('../../../tools/inspect/firsttimer.ts');
   const { darkRims } = await import('./dark.ts');
   let rim: ReturnType<typeof darkRims>[number] | undefined, undo = () => {};
-  const r = firstTimer(DRAFT, 1, { ...FT_MIDDLE, setting: 'normal', noTurnRoom }, { cap: 12, onFrame(sim, b) {
+  const r = firstTimer(DRAFT, 1, { ...FT_MIDDLE, setting: 'normal', noTurnRoom, noLipHold }, { cap: 12, onFrame(sim, b) {
     if (rim || sim.e.gameTime <= 0.5) return;
     ({ rim, undo } = asleepRim(sim, b, darkRims as never) as unknown as { rim: ReturnType<typeof darkRims>[number]; undo: () => void });
     assert.ok(rim, 'the draft has a sleeping rim');
@@ -334,10 +334,19 @@ test("the dark stop's turn is never pressed at the rim's very edge: stood 2 px i
   assert.deepEqual(dark.unlit, []);
 });
 
-test("the turn pressed at the rim's very edge (noTurnRoom, the plant): the press that turns him carries him off that rim into the dark (RED)", async () => {
-  const { dark, at } = await turnRun(true);
+// (ENG-DARK box 23, the lead's ruling) since c16 two guards cover this one walk-off: the turn room (no turn pressed within its slide of
+//  the edge) and the lip hold (the stop held while the engine stands him on the rim's piece, his middle past its end). The turn room alone
+//  off, the lip hold still holds him (the toy after this one); both off, off he goes RED. Whether the turn room is still needed alone: R-165.483
+test("the turn pressed at the rim's very edge (noTurnRoom + noLipHold, the plant): the press that turns him carries him off that rim into the dark (RED)", async () => {
+  const { dark, at } = await turnRun(true, true);
   assert.ok(dark.edgeTurns.some((t) => t.includes(at)), `a turn pressed at the edge of the rim at ${at}: ${JSON.stringify(dark.edgeTurns)}`);
   assert.ok(dark.unlit.some((u) => u.includes(at)), `the rim at ${at} gone over dark: ${JSON.stringify(dark.unlit.slice(0, 3))}`);
+});
+
+test("the lip hold alone holds at the rim's very edge: the turn room off (noTurnRoom), the press at the edge carries his middle past the end, the engine still stands him on the piece, the stop holds, and no rim is gone over dark (GREEN; planted: noLipHold, the toy before)", async () => {
+  const { dark, at } = await turnRun(true);
+  assert.ok(dark.edgeTurns.some((t) => t.includes(at)), `a turn pressed at the edge of the rim at ${at}: ${JSON.stringify(dark.edgeTurns)}`);
+  assert.deepEqual(dark.unlit, [], `no rim gone over dark (the rim at ${at})`);
 });
 
 /** (ENG-DARK box 17's rule on the real row, box 18's toys) the drafted 3-1 Normal 22: turn 17's vine (x 833) stops on catch #193
