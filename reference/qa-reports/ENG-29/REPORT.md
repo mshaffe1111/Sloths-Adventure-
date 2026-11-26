@@ -23,6 +23,53 @@ is only heard on the real page: no listening check yet (a clip of 2-9's court wi
 and the boss's slow motion step game time slower than the audio clock for a moment: the hits already ahead (at most 3 frames) sound a
 little early there; 2-9 has no hitstop or slow motion on the court today.
 
+## Session 4 (ENG-29-d): step 0 (the listed.test red), step 1 (c73cb9766 merged), step 2 (the bots on the court: TWO gaps found and fixed with the piece), step 3 (engine-core.md)
+- Step 0 (7b3ea26a): w2TempoToy.ts :6 and :18 reworded ('the row a test lays through listed.ts's test seam', 'the test seam refuses a listed
+  one'); listed.test.ts 3/3 GREEN; the word put back at :18: RED 2/3, naming 'src/game/gen2/worlds/w2TempoToy.ts'. Comment-only.
+- Step 1 (3764c59e9): merge origin/release-0.10.3 = c73cb9766 into t-eng-29-wip, no force, NO conflicts (engine.ts and firsttimer.ts were
+  resolved once already in 791735cfa, so W2-LANE-j's resolution was not needed again). tsc clean. The six toys on the merge: 30/30 GREEN
+  (gen2/tempo, gen2/tempoToy, tempo, tempoResume, drum, drumBus, drumEngine, listed). Each planted RED still RED, by name, then removed:
+  tempo.ts lay phase lock+0.25 and period x1.1 (tempoToy 'every liana on the bar' fails; a phase of 0 does not bite: the court's lock IS 0);
+  engine vineClock +0.3 (tempoResume 'off the bar'); engine drumHold removed and drumStep's drumTick removed (drumEngine fails each);
+  `import { tempoBeat } from "../game/tempo.ts"` in drum.ts (drumBus names 'drum.ts'); drum.ts cues at audioNow, ON THE FRAME (drum.test
+  4 fail: 'audio clock', 'a lost life's down', 'without the engine's hold'). Gates on the frozen merge: see the gates list below.
+- Step 2, castBots on NEW 1's toy row FIRST (c73's bots; ENG-THUMB not landed: the lead has not said so): tools/inspect/tempoToys.ts (the
+  toy rolled as the game rolls a listed stage, castBots' cast over it). Before: 34/36 (seeds 1-4, kid/adult/child/middle both settings,
+  the expert Normal): middle Easy seed 2 and expert Normal seed 1 reached the shrine with ONE RESCUE each, hung 20 s 'on a vine with no way
+  on' (x 2988, x 12738).
+  - ROOT CAUSE (a bot gap that only a locked court shows): the bot lets go only at the swing's forward end (LET_GO_AT) and, over logs,
+    only when that let-go lands (dropWaits). On the court the liana and its river keep ONE clock (swing = bar = one log), so the
+    forward-end moment meets the logs the same way on EVERY bar: if it misses once it misses for good. Locks 0.25/0.5/0.75 cleared the
+    middle's roll and only lock 0 stranded it; the expert's hang is the same court with no tempo (2-4's 2.85 s swing and the court river's
+    2.85 s log are locked anyway), so the TEMPO did not cause it, the lock did. A person hears the drum: 2-9.md 'let go on ONE'.
+  - FIX (the bot, with the piece): firsttimer.ts liana branch `onOne`: on a stage with a tempo, after a whole swing, he presses on the
+    drum's ONE (his thumb's lag ahead of it) when that press lands. Keyed on the stage's tempo: NO listed stage's bot can move (none has a
+    tempo). After: 36/36, no rescue; Normal times fall (kid ~240 -> ~152 s; the forward-end let-go had been drowning them: kid seed 1 lives
+    3 -> 0). Toys each way, tools/inspect/tempoToys.test.ts (added to CI's tool line, gates.yml:157): GREEN the two runs that hung finish
+    clean; RED the same court with no drum: the expert hangs on a liana with no way on, to a rescue. Planted RED of the fix itself (the ONE
+    press switched off): the GREEN fails, 'middle easy seed 2: shrine, rescues 1, stuck on a vine at 2988,755'.
+  - THE JUDGE that missed it (the piece): riverLay lianaDrops judges a liana and its river as FREE clocks (every pair of phases) and runs
+    BEFORE layTempo; a locked court plays one pairing only. NEW: riverLay lockedDrops (one joint cycle: share, wait, window = longest run
+    that lands, `one` = a press on ONE lands every swing) and lockedLianas (every log river in its rightward frame); tempoFaults names a
+    court liana whose press on ONE misses: 'the liana at x N over the river at x A-B: a press on ONE misses its logs on every bar (locked:
+    P% of a bar's presses land, the longest run W s)'. tempoToy.test: GREEN every court liana's ONE lands, seeds 1-4 both settings; RED
+    the lock at 0.15 of a bar, by name in gen2's errors (on Easy gen2 refuses every seed of the roll: the stage never builds). Planted RED
+    of the check (removed): the RED test fails. The toy's numbers at the lay's lock: Normal window 1.23 s (77%), Easy 1.97 s (91%), the same
+    on every court liana of seeds 1-4 (2-9.md's 2.00 s / 2.40 s were measured on 2-1's liana; NOT made a gate: the lead's call, below).
+  - THE PAD BOT AT THE RUN PITCH (190 px a beat): the toy row had NO run-pitch pad row, so the cast above never met one. NEW:
+    w2TempoToy.ts COURT_PADS (2-9.md's beat row: 4 small weight pads, 130 px, over 60 px water) and opts.pads (its pond laid in place of the
+    stones'). FOUND a second piece gap: tempoFaults judged the weight pads' clock 'pad-small' (a count that runs only while he stands on that
+    pad, ride.ts 'weight') as a court clock ('a cycle of 2 s is not a whole number of beats', 'Easy stretches it 1.5'), so gen2 refused
+    every roll with the row. FIX: a clock only weight pads read is skipped (a beat pad's is judged). tempoToy.test: GREEN 4 pads 190 px
+    apart, gen2 clean, seeds 1-4 both settings; RED the row breathing on a beat, named; planted RED (the skip removed): 'pad-small' named.
+    The cast over it: 36/36, no rescue, no stuck spot on the pads. Lives lost ON the pads (x 4600-5800, --lives): child Normal 5 over
+    4 runs, middle Normal 2, none on Easy and none for kid, adult or expert (2-9.md: Normal at the run pitch a missed beat runs off a pad's
+    far end; whether the child's 1.25 a run is the bar is READY-29's to measure).
+- Step 3: reference/handoffs/engine-core.md §0zs-TEMPO (the tempo, the locked let-go, the bot on a court, the drum's path, the traps:
+  layering, DRUM_AHEAD 3 frames and why, DRUM_JUMP, the hold at loseLife, the comment that trips listed.test; the toy; what is open).
+- A miss of mine: one probe ran three locks with a shell '&' and `wait` (the brief says never); every later run went through
+  run_in_background.
+
 ## Session 3 (ENG-29-c), NEW 2 (b): the drum WIRED, on the audio clock (9b60aeac0)
 - src/audio/conductor.ts: `drumTick(beat, gameNow, doubled?)` and `drumHold(gameNow)`; a `drumBus` GainNode (0.55) to the effects bus;
   each cue `(boom ? taiko : woodblock)(core, bus, at, boom 0.9 / tok 0.6)` (instruments.ts, never fx()). A cut (game time stands or goes
