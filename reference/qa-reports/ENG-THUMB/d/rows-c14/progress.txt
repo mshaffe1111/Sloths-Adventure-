@@ -1,2 +1,5 @@
 rows on 1457e1daf bots kid,adult,child,middle,expert 4:52 PM ET
 2-1 exit 0 360 rows 126 s
+2-5 exit 0 360 rows 105 s
+2-2 exit 0 360 rows 157 s
+2-4 exit 0 360 rows 246 s
