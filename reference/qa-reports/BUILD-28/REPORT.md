@@ -24,8 +24,13 @@ listed stage moves"). NEXT (box 2): STEP 1, in this order:
    '2-8', KITS/WORLD 'w2-28', w2Manifest briefs '2-8' flood W2_FLOOD; `npx tsx tools/engine/addlevel.ts 2-8`.
 3. T_CLOSE re-flown: `git show origin/t-design-26:reference/specs/sims/flood28.ts` (its legs are consts at :32-51: the 2,000 px to the fork
    becomes the dyke's laid length); W2_FLOOD.flown.px, .close, .tailOff from its output, pasted.
-LINES (step 2) ARE BLOCKED ON THE STORY KEEPER: there is NO reference/story/lines-2-8.md on any branch (checked t-keeper-23-29, -26, -27,
--3x, the lead's, t-design-26); the lead was told this box, with the list of lines 2-8 needs. Lay step 1 with line ids and no shipped words.
+LINES (step 2): WRITTEN AND APPROVED (the lead's message this box): reference/story/lines-2-8.md on t-keeper-28 (943984c2f, cut from
+c0e6034fe): merge it (or cherry-pick its one file) at step 2. Ids: w28.rise, w28.rise2 (the teach, 800 px+ before beat 2's dip), w28.turn,
+w28.fork, w28.missingCage / w28.missingBank (locked exit; both true: missingCage), w28.home, w28.mission, w28.goalStart, w28.goalLate,
+w28.floodCard (journal), w28.page (Pokey's journal page, replacing pokeyJournal.ts:67's). W2_TIPS.water STANDS for beat 4 ONLY on the
+keeper's condition, HELD IN A TEST: WATER_WARN's wet gaps (pipeline.ts:3878) include NO flood water; no W2_TIPS.water hint within
+WATER_WARN.lead+40 px before any flood water's near edge, every seed, both settings; Normal's one warning lands before beat 4. Ask the lead
+(the keeper writes them) when their spots are laid: w2_book's find words (finds.ts:416) and 2-8's own wayside aside.
 STEP 0's CHECKS (frozen trees /home/user/wt28m = f68a7421d, /home/user/wt28b = d4e7677ba; chattr +i on src, tools):
 - KID_RUNS_59 alone (firstTimerBot.test.ts + w5RealReach.test.ts): RED on BOTH, identical: actual [8,9,7,7,4,7] vs [3,5,6,7,6,5]
   (firstTimerBot.test.ts:185), 15 pass 1 fail each; w5RealReach green. = the release line's (R-165.473), named, not this build's.
