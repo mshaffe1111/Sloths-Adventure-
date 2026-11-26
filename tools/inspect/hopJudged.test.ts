@@ -792,3 +792,20 @@ test("a put-back by the game spends the edge plan's stand: a stand drawn for the
   assert.ok(backs >= 1, `the toy reads too little: ${backs} put-backs with a stand held`);
   assert.deepEqual(stale, [], 'a stand for the lip he left outlived the put-back');
 });
+
+test("a log running his way, his middle past its end: the feet read leaves it to the edge plan, which flies him to the liana (lianaRide's catch toy, middle Easy variant 2, R-165.465 C13)", async () => {
+  const ft = await import('./firsttimer.ts');
+  const { lianaRun } = await import('./lianaRiverToys.ts');
+  // (C12 read every drifting log by his feet; on this one, running his way, the ride wait ran where the edge plan had stood and
+  //  pressed: he stood at the log's end and rode past the liana, 0 catches off a log (C11 and C13: 1). The other way, a log running
+  //  back at him, is the toy above ('his middle past a drifting log's front'))
+  const was = ft.SKILLS.vineFromLog;
+  ft.SKILLS.vineFromLog = true;
+  try {
+    const r = lianaRun('catch', 'twin', 'middle', 'easy', 2, 2, 'long', { realInput: true });
+    assert.equal(r.end, 'shrine', `ended ${r.end}`);
+    assert.ok(r.fromLog >= 1, `he never jumped from the log to the liana (${r.fromLog} catches off a log)`);
+  } finally {
+    ft.SKILLS.vineFromLog = was;
+  }
+});

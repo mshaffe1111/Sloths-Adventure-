@@ -3758,8 +3758,12 @@ export class FirstTimerRun {
         //  ('an open drop ahead, water ahead', x 19,753). Logs only: read this way on solid lips too, it fired on that run from t 31
         //  on (20 frames by t 137, the bank ride block run where it never had) and moved the whole run. hopJudged.test.ts 'his middle
         //  past a drifting log's front')
+        //  Only a log running BACK at him (C13): both runs that proved the cause (2-1 child Easy 3 #86, Easy 1 #88) rode logs running
+        //  back at him. On a log running his way the read ran the ride wait where the edge plan's stand and press had flown him onto
+        //  the liana: lianaRide's catch toy, middle Easy variant 2, stood at the log's end 7 s and never caught it (1,1,1,1,0 to
+        //  1,0,1,1,0). hopJudged.test.ts 'a log running his way'
         const feetOn = p.grounded ? this.sim.platforms.find((q) => q.id === this.sim.standingOn) : undefined;
-        const here = this.floorAt(p.x, p.y, 6) ?? (feetOn?.type === 'drift' && dir * (p.x - (dir > 0 ? feetOn.x + feetOn.width : feetOn.x)) > 0 ? feetOn : null);
+        const here = this.floorAt(p.x, p.y, 6) ?? (feetOn?.type === 'drift' && feetOn.drift && feetOn.drift.dir !== dir && dir * (p.x - (dir > 0 ? feetOn.x + feetOn.width : feetOn.x)) > 0 ? feetOn : null);
         // (ENG-W2b: a float is near when a hop he makes now, or a beat later as his thumb gets there, comes down on it where it will be,
         // hopLandsOn; drifting logs come out from under the bank at his feet, so every log on the water is looked at, not only those ahead)
         const rivers = (this.sim.stage as { rivers?: RiverZone[] }).rivers;
