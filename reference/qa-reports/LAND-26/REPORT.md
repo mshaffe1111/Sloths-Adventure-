@@ -1,5 +1,38 @@
 # LAND-26: 2-6 back on release 4's line (release 5), beat A's soil block (R-165.451)
 
+## EXACT NEXT STEP (session 7 LAND-26-g, 6:06 PM ET Thu 11-26; branch t-land-26; code still 1caf50a93)
+**The 2-7 line check is DONE: the gate reads the drawer's own line, to 0.01 px, and the drawn step shows as strongly as a planted 48 px
+step does on 2-6. 2-7's 108 DEPTH STEP lines are RED BY THE BAR, honestly. No gate fix exists to make; this box changed no gate, bar or
+game file.** Waiting on the lead's route for 2-7 (the soil fix, or a written ruling to land 2-6 with 2-7 red). Then: paintcheck part 1/3
+ONCE on the final head, the gates box 6 was recording (CI tool line, sweep 2/3, tierBots: fetch first), the suite shards 1-3, drawcheck,
+clipcheck; KID_RUNS_59 is the release line's inherited red; land on t-land-26 (no force).
+
+### Session 7 (LAND-26-g): the live line against the gate
+- **Probe (scratch tree at 1caf50a93 only; tools/liveLineHook27.diff.txt, tools/probeLive27.mjs.txt, tools/gateY27.mts.txt):** a hook
+  in paintTile logs the LIVE `groundDepth(x)` the chunk painter uses; the gate's `groundLine(groundBanks, groundCeilings)` with the ground
+  stacks set as paintcheck sets them is printed in node. Line y (= top + 0.55 x band):
+
+  | stage x (2-7 Normal) | live (phone upright) | gate | strip jump |
+  |---|---|---|---|
+  | seed 84450 (layout 67) x 15864 | 1476.25 | 1476.25 | |
+  | seed 84450 x 15880 | 1526.00 | 1526.00 | 49.75 |
+  | seed 35 (layout 34) x 3424 / 3432 | 1557.52 / 1523.25 | same | |
+  | seed 35 x 3440 / 3448 | 1492.84 / 1465.67 | same | 57.58 (3432 to 3448) |
+
+  Same banks (57), same platforms (115), same bank under each x. **The only difference is depthView: 900 in node, 977 on a 412x915
+  upright phone.** It stretches the band (vt to vb) about both sides alike; it moves no jump. So the gate's input is the drawer's line
+  (D136 met); there is no "line not drawn on 2-7's stacked legs".
+- **Steady frames draw the chunk tiles painted with that line** (a band hook over 5 settled frames: no repaint, no fallback).
+  Named, not this gate: **when a frame runs out of tile budget, drawProtoScene falls back to drawGround with `groundDepth` null, a FLAT
+  band from each bank's own top** (seen once on the main canvas while the first tiles painted). A one-frame look that differs from the
+  tiles: a candidate for the lead to number; not a cause of the red.
+- **Why box 6 measured 1.2 and not ~4.1 (tools/plant27.mjs.txt, data/line27/strip-Jm50-0-48.png):** box 6's method, planted at 2-7's
+  own seam (seed 84450 x 15872, 2x upright): line made FLAT (J -50) reads **-1.2**; the natural ~50 px step **+1.2**; ~98 px (J +48)
+  **+3.6**. So ~49 px of line moves the reading by **2.4 on 2-7's soil against 2.6 per 48 px on 2-6's** (box 6: J0 1.5, J48 4.1). The
+  soil art's own texture reads -1.2 at that seam (2-6's read +1.5), which hid half the step in the absolute number. Not low contrast,
+  not the soil's visible depth: the alpha step is the same, the drawing the same. Looked at (the strip): flat, no line; natural, a very
+  faint straight line; +48, a plain faint line. By C (32-48 faint, 64 plain), 2-7's 49-73 px steps are honestly red.
+
 ## EXACT NEXT STEP (session 6 LAND-26-f hand-over, 5:58 PM ET Thu 11-26; branch t-land-26; code still 1caf50a93)
 **2-7's DEPTH STEP red is REAL BY THE BAR (the lead ruled C; the bar stays 48) and goes to the lead's soil-fix route; this box changed
 no gate, no bar, no game file.** The next box, in this order:
