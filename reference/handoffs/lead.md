@@ -111,16 +111,20 @@ code-checked plan (ENGINE-NEEDS.md); "add a level" in one step; every lead keeps
 3. **The lead manages; members engineer.** The lead decides scope, priority, time and the bar, judges the evidence and unsticks; it does not do the work or design the code. A member's technical fork goes back as 'decide it within your budget and show me the evidence', unless it changes scope, the bar, a shipped stage or Matt's taste.
 4. **The scoreboard in every report to Matt:** levels on his link this week vs the plan; hours per level vs 2 h; pieces landed ahead; **2-HOUR PROGRESS** (Matt 11-23, R-165.409): what was done today toward the 2-hour level (reference/plans/TWO-HOUR-PLAN.md and its schedule).
 
-## RIGHT NOW (11-25 evening, written about 5:20 PM ET; refreshed at the wrap; this block wins over everything below, R-165.242)
+## RIGHT NOW (11-25 evening, written about 5:20 PM ET, refreshed at the wrap about 9:35 PM ET; this block wins over everything below, R-165.242)
 THE WEEK (Matt R-165.449, R-165.461/.462 answered 'A' at 4:23 PM): finish World 2 (release 4 tonight; LAND-26, 2-8, 2-9 -> release 5 Friday);
 THURSDAY ENG-BOTSIM (packets/2026-11-26/ENG-BOTSIM.md: can the bots ask the engine instead of their own physics copy; a YES/NO with numbers);
 World 3's pieces land, then 3-1 and 3-2 built as the PROOF of the 2-hour level (3-3/3-4 this weekend only if they come in near 2 h);
 World 4 pitched, picked and designed by Sunday. THE BUDGET PLAN (WEEK-1125.md): 16% gone by 2:15 PM Wed; at most 4 helpers, high effort
 except new engine pieces / the hardest bot faults / merges; check-ins every 30 min, SHORT; a daily budget (end Wed <= 26%, Thu 43%, Fri 60%,
 Sat 77%, Sun 92%); the nightly spend number to Matt. The lead ROTATES at tonight's wrap (this session is at about 430k+ context).
-RELEASE 4: release-0.10.3 = c73cb9766 (2-7 + the two draw fixes + the bot fix CI-15 0ec009b4d, ALL GREEN; What's New line A committed).
-INT-R5d-c (session_01FhBbYMmgrFPPBizXMjxXFi) runs THE FULL SET (about 2 h from 5:00 PM). Then: the test link (build.py on release-0.10.3;
-republish EnK5 in place; under 480 files), Matt's 'push' (one question), the PR via create_pull_request (not a draft), the deploy + APK check.
+RELEASE 4 SHIPPED as 0.10.3 'Two little fixes' (Matt's A, R-165.467): PR #79 from release-0.10.3-lite (main + t-fix-sidewall +
+t-fix-soil), merged 11-25 about 9:29 PM (merge 4bf2cbaaa); the after-merge checks (publish, pages, APK, live title, #ctest, EnK5 from the
+merge commit, Matt's handoff doc) are in STATE. 2-7 + the bot fix (CI-15, ALL GREEN on seeds 1-10) wait on release-0.10.3 = c73cb9766 for
+RELEASE 5: rule 28 vs main found 5 PASS -> FAIL on seeds 11-40 (4 from the bot fix: the kid's bare stands; the thumbify root fix
+R-165.465; 1 is 2-7's own): fix them first, then rule 28 on seeds 1-40 (CI #86). ENG-BOTSIM (Thursday) may change how that is done.
+NOTHING RUNS tonight (Matt R-165.466: Thanksgiving Eve off). The next day starts ONLY on Matt's word; the morning trigger stays off.
+THE NEXT LEAD: this session is at 818k context; start a FRESH lead session at the next start (this note + STATE + WEEK-1125 carry it).
 WORLD 3 on t-eng-w3 = 88592a9c4 (FIX-CARD-DOWN + ENG-NOISE landed). 3-1's ONE LANE (dark + the bots' way down merged on t-eng-dark-wip;
 ENG-DARK-p session_01FhBbYNEYtZNguUhvJ2SuiR): x40 on a5e15a74d FAILS (5 strands 'the way on is 347 px down'; 2 new from box 15's seam change,
 3 older), being traced; it lands Thursday when an x40 passes; BUILD-31 Thursday afternoon at the earliest (packet BUILD-31 + FIX-CARD-DOWN in).
