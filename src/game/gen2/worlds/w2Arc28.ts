@@ -34,15 +34,19 @@ import type { GraphBrief, NodeJob, SectionPiece, SectionTemplate, Socket, WorldK
 export const STAGE_28 = '2-8';
 
 /** 2-8's ONE graph (READY-28 §1's node string as LAID, the lead's L1 and L2: the dyke path, then one more home beat) */
-export const ARC_28: Record<string, string> = { 'flood-28-arc': 'A Pg1 Tw1:#soft@flood Pp1 Xf1 R Uc1^ /L Pg1>:#water@flood R F[P+|P] Pg1> R Pf1> R Sg1< E' };
+/* THE LEAD'S BOX-3 RULINGS in this string: (2) the legs are parted by a DROP COLUMN at the turn, 2-7's proven `/D Dc_` (w2Arc27.ts
+ * ARC_27), not taller steps (legs.ts LEG_CLEAR 260 must hold, flown on the first clean roll); (3) n4 is `Pw1` (the pad pond's content is
+ * water, 2-2's pads), and the dyke is `#soft@flood` (paddling depth, 2-8.md:36). */
+export const ARC_28: Record<string, string> = { 'flood-28-arc': 'A Pg1 Tw1:#soft@flood Pw1 Xf1 R Uc1^ /D Dc_ /L Pg1>:#soft@flood R F[P+|P] Pg1> R Pf1> R Sg1< E' };
 
 /** the lesson 2-8 teaches: this water rises when he comes near, and it stays up */
 export const FLOOD_LESSON = 'flood-rise';
 
-/** 2-8's brief, all of it data (a rescue on two legs: 10 content nodes: ground 4, water 3, floating 2, climb 1); the flood clock */
+/** 2-8's brief, all of it data (a rescue on two legs: 11 content nodes: ground 4, water 3, floating 2, climb 2: the steps and the drop
+ *  column at the turn, the lead's box-3 ruling (2)); the flood clock */
 export const BRIEF_28: GraphBrief = {
   ends: 'quiet', trend: 'level', branching: 'none', teaches: [FLOOD_LESSON],
-  deal: { ground: 40, water: 30, floating: 20, climb: 10 }, dealExact: true,
+  deal: { ground: 400 / 11, water: 300 / 11, floating: 200 / 11, climb: 200 / 11 }, dealExact: true,
   tags: true, petals: 'few', flood: W2_FLOOD,
 };
 
