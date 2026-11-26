@@ -28,6 +28,8 @@ import type { LevelConfig } from '../../types.ts';
 import { w2Finish } from './w2.ts';
 
 export const STAGE_29 = '2-9';
+/** the draft's bot id (the bots fly a fixture by an id no stage of the game has, realPlay.ts withFixtureConfig; the tempo toy is 2-90) */
+export const DRAFT_ID_29 = '2-91';
 
 /** 2-9's ONE graph: the design's node string (2-9.md:50) with the two liana beats on `r` (G5) */
 export const ARC_29: Record<string, string> = { 'court-29-arc': 'A Tp1<:#soft Pw1> Pf1> Xr1>:#water R Pp1&>:&snapper*2 Wr1>:#water R Uc^< Cp1&>:#water:&snapper*2 R Pb1^< Sw1> E' };
@@ -193,30 +195,30 @@ export const EXIT_29: SectionTemplate = {
 export const SECTIONS_29: SectionTemplate[] = [...BEATS_29, EXIT_29];
 
 /** World 2's kit with 2-9's rows over it (the draft: rolled through the test seam only) */
-export function kitLib29(): WorldKit {
+export function kitLib29(id: string = STAGE_29): WorldKit {
   const k = w2World(), M = k.manifest, G = M.graphs!;
   return { ...k,
     spawn: w2CastSpawn,
     manifest: { ...M,
-      sections: SECTIONS_29,
+      sections: id === STAGE_29 ? SECTIONS_29 : SECTIONS_29.map((t) => ({ ...t, feel: [id] })),
       pads: PADS_29,
       rivers: RIVERS_29,
       wheels: WHEELS_29,
       creatures: SNAPPERS_29,
-      lessons: { ...M.lessons, [BEAT_LESSON]: STAGE_29 },
+      lessons: { ...M.lessons, [BEAT_LESSON]: id },
       required: {},
       tips: { ...M.tips, ...Object.fromEntries((Object.keys(LINES_29) as Array<keyof typeof LINES_29>).map((key) => [lineId29(key), LINES_29[key]])) },
       teachTips: [...(M.teachTips ?? []), ...TEACH_29.map(lineId29)],
-      graphs: { ...G, list: [...G.list.filter((g) => g.archetype !== 'gauntlet'), ...Object.entries(ARC_29).map(([id, code]) => ({ id, archetype: 'gauntlet' as const, code }))], briefs: { ...G.briefs, [STAGE_29]: BRIEF_29 } },
+      graphs: { ...G, list: [...G.list.filter((g) => g.archetype !== 'gauntlet'), ...Object.entries(ARC_29).map(([id, code]) => ({ id, archetype: 'gauntlet' as const, code }))], briefs: { ...G.briefs, [id]: BRIEF_29 } },
     } } as WorldKit;
 }
 
 /** the draft's level: 2-9's own config (a gauntlet), unlocked */
-export function draft29Cfg(): LevelConfig {
+export function draft29Cfg(id: string = STAGE_29): LevelConfig {
   const c = generateAllLevels().find((q) => q.id === STAGE_29 && !q.secret)!;
-  return { ...c, unlocked: true, targetCount: GOAL_29 };
+  return { ...c, id, unlocked: true, targetCount: GOAL_29 };
 }
 
 /** the draft's stageTable row (World 2's finish), for listed.ts's test seam only */
-export const draft29Row = (seeds: number[] = []): ListedStage & { seeds: number[] } =>
-  ({ kit: () => kitLib29(), world: (s, _sq, d) => w2Finish(s as never, d) as typeof s, seeds });
+export const draft29Row = (seeds: number[] = [], id: string = STAGE_29): ListedStage & { seeds: number[] } =>
+  ({ kit: () => kitLib29(id), world: (s, _sq, d) => w2Finish(s as never, d) as typeof s, seeds });
