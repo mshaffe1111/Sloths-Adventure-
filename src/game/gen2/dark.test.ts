@@ -407,3 +407,30 @@ test("a RUN off an edge with its OWN dark stop is judged too: Normal roll 22's r
   assert.equal(ro.length, 1, `its run off is judged: a stop for the sleeping rim it meets (${JSON.stringify(runOffRims(st, 'normal').map((r) => [r.x, r.y, r.dir]))})`);
   assert.ok(ro[0].land.y > 5658 && ro[0].light !== darkRims(st).find((r) => r.x === 699 && Math.round(r.y) === 5658)!.light, 'it waits for the light of the rim the run meets, not its own');
 });
+
+/** a put-back across a rim (ENG-DARK box 22, the lead's ruling: a measurement fix, a teleport is no crossing): expert Normal 25 of c15's
+ *  3-1 x40 stood on 648-885 at x 800 (stuck 'in a dip 281 px deep'); the rescue put him 261 px under it at x 218 and the next frame,
+ *  in the air there, RimWatch counted the rim at x 648 gone over with its landing dark. The pass, on a real sleeping rim: on its piece
+ *  30 px in, then put 260 px under it and 200 px past its end, in the air */
+function putAcross(put: boolean) {
+  ready();
+  const r = new RealPlay(DRAFT, 1, draftCfg());
+  const rim = darkRims(r.stage).find((q) => q.light?.sleep);
+  assert.ok(rim, 'a dark rim with a sleeping light on the real row');
+  const watch = new RimWatch([rim!]);
+  const dark = () => undefined;
+  watch.step(10, { x: rim!.x - rim!.dir * 30, y: rim!.y, grounded: true }, dark);
+  if (put) watch.put();
+  watch.step(10.1, { x: rim!.x + rim!.dir * 200, y: rim!.y + 260, grounded: false }, dark);
+  return watch.crossings;
+}
+
+test("RimWatch: a put-back (a rescue) from a rim's piece to past its end is no crossing: the watch starts again where he is put (GREEN; planted: put() a no-op)", () => {
+  assert.deepEqual(putAcross(true), [], 'a put-back across the rim is no going over');
+});
+
+test("RimWatch without the put-back (the old watch): the same put across the rim counts it gone over, its landing dark (RED)", () => {
+  const c = putAcross(false);
+  assert.equal(c.length, 1, 'the old watch counted the put-back as a crossing');
+  assert.deepEqual(litAhead(c, 'normal').length, 1, "'lit 1 s ahead' named it");
+});

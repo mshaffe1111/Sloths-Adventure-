@@ -4324,6 +4324,8 @@ export class FirstTimerRun {
     this.blockedT = 0;
     this.prog.relocate(sim.p);
     this.placed = true;
+    // (a put-back is no crossing of the rim he was put away from: gen2/dark.ts RimWatch.put)
+    this.rimWatch?.put();
   }
 
   /** the route point nearest a spot */

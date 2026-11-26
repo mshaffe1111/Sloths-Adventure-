@@ -517,6 +517,13 @@ export class RimWatch {
    *  ground past the rim; a jump UP over the rim onto higher ground is no way into the dark below) */
   private over: RimCrossing | null = null;
   constructor(readonly rims: readonly DarkRim[]) {}
+  /** he was put somewhere (a rescue's put-back, a placement past a puzzle room): he left the piece by no way of his own, and a put-back
+   *  is no going over: the watch starts again from where he is put (expert Normal 25 of c15's 3-1 x40, ENG-DARK box 22: a rescue took
+   *  him from x 800 on 648-885 to 261 px under it, and the next frame counted the rim at x 648 gone over dark) */
+  put(): void {
+    this.onPiece = null;
+    this.over = null;
+  }
   step(t: number, p: { x: number; y: number; grounded: boolean; climbing?: boolean }, lit: (l: Light) => number | undefined) {
     if (this.over) {
       const o = this.over, rim = o.rim;

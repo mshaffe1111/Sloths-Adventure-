@@ -519,3 +519,16 @@ test("the stop read by the piece's span alone (noLipHold, the plant): at roll 8'
   const { unlit } = await lip8(true);
   assert.equal(unlit.length, 1, `he went over that rim dark (${JSON.stringify(unlit)})`);
 });
+
+test("the bot's own put-back (placeAt: a rescue, a room's put-back) starts the dark's rim watch again: a teleport is no crossing (dark.test's put-back toy; GREEN; planted: placeAt without RimWatch.put)", async () => {
+  if (readied !== DRAFT) readyDraft(DRAFT);
+  const { firstTimer, FT_EXPERT } = await import('../../../tools/inspect/firsttimer.ts');
+  let watched: unknown = 'not reached';
+  firstTimer(DRAFT, 1, { ...FT_EXPERT, setting: 'normal' }, { cap: 20, onFrame(sim, b) {
+    const bot = b as unknown as { rimWatch: { onPiece: unknown } | null | undefined; placeAt(x: number, y: number): void };
+    if (watched !== 'not reached' || !bot.rimWatch || !bot.rimWatch.onPiece) return;
+    bot.placeAt(sim.p.x, sim.p.y);
+    watched = bot.rimWatch.onPiece;
+  } });
+  assert.equal(watched, null, "the bot's put-back started the watch again");
+});

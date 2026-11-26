@@ -98,6 +98,13 @@ PLANTS = [
     ("the dark stop dropped at the lip (standingOnId not read)", 'tools/inspect/firsttimer.ts',
      "const held = (r: DarkRim) => on(r) || (!this.who.noLipHold && p.grounded && e.standingOnId === r.piece.id);", "const held = on;",
      "a dark stop holds at the lip", 'src/game/gen2/darkBots.test.ts'),
+    # (ENG-DARK box 22, kind C) a put-back counted as a crossing (c15 x40 expert N 25: a rescue across the rim at x 648)
+    ("a put-back across a rim counted gone over (RimWatch.put a no-op)", 'src/game/gen2/dark.ts',
+     "  put(): void {\n    this.onPiece = null;\n    this.over = null;\n  }", "  put(): void {\n  }",
+     "a put-back (a rescue) from a rim's piece to past its end is no crossing"),
+    ("the bot's put-back never tells the rim watch (placeAt without RimWatch.put)", 'tools/inspect/firsttimer.ts',
+     "    this.rimWatch?.put();\n", "",
+     "the bot's own put-back (placeAt", 'src/game/gen2/darkBots.test.ts'),
     # (ENG-DARK box 16) landed ahead on the way's floor, still followed by the point over his head (roll 26 middle N: up the trunk again)
     ("landed ahead, never put on the way at his floor (landedAhead)", 'tools/inspect/firsttimer.ts',
      '    if (p.grounded && this.airFrom && this.landedAhead(p)) more = true;', '',
