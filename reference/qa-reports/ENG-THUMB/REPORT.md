@@ -1,6 +1,6 @@
 # ENG-THUMB: the kid-bot root fix (R-165.465) and release 5's rule-28 rows
 
-## EXACT NEXT STEP (box 8 ENG-THUMB-h, the final checks on C14; written 5:24 PM ET 11/26 by `date`; the suite line added when it lands)
+## EXACT NEXT STEP (box 8 ENG-THUMB-h, the final checks on C14; written 5:24 PM ET 11/26 by `date`; the suite line added at 5:58 PM ET)
 Branch t-eng-thumb-wip. **Code = C14 1457e1daf** (no src or workflow change since: `git diff --name-only 1457e1daf HEAD -- src .github`
 is empty). On top, tests and data only: **9ccc5c14e** (the lead's ruling on CI red 357, ruling 4's method: UPSTREAM_LIVES re-planted
 at the SAME +5 bar on C14) and **5cfc9ca64** (the lead's ruling A: R-165.59's 1-1 calibration recommitted, BOTS.md line). Frozen trees
@@ -25,8 +25,12 @@ at the SAME +5 bar on C14) and **5cfc9ca64** (the lead's ruling A: R-165.59's 1-
    committed; no check flips), no life and no end moved, ONE rescue moved (child Normal v14 1 -> 0; child N's total 3 -> 2)
    (d/cal/calcmp-main-vs-c14.txt). Recommitted 5cfc9ca64. **tierBots on frozen 5cfc9ca64: 9/9.**
 6. **tsc** exit 0 (frozen 7bb313874; no src change since).
-7. **The suite in shards** (deploy.yml:38, --test-shard i/6, frozen 5cfc9ca64, run_in_background, timeout 7200000): RUNNING
-   (scratch suiteA/suiteB). Expected ONE red: KID_RUNS_59, src/game/firstTimerBot.test.ts:177 (R-165.473/.477, HELD for Matt; not touched).
+7. **The suite in shards** (deploy.yml:38, --test-shard i/6, frozen 5cfc9ca64, run_in_background, timeout 7200000; two runs of three
+   shards, 1,503 s and 2,031 s): **4,184 tests, 4,180 pass, ONE fail, 3 todo** (d/box8/suite-5cfc9ca64.txt). The one red is the named
+   one: **KID_RUNS_59**, src/game/firstTimerBot.test.ts:177 '5-9's Easy goal rests on the kid's runs' (shard 5), measured
+   [14,13,17,18,5,5] vs recorded [3,5,6,7,6,5], the same numbers as on C11 (R-165.473/.477, HELD for Matt; not touched). Todos: R-165.312
+   (shard 1), 4-3's wall check (shard 5), one in shard 6.
+**C14's final hash for release 5's integration: the commit that adds this line** (code 1457e1daf; tests 9ccc5c14e, calibration 5cfc9ca64).
 - Box 8's slip, owned: one up.mts launch used a shell '&' inside a background command; stopped within seconds, and re-run as two
   separate background commands before any result was read.
 - **Lessons applied:** D115 (four frozen chattr trees, proven writable), D119 (commit messages from files), D122 (suite timeout 7200000),
