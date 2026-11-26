@@ -215,8 +215,11 @@ export const W2_FORK: W2ForkShape = {
  *  the flood as the road that turns deep. Its floor 75 px under the banks (BUILD-28 session 6, the lead's ruling (c)): the porch, a step
  *  over the banks (W2_FORK.wall.h), then stands 135 px over it, out of a single jump's reach plus its margin (floodLay FLOOD_LOW_HOP:
  *  117.8 + 15; at 60 under the banks the porch's 120 px was inside it and his dip hop put him on the high road); within the line's drop
- *  (W2_FOLLOW.step 90) */
-export const W2_FORK_RIVERS = { [W2_FORK.row]: { dir: 1, speed: 0, logW: 0, logs: 0, safe: true, flood: 'close' as const, marsh: { width: 1400, floor: 75, dips: 4, dip: 100 } } } satisfies Record<string, RiverRow>;
+ *  (W2_FOLLOW.step 90). It OPENS on water (`open` 140, BUILD-28 session 12, the lead's ruling A (a)): from W's lip, upright, the frame
+ *  reaches about 210 px past his feet and the bank's edge is 111 px past them, so the first 100 px of the frame past the edge must be
+ *  water; 140 is the engine's sure single-jump gap (physics.ts JUMP_GAPS gap1) and inside his 205 px full-run reach off the bank's 75 px
+ *  drop, so he hops it as he hops the dips (the line paddles it) */
+export const W2_FORK_RIVERS = { [W2_FORK.row]: { dir: 1, speed: 0, logW: 0, logs: 0, safe: true, flood: 'close' as const, marsh: { width: 1400, floor: 75, dips: 4, dip: 100, open: 140 } } } satisfies Record<string, RiverRow>;
 /** the two-road section `id` for job `job` (its numbers W2_FORK's) */
 export function w2TwoRoad(id: string, job: NodeJob, f: W2ForkShape = W2_FORK): SectionTemplate {
   // (a share along the near bank: `d` px past its end; W's place on it: `wall.back` px back from its end)

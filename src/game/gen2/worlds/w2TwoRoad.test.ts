@@ -11,6 +11,7 @@ import { towerCfg } from '../toyTower.ts';
 import { HOME_BRICKS, HOME_CODE, homeKit } from '../toyHome.ts';
 import { FLOOD_FORK_JUMP, FLOOD_HOP, FLOOD_LOW_HOP, FLOOD_STEP, FLOOD_WALK_OFF, layFlood } from '../floodLay.ts';
 import { forkFaults, highRoad, strandFaults } from '../../flood.ts';
+import { RIVER_LAY } from '../riverLay.ts';
 import { W2_FLOOD, W2_FORK, W2_FORK_RIVERS, W2_RIVERS, w2TwoRoad, type W2ForkShape } from './w2.ts';
 import type { Collectible } from '../../types.ts';
 import type { WorldKit } from '../types.ts';
@@ -109,8 +110,11 @@ test('two roads: RED by name on W 60 (every tier walks off) and on no gap (no wa
   };
   assert.match(faults({ ...W2_FORK, wall: { ...W2_FORK.wall, w: 60 } }), new RegExp(`the adult lands 86 px past its face .* walks off into the ${W2_FORK.gap} px gap`), 'RED: W 60');
   assert.match(faults({ ...W2_FORK, gap: 0 }), /no way down onto the low road: the gap after it is 0 px/, 'RED: no gap');
-  // (W flush on the water's edge (BUILD-28 1e): off its lip onto the marsh floor is one 120 px drop, deeper than the line's step)
-  assert.match(faults({ ...W2_FORK, wall: { ...W2_FORK.wall, back: 0 } }), new RegExp(`off the (left|right) end of the high road's piece at x \\d+-\\d+ the first ground is ${W2_FORK.wall.h + W2_FORK_RIVERS[W2_FORK.row].marsh.floor} px down, deeper than the line's 90 px step`), 'RED: W flush on the water');
+  // (W flush on the water's edge (BUILD-28 1e): off its lip onto the marsh floor is one 120 px drop, deeper than the line's step; with
+  // the marsh OPEN on water (marsh.open, BUILD-28 session 12) the first thing under his lip is the water, RIVER_LAY.marshWater lower)
+  const m = W2_FORK_RIVERS[W2_FORK.row].marsh;
+  const flush = W2_FORK.wall.h + m.floor + ((m.open ?? 0) > 0 ? RIVER_LAY.marshWater : 0);
+  assert.match(faults({ ...W2_FORK, wall: { ...W2_FORK.wall, back: 0 } }), new RegExp(`off the (left|right) end of the high road's piece at x \\d+-\\d+ the first ground is ${flush} px down, deeper than the line's 90 px step`), 'RED: W flush on the water');
 });
 
 test('two roads: THE LOW ROAD\'S HOP: RED by name on the marsh floor 60 px under the banks (b3747ddcb: the porch 120 px over it, inside a single jump), GREEN on 75', () => {
