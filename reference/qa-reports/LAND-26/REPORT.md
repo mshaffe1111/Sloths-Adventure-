@@ -80,7 +80,7 @@ The next session, in this order:
 | 2-6's own tests (18 files) | 126/128: 2 FAIL (w2Arc26 'one millrace'; rowWheels trunkCatch plant), both named above |
 | known flips (set1, 23 rows) | 23/23 = CI-15, 0 moved |
 | suite (3 shards) | RUNNING at hand-over (frozen 42e3b30fc) |
-| CI tool line | RUNNING at hand-over (frozen 42e3b30fc) |
+| CI tool line | 426 tests: 424 pass, 1 todo (chase bots, ENG-B4's open todo), 1 FAIL = rowWheels.test.ts PLANTED trunkCatch (red 2 above, no new red); data/ciline-42e3b30fc.txt |
 | paintcheck, lockall, castBots --proven 2-6, seedlist 2-6 --check, registrycheck, drawcheck, clipcheck, tierBots, timecheck, teachFirstScan | NOT RUN |
 
 ## Polish check
