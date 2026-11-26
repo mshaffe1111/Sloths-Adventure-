@@ -14,7 +14,11 @@ of G1-G3; beat 6 and the guard wait for ENG-29-e. G4 (the wheel's Easy R) and G5
 3. THE DRAFT EXISTS (session 1): `src/game/gen2/worlds/w2Arc29.ts` (2-5's brick form; test seam only, nothing imports it; tsc clean,
    listed.test 3/3, generalitycheck PASS). Rolled once a setting, seeds 1-2 (`npx tsx reference/qa-reports/BUILD-29/probes/draft1.ts`):
    it BUILDS (26.6-27.4k px; Normal 17 enemies, Easy 11; target 15 = the hand build's config, not yet 2-9's goal) with 33-41 gen2 errors
-   a roll, by kind. FIX IN DATA (mine, in order): (i) the node string's `&turtle*2` -> `&snapper*2` (the cast's id is `snapper`, as
+   a roll, by kind. DONE in session 1 (710f7ed59 + the next commit): the lead's rulings G4 (wheel `court29` R160 both settings), G5 (B: `Xr1>`,
+   `Wr1>`, a change from 2-9.md:50) and the lock 0.92 (READY (a), TEMPO_29.lock); (i) and (ii) below. The re-roll's errors left: (vi) 74,
+   (iii) 26, (vii) 6, (iv) 6, and the P/C beat nodes ('content p: no piece on a clock laid'; 'threat snapper*2: laid N'): the pads brick
+   and the snappers brick are both practise + floating, so gen2 may serve either to any P node; give each beat's brick what only its node
+   asks (read pipeline's node-to-section match first). FIX IN DATA (mine, in order): (i) the node string's `&turtle*2` -> `&snapper*2` (the cast's id is `snapper`, as
    ARC_25; 'no creature of that id'); (ii) beat 4's river DEEP (`court`, not `court29s`): its node `Xr1>:#water` asks deep ('hazard
    #water: laid soft'; 2-9.md:55 said splash-back, the node string wins: name it); (iii) the snapper patches clear of every higher floor
    in the bonk's landing ('cast: turtle ... a floor N px over its ground'); (iv) fly the court wheel: `npx tsx tools/engine/wheelflights.ts`

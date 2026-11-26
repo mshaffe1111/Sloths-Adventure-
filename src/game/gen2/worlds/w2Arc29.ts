@@ -4,7 +4,7 @@
  * rolled through listed.ts's test seam (a test's row: draft29Row()), and the hand-built 2-9 (w2Stages.ts) still stands.
  *
  * One brick a beat (2-5's form, w2Arc25.ts, from 2-4's), each on World 2's rows at the design's numbers, under a brief naming the court's
- * tempo (tempo.ts: the liana's swing is a bar of four; every clock a whole number of beats):
+ * tempo (tempo.ts: the liana's swing is a bar of four; every clock a whole number of beats; the lock 0.92, the lead's ruling on READY (a)):
  *   A    the water gate, the drum alone; Dot's `drum` 800 px+ before beat 1   Xr1>  2-4's liana over a court river, let go on ONE
  *   Tp1< two snap stones in step on the court's jaws, splash-back, free bite    Pp1&> three in step, then two snappers on the court's jaws
  *   Pw1> a court river, a log a bar, splash-back                               Wr1>  the twist: a liana over the `double` river (two beats)
@@ -30,13 +30,13 @@ import { w2Finish } from './w2.ts';
 export const STAGE_29 = '2-9';
 
 /** 2-9's ONE graph: the design's node string (2-9.md:50) with the two liana beats on `r` (G5) */
-export const ARC_29: Record<string, string> = { 'court-29-arc': 'A Tp1<:#soft Pw1> Pf1> Xr1>:#water R Pp1&>:&turtle*2 Wr1>:#water R Uc^< Cp1&>:#water:&turtle*2 R Pb1^< Sw1> E' };
+export const ARC_29: Record<string, string> = { 'court-29-arc': 'A Tp1<:#soft Pw1> Pf1> Xr1>:#water R Pp1&>:&snapper*2 Wr1>:#water R Uc^< Cp1&>:#water:&snapper*2 R Pb1^< Sw1> E' };
 
 /** the lesson 2-9 teaches: the beat (hop, ride, swing and bop on the drum) */
 export const BEAT_LESSON = 'beat';
 
 /** the court's tempo (2-9.md:6-7): one liana swing (TIMED.period 2.85 s Normal, 3.3 s Easy) is a bar of four; every liana on the lock */
-export const TEMPO_29: TempoSpec = { beats: 4, bar: 2.85, easyStretch: 3.3 / 2.85, lock: 0 };
+export const TEMPO_29: TempoSpec = { beats: 4, bar: 2.85, easyStretch: 3.3 / 2.85, lock: 0.92 };
 /** one count of the court's jaws on Normal (s): a beat, 0.7125 s */
 const COUNT = TEMPO_29.bar / TEMPO_29.beats;
 
@@ -143,7 +143,7 @@ const logsOnBeat: Lay = { pieces: [bank('a', null, 360), river('c', 'a', 'court2
 /** [P f1>] beat 3, pads on the beat: five small weight pads at the run pitch, splash-back */
 const padsOnBeat: Lay = { pieces: [bank('a', null, 360), pond('c', 'a', 'pads29', 340), bank('z', 'c', 300)], sockets: [petal('pz', 'z', 0.5)] };
 /** [X r1>] beat 4, let go on ONE: 2-4's liana over a splash-back court river, locked to the bar; the flag before */
-const letGoOnOne: Lay = { pieces: [bank('a', null, 420), rock('ra', 'a', 0.5), bank('b', 'a', 400), liana('l', 'b'), river('c', 'l', 'court29s', 340), rock('rc', 'c', 0.15), bank('z', 'c', 300)], sockets: [flag('a')] };
+const letGoOnOne: Lay = { pieces: [bank('a', null, 420), rock('ra', 'a', 0.5), bank('b', 'a', 400), liana('l', 'b'), river('c', 'l', 'court', 340), rock('rc', 'c', 0.15), bank('z', 'c', 300)], sockets: [flag('a')] };
 /** [P p1&>] beat 5, the snappers: three in step from ONE, then two snappers on the court's jaws */
 const snappers: Lay = {
   pieces: [bank('a', null, 360), pond('c', 'a', 'three29', 340), bank('m', 'c', 300), ...snapperGround('s1', 'm'), bank('n', 's1-out', 240), ...snapperGround('s2', 'n'), bank('z', 's2-out', 300)],
