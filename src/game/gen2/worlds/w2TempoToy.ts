@@ -3,7 +3,7 @@
  * (nothing in the game imports it). The kit is 2-4's (worlds/w2Arc24.ts kitLib24) cut to its arrival, its first drop (2-4's liana over a
  * river, the river on World 2's `court` row: a log every bar), a pond of snap stones on the court's bar (2-5's jaws, counted in beats),
  * a rest and the jetty, under a brief that names the court's tempo (GraphBrief.tempo: gen2's finish locks every liana to the bar and
- * holds every clock to it, tempo.ts). The row a test builds with `withTestStage({ [TEMPO_ID]: tempoRow() }, ...)`.
+ * holds every clock to it, tempo.ts). The row a test lays through listed.ts's test seam (`{ [TEMPO_ID]: tempoRow() }`).
  */
 import { BRIEF_24, DROP_LESSON, EXIT_24, SECTIONS_24, STAGE_24, kitLib24 } from './w2Arc24.ts';
 import { w2Finish, W2_RIVERS } from './w2.ts';
@@ -15,7 +15,7 @@ import type { ListedStage } from '../listed.ts';
 import type { GraphBrief, SectionTemplate, WorldKit } from '../types.ts';
 import type { LevelConfig } from '../../types.ts';
 
-/** the toy's stage id (no listed stage, no other toy: withTestStage refuses a listed one) */
+/** the toy's stage id (no listed stage, no other toy: the test seam refuses a listed one) */
 export const TEMPO_ID = '2-90';
 /** the court's tempo as 2-9.md writes it: one liana swing (TIMED.period: 2.85 s Normal, 3.3 s Easy) is a bar of four */
 export const COURT_TEMPO: TempoSpec = { beats: 4, bar: 2.85, easyStretch: 3.3 / 2.85, lock: 0 };
