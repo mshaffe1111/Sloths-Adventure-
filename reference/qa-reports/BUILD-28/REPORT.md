@@ -1,6 +1,37 @@
 # BUILD-28 REPORT (W2-LANE: 2-8 "Before the Water Rises"; R-165.430 (2), READY-28, BUILD-28). Session 1 (W2-LANE a), started 9:44 AM ET (from date). Session 2 (W2-LANE b), started 10:07 AM ET (from date). Session 3 (W2-LANE c), started 10:30 AM ET (from date). Session 4 (W2-LANE d), started 10:52 AM ET (from date). Session 5 (W2-LANE e), started 11:19 AM ET (from the session hook date) Session 6 (W2-LANE f), started 11:41 AM ET (from the session hook date) Session 7 (W2-LANE g), started 12:05 PM ET (from the session hook date) Session 8 (W2-LANE h), started 12:49 PM ET (from the session hook date) Session 9 (W2-LANE i), started 1:15 PM ET (from the session hook date) Session 10 (W2-LANE j), started 1:05 PM ET (from the session hook date) Session 12 (W2-LANE l), started 2:20 PM ET (from the session hook date)
 
-## EXACT NEXT STEP (session 13, W2-LANE m, started 3:49 PM ET (from the session hook date); code head 6c407a578 on t-build-28-wip)
+
+## EXACT NEXT STEP (BUILD-28 box 1, session 14, started 5:19 PM ET (from the session hook date); head = this commit on t-build-28-wip; code 4d8450bcc)
+STEP 0 DONE; THE PLAN IS APPROVED BY THE LEAD (verbatim: "the plan is APPROVED as written ... Item 7: YES, yours, as a PURE deletion with
+the hand build, on two conditions written in the commit: (a) a grep shows nothing but floodBasin sets r.flood ..., and (b) lockall shows no
+listed stage moves"). NEXT (box 2): STEP 1, in this order:
+1. The hand build's deletion, ONE commit (new replaces old): w2Stages.ts '2-8' (W2_STAGES :34, CAGES_28 :39 -> w2Arc28.ts, W2_PUZZLES :51,
+   floodBasin :638-674, cageRoom :805, targetCount :990), w2Sections.ts '2-8' (:21, :90, :109, :285-354), engine.ts :1990-2014 (the
+   rise-and-drain on RiverZone.flood.trigger + its guide line), :597-598 floodAt/floodTold, :3030, :6218; and the same dead path's two
+   readers: river.ts:74 (RiverZone.flood's type) and gen2/legs.ts:184 (mirrors an r.flood only floodBasin set). Condition (a) PROVEN this
+   box: `grep -rn "flood: {\|\.flood\s*=" src` -> only w2Stages.ts:663 sets it (legs.ts:184 copies an existing one; pipeline.ts:4303 is
+   the STAGE's flood, P1's). Put that grep in the commit body; condition (b): lockall on the frozen deletion tree, its result in the body.
+   Re-pin the tests that pin the hand build (READY-28's list: w2Puzzles.test :34-88 :91 :171 :198/:204 -> the pulley-cage cases move to 2-9;
+   w2Stages.test PLANS :21 :68; puzzleCamera.test:20; w1NewArt.test:92; writtenKeys.test:37); re-read levelSeeds.ts:24, stageSheets.ts:92,
+   pokeyJournal.ts:67, finds.ts:416 (w2_book's find re-placed on the high road's +).
+   Re-read on 4d8450bcc this box: the line numbers above hold; cageRoom's ONLY caller is floodBasin (w2Stages.ts:651), so both go, with
+   their kit signatures (w2Sections.ts:55-56), the export list (w2Stages.ts:956) and W2Plan's '2-8' (w2Sections.ts:21); stageClue.ts:34 and
+   pokeyJournal.ts:67 hold 2-8 player words (the keeper's call: keep, or replace from lines-2-8.md).
+2. w2Arc28.ts on 2-3's/2-7's brick form (w2Arc23.ts:136-160 brick(), :167-273 lays; w2Arc27.ts:106-125, :129 jetty, :146 porches):
+   `A Pg1 Tw1:#soft@flood Pp1 Xf1 R Uc1^ /L Pg1>:#water@flood R F[P+|P] Pg1> R Pf1> R Sg1< E`, cages by socket (cage(), w2Arc23.ts:129)
+   on beats 1,3,4,6; F = w2TwoRoad (w2.ts:224); beat 2 a marsh river with flood 'teach' and W2_FLOOD.teach {normal 6, easy 8}
+   (floodLay.test.ts:112's numbers; judged on the still); the dyke (beat 8) about 4,000 px, three flood 'rise' dips; then STAGE_TABLE
+   '2-8', KITS/WORLD 'w2-28', w2Manifest briefs '2-8' flood W2_FLOOD; `npx tsx tools/engine/addlevel.ts 2-8`.
+3. T_CLOSE re-flown: `git show origin/t-design-26:reference/specs/sims/flood28.ts` (its legs are consts at :32-51: the 2,000 px to the fork
+   becomes the dyke's laid length); W2_FLOOD.flown.px, .close, .tailOff from its output, pasted.
+LINES (step 2) ARE BLOCKED ON THE STORY KEEPER: there is NO reference/story/lines-2-8.md on any branch (checked t-keeper-23-29, -26, -27,
+-3x, the lead's, t-design-26); the lead was told this box, with the list of lines 2-8 needs. Lay step 1 with line ids and no shipped words.
+STEP 0's CHECKS (frozen trees /home/user/wt28m = f68a7421d, /home/user/wt28b = d4e7677ba; chattr +i on src, tools):
+- KID_RUNS_59 alone (firstTimerBot.test.ts + w5RealReach.test.ts): RED on BOTH, identical: actual [8,9,7,7,4,7] vs [3,5,6,7,6,5]
+  (firstTimerBot.test.ts:185), 15 pass 1 fail each; w5RealReach green. = the release line's (R-165.473), named, not this build's.
+- P1's CI tool line on f68a7421d (gates.yml:157-179): CI_LINE_RESULT
+
+## (superseded by session 14) EXACT NEXT STEP (session 13, W2-LANE m, started 3:49 PM ET (from the session hook date); code head 6c407a578 on t-build-28-wip)
 ## THE LEAD'S RULINGS ON READY-28 (received in session 13 after READY-28; written here as a doc commit only)
 - L1: cages by socket, F[P+|P], no side channel: YES. K written P: YES on the condition the dyke beats' pressure is the flood's water,
   not a chase. 2-8.md (t-design-26) says it is: :36 beat 6 "The dyke path, three dips filling ahead (paddling depth only: never deep)",
