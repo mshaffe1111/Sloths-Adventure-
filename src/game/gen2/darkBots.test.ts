@@ -241,14 +241,20 @@ test("a seam read as a way down (noSeamWalk, the plant): both sides of the seam 
 
 /** roll 11's seam (ENG-DARK box 15): the way on drops through a 13 px gap from 355-591 (y 11405) to 604-784, 13 px UP (a step he walks
  *  over), and comes out past 784 on the storey under it (604-817, y 11552). Steered by his facing, a turn on 355-591 flipped him and he
- *  walked to and fro over the rim at 604 eleven times (probes/seamscan.mts); he steps off the run's end the way on comes out past */
+ *  walked to and fro over the rim at 604 eleven times (probes/seamscan.mts); he steps off the run's end the way on comes out past.
+ *  R-165.432 (ENG-DARK box 25): on roll 11 the plant has LOST ITS LIVE CASE: towerRoute.ts dropTo's walledEnd (b32b0f5ee) reads 71's
+ *  right end walled by 180 (a right read), so the way on drops off 71's left end and never goes through the seam. The scan with
+ *  seamByFacing on (scan-seamByFacing-2432cfde-lane1/-lane2.jsonl) found the live case on ADULT NORMAL 29 (CAST_BOTS.adult.normal, the
+ *  scan's bot): 12 times over one rim planted; on c17 unplanted shrine 182.3 s, crossed 33, unlit [], loop 1. The pair is re-pointed
+ *  there, the bar unchanged (planted: worst rim >= 8) */
 async function seam11(seamByFacing: boolean) {
   if (readied !== DRAFT) readyDraft(DRAFT);
-  const { firstTimer, FT_ADULT } = await import('../../../tools/inspect/firsttimer.ts');
-  return firstTimer(DRAFT, 11, { ...FT_ADULT, setting: 'normal', seamByFacing }, { cap: 200 });
+  const { firstTimer } = await import('../../../tools/inspect/firsttimer.ts');
+  const { CAST_BOTS } = await import('../../../tools/inspect/castBots.ts');
+  return firstTimer(DRAFT, 29, { ...CAST_BOTS.adult.normal!, seamByFacing }, { cap: 200 });
 }
 
-test("the way on under a seam run comes out past its far end: on roll 11's 13 px seam he steps off that end and reaches the shrine, no rim gone over again and again (GREEN; planted: seamByFacing)", async () => {
+test("the way on under a seam run comes out past its far end: the adult on Normal roll 29 reaches the shrine, no rim gone over again and again (GREEN; planted: seamByFacing; R-165.432: was roll 11)", async () => {
   const r = await seam11(false);
   assert.equal(r.end, 'shrine', `he reached the shrine (${r.end} at ${r.time})`);
   assert.ok(r.dark && r.dark.crossed >= 20, `he went over dark rims (${r.dark?.crossed})`);
@@ -256,7 +262,7 @@ test("the way on under a seam run comes out past its far end: on roll 11's 13 px
   assert.ok(r.dark.loop < 6, `no rim gone over again and again (the most over one rim: ${r.dark.loop})`);
 });
 
-test("the seam run's end picked by his facing (seamByFacing, the plant): turned on the low side, he walks to and fro over roll 11's seam (RED)", async () => {
+test("the seam run's end picked by his facing (seamByFacing, the plant): turned on the low side, the adult on Normal roll 29 walks to and fro over one rim (RED; R-165.432: was roll 11)", async () => {
   const r = await seam11(true);
   assert.ok(r.dark, 'the drafted 3-1 has a lit dark (FTRun.dark)');
   assert.ok(Math.max(r.dark.loop, worstRim(r.dark.unlit)) >= 8, `one rim gone over again and again (the most over one rim: ${r.dark.loop})`);
