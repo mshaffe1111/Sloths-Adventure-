@@ -461,10 +461,6 @@ export const LEVEL_REACH = 600;
 export const UNDER_REACH = 175;
 /** a rewind's reach across from a climbing vine at his feet (Progress.relocate's `climb`): a field's vines stand 80 px apart, one step */
 export const CLIMB_ACROSS = 90;
-/** px he slides on once the steer is let go at a run (2 frames, 285 -> 41 -> 0: FT_FRAMES on 2-1 kid Easy 25 at 20.27): the press must
- *  come this far inside a pad's front */
-const PAD_LIP_SLIDE = 8;
-
 export class Progress {
   cur = 0;
   hi = 0;
@@ -3477,10 +3473,7 @@ export class FirstTimerRun {
     // (a press on its way: he keeps going until it comes; a jump off a log for a vine he waits for standing, the log carrying him, as it
     //  was judged (SKILLS.vineFromLog): walking on, he ran off the log's front end before it came, catch toy v3)
     // (a bonk's press comes from a stand: he holds still through his thumb's lag, never walks on into a running hop, snapperPlan)
-    if (this.pending) {
-      if (!this.pending.still && this.padLip(this.pending.dir, this.pending.at)) this.pending.still = true;
-      return this.pending.still ? {} : side(this.pending.dir);
-    }
+    if (this.pending) return this.pending.still ? {} : side(this.pending.dir);
     // (just landed: the thumb comes back down before the next flick)
     if (t - this.lastLand < 0.1) {
       // (SKILLS.floatSure, ENG-PLANT-i (the lean candidate, the lead's ruling 1): landed on a log running his way whose front goes under
@@ -4966,24 +4959,7 @@ export class FirstTimerRun {
       return out;
     }
     this.pending = { at: this.t + lag, dir, kind, off, want };
-    if (dir !== 0 && (meanwhile.left || meanwhile.right) && this.padLip(dir, this.pending.at)) {
-      this.pending.still = true;
-      return {};
-    }
     return meanwhile;
-  }
-
-  /** standing on a pad, the press on its way (due at `at`) would come after his walk on took him to its front: he stands there for it.
-   *  Off a pad's lip there is no fall to press in, the water is under it; walking on through his thumb's lag, the press came after he
-   *  was in. As at a snap stone's lip (ENG-25c), for every pad; a press that comes while he is still on it is flown at a run as before
-   *  (R-165.465 step 2: 2-2 kid Normal 15 walked off #116's front 3 times with the press 0.17 s away, rescued) */
-  private padLip(dir: -1 | 0 | 1, at: number): boolean {
-    const p = this.sim.p;
-    if (dir === 0 || !p.grounded) return false;
-    const on = this.sim.platforms.find((q) => q.id === this.e.standingOnId);
-    if (!on?.pad) return false;
-    const front = dir > 0 ? on.x + on.width : on.x;
-    return dir * (front - p.x) < Math.abs(p.vx) * Math.max(0, at - this.t) + PAD_LIP_SLIDE;
   }
 
   /** the thumb's own fumbles on top of what he means: drift into the dead zone, travel when turning, a late lift-off */
