@@ -129,7 +129,7 @@ test("flood lay: a water marked 'teach' is laid as its OWN rise (FloodWater.own,
       assert.equal(own[0].y1, Math.min(own[0].y0, own[0].lip + FLOOD_PADDLE), `${at}: to paddling depth`);
       assert.equal(st.rivers![own[0].river].floodMark!.kind, 'teach', `${at}: its own river`);
       // RED, planted: the table with no teach rise refuses the teach water by name (never a silent rise on the clock's close)
-      assert.match(layFlood(st, W2_FLOOD, difficulty === 'easy').problems.join('; '), /a water is laid from a row marked 'teach', but the flood table names no teach rise/, `${at}: RED`);
+      assert.match(layFlood(st, { ...W2_FLOOD, teach: undefined }, difficulty === 'easy').problems.join('; '), /a water is laid from a row marked 'teach', but the flood table names no teach rise/, `${at}: RED`);
     }
   }
 });

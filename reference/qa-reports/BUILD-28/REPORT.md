@@ -1,7 +1,35 @@
 # BUILD-28 REPORT (W2-LANE: 2-8 "Before the Water Rises"; R-165.430 (2), READY-28, BUILD-28). Session 1 (W2-LANE a), started 9:44 AM ET (from date). Session 2 (W2-LANE b), started 10:07 AM ET (from date). Session 3 (W2-LANE c), started 10:30 AM ET (from date). Session 4 (W2-LANE d), started 10:52 AM ET (from date). Session 5 (W2-LANE e), started 11:19 AM ET (from the session hook date) Session 6 (W2-LANE f), started 11:41 AM ET (from the session hook date) Session 7 (W2-LANE g), started 12:05 PM ET (from the session hook date) Session 8 (W2-LANE h), started 12:49 PM ET (from the session hook date) Session 9 (W2-LANE i), started 1:15 PM ET (from the session hook date) Session 10 (W2-LANE j), started 1:05 PM ET (from the session hook date) Session 12 (W2-LANE l), started 2:20 PM ET (from the session hook date)
 
 
-## EXACT NEXT STEP (BUILD-28 box 2, session 15, started 5:43 PM ET (from the session hook date); head = this commit on t-build-28-wip)
+## EXACT NEXT STEP (BUILD-28 box 3, session 16, started 6:05 PM ET (from the session hook date); head = this commit on t-build-28-wip)
+STEP 1 (2) STARTED, NOT DONE: w2Arc28.ts written on the 2-3/2-7 brick form and REGISTERED (STAGE_TABLE '2-8' kit 'w2-28', listed.ts
+KITS/WORLD/FINISH 'w2-28' with finish28 setting proto.follow = W2_FOLLOW, the brief in kitLib28 with flood: W2_FLOOD); W2_FLOOD.teach
+{normal 6, easy 8} added (box 1's list; floodLay.test's planted RED re-pinned to { ...W2_FLOOD, teach: undefined }, same test, same bar).
+tsc 0. The keeper's words are in LINES_28 etc. verbatim from lines-2-8.md (943984c2f); their test is step 2's.
+FIRST REAL ROLL (libstage --stage 2-8 --seeds 4, both settings, written 6:14 PM ET): CLEAN 0 of 4 on both. Seed 1 Normal's errors, in the
+order to take them (all named by the pipeline, none estimated):
+1. THE FORK IS NOT LAID AS A FORK: BRIEF_28 branching 'none' -> pipeline.ts:651 forks = 0 -> :652 turns the code's F into 'practise';
+   the deal then lays w2-28-fork at slot 12 and the fork-rest at slot 5 (plan out of order), "pool short at slot 10/11/13 (practise)",
+   "flood: the high road breaks at x 8201". With branching 'some' (forks 1 + a coin for 2, :651) seed 1 THROWS "no section fits node n16
+   (ketsu): the pool is spent". NEXT: read pipeline.ts:600-700 (how a designed code's F[P+|P] roads are counted as nodes) and how the
+   deleted hand build's B-bot runs laid the fork (cc85378b0, 6c407a578). If a designed code cannot hold exactly ONE fork without the coin,
+   that is an ENGINE GAP: STOP and take it to the lead (the packet's order) with these two lines.
+2. LEGS: "leg 2 (left) overlays leg 1 (right) at x 6401-20764: the lower leg's top 680 is -336 px under the higher leg's foot 1016 (needs
+   260, legs.ts:214 LEG_CLEAR): a leg laid back over another needs its own ground (a column between them)". Beat 6's three 45 px steps do
+   not part the legs; 2-7 parts them with its D column (Dc_). The steps' height (or a column at the turn) is a DESIGN call: to the lead,
+   with the numbers above.
+3. NOTATION (READY-28's string vs the realised code; each a lead's call, L1's kind): n4 "Pp1" asks content 'p' = BEAT (nodeLetters.ts:
+   'p' beat), the pads realise 'w' (2-2's content water) -> recommend Pw1; n8 "Pg1>:#water@flood" "laid soft" (the dyke's marsh is safe,
+   paddling depth, 2-8.md:36) -> recommend #soft@flood; n11/n13 content asks ('g' got floating, 'f' got water) follow from item 1's order.
+4. FLAGS: 21,891 px of way with no flag after x 14030; none before hard node n3 within 2,400 px; none in the last 2,000 px. Re-check after
+   1-2 (the home leg's flag sockets 'flag' on dyke/reed-bank are laid; the order breaks them).
+5. V11 at token 10 ('g' on two neighbouring content nodes): the fork's content next to Pg1>; re-read after item 1.
+Then (unchanged): step 1 (3) flood28.ts at the dyke's LAID length; step 2; step 3 first look. The suite + CI tool line are still owed on
+the laid candidate (not run on this red draft: nothing to judge until it lays clean).
+Lessons applied (box 3): D119 (message from a file), D128 (stamp from date), D134/D138 (pushed and ls-remote-checked before the hand-over),
+D140 (ReadNotifications at the step boundary: none), D141 (the suite owed on the candidate, named).
+
+## (superseded by box 3) EXACT NEXT STEP (BUILD-28 box 2, session 15, started 5:43 PM ET (from the session hook date); head = this commit on t-build-28-wip)
 STEP 1 (1) DONE: the hand build's deletion is ONE commit, 69c3c1640 (its parent f5dae1de8), conditions (a) and (b) in its body:
 (a) the grep: on the base, w2Stages.ts:663 is the only setter of RiverZone.flood (legs.ts:184 copied it, pipeline.ts:4303 is P1's
 STAGE flood); on the deletion tree only pipeline.ts:4303 is left. (b) lockall, 16 layouts x both settings, the deletion tree against

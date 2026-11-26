@@ -157,6 +157,9 @@ export const W2_FLOOD: FloodRow = {
   close: { normal: 26, easy: 26 },
   spare: { normal: 4, easy: 8 },
   flown: { px: 2000 + 1400, tailOff: { normal: 22.0, easy: 17.9 } },
+  /** 2-8's teach (beat 2, RiverRow.flood 'teach'): the s its water takes to rise to paddling depth from his first step over it, by setting
+   *  (READY-28 box 1's list: floodLay.test.ts TEACH_ROW's numbers, to be judged on the still at step 3) */
+  teach: { normal: 6, easy: 8 },
   climb: { land: { child: 233, middle: 86, expert: 86, adult: 86 }, runUp: { child: 73, middle: 61, expert: 61, adult: 22 }, pause: [0.25, 0.5], width: 44 },
   /** the line's step (W2_FOLLOW.step): off any end of the high road, ground within it (flood.ts strandFaults) */
   step: W2_FOLLOW.step,
