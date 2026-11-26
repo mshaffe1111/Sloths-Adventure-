@@ -1,6 +1,34 @@
 # BUILD-28 REPORT (W2-LANE: 2-8 "Before the Water Rises"; R-165.430 (2), READY-28, BUILD-28). Session 1 (W2-LANE a), started 9:44 AM ET (from date). Session 2 (W2-LANE b), started 10:07 AM ET (from date). Session 3 (W2-LANE c), started 10:30 AM ET (from date). Session 4 (W2-LANE d), started 10:52 AM ET (from date). Session 5 (W2-LANE e), started 11:19 AM ET (from the session hook date) Session 6 (W2-LANE f), started 11:41 AM ET (from the session hook date) Session 7 (W2-LANE g), started 12:05 PM ET (from the session hook date) Session 8 (W2-LANE h), started 12:49 PM ET (from the session hook date) Session 9 (W2-LANE i), started 1:15 PM ET (from the session hook date) Session 10 (W2-LANE j), started 1:05 PM ET (from the session hook date) Session 12 (W2-LANE l), started 2:20 PM ET (from the session hook date)
 
 ## EXACT NEXT STEP (session 12, W2-LANE l, started 2:20 PM ET (from the session hook date); code head 8bb00acae; bot head 6c407a578)
+HAND-OVER AT THE BOX (2:55 PM ET from date; past the 28-minute work box by 7 min: my miss). Heads: t-eng-marsh 8bbb510f8 (the piece,
+its gates GREEN, item 6); t-build-28-wip 7ea5d5f3e = code 8bb00acae (2-8 marsh.first 117) + bot 6c407a578 (fork-jump cc85378b0 + the
+walked-top reroute). The lead APPROVED the open-140 stills, then RULED the first landing (RULE 1 any walk-off lands on the floor; RULE 2
+water in the upright frame from the bank's edge): done (5). B's rows reached the lead before the push (D117); its ruling on what lands
+(fork-jump + B, 2b not landed; the child's 3 late-0 rows) is OPEN.
+RUNNING AT THE BOX (frozen /tmp/claude-0/wt/6c407a578, logs in the session scratchpad, gone with the container): the src suite in 6
+shards (shard 1: 235 ok, 0 not ok); lockall: base recorded on main 4bf2cbaaa, then --check on the head; the CI tool line, then
+paintcheck 2/3. If they never arrive in this REPORT, re-run each ONCE on 6c407a578's tree (suite frozen except src/game/gen2/proven).
+NEXT, in order: (0) ReadNotifications: the lead's ruling on B. (1) record the gates above. (2) READY-28 to the lead, on 2-8's own config
+(forkstills-s12.mjs.txt, FORK_AS 2-8, the shots DRIVEN): the must-show = stills-s12-first117/fork-s1-edge-upright.jpg (from the bank's
+edge, upright, the first dip's water below-left); the look items: (i) top-upright's pocket: on the new marsh both banks of the dip under
+the log now show rooted lips (stills-s12-top/); NEW: the first landing's square seam against the bank (edge/lip-upright); (ii)
+top-sideways' dark band under the log deck (world y ~1499-1536): NOT the river zones, NOT the stage water plane (diagnostic frames
+stills-s12-top/*-norivers, *-nowater: unchanged), and in FIX-SOIL-c's BEFORE porch-sideways too (so not the soil fix's underside); the
+terrain is not drawn from the live platform list (*-noplat unchanged), so its drawer is NOT yet named: find the terrain layer the
+porch's span is drawn from (groundStack.ts:190 the stacked leg's ceilings is the candidate, unproven); it reads as a flat dark slab
+with a foam line, a hole more than shade. Dot's card over the fork: 2-8's scripted wayside line (wayside.ts:102, the Petal, at
+'start', due START_AFTER_MS 2.4 s into play, wayside.ts:335,377): in a real run it shows by the spawn, long before the fork; it shows in
+the stills only because the shot starts play at the fork. WALK vs PADDLE (2-8.md, t-design-26): Pokey walks the marsh floor and hops
+the dips; the little ones paddle splash-back water at his pace (2-3's contract) and wait at deep water as at a climb's foot; the low
+road turns deep at T_CLOSE 26 s after the last cage. THE PLAN (level.md rule 25 step 0): the node string `A Pg1+:+cage Tw1:#soft@flood
+Pp1+:+cage Xf1+:+cage R Uc1^ /L Kg1>:#water@flood R F[Pf1+|Pw1] Kg1> R Sg1< E`, one line per beat: piece (section id, file:line), data
+field; NOT STARTED (a map of the W2 kit per token was in flight at the box). Then WAIT for GO before BUILD-28.
+LEARNED (proposals for level.md, the lead decides): (a) a walk-off a level's data changes is held by a verdict over EVERY walk-off speed,
+creep to full run, measured in the real engine before the number is chosen (the open dip broke the run-takes-the-low-road rule; the
+first landing's 117 came from 16 measured run-ups); (b) a bot draft is re-proven on the probe WITH every draft it was proven beside
+(fork-jump alone 15/54; with the walked-top reroute 51/54); (c) session 11's painter band table (moss_stone 1-49 thin piece, 50 one
+boulder, 51-89 code terrain, 90+ soil bank).
 DONE (the lead's ruling A): (1) THE PIECE on t-eng-marsh 5f8cb1edb (cut from 2808df79d): riverLay.ts RiverRow.marsh.open (data, unset
    = the old shape): a dip `open` px wide at the near bank's foot, the dips evenly split the rest; an open that leaves no floor throws by
    name. Toy riverLay.test.ts "a marsh's `open`": both ways (unset/0: first piece at the bank's foot, 5 x 200 px pieces; open 220: no
