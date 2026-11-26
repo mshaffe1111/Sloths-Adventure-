@@ -1,14 +1,54 @@
 # ENG-SIM: the bots ask the GAME how a press flies (R-165.470; packet reference/packets/2026-11-26/ENG-SIM.md on the lead's branch)
 Branch t-eng-sim from origin/release-0.10.3 c73cb9766. Nothing here lands on release-0.10.3, main or a release 5 branch.
 
-## EXACT NEXT STEP (box 3 hand-over): step 2's checks GREEN so far, step 3's plan WRITTEN; finish the suite, then STOP for the lead's GO
-Head: the hand-over message's hash (pushed to t-eng-sim, ls-remote confirmed). Box 3's logs were in its scratchpad; the counts are below.
-1. DONE by box 3 (shards 1-2 recorded below: one red, pre-existing on release-0.10.3, traced to CI-15 0ec009b4d). Kept for its commands: Otherwise, on
-   a chattr-frozen worktree of the pushed head (src and tools frozen except src/game/gen2/proven; node_modules symlinked;
-   run_in_background + timeout 7200000): `ls` CLAUDE.md's src globs | sort -u | `split -n r/3 -d`, run shards 01 and 02 ONLY (shard 00
-   passed, 1,407 / 0 fail / 1 todo); each red traced to its cause and named. Record them with the hash.
-2. Step 3 is PLANNED (the section "Step 3: THE ONE-PAGE PLAN" below), NOT STARTED: wait for the lead's GO, which comes after ENG-THUMB
-   lands; then item 0 of that plan (merge ENG-THUMB's landed head, re-run the probe-equality gate and pressPlan.test on the merge) first.
+## EXACT NEXT STEP (box 4 hand-over): step 3 (0) DONE (merge 114944b5b); 1a-i CANDIDATE 0b92b3fcb (the stand on planFlies); then 1a-ii
+Head: the hand-over message's hash (pushed to t-eng-sim, ls-remote confirmed). The step 3 GO (the lead, box 4's brief): (0) then (1) in
+the plan's order; rows WILL move from (1) on (the re-baseline's job, not a stop); the cost check stands (one World 2 x40 over 3x the old
+CPU is a finding to bring to the lead). Nothing lands on release-0.10.3, main or a release branch.
+1. **FIRST: the CI tool line on 0b92b3fcb** (D141; never run on it): a chattr-frozen worktree (src and tools frozen except
+   src/game/gen2/proven; node_modules symlinked), `sed -n 157p .github/workflows/gates.yml | sed 's/^ *- run: //'` run with
+   run_in_background + timeout 7200000. Every red is EXPECTED to be a row the stand's move shifted (a pinned 2-4 / lianaRide / riverRide row):
+   name each with old -> new and the judge it traces to (rule 28); it is re-pinned in the re-baseline (3e), NOT patched now, unless it is
+   a crash or a deadlock (then it is this candidate's bug: fix it). Record the merge's CI line too (box 4's result is below if it finished).
+2. **1a-ii: the run-up on plans** (firsttimer.ts vineFromLog's `running` branch, runUpCatches / runPress, about 1 h): a run plan = the steer
+   `dir` from frame 1 (no tail: he is running; steerFrom still gates it, as c25's brake), the press on frame P, the hold `hold`. **A run
+   plan depends on the press frame P ALONE** (the run's steer is the same from frame 1 whatever k and the lag), so k + pressIn(lag)/DT = P:
+   fly ONE unpressed run first (the frame his feet leave `here` bounds P: the engine's take-off, not runPress' 10 px margin), then
+   catch(P) once per P upward from the spread's smallest press frame (planCatches, cached), up to that bound or k = 44 (runUpCatches'
+   bound); the first run of (spread width) consecutive catching P's gives the smallest k at which EVERY lag of thumbLags flies to `v`.
+   Then the plan at decide's drawn lag (gauss(this.r, who.thumb), press frame k + its m) set and played (setPlan, end = |at|): one plan
+   replaces the frame-by-frame run / re-judge (and the run / stand flicker it guarded, candidate 15's #104). Retires runUpCatches,
+   runPress, this.runUp / runUpHold and startJump's run-up hold block. **COST RISK (time it):** a refused run-up re-judges every frame he
+   rides under the liana (up to about 50 flights a frame); time 2-4 kid Easy 19 to t 99 against the merge 114944b5b before going on, and
+   if it is over 3x, cache the refusal per log until his lives or the log's id change (a finding for the report either way).
+   Toys: firsttimer.test.ts :351 (the run-up's jump held at least as runPress judged it, 2-4 child Normal 8): re-point to the run plan
+   (its catch on the frame the probe flew it to, as hopJudged :291 / :327 now do) and plant it RED (the plan one frame late, as box 4
+   planted the stand). lianaRide.test :104 / :125 outcome rows: KEPT, re-measured.
+3. Then 1b (hopFlight + the gate family + the landing stop), 1c, 1d, 1e, 1f in the plan's order (below).
+
+## Step 3 box 4 (the lead's GO; from 6:00 PM ET)
+- **(0) The merge, 114944b5b** = t-eng-sim d8f6a5125 + ENG-THUMB's FINAL head origin/t-eng-thumb-wip 35d5252c2 (C14 1457e1daf + the 357
+  re-plant + the 1-1 calibration recommit), no force. **No conflict:** the one file both sides touch, tools/inspect/firsttimer.ts,
+  auto-merged (this lane's hunks: the PlanPlayer import, setPlan / planNext, the loop's planNext() ?? pad(); C6..C14's hunks untouched).
+  The gate's MEMOS list re-read for ENG-THUMB's rng().fork(): a closure on the bot's own stream (firsttimer.ts rng), no module binding,
+  so nothing new for the gate. **Checks on a chattr-frozen worktree of 114944b5b:** tsc PASS; pressPlan.test + engineProbe.test 7/7
+  PASS (12 s); the CI tool line (it carries the probe-equality gate): RUNNING at this commit (no red in its first 296 tests; the result in the next commit).
+- **1a-i, CANDIDATE 0b92b3fcb: vineFromLog's STANDING press judged and played on the engine.** The judge flies the stand plan
+  (standPlan: the thumb's tail as thumbify leaves a bare stand (standTail: none while travelling or slipping; an armed lift-off's frames
+  left; else his median lift-off, no draw: a drawn one is his own future fumble foreseen), the press on pressIn(lag)'s frame, held
+  `hold` as the engine counts it, the steer from the press or steerFrom) at EVERY lag of thumbLags on the probe (planCatches: met when
+  swinging on `v`; failed on another liana or back on his feet after press + 2; one flight per press frame, cached); the press he makes
+  is the plan at decide's own draw, played verbatim to its flown end. **The play loop now plays a plan set INSIDE pad() from this very
+  frame** (the probe's frame 1 is the frame about to be played; pad()'s own want for the frame is dropped); a plan set from onFrame plays
+  from the next, as before. Retired: the stand's hopCatches model, its free-frames count (CI-11 `frees`), the stand's held-exactly hold
+  (standHold and startJump's block for it). The run-up is still the model (1a-ii).
+  **Toys:** hopJudged.test :291 (2-4 kid Easy 35) and :327 (2-4 kid Easy 19): re-pointed from startJump's stand flags to the plans
+  (setPlan), KEPT as outcome rows (every stand plan ends on a liana) and given the INVARIANT ON THE REAL STAGE (the catch comes on the very
+  frame the probe flew it to, the plan's end). **GREEN 2/2 on 0b92b3fcb; PLANTED RED** (the loop's play-now removed, the plan a frame late):
+  1/2 fail, "the standing press at t 32.967 on #33: caught on frame 16, the probe said 17". tsc PASS on the frozen tree. pressPlan.test +
+  lianaRide.test (its :104 vine from a log, :125 over the tail, :178 the aims) 7/7 PASS (114 s, sharing cores with the CI line). The CI tool line on 0b92b3fcb: NOT RUN (the next step's first job).
+- **Cost (first read, not the 1f check):** the stand judge flies at most one plan per press frame the spread reaches (the kid: about 5),
+  early exit on the first miss, on every frame he rides a log under a liana; the 1f World 2 x40 timing is still owed.
 
 ## Step 1: THE SEAM (box 1 from 2:07 PM ET)
 - **The probe moved to src/game as a tested tool:** src/game/engineProbe.ts (the spike's snapshot / fly / restore in place; it now flies
@@ -173,6 +213,15 @@ check (1f) is where an over-run shows first.
   spike's 4 h; step 2's core about 10 min of code against 3 h (its candidate checks are box 3's first job).
 - Box 3 from 3:48 PM ET (about 30 min, most of it waiting on the runs): the rebuilt frozen tree, step 2's checks (all PASS so far),
   step 3's one-page plan. Steps 1-2 together: about 1.5 h of member time against the spike's 7 h (moved code, not new code).
+- Box 4 from 6:00 PM ET (about 28 min): (0) the merge and its checks (0.5 h sized; about 10 min of work, the CI line's wait aside);
+  1a-i the stand on planFlies, its toys re-pointed with the exact-frame invariant, GREEN and planted RED (about 15 min against 1a's 2 h).
+
+## Lessons applied (box 4)
+- D115: every test run on a chattr-frozen worktree (wt0 = the merge, wt1 = the candidate, wt2 = the plant), edits only in the main tree.
+- D119: commit messages written to a file first (printf), never a heredoc in the commit's chain. D128: the box's start from the hook's `date`.
+- D134 / D138: pushed and ls-remote-confirmed before the hand-over message; the hand-over ends new work. D140: ReadNotifications at
+  each step boundary (none queued). D141: the CI tool line on the merge; on the candidate 0b92b3fcb it is NOT run in this box, named as
+  the next step's first job rather than skipped. D40: the run-up and the other judges left on the model until their own candidate.
 
 ## Lessons applied (box 3)
 - D115 a chattr-frozen rebuilt worktree for every check; D141 the CI tool line on the candidate; D113 every run in the background, a
