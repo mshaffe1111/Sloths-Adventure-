@@ -18,7 +18,7 @@ import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { DT } from '../../src/game/realPlay.ts';
 import { FirstTimerRun, FT_ADULT, FT_CHILD, FT_CHILD_EASY, FT_EXPERT, FT_MIDDLE, FT_MIDDLE_EASY, LINE_SKILL, ROAD_TRIPS, freshPhone, rng, type FirstTimer } from './firsttimer.ts';
-import { FORK_JUMP_SKILL } from './firsttimer.ts';
+import { FORK_JUMP_SKILL, REROUTE_SKILL } from './firsttimer.ts';
 import { SAME_GROUND, spook, type Follower } from '../../src/game/follow.ts';
 import { W2_FLOOD, W2_FOLLOW } from '../../src/game/gen2/worlds/w2.ts';
 import { W2_FORK, W2_FORK_RIVERS } from '../../src/game/gen2/worlds/w2.ts';
@@ -618,5 +618,17 @@ test("planted: with the fork's jump off the bot cannot read the fork (W's link i
     assert.ok(r.highBy === 'PRESS off W' && (r.marshT < 0 || r.marshT > r.highT), `middle seed 1 late 0, the fork's jump off: ${JSON.stringify(r)}`);
   } finally {
     FORK_JUMP_SKILL.on = true;
+  }
+});
+
+test("the reroute's walked top (2-8's ruled fork, late 19: too late for the line): the bot leads them round by the high road, three up and three down, home, nobody set back, no rescue; RED with the walked top off (each piece's whole span in turn: he stalls on the rises)", () => {
+  const r = forkRun(FT_MIDDLE, 1, 19);
+  assert.ok(r.end === 'shrine' && r.home === 3 && r.setBack + r.rescues === 0 && r.highT >= 0, `middle seed 1 late 19: ${JSON.stringify(r)}`);
+  REROUTE_SKILL.walkedTop = false;
+  try {
+    const off = forkRun(FT_MIDDLE, 1, 19);
+    assert.ok(off.end !== 'shrine' || off.rescues > 0, `middle seed 1 late 19, the walked top off: ${JSON.stringify(off)}`);
+  } finally {
+    REROUTE_SKILL.walkedTop = true;
   }
 });

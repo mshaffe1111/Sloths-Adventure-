@@ -166,6 +166,12 @@ export const FORK_READ = 300;
  */
 export const FORK_JUMP_SKILL = { on: true };
 /**
+ * The reroute's walked top (BUILD-28 session 7's draft B, landed session 12; level.md rule 21: lineBot.test plants it off -> RED): sent round
+ * by the high road, his points are its WALKED top line, over each x the highest chain top there, so a chain that climbs and comes down over
+ * the same pieces (2-8's three up, three down) is one walk out. Off: each piece's whole span in chain order, and he stalls on the rises.
+ */
+export const REROUTE_SKILL = { walkedTop: true };
+/**
  * The cage skill (ENG-CAGE 11-20; level.md rule 21: tools/inspect/cageBot.test.ts plants each off -> RED). PUNCH: a cage (a collectible
  * of type 'cage' a puzzle kit does not hold) within his reach ahead at his height: he stops, his tier's own hesitation, and punches until
  * it opens (its cageHp), then carries on. CLIMB: a cage hung up a climbing vine he is at the foot of: up the vine to it, the same punches
@@ -2832,9 +2838,14 @@ export class FirstTimerRun {
     const tail = going.length ? Math.min(...going.map((f) => f.x * dir)) * dir : p.x;
     const rate = c.f.tailOff > 0 ? c.f.px / c.f.tailOff : Infinity;
     if (left >= ((far - tail) * dir) / rate) return;
-    // (they can't make it: round by the high road, its pieces' tops every 24 px)
+    // (they can't make it: round by the high road, its WALKED top every 24 px: over each x the highest chain top there, so a chain that
+    //  climbs and comes down over the same pieces (three up, three down) is one walk out, never each piece's whole span in turn)
     const pts: Pt[] = [];
-    for (const q of road.chain) for (let x = nearOf(q); (farOf(q) - x) * dir >= 0; x += 24 * dir) pts.push({ x, y: q.y });
+    if (!REROUTE_SKILL.walkedTop) for (const q of road.chain) for (let x = nearOf(q); (farOf(q) - x) * dir >= 0; x += 24 * dir) pts.push({ x, y: q.y });
+    else for (let x = nearOf(road.chain[0]); (farOf(road.chain[road.chain.length - 1]) - x) * dir >= 0; x += 24 * dir) {
+      const on = road.chain.filter((q) => x >= q.x && x <= q.x + q.w);
+      if (on.length) pts.push({ x, y: Math.min(...on.map((q) => q.y)) });
+    }
     this.prog.reroute(this.prog.cur, fork, farOf(road.chain[road.chain.length - 1]), dir, pts);
     // (round by the high road: the other road is the low road's own pieces, laid under the banks within its span)
     this.otherRoad = new Set(this.sim.platforms.filter((q) => q.y > low.lip + 1 && q.x >= low.x0 - 1 && q.x + q.width <= low.x1 + 1));
