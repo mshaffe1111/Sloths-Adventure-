@@ -21,10 +21,10 @@ stand) kept. Tests on the head: f2ef1ca27 (ruling 2), 9dbcda5f8 (231), 585dccbde
   cannot: a fresh draw, a re-aim the read made by itself (the line that let the held tap go is NOT traced). **On C14 the plant bites on the original phases again** (0, 1, 1.5, 2.5: on hop, off back; 1.5 off back@120
   = C11's); phase 3 hops either way on C14, so the C13 re-plant (fdc794b3b) is reverted in 18a990dcf; no bar moved.
 - **C14's rows vs main** (d/rows-c14, d/flips-main-vs-c14-fivebots.txt; main = INT-R5 d/rule28/rows-main on
-  origin/release-0.10.3-wip-fixes): **0 PASS -> FAIL on 2-1, 2-2, 2-4, 2-5** (fail -> pass 31 / 30 / 74 / 44); 2-1 vs C11: 0 PASS -> FAIL,
+  origin/release-0.10.3-wip-fixes): **0 PASS -> FAIL on 2-1, 2-2, 2-4, 2-5, 1-4** (fail -> pass 31 / 30 / 74 / 44 / 128; 1-4 recorded after the hand-over, already running); 2-1 vs C11: 0 PASS -> FAIL,
   1 fail -> pass (child Easy 3). **1-4 and the CI line on frozen fin 7bb313874 were RUNNING at this hand-over** (box 7 records them if they
   finish; else re-run: rows.sh on frozen 1457e1daf for 1-4 only, about 2 min; ciline.sh on frozen fin, about 10 min).
-1. **Read C14's 1-4 row** (flips.py vs main): bar 0 PASS -> FAIL; trace any moved row.
+1. ~~Read C14's 1-4 row~~ DONE (recorded by box 7 after the hand-over): 1-4 0 PASS -> FAIL. Rule-28 rows on C14: all five stages clean.
 2. **The CI line on frozen fin** (D141; ciline.sh with gates.yml:157 written to a file): expected reds only 254 and 355 if their test
    commits are NOT in the tree; on fin (they are) expect 0 reds from 268/356 (both measured green on C14 above), 231 green.
 3. Then the final checks ONCE on frozen fin: 2-7 x40 (>= 29/40), pacerLay 23/23, the 10 races (tools/margins.mts.txt), tierBots 9/9,
