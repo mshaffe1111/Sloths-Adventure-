@@ -1,0 +1,7 @@
+glowGo: a clocked light never waited for: CAUGHT not ok 1 - the puff's light: put at the rim with the puff dark, the bot stands until it ha; not ok 2 - PLANT the puff's light off: the bot waits at the rim forever (RED), and darkGap
+glowRimsOf: clocked rims left out: MISSED 
+RimWatch: a clocked light read as always lit: CAUGHT not ok 1 - the puff's light: put at the rim with the puff dark, the bot stands until it ha; not ok 4 - the bot's wait for a clocked light REMOVED (noGlowWait, rule 21's plant): put a
+darkGaps: the clock rule removed: CAUGHT not ok 3 - the laid row's verdicts: darkGaps keeps the puff's 3.2 s window; the light off,
+glowZone: no puff light (a glowworm as before): CAUGHT not ok 6 - the brick lays it: the recipe is zones.ts's data (SPORE, 3-1's beat), and the g
+glowGo: the window's end not read: MISSED 
+exit 0

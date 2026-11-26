@@ -13,7 +13,7 @@ type Light = NonNullable<Zone['lights']>[number];
 
 /** the spore cloud over `shelf` (its beat's offset from `roll`, 0..1, to a tenth of a second); the warn is laid as asked, so levelCheck's
  *  'warning too short' judges it (no clamp hides a bad one) */
-export function sporeZoneOn(shelf: Pick<Platform, 'x' | 'y' | 'width'>, z: Omit<Extract<SectionZone, { kind: 'spore' }>, 'on'>, roll: () => number): Zone {
+export function sporeZoneOn(shelf: Pick<Platform, 'x' | 'y' | 'width'>, z: Omit<Extract<SectionZone, { kind: 'spore' }>, 'on' | 'kind'>, roll: () => number): Zone {
   const period = z.period ?? SPORE.period, warn = z.warn ?? SPORE.warn, active = z.active ?? SPORE.active;
   return {
     kind: 'spore', x0: shelf.x, x1: shelf.x + shelf.width, top: shelf.y - SPORE_BOX.up, bottom: shelf.y + SPORE_BOX.down, baseY: shelf.y, dir: 1,

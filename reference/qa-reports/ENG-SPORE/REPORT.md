@@ -1,21 +1,23 @@
 # ENG-SPORE REPORT (spore puffs as a gen2 zone brick, their light on a clock; 3-1 NEW 2; R-165.449; ADR-004)
 
-**EXACT NEXT STEP (box 1 hand-over; head on t-eng-spore-wip = the commit that carries this line).** Items 1-3 are CODED and their toy is
-GREEN on my tree (sporeBots.test 6/6, below). BOX 2 FIRST: ReadNotifications. Then:
-(a) the frozen tree's runs from box 1 are GONE with this container if it was reclaimed: re-make a frozen tree of the head
-(`git worktree add --detach /tmp/claude-0/wt-<h> <head>`, node_modules symlinked, `chattr -R +i src tools`, D115) and run
-`npx tsx --test src/game/gen2/dark.test.ts src/game/gen2/darkBots.test.ts src/game/gen2/sporeBots.test.ts` there (run_in_background,
-timeout 2700000); every test GREEN (box 1 started this on 12653334d: read /tmp/claude-0/darktests-12653334d.txt if it is still there);
-(b) the stills: DONE in box 1 (reshot on 12653334d with Dot's line tapped away: stills/3-1-{port,land}-puff-{dark,warn,lit}.png); the
-upright lit one went to the lead first. Rough spots named, not mine to fix here: the draft's petal sits on the puff's mushroom (the
-row's collectible); the shelf's ends read dimmer than its middle (the light is 110 px from them, r 190). The lead judges.
-(c) a planted-faults pass on the five new reads (glowGo, glowRimsOf's clocked rims, lightLitAt in RimWatch, darkGaps' clock rule,
-glowZone's puff light): each removed in a copy, sporeBots.test RED; write the table here;
-(d) the pipeline's own lay of SectionZone 'spore' (pipeline.ts, `z.kind === 'spore'`) has NO caller yet: no template lays one. Its builder
-is the same `sporeZoneOn` the toy uses; READY-31's builder is its first caller. Say so to the lead with the hash (not hidden);
-(e) WAIT for ENG-DARK's landing on t-eng-w3 (ls-remote t-eng-w3 past 88592a9c4, or the lead's word), merge it in (no force), then on the
+**EXACT NEXT STEP (box 1 hand-over; head on t-eng-spore-wip = the commit that carries this line).** Items 1-3 CODED; the toy
+sporeBots.test 7/7 GREEN on my tree; the stills shot and looked at (Polish check). BOX 2 FIRST: ReadNotifications. Then:
+(a) the planted faults AGAIN on a COPY tree of the head (`git worktree add --detach /tmp/claude-0/plant-<h> <head>`, node_modules
+symlinked; never the frozen tree): `python3 reference/qa-reports/ENG-SPORE/planted-faults.py <copy>` (about 5 min, run_in_background),
+written to plants-<h>.txt. On b254cb3a0 it was 4 CAUGHT, 2 MISSED (plants-b254cb3a0.txt): 'glowRimsOf: clocked rims left out' (the toy
+planted the puff after the bot had read its rims: now re-read, `glowRims = undefined`) and 'glowGo: the window's end not read' (no toy
+put him in a closing window: now 'put at the rim as the puff's window is closing'). Both toys are in this head; all 6 must be CAUGHT.
+(b) frozen tree of the head (`chattr -R +i src tools`, D115): `npx tsx --test src/game/gen2/dark.test.ts src/game/gen2/darkBots.test.ts
+src/game/gen2/sporeBots.test.ts` (run_in_background, timeout 2700000). On 12653334d: 54 tests, 51 pass, 3 RED in darkBots.test, and
+the SAME 3 are RED on the base e544dc3dd (ENG-DARK's c16, run alone in /tmp/claude-0/wt-base-e544dc3dd): 'seamByFacing, the plant' (RED
+plant not red: 'the most over one rim: 1'), 'noOpenEnd' GREEN half, 'noTurnRoom, the plant' ('the rim at x 846, y 927 gone over dark:
+[]'). INHERITED, proven on the base, NOT fixed by me (ENG-DARK's; told to the lead). Mine must add no red.
+(c) the pipeline's own lay of SectionZone 'spore' (pipeline.ts `z.kind === 'spore'`) has NO caller yet (no template lays one); its
+builder is the same `sporeZoneOn` the toy uses. READY-31's builder is its first caller. Told to the lead.
+(d) WAIT for ENG-DARK's landing on t-eng-w3 (ls-remote t-eng-w3 past 88592a9c4, or the lead's word), merge it in (no force), then on the
 merged head: the toys again, lockall (`--layouts 16 --check` against main's lock: only the stages traced), tierBots 9/9, the suite
-(shards, run_in_background, timeout 7200000) and the CI tool line, then land on t-eng-w3 (merge, no force) and send the lead the hash.
+(shards, run_in_background, timeout 7200000) and the CI tool line, then land on t-eng-w3 (merge, no force) and send the lead the hash
+and what READY-31 can measure (below).
 
 ## Box 1 (ENG-SPORE, from e544dc3dd = ENG-DARK's c16 code e5c098072; the lead's catch-ahead base)
 ### Item 1: the spore puff as a gen2 zone brick
@@ -33,15 +35,16 @@ merged head: the toys again, lockall (`--layouts 16 --check` against main's lock
   (the drop's fall, or a hop's rise and fall), else names the rim; `darkLandings` judges a clocked landing light as a sleeping one;
   `litAfter` (darkFlags) gives a clocked light its longest dark spell; `RimWatch` reads `lightLitAt` (the window's start).
 - The draw (engine.ts, the darkness's light list): `u = clockGlow(...)` for a clocked light: no allocation added per frame.
-- The bot (firsttimer.ts): `glowRimsOf` takes clocked rims; `glowGo(rim, lead)`: lit `lead` s AND the window still open for the way
+- The bot (firsttimer.ts): `glowRimsOf` takes clocked rims; `glowGo(rim, lead)` (any other light read bit for bit as before): lit `lead` s AND the window still open for the way
   over + CLOCK_SPARE 0.25 s (the step from a 30 px stand); a clocked light has NO give-up (he waits for it: the light off, forever).
-### Item 3: the toy on a REAL row (src/game/gen2/sporeBots.test.ts, 6 tests, GREEN on my tree)
+### Item 3: the toy on a REAL row (src/game/gen2/sporeBots.test.ts, 7 tests, GREEN on my tree)
 - THE ROW: 3-1 draft roll 1 Normal, the dark DROP rim at the left end of 846-1099 (y 927), 194 px down onto 607-830 (reaching 239 px past
   the rim, nothing between). NOT 240 px: the draft has no clean dark drop at 240 (probes/drops.mts: rolls 1-12, the clean way-down drops
   are 156-194 px; roll 1's 195 px one at 613 has a piece 65 px under it that a running drop lands on; roll 3's 217 px one is a shelf
   under the rim's own piece that a run carries past). 194 px lies in 3-1.md's 160-320 band. The shelf gets its puff from the brick's
   own builders (sporeZoneOn, puffLight) in place of its glowworm, on SPORE's beat.
-- GREEN: put 30 px from the rim with the puff dark, the bot stands, goes once lit 1 s, lands in light; litAhead [].
+- GREEN: put 30 px from the rim with the puff dark, the bot stands, goes once lit 1 s, lands in light; litAhead []. Put there as the
+  window is closing (lit 2.8 s, 0.4 s left, less than the way down): he waits for the next window and lands in light.
 - FLOWN: 128 presses from a stand 30 px out: **53/128 land in light = 41.4% of the cycle; press to touchdown 0.57 s; worst wait
   3.75 s** (3-1.md: 38-42%, 0.53-0.60 s for 160-240 px, worst wait 3.7-4.0 s).
 - PLANTS (all RED as they must be): the light off (len 0): the bot waits at the rim the whole 14 s, darkGaps names the rim ('a clocked

@@ -78,8 +78,8 @@ import type { FollowPlay } from '../../src/game/followPlay.ts';
 import { bucketAngle } from '../../src/game/wheel.ts';
 import { WHEEL_FLOWN } from '../../src/game/gen2/wheelFlights.data.ts';
 import { flownKey } from '../../src/game/gen2/wheelLay.ts';
-import { DARK_AHEAD, darkRims, lightLitAt, litAhead, RimWatch, rimAir, runOffRims, type DarkRim, type RimCrossing } from '../../src/game/gen2/dark.ts';
-import { clockLitLeft } from '../../src/game/zones.ts';
+import { DARK_AHEAD, darkRims, litAhead, RimWatch, rimAir, runOffRims, type DarkRim, type RimCrossing } from '../../src/game/gen2/dark.ts';
+import { clockLitAt, clockLitLeft } from '../../src/game/zones.ts';
 /** the most times he went over one rim in the dark (climbs not counted; FTRun.dark.loop): a walk back and forth over one rim (ENG-DARK box 12,
  *  the seam toy's record: since RimWatch reads a grounded step over a seam as on the piece, the loop shows here, lit or not) */
 const rimLoop = (cs: readonly RimCrossing[]) => Math.max(0, ...[...cs.filter((c) => !c.climbed).reduce((m, c) => m.set(c.rim, (m.get(c.rim) ?? 0) + 1), new Map<DarkRim, number>()).values()]);
@@ -3613,9 +3613,13 @@ export class FirstTimerRun {
   private glowGo(r: DarkRim, lead: number): boolean {
     const e = this.e as unknown as { gameTime: number; glowWake: Map<number, number> };
     const l = r.light!;
-    const at = lightLitAt(l, e.gameTime, (q) => e.glowWake.get(q.id ?? -1));
-    if (at === undefined || e.gameTime < at + lead) return false;
-    return !l.clock || clockLitLeft(l.clock, e.gameTime) >= rimAir(r) + CLOCK_SPARE;
+    if (l.clock) {
+      const at = clockLitAt(l.clock, e.gameTime);
+      return at !== undefined && e.gameTime >= at + lead && clockLitLeft(l.clock, e.gameTime) >= rimAir(r) + CLOCK_SPARE;
+    }
+    // (any other light as before ENG-SPORE, bit for bit: lit once the engine woke it (a light laid awake is never in glowWake))
+    const woke = e.glowWake.get(l.id!);
+    return woke !== undefined && e.gameTime >= woke + lead;
   }
 
   /**

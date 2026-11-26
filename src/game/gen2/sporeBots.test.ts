@@ -31,10 +31,10 @@ const ready = () => { if (readied !== DRAFT) readyDraft(DRAFT); };
 type Light = NonNullable<Zone['lights']>[number];
 
 /** the row's rim, and its landing's glowworm turned into the shelf's puff (the brick's builders; offset 0: dark until 3.2 s) */
-function plantPuff(stage: GeneratedStage, spec: { warn?: number } = {}, lightOff = false): { rim: DarkRim; puff: Zone; light: Light } {
+function plantPuff(stage: GeneratedStage, spec: { warn?: number } = {}, lightOff = false, roll = 0): { rim: DarkRim; puff: Zone; light: Light } {
   const rim = darkRims(stage as never).find((q) => q.x === RIM.x && Math.round(q.y) === RIM.y && q.dir === RIM.dir);
   assert.ok(rim?.drop && rim.light?.sleep, `the draft's roll ${SEED} has its dark drop at (${RIM.x}, ${RIM.y}), its landing's light asleep`);
-  const puff = sporeZoneOn(rim.onto, spec, () => 0);
+  const puff = sporeZoneOn(rim.onto, spec, () => roll);
   stage.zones!.push(puff);
   const light = rim.light!;
   delete light.id;
@@ -45,12 +45,16 @@ function plantPuff(stage: GeneratedStage, spec: { warn?: number } = {}, lightOff
 }
 
 /** the bot put 30 px from the rim (facing over it) at 0.5 s, the puff planted first; the run's crossings and his touchdown on the shelf */
-async function run(lightOff: boolean, cap: number) {
+async function run(lightOff: boolean, cap: number, roll = 0) {
   ready();
   const { firstTimer, FT_ADULT } = await import('../../../tools/inspect/firsttimer.ts');
   let p: ReturnType<typeof plantPuff> | undefined, put = false, landT: number | undefined, crossings: RimCrossing[] = [], end = { x: 0, y: 0 }, landAt = { x: 0, y: 0 };
   firstTimer(DRAFT, SEED, { ...FT_ADULT, setting: 'normal' }, { cap, onFrame(sim, b) {
-    p ??= plantPuff(sim.stage, {}, lightOff);
+    if (!p) {
+      p = plantPuff(sim.stage, {}, lightOff, roll);
+      // (his dark rims read again from the planted stage, as a stage laid with the puff gives them: glowRimsOf's clocked rims)
+      (b as { glowRims?: unknown }).glowRims = undefined;
+    }
     if (!put && sim.e.gameTime > 0.5) {
       put = true;
       (b as { placeAt(x: number, y: number): void }).placeAt(p.rim.x - RIM.dir * 30, p.rim.y);
@@ -73,6 +77,14 @@ test("the puff's light: put at the rim with the puff dark, the bot stands until 
   assert.deepEqual(litAhead(r.crossings, 'normal'), []);
   assert.ok(Math.abs(r.landAt.y - r.p.rim.onto.y) <= 4, `he came down on the puff shelf (${r.landAt.x}, ${r.landAt.y}; the shelf ${Math.round(r.p.rim.onto.x)}-${Math.round(r.p.rim.onto.x + r.p.rim.onto.width)} at ${Math.round(r.p.rim.onto.y)})`);
   assert.ok(r.landT !== undefined && clockLitAt(r.p.light.clock!, r.landT) !== undefined, `he landed in light (${r.landT?.toFixed(2)} s, went ${r.crossings[0].t.toFixed(2)})`);
+});
+
+test("put at the rim as the puff's window is closing (lit 2.8 s, 0.4 s left: less than the way down): he does not drop into it; he waits for the next window and lands in light (GREEN)", async () => {
+  // (the beat's offset 5.5 s: the window closes at 0.9 s and opens again at 4.1 s)
+  const r = await run(false, 14, 5.5 / 6.4);
+  assert.ok(r.crossings.length >= 1, 'he went over the rim onto the puff shelf');
+  assert.ok(r.crossings[0].t > 4.1 + 1, `he waited for the next window (opens 4.1 s); went at ${r.crossings[0].t.toFixed(2)} s`);
+  assert.ok(r.landT !== undefined && clockLitAt(r.p.light.clock!, r.landT) !== undefined, `he landed in light (${r.landT?.toFixed(2)} s)`);
 });
 
 test("PLANT the puff's light off: the bot waits at the rim forever (RED), and darkGaps names the rim (RED)", async () => {

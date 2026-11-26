@@ -119,12 +119,12 @@ function stepOnto(platforms: readonly Platform[], from: Platform, dir: -1 | 1): 
 const runFly = (drop: number, frac = 1) => PHYS.maxRun * frac * fallTime(drop);
 /** seconds to fall `drop` px from rest (gravDown to maxFall) */
 const fallTime = (drop: number) => {
-  const d = Math.max(0, drop), cap = PHYS.maxFall ** 2 / (2 * PHYS.gravDown);
-  return d <= cap ? Math.sqrt((2 * d) / PHYS.gravDown) : PHYS.maxFall / PHYS.gravDown + (d - cap) / PHYS.maxFall;
+  const cap = PHYS.maxFall ** 2 / (2 * PHYS.gravDown);
+  return drop <= cap ? Math.sqrt((2 * drop) / PHYS.gravDown) : PHYS.maxFall / PHYS.gravDown + (drop - cap) / PHYS.maxFall;
 };
 /** a rim's way over, in the air (s): a drop falls from the rim to the landing; a hop is a full jump's rise, then its fall to the landing */
 export const rimAir = (r: Pick<DarkRim, 'y' | 'land' | 'drop'>) =>
-  r.drop ? fallTime(r.land.y - r.y) : PHYS.jumpV / PHYS.gravUp + fallTime(r.land.y - r.y + PHYS.jumpV ** 2 / (2 * PHYS.gravUp));
+  r.drop ? fallTime(Math.max(0, r.land.y - r.y)) : PHYS.jumpV / PHYS.gravUp + fallTime(Math.max(0, r.land.y - r.y + PHYS.jumpV ** 2 / (2 * PHYS.gravUp)));
 /** when a dark light was lit, as the watch reads it at game time t: a clocked light (ADR-004) its current window's start (undefined:
  *  dark now), a sleeping one when it woke (`woke`, the engine's glowWake), any other always (-Infinity) */
 export const lightLitAt = (l: Light, t: number, woke: (l: Light) => number | undefined): number | undefined =>
