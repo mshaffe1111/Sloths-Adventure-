@@ -85,6 +85,7 @@ for (const [tag, w, h] of [['upright', 412, 915], ['sideways', 915, 412]]) {
   const spots = [
     ['bank', Wx + Ww + 140, fork.lip, -1],
     ['lip', Wx + 30, Wy, -1],
+    ['edge', Wx - fork.gap + 10, fork.lip, -1],
     ['porch', fork.riseR ? (fork.riseR + px + pw) / 2 : px + pw / 2, py, -1],
     ['top', fork.top ? fork.top[0] + fork.top[2] / 2 : px + pw / 2, fork.top ? fork.top[1] : py, -1],
   ];
@@ -100,18 +101,19 @@ for (const [tag, w, h] of [['upright', 412, 915], ['sideways', 915, 412]]) {
       //  of the pad short of the lip so he stops on it; the camera follows him there the game's way)
       let drove = null;
       if (DRIVE[0] !== null) {
-        const [Wx, Ww, Wy, bankY] = DRIVE;
+        const [Wx, Ww, Wy, bankY, edgeX] = DRIVE;
         Object.assign(e.player, { x: Wx + Ww + 140, y: bankY, vx: 0, vy: 0, grounded: true, facing: -1 });
         const set = (left, jump) => { e.input.triggerTouchMove(left ? 'left' : 'none'); if (jump) e.input.triggerTouchUp(0, 300); };
         for (let i = 0; i < 20; i++) { set(false, false); e.update(1 / 30); }
         let jumped = -1, onTop = -1, release = -1;
         for (let i = 0; i < 300; i++) {
           const pl = e.player;
-          const top = pl.grounded && Math.abs(pl.y - Wy) < 3;
+          // (to the bank's edge: on past W's lip, off it onto the bank, to the edge; else: W's top)
+          const top = edgeX !== undefined ? pl.grounded && Math.abs(pl.y - bankY) < 3 && pl.x < Wx : pl.grounded && Math.abs(pl.y - Wy) < 3;
           if (top && onTop < 0) onTop = i;
           const wantJump = jumped < 0 && pl.grounded && pl.x <= Wx + Ww + 70;
           if (wantJump) jumped = i;
-          const left = !(top && pl.x <= Wx + RELEASE);
+          const left = !(top && pl.x <= (edgeX !== undefined ? edgeX : Wx) + RELEASE);
           if (!left && release < 0) release = i;
           set(left && release < 0, wantJump);
           e.update(1 / 30);
@@ -122,7 +124,7 @@ for (const [tag, w, h] of [['upright', 412, 915], ['sideways', 915, 412]]) {
         e.isPaused = true;
       }
       return { drove, x: Math.round(e.player.x), y: Math.round(e.player.y), grounded: e.player.grounded, feetAt: +((e.player.y - e.camera.y) / e.camera.viewportHeight).toFixed(3) };
-    }, [x, y, facing, E, name === 'lip' ? [Wx, Ww, Wy, fork.lip] : [null], +(process.env.RELEASE ?? 75)]);
+    }, [x, y, facing, E, name === 'lip' ? [Wx, Ww, Wy, fork.lip] : name === 'edge' ? [Wx, Ww, Wy, fork.lip, Wx - fork.gap] : [null], name === 'edge' ? +(process.env.EDGE_REL ?? 20) : +(process.env.RELEASE ?? 75)]);
     for (let i = 0; i < 20; i++) {
       await p.evaluate((E) => { const e = eval(E); e.update(1 / 30); e.clearGuide?.(); e.player.invincibleTimer = 0; e.render(); }, E);
       await p.evaluate(() => new Promise((r) => requestAnimationFrame(() => r(0))));

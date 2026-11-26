@@ -1,6 +1,6 @@
 # BUILD-28 REPORT (W2-LANE: 2-8 "Before the Water Rises"; R-165.430 (2), READY-28, BUILD-28). Session 1 (W2-LANE a), started 9:44 AM ET (from date). Session 2 (W2-LANE b), started 10:07 AM ET (from date). Session 3 (W2-LANE c), started 10:30 AM ET (from date). Session 4 (W2-LANE d), started 10:52 AM ET (from date). Session 5 (W2-LANE e), started 11:19 AM ET (from the session hook date) Session 6 (W2-LANE f), started 11:41 AM ET (from the session hook date) Session 7 (W2-LANE g), started 12:05 PM ET (from the session hook date) Session 8 (W2-LANE h), started 12:49 PM ET (from the session hook date) Session 9 (W2-LANE i), started 1:15 PM ET (from the session hook date) Session 10 (W2-LANE j), started 1:05 PM ET (from the session hook date) Session 12 (W2-LANE l), started 2:20 PM ET (from the session hook date)
 
-## EXACT NEXT STEP (session 12, W2-LANE l, started 2:20 PM ET (from the session hook date); code head 3170a73f4)
+## EXACT NEXT STEP (session 12, W2-LANE l, started 2:20 PM ET (from the session hook date); code head 8bb00acae)
 DONE (the lead's ruling A): (1) THE PIECE on t-eng-marsh 5f8cb1edb (cut from 2808df79d): riverLay.ts RiverRow.marsh.open (data, unset
    = the old shape): a dip `open` px wide at the near bank's foot, the dips evenly split the rest; an open that leaves no floor throws by
    name. Toy riverLay.test.ts "a marsh's `open`": both ways (unset/0: first piece at the bank's foot, 5 x 200 px pieces; open 220: no
@@ -22,6 +22,20 @@ DONE (the lead's ruling A): (1) THE PIECE on t-eng-marsh 5f8cb1edb (cut from 280
    bank' (high, marshT -1), child-easy 'PRESS off bank', adult low but RESCUED 1; open 50 and open 0: middle marshT 6.5, child-easy 7.5,
    adult 4.4 (identical: the walk-off clears a 50 px dip), highs only by a PRESS off the marsh. Stills stills-s12-lip50/ (open 50,
    pieces 190): upright the water shows as a narrow slot between two soil banks at the bank's foot, not the frame's lower part.
+   (5) THE LEAD'S RULING on the open width (RULE 1: any walk-off off the near bank's edge lands on the floor, creep to full run; RULE 2:
+   from the lip, the bank's edge, upright, water in frame): `open` REPLACED by the FIRST LANDING (t-eng-marsh 8bbb510f8): riverLay
+   marsh.first (data, unset = the old lay's own sum: no laid marsh moves), the dips and the other pieces split the rest; flood.ts
+   walkOffLand(drop) and bankLandFaults (the first landing reaches past the edge >= walkOffLand + half his width + 15), laid by floodLay.
+   MEASURED (the real engine, RealPlay on 2-8's config, a bank 75 over the floor, 16 run-ups from a creep to 600 px): widest landing
+   76 Normal, 80 Easy (a creep on Easy lands 39-40; on Normal it stands on the edge); walkOffLand(75) = 79.3. Toys: riverLay.test both
+   ways; flood.test RED 1 px short, water at the foot, mirrored; w2TwoRoad.test RED by name at 116, GREEN at 117, both settings, RED with
+   floodLay's call removed. tsc 0, generalitycheck PASS. MERGED 8bb00acae: 2-8 marsh.first 117 (79.3 + 22 + 15), the W-flush plant back
+   to 135. Fork tests 31/0. BUILT (seed 1): first landing 17252..17369, the first dip 17152..17252, pieces 220.75.
+   STILLS stills-s12-first117/ (DRIVEN; edge: on past W's lip, off onto the bank, pad let go 20 px short, stops at 17370, his middle at
+   the edge, teetering): edge-upright: the first landing below-left, then the first dip's water in the frame's lower left, beside and
+   below him; edge-sideways: two dips of water left of him. lip-upright (Wx+30): only a sliver of water at the frame's left edge.
+   ROUGH, named: a straight square seam where the first landing's painted soil meets the bank (a flat cut bottom ~y 1300 at 2x, a
+   vertical cut at its right end), in edge- and lip-upright: the soil painter's square seam, not 2-8's lay (look item for READY-28).
 
 
 ## EXACT NEXT STEP (session 11, W2-LANE k, started 1:56 PM ET (from the session hook date); code head 6545a5823; hand-over at the box)
