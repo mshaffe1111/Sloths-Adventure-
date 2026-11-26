@@ -16,6 +16,14 @@ the twist's `doubled`: no data path yet; (d) the drum is heard only on the real 
 sound the hits already ahead (at most 3 frames) a little early; 2-9 has neither on the court. NEW: Easy's 50 px pad water has no data path
 (a pad row has one gap); the child loses ~1.25 lives a run on the run-pitch pads on Normal (it hops in place, then learns).
 
+## GATES ONCE on the frozen candidate f569d3957 (session 4's gates-only extension; every later commit is the REPORT only)
+- lockall --layouts 16 vs c73cb9766's record (3,264 builds of 102 stages): 102/102 unchanged (the merge 3764c59e9 read the same).
+- The suite (the CLAUDE.md glob, 657 files, 6 shards): 4,225 tests, 4,221 pass, 3 todo, ONE fail: firstTimerBot.test.ts:177 KID_RUNS_59,
+  INHERITED (the lead's ruling: the release line's own, CI-15 0ec009b4d, R-165.473 / R-165.477; the same on c73cb9766 alone). pacerLay
+  and listed.test (shard 1): no fail. The worktree's `git status` empty after.
+- The CI tool line (gates.yml:157, with tools/inspect/tempoToys.test.ts): 427 tests, 426 pass, 0 fail, 1 todo.
+- tierBots: 9/9. tsc clean; generalitycheck PASS (on the candidate's code, the main tree).
+
 ## Session 4 (ENG-29-d): step 0 (the listed.test red), step 1 (c73cb9766 merged), step 2 (the bots on the court: TWO gaps found and fixed with the piece), step 3 (engine-core.md)
 - Step 0 (7b3ea26a): w2TempoToy.ts :6 and :18 reworded ('the row a test lays through listed.ts's test seam', 'the test seam refuses a listed
   one'); listed.test.ts 3/3 GREEN; the word put back at :18: RED 2/3, naming 'src/game/gen2/worlds/w2TempoToy.ts'. Comment-only.
