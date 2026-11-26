@@ -19,7 +19,7 @@ import { RealPlay } from '../realPlay.ts';
 import { loadSeedList } from './seedList.ts';
 import { setDifficulty } from '../difficulty.ts';
 import type { Enemy } from '../types.ts';
-import type { SectionTemplate, WorldKit } from './types.ts';
+import type { CreatureDef, SectionTemplate, Socket, WorldKit } from './types.ts';
 
 /** the toy's kit with the posted row in its creatures; `socket`: the stones' near bank holds a socket naming it */
 function kit(socket: boolean): WorldKit {
@@ -65,6 +65,34 @@ test('the posted row in a world\'s list moves no foe: on 2-5 (snappers from the 
     assert.equal(sig(more), sig(plain), `${d} seed ${seed}`);
     assert.equal(posts(more).length, 0);
   }
+});
+
+/** the toy's kit with OPEN enemy sockets (naming no row) on the stones' near bank and a bag holding a plain turtle; `posted`: the posted
+ *  row in the world's list too (no socket names it) */
+function openKit(posted: boolean): WorldKit {
+  const k = tempoKit(), M = k.manifest;
+  const turtle: CreatureDef = { id: 'toy-turtle', enemy: 'turtle', terrain: 'flat', minGround: 60, w: 48, h: 24, hp: 1, footY: 14, threat: 1 };
+  const open = (id: string, t: number): Socket => ({ id, role: 'enemy', on: 'in', t, dn: 0, easy: 'stay', chance: 1, maxThreat: 3 });
+  const sections = M.sections.map((s) => (s.id !== 'toy-court-stones' ? s : {
+    ...s, pieces: s.pieces.map((q) => (q.key === 'in' ? { ...q, w: [900, 900] } : q)),
+    sockets: [...s.sockets, open('o1', 0.15), open('o2', 0.45)],
+  } as SectionTemplate));
+  return { ...k, manifest: { ...M, sections, creatures: [turtle, ...(posted ? [W2_POSTED_GUARD] : [])] } } as WorldKit;
+}
+
+test('the bag never deals the posted row: open enemy sockets (naming no row) over a bag holding the turtle lay the same foes with the posted row in the world\'s list, and never a royal off his post (RED with castRows\' exclusion removed)', () => {
+  const sig = (st: { enemies: Enemy[] }) => st.enemies.map((e) => `${e.type}${e.royal ? '-royal' : ''}@${e.x},${e.y}`).join(' ');
+  let dealt = 0;
+  for (const d of ['normal', 'easy'] as const) for (const seed of [1, 2, 3, 4]) {
+    const at = `${d} seed ${seed}`;
+    const plain = build(openKit(false), seed, d), more = build(openKit(true), seed, d);
+    assert.deepEqual(more.gen2.errors, [], at);
+    if (d === 'normal') assert.ok(plain.enemies.length >= 1, `${at}: the open sockets deal a turtle`);
+    dealt += plain.enemies.length;
+    assert.ok(more.enemies.every((e) => !e.royal && !e.uncounted && !e.post), `${at}: the bag dealt the posted row (${sig(more)})`);
+    assert.equal(sig(more), sig(plain), `${at}: one more row in the list re-dealt the open sockets`);
+  }
+  assert.ok(dealt >= 5, `the open sockets deal turtles (${dealt} over 8 builds)`);
 });
 
 test('postFacing: toward the nearest river; inside or with none, the row\'s own way', () => {
