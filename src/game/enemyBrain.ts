@@ -195,6 +195,12 @@ export interface BrainEvents {
 
 /** a calm walk along its own patch of ground, turning at each end */
 export function patrolWalk(e: Enemy, dt: number, speed: number): void {
+  // (a posted sentry holds his post facing his way, Enemy.post: no walk, so no turn each frame on a patrol of none)
+  if (e.post) {
+    e.facing = e.post;
+    e.vx = 0;
+    return;
+  }
   e.x += e.facing * speed * dt;
   if (e.x < e.patrolMinX) e.facing = 1;
   else if (e.x > e.patrolMaxX) e.facing = -1;

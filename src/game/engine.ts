@@ -4941,7 +4941,8 @@ export class GameEngine {
         markTipHeard(FIRST_OF_STAGE, `cast:${way}`);
         this.guide(line, 4);
       }
-      p.enemiesDefeated++;
+      // (a foe the goal does not name, Enemy.uncounted, moves no count: goals.ts goalCounts leaves him out of the total too)
+      if (!e.uncounted) p.enemiesDefeated++;
       if (!e.minion && e.type !== 'boss' && e.type !== 'ant_hazard') this.statKills[e.type] = (this.statKills[e.type] ?? 0) + 1;
       recorder.event('chasedOff', e.type);
       sound.playWhoosh();
@@ -5310,7 +5311,7 @@ export class GameEngine {
     e.koTimer = 0;
     e.koAngle = 0;
     e.koLanded = false;
-    p.enemiesDefeated++;
+    if (!e.uncounted) p.enemiesDefeated++;
     if (e.groundY === undefined) e.groundY = e.y;
     if (isPredator(e.type)) staggerPredator(e); // open crouch pose, then the hop and flop
     const ko = koLaunch(e, dir);

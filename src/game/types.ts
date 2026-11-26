@@ -264,6 +264,13 @@ export interface Enemy {
   /** 2-9: a snapper of the river king's guard: stands upright with a spear, jabs further, blocks a blow to the front instead of hiding,
    *  and is staggered back by a kick (it shares the snapper's brain, predatorAI.ts) */
   royal?: boolean;
+  /** a POSTED sentry (ENG-29-e G2; 2-9's royal guard on the barge's landing): he holds his ground while calm, facing this way (the
+   *  water he guards, set where he is laid: gen2 pipeline.ts fillSockets), never patrolling; he still turns to a sloth he notices and
+   *  fights where he stands (enemyBrain.ts patrolWalk) */
+  post?: 1 | -1;
+  /** no foe of the stage's goal: never in the goal's count (goals.ts goalCounts), and beating him moves no count (engine.ts), so the
+   *  sealed exit and the HUD's counter read only the foes the goal names ("Chase off 5 snappers" stays true with the guard posted) */
+  uncounted?: true;
   /** drawn as another creature than its kind: World 7's Stone Sentry fights as a prowler (an ocelot's brain, score and checks) and only
    *  looks like a sentry (sentrySprite.ts) */
   look?: 'sentry';
