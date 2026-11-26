@@ -1,7 +1,34 @@
 # BUILD-29 REPORT: 2-9 "The River King's Court" (the World 2 finale; R-165.449), release 6
 Branch t-build-29, cut from origin/t-eng-29 = 098047713 (the lead's named base). Session 1 started 5:45 PM ET Thu 11/26 (by `date`).
 
-## EXACT NEXT STEP (session 2 hand-over, BUILD-29-b; STEP 0 (b)/(c) NOT yet sent as a whole; GO not given: nothing laid)
+## EXACT NEXT STEP (session 3 hand-over, BUILD-29-c, 6:29 PM ET Thu 11/26 by `date`; the lead's HAND OVER NOW (helper cap); GO for laying not given)
+The next box starts when ENG-29-f (t-eng-29) and ENG-STONE29 (t-eng-stone29) land. ReadNotifications first (D140).
+1. **THE BARGE: ENG-29-f reads which of the four is false** (G3's own check, the lead's ruling). Box 3 already read it and sent it to
+   ENG-29-f and the lead: the false need is **st.tempo**. On addc4a20 + 7cfbe307c (barge29 `look: 'barge'`), riverFaults on the barge reads
+   look 'barge' on all 4 logs, no liana over, the SAFE stand true (bank right edge == r.x0, 420 px solid), st.tempo UNSET: the pipeline
+   sets st.tempo only at the end of layChaseStage (pipeline.ts:4353), after checkAndRepair -> checkStage -> riverFaults (pipeline.ts:4417).
+   Proof: with only bargeBound reading `st.tempo ?? st.gen2?.brief?.tempo` (scratch, frozen tree), the draft rolls Normal 40/40 and Easy
+   40/40 clean (flown/yield-f-tempofix.txt; was 0/40). Built waits: Normal 5.700 s vs 2 bars 5.70 s, Easy 6.600 vs 6.60 s. No 2-9 data
+   fix beyond `look: 'barge'`. Probe: probes/barge29.ts. ON LANDING: check ENG-29-f's fix is in, then roll the 40 x both settings.
+2. **G2's socket shape is READY** as `landing-g2g3.patch` (w2Arc29.ts only: import W2_POSTED_GUARD, add it to SNAPPERS_29, a socket
+   `{ id: 'guard', role: 'enemy', on: 'z', t: 0.75, allow: [W2_POSTED_GUARD.id] }` on the barge's far bank, and barge29 `look: 'barge'`).
+   Proven in the scratch tree (seeds 1-3 both settings: one guard, post -1, uncounted, royal, 225 px into the 300 px far bank, 0 errors;
+   probes/guard29.ts). Apply it (`git apply`) only after t-eng-29 with G2 + G3 is merged into t-build-29.
+3. **The court, laid but the stones** (rule 27, built, seed 1 both settings, probes/widths.ts): pads 5 x 130 px with 50 px gaps both
+   settings; wheel W2_WHEELS.court R160 (5c89954e1, flown); goal countSet 5 of 7 (laid). Stones still 80/30 (2-5's): when ENG-STONE29
+   lands, the stones 130 px, Normal gap 60, Easy 50 (RULED A), then FLY them before use (CI #92: in step 3 safe only from ONE, the wave
+   of 5 from ONE or TWO).
+4. Met order on the landing-state tree (probes/teach.ts 1,2), both settings the same beats in order: gate hear logs pads let-go rest
+   snappers double rest terrace dance rest quay barge shrine; w29.drum at 688, first stone 2210 (1,522 px, rule 6 holds), no foe before
+   the snappers beat (first at 11,641 Normal s1); w29.roar 500 px into the twist.
+5. NOT DONE (stopped by the hand-over): the bots x40 (draft29.ts, each bot its own background lane, kid adult child middle expert; on
+   the landed tree with no --barge-stand-in), drawcheck on the draft (D131: drawcheck plays only limits.json scenarios; find the draft's
+   way in or name the gap to the lead), and THE PLAN to the lead in under 20 lines. Then each engine hash as it comes: merge (no force,
+   conflicts named), roll 40 x both settings, every error named.
+6. Box 3's miss: commit 664f9e24f's trailer names a model (the packet's "never a model name in a commit"); later commits use
+   `Co-Authored-By: Claude <noreply@anthropic.com>`. Not rewritten (no force-push).
+
+## (superseded) NEXT STEP (session 2 hand-over, BUILD-29-b; STEP 0 (b)/(c) NOT yet sent as a whole; GO not given: nothing laid)
 **RULED (A), the STONES (the lead's reply to box 2):** the court's stones are WIDE snap stones, 130 px: Normal 130 + 60, Easy 130 + 50,
 flown again on the landed piece before use. A pieces lane, ENG-STONE29, builds a second flown snap-stone width (SNAP_LAY a 130 px stone
 with its own gap band MEASURED on the real engine; snapFaults and rideLay's judge read the band per stone width; 2-5's 80 px stone
