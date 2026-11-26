@@ -16,7 +16,7 @@
  */
 import { layPacer } from './pacerLay.ts';
 import { layFlood } from './floodLay.ts';
-import { layTempo } from '../tempo.ts';
+import { doubleSpans, layTempo } from '../tempo.ts';
 import { raceEndsOf, type RaceEndSaid, type RaceEnds } from '../pacer.ts';
 import { layPost } from './postLay.ts';
 import { layColumnDress } from './columnDressLay.ts';
@@ -4350,8 +4350,10 @@ function layChaseStage(st: Gen2Stage, piecesOf: (uid: string) => ReadonlyArray<{
   // (a brief's tempo, last: every liana locked to the bar, then every clock the stage laid held to it, each one off named, tempo.ts)
   const tempo = st.gen2.brief?.tempo;
   const timed = tempo ? layTempo(st, tempo, easy) : { problems: [] };
-  if (tempo) st.tempo = tempo;
-  return [...chase.problems, ...r.problems, ...paced.problems, ...ended.problems, ...flooded.problems, ...posted.problems, ...dressed.problems, ...timed.problems];
+  // (the twist, ENG-29-e G1: the brief's section mark laid as the x spans where the drum doubles, tempo.ts doubleSpans)
+  const doubled = tempo ? doubleSpans(tempo, st.gen2.sections) : { problems: [] };
+  if (tempo) st.tempo = doubled.spans ? { ...tempo, double: doubled.spans } : tempo;
+  return [...chase.problems, ...r.problems, ...paced.problems, ...ended.problems, ...flooded.problems, ...posted.problems, ...dressed.problems, ...timed.problems, ...doubled.problems];
 }
 /** a graph with asks: each node's sections as laid (content type, the double, exit less entry height), read by applyVerdicts */
 const LAID_NODES = new WeakMap<Gen2Stage, Map<string, Array<{ content?: string; double: boolean; dy: number; clocked?: true }>>>();

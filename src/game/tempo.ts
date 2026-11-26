@@ -25,6 +25,30 @@ export interface TempoSpec {
   easyStretch: number;
   /** the share of a swing (0..1) a liana is at on the bar's ONE: every liana of the stage carries it as its swingPhase */
   lock: number;
+  /** the twist (2-9.md beat 6; ENG-29-e G1): the brief's section mark, the section templates (ids) where the drum doubles, on BOTH
+   *  settings (Easy's drum doubles too; its logs keep one a bar). The pipeline lays each placed one as an x span (`double`); a mark
+   *  that lays no section fails the roll by name (doubleSpans) */
+  doubleIn?: readonly string[];
+  /** where the drum doubles as laid (world x, [x0, x1)): written by the pipeline from `doubleIn`, never by a brief. The engine passes
+   *  `doubled` to the drum while Pokey's middle is inside one (engine.ts drumStep; audio/drum.ts drumHits) */
+  double?: ReadonlyArray<{ x0: number; x1: number }>;
+}
+
+/** the drum doubles at x: inside one of the tempo's laid spans */
+export const drumDoubled = (t: TempoSpec, x: number): boolean => !!t.double?.some((s) => x >= s.x0 && x < s.x1);
+
+/** the twist's spans from the brief's mark: every placed section whose template `doubleIn` names, merged where they touch; a mark that
+ *  lays none is named */
+export function doubleSpans(t: TempoSpec, sections: ReadonlyArray<{ template: string; x0: number; x1: number }>): { spans?: Array<{ x0: number; x1: number }>; problems: string[] } {
+  if (!t.doubleIn?.length) return { problems: [] };
+  const problems = t.doubleIn.filter((id) => !sections.some((q) => q.template === id)).map((id) => `tempo: the drum doubles in '${id}', which this roll lays nowhere`);
+  const spans: Array<{ x0: number; x1: number }> = [];
+  for (const q of [...sections].filter((q) => t.doubleIn!.includes(q.template)).sort((a, b) => a.x0 - b.x0)) {
+    const last = spans[spans.length - 1];
+    if (last && q.x0 <= last.x1) last.x1 = Math.max(last.x1, q.x1);
+    else spans.push({ x0: q.x0, x1: q.x1 });
+  }
+  return { spans: spans.length ? spans : undefined, problems };
 }
 
 /** the bar on a setting (s) */
