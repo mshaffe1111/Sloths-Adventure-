@@ -1,0 +1,24 @@
+2-1-child-easy           2 | c27 PASS 288.2 r0 l0       | ci6 PASS 288.2 r0 l0       | ci7 PASS 288.2 r0 l0       =
+2-1-child-normal        11 | c27 PASS 354.5 r0 l0       | ci6 PASS 354.5 r0 l0       | ci7 PASS 354.5 r0 l0       =
+2-1-kid-normal          19 | c27 PASS 164 r0 l0         | ci6 PASS 164 r0 l0         | ci7 PASS 164 r0 l0         =
+2-1-kid-normal          21 | c27 PASS 160.2 r0 l0       | ci6 PASS 160.2 r0 l0       | ci7 PASS 160.2 r0 l0       =
+2-2-adult-normal         4 | c27 PASS 159.2 r0 l0       | ci6 PASS 159.2 r0 l0       | ci7 PASS 159.2 r0 l0       =
+2-2-adult-normal        24 | c27 PASS 159.2 r0 l0       | ci6 PASS 159.2 r0 l0       | ci7 PASS 159.2 r0 l0       =
+2-2-kid-easy            37 | c27 PASS 170.8 r0 l1       | ci6 PASS 170.8 r0 l1       | ci7 PASS 170.8 r0 l1       =
+2-2-kid-normal           3 | c27 PASS 165.7 r0 l1       | ci6 PASS 165.7 r0 l1       | ci7 PASS 165.7 r0 l1       =
+2-2-kid-normal          33 | c27 PASS 167.6 r0 l1       | ci6 PASS 167.6 r0 l1       | ci7 PASS 167.6 r0 l1       =
+2-4-adult-normal         6 | c27 PASS 163.3 r0 l1       | ci6 PASS 163.3 r0 l1       | ci7 PASS 163.3 r0 l1       =
+2-4-adult-normal         8 | c27 PASS 163.3 r0 l1       | ci6 PASS 163.3 r0 l1       | ci7 PASS 163.3 r0 l1       =
+2-4-adult-normal        24 | c27 PASS 163.4 r0 l0       | ci6 PASS 163.4 r0 l0       | ci7 PASS 163.4 r0 l0       =
+2-4-adult-normal        32 | c27 PASS 174.7 r0 l1       | ci6 PASS 174.7 r0 l1       | ci7 PASS 174.7 r0 l1       =
+2-4-child-easy          11 | c27 PASS 243.9 r0 l0       | ci6 PASS 243.9 r0 l0       | ci7 PASS 243.9 r0 l0       =
+2-4-child-easy          23 | c27 PASS 257.9 r0 l0       | ci6 PASS 257.9 r0 l0       | ci7 PASS 257.9 r0 l0       =
+2-4-child-normal         8 | c27 PASS 385.2 r0 l4       | ci6 PASS 385.2 r0 l4       | ci7 PASS 385.2 r0 l4       =
+2-4-child-normal        39 | c27 PASS 349 r0 l2         | ci6 PASS 349 r0 l2         | ci7 PASS 349 r0 l2         =
+2-4-kid-easy             2 | c27 PASS 172.1 r0 l0       | ci6 PASS 172.1 r0 l0       | ci7 PASS 172.1 r0 l0       =
+2-4-kid-easy            12 | c27 PASS 168.7 r0 l0       | ci6 PASS 168.7 r0 l0       | ci7 PASS 168.7 r0 l0       =
+2-4-kid-easy            13 | c27 PASS 168.8 r0 l0       | ci6 PASS 168.8 r0 l0       | ci7 PASS 168.8 r0 l0       =
+2-4-kid-easy            19 | c27 PASS 182.1 r0 l0       | ci6 PASS 182.1 r0 l0       | ci7 PASS 182.1 r0 l0       =
+2-4-kid-easy            20 | c27 PASS 182 r0 l0         | ci6 PASS 182 r0 l0         | ci7 PASS 182 r0 l0         =
+2-4-kid-easy            35 | c27 PASS 172 r0 l0         | ci6 PASS 172 r0 l0         | ci7 PASS 172 r0 l0         =
+rows equal to c27: 23, moved: 0
