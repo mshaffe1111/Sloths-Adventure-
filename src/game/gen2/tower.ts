@@ -508,14 +508,17 @@ const SLOT = { step: 8, walk: 21, clear: 42 + 24 } as const;
 
 /**
  * A WALLED end: going down, the end of the run of wood at height `y` (its end at `end`, stepping off toward `dir`) is no way off when
- * other wood, not level with it (past SLOT.step), lies within his body and its margin past that end (SLOT.clear) with its own body
- * (its top to its underside) inside his (BODY_H over his feet): he walks into its side and stands there. ENG-DOWNBOT's catch across a
+ * other wood, not level with it (past SLOT.step), lies within his half-width past that end (WALL_HALF: he drops once his middle is
+ * past the end) with its own body (its top to its underside) inside his (BODY_H over his feet): he walks into its side and stands
+ * there. 28 px past an end, 8 px into his height, he goes by (the same lay's Normal 22, y 11421). ENG-DOWNBOT's catch across a
  * climb vine (stopVines) was laid 17 px from a 90 px log 73 px over it (the drafted 3-1 Normal 22) and flush with a bough 62 px over it
  * (Easy 37): handOn and the route stepped off that end, and the kid, the middle and the adult stood at it, turning, until rescued (the
  * rescue kinds 'a waist-high step ahead, a drop ahead, a trunk beside him', new on every x40 since the merge, ENG-DARK box 17).
  */
+/** his half-width (engine.ts: the player is 44 px wide): how far past an end his body still reaches when he starts to drop */
+const WALL_HALF = 22;
 export function walledEnd(platforms: ReadonlyArray<Pick<Platform, 'x' | 'y' | 'width' | 'type'> & { height?: number }>, end: number, dir: -1 | 1, y: number): boolean {
-  const a = dir < 0 ? end - SLOT.clear : end, b = dir < 0 ? end : end + SLOT.clear;
+  const a = dir < 0 ? end - WALL_HALF : end, b = dir < 0 ? end : end + WALL_HALF;
   return platforms.some((q) => q.type !== 'fragile' && q.type !== 'bouncy' && q.y < y - SLOT.step && q.y + (q.height ?? 24) > y - BODY_H
     && q.x < b && q.x + q.width > a);
 }
