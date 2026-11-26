@@ -20,7 +20,6 @@ import { HANG_DROP, ROPE_RISE, ROPE_SPEED } from './rope.ts';
 import { findForStage } from './finds.ts';
 import type { Bush, WatchZone } from './watcher.ts';
 import { catchWindow, earlyCatch, jumpGrab, jumpReaches, landWindow, leapBand, maxRise } from './protoCheck.ts';
-import type { W2Decor } from './riverArt.ts';
 import { driftX, gapFor, LOG_DROP, LOG_HEIGHT, logLayout, surfaceBelowBank, type RiverZone } from './river.ts';
 import type { SkillId } from './skills.ts';
 import type { Zone } from './zones.ts';
@@ -220,11 +219,11 @@ export interface ProtoExtras {
   invDress?: import('./art/invDress.ts').InvDress[];
   /** World 2's painted dressing: reeds, lily pads, the village's doors and signs, and its folk (w2Stages.ts, drawn by riverArt.ts) */
   decor?: import('./riverArt.ts').W2Decor[];
-  /** 2-6: the climbs are the village's ladders (riverArt.ts drawLadder), not trunks */
+  /** 2-6: the house's inside climbs are drawn as the village's ladders (riverArt.ts drawLadder), not trunks (w2Arc26.ts finish26) */
   ladders?: boolean;
   /** 4-1 and 4-6's catch branches under the hop gaps of the climb (platform id, the gap's two planks) */
   catches?: Array<{ plat: number; planks: [number, number] }>;
-  /** 2-6: the face of the river bank the village is dug into, behind the whole climb (drawn by protoArt.ts drawEarthWall) */
+  /** 2-6: the face of the river bank the village is dug into, behind the whole climb (w2Arc26.ts finish26; drawn by protoArt.ts drawEarthWall) */
   bankWall?: { x0: number; x1: number; top: number; bottom: number };
   /** moves this stage lends him whether or not he has learned them yet (the control test's rope stretch needs Shimmy Rope) */
   grant?: SkillId[];
@@ -492,9 +491,9 @@ function buildPlan(config: LevelConfig, seed: number, plan: StagePlan, easy = fa
   const spec = specFor(plan);
   if (spec) return buildFromSpec(config, seed, easy, spec);
   if (plan === '3-4') return buildSinkhole(config, seed);
-  if (plan === '4-1') return buildKapok(config, seed, false, false, true);
+  if (plan === '4-1') return buildKapok(config, seed, false, true);
   if (plan === '4-3') return buildWaterfallSteps(config, seed);
-  if (plan === '4-6') return buildKapok(config, seed, false, false, false, true);
+  if (plan === '4-6') return buildKapok(config, seed, false, false, true);
   if (plan === '4-7') return buildLongDrop(config, seed);
   if (plan === '7-4') return buildSlideStage(config, seed);
   if (plan === '8-4') return buildLanternRun(config, seed);
@@ -4624,10 +4623,6 @@ export const KNOT_PULLEY_TIPS: RoomTips = { enter: 'I knotted us a pulley!', hol
  * gap, near the top. Finish: the last trunk to the crown and the shrine. A fall only drops him to a lower branch or the floor: it costs
  * the climb, never a life. Built from y = 0 upward and shifted down at the end, so the crown sits near the top of the stage.
  *
- * `village` (2-6 Up the Bank Houses, w2Stages.ts): the same climb up the riverbank village. World 2's kit paints it (bamboo posts, plank
- * porches, earth), the porches get the village's round doors, windows and washing, the secret hollow is a lit round window instead,
- * and Gruntlewick waits at the top with his scroll.
- *
  * `grotto` (3-4 The Sinkhole): the same climb up the wall of the sinkhole toward the moonlight. World 3's kit paints it (root columns,
  * limestone shelves), prowling ocelots stand in for the snakes, and Matt's grotto pieces dress it: moss hanging under the shelves,
  * glowing mushrooms and ferns on them, stalactites and glowworm threads up in the dark.
@@ -4651,7 +4646,7 @@ export const KNOT_PULLEY_TIPS: RoomTips = { enter: 'I knotted us a pulley!', hol
  * mist in turn; then the crown and the shrine. It is a long stage (stageSeconds('4-6'), four minutes). No glide is needed (4-7 is the
  * first stage that needs the leaf).
  */
-export function buildKapok(config: LevelConfig, seed: number, village = false, grotto = false, cliff = false, mist = false): GeneratedStage & { proto: ProtoExtras } {
+export function buildKapok(config: LevelConfig, seed: number, grotto = false, cliff = false, mist = false): GeneratedStage & { proto: ProtoExtras } {
   const R = stream(seed);
   const W = KAPOK_W;
   const P: Platform[] = [];
@@ -4664,7 +4659,6 @@ export function buildKapok(config: LevelConfig, seed: number, village = false, g
   const hints: StageHint[] = [];
   const beats: Array<[number, number, string]> = [];
   const hollows: Array<{ x: number; y: number }> = [];
-  const villageWindows: Array<{ x: number; y: number }> = [];
   let pid = 1, vid = 1, tid = 1, eid = 1, cid = 1, seedN = 0;
   let expert = 0;
   const RUN = 285, CLIMB = 220;
@@ -4865,18 +4859,12 @@ export function buildKapok(config: LevelConfig, seed: number, village = false, g
   cur = P[0];
   beat('Learn: up the trunk', () => {
     // the patch of floor the first trunk stands on
-    // (2-6, QA 2026-10-29: the first ladder stood 440 px from where he starts, off an upright screen (it shows 70-510); the tip to slide
-    // up a post came as he walked past it, and he walked the floor seeing only the bank's dirt. In the village it stands 220 px on)
-    cur = (village ? { ...P[0], x: 200, width: 280 } : { ...P[0], x: 300, width: 400 }) as Platform;
-    if (village) hint('Up through the village! Slide up a post to climb', 'Up through the village! Hold up on a post to climb', 'Up through the village! Hold up on a post to climb');
-    else if (grotto) hint('Up the sinkhole, toward the moonlight! Slide up a root to climb', 'Up the sinkhole, toward the moonlight! Hold up on a root to climb', 'Up the sinkhole, toward the moonlight! Hold up on a root to climb');
+    cur = { ...P[0], x: 300, width: 400 } as Platform;
+    if (grotto) hint('Up the sinkhole, toward the moonlight! Slide up a root to climb', 'Up the sinkhole, toward the moonlight! Hold up on a root to climb', 'Up the sinkhole, toward the moonlight! Hold up on a root to climb');
     else if (mist) hint('Up toward the eagle nests, above the mist! Slide up a trunk to climb', 'Up toward the eagle nests, above the mist! Hold up on a trunk to climb', 'Up toward the eagle nests, above the mist! Hold up on a trunk to climb');
     else if (cliff) hint('The ledge broke away! Climb back up. Slide up a trunk to climb', 'The ledge broke away! Climb back up. Hold up on a trunk to climb', 'The ledge broke away! Climb back up. Hold up on a trunk to climb');
     else hint('Slide up on the trunk to climb', 'Hold up on the trunk to climb', 'Hold up on the trunk to climb');
     firstTrunkX = climb(Math.round(R.r(280, 320)), 4);
-    // (2-6: a log lying on the floor just past the first ladder, a hop high: a plain walk stops by the ladder instead of carrying him off
-    // along the floor, and coming back to it after a fall is a hop over, QA 2026-10-29)
-    if (village) P.push({ id: pid++, x: firstTrunkX + 70, y: -40, width: 100, height: 40 + BANK_H, type: 'solid', style: 'log' });
     row(cur.x + 80, cur.x + cur.width - 30, cur.y - 34, 2, 'hibiscus');
     climb(Math.round(R.r(260, 300)), 3);
     flag();
@@ -4909,8 +4897,7 @@ export function buildKapok(config: LevelConfig, seed: number, village = false, g
       const h = Math.round(R.r(380, 420));
       trunk(sx, cur.y, cur.y - h);
       const hy = Math.round(cur.y - h * 0.5);
-      if (!village) hollows.push({ x: sx, y: hy });
-      else villageWindows.push({ x: sx, y: hy });
+      hollows.push({ x: sx, y: hy });
       seedN++;
       C.push({ id: cid++, type: 'seed', x: sx, y: hy + 4, collected: false, bobPhase: seedN, findId: `seed-${seedN}` });
       const top = ledge(sx - 40, sx + 150, cur.y - h);
@@ -5325,38 +5312,6 @@ export function buildKapok(config: LevelConfig, seed: number, village = false, g
 
   // shift down: the crown sits 400 px under the top of the stage, the floor 120 px over its bottom
   const crown = cur;
-  const decor: W2Decor[] = [];
-  if (village) {
-    // the village on its porches: a round door on every wide one (clear of the posts and the rope ends), a lit window or washing on
-    // the others, a chimney and Gruntlewick with his scroll up top, and the lit window where 1-4 has its hollow
-    // (only the posts that stand on or rise from this porch, and the ropes tied to it, are in the way)
-    const clear = (p: Platform, x: number, half: number) =>
-      V.every((v) => v.vineType !== 'tree_climb' || v.topY > p.y + 10 || v.bottomY < p.y - 10 || Math.abs(v.x - x) > half + 40) &&
-      ROPES.every((r) => (r.g0 !== p.y && r.g1 !== p.y) || (Math.abs(r.x0 - x) > half + 30 && Math.abs(r.x1 - x) > half + 30));
-    let k = 0;
-    for (const p of P) {
-      if (p === P[0] || p === crown || p.width < 220) continue;
-      // try the middle of the porch, then a third of the way along from each end
-      const spots = [0.5, 0.33, 0.67].map((u) => p.x + p.width * u);
-      const kind = k % 3;
-      const half = kind === 0 ? 70 : kind === 1 ? 36 : 85;
-      const at = spots.find((x) => clear(p, x, half));
-      if (at === undefined) continue;
-      k++;
-      if (kind === 0) {
-        decor.push({ n: 'doorRoof', x: at, b: p.y + 6, w: 150, flip: k % 2 === 0 });
-        decor.push({ n: 'lantern', x: at + (k % 2 === 0 ? -92 : 92), b: p.y - 62, w: 26 });
-      }
-      else if (kind === 1) decor.push({ n: 'window', x: at, b: p.y - 16, w: 62 });
-      else decor.push({ n: 'laundry', x: at, b: p.y + 4, w: 160 });
-    }
-    for (const w of villageWindows) decor.push({ n: 'window', x: w.x, b: w.y + 34, w: 70 });
-    decor.push({ n: 'rooftop', x: crown.x + 150, b: crown.y + 4, w: 170 });
-    decor.push({ n: 'bell', x: crown.x + crown.width - 330, b: crown.y + 4, w: 96 });
-    decor.push({ cel: 'tc.hat_shout', x: crown.x + crown.width - 60, b: crown.y + 2, k: 0.42, flip: true });
-    // the floor at the bottom is the river's bank, with reeds
-    decor.push({ n: 'reedTall', x: 160, b: 6, w: 64 }, { n: 'reedShort', x: W - 200, b: 6, w: 90 });
-  }
   const w3decor: W3Decor[] = [];
   if (grotto) {
     // the sinkhole: moss hanging under the shelves, mushrooms and ferns on them, the clawed rock and stalagmites on the floor,
@@ -5491,36 +5446,11 @@ export function buildKapok(config: LevelConfig, seed: number, village = false, g
 
   /**
    * A knot of wood at each end of a high branch where a step too far drops him `drop` px or more (or at a rope's post), so a plain walk
-   * stops there instead of carrying him into a long fall; he can still hop over it. Returns the knots. `floor` (2-6): the drop is where
-   * a walk off lands (walkOff), and an end onto the floor gets one too; `doubt`: every knot is listed there for the level check to judge
-   * (one that saves a move goes), and knots under a ledge a double jump off their top might reach are made anyway (2-6: a knot's top was
-   * a step up to a porch 180 px up and 130 px across, a double jump the kid bot made 78% of the time).
+   * stops there instead of carrying him into a long fall; he can still hop over it. Returns the knots.
    */
-  const knots = (drop: number, o: { floor?: boolean; doubt?: Platform[] } = {}): Platform[] => {
+  const knots = (drop: number): Platform[] => {
     const LIP = { w: 18, h: 56 };
     const made: Platform[] = [];
-    /**
-     * Where a walk off the end of p lands (`floor`, 2-6): the arc of a walk off at a run, held on the way it was going (he carries on
-     * well past the end as he falls: 30 and 80 px past it missed porches below that he sails over), and how far down that is. An end
-     * that drops him to the floor gets a knot however short the fall.
-     */
-    const walkOff = (p: Platform, end: number, side: 1 | -1): { drop: number; floor: boolean } => {
-      let y = 0, vy = 0;
-      for (let t = 0; t < 4; t += 1 / 60) {
-        const x = end + side * (8 + PHYS.maxRun * t);
-        const y1 = y + vy / 60;
-        vy = Math.min(PHYS.maxFall, vy + PHYS.gravDown / 60);
-        // (a landing within 60 px of a porch's end counts as a miss: he comes down on the knot there, half his body past it, and walks on
-        // off it)
-        const hit = P.filter((q) => q !== p && !q.lip && q.y - p.y > y && q.y - p.y <= y1 && q.x + 60 <= x && q.x + q.width - 60 >= x);
-        if (hit.length) {
-          const q = hit.reduce((a, b) => (b.y < a.y ? b : a));
-          return { drop: q.y - p.y, floor: q === P[0] };
-        }
-        y = y1;
-      }
-      return { drop: Infinity, floor: false };
-    };
     const dropAt = (p: Platform, x: number) => {
       const under = P.filter((q) => q !== p && q.y > p.y && q.x <= x + 19 && q.x + q.width >= x - 19);
       return under.length ? Math.min(...under.map((q) => q.y)) - p.y : Infinity;
@@ -5532,15 +5462,13 @@ export function buildKapok(config: LevelConfig, seed: number, village = false, g
         // (and at an end where a rope's post stands: walking up to the post he used to run past it and off the end, 44 px on, before
         // he could jump up to the rope; the knot stops him at the post. Hanging, he passes over it, and he steps off the rope beyond it)
         const post = ROPES.some((q) => (side > 0 ? Math.abs(q.x0 + 44 - end) < 2 : Math.abs(q.x1 - 44 - end) < 2) && Math.abs(q.g0 - p.y) < 2);
-        const off = o.floor ? walkOff(p, end, side) : null;
-        if (!post && (off ? off.drop < drop && !off.floor : Math.max(dropAt(p, end + side * 30), dropAt(p, end + side * 80)) < drop)) continue;
+        if (!post && Math.max(dropAt(p, end + side * 30), dropAt(p, end + side * 80)) < drop) continue;
         // (never under a ledge a double jump off the knot's top would reach: under a mist column's top it was a step up past the hidden
         // ledges, a 150 px jump straight up that the kid bot made 54-65% of the time, 2026-10-28. A fall here costs a climb, not a life)
         // (a knot under a rope's post stays: the post needs it; the engine's walls are 50 px or taller, so it cannot be made lower)
         const lx = side < 0 ? end : end - LIP.w;
         const over = P.some((q) => q !== p && q.y < p.y && p.y - LIP.h - q.y < DOUBLE_RISE + 30 && q.x < lx + LIP.w + 60 && q.x + q.width > lx - 60);
-        // (`doubt`: kept for now, and the level check takes it away if it saves a move, as it does the catch branches below)
-        if (over && !post && !o.doubt) continue;
+        if (over && !post) continue;
         // (nor where the next branch is a hop away at about the same height, round 4: a knot at both ends of a 70 px gap made the hop clear
         // two walls, a 100 ms press on Easy; a slip into that gap drops to a branch or the floor, the climb again, never a life)
         const hopNext = P.some((q) => q !== p && q.height === 24 && Math.abs(q.y - p.y) < 90 && (side > 0 ? q.x >= end && q.x - end < 200 : end >= q.x + q.width && end - (q.x + q.width) < 200));
@@ -5548,19 +5476,10 @@ export function buildKapok(config: LevelConfig, seed: number, village = false, g
         const knot: Platform = { id: pid++, x: lx, y: p.y - LIP.h, width: LIP.w, height: LIP.h, type: 'solid', style: 'branch', lip: true };
         P.push(knot);
         made.push(knot);
-        o.doubt?.push(knot);
       }
     }
     return made;
   };
-
-  // 2-6 (QA 2026-10-29, ?layout=1: "plank ends walk you off to the floor"): the same knots at the porches' dead ends where a step too far
-  // drops him past the porch below (400 px or more: a climb back is one ladder, a fall past it a long way back) or onto the floor (where
-  // he walked off along the bank, away from the ladders); each is a mailbox on its post (the World 2 sheet: placed once the level check
-  // has had its say, below)
-  /** the knots for the level check to judge (it keeps only those that save no move) */
-  const doubtKnots: Platform[] = [];
-  const villageKnots = village ? knots(400, { floor: true, doubt: doubtKnots }) : [];
 
   // 4-6: the ends of the branches high in the tree where a step too far drops him a very long way (the floor, or a ledge far below):
   // a knot of wood stands at each such end, a little wall, so he cannot walk off into a ten-second fall (he can still hop over it). And
@@ -5679,13 +5598,10 @@ export function buildKapok(config: LevelConfig, seed: number, village = false, g
   for (const r of ROPES) { r.y += shift; r.g0 += shift; r.g1 += shift; }
   for (const cp of checkpoints) cp.y += shift;
   for (const h of hollows) h.y += shift;
-  for (const d of decor) d.b += shift;
   for (const h of hints) if (h.aboveY !== undefined) h.aboveY += shift;
   for (const b of beats) { b[0] += shift; b[1] += shift; }
   const floorY = P[0].y;
   const H = floorY + 120;
-  // the bank's face rises from the floor to just under the top porch, where the village opens onto the sky
-  const bankWall = village ? { x0: 0, x1: W, top: crown.y + 40, bottom: floorY + 10 } : undefined;
   const exitX = Math.round(crown.x + crown.width - 140);
   C.push({ id: cid++, type: 'exit_totem', x: exitX, y: crown.y - 30, collected: false, bobPhase: 0 });
   cid = heartsAtFlags(C, checkpoints, cid);
@@ -5713,23 +5629,21 @@ export function buildKapok(config: LevelConfig, seed: number, village = false, g
     ...(kit ? { kit } : {}),
     ...(gusts.length ? { zones: gusts } : {}),
     proto: {
-      hints, covers: [], beats, movedPickups, hollows, ...(catches.length ? { catches } : {}), ...(decor.length ? { decor } : {}), ...(w3decor.length ? { w3decor } : {}), ...(bankWall ? { bankWall, ladders: true } : {}),
+      hints, covers: [], beats, movedPickups, hollows, ...(catches.length ? { catches } : {}), ...(w3decor.length ? { w3decor } : {}),
       ...(cliff ? { w4: { rocks, patience: spot ? [spot] : [], rockTip: ROCKS_LOOSE } } : {}),
       ...(mist ? { w4: { patience: mistSpots, nests, floor: { y: floorY, trunkX: firstTrunkX }, ...(rocks.length ? { rocks, rockTip: ROCKS_LOOSE } : {}) } } : {}),
     },
   };
   // (the catch branches, judged by the level check itself: one that lets any place be reached in fewer moves than without the catches
-  // is taken away, and its gap closed instead where it can be. The rules above keep most clear; this catches the rest. 2-6's knots the
-  // same way: one that saves a move is taken away)
-  if (catches.length || doubtKnots.length) {
+  // is taken away, and its gap closed instead where it can be. The rules above keep most clear; this catches the rest)
+  if (catches.length) {
     let g: CheckGraph | null = null;
     validateStage(out as unknown as GeneratedStage, { inspect: (q) => (g = q) });
     const graph = g as CheckGraph | null;
     if (graph) {
-      const ck = new Map<string, { plat: number; planks?: [number, number] }>([
-        ...catches.map((c) => [graph.key(P.find((p) => p.id === c.plat)!), c] as const),
-        ...doubtKnots.map((k) => [graph.key(k), { plat: k.id }] as const),
-      ]);
+      const ck = new Map<string, { plat: number; planks: [number, number] }>(
+        catches.map((c) => [graph.key(P.find((p) => p.id === c.plat)!), c] as const),
+      );
       const start = graph.key(P[0]);
       const bfs = (skip: (k: string) => boolean) => {
         const d = new Map<string, number>([[start, 0]]);
@@ -5752,27 +5666,12 @@ export function buildKapok(config: LevelConfig, seed: number, village = false, g
       for (const k of gone) {
         const c = ck.get(k)!;
         P.splice(P.findIndex((p) => p.id === c.plat), 1);
-        if (!c.planks) {
-          villageKnots.splice(villageKnots.findIndex((q) => q.id === c.plat), 1);
-          continue;
-        }
-        catches.splice(catches.indexOf(c as (typeof catches)[number]), 1);
+        catches.splice(catches.indexOf(c), 1);
         const [a, b] = c.planks.map((id) => P.find((p) => p.id === id)!);
         closeGap(a, b);
       }
     }
   }
-  // 2-6's knots: a mailbox on its post (its post 6% of the picture right of its middle: flipped, as far left), facing either way, and
-  // every third a signpost (its post in the middle), so some fifty of them never read as one piece repeated (STAGE-RULES §5b)
-  villageKnots.forEach((k, i) => {
-    k.art = 'post';
-    const b = k.y + k.height + 2, cx = k.x + k.width / 2;
-    if (i % 3 === 2) decor.push({ n: 'sign', x: Math.round(cx), b, w: 50 });
-    else {
-      const flip = (i + Math.floor(i / 3)) % 2 === 1;
-      decor.push({ n: 'mailbox', x: Math.round(cx + (flip ? 2 : -2)), b, w: 38, flip });
-    }
-  });
   return out;
 }
 
