@@ -81,7 +81,7 @@ import { towerCorners, towerRoutePts } from './towerRoute.ts';
 import type { Stage } from './stages.ts';
 import { liftStop } from '../../src/game/lift.ts';
 import type { FollowPlay } from '../../src/game/followPlay.ts';
-import { bucketAngle } from '../../src/game/wheel.ts';
+import { bucketAngle, bucketAt, bucketPeriod, type Wheel } from '../../src/game/wheel.ts';
 import { WHEEL_FLOWN } from '../../src/game/gen2/wheelFlights.data.ts';
 import { flownKey } from '../../src/game/gen2/wheelLay.ts';
 
@@ -1044,6 +1044,31 @@ export function hopLandsOn(q: Platform, at: (t: number) => number, x: number, y:
   return false;
 }
 /**
+ * SKILLS.rideWheel's board (LAND-26c, R-165.475): a hop pressed from (x, y) toward `dir`, held `hold` s and steered `dir` through the
+ * flight, comes down IN a bucket of wheel `w` (each bucket's floor where it is on the wheel's clock, bucketAt: frame i at t0 + i * DT),
+ * his middle `margin` px or more inside its ends. False when it comes down on a bucket's end (he slides off it, as 2-6 child Normal v2 did
+ * at the top wheel from 17 px short of the jetty's lip) or into no bucket. wheelFlights' board (a tap hop boards at every moment) was
+ * flown from 30 px back of the lip: from nearer, at some moments the hop carries past the bucket coming up.
+ */
+export function hopBoards(w: Wheel, x: number, y: number, dir: -1 | 1, hold: number, t0: number, vx0 = 0, margin = 24): boolean {
+  const b = { x, y, vx: vx0, vy: -PHYS.jumpV };
+  const seats = (k: number) => Array.from({ length: w.N }, (_, j) => bucketAt(w, j, t0 + k * DT));
+  let prev = seats(0);
+  for (let i = 1; i < 60; i++) {
+    const py = b.y;
+    hopFrame(b, i, dir, hold);
+    const now = seats(i);
+    // (his feet over a bucket's floor last frame and on or under it now: a bucket on the rising side comes up to meet him while he still rises)
+    for (let j = 0; j < w.N; j++) {
+      const q = now[j];
+      if (py <= prev[j].y && b.y >= q.y && b.x > q.x - 20 && b.x < q.x + w.W + 20) return b.x >= q.x + margin && b.x <= q.x + w.W - margin;
+    }
+    prev = now;
+    if (b.y > y + 200) return false;
+  }
+  return false;
+}
+/**
  * A hop as the bot will press it (level.md rule 28, the hop judged is the hop flown; the lead's ruling 11-21, ENG-27n): its kind, the
  * first press's hold, the second press (`d2` s after the first, a tier bot's dbl2Q; -1: at `dblAt`, falling past it) and its hold
  * (`hold2`), and the beat with no steer (`upOnly`). Drawn once per wait (FirstTimerRun.drawHop, by the testers' habit), judged by
@@ -1569,6 +1594,8 @@ export class FirstTimerRun {
   private wheelSeen = -1;
   private wheelDelay = 0;
   private wheelHop = 0;
+  /** SKILLS.rideWheel: when he first stood at a jetty's lip waiting for a bucket his hop boards (game time, -1: not waiting) */
+  private wheelBoardWait = -1;
   /** a pond's pad ahead first read ready (s), or -1 (padRead's reaction) */
   private padSeen = -1;
   /** he has hopped since padSeen was set (CI-14: the next floor that stays he reaches is a new edge, read afresh) */
@@ -4774,10 +4801,19 @@ export class FirstTimerRun {
     if (!w || dir !== w.way) return null;
     const lip = w.way > 0 ? here.x + here.width : here.x;
     const toLip = (lip - p.x) * w.way;
-    if (toLip > (who.aimQ ? who.aimQ[1] + 31 : 22 + who.edgeAim)) return w.way > 0 ? { right: true } : { left: true };
+    if (toLip > (who.aimQ ? who.aimQ[1] + 31 : 22 + who.edgeAim)) { this.wheelBoardWait = -1; return w.way > 0 ? { right: true } : { left: true }; }
     // (the stand at the lip: a thumb that does not let go (no holdQ) keeps the walk-up press held through a `{}` and walks off the lip
     // into the pond (the wheel toy, sparse kid Normal v2, 6.1 s): for him the stand is a brake, a press against his motion. BUILD-26n)
     if (Math.abs(p.vx) > 10) return who.holdQ ? {} : p.vx > 0 ? { left: true } : { right: true };
+    // (he hops when a bucket coming up takes the hop, as a person who has watched the wheel does, at every lag his thumb presses at
+    // (thumbLags, hopAim's clock): from nearer the lip than the board was flown (30 px), at some moments the hop carries past the bucket's
+    // end and he slides off it (2-6 child Normal v2, the top wheel: 17 px short of the lip, in at its end, 2 scrambles. LAND-26c,
+    // R-165.475). Every moment comes round once a bucket period: none in one, and he hops as before)
+    const hold = Math.max(who.hold[0], this.pressHold());
+    if (this.wheelBoardWait < 0) this.wheelBoardWait = e.gameTime;
+    const boards = thumbLags(who.thumb).every((lag) => hopBoards(w, p.x, p.y, w.way, hold, e.gameTime + hopAim(lag).clock));
+    if (!boards && e.gameTime - this.wheelBoardWait < bucketPeriod(w)) return !who.holdQ && Math.abs(p.vx) > BONK.still ? (p.vx > 0 ? { left: true } : { right: true }) : {};
+    this.wheelBoardWait = -1;
     this.wheelHop = who.hold[0];
     const out = this.decide(w.way, 'single', true, {});
     // (decide may have set a press to come: he stands while it comes, as off a log, vineFromLog)
