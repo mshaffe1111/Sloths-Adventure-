@@ -8,7 +8,7 @@ water in the upright frame from the bank's edge): done (5). B's rows reached the
 (fork-jump + B, 2b not landed; the child's 3 late-0 rows) is OPEN.
 RUNNING AT THE BOX (frozen /tmp/claude-0/wt/6c407a578, logs in the session scratchpad, gone with the container): the src suite in 6
 shards (shard 1: 235 ok, 0 not ok); lockall: base recorded on main 4bf2cbaaa, then --check on the head; the CI tool line, then
-paintcheck 2/3. If they never arrive in this REPORT, re-run each ONCE on 6c407a578's tree (suite frozen except src/game/gen2/proven).
+paintcheck 2/3. RESULTS AFTER THE HAND-OVER (already running, D138): CI tool line on 6c407a578: 434 tests, 433 pass, 0 fail, 1 todo (the OPEN chase-bots child): GREEN; paintcheck 2/3: PASS (0 new, 106 known ids). Suite and lockall: see below if recorded. If they never arrive in this REPORT, re-run each ONCE on 6c407a578's tree (suite frozen except src/game/gen2/proven).
 NEXT, in order: (0) ReadNotifications: the lead's ruling on B. (1) record the gates above. (2) READY-28 to the lead, on 2-8's own config
 (forkstills-s12.mjs.txt, FORK_AS 2-8, the shots DRIVEN): the must-show = stills-s12-first117/fork-s1-edge-upright.jpg (from the bank's
 edge, upright, the first dip's water below-left); the look items: (i) top-upright's pocket: on the new marsh both banks of the dip under
