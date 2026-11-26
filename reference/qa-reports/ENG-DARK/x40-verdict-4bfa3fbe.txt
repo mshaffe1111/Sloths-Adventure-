@@ -1,0 +1,28 @@
+rows 360 shrine 360
+unlit events 2
+  child easy 8 dark: went over the rim at x 515, y 4375 (right end of 251-515) at 103.37 s with its landing dark (needs 1.6 s)
+  kid normal 29 dark: went over the rim at x 582, y 3380 (left end of 582-993) at 31.53 s with its landing dark (needs 1 s)
+max loop (7, 'middle', 'normal', 26)
+gaveUp 2 edgeTurns 0
+rescue kinds the base lacks 3
+  an open drop ahead, a trunk beside him, the way on is # px down
+  in a dip # px deep, a drop of # px ahead
+  in a dip # px deep, a drop of # px ahead, a trunk beside him, the way on is # px down
+bot setting  shrine  median new / base  delta  rescues new/base
+kid    normal  40/40   151.7 /  174.7   -23.0  49/156
+kid    easy    40/40   206.3 /  197.0    +9.3  103/186
+child  normal  40/40   262.4 /  320.1   -57.7  36/138
+child  easy    40/40   266.4 /  306.4   -40.0  80/178
+middle normal  40/40   189.8 /  207.7   -17.8  69/126
+middle easy    40/40   233.8 /  261.5   -27.8  110/186
+adult  normal  40/40   153.8 /  164.4   -10.6  49/119
+adult  easy    40/40   206.2 /  200.3    +5.8  106/180
+expert normal  40/40   178.7 /  202.4   -23.7  72/124
+base rescues 1393 new rescues 674
+child normal 19 x 255: in a dip 188 px deep, a drop of 70 px ahead | base same spot: 0 (base rescues on this roll 48)
+middle normal 13 x 879: in a dip 225 px deep, a drop of 173 px ahead, a trunk beside him, the way on is 130 px down | base same spot: 1 (base rescues on this roll 8)
+    base ('middle', 854, 'in a dip 173 px deep, the way on is 108 px down')
+child easy 34 x 802: an open drop ahead, a trunk beside him, the way on is 141 px down | base same spot: 4 (base rescues on this roll 19)
+    base ('kid', 755, 'in a dip 287 px deep, the way on is 120 px down')
+    base ('adult', 755, 'in a dip 287 px deep, the way on is 120 px down')
+    base ('child', 779, 'in a dip 281 px deep, the way on is 126 px down')

@@ -1,4 +1,36 @@
 # ENG-DARK REPORT (the dark + light ring as one gen2 brick; WORLD-3-PLAN F2; R-165.449)
+**EXACT NEXT STEP (ENG-DARK-s box 19 HAND-OVER, 2:27 PM ET by `date`; head on t-eng-dark-wip = this commit). CODE CANDIDATE STILL
+4bfa3fbee (c13), REVIEWED, x40 RUN: IT MISSES THE BAR ON ONE ROW ONLY. shrine 360/360, unlit 2, max loop 7 (middle N 26), gaveUp 2;
+rescues 674 vs base 1393. kinds.py: 3 kinds the base lacks; middle N 13 x 879 (base same spot 1) and child E 34 x 802 (base same spot
+4) have base rescues at the same place (NOT new per box 17's ruling); expert N 37, child E 38, child N 25 x 365 did NOT recur.
+THE ONE NEW ROW: child N 19 x 255, y 8689, 165.3 s, 'in a dip 188 px deep, a drop of 70 px ahead' (base same spot 0).** x40-verdict-
+4bfa3fbe.txt, cast-3-1-x40-4bfa3fbe-lane1/-lane2.jsonl.
+**Box 19 DONE:** (1) c13's diff reviewed: sound (engine.ts one literal -> STAND_SIDE, same value; p.x is his middle, walls [20, w-20],
+Easy assist 1 so HANG.off 15.84 covers every setting; the `<=` vs the engine's strict `<` cannot meet: 11.44 is not whole). tower.test
+39/39 GREEN on frozen 4bfa3fbee. Normal 22: all 5 bots reach the shrine, 1 rescue each (c12: all 5 stranded). Child N 25: shrine, 3
+stuck lines, x 365 not among them. (2) x40 as above. (3)-(4) NOT RUN (the bar is missed; D140: no gates on a head that fails it).
+Merge preview onto t-eng-w3 88592a9c4 (merge base c1008d8ed): CLEAN, no conflicts.
+**The N 19 row, traced as far as the box allowed (probes/tagat.mts; probes/lays.mts = md5 of the 80 lays, committed):** the wood at
+the spot is IDENTICAL on c12 and c13 (#48 79-289 y 8689; slot #50 289-386 y 8759, 70 px down; #49 386-723 y 8689; #47 125-350 and
+#119 350-693 y 8408; catch #120 284-464 y 8501; #121 0-79). On the BASE the catch over the slot is #119 284-464 at y 8581 (108 px over
+#48); on c12/c13 it is #120 at y 8501, 188 px over #48 = the rescue's 'dip 188 px deep': ENG-DOWNBOT's going-down lay, not c13's
+offEnd. c12's child passed it without a rescue (its route got there differently: c13 changes all 80 lays, so the run before the spot
+differs; c12 stuck at 210/6329, c13 at 1083/5755). Not yet known: what the child does on #48 (which way he faces, whether he refuses
+the 70 px slot or the jump to #120), and whether the base's #119 at 8581 was reachable where #120 at 8501 is not.
+**BOX 20 DOES, in order:** (a) send the lead this row with the trace above and ASK FOR THE RULING (is a rescue on wood identical to
+c12's, under the going-down lay's catch, 'new against the base'?) with priority now; (b) meanwhile trace it on frozen 4bfa3fbee
+(FT_FRAMES around 160-166 s, probes/legs.mts at 255,8689): if it is a real fault of the lay (#120 too high to be the way on, or the
+slot refused), fix it in tower.ts with a toy each way and a plant, re-run tower.test and the 5 bots on N 19 + N 22 + child N 25, then
+ONE x40; if the lead rules it not new, c13 STANDS and go to (c) on 4bfa3fbee. (c) dark.test + darkBots.test + castBots.test WHOLE (2 at
+a time) and ALL 44 plants CAUGHT (`python3 reference/qa-reports/ENG-DARK/planted-faults.py <dir>`); (d) the gates ONCE (tierBots 9/9,
+the CI tool line gates.yml:157 on a FULL tree, the suite shards = deploy.yml:38 `--test-shard=i/6`, run_in_background WITH timeout
+7200000), then LAND on t-eng-w3 (merge, no force; preview was clean); dark/darkBots/castBots + lockall on the merged head; push; the
+hash to the lead. LANDED by 6:00 PM ET; if it slips, the lead at 5:30 PM ET with what is left; HARD STOP 7:00 PM ET.
+Frozen trees in box 19's container (gone with it): /home/user/wt-c13 (4bfa3fbee + node_modules), wt-c12 (a1d6a529c), wt-base
+(c1008d8ed). Lessons applied: D115 (frozen trees for every run), D119, D128, D134, D138 (this note ends box 19's new work), D140, D141.
+LEARNED: a rescue that appears on a candidate whose change is elsewhere can be the route arriving differently at a place an earlier
+change made fragile: compare the WOOD at the spot across candidate, previous candidate and base (tagat) before blaming the candidate.
+
 **EXACT NEXT STEP (ENG-DARK-r box 18 HAND-OVER, 2:06 PM ET by `date`; head on t-eng-dark-wip = this commit). CODE CANDIDATE 4bfa3fbee
 (c13), NOTHING RUN ON IT YET. c12 (a1d6a529c)'s x40 FAILED THE BAR: shrine 355/360 (all 5 bots stranded on Normal 22 by the shrine),
 unlit 5 (= the limit), max loop 7, 4 kinds the base lacks (kinds.py: child N 25 x 365 NOT a rescue; expert N 37, child E 34, child E 38:
