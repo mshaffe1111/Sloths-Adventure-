@@ -44,7 +44,17 @@ Re-fetch t-eng-29-wip (head d1038af49 or this REPORT commit after it). Run ReadN
   TRAP found and fixed: the engine holds an early press to the swing's sweet spot (engine.ts holdLeapForSweet, swingLeapWait), so a try
   must run on to its landing and the held leap must be cleared between tries; the first sweep read those as 'regrab'/'fell-off' and cut
   the early side to one frame. First clean read (seed 1, 1 bar, Normal, liana x7903): grip 0.7 early 0.40 s / late 0.17 s; grip 0.95
-  early 0.37 s / late 0.33 s. The full sweep's numbers follow.
+  early 0.37 s / late 0.33 s.
+- **G6 MEASURED (the full sweep, seeds 1 and 2, 4 bars each press, both lianas, both grips; raw: probes/oneMargin-0.92.txt)**, the
+  contiguous landing presses either side of the press on ONE, worst over seeds, lianas and bars (both lianas and both seeds read alike):
+
+  | setting (bar) | grip 0.7 early / late | grip 0.95 early / late | WORST early / late | window round ONE |
+  |---|---|---|---|---|
+  | Normal (2.85 s) | 0.47 / 0.17 s | 0.37 / 0.30 s | **0.37 / 0.17 s** | 0.67 s (grip 0.7) |
+  | Easy (3.30 s) | 0.57 / 0.23 s | 0.47 / 0.40 s | **0.47 / 0.23 s** | 0.83 s (grip 0.7) |
+
+  Every miss is water (a let-go that falls short or long of the log); none is a harness read. lockedDrops' model says one=true on all four.
+  The LATE side is the short one: at lock 0.92 ONE sits near the end of the landing run (Normal: 5 frames late, 14 early at grip 0.7).
 
 ## ENG-29-e (box 1 hand-over, 6:22 PM ET Thu 11/26 by `date`): G3 and G2 DONE on t-eng-29-wip; G1, G6 and the landing NOT started
 
