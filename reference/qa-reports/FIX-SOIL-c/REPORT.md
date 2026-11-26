@@ -1,10 +1,32 @@
 # FIX-SOIL-c (t-fix-soil-c, cut from t-build-28-wip 0f15f97d3). Started 1:24 PM ET 11-26 (by `date`)
 
-## EXACT NEXT STEP
-Gates on a FROZEN tree of the fix commit (git worktree add --detach; node_modules linked; D115), each ONCE: tsc; lockall --layouts 16
---check against a lock RECORDED on frozen 0f15f97d3 (zero moves); paintcheck sweep (all parts); drawcheck; the CI tool line
-(gates.yml 'rolled': `npx tsx --test tools/engine/library.test.ts ...`). Fill the gate table, push t-fix-soil-c, `git ls-remote`, send
-the lead the hash + table.
+## EXACT NEXT STEP (hand-over at the box: 28 minutes of work; the pillar fix a9c0170c is APPROVED by the lead on its stills)
+FINAL CODE HEAD a9c0170c on t-fix-soil-c. Gates on a FROZEN tree of a9c0170c (git worktree add --detach; ln -s node_modules; chattr -R +i
+src tools; D115), each ONCE, all NOT YET DONE (this session started them in its own container; none finished before the box):
+(1) lockall: RECORD on a frozen tree of 0f15f97d3 (`npx tsx tools/engine/lockall.ts --layouts 16 --out <scratch>/lock-base.json`, ~30 min
+    with paintcheck alongside), then `--check <scratch>/lock-base.json` on a9c0170c: ZERO moves expected (draw-only).
+(2) paintcheck sweep, all parts in one run (`npx tsx tools/engine/paintcheck.ts`, ~18 min+): 0 new, 0 SOIL OVER.
+(3) drawcheck (`node tools/perf/drawcheck.mjs`, ~6 min).
+(4) the CI tool line (.github/workflows/gates.yml line 157, the 'rolled' step starting `npx tsx --test tools/engine/library.test.ts`).
+(tsc on the frozen a9c0170c: PASS. paintFall.test.ts: 18/18; planted RED on 0f15f97d3's src: 2 fail.) The SUITE is HELD by the lead
+until the final candidate is known (CI #85). Then fill the table, push t-fix-soil-c, `git ls-remote origin t-fix-soil-c`, send the hash
+and table to the lead (session_01FhBbYN2CVHnFXg7XzqKXpM).
+THE RISES' BLOCK (the lead's second order): cause traced, below; NOT one quick draw-only fix: the lead routes it. Do not patch it here.
+
+## The rises' pale block (the lead's order 2, traced; NOT a quick draw-only fix)
+- (a) The rises (id 32 moss_stone 1400x60 at x 15569 y 1398; id 33 600x60 at x 15969 y 1338; both stand on the porch log, foot 1458)
+  are not painted: paintedBank (w1Pits.ts:97) needs height >= 90 (or soil); the moss-stone painter draws only h 50 (rockLooks.ts:21),
+  and pickCut gives no cut piece (too wide), so terrain.ts terrainLook (the `if (p.height >= 50)` branch) draws them as CODE TERRAIN
+  ('ground'/'step'/'pillar'/'earth' by the plan), whose body footingOf gives bodyBottom: Infinity: drawn on down out of sight with a
+  straight side, through the porch log. It is R-165.292's fall-through (paintFall.ts paintFalls): on the toy build paintFalls flags
+  id 32 and id 33, and W itself (id 30, 330x60), as moss_stone h 60 drawn 'ground', painter range 1-50. The paintcheck sweep has not seen
+  it only because no listed row lays this section yet: it WILL go red when 2-8 lists it. The fix is a lay or painter-range decision
+  (the rises and W at 50 or >= 90/soil, or a painter for a 60 px stone step), not a draw patch.
+- (b) The look varies run to run BY DESIGN: engine.ts:1054 setSceneSeed(rollSceneSeed()) on every stage load (sceneSeed.ts: "no two runs
+  look alike while the gameplay layout stays the same"; ?seed=N replays one); terrain.ts stagePlan builds its plan from that seed, so
+  code terrain's face changes per load. Not Math.random in the lay; the layout is the same every run.
+- R-165.451 (2-6 beat A, FIX-SOIL-b's after-A panel): painted soil texture in a lighter shade with a straight side (protoArt's ground),
+  not code terrain: a DIFFERENT draw by its look (not traced on 2-6 in this session).
 
 ## The cause (traced on the real page, to the line)
 2-8's fork (BUILD-28's toy on 2-8's own config, forkstills-s9/s10): the pillar sat at world x 16957..17125 in all three stills
