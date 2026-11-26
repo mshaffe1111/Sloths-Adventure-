@@ -130,6 +130,12 @@ PLANTS = [
     ("glowWait takes the first rim at an end (89ef9a985's bot change reverted)", 'tools/inspect/firsttimer.ts',
      "<= GLOW_NEAR && unlit(r));\n    if (!rim) return null;", "<= GLOW_NEAR);\n    if (!rim || !unlit(rim)) return null;",
      'a dark stop at an end that is two rims', 'src/game/gen2/darkBots.test.ts'),
+    ("the reach check off: a catch over a slot at any height (box 20)", 'src/game/gen2/tower.ts',
+     "slotted(x0, x1, y, but) || unreached(x0, x1, y) ||", "slotted(x0, x1, y, but) ||",
+     'a catch over a slot lies within one plain jump', 'src/game/gen2/tower.test.ts'),
+    ("the slot never gets wood (box 20's rule 5 off)", 'src/game/gen2/tower.ts',
+     "        const s = slotUnder(all, e.x - 1, e.x + 1, e.p.y + HEAD);\n        if (s) {", "        const s = slotUnder(all, e.x - 1, e.x + 1, e.p.y + HEAD);\n        if (s && !s) {",
+     'a catch over a slot lies within one plain jump', 'src/game/gen2/tower.test.ts'),
 ]
 # (ENG-DARK box 13) ONLY='a|b': run only the plants whose name holds one of these (a re-anchor's check; the full proof runs them all)
 import os
