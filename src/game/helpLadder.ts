@@ -17,6 +17,7 @@
 import { PHYS } from './physics.ts';
 import { MODES, travelSpan } from './stageModes.ts';
 import type { Mark, StageMode, TravelSpan } from './stageKit.types.ts';
+import { playStore } from './playStores.ts';
 
 export type Setting = 'easy' | 'normal';
 export type Rung = 'move' | 'pad' | 'step' | 'offer' | 'reask';
@@ -350,6 +351,12 @@ export const BOUNCE_ALONE = (0.8 * PHYS.bounceV * PHYS.bounceV) / (2 * PHYS.grav
  */
 /** rises a stair had no room for, since the last read (the sweep test reports them) */
 let stairsLeftOut = 0;
+// (a probe flies the engine ahead and puts it back: the ladder's line on screen, the ladder on now, the grown steps and this count
+// come back with it, playStores.ts; R-165.470)
+playStore('helpLadder', {
+  save: () => ({ onScreenText, current, grownNow, stairsLeftOut }),
+  load: (s) => ({ onScreenText, current, grownNow, stairsLeftOut } = s),
+});
 export function takeStairsLeftOut(): number {
   const n = stairsLeftOut;
   stairsLeftOut = 0;

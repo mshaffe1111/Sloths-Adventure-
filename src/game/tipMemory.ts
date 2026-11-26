@@ -8,6 +8,7 @@
  * help setting dropped, or that waited in her queue until it was old news, is never written down, so a player who turns tips back on
  * (or plays on later) still hears it. 93 lines in Worlds 1-4 were lost for good before this.
  */
+import { playStore, copyMapOfSets, copyMapOfLists, loadMap } from './playStores.ts';
 const key = (stageId: string) => `sloth_tips_${stageId}`;
 
 /** sent this session but not yet shown (stage -> ids): not sent again now, not kept on the phone */
@@ -16,6 +17,15 @@ const sent = new Map<string, Set<string>>();
 let pending: Array<{ stageId: string; id: string }> = [];
 /** the engine's words of a line -> the tips it carries, until it is shown */
 const byText = new Map<string, Array<{ stageId: string; id: string }>>();
+// (a probe flies the engine ahead and puts it back: what it sent is forgotten with it, playStores.ts; the spike's leak, R-165.470)
+playStore('tipMemory', {
+  save: () => ({ sent: copyMapOfSets(sent), pending: pending.map((t) => ({ ...t })), byText: copyMapOfLists(byText) }),
+  load: (s) => {
+    loadMap(sent, s.sent, (v) => new Set(v));
+    pending = s.pending.map((t) => ({ ...t }));
+    loadMap(byText, s.byText, (l) => l.map((t) => ({ ...t })));
+  },
+});
 
 function read(stageId: string): Set<string> {
   try {

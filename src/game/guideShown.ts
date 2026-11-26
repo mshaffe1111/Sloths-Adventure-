@@ -5,7 +5,10 @@
  * stuck helper's "told", World 5's hold while she says it, and the recorder's `dot` and `stuckHelp` moments. A line her setting dropped,
  * or one that waited in her queue until it was old news, was never given.
  */
+import { playStore } from './playStores.ts';
 let shown: string[] = [];
+// (a probe's lines are forgotten with it: playStores.ts)
+playStore('guideShown', { save: () => [...shown], load: (s) => { shown = [...s]; } });
 /** reports kept for an engine that is not reading them (a tool, a test, between stages): the oldest go first */
 const KEEP = 32;
 const NONE: readonly string[] = [];
