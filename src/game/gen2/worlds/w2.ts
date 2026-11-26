@@ -357,13 +357,17 @@ export function w2Finish<T extends FinishStage>(st: T, _difficulty?: Difficulty)
   };
   const dryGap = (y: number, x0: number, x1: number, near: Platform, far: Platform): boolean => {
     if (![x0 + 8, (x0 + x1) / 2, x1 - 8].every((x) => lands(x, y))) return false;
-    // (its floor: the highest sound piece wholly under the gap, within the fall rule. None: the walk-offs must land on wood below as they
-    //  are. One: it is widened whatever the flown path says, so a walk-off comes down half his body inside its ends. Still missed once
-    //  widened: it keeps its water. KNOWN (LAND-26): the pocket has no walls under thin pieces, so one who lands in it and walks on can
+    // (ruling (B) as it was: over the floor of a run leg laid under this one, the gap is left open as it is (ENG-GROUND-d's toy, 2-7))
+    if (overLowFloor(x0, x1)) return true;
+    // (elsewhere, its floor: the highest sound piece under the gap's middle, within the fall rule. None: it keeps its water. One: it is
+    //  widened whatever the flown path says, so a walk-off comes down half his body inside its ends. Still missed once widened: it keeps
+    //  its water. KNOWN (LAND-26): the pocket has no walls under thin pieces, so one who lands in it and walks on can
     //  still walk off the floor's end, under the plank and down (2-6 Easy kid seed 36, one rescue in 360 runs); the root is the lay's
     //  (pipeline.ts pitSteps lays the floor for earth walls), the lead's R-number)
-    const bed = solids.filter((p) => p.x >= x0 - 1 && p.x + p.width <= x1 + 1 && p.y > y + 1 && p.y <= y + TOWER.see).sort((a, b) => a.y - b.y)[0];
-    if (!bed) return runsOn(near, 1) && runsOn(far, -1);
+    //  (a floor this finish widened before still reads as the gap's own: under its middle, inside its two lips' pieces; called twice, the same)
+    const mid = (x0 + x1) / 2;
+    const bed = solids.filter((p) => p.x <= mid && p.x + p.width >= mid && p.x >= near.x - 1 && p.x + p.width <= far.x + far.width + 1 && p.y > y + 1 && p.y <= y + TOWER.see).sort((a, b) => a.y - b.y)[0];
+    if (!bed) return false;
     const was = { x: bed.x, width: bed.width };
     const a = Math.max(near.x, Math.min(bed.x, runX(far.x, -1, bed.y - far.y, width) - BODY_HALF));
     const b = Math.min(far.x + far.width, Math.max(bed.x + bed.width, runX(near.x + near.width, 1, bed.y - near.y, width) + BODY_HALF));
