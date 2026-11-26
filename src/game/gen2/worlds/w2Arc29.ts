@@ -88,10 +88,8 @@ export const RIVERS_29 = {
   barge29: { dir: 1, speed: 80, logW: 384, gap: 72, logs: 3, easy: { speed: 70, logW: 390 } },
 } as const satisfies Record<string, RiverRow>;
 type Row29 = keyof typeof RIVERS_29;
-
-/** the terrace wheel, one bucket a bar (N6: a turn 17.1 s Normal, 19.8 s Easy), R160 on both settings (BUILD-29's G4 proposal: the
- *  design's Normal R180 / Easy R160 has no per-setting radius; FLY Normal's step-off before this is used) */
-export const WHEELS_29 = { ...W2_WHEELS, court29: { R: 160, V: 58.79, easyV: 50.77, N: 6, street: 'in' } } as const satisfies Record<string, WheelRow>;
+/** World 2's wheels; the terrace lays W2_WHEELS.court (R160 both settings, the lead's ruling G4; flown: wheelFlights.data.ts) */
+export const WHEELS_29 = W2_WHEELS;
 
 /** the snappers, on the court's jaws (the stones' clock: PadRow.clock 'court') */
 export const SNAPPERS_29: CreatureDef[] = w2Snappers('snap-court').map((c) => ({ ...c, minGround: 100 }));
@@ -155,7 +153,7 @@ const snappers: Lay = {
  *  before. The drum's doubling is NOT laid (G1, ENG-29-e) */
 const twist: Lay = { pieces: [bank('a', null, 420), rock('ra', 'a', 0.5), bank('b', 'a', 400), liana('l', 'b'), river('c', 'l', 'double29', 340), rock('rc', 'c', 0.15), bank('z', 'c', 300)], sockets: [flag('a'), tip('t-roar', 'b', 0.2, 'roar')] };
 /** [U c^<] beat 7, up the terrace: the court wheel, one bucket a bar, a street IN over the top */
-const terrace: Lay = { pieces: [bank('a', null, 300), wheel('z', 'a', 'court29', 300)], sockets: [] };
+const terrace: Lay = { pieces: [bank('a', null, 300), wheel('z', 'a', 'court', 300)], sockets: [] };
 /** [C p1&>] beat 8, the grand dance: the wave (Easy two pairs), a court log (deep), two snappers; the flag before */
 const grandDance = (easy: boolean): Lay => ({
   pieces: [bank('a', null, 420), pond('c', 'a', easy ? 'wave29e' : 'wave29', 340), ...(easy ? [pond('d', 'c', 'wave29e', 300)] : [bank('d', 'c', 300)]), river('e', 'd', 'court', 340), ...snapperGround('s1', 'e'), bank('n', 's1-out', 240), ...snapperGround('s2', 'n'), bank('z', 's2-out', 300)],

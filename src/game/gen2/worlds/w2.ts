@@ -209,6 +209,9 @@ export const W2_WHEELS = {
   top: { R: 180, V: 70, easyV: 60, N: 6, street: 'up', up: { normal: 80, easy: 60 } },
   /** beat 12, the great wheel: the last bank, the street in over the top */
   great: { R: 200, V: 70, easyV: 60, N: 6, street: 'in' },
+  /** 2-9's terrace (reference/design/2-9.md:23-24): one bucket a bar of the court's drum (N6, a turn 17.1 s Normal, 19.8 s Easy), R160 on
+   *  both settings (the lead's ruling G4 on BUILD-29: no per-setting radius), the street in over the top */
+  court: { R: 160, V: 58.79, easyV: 50.77, N: 6, street: 'in' },
 } as const satisfies Record<string, WheelRow>;
 /** the stage World 2's wheels are flown on (wheelFlights.ts flyWheel: its RealPlay, the stage's own help in the flight): 2-6, the level of
  *  the norias (reference/design/2-6.md) */
