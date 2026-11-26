@@ -777,7 +777,7 @@ export const SKILLS = { trunkCatch: true, ride: true, upstream: true, bankUp: tr
  * tier's reaction to the window opening (stopReact, plus a late press as often as his tier's lateShare), and only while it is still open.
  * The hops are single (no second press): a double off the jetty or off the top is no step-off. With it off he treats the buckets as
  * ledges, scrambling bucket to bucket and into the pond (wheelRide.test.ts).
- * `boardWatch` (LAND-26c, R-165.475): stopped nearer the jetty's lip than the board was flown (wheelFlights.ts BOARD_BACK), he hops in
+ * `boardWatch` (LAND-26c, R-165.478): stopped nearer the jetty's lip than the board was flown (wheelFlights.ts BOARD_BACK), he hops in
  * only when his own hop (hopBoards: every lag and hold it can have) comes down inside a bucket, up to a bucket period; with it off he hops
  * at once, and from 17 px short of the lip the hop can carry past the bucket's end (wheelBoard.test.ts). Always on outside a test.
  */
@@ -1048,7 +1048,7 @@ export function hopLandsOn(q: Platform, at: (t: number) => number, x: number, y:
   return false;
 }
 /**
- * SKILLS.rideWheel's board (LAND-26c, R-165.475): a hop pressed from (x, y) toward `dir`, held `hold` s and steered `dir` through the
+ * SKILLS.rideWheel's board (LAND-26c, R-165.478): a hop pressed from (x, y) toward `dir`, held `hold` s and steered `dir` through the
  * flight, comes down IN a bucket of wheel `w` (each bucket's floor where it is on the wheel's clock, bucketAt: frame i at t0 + i * DT),
  * his middle `margin` px or more inside its ends. False when it comes down on a bucket's end (he slides off it, as 2-6 child Normal v2 did
  * at the top wheel from 17 px short of the jetty's lip) or into no bucket. wheelFlights' board (a tap hop boards at every moment) was
@@ -4810,7 +4810,7 @@ export class FirstTimerRun {
     if (Math.abs(p.vx) > 10) return who.holdQ ? {} : p.vx > 0 ? { left: true } : { right: true };
     // (the board was flown from BOARD_BACK px back of the lip, where a tap hop boards at every moment (wheelFlights.ts); stopped nearer it,
     // at some moments the hop carries past the bucket's end and he slides off it (2-6 child Normal v2, the top wheel: 17 px short of the
-    // lip, in at its end, 2 scrambles. LAND-26c, R-165.475). There he hops when a bucket coming up takes the hop, as a person who has
+    // lip, in at its end, 2 scrambles. LAND-26c, R-165.478). There he hops when a bucket coming up takes the hop, as a person who has
     // watched the wheel does, at every lag his thumb presses at (thumbLags, hopAim's clock); every moment comes round once a bucket
     // period: none in one, and he hops as before)
     // (and at every hold the press can have: the wheel hop is held at least who.hold[0] (wheelHop), his draw above it as drawn)

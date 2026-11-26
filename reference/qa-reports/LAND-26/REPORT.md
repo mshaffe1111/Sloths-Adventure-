@@ -2,9 +2,9 @@
 
 ## EXACT NEXT STEP (session 3 LAND-26-c hand-over, 4:12 PM ET Thu 11-26; branch t-land-26)
 The lead's rulings (session 3's brief): W stands (R-165.471; the residual, a thin-piece pocket with no walls, kid Easy 36 walks off the floor's far
-end: **R-165.476 (proposed, the lead to confirm) KNOWN, owner a lay packet after release 5** (pitSteps assumes earth walls under thin pieces;
+end: **R-165.479 (the lead's number) KNOWN, owner a lay packet after release 5** (pitSteps assumes earth walls under thin pieces;
 every world)). Code head = the commit before this REPORT commit. Done in session 3 (all pushed):
-- **R-165.475 (proposed number) rideWheel board judge** (tools/inspect/firsttimer.ts wheelRide jetty branch + hopBoards; src/game/gen2/wheelFlights.ts
+- **R-165.478 (the lead's number) rideWheel board judge** (tools/inspect/firsttimer.ts wheelRide jetty branch + hopBoards; src/game/gen2/wheelFlights.ts
   `BOARD_BACK = 30`, board() uses it, data unchanged; switch SKILLS.boardWatch). Trace: data/rideWheel-top-child-normal-v2-7f9abaa55.txt (child
   stops 17 px short of the lip at t 130.10, hops at 130.17 without looking, in b0 at off +67 at vx 285 at 130.70, off its end; 2 scrambles).
   Only when stopped nearer the lip than BOARD_BACK he hops when his own hop lands inside a bucket (every lag/hold; engine.ts onFloor's catch);
@@ -12,7 +12,7 @@ every world)). Code head = the commit before this REPORT commit. Done in session
 - **R-165.474 stalk** (src/game/terrain.ts stalkFoot + renderWorldObjects' allPlatforms; engine.ts passes this.platforms): data/stalkfix/ 2x
   upright before|after, 2-6 (beat 10's cap x741), 9-2 (x3506, x1804), 10-4 (x2313, x2017): the line is gone in every after frame. Sent to the lead.
 The next session, in this order:
-1. ReadNotifications (the lead's word on R-165.475/476 and the stills). `git fetch origin t-land-26 && git checkout -B t-land-26 origin/t-land-26`;
+1. ReadNotifications (the lead's word on R-165.478/479 and the stills). `git fetch origin t-land-26 && git checkout -B t-land-26 origin/t-land-26`;
    npm ci --legacy-peer-deps (run_in_background). Frozen tree per run (worktree --detach; link node_modules; chattr -R +i src tools; chattr -i
    src/game/gen2/proven).
 2. The planted toy EACH WAY for boardWatch (the lead's ask): tools/boardWatchSearch.mts.txt (REPO=<frozen tree> npx tsx it; ~10 min,
