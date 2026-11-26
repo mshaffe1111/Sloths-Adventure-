@@ -1,0 +1,7 @@
+# pp.py <PROBE copy of tools/inspect/firsttimer.ts>: on a probe copy only (never a frozen tree), PADPROBE=1 prints 'PP' on stderr for every
+# pad hop padRead decides (C6): t, x, vx, toEdge, the peeked take-off (off s, x0, v0), the late lift-off frames, lead, onRun, lands, here, next
+import sys
+p=sys.argv[1]; s=open(p).read()
+old="      const out = this.decide(dir, 'single', false, onRun ? go : {});"
+new="      if (process.env.PADPROBE) console.error(`PP t ${t.toFixed(2)} x ${Math.round(p.x)} vx ${Math.round(p.vx)} toEdge ${toEdge.toFixed(1)} off ${off.toFixed(3)} x0 ${Math.round(x0)} v0 ${Math.round(v0)} late ${late} lead ${lead.toFixed(1)} onRun ${onRun} lands ${lands} here #${here.id} ${here.x}-${here.x + here.width} pad ${!!here.pad} next #${next.id} ${next.x},${next.y}`);\n"+old
+assert s.count(old)==1; open(p,'w').write(s.replace(old,new)); print('pp in')

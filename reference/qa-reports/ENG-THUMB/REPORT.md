@@ -1,6 +1,48 @@
 # ENG-THUMB: the kid-bot root fix (R-165.465) and release 5's rule-28 rows
 
-## EXACT NEXT STEP (hand-over 2, box 2; written 1:48 PM ET 11/26 by `date`; C4 rows filling in)
+## EXACT NEXT STEP (hand-over 3, box 3; written 2:10 PM ET 11/26 by `date`)
+Branch t-eng-thumb-wip, head = the commit that adds this text. **Code = C6 39ee096b7 (C4a + step 2, the peek).** Tools: tools/*.txt as
+before (copy out, strip `.txt`; ciline.sh's cmd = gates.yml:157's `- run:` line saved to a file and its path set in ciline.sh), plus
+**tools/pp.py.txt** (on a PROBE copy: PADPROBE=1 prints a `PP` line for every pad hop padRead decides). Main's rows: box 1's (INT-R5's
+d/rule28/rows-main/ on origin/release-0.10.3-wip-fixes). Box 2's container trees are gone; rebuild frozen trees from the branch (D115).
+1. **Read C6's five-bot rows vs main (kid adult child middle expert, seeds 1-40, both settings, 2-2 2-1 2-4 2-5 1-4)**: box 3 started
+   them on a frozen C6 tree at 2:09 PM ET (rows.sh, bots kid,adult,child,middle,expert, about 1.5 min a stage) and handed over before
+   they were read: if they are not in d/rows-c6all/, re-run them. padRead serves EVERY bot (not only the kid's thumb), so child, middle
+   and expert rows can move with step 2: rule 28 reads all five. Every PASS -> FAIL traced (pp.py + FT_TRACE's `LIFE LOST` lines), or
+   the change narrowed. **The lead's stop: more than about 20 moved rows outside 2-2's pads -> bring the lead the count and a sample of
+   why-lines BEFORE tracing them all.** Then the CI tool line on C6 (also started by box 3 after the rows; NOT read).
+2. Step 3, 2-1 middle N 17 (box 2's text below, unchanged): fix with a toy, or STOP with the frames for the lead (law 22).
+3. The final checks ONCE on the frozen head (box 1's list): rule 28 vs main (all five bots, 1-40, both settings, 5 stages, 0 PASS ->
+   FAIL), 2-7 x40 (>= 29/40), pacerLay 23/23, the 10 races, tierBots 9/9, tsc, the 4 bot test files, and the CI line on EVERY candidate.
+
+## Step 2 (box 3: DONE on 2-2 for kid + adult, C6 39ee096b7; toy RED on C4a, GREEN on C6)
+- **The fault (the lead's family, rule 28 'the hop judged is the hop flown'):** padRead judged a pad hop at FIXED lags 0.03 and 0.1 s
+  at his speed then (`p.x + p.vx * lag`), while decide() then drew his own lag (gauss who.thumb; 0.167-0.267 s seen) and ran `go`
+  through it; from a stand the judge flew a stood hop and the meanwhile ran him on (2-2 kid N 15 C5 probe, 42.43 on #40: stood at
+  toEdge 11.2, judged from the stand, ran 30 px and off the front). The press on its way walked him off a pad's front.
+- **Fix (firsttimer.ts):** `rng()` gains `fork()`, a copy of the stream from where it stands (its draws are the stream's next draws;
+  drawing from it consumes NOTHING: the draw order is as ever, so a row moves only where the judge's answer changes). padRead peeks
+  the lag decide() draws next (`gauss(this.r.fork(), who.thumb)`; the peek and decide's draw are on the same call, nothing drawn
+  between: hopLandsOn and groundStep draw nothing) and flies the hop from where that lag takes him off: his run on through hopAim's
+  frames as the engine runs it (`groundStep`, from a stand he speeds up; a thumb travel or slip already running steers nothing).
+  **Where that run has him off the front before the press, the flight leaves the lip:** he stands while it comes (pending.still), the
+  stand flown as flown (his late lift-off: the release thumbify draws next on that frame, peeked on the same fork; then the engine's
+  brake), taken only when that stood hop lands or as the last frame he can still stop on the pad (`lead < 6 + one frame's run`, which
+  replaces `toEdge < 6`); a run that overshoots otherwise waits a frame for the next peek.
+- **Toy (hopJudged.test.ts, 'a pad hop is flown from the pad'):** 2-2 kid N 15 to t 170: no press padRead decided may come after he
+  walked off that pad's front, and no set-down on the last pads (x 28,000-30,200). **C4a: RED, 15 presses** (101.20 off #75 ...
+  158.53 off #116, the press due 158.597). **C6: GREEN.**
+- **Narrowed by the rows (C5 -> C6):** C5 (b088c8ab4) stood at the lip at once for every run that overshot, whatever the stood hop:
+  2-2 kid N 7, 27, 28 went PASS -> FAIL vs main (d/flips-main-vs-c5-2-2.txt). Traced (d/pp-c5-2-2-kidnormal-27-28-7.txt): kid N 27 at
+  149.00 on #113 (x 28,382, vx 268, toEdge 66, lag 8 frames: the run 4 px past the front) stood and hopped from 28,399 short of #114
+  (lands false), LIFE LOST; the same at 154.43 (#115), 157.70, 159.00, 162.30. C6 takes the stood hop only when it lands or at the
+  last frame.
+- **2-2, kid + adult, C6 vs main: 0 PASS -> FAIL, 30 fail -> pass** (d/flips-main-vs-c6-2-2.txt, d/rows-c6/2-2.jsonl). kid N 15 PASS
+  (1 life, 0 rescues, 169.0 s; main 165.6), kid N 40 PASS (0 lives, 159.3 s), kid N 7 / 27 / 28 PASS. tsc GREEN on C6.
+- **Same pattern, NOT changed (narrow, the lead's call):** the snap-stone branch of padRead (`flies1`, OFF-BEFORE-FOUR) judges its
+  tap at a fixed 0.03 s, and the shiver clause flies from p.x with no lag; neither is in 2-2 kid N 15 / 40's family.
+
+## Box 2's next step (hand-over 2, box 2; written 1:48 PM ET 11/26 by `date`; C4 rows filling in)
 Branch t-eng-thumb-wip, head = the commit that adds this text. **Code = C4a d89050abb (C3 + step 1 only).** Step 2's candidate C4
 (8a35b4238) FAILED rule 28 and is REVERTED (0d01b2ded). Tools: tools/*.txt as box 1 says (copy out, strip `.txt`; ciline.sh's cmd =
 gates.yml:157's `- run:` line saved to a file and the path set in ciline.sh), plus **tools/tag.py.txt** (box 2's why-probe: on a PROBE
