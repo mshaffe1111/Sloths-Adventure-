@@ -19,6 +19,7 @@ import { gripsOf, lianaCaught } from '../levelCheck.ts';
 import { LAND_IN } from './landings.ts';
 import { RIDE } from '../ride.ts';
 import type { Difficulty } from '../difficulty.ts';
+import type { TempoSpec } from '../tempo.ts';
 
 /** a river as data: a world's row */
 export interface RiverRow {
@@ -157,7 +158,10 @@ function rightwards(r: RiverZone, platforms: readonly Platform[], vines: readonl
   return { r: { ...rest, x0: sum - r.x1, x1: sum - r.x0, dir: -r.dir as 1 | -1 }, platforms: platforms.map(turn), vines: vines.map((v) => ({ ...v, x: sum - v.x })) };
 }
 
-export function riverFaults(st: { platforms: readonly Platform[]; rivers?: readonly RiverZone[]; vines?: readonly Vine[] }, difficulty: Difficulty = 'normal'): string[] {
+/** a barge row's longest wait on its safe stand, in bars of the stage's tempo (riverFaults; 2-9.md:25: a barge every two bars) */
+export const BARGE_BARS = 2;
+
+export function riverFaults(st: { platforms: readonly Platform[]; rivers?: readonly RiverZone[]; vines?: readonly Vine[]; tempo?: TempoSpec }, difficulty: Difficulty = 'normal'): string[] {
   const out: string[] = [];
   for (const r0 of st.rivers ?? []) {
     if (r0.speed === 0 || r0.open || r0.raft || r0.flood) continue;
@@ -185,7 +189,14 @@ export function riverFaults(st: { platforms: readonly Platform[]; rivers?: reado
       if (Math.abs(next - offs[i] - T / offs.length) > 0.05) { out.push(`${at}: its logs are not evenly spaced`); break; }
     }
     if (d.speed > RIVER_LAY.speed) out.push(`${at}: it runs at ${d.speed} px/s, over ${RIVER_LAY.speed}`);
-    if (spacing / d.speed > RIVER_LAY.beat + 1e-6) out.push(`${at}: a log every ${(spacing / d.speed).toFixed(1)} s, over ${RIVER_LAY.beat}`);
+    // (a BARGE row (look 'barge', ENG-29-e, the lead's ruling on 2-9's King's Barge): a carrier he boards from the bank, never a log in a
+    //  hop chain, so its wait is judged by its own bound: a barge every BARGE_BARS bars at most at the stage's tempo on this setting, and
+    //  only while he waits on the near bank, a SAFE stand (no liana over it: a drop onto it is a log's crossing). Every other row, and a
+    //  barge row on a stage with no tempo or under a liana, keeps the log's beat)
+    const bargeBound = d.look === 'barge' && st.tempo && !over.length ? BARGE_BARS * st.tempo.bar * (difficulty === 'easy' ? st.tempo.easyStretch : 1) : undefined;
+    if (bargeBound !== undefined) {
+      if (spacing / d.speed > bargeBound + 1e-6) out.push(`${at}: a barge every ${(spacing / d.speed).toFixed(1)} s, over ${BARGE_BARS} bars (${bargeBound.toFixed(2)} s) at the stage's tempo`);
+    } else if (spacing / d.speed > RIVER_LAY.beat + 1e-6) out.push(`${at}: a log every ${(spacing / d.speed).toFixed(1)} s, over ${RIVER_LAY.beat}`);
     const near = solids.find((p) => Math.abs(p.x + p.width - r.x0) <= 2);
     const far = solids.find((p) => Math.abs(p.x - r.x1) <= 2);
     if (!near || !far) { out.push(`${at}: no bank at one end`); continue; }
