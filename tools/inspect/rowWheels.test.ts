@@ -77,9 +77,9 @@ test("the meter's wheel channel prices every wheel on 2-6's row: a board each (e
   });
 });
 
-// (seeds 28 and 17: the trunkCatch plant's GREEN half, below; ENG-26u, LAND-26)
-test("the tower's turns, 2-6's row: the middle and the expert finish with NO rescue, seeds 1, 2, 17 and 28 (ENG-26e)", () => {
-  for (const seed of [1, 2, 17, 28]) {
+// (seeds 28 and 20: the trunkCatch plant's GREEN half, below; ENG-26u, LAND-26)
+test("the tower's turns, 2-6's row: the middle and the expert finish with NO rescue, seeds 1, 2, 20 and 28 (ENG-26e)", () => {
+  for (const seed of [1, 2, 20, 28]) {
     const runs = rowWheelRuns(ROW, seed, TIER_RUNS.filter(([t]) => t !== 'child'));
     for (const r of runs) assert.equal(r.run.rescues, 0, `seed ${seed} ${runLine(r)} (stuck ${JSON.stringify(r.run.stuck.filter((s) => s.rescued))})`);
   }
@@ -88,14 +88,14 @@ test("the tower's turns, 2-6's row: the middle and the expert finish with NO res
 // (ENG-26u, 11-24: seed 1 no longer meets the flick since the floorAt merge (0 rescues with the skill off); seed 28 does, the same way: a
 // ground double onto a trunk, the second press 0.3-0.4 s on, FELL BACK, again and again to a rescue (middle Easy v1 at x 89, through-house;
 // middle Normal v1 and v2). Off: 3 rescues; on: 0 (the test above). The bar is the old one. b26u/trunkCatch-*.txt)
-// (LAND-26, R-165.472, on release 4's bots (CI-15): seed 28 no longer bites (0 rescues off, all six runs), so the plant moves to the live case
-// found over seeds 1-40 on 2-6's row: seed 17, off: middle Normal v1 fell back 8 times at x 1529 (the first wheel) to a rescue, v2 the
-// same at x 1529 and at x 68 (the crest, 115 px up), 3 rescues; on: 0. 21 of seeds 1-40 cost a rescue with it off (and seed 13 one with
-// it on: child Normal v1, 3), so trunkCatch stays. reference/qa-reports/LAND-26/data/trunk-1-40.txt)
+// (LAND-26, R-165.472, on release 4's bots (CI-15) and the World 2 finish's dry porch gaps: seed 28 no longer bites (0 rescues off), so
+// the plant moves to a live case found over seeds 1-40 on 2-6's row: seed 20, off: middle Normal v1 'a trunk beside him, the way on is 138
+// px up' at x 88 (the crest) to a rescue, v2 the same at x 437, middle Easy v2 at x 1612 (the millpond, 140 px up): 3 rescues; on: 0. 31 of
+// seeds 1-40 cost a rescue with it off and none with it on, so trunkCatch stays. data/trunk-1-40-W.txt)
 test('PLANTED: trunkCatch OFF, a double that grabs a trunk or turn vine straight off the ground flicks him off it: rescues come back (RED)', () => {
   SKILLS.trunkCatch = false;
   try {
-    const runs = rowWheelRuns(ROW, 17, TIER_RUNS.filter(([t]) => t !== 'child'));
+    const runs = rowWheelRuns(ROW, 20, TIER_RUNS.filter(([t]) => t !== 'child'));
     const n = runs.reduce((a, r) => a + r.run.rescues, 0);
     assert.ok(n >= 2, `with the jump running on after the catch, rescues return (${n}: ${runs.map((r) => `${r.tier} ${r.setting} v${r.v} ${r.run.rescues}`).join(', ')})`);
   } finally {
