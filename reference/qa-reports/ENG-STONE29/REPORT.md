@@ -71,7 +71,20 @@ GATES (frozen worktree of a6ac7316b, `git status` empty after): see §1b.
 (filled when each ends)
 
 ## 2. Polish check
-(the stills, filled when shot)
+Stills at 2x (deviceScaleFactor 2), a REAL engine frame: 2-5 on the designed roll, its widest snap pond re-laid at run time as the wide stone
+(130 px, 62 px of water: the court's Normal pitch of 192; the pond holds 2), Pokey pinned by his feet. Script: stills/still.mjs.
+- stills/wide-sideways-on-stone.jpg (844x390): Pokey standing on the wide stone; its top level with both banks, its jaw drawn open (the
+  count's frame), the second stone beside it. The stone is about 1.5x his width and reads as a floor he stands on. Good.
+- stills/wide-upright-bank.jpg (390x844): Pokey on the bank beside the wide stone on the water: the scale at a glance. Good.
+- stills/wide-upright-on-stone.jpg: Pokey is on the stone but faded: the pinned stone bit him and he is blinking through his safe spell (the
+  pin keeps him on it through count 4). Real play state, not a draw fault; the bank still is the clean upright view.
+- stills/wide-sideways-bank.jpg: the bank, sideways.
+- Fixed on the way: the first two takes were unusable (the goal card over the pond; Pokey pinned a body height in the air, because p.y is
+  his feet, as realPlay.stand sets it). Both fixed in the script; these are the third take.
+- ART: REUSE holds. snapStoneArt.ts scales the painted sheet by width (SNAP_DRAW_W 1.08, height in proportion: drawn 140 x 82 at 130), so
+  the 130 stone is the same painting larger, never stretched; its mossy lid, seam and jaw read the same. No new draw path (drawcheck not
+  required by the packet's rule; no art lane needed). If the lead wants a longer, lower stone rather than a bigger one, that is an art
+  lane piece: 'w2-snapstone-wide', 5 frames like the 80's, about 260 x 140 per frame.
 
 ## 3. Pushback
 - The packet's "130 at the measured band keeps the design's counts (in-step 3 safe only from ONE)": the flight says 3 in step on the wide
@@ -81,7 +94,8 @@ GATES (frozen worktree of a6ac7316b, `git status` empty after): see §1b.
 - A gap band alone cannot judge the wide stone: its band moves with the bar's count (one stone a count). The judge reads the pace.
 
 ## 4. Suggestions
-- (art) see §2.
+- (art, optional) a wide sheet only if the lead wants the 130 stone lower than in proportion (§2).
+- (BUILD-29) fly 130 + 62 Normal / 130 + 92 Easy in the court before use; beat 5 to 2 in step (the lead's ruling).
 
 ## 5. Unresolved
 (filled at the end)
