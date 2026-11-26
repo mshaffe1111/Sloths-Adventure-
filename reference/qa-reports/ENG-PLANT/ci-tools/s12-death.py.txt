@@ -1,0 +1,16 @@
+import json, sys
+# death.py <run.json> <x0> <x1>: every life with its death x in [x0, x1]: the last floor he stood on, his last take-off before (t, from #id,
+# kind, hold, dir), the frames in the air, any vine caught, where he fell (x, y)
+R = json.load(open(sys.argv[1])); x0, x1 = float(sys.argv[2]), float(sys.argv[3]); fr = R['fr']; J = R['jumps']
+out = []
+for k in range(1, len(fr)):
+    if abs(fr[k][1] - fr[k-1][1]) > 150 or abs(fr[k][2] - fr[k-1][2]) > 150:
+        d = fr[k-1]
+        if not (x0 <= d[1] <= x1): continue
+        g = next((fr[i] for i in range(k - 1, 0, -1) if fr[i][3] == 1), None)
+        j = [q for q in J if q['t'] <= d[0]][-1:]
+        v = next((fr[i][5] for i in range(k - 1, max(0, k - 90), -1) if fr[i][5] is not None), None)
+        jj = j[0] if j else {}
+        out.append(f"die {d[0]:.2f} x{d[1]:.0f} y{d[2]:.0f} | last floor #{g[4] if g else '-'} at {g[0]:.2f} x{g[1]:.0f} | jump {jj.get('t')} #{jj.get('on')} {(jj.get('j') or {}).get('k')} h{round((jj.get('j') or {}).get('h') or 0, 3)} dir{(jj.get('a') or [None])[0]} | vine {v}")
+print(sys.argv[1].split('/')[-1], R['end'], R['time'], 'r', R['rescues'])
+print('\n'.join(out))

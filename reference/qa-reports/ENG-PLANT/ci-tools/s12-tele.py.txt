@@ -1,0 +1,6 @@
+import json, sys
+# tele.py <run.json>...: each run's stuck list and every teleport (a > 150 px jump in one frame): t, from x -> to x, standing id before
+for f in sys.argv[1:]:
+    R = json.load(open(f)); fr = R['fr']
+    tp = [f"{fr[k][0]:.2f}:{fr[k-1][1]:.0f}->{fr[k][1]:.0f}" for k in range(1, len(fr)) if abs(fr[k][1] - fr[k-1][1]) > 150 or abs(fr[k][2] - fr[k-1][2]) > 150]
+    print(f.split('/')[-1], R['end'], R['time'], 'r', R['rescues'], 'stuck', R['stuck'], '|', ' '.join(tp))

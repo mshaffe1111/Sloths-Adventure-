@@ -1,0 +1,23 @@
+// s9-who: which FirstTimerRun methods return a pad (and what) on each frame of a window, in call order (the gate that steers him).
+// usage: npx tsx s9-who.mts <tree> <stage> <bot> <setting> <seed> <t0> <t1>
+const [T, stage, bot, setting, seedS, a, b] = process.argv.slice(2);
+const t0 = Number(a), t1 = Number(b);
+await import(T + '/src/game/headlessDom.ts');
+const ft: any = await import(T + '/tools/inspect/firsttimer.ts');
+const cb: any = await import(T + '/tools/inspect/castBots.ts');
+const P = ft.FirstTimerRun.prototype;
+const rows: string[] = [];
+for (const k of Object.getOwnPropertyNames(P)) {
+  if (k === 'constructor') continue;
+  const d = Object.getOwnPropertyDescriptor(P, k);
+  if (!d || typeof d.value !== 'function') continue;
+  const f = d.value;
+  P[k] = function (this: any, ...q: any[]) {
+    const r = f.apply(this, q);
+    if (this.t >= t0 && this.t <= t1 && r && typeof r === 'object' && !Array.isArray(r) && ('right' in r || 'left' in r || 'jump' in r) && Object.keys(r).length <= 6) rows.push(`${this.t.toFixed(3)} ${k} -> ${JSON.stringify(r)}`);
+    if (this.t >= t0 && this.t <= t1 && r === null && /^(vine|ride|river|log|up|wait|edge|lead|plan|step|gate|bank|float)/i.test(k)) rows.push(`${this.t.toFixed(3)} ${k} -> null`);
+    return r;
+  };
+}
+ft.firstTimer(stage, Number(seedS), cb.CAST_BOTS[bot][setting], { cap: Math.ceil(t1) + 1, dotSetting: true });
+console.log(rows.join('\n'));

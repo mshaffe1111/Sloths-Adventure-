@@ -1,0 +1,22 @@
+#!/bin/bash
+# usage: var.sh <outroot> <variant...>: on /home/user/bis, each variant = head + one toggle, the three moved 2-1 rows
+O=$1; shift; W=/home/user/bis; F=tools/inspect/firsttimer.ts; S=/tmp/claude-0/-home-user-Sloths-Adventure-/849ea968-bd5b-5972-8a18-06987d01381d/scratchpad
+for v in "$@"; do
+  cd $W; git checkout -q -- $F
+  case $v in
+    head) ;;
+    p1) sed -i '3686s/frontStandPx(who)/frontStandPx({ releaseMax: [0, 2] })/' $F ;;
+    p2) sed -i '3847s/frontStandPx(who)/frontStandPx({ releaseMax: [0, 2] })/' $F ;;
+    p3) sed -i '3881s/frontStandPx(who)/frontStandPx({ releaseMax: [0, 2] })/' $F ;;
+    p123) sed -i '3686s/frontStandPx(who)/frontStandPx({ releaseMax: [0, 2] })/;3847s/frontStandPx(who)/frontStandPx({ releaseMax: [0, 2] })/;3881s/frontStandPx(who)/frontStandPx({ releaseMax: [0, 2] })/' $F ;;
+    p4) sed -i '3846{h;d};3847{G}' $F ;;
+    p5) sed -i '1215s/return this.react > 0/return false \&\& this.react > 0/' $F ;;
+  esac
+  echo "$v: $(git diff --stat | tail -1)"
+  $S/tl/s21.sh $W $O/$v > /dev/null
+  for f in $O/$v/*.jsonl; do python3 -c "
+import json
+for l in open('$f'):
+  r=json.loads(l); print('  ',r['bot'],r['setting'],r['seed'],'PASS' if r['pass'] else 'FAIL','t',r['time'],'r',r['rescues'],'l',r['lives'])"; done
+done
+cd $W; git checkout -q -- $F

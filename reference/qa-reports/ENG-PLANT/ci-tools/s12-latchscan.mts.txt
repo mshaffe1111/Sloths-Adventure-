@@ -1,0 +1,49 @@
+// latchscan: runs that reach CI-14's stale-latch case: padSeen set on floor-that-stays A, hops over pads, lands on floor-that-stays B
+// (B != A, padSeen still >= 0 on landing), then a beat-row start off B; each such start's breath (the CI-14 toy's check).
+// usage: tsx latchscan.mts <tree> <stage> <bot> <setting> <seeds a-b> [cap]
+const [T, stage, bot, setting, seedsS, capS] = process.argv.slice(2);
+await import(T + '/src/game/headlessDom.ts');
+const ft: any = await import(T + '/tools/inspect/firsttimer.ts');
+const cb: any = await import(T + '/tools/inspect/castBots.ts');
+const { PAD_FAIR } = await import(T + '/src/game/gen2/rideLay.ts');
+const DT = 1 / 30, who = cb.CAST_BOTS[bot][setting], lagMax = who.thumb[0] + 3 * who.thumb[1];
+const P = ft.FirstTimerRun.prototype, play = P.play;
+let run: any = null;
+P.play = function (this: any) { run = this; return play.call(this); };
+const [a, b] = seedsS.split('-').map(Number);
+for (let seed = a; seed <= (b ?? a); seed++) {
+  const out: string[] = [];
+  let last: any = null, open: any = null, seenOn = -1, prevSeen = -1, stay = -1, padSince = false;
+  const carried = new Map<number, number>();
+  const r = ft.firstTimer(stage, seed, who, { cap: Number(capS ?? 1200), dotSetting: true, onFrame: (s: any) => {
+    const p = s.e.player, q = p.grounded ? s.platforms.find((x: any) => x.id === s.e.standingOnId) : undefined;
+    const ps = run?.padSeen ?? -1;
+    if (ps >= 0 && prevSeen < 0) seenOn = q && !q.pad ? q.id : stay;
+    prevSeen = ps;
+    if (q?.pad) padSince = true;
+    if (q && !q.pad) {
+      if (q.id !== stay && padSince && ps >= 0 && seenOn >= 0 && seenOn !== q.id) carried.set(q.id, seenOn);
+      if (q.id !== stay) padSince = false;
+      stay = q.id;
+    }
+    const was = last?.on != null ? s.platforms.find((x: any) => x.id === last.on) : undefined;
+    if (last?.g && !p.grounded && was && !was.pad) open = { t: s.t, from: was, x: last.x };
+    if (open && p.grounded) {
+      const on = s.platforms.find((x: any) => x.id === s.e.standingOnId);
+      if (on?.pad?.by === 'beat' && on.pad.clock && on.id !== open.from.id && carried.has(open.from.id)) {
+        const rd = s.e.clock.read(on.pad.clock, on.pad.shift);
+        const def = (s.stage.clocks ?? []).find((c: any) => c.id === on.pad.clock);
+        const warn = def?.phases.find((ph: any) => ph.name === 'warn')?.seconds ?? 0;
+        const dir = on.x > open.x ? 1 : -1, edge = dir > 0 ? open.from.x + open.from.width : open.from.x;
+        const row = s.platforms.filter((x: any) => Math.abs(x.y - open.from.y) < 90 && x !== open.from && (dir > 0 ? x.x >= edge - 4 : x.x + x.width <= edge + 4)).sort((x: any, y: any) => (dir > 0 ? x.x - y.x : y.x - x.x));
+        const st = row.find((x: any) => x.pad?.by !== 'beat');
+        const need = (st ? Math.abs((dir > 0 ? st.x : st.x + st.width) - edge) : Infinity) / PAD_FAIR.pace;
+        const left = (rd.phase === 'off' ? rd.left + warn : rd.phase === 'warn' ? rd.left : 0) + (s.t - open.t);
+        out.push(`${left < need - DT - lagMax ? 'SHORT' : 'ok'} #${carried.get(open.from.id)}~>#${open.from.id}->#${on.id}@${open.t.toFixed(2)} ${left.toFixed(2)}/${need.toFixed(2)}`);
+      }
+      open = null;
+    }
+    last = { g: p.grounded, on: s.e.standingOnId, x: p.x };
+  } });
+  console.log(`${stage} ${bot} ${setting} ${seed} ${r.end} ${r.time} | carried starts ${out.length}: ${out.join(' ')}`);
+}

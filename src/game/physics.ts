@@ -232,10 +232,16 @@ export function airStep(b: AirBody, dt: number, dir: -1 | 0 | 1, hold = false, d
  * The frame a jump leaves the ground (its launch already in `b.vy`), as the engine plays it (ENG-285b, R-165.297): he steers ON the ground
  * first (PHYS.groundAcc, the turn bonus reversing; nothing steering brakes nothing on the take-off frame, engine.ts `takeOff`), then the
  * frame's gravity and move are airStep's. Flown as an air tick, a hop from below a run under-steered that frame (a stand: 4.1 px short
- * over the flight); at a full run the two are the same.
+ * over the flight); at a full run the two are the same. `carry` is the sideways speed of the floor he leaves (a drifting log's; a jump keeps
+ * all of it, RIDE.keep.x = 1), `b.vx` his own speed: the press's frame first carries him with the floor (engine.ts update: the logs move
+ * and him on them), then steers his own speed on the ground, then adds the carry once (groundJump's carryVx), then the air move.
+ * (ENG-PLANT-CI: steering his speed and the log's together bled a 268 px/s run off a log at 80 px/s to 330, the engine's 365, and the
+ * frame's ride left him 2.67 px behind; hopJudged.test.ts carryToy pins it against the engine frame for frame)
  */
-export function takeOffStep(b: AirBody, dt: number, dir: -1 | 0 | 1, hold = false) {
+export function takeOffStep(b: AirBody, dt: number, dir: -1 | 0 | 1, hold = false, carry = 0) {
+  b.x += carry * dt;
   groundSteer(b, dt, dir, true);
+  b.vx += carry;
   airStep(b, dt, 0, hold);
 }
 

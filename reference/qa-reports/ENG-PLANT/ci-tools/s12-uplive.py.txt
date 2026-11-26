@@ -1,0 +1,10 @@
+import json, glob
+# uplive.py: the upstream search's live cases: RESCUED (or not at the shrine) off while clean on; 5+ MORE LIVES off
+R = [json.loads(l) for f in sorted(glob.glob('/home/user/fz/out/up/s*.jsonl')) for l in open(f) if l.startswith('{')]
+clean = lambda x: x['end'] == 'shrine' and x['rescues'] == 0
+resc = [r for r in R if clean(r['on']) and not clean(r['off'])]
+more = [r for r in R if clean(r['on']) and r['off']['lives'] - r['on']['lives'] >= 5]
+f = lambda r: f"{r['bot']} {r['setting'][0].upper()} {r['seed']} (l {r['on']['lives']}->{r['off']['lives']}, r {r['on']['rescues']}->{r['off']['rescues']}, {r['off']['end']})"
+print(f"rows {len(R)}; RESCUED off while clean on: {len(resc)}: " + '; '.join(map(f, resc)))
+print(f"5+ MORE LIVES (clean on): {len(more)}: " + '; '.join(map(f, more)))
+print('moved:', sum(1 for r in R if r['on'] != r['off']))

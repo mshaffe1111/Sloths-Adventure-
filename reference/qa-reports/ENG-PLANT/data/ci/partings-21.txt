@@ -1,0 +1,85 @@
+# the three partings, per frame (tl/rowprobe.mts ALL=1, every 4th-6th frame; and tl/aimprobe.mts)
+## 2-1 kid Normal 19: CI-6 head vs head with ft:3847 at 31 (p2 = c27's row)
+-- head
+f2899 t96.63 x19150 y686 vx0 g0 on-1 L3
+f2903 t96.77 x19150 y686 vx0 g0 on-1 L3
+f2907 t96.90 x19150 y686 vx0 g0 on-1 L3
+f2911 t97.03 x19150 y686 vx0 g0 on-1 L3
+f2915 t97.17 x19150 y686 vx0 g1 on81:solid:18850..19270 L3
+f2919 t97.30 x19177 y686 vx285 g1 on81:solid:18850..19270 L3
+f2923 t97.43 x19214 y686 vx285 g1 on81:solid:18850..19270 L3
+f2927 t97.57 x19249 y635 vx268 g0 on-1 L3
+f2931 t97.70 x19286 y611 vx285 g0 on-1 L3
+f2935 t97.83 x19322 y631 vx285 g0 on-1 L3
+f2939 t97.97 x19359 y695 vx285 g0 on-1 L3
+f2943 t98.10 x19389 y714 vx285 g1 on84:drift:19314..19464 L3
+-- p2
+f2899 t96.63 x19150 y686 vx0 g0 on-1 L3
+f2903 t96.77 x19150 y686 vx0 g0 on-1 L3
+f2907 t96.90 x19150 y686 vx0 g0 on-1 L3
+f2911 t97.03 x19150 y686 vx0 g0 on-1 L3
+f2915 t97.17 x19150 y686 vx0 g1 on81:solid:18850..19270 L3
+f2919 t97.30 x19177 y686 vx285 g1 on81:solid:18850..19270 L3
+f2923 t97.43 x19214 y686 vx285 g1 on81:solid:18850..19270 L3
+f2927 t97.57 x19249 y635 vx268 g0 on-1 L3
+f2931 t97.70 x19286 y611 vx285 g0 on-1 L3
+f2935 t97.83 x19322 y631 vx285 g0 on-1 L3
+f2939 t97.97 x19359 y695 vx285 g0 on-1 L3
+f2943 t98.10 x19389 y714 vx285 g1 on84:drift:19314..19464 L3
+## 2-1 child Normal 11: c27 head (fz-base) vs CI-6 head
+-- base
+f4494 t149.80 x14259 y926 vx285 g1 on64:drift:14145..14305 L3
+f4499 t149.97 x14279 y926 vx0 g1 on64:drift:14157..14317 L3
+f4504 t150.13 x14297 y907 vx162 g0 on-1 L3
+f4509 t150.30 x14341 y864 vx285 g0 on-1 L3
+f4514 t150.47 x14389 y843 vx285 g0 on-1 L3
+f4519 t150.63 x14435 y820 vx268 g0 on-1 L3
+f4524 t150.80 x14481 y866 vx285 g0 on-1 L3
+f4529 t150.97 x14520 y926 vx41 g1 on65:drift:14464..14624 L3
+-- head
+f4494 t149.80 x14259 y926 vx285 g1 on64:drift:14145..14305 L3
+f4499 t149.97 x14279 y926 vx0 g1 on64:drift:14157..14317 L3
+f4504 t150.13 x14292 y926 vx0 g1 on64:drift:14170..14330 L3
+f4509 t150.30 x14304 y926 vx0 g1 on64:drift:14182..14342 L3
+f4514 t150.47 x14317 y926 vx0 g1 on64:drift:14195..14355 L3
+f4519 t150.63 x14329 y926 vx0 g1 on64:drift:14207..14367 L3
+f4524 t150.80 x14342 y926 vx0 g1 on64:drift:14220..14380 L3
+f4529 t150.97 x14354 y926 vx0 g1 on64:drift:14232..14392 L3
+-- aimprobe head 149.8-150.6
+DRAW t 150.100 dir 1 log 64 single 0.091 | ft:3455:32 < ft:4947:27
+FRESH t 150.100 log 64 drawn t 150.100 | ft:2028:18 < ft:3467:30
+-- the life on CI-6 head (hop trace + frames)
+H edgeWait q#87 t 200.20 x 19378 hold 0.151 single flown single 0.151
+H upstream q#86 t 201.67 x 19535 hold 0.094 single flown single 0.094
+H upstream q#-2 t 202.67 x 19689 hold 0.075 double flown double 0.075
+H edgeWait q#86 t 204.73 x 19379 hold 0.079 single flown single 0.079
+f6051 t201.70 x19540 y796 vx198 g0 on-1 L3
+f6063 t202.10 x19650 y815 vx285 g1 on86:drift:19630..19780 L3
+f6075 t202.50 x19658 y815 vx87 g1 on86:drift:19602..19752 L3
+f6087 t202.90 x19748 y754 vx285 g0 on-1 L3
+f6099 t203.30 x19859 y707 vx285 g0 on-1 L3
+f6109 t203.63 x19953 y823 vx285 g0 on-1 L3
+## 2-1 child Easy 2: c27 head vs CI-6 head
+-- base
+f2159 t71.97 x8565 y783 vx268 g1 on43:drift:8446..8646 L3
+f2165 t72.17 x8586 y783 vx0 g1 on43:drift:8460..8660 L3
+f2171 t72.37 x8600 y783 vx0 g1 on43:drift:8474..8674 L3
+f2177 t72.57 x8651 y699 vx285 g0 on-1 L3
+f2183 t72.77 x8707 y670 vx285 g0 on-1 L3
+f2189 t72.97 x8764 y606 vx285 g0 on-1 L3
+f2195 t73.17 x8820 y622 vx285 g0 on-1 L3
+f2201 t73.37 x8875 y736 vx285 g0 on-1 L3
+f2207 t73.57 x8918 y783 vx0 g1 on44:drift:8830..9030 L3
+-- head
+f2159 t71.97 x8565 y783 vx268 g1 on43:drift:8446..8646 L3
+f2165 t72.17 x8586 y783 vx0 g1 on43:drift:8460..8660 L3
+f2171 t72.37 x8600 y783 vx0 g1 on43:drift:8474..8674 L3
+f2177 t72.57 x8614 y783 vx0 g1 on43:drift:8488..8688 L3
+f2183 t72.77 x8628 y783 vx0 g1 on43:drift:8502..8702 L3
+f2189 t72.97 x8642 y783 vx0 g1 on43:drift:8516..8716 L3
+f2195 t73.17 x8656 y783 vx0 g1 on43:drift:8530..8730 L3
+f2201 t73.37 x8670 y783 vx0 g1 on43:drift:8544..8744 L3
+f2207 t73.57 x8684 y783 vx0 g1 on43:drift:8558..8758 L3
+-- aimprobe head 71.9-72.9
+DRAW t 72.367 dir 1 log 43 single 0.038 | ft:3455:32 < ft:4947:27
+FRESH t 72.367 log 43 drawn t 72.367 | ft:2028:18 < ft:3467:30

@@ -1,0 +1,27 @@
+# CI-10 0db82fb25, frozen fz-ci10: the 4 files (riverRide, lianaRide, hopJudged, firsttimer tests)
+not ok 11 - on the runs it was found on, 2-2 child Normal seed 36 and middle Normal seed 17: no life lost in the 3 s after he stands at a lip with a log his way across it (SKILLS.boardHop; the child R
+not ok 16 - on the run it was found on, 2-4 kid Easy seed 35: no jump off a drifting log comes down in the water (set down by the game before he stands again); the run-up judge counts the thumb travel
+not ok 35 - DROP ON A LOG: on gap280 the middle bot lets go onto a log and loses no life; PLANTED: without the skill he drowns
+not ok 36 - A VINE FROM A LOG: on the catch toy the middle bot jumps from the moving log to the liana; PLANTED: without the skill, never
+not ok 61 - planted: with the against-the-flow skill off, the adult on Normal is rescued at 2-1's back river (12) and the child and the middle on Normal lose 5+ more lives (child 4, 23; middle 26)
+not ok 62 - planted: with the up-the-far-bank skill off, the child on Normal loses 5+ more lives on 2-1 and reaches the both-ways far bank 2+ s later (40)
+not ok 63 - in the real engine: on a log flowing AT him, a held hop the upstream gate refuses is aimed again after his reaction, never held for the whole ride back (SKILLS.reAim; RED with it off)
+not ok 64 - SKILLS.reAim keeps the honest aim (D121, the lead's two conditions): on a log a re-draw never comes inside his stopReact, and the press is decided on the aimed hop alone, never its drawn t
+# tests 68
+# pass 60
+# fail 8
+fail 11 at 'firsttimer.test.ts:185:1'
+fail 16 at 'firsttimer.test.ts:312:1'
+fail 35 at 'lianaRide.test.ts:56:1'
+fail 36 at 'lianaRide.test.ts:93:1'
+fail 61 at 'riverRide.test.ts:266:1'
+fail 62 at 'riverRide.test.ts:282:1'
+fail 63 at 'riverRide.test.ts:344:1'
+fail 64 at 'riverRide.test.ts:355:1'
+# v-ci10a (CI-10 without the press frame's ride step), the 3 new reds:
+not ok 1 - on the run it was found on, 2-4 kid Easy seed 35: no jump off a drifting log comes down in the water (set down by the game before he stands again); t
+ok 2 - in the real engine: on a log flowing AT him, a held hop the upstream gate refuses is aimed again after his reaction, never held for the whole ride back (
+ok 3 - SKILLS.reAim keeps the honest aim (D121, the lead's two conditions): on a log a re-draw never comes inside his stopReact, and the press is decided on the
+# CI-9 frozen fz-ci9, carryToy:
+# pass 0
+# fail 2

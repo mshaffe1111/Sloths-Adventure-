@@ -1,0 +1,9 @@
+rows 270; BAR PASS -> FAIL vs main: 7; FAIL -> PASS: 10; moved 245
+  PF 2-1 kid easy 10: main PASS 137.8 r0 -> FAIL 152.8 r1
+  PF 2-1 kid normal 2: main PASS 153.9 r0 -> FAIL 171.8 r1
+  PF 2-1 kid normal 7: main PASS 156.2 r0 -> FAIL 164.2 r2
+  PF 2-1 kid normal 10: main PASS 167.7 r0 -> FAIL 156.4 r1
+  PF 2-2 kid normal 4: main PASS 161 r0 -> FAIL 163 r1
+  PF 2-2 kid normal 6: main PASS 184.8 r0 -> FAIL 171.7 r1
+  PF 2-2 kid normal 8: main PASS 155.6 r0 -> FAIL 166.8 r1
+  FP 2-1 kid easy 4, 2-1 kid easy 7, 2-1 kid easy 9, 2-1 kid normal 3, 2-1 kid normal 5, 2-1 kid normal 8, 2-2 kid normal 3, 2-2 kid normal 10, 2-4 kid easy 1, 2-4 kid easy 2
