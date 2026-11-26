@@ -1,7 +1,9 @@
 # LAND-26: 2-6 back on release 4's line (release 5), beat A's soil block (R-165.451)
 
 ## EXACT NEXT STEP (session 5 LAND-26-e; branch t-land-26)
-**NEXT: the gates still RUNNING or QUEUED in "Session 5 gates" below.** Box 5 started them on frozen f738cc21d before its hand-over and
+**STOPPED ON A RED (the lead's order: any other red, stop and hand over): the paint sweep part 1/3 FAILS on 2-7, 108 DEPTH STEP lines
+(see the table). Needs the lead's ruling before any fix; head 1caf50a93 is NOT landed as passing.** Then: the gates still running in
+"Session 5 gates" below, finished and recorded by box 5 (D138). Box 5 started them on frozen f738cc21d before its hand-over and
 finishes and records only those (D138). If box 5's container is gone: frozen tree at f738cc21d (worktree --detach; link node_modules;
 chattr -R +i src tools .github; chattr -i src/game/gen2/proven), each run_in_background with timeout 7200000, no shell '&':
 (a) the CI tool line = gates.yml line 157 verbatim; (b) the suite with `--test-shard=i/3`, i = 1..3 (CLAUDE.md's file list);
@@ -42,11 +44,16 @@ chattr-frozen tree at f738cc21d; lockall's base is a frozen tree at release 4's 
 | tsc | PASS (0) |
 | wheelStepOff.test.ts | 2/2 PASS (ON clean, PLANTED off RED) |
 | castBots --proven 2-6 (seeds 1-40, both, every bot) | PASS: 360/360 the shrine; proven 39 (= the 7f9abaa55 set; 36 out, kid Easy 36 rescued, R-165.479 KNOWN); none under the floor (min 105.7 s); **equal to box 4's stepOff rows on all 360** (cast-stepOff-x3); vs 7f9abaa55: 257 rows moved in end/time/rescues + kid Easy 1 in stuck lines only = box 4's 258, all traced above. data/rule28/cast-final-f738cc21d.jsonl |
-| the CI tool line (gates.yml:157) | RUNNING at hand-over |
-| the suite, 3 shards | RUNNING at hand-over (shard 1) |
-| lockall --layouts 16, base c73cb9766, --intended 2-6 | RUNNING (base being recorded) |
-| paintcheck --stages 2-6, then the sweep (--part 0/3..2/3, depthSteps) | QUEUED after lockall (same stream) |
-| seedlist 2-6 --check, registrycheck, timecheck, teachFirstScan --check, tierBots, drawcheck, clipcheck | QUEUED after the CI line (same stream) |
+| the CI tool line (gates.yml:157) | f738cc21d PASS 432/433, 0 fail, 1 todo (chase bots, known); re-run on 1caf50a93: see below |
+| the suite, 3 shards | f738cc21d shard 1 PASS 1418/1420 (2 todo); shards 2-3 stopped there and run on 1caf50a93 (the list changed) |
+| lockall --layouts 16, base c73cb9766, --intended 2-6 | f738cc21d PASS: 101/102 stages unchanged, only 2-6 (intended); **2-7 untouched**; 1caf50a93: PASS (exit 0) |
+| seedlist 2-6 --check | **f738cc21d FAIL**: seeds 70 77 78 (both settings) replay off their search; ALSO FAILS on 175ebe726 (before the W fix) and on t-build-26's 40a9c4bd2: inherited from t-build-26 (the list last written at BUILD-26 step 1, fab3a8a20). Rebuilt (the lead's bounded exception) = **1caf50a93**: PASS (100 seeds, both settings). Entries 1-40 same seeds and plans (castBots unaffected); plans re-packed 51 70 77 78; 97 in, 101 out; the reported quiet numbers moved up to 0.3 s; provenIndex.ts's version with it (52496f5f -> 1ed9df17, the check demands it). data/seedlist-*.txt |
+| registrycheck | f738cc21d PASS |
+| timecheck | f738cc21d PASS |
+| paintcheck --stages 2-6 | f738cc21d PASS; 1caf50a93: running |
+| **paintcheck sweep (depthSteps)** | part 0/3 PASS (34 stages, 2050 builds); **part 1/3 FAIL: 108 NEW lines, ALL 2-7, ALL 'DEPTH STEP'** (71 Normal, 37 Easy, 61 seed-settings; the soil's darkening starts 49-61 px apart either side of an x under a bank, bar 48; the banks near x 3400-4100 and 15964-17640). 2-7's layout is unchanged vs release 4 (lockall), so this is the soil paint on 2-7's banks against the depth-step gate this branch added (session 2, R-165.451), not a lay move: whether it is the gate's reach or a real straight-sided block on 2-7 is NOT diagnosed (the lead's order: any other red, stop). data/paintcheck-part1of3-f738cc21d.txt. Part 2/3: running at this hand-over |
+| teachFirstScan, tierBots, drawcheck, clipcheck | moved to 1caf50a93 (they read the lists); running at this hand-over |
+| CI tool line + suite 3 shards on 1caf50a93 | running at this hand-over |
 
 ## EXACT NEXT STEP (session 4 LAND-26-d hand-over, 4:35 PM ET Thu 11-26; branch t-land-26)
 Code head = **cb69a104e** (R-165.478 SKILLS.stepOff; the commit before this REPORT commit). The lead's numbers: R-165.478 the rideWheel
