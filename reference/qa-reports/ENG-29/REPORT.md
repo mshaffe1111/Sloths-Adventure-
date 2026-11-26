@@ -1,5 +1,51 @@
 # ENG-29 REPORT: 2-9's NEW 1 (the court's tempo) and NEW 2 (the drum you hear), built ahead (R-165.449)
 
+## ENG-29-f (box 2, ENG-29-e's packet; written 6:38 PM ET Thu 11/26 by `date`): ruling 0, G1 and G3's tempo fix DONE on t-eng-29-wip; G6 MEASURING
+
+### EXACT NEXT STEP (box 3)
+Re-fetch t-eng-29-wip (head d1038af49 or this REPORT commit after it). Run ReadNotifications. Then, in order:
+1. **G6's bar**: the real-engine measurement is reference/qa-reports/ENG-29/probes/oneMargin.ts, a SCRATCH probe (it needs t-build-29's
+   w2Arc29.ts: run it in a worktree of origin/t-build-29 with t-eng-29-wip merged and the barge29 row given `look: 'barge'`, never
+   committed there). If the lead has not had the numbers, run `for s in 1 2; do npx tsx reference/qa-reports/ENG-29/probes/oneMargin.ts $s 4; done`
+   (background, about 10 min), send the per-liana early/late margins (worst over seeds, grips, 4 bars) and a proposed bar to the lead, and
+   WAIT for the bar (not reversible: no 20-minute default). Then: lockedDrops reports `early`/`late` (s, the contiguous landing presses
+   either side of the press on ONE, worst over grips and the joint cycle's swings); tempoFaults refuses a court liana under the bar; a toy
+   each way (RED with the refusal ignored), and a check that the model's margin is not looser than the real engine's on the draft.
+2. GATES ONCE on the frozen final candidate (the packet list; KID_RUNS_59 named as the inherited red R-165.473), land on t-eng-29 (no
+   force), the hash and what BUILD-29 can lay to the LEAD only (the lead's order: BUILD-29-c handed over; the lead starts its next box).
+
+### Done this box (each pushed to t-eng-29-wip and ls-remote-confirmed)
+- **Ruling 0, the posted row's bag exclusion PROVEN** (c46f0a7a): postedGuard.test.ts 'the bag never deals the posted row': the tempo
+  toy's stones bank with two OPEN enemy sockets (no allow) over a bag holding a plain turtle (minGround 60, threat 1), with and without
+  W2_POSTED_GUARD in the world's list, both settings, seeds 1-4: no royal/uncounted/posted foe dealt, the same foes laid, Normal deals a
+  turtle every seed. PLANTED RED (castRows `bag = M.creatures`): 'normal seed 2: the bag dealt the posted row (turtle-royal@4471,775)'.
+  postedGuard.test 6/6 green.
+- **G1 the twist's doubled drum** (65f7c0187): TempoSpec.doubleIn (the brief's section mark: template ids) and TempoSpec.double (the laid
+  x spans, written by the pipeline only); tempo.ts doubleSpans (placed sections of the mark, touching ones merged; a mark laying nothing
+  fails the roll by name 'tempo: the drum doubles in ...') and drumDoubled; pipeline.ts lays them on st.tempo; engine.ts drumStep passes
+  `doubled` while his middle is inside a span, both settings. Toy src/game/drumDouble.test.ts (2): doubleSpans/drumDoubled unit; the REAL
+  engine on the tempo toy with its stones marked, Normal and Easy: the engine's drumTicks through DrumSchedule, inside the span every hit
+  within a frame of a half-beat and every half-beat struck (off-beats included), outside whole beats only. PLANTED REDS: the engine
+  passing false ('normal: the half-beat at 5.344 s inside the span has no hit'); the pipeline not laying spans ("the built stage carries the
+  twist's span (undefined)"). No listed stage names doubleIn, so no listed stage moves (lockall to confirm in the gates). generalitycheck PASS.
+- **G3's false need was the ENGINE's** (d1038af49; BUILD-29-c's find, proven by it 40/40 both settings on its scratch): riverFaults read
+  st.tempo, which the pipeline sets only after checkStage judges the stage; it now reads `st.tempo ?? st.gen2?.brief?.tempo`. Toy
+  bargeRow.test 'built through the pipeline': the tempo toy with its pond laid as a 420 / barge (BARGE) / 300 crossing, brief tempo only,
+  both settings, seeds 1-2: the barge laid, no roll refused. PLANTED RED (st.tempo alone): 'normal seed 1: the barge's wait refused'.
+  **2-9's data line for BUILD-29's next box** (do not edit t-build-29 from here): w2Arc29.ts:91 `barge29: { dir: 1, speed: 80, logW: 384,
+  gap: 72, logs: 3, look: 'barge', easy: { speed: 70, logW: 390 } },` (the draft then builds: the probe's scratch tree rolls seed 1).
+- tsc clean on each; targeted runs green: postedGuard 6, drumDouble 2, drumEngine/drum/drumBus/tempo/gen2 tempo/tempoToy/tempoResume 29,
+  bargeRow/riverLeft/riverTail/lianaRiver 16.
+- The suite in 6 shards and the CI tool line on d1038af49 (frozen worktree, CI #93): RUNNING at this writing; totals go in the ruling
+  request and here.
+- **G6 measuring method (the real engine)**: oneMargin.ts hangs him on each locked court liana at each grip (LIANA_RIVER.grips 0.7, 0.95)
+  on the vine's own clock (vineShift 0: the lock holds), presses let-go at a bar's ONE + j frames (j -45..45) on 4 consecutive bars, and
+  scores a press as landing when he next stands on a log of that river or on its far bank within 5 s (water or the vine: a miss). HARNESS
+  TRAP found and fixed: the engine holds an early press to the swing's sweet spot (engine.ts holdLeapForSweet, swingLeapWait), so a try
+  must run on to its landing and the held leap must be cleared between tries; the first sweep read those as 'regrab'/'fell-off' and cut
+  the early side to one frame. First clean read (seed 1, 1 bar, Normal, liana x7903): grip 0.7 early 0.40 s / late 0.17 s; grip 0.95
+  early 0.37 s / late 0.33 s. The full sweep's numbers follow.
+
 ## ENG-29-e (box 1 hand-over, 6:22 PM ET Thu 11/26 by `date`): G3 and G2 DONE on t-eng-29-wip; G1, G6 and the landing NOT started
 
 ### EXACT NEXT STEP (ENG-29-e box 2)
