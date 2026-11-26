@@ -61,6 +61,11 @@ window, is named), levelCheck's spore rules (warn >= 0.9, 3 s awake between clou
 - stills/3-1-port-puff-lit.png: the puff's light opens over the shelf, its mossy top and mushrooms readable, the cloud above; Pokey on
   the rim up right. -dark: the shelf is lost but for the petal's glow and a faint glimmer (as a sleeping glowworm's). The cloud and the
   light agree (one offset).
+- THE LIT SPAN against the shelf (box 2, the lead's ask; my own arithmetic agrees with the lead's figures): the puff's light at
+  (719, 1031), r 190, 90 px over the shelf's top (607-830 at y 1121, 223 px wide). Inside r at the shelf's top: 552-886 (334 px), so
+  the WHOLE shelf is inside the light; its ends sit 144 px from it (0.76 r), which is why they read dim; the landing he aims for (x
+  792) sits 116 px away (0.61 r). The radius is full only once the light has ramped (0.35 + 0.65 x its glow). The lead APPROVED the
+  stills (-dark vs -lit): the lit shelf reads plainly; the petal placement and the dim ends are the level's, not the brick's.
 - Rough, named: the draft's petal over the mushroom; the shelf's ends dimmer than its middle. Box 1's first shots had Dot's 'Too dark
   to see' box over the puff: reshot with it tapped away.
 
