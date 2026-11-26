@@ -566,3 +566,40 @@ test('the way he keeps is the way he flew: in the air on a jump the jump steers,
   const there = run.stuck.filter((s) => s.x > 3600 && s.x < 4500);
   assert.deepEqual(there.map((s) => `${s.x}: ${s.what}`), [], 'stuck at the liana and #13 (x 3,600-4,500)');
 });
+
+test('a pad hop is flown from the pad: padRead judges it with the lag decide() then draws, and no press on its way walks him off the front: 2-2 kid Normal 15 to t 170 (R-165.465 step 2)', async () => {
+  const ft = await import('./firsttimer.ts');
+  const { CAST_BOTS } = await import('./castBots.ts');
+  type Pend = { at: number; fromPad?: number };
+  type R = { t: number; pending: Pend | null; jump: unknown; sim: { standingOn: number | null; p: { grounded: boolean; x: number } } };
+  const P = ft.FirstTimerRun.prototype as unknown as { intend: (this: R) => unknown; padRead: (this: R, ...a: unknown[]) => unknown };
+  const it = P.intend, pr = P.padRead;
+  const off: string[] = [];
+  let pressed = 0;
+  P.padRead = function (this: R, ...a: unknown[]) {
+    const before = this.pending;
+    const o = pr.apply(this, a);
+    if (!before && this.pending) { this.pending.fromPad = this.sim.standingOn ?? -1; pressed++; }
+    return o;
+  };
+  P.intend = function (this: R) {
+    const q = this.pending;
+    if (q && q.fromPad !== undefined && !this.jump && !this.sim.p.grounded) {
+      off.push(`t ${this.t.toFixed(2)} x ${Math.round(this.sim.p.x)}: off #${q.fromPad}'s front, the press due ${q.at.toFixed(3)}`);
+      q.fromPad = undefined;
+    }
+    return it.call(this);
+  };
+  let run: ReturnType<typeof ft.firstTimer>;
+  try {
+    run = ft.firstTimer('2-2', 15, CAST_BOTS.kid.normal!, { cap: 170, dotSetting: true });
+  } finally {
+    P.intend = it;
+    P.padRead = pr;
+  }
+  assert.ok(pressed > 30, `the toy reads too little: ${pressed} pad presses`);
+  assert.deepEqual(off, [], 'a press decided on a pad came after he walked off its front');
+  // (the row: pads #112-#116 near 2-2's end, x 28,000-30,200, cleared with no set-down)
+  const there = run.stuck.filter((s) => s.x > 28000 && s.x < 30200);
+  assert.deepEqual(there.map((s) => `${s.x}: ${s.what}`), [], 'stuck on the last pads (x 28,000-30,200)');
+});

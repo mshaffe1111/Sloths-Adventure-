@@ -355,16 +355,29 @@ const UNDER_AT = 240;
 /** a chased player's stand at an edge leaves this much of the front's stop budget (s): his jump and the step after it still to come */
 const CHASE_MARGIN = 0.8;
 
-/** seeded random numbers (mulberry32): the same seed plays the same run */
-export function rng(seed: number): () => number {
+/** seeded random numbers (mulberry32): the same seed plays the same run. `fork()` is a copy of the stream from where it stands: its draws
+ *  are the stream's next draws, and drawing from it consumes nothing of the stream (a judge peeks the draw a decision will make: padRead) */
+export type Rng = (() => number) & { fork: () => () => number };
+const mulberry = (a: number): number => {
+  let t = a;
+  t = Math.imul(t ^ (t >>> 15), t | 1);
+  t ^= t + Math.imul(t ^ (t >>> 7), t | 61);
+  return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+};
+export function rng(seed: number): Rng {
   let a = seed >>> 0;
-  return () => {
+  const r = (() => {
     a = (a + 0x6d2b79f5) >>> 0;
-    let t = a;
-    t = Math.imul(t ^ (t >>> 15), t | 1);
-    t ^= t + Math.imul(t ^ (t >>> 7), t | 61);
-    return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+    return mulberry(a);
+  }) as Rng;
+  r.fork = () => {
+    let b = a;
+    return () => {
+      b = (b + 0x6d2b79f5) >>> 0;
+      return mulberry(b);
+    };
   };
+  return r;
 }
 const between = (r: () => number, [a, b]: [number, number]) => a + (b - a) * r();
 /** a normal draw (Box-Muller) */
@@ -1486,7 +1499,7 @@ export const c26StandPx = (who: { releaseMax: [number, number]; reAim?: boolean 
 export class FirstTimerRun {
   readonly sim: RealPlay;
   readonly e: Eng;
-  readonly r: () => number;
+  readonly r: Rng;
   readonly prog: Progress;
   readonly mem = new SpotMemory();
   readonly dot: DotShadow;
@@ -4560,14 +4573,48 @@ export class FirstTimerRun {
     }
     // (the hop: he presses where a flown hop comes down on it whatever he holds, a tap or a full hold, after his thumb's lag; where no
     // press point lands both, within 40 px of the edge where his own usual hold does; at the very edge he presses whatever)
-    const flies = (hold: number, lag: number) => hopLandsOn(next!, () => next!.x, p.x + p.vx * lag, p.y, dir, hold, t + lag, p.vx, 6);
-    const lands = [0.03, 0.1].every((lag) => flies(0, lag) && flies(0.7, lag)) || (toEdge < 40 && [0.03, 0.1].every((lag) => flies(who.hold[0], lag)));
+    // (R-165.465 step 2, the lead's ruling; rule 28, the hop judged is the hop flown: the lag is the one decide() draws next, peeked on a
+    //  fork of his stream (nothing consumed: every draw as ever), and the hop is flown from where he takes off after it, hopAim's frame,
+    //  his run on through the lag as the engine runs it (groundStep: from a stand he speeds up; a thumb's travel or slip already running
+    //  steers nothing). Judged at fixed lags 0.03 and 0.1 s at his speed then, while decide drew 0.167-0.187 s and a run from a stand
+    //  sped up, the press on its way walked him off a pad's front into the water, 2-2 kid Normal 15 (#116) and 40 (#113, #112). Where
+    //  that run has him off the front before the press comes, the flight leaves the lip: he stands while it comes (pending.still), his
+    //  thumb's late lift-off first (the release thumbify draws next, on this frame, when it arms one), then the engine's brake)
+    const f = this.r.fork();
+    const off = hopAim(gauss(f, who.thumb)).off;
+    const frames = Math.round(off / DT);
+    // (`steer`: his steer on each frame his thumb is free; `n` frames of it, then none (Infinity: all of them))
+    const fly = (steer: -1 | 1, n: number) => {
+      const b = { x: p.x, y: p.y, vx: p.vx, vy: 0 };
+      for (let i = 0; i < frames; i++) {
+        const free = t + i * DT >= Math.max(this.travelUntil, this.driftUntil);
+        groundStep(b, DT, free && n > 0 ? steer : 0);
+        if (free) n--;
+      }
+      return b;
+    };
+    const ran = fly(dir, Infinity);
+    const onRun = dir * (edgeX - ran.x) >= 0;
+    let late = this.releaseLeft;
+    if (!onRun && this.lastSteer !== 0 && !((who.holdQ || p.grounded) && this.releaseArmed)) {
+      const [lo, hi] = who.releaseMax;
+      late = Math.max(lo, Math.min(hi, Math.round(Math.exp(gauss(f, who.release)))));
+    }
+    const stood = onRun ? ran : fly(this.lastSteer > 0 ? 1 : -1, late);
+    const x0 = stood.x, v0 = stood.vx;
+    const lead = dir * (edgeX - x0);
+    const flies = (hold: number) => hopLandsOn(next!, () => next!.x, x0, p.y, dir, hold, t + off, v0, 6);
+    const lands = (flies(0) && flies(0.7)) || (lead < 40 && flies(who.hold[0]));
     // (KEEP-HOPPING: his pad shivers; he does not walk on to his usual press point, he goes now)
     const shiver = here.pad && PAD_SKILL.keepHopping && shows(here).tell > 0;
     // (a pond hop is a single, its hold his own: every water in a pond is under a held single's reach (padFaults PAD_FAIR.reach). The
     // plain edge's plan read the next floor at his height, a bank 900 px on, and the spot memory then kept the double a failed double
     // had left: a middle bot fell 8 times at one 110 px gap, 2-2 seed 6 (BUILD-22). His own second press stays, at his share (startJump))
-    if (lands || toEdge < 6 || (shiver && hopLandsOn(next, () => next!.x, p.x, p.y, dir, who.hold[1] + who.hold[0], t, p.vx))) return this.decide(dir, 'single', false, go);
+    if (lands || lead < 6 || (!onRun && dir * p.vx > 1) || (shiver && hopLandsOn(next, () => next!.x, p.x, p.y, dir, who.hold[1] + who.hold[0], t, p.vx))) {
+      const out = this.decide(dir, 'single', false, onRun ? go : {});
+      if (!onRun && this.pending) this.pending.still = true;
+      return out;
+    }
     return go;
   }
 
