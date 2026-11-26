@@ -2,7 +2,7 @@
 
 Session 1: started 2:31 PM ET 11-24 (by `date`), handed over at the 28-minute box. Lead: session_01FhBbYN2CVHnFXg7XzqKXpM.
 
-## MATT CHOSE A (the lead, 11-25; written 6:05 PM ET by `date`): release 4 = release-0.10.3-lite (main + the two draw fixes)
+## MATT CHOSE A (the lead, 11-25; written in commit b14ab3aa4, re-stamped 7:31 PM ET by `date`: a hand-typed stamp ran 5:29 past its commit, D128): release 4 = release-0.10.3-lite (main + the two draw fixes)
 Release 4's work moved to **release-0.10.3-lite** (REPORT: reference/qa-reports/INT-R5L/REPORT.md on that branch). This branch and
 release-0.10.3 (c73cb9766) are **release 5's bot line**; nothing more runs here tonight. The c73cb9766 lanes were STOPPED at the lead's
 word; what they recorded (d/fullset-c73cb9766/): L0 tsc, the CI tool line 420/0 fail/1 todo; L1 all 8 PASS (drawcheck, clipcheck 83
