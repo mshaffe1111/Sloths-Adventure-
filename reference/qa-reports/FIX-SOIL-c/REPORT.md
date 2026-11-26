@@ -2,12 +2,15 @@
 
 ## EXACT NEXT STEP (hand-over at the box: 28 minutes of work; the pillar fix a9c0170c is APPROVED by the lead on its stills)
 FINAL CODE HEAD a9c0170c on t-fix-soil-c. Gates on a FROZEN tree of a9c0170c (git worktree add --detach; ln -s node_modules; chattr -R +i
-src tools; D115), each ONCE, all NOT YET DONE (this session started them in its own container; none finished before the box):
-(1) lockall: RECORD on a frozen tree of 0f15f97d3 (`npx tsx tools/engine/lockall.ts --layouts 16 --out <scratch>/lock-base.json`, ~30 min
-    with paintcheck alongside), then `--check <scratch>/lock-base.json` on a9c0170c: ZERO moves expected (draw-only).
-(2) paintcheck sweep, all parts in one run (`npx tsx tools/engine/paintcheck.ts`, ~18 min+): 0 new, 0 SOIL OVER.
-(3) drawcheck (`node tools/perf/drawcheck.mjs`, ~6 min).
-(4) the CI tool line (.github/workflows/gates.yml line 157, the 'rolled' step starting `npx tsx --test tools/engine/library.test.ts`).
+src tools; D115), each ONCE. Status at the box (1:51 PM ET):
+(1) lockall: the lock IS RECORDED on frozen 0f15f97d3 (3264 builds of 102 stages, rc 0): reference/qa-reports/FIX-SOIL-c/lock-base-0f15f97d3.json.
+    NEXT: `npx tsx tools/engine/lockall.ts --layouts 16 --check reference/qa-reports/FIX-SOIL-c/lock-base-0f15f97d3.json` on frozen
+    a9c0170c: ZERO moves expected (draw-only). NOT RUN.
+(2) paintcheck sweep, all parts in one run (`npx tsx tools/engine/paintcheck.ts`, ~18 min+): 0 new, 0 SOIL OVER. Started here, reached 1-8
+    of 102 at the box: NOT FINISHED; run it fresh.
+(3) drawcheck (`node tools/perf/drawcheck.mjs`, ~6 min): NOT RUN.
+(4) the CI tool line (.github/workflows/gates.yml line 157, the 'rolled' step starting `npx tsx --test tools/engine/library.test.ts`):
+    started here on frozen a9c0170c, 94 ok / 0 not ok at the box, NOT FINISHED; run it fresh.
 (tsc on the frozen a9c0170c: PASS. paintFall.test.ts: 18/18; planted RED on 0f15f97d3's src: 2 fail.) The SUITE is HELD by the lead
 until the final candidate is known (CI #85). Then fill the table, push t-fix-soil-c, `git ls-remote origin t-fix-soil-c`, send the hash
 and table to the lead (session_01FhBbYN2CVHnFXg7XzqKXpM).
