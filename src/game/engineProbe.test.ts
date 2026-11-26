@@ -145,3 +145,39 @@ test('the module play stores and the phone storage written inside a probe are pu
   assert.equal(grownSteps(), steps);
   assert.deepEqual([...mem.m], [['keep', '1']]);
 });
+
+test("the let-go cue memo: a flight's memo gains a table only where the engine builds one, never one an earlier probe built", () => {
+  // (ENG-SIM box 5: the probe-equality gate's 2-4 seed 35 row. The probe lent the tables earlier flights built by putting them in the
+  // live memo at a flight's start, so inside the bot's own flight the memo held the table one of the gate's probes had built where the
+  // unprobed run's held the bot's: a probe that changed a later probe's world. A toy engine with the real memo's shape, engine.ts
+  // letGoNow: look the key up; if absent, clear at 8, build through engine.cueTable, keep it.)
+  class Toy {
+    cueTables = new Map<string, { key: string }>();
+    currentStage = {};
+    gameTime = 0;
+    key = '';
+    builds = 0;
+    cueTable(key: string): { key: string } {
+      this.builds++;
+      return { key };
+    }
+    step(): void {
+      if (this.cueTables.has(this.key)) return;
+      if (this.cueTables.size >= 8) this.cueTables.clear();
+      this.cueTables.set(this.key, this.cueTable(this.key));
+    }
+  }
+  const e = new Toy();
+  const sim = { e, frame: (k: string) => { e.key = k; e.step(); } };
+  sim.frame('live');
+  probe(sim, ['gate'], () => 0);
+  const seen: string[][] = [];
+  probe(sim, ['bot'], (q) => { seen.push([...q.cueTables.keys()]); return 0; });
+  assert.deepEqual(seen, [['live', 'bot']], "a table an earlier probe built sits in a later flight's memo");
+  assert.deepEqual([...e.cueTables.keys()], ['live'], 'the memo is put back as found');
+  assert.equal(Object.prototype.hasOwnProperty.call(e, 'cueTable'), false, "the flight's build is taken off");
+  const n = e.builds;
+  probe(sim, ['gate'], (q) => { seen.push([...q.cueTables.keys()]); return 0; });
+  assert.equal(e.builds, n, 'a table a flight built is lent to the next flight that needs it, never built twice');
+  assert.deepEqual(seen[1], ['live', 'gate']);
+});

@@ -1018,6 +1018,12 @@ export class GameEngine {
   /** the let-go tables flown (letGoCue.ts), by liana, facing and hold; the one in use */
   private cueTables = new Map<string, LetGoTable>();
   private cueTab: { id: number; dir: -1 | 1; len: number; tab: LetGoTable } | null = null;
+  /** build the let-go table for `key` (letGoCue.ts letGoTable: a pure function of the liana, the hold, the facing and the river path).
+   *  The live run always builds here; a probe's flight (engineProbe.ts cueFly) lends the tables earlier flights built through this one
+   *  call, so the flight's memo holds, entry for entry, what the live run's would (never a table put in it ahead: ENG-SIM box 5) */
+  private cueTable(_key: string, v: Vine, len: number, dir: 1 | -1, d0: DriftInfo): LetGoTable {
+    return letGoTable(v, len, dir, d0);
+  }
   private swingLeapWait = 0;
   private lastReleasedVineId: number = -1;
   private wasQuotaMet: boolean = false;
@@ -7013,7 +7019,7 @@ export class GameEngine {
       if (!tab) {
         if (this.cueTables.size >= 8) this.cueTables.clear();
         const d0 = under.logs[0];
-        tab = letGoTable(v, sw.len, dir, d0);
+        tab = this.cueTable(key, v, sw.len, dir, d0);
         this.cueTables.set(key, tab);
       }
       at = this.cueTab = { id: v.id, dir, len: sw.len, tab };

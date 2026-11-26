@@ -54,7 +54,8 @@ export const NEVER_CHANGES: ReadonlyArray<ShareEntry> = [
   { path: 'currentStage.proto.beats', deep: true, why: "the stage's beat list as rolled: read by Dot's lines and the tools" },
   { path: 'currentStage.proto.gen2', deep: true, why: "the generator's record as the proto carries it: as currentStage.gen2" },
   // (engine.cueTables, the let-go cue memo, letGoCue.ts: its tables are built from the vine and the river path only and never written
-  // after they are made, so the tables are shared, never copied. Not frozen: the Map is play state; cueFly puts its entries back.)
+  // after they are made, so the tables are shared, never copied. Not frozen: the Map is play state; cueFly puts its entries back
+  // and lends a flight the tables earlier flights built only through the engine's own build, engine.cueTable.)
 ];
 const STAGE_FIELDS = ['currentStage', 'drawPlats', 'proto'];
 
@@ -105,23 +106,33 @@ function prepareShare(e: Eng): void {
  * the hold, the facing and the river's log path, letGoCue.ts letGoTable), but WHICH tables the memo holds is play state: it is capped
  * (at 8 it is cleared), so a probe that built a table ahead of the live run would move the moment of a later clear (the gate saw the
  * memo hold one table more after a probe, and one fewer at a run's end). So the flight works on the live Map and the probe puts the
- * Map's entries back as it found them, in order; the tables a probe built are kept here, per stage, and lent to the next flight, so a
- * probe never builds the same table twice. The live run never reads this side memo: it builds its own tables at its own moments.
+ * Map's entries back as it found them, in order. The tables flights built are kept here, per stage, and LENT THROUGH THE ENGINE'S BUILD
+ * (engine.cueTable, swapped for the flight): a flight's Map gains a table only where the engine itself would build one, so at every
+ * frame of a flight the Map holds, key for key and in order, what it would hold had no probe ever flown. (Box 4 lent them by putting
+ * them in the Map at the flight's start: the gate's 2-4 seed 35 row then saw, inside the bot's own flight, a table one of the gate's
+ * earlier probes had built where the unprobed run's held the one the bot had built: a probe that changed a later probe's world.) A
+ * probe still never builds the same table twice. The live run never reads this side memo: it builds its own tables at its own moments.
  */
 const probeCue = new WeakMap<object, Map<string, unknown>>();
 function cueFly(e: Eng): (() => void) | null {
   const live = e.cueTables;
   const stage = e.currentStage;
-  if (!(live instanceof Map) || stage === null || typeof stage !== 'object') return null;
+  const build = e.cueTable;
+  if (!(live instanceof Map) || stage === null || typeof stage !== 'object' || typeof build !== 'function') return null;
   const kept = [...live];
-  const had = new Set(live.keys());
   let side = probeCue.get(stage);
   if (!side) probeCue.set(stage, (side = new Map()));
-  // (lent up to the memo's own cap; a flight that fills it clears it as the live run would: harmless, every table is pure)
-  for (const [k, t] of side) if (live.size < 8 && !live.has(k)) live.set(k, t);
   const lent = side;
+  // (an own property for the flight, so restore takes it off: the snapshot was made before it; a flight inside a flight lends the same)
+  const mine = (key: string, ...rest: unknown[]): unknown => {
+    let t = lent.get(key);
+    if (t === undefined) lent.set(key, (t = build.call(e, key, ...rest)));
+    if (t !== null && typeof t === 'object') SHARED.add(t);
+    return t;
+  };
+  e.cueTable = mine;
   return () => {
-    for (const [k, t] of live) if (!had.has(k)) lent.set(k, t);
+    if (e.cueTable === mine) delete e.cueTable;
     live.clear();
     for (const [k, t] of kept) live.set(k, t);
   };
