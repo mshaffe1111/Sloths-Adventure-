@@ -1,6 +1,44 @@
 # LAND-26: 2-6 back on release 4's line (release 5), beat A's soil block (R-165.451)
 
-## EXACT NEXT STEP (session 7 LAND-26-g, 6:06 PM ET Thu 11-26; branch t-land-26; code still 1caf50a93)
+## EXACT NEXT STEP (session 7 LAND-26-g, 6:51 PM ET Thu 11-26; branch t-land-26; final code head 800bcda5b)
+**The lead RULED (after the trace below): 2-6 LANDS with the depthSteps gate at 48 and a SHRINK-ONLY known list of 2-7's 108 lines,
+owned by R-165.487 (the soil-ease packet); the fallback flat band is R-165.488.** Built and pushed at 800bcda5b:
+tools/engine/depthSteps.known.json (108 entries: stage|setting|seed|x|bank, each with its jump 49-73), read by paintcheck (known only
+at or under its listed jump; growth, unlisted or vanished-on-a-whole-sweep entries fail) and by knowncheck (shrink-only). Proven: 2-7
+passes with the list; one jump lowered or one entry deleted = 2 NEW lines, FAIL; knowncheck against the committed list: an added
+entry FAILS (exit 1), one removed passes ("107, 1 fewer"). paintFall.test (the planted RED) 17/17.
+Next: the gates still running on frozen 800bcda5b (the table below: suite shards 1-3, sweep 2/3, tierBots); each result in the
+table; then the landing message to the lead with the hash and one line per gate (each shard's totals).
+
+### Session 7 gates (frozen 800bcda5b unless noted; one run each)
+| gate | result |
+|---|---|
+| tsc | PASS (0) |
+| paintcheck part 1/3 | **PASS** (2196 builds, 34 stages; 108 known depth steps seen, 0 stale, 0 new; 107 known ids R-165.292) |
+| paintcheck part 0/3 | PASS (170 known ids; 0 depth steps) |
+| paintcheck part 2/3 | RUNNING |
+| the CI tool line (gates.yml:157) | PASS 432/433, 0 fail, 1 todo |
+| knowncheck | PASS (depthSteps.known.json new, 108) |
+| paintFall.test.ts | 17/17 |
+| seedlist 2-6 --check | PASS (100 seeds, both settings) |
+| registrycheck / timecheck / generalitycheck / artcheck | PASS / PASS / PASS / PASS |
+| roadmapcheck | FAIL (14): 13 inherited (commits not in this clone's history; same 13 on cf9a59a07) + depthSteps.known.json not yet cited: **owed to the lead's ROADMAP at integration** (R-165.487's Source; the lead's ruling) |
+| drawcheck | PASS (1181 s) on frozen cf9a59a07 (src identical to 800bcda5b) |
+| clipcheck | PASS (83 known, none new) on frozen cf9a59a07 (src identical) |
+| suite shards 1-3 | RUNNING |
+| tierBots | RUNNING (queued after sweep 2/3) |
+| KID_RUNS_59 | the release line's inherited red (R-165.473/.477), held for Matt |
+
+### LAND-26-e's final gate record (relayed by the lead; its own record commit was never pushed). Code 1caf50a93 unless noted
+seedlist 2-6 --check PASS 100 seeds (FAILED on f738cc21d seeds 70 77 78, inherited from t-build-26 40a9c4bd2); lockall --layouts 16 vs
+c73cb9766 --intended 2-6 PASS on f738cc21d and 1caf50a93 (101/102 unchanged, only 2-6; 2-7 untouched); paintcheck --stages 2-6 PASS
+(200 builds); sweep on f738cc21d: 0/3 PASS (2050), 2/3 PASS (1928), 1/3 FAIL (the 108 2-7 depth-step lines, since listed); teachFirstScan
+--check PASS (0 misses, 3422 rolls, 16 stages); tierBots 9/9; drawcheck PASS (983 s); clipcheck PASS (83 known, none new); CI tool line
+432/433 1 todo on both heads; suite: shard 1 1418/1420 (2 todo), shard 2 1401/1403 (1 fail = KID_RUNS_59, inherited, 1 todo), shard 3
+1368/1368; registrycheck PASS, timecheck PASS (f738cc21d); castBots --proven 2-6 (f738cc21d; entries 1-40 identical in the rebuilt
+list) 360/360, proven 39.
+
+## The 2-7 line check (session 7 LAND-26-g, 6:06 PM ET Thu 11-26; branch t-land-26; code still 1caf50a93)
 **The 2-7 line check is DONE: the gate reads the drawer's own line, to 0.01 px, and the drawn step shows as strongly as a planted 48 px
 step does on 2-6. 2-7's 108 DEPTH STEP lines are RED BY THE BAR, honestly. No gate fix exists to make; this box changed no gate, bar or
 game file.** Waiting on the lead's route for 2-7 (the soil fix, or a written ruling to land 2-6 with 2-7 red). Then: paintcheck part 1/3
@@ -32,6 +70,7 @@ clipcheck; KID_RUNS_59 is the release line's inherited red; land on t-land-26 (n
   soil art's own texture reads -1.2 at that seam (2-6's read +1.5), which hid half the step in the absolute number. Not low contrast,
   not the soil's visible depth: the alpha step is the same, the drawing the same. Looked at (the strip): flat, no line; natural, a very
   faint straight line; +48, a plain faint line. By C (32-48 faint, 64 plain), 2-7's 49-73 px steps are honestly red.
+- **R-165.488 (the lead's number): the tile-budget fallback's flat band** (above).
 
 ## EXACT NEXT STEP (session 6 LAND-26-f hand-over, 5:58 PM ET Thu 11-26; branch t-land-26; code still 1caf50a93)
 **2-7's DEPTH STEP red is REAL BY THE BAR (the lead ruled C; the bar stays 48) and goes to the lead's soil-fix route; this box changed
