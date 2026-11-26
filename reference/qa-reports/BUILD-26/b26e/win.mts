@@ -1,0 +1,14 @@
+import '/tmp/claude-0/-home-user-Sloths-Adventure-/02dad268-db54-55a5-bb1a-c8d1305dd010/scratchpad/head/src/game/headlessDom.ts';
+import { setDifficulty } from '/tmp/claude-0/-home-user-Sloths-Adventure-/02dad268-db54-55a5-bb1a-c8d1305dd010/scratchpad/head/src/game/difficulty.ts';
+import { generateAllLevels } from '/tmp/claude-0/-home-user-Sloths-Adventure-/02dad268-db54-55a5-bb1a-c8d1305dd010/scratchpad/head/src/game/worldsData.ts';
+import { listedStage, playFinish } from '/tmp/claude-0/-home-user-Sloths-Adventure-/02dad268-db54-55a5-bb1a-c8d1305dd010/scratchpad/head/src/game/gen2/listed.ts';
+import { buildGen2Stage } from '/tmp/claude-0/-home-user-Sloths-Adventure-/02dad268-db54-55a5-bb1a-c8d1305dd010/scratchpad/head/src/game/gen2/pipeline.ts';
+const [seed] = process.argv.slice(2).map(Number);
+const cfg = generateAllLevels().find((c) => c.id === '2-6' && !c.secret)!;
+setDifficulty('normal');
+const row = listedStage('2-6')!;
+const st: any = playFinish(row, buildGen2Stage({ config: cfg, kit: row.kit(), seed, difficulty: 'normal' }) as never, 'normal');
+for (const p of st.platforms) if (p.x < 1700 && p.x + p.width > 800 && p.y > 3600 && p.y < 4200) console.log(`P#${p.id} ${p.type}/${p.style ?? ''} x ${Math.round(p.x)}-${Math.round(p.x + p.width)} y ${Math.round(p.y)}${p.wheel ? ' wheel' : ''}${p.bouncy ? ' bouncy' : ''}`);
+for (const v of st.vines) if (v.x > 800 && v.x < 1700 && v.bottomY > 3600 && v.topY < 4200) console.log(`V#${v.id} ${v.vineType} x ${Math.round(v.x)} ${Math.round(v.topY)}-${Math.round(v.bottomY)}`);
+for (const s of st.gen2?.sections ?? []) if (/rest|great|wheel-b/.test(s.template)) 0;
+for (const w of [...new Set(st.platforms.flatMap((p: any) => (p.wheel ? [p.wheel.w] : [])))] as any[]) if (w.cy > 3500 && w.cy < 4400) console.log('W', Math.round(w.cx), Math.round(w.cy), w.R, w.way, w.lay?.row);

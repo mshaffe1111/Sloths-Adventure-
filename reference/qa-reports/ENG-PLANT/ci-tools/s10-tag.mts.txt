@@ -1,0 +1,19 @@
+// tag probe: which `return` in intend each frame took (the tagged copy's line), its pad, his x / log, in a window. usage: tg.mts <tree> <stage> <bot> <setting> <seed> <t0> <t1>
+const [T, stage, bot, setting, seedS, t0s, t1s] = process.argv.slice(2);
+const t0 = Number(t0s), t1 = Number(t1s);
+(globalThis as any).__tgv = (n: number, v: unknown) => (((globalThis as any).__TG = n), v);
+await import(T + '/src/game/headlessDom.ts');
+const ft: any = await import(T + '/tools/inspect/firsttimer.ts');
+const cb: any = await import(T + '/tools/inspect/castBots.ts');
+const P = ft.FirstTimerRun.prototype, it = P.intend;
+P.intend = function (this: any) {
+  (globalThis as any).__TG = 0;
+  const o = it.call(this);
+  if (this.t >= t0 && this.t <= t1) {
+    const p = this.sim.p, on = this.sim.standingOn, q = this.sim.platforms.find((x: any) => x.id === on);
+    console.log(this.t.toFixed(3), 'L' + (globalThis as any).__TG, JSON.stringify(o), 'x', p.x.toFixed(1), 'vx', p.vx.toFixed(0), 'g', p.grounded ? 1 : 0, 'on', on, q ? `[${q.x.toFixed(0)},${(q.x + q.width).toFixed(0)}] ${q.type}${q.crumble ? " crumble" : ""}${q.sink ? " sink" : ""}${q.drift ? " drift" : ""}${q.broken ? " broken" : ""}` : '', 'pend', this.pending ? 1 : 0, 'jump', this.jump ? 1 : 0);
+  }
+  return o;
+};
+const who = cb.CAST_BOTS[bot][setting];
+ft.firstTimer(stage, Number(seedS), who, { cap: t1 + 0.1, dotSetting: true });

@@ -1,0 +1,24 @@
+// firsttimer.test.ts :312's run (2-4 kid Easy 35): every jump off a drifting log, where it came down, and the HOP_TRACE row that pressed it
+const T = process.argv[2];
+await import(T + '/src/game/headlessDom.ts');
+const ft = await import(T + '/tools/inspect/firsttimer.ts');
+const { PHYS } = await import(T + '/src/game/physics.ts');
+const { firstTimer, FT_KID, HOP_TRACE } = ft as any;
+if (HOP_TRACE) { HOP_TRACE.on = true; HOP_TRACE.rows.length = 0; }
+const P = (ft as any).FirstTimerRun.prototype, sj = P.startJump, dc = P.decide;
+P.decide = function (this: any, ...a: any[]) { const t = this.sim.t; if (t > 46.5 && t < 49.5) { const st = (new Error().stack ?? "").split("\n").slice(2, 6).map((s) => (s.match(/firsttimer.ts:(\d+)/) ?? [])[1]).join(">"); console.log(`DC t${t.toFixed(3)} x${this.sim.p.x.toFixed(1)} vx${this.sim.p.vx.toFixed(1)} dir ${a[0]} kind ${a[1]} on ${this.sim.standingOn} judged ${JSON.stringify(this.judged)} from ${st}`); } return dc.apply(this, a); };
+P.startJump = function (this: any, ...a: any[]) { const t = this.sim.t; if (t > 44 && t < 49.5) { const st = (new Error().stack ?? "").split("\n").slice(2, 5).map((s) => (s.match(/firsttimer.ts:(\d+)/) ?? [])[1]).join(">"); console.log(`SJ t${t.toFixed(3)} x${this.sim.p.x.toFixed(1)} vx${this.sim.p.vx.toFixed(1)} kind ${a[1]} on ${this.sim.standingOn} from ${st}`); } return sj.apply(this, a); };
+let flying = false, offs = 0, cur: any = null, last: any = null;
+const jumps: any[] = [];
+firstTimer('2-4', 35, { ...FT_KID, setting: 'easy' }, { cap: 180, dotSetting: true, onFrame: (sim: any) => {
+  const e = sim.e, p = e.player, here = e.platforms.find((q: any) => q.id === e.standingOnId);
+  if (last && Math.hypot(p.x - last.x, p.y - last.y) >= 100 && flying && cur) { cur.down = `WATER set down at t${sim.t.toFixed(3)} from x ${last.x.toFixed(1)} y ${last.y.toFixed(1)}`; }
+  if (last?.on && !p.grounded && p.vy < -0.8 * PHYS.jumpV) { flying = true; offs++; cur = { n: offs, t: +sim.t.toFixed(3), x: +last.x.toFixed(1), from: last.id, vx: +p.vx.toFixed(1) }; jumps.push(cur); }
+  else if (p.grounded) { if (flying && cur && !cur.down) cur.down = `on ${e.standingOnId} x ${p.x.toFixed(1)}`; flying = false; }
+  last = { x: p.x, y: p.y, on: p.grounded && !!here && here.type === 'drift', id: e.standingOnId };
+} });
+if (HOP_TRACE) console.log("ROWS", HOP_TRACE.rows.length, JSON.stringify(HOP_TRACE.rows.filter((r: any) => r.t > 44 && r.t < 49.5).map((r: any) => [r.site, r.q, +r.t.toFixed(3), +r.x.toFixed(1), r.hold, r.lag, r.kind, r.landed])));
+for (const j of jumps) {
+  const r = HOP_TRACE?.rows.find((r: any) => Math.abs(r.t - j.t) < 0.2);
+  console.log(JSON.stringify(j), r ? `ROW ${r.site} q${r.q} t${r.t.toFixed(3)} x${r.x.toFixed(1)} hold ${r.hold} lag ${r.lag} ${r.kind ?? ''} landed ${r.landed}` : 'ROW none');
+}

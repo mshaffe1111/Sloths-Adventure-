@@ -1,0 +1,10 @@
+  27.03 single from 311,9762 hold 0.97 up 0.00 d2 0.47 2nd false -> 477,9762 ok
+  28.10 single from 457,9762 hold 0.46 up 0.00 d2 0.49 2nd false -> 642,9762 ok
+  85.47 double from 754,6281 hold 0.95 up 0.00 d2 0.55 2nd true -> 954,6231 ok
+  101.40 single from 300,5610 hold 1.44 up 0.00 d2 0.59 2nd false -> 88,5578 ok
+  113.77 double from 926,4668 hold 0.28 up 0.00 d2 0.72 2nd false -> 1069,4628 ok
+  127.87 double from 790,3646 hold 1.08 up 0.00 d2 0.35 2nd true -> 1053,3463 ok
+  145.47 double from 214,2994 hold 0.36 up 0.00 d2 0.40 2nd false -> 20,3325 FELL BACK
+  164.10 double from 482,1642 hold 1.60 up 0.00 d2 0.34 2nd true -> 236,1459 ok
+== 1-4 child easy seed 37 reach GRAB: shrine 176.6 s rescues 1
+   t 149.2 x 252 y 2653 dur 0 fell back down from here 8 times

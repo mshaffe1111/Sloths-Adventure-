@@ -3029,8 +3029,8 @@ function finishStage<T extends GeneratedStage>(stage: T, reachableIds: number[])
   );
   // and the petal trail: one pickup, no clutter, all of it reachable (petalPass.ts)
   const out = petalPass(stage);
-  // (then a vine field's paired stretches: the petals on them hang between the pair, for two hands: vineField.ts pairPetals)
-  pairPetals(out.collectibles, out.vines, new Set((out.pods ?? []).flatMap((q) => (q.vine === undefined ? [] : [q.vine]))));
+  // (then a vine field's paired stretches: the petals on them hang between the pair, for two hands, never onto another pickup: vineField.ts pairPetals)
+  pairPetals(out.collectibles, out.vines, new Set((out.pods ?? []).flatMap((q) => (q.vine === undefined ? [] : [q.vine]))), PICKUP_APART);
   // (last, on the stage as the game plays it: which petals the door counts, by the walked path; a gen2 stage, whose record of its falls
   //  and asks the model reads (petals.ts markWalked; the lead's ruling INT-10d 11-15). Placement is done: nothing here moves a petal)
   if ((out as { gen2?: unknown }).gen2) markWalked(out);

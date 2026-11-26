@@ -28,6 +28,8 @@ export interface LandPickup { x: number; y: number; type: string }
 
 /** his middle may hang this far past a top and still stand or be caught (engine.ts: width 44 x 0.26, the unassisted figure) */
 export const LAND_SIDE = { px: 44 * 0.26, source: 'engine.ts platform collisions: p.width 44 x side 0.26' } as const;
+/** how far past a mushroom cap's ends his middle still meets it (a bounce) */
+export const CAP_SIDE = { px: 12, source: 'engine.ts platform collisions: a cap is met as any top is (LAND_SIDE, 11.4 px), read here as 12' } as const;
 /** a falling foot crossing a top is caught this far under it (engine.ts catchDrop 14, the unassisted figure) */
 export const CATCH_DROP = { px: 14, source: 'engine.ts platform collisions: catchDrop 14' } as const;
 /** half his body's width at a wall (engine.ts "Solid ground blocks": half 19) */
@@ -118,7 +120,7 @@ export function events(path: FlightPath, y0: number, dir: 1 | -1, pieces: readon
     const i = catchFrame(path, top);
     if (i > 0) {
       const dx = path[i][0];
-      const side = P.type === 'bouncy' ? 12 : LAND_SIDE.px;
+      const side = P.type === 'bouncy' ? CAP_SIDE.px : LAND_SIDE.px;
       const [a, b] = [P.x - side, P.x + P.width + side];
       out.push(dir > 0 ? { frame: i, lo: a - dx, hi: b - dx, piece: P, dx } : { frame: i, lo: a + dx, hi: b + dx, piece: P, dx });
     }
@@ -156,8 +158,8 @@ const JUMPS: readonly Flight[] = ['jump', 'double', 'jump-up', 'double-up'];
 const SINGLES: readonly Flight[] = ['jump', 'jump-up'];
 const BOUNCES: readonly Flight[] = ['bounce', 'bounce-air', 'bounce-up', 'bounce-air-up'];
 
-/** the take-off x span of a ledge (his middle over its top, LAND_SIDE past each end) or a cap (12 past each end) */
-const takeOff = (S: LandPiece): readonly [number, number] => S.type === 'bouncy' ? [S.x - 12, S.x + S.width + 12] : [S.x - LAND_SIDE.px, S.x + S.width + LAND_SIDE.px];
+/** the take-off x span of a ledge (his middle over its top, LAND_SIDE past each end) or a cap (CAP_SIDE past each end) */
+const takeOff = (S: LandPiece): readonly [number, number] => S.type === 'bouncy' ? [S.x - CAP_SIDE.px, S.x + S.width + CAP_SIDE.px] : [S.x - LAND_SIDE.px, S.x + S.width + LAND_SIDE.px];
 
 /**
  * One stage's flights, each flown once from each source and kept (a stage judges dozens of landings from the same ledges): from a ledge

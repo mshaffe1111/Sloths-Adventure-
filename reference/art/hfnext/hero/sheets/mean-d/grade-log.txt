@@ -1,0 +1,4 @@
+atlas: fur mean [58.74 16.1  33.42] -> [60.4  16.52 29.59] (plain [60.4  16.53 29.59]); pooled dE 4.19 -> 0.01; worst frame after 0.15; dL [2.04] ['all']; |even| max 4.87
+story: fur mean [55.36 14.8  26.65] -> [60.4  16.53 29.59] (plain [60.4  16.53 29.59]); pooled dE 6.09 -> 0.01; worst frame after 0.32; dL [5.38] ['all']; |even| max 5.39
+exit 0
+Sat Nov 21 23:35:05 UTC 2026

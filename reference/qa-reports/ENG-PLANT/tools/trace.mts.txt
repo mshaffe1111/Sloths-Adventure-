@@ -1,0 +1,13 @@
+// usage: tsx trace.mts <tree> <stage> <bot> <setting> <seed> [skillOff]  -> one line per frame: t x y grounded vx
+const [T, stage, bot, setting, seed, off] = process.argv.slice(2);
+await import(`${T}/src/game/headlessDom.ts`);
+const { CAST_BOTS } = await import(`${T}/tools/inspect/castBots.ts`);
+const { SKILLS, firstTimer } = await import(`${T}/tools/inspect/firsttimer.ts`);
+if (off) (SKILLS as any)[off] = false;
+const lines: string[] = [];
+const r = firstTimer(stage, Number(seed), CAST_BOTS[bot][setting], { cap: 1200, dotSetting: true, onFrame: (sim: any) => {
+  const p = sim.p; const e = sim.e; const h = e.platforms.find((q: any) => q.id === e.standingOnId);
+  lines.push(`${sim.t.toFixed(3)} ${p.x.toFixed(1)} ${p.y.toFixed(1)} ${p.grounded ? 1 : 0} ${p.vx.toFixed(1)} ${e.lives} ${h ? h.type + (h.drift ? h.drift.dir : "") + "#" + h.id : "-"}`);
+} });
+console.log(lines.join('\n'));
+console.error('end', r.end, 'lives', (r as any).lives, 'rescues', (r as any).rescues);

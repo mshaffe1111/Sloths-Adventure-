@@ -105,6 +105,26 @@ export function riverAt<R extends Pick<RiverZone, 'x0' | 'x1' | 'surfaceY'>>(riv
   return best;
 }
 
+/** a floor that ends a fall before the water under it: still ground, not a pad (he bounces off it) nor a log (it drifts away) */
+type FloorLike = { x: number; width: number; y: number; type?: string; broken?: boolean };
+const floorsUnder = (p: FloorLike) => p.type !== 'bouncy' && p.type !== 'drift' && !p.broken;
+
+/** the water under (x, y), the FIRST thing a fall from there meets (ENG-26e: the readers that judged water by x alone, the drop judge,
+ *  Easy's flags and steps and the water lesson, read it here): riverAt's river (the water he is in, or the higher water under him), unless
+ *  a STOREY lies between: a floor that spans x, at or under y (the floor he stands on counts), more than RIVER_DEPTH over the surface.
+ *  Nearer the surface a floor is ON the river (a bank, an island, a lily, a stone: World 2's rivers carry them in their windows), and the
+ *  water is his storey's, as by x alone. One storey: riverAt */
+export function waterUnder<R extends Pick<RiverZone, 'x0' | 'x1' | 'surfaceY'>>(rivers: readonly R[] | undefined, x: number, y: number, floors: readonly FloorLike[] = []): R | undefined {
+  const r = riverAt(rivers, x, y);
+  return r && !floors.some((p) => floorsUnder(p) && p.x <= x && p.x + p.width >= x && p.y >= y && p.y < r.surfaceY - RIVER_DEPTH) ? r : undefined;
+}
+
+/** is r's water on the storey of (x, y): waterUnder at the point of r's window nearest x (he stands beside it, or over it). A river a storey
+ *  above (deeper than RIVER_DEPTH over him) or a storey below (a floor between) is not */
+export function waterNear<R extends Pick<RiverZone, 'x0' | 'x1' | 'surfaceY'>>(r: R, x: number, y: number, floors: readonly FloorLike[] = []): boolean {
+  return waterUnder([r], Math.min(r.x1 - 1, Math.max(r.x0 + 1, x)), y, floors) === r;
+}
+
 /** the clock a log moves by: its river's own when a sluice runs that river (RiverZone.flowT), else the game's */
 export function logClock(rivers: readonly RiverZone[] | undefined, d: DriftInfo, t: number): number {
   for (const r of rivers ?? []) if (r.flowT !== undefined && d.x0 >= r.x0 - 1 && d.x1 <= r.x1 + 1) return r.flowT;

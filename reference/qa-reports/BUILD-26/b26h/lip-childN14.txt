@@ -1,0 +1,13 @@
+1-4 child Normal seed 14, b26/traceS.ts (ST=1-4; trace.ts with the stage from the env), FT_FRAMES=0,260, frozen trees:
+  27e20ebf9 (no lip):           shrine 216.4 s, rescues 0
+  b746b9a87 (27e20ebf9 + b26g/lip.patch): shrine 220.4 s, rescues 1: t 192.7 x 634 y 1923 [#47 branch x 339-859] fell back down from here 8 times
+The lip fires ONCE in the whole run (a stderr line at the lip's own line, w-lipT): LIP t 161.03 x 415 y 3646 dir -1 (run coords).
+  frames 161.00-161.67: base walks off #41's lip at 406 (late), drops 28 px, jumps at 161.33, lands #42 (40 px up) at 252;
+  lip jumps at 161.07 on the run, lands #42 at 260. Same platform, 8 px apart: the lip did what it is for there.
+From there the two runs differ by draws and position (base reaches #47 at 180.70, lip at 177.23). At x 890 on #47 going left the base
+takes the vine up (pad up, 183.43 -> #48 at 190.70); the lip run PRESSES a jump left at 179.43 (pad left+press), passes the vine,
+lands back on #47 at 538, then walks 511..632 for 10 s without trying the vine again -> rescue at 192.73 onto #49.
+So child N 14's loss is a knock-on (a different draw at the vine), not a walk-off under a ledge. One run only: the second run for
+the cause (D: two runs per cause) is NOT done.
+Toy (b26g/toylip.mts, imports pointed at each tree): fix drops 31/40, PLANT drops 31/40 on b746b9a87; the same 31/31 on 27e20ebf9.
+The toy does NOT separate the fix from the plant: it does not prove the lip (D96 not met). Not rewritten in this box.

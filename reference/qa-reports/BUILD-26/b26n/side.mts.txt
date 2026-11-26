@@ -1,0 +1,18 @@
+const W = process.env.WT!;
+await import(W + '/src/game/headlessDom.ts');
+const { setDifficulty } = await import(W + '/src/game/difficulty.ts');
+const FT: any = await import(W + '/tools/inspect/firsttimer.ts');
+const FP: any = await import(W + '/tools/inspect/figPush.ts');
+const set = process.env.SET ?? 'easy'; setDifficulty(set);
+const out: string[] = []; let run: any;
+const P = FP.FigPush.prototype; const orig = P.freeSide;
+P.freeSide = function (v: any, p: any, t: number, h: any) {
+  const nw = orig.call(this, v, p, t, h);
+  const tg = this.target; this.target = null; const old = orig.call(this, v, p, t, h); this.target = tg;
+  if (old !== nw) out.push(`t ${t.toFixed(2)} at ${Math.round(p.x)},${Math.round(p.y)} old ${old} new ${nw} target ${tg ? tg.id : '-'}`);
+  return nw;
+};
+run = new FT.FirstTimerRun('1-4', Number(process.argv[2]), { ...FT[process.env.BOT ?? 'FT_KID'], setting: set }, {});
+const res = run.play();
+console.log(`seed ${process.argv[2]} differs ${out.length} first ${out[0] ?? '-'}`);
+console.log(JSON.stringify({ t: +run.t.toFixed(1), rescues: res.rescues }));

@@ -1,0 +1,312 @@
+{
+ "note": "fur-only light/dark bands per move group at each sheet's accepted state (herobody.py --ratchet); heroClipsBody.test.ts fails a band > 1.0 dE worse",
+ "slack": 1.0,
+ "sheets": {
+  "idle-yawn": {
+   "all": {
+    "light": 3.622,
+    "dark": 2.572
+   }
+  },
+  "look-around": {
+   "all": {
+    "light": 4.532,
+    "dark": 3.305
+   }
+  },
+  "hurt": {
+   "all": {
+    "light": 5.213,
+    "dark": 3.592
+   }
+  },
+  "belly-scratch": {
+   "all": {
+    "light": 0.774,
+    "dark": 1.125
+   }
+  },
+  "wave": {
+   "all": {
+    "light": 2.918,
+    "dark": 2.235
+   }
+  },
+  "cheer": {
+   "all": {
+    "light": 3.085,
+    "dark": 2.329
+   }
+  },
+  "push": {
+   "all": {
+    "light": 4.839,
+    "dark": 5.351
+   }
+  },
+  "move-run": {
+   "all": {
+    "light": 0.91,
+    "dark": 1.674
+   }
+  },
+  "move-jab": {
+   "all": {
+    "light": 0.681,
+    "dark": 0.558
+   }
+  },
+  "move-cross": {
+   "all": {
+    "light": 0.202,
+    "dark": 0.231
+   }
+  },
+  "move-hook": {
+   "all": {
+    "light": 2.279,
+    "dark": 1.377
+   }
+  },
+  "move-kick": {
+   "all": {
+    "light": 1.668,
+    "dark": 3.235
+   }
+  },
+  "move-kick2": {
+   "all": {
+    "light": 1.816,
+    "dark": 1.447
+   }
+  },
+  "move-mega": {
+   "all": {
+    "light": 2.588,
+    "dark": 2.242
+   }
+  },
+  "teeter": {
+   "all": {
+    "light": 2.35,
+    "dark": 0.788
+   }
+  },
+  "step-back": {
+   "all": {
+    "light": 2.066,
+    "dark": 0.772
+   }
+  },
+  "move-climb": {
+   "all": {
+    "light": 5.289,
+    "dark": 5.796
+   }
+  },
+  "move-walk": {
+   "all": {
+    "light": 0.679,
+    "dark": 2.018
+   }
+  },
+  "hero-rope": {
+   "all": {
+    "light": 5.876,
+    "dark": 7.203
+   }
+  },
+  "pokey-swim": {
+   "first": {
+    "light": 4.941,
+    "dark": 3.716
+   },
+   "surf": {
+    "light": 4.214,
+    "dark": 7.564
+   },
+   "tread": {
+    "light": 6.772,
+    "dark": 5.596
+   },
+   "under": {
+    "light": 3.487,
+    "dark": 6.079
+   }
+  },
+  "hero-vine": {
+   "all": {
+    "light": 1.428,
+    "dark": 1.362
+   }
+  },
+  "hero-climb2": {
+   "all": {
+    "light": 3.537,
+    "dark": 1.367
+   }
+  },
+  "hero-studies": {
+   "s1": {
+    "light": 5.175,
+    "dark": 4.531
+   },
+   "s3": {
+    "light": 4.594,
+    "dark": 5.315
+   },
+   "s4": {
+    "light": 3.999,
+    "dark": 4.31
+   },
+   "s5": {
+    "light": 1.106,
+    "dark": 0.929
+   }
+  },
+  "hero-atlas": {
+   "climb": {
+    "light": 4.344,
+    "dark": 2.563
+   },
+   "duck": {
+    "light": 6.199,
+    "dark": 6.035
+   },
+   "fall": {
+    "light": 4.321,
+    "dark": 3.202
+   },
+   "guard": {
+    "light": 0.526,
+    "dark": 1.642
+   },
+   "hurt": {
+    "light": 2.512,
+    "dark": 3.168
+   },
+   "idle": {
+    "light": 0.544,
+    "dark": 1.665
+   },
+   "jump": {
+    "light": 3.239,
+    "dark": 1.65
+   },
+   "kick": {
+    "light": 4.169,
+    "dark": 3.764
+   },
+   "land": {
+    "light": 1.414,
+    "dark": 0.783
+   },
+   "mega": {
+    "light": 3.058,
+    "dark": 2.555
+   },
+   "punch": {
+    "light": 3.955,
+    "dark": 2.9
+   },
+   "run": {
+    "light": 4.23,
+    "dark": 3.08
+   }
+  },
+  "hero-story": {
+   "alarm": {
+    "light": 6.872,
+    "dark": 5.905
+   },
+   "away": {
+    "light": 1.577,
+    "dark": 4.576
+   },
+   "cheer": {
+    "light": 7.266,
+    "dark": 7.071
+   },
+   "crossed": {
+    "light": 9.095,
+    "dark": 7.426
+   },
+   "farewell": {
+    "light": 5.651,
+    "dark": 8.171
+   },
+   "impatient": {
+    "light": 10.208,
+    "dark": 7.714
+   },
+   "look": {
+    "light": 4.18,
+    "dark": 4.125
+   },
+   "point": {
+    "light": 8.848,
+    "dark": 7.536
+   },
+   "resolve": {
+    "light": 9.232,
+    "dark": 7.842
+   },
+   "sad": {
+    "light": 6.699,
+    "dark": 6.587
+   },
+   "scared": {
+    "light": 10.314,
+    "dark": 8.537
+   },
+   "shock": {
+    "light": 9.781,
+    "dark": 8.117
+   },
+   "shout": {
+    "light": 8.599,
+    "dark": 7.821
+   },
+   "sleep": {
+    "light": 7.61,
+    "dark": 8.163
+   },
+   "slump": {
+    "light": 7.265,
+    "dark": 6.71
+   },
+   "sneak": {
+    "light": 8.746,
+    "dark": 7.809
+   },
+   "stance": {
+    "light": 8.734,
+    "dark": 7.771
+   },
+   "talk": {
+    "light": 5.143,
+    "dark": 5.144
+   },
+   "think": {
+    "light": 7.648,
+    "dark": 7.45
+   },
+   "thumbs": {
+    "light": 10.235,
+    "dark": 7.749
+   },
+   "tired": {
+    "light": 9.414,
+    "dark": 7.809
+   },
+   "wipe": {
+    "light": 8.793,
+    "dark": 7.383
+   },
+   "worried": {
+    "light": 11.143,
+    "dark": 8.838
+   }
+  }
+ }
+}

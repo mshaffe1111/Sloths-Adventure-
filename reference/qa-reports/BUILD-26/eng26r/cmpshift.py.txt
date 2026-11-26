@@ -1,0 +1,19 @@
+# usage: python3 -I cmpshift.py <dirA> <dirB>: per still, the whole-pixel shift of B that best matches A (the world below the HUD), then
+# the residual: pixels over 1 luma and the largest difference, in the overlap
+import sys, os
+import numpy as np
+from PIL import Image
+a, b = sys.argv[1], sys.argv[2]
+for f in sorted(os.listdir(a)):
+    if not f.endswith('.png') or not os.path.exists(os.path.join(b, f)): continue
+    A = np.asarray(Image.open(os.path.join(a, f)).convert('L'), dtype=np.int16); B = np.asarray(Image.open(os.path.join(b, f)).convert('L'), dtype=np.int16)
+    H, W = A.shape; y0 = 260; best = None
+    for dy in range(-6, 7):
+        for dx in range(-6, 7):
+            a_ = A[y0 + 6:H - 6, 6:W - 6]; b_ = B[y0 + 6 + dy:H - 6 + dy, 6 + dx:W - 6 + dx]
+            d = np.abs(a_ - b_); s = int((d > 1).sum())
+            if best is None or s < best[0]: best = (s, dx, dy, int(d.max()), d)
+    s, dx, dy, mx, d = best
+    ys, xs = np.nonzero(d > 1)
+    box = (int(xs.min()), int(ys.min()) + y0 + 6, int(xs.max()), int(ys.max()) + y0 + 6) if s else None
+    print(f'{f}: best shift ({dx},{dy}); over 1 luma {s} of {d.size} ({100*s/d.size:.2f}%), max {mx}, box {box}')

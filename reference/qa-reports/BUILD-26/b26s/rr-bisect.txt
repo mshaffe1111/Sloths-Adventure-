@@ -1,0 +1,36 @@
+running '/tmp/claude-0/-home-user-Sloths-Adventure-/c77cce7e-873c-58c4-b96e-1ed826e58aa0/scratchpad/bis/rr.sh'
+Bisecting: 47 revisions left to test after this (roughly 6 steps)
+[064ca6df657d022dbf272cac40f06889f0aeb49c] Bots: no silent cap: a vine field's work that gets nowhere for 20 s runs the no-progress clock; a stall on a vine is a named stuck spot; the toy (RED on 1f42b4323, GREEN). BUILD-26l
+running '/tmp/claude-0/-home-user-Sloths-Adventure-/c77cce7e-873c-58c4-b96e-1ed826e58aa0/scratchpad/bis/rr.sh'
+Bisecting: 23 revisions left to test after this (roughly 5 steps)
+[43c4c677666a96f49ff2384b6102f340438c6ed1] BUILD-26h REPORT at the box: child E 37 is C's, adult N 9 is A/B's (one run each); the tower test red is older than these commits; EXACT NEXT STEP is the lead's ruling
+running '/tmp/claude-0/-home-user-Sloths-Adventure-/c77cce7e-873c-58c4-b96e-1ed826e58aa0/scratchpad/bis/rr.sh'
+Bisecting: 11 revisions left to test after this (roughly 4 steps)
+[99a68ff10de701f1225b54434689b4e40e54ded5] BUILD-26j REPORT: child N 14's failure spot read (a vine field, no lip)
+running '/tmp/claude-0/-home-user-Sloths-Adventure-/c77cce7e-873c-58c4-b96e-1ed826e58aa0/scratchpad/bis/rr.sh'
+Bisecting: 5 revisions left to test after this (roughly 3 steps)
+[c00d2fd174ae8c746366c903f8ffcfabe5cc9329] BUILD-26i: tierBots 9/9 on 9c2ce855d (the calibration holds after C's revert)
+running '/tmp/claude-0/-home-user-Sloths-Adventure-/c77cce7e-873c-58c4-b96e-1ed826e58aa0/scratchpad/bis/rr.sh'
+Bisecting: 2 revisions left to test after this (roughly 2 steps)
+[f4eab7721c6f348bbefe7ca333b0542c95d7aac0] BUILD-26j: C re-applied on the step-up rule (git revert 9c2ce855d: towerRoute noOutAndBack within GRAB_REACH, C's toy back)
+running '/tmp/claude-0/-home-user-Sloths-Adventure-/c77cce7e-873c-58c4-b96e-1ed826e58aa0/scratchpad/bis/rr.sh'
+Bisecting: 0 revisions left to test after this (roughly 1 step)
+[f348115a2fb68151011d5be5579b9127ca47968a] BUILD-26j: the step-up lip's toy (RED on c00d2fd17 roll 2 walks off; GREEN on the rule; planted arm walks off in 3+ of 6)
+running '/tmp/claude-0/-home-user-Sloths-Adventure-/c77cce7e-873c-58c4-b96e-1ed826e58aa0/scratchpad/bis/rr.sh'
+Bisecting: 0 revisions left to test after this (roughly 0 steps)
+[d6350d3e7ad93a92475d76d68ab4e1e948f3a7d5] BUILD-26j: the step-up rule at a faceless lip (stepUpAtLip, LIP_STEP measured from the lip: a late press becomes a run where the floor goes on a hop up with no face)
+running '/tmp/claude-0/-home-user-Sloths-Adventure-/c77cce7e-873c-58c4-b96e-1ed826e58aa0/scratchpad/bis/rr.sh'
+d6350d3e7ad93a92475d76d68ab4e1e948f3a7d5 is the first bad commit
+commit d6350d3e7ad93a92475d76d68ab4e1e948f3a7d5
+Author: Claude <noreply@anthropic.com>
+Date:   Sun Nov 22 01:31:24 2026 +0000
+
+    BUILD-26j: the step-up rule at a faceless lip (stepUpAtLip, LIP_STEP measured from the lip: a late press becomes a run where the floor goes on a hop up with no face)
+    
+    Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
+    Claude-Session: https://claude.ai/code/session_01FhBbYMdbCR3bQuvo3QsKV2
+
+ tools/inspect/firsttimer.ts | 17 +++++++++++++++++
+ 1 file changed, 17 insertions(+)
+bisect found first bad commit
+exit 0

@@ -1,0 +1,45 @@
+// ENG-26t step 1: search 2-1 for live cases that need SKILLS.upstream / SKILLS.bankUp.
+// usage: npx tsx <this> <frozen tree> <out.jsonl> [bots] [seeds a-b]
+const [tree, out, botsArg, seedsArg] = process.argv.slice(2);
+await import(`${tree}/src/game/headlessDom.ts`);
+const { SKILLS, firstTimer } = await import(`${tree}/tools/inspect/firsttimer.ts`);
+const { CAST_BOTS } = await import(`${tree}/tools/inspect/castBots.ts`);
+const fs = await import('node:fs');
+type RZ = { x0: number; x1: number; dir: number; speed: number };
+const bots = (botsArg ?? 'kid,adult,child,middle,expert').split(',');
+const [a, b] = (seedsArg ?? '1-40').split('-').map(Number);
+
+function run(bot: string, setting: string, seed: number) {
+  let backs: RZ[] | undefined;
+  let both: RZ | null | undefined;
+  let boarded: number | undefined, banked: number | undefined;
+  const r = firstTimer('2-1', seed, CAST_BOTS[bot][setting], { cap: 1200, dotSetting: true, onFrame: (sim: any) => {
+    if (backs === undefined) {
+      const rivers: RZ[] = (sim.stage.rivers ?? []);
+      backs = rivers.filter((q) => q.dir < 0 && q.speed > 0);
+      const found = backs.filter((q) => rivers.some((w) => w.dir > 0 && w.speed > 0 && q.x0 > w.x1 && q.x0 - w.x1 < 600));
+      both = found.length === 1 ? found[0] : null;
+    }
+    if (!both || !sim.p.grounded) return;
+    if (boarded === undefined && sim.p.x > both.x0 && sim.p.x < both.x1) boarded = sim.t;
+    if (boarded !== undefined && banked === undefined && sim.p.x > both.x1 + 4 && sim.p.x < both.x1 + 400) banked = sim.t;
+  } });
+  const lives = r.harms.filter((h: any) => h.kind === 'life');
+  const atBack = lives.filter((h: any) => (backs ?? []).some((q) => h.x >= q.x0 - 40 && h.x <= q.x1 + 40)).length;
+  return { end: r.end, rescues: r.rescues, lives: lives.length, atBack, time: +r.time.toFixed(2),
+    both: boarded !== undefined && banked !== undefined ? +(banked - boarded).toFixed(2) : null };
+}
+
+const ROWS = (process.env.ROWS ?? "").split(",").filter(Boolean).map((r) => r.split(":"));
+for (const [bot, setting, sd] of ROWS) { const seed = Number(sd);
+  if (!CAST_BOTS[bot][setting]) continue;
+  {
+    const on = run(bot, setting, seed);
+    SKILLS.upstream = false;
+    let up; try { up = run(bot, setting, seed); } finally { SKILLS.upstream = true; }
+    SKILLS.bankUp = false;
+    let bu; try { bu = run(bot, setting, seed); } finally { SKILLS.bankUp = true; }
+    fs.appendFileSync(out, JSON.stringify({ bot, setting, seed, on, up, bu }) + '\n');
+  }
+}
+console.log('done');

@@ -1,0 +1,10 @@
+import '/home/user/wt-toy/src/game/headlessDom.ts';
+import { setDifficulty } from '/home/user/wt-toy/src/game/difficulty.ts';
+import { FirstTimerRun, FT_CHILD } from '/home/user/wt-toy/tools/inspect/firsttimer.ts';
+setDifficulty('normal');
+const seed = Number(process.argv[2]); let lo = '';
+const fell: string[] = []; let g = true;
+const run: any = new FirstTimerRun('1-4', seed, FT_CHILD, { onFrame: (s: any) => { if (g && !s.p.grounded && s.p.vy > 0) fell.push(`walkoff t ${run.t.toFixed(2)} x ${Math.round(s.p.x)},${Math.round(s.p.y)}`); g = s.p.grounded; } });
+if (process.env.PLANT) run.stepUpAtLip = () => null;
+const res = run.play();
+console.log(JSON.stringify({ rescues: res.rescues, stuck: res.stuck?.map((x: any) => [x.x, x.y, x.t, x.what]) }));

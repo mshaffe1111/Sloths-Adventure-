@@ -1,0 +1,125 @@
+rel 1-4 normal castBots seed 12: gen2.seed 21036, size 1280x11208, box x 816-1256, y 9286-10126
+  wood 590-1010 @9425 solid s4:b
+  wood 744-854 @9706 fragile s3:r3
+  wood 854-1054 @9706 solid s3:z
+  wood 1154-1245 @9706 solid
+  wood 334-974 @9786 solid s3:s
+  wood 719-1088 @10067 solid
+  wood 1088-1209 @10067 solid
+  wood 1209-1280 @10067 solid
+  vine x 1036 top 9425 bottom 9706
+rel 1-4 normal castBots seed 36: gen2.seed 37, size 1280x11545, box x 816-1256, y 9623-10463
+  wood 570-1010 @9762 solid s4:b
+  wood 1110-1231 @9762 solid
+  wood 1231-1280 @9762 solid
+  wood 996-1176 @10042 solid
+  wood 744-854 @10043 fragile s3:r3
+  wood 854-1054 @10043 solid s3:z
+  wood 1154-1245 @10043 solid
+  wood 334-974 @10123 solid s3:s
+  wood 713-1088 @10404 solid
+  wood 1088-1209 @10404 solid
+  wood 1209-1280 @10404 solid
+  vine x 1036 top 9762 bottom 10043
+rel 1-4 easy castBots seed 17: gen2.seed 18, size 1280x11641, box x 895-1335, y 9719-10559
+  wood 677-1137 @9858 solid s4:b
+  wood 775-933 @10139 fragile s3:r3
+  wood 933-1181 @10139 solid s3:z
+  wood 1181-1280 @10139 solid
+  wood 334-1022 @10219 solid s3:s
+  wood 659-1136 @10500 solid
+  wood 1136-1256 @10500 solid
+  vine x 1163 top 9858 bottom 10139
+rel 1-4 easy castBots seed 10: gen2.seed 19018, size 1280x11641, box x 347-867, y 2922-3762
+  wood 72-360 @3021 solid s18:c
+  wood 360-760 @3061 solid s18:b
+  wood 760-1280 @3061 solid
+  wood 481-841 @3342 solid s17:top
+  wood 246-426 @3381 solid
+  wood 295-1027 @3702 solid s17:foot
+  vine x 781 top 3342 bottom 3702 s17:f1
+  vine x 701 top 3342 bottom 3702 s17:f2
+  vine x 621 top 3342 bottom 3702 s17:f3
+  vine x 541 top 3342 bottom 3702 s17:f4
+  vine x 786 top 3061 bottom 3342
+rel 1-4 easy castBots seed 37: gen2.seed 46261, size 1280x11264, box x 347-867, y 2545-3385
+  wood 72-360 @2644 solid s18:c
+  wood 360-760 @2684 solid s18:b
+  wood 760-1280 @2684 solid
+  wood 481-841 @2965 solid s17:top
+  wood 246-426 @3004 solid
+  wood 295-1027 @3325 solid s17:foot
+  vine x 781 top 2965 bottom 3325 s17:f1
+  vine x 701 top 2965 bottom 3325 s17:f2
+  vine x 621 top 2965 bottom 3325 s17:f3
+  vine x 541 top 2965 bottom 3325 s17:f4
+  vine x 786 top 2684 bottom 2965
+rel 1-4 normal castBots seed 29: gen2.seed 30, size 1280x11641, box x -159-281, y 9438-10278
+  wood 150-590 @9458 solid s5:top
+  wood 0-150 @9858 solid
+  wood 150-590 @9858 solid s5:foot
+  wood 114-334 @10139 solid s3:a
+  vine x 88 top 10139 bottom 10500
+  vine x 210 top 9458 bottom 9858 s5:f5
+  vine x 168 top 9177 bottom 9458
+rel 1-4 easy castBots seed 29: gen2.seed 30, size 1280x11641, box x -109-331, y 4865-5705
+  wood 0-117 @4925 solid
+  wood 117-345 @4925 solid s14:c
+  wood 309-749 @5246 solid s13:top
+  wood 0-101 @5285 solid
+  wood 101-281 @5285 solid
+  wood 114-944 @5626 solid s13:foot
+  vine x 88 top 5626 bottom 5907
+  vine x 135 top 4644 bottom 4925
+old 1-4 normal castBots seed 12: gen2.seed 21036, size 1280x11152, box x 816-1256, y 9286-10126
+  wood 590-1010 @9369 solid s4:b
+  wood 744-854 @9650 fragile s3:r3
+  wood 854-1054 @9650 solid s3:z
+  wood 334-974 @9730 solid s3:s
+  wood 719-1088 @10011 solid
+  vine x 1036 top 9369 bottom 9650
+old 1-4 normal castBots seed 36: gen2.seed 37, size 1280x11866, box x 816-1256, y 9623-10463
+  wood 414-854 @9762 solid s5:foot
+  wood 854-968 @9762 solid
+  wood 570-1010 @10083 solid s4:b
+  wood 744-854 @10364 fragile s3:r3
+  wood 854-1054 @10364 solid s3:z
+  wood 334-974 @10444 solid s3:s
+  vine x 1036 top 10083 bottom 10364
+old 1-4 easy castBots seed 17: gen2.seed 34000, size 1280x11585, box x 895-1335, y 9719-10559
+  wood 677-1137 @9802 solid s4:b
+  wood 775-933 @10083 fragile s3:r3
+  wood 933-1181 @10083 solid s3:z
+  wood 1181-1280 @10083 solid
+  wood 334-1022 @10163 solid s3:s
+  wood 652-1136 @10444 solid
+  vine x 1163 top 9802 bottom 10083
+old 1-4 easy castBots seed 10: gen2.seed 19018, size 1280x11641, box x 347-867, y 2922-3762
+  wood 72-360 @3021 solid s18:c
+  wood 360-760 @3061 solid s18:b
+  wood 712-1072 @3342 solid s17:top
+  wood 246-426 @3381 solid
+  wood 132-632 @3702 solid
+  wood 632-1152 @3702 solid s17:foot
+  vine x 786 top 3061 bottom 3342
+old 1-4 easy castBots seed 37: gen2.seed 46261, size 1280x11641, box x 347-867, y 2545-3385
+  wood 116-796 @2740 solid s19:foot
+  wood 796-1280 @2740 solid
+  wood 72-360 @3021 solid s18:c
+  wood 360-760 @3061 solid s18:b
+  wood 712-1072 @3342 solid s17:top
+  wood 246-426 @3381 solid
+  vine x 786 top 3061 bottom 3342
+  vine x 416 top 2300 bottom 2740 s19:f3
+  vine x 496 top 2300 bottom 2740 s19:f4
+  vine x 576 top 2300 bottom 2740 s19:f5
+  vine x 656 top 2300 bottom 2740 s19:f6
+old 1-4 normal castBots seed 29: gen2.seed 30, size 1280x11529, box x -159-281, y 9438-10278
+  wood 36-150 @9746 solid
+  wood 150-590 @9746 solid s5:foot
+  wood 114-334 @10027 solid s3:a
+  vine x 88 top 10027 bottom 10388
+  vine x 210 top 9346 bottom 9746 s5:f5
+old 1-4 easy castBots seed 29: gen2.seed 30, size 1280x11697, box x -109-331, y 4865-5705
+  wood 0-378 @4925 solid
+

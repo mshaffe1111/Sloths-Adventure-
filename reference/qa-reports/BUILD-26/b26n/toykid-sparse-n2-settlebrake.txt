@@ -1,0 +1,363 @@
+0.03 143,9617 vx 87 plat1 src 
+1.23 471,9617 vx 268 plat1 src null
+1.30 490,9598 vx 285 air src 
+1.83 638,9617 vx 285 plat1 src 
+1.87 647,9617 vx 268 plat2 src null
+2.07 703,9598 vx 285 air src 
+2.63 860,9617 vx 285 plat2 src 
+2.67 869,9617 vx 268 plat2 src null
+2.93 943,9598 vx 285 air src 
+5.27 1007,9112 vx -285 plat3 src 
+5.30 998,9112 vx -268 plat3 src wheel{"left":true}
+6.13 767,9112 vx -285 plat3 src wheel{}
+6.33 712,9115 vx -285 air src wheel{}
+6.37 703,9120 vx -268 air src 
+6.73 771,9112 vx 0 plat3 src wheel{}
+6.77 771,9112 vx 0 plat3 src null
+6.90 768,9093 vx -87 air src 
+7.50 610,9126 vx -268 bucket8 mid 645 w 120 src 
+7.53 607,9125 vx -154 bucket8 mid 647 w 120 src wheel{"right":true}
+7.57 608,9124 vx -41 bucket8 mid 650 w 120 src wheel{"right":true}
+7.60 610,9123 vx 0 bucket8 mid 652 w 120 src wheel{"right":true}
+7.63 612,9122 vx 0 bucket8 mid 654 w 120 src wheel{}
+7.67 614,9121 vx 0 bucket8 mid 656 w 120 src wheel{}
+7.70 613,9120 vx -87 bucket8 mid 658 w 120 src wheel{}
+7.73 618,9118 vx 73 bucket8 mid 660 w 120 src wheel{"right":true}
+7.77 620,9117 vx 0 bucket8 mid 662 w 120 src wheel{"left":true}
+7.80 622,9116 vx 0 bucket8 mid 664 w 120 src wheel{}
+7.83 624,9115 vx 0 bucket8 mid 666 w 120 src wheel{}
+7.87 626,9114 vx 0 bucket8 mid 668 w 120 src wheel{}
+7.90 628,9113 vx 0 bucket8 mid 670 w 120 src wheel{}
+7.93 630,9111 vx 0 bucket8 mid 672 w 120 src wheel{}
+7.97 629,9110 vx -87 bucket8 mid 674 w 120 src wheel{}
+8.00 633,9109 vx 73 bucket8 mid 676 w 120 src wheel{"right":true}
+8.03 635,9107 vx 0 bucket8 mid 678 w 120 src wheel{"left":true}
+8.07 637,9106 vx 0 bucket8 mid 680 w 120 src wheel{}
+8.10 639,9105 vx 0 bucket8 mid 682 w 120 src wheel{}
+8.13 641,9103 vx 0 bucket8 mid 683 w 120 src wheel{}
+8.17 643,9102 vx 0 bucket8 mid 685 w 120 src wheel{}
+8.20 645,9100 vx 0 bucket8 mid 687 w 120 src wheel{}
+8.23 644,9099 vx -87 bucket8 mid 689 w 120 src wheel{}
+8.27 648,9097 vx 73 bucket8 mid 691 w 120 src wheel{"right":true}
+8.30 650,9096 vx 0 bucket8 mid 693 w 120 src wheel{"left":true}
+8.33 651,9094 vx 0 bucket8 mid 694 w 120 src wheel{}
+8.37 653,9093 vx 0 bucket8 mid 696 w 120 src wheel{}
+8.40 655,9091 vx 0 bucket8 mid 698 w 120 src wheel{}
+8.43 657,9090 vx 0 bucket8 mid 699 w 120 src wheel{}
+8.47 658,9088 vx 0 bucket8 mid 701 w 120 src wheel{}
+8.50 657,9086 vx -87 bucket8 mid 703 w 120 src wheel{}
+8.53 661,9085 vx 73 bucket8 mid 704 w 120 src wheel{"right":true}
+8.57 663,9083 vx 0 bucket8 mid 706 w 120 src wheel{"left":true}
+8.60 664,9081 vx 0 bucket8 mid 708 w 120 src wheel{}
+8.63 666,9080 vx 0 bucket8 mid 709 w 120 src wheel{}
+8.67 667,9078 vx 0 bucket8 mid 711 w 120 src wheel{}
+8.70 669,9076 vx 0 bucket8 mid 712 w 120 src wheel{}
+8.73 670,9074 vx 0 bucket8 mid 714 w 120 src wheel{}
+8.77 669,9072 vx -87 bucket8 mid 715 w 120 src wheel{}
+8.80 673,9071 vx 73 bucket8 mid 717 w 120 src wheel{"right":true}
+8.83 674,9069 vx 0 bucket8 mid 718 w 120 src wheel{"left":true}
+8.87 676,9067 vx 0 bucket8 mid 719 w 120 src wheel{}
+8.90 677,9065 vx 0 bucket8 mid 721 w 120 src wheel{}
+8.93 678,9063 vx 0 bucket8 mid 722 w 120 src wheel{}
+8.97 680,9061 vx 0 bucket8 mid 723 w 120 src wheel{}
+9.00 681,9059 vx 0 bucket8 mid 725 w 120 src wheel{}
+9.03 679,9057 vx -87 bucket8 mid 726 w 120 src wheel{}
+9.07 683,9055 vx 73 bucket8 mid 727 w 120 src wheel{"right":true}
+9.10 684,9053 vx 0 bucket8 mid 728 w 120 src wheel{"left":true}
+9.13 686,9051 vx 0 bucket8 mid 730 w 120 src wheel{}
+9.17 687,9049 vx 0 bucket8 mid 731 w 120 src wheel{}
+9.20 688,9047 vx 0 bucket8 mid 732 w 120 src wheel{}
+9.23 689,9045 vx 0 bucket8 mid 733 w 120 src wheel{}
+9.27 690,9043 vx 0 bucket8 mid 734 w 120 src wheel{}
+9.30 688,9041 vx -87 bucket8 mid 735 w 120 src wheel{}
+9.33 692,9039 vx 73 bucket8 mid 736 w 120 src wheel{"right":true}
+9.37 693,9037 vx 0 bucket8 mid 737 w 120 src wheel{"left":true}
+9.40 694,9035 vx 0 bucket8 mid 738 w 120 src wheel{}
+9.43 695,9033 vx 0 bucket8 mid 739 w 120 src wheel{}
+9.47 696,9031 vx 0 bucket8 mid 740 w 120 src wheel{}
+9.50 696,9028 vx 0 bucket8 mid 741 w 120 src wheel{}
+9.53 697,9026 vx 0 bucket8 mid 742 w 120 src wheel{}
+9.57 695,9024 vx -87 bucket8 mid 743 w 120 src wheel{}
+9.60 699,9022 vx 73 bucket8 mid 744 w 120 src wheel{"right":true}
+9.63 699,9020 vx 0 bucket8 mid 744 w 120 src wheel{"left":true}
+9.67 700,9017 vx 0 bucket8 mid 745 w 120 src wheel{}
+9.70 701,9015 vx 0 bucket8 mid 746 w 120 src wheel{}
+9.73 702,9013 vx 0 bucket8 mid 747 w 120 src wheel{}
+9.80 703,9009 vx 0 bucket8 mid 748 w 120 src wheel{}
+9.83 701,9006 vx -87 bucket8 mid 749 w 120 src wheel{}
+9.87 704,9004 vx 73 bucket8 mid 749 w 120 src wheel{"right":true}
+9.90 704,9002 vx 0 bucket8 mid 750 w 120 src wheel{"left":true}
+9.93 705,8999 vx 0 bucket8 mid 750 w 120 src wheel{}
+9.97 705,8997 vx 0 bucket8 mid 751 w 120 src wheel{}
+10.03 706,8993 vx 0 bucket8 mid 752 w 120 src wheel{}
+10.13 707,8986 vx 73 bucket8 mid 753 w 120 src wheel{"right":true}
+10.17 707,8983 vx 0 bucket8 mid 753 w 120 src wheel{"left":true}
+10.20 707,8981 vx 0 bucket8 mid 753 w 120 src wheel{}
+10.23 708,8979 vx 0 bucket8 mid 754 w 120 src wheel{}
+10.40 708,8967 vx 73 bucket8 mid 754 w 120 src wheel{"right":true}
+10.43 708,8965 vx 0 bucket8 mid 755 w 120 src wheel{"left":true}
+10.47 708,8962 vx 0 bucket8 mid 755 w 120 src wheel{}
+10.60 708,8953 vx 0 bucket8 mid 754 w 120 src wheel{}
+10.67 707,8948 vx 73 bucket8 mid 754 w 120 src wheel{"right":true}
+10.70 707,8946 vx 0 bucket8 mid 754 w 120 src wheel{"left":true}
+10.73 707,8944 vx 0 bucket8 mid 754 w 120 src wheel{}
+10.80 707,8939 vx 0 bucket8 mid 753 w 120 src wheel{}
+10.90 703,8932 vx -87 bucket8 mid 752 w 120 src wheel{}
+10.93 705,8930 vx 73 bucket8 mid 752 w 120 src wheel{"right":true}
+10.97 704,8928 vx 0 bucket8 mid 752 w 120 src wheel{"left":true}
+11.00 704,8925 vx 0 bucket8 mid 751 w 120 src wheel{}
+11.07 703,8921 vx 0 bucket8 mid 750 w 120 src wheel{}
+11.13 702,8916 vx 0 bucket8 mid 749 w 120 src wheel{}
+11.20 700,8912 vx 73 bucket8 mid 748 w 120 src wheel{"right":true}
+11.23 700,8909 vx 0 bucket8 mid 747 w 120 src wheel{"left":true}
+11.27 699,8907 vx 0 bucket8 mid 747 w 120 src wheel{}
+11.30 698,8905 vx 0 bucket8 mid 746 w 120 src wheel{}
+11.33 698,8903 vx 0 bucket8 mid 745 w 120 src wheel{}
+11.40 696,8898 vx 0 bucket8 mid 744 w 120 src wheel{}
+11.43 692,8896 vx -87 bucket8 mid 743 w 120 src wheel{}
+11.47 694,8894 vx 73 bucket8 mid 742 w 120 src wheel{"right":true}
+11.50 693,8892 vx 0 bucket8 mid 741 w 120 src wheel{"left":true}
+11.53 692,8890 vx 0 bucket8 mid 740 w 120 src wheel{}
+11.57 691,8888 vx 0 bucket8 mid 739 w 120 src wheel{}
+11.60 690,8885 vx 0 bucket8 mid 738 w 120 src wheel{}
+11.63 689,8883 vx 0 bucket8 mid 737 w 120 src wheel{}
+11.67 688,8881 vx 0 bucket8 mid 736 w 120 src wheel{}
+11.70 684,8879 vx -87 bucket8 mid 735 w 120 src wheel{}
+11.73 686,8877 vx 73 bucket8 mid 734 w 120 src wheel{"right":true}
+11.77 685,8875 vx 0 bucket8 mid 733 w 120 src wheel{"left":true}
+11.80 684,8873 vx 0 bucket8 mid 732 w 120 src wheel{}
+11.83 682,8871 vx 0 bucket8 mid 731 w 120 src wheel{}
+11.87 681,8869 vx 0 bucket8 mid 730 w 120 src wheel{}
+11.90 680,8867 vx 0 bucket8 mid 729 w 120 src wheel{}
+11.93 679,8865 vx 0 bucket8 mid 727 w 120 src wheel{}
+11.97 675,8863 vx -87 bucket8 mid 726 w 120 src wheel{}
+12.00 676,8861 vx 73 bucket8 mid 725 w 120 src wheel{"right":true}
+12.03 675,8859 vx 0 bucket8 mid 724 w 120 src wheel{"left":true}
+12.07 673,8857 vx 0 bucket8 mid 722 w 120 src wheel{}
+12.10 672,8855 vx 0 bucket8 mid 721 w 120 src wheel{}
+12.13 670,8853 vx 0 bucket8 mid 720 w 120 src wheel{}
+12.17 669,8851 vx 0 bucket8 mid 718 w 120 src wheel{}
+12.20 668,8850 vx 0 bucket8 mid 717 w 120 src wheel{}
+12.23 663,8848 vx -87 bucket8 mid 715 w 120 src wheel{}
+12.27 664,8846 vx 73 bucket8 mid 714 w 120 src wheel{"right":true}
+12.30 663,8844 vx 0 bucket8 mid 712 w 120 src wheel{"left":true}
+12.33 661,8842 vx 0 bucket8 mid 711 w 120 src wheel{}
+12.37 660,8841 vx 0 bucket8 mid 709 w 120 src wheel{}
+12.40 658,8839 vx 0 bucket8 mid 708 w 120 src wheel{}
+12.43 657,8837 vx 0 bucket8 mid 706 w 120 src wheel{}
+12.47 655,8835 vx 0 bucket8 mid 705 w 120 src wheel{}
+12.50 651,8834 vx -87 bucket8 mid 703 w 120 src wheel{}
+12.53 651,8832 vx 73 bucket8 mid 701 w 120 src wheel{"right":true}
+12.57 650,8831 vx 0 bucket8 mid 700 w 120 src wheel{"left":true}
+12.60 648,8829 vx 0 bucket8 mid 698 w 120 src wheel{}
+12.63 646,8827 vx 0 bucket8 mid 696 w 120 src wheel{}
+12.67 645,8826 vx 0 bucket8 mid 694 w 120 src wheel{}
+12.70 643,8824 vx 0 bucket8 mid 693 w 120 src wheel{}
+12.73 641,8823 vx 0 bucket8 mid 691 w 120 src wheel{}
+12.77 636,8821 vx -87 bucket8 mid 689 w 120 src wheel{}
+12.80 637,8820 vx 73 bucket8 mid 687 w 120 src wheel{"right":true}
+12.83 635,8818 vx 0 bucket8 mid 686 w 120 src wheel{"left":true}
+12.87 633,8817 vx 0 bucket8 mid 684 w 120 src wheel{}
+12.90 631,8815 vx 0 bucket8 mid 682 w 120 src wheel{}
+12.93 630,8814 vx 0 bucket8 mid 680 w 120 src wheel{}
+12.97 628,8813 vx 0 bucket8 mid 678 w 120 src wheel{}
+13.00 626,8811 vx 0 bucket8 mid 676 w 120 src wheel{}
+13.03 621,8810 vx -87 bucket8 mid 674 w 120 src wheel{}
+13.07 619,8809 vx 0 bucket8 mid 672 w 120 src wheel{}
+13.10 617,8808 vx 0 bucket8 mid 670 w 120 src wheel{}
+13.13 615,8806 vx 0 bucket8 mid 668 w 120 src wheel{}
+13.17 613,8805 vx 0 bucket8 mid 666 w 120 src wheel{}
+13.20 611,8804 vx 0 bucket8 mid 664 w 120 src wheel{}
+13.23 609,8803 vx 0 bucket8 mid 662 w 120 src wheel{}
+13.27 607,8802 vx 0 bucket8 mid 660 w 120 src wheel{}
+13.30 605,8801 vx 0 bucket8 mid 658 w 120 src wheel{}
+13.33 603,8799 vx 0 bucket8 mid 656 w 120 src wheel{}
+13.37 601,8798 vx 0 bucket8 mid 654 w 120 src wheel{}
+13.40 599,8797 vx 0 bucket8 mid 652 w 120 src wheel{}
+13.43 596,8796 vx 0 bucket8 mid 650 w 120 src wheel{}
+13.47 594,8795 vx 0 bucket8 mid 648 w 120 src wheel{}
+13.50 592,8795 vx 0 bucket8 mid 645 w 120 src wheel{}
+13.53 590,8794 vx 0 bucket8 mid 643 w 120 src wheel{}
+13.57 588,8793 vx 0 bucket8 mid 641 w 120 src wheel{}
+13.60 586,8792 vx 0 bucket8 mid 639 w 120 src wheel{}
+13.63 584,8791 vx 0 bucket8 mid 637 w 120 src wheel{}
+13.67 581,8790 vx 0 bucket8 mid 635 w 120 src wheel{}
+13.70 579,8790 vx 0 bucket8 mid 632 w 120 src wheel{}
+13.73 577,8789 vx 0 bucket8 mid 630 w 120 src wheel{}
+13.77 575,8788 vx 0 bucket8 mid 628 w 120 src wheel{}
+13.80 572,8787 vx 0 bucket8 mid 626 w 120 src wheel{}
+13.83 570,8787 vx 0 bucket8 mid 624 w 120 src wheel{}
+13.87 568,8786 vx 0 bucket8 mid 621 w 120 src wheel{}
+13.90 566,8786 vx 0 bucket8 mid 619 w 120 src wheel{}
+13.93 563,8785 vx 0 bucket8 mid 617 w 120 src wheel{}
+13.97 561,8784 vx 0 bucket8 mid 614 w 120 src wheel{}
+14.00 559,8784 vx 0 bucket8 mid 612 w 120 src wheel{}
+14.03 557,8783 vx 0 bucket8 mid 610 w 120 src wheel{}
+14.07 554,8783 vx 0 bucket8 mid 608 w 120 src wheel{}
+14.10 552,8783 vx 0 bucket8 mid 605 w 120 src wheel{}
+14.13 550,8782 vx 0 bucket8 mid 603 w 120 src wheel{}
+14.17 547,8782 vx 0 bucket8 mid 601 w 120 src wheel{}
+14.20 545,8782 vx 0 bucket8 mid 598 w 120 src wheel{}
+14.23 543,8781 vx 0 bucket8 mid 596 w 120 src wheel{}
+14.27 540,8781 vx 0 bucket8 mid 594 w 120 src wheel{}
+14.30 538,8781 vx 0 bucket8 mid 591 w 120 src wheel{}
+14.33 536,8781 vx 0 bucket8 mid 589 w 120 src wheel{}
+14.37 533,8780 vx 0 bucket8 mid 587 w 120 src wheel{}
+14.40 531,8780 vx 0 bucket8 mid 584 w 120 src wheel{}
+14.43 529,8780 vx 0 bucket8 mid 582 w 120 src wheel{}
+14.47 526,8780 vx 0 bucket8 mid 580 w 120 src wheel{}
+14.50 524,8780 vx 0 bucket8 mid 577 w 120 src wheel{}
+14.53 522,8780 vx 0 bucket8 mid 575 w 120 src wheel{}
+14.57 519,8780 vx 0 bucket8 mid 573 w 120 src wheel{}
+14.60 517,8780 vx 0 bucket8 mid 570 w 120 src wheel{}
+14.63 515,8780 vx 0 bucket8 mid 568 w 120 src wheel{}
+14.67 512,8780 vx 0 bucket8 mid 566 w 120 src wheel{}
+14.70 510,8780 vx 0 bucket8 mid 563 w 120 src wheel{}
+14.73 508,8781 vx 0 bucket8 mid 561 w 120 src wheel{}
+14.77 506,8781 vx 0 bucket8 mid 559 w 120 src wheel{}
+14.80 503,8781 vx 0 bucket8 mid 556 w 120 src wheel{}
+14.83 501,8781 vx 0 bucket8 mid 554 w 120 src wheel{}
+14.87 499,8781 vx 0 bucket8 mid 552 w 120 src wheel{}
+14.90 496,8782 vx 0 bucket8 mid 550 w 120 src wheel{}
+14.93 494,8782 vx 0 bucket8 mid 547 w 120 src wheel{}
+14.97 492,8782 vx 0 bucket8 mid 545 w 120 src wheel{}
+15.00 489,8783 vx 0 bucket8 mid 543 w 120 src null
+15.03 487,8783 vx 0 bucket8 mid 540 w 120 src null
+15.07 485,8784 vx 0 bucket8 mid 538 w 120 src null
+15.10 482,8784 vx 0 bucket8 mid 536 w 120 src null
+15.13 480,8785 vx 0 bucket8 mid 533 w 120 src null
+15.17 478,8785 vx 0 bucket8 mid 531 w 120 src null
+15.20 471,8767 vx -154 air src 
+15.80 307,8808 vx -268 plat4 src 
+15.83 298,8808 vx -285 plat4 src null
+16.13 183,8801 vx 0 air src null
+16.17 183,8793 vx 0 air src 
+18.27 246,8527 vx 285 plat10 src 
+18.30 255,8527 vx 268 plat10 src null
+18.70 395,8520 vx 0 air src null
+18.73 395,8512 vx 0 air src 
+20.03 458,8268 vx 285 plat11 src 
+20.07 467,8268 vx 268 plat11 src null
+20.87 688,8268 vx 268 plat12 src null
+21.40 863,8261 vx 0 air src null
+21.43 863,8253 vx 0 air src 
+22.80 926,7999 vx 285 plat13 src 
+22.83 935,7999 vx 268 plat13 src null
+23.40 1126,7992 vx 0 air src null
+23.43 1126,7984 vx 0 air src 
+24.83 1163,7718 vx 160 plat54 src 
+24.87 1165,7718 vx 47 plat54 src null
+25.40 1092,7718 vx -285 plat14 src null
+26.03 883,7711 vx 0 air src null
+26.07 883,7703 vx 0 air src 
+27.57 820,7419 vx -285 plat15 src 
+27.60 811,7419 vx -268 plat15 src null
+28.50 562,7419 vx -285 plat16 src null
+29.03 385,7412 vx 0 air src null
+29.07 385,7404 vx 0 air src 
+30.37 322,7165 vx -285 plat17 src 
+30.40 313,7165 vx -268 plat17 src null
+31.00 115,7158 vx 0 air src null
+31.03 115,7150 vx 0 air src 
+32.43 178,6884 vx 285 plat18 src 
+32.47 187,6884 vx 268 plat18 src null
+32.90 337,6877 vx 0 air src null
+32.93 337,6869 vx 0 air src 
+34.13 400,6646 vx 285 plat19 src 
+34.17 409,6646 vx 268 plat19 src null
+34.93 621,6646 vx 285 plat20 src null
+35.47 802,6639 vx 0 air src null
+35.50 802,6631 vx 0 air src 
+36.87 865,6375 vx 285 plat21 src 
+36.90 874,6375 vx 268 plat21 src null
+37.53 1082,6368 vx 0 air src null
+37.57 1082,6360 vx 0 air src 
+38.97 1119,6094 vx 160 plat61 src 
+39.00 1121,6094 vx 47 plat61 src null
+39.37 1048,6094 vx -268 plat22 src null
+39.90 868,6087 vx 0 air src null
+39.93 868,6079 vx 0 air src 
+41.13 805,5857 vx -285 plat23 src 
+41.17 796,5857 vx -268 plat23 src null
+42.00 566,5857 vx -285 plat24 src null
+43.13 219,5850 vx 0 air src null
+43.17 219,5842 vx 0 air src 
+45.57 282,5510 vx 285 plat25 src 
+45.60 291,5510 vx 268 plat25 src null
+46.93 659,5510 vx 268 plat26 src null
+48.03 998,5503 vx 0 air src null
+48.07 998,5495 vx 0 air src 
+50.17 935,5229 vx -285 plat27 src 
+50.20 926,5229 vx -268 plat27 src null
+50.63 772,5222 vx 0 air src null
+50.67 772,5214 vx 0 air src 
+51.90 709,4983 vx -285 plat28 src 
+51.93 700,4983 vx -268 plat28 src null
+52.67 468,4976 vx 0 air src null
+52.70 468,4968 vx 0 air src 
+54.80 531,4702 vx 285 plat29 src 
+54.83 540,4702 vx 268 plat29 src null
+55.20 670,4695 vx 0 air src null
+55.23 670,4687 vx 0 air src 
+56.67 733,4415 vx 285 plat30 src 
+56.70 742,4415 vx 268 plat30 src null
+57.27 929,4408 vx 0 air src null
+57.30 929,4400 vx 0 air src 
+59.40 866,4134 vx -285 plat31 src 
+59.43 857,4134 vx -268 plat31 src null
+59.80 727,4127 vx 0 air src null
+59.83 727,4119 vx 0 air src 
+61.30 664,3836 vx -285 plat32 src 
+61.33 655,3836 vx -268 plat32 src null
+62.00 437,3829 vx 0 air src null
+62.03 437,3821 vx 0 air src 
+64.13 500,3555 vx 285 plat33 src 
+64.17 509,3555 vx 268 plat33 src null
+64.57 649,3548 vx 0 air src null
+64.60 649,3540 vx 0 air src 
+65.80 712,3316 vx 285 plat34 src 
+65.83 721,3316 vx 268 plat34 src null
+66.50 934,3309 vx 0 air src null
+66.53 934,3301 vx 0 air src 
+68.23 971,2969 vx 160 plat95 src 
+68.27 971,2969 vx 0 plat95 src null
+68.53 908,2969 vx -285 plat35 src null
+69.93 521,2969 vx -285 plat36 src null
+71.20 137,2962 vx 0 air src null
+71.23 137,2954 vx 0 air src 
+73.63 200,2622 vx 285 plat37 src 
+73.67 209,2622 vx 268 plat37 src null
+74.87 540,2622 vx 268 plat38 src null
+75.53 753,2615 vx 0 air src null
+75.57 753,2607 vx 0 air src 
+76.93 816,2347 vx 285 plat39 src 
+76.97 825,2347 vx 268 plat39 src null
+77.50 1002,2340 vx 0 air src null
+77.53 1002,2332 vx 0 air src 
+79.63 939,2066 vx -285 plat40 src 
+79.67 930,2066 vx -268 plat40 src null
+80.03 801,2059 vx 0 air src null
+80.07 801,2051 vx 0 air src 
+81.37 738,1806 vx -285 plat41 src 
+81.40 729,1806 vx -268 plat41 src null
+82.10 507,1799 vx 0 air src null
+82.13 507,1791 vx 0 air src 
+84.23 570,1525 vx 285 plat42 src 
+84.27 579,1525 vx 268 plat42 src null
+84.70 729,1518 vx 0 air src null
+84.73 729,1510 vx 0 air src 
+86.03 792,1265 vx 285 plat43 src 
+86.07 801,1265 vx 268 plat43 src null
+86.80 1033,1258 vx 0 air src null
+86.83 1033,1250 vx 0 air src 
+88.93 970,984 vx -285 plat44 src 
+88.97 961,984 vx -268 plat44 src null
+89.37 823,977 vx 0 air src null
+89.40 823,969 vx 0 air src 
+90.80 760,707 vx -285 plat45 src 
+90.83 751,707 vx -268 plat45 src null
+91.57 549,707 vx -268 plat46 src null
+92.53 250,700 vx 0 air src null
+92.57 250,692 vx 0 air src 
+94.97 313,360 vx 285 plat47 src 
+95.00 322,360 vx 268 plat47 src null

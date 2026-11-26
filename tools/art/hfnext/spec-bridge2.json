@@ -1,0 +1,73 @@
+{
+ "tag": "bridge2",
+ "dir": "reference/art/hfnext/bridge/",
+ "w": 480,
+ "h": 576,
+ "neg": "camera movement, zoom, pan, tracking shot, background change, scenery, extra limbs, extra characters, human hands, fingers, blurry, deformed, text, watermark, flicker, morphing, changing art style, leaving the frame, walking, stepping, shadow, ground, floor line, changing colours, losing the bag, losing the strap",
+ "gens": [
+  {
+   "name": "B4-s5",
+   "bridge": "B4",
+   "seed": 5,
+   "frames": 33,
+   "prompt": "A cute cartoon sloth with a brown satchel on a strap across his chest and bandage-wrapped forearms, standing on a flat plain grey background, the camera locked still. With his feet planted on the spot, he slowly bends his knees and lowers himself down until he sits, bringing both paws down to rest in his lap, getting sleepy, eyes closing. One slow, smooth, continuous sit-down.",
+   "neg": "camera movement, zoom, pan, tracking shot, background change, scenery, extra limbs, extra characters, human hands, fingers, blurry, deformed, text, watermark, flicker, morphing, changing art style, leaving the frame, walking, stepping, shadow, ground, floor line, changing colours, losing the bag, losing the strap, sliding feet, jumping, sudden drop, teleporting, smear, hunched blob, melting"
+  },
+  {
+   "name": "B4-s37",
+   "bridge": "B4",
+   "seed": 37,
+   "frames": 33,
+   "prompt": "A cute cartoon sloth with a brown satchel on a strap across his chest and bandage-wrapped forearms, standing on a flat plain grey background, the camera locked still. With his feet planted on the spot, he slowly bends his knees and lowers himself down until he sits, bringing both paws down to rest in his lap, getting sleepy, eyes closing. One slow, smooth, continuous sit-down.",
+   "neg": "camera movement, zoom, pan, tracking shot, background change, scenery, extra limbs, extra characters, human hands, fingers, blurry, deformed, text, watermark, flicker, morphing, changing art style, leaving the frame, walking, stepping, shadow, ground, floor line, changing colours, losing the bag, losing the strap, sliding feet, jumping, sudden drop, teleporting, smear, hunched blob, melting"
+  },
+  {
+   "name": "B4-s47",
+   "bridge": "B4",
+   "seed": 47,
+   "frames": 33,
+   "prompt": "A cute cartoon sloth with a brown satchel on a strap across his chest and bandage-wrapped forearms, standing on a flat plain grey background, the camera locked still. With his feet planted on the spot, he slowly bends his knees and lowers himself down until he sits, bringing both paws down to rest in his lap, getting sleepy, eyes closing. One slow, smooth, continuous sit-down.",
+   "neg": "camera movement, zoom, pan, tracking shot, background change, scenery, extra limbs, extra characters, human hands, fingers, blurry, deformed, text, watermark, flicker, morphing, changing art style, leaving the frame, walking, stepping, shadow, ground, floor line, changing colours, losing the bag, losing the strap, sliding feet, jumping, sudden drop, teleporting, smear, hunched blob, melting"
+  },
+  {
+   "name": "B4-s61",
+   "bridge": "B4",
+   "seed": 61,
+   "frames": 33,
+   "prompt": "A cute cartoon sloth with a brown satchel on a strap across his chest and bandage-wrapped forearms, standing on a flat plain grey background, the camera locked still. With his feet planted on the spot, he slowly bends his knees and lowers himself down until he sits, bringing both paws down to rest in his lap, getting sleepy, eyes closing. One slow, smooth, continuous sit-down.",
+   "neg": "camera movement, zoom, pan, tracking shot, background change, scenery, extra limbs, extra characters, human hands, fingers, blurry, deformed, text, watermark, flicker, morphing, changing art style, leaving the frame, walking, stepping, shadow, ground, floor line, changing colours, losing the bag, losing the strap, sliding feet, jumping, sudden drop, teleporting, smear, hunched blob, melting"
+  },
+  {
+   "name": "SC-s7",
+   "bridge": "SC",
+   "seed": 7,
+   "frames": 41,
+   "prompt": "A cute cartoon sloth with a brown satchel on a strap across his chest and bandage-wrapped forearms, standing on a flat plain grey background, the camera locked still. Standing in place with his feet planted, he closes his eyes contentedly and slowly scratches his round belly with one paw, then opens his eyes and lowers the paw back to exactly how he started. He keeps his brown satchel and its strap on the whole time.",
+   "neg": "camera movement, zoom, pan, tracking shot, background change, scenery, extra limbs, extra characters, human hands, fingers, blurry, deformed, text, watermark, flicker, morphing, changing art style, leaving the frame, walking, stepping, shadow, ground, floor line, changing colours, losing the bag, losing the strap, sliding feet, turning around, smear, melting"
+  },
+  {
+   "name": "SC-s19",
+   "bridge": "SC",
+   "seed": 19,
+   "frames": 41,
+   "prompt": "A cute cartoon sloth with a brown satchel on a strap across his chest and bandage-wrapped forearms, standing on a flat plain grey background, the camera locked still. Standing in place with his feet planted, he closes his eyes contentedly and slowly scratches his round belly with one paw, then opens his eyes and lowers the paw back to exactly how he started. He keeps his brown satchel and its strap on the whole time.",
+   "neg": "camera movement, zoom, pan, tracking shot, background change, scenery, extra limbs, extra characters, human hands, fingers, blurry, deformed, text, watermark, flicker, morphing, changing art style, leaving the frame, walking, stepping, shadow, ground, floor line, changing colours, losing the bag, losing the strap, sliding feet, turning around, smear, melting"
+  },
+  {
+   "name": "SC-s31",
+   "bridge": "SC",
+   "seed": 31,
+   "frames": 41,
+   "prompt": "A cute cartoon sloth with a brown satchel on a strap across his chest and bandage-wrapped forearms, standing on a flat plain grey background, the camera locked still. Standing in place with his feet planted, he closes his eyes contentedly and slowly scratches his round belly with one paw, then opens his eyes and lowers the paw back to exactly how he started. He keeps his brown satchel and its strap on the whole time.",
+   "neg": "camera movement, zoom, pan, tracking shot, background change, scenery, extra limbs, extra characters, human hands, fingers, blurry, deformed, text, watermark, flicker, morphing, changing art style, leaving the frame, walking, stepping, shadow, ground, floor line, changing colours, losing the bag, losing the strap, sliding feet, turning around, smear, melting"
+  },
+  {
+   "name": "SC-s43",
+   "bridge": "SC",
+   "seed": 43,
+   "frames": 41,
+   "prompt": "A cute cartoon sloth with a brown satchel on a strap across his chest and bandage-wrapped forearms, standing on a flat plain grey background, the camera locked still. Standing in place with his feet planted, he closes his eyes contentedly and slowly scratches his round belly with one paw, then opens his eyes and lowers the paw back to exactly how he started. He keeps his brown satchel and its strap on the whole time.",
+   "neg": "camera movement, zoom, pan, tracking shot, background change, scenery, extra limbs, extra characters, human hands, fingers, blurry, deformed, text, watermark, flicker, morphing, changing art style, leaving the frame, walking, stepping, shadow, ground, floor line, changing colours, losing the bag, losing the strap, sliding feet, turning around, smear, melting"
+  }
+ ]
+}

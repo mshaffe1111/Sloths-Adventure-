@@ -232,10 +232,16 @@ export function airStep(b: AirBody, dt: number, dir: -1 | 0 | 1, hold = false, d
  * The frame a jump leaves the ground (its launch already in `b.vy`), as the engine plays it (ENG-285b, R-165.297): he steers ON the ground
  * first (PHYS.groundAcc, the turn bonus reversing; nothing steering brakes nothing on the take-off frame, engine.ts `takeOff`), then the
  * frame's gravity and move are airStep's. Flown as an air tick, a hop from below a run under-steered that frame (a stand: 4.1 px short
- * over the flight); at a full run the two are the same.
+ * over the flight); at a full run the two are the same. `carry` is the sideways speed of the floor he leaves (a drifting log's; a jump keeps
+ * all of it, RIDE.keep.x = 1), `b.vx` his own speed: the press's frame first carries him with the floor (engine.ts update: the logs move
+ * and him on them), then steers his own speed on the ground, then adds the carry once (groundJump's carryVx), then the air move.
+ * (ENG-PLANT-CI: steering his speed and the log's together bled a 268 px/s run off a log at 80 px/s to 330, the engine's 365, and the
+ * frame's ride left him 2.67 px behind; hopJudged.test.ts carryToy pins it against the engine frame for frame)
  */
-export function takeOffStep(b: AirBody, dt: number, dir: -1 | 0 | 1, hold = false) {
+export function takeOffStep(b: AirBody, dt: number, dir: -1 | 0 | 1, hold = false, carry = 0) {
+  b.x += carry * dt;
   groundSteer(b, dt, dir, true);
+  b.vx += carry;
   airStep(b, dt, 0, hold);
 }
 
@@ -295,15 +301,21 @@ const REACH_SIZE = REACH_OFFSET * 2 + 1;
 /** a flight is flown at most this many frames (then it has neither landed nor fallen past: no reach) */
 const REACH_FRAMES = 600;
 interface ReachTable { v0: number; vx: number; dbl: boolean; dt: number; glide: boolean; vals: Float64Array; far: Map<number, number> }
-const reachTables: ReachTable[] = [];
+/** the tables by launch speed, then run speed (number keys), each a short list told apart by its double, tick and glide (ENG-26h,
+ *  load speed: one list scanned on every ask was a quarter of a tall tower's build) */
+const reachTables = new Map<number, Map<number, ReachTable[]>>();
 
 function reachTable(v0: number, vx: number, dbl: boolean, dt: number, glide = false): ReachTable {
-  for (let i = 0; i < reachTables.length; i++) {
-    const t = reachTables[i];
-    if (t.v0 === v0 && t.vx === vx && t.dbl === dbl && t.dt === dt && t.glide === glide) return t;
+  let byVx = reachTables.get(v0);
+  if (!byVx) reachTables.set(v0, (byVx = new Map()));
+  let list = byVx.get(vx);
+  if (!list) byVx.set(vx, (list = []));
+  for (let i = 0; i < list.length; i++) {
+    const t = list[i];
+    if (t.dbl === dbl && t.dt === dt && t.glide === glide) return t;
   }
   const t: ReachTable = { v0, vx, dbl, dt, glide, vals: new Float64Array(REACH_SIZE).fill(NaN), far: new Map() };
-  reachTables.push(t);
+  list.push(t);
   return t;
 }
 

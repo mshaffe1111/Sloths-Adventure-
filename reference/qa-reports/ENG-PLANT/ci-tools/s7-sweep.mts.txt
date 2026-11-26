@@ -1,0 +1,37 @@
+// riverRide.test.ts :344's plantedRide, one phase, child, reAim on: every on-log draw, gate verdict (HOP_TRACE judged rows), and the end
+const T = process.argv[2], GAP = Number(process.argv[3] ?? 80);
+await import(T + '/src/game/headlessDom.ts');
+const ft = await import(T + '/tools/inspect/firsttimer.ts');
+const { FirstTimerRun, FT_CHILD, SKILLS, HOP_TRACE } = ft as any;
+const w = 150, gap = GAP, speed = 75, x0 = 1000, x1 = 2840, TT = (x1 - x0 + w) / speed, n = Math.round((x1 - x0 + w) / (w + gap));
+const pieces = (ph: number) => [
+  { id: 1, x: 0, y: 600, width: x0, height: 90, type: 'solid' },
+  { id: 2, x: x1, y: 600, width: 1200, height: 90, type: 'solid' },
+  ...Array.from({ length: n }, (_, k) => ({ id: 10 + k, x: 0, y: 628, width: w, height: 24, type: 'drift', drift: { x0, x1, dir: -1, speed, width: w, baseY: 628, offset: ((k * (w + gap)) / speed + ph) % TT } })),
+];
+const one = (phase: number, on: boolean) => {
+SKILLS.reAim = on; HOP_TRACE.on = true; HOP_TRACE.rows.length = 0;
+const line = Array.from({ length: 200 }, (_, i) => ({ x: 100 + i * 24, y: 600 }));
+let log: number | null = null, onLog = false, f = 0, stubbed = false, end = '', fEnd = -1, prev = { g: false, id: null as number | null };
+const run = new FirstTimerRun('1-1', 1, FT_CHILD, { route: line, cap: 20, rescueAfter: 1000, onFrame: (sim: any) => {
+  const e = sim.e; f++;
+  const here = e.platforms.find((q: any) => q.id === e.standingOnId);
+  onLog = !!here?.drift && e.player.grounded;
+  if (onLog && log === null) log = here.id;
+  if (log !== null && !end) {
+    if (prev.g && prev.id === log && !e.player.grounded && e.player.vy < 0) end = 'hop';
+    else if (e.player.grounded && here?.id === 1) end = 'back';
+    if (end) fEnd = f;
+  }
+  prev = { g: e.player.grounded, id: here?.id ?? null };
+} });
+const own = run as any; const real = own.drawHop.bind(run);
+own.drawHop = (d: number) => { const h = real(d); if (!stubbed && onLog) { stubbed = true; return { ...h, kind: 'single', hold: 0.033, d2: -1 }; } return h; };
+run.sim.bare(pieces(phase));
+run.sim.e.currentStage.config.levelHeight = 720;
+run.sim.stand(700, 600); run.prog.relocate(run.sim.p); run.play();
+const up = HOP_TRACE.rows.find((r: any) => r.site === 'upstream');
+const lost = HOP_TRACE.rows.filter((r: any) => r.landed === 'lost').length;
+return `${stubbed ? (end || 'none') : 'unplanted'}@${fEnd}${up ? ` up${up.t.toFixed(2)}>${up.landed}` : ''}${lost ? ` LOST${lost}` : ''}`;
+};
+for (const on of [true, false]) console.log(`gap ${GAP} reAim ${on ? 'on ' : 'off'}:`, [0, 0.5, 1, 1.5, 2, 2.5].map((ph) => one(ph, on)).join(' | '));

@@ -1,0 +1,25 @@
+wheelRide 'sparse' toy, middle, Easy, v1 (b26s/wheeltr.mts.txt; every change of where he stands from the jetty to the street)
+
+CANDIDATE ca3a7d063 (t-build-26-wip-26s: the merge + 1-4 relist + 2-6 judged + floorAt 86bb3b145), frozen fz26s-c:
+rivers [[175,975,9862,"pond"]] wheel {"cx":574.58,"cy":9522,"R":180}
+t 7.50 air -> jetty at 1007,9674 vx -285 vy 0 on #3 (731-1009 y 9674)
+t 8.67 jetty -> air at 770,9655 vx -87 vy -577 on #-1
+t 9.03 air -> bucket at 674,9578 vx -285 vy 0 on #9 (686-806 y 9578 bucket)      <- lands 12 px PAST bucket #9's left end, at run speed
+t 9.07 bucket -> air at 669,9580 vx -172 vy 83 on #-1                            <- runs off it 0.04 s later: the scramble
+t 9.33 air -> bucket at 604,9701 vx -285 vy 0 on #8 (529-649 y 9701 bucket)
+t 20.60 bucket -> air at 565,9323 vx -137 vy -577 on #-1
+t 21.27 air -> street at 385,9370 vx -268 vy 0 on #4 (117-418 y 9370)
+end shrine lives 0 rescues 0
+
+BEFORE floorAt df0d3d76f (same branch, one commit back of the floorAt merge), frozen fz26s-b:
+rivers [[175,975,9862,"pond"]] wheel {"cx":574.58,"cy":9522,"R":180}
+t 6.27 air -> jetty at 1007,9674 vx -285 vy 0 on #3 (731-1009 y 9674)
+t 7.27 jetty -> air at 757,9655 vx -87 vy -577 on #-1
+t 7.90 air -> bucket at 592,9693 vx -268 vy 0 on #8 (458-578 y 9693 bucket)
+t 20.63 bucket -> air at 560,9323 vx -137 vy -577 on #-1
+t 21.23 air -> street at 399,9370 vx -268 vy 0 on #4 (117-418 y 9370)
+end shrine lives 0 rescues 0
+
+Read: he reaches the jetty 1.2 s later on the candidate (7.50 vs 6.27: the walk-on before the wheel differs), so the wheel is at another
+angle when he jumps; he lands on the edge of the higher bucket #9 at full run speed and runs straight off its end (the LIP family of
+R-165.398: a landing at a lip at run speed, then off it). The landing beat does not stop him on a moving bucket's edge.

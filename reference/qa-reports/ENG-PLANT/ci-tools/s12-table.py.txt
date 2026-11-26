@@ -1,0 +1,20 @@
+import json, os, sys
+# table.py: the 7 kid rows on each frozen step (P/F time r l)
+steps = ['c27','ci1','ci2','ci3','ci4','ci5','ci6','ci7','ci8','ci9','ci10','ci11','ci12','ci13','ci14']
+keys = [('2-1','normal',2),('2-1','normal',7),('2-1','normal',10),('2-1','easy',10),('2-2','normal',4),('2-2','normal',6),('2-2','normal',8)]
+O = '/home/user/fz/out/'
+print('step  ' + ' | '.join(f"{s} {g[0].upper()}{n}" for s, g, n in keys))
+for st in steps:
+    R = {}
+    for tag in ('21n', '21e', '22n'):
+        f = O + f'{st}-{tag}.jsonl'
+        if os.path.exists(f):
+            for l in open(f):
+                if l.startswith('{'):
+                    r = json.loads(l); R[(r['stage'], r['setting'], r['seed'])] = r
+    if not R: continue
+    cells = []
+    for k in keys:
+        r = R.get(k)
+        cells.append('   -    ' if not r else f"{'P' if r['pass'] else 'F'} {r['time']:5.1f} r{r['rescues']}l{r['lives']}")
+    print(f"{st:5} " + ' | '.join(cells))

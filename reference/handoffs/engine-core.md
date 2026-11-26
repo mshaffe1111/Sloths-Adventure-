@@ -2,6 +2,154 @@
 
 Merged at INT-14 (11-20, t-int-14): §0zq-25d/§0zq-25c ENG-25c (2-5's snap rows level, the snapper's ground, the straddle), §0zq-NOISE ENG-NOISE (one noise channel), §0zq-PROWL ENG-PROWL (sight.up + the leap), §0zq-small3 ENG-SMALL3 (R-165.317/.319/.321), and PAINT-292 (World 1's painted planks and stones; no section here). Merged at INT-13 (11-19, t-int-13): §0ENG23 ENG-23 (followers, the heron reads the line) and §0zl-168 TIME-168 (timecheck), §0zm-25b ENG-25b (the snapper bot skill, the meter's snap channel) and §0zl-25 ENG-25 (2-5's snap stones and snapper rows), §0zn-26b ENG-26b and §0zm-26 ENG-26 (the water wheel), §0W2A ART-W2A (2-3's painted follow poses), §0zo ART-W2B (the wheel's painted draw), §0zo-285c/§0zo-285b/§0zo-285 ENG-285 (the judges and bots fly the engine's Pokey), §0zp-284 FIX-284/284b (2-2's big pads, the real tap hop), §0zp-24d BUILD-24d, §0zn-24c ENG-24c (the raft look, the glow) and §0zm-24 BUILD-24 (2-4) joined; rewritten at the INT-12 merge (11-18, t-int-12): four members wrote here the same day, so labels are suffixed where they met: §0zm-22p ART-22P (CI's seed-list matrix, R-165.278); §0zl-24 ENG-24 (a liana over a river; its REPORT cites it as §0zl); §0zm BUILD-19b, §0zn ENG-19c and §0zl BUILD-19 (t-build-19, the labels its REPORT cites). Before them FIX-22b (11-15): section 0zk.
 
+## 0zs-SOIL. FIX-SOIL-b (t-fix-soil from main cdffdc627, 11-25; final code head 539885c37): a hung bank's soil stops at its own bottom over a painted underside (R-165.441)
+- THE CAUSE: drawGround paints banks lowest first and drawBankArt ran a bank's soil to the view's bottom, so a HIGH bank's soil was one
+  column over every floor under it (SHIPPED 1-4's summit, every build; 2-6 beat A on t-build-26). paintcheck passed it: it judged the
+  drawer ASSIGNED, not what was drawn (D136).
+- WHERE: src/game/protoArt.ts. bankOpen(p, banks) is drawGround's per-bank side logic (moved unchanged); soilOutline(w, p, open, bottom)
+  is the soil's clip path (a non-hung bank's path is the old one, point for point); soilHangs() decides HUNG: the soil run on down would
+  cover more than SOIL_JOIN (3) units of a lower bank's top or the SOIL_ROOM (48) over it, gap >= 48. groundSoil(banks) exports the
+  regions as painted (paint order, pockets after): the gate reads THAT. groundLine() leaves hung banks out (the depth line).
+  The underside: soilOutline's `under` (edge line: UNDER_WOB 18 clumps, UNDER_CORNER 30 rounding over UNDER_ROUND 110 at open ends,
+  never below the collider), groundPaint.ts drawUnderside (the world's own lip from LIP_MAT 0.37 down: turf underside + roots 1.8x,
+  baked once per bank, at most 4 kept; the turf darkened toward the world's deep tone, UNDER_TURF_SHADE 0.55: World 2's lip has a pale
+  clay rim that stood as a cream stripe across 2-6's earth wall, the lead's ruling), the shade (UNDER_SHADE 50, deep tone 0.7), the ends faded at bottom - underRoom.
+- GATE: tools/engine/paintFall.ts soilOvers (wired into paintcheck, no known list), planted in paintFall.test.ts (CI-run).
+- TRAPS: (1) a bank "over" another by its box is not over it: the end faces curve in up to 80 units at depth; the rule uses the drawn
+  outline, so a floor tucked under an open end's face is NOT hung. (2) A step down beside a bank meets its soil 1 unit past the end
+  (closed side x+1): that is the join, not a breach (SOIL_JOIN). (3) protoArt.ts groundBanks(platforms) is the ONE bank list: drawProtoScene
+  draws it and soilOvers reads it. t-fix-sidewall changes that same drawProtoScene line to narrowBank.ts bankList(...): the merge puts
+  bankList INSIDE groundBanks (one line), never back on the draw line, or the gate judges a list the screen does not draw.
+  (4) paintTile still paints (empty) squares under a hung bank down the whole climb (as main painted the column there): a cheap
+  follow-up is to stop a hung bank's reach at its underside + 80 in paintTile's null test.
+
+## 0zs-SIDEWALL. SIDEWALL-FIX a/b/c (t-fix-sidewall from main cdffdc62, 11-24/11-25; R-165.440): invisible walls on shipped 1-6 and 8-1
+- What: a painted bank narrower than his body (44) gets soil fill only (the backdrop's colour). `src/game/narrowBank.ts` (narrowLook,
+  memoised per stage) gives such a block a look by SHAPE: 'joined' (flush beside a same-top/bottom bank: merged into one bank by
+  bankList, a standard bank end; 8-1 seed 38747's 14 px sliver) or 'post' (alone, a side open over 48, foot on a solid: drawn by
+  `src/game/livePostArt.ts` as hf678/w1-livepost-tall, LAST in drawProtoScene, from under what rests on it; 1-6's two 24 x 345 posts).
+- `tools/engine/sideWall.ts` reads the same narrowLook, so check and screen agree; paintcheck fails any side-on wall (NO known list).
+- TRAP (the lead's ruling 2): 'joined' guarantees only "part of a bank the bank painter draws", NOT "the face reaches the collider":
+  World 8's end face sits 14-25 px inside every bank end's collider below the lip (groundPaint.ts endFace) = R-165.442, release 5.
+- TRAP: 1-6's stair (ids 130-132) is a cut boulder drawn ~200 px past its collider, over anything drawn earlier (R-165.443). That is
+  why the post is drawn last.
+- Gates on 424290c3 all PASS (REPORT.md "Gates (session 3)"): lockall vs lock-main-cdffdc62 102/102 unchanged; paintcheck 3/3; CI
+  tool line; 6 suite shards 4,042 tests 0 fail. Open for Content: inventory row hf678/w1-livepost-tall still reads "cut, not placed".
+
+## 0zr-W2FIN. ENG-W2FIN (eng-w2fin 78bf17d60 on release-0.10.3, 11-24): a wheel's fall takes its own pond as its river (R-165.431)
+- w2.ts w2Finish hasRiver: a fall is a WHEEL'S fall when that wheel's own jetty lip (way>0: jetty right edge = f.x0; way<0: jetty.x = f.x1)
+  and its own street (street.y = f.y) are its ends (Wheel.lay.jetty/streetId); its river is the wheel's pond (wheelPond, surface
+  w.cy + w.R + WHEEL.pond, spanning the fall). Every other fall keeps 2-7's height rule (ENG-GROUND-b) and needs a bank at each end.
+- Why it broke: the gen2 fall for place `wheel` runs jetty lip -> the sweep's far end at the STREET's height (pipeline.ts wheel gap); the
+  street reaches in over the top, so the far end has no bank by design and the pond is a wheel's height under the lip. t-build-26 passed
+  only because its hasRiver matched rivers by x alone (the height rule replaced that).
+- Trap: the gen2 fall record (types.ts falls) carries no `wheel` mark (pipeline.ts ~4216 drops g.wheel); the finish finds the wheel by
+  geometry. If the Architect adds the mark, w2Finish can read it instead.
+- Planted: w2.test.ts 'a fall over a water wheel's sweep...' (every row, both settings, both ways) and 'another storey's fall over a wheel's
+  pond...' (RED on an x-only loosened variant: reference/qa-reports/ENG-W2FIN/loosened.txt).
+
+## 0zr-FILL14. FILL-14 + FILL-14b (t-build-26-wip-fill14, code 094e09746, 11-24): a failing list slot is filled IN PLACE
+- `seedlist <stage> --fill <variants> --with part.json[,...],order.json` (seedlistFile.ts fillSlots + variantIndex): each named layout
+  VARIANT is resolved to its list index by building the stage as Play does (RealPlay), then takes the next candidate of ORDER; every other
+  index keeps seed, packed plan, quiet and outro byte for byte. Candidates are laid first (`--merge cand.json --in-order --part`) and
+  played through a planted list (castBots --proven). Planted: seedlist.test.ts (red on a drop-and-append reorder; red on 'v - 1' and 'v mod n').
+- TRAP: a variant is not a list position by one rule. 1-1 plays index v - 1 (testlink1_1.ts play11Seed); every other listed stage plays
+  index v mod n (seedList.ts provenSeedFor). A castBots or ENG table's "seed N" on a listed stage is the VARIANT: FILL-14's first fill
+  replaced the wrong four by reading it as the seed. Resolve with variantIndex, never by hand (seed-list.md "Order is identity").
+- 1-4 at 094e09746: variants 26/45/66/69 (seeds 27/46/67/70) -> 101/102/103/104; castBots --proven 1-4 100/100; lockall 102/102 unchanged.
+
+## 0zr-26s. ENG-26s (t-build-26-wip-26s ca3a7d063, 11-23): release 4's base, main merged into t-build-26; three CI reds fixed at cause
+- Merge b3e0a8206: 2-3 is main's arc (w2-23) and 2-6 is t-build-26's (w2-26); W2Plan is now '2-7' | '2-8' | '2-9'. firsttimer's stuck
+  clock keeps both the figs' progress hold and FETCH-CLOCK. calibration-main.jsonl took t-build-26's side: re-judge it with tierBots.
+- rowWheels (d9840a065): withPlantedRow plays a LISTED row's own listed seed alone when the table lists the stage with that kit.
+  Trap: a draft plant over a listed stage throws by design; when a stage gets listed, point its row tools at the real row the same day.
+- 2-6 judged (df0d3d76f): flownArcs normal-2-6 from fly-2-6.txt. Under the judge, seedlist 2-6 --check fails 3 of 100 (70, 77, 78:
+  replay differs from search). That is a named red until 2-6 is filled in place after R-165.398.
+- 1-4 relisted in order (8d2ac35bc, 9fdaeff4). Trap: any lay change (2f188c552) stales libstage's 'beats its list replays' even while
+  seedlist --check passes. Relist in the same packet as the lay change.
+- riverRide's upstream and bankUp plants go RED at d6350d3e7 (the step-up rule does their job at 2-1's live cases). A new plant is owed.
+
+## 0zr-26q. ENG-26q (t-build-26-wip-26q 4e0888c5d, 11-21 evening): pairPetals keeps the level check's spacing
+- vineField.ts pairPetals (run last in stageGenerator finishStage, after addFinds, fixPickups and petalPass) moves a field petal to the
+  middle of its vine and a mate. It now takes `apart` (finishStage passes levelCheck's PICKUP_APART) and moves only to a middle at least that
+  far from every other pickup: the nearest mate's, else the next mate's, else it stays. Before, it checked nothing: 1-4 ?layout=72140 put
+  flower #27 28 px from the Notch (rollGuard red, exposed when 2f188c552's gate band changed the catch boughs and so addFinds' hashed spot).
+  Trap: any pass that MOVES a placed pickup must re-check spacing against every other pickup; addFinds' 110 px only holds at its own time.
+  Plants: rollGuard.test.ts 1-4; vineField.test.ts 'pairPetals (planted, ENG-26q)'.
+
+## 0zr-26. The tower's walk-off judge (t-build-26, ENG-26g to ENG-26m, 11-21): what the next engineer must know (1-4, 2-6, every tower)
+**The judge (ENG-26g, de009b9f5 + ac2fd73b6):** tower.ts `walkOff` flies the engine's own full-speed walk-off (landFlights.data.ts 'walk',
+proven the engine's by landFlights.test.ts; the same path on both settings), held at the tower's sides [20, W-20] and at a wall's face (a
+wall face is flown straight down and on again; the deeper is judged). Water takes him by his MIDDLE (river.ts riverAt), not a foot's 11 px.
+A mushroom cap bounces him on along the flown 'bounce' (BOUNCES 3). `openEnds` judges the step AND the run; `towerFalls` names "a running
+walk-off"; `towerCatches` lays a run's catch where the arc comes down to its height (runX), and only if the flown run lands on it
+(`takes`); a contiguous bridge needs no 60 px. BUILD-26b's `clearFoot` (TOWER.foot) is in pipeline.ts towerJoin. Planted against an
+independent flier (landings.ts `Landings.walk`): old code 420/4376 ends past 450 px on 24 toy rolls, the judge 0/5307.
+**The gate's own run (ENG-26j, 8e21145f1; the lead's ruling (a)):** a run off a gate's end at full speed is 164 px out at the frame he lands
+360 px down, 173 at 400, 191 at 440 (both settings). w1Arc14.ts `gateRun(H)` (replaced `GATE_RUN` = 80) runs the gate field's foot out, at
+each end, that flown run (the larger of the two settings) plus half his body (22 px), never under one vine spacing: 360 -> 186, 400 -> 195,
+440 -> 214. The foot is walked onto, never landed on (`landing: false`, so Easy's widening is unchanged). **The lay adds nothing by a sealed
+piece** (a gate is never run on; the lay-side cure 97bb2b73e and its proof b73600b56 were reverted in ecb86074e). 1-4's yield, seeds 1-400:
+49 kept (12%) under the judge alone, 400 (100%) with gateRun. Plants: w1Arc14.test.ts (RED 9/12 with gateRun = GAP, GREEN 12/12).
+**The price (ENG-26h):** the cost of the judge came from the refused ROLLS, not from the flights. Before gateRun, seed 5's search rerolled 7 times (0 on
+the base), and the stage check ran 32-56 times a build (4 on the base). Flights were about 13% of a head build. Profile: physics reachTable's
+linear scan about 27%, levelCheck roofedDrop about 20% (every pair in a tower, each a pass over every piece), tower.ts fly about 13%. The
+three EXACT speed-ups (91e6c584e, on the branch as d12ffcacf): fly reads only the pieces in its path's box, roofedDrop's run and closed ends
+are found once a walk, and the reach tables are in Map<v0, Map<vx, list>>; proven exact by lockall (3,264 builds, 66,457 part hashes,
+0 differ). **Trap:** a search that refuses a roll BEFORE its checks is not exact (the checks repair the stage first: repairLandings takes
+caps up, and caps bounce a walk-off).
+**Measured on frozen trees (ENG-26m, OLD 4ea253b8c vs RELISTED 626fac5ac):** loadtime.mts (eng26h/tools; desktop, best of 3, every listed
+seed, both settings): 1-4 p50 39-41 ms, 2-6 6-8 ms, 0 fell to the search. buildcheck at 4x CPU (BUILDCHECK_STAGE): **1-4 is OVER the 150 ms
+p95 budget on BOTH trees** (OLD Normal p50 192 / p95 581, RELISTED 197 / 455; Easy 162 / 210 and 175 / 205: so the relist did not cause it). CI
+times 1-1 only, so this is open (PERFORMANCE-RULES §1, the lead's call). 2-6 passes (p95 39-53 ms).
+**Traps:** (1) the page's `?layout=N` builds the seed the stills tool prints (the engine's own `gen2.seed`): on 1-4, layout 1 is SEED 2.
+Measure spots on that seed (eng26k/feet.mts, eng26j/gates.mts). (2) Take stills with eng26l/stand.mjs (Pokey set down and left to stand,
+Dot's cards tapped away), never eng26h's pin.mjs (it draws Pokey frozen in the air under a paused card). (3) lockall's 1-4 builds go the
+game's path with the list in (layout 12 asks seed 13, the list's seeds[12]); a listed seed whose plan no longer replays falls to the
+search, as it would on a phone. So after an engine change, `seedlist.ts <id> --check` names the seeds that replay differently: relist them
+(methods/seed-list.md). (4) Every bot number is taken on a FROZEN tree at a fixed hash (D115); BUILD-26c's towerRoute.ts moves the bot's route.
+**Open (named):** 1-4's build over budget at 4x CPU (above). A walk-off at less than full speed (a slow walker) lands between the step and the
+run, and only those two are flown (ENG-26g's pushback: fly a short run-up too if the bots show it).
+**Kept-out boxes and the catch lay (ENG-26n 2f188c552, ENG-26p 7d663daee):** a sealed piece's BAND (tower.ts gateBand: its section's full
+width, from just under its level up to the storey its way on climbs to) joins the wheel sweeps in towerCatches' `keepOut`; towerGateRoofs
+names any lay wood in it. A box is a new wall every catch rule must step round: with the band in, gateKit Easy seed 4's run-on was refused
+and the bridge laid instead stepped off 9 px past the band's edge, where rule 4's CENTRED bough always lay in the band (647 px fall; tower.test
+red from 2f188c552, run by name filter only). Rule 4 now also tries the bough slid to the box's edge on the side he comes down, when it still
+lies under him (toy: 'towerCatches (planted, ENG-26p)'). After any keepOut change run tower.test.ts WHOLE, not the tests named for the box.
+
+## 0zq-teach. TEACH-11 (t-eng-27-wip-teach, 11-24): a teach section's tip is a teach line; the first-appearance gate (R-165.427)
+- **Landed** on t-eng-27 (fast-forward; hash in reference/qa-reports/TEACH-11/REPORT.md item 4). 1-1's first-run lock re-recorded on the
+  lead's ruling (11-24 3:28 PM ET): Normal 63ee55bd4e47e897, Easy d166f084d0071472 (only proto.hints moved; revert proof in
+  reference/qa-reports/TEACH-11/firstrun-lock.txt). A future change to a 1-1 line's KIND moves that lock: bring the same proof.
+- **CI** runs `teachFirstScan --check --seeds 20` (520 rolls, ~3 min, the lead's ruling); THE FULL SET at release runs every seed.
+- **The rule reaches Worlds 5-8 too** (lockall: 18 stages, proto.hints only): 15 lesson lines in their teach sections that Tips dropped
+  on Normal are now said (6-2, 6-4, 6-6, 7-1..7-9's brown vines, cracked tiles and four locked-shrine lines, 8-1, 8-2). No gate reads
+  non-listed stages' lines: storyTipScan and teachFirstScan cover LISTED stages only.
+- **Tests that pinned the old rule were re-pinned, not loosened:** src/game/gen2/teachTips.test.ts (1-3's trap tip is a teach line
+  with the list empty; the bare branch stays plain unless listed); tools/engine/library.test.ts thorn plant (out of teachTips alone
+  the thorn lines stay teach lines; the plain plant strips the laid mark, as the section's mark cannot come off: 1-2's teach node then
+  has no section).
+- **The cause (1-1's double line missing before the tall steps):** the line was LAID on every roll (161/161 listed seeds, both
+  settings, in the first double section) but laid as a PLAIN move tip: W1's `teachTips` named 'hint.1-1.bank' but not the teach
+  sections' own lines (coach.jump, hint.1-1.gaps, hint.1-1.double, w1.ts TEACH_LINES). A plain tip that can wait starts no sooner than
+  30 s after the last line started on Tips (TIPS_GAP_MS, Normal's default): on seed 15050 (w1-bank-double-teach, the testers' tall
+  bank) it was sent at x 5450 and SHOWN at x 7595 (32.6 s = the petals line's 2.6 s + 30 s), ~1,900 px past the bank at x 5698.
+- **The fix (general, pipeline.ts fillSockets):** a tip in a section whose template `teaches` a mechanic is laid with
+  `StageHint.teach` (stageTeach: Tips keeps it, it skips the 30 s gap, waits only for a clear moment), whatever the kit's teachTips
+  say; a story tip keeps its story kind. Every other world already listed its teach-section tips in teachTips, so only 1-1's three
+  lines changed kind (lockall: 1-1 `proto.hints` only).
+- **The gate:** `npx tsx tools/engine/teachFirstScan.ts --check` (gates.yml 'rolled'; gates.md 8e; every listed stage, EVERY proven
+  seed, both settings; its test plants four reds). Channels it accepts as "taught": a Dot teach line laid as a teach line, an earlier
+  stage's lesson (manifest.lessons), the 1-1 touch coach on a fresh touch phone (touchCoach.ts coachWanted: run, jump), a teach
+  section with no line of its own (its lesson card: the bounce). An EMPTY tip socket (w1-mushroom-lift's, no `allow`) lays nothing.
+- **Traps:** the built stage's sections carry no pieces, beats or entry/exit (stripped): the first required move is
+  pipeline.ts `laidAsks(st)` (lay order); a section's walking direction is the next section's place. storyTipScan only proves Tips
+  keeps a line, not WHEN it is said: the 30 s gap is what delayed this one. The moment is teachFirstScan.ts `walkSaid` (the brisk
+  route through Dot's real queue, DotSay + GuideQueue, dotHelp's default, a fresh device, the route's moves counted as done; its test
+  walks 1-1 seeds 15050, 9013, 9652). A probe that counts no move done keeps 'Slide your thumb to run' up to its 12 s cap and
+  over-reports late lines (my first count did: 5033 was NOT late on the base); dotPace.ts drops a hint's teach/warn/story flags (it calls engineGuideLine with
+  `{ dot: true }` only), so it under-reports teach lines.
+
 ## 0zq-warn. WARN-412 (t-eng-27-wip-warn, 11-24): every laid warning a must, every story beat a story line; the laid-line gate (R-165.412)
 - **A laid line's KIND is data, never words.** `StageHint.warn` (protoStage.ts) -> engine.ts GuideOpts `warn` (WARN_LINE) -> App.tsx's
   guide feed -> DotGuide.tsx engineLine -> dotLines.ts engineGuideLine `o.warn`: kind 'must' on every help setting (lock still wins:
@@ -244,6 +392,57 @@ splash side on a left leg; bots follow the lay's route on legs. **Traps:** an ou
 x alone breaks (river under him, past the shrine, wet ahead, fall links); grep for them first. levelCheck's `plats` is rebuilt by
 layout() each walk: per-platform maps belong inside walk(). Open: bots drown on toy seeds 2-3; the column's last-storey rescue; the
 inspector's column-wall phantom; a sealed door's push-back assumes he came from the left (engine.ts:3607).
+## 0zq-PICK. PICK-W1 (t-pick-w1 from t-int-15 0eefc707e, 11-20 evening): the testers' link plays all of World 1, picked on its front page (R-165.343)
+- WHERE: playRecorder.ts CTEST_STAGES (1-1..1-9, the ONE list; CTEST_LEVEL_ID is deleted), isCtestStage, savedCtestStage/saveCtestStage
+  ('sloth_qa_ctest_stage'), ctestPlayed/markCtestPlayed ('sloth_qa_ctest_played', the tile tick). ControlTestGate.tsx: StagePicker,
+  ctestBegin (the Start path, testable), ctestLevelFor (App's lookup), CTEST_PAGES for all nine (six DRAFT), the end screen's
+  "Play 1-x again" / "Pick another level". App.tsx: ctestPick preloads the picked stage; victory on any offered stage ends the run and
+  ticks it. touchCoach: any offered stage coaches a new tester on #ctest.
+- The record: a 'stage' line at every Start, 'pickAnother' at the end, survey row key `stage`; all in the Data cell, collector unchanged.
+- Chips: ctestStretches.ts names every section of 1-2 and 1-4..1-9 (DRAFT words for the story keeper). ctestPicker.test.ts flies every
+  offered stage, both settings, two seeds, and fails if any stretch is unnamed or a stage offers only the generic four: a new arc
+  section must be named before it ships (the old table test read w1World's shared sections only, which is how 1-2/1-4..1-9 slipped).
+- Stills: src/assets/ui/ctest-<id>.webp for all nine (880x425, real game, designed roll ?layout=1, Normal, HUD hidden: shot at
+  660x319 dsf 4/3, the pin released so he stands); ctestPicker.test fails if one is missing.
+- TRAP: clipcheck and kbdcheck now tap tiles by `.ct-pick[data-stage=...]`; renaming that class or attribute breaks both walks.
+
+## 0zr-IDLE. FIX-IDLE (t-fix-idle from main 107870f5, 11-20 evening): Pokey's clip melt is a solid cross-dissolve (R-165.353)
+- **SUPERSEDED at INT-R3 (release-0.10.2, 11-21): R-165.382 (ART-CHEER, t-art-next) makes every clip switch a CUT, so drawMelt, its
+  scratch canvas and heroIdleMelt.test.ts are deleted (new replaces old); the cut's tests are heroClipsCut/heroClipsEnds.test.ts.**
+- **heroSprite.ts drawMelt:** on a clip's fade frames (blend < 1) the plain pose (1-b) and the clip (b, 'lighter') go onto ONE scratch
+  canvas (module-level, grow-only, made once) lined up with the stage's pixels, then laid down whole. Never draw two poses part-clear
+  straight onto the stage again: that paints only 1-(1-b)*b of him (the INT-15 x3268 see-through). Test: src/game/heroIdleMelt.test.ts
+  (real drawHeroSprite, a fake 2D context that tracks alpha + compositing; fails on a see-through body or a pop).
+- **What it cannot fix (the art, R-165.354):** every clip's ends are ~10 sheet px off the plain 'idle' pose and face front (two faces for
+  ~0.1 s); doze's ends are sitting (a standing ghost for ~6 frames). Table: reference/qa-reports/FIX-IDLE/REPORT.md.
+- **Trap:** drawcheck's scenarios never stand him still 4 s, so idle-only draw paths (clips, melts) never reach the perf gate. Measure them
+  with tools/perf/instrument.js on frames you step yourself (reference/qa-reports/FIX-IDLE/stills/logs/perfmelt.mjs).
+- **Seeing a blend fault:** draw the hero ALONE on a transparent canvas after each real render and count solid vs part-clear pixels
+  (stills/logs/melt2.mjs ISO mode); stage haze fooled the eye at one frame on both builds.
+
+## 0zq-23b. BUILD-23b (t-build-23, 11-20 evening; this entry 9:24 PM ET by `date`): two engine pieces and three engine-side fixes on 2-3
+- **Designed cage socket** (pipeline.ts fillSockets, 3f958e630 + its planted test ad2d9e15a, src/game/gen2/designedCage.test.ts): a
+  socket with role 'objective' whose allow holds 'cage' (and a little one's kind) lays that cage where it stands, every one. A rolled graph's
+  nodes carry no objective quota, so without it a designed stage lays no cage. Any world's designed cage uses it.
+- **Heron look** (followArt.ts lookInView, cd44b43fa): the look (gaze + wash) is drawn while its wash OR the heron is in view. Trap: the
+  wash's sight is 70 px and a sweep starts 160 px past its stretch, so a still shot at a sweep's start shows a head-up heron with no wash.
+- **World 2's new sheet** (w2NewArt.ts; riverArt.ts W2Decor.nw drawn by drawW2Decor; stageSheets 'w2-new'; stagePreload): a stage lays a
+  w2-new piece as World 2 dressing. A climb whose look is a painting sets Vine.rope (protoArt.ts skips the kapok trunk; no play change).
+- **sheetWarm** (stageAnims, stageExtras): no eagle on a follow stage (herons in the watcher's place), no props2 for reed clumps.
+- **HUD faces** (followFaces.ts pure; engine.ts lineFaces(); VineHud lineFaces prop polled every 150 ms, redrawn on facesKey change;
+  components/hud/LineFace.tsx). Trap: `.vh-slot:not(.on) > *` silhouettes any slot child; LineFace sets filter none inline, its tone on
+  an inner layer so the '!' keeps its amber.
+
+## 0zq-CAGE. ENG-CAGE + ENG-CAGE-b (t-eng-cage, 11-20 evening; this entry 9:56 PM ET): the cage bot and the line's fetch clock (R-165.359)
+- Where: tools/inspect/firsttimer.ts CAGE_SKILL { punch, climb } + FirstTimerRun.cagePlan (any world's cage by its data: in the engine's strike
+  reach at his height, or hung up a climbing vine at whose foot he stands); LINE_SKILL.hopBack (a plain hop over a face on the way back for a
+  spooked one) and LINE_SKILL.fetchClock (the stuck clock holds through a fetch and starts over after it; three fetches with no step further
+  are a loop); the SET-DOWN LOOP (set down by the game at one place tries3 times, no further: put past it). Toys: cageBot.test, lineBot.test
+  (hop-back, fetch-clock on 2-3's gen2 row seed 5), firsttimer.test 'set down'.
+- Traps: the set-down loop rule reaches 1-1 (2 child Normal runs moved; calibration recommitted 11-20). The stop reaction at a face counts
+  only his pushes (P13): counting it in real time breaks 1-1's calibration (tried and rejected, ENG-CAGE-b REPORT). RealPlay.frame's real-input
+  branch drops pad.punch: castBots --input touch|pad never punches.
+- Open: the cage meter CHANNEL (score.ts; coveragecheck's last red); 2-3 child Normal 1/40 is the lay (the watched mud, REPORT); the kid 0/40 untraced.
 
 ## 0zq-TAB. FIX-TAB (t-fix-tab from 453b69c2 + t-int-14, 11-20 afternoon): a bank's end steps down to the bank beside it (R-165.344)
 **Done, proven:** protoArt.ts `stepDownTo(p, banks, side)`: an open bank end steps down to the HIGHEST lower bank that meets it (the one

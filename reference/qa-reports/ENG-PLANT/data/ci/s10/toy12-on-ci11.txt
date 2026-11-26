@@ -1,0 +1,28 @@
+TAP version 13
+# Subtest: a vine from a log pressed from a stand is judged at every lag his thumb draws: 2-4 kid Easy 19, on log \#73 drifting his way at 80 px/s under liana \#6 (CI-12)
+not ok 1 - a vine from a log pressed from a stand is judged at every lag his thumb draws: 2-4 kid Easy 19, on log \#73 drifting his way at 80 px/s under liana \#6 (CI-12)
+  ---
+  duration_ms: 1631.424117
+  type: 'test'
+  location: '/home/user/wt/fz-ci11t/tools/inspect/hopJudged.test.ts:327:1'
+  failureType: 'testCodeFailure'
+  error: 'the standing press at t 97.700 from x 16434.6 on #73 was judged to catch; the engine: grounded on #74 at x 16588.6 y 904.0, frame 17'
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: true
+  actual: false
+  operator: '=='
+  stack: |-
+    TestContext.<anonymous> (/home/user/wt/fz-ci11t/tools/inspect/hopJudged.test.ts:355:32)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
+  ...
+1..1
+# tests 1
+# suites 0
+# pass 0
+# fail 1
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 6435.256745

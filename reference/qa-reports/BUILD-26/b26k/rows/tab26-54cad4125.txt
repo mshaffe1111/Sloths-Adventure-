@@ -1,0 +1,16 @@
+castBots 2-6, seeds 1-40; the floor 100 s (STAGE-RULES.md:77: a climb, 20 s short)
+kid    normal PASS 31/40; under the floor 0; time median 144.4 s (min 114.5); hits 0 lives 0 (none); cleared none; told of traps 0/40; first trap sprung 0/40; traps sprung 0/0; turned back 0; left 0
+        fail 9: shrine rescued x1  (seeds 11,23,24,30,25,31,9,27,38)
+kid    easy   PASS 25/40; under the floor 0; time median 156.8 s (min 129.4); hits 0 lives 0 (none); cleared none; told of traps 0/40; first trap sprung 0/40; traps sprung 0/0; turned back 0; left 0
+        fail 12: shrine rescued x1  (seeds 12,18,30,36,1,19,22,34,40,14,26,32)
+        fail 3: shrine rescued x2  (seeds 5,10,2)
+adult  normal PASS 34/40; under the floor 8; time median 105.6 s (min 96.1); hits 0 lives 0 (none); cleared none; told of traps 0/40; first trap sprung 0/40; traps sprung 0/0; turned back 0; left 0
+        fail 6: shrine rescued x1  (seeds 11,36,1,9,40,32)
+adult  easy   PASS 29/40; under the floor 0; time median 128.6 s (min 114.8); hits 0 lives 0 (none); cleared none; told of traps 0/40; first trap sprung 0/40; traps sprung 0/0; turned back 0; left 0
+        fail 6: shrine rescued x1  (seeds 36,10,34,2,26,32)
+        fail 5: shrine rescued x2  (seeds 5,18,1,19,40)
+child  normal PASS 40/40; under the floor 0; time median 152.5 s (min 133.3); hits 0 lives 0 (none); cleared none; told of traps 0/40; first trap sprung 0/40; traps sprung 0/0; turned back 0; left 0
+child  easy   PASS 40/40; under the floor 0; time median 166.1 s (min 147.7); hits 0 lives 0 (none); cleared none; told of traps 0/40; first trap sprung 0/40; traps sprung 0/0; turned back 0; left 0
+middle normal PASS 40/40; under the floor 0; time median 120.7 s (min 106.4); hits 0 lives 0 (none); cleared none; told of traps 0/40; first trap sprung 0/40; traps sprung 0/0; turned back 0; left 0
+middle easy   PASS 40/40; under the floor 0; time median 133.7 s (min 121.8); hits 0 lives 0 (none); cleared none; told of traps 0/40; first trap sprung 0/40; traps sprung 0/0; turned back 0; left 0
+expert normal PASS 40/40; under the floor 0; time median 112.5 s (min 105.7); hits 0 lives 0 (none); cleared none; told of traps 0/40; first trap sprung 0/40; traps sprung 0/0; turned back 0; left 0

@@ -98,8 +98,14 @@ export const riverBeat = (row: RiverRow): number => (row.logW + rowGap(row)) / r
  * Lay one river: the water from `x0` (the near bank's end) across `riverWidth(row)` to the far bank's start, under banks whose top is
  * `bankY`, and its logs (platforms 'drift', ids from `nextId`) across the logs' window (carrierWidth: the water less its tail). The zone's
  * `safe` sets him back 70 px short of the edge on the near bank.
+ *
+ * `way` -1 (ENG-26c, a tower's storey that runs left): he crosses right to left, `x0` is the near bank's START and the water runs left
+ * from it. Laid as the exact mirror of the same row run right about `x0`: the window, every log at every moment (driftX of the mirror is
+ * the mirror of driftX), the current turned (`dir` is the world's: a row that flows with him flows left), the petals on the same logs and
+ * the splash-back 70 px in from the near bank's edge. A row with a TAIL is not laid this way yet (its log-free water is drawn past `x1`).
  */
-export function layRiver(row: RiverRow, x0: number, bankY: number, nextId: () => number, style?: string): { zone: RiverZone; logs: Platform[]; floor: Platform[]; petals: Array<{ log: Platform; dx: number; dy: number }> } {
+export function layRiver(row: RiverRow, x0: number, bankY: number, nextId: () => number, way: 1 | -1 = 1, style?: string): { zone: RiverZone; logs: Platform[]; floor: Platform[]; petals: Array<{ log: Platform; dx: number; dy: number }> } {
+  if (way === -1) return layRiverLeft(row, x0, bankY, nextId);
   if (row.marsh) {
     // (a marsh: its floor's pieces, solid, in the banks' own style (`style`), split by its dips; no logs, still water)
     const m = row.marsh;
@@ -125,6 +131,22 @@ export function layRiver(row: RiverRow, x0: number, bankY: number, nextId: () =>
   const zone: RiverZone = { x0, x1: x1 + tail, surfaceY: bankY + surfaceBelowBank, dir: row.dir, speed: row.speed, ...(row.safe ? { safe: { backX: x0 - 70, backY: bankY } } : {}), ...(tail ? { tail } : {}), ...(row.flood ? { floodMark: { kind: row.flood, lip: bankY } } : {}) };
   const petals = logs.slice(0, Math.max(0, row.petals ?? 0)).map((log) => ({ log, dx: Math.round(log.width / 2), dy: -PETAL_SIT }));
   return { zone, logs, floor: [], petals };
+}
+
+/** layRiver's way -1: the mirror about `x0` (the near bank's start) of the same row laid right from it */
+function layRiverLeft(row: RiverRow, x0: number, bankY: number, nextId: () => number): ReturnType<typeof layRiver> {
+  if (row.tail) throw new Error(`layRiver: a river with a tail (${row.tail} px) crossed right to left is not laid yet`);
+  if (row.marsh) throw new Error('layRiver: a marsh crossed right to left is not laid yet');
+  const R = layRiver(row, x0, bankY, nextId);
+  const M = 2 * x0;
+  for (const p of R.logs) {
+    const d = p.drift!;
+    p.drift = { ...d, x0: M - d.x1, x1: M - d.x0, dir: -d.dir as 1 | -1 };
+    p.x = driftX(p.drift, 0);
+  }
+  const z = R.zone;
+  const zone: RiverZone = { ...z, x0: M - z.x1, x1: M - z.x0, dir: -z.dir as 1 | -1, way: -1, ...(z.safe ? { safe: { backX: M - z.safe.backX, backY: z.safe.backY } } : {}) };
+  return { zone, logs: R.logs, floor: R.floor, petals: R.petals };
 }
 
 /**

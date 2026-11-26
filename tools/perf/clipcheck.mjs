@@ -690,6 +690,32 @@ async function walk(browser, base, save, size, devBase) {
     await plant('help offer: planted', '.ho-card');
   });
 
+  // 2-3's HUD faces (BUILD-23b; the lead's ruling 11-20 7:54 PM ET): on a stage whose little ones follow him, the goal plank's slots are
+  // their faces (LineFace.tsx). Three freed by the engine's own freeing, the third set spooked as the look does (follow.ts spook's fields),
+  // so every state the plank shows but home is up: lit, and grey with its '!'. On the development build only (window.__engine). Fails
+  // closed: no faces up is a screen that could not be opened.
+  if (save === 'fresh' && devBase) await tryStep('2-3 HUD faces', async () => {
+    await page.goto(`${devBase}/?lessons=off`);
+    await seed(page, 'fresh');
+    await page.evaluate(() => localStorage.setItem('sloth_difficulty', 'normal'));
+    await page.goto(`${devBase}/?lessons=off`);
+    await until('the game loaded (window.__play)', () => typeof window.__play === 'function');
+    await page.evaluate(() => window.__play('2-3'));
+    await opens('canvas', 'attached');
+    // (its own engine up first: the stage's title card holds the HUD's flags before the engine is made)
+    await until('2-3 up (its engine)', () => typeof window.__engine === 'function' && window.__engine()?.currentStage?.config?.id === '2-3' && !!window.__engine()?.follow);
+    await running();
+    await page.evaluate(() => {
+      const e = window.__engine();
+      for (const c of e.collectibles.filter((q) => q.type === 'cage').sort((a, b) => a.x - b.x).slice(0, 3)) { e.freeCritter(c); c.collected = true; }
+      const f = e.follow.line[2];
+      f.state = 'spooked'; f.backX = f.x - 300; f.back = false;
+    });
+    await opens('.vh-face-bang');
+    await settle();
+    await judge('play: 2-3 HUD faces');
+  });
+
   // Dot's very first tip, with its Skip tips button (once per device, never on 1-1: dotGuideHelp.ts offersSkip): 1-3 on the fresh save,
   // lessons on. Judged inside her layer only. Sideways its Skip sat inside the right 48 px inset until 11-06 (VineHud's guide safe area
   // now keeps the phone's insets). Fails closed: no Skip up is a screen not opened.
@@ -840,6 +866,11 @@ async function walk(browser, base, save, size, devBase) {
     await opens('#ctest-name');
     await settle();
     await judge('testers: front page');
+    // (the stage picker, R-165.343: a pick, then the page again with that stage's still and moves; 1-5, the stage this walk played before
+    // the picker, so the walk below is the one it always was)
+    await click('.ct-pick[data-stage="1-5"]');
+    await settle();
+    await judge('testers: front page, a pick');
     await page.fill('#ctest-name', 'clipcheck');
     await click('button[type=submit]');
     // (until 11-19 a 7 s sleep stood in for the level starting: now its own HUD up and its goal card gone)
@@ -877,6 +908,11 @@ async function walk(browser, base, save, size, devBase) {
     await click('button:text-is("Send")');
     await judge('testers: sent');
     scope = '';
+    // and back to the picker from the end ("Pick another level"), the last pick still picked
+    await click('button:text-is("Pick another level")');
+    await opens('.ct-picks');
+    await settle();
+    await judge('testers: front page, back from the end');
   });
 
   await ctx.close();

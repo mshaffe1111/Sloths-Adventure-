@@ -38,7 +38,8 @@ test("the lay: river.ts's own rules (its window a whole number of spacings, logL
 });
 
 test('the hand-built World 2 stages lay every log river through the lay, and every one is fair (seeds 1-3)', () => {
-  const plans = Object.entries(W2_STAGES).filter(([, plan]) => plan !== '2-6');
+  // (2-6 is gen2's now, BUILD-26: its millrace is judged by riverFaults in w2Arc26.test.ts)
+  const plans = Object.entries(W2_STAGES);
   let rivers = 0;
   for (const [id, plan] of plans) for (const s of [1, 2, 3]) {
     const cfg = generateAllLevels().find((c) => c.id === id && !c.secret)!;

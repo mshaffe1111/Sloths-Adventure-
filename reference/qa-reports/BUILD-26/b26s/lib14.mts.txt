@@ -1,0 +1,17 @@
+// usage: npx tsx lib14.mts <tree> : 1-4 seeds 1..6, the search's beats against the list's (libstage.test's own check)
+const T = process.argv[2];
+await import(`${T}/src/game/headlessDom.ts`);
+const { rollStage } = await import(`${T}/tools/engine/libstage.ts`);
+const { loadSeedList, provenList, unpackPlan } = await import(`${T}/src/game/gen2/seedList.ts`);
+await loadSeedList('1-4');
+const L = provenList('1-4');
+let bad = 0;
+for (let i = 0; i < 6; i++) {
+  const seed = L.seeds[i];
+  const n = rollStage('1-4', seed, 'normal');
+  const want = unpackPlan(L.plans[i], L.dict).plan.map((p: { template: string }) => p.template);
+  const same = JSON.stringify(n.plan) === JSON.stringify(want);
+  if (!same) bad++;
+  console.log(`1-4 seed ${seed}: clean ${n.clean} ${same ? 'SAME' : 'DIFFERS'}`);
+}
+console.log(bad ? `RED ${bad}` : 'GREEN');

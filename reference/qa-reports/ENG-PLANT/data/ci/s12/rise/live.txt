@@ -1,0 +1,2 @@
+2-2: 239 rows (adult E 40, adult N 40, child E 39, child N 40, kid E 40, kid N 40); moved 52; RESCUED off while clean on: child N 6 (l 5->8, r 1); child N 22 (l 5->9, r 1); child N 24 (l 2->12, r 1) | 5+ MORE LIVES: child N 4 (2->8); child N 10 (1->9); child N 12 (2->10); child N 19 (3->8); child N 24 (2->12); child N 28 (6->11); child N 32 (3->12); child N 38 (3->8)
+2-5: 64 rows (child N 39, kid N 25); moved 0; RESCUED off while clean on:  | 5+ MORE LIVES: 

@@ -93,6 +93,10 @@ async function run(browser, base, c, kb, plant) {
     await page.goto(`${base}/?lessons=off#ctest`);
     await page.waitForSelector('#ctest-name', { timeout: 60000 });
     if (plant) await page.evaluate(() => { window.__ctNoKeep = true; });
+    // (the stage picker, R-165.343: a pick off the default first, the last tile, so the name box is checked below the page as a pick
+    // leaves it, in both orientations; the run below plays the stage picked)
+    await page.click('.ct-pick[data-stage="1-9"]');
+    if ((await page.getAttribute('.ct-pick[data-stage="1-9"]', 'aria-checked')) !== 'true') throw new Error('the picker did not take the pick');
     await page.waitForTimeout(800);
     await field(page, 'ctest-name', keep, tag, results, !plant);
     // back to full height, Start, and the end questions

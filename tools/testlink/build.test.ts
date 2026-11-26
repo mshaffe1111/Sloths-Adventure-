@@ -12,7 +12,7 @@ import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 const HERE = path.dirname(fileURLToPath(import.meta.url));
-/** a build: file name -> contents, written into dist by the stand-in for vite */
+/** a build: file name -> contents, written into dist by the stand-in for vite ('@size:N' writes N bytes) */
 type Build = Record<string, string>;
 /** run build.py's main in `dir` with `argv`; the stand-in build writes `files` into dir/dist */
 function run(dir: string, argv: string[], files: Build = {}): { code: number; out: string } {
@@ -27,7 +27,7 @@ def fake():
     for k, v in files.items():
         p = here / 'dist' / k
         p.parent.mkdir(parents=True, exist_ok=True)
-        p.write_text(v)
+        p.write_bytes(b'x' * int(v[6:])) if v.startswith('@size:') else p.write_text(v)
 sys.exit(build.main(['build.py'] + json.loads(${JSON.stringify(JSON.stringify(argv))}), here, fake))
 `;
   const r = spawnSync('python3', ['-c', src], { encoding: 'utf8' });
@@ -49,12 +49,61 @@ test('R-165.252: a build over 480 files fails before publish, prints its count a
   assert.equal(fs.existsSync(path.join(dir, 'work-index.html')), false, 'no page is refreshed for it');
 });
 
-test('R-165.252: a build of 480 files passes and prints its count', () => {
+test('R-165.252 (LINK-ROOM): a build of 440 files, 40 free under the cap, passes and prints its count and room', () => {
   const dir = tmp();
-  const r = run(dir, ['at the line'], many(480));
+  const r = run(dir, ['room kept'], many(440));
   assert.equal(r.code, 0, r.out);
-  assert.match(r.out, /test link: 480 files \(limit 480\)/);
-  assert.equal(Object.keys(map(dir)).length, 479, 'every asset is new on a fresh machine (no dist-published); the page is not in the map');
+  assert.match(r.out, /test link: 440 files \(limit 480, 40 free; largest file 0\.0 MB, limit 13\)/);
+  assert.equal(Object.keys(map(dir)).length, 439, 'every asset is new on a fresh machine (no dist-published); the page is not in the map');
+});
+
+test('R-165.252 (LINK-ROOM): a build that leaves under 40 files free fails before publish, though the artifact would still take it', () => {
+  const dir = tmp();
+  // (release 2's head: 479 of 480, one picker still to add six stills)
+  const r = run(dir, ['479'], many(479));
+  assert.equal(r.code, 1, r.out);
+  assert.match(r.out, /FAIL: 479 files leave 1 of room under the 480 limit; at least 40 must stay free/);
+  assert.equal(fs.existsSync(path.join(dir, 'filesmap.json')), false, 'no map is left to publish');
+  assert.equal(run(tmp(), ['441'], many(441)).code, 1);
+});
+
+test('R-165.252 (LINK-ROOM): a file over 13 MB fails before publish (the artifact takes 16 MB a file; index.js stood at 14.6 MB)', () => {
+  const dir = tmp();
+  const r = run(dir, ['big'], { ...many(10), 'assets/index-x.js': '@size:13100000', 'assets/audio-pack-1.webm': '@size:14900000' });
+  assert.equal(r.code, 1, r.out);
+  assert.match(r.out, /FAIL: assets\/index-x\.js is 13\.1 MB, over 13 MB/);
+  // (an audio pack is held to its own 15 MB, the most pack_audio puts in one; the stand-in's .webm goes through pack_audio as a real one does)
+  assert.doesNotMatch(r.out, /audio-pack/);
+  assert.match(run(tmp(), ['audio'], { ...many(10), 'assets/audio-pack-1.webm': '@size:15100000' }).out, /audio-pack-[0-9a-f]+\.webm is 15\.1 MB, over 15 MB/);
+  assert.equal(fs.existsSync(path.join(dir, 'filesmap.json')), false, 'no map is left to publish');
+});
+
+// The real test-link build (vite.testlink.config.ts, the art packs, the audio packs), into a folder of the test's own (the lead's
+// tools/testlink/dist, maybe waiting to publish, is not touched): it keeps its room and its file sizes. A round's new art that eats the
+// room fails here, in CI, before the lead's build refuses at publish time. (about 15 s)
+test('R-165.252 (LINK-ROOM): the real test-link build keeps 40 files free under the cap and every file under 13 MB (audio packs 15)', () => {
+  const out = path.join(tmp(), 'dist');
+  const repo = path.resolve(HERE, '../..');
+  const b = spawnSync('npx', ['vite', 'build', '-c', 'tools/testlink/vite.testlink.config.ts', '--outDir', out, '--emptyOutDir', '--logLevel', 'error'], { cwd: repo, encoding: 'utf8' });
+  assert.equal(b.status, 0, `${b.stdout}${b.stderr}`);
+  const src = `
+import json, sys
+from pathlib import Path
+sys.path.insert(0, ${JSON.stringify(HERE)})
+import build
+d = Path(${JSON.stringify(out)})
+build.pack_audio(d)
+print(json.dumps({'n': build.count_files(d), 'mb': build.largest_mb(d), 'bad': build.room_problems(d)}))
+`;
+  const r = spawnSync('python3', ['-c', src], { encoding: 'utf8' });
+  assert.equal(r.status, 0, r.stderr);
+  const got = JSON.parse(r.stdout) as { n: number; mb: number; bad: string[] };
+  assert.deepEqual(got.bad, [], `${got.n} files, largest ${got.mb.toFixed(1)} MB`);
+  // (the pictures went to the packs: index.js carries none of them, so it stays small)
+  const idx = fs.readdirSync(path.join(out, 'assets')).filter((f) => /^index-.*\.js$/.test(f));
+  assert.equal(idx.length, 1);
+  assert.ok(fs.statSync(path.join(out, 'assets', idx[0])).size < 6e6, 'index.js is code, not pictures');
+  assert.ok(fs.readdirSync(path.join(out, 'assets')).some((f) => f.startsWith('artpack-')), 'the art packs are built');
 });
 
 test('R-165.252: the map is against the last PUBLISHED build, not a pre-build that was never published (D72)', () => {
@@ -79,4 +128,17 @@ test('R-165.252: --published refuses when there is no build to mark', () => {
   const r = run(tmp(), ['--published']);
   assert.equal(r.code, 1);
   assert.match(r.out, /no build in dist/);
+});
+
+test('R-165.252 (LINK-ROOM): the test link names each new URL(picture) as a ?url import, so it can go in an art pack; nothing else changes', async () => {
+  const { artAsImports } = await import('./vite.testlink.config.ts');
+  const id = path.resolve(HERE, '../../src/components/hud/painted.tsx');
+  const code = "export const A = new URL('../../assets/hud/hud-atlas.webp', import.meta.url).href;\nconst B = new URL(\"../../assets/characters/dot-perch-atlas.webp\", import.meta.url);\n";
+  const out = artAsImports(code, id);
+  assert.ok(out);
+  assert.match(out, /^import __tlArt0 from "\.\.\/\.\.\/assets\/hud\/hud-atlas\.webp\?url";\nimport __tlArt1 from "\.\.\/\.\.\/assets\/characters\/dot-perch-atlas\.webp\?url";\n/);
+  assert.match(out, /export const A = new URL\(__tlArt0, import\.meta\.url\)\.href;/);
+  assert.match(out, /const B = new URL\(__tlArt1, import\.meta\.url\);/);
+  // (a path that is not there, as in a comment, a template-literal name (the bundler's glob takes those), and a sound are left alone)
+  assert.equal(artAsImports("// new URL('../../assets/none.webp', import.meta.url)\nnew URL(`../../assets/hud/${n}.webp`, import.meta.url);\nnew URL('../../assets/x.mp3', import.meta.url);", id), null);
 });

@@ -1,0 +1,25 @@
+// s9-rows: one castBots row (castRun's own call) on a tree, every frame (t x y g on sw) and every startJump (kind, hold, the CI-11
+// standing press marked), dumped as JSON for s9-diff.py. usage: npx tsx s9-rows.mts <tree> <stage> <bot> <setting> <seed> <out.json>
+import { writeFileSync } from 'node:fs';
+const [T, stage, bot, setting, seedS, out] = process.argv.slice(2);
+await import(T + '/src/game/headlessDom.ts');
+const ft: any = await import(T + '/tools/inspect/firsttimer.ts');
+const cb: any = await import(T + '/tools/inspect/castBots.ts');
+const P = ft.FirstTimerRun.prototype, sj = P.startJump;
+const jumps: any[] = [];
+P.startJump = function (this: any, ...a: any[]) {
+  const sh = this.standHold, its = this.pressJudged || (!!this.pending?.still && !!this.pending?.judged);
+  const stand = !!sh && its && this.t - sh.t < 0.5;
+  const o = sj.apply(this, a);
+  const p = this.sim.p;
+  jumps.push({ t: +this.t.toFixed(3), x: +p.x.toFixed(1), y: +p.y.toFixed(1), on: this.sim.e.standingOnId ?? null, a: a.map((v: any) => (typeof v === 'object' ? null : v)), stand, sh: stand ? +sh.hold.toFixed(4) : null, j: this.jump ? { k: this.jump.kind, h: this.jump.hold } : null });
+  return o;
+};
+const fr: any[] = [];
+const who = cb.CAST_BOTS[bot][setting];
+const r = ft.firstTimer(stage, Number(seedS), who, { cap: 1200, dotSetting: true, onFrame: (sim: any) => {
+  const e = sim.e, p = e.player;
+  fr.push([+sim.t.toFixed(3), +p.x.toFixed(2), +p.y.toFixed(2), p.grounded ? 1 : 0, e.standingOnId ?? null, p.isVineSwinging ? p.swingVineId : null]);
+} });
+writeFileSync(out, JSON.stringify({ end: r.end, time: r.time, rescues: r.rescues, stuck: r.stuck.map((s: any) => ({ x: Math.round(s.x), what: String(s.what ?? '') })), jumps, fr }));
+console.log(stage, bot, setting, seedS, r.end, r.time, 'rescues', r.rescues, 'frames', fr.length, 'jumps', jumps.length, 'stand', jumps.filter((j) => j.stand).length);

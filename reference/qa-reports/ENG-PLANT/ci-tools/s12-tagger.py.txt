@@ -1,0 +1,16 @@
+import re, sys
+# tagger.py <in.ts> <out.ts> <a> <b>: every single-line `return EXPR;` in lines a..b wrapped as __tgv(<line>, EXPR) (a probe copy only)
+src = open(sys.argv[1]).read().split('\n'); a, b = int(sys.argv[3]), int(sys.argv[4])
+def bal(s): return all(s.count(o) == s.count(c) for o, c in ('()', '[]', '{}'))
+n = 0
+for i in range(a - 1, b):
+    L = src[i]
+    if L.lstrip().startswith('//') or L.lstrip().startswith('*'): continue
+    def rep(m):
+        global n
+        e = m.group(1)
+        if not bal(e) or '`' in e: return m.group(0)
+        n += 1
+        return f"return (globalThis as any).__tgv({i + 1}, ({e}));"
+    src[i] = re.sub(r"return ([^;]+);", rep, L)
+open(sys.argv[2], 'w').write('\n'.join(src)); print('tagged', n)

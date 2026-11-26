@@ -1,0 +1,14 @@
+// padlives: each life of a run (castRun's call) with waitRise on/off: t, x, the floor he last stood on (beat pad, weight pad or not)
+const [T, stage, bot, setting, seedS, offS] = process.argv.slice(2);
+await import(T + '/src/game/headlessDom.ts');
+const ft: any = await import(T + '/tools/inspect/firsttimer.ts');
+const cb: any = await import(T + '/tools/inspect/castBots.ts');
+if (offS === 'off') ft.PAD_SKILL.waitRise = false;
+let last: any = null, lastFloor: any = null; const out: string[] = [];
+const r = ft.firstTimer(stage, Number(seedS), cb.CAST_BOTS[bot][setting], { cap: 1200, dotSetting: true, onFrame: (s: any) => {
+  const p = s.e.player, q = p.grounded ? s.platforms.find((x: any) => x.id === s.e.standingOnId) : undefined;
+  if (last && (Math.abs(p.x - last.x) > 150 || Math.abs(p.y - last.y) > 150)) out.push(`${s.t.toFixed(1)}@x${Math.round(last.x)} on #${lastFloor?.id}${lastFloor?.pad ? ' pad:' + lastFloor.pad.by : ''}`);
+  if (q) lastFloor = q;
+  last = { x: p.x, y: p.y };
+} });
+console.log(`${stage} ${bot} ${setting} ${seedS} waitRise ${offS}: ${r.end} ${r.time} r${r.rescues} l${r.lives} | ${out.join(' ')}`);

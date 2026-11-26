@@ -1,0 +1,31 @@
+TAP version 13
+# Subtest: 2-6's draft row (a tower with five wheels' ponds over its lower storeys): the first frames keep him at the spawn, both settings
+not ok 1 - 2-6's draft row (a tower with five wheels' ponds over its lower storeys): the first frames keep him at the spawn, both settings
+  ---
+  duration_ms: 149.712362
+  type: 'test'
+  location: '/home/user/fz-base/src/game/gen2/towerWater.test.ts:56:1'
+  failureType: 'testCodeFailure'
+  error: 'World 2 finish: the fall at x=274-670 has no bank at one end'
+  code: 'ERR_TEST_FAILURE'
+  stack: |-
+    w2Finish (/home/user/fz-base/src/game/gen2/worlds/w2.ts:333:31)
+    world (/home/user/fz-base/src/game/gen2/towerWater.test.ts:63:74)
+    playFinish (/home/user/fz-base/src/game/gen2/listed.ts:72:31)
+    generateStageOn (/home/user/fz-base/src/game/stageGenerator.ts:2952:9)
+    <anonymous> (/home/user/fz-base/src/game/stageGenerator.ts:2891:40)
+    withSetting (/home/user/fz-base/src/game/settingDials.ts:45:12)
+    generateStage (/home/user/fz-base/src/game/stageGenerator.ts:2891:10)
+    new GameEngine (/home/user/fz-base/src/game/engine.ts:1063:57)
+    new RealPlay (/home/user/fz-base/src/game/realPlay.ts:156:15)
+    <anonymous> (/home/user/fz-base/src/game/gen2/towerWater.test.ts:70:21)
+  ...
+1..1
+# tests 1
+# suites 0
+# pass 0
+# fail 1
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 2348.239806

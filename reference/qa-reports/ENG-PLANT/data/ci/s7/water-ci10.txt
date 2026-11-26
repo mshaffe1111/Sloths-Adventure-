@@ -1,0 +1,15 @@
+SJ t44.067 x10190.0 vx0.0 kind single on -1 from 3032>4986>5506
+DC t47.500 x10537.6 vx0.0 dir 1 kind single on 48 judged null from 2486>3280>4986>5506
+SJ t47.600 x10545.1 vx0.0 kind single on 48 from 3032>4986>5506
+DC t49.300 x10486.3 vx267.7 dir 1 kind single on 47 judged null from 3969>4986>5506>5636
+SJ t49.467 x10910.9 vx86.7 kind single on 49 from 3032>4986>5506
+ROWS 15 [["unjudged",-1,44.067,10190,0.06666666666666667,0,null,42]]
+{"n":1,"t":47.633,"x":10545.1,"from":48,"vx":75,"down":"WATER set down at t48.067 from x 10647.4 y 977.1"} ROW none
+{"n":2,"t":49.5,"x":10910.9,"from":49,"vx":161.7,"down":"on 43 x 11050.0"} ROW none
+{"n":3,"t":72.9,"x":16136.1,"from":76,"vx":347.7,"down":"on 77 x 16602.9"} ROW none
+{"n":4,"t":77.733,"x":16763.2,"from":77,"vx":347.7,"down":"on 71 x 17159.0"} ROW none
+{"n":5,"t":98.967,"x":21325.4,"from":102,"vx":365,"down":"on 103 x 21743.4"} ROW none
+{"n":6,"t":107.9,"x":22260.7,"from":103,"vx":347.7,"down":"on 94 x 22382.0"} ROW none
+{"n":7,"t":110.933,"x":22936.4,"from":108,"vx":360,"down":"on 111 x 23310.6"} ROW none
+{"n":8,"t":126.133,"x":23367.6,"from":111,"vx":161.7,"down":"on 111 x 23893.3"} ROW none
+{"n":9,"t":137.4,"x":24556.5,"from":118,"vx":342.7,"down":"on 118 x 24929.8"} ROW none

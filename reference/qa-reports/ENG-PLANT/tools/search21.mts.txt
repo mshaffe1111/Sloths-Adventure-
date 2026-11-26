@@ -1,0 +1,13 @@
+// usage: tsx search21.mts <tree> <stage> <seedFrom> <seedTo> bot:setting ...   -> jsonl: on, up (upstream off), bu (bankUp off)
+const [T, stage, a, b, ...bots] = process.argv.slice(2);
+await import(`${T}/src/game/headlessDom.ts`);
+const { castRun } = await import(`${T}/tools/inspect/castBots.ts`);
+const { SKILLS } = await import(`${T}/tools/inspect/firsttimer.ts`);
+const pick = (x: any) => ({ end: x.end, rescues: x.rescues, lives: x.lives, time: Number(x.time.toFixed(1)), stuck: x.stuck });
+for (let seed = Number(a); seed <= Number(b); seed++) for (const bs of bots) {
+  const [bot, setting] = bs.split(':');
+  const on = pick(castRun(bot, setting, stage, seed));
+  let up = null as any; if (!process.env.ONLY_BU) { SKILLS.upstream = false; try { up = pick(castRun(bot, setting, stage, seed)); } finally { SKILLS.upstream = true; } }
+  SKILLS.bankUp = false; let bu; try { bu = pick(castRun(bot, setting, stage, seed)); } finally { SKILLS.bankUp = true; }
+  console.log(JSON.stringify({ bot, setting, seed, on, up, bu }));
+}

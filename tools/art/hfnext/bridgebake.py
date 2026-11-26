@@ -1,0 +1,163 @@
+"""ART-NEXT-c (R-165.354): bake a picked bridge take into its idle clips' sheets, so every idle clip starts AND ends on Pokey's plain pose.
+    python3 -I tools/art/hfnext/bridgebake.py <take dir of Wan frames> <clip>[,<clip>...] [--sheet out.jpg] [--pin-feet] [--dry] [--replace]
+A take is the bridge from the plain pose (Wan frame 0) to the clip's frame 0 (Wan's last frame), drawn by bridgestarts.py at S = 2.4
+canvas px a sheet px with the feet anchor at (240, 552). Each Wan frame is keyed off its flat grey (flood from the border), scaled to
+sheet px and placed on the anchor; then frame 0 is REPLACED by the exact plain frame (heroStandardData idle) and the last by the clip's
+exact frame 0, so both ends are pixel for pixel what they join. The clip becomes: bridge in (Wan 0..m-2), the clip's own frames, bridge
+out (Wan m-2..0, reversed): its first and last frames are the plain pose. COLOUR RAMP (ART-NEXT-e): every in-between frame gets a Lab
+mean/std (Reinhard) transfer over its solid px (alpha > 200) toward lerp(stats(plain), stats(target), u), u = i/(m-1): bridge IN
+targets the clip's frame 0, bridge OUT (its own list, not bridge in reversed) the clip's LAST frame, so the old clips' colour drift
+over their 49 frames never pops at the join; --replace ramps plain -> the take's mean stats -> plain (a tent). Writes the layout
+to tools/art/hfnext/bridges.json, which clipde.py reads to find the seams (the gate: src/game/heroClipsSeams.test.ts). --pin-feet shifts each in-between frame sideways onto that line (a standing turn; never the sit-down, whose feet move by design). The sheet box grows to the union of all
+frames; heroClipsData.ts's entry (n, w, h, ax, ay) is rewritten in the clip cutter's own format. --dry writes only the check sheet.
+Prints, per in-between frame, how far its feet centre sits off the straight line between the two ends' feet (a slide; the turn itself
+moves the stance by up to ~10 px), before any pin (the lead's bar: within 2 px across a standing bridge).
+"""
+import glob, json, re, subprocess, sys
+from pathlib import Path
+import numpy as np
+from PIL import Image, ImageDraw, ImageFilter
+from scipy import ndimage as nd
+
+S, FX, FY = 2.4, 240, 552
+take, clips = sys.argv[1], sys.argv[2].split(',')
+PIN, DRY, REPLACE = '--pin-feet' in sys.argv, '--dry' in sys.argv, '--replace' in sys.argv   # --replace: the take IS the clip (plain first and last)
+SHEET = sys.argv[sys.argv.index('--sheet') + 1] if '--sheet' in sys.argv else None
+DATA = Path('src/game/heroClipsData.ts')
+src = DATA.read_text()
+CL = json.loads(subprocess.run(['npx', 'tsx', '-e', "import {HERO_CLIPS} from './src/game/heroClipsData.ts'; console.log(JSON.stringify(HERO_CLIPS))"],
+                               capture_output=True, text=True, check=True).stdout)
+STD = Image.open('src/assets/hero/hero-standard.webp').convert('RGBA')
+LAYP = Path('tools/art/hfnext/bridges.json'); LAY = json.loads(LAYP.read_text()) if LAYP.exists() else {}
+AW, AH, AX, AY = 420, 300, 210, 270          # the working canvas (sheet px) and its feet anchor
+
+
+def on_anchor(im, ax, ay):
+    c = Image.new('RGBA', (AW, AH), (0, 0, 0, 0)); c.alpha_composite(im, (int(round(AX - ax)), int(round(AY - ay)))); return c
+
+
+_M = np.array([[0.4124, 0.3576, 0.1805], [0.2126, 0.7152, 0.0722], [0.0193, 0.1192, 0.9505]]); _W = np.array([0.9505, 1.0, 1.089])
+
+
+def lab(rgb):   # the same sRGB -> Lab (D65) as clipde.py
+    c = rgb / 255.0; c = np.where(c > 0.04045, ((c + 0.055) / 1.055) ** 2.4, c / 12.92)
+    f = (c @ _M.T) / _W; f = np.where(f > 0.008856, np.cbrt(f), 7.787 * f + 16 / 116)
+    return np.stack([116 * f[..., 1] - 16, 500 * (f[..., 0] - f[..., 1]), 200 * (f[..., 1] - f[..., 2])], -1)
+
+
+def rgb(L):
+    fy = (L[..., 0] + 16) / 116; f = np.stack([fy + L[..., 1] / 500, fy, fy - L[..., 2] / 200], -1)
+    xyz = np.where(f > 0.206893, f ** 3, (f - 16 / 116) / 7.787) * _W
+    c = np.clip(xyz @ np.linalg.inv(_M).T, 0, 1); c = np.where(c > 0.0031308, 1.055 * np.power(c, 1 / 2.4) - 0.055, 12.92 * c)
+    return np.clip(c * 255, 0, 255)
+
+
+def cstats(im):
+    a = np.asarray(im).astype(np.float32); L = lab(a[..., :3][a[..., 3] > 200]); return L.mean(0), L.std(0)
+
+
+def ramp(im, A, B, u):
+    """Move im's solid-px Lab mean/std to lerp(A, B, u) (A, B = cstats); every visible px moves with it. Two more mean-only passes
+    take out what the RGB clip and the 8-bit round shift."""
+    a = np.asarray(im).astype(np.float32); vis = a[..., 3] > 0
+    tm, ts = A[0] + (B[0] - A[0]) * u, A[1] + (B[1] - A[1]) * u
+    mu, sd = cstats(im); L = (lab(a[..., :3][vis]) - mu) * (ts / np.maximum(sd, 1e-3)) + tm
+    for _ in range(3):
+        out = a.copy(); out[..., :3][vis] = np.round(rgb(L)); mu, _sd = cstats(Image.fromarray(out.astype(np.uint8), 'RGBA'))
+        L = L + (tm - mu)
+    return Image.fromarray(out.astype(np.uint8), 'RGBA')
+
+
+def key(path):
+    a = np.asarray(Image.open(path).convert('RGB')).astype(np.float32)
+    bg = np.median(np.concatenate([a[:3].reshape(-1, 3), a[-3:].reshape(-1, 3), a[:, :3].reshape(-1, 3), a[:, -3:].reshape(-1, 3)]), axis=0)
+    near = np.abs(a - bg).max(axis=2) <= 22
+    lab, _ = nd.label(near)
+    edge = set(np.unique(np.concatenate([lab[0], lab[-1], lab[:, 0], lab[:, -1]]))) - {0}
+    bgm = np.isin(lab, list(edge))
+    keep = ~bgm
+    lab2, n2 = nd.label(keep)
+    if n2 > 1:
+        sz = nd.sum(keep, lab2, range(1, n2 + 1)); keep = lab2 == 1 + int(np.argmax(sz))
+    dist = np.abs(a - bg).max(axis=2)
+    al = keep.astype(np.float32); rim = keep & ~nd.binary_erosion(keep, iterations=2)
+    al[rim] = np.clip(dist[rim] / 50.0, 0, 1)
+    al = np.asarray(Image.fromarray((al * 255).astype(np.uint8)).filter(ImageFilter.GaussianBlur(0.7))).astype(np.float32) / 255
+    al[~nd.binary_dilation(keep, iterations=1)] = 0
+    k = np.maximum(al, 1e-3)[..., None]
+    rgb = np.where(al[..., None] > 0.02, np.clip((a - bg * (1 - k)) / k, 0, 255), 0)
+    im = Image.fromarray(np.dstack([rgb, al * 255]).astype(np.uint8), 'RGBA')
+    im = im.resize((round(im.width / S), round(im.height / S)), Image.LANCZOS)
+    return on_anchor(im, FX / S, FY / S)
+
+
+def feet_cx(im):
+    m = np.asarray(im)[..., 3] > 128; ys = np.nonzero(m.any(1))[0]; b = ys.max()
+    xs = np.nonzero(m[b - 7:b + 1].any(0))[0]; return (xs.min() + xs.max()) / 2, b
+
+
+def clip_frames(name):
+    c = CL[name]; im = Image.open(f'src/assets/hero/clips/{name}.webp').convert('RGBA')
+    return [on_anchor(im.crop(((k % c['cols']) * c['w'], (k // c['cols']) * c['h'], (k % c['cols'] + 1) * c['w'], (k // c['cols'] + 1) * c['h'])),
+                      c['ax'], c['ay']) for k in range(c['n'])]
+
+
+plain = on_anchor(STD.crop((674, 478, 674 + 127, 478 + 209)), 57.0, 205.0)
+wan = [key(f) for f in sorted(glob.glob(take + '/*.webp'))]
+assert len(wan) >= 9, f'{take}: {len(wan)} frames'
+f0x, f0y = feet_cx(plain)
+f1x, f1y = feet_cx(plain if REPLACE else clip_frames(clips[0])[0])
+drift = []   # each in-between frame's feet centre against the straight line from the plain pose's feet to the clip's: a SLIDE, not the turn
+for i, im in enumerate(wan[1:-1], 1):
+    x, y = feet_cx(im); u = i / (len(wan) - 1)
+    drift.append((i, round(x - (f0x + (f1x - f0x) * u), 1), int(y - round(f0y + (f1y - f0y) * u))))
+print(f'feet: plain x {f0x} y {f0y}, clip f0 x {f1x} y {f1y}; off the line per frame (frame, dx, dy) sheet px:', drift)
+print('max |dx|', max(abs(d[1]) for d in drift), 'max |dy|', max(abs(d[2]) for d in drift))
+if PIN:
+    wan = [im if i in (0, len(wan) - 1) else im.transform(im.size, Image.AFFINE, (1, 0, feet_cx(im)[0] - (f0x + (f1x - f0x) * i / (len(wan) - 1)), 0, 1, 0), Image.BICUBIC)
+           for i, im in enumerate(wan)]
+for name in clips:
+    own = [plain] if REPLACE else clip_frames(name)
+    m = len(wan); P = cstats(plain)               # Wan 0 -> the exact plain frame; Wan m-1 -> the clip's own frame 0 (not repeated)
+    if REPLACE:                                   # plain, the take's in-betweens (tent ramp plain -> the take's mean -> plain), plain
+        T = [cstats(im) for im in wan[1:-1]]; MID = (np.mean([t[0] for t in T], 0), np.mean([t[1] for t in T], 0))
+        bridge = [plain] + [ramp(wan[i], P, MID, 1 - abs(2 * i / (m - 1) - 1)) for i in range(1, m - 1)]
+        frames = bridge + own
+    else:
+        F0, FL = cstats(own[0]), cstats(own[-1])
+        bridge = [plain] + [ramp(wan[i], P, F0, i / (m - 1)) for i in range(1, m - 1)]
+        out_b = [ramp(wan[i], P, FL, i / (m - 1)) for i in range(m - 2, 0, -1)] + [plain]
+        frames = bridge + own + out_b
+    LAY[name] = {'take': Path(take).name, 'bridge': len(bridge) if not REPLACE else len(frames), 'own': 0 if REPLACE else len(own),
+                 'replace': REPLACE, 'pin_feet': PIN}
+    if SHEET:
+        ims = [plain] + wan[1:-1] + [own[0]]
+        tw = 2 * 170; th = 2 * 230
+        sh = Image.new('RGB', (len(ims) * tw, th * 2 + 40), (0, 0, 0)); d = ImageDraw.Draw(sh)
+        for i, im in enumerate(ims):
+            cr = im.crop((AX - 80, AY - 220, AX + 90, AY + 10)).resize((tw, th), Image.LANCZOS)
+            for r, bgc in enumerate([(226, 230, 214, 255), (26, 30, 42, 255)]):
+                b = Image.new('RGBA', cr.size, bgc); b.alpha_composite(cr); sh.paste(b.convert('RGB'), (i * tw, 20 + r * (th + 20)))
+            d.text((i * tw + 4, 4), 'PLAIN' if i == 0 else ('CLIP f0' if i == len(ims) - 1 else str(i)), fill=(255, 230, 90))
+            d.line([(i * tw, 20 + th - 20), (i * tw + tw, 20 + th - 20)], fill=(255, 60, 60))
+        sh.save(SHEET, quality=86); print('sheet', SHEET, sh.size)
+    if DRY:
+        continue
+    al = np.stack([np.asarray(f)[..., 3] for f in frames]).max(0) > 8
+    ys, xs = np.nonzero(al); x0, x1, y0, y1 = xs.min() - 1, xs.max() + 2, ys.min() - 1, ys.max() + 2
+    w, h = int(x1 - x0), int(y1 - y0); cols = 8; rows = (len(frames) + cols - 1) // cols
+    out = Image.new('RGBA', (cols * w, rows * h), (0, 0, 0, 0))
+    for k, f in enumerate(frames):
+        out.alpha_composite(f.crop((x0, y0, x1, y1)), ((k % cols) * w, (k // cols) * h))
+    assert out.width <= 4096 and out.height <= 4096
+    ent = {'n': len(frames), 'cols': cols, 'w': w, 'h': h, 'ax': round(float(AX - x0), 1), 'ay': round(float(AY - y0), 1), 'fps': CL[name]['fps']}
+    blk = re.compile(r'^ "' + re.escape(name) + r'": \{\n[^}]*\n \}', re.M)   # the cutter writes 202.0 where JSON round-trips 202: match the block
+    assert len(blk.findall(src)) == 1, f'{name}: entry not found in the cutter format'
+    src = blk.sub(lambda _m: json.dumps({name: ent}, indent=1)[2:-2], src)
+    p = f'src/assets/hero/clips/{name}.webp'; out.save(p, 'WEBP', quality=86, method=6)  # the clip cutter's own quality (tools/art/train/clips.py)   # written only once its entry matched
+    print(name, 'frames', len(frames), 'sheet', out.size, f'{Path(p).stat().st_size / 1024:.0f} KB', ent)
+if not DRY:
+    if 'bridgebake.py' not in src.split('\n')[0]:
+        src = src.replace('Do not edit by hand. */', 'Do not edit by hand. The idle clips\' bridge frames: tools/art/hfnext/bridgebake.py (R-165.354). */', 1)
+    DATA.write_text(src)
+    LAYP.write_text('{\n' + ',\n'.join(f' {json.dumps(k)}: {json.dumps(v)}' for k, v in LAY.items()) + '\n}\n')

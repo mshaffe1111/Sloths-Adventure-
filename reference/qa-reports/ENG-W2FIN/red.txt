@@ -1,0 +1,81 @@
+TAP version 13
+# Subtest: World 2 finish: a fall over a water wheel's sweep takes the wheel's pond as its river (every row, both settings, both ways round)
+not ok 1 - World 2 finish: a fall over a water wheel's sweep takes the wheel's pond as its river (every row, both settings, both ways round)
+  ---
+  duration_ms: 3.299184
+  type: 'test'
+  location: '/home/user/w2fin/src/game/gen2/worlds/w2.test.ts:254:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly deep-equal:
+    + actual - expected
+    
+    + [
+    +   'teach normal way 1: World 2 finish: the fall at x=1300-1670.4212364436585 has no bank at one end',
+    +   'teach normal way -1: World 2 finish: the fall at x=2629.5787635563415-3000 has no bank at one end',
+    +   'teach easy way 1: World 2 finish: the fall at x=1300-1670.4212364436585 has no bank at one end',
+    +   'teach easy way -1: World 2 finish: the fall at x=2629.5787635563415-3000 has no bank at one end',
+    +   'edge normal way 1: World 2 finish: the fall at x=1300-1696.4157663455517 has no bank at one end',
+    +   'edge normal way -1: World 2 finish: the fall at x=2603.5842336544483-3000 has no bank at one end',
+    +   'edge easy way 1: World 2 finish: the fall at x=1300-1696.4157663455517 has no bank at one end',
+    +   'edge easy way -1: World 2 finish: the fall at x=2603.5842336544483-3000 has no bank at one end',
+    +   'top normal way 1: World 2 finish: the fall at x=1300-1696.4157663455517 has no bank at one end',
+    +   'top normal way -1: World 2 finish: the fall at x=2603.5842336544483-3000 has no bank at one end',
+    +   'top easy way 1: World 2 finish: the fall at x=1300-1696.4157663455517 has no bank at one end',
+    +   'top easy way -1: World 2 finish: the fall at x=2603.5842336544483-3000 has no bank at one end',
+    +   'great normal way 1: World 2 finish: the fall at x=1300-1722.0588065773845 has no bank at one end',
+    +   'great normal way -1: World 2 finish: the fall at x=2577.9411934226155-3000 has no bank at one end',
+    +   'great easy way 1: World 2 finish: the fall at x=1300-1722.0588065773845 has no bank at one end',
+    +   'great easy way -1: World 2 finish: the fall at x=2577.9411934226155-3000 has no bank at one end'
+    + ]
+    - []
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+  actual:
+    0: 'teach normal way 1: World 2 finish: the fall at x=1300-1670.4212364436585 has no bank at one end'
+    1: 'teach normal way -1: World 2 finish: the fall at x=2629.5787635563415-3000 has no bank at one end'
+    2: 'teach easy way 1: World 2 finish: the fall at x=1300-1670.4212364436585 has no bank at one end'
+    3: 'teach easy way -1: World 2 finish: the fall at x=2629.5787635563415-3000 has no bank at one end'
+    4: 'edge normal way 1: World 2 finish: the fall at x=1300-1696.4157663455517 has no bank at one end'
+    5: 'edge normal way -1: World 2 finish: the fall at x=2603.5842336544483-3000 has no bank at one end'
+    6: 'edge easy way 1: World 2 finish: the fall at x=1300-1696.4157663455517 has no bank at one end'
+    7: 'edge easy way -1: World 2 finish: the fall at x=2603.5842336544483-3000 has no bank at one end'
+    8: 'top normal way 1: World 2 finish: the fall at x=1300-1696.4157663455517 has no bank at one end'
+    9: 'top normal way -1: World 2 finish: the fall at x=2603.5842336544483-3000 has no bank at one end'
+    10: 'top easy way 1: World 2 finish: the fall at x=1300-1696.4157663455517 has no bank at one end'
+    11: 'top easy way -1: World 2 finish: the fall at x=2603.5842336544483-3000 has no bank at one end'
+    12: 'great normal way 1: World 2 finish: the fall at x=1300-1722.0588065773845 has no bank at one end'
+    13: 'great normal way -1: World 2 finish: the fall at x=2577.9411934226155-3000 has no bank at one end'
+    14: 'great easy way 1: World 2 finish: the fall at x=1300-1722.0588065773845 has no bank at one end'
+    15: 'great easy way -1: World 2 finish: the fall at x=2577.9411934226155-3000 has no bank at one end'
+  operator: 'deepStrictEqual'
+  stack: |-
+    TestContext.<anonymous> (/home/user/w2fin/src/game/gen2/worlds/w2.test.ts:266:10)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    <anonymous> (/home/user/w2fin/src/game/gen2/worlds/w2.test.ts:254:1)
+  ...
+# Subtest: World 2 finish: another storey's fall over a wheel's pond is still held to its own height and its own banks (2-7's height rule)
+not ok 2 - World 2 finish: another storey's fall over a wheel's pond is still held to its own height and its own banks (2-7's height rule)
+  ---
+  duration_ms: 0.338236
+  type: 'test'
+  location: '/home/user/w2fin/src/game/gen2/worlds/w2.test.ts:268:1'
+  failureType: 'testCodeFailure'
+  error: 'World 2 finish: the fall at x=1300-1670.4212364436585 has no bank at one end'
+  code: 'ERR_TEST_FAILURE'
+  stack: |-
+    w2Finish (/home/user/w2fin/src/game/gen2/worlds/w2.ts:333:31)
+    TestContext.<anonymous> (/home/user/w2fin/src/game/gen2/worlds/w2.test.ts:277:5)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+  ...
+1..2
+# tests 2
+# suites 0
+# pass 0
+# fail 2
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 538.500711

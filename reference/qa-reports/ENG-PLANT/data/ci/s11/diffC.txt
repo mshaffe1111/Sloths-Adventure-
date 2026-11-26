@@ -1,0 +1,3 @@
+C14 2-2-adult-normal-4: part 138.933 x 29273 on #109 g1 | CI-13 156.9 r0: press 138.900#109s; tp 140.30@x29507y601#-1->x27932(n1) | CI-14 149.6 r0: press -; tp -(n0)
+C14 2-2-adult-normal-24: part 148.433 x 29486 on #111 g1 | CI-13 166.5 r0: press 148.467#111s; tp 149.90@x29901y616#-1->x28140(n1) | CI-14 159.3 r0: press -; tp -(n0)
+C14 2-2-kid-normal-3: part 156.900 x 29245 on #109 g1 | CI-13 165.5 r0: press 157.100#-1s; tp -(n0) | CI-14 168.5 r0: press -; tp -(n0)

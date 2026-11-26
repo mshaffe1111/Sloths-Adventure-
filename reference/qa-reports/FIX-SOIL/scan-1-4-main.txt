@@ -1,0 +1,201 @@
+1-4: 200/200 builds
+  normal v0 seed 1: 1 pairs: #56(190-610 y360 h120) over #1(0-640 y11321) ov 420 gap 10841
+  normal v1 seed 2: 2 pairs: #56(484-904 y360 h120) over #1(0-640 y11265) ov 156 gap 10785; #56(484-904 y360 h120) over #2(640-1200 y11265) ov 264 gap 10785
+  normal v2 seed 3: 2 pairs: #56(488-908 y360 h120) over #1(0-640 y11209) ov 152 gap 10729; #56(488-908 y360 h120) over #2(640-1184 y11209) ov 268 gap 10729
+  normal v3 seed 4: 1 pairs: #56(734-1154 y360 h120) over #2(640-1196 y11225) ov 420 gap 10745
+  normal v4 seed 5: 2 pairs: #56(424-844 y360 h120) over #1(0-640 y11546) ov 216 gap 11066; #56(424-844 y360 h120) over #2(640-1199 y11546) ov 204 gap 11066
+  normal v5 seed 6: 2 pairs: #56(484-904 y360 h120) over #1(0-640 y11040) ov 156 gap 10560; #56(484-904 y360 h120) over #2(640-1184 y11040) ov 264 gap 10560
+  normal v6 seed 7: 2 pairs: #56(486-906 y360 h120) over #1(0-640 y10815) ov 154 gap 10335; #56(486-906 y360 h120) over #2(640-1178 y10815) ov 266 gap 10335
+  normal v7 seed 23910: 1 pairs: #56(84-504 y360 h120) over #1(0-640 y10382) ov 420 gap 9902
+  normal v8 seed 9: 2 pairs: #56(484-904 y360 h120) over #1(0-640 y10984) ov 156 gap 10504; #56(484-904 y360 h120) over #2(640-1194 y10984) ov 264 gap 10504
+  normal v9 seed 10: 2 pairs: #55(590-1010 y360 h120) over #1(0-640 y10326) ov 50 gap 9846; #55(590-1010 y360 h120) over #2(640-1173 y10326) ov 370 gap 9846
+  normal v10 seed 19018: 1 pairs: #56(130-550 y360 h120) over #1(0-640 y10944) ov 420 gap 10464
+  normal v11 seed 12: 2 pairs: #57(770-1190 y360 h120) over #2(640-1172 y10872) ov 402 gap 10392; #57(770-1190 y360 h120) over #58(1172-1280 y10872) ov 18 gap 10392
+  normal v12 seed 21036: 1 pairs: #56(84-504 y360 h120) over #1(0-640 y10832) ov 420 gap 10352
+  normal v13 seed 14: 2 pairs: #57(374-794 y360 h120) over #1(0-640 y11040) ov 266 gap 10560; #57(374-794 y360 h120) over #2(640-1186 y11040) ov 154 gap 10560
+  normal v14 seed 15: 1 pairs: #56(130-550 y360 h120) over #1(0-640 y11321) ov 420 gap 10841
+  normal v15 seed 16: 1 pairs: #56(70-490 y360 h120) over #1(0-640 y11169) ov 420 gap 10689
+  normal v16 seed 25072: 2 pairs: #57(484-904 y360 h120) over #1(0-640 y11265) ov 156 gap 10785; #57(484-904 y360 h120) over #2(640-1172 y11265) ov 264 gap 10785
+  normal v17 seed 34000: 2 pairs: #57(448-868 y360 h120) over #1(0-640 y10928) ov 192 gap 10448; #57(448-868 y360 h120) over #2(640-1167 y10928) ov 228 gap 10448
+  normal v18 seed 19: 2 pairs: #55(574-994 y360 h120) over #1(0-640 y10438) ov 66 gap 9958; #55(574-994 y360 h120) over #2(640-1173 y10438) ov 354 gap 9958
+  normal v19 seed 20: 2 pairs: #57(376-796 y360 h120) over #1(0-640 y11080) ov 264 gap 10600; #57(376-796 y360 h120) over #2(640-1177 y11080) ov 156 gap 10600
+  normal v20 seed 21: 2 pairs: #56(412-832 y360 h120) over #1(0-640 y10984) ov 228 gap 10504; #56(412-832 y360 h120) over #2(640-1178 y10984) ov 192 gap 10504
+  normal v21 seed 30117: 2 pairs: #56(376-796 y360 h120) over #1(0-640 y10759) ov 264 gap 10279; #56(376-796 y360 h120) over #2(640-1191 y10759) ov 156 gap 10279
+  normal v22 seed 23: 2 pairs: #56(374-794 y360 h120) over #1(0-640 y11096) ov 266 gap 10616; #56(374-794 y360 h120) over #2(640-1169 y11096) ov 154 gap 10616
+  normal v23 seed 24: 2 pairs: #56(484-904 y360 h120) over #1(0-640 y11658) ov 156 gap 11178; #56(484-904 y360 h120) over #2(640-1172 y11658) ov 264 gap 11178
+  normal v24 seed 25: 2 pairs: #56(630-1050 y360 h120) over #1(0-640 y10928) ov 10 gap 10448; #56(630-1050 y360 h120) over #2(640-1195 y10928) ov 410 gap 10448
+  normal v25 seed 26: 2 pairs: #56(410-830 y360 h120) over #1(0-640 y11490) ov 230 gap 11010; #56(410-830 y360 h120) over #2(640-1163 y11490) ov 190 gap 11010
+  normal v26 seed 27: 2 pairs: #56(376-796 y360 h120) over #1(0-640 y11040) ov 264 gap 10560; #56(376-796 y360 h120) over #2(640-1173 y11040) ov 156 gap 10560
+  normal v27 seed 28: 2 pairs: #56(470-890 y360 h120) over #1(0-640 y10984) ov 170 gap 10504; #56(470-890 y360 h120) over #2(640-1188 y10984) ov 250 gap 10504
+  normal v28 seed 37180: 2 pairs: #56(448-868 y360 h120) over #1(0-640 y10703) ov 192 gap 10223; #56(448-868 y360 h120) over #2(640-1196 y10703) ov 228 gap 10223
+  normal v29 seed 30: 2 pairs: #56(514-934 y360 h120) over #1(0-640 y11209) ov 126 gap 10729; #56(514-934 y360 h120) over #2(640-1182 y11209) ov 294 gap 10729
+  normal v30 seed 39198: 2 pairs: #56(424-844 y360 h120) over #1(0-640 y11209) ov 216 gap 10729; #56(424-844 y360 h120) over #2(640-1192 y11209) ov 204 gap 10729
+  normal v31 seed 32: 2 pairs: #56(430-850 y360 h120) over #1(0-640 y11490) ov 210 gap 11010; #56(430-850 y360 h120) over #2(640-1170 y11490) ov 210 gap 11010
+  normal v32 seed 33: 2 pairs: #56(452-872 y360 h120) over #1(0-640 y11546) ov 188 gap 11066; #56(452-872 y360 h120) over #2(640-1166 y11546) ov 232 gap 11066
+  normal v33 seed 42225: 1 pairs: #55(110-530 y360 h120) over #1(0-640 y10382) ov 420 gap 9902
+  normal v34 seed 35: 1 pairs: #56(84-504 y360 h120) over #1(0-640 y11225) ov 420 gap 10745
+  normal v35 seed 36: 2 pairs: #56(250-670 y360 h120) over #1(0-640 y11321) ov 390 gap 10841; #56(250-670 y360 h120) over #2(640-1177 y11321) ov 30 gap 10841
+  normal v36 seed 37: 2 pairs: #56(432-852 y360 h120) over #1(0-640 y11546) ov 208 gap 11066; #56(432-852 y360 h120) over #2(640-1187 y11546) ov 212 gap 11066
+  normal v37 seed 46261: 2 pairs: #57(436-856 y360 h120) over #1(0-640 y11321) ov 204 gap 10841; #57(436-856 y360 h120) over #2(640-1174 y11321) ov 216 gap 10841
+  normal v38 seed 39: 2 pairs: #56(466-886 y360 h120) over #1(0-640 y11153) ov 174 gap 10673; #56(466-886 y360 h120) over #2(640-1175 y11153) ov 246 gap 10673
+  normal v39 seed 40: 2 pairs: #56(408-828 y360 h120) over #1(0-640 y11490) ov 232 gap 11010; #56(408-828 y360 h120) over #2(640-1179 y11490) ov 188 gap 11010
+  normal v40 seed 41: 2 pairs: #57(436-856 y360 h120) over #1(0-640 y11642) ov 204 gap 11162; #57(436-856 y360 h120) over #2(640-1171 y11642) ov 216 gap 11162
+  normal v41 seed 42: 2 pairs: #57(404-824 y360 h120) over #1(0-640 y11024) ov 236 gap 10544; #57(404-824 y360 h120) over #2(640-1186 y11024) ov 184 gap 10544
+  normal v42 seed 59225: 1 pairs: #56(84-504 y360 h120) over #1(0-640 y10832) ov 420 gap 10352
+  normal v43 seed 44: 2 pairs: #56(410-830 y360 h120) over #1(0-640 y11265) ov 230 gap 10785; #56(410-830 y360 h120) over #2(640-1171 y11265) ov 190 gap 10785
+  normal v44 seed 45: 2 pairs: #56(444-864 y360 h120) over #1(0-640 y11546) ov 196 gap 11066; #56(444-864 y360 h120) over #2(640-1176 y11546) ov 224 gap 11066
+  normal v45 seed 46: 2 pairs: #56(426-846 y360 h120) over #1(0-640 y11377) ov 214 gap 10897; #56(426-846 y360 h120) over #2(640-1184 y11377) ov 206 gap 10897
+  normal v46 seed 71180: 2 pairs: #56(448-868 y360 h120) over #1(0-640 y11209) ov 192 gap 10729; #56(448-868 y360 h120) over #2(640-1178 y11209) ov 228 gap 10729
+  normal v47 seed 48: 1 pairs: #56(104-524 y360 h120) over #1(0-640 y10663) ov 420 gap 10183
+  normal v48 seed 49: 2 pairs: #56(376-796 y360 h120) over #1(0-640 y11209) ov 264 gap 10729; #56(376-796 y360 h120) over #2(640-1181 y11209) ov 156 gap 10729
+  normal v49 seed 50: 2 pairs: #56(470-890 y360 h120) over #1(0-640 y11040) ov 170 gap 10560; #56(470-890 y360 h120) over #2(640-1191 y11040) ov 250 gap 10560
+  normal v50 seed 51: 2 pairs: #56(414-834 y360 h120) over #1(0-640 y11209) ov 226 gap 10729; #56(414-834 y360 h120) over #2(640-1182 y11209) ov 194 gap 10729
+  normal v51 seed 52: 2 pairs: #57(472-892 y360 h120) over #1(0-640 y11024) ov 168 gap 10544; #57(472-892 y360 h120) over #2(640-1187 y11024) ov 252 gap 10544
+  normal v52 seed 53: 2 pairs: #56(414-834 y360 h120) over #1(0-640 y11546) ov 226 gap 11066; #56(414-834 y360 h120) over #2(640-1195 y11546) ov 194 gap 11066
+  normal v53 seed 62405: 1 pairs: #56(130-550 y360 h120) over #1(0-640 y10944) ov 420 gap 10464
+  normal v54 seed 55: 2 pairs: #56(636-1056 y360 h120) over #1(0-640 y11169) ov 4 gap 10689; #56(636-1056 y360 h120) over #2(640-1161 y11169) ov 416 gap 10689
+  normal v55 seed 56: 2 pairs: #56(754-1174 y360 h120) over #2(640-1162 y11225) ov 408 gap 10745; #56(754-1174 y360 h120) over #57(1162-1280 y11225) ov 12 gap 10745
+  normal v56 seed 57: 2 pairs: #57(446-866 y360 h120) over #1(0-640 y11249) ov 194 gap 10769; #57(446-866 y360 h120) over #2(640-1165 y11249) ov 226 gap 10769
+  normal v57 seed 66441: 1 pairs: #56(130-550 y360 h120) over #1(0-640 y10944) ov 420 gap 10464
+  normal v58 seed 91207: 2 pairs: #57(414-834 y360 h120) over #1(0-640 y11209) ov 226 gap 10729; #57(414-834 y360 h120) over #2(640-1161 y11209) ov 194 gap 10729
+  normal v59 seed 60: 2 pairs: #56(224-644 y360 h120) over #1(0-640 y10607) ov 416 gap 10127; #56(224-644 y360 h120) over #2(640-1198 y10607) ov 4 gap 10127
+  normal v60 seed 61: 2 pairs: #56(392-812 y360 h120) over #1(0-640 y11546) ov 248 gap 11066; #56(392-812 y360 h120) over #2(640-1193 y11546) ov 172 gap 11066
+  normal v61 seed 62: 1 pairs: #55(166-586 y360 h120) over #1(0-640 y10607) ov 420 gap 10127
+  normal v62 seed 63: 2 pairs: #56(456-876 y360 h120) over #1(0-640 y10928) ov 184 gap 10448; #56(456-876 y360 h120) over #2(640-1179 y10928) ov 236 gap 10448
+  normal v63 seed 72495: 2 pairs: #56(472-892 y360 h120) over #1(0-640 y10759) ov 168 gap 10279; #56(472-892 y360 h120) over #2(640-1177 y10759) ov 252 gap 10279
+  normal v64 seed 73504: 2 pairs: #56(388-808 y360 h120) over #1(0-640 y11153) ov 252 gap 10673; #56(388-808 y360 h120) over #2(640-1195 y11153) ov 168 gap 10673
+  normal v65 seed 74513: 2 pairs: #56(230-650 y360 h120) over #1(0-640 y10944) ov 410 gap 10464; #56(230-650 y360 h120) over #2(640-1164 y10944) ov 10 gap 10464
+  normal v66 seed 75522: 2 pairs: #55(514-934 y360 h120) over #1(0-640 y10759) ov 126 gap 10279; #55(514-934 y360 h120) over #2(640-1197 y10759) ov 294 gap 10279
+  normal v67 seed 68: 1 pairs: #56(86-506 y360 h120) over #1(0-640 y10888) ov 420 gap 10408
+  normal v68 seed 69: 2 pairs: #56(486-906 y360 h120) over #1(0-640 y10815) ov 154 gap 10335; #56(486-906 y360 h120) over #2(640-1178 y10815) ov 266 gap 10335
+  normal v69 seed 70: 2 pairs: #56(434-854 y360 h120) over #1(0-640 y11658) ov 206 gap 11178; #56(434-854 y360 h120) over #2(640-1161 y11658) ov 214 gap 11178
+  normal v70 seed 71: 2 pairs: #56(374-794 y360 h120) over #1(0-640 y11658) ov 266 gap 11178; #56(374-794 y360 h120) over #2(640-1194 y11658) ov 154 gap 11178
+  normal v71 seed 88486: 2 pairs: #56(412-832 y360 h120) over #1(0-640 y10759) ov 228 gap 10279; #56(412-832 y360 h120) over #2(640-1181 y10759) ov 192 gap 10279
+  normal v72 seed 73: 2 pairs: #56(484-904 y360 h120) over #1(0-640 y11209) ov 156 gap 10729; #56(484-904 y360 h120) over #2(640-1164 y11209) ov 264 gap 10729
+  normal v73 seed 74: 2 pairs: #56(466-886 y360 h120) over #1(0-640 y11153) ov 174 gap 10673; #56(466-886 y360 h120) over #2(640-1170 y11153) ov 246 gap 10673
+  normal v74 seed 75: 2 pairs: #55(306-726 y360 h120) over #1(0-640 y10382) ov 334 gap 9902; #55(306-726 y360 h120) over #2(640-1163 y10382) ov 86 gap 9902
+  normal v75 seed 76: 1 pairs: #55(170-590 y360 h120) over #1(0-640 y10944) ov 420 gap 10464
+  normal v76 seed 77: 2 pairs: #56(468-888 y360 h120) over #1(0-640 y11602) ov 172 gap 11122; #56(468-888 y360 h120) over #2(640-1165 y11602) ov 248 gap 11122
+  normal v77 seed 78: 1 pairs: #56(714-1134 y360 h120) over #2(640-1174 y11225) ov 420 gap 10745
+  normal v78 seed 87630: 1 pairs: #55(70-490 y360 h120) over #1(0-640 y10382) ov 420 gap 9902
+  normal v79 seed 80: 2 pairs: #56(486-906 y360 h120) over #1(0-640 y11321) ov 154 gap 10841; #56(486-906 y360 h120) over #2(640-1171 y11321) ov 266 gap 10841
+  normal v80 seed 81: 2 pairs: #55(312-732 y360 h120) over #1(0-640 y10663) ov 328 gap 10183; #55(312-732 y360 h120) over #2(640-1196 y10663) ov 92 gap 10183
+  normal v81 seed 138171: 1 pairs: #56(164-584 y360 h120) over #1(0-640 y10776) ov 420 gap 10296
+  normal v82 seed 91666: 2 pairs: #56(488-908 y360 h120) over #1(0-640 y10759) ov 152 gap 10279; #56(488-908 y360 h120) over #2(640-1175 y10759) ov 268 gap 10279
+  normal v83 seed 84: 2 pairs: #56(432-852 y360 h120) over #1(0-640 y10759) ov 208 gap 10279; #56(432-852 y360 h120) over #2(640-1167 y10759) ov 212 gap 10279
+  normal v84 seed 85: 2 pairs: #56(450-870 y360 h120) over #1(0-640 y11265) ov 190 gap 10785; #56(450-870 y360 h120) over #2(640-1179 y11265) ov 230 gap 10785
+  normal v85 seed 86: 2 pairs: #57(346-766 y360 h120) over #1(0-640 y11080) ov 294 gap 10600; #57(346-766 y360 h120) over #2(640-1177 y11080) ov 126 gap 10600
+  normal v86 seed 87: 1 pairs: #56(676-1096 y360 h120) over #2(640-1191 y11169) ov 420 gap 10689
+  normal v87 seed 88: 2 pairs: #56(350-770 y360 h120) over #1(0-640 y11602) ov 290 gap 11122; #56(350-770 y360 h120) over #2(640-1185 y11602) ov 130 gap 11122
+  normal v88 seed 89: 2 pairs: #56(610-1030 y360 h120) over #1(0-640 y10663) ov 30 gap 10183; #56(610-1030 y360 h120) over #2(640-1176 y10663) ov 390 gap 10183
+  normal v89 seed 90: 2 pairs: #56(346-766 y360 h120) over #1(0-640 y11209) ov 294 gap 10729; #56(346-766 y360 h120) over #2(640-1195 y11209) ov 126 gap 10729
+  normal v90 seed 99738: 2 pairs: #57(412-832 y360 h120) over #1(0-640 y10984) ov 228 gap 10504; #57(412-832 y360 h120) over #2(640-1197 y10984) ov 192 gap 10504
+  normal v91 seed 92: 1 pairs: #57(676-1096 y360 h120) over #2(640-1168 y11209) ov 420 gap 10729
+  normal v92 seed 93: 2 pairs: #57(376-796 y360 h120) over #1(0-640 y11642) ov 264 gap 11162; #57(376-796 y360 h120) over #2(640-1173 y11642) ov 156 gap 11162
+  normal v93 seed 94: 2 pairs: #57(424-844 y360 h120) over #1(0-640 y10855) ov 216 gap 10375; #57(424-844 y360 h120) over #2(640-1200 y10855) ov 204 gap 10375
+  normal v94 seed 95: 1 pairs: #56(714-1134 y360 h120) over #2(640-1185 y10551) ov 420 gap 10071
+  normal v95 seed 96: 2 pairs: #56(436-856 y360 h120) over #1(0-640 y11265) ov 204 gap 10785; #56(436-856 y360 h120) over #2(640-1165 y11265) ov 216 gap 10785
+  normal v96 seed 97: 1 pairs: #56(710-1130 y360 h120) over #2(640-1179 y10663) ov 420 gap 10183
+  normal v97 seed 98: 1 pairs: #56(696-1116 y360 h120) over #2(640-1188 y10888) ov 420 gap 10408
+  normal v98 seed 99: 1 pairs: #56(170-590 y360 h120) over #1(0-640 y11169) ov 420 gap 10689
+  normal v99 seed 100: 1 pairs: #55(650-1070 y360 h120) over #2(640-1163 y10326) ov 420 gap 9846
+  easy v0 seed 1: 1 pairs: #57(732-1152 y360 h120) over #2(640-1197 y11265) ov 420 gap 10785
+  easy v1 seed 2: 2 pairs: #56(436-856 y360 h120) over #1(0-640 y11321) ov 204 gap 10841; #56(436-856 y360 h120) over #2(640-1200 y11321) ov 216 gap 10841
+  easy v2 seed 3: 2 pairs: #57(420-840 y360 h120) over #1(0-640 y11265) ov 220 gap 10785; #57(420-840 y360 h120) over #2(640-1184 y11265) ov 200 gap 10785
+  easy v3 seed 4: 2 pairs: #56(424-844 y360 h120) over #1(0-640 y10984) ov 216 gap 10504; #56(424-844 y360 h120) over #2(640-1196 y10984) ov 204 gap 10504
+  easy v4 seed 5: 2 pairs: #57(424-844 y360 h120) over #1(0-640 y10984) ov 216 gap 10504; #57(424-844 y360 h120) over #2(640-1199 y10984) ov 204 gap 10504
+  easy v5 seed 6: 2 pairs: #56(424-844 y360 h120) over #1(0-640 y11321) ov 216 gap 10841; #56(424-844 y360 h120) over #2(640-1184 y11321) ov 204 gap 10841
+  easy v6 seed 7: 2 pairs: #56(422-842 y360 h120) over #1(0-640 y11096) ov 218 gap 10616; #56(422-842 y360 h120) over #2(640-1178 y11096) ov 202 gap 10616
+  easy v7 seed 23910: 2 pairs: #56(360-780 y360 h120) over #1(0-640 y11040) ov 280 gap 10560; #56(360-780 y360 h120) over #2(640-1186 y11040) ov 140 gap 10560
+  easy v8 seed 9: 2 pairs: #55(228-648 y360 h120) over #1(0-640 y10719) ov 412 gap 10239; #55(228-648 y360 h120) over #2(640-1194 y10719) ov 8 gap 10239
+  easy v9 seed 10: 1 pairs: #55(148-568 y360 h120) over #1(0-640 y10719) ov 420 gap 10239
+  easy v10 seed 19018: 2 pairs: #57(436-856 y360 h120) over #1(0-640 y11321) ov 204 gap 10841; #57(436-856 y360 h120) over #2(640-1170 y11321) ov 216 gap 10841
+  easy v11 seed 12: 2 pairs: #56(632-1052 y360 h120) over #1(0-640 y11040) ov 8 gap 10560; #56(632-1052 y360 h120) over #2(640-1172 y11040) ov 412 gap 10560
+  easy v12 seed 21036: 2 pairs: #57(360-780 y360 h120) over #1(0-640 y11265) ov 280 gap 10785; #57(360-780 y360 h120) over #2(640-1193 y11265) ov 140 gap 10785
+  easy v13 seed 14: 2 pairs: #56(436-856 y360 h120) over #1(0-640 y11321) ov 204 gap 10841; #56(436-856 y360 h120) over #2(640-1186 y11321) ov 216 gap 10841
+  easy v14 seed 15: 2 pairs: #58(424-844 y360 h120) over #1(0-640 y11080) ov 216 gap 10600; #58(424-844 y360 h120) over #2(640-1170 y11080) ov 204 gap 10600
+  easy v15 seed 16: 1 pairs: #56(70-490 y360 h120) over #1(0-640 y11169) ov 420 gap 10689
+  easy v16 seed 25072: 2 pairs: #56(780-1200 y360 h120) over #2(640-1172 y10663) ov 392 gap 10183; #56(780-1200 y360 h120) over #57(1172-1280 y10663) ov 28 gap 10183
+  easy v17 seed 34000: 2 pairs: #57(424-844 y360 h120) over #1(0-640 y11265) ov 216 gap 10785; #57(424-844 y360 h120) over #2(640-1167 y11265) ov 204 gap 10785
+  easy v18 seed 19: 1 pairs: #55(204-624 y360 h120) over #1(0-640 y10719) ov 420 gap 10239
+  easy v19 seed 20: 2 pairs: #57(424-844 y360 h120) over #1(0-640 y11417) ov 216 gap 10937; #57(424-844 y360 h120) over #2(640-1177 y11417) ov 204 gap 10937
+  easy v20 seed 21: 2 pairs: #56(496-916 y360 h120) over #1(0-640 y11265) ov 144 gap 10785; #56(496-916 y360 h120) over #2(640-1178 y11265) ov 276 gap 10785
+  easy v21 seed 30117: 2 pairs: #56(436-856 y360 h120) over #1(0-640 y10815) ov 204 gap 10335; #56(436-856 y360 h120) over #2(640-1191 y10815) ov 216 gap 10335
+  easy v22 seed 23: 2 pairs: #56(438-858 y360 h120) over #1(0-640 y11377) ov 202 gap 10897; #56(438-858 y360 h120) over #2(640-1169 y11377) ov 218 gap 10897
+  easy v23 seed 24: 2 pairs: #57(424-844 y360 h120) over #1(0-640 y11602) ov 216 gap 11122; #57(424-844 y360 h120) over #2(640-1172 y11602) ov 204 gap 11122
+  easy v24 seed 25: 1 pairs: #56(772-1192 y360 h120) over #2(640-1195 y11040) ov 420 gap 10560
+  easy v25 seed 26: 2 pairs: #56(344-764 y360 h120) over #1(0-640 y11546) ov 296 gap 11066; #56(344-764 y360 h120) over #2(640-1163 y11546) ov 124 gap 11066
+  easy v26 seed 27: 2 pairs: #56(424-844 y360 h120) over #1(0-640 y11096) ov 216 gap 10616; #56(424-844 y360 h120) over #2(640-1173 y11096) ov 204 gap 10616
+  easy v27 seed 28: 2 pairs: #56(436-856 y360 h120) over #1(0-640 y11321) ov 204 gap 10841; #56(436-856 y360 h120) over #2(640-1188 y11321) ov 216 gap 10841
+  easy v28 seed 37180: 2 pairs: #56(424-844 y360 h120) over #1(0-640 y10759) ov 216 gap 10279; #56(424-844 y360 h120) over #2(640-1196 y10759) ov 204 gap 10279
+  easy v29 seed 30: 2 pairs: #56(436-856 y360 h120) over #1(0-640 y11377) ov 204 gap 10897; #56(436-856 y360 h120) over #2(640-1182 y11377) ov 216 gap 10897
+  easy v30 seed 39198: 2 pairs: #57(424-844 y360 h120) over #1(0-640 y11321) ov 216 gap 10841; #57(424-844 y360 h120) over #2(640-1192 y11321) ov 204 gap 10841
+  easy v31 seed 32: 2 pairs: #57(422-842 y360 h120) over #1(0-640 y11321) ov 218 gap 10841; #57(422-842 y360 h120) over #2(640-1170 y11321) ov 202 gap 10841
+  easy v32 seed 33: 2 pairs: #56(456-876 y360 h120) over #1(0-640 y11321) ov 184 gap 10841; #56(456-876 y360 h120) over #2(640-1166 y11321) ov 236 gap 10841
+  easy v33 seed 42225: 2 pairs: #56(356-776 y360 h120) over #1(0-640 y11040) ov 284 gap 10560; #56(356-776 y360 h120) over #2(640-1184 y11040) ov 136 gap 10560
+  easy v34 seed 35: 2 pairs: #56(248-668 y360 h120) over #1(0-640 y10382) ov 392 gap 9902; #56(248-668 y360 h120) over #2(640-1180 y10382) ov 28 gap 9902
+  easy v35 seed 36: 1 pairs: #56(188-608 y360 h120) over #1(0-640 y11321) ov 420 gap 10841
+  easy v36 seed 37: 2 pairs: #57(476-896 y360 h120) over #1(0-640 y11265) ov 164 gap 10785; #57(476-896 y360 h120) over #2(640-1187 y11265) ov 256 gap 10785
+  easy v37 seed 46261: 2 pairs: #57(436-856 y360 h120) over #1(0-640 y11321) ov 204 gap 10841; #57(436-856 y360 h120) over #2(640-1174 y11321) ov 216 gap 10841
+  easy v38 seed 39: 2 pairs: #56(424-844 y360 h120) over #1(0-640 y11321) ov 216 gap 10841; #56(424-844 y360 h120) over #2(640-1175 y11321) ov 204 gap 10841
+  easy v39 seed 40: 2 pairs: #56(408-828 y360 h120) over #1(0-640 y10703) ov 232 gap 10223; #56(408-828 y360 h120) over #2(640-1179 y10703) ov 188 gap 10223
+  easy v40 seed 41: 2 pairs: #57(436-856 y360 h120) over #1(0-640 y10855) ov 204 gap 10375; #57(436-856 y360 h120) over #2(640-1171 y10855) ov 216 gap 10375
+  easy v41 seed 42: 2 pairs: #57(426-846 y360 h120) over #1(0-640 y10855) ov 214 gap 10375; #57(426-846 y360 h120) over #2(640-1186 y10855) ov 206 gap 10375
+  easy v42 seed 59225: 2 pairs: #56(780-1200 y360 h120) over #2(640-1184 y10663) ov 404 gap 10183; #56(780-1200 y360 h120) over #57(1184-1280 y10663) ov 16 gap 10183
+  easy v43 seed 44: 2 pairs: #55(314-734 y360 h120) over #1(0-640 y10438) ov 326 gap 9958; #55(314-734 y360 h120) over #2(640-1171 y10438) ov 94 gap 9958
+  easy v44 seed 45: 2 pairs: #56(424-844 y360 h120) over #1(0-640 y11602) ov 216 gap 11122; #56(424-844 y360 h120) over #2(640-1176 y11602) ov 204 gap 11122
+  easy v45 seed 46: 2 pairs: #56(438-858 y360 h120) over #1(0-640 y11377) ov 202 gap 10897; #56(438-858 y360 h120) over #2(640-1184 y11377) ov 218 gap 10897
+  easy v46 seed 71180: 2 pairs: #57(424-844 y360 h120) over #1(0-640 y11265) ov 216 gap 10785; #57(424-844 y360 h120) over #2(640-1178 y11265) ov 204 gap 10785
+  easy v47 seed 48: 2 pairs: #56(756-1176 y360 h120) over #2(640-1175 y10944) ov 419 gap 10464; #56(756-1176 y360 h120) over #57(1175-1280 y10944) ov 1 gap 10464
+  easy v48 seed 49: 2 pairs: #56(436-856 y360 h120) over #1(0-640 y11321) ov 204 gap 10841; #56(436-856 y360 h120) over #2(640-1181 y11321) ov 216 gap 10841
+  easy v49 seed 50: 2 pairs: #56(424-844 y360 h120) over #1(0-640 y11265) ov 216 gap 10785; #56(424-844 y360 h120) over #2(640-1191 y11265) ov 204 gap 10785
+  easy v50 seed 51: 2 pairs: #56(420-840 y360 h120) over #1(0-640 y11040) ov 220 gap 10560; #56(420-840 y360 h120) over #2(640-1182 y11040) ov 200 gap 10560
+  easy v51 seed 52: 2 pairs: #57(424-844 y360 h120) over #1(0-640 y11417) ov 216 gap 10937; #57(424-844 y360 h120) over #2(640-1187 y11417) ov 204 gap 10937
+  easy v52 seed 53: 2 pairs: #56(462-882 y360 h120) over #1(0-640 y11546) ov 178 gap 11066; #56(462-882 y360 h120) over #2(640-1195 y11546) ov 242 gap 11066
+  easy v53 seed 62405: 2 pairs: #57(436-856 y360 h120) over #1(0-640 y11321) ov 204 gap 10841; #57(436-856 y360 h120) over #2(640-1196 y11321) ov 216 gap 10841
+  easy v54 seed 55: 2 pairs: #57(438-858 y360 h120) over #1(0-640 y11040) ov 202 gap 10560; #57(438-858 y360 h120) over #2(640-1161 y11040) ov 218 gap 10560
+  easy v55 seed 56: 2 pairs: #56(424-844 y360 h120) over #1(0-640 y11321) ov 216 gap 10841; #56(424-844 y360 h120) over #2(640-1162 y11321) ov 204 gap 10841
+  easy v56 seed 57: 2 pairs: #57(424-844 y360 h120) over #1(0-640 y11305) ov 216 gap 10825; #57(424-844 y360 h120) over #2(640-1165 y11305) ov 204 gap 10825
+  easy v57 seed 66441: 2 pairs: #57(420-840 y360 h120) over #1(0-640 y11265) ov 220 gap 10785; #57(420-840 y360 h120) over #2(640-1190 y11265) ov 200 gap 10785
+  easy v58 seed 91207: 2 pairs: #57(424-844 y360 h120) over #1(0-640 y11265) ov 216 gap 10785; #57(424-844 y360 h120) over #2(640-1161 y11265) ov 204 gap 10785
+  easy v59 seed 60: 2 pairs: #56(636-1056 y360 h120) over #1(0-640 y10944) ov 4 gap 10464; #56(636-1056 y360 h120) over #2(640-1198 y10944) ov 416 gap 10464
+  easy v60 seed 61: 2 pairs: #56(344-764 y360 h120) over #1(0-640 y11321) ov 296 gap 10841; #56(344-764 y360 h120) over #2(640-1193 y11321) ov 124 gap 10841
+  easy v61 seed 62: 1 pairs: #55(108-528 y360 h120) over #1(0-640 y10719) ov 420 gap 10239
+  easy v62 seed 63: 2 pairs: #56(344-764 y360 h120) over #1(0-640 y11321) ov 296 gap 10841; #56(344-764 y360 h120) over #2(640-1179 y11321) ov 124 gap 10841
+  easy v63 seed 72495: 2 pairs: #56(436-856 y360 h120) over #1(0-640 y11040) ov 204 gap 10560; #56(436-856 y360 h120) over #2(640-1177 y11040) ov 216 gap 10560
+  easy v64 seed 73504: 2 pairs: #57(424-844 y360 h120) over #1(0-640 y11321) ov 216 gap 10841; #57(424-844 y360 h120) over #2(640-1195 y11321) ov 204 gap 10841
+  easy v65 seed 74513: 2 pairs: #57(360-780 y360 h120) over #1(0-640 y11265) ov 280 gap 10785; #57(360-780 y360 h120) over #2(640-1164 y11265) ov 140 gap 10785
+  easy v66 seed 75522: 2 pairs: #56(416-836 y360 h120) over #1(0-640 y11040) ov 224 gap 10560; #56(416-836 y360 h120) over #2(640-1197 y11040) ov 196 gap 10560
+  easy v67 seed 68: 2 pairs: #56(456-876 y360 h120) over #1(0-640 y11265) ov 184 gap 10785; #56(456-876 y360 h120) over #2(640-1180 y11265) ov 236 gap 10785
+  easy v68 seed 69: 2 pairs: #56(422-842 y360 h120) over #1(0-640 y11096) ov 218 gap 10616; #56(422-842 y360 h120) over #2(640-1178 y11096) ov 202 gap 10616
+  easy v69 seed 70: 2 pairs: #57(426-846 y360 h120) over #1(0-640 y11040) ov 214 gap 10560; #57(426-846 y360 h120) over #2(640-1161 y11040) ov 206 gap 10560
+  easy v70 seed 71: 2 pairs: #57(438-858 y360 h120) over #1(0-640 y11602) ov 202 gap 11122; #57(438-858 y360 h120) over #2(640-1194 y11602) ov 218 gap 11122
+  easy v71 seed 88486: 2 pairs: #55(396-816 y360 h120) over #1(0-640 y10815) ov 244 gap 10335; #55(396-816 y360 h120) over #2(640-1181 y10815) ov 176 gap 10335
+  easy v72 seed 73: 2 pairs: #56(436-856 y360 h120) over #1(0-640 y11321) ov 204 gap 10841; #56(436-856 y360 h120) over #2(640-1164 y11321) ov 216 gap 10841
+  easy v73 seed 74: 1 pairs: #56(168-588 y360 h120) over #1(0-640 y10944) ov 420 gap 10464
+  easy v74 seed 75: 2 pairs: #55(294-714 y360 h120) over #1(0-640 y10438) ov 346 gap 9958; #55(294-714 y360 h120) over #2(640-1163 y10438) ov 74 gap 9958
+  easy v75 seed 76: 1 pairs: #56(128-548 y360 h120) over #1(0-640 y10382) ov 420 gap 9902
+  easy v76 seed 77: 2 pairs: #56(516-936 y360 h120) over #1(0-640 y11602) ov 124 gap 11122; #56(516-936 y360 h120) over #2(640-1165 y11602) ov 296 gap 11122
+  easy v77 seed 78: 1 pairs: #56(154-574 y360 h120) over #1(0-640 y10944) ov 420 gap 10464
+  easy v78 seed 87630: 2 pairs: #56(416-836 y360 h120) over #1(0-640 y11040) ov 224 gap 10560; #56(416-836 y360 h120) over #2(640-1199 y11040) ov 196 gap 10560
+  easy v79 seed 80: 2 pairs: #56(422-842 y360 h120) over #1(0-640 y11377) ov 218 gap 10897; #56(422-842 y360 h120) over #2(640-1171 y11377) ov 202 gap 10897
+  easy v80 seed 81: 2 pairs: #55(248-668 y360 h120) over #1(0-640 y10719) ov 392 gap 10239; #55(248-668 y360 h120) over #2(640-1196 y10719) ov 28 gap 10239
+  easy v81 seed 138171: 1 pairs: #56(164-584 y360 h120) over #1(0-640 y10944) ov 420 gap 10464
+  easy v82 seed 91666: 2 pairs: #56(420-840 y360 h120) over #1(0-640 y11040) ov 220 gap 10560; #56(420-840 y360 h120) over #2(640-1175 y11040) ov 200 gap 10560
+  easy v83 seed 84: 2 pairs: #56(476-896 y360 h120) over #1(0-640 y11040) ov 164 gap 10560; #56(476-896 y360 h120) over #2(640-1167 y11040) ov 256 gap 10560
+  easy v84 seed 85: 2 pairs: #56(436-856 y360 h120) over #1(0-640 y11040) ov 204 gap 10560; #56(436-856 y360 h120) over #2(640-1179 y11040) ov 216 gap 10560
+  easy v85 seed 86: 2 pairs: #57(436-856 y360 h120) over #1(0-640 y11361) ov 204 gap 10881; #57(436-856 y360 h120) over #2(640-1177 y11361) ov 216 gap 10881
+  easy v86 seed 87: 1 pairs: #56(676-1096 y360 h120) over #2(640-1191 y10944) ov 420 gap 10464
+  easy v87 seed 88: 2 pairs: #56(436-856 y360 h120) over #1(0-640 y11321) ov 204 gap 10841; #56(436-856 y360 h120) over #2(640-1185 y11321) ov 216 gap 10841
+  easy v88 seed 89: 1 pairs: #56(188-608 y360 h120) over #1(0-640 y10944) ov 420 gap 10464
+  easy v89 seed 90: 1 pairs: #56(124-544 y360 h120) over #1(0-640 y10663) ov 420 gap 10183
+  easy v90 seed 99738: 2 pairs: #57(424-844 y360 h120) over #1(0-640 y11321) ov 216 gap 10841; #57(424-844 y360 h120) over #2(640-1197 y11321) ov 204 gap 10841
+  easy v91 seed 92: 1 pairs: #57(676-1096 y360 h120) over #2(640-1168 y10984) ov 420 gap 10504
+  easy v92 seed 93: 2 pairs: #57(436-856 y360 h120) over #1(0-640 y11080) ov 204 gap 10600; #57(436-856 y360 h120) over #2(640-1173 y11080) ov 216 gap 10600
+  easy v93 seed 94: 2 pairs: #56(336-756 y360 h120) over #1(0-640 y10855) ov 304 gap 10375; #56(336-756 y360 h120) over #2(640-1200 y10855) ov 116 gap 10375
+  easy v94 seed 95: 1 pairs: #56(110-530 y360 h120) over #1(0-640 y10607) ov 420 gap 10127
+  easy v95 seed 96: 2 pairs: #56(436-856 y360 h120) over #1(0-640 y11321) ov 204 gap 10841; #56(436-856 y360 h120) over #2(640-1165 y11321) ov 216 gap 10841
+  easy v96 seed 97: 1 pairs: #56(88-508 y360 h120) over #1(0-640 y10944) ov 420 gap 10464
+  easy v97 seed 98: 1 pairs: #56(696-1116 y360 h120) over #2(640-1188 y10944) ov 420 gap 10464
+  easy v98 seed 99: 1 pairs: #56(218-638 y360 h120) over #1(0-640 y11169) ov 420 gap 10689
+  easy v99 seed 100: 1 pairs: #55(688-1108 y360 h120) over #2(640-1163 y10438) ov 420 gap 9958

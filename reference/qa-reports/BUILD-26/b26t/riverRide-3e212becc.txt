@@ -1,0 +1,134 @@
+TAP version 13
+# Subtest: the fixture: one deep log river, rolled clean
+ok 1 - the fixture: one deep log river, rolled clean
+  ---
+  duration_ms: 116.253507
+  type: 'test'
+  ...
+# Subtest: middle, normal: rides the logs across the river and reaches the shrine
+ok 2 - middle, normal: rides the logs across the river and reaches the shrine
+  ---
+  duration_ms: 1699.464447
+  type: 'test'
+  ...
+# Subtest: middle, easy: rides the logs across the river and reaches the shrine
+ok 3 - middle, easy: rides the logs across the river and reaches the shrine
+  ---
+  duration_ms: 871.756981
+  type: 'test'
+  ...
+# Subtest: child, normal: rides the logs across the river and reaches the shrine
+ok 4 - child, normal: rides the logs across the river and reaches the shrine
+  ---
+  duration_ms: 1319.130688
+  type: 'test'
+  ...
+# Subtest: child, easy: rides the logs across the river and reaches the shrine
+ok 5 - child, easy: rides the logs across the river and reaches the shrine
+  ---
+  duration_ms: 1012.43441
+  type: 'test'
+  ...
+# Subtest: planted: with the ride skill off, the middle and child bots drown in the river
+not ok 6 - planted: with the ride skill off, the middle and child bots drown in the river
+  ---
+  duration_ms: 3986.038182
+  type: 'test'
+  location: '/tmp/claude-0/-home-user-Sloths-Adventure-/62fccdc6-a8bc-5c66-9d10-d2bfa99c8ea7/scratchpad/f4/tools/inspect/riverRide.test.ts:106:1'
+  failureType: 'testCodeFailure'
+  error: 'with no ride skill every tier still crossed within 2 lives: middle normal: ended shrine, at the river {"id":"toy-one-river","lives":1,"putbacks":0,"seconds":13} (at most 2 lives), stuck []; middle easy: ended shrine, at the river {"id":"toy-one-river","lives":0,"putbacks":0,"seconds":9} (at most 2 lives), stuck []; child normal: ended shrine, at the river {"id":"toy-one-river","lives":0,"putbacks":0,"seconds":12.5} (at most 2 lives), stuck []; child easy: ended shrine, at the river {"id":"toy-one-river","lives":0,"putbacks":0,"seconds":11.5} (at most 2 lives), stuck []'
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: true
+  actual: false
+  operator: '=='
+  stack: |-
+    TestContext.<anonymous> (/tmp/claude-0/-home-user-Sloths-Adventure-/62fccdc6-a8bc-5c66-9d10-d2bfa99c8ea7/scratchpad/f4/tools/inspect/riverRide.test.ts:116:12)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: middle, normal: against the flow (W2_RIVERS.back), hops log to log off each front end and reaches the shrine
+ok 7 - middle, normal: against the flow (W2_RIVERS.back), hops log to log off each front end and reaches the shrine
+  ---
+  duration_ms: 924.652611
+  type: 'test'
+  ...
+# Subtest: middle, normal: the long log (W2_RIVERS.long, laid deep) rides him in and hands him onto the far bank
+ok 8 - middle, normal: the long log (W2_RIVERS.long, laid deep) rides him in and hands him onto the far bank
+  ---
+  duration_ms: 514.635896
+  type: 'test'
+  ...
+# Subtest: middle, easy: against the flow (W2_RIVERS.back), hops log to log off each front end and reaches the shrine
+ok 9 - middle, easy: against the flow (W2_RIVERS.back), hops log to log off each front end and reaches the shrine
+  ---
+  duration_ms: 622.723319
+  type: 'test'
+  ...
+# Subtest: middle, easy: the long log (W2_RIVERS.long, laid deep) rides him in and hands him onto the far bank
+ok 10 - middle, easy: the long log (W2_RIVERS.long, laid deep) rides him in and hands him onto the far bank
+  ---
+  duration_ms: 553.030348
+  type: 'test'
+  ...
+# Subtest: child, normal: against the flow (W2_RIVERS.back), hops log to log off each front end and reaches the shrine
+ok 11 - child, normal: against the flow (W2_RIVERS.back), hops log to log off each front end and reaches the shrine
+  ---
+  duration_ms: 1204.018406
+  type: 'test'
+  ...
+# Subtest: child, normal: the long log (W2_RIVERS.long, laid deep) rides him in and hands him onto the far bank
+ok 12 - child, normal: the long log (W2_RIVERS.long, laid deep) rides him in and hands him onto the far bank
+  ---
+  duration_ms: 1199.472562
+  type: 'test'
+  ...
+# Subtest: child, easy: against the flow (W2_RIVERS.back), hops log to log off each front end and reaches the shrine
+ok 13 - child, easy: against the flow (W2_RIVERS.back), hops log to log off each front end and reaches the shrine
+  ---
+  duration_ms: 1096.518667
+  type: 'test'
+  ...
+# Subtest: child, easy: the long log (W2_RIVERS.long, laid deep) rides him in and hands him onto the far bank
+ok 14 - child, easy: the long log (W2_RIVERS.long, laid deep) rides him in and hands him onto the far bank
+  ---
+  duration_ms: 975.705881
+  type: 'test'
+  ...
+# Subtest: planted: with the handed-to-the-bank skill off, the middle on Normal hops at the water off the long log and drowns over the bar
+ok 15 - planted: with the handed-to-the-bank skill off, the middle on Normal hops at the water off the long log and drowns over the bar
+  ---
+  duration_ms: 808.78697
+  type: 'test'
+  ...
+# Subtest: 2-1, against the flow and up the far bank on: the adult on Normal (12), the child on Normal (4, 23, 40) and the middle on Normal (26) cross clean
+ok 16 - 2-1, against the flow and up the far bank on: the adult on Normal (12), the child on Normal (4, 23, 40) and the middle on Normal (26) cross clean
+  ---
+  duration_ms: 13666.428711
+  type: 'test'
+  ...
+# Subtest: planted: with the against-the-flow skill off, the adult on Normal is rescued at 2-1's back river (12) and the child and the middle on Normal lose 5+ more lives (child 4, 23; middle 26)
+ok 17 - planted: with the against-the-flow skill off, the adult on Normal is rescued at 2-1's back river (12) and the child and the middle on Normal lose 5+ more lives (child 4, 23; middle 26)
+  ---
+  duration_ms: 10001.350941
+  type: 'test'
+  ...
+# Subtest: planted: with the up-the-far-bank skill off, the child on Normal loses 5+ more lives on 2-1 and reaches the both-ways far bank 2+ s later (40)
+ok 18 - planted: with the up-the-far-bank skill off, the child on Normal loses 5+ more lives on 2-1 and reaches the both-ways far bank 2+ s later (40)
+  ---
+  duration_ms: 6518.315174
+  type: 'test'
+  ...
+1..18
+# tests 18
+# suites 0
+# pass 17
+# fail 1
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 52818.357819

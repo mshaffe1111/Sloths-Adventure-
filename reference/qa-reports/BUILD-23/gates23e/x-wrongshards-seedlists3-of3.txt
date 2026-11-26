@@ -1,0 +1,3 @@
+== L=$(npx tsx tools/engine/registrycheck.ts --lists --shard 3/3) || exit 1; for s in $L; do echo "== $s"; npx tsx tools/engine/seedlist.ts "$s" --check || exit 1; done (head 0b3b6a7b9, cwd .) start 10:49 AM
+registrycheck --shard 3/3: today's lists make 4 shards
+== exit 1 FAIL, 0 min, end 10:49 AM

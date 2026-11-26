@@ -1,0 +1,4 @@
+ok 1 - a vine from a log pressed from a stand is the catch flown: 2-4 kid Easy 35, standing on a log drifting his way at 75 px/s under liana \#4 (CI-11)
+# tests 1
+# pass 1
+# fail 0

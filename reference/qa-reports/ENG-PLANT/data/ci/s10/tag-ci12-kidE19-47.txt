@@ -1,0 +1,25 @@
+47.333 L3190 {} x 10616.7 vx 268 g 0 on -1  pend 0 jump 1
+47.367 L3190 {} x 10626.2 vx 285 g 0 on -1  pend 0 jump 1
+47.400 L3504 {"left":true} x 10635.1 vx 268 g 1 on 48 [10551,10711] pend 0 jump 0
+47.433 L3504 {"left":true} x 10642.8 vx 154 g 1 on 48 [10553,10713] pend 0 jump 0
+47.467 L3504 {"left":true} x 10646.6 vx 41 g 1 on 48 [10556,10716] pend 0 jump 0
+47.500 L3504 {"left":true} x 10649.1 vx 0 g 1 on 48 [10558,10718] pend 0 jump 0
+47.533 L4050 {"right":true} x 10651.6 vx 0 g 1 on 48 [10561,10721] pend 0 jump 0
+47.567 L4050 {"right":true} x 10654.1 vx 0 g 1 on 48 [10563,10723] pend 0 jump 0
+47.600 L4050 {"right":true} x 10656.6 vx 0 g 1 on 48 [10566,10726] pend 0 jump 0
+47.633 L4050 {"right":true} x 10659.1 vx 0 g 1 on 48 [10568,10728] pend 0 jump 0
+47.667 L4050 {"right":true} x 10661.6 vx 0 g 1 on 48 [10571,10731] pend 0 jump 0
+47.700 L4050 {"right":true} x 10664.1 vx 0 g 1 on 48 [10573,10733] pend 0 jump 0
+47.733 L4050 {"right":true} x 10666.6 vx 0 g 1 on 48 [10576,10736] pend 0 jump 0
+47.767 L4050 {"right":true} x 10672.0 vx 87 g 1 on 48 [10578,10738] pend 0 jump 0
+47.800 L4050 {"right":true} x 10680.3 vx 173 g 1 on 48 [10581,10741] pend 0 jump 0
+47.833 L3875 {} x 10691.5 vx 260 g 1 on 48 [10583,10743] pend 0 jump 0
+47.867 L3875 {} x 10703.5 vx 285 g 1 on 48 [10586,10746] pend 0 jump 0
+47.900 L3875 {} x 10714.9 vx 268 g 1 on 48 [10588,10748] pend 0 jump 0
+47.933 L3875 {} x 10726.9 vx 285 g 1 on 48 [10591,10751] pend 0 jump 0
+47.967 L3875 {} x 10738.3 vx 268 g 1 on 48 [10593,10753] pend 0 jump 0
+48.000 L3875 {} x 10750.3 vx 285 g 1 on 48 [10596,10756] pend 0 jump 0
+48.033 L3999 {"right":true} x 10761.7 vx 268 g 1 on 48 [10598,10758] pend 1 jump 0
+48.067 L3470 {"right":true} x 10773.7 vx 285 g 1 on 48 [10601,10761] pend 1 jump 0
+48.100 L3302 {"right":true} x 10785.2 vx 268 g 0 on -1  pend 1 jump 0
+48.133 L3302 {"right":true} x 10794.7 vx 285 g 0 on -1  pend 1 jump 0

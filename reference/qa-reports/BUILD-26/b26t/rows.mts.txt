@@ -1,0 +1,9 @@
+// usage: tsx rows.mts <tree> stage bot:setting:seed ...
+const [T, stage, ...rows] = process.argv.slice(2);
+await import(`${T}/src/game/headlessDom.ts`);
+const { castRun } = await import(`${T}/tools/inspect/castBots.ts`);
+for (const r of rows) {
+  const [bot, setting, seed] = r.split(':');
+  const x = castRun(bot, setting, stage, Number(seed));
+  console.log(stage, bot, setting, seed, 'pass', x.pass, 'end', x.end, 'time', x.time.toFixed(1), 'lives', x.lives, 'rescues', x.rescues, 'stuck', JSON.stringify(x.stuck));
+}

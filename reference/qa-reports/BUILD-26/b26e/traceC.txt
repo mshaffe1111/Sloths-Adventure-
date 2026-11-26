@@ -1,0 +1,32 @@
+   wheel teach cx 1146 cy 6028 R 160 way -1 jetty 5 street 6
+   wheel edge cx 667 cy 4273 R 180 way 1 jetty 27 street 28
+   wheel top cx 879 cy 3085 R 180 way 1 jetty 44 street 45
+   wheel edge cx 430 cy 1887 R 180 way 1 jetty 55 street 56
+   wheel great cx 1101 cy 879 R 200 way -1 jetty 67 street 68
+== child normal seed 23: shrine 168.7 s rescues 1
+   t 138.2 x 1529 y 1441 dur 0 [#65 solid/branch x 1067-1327 y 1556; #66 solid/branch x 1327-1547 y 1556] fell back down from here 8 times
+   t 143.3 x 1215 y 697 dur 9.5 [#68 solid/branch x 781-1081 y 707] water ahead, the way on is 206 px down
+   wheel teach cx 1146 cy 6013 R 160 way -1 jetty 5 street 6
+   wheel edge cx 662 cy 4270 R 180 way 1 jetty 27 street 28
+   wheel top cx 845 cy 3082 R 180 way 1 jetty 44 street 45
+   wheel edge cx 430 cy 1884 R 180 way 1 jetty 55 street 56
+   wheel great cx 1101 cy 879 R 200 way -1 jetty 67 street 68
+== child normal seed 24: shrine 151.8 s rescues 1
+   t 124.1 x 1529 y 1395 dur 0 [#65 solid/branch x 1067-1327 y 1556; #66 solid/branch x 1327-1547 y 1556] fell back down from here 8 times
+   wheel teach cx 1146 cy 6020 R 160 way -1 jetty 5 street 6
+   wheel edge cx 655 cy 4268 R 180 way 1 jetty 27 street 28
+   wheel top cx 844 cy 3080 R 180 way 1 jetty 44 street 45
+   wheel edge cx 430 cy 1882 R 180 way 1 jetty 55 street 56
+   wheel great cx 1101 cy 879 R 200 way -1 jetty 67 street 68
+== child normal seed 4: shrine 159.1 s rescues 1
+   t 16.6 x 1170 y 5864 dur 8.7 [#6 solid/branch x 826-1126 y 5888] in a dip 325 px deep, a drop of 315 px ahead, water ahead, the way on is 146 px down
+   t 125.6 x 1577 y 1732 dur 8.2 [#65 solid/branch x 1067-1327 y 1556; #66 solid/branch x 1327-1547 y 1556; #90 solid/branch x 827-1700 y 1730] an open drop ahead, the way on is 176 px up
+   t 133.8 x 1529 y 1395 dur 0 [#65 solid/branch x 1067-1327 y 1556; #66 solid/branch x 1327-1547 y 1556] fell back down from here 8 times
+   wheel teach cx 1146 cy 6033 R 160 way -1 jetty 5 street 6
+   wheel edge cx 678 cy 4272 R 180 way 1 jetty 27 street 28
+   wheel top cx 872 cy 3084 R 180 way 1 jetty 44 street 45
+   wheel edge cx 430 cy 1886 R 180 way 1 jetty 55 street 56
+   wheel great cx 1101 cy 879 R 200 way -1 jetty 67 street 68
+== middle normal seed 27: shrine 134 s rescues 1
+   t 107.1 x 1577 y 1732 dur 8.9 [#65 solid/branch x 1067-1327 y 1556; #66 solid/branch x 1327-1547 y 1556; #90 solid/branch x 827-1700 y 1734] in a dip 176 px deep, an open drop ahead, water ahead, the way on is 809 px down
+   t 116 x 1529 y 1395 dur 0 [#65 solid/branch x 1067-1327 y 1556; #66 solid/branch x 1327-1547 y 1556] fell back down from here 8 times

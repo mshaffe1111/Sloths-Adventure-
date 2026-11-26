@@ -32,7 +32,6 @@ export const FIRST_OF: Readonly<Record<string, string>> = {
   'hint.2-1.upstream': 'upstream',
   'hint.2-2.upstream': 'upstream',
   'hint.2-2.pads': 'lilyPads',
-  'hint.2-7.basket': 'basketLift',
   'hint.2-9.guards': 'spearGuard',
   // World 3
   'hint.3-1.dark': 'dark',
