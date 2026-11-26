@@ -9,6 +9,53 @@
    only: CI-11 is the one it covers; the rest go in the plan table as "which judge, physics or input").
 3. Item 4: this page's ANSWER section.
 
+## THE ANSWER (item 4): YES, with two halves and one engine seam (cost numbers: item 3 below)
+**The judges ask the engine, and the bot plays what was judged.** The probe removes the PHYSICS half of the class by construction (the
+judge's flight IS the engine's: CI-8 the ledge forgiveness, CI-9 the lip hoist, CI-10 the take-off carry, CI-11's hold count). The other
+half of CI-8..CI-15 was the INPUT stream (CI-11's free frames and startJump's own hold draw, CI-12's lag spread, CI-13 / CI-15's stops the
+thumb never lets go): the probe alone does not fix those, "play the plan" does: the judge builds the exact pads (wait, press, hold,
+steer), the engine flies them, and the bot plays those pads verbatim. Rule 28 ("the judged hop is the hop flown") then holds by
+construction instead of by a toy per judge. Human noise is kept honestly: the judge flies the thumb's spread (thumbLags), the bot draws
+its lag as today, and a draw outside the spread is a real miss, as for a person (no foresight, ENG-27r). NOT covered: what he remembers
+or sees (CI-14 padSeen's latch), which is bot logic, not physics.
+
+| CI | judge | fault | probe + plan fixes it? |
+|---|---|---|---|
+| CI-8 | hopFlight (others loop) | the engine's ledge forgiveness | yes (physics) |
+| CI-9 | hopFlight | the engine's lip hoist | yes (physics) |
+| CI-10 | takeOffStep (all hop judges) | the take-off carry on a drifting log | yes (physics) |
+| CI-11 | vineFromLog standing | hold count (physics); free frames, startJump's own hold (input) | yes: PROVEN on the old code (item 2) |
+| CI-12 | thumb lag spread | input (the press lands off the judged lag) | yes in part: the plan flies every lag of the spread |
+| CI-13, CI-15 | stops (padPause, the let-go re-arm) | input (thumbify re-arms) | yes for a planned press/stop; else no |
+| CI-14 | padRead's latch (padSeen) | memory | no (bot logic) |
+
+**The plan, ordered by how often each judge broke** (mentions in CI-REDS / commits since 11-10), sized for one engine member:
+0. **The seam (engine, 3 h, first):** the module stores the engine writes in play (tipMemory, guideShown, helpLadder, physics
+   framesFlown, playRecorder; localStorage) each get save/load (or move onto the engine); engineFork.ts moves to src/game as a tested
+   tool; the proof gate in the CI tool line: the graph prints the same after a probe, and a run probed every 3rd frame ends equal to the
+   unprobed run, one seed per world (seconds each), planted first with the tipMemory leak (RED today: B3's guideN).
+1. **Plan-and-play core (3 h):** PressPlan (pads) + planFlies(plan, goal) on probe(); the bot's plan queue (played verbatim, thumbify
+   off on planned frames, the lag drawn as decide draws it); ONE invariant test replaces the per-judge "judged == flown" toys: every
+   planned press whose drawn lag is inside the judged spread ends as the probe said.
+2. **vineFromLog (19 / 13; 2 h):** the standing branch is the prototype; the run-up (runUpCatches, runPress) as plans with run frames.
+3. **hopFlight and the gate family (14 / 6, + hopLandsOn 2 / 7, floatSure 0 / 7, gateLands, gateAirtime, the race gate; 4 h):** the race
+   gate flies each candidate hop x 3 lags: about 30 ms a candidate, early exit on the first miss.
+4. **padRead's flights (8 / 11; 2 h):** the flight part only; the latch stays bot logic.
+5. **lianaWait and dropWaits (4 / 8, 3 / 0; 2 h):** the let-go flown by the engine (timedLaunch, the logs' clock) instead of the model.
+6. **hopCatches family (3 / 5; pitClimb, lianaWait's catch; 1 h).**
+7. **Re-measure (the hidden cost, 4-6 h):** the bots' play moves; every stage's x40 rows move (rule 28 traces), the tierBots
+   calibration re-runs and recommits (R-165.317), the proven seed lists re-check. Budget it as one release's bot fix, ONCE, instead of
+   one per stage.
+**Total about 21-23 h of member time** (about 4 working days for one engine lane), then World 3's judges are written as plans from day one.
+**Retires:** in firsttimer.ts the model block (hopFrame, hopCatches, hopCatchAt, hopLandsOn, hopFlies, hopFlight, gateLands,
+gateAirtime: lines 999-1315 on c73cb9766, about 320 lines) and physics.ts's bot-only mirrors takeOffStep and groundStep (the engine
+calls neither; airStep stays, levelCheck uses it); tests: judgeFliesEngine.test.ts, lianaRide.test.ts's model pins, hopJudged.test.ts's
+model toys (CI-8 ledge, CI-9 lip, CI-10 carry, CI-11 standing: they become the one plan invariant), pitClimb's hopCatches pins,
+riverRide's gateAirtime pins.
+**Risks:** (a) a leak not on the list: the proof gate catches it on the stages it runs, so it runs one seed of every world; (b) cost
+(item 3); (c) the probe flies the engine as it is NOW: a moving piece's future that depends on him (a crumble he triggers, a foe that
+reacts) is flown for real, which is right, but a judge that probes many frames ahead pays for it.
+
 ## Item 1: YES, by snapshot + fly the LIVE engine + restore in place (a separate copy does NOT work)
 Tool: `tools/inspect/engineFork.ts` (`probe(e, pads, read)`); proof: `npx tsx tools/inspect/botsim/forkProbe.ts 2-4 35 easy 30`.
 - **A copy (deep clone, prototypes kept, stepped on its own) fails:** it matches the live flight, but it SHARES state held in closures:
