@@ -125,6 +125,7 @@ RELEASE 5: rule 28 vs main found 5 PASS -> FAIL on seeds 11-40 (4 from the bot f
 R-165.465; 1 is 2-7's own): fix them first, then rule 28 on seeds 1-40 (CI #86). ENG-BOTSIM (Thursday) may change how that is done.
 NOTHING RUNS tonight (Matt R-165.466: Thanksgiving Eve off). The next day starts ONLY on Matt's word; the morning trigger stays off.
 THE NEXT LEAD: this session is at 818k context; start a FRESH lead session at the next start (this note + STATE + WEEK-1125 carry it).
+FIRST AT THE START: tick Matt's handoff doc (Y664: 0.10.3 live via PR #79; APK v0.10.3-48); then ENG-BOTSIM, LAND-26, 2-8 at 1b (on the RELEASE 5 line), 3-1's box 17 (the kinds ruling in STATE), ENG-29-d.
 WORLD 3 on t-eng-w3 = 88592a9c4 (FIX-CARD-DOWN + ENG-NOISE landed). 3-1's ONE LANE (dark + the bots' way down merged on t-eng-dark-wip;
 ENG-DARK-p session_01FhBbYNEYtZNguUhvJ2SuiR): x40 on a5e15a74d FAILS (5 strands 'the way on is 347 px down'; 2 new from box 15's seam change,
 3 older), being traced; it lands Thursday when an x40 passes; BUILD-31 Thursday afternoon at the earliest (packet BUILD-31 + FIX-CARD-DOWN in).
