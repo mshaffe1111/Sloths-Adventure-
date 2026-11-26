@@ -1,0 +1,15 @@
+2-9 draft normal, seeds 1-40: clean 0 of 40 (0%)
+  stopped | first | alone | rule
+       40 |    40 |    19 | river: river at x=#: a log every # s, over #
+       11 |     0 |     0 | ask: node n# "Pg#>": threat snapper*#: laid #
+        6 |     0 |     0 | ask: node n# "Pg#_>": threat snapper*#: laid #
+        6 |     0 |     0 | cast: turtle at x=#: a floor at x=# # px over its ground, inside its b
+        3 |     0 |     0 | ask: node n# "Pg#^>": threat snapper*#: laid #
+2-9 draft easy, seeds 1-40: clean 0 of 40 (0%)
+  stopped | first | alone | rule
+       40 |    40 |     0 | river: river at x=#: a log every # s, over #
+       40 |     0 |     0 | Easy could not lay Normal's plan
+       11 |     0 |     0 | ask: node n# "Pg#>": threat snapper*#: laid #
+        6 |     0 |     0 | ask: node n# "Pg#_>": threat snapper*#: laid #
+        6 |     0 |     0 | cast: turtle at x=#: a floor at x=# # px over its ground, inside its b
+        3 |     0 |     0 | ask: node n# "Pg#^>": threat snapper*#: laid #

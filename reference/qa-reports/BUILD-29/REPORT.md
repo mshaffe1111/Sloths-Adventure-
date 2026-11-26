@@ -1,7 +1,65 @@
 # BUILD-29 REPORT: 2-9 "The River King's Court" (the World 2 finale; R-165.449), release 6
 Branch t-build-29, cut from origin/t-eng-29 = 098047713 (the lead's named base). Session 1 started 5:45 PM ET Thu 11/26 (by `date`).
 
-## EXACT NEXT STEP (session 1 hand-over; STEP 0 NOT yet sent as a whole: G1-G5 and READY (a)/(b) went to the lead early, rule 26)
+## EXACT NEXT STEP (session 2 hand-over, BUILD-29-b; STEP 0 (b)/(c) NOT yet sent as a whole; GO not given: nothing laid)
+0. Re-fetch t-build-29, t-eng-29-wip and the lead's branch; ReadNotifications (D140). READ THE LEAD'S REPLY on the GOAL (sent this
+   session: (A) countSet, 7 snappers seated (beat 5 three, beat 8 four), goal 5 of 7; (B) countSet, the 4 seated, goal 4; (C) keep the
+   top-up, an engine lane keeps it inside the snapper nodes). No reply 20 minutes after it was sent: (A), on the draft only (CI #89), said first.
+1. Lay the goal ruling in the DRAFT (w2Arc29.ts: draft29Cfg's `countSet: true` with GOAL_29, and the extra `snapper(...)` sockets +
+   `snapperGround` patches in `snappers` / `grandDance`), then roll: `npx tsx reference/qa-reports/BUILD-29/probes/draft1.ts 1,2,3,5,8`
+   (seed 1: a top-up snapper at x 2000 on beat 1; 3: a floor over a snapper; 5, 8: 'snapper*2: laid 3') and the yield
+   `npx tsx reference/qa-reports/BUILD-29/probes/yield29.ts 1 40` on a FROZEN worktree: the only rule left must be the barge's
+   'a log every 5.7 s, over 4' (ENG-29-e's G3 carrier rule; and its echo 'Easy could not lay Normal's plan').
+2. ENG-29-e's G1/G2/G3/G6 notes (t-eng-29-wip): when G3 lands, re-roll WITHOUT the stand-in; when G2 lands, the guard on beat 10's landing.
+3. READY-29 on the draft, each ONCE on a frozen worktree of the head (git worktree add --detach; chattr -R +i src tools; node_modules
+   symlinked), each lane its OWN run_in_background call (never a shell '&'):
+   - the bots x40: `npx tsx tools/inspect/draft29.ts --seeds 1-40 --bots <bot> --barge-stand-in` one lane per bot (kid adult child
+     middle expert; about 3 s a run): every tier at the shrine both settings, no run under 120 s, each tier's FASTEST clean run named,
+     every miss traced (rule 28: two runs a cause, seed, x, frame, what took him). Session 2's partial look (top-up goal, superseded):
+     adult Normal 12/12 at the shrine, 153-168 s; `pass` false on seeds 3 and 8 though at the shrine: read why (goal got 5 / 6 of 5).
+   - met order (D130) and teach-first: `npx tsx reference/qa-reports/BUILD-29/probes/teach.ts 1,2` prints sections and enemies from the
+     BUILT stage; the tips are NOT on the built stage's keys (find where Dot's teach tips are laid: st.meta or st.collectibles; the
+     drum tip must stand 800 px+ before the first stone of `hear`, nothing that hurts between).
+   - drawcheck on the draft (D131) and yield done in step 1.
+   - FLOWN AGAIN on 098047713 (rule 24): `reference/specs/sims/court29.ts` (copied from t-design-29) in the frozen worktree
+     scratchpad/wt-base; this session ran `beat` on both settings (results below if they landed; else re-run): the stones at 30 px,
+     the pads at 50 (margin 0.67 / 1.07 s on the design), the run row; then `hop` (119 px). The court wheel is FLOWN (below).
+4. Send STEP 0 (b) READY-29 and (c) THE PLAN (the table below, as ruled, with each tier's fastest clean run and the deletion list), then
+   WAIT for GO.
+
+## Session 2 (BUILD-29-b), done, each pushed to t-build-29
+- 894031cb5 snap stones at 30 px (the lead's (vi): rideLay's snap judge's 74 errors a roll gone; pads stay 50); the draft's goal 5 on its
+  config (GOAL_29; the hand build's config said 15 and topped up to 17).
+- 5bf40bc3f deal exact (2-6's form) + the snappers brick content 'ground': gen2 had served the pads brick to the `Pp1&>` node and the
+  snappers brick to `Pf1>` (both practise + floating): 'content p: no piece on a clock laid' and the snapper asks gone; every roll of
+  seeds 1-2 both settings lays gate hear logs pads let-go rest snappers double rest terrace dance rest quay barge shrine.
+- 5c89954e1 the court wheel a World 2 row W2_WHEELS.court {R160, V58.79, easyV50.77, N6, in} (the lead's G4), FLOWN
+  (`npx tsx tools/engine/wheelflights.ts --write`; only its 2 rows added): Normal turn 17.1 s, bucket 2.85 s (a bar), board tap 100%,
+  step-off 3.93 s; Easy turn 19.8 s, bucket 3.30 s (Easy's bar), step-off 4.87 s (Easy never tighter, rule 4; 2-6's floor 1.5 s).
+- 553de213f tools/inspect/draft29.ts (tempoToys' onToy on the draft; fixture id DRAFT_ID_29 '2-91' because withFixtureConfig refuses
+  the game's own 2-9, whose config would top up to 17); `--barge-stand-in` lays the barge as a court river (the game's roll refuses
+  every unclean seed, and the barge is unclean until G3).
+- The 40-seed yield (head aa4c5b1a7, top-up goal): 0 of 40 clean on both settings, the barge on 40 (alone on 19); under it the top-up's
+  snappers: 'snapper*2: laid 3' 20 rolls, 'a floor over its ground' 6. Sent to the lead as the GOAL ruling.
+- FLOWN AGAIN on 098047713 (rule 24; t-design-29's court29.ts `beat`, frozen worktree; flown/beat-{normal,easy}-098047713.txt), a
+  RUN row (right held, a tap on every beat B 0.71 s Normal), floors 130 px: Normal G30 clean, pad margin 0.70 s, a beat late 0.43 s,
+  2 in step from count 1-2 (47% of phases); G50 clean, margin 0.67 s (= the design), a beat late 0.43 s; G60-70 clean but a beat late
+  SWIMS; G80+ swims. Easy G30 clean, margin 1.07 s, a beat late 0.90 s; G50 the same (1.07 / 0.90; = the design). So the stones at 30 and
+  the pads at 50 fly clean on BOTH settings at the run pitch, Easy never tighter.
+- BUILT widths (rule 27; probes/widths.ts, seed 1 both settings): the pads are 130 px at 50 px water (= the sim's W130 G50: clean, margin
+  0.67 s Normal / 1.07 s Easy, the design's numbers HOLD). The snap STONES are 80 px at 30 px water (pitch 110 px), NOT the design's
+  130 + 60 (pitch 190). **FLOWN at W80 G30 the stones LOSE the design's counts** (flown/beat-*.txt, RUN W80 G 30): Normal 3 in step
+  safe from count 1 or 2 (45%; design: only from ONE, 16%), 5 in step safe from ONE (17%; design: never), the WAVE of 5 safe ONLY from
+  count 3 (22%; design: from ONE or TWO, 65%); Easy the same shape (wave x5 from 3 only, 22%; wave x2 from 2 or 3, not ONE). The
+  design's counts come back at the 190 px pitch: Normal W80 G110 (3 in step from ONE 16%, wave x5 from ONE/TWO 65%) but a beat late
+  swims and Easy W80 G100-110 swims; W130 G60 Normal holds them (the design's row). rideLay's snap judge refuses anything but 30-40 px
+  beside a stone. SENT TO THE LEAD (a design-level ruling: beats 5 and 8 as designed cannot be laid with 80 px stones at 30).
+- The hop (flown/hop-*.txt): Normal a tap at a run 0.43 s, 119 px (= the design); from a stand 106 px; 0.28 s on the floor between
+  beat hops. Easy 0.43 s, 119 px; 0.39 s between hops (Easy's beat 0.82 s).
+- MY MISS, owned: the first bot lanes went up as ONE background run with a shell '&' and `wait` (the box's rule: never). Stopped at
+  once (pkill; 0 left), re-run as one background call a bot; then stopped again for the goal finding (their numbers are superseded).
+
+## Session 1 hand-over (history; its steps 0 and 3 (i)-(vii) are done or ruled above)
 THE LEAD HAS RULED (its message after G1-G3): G1, G2 and G3 (option A, look 'barge') go to ONE pieces lane, ENG-29-e on t-eng-29; YES
 to pads and stones at 50 px on both settings (Normal's stones FLOWN at 50 in READY before use); after GO lay every beat that needs none
 of G1-G3; beat 6 and the guard wait for ENG-29-e. G4 (the wheel's Easy R) and G5 (the 's' letter) were sent after: read its reply.
