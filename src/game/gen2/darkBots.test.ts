@@ -482,10 +482,31 @@ test("going down, a ledge over him is a step up only where the way rises: at Nor
   assert.deepEqual(lip.map((s) => s.what), [], 'no stuck line at the dip');
 });
 
-test("every ledge over him read as a step up (noLevelRead, the plant): at Normal roll 19's dip the child reads a double and stands at its lip (RED)", async () => {
-  const { read, lip } = await lip19(true);
-  assert.equal(read, 'double', 'the bough 188 px over his floor read as a step up');
-  assert.ok(lip.some((s) => /in a dip 188 px deep/.test(s.what)), `stuck at the dip's lip (${JSON.stringify(lip.map((s) => s.what))})`);
+/** the plant's live case moved (R-165.432, ENG-DARK box 25): on c17 lipEnd (2805f60c2, #13's fix: a point past an end of his wood is
+ *  off that end however near his middle) steps the planted child off roll 19's lip, the double still read there, so that row no longer
+ *  stands (c16: "in a dip 188 px deep" at 255; c17: none). The scan (child Normal rolls 1-40, noLevelRead, c17) found the same shape on
+ *  Normal roll 2: at the lip by x 458 (y 6602) the bough over it reads a double planted, a single unplanted, and the planted child
+ *  stands there (in a dip 208 px deep, at 141.7 s; unplanted no stuck line there). The RED is re-pointed there, the bar unchanged
+ *  (the read a double AND a stand in that dip); the GREEN stays on roll 19 */
+async function lip2(noLevelRead: boolean) {
+  if (readied !== DRAFT) readyDraft(DRAFT);
+  const { firstTimer } = await import('../../../tools/inspect/firsttimer.ts');
+  const { CAST_BOTS } = await import('../../../tools/inspect/castBots.ts');
+  const reads: string[] = [];
+  const r = firstTimer(DRAFT, 2, { ...CAST_BOTS.child.normal!, noLevelRead }, { cap: 240, dotSetting: true, onFrame(sim, b) {
+    const p = sim.p;
+    if (reads.length || !p.grounded || Math.abs(p.y - 6602) > 2 || Math.abs(p.x - 458) > 40) return;
+    const bot = b as unknown as { jumpFor(p: unknown, dir: number, here: unknown): string; floorAt(x: number, y: number, d: number): unknown };
+    reads.push(bot.jumpFor(p, p.facing < 0 ? -1 : 1, bot.floorAt(p.x, p.y, 6)));
+  } });
+  const lip = r.stuck.filter((s) => Math.abs(s.y - 6602) < 4 && Math.abs(s.x - 458) < 60);
+  return { read: reads[0], lip, end: r.end };
+}
+
+test("every ledge over him read as a step up (noLevelRead, the plant): at Normal roll 2's dip the child reads a double and stands at its lip (RED; R-165.432: was roll 19)", async () => {
+  const { read, lip } = await lip2(true);
+  assert.equal(read, 'double', 'the bough over his floor read as a step up');
+  assert.ok(lip.some((s) => /in a dip 208 px deep/.test(s.what)), `stuck at the dip's lip (${JSON.stringify(lip.map((s) => s.what))})`);
 });
 
 /** the SHAPE of roll 19's dip, hand-built (ENG-DARK box 22, the lead's ruling: a toy each way, N 19's row and the shape alone). On the
