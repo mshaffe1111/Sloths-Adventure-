@@ -1,6 +1,6 @@
 # BUILD-28 REPORT (W2-LANE: 2-8 "Before the Water Rises"; R-165.430 (2), READY-28, BUILD-28). Session 1 (W2-LANE a), started 9:44 AM ET (from date). Session 2 (W2-LANE b), started 10:07 AM ET (from date). Session 3 (W2-LANE c), started 10:30 AM ET (from date). Session 4 (W2-LANE d), started 10:52 AM ET (from date). Session 5 (W2-LANE e), started 11:19 AM ET (from the session hook date) Session 6 (W2-LANE f), started 11:41 AM ET (from the session hook date) Session 7 (W2-LANE g), started 12:05 PM ET (from the session hook date) Session 8 (W2-LANE h), started 12:49 PM ET (from the session hook date) Session 9 (W2-LANE i), started 1:15 PM ET (from the session hook date) Session 10 (W2-LANE j), started 1:05 PM ET (from the session hook date) Session 12 (W2-LANE l), started 2:20 PM ET (from the session hook date)
 
-## EXACT NEXT STEP (session 12, W2-LANE l, started 2:20 PM ET (from the session hook date); code head 8bb00acae)
+## EXACT NEXT STEP (session 12, W2-LANE l, started 2:20 PM ET (from the session hook date); code head 8bb00acae; bot head 6c407a578)
 DONE (the lead's ruling A): (1) THE PIECE on t-eng-marsh 5f8cb1edb (cut from 2808df79d): riverLay.ts RiverRow.marsh.open (data, unset
    = the old shape): a dip `open` px wide at the near bank's foot, the dips evenly split the rest; an open that leaves no floor throws by
    name. Toy riverLay.test.ts "a marsh's `open`": both ways (unset/0: first piece at the bank's foot, 5 x 200 px pieces; open 220: no
@@ -36,6 +36,26 @@ DONE (the lead's ruling A): (1) THE PIECE on t-eng-marsh 5f8cb1edb (cut from 280
    below him; edge-sideways: two dips of water left of him. lip-upright (Wx+30): only a sliver of water at the frame's left edge.
    ROUGH, named: a straight square seam where the first landing's painted soil meets the bank (a flat cut bottom ~y 1300 at 2x, a
    vertical cut at its right end), in edge- and lip-upright: the soil painter's square seam, not 2-8's lay (look item for READY-28).
+   (6) ENGINE PIECE GATES on 8bbb510f8 (frozen /tmp/claude-0/wt/8bbb510f8): lockall --check vs a base recorded on 2808df79d: 102/102
+   stages unchanged, rc 0 (the usual 'gen2 gained verdicts and drops (not hashed)' list); CI tool line (gates.yml:157) 431 tests, 430
+   pass, 0 fail, 1 todo (the OPEN chase-bots child); tsc 0; generalitycheck PASS. (The first piece 5f8cb1edb: CI line 430/0 too.)
+B (the lead's ruling B; firsttimer.ts + lineBot.test.ts only, each its own hunks, NOT pushed until these rows reached the lead, D117):
+   (7) draft-fork-jump-bot ALONE (cc85378b0: FORK_JUMP_SKILL, its toy: the ruled fork late 0, child-easy/middle/adult on the marsh
+   floor first, home, no rescue: GREEN; plant FORK_JUMP_SKILL off: 'PRESS off W': caught): the probe 15/54 (rule28-s12/
+   probe-forkjump-only-cc85378b0.txt): the read turns on the late 15/19 reroute, which walked each high-road piece's whole span in
+   chain order (draft B never landed): 36 late-15/19 runs time out on the rises (px ~2680, home 0). The full draft-1b (B + 2b +
+   fork-jump; LINE_SKILL conflict resolved keeping both flag sets) on ff50ad65a: 51/54, but its own pop-up toys fail on the new marsh
+   (19: the child's 3; 20: with popUp off no pop-up run stalls: 2b unproven on this shape).
+   (8) LANDED LOCALLY: fork-jump (cc85378b0) + draft B, the walked top line (6c407a578: REROUTE_SKILL.walkedTop; toy: middle seed 1
+   late 19 home round the high road, no rescue; plant off: stalls/rescued: caught). Toys 3/3 on frozen 6c407a578. 2b NOT landed.
+   RULE 28 on 6c407a578 (probe-fork-s12.test.ts.txt: 6 tiers x seeds 1-3 x late 0/15/19, the ROAD check; FirstTimerRun config 2-3
+   AND 2-8): 51/54 on each (rule28-s12/probe-6c407a578-cfg2-3.txt, -cfg2-8.txt), rescues 0 on all 54. The 3 MISS: the CHILD, late 0,
+   seeds 1-3 (identical rows), 'ROAD FAIL highBy PRESS off bank'. TRACE (child s1, late 0, t 11-14.5 s): he walks W, walks off its lip
+   at full run (x 930, vx 285) and lands on the bank's very edge (x 1010, the edge at 1000, his box over it); the bot's water look
+   (firsttimer FIX-21 wetBetween, his long press distance) sees the first dip 117 px out past the 75 px step down and presses at the
+   lip (t 13.9); the jump rises through the porch's near end overhead (one-way) and lands on it (x 1078, y 740): the high road. On
+   session 7's 200 px first piece the same child walked down onto the floor first. ENGINE-WORTHY (bot): the water look fires from a
+   bank whose way on steps DOWN onto a floor (firsttimer.ts, the edge logic's `past`); named to the lead, not coded around.
 
 
 ## EXACT NEXT STEP (session 11, W2-LANE k, started 1:56 PM ET (from the session hook date); code head 6545a5823; hand-over at the box)

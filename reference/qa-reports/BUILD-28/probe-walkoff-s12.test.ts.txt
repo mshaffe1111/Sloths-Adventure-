@@ -1,0 +1,36 @@
+// BUILD-28 session 12 (the lead's ruling, the first landing L): every walk-off off the near bank's edge, creep to full run, onto the marsh
+// floor 75 px under it: where his middle lands past the edge (dx), in the real engine (RealPlay), both settings, 2-8's config.
+import { test } from 'node:test';
+import { RealPlay } from '../src/game/realPlay.ts';
+import { setDifficulty } from '../src/game/difficulty.ts';
+import { PHYS } from '../src/game/physics.ts';
+import type { Platform } from '../src/game/types.ts';
+const BANK = 800, E = 940;
+const solid = (id: number, x: number, width: number, y: number, height: number) => ({ id, x, y, width, height, type: 'solid' }) as Platform;
+test('walk-off landings off the bank edge, 75 px drop', () => {
+  for (const setting of ['normal', 'easy'] as const) {
+    setDifficulty(setting);
+    let max = { dx: -99, run: 0, v: 0 }, min = { dx: 99, run: 0, v: 0 };
+    const rows: string[] = [];
+    for (const run of [1, 2, 4, 8, 12, 16, 24, 32, 48, 64, 96, 128, 192, 256, 400, 600]) {
+      const r = new RealPlay('2-8', 1);
+      r.bare([solid(1, 0, E, BANK, 200), solid(2, E, 3000, BANK + 75, 200)]);
+      r.stand(E - 22 - run, BANK);
+      for (let i = 0; i < 6; i++) r.frame({});
+      let v = 0, left = false;
+      for (let i = 0; i < 200; i++) {
+        // (a creep: one frame of right at a time, then a stand, until he is off; a run: right held)
+        const creep = run <= 4;
+        r.frame(creep ? (i % 4 === 0 ? { right: true } : {}) : { right: true });
+        if (!r.p.grounded && !left) { left = true; v = Math.round(r.p.vx); }
+        if (left && r.p.grounded) break;
+      }
+      const dx = Math.round(r.p.x - E);
+      rows.push(`run ${run}: off at vx ${v}, lands dx ${dx} on ${r.e.standingOnId}`);
+      if (dx > max.dx) max = { dx, run, v };
+      if (dx < min.dx) min = { dx, run, v };
+    }
+    console.log(JSON.stringify({ setting, width: (r0 => r0)(44), maxRun: PHYS.maxRun, max, min, rows }));
+  }
+  setDifficulty('normal');
+});

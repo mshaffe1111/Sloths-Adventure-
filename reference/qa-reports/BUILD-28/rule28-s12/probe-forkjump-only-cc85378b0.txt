@@ -1,0 +1,54 @@
+ok   child-easy s1 late 0: ROAD ok highBy PRESS off marsh climb {"off":570,"land":672,"face":589,"y":740} end shrine home 3 setBack 0 road HIGH t 29.2 marshT 7.5 highT 12.8 paddled true dry true res
+MISS child-easy s1 late 15: ROAD ok highBy PRESS off W climb {"off":570,"land":672,"face":589,"y":740} end time home 0 setBack 0 road HIGH t 200 marshT -1 highT 6.8 paddled false dry true px 2675 li
+MISS child-easy s1 late 19: ROAD ok highBy PRESS off W climb {"off":570,"land":672,"face":589,"y":740} end time home 0 setBack 0 road HIGH t 200 marshT -1 highT 6.8 paddled false dry true px 2675 li
+ok   child-easy s2 late 0: ROAD ok highBy PRESS off marsh climb {"off":570,"land":672,"face":589,"y":740} end shrine home 3 setBack 0 road HIGH t 29.2 marshT 7.5 highT 12.8 paddled true dry true res
+MISS child-easy s2 late 15: ROAD ok highBy PRESS off W climb {"off":570,"land":672,"face":589,"y":740} end time home 0 setBack 0 road HIGH t 200 marshT -1 highT 6.8 paddled false dry true px 2675 li
+MISS child-easy s2 late 19: ROAD ok highBy PRESS off W climb {"off":570,"land":672,"face":589,"y":740} end time home 0 setBack 0 road HIGH t 200 marshT -1 highT 6.8 paddled false dry true px 2675 li
+ok   child-easy s3 late 0: ROAD ok highBy PRESS off marsh climb {"off":570,"land":672,"face":589,"y":740} end shrine home 3 setBack 0 road HIGH t 29.2 marshT 7.5 highT 12.8 paddled true dry true res
+MISS child-easy s3 late 15: ROAD ok highBy PRESS off W climb {"off":570,"land":672,"face":589,"y":740} end time home 0 setBack 0 road HIGH t 200 marshT -1 highT 6.8 paddled false dry true px 2675 li
+MISS child-easy s3 late 19: ROAD ok highBy PRESS off W climb {"off":570,"land":672,"face":589,"y":740} end time home 0 setBack 0 road HIGH t 200 marshT -1 highT 6.8 paddled false dry true px 2675 li
+MISS child s1 late 0: ROAD FAIL highBy PRESS off bank climb {"off":570,"land":598,"face":589,"y":740} end shrine home 3 setBack 0 road HIGH t 46.4 marshT -1 highT 14.2 paddled false dry true px 3767
+MISS child s1 late 15: ROAD ok highBy - climb {"off":570,"land":598,"face":589,"y":740} end time home 0 setBack 0 road - t 200 marshT -1 highT -1 paddled false dry true px 2680 line 2714/695/follow 
+MISS child s1 late 19: ROAD ok highBy - climb {"off":570,"land":598,"face":589,"y":740} end time home 0 setBack 0 road - t 200 marshT -1 highT -1 paddled false dry true px 2680 line 2714/695/follow 
+MISS child s2 late 0: ROAD FAIL highBy PRESS off bank climb {"off":570,"land":598,"face":589,"y":740} end shrine home 3 setBack 0 road HIGH t 46.4 marshT -1 highT 14.2 paddled false dry true px 3767
+MISS child s2 late 15: ROAD ok highBy - climb {"off":570,"land":598,"face":589,"y":740} end time home 0 setBack 0 road - t 200 marshT -1 highT -1 paddled false dry true px 2680 line 2714/695/follow 
+MISS child s2 late 19: ROAD ok highBy - climb {"off":570,"land":598,"face":589,"y":740} end time home 0 setBack 0 road - t 200 marshT -1 highT -1 paddled false dry true px 2680 line 2714/695/follow 
+MISS child s3 late 0: ROAD FAIL highBy PRESS off bank climb {"off":570,"land":598,"face":589,"y":740} end shrine home 3 setBack 0 road HIGH t 46.4 marshT -1 highT 14.2 paddled false dry true px 3767
+MISS child s3 late 15: ROAD ok highBy - climb {"off":570,"land":598,"face":589,"y":740} end time home 0 setBack 0 road - t 200 marshT -1 highT -1 paddled false dry true px 2680 line 2714/695/follow 
+MISS child s3 late 19: ROAD ok highBy - climb {"off":570,"land":598,"face":589,"y":740} end time home 0 setBack 0 road - t 200 marshT -1 highT -1 paddled false dry true px 2680 line 2714/695/follow 
+ok   middle-easy s1 late 0: ROAD ok highBy PRESS off marsh climb {"off":570,"land":809,"face":589,"y":740} end shrine home 3 setBack 0 road HIGH t 18.6 marshT 5.8 highT 7.1 paddled false dry true re
+MISS middle-easy s1 late 15: ROAD ok highBy PRESS off W climb {"off":570,"land":809,"face":589,"y":740} end time home 0 setBack 0 road HIGH t 200 marshT -1 highT 5.1 paddled false dry true px 2697 l
+MISS middle-easy s1 late 19: ROAD ok highBy PRESS off W climb {"off":570,"land":809,"face":589,"y":740} end time home 0 setBack 0 road HIGH t 200 marshT -1 highT 5.1 paddled false dry true px 2697 l
+ok   middle-easy s2 late 0: ROAD ok highBy PRESS off marsh climb {"off":570,"land":809,"face":589,"y":740} end shrine home 3 setBack 0 road HIGH t 18.6 marshT 5.8 highT 7.1 paddled false dry true re
+MISS middle-easy s2 late 15: ROAD ok highBy PRESS off W climb {"off":570,"land":809,"face":589,"y":740} end time home 0 setBack 0 road HIGH t 200 marshT -1 highT 5.1 paddled false dry true px 2697 l
+MISS middle-easy s2 late 19: ROAD ok highBy PRESS off W climb {"off":570,"land":809,"face":589,"y":740} end time home 0 setBack 0 road HIGH t 200 marshT -1 highT 5.1 paddled false dry true px 2697 l
+ok   middle-easy s3 late 0: ROAD ok highBy PRESS off marsh climb {"off":570,"land":809,"face":589,"y":740} end shrine home 3 setBack 0 road HIGH t 18.6 marshT 5.8 highT 7.1 paddled false dry true re
+MISS middle-easy s3 late 15: ROAD ok highBy PRESS off W climb {"off":570,"land":809,"face":589,"y":740} end time home 0 setBack 0 road HIGH t 200 marshT -1 highT 5.1 paddled false dry true px 2697 l
+MISS middle-easy s3 late 19: ROAD ok highBy PRESS off W climb {"off":570,"land":809,"face":589,"y":740} end time home 0 setBack 0 road HIGH t 200 marshT -1 highT 5.1 paddled false dry true px 2697 l
+ok   middle s1 late 0: ROAD ok highBy PRESS off marsh climb {"off":570,"land":809,"face":589,"y":740} end shrine home 3 setBack 0 road HIGH t 23 marshT 6.5 highT 7.6 paddled false dry true rescues 0
+MISS middle s1 late 15: ROAD ok highBy PRESS off W climb {"off":570,"land":809,"face":589,"y":740} end time home 0 setBack 0 road HIGH t 200 marshT -1 highT 6.4 paddled false dry true px 2722 line 2
+MISS middle s1 late 19: ROAD ok highBy PRESS off W climb {"off":570,"land":809,"face":589,"y":740} end time home 0 setBack 0 road HIGH t 200 marshT -1 highT 6.4 paddled false dry true px 2722 line 2
+ok   middle s2 late 0: ROAD ok highBy PRESS off marsh climb {"off":570,"land":809,"face":589,"y":740} end shrine home 3 setBack 0 road HIGH t 23 marshT 6.5 highT 7.6 paddled false dry true rescues 0
+MISS middle s2 late 15: ROAD ok highBy PRESS off W climb {"off":570,"land":809,"face":589,"y":740} end time home 0 setBack 0 road HIGH t 200 marshT -1 highT 6.4 paddled false dry true px 2722 line 2
+MISS middle s2 late 19: ROAD ok highBy PRESS off W climb {"off":570,"land":809,"face":589,"y":740} end time home 0 setBack 0 road HIGH t 200 marshT -1 highT 6.4 paddled false dry true px 2722 line 2
+ok   middle s3 late 0: ROAD ok highBy PRESS off marsh climb {"off":570,"land":809,"face":589,"y":740} end shrine home 3 setBack 0 road HIGH t 23 marshT 6.5 highT 7.6 paddled false dry true rescues 0
+MISS middle s3 late 15: ROAD ok highBy PRESS off W climb {"off":570,"land":809,"face":589,"y":740} end time home 0 setBack 0 road HIGH t 200 marshT -1 highT 6.4 paddled false dry true px 2722 line 2
+MISS middle s3 late 19: ROAD ok highBy PRESS off W climb {"off":570,"land":809,"face":589,"y":740} end time home 0 setBack 0 road HIGH t 200 marshT -1 highT 6.4 paddled false dry true px 2722 line 2
+ok   adult s1 late 0: ROAD ok highBy - climb {"off":570,"land":663,"face":589,"y":740} end shrine home 3 setBack 0 road low t 22.5 marshT 4.4 highT -1 paddled true dry false rescues 0 STUCK 
+MISS adult s1 late 15: ROAD ok highBy PRESS off W climb {"off":570,"land":663,"face":589,"y":740} end time home 0 setBack 0 road HIGH t 200 marshT -1 highT 4.4 paddled false dry true px 2701 line 27
+MISS adult s1 late 19: ROAD ok highBy PRESS off W climb {"off":570,"land":663,"face":589,"y":740} end time home 0 setBack 0 road HIGH t 200 marshT -1 highT 4.4 paddled false dry true px 2701 line 27
+ok   adult s2 late 0: ROAD ok highBy - climb {"off":570,"land":663,"face":589,"y":740} end shrine home 3 setBack 0 road low t 22.5 marshT 4.4 highT -1 paddled true dry false rescues 0 STUCK 
+MISS adult s2 late 15: ROAD ok highBy PRESS off W climb {"off":570,"land":663,"face":589,"y":740} end time home 0 setBack 0 road HIGH t 200 marshT -1 highT 4.4 paddled false dry true px 2701 line 27
+MISS adult s2 late 19: ROAD ok highBy PRESS off W climb {"off":570,"land":663,"face":589,"y":740} end time home 0 setBack 0 road HIGH t 200 marshT -1 highT 4.4 paddled false dry true px 2701 line 27
+ok   adult s3 late 0: ROAD ok highBy - climb {"off":570,"land":663,"face":589,"y":740} end shrine home 3 setBack 0 road low t 22.5 marshT 4.4 highT -1 paddled true dry false rescues 0 STUCK 
+MISS adult s3 late 15: ROAD ok highBy PRESS off W climb {"off":570,"land":663,"face":589,"y":740} end time home 0 setBack 0 road HIGH t 200 marshT -1 highT 4.4 paddled false dry true px 2701 line 27
+MISS adult s3 late 19: ROAD ok highBy PRESS off W climb {"off":570,"land":663,"face":589,"y":740} end time home 0 setBack 0 road HIGH t 200 marshT -1 highT 4.4 paddled false dry true px 2701 line 27
+ok   expert s1 late 0: ROAD ok highBy PRESS off marsh climb {"off":570,"land":672,"face":589,"y":740} end shrine home 3 setBack 0 road HIGH t 20.9 marshT 5.3 highT 6.5 paddled false dry true rescues
+MISS expert s1 late 15: ROAD ok highBy PRESS off W climb {"off":570,"land":672,"face":589,"y":740} end time home 0 setBack 0 road HIGH t 200 marshT -1 highT 5 paddled false dry true px 2673 line 270
+MISS expert s1 late 19: ROAD ok highBy PRESS off W climb {"off":570,"land":672,"face":589,"y":740} end time home 0 setBack 0 road HIGH t 200 marshT -1 highT 5 paddled false dry true px 2673 line 270
+ok   expert s2 late 0: ROAD ok highBy PRESS off marsh climb {"off":570,"land":672,"face":589,"y":740} end shrine home 3 setBack 0 road HIGH t 20.9 marshT 5.3 highT 6.5 paddled false dry true rescues
+MISS expert s2 late 15: ROAD ok highBy PRESS off W climb {"off":570,"land":672,"face":589,"y":740} end time home 0 setBack 0 road HIGH t 200 marshT -1 highT 5 paddled false dry true px 2673 line 270
+MISS expert s2 late 19: ROAD ok highBy PRESS off W climb {"off":570,"land":672,"face":589,"y":740} end time home 0 setBack 0 road HIGH t 200 marshT -1 highT 5 paddled false dry true px 2673 line 270
+ok   expert s3 late 0: ROAD ok highBy PRESS off marsh climb {"off":570,"land":672,"face":589,"y":740} end shrine home 3 setBack 0 road HIGH t 20.9 marshT 5.3 highT 6.5 paddled false dry true rescues
+MISS expert s3 late 15: ROAD ok highBy PRESS off W climb {"off":570,"land":672,"face":589,"y":740} end time home 0 setBack 0 road HIGH t 200 marshT -1 highT 5 paddled false dry true px 2673 line 270
+MISS expert s3 late 19: ROAD ok highBy PRESS off W climb {"off":570,"land":672,"face":589,"y":740} end time home 0 setBack 0 road HIGH t 200 marshT -1 highT 5 paddled false dry true px 2673 line 270
