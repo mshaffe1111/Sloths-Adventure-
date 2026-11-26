@@ -1,5 +1,64 @@
 # ENG-THUMB: the kid-bot root fix (R-165.465) and release 5's rule-28 rows
 
+## EXACT NEXT STEP (hand-over 6, box 6 ENG-THUMB-f; written 4:35 PM ET 11/26 by `date`)
+Branch t-eng-thumb-wip, head = the commit that adds this text. **Code = C12 c0cc0810e** = C11 + (1) the gap block (intend's `if (!ahead)`)
+reads a DRIFTING LOG by his feet (standingOn) where his middle is past its end in his way (logs only), + (2) the game's put-back (C7's
+block) also spends `standing`. On top, tests only: **f2ef1ca27** ruling 2 (CI-14's allowance pressIn(mid + 3 sd), its own commit),
+**9dbcda5f8** 231 (c23's pause and C11's pull-back as one rule, by his middle), **585dccbde** ruling 4 (riverRide's plant re-planted at
+the same bar: UPSTREAM_CASES child N 16; UPSTREAM_LIVES child N 15, 8, 7). Frozen trees to rebuild (D115): c12 = c0cc0810e, fin =
+585dccbde (code = C12). Tools: tools/*.txt (+ scan.mts, probe1.mts, probe231.mts, margins.mts). Main's rows: INT-R5 d/rule28/rows-main on
+origin/release-0.10.3-wip-fixes (base cdffdc627; main since then moved only art/paint files: groundPaint, protoArt, livePostArt,
+narrowBank, manifest, preload, whatsNew).
+1. **C12's CI line (frozen c0cc0810e, before the test commits) has 2 NEW reds from C12's code: trace both, fix where the cause is, a toy
+   each way, or STOP with the frames as a ruling:**
+   - **268** lianaRide.test.ts:104 'A VINE FROM A LOG: on the catch toy the middle bot jumps from the moving log to the liana': 'easy, with
+     the skill: catches off a log 1,0,1,1,0'. Likely (1): at a log's end with his middle past it the gap block now runs the river blocks
+     where the vine-from-log path ran before. Probe: tools/probe1.mts.txt on the catch toy's failing phases, C11 vs C12.
+   - **356** riverRide.test.ts:334 the reAim plant 'RED with SKILLS.reAim off': with reAim off one phase now hops ('back back hop back'):
+     the planted fault no longer bites in that phase. (1) lets the upstream gate judge at the lip where the edge plan pressed before.
+     A plant that stops biting is a plant to re-plant at the SAME bar (as ruling 4), or the lead's ruling; trace first.
+   - Expected and handled on the head: 254 (f2ef1ca27), 355 = ruling 4's plant (585dccbde). 231 is GREEN on C12. The line was at 389 of
+     430 at this hand-over (scratchpad out/ciline-c12.txt): box 6 records the end if it finishes (D138: an already-running gate).
+2. **The five-bot rows on frozen 585dccbde (5 stages, rows.sh) were RUNNING at this hand-over** (scratchpad out/rows-fin/): box 6 records
+   them if they finish. Then flips.py vs main's rows: bar 0 PASS -> FAIL on 2-1 2-2 2-4 2-5 1-4. If 268/356 change the code, re-run them.
+3. Then the final checks ONCE on the frozen final head: 2-7 x40 (castBots 2-7 --seeds 1-40 --bots adult,child,middle,expert --setting
+   both; seeds where every row passes >= 29/40), pacerLay 23/23 (src/game/gen2/pacerLay.test.ts), the 10 races (tools/margins.mts.txt),
+   tierBots 9/9, tsc, the 4 bot test files (lianaRide, riverRide, firsttimer, castBots), the suite in shards (run_in_background AND
+   timeout 7200000), the CI line on the final head (D141). **R-165.473 HELD (the lead's ruling): KID_RUNS_59 NOT re-pinned, easyGoal and
+   goalsEasy.test.ts untouched; the suite's one named red is src/game/firstTimerBot.test.ts:177 "5-9's Easy goal rests on the kid's
+   runs" (measured [14,13,17,18,5,5] on C11, recorded [3,5,6,7,6,5]): the lead takes it to Matt.**
+4. Push, ls-remote, the hash + one line per check to the lead.
+- **C12 (1), 2-1 child Easy 3 (the C11 PASS -> FAIL), traced (d/frames-c11-2-1-childeasy3.txt; probe1 on frozen C11):** the edge plan for
+  #86's front drew aim 0 and how 'late' (late 0.24 s); the gap block's look is the aim, so it saw the gap only at 169.73 with his middle
+  2 px past #86's end (log 19,821-19,991, x 19,993), where `here` (floorAt by his middle) was null: the ride wait and the upstream gate
+  (which judge the hop to #87, 80 px on) never ran, the edge plan armed the late press (lateArmed, why 4057) and walked him off into the
+  water (169.80); the splash-back to #81 and the same front again, to the rescue. With (1) it fires ONCE on this run (169.73, #86, the
+  run identical before it): the upstream gate presses the judged hop, PASS, 0 rescues, 0 lives. Read by feet on solid lips too it fired
+  20+ times from t 31 (the bank ride block where it never ran) and moved the run: narrowed to logs. **Second run of the cause** (scan.mts,
+  frozen C11): 2-1 child Easy 1, t 167.13, x 20,007, #88 running back at him, walked off its front and splashed back (a PASS that paid).
+  The same walk-off shape on logs running HIS way is common in passing runs (d/scan-c11-2-1-2-5-partial.jsonl 'offs').
+- **C12 (2), fault (b), live on C11 (scan.mts):** a stand kept across a put-back in 2-1 middle Easy 18 (t 10.00, x 2,135 -> 2,010) and 2-1
+  child Easy 24 (t 190.10, x 24,046 -> 23,933), both passes. Toys: d/toys-c12-each-way.txt (both RED on C11, GREEN on C12).
+- **Ruling 2 (the lead: accepted as a test correction on two conditions):** the test's comment (hopJudged.test.ts:386) says 'a frame and
+  his thumb's lag (mid + 3 sd, as thumbLags)'; thumbLags bins a lag to its press frame, pressIn: 0.12 s -> 0.1667 s, bar 1.8435 for the
+  honest start (1.87). Planted (CI-14's padSeen reset removed): RED '#109 at t 145.100 onto #115 with 1.50 s for 2.17'; C12 GREEN.
+- **231 (the lead's order: one rule from the traces):** d/p231-c1x-2-1-childeasy2.txt. C11's red landing: #111 at 213.47, his middle 17 px
+  PAST its front (the pull-back steered back, he slid off, splashed back, shrine). c23's own case #43 is 75 px short of its front; C10 has
+  no past-front landing on this run; C12's run moves at 212.27 (where (1) fires), every c23 landing pauses. The code already holds ONE
+  rule, set by his middle: on the log, the pause; past its front, the pull-back and no pause. The test's condition ('inside his run-out')
+  was wider than the rule: both halves now asserted. GREEN on C11 and C12; the pause half RED on c22 (ENG-PLANT-s), the pull-back half
+  RED on C10 (hopJudged 'a pull-back due ... is kept').
+- **Ruling 4 on C12** (d/up-c12-2-1-childmiddle-normal.txt): child N 17 no longer holds (on clean 0 lives; off clean 3). Rescued off while
+  clean on: child N 5, 16, 24, 32, 35; +5 or more: 19 child seeds (15 +14, 8 +13, 7 +11 the widest); middle none (best +4). Re-planted
+  child N 16 / child N 15, 8, 7: same bars; both plant tests GREEN on C12. (Sent to the lead as my plan; reversible.)
+- **Process slips (box 6):** (a) ONE shell `&` inside a background command (the C11 scan's first launch): killed within a minute and
+  relaunched as three tracked run_in_background calls; (b) D140: the lead's 231/254 order (queued before my first fix) was read about 9
+  minutes late, after both C12 fixes; I took 231 and 254 next. (c) C11's CI line was started once more before box 5's record arrived;
+  stopped as a duplicate.
+- **Lessons applied:** D115 (frozen trees c11, c10, c12, fin; proven writable; probes on copies c11p, c12p), D119 (messages from files),
+  D128 (stamps by `date`), D133 (the fix narrowed, judged on full rows, not on its own run), D134/D138 (this hand-over pushed and
+  ls-remote'd first; it ends new work), D140 (slip named), D141 (C12's CI line started with its rows).
+
 ## EXACT NEXT STEP (hand-over 5, box 5 ENG-THUMB-e; written 4:10 PM ET 11/26 by `date`)
 Branch t-eng-thumb-wip, head = the commit that adds this text. **Code = C11 48af07540** = C10 narrowed (firsttimer.ts landing branch:
 the floor read by his feet only where the walk-on would run him off: his middle past the end IN HIS WAY and no pull-back due). The head

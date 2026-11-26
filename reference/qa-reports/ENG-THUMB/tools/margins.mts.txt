@@ -1,0 +1,12 @@
+// usage: tsx margins.mts <tree> : the careful middle's race margin (his time minus the boat's; below 0 he wins) on every race row:
+// home seeds 1-3 and post seeds 4-5, both settings (pacerLay.test.ts raceRun, SKILLS as shipped)
+const [T] = process.argv.slice(2);
+await import(`${T}/src/game/headlessDom.ts`);
+const { homeRun } = await import(`${T}/tools/inspect/homeToys.ts`);
+const { HOME_CODE, POST_CODE } = await import(`${T}/src/game/gen2/toyHome.ts`);
+for (const setting of ['normal', 'easy'] as const) for (const [race, code, seeds] of [['home', HOME_CODE, [1, 2, 3]], ['post', POST_CODE, [4, 5]]] as const) for (const seed of seeds) {
+  let piece: any; let lost = 0, lives: number | undefined;
+  const r = homeRun('middle', setting, seed, 1, { onFrame: (sim: any) => { const e = sim.e; piece ??= e.pieces.find((q: any) => q.kind === 'pacer'); if (lives !== undefined && e.lives < lives && piece?.clock != null) lost++; lives = e.lives; } } as never, code);
+  const v = piece?.verdict;
+  console.log(`${race} ${setting} ${seed} | him ${v?.him} boat ${v?.boat} | margin ${v ? (v.him - v.boat).toFixed(2) : 'none'} | ${v?.won ? 'WON' : 'LOST'} | race lives lost ${lost} | end ${r.end}`);
+}
