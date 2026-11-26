@@ -1,7 +1,32 @@
 # BUILD-28 REPORT (W2-LANE: 2-8 "Before the Water Rises"; R-165.430 (2), READY-28, BUILD-28). Session 1 (W2-LANE a), started 9:44 AM ET (from date). Session 2 (W2-LANE b), started 10:07 AM ET (from date). Session 3 (W2-LANE c), started 10:30 AM ET (from date). Session 4 (W2-LANE d), started 10:52 AM ET (from date). Session 5 (W2-LANE e), started 11:19 AM ET (from the session hook date) Session 6 (W2-LANE f), started 11:41 AM ET (from the session hook date) Session 7 (W2-LANE g), started 12:05 PM ET (from the session hook date) Session 8 (W2-LANE h), started 12:49 PM ET (from the session hook date) Session 9 (W2-LANE i), started 1:15 PM ET (from the session hook date) Session 10 (W2-LANE j), started 1:05 PM ET (from the session hook date) Session 12 (W2-LANE l), started 2:20 PM ET (from the session hook date)
 
 
-## EXACT NEXT STEP (BUILD-28 box 1, session 14, started 5:19 PM ET (from the session hook date); head = this commit on t-build-28-wip; code 4d8450bcc)
+## EXACT NEXT STEP (BUILD-28 box 2, session 15, started 5:43 PM ET (from the session hook date); head = this commit on t-build-28-wip)
+STEP 1 (1) DONE: the hand build's deletion is ONE commit, 69c3c1640 (its parent f5dae1de8), conditions (a) and (b) in its body:
+(a) the grep: on the base, w2Stages.ts:663 is the only setter of RiverZone.flood (legs.ts:184 copied it, pipeline.ts:4303 is P1's
+STAGE flood); on the deletion tree only pipeline.ts:4303 is left. (b) lockall, 16 layouts x both settings, the deletion tree against
+the base, compared build by build (102 stages, 3,264 builds): ONLY 2-8 moves (its 32 builds); 0 of the other 3,232
+move. Both records were made on frozen trees (wt28base, wt28del; gone with this container).
+NEXT (box 3): step 1 (2) then (3), as box 1's list below says (the form: w2Arc23.ts:129 cage(), :136-160 brick(), :167-273 lays;
+w2Arc27.ts:106-125, :129 jetty, :146 porches, kitLib27 at its end is the registration's model). Found this box, for box 3:
+- Between the deletion and w2Arc28's registration 2-8 builds through the generic fallback (seed 1 Normal: 19,579 px, 3 cages, no
+  gen2): REGISTER w2Arc28 (STAGE_TABLE '2-8', KITS/WORLD 'w2-28', briefs '2-8' flood W2_FLOOD) BEFORE flying flood28.ts: it plays
+  RealPlay('2-8', 1) (flood28.ts:35), so it needs the laid 2-8.
+- W2_PUZZLES is now 2-9 only: World 2 keeps ONE puzzle room (the court's bell). STAGE-RULES' puzzle-rooms-per-world line: the lead's
+  call (named in the hand-over; 2-8's design has no room, READY-28 L1).
+- No stage lays a pulley cage now: puzzleKit.ts / puzzlePlay.ts's lift-with-a-cage paths are held by no stage test (w2Puzzles.test's
+  pulley cases went with the stage that laid them). A cleanup packet for a pieces lane (Suggestions), never this level's.
+- The hand build's player words still in dotLinesData.ts: eng.flood :151 (its only speaker, the deleted engine block, is gone),
+  hint.2-8.post :146, hint.2-8.bank/.deep/.open :152-154, way.2-8 :169; plus stageClue.ts:34 and pokeyJournal.ts:67 (box 1's).
+  They go or are replaced at step 2 with lines-2-8.md (t-keeper-28 943984c2f), the keeper's call on which stay.
+- The suite was NOT run on the deletion tree (stopped so the two locks had the CPU; lockall took about 11 min a tree, two at once on 4 cores):
+  it runs on the laid candidate with the CI tool line (D126, D141).
+- tools/inspect/lineBot.test.ts:780 names the hand build in its title (it reproduces its rule with numbers, no import): leave it.
+Lessons applied (box 2): D115 (both lock trees chattr-frozen, worktrees of their own), D119 (the commit message from a file, no heredoc
+in a commit chain), D128 (stamps from date), D134/D138 (this step pushed and ls-remote-checked before the hand-over; no new work after
+it; only the deletion's own lock finished past the box), D140 (ReadNotifications at each step), D141 (the suite owed on the candidate).
+
+## (superseded by box 2) EXACT NEXT STEP (BUILD-28 box 1, session 14, started 5:19 PM ET (from the session hook date); head = this commit on t-build-28-wip; code 4d8450bcc)
 STEP 0 DONE; THE PLAN IS APPROVED BY THE LEAD (verbatim: "the plan is APPROVED as written ... Item 7: YES, yours, as a PURE deletion with
 the hand build, on two conditions written in the commit: (a) a grep shows nothing but floodBasin sets r.flood ..., and (b) lockall shows no
 listed stage moves"). NEXT (box 2): STEP 1, in this order:
