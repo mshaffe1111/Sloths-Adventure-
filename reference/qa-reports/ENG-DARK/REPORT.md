@@ -1,4 +1,31 @@
 # ENG-DARK REPORT (the dark + light ring as one gen2 brick; WORLD-3-PLAN F2; R-165.449)
+**BOX 17 STEP 1 (ENG-DARK-q, 1:19 PM ET by `date`): THE RULING APPLIED, PER ROW. ALL 4 KINDS ARE NEW FAILURES (no base rescue at the
+same place family). Base rescues 1393 (x40 base c1008d8e) vs c7 620.** Method: each c7 row re-run on frozen 119680d33 (probes onerun.mts,
+kinds-c7-rows.txt: the x40 rows reproduce exactly), the base's 5 bots on the same roll and setting on frozen c1008d8e (kinds-base-rows.txt),
+each spot's wood, trunk and the route's corners read from the lay (probes/tagat.mts, probes/legs.mts; kinds.py lists the rows). The two
+lays share every floor (gen2.tower.turns) but NOT the wood at these spots: ENG-DOWNBOT's going-down lay (merged at box 14, f1d519f25;
+not on t-eng-w3) stops each trunk on a catch laid across it (tower.ts stopVines, ruling (b)); on the base the same trunk runs the floor.
+| row | spot (c7) | the place on c7 | on the base (same roll) | base rescues there |
+|---|---|---|---|---|
+| kid N 22, middle N 22, adult N 22 (x 826-866) | catch #193 824-1004, y 8384; trunk 17 (x 833) cut 8311->8384 | left end 17 px from log #51 (427-807, y 8311, 90 px THICK: to 8401), the log's body inside his 48 px body: the end is WALLED; the route's next corner (794, 8484) is off that end, onto #124 (741-921, y 8484) roofed by #193 + #51 | no #193; trunk 17 runs 8311->8658 | 0 of 5 bots on floor 16 |
+| child N 22 (x 773, y 8311) | on log #51, beside trunk 17's top | the same wedge, one step before it | the log, trunk to 8658 | 0 |
+| adult E 37 (x 1077) | catch #154 1066-1246, y 5508; trunk 12 (x 1092) cut 5446->5508 | left end FLUSH with #33 (701-1066, y 5446, h 24: 5446-5470, inside his body at 5508): walled; route corner (1036, 5797) is off that end; the right end drops 414 px to #156 (y 5922), past the storey 5797 | no #154; trunk 12 runs 5446->5797 | 0 (kid + child rescue on floor 2's FULL trunk 1074, 1726->2007: a different place) |
+| child N 25 (x 367, y 9493) | rescued onto #59 338-592 | NOT the catch: at 128.7 s he jumped left off #47 (x 104, y 7659) and fell 1850 px down the left wall to #185 (y 9445), ahead of the way; the rescue's words name the spot he was put at | trunk 20 runs 9493->9774 (c7: cut at 9618 by #186) | 0 |
+**Trace (kid N 22, FT_FRAMES 109-135):** climbs down trunk 17 onto #193 (109.4 s), presses left at x 826 (the walled end) and stands; walks
+to the right end (1004), turns back (the way is left), and so on, jumps at the log, until rescued. **ROOT CAUSE (one, two places that
+read it):** an end of wood with other wood beside it whose BODY (y to y + height) is inside his body band (48 px, reach.ts BODY_H) is no
+way off; tower.ts `handOn` (the lay's hand-on verdict, towerHandOns, a catch's ends) and towerRoute.ts `dropTo` (the bot's way on, the end
+toward the way) both step off an end a body's width past it without asking. tower.ts `slotted` (the no-slot rule) asks only wood within
+8 px of level (SLOT.step), never a higher piece whose body reaches down past the bough's top. Child N 25 is a second cause (the
+1850 px wall fall): not yet traced past the jump.
+**EXACT NEXT STEP (box 17 continues; this text is the plan):** (1) `walled(end)`: wood (non-fragile, not bouncy) whose x span overlaps
+the strip from the end to a body's width + 24 past it and whose body [y, y + height] overlaps [feet - BODY_H, feet - 1]: one helper in
+tower.ts, read by handOn (a walled end is no way off) and, the same rule, by towerRoute dropTo (a walled end is never chosen); the
+lay then refuses/repairs a catch with no open end that hands on (towerHandOns 'past'/no way off: E37). Toys: tower.test (E37's catch
+named by towerHandOns RED on c7's rule, GREEN after; plant: walled() always false); darkBots/towerRoute toy kid N 22 (no rescue on
+floor 16 / planted RED). (2) child N 25's wall fall traced. (3) a fresh x40 (lay + route changed). Then step 2 (toys for 89ef9a985,
+glowJump) and the gates as ordered.
+
 **EXACT NEXT STEP (ENG-DARK-p box 16 HAND-OVER on the lead's order (Matt off for Thanksgiving Eve), 5:57 PM ET by `date`; head on
 t-eng-dark-wip = this commit; CODE CANDIDATE 119680d33 (c7). The lane resumes when Matt starts the next day. Re-fetch before every
 commit (D138).)** Box 16 read the lead's hand-over order about 30 minutes late (no ReadNotifications at the step boundaries: D113/D140

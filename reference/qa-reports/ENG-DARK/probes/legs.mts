@@ -1,0 +1,18 @@
+import path from 'node:path';
+const root = process.cwd();
+await import(path.join(root, 'src/game/headlessDom.ts'));
+const { readyDraft } = await import(path.join(root, 'tools/engine/draft.ts'));
+readyDraft('3-1');
+const { generateAllLevels } = await import(path.join(root, 'src/game/worldsData.ts'));
+const { generateStage, setLayoutVariant } = await import(path.join(root, 'src/game/stageGenerator.ts'));
+const { towerCorners } = await import(path.join(root, 'tools/inspect/towerRoute.ts'));
+const [setting, seed, y0, y1] = process.argv.slice(2);
+setLayoutVariant(Number(seed));
+const st: any = generateStage({ ...generateAllLevels().find((c: any) => c.id === '3-1' && !c.secret)!, unlocked: true }, setting);
+setLayoutVariant(null);
+const T = st.gen2.tower;
+const inb = (y: number) => y >= +y0 && y <= +y1;
+console.log('turns', JSON.stringify(T.turns.filter((t: any) => inb(t.from) || inb(t.to))));
+console.log('legs', JSON.stringify(T.route.legs.filter((l: any) => inb(l.entry.y) || inb(l.exit.y)).map((l: any) => [Math.round(l.entry.x), Math.round(l.entry.y), Math.round(l.exit.x), Math.round(l.exit.y)])));
+const c = towerCorners(st, { x: st.spawnX, y: st.spawnY }) ?? [];
+console.log('corners', JSON.stringify(c.filter((p: any) => inb(p.y)).map((p: any) => [Math.round(p.x), Math.round(p.y)])));
