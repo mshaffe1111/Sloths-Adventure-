@@ -153,3 +153,8 @@ about 1-2 s a row, every finished row kept.
 **A budget cut never removes a per-candidate gate (D141, 11-25).** 'Run each heavy check ONCE' means once per CANDIDATE: the CI tool line (about 10 minutes) still runs on every candidate (CI #79). Release 4's briefs left it to the end and three reds waited five candidates.
 
 **A lane's bar uses the release's own range (CI #86, 11-25).** A bot change's final 'wide sample' runs rule 28's range (seeds 1-40, every stage the release ships) on its final candidate, not a faster subset: release 4's bot fix passed seeds 1-10 and failed the release on seeds 15-40.
+
+**A wait for a ruling times out at 20 minutes (CI #89, 11-26).** Every brief says: a member waiting on the lead's ruling for 20 minutes
+with no reply takes its OWN stated recommendation IF it is reversible (its own commit on its own branch; nothing on a release branch or
+main; no test bar, plant bar or rule changed) and goes on, saying so first in its next message; a ruling that would land on a release
+branch, change a test bar or change a rule still waits. (The lead's worker restarted on 11-26 and five lanes sat 30-60 minutes.)
