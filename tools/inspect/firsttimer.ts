@@ -1053,17 +1053,16 @@ export function hopLandsOn(q: Platform, at: (t: number) => number, x: number, y:
 export function hopBoards(w: Wheel, x: number, y: number, dir: -1 | 1, hold: number, t0: number, vx0 = 0, margin = 24): boolean {
   const b = { x, y, vx: vx0, vy: -PHYS.jumpV };
   const seats = (k: number) => Array.from({ length: w.N }, (_, j) => bucketAt(w, j, t0 + k * DT));
-  let prev = seats(0);
   for (let i = 1; i < 60; i++) {
     const py = b.y;
     hopFrame(b, i, dir, hold);
     const now = seats(i);
-    // (his feet over a bucket's floor last frame and on or under it now: a bucket on the rising side comes up to meet him while he still rises)
-    for (let j = 0; j < w.N; j++) {
+    // (the engine's catch, engine.ts onFloor: falling, his feet last frame no more than 14 px under the floor's top and on or under it now,
+    // his middle within about a quarter of his width (and the ledge forgiveness) of its ends)
+    if (b.vy >= 0) for (let j = 0; j < w.N; j++) {
       const q = now[j];
-      if (py <= prev[j].y && b.y >= q.y && b.x > q.x - 20 && b.x < q.x + w.W + 20) return b.x >= q.x + margin && b.x <= q.x + w.W - margin;
+      if (py <= q.y + 14 && b.y >= q.y && b.x > q.x - 20 && b.x < q.x + w.W + 20) return b.x >= q.x + margin && b.x <= q.x + w.W - margin;
     }
-    prev = now;
     if (b.y > y + 200) return false;
   }
   return false;
@@ -4809,9 +4808,11 @@ export class FirstTimerRun {
     // (thumbLags, hopAim's clock): from nearer the lip than the board was flown (30 px), at some moments the hop carries past the bucket's
     // end and he slides off it (2-6 child Normal v2, the top wheel: 17 px short of the lip, in at its end, 2 scrambles. LAND-26c,
     // R-165.475). Every moment comes round once a bucket period: none in one, and he hops as before)
-    const hold = Math.max(who.hold[0], this.pressHold());
+    // (and at every hold the press can have: the wheel hop is held at least who.hold[0] (wheelHop), his draw above it as drawn)
+    const min = Math.max(who.hold[0], this.pressHold());
+    const holds = [min, ...(who.holdQ ? who.holdQ.map((h) => Math.min(1.5, h)) : [who.hold[0] + 1.5 * who.hold[1], Math.min(0.45, who.hold[0] + 3 * who.hold[1])]).filter((h) => h > min)];
     if (this.wheelBoardWait < 0) this.wheelBoardWait = e.gameTime;
-    const boards = thumbLags(who.thumb).every((lag) => hopBoards(w, p.x, p.y, w.way, hold, e.gameTime + hopAim(lag).clock));
+    const boards = thumbLags(who.thumb).every((lag) => holds.every((hold) => hopBoards(w, p.x, p.y, w.way, hold, e.gameTime + hopAim(lag).clock)));
     if (!boards && e.gameTime - this.wheelBoardWait < bucketPeriod(w)) return !who.holdQ && Math.abs(p.vx) > BONK.still ? (p.vx > 0 ? { left: true } : { right: true }) : {};
     this.wheelBoardWait = -1;
     this.wheelHop = who.hold[0];
