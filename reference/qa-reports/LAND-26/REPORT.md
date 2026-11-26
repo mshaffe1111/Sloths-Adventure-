@@ -1,5 +1,53 @@
 # LAND-26: 2-6 back on release 4's line (release 5), beat A's soil block (R-165.451)
 
+## EXACT NEXT STEP (session 5 LAND-26-e; branch t-land-26)
+**NEXT: the gates still RUNNING or QUEUED in "Session 5 gates" below.** Box 5 started them on frozen f738cc21d before its hand-over and
+finishes and records only those (D138). If box 5's container is gone: frozen tree at f738cc21d (worktree --detach; link node_modules;
+chattr -R +i src tools .github; chattr -i src/game/gen2/proven), each run_in_background with timeout 7200000, no shell '&':
+(a) the CI tool line = gates.yml line 157 verbatim; (b) the suite with `--test-shard=i/3`, i = 1..3 (CLAUDE.md's file list);
+(c) lockall: on a frozen c73cb9766 tree `lockall.ts --layouts 16 --out <scratch>/lock-base.json`, then on f738cc21d `lockall.ts --layouts
+16 --check <scratch>/lock-base.json --intended 2-6` (2-7 must show no move); (d) `paintcheck.ts --stages 2-6`, then `--part 0/3`, `1/3`,
+`2/3`; (e) `seedlist.ts 2-6 --check`, `registrycheck.ts`, `node tools/timecheck.mjs`, `teachFirstScan.ts --check`, `npx tsx --test
+tools/inspect/tierBots.test.ts` (9/9), `node tools/perf/drawcheck.mjs`, `node tools/perf/clipcheck.mjs`. castBots is DONE (no re-run:
+code unchanged). Then land on t-land-26 (no force) and send the lead the hash and one line per gate.
+Final head = **f738cc21d** (code = cb69a104e + tools/inspect/wheelStepOff.test.ts + its CI line entry; every gate below runs on a
+chattr-frozen tree at f738cc21d; lockall's base is a frozen tree at release 4's final head c73cb9766). Done in session 5:
+- **(1) The 14 untraced kid rows: ALL TRACED, one cause.** tools/divTrace.mts.txt runs each row with boardWatch+stepOff OFF and ON and
+  finds the FIRST frame whose pad differs (exact: before it the runs are frame for frame equal). All 14 (kid N 3 12 13 16 21 22 24 30 40,
+  kid E 8 23 30 32 33): **the stepOff settle press** (wheelRide's `off * w.way < -16` term) at a frame where he is in a bucket, behind its
+  middle by 16-52 px, inside his stand distance, and STILL SLIDING (|vx| 73-285 px/s): with it off wheelRide brakes (a press against his
+  motion), with it on it presses toward the middle. Session 4's tracer only counted a settle with |vx| < 5, so it missed these. Both runs
+  of all 14 equal their recorded rows (cast-7f9abaa55 and cast-stepOff-x3: end, time, rescues; 14/14). data/rule28/firstCause-14-div-cb69a104e.txt.
+  **Rule 28 on stepOff: 258/258 moved rows traced** (183 boardWatch wait, 45 stepOff refuse, 16+14 = 30 stepOff settle).
+- **(2) The stepOff toy: tools/inspect/wheelStepOff.test.ts, 2/2 GREEN on frozen f738cc21d, on the CI tool line (gates.yml:157).**
+  Way +1 = 2-6 adult Easy 12 (the top wheel): stepOff off: rescued at t 127.3 (last bucket #49 b1, way +1); on: 4 refusals (way +1),
+  the shrine, no rescue (PLANTED off = RED). **Way -1: no real case exists, so none is planted** (as box 3 said for boardWatch):
+  (a) on 2-6, the rescues with stepOff off (boardWatch on) are adult E 12, 33, 39 and middle E 37 on way +1 wheels, and adult E 13
+  on way -1 (#32 b2), where stepOff makes 0 refusals: it goes by a timing shift, not the skill (data/stepOff-rescueWhere-cb69a104e.txt);
+  (b) the toys (every toy wheel turns left; 7 tier/settings x 2 variants x 5 rows = 70 runs, stepOff on vs off): 65 equal, 5 differ in
+  time only (at most 0.3 s), no scramble or pond moved (data/stepOff-toySearch-cb69a104e.txt).
+- **(3) Gates ONCE on f738cc21d: see the table "Session 5 gates" below.**
+- **R-165.480 (the lead's number): KNOWN bounce-bot hole.** middle Easy 37's World 2 bounce flail (rescued at t 145.0, x 609 y 1013, with
+  stepOff off; gone with it on) is a timing shift into a bounce-bot hole, not a wheel (data/stepOff-me37-*.txt). Any timing change can
+  bring it back; it is a bounce-bot gap, owner the lead's list.
+- **KID_RUNS_59** (src/game/firstTimerBot.test.ts:177): inherited and held for Matt (R-165.473/.477), not ours.
+- **(4) For Friday's integration: the 2-6 rows that stop at a stand by water** (castBots 'water ahead' stuck lines on f738cc21d):
+  234/360 rows, 384 lines; by x (100 px bins): x~1200 105, ~300 45, ~1300 41, ~1100 40, ~1000 37, ~400 35, ~700 29, ~900 20, ~800 12,
+  ~1400 11, ~600 8, ~200 1; each bin's rows by name in data/stand-rows-f738cc21d.txt. (castBots' stuck lines carry x only, not the
+  piece, so a pad wait is not told apart from a stand wait there: ENG-THUMB's reader takes the rows from that file.)
+
+### Session 5 gates (frozen f738cc21d; one run each)
+| gate | result |
+|---|---|
+| tsc | PASS (0) |
+| wheelStepOff.test.ts | 2/2 PASS (ON clean, PLANTED off RED) |
+| castBots --proven 2-6 (seeds 1-40, both, every bot) | PASS: 360/360 the shrine; proven 39 (= the 7f9abaa55 set; 36 out, kid Easy 36 rescued, R-165.479 KNOWN); none under the floor (min 105.7 s); **equal to box 4's stepOff rows on all 360** (cast-stepOff-x3); vs 7f9abaa55: 257 rows moved in end/time/rescues + kid Easy 1 in stuck lines only = box 4's 258, all traced above. data/rule28/cast-final-f738cc21d.jsonl |
+| the CI tool line (gates.yml:157) | RUNNING at hand-over |
+| the suite, 3 shards | RUNNING at hand-over (shard 1) |
+| lockall --layouts 16, base c73cb9766, --intended 2-6 | RUNNING (base being recorded) |
+| paintcheck --stages 2-6, then the sweep (--part 0/3..2/3, depthSteps) | QUEUED after lockall (same stream) |
+| seedlist 2-6 --check, registrycheck, timecheck, teachFirstScan --check, tierBots, drawcheck, clipcheck | QUEUED after the CI line (same stream) |
+
 ## EXACT NEXT STEP (session 4 LAND-26-d hand-over, 4:35 PM ET Thu 11-26; branch t-land-26)
 Code head = **cb69a104e** (R-165.478 SKILLS.stepOff; the commit before this REPORT commit). The lead's numbers: R-165.478 the rideWheel
 board judge (boardWatch) AND its step-off (stepOff); R-165.479 the W residual (KNOWN, a lay packet after release 5). Done in session 4:
