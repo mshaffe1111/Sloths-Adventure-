@@ -1,6 +1,6 @@
 # ENG-BOTSIM: can the bots ask the GAME how a press flies? (R-165.462, spike; branch t-eng-botsim from c73cb9766)
 
-## EXACT NEXT STEP (session 2 hand-over, written 1:43 PM ET; order step 1 DONE with a NO-BACK result below; steps 2, 3 open)
+## EXACT NEXT STEP (session 2 hand-over, written 1:51 PM ET; order step 1 DONE with a NO-BACK result below; step 2 (a)-(b) DONE, (c) open; step 3 open)
 Tree: `git worktree add --detach ../bs-ci10 8134a9a56`; `npm ci --no-audit --no-fund --legacy-peer-deps` in the main tree (plain npm ci
 fails ERESOLVE), `ln -s <main>/node_modules ../bs-ci10/node_modules`; `git -C ../bs-ci10 apply <main>/reference/qa-reports/ENG-BOTSIM/
 proto-ci10-s2.patch` (REPLACES proto-ci10.patch: session 1's judge + session 2's fixes a-c, the band switch, the plan counters, the trace);
@@ -8,7 +8,20 @@ proto-ci10-s2.patch` (REPLACES proto-ci10.patch: session 1's judge + session 2's
 ../bs-ci10/tools/inspect/botsim/`. Switches: `BOTSIM=1` probe judge, `BOTSIM_BAND=1` judged lags mid +- 1 sd (default +- sd/2),
 `BOTSIM_STATS=1` a probe's time split at exit, `BOTSIM_STABLE=1` the never-changing stage objects at exit (stderr). Rows carry
 `botsim: {plans, deaths}` (lives lost inside a played plan or 0.5 s after it).
-1. **Step 2, the snapshot cut (first):** (a) `BOTSIM=1 BOTSIM_BAND=1 BOTSIM_STATS=1 npx tsx tools/inspect/castBots.ts --stage 2-4 --seeds 35
+1. **Step 2 (a)-(b) DONE (2-4 kid Easy 35, band 1, 285 probes):** a probe copies 3,115 objects on average in play (not session 1's 754 at
+   8 s): snapshot 2.84-2.97 ms + restore 3.43-3.54 ms = 6.3 ms of each 8 ms probe; the flight only 1.75 ms (17.2 frames, 0.10 ms a frame:
+   the early exit already works). The last probe's graph is 5,760 objects, 4,590 first met through engine.cueTables (engine.ts:1019,
+   7012: a memo of letGoTable(vine, len, dir, first log), keyed `id:dir:len`, cleared at 8 entries: pure derived data) and 346 through
+   chaseSpanFor (only [stage, chase, rolling]: key-order attribution). Under currentStage / drawPlats / proto, 516 of 633 objects never
+   changed in 5,059 frames (gen2 graph / drops / plan / barren / fills / falls / nodes / sections, proto dress / decor / beats, rivers,
+   meta.pieces, config); changed: platforms 40 of 168, collectibles 42 of 67, checkpoints 19, vines 13, proto.hints 3.
+   **Step 2 (c), NEXT:** in engineFork SHARE: (i) the cueTables Map and its tables (confirm letGoTable's result is never written after
+   it is made: grep its users; a probe adding or clearing an entry is then harmless, the live run recomputes the same table); (ii) the
+   516 never-changed stage objects, deep-frozen at the first probe (frozen = shared already; a write THROWS, so a wrong share is loud).
+   Expected: about 650 objects copied instead of 3,100-5,800, so snapshot + restore near 1.3 ms and a probe near 3 ms (MEASURE it with
+   BOTSIM_STATS; the last-graph line prints too). Then ONE x40 kid + adult, both settings, --par 4, timed, vs 62.3 s / 230 s (old) and
+   117.6 s / 447 s (session 1); a TypeError = a shared object that changes: take it out.
+   (The earlier plan for step 2, kept for its commands:) (a) `BOTSIM=1 BOTSIM_BAND=1 BOTSIM_STATS=1 npx tsx tools/inspect/castBots.ts --stage 2-4 --seeds 35
    --bots kid --setting easy` (one run, par 1): snapshot / fly / restore ms and frames a probe. (b) the same with `BOTSIM_STABLE=1`: how
    many of the ~620 objects under currentStage / drawPlats / proto never change (NOTE engine.platforms IS currentStage.platforms,
    engine.ts:1069: currentStage holds the moving logs, vines, foes; it cannot be shared whole). (c) share the never-changed set: deep-freeze

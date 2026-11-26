@@ -233,8 +233,15 @@ export function graphPrint(root: object): string {
  */
 /** ENG-BOTSIM step 2: where a probe's time goes (BOTSIM_STATS=1 prints it at exit) */
 export const PROBE_STATS = { n: 0, snap: 0, fly: 0, rest: 0, frames: 0, objects: 0 };
+let lastE: Record<string, any> | null = null;
 if (typeof process !== 'undefined' && process.env.BOTSIM_STATS) process.on('exit', () => {
   const q = PROBE_STATS, n = Math.max(1, q.n);
+  if (lastE) {
+    const seen = new Map<object, unknown>(), rows: Array<[string, number]> = [];
+    for (const k of Object.keys(lastE)) { const b0 = seen.size; deepFork({ v: lastE[k] }, undefined, seen); rows.push([k, seen.size - b0 - 1]); }
+    rows.sort((x, y) => y[1] - x[1]);
+    process.stderr.write(`PROBE last graph ${seen.size}: ${rows.slice(0, 12).map(([k, c]) => `${k} ${c}`).join(', ')}\n`);
+  }
   process.stderr.write(`PROBES ${q.n}: snapshot ${(q.snap / n).toFixed(2)} ms, fly ${(q.fly / n).toFixed(2)} ms (${(q.frames / n).toFixed(1)} frames, ${(q.fly / Math.max(1, q.frames)).toFixed(3)} ms a frame), restore ${(q.rest / n).toFixed(2)} ms, objects ${(q.objects / n).toFixed(0)}; total ${((q.snap + q.fly + q.rest) / 1000).toFixed(2)} s\n`);
 });
 
@@ -242,6 +249,7 @@ export function probe<R>(e: Record<string, any>, pads: ReadonlyArray<Parameters<
   const t0 = performance.now();
   const s = snapshot(e);
   const t1 = performance.now();
+  lastE = e;
   const f: Fork = { e, input: e.input as Record<string, any>, died: null, stats: { objects: s.pairs.size, ms: s.ms } };
   e.loseLife = (reason?: string) => { f.died ??= reason ?? 'life'; };
   e.softFall = () => { f.died ??= 'soft'; return true; };
