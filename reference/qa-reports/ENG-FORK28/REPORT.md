@@ -1,14 +1,21 @@
 # ENG-FORK28 REPORT (rule 26: the engine piece 2-8's build found missing). Started 6:17 PM ET 2026-11-26 (from the session hook date).
 
-## EXACT NEXT STEP (rewritten 6:50 PM ET from `date`, the box's hand-over; the frozen candidate is 408679c3d on t-eng-fork28)
-The piece and its toys are DONE (408679c3d). Only the gates of THAT candidate run past the box (D138), in the frozen worktree
-(scratchpad `cand/`, src chattr +i). IN: tsc 0; generalitycheck PASS; lockall --check vs e878b1f45: 101/102 unchanged, 2-8 the one
-moved (refused on both, see Gates). RED so far, each being run on the base e878b1f45 (scratchpad `base/`) to name inherited vs mine:
-shard 1 (746 pass, 6 fail: chaseRespawnReal, firstMet, postLay x2, pitPocket, stageSheets), the CI tools tests (433 pass, 3 fail +
-1 todo: registrycheck.test, hopJudged, pacerRespawn), storyTipScan (throws on 2-8: no seed builds cleanly), registrycheck (2-8 has
-no drawcheck scenario, no seed list, no judged scope: BUILD-28's registration, inherited). NEXT: read `base-*.log`; a red also red on
-the base is inherited (name it); a red green on the base is MINE: a stop, named here with its line. Then shards 2-6, kbdcheck and the
-seedlists tail; then the landing message to the lead only (each shard's totals for 408679c3d).
+## EXACT NEXT STEP (rewritten 7:00 PM ET from `date`; candidate 408679c3d is RED BY ME, the fix is the next session's (D138))
+FOUND (on 408679c3d's gates, checked on the base e878b1f45): a TOY wrote a fork it never meant. `src/game/gen2/toyHome.ts:59`
+POST_CODE = 'A Pg1> Xw1> R Fg1> R /D ...' (its comment: "a flow of ground"; F is the FORK letter, M is flow, nodeLetters.ts:42/45).
+Its brief is designed (dealExact, branching 'none'), so on e878b1f45 'none' turned that F into a practise; on 408679c3d the F is a
+fork, the toy's pool has no fork section, and every POST_CODE roll fails ("seedList: a proven plan has a loosened slot (n5 fork: no
+section for the job left ...)" / "the toy lays on most rolls (4 of 8)"). RED on 408679c3d, GREEN on the base: firstMet, postLay x2,
+easyRouted, pacerRespawn, hopJudged (2-7's post tests on the toy). PROVEN: with POST_CODE's 'Fg1>' written 'Pg1>' (what the base laid
+it as), firstMet 2/2, postLay 3/3, easyRouted 1/1, pacerRespawn 2/2 pass (a scratch edit in the main tree, restored, not committed).
+STEP 1: on t-eng-fork28, write POST_CODE's 'Fg1>' as 'Pg1>' (one letter; the toy then lays what it laid before, as it was laid:
+prove it by hashing buildGen2Stage(homeKit(id, POST_CODE)) seeds 1-12 x both settings on e878b1f45 vs the new head, equal).
+Fix the comment ("a practise of ground"). Grep every other code for an F with no roads (`/(^| )F[a-z]/`) under a dealExact brief
+(none found in src/game/gen2/worlds; toyHome's is the one). STEP 2: the new candidate's gates in full, unfrozen src this time
+(the chattr +i freeze made seedListChunk.test's mkdtemp fail EPERM: a harness fault of mine, not a red of the code; freeze only the
+files the gates must not change, or none). Inherited reds (red on the base too: name, never fix here): 2-8 itself (no seed of 24
+builds cleanly; storyTipScan, registrycheck, chaseRespawnReal, pitPocket, stageSheets, registrycheck.test, easyMode x4, levels x3,
+stageStart x2, harpy, artUse, w1NewArt in shard 2 all throw on 2-8), KID_RUNS_59 (R-165.473). Then the landing to the lead only.
 
 ## The piece (pipeline.ts `rolledGraph`, the fork count)
 - A DESIGNED graph (`GraphBrief.dealExact`, a level's arc) lays exactly the forks its code writes: its F nodes, at their places, every
