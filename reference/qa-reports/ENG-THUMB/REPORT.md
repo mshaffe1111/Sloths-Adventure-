@@ -1,6 +1,39 @@
 # ENG-THUMB: the kid-bot root fix (R-165.465) and release 5's rule-28 rows
 
-## EXACT NEXT STEP (hand-over 7, box 7 ENG-THUMB-g; written 4:55 PM ET 11/26 by `date`)
+## EXACT NEXT STEP (box 8 ENG-THUMB-h, the final checks on C14; written 5:24 PM ET 11/26 by `date`; the suite line added when it lands)
+Branch t-eng-thumb-wip. **Code = C14 1457e1daf** (no src or workflow change since: `git diff --name-only 1457e1daf HEAD -- src .github`
+is empty). On top, tests and data only: **9ccc5c14e** (the lead's ruling on CI red 357, ruling 4's method: UPSTREAM_LIVES re-planted
+at the SAME +5 bar on C14) and **5cfc9ca64** (the lead's ruling A: R-165.59's 1-1 calibration recommitted, BOTS.md line). Frozen trees
+(D115, chattr, proven writable): c14 = 1457e1daf, fin = 7bb313874, fin2 = 9ccc5c14e, fin3 = 5cfc9ca64. Data: d/box8/.
+1. **1-4 rows vs main**: 0 PASS -> FAIL (box 7, b5cef8ec6): C14 is 0 PASS -> FAIL on all five rule-28 stages (fail -> pass 2-1 31,
+   2-2 30, 2-4 74, 2-5 44; 1-4 in d/flips-main-vs-c14-fivebots.txt).
+2. **The CI line (gates.yml:157)**: on fin 7bb313874 (box 7) 432/434, one red 357 (child N 7: 1 -> 1 lives with the skill off, bar
+   +5). **Re-planted (9ccc5c14e)** from the scan on frozen C14 (d/up-c14-2-1-childmiddle-normal.txt, up.mts, 2-1 child + middle Normal
+   1-40, skill on / off): child N 7 -> 6 (1 -> 13, +12, clean both ways); 15 (+11) and 8 (+11) kept; the rescue case 16 kept (0 ->
+   rescued, 8 lives); no middle seed reaches +5 (best +4). **CI line on frozen 9ccc5c14e: exit 0, 496 s, 433 / 434 pass, 0 fail, 1 todo**
+   (d/box8/ciline-9ccc5c14e.txt; the 4 bot test files riverRide, lianaRide, firsttimer, castBots are on this line, all GREEN).
+   5cfc9ca64 changes only reference/ data no test on that line reads (calibration-main.jsonl is read by tierBots.test.ts, gates.yml:177).
+3. **2-7 x40** (castBots 2-7 1-40, adult/child/middle/expert, both settings, frozen 5cfc9ca64): **38/40** seeds every row passing (bar
+   29); the two misses are child Normal (seed 5: shrine, 0 lives, 1 rescue at x 11,611 'set down here 8 times'; seed 34: shrine, 2
+   lives, 1 rescue at x 14,201); every other bot and setting 40/40 (d/box8/2-7-5cfc9ca64-table.txt).
+4. **pacerLay 23/23** (frozen 7bb313874, 26 s). **The 10 races: all WON** (margins.mts, identical to ENG-PLANT/tools on
+   origin/release-0.10.3-wip-plant-c-report; margin -15.96 to -35.70 s; home Easy 2 lost 1 life in the race and still won;
+   d/box8/margins-fin-7bb313874.txt).
+5. **tierBots**: on fin 7bb313874 **8/9, RED** at tierBots.test.ts:133 (114 of 200 1-1 calibration runs moved: the C-series bot code;
+   the pin was never run on the earlier candidates). Brought to the lead; **ruling A** (BOTS.md's own procedure): re-run, check the
+   table, recommit. Re-run on frozen fin (237 s): **every tier verdict holds** (child E/N, middle E/N fail and expert N passes, as
+   committed; no check flips), no life and no end moved, ONE rescue moved (child Normal v14 1 -> 0; child N's total 3 -> 2)
+   (d/cal/calcmp-main-vs-c14.txt). Recommitted 5cfc9ca64. **tierBots on frozen 5cfc9ca64: 9/9.**
+6. **tsc** exit 0 (frozen 7bb313874; no src change since).
+7. **The suite in shards** (deploy.yml:38, --test-shard i/6, frozen 5cfc9ca64, run_in_background, timeout 7200000): RUNNING
+   (scratch suiteA/suiteB). Expected ONE red: KID_RUNS_59, src/game/firstTimerBot.test.ts:177 (R-165.473/.477, HELD for Matt; not touched).
+- Box 8's slip, owned: one up.mts launch used a shell '&' inside a background command; stopped within seconds, and re-run as two
+  separate background commands before any result was read.
+- **Lessons applied:** D115 (four frozen chattr trees, proven writable), D119 (commit messages from files), D122 (suite timeout 7200000),
+  D123 (the suite started only after 2-7's run finished), D128 (stamps by `date`), D134 (pushed and ls-remote before any hand-over),
+  D140 (ReadNotifications at each step), D141 (the CI line on the re-planted head before the final checks).
+
+## Hand-over 7 (superseded by box 8; box 7 ENG-THUMB-g; written 4:55 PM ET 11/26 by `date`)
 Branch t-eng-thumb-wip, head = the commit that adds this text. **Code = C14 1457e1daf**: C12's feet read narrowed to ONE shape, the
 one 2-1 child Easy 3 proved: where his middle is past the front of a drifting log RUNNING BACK AT HIM, the log by his feet counts only
 for the upstream gate's judged hop to the next log (floatSure's `next`, the aim held, gateSees 24 px), pressed from where he stands;

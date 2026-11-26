@@ -1,0 +1,10 @@
+home normal 1 | him 92.3 boat 115.91 | margin -23.61 | WON | race lives lost 0 | end shrine
+home normal 2 | him 93.6 boat 114.04 | margin -20.44 | WON | race lives lost 0 | end shrine
+home normal 3 | him 97.7 boat 113.66 | margin -15.96 | WON | race lives lost 0 | end shrine
+post normal 4 | him 94.9 boat 124.4 | margin -29.50 | WON | race lives lost 0 | end shrine
+post normal 5 | him 95.5 boat 127.7 | margin -32.20 | WON | race lives lost 0 | end shrine
+home easy 1 | him 78.1 boat 108.37 | margin -30.27 | WON | race lives lost 0 | end shrine
+home easy 2 | him 75.9 boat 107.02 | margin -31.12 | WON | race lives lost 1 | end shrine
+home easy 3 | him 89.6 boat 106.77 | margin -17.17 | WON | race lives lost 0 | end shrine
+post easy 4 | him 83.6 boat 117.03 | margin -33.43 | WON | race lives lost 0 | end shrine
+post easy 5 | him 83.8 boat 119.5 | margin -35.70 | WON | race lives lost 0 | end shrine

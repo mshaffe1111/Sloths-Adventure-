@@ -1,0 +1,5 @@
+not ok 9 - every committed run (all 200) replays exactly as committed
+# tests 9
+# pass 8
+# fail 1
+    114 of 200 runs moved: re-run the calibration and recommit calibration-main.jsonl (BOTS.md)
