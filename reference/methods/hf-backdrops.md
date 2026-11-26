@@ -62,7 +62,7 @@ The strips must look right both upright (412x915) and sideways (915x412).
 - Examples at the bar: `hf-backdrops2/w3-before-after.jpg` (3-2, 3-8) and `w8-before-after.jpg` (8-5, 8-7).
 
 ## Checks before reporting
-1. `npx vite --port=4301 &` (and the release in a `git worktree` on 4302 for the befores).
+1. `npx vite --port=4301` with the Bash tool's run_in_background, never a shell '&' (R-165.469; the ampgate hook refuses one) (and the release in a `git worktree` on 4302 for the befores).
 2. `SIZES=412x915,915x412 PORT=… node tools/art/hfbackdrops/audit.mjs <dir> <stages…>` for every stage whose set changed, before and
    after. It places Pokey 45% along and waits for the game after any dev-server reload.
 3. `python3 -I tools/art/hfbackdrops/sheet2.py <before> <after> reference/prop-sheets/qa-notes/<job>/` makes one sheet per world.

@@ -13,7 +13,7 @@ same container.
    ```
    git stash   # or check out the before commit
    npx vite build && cp -r dist /tmp/dist-before
-   npx vite preview --outDir /tmp/dist-before --port 4501 --host 127.0.0.1 --strictPort &
+   npx vite preview --outDir /tmp/dist-before --port 4501 --host 127.0.0.1 --strictPort   # with the Bash tool's run_in_background, never a shell '&' (R-165.469)
    # the same for the after build on 4502
    ```
 2. **Frame times of the first 10 s of play:** `node tools/perf/firstframes.cjs http://127.0.0.1:4501/ <stage> 448x998 1 3`
