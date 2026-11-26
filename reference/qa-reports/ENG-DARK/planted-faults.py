@@ -47,8 +47,9 @@ PLANTS = [
     # (ENG-DARK-d) unlit cause 2: the stop taken facing away is never turned to the rim; the give-up kept for the whole run
     ("the dark stop never turns him to face the rim", 'tools/inspect/firsttimer.ts',
      'if (p.facing !== rim.dir && stop.turn !== 2 && !this.who.noGlowTurn) {', 'if (false) {', "stop FACES the rim", 'src/game/gen2/darkBots.test.ts'),
+    # (ENG-DARK box 25) re-anchored: box 22's c16 (23fae3c18) changed on(r) to held(r) on this line; NO ANCHOR (no plant test) from c16 to c18
     ("a dark give-up kept for the whole run", 'tools/inspect/firsttimer.ts',
-     '    if (this.glowGaveUp.size && p.grounded) for (const r of this.glowGaveUp) if (!on(r)) this.glowGaveUp.delete(r);', '', "give-up ends with the visit", 'src/game/gen2/darkBots.test.ts'),
+     '    if (this.glowGaveUp.size && p.grounded) for (const r of this.glowGaveUp) if (!held(r)) this.glowGaveUp.delete(r);', '', "give-up ends with the visit", 'src/game/gen2/darkBots.test.ts'),
     # (ENG-DARK-d) unlit cause 3: the stop reads only the route's way, never the steer the thumb presses
     ("the dark stop never reads the pressed steer (glowSteer not called)", 'tools/inspect/firsttimer.ts',
      '    this.glowSteer(out);\n', '', "stop reads the THUMB", 'src/game/gen2/darkBots.test.ts'),

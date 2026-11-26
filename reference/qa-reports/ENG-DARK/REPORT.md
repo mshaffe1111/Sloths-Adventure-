@@ -13,6 +13,10 @@ the SAME frozen candidate only (a red = stop and bring it to the lead): the plan
 (deploy.yml's line, --test-shard=i/6, run_in_background + timeout 7200000; the one known red is KID_RUNS_59, R-165.473), then LAND on
 t-eng-w3 (88592a9c4; merge, no force, conflicts named), dark/darkBots/castBots + lockall on the merged head, push, and the hash to
 the lead AND ENG-SPORE-b (session_01FhBbYKP2XcqtZ8GRH6Jn5h). LANDED by 8:30 PM ET; HARD STOP 9:30 PM ET.**
+**Box 25 plants (frozen 2c5a49f13, c18's code): 47/47 CAUGHT** after one re-anchor (the lead: YES). The full run gave 46 CAUGHT and
+1 NO ANCHOR: plant 15, "a dark give-up kept for the whole run". Box 22's c16 (23fae3c18) changed that line in firsttimer.ts from
+`if (!on(r))` to `if (!held(r))` (firsttimer.ts:3540), so THIS FAULT HAD NO PLANT TEST FROM c16 TO c18. Re-anchored to the c16 line and
+run alone: CAUGHT ('give-up ends with the visit'). None NO TEST or BASE RED.
 **Box 25 (ENG-DARK-y) lessons applied:** D115 (frozen trees, the plants in their own tree since the script edits it), D119 (no heredoc
 in a commit's && chain), D128 (stamps from `date`), D134 (pushed and ls-remote'd before the hand-over), D138 (after the hand-over only
 the same candidate's gates and the landing), D140 (ReadNotifications at each step boundary), D141 (the CI line on this candidate).
