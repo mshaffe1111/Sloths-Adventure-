@@ -55,6 +55,13 @@ Re-fetch t-eng-29-wip (head d1038af49 or this REPORT commit after it). Run ReadN
 
   Every miss is water (a let-go that falls short or long of the log); none is a harness read. lockedDrops' model says one=true on all four.
   The LATE side is the short one: at lock 0.92 ONE sits near the end of the landing run (Normal: 5 frames late, 14 early at grip 0.7).
+- **The lock moves ONE inside its run (seed 1, 4 bars, scratch tree only: TEMPO_29.lock from an env var there, never committed)**,
+  worst early / late over both lianas and grips: lock 0.85 Normal 0.07 / 0.43, Easy 0.17 / 0.57; **0.88** Normal 0.20 / 0.33, Easy
+  0.30 / 0.43; **0.90 Normal 0.30 / 0.23, Easy 0.37 / 0.33**; 0.92 Normal 0.37 / 0.17, Easy 0.47 / 0.23. The run is about 0.67-0.73 s
+  wide on Normal and 0.83-0.90 s on Easy at every lock; lockedDrops' `one` reads true at all of them (it cannot tell them apart).
+- **PROPOSED BAR (sent to the lead; the lead sets it)**: tempoFaults refuses a court liana whose press on ONE has under **0.20 s (6
+  frames) on either side on Normal, 0.30 s (9 frames) on Easy**, worst over LIANA_RIVER.grips and the joint cycle's swings. 0.92 fails
+  it (Normal late 0.17 s); 0.90 passes (Normal 0.30 / 0.23, Easy 0.37 / 0.33), a data move for BUILD-29 (TEMPO_29.lock 0.90).
 
 ## ENG-29-e (box 1 hand-over, 6:22 PM ET Thu 11/26 by `date`): G3 and G2 DONE on t-eng-29-wip; G1, G6 and the landing NOT started
 
