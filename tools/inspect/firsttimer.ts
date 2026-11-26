@@ -82,7 +82,7 @@ import type { Stage } from './stages.ts';
 import { liftStop } from '../../src/game/lift.ts';
 import type { FollowPlay } from '../../src/game/followPlay.ts';
 import { highRoad, type FloodClock } from '../../src/game/flood.ts';
-import { FLOOD_HOP, FLOOD_STEP } from '../../src/game/gen2/floodLay.ts';
+import { FLOOD_FORK_JUMP, FLOOD_HOP, FLOOD_STEP } from '../../src/game/gen2/floodLay.ts';
 import { bucketAngle } from '../../src/game/wheel.ts';
 import { WHEEL_FLOWN } from '../../src/game/gen2/wheelFlights.data.ts';
 import { flownKey } from '../../src/game/gen2/wheelLay.ts';
@@ -158,6 +158,13 @@ export const ROAD_TRIPS = { n: 0 };
 
 /** px before the roads part (the high road's first piece) that he reads a flood's low road: a stride and a half, still on the near bank */
 export const FORK_READ = 300;
+/**
+ * The fork's jump (BUILD-28, R-165.430 (2); level.md rule 21: tools/inspect/lineBot.test.ts plants it off -> RED): the bot reads a flood's
+ * high road as floodLay lays it (flood.ts highRoad with FLOOD_FORK_JUMP: the link off the wall-step may be a short jump across, not only a
+ * hop), so a fork whose W stands back from the water reads as a fork and the low road stays his own. Off: the read refuses W's jump link,
+ * no road is read, and the way's route takes him up W at a press.
+ */
+export const FORK_JUMP_SKILL = { on: true };
 /**
  * The cage skill (ENG-CAGE 11-20; level.md rule 21: tools/inspect/cageBot.test.ts plants each off -> RED). PUNCH: a cage (a collectible
  * of type 'cage' a puzzle kit does not hold) within his reach ahead at his height: he stops, his tier's own hesitation, and punches until
@@ -2808,7 +2815,7 @@ export class FirstTimerRun {
     const dir: 1 | -1 = low.deep.near.x < low.x0 ? 1 : -1;
     const [edge, far] = dir > 0 ? [low.x0, low.x1] : [low.x1, low.x0];
     const tops = this.sim.platforms.filter((q) => q.type === 'solid' && !q.pad && !q.broken && q.y < low.lip - 1).map((q) => ({ x: q.x, w: q.width, y: q.y, h: q.height, q }));
-    const road = highRoad(tops, { x0: low.x0, x1: low.x1, from: { x: edge, y: low.lip }, to: { x: far, y: low.lip } }, FLOOD_STEP, FLOOD_HOP);
+    const road = highRoad(tops, { x0: low.x0, x1: low.x1, from: { x: edge, y: low.lip }, to: { x: far, y: low.lip } }, FLOOD_STEP, FLOOD_HOP, FORK_JUMP_SKILL.on ? FLOOD_FORK_JUMP : FLOOD_HOP);
     if (road.faults.length || !road.chain.length) return;
     const nearOf = (q: { x: number; w: number }) => (dir > 0 ? q.x : q.x + q.w);
     const farOf = (q: { x: number; w: number }) => (dir > 0 ? q.x + q.w : q.x);
