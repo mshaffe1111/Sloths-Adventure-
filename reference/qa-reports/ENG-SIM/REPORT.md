@@ -32,7 +32,7 @@ CPU is a finding to bring to the lead). Nothing lands on release-0.10.3, main or
   auto-merged (this lane's hunks: the PlanPlayer import, setPlan / planNext, the loop's planNext() ?? pad(); C6..C14's hunks untouched).
   The gate's MEMOS list re-read for ENG-THUMB's rng().fork(): a closure on the bot's own stream (firsttimer.ts rng), no module binding,
   so nothing new for the gate. **Checks on a chattr-frozen worktree of 114944b5b:** tsc PASS; pressPlan.test + engineProbe.test 7/7
-  PASS (12 s); the CI tool line (it carries the probe-equality gate): RUNNING at this commit (no red in its first 296 tests; the result in the next commit).
+  PASS (12 s); the CI tool line (it carries the probe-equality gate) PASS: 445 tests, 444 pass, 0 fail, 1 todo (chaseBots' CHILD-on-Normal fork, OPEN, ENG-B4), 580 s. C14's own line was 434 (433 + the todo, box 8 on 9ccc5c14e); the merge adds the gate's 11: every pinned row C14 carries (riverRide, padRide, lianaRide, hopJudged, chaseBots, pitClimb...) passes, and the gate is 11/11 (the planted B3 + one seed of every world: answers thrown away, the run is the unprobed run). **No row moved by the merge of the probe onto C14.**
 - **1a-i, CANDIDATE 0b92b3fcb: vineFromLog's STANDING press judged and played on the engine.** The judge flies the stand plan
   (standPlan: the thumb's tail as thumbify leaves a bare stand (standTail: none while travelling or slipping; an armed lift-off's frames
   left; else his median lift-off, no draw: a drawn one is his own future fumble foreseen), the press on pressIn(lag)'s frame, held
