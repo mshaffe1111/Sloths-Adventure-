@@ -5,9 +5,11 @@ recurs). c16's x40 NOT RUN TO THE END (lane 1 was started in box 22's container,
 of the head (`git worktree add --detach <dir> <head>`, node_modules symlinked, D115), then c16's ONE x40, 2 lanes in the background
 (`GEN2_DRAFT=3-1 npx tsx tools/inspect/castBots.ts --stage 3-1 --seeds 1-20 --setting both --par 2 --rows reference/qa-reports/ENG-DARK/cast-3-1-x40-e5c09807-lane1.jsonl`,
 21-40 as lane2, about 7 min), `python3 x40verdict.py cast-3-1-x40-base-c1008d8e.jsonl <lanes>` + `python3 kinds.py <lanes>` vs THE BAR
-(shrine 360/360, unlit <= 5, no loop of 10+, no rescue kind new against the base per the ruling). With it, rule 28: `npx tsx
-reference/qa-reports/ENG-DARK/probes/flows.mts` on the frozen tree (every shipped build's gen2.tower.flow, layouts 1-16, both settings;
-expect 'going down: none': wayRises reads only flow 'down'; NOT FINISHED in box 22, it ran over 10 min). On the bar: dark.test + darkBots.test
+(shrine 360/360, unlit <= 5, no loop of 10+, no rescue kind new against the base per the ruling). Rule 28 for wayRises is SHOWN (box 22,
+probes/flows.mts on frozen c3709f45, rule28-flows-c3709f45.txt): 102 shipped stages, 3,264 builds (layouts 1-16, both settings), 0
+errors; gen2.tower.flow: 3,232 no tower, 32 'up', going down: NONE: wayRises reads only flow 'down', so no shipped row moves (tierBots
+9/9 box 21). c16's lip hold and RimWatch.put act only where a stage has glowworm dark (3-1 alone): castBots.test + lockall on the
+merged head show the rest. On the bar: dark.test + darkBots.test
 + castBots.test WHOLE on the frozen tree (2 at a time), `python3 reference/qa-reports/ENG-DARK/planted-faults.py <frozen>` all CAUGHT (plants
 43-46 new since c13: wayRises, the lip hold, RimWatch.put, placeAt's put; none NO TEST or BASE RED), the gates ONCE (the CI tool line on a
 FULL tree; suite shards run_in_background + timeout 7200000), then LAND on t-eng-w3 (88592a9c4; merge, no force; box 22's trial merge
@@ -32,7 +34,7 @@ crossing). Toys, all GREEN on the edited tree (preliminary; box 23 runs them WHO
 lip" (child Easy 8, rim 515,4375: held past the end, not gone over dark) + its RED (noLipHold: gone over dark, c15's crossing); dark.test
 "a put-back (a rescue) ... is no crossing" + its RED (the old watch counts it); darkBots "the bot's own put-back (placeAt ...)"; the roll 19
 lip toys still GREEN on c16. Plants added: 44 (held = on), 45 (put() a no-op), 46 (placeAt without put). tsc 0.
-**NOT DONE (box 23):** c16's x40 + verdict, rule 28's flows probe result, kind A's R-id, the WHOLE tests + plants, gates, landing.
+**NOT DONE (box 23):** c16's x40 + verdict, kind A's R-id, the WHOLE tests + plants, gates, landing.
 Lessons applied: D115 (frozen trees for every verdict run; the instrumented copy separate), D119 (no heredoc in a commit chain), D128 (stamps
 from `date`), D134 (pushed and ls-remote checked before the hand-over message), D138 (this note ends box 22's new work), D140, D141.
 LEARNED: when a bot change re-rolls every row, the new misses are first set against the changed reads (log each flipped read with t, x, y):
