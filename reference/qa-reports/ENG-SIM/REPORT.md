@@ -1,20 +1,23 @@
 # ENG-SIM: the bots ask the GAME how a press flies (R-165.470; packet reference/packets/2026-11-26/ENG-SIM.md on the lead's branch)
 Branch t-eng-sim from origin/release-0.10.3 c73cb9766. Nothing here lands on release-0.10.3, main or a release 5 branch.
 
-## EXACT NEXT STEP (box 1 hand-over, written 2:25 PM ET)
-1. Read the two gate runs box 1 started (frozen worktrees under /home/user/wt; if the container was replaced, re-run them: they are
-   `git worktree add --detach <dir> <hash>`, symlink node_modules, `chattr -R +i <dir>/src <dir>/tools`, then
-   `npx tsx --test tools/engine/probeEqual.test.ts` with run_in_background and timeout 7200000):
-   - RED run on 90f57a345 (gate planted, no seam): expected RED on the planted B3 case (tipMemory's leak). Record the failing line here.
-   - seam run on 74ba58873 (tipMemory, guideShown, helpLadder registered): every world's test. Any `module store X changed` or
-     checkpoint diff names a store the seam still misses: register it in its module with `playStore(...)` (src/game/playStores.ts),
-     or, ONLY if it is a memo of pure inputs or a read-through cache of the phone, add it to MEMOS in tools/engine/probeEqual.test.ts
-     with why. A diff in the graph (not a store) is a closure or an accessor the snapshot misses: trace it, do not allow-list it.
-   - The box-1 result is below under "Gate"; box 1's run of the result may have finished: check `Gate` first.
-2. When the gate is GREEN on a frozen tree of HEAD: the CI tool line (gates.yml's `npx tsx --test tools/...` line, about 10 min) and
-   the suite in 3 shards (`--test-shard=i/3`, CLAUDE.md Checks glob), tsc, generalitycheck: the step 1 candidate. Put the times here.
-3. Step 2 (the core): PressPlan + planFlies on probe() + the plan queue in FirstTimerRun (the prototype's playPlan: thumb hand-back,
-   a death or a life lost drops the plan; spike patch proto-ci10-s2.patch lines 43-126) with NO judge using it, and ONE invariant test.
+## EXACT NEXT STEP (box 1 hand-over, written 2:27 PM ET): make the gate GREEN; three causes are named, fix them in this order
+Box 1's two gate runs both finished RED, 0/11 (4 min 15 s each; logs were in box 1's scratchpad, the counts below). The planted leak is
+PROVEN: tipMemory `sent` and `byText` changed in a probe 6 times each on 90f57a345 (no seam) and 0 times on 74ba58873 (the seam).
+1. THE GATE'S OWN ARTIFACT (every world's checkpoint 0): src/game/sceneSeed.ts `seed` (line 8, drawn with Math.random, line 32) and
+   `listeners3` differ between the two module worlds at import. Fix in tools/engine/probeEqual.test.ts `before`: import BOTH worlds
+   under one seeded stream (`Math.random = rng(7)` before each `import(file + ...)`, put back after), so the worlds start equal.
+2. src/game/clock.ts `WALK` (line 85, `{ i: 0, s: 0, c: 0 }`) and `QW` (line 86, `[0, 0]`) changed in 32 / 4 probes: read them. If each
+   is a scratch buffer written before every read (no value survives a call), add it to MEMOS with that proof (a unit test that a call
+   never reads them before it writes them); if any value survives a call, register it with playStore in clock.ts.
+3. "the graph print changed" after 26 probes (e.g. B3 probe 150, harness 0 frame 450; 1-1 probe 170, harness 1 frame 360): a real
+   leak in the harness graph. Trace it: in the watch, on a changed print, split both prints on ' ' and print the 30 tokens around the
+   first difference (as firstDiff does); the likely kinds are a closure the snapshot cannot reach, an own accessor property (restore
+   skips accessors), or a non-writable field. Fix at the source (save/load, or move the state onto the engine); never allow-list it.
+4. Re-run the gate on a frozen worktree of the new HEAD (`git worktree add --detach`, symlink node_modules, `chattr -R +i src tools`,
+   run_in_background + timeout 7200000; about 4 min). GREEN: record it under "Gate" below with the hash.
+5. Then the step 1 candidate: the CI tool line (gates.yml `npx tsx --test tools/...`, about 10 min), the suite in 3 shards, tsc,
+   generalitycheck, timecheck (`--range c73cb9766..HEAD`). Then step 2 (the core; packet step 2; prototype: proto-ci10-s2.patch 43-126).
 
 ## Step 1: THE SEAM (box 1 from 2:07 PM ET)
 - **The probe moved to src/game as a tested tool:** src/game/engineProbe.ts (the spike's snapshot / fly / restore in place; it now flies
@@ -34,7 +37,8 @@ Branch t-eng-sim from origin/release-0.10.3 c73cb9766. Nothing here lands on rel
   (1) graph print equal after a probe (every 10th probe; the module stores every 200th); (2) checkpoints every 900 frames per harness
   and the end: graph + every module store equal; (3) the kid's whole FTRun (wall ms aside) equal. One seed of every world (1-1 s3, 2-4
   s35, 3-1 .. 10-1 s1) and the planted case (the spike's B3: 2-4 s35 Easy, 900 frames of a fixed pad).
-- **Gate:** RED on 90f57a345: (pending, see step 1). GREEN on 74ba58873: (pending).
+- **Gate:** box 1: RED on 90f57a345 (no seam): 0/11, tipMemory sent/byText 6+6, clock WALK/QW 32/4, graph print 26, sceneSeed. RED on
+  74ba58873 (seam): 0/11, the same minus tipMemory. GREEN: not yet (next step items 1-3).
 
 ## Pushback
 - physics `framesFlown` (on the packet's list) is the reach MEMO's own cost counter (read only by reachFill.test.ts R-165.207); a probe
@@ -45,4 +49,5 @@ Branch t-eng-sim from origin/release-0.10.3 c73cb9766. Nothing here lands on rel
   recorder's bindings like every other store.
 
 ## Hours (LEVEL-LOG style; the spike sized step 1 at 4 h)
-- Box 1 from 2:07 PM ET (28 min), step 1 about 70% (tool, seam, gate, unit tests; the gate's verdict and any further store pending).
+- Box 1 from 2:07 PM ET (28 min): the tool, the seam (3 stores), the store finder, the gate (planted RED proven), unit tests 6/6.
+  Left for step 1: the 3 causes above and the candidate's checks (about 1.5 h more, against the spike's 4 h).
