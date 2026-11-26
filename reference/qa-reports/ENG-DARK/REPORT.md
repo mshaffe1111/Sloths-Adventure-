@@ -1,5 +1,24 @@
 # ENG-DARK REPORT (the dark + light ring as one gen2 brick; WORLD-3-PLAN F2; R-165.449)
-**EXACT NEXT STEP (ENG-DARK-v box 22 HAND-OVER, 4:37 PM ET by `date`; head on t-eng-dark-wip = this commit). CODE CANDIDATE c16 =
+**EXACT NEXT STEP (ENG-DARK-w box 23 HAND-OVER, 4:58 PM ET by `date`; head on t-eng-dark-wip = this commit; code = c47fa1e34 =
+c16 e5c098072 + the #18 test fix). c16's x40 is ON THE BAR and the lead ruled it so (shrine 360/360, unlit 5, max loop 7; child N 15 x 856 = R-165.482, not a
+stop). Kind A = R-165.481. STEP (2) IS NOT GREEN: on frozen c16 dark.test 20/20, castBots.test 16/16, darkBots.test 25/28 RED #12 #13 #18.
+#18 (the noTurnRoom plant's RED, c16's: the lip hold stops the walk-off it plants): FIXED per the lead's ruling in c47fa1e34 (the plant
+plants noLipHold WITH noTurnRoom; a new toy "the lip hold alone holds at the rim's very edge" GREEN expected; R-165.483 after the landing:
+is the turn room still needed alone). NOT YET RUN: both toys on a frozen c47fa1e34. #12 and #13 are THIS LANE'S, bisected on frozen trees
+(--test-name-pattern): #12 "the seam run's end picked by his facing (seamByFacing, the plant) ... (RED)": GREEN at 119680d33 (box 16),
+RED from b32b0f5ee (box 17: "a walled end is no way off", tower.ts walledEnd) on (b1c17c9b1, 8cc3a319a, a1d6a529c, c13 4bfa3fbee, c14,
+c15, c16): the plant no longer walks to and fro (most over one rim: 1): walledEnd likely took away the end the plant's facing picked.
+#13 "on Normal roll 15 the expert steps off its open end and reaches the shrine (GREEN)": GREEN on c13 4bfa3fbee, RED from c14 040a56547
+(box 20: going down, a catch over a slot within one plain jump) on: 'time' at the 200 s cap (last stuck lines 'in a dip 131 px deep, a drop
+of 122 px ahead, the way on is 122 px down', 'a drop of 178 px ahead, the way on is 134 px down'). The lead: "if they are this lane's, fix
+where the cause is". BOX 24 FIRST: ReadNotifications; npm install --legacy-peer-deps + unshallow fetch in the background (no shell &);
+frozen trees; (a) #12: diff b32b0f5ee^..b32b0f5ee, run the seamByFacing toy with probes/stk.mts-style frames on b32b0f5ee^ vs b32b0f5ee, find
+why the plant's to-and-fro is gone (a real fix, or the plant needs walledEnd off too: ASK the lead before a plant change, law 22);
+(b) #13: the expert Normal roll 15 on c13 vs c14 (stk.mts with frames, cap 200): where c14's catch reach sends him; fix at the cause;
+(c) then darkBots WHOLE + dark + castBots on a frozen head, ALL plants (planted-faults.py, 43-46 included), the gates ONCE, LAND on
+t-eng-w3 (88592a9c4; the trial merge of 434f22f7 was CLEAN). Any engine or bot change re-runs the x40 (the bar above). LANDED by 8:00 PM ET;
+word at 7:30 if it slips; HARD STOP 9:00 PM ET. Box 23's own miss: one bisect step ran two tests with a shell '&' + wait (forbidden; not again).**
+**(was) EXACT NEXT STEP (ENG-DARK-v box 22 HAND-OVER, 4:37 PM ET by `date`; head on t-eng-dark-wip = this commit). CODE CANDIDATE c16 =
 e5c098072 (c15 + the lip hold + kind C), the lead's rulings in hand (GO c16; kind C IN as a measurement fix; kind A named and left unless it
 recurs). c16's x40 NOT RUN TO THE END (lane 1 was started in box 22's container, gone with it): BOX 23 FIRST: ReadNotifications; frozen tree
 of the head (`git worktree add --detach <dir> <head>`, node_modules symlinked, D115), then c16's ONE x40, 2 lanes in the background
