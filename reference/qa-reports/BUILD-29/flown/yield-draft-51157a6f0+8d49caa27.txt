@@ -1,0 +1,7 @@
+2-9 draft normal, seeds 1-40: clean 0 of 40 (0%)
+  stopped | first | alone | rule
+       40 |    40 |    40 | river: river at x=#: a log every # s, over #
+2-9 draft easy, seeds 1-40: clean 0 of 40 (0%)
+  stopped | first | alone | rule
+       40 |    40 |     0 | river: river at x=#: a log every # s, over #
+       40 |     0 |     0 | Easy could not lay Normal's plan

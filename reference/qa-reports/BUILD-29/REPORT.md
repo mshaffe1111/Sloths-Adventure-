@@ -2,17 +2,30 @@
 Branch t-build-29, cut from origin/t-eng-29 = 098047713 (the lead's named base). Session 1 started 5:45 PM ET Thu 11/26 (by `date`).
 
 ## EXACT NEXT STEP (session 2 hand-over, BUILD-29-b; STEP 0 (b)/(c) NOT yet sent as a whole; GO not given: nothing laid)
+**RULED (A), the STONES (the lead's reply to box 2):** the court's stones are WIDE snap stones, 130 px: Normal 130 + 60, Easy 130 + 50,
+flown again on the landed piece before use. A pieces lane, ENG-STONE29, builds a second flown snap-stone width (SNAP_LAY a 130 px stone
+with its own gap band MEASURED on the real engine; snapFaults and rideLay's judge read the band per stone width; 2-5's 80 px stone
+unchanged), landing on t-eng-stone29; the lead gives its hash to this box. Beats 5 and 8 are NOT re-designed. The lead's words: "The next
+box lays everything else in the court (pads 130/50 as flown, the rest of the beats) and drops the stones in when ENG-STONE29 lands."
+(Confirm with the lead that this is the GO for laying, rule 25, before the first laid line, if the GO message is not plain.)
 0. Re-fetch t-build-29, t-eng-29-wip and the lead's branch; ReadNotifications (D140). THE GOAL IS RULED AND LAID: the lead's A (countSet,
    7 seated: beat 5 three, beat 8 four, goal 5 of 7, Easy easyMode's share), in the draft at this head; seeds 1,2,3,5,8 both settings
    roll with ONE error left, the barge's 'a log every 5.7 s, over 4' (+ its echo on Easy). READ THE LEAD'S REPLY on the STONES (sent
-   this session, design level: built 80 px at 30 px lose the design's counts; (A, recommended) a pieces lane makes a 130 px snap stone,
-   judged by pitch, laid 130 + 60 Normal / 130 + 50 Easy and flown again; (B) re-design beats 5 and 8 on the 30 px counts; (C) the
-   lead's row). No reply in 20 minutes: (A) stays a recommendation in the REPORT only (it needs an engine lane).
+   this session): RULED (A), above.
 1. ENG-29-e's G3 is on t-eng-29-wip 8d49caa27 (NOT landed on t-eng-29; its message: RiverRow look 'barge', w2-next#barge, logW 384 ->
    ~504 whole; riverFaults judges a barge row by 2 bars of the stage's tempo (riverLay.ts BARGE_BARS) ONLY when the brief has a tempo, no
    liana hangs over that river, and the near bank is a SAFE stand). To roll on it before it lands: a frozen worktree of t-build-29 with
    8d49caa27 merged in (never merged into t-build-29 until the lead says), the draft's barge29 row `look: 'barge'`, its bank 'a' a plain
    bank (it is): then the yield `npx tsx reference/qa-reports/BUILD-29/probes/yield29.ts 1 40` must be 40/40 clean both settings.
+   BOX 2 TRIED IT (scratchpad worktree wt-g3 = 51157a6f0 + merge of 8d49caa27, the barge29 row `look: 'barge'`; flown/
+   yield-draft-51157a6f0+8d49caa27.txt): 0 of 40 clean, and the ONLY rule on all 40 rolls both settings is still the LOG beat's 'a log
+   every 5.7 s, over 4' (the top-up's snapper errors are GONE with the goal ruling: 40 of 40 have no other error). So riverLay.ts:199's
+   `bargeBound` is undefined on the draft's barge: one of d.look (the built DriftInfo's look), st.tempo, `over` (a liana over it) or
+   safeStand (riverLay.ts:197: a solid whose right edge is within 2 px of r.x0) is false. FIRST: read which, with a committed probe
+   file (not `tsx -e`, which hung), then: if it is the stand (likely: the river 'c' is laid `after: 'a'`, its x0 may not meet the bank's
+   edge within 2 px) or look not carried, it is ENG-29-e's (message them with the numbers, rule 26); if it is the draft's data, fix it.
+   Also check 456 px / 80 px/s = 5.70 s against 2 bars x 2.85 = 5.70 s: equal, inside the +1e-6 bound, but Easy is 462/70 = 6.6 s
+   against 2 x 3.3 = 6.6 s: equal too; a hair over on either is a refusal, so read the built spacing.
 2. ENG-29-e's G1/G2/G3/G6 notes (t-eng-29-wip): when G3 lands, re-roll WITHOUT the stand-in; when G2 lands, the guard on beat 10's landing.
 3. READY-29 on the draft, each ONCE on a frozen worktree of the head (git worktree add --detach; chattr -R +i src tools; node_modules
    symlinked), each lane its OWN run_in_background call (never a shell '&'):
