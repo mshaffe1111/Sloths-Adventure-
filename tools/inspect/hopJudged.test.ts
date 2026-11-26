@@ -566,3 +566,39 @@ test('the way he keeps is the way he flew: in the air on a jump the jump steers,
   const there = run.stuck.filter((s) => s.x > 3600 && s.x < 4500);
   assert.deepEqual(there.map((s) => `${s.x}: ${s.what}`), [], 'stuck at the liana and #13 (x 3,600-4,500)');
 });
+
+test('a press on its way that would come after he reached a pad\'s front stands him at its lip, never steers him on: 2-2 kid Normal 15 to t 162, pad #116 (R-165.465 step 2)', async () => {
+  const ft = await import('./firsttimer.ts');
+  const { CAST_BOTS } = await import('./castBots.ts');
+  const who = CAST_BOTS.kid.normal!;
+  type Pl = { id: number; x: number; width: number; pad?: unknown };
+  type Pd = { left?: boolean; right?: boolean };
+  type R = { t: number; pending: { at: number; dir: number } | null; e: { standingOnId: number }; sim: { platforms: Pl[]; p: { grounded: boolean; x: number; vx: number } } };
+  const P = ft.FirstTimerRun.prototype as unknown as { intend: (this: R) => Pd };
+  const it = P.intend;
+  const steered: string[] = [];
+  let atLip = 0;
+  P.intend = function (this: R) {
+    const p = this.sim.p, o = it.call(this), q = this.pending;
+    const on = p.grounded ? this.sim.platforms.find((b) => b.id === this.e.standingOnId) : undefined;
+    if (q && q.dir !== 0 && on?.pad) {
+      const front = q.dir > 0 ? on.x + on.width : on.x;
+      // (his walk on until the press comes, and the slide once let go at a run: 8 px, two frames)
+      if (q.dir * (front - p.x) < Math.abs(p.vx) * Math.max(0, q.at - this.t) + 8) {
+        atLip++;
+        if (o.left || o.right) steered.push(`t ${this.t.toFixed(2)} x ${Math.round(p.x)} on pad #${on.id}: ${Math.round(q.dir * (front - p.x))} px from its front, the press due ${q.at.toFixed(3)}`);
+      }
+    }
+    return o;
+  };
+  let run: ReturnType<typeof ft.firstTimer>;
+  try {
+    run = ft.firstTimer('2-2', 15, who, { cap: 162, dotSetting: true });
+  } finally {
+    P.intend = it;
+  }
+  assert.ok(atLip >= 5, `the toy reads too little: ${atLip} frames of a press on its way at a pad's lip`);
+  assert.deepEqual(steered.slice(0, 6), [], `a press on its way steered him on at a pad's lip (${steered.length} frames)`);
+  const there = run.stuck.filter((s) => s.x > 28900 && s.x < 29400);
+  assert.deepEqual(there.map((s) => `${s.x}: ${s.what}`), [], 'stuck at pad #116 (x 28,900-29,400)');
+});
