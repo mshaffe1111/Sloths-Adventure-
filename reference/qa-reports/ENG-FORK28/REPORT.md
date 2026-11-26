@@ -1,6 +1,6 @@
 # ENG-FORK28 REPORT (rule 26: the engine piece 2-8's build found missing). Started 6:17 PM ET 2026-11-26 (from the session hook date).
 
-## EXACT NEXT STEP (rewritten 7:00 PM ET from `date`; candidate 408679c3d is RED BY ME, the fix is the next session's (D138))
+## EXACT NEXT STEP (rewritten 6:58 PM ET from `date`; candidate 408679c3d is RED BY ME, the fix is the next session's (D138))
 FOUND (on 408679c3d's gates, checked on the base e878b1f45): a TOY wrote a fork it never meant. `src/game/gen2/toyHome.ts:59`
 POST_CODE = 'A Pg1> Xw1> R Fg1> R /D ...' (its comment: "a flow of ground"; F is the FORK letter, M is flow, nodeLetters.ts:42/45).
 Its brief is designed (dealExact, branching 'none'), so on e878b1f45 'none' turned that F into a practise; on 408679c3d the F is a
