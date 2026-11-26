@@ -411,3 +411,35 @@ test("a dark stop at an end that is two rims waits for the rim not yet lit: Norm
   const { left, ahead } = await secondRim();
   assert.ok(left.woke !== undefined && left.t >= left.woke + ahead, `he left the end at ${left.t.toFixed(2)} s, the met rim's light woke at ${left.woke}`);
 });
+
+/** roll 19's dip on the way down (ENG-DARK box 21): the child on Normal comes down the vine at x 99 onto 79-289 (y 8689) and walks
+ *  right to a 97 px dip (289-386, 70 px deep); the route runs level across it; over its lip lies the catch of the storey's end above
+ *  (284-464, y 8501, 188 px over his floor), the shape of every storey of the way down (622 such catches over the 80 rolls). Read as a
+ *  step up (stepUp), the bough got a double: he stood his time, the standing double's second press came after the flick's hop had
+ *  landed, he was steered back and went back up the vine, 8.7 s at the lip. The read at the lip, and the row to 180 s */
+async function lip19(noLevelRead: boolean) {
+  if (readied !== DRAFT) readyDraft(DRAFT);
+  const { firstTimer } = await import('../../../tools/inspect/firsttimer.ts');
+  const { CAST_BOTS } = await import('../../../tools/inspect/castBots.ts');
+  const reads: string[] = [];
+  const r = firstTimer(DRAFT, 19, { ...CAST_BOTS.child.normal!, noLevelRead }, { cap: 180, dotSetting: true, onFrame(sim, b) {
+    const p = sim.p;
+    if (reads.length || !p.grounded || Math.abs(p.y - 8689) > 2 || p.x < 230 || p.x > 289) return;
+    const bot = b as unknown as { jumpFor(p: unknown, dir: number, here: unknown): string; floorAt(x: number, y: number, d: number): unknown };
+    reads.push(bot.jumpFor(p, 1, bot.floorAt(p.x, p.y, 6)));
+  } });
+  const lip = r.stuck.filter((s) => Math.abs(s.y - 8689) < 4 && s.x > 200 && s.x < 400);
+  return { read: reads[0], lip, end: r.end };
+}
+
+test("going down, a ledge over him is a step up only where the way rises: at Normal roll 19's dip, the way level across it, the child reads a single, and crosses without a stand at its lip (GREEN; planted: noLevelRead)", async () => {
+  const { read, lip } = await lip19(false);
+  assert.equal(read, 'single', 'the way on runs level across the dip: the bough over it is no step up');
+  assert.deepEqual(lip.map((s) => s.what), [], 'no stuck line at the dip');
+});
+
+test("every ledge over him read as a step up (noLevelRead, the plant): at Normal roll 19's dip the child reads a double and stands at its lip (RED)", async () => {
+  const { read, lip } = await lip19(true);
+  assert.equal(read, 'double', 'the bough 188 px over his floor read as a step up');
+  assert.ok(lip.some((s) => /in a dip 188 px deep/.test(s.what)), `stuck at the dip's lip (${JSON.stringify(lip.map((s) => s.what))})`);
+});

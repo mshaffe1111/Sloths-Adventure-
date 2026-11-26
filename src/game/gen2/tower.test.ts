@@ -16,7 +16,7 @@ import { applyVerdicts, buildGen2Stage, HARD_JOBS, keptFoes, layLocal, layStage,
 import { packPlan, stageParts, unpackPlan } from './seedList.ts';
 import { cfg as runCfg, kit as runKit } from './toyWorld.ts';
 import { ARC_CODE, arcKit, gateKit, hopsUp, towerCfg, upKit, upManifest } from './toyTower.ts';
-import { fallSeconds, flagFurther, gapCatchY, LEAP, leaps, localExtent, HANG, offEnd, openEnds, walledEnd, reflectLocal, routeAt, routeOf, storeyLimit, TOWER, towerCatches, towerFalls, towerFlagBreaches, stopVines, towerHandOns, towerVineCuts, towerFlags, towerGates, towerSkips, towerVaults, vertical, towerLids, ROOF, SLOT_REACH, slotUnder, towerSlotReach } from './tower.ts';
+import { fallSeconds, flagFurther, gapCatchY, LEAP, leaps, localExtent, HANG, offEnd, openEnds, walledEnd, reflectLocal, routeAt, routeOf, storeyLimit, TOWER, towerCatches, towerFalls, towerFlagBreaches, stopVines, towerHandOns, towerVineCuts, towerFlags, towerGates, towerSkips, towerVaults, vertical, towerLids, ROOF } from './tower.ts';
 import { CLIMB_CLEAR, VAULT_GAP } from '../vineTop.ts';
 import type { Gen2Stage } from './types.ts';
 
@@ -788,29 +788,4 @@ test('going down, no slot: a catch beside near-level wood lies flush, a crack fr
   assert.deepEqual(slots, [], lay);
   assert.deepEqual(towerFalls('down', all, FLOOR, W), []);
   assert.deepEqual(towerLids([vine], all), [], lay);
-});
-
-test("going down, a catch over a slot lies within one plain jump of the floor beside it, or the slot gets wood (3-1 Normal 19, ENG-DARK box 20)", () => {
-  // (drafted 3-1 Normal 19's shape, y 8408-8759 as 1000-1351: a storey 125-350 whose right end is open, a climb vine at x 99 down to
-  //  the floor 281 px under it, 79-289 and 386-723, with a 97 px slot between them 70 px deep (289-386). The end's fall line (x 350)
-  //  is over the slot, 351 px down. The lay caught it with a bough 284-464 188 px over the floor (out of every tier's reach, clear of
-  //  the lid over the dip's lip): the child stood 8.7 s at the slot's lip, hopped, turned back, climbed the vine back and came down)
-  const W = 1280, FLOOR = 2400;
-  const base = [solid(125, 1000, 225, 1), solid(79, 1281, 210, 2), solid(386, 1281, 337, 3), solid(289, 1351, 97, 4), solid(0, 1628, W, 5), solid(0, FLOOR, W, 6)];
-  const vine = { id: 1, x: 99, topY: 1000, bottomY: 1281, swaySpeed: 1, swayPhase: 0, vineType: 'tree_climb' } as Vine;
-  const cs = towerCatches('down', base, [vine], FLOOR, W);
-  const all = [...base, ...cs.map((c, k) => solid(c.x, c.y, c.w, 200 + k))];
-  const lay = cs.map((c) => `${c.x}-${c.x + c.w}@${c.y}`).join(', ');
-  // (the slot itself, read: 289-386 under the floor's level; what the old lay laid over it reads 188 px over it)
-  assert.deepEqual(slotUnder(base, 284, 464, 1093), { x0: 289, x1: 386, y: 1281 });
-  assert.deepEqual(towerSlotReach([{ x: 284, y: 1093, w: 180 }], base), ['284-464@1093: 188 px over the slot 289-386@1281']);
-  assert.deepEqual(towerSlotReach([{ x: 284, y: 1281 - SLOT_REACH, w: 180 }], base), [], 'one plain jump over the floor is in reach');
-  // (the lay: nothing over the slot out of reach; the open end is caught, here by wood in the slot level with the floor, lip to lip)
-  assert.deepEqual(towerSlotReach(cs, all), [], lay);
-  assert.ok(cs.some((c) => c.x <= 289 && c.x + c.w >= 386 && c.y === 1281), `the slot gets wood: ${lay}`);
-  assert.deepEqual(towerFalls('down', all, FLOOR, W), [], lay);
-  assert.deepEqual(towerLids([vine], all), [], lay);
-  // (a slot no wider than a crack is no slot; one wider than a catch is a gap of the way's own)
-  assert.equal(slotUnder([solid(0, 1281, 300), solid(320, 1281, 300)], 200, 400, 1093), undefined);
-  assert.equal(slotUnder([solid(0, 1281, 300), solid(500, 1281, 300)], 200, 600, 1093), undefined);
 });

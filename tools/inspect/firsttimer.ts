@@ -308,6 +308,9 @@ export interface FirstTimer {
   /** landed ahead on the way's own floor, still followed by the point over his head (darkBots.test's roll 26 toy only): he climbs the
    *  trunk beside him back up and falls again until rescued */
   noLandAhead?: boolean;
+  /** going down, a ledge over him read as a step up whatever way the route runs (darkBots.test's roll 19 toy only): at a dip's lip with a
+   *  bough overhead and the way on level across the dip, he doubles at the bough */
+  noLevelRead?: boolean;
   /** at a gap or a face he must clear, his hold is drawn from this quantile of holdQ up (he reads the jump): a tuning field */
   readHold?: number;
   /** and a double up a step gets its second press from dbl2Q's quantiles up to this one (early enough to climb): a tuning field */
@@ -1640,7 +1643,25 @@ export class FirstTimerRun {
     const one = this.who.setting === 'easy' ? reachJumpHeld(0, false) : reachJump(0, false);
     if (gap > one && gap < 600) return 'double';
     // (a tier bot reads a step up as well: the next ledge ahead over a single jump's height (about 108 px; 90 with his margin) gets a double)
-    return this.who.knowsDouble && this.stepUp(here, dir) ? 'double' : 'single';
+    // (going down a tower, only where the way on rises ahead of him (wayRises): at a 97 px dip's lip with a bough 188 px over his floor
+    //  and the way on level across the dip, the bough read as a step up; the child stood his time, pressed a standing double whose
+    //  second press came after the flick's hop had landed, was steered back and went back up the vine, 8.7 s at the lip, 3-1 Normal 19,
+    //  ENG-DARK box 21. That bough is the catch of the end over the dip, on every storey of the way down: 622 of them over 80 rolls)
+    return this.who.knowsDouble && this.stepUp(here, dir) && this.wayRises(p) ? 'double' : 'single';
+  }
+
+  /** a step up is a way on only where the way rises: going down a tower (gen2.tower.flow 'down'), the route's points ahead of him, within
+   *  a step up's read (stepUp: 260 px past the edge, 300 px from him), rise past a single's height with his margin (90 px) before they
+   *  drop away (40 px under his feet); off a way down (or noLevelRead) every ledge over him is read as before */
+  private wayRises(p: { x: number; y: number }): boolean {
+    if (this.who.noLevelRead || (this.sim.stage as { gen2?: { tower?: { flow?: string } } }).gen2?.tower?.flow !== 'down') return true;
+    const pts = this.prog.pts;
+    for (let i = this.prog.cur; i < pts.length; i++) {
+      const q = pts[i];
+      if (Math.abs(q.x - p.x) > 300 || q.y > p.y + 40) break;
+      if (p.y - q.y > 90) return true;
+    }
+    return false;
   }
 
   /** a tier bot's read of a step up: a ledge ahead of the edge of `here` (within 260 px) over a single jump's height (90 px with margin) */
