@@ -3589,9 +3589,12 @@ export class FirstTimerRun {
     if (this.who.noGlowWait || dir === 0 || this.glowStop || !this.sim.p.grounded) return null;
     this.glowRims ??= this.glowRimsOf();
     const p = this.sim.p;
-    const e = this.e as unknown as { gameTime: number; glowWake: Map<number, number> };
-    const rim = this.glowRims.find((r) => !r.runOff && r.dir === dir && !this.glowGaveUp.has(r) && p.x >= r.piece.x && p.x <= r.piece.x + r.piece.width
-      && Math.abs(p.y - r.piece.y) <= 4 && (r.x - p.x) * r.dir >= 0 && (r.x - p.x) * r.dir <= GLOW_JUMP);
+    const e = this.e as unknown as { gameTime: number; glowWake: Map<number, number>; standingOnId: number };
+    // (on the rim's piece as the engine stands him (standingOnId), his middle past its end at the lip as well: there the rim is behind
+    //  his middle and a jump toward it goes over it; glowWait holds the stop the same way, ENG-DARK box 22)
+    const lip = (r: DarkRim) => !this.who.noLipHold && e.standingOnId === r.piece.id;
+    const rim = this.glowRims.find((r) => !r.runOff && r.dir === dir && !this.glowGaveUp.has(r) && (lip(r) || (p.x >= r.piece.x && p.x <= r.piece.x + r.piece.width
+      && Math.abs(p.y - r.piece.y) <= 4 && (r.x - p.x) * r.dir >= 0)) && (r.x - p.x) * r.dir <= GLOW_JUMP);
     if (!rim) return null;
     const woke = e.glowWake.get(rim.light!.id!);
     if (woke !== undefined && e.gameTime >= woke + DARK_AHEAD[this.who.setting]) return null;
