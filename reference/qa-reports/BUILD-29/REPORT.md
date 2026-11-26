@@ -11,11 +11,20 @@ of G1-G3; beat 6 and the guard wait for ENG-29-e. G4 (the wheel's Easy R) and G5
 2. Read the base gates' results: scratchpad gates-base/summary.txt is LOST with this container, so if the lead has no numbers from
    session 1 for the CI tool line, re-run it once on a frozen worktree of 098047713 (`git worktree add --detach`, chattr +i all but
    src/game/gen2/proven, run_in_background): the 6 `npx tsx` lines of gates.yml's `rolled` job. Session 1's results so far are below.
-3. BUILD THE DRAFT as a test-seam row (nothing listed, nothing deleted, rule 25): `src/game/gen2/worlds/w2Arc29.ts` on 2-6's pattern
-   (w2Arc26.ts: brick(), kitLib26, ARC_26 verbatim from the design) and the toy's (w2TempoToy.ts: `withTestStage({ '2-9': row })`, a
-   brief with `tempo: COURT_TEMPO`), the bricks as "THE PLAN" below names them; beat 6 laid on a `double` river row WITHOUT the doubled
-   drum (G1 open) and NO guard (G2 open), each marked in the REPORT, never in code as a stopgap.
-4. A READY tool `tools/inspect/draft29.ts` on tempoToys.ts's pattern (onToy: plantSeedList + withTestStage + castRun) and run, each ONCE:
+3. THE DRAFT EXISTS (session 1): `src/game/gen2/worlds/w2Arc29.ts` (2-5's brick form; test seam only, nothing imports it; tsc clean,
+   listed.test 3/3, generalitycheck PASS). Rolled once a setting, seeds 1-2 (`npx tsx reference/qa-reports/BUILD-29/probes/draft1.ts`):
+   it BUILDS (26.6-27.4k px; Normal 17 enemies, Easy 11; target 15 = the hand build's config, not yet 2-9's goal) with 33-41 gen2 errors
+   a roll, by kind. FIX IN DATA (mine, in order): (i) the node string's `&turtle*2` -> `&snapper*2` (the cast's id is `snapper`, as
+   ARC_25; 'no creature of that id'); (ii) beat 4's river DEEP (`court`, not `court29s`): its node `Xr1>:#water` asks deep ('hazard
+   #water: laid soft'; 2-9.md:55 said splash-back, the node string wins: name it); (iii) the snapper patches clear of every higher floor
+   in the bonk's landing ('cast: turtle ... a floor N px over its ground'); (iv) fly the court wheel: `npx tsx tools/engine/wheelflights.ts`
+   and commit its table ('has not been flown'); (v) the beat-nodes' clocked piece ('content p: no piece on a clock laid'): read which
+   node, the weight pads are not a clock (ENG-29d's skip). TO THE LEAD FIRST (rules, never loosened by me): (vi) **snap stones at 50 px
+   are refused**: rideLay's snap judge holds 30-40 px of water beside a stone ('not 30-40 (one tap hop)', 74 a roll): the lead's YES to
+   50 px holds for the PADS only; my recommendation: stones at 30 (2-5's flown row) and the court's shares flown again at 30; (vii) **the
+   barge's log every 5.7 s is over the river judge's 4 s** ('a log every 5.7 s, over 4'): a barge is a carrier, not a log to time; the
+   rule's exception for a `barge` look belongs in ENG-29-e with G3, or the barge row becomes two logs a bar (the lead's call).
+4. When the draft rolls with no errors: a READY tool `tools/inspect/draft29.ts` on tempoToys.ts's pattern (onToy: plantSeedList + withTestStage + castRun) and run, each ONCE:
    yield first (D125: tools/engine/yield.ts's measure on the draft), drawcheck on the draft (D131), castBots x40 both settings, met order
    (D130: first met, never first by x), teach-first (Dot 800 px+ before beat 1), and FLOWN AGAIN on 098047713 (rule 24): the run row's
    hop 119 px, pad and stone water at 50 px on BOTH settings (my proposal, below), the pads' margin (0.67 s / 1.07 s), the court
@@ -26,7 +35,7 @@ of G1-G3; beat 6 and the guard wait for ENG-29-e. G4 (the wheel's Easy R) and G5
 ### (a) Engine gates on the base 098047713 (frozen worktree, chattr +i, 0 chattr errors)
 - tsc: exit 0. generalitycheck: exit 0. coveragecheck (tools/difficulty/coveragecheck.ts): exit 0.
 - The tempo/drum toys + listed.test (gen2/tempo, gen2/tempoToy, tempo, tempoResume, drum, drumBus, drumEngine, gen2/listed): 32 pass, 0 fail.
-- The CI tool line (gates.yml `rolled`): line 1 (the tool tests) 427 tests, 0 fail, 1 todo (= ENG-29's count); lines 2-3 (tipwalk, storyTipScan) exit 0; lines 4-6 (teachFirstScan, registrycheck, tierBots) running.
+- The CI tool line (gates.yml `rolled`): line 1 (the tool tests) 427 tests, 0 fail, 1 todo (= ENG-29's count); lines 2-4 (tipwalk, storyTipScan, teachFirstScan) exit 0; lines 5-6 (registrycheck, tierBots) running at hand-over: re-run them once if no result reached the lead.
 - Inherited and named, never BUILD-29's: firstTimerBot.test.ts:177 KID_RUNS_59 (R-165.473 / R-165.477, the release line's own).
 
 ### Gaps found (sent to the lead at once, rule 26; ENGINE-WORTHY; none coded around)
