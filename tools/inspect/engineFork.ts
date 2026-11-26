@@ -8,10 +8,31 @@
  *  - Math.random: the copy steps on its own stream (the live run's seeded stream is saved and put back), so a probe never moves a roll.
  */
 import { DT } from '../../src/game/realPlay.ts';
+import { stageWalk } from './botsim/stable.ts';
 
 type Obj = Record<string | symbol, unknown>;
+/** ENG-BOTSIM step 2(c), BOTSIM_SHARE=1: objects every probe shares (never copied, never written back): the cue memo (engine.cueTables
+ * and its tables: derived from the vine and the river path only, never written after made) and the stage objects that never change
+ * in play, deep-frozen at the first probe so a write to one THROWS (a wrong share is loud, never a silent leak) */
+const SHARED = new WeakSet<object>();
+const SHARE_ON = typeof process !== 'undefined' && !!process.env.BOTSIM_SHARE;
+const NEVER_CHANGES = /^currentStage\.(?:gen2(?:\.|$)|rivers\.\[\]|meta\.pieces|config$|proto\.(?:dress|decor|beats|gen2)$)/;
+const prepared = new WeakSet<object>();
+export const SHARE_STATS = { frozen: 0, skipped: 0 };
+function prepareShare(e: Record<string, any>): void {
+  const ct = e.cueTables;
+  if (ct instanceof Map) { SHARED.add(ct); for (const t of ct.values()) if (t && typeof t === 'object') SHARED.add(t); }
+  if (prepared.has(e)) return;
+  prepared.add(e);
+  for (const [o, path] of stageWalk(e)) {
+    if (!NEVER_CHANGES.test(path)) continue;
+    if (o instanceof Map || o instanceof Set || ArrayBuffer.isView(o)) { SHARE_STATS.skipped++; continue; }
+    Object.freeze(o);
+    SHARE_STATS.frozen++;
+  }
+}
 const SHARE = (v: object): boolean => {
-  if (Object.isFrozen(v)) return true;
+  if (Object.isFrozen(v) || SHARED.has(v)) return true;
   const n = v.constructor?.name ?? '';
   return /Canvas|Context|Image|Audio|HTMLElement|Path2D|ImageBitmap|WebGL|OffscreenCanvas|Node$/.test(n);
 };
@@ -242,11 +263,12 @@ if (typeof process !== 'undefined' && process.env.BOTSIM_STATS) process.on('exit
     rows.sort((x, y) => y[1] - x[1]);
     process.stderr.write(`PROBE last graph ${seen.size}: ${rows.slice(0, 12).map(([k, c]) => `${k} ${c}`).join(', ')}\n`);
   }
-  process.stderr.write(`PROBES ${q.n}: snapshot ${(q.snap / n).toFixed(2)} ms, fly ${(q.fly / n).toFixed(2)} ms (${(q.frames / n).toFixed(1)} frames, ${(q.fly / Math.max(1, q.frames)).toFixed(3)} ms a frame), restore ${(q.rest / n).toFixed(2)} ms, objects ${(q.objects / n).toFixed(0)}; total ${((q.snap + q.fly + q.rest) / 1000).toFixed(2)} s\n`);
+  process.stderr.write(`PROBES ${q.n}: snapshot ${(q.snap / n).toFixed(2)} ms, fly ${(q.fly / n).toFixed(2)} ms (${(q.frames / n).toFixed(1)} frames, ${(q.fly / Math.max(1, q.frames)).toFixed(3)} ms a frame), restore ${(q.rest / n).toFixed(2)} ms, objects ${(q.objects / n).toFixed(0)}; share ${SHARE_ON ? `on (frozen ${SHARE_STATS.frozen}, maps kept ${SHARE_STATS.skipped})` : 'off'}; total ${((q.snap + q.fly + q.rest) / 1000).toFixed(2)} s\n`);
 });
 
 export function probe<R>(e: Record<string, any>, pads: ReadonlyArray<Parameters<typeof stepFork>[1]>, read: (e: Record<string, any>, i: number) => R | 'stop'): { rows: R[]; died: string | null; ms: number } {
   const t0 = performance.now();
+  if (SHARE_ON) prepareShare(e);
   const s = snapshot(e);
   const t1 = performance.now();
   lastE = e;

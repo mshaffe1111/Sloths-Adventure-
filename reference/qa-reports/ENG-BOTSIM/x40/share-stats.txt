@@ -1,0 +1,8 @@
+PROBES 8171: snapshot 0.93 ms, fly 1.80 ms (17.1 frames, 0.106 ms a frame), restore 0.80 ms, objects 397; share on (frozen 14090, maps kept 0); total 28.93 s
+PROBES 8181: snapshot 0.97 ms, fly 1.81 ms (17.0 frames, 0.107 ms a frame), restore 0.82 ms, objects 396; share on (frozen 13748, maps kept 0); total 29.47 s
+PROBES 8260: snapshot 0.95 ms, fly 1.84 ms (17.0 frames, 0.108 ms a frame), restore 0.82 ms, objects 393; share on (frozen 13648, maps kept 0); total 29.87 s
+PROBES 8518: snapshot 0.95 ms, fly 1.77 ms (17.0 frames, 0.104 ms a frame), restore 0.81 ms, objects 396; share on (frozen 13980, maps kept 0); total 30.08 s
+PROBES 0: snapshot 0.00 ms, fly 0.00 ms (0.0 frames, 0.000 ms a frame), restore 0.00 ms, objects 0; share on (frozen 0, maps kept 0); total 0.00 s
+real	1m26.875s
+user	5m24.001s
+sys	0m3.734s

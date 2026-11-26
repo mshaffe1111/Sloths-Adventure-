@@ -30,6 +30,7 @@ const print = (o: object): string => {
 const FIELDS = ['currentStage', 'drawPlats', 'proto'];
 const SKIP = /Canvas|Context|Image|Audio|HTMLElement|Path2D|ImageBitmap|WebGL|OffscreenCanvas|Node$/;
 /** every object under the stage fields, by the path it was first met on (field.key.key, two levels named) */
+export const stageWalk = (e: Record<string, unknown>): Map<object, string> => walk(e);
 const walk = (e: Record<string, unknown>): Map<object, string> => {
   const at = new Map<object, string>();
   const go = (v: unknown, path: string, depth: number): void => {
