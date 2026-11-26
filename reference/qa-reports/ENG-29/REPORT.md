@@ -64,11 +64,15 @@ little early there; 2-9 has no hitstop or slow motion on the court today.
     apart, gen2 clean, seeds 1-4 both settings; RED the row breathing on a beat, named; planted RED (the skip removed): 'pad-small' named.
     The cast over it: 36/36, no rescue, no stuck spot on the pads. Lives lost ON the pads (x 4600-5800, --lives): child Normal 5 over
     4 runs, middle Normal 2, none on Easy and none for kid, adult or expert (2-9.md: Normal at the run pitch a missed beat runs off a pad's
-    far end; whether the child's 1.25 a run is the bar is READY-29's to measure).
+    far end; whether the child's 1.25 a run is the bar is READY-29's to measure). Traced (child Normal seed 2, FT_TRACE): onto pad 1
+    with a run, then three hops of 0.03-0.08 s held from a stand land back on the same pad ('FELL BACK', run false) until it sinks: 2
+    lives; then a 0.27 s hold and the row crossed in four hops a beat apart. The child's own small-pad play (it hops in place, then
+    learns), not the court's: NOT retuned here (the child is calibrated on 1-1, BOTS.md); named for READY-29.
 - Step 3: reference/handoffs/engine-core.md §0zs-TEMPO (the tempo, the locked let-go, the bot on a court, the drum's path, the traps:
   layering, DRUM_AHEAD 3 frames and why, DRUM_JUMP, the hold at loseLife, the comment that trips listed.test; the toy; what is open).
 - A miss of mine: one probe ran three locks with a shell '&' and `wait` (the brief says never); every later run went through
-  run_in_background.
+  run_in_background. A second: my first STOP message went to my OWN session id (the lead's and mine share a prefix); caught when it
+  came back as a notification, and sent again to the lead (session_01FhBbYN2CVHnFXg7XzqKXpM); the 20-minute wait counts from that send.
 
 ## Session 3 (ENG-29-c), NEW 2 (b): the drum WIRED, on the audio clock (9b60aeac0)
 - src/audio/conductor.ts: `drumTick(beat, gameNow, doubled?)` and `drumHold(gameNow)`; a `drumBus` GainNode (0.55) to the effects bus;
