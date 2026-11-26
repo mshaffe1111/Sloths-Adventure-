@@ -199,9 +199,15 @@ const said = (r: ReturnType<typeof castRun>) => `${r.bot} ${r.setting} seed ${r.
 //  rescues, 0 -> 12 lives), 24, 32, 36, child E 5, 6, 31; no adult or kid row (the adult never loses a life more off); 5+ MORE LIVES:
 //  child N 3 (1 -> 18), 15 (0 -> 11), 35 (2 -> 16) and 16 more child N rows, middle N 16 (0 -> 6), expert N 37 (0 -> 5). The adult N 16
 //  and child N 11 stay as clean crossings with the skill on (KEPT_CLEAN))
-const UPSTREAM_CASES: Array<[string, 'normal' | 'easy', number]> = [['child', 'normal', 17]];
-const UPSTREAM_LIVES: Array<[string, 'normal' | 'easy', number]> = [['child', 'normal', 3], ['child', 'normal', 15], ['middle', 'normal', 16]];
-/** with the against-the-flow skill off, at least this many more lives than with it (measured +8 on each of UPSTREAM_LIVES on 11-24; +7, +14, +6 on the re-planted rows 11-25; +17, +11, +6 on the session 12 re-plant, CI-15) */
+// (ENG-THUMB, R-165.465 C12, the lead's ruling 4 (A): re-planted at the SAME bar. From C7 the child on Normal, seed 17, crossed clean
+//  without the skill (C7-C10), rescued again on C11, clean again on C12 (0 -> 3 lives, 0 rescues); child N 3 (0 -> 0) and middle N 16
+//  (3 -> 1) lose no more. The search on C12 c0cc0810e (2-1 child and middle on Normal, seeds 1-40, skill on and off, castRun as here:
+//  reference/qa-reports/ENG-THUMB/d/up-c12-2-1-childmiddle-normal.txt): RESCUED off while clean on: child N 5, 16 (0 lives -> rescued,
+//  8), 24, 32, 35 (16 live on CI-15, C11 and C12); 5+ MORE LIVES: 19 child N seeds, 15 (0 -> 14), 8 (1 -> 14), 7 (0 -> 11) the widest;
+//  no middle seed (best +4)
+const UPSTREAM_CASES: Array<[string, 'normal' | 'easy', number]> = [['child', 'normal', 16]];
+const UPSTREAM_LIVES: Array<[string, 'normal' | 'easy', number]> = [['child', 'normal', 15], ['child', 'normal', 8], ['child', 'normal', 7]];
+/** with the against-the-flow skill off, at least this many more lives than with it (measured +8 on each of UPSTREAM_LIVES on 11-24; +7, +14, +6 on the re-planted rows 11-25; +17, +11, +6 on the session 12 re-plant, CI-15; +14, +13, +11 on the C12 re-plant, R-165.465) */
 const UPSTREAM_MORE = 5;
 // (ENG-285c, the lead's ruling 2 (A): on the final judge model the child on Easy, seeds 20 and 23, crosses clean without the skill, and
 //  bankUp moves no life and no rescue anywhere (2-1 every cast bot both settings 1-40; 2-2 lays no river running back at him; the toy
@@ -226,7 +232,7 @@ const UPSTREAM_MORE = 5;
 //  clean crossing with both skills on)
 const KEPT_CLEAN: Array<[string, 'normal' | 'easy', number]> = [['child', 'normal', 40], ['adult', 'normal', 16], ['child', 'normal', 11]];
 
-test('2-1, against the flow and up the far bank on: the child on Normal (17, 3, 15, 40, 11), the middle on Normal (16) and the adult on Normal (16) cross clean', () => {
+test('2-1, against the flow and up the far bank on: the child on Normal (16, 15, 8, 7, 40, 11) and the adult on Normal (16) cross clean', () => {
   for (const [bot, setting, seed] of [...UPSTREAM_CASES, ...UPSTREAM_LIVES, ...KEPT_CLEAN]) {
     const r = castRun(bot, setting, '2-1', seed);
     assert.ok(crossedClean(r), said(r));
@@ -263,7 +269,7 @@ test('2-1, he never runs off the front of the log he just landed on: the child o
   const r = castRun('child', 'normal', '2-1', 11);
   assert.ok(crossedClean(r), said(r));
 });
-test('planted: with the against-the-flow skill off, the child on Normal is rescued on 2-1 (17) and the child and the middle on Normal lose 5+ more lives (child 3, 15; middle 16)', () => {
+test('planted: with the against-the-flow skill off, the child on Normal is rescued on 2-1 (16) and loses 5+ more lives (15, 8, 7)', () => {
   const withIt = UPSTREAM_LIVES.map(([bot, setting, seed]) => castRun(bot, setting, '2-1', seed));
   SKILLS.upstream = false;
   try {
