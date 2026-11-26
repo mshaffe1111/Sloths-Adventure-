@@ -1,6 +1,47 @@
 # ENG-THUMB: the kid-bot root fix (R-165.465) and release 5's rule-28 rows
 
-## EXACT NEXT STEP (hand-over 1, the 28-minute box; written 1:27 PM ET 11/26 by `date`)
+## EXACT NEXT STEP (hand-over 2, box 2; written 1:48 PM ET 11/26 by `date`; C4 rows filling in)
+Branch t-eng-thumb-wip, head = the commit that adds this text. **Code = C4a d89050abb (C3 + step 1 only).** Step 2's candidate C4
+(8a35b4238) FAILED rule 28 and is REVERTED (0d01b2ded). Tools: tools/*.txt as box 1 says (copy out, strip `.txt`; ciline.sh's cmd =
+gates.yml:157's `- run:` line saved to a file and the path set in ciline.sh), plus **tools/tag.py.txt** (box 2's why-probe: on a PROBE
+copy it tags every return in intend() with its line, and FT_FRAMES prints `why <line>` before `meant`). Main's rows: as box 1.
+1. **C4a's rows (kid + adult) vs main, read so far: 2-2 = 2 PASS -> FAIL** (d/flips-main-vs-c4a-2-2.txt, d/rows-c4a/): kid N 15 (step 2,
+   x 29,179) and **kid N 40 (NEW vs C3, x 28,807: he walks off pads #113 and #112's fronts meaning right, no press, into the water, 3
+   times: 153.53, 158.30, 162.17; d/why-c4a-2-2-kidnormal40.txt): the step-2 family, met by a reshuffle (17 2-2 rows move vs C3).**
+   2-1, 2-4, 2-5, 1-4 on C4a were still running in box 2's container at the hand-over: NOT read; re-run them (rows.sh, about 2.5 min a
+   stage). 2-1 on C4 (step 1 + 2): 0 PASS -> FAIL vs main. The CI line is NOT yet run on C4a (C4's was stopped at 94 ok, 0 not ok).
+2. **Step 2, 2-2 kid N 15 (pad #116), OPEN: the pad hop judge, where it lives.** C3 :3471 is `if (this.pending) return ...
+   side(pending.dir)`: on #116 (x 29,009-29,139) no press point landed #111 (120 px on, 34 up), so at 158.43, 5.6 px from its front,
+   padRead's last line pressed 'whatever' (`toEdge < 6`) with a drawn lag of 0.167 s, and the press on its way walked him off into the
+   water 3 frames before it came, 3 times, rescued (d/why-c3-2-2-kidnormal15.txt). padRead judges the hop (`lands`) at FIXED lags 0.03
+   and 0.1 s at a run from p.x + vx*lag, while decide() then draws his own lag (gauss who.thumb; 0.167-0.187 s seen): the hop judged is
+   not the hop flown (rule 28's 11-21 amendment). **Tried and failed (C4): stand him at the lip when the press would come after he
+   reached the front** (padLip, as at a snap stone's lip, ENG-25c): the stood hop comes down short (2-2 kid N 15 on C4: 2 lives, 151.03
+   from #116 hold 0.15, 155.60 from #115 hold 0.18, d/k15-c4-lives.txt), and 2-2 kid Normal 3, 29, 30, 32, 40 went PASS -> FAIL vs
+   main. Next: judge the hop with the lag decide() will draw (draw it once at the judge and hand it to decide, so no extra draw), and
+   press where that flight leaves from the pad; toy RED on C4a / GREEN after; then 2-2's rows vs main FIRST (46-87 s): kid N 15 AND kid N 40 must PASS, the other 4 stages after.
+3. **Step 3, 2-1 middle N 17 (unchanged on C4: life lost 111.47, 'an open drop ahead, water ahead' x 19,869, rescued).** Why-lines (C4's
+   tag.py, FT_FRAMES 110.8-111.5, d/why-c4-2-1-middlenormal17.txt; C4 = C4a here, step 2 never ran on 2-1's ledges): on #85 (x 19,619,
+   y 826) intend() C4 line 3516 (the landed-on-a-small-pad-or-ledge pause, `if (!this.padPause) return side(...)`) means right; the holdQ
+   thumb shows {} 9 frames, then right at 111.17; he walks off #85 down onto log #90 (y 854) at 111.30, :3516 means right on the log at
+   once and walks him off its front into the water at 111.47. The route's point is 19,724-19,771 y 854, along the log's line: find
+   whether #90 had drifted on (the route assumes it there) and why a fresh landing on a drifting log is walked on with no ride read.
+   Fix with a toy, or STOP with these frames for the lead (law 22).
+4. Then the final checks ONCE on the frozen head (box 1's list): rule 28 vs main (all five bots, 1-40, both settings, 5 stages),
+   2-7 x40 (>= 29/40), pacerLay 23/23, the 10 races, tierBots 9/9, tsc, the 4 bot test files, the CI line.
+
+## Step 1 (box 2: DONE on C4a d89050abb; toy RED on C3, GREEN on C4a; tsc GREEN on C4, 13 s, C4a's code is C4's minus step 2)
+- **2-1 kid E 25 (the vine retry loop): the way he keeps.** Traced on C3 with tag.py (d/why-c3-2-1-kideasy25.txt): the hop off the
+  liana (19.50, x 4,017) flies at y 555-576 over the route's floor (y 814): step() follows him only within 160 px (y weighs 0.7), so the
+  route's point stayed at 4,068 behind him; from 19.93 intend's dir was -1 and set `this.way = -1`, though the jump branch steered right
+  (j.dir 1). Down on #13 at 20.27 (the way on 90 px right and 55 px down: 'below, close across, he keeps going the way he was', C3
+  :2983) he kept that stale -1: meant LEFT (C3 :3504, :4057, :3341) and walked off #13's left end at 4,042 into the pit, 3 set-downs.
+  **Fix (firsttimer.ts, the `way` line): in the air on a jump the way he keeps is the jump's own (j.dir).** Toy (hopJudged.test.ts, 'the
+  way he keeps is the way he flew'): every air frame of a steered jump to t 40 has way = j.dir, and no stuck spot at x 3,600-4,500. C3:
+  RED, '21 frames, t 19.93 x 4191: way -1, the jump's 1'. C4a: GREEN. Row: PASS 176.1 s, 0 rescues (C3 180, rescued).
+- C4 (steps 1 + 2) on 2-1, kid + adult vs main: 0 PASS -> FAIL, 31 fail -> pass (vs C3: 6 rows moved, 0 PASS -> FAIL).
+
+## Box 1's next step (hand-over 1, written 1:27 PM ET 11/26; step 1 DONE by box 2 above, step 2 OPEN)
 Branch t-eng-thumb-wip, head = the commit that adds this file (code = C3 252f2facc). Evidence in d/, tools in tools/ (`.txt`: copy out,
 strip the suffix). Base c73cb9766. Main's rows: INT-R5's `d/rule28/rows-main/` on origin/release-0.10.3-wip-fixes (main cdffdc627;
 INT-R5L proved release 4's head rows identical to it, so they ARE main 4bf2cbaa's for these stages).
@@ -64,10 +105,17 @@ here 3 times') and 2-2 kid N 15 (x 29,179); 0 on 2-4, 2-5, 1-4; fail -> pass 203
 - 2-1 kid N 40: fails on dfe631913 too (x 19,848: 2-7's own change vs main, D132). PASS on C1.
 
 ## Polish check
-No screen changed: bot code and a test only. ## Pushback
-The 5 rows are a reshuffle, not 5 faults: each run parts from the base within the first 5-50 s (a stand let go or a press a frame
-earlier) and meets an unrelated fault 100+ s later. Rule 28 vs main row for row will keep finding the bot's remaining faults (the 2-2
-pad cluster, the vine retry loop) by chance; each is fixed where it lives. ## Unresolved
-The 2 C3 flips and middle N 17 (steps 1-3), the CI line on C3, every final check. ## Method update
-FT_FRAMES prints `meant` (intend's pad) beside the pad: a stand the thumb ran on reads in one line. ## Lessons applied
-D115 (frozen trees for every verdict; probes on copies), D119, D128, D132 (vs MAIN), D133 (wide read, not the 5 rows), D134, D138, D140.
+No screen changed: bot code and tests only. ## Pushback
+Box 1's read holds for step 1 (a stale way off a liana, fixed where it lives). Step 2 shows the opposite risk: a fix where the symptom
+shows (the walk) instead of where the cause is (the judge) moved 10 2-2 rows the wrong way; the rows caught it in 87 s.
+## Unresolved
+Step 2 (the pad hop judge; padLip failed), step 3 (middle N 17), the CI line and the rows on C4a not filled in above, every final check.
+## Method update
+tools/tag.py.txt (box 2): tag every return in intend() on a probe copy and print `why <line>` per frame: which branch chose the steer
+reads in one line. Both of box 2's faults were found with it in under 10 minutes each (the 'way' on 2-1 was NOT in the branch that
+returned the pad: tag first, then print the state that branch reads: d1/back/way/cur/tgt). A toy that names a rule must test the rule
+built, not a stronger one: box 2's first pad toy ('never walks off a pad to his loss') was RED on the fix too, on a different fault.
+## Lessons applied
+D115 (frozen C3/C4 trees for every verdict; probes on copies), D119 (no heredoc in a commit chain), D128 (stamps from `date`), D132 (vs
+MAIN), D133 (the wide read caught padLip: 2-2 kid N 15 passed, 5 other rows failed), D134 (pushed and ls-remote before the hand-over),
+D138 (the hand-over ends new work), D140 (notifications at each step boundary), D141 (the CI line on C4, this candidate).
