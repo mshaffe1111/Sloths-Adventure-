@@ -1,0 +1,55 @@
+    f 158.43 29133,614 g1 vx268 pad {"right":true} why 3330 pend - la - edge - d1 1 way 1 pp 0 cur 1504 tgt 29239,586 meant {"right":true} on 116
+    f 158.47 29143,614 g1 vx285 pad {"right":true} why 3330 pend 158.597/0 la - edge - d1 1 way 1 pp 0 cur 1505 tgt 29239,586 meant {"right":true} on 116
+    f 158.50 29152,614 g1 vx268 pad {"right":true} why 3471 pend 158.597/0 la - edge - d1 1 way 1 pp 0 cur 1505 tgt 29239,586 meant {"right":true} on 116
+    f 158.53 29161,617 g0 vx285 pad {"right":true} why 3471 pend 158.597/0 la - edge - d1 1 way 1 pp 0 cur 1506 tgt 29259,580 meant {"right":true} on -1
+PR t 10.60 x 2621 toEdge 38.9 lands true next #11 2720,667 w 180 here #8 2260-2660 pad null
+PR t 11.47 x 2862 toEdge 37.7 lands true next #9 2960,633 w 360 here #11 2720-2900 pad {"by":"weight","clock":"pad-big","look":"big"}
+PR t 15.50 x 3943 toEdge 37.5 lands true next #15 4050,621 w 130 here #12 3620-3980 pad null
+PR t 16.30 x 4164 toEdge 16.4 lands true next #16 4250,621 w 130 here #15 4050-4180 pad {"by":"weight","clock":"pad-small","look":"small"}
+PR t 16.93 x 4341 toEdge 39.4 lands true next #17 4450,621 w 130 here #16 4250-4380 pad {"by":"weight","clock":"pad-small","look":"small"}
+PR t 17.67 x 4543 toEdge 36.7 lands true next #13 4650,587 w 360 here #17 4450-4580 pad {"by":"weight","clock":"pad-small","look":"small"}
+PR t 39.43 x 9800 toEdge 26.0 lands true next #38 9876,815 w 130 here #36 9446-9826 pad null
+PR t 40.10 x 9974 toEdge 32.4 lands true next #39 10056,815 w 130 here #38 9876-10006 pad {"by":"beat","clock":"pads-spur22","look":"small"}
+PR t 40.80 x 10096 toEdge 90.2 lands false next #40 10236,815 w 136 here #39 10056-10186 pad {"by":"beat","clock":"pads-spur22","look":"small"}
+PR t 42.50 x 10276 toEdge 39.6 lands true next #39 10056,815 w 130 here #40 10236-10372 pad null
+PR t 43.17 x 10092 toEdge 35.6 lands true next #38 9876,815 w 130 here #39 10056-10186 pad {"by":"beat","clock":"pads-spur22","look":"small"}
+PR t 43.80 x 9918 toEdge 42.1 lands false next #36 9446,781 w 380 here #38 9876-10006 pad {"by":"beat","clock":"pads-spur22","look":"small"}
+PR t 72.47 x 13172 toEdge 21.7 lands true next #54 13264,631 w 130 here #50 12774-13194 pad null
+PR t 73.27 x 13384 toEdge 10.1 lands true next #55 13464,631 w 130 here #54 13264-13394 pad {"by":"beat","clock":"pads-breath22","look":"small"}
+PR t 74.07 x 13539 toEdge 55.2 lands false next #51 13664,597 w 300 here #55 13464-13594 pad {"by":"beat","clock":"pads-breath22","look":"small"}
+PR t 78.47 x 13933 toEdge 30.7 lands true next #56 14034,631 w 130 here #51 13664-13964 pad null
+PR t 79.20 x 14125 toEdge 39.0 lands true next #57 14234,631 w 130 here #56 14034-14164 pad {"by":"beat","clock":"pads-breath22","look":"small"}
+PR t 79.87 x 14308 toEdge 56.0 lands false next #52 14434,597 w 360 here #57 14234-14364 pad {"by":"beat","clock":"pads-breath22","look":"small"}
+PR t 101.00 x 19217 toEdge 36.1 lands true next #84 19333,577 w 130 here #75 18953-19253 pad null
+PR t 101.80 x 19436 toEdge 26.8 lands true next #85 19573,577 w 180 here #84 19333-19463 pad {"by":"weight","clock":"pad-small","look":"small"}
+PR t 102.87 x 19731 toEdge 22.0 lands true next #86 19863,577 w 130 here #85 19573-19753 pad {"by":"weight","clock":"pad-big","look":"big"}
+PR t 103.60 x 19218 toEdge 34.7 lands true next #84 19333,577 w 130 here #75 18953-19253 pad null
+PR t 104.63 x 19447 toEdge 16.3 lands true next #85 19573,577 w 180 here #84 19333-19463 pad {"by":"weight","clock":"pad-small","look":"small"}
+PR t 105.63 x 19723 toEdge 30.2 lands true next #86 19863,577 w 130 here #85 19573-19753 pad {"by":"weight","clock":"pad-big","look":"big"}
+PR t 106.50 x 19961 toEdge 31.9 lands true next #76 20073,543 w 300 here #86 19863-19993 pad {"by":"weight","clock":"pad-small","look":"small"}
+PR t 107.27 x 19218 toEdge 34.7 lands true next #84 19333,577 w 130 here #75 18953-19253 pad null
+PR t 108.07 x 19439 toEdge 23.7 lands true next #85 19573,577 w 180 here #84 19333-19463 pad {"by":"weight","clock":"pad-small","look":"small"}
+PR t 109.10 x 19726 toEdge 26.7 lands true next #86 19863,577 w 130 here #85 19573-19753 pad {"by":"weight","clock":"pad-big","look":"big"}
+PR t 109.93 x 19957 toEdge 36.1 lands true next #76 20073,543 w 300 here #86 19863-19993 pad {"by":"weight","clock":"pad-small","look":"small"}
+PR t 123.47 x 21549 toEdge 12.2 lands true next #87 21631,577 w 130 here #77 21261-21561 pad null
+PR t 124.30 x 21769 toEdge -8.3 lands true next #88 21831,577 w 130 here #87 21631-21761 pad {"by":"beat","clock":"pads-mixBeat22","look":"small"}
+PR t 127.93 x 21532 toEdge 28.9 lands true next #87 21631,577 w 130 here #77 21261-21561 pad null
+PR t 128.70 x 21730 toEdge 30.7 lands true next #88 21831,577 w 130 here #87 21631-21761 pad {"by":"beat","clock":"pads-mixBeat22","look":"small"}
+PR t 129.40 x 21925 toEdge 36.4 lands true next #78 22031,543 w 300 here #88 21831-21961 pad {"by":"beat","clock":"pads-mixBeat22","look":"small"}
+PR t 139.60 x 24644 toEdge 34.5 lands true next #99 24749,581 w 130 here #96 24259-24679 pad null
+PR t 140.33 x 24848 toEdge 31.3 lands true next #100 24949,581 w 300 here #99 24749-24879 pad {"by":"weight","clock":"pad-small","look":"small"}
+PR t 140.87 x 24887 toEdge -8.5 lands true next #100 24949,581 w 300 here #99 24749-24879 pad {"by":"weight","clock":"pad-small","look":"small"}
+PR t 142.30 x 25211 toEdge 38.4 lands true next #101 25319,581 w 130 here #100 24949-25249 pad null
+PR t 143.03 x 25413 toEdge 36.4 lands true next #97 25519,547 w 360 here #101 25319-25449 pad {"by":"weight","clock":"pad-small","look":"small"}
+PR t 155.43 x 28304 toEdge 34.6 lands true next #114 28459,614 w 130 here #110 28039-28339 pad null
+PR t 156.40 x 28572 toEdge 17.2 lands true next #115 28709,614 w 180 here #114 28459-28589 pad {"by":"weight","clock":"pad-small","look":"small"}
+PR t 157.50 x 28875 toEdge 13.5 lands true next #116 29009,614 w 130 here #115 28709-28889 pad {"by":"weight","clock":"pad-big","look":"big"}
+PR t 158.43 x 29133 toEdge 5.6 lands false next #111 29259,580 w 280 here #116 29009-29139 pad {"by":"weight","clock":"pad-small","look":"small"}
+PR t 160.23 x 28308 toEdge 31.1 lands true next #114 28459,614 w 130 here #110 28039-28339 pad null
+PR t 161.20 x 28575 toEdge 13.7 lands true next #115 28709,614 w 180 here #114 28459-28589 pad {"by":"weight","clock":"pad-small","look":"small"}
+PR t 163.17 x 28306 toEdge 33.4 lands true next #114 28459,614 w 130 here #110 28039-28339 pad null
+PR t 164.13 x 28573 toEdge 16.0 lands true next #115 28709,614 w 180 here #114 28459-28589 pad {"by":"weight","clock":"pad-small","look":"small"}
+PR t 165.23 x 28876 toEdge 13.5 lands true next #116 29009,614 w 130 here #115 28709-28889 pad {"by":"weight","clock":"pad-big","look":"big"}
+PR t 166.87 x 29504 toEdge 35.1 lands true next #117 29619,614 w 130 here #111 29259-29539 pad null
+PR t 167.67 x 29716 toEdge 33.5 lands true next #118 29829,614 w 130 here #117 29619-29749 pad {"by":"beat","clock":"pads-deepBeat22","look":"small"}
+PR t 168.43 x 29925 toEdge 34.2 lands true next #112 30039,580 w 300 here #118 29829-29959 pad {"by":"beat","clock":"pads-deepBeat22","look":"small"}

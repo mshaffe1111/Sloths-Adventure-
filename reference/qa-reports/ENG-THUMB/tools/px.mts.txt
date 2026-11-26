@@ -1,0 +1,22 @@
+// px.mts <tree> <stage> <seed> <bot> <setting> <x0> <x1> [every]: frames with x in [x0,x1]: t x g, the platform under his feet (index, type,
+// drift dir, span), mid = a floor by his middle, F = C12/C13's feet read would fire (for dir +1 or -1 as named), intend's out, edge/late/standing;
+// and every put-back (|dx| >= 100 in a frame) anywhere
+const [T, st, sd, bot, set, a, b, ev] = process.argv.slice(2);
+await import(`${T}/src/game/headlessDom.ts`);
+const ft = await import(`${T}/tools/inspect/firsttimer.ts`);
+const { castRun } = await import(`${T}/tools/inspect/castBots.ts`);
+const P = ft.FirstTimerRun.prototype as any; const it = P.intend; let lx = 0, lt = -1, k = 0;
+P.intend = function (...q: any[]) {
+  const p = this.sim.p, x0 = p.x;
+  if (lt >= 0 && Math.abs(this.t - lt - 1 / 30) < 1e-3 && Math.abs(x0 - lx) >= 100) console.log(`PUTBACK t ${this.t.toFixed(2)} x ${Math.round(lx)} -> ${Math.round(x0)}`);
+  const o = it.apply(this, q);
+  if (p.x >= +a && p.x <= +b && (k++ % +(ev ?? 1) === 0 || o.jump || o.press)) {
+    const i = this.sim.platforms.findIndex((z: any) => z.id === this.sim.standingOn); const f = i >= 0 ? this.sim.platforms[i] : null;
+    const mid = this.floorAt(p.x, p.y, 6) ? 1 : 0;
+    const F = p.grounded && f?.type === 'drift' && !mid ? (p.x > f.x + f.width ? '+' : p.x < f.x ? '-' : '?') : '';
+    console.log(`t ${this.t.toFixed(2)} x ${p.x.toFixed(0)} g${p.grounded ? 1 : 0} on ${f ? `#${i} ${f.type}${f.drift ? (f.drift.dir > 0 ? '>' : '<') : ''} ${Math.round(f.x)}-${Math.round(f.x + f.width)}` : '-'} mid ${mid}${F ? ' F' + F : ''} out ${JSON.stringify(o)} e${this.edge ? 1 : 0} l${this.lateArmed ? this.lateArmed.dir : '-'} s${this.standing ? 1 : 0}`);
+  }
+  lt = this.t; lx = this.sim.p.x; return o;
+};
+const r = castRun(bot, set, st, +sd);
+console.log(`end ${r.end} rescues ${r.rescues} lives ${r.lives} time ${r.time ?? ''}`);

@@ -1,0 +1,12 @@
+// plats.mts <tree> <stage> <seed> <bot> <setting> <t0> <t1> <x0> <x1>: platforms overlapping [x0,x1] at frames t0..t1 (every 3rd)
+const [T, st, seed, bot, setting, t0, t1, x0, x1] = process.argv.slice(2);
+await import(`${T}/src/game/headlessDom.ts`);
+const ft = await import(`${T}/tools/inspect/firsttimer.ts`);
+const { CAST_BOTS } = await import(`${T}/tools/inspect/castBots.ts`);
+let k = 0;
+ft.firstTimer(st, +seed, (CAST_BOTS as any)[bot][setting], { cap: +t1 + 0.1, dotSetting: true, onFrame: (sim: any) => {
+  if (sim.t < +t0 || (k++ % 3)) return;
+  const p = sim.e.player;
+  const qs = sim.platforms.filter((q: any) => q.x + q.width > +x0 && q.x < +x1 && !q.broken).map((q: any) => `#${q.id} ${q.type ?? ''} ${Math.round(q.x)}-${Math.round(q.x + q.width)} y${Math.round(q.y)}${q.drift ? ` drift d${q.drift.dir} v${q.drift.speed} ${Math.round(q.drift.x0)}-${Math.round(q.drift.x1)}` : ''}${q.sink ? ' sink' : ''}${q.pad ? ' pad' : ''}`);
+  console.log(`${sim.t.toFixed(2)} him ${Math.round(p.x)},${Math.round(p.y)} on ${sim.e.standingOnId} | ${qs.join(' | ')}`);
+} });

@@ -1,0 +1,51 @@
+TAP version 13
+# Subtest: a put-back by the game spends the edge plan: a teaching river splashes him back with no life lost, and the lip he left has no plan left armed for it (2-2 child Easy 21 to t 266, R-165.465)
+not ok 1 - a put-back by the game spends the edge plan: a teaching river splashes him back with no life lost, and the lip he left has no plan left armed for it (2-2 child Easy 21 to t 266, R-165.465)
+  ---
+  duration_ms: 2906.013412
+  type: 'test'
+  location: '/home/user/toy-c6/tools/inspect/hopJudged.test.ts:607:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    a plan for the lip he left outlived the put-back
+    + actual - expected
+    
+    + [
+    +   't 218.73 x 20823 -> 20378: the late press armed before it',
+    +   't 257.50 x 24420 -> 24292: the late press armed before it',
+    +   't 258.03 x 24420 -> 24292: the late press armed before it',
+    +   't 259.27 x 24423 -> 24292: the late press armed before it',
+    +   't 259.80 x 24420 -> 24292: the late press armed before it',
+    +   't 262.53 x 24422 -> 24292: the late press armed before it',
+    +   't 263.07 x 24420 -> 24292: the late press armed before it',
+    +   't 263.60 x 24415 -> 24529: the late press armed before it'
+    + ]
+    - []
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+  actual:
+    0: 't 218.73 x 20823 -> 20378: the late press armed before it'
+    1: 't 257.50 x 24420 -> 24292: the late press armed before it'
+    2: 't 258.03 x 24420 -> 24292: the late press armed before it'
+    3: 't 259.27 x 24423 -> 24292: the late press armed before it'
+    4: 't 259.80 x 24420 -> 24292: the late press armed before it'
+    5: 't 262.53 x 24422 -> 24292: the late press armed before it'
+    6: 't 263.07 x 24420 -> 24292: the late press armed before it'
+    7: 't 263.60 x 24415 -> 24529: the late press armed before it'
+  operator: 'deepStrictEqual'
+  stack: |-
+    TestContext.<anonymous> (/home/user/toy-c6/tools/inspect/hopJudged.test.ts:633:10)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
+  ...
+1..1
+# tests 1
+# suites 0
+# pass 0
+# fail 1
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 7629.067204

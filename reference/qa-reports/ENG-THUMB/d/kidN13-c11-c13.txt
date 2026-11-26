@@ -1,0 +1,21 @@
+# 2-1 kid Normal 13 at the river past #85 (px.mts, x 19,300-20,300): C11 48af07540 (every frame) vs C13 c38532c48 (every 3rd); F+ = his feet on a log running at him, his middle past its front
+## C11 (crosses: walk-on, the edge plan's pending press flies at 102.53; end shrine 0 lives)
+t 102.30 x 19893 g1 on #72 drift< 19788-19938 mid 1 out {"right":true} e0 l- s0
+t 102.33 x 19901 g1 on #72 drift< 19786-19936 mid 1 out {"right":true} e0 l- s0
+t 102.37 x 19907 g1 on #72 drift< 19783-19933 mid 1 out {} e0 l- s0
+t 102.40 x 19914 g1 on #72 drift< 19781-19931 mid 1 out {} e0 l- s0
+t 102.43 x 19921 g1 on #72 drift< 19779-19929 mid 1 out {} e0 l- s0
+t 102.47 x 19928 g1 on #72 drift< 19776-19926 mid 0 F+ out {"right":true} e0 l- s0
+t 102.50 x 19935 g1 on #72 drift< 19774-19924 mid 0 F+ out {"right":true} e0 l- s0
+t 102.53 x 19942 g0 on - mid 0 out {"press":true,"jump":true} e0 l- s0
+t 102.57 x 19951 g0 on - mid 0 out {"jump":true} e0 l- s0
+t 102.60 x 19961 g0 on - mid 0 out {"jump":true} e0 l- s0
+## C13 (the river block's stand: no input, slid off, no press, drowned; end shrine, 2 lives, 1 rescue at 19,577)
+t 102.40 x 19914 g1 on #72 drift< 19781-19931 mid 1 out {} e0 l- s0
+t 102.50 x 19935 g1 on #72 drift< 19774-19924 mid 0 F+ out {} e0 l- s0
+t 102.60 x 19954 g0 on - mid 0 out {"right":true} e0 l- s0
+t 102.63 x 19963 g0 on - mid 0 out {"right":true} e0 l- s0
+t 102.63 x 19963 g0 on - mid 0 out {"right":true} e0 l- s0
+t 102.63 x 19963 g0 on - mid 0 out {"right":true} e0 l- s0
+t 102.63 x 19389 g0 on - mid 1 out {"right":true} e0 l- s0
+t 102.73 x 19389 g1 on #69 solid 19089-19509 mid 1 out {"right":true} e0 l- s0

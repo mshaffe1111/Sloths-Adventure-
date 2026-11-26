@@ -1,0 +1,76 @@
+# C5 b088c8ab4 probe (PADPROBE line, tools/pp.py.txt): every padRead decision and every life lost, 2-2 kid Normal 27, 28, 7
+== kid Normal 27
+  149.90 single from 28399,624 hold 0.22 run false -> LIFE LOST
+  155.23 single from 28995,624 hold 0.12 run false -> LIFE LOST
+  159.83 single from 28711,624 hold 0.19 run false -> LIFE LOST
+  163.17 single from 28425,624 hold 0.22 run false -> LIFE LOST
+PP t 148.17 x 28153 vx 285 toEdge 45.0 off 0.100 x0 28180 v0 268 late 0 lead 17.7 onRun true lands true here #109 27898-28198 pad false next #113 28318,624
+PP t 149.00 x 28382 vx 268 toEdge 66.2 off 0.267 x0 28399 v0 0 late 1 lead 49.0 onRun false lands false here #113 28318-28448 pad true next #114 28568,624
+PP t 151.40 x 28130 vx 268 toEdge 67.9 off 0.167 x0 28176 v0 285 late 0 lead 21.6 onRun true lands true here #109 27898-28198 pad false next #113 28318,624
+PP t 152.47 x 28425 vx 268 toEdge 23.2 off 0.100 x0 28453 v0 285 late 3 lead -4.8 onRun false lands true here #113 28318-28448 pad true next #114 28568,624
+PP t 153.33 x 28664 vx 268 toEdge 83.7 off 0.267 x0 28738 v0 268 late 0 lead 10.0 onRun true lands true here #114 28568-28748 pad true next #115 28868,624
+PP t 154.43 x 28969 vx 285 toEdge 29.4 off 0.267 x0 28995 v0 0 late 2 lead 3.3 onRun false lands false here #115 28868-28998 pad true next #110 29118,590
+PP t 156.80 x 28149 vx 268 toEdge 49.5 off 0.133 x0 28185 v0 268 late 0 lead 12.6 onRun true lands true here #109 27898-28198 pad false next #113 28318,624
+PP t 157.70 x 28398 vx 285 toEdge 50.5 off 0.233 x0 28413 v0 0 late 1 lead 35.1 onRun false lands false here #113 28318-28448 pad true next #114 28568,624
+PP t 159.00 x 28694 vx 268 toEdge 54.3 off 0.200 x0 28711 v0 0 late 1 lead 37.1 onRun false lands false here #114 28568-28748 pad true next #115 28868,624
+PP t 161.33 x 28130 vx 268 toEdge 67.9 off 0.233 x0 28195 v0 285 late 0 lead 3.1 onRun true lands true here #109 27898-28198 pad false next #113 28318,624
+PP t 162.30 x 28399 vx 285 toEdge 49.3 off 0.233 x0 28425 v0 0 late 2 lead 23.3 onRun false lands false here #113 28318-28448 pad true next #114 28568,624
+PP t 166.87 x 29365 vx 0 toEdge 33.0 off 0.100 x0 29382 v0 260 late 0 lead 15.7 onRun true lands true here #110 29118-29398 pad false next #116 29478,624
+PP t 167.63 x 29567 vx 268 toEdge 41.5 off 0.067 x0 29585 v0 268 late 1 lead 23.1 onRun true lands true here #116 29478-29608 pad true next #117 29688,624
+PP t 168.37 x 29769 vx 268 toEdge 48.8 off 0.133 x0 29806 v0 268 late 0 lead 12.0 onRun true lands true here #117 29688-29818 pad true next #111 29898,590
+== kid Normal 28
+  110.47 single from 20324,608 hold 0.17 run false -> LIFE LOST
+  113.63 single from 19674,642 hold 0.26 run false -> LIFE LOST
+  117.00 single from 19703,642 hold 0.20 run false -> LIFE LOST
+  117.63 single from 20638,636 hold 0.07 run true -> LIFE LOST
+  128.37 single from 21717,642 hold 0.07 run false -> LIFE LOST
+  161.23 single from 28962,632 hold 0.14 run false -> LIFE LOST
+  165.63 single from 29250,632 hold 0.07 run true -> LIFE LOST
+  171.17 single from 29221,632 hold 0.12 run false -> LIFE LOST
+  175.87 single from 29219,632 hold 0.23 run false -> LIFE LOST
+PP t 145.07 x 25380 vx 268 toEdge 50.4 off 0.100 x0 25407 v0 285 late 0 lead 22.5 onRun true lands true here #101 25300-25430 pad true next #97 25500,605
+PP t 158.47 x 28393 vx 268 toEdge 56.3 off 0.100 x0 28421 v0 285 late 0 lead 28.3 onRun true lands true here #111 28149-28449 pad false next #115 28569,632
+PP t 159.30 x 28624 vx 285 toEdge 74.5 off 0.233 x0 28689 v0 268 late 0 lead 10.4 onRun true lands true here #115 28569-28699 pad true next #116 28819,632
+PP t 160.40 x 28926 vx 268 toEdge 72.6 off 0.267 x0 28962 v0 0 late 3 lead 37.0 onRun false lands false here #116 28819-28999 pad true next #117 29119,632
+PP t 161.77 x 28388 vx 285 toEdge 61.1 off 0.133 x0 28425 v0 285 late 0 lead 24.2 onRun true lands true here #111 28149-28449 pad false next #115 28569,632
+PP t 162.70 x 28646 vx 268 toEdge 52.6 off 0.167 x0 28693 v0 285 late 0 lead 6.2 onRun true lands true here #115 28569-28699 pad true next #116 28819,632
+PP t 163.83 x 28960 vx 268 toEdge 39.4 off 0.200 x0 28995 v0 0 late 3 lead 3.8 onRun false lands false here #116 28819-28999 pad true next #117 29119,632
+PP t 165.07 x 29226 vx 285 toEdge 22.8 off 0.100 x0 29250 v0 172 late 2 lead -1.4 onRun false lands false here #117 29119-29249 pad true next #112 29369,598
+PP t 166.50 x 28406 vx 285 toEdge 42.6 off 0.067 x0 28425 v0 285 late 0 lead 24.2 onRun true lands true here #111 28149-28449 pad false next #115 28569,632
+PP t 167.40 x 28655 vx 268 toEdge 44.2 off 0.167 x0 28680 v0 0 late 2 lead 19.3 onRun false lands false here #115 28569-28699 pad true next #116 28819,632
+PP t 168.47 x 28653 vx 285 toEdge 45.7 off 0.133 x0 28690 v0 285 late 0 lead 8.9 onRun true lands true here #115 28569-28699 pad true next #116 28819,632
+PP t 169.60 x 28966 vx 285 toEdge 32.5 off 0.100 x0 28994 v0 268 late 0 lead 5.2 onRun true lands true here #116 28819-28999 pad true next #117 29119,632
+PP t 170.47 x 29206 vx 285 toEdge 43.1 off 0.167 x0 29221 v0 0 late 1 lead 27.6 onRun false lands false here #117 29119-29249 pad true next #112 29369,598
+PP t 171.97 x 28388 vx 285 toEdge 61.1 off 0.133 x0 28425 v0 285 late 0 lead 24.2 onRun true lands true here #111 28149-28449 pad false next #115 28569,632
+PP t 172.97 x 28664 vx 285 toEdge 34.7 off 0.133 x0 28680 v0 0 late 1 lead 19.3 onRun false lands false here #115 28569-28699 pad true next #116 28819,632
+PP t 174.10 x 28942 vx 268 toEdge 56.9 off 0.167 x0 28988 v0 285 late 0 lead 10.6 onRun true lands true here #116 28819-28999 pad true next #117 29119,632
+PP t 174.97 x 29183 vx 268 toEdge 65.7 off 0.267 x0 29219 v0 0 late 3 lead 30.1 onRun false lands false here #117 29119-29249 pad true next #112 29369,598
+PP t 179.40 x 29631 vx 0 toEdge 18.3 off 0.133 x0 29631 v0 0 late 0 lead 18.3 onRun false lands true here #112 29369-29649 pad false next #118 29729,632
+PP t 180.20 x 29801 vx 268 toEdge 58.0 off 0.167 x0 29847 v0 285 late 1 lead 11.7 onRun true lands true here #118 29729-29859 pad true next #119 29939,632
+PP t 181.00 x 30022 vx 268 toEdge 47.0 off 0.100 x0 30050 v0 285 late 3 lead 19.0 onRun true lands true here #119 29939-30069 pad true next #113 30149,598
+== kid Normal 7
+  82.87 single from 14025,668 hold 0.09 run false -> LIFE LOST
+  117.47 single from 19735,604 hold 0.07 run false -> LIFE LOST
+  137.63 single from 21928,604 hold 0.07 run false -> LIFE LOST
+  171.70 single from 28950,641 hold 0.07 run false -> LIFE LOST
+  177.10 single from 28987,641 hold 0.08 run false -> LIFE LOST
+  182.07 single from 28993,641 hold 0.15 run false -> LIFE LOST
+PP t 152.50 x 24439 vx 285 toEdge 106.4 off 0.267 x0 24512 v0 285 late 0 lead 32.7 onRun true lands true here #95 24125-24545 pad false next #98 24615,624
+PP t 153.30 x 24660 vx 285 toEdge 85.3 off 0.167 x0 24705 v0 268 late 0 lead 39.6 onRun true lands true here #98 24615-24745 pad true next #99 24815,624
+PP t 154.70 x 25045 vx 285 toEdge 70.2 off 0.133 x0 25082 v0 285 late 0 lead 33.4 onRun true lands true here #99 24815-25115 pad false next #100 25185,624
+PP t 155.43 x 25247 vx 285 toEdge 67.6 off 0.133 x0 25284 v0 285 late 0 lead 30.7 onRun true lands true here #100 25185-25315 pad true next #96 25385,590
+PP t 167.90 x 28125 vx 285 toEdge 79.5 off 0.233 x0 28190 v0 268 late 0 lead 15.3 onRun true lands true here #109 27905-28205 pad false next #113 28325,641
+PP t 169.00 x 28429 vx 268 toEdge 25.9 off 0.133 x0 28454 v0 41 late 2 lead 0.9 onRun false lands true here #113 28325-28455 pad true next #114 28575,641
+PP t 170.10 x 28712 vx 268 toEdge 43.0 off 0.133 x0 28749 v0 268 late 0 lead 6.2 onRun true lands true here #114 28575-28755 pad true next #115 28875,641
+PP t 170.90 x 28933 vx 268 toEdge 71.9 off 0.333 x0 28950 v0 0 late 1 lead 54.8 onRun false lands false here #115 28875-29005 pad true next #110 29125,607
+PP t 173.23 x 28147 vx 285 toEdge 58.4 off 0.167 x0 28192 v0 268 late 0 lead 12.6 onRun true lands true here #109 27905-28205 pad false next #113 28325,641
+PP t 174.20 x 28413 vx 268 toEdge 41.6 off 0.200 x0 28438 v0 0 late 2 lead 16.6 onRun false lands false here #113 28325-28455 pad true next #114 28575,641
+PP t 175.50 x 28729 vx 285 toEdge 26.3 off 0.133 x0 28744 v0 0 late 1 lead 10.9 onRun false lands false here #114 28575-28755 pad true next #115 28875,641
+PP t 176.50 x 28970 vx 268 toEdge 35.4 off 0.133 x0 28987 v0 0 late 1 lead 18.2 onRun false lands false here #115 28875-29005 pad true next #110 29125,607
+PP t 178.33 x 28137 vx 268 toEdge 67.9 off 0.200 x0 28192 v0 268 late 0 lead 12.6 onRun true lands true here #109 27905-28205 pad false next #113 28325,641
+PP t 179.37 x 28423 vx 285 toEdge 32.1 off 0.100 x0 28450 v0 268 late 0 lead 4.7 onRun true lands true here #113 28325-28455 pad true next #114 28575,641
+PP t 180.37 x 28699 vx 285 toEdge 55.7 off 0.200 x0 28755 v0 285 late 0 lead 0.5 onRun true lands true here #114 28575-28755 pad true next #115 28875,641
+PP t 181.30 x 28959 vx 285 toEdge 46.1 off 0.200 x0 28993 v0 0 late 3 lead 12.2 onRun false lands false here #115 28875-29005 pad true next #110 29125,607
+PP t 186.07 x 29390 vx 0 toEdge 15.4 off 0.100 x0 29390 v0 0 late 0 lead 15.4 onRun false lands true here #110 29125-29405 pad false next #116 29485,641
+PP t 186.77 x 29541 vx 268 toEdge 73.6 off 0.133 x0 29578 v0 268 late 1 lead 36.8 onRun true lands true here #116 29485-29615 pad true next #117 29695,641
+PP t 187.50 x 29743 vx 285 toEdge 82.1 off 0.233 x0 29807 v0 268 late 0 lead 17.9 onRun true lands true here #117 29695-29825 pad true next #111 29905,607

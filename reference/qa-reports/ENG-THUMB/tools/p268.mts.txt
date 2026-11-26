@@ -1,0 +1,17 @@
+// p268.mts <tree> <setting> <variants> [trace v]: the catch toy (twin, seed 2, long), middle, vineFromLog on; fromLog per variant; with a trace
+// variant, every frame where his feet are on a drifting log and floorAt by his middle is null (C12's feetOn read), and the intend output
+const [T, set, vs, tv] = process.argv.slice(2);
+await import(`${T}/src/game/headlessDom.ts`);
+const ft = await import(`${T}/tools/inspect/firsttimer.ts`);
+const { lianaRun } = await import(`${T}/tools/inspect/lianaRiverToys.ts`);
+ft.SKILLS.vineFromLog = true;
+const P = ft.FirstTimerRun.prototype as any; const it = P.intend; let cur = 0;
+P.intend = function (...a: any[]) {
+  const o = it.apply(this, a); const p = this.sim.p;
+  if (tv && cur === +tv && p.grounded) {
+    const f = this.sim.platforms.find((q: any) => q.id === this.sim.standingOn);
+    if (f?.type === 'drift' && !this.floorAt(p.x, p.y, 6)) console.log(`  t ${this.t.toFixed(2)} x ${p.x.toFixed(0)} log ${Math.round(f.x)}-${Math.round(f.x + f.width)} dir ${f.drift?.dir} out ${JSON.stringify(o)} edge ${this.edge ? 1 : 0} late ${this.lateArmed ? this.lateArmed.dir : '-'} standing ${this.standing ? 1 : 0}`);
+  }
+  return o;
+};
+for (const v of vs.split(',').map(Number)) { cur = v; const r = lianaRun('catch', 'twin', 'middle', set, 2, v, 'long', { realInput: true }); console.log(`v${v} end ${r.end} fromLog ${r.fromLog}`); }
