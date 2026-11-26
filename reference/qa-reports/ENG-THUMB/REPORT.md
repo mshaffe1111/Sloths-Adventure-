@@ -42,6 +42,9 @@ d/rule28/rows-main/ on origin/release-0.10.3-wip-fixes. Rebuild frozen trees (D1
    - **254** (hopJudged.test.ts:392, ruling 2's 'a beat row is started (CI-14)'): 'he left floor #50 at t 75.533 onto beat pad #55 with
      1.87 s of the breath left for a run that needs 2.04 s'. Red on C9, GREEN on C10, red again on C11: ruling 2 is live again.
    **C11 is NOT a clean candidate.**
+7. **C11's five-bot rows vs main (recorded after the hand-over; already running; d/rows-c11/, d/flips-main-vs-c11-fivebots.txt):** 1-40,
+   both settings, 360 rows a stage. PASS -> FAIL: **2-1 1** (child Easy 3, step 1 above), **2-2 0, 2-4 0, 2-5 0, 1-4 0**; fail -> pass
+   31 / 30 / 74 / 44 / 128. C10's 3 rows all PASS on C11.
 - **The three C10 rows (the lead's ruling, traced on frozen C10 with tag.py, FT_FRAMES and a probe of the feet floor):**
   - 2-1 child N 20 (d/frames-c10-2-1-childnormal20.txt): 81.23 lands on #41 (8,444-8,614, drifting his way) at x 8,627, his middle 13 px
     past its front, the floatSure pull-back due; C10's feet floor sent him past it to the edge plan's stand (why 4044, `standing` until -1,
