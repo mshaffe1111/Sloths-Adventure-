@@ -1,4 +1,16 @@
 # ENG-DARK REPORT (the dark + light ring as one gen2 brick; WORLD-3-PLAN F2; R-165.449)
+**BOX 26 (ENG-DARK-z): THE LAY FIX, c19 = 7accddd52 (tower.ts towerCatches rule 1).** CAUSE (probe, an instrumented copy, never a
+verdict): the guard DOES read Easy 6's end at 1241 (offEnd's new point, x 1260 on the wall line) and runs on it every pass. Rule 1 (run
+the piece on into the wall) was refused by `slotted`: the run-on 1241-1280 read ALONE is 65 px from the bough at 1061-1176, though the
+piece itself (a bridge, 1176-1241) fills that gap: a FALSE slot. Rule 4 (a catch under it) cannot cover x 1260 (boughs keep to [24,
+width - 24], 1256 at most), so it laid the same non-catching bough 1122-1256, y 3111 on each pass: 8 stacked copies. FIX: rule 1 reads its
+slot off the run it makes (the piece and its run-on as one). RUN ON into the wall, not a catch: the gap to the wall is 39 px, itself a
+slot by SLOT's own measure (under 66), so a catch under it would leave a crack he can neither walk nor read as an end. Easy 6: run-on
+1241-1280 laid, errors [], the stacked boughs gone. w3.test 10/10 GREEN on the fix (:108, :129, :143 were RED on c18, box 25).
+Toy (tower.test.ts, 'an end 19 px in from the wall line is run on into the wall') GREEN; plants 48 (the toy) and 49 (w3 :129) added.
+**EXACT NEXT STEP (box 26, in progress):** c19's x40 (frozen wt19, 2 lanes) -> x40verdict vs the bar + kinds; lays.mts c18 vs c19 (rule 28:
+every moved row traced); then the gates ONCE on the final candidate (tsc, CI line, suite all shards, dark/castBots/darkBots/tierBots,
+lockall --check, generalitycheck, plants 49/49); land on t-eng-w3 (88592a9c4) by merge, no force.
 **BOX 25 STOP (ENG-DARK-y, after the hand-over; the landing NOT done): a suite red, traced.** Suite shard 2/6 on frozen c18 38e4892e1:
 658 pass / 3 fail, all in src/game/gen2/worlds/w3.test.ts (:108 every roll clean, :129 head room on the way down, :143 a catch crosses a
 vine), with one cause: 'easy 6: tower: a blind drop off the piece at x 1176-1241, y 2830: 568 px to its landing (in view: within 300)'.

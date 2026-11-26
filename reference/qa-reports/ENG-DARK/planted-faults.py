@@ -154,6 +154,9 @@ PLANTS = [
     ("the run-on's slot read off the run-on alone (not the run it makes)", 'src/game/gen2/tower.ts',
      "!slotted(r0, r1, e.p.y, [e.p])", "!slotted(w0, w1, e.p.y, [e.p])",
      'going down, an end 19 px in from the wall line is run on into the wall', 'src/game/gen2/tower.test.ts'),
+    ("the run-on's slot read off the run-on alone: the raw 3-1 rolls (Easy 6's blind drop)", 'src/game/gen2/tower.ts',
+     "!slotted(r0, r1, e.p.y, [e.p])", "!slotted(w0, w1, e.p.y, [e.p])",
+     'head room on the way down: no piece of 24 raw rolls', 'src/game/gen2/worlds/w3.test.ts'),
 ]
 # (ENG-DARK box 13) ONLY='a|b': run only the plants whose name holds one of these (a re-anchor's check; the full proof runs them all)
 import os
