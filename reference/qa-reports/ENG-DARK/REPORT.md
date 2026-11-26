@@ -44,7 +44,8 @@ y 11320 from 244.9 s he walks a floor left 1226 -> 856 in six stop-and-go steps;
 (gw null, glowStop false), and the stops are the bot's thumb rhythm (want = this.rhythm(intended), firsttimer.ts:4248) giving {} for
 1-2 s at a time; over that walk prog.hi does not rise (1289 -> 1254), so the no-progress clock (firsttimer.ts:4481, 8 s) opens a stuck
 line at 244.4 s, closed by his jump down at 253.0 s. Not the dark, not c16's lip hold or put(): a bot pacing read the base never meets
-because the base's run of this roll goes another way (18 rescues). Kind A = R-165.481.
+because the base's run of this roll goes another way (18 rescues). Kind A = R-165.481. The lead: c16 ON THE BAR; N 15 x 856 does not stop it,
+named R-165.482 (a bot rhythm stall on a long level floor; the bot lane after release 5).
 Lessons applied: D115 (frozen trees for every verdict run; the instrumented copy separate), D119 (no heredoc in a commit chain), D128 (stamps
 from `date`), D134 (pushed and ls-remote checked before the hand-over message), D138 (this note ends box 22's new work), D140, D141.
 LEARNED: when a bot change re-rolls every row, the new misses are first set against the changed reads (log each flipped read with t, x, y):
