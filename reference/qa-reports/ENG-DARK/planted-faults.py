@@ -120,6 +120,14 @@ PLANTS = [
      "  const a = dir < 0 ? end - WALL_HALF : end, b = dir < 0 ? end : end + WALL_HALF;",
      "  return false;\n  const a = dir < 0 ? end - WALL_HALF : end, b = dir < 0 ? end : end + WALL_HALF;", 'no rescue at the walled catch', 'src/game/gen2/darkBots.test.ts'),
 
+    # (ENG-DARK-r, box 18) box 16's 89ef9a985, its two changes planted back (toys written box 18)
+    ("runOffs skips an edge with its own sleeping stop (89ef9a985's lay change reverted)", 'src/game/gen2/dark.ts',
+     "    const uds = rims.filter((m) => m.piece === u.piece && m.dir === u.dir);\n",
+     "    const uds = rims.filter((m) => m.piece === u.piece && m.dir === u.dir);\n    if (uds.some((m) => m.light?.sleep)) continue;\n",
+     'a RUN off an edge with its OWN dark stop is judged too'),
+    ("glowWait takes the first rim at an end (89ef9a985's bot change reverted)", 'tools/inspect/firsttimer.ts',
+     "<= GLOW_NEAR && unlit(r));\n    if (!rim) return null;", "<= GLOW_NEAR);\n    if (!rim || !unlit(rim)) return null;",
+     'a dark stop at an end that is two rims', 'src/game/gen2/darkBots.test.ts'),
 ]
 # (ENG-DARK box 13) ONLY='a|b': run only the plants whose name holds one of these (a re-anchor's check; the full proof runs them all)
 import os

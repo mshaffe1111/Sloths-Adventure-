@@ -15,7 +15,7 @@ import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { RealPlay } from '../realPlay.ts';
 import { GLOW_REACH, glowReaches, keepsClear, type Zone } from '../zones.ts';
-import { awakeLights, DARK_AHEAD, DARK_EMIT, DARK_GLOW, DARK_PROPS, DARK_ZONE, darkFlags, darkGaps, darkLandings, darkRims, darkStop, entryPieces, litAhead, RimWatch, type DarkRim } from './dark.ts';
+import { awakeLights, DARK_AHEAD, DARK_EMIT, DARK_GLOW, DARK_PROPS, DARK_ZONE, darkFlags, darkGaps, darkLandings, darkRims, darkStop, entryPieces, litAhead, RimWatch, runOffRims, type DarkRim } from './dark.ts';
 import type { Platform } from '../types.ts';
 import type { StageSink } from './types.ts';
 import { W6S_EMIT, W6S_PROPS } from './worlds/w6Swing.ts';
@@ -266,12 +266,12 @@ test("the cave mouth is lit (ruling (ii)): adult Easy roll 30 drops in from OUTS
   assert.ok(red.some((m) => m.includes('the rim he left outside the dark: the rim at x 175, y 2190')), red.join('; ') || 'nothing named');
 });
 
-/** (ENG-DARK box 14) the hop rim's SHAPE: on Normal rolls 1-10, a hop rim in the dark whose step-off piece (the highest under a body's
+/** (ENG-DARK box 14) the hop rim's SHAPE: on Normal rolls 1-40 (1-10 until box 18: the going-down lay left no such rim in them), a hop rim in the dark whose step-off piece (the highest under a body's
  *  width out), moved by hand along so its back end lies 13 px behind his touchdown, is a sleeping rim no other light shows: the dark
  *  laid again (relay) with that piece moved; `own` the same lay with only the lights over the rims' own landings (no second lights) */
 const HOP_FLOOR = 540;
 function hopStep() {
-  for (let seed = 1; seed <= 10; seed++) {
+  for (let seed = 1; seed <= 40; seed++) {
     const st = built(seed, 'normal');
     for (const z of st.zones ?? []) {
       if (z.kind !== 'dark' || !z.lights?.length) continue;
@@ -309,7 +309,7 @@ test("a hop rim's step-off landing is lit (the lead's ruling A, 11-25): a SHAPE 
   // (adult Normal roll 33's hop rim x 951, y 7644 stepping off onto 704-940 was the real row; on ENG-DOWNBOT's lay (merged, box 14) no
   //  hop rim of rolls 1-40 goes red without the second lights (probes/anchors.mts), so the toy is hand-built on a real hop rim)
   const h = hopStep();
-  assert.ok(h, 'a hop rim whose step-off edge behind him no other light shows (rolls 1-10)');
+  assert.ok(h, 'a hop rim whose step-off edge behind him no other light shows (rolls 1-40)');
   assert.deepEqual(darkLandings(h.stage, 'normal').filter((m) => m.includes(named(h.hop)) && m.includes(`onto ${named(h.back)}`)), []);
 });
 
@@ -394,4 +394,16 @@ test("an edge BEHIND a dark-rim drop's landing is no edge he lands toward (the l
   assert.ok(BEHIND < darkStop('normal'), 'inside his stopping distance: judged were it an edge he lands toward');
   assert.ok(Math.hypot(rim.light!.x - back.x, rim.light!.y - back.y) > rim.light!.r, "the drop's own light does not reach it");
   assert.deepEqual(darkLandings(stage, 'normal').filter((m) => m.includes(named(rim)) && m.includes(`onto ${named(back)}`)), []);
+});
+
+/** (ENG-DARK box 16's change 89ef9a985, its toy written box 18) an edge with a dark stop OF ITS OWN is judged as a run off too: the
+ *  stop ends when its own landing's light is lit, and he runs off from it like any other run. Skipped, the child on Normal 22 stood
+ *  63 px from piece 106's left end (699, 5658) until its landing's light woke, ran off at 268 px/s and touched down on 590-811 at its
+ *  sleeping left rim (8 such went over in the x40 on a5e15a74d). Planted: runOffs skips an edge whose own rim's light sleeps. */
+test("a RUN off an edge with its OWN dark stop is judged too: Normal roll 22's run off piece 106's left end (699, 5658) is a rim to stop at for the rim it meets (GREEN; planted: such an edge skipped)", () => {
+  const st = built(22);
+  assert.ok(darkRims(st).some((r) => r.x === 699 && Math.round(r.y) === 5658 && r.dir === -1 && r.light?.sleep), 'the edge has a dark stop of its own (its rim, light asleep)');
+  const ro = runOffRims(st, 'normal').filter((r) => r.x === 699 && r.y === 5658 && r.dir === -1);
+  assert.equal(ro.length, 1, `its run off is judged: a stop for the sleeping rim it meets (${JSON.stringify(runOffRims(st, 'normal').map((r) => [r.x, r.y, r.dir]))})`);
+  assert.ok(ro[0].land.y > 5658 && ro[0].light !== darkRims(st).find((r) => r.x === 699 && Math.round(r.y) === 5658)!.light, 'it waits for the light of the rim the run meets, not its own');
 });

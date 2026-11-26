@@ -34,16 +34,27 @@ test("the dark's skill REMOVED (noGlowWait, rule 21's plant): he walks off into 
   assert.match(r.dark.unlit[0], /landing dark|after its light woke/);
 });
 
-test("the dark's skill holds a running JUMP too: the expert's jump into the dark waits for the landing's light (GREEN; planted: glowJump removed)", async () => {
+test("the dark's skill holds a running JUMP too: the expert running at a hop rim whose landing is dark waits for its light (GREEN; planted: glowJump removed)", async () => {
   // (castBots x40 on 653bb970: the expert went over the rim at the right end of a piece with its landing dark, the jump pressed 94 px
-  //  out, just past GLOW_NEAR; this roll's first 85 s hold that jump)
-  // (ENG-DARK box 13: on the final lay roll 12's first 85 s no longer hold it; box 12's scan (scan-box12-jump.txt, plant 13 on rolls 1-40)
-  //  found it on real rows again, the earliest the expert Easy roll 2: the jump over the rim at the right end of 225-484 at 22.97 s with its
-  //  landing dark; unplanted, the first 26 s go over 4 dark rims, every one lit. A REAL row, not a shape toy)
+  //  out, just past GLOW_NEAR. Boxes 13-15 anchored it on real rows (roll 12, then Easy roll 2); on the going-down lay no real row of
+  //  box 12's scan holds that jump planted (box 15: plant 13 MISSED; box 18: Easy 2, Normal 4, 17 and 27 unlit [] planted). A SHAPE
+  //  toy on a real rim (ENG-DARK box 18): Normal roll 4's hop rim at (808, 5980), facing right, its landing's light asleep; the expert
+  //  is put 150 px before it at 0.5 s, running at it (250 px/s). Unplanted he stops and waits for the light; planted (glowJump not
+  //  read) he jumps over it dark)
   if (readied !== DRAFT) readyDraft(DRAFT);
   const { firstTimer, FT_EXPERT } = await import('../../../tools/inspect/firsttimer.ts');
-  const r = firstTimer(DRAFT, 2, { ...FT_EXPERT, setting: 'easy' }, { cap: 26 });
-  assert.ok(r.dark && r.dark.crossed >= 3, `he went over dark rims (${r.dark?.crossed})`);
+  const { darkRims } = await import('./dark.ts');
+  let rim: ReturnType<typeof darkRims>[number] | undefined, done = false;
+  const r = firstTimer(DRAFT, 4, { ...FT_EXPERT, setting: 'normal' }, { cap: 7, onFrame(sim, b) {
+    if (done || sim.e.gameTime <= 0.5) return;
+    done = true;
+    rim = darkRims(sim.stage as never).find((q) => !q.drop && q.x === 808 && Math.round(q.y) === 5980 && q.dir === 1);
+    assert.ok(rim?.light?.sleep && !(sim.e as unknown as { glowWake: Map<number, number> }).glowWake.has(rim.light.id!), 'the hop rim at (808, 5980), its light asleep');
+    (b as { placeAt(x: number, y: number): void }).placeAt(rim.x - 150, rim.y);
+    sim.p.facing = 1;
+    sim.p.vx = 250;
+  } });
+  assert.ok(rim && r.dark, 'he was put running at the hop rim');
   assert.deepEqual(r.dark.unlit, []);
 });
 
@@ -354,10 +365,49 @@ test("the way down off a walled catch goes off its OPEN end: Normal roll 22's ca
 });
 
 test("no rescue at the walled catch: the kid on Normal roll 22 passes the turn at x 833 (y 8311-8658) by himself (GREEN; planted: walledEnd false)", async () => {
+  if (readied !== DRAFT) readyDraft(DRAFT);
   const { firstTimer } = await import('../../../tools/inspect/firsttimer.ts');
   const { CAST_BOTS } = await import('../../../tools/inspect/castBots.ts');
   const r = firstTimer(DRAFT, 22, CAST_BOTS.kid.normal!, { cap: 135 });
   const at = r.stuck.filter((s) => s.rescued && s.y >= 8311 && s.y <= 8658);
   assert.deepEqual(at.map((s) => `${s.x},${s.y} ${s.what}`), [], 'no rescue at the walled catch');
   assert.ok(!r.stuck.some((s) => s.y >= 8311 && s.y <= 8658 && s.t + s.dur >= 134), `not still standing at it when the cap ends (${JSON.stringify(r.stuck.slice(-2))})`);
+});
+
+/** (ENG-DARK box 16's change 89ef9a985, glowWait's second rim; its toy written box 18 as a SHAPE toy: the real run's child Normal 22
+ *  unlit at piece 106 no longer comes on the final lay) piece 106's left end (699, 5658) on Normal roll 22 is two rims: its own (its
+ *  landing's light) and the run off's (the light of the sleeping rim the run meets on 590-811, runOffRims). The child is put on 106 at
+ *  0.5 s 63 px in, facing that end, its OWN rim's light woken by hand long ago and the met rim's asleep. He stops at the end until the
+ *  met rim's light has been lit DARK_AHEAD, then goes. Planted: glowWait takes the FIRST rim there (its own, lit) and goes at once,
+ *  the met rim's light asleep */
+async function secondRim() {
+  if (readied !== DRAFT) readyDraft(DRAFT);
+  const { firstTimer, FT_CHILD } = await import('../../../tools/inspect/firsttimer.ts');
+  const { darkRims, runOffRims, DARK_AHEAD } = await import('./dark.ts');
+  let placed = false, metId = -1, left: { t: number; woke: number | undefined } | undefined;
+  firstTimer(DRAFT, 22, { ...FT_CHILD, setting: 'normal' }, { cap: 8, onFrame(sim, b) {
+    const wake = (sim.e as unknown as { glowWake: Map<number, number>; gameTime: number }).glowWake;
+    if (placed) {
+      if (!left && !sim.p.grounded && sim.p.x < 699) left = { t: sim.e.gameTime, woke: wake.get(metId) };
+      return;
+    }
+    if (sim.e.gameTime <= 0.5) return;
+    const st = sim.stage as never;
+    const own = darkRims(st).find((q) => q.x === 699 && Math.round(q.y) === 5658 && q.dir === -1);
+    const met = runOffRims(st, 'normal').find((q) => q.x === 699 && q.y === 5658 && q.dir === -1);
+    assert.ok(own?.light?.id !== undefined && met?.light?.id !== undefined && own.light !== met.light, 'the end is two rims, two lights');
+    metId = met.light.id;
+    wake.set(own.light.id, -100);
+    assert.ok(!wake.has(metId), "the met rim's light sleeps");
+    (b as { placeAt(x: number, y: number): void }).placeAt(699 + 63, 5658);
+    sim.p.facing = -1;
+    placed = true;
+  } });
+  assert.ok(placed && left, 'he was put on piece 106 and went off its left end');
+  return { left: left!, ahead: DARK_AHEAD.normal };
+}
+
+test("a dark stop at an end that is two rims waits for the rim not yet lit: Normal roll 22's piece 106, its own rim lit, the run's rim asleep: he goes only once that rim's light is lit DARK_AHEAD (GREEN; planted: glowWait takes the first rim)", async () => {
+  const { left, ahead } = await secondRim();
+  assert.ok(left.woke !== undefined && left.t >= left.woke + ahead, `he left the end at ${left.t.toFixed(2)} s, the met rim's light woke at ${left.woke}`);
 });
