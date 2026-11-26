@@ -83,6 +83,7 @@ import { liftStop } from '../../src/game/lift.ts';
 import type { FollowPlay } from '../../src/game/followPlay.ts';
 import { bucketAngle, bucketAt, bucketPeriod, type Wheel } from '../../src/game/wheel.ts';
 import { WHEEL_FLOWN } from '../../src/game/gen2/wheelFlights.data.ts';
+import { BOARD_BACK } from '../../src/game/gen2/wheelFlights.ts';
 import { flownKey } from '../../src/game/gen2/wheelLay.ts';
 
 /**
@@ -4804,15 +4805,16 @@ export class FirstTimerRun {
     // (the stand at the lip: a thumb that does not let go (no holdQ) keeps the walk-up press held through a `{}` and walks off the lip
     // into the pond (the wheel toy, sparse kid Normal v2, 6.1 s): for him the stand is a brake, a press against his motion. BUILD-26n)
     if (Math.abs(p.vx) > 10) return who.holdQ ? {} : p.vx > 0 ? { left: true } : { right: true };
-    // (he hops when a bucket coming up takes the hop, as a person who has watched the wheel does, at every lag his thumb presses at
-    // (thumbLags, hopAim's clock): from nearer the lip than the board was flown (30 px), at some moments the hop carries past the bucket's
-    // end and he slides off it (2-6 child Normal v2, the top wheel: 17 px short of the lip, in at its end, 2 scrambles. LAND-26c,
-    // R-165.475). Every moment comes round once a bucket period: none in one, and he hops as before)
+    // (the board was flown from BOARD_BACK px back of the lip, where a tap hop boards at every moment (wheelFlights.ts); stopped nearer it,
+    // at some moments the hop carries past the bucket's end and he slides off it (2-6 child Normal v2, the top wheel: 17 px short of the
+    // lip, in at its end, 2 scrambles. LAND-26c, R-165.475). There he hops when a bucket coming up takes the hop, as a person who has
+    // watched the wheel does, at every lag his thumb presses at (thumbLags, hopAim's clock); every moment comes round once a bucket
+    // period: none in one, and he hops as before)
     // (and at every hold the press can have: the wheel hop is held at least who.hold[0] (wheelHop), his draw above it as drawn)
     const min = Math.max(who.hold[0], this.pressHold());
     const holds = [min, ...(who.holdQ ? who.holdQ.map((h) => Math.min(1.5, h)) : [who.hold[0] + 1.5 * who.hold[1], Math.min(0.45, who.hold[0] + 3 * who.hold[1])]).filter((h) => h > min)];
     if (this.wheelBoardWait < 0) this.wheelBoardWait = e.gameTime;
-    const boards = thumbLags(who.thumb).every((lag) => holds.every((hold) => hopBoards(w, p.x, p.y, w.way, hold, e.gameTime + hopAim(lag).clock)));
+    const boards = toLip >= BOARD_BACK || thumbLags(who.thumb).every((lag) => holds.every((hold) => hopBoards(w, p.x, p.y, w.way, hold, e.gameTime + hopAim(lag).clock)));
     if (!boards && e.gameTime - this.wheelBoardWait < bucketPeriod(w)) return !who.holdQ && Math.abs(p.vx) > BONK.still ? (p.vx > 0 ? { left: true } : { right: true }) : {};
     this.wheelBoardWait = -1;
     this.wheelHop = who.hold[0];
