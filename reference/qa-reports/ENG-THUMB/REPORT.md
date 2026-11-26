@@ -1,19 +1,29 @@
 # ENG-THUMB: the kid-bot root fix (R-165.465) and release 5's rule-28 rows
 
-## EXACT NEXT STEP (hand-over 3, box 3; written 2:10 PM ET 11/26 by `date`)
+## EXACT NEXT STEP (hand-over 3, box 3; written 2:13 PM ET 11/26 by `date`)
 Branch t-eng-thumb-wip, head = the commit that adds this text. **Code = C6 39ee096b7 (C4a + step 2, the peek).** Tools: tools/*.txt as
 before (copy out, strip `.txt`; ciline.sh's cmd = gates.yml:157's `- run:` line saved to a file and its path set in ciline.sh), plus
 **tools/pp.py.txt** (on a PROBE copy: PADPROBE=1 prints a `PP` line for every pad hop padRead decides). Main's rows: box 1's (INT-R5's
-d/rule28/rows-main/ on origin/release-0.10.3-wip-fixes). Box 2's container trees are gone; rebuild frozen trees from the branch (D115).
-1. **Read C6's five-bot rows vs main (kid adult child middle expert, seeds 1-40, both settings, 2-2 2-1 2-4 2-5 1-4)**: box 3 started
-   them on a frozen C6 tree at 2:09 PM ET (rows.sh, bots kid,adult,child,middle,expert, about 1.5 min a stage) and handed over before
-   they were read: if they are not in d/rows-c6all/, re-run them. padRead serves EVERY bot (not only the kid's thumb), so child, middle
-   and expert rows can move with step 2: rule 28 reads all five. Every PASS -> FAIL traced (pp.py + FT_TRACE's `LIFE LOST` lines), or
-   the change narrowed. **The lead's stop: more than about 20 moved rows outside 2-2's pads -> bring the lead the count and a sample of
-   why-lines BEFORE tracing them all.** Then the CI tool line on C6 (also started by box 3 after the rows; NOT read).
-2. Step 3, 2-1 middle N 17 (box 2's text below, unchanged): fix with a toy, or STOP with the frames for the lead (law 22).
-3. The final checks ONCE on the frozen head (box 1's list): rule 28 vs main (all five bots, 1-40, both settings, 5 stages, 0 PASS ->
-   FAIL), 2-7 x40 (>= 29/40), pacerLay 23/23, the 10 races, tierBots 9/9, tsc, the 4 bot test files, and the CI line on EVERY candidate.
+d/rule28/rows-main/ on origin/release-0.10.3-wip-fixes). Rebuild frozen trees from the branch (D115).
+**C6's five-bot rows vs main read so far (d/rows-c6all/, d/flips-main-vs-c6-fivebots.txt): 2-2 = 3 PASS -> FAIL, 2-1 = 1.** 2-4, 2-5,
+1-4 were running at the hand-over: NOT read (re-run: rows.sh, bots kid,adult,child,middle,expert, about 2 min a stage). The CI line on
+C6: NOT run.
+1. **2-2's 3 PASS -> FAIL are tier bots, all PASS on C4a** (box 3 ran them on a C4a tree: child E 21 262.9 s 1 life, child E 37 280.6 s,
+   middle N 7 202.4 s 2 lives), so step 2 moved them: **child E 21** (x 24,440 'set down here 8 times', 307.8 s), **child E 37** (x 27,943,
+   set down 8), **middle N 7** (x 9,242, 'fell back down from here 8 times'). Child E 21 traced (d/frames-c6-2-2-childeasy21.txt,
+   d/pp-c6-2-2-childeasy21.txt): **a reshuffle, not a pad hop**: C4a and C6 part at his FIRST pad hop (C6 decides at 25.83, toEdge 67, take-off
+   2.4 px before #8's front; C4a hops at 26.63), and every draw after differs; at 257-264 s he is set down at (24,292, 575), runs right
+   meaning right and walks off at about 24,420 (y 617) into the gap before #94 (24,459-24,879, NOT a pad: padRead returns null there, the
+   plain edge's walk) with no jump, 8 times, then rescued. NEXT: tag.py on a probe copy, FT_FRAMES 257.3-258.1, the `why` line that
+   walks him off that set-down floor with no press (the plain edge after a set-down: is the gap to #94 seen at all?), and the same for
+   child E 37 (x 27,943) and middle N 7 (x 9,242): fix where each lives with a toy, or bring the lead the three why-lines (law 22: an
+   honest life the old stream hid is a ruling, not a patch). The lead's stop stands: more than about 20 moved rows outside 2-2's pads
+   -> the count and a sample to the lead first.
+2. **2-1 = 1 PASS -> FAIL: middle N 17** (x 19,869 'an open drop ahead, water ahead': the SAME row and x as on C3 and C4, step 3's, not
+   moved by step 2); fail -> pass 31. Step 3 (box 2's text below): fix with a toy, or STOP with the frames for the lead.
+3. Then 2-4, 2-5, 1-4 five-bot rows vs main, the CI line on C6 (D141: on every candidate), and the final checks ONCE on the frozen
+   head (box 1's list): rule 28 vs main (all five bots, 1-40, both settings, 5 stages, 0 PASS -> FAIL), 2-7 x40 (>= 29/40), pacerLay
+   23/23, the 10 races, tierBots 9/9, tsc, the 4 bot test files.
 
 ## Step 2 (box 3: DONE on 2-2 for kid + adult, C6 39ee096b7; toy RED on C4a, GREEN on C6)
 - **The fault (the lead's family, rule 28 'the hop judged is the hop flown'):** padRead judged a pad hop at FIXED lags 0.03 and 0.1 s
