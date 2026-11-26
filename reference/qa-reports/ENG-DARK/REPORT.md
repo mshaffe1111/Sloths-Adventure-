@@ -13,8 +13,8 @@ merged head show the rest. On the bar: dark.test + darkBots.test
 + castBots.test WHOLE on the frozen tree (2 at a time), `python3 reference/qa-reports/ENG-DARK/planted-faults.py <frozen>` all CAUGHT (plants
 43-46 new since c13: wayRises, the lip hold, RimWatch.put, placeAt's put; none NO TEST or BASE RED), the gates ONCE (the CI tool line on a
 FULL tree; suite shards run_in_background + timeout 7200000), then LAND on t-eng-w3 (88592a9c4; merge, no force; box 22's trial merge
-of the c15 head: CLEAN), dark/darkBots/castBots + lockall on the merged head, push, the hash to the lead. Kind A needs its R-id from the
-lead (asked); write it here when given. LANDED by 8:00 PM ET; word at 7:30 if it slips; HARD STOP 9:00 PM ET.**
+of the c15 head: CLEAN), dark/darkBots/castBots + lockall on the merged head, push, the hash to the lead. Kind A (child N 11: a jump from the piece
+before over a whole rim piece) is R-165.481 (the lead's number). LANDED by 8:00 PM ET; word at 7:30 if it slips; HARD STOP 9:00 PM ET.**
 **Box 22 DONE:** (1) the SHAPE toy (65935b12, darkBots.test "the SHAPE hand-built"): on the draft's way down, his ground and route set aside
 for one read: a floor 0-289, a 97 px dip 70 px down, a bough 284-464 188 px over his floor; the way level: a single; the way rising 120 px:
 a double; the plant (noLevelRead): a double. GREEN both ways. (2) c15's x40 (frozen 65935b12; cast-3-1-x40-5b091de7-lane1/-lane2.jsonl,
