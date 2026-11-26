@@ -63,6 +63,13 @@ const listed = new Set(Object.keys(PROVEN_INDEX));
 const KNOWN_FILE = path.join(path.dirname(fileURLToPath(import.meta.url)), 'paintcheck.known.json');
 const knownJson = JSON.parse(fs.readFileSync(KNOWN_FILE, 'utf8')) as { known: string[] };
 const known = new Set(knownJson.known);
+// (R-165.487: the depth steps there the day 2-6 landed with the depthSteps gate, all 2-7's, the lead's ruling 11-26: shrink-only, one
+// entry per stage, setting, seed, strip and bank, with its jump; a step known only at or under its listed jump: a step that grew fails.
+// knowncheck.mjs fails an added entry; this gate fails a listed one a whole sweep no longer shows)
+const DEPTH_FILE = path.join(path.dirname(fileURLToPath(import.meta.url)), 'depthSteps.known.json');
+const depthJson = JSON.parse(fs.readFileSync(DEPTH_FILE, 'utf8')) as { defect: string; known: Array<{ id: string; jump: number }> };
+const depthKnown = new Map(depthJson.known.map((k) => [k.id, k.jump]));
+const depthSeen = new Map<string, number>();
 // (a sweep of its part's stages on the full 16 layouts judges the list for those stages: an id no build of them shows any more is stale)
 const whole = !only && N === 16;
 const mine = new Set(levels.map((c) => c.id));
@@ -125,8 +132,11 @@ for (const c of levels) {
       newLines.push(`${c.id} ${setting} seed ${seed} x ${o.under.x}: SOIL OVER A TOP: bank #${o.over.id} (x ${o.over.x}-${o.over.x + o.over.w} y ${o.over.y} h ${o.over.h})'s soil covers ${o.covered} units of bank #${o.under.id}'s top (x ${o.under.x}-${o.under.x + o.under.w} y ${o.under.y}), ${o.gap} under it (R-165.441)`);
     }
     // (R-165.451: a straight-sided block in a bank's soil, the darkening's bands as the square painter draws them (paintFall.ts
-    // depthSteps), read with the ground stacks set above as the engine sets them (D136). No known list: none on the day it started)
+    // depthSteps), read with the ground stacks set above as the engine sets them (D136). Known: depthSteps.known.json, R-165.487, above)
     if (st.groundLook !== 'bough') for (const d of depthSteps(st.platforms)) {
+      const did = `${c.id}|${setting}|seed ${seed}|x ${d.x}|bank ${d.bank}`;
+      depthSeen.set(did, Math.max(depthSeen.get(did) ?? 0, d.jump));
+      if ((depthKnown.get(did) ?? -1) >= d.jump) continue;
       row.hit++;
       newLines.push(`${c.id} ${setting} seed ${seed} x ${d.x} y ${d.y}: DEPTH STEP: the soil's darkening starts ${d.jump} px apart either side of x ${d.x} under bank ${d.bank}, a straight-sided block (over ${DEPTH_STEP_MAX}; R-165.451)`);
     }
@@ -134,6 +144,13 @@ for (const c of levels) {
   process.stderr.write(`${c.id} `);
 }
 process.stderr.write('\n');
+if (process.argv.includes('--write-depth-known')) {
+  // (seeded once, the day 2-6 landed with the gate (R-165.487); then it only shrinks: this keeps the other stages' entries)
+  const keep = depthJson.known.filter((k) => !mine.has(k.id.split('|')[0]));
+  const known = [...keep, ...[...depthSeen].map(([id, jump]) => ({ id, jump }))].sort((a, b) => (a.id < b.id ? -1 : a.id > b.id ? 1 : 0));
+  fs.writeFileSync(DEPTH_FILE, JSON.stringify({ ...depthJson, known }, null, 1) + '\n');
+  console.log(`paintcheck: wrote ${depthSeen.size} depth-step entries`);
+}
 if (process.argv.includes('--write-known')) {
   // (writes this run's ids for its stages, keeping the other stages' ids: a list is seeded once, the day the gate starts, then only shrinks)
   const keep = knownJson.known.filter((k) => !mine.has(k.split('|')[0]));
@@ -144,6 +161,7 @@ if (process.argv.includes('--write-known')) {
 console.log(`paintcheck: ${builds} builds of ${levels.length} stages${partN > 1 ? ` (part ${partI}/${partN})` : ''} (listed stages on every listed seed, the rest on layouts 1-${N}), both settings`);
 for (const [id, r] of byStage) if (r.hit) console.log(`  ${id}: ${r.hit}/${r.builds} builds breach (${[...r.ids].filter((k) => known.has(k)).length} known ids, ${[...r.ids].filter((k) => !known.has(k)).length} new)`);
 const stale = whole ? [...known].filter((k) => mine.has(k.split('|')[0]) && !seen.has(k)) : [];
+const depthStale = whole ? [...depthKnown.keys()].filter((k) => mine.has(k.split('|')[0]) && !depthSeen.has(k)) : [];
 if (showUnpainted) {
   console.log(`\nunpainted (no painter at any height in that stage: not a breach, missing art for Content): ${unpaintedSeen.size}`);
   for (const [k, at] of unpaintedSeen) console.log(`  ${k} (first: ${at})`);
@@ -151,13 +169,14 @@ if (showUnpainted) {
 if (process.argv.includes('--known')) for (const [id, l] of seen) if (known.has(id)) console.log(`  known: ${l}`);
 for (const l of newLines) console.log(`NEW: ${l}`);
 for (const k of stale) console.log(`FIXED, still listed (take it off ${path.basename(KNOWN_FILE)}): ${k}`);
+for (const k of depthStale) console.log(`FIXED, still listed (take it off ${path.basename(DEPTH_FILE)}): ${k}`);
 const unbuilt = [...byStage].filter(([, r]) => r.builds === 0).map(([id]) => id);
 const missing = (only ?? []).filter((id) => !all.some((c) => c.id === id));
 for (const id of unbuilt) console.log(`EMPTY: ${id} had 0 builds (an empty seed list?): checked nothing`);
 for (const id of missing) console.log(`EMPTY: --stages ${id} is no stage: checked nothing`);
 const empty = builds === 0 || unbuilt.length > 0 || missing.length > 0;
-const breach = newLines.length + stale.length;
+const breach = newLines.length + stale.length + depthStale.length;
 if (empty) console.log(`paintcheck: FAIL, checked nothing: ${builds} builds of ${levels.length} stages, ${unbuilt.length} stages with 0 builds, ${missing.length} --stages ids that are no stage (R-165.330)`);
-if (breach) console.log(`paintcheck: FAIL, ${newLines.length} new breach lines, ${stale.length} fixed ids still listed`);
-if (!empty && !breach) console.log(`paintcheck: PASS, no new painted style falls through to code terrain (${[...seen.keys()].filter((k) => known.has(k)).length} known ids seen, R-165.292)`);
+if (breach) console.log(`paintcheck: FAIL, ${newLines.length} new breach lines, ${stale.length + depthStale.length} fixed ids still listed`);
+if (!empty && !breach) console.log(`paintcheck: PASS, no new painted style falls through to code terrain (${[...seen.keys()].filter((k) => known.has(k)).length} known ids seen, R-165.292; ${[...depthSeen.keys()].filter((k) => depthKnown.has(k)).length} known depth steps seen, R-165.487)`);
 process.exit(empty || breach ? 1 : 0);
