@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { beatOf, checkClock, clockAt, cycleRead, stageClock, type CycleRead } from './clock.ts';
+import { beatAt, beatOf, checkClock, clockAt, cycle3, cycleRead, stageClock, type CycleRead } from './clock.ts';
 import type { ClockDef } from './stageKit.types.ts';
 
 const DT = 1 / 30;
@@ -125,4 +125,26 @@ test('the walk under every timer: stretches in order, the last one running to th
   // before game time 0 it still reads a real place in the cycle
   assert.deepEqual({ ...cycleRead(-0.5, 0, 5, [2, 1], 2, out) }, { i: 2, s: 1.5, c: 4.5 });
   assert.deepEqual({ ...cycleRead(1, 1.5, 5, [2, 1], 2, out) }, { i: 1, s: 0.5, c: 2.5 });
+});
+
+// (ENG-SIM step 1, R-165.470: the probe-equality gate sees clock.ts's WALK and QW change in a probe. They are scratch, not play state:
+// every read writes them before it reads them, so no value survives a call and the live run after a probe reads exactly what it would
+// have read. These two tests are that proof; tools/engine/probeEqual.test.ts lists WALK and QW as MEMOS on the strength of them.)
+test('cycleRead only writes its out: it never reads a field of it (so a shared out carries nothing from one read to the next)', () => {
+  const out = new Proxy({} as CycleRead, { get: () => { throw new Error('cycleRead read its out'); } });
+  for (const t of [0, 0.4, 1.7, 3.99, 4, 123.45, -2.5]) assert.doesNotThrow(() => cycleRead(t, 0.3, 4, [2, 1, 0.5, 0.5], 3, out));
+});
+
+test("cycle3 and beatAt answer from their arguments alone: the same read after any other read gives the same answer (WALK, QW)", () => {
+  let s = 7;
+  const r = () => ((s = (s * 16807) % 2147483647) / 2147483647);
+  const beat = beatOf(def);
+  const ask3 = () => { const a = [r() * 40, r() * 3, 1 + r() * 9, 0.1 + r() * 2, 0.1 + r() * 2] as const; return { a, k: { ...cycle3(...a) } }; };
+  const askB = () => { const a = [r() * 40, r() * 2] as const; return { a, k: beatAt(beat, ...a) }; };
+  const asks = Array.from({ length: 200 }, (_, i) => (i % 2 ? ask3() : askB()));
+  for (const { a, k } of asks) {
+    // (a different read in between, then the same read again)
+    if (a.length === 5) { ask3(); askB(); assert.deepEqual({ ...cycle3(...a) }, k); }
+    else { ask3(); askB(); assert.deepEqual(beatAt(beat, ...a), k); }
+  }
 });

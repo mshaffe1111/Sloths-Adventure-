@@ -26,6 +26,8 @@ const MEMOS: ReadonlyArray<{ mod: string; name: string; why: string }> = [
   { mod: 'src/game/physics.ts', name: 'framesFlown', why: "the reach memo's own cost counter (reachFill.test.ts): it counts the memo's building, which a probe may do first" },
   { mod: 'src/game/controlPrefs.ts', name: 'style', why: "a read-through cache of the phone's control setting; the probe puts the phone's storage back, so the live run reads the same" },
   { mod: 'src/game/haptics.ts', name: 'on', why: "a read-through cache of the phone's haptics setting (as controlPrefs style)" },
+  { mod: 'src/game/clock.ts', name: 'WALK', why: "every timer read's scratch: cycleRead only writes it (clock.test.ts: a Proxy out that throws on a read), cycle3's seven callers read it before the next read, beatAt copies it out; no value survives a call (clock.test.ts: a read after any other read answers the same)" },
+  { mod: 'src/game/clock.ts', name: 'QW', why: "cycle3's scratch: both entries written before cycleRead reads them (clock.test.ts, as WALK)" },
   { mod: 'src/game/headlessDom.ts', name: 'g', why: "globalThis (Node's own internals change under it); the globals play uses are Math.random (put back, checked below) and localStorage (saved and put back)" },
 ];
 const memo = (k: string): boolean => MEMOS.some((m) => k.startsWith(m.mod + ' ') && new RegExp(`^${m.name}\\d*$`).test(k.slice(m.mod.length + 1)));
@@ -142,11 +144,17 @@ for (const { id, seed } of WORLDS) {
   test(`${id} seed ${seed}, the kid on Easy: answers thrown away, the run is today's run (rows, graph, every module store)`, () => {
     const run = (w: World, probing: boolean) => {
       const wt = watch(w, probing);
+      // (both worlds under the same seeded stream: firstTimer's hold check, holdOn, plays a harness before firstTimer seeds its own,
+      // and that harness's stage load rolls the scene seed from Math.random; unseeded, each world rolled its own look. Nothing the
+      // gate compares is changed by this: both runs see the same stream, as every run under firstTimer's own seed already does.)
+      const mr = Math.random;
+      Math.random = w.rng(7);
       try {
         const r = w.firstTimer(id, seed, { ...w.FT_KID, setting: 'easy' });
         delete r.ms;
         return { row: JSON.stringify(r), ...wt, end: JSON.stringify([...stores(w)]) };
       } finally {
+        Math.random = mr;
         wt.undo();
       }
     };

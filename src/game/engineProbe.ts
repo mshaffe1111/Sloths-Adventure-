@@ -54,7 +54,7 @@ export const NEVER_CHANGES: ReadonlyArray<ShareEntry> = [
   { path: 'currentStage.proto.beats', deep: true, why: "the stage's beat list as rolled: read by Dot's lines and the tools" },
   { path: 'currentStage.proto.gen2', deep: true, why: "the generator's record as the proto carries it: as currentStage.gen2" },
   // (engine.cueTables, the let-go cue memo, letGoCue.ts: its tables are built from the vine and the river path only and never written
-  // after they are made; a probe adding a table is harmless, the live run would build the same one. Shared, not frozen: the Map grows.)
+  // after they are made, so the tables are shared, never copied. Not frozen: the Map is play state; cueFly puts its entries back.)
 ];
 const STAGE_FIELDS = ['currentStage', 'drawPlats', 'proto'];
 
@@ -98,6 +98,33 @@ function prepareShare(e: Eng): void {
     Object.freeze(o);
     SHARE_STATS.frozen++;
   }
+}
+
+/**
+ * The let-go cue memo around a flight (engine.cueTables). Its tables are shared, never copied (each a pure function of its key: the vine,
+ * the hold, the facing and the river's log path, letGoCue.ts letGoTable), but WHICH tables the memo holds is play state: it is capped
+ * (at 8 it is cleared), so a probe that built a table ahead of the live run would move the moment of a later clear (the gate saw the
+ * memo hold one table more after a probe, and one fewer at a run's end). So the flight works on the live Map and the probe puts the
+ * Map's entries back as it found them, in order; the tables a probe built are kept here, per stage, and lent to the next flight, so a
+ * probe never builds the same table twice. The live run never reads this side memo: it builds its own tables at its own moments.
+ */
+const probeCue = new WeakMap<object, Map<string, unknown>>();
+function cueFly(e: Eng): (() => void) | null {
+  const live = e.cueTables;
+  const stage = e.currentStage;
+  if (!(live instanceof Map) || stage === null || typeof stage !== 'object') return null;
+  const kept = [...live];
+  const had = new Set(live.keys());
+  let side = probeCue.get(stage);
+  if (!side) probeCue.set(stage, (side = new Map()));
+  // (lent up to the memo's own cap; a flight that fills it clears it as the live run would: harmless, every table is pure)
+  for (const [k, t] of side) if (live.size < 8 && !live.has(k)) live.set(k, t);
+  const lent = side;
+  return () => {
+    for (const [k, t] of live) if (!had.has(k)) lent.set(k, t);
+    live.clear();
+    for (const [k, t] of kept) live.set(k, t);
+  };
 }
 
 /** a deep copy of `root` with its prototypes, cycles and sharing kept; `seen` maps each live object to its copy */
@@ -280,6 +307,7 @@ export function probe<P, R>(sim: ProbeSim<P>, pads: ReadonlyArray<P>, read: (e: 
   const e = sim.e;
   if (opts.share !== false) prepareShare(e);
   const s = snapshot(sim, e);
+  const cue = cueFly(e);
   const stores = savePlayStores();
   const ph = phone();
   const mr = Math.random;
@@ -306,6 +334,7 @@ export function probe<P, R>(sim: ProbeSim<P>, pads: ReadonlyArray<P>, read: (e: 
     t2 = performance.now();
     Math.random = mr;
     restore(e, s);
+    cue?.();
     loadPlayStores(stores);
     putPhone(ph);
   }
