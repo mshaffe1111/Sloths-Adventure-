@@ -468,6 +468,8 @@ export interface Pt { x: number; y: number; /** a point along a shimmy rope (rou
  */
 /** how near a pin's point he stands to have reached it (px, Progress.d: the stone's half width less a step) */
 const PIN_AT = 50;
+/** off the way: further than this from his place along it (Progress.off), he has fallen off it (the fall-back rewind; relocate's pin floor) */
+const OFF_WAY = 260;
 /** px: how far along x a fallen bot's `level` point may be (Progress.relocate); past it, the plain nearest point (ENG-285) */
 export const LEVEL_REACH = 600;
 /** px: more than a double's reach under the point he is at along the way: he fell off it (Progress.under, BUILD-26f) */
@@ -554,6 +556,24 @@ export class Progress {
       if (d < bd) {
         bd = d;
         bi = i;
+      }
+    }
+    // (set down BEHIND the last pin he stood at: a respawn at a flag before the spur's out-and-back ground. The floor keeps him from
+    //  being followed back out over that ground (kept through a respawn); with no point at or past it within the off-way reach
+    //  (OFF_WAY, the fall-back rewind's own test) it kept him off the way for good, and every rewind from there counted as a fall from
+    //  one top: 2-2 middle Normal 7 (R-165.465 C6), a life lost past the stone pin at x 9,242 and the flag 1,895 px behind it, 8 'fell
+    //  back down' and a rescue. The pins past the point nearest him are his to stand at again; the floor drops to the last one before it)
+    if (this.pin > 0 && bd > OFF_WAY) {
+      let near = 0, nd = Infinity;
+      for (let i = 0; i < this.pts.length; i++) {
+        if (this.pts[i].rope) continue;
+        const d = this.d(i, p);
+        if (d < nd) { nd = d; near = i; }
+      }
+      if (near < this.pinFloor) {
+        while (this.pin > 0 && this.pins[this.pin - 1] > near) this.pin--;
+        this.pinFloor = this.pin > 0 ? this.pins[this.pin - 1] : 0;
+        return this.relocate(p, level, band, climb);
       }
     }
     this.cur = bi;
@@ -5440,7 +5460,7 @@ export class FirstTimerRun {
     // (or he stands more than a double's reach under it, hopping or not: Progress.under, BUILD-26f; his hops took `off` under 260)
     // (a pod's knock ends the climb in the frame it lands, so the field's own step, run only while he climbs, never saw it: read it here)
     this.figs?.sawKnock((this.e as unknown as FieldView).knocked, t);
-    const far = this.prog.off(p) > 260;
+    const far = this.prog.off(p) > OFF_WAY;
     // (never on a moving piece: riding a wheel's car he is under the route over the wheel by design; the rewind pulled him off it at the
     //  car's bottom, 2-6 adult N 3 at x 1023 y 1076 on the great wheel, then three far-off falls and a rescue. BUILD-26f)
     const rides = this.sim.platforms.find((q) => q.id === this.e.standingOnId);

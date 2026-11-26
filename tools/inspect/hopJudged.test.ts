@@ -672,3 +672,14 @@ test('a log going under the bank is no floor ahead: a log drifting against his w
   const there = run.stuck.filter((s) => s.x > 19400 && s.x < 19900);
   assert.deepEqual(there.map((s) => `${s.x}: ${s.what}`), [], 'stuck at the river past #85 (x 19,400-19,900)');
 });
+
+test('set down behind a stood pin, his place is found where he is: a respawn at a flag before the spur counts no falls back (2-2 middle Normal 7 to t 75, R-165.465 C9)', async () => {
+  const ft = await import('./firsttimer.ts');
+  const { CAST_BOTS } = await import('./castBots.ts');
+  const run = ft.firstTimer('2-2', 7, CAST_BOTS.middle.normal!, { cap: 75, dotSetting: true });
+  // (the row: a life lost past the stone at x 9,242 and the flag at x 7,347; no rewinds counted as falls there, and no rescue)
+  assert.ok(run.harms.some((h) => h.kind === 'life' && h.x > 9300), 'the toy reads too little: no life lost past the stone');
+  const there = run.stuck.filter((s) => s.x > 7000 && s.x < 10500);
+  assert.deepEqual(there.map((s) => `${s.x}: ${s.what}`), [], 'stuck between the flag and the stone (x 7,000-10,500)');
+  assert.deepEqual(run.rescueXs.filter((x) => x > 7000 && x < 10500), [], 'rescued between the flag and the stone');
+});

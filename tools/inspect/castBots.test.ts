@@ -196,7 +196,11 @@ test('under a raised row on a tower, KID stops (one late lift-off), hops up and 
     const r = run as unknown as { lastSteer: number; onTower: boolean };
     r.lastSteer = 1;
     r.onTower = true;
-    if (plant) Object.defineProperty(run, 'stopMeant', { get: () => false, set: () => undefined });
+    // (the plant, the stop not meant: his late lift-off re-arms every frame, so the thumb never lets go of the steer (R-165.59). Once a
+    //  stopMeant field this stop set; the root fix (R-165.465, thumbify's bare stand) deleted it and arms the lift-off once through
+    //  releaseArmed, so the plant holds that unarmed: forcing the deleted field planted nothing and the plant check went red, CI line on
+    //  ENG-THUMB C6)
+    if (plant) Object.defineProperty(run, 'releaseArmed', { get: () => false, set: () => undefined });
     run.prog.relocate(run.sim.p);
     run.play();
     return Math.round(lo);

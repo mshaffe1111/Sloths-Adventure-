@@ -114,6 +114,38 @@ test("OUT-AND-BACK's pin: he is followed out to the stone first, and once he has
   assert.ok(pr.cur > 12, `a respawn put him back on the way out (${pr.cur})`);
 });
 
+// (R-165.465 C9, 2-2 middle Normal 7: a life lost past a spur's stone pin, the flag 1,895 px behind it; the pin floor, kept through a
+//  respawn, left no point within the off-way reach, so every rewind counted as a fall from one top: 8 and a rescue. Each way: set down
+//  ON the out-and-back ground the floor holds (never back out to the stone); set down behind the whole spur it rolls back)
+test("OUT-AND-BACK's pin and a respawn: set down beside the way back he stays on it; set down behind the spur his place is found there and the stone is his to stand at again", async () => {
+  const { Progress } = await import('./firsttimer.ts');
+  // (2,000 px of way up to the spur at y 730, every 25 px; then out along it to the stone at x 300 and back, as the pin test lays it)
+  const lead = Array.from({ length: 80 }, (_, i) => ({ x: -2000 + i * 25, y: 730 }));
+  const out = Array.from({ length: 13 }, (_, i) => ({ x: i * 25, y: 730 }));
+  const back = Array.from({ length: 13 }, (_, i) => ({ x: 312 - i * 25, y: 730 }));
+  const pts = [...lead, ...out, ...back];
+  const stone = lead.length + 12;
+  const stood = () => {
+    const pr = new Progress(pts);
+    pr.pins.push(stone);
+    pr.relocate({ x: -1990, y: 730 });
+    for (let x = -1975; x <= 300; x += 25) pr.step({ x, y: 730 });
+    assert.equal(pr.cur, stone, 'he stood at the stone');
+    return pr;
+  };
+  // (one way: set down at x 237 on the way back, beside the way out: he is placed on the way back, never on the way out to the stone)
+  const a = stood();
+  a.relocate({ x: 237, y: 730 });
+  assert.ok(a.cur >= stone, `set down beside the way back he was placed on the way out (point ${a.cur}, x ${pts[a.cur].x})`);
+  // (the other: set down at a flag 1,900 px behind the spur: his place is where he is, and the way on heads out to the stone again)
+  const b = stood();
+  b.relocate({ x: -1900, y: 730 });
+  assert.ok(Math.abs(pts[b.cur].x + 1900) < 30, `set down behind the spur his place stayed off the way (point ${b.cur}, x ${pts[b.cur].x})`);
+  assert.ok(b.off({ x: -1900, y: 730 }) < 260, 'set down behind the spur he is off the way');
+  for (let x = -1875; x <= 225; x += 25) b.step({ x, y: 730 });
+  assert.ok(b.cur < stone, `walking out again he was followed past the stone he has not stood at again (point ${b.cur})`);
+});
+
 // FIX-284 (R-165.284; the lead's ruling A, 11-19): A BREATHING ROW NEVER MEETS HIM IN LOCKSTEP. On 2-2's finale a first-timer drowned at a
 // beat pair, was put back and ran back in two whole breaths, so every try met the pair at the same bad moment until the rescue
 // (reference/qa-reports/FIX-284/phase.ts). The engine now turns every breathing row ahead of him at each put-back (breathAim.ts, in
