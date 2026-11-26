@@ -1,12 +1,14 @@
 # ENG-FORK28 REPORT (rule 26: the engine piece 2-8's build found missing). Started 6:17 PM ET 2026-11-26 (from the session hook date).
 
-## EXACT NEXT STEP (written 6:24 PM ET from `date`; the frozen candidate is 408679c3d on t-eng-fork28)
-The piece and its toys are DONE and pushed (408679c3d). The gates of THAT candidate are running in a frozen worktree (src chattr +i) at
-the scratchpad's `cand/`: lockall (baseline recorded on e878b1f45 in `base/`, then `--check` on the candidate), the suite in 6 shards,
-and the CI tool line (gates.yml's rolled job: the engine tools' tests, tipwalk, storyTipScan, teachFirstScan, registrycheck, tierBots,
-buildcheck; kbdcheck; the seedlists matrix). NEXT: read each log as it lands and write its line in "Gates" below; any red that is not
-KID_RUNS_59 (the release line's inherited red, R-165.473) is a stop: name it here with its log line, never re-run to green. All green:
-the landing hash is 408679c3d (+ this report's commit), sent to the lead.
+## EXACT NEXT STEP (rewritten 6:50 PM ET from `date`, the box's hand-over; the frozen candidate is 408679c3d on t-eng-fork28)
+The piece and its toys are DONE (408679c3d). Only the gates of THAT candidate run past the box (D138), in the frozen worktree
+(scratchpad `cand/`, src chattr +i). IN: tsc 0; generalitycheck PASS; lockall --check vs e878b1f45: 101/102 unchanged, 2-8 the one
+moved (refused on both, see Gates). RED so far, each being run on the base e878b1f45 (scratchpad `base/`) to name inherited vs mine:
+shard 1 (746 pass, 6 fail: chaseRespawnReal, firstMet, postLay x2, pitPocket, stageSheets), the CI tools tests (433 pass, 3 fail +
+1 todo: registrycheck.test, hopJudged, pacerRespawn), storyTipScan (throws on 2-8: no seed builds cleanly), registrycheck (2-8 has
+no drawcheck scenario, no seed list, no judged scope: BUILD-28's registration, inherited). NEXT: read `base-*.log`; a red also red on
+the base is inherited (name it); a red green on the base is MINE: a stop, named here with its line. Then shards 2-6, kbdcheck and the
+seedlists tail; then the landing message to the lead only (each shard's totals for 408679c3d).
 
 ## The piece (pipeline.ts `rolledGraph`, the fork count)
 - A DESIGNED graph (`GraphBrief.dealExact`, a level's arc) lays exactly the forks its code writes: its F nodes, at their places, every
@@ -33,7 +35,8 @@ plan" (4).
 ## Gates (the frozen candidate 408679c3d)
 - tsc: 0.
 - generalitycheck: PASS.
-- lockall --check vs e878b1f45: (running)
+- lockall --check vs e878b1f45: 101/102 stages unchanged. 2-8 moved, and only in its refusal text: on both settings and both heads no seed of 24
+  builds cleanly; the first error's x is 6401 on the base and 6433 on the candidate (its fork is now laid). No other stage moved.
 - the suite, 6 shards: (running)
 - the CI tool line: (running)
 
