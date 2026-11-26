@@ -34,7 +34,7 @@ const { easyStage } = await import('../../src/game/easyMode.ts');
 const { withGoals } = await import('../../src/game/goals.ts');
 const { loadSeedList, provenSeeds } = await import('../../src/game/gen2/seedList.ts');
 const { PROVEN_INDEX } = await import('../../src/game/gen2/provenIndex.ts');
-const { soilOvers, soilShorts } = await import('./paintFall.ts');
+const { soilOvers, soilShorts, depthSteps, DEPTH_STEP_MAX } = await import('./paintFall.ts');
 const { setGroundStacks } = await import('../../src/game/protoArt.ts');
 const { stackZonesOf } = await import('../../src/game/groundStack.ts');
 const { stagePaintInput } = await import('./paintStage.ts');
@@ -123,6 +123,12 @@ for (const c of levels) {
     if (st.groundLook !== 'bough') for (const o of soilOvers(st.platforms)) {
       row.hit++;
       newLines.push(`${c.id} ${setting} seed ${seed} x ${o.under.x}: SOIL OVER A TOP: bank #${o.over.id} (x ${o.over.x}-${o.over.x + o.over.w} y ${o.over.y} h ${o.over.h})'s soil covers ${o.covered} units of bank #${o.under.id}'s top (x ${o.under.x}-${o.under.x + o.under.w} y ${o.under.y}), ${o.gap} under it (R-165.441)`);
+    }
+    // (R-165.451: a straight-sided block in a bank's soil, the darkening's bands as the square painter draws them (paintFall.ts
+    // depthSteps), read with the ground stacks set above as the engine sets them (D136). No known list: none on the day it started)
+    if (st.groundLook !== 'bough') for (const d of depthSteps(st.platforms)) {
+      row.hit++;
+      newLines.push(`${c.id} ${setting} seed ${seed} x ${d.x} y ${d.y}: DEPTH STEP: the soil's darkening starts ${d.jump} px apart either side of x ${d.x} under bank ${d.bank}, a straight-sided block (over ${DEPTH_STEP_MAX}; R-165.451)`);
     }
   }
   process.stderr.write(`${c.id} `);

@@ -239,3 +239,24 @@ test('stacked legs RED: a hung bank over a ceiling stops short of its line (soil
   // (and the clip is what clears it: the same soil judged with no ceiling covers the race leg's top)
   assert.equal(soilOvers(st, groundSoil(st, undefined, cs), []).length, 1);
 });
+
+// R-165.451 planted on the SHIPPED case: 2-6's beat A (seed 1, Normal), the start floor's soil under the storeys hung over it. The gate
+// (paintFall.ts depthSteps) reads the darkening's bands as the square painter draws them. RED: the line t-build-26 drew, with the hung
+// banks standing in it as ground (the storeys thousands of px up pulled it, a 192-224 px jump at x 1040-1056, the straight edge Matt's
+// still showed); GREEN: the line drawn now (FIX-SOIL-b c22702edc: a hung bank leaves the line, R-165.441).
+test('R-165.451 RED: the depth line with the hung storeys in it steps under 2-6\'s start floor; GREEN: as drawn, no straight-sided block', async () => {
+  const { depthSteps } = await import('./paintFall.ts');
+  const { groundBanks, groundLine } = await import('../../src/game/protoArt.ts');
+  const { generateAllLevels } = await import('../../src/game/worldsData.ts');
+  const { listedStage, playFinish } = await import('../../src/game/gen2/listed.ts');
+  const { buildGen2Stage } = await import('../../src/game/gen2/pipeline.ts');
+  const cfg = generateAllLevels().find((c) => c.id === '2-6' && !c.secret)!;
+  const row = listedStage('2-6')!;
+  const st = playFinish(row, buildGen2Stage({ config: cfg, kit: row.kit(), seed: 1, difficulty: 'normal' }) as never, 'normal') as { platforms: Platform[] };
+  assert.deepEqual(depthSteps(st.platforms), [], 'drawn: no step in the soil\'s darkening');
+  // (the plant: every bank standing as ground down to the deepest floor, as t-build-26's line took them)
+  const banks = groundBanks(st.platforms), foot = Math.max(...banks.map((b) => b.y + b.height));
+  const old = groundLine(banks.map((b) => ({ ...b, height: foot - b.y })));
+  const red = depthSteps(st.platforms, old);
+  assert.ok(red.some((d) => d.x >= 1024 && d.x <= 1072 && d.jump > 150), `the old line steps at beat A's edge: ${JSON.stringify(red.slice(0, 3))}`);
+});
