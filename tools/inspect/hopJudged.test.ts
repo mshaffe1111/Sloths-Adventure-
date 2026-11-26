@@ -669,6 +669,58 @@ test('landed on the very end of a small log, the pause comes: he never walks off
   assert.deepEqual(there.map((s) => `${s.x}: ${s.what}`), [], 'stuck at the river past #85 (x 19,400-19,900)');
 });
 
+// (C11, R-165.465 step 3 narrowed: the landing floor read by his feet comes only where the walk-on would run him off: his middle past
+//  the end IN HIS WAY and no pull-back due. C10 read it everywhere his middle was off his floor, and broke two shapes: on a log running
+//  his way it replaced the pull-back with the edge plan's stand (standing, until -1), his run carried him off the front, and the stand
+//  outlived the river's splash-back: he stood at the bank until rescued (2-1 child Normal 20 at #41, 2-5 child Normal 34 at #42, 'water
+//  ahead'); and a ledge he landed short of drew a pause dropped the same frame, moving the whole run after it (2-1 kid Normal 29, 3 lives
+//  at the upstream river past #85, 'set down here 3 times'). One toy for each; 'landed on the very end of a small log' keeps C10's cure)
+test('a pull-back due on a log running his way is kept where his middle is past its front: the steer on landing is back onto it, never a stand (2-1 child Normal 20 to t 90, R-165.465 C11)', async () => {
+  const ft = await import('./firsttimer.ts');
+  const { CAST_BOTS } = await import('./castBots.ts');
+  type Pad = { left?: boolean; right?: boolean };
+  type R = { t: number; lastLand: number; sim: { standingOn: number | null; platforms: Array<{ id: number; x: number; width: number; drift?: { dir: number } }>; p: { grounded: boolean; x: number } } };
+  const P = ft.FirstTimerRun.prototype as unknown as { intend: (this: R) => Pad };
+  const it = P.intend;
+  const cases: string[] = [], bad: string[] = [];
+  P.intend = function (this: R) {
+    const s = this.sim, x = s.p.x;
+    const q = s.p.grounded && s.standingOn !== null ? s.platforms.find((u) => u.id === s.standingOn) : undefined;
+    const d = q?.drift?.dir ?? 0;
+    // (just landed on a log running his way with his middle already past its front: the case the pull-back is for)
+    const caseNow = !!q && d !== 0 && this.t - this.lastLand < 0.1 && (d > 0 ? x > q.x + q.width : x < q.x);
+    const o = it.call(this);
+    if (caseNow) {
+      cases.push(`t ${this.t.toFixed(2)} #${q!.id}`);
+      if (!(d > 0 ? o.left : o.right)) bad.push(`t ${this.t.toFixed(2)} x ${Math.round(x)} on #${q!.id} (${Math.round(q!.x)}-${Math.round(q!.x + q!.width)}): steer ${JSON.stringify(o)}, not back onto it`);
+    }
+    return o;
+  };
+  let run: ReturnType<typeof ft.firstTimer>;
+  try {
+    run = ft.firstTimer('2-1', 20, CAST_BOTS.child.normal!, { cap: 90, dotSetting: true });
+  } finally {
+    P.intend = it;
+  }
+  assert.ok(cases.length >= 1, 'the toy reads too little: no landing on a log running his way with his middle past its front');
+  assert.deepEqual(bad, [], 'the pull-back due on landing was not pressed');
+  // (the row: the first river, logs #37-#43, x 8,300-8,700, crossed with no set-down)
+  const there = run.stuck.filter((s) => s.x > 8300 && s.x < 8700);
+  assert.deepEqual(there.map((s) => `${s.x}: ${s.what}`), [], 'stuck at the first river (x 8,300-8,700)');
+});
+
+test('landed short of a small floor, the walk-on runs him onto it and no pause is drawn from his feet: the upstream river past #85 crossed with no set-down loop (2-1 kid Normal 29 to t 125, R-165.465 C11)', async () => {
+  const ft = await import('./firsttimer.ts');
+  const { CAST_BOTS } = await import('./castBots.ts');
+  // (a row toy: the pause C10 drew and dropped in one frame at #18 and #20 (x 5,650 and 5,955, his middle 13 and 8 px short of their
+  //  back ends) is not seen from outside intend; what it moved is: 3 lives at x 19,352-19,856, 108.7-111.1 s, 'set down here 3 times', rescued. C9 and C11 lose 1 there
+  //  and go on: the bar is the set-down loop)
+  const run = ft.firstTimer('2-1', 29, CAST_BOTS.kid.normal!, { cap: 125, dotSetting: true });
+  assert.ok(run.x > 19950, `the toy reads too little: he stands at x ${Math.round(run.x)} at t 125, short of the river's far side`);
+  const there = run.stuck.filter((s) => s.x > 19300 && s.x < 19950);
+  assert.deepEqual(there.map((s) => `${s.x}: ${s.what}`), [], 'stuck at the river past #85 (x 19,300-19,950)');
+});
+
 test('set down behind a stood pin, his place is found where he is: a respawn at a flag before the spur counts no falls back (2-2 middle Normal 7 to t 75, R-165.465 C9)', async () => {
   const ft = await import('./firsttimer.ts');
   const { CAST_BOTS } = await import('./castBots.ts');

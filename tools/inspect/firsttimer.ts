@@ -3534,10 +3534,20 @@ export class FirstTimerRun {
       }
       // (landed on a small pad or ledge: he stops on it a beat, then flicks on from where he stands if its edge is close)
       // (the floor he landed on is the one his feet are on (the engine's standingOn) where his middle is already past its end: read by
-      //  his middle alone it was no floor, so the pause never came and the walk-on below ran him off the end he stood on. 2-1 middle
-      //  Normal 17 (R-165.465 step 3): stepped from #85 onto log #90's last px (its end 5 px behind his middle, the log going under the
-      //  bank), walked on off it, LIFE LOST at 111.47, rescued at x 19,869. hopJudged.test.ts 'landed on the very end of a small log')
-      const here = this.floorAt(p.x, p.y, 6) ?? (p.grounded ? this.sim.platforms.find((q) => q.id === this.sim.standingOn) ?? null : null);
+      //  his middle alone it was no floor, so the walk-on below ran him off the end he stood on. 2-1 middle Normal 17 (R-165.465 step
+      //  3): stepped from #85 onto log #90's last px (its end 5 px behind his middle, the log going under the bank), walked on off it,
+      //  LIFE LOST at 111.47, rescued at x 19,869. Read by his feet, the pause is started and the walk-on skipped; the pause's own block
+      //  reads his middle and drops it that frame, so the edge plan below decides (N 17: it jumps him on from #90's end at 111.33, the
+      //  next log reached, 0 lives). hopJudged.test.ts 'landed on the very end of a small log'. The pause's length is drawn from the
+      //  run's random stream even when it is dropped, so every firing moves the run after it.
+      //  Only where that walk-on would run him off: his middle past the end IN HIS WAY (short of the back end the walk-on runs him onto
+      //  the floor: read as a pause there, a 116 px ledge held 2-1 kid Normal 29 0.3 s at x 5,695 and the shifted run lost 3 lives at
+      //  the upstream river, 'set down here 3 times') and no pull-back due (the pull-back already turns him back from a log running his
+      //  way; the pause read by his middle drops at once and the stand let his run carry him off its front: 2-1 child Normal 20 off #41
+      //  at x 8,634 and 2-5 child Normal 34 off #42 at x 8,655, 'water ahead'. hopJudged.test.ts 'a pull-back due on a log running his
+      //  way is kept' and 'landed short of a small floor')
+      const feet = p.grounded && dir !== 0 && !pullBack ? this.sim.platforms.find((q) => q.id === this.sim.standingOn) : undefined;
+      const here = this.floorAt(p.x, p.y, 6) ?? (feet && dir * (p.x - (dir > 0 ? feet.x + feet.width : feet.x)) > 0 ? feet : null);
       // (never on a sinking pad once he knows it sinks: KEEP-HOPPING, padRead; never on a drifting log running his way under a liana over
       //  its river, which the handed skill rides in (SKILLS.handed): after a let-go onto a 150 px log the pause flicked him on blind into
       //  the water, ENG-24 drop toy gap280, middle Normal 17 lives. Every other river keeps it as it was (its bots' plants are measured on
