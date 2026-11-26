@@ -55,9 +55,12 @@ export interface RiverRow {
    * of logs, a walkable FLOOR `floor` px under the banks' top across `width` px of water, split by `dips` gaps `dip` px wide (evenly spaced,
    * the floor's pieces equal) where the water shows: he hops them, the line paddles them (follow.ts: splash-back water under its path).
    * The water stands RIVER_LAY.marshWater under the floor's top; a flood raises it to paddling depth under the FLOOR (floodLay), and the
-   * close covers the floor (deep: a wall the line waits at). The row's logs, speed and look are not read (it is still water)
+   * close covers the floor (deep: a wall the line waits at). The row's logs, speed and look are not read (it is still water).
+   * `open` (data; unset or 0: none, the floor's first piece starts at the near bank's foot): the marsh OPENS on water, a dip this wide
+   * (px) at the near bank's foot before the floor's first piece, so from the bank's lip the water is at his feet (READY-28: from the
+   * fork, upright, the low road reads as water); the `dips` evenly split the rest
    */
-  marsh?: { width: number; floor: number; dips: number; dip: number };
+  marsh?: { width: number; floor: number; dips: number; dip: number; open?: number };
 }
 
 /** how high over its log's top a riding petal sits (px): a petal's height over the floor it is laid on (the sections' pickup `dn`) */
@@ -108,10 +111,13 @@ export function layRiver(row: RiverRow, x0: number, bankY: number, nextId: () =>
   if (way === -1) return layRiverLeft(row, x0, bankY, nextId);
   if (row.marsh) {
     // (a marsh: its floor's pieces, solid, in the banks' own style (`style`), split by its dips; no logs, still water)
+    // (`open`: the first dip at the near bank's foot; the pieces and dips share the rest as before)
     const m = row.marsh;
-    const piece = (m.width - m.dips * m.dip) / (m.dips + 1);
+    const open = m.open ?? 0;
+    const piece = (m.width - open - m.dips * m.dip) / (m.dips + 1);
+    if (open < 0 || piece <= 0) throw new Error(`layRiver: a marsh ${m.width} px wide has no floor left with open ${open} and ${m.dips} dips of ${m.dip}`);
     const top = bankY + m.floor;
-    const floor: Platform[] = Array.from({ length: m.dips + 1 }, (_, i) => ({ id: nextId(), x: x0 + i * (piece + m.dip), y: top, width: piece, height: 200, type: 'solid', ...(style ? { style } : {}) }) as Platform);
+    const floor: Platform[] = Array.from({ length: m.dips + 1 }, (_, i) => ({ id: nextId(), x: x0 + open + i * (piece + m.dip), y: top, width: piece, height: 200, type: 'solid', ...(style ? { style } : {}) }) as Platform);
     const zone: RiverZone = { x0, x1: x0 + m.width, surfaceY: top + RIVER_LAY.marshWater, dir: row.dir, speed: 0, marsh: { floor: top, lip: bankY }, ...(row.safe ? { safe: { backX: x0 - 70, backY: bankY } } : {}), ...(row.flood ? { floodMark: { kind: row.flood, lip: bankY } } : {}) };
     return { zone, logs: [], floor, petals: [] };
   }
