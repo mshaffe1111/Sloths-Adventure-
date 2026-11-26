@@ -18,7 +18,7 @@ Art, Opus 5.5 high. Packet: reference/packets/2026-11-26/ART-REED-28.md on ccr-e
    cage beside it; upright sent first; the lead judged both. PASS.
 
 ## Gates (scoped, law 5: inventory JSON + one test count changed; no drawing, screen or stage code)
-tsc 0. Unit suite 3 shards: SUITE_RESULT. Art tests 16/16. Build + chunkcheck: BUILD_RESULT. artcheck PASS, knowncheck PASS,
+tsc 0. Unit suite 3 shards: 4211 pass, 1 fail, 3 todo; the 1 fail is KID_RUNS_59 (firstTimerBot.test.ts:177, actual [8,9,7,7,4,7] vs [3,5,6,7,6,5]), identical to BUILD-28's run on this base f5dae1de8 = the release line's R-165.473, not this branch. Art tests 16/16. Build (BASE_PATH=/Sloths-Adventure-/) 0 + chunkcheck PASS. artcheck PASS, knowncheck PASS,
 generalitycheck PASS, roadmapcheck PASS, timecheck PASS (clone unshallowed). Not run (nothing they read changed): drawcheck, clipcheck,
 paintcheck, kbdcheck, buildcheck, seedlist, tierBots; they run on the integration head.
 inventory.test.ts: the unpacked-cut-piece count 218 -> 219 (this piece; each art batch moves it; BUILD-28 moves it back when it packs it).
