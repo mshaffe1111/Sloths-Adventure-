@@ -55,15 +55,17 @@ export const LINES_29 = {
   goalLate: 'Still {n} snappers to chase off',
   sealed: 'Snappers still on the court! Back we go!',
 } as const;
+/** the court's goal (2-9.md:30, the design's proposal: chase off 5; the gauntlet's top-up lays the goal + 2 = 7; Easy easyMode's own) */
+export const GOAL_29 = 5;
 export const MISSION_29 = "Dance to the king's drum, chase off his snappers, reach the shrine.";
 export const DRUM_CARD_29 = 'Crocodiles signal by slapping their heads on water. This king prefers drums.';
 export const lineId29 = (line: keyof typeof LINES_29): string => `w29.${line}`;
 /** the teach lines (said on the first meeting, never waiting out Dot's calm gap) */
 export const TEACH_29 = ['drum'] as const;
 
-/** the court's rows of snap stones and pads (2-9.md:10-17; water 50 px on both settings, the lead's ruling on BUILD-29's G-list) */
+/** the court's rows of snap stones and pads (2-9.md:10-17; stones at 30 px, 2-5's flown row; the pads at 50 px: the lead's ruling (vi)) */
 const snapRow = (n: number, o: Partial<PadRow> = {}): PadRow =>
-  ({ by: 'snap', pads: Array.from({ length: n }, () => 'snap'), gap: 50, snap: { count: COUNT }, clock: 'court', easyStretch: TEMPO_29.easyStretch, ...o }) as PadRow;
+  ({ by: 'snap', pads: Array.from({ length: n }, () => 'snap'), gap: 30, snap: { count: COUNT }, clock: 'court', easyStretch: TEMPO_29.easyStretch, ...o }) as PadRow;
 export const PADS_29 = {
   /** beat 1: two in step, splash-back, the bite free (the drum is the hint, not the rule) */
   teach29: snapRow(2, { safe: true, freeBite: true }),
@@ -214,7 +216,7 @@ export function kitLib29(): WorldKit {
 /** the draft's level: 2-9's own config (a gauntlet), unlocked */
 export function draft29Cfg(): LevelConfig {
   const c = generateAllLevels().find((q) => q.id === STAGE_29 && !q.secret)!;
-  return { ...c, unlocked: true };
+  return { ...c, unlocked: true, targetCount: GOAL_29 };
 }
 
 /** the draft's stageTable row (World 2's finish), for listed.ts's test seam only */
