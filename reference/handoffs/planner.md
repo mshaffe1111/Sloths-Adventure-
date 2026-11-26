@@ -13,6 +13,14 @@ Next: carry `tok.dials` onto `NodeDials` (types.ts has the fields), honour conte
 count / hazard hurt, add `gen2.dialMiss` to `rollErrors`, then delete the throw. On a stage of legs the column verdicts
 (towerFalls, towerSkips) run per column, each message tagged "[the column at x N]"; strays run per run leg.
 
+**Added by ENG-FORK28 (2026-11-26, t-eng-fork28, rule 26; the gap BUILD-28 box 3 found on 2-8): the fork count.** In `rolledGraph`, a
+DESIGNED graph (`GraphBrief.dealExact`, a level's arc) lays exactly the forks its code writes (its F nodes, at their places, every roll,
+no coin drawn); `branching` is a ROLLED graph's count only (none 0, some 1 + a coin, lots 3 + a coin), and a designed brief with a
+branching other than 'none' THROWS by name. Every designed arc before 2-8 had no F, so its count (0) and its stream are what 'none' gave.
+Toys: `src/game/gen2/designedForks.test.ts` (2-8's one F laid at its node on 40 seeds x both settings; the refusal; 1-1's fork counts
+on seeds 1-40 pinned from before the piece). Trap: `needsFork` on the code check (pipeline.ts, `checkCode` of the laid code) still
+reads `branching !== 'none'`, so a designed code's laid F is not REQUIRED by V17 there; the designed path keeps its F by construction.
+
 **Added by FA (11:36 AM ET, 2026-11-13, t-fa, R-165.170): a stage laid as a tower has three verdicts of its own**, folded by `rollErrors()` as
 `gen2.towerMiss` and `gen2.flagMiss`, each with a planted test in `src/game/gen2/tower.test.ts` and a planted fault in
 `reference/qa-reports/FA/planted-faults.py`:
