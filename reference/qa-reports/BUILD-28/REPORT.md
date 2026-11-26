@@ -15,6 +15,13 @@ DONE (the lead's ruling A): (1) THE PIECE on t-eng-marsh 5f8cb1edb (cut from 280
    jump into W's face (frame 9), on top (23), pad let go at Wx+38 (48), stops at 17480 = Wx+30): upright, teal water fills the frame's
    lower left from the bank's foot to the frame's edge, beside and below him; sideways, the open dip, then the floor pieces with water
    between. Not mine, named: a "HOLD DOWN" label over his head and Dot's rising-water line (the game's tip) cover part of the frame.
+   (4) FOUND, SENT TO THE LEAD (a ruling needed before B lands): at open 140 the low road needs a HOP off the bank's edge, under the
+   porch's near end (the porch starts at the bank's edge, 60 over the bank, one-way from below): the hop rises through it and lands him
+   on the high road, and a full-run walk-off off the bank's edge drops into the water (splash-back): the lead's entry principle (the
+   run takes the low road) breaks. Probe (draft-fork-jump-bot applied, late 0, seed 1, floodRun fork): open 140: middle 'PRESS off
+   bank' (high, marshT -1), child-easy 'PRESS off bank', adult low but RESCUED 1; open 50 and open 0: middle marshT 6.5, child-easy 7.5,
+   adult 4.4 (identical: the walk-off clears a 50 px dip), highs only by a PRESS off the marsh. Stills stills-s12-lip50/ (open 50,
+   pieces 190): upright the water shows as a narrow slot between two soil banks at the bank's foot, not the frame's lower part.
 
 
 ## EXACT NEXT STEP (session 11, W2-LANE k, started 1:56 PM ET (from the session hook date); code head 6545a5823; hand-over at the box)
