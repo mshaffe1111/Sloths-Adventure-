@@ -4999,10 +4999,11 @@ export class FirstTimerRun {
       if (m >= 0) this.driftUntil = t + m * DT;
     }
     // (R-165.59: lastSteer is not moved on while the late lift-off runs, so for KID and ADULT this re-arms every frame and the steer is
-    // never let go once held; a tier bot arms it once per let-go, as the thumb does. R-165.465, the root fix: a BARE stand (intend's {}:
-    // nothing steered, pressed, held or climbed) is a stop he means, so every bot's thumb lifts once with its late lift-off there; the
-    // per-stand stopMeant lines (c11's ride read, CI-13's handed ride, CI-15's pad pause and the five like them) each patched one {})
-    const bare = !Object.values(want).some(Boolean);
+    // never let go once held; a tier bot arms it once per let-go, as the thumb does. R-165.465, the root fix: a BARE STAND (intend's {}
+    // with his feet on a floor: nothing steered, pressed, held or climbed) is a stop he means, so every bot's thumb lifts once with its
+    // late lift-off there; the per-stand stopMeant lines (c11's ride read, CI-13's handed ride, CI-15's pad pause and the five like them)
+    // each patched one {}. In the air a {} is no stand: the kid's thumb rides the jump on as it always has)
+    const bare = this.sim.p.grounded && !Object.values(want).some(Boolean);
     if (steer === 0 && this.lastSteer !== 0 && !want.press && !((who.holdQ || bare) && this.releaseArmed)) {
       const [lo, hi] = who.releaseMax;
       const n = Math.max(lo, Math.min(hi, Math.round(Math.exp(gauss(this.r, who.release)))));
