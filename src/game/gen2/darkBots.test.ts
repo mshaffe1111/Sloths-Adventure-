@@ -279,6 +279,34 @@ test("the way on straight under a run that ends at a side wall: on Normal roll 1
   assert.ok(!r.stuck.some((s) => /fell back down/.test(s.what)), `never fell back down again and again (${JSON.stringify(r.stuck.map((s) => s.what))})`);
 });
 
+/** roll 15's lip (ENG-DARK box 24): going down, the expert on Normal walks left on 367-719 (y 7063) to its end, the way on dropping
+ *  past it to 253-605 (y 7185), the drop's first point at x 362. The engine stands him to STAND_SIDE past the end, his middle at
+ *  363-366 over that point: read as straight under him (downEnd's 0), the steer dropped and he was turned back, and 4 px on it named
+ *  the end again: to and fro at the lip 22 s (c16), 20 s to a rescue (c13). A point past an end of his wood is off that end (lipEnd) */
+async function lip15(noLipEnd: boolean) {
+  if (readied !== DRAFT) readyDraft(DRAFT);
+  const { firstTimer } = await import('../../../tools/inspect/firsttimer.ts');
+  const { CAST_BOTS } = await import('../../../tools/inspect/castBots.ts');
+  let atLip = 0;
+  const r = firstTimer(DRAFT, 15, { ...CAST_BOTS.expert.normal!, noLipEnd }, { cap: 125, onFrame(sim) {
+    const p = sim.p;
+    if (p.grounded && Math.abs(p.y - 7063) <= 4 && p.x >= 355 && p.x <= 380) atLip += 1 / 30;
+  } });
+  return { r, atLip };
+}
+
+test("at the lip over the way on's first point, he steps off that end: on Normal roll 15 the expert stands at most 3 s at 367's lip and never stalls there (GREEN; planted: noLipEnd)", async () => {
+  const { r, atLip } = await lip15(false);
+  assert.ok(atLip > 0, `he came to the lip (${atLip.toFixed(1)} s there)`);
+  assert.ok(atLip <= 3, `he stepped off the lip (${atLip.toFixed(1)} s there)`);
+  assert.ok(!r.stuck.some((s) => Math.abs(s.y - 7063) <= 4 && s.x >= 355 && s.x <= 380), `no stall at the lip (${JSON.stringify(r.stuck)})`);
+});
+
+test("the lip read as straight under him (noLipEnd, the plant): the expert goes to and fro at 367's lip on Normal roll 15 (RED)", async () => {
+  const { atLip } = await lip15(true);
+  assert.ok(atLip >= 8, `to and fro at the lip (${atLip.toFixed(1)} s there)`);
+});
+
 test("no end picked under that run (noOpenEnd, the plant): the expert stands over the shrine by roll 15's right wall until stranded (RED)", async () => {
   const r = await wall15(true);
   assert.notEqual(r.end, 'shrine', `stranded by the wall (${r.end} at ${r.time})`);
