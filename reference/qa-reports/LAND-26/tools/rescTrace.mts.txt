@@ -1,0 +1,11 @@
+// one castBots run: each rescue (t, x, y, on what) and each boardWatch wait (start, end, x, toward which wheel)
+const R = process.env.REPO!;
+await import(`${R}/src/game/headlessDom.ts`);
+const { FirstTimerRun, SKILLS } = await import(`${R}/tools/inspect/firsttimer.ts`);
+if (process.env.BW === '0') SKILLS.boardWatch = false;
+const { castRun } = await import(`${R}/tools/inspect/castBots.ts`);
+const FP: any = FirstTimerRun.prototype;
+const r0 = FP.rescue; FP.rescue = function () { const p = this.sim.p; const t = this.sim.t; const ok = r0.call(this); if (ok) console.log(`RESCUE t ${t.toFixed(2)} from x ${p.x.toFixed(0)} y ${p.y.toFixed(0)} on ${this.sim.standingOn} -> x ${this.sim.p.x.toFixed(0)} y ${this.sim.p.y.toFixed(0)}`); return ok; };
+let prevW = -1; const w0 = FP.wheelRide; FP.wheelRide = function (...a: any[]) { const o = w0.apply(this, a); const ww = this.wheelBoardWait; if ((ww >= 0) !== (prevW >= 0)) console.log(`${ww >= 0 ? 'WAIT' : 'GO  '} t ${this.sim.t.toFixed(2)} x ${this.sim.p.x.toFixed(0)} y ${this.sim.p.y.toFixed(0)} vx ${this.sim.p.vx.toFixed(0)} on ${this.sim.standingOn}`); prevW = ww; return o; };
+const row = castRun(process.env.BOT!, process.env.SET as any, '2-6', Number(process.env.SEED));
+console.log('END', row.end, row.time, 'rescues', row.rescues, JSON.stringify(row.stuck).slice(0, 400));

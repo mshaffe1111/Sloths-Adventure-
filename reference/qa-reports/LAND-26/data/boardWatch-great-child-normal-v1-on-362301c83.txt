@@ -1,0 +1,33 @@
+JETTY 731 1009 9627 wheel cx 568.9411934226155 cy 9455 R 200 way -1 edgeAim 73 aimQ [1,28,73,119,232] holdQ [0.022,0.049,0.074,0.115,0.231] hold [0.16,0.08]
+J0 P0 H0 WR null t 11.33 gt 11.33 jetty x 1007 y 9627 vx -285 vy 0 g 1 pad left 
+J0 P0 H0 WR {"left":true} t 11.37 gt 11.37 jetty x 998 y 9627 vx -268 vy 0 g 1 pad left 
+J0 P0 H0 WR {"left":true} t 11.40 gt 11.40 jetty x 988 y 9627 vx -285 vy 0 g 1 pad left 
+J0 P0 H0 WR {"left":true} t 11.60 gt 11.60 jetty x 978 y 9627 vx -87 vy 0 g 1 pad left 
+J0 P0 H0 WR {"left":true} t 11.63 gt 11.63 jetty x 972 y 9627 vx -173 vy 0 g 1 pad left 
+J0 P0 H0 WR {"left":true} t 11.67 gt 11.67 jetty x 963 y 9627 vx -260 vy 0 g 1 pad left 
+J0 P0 H0 WR {"left":true} t 11.70 gt 11.70 jetty x 954 y 9627 vx -285 vy 0 g 1 pad left 
+J0 P0 H0 WR {"left":true} t 11.73 gt 11.73 jetty x 945 y 9627 vx -268 vy 0 g 1 pad left 
+J0 P0 H0 WR {"left":true} t 11.77 gt 11.77 jetty x 935 y 9627 vx -285 vy 0 g 1 pad left 
+J0 P0 H0 WR {"left":true} t 13.43 gt 13.43 jetty x 925 y 9627 vx -87 vy 0 g 1 pad left 
+J0 P0 H0 WR {"left":true} t 13.47 gt 13.47 jetty x 919 y 9627 vx -173 vy 0 g 1 pad left 
+J0 P0 H0 WR {"left":true} t 13.50 gt 13.50 jetty x 910 y 9627 vx -260 vy 0 g 1 pad left 
+J0 P0 H0 WR {"left":true} t 13.53 gt 13.53 jetty x 901 y 9627 vx -285 vy 0 g 1 pad left 
+J0 P0 H0 WR {"left":true} t 14.23 gt 14.23 jetty x 890 y 9627 vx -87 vy 0 g 1 pad left 
+J0 P0 H0 WR {"left":true} t 14.27 gt 14.27 jetty x 885 y 9627 vx -173 vy 0 g 1 pad left 
+J0 P0 H0 WR {"left":true} t 14.30 gt 14.30 jetty x 876 y 9627 vx -260 vy 0 g 1 pad left 
+J0 P0 H0 WR {"left":true} t 14.33 gt 14.33 jetty x 866 y 9627 vx -285 vy 0 g 1 pad left 
+J0 P0 H0 WR {"left":true} t 14.37 gt 14.37 jetty x 858 y 9627 vx -268 vy 0 g 1 pad left 
+J0 P0 H0 WR {"left":true} t 14.40 gt 14.40 jetty x 848 y 9627 vx -285 vy 0 g 1 pad left 
+J0 P0 H0 WR {"left":true} t 15.57 gt 15.57 jetty x 838 y 9627 vx -87 vy 0 g 1 pad left 
+J0 P0 H0 WR {"left":true} t 15.60 gt 15.60 jetty x 832 y 9627 vx -173 vy 0 g 1 pad left 
+J0 P0 H0 WR {"left":true} t 15.63 gt 15.63 jetty x 823 y 9627 vx -260 vy 0 g 1 pad left 
+J0 P0 H0 WR {"left":true} t 15.67 gt 15.67 jetty x 814 y 9627 vx -285 vy 0 g 1 pad left 
+J0 P0 H0 WR {"left":true} t 15.70 gt 15.70 jetty x 805 y 9627 vx -268 vy 0 g 1 pad left 
+J0 P0 H0 WR {"left":true} t 15.73 gt 15.73 jetty x 795 y 9627 vx -285 vy 0 g 1 pad left 
+J0 P0 H0 WR {"left":true} t 15.77 gt 15.77 jetty x 786 y 9627 vx -268 vy 0 g 1 pad left 
+J0 P0 H0 WR {} t 15.80 gt 15.80 jetty x 777 y 9627 vx -285 vy 0 g 1 pad left 
+J0 P0 H0 WR {} t 15.83 gt 15.83 jetty x 768 y 9627 vx -268 vy 0 g 1 pad left 
+J0 P0 H0 WR {} t 15.87 gt 15.87 jetty x 758 y 9627 vx -285 vy 0 g 1 pad left 
+J0 P0 H0 WR {} t 15.90 gt 15.90 jetty x 749 y 9627 vx -268 vy 0 g 1 pad left 
+J0 P0 H0 WR {} t 16.70 gt 16.70 b1 x 743 y 9619 vx 0 vy 0 g 1 pad - past -2.53 [-0.65,0.55] off 60 bw 120
+J0 P0 H0 WR {} t 25.63 gt 25.63 STREET x 517 y 9283 vx 0 vy 0 g 1 pad - 

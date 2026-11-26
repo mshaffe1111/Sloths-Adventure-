@@ -1,6 +1,53 @@
 # LAND-26: 2-6 back on release 4's line (release 5), beat A's soil block (R-165.451)
 
-## EXACT NEXT STEP (session 3 LAND-26-c hand-over, 4:12 PM ET Thu 11-26; branch t-land-26)
+## EXACT NEXT STEP (session 4 LAND-26-d hand-over, 4:35 PM ET Thu 11-26; branch t-land-26)
+Code head = **cb69a104e** (R-165.478 SKILLS.stepOff; the commit before this REPORT commit). The lead's numbers: R-165.478 the rideWheel
+board judge (boardWatch) AND its step-off (stepOff); R-165.479 the W residual (KNOWN, a lay packet after release 5). Done in session 4:
+- **boardWatch planted each way: tools/inspect/wheelBoard.test.ts, 4/4 GREEN on frozen 8cdd02803, on the CI tool line (gates.yml:157).**
+  Way -1 = the 'great' toy child Normal v1 (off: slides to 9 px of the left lip, blind hop, pond; on: waits, in b1, pd0;
+  data/boardWatch-great-*.txt); way +1 = 2-6 seed 1 child Normal v2 top wheel (off 2 scrambles, on 0). Toy search rows:
+  data/boardWatch-search-toys-362301c83.txt; the 2-6 row seed 1 on/off: data/boardWatch-search-row26-seed1-362301c83.txt.
+- **Rule 28 on boardWatch alone (8cdd02803) FAILED: 190/360 castBots rows moved vs 7f9abaa55, 5 NEW RESCUES (adult E 12 13 33 39,
+  middle E 37), proven 39 -> 34** (data/rule28/diff-7f9abaa55-vs-8cdd02803.txt). Isolation: 8cdd02803 with boardWatch OFF = 7f9abaa55
+  on all 360 rows (data/rule28/cast-8cdd02803-boardWatchOff.jsonl). Cause (traced): boardWatch boards at new moments, some at a
+  bucket's trailing end; the step-off window was flown from the bucket's middle and from there falls short (adult E 12 top wheel: off -37
+  at past -0.62 where the off run made street #47 from off +36: data/stepOff-ae12-*.txt).
+- **The lead ruled A** (fix the step-off where the cause is; the 5 rescues must GO; proven back to 39+; a toy each way; every moved row
+  traced; if rows cannot be traced by the 7:30 word, bring the list, do not widen). Built as **SKILLS.stepOff** (firsttimer.ts
+  stepOffLands: in the open window he goes only when his OWN hop from where he stands, every thumb lag and hold, the bucket's carry kept
+  (RIDE.keep x 1), lands on the street (hopLandsOn, margin 0); else he waits in the window or rides on; a no-let-go thumb behind the
+  middle by > 16 px walks up to it while settling). The plain |off| <= 16 band was tried first and fixed only 1/5 (the adult has no
+  holdQ, its band is 22 + edgeAim); a directional band fixed 2/5 (data in this session's messages to the lead).
+- **castBots --proven 2-6 on the stepOff code (scratch tree x3 = cb69a104e with the switch named boardWatch; same behaviour with both
+  on): all 360 rows reach the shrine, proven = 39 (the pre head's exact set, 36 out as before), NO new failure; 258 rows moved in time
+  only (median +3.6 s, p10 -3.8, p90 +14, min -25.8, max +31.2; none under the floor).** data/rule28/cast-stepOff-x3.jsonl,
+  diff-7f9abaa55-vs-stepOff.txt, moved-stepOff.txt. wheelBoard + wheelRide + rowWheels tests 11/11 on x3.
+The next session, in this order:
+1. ReadNotifications. `git fetch origin t-land-26 && git checkout -B t-land-26 origin/t-land-26`; npm ci --legacy-peer-deps
+   (run_in_background); frozen tree at the head (worktree --detach; link node_modules; chattr -R +i src tools; chattr -i
+   src/game/gen2/proven).
+2. **Trace every moved row (rule 28, the lead's order):** tools/firstCause.mts.txt (REPO=<frozen> FILE=data/rule28/moved-stepOff.txt
+   LO= HI= npx tsx it; 3 shards of 86, run_in_background each, ~30 min) prints per row the FIRST frame where boardWatch or stepOff acts
+   (before it the run IS the run with both off). Every row must name one; a 'NONE' row is untraced: bring it to the lead. Session 4 had
+   these running at hand-over; their output did not survive the container.
+3. **The stepOff toy each way:** tools/wheelStepOff.test.ts.DRAFT.txt is a draft. Way +1 = castRun adult Easy 2-6 seed 12 (stepOff off:
+   rescued, on: none; measured on c1/x3). **Its way -1 case (seed 13) is WRONG**: in seed 13 the step-off makes street #29 (with a
+   double) and he bounces back into the wheel (data/stepOff-ae13-c1-*.txt), not a short step-off. Find a real way -1 case:
+   tools/toysStep.mts.txt (stepOff on/off over the toys, every toy wheel turns left; boardWatch on) and, if none, the adult/kid rows on
+   2-6's left wheels (teach, the left edge). If no left case exists, say so with the rows (as box 3 said for boardWatch). Then put the
+   test at tools/inspect/wheelStepOff.test.ts and ADD it to the CI tool line (gates.yml:157).
+4. middle Easy 37 (gone on stepOff) was a World 2 bounce flail, not a wheel (data/stepOff-me37-*.txt): a timing shift into a bounce-bot
+   hole. Name it to the lead for the list (it can come back on any timing change).
+5. The gates ONCE on the final head (the brief's list): the CI tool line; the suite in 3 shards (run_in_background, timeout 7200000);
+   paintcheck 2-6 + the sweep (depthSteps); lockall (2-6's named moves only; 2-7 untouched: show it); castBots --proven 2-6 (seeds 1-40,
+   both; rediff vs data/rule28/cast-7f9abaa55.jsonl); seedlist 2-6 --check (seed 36: still kid Easy rescued, out on both heads);
+   registrycheck; drawcheck (after the stalk); clipcheck; tierBots 9/9; timecheck; teachFirstScan. KID_RUNS_59 inherited (R-165.473/.477,
+   held for Matt). Then the 2-6 rows near a pad or a stand for Friday's integration; land on t-land-26 (no force); hash + one line a
+   gate to the lead. Lead's times: landed by 8:00 PM ET, word at 7:30 if it slips, HARD STOP 9:00 PM ET.
+Lessons this session: D115 (frozen trees for every run), D141 (the CI line on every candidate), D138 (hand-over ends new work). Own miss:
+one shell '&' in a background command (the brief forbids it); caught, stopped and re-run as two background runs before any result.
+
+## Session 3's EXACT NEXT STEP (kept for history; session 3 LAND-26-c hand-over, 4:12 PM ET Thu 11-26; branch t-land-26)
 The lead's rulings (session 3's brief): W stands (R-165.471; the residual, a thin-piece pocket with no walls, kid Easy 36 walks off the floor's far
 end: **R-165.479 (the lead's number) KNOWN, owner a lay packet after release 5** (pitSteps assumes earth walls under thin pieces;
 every world)). Code head = the commit before this REPORT commit. Done in session 3 (all pushed):

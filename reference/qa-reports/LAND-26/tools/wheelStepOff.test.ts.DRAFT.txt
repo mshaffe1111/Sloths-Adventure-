@@ -1,0 +1,40 @@
+/**
+ * LAND-26d, R-165.478 (level.md rules 21 and 28): the bot skill `stepOff` (firsttimer.ts SKILLS), the rideWheel step-off judged from where
+ * he stands, planted EACH WAY the wheel turns, on 2-6's own stage as castBots plays it (the adult, Easy). With boardWatch on he boards at
+ * new moments, some at a bucket's trailing end; the step-off window was flown from the bucket's middle, and from that end the hop falls
+ * short of the street. stepOffLands flies his own hop (every thumb lag and hold, the bucket's carry kept) before he goes.
+ *   - way +1: seed 12, the top wheel (about x 801, y 3308): off, he jumps from b5 at off -37 (where the run without boardWatch jumped from
+ *     off +36 and made street #47), comes down in a bucket again, round and round to a rescue; on, none.
+ *   - way -1: seed 13, the left edge wheel (about x 1060, y 4772): off, the hop off b2 falls short and he is rescued; on, none.
+ * GREEN with the skill: the shrine, no rescue, no life lost. RED with it off (the plant, boardWatch still on): a rescue.
+ * The traces: reference/qa-reports/LAND-26/data/stepOff-*.txt.
+ */
+import '../../src/game/headlessDom.ts';
+import { test } from 'node:test';
+import assert from 'node:assert/strict';
+import { castRun } from './castBots.ts';
+import { SKILLS } from './firsttimer.ts';
+
+const run = (seed: number, on: boolean) => {
+  const was = SKILLS.stepOff;
+  SKILLS.stepOff = on;
+  try {
+    return castRun('adult', 'easy', '2-6', seed);
+  } finally {
+    SKILLS.stepOff = was;
+  }
+};
+const line = (r: ReturnType<typeof castRun>) => `${r.end} ${r.time} s, rescues ${r.rescues}, lives ${r.lives}`;
+
+for (const [seed, way, wheel] of [[12, '+1', 'the top wheel'], [13, '-1', 'the left edge wheel']] as const) {
+  test(`stepOff ON, way ${way} (2-6 adult Easy seed ${seed}, ${wheel}): the shrine, no rescue`, () => {
+    const r = run(seed, true);
+    assert.equal(r.end, 'shrine', line(r));
+    assert.equal(r.rescues, 0, line(r));
+    assert.equal(r.lives, 0, line(r));
+  });
+  test(`stepOff PLANTED OFF, way ${way} (2-6 adult Easy seed ${seed}, ${wheel}): the step-off falls short, a rescue (RED)`, () => {
+    const r = run(seed, false);
+    assert.ok(r.rescues >= 1, `${line(r)}: no rescue with the skill off: the plant is not live`);
+  });
+}

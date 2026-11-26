@@ -1,0 +1,58 @@
+t 50.03 x 999 y 5457 vx 0 vy 0 drift#24 842-1012 y5457  pad -
+t 50.57 x 1036 y 5457 vx 0 vy 0 drift#24 880-1050 y5457  pad -
+t 51.10 x 1074 y 5457 vx 0 vy 0 drift#24 917-1087 y5457  pad -
+t 51.63 x 1111 y 5457 vx 0 vy 0 drift#24 954-1124 y5457  pad -
+t 52.17 x 1148 y 5457 vx 0 vy 0 drift#24 992-1162 y5457  pad -
+t 52.70 x 1186 y 5457 vx 0 vy 0 drift#24 1029-1199 y5457  pad -
+t 53.23 x 1245 y 5429 vx 285 vy 0 solid#23 1212-1500 y5429  pad right
+t 53.77 x 1392 y 5429 vx 285 vy 0 solid#23 1212-1500 y5429  pad right
+t 54.30 x 1482 y 5348 vx 0 vy 0 air  pad up+right
+t 54.83 x 1482 y 5231 vx 0 vy 0 air  pad up
+t 55.37 x 1482 y 5114 vx 0 vy 0 air  pad up
+t 55.90 x 1482 y 4996 vx 0 vy 0 air  pad up
+t 56.43 x 1454 y 4924 vx -285 vy 0 solid#28 1216-1456 y4924  pad left
+t 56.97 x 1306 y 4924 vx -285 vy 0 solid#28 1216-1456 y4924  pad left
+t 57.50 x 1243 y 4924 vx 0 vy 0 solid#28 1216-1456 y4924  pad -
+t 58.03 x 1242 y 4924 vx 73 vy 0 solid#28 1216-1456 y4924  pad right
+t 58.57 x 1241 y 4924 vx 0 vy 0 solid#28 1216-1456 y4924  pad -
+t 59.10 x 1240 y 4924 vx 0 vy 0 solid#28 1216-1456 y4924  pad -
+t 59.63 x 1231 y 4890 vx 0 vy 0 wheel@1060,4772 way -1 b3  past -2.28 [-0.03,1.13] edge off 36 pad -
+t 60.17 x 1246 y 4868 vx 0 vy 0 wheel@1060,4772 way -1 b3  past -2.14 [-0.03,1.13] edge off 34 pad -
+t 60.70 x 1258 y 4845 vx 0 vy 0 wheel@1060,4772 way -1 b3  past -1.99 [-0.03,1.13] edge off 34 pad -
+t 61.23 x 1267 y 4820 vx 0 vy 0 wheel@1060,4772 way -1 b3  past -1.84 [-0.03,1.13] edge off 34 pad -
+t 61.77 x 1273 y 4794 vx 0 vy 0 wheel@1060,4772 way -1 b3  past -1.69 [-0.03,1.13] edge off 34 pad -
+t 62.30 x 1274 y 4767 vx 0 vy 0 wheel@1060,4772 way -1 b3  past -1.54 [-0.03,1.13] edge off 34 pad -
+t 62.83 x 1271 y 4741 vx 0 vy 0 wheel@1060,4772 way -1 b3  past -1.40 [-0.03,1.13] edge off 34 pad -
+t 63.37 x 1265 y 4715 vx 0 vy 0 wheel@1060,4772 way -1 b3  past -1.25 [-0.03,1.13] edge off 34 pad -
+t 63.90 x 1254 y 4690 vx 0 vy 0 wheel@1060,4772 way -1 b3  past -1.10 [-0.03,1.13] edge off 34 pad -
+t 64.43 x 1241 y 4668 vx 0 vy 0 wheel@1060,4772 way -1 b3  past -0.95 [-0.03,1.13] edge off 34 pad -
+t 64.97 x 1223 y 4647 vx 0 vy 0 wheel@1060,4772 way -1 b3  past -0.80 [-0.03,1.13] edge off 34 pad -
+t 65.50 x 1204 y 4629 vx 0 vy 0 wheel@1060,4772 way -1 b3  past -0.66 [-0.03,1.13] edge off 34 pad -
+t 66.03 x 1181 y 4615 vx 0 vy 0 wheel@1060,4772 way -1 b3  past -0.51 [-0.03,1.13] edge off 34 pad -
+t 66.57 x 1157 y 4603 vx 0 vy 0 wheel@1060,4772 way -1 b3  past -0.36 [-0.03,1.13] edge off 34 pad -
+t 67.10 x 1132 y 4596 vx 0 vy 0 wheel@1060,4772 way -1 b3  past -0.21 [-0.03,1.13] edge off 34 pad -
+t 67.63 x 1105 y 4592 vx 0 vy 0 wheel@1060,4772 way -1 b3  past -0.06 [-0.03,1.13] edge off 34 pad -
+t 68.17 x 1079 y 4593 vx 0 vy 0 wheel@1060,4772 way -1 b3  past 0.09 [-0.03,1.13] edge off 34 pad -
+t 68.70 x 936 y 4549 vx -285 vy 473 air  pad -
+t 69.23 x 950 y 4525 vx 268 vy -133 air  pad right
+t 69.77 x 1034 y 4617 vx 0 vy 0 wheel@1060,4772 way -1 b3  past 0.53 [-0.03,1.13] edge off 66 pad -
+t 70.30 x 941 y 4526 vx -285 vy -7 air  pad left
+t 70.83 x 932 y 4628 vx 285 vy 167 air  pad right
+t 71.37 x 945 y 4652 vx -115 vy -577 air  pad left+press+jump
+t 71.90 x 808 y 4620 vx -154 vy 0 solid#29 555-903 y4620  pad -
+t 72.43 x 916 y 4556 vx 268 vy -387 air  pad right+jump
+t 72.97 x 1048 y 4604 vx 41 vy 0 wheel@1060,4772 way -1 b2  past 0.37 [-0.03,1.13] edge off 54 pad -
+t 73.50 x 978 y 4538 vx -285 vy -323 air  pad left+jump
+t 74.03 x 844 y 4620 vx -58 vy 0 solid#29 555-903 y4620  pad -
+t 74.57 x 957 y 4649 vx 154 vy 0 wheel@1060,4772 way -1 b2  past 0.82 [-0.03,1.13] edge off 29 pad -
+t 75.10 x 907 y 4589 vx -268 vy -323 air  pad left+jump
+t 75.63 x 787 y 4620 vx 0 vy 0 solid#29 555-903 y4620  pad -
+t 76.17 x 924 y 4545 vx 285 vy -323 air  pad right+jump
+t 76.70 x 1041 y 4604 vx -119 vy 0 wheel@1060,4772 way -1 b1  past 0.36 [-0.03,1.13] edge off 45 pad left
+t 77.23 x 972 y 4512 vx -285 vy -70 air  pad left
+t 77.77 x 913 y 4620 vx 260 vy 0 solid#29 555-903 y4620  pad right
+t 78.30 x 882 y 4550 vx -268 vy -197 air  pad left+jump
+t 78.83 x 775 y 4620 vx 87 vy 0 solid#29 555-903 y4620  pad right
+t 79.37 x 918 y 4536 vx 285 vy -260 air  pad right+jump
+t 79.90 x 1015 y 4596 vx -87 vy 0 wheel@1060,4772 way -1 b0  past 0.20 [-0.03,1.13] edge off -9 pad left
+END shrine 163.8 rescues 1
