@@ -731,3 +731,61 @@ test('set down behind a stood pin, his place is found where he is: a respawn at 
   assert.deepEqual(there.map((s) => `${s.x}: ${s.what}`), [], 'stuck between the flag and the stone (x 7,000-10,500)');
   assert.deepEqual(run.rescueXs.filter((x) => x > 7000 && x < 10500), [], 'rescued between the flag and the stone');
 });
+
+test("his middle past a drifting log's front, the log is read by his feet: the river's judged hop is flown, never the edge plan's late press into the water (2-1 child Easy 3 to t 175, R-165.465 C12)", async () => {
+  const ft = await import('./firsttimer.ts');
+  const { CAST_BOTS } = await import('./castBots.ts');
+  // (C11: on #86 running back at him, a late press drawn with a look of 0 px walked him off its front at 169.80, x 20,007, into the
+  //  water; splashed back to #81 (x 19,552) and the same front again, rescued at x 19,753. The bar: the river past #85 crossed by t 175
+  //  with no put-back on it, on the far bank by t 175)
+  type R = { t: number; sim: { p: { x: number } } };
+  const P = ft.FirstTimerRun.prototype as unknown as { intend: (this: R) => unknown };
+  const it = P.intend;
+  const backs: string[] = [];
+  let lastT = -1, lastX = 0;
+  P.intend = function (this: R) {
+    const x = this.sim.p.x;
+    if (lastT >= 0 && Math.abs(this.t - lastT - 1 / 30) < 1e-3 && Math.abs(x - lastX) >= 100 && lastX > 19300 && lastX < 20600) backs.push(`t ${this.t.toFixed(2)} x ${Math.round(lastX)} -> ${Math.round(x)}`);
+    const o = it.call(this);
+    lastT = this.t; lastX = this.sim.p.x;
+    return o;
+  };
+  let run: ReturnType<typeof ft.firstTimer>;
+  try {
+    run = ft.firstTimer('2-1', 3, CAST_BOTS.child.easy!, { cap: 175, dotSetting: true });
+  } finally {
+    P.intend = it;
+  }
+  assert.deepEqual(backs, [], 'put back at the river past #85 (x 19,300-20,600)');
+  // (the far bank starts at x 20,202, a step up from the logs)
+  assert.ok(run.x > 20202, `the toy reads too little: he stands at x ${Math.round(run.x)} at t 175, short of the river's far bank`);
+});
+
+test("a put-back by the game spends the edge plan's stand: a stand drawn for the lip he left never holds him where he is set down (2-1 middle Easy 18 to t 12, R-165.465 C12)", async () => {
+  const ft = await import('./firsttimer.ts');
+  const { CAST_BOTS } = await import('./castBots.ts');
+  // (C11: standing for a lip when the game set him back 125 px at t 10.00 (x 2,135 -> 2,010), the stand kept; 2-1 child Easy 24 kept
+  //  one at t 190.10 (x 24,046 -> 23,933). On C10 such a stand held 2-1 child Normal 20 at x 8,390 until rescued)
+  type R = { t: number; standing: object | null; sim: { p: { x: number } } };
+  const P = ft.FirstTimerRun.prototype as unknown as { intend: (this: R) => unknown };
+  const it = P.intend;
+  const stale: string[] = [];
+  let backs = 0, lastT = -1, lastX = 0, held: object | null = null;
+  P.intend = function (this: R) {
+    const x = this.sim.p.x;
+    if (lastT >= 0 && Math.abs(this.t - lastT - 1 / 30) < 1e-3 && Math.abs(x - lastX) >= 100 && held) {
+      backs++;
+      if (this.standing === held) stale.push(`t ${this.t.toFixed(2)} x ${Math.round(lastX)} -> ${Math.round(x)}`);
+    }
+    const o = it.call(this);
+    lastT = this.t; lastX = this.sim.p.x; held = this.standing;
+    return o;
+  };
+  try {
+    ft.firstTimer('2-1', 18, CAST_BOTS.middle.easy!, { cap: 12, dotSetting: true });
+  } finally {
+    P.intend = it;
+  }
+  assert.ok(backs >= 1, `the toy reads too little: ${backs} put-backs with a stand held`);
+  assert.deepEqual(stale, [], 'a stand for the lip he left outlived the put-back');
+});

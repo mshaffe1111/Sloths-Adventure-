@@ -3750,7 +3750,16 @@ export class FirstTimerRun {
         const pit = !!who.holdQ && !this.floorAt(p.x + dir * (look + 40), p.y, 400);
         const drops = on && on.y > p.y + 50 && !across && !pit;
         // (a log or a lily pad drifting across the gap: he can see it, so he waits at the edge until it is near, up to 6 s)
-        const here = this.floorAt(p.x, p.y, 6);
+        // (the drifting log he stands on is read by his feet (the engine's standingOn) where his middle is already past its end in his
+        //  way: read by his middle alone it was no floor, so neither river block below (the ride wait, the upstream gate's judged hop)
+        //  ever ran, and the edge plan pressed blind off the log's front. A look of 0 px (a press distance drawn at 0, the late press's
+        //  look) sees the gap only there, his middle past the end. 2-1 child Easy 3 (R-165.465 C12): on #86 running back at him, the
+        //  late press walked him off its front at x 19,993 into the water, splashed back to #81 and the same front again until rescued
+        //  ('an open drop ahead, water ahead', x 19,753). Logs only: read this way on solid lips too, it fired on that run from t 31
+        //  on (20 frames by t 137, the bank ride block run where it never had) and moved the whole run. hopJudged.test.ts 'his middle
+        //  past a drifting log's front')
+        const feetOn = p.grounded ? this.sim.platforms.find((q) => q.id === this.sim.standingOn) : undefined;
+        const here = this.floorAt(p.x, p.y, 6) ?? (feetOn?.type === 'drift' && dir * (p.x - (dir > 0 ? feetOn.x + feetOn.width : feetOn.x)) > 0 ? feetOn : null);
         // (ENG-W2b: a float is near when a hop he makes now, or a beat later as his thumb gets there, comes down on it where it will be,
         // hopLandsOn; drifting logs come out from under the bank at his feet, so every log on the water is looked at, not only those ahead)
         const rivers = (this.sim.stage as { rivers?: RiverZone[] }).rivers;
@@ -5624,8 +5633,12 @@ export class FirstTimerRun {
       //  jumps or is put back'. A teaching river's splash-back (engine.ts river.safe, safeWater) moves him with no loseLife or softFall,
       //  so respawned() never ran for it: 2-2 child Easy 21 (R-165.465 C6) walked off #92 on a late press, splashed back, and walked off
       //  the same lip again on the press armed before the splash, 8 times, rescued. hopJudged.test.ts 'a put-back by the game')
+      //  The edge plan's stand is that plan too ('stand', held in `standing` until he jumps): kept, it held him wherever the game set
+      //  him down, the lip he stood for left behind. 2-1 child Normal 20 on C10 (R-165.465): stood for #41's front, splashed back to
+      //  x 8,424, and the stand held him there until rescued. hopJudged.test.ts 'a put-back by the game spends the edge plan's stand')
       this.edge = null;
       this.lateArmed = null;
+      this.standing = null;
       // (set down at the same place again and again, never getting further: three are a loop, as three falls back are, and he is put
       // past. A splash-back costs no life, and each relocate wound his progress back, so the walk on to the same pond counted as
       // progress and no rescue ever came: 2-3's sinking-pad pond, the kid Normal set down at its near bank every 20 s to the 1200 s cap,
