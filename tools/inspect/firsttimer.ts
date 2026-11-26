@@ -3750,26 +3750,41 @@ export class FirstTimerRun {
         const pit = !!who.holdQ && !this.floorAt(p.x + dir * (look + 40), p.y, 400);
         const drops = on && on.y > p.y + 50 && !across && !pit;
         // (a log or a lily pad drifting across the gap: he can see it, so he waits at the edge until it is near, up to 6 s)
-        // (the drifting log he stands on is read by his feet (the engine's standingOn) where his middle is already past its end in his
-        //  way: read by his middle alone it was no floor, so neither river block below (the ride wait, the upstream gate's judged hop)
-        //  ever ran, and the edge plan pressed blind off the log's front. A look of 0 px (a press distance drawn at 0, the late press's
-        //  look) sees the gap only there, his middle past the end. 2-1 child Easy 3 (R-165.465 C12): on #86 running back at him, the
-        //  late press walked him off its front at x 19,993 into the water, splashed back to #81 and the same front again until rescued
-        //  ('an open drop ahead, water ahead', x 19,753). Logs only: read this way on solid lips too, it fired on that run from t 31
-        //  on (20 frames by t 137, the bank ride block run where it never had) and moved the whole run. hopJudged.test.ts 'his middle
-        //  past a drifting log's front')
-        //  Only a log running BACK at him (C13): both runs that proved the cause (2-1 child Easy 3 #86, Easy 1 #88) rode logs running
-        //  back at him. On a log running his way the read ran the ride wait where the edge plan's stand and press had flown him onto
-        //  the liana: lianaRide's catch toy, middle Easy variant 2, stood at the log's end 7 s and never caught it (1,1,1,1,0 to
-        //  1,0,1,1,0). hopJudged.test.ts 'a log running his way'
+        // (the drifting log he stands on, read by his feet (the engine's standingOn) where his middle is already past its end in his way,
+        //  counts for ONE thing: the upstream gate's judged hop to the next log, pressed from where he stands (below, after `lands`).
+        //  2-1 child Easy 3 (R-165.465 C12): read by his middle alone #86 (running back at him) was no floor, the gate never judged the
+        //  hop to #87, and the edge plan's late press (a look of 0 px) walked him off its front at x 19,993 into the water, splashed
+        //  back to #81 and the same front again until rescued. C12 read it as his floor for every river block: on a log running HIS way
+        //  the ride wait ran where the edge plan had flown him to the liana (lianaRide's catch toy, middle Easy v2: 1,1,1,1,0 to
+        //  1,0,1,1,0); on one running at him, where the gate refused or nothing was in reach, its stand gave no input at a lip he had
+        //  already passed, and his walk slid him off it with no press (2-1 kid Normal 13 at 102.47, #72, x 19,928: drowned; C11's edge
+        //  plan had a press pending and flew him off the lip). So (C14) the floor stays the one by his middle, and the log by his feet
+        //  only adds that judged hop; refused, he goes on exactly as before. hopJudged.test.ts 'his middle past a drifting log's front')
         const feetOn = p.grounded ? this.sim.platforms.find((q) => q.id === this.sim.standingOn) : undefined;
-        const here = this.floorAt(p.x, p.y, 6) ?? (feetOn?.type === 'drift' && feetOn.drift && feetOn.drift.dir !== dir && dir * (p.x - (dir > 0 ? feetOn.x + feetOn.width : feetOn.x)) > 0 ? feetOn : null);
+        const here = this.floorAt(p.x, p.y, 6);
+        const feetLog = !here && feetOn?.type === 'drift' && feetOn.drift && feetOn.drift.dir !== dir && dir * (p.x - (dir > 0 ? feetOn.x + feetOn.width : feetOn.x)) > 0 ? feetOn : null;
         // (ENG-W2b: a float is near when a hop he makes now, or a beat later as his thumb gets there, comes down on it where it will be,
         // hopLandsOn; drifting logs come out from under the bank at his feet, so every log on the water is looked at, not only those ahead)
         const rivers = (this.sim.stage as { rivers?: RiverZone[] }).rivers;
         // (a hop off a log keeps the log's sideways speed, the one carry rule (engine.ts groundJump, RIDE.keep): flown with it)
         const carry = here?.drift ? ((floatAt(rivers, here)(t + DT) - floatAt(rivers, here)(t)) / DT) * RIDE.keep.x : 0;
         const lands = (q: Platform) => [0, 0.1, 0.2].some((lag) => hopLandsOn(q, floatAt(rivers, q), p.x + (p.vx + carry) * lag, p.y, dir as -1 | 1, who.hold[0], t + lag, p.vx + (Math.abs(carry) < 400 ? carry : 0), 24, Math.abs(carry) < 400 ? carry : 0));
+        // (the log by his feet, his middle past its front: the upstream gate's judged hop to the next log, as the gate below flies it from
+        //  a log he stands on (SKILLS.floatSure's `next`: lands at lag 0, 0.1 or 0.2; the aim held for the wait; gateSees with 24 px))
+        if (feetLog && SKILLS.ride && !drops && SKILLS.upstream && SKILLS.floatSure) {
+          const fc = ((floatAt(rivers, feetLog)(t + DT) - floatAt(rivers, feetLog)(t)) / DT) * RIDE.keep.x, cv = Math.abs(fc) < 400 ? fc : 0, vx = p.vx + cv;
+          const logs = this.sim.platforms.filter((q) => q !== feetLog && q.type === 'drift' && !q.broken && Math.abs(q.y - p.y) < 70 && Math.abs(q.x - feetLog.x) < 600);
+          if (logs.some((q) => [0, 0.1, 0.2].some((lag) => hopLandsOn(q, floatAt(rivers, q), p.x + (p.vx + fc) * lag, p.y, dir as -1 | 1, who.hold[0], t + lag, vx, 24, cv)))) {
+            const h = this.aim.at(dir as -1 | 1, t, (d) => this.drawHop(d));
+            if (logs.some((q) => this.gateSees(q, floatAt(rivers, q), p.x, p.y, dir as -1 | 1, h, t, vx, 24, cv))) {
+              if (HOP_TRACE.on) { this.judged = null; this.judge('upstream', logs, [0], dir as -1 | 1, h.hold, vx, fc, 24, h); }
+              this.gateHop = h;
+              this.aim.end();
+              this.edgeWait = -1;
+              return this.startJump(dir, 'single', false);
+            }
+          }
+        }
         if (SKILLS.ride && !drops && here && here.type !== 'drift' && here.type !== 'moving') {
           const edgeX = dir > 0 ? here.x + here.width : here.x;
           // (a lift or a lily pad, 'moving', keeps the read it always had: near the edge now)
