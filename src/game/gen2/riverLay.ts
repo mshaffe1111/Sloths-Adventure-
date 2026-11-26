@@ -38,8 +38,10 @@ export interface RiverRow {
    *  ridePickups.ts): at its middle, PETAL_SIT over its top, hidden with it under a bank */
   petals?: number;
   /** what floats on it (data; unset: logs). 'raft': a lashed raft (R-165.288; 2-4's last row to the jetty): the same carrier on the same
-   *  clock, drawn as World 2's painted raft (riverArt.ts drawRiverLog), its deck the walkable top (art = collider) */
-  look?: 'raft';
+   *  clock, drawn as World 2's painted raft (riverArt.ts drawRiverLog), its deck the walkable top (art = collider). 'barge': the King's
+   *  Barge (ENG-29-e G3, w2-next#barge): the same carrier, its painted deck (x 80-1050 of the frame) the log's whole top, the canopy drawn
+   *  behind him and the hull under the deck, so the art is taller than its collider (deck 386 of 507 px at a 384-390 px log) */
+  look?: 'raft' | 'barge';
   /**
    * its TAIL (ENG-24e, R-165.301; data, unset: none): log-free water this wide (px) between where the logs go under and the far bank. The
    * logs' window (`logs` spacings, as ever) ends `tail` short of the far bank, under World 2's painted end (riverArt.ts drawRiverTail), so a

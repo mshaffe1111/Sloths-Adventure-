@@ -6422,7 +6422,7 @@ export class GameEngine {
         //  river's box above ends there, one clip, DRESS-27b)
         if (painted && drawSafeRiverOver(ctx, logs, r.surfaceY, t, r.dir, r.speed)) {
           for (const lg of logs) {
-            if (lg.drift?.look === 'raft') continue;
+            if (lg.drift?.look === 'raft' || lg.drift?.look === 'barge') continue;
             const ly = safeLogLine(lg, t);
             for (let x = lg.x + 22; x < lg.x + lg.width - 8; x += 50) drawRiverFoam(ctx, Math.round(x / 50) + lg.id, x, ly + 2, 56, 0.75, (lg.id + Math.round(x / 50)) % 2 === 0);
           }

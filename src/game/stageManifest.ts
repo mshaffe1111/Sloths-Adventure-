@@ -40,7 +40,7 @@ export interface RevealStrips {
 /** the parts of a built stage (stageGenerator.ts GeneratedStage) that say what it draws */
 export interface BuiltStage extends StageDraws {
   config: { worldIndex: number; id: string; secret?: string };
-  platforms: ReadonlyArray<{ type?: string; crumbleAfter?: number }>;
+  platforms: ReadonlyArray<{ type?: string; crumbleAfter?: number; drift?: { look?: string } }>;
   boss?: unknown;
   proto?: (NonNullable<StageDraws['proto']> & { reveal?: { strips: RevealStrips } }) | null;
   daisyX?: number;
@@ -104,5 +104,7 @@ export function builtStageKeys(st: BuiltStage): string[] {
   if (st.pacer || st.post) out.add('w2-next');
   // (a laid column dress draws its piece off its own sheet: 2-7's weir on World 2's next sheet)
   if (st.columnDress?.some((d) => d.art.startsWith('w2-next#'))) out.add('w2-next');
+  // (a river row of barges draws the King's Barge off the same sheet: riverArt.ts drawRiverLog, ENG-29-e)
+  if (st.platforms.some((p) => p.drift?.look === 'barge')) out.add('w2-next');
   return [...out];
 }
