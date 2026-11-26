@@ -1,0 +1,40 @@
+diff --git a/src/game/gen2/worlds/w2Arc29.ts b/src/game/gen2/worlds/w2Arc29.ts
+index 4707e6084..a9e178bf2 100644
+--- a/src/game/gen2/worlds/w2Arc29.ts
++++ b/src/game/gen2/worlds/w2Arc29.ts
+@@ -16,7 +16,7 @@
+  * bell on the steps' arch. The liana beats are written `r` (2-4's letter): the design's `s` is unlaid (G5, the lead's call).
+  */
+ import { W2_RIVERS, W2_WHEELS, w2World } from './w2.ts';
+-import { w2CastSpawn, w2Snappers } from './w2Cast.ts';
++import { W2_POSTED_GUARD, w2CastSpawn, w2Snappers } from './w2Cast.ts';
+ import { generateAllLevels } from '../../worldsData.ts';
+ import type { TempoSpec } from '../../tempo.ts';
+ import type { PadRow } from '../rideLay.ts';
+@@ -88,14 +88,14 @@ export const RIVERS_29 = {
+   ...W2_RIVERS,
+   court29s: { ...W2_RIVERS.court, safe: true },
+   double29: { dir: 1, speed: 140, logW: 127.5, gap: 72, logs: 3, easy: { speed: 70, logW: 159 } },
+-  barge29: { dir: 1, speed: 80, logW: 384, gap: 72, logs: 3, easy: { speed: 70, logW: 390 } },
++  barge29: { dir: 1, look: 'barge', speed: 80, logW: 384, gap: 72, logs: 3, easy: { speed: 70, logW: 390 } },
+ } as const satisfies Record<string, RiverRow>;
+ type Row29 = keyof typeof RIVERS_29;
+ /** World 2's wheels; the terrace lays W2_WHEELS.court (R160 both settings, the lead's ruling G4; flown: wheelFlights.data.ts) */
+ export const WHEELS_29 = W2_WHEELS;
+ 
+ /** the snappers, on the court's jaws (the stones' clock: PadRow.clock 'court') */
+-export const SNAPPERS_29: CreatureDef[] = w2Snappers('snap-court').map((c) => ({ ...c, minGround: 100 }));
++export const SNAPPERS_29: CreatureDef[] = [...w2Snappers('snap-court').map((c) => ({ ...c, minGround: 100 })), W2_POSTED_GUARD];
+ 
+ // ───────────────────────────── the pieces ─────────────────────────────
+ const bank = (key: string, after: string | null, w: number): SectionPiece => ({ key, shape: 'bank', w: [w, w], place: after ? { kind: 'walk', after, dy: [0, 0] } : { kind: 'start' }, style: 'log', main: true });
+@@ -165,7 +165,8 @@ const grandDance = (easy: boolean): Lay => ({
+ /** [P b1^<] beat 9, up to the quay: World 2's bounce to the royal quay */
+ const upQuay: Lay = { pieces: [bank('a', null, 360), spring('sp', 'a', 0.7), rise('z', 'a', 420, -160)], sockets: [] };
+ /** [S w1>] beat 10, the King's Barge: from the quay to the shrine steps (G3: its own look; the bell on the arch, not in the draft) */
+-const barge: Lay = { pieces: [bank('a', null, 420), river('c', 'a', 'barge29', 360), bank('z', 'c', 300)], sockets: [] };
++// (beat 10's landing: the king's guard POSTED on the far bank (G2, the lead's rulings (1)(4)(5)), facing the barge, out of the goal)
++const barge: Lay = { pieces: [bank('a', null, 420), river('c', 'a', 'barge29', 360), bank('z', 'c', 300)], sockets: [{ id: 'guard', role: 'enemy', on: 'z', t: 0.75, allow: [W2_POSTED_GUARD.id] }] };
+ /** [R] a rest on the bank */
+ const rest: Lay = { pieces: [bank('a', null, 240), bank('b', 'a', 300), rock('rb', 'b', 0.5), bank('z', 'b', 240)], sockets: [{ id: 'find', role: 'findSpot', on: 'a', t: 0.5 }] };
+ 
