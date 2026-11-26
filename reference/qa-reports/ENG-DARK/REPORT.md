@@ -1,4 +1,15 @@
 # ENG-DARK REPORT (the dark + light ring as one gen2 brick; WORLD-3-PLAN F2; R-165.449)
+**BOX 25 STOP (ENG-DARK-y, after the hand-over; the landing NOT done): a suite red, traced.** Suite shard 2/6 on frozen c18 38e4892e1:
+658 pass / 3 fail, all in src/game/gen2/worlds/w3.test.ts (:108 every roll clean, :129 head room on the way down, :143 a catch crosses a
+vine), with one cause: 'easy 6: tower: a blind drop off the piece at x 1176-1241, y 2830: 568 px to its landing (in view: within 300)'.
+Deterministic: red on c18 alone, red on c16 c47fa1e34, red on the trial merge into t-eng-w3; GREEN on t-eng-w3 88592a9c4 (7/7).
+`git bisect run` (the one test, 7 steps): FIRST BAD 8cc3a319a (box 18, c10, tower.ts offEnd). Before it, the lay's ends with their
+step-off point (end ± 24) past the wall line [20, width - 20] were SKIPPED; offEnd now clamps the point to the wall line, so a slot
+between such an end and the wall is a way off. offEnd's read is right (box 18: the engine drops him down such a slot). On Easy roll 6
+the lay leaves a blind slot by the wall at 1241 that its catch guard does not cover. Red since c10, unseen: the suite shards were not run
+on this lane after c10 (D141's shape). Shards 1: 704/0, 3: 685/0 (+1 TODO), 4: 717/0; 5 and 6 below if they ended. The lead has it;
+my recommendation: a fresh box fixes the lay at the cause (w3.test :129 the toy), then an x40 and the gates once.
+Note: the bisect ran beside the two shard lanes (three runs at once, each bisect step one short test): named, against the two-run rule.
 **EXACT NEXT STEP (ENG-DARK-y box 25 HAND-OVER, 5:45 PM ET by `date`; head on t-eng-dark-wip = this commit; CODE CANDIDATE c18 =
 38e4892e1 = c17 2432cfde9 + two TEST-ONLY re-points, both under R-165.432, the bars unchanged): (1) 2c5a49f13: the seamByFacing pair -> ADULT
 NORMAL 29 (CAST_BOTS.adult.normal, the scan's bot; planted worst rim >= 8). (2) 38e4892e1: the noLevelRead row RED -> CHILD NORMAL ROLL 2
