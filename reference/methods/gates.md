@@ -18,6 +18,10 @@ Last proven: 2026-11-01, kaizen-gates (built clipcheck, playerText.test, knownch
   CLAUDE.md's Checks paragraph does not name coveragecheck, registrycheck, tipwalk, paintcheck or timecheck: a packet that says
   'the CLAUDE.md list' MUST add them (BUILD-25b skipped three; ENG-SNAP found coverage + registry red on 2-5).
 - When a defect escapes (CONTINUOUS-IMPROVEMENT.md): the countermeasure is a new check here (L3), built with "Adding a new check" below.
+- **A look rule reads what was DRAWN, inputs included (D136, CI #87, 11-26):** every input of a paint/look rule (paintcheck, paintFall's soilOvers,
+  sideWall, soilShorts) comes from the drawer's own output or its exported regions (e.g. groundSoil's per-region `clip`); an input the rule
+  works out for itself is an ASSUMPTION, named as one in the rule's comment, with its own planted case. soilOvers assumed a ceiling clip
+  for every region and passed 2-8's porch pillar.
 
 ## The gates (what each catches, how long, where)
 
