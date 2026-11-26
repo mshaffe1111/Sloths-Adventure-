@@ -204,7 +204,12 @@ export const W2_FORK: W2ForkShape = {
    *  off W's lip, 66 px (floodLay FLOOD_WALK_OFF, measured), + the 15 px margin; the porch from the bank's edge as before */
   gap: 81,
   porch: 2200,
-  rises: [{ w: 1400, h: 60 }, { w: 600, h: 60 }],
+  /** each rise 45 high (BUILD-28 session 11, R-165.292 on 2-8's lay): a moss stone this wide is painted only at a height a painter draws:
+   *  1-49 a painted thin piece (a stone step), exactly 50 ONE boulder drawn 1.15x its width (a 1,610 px rock, not a step), 90 and up a
+   *  painted soil bank (a step as tall as Pokey, its soil a bank's). At 60 neither drew it: code terrain stood down through the porch log
+   *  (paintFalls RED on ids 32/33). 45: the nearest a stone step stays to the design's 60 and still 5 clear of the boulder's 50; half
+   *  his height, it reads as a step he walks into at his size. W stays 60: on the game's build it is a painted thin piece there. */
+  rises: [{ w: 1400, h: 45 }, { w: 600, h: 45 }],
 };
 /** the low road's row: a MARSH (riverLay.ts RiverRow.marsh; 2-8.md:9: 1,400 px with four 100 px dips), still water, no logs, marked for
  *  the flood as the road that turns deep. Its floor 75 px under the banks (BUILD-28 session 6, the lead's ruling (c)): the porch, a step
