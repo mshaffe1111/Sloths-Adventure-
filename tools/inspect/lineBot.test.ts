@@ -434,6 +434,7 @@ test('planted: with no-line-go off the middle stands in the clump before the str
   } finally {
     LINE_SKILL.noLineGo = true;
   }
+});
 
 // THE MARSH LOW ROAD (the lead's ruling 1c, R-165.430 (2); 2-8.md:9 "LOW 1,400 px of marsh path with four 100 px dips"): the toy's low
 // road laid by gen2's own piece (riverLay layRiver, RiverRow.marsh) in place of the hand walkway: its floor 60 px under the banks, the
