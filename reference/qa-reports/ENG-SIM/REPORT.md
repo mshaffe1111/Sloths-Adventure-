@@ -1,16 +1,14 @@
 # ENG-SIM: the bots ask the GAME how a press flies (R-165.470; packet reference/packets/2026-11-26/ENG-SIM.md on the lead's branch)
 Branch t-eng-sim from origin/release-0.10.3 c73cb9766. Nothing here lands on release-0.10.3, main or a release 5 branch.
 
-## EXACT NEXT STEP (box 2 hand-over, written 2:43 PM ET): step 1 GREEN and step 2's core in; run step 2's candidate checks, then step 3's plan
-Head: see the hand-over message (pushed to t-eng-sim, ls-remote confirmed). Box 2's logs were in its scratchpad; the counts are below.
-1. On a frozen worktree of the pushed head (`git worktree add --detach`, symlink node_modules, `chattr -R +i src tools`,
-   run_in_background + timeout 7200000): the CI tool line (gates.yml line 157, about 10 min; it runs the probe-equality gate, about
-   5 min of it), the suite in 3 shards (CLAUDE.md's src globs), tsc, generalitycheck, timecheck `--range c73cb9766..HEAD`. Record each
-   under "Step 2" below with the hash. Box 2 ran on step 2 (ee33a442b): tsc PASS, the invariant test 1/1 PASS and its plant RED.
-2. Step 1's CI tool line PASSED on f3acbc87d (recorded under Step 1); step 2 adds only src/game/pressPlan.ts, its test and the bot's
-   planNext/setPlan (nothing calls them until a judge sets a plan), so item 1 is the step 2 candidate's full set.
-3. Then packet step 3 (READY only, do NOT start it): the one-page plan, in this REPORT (packet items: the judges as ONE family with their
-   toy rows; the press-timing calibration and its honest limit; the re-baseline list). The lead GOs step 3 after ENG-THUMB lands.
+## EXACT NEXT STEP (box 3 hand-over): step 2's checks GREEN so far, step 3's plan WRITTEN; finish the suite, then STOP for the lead's GO
+Head: the hand-over message's hash (pushed to t-eng-sim, ls-remote confirmed). Box 3's logs were in its scratchpad; the counts are below.
+1. Suite shards 1 and 2 on step 2's code: if box 3 appended their verdicts under "Step 2's checks" below, nothing to run. Otherwise, on
+   a chattr-frozen worktree of the pushed head (src and tools frozen except src/game/gen2/proven; node_modules symlinked;
+   run_in_background + timeout 7200000): `ls` CLAUDE.md's src globs | sort -u | `split -n r/3 -d`, run shards 01 and 02 ONLY (shard 00
+   passed, 1,407 / 0 fail / 1 todo); each red traced to its cause and named. Record them with the hash.
+2. Step 3 is PLANNED (the section "Step 3: THE ONE-PAGE PLAN" below), NOT STARTED: wait for the lead's GO, which comes after ENG-THUMB
+   lands; then item 0 of that plan (merge ENG-THUMB's landed head, re-run the probe-equality gate and pressPlan.test on the merge) first.
 
 ## Step 1: THE SEAM (box 1 from 2:07 PM ET)
 - **The probe moved to src/game as a tested tool:** src/game/engineProbe.ts (the spike's snapshot / fly / restore in place; it now flies
@@ -75,7 +73,9 @@ Head: see the hand-over message (pushed to t-eng-sim, ls-remote confirmed). Box 
 - **Step 2's checks (box 3, ONE run each, a chattr-frozen worktree of a82a602c = ee33a442b's code + REPORT only; src and tools frozen except
   src/game/gen2/proven):** the CI tool line (gates.yml line 157) PASS: 432 tests, 431 pass, 0 fail, 1 todo (chaseBots' CHILD-on-Normal
   fork, OPEN, ENG-B4), 1,045 s (sharing 4 cores with the suite); tsc PASS; generalitycheck PASS (70 engine files, 26 literals, 26 known);
-  timecheck c73cb9766..a82a602c PASS (9 commits, 1 stamp). The suite in 3 shards (651 files, CLAUDE.md's src globs, 217 each): SUITE_PENDING
+  timecheck c73cb9766..a82a602c PASS (9 commits, 1 stamp). The suite in 3 shards (651 files, CLAUDE.md's src globs, 217 each): shard 0 PASS: 1,408 tests, 1,407 pass, 0 fail, 1 todo (4-3 in the real engine:
+  the wall check has no bottom, a known todo), 1,728 s; shards 1 and 2 were still running at box 3's hand-over (their verdicts are appended
+  below by box 3 if it is still up; otherwise box 4 runs them ONCE, item 1 of the next step).
 
 ## Step 3: THE ONE-PAGE PLAN (box 3; READY only, NOT started: the lead GOs it after ENG-THUMB lands)
 **Order of work, each a candidate with its own checks (D141: the CI tool line on every one):**
@@ -165,6 +165,14 @@ check (1f) is where an over-run shows first.
 - Box 2 from 2:31 PM ET (about 28 min): the three causes traced and sealed, the gate GREEN 11/11, the plant RED, the rows equal base;
   step 2's core and its invariant (plant RED), rows equal base. Step 1 took about 1 h of work (box 1 + most of box 2) against the
   spike's 4 h; step 2's core about 10 min of code against 3 h (its candidate checks are box 3's first job).
+- Box 3 from 3:48 PM ET (about 30 min, most of it waiting on the runs): the rebuilt frozen tree, step 2's checks (all PASS so far),
+  step 3's one-page plan. Steps 1-2 together: about 1.5 h of member time against the spike's 7 h (moved code, not new code).
+
+## Lessons applied (box 3)
+- D115 a chattr-frozen rebuilt worktree for every check; D141 the CI tool line on the candidate; D113 every run in the background, a
+  monitor instead of a foreground wait; D140 ReadNotifications at the step boundaries (the lead's CI #89 standing rule read and kept);
+  D134 pushed and ls-remote confirmed before the hand-over; D138 the hand-over ends new work (only the running shards are recorded);
+  D40 in the plan's fault list (what the switch replaces waits, what it does not is fixed now).
 
 ## Lessons applied (box 2)
 - D115 frozen worktrees for every gate, plant and rows run; D141 the CI tool line on the step 1 candidate; D134 pushed and ls-remote
