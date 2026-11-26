@@ -84,6 +84,7 @@ import type { FollowPlay } from '../../src/game/followPlay.ts';
 import { bucketAngle } from '../../src/game/wheel.ts';
 import { WHEEL_FLOWN } from '../../src/game/gen2/wheelFlights.data.ts';
 import { flownKey } from '../../src/game/gen2/wheelLay.ts';
+import { PlanPlayer, type PressPlan } from '../../src/game/pressPlan.ts';
 
 /**
  * The bot's clock-read skill (METER-2a, R-165.272; METER-COVERAGE §2a "read a stage clock", board + step-off half). A toy test switches
@@ -5026,6 +5027,32 @@ export class FirstTimerRun {
     return out;
   }
 
+  /** ENG-SIM step 2 (R-165.470): the press plan he plays verbatim, judged by flying it on the engine (src/game/pressPlan.ts) */
+  readonly planner = new PlanPlayer();
+  /**
+   * Play `plan` from the next frame, its first `end` frames (a judge sets it once planFlies has flown it): the travel its steer `dir`
+   * waits for is kept, and any press still queued is dropped (the plan carries the press).
+   */
+  setPlan(plan: PressPlan, end: number, dir: -1 | 1): void {
+    this.travelUntil = Math.max(this.travelUntil, this.steerFrom(dir, this.t));
+    this.pending = null;
+    this.planner.set(plan, end, this.e.lives);
+  }
+  /**
+   * The plan's next pad, or null (none, played out, or a life lost since it was set). His thumb is left as thumbify would leave it for
+   * these pads (the spike's fix b): a steer on the stick ends any late lift-off and its arming; a frame with none is a thumb let go.
+   */
+  private planNext(): Pad | null {
+    const out = this.planner.next(this.e.lives);
+    if (!out) return null;
+    const steer: -1 | 0 | 1 = out.right ? 1 : out.left ? -1 : 0;
+    this.releaseLeft = 0;
+    if (steer !== 0) this.releaseArmed = false;
+    this.lastSteer = steer;
+    if (out.press) this.lastPress = this.t;
+    return out;
+  }
+
   private pad(): Pad {
     this.figTap = false;
     this.rollHeld = false;
@@ -5559,7 +5586,7 @@ export class FirstTimerRun {
     const e = this.e;
     while (this.t < cap) {
       this.pressWant = undefined;
-      const pad = this.pad();
+      const pad = this.planNext() ?? this.pad();
       this.sim.frame(pad);
       if (PRESS_TRACE.on && pad.press && this.pressWant !== undefined) PRESS_TRACE.rows.push({ want: this.pressWant, got: this.t });
       if (this.hopOpen) {
