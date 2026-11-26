@@ -1,5 +1,27 @@
 # ENG-THUMB: the kid-bot root fix (R-165.465) and release 5's rule-28 rows
 
+## EXACT NEXT STEP (hand-over 4, box 4; written 2:57 PM ET 11/26 by `date`)
+Branch t-eng-thumb-wip, head = the commit that adds this text. **Code = C10 22abe1e3e** = C6 + C7 (put-back spends the edge plan) + C9
+(pin roll-back on a respawn behind a spur) + C10 (step 3: the landing floor is standingOn where his middle is past its end). **C8's
+underLip extension is REVERTED in C10** (it moved 2-1 middle E 9 and riverRide 352/353). Tools: tools/*.txt (copy out, strip `.txt`;
+ciline.sh's cmd = gates.yml:157's `- run:` line saved to a file, path set in ciline.sh), tag.py / pp.py on PROBE copies, plus
+**tools/rise.mts.txt** (a plant search: 2-2 child N 1-40, waitRise on/off). Main's rows: box 1's (INT-R5 d/rule28/rows-main/ on
+origin/release-0.10.3-wip-fixes). Rebuild frozen trees from the branch (D115).
+1. **C10's five-bot rows (5 stages, rows.sh, about 2 min a stage) and C10's CI line were RUNNING at this hand-over: NOT read. Re-run
+   both on a frozen C10.** Expected from the parts: 2-2 0 (C9), 2-4/2-5/1-4 0 (C9), 2-1 0 (N 17 and E 9 both PASS on the C10 code,
+   single runs); CI line: 254 and 303 (rulings 2 and 3) and riverRide 351 (ruling 4) red; 352/353 GREEN (they pass on C7, no C8).
+   Any other PASS -> FAIL or red: trace it (tag.py, FT_FRAMES), fix with a toy each way, or STOP with the frames.
+2. **The lead's rulings (sent, no answer at this hand-over; ReadNotifications first):** ruling 1 (E 9 under C8) is moot if C10's 2-1 holds.
+   **Ruling 2** (hopJudged 'a beat row is started (CI-14)': the allowance as pressIn(mid + 3 sd), 1.8435, proposed), **ruling 3**
+   (padRide 'planted: waitRise off': no live case at the rescue bar on C8, d/rise-c8-2-2-childnormal.txt), **ruling 4** (riverRide 351
+   'planted: against-the-flow skill off, child N 2-1 17 rescued': red from C7, the stale press after a splash-back was part of the
+   rescue loop; 'upstream off, still clean: shrine, rescues 0, lives 2'). For 3 and 4: (a) re-plant search at the same bar (rise.mts
+   for waitRise; the same shape with SKILLS.upstream for 351) or (b) the bar by lives. Do what the lead rules; no bar change without it.
+3. Then the final checks ONCE on the frozen final head (box 1's list): rule 28 vs main (five bots, 1-40, both settings, 2-1 2-2 2-4 2-5
+   1-4, 0 PASS -> FAIL); 2-7 x40 (castBots 2-7 --seeds 1-40 --bots adult,child,middle,expert --setting both; seeds where every row
+   passes >= 29/40); pacerLay 23/23 (src/game/gen2/pacerLay.test.ts); the 10 races (margins.mts on origin/release-0.10.3-wip-plant-c-report
+   ENG-PLANT/tools); tierBots 9/9; tsc; the 4 bot test files; the CI line on EVERY candidate (D141).
+
 ## Box 4 (ENG-THUMB-d; written 2:43 PM ET 11/26 by `date`; C9 rows and CI line running at this writing)
 Branch t-eng-thumb-wip. **Code = C9 e106d4a6e** (C6 + C7 + C8 + C9). Tools: as box 3 (tools/*.txt), main's rows as box 1. Evidence in d/.
 **The lead has 3 rulings in hand (sent): (1) 2-1 middle E 9 under C8, (2) hopJudged 'a beat row is started' (CI-14) allowance,
