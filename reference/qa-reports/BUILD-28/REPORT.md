@@ -23,7 +23,7 @@ the stills only because the shot starts play at the fork. WALK vs PADDLE (2-8.md
 the dips; the little ones paddle splash-back water at his pace (2-3's contract) and wait at deep water as at a climb's foot; the low
 road turns deep at T_CLOSE 26 s after the last cage. THE PLAN (level.md rule 25 step 0): the node string `A Pg1+:+cage Tw1:#soft@flood
 Pp1+:+cage Xf1+:+cage R Uc1^ /L Kg1>:#water@flood R F[Pf1+|Pw1] Kg1> R Sg1< E`, one line per beat: piece (section id, file:line), data
-field; NOT STARTED (a map of the W2 kit per token was in flight at the box). Then WAIT for GO before BUILD-28.
+field; NOT STARTED; the W2 kit map per token is in kitmap-28-s12.md (arrived after the hand-over: 6 tokens MISSING (T, U, K x2, the island-cage, carved steps), no 2-8 kit or row, `:+cage` parses as a find, and a fork road carrying a mark throws, pipeline.ts:613-614). Then WAIT for GO before BUILD-28.
 LEARNED (proposals for level.md, the lead decides): (a) a walk-off a level's data changes is held by a verdict over EVERY walk-off speed,
 creep to full run, measured in the real engine before the number is chosen (the open dip broke the run-takes-the-low-road rule; the
 first landing's 117 came from 16 measured run-ups); (b) a bot draft is re-proven on the probe WITH every draft it was proven beside
