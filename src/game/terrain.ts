@@ -1353,7 +1353,7 @@ export function renderWorldObjects(
     const tl = terrainLook(p, plan, look, !!curRig);
     if (tl === 'bounce') {
       const tp = thinPlanFor(plan, p);
-      drawBounce(ctx, p, worldId, tp.variant, time, bounceBottom);
+      drawBounce(ctx, p, worldId, tp.variant, time, Math.min(bounceBottom, stalkFoot(p, platforms)));
     } else if (tl === 'fragile') {
       const tp = thinPlanFor(plan, p);
       const [dx, dy] = shakeOffset(p, time);
@@ -1513,6 +1513,28 @@ export function drawBounceCaps(ctx: CanvasRenderingContext2D, worldId: number, p
     const tp = thinPlanFor(plan, p);
     drawBounce(ctx, p, worldId, tp.variant, time, 0, 'cap');
   }
+}
+
+/**
+ * where a bounce plant's stalk ends (LAND-26c, R-165.474): at the foot of the first sound piece under its cap's middle, the piece it grows
+ * from (drawn after the plants, so it covers the stalk's end; an earth bank covers all of it below its top). Over no piece the stalk runs
+ * off the view's foot as before (Infinity). Was the view's foot for every plant: under a thin plank over open backdrop a dark line ran down
+ * the screen from it (2-6, 9-2, 10-4). Static pieces only (solid, never a wheel's bucket), found once a plant.
+ */
+const stalkFeet = new WeakMap<Platform, number>();
+function stalkFoot(b: Platform, platforms: Platform[]): number {
+  let y = stalkFeet.get(b);
+  if (y === undefined) {
+    const cx = b.x + b.width / 2;
+    let root: Platform | null = null;
+    for (const q of platforms) {
+      if (q === b || q.type !== 'solid' || q.wheel || q.x > cx || q.x + q.width < cx || q.y < b.y - 2) continue;
+      if (!root || q.y < root.y) root = q;
+    }
+    y = root ? root.y + root.height : Infinity;
+    stalkFeet.set(b, y);
+  }
+  return y;
 }
 
 function thinPlanFor(plan: StagePlan, p: Platform): ThinPlan {
