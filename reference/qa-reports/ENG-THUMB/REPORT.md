@@ -19,8 +19,12 @@ narrowBank, manifest, preload, whatsNew).
      A plant that stops biting is a plant to re-plant at the SAME bar (as ruling 4), or the lead's ruling; trace first.
    - Expected and handled on the head: 254 (f2ef1ca27), 355 = ruling 4's plant (585dccbde). 231 is GREEN on C12. **The line, finished
      after the hand-over (already running; d/ciline-c12.txt): exit 1, 561 s, 427 / 432 pass, 4 fail (254, 268, 355, 356), 1 todo.**
-2. **The five-bot rows on frozen 585dccbde (5 stages, rows.sh) were RUNNING at this hand-over** (scratchpad out/rows-fin/): box 6 records
-   them if they finish. Then flips.py vs main's rows: bar 0 PASS -> FAIL on 2-1 2-2 2-4 2-5 1-4. If 268/356 change the code, re-run them.
+2. **The five-bot rows on frozen 585dccbde (code = C12), finished after the hand-over (already running; d/rows-c12/,
+   d/flips-main-vs-c12-fivebots.txt), vs main's rows: PASS -> FAIL 2-1 1, 2-2 0, 2-4 0, 2-5 0, 1-4 0** (fail -> pass 31 / 30 / 74 / 44 /
+   128). C11's flip (child Easy 3) PASSES. **NEW on C12: 2-1 kid Normal 13** (main shrine 0 lives 138.6 s; C12 rescued once, 2 lives,
+   214.8 s, stuck x 19,577 'water ahead': the upstream river past #85, the same river as child Easy 3). NOT traced (hand-over). Trace it
+   with 268 and 356 (step 1): probe1 / FT_FRAMES on frozen C12 vs C11 at x 19,300-20,300; whether (1) fires there. If 268/356/kid N 13
+   change the code, re-run the rows.
 3. Then the final checks ONCE on the frozen final head: 2-7 x40 (castBots 2-7 --seeds 1-40 --bots adult,child,middle,expert --setting
    both; seeds where every row passes >= 29/40), pacerLay 23/23 (src/game/gen2/pacerLay.test.ts), the 10 races (tools/margins.mts.txt),
    tierBots 9/9, tsc, the 4 bot test files (lianaRide, riverRide, firsttimer, castBots), the suite in shards (run_in_background AND
