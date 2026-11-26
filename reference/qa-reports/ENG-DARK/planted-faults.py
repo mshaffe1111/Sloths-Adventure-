@@ -90,6 +90,10 @@ PLANTS = [
     ("no open end picked under a run with the way on under it (downEnd)", 'tools/inspect/firsttimer.ts',
      '    const wayOn = this.who.noOpenEnd ? null : this.downPt(p);', '    const wayOn = null as Pt | null;',
      'the way on straight under a run that ends at a side wall', 'src/game/gen2/darkBots.test.ts'),
+    # (ENG-DARK box 21) going down, a ledge over him read as a step up whatever way the route runs (roll 19 child N: a double at the dip)
+    ("every ledge over him a step up going down (wayRises not read)", 'tools/inspect/firsttimer.ts',
+     "this.stepUp(here, dir) && this.wayRises(p) ? 'double' : 'single';", "this.stepUp(here, dir) ? 'double' : 'single';",
+     "a ledge over him is a step up only where the way rises", 'src/game/gen2/darkBots.test.ts'),
     # (ENG-DARK box 16) landed ahead on the way's floor, still followed by the point over his head (roll 26 middle N: up the trunk again)
     ("landed ahead, never put on the way at his floor (landedAhead)", 'tools/inspect/firsttimer.ts',
      '    if (p.grounded && this.airFrom && this.landedAhead(p)) more = true;', '',
