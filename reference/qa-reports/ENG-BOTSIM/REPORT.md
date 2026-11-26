@@ -1,15 +1,19 @@
 # ENG-BOTSIM: can the bots ask the GAME how a press flies? (R-165.462, spike; branch t-eng-botsim from c73cb9766)
 
-## EXACT NEXT STEP (session 1, written 1:16 PM ET; items 1 and 2's toy DONE)
-1. Item 3 (cost): on worktree `../bs-ci10` (8134a9a56 + `proto-ci10.patch` + engineFork.ts; recreate: `git worktree add --detach
-   ../bs-ci10 8134a9a56`, symlink node_modules, `git apply` the patch, copy tools/inspect/engineFork.ts): one x40 kid + adult on 2-4
-   (castBots' roll, both settings as it rolls them) with and without `BOTSIM=1`: wall and user CPU (bash `time`; no /usr/bin/time here),
-   the probe count and ms (`BOTSIM` counters), and pass/fail per row both ways.
-2. Item 2's other rows: the CI-8..CI-15 rows on their OLD heads, as far as the prototype's one judge reaches (vineFromLog standing
-   only: CI-11 is the one it covers; the rest go in the plan table as "which judge, physics or input").
-3. Item 4: this page's ANSWER section.
+## EXACT NEXT STEP (session 1 hand-over, written 1:24 PM ET; items 1, 2 (the toy), 3 DONE; item 4 drafted below)
+Recreate the old-code tree: `git worktree add --detach ../bs-ci10 8134a9a56`, `ln -s <main>/node_modules ../bs-ci10/node_modules`,
+`git -C ../bs-ci10 apply <main>/reference/qa-reports/ENG-BOTSIM/proto-ci10.patch`, `cp tools/inspect/engineFork.ts ../bs-ci10/tools/inspect/`.
+`BOTSIM=1` = the probe judge acts; `BOTSIM=2` = probes run, answers thrown away (the leak check); unset = the old judge.
+1. **Trace kid Normal's extra water lives (item 3: 17 rows up, 10 down, net +17), seed 2 first** (`castBots.ts --stage 2-4 --seeds 2
+   --bots kid --setting normal` both ways, FT_TRACE=1 around the first life that differs). Hypothesis, NOT checked: the probe judge
+   accepts a press that catches only across mid +- sd/2, and the kid's drawn lag falls outside that band most of the time (about 62% of
+   a normal draw does), so he tries more marginal catches than the old, wrong-but-cautious model let him. If so: the band (thumbLags,
+   or a wider one) is a fidelity number to calibrate, separate from physics. Then kid Easy seed 8 (the one new rescue).
+2. **Snapshot cost:** count how many of the ~750 copied objects are the stage's fixed data (platforms that never move, vines' shape,
+   art), freeze them (or mark them shared in engineFork's SHARE), and re-time the probe (target: under 1 ms for snapshot + restore).
+3. **Item 4:** finish THE ANSWER below with 1 and 2 (it stands as YES, gated on 1's cause and 2's cost); send it to the lead.
 
-## THE ANSWER (item 4): YES, with two halves and one engine seam (cost numbers: item 3 below)
+## THE ANSWER (item 4, DRAFT: final after next steps 1-2): YES, with two halves and one engine seam
 **The judges ask the engine, and the bot plays what was judged.** The probe removes the PHYSICS half of the class by construction (the
 judge's flight IS the engine's: CI-8 the ledge forgiveness, CI-9 the lip hoist, CI-10 the take-off carry, CI-11's hold count). The other
 half of CI-8..CI-15 was the INPUT stream (CI-11's free frames and startJump's own hold draw, CI-12's lag spread, CI-13 / CI-15's stops the
@@ -55,6 +59,25 @@ riverRide's gateAirtime pins.
 **Risks:** (a) a leak not on the list: the proof gate catches it on the stages it runs, so it runs one seed of every world; (b) cost
 (item 3); (c) the probe flies the engine as it is NOW: a moving piece's future that depends on him (a crumble he triggers, a foe that
 reacts) is flown for real, which is right, but a judge that probes many frames ahead pays for it.
+
+## Item 3: cost and effect, 2-4, kid + adult, seeds 1-40, both settings (160 runs, --par 4 on 4 cores, old code 8134a9a56)
+| run | wall | CPU (user) | kid N | kid E | adult N | adult E |
+|---|---|---|---|---|---|---|
+| old judge | 62.3 s | 230 s | 40/40, 61 lives | 33/40 (7 rescued) | 40/40, 38 lives | 40/40 |
+| probe judge (BOTSIM=1) | 117.6 s (1.9x) | 447 s (1.9x) | 40/40, 78 lives | 39/40 (1 rescued: seed 8) | 40/40, 37 lives | 40/40 |
+| probes, answers thrown away (BOTSIM=2) | 227.0 s | 863 s | 0 of 160 rows moved vs the old judge | | | |
+- **No leak reached a row:** with every probe flown and its answer thrown away, all 160 rows are identical to the old judge's (pass,
+  lives, time): the snapshot/restore is invisible to the bots on 2-4 (tipMemory's leak did not reach a row here; the seam still has to
+  land before any other stage counts on it). So every moved row below is the judge's own change.
+- **The judge's effect:** 149 of 160 rows moved (time or lives). Kid Easy: all 7 old rescues (2, 18, 1, 13, 27, 35, 20: the vineFromLog
+  standing miss, CI-11's class) now PASS; 1 new rescue (seed 8, untraced); runs 9.8 s quicker (median). Kid Normal: 17 rows lost MORE
+  lives, 10 fewer (net +17 water lives, no pass/fail change, untraced: next step 1). Adult: Normal 10 up / 12 down (net -1), Easy quicker
+  3.3 s (median), no pass/fail change.
+- **Cost:** one judge on probes = 1.9x wall and CPU on this stage (a probe-heavy one: the judge runs every frame he stands on a log under
+  a liana). The leak check (all 3 lags every frame, no early exit) is 3.7x: the snapshot (about 5 ms of each 8-10 ms probe) is the cost
+  to cut before more judges move (next step 2). CI today runs castBots and tierBots in the CI tool line; at 1.9x per judge moved they
+  stay usable only with the cheaper snapshot and early exits; measured, not assumed, per judge as it moves.
+- Evidence: x40/off.txt, on.txt, leak.txt, the rows (*.jsonl), `python3 x40/cmp.py x40/x40-off.jsonl x40/x40-on.jsonl`.
 
 ## Item 1: YES, by snapshot + fly the LIVE engine + restore in place (a separate copy does NOT work)
 Tool: `tools/inspect/engineFork.ts` (`probe(e, pads, read)`); proof: `npx tsx tools/inspect/botsim/forkProbe.ts 2-4 35 easy 30`.

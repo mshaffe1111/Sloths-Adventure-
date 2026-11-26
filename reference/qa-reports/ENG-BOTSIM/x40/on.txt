@@ -1,0 +1,8 @@
+kid    normal PASS 40/40; under the floor 0; time median 174.6 s (min 163.2); hits 0 lives 78 (water 78); cleared none; told of traps 0/40; first trap sprung 0/40; traps sprung 0/0; turned back 0; left 0
+kid    easy   PASS 39/40; under the floor 0; time median 168.6 s (min 139.3); hits 0 lives 0 (none); cleared none; told of traps 0/40; first trap sprung 0/40; traps sprung 0/0; turned back 0; left 0
+        fail 1: shrine rescued x1  (seeds 8)
+adult  normal PASS 40/40; under the floor 0; time median 163.4 s (min 163.3); hits 0 lives 37 (water 37); cleared none; told of traps 0/40; first trap sprung 0/40; traps sprung 0/0; turned back 0; left 0
+adult  easy   PASS 40/40; under the floor 0; time median 149 s (min 139.1); hits 0 lives 0 (none); cleared none; told of traps 0/40; first trap sprung 0/40; traps sprung 0/0; turned back 0; left 0
+real	1m57.596s
+user	7m27.361s
+sys	0m6.598s

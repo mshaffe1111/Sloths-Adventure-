@@ -1,5 +1,5 @@
 diff --git a/tools/inspect/firsttimer.ts b/tools/inspect/firsttimer.ts
-index 02aca7402..d27279a41 100644
+index 02aca7402..0d7bcfb05 100644
 --- a/tools/inspect/firsttimer.ts
 +++ b/tools/inspect/firsttimer.ts
 @@ -28,6 +28,9 @@
@@ -58,21 +58,22 @@ index 02aca7402..d27279a41 100644
    /** SKILLS.runUp: the hold the run-up's jump was judged with (runPress: who.hold[0]), and when; startJump holds at least that */
    private runUpHold: { hold: number; t: number } | null = null;
    /** the game time a press decided on (decide) was aimed to reach the engine (pressIn), for the press this frame's pad carries */
-@@ -2445,7 +2487,8 @@ export class FirstTimerRun {
+@@ -2445,7 +2487,9 @@ export class FirstTimerRun {
      // (SKILLS.runUp, ENG-PLANT-g: a run-up he is on (sent last frame, this log); else none)
      const running = SKILLS.runUp && !!this.runUp && this.runUp.id === here.id && t - this.runUp.t < DT * 1.5;
      this.runUp = null;
 -    if (!running && !lags.every(catches)) {
-+    const judged = !running && (BOTSIM.on ? lags.every((lag) => this.planCatch(this.standPlan(lag, dir, hold, t), v) > 0) : lags.every(catches));
++    if (process.env.BOTSIM === '2' && !running) for (const lag of lags) this.planCatch(this.standPlan(lag, dir, hold, t), v);
++    const judged = !running && (BOTSIM.on && process.env.BOTSIM !== '2' ? lags.every((lag) => this.planCatch(this.standPlan(lag, dir, hold, t), v) > 0) : lags.every(catches));
 +    if (!running && !judged) {
        // (SKILLS.runUp, ENG-PLANT-g: from a stand a PERFECT thumb catches 2-4's tailed-river liana 0 of ~560 frames; a running jump off the
        //  same log catches it (2-4 adult Normal 6, 52 of 541 frames; main crossed by an unjudged full-run leap). The hop he can make is
        //  judged: a run along the log (groundStep, his own thumb lag and spread on the run press and the jump press, the take-off still on
-@@ -2480,6 +2523,15 @@ export class FirstTimerRun {
+@@ -2480,6 +2524,15 @@ export class FirstTimerRun {
        if (this.pending) this.pending.judged = true;
        return go;
      }
-+    if (BOTSIM.on) {
++    if (BOTSIM.on && process.env.BOTSIM !== '2') {
 +      // (ENG-BOTSIM: his lag drawn as decide draws it; the plan at that lag is the press he makes, frame by frame, to its probed end)
 +      const lag = gauss(this.r, this.who.thumb);
 +      const plan = this.standPlan(lag, dir, hold, t);
@@ -84,7 +85,7 @@ index 02aca7402..d27279a41 100644
      // (judged here: decide's immediate press (a lag under half a frame) reaches startJump now, so the flag is up for it too; candidate
      //  10 marked only the queued press and 2-4 adult Normal 6 had two liana presses refused, x 21,600 and 24,700, UNJUDGED)
      this.pressJudged = true;
-@@ -4984,6 +5036,7 @@ export class FirstTimerRun {
+@@ -4984,6 +5037,7 @@ export class FirstTimerRun {
      this.steady = false;
      this.stopMeant = false;
      const intended = this.intend();
@@ -92,7 +93,7 @@ index 02aca7402..d27279a41 100644
      const want = this.rollHeld || this.steady || this.runnerAhead() ? intended : this.rhythm(intended);
      const out = this.figTap ? this.tapped(want) : this.thumbify(want);
      this.wasOnTrunk = !!this.sim.p.climbing;
-@@ -5503,7 +5556,7 @@ export class FirstTimerRun {
+@@ -5503,7 +5557,7 @@ export class FirstTimerRun {
      const e = this.e;
      while (this.t < cap) {
        this.pressWant = undefined;
