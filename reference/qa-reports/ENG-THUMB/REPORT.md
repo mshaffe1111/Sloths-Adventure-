@@ -25,8 +25,14 @@ stand) kept. Tests on the head: f2ef1ca27 (ruling 2), 9dbcda5f8 (231), 585dccbde
   1 fail -> pass (child Easy 3). **1-4 and the CI line on frozen fin 7bb313874 were RUNNING at this hand-over** (box 7 records them if they
   finish; else re-run: rows.sh on frozen 1457e1daf for 1-4 only, about 2 min; ciline.sh on frozen fin, about 10 min).
 1. ~~Read C14's 1-4 row~~ DONE (recorded by box 7 after the hand-over): 1-4 0 PASS -> FAIL. Rule-28 rows on C14: all five stages clean.
-2. **The CI line on frozen fin** (D141; ciline.sh with gates.yml:157 written to a file): expected reds only 254 and 355 if their test
-   commits are NOT in the tree; on fin (they are) expect 0 reds from 268/356 (both measured green on C14 above), 231 green.
+2. **The CI line on frozen fin 7bb313874 (code C14), recorded after the hand-over (already running; d/ciline-fin-c14.txt): exit 1,
+   645 s, 432 / 434 pass, 1 todo, ONE red: 357 riverRide :272, ruling 4's plant ('against-the-flow skill off ... rescued on 2-1 (16)
+   and 5+ more lives (15, 8, 7)')**: UPSTREAM_CASES child N 16 holds, child N 15 and 8 hold, **child N 7 does not: upstream on lives 1
+   (stuck x 19,739 'water ahead'), off lives 1 (1 rescue at x 25,663): 0 more lives, bar 5**. 268 and 356 GREEN (and 231, 254).
+   NEXT: C14 changed the at-him lip behavior that ruling 4's C12 re-plant was measured on, so this is a plant that stopped biting
+   on one case: re-plant at the SAME bar (5+ more lives with upstream off, the rescue case kept) on a live case, measured on C14
+   (up.mts.txt: 2-1 child + middle Normal 1-40, upstream on/off), as ruling 4 did, or bring the lead the numbers; NEVER lower the bar.
+   Then the CI line again on the new head.
 3. Then the final checks ONCE on frozen fin: 2-7 x40 (>= 29/40), pacerLay 23/23, the 10 races (tools/margins.mts.txt), tierBots 9/9,
    tsc, the 4 bot test files (lianaRide, riverRide, firsttimer, castBots), the suite in shards (run_in_background AND timeout 7200000).
    **R-165.473 HELD for Matt (KID_RUNS_59 not re-pinned): the suite's one named red, firstTimerBot.test.ts:177.**
