@@ -17,8 +17,8 @@ narrowBank, manifest, preload, whatsNew).
    - **356** riverRide.test.ts:334 the reAim plant 'RED with SKILLS.reAim off': with reAim off one phase now hops ('back back hop back'):
      the planted fault no longer bites in that phase. (1) lets the upstream gate judge at the lip where the edge plan pressed before.
      A plant that stops biting is a plant to re-plant at the SAME bar (as ruling 4), or the lead's ruling; trace first.
-   - Expected and handled on the head: 254 (f2ef1ca27), 355 = ruling 4's plant (585dccbde). 231 is GREEN on C12. The line was at 389 of
-     430 at this hand-over (scratchpad out/ciline-c12.txt): box 6 records the end if it finishes (D138: an already-running gate).
+   - Expected and handled on the head: 254 (f2ef1ca27), 355 = ruling 4's plant (585dccbde). 231 is GREEN on C12. **The line, finished
+     after the hand-over (already running; d/ciline-c12.txt): exit 1, 561 s, 427 / 432 pass, 4 fail (254, 268, 355, 356), 1 todo.**
 2. **The five-bot rows on frozen 585dccbde (5 stages, rows.sh) were RUNNING at this hand-over** (scratchpad out/rows-fin/): box 6 records
    them if they finish. Then flips.py vs main's rows: bar 0 PASS -> FAIL on 2-1 2-2 2-4 2-5 1-4. If 268/356 change the code, re-run them.
 3. Then the final checks ONCE on the frozen final head: 2-7 x40 (castBots 2-7 --seeds 1-40 --bots adult,child,middle,expert --setting
