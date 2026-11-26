@@ -151,3 +151,5 @@ about 1-2 s a row, every finished row kept.
 **The suite's run settings (CI #85, 11-25).** 'The suite' always means: in shards, run_in_background WITH timeout 7200000 (the 30-minute default stops a shard before its summary), on a chattr-frozen tree with src/game/gen2/proven left writable. A shard stopped by a limit is NOT a result.
 
 **A budget cut never removes a per-candidate gate (D141, 11-25).** 'Run each heavy check ONCE' means once per CANDIDATE: the CI tool line (about 10 minutes) still runs on every candidate (CI #79). Release 4's briefs left it to the end and three reds waited five candidates.
+
+**A lane's bar uses the release's own range (CI #86, 11-25).** A bot change's final 'wide sample' runs rule 28's range (seeds 1-40, every stage the release ships) on its final candidate, not a faster subset: release 4's bot fix passed seeds 1-10 and failed the release on seeds 15-40.
