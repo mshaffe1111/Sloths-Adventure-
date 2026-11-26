@@ -32,7 +32,7 @@ export const STAGE_29 = '2-9';
 export const DRAFT_ID_29 = '2-91';
 
 /** 2-9's ONE graph: the design's node string (2-9.md:50) with the two liana beats on `r` (G5) */
-export const ARC_29: Record<string, string> = { 'court-29-arc': 'A Tp1<:#soft Pw1> Pf1> Xr1>:#water R Pp1&>:&snapper*2 Wr1>:#water R Uc^< Cp1&>:#water:&snapper*2 R Pb1^< Sw1> E' };
+export const ARC_29: Record<string, string> = { 'court-29-arc': 'A Tp1<:#soft Pw1> Pf1> Xr1>:#water R Pp1&>:&snapper*3 Wr1>:#water R Uc^< Cp1&>:#water:&snapper*4 R Pb1^< Sw1> E' };
 
 /** the lesson 2-9 teaches: the beat (hop, ride, swing and bop on the drum) */
 export const BEAT_LESSON = 'beat';
@@ -57,7 +57,8 @@ export const LINES_29 = {
   goalLate: 'Still {n} snappers to chase off',
   sealed: 'Snappers still on the court! Back we go!',
 } as const;
-/** the court's goal (2-9.md:30, the design's proposal: chase off 5; the gauntlet's top-up lays the goal + 2 = 7; Easy easyMode's own) */
+/** the court's goal AS DESIGNED (LevelConfig.countSet, 2-5's form; the lead's ruling A on BUILD-29-b): 7 seated (beat 5 three, beat 8 four),
+ *  chase off 5; no top-up (it seated snappers on the drum's teach and under higher floors); Easy easyMode's share */
 export const GOAL_29 = 5;
 export const MISSION_29 = "Dance to the king's drum, chase off his snappers, reach the shrine.";
 export const DRUM_CARD_29 = 'Crocodiles signal by slapping their heads on water. This king prefers drums.';
@@ -148,8 +149,8 @@ const padsOnBeat: Lay = { pieces: [bank('a', null, 360), pond('c', 'a', 'pads29'
 const letGoOnOne: Lay = { pieces: [bank('a', null, 420), rock('ra', 'a', 0.5), bank('b', 'a', 400), liana('l', 'b'), river('c', 'l', 'court', 340), rock('rc', 'c', 0.15), bank('z', 'c', 300)], sockets: [flag('a')] };
 /** [P p1&>] beat 5, the snappers: three in step from ONE, then two snappers on the court's jaws */
 const snappers: Lay = {
-  pieces: [bank('a', null, 360), pond('c', 'a', 'three29', 340), bank('m', 'c', 300), ...snapperGround('s1', 'm'), bank('n', 's1-out', 240), ...snapperGround('s2', 'n'), bank('z', 's2-out', 300)],
-  sockets: [snapper('e1', 's1', 0.5), snapper('e2', 's2', 0.5)],
+  pieces: [bank('a', null, 360), pond('c', 'a', 'three29', 340), bank('m', 'c', 300), ...snapperGround('s1', 'm'), bank('n', 's1-out', 240), ...snapperGround('s2', 'n'), bank('o', 's2-out', 240), ...snapperGround('s3', 'o'), bank('z', 's3-out', 300)],
+  sockets: [snapper('e1', 's1', 0.5), snapper('e2', 's2', 0.5), snapper('e3', 's3', 0.5)],
 };
 /** [W r1>] beat 6, the TWIST: the king's roar (Dot's `roar` on the rest bank before), a liana over the `double` river (deep); the flag
  *  before. The drum's doubling is NOT laid (G1, ENG-29-e) */
@@ -158,8 +159,8 @@ const twist: Lay = { pieces: [bank('a', null, 420), rock('ra', 'a', 0.5), bank('
 const terrace: Lay = { pieces: [bank('a', null, 300), wheel('z', 'a', 'court', 300)], sockets: [] };
 /** [C p1&>] beat 8, the grand dance: the wave (Easy two pairs), a court log (deep), two snappers; the flag before */
 const grandDance = (easy: boolean): Lay => ({
-  pieces: [bank('a', null, 420), pond('c', 'a', easy ? 'wave29e' : 'wave29', 340), ...(easy ? [pond('d', 'c', 'wave29e', 300)] : [bank('d', 'c', 300)]), river('e', 'd', 'court', 340), ...snapperGround('s1', 'e'), bank('n', 's1-out', 240), ...snapperGround('s2', 'n'), bank('z', 's2-out', 300)],
-  sockets: [flag('a'), snapper('e1', 's1', 0.5), snapper('e2', 's2', 0.5)],
+  pieces: [bank('a', null, 420), pond('c', 'a', easy ? 'wave29e' : 'wave29', 340), ...(easy ? [pond('d', 'c', 'wave29e', 300)] : [bank('d', 'c', 300)]), river('e', 'd', 'court', 340), ...snapperGround('s1', 'e'), bank('n', 's1-out', 240), ...snapperGround('s2', 'n'), bank('o', 's2-out', 240), ...snapperGround('s3', 'o'), bank('p', 's3-out', 240), ...snapperGround('s4', 'p'), bank('z', 's4-out', 300)],
+  sockets: [flag('a'), snapper('e1', 's1', 0.5), snapper('e2', 's2', 0.5), snapper('e3', 's3', 0.5), snapper('e4', 's4', 0.5)],
 });
 /** [P b1^<] beat 9, up to the quay: World 2's bounce to the royal quay */
 const upQuay: Lay = { pieces: [bank('a', null, 360), spring('sp', 'a', 0.7), rise('z', 'a', 420, -160)], sockets: [] };
@@ -216,7 +217,7 @@ export function kitLib29(id: string = STAGE_29): WorldKit {
 /** the draft's level: 2-9's own config (a gauntlet), unlocked */
 export function draft29Cfg(id: string = STAGE_29): LevelConfig {
   const c = generateAllLevels().find((q) => q.id === STAGE_29 && !q.secret)!;
-  return { ...c, id, unlocked: true, targetCount: GOAL_29 };
+  return { ...c, id, unlocked: true, targetCount: GOAL_29, countSet: true };
 }
 
 /** the draft's stageTable row (World 2's finish), for listed.ts's test seam only */

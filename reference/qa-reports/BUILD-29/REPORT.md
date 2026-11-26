@@ -2,17 +2,17 @@
 Branch t-build-29, cut from origin/t-eng-29 = 098047713 (the lead's named base). Session 1 started 5:45 PM ET Thu 11/26 (by `date`).
 
 ## EXACT NEXT STEP (session 2 hand-over, BUILD-29-b; STEP 0 (b)/(c) NOT yet sent as a whole; GO not given: nothing laid)
-0. Re-fetch t-build-29, t-eng-29-wip and the lead's branch; ReadNotifications (D140). READ THE LEAD'S REPLY on the GOAL (sent this
-   session: (A) countSet, 7 snappers seated (beat 5 three, beat 8 four), goal 5 of 7; (B) countSet, the 4 seated, goal 4; (C) keep the
-   top-up, an engine lane keeps it inside the snapper nodes). No reply 20 minutes after it was sent: (A), on the draft only (CI #89), said first.
-   AND THE LEAD'S REPLY on the STONES (sent this session, design level: built 80 px at 30 px lose the design's counts; (A) a pieces lane
-   makes a 130 px snap stone, judged by pitch, laid 130 + 60 Normal / 130 + 50 Easy and flown again; (B) re-design beats 5 and 8 on the
-   30 px counts; (C) the lead's row). No reply: (A) is only RECOMMENDED in the REPORT (it needs an engine lane; nothing built by me).
-1. Lay the goal ruling in the DRAFT (w2Arc29.ts: draft29Cfg's `countSet: true` with GOAL_29, and the extra `snapper(...)` sockets +
-   `snapperGround` patches in `snappers` / `grandDance`), then roll: `npx tsx reference/qa-reports/BUILD-29/probes/draft1.ts 1,2,3,5,8`
-   (seed 1: a top-up snapper at x 2000 on beat 1; 3: a floor over a snapper; 5, 8: 'snapper*2: laid 3') and the yield
-   `npx tsx reference/qa-reports/BUILD-29/probes/yield29.ts 1 40` on a FROZEN worktree: the only rule left must be the barge's
-   'a log every 5.7 s, over 4' (ENG-29-e's G3 carrier rule; and its echo 'Easy could not lay Normal's plan').
+0. Re-fetch t-build-29, t-eng-29-wip and the lead's branch; ReadNotifications (D140). THE GOAL IS RULED AND LAID: the lead's A (countSet,
+   7 seated: beat 5 three, beat 8 four, goal 5 of 7, Easy easyMode's share), in the draft at this head; seeds 1,2,3,5,8 both settings
+   roll with ONE error left, the barge's 'a log every 5.7 s, over 4' (+ its echo on Easy). READ THE LEAD'S REPLY on the STONES (sent
+   this session, design level: built 80 px at 30 px lose the design's counts; (A, recommended) a pieces lane makes a 130 px snap stone,
+   judged by pitch, laid 130 + 60 Normal / 130 + 50 Easy and flown again; (B) re-design beats 5 and 8 on the 30 px counts; (C) the
+   lead's row). No reply in 20 minutes: (A) stays a recommendation in the REPORT only (it needs an engine lane).
+1. ENG-29-e's G3 is on t-eng-29-wip 8d49caa27 (NOT landed on t-eng-29; its message: RiverRow look 'barge', w2-next#barge, logW 384 ->
+   ~504 whole; riverFaults judges a barge row by 2 bars of the stage's tempo (riverLay.ts BARGE_BARS) ONLY when the brief has a tempo, no
+   liana hangs over that river, and the near bank is a SAFE stand). To roll on it before it lands: a frozen worktree of t-build-29 with
+   8d49caa27 merged in (never merged into t-build-29 until the lead says), the draft's barge29 row `look: 'barge'`, its bank 'a' a plain
+   bank (it is): then the yield `npx tsx reference/qa-reports/BUILD-29/probes/yield29.ts 1 40` must be 40/40 clean both settings.
 2. ENG-29-e's G1/G2/G3/G6 notes (t-eng-29-wip): when G3 lands, re-roll WITHOUT the stand-in; when G2 lands, the guard on beat 10's landing.
 3. READY-29 on the draft, each ONCE on a frozen worktree of the head (git worktree add --detach; chattr -R +i src tools; node_modules
    symlinked), each lane its OWN run_in_background call (never a shell '&'):
