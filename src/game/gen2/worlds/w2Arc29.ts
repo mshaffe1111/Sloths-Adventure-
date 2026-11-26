@@ -42,7 +42,7 @@ const COUNT = TEMPO_29.bar / TEMPO_29.beats;
 
 /** 2-9's brief: a gauntlet (stagePlan.ts's 2-9 row), level, its one lesson the beat, the court's tempo, the snappers its cast */
 export const BRIEF_29: GraphBrief = {
-  ends: 'quiet', trend: 'level', branching: 'none', teaches: [BEAT_LESSON], deal: { floating: 40, water: 30, rope: 20, climb: 5, bounce: 5 },
+  ends: 'quiet', trend: 'level', branching: 'none', teaches: [BEAT_LESSON], deal: { floating: 35, water: 30, rope: 20, ground: 5, climb: 5, bounce: 5 }, dealExact: true,
   tags: true, petals: 'few', cast: ['turtle'], tempo: TEMPO_29,
 };
 
@@ -175,7 +175,7 @@ export const BEATS_29: SectionTemplate[] = [
   brick({ id: 'logs', name: 'logs on the beat', jobs: ['practise'], difficulty: 2, content: 'water', uses: [BEAT_LESSON], versions: [{ id: 'court', lay: logsOnBeat }] }),
   brick({ id: 'pads', name: 'pads on the beat', jobs: ['practise'], difficulty: 2, content: 'floating', uses: [BEAT_LESSON], versions: [{ id: 'five', lay: padsOnBeat }] }),
   brick({ id: 'let-go', name: 'let go on ONE', jobs: ['test'], difficulty: 3, content: 'rope', uses: [BEAT_LESSON], versions: [{ id: 'one', lay: letGoOnOne }] }),
-  brick({ id: 'snappers', name: 'the snappers', jobs: ['practise'], difficulty: 3, content: 'floating', uses: [BEAT_LESSON], versions: [{ id: 'three', lay: snappers }] }),
+  brick({ id: 'snappers', name: 'the snappers', jobs: ['practise'], difficulty: 3, content: 'ground', uses: [BEAT_LESSON], versions: [{ id: 'three', lay: snappers }] }),
   brick({ id: 'double', name: 'double time', jobs: ['twist'], difficulty: 5, content: 'rope', uses: [BEAT_LESSON], versions: [{ id: 'double', lay: twist }] }),
   brick({ id: 'terrace', name: 'up the terrace', jobs: ['climb'], difficulty: 3, content: 'climb', uses: [BEAT_LESSON], versions: [{ id: 'wheel', lay: terrace }] }),
   brick({ id: 'dance', name: 'the grand dance', jobs: ['combine'], difficulty: 6, content: 'floating', uses: [BEAT_LESSON], versions: [{ id: 'wave', lay: grandDance(false), easy: grandDance(true) }] }),
