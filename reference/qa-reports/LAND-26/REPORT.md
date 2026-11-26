@@ -1,29 +1,31 @@
 # LAND-26: 2-6 back on release 4's line (release 5), beat A's soil block (R-165.451)
 
-## EXACT NEXT STEP (session 1 hand-over, 2:13 PM ET Thu 11-26; branch t-land-26)
+## EXACT NEXT STEP (session 1 hand-over, 2:19 PM ET Thu 11-26; branch t-land-26)
 Code head **42e3b30fc** (pushed). Step 1 is DONE except two reds in 2-6's own tests (below, both need the lead's R-number and owner, D135).
+**Running at hand-over (session 1 appends each verdict here when it finishes):** the unit suite in 3 shards and the CI tool line (gates.yml
+line 157), both on frozen 42e3b30fc (run_in_background, timeout 7200000; CI #85, D141). If 42e3b30fc stays the code head, those count.
 The next session, in this order:
-1. ReadNotifications. `git fetch origin t-land-26 && git checkout -B t-land-26 origin/t-land-26` (the REPORT commit sits on 42e3b30fc).
-   npm ci --legacy-peer-deps (run_in_background). Frozen tree: `git worktree add --detach <scratch>/wt/m1 42e3b30fc`, link node_modules,
+1. ReadNotifications. `git fetch origin t-land-26 && git checkout -B t-land-26 origin/t-land-26`. npm ci --legacy-peer-deps
+   (run_in_background). Frozen tree per run: `git worktree add --detach <scratch>/wt/m1 42e3b30fc`, link node_modules,
    `chattr -R +i src tools && chattr -i src/game/gen2/proven`.
-2. **Start the suite on 42e3b30fc NOW** (3 shards, run_in_background, timeout 7200000; CI #85) and the CI tool line (gates.yml line 157)
-   on the same frozen tree (D141). Session 1 did NOT start either.
-3. **R-165.451 (the soil block) is NOT traced yet.** Session 1's frame is the WRONG frame: on 42e3b30fc, `__play('2-6', 0)` rolls seed 1 and
-   platform id 5 is a plank at y 6161 (data/m1-A-porch5-normal-upright.jpg shows planks and a wheel, no turf porch). FIX-SOIL-b's beat A
-   (b/BA26-upright.jpg, "after-A-porch5") is a TURF porch with a hobbit door on its left, a green vine at screen x ~280 and the lighter
-   block right of screen x ~363 (412 x 915), from the porch's soil down. Find that porch on 42e3b30fc: tools/plats26.mjs.txt lists
-   platforms (id x y w h style); widen its x filter and look for the turf porch (FIX-SOIL-b shot a9439e586 + its patch: its ids may differ,
-   so match by the picture, not by id 5). Then run tools/trace26.mjs.txt with the spot's platform and EDGE set to the block's left edge.
-   **Its trace only wraps drawImage and fillRect: add `fill`** (FIX-SOIL-c judged it 'painted soil texture in a lighter shade: protoArt's
-   ground', likely a pattern fill or a soil chunk). Best probe: after EVERY draw call read the two pixels either side of the edge
-   (getImageData 1x1 at x-2 and x+2, several y) and log the calls whose change differs between the two (the call that MAKES the edge),
-   with its stack. Then read that function to the line, fix it in general (no stage id or x), plant a paint-gate case RED on the straight
-   edge that reads the drawer's OUTPUT (D136, CI #87), GREEN after. A fix in protoArt.ts drawGround goes in its own hunk (FIX-SOIL-c's
-   dip-pocket pass, a9c0170c on t-fix-soil-c, also edits it); name the file and function here.
-4. Stills of beat A at 2x, upright AND sideways, both settings (shoot26.mjs from reference/qa-reports/FIX-SOIL, Playwright path
-   `/opt/node-tools/node_modules/playwright/index.js`): send the lead the UPRIGHT pair before going on. Kill the vite port after each tree
-   and check the served tree (CI #78).
-5. Then packet step 3 (every gate once on the final head) and step 4 (land on t-land-26, no force).
+2. **R-165.451, what session 1 found (data/A-floor790-upright-normal-b26-vs-42e3b30fc.jpg, left t-build-26 40a9c4bd2, right 42e3b30fc,
+   Normal, upright 412 x 915, seed 1):** FIX-SOIL-b's 'porch 5' is the START FLOOR's turf at world x 790, y 6716 (on FIX-SOIL's tree id 5
+   was that floor piece; on 42e3b30fc id 5 is a plank at y 6161, so never select it by id). The start area is the same on layouts 0-11
+   (data/start-area-layouts0-11-42e3b30fc.jpg). Shot with tools/shootA.mjs.txt (FIX-SOIL's shoot26 with the spot 'the lowest platform under
+   x 790'). Measured, column brightness under the turf (screen y 775-905, the mean of 6 columns right minus 6 left): **t-build-26 +12.2 at
+   screen x 393 (the block's straight left edge); 42e3b30fc at most 1.6 anywhere: NO block in this frame.** Release 4's soil work (FIX-SOIL-b
+   539885c37 merged by INT-R5d-c, groundBanks/groundCeilings) appears to have removed it. NOT yet proven: (a) which draw made the edge on
+   t-build-26 (trace it there to the line: tools/trace26.mjs.txt wraps drawImage/fillRect only, ADD fill; best probe: after every draw
+   call read 1x1 pixels at the edge's x-2 and x+2, several y, and log the call whose change differs, with its stack), so the REPORT can
+   say which release 4 change removed it and that it is gone IN GENERAL; (b) Easy and sideways on 42e3b30fc; (c) the rest of 2-6 (the same
+   measure over a grid of frames: tools/grid26.mjs.txt, PTS="x,y;..."); (d) a paint gate that reads the DRAWN output (D136, CI #87): a
+   planted case RED on t-build-26's draw (the straight edge) and GREEN on 42e3b30fc. If a block remains anywhere, fix it in general (no
+   stage id or x); a fix in protoArt.ts drawGround goes in its own hunk (FIX-SOIL-c's dip-pocket pass, a9c0170c on t-fix-soil-c, edits it).
+3. Stills of beat A at 2x (deviceScaleFactor 2), upright AND sideways, both settings, on the final head: send the lead the UPRIGHT pair
+   before going on. Playwright: `/opt/node-tools/node_modules/playwright/index.js`. Kill the vite port after each tree (no `ss` here: use
+   `curl` on the port) and check the served tree (CI #78).
+4. Packet step 3 (every gate once on the final head; the suite and the CI line again only if the code head moved off 42e3b30fc) and
+   step 4 (land on t-land-26, no force).
 
 ## Step 1: the reverts and the merge (done, 42e3b30fc)
 - Base: c73cb9766 (origin/release-0.10.3, confirmed by ls-remote). Branch t-land-26 cut from it.
@@ -65,10 +67,11 @@ The next session, in this order:
      re-plant, R-165.432). Not fixed: a bot-owner re-plant (a live case on CI-15's bots), never a removal.
 - Not yet run on 42e3b30fc: the suite, the CI tool line, and every step 3 gate.
 
-## Step 2: R-165.451 (NOT traced yet; see EXACT NEXT STEP 3)
-- Session 1's trace (tools/trace26.mjs.txt) ran on the WRONG frame (seed 1, id 5 is a plank); its only output is that drawImage/fillRect
-  near that frame's x 300-420 are wall chunks (protoArt.ts drawWallChunks :1554 via drawEarthWall :1460), the wheel, branch art, ladders
-  and dress: no lighter block in that frame.
+## Step 2: R-165.451 (see EXACT NEXT STEP 2: gone in beat A's frame on 42e3b30fc by measure; cause and generality not yet proven)
+- Session 1's first trace ran on the wrong frame (platform id 5 = a plank on this tree); it only showed wall chunks (protoArt.ts
+  drawWallChunks :1554 via drawEarthWall :1460), the wheel, branch art, ladders and dress near that frame's screen x 300-420.
+- Seed-1 camera grids of the whole stage (sideways, Normal) on both trees: the same plank porches and pieces; t-build-26's tall lighter
+  soil COLUMN (beside the wheels, storeys y ~900-5700) is gone on 42e3b30fc (release 4's soil fix).
 
 ## Gate table (42e3b30fc)
 | Gate | Result |
@@ -76,16 +79,19 @@ The next session, in this order:
 | tsc | clean |
 | 2-6's own tests (18 files) | 126/128: 2 FAIL (w2Arc26 'one millrace'; rowWheels trunkCatch plant), both named above |
 | known flips (set1, 23 rows) | 23/23 = CI-15, 0 moved |
-| suite (3 shards) | NOT RUN |
-| CI tool line | NOT RUN |
+| suite (3 shards) | RUNNING at hand-over (frozen 42e3b30fc) |
+| CI tool line | RUNNING at hand-over (frozen 42e3b30fc) |
 | paintcheck, lockall, castBots --proven 2-6, seedlist 2-6 --check, registrycheck, drawcheck, clipcheck, tierBots, timecheck, teachFirstScan | NOT RUN |
 
 ## Polish check
-- None yet: no still of the soil block on this head (session 1's frame was the wrong one).
+- Beat A upright Normal, t-build-26 vs 42e3b30fc (data/A-floor790-upright-normal-b26-vs-42e3b30fc.jpg): the block is visible on
+  t-build-26 (right of screen x ~393 under the turf) and not on 42e3b30fc; at 1x only (an analysis still, not the 2x set for the lead).
 
 ## Learned
 - A 'merge t-build-26' step can be a no-op when the branch already sits inside the release line: check `git merge-base --is-ancestor`
   first; then the reverts ARE the landing, and their conflicts are where 2-6 meets release 4's later work.
+- A look defect is judged by a NUMBER read from the drawn frame (a brightness step across the edge), on both trees at one camera,
+  never by eye alone; that number is also the seed of the paint gate D136 asks for.
 - A packet's 'porch 5' is an id on another tree: a spot is named by its picture or its built geometry, never an id (rule 27's shape).
 
 ## Lessons applied
