@@ -358,6 +358,56 @@ export function lianaDrops(v: Vine, logs: readonly DriftInfo[], difficulty: Diff
   });
 }
 
+/** how a LOCKED liana's let-go lands on its river (lockedDrops): the share of one joint cycle's presses that land, the longest wait (s;
+ *  Infinity when none lands), and the WINDOW (s): the longest run of presses in a row that land, the let-go a player can aim for */
+export interface LockedDrops extends LianaDrops {
+  window: number;
+}
+
+/**
+ * lianaDrops on a LOCKED court (tempo.ts layTempo: the liana's swing is the bar, the river a log every whole number of beats, both on the
+ * game's clock, engine.ts vineClock): the vine and the river are ONE clock, so a waiting player meets one pairing only, never every pair
+ * (lianaDrops' grid): the press at swing clock `pt` with the river at that same game time, and, when a log comes less often than a swing,
+ * each swing of the joint cycle in turn. A pairing that misses misses on every bar: he hangs there for good (castBots, the tempo toy, the
+ * middle on Easy, ENG-29d). The worse of LIANA_RIVER.grips counts.
+ */
+export function lockedDrops(v: Vine, logs: readonly DriftInfo[], difficulty: Difficulty): LockedDrops {
+  return withSetting(difficulty, () => {
+    const easy = difficulty === 'easy';
+    const d0 = logs[0];
+    const spacing = driftCycle(d0) / logs.length;
+    const period = vinePeriod(v);
+    // (the swings in one joint cycle: the fewest whole swings that are a whole number of log spacings; at most 8)
+    let reps = 1;
+    while (reps < 8 && Math.abs((reps * period) / spacing - Math.round((reps * period) / spacing)) > 1e-3) reps++;
+    let share = 1, wait = 0, window = Infinity;
+    for (const g of LIANA_RIVER.grips) {
+      const L = pressLaunches(v, g);
+      const n = L.length, N = n * reps;
+      const G = new Uint8Array(N);
+      L.forEach((l, k) => {
+        const f = letGoFall(l, d0);
+        for (let r = 0; r < reps; r++) G[r * n + k] = f.far || fallOnLog(f, logs, l.pt + r * period, easy) ? 1 : 0;
+      });
+      let lands = 0;
+      for (let i = 0; i < N; i++) lands += G[i];
+      share = Math.min(share, lands / N);
+      if (!lands) { wait = Infinity; window = 0; continue; }
+      let worst = 0, run = 0, best = 0;
+      for (let i = 0; i < N; i++) {
+        let tau = 0;
+        while (!G[(i + tau) % N]) tau++;
+        if (tau > worst) worst = tau;
+      }
+      // (the longest run of landing presses, round the cycle's end)
+      for (let i = 0; i < 2 * N; i++) { run = G[i % N] ? run + 1 : 0; if (run > best) best = Math.min(run, N); }
+      wait = Math.max(wait, worst * FRAME);
+      window = Math.min(window, best * FRAME);
+    }
+    return { share, wait, period, window };
+  });
+}
+
 /**
  * Does a held jump off a log the river carries under liana `v` catch it (a jump timed for it, as levelCheck's catch off a ledge:
  * canGrabSwing on the line the vine swings through)? He stands on the log (its speed his, RIDE.keep) or runs on it (his run on top), from

@@ -2403,6 +2403,13 @@ export class FirstTimerRun {
    * logs where they will be on their own clock as his feet come down through their top inside the river's window (margin 12 px in from a
    * log's end); past the water on the far bank is a landing too. Not over a log river: never waits.
    */
+  /** his press, made now, reaches the engine on the drum's ONE (a bar of game time: the court's liana swings the bar, its ONE where its
+   *  clock is a whole bar, tempo.ts layTempo), his thumb's lag (its middle) ahead of it: the frame whose press lands on ONE */
+  private onOne(v: Vine): boolean {
+    const P = vinePeriod(v), clock = (this.e as unknown as { vineClock: number }).vineClock + pressIn(this.who.thumb[0]);
+    return ((clock % P) + P) % P < DT;
+  }
+
   private dropWaits(v: Vine, dir: -1 | 1, t: number): boolean {
     const rivers = this.sim.stage.rivers ?? [];
     const r = rivers.find((q) => q.speed > 0 && !q.open && lianasOver([v], q).length);
@@ -3345,7 +3352,11 @@ export class FirstTimerRun {
       // (his 7 s "late" let-go too: over the logs he waits for them up to the 14 s cap, as a person watching the river does; the late
       //  let-go at the forward end then drowned the child on Normal, ENG-24 drop toy gap280)
       const wait = SKILLS.dropOnLog && own && this.swingT <= 14 && this.dropWaits(own, fdir, t);
-      if (!this.pending && !wait && ((this.swingT > 1 && a * fdir > LET_GO_AT && om * fdir > 0) || (late && !(SKILLS.dropOnLog && own && this.overLogs(own))) || this.swingT > 14)) {
+      // (on a court that keeps a drum (the stage's tempo, tempo.ts): the liana and the river are one clock, so a forward end whose let-go
+      //  misses the logs misses on every bar, and he hung there to a rescue (the tempo toy, middle Easy, ENG-29d). After a whole swing
+      //  he presses on the drum's ONE, as its beat teaches (2-9.md "let go on ONE"), his thumb's lag ahead of it, when that press lands)
+      const one = !!own && !!(this.sim.stage as { tempo?: unknown }).tempo && this.swingT > vinePeriod(own) && this.onOne(own);
+      if (!this.pending && !wait && ((this.swingT > 1 && a * fdir > LET_GO_AT && om * fdir > 0) || one || (late && !(SKILLS.dropOnLog && own && this.overLogs(own))) || this.swingT > 14)) {
         this.swingT = 0;
         this.letGoAt = t;
         // (a let-go aimed at a log is a drop: no second press after it, which threw the middle bot past his log into the water)
