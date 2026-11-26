@@ -1,4 +1,21 @@
 # ENG-DARK REPORT (the dark + light ring as one gen2 brick; WORLD-3-PLAN F2; R-165.449)
+**EXACT NEXT STEP (ENG-DARK-y box 25 HAND-OVER, 5:45 PM ET by `date`; head on t-eng-dark-wip = this commit; CODE CANDIDATE c18 =
+38e4892e1 = c17 2432cfde9 + two TEST-ONLY re-points, both under R-165.432, the bars unchanged): (1) 2c5a49f13: the seamByFacing pair -> ADULT
+NORMAL 29 (CAST_BOTS.adult.normal, the scan's bot; planted worst rim >= 8). (2) 38e4892e1: the noLevelRead row RED -> CHILD NORMAL ROLL 2
+(the lead: YES to the scan). On c17, lipEnd steps the planted child off roll 19's lip and the stand is gone: darkBots:485 went RED.
+Bisected: GREEN on frozen c16 c47fa1e34. The probe (probes/lip19 logic): c16 "255,8689: in a dip 188 px deep", c17 none. The scan
+(scan-noLevelRead-child-N-2432cfde.jsonl, probes/scan19.mts + read19.mts, a diagnosis) found the live case on roll 2: lip x 458, y 6602,
+the read double planted / single unplanted, the stand "in a dip 208 px deep" at 141.7 s. Roll 12 is the second live row (730, 6744,
+64 px). The GREEN stays on roll 19. ON FROZEN TREES: 2c5a49f13: dark.test 20/20, castBots.test 16/16, tierBots 9/9 (the code is
+identical to c18's); the 47 plants are RUNNING on frozen 2c5a49f13 (/tmp fz-plants; no plant's pattern names the changed RED, so they
+hold for c18). 38e4892e1 (chattr-frozen except src/game/gen2/proven): darkBots.test WHOLE 31/31; tsc + the CI tool line RUNNING. LEFT,
+the SAME frozen candidate only (a red = stop and bring it to the lead): the plants (all 47 CAUGHT), tsc + the CI tool line, the 6 suite shards
+(deploy.yml's line, --test-shard=i/6, run_in_background + timeout 7200000; the one known red is KID_RUNS_59, R-165.473), then LAND on
+t-eng-w3 (88592a9c4; merge, no force, conflicts named), dark/darkBots/castBots + lockall on the merged head, push, and the hash to
+the lead AND ENG-SPORE-b (session_01FhBbYKP2XcqtZ8GRH6Jn5h). LANDED by 8:30 PM ET; HARD STOP 9:30 PM ET.**
+**Box 25 (ENG-DARK-y) lessons applied:** D115 (frozen trees, the plants in their own tree since the script edits it), D119 (no heredoc
+in a commit's && chain), D128 (stamps from `date`), D134 (pushed and ls-remote'd before the hand-over), D138 (after the hand-over only
+the same candidate's gates and the landing), D140 (ReadNotifications at each step boundary), D141 (the CI line on this candidate).
 **EXACT NEXT STEP (ENG-DARK-x box 24 HAND-OVER, 5:25 PM ET by `date`; head on t-eng-dark-wip = this commit; CODE CANDIDATE c17 =
 2432cfde9 = c16 c47fa1e34 + lipEnd 2805f60c2 + the roll 15 lip toys; plant 47 in 2afdc3c04). #13 FIXED AT THE CAUSE (lipEnd; the lead:
 "right"). c17's x40: ON THE BAR (shrine 360/360, unlit 1, max loop 7, rescues 579, no new-spot rescue; box 24 (3) below); NO further engine or bot change is planned, so this x40 stands unless (i)/(ii) change code. #12 RULED (the lead, box 24): the plant lost its live case (R-165.432; towerRoute.ts dropTo's walledEnd
