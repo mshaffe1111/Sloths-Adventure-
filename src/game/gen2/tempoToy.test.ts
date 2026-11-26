@@ -10,7 +10,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import { buildGen2Stage } from './pipeline.ts';
 import { withTestStage } from './listed.ts';
-import { COURT_STONES, COURT_TEMPO, TEMPO_ID, tempoCfg, tempoKit, tempoRow, type TempoToyOpts } from './worlds/w2TempoToy.ts';
+import { COURT_PADS, COURT_STONES, COURT_TEMPO, TEMPO_ID, tempoCfg, tempoKit, tempoRow, type TempoToyOpts } from './worlds/w2TempoToy.ts';
 import { W2_RIVERS } from './worlds/w2.ts';
 import { tempoFaults } from '../tempo.ts';
 import { lockedLianas } from './riverLay.ts';
@@ -77,4 +77,17 @@ test('tempo toy: every court liana\'s press on ONE lands its logs, seeds 1-4, bo
     const st = build(2, difficulty, { tempo });
     assert.match(st.gen2.errors.join('; '), /the liana at x \d+ over the river at x \d+-\d+: a press on ONE misses its logs on every bar \(locked: \d+% of a bar's presses land, the longest run [\d.]+ s\)/, difficulty);
   }
+});
+
+test('tempo toy, the run-pitch pads (COURT_PADS): 4 small pads 190 px a beat, gen2 clean on seeds 1-4, both settings (a weight pad\'s count is no stage clock); RED: the row breathing on a beat is named', () => {
+  for (const difficulty of ['normal', 'easy'] as const) for (const seed of [1, 2, 3, 4]) {
+    const st = build(seed, difficulty, { pads: COURT_PADS });
+    assert.deepEqual(st.gen2.errors, [], `${difficulty} seed ${seed}`);
+    const pads = st.platforms.filter((p) => p.pad?.by === 'weight').sort((a, b) => a.x - b.x);
+    assert.equal(pads.length, 4, `${difficulty} seed ${seed}: the row`);
+    pads.forEach((p, i) => { assert.equal(p.width, 130); if (i) assert.equal(p.x - pads[i - 1].x, 190, `${difficulty} seed ${seed}: pad ${i + 1} a beat on`); });
+  }
+  // (planted: the same row breathing on a beat, whose breath every put-back turns to meet him)
+  const st = build(1, 'normal', { pads: { ...COURT_PADS, by: 'beat', beat: { up: 1.8, shiver: 0.6, under: 0.6 } } });
+  assert.match(st.gen2.errors.join('; '), /the breathing pad at x \d+ \(clock '[^']+'\): a breathing row is turned at every put-back/);
 });
