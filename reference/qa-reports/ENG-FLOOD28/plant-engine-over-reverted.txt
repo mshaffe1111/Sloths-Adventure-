@@ -1,0 +1,8 @@
+not ok 1 - the teach (P1): every tier, both settings, seeds 1-3: the water rises on its OWN start as he comes over it, to paddling depth, and never drains (a respawn keeps it); the bot leads the line through, home, no rescue; the little ones paddle the RISING water at its live surface
+  error: 'child-easy seed 1: {"end":"shrine","home":3,"rescues":0,"y0":890,"y1":870,"endY":890,"respawnY":890,"paddles":87,"risenPaddles":0,"offSurface":0}: it started as he came over its near edge'
+not ok 2 - planted (the teach): with its own start removed the water never rises (RED); with the line's live read removed the little ones paddle under the risen water (RED)
+  error: 'RED: a paddle off the live surface (0 frames)'
+not ok 3 - the hand build's rise-on-approach (engine.ts:1988-2011, w2Stages.ts floodBasin) reproduced by the piece: the same rise from y0 to y1 over the same seconds from his approach, started no later (its trigger was 30 px in); kept, where it drained
+  error: 'child-easy seed 1: the piece starts on his approach, no later than the hand build (undefined vs 5.866666666666656)'
+# pass 0
+# fail 3

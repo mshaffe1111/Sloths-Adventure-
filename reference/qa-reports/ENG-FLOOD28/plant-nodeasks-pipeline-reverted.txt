@@ -1,0 +1,14 @@
+not ok 4 - '@flood' through the pipeline (the toy's twist node over the teach twin): the brief names the flood, the ask is laid; RED with no flood in the brief, and on the out leg's crossing whose river is unmarked, each by name
+  error: |-
+    + actual - expected
+    + [
+    +   `ask: node n9 "Ww1_>": hazard #water@flood: Later: named clocks are B14's pods (t-b14)`
+    + ]
+    - []
+not ok 6 - node asks (planted): each element asked and not laid is named; laid, it passes
+  error: |-
+    + actual - expected
+    + `node n2 "P": hazard #soft@flood: Later: named clocks are B14's pods (t-b14)`
+    - ''
+# pass 9
+# fail 2
