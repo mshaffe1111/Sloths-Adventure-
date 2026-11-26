@@ -444,3 +444,50 @@ test("every ledge over him read as a step up (noLevelRead, the plant): at Normal
   assert.equal(read, 'double', 'the bough 188 px over his floor read as a step up');
   assert.ok(lip.some((s) => /in a dip 188 px deep/.test(s.what)), `stuck at the dip's lip (${JSON.stringify(lip.map((s) => s.what))})`);
 });
+
+/** the SHAPE of roll 19's dip, hand-built (ENG-DARK box 22, the lead's ruling: a toy each way, N 19's row and the shape alone). On the
+ *  draft's own way down (gen2.tower.flow 'down'), his ground and the route are set aside for one read and the shape put in their place:
+ *  a floor 0-289, a dip 289-386 70 px down (97 px wide), the floor on 386-700, and a bough 284-464 188 px over his floor, over the dip's
+ *  lip; he stands 20 px from the lip facing it. With the route level across the dip the bough is no step up: a single; with the route
+ *  rising 120 px within 300 px the same bough is one: a double (the read is of the way, not every ledge dropped). The plant
+ *  (noLevelRead) reads every ledge over him as a step up: a double on the level way */
+function shapeRead(noLevelRead: boolean, rise: number) {
+  return (async () => {
+    if (readied !== DRAFT) readyDraft(DRAFT);
+    const { firstTimer } = await import('../../../tools/inspect/firsttimer.ts');
+    const { CAST_BOTS } = await import('../../../tools/inspect/castBots.ts');
+    let read: string | undefined, flow: string | undefined;
+    firstTimer(DRAFT, 1, { ...CAST_BOTS.child.normal!, noLevelRead }, { cap: 2, dotSetting: true, onFrame(sim, b) {
+      if (read !== undefined) return;
+      flow = (sim.stage as { gen2?: { tower?: { flow?: string } } }).gen2?.tower?.flow;
+      const Y = 1000, keep = sim.platforms.slice(), like = keep[0];
+      const piece = (x: number, y: number, width: number) => ({ ...like, x, y, width, type: 'solid' as const, broken: false });
+      const floor = piece(0, Y, 289);
+      sim.platforms.length = 0;
+      sim.platforms.push(floor, piece(289, Y + 70, 97), piece(386, Y, 314), piece(284, Y - 188, 180));
+      const bot = b as unknown as { prog: { pts: Array<{ x: number; y: number }>; cur: number }; jumpFor(p: unknown, dir: number, here: unknown): string };
+      const pts = bot.prog.pts.slice(), cur = bot.prog.cur;
+      const way = [200, 269, 330, 363, 420, 500, 600].map((x) => ({ ...pts[0], x, y: x > 400 ? Y - rise : Y }));
+      bot.prog.pts.splice(0, bot.prog.pts.length, ...way);
+      bot.prog.cur = 1;
+      try { read = bot.jumpFor({ x: 269, y: Y }, 1, floor); }
+      finally {
+        sim.platforms.length = 0; sim.platforms.push(...keep);
+        bot.prog.pts.splice(0, bot.prog.pts.length, ...pts); bot.prog.cur = cur;
+      }
+    } });
+    return { read, flow };
+  })();
+}
+
+test("going down, a ledge over him is a step up only where the way rises: the SHAPE hand-built (a 97 px dip, a bough 188 px over its lip): the way level across it, a single; the way rising 120 px past it, a double (GREEN; planted: noLevelRead)", async () => {
+  const level = await shapeRead(false, 0), rising = await shapeRead(false, 120);
+  assert.equal(level.flow, 'down', 'the draft is laid going down');
+  assert.equal(level.read, 'single', 'the way level across the dip: the bough over its lip is no step up');
+  assert.equal(rising.read, 'double', 'the way rising past the dip: the same bough is a step up');
+});
+
+test("every ledge over him read as a step up (noLevelRead, the plant): the SHAPE hand-built, the way level across the dip, reads a double (RED)", async () => {
+  const { read } = await shapeRead(true, 0);
+  assert.equal(read, 'double', 'the bough 188 px over his floor read as a step up');
+});
