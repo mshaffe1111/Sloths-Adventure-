@@ -6,13 +6,15 @@
  * the storey above and dithered (1-4, INT-4, 11-13). The same order tools/engine/towerFly.ts flies: the turn's foot, its top, the
  * leg's entry, the leg's exit; after the last leg, a last turn (if laid) to the shrine's ledge, then the shrine. No stage id or x.
  */
+import { walledEnd } from '../../src/game/gen2/tower.ts';
+
 export interface Pt { x: number; y: number }
 
 /** px of height a plain hop takes him (the bots step or jump it; more is a climb) */
 const HOP = 60;
 type StageLike = {
   gen2?: unknown; exitTotemX?: number; exitTotemY?: number; vines?: ReadonlyArray<{ x: number; topY: number; bottomY: number; vineType?: string }>;
-  platforms?: ReadonlyArray<{ x: number; y: number; width: number; type?: string }>;
+  platforms?: ReadonlyArray<{ x: number; y: number; width: number; height?: number; type?: string }>;
 };
 
 interface TowerMeta {
@@ -93,8 +95,11 @@ export function towerCorners(stage: StageLike, spawn: Pt): Pt[] | null {
       const toward = b.x < at.x ? -1 : 1;
       const offAt = (d: number) => (d < 0 ? lo - 30 : hi + 30);
       const underAt = (d: number) => wood.filter((p) => offAt(d) >= p.x && offAt(d) <= p.x + p.width && p.y > at.y + 4).sort((p, q) => p.y - q.y)[0];
-      const dir = underAt(toward) ? toward : -toward;
-      const off = offAt(dir), under = underAt(dir);
+      // (a walled end, other wood's body inside his past it, is no way off: he walked into the side of a log 17 px past a catch's end and
+      //  stood there until rescued (the drafted 3-1 Normal 22), gen2 tower.ts walledEnd, ENG-DARK box 17)
+      const open = (d: -1 | 1) => (walledEnd(wood as Parameters<typeof walledEnd>[0], d < 0 ? lo : hi, d, at.y) ? undefined : underAt(d));
+      const dir = open(toward) ? toward : (-toward as -1 | 1);
+      const off = offAt(dir), under = open(dir);
       if (!under) break;
       // (to the end of the wood, then down to where he lands past it: a point in the air level with the wood read as a gap to jump,
       // and he jumped it onto the catch beyond, ENG-W3a)

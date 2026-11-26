@@ -375,7 +375,8 @@ export function towerCatches(flow: 'up' | 'down', platforms: readonly Platform[]
     }
     const v = climbs.find((q) => a + 6 < q.x && b - 6 > q.x && y > q.topY + 10 && y < q.bottomY - 10);
     if (!v) return false;
-    return ![a - 24, b + 24].filter((x) => x >= 20 && x <= width - 20).some((x) => { const l = catchUnder([...all, box], x, y, 100000); return l !== undefined && l <= v.bottomY + 2; });
+    // (a walled end is no way off it: walledEnd)
+    return ![a - 24, b + 24].filter((x, i) => x >= 20 && x <= width - 20 && !walledEnd([...all, box], i ? b : a, i ? 1 : -1, y)).some((x) => { const l = catchUnder([...all, box], x, y, 100000); return l !== undefined && l <= v.bottomY + 2; });
   };
   // (going down, no slot beside it: a bough within a step of the wood beside it (SLOT.step px in height) lies flush with it, a
   //  walkable crack from it (SLOT.walk) or his body and a margin clear of it (SLOT.clear). A gap about his body's width between two
@@ -505,6 +506,20 @@ const SLIDE = { out: 60, back: 30 } as const;
  *  2 x BODY_HALF = 42 px, plus a 24 px margin: he steps 24 px past a lip before he drops, SLIDE.back's note) */
 const SLOT = { step: 8, walk: 21, clear: 42 + 24 } as const;
 
+/**
+ * A WALLED end: going down, the end of the run of wood at height `y` (its end at `end`, stepping off toward `dir`) is no way off when
+ * other wood, not level with it (past SLOT.step), lies within his body and its margin past that end (SLOT.clear) with its own body
+ * (its top to its underside) inside his (BODY_H over his feet): he walks into its side and stands there. ENG-DOWNBOT's catch across a
+ * climb vine (stopVines) was laid 17 px from a 90 px log 73 px over it (the drafted 3-1 Normal 22) and flush with a bough 62 px over it
+ * (Easy 37): handOn and the route stepped off that end, and the kid, the middle and the adult stood at it, turning, until rescued (the
+ * rescue kinds 'a waist-high step ahead, a drop ahead, a trunk beside him', new on every x40 since the merge, ENG-DARK box 17).
+ */
+export function walledEnd(platforms: ReadonlyArray<Pick<Platform, 'x' | 'y' | 'width' | 'type'> & { height?: number }>, end: number, dir: -1 | 1, y: number): boolean {
+  const a = dir < 0 ? end - SLOT.clear : end, b = dir < 0 ? end : end + SLOT.clear;
+  return platforms.some((q) => q.type !== 'fragile' && q.type !== 'bouncy' && q.y < y - SLOT.step && q.y + (q.height ?? 24) > y - BODY_H
+    && q.x < b && q.x + q.width > a);
+}
+
 /** how far under a gate's top a piece still counts as level with it (px) */
 const GATE_LEVEL = 30;
 
@@ -629,7 +644,8 @@ function runOf(solid: readonly Platform[], x0: number, x1: number, y: number): {
 export function handOn(platforms: readonly Platform[], x0: number, x1: number, y: number, to: number, width: number, most = Infinity): { state: 'ok' | 'open' | 'past'; run: { a: number; b: number; y: number }; first: Array<number | undefined> } {
   const solid = platforms.filter((p) => p.type === 'solid');
   const run = runOf(solid, x0, x1, y);
-  const offs = (r: { a: number; b: number; y: number }) => [r.a - 24, r.b + 24].filter((x) => x >= 20 && x <= width - 20).map((x) => ({ x, l: catchUnder(platforms, x, r.y, 100000) }));
+  // (a walled end is no way off: walledEnd)
+  const offs = (r: { a: number; b: number; y: number }) => [r.a - 24, r.b + 24].filter((x, i) => x >= 20 && x <= width - 20 && !walledEnd(platforms, i ? r.b : r.a, i ? 1 : -1, r.y)).map((x) => ({ x, l: catchUnder(platforms, x, r.y, 100000) }));
   const first = offs(run).map((o) => o.l);
   let open = false;
   const todo = [run], seen = new Set([`${run.a} ${run.y}`]);
