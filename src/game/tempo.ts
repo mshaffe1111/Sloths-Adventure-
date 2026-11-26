@@ -104,7 +104,12 @@ export function tempoFaults(st: TempoStage, tempo: TempoSpec, easy: boolean): st
     if (drops.one) continue;
     out.push(`the liana at x ${Math.round(liana.x)} over the river at x ${Math.round(river.x0)}-${Math.round(river.x1)}: a press on ONE misses its logs on every bar (locked: ${Math.round(drops.share * 100)}% of a bar's presses land, the longest run ${s3(drops.window)} s)`);
   }
+  // (a clock only weight pads read is no stage clock: its count runs only while he stands on that pad (ride.ts 'weight'), so it starts
+  //  where he does and keeps no bar; 2-9.md's pads on the beat are kept by HIM, one pad a beat. A clock any beat pad reads is judged)
+  const byWeight = new Set(st.platforms.filter((p) => p.pad?.by === 'weight').map((p) => p.pad!.clock));
+  for (const p of st.platforms) if (p.pad?.by === 'beat') byWeight.delete(p.pad.clock);
   for (const c of st.clocks ?? []) {
+    if (byWeight.has(c.id)) continue;
     const at = `the clock '${c.id}'`;
     if (Math.abs(c.easyStretch - tempo.easyStretch) > 1e-6) out.push(`${at}: Easy stretches it ${s3(c.easyStretch)}, not the bar's ${s3(tempo.easyStretch)}`);
     const k = easy ? c.easyStretch : 1;

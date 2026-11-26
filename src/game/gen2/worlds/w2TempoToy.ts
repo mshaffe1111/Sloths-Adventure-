@@ -41,6 +41,14 @@ const STONES_SECTION: SectionTemplate = {
   entry: { piece: 'in', kind: 'ground' }, exit: { piece: 'out', kind: 'ground' }, exitDy: 0, sockets: [], mirrorable: false,
 } as SectionTemplate;
 
+/** 2-9.md's beat row of pads, a RUN row (small weight pads, PAD_SIZES 130 px, over 60 px of water: 190 px a beat at the run pitch; one
+ *  pad a beat never sinks); the row 2-9.md lays on Easy (50 px of water) has no data path yet: a pad row has one gap for both settings */
+export const COURT_PADS: PadRow = { by: 'weight', pads: ['small', 'small', 'small', 'small'], gap: 60 };
+
+/** the run-pitch pads: the stones' pond shape, its row the court's pads */
+const PADS_SECTION: SectionTemplate = { ...STONES_SECTION, id: 'toy-court-pads', name: 'pads on the beat',
+  pieces: STONES_SECTION.pieces.map((q) => (q.key === 'out' ? { ...q, place: { kind: 'pads', after: 'in', row: 'beatpads' } } : q)) } as SectionTemplate;
+
 export interface TempoToyOpts {
   /** the court river's row (a planted fault: its speed) */
   court?: RiverRow;
@@ -48,6 +56,8 @@ export interface TempoToyOpts {
   stones?: PadRow;
   /** the brief's tempo; null: none (the stage laid as it always was) */
   tempo?: TempoSpec | null;
+  /** a run-pitch pad row (COURT_PADS): its pond is laid in place of the stones' (the cast's pad bot at 190 px a beat, ENG-29d) */
+  pads?: PadRow;
 }
 
 /** the toy's kit: 2-4's, cut to the court pieces, under a brief with the tempo */
@@ -57,9 +67,9 @@ export function tempoKit(o: TempoToyOpts = {}): WorldKit {
   const brief: GraphBrief = { ...BRIEF_24, deal: { rope: 50, floating: 50 }, ...(tempo ? { tempo } : {}) };
   return { ...k,
     manifest: { ...M,
-      sections: [...[...SECTIONS_24.filter((s) => KEEP.includes(s.id)), EXIT_24].map(onCourt), STONES_SECTION],
+      sections: [...[...SECTIONS_24.filter((s) => KEEP.includes(s.id)), EXIT_24].map(onCourt), o.pads ? PADS_SECTION : STONES_SECTION],
       rivers: { ...M.rivers, court: o.court ?? W2_RIVERS.court },
-      pads: { ...(M.pads ?? {}), stones: o.stones ?? COURT_STONES },
+      pads: { ...(M.pads ?? {}), stones: o.stones ?? COURT_STONES, ...(o.pads ? { beatpads: o.pads } : {}) },
       lessons: { ...M.lessons, [DROP_LESSON]: TEMPO_ID },
       graphs: { ...G, list: [{ id: 'court-toy', archetype: 'vine_runner', code: 'A Tr Pf R S E' }], briefs: { [TEMPO_ID]: brief } },
     } } as WorldKit;

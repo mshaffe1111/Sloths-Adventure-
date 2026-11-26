@@ -1,14 +1,15 @@
 /**
  * The tempo toy's bot runs (ENG-29, 2-9's NEW 1): the court toy row (src/game/gen2/worlds/w2TempoToy.ts) rolled by gen2 the way the game
  * rolls a listed stage (listed.ts's test seam, a planted one-seed list, World 2's finish), and castBots' cast over it in the real engine.
- *   npx tsx tools/inspect/tempoToys.ts [--seeds 1-4] [--bots kid,adult,child,middle,expert] [--input fake|touch|pad]
+ *   npx tsx tools/inspect/tempoToys.ts [--seeds 1-4] [--bots kid,adult,child,middle,expert] [--input fake|touch|pad] [--setting normal|easy]
+ *     [--pads] (the run-pitch pads' pond, COURT_PADS, in place of the stones') [--all] (every stuck spot)
  */
 import '../../src/game/headlessDom.ts';
 import { withTestStage } from '../../src/game/gen2/listed.ts';
 import { buildGen2Stage, keptFoes } from '../../src/game/gen2/pipeline.ts';
 import { packPlan, plantSeedList } from '../../src/game/gen2/seedList.ts';
 import { withFixtureConfig } from '../../src/game/realPlay.ts';
-import { TEMPO_ID, tempoCfg, tempoKit, tempoRow, type TempoToyOpts } from '../../src/game/gen2/worlds/w2TempoToy.ts';
+import { COURT_PADS, TEMPO_ID, tempoCfg, tempoKit, tempoRow, type TempoToyOpts } from '../../src/game/gen2/worlds/w2TempoToy.ts';
 import { CAST_BOTS, castRun, type CastInput, type CastRun } from './castBots.ts';
 import type { Setting } from './tierBots.ts';
 
@@ -37,7 +38,7 @@ if (import.meta.url === `file://${process.argv[1]}`) {
   for (const setting of (arg('--setting') ? [arg('--setting')] : ['normal', 'easy']) as Setting[]) {
     for (const bot of bots.filter((q) => CAST_BOTS[q]?.[setting])) {
       for (let s = a; s <= (b ?? a); s++) {
-        const r = tempoCast(bot, setting, s, {}, input);
+        const r = tempoCast(bot, setting, s, process.argv.includes('--pads') ? { pads: COURT_PADS } : {}, input);
         console.log(JSON.stringify({ bot, setting, seed: s, pass: r.pass, time: Math.round(r.time * 10) / 10, end: r.end, goal: r.goal, rescues: r.rescues, turnBacks: r.turnBacks, lives: r.lives, hits: r.hits, hitBy: r.hitBy, stuck: process.argv.includes("--all") ? r.stuck : r.stuck.slice(0, 3), error: r.error }));
       }
     }
