@@ -1,4 +1,47 @@
 # ENG-DARK REPORT (the dark + light ring as one gen2 brick; WORLD-3-PLAN F2; R-165.449)
+**EXACT NEXT STEP (ENG-DARK-u box 21 HAND-OVER, 4:14 PM ET by `date`; head on t-eng-dark-wip = this commit). CODE CANDIDATE c15 =
+5b091de7f (c14 DROPPED: tower.ts, tower.test.ts, planted-faults.py back to c13 4bfa3fbee, c13's 80 lays exactly; NEW: firsttimer.ts
+wayRises, going down a tower a ledge over him is read as a step up (stepUp, a double) only where the route's points ahead, within
+300 px, rise past 90 px before they drop 40 px; off a way down nothing changes; darkBots.test "going down, a ledge over him is a step
+up only where the way rises" roll 19 child N lip toy GREEN + its RED (noLevelRead), both green on frozen c15; plant 43 added, NOT RUN).
+THE LEAD RULED (message read at box 21's end): GO c15. N 19 is a BOT misread (stepUp), not a lay shape; c13's lays stand (0 of 80 move), c14 dropped; down towers only, show tierBots and rule 28 unmoved; toy each way (N 19's row + a SHAPE toy) + a plant; ONE x40 vs the bar; tests + plants whole, gates, LAND by 8:00 PM ET. BOX 22 FIRST: ReadNotifications; then (a) the SHAPE toy (hand-built down-tower toy, not yet written: a floor with a 97 px dip and a bough 188 px over its lip, the route level across; jumpFor reads single with wayRises, double with noLevelRead), then c15's x40 on a frozen tree of the head (code = 5b091de7f), 2 lanes in the background (`GEN2_DRAFT=3-1 npx tsx tools/inspect/castBots.ts --stage 3-1
+--seeds 1-20 --setting both --par 2 --rows reference/qa-reports/ENG-DARK/cast-3-1-x40-5b091de7-lane1.jsonl`, 21-40 as lane2, about
+7 min), `python3 x40verdict.py cast-3-1-x40-base-c1008d8e.jsonl <lanes>` and `python3 kinds.py <lanes>` (in this folder) vs THE BAR
+(shrine 360/360, unlit <= 5, no loop of 10+, no stuck kind new against the base per the ruling). On the bar: dark.test + darkBots.test
++ castBots.test WHOLE on frozen c15 (2 at a time), plants `python3 reference/qa-reports/ENG-DARK/planted-faults.py <frozen c15>` all
+CAUGHT, then the gates ONCE and LAND on t-eng-w3 (88592a9c4; merge, no force). Off the bar: trace the new rows against c13 (stk.mts
+below) and send the lead the rows; the bot change re-rolls EVERY row from its first changed read (child N 19 parts from c13 by 51 s).**
+**Box 21 DONE (traces on frozen 4bfa3fbee and 040a56547; probes in box 21's scratchpad, rewritten here):** (1) N 35 x 874 (kid,
+adult, child, middle; stuck at y 7970, 112.3 s for the kid): c14's `unreached` in fair() refused c13's two catches under the log
+534-855@7886, r4 420-600@8039 for its LEFT end (fall line x 510) and the r2 bridge 600-969@8039 for its right end (x 879): both lie 194
+px over the slot 538-663@8233 though NEITHER fall line is over it. The y loop then laid both HIGHER, at 7970, 263 px over the slot (past
+TOWER.clear, where slotUnder no longer reads it): 84 px under the log, a chest-high step in an 84 px dip, vine #18 cut to 7970. Cause:
+unreached in fair (a refused height pushes the bough UP out of the rule's window). (2) child N 25 STRANDED: 8 of N 25's r4 catches
+became rule-5 fills; at the last storey (end 442 of 218-418@11301) c13's 352-532@11394 (188 px over the slot 387-494@11582) was refused
+and the slot filled. The child 'fell back down from here 8 times' at x 226 y 11301 on BOTH (c13 209.3 s, rescued, shrine 218.8 s); on
+c14 at 218.9 s rescue() found no route point left past him: stranded. Cause: unreached + the rule-5 fill together. (3) THE N 19 SHAPE
+IS IN EVERY LAY: a scan of c13's 80 lays (the lay's puts logged in an instrumented copy, slotUnder of c14 applied) finds 678 catches
+over a slot by more than 108 px; 622 are exactly N 19's (r4 bough 188 px over a 70 px dip under the end's own fall line, a climb vine
+landing beside), in all 80 rolls; c13's x40 has a stuck line new against the base at ONE of them (child N 19). Box 20's narrowing (a dip, the fall line over it) keeps all 622 and still
+moves all 80 lays; it would cure N 35 (fall line not over: 56 such catches in 32 rolls) but NOT N 25. No narrowed LAY rule cures N 19
+with few lays moved. (4) WHY N 19 STALLS (bot trace, an instrumented c13 copy): at the lip (x 259) the child's edge plan drew 'stand'
+(1.24 s); jumpFor picked a DOUBLE because stepUp reads any ledge 90-260 px over his floor within -150..260 px of the edge as a step
+up, and the bough 188 up is one, though the route's next point (363,8689) runs LEVEL across the slot; the standing double's first press
+was a 0.062 s flick (46 px up), its second press drawn at 0.465 s came after he landed; overSmall steered him back; he went back up the
+vine. A bot misread at a shape every storey has, not a lay shape of that spot. (5) c15 (above): child N 19 on c15 reaches the shrine
+at 294.8 s, 1 rescue (x 975 y 4133 'fell back down from here 8 times'), no stuck line at the dip; his run parts from c13's by 51 s
+(every later read re-rolls). tsc 0; generalitycheck PASS; tierBots on frozen c15: 9/9 GREEN (all 200 calibration runs replay exactly: 1-1 unmoved).
+**NOT DONE (box 22):** the SHAPE toy, rule 28 on shipped stages (castBots' shipped rows unmoved), c15's x40, (c) the WHOLE tests + plants, (d) gates, landing (as above).
+Probes (box 21, committed in probes/): stk.mts (castRun's firstTimer with cap 1200, dotSetting, onFrame: frames and every stuck
+spot with y and t), slot.mts (slotUnder at a bough + the wood in its box), instr.py (logs each put of towerCatches with its rule and
+end, and [RCH] for every catch over a slot past SLOT_REACH), scan.mts (the [RCH] lines of all 80 lays; c13's are scan-box21-c13-reach.txt), strand4.mts (strand3 with
+cap 1200 + dotSetting, a 4 s window). instr.py edits a COPY's tower.ts (python3 probes/instr.py <copy>/src/game/gen2/tower.ts; TC_LOG=1); the [RCH] lines also need c14's slotUnder + SLOT_REACH appended to that copy (git show 040a56547:src/game/gen2/tower.ts). Frozen trees here (gone with this container): /home/user/wt-c13, wt-c14, wt-c15 (5b091de7f),
+wt-dbg13 / wt-dbg14 (instrumented copies, never run for a verdict).
+Lessons applied: D115 (frozen trees for every run; the instrumented copies are separate trees), D119, D128 (every stamp from `date`),
+D134, D138 (this note ends box 21's new work; only the running tierBots was finished), D140 (ReadNotifications at each step), D141.
+LEARNED: when a stage repeats one shape on every storey, a stall at one spot is first counted across every roll (a lay scan): 1 stall
+in 622 of the same shape is the bot's read or its draws, not the lay; moving the lay there re-rolls every row and buys new ones.
+
 **EXACT NEXT STEP (ENG-DARK-t box 20 HAND-OVER, 2:49 PM ET by `date`; head on t-eng-dark-wip = this commit). CODE CANDIDATE c14 =
 040a56547 (tower.ts going-down lay: a catch over a slot lies within one plain jump of the floor beside it, or the slot gets wood).
 c14 x40 RUN (frozen 040a56547; x40-verdict-040a5654.txt, cast-3-1-x40-040a5654-lane1/-lane2.jsonl): IT MISSES THE BAR. shrine 359/360 (child N 25 STRANDED, 2 rescues, last stuck x 802, 794, 226; on c13 he reached the shrine); unlit 2; max loop 7 (middle N 26); gaveUp 2; rescues 625 vs base 1393 (c13 674). NEW rows (kinds.py, base same spot 0): N 35 x 874-875 for kid, adult, child AND middle ("a 84 px chest-high step ahead, in a dip 84 px deep": a shape the fix made, likely rule 5 or a lowered catch), child N 12 x 643 (dip 217, drop 64), child N 15 x 867 (dip 211, drop 173), expert N 2 x 1085 (dip 173, drop 178). child N 37 x 1035 and child E 34 x 802 have base rescues at the same spot (accepted per the ruling). The N 19 x 255 row is GONE. BOX 21 FIRST: trace child N 25 (the strand) and N 35 x 874 on frozen 040a56547 vs 4bfa3fbee (tagat + /tmp-style track probe: castBots CAST_BOTS[bot][setting] through firstTimer with onFrame), name which of the three changes (unreached in fair, unreached on rule 1, rule 5 fill) made each, and narrow the fix IN GENERAL (58 of 80 lays changed: the reach rule as written reaches far past the one shape; candidate narrowing: only a slot whose floor is a dip in the way he walks, and only the end whose fall line is over it), one x40 per candidate.**
