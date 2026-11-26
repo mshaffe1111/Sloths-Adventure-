@@ -1,4 +1,21 @@
-# BUILD-28 REPORT (W2-LANE: 2-8 "Before the Water Rises"; R-165.430 (2), READY-28, BUILD-28). Session 1 (W2-LANE a), started 9:44 AM ET (from date). Session 2 (W2-LANE b), started 10:07 AM ET (from date). Session 3 (W2-LANE c), started 10:30 AM ET (from date). Session 4 (W2-LANE d), started 10:52 AM ET (from date). Session 5 (W2-LANE e), started 11:19 AM ET (from the session hook date) Session 6 (W2-LANE f), started 11:41 AM ET (from the session hook date) Session 7 (W2-LANE g), started 12:05 PM ET (from the session hook date) Session 8 (W2-LANE h), started 12:49 PM ET (from the session hook date) Session 9 (W2-LANE i), started 1:15 PM ET (from the session hook date) Session 10 (W2-LANE j), started 1:05 PM ET (from the session hook date)
+# BUILD-28 REPORT (W2-LANE: 2-8 "Before the Water Rises"; R-165.430 (2), READY-28, BUILD-28). Session 1 (W2-LANE a), started 9:44 AM ET (from date). Session 2 (W2-LANE b), started 10:07 AM ET (from date). Session 3 (W2-LANE c), started 10:30 AM ET (from date). Session 4 (W2-LANE d), started 10:52 AM ET (from date). Session 5 (W2-LANE e), started 11:19 AM ET (from the session hook date) Session 6 (W2-LANE f), started 11:41 AM ET (from the session hook date) Session 7 (W2-LANE g), started 12:05 PM ET (from the session hook date) Session 8 (W2-LANE h), started 12:49 PM ET (from the session hook date) Session 9 (W2-LANE i), started 1:15 PM ET (from the session hook date) Session 10 (W2-LANE j), started 1:05 PM ET (from the session hook date) Session 12 (W2-LANE l), started 2:20 PM ET (from the session hook date)
+
+## EXACT NEXT STEP (session 12, W2-LANE l, started 2:20 PM ET (from the session hook date); code head 3170a73f4)
+DONE (the lead's ruling A): (1) THE PIECE on t-eng-marsh 5f8cb1edb (cut from 2808df79d): riverLay.ts RiverRow.marsh.open (data, unset
+   = the old shape): a dip `open` px wide at the near bank's foot, the dips evenly split the rest; an open that leaves no floor throws by
+   name. Toy riverLay.test.ts "a marsh's `open`": both ways (unset/0: first piece at the bank's foot, 5 x 200 px pieces; open 220: no
+   floor in the dip, the far end unmoved, dips 100) GREEN; PLANTED (the lay change stashed): RED. tsc 0; generalitycheck PASS (26/26
+   known). lockall --check vs a base recorded on 2808df79d and the CI tool line on frozen /tmp/claude-0/wt/5f8cb1ed: RUNNING (item 2).
+   (2) MERGED (ff) into t-build-28-wip; 2-8's data 3170a73f4: W2_FORK_RIVERS marsh.open 140 (gap1 = physics' sure single-jump gap,
+   inside his 205 px full-run reach off the bank's 75 px drop). w2TwoRoad.test's W-flush plant read 135 hard-coded; with the marsh open
+   the first ground under a flush W's lip is the water (165 = 60 + 75 + marshWater 30): its depth now reads from the data, still RED by
+   name. w2TwoRoad, flood, floodLay, lineBot tests: 42 pass, 0 fail.
+   (3) BUILT (2-8's config, seed 1, read off the built stage): W 17450 w330, bank's edge 17369, the open dip 17229..17369 (140), floor
+   pieces 172 wide from 17057 down. STILLS stills-s12-lip/ (forkstills-s12.mjs.txt: the lip DRIVEN from the bank right of W: run left,
+   jump into W's face (frame 9), on top (23), pad let go at Wx+38 (48), stops at 17480 = Wx+30): upright, teal water fills the frame's
+   lower left from the bank's foot to the frame's edge, beside and below him; sideways, the open dip, then the floor pieces with water
+   between. Not mine, named: a "HOLD DOWN" label over his head and Dot's rising-water line (the game's tip) cover part of the frame.
+
 
 ## EXACT NEXT STEP (session 11, W2-LANE k, started 1:56 PM ET (from the session hook date); code head 6545a5823; hand-over at the box)
 DONE: step 0 ff (t-build-28-wip 0f15f97d3 -> 334d94f64, no force); step 1 fork reshoot (stills-s11/: pillar GONE; the lead judged the
