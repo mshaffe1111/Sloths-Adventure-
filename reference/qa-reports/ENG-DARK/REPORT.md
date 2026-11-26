@@ -1,4 +1,44 @@
 # ENG-DARK REPORT (the dark + light ring as one gen2 brick; WORLD-3-PLAN F2; R-165.449)
+**EXACT NEXT STEP (ENG-DARK-v box 22 HAND-OVER, 4:37 PM ET by `date`; head on t-eng-dark-wip = this commit). CODE CANDIDATE c16 =
+e5c098072 (c15 + the lip hold + kind C), the lead's rulings in hand (GO c16; kind C IN as a measurement fix; kind A named and left unless it
+recurs). c16's x40 NOT RUN TO THE END (lane 1 was started in box 22's container, gone with it): BOX 23 FIRST: ReadNotifications; frozen tree
+of the head (`git worktree add --detach <dir> <head>`, node_modules symlinked, D115), then c16's ONE x40, 2 lanes in the background
+(`GEN2_DRAFT=3-1 npx tsx tools/inspect/castBots.ts --stage 3-1 --seeds 1-20 --setting both --par 2 --rows reference/qa-reports/ENG-DARK/cast-3-1-x40-e5c09807-lane1.jsonl`,
+21-40 as lane2, about 7 min), `python3 x40verdict.py cast-3-1-x40-base-c1008d8e.jsonl <lanes>` + `python3 kinds.py <lanes>` vs THE BAR
+(shrine 360/360, unlit <= 5, no loop of 10+, no rescue kind new against the base per the ruling). With it, rule 28: `npx tsx
+reference/qa-reports/ENG-DARK/probes/flows.mts` on the frozen tree (every shipped build's gen2.tower.flow, layouts 1-16, both settings;
+expect 'going down: none': wayRises reads only flow 'down'; NOT FINISHED in box 22, it ran over 10 min). On the bar: dark.test + darkBots.test
++ castBots.test WHOLE on the frozen tree (2 at a time), `python3 reference/qa-reports/ENG-DARK/planted-faults.py <frozen>` all CAUGHT (plants
+43-46 new since c13: wayRises, the lip hold, RimWatch.put, placeAt's put; none NO TEST or BASE RED), the gates ONCE (the CI tool line on a
+FULL tree; suite shards run_in_background + timeout 7200000), then LAND on t-eng-w3 (88592a9c4; merge, no force; box 22's trial merge
+of the c15 head: CLEAN), dark/darkBots/castBots + lockall on the merged head, push, the hash to the lead. Kind A needs its R-id from the
+lead (asked); write it here when given. LANDED by 8:00 PM ET; word at 7:30 if it slips; HARD STOP 9:00 PM ET.**
+**Box 22 DONE:** (1) the SHAPE toy (65935b12, darkBots.test "the SHAPE hand-built"): on the draft's way down, his ground and route set aside
+for one read: a floor 0-289, a 97 px dip 70 px down, a bough 284-464 188 px over his floor; the way level: a single; the way rising 120 px:
+a double; the plant (noLevelRead): a double. GREEN both ways. (2) c15's x40 (frozen 65935b12; cast-3-1-x40-5b091de7-lane1/-lane2.jsonl,
+x40-verdict-5b091de7.txt): OFF THE BAR: shrine 360/360, max loop 7 (middle N 26), gaveUp 1, rescues 633 vs base 1393, BUT unlit 9 (bar <= 5;
+c13 2) and one rescue row new against the base (child N 15 x 856, 'in a dip 211 px deep, a drop of 173 px ahead', base same spot 0; it
+was on c14's lay too, x 867). (3) TRACED (an instrumented copy wt-dbg15, wayRises' flipped reads logged [WR]; probes/wr.mts needs that
+patch: WR_LOG=1; never run for a verdict): no unlit crossing and not N 15 x 856 is at a flipped read (child N 11's nearest flip 29 s before,
+1,700 px off; N 19's at 195.9 s, y 8689; N 15 has no flip in the 125 s before its rescue at 244.4 s): all re-rolls. probes/rim2.mts on all 9
+(unlit-kinds-5b091de7.txt): KIND B 7 of 9 (child N 19, E 4, E 8, E 26, E 28, E 36, kid N 29): his dark stop at THAT rim was on 0.03-0.7 s
+before; grounded with his middle 8-15 px past the piece's end (the engine stands him to p.width x (STAND_SIDE + assist) past an end:
+standingOnId the rim's piece); glowWait's on(rim) read the span alone and dropped the stop: he walked over dark. KIND A 1 (child N 11, rim
+581,6560): from the piece before (206-428) a single and a double carried him over the whole 153 px piece and its rim; glowJump covers only
+the rim's own piece. KIND C 1 (expert N 25, rim 648,11021): a rescue took him from x 800 on 648-885 to (218, 11282) in one frame; RimWatch
+counted it gone over. (4) c16 (the lead's rulings): 23fae3c18 glowWait holds the stop while the engine stands him on the rim's piece
+(standingOnId; noLipHold the plant); 7440617a8 glowJump the same; e5c098072 kind C: RimWatch.put(), called from placeAt (a put-back is no
+crossing). Toys, all GREEN on the edited tree (preliminary; box 23 runs them WHOLE on the frozen head): darkBots "a dark stop holds at the
+lip" (child Easy 8, rim 515,4375: held past the end, not gone over dark) + its RED (noLipHold: gone over dark, c15's crossing); dark.test
+"a put-back (a rescue) ... is no crossing" + its RED (the old watch counts it); darkBots "the bot's own put-back (placeAt ...)"; the roll 19
+lip toys still GREEN on c16. Plants added: 44 (held = on), 45 (put() a no-op), 46 (placeAt without put). tsc 0.
+**NOT DONE (box 23):** c16's x40 + verdict, rule 28's flows probe result, kind A's R-id, the WHOLE tests + plants, gates, landing.
+Lessons applied: D115 (frozen trees for every verdict run; the instrumented copy separate), D119 (no heredoc in a commit chain), D128 (stamps
+from `date`), D134 (pushed and ls-remote checked before the hand-over message), D138 (this note ends box 22's new work), D140, D141.
+LEARNED: when a bot change re-rolls every row, the new misses are first set against the changed reads (log each flipped read with t, x, y):
+a miss far from any flip is the re-roll finding an old defect, and the defect is fixed where it lives (here the dark stop's footing), not
+by undoing the change.
+
 **EXACT NEXT STEP (ENG-DARK-u box 21 HAND-OVER, 4:14 PM ET by `date`; head on t-eng-dark-wip = this commit). CODE CANDIDATE c15 =
 5b091de7f (c14 DROPPED: tower.ts, tower.test.ts, planted-faults.py back to c13 4bfa3fbee, c13's 80 lays exactly; NEW: firsttimer.ts
 wayRises, going down a tower a ledge over him is read as a step up (stepUp, a double) only where the route's points ahead, within
