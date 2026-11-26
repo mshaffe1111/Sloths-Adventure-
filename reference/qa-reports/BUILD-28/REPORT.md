@@ -1,6 +1,119 @@
 # BUILD-28 REPORT (W2-LANE: 2-8 "Before the Water Rises"; R-165.430 (2), READY-28, BUILD-28). Session 1 (W2-LANE a), started 9:44 AM ET (from date). Session 2 (W2-LANE b), started 10:07 AM ET (from date). Session 3 (W2-LANE c), started 10:30 AM ET (from date). Session 4 (W2-LANE d), started 10:52 AM ET (from date). Session 5 (W2-LANE e), started 11:19 AM ET (from the session hook date) Session 6 (W2-LANE f), started 11:41 AM ET (from the session hook date) Session 7 (W2-LANE g), started 12:05 PM ET (from the session hook date) Session 8 (W2-LANE h), started 12:49 PM ET (from the session hook date) Session 9 (W2-LANE i), started 1:15 PM ET (from the session hook date) Session 10 (W2-LANE j), started 1:05 PM ET (from the session hook date) Session 12 (W2-LANE l), started 2:20 PM ET (from the session hook date)
 
-## EXACT NEXT STEP (session 12, W2-LANE l, started 2:20 PM ET (from the session hook date); code head 8bb00acae; bot head 6c407a578)
+## EXACT NEXT STEP (session 13, W2-LANE m, started 3:49 PM ET (from the session hook date); code head 6c407a578 on t-build-28-wip)
+READY-28 SENT to the lead (below). WAIT for the lead's rulings (L1-L4) and its GO; build nothing before it (level.md rule 25). No piece is
+built in the level (a pieces lane builds P1). Ruling on B taken as given: fork-jump cc85378b0 + the walked-top reroute 6c407a578 LAND as
+they are; 2b stays out (rule 21). The child's 3 late-0 'PRESS off bank' rows (seeds 1-3, the fork probe, both configs) are a named BOT
+READ GAP, R-165.475: the FIX-21 water look fires from a bank whose way on steps DOWN onto a floor; owner the bot lane after release 5.
+Their frames (rule28-s12/probe-6c407a578-cfg2-8.txt and -cfg2-3.txt; the session 12 trace below): child s1, late 0, t 11-14.5 s: he
+walks off W's lip at full run (x 930, vx 285), lands on the bank's very edge (x 1010; the edge 1000); the water look sees the first dip
+117 px out and PRESSES at the lip (t 13.9); the jump lands on the porch (x 1078, y 740): the high road. Seeds 2-3 identical rows.
+Rule 28 on the head is complete for the fork (51/54 both configs, rescues 0). Next builder: read READY-28 and the lead's rulings, then the kit map (kitmap-28-s12.md).
+
+## READY-28 (session 13; every number from the built stage or a named file:line on bfbfd2a09; estimates are marked ESTIMATE)
+### 1. The plan (rule 25 step 0)
+Node string as LAID (the design's, 2-8.md:44, with the four notation changes of section 2, each the lead's call, L1):
+`A Pg1 Tw1:#soft@flood Pp1 Xf1 R Uc1^ /L Pg1>:#water@flood R F[P+|P] Pg1> R Sg1< E`. Home is LEFT (out right, /L back along the dyke).
+| # | Token | Beat | Piece (brick, from) | Data field |
+|---|---|---|---|---|
+| 0 | A | arrive, the village jetty | 2-3 w2-23-marsh (w2Arc23.ts:264) / 2-7 jetty (w2Arc27.ts:187), as a 2-8 brick | start; W2_FOLLOW families |
+| 1 | Pg1 | the first cage, 2 ducklings | 2-3 first-cage (w2Arc23.ts:265, lay :172) | cage socket cage(id,on,t,critter,dn) (w2Arc23.ts:129), role objective |
+| 2 | Tw1:#soft@flood | TEACH, the water rises (soft, paddling depth), flag before | NEW P1 (teach rise) on a marsh river | RiverRow.flood 'teach' (P1), marsh (riverLay.ts:124); tip 800 px before (rule 6) |
+| 3 | Pp1 | the pad pond, cage 2 (2 otters) | 2-2 pad bricks (w2Arc22.ts:239-247), rows W2_PADS (w2.ts:266) | cage socket on the far bank |
+| 4 | Xf1 | the reed island, cage 3 (2 capybaras), flag, then R | 2-7 porches plank hops (w2Arc27.ts:146) over a 'water' gap (W2_TIPS.water, w2.ts:86); the island a solid with the cage socket | the line follows his hops (follow.ts:3-6): no side channel (L1) |
+| 5 | R | rest | 2-3 w2-23-rest (w2Arc23.ts:273) | the stage find NOT here (the high road's +) |
+| 6 | Uc1^ | the last cage (1 duckling) at the steps' foot, the turn; the flood starts | a data brick: three walks dy -45 (2-6 first-street's walk dy, w2Arc26.ts:104; the fork's own rises W2_FORK.rises, w2.ts:190; 45 = session 11's painter band, a thin piece draws as a step) | cage socket at the foot = the last met (floodLay.ts lastMet) |
+| 7 | /L | home is left | legs.ts:20, :162 reflectLeg (proven ARC_27, w2Arc27.ts:34) | ground clear of the out leg |
+| 8 | Pg1>:#water@flood | PRESSURE, three dips filling (paddling depth), flag | a data brick: marsh dips from a row with flood 'rise' (riverLay.ts:52) | K written P (L1): pipeline.ts:561 maps pressure to practise; K lays a CHASE (chaseLay.ts:2, :110) |
+| 9 | R | rest, Dot's fork line here | rest brick | the fork tip in view of the water (2-8.md:49) |
+| 10 | F[P+\|P] | THE FORK THE WATER DECIDES | w2TwoRoad (w2.ts:224), W2_FORK (:190), W2_FORK_RIVERS (:222), W2_FLOOD (:156); the B bots (cc85378b0, 6c407a578) | brief.flood = W2_FLOOD (types.ts:765, pipeline.ts:4301) |
+| 11 | Pg1> | the reed bank, flag, heart after | as beat 8 (flood 'rise') | |
+| 12 | R | rest | rest brick | |
+| 13 | Sg1< | the parade, the water 10 px under the boards | 2-3 w2-23-home boardwalk (w2Arc23.ts:272, :251); FLOOD_PADDLE (floodLay.ts:21) | flood 'rise' under the boards |
+| 14 | E | the jetty, each little one home | 2-3 w2-23-gate (w2Arc23.ts:277) / 2-7 home-jetty (w2Arc27.ts:203) | goal rescue: Normal 7 (CAGES_28), Easy 5 |
+Kit and row (build work, not pieces): a new w2Arc28.ts (STAGE_28, ARC_28, BEATS_28, own: true as every W2 brick), STAGE_TABLE '2-8'
+(stageTable.ts:32-81), KITS/WORLD 'w2-28' (listed.ts:45, :51), w2Manifest briefs '2-8' (w2.ts:342) with flood: W2_FLOOD.
+
+THE 2-MINUTE FLOOR (STAGE-RULES.md:84, a quick player, every roll): AS FLOWN IT FAILS. The design's legs are short: from the turn
+2,000 px to the fork + 1,400 low road + 1,000 to the jetty = 4,400 px (2-8.md:9), and on a leg stage the out leg spans the same x
+(home is the spawn's jetty), so about 9,000-10,000 px of route. Measured comparison (libstage 4 seeds x 2 settings, this session):
+2-3 lays 27,510-28,124 px, model 172-176 s; its quick Easy player measured 144-146 s (BUILD-23 REPORT:384). ESTIMATE for 2-8 as flown:
+the quick tier home in 60-75 s (out ~4,400 px at 2-3's ~190 px/s, the home leg bound by the line: 23.1 s Easy / 28.4 s Normal from
+the turn, 2-8.md flights). To clear 120 s with 2-3's margin, each leg needs ~13,000-14,000 px (2-3's ~2,000 px a token).
+Where the length goes is a DESIGN ruling (L2): (A) all of it after the fork's low road and on beats 0-6: T_CLOSE 26 s stays as flown
+(the close measures only the last cage -> off the low road, floodLay.ts px), but the home leg is then ~10,000 px of line-paced reed
+bank and parade, thin; (B, my recommendation) split it: the dyke path (beat 8) to ~4,000 px, T_CLOSE re-flown with
+reference/specs/sims/flood28.ts (data: W2_FLOOD.close/flown), one more home beat from the World 2 pool (Matt 10-30: more pieces), and
+the rest on the out leg. Check: castBots quick tier >= 120 s on all 40 seeds, both settings (rule 28), the model's fast >= 143 s
+(2-7's floor, BUILD-27 REPORT:367).
+
+THE HAND BUILD'S DELETION LIST (new replaces old; lines re-read on bfbfd2a09 this session where marked *):
+w2Stages.ts: W2_STAGES '2-8' :34*; CAGES_28 :39* (the number moves to w2Arc28.ts); W2_PUZZLES :51* drops '2-8'; floodBasin :638*-674*
+(its stop :663*); cageRoom :805*; targetCount :990* ('2-8' branch). engine.ts:1988*-2011* (the hand build's in-basin rise-and-drain
+and its hard-coded guide line), :3028 (its respawn reset), floodAt/floodTold fields: REPLACED by P1, deleted with it. w2Sections.ts
+'2-8' (:21*, :90, :109, :285*-354). stagePlan.ts:87* stands (the story line). Tests that pin it: w2Puzzles.test :34-88, :91, :171,
+:198/:204 (the pulley-cage cases move to 2-9); w2Stages.test PLANS :21, :68; puzzleCamera.test:20, w1NewArt.test:92 (id lists);
+finds.ts:416 (w2_book's hint: its find re-placed on the high road's +); also levelSeeds.ts:24, stageSheets.ts:92, pokeyJournal.ts:67,
+writtenKeys.test.ts:37 (re-read before each edit).
+
+### 2. The pieces 2-8 lacks (the kit map's 6 + the two parse faults): the smallest honest way for each
+1. THE RISING WATER'S TEACH (Tw1): NEW ENGINE PIECE P1. The one flood clock starts at the LAST cage (floodLay.ts:1-6, lastMet), so a dip
+   that rises at beat 2, before three cages, has no clock. The only rise-on-approach in the tree is the hand build's (engine.ts:1988-2011:
+   x-trigger, drains when he stands on a bank, a hard-coded guide line), deleted with the hand build. P1: a flood mark 'teach'
+   (RiverRow.flood, riverLay.ts:52; river.ts:76 floodMark kind) whose water rises to paddling depth (FLOOD_PADDLE) on its OWN start, the
+   first frame he stands within its span, and never drains (a respawn keeps it); no stage id or x. Plus nodeAsks.ts:175: `#kind@flood`
+   checked (the node laid a flood-marked water) instead of reported 'Later'. Toys (rule 21): the dip rises when he arrives, RED with
+   the mark removed; lineBot (lineBot.test.ts floodRun) leads the line through a rising dip, RED with the read removed. ~2.5 h with
+   gates (CI line, suite, paintcheck 3/3, lockall 102/102 unchanged: no listed stage marks 'teach').
+2. THE CARVED STEPS (Uc1^): DATA, an existing pattern. Three walks dy -45 (2-6 first-street, w2Arc26.ts:104), the shape the fork's high
+   road already lays and the bots already climb (W2_FORK.rises, FLOOD_STEP 60, floodLay.ts:23; the line's step, follow.ts Trail.step).
+   Content 'climb' is the brick's own declared type (nodeAsks.ts:66). Art: w2-props#steps (w2.json, 2-8.md:61). 0 engine h.
+3, 4. BOTH DYKE-PATH BEATS (Kg1>:#water@flood, Kg1>): DATA, if the lead accepts writing them P (L1). In this engine K lays 1-8's
+   falling-branch CHASE on every K node (chaseLay.ts:2, :110-113), and 2-8's pressure IS the flood clock, already laid over the whole
+   home leg by layFlood; the meter scores K as practise (pipeline.ts:561), so P changes no number. The dips: marsh rivers from a row with
+   flood 'rise' (riverLay.ts:52, :124), paddling depth only. 0 engine h. (If K must stay K: P2, K lays the KIT's pressure, chase or
+   flood, ~1.5 h with a toy and lockall: 1-8 unchanged.)
+5. THE REED-ISLAND CAGE (Xf1): DATA. 2-7's plank hops (w2-27-porches, w2Arc27.ts:146) over a 'water' gap, the island a solid with the
+   cage socket. The design's "the line paddles a soft side channel" has no piece: the line walks HIS trail, hops included (follow.ts:3-6,
+   record() 'walk' takes his air), so it crosses where he does (L1). Art: no reed-island picture in w2.json (the hand build's islands
+   are moss_stone blocks 110 high, w2Stages.ts:649: the soil-bank band); a Hugging Face ask for a reed island is the lead's call. 0 h.
+6. ':+cage' (nodeCode.ts:107: '+' is a FIND; nodeAsks.ts:171 wants a find named 'cage'; cages are objective sockets,
+   pipeline.ts:3720-3726): DATA. Cages ride their bricks' sockets as 2-3's do (ARC_23 marks none, w2Arc23.ts:46); the tokens lose
+   '+' and ':+cage' (a '+' on beats 1, 3, 4 asks a FIND there); the plan test checks a cage in beats 1, 3, 4, 6 (rule 2). 0 h.
+7. A FORK ROAD CARRYING A MARK THROWS (pipeline.ts:613-614: any content or move inside a road): DATA. `F[P+|P]`: the high road's '+'
+   is the fork's own (stripped, pipeline.ts:612), the roads' content (porches f, marsh w) is fixed by w2TwoRoad and checked by its own
+   verdicts on the BUILT stage (floodFaults, highRoadFaults, forkFaults, bankLandFaults). 0 h. (If the roads' asks must be checked:
+   P3, asks matched to the two-road section's roads, ~1.5 h.)
+TOTAL (if the lead takes the data routes, L1): PIECES ~2.5 h (P1 only, one engine lane at xhigh) from 6:30 PM ET -> ~9:00 PM ET.
+BUILD ~7.75 h of work (kit + row + brief 2.5; the hand-build deletion and re-pins 1.0; length to the floor 0.5; rule 28: castBots 40
+seeds x 2 settings + traces 1.5; seedlist + tierBots 0.5; stills both ways at beats 2, 5, 8, 11 + the beat-8 dawdle clip 0.75; the
+full gates once 1.0), ~9.5-10 h wall with 28-minute box hand-overs. EARLIEST HONEST READY TO LAND: Friday ~7:30 AM ET, with no red at
+rule 28 (each red cause on this level has cost 1-3 h, sessions 6-12). With P2 and P3: +3 h, Friday ~10:30 AM ET.
+MY RECOMMENDATION (L4): 2-8 FOLLOWS RELEASE 5. It would land on the integrator's day with no slack, the 2-minute floor needs a design
+ruling first (L2), and Friday's integrator already carries lockall's 32 moved ids.
+
+### 3. Must-show, look items, Dot, walk vs paddle
+- MUST-SHOW: from the bank's edge, upright, the low road reads as WATER: stills-s12-first117/fork-s1-edge-upright.jpg, APPROVED by the lead.
+- LOOK (i) top-upright's pocket: both banks of the dip under the log show rooted lips (stills-s12-top/); open: the first landing's
+  square seam against the bank (edge/lip-upright), for the build's polish pass. (ii) top-sideways' dark band under the log deck (world
+  y ~1499-1536): I COULD NOT NAME ITS DRAWER this session. Ruled out (session 12's frames): the river zones, the stage water plane,
+  the live platform list, the soil fix. The candidate stays groundStack.ts's ceiling over a lower leg (the upper leg's earth ends at a
+  ceiling and its underside's hang is drawn; groundStack.ts:1-12; ceilingsOverSpan :192 for a river span), unproven: the next frame
+  to shoot is the same view with protoArt.ts's two groundStack helpers off (*-noceil).
+- DOT'S CARD: CONFIRMED from a run started at the SPAWN (no teleport): stills-s13/spawn-dot-upright.jpg, 2-8's config, seed 1: the
+  wayside line (wayside.ts:102, "The river's rising...") is up at game time 2.8 s with Pokey at x 15,043, 2,407 px before the fork's
+  wall-step (x 17,450; out of view). It is not at the fork in a real run. Story note (for the story keeper, not mine): the line says
+  the river is rising at the jetty, before anything rises; an 'on' moment (the last cage) would fit the flood (wayside.ts WayAt 'on').
+- WALK vs PADDLE (2-8.md, t-design-26): Pokey WALKS the marsh floor and hops the dips; the little ones PADDLE splash-back water at his
+  pace (2-3's contract, follow.ts:6-7) and WAIT at deep water as at a climb's foot; the low road turns deep at T_CLOSE 26 s after the
+  last cage; one in it then sits on its near bank (FLOOD_SIT 40, floodLay.ts), drawn hiding in the reeds (followArt.ts:110).
+### The lead's calls (one at a time): L1 the four notation changes (cages by socket, K written P, F[P+|P], no side channel);
+L2 where the 2-minute length goes (A or B); L3 a Hugging Face reed island (or the soil-bank block); L4 2-8 in release 5 or after it.
+### Method notes this session: the spawn still's port check used `ss`, which is not in this container: the check printed 'free'
+without testing (vite --strictPort would have refused a busy port; it served, and I killed it after the one tree). Next time: `curl -s
+127.0.0.1:PORT` or `lsof`.
+
+## (superseded by session 13) EXACT NEXT STEP (session 12, W2-LANE l, started 2:20 PM ET (from the session hook date); code head 8bb00acae; bot head 6c407a578)
 HAND-OVER AT THE BOX (2:55 PM ET from date; past the 28-minute work box by 7 min: my miss). Heads: t-eng-marsh 8bbb510f8 (the piece,
 its gates GREEN, item 6); t-build-28-wip 7ea5d5f3e = code 8bb00acae (2-8 marsh.first 117) + bot 6c407a578 (fork-jump cc85378b0 + the
 walked-top reroute). The lead APPROVED the open-140 stills, then RULED the first landing (RULE 1 any walk-off lands on the floor; RULE 2
