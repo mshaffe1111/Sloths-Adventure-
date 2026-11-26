@@ -34,7 +34,9 @@ WATER_WARN.lead+40 px before any flood water's near edge, every seed, both setti
 STEP 0's CHECKS (frozen trees /home/user/wt28m = f68a7421d, /home/user/wt28b = d4e7677ba; chattr +i on src, tools):
 - KID_RUNS_59 alone (firstTimerBot.test.ts + w5RealReach.test.ts): RED on BOTH, identical: actual [8,9,7,7,4,7] vs [3,5,6,7,6,5]
   (firstTimerBot.test.ts:185), 15 pass 1 fail each; w5RealReach green. = the release line's (R-165.473), named, not this build's.
-- P1's CI tool line on f68a7421d (gates.yml:157-179): CI_LINE_RESULT
+- P1's CI tool line on f68a7421d (gates.yml:157-179): ALL GREEN: the engine tools' tests 436 pass, 0 fail, 1 todo (the
+  standing chase-bots TODO, ENG-B4); tipwalk, storyTipScan --check, teachFirstScan --check --seeds 20, registrycheck, tierBots (9 pass) all
+  exit 0; buildcheck PASS (1-1 p95 Normal 142 ms, Easy 105 ms, budget 150). P1's owed CI tool line is now RUN and green.
 
 ## (superseded by session 14) EXACT NEXT STEP (session 13, W2-LANE m, started 3:49 PM ET (from the session hook date); code head 6c407a578 on t-build-28-wip)
 ## THE LEAD'S RULINGS ON READY-28 (received in session 13 after READY-28; written here as a doc commit only)
