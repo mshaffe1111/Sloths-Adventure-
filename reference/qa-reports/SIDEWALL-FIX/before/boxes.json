@@ -1,0 +1,434 @@
+[
+ {
+  "diff": "normal",
+  "file": "/tmp/claude-0/-home-user-Sloths-Adventure-/f9e2f691-8996-5505-a4ff-e8eb307011ec/scratchpad/shots-before/1-6-land-normal-close.png",
+  "stage": "1-6",
+  "orient": "land-normal",
+  "shot": "close",
+  "seed": 1,
+  "piece": {
+   "x": 27896,
+   "y": 865,
+   "w": 24,
+   "h": 345,
+   "style": "moss_stone",
+   "type": "solid"
+  },
+  "screenBox": {
+   "x": 356.6888979010194,
+   "y": 158.64814899410172,
+   "w": 17.333333333333332,
+   "h": 249.16666666666666,
+   "zoom": 0.7222222222222222
+  }
+ },
+ {
+  "diff": "normal",
+  "file": "/tmp/claude-0/-home-user-Sloths-Adventure-/f9e2f691-8996-5505-a4ff-e8eb307011ec/scratchpad/shots-before/1-6-land-normal-wide.png",
+  "stage": "1-6",
+  "orient": "land-normal",
+  "shot": "wide",
+  "seed": 1,
+  "piece": {
+   "x": 27896,
+   "y": 865,
+   "w": 24,
+   "h": 345,
+   "style": "moss_stone",
+   "type": "solid"
+  },
+  "screenBox": {
+   "x": 573.3555524805846,
+   "y": 158.6481481481482,
+   "w": 17.333333333333332,
+   "h": 249.16666666666666,
+   "zoom": 0.7222222222222222
+  }
+ },
+ {
+  "diff": "normal",
+  "file": "/tmp/claude-0/-home-user-Sloths-Adventure-/f9e2f691-8996-5505-a4ff-e8eb307011ec/scratchpad/shots-before/8-1-land-normal-close.png",
+  "stage": "8-1",
+  "orient": "land-normal",
+  "shot": "close",
+  "seed": 38747,
+  "piece": {
+   "x": 1466,
+   "y": 526,
+   "w": 14,
+   "h": 224,
+   "style": "log",
+   "type": "solid"
+  },
+  "screenBox": {
+   "x": 301.0777867899096,
+   "y": 175.50000000000009,
+   "w": 10.11111111111111,
+   "h": 161.77777777777777,
+   "zoom": 0.7222222222222222
+  }
+ },
+ {
+  "diff": "normal",
+  "file": "/tmp/claude-0/-home-user-Sloths-Adventure-/f9e2f691-8996-5505-a4ff-e8eb307011ec/scratchpad/shots-before/8-1-land-normal-top.png",
+  "stage": "8-1",
+  "orient": "land-normal",
+  "shot": "top",
+  "seed": 38747,
+  "piece": {
+   "x": 1466,
+   "y": 526,
+   "w": 14,
+   "h": 224,
+   "style": "log",
+   "type": "solid"
+  },
+  "screenBox": {
+   "x": 349.4666659799231,
+   "y": 175.50000000000009,
+   "w": 10.11111111111111,
+   "h": 161.77777777777777,
+   "zoom": 0.7222222222222222
+  }
+ },
+ {
+  "diff": "normal",
+  "file": "/tmp/claude-0/-home-user-Sloths-Adventure-/f9e2f691-8996-5505-a4ff-e8eb307011ec/scratchpad/shots-before/8-1-land-normal-wide.png",
+  "stage": "8-1",
+  "orient": "land-normal",
+  "shot": "wide",
+  "seed": 38747,
+  "piece": {
+   "x": 1466,
+   "y": 526,
+   "w": 14,
+   "h": 224,
+   "style": "log",
+   "type": "solid"
+  },
+  "screenBox": {
+   "x": 537.2444417794693,
+   "y": 220.80552306692678,
+   "w": 10.11111111111111,
+   "h": 161.77777777777777,
+   "zoom": 0.7222222222222222
+  }
+ },
+ {
+  "diff": "normal",
+  "file": "/tmp/claude-0/-home-user-Sloths-Adventure-/f9e2f691-8996-5505-a4ff-e8eb307011ec/scratchpad/shots-before/1-6-port-normal-close.png",
+  "stage": "1-6",
+  "orient": "port-normal",
+  "shot": "close",
+  "seed": 1,
+  "piece": {
+   "x": 27896,
+   "y": 865,
+   "w": 24,
+   "h": 345,
+   "style": "moss_stone",
+   "type": "solid"
+  },
+  "screenBox": {
+   "x": 168.40909506423907,
+   "y": 460.65454545454554,
+   "w": 21.272727272727273,
+   "h": 305.79545454545456,
+   "zoom": 0.8863636363636364
+  }
+ },
+ {
+  "diff": "normal",
+  "file": "/tmp/claude-0/-home-user-Sloths-Adventure-/f9e2f691-8996-5505-a4ff-e8eb307011ec/scratchpad/shots-before/1-6-port-normal-wide.png",
+  "stage": "1-6",
+  "orient": "port-normal",
+  "shot": "wide",
+  "seed": 1,
+  "piece": {
+   "x": 27896,
+   "y": 865,
+   "w": 24,
+   "h": 345,
+   "style": "moss_stone",
+   "type": "solid"
+  },
+  "screenBox": {
+   "x": 434.3181807109508,
+   "y": 460.65454545454554,
+   "w": 21.272727272727273,
+   "h": 305.79545454545456,
+   "zoom": 0.8863636363636364
+  }
+ },
+ {
+  "diff": "normal",
+  "file": "/tmp/claude-0/-home-user-Sloths-Adventure-/f9e2f691-8996-5505-a4ff-e8eb307011ec/scratchpad/shots-before/8-1-port-normal-close.png",
+  "stage": "8-1",
+  "orient": "port-normal",
+  "shot": "close",
+  "seed": 38747,
+  "piece": {
+   "x": 1466,
+   "y": 526,
+   "w": 14,
+   "h": 224,
+   "style": "log",
+   "type": "solid"
+  },
+  "screenBox": {
+   "x": 99.18222642017254,
+   "y": 493.2711111111111,
+   "w": 13.12888888888889,
+   "h": 210.06222222222223,
+   "zoom": 0.9377777777777778
+  }
+ },
+ {
+  "diff": "normal",
+  "file": "/tmp/claude-0/-home-user-Sloths-Adventure-/f9e2f691-8996-5505-a4ff-e8eb307011ec/scratchpad/shots-before/8-1-port-normal-top.png",
+  "stage": "8-1",
+  "orient": "port-normal",
+  "shot": "top",
+  "seed": 38747,
+  "piece": {
+   "x": 1466,
+   "y": 526,
+   "w": 14,
+   "h": 224,
+   "style": "log",
+   "type": "solid"
+  },
+  "screenBox": {
+   "x": 162.01333244162151,
+   "y": 493.2711111111111,
+   "w": 13.12888888888889,
+   "h": 210.06222222222223,
+   "zoom": 0.9377777777777778
+  }
+ },
+ {
+  "diff": "normal",
+  "file": "/tmp/claude-0/-home-user-Sloths-Adventure-/f9e2f691-8996-5505-a4ff-e8eb307011ec/scratchpad/shots-before/8-1-port-normal-wide.png",
+  "stage": "8-1",
+  "orient": "port-normal",
+  "shot": "wide",
+  "seed": 38747,
+  "piece": {
+   "x": 1466,
+   "y": 526,
+   "w": 14,
+   "h": 224,
+   "style": "log",
+   "type": "solid"
+  },
+  "screenBox": {
+   "x": 405.8355541833633,
+   "y": 493.2711111111111,
+   "w": 13.12888888888889,
+   "h": 210.06222222222223,
+   "zoom": 0.9377777777777778
+  }
+ },
+ {
+  "diff": "easy",
+  "file": "/tmp/claude-0/-home-user-Sloths-Adventure-/f9e2f691-8996-5505-a4ff-e8eb307011ec/scratchpad/shots-before/1-6-land-easy-close.png",
+  "stage": "1-6",
+  "orient": "land-easy",
+  "shot": "close",
+  "seed": 1,
+  "piece": null,
+  "screenBox": {
+   "x": 356.6888979010194,
+   "y": 162.66049465512495,
+   "w": 17.333333333333332,
+   "h": 249.16666666666666,
+   "zoom": 0.7222222222222222
+  }
+ },
+ {
+  "diff": "easy",
+  "file": "/tmp/claude-0/-home-user-Sloths-Adventure-/f9e2f691-8996-5505-a4ff-e8eb307011ec/scratchpad/shots-before/1-6-land-easy-wide.png",
+  "stage": "1-6",
+  "orient": "land-easy",
+  "shot": "wide",
+  "seed": 1,
+  "piece": null,
+  "screenBox": {
+   "x": 573.3555524805846,
+   "y": 162.66049382716062,
+   "w": 17.333333333333332,
+   "h": 249.16666666666666,
+   "zoom": 0.7222222222222222
+  }
+ },
+ {
+  "diff": "easy",
+  "file": "/tmp/claude-0/-home-user-Sloths-Adventure-/f9e2f691-8996-5505-a4ff-e8eb307011ec/scratchpad/shots-before/8-1-land-easy-close.png",
+  "stage": "8-1",
+  "orient": "land-easy",
+  "shot": "close",
+  "seed": 38747,
+  "piece": {
+   "x": 1466,
+   "y": 536,
+   "w": 14,
+   "h": 214,
+   "style": "log",
+   "type": "solid"
+  },
+  "screenBox": {
+   "x": 301.0777867899096,
+   "y": 163.94482172940215,
+   "w": 10.11111111111111,
+   "h": 161.77777777777777,
+   "zoom": 0.7222222222222222
+  }
+ },
+ {
+  "diff": "easy",
+  "file": "/tmp/claude-0/-home-user-Sloths-Adventure-/f9e2f691-8996-5505-a4ff-e8eb307011ec/scratchpad/shots-before/8-1-land-easy-top.png",
+  "stage": "8-1",
+  "orient": "land-easy",
+  "shot": "top",
+  "seed": 38747,
+  "piece": {
+   "x": 1466,
+   "y": 536,
+   "w": 14,
+   "h": 214,
+   "style": "log",
+   "type": "solid"
+  },
+  "screenBox": {
+   "x": 349.4666659799231,
+   "y": 163.94444444444764,
+   "w": 10.11111111111111,
+   "h": 161.77777777777777,
+   "zoom": 0.7222222222222222
+  }
+ },
+ {
+  "diff": "easy",
+  "file": "/tmp/claude-0/-home-user-Sloths-Adventure-/f9e2f691-8996-5505-a4ff-e8eb307011ec/scratchpad/shots-before/8-1-land-easy-wide.png",
+  "stage": "8-1",
+  "orient": "land-easy",
+  "shot": "wide",
+  "seed": 38747,
+  "piece": {
+   "x": 1466,
+   "y": 536,
+   "w": 14,
+   "h": 214,
+   "style": "log",
+   "type": "solid"
+  },
+  "screenBox": {
+   "x": 537.2444417794693,
+   "y": 220.80552306692678,
+   "w": 10.11111111111111,
+   "h": 161.77777777777777,
+   "zoom": 0.7222222222222222
+  }
+ },
+ {
+  "diff": "easy",
+  "file": "/tmp/claude-0/-home-user-Sloths-Adventure-/f9e2f691-8996-5505-a4ff-e8eb307011ec/scratchpad/shots-before/1-6-port-easy-close.png",
+  "stage": "1-6",
+  "orient": "port-easy",
+  "shot": "close",
+  "seed": 1,
+  "piece": null,
+  "screenBox": {
+   "x": 168.40909514395372,
+   "y": 472.1772727272728,
+   "w": 21.272727272727273,
+   "h": 305.79545454545456,
+   "zoom": 0.8863636363636364
+  }
+ },
+ {
+  "diff": "easy",
+  "file": "/tmp/claude-0/-home-user-Sloths-Adventure-/f9e2f691-8996-5505-a4ff-e8eb307011ec/scratchpad/shots-before/1-6-port-easy-wide.png",
+  "stage": "1-6",
+  "orient": "port-easy",
+  "shot": "wide",
+  "seed": 1,
+  "piece": null,
+  "screenBox": {
+   "x": 434.3181804049905,
+   "y": 472.1772727272728,
+   "w": 21.272727272727273,
+   "h": 305.79545454545456,
+   "zoom": 0.8863636363636364
+  }
+ },
+ {
+  "diff": "easy",
+  "file": "/tmp/claude-0/-home-user-Sloths-Adventure-/f9e2f691-8996-5505-a4ff-e8eb307011ec/scratchpad/shots-before/8-1-port-easy-close.png",
+  "stage": "8-1",
+  "orient": "port-easy",
+  "shot": "close",
+  "seed": 38747,
+  "piece": {
+   "x": 1466,
+   "y": 536,
+   "w": 14,
+   "h": 214,
+   "style": "log",
+   "type": "solid"
+  },
+  "screenBox": {
+   "x": 99.18222641949001,
+   "y": 493.2711111111111,
+   "w": 13.12888888888889,
+   "h": 210.06222222222223,
+   "zoom": 0.9377777777777778
+  }
+ },
+ {
+  "diff": "easy",
+  "file": "/tmp/claude-0/-home-user-Sloths-Adventure-/f9e2f691-8996-5505-a4ff-e8eb307011ec/scratchpad/shots-before/8-1-port-easy-top.png",
+  "stage": "8-1",
+  "orient": "port-easy",
+  "shot": "top",
+  "seed": 38747,
+  "piece": {
+   "x": 1466,
+   "y": 536,
+   "w": 14,
+   "h": 214,
+   "style": "log",
+   "type": "solid"
+  },
+  "screenBox": {
+   "x": 162.01333244161938,
+   "y": 493.2711111111111,
+   "w": 13.12888888888889,
+   "h": 210.06222222222223,
+   "zoom": 0.9377777777777778
+  }
+ },
+ {
+  "diff": "easy",
+  "file": "/tmp/claude-0/-home-user-Sloths-Adventure-/f9e2f691-8996-5505-a4ff-e8eb307011ec/scratchpad/shots-before/8-1-port-easy-wide.png",
+  "stage": "8-1",
+  "orient": "port-easy",
+  "shot": "wide",
+  "seed": 38747,
+  "piece": {
+   "x": 1466,
+   "y": 536,
+   "w": 14,
+   "h": 214,
+   "style": "log",
+   "type": "solid"
+  },
+  "screenBox": {
+   "x": 405.8355541833633,
+   "y": 493.2711111111111,
+   "w": 13.12888888888889,
+   "h": 210.06222222222223,
+   "zoom": 0.9377777777777778
+  }
+ }
+]
