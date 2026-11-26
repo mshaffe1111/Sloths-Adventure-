@@ -1,8 +1,13 @@
 # BUILD-29 REPORT: 2-9 "The River King's Court" (the World 2 finale; R-165.449), release 6
 Branch t-build-29, cut from origin/t-eng-29 = 098047713 (the lead's named base). Session 1 started 5:45 PM ET Thu 11/26 (by `date`).
 
-## EXACT NEXT STEP (session 1 hand-over; STEP 0 NOT yet sent as a whole: the gaps G1-G4 were sent to the lead early, rule 26)
-1. Re-fetch t-build-29 and the lead's branch; ReadNotifications (D140); read the lead's reply to the G1-G4 message (below).
+## EXACT NEXT STEP (session 1 hand-over; STEP 0 NOT yet sent as a whole: G1-G5 and READY (a)/(b) went to the lead early, rule 26)
+THE LEAD HAS RULED (its message after G1-G3): G1, G2 and G3 (option A, look 'barge') go to ONE pieces lane, ENG-29-e on t-eng-29; YES
+to pads and stones at 50 px on both settings (Normal's stones FLOWN at 50 in READY before use); after GO lay every beat that needs none
+of G1-G3; beat 6 and the guard wait for ENG-29-e. G4 (the wheel's Easy R) and G5 (the 's' letter) were sent after: read its reply.
+0. G5 decides how the draft's node string is written: if the lead rules (B), the draft's ARC_29 writes the two liana beats `Xr1>:#water`
+   and `Wr1>:#water` (2-4's letter) and the REPORT names the change from 2-9.md:50; if (A), wait for the lane's TYPE_OF_LETTER 's'.
+1. Re-fetch t-build-29 and the lead's branch; ReadNotifications (D140); read the lead's replies (G4, G5).
 2. Read the base gates' results: scratchpad gates-base/summary.txt is LOST with this container, so if the lead has no numbers from
    session 1 for the CI tool line, re-run it once on a frozen worktree of 098047713 (`git worktree add --detach`, chattr +i all but
    src/game/gen2/proven, run_in_background): the 6 `npx tsx` lines of gates.yml's `rolled` job. Session 1's results so far are below.
@@ -21,7 +26,7 @@ Branch t-build-29, cut from origin/t-eng-29 = 098047713 (the lead's named base).
 ### (a) Engine gates on the base 098047713 (frozen worktree, chattr +i, 0 chattr errors)
 - tsc: exit 0. generalitycheck: exit 0. coveragecheck (tools/difficulty/coveragecheck.ts): exit 0.
 - The tempo/drum toys + listed.test (gen2/tempo, gen2/tempoToy, tempo, tempoResume, drum, drumBus, drumEngine, gen2/listed): 32 pass, 0 fail.
-- The CI tool line (gates.yml `rolled`, 6 lines): running at hand-over (see EXACT NEXT STEP 2).
+- The CI tool line (gates.yml `rolled`): line 1 (the tool tests) 427 tests, 0 fail, 1 todo (= ENG-29's count); lines 2-3 (tipwalk, storyTipScan) exit 0; lines 4-6 (teachFirstScan, registrycheck, tierBots) running.
 - Inherited and named, never BUILD-29's: firstTimerBot.test.ts:177 KID_RUNS_59 (R-165.473 / R-165.477, the release line's own).
 
 ### Gaps found (sent to the lead at once, rule 26; ENGINE-WORTHY; none coded around)
@@ -40,10 +45,41 @@ Branch t-build-29, cut from origin/t-eng-29 = 098047713 (the lead's named base).
   only). Found after the message; goes to the lead in STEP 0. My recommendation (reversible, data): R160 on BOTH settings (Normal
   V = 2*pi*160/17.1 = 58.8 px/s, one bucket a bar), flown on the real engine for Normal's step-off before it is used (2-6's floor 1.5 s);
   else a per-setting R path in the pieces lane.
-- NOT a gap (my recommendation, reversible): Easy's 50 px pad water: lay pads and stones at 50 px on BOTH settings (Normal flew clean
+- **G5 the node letter `s` (swing) is UNLAID** (found after the G4 message): nodeLetters.ts:67 `s: { name: "swing", ..., unlaid: "the swing
+  vine (liana) as a content block: its emitter keyed by letter is not built" }`, and nodeAsks.ts:40 TYPE_OF_LETTER has no `s`, so
+  askMisses (nodeAsks.ts:131-133) names every `Xs1>` / `Ws1>` node "Later: the swing vine ...": 2-9.md:50's string passes checkCode but
+  its two liana beats cannot be laid as written. 2-4 wrote its liana beats with `r` (ARC_24 'A Tr Pg Pr Xw R Pf Wr ...', content
+  'rope'). Lead's call: (B, my recommendation, data, reversible) the draft writes `Xr1>:#water` and `Wr1>:#water`, the bricks content
+  'rope' as 2-4's; (A) the lane maps `s` to a type. The other letters lay: p (CLOCK_LETTER, a clocked piece: stones, pads, wheel
+  buckets), w, f, b; `Uc^<` asks every section of the node be 'climb', so the wheel brick is typed 'climb' (2-6 typed its wheels 'rope').
+- NOT a gap (the lead's YES): Easy's 50 px pad water: lay pads and stones at 50 px on BOTH settings (Normal flew clean
   over 30-70, 2-9.md:10-11); Normal's stone shares at 50 must be flown (they were flown at 60).
 - ENG-29's NEW item, the child's ~1.25 lives a run on the run-pitch pads on Normal: it WILL show on 2-9's draft (beat 3 is a 5-pad run
   row; the toy's was 4). Rule 4: Normal is never softened for the child; READY measures it on the draft and names it.
+
+### (b) READY-29, measured so far: ENG-29's STILL OPEN (a) and (b) on the court liana 2-9 lays at beat 4
+2-9's beat 4 is the toy's liana: 2-4's `first-drop` (anchor 165 px past the bank, 410 over, 410 long) over the `court` row, locked at
+COURT_TEMPO.lock 0. Probe `reference/qa-reports/BUILD-29/probes/oneLock.ts` (committed; the tempo toy, seeds 1-2, every court liana,
+riverLay.ts lockedLianas; the "sides" = how far the LIANA'S PHASE may move against the bar, each way, before a press on ONE misses:
+the lock's margin, NOT a press's lag: a later press also moves the river, so ONE's place inside the press window is NOT yet measured,
+and lockedDrops does not report it; the window and share columns ARE lockedDrops' own press-time numbers), on 098047713:
+| lock | Normal window / share | ONE early / LATE side | Easy window / share | ONE early / LATE side |
+|---|---|---|---|---|
+| 0 (today) | 1.23 s / 77% | 0.66 s / **0.29 s** | 1.97 s / 91% | >= 1.65 s (probe cap) / **0.31 s** |
+| 0.935 | 1.83 s / 81% | 0.47 s / 0.47 s | 2.10 s / 93% | >= 1.65 s / 0.53 s |
+| 0.92 | 1.83 s / 83% | 0.43 s / 0.51 s | 2.13 s / 95% | >= 1.65 s / 0.58 s |
+(identical on every court liana of seeds 1-2, 18 lianas a setting.)
+- **(a) the let-go window:** at today's lock 0 ONE lands, but the lock sits 0.29 s (Normal) / 0.31 s (Easy) of phase from where ONE
+  stops landing, and the press window is 1.23 s Normal (2-9.md's 2.00 / 2.40 s came from 2-1's liana and do not hold on 2-4's). At lock
+  0.92 the window is 1.83 s Normal / 2.13 s Easy and the lock's margin 0.43 / 0.51 s. PROPOSAL (the lead's call): (1) the court's lock
+  0.92 (data: one number in 2-9's tempo), (2) a gate on the window AND on ONE's place in it: lockedDrops reports ONE's early and late
+  margin (a small add, a pieces lane: today it returns only `one`), and tempoFaults refuses a court liana whose press on ONE has under
+  0.40 s Normal / 0.50 s Easy either side (Easy never tighter, rule 4), with the window >= 1.5 s Normal / 2.0 s Easy. The numbers are
+  proposals until ONE's press margin is measured; re-check on the draft's own lianas (beat 6's over `double` too) and with the bots'
+  ONE press (ENG-29d onOne) before the lock is used.
+- **(b) the river offset:** ONE's check alone is NOT enough on this liana: it passes at 0.29 s of late margin. The design's 'river 5
+  frames ahead' was there to centre ONE; with no offset path, moving the LOCK does the same job for the liana (the river and the drum
+  stay on the bar), so no river-offset path is needed if the margin gate above lands and the lock moves. The lead's call.
 
 ### (c) THE PLAN (draft; one line per beat: token, piece, data field, brick it borrows)
 Node string, verbatim (2-9.md:50): `A Tp1<:#soft Pw1> Pf1> Xs1>:#water R Pp1&>:&turtle*2 Ws1>:#water R Uc^< Cp1&>:#water:&turtle*2 R Pb1^< Sw1> E`
