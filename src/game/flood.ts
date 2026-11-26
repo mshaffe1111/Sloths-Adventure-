@@ -173,6 +173,33 @@ export function forkFaults(chain: ReadonlyArray<{ x: number; w: number; y: numbe
 }
 
 /**
+ * How far past a bank's edge his middle lands at most when he walks off it onto ground `drop` px below (px): his full run (PHYS.maxRun) for
+ * the fall (from rest, under gravDown, capped at maxFall) and one more frame of run before the fall reads. Measured (BUILD-28 session 12,
+ * the real engine, 2-8's config, creep to full run, 75 px down): 76 Normal, 80 Easy; this gives 79.3, so it holds both.
+ */
+export function walkOffLand(drop: number): number {
+  const g = PHYS.gravDown;
+  const cap = PHYS.maxFall;
+  const d1 = (cap * cap) / (2 * g);
+  const t = drop <= d1 ? Math.sqrt((2 * drop) / g) : cap / g + (drop - d1) / cap;
+  return PHYS.maxRun * (t + 1 / 30);
+}
+
+/**
+ * THE BANK'S LANDING (BUILD-28 session 12, the lead's rule: ANY walk-off from the near bank's edge lands on solid floor, a creep through a
+ * full run). `edge` is the near bank's edge (its x, its top), `dir` the way on (+1 right), `tops` every solid top, `floorY` the low road's
+ * floor (a marsh's): the floor's piece at the bank's foot (the first landing) reaches past the edge at least his widest walk-off landing
+ * (walkOffLand of the drop) + half his `width` + `margin`. Water at the foot (no piece there) is the same fault. By name; empty: fair.
+ */
+export function bankLandFaults(edge: { x: number; y: number }, dir: 1 | -1, tops: ReadonlyArray<{ x: number; w: number; y: number }>, floorY: number, width: number, margin: number): string[] {
+  const need = Math.ceil(walkOffLand(floorY - edge.y) + width / 2 + margin);
+  const at = tops.find((t) => Math.abs(t.y - floorY) < 1 && (dir > 0 ? t.x <= edge.x + 1 && t.x + t.w > edge.x : t.x + t.w >= edge.x - 1 && t.x < edge.x));
+  const reach = at ? Math.round((dir > 0 ? at.x + at.w - edge.x : edge.x - at.x) * 10) / 10 : 0;
+  if (reach >= need) return [];
+  return [`flood: a walk-off off the near bank's edge at x ${Math.round(edge.x)} lands up to ${Math.round(walkOffLand(floorY - edge.y))} px past it, ${Math.round(floorY - edge.y)} px down: its first landing reaches ${reach} px, short of ${need} (that + half his ${width} px width + ${margin})`];
+}
+
+/**
  * THE STRAND VERDICT (BUILD-28 1e, the walk-off model, carry 0). He can walk off EITHER end of any piece of the high road (traced: the
  * adult turned back on the top and walked off its near edge), and the line follows him down only a drop of at most its step (follow.ts
  * record: deeper is a WAIT at the lip, and he goes on alone). So just outside each end of each piece of `chain`, the first ground under it

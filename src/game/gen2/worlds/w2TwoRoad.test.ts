@@ -9,9 +9,8 @@ import '../../headlessDom.ts';
 import { buildGen2Stage } from '../pipeline.ts';
 import { towerCfg } from '../toyTower.ts';
 import { HOME_BRICKS, HOME_CODE, homeKit } from '../toyHome.ts';
-import { FLOOD_FORK_JUMP, FLOOD_HOP, FLOOD_LOW_HOP, FLOOD_STEP, FLOOD_WALK_OFF, layFlood } from '../floodLay.ts';
-import { forkFaults, highRoad, strandFaults } from '../../flood.ts';
-import { RIVER_LAY } from '../riverLay.ts';
+import { FLOOD_BANK_LAND, FLOOD_FORK_JUMP, FLOOD_HOP, FLOOD_LOW_HOP, FLOOD_STEP, FLOOD_WALK_OFF, layFlood } from '../floodLay.ts';
+import { forkFaults, highRoad, strandFaults, walkOffLand } from '../../flood.ts';
 import { W2_FLOOD, W2_FORK, W2_FORK_RIVERS, W2_RIVERS, w2TwoRoad, type W2ForkShape } from './w2.ts';
 import type { Collectible } from '../../types.ts';
 import type { WorldKit } from '../types.ts';
@@ -110,11 +109,8 @@ test('two roads: RED by name on W 60 (every tier walks off) and on no gap (no wa
   };
   assert.match(faults({ ...W2_FORK, wall: { ...W2_FORK.wall, w: 60 } }), new RegExp(`the adult lands 86 px past its face .* walks off into the ${W2_FORK.gap} px gap`), 'RED: W 60');
   assert.match(faults({ ...W2_FORK, gap: 0 }), /no way down onto the low road: the gap after it is 0 px/, 'RED: no gap');
-  // (W flush on the water's edge (BUILD-28 1e): off its lip onto the marsh floor is one 120 px drop, deeper than the line's step; with
-  // the marsh OPEN on water (marsh.open, BUILD-28 session 12) the first thing under his lip is the water, RIVER_LAY.marshWater lower)
-  const m = W2_FORK_RIVERS[W2_FORK.row].marsh;
-  const flush = W2_FORK.wall.h + m.floor + ((m.open ?? 0) > 0 ? RIVER_LAY.marshWater : 0);
-  assert.match(faults({ ...W2_FORK, wall: { ...W2_FORK.wall, back: 0 } }), new RegExp(`off the (left|right) end of the high road's piece at x \\d+-\\d+ the first ground is ${flush} px down, deeper than the line's 90 px step`), 'RED: W flush on the water');
+  // (W flush on the water's edge (BUILD-28 1e): off its lip onto the marsh floor is one 120 px drop, deeper than the line's step)
+  assert.match(faults({ ...W2_FORK, wall: { ...W2_FORK.wall, back: 0 } }), new RegExp(`off the (left|right) end of the high road's piece at x \\d+-\\d+ the first ground is ${W2_FORK.wall.h + W2_FORK_RIVERS[W2_FORK.row].marsh.floor} px down, deeper than the line's 90 px step`), 'RED: W flush on the water');
 });
 
 test('two roads: THE LOW ROAD\'S HOP: RED by name on the marsh floor 60 px under the banks (b3747ddcb: the porch 120 px over it, inside a single jump), GREEN on 75', () => {
@@ -152,4 +148,18 @@ test('two roads: THE RUN TAKES THE LOW ROAD (BUILD-28 session 7, the lead\'s ent
     assert.equal(lay(W2_FORK.gap), '', `${difficulty}: GREEN at the ruled ${W2_FORK.gap}`);
   }
   assert.ok(W2_FORK.gap >= FLOOD_WALK_OFF.carry + FLOOD_WALK_OFF.margin && W2_FORK.gap <= FLOOD_FORK_JUMP, 'the ruled gap: past the walk-off rule, within the fork\'s jump');
+});
+
+test("two roads: THE BANK'S LANDING (BUILD-28 session 12, the lead's rule: any walk-off off the near bank's edge lands on the floor): laid by floodLay, RED by name with the marsh's first landing 1 px short, GREEN at the need, both settings", () => {
+  const need = Math.ceil(walkOffLand(W2_FORK_RIVERS[W2_FORK.row].marsh.floor) + W2_FLOOD.climb.width / 2 + FLOOD_BANK_LAND.margin);
+  const rivers = (first: number) => ({ [W2_FORK.row]: { ...W2_FORK_RIVERS[W2_FORK.row], marsh: { ...W2_FORK_RIVERS[W2_FORK.row].marsh, first } } }) as unknown as typeof W2_FORK_RIVERS;
+  for (const d of ['normal', 'easy'] as const) {
+    const faults = (first: number) => {
+      const st = build(1, d, W2_FORK, rivers(first));
+      caged(st);
+      return layFlood(st, W2_FLOOD, d === 'easy').problems.join('; ');
+    };
+    assert.match(faults(need - 1), new RegExp(`its first landing reaches ${need - 1} px, short of ${need}`), `RED ${d}`);
+    assert.doesNotMatch(faults(need), /first landing/, `GREEN ${d}`);
+  }
 });

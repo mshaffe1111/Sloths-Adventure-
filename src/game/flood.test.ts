@@ -5,7 +5,7 @@
 // he walks off is a walk for the line, never a wait (2-8.md:59, Pushback 5).
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { FloodClock, floodFaults, floodSurface, floodTailOff, forkFaults, highRoad, highRoadFaults, strandFaults, type Flood, type FloodWater } from './flood.ts';
+import { bankLandFaults, FloodClock, floodFaults, floodSurface, floodTailOff, forkFaults, highRoad, highRoadFaults, strandFaults, walkOffLand, type Flood, type FloodWater } from './flood.ts';
 import { join, newTrail, record, rejoin, setOnBank, stepLine, wallCap, type Follower } from './follow.ts';
 import { FollowPlay } from './followPlay.ts';
 import type { Platform } from './types.ts';
@@ -349,4 +349,20 @@ test('the strand verdict: RED on a top flush on its rise and on W flush on the m
   // (RED: W flush on the water's edge with the gap over the marsh (today's gen2 fork): his walk off W's lip onto the floor is 120 px)
   const wFlush = strandFaults([pc(W0 - 150, 150, Y - 60), pc(W0 + 60, W1 - W0 - 60, Y - 60)], [], under, W2_FOLLOW.step);
   assert.ok(wFlush.some((f) => /right end of the high road's piece at x 850-1000 the first ground is 120 px down/.test(f)), wFlush.join('; '));
+});
+
+test("THE BANK'S LANDING (BUILD-28 session 12): every walk-off off the near bank's edge lands on the low road's first landing; RED by name 1 px short, with water at the foot, and the same mirrored", () => {
+  // (the carry model against the real engine's walk-offs off a bank 75 px over the floor, creep to full run: widest 76 Normal, 80 Easy)
+  assert.ok(walkOffLand(75) > 79 && walkOffLand(75) < 81, `walkOffLand(75) ${walkOffLand(75)}`);
+  assert.ok(walkOffLand(400) > walkOffLand(75), 'deeper lands farther (the fall capped at maxFall)');
+  const need = Math.ceil(walkOffLand(75) + 22 + 15);
+  const bank = { x: 0, w: 1000, y: 800 };
+  const land = (w: number, gapAtFoot = 0) => [bank, { x: 1000 + gapAtFoot, w, y: 875 }, { x: 1000 + gapAtFoot + w + 100, w: 300, y: 875 }];
+  assert.deepEqual(bankLandFaults({ x: 1000, y: 800 }, 1, land(need), 875, 44, 15), []);
+  assert.match(bankLandFaults({ x: 1000, y: 800 }, 1, land(need - 1), 875, 44, 15).join(), new RegExp(`its first landing reaches ${need - 1} px, short of ${need}`));
+  assert.match(bankLandFaults({ x: 1000, y: 800 }, 1, land(400, 50), 875, 44, 15).join(), /its first landing reaches 0 px/);
+  // (mirrored: the way on runs left from the bank's edge at x 1000)
+  const left = (w: number) => [{ x: 1000, w: 1000, y: 800 }, { x: 1000 - w, w, y: 875 }];
+  assert.deepEqual(bankLandFaults({ x: 1000, y: 800 }, -1, left(need), 875, 44, 15), []);
+  assert.match(bankLandFaults({ x: 1000, y: 800 }, -1, left(need - 1), 875, 44, 15).join(), /short of/);
 });
