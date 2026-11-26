@@ -45,7 +45,7 @@ test('the hand-built World 2 stages lay every log river through the lay, and eve
     const cfg = generateAllLevels().find((c) => c.id === id && !c.secret)!;
     const st = buildW2Stage(cfg, s, plan);
     assert.deepEqual(riverFaults(st), [], `${id} seed ${s}`);
-    rivers += (st.rivers ?? []).filter((r) => r.speed > 0 && !r.open && !r.raft && !r.flood).length;
+    rivers += (st.rivers ?? []).filter((r) => r.speed > 0 && !r.open && !r.raft).length;
   }
   assert.ok(rivers >= 10, `${rivers} log rivers judged`);
 });

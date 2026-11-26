@@ -116,7 +116,7 @@ import type { RiverZone } from './river.ts';
 import { rideHidden, ridersOf, stepRiders, type Riders } from './ridePickups.ts';
 import { RIDE } from './ride.ts';
 import { FloodClock, floodDeep } from './flood.ts';
-import { driftCycle, driftProgress, driftX, floodLevel, lianasOver, logClock, logKnocks, LOG_DROP, DRIFT_CATCH, onRiver, riverAt, type DriftInfo } from './river.ts';
+import { driftCycle, driftProgress, driftX, lianasOver, logClock, logKnocks, LOG_DROP, DRIFT_CATCH, onRiver, riverAt, type DriftInfo } from './river.ts';
 import { GLOW_SHOWN, letGoLands, letGoTable, type LetGoTable } from './letGoCue.ts';
 import { heard, NOISE } from './noise.ts';
 import { mayRegrow, regrowDelay } from './regrow.ts';
@@ -594,8 +594,6 @@ export class GameEngine {
   /** the first time a guard of the river king blocks (2-9) */
   private guardTold = false;
   /** 2-8: when each rising river began to rise (game time), and whether Dot has warned about it */
-  private floodAt = new Map<import('./river.ts').RiverZone, number>();
-  private floodTold = false;
   private isPaused: boolean = false;
   private animFrameId: number | null = null;
   private lastTime: number = 0;
@@ -1987,31 +1985,6 @@ export class GameEngine {
       });
       for (const w of closed) this.follow?.floodClosed(w);
     }
-    // 2-8: rising water. It starts once he steps in, and covers the low reed islands; out on a bank again (either one) it drains away as
-    // fast as it rose, so a little one left behind can still be gone back for (every one of them is the goal)
-    for (const r of this.currentStage.rivers ?? []) {
-      const f = r.flood;
-      if (!f) continue;
-      f.y0 ??= r.surfaceY;
-      let at = this.floodAt.get(r);
-      const inBasin = p.x > f.trigger && p.x < r.x1 + 10;
-      if (at !== undefined && !inBasin && p.grounded) {
-        at = Math.min(this.gameTime, at + 2 * dt);
-        if (at >= this.gameTime) {
-          this.floodAt.delete(r);
-          at = undefined;
-        } else this.floodAt.set(r, at);
-      }
-      if (at === undefined && inBasin && !this.isGameOver) {
-        at = this.gameTime;
-        this.floodAt.set(r, at);
-        if (!this.floodTold) {
-          this.floodTold = true;
-          this.guide('The water is rising! Free them and get back to the bank!', 4);
-        }
-      }
-      r.surfaceY = floodLevel(f, f.y0, at === undefined ? undefined : this.gameTime - at);
-    }
     if (!this.riverHinted && this.currentStage.rivers?.length) {
       const r0 = this.currentStage.rivers[0];
       if (p.x > r0.x0 - 380 && p.x < r0.x1) {
@@ -3026,8 +2999,6 @@ export class GameEngine {
         p.vy = 0;
         p.grounded = true;
         p.invincibleTimer = Math.max(p.invincibleTimer, 1);
-        // a rising teaching river (2-8) goes back down for the next try
-        if (river.flood) this.floodAt.delete(river);
       } else if (river && p.y > river.surfaceY + 8 && !this.isGameOver) {
         this.spawnWaterSplash(p.x, river.surfaceY);
         sound.playSplash(0);
@@ -6214,8 +6185,6 @@ export class GameEngine {
 
   private respawnAtCheckpoint(reason: 'water' | 'pit' | 'hurt', respawnTake = true, lifeNote = true) {
     const p = this.player;
-    // the rising rivers go back down: he comes back to water at its starting level
-    this.floodAt.clear();
     // (the attacks in the air go, but what a phase did to the arena stays, the boss still in that phase: it comes in again, warned, so
     // he is never put back inside it)
     const arena: BossHazard[] = [];
@@ -6327,8 +6296,8 @@ export class GameEngine {
     drawPorchPosts(ctx, posts, view, (c, x, top, foot, w) => drawKitColumn(c, 'trunk', x, top, foot, w));
   }
 
-  private drawRivers(ctx: CanvasRenderingContext2D, world: (typeof WORLDS_DATA)[number], over: boolean, floodsOnly = false) {
-    const rivers = floodsOnly ? this.currentStage.rivers?.filter((r) => r.flood && this.floodAt.has(r)) : this.currentStage.rivers;
+  private drawRivers(ctx: CanvasRenderingContext2D, world: (typeof WORLDS_DATA)[number], over: boolean) {
+    const rivers = this.currentStage.rivers;
     if (!rivers?.length) return;
     const cam = this.camera;
     const t = this.gameTime;
@@ -6341,7 +6310,7 @@ export class GameEngine {
       //  one clip: it stopped at the lip's x, and under a bank whose face slopes back in the water there showed as a lighter teal strip
       //  from the surface to the floor between the river and the wall, BUILD-27f's finding 2 at 2-7's deep river, DRESS-27c. A safe
       //  river's over pass draws only on its logs, and a flood's has no bank)
-      const [ul, ur] = over && (r.safe || floodsOnly) ? [0, 0] : this.riverUnderBanks(r);
+      const [ul, ur] = over && r.safe ? [0, 0] : this.riverUnderBanks(r);
       const x0 = r.x0 - ul, x1 = r.x1 + ur;
       if (x1 < cam.x - 40 || x0 > cam.x + cam.viewportWidth + 40) continue;
       const a = Math.max(x0, cam.x - 20);
@@ -7017,7 +6986,7 @@ export class GameEngine {
     if (this.cueRivers?.from !== this.platforms) this.cueRivers = { from: this.platforms, by: new Map() };
     let under = this.cueRivers.by.get(v.id);
     if (under === undefined) {
-      const r = (this.currentStage.rivers ?? []).find((q) => q.speed > 0 && !q.open && !q.raft && !q.flood && lianasOver([v], q).length > 0);
+      const r = (this.currentStage.rivers ?? []).find((q) => q.speed > 0 && !q.open && !q.raft && lianasOver([v], q).length > 0);
       const logs = r ? this.platforms.filter((q) => q.type === 'drift' && q.drift && onRiver(q.drift, r)).map((q) => q.drift!) : [];
       under = r && logs.length ? { logs, flowT: r.flowT !== undefined } : null;
       this.cueRivers.by.set(v.id, under);
@@ -7757,8 +7726,6 @@ export class GameEngine {
       ctx.fillStyle = g;
       ctx.fillRect(p.x - 124, p.y - 158, 248, 248);
     }
-    // 2-8: a rising river's water over the reed islands it has covered (the scene above paints the islands on top of the water)
-    if (this.floodAt.size) this.drawRivers(ctx, world, true, true);
     // World 2's basket lifts (2-7): the crane, the ropes and the basket where it is now (over the ground, so the basket shows at the bottom)
     for (const pl of this.platforms) if (pl.lift && this.onScreen(pl.x + pl.width / 2, (pl.lift.top + pl.lift.bottom) / 2, 400)) drawW2Lift(ctx, pl, !!pl.lift.postRight);
     // 2-6: the village's ladders where the climbs are

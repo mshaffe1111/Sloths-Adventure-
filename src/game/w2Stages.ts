@@ -31,12 +31,9 @@ import { buildW2Sections, w2Picks, type W2Kit, type W2Look, type W2Plan } from '
 export type { W2Plan } from './w2Sections.ts';
 export const W2_STAGES: Record<string, W2Plan> = {
   '2-6': '2-6',
-  '2-8': '2-8',
   '2-9': '2-9',
 };
 
-/** 2-8 Reed Cages asks for 7 more little ones (the stage holds about one and a half times that) */
-export const CAGES_28 = 7;
 /** 2-9 The River King's Court asks for 14 of the court's guards and snappers (it holds about one and a half times that) */
 export const COURT_GOAL_29 = 14;
 /** a reed island's top in a rising river: just above the still water (it starts 20 px below), so the water covers it as it rises */
@@ -46,9 +43,9 @@ export const ISLAND_TOP = 600;
  * so Dot's first tip (she waits 2.5 s at a stage's start: dotGuide.ts CALM) is up before anything can hurt him (stageStart.test.ts)
  */
 export const START_WALK = 1150;
-/** the stages with puzzle rooms (puzzleKit.ts): the reed cages on their pulleys (2-8), the court's bell (2-9). (2-3's is gone with its
- *  hand build: the designed 2-3 has none, the lead's ruling 8:05 PM ET 11-20; World 2 keeps two, STAGE-RULES' 2-3 per world) */
-export const W2_PUZZLES: ReadonlySet<string> = new Set(['2-8', '2-9']);
+/** the stages with puzzle rooms (puzzleKit.ts): the court's bell (2-9). (2-3's and 2-8's are gone with their hand builds: the designed
+ *  2-3 and 2-8 have none, the lead's rulings 8:05 PM ET 11-20 and READY-28 L1, cages by socket) */
+export const W2_PUZZLES: ReadonlySet<string> = new Set(['2-9']);
 /** a stone weighs this much in a counter-basket (puzzleKit.ts ITEM.stone) */
 const STONE = 2;
 /** a hanging cage's pool: a hop across, the cage over its middle; how far over the bank the cage comes up, its floor dropping open */
@@ -627,50 +624,6 @@ function buildW2Plan(config: LevelConfig, seed: number, plan: W2Plan): Generated
     return { path, xs, px };
   }
 
-  // ----- 2-8 Reed Cages: still water that rises -----
-
-  /**
-   * a basin of still water with low reed islands in it, reed cages hung over the water off some of them (each island with a cage has its
-   * pile of stones and the cage's counter-basket: cageRoom). Once he steps in the water starts to rise, and covers the islands after about
-   * `seconds` (it stops just under the banks). `safe`: falling in puts him back on the bank, and the water goes down for the next try (the
-   * teaching basins). `across`: each cage's stones are on the island before its own, across the water (thrown over, the twist).
-   */
-  function floodBasin(islands: number, cageAt: number[], seconds: number, opts: { safe?: boolean; across?: boolean; need?: number; tips?: RoomTips } = {}) {
-    const x0b = x;
-    run(R.r(145, 160));
-    close();
-    const bx0 = x;
-    let ix = x;
-    let prev: Platform | null = null;
-    for (let i = 0; i < islands; i++) {
-      ix += Math.round(one * R.r(0.36, 0.46));
-      const lifted = cageAt.includes(i) && (!opts.across || !!prev);
-      const w = Math.round(lifted ? R.r(250, 280) : R.r(150, 200));
-      const isl: Platform = { id: pid++, x: ix, y: ISLAND_TOP, width: w, height: 110, type: 'solid', style: 'moss_stone' };
-      P.push(isl);
-      if (lifted) cageRoom({ need: opts.need ?? STONE, mode: 'bank', critter: R.pick(['capy', 'duck', 'otter'] as const), ground: isl, ...(opts.across ? { pileOn: prev! } : {}), tips: i === cageAt[0] ? opts.tips : undefined });
-      else if (!opts.across || !cageAt.includes(i + 1)) row(ix + 40, ix + w - 40, ISLAND_TOP - 34, 2, 'lotus');
-      reeds(ix + R.r(16, 36), ISLAND_TOP + 4, R.chance(0.5));
-      ix += w;
-      // (the cage hangs over the water past its island: a pool's width, a hop across)
-      if (lifted) ix += POOL_W - Math.round(one * 0.4);
-      prev = isl;
-    }
-    ix += Math.round(one * R.r(0.36, 0.44));
-    // it rises from 22 px under the islands to 8 px over them (and stops 10 px under the banks)
-    rivers.push({
-      x0: bx0, x1: ix, surfaceY: SURFACE, dir: 1, speed: 0,
-      flood: { y1: ISLAND_TOP - 10, seconds, trigger: bx0 + 30 },
-      ...(opts.safe ? { safe: { backX: bx0 - 70, backY: G } } : {}),
-    });
-    reeds(bx0 - 20, G + 6);
-    reeds(ix + 20, G + 6, true);
-    open(ix, G);
-    run(R.r(145, 160));
-    expert += (x - x0b) / RUN + islands * 0.5;
-    pieces.push({ k: opts.across ? 'floodAcross' : 'flood', x0: x0b, x1: x });
-  }
-
   /** a reed cage with a little one in it, standing at (cx, floor) */
   function cage(cx: number, floor: number, critter: 'capy' | 'duck' | 'otter') {
     C.push({
@@ -792,92 +745,6 @@ function buildW2Plan(config: LevelConfig, seed: number, plan: W2Plan): Generated
   /** a spot on a platform at world x, as a room's anchor */
   const at = (p: Platform, wx: number, dy = 0): Anchor => ({ on: p.id, at: (wx - p.x) / p.width, ...(dy ? { dy } : {}) });
 
-  /**
-   * A reed cage hung on a rope over a pulley (Matt's sheet; 2-3 and 2-8): the cage over a pool a hop across, its counter-basket hanging
-   * on the bank before it, a pile of river stones behind. Stones in the basket lift the cage out of the water; all the way up, its floor
-   * drops open and the little one is free. No punch breaks it (engine.ts).
-   *   need   the weight that lifts it all the way (a stone weighs 2): with 4, the first stone lifts it halfway, so the room shows itself
-   *   mode   'bank': the pile on the basket's bank; 'across': the pile on a reed island across a channel (his hands full, he cannot jump:
-   *          the stones are thrown over); 'high': the basket hangs high up the post (flick up to throw the stones in)
-   *   ground build it on this reed island in a rising basin instead (2-8): the island ends where the cage hangs, over the basin's water;
-   *          `pileOn`: the stones are on the island before it, across the water (thrown over)
-   */
-  function cageRoom(o: { need: number; mode: 'bank' | 'across' | 'high'; critter: Critter; safe?: boolean; tips?: RoomTips; ground?: Platform; pileOn?: Platform }) {
-    const ri = rooms.length;
-    const x0 = x;
-    let first: Platform;
-    let pileP: Platform;
-    let A: Platform;
-    let pileX: number;
-    let basketX: number;
-    const postX = (o.pileOn ?? o.ground ?? { x }).x + 26;
-    if (o.ground) {
-      // on an island: the pile at its near end (or on the island before it, across the water: thrown over), the basket at its far end,
-      // the cage over the water past it
-      A = o.ground;
-      first = pileP = o.pileOn ?? A;
-      pileX = pileP.x + (o.pileOn ? 56 : 70);
-      basketX = A.x + A.width - 46;
-    } else if (o.mode === 'across') {
-      // the stones lie on a reed island a hop off this bank; the basket's bank is a hop on, across a channel
-      run(R.r(110, 140));
-      first = close()!;
-      const g1 = Math.round(R.r(84, 100));
-      const iw = Math.round(R.r(280, 300));
-      const ch = Math.round(R.r(110, 125));
-      const ix = x + g1;
-      rivers.push({ x0: x, x1: ix, surfaceY: SURFACE, dir: 1, speed: 0, ...(o.safe ? { safe: { backX: x - 60, backY: G } } : {}) });
-      pileP = bank(ix, ix + iw);
-      pileX = ix + 64;
-      rivers.push({ x0: ix + iw, x1: ix + iw + ch, surfaceY: SURFACE, dir: 1, speed: 0, ...(o.safe ? { safe: { backX: ix + iw - 50, backY: G } } : {}) });
-      reeds(ix + iw - 30, G + 4, true);
-      open(ix + iw + ch);
-      run(R.r(150, 170));
-      basketX = x;
-      run(64);
-      A = close()!;
-    } else {
-      // (narrow: the signpost, the pile, the basket and the cage all in one upright phone's view)
-      run(R.r(80, 100));
-      pileX = x;
-      run(R.r(100, 120));
-      basketX = x;
-      run(64);
-      A = first = pileP = close()!;
-    }
-    const E = A.x + A.width;
-    if (!o.ground) {
-      rivers.push({ x0: E, x1: E + POOL_W, surfaceY: SURFACE, dir: 1, speed: 0, ...(o.safe ? { safe: { backX: E - 60, backY: G } } : {}) });
-      reeds(E + POOL_W + 16, G + 6, true);
-    }
-    // the cage over the middle of the water: built where it ends up (lifted), the kit hangs it down at the rope's end as the stage starts
-    const cageId = cid++;
-    const cx = E + POOL_W / 2;
-    const topFloor = A.y - CAGE_UP;
-    C.push({ id: cageId, type: 'cage', x: cx, y: topFloor - 26, collected: false, bobPhase: 0, cageHp: 2, critter: o.critter });
-    const low = SURFACE + 10;
-    const stones2 = Math.ceil(o.need / STONE);
-    const parts: RoomSpec['pieces'] = [
-      { kind: 'reset', id: `post${ri}`, at: at(first, postX) },
-      { kind: 'source', id: `pile${ri}`, variant: 'stone', at: at(pileP, pileX), look: 'pile' },
-      ...Array.from({ length: stones2 }, (_, k) => ({ kind: 'item' as const, id: `stone${ri}${k}`, variant: 'stone' as const, source: `pile${ri}`, for: `basket${ri}`, ...(k ? { at: at(pileP, pileX + 40 * k) } : {}) })),
-      { kind: 'basket', id: `basket${ri}`, at: at(A, basketX), mouth: o.mode === 'high' ? 236 : 92, need: o.need, drop: 34 },
-      { kind: 'lift', id: `lift${ri}`, at: { on: A.id, at: 1, dx: POOL_W / 2, dy: low - A.y }, w: 56, rise: low - topFloor, by: `basket${ri}`, cage: cageId },
-    ];
-    rooms.push({
-      id: `cage${ri}`, left: at(first, Math.max(first.x + 2, Math.min(x0, postX - 20))), right: { on: A.id, at: 1, dx: POOL_W + 60 },
-      above: o.mode === 'high' ? 480 : 420, below: 170, pieces: parts, exit: `lift${ri}`, beyond: at(A, basketX - 20),
-      ground: [...new Set([first.id, pileP.id, A.id])], tips: o.tips,
-    });
-    if (!o.ground) {
-      open(E + POOL_W);
-      run(R.r(190, 220));
-    }
-    expert += (x - x0) / RUN + stones2 * 3 + (o.mode === 'bank' ? 1 : 3);
-    pieces.push({ k: `cage-${o.mode}`, x0, x1: x });
-    return { cageId, A };
-  }
-
 
   /**
    * The court gate (2-9): a latched gate in the court's wall, the court bell beside it. Ring the bell (a tap by it) and the gate opens
@@ -953,7 +820,7 @@ function buildW2Plan(config: LevelConfig, seed: number, plan: W2Plan): Generated
     get expert() { return expert; },
     addExpert: (s) => { expert += s; },
     run, open, beat, flag, hint, rest, breath, snakeBank, guardedRest, river, stones, lilyPond, swingRiver, stairs, porchRun,
-    floodBasin, cageRoom, bellGate, bellGallery, sandbar, island, postUp, channels, startWalk, heart, goldenSeed,
+    bellGate, bellGallery, sandbar, island, postUp, channels, startWalk, heart, goldenSeed,
     piece: (n, px, b, w, extra) => piece(n as W2Decor['n'], px, b, w, extra as Partial<W2Decor>),
     row, arc, flower, turtle, guard, snake,
     mark: (k, x0) => pieces.push({ k, x0, x1: x }),
@@ -987,7 +854,7 @@ function buildW2Plan(config: LevelConfig, seed: number, plan: W2Plan): Generated
   });
 
   const width = Math.ceil(x + 20);
-  const targetCount = plan === '2-8' ? CAGES_28 : plan === '2-9' ? COURT_GOAL_29 : config.targetCount;
+  const targetCount = plan === '2-9' ? COURT_GOAL_29 : config.targetCount;
   const cfg: LevelConfig = {
     ...config,
     levelWidth: width,

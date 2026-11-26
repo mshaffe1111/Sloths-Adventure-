@@ -18,8 +18,7 @@ import { stream } from './protoStage.ts';
 import type { RoomTips } from './puzzleKit.ts';
 import type { Collectible, LevelConfig, Platform, Vine } from './types.ts';
 
-export type W2Plan = '2-6' | '2-8' | '2-9';
-type Critter = 'capy' | 'duck' | 'otter';
+export type W2Plan = '2-6' | '2-9';
 type Stream = ReturnType<typeof stream>;
 
 /** the bank's dressing for a roll: reeds and poles, the moorings (jetty posts and spare logs), or the village's cottages */
@@ -52,8 +51,6 @@ export interface W2Kit {
   swingRiver(n: number, opts?: { safe?: boolean; island?: number; flow?: number; frames?: boolean }): void;
   stairs(rise: number, up: boolean): void;
   porchRun(n: number, water: boolean, tail?: number, safe?: boolean): { path: Platform | null; xs: number; px: number };
-  floodBasin(islands: number, cageAt: number[], seconds: number, opts?: { safe?: boolean; across?: boolean; need?: number; tips?: RoomTips }): void;
-  cageRoom(o: { need: number; mode: 'bank' | 'across' | 'high'; critter: Critter; safe?: boolean; tips?: RoomTips }): void;
   bellGate(tips: RoomTips): { gateX: number; bellX: number };
   bellGallery(guards: number): void;
   sandbar(dirA: 1 | -1, dirB: 1 | -1, speed: number, logW: number, opts?: { safe?: boolean; flowers?: number; tag?: string }): void;
@@ -87,7 +84,6 @@ export interface W2Kit {
 
 /** the flavours each stage rolls among (2-6 is World 1's climbing stage built up the bank houses: protoStage.ts buildKapok) */
 export const W2_FLAVOURS: Record<Exclude<W2Plan, '2-6'>, readonly string[]> = {
-  '2-8': ['islands', 'channels', 'reeds', 'logs'],
   '2-9': ['lilies', 'porches', 'sandbars', 'gates'],
 };
 const LOOKS: readonly W2Look[] = ['reeds', 'moorings', 'cottages'];
@@ -102,11 +98,10 @@ export interface W2Picks {
 /**
  * Which flavour each stage takes for a draw of 0..3. The draw is the layout number's own (the same for every stage of the world), and the
  * tables pair the stages that share a world's ideas so that one roll never gives them the same kind of way across (the 200-roll tool
- * compares each stage with the same roll of the others: "no two stages of a world alike", STAGE-RULES §2): 2-3 and 2-8 (the cages),
- * (2-1, 2-2, 2-4, 2-5 and 2-7 are gen2's: gen2/worlds/w2.ts, w2Arc24.ts, w2Arc25.ts, w2Arc27.ts)
+ * compares each stage with the same roll of the others: "no two stages of a world alike", STAGE-RULES §2)
+ * (2-1, 2-2, 2-3, 2-4, 2-5, 2-7 and 2-8 are gen2's: gen2/worlds/w2.ts and its w2Arc files)
  */
 const BY_DRAW: Record<Exclude<W2Plan, '2-6'>, readonly string[]> = {
-  '2-8': ['channels', 'reeds', 'logs', 'islands'],
   '2-9': ['porches', 'lilies', 'sandbars', 'gates'],
 };
 
@@ -276,74 +271,6 @@ class Crossings {
 }
 
 const PLANS: Record<Exclude<W2Plan, '2-6'>, (k: W2Kit, flavour: string, rng: Rng) => void> = {
-  // ======================================================================================================================
-  // 2-8 Reed Cages: more little ones caught in the reeds, in reed cages hung on pulleys off the islands of still water that rises once he
-  // steps in. Each cage's island has its pile of river stones and its counter-basket: a stone in, and the cage comes up out of the water
-  // and opens. Learn on basins where a fall costs nothing; then the deep basins, rolled: wide basins of many islands; basins with rivers
-  // and channels between; or the reeds, snakes on the banks between basins. The twist puts the stones on the island before the cage's,
-  // across the water, to be thrown over while the water climbs.
-  '2-8': (k, flavour, rng) => {
-    const { R } = k;
-    // the reeds between the basins, by the roll: more basins, close together; channels and stepping stones; snakes on the banks; or the
-    // log rivers
-    type T = Kind | 'basin' | 'across';
-    const kinds: Record<string, T[]> = {
-      islands: ['basin', 'across', 'basin', 'pond'],
-      channels: ['channels', 'basin', 'stones', 'channels', 'across'],
-      reeds: ['snake', 'basin', 'snake', 'across', 'snake'],
-      logs: ['with', 'basin', 'back', 'across', 'sandbar'],
-    };
-    const cross = new Crossings(k, { speed: 64 });
-    const turns = new Turns<T>(rng, kinds[flavour], 1);
-    const go = (t: T, n: number) => {
-      if (t === 'basin' || t === 'across') {
-        k.breath();
-        if (t === 'basin') k.floodBasin(3, n % 2 ? [1] : [0, 2], 26);
-        else k.floodBasin(3, [1], 26, { across: true });
-      } else cross.step(t, n, kinds[flavour].filter((x): x is Kind => x !== 'basin' && x !== 'across'));
-    };
-    k.beat('Learn: the water rises', () => {
-      k.run(R.r(200, 240));
-      k.hint(180, 'More little ones in the reeds! Free them before the water rises.');
-      k.floodBasin(2, [1], 30, { safe: true, tips: { enter: "The water's rising round that cage!", nudge: 'The basket lifts the cage.', move: 'A stone in the basket. Quick!', mech: 'flood' } });
-      k.hint(k.x - 220, 'Back on the bank before the islands go under!');
-      k.breath();
-      k.floodBasin(3, [0, 2], 30, { safe: true });
-      k.flag();
-    });
-    k.beat('Develop: deep water', () => {
-      k.breath();
-      k.hint(k.x + 10, 'Deep water now. Be quick!');
-      k.floodBasin(3, [1, 2], 26);
-      k.heart(k.x - 40, k.G - 60);
-      go(turns.next(), 1);
-      go(turns.next(), 2);
-      k.flag();
-    });
-    k.beat('Twist: stones across the water', () => {
-      k.breath();
-      k.floodBasin(3, [1], 26, { across: true, tips: { enter: 'The stones are on the next island.', hold: 'Flick toward the cage’s island to throw it.', nudge: 'Too far to carry it over.', move: 'Throw one over to the cage’s island.' } });
-      k.heart(k.x - 40, k.G - 60);
-      go(turns.next(), 3);
-      k.breath();
-      // a golden seed over the middle of a basin, a double jump from an island before it floods
-      const sx = k.x;
-      k.floodBasin(4, [2], 26, { across: true });
-      k.goldenSeed(sx + (k.x - sx) * 0.3, k.ISLAND_TOP - 170);
-      k.flag();
-    });
-    k.beat('Finish: before the water rises', () => {
-      let n = 0;
-      const cages = () => k.C.filter((c) => c.type === 'cage').length;
-      // (and cages enough, about one and a half times the goal, whatever the reeds between the basins)
-      while ((k.expert < k.EXPERT_SECONDS - 14 || cages() < 10) && n < 10) {
-        go(cages() < 10 && n >= 2 && n % 2 ? 'basin' : turns.next(), n);
-        if (++n % 2 === 0) k.flag();
-      }
-      k.rest(R.r(300, 400), false);
-    });
-  },
-
   // ======================================================================================================================
   // 2-9 The River King's Court: fight through the court to the king. His guards (royal snappers, upright with spears) block a blow to
   // the front, jab further than a snapper bites, and need two hits; from behind, or open after a jab, they go down; a kick staggers one

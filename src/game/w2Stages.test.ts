@@ -1,7 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { buildW2Stage, CAGES_28, COURT_GOAL_29, ISLAND_TOP, type W2Plan } from './w2Stages.ts';
-import { floodLevel } from './river.ts';
+import { buildW2Stage, COURT_GOAL_29, type W2Plan } from './w2Stages.ts';
 import { turtleGuard } from './predatorAI.ts';
 import type { Enemy } from './types.ts';
 import { EXPERT_SECONDS } from './protoStage.ts';
@@ -18,7 +17,8 @@ const SEEDS = Array.from({ length: 16 }, (_, i) => 1 + i * 37);
 // (2-4 is gen2's since BUILD-24, 11-18: gen2/worlds/w2Arc24.ts; its crossings are held in w2Arc24.test.ts. 2-3 is gen2's since BUILD-23,
 //  11-20: gen2/worlds/w2Arc23.ts, held in w2Arc23.test.ts)
 // (2-7 is gen2's since BUILD-27, 11-23: gen2/worlds/w2Arc27.ts, held in w2Arc27.test.ts)
-const PLANS: W2Plan[] = ['2-8', '2-9'];
+// (2-8's hand build is gone, BUILD-28: the designed 2-8 is laid by gen2, gen2/worlds/w2Arc28.ts)
+const PLANS: W2Plan[] = ['2-9'];
 
 test('World 2 trio: every roll passes the reachability check, keeps its beats in order, has one exit and hearts on the way', () => {
   for (const plan of PLANS) {
@@ -55,47 +55,12 @@ test('World 2 trio: every roll passes the reachability check, keeps its beats in
         const pads = st.platforms.filter((p) => p.lily && p.x >= r.x0 && p.x <= r.x1);
         const vines = st.vines.filter((v) => v.vineType === 'swing_liana' && v.x > r.x0 && v.x < r.x1);
         const porches = st.platforms.filter((p) => p.art === 'porch' && p.x > r.x0 && p.x < r.x1);
-        const islands = st.platforms.filter((p) => p.y === ISLAND_TOP && p.x > r.x0 && p.x < r.x1);
         // (still water is crossed on lily pads or stepping stones, or it is a pool a hop across: a hanging cage's; 2-2's ferry has one raft)
         const stones = st.platforms.filter((p) => p.style === 'moss_stone' && p.x >= r.x0 && p.x + p.width <= r.x1);
         const still = pads.length >= 3 || stones.length >= 3 || r.x1 - r.x0 <= 180;
-        assert.ok(r.open ? vines.length >= 2 || porches.length >= 2 : r.flood ? islands.length >= 2 : r.speed === 0 ? still : r.raft ? logs.length === 1 : logs.length >= 2, `${plan} seed ${s}: river at ${r.x0}`);
+        assert.ok(r.open ? vines.length >= 2 || porches.length >= 2 : r.speed === 0 ? still : r.raft ? logs.length === 1 : logs.length >= 2, `${plan} seed ${s}: river at ${r.x0}`);
       }
     }
-  }
-});
-
-test('2-8: reed cages hung on pulleys off the islands, in water that rises over them (and stops under the banks); stones thrown across', () => {
-  for (const s of SEEDS) {
-    const st = buildW2Stage(cfg('2-8'), s, '2-8');
-    const cages = st.collectibles.filter((c) => c.type === 'cage');
-    assert.equal(st.config.targetCount, CAGES_28);
-    assert.ok(cages.length >= CAGES_28 * 1.3, `seed ${s}: ${cages.length} cages`);
-    const floods = st.rivers!.filter((r) => r.flood);
-    assert.ok(floods.length >= 5, `seed ${s}: ${floods.length} basins`);
-    assert.ok(floods[0].safe && floods[1].safe && floods.slice(2).every((r) => !r.safe), `seed ${s}: the first two basins are the teaching ones`);
-    for (const r of floods) {
-      const top = floodLevel(r.flood!, r.surfaceY, 999);
-      // risen: over the islands (a cage on one is lost to the water), under the banks either side
-      assert.ok(top < ISLAND_TOP - 8 + 1 && top > 580, `seed ${s}: ${top}`);
-      // still: the islands stand clear of it
-      assert.ok(r.surfaceY > ISLAND_TOP + 8);
-      // the islands go under no sooner than 15 s after it starts
-      let t = 0;
-      while (floodLevel(r.flood!, r.surfaceY, t) > ISLAND_TOP - 8) t += 0.1;
-      assert.ok(t >= 15, `seed ${s}: islands under after ${t.toFixed(1)} s`);
-    }
-    // every cage hangs on a pulley off a reed island, its stones on that island or (the twist) on the island before it
-    const rooms = st.kit!.rooms;
-    for (const c of cages) {
-      const room = rooms.find((r) => r.pieces.some((p) => p.kind === 'lift' && p.cage === c.id));
-      assert.ok(room, `seed ${s}: cage ${c.id} hangs on a pulley`);
-      const isl = st.platforms.find((p) => p.id === room!.left.on)!;
-      assert.equal(isl.y, ISLAND_TOP, `seed ${s}: its stones are on a reed island`);
-    }
-    assert.ok(rooms.filter((r) => r.ground.length >= 2).length >= 2, `seed ${s}: stones across the water`);
-    // the first basins teach it: one stone, and a fall costs nothing
-    assert.ok(rooms[0].tips?.enter && floods[0].safe, `seed ${s}: taught`);
   }
 });
 

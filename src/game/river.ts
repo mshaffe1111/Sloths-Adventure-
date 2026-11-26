@@ -67,11 +67,6 @@ export interface RiverZone {
   /** he crosses it right to left (a river in a leg laid left, gen2/legs.ts reflectLeg): `dir` is still the screen's (-1 flows left, WITH
    *  him), and its fairness is judged in its own frame, as if he crossed it rightwards (gen2/riverLay.ts riverFaults). Unset: left to right */
   way?: -1;
-  /**
-   * 2-8 Reed Cages: still water that rises once he passes `trigger`, from where it starts to `y1` over `seconds`, covering the low reed
-   * islands in it (the banks stay dry). Back to where it started when he respawns. `y0` is filled in by the engine (the starting level).
-   */
-  flood?: { y1: number; seconds: number; trigger: number; y0?: number };
   /** a gen2 flood's water (RiverRow.flood, gen2/floodLay.ts; flood.ts FloodClock raises it): its mark and its banks' top (`lip`) */
   floodMark?: { kind: 'rise' | 'close' | 'teach'; lip: number };
   /** a MARSH (RiverRow.marsh, riverLay layRiver): a walkable floor in the water, its top `floor` (y), under banks whose top is `lip` (y);

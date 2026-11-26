@@ -184,7 +184,7 @@ function rightwards(r: RiverZone, platforms: readonly Platform[], vines: readonl
 export function riverFaults(st: { platforms: readonly Platform[]; rivers?: readonly RiverZone[]; vines?: readonly Vine[] }, difficulty: Difficulty = 'normal'): string[] {
   const out: string[] = [];
   for (const r0 of st.rivers ?? []) {
-    if (r0.speed === 0 || r0.open || r0.raft || r0.flood) continue;
+    if (r0.speed === 0 || r0.open || r0.raft) continue;
     const at = `river at x=${Math.round(r0.x0)}`;
     // (a river he crosses right to left (a leg laid left, RiverZone.way) is judged in its own frame: the stage turned about it, so his near
     //  bank is on the left and `dir` is the current against or with him, as every rule below reads it)

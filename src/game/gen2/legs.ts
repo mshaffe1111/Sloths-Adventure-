@@ -181,7 +181,6 @@ export function reflectLeg(laid: LegLaid, sum: number): void {
     if (r.way === -1) delete r.way; else r.way = -1;
     if (r.safe) r.safe = { ...r.safe, backX: sum - r.safe.backX };
     if (r.spur) r.spur = { ...r.spur, x: sum - r.spur.x };
-    if (r.flood) r.flood = { ...r.flood, trigger: sum - r.flood.trigger };
   }
   for (const q of laid.riverPetals ?? []) q.dx = q.log.width - q.dx;
   const vines = new Set<Vine>([...laid.vines, ...laid.sections.flatMap((q) => q.vines.map((e) => e.vine))]);

@@ -1,8 +1,7 @@
 /**
- * World 2's puzzle rooms (2026-10-28), built from the puzzle kit (puzzleKit.ts): the reed cages hung on pulleys over the water (2-8; 2-3's hand build is gone,
- * BUILD-23 11-20: its pulley tests stand on 2-8's cages, the same kit rooms),
- * lifted out by river stones in their counter-baskets; the ferry's raft behind its sluice (2-2); the court bell that opens the court
- * gate and calls the guards to look (2-9). Their rules, their check, and the rooms played in the real engine.
+ * World 2's puzzle rooms (2026-10-28), built from the puzzle kit (puzzleKit.ts): the court bell that opens the court gate and calls
+ * the guards to look (2-9), its rule and the room played in the real engine. (The reed cages hung on pulleys went with 2-8's hand build,
+ * BUILD-28: the designed 2-8 holds its cages by socket, READY-28 L1; no stage lays a pulley cage now.)
  */
 import test from 'node:test';
 import assert from 'node:assert/strict';
@@ -30,71 +29,6 @@ const host = (p: PlayerState, freed: Collectible[]): KitHost => ({
   },
 });
 const idle = (x: number) => ({ x, y: G, vx: 0, vy: 0, facing: 1, grounded: true, walkCycle: 0 }) as unknown as PlayerState;
-
-test('a hanging cage starts down in the water, rides its rope up as a stone goes in its basket, and opens all the way up', () => {
-  // (2-8's cages, BUILD-23: 2-3's hand build held the two-stone cage whose first stone lifted it halfway; no stage lays one now, so the
-  //  halfway step went with it; every other assertion stands on 2-8's one-stone cages)
-  for (const s of SEEDS) {
-    const st = buildW2Stage(cfg('2-8'), s, '2-8');
-    const kit = new KitPlay(st.kit!, st.platforms, { rivers: st.rivers, collectibles: st.collectibles });
-    const ri = kit.rooms.findIndex((r) => r.lifts.some((l) => l.cage));
-    const room = kit.rooms[ri];
-    const lift = room.lifts[0];
-    const cage = lift.cage!;
-    assert.ok(kit.holdsCage(cage));
-    const low = cage.y;
-    assert.ok(Math.abs(low - (lift.plat.y - 26)) < 1, 'it hangs at the rope end');
-    assert.ok(lift.plat.broken, 'nothing to stand on under a hanging cage');
-    const freed: Collectible[] = [];
-    const h = host(idle(room.box.x0 + 10), freed);
-    const step = (sec: number) => { for (let t = 0; t < sec; t += 1 / 30) kit.step(1 / 30, h, st.platforms); };
-    step(1);
-    assert.ok(!cage.collected && Math.abs(cage.y - low) < 1, 'no stone: it stays down, shut');
-    room.items[0].mode = 'basket';
-    room.items[0].basket = 0;
-    step(2);
-    assert.equal(lift.level, 1);
-    assert.deepEqual(freed, [cage], 'all the way up, its floor drops open');
-    assert.ok(Math.abs(cage.y - (lift.baseY - lift.spec.rise - 26)) < 1, 'it stays up, where the check placed it');
-  }
-});
-
-test('the check: a cage room is solved only with its cage lifted; a basket the room cannot fill fails it', () => {
-  // (2-8's rooms, BUILD-23: 2-3's hand build is gone)
-  const st = buildW2Stage(cfg('2-8'), 1, '2-8');
-  assert.deepEqual(roomErrors(st), []);
-  // (a basket asking for one stone more than the room holds: the cage never comes all the way up)
-  const room = st.kit!.rooms.find((r) => r.pieces.some((p) => p.kind === 'item') && r.pieces.some((p) => p.kind === 'basket'))!;
-  const basket = room.pieces.find((p) => p.kind === 'basket')!;
-  if (basket.kind === 'basket') basket.need = 2 * (room.pieces.filter((p) => p.kind === 'item').length + 1);
-  const errs = roomErrors(st);
-  assert.ok(errs.some((e) => e.includes(room.id) && e.includes('can never be opened')), errs.join('; '));
-});
-
-test('the across room: the stones lie on a reed island over a channel, and only a throw gets them to the basket', () => {
-  // (2-8's across basins, BUILD-23: 2-3's hand build is gone)
-  for (const s of SEEDS) {
-    const st = buildW2Stage(cfg('2-8'), s, '2-8');
-    const on = (r: RoomSpec, k: 'source' | 'basket') => (r.pieces.find((p) => p.kind === k) as { at: { on: number } }).at.on;
-    const room = st.kit!.rooms.find((r) => on(r, 'source') !== on(r, 'basket'))!;
-    const src = room.pieces.find((p) => p.kind === 'source')!;
-    const basket = room.pieces.find((p) => p.kind === 'basket')!;
-    assert.ok('at' in src && 'at' in basket && src.at!.on !== basket.at.on, 'the pile and the basket on two pieces of ground');
-    const isl = st.platforms.find((p) => p.id === (src as { at: { on: number } }).at.on)!;
-    // (still water both sides of the island: no walking over with a stone. 2-8's basin is one still river the islands stand in)
-    const wet = (x: number) => st.rivers!.some((r) => r.speed === 0 && x > r.x0 && x < r.x1);
-    assert.ok(wet(isl.x - 4) && wet(isl.x + isl.width + 4), `seed ${s}: water both sides of the island at ${isl.x}`);
-  }
-  assert.deepEqual(validateStage(buildW2Stage(cfg('2-8'), 1, '2-8')).errors, []);
-});
-
-test('2-8: every cage in the rising basins hangs off a reed island, and every room is solvable', () => {
-  for (const s of SEEDS) {
-    const st = buildW2Stage(cfg('2-8'), s, '2-8');
-    assert.deepEqual(roomErrors(st), [], `seed ${s}`);
-    assert.ok(st.collectibles.filter((c) => c.type === 'cage').every((c) => st.kit!.rooms.some((r) => r.pieces.some((p) => p.kind === 'lift' && p.cage === c.id))));
-  }
-});
 
 test('the court bell: a tap rings it, the court gate opens and stays open, and the guard past the gate comes to look', () => {
   const st = buildW2Stage(cfg('2-9'), 1, '2-9');
@@ -133,111 +67,7 @@ test('the court bell in play: tapped, the gate opens for good, and the first gua
   void heard;
 });
 
-test('a hanging cage in play: no punch breaks it; a stone set in its basket lifts it out and frees the little one', () => {
-  // (2-8's first cage, BUILD-23: 2-3's hand build is gone)
-  const r = new RealPlay('2-8', 1);
-  const kit = r.e.kit as KitPlay;
-  assert.ok(kit);
-  const room = kit.rooms[0];
-  const cage = room.lifts[0].cage!;
-  const before = r.p.crittersRescued;
-  // punching at it from the bank does nothing to it
-  r.stand(room.baskets[0].x + 40, room.baskets[0].y);
-  r.frame({ right: true });
-  r.frame();
-  for (let i = 0; i < 3; i++) {
-    r.frame({ punch: true });
-    r.wait(0.5);
-  }
-  assert.equal(cage.collected, false, 'too tough to punch open');
-  // pick up the stone at its pile, carry it to the basket, tap: in it goes
-  const stone = room.items[0];
-  r.stand(stone.x - 12, stone.y);
-  r.frame({ right: true });
-  r.frame();
-  r.frame({ punch: true });
-  r.frame();
-  assert.equal(stone.mode, 'held', 'picked up');
-  for (let i = 0; i < 400 && r.p.x < room.baskets[0].x - 40; i++) r.frame({ right: true });
-  r.frame();
-  r.frame({ punch: true });
-  r.frame();
-  assert.equal(stone.mode, 'basket', 'in the basket');
-  r.wait(2.5);
-  assert.ok(cage.collected, 'up it comes, and the little one is free');
-  assert.equal(r.p.crittersRescued, before + 1);
-});
-
-test('2-8 in play: the water rises while he is in a basin, and drains away once he is back on a bank (a cage left behind can be gone back for)', () => {
-  const r = new RealPlay('2-8', 1);
-  const basin = r.stage.rivers!.find((q) => q.flood)!;
-  const isl = r.platforms.filter((q) => q.y === 600 && q.x > basin.x0 && q.x < basin.x1).sort((a, b) => a.x - b.x)[0];
-  const still = basin.surfaceY;
-  r.stand(isl.x + 40, isl.y);
-  r.wait(6);
-  const risen = basin.surfaceY;
-  assert.ok(risen < still - 5, `it rises with him in the basin (${still} -> ${risen})`);
-  r.stand(basin.x0 - 120, G);
-  r.wait(8);
-  assert.ok(Math.abs(basin.surfaceY - still) < 0.5, `back on the bank, it drains (${basin.surfaceY})`);
-  // and in again, it starts rising again
-  r.stand(isl.x + 40, isl.y);
-  r.wait(2);
-  assert.ok(basin.surfaceY < still - 0.5);
-});
-
 /** the room check's errors for a stage, as the level check runs it (levelCheck.ts hands the rooms its own graph) */
 function roomErrors(st: ReturnType<typeof buildW2Stage>): string[] {
   return validateStage(st).errors.filter((e) => e.startsWith('room '));
 }
-
-// Matt, 2-3, 2026-10-31: "2 cages won't open so you can't solve the level" (the two high-basket cages). A throw up carried ~95 px
-// forward, so from under the high basket, where anyone stands, the stone flew over the pool and was lost every time; it only went in
-// from a 50 px strip well back from the post (puzzleKit.ts aimUp). Every cage, in play: each stone carried to the basket and, standing
-// under it, flicked up (a high basket) or tapped in (a bank's basket), opens it, on Normal and Easy.
-test('every cage in 2-8 opens in play: each stone carried to its basket and flicked up (or tapped) in from under it', () => {
-  try {
-    for (const mode of ['normal', 'easy'] as const) {
-      setDifficulty(mode);
-      // (every critter in every mode, not just the rolls: Matt, "it feels like one of the animals won't work". The critter is only its
-      // look in the engine, but each seed is also played with every cage holding a capybara, then a duckling, then an otter)
-      const runs = (['2-8'] as const).flatMap((plan) => [1, 2, 3, 38, 75, 112].flatMap((seed) => [undefined, ...(seed <= 2 ? (['capy', 'duck', 'otter'] as const) : [])].map((force) => ({ plan, seed, force }))));
-      for (const { plan, seed, force } of runs) {
-        const r = new RealPlay(plan, seed);
-        const kit = r.e.kit as KitPlay;
-        if (force) for (const room of kit.rooms) for (const l of room.lifts) if (l.cage) l.cage.critter = force;
-        let rooms = 0;
-        kit.rooms.forEach((room) => {
-          const l = room.lifts.find((q) => q.cage);
-          if (!l) return;
-          rooms++;
-          const b = room.baskets[l.basket];
-          const high = b.spec.mouth > KIT.up;
-          for (const stone of room.items) {
-            if (l.cage!.collected) break;
-            // (picked up where it lies, close by it: a step back on 2-8's islands is the room's reset post, nearer than the stone)
-            r.stand(stone.x - 12, stone.y);
-            r.frame({ right: true });
-            r.frame();
-            r.frame({ punch: true });
-            r.frame();
-            assert.equal(stone.mode, 'held', `${mode} ${plan} seed ${seed} ${room.spec.id}: picked up`);
-            // under the basket, facing it, then flick up (a high basket) or tap (a bank's)
-            r.stand(b.x - 16, b.y);
-            r.frame({ right: true });
-            r.frame();
-            r.frame(high ? { up: true, jump: true, press: true } : { punch: true });
-            r.frame();
-            r.wait(2.5);
-            assert.equal(stone.mode, 'basket', `${mode} ${plan} seed ${seed} ${room.spec.id} ${l.cage!.critter} (${high ? 'high' : 'bank'} basket): the stone goes in, not ${stone.mode}`);
-          }
-          assert.ok(l.cage!.collected, `${mode} ${plan} seed ${seed} ${room.spec.id}: the cage comes all the way up and opens`);
-        });
-        assert.ok(rooms >= 7, `${plan} seed ${seed}: its cages (${rooms})`);
-        assert.ok(r.p.crittersRescued >= rooms, `${mode} ${plan} seed ${seed}: every little one freed (${r.p.crittersRescued} of ${rooms})`);
-      }
-    }
-  } finally {
-    setDifficulty('normal');
-  }
-});
