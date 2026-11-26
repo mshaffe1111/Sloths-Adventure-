@@ -271,14 +271,25 @@ function catchUnder(platforms: readonly Platform[], x: number, y: number, reach:
   return best;
 }
 
+/**
+ * Where his middle goes stepping off the end of wood at `end` toward `dir`: a body's width past it, but never past the walls the engine
+ * keeps his middle inside, [20, width - 20]; null when the end is at or past that wall (no place for him off it: no end). The engine
+ * stands him only while his middle is over wood, so an end 14 px in from that line is a slot he falls down: on the drafted 3-1, log
+ * #48's left end at x 34 left one, read as no end (its body-width point, x 10, is past the wall), and the child, jumping left against
+ * the wall at x 20, fell past it 1850 px (ENG-DARK box 18).
+ */
+export function offEnd(end: number, dir: -1 | 1, width: number): number | null {
+  return dir < 0 ? (end <= 20 ? null : Math.max(20, end - 24)) : end >= width - 20 ? null : Math.min(width - 20, end + 24);
+}
+
 /** where stepping off either end of a standable piece falls further than `most` px (or out of the tower): the open ends a catch is
- *  owed. An end at a wall is no end: the engine keeps him inside [20, width - 20] */
+ *  owed. An end at a wall is no end (offEnd) */
 export function openEnds(platforms: readonly Platform[], floorY: number, most: number, width: number): Array<{ p: Platform; x: number; drop: number }> {
   const out: Array<{ p: Platform; x: number; drop: number }> = [];
   for (const p of platforms) {
     if (p.type !== 'solid' || p.y >= floorY - 1) continue;
-    for (const x of [p.x - 24, p.x + p.width + 24]) {
-      if (x < 20 || x > width - 20) continue;
+    for (const x of [offEnd(p.x, -1, width), offEnd(p.x + p.width, 1, width)]) {
+      if (x === null) continue;
       // (a neighbour at the same height, or one he walks onto: no fall there)
       if (platforms.some((q) => q !== p && q.type !== 'fragile' && x >= q.x && x <= q.x + q.width && q.y <= p.y + 1 && q.y + q.height > p.y)) continue;
       const land = catchUnder(platforms, x, p.y, 100000);
@@ -376,7 +387,7 @@ export function towerCatches(flow: 'up' | 'down', platforms: readonly Platform[]
     const v = climbs.find((q) => a + 6 < q.x && b - 6 > q.x && y > q.topY + 10 && y < q.bottomY - 10);
     if (!v) return false;
     // (a walled end is no way off it: walledEnd)
-    return ![a - 24, b + 24].filter((x, i) => x >= 20 && x <= width - 20 && !walledEnd([...all, box], i ? b : a, i ? 1 : -1, y)).some((x) => { const l = catchUnder([...all, box], x, y, 100000); return l !== undefined && l <= v.bottomY + 2; });
+    return ![offEnd(a, -1, width), offEnd(b, 1, width)].filter((x, i): x is number => x !== null && !walledEnd([...all, box], i ? b : a, i ? 1 : -1, y)).some((x) => { const l = catchUnder([...all, box], x, y, 100000); return l !== undefined && l <= v.bottomY + 2; });
   };
   // (going down, no slot beside it: a bough within a step of the wood beside it (SLOT.step px in height) lies flush with it, a
   //  walkable crack from it (SLOT.walk) or his body and a margin clear of it (SLOT.clear). A gap about his body's width between two
@@ -477,7 +488,7 @@ export function towerCatches(flow: 'up' | 'down', platforms: readonly Platform[]
       //  drafted 3-1 rolls, where a bough a little higher, off the vine's top, landed both ends, ENG-DOWNBOT)
       const landed = (bx: number, y: number) => {
         const box = { id: 0, x: bx, y, width: TOWER.catchW, height: 24, type: 'solid' } as Platform;
-        return [bx - 24, bx + TOWER.catchW + 24].every((x) => x < 20 || x > width - 20 || all.some((q) => q.type === 'solid' && Math.abs(q.y - y) <= 1 && x >= q.x && x <= q.x + q.width) || (catchUnder([...all, box], x, y, most) !== undefined));
+        return [offEnd(bx, -1, width), offEnd(bx + TOWER.catchW, 1, width)].every((x) => x === null || all.some((q) => q.type === 'solid' && Math.abs(q.y - y) <= 1 && x >= q.x && x <= q.x + q.width) || (catchUnder([...all, box], x, y, most) !== undefined));
       };
       let pick: { bx: number; y: number; L: number } | undefined;
       for (const y of ys) {
@@ -648,7 +659,7 @@ export function handOn(platforms: readonly Platform[], x0: number, x1: number, y
   const solid = platforms.filter((p) => p.type === 'solid');
   const run = runOf(solid, x0, x1, y);
   // (a walled end is no way off: walledEnd)
-  const offs = (r: { a: number; b: number; y: number }) => [r.a - 24, r.b + 24].filter((x, i) => x >= 20 && x <= width - 20 && !walledEnd(platforms, i ? r.b : r.a, i ? 1 : -1, r.y)).map((x) => ({ x, l: catchUnder(platforms, x, r.y, 100000) }));
+  const offs = (r: { a: number; b: number; y: number }) => [offEnd(r.a, -1, width), offEnd(r.b, 1, width)].filter((x, i): x is number => x !== null && !walledEnd(platforms, i ? r.b : r.a, i ? 1 : -1, r.y)).map((x) => ({ x, l: catchUnder(platforms, x, r.y, 100000) }));
   const first = offs(run).map((o) => o.l);
   let open = false;
   const todo = [run], seen = new Set([`${run.a} ${run.y}`]);
