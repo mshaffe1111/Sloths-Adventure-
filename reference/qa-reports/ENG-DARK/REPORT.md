@@ -1,4 +1,44 @@
 # ENG-DARK REPORT (the dark + light ring as one gen2 brick; WORLD-3-PLAN F2; R-165.449)
+**EXACT NEXT STEP (ENG-DARK-r box 18 HAND-OVER, 1:55 PM ET by `date`; head on t-eng-dark-wip = this commit; CODE CANDIDATE a1d6a529c (c12):
+steps 1-3 of the order DONE (below); the x40 on frozen a1d6a529c was started by box 18 (its verdict below if it landed before the push).**
+**BOX 19 DOES, in order:** (0) `git worktree add --detach <dir> a1d6a529c`, node_modules linked (npm install --legacy-peer-deps, as CI).
+(1) IF no x40 verdict is below: the x40 on that frozen tree, 2 lanes in the background: `GEN2_DRAFT=3-1 npx tsx tools/inspect/castBots.ts
+--stage 3-1 --seeds 1-20 --setting both --par 2 --rows reference/qa-reports/ENG-DARK/cast-3-1-x40-a1d6a529-lane1.jsonl` and 21-40 as
+lane2 (about 6-10 min); `python3 x40verdict.py cast-3-1-x40-base-c1008d8e.jsonl <lane1> <lane2>` vs THE BAR (shrine 360/360, unlit <= 5,
+no loop of 10+, no rescue kind new against the base per the ruling: kinds.py <lanes> lists each, base same spot or not).
+(2) dark.test + darkBots.test + castBots.test WHOLE on the frozen tree (2 at a time) and ALL plants: `python3
+reference/qa-reports/ENG-DARK/planted-faults.py <dir>` (43 plants; every one CAUGHT, none NO TEST / BASE RED / MISSED).
+(3) the gates ONCE (tierBots 9/9, the CI tool line on a FULL tree, the suite shards in the background WITH timeout 7200000), then LAND
+on t-eng-w3 (88592a9c4, unmoved at 1:54 PM ET): merge, no force, conflicts named; dark.test + darkBots.test + castBots.test + lockall
+on the merged head; push; the landed hash to the lead with what READY-31 can measure. LANDED by 6:00 PM ET; if it slips, tell the lead
+at 5:30 PM ET exactly what is left; HARD STOP 7:00 PM ET.
+Probes rebuilt in box 18 (scratch, not committed; rebuild if needed): onerun2 (onerun.mts + rescued/dur per stuck), onerun3 (+ CAP env),
+lays.mts (md5 of the 80 lays), hj.mts (the hop-rim scan for the glowJump toy). Lessons applied: D115 (every row and toy on a frozen
+tree), D119, D128, D134, D138, D140, D141 (the CI line is box 19's on this candidate). LEARNED: a toy run ALONE must ready its own draft
+(planted-faults runs each toy alone; one that leans on an earlier test's readyDraft plays the old stage and goes MISSED, not BASE RED).
+**BOX 18 (ENG-DARK-r) STATE, 1:54 PM ET by `date`: CODE CANDIDATE a1d6a529c (c12) on t-eng-dark-wip; its x40 RUNNING (2 lanes, frozen).**
+1. **N 25's wall fall: CAUSE AND FIX.** The jump: firsttimer intend's tier edge (`this.standing` -> startJump, the stand-then-jump at an
+   edge) after the dark stop at x 112 on #47: `pit` read true, its probe (x - look - 40 = about 12) over the 14 px SLOT between the wall
+   clamp (his middle is kept in [20, W - 20]) and log #48's left end at x 34; the engine stands him only while his MIDDLE is over wood
+   (engine.ts landing), so the slot is real: a player jumping left there falls 1850 px too. The lay read that end as NO END: openEnds
+   (and handOn, landed, passes) probed at end - 24 = 10, outside the clamp, and skipped it. FIX 8cc3a319a: tower.ts `offEnd` (one rule:
+   his middle a body-width past the end, clamped to the walls; null only for an end on or past the clamp line), read by all four. The
+   lay now runs #48 on into the wall (rule 1: #121, 0-34). Child N 25 on frozen 8cc3a319a: 211.4 s / 3 rescues (c9) -> 244.2 s / 2
+   rescues, both base kinds (base child N 25: 271.6 s / 2); the 9493 stop of the new kind is no longer a rescue (he gets out in 9.8 s).
+2. **Box 17's rule, toys + plants:** tower.test SHAPE toy (towerHandOns names the walled catch; without the log kept; walledEnd values
+   17 px/90 px log walled, flush 62 px walled, 28 px off open, level open); offEnd toy (values, openEnds names the 14 px slot, the lay
+   closes it); darkBots: the route on Normal 22 leaves catch #193 by its open right end (corner 1034, 8658), the kid on Normal 22 cap
+   135 s no rescue in y 8311-8658. **Taken out (no row needs them):** `passes`' walledEnd read (all 80 drafted lays byte-identical with
+   it planted out) and firsttimer downEnd's walledEnd read (instrumented: it decided nothing on kid/middle/adult/child N 22, adult E 37,
+   child N 25). Plants on frozen d156ccf84: offEnd-as-it-was CAUGHT, handOn's filter CAUGHT, dropTo without walledEnd CAUGHT,
+   walledEnd false first MISSED: the kid toy run ALONE never readied the draft (it played the old 3-1); fixed (readyDraft), RED planted.
+3. **Box 16's toys on the final lay:** dark.test 'a RUN off an edge with its OWN dark stop' (Normal 22, 699/5658 still a run-off rim
+   on the final lay; planted: 12 rims, none there); darkBots 'two rims' SHAPE toy (child put on Normal 22's piece 106, own light woken
+   by hand, met light 34 asleep; GREEN he leaves after it is lit DARK_AHEAD; planted: leaves at 0.90 s, light asleep). Child N 22's
+   real unlit anchor does NOT hold on the final lay (planted, unlit [] over the whole run): hence the shape toy. **glowJump toy
+   re-anchored** as a SHAPE toy (no real row holds it: Easy 2, Normal 4/17/27 unlit [] planted): Normal 4's hop rim (808, 5980), the
+   expert put 150 px before it at 250 px/s: GREEN unplanted, RED planted. **dark.test was RED on c9 already** (hopStep: no hop rim on
+   rolls 1-10 of the going-down lay): the scan reads rolls 1-40, GREEN.
 **EXACT NEXT STEP (ENG-DARK-q box 17 HAND-OVER, 1:26 PM ET by `date`; head on t-eng-dark-wip = this commit; CODE CANDIDATE b1c17c9b1 (c9).
 The lead's answer (box 17): KEEP ENG-DOWNBOT's lay in this landing; ONE walled-end rule read by handOn and dropTo; no catch laid
 without an open end (repair where it can, refuse where it can't); toys and plants each way; N 25's wall fall traced; then a fresh
