@@ -1314,7 +1314,9 @@ export function renderWorldObjects(
   vines: Vine[],
   trees: TreeStructure[],
   cam: Cam,
-  time: number
+  time: number,
+  /** every piece of the stage (the painted ones too, which `platforms` leaves out): where a bounce plant's stalk ends (stalkFoot) */
+  allPlatforms: Platform[] = platforms
 ) {
   const look = lookFor(worldId);
   curWorld = worldId;
@@ -1353,7 +1355,7 @@ export function renderWorldObjects(
     const tl = terrainLook(p, plan, look, !!curRig);
     if (tl === 'bounce') {
       const tp = thinPlanFor(plan, p);
-      drawBounce(ctx, p, worldId, tp.variant, time, Math.min(bounceBottom, stalkFoot(p, platforms)));
+      drawBounce(ctx, p, worldId, tp.variant, time, Math.min(bounceBottom, stalkFoot(p, allPlatforms)));
     } else if (tl === 'fragile') {
       const tp = thinPlanFor(plan, p);
       const [dx, dy] = shakeOffset(p, time);
