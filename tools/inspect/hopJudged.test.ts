@@ -445,7 +445,10 @@ test('a beat row is started from a floor that stays only on a breath that crosse
     P.play = play;
   }
   assert.ok(starts.some((b) => b.carried !== null), `he never started a beat row off a floor that stays reached over pads with the latch seen on another floor, by t 152 (${starts.map((b) => '#' + b.from + '@' + b.t.toFixed(2)).join(' ')})`);
-  const lagMax = ft.FT_ADULT.thumb[0] + 3 * ft.FT_ADULT.thumb[1];
+  // (his thumb's lag as thumbLags bins it, the comment above: mid + 3 sd pressed on its own frame, pressIn (the adult's 0.12 s presses at
+  //  0.167 s). The raw lag stood a frame short of that: the honest start off #50 at 75.533 (1.87 s for 2.04, the bar 1.8435) read red on
+  //  C9 and C11 and green on C10 as the run's random stream moved; R-165.465 ruling 2, a test correction)
+  const lagMax = ft.pressIn(ft.FT_ADULT.thumb[0] + 3 * ft.FT_ADULT.thumb[1]);
   for (const b of starts) assert.ok(b.left >= b.need - DT - lagMax, `he left floor #${b.from} at t ${b.t.toFixed(3)} onto beat pad #${b.on} with ${b.left.toFixed(2)} s of the breath left for a run that needs ${b.need.toFixed(2)} s`);
 });
 
