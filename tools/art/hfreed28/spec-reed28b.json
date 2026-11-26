@@ -1,0 +1,35 @@
+{
+ "tag": "reed28b",
+ "edits": [
+  {
+   "name": "isleC",
+   "src": "gh:COMMIT:reference/art/hfreed28/starts/isleC.png",
+   "refs": [
+    "gh:COMMIT:reference/art/hfreed28/starts/ref-w2bank.png"
+   ],
+   "w": 1024,
+   "h": 768,
+   "seeds": [
+    23,
+    37
+   ],
+   "prompt": "Repaint the first image as one small marsh island of reeds and wet mud standing in a river, in exactly the hand-painted storybook style of the riverbank pieces in the second image: soft painterly gouache shading, fine thin dark-brown linework, a mossy green grass top, warm brown layered soil. The island's top is one long, perfectly flat and level grassy walking surface from end to end, open and clear in the middle; clumps of cattail reeds and bulrushes grow only at the two ends, standing behind the top edge. Its sides are rounded, sloping banks of wet mud with a few small roots, darker and glistening wet toward the bottom, fading softly away at the very bottom. It is a natural little island mound, never a box: its two ends round over in soft mossy shoulders and its muddy sides slope inward to a narrower foot. Keep its width, its flat top and the places of the two reed clumps. Keep the flat plain grey background around it, with empty grey space on every side.",
+   "neg": "photo, 3d render, blurry, text, letters, watermark, frame, border, scenery, sky, horizon, landscape, wall, ground plane, thick black outline, flat vector, clip art, harsh shadow, cast shadow, extra objects, sloped top, tilted top, dome, hill, rounded top, rocks on top, reeds in the middle, people, animals, sloth, cage, boat, box shape, sharp corners"
+  },
+  {
+   "name": "isleD",
+   "src": "gh:COMMIT:reference/art/hfreed28/starts/isleD.png",
+   "refs": [
+    "gh:COMMIT:reference/art/hfreed28/starts/ref-w2bank.png"
+   ],
+   "w": 1024,
+   "h": 768,
+   "seeds": [
+    23,
+    37
+   ],
+   "prompt": "Repaint the first image as one small marsh island of reeds and wet mud standing in a river, in exactly the hand-painted storybook style of the riverbank pieces in the second image: soft painterly gouache shading, fine thin dark-brown linework, a mossy green grass top, warm brown layered soil. The island's top is one long, perfectly flat and level grassy walking surface from end to end, open and clear in the middle; clumps of cattail reeds and bulrushes grow only at the two ends, standing behind the top edge. Its sides are rounded, sloping banks of wet mud with a few small roots, darker and glistening wet toward the bottom; its foot is dark wet mud standing in a ring of shallow still blue-green water with soft ripples. It is a natural little island mound, never a box: its two ends round over in soft mossy shoulders and its muddy sides slope inward to a narrower foot. Keep its width, its flat top and the places of the two reed clumps. Keep the flat plain grey background around it, with empty grey space on every side.",
+   "neg": "photo, 3d render, blurry, text, letters, watermark, frame, border, scenery, sky, horizon, landscape, wall, ground plane, thick black outline, flat vector, clip art, harsh shadow, cast shadow, extra objects, sloped top, tilted top, dome, hill, rounded top, rocks on top, reeds in the middle, people, animals, sloth, cage, boat, box shape, sharp corners, foam, white water"
+  }
+ ]
+}
