@@ -1,5 +1,60 @@
 # ENG-THUMB: the kid-bot root fix (R-165.465) and release 5's rule-28 rows
 
+## EXACT NEXT STEP (hand-over 5, box 5 ENG-THUMB-e; written 4:10 PM ET 11/26 by `date`)
+Branch t-eng-thumb-wip, head = the commit that adds this text. **Code = C11 48af07540** = C10 narrowed (firsttimer.ts landing branch:
+the floor read by his feet only where the walk-on would run him off: his middle past the end IN HIS WAY and no pull-back due). The head
+adds only tests/evidence on top: padRide's waitRise plant re-barred by lives (ruling 3). Tools: tools/*.txt as before plus
+**tools/up.mts.txt** (2-1 <bot> Normal 1-40, SKILLS.upstream on/off) and **tools/kid59.mts.txt** (5-9's kid runs as firstTimerBot measures
+them). ciline.sh's cmd = gates.yml:157's `- run:` line saved to a file (its path set in ciline.sh). Main's rows: INT-R5's
+d/rule28/rows-main/ on origin/release-0.10.3-wip-fixes. Rebuild frozen trees (D115).
+1. **2-1 child Easy 3 is a NEW PASS -> FAIL on C11** (d/rows-c11/2-1.jsonl: rescued, 'an open drop ahead, water ahead' x 19,753; 2-1 is
+   otherwise 1 PASS -> FAIL, 31 fail -> pass vs main). Traced (d/frames-c11-2-1-childeasy3.txt, d/fb-c10-c11-landingfloor.txt): C11's
+   feet floor never fires with effect on this run (it runs as C7 + C9 with no step 3, a combination never measured before); at the
+   upstream river past #85 he lands on #86 (drifting back at him) at 167.87, stands while it carries him 80 px back, then the default walk-on
+   (intend's last line, `return side(dir)`, meant right from 169.50) walks him off its FRONT at 169.80 into the water; the splash-back sets
+   him on #81 (19,569) and the loop repeats (164.67-193.87) to the rescue. C10 passes it only on a shifted random stream (its feet-floor
+   firings at 67.87 and 84.70 drew pause lengths). **NEXT: find why nothing between the pause and that last line sees the water off
+   #86's front (the frame at 169.77 is why 4057 on the tagged C11, meant right); a second run of the same cause (rule 28: two runs per
+   cause); fix with a toy each way; or STOP with these frames as a ruling.** The other 4 stages' rows (2-5, 2-2, 2-4, 1-4) and C11's CI
+   line were RUNNING at this hand-over: read them (rows: scratchpad rows-c11/, or re-run rows.sh on a frozen C11; CI line: ciline.sh).
+2. **Ruling 4 (riverRide 'planted: against-the-flow skill off'), the lead's ruling is pending, with new data** (d/up-c11-2-1-childmiddle-normal.txt,
+   2-1 child + middle N 1-40, upstream on/off, castRun as the plant): on C11 **UPSTREAM_CASES child N 17 HOLDS again** (clean 0 lives on,
+   rescued twice with 12 lives off); 10 child N seeds are live at the rescue bar (5, 7, 8, 16, 17, 19, 24, 26, 32, 35). UPSTREAM_LIVES fails:
+   child N 3 0 -> 0 and middle N 16 3 -> 1 (child N 15 0 -> 11 holds). No middle seed reaches +5 (best +3: middle N 1, 2, 3, 7, 36, 38).
+   Child N at +5 or more: 18 seeds (6 +12, 11 +10, 12 +8, 15 +11, ...). Recommendation sent to the lead: A) the SAME bar, the seeds re-planted.
+3. **Ruling 3 (padRide waitRise) DONE on this head:** the plant is now by lives. 2-2 child N 1-40 on C11 (d/rise-c11-2-2-childnormal.txt):
+   no rescue case; seeds 1, 4, 6, 7, 20, 26, 39 lose more lives off (3->6, 3->4, 2->7, 4->7, 1->7, 3->4, 0->3; the same seven as on C8);
+   9, 15, 21, 25 lose fewer off (15 lives net over 40, named in the comment). Test 'planted: with waitRise off, 2-2 costs the child on
+   Normal more lives...' GREEN on this head.
+4. **R-165.473 (KID_RUNS_59) is NOT re-pinned: it waits for the lead** (d/kid59-runs.txt): the test on frozen C11 measures [14,13,17,18,5,5]
+   (recorded [3,5,6,7,6,5]); base c73cb9766 [8,9,7,7,4,7]; **C1 288b40d2a (the root fix, 'a bare stand is a stop the thumb lets go')
+   [13,14,18,15,5,9]**; C3 onward [14,13,17,18,5,5]. A re-pin moves 5-9's Easy goal (kidMedian, the lower median) from 5 to **13 of 18**,
+   and goalsEasy.test.ts pins easyGoal 5 and the old runs: a player-facing goal and a test bar, so the lead rules first (CI #89). Seed 3
+   gets 5 both trials (sealed door): a goal of 13 would seal that kid's door. Rule 20: re-pin only after the full suite on the final head.
+5. Then the final checks once on the frozen final head (box 1's list, as hand-over 4 step 3), the CI line on EVERY candidate (D141).
+- **The three C10 rows (the lead's ruling, traced on frozen C10 with tag.py, FT_FRAMES and a probe of the feet floor):**
+  - 2-1 child N 20 (d/frames-c10-2-1-childnormal20.txt): 81.23 lands on #41 (8,444-8,614, drifting his way) at x 8,627, his middle 13 px
+    past its front, the floatSure pull-back due; C10's feet floor sent him past it to the edge plan's stand (why 4044, `standing` until -1,
+    meant {}), his run carried him off at 81.27, the splash-back set him at 8,424, and the stand held: still at 8,390 until rescued.
+    2-5 child N 34 (d/frames-c10-2-5-childnormal34.txt) is the same shape off #42 at 108.80 (x 8,647). On C11 the pull-back is pressed
+    (meant left at 81.27); his thumb's lag still lets him slide off (as on C9), and he goes on (PASS, 2 lives).
+  - 2-1 kid N 29 (d/frames-c10-2-1-kidnormal29.txt): lands 13 px short of #18's back end (116 px) at 25.67; C10 started a pause there,
+    dropped it that frame (the pause block reads his middle), but its length was already drawn from the run's random stream: the 0.3 s
+    stand on #18 that follows and every draw after it moved; the shifted run lost 3 lives at 19,352-19,856 (108.7-111.1 s, 'set down here
+    3 times'). C11: PASS, 1 life (as C9).
+  - N 17's cure on C11 (d/frames-c11-2-1-middlenormal17.txt): lands on #90's end at 111.30; the walk-on is skipped and the edge plan jumps
+    him on at 111.33 (why 4046): PASS, 0 lives. (C10's comment said 'the pause comes'; it never holds: corrected in C11.)
+  - Toys (hopJudged.test.ts, d/toys-c11-each-way.txt): 'a pull-back due on a log running his way is kept...' RED on C10 ('t 81.23 x 8627
+    on #41 (8444-8614): steer {}, not back onto it'), GREEN on C11; 'landed short of a small floor...' RED on C10 ('19892: set down here 3
+    times'), GREEN on C11; C10's 'landed on the very end of a small log' GREEN on both.
+- **A latent fault named, not fixed (a ruling):** an edge-plan stand (`standing`, until -1) outlives a game put-back (the splash-back):
+  C7 spends `edge` and `lateArmed` on a put-back, not `standing` (2-1 child N 20 on C10: stood at 8,390 until rescued). Only C10 reached it.
+- **Process:** one shell `&` with `wait` in an early probe run (the brief forbids it); every later parallel run went through run_in_background.
+- **Lessons applied:** D113 (no foreground wait on a background run), D115 (frozen trees: c10, c9, c11, base and 4 bisect trees, proven
+  writable), D117 (candidates on the -wip branch only), D119 (commit messages from a file, no heredoc in the chain), D128 (stamps by
+  `date`), D134/D138 (hand-over pushed and ls-remote'd first; it ends new work), D140 (ReadNotifications at boundaries), D141 (C11's CI
+  line started with its rows).
+
 ## EXACT NEXT STEP (hand-over 4, box 4; written 2:57 PM ET 11/26 by `date`)
 Branch t-eng-thumb-wip, head = the commit that adds this text. **Code = C10 22abe1e3e** = C6 + C7 (put-back spends the edge plan) + C9
 (pin roll-back on a respawn behind a spur) + C10 (step 3: the landing floor is standingOn where his middle is past its end). **C8's

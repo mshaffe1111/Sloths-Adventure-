@@ -73,22 +73,24 @@ for (const row of Object.keys(TOY_PADS) as ToyPad[]) {
 //  settings, 239 rows; 2-5 child N 1-39, kid N 1-25, nothing moved): on 2-2 the child on Normal, seeds 6, 22 and 24, crosses clean with
 //  the skill and is rescued without it (and N 4, 10, 12, 19, 28, 32, 38 lose 5+ more lives); the extra lives are at the pads (seed 24:
 //  beat pads #86 / #87 at x 21,7xx, weight pads #114 - #116 at x 28,6xx - 29,1xx), the skill's own work)
-const RISE_CASES: Array<[string, 'normal' | 'easy', number]> = [['child', 'normal', 6], ['child', 'normal', 22], ['child', 'normal', 24]];
+// (ENG-THUMB, R-165.465, the lead's ruling 3: the bar by LIVES. The kid-bot root fix made the child better at the pads with the skill off:
+//  from C6 39ee096b7 at the latest (the CI line was not run on C1-C5; green on c73cb9766) the RESCUE plant above has no live case: 2-2
+//  child Normal 6, 22 and 24 cross clean without the skill, and on C11 48af07540 all 40 seeds do (2-2 child N 1-40, waitRise on and off,
+//  castRun as here: reference/qa-reports/ENG-THUMB/d/rise-c11-2-2-childnormal.txt). The skill still saves lives, the work it is planted
+//  for: seeds 1, 4, 6, 7, 20, 26 and 39 lose more without it (3 -> 6, 3 -> 4, 2 -> 7, 4 -> 7, 1 -> 7, 3 -> 4, 0 -> 3: 22 lives over the
+//  seven; the same seven on C8). Four seeds lose fewer without it (9: 2 -> 1, 15: 1 -> 0, 21: 5 -> 2, 25: 3 -> 1): 15 lives net over 40)
+const RISE_LIVES: Array<[string, 'normal' | 'easy', number]> = [1, 4, 6, 7, 20, 26, 39].map((seed) => ['child', 'normal', seed]);
 
-test('planted: with waitRise off, 2-2 takes the child on Normal the skill carries across (6, 22, 24: clean with it, rescued without)', async () => {
+test('planted: with waitRise off, 2-2 costs the child on Normal more lives on the seeds the skill carries (1, 4, 6, 7, 20, 26, 39: more lives lost without it on each)', async () => {
   const { castRun } = await import('./castBots.ts');
-  const clean = (r: { end: string; rescues: number }) => r.end === 'shrine' && r.rescues === 0;
   const said = (r: { bot: string; setting: string; seed: number; end: string; rescues: number; lives: number }) => `${r.bot} ${r.setting} seed ${r.seed}: ${r.end}, rescues ${r.rescues}, lives ${r.lives}`;
-  for (const [bot, setting, seed] of RISE_CASES) {
-    const r = castRun(bot, setting, '2-2', seed);
-    assert.ok(clean(r), `waitRise on, not clean: ${said(r)}`);
-  }
+  const withIt = RISE_LIVES.map(([bot, setting, seed]) => castRun(bot, setting, '2-2', seed));
   PAD_SKILL.waitRise = false;
   try {
-    for (const [bot, setting, seed] of RISE_CASES) {
+    RISE_LIVES.forEach(([bot, setting, seed], i) => {
       const r = castRun(bot, setting, '2-2', seed);
-      assert.ok(!clean(r), `waitRise off, still clean: ${said(r)}`);
-    }
+      assert.ok(r.lives > withIt[i].lives, `waitRise off, no more lives lost: on ${said(withIt[i])}; off ${said(r)}`);
+    });
   } finally {
     PAD_SKILL.waitRise = true;
   }
