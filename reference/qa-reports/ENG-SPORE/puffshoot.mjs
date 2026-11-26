@@ -87,6 +87,9 @@ for (const o of ORIENTS) {
   if (!pk) { await ctx.close(); continue; }
   await page.evaluate((p) => { window.__pin = p; }, pk);
   await sleep(Number(process.env.SETTLE_MS || 3000));
+  // (Dot's 'Too dark to see' line is the stage's own; it sat over the puff in box 1's shots: tapped away, as a player does)
+  for (let i = 0; i < 3; i++) await page.getByText("Tap here when you've read it", { exact: false }).first().click({ timeout: 2000 }).catch(() => {});
+  await sleep(800);
   // (each still at a set point of the puff's beat: its zone's and its light's offsets set together, so the cloud and the light agree)
   for (const [name, at] of [['dark', 1.6], ['warn', 3.7], ['lit', 5.2]]) {
     await page.evaluate((at) => {

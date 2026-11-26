@@ -6,13 +6,9 @@ GREEN on my tree (sporeBots.test 6/6, below). BOX 2 FIRST: ReadNotifications. Th
 (`git worktree add --detach /tmp/claude-0/wt-<h> <head>`, node_modules symlinked, `chattr -R +i src tools`, D115) and run
 `npx tsx --test src/game/gen2/dark.test.ts src/game/gen2/darkBots.test.ts src/game/gen2/sporeBots.test.ts` there (run_in_background,
 timeout 2700000); every test GREEN (box 1 started this on 12653334d: read /tmp/claude-0/darktests-12653334d.txt if it is still there);
-(b) the stills: box 1 SHOT them on 12653334d (stills/3-1-{port,land}-puff-{dark,warn,lit}.png) and they FAIL the polish bar for
-judging: Dot's 'Too dark to see. Stand still and listen...' box (the stage's own line; `lessons=off` does not stop it) sits over the
-puff in landscape and just under the shelf upright. FIX in puffshoot.mjs: dismiss Dot's line before the shots (tap it, or clear the
-engine's guide line in the page), reshoot on the frozen tree (`node reference/qa-reports/ENG-SPORE/puffshoot.mjs <frozen tree> <abs
-path>/reference/qa-reports/ENG-SPORE/stills 5191`), LOOK at all six as Matt would, commit, send the lead the UPRIGHT lit one first.
-What the shots already show: dark = the shelf is lost but for the petal's glow and a faint glimmer; lit = the purple cloud and the
-puff's light open over the shelf, its mossy top readable under the mushrooms; the shelf's ends (110 px from the light) read dimmer;
+(b) the stills: DONE in box 1 (reshot on 12653334d with Dot's line tapped away: stills/3-1-{port,land}-puff-{dark,warn,lit}.png); the
+upright lit one went to the lead first. Rough spots named, not mine to fix here: the draft's petal sits on the puff's mushroom (the
+row's collectible); the shelf's ends read dimmer than its middle (the light is 110 px from them, r 190). The lead judges.
 (c) a planted-faults pass on the five new reads (glowGo, glowRimsOf's clocked rims, lightLitAt in RimWatch, darkGaps' clock rule,
 glowZone's puff light): each removed in a copy, sporeBots.test RED; write the table here;
 (d) the pipeline's own lay of SectionZone 'spore' (pipeline.ts, `z.kind === 'spore'`) has NO caller yet: no template lays one. Its builder
@@ -59,8 +55,11 @@ puff too short for its drop is named), litAhead on every castBots row (a drop ma
 window, is named), levelCheck's spore rules (warn >= 0.9, 3 s awake between clouds). The flown share is sporeBots.test's harness.
 
 ## Polish check
-NOT PASSED YET: the six stills are shot but Dot's tip box covers the puff (landscape) / sits under the shelf (upright): reshoot with the
-line dismissed (next step b). Seen so far: the light is clearly off when dark and clearly on when lit; the cloud and light agree.
+- stills/3-1-port-puff-lit.png: the puff's light opens over the shelf, its mossy top and mushrooms readable, the cloud above; Pokey on
+  the rim up right. -dark: the shelf is lost but for the petal's glow and a faint glimmer (as a sleeping glowworm's). The cloud and the
+  light agree (one offset).
+- Rough, named: the draft's petal over the mushroom; the shelf's ends dimmer than its middle. Box 1's first shots had Dot's 'Too dark
+  to see' box over the puff: reshot with it tapped away.
 
 ## Lessons applied
 D115 (runs on a chattr-frozen tree), D119 (no heredoc in a commit chain), D128 (times from `date`), D134 (this next step pushed and
