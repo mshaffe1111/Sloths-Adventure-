@@ -1,16 +1,26 @@
 # ENG-DARK REPORT (the dark + light ring as one gen2 brick; WORLD-3-PLAN F2; R-165.449)
-**BOX 26 (ENG-DARK-z): THE LAY FIX, c19 = 7accddd52 (tower.ts towerCatches rule 1).** CAUSE (probe, an instrumented copy, never a
-verdict): the guard DOES read Easy 6's end at 1241 (offEnd's new point, x 1260 on the wall line) and runs on it every pass. Rule 1 (run
-the piece on into the wall) was refused by `slotted`: the run-on 1241-1280 read ALONE is 65 px from the bough at 1061-1176, though the
-piece itself (a bridge, 1176-1241) fills that gap: a FALSE slot. Rule 4 (a catch under it) cannot cover x 1260 (boughs keep to [24,
-width - 24], 1256 at most), so it laid the same non-catching bough 1122-1256, y 3111 on each pass: 8 stacked copies. FIX: rule 1 reads its
-slot off the run it makes (the piece and its run-on as one). RUN ON into the wall, not a catch: the gap to the wall is 39 px, itself a
-slot by SLOT's own measure (under 66), so a catch under it would leave a crack he can neither walk nor read as an end. Easy 6: run-on
-1241-1280 laid, errors [], the stacked boughs gone. w3.test 10/10 GREEN on the fix (:108, :129, :143 were RED on c18, box 25).
-Toy (tower.test.ts, 'an end 19 px in from the wall line is run on into the wall') GREEN; plants 48 (the toy) and 49 (w3 :129) added.
-**EXACT NEXT STEP (box 26, in progress):** c19's x40 (frozen wt19, 2 lanes) -> x40verdict vs the bar + kinds; lays.mts c18 vs c19 (rule 28:
-every moved row traced); then the gates ONCE on the final candidate (tsc, CI line, suite all shards, dark/castBots/darkBots/tierBots,
-lockall --check, generalitycheck, plants 49/49); land on t-eng-w3 (88592a9c4) by merge, no force.
+**BOX 26 (ENG-DARK-z): THE LAY FIX, c20 = b83522463 (tower.ts towerCatches rule 1: the run-on into the wall reads no slot).**
+CAUSE (probe, an instrumented copy, never a verdict): the guard DOES read Easy 6's end at 1241 (offEnd's point, x 1260 on the wall line)
+and runs on it every pass. Rule 1 (run the piece on into the wall) was refused by `slotted`: the run-on 1241-1280 read ALONE is 65 px
+from the bough at 1061-1176, though the piece itself (a bridge, 1176-1241) fills that gap: a FALSE slot. Rule 4 (a catch under it)
+cannot cover x 1260 (boughs keep to [24, width - 24], 1256 at most), so it laid the same non-catching bough 1122-1256, y 3111 on each
+pass: 8 stacked copies. RUN ON, not a catch: the gap to the wall is 39 px, itself a slot by SLOT's own measure (under 66).
+c19 (7accddd52) read the slot off the piece + run-on as one: Easy 6 fixed, BUT on Easy 34 it refused 59-260's run-on (y 6186) for the
+piece's OWN 65 px gap on its far side (to 325-701), a bough laid instead: an over-refusal, found by the rule-28 trace. A run-on opens no
+gap (one end at the wall, the other joined to the piece's end), so the no-slot rule has nothing to judge there: c20 reads none.
+c19's x40 (frozen, cast-3-1-x40-7accddd5-lane1/-lane2.jsonl, x40-verdict-7accddd5.txt): ON THE BAR (shrine 360/360, unlit 1, max
+loop 7, rescues 586 vs c17 579, no new kind); 7 rows moved, all Easy, seeds 6/14/34. Lays moved (lays.mts c18 vs c19): Easy 4 5 6 14 17
+23 34 35 38, no Normal. Easy 6: raw roll 6 was REFUSED on c18 (the game built a reroll), kept on c19: a wholly new stage (196/212
+pieces differ); its stuck spots x 391-871, none at the run-on. Easy 38: its left-wall blind drop (44-108, y 4824) fixed; its other
+(195-375, y 10008, 325 px, not by a wall) still refuses the raw roll (named, out of w3.test's 1-24).
+Lead (box 25's shard line, c18 38e4892e1): 1: 704/0. 2: 658/3 (only w3 Easy 6). 3: 685/0 +1 TODO R-165.312. 4: 717/0. 5: 675/0 +1 TODO
+(4-3's wall check). 6: 666/0. KID_RUNS_59 did not show on c18. After the fix every shard must read 0 fail with the same two TODOs.
+BROKEN AND OWNED: the c18/c19 lay hashes ran with a shell '&' and a wait (the brief forbids it); every other run is run_in_background.
+**EXACT NEXT STEP (box 26, in progress):** c20's x40 (frozen wt20, cast-3-1-x40-b8352246-lane1/-lane2) -> x40verdict vs the bar;
+lays c18 vs c20; every moved row traced vs c17; then merge t-eng-w3 (88592a9c4) into the wip = THE candidate; the gates ONCE on it
+(tsc, CI line, suite 6 shards, tierBots 9/9, dark/darkBots/castBots, lockall --check vs t-eng-w3, generalitycheck, plants 50/50);
+land by pushing that merge to t-eng-w3 (a fast-forward, no force).
+
 **BOX 25 STOP (ENG-DARK-y, after the hand-over; the landing NOT done): a suite red, traced.** Suite shard 2/6 on frozen c18 38e4892e1:
 658 pass / 3 fail, all in src/game/gen2/worlds/w3.test.ts (:108 every roll clean, :129 head room on the way down, :143 a catch crosses a
 vine), with one cause: 'easy 6: tower: a blind drop off the piece at x 1176-1241, y 2830: 568 px to its landing (in view: within 300)'.
