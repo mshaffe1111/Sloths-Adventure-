@@ -1,6 +1,24 @@
 # LAND-26: 2-6 back on release 4's line (release 5), beat A's soil block (R-165.451)
 
-## EXACT NEXT STEP (session 1 hand-over, 2:19 PM ET Thu 11-26; branch t-land-26)
+## EXACT NEXT STEP (session 2 hand-over, 3:15 PM ET Thu 11-26; branch t-land-26, head 7f9abaa55)
+Code head **7f9abaa55** (pushed; session 1's 42e3b30fc plus session 2's candidate). **The lead's W/P ruling on 2-6's porch gaps is OPEN**
+(R-165.471; my messages to the lead carry the data). Under W (the head as pushed): 2-6's own tests 159/160 expected, ONE red =
+rowWheels 'rideWheel ON' child Normal v2 2 scrambles on the top wheel (the bot's boarding judge after a timing shift; traced below;
+for the lead to rule, never the test bar). The next session, in this order:
+1. ReadNotifications; read the lead's ruling. `git fetch origin t-land-26 && git checkout -B t-land-26 origin/t-land-26`; npm ci
+   --legacy-peer-deps (run_in_background). Frozen tree per run (git worktree add --detach; link node_modules; chattr -R +i src tools;
+   chattr -i src/game/gen2/proven).
+2. If P: revert the w2.ts hunks of 4066c0e37 + 430b53d73 with a new commit (keep w2DryGap.test.ts out too), then the trunkCatch plant
+   moves back to seed 17 (live on the pools tree: data/trunk-1-40.txt) and w2Arc26 'one millrace' needs the lead's ruling. If W: nothing
+   to change unless the lead rules on the rideWheel red.
+3. Packet step 3 on the final head, each ONCE: the suite in 3 shards (`npx tsx --test --test-shard=i/3 <deploy.yml's globs>`,
+   run_in_background, timeout 7200000) + the CI tool line (gates.yml line 157); paintcheck --stages 2-6 then the sweep (now with the
+   depth-step check); lockall (2-6's named moves only; 2-7 FIRST, a still of each moved 2-7 gap to the lead); castBots --proven 2-6
+   (seeds 1-40, both settings; compare with data/cast-*.txt); seedlist 2-6 --check; registrycheck; drawcheck; clipcheck; tierBots 9/9;
+   timecheck; teachFirstScan. Then the ENG-THUMB list (2-6 rows waiting at a stand: castBots 'water ahead' stuck lines, 103 on W).
+4. Land on t-land-26 (no force); hash + one line per gate to the lead. Never merge to main or a release branch.
+
+## Session 1's EXACT NEXT STEP (kept for history)
 Code head **42e3b30fc** (pushed). Step 1 is DONE except two reds in 2-6's own tests (below, both need the lead's R-number and owner, D135).
 **Running at hand-over (session 1 appends each verdict here when it finishes):** the unit suite in 3 shards and the CI tool line (gates.yml
 line 157), both on frozen 42e3b30fc (run_in_background, timeout 7200000; CI #85, D141). If 42e3b30fc stays the code head, those count.
@@ -72,6 +90,45 @@ The next session, in this order:
   drawWallChunks :1554 via drawEarthWall :1460), the wheel, branch art, ladders and dress near that frame's screen x 300-420.
 - Seed-1 camera grids of the whole stage (sideways, Normal) on both trees: the same plank porches and pieces; t-build-26's tall lighter
   soil COLUMN (beside the wheels, storeys y ~900-5700) is gone on 42e3b30fc (release 4's soil fix).
+
+## Session 2 (LAND-26-b): R-165.471, R-165.451, R-165.472, the stalk
+### R-165.471 the four new pools (ruled DRY by the lead)
+- What: release 4's ENG-GROUND-b rule laid a SAFE still pool in four soft gaps between thin porch planks (beat 7 'hanging porches'
+  y 3740 x 674-753/953-1042/1242-1332; beat 2 'first street' y 5546 x 714-799, Normal seed 1) and DROPPED each gap's own floor plank
+  (ids 18, 41, 42, 43). On t-build-26 they were dry only because the old rule took the millrace (another storey) as covering them in x.
+  Stills: data/pools/*.jpg: the pools draw as NO water (soil, reeds on the lips). 2-6.md names water only under the wheels and the millrace.
+- Bots (castBots 2-6, seeds 1-40, every bot, both settings, 360 runs, frozen trees; lives 0 hits 0 in all): pools 357 pass / 3 rescued
+  (none at a pool); dry as t-build-26 (overLowFloor dropped, floor as laid) 333 / 27 rescued (kid E 14, adult E 13); dry widened 359 / 1;
+  dry with walls 356 / 4 (and a grass strip over the hole: fails polish, data/drygap/); bridged 359 / 1 but that one is a BROKEN ROUTE
+  (expert N seed 15: the gap is the way down). Withdrawn: walls, bridge.
+- Cause of the dry rescues (traced; tools/tr12, on.mts): the pocket under thin planks has NO WALLS. He lands on its floor (kid E seed 12,
+  frame 1443, middle 838 on floor 762-828) and walks on off its far end under the jump-through plank and down the storey (430 px), three
+  times, to a rescue; adult E seed 4 the same (x 718 -> 983, frames 841/1105/1398); kid E seed 36 the same after widening (the 1 left).
+  The root is pipeline.ts pitSteps (a single-jump pit's floor one hop under the far lip, walls assumed from earth banks): an engine packet.
+- Candidate W (w2.ts dryGap, 4066c0e37 + 430b53d73): ruling (B) first and unchanged (over a lower leg's floor, open); elsewhere a thin-piece
+  soft gap with its own floor stays dry, the floor widened so a walk-off at a run (tower.ts walkOff/runX) comes down half his body inside
+  its ends; idempotent. Toys w2DryGap.test.ts 3/3; plants RED: 42e3b30fc's gate 'gap 66: no pool over a porch gap'; floor left the
+  gap's width 'gap 66: off the near lip, 700..766'. w2.test/w2StackedFall green; w2Arc26 'one millrace' GREEN (test unchanged).
+- Under W, rowWheels 'rideWheel ON' RED: child Normal v2 topR 2 scrambles (edgeR crossing 13.3 s vs 8.5 s with pools: the pocket now
+  holds him; he meets the top wheel at another phase). Widened floors are 257+ px clear of every sweep. The bot's boarding judge (b).
+### R-165.451 beat A's soil block (traced, gone in general, gated)
+- t-build-26, to the line (tools/probe451tile.mjs.txt): groundPaint.ts shadeSoil -> depthBand fillRect in the cached ground square
+  (protoArt.ts drawGroundChunks -> paintTile -> drawGround -> drawBankArt -> drawSoil): bands x 1040-1056 then 1056-1201, the
+  darkening's start 192-224 px apart (step 1.9 -> 25.1 -> 14.4). groundLine counted the HUNG storeys. The live draw had none (1.5).
+  FIX-SOIL-b c22702edc (release 4, R-165.441) leaves hung banks out of groundLine: general (1-4's start step was the same).
+- Gate: groundPaint.ts depthRuns (the one function shadeSoil draws its bands with); tools/engine/paintFall.ts depthSteps reads them with
+  the same line, banks and ceilings as paintTile (stacks set as the engine sets them, D136); > 48 px fails; in paintcheck, no known list.
+  Planted on 2-6 seed 1 (paintFall.test.ts): RED on t-build-26's line (jumps over 150 at x 1024-1072), GREEN as drawn; 17/17.
+  Sweep (all stages, N+E, layouts 1-4): max 25 px. My first sweep flagged 2-7 E seed 2 (96 px): MY probe had no ground stacks set.
+- Stills 2x (data/beatA/): upright Normal step +13.5 (t-build-26, screen x 784) vs <= 2.3 (candidate); Easy no block either tree;
+  sideways Normal: t-build-26's lighter straight-sided rectangle gone.
+### R-165.472 trunkCatch
+- Re-planted on live cases: seed 17 (pools tree), then seed 20 under W (3 rescues off at the crest x 88 / x 437 and the millpond x 1612,
+  'a trunk beside him, the way on is 138 px up'; 0 on); 31 of seeds 1-40 cost a rescue off: trunkCatch stays (7f9abaa55).
+### The dark-green vertical line (the release line's, not 2-6's)
+- bounceArt.ts drawBounce 'plant' stalk to bottomY = terrain.ts bounceBottom (the view's foot) for every bounce plant; t-build-26's soil
+  column hid 2-6's. Also on c73cb9766: 9-2, 10-4 (data/stalk/); not 1-1, 5-8, 7-8. Proposed: the stalk ends on the piece it grows from.
+  The lead's call (an R-number); not touched.
 
 ## Gate table (42e3b30fc)
 | Gate | Result |
