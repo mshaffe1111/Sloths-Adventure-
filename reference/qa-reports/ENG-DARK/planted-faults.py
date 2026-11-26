@@ -150,6 +150,10 @@ PLANTS = [
     ("lipEnd off: a point past his wood's end within 8 px read straight under him (downEnd 0)", 'tools/inspect/firsttimer.ts',
      "      const d = dx > 8 ? 1 : dx < -8 ? -1 : endOf(at);\n", "      const d = dx > 8 ? 1 : dx < -8 ? -1 : 0;\n",
      "at the lip over the way on's first point, he steps off that end", 'src/game/gen2/darkBots.test.ts'),
+    # (box 26) the run-on into the wall reads its slot off the run-on alone again: Easy 6's end 19 px from the wall line is left open
+    ("the run-on's slot read off the run-on alone (not the run it makes)", 'src/game/gen2/tower.ts',
+     "!slotted(r0, r1, e.p.y, [e.p])", "!slotted(w0, w1, e.p.y, [e.p])",
+     'going down, an end 19 px in from the wall line is run on into the wall', 'src/game/gen2/tower.test.ts'),
 ]
 # (ENG-DARK box 13) ONLY='a|b': run only the plants whose name holds one of these (a re-anchor's check; the full proof runs them all)
 import os
