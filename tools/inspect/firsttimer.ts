@@ -5586,6 +5586,12 @@ export class FirstTimerRun {
       const top = this.prog.best;
       this.prog.relocate(p);
       this.climbBack = null;
+      // (a put-back by the game spends the edge he drew for the lip he left and the late press armed for it: edgePlan's 'kept until he
+      //  jumps or is put back'. A teaching river's splash-back (engine.ts river.safe, safeWater) moves him with no loseLife or softFall,
+      //  so respawned() never ran for it: 2-2 child Easy 21 (R-165.465 C6) walked off #92 on a late press, splashed back, and walked off
+      //  the same lip again on the press armed before the splash, 8 times, rescued. hopJudged.test.ts 'a put-back by the game')
+      this.edge = null;
+      this.lateArmed = null;
       // (set down at the same place again and again, never getting further: three are a loop, as three falls back are, and he is put
       // past. A splash-back costs no life, and each relocate wound his progress back, so the walk on to the same pond counted as
       // progress and no rescue ever came: 2-3's sinking-pad pond, the kid Normal set down at its near bank every 20 s to the 1200 s cap,

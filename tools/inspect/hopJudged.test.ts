@@ -603,3 +603,35 @@ test('a pad hop is flown from the pad: padRead judges it with the lag decide() t
   const there = run.stuck.filter((s) => s.x > 28000 && s.x < 30200);
   assert.deepEqual(there.map((s) => `${s.x}: ${s.what}`), [], 'stuck on the last pads (x 28,000-30,200)');
 });
+
+test('a put-back by the game spends the edge plan: a teaching river splashes him back with no life lost, and the lip he left has no plan left armed for it (2-2 child Easy 21 to t 266, R-165.465)', async () => {
+  const ft = await import('./firsttimer.ts');
+  const { CAST_BOTS } = await import('./castBots.ts');
+  type R = { t: number; edge: object | null; lateArmed: object | null; sim: { p: { x: number } } };
+  const P = ft.FirstTimerRun.prototype as unknown as { intend: (this: R) => unknown };
+  const it = P.intend;
+  const stale: string[] = [];
+  let backs = 0, lastT = -1, lastX = 0, held: { edge: object | null; late: object | null } = { edge: null, late: null };
+  P.intend = function (this: R) {
+    const x = this.sim.p.x;
+    // (the game moved him 100 px or more in one frame: a put-back; every plan held for the lip he left is spent by the next frame he reads)
+    if (lastT >= 0 && Math.abs(this.t - lastT - 1 / 30) < 1e-3 && Math.abs(x - lastX) >= 100 && (held.edge || held.late)) {
+      backs++;
+      if ((held.late && this.lateArmed === held.late) || (held.edge && this.edge === held.edge)) stale.push(`t ${this.t.toFixed(2)} x ${Math.round(lastX)} -> ${Math.round(x)}: ${this.lateArmed === held.late ? 'the late press' : 'the edge'} armed before it`);
+    }
+    const o = it.call(this);
+    lastT = this.t; lastX = this.sim.p.x; held = { edge: this.edge, late: this.lateArmed };
+    return o;
+  };
+  let run: ReturnType<typeof ft.firstTimer>;
+  try {
+    run = ft.firstTimer('2-2', 21, CAST_BOTS.child.easy!, { cap: 266, dotSetting: true });
+  } finally {
+    P.intend = it;
+  }
+  assert.ok(backs >= 1, `the toy reads too little: ${backs} put-backs with a plan held`);
+  assert.deepEqual(stale, [], 'a plan for the lip he left outlived the put-back');
+  // (the row: the river between #92 and #94, x 24,000-24,900, crossed with no set-down loop)
+  const there = run.stuck.filter((s) => s.x > 24000 && s.x < 24900);
+  assert.deepEqual(there.map((s) => `${s.x}: ${s.what}`), [], 'stuck at the river before #94 (x 24,000-24,900)');
+});
