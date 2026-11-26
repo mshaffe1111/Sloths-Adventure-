@@ -1,4 +1,43 @@
-# BUILD-28 REPORT (W2-LANE: 2-8 "Before the Water Rises"; R-165.430 (2), READY-28, BUILD-28). Session 1 (W2-LANE a), started 9:44 AM ET (from date). Session 2 (W2-LANE b), started 10:07 AM ET (from date). Session 3 (W2-LANE c), started 10:30 AM ET (from date). Session 4 (W2-LANE d), started 10:52 AM ET (from date). Session 5 (W2-LANE e), started 11:19 AM ET (from the session hook date) Session 6 (W2-LANE f), started 11:41 AM ET (from the session hook date) Session 7 (W2-LANE g), started 12:05 PM ET (from the session hook date) Session 8 (W2-LANE h), started 12:49 PM ET (from the session hook date) Session 9 (W2-LANE i), started 1:15 PM ET (from the session hook date)
+# BUILD-28 REPORT (W2-LANE: 2-8 "Before the Water Rises"; R-165.430 (2), READY-28, BUILD-28). Session 1 (W2-LANE a), started 9:44 AM ET (from date). Session 2 (W2-LANE b), started 10:07 AM ET (from date). Session 3 (W2-LANE c), started 10:30 AM ET (from date). Session 4 (W2-LANE d), started 10:52 AM ET (from date). Session 5 (W2-LANE e), started 11:19 AM ET (from the session hook date) Session 6 (W2-LANE f), started 11:41 AM ET (from the session hook date) Session 7 (W2-LANE g), started 12:05 PM ET (from the session hook date) Session 8 (W2-LANE h), started 12:49 PM ET (from the session hook date) Session 9 (W2-LANE i), started 1:15 PM ET (from the session hook date) Session 10 (W2-LANE j), started 1:05 PM ET (from the session hook date)
+
+## EXACT NEXT STEP (session 10, W2-LANE j, started 1:05 PM ET (from the session hook date); code head cb52396a3)
+STOPPED AT STEP 2 BY RULING (ii): THE SOIL COLUMN THROUGH THE PORCH LOG IS STILL THERE ON THE 1b HEAD. A NEW DEFECT, NOT PATCHED.
+Waiting for the lead's word. Nothing after step 2 was started (no rule 28, no paintcheck 2/3, no READY-28).
+1. 1b DONE: be38dd4eb merges origin/release-0.10.3 c73cb9766 (no force; merge base 90552d3ec, the same as ENG-29's 791735cfa).
+   - engine.ts: 791735cfa's file AS IS (ours = fda48b3d8's, theirs = 4c73ac2ae's: ENG-29's exact inputs).
+   - firsttimer.ts: 791735cfa's file + 4c73ac2ae..c73cb9766 (CI-15) merged onto it by git merge-file: clean.
+   - lineBot.test.ts: 791735cfa's file + this branch's fda48b3d8..a95077e37 (the ruled-fork toys): both test sets, 18 tests; ours'
+     wider imports. MY MISS, fixed in cb52396a3: the union merge dropped the `});` between the two sets, so the file did not parse;
+     tsc -p . does not cover tools/ and passed; the CI tool line caught it.
+   - TWO OTHER CONFLICTS, named: riverLay.ts (layRiver keeps both: `way` 5th, the release's leftward river (ENG-26c); `style` 6th, the
+     marsh floor's; a marsh crossed right to left is refused like a tail; layRiverLeft passes `floor` on) and pipeline.ts (the release's
+     way/farLip check, with the marsh floor pushed and near.style passed).
+   - tsc 0 on be38dd4eb. CI tool line (gates.yml:157) on frozen be38dd4eb: 412 tests, 410 pass, 1 todo (chase bots child, OPEN),
+     1 FAIL = lineBot.test.ts (the parse break above). lineBot.test.ts alone on frozen cb52396a3: see item 3.
+2. THE FORK RESHOOT (stills-s10/, seed 1 Normal, 412x915 and 915x412 at 2x, forkstills-s10.mjs.txt; vite on frozen /tmp/claude-0/wt1b
+   = be38dd4eb, port 5199 --strictPort (started clean), the served tree checked (/proc/<vite>/cwd = the frozen tree, w2.ts serves
+   W2_FORK), vite killed after).
+   THE TOY COULD NOT BE HOSTED ON 2-3 ANY MORE (found): release 4 made 2-3 a JUDGED gen2 row (stageTable '2-3': kit w2-23, judged
+   'normal-2-3'), so the toy under 2-3's id is judged, and 5 verdicts refuse it on every seed (the page: "no seed of 24 from 1 builds
+   cleanly"): drop.look-lies x4 (soft drops drawn void-dark at x 14243..14326, 18020..18103, 18264..18333, 18488..18574) and
+   floor.unmarked at 14243..14326. The same 4 void-dark soft drops are there BEFORE the merge (a95077e37, headless, same toy, 2-3's
+   config: 0 errors, because 2-3 was not judged then). Traced to the sections: home-flow (13921..14771) and
+   home-practise-floating / home-test-back (17342..18883): the TOY's home bricks, NONE in the two-road section (home-practise-ride
+   14771..17732). So not a 2-8 fault. HOSTED ON 2-8's OWN CONFIG instead (FORK_AS=2-8: unjudged, 0 errors, and __play('2-8') plays now
+   with session 9's boot import): '2-8', travel left, gen2, 99 platforms.
+   THE FORK READ OFF THE BUILT STAGE: W 330x60 at x 17450 top 1458, GAP 81, porch 2200 wide level with W (x 15169), 2 rises over it
+   (1398, 1338; top 15969 x 600), the marsh floor 5 pieces of 200 (x 15969..17169).
+   LOOKED AT (as Matt on a phone):
+   - lip-sideways, porch-sideways, porch-upright: THE SOIL COLUMN IS STILL THERE: a full-height soil pillar painted from the frame's top
+     to its bottom straight through the porch log (lip-sideways x ~165..420; porch-sideways x ~637..893; porch-upright x ~98..412, at
+     2x). Ruling (ii): a NEW defect; STOPPED; stills sent to the lead; NOT patched.
+   - Candidates over that span (headless, the same build): moss_stone 88x90 at x 16997 y 803; log 334x165 at x 17085 y 728;
+     log 287x165 at x 16710 y 728 (narrow high pieces over the lower porch: the 'hung bank' shape FIX-SOIL-b fixed for banks).
+   - NOT looked at (stopped first): lip-upright, bank-*, top-*.
+   THE MARSH DIP: NOT SHOT, the same as session 9: three little ones freed right of the first dip walked to him without a paddle frame
+   in 400 frames (line 16983..17051/1593 'follow'), upright and sideways.
+3. lineBot.test.ts on frozen cb52396a3: 18 tests, 18 pass, 0 fail (10 s). With the CI line's other 410 pass on be38dd4eb (the fix touches only
+   lineBot.test.ts), the CI tool line is green on cb52396a3 but for the one OPEN todo.
 
 ## EXACT NEXT STEP (session 9, W2-LANE i; code head 0cdc35b7f; this session adds only files under reference/)
 1. THE STILLS: SHOT ON THE REAL PAGE, 8 of them, reference/qa-reports/BUILD-28/stills-s9/fork-s1-{bank,lip,porch,top}-{upright,sideways}.jpg

@@ -1,0 +1,139 @@
+// BUILD-28 session 8: stills of the TWO-ROAD TOY (w2TwoRoad.test's build: homeKit with w2TwoRoad swapped in for the practise ride and
+// W2_FORK_RIVERS) on the real dev page, upright 412 x 915 and sideways 915 x 412 at 2x, the way towerstills.mjs builds its fixture: in the
+// page only, in place of a listed World 2 stage (FORK_AS, default 2-3: its config and its world's art). No stage row lays the section yet,
+// so these are the TOY's stills. Nothing in the repo or the build changes; reload the page and it is gone.
+//   cp reference/qa-reports/BUILD-28/forkstills.mjs.txt <scratch>/forkstills.mjs
+//   (a background command) npx vite --port 5199 --strictPort
+//   node <scratch>/forkstills.mjs 5199 <out dir> <seed>
+// Spots: bank (the near bank before W: W, the gap and the porch ahead), lip (on W at its far lip: the 81 px gap below him), porch (on the
+// porch), top (on the top rise: three up, three down), marsh (on the marsh floor past a dip, the line behind him swimming it: shot the
+// frame a little one paddles in the dip).
+import fs from 'node:fs';
+import path from 'node:path';
+import { createRequire } from 'node:module';
+const { chromium } = createRequire(import.meta.url)('playwright');
+const [port, out, seedS] = process.argv.slice(2);
+const seed = +(seedS ?? 1), AS = process.env.FORK_AS ?? '2-8', SCALE = +(process.env.SCALE ?? 2);
+fs.mkdirSync(out, { recursive: true });
+const b = await chromium.launch();
+const E = "(typeof window.__engine === 'function' ? window.__engine() : window.__engine)";
+for (const [tag, w, h] of [['upright', 412, 915], ['sideways', 915, 412]]) {
+  const ctx = await b.newContext({ viewport: { width: w, height: h }, deviceScaleFactor: SCALE });
+  // (session 9: the toy's sprint objective readied BEFORE the game's entry, as draftshoot.mjs readies a draft: the app's own level list
+  //  is made at its first render, so a config changed after load never reaches __play)
+  await ctx.route(/\/src\/main\.tsx(\?.*)?$/, async (r) => { const resp = await r.fetch(); r.fulfill({ response: resp, body: `import "/__forkboot.js";\n${await resp.text()}` }); });
+  await ctx.route(/\/__forkboot\.js$/, (r) => r.fulfill({ contentType: 'application/javascript', body: `import { STAGE_PLAN } from '/src/game/stagePlan.ts';\nconst [w, s] = ${JSON.stringify(AS)}.split('-').map(Number);\nSTAGE_PLAN[w][s - 1] = { ...STAGE_PLAN[w][s - 1], type: 'sprint' };\n` }));
+  const p = await ctx.newPage();
+  p.on('pageerror', (e) => console.log('ERR', e.message));
+  p.on('console', (m) => { if (m.type() === 'error' || m.type() === 'warning') console.log('CONSOLE', m.type(), m.text().slice(0, 300)); });
+  await p.goto(`http://127.0.0.1:${port}/?lessons=off`);
+  await p.waitForTimeout(2500);
+  const built = await p.evaluate(async ([AS, seed]) => {
+    const [listed, lists, home, proto, pipe, data, w2, w2s] = await Promise.all(['/src/game/gen2/listed.ts', '/src/game/gen2/seedList.ts', '/src/game/gen2/toyHome.ts', '/src/game/protoStage.ts', '/src/game/gen2/pipeline.ts', '/src/game/worldsData.ts', '/src/game/gen2/worlds/w2.ts', '/src/game/w2Stages.ts'].map((m) => import(m)));
+    const cfg0 = data.generateAllLevels().find((l) => l.id === AS);
+    // (the toy's own objective: a sprint home, as w2TwoRoad.test's towerCfg(ID, 'sprint'))
+    Object.assign(cfg0, { objectiveType: 'sprint', unlocked: true });
+    const cfg = { ...cfg0 };
+    const k = home.homeKit(AS, home.HOME_CODE);
+    const briefs = k.manifest.graphs.briefs;
+    const sections = [k.manifest.sections[0], ...home.HOME_BRICKS.map((bb) => (bb.id === 'home-practise-ride' ? w2.w2TwoRoad(bb.id, bb.jobs[0], w2.W2_FORK) : bb))];
+    const kit = { ...k, manifest: { ...k.manifest, world: cfg.worldIndex, rivers: { ...w2.W2_RIVERS, ...w2.W2_FORK_RIVERS, twin: { ...w2.W2_RIVERS.twin, flood: 'rise' } }, sections, graphs: { ...k.manifest.graphs, briefs: { [AS]: { ...briefs[AS], pacer: undefined } } } } };
+    const st = pipe.buildGen2Stage({ config: cfg, kit, seed, difficulty: 'normal' });
+    const verr = st.gen2.errors ?? [];
+    const near = (x0, x1) => st.platforms.filter((q) => q.x < x1 + 60 && q.x + q.width > x0 - 60).map((q) => `${q.type}${q.style ? ':' + q.style : ''} ${Math.round(q.x)}..${Math.round(q.x + q.width)} y${Math.round(q.y)} h${Math.round(q.height)}`);
+    const around = [[14243, 14326], [18020, 18103], [18264, 18333], [18488, 18574]].map(([a, b]) => [a, b, near(a, b), (st.rivers ?? []).filter((z) => z.x0 < b && z.x1 > a).map((z) => `${z.x0}..${z.x1} surf${Math.round(z.surfaceY)}${z.marsh ? ' marsh' : ''}`)]);
+    console.log('VERR', JSON.stringify(verr)); console.log('AROUND', JSON.stringify(around));
+    const dict = [];
+    const packed = lists.packPlan({ seed: st.gen2.seed, rerolls: st.gen2.rerolls, plan: st.gen2.plan, foes: [...pipe.keptFoes(st)] }, dict);
+    delete proto.HAND_STAGES[AS];
+    // (session 9: the hand-built W2 plan shadowed the planted list, as draftReady.ts lifts it: delete W2_STAGES[id])
+    delete w2s.W2_STAGES[AS];
+    listed.LISTED[AS] = { kit: () => kit };
+    lists.plantSeedList(AS, { dict, seeds: [seed], plans: [packed] });
+    return { errors: [], verr, around, F: w2.W2_FORK, FR: w2.W2_FORK_RIVERS.low, follow: w2.W2_FOLLOW };
+  }, [AS, seed]);
+  console.log('VERDICT-ERRORS (shot past, diagnosis only):', built.verr.length); for (const a of built.around) console.log('AROUND', JSON.stringify(a));
+  if (built.errors.length) { console.log('the toy does not build cleanly here:', built.errors.join('; ')); process.exit(2); }
+  let ok = false;
+  for (let t = 0; t < 4 && !ok; t++) {
+    await p.evaluate(([id]) => window.__play(id, 1), [AS]);
+    for (let k = 0; k < 20 && !ok; k++) { await p.waitForTimeout(1000); ok = await p.evaluate((E) => { const e = eval(E); return !!(e && e.currentStage); }, E); }
+  }
+  if (!ok) { console.log(tag, 'no engine after __play', AS, await p.evaluate(() => document.body.innerText.slice(0, 200))); process.exit(4); }
+  console.log(tag, 'playing', await p.evaluate((E) => { const e = eval(E); const s = e.currentStage; return JSON.stringify({ id: s.config?.id, travel: s.config?.travel, n: s.platforms.length, gen2: !!s.gen2, seed: s.gen2?.seed }); }, E));
+  await p.waitForFunction(() => document.documentElement.dataset.hudCard !== '1', null, { timeout: 30000 }).catch(() => {});
+  await p.waitForTimeout(3000);
+  // (the fork read from the BUILT stage: W the wall-step (F.wall's size), the porch (F.porch wide, level with W's top), the rises over it,
+  //  the marsh floor (FR.marsh.floor under the bank) in pieces with the dips between them)
+  const fork = await p.evaluate(([E, F, FR]) => {
+    const e = eval(E);
+    const P = e.platforms ?? e.currentStage.platforms;
+    const solid = P.filter((q) => q.type === 'solid');
+    const W = solid.find((q) => q.width === F.wall.w && q.height === F.wall.h);
+    if (!W) return { dbg: { id: e.currentStage.config?.id, secs: (e.currentStage.gen2?.sections ?? []).map((s) => s.id ?? s.brick ?? s.kind).slice(0, 12), want: [F.wall.w, F.wall.h], tall: solid.filter((q) => q.height >= 40 && q.height <= 80).map((q) => [Math.round(q.x), Math.round(q.y), q.width, q.height]).slice(0, 20), n: P.length } };
+    const lip = W.y + W.height;
+    const porch = solid.filter((q) => q.width === F.porch && Math.abs(q.y - W.y) < 2 && q.x + q.width <= W.x).sort((a, c) => c.x - a.x)[0];
+    const above = solid.filter((q) => porch && q.y < porch.y - 1 && q.y >= porch.y - 3 * 60 - 2 && q.x >= porch.x - 1 && q.x + q.width <= porch.x + porch.width + 1).sort((a, c) => a.y - c.y);
+    const floor = solid.filter((q) => Math.abs(q.y - (lip + FR.marsh.floor)) < 2 && q.x < W.x).sort((a, c) => c.x - a.x);
+    return { W: [W.x, W.y, W.width, W.height], lip, gap: porch ? W.x - (porch.x + porch.width) : null, porch: porch ? [porch.x, porch.y, porch.width] : null, top: above[0] ? [above[0].x, above[0].y, above[0].width] : null, rises: above.length, riseR: above.length ? Math.max(...above.map((q) => q.x + q.width)) : null, floor: floor.map((q) => [q.x, q.width]) };
+  }, [E, built.F, built.FR]);
+  console.log(tag, 'fork', JSON.stringify(fork));
+  if (!fork || fork.dbg || !fork.porch) { console.log('the page did not lay the fork (no W or porch on the built stage)'); process.exit(3); }
+  const [Wx, Wy, Ww] = fork.W, [px, py, pw] = fork.porch;
+  const fl = fork.floor;
+  const dip = fl.length >= 2 ? { a: fl[1][0] + fl[1][1], b: fl[0][0] } : null;
+  const spots = [
+    ['bank', Wx + Ww + 140, fork.lip, -1],
+    ['lip', Wx + 30, Wy, -1],
+    ['porch', fork.riseR ? (fork.riseR + px + pw) / 2 : px + pw / 2, py, -1],
+    ['top', fork.top ? fork.top[0] + fork.top[2] / 2 : px + pw / 2, fork.top ? fork.top[1] : py, -1],
+  ];
+  for (const [name, x, y, facing] of spots) {
+    const at = await p.evaluate(([x, y, facing, E]) => {
+      const e = eval(E);
+      e.isPaused = true;
+      const st = e.currentStage;
+      Object.assign(e.player, { x, y, vx: 0, vy: 0, grounded: true, hanging: false, climbing: false, facing, invincibleTimer: 9 });
+      for (const hh of st.proto?.hints ?? []) hh.shown = true;
+      for (let i = 0; i < 60; i++) e.update(1 / 30);
+      return { x: Math.round(e.player.x), y: Math.round(e.player.y), grounded: e.player.grounded, feetAt: +((e.player.y - e.camera.y) / e.camera.viewportHeight).toFixed(3) };
+    }, [x, y, facing, E]);
+    for (let i = 0; i < 20; i++) {
+      await p.evaluate((E) => { const e = eval(E); e.update(1 / 30); e.clearGuide?.(); e.player.invincibleTimer = 0; e.render(); }, E);
+      await p.evaluate(() => new Promise((r) => requestAnimationFrame(() => r(0))));
+    }
+    const file = path.join(out, `fork-s${seed}-${name}-${tag}.jpg`);
+    await p.screenshot({ path: file, type: 'jpeg', quality: 78 });
+    console.log('wrote', file, JSON.stringify(at));
+  }
+  // (the marsh dip: him on the floor past the first dip, three little ones freed on the floor before it; the follow line's own step walks
+  //  them to him and swims the dip: shot on the first frame one of them paddles over the dip)
+  if (dip) {
+    const r = await p.evaluate(([E, d, lip, FR, follow]) => {
+      const e = eval(E);
+      const st = e.currentStage;
+      const fy = lip + FR.marsh.floor;
+      if (e.proto) e.proto.follow = follow; else e.proto = { hints: [], covers: [], beats: [], movedPickups: [], bushes: [], watch: [], follow };
+      e.startFollow?.();
+      if (!e.follow) return { err: 'no follow line on this page (startFollow)' };
+      for (const [i, c] of ['duck', 'otter', 'capy'].entries()) e.follow.free(c, { x: d.b + 60 + i * 40, y: fy }, { x: d.b + 60 + i * 40, y: fy });
+      Object.assign(e.player, { x: d.a - 120, y: fy, vx: 0, vy: 0, grounded: true, facing: -1, invincibleTimer: 9 });
+      for (let i = 0; i < 400; i++) {
+        e.player.x = d.a - 120; e.player.vx = 0; e.player.invincibleTimer = 9;
+        e.update(1 / 30);
+        const sw = e.follow.line.find((f) => f.paddle && f.x > d.a && f.x < d.b);
+        if (sw) return { frame: i, paddler: [Math.round(sw.x), Math.round(sw.y)], line: e.follow.line.map((f) => `${Math.round(f.x)}/${Math.round(f.y)}/${f.state}${f.paddle ? '/P' : ''}`) };
+      }
+      return { err: 'no little one paddled the dip in 400 frames', line: e.follow.line.map((f) => `${Math.round(f.x)}/${Math.round(f.y)}/${f.state}`) };
+    }, [E, dip, fork.lip, built.FR, built.follow]);
+    console.log(tag, 'marsh', JSON.stringify(r));
+    if (!r.err) {
+      await p.evaluate((E) => { const e = eval(E); e.clearGuide?.(); e.player.invincibleTimer = 0; e.render(); }, E);
+      const file = path.join(out, `fork-s${seed}-marsh-dip-${tag}.jpg`);
+      await p.screenshot({ path: file, type: 'jpeg', quality: 78 });
+      console.log('wrote', file);
+    }
+  }
+  await p.context().close();
+}
+await b.close();
