@@ -360,7 +360,9 @@ test('the wide stone at its measured band passes on a built stage and keeps the 
   for (const g of [54, 62, 70]) assert.equal(wideFaults(wide(5, g, true)), '', `the wave of 5 at 130 + ${g}`);
   assert.equal(wideFaults(wide(2, 62)), '', '2 in step at 130 + 62');
   // (Easy lays its own water for its stretched count: 83-102)
-  for (const g of [83, 90, 102]) assert.equal(wideFaults(wide(5, g, true), 'easy'), '', `Easy: the wave of 5 at 130 + ${g}`);
+  for (const g of [83, 92, 102]) assert.equal(wideFaults(wide(5, g, true), 'easy'), '', `Easy: the wave of 5 at 130 + ${g}`);
+  assert.equal(wideFaults(wide(2, 92), 'easy'), '', 'Easy: 2 in step at 130 + 92');
+  assert.ok(snapBeat(snapClock('w', { count: COURT }, COURT_EASY), [0, 0], false).slack >= SNAP_WIDE.slack, '2 in step keeps the slack (ONE: 13 early, 21 late)');
   const def = snapClock('w', { count: COURT }, COURT_EASY);
   assert.equal(snapBeat(def, [0, -COURT, -2 * COURT, -3 * COURT, -4 * COURT], false).counts, '12--', 'the wave of 5: ONE or TWO (2-9 beat 8)');
   assert.equal(snapBeat(def, [0, 0, 0], false).counts, '1---', '3 in step: ONE only (2-9 beat 5), but with no slack late');
@@ -382,5 +384,6 @@ test('the wide stone refused, each by name: 30 px of water (off the beat), Norma
   ps.filter((p) => p.pad?.on === 'bites')[0].width = 80;
   assert.match(snapFaults({ ...st, platforms: ps }, 'normal').join(' | '), /mixes 80 and 130 px stones/);
   // (3 in step: safe only from ONE, and a tap one frame after ONE is a bite: refused by the slack, SNAP_WIDE.slack)
-  assert.match(wideFaults(wide(3, 62)), /on Normal his tap on its best count \(safe on \[1---\]\) may be 0 s off the beat, under 0.2/);
+  assert.match(wideFaults(wide(3, 62)), /on Normal it is safe on \[1---\], and its best tap may be only 13 frames early and 0 frames late, under 6 frames \(0.2 s\) each way/);
+  assert.match(wideFaults(wide(3, 92), 'easy'), /on Easy it is safe on \[1---\], .* 0 frames late/, 'Easy too');
 });

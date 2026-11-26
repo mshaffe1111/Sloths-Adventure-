@@ -489,9 +489,10 @@ export type SnapStoneW = (typeof SNAP_WIDTHS)[number];
  * A run of WIDE snap stones on its bar, by SNAP_WIDE's model of the flight: his first tap at the bank's lip, stone i stood from the hop's
  * landing after the tap on count i to the tap on count i+1 (frames from his first tap; the far bank after the last). `counts`: the counts of
  * the bar his first tap may fall on and stay safe ('1---': ONE only), as court29.ts reads its flight; `slack`: the best of those counts' least
- * early-or-late margin (s); `window`: the longest spell of safe start moments round the bar (s). Shifts as snapWindow's.
+ * early-or-late margin (s), its frames early and late (`early`, `late`); `window`: the longest spell of safe start moments round the bar (s).
+ * Shifts as snapWindow's.
  */
-export function snapBeat(def: ClockDef, shifts: readonly number[], easy: boolean): { counts: string; slack: number; window: number } {
+export function snapBeat(def: ClockDef, shifts: readonly number[], easy: boolean): { counts: string; slack: number; window: number; early: number; late: number } {
   const b = beatOf(def, easy);
   const dt = 1 / 30;
   const c = b.seconds[b.names.indexOf('on')] ?? 0;
@@ -508,7 +509,7 @@ export function snapBeat(def: ClockDef, shifts: readonly number[], easy: boolean
   const at = (k: number) => safe[((k % m) + m) % m];
   let best = 0;
   for (let a = 0; a < m; a++) { let k = 0; while (k < m && at(a + k)) k++; best = Math.max(best, k); }
-  let slack = 0, counts = '';
+  let slack = -1, counts = '', bestEarly = 0, bestLate = 0;
   for (let k = 1; k <= 4; k++) {
     const c0 = Math.round(((k - 1) * c) / dt);
     if (!at(c0)) { counts += '-'; continue; }
@@ -516,9 +517,9 @@ export function snapBeat(def: ClockDef, shifts: readonly number[], easy: boolean
     let early = 0, late = 0;
     while (early < m && at(c0 - early - 1)) early++;
     while (late < m && at(c0 + late + 1)) late++;
-    slack = Math.max(slack, Math.min(early, late));
+    if (Math.min(early, late) > slack) { slack = Math.min(early, late); bestEarly = early; bestLate = late; }
   }
-  return { counts, slack: Math.round(slack * dt * 100) / 100, window: Math.round(best * dt * 100) / 100 };
+  return { counts, slack: Math.round(Math.max(0, slack) * dt * 100) / 100, window: Math.round(best * dt * 100) / 100, early: bestEarly, late: bestLate };
 }
 
 /** a snap row's bar: four counts, the bite the fourth, the creak at the end of the third; Easy stretches it */
@@ -552,12 +553,16 @@ export function snapWindow(def: ClockDef, shifts: readonly number[], easy: boole
 
 /**
  * What is unfair about a stage's snap stones, in words (none: they may be laid):
- *   - each is SNAP_LAY.w wide (the flown stone) and its clock is listed, fair (every bite out of a creak: clock.ts checkClock; a creak of
+ *   - each is one of the flown widths (SNAP_WIDTHS: 80 or 130, any other named) and its clock is listed, fair (every bite out of a creak: clock.ts checkClock; a creak of
  *     SNAP_FAIR.warn or more: beatBrick.ts brickFair) and bites for one count of a four-count bar;
  *   - the water each side of it is SNAP_FAIR.gap (one tap hop);
  *   - each run of snap stones between floors that never bite (a bank, a plain stone): at most SNAP_FAIR.inStep in step; a wave runs ahead
  *     only (each a count later or in step with the one before, never earlier); its window to leave the bank, straight through, is
  *     SNAP_FAIR.window or more on Normal, and Easy's is never under Normal's (level.md rule 4).
+ *   THE WIDE STONE (130 px, SNAP_WIDE, the lead's ruling (A) on ENG-STONE29's flight) by its own band instead: the water each side keeps the
+ *   pace (pitch over the row's count on the setting judged), its count is one the pace was flown at, a run is one width, at most
+ *   SNAP_WIDE.inStep in step, a wave runs ahead only, and its best count's tap keeps SNAP_WIDE.slack early AND late (snapBeat): 3 in step
+ *   is safe only on ONE with no frame late, so it is refused.
  */
 export function snapFaults(st: { platforms: readonly Platform[]; rivers?: readonly RiverZone[]; clocks?: readonly ClockDef[] }, difficulty?: 'normal' | 'easy'): string[] {
   const out: string[] = [];
@@ -646,7 +651,7 @@ export function snapFaults(st: { platforms: readonly Platform[]; rivers?: readon
         }
         for (const easy of difficulty === 'easy' ? [true] : difficulty === 'normal' ? [false] : [false, true]) {
           const sb = snapBeat(def, shifts, easy);
-          if (sb.slack < SNAP_WIDE.slack - 1e-6) out.push(`${at}: on ${easy ? 'Easy' : 'Normal'} his tap on its best count (safe on [${sb.counts}]) may be ${sb.slack} s off the beat, under ${SNAP_WIDE.slack}: a tap that late or early is a bite`);
+          if (sb.slack < SNAP_WIDE.slack - 1e-6) out.push(`${at}: on ${easy ? 'Easy' : 'Normal'} it is safe on [${sb.counts}], and its best tap may be only ${sb.early} frames early and ${sb.late} frames late, under ${Math.round(SNAP_WIDE.slack * 30)} frames (${SNAP_WIDE.slack} s) each way`);
         }
         continue;
       }
