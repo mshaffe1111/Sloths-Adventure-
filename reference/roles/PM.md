@@ -110,7 +110,7 @@ Everything else is yours on his standing permission (11-07).
    **The catch-ahead list names every cause any lane has booked to another lane's landing ('expected to fall at the merge'): each is a
    measurement owed today, on a trial merge (CI #83).**
    **A build's start time is given from its BASE line, never from memory (CI #90, 11-26).** Before any build start time goes to Matt, and at
-   every check-in that names a NEXT build, list EVERY prerequisite in that build packet's BASE line with its state (landed hash / running
+   every check-in that names a NEXT build, list EVERY prerequisite in that build packet (its BASE line, its ART and its LINES file) with its state (landed hash / running
    session + ETA / NOT STARTED). A NOT STARTED piece is started at once or the time is not given (3-1's spore brick was missed all day).
 8b. **Machine load (Matt, 10-29: helpers get their own machine; 6 in one container meant 30+ min tests and a full disk).** Every
    member is its own session, so it has its own machine: heavy work (the full suite, clipcheck, drawcheck, a seed-list build) runs
