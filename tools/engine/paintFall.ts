@@ -121,7 +121,7 @@ export interface SoilOver {
  *  clipAbove), so a point under the ceiling's line is no soil; set the stage's stack zones first, as engine.ts does (paintcheck.ts) */
 const airUnder = (cs: readonly Ceiling[]) => (x: number, y: number) => cs.some((c) => y >= ceilingAt(c, x));
 
-export function soilOvers(platforms: Platform[], regions = groundSoil(groundBanks(platforms), undefined, groundCeilings(platforms)), cs: readonly Ceiling[] = groundCeilings(platforms)): SoilOver[] {
+export function soilOvers(platforms: Platform[], regions: ReadonlyArray<{ p: Platform; pts: Array<[number, number]>; clip?: readonly Ceiling[] }> = groundSoil(groundBanks(platforms), undefined, groundCeilings(platforms)), cs: readonly Ceiling[] = groundCeilings(platforms)): SoilOver[] {
   const out: SoilOver[] = [];
   const box = regions.map((r) => {
     let x0 = Infinity, x1 = -Infinity, y1 = -Infinity;
@@ -134,7 +134,8 @@ export function soilOvers(platforms: Platform[], regions = groundSoil(groundBank
       const b = regions[j].p;
       const gap = b.y - (a.y + a.height);
       if (b === a || gap < SOIL_ROOM || box[i].y1 < b.y - SOIL_ROOM || Math.min(box[i].x1, b.x + b.width) - Math.max(box[i].x0, b.x) <= SOIL_JOIN) continue;
-      const over = cs.length ? ceilingsOver(a, cs) : [];
+      // (the clip the drawer paints the region under, as groundSoil exports it; a region handed in without one, the stage's ceilings over it)
+      const over = cs.length ? (regions[i].clip ?? ceilingsOver(a, cs)) : [];
       const n = soilCover(regions[i].pts, b, over.length ? airUnder(over) : undefined);
       if (n > SOIL_JOIN) out.push({ over: { id: a.id, x: Math.round(a.x), y: Math.round(a.y), w: Math.round(a.width), h: a.height }, under: { id: b.id, x: Math.round(b.x), y: Math.round(b.y), w: Math.round(b.width) }, covered: n, gap: Math.round(gap) });
     }

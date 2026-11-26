@@ -239,3 +239,52 @@ test('stacked legs RED: a hung bank over a ceiling stops short of its line (soil
   // (and the clip is what clears it: the same soil judged with no ceiling covers the race leg's top)
   assert.equal(soilOvers(st, groundSoil(st, undefined, cs), []).length, 1);
 });
+
+// FIX-SOIL-c planted (R-165.441 x the dip pocket): a dip pocket (a narrow piece sunk between two higher banks, drawGround's second pass)
+// painted its soil edge to edge from its lip to the view's bottom, with no ceiling clip and no hung stop. The plant is 2-8's fork
+// (BUILD-28's stills, 11-26): moss_stone 88x90 sunk 75 between two logs 165 deep, over the marsh floor 700 lower, under a stacked
+// leg's ceiling: one full-height soil pillar through the porch log, upright and sideways. The gate read the ceiling as clipping it
+// (soilOvers took ceilingsOver for every region); it reads the clip drawGround draws now (groundSoil's `clip`).
+const { pocketHangs, pocketOutline } = await import('../../src/game/protoArt.ts');
+function forkPocket() {
+  const L = bank(1000, 728, 287, 165), K = { ...bank(1287, 803, 88, 90), ownLook: true } as Platform, R = bank(1375, 728, 334, 165);
+  const F = bank(900, 1593, 900, 200);
+  return { L, K, R, F, st: [L, K, R, F] };
+}
+const pocketRegion = (regions: ReadonlyArray<{ p: Platform }>, K: Platform) => regions.length - 1 - [...regions].reverse().findIndex((r) => r.p === K);
+
+test('FIX-SOIL-c RED: a dip pocket under a stacked leg\'s ceiling painted unclipped covers the lower leg; GREEN: drawn clipped, the gate reads that clip', () => {
+  const { K, F, st } = forkPocket();
+  paintOn(st);
+  const n = Math.floor((1800 - 900) / STEP) + 1;
+  const cs = [{ x0: 900, x1: 900 + (n - 1) * STEP, ys: Array.from({ length: n }, () => 1000), lower: [F] }];
+  const drawn = groundSoil(st, undefined, cs);
+  const i = pocketRegion(drawn, K);
+  assert.equal(drawn[i].p, K);
+  assert.equal(drawn[i].clip.length, 1, 'the pocket\'s soil is drawn clipped above the ceiling, as its banks\' is');
+  // (the plant: the pocket's soil as the release drew it, no clip)
+  const red = soilOvers(st, drawn.map((r, j) => (j === i ? { ...r, clip: [] } : r)), cs);
+  assert.ok(red.some((o) => o.over.id === K.id && o.under.id === F.id && o.covered > 100), JSON.stringify(red));
+  assert.deepEqual(soilOvers(st, drawn, cs), []);
+  assert.equal(pocketHangs(K, st, undefined, cs), false, 'under a ceiling the ceiling owns its end, never hung');
+});
+
+test('FIX-SOIL-c RED: a dip pocket between hung banks run on down covers the floor; GREEN: it hangs, its soil stops at its own bottom, the banks meet it square', () => {
+  const { L, K, R, F, st } = forkPocket();
+  paintOn(st);
+  assert.equal(bankOpen(L, st)!.open.underside, true);
+  assert.equal(bankOpen(R, st)!.open.underside, true);
+  const drawn = groundSoil(st);
+  const i = pocketRegion(drawn, K);
+  const red = soilOvers(st, drawn.map((r, j) => (j === i ? { ...r, pts: pocketOutline(K, st, 2000, undefined, [], false).pts } : r)));
+  assert.ok(red.some((o) => o.over.id === K.id && o.under.id === F.id && o.covered > 100), JSON.stringify(red));
+  assert.equal(pocketHangs(K, st), true);
+  assert.ok(Math.max(...drawn[i].pts.map((q) => q[1])) <= K.y + K.height, 'the pocket\'s underside never hangs under its collider');
+  assert.equal(bankOpen(L, st)!.open.seamR, true, 'the left bank\'s underside runs on square into the pocket\'s');
+  assert.equal(bankOpen(R, st)!.open.seamL, true);
+  assert.deepEqual(soilOvers(st), []);
+  // (a pocket whose banks are not hung and with nothing under it runs on down as before)
+  const lone = [{ ...L }, { ...K }, { ...R }] as Platform[];
+  paintOn(lone);
+  assert.equal(pocketHangs(lone[1], lone), false);
+});

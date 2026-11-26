@@ -1005,6 +1005,9 @@ export interface BankOpen {
   left: boolean; right: boolean; leftStep?: number; rightStep?: number; bare?: boolean; lipless?: boolean; shadeFrom?: number; underL?: number; underR?: number;
   /** open space under the bank down to a lower bank (soilHangs): its soil stops at its own bottom, over a painted underside (R-165.441) */
   underside?: boolean;
+  /** with `underside`: that side meets a hung dip pocket (pocketHangs), whose soil carries the underside on past the end, so the underside
+   *  runs square to the end on its line and does not round up into the end's face (R-165.441, FIX-SOIL-c) */
+  seamL?: boolean; seamR?: boolean;
 }
 
 /** room for him under a bank: his collider's height (engine.ts, 48) */
@@ -1076,8 +1079,8 @@ export function soilOutline(w: number, p: Platform, open: BankOpen, viewBottom: 
     }
     return out;
   };
-  R = upTo(R, open.right).map(clampY);
-  L = upTo(L, open.left).map(clampY);
+  R = upTo(R, open.right && !open.seamR).map(clampY);
+  L = upTo(L, open.left && !open.seamL).map(clampY);
   const [xr, yr] = R[R.length - 1], [xl, yl] = L[L.length - 1];
   const dR = yr - underY(xr, foot), dL = yl - underY(xl, foot);
   const ease = (t: number) => (t >= 1 ? 0 : 0.5 + 0.5 * Math.cos(Math.PI * t));
@@ -1706,15 +1709,47 @@ function drawGround(ctx: CanvasRenderingContext2D, platforms: Platform[], banks:
   // laid from the view, it stood as a lighter box with straight sides between 1-1's earth pillars, and moved with the camera: R-165.129)
   for (const p of banks) {
     if (!vis(p) || !isPocket(p, banks)) continue;
-    const bottom = Math.max(p.y + p.height, (view.y1 ?? 0) + 40);
+    // (R-165.441, FIX-SOIL-c: hung, between hung banks or over a lower bank, its soil stops at its own bottom over a painted underside, as
+    // theirs does: run on down to the view's bottom alone it stood as a full-height pillar through 2-8's porch log)
+    // (under a stacked leg's ceiling its soil is clipped clear of the air under the line, as the banks' either side are, and the ceiling's
+    // underside drawn under its own span: unclipped it ran on down through the lower leg's air as a full-height pillar through 2-8's porch
+    // log, upright and sideways, FIX-SOIL-c 11-26)
+    const over = cs.length ? ceilingsOver(p, cs) : [];
+    const hung = pocketHangs(p, banks, sig, cs) ? pocketOutline(p, banks, 0, sig, cs, true) : null;
+    const bottom = hung ? hung.bottom : Math.max(p.y + p.height, (view.y1 ?? 0) + 40);
+    if (over.length) {
+      ctx.save();
+      clipAbove(ctx, over, p.x - 400, p.x + p.width + 400, p.y - 400, Math.max(view.y1 ?? 0, ...over.map((c) => Math.max(...c.ys))) + 400);
+    }
+    if (hung?.under) drawHungUnderside(ctx, kitWorld, ['pocket', p.x, p.y, p.width, p.height].map((v) => (typeof v === 'number' ? Math.round(v) : v)).join(','), hung.under.xl, hung.under.xr, hung.under.edge, UNDER_HIDE);
     ctx.save();
     ctx.beginPath();
-    // (under its lip the soil runs on under the banks' end faces either side, which curve in and left the backdrop showing below them)
-    ctx.rect(p.x - 2, p.y + 6, p.width + 4, 14);
-    ctx.rect(p.x - POCKET_SIDE, p.y + 20, p.width + 2 * POCKET_SIDE, bottom - p.y - 20);
+    if (hung) {
+      ctx.moveTo(...hung.pts[0]);
+      for (let i = 1; i < hung.pts.length; i++) ctx.lineTo(...hung.pts[i]);
+      ctx.closePath();
+    } else {
+      // (under its lip the soil runs on under the banks' end faces either side, which curve in and left the backdrop showing below them)
+      ctx.rect(p.x - 2, p.y + 6, p.width + 4, 14);
+      ctx.rect(p.x - POCKET_SIDE, p.y + 20, p.width + 2 * POCKET_SIDE, bottom - p.y - 20);
+    }
     ctx.clip();
-    drawSoil(ctx, kitWorld, p.x - POCKET_SIDE, p.x + p.width + POCKET_SIDE, p.y + 6, bottom, view.y1 ?? 0, view.y0, true, groundDepth ?? undefined);
+    drawSoil(ctx, kitWorld, p.x - POCKET_SIDE, p.x + p.width + POCKET_SIDE, p.y + 6, bottom + (hung ? 2 : 0), view.y1 ?? 0, view.y0, true, groundDepth ?? undefined);
+    // (its underside in shade, as a hung bank's: from nothing UNDER_SHADE up to the world's deep tone at its edge)
+    const deep = hung ? GROUND_FRAMES[kitWorld]?.deep : undefined;
+    if (deep && typeof ctx.createLinearGradient === 'function') {
+      const gr = ctx.createLinearGradient(0, bottom - UNDER_SHADE, 0, bottom);
+      gr.addColorStop(0, `rgba(${deep[0]},${deep[1]},${deep[2]},0)`);
+      gr.addColorStop(1, `rgba(${deep[0]},${deep[1]},${deep[2]},0.7)`);
+      ctx.fillStyle = gr;
+      ctx.fillRect(p.x - POCKET_SIDE, bottom - UNDER_SHADE, p.width + 2 * POCKET_SIDE, UNDER_SHADE + 2);
+    }
     ctx.restore();
+    if (over.length) {
+      ctx.restore();
+      // (the ceiling's underside over its own span, closed both ends: the banks either side carry it on)
+      drawUnderside(ctx, kitWorld, p, over, view, { l: false, r: false });
+    }
     ctx.save();
     ctx.beginPath();
     ctx.rect(p.x - 1, p.y - 120, p.width + 2, 260);
@@ -1764,6 +1799,64 @@ export function paintOrder(banks: readonly Platform[]): Platform[] {
  * itself (a pit's wall under a bank's end is that bank's soil already).
  */
 export function bankOpen(p: Platform, banks: readonly Platform[], sig = bankSig(banks), cs: readonly Ceiling[] = []): { open: BankOpen; isWall: boolean } | null {
+  const how = bankOpenBase(p, banks, sig, cs);
+  if (!how?.open.underside) return how;
+  // (a hung bank beside a hung dip pocket: its underside runs on square into the pocket's, never rounding up at that end; R-165.441, FIX-SOIL-c)
+  const seam = (right: boolean) => banks.some((q) => q !== p && q.y > p.y + 20 && Math.abs(right ? q.x - (p.x + p.width) : q.x + q.width - p.x) < 4 &&
+    isPocket(q, banks) && pocketHangs(q, banks, sig, cs));
+  const seamL = seam(false), seamR = seam(true);
+  return seamL || seamR ? { ...how, open: { ...how.open, ...(seamL ? { seamL } : {}), ...(seamR ? { seamR } : {}) } } : how;
+}
+
+const pocketMemo = new WeakMap<Platform, { sig: number; n: number; r: boolean }>();
+/**
+ * R-165.441 for a dip pocket (FIX-SOIL-c): whether its soil, which drawGround paints edge to edge under its lip, stops at its own bottom.
+ * It does where a bank it sits between is hung (soilHangs: the soil either side stops at its bottom, and the pocket's alone ran on down as
+ * one full-height pillar, 2-8's fork 11-26: through the porch log, his own tread, upright and sideways), or where its own soil, run on
+ * down, would cover a lower bank's top or the room for him over it (more than where two soils meet). Never under a stacked leg's ceiling
+ * (the ceiling clips the earth there, as for a bank).
+ */
+export function pocketHangs(p: Platform, banks: readonly Platform[], sig = bankSig(banks), cs: readonly Ceiling[] = []): boolean {
+  const hit = pocketMemo.get(p);
+  if (hit && hit.sig === sig && hit.n === cs.length) return hit.r;
+  let r = false;
+  if (!(cs.length && ceilingsOver(p, cs).length)) {
+    r = banks.some((q) => q !== p && q.y < p.y - 20 && (Math.abs(q.x - (p.x + p.width)) < 4 || Math.abs(q.x + q.width - p.x) < 4) && !!bankOpenBase(q, banks, sig, cs)?.open.underside);
+    if (!r) {
+      const foot = p.y + p.height, a = p.x - POCKET_SIDE, b = p.x + p.width + POCKET_SIDE;
+      const under = banks.filter((q) => q !== p && q.y - foot >= SOIL_ROOM && Math.min(b, q.x + q.width) - Math.max(a, q.x) > SOIL_JOIN);
+      if (under.length) {
+        const pts = pocketOutline(p, banks, Math.max(...under.map((q) => q.y)) + 2, sig, cs, false).pts;
+        r = under.some((q) => soilCover(pts, q) > SOIL_JOIN);
+      }
+    }
+  }
+  pocketMemo.set(p, { sig, n: cs.length, r });
+  return r;
+}
+
+/**
+ * A dip pocket's soil as drawGround paints it: under its lip, then edge to edge POCKET_SIDE past its ends (under the banks' end faces
+ * either side), run on down to `deep`; hung (pocketHangs), it stops at its own bottom on the world-anchored underside line (underY, the
+ * line a hung bank's closed side ends on, so the soils meet with no step), with `under` set for its painted underside.
+ */
+export function pocketOutline(p: Platform, banks: readonly Platform[], deep: number, sig = bankSig(banks), cs: readonly Ceiling[] = [], hang = pocketHangs(p, banks, sig, cs)): {
+  pts: Array<[number, number]>; bottom: number; under?: { xl: number; xr: number; edge: (x: number) => number };
+} {
+  const a = p.x - POCKET_SIDE, b = p.x + p.width + POCKET_SIDE, t = p.y + 6;
+  const top: Array<[number, number]> = [[p.x - 2, t], [p.x + p.width + 2, t], [p.x + p.width + 2, p.y + 20], [b, p.y + 20]];
+  if (!hang) {
+    const d = Math.max(p.y + p.height, deep);
+    return { pts: [...top, [b, d], [a, d], [a, p.y + 20], [p.x - 2, p.y + 20]], bottom: d };
+  }
+  const foot = p.y + p.height;
+  const edge = (x: number) => Math.max(p.y + 24, underY(x, foot));
+  const under: Array<[number, number]> = [];
+  for (let x = b; x > a; x -= 4) under.push([x, edge(x)]);
+  return { pts: [...top, ...under, [a, edge(a)], [a, p.y + 20], [p.x - 2, p.y + 20]], bottom: foot, under: { xl: a, xr: b, edge } };
+}
+
+function bankOpenBase(p: Platform, banks: readonly Platform[], sig: number, cs: readonly Ceiling[]): { open: BankOpen; isWall: boolean } | null {
   // (a pit's wall under a bank's end is that bank's soil already)
   if (p.soil && banks.some((q) => q !== p && !q.soil && Math.abs(q.y + q.height - p.y) < 3 && q.x <= p.x + 2 && q.x + q.width >= p.x + p.width - 2)) return null;
   // (a side is closed where the next bank meets it, or where a piece stands right on top of its end: a pit's floor runs on under the
@@ -1800,18 +1893,19 @@ export function bankOpen(p: Platform, banks: readonly Platform[], sig = bankSig(
  * outline in paint order, run on down to `deep` where it runs out of sight, then the dip pockets' soil, painted after every bank. Set the
  * stage's paint state first (kit world: the end faces are each world's own).
  */
-export function groundSoil(banks: readonly Platform[], deep = Math.max(0, ...banks.map((q) => q.y + q.height)) + 100, cs: readonly Ceiling[] = []): Array<{ p: Platform; pts: Array<[number, number]> }> {
+export function groundSoil(banks: readonly Platform[], deep = Math.max(0, ...banks.map((q) => q.y + q.height)) + 100, cs: readonly Ceiling[] = []): Array<{ p: Platform; pts: Array<[number, number]>; clip: Ceiling[] }> {
   const sig = bankSig(banks);
-  const out: Array<{ p: Platform; pts: Array<[number, number]> }> = [];
+  // (`clip`: the stacked legs' ceilings drawGround clips the region's paint above, as it draws it: the gate reads the clip drawn, never
+  // one it assumes; FIX-SOIL-c, 2-8's pocket pillar was painted unclipped under a ceiling the gate took as clipping it)
+  const out: Array<{ p: Platform; pts: Array<[number, number]>; clip: Ceiling[] }> = [];
   for (const p of paintOrder(banks)) {
     const how = bankOpen(p, banks, sig, cs);
-    if (how) out.push({ p, pts: soilOutline(kitWorld, p, how.open, deep).pts });
+    if (how) out.push({ p, pts: soilOutline(kitWorld, p, how.open, deep).pts, clip: cs.length ? ceilingsOver(p, cs) : [] });
   }
   // (a dip pocket's soil, edge to edge under its lip: drawGround's second pass)
   for (const p of banks) {
     if (!isPocket(p, banks)) continue;
-    const a = p.x - POCKET_SIDE, b = p.x + p.width + POCKET_SIDE, t = p.y + 6, d = Math.max(p.y + p.height, deep);
-    out.push({ p, pts: [[p.x - 2, t], [p.x + p.width + 2, t], [p.x + p.width + 2, p.y + 20], [b, p.y + 20], [b, d], [a, d], [a, p.y + 20], [p.x - 2, p.y + 20]] });
+    out.push({ p, pts: pocketOutline(p, banks, deep, sig, cs).pts, clip: cs.length ? ceilingsOver(p, cs) : [] });
   }
   return out;
 }
