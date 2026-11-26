@@ -3,7 +3,7 @@ Branch t-eng-sim from origin/release-0.10.3 c73cb9766. Nothing here lands on rel
 
 ## EXACT NEXT STEP (box 3 hand-over): step 2's checks GREEN so far, step 3's plan WRITTEN; finish the suite, then STOP for the lead's GO
 Head: the hand-over message's hash (pushed to t-eng-sim, ls-remote confirmed). Box 3's logs were in its scratchpad; the counts are below.
-1. Suite shards 1 and 2 on step 2's code: if box 3 appended their verdicts under "Step 2's checks" below, nothing to run. Otherwise, on
+1. DONE by box 3 (shards 1-2 recorded below: one red, pre-existing on release-0.10.3, traced to CI-15 0ec009b4d). Kept for its commands: Otherwise, on
    a chattr-frozen worktree of the pushed head (src and tools frozen except src/game/gen2/proven; node_modules symlinked;
    run_in_background + timeout 7200000): `ls` CLAUDE.md's src globs | sort -u | `split -n r/3 -d`, run shards 01 and 02 ONLY (shard 00
    passed, 1,407 / 0 fail / 1 todo); each red traced to its cause and named. Record them with the hash.
@@ -74,8 +74,14 @@ Head: the hand-over message's hash (pushed to t-eng-sim, ls-remote confirmed). B
   src/game/gen2/proven):** the CI tool line (gates.yml line 157) PASS: 432 tests, 431 pass, 0 fail, 1 todo (chaseBots' CHILD-on-Normal
   fork, OPEN, ENG-B4), 1,045 s (sharing 4 cores with the suite); tsc PASS; generalitycheck PASS (70 engine files, 26 literals, 26 known);
   timecheck c73cb9766..a82a602c PASS (9 commits, 1 stamp). The suite in 3 shards (651 files, CLAUDE.md's src globs, 217 each): shard 0 PASS: 1,408 tests, 1,407 pass, 0 fail, 1 todo (4-3 in the real engine:
-  the wall check has no bottom, a known todo), 1,728 s; shards 1 and 2 were still running at box 3's hand-over (their verdicts are appended
-  below by box 3 if it is still up; otherwise box 4 runs them ONCE, item 1 of the next step).
+  the wall check has no bottom, a known todo), 1,728 s; shard 1 PASS: 1,421 tests, 1,419 pass, 0 fail, 2 todo (R-165.312's flag placer, known), 1,029 s.
+  **Shard 2: 1,364 tests, 1 FAIL, NOT this lane's:** src/game/firstTimerBot.test.ts:177 "5-9's Easy goal rests on the kid's runs: re-measured,
+  they are still the ones recorded (gen2/game.ts KID_RUNS_59)": recorded [3, 5, 6, 7, 6, 5], measured [8, 9, 7, 7, 4, 7]. TRACED: the same
+  red, the same six runs, on the BASE c73cb9766 (= origin/release-0.10.3 today); GREEN on the merge's first parent b552ac952, RED on its
+  second 9718499a6; git bisect dfe631913..9718499a6 (the test alone, about 11 s a step): **first bad commit 0ec009b4d, ENG-PLANT-CI CI-15
+  'padPause's stand on a small log is a stop he means (stopMeant)'.** So the bot code release 5 ships moved the kid's 5-9 runs and the
+  pinned Easy goal (kidMedian) was not re-measured. NOT fixed here (the guard: nothing from this lane lands on release-0.10.3, and the
+  fix, re-measure + re-set 5-9's Easy goal or a bot change, is the release lane's call); sent to the lead. Step 2 adds NO red.
 
 ## Step 3: THE ONE-PAGE PLAN (box 3; READY only, NOT started: the lead GOs it after ENG-THUMB lands)
 **Order of work, each a candidate with its own checks (D141: the CI tool line on every one):**
