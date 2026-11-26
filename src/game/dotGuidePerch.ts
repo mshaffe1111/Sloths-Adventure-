@@ -560,7 +560,7 @@ export const AHEAD_JUMPS = 1.5;
  * feet (the lip, the ledge) up to the top of a double jump over his head. Climbing, it is the vine above him; falling or gliding, it
  * reaches down ahead of him too. Clipped to the screen.
  */
-export type AheadProbe = Pick<GuideView, 'px' | 'py' | 'pw' | 'ph' | 'zoom' | 'camX' | 'camY' | 'cssW' | 'cssH' | 'facing' | 'climbing' | 'grounded' | 'vy' | 'gliding'>;
+export type AheadProbe = Pick<GuideView, 'px' | 'py' | 'pw' | 'ph' | 'zoom' | 'camX' | 'camY' | 'cssW' | 'cssH' | 'facing' | 'climbing' | 'grounded' | 'vy' | 'gliding'> & Partial<Pick<GuideView, 'travel'>>;
 /** (`out`: filled in place, for a caller in the frame loop that may not allocate: Meeca's thought cloud) */
 /**
  * the move the words are about, which sets the shape of the way ahead (the lead's check, 4-2 upright: a glide tip's box sat where the
@@ -586,7 +586,17 @@ export function aheadZone(v: AheadProbe, out: Rect = { x0: 0, y0: 0, x1: 0, y1: 
   let a: number, b: number, c: number, d: number;
   // (what he is doing now wins over what the words are about: on the vine it is the climb, in the air falling it is the way down)
   const m: AheadMove = v.climbing ? 'climb' : !v.grounded && (v.gliding || v.vy > 120) ? 'glide' : move;
-  if (m === 'climb') {
+  if (v.travel === 'down') {
+    // a stage that travels DOWN (R-165.456): the way on is below him, to either side, wherever the next ledge is; the words go above.
+    // On a vine, the stretch under his feet as well as over his head (straight up or down on a vine always climbs). Off it, from just
+    // over the ledge he stands on (the lip he drops from) to the bottom of the screen, 1.5 jumps either side; falling, from his head
+    const mid = (x0 + x1) / 2;
+    const reach = JUMP_RISE * AHEAD_JUMPS * z;
+    a = m === 'climb' ? x0 - 70 * z : mid - len;
+    b = m === 'climb' ? head - reach : m === 'glide' ? head - 30 * z : feet - 34 * z;
+    c = m === 'climb' ? x1 + 70 * z : mid + len;
+    d = m === 'climb' ? feet + reach : v.cssH;
+  } else if (m === 'climb') {
     // up the vine: the stretch above him, and the leap off it either side of his hands
     a = x0 - 70 * z;
     b = head - JUMP_RISE * AHEAD_JUMPS * z;
@@ -796,6 +806,8 @@ export function cornerBubble(v: GuideView, w: number, h: number, safe: SafeArea,
 export function hoverOrder(v: GuideView): ('above' | 'below' | 'left' | 'right')[] {
   const back = v.facing > 0 ? 'left' : 'right';
   const front = v.facing > 0 ? 'right' : 'left';
+  // (a way down: above him first, then beside him; under him is the way on, R-165.456)
+  if (v.travel === 'down') return ['above', back, front, 'below'];
   return v.cssH > v.cssW ? ['above', back, 'below', front] : [back, 'above', 'below', front];
 }
 

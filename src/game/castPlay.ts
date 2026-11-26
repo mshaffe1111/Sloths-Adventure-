@@ -3,14 +3,15 @@
  * between the engine and the pure kit: when a stage's brief names a cast (`proto.cast`, castPlay.types.ts), every animal of a named
  * kind is stepped HERE on the fixed step, never by predatorAI.ts, with
  *   - Pokey's stillness (stillness.ts) and the cover he stands in,
- *   - ONE noise channel (ENG-NOISE): every noise he or the stage makes reaches every animal here, in the order made: his hard landing
+ *   - ONE channel (ENG-NOISE; `take`, castPlay.types.ts CastEvent `{ way, x, y, r }`; noises are its first way): every noise he or the
+ *     stage makes reaches every animal here, in the order made: his hard landing
  *     (heroNoise.ts: a soft one, or one on quiet ground, makes none), his punch (the engine's blow, from the world that teaches noise),
  *     a struck or fired sounding thing (castPlay.types.ts SoundPost: its own noise at its place, never his punch's),
  *   - the stage's drop traps (dropTrap.ts), which beat what they come down beside by the kit's 'trap' way.
  * A blow, a stomp or a trap is tried on the kit (`beat`); what it does is the animal's data. Nothing here is a stage's: no ids, no
  * seeds, no positions. Pure but for the animals it writes back to (the fields the art already reads); no canvas, no sounds.
  */
-import type { CastData, SoundPost, TrapPost } from './castPlay.types.ts';
+import type { CastData, CastEvent, SoundPost, TrapPost } from './castPlay.types.ts';
 import { TRAP, handleBox, limbGone, newTrap, scares, shake, stepTrap, type TrapState } from './dropTrap.ts';
 import { bellNoise, landingNoise, newFall, stepFall, type Sound } from './heroNoise.ts';
 import { DROWSY, GONE_AFTER, beat, coolOf, foodChain, hear, hurt, landed, newPredator, reachBox, sparedPass, stepPredator, tellOf, touches, FLEE_OFF } from './predators/core.ts';
@@ -102,8 +103,8 @@ export class CastPlay {
   private readonly punchLoud: boolean;
   /** the stage's sounding things (castPlay.types.ts SoundPost) */
   readonly sounds: readonly SoundPost[];
-  /** the noises made since the last step (noise()): the step hears them, in order, after his landing */
-  private made: Sound[] = [];
+  /** the events made since the last step (take()): the step hears them, in order, after his landing */
+  private made: CastEvent[] = [];
   /** the stage's lure targets (predators/lure.ts) */
   private readonly lures: readonly LurePost[];
   /** the stage teaches the freeze, and its first one has not come yet (CastData.teachStill: the first is the moment wherever he stands) */
@@ -203,7 +204,7 @@ export class CastPlay {
     if (this.made.length) {
       const made = this.made;
       this.made = [];
-      for (const n of made) this.hearAll(n);
+      for (const e of made) this.reach(e);
     }
 
     // the traps: one that comes down chases off what stands beside it
@@ -248,6 +249,15 @@ export class CastPlay {
     return o;
   }
 
+  /** one event reaches every animal of the cast, by its way (a noise: hearAll) */
+  private reach(e: CastEvent): void {
+    switch (e.way) {
+      case 'noise':
+        this.hearAll(e);
+        return;
+    }
+  }
+
   /** one noise reaches every animal of the cast (core.ts hear: a sleeper in reach wakes, a hunter is drawn or comes looking) */
   private hearAll(n: Sound): void {
     const o = this.out;
@@ -256,14 +266,19 @@ export class CastPlay {
   }
 
   /**
-   * THE CHANNEL's way in (ENG-NOISE): a noise made off the cast's own step (his punch: engine.ts at the end of a blow; a sounding thing:
-   * ring). Heard on the next step, after his landing, in the order made. His punch is dropped before the world that teaches noise
-   * (TAUGHT.noise); his landing comes in through the step itself (it reads his fall and the ground)
+   * THE CHANNEL's way in (ENG-NOISE): an event the engine or the stage makes off the cast's own step, `{ way, x, y, r }` (castPlay.types.ts
+   * CastEvent). Heard on the next step, after his landing, in the order made. A noise: his punch (engine.ts at the end of a blow) is dropped
+   * before the world that teaches noise (TAUGHT.noise); a sounding thing (ring); his landing comes in through the step itself (it reads his
+   * fall and the ground)
    */
+  take(e: CastEvent): void {
+    if (e.way === 'noise' && ((e.from === 'punch' && !this.punchLoud) || (e.from === 'landing' && !this.loud))) return;
+    this.made.push(e);
+  }
+
+  /** a noise into the channel: take() as the noise way */
   noise(n: Sound): void {
-    if (n.from === 'punch' && !this.punchLoud) return;
-    if (n.from === 'landing' && !this.loud) return;
-    this.made.push(n);
+    this.take({ way: 'noise', ...n });
   }
 
   /** the first sounding thing a blow's box reaches (its index in `sounds`), or -1 */

@@ -1,0 +1,56 @@
+[
+ {
+  "orient": "port",
+  "tag": "before",
+  "file": "/tmp/claude-0/-home-user-Sloths-Adventure-/1d6c2669-dade-5d56-8a0c-8489d2098e24/scratchpad/stills/3-1-port-before.png",
+  "text": "",
+  "card": {
+   "x0": 16,
+   "y0": 323,
+   "x1": 342,
+   "y1": 414
+  },
+  "him": {
+   "x0": 117,
+   "y0": 244,
+   "x1": 156,
+   "y1": 287
+  },
+  "below": {
+   "x0": 162,
+   "y0": 696,
+   "x1": 360,
+   "y1": 779
+  },
+  "coversBelow": false,
+  "underFeet": true,
+  "aboveHead": false
+ },
+ {
+  "orient": "land",
+  "tag": "before",
+  "file": "/tmp/claude-0/-home-user-Sloths-Adventure-/1d6c2669-dade-5d56-8a0c-8489d2098e24/scratchpad/stills/3-1-land-before.png",
+  "text": "",
+  "card": {
+   "x0": 256,
+   "y0": 218,
+   "x1": 550,
+   "y1": 302
+  },
+  "him": {
+   "x0": 321,
+   "y0": 152,
+   "x1": 353,
+   "y1": 187
+  },
+  "below": {
+   "x0": 358,
+   "y0": 520,
+   "x1": 519,
+   "y1": 588
+  },
+  "coversBelow": false,
+  "underFeet": true,
+  "aboveHead": false
+ }
+]

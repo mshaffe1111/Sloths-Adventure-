@@ -1,60 +1,73 @@
-# ENG-NOISE report: one noise channel the cast hears (World 3's first engine foundation)
-Branch t-eng-noise from t-int-13 8efb1bba. Code head (gates ran on it): b85e5aee0. Final hash: in the lead message (this file's commit).
-**The channel as built.** castPlay.ts `noise(n)` takes any heroNoise.ts Sound; each cast step hears his landing first, then every noise
-made since the last step, in order, each reaching every animal through core.ts `hear` (`CastStep.heard` lists them). Three makers:
-- **His hard landing** (as before, castPlay.ts step) except on QUIET ground: `Platform.quiet` (one field; gen2 `SectionPiece.quiet`),
-  read by `heroNoise.landingNoise(x, y, t, fell, ground)` -> null; the engine fills `CastHero.quiet` from the platform he stands on.
-- **His punch** (engine.ts `blowNoise`): `punchNoise` at his place, once a swing, when its strike window closes (a kick and a mega the
-  same; a taken-back jab none). Heard only from `TAUGHT.noise` (World 3): no World 1-2 cast hears a blow.
-- **A struck object** (`CastData.sounds: SoundPost[]`, laid by new gen2/soundLay.ts from a prop socket tagged 'sounding'): a blow that
-  reaches one rings it (`ring`: its bellNoise at its place; sound + 0.04 s hitstop) and makes ONLY that sound (`atk.rang` stops the
-  punch's). The stage may fire one too (`CastPlay.ring(i, t)`, the same noise). No stage id, world number or x in engine code.
+# ENG-NOISE (11-25) REPORT: the cast's one channel as a { way, x, y, r } seam; the noise toys re-proved on a REAL World 3 row
+**EXACT NEXT STEP (box 2 handed over on the 28-minute clock, 2:30 PM ET):** item 1 is DONE (the three toys GREEN on the real 3-1 draft
+row, plants caught: w3Noise 7/7, with castNoise + noiseRow 21/21, at d05aa5321). Item 2, the gates, is RUNNING in box 2 on a chattr-frozen
+worktree of d05aa5321 (this hand-over commit adds only this REPORT): lockall --out head --check BASE, then the head lock compared to MAIN's
+by lockall's own rule; tierBots; the CI tool line (gates.yml:157); the suite in 3 shards. Box 2 finishes and records ONLY those (D138) and
+sends the lead one line per gate. Box 3, once the lead forwards them all green: (1) `git fetch origin t-eng-w3 t-eng-noise-wip`, check out
+t-eng-noise-wip's head, merge origin/t-eng-w3 (no force; it stood at c1008d8ed = BASE at this hand-over, so a no-op unless FIX-CARD-DOWN,
+ENG-DARK or ENG-DOWNBOT landed; name every conflict); (2) if the merge brought code: tsc, w3Noise + castNoise + noiseRow, the CI tool line on
+the merged head; else w3Noise + castNoise + noiseRow alone; (3) the gate lines into item 3 below, push t-eng-noise-wip, then
+`git push origin HEAD:t-eng-w3`, ls-remote both; (4) rewrite reference/handoffs/engine-core.md; send the lead the landed hash.
+Branch t-eng-noise-wip from t-eng-w3 c1008d8ed (BASE). Started 1:45 PM ET (hook stamp); lead's re-scope approved (toys by 3:30 PM, landed by 5:00 PM, stop 6:00 PM ET).
+
+## What main ALREADY has for noise (ENG-NOISE 11-19: 015e4209 + b85e5aee, report c59928a4 on t-eng-noise): ENG-LURE and the 3-3/3-5 builders start here
+castPlay.ts:197 his landing -> landingNoise(x, y, t, fell, hero) (hero.quiet from the platform he stands on); castPlay.ts:274 take() (NEW, the seam),
+:280 noise(), :285 soundAt(box), :294 ring(i, t) (a sounding thing's bellNoise at its place); engine.ts:4499 blowNoise (punchNoise once a swing,
+none when the blow rang a thing: atk.rang), engine.ts:4621 a blow that reaches a SoundPost rings it; heroNoise.ts:44 landingNoise reads
+`ground.quiet`; types.ts:323 Platform.quiet; gen2/types.ts:385 SectionPiece.quiet; gen2/soundLay.ts (a prop socket tagged 'sounding' ->
+CastData.sounds); castPlay.types.ts SoundPost; roster.ts:56 TAUGHT.noise 3 (no World 1-2 cast hears a blow). Tests: castNoise.test.ts,
+gen2/noiseRow.test.ts (a toy kit). 3-5.md/3-3.md's "NOT wired: no caller outside heroNoise.ts" lines are stale (Design's to correct).
+
 ## Done-items
-1. One channel, the three makers, the quiet field: above; generality PASS (26 literals, 26 known: none new). 2. Toys on gen2-laid rows (gen2/noiseRow.test.ts; toy World 3 kit, rows laid by buildGen2Stage, played in RealPlay at 30 fps):
-| Toy | Green (b85e5aee0) | Plant on the REAL code (piece broken, run, restored) |
+1. **The seam (castPlay.types.ts CastEvent `{ way: 'noise' } & Sound`, i.e. { way, x, y, r, t, from }; castPlay.ts `take(e)`)**: the channel's
+   one way in; the step reaches each event by its way (`reach`: 'noise' -> hearAll). noise() and ring() go through take(); the engine still
+   calls noise() (lead's ruling: the existing cast tests byte-unchanged). ENG-LIGHT adds `{ way: 'light' }` + its case + its caller only.
+   Test castNoise.test.ts 'the seam': GREEN on 70392a065; RED with the seam stashed (take is not a function). castNoise + noiseRow: 14/14.
+2. **Toys on the 3-1 DRAFT row** (src/game/gen2/worlds/w3Noise.test.ts): readyDraft('3-1') (kit w3, travel down), World 3's own ocelot row
+   (W3_CAST) and def (registry castDef('ocelot', 3), asserted on the cast member), ONE test-only section added to that row's pool in the test
+   (W3_DOWN, the draft row and w3.ts untouched). Box 2 (the drop toy): 7/7 run alone; with castNoise + noiseRow 21/21:
+| Toy (3-1 draft, Normal) | GREEN | Plant (the real code's piece off, in the file) |
 |---|---|---|
-| struck stone calls a kit ocelot | drawn 0.07 s after the press, goal = the stone's x, from 588 px, under it at 5.67 s (closest 5 px); channel heard [bell] only | stone's ring call removed: RED (never drawn). "Only its sound" off (punch heard too): RED |
-| punch wakes a sleeper in 240 px | 200 px: woke; 300 px: slept; heard [punch] once | punch noise removed: RED (sleeps on) |
-| 400 px drop: moss vs stone, sleeper 300 px off | moss: heard [], slept; stone: heard [landing] (r 360), woke | landingNoise ignores the ground: RED (moss wakes) |
-Each plant is also kept in the file as a stubbed case. castNoise.test.ts (no engine): the ladder (worlds 1-2 hear no blow, 3-4 do), the
-order (landing, punch, bell), a stage-fired ring draws an ocelot, soundAt's edges, quiet ground silent for any fall, a flag clears it.
-3. Gates, every CLAUDE.md item once on b85e5aee0 (long runs in the background, output to files; nothing left running):
-| Gate | Result |
-|---|---|
-| tsc; build (BASE_PATH) + chunkcheck; artcheck; knowncheck; generality; roadmapcheck | PASS each |
-| suite, 3 shards | 3,948 tests: 3,946 pass, 0 fail, 2 TODO (already there: 4-3's boulder wall); noiseRow + castNoise in it, green |
-| drawcheck (706 s); clipcheck (365 s, 83 known); kbdcheck; buildcheck | PASS each |
-| engine tool tests; tierBots | 37 pass; 7 pass (identical: nothing recommitted, no 1-1 change) |
-| seedlist --check, EVERY list (registrycheck --lists: 12) | 12 of 12 PASS (1-1..1-9, 2-1, 2-2, 2-4; each list clean on both settings) |
-| funcheck | FAIL 30 worse/new, 41 to lower: BYTE-IDENTICAL on the base 8efb1bba (run there, diffed): none new or worse from this branch |
-| lockall --layouts 16 (3,264 builds) | mine == base 8efb1bba, every build; vs main 6e7b85f8 = base vs main exactly (int-13's 17 stages: 1-6..1-9, 2-1, 2-2, 2-4, 3-8, 4-4, 6-1, 6-3, 6-6, 6-7, 7-5, 7-9, 8-3, 8-5) |
-Nothing shipped moved: no shipped stage lays a sounding thing or a quiet piece, and no World 1-2 cast hears a blow.
+| struck stone calls World 3's ocelot | drawn 0.10 s after the strike from 420 px, goal = the stone (929), closest 4 px; heard [bell] only | `ring` -> null: never drawn, never sent: RED caught |
+| punch wakes a sleeper in 240 px | 200 px: woke; 300 px: slept; heard [punch] | punch dropped at the seam (`take`): sleeps on: RED caught |
+| 400 px drop: moss vs stone | he walks off the section's own top (a 392 px fall as the roll lays it): moss slept, heard []; stone woke, heard [landing]; the sleeper 303/305 px from where he landed | the ground's quiet ignored (hero.quiet false): woke, heard [landing]: RED caught |
+   Harness notes: a teleport (stand/fly) is not a fall: `teleported(cast)` resets the cast's fall as a flag's respawn does (calm);
+   the call row's stone must sit inside the ocelot's own patch (patrolMin/MaxX: flags and jumps cut patches on the way down).
+   The drop toy builds its own drop (no roll of 3-1's way down has a clear 400 px column: its storeys stack 110-150 px apart): a top
+   branch and an 800 px floor `jump` dy 400 under it, 8-20 px across. Three things the real row taught (each in the file): the section
+   must fit one storey (1140 px; 1000 px of floor made it 1231, 860 made 1165); the tower lays every other storey right to left, so the
+   top stands on either side (dropTop looks both ways, he walks off toward the floor); the roll's tempo scales a laid drop (pipeline.ts
+   dy x T.rise: 392-407 px on 3-1's rolls), so the toy takes the fall as laid within 10 px and prints it. A walk-off lands about 140 px
+   in, so the sleeper sits at t 0.55 (about 300 px past the landing, measured on the landing frame).
+3. **Gates (box 2, on frozen d05aa5321):** tsc PASS. Locks recorded from frozen worktrees: BASE c1008d8ed and MAIN cdffdc627 are the same
+   lock (3264 builds, 102/102 stages unchanged: t-eng-w3's base moves no listed stage against main). Box 2's gate lines, all GREEN on
+   frozen d05aa5321: tsc PASS; lockall --check 102/102 unchanged vs BASE and vs MAIN; tierBots 9/9; the CI tool line (gates.yml:157)
+   350/351 pass, 1 todo, 0 fail; the suite 4,054/4,057 pass, 3 todo, 0 fail (shards 1182 pass/0 fail/2 todo, 1499/0/1 todo, 1373/0);
+   seedListChunk passed with only src/game/gen2/proven unfrozen.
+   Box 3: merged origin/t-eng-w3 (0f49129dd, FIX-CARD-DOWN) into t-eng-noise-wip with no conflicts (merge 1b78d0c8); on the merged
+   head tsc PASS; w3Noise + castNoise + noiseRow 21/21; dotGuideDown 8/8 (the card fix that rode in).
+
 ## Polish check
-Nothing drawn changed: no new art, sprite, screen or text; nothing to shoot upright or sideways (drawcheck/clipcheck PASS). ROUGH,
-NAMED: a struck stone has no look yet, and its ring is a STAND-IN sound, `sound.playShrineUnlocked()` (the puzzle bell's ring) plus a
-0.04 s hitstop, until the chime's own sound and look (ENG-LURE).
+Nothing drawn changed (no art, sprite, screen or text): the seam is a type and a method; the toys are a test. A struck stone still has
+no look of its own and rings with the stand-in sound (11-19's, named then): ENG-LURE's chime.
+
 ## Pushback
-- "lockall vs main": t-int-13 already differs from main on 17 stages, so the lock was taken on main AND the base (table).
-- "His punch" = every blow (punch, kick, mega): one noise a swing. The lead ruled: kept (every blow is heard from World 3 on).
-- "Fired by the stage as data": built as the API (`ring`), not a clock-fired SoundPost: no design names its timing yet (D40).
-## What the 3-3/3-5 builders need
-- A sounding thing: a world row in its kit (`soundProps({ chime: { w, h, looks } })`, `emit: soundEmitters(rows, note)` for the look),
-  a section socket `soundSocket(id, piece, t)`. Its box (w, h) is what a blow must reach: size it to Pokey (his drawn height 89.1).
-- Moss: `quiet: true` on the section piece; give it a moss look by style/slot (quiet draws nothing). A brief must still name the cast.
-- Numbers: punch r 240, bell r 680, landing soft 200 / min 180 / 0.9 per px / max 560 (heroNoise.ts LOUD); hearY 360 up or down.
-- Bots: firsttimer.ts has no skill for any of this yet (3-3 ring-to-call, 3-5 quiet-route are their own packets).
-## Unresolved
-- funcheck is red on t-int-13 itself (above): the integration's, not this branch's; the lead's to route.
+- The packet's core was already in main (above); sent to the lead first thing, re-scope approved.
+- The toy floor is 1000 px (not 11-19's 1400): the draft's down tower's storeys are 1140 px wide (gen2 refused 1400 by name).
+- **For 3-3/3-5/3-8/3-9's builders (found on the real row): 3-1's sections hold 2.3 x tension (~0.72) = ~1.66 threat; W3_CAST's ocelot
+  costs 3, so NO socket on 3-1's budget can lay World 3's ocelot** (pipeline.ts:3558, :3609). A W3 cast stage needs heat for it or a node
+  threat ask (nodeAsks: kinds named, budget bypassed). The toy pays a test-only lay cost of 1 (body W3_CAST's, def the registry's) and
+  sits in phases ten/ketsu (a ki section lands inside the 5 s opening, where no animal stands: pipeline.ts:3521).
+
 ## Suggestions
-- ENG-LURE as in 3-3.md NEW 1, plus a recorder event for a ring and a punch noise (CastStep.heard has them) with a counting test (D38).
-## Method used / Lessons applied / Method update
-Method: predator-kit.md "Wiring a cast into a stage" + w2Cast.test.ts's toy row (withTestStage + RealPlay). Lessons: D19, D30, D40 (no
-clock-fired sounder ahead of its design), D57/D87, D59, D75, D86, D88 (plants on the real code), D90. Method update (predator-kit.md,
-proposed step 7): "A noise into the cast: castPlay.noise / a SoundPost via soundLay.ts / SectionPiece.quiet; prove it on a toy row
-(noiseRow.test.ts); judge 'it came' by s.drawn and goalX, never distance (an ocelot patrols at 55 px/s)".
-## Learned
-- The kit's patrol makes "it came near" a false proof; read the kit's own state (drawn, goalX, asleep) at the step.
-- A blow's noise waits for its strike window to close, or a later frame of the same swing could ring a stone after the punch spoke.
-- `registrycheck.ts --lists` only PRINTS the lists (my chain ran it as the check: 0 s, caught on reading the time); the check is the
-  CI loop, `seedlist.ts <id> --check` per printed id. gates.md row 8 could show the loop as one copyable line.
-Turnover note: reference/handoffs/engine-core.md §0zq-NOISE.
+- Design: correct 3-5.md:62-64 and 3-3.md:53-54 "NOT wired" to the file:line list above, so ENG-LURE/ENG-VINE packets start from fact.
+
+## Unresolved
+The gates, the landing on t-eng-w3, the turnover note. Lessons applied: D113 (waits in the background), D115, D119, D120 (the pushback did not end the box), D128, D134, D138.
+
+## Method update
+level.md (proposed): an engine packet's "NOT wired" line carries the `git grep` it was read from, re-run on the packet's BASE the day it is
+written (this packet re-ordered a job main had for six days).
+
+## Turnover note
+reference/handoffs/engine-core.md: NOT YET (rewritten at the task's end, with the landing).

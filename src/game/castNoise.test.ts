@@ -85,3 +85,21 @@ test('a flag clears what was made and not yet heard (castPlay.ts calm)', () => {
   assert.deepEqual(c.step(hero(), DT, DT, false).heard, []);
   assert.ok(e.kit!.asleep);
 });
+
+test('the seam: the cast takes { way, x, y, r } events (CastEvent); a noise way reaches it as noise() does, in order, from World 3 on', () => {
+  const e = ocelot({ asleep: true, x: 1000 });
+  const c = cast(3, [e]);
+  c.step(hero(), DT, 0, false);
+  c.take({ way: 'noise', ...punchNoise(1000 - LOUD.punch.r - 40, 400, DT) });
+  c.take({ way: 'noise', ...punchNoise(1000 - 200, 400, DT) });
+  const r = c.step(hero(), DT, DT, false);
+  assert.deepEqual(r.heard.map((n) => n.x), [1000 - LOUD.punch.r - 40, 800], 'both heard, in the order taken');
+  assert.equal(r.woke, 1, 'the one in reach wakes it; the one past 240 px does not');
+  assert.ok(!e.kit!.asleep);
+  // before the world that teaches noise, a punch event is dropped at the seam (as noise() drops it)
+  const e2 = ocelot({ type: 'snake', asleep: true });
+  const c2 = new CastPlay({ kinds: ['snake'], traps: [] } as CastData, [e2], [floor], 2);
+  c2.step(hero(), DT, 0, false);
+  c2.take({ way: 'noise', ...punchNoise(800, 400, DT) });
+  assert.deepEqual(c2.step(hero(), DT, DT, false).heard, [], 'World 2: no blow is heard');
+});

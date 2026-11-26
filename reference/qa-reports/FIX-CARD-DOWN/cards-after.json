@@ -1,0 +1,58 @@
+[
+ {
+  "orient": "port",
+  "tag": "after",
+  "file": "/tmp/claude-0/-home-user-Sloths-Adventure-/1d6c2669-dade-5d56-8a0c-8489d2098e24/scratchpad/stills/3-1-port-after.png",
+  "travel": "down",
+  "text": "",
+  "card": {
+   "x0": 48,
+   "y0": 122,
+   "x1": 374,
+   "y1": 212
+  },
+  "him": {
+   "x0": 117,
+   "y0": 244,
+   "x1": 156,
+   "y1": 287
+  },
+  "below": {
+   "x0": 162,
+   "y0": 696,
+   "x1": 360,
+   "y1": 779
+  },
+  "coversBelow": false,
+  "underFeet": false,
+  "aboveHead": true
+ },
+ {
+  "orient": "land",
+  "tag": "after",
+  "file": "/tmp/claude-0/-home-user-Sloths-Adventure-/1d6c2669-dade-5d56-8a0c-8489d2098e24/scratchpad/stills/3-1-land-after.png",
+  "travel": "down",
+  "text": "",
+  "card": {
+   "x0": 534,
+   "y0": 74,
+   "x1": 828,
+   "y1": 158
+  },
+  "him": {
+   "x0": 321,
+   "y0": 152,
+   "x1": 353,
+   "y1": 187
+  },
+  "below": {
+   "x0": 358,
+   "y0": 520,
+   "x1": 519,
+   "y1": 588
+  },
+  "coversBelow": false,
+  "underFeet": false,
+  "aboveHead": false
+ }
+]
