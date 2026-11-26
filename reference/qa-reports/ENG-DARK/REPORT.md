@@ -35,6 +35,16 @@ lip" (child Easy 8, rim 515,4375: held past the end, not gone over dark) + its R
 "a put-back (a rescue) ... is no crossing" + its RED (the old watch counts it); darkBots "the bot's own put-back (placeAt ...)"; the roll 19
 lip toys still GREEN on c16. Plants added: 44 (held = on), 45 (put() a no-op), 46 (placeAt without put). tsc 0.
 **NOT DONE (box 23):** c16's x40 + verdict, kind A's R-id, the WHOLE tests + plants, gates, landing.
+**Box 23 (ENG-DARK-w):** (1) c16's x40 RUN on frozen e544dc3dd (src/tools = e5c098072; cast-3-1-x40-e5c09807-lane1/-lane2.jsonl,
+x40-verdict-e5c09807.txt, kinds-e5c09807-rows.txt): ON THE BAR. shrine 360/360; unlit 5 (bar <= 5; c15 9); max loop 7 (middle N 26);
+gaveUp 1; rescues 630 vs base 1393. Rows new against the base at their spot: ONE, child N 15 x 856 'in a dip 211 px deep, a drop of 173 px
+ahead' (base same spot 0), a STUCK LINE with 0 rescues (the run reaches the shrine at 261.4 s, the same run to the tenth as c15's).
+(2) N 15 x 856 TRACED to its line (instrumented COPY /home/user/wt-dbg16, GW_LOG=1 logs glowWait and pad(); never for a verdict): at
+y 11320 from 244.9 s he walks a floor left 1226 -> 856 in six stop-and-go steps; every frame intend() asks {left}, glowWait never holds
+(gw null, glowStop false), and the stops are the bot's thumb rhythm (want = this.rhythm(intended), firsttimer.ts:4248) giving {} for
+1-2 s at a time; over that walk prog.hi does not rise (1289 -> 1254), so the no-progress clock (firsttimer.ts:4481, 8 s) opens a stuck
+line at 244.4 s, closed by his jump down at 253.0 s. Not the dark, not c16's lip hold or put(): a bot pacing read the base never meets
+because the base's run of this roll goes another way (18 rescues). Kind A = R-165.481.
 Lessons applied: D115 (frozen trees for every verdict run; the instrumented copy separate), D119 (no heredoc in a commit chain), D128 (stamps
 from `date`), D134 (pushed and ls-remote checked before the hand-over message), D138 (this note ends box 22's new work), D140, D141.
 LEARNED: when a bot change re-rolls every row, the new misses are first set against the changed reads (log each flipped read with t, x, y):
