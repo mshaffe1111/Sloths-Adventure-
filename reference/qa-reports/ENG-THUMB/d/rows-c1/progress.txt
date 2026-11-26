@@ -1,0 +1,7 @@
+rows on 288b40d2a bots kid,adult 1:14 PM ET
+2-1 exit 0 160 rows 71 s
+2-2 exit 0 160 rows 41 s
+2-4 exit 0 160 rows 63 s
+2-5 exit 0 160 rows 52 s
+1-4 exit 0 160 rows 46 s
+rows done 1:18 PM ET

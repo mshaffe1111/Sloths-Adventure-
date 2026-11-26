@@ -1,0 +1,24 @@
+main
+2-1 aduE:39/40 aduN:38/40 chiE:40/40 chiN:40/40 expN:40/40 kidE:33/40 kidN:19/40 midE:40/40 midN:40/40
+2-2 aduE:40/40 aduN:37/40 chiE:40/40 chiN:40/40 expN:40/40 kidE:34/40 kidN:19/40 midE:40/40 midN:40/40
+2-4 aduE:40/40 aduN:16/40 chiE:40/40 chiN:40/40 expN:40/40 kidE:30/40 kidN:0/40 midE:40/40 midN:40/40
+2-5 aduE:40/40 aduN:40/40 chiE:40/40 chiN:40/40 expN:40/40 kidE:0/40 kidN:0/40 midE:40/40 midN:40/40
+1-4 aduE:40/40 aduN:40/40 chiE:13/40 chiN:10/40 expN:25/40 kidE:34/40 kidN:24/40 midE:24/40 midN:22/40
+c73
+2-1 aduE:40/40 aduN:40/40 chiE:40/40 chiN:40/40 expN:40/40 kidE:38/40 kidN:39/40 midE:40/40 midN:39/40
+2-2 aduE:40/40 aduN:40/40 chiE:40/40 chiN:40/40 expN:40/40 kidE:40/40 kidN:32/40 midE:40/40 midN:40/40
+2-4 aduE:40/40 aduN:40/40 chiE:40/40 chiN:40/40 expN:40/40 kidE:40/40 kidN:40/40 midE:40/40 midN:40/40
+2-5 aduE:40/40 aduN:40/40 chiE:40/40 chiN:40/40 expN:40/40 kidE:4/40 kidN:0/40 midE:40/40 midN:40/40
+1-4 aduE:40/40 aduN:40/40 chiE:40/40 chiN:40/40 expN:40/40 kidE:40/40 kidN:40/40 midE:40/40 midN:40/40
+c1
+2-1 aduE:39/40 aduN:40/40 kidE:39/40 kidN:40/40
+2-2 aduE:40/40 aduN:40/40 kidE:39/40 kidN:27/40
+2-4 aduE:40/40 aduN:40/40 kidE:40/40 kidN:40/40
+2-5 aduE:40/40 aduN:40/40 kidE:26/40 kidN:26/40
+1-4 aduE:40/40 aduN:40/40 kidE:40/40 kidN:40/40
+c3
+2-1 aduE:40/40 aduN:40/40 kidE:38/40 kidN:40/40
+2-2 aduE:40/40 aduN:40/40 kidE:40/40 kidN:36/40
+2-4 aduE:40/40 aduN:40/40 kidE:40/40 kidN:40/40
+2-5 aduE:40/40 aduN:40/40 kidE:33/40 kidN:17/40
+1-4 aduE:40/40 aduN:40/40 kidE:40/40 kidN:40/40
