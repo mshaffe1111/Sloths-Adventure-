@@ -4,7 +4,7 @@ Lead: session_01FhBbYN2CVHnFXg7XzqKXpM. Integration: INT-R5d-c. Matt chose A on 
 draw fixes; 2-7 and the bot fix wait (release-0.10.3 stays at c73cb9766, release 5's line; its red: INT-R5/REPORT.md on
 release-0.10.3-wip-fixes, d/rule28/). The PR is from release-0.10.3-lite; the LEAD opens it on Matt's word.
 
-## EXACT NEXT STEP (written 7:33 PM ET 11-25 by `date`)
+## EXACT NEXT STEP (written 7:30 PM ET 11-25 by `date`)
 **THE FULL SET on code head 2b5f0d6c8 is DONE: every gate GREEN** (funcheck's accepted debt, identical flag for flag to INT-14's ruled
 table, as every release since 0.9.5; table below). The integration's part is over. The LEAD builds Matt's test link from
 release-0.10.3-lite, asks Matt for 'push', and opens the PR from release-0.10.3-lite (methods/release.md; name funcheck's 22 in the
@@ -54,3 +54,6 @@ at cdffdc627, frozen; lanes per tools/lane.sh, every run_in_background with time
 D115 (frozen trees), D119 (commits by -m), D128 (stamps from `date`), D132 (rule 28 vs MAIN), D134 (pushed and ls-remote before every
 report), D135 (no red called inherited without main's own result), D138 (the c73cb9766 lanes stopped at the lead's word, what they had
 recorded kept).
+**Missed (owned):** D128 once: the gate-table commit 396ca6092 carried a hand-typed stamp 2:54 later than its own commit;
+timecheck caught it before any report; replaced with the `date` stamp. Countermeasure applied at once: every stamp below is pasted from
+`date` in the same command as the edit (timecheck run on the branch after the fix).
