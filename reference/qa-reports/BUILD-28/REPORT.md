@@ -28,11 +28,11 @@ DONE (the lead's ruling A): (1) THE PIECE on t-eng-marsh 5f8cb1edb (cut from 280
 DONE: step 0 ff (t-build-28-wip 0f15f97d3 -> 334d94f64, no force); step 1 fork reshoot (stills-s11/: pillar GONE; the lead judged the
 upright set: confirmed); step 2 the rises (6545a5823: W2_FORK.rises h 60 -> 45 in w2.ts; stills-s11-rises45/); the lead's extra order,
 the marsh trace (stills-s11-marsh/, forkstills-s11.mjs.txt): cause sent to the lead = the ENGINE's marsh lay shape; STOPPED on it.
-1. THE SOIL FIX'S GATES (FIX-SOIL-c, frozen a9c0170c tree /tmp/claude-0/wt-a9c, each ONCE): paintcheck 0/3 PASS (0 new, 170 known);
-   1/3 PASS (0 new, 107 known); 2/3 RUNNING at the box; CI tool line (gates.yml:157) 431 tests, 430 pass, 0 fail, 1 todo (the OPEN
-   chase-bots child): GREEN; drawcheck RUNNING at the box, then lockall --check vs reference/qa-reports/FIX-SOIL-c/lock-base-0f15f97d3.json
-   (zero moves expected). Logs: the session scratchpad (paint-*.log, ciline.log, draw.log, lock.log). NEXT: the results go in this table and
-   to the lead; any red is the soil fix's: to the lead at once with the line.
+1. THE SOIL FIX'S GATES (FIX-SOIL-c, frozen a9c0170c tree, each ONCE): ALL GREEN, finished after the hand-over (D138: already running).
+   paintcheck 0/3 PASS (0 new, 170 known ids seen); 1/3 PASS (0 new, 107 known); 2/3 PASS (0 new, 106 known); CI tool line (gates.yml:157)
+   431 tests, 430 pass, 0 fail, 1 todo (the OPEN chase-bots child); drawcheck PASS (954 s); lockall --check vs
+   reference/qa-reports/FIX-SOIL-c/lock-base-0f15f97d3.json: 102/102 stages unchanged, rc 0 (a draw-only fix moved no build; it also printed
+   the usual 'gen2 gained verdicts and drops (not hashed)' list, not a move).
 2. THE RISES (step 2): paintFalls on 2-8's own config (the toy planted as 2-8 and built the GAME's way, generateStage + finish, every
    sheet 'loaded' as paintFall.test does; probe: the session's /tmp/claude-0/probe/rises2.mts, logic in this note): seeds 1-8 x
    Normal/Easy: RED on the head 16/16 builds (ids 32/33 moss_stone h 60 drawn 'ground', painter '1-50, 90-420'); GREEN on 6545a5823 16/16 (0).
