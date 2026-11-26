@@ -1,15 +1,21 @@
 # ENG-SIM: the bots ask the GAME how a press flies (R-165.470; packet reference/packets/2026-11-26/ENG-SIM.md on the lead's branch)
 Branch t-eng-sim from origin/release-0.10.3 c73cb9766. Nothing here lands on release-0.10.3, main or a release 5 branch.
 
-## EXACT NEXT STEP (box 4 hand-over): step 3 (0) DONE (merge 114944b5b); 1a-i CANDIDATE 0b92b3fcb (the stand on planFlies); then 1a-ii
+## EXACT NEXT STEP (box 4 hand-over): step 3 (0) DONE (merge 114944b5b); 1a-i CANDIDATE 0b92b3fcb has ONE gate red: trace it, then 1a-ii
 Head: the hand-over message's hash (pushed to t-eng-sim, ls-remote confirmed). The step 3 GO (the lead, box 4's brief): (0) then (1) in
 the plan's order; rows WILL move from (1) on (the re-baseline's job, not a stop); the cost check stands (one World 2 x40 over 3x the old
 CPU is a finding to bring to the lead). Nothing lands on release-0.10.3, main or a release branch.
-1. **FIRST: the CI tool line on 0b92b3fcb** (D141; never run on it): a chattr-frozen worktree (src and tools frozen except
-   src/game/gen2/proven; node_modules symlinked), `sed -n 157p .github/workflows/gates.yml | sed 's/^ *- run: //'` run with
-   run_in_background + timeout 7200000. Every red is EXPECTED to be a row the stand's move shifted (a pinned 2-4 / lianaRide / riverRide row):
-   name each with old -> new and the judge it traces to (rule 28); it is re-pinned in the re-baseline (3e), NOT patched now, unless it is
-   a crash or a deadlock (then it is this candidate's bug: fix it). Record the merge's CI line too (box 4's result is below if it finished).
+1. **FIRST: trace the ONE red of 0b92b3fcb's CI tool line** (box 4 ran it on a frozen worktree: 445 tests, 443 pass, **1 FAIL**, 1 todo,
+   543 s): the probe-equality gate's `2-4 seed 35, the kid on Easy: answers thrown away` (tools/engine/probeEqual.test.ts:144): "a
+   checkpoint differs: checkpoint 8 (harness 1 frame 6300): token 10068: probed `... late false } ] } "1:1:296.28393291656784" { T` | plain
+   `... late false } ] } "1:1:400" { T`". GREEN on the merge 114944b5b, so it is 1a-i's: since 1a-i THE BOT ITSELF PROBES (the stand
+   judge's planFlies) in both worlds, so a gate probe in world A now differs from world B only if it changes something the bot's own
+   later probe or play reads. Find the binding at that token (graphPrint's path at token 10068; a map keyed "1:1:<number>" with a `late`
+   field: look first at what a probe keeps on purpose, engine.cueTables (the cue memo, shared, not frozen) and the NEVER_CHANGES share
+   frozen at the FIRST probe, which is the gate's in world A and the bot's in world B). If it is a real leak, seal it at the cause (the
+   seam) and the gate goes GREEN; if it is the gate's own artifact, fix the gate's setup only as box 2 did for the scene seed (what it
+   compares unchanged). NEVER loosen the gate (laws 5, 22). Every other CI-line row PASSED on 0b92b3fcb: the stand's move moved no
+   pinned row (rows may still move on stages the line does not pin; the re-baseline's job).
 2. **1a-ii: the run-up on plans** (firsttimer.ts vineFromLog's `running` branch, runUpCatches / runPress, about 1 h): a run plan = the steer
    `dir` from frame 1 (no tail: he is running; steerFrom still gates it, as c25's brake), the press on frame P, the hold `hold`. **A run
    plan depends on the press frame P ALONE** (the run's steer is the same from frame 1 whatever k and the lag), so k + pressIn(lag)/DT = P:
@@ -46,7 +52,7 @@ CPU is a finding to bring to the lead). Nothing lands on release-0.10.3, main or
   (setPlan), KEPT as outcome rows (every stand plan ends on a liana) and given the INVARIANT ON THE REAL STAGE (the catch comes on the very
   frame the probe flew it to, the plan's end). **GREEN 2/2 on 0b92b3fcb; PLANTED RED** (the loop's play-now removed, the plan a frame late):
   1/2 fail, "the standing press at t 32.967 on #33: caught on frame 16, the probe said 17". tsc PASS on the frozen tree. pressPlan.test +
-  lianaRide.test (its :104 vine from a log, :125 over the tail, :178 the aims) 7/7 PASS (114 s, sharing cores with the CI line). The CI tool line on 0b92b3fcb: NOT RUN (the next step's first job).
+  lianaRide.test (its :104 vine from a log, :125 over the tail, :178 the aims) 7/7 PASS (114 s, sharing cores with the CI line). **The CI tool line on 0b92b3fcb: 445, 443 pass, 1 FAIL (the gate's 2-4 s35 row, traced next: the EXACT NEXT STEP 1), 1 todo, 543 s.** The candidate is NOT green.
 - **Cost (first read, not the 1f check):** the stand judge flies at most one plan per press frame the spread reaches (the kid: about 5),
   early exit on the first miss, on every frame he rides a log under a liana; the 1f World 2 x40 timing is still owed.
 
@@ -220,8 +226,7 @@ check (1f) is where an over-run shows first.
 - D115: every test run on a chattr-frozen worktree (wt0 = the merge, wt1 = the candidate, wt2 = the plant), edits only in the main tree.
 - D119: commit messages written to a file first (printf), never a heredoc in the commit's chain. D128: the box's start from the hook's `date`.
 - D134 / D138: pushed and ls-remote-confirmed before the hand-over message; the hand-over ends new work. D140: ReadNotifications at
-  each step boundary (none queued). D141: the CI tool line on the merge; on the candidate 0b92b3fcb it is NOT run in this box, named as
-  the next step's first job rather than skipped. D40: the run-up and the other judges left on the model until their own candidate.
+  each step boundary (none queued). D141: the CI tool line on the merge AND on the candidate 0b92b3fcb (its one red named, not waved through). D40: the run-up and the other judges left on the model until their own candidate.
 
 ## Lessons applied (box 3)
 - D115 a chattr-frozen rebuilt worktree for every check; D141 the CI tool line on the candidate; D113 every run in the background, a
