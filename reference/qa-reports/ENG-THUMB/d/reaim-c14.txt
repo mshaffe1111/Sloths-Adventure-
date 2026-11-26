@@ -1,0 +1,14 @@
+# 356 on C14 1457e1daf (p356.mts): reAim on | off per phase; the original REAIM_PHASES 0, 1, 1.5, 2.5 all split (1.5 off back@120 = C11's); 3 hops either way (C13's re-plant would fail)
+phase 0 reAim 1: hop@126 log 17|reAim 0: back@151 log 17
+phase 0.25 reAim 1: back@127 log 17|reAim 0: back@127 log 17
+phase 0.5 reAim 1: back@119 log 17|reAim 0: back@119 log 17
+phase 0.75 reAim 1: back@112 log 17|reAim 0: back@112 log 17
+phase 1 reAim 1: hop@104 log 17|reAim 0: back@114 log 17
+phase 1.25 reAim 1: back@97 log 17|reAim 0: back@110 log 17
+phase 1.5 reAim 1: hop@94 log 17|reAim 0: back@120 log 17
+phase 1.75 reAim 1: hop@91 log 17|reAim 0: hop@63 log 17
+phase 2 reAim 1: hop@93 log 17|reAim 0: hop@93 log 17
+phase 2.25 reAim 1: back@84 log 17|reAim 0: back@84 log 17
+phase 2.5 reAim 1: hop@142 log 16|reAim 0: back@168 log 16
+phase 2.75 reAim 1: hop@138 log 16|reAim 0: back@146 log 16
+phase 3 reAim 1: hop@137 log 16|reAim 0: hop@155 log 16

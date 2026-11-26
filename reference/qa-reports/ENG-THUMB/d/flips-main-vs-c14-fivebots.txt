@@ -1,0 +1,44 @@
+2-1: rows 360 (main 360, fix 360), differ 161, PASS->FAIL 0, fail->pass 31
+  fail->pass ('adult', 'easy', 27) {'end': ('shrine', 'shrine'), 'lives': (0, 0), 'rescues': (1, 0)}
+  fail->pass ('adult', 'normal', 16) {'end': ('shrine', 'shrine'), 'lives': (5, 0), 'rescues': (1, 0)}
+  fail->pass ('adult', 'normal', 31) {'end': ('shrine', 'shrine'), 'lives': (4, 0), 'rescues': (1, 0)}
+  fail->pass ('kid', 'easy', 1) {'end': ('shrine', 'shrine'), 'lives': (0, 0), 'rescues': (1, 0)}
+  fail->pass ('kid', 'easy', 13) {'end': ('shrine', 'shrine'), 'lives': (0, 0), 'rescues': (1, 0)}
+  fail->pass ('kid', 'easy', 17) {'end': ('shrine', 'shrine'), 'lives': (0, 0), 'rescues': (1, 0)}
+  fail->pass ('kid', 'easy', 26) {'end': ('shrine', 'shrine'), 'lives': (0, 0), 'rescues': (1, 0)}
+  fail->pass ('kid', 'easy', 27) {'end': ('shrine', 'shrine'), 'lives': (0, 0), 'rescues': (1, 0)}
+  fail->pass ('kid', 'easy', 31) {'end': ('shrine', 'shrine'), 'lives': (0, 0), 'rescues': (1, 0)}
+  fail->pass ('kid', 'easy', 33) {'end': ('shrine', 'shrine'), 'lives': (0, 0), 'rescues': (1, 0)}
+  fail->pass ('kid', 'normal', 1) {'end': ('shrine', 'shrine'), 'lives': (5, 0), 'rescues': (1, 0)}
+  fail->pass ('kid', 'normal', 4) {'end': ('shrine', 'shrine'), 'lives': (7, 0), 'rescues': (3, 0)}
+  fail->pass ('kid', 'normal', 5) {'end': ('shrine', 'shrine'), 'lives': (9, 0), 'rescues': (1, 0)}
+  fail->pass ('kid', 'normal', 6) {'end': ('shrine', 'shrine'), 'lives': (6, 0), 'rescues': (1, 0)}
+  fail->pass ('kid', 'normal', 7) {'end': ('shrine', 'shrine'), 'lives': (2, 0), 'rescues': (1, 0)}
+  fail->pass ('kid', 'normal', 9) {'end': ('shrine', 'shrine'), 'lives': (3, 1), 'rescues': (1, 0)}
+  fail->pass ('kid', 'normal', 14) {'end': ('shrine', 'shrine'), 'lives': (9, 0), 'rescues': (2, 0)}
+  fail->pass ('kid', 'normal', 16) {'end': ('shrine', 'shrine'), 'lives': (4, 0), 'rescues': (1, 0)}
+  fail->pass ('kid', 'normal', 17) {'end': ('shrine', 'shrine'), 'lives': (9, 0), 'rescues': (2, 0)}
+  fail->pass ('kid', 'normal', 18) {'end': ('shrine', 'shrine'), 'lives': (4, 0), 'rescues': (1, 0)}
+  fail->pass ('kid', 'normal', 20) {'end': ('shrine', 'shrine'), 'lives': (6, 0), 'rescues': (1, 0)}
+  fail->pass ('kid', 'normal', 22) {'end': ('shrine', 'shrine'), 'lives': (7, 1), 'rescues': (1, 0)}
+  fail->pass ('kid', 'normal', 23) {'end': ('shrine', 'shrine'), 'lives': (9, 0), 'rescues': (3, 0)}
+  fail->pass ('kid', 'normal', 25) {'end': ('shrine', 'shrine'), 'lives': (5, 1), 'rescues': (1, 0)}
+  fail->pass ('kid', 'normal', 26) {'end': ('shrine', 'shrine'), 'lives': (6, 0), 'rescues': (2, 0)}
+  fail->pass ('kid', 'normal', 31) {'end': ('shrine', 'shrine'), 'lives': (3, 0), 'rescues': (1, 0)}
+  fail->pass ('kid', 'normal', 32) {'end': ('shrine', 'shrine'), 'lives': (5, 0), 'rescues': (1, 0)}
+  fail->pass ('kid', 'normal', 33) {'end': ('shrine', 'shrine'), 'lives': (4, 0), 'rescues': (1, 0)}
+  fail->pass ('kid', 'normal', 37) {'end': ('shrine', 'shrine'), 'lives': (7, 0), 'rescues': (1, 0)}
+  fail->pass ('kid', 'normal', 38) {'end': ('shrine', 'shrine'), 'lives': (6, 0), 'rescues': (1, 0)}
+  fail->pass ('kid', 'normal', 39) {'end': ('shrine', 'shrine'), 'lives': (11, 0), 'rescues': (3, 0)}
+  rescues ('adult', 'easy', 27) 1 -> 0 lives 0 -> 0
+  rescues ('adult', 'normal', 16) 1 -> 0 lives 5 -> 0
+  rescues ('adult', 'normal', 31) 1 -> 0 lives 4 -> 0
+  rescues ('kid', 'easy', 1) 1 -> 0 lives 0 -> 0
+  rescues ('kid', 'easy', 13) 1 -> 0 lives 0 -> 0
+  rescues ('kid', 'easy', 17) 1 -> 0 lives 0 -> 0
+  rescues ('kid', 'easy', 26) 1 -> 0 lives 0 -> 0
+  rescues ('kid', 'easy', 27) 1 -> 0 lives 0 -> 0
+  rescues ('kid', 'easy', 31) 1 -> 0 lives 0 -> 0
+  rescues ('kid', 'easy', 33) 1 -> 0 lives 0 -> 0
+  rescues ('kid', 'normal', 1) 1 -> 0 lives 5 -> 0
+  rescues ('kid', 'normal', 4) 3 -> 0 lives 7 -> 0

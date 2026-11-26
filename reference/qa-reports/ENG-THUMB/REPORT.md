@@ -1,6 +1,40 @@
 # ENG-THUMB: the kid-bot root fix (R-165.465) and release 5's rule-28 rows
 
-## EXACT NEXT STEP (hand-over 6, box 6 ENG-THUMB-f; written 4:35 PM ET 11/26 by `date`)
+## EXACT NEXT STEP (hand-over 7, box 7 ENG-THUMB-g; written 4:55 PM ET 11/26 by `date`)
+Branch t-eng-thumb-wip, head = the commit that adds this text. **Code = C14 1457e1daf**: C12's feet read narrowed to ONE shape, the
+one 2-1 child Easy 3 proved: where his middle is past the front of a drifting log RUNNING BACK AT HIM, the log by his feet counts only
+for the upstream gate's judged hop to the next log (floatSure's `next`, the aim held, gateSees 24 px), pressed from where he stands;
+refused or nothing in reach, the floor stays the one by his middle and C11's path runs unchanged. C12's (2) (a put-back spends the
+stand) kept. Tests on the head: f2ef1ca27 (ruling 2), 9dbcda5f8 (231), 585dccbde (ruling 4), 645bcabbf (C13's catch toy, hopJudged
+'a log running his way'), **18a990dcf** (hopJudged 'kid Normal 13' toy; 356's C13 re-plant REVERTED: REAIM_PHASES back to 0, 1, 1.5,
+2.5 as on main). Frozen trees to rebuild (D115): c14 = 1457e1daf (code), fin = this head (code = C14; test-only commits on top).
+- **268 traced and fixed** (d/catch-c13.txt): C12 read a log running HIS way (lianaRide's catch toy, middle Easy v2: from 9.23 his
+  middle past the end of the log 1615-1855, dir 1): the ride wait ran 221 frames where C11's edge plan stood and pressed at 9.40 onto
+  the liana: 1,1,1,1,0 (C11) -> 1,0,1,1,0 (C12) -> **1,1,1,1,0 Easy / 1,1,1,1,1 Normal on C13 and C14**. Toy each way: hopJudged 'a log
+  running his way' (RED on C12, GREEN C13/C14) and C12's 'his middle past a drifting log's front' (GREEN on C14).
+- **2-1 kid Normal 13 (the lead's NEW C12 row) traced** (d/kidN13-c11-c13.txt): at 102.47 on #72 (running at him), his middle past
+  its front at x 19,928, C12/C13's river block gave a stand (no input) and his walk slid him off with no press into the water; C11's
+  edge plan had a press pending and flew him off the lip. **C14**: toy hopJudged 'kid Normal 13' RED on C13 (x 19,829 at t 110), GREEN
+  on C14. 2-1 child Normal 19 (C13's own new PASS -> FAIL, rescued at x 19,550, the same river) PASSES on C14.
+- **356 traced** (d/reaim-c13.txt, d/reaim-c14.txt): on C12/C13 at phase 1.5 (reAim off) the river block at the lip (2.37, his middle
+  1 px past log 17's front) took the lip, and at 2.40 the gate pressed a hop that landed on log 16, which the planted 0.033 s tap
+  cannot: a fresh draw, a re-aim the read made by itself (the line that let the held tap go is NOT traced). **On C14 the plant bites on the original phases again** (0, 1, 1.5, 2.5: on hop, off back; 1.5 off back@120
+  = C11's); phase 3 hops either way on C14, so the C13 re-plant (fdc794b3b) is reverted in 18a990dcf; no bar moved.
+- **C14's rows vs main** (scratchpad rows-c14, being copied to d/rows-c14 when done): **2-1: 0 PASS -> FAIL**, 31 fail -> pass (vs C11:
+  0 PASS -> FAIL, 1 fail -> pass = child Easy 3). 2-5 / 2-2 / 2-4 / 1-4 RUNNING at this hand-over (if d/rows-c14 has only 2-1, re-run
+  rows.sh on frozen 1457e1daf for those four: about 7 minutes).
+1. **Read C14's rows on 2-5 2-2 2-4 1-4** (flips.py vs main's rows on origin/release-0.10.3-wip-fixes INT-R5 d/rule28/rows-main):
+   bar 0 PASS -> FAIL; trace any moved row.
+2. **The CI line on frozen fin** (D141; ciline.sh with gates.yml:157 written to a file): expected reds only 254 and 355 if their test
+   commits are NOT in the tree; on fin (they are) expect 0 reds from 268/356 (both measured green on C14 above), 231 green.
+3. Then the final checks ONCE on frozen fin: 2-7 x40 (>= 29/40), pacerLay 23/23, the 10 races (tools/margins.mts.txt), tierBots 9/9,
+   tsc, the 4 bot test files (lianaRide, riverRide, firsttimer, castBots), the suite in shards (run_in_background AND timeout 7200000).
+   **R-165.473 HELD for Matt (KID_RUNS_59 not re-pinned): the suite's one named red, firstTimerBot.test.ts:177.**
+4. Push, ls-remote, the hash + one line per check to the lead.
+- Box 7's slips, owned: one foreground shell '&' + wait (the C11/C12 catch-toy probes, finished in the foreground; no background use);
+  the C13 re-plant was measured on C13, not on the code that became final (caught by re-running the scan on C14 before any CI line).
+
+## Hand-over 6 (box 6 ENG-THUMB-f; superseded by hand-over 7; written 4:35 PM ET 11/26 by `date`)
 Branch t-eng-thumb-wip, head = the commit that adds this text. **Code = C12 c0cc0810e** = C11 + (1) the gap block (intend's `if (!ahead)`)
 reads a DRIFTING LOG by his feet (standingOn) where his middle is past its end in his way (logs only), + (2) the game's put-back (C7's
 block) also spends `standing`. On top, tests only: **f2ef1ca27** ruling 2 (CI-14's allowance pressIn(mid + 3 sd), its own commit),

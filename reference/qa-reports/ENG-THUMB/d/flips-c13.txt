@@ -1,0 +1,23 @@
+# C13 c38532c48 five-bot rows (kid,adult,child,middle,expert; seeds 1-40; both) vs main (INT-R5 rows-main, cdffdc627) and vs C12 (d/rows-c12)
+rows on c38532c48 bots kid,adult,child,middle,expert 4:43 PM ET
+2-1 exit 0 360 rows 106 s
+2-5 exit 0 360 rows 110 s
+2-2 exit 0 360 rows 86 s
+2-4 exit 0 360 rows 128 s
+1-4 exit 0 360 rows 96 s
+rows done 4:52 PM ET
+## vs main
+2-1: rows 360 (main 360, fix 360), differ 163, PASS->FAIL 2, fail->pass 31
+  PASS->FAIL ('child', 'normal', 19) {'end': ('shrine', 'shrine'), 'lives': (4, 0), 'rescues': (0, 1), 'time': (375, 383.2)} [{'x': 19550, 'what': 'water ahead'}, {'x': 25392, 'what': 'an open drop ahead, water ahead'}]
+  PASS->FAIL ('kid', 'normal', 13) {'end': ('shrine', 'shrine'), 'lives': (0, 2), 'rescues': (0, 1), 'time': (138.6, 214.8)} [{'x': 19577, 'what': 'water ahead'}]
+2-2: rows 360 (main 360, fix 360), differ 342, PASS->FAIL 0, fail->pass 30
+2-4: rows 360 (main 360, fix 360), differ 297, PASS->FAIL 0, fail->pass 74
+2-5: rows 360 (main 360, fix 360), differ 257, PASS->FAIL 0, fail->pass 44
+1-4: rows 360 (main 360, fix 360), differ 234, PASS->FAIL 0, fail->pass 128
+## vs C12
+2-1: rows 360 (main 360, fix 360), differ 26, PASS->FAIL 1, fail->pass 0
+  PASS->FAIL ('child', 'normal', 19) {'end': ('shrine', 'shrine'), 'lives': (0, 0), 'rescues': (0, 1), 'time': (368.9, 383.2)} [{'x': 19550, 'what': 'water ahead'}, {'x': 25392, 'what': 'an open drop ahead, water ahead'}]
+2-2: rows 360 (main 360, fix 360), differ 21, PASS->FAIL 0, fail->pass 0
+2-4: rows 360 (main 360, fix 360), differ 19, PASS->FAIL 0, fail->pass 0
+2-5: rows 360 (main 360, fix 360), differ 24, PASS->FAIL 0, fail->pass 0
+1-4: rows 360 (main 360, fix 360), differ 0, PASS->FAIL 0, fail->pass 0
