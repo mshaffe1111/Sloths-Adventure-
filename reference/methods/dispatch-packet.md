@@ -154,6 +154,10 @@ about 1-2 s a row, every finished row kept.
 
 **A lane's bar uses the release's own range (CI #86, 11-25).** A bot change's final 'wide sample' runs rule 28's range (seeds 1-40, every stage the release ships) on its final candidate, not a faster subset: release 4's bot fix passed seeds 1-10 and failed the release on seeds 15-40.
 
+**The suite is never left to the landing (CI #93, 11-26; D141 again).** Every packet says: the CI tool line on EVERY candidate; the
+suite shards on every candidate brought to the lead for a ruling AND on the final one. A ruling request and a landing message carry each
+shard's pass/fail totals for THAT hash. Never write "GATES once on the final candidate" alone: that wording left 3-1's w3.test red for 9
+candidates.
 **A wait for a ruling times out at 20 minutes (CI #89, 11-26).** Every brief says: a member waiting on the lead's ruling for 20 minutes
 with no reply takes its OWN stated recommendation IF it is reversible (its own commit on its own branch; nothing on a release branch or
 main; no test bar, plant bar or rule changed) and goes on, saying so first in its next message; a ruling that would land on a release

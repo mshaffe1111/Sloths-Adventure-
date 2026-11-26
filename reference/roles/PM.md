@@ -109,6 +109,8 @@ Everything else is yours on his standing permission (11-07).
    message with no priority waits for its turn to end (D140).**
    **The catch-ahead list names every cause any lane has booked to another lane's landing ('expected to fall at the merge'): each is a
    measurement owed today, on a trial merge (CI #83).**
+   **"On the bar" needs the suite totals for that hash (CI #93, 11-26).** Without each shard's pass/fail for the candidate's hash the
+   lead rules "bots on the bar, suite owed", never "on the bar" (3-1's c17 was ruled on bot tables while w3.test was red since c10).
    **A ruling that sets a geometry or timing number names the flight that confirms it (CI #92, 11-26):** "N if flown clean on <the
    design's check>, else back to the lead". A judge's band (SNAP_FAIR, rideLay, a gate's limit) is another stage's flight, never the
    design's number for this one.
