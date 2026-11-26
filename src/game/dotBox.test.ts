@@ -195,8 +195,9 @@ const MOMENTS: readonly Moment[] = [
   { stage: '5-1', layout: 0, hint: 'A wide gap', at: 'lip' },
   // (the glide moment, World 4: the leaf's first glide, off the branch; its way ahead is the cone down and forward)
   { stage: '4-2', layout: 0, hint: 'Your leaf!', at: 'lip' },
-  // (the climb moment, World 2: at the foot of the first post up through the village; its way ahead is the climb above him)
-  { stage: '2-6', layout: 0, hint: 'Up through the village!', at: 'post' },
+  // (the ride moment, World 2: 2-6's teach on the millpond bank (w2Arc26.ts LINES_26.ride), where he stands when it goes up: the bank's
+  // boulder stops a plain walk about 200 px past the hint (qaW123.test.ts, the ride line's test); its way ahead is the hop and the bank)
+  { stage: '2-6', layout: 0, hint: 'Ride a bucket up!', at: 200 },
 ];
 
 for (const m of MOMENTS) {
@@ -214,7 +215,9 @@ for (const m of MOMENTS) {
       assert.ok(line, `${m.stage}: "${m.hint}" is not said on a phone`);
       // (where he stands: on the ground under the hint, at the spot, or walked up to the end of that ledge)
       const x0 = hint.x + 10;
-      const g = sim.platforms.filter((q) => !q.broken && q.x <= x0 + 20 && q.x + q.width >= x0 + 20 && q.type !== 'drift' && q.type !== 'fragile').sort((a, b) => a.y - b.y)[0];
+      // (on a climbing stage the topmost platform over the hint's x is storeys above it: the hint's own band, where it has one, says which)
+      const band: [number, number] | undefined = hint.band;
+      const g = sim.platforms.filter((q) => !q.broken && q.x <= x0 + 20 && q.x + q.width >= x0 + 20 && q.type !== 'drift' && q.type !== 'fragile' && (!band || (q.y >= band[0] && q.y <= band[1]))).sort((a, b) => a.y - b.y)[0];
       assert.ok(g, `${m.stage}: no ground under the hint`);
       let x = m.at === 'lip' ? Math.max(x0, g.x + g.width - sim.p.width - 110) : m.at === 'post' ? x0 : Math.min(x0 + m.at - 10, g.x + g.width - sim.p.width - 20);
       let gy = g.y;

@@ -12,25 +12,20 @@ import { generateAllLevels } from '../../worldsData.ts';
 import { onRiver, type RiverZone } from '../../river.ts';
 import type { Platform, Vine } from '../../types.ts';
 import { WHEEL, type Wheel } from '../../wheel.ts';
-import { listedStage, playFinish, withTestStage, type ListedStage } from '../listed.ts';
+import { listedStage, playFinish } from '../listed.ts';
 import { buildGen2Stage } from '../pipeline.ts';
 import { riverFaults } from '../riverLay.ts';
-import { w2Finish, W2_WHEELS } from './w2.ts';
-import { BEATS_26, CLUE_26, finish26, kitLib26, JOURNAL_26, LINES_26, MISSION_26, NORIA_PAGE_26, SIGN_26, STAGE_26 } from './w2Arc26.ts';
+import { W2_WHEELS } from './w2.ts';
+import { BEATS_26, CLUE_26, JOURNAL_26, LINES_26, MISSION_26, NORIA_PAGE_26, SIGN_26, STAGE_26 } from './w2Arc26.ts';
 
 const cfg = generateAllLevels().find((c) => c.id === STAGE_26 && !c.secret)!;
 type Rolled = { platforms: Platform[]; vines: Vine[]; rivers?: RiverZone[]; exitTotemX: number; gen2: { errors?: string[]; sections: Array<{ template: string }> } };
 const SEEDS = Array.from({ length: 12 }, (_, i) => i + 1);
 const BOTH = ['normal', 'easy'] as const;
 
-/** 2-6's DRAFT row (INT-R5, the lead's ruling: 2-6 does not ship in release 4, main's hand-built 2-6 plays; the new one stays a draft
- *  until release 5 lists it): rolled the way a listed row is rolled (listed.ts withTestStage, its kit, World 2's finish) */
-const inDraft = <T>(fn: () => T): T => withTestStage({ [STAGE_26]: { kit: kitLib26, world: (s, _sq, d) => w2Finish(s as never, d) as typeof s, finish: finish26 as ListedStage['finish'], seeds: [] } }, fn);
-/** every roll, as Play finishes a listed row */
-const rolls = inDraft(() => {
-  const row = listedStage(STAGE_26)!;
-  return BOTH.flatMap((d) => SEEDS.map((seed) => ({ d, seed, st: playFinish(row, buildGen2Stage({ config: cfg, kit: row.kit(), seed, difficulty: d }) as never, d) as unknown as Rolled })));
-});
+/** every roll, as Play finishes the listed row (its kit 'w2-26', World 2's finish, 2-6's own) */
+const row = listedStage(STAGE_26)!;
+const rolls = BOTH.flatMap((d) => SEEDS.map((seed) => ({ d, seed, st: playFinish(row, buildGen2Stage({ config: cfg, kit: row.kit(), seed, difficulty: d }) as never, d) as unknown as Rolled })));
 
 /** the beats in order (the arc's node string), by the draft's brick names */
 const ORDER = ['millpond', 'first-wheel', 'first-street', 'through-house', 'millrace', 'edge-wheel', 'rest', 'porches', 'top-wheel', 'rest', 'wheel-bounce', 'rest', 'great-wheel', 'crest'];
@@ -88,7 +83,7 @@ test("beat 4's millrace lays 2-1's ride logs (soft), crossed either way, fair; b
 test('2-6: the climb up the bank village, with the bank behind it, doors on the porches and Gruntlewick at the top', async () => {
   const { RealPlay } = await import('../../realPlay.ts');
   for (const seed of SEEDS.slice(0, 8)) {
-    const st = inDraft(() => { const row = listedStage(STAGE_26)!; return playFinish(row, buildGen2Stage({ config: cfg, kit: row.kit(), seed, difficulty: 'normal' }) as never, 'normal'); }) as unknown as Rolled & { proto: { bankWall?: object; ladders?: boolean; decor?: Array<{ n?: string; cel?: string; text?: string[] }>; hollows?: unknown[] } };
+    const st = playFinish(row, buildGen2Stage({ config: cfg, kit: row.kit(), seed, difficulty: 'normal' }) as never, 'normal') as unknown as Rolled & { proto: { bankWall?: object; ladders?: boolean; decor?: Array<{ n?: string; cel?: string; text?: string[] }>; hollows?: unknown[] } };
     assert.ok(st.proto.bankWall, `seed ${seed}`);
     assert.ok(st.proto.decor!.filter((d) => d.n === 'doorRoof').length >= 5, `seed ${seed}: doors`);
     assert.ok(st.proto.ladders, 'the climbs are ladders');
@@ -99,7 +94,7 @@ test('2-6: the climb up the bank village, with the bank behind it, doors on the 
     // (hearts, the lead's ruling (BUILD-26b; level.md rule 3 over the design's "heart after beat 10"): Normal lays a heart only where a
     // heart can be lost (stageGenerator.ts `risky`, Matt 11-05 "a heart only after real risk"). Nothing on Normal 2-6 costs one: no
     // creature, no deadly water, every pond and fall soft; so it lays none, and one that could never be needed would be filler)
-    const r = inDraft(() => new RealPlay(STAGE_26, seed));
+    const r = new RealPlay(STAGE_26, seed);
     // (BUILD-26c, the lead's ruling: every way a heart is lost is counted, so 0 is the rule's answer, not a loose one: a river without
     // `safe` costs a life (engine.ts loseLife('water')), as a gen2 pit that is not soft does; 2-6's six rivers are all safe)
     const played = r.stage as typeof r.stage & { heartFalls?: Array<{ soft?: boolean }>; proto?: { water?: Array<{ kind?: string }> }; gen2?: { budget?: { pit?: string } } };
