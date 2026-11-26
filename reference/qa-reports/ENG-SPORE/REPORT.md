@@ -1,23 +1,18 @@
 # ENG-SPORE REPORT (spore puffs as a gen2 zone brick, their light on a clock; 3-1 NEW 2; R-165.449; ADR-004)
 
-**EXACT NEXT STEP (box 1 hand-over; head on t-eng-spore-wip = the commit that carries this line).** Items 1-3 CODED; the toy
-sporeBots.test 7/7 GREEN on my tree; the stills shot and looked at (Polish check). BOX 2 FIRST: ReadNotifications. Then:
-(a) the planted faults AGAIN on a COPY tree of the head (`git worktree add --detach /tmp/claude-0/plant-<h> <head>`, node_modules
-symlinked; never the frozen tree): `python3 reference/qa-reports/ENG-SPORE/planted-faults.py <copy>` (about 5 min, run_in_background),
-written to plants-<h>.txt. On b254cb3a0 it was 4 CAUGHT, 2 MISSED (plants-b254cb3a0.txt): 'glowRimsOf: clocked rims left out' (the toy
-planted the puff after the bot had read its rims: now re-read, `glowRims = undefined`) and 'glowGo: the window's end not read' (no toy
-put him in a closing window: now 'put at the rim as the puff's window is closing'). Both toys are in this head; all 6 must be CAUGHT.
-(b) frozen tree of the head (`chattr -R +i src tools`, D115): `npx tsx --test src/game/gen2/dark.test.ts src/game/gen2/darkBots.test.ts
-src/game/gen2/sporeBots.test.ts` (run_in_background, timeout 2700000). On 12653334d: 54 tests, 51 pass, 3 RED in darkBots.test, and
-the SAME 3 are RED on the base e544dc3dd (ENG-DARK's c16, run alone in /tmp/claude-0/wt-base-e544dc3dd): 'seamByFacing, the plant' (RED
-plant not red: 'the most over one rim: 1'), 'noOpenEnd' GREEN half, 'noTurnRoom, the plant' ('the rim at x 846, y 927 gone over dark:
-[]'). INHERITED, proven on the base, NOT fixed by me (ENG-DARK's; told to the lead). Mine must add no red.
-(c) the pipeline's own lay of SectionZone 'spore' (pipeline.ts `z.kind === 'spore'`) has NO caller yet (no template lays one); its
-builder is the same `sporeZoneOn` the toy uses. READY-31's builder is its first caller. Told to the lead.
-(d) WAIT for ENG-DARK's landing on t-eng-w3 (ls-remote t-eng-w3 past 88592a9c4, or the lead's word), merge it in (no force), then on the
-merged head: the toys again, lockall (`--layouts 16 --check` against main's lock: only the stages traced), tierBots 9/9, the suite
-(shards, run_in_background, timeout 7200000) and the CI tool line, then land on t-eng-w3 (merge, no force) and send the lead the hash
-and what READY-31 can measure (below).
+**EXACT NEXT STEP (box 2 hand-over; head on t-eng-spore-wip = the commit that carries this line).** Box 2 did (1)-(2) on the code head
+8477445a5 (no src or tools change since): (1) planted faults on a copy tree: ALL 6 CAUGHT (plants-8477445a5.txt; both box-1 misses
+caught by their toys); (2) dark.test + darkBots.test + sporeBots.test on a chattr-frozen tree: 55 tests, 52 pass, 3 RED, exactly ENG-DARK's
+inherited three (darkspore-8477445a5.txt: 'seamByFacing, the plant', 'noOpenEnd' GREEN half, 'noTurnRoom, the plant'; proven red on the
+base e544dc3dd in box 1; ENG-DARK fixes them in its box 24 before its landing; NOT touched here). The lit span is in the Polish check.
+NEXT: ReadNotifications. Then (3) WAIT for ENG-DARK's landing: `git ls-remote origin t-eng-w3` past 88592a9c4 (or the lead's word);
+at box 2's end it was still 88592a9c4. Then `git fetch origin t-eng-w3 && git merge --no-ff FETCH_HEAD` into t-eng-spore-wip (no force;
+name every conflict: expect dark.ts / darkBots.test.ts / firsttimer.ts / engine.ts's light list), and on a NEW frozen tree of the merged
+head: sporeBots.test + dark.test + darkBots.test (darkBots must now be ALL GREEN with ENG-DARK's fixes; any red is the merge's) and the
+planted faults again on a copy. (4) the full gate set ONCE on that merged frozen head: lockall (`--layouts 16 --check` against main's
+lock: any move traced), tierBots 9/9, the suite in shards (run_in_background, timeout 7200000, frozen except src/game/gen2/proven), the CI
+tool line (D141), generalitycheck, drawcheck (the light draws). (5) land on t-eng-w3 (merge, no force), ls-remote confirm, the hash and
+"What READY-31 can measure" (below) to the lead.
 
 ## Box 1 (ENG-SPORE, from e544dc3dd = ENG-DARK's c16 code e5c098072; the lead's catch-ahead base)
 ### Item 1: the spore puff as a gen2 zone brick

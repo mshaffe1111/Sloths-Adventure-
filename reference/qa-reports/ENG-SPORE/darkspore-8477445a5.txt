@@ -1,0 +1,6 @@
+not ok 32 - the seam run's end picked by his facing (seamByFacing, the plant): turned on the low side, he walks to and f
+not ok 33 - the way on straight under a run that ends at a side wall: on Normal roll 15 the expert steps off its open en
+not ok 38 - the turn pressed at the rim's very edge (noTurnRoom, the plant): the press that turns him carries him off th
+# tests 55
+# pass 52
+# fail 3
