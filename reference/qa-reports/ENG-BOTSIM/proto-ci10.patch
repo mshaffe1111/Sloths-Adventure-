@@ -1,0 +1,103 @@
+diff --git a/tools/inspect/firsttimer.ts b/tools/inspect/firsttimer.ts
+index 02aca7402..d27279a41 100644
+--- a/tools/inspect/firsttimer.ts
++++ b/tools/inspect/firsttimer.ts
+@@ -28,6 +28,9 @@
+  * loseLife and damagePlayer (the harness stubs them), and sizes the view to a phone held sideways (844 x 390).
+  */
+ import { DT, RealPlay, levelConfig, type Pad } from '../../src/game/realPlay.ts';
++import { probe } from './engineFork.ts';
++/** ENG-BOTSIM prototype: vineFromLog's standing catch asks the engine (a probe of the press plan) and the bot plays the plan */
++export const BOTSIM = { on: typeof process !== 'undefined' && !!process.env.BOTSIM, probes: 0, ms: 0 };
+ import { glanceView, glancing, hurt, touches } from '../../src/game/predators/core.ts';
+ import type { PredatorDef, PredatorState } from '../../src/game/predators/types.ts';
+ import { GameEngine, LIP_IN } from '../../src/game/engine.ts';
+@@ -1514,6 +1517,45 @@ export class FirstTimerRun {
+   private landRide: number | null = null;
+   /** SKILLS.runUp: the run-up vineFromLog sent him on, on this log (its id), last judged at this game time */
+   private runUp: { id: number; t: number } | null = null;
++  /** ENG-BOTSIM: the pads of a probed press plan, played verbatim from the next frame (the judged press is the press flown) */
++  private plan: Pad[] | null = null;
++  /** ENG-BOTSIM: the press plan of a standing hop at thumb lag `lag`: he stands, presses on frame m (pressIn), the jump held while the
++   *  engine counts it held ((j - m) * DT < hold), the steer from the press frame or when his thumb gets there (steerFrom); frame 1 = now */
++  private standPlan(lag: number, dir: -1 | 1, hold: number, t: number, n = 60): Pad[] {
++    const m = Math.round(pressIn(lag) / DT);
++    const sf = this.steerFrom(dir, t);
++    const out: Pad[] = [];
++    for (let j = 1; j <= m + n; j++) {
++      const steer = j >= m && t + (j - 1) * DT >= sf - 1e-9;
++      const pad: Pad = steer ? side1(dir) : {};
++      if (j === m) { pad.press = true; pad.jump = true; } else if (j > m && (j - m) * DT < hold) pad.jump = true;
++      out.push(pad);
++    }
++    return out;
++  }
++  /** ENG-BOTSIM: the frame (1-based) on which the engine, flying `plan` from now, has him swinging on liana `v`; -(frame) if he comes
++   *  down, dies or never reaches it first */
++  private planCatch(plan: Pad[], v: Vine): number {
++    let at = -plan.length;
++    const m = plan.findIndex((q) => q.press) + 1;
++    const r = probe(this.e as never, plan, (e, i) => {
++      const pl = e.player as { isVineSwinging?: boolean; swingVineId?: number; grounded: boolean };
++      if (pl.isVineSwinging) { at = pl.swingVineId === v.id ? i + 1 : -(i + 1); return 'stop'; }
++      if (i + 1 > m + 2 && pl.grounded) { at = -(i + 1); return 'stop'; }
++      return 0;
++    });
++    BOTSIM.probes++;
++    BOTSIM.ms += r.ms;
++    if (r.died) at = -Math.abs(at);
++    return at;
++  }
++  private playPlan(): Pad {
++    const out = this.plan!.shift()!;
++    if (!this.plan!.length) this.plan = null;
++    this.lastSteer = out.right ? 1 : out.left ? -1 : 0;
++    if (out.press) this.lastPress = this.t;
++    return out;
++  }
+   /** SKILLS.runUp: the hold the run-up's jump was judged with (runPress: who.hold[0]), and when; startJump holds at least that */
+   private runUpHold: { hold: number; t: number } | null = null;
+   /** the game time a press decided on (decide) was aimed to reach the engine (pressIn), for the press this frame's pad carries */
+@@ -2445,7 +2487,8 @@ export class FirstTimerRun {
+     // (SKILLS.runUp, ENG-PLANT-g: a run-up he is on (sent last frame, this log); else none)
+     const running = SKILLS.runUp && !!this.runUp && this.runUp.id === here.id && t - this.runUp.t < DT * 1.5;
+     this.runUp = null;
+-    if (!running && !lags.every(catches)) {
++    const judged = !running && (BOTSIM.on ? lags.every((lag) => this.planCatch(this.standPlan(lag, dir, hold, t), v) > 0) : lags.every(catches));
++    if (!running && !judged) {
+       // (SKILLS.runUp, ENG-PLANT-g: from a stand a PERFECT thumb catches 2-4's tailed-river liana 0 of ~560 frames; a running jump off the
+       //  same log catches it (2-4 adult Normal 6, 52 of 541 frames; main crossed by an unjudged full-run leap). The hop he can make is
+       //  judged: a run along the log (groundStep, his own thumb lag and spread on the run press and the jump press, the take-off still on
+@@ -2480,6 +2523,15 @@ export class FirstTimerRun {
+       if (this.pending) this.pending.judged = true;
+       return go;
+     }
++    if (BOTSIM.on) {
++      // (ENG-BOTSIM: his lag drawn as decide draws it; the plan at that lag is the press he makes, frame by frame, to its probed end)
++      const lag = gauss(this.r, this.who.thumb);
++      const plan = this.standPlan(lag, dir, hold, t);
++      const end = Math.abs(this.planCatch(plan, v));
++      this.pending = null;
++      this.plan = plan.slice(0, Math.max(1, end));
++      return {};
++    }
+     // (judged here: decide's immediate press (a lag under half a frame) reaches startJump now, so the flag is up for it too; candidate
+     //  10 marked only the queued press and 2-4 adult Normal 6 had two liana presses refused, x 21,600 and 24,700, UNJUDGED)
+     this.pressJudged = true;
+@@ -4984,6 +5036,7 @@ export class FirstTimerRun {
+     this.steady = false;
+     this.stopMeant = false;
+     const intended = this.intend();
++    if (this.plan?.length) return this.playPlan();
+     const want = this.rollHeld || this.steady || this.runnerAhead() ? intended : this.rhythm(intended);
+     const out = this.figTap ? this.tapped(want) : this.thumbify(want);
+     this.wasOnTrunk = !!this.sim.p.climbing;
+@@ -5503,7 +5556,7 @@ export class FirstTimerRun {
+     const e = this.e;
+     while (this.t < cap) {
+       this.pressWant = undefined;
+-      const pad = this.pad();
++      const pad = this.plan?.length ? this.playPlan() : this.pad();
+       this.sim.frame(pad);
+       if (PRESS_TRACE.on && pad.press && this.pressWant !== undefined) PRESS_TRACE.rows.push({ want: this.pressWant, got: this.t });
+       if (this.hopOpen) {

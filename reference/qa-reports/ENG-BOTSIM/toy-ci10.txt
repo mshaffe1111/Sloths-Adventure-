@@ -1,0 +1,12 @@
+toy-off.txt:# BOTSIM {"on":false,"probes":0,"ms":0}
+toy-off.txt:  error: 'the standing press at t 47.600 from x 10545.1 on #48 was judged to catch; the engine: grounded on #-1 at x 10190.0 y 947.0, frame 14'
+toy-off.txt:# pass 0
+toy-off.txt:# fail 1
+toy-off.txt:real	0m5.093s
+toy-off.txt:user	0m4.337s
+toy-on.txt:# ROWS [{"t":47.066666666666556,"x":10502.22222222221,"on":48,"n":10,"caught":4,"down":null}]
+toy-on.txt:# BOTSIM {"on":true,"probes":114,"ms":1056.2005410000013}
+toy-on.txt:# pass 1
+toy-on.txt:# fail 0
+toy-on.txt:real	0m3.541s
+toy-on.txt:user	0m4.695s

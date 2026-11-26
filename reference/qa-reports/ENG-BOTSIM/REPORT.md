@@ -1,15 +1,13 @@
 # ENG-BOTSIM: can the bots ask the GAME how a press flies? (R-165.462, spike; branch t-eng-botsim from c73cb9766)
 
-## EXACT NEXT STEP (session 1, written 1:13 PM ET; item 1 DONE, item 2 in progress)
-1. Item 2 prototype on the OLD code: worktree `../bs-ci10` = 8134a9a56 (CI-10), node_modules symlinked. Copy
-   `tools/inspect/engineFork.ts` in; in `tools/inspect/firsttimer.ts` vineFromLog's standing branch (`if (!running && !lags.every(catches))`
-   and the press at its end), behind `process.env.BOTSIM`: build the press PLAN per lag (frames 1..m-1 `{}`, m = pressIn(lag)/DT the
-   press `{press, jump}`, jump held while (j-m)*DT < pressHold(), steer from max(press frame, steerFrom(dir, t))), judge = every lag's
-   plan caught by `probe(this.e, plan, read isVineSwinging)`; act = draw the lag as decide does (gauss(this.r, who.thumb)) and PLAY that
-   plan's pads verbatim (`this.plan`, taken first in `play()` and right after `intend()` in `pad()`), truncated at its probed catch.
-2. Run CI-11's toy (`git show 4cccba33e:tools/inspect/hopJudged.test.ts` lines 286-327, the 2-4 kid Easy 35 test) on ../bs-ci10:
-   without BOTSIM it must be RED (the known miss), with BOTSIM=1 GREEN = item 2's toy.
-3. Then item 3 (x40 kid + adult, one stage, BOTSIM vs not: wall + CPU) and item 4 (this page).
+## EXACT NEXT STEP (session 1, written 1:16 PM ET; items 1 and 2's toy DONE)
+1. Item 3 (cost): on worktree `../bs-ci10` (8134a9a56 + `proto-ci10.patch` + engineFork.ts; recreate: `git worktree add --detach
+   ../bs-ci10 8134a9a56`, symlink node_modules, `git apply` the patch, copy tools/inspect/engineFork.ts): one x40 kid + adult on 2-4
+   (castBots' roll, both settings as it rolls them) with and without `BOTSIM=1`: wall and user CPU (bash `time`; no /usr/bin/time here),
+   the probe count and ms (`BOTSIM` counters), and pass/fail per row both ways.
+2. Item 2's other rows: the CI-8..CI-15 rows on their OLD heads, as far as the prototype's one judge reaches (vineFromLog standing
+   only: CI-11 is the one it covers; the rest go in the plan table as "which judge, physics or input").
+3. Item 4: this page's ANSWER section.
 
 ## Item 1: YES, by snapshot + fly the LIVE engine + restore in place (a separate copy does NOT work)
 Tool: `tools/inspect/engineFork.ts` (`probe(e, pads, read)`); proof: `npx tsx tools/inspect/botsim/forkProbe.ts 2-4 35 easy 30`.
@@ -29,3 +27,18 @@ Tool: `tools/inspect/engineFork.ts` (`probe(e, pads, read)`); proof: `npx tsx to
   engine writes during play: tipMemory, guideShown (`shown`), helpLadder (`onScreenText`, `current`, `grownNow`, `stairsLeftOut`),
   physics (`framesFlown`, a counter), playRecorder, localStorage. The fix is an engine seam (each store exports save/load, or moves onto
   the engine), and B3 over every stage as the gate that proves none is left.
+
+## Item 2: the prototype on ONE judge (vineFromLog's standing catch), on the OLD code: CI-11's row judged right with NO hand fix
+Patch: `proto-ci10.patch` (on 8134a9a56 = CI-10, behind `BOTSIM=1`; 103 lines); toy: `botsimToy.test.ts.txt` (CI-11's own toy from
+4cccba33e, plus the same recorder on the plan's press); evidence `toy-ci10.txt`.
+- **The judge asks the engine:** for each of the three lags (mid, mid - sd/2, mid + sd/2) it builds the press PLAN (stand until the
+  press frame pressIn(lag), the press, the jump held while the engine counts it held, the steer from the press frame or when his thumb
+  gets there, steerFrom) and `probe()` flies it on the real engine: caught = swinging on that liana before he is grounded or dies.
+- **The bot plays what was judged:** the lag drawn as decide draws it; the plan at that lag is the pad stream, frame for frame, to its
+  probed end (no thumbify, no startJump draw in between: rule 28 "the judged hop is the hop flown" holds by construction).
+- **Result:** without the probe (old judge): RED, "the standing press at t 47.600 from x 10545.1 on #48 was judged to catch; the engine:
+  grounded on #-1 at x 10190.0 y 947.0, frame 14" (CI-11's miss). With the probe: GREEN, pressed at t 47.067 from x 10502.2 on #48,
+  caught liana #4 on frame 10: the SAME press and catch CI-11's hand fix reached (CI-REDS session 8: "pressed 47.067 from x 10502.2 on
+  #48 ... caught swing #4 at 47.400 (frame 10)"). CI-11's three hand fixes (every free count, the engine's hold count, startJump flying
+  the judged hold) are not needed: the first two are physics the engine does itself; the third is "play the plan".
+- **Cost on the toy:** 114 probes, about 1.0 s of probing in a 49 s run (8.5 ms a probe); test wall 3.5 s vs 5.1 s (noise: one run each).
