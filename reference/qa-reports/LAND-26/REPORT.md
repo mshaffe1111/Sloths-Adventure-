@@ -28,8 +28,10 @@ The next session, in this order:
    src/game/gen2/proven).
 2. **Trace every moved row (rule 28, the lead's order):** tools/firstCause.mts.txt (REPO=<frozen> FILE=data/rule28/moved-stepOff.txt
    LO= HI= npx tsx it; 3 shards of 86, run_in_background each, ~30 min) prints per row the FIRST frame where boardWatch or stepOff acts
-   (before it the run IS the run with both off). Every row must name one; a 'NONE' row is untraced: bring it to the lead. Session 4 had
-   these running at hand-over; their output did not survive the container.
+   (before it the run IS the run with both off). Every row must name one; a 'NONE' row is untraced: bring it to the lead. **Session 4's
+   run finished right after the hand-over push (frozen cb69a104e; data/rule28/firstCause-cb69a104e.txt): 244/258 traced (183 boardWatch
+   wait, 45 stepOff refuse, 16 stepOff settle); all 258 runs equal their castBots rows (end, time, rescues). 14 'NONE' rows remain
+   (grep NONE): likely a settle press or brake the tracer's tight test (|vx| < 5, toward the way) misses; trace those 14 only.**
 3. **The stepOff toy each way:** tools/wheelStepOff.test.ts.DRAFT.txt is a draft. Way +1 = castRun adult Easy 2-6 seed 12 (stepOff off:
    rescued, on: none; measured on c1/x3). **Its way -1 case (seed 13) is WRONG**: in seed 13 the step-off makes street #29 (with a
    double) and he bounces back into the wheel (data/stepOff-ae13-c1-*.txt), not a short step-off. Find a real way -1 case:
