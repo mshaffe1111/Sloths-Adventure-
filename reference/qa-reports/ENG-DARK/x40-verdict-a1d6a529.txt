@@ -1,0 +1,24 @@
+rows 360 shrine 355
+unlit events 5
+  child normal 12 dark: went over the rim at x 477, y 9779 (right end of 246-477) at 201.30 s with its landing dark (needs 1 s)
+  kid normal 29 dark: went over the rim at x 582, y 3380 (left end of 582-993) at 31.53 s with its landing dark (needs 1 s)
+  child easy 29 dark: went over the rim at x 834, y 7310 (left end of 834-1083) at 117.27 s with its landing dark (needs 1.6 s)
+  child easy 35 dark: went over the rim at x 627, y 9412 (left end of 627-989) at 219.83 s with its landing dark (needs 1.6 s)
+  kid normal 24 dark: went over the rim at x 584, y 6723 (left end of 584-993) at 69.23 s with its landing dark (needs 1 s)
+max loop (7, 'middle', 'normal', 26)
+gaveUp 0 edgeTurns 0
+rescue kinds the base lacks 4
+  a # px waist-high step ahead, in a dip # px deep, a drop of # px ahead, the way on is # px down
+  an open drop ahead, a trunk beside him, the way on is # px down
+  in a dip # px deep, a drop of # px ahead
+  in a dip # px deep, a drop of # px ahead, a trunk beside him, the way on is # px down
+bot setting  shrine  median new / base  delta  rescues new/base
+kid    normal  39/40   152.4 /  174.7   -22.2  50/156
+kid    easy    40/40   205.4 /  197.0    +8.4  104/186
+child  normal  39/40   264.4 /  320.1   -55.7  35/138
+child  easy    40/40   269.5 /  306.4   -36.8  80/178
+middle normal  39/40   188.8 /  207.7   -18.9  74/126
+middle easy    40/40   227.8 /  261.5   -33.7  114/186
+adult  normal  39/40   153.6 /  164.4   -10.8  50/119
+adult  easy    40/40   206.2 /  200.3    +5.9  108/180
+expert normal  39/40   177.4 /  202.4   -24.9  74/124

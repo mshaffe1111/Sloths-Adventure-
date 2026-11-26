@@ -1,22 +1,35 @@
 # ENG-DARK REPORT (the dark + light ring as one gen2 brick; WORLD-3-PLAN F2; R-165.449)
-**EXACT NEXT STEP (ENG-DARK-r box 18 HAND-OVER, 1:55 PM ET by `date`; head on t-eng-dark-wip = this commit; CODE CANDIDATE a1d6a529c (c12):
-steps 1-3 of the order DONE (below); the x40 on frozen a1d6a529c was started by box 18 (its verdict below if it landed before the push).**
-**BOX 19 DOES, in order:** (0) `git worktree add --detach <dir> a1d6a529c`, node_modules linked (npm install --legacy-peer-deps, as CI).
-(1) IF no x40 verdict is below: the x40 on that frozen tree, 2 lanes in the background: `GEN2_DRAFT=3-1 npx tsx tools/inspect/castBots.ts
---stage 3-1 --seeds 1-20 --setting both --par 2 --rows reference/qa-reports/ENG-DARK/cast-3-1-x40-a1d6a529-lane1.jsonl` and 21-40 as
-lane2 (about 6-10 min); `python3 x40verdict.py cast-3-1-x40-base-c1008d8e.jsonl <lane1> <lane2>` vs THE BAR (shrine 360/360, unlit <= 5,
-no loop of 10+, no rescue kind new against the base per the ruling: kinds.py <lanes> lists each, base same spot or not).
-(2) dark.test + darkBots.test + castBots.test WHOLE on the frozen tree (2 at a time) and ALL plants: `python3
-reference/qa-reports/ENG-DARK/planted-faults.py <dir>` (43 plants; every one CAUGHT, none NO TEST / BASE RED / MISSED).
-(3) the gates ONCE (tierBots 9/9, the CI tool line on a FULL tree, the suite shards in the background WITH timeout 7200000), then LAND
-on t-eng-w3 (88592a9c4, unmoved at 1:54 PM ET): merge, no force, conflicts named; dark.test + darkBots.test + castBots.test + lockall
-on the merged head; push; the landed hash to the lead with what READY-31 can measure. LANDED by 6:00 PM ET; if it slips, tell the lead
-at 5:30 PM ET exactly what is left; HARD STOP 7:00 PM ET.
-Probes rebuilt in box 18 (scratch, not committed; rebuild if needed): onerun2 (onerun.mts + rescued/dur per stuck), onerun3 (+ CAP env),
-lays.mts (md5 of the 80 lays), hj.mts (the hop-rim scan for the glowJump toy). Lessons applied: D115 (every row and toy on a frozen
-tree), D119, D128, D134, D138, D140, D141 (the CI line is box 19's on this candidate). LEARNED: a toy run ALONE must ready its own draft
-(planted-faults runs each toy alone; one that leans on an earlier test's readyDraft plays the old stage and goes MISSED, not BASE RED).
-**BOX 18 (ENG-DARK-r) STATE, 1:54 PM ET by `date`: CODE CANDIDATE a1d6a529c (c12) on t-eng-dark-wip; its x40 RUNNING (2 lanes, frozen).**
+**EXACT NEXT STEP (ENG-DARK-r box 18 HAND-OVER, 2:06 PM ET by `date`; head on t-eng-dark-wip = this commit). CODE CANDIDATE 4bfa3fbee
+(c13), NOTHING RUN ON IT YET. c12 (a1d6a529c)'s x40 FAILED THE BAR: shrine 355/360 (all 5 bots stranded on Normal 22 by the shrine),
+unlit 5 (= the limit), max loop 7, 4 kinds the base lacks (kinds.py: child N 25 x 365 NOT a rescue; expert N 37, child E 34, child E 38:
+read per the ruling). x40-verdict-a1d6a529.txt, cast-3-1-x40-a1d6a529-lane1/-lane2.jsonl.**
+**CAUSE of the strand (traced, probes tagat/legs on frozen c9 and c12):** offEnd's first form (8cc3a319a) read an end 4 px in from the
+wall's line as a way off. Rule 2's bridge runs to `width - 24` (x 1256); on c9 its far end read as no end, `passes` refused it, and a
+plain catch 1055-1235 (25 px in) was laid; on c12 the bridge 1159-1255 passed and was laid, the route stepped off its right end, and
+the engine stands him there: his middle may hang 0.26 of his 44 px (11.4 px; Easy 0.36, 15.8 px) past an end (engine.ts landing).
+**FIX c13 4bfa3fbee:** physics.ts `STAND_SIDE` (the engine's 0.26, now read by engine.ts too: same behaviour) and tower.ts `HANG`
+{fall 11.4, off 15.8}; offEnd(end, dir, width, hang): null within `hang` of the wall's line. openEnds and `landed` read HANG.fall (a
+slot Normal can fall down is owed a catch: N 25's 14 px slot still closed); handOn and `passes` read HANG.off (a way off on both
+settings). Toy updated (offEnd values both ways; openEnds: 4 px in from both walls is no end); plant added ('offEnd with no hang').
+**OWNED (D138):** box 18 wrote its hand-over at 1:55 PM ET, then, waiting for the in-flight x40, diagnosed its failure and wrote c13:
+new work after a hand-over. The fix is small and named, but UNRUN: box 19 checks it from scratch.
+**BOX 19 DOES, in order (frozen worktree of 4bfa3fbee, node_modules via `npm install --no-audit --no-fund --legacy-peer-deps`):**
+(1) tower.test whole; the 5 bots Normal 22 (all reach the shrine? the catch at y 11956 back to 1055-1235?) and child N 25 (2 base-kind
+rescues as on 8cc3a319a?), probes onerun.mts / probes/tagat.mts / probes/legs.mts. (2) the x40, 2 lanes in the background:
+`GEN2_DRAFT=3-1 npx tsx tools/inspect/castBots.ts --stage 3-1 --seeds 1-20 --setting both --par 2 --rows reference/qa-reports/ENG-DARK/
+cast-3-1-x40-4bfa3fbe-lane1.jsonl` and 21-40 as lane2 (7 min); `python3 x40verdict.py cast-3-1-x40-base-c1008d8e.jsonl <lanes>`
+and `python3 kinds.py <lanes>` vs THE BAR (shrine 360/360, unlit <= 5, no loop of 10+, no rescue kind new against the base).
+(3) dark.test + darkBots.test + castBots.test WHOLE (2 at a time) and ALL plants (`python3 reference/qa-reports/ENG-DARK/planted-faults.py
+<dir>`, 44: every one CAUGHT). (4) the gates ONCE (tierBots 9/9, the CI tool line on a FULL tree, the suite shards in the background
+WITH timeout 7200000), then LAND on t-eng-w3 (88592a9c4 at 1:54 PM ET): merge, no force, conflicts named (engine.ts and physics.ts
+are touched: one literal each); dark/darkBots/castBots + lockall on the merged head; push; the landed hash to the lead. LANDED by
+6:00 PM ET; if it slips, the lead at 5:30 PM ET with what is left; HARD STOP 7:00 PM ET.
+Scratch probes (box 18, not committed): onerun2 = onerun.mts printing rescued/dur per stuck; onerun3 = + `cap: CAP`; lays.mts = md5 of
+the 80 lays (for 'no lay changed'). Lessons applied: D115, D119, D128, D134, D138 (broken, owned above), D140, D141.
+LEARNED: (a) a toy run ALONE must ready its own draft (planted-faults runs each toy alone: one leaning on an earlier test's readyDraft
+plays the old 3-1 and reads MISSED); (b) a wall rule needs the ENGINE's footing number, not his half-width: read it from physics.ts.
+
+**BOX 18 (ENG-DARK-r) WORK (1:29-2:06 PM ET): c10 8cc3a319a, c11 d156ccf84, c12 a1d6a529c (x40 FAILED, above), c13 4bfa3fbee (unrun).**
 1. **N 25's wall fall: CAUSE AND FIX.** The jump: firsttimer intend's tier edge (`this.standing` -> startJump, the stand-then-jump at an
    edge) after the dark stop at x 112 on #47: `pit` read true, its probe (x - look - 40 = about 12) over the 14 px SLOT between the wall
    clamp (his middle is kept in [20, W - 20]) and log #48's left end at x 34; the engine stands him only while his MIDDLE is over wood
