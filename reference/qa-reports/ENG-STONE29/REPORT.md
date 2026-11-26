@@ -1,8 +1,8 @@
 # ENG-STONE29: the wide snap stone (130 px) with its own flown band (R-165.490)
 
-**EXACT NEXT STEP:** candidate 2 a6ac7316b (the lead ruled A) is committed on t-eng-stone29. Run on a frozen worktree of it: the CI tool
-line, lockall --check against a record of 098047713, the suite in 6 shards; then the 2x stills of the wide stone beside Pokey (upright,
-sideways); then send the lead the hash, the band and the stills (lead only; BUILD-29-c handed over).
+**EXACT NEXT STEP:** the CI tool line PASSED on a6ac7316b; lockall --check and the 6 suite shards are running on its frozen worktree. When they end:
+record each total in §1b, commit, push, ls-remote, and send the lead the landing hash, the band, the stills (stills/, shot) and each
+shard's totals (lead only; BUILD-29-c handed over). KID_RUNS_59 (firstTimerBot.test.ts) is the release line's inherited red: name it.
 
 Base: t-eng-29 098047713 (ENG-29-e's barge/guard/drum on t-eng-29-wip untouched). Code candidate: a6ac7316b (gates below are of it).
 
@@ -67,8 +67,12 @@ one width a run, inStep 3, a wave ahead only, and the slack on Normal and Easy. 
 
 GATES (frozen worktree of a6ac7316b, `git status` empty after): see §1b.
 
-## 1b. Gates
-(filled when each ends)
+## 1b. Gates (all on a chattr-frozen worktree of a6ac7316b; `git status` empty after each)
+- tsc: clean. generalitycheck: PASS (71 engine files, 26 literals, 26 known). snapRow.test.ts: 17/17.
+- The CI tool line (gates.yml line 157): 427 tests, 426 pass, 0 fail, 1 todo (chase bots ENG-B4, a standing TODO), exit 0.
+- lockall --layouts 16 --check against a record of 098047713 (3,264 builds of 102 stages): (running)
+- The suite, 6 shards round robin (the CLAUDE.md glob, 657 files): (running)
+- drawcheck: not run; no new draw path (the snap stone's own drawer, scaled by width as before).
 
 ## 2. Polish check
 Stills at 2x (deviceScaleFactor 2), a REAL engine frame: 2-5 on the designed roll, its widest snap pond re-laid at run time as the wide stone
@@ -98,14 +102,15 @@ Stills at 2x (deviceScaleFactor 2), a REAL engine frame: 2-5 on the designed rol
 - (BUILD-29) fly 130 + 62 Normal / 130 + 92 Easy in the court before use; beat 5 to 2 in step (the lead's ruling).
 
 ## 5. Unresolved
-(filled at the end)
+- The stills are a run-time re-lay of 2-5's pond, not a built stage holding the wide stone (no stage lays one yet: 2-9 will).
+- BUILD-29 still flies 130 + 62 / 130 + 92 in the court before use.
 
 ## 6. Method update
 - level.md / STAGE-RULES: a stone crossed on the beat is judged by its PACE (pitch over the count) and by the SLACK of its best count, not by
   a fixed gap or a window to leave the bank. Fly the band over the counts it will be used at, both settings, in 1 px steps.
 
 ## 7. Turnover note
-(engine-core.md §0zs-STONE29, in the landing commit)
+reference/handoffs/engine-core.md §0zs-STONE29 (the commit after this REPORT's gates).
 
 Lessons applied: D115 (every run on a chattr-frozen worktree), D128 (stamps from `date`), D134 (next step pushed and ls-remote checked
 before any hand-over), D138 (no new work past a hand-over), D140 (ReadNotifications at each step), D141/CI #93 (the CI tool line on every
