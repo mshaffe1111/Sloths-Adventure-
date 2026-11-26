@@ -145,6 +145,10 @@ PLANTS = [
     ("glowWait takes the first rim at an end (89ef9a985's bot change reverted)", 'tools/inspect/firsttimer.ts',
      "<= GLOW_NEAR && unlit(r));\n    if (!rim) return null;", "<= GLOW_NEAR);\n    if (!rim || !unlit(rim)) return null;",
      'a dark stop at an end that is two rims', 'src/game/gen2/darkBots.test.ts'),
+    # (ENG-DARK box 24, plant 47) at the lip the way on's first point within 8 px of his middle read as straight under him (expert N 15 x 367)
+    ("lipEnd off: a point past his wood's end within 8 px read straight under him (downEnd 0)", 'tools/inspect/firsttimer.ts',
+     "      const d = dx > 8 ? 1 : dx < -8 ? -1 : endOf(at);\n", "      const d = dx > 8 ? 1 : dx < -8 ? -1 : 0;\n",
+     "at the lip over the way on's first point, he steps off that end", 'src/game/gen2/darkBots.test.ts'),
 ]
 # (ENG-DARK box 13) ONLY='a|b': run only the plants whose name holds one of these (a re-anchor's check; the full proof runs them all)
 import os
