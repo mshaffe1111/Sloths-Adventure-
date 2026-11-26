@@ -1,4 +1,34 @@
 # ENG-DARK REPORT (the dark + light ring as one gen2 brick; WORLD-3-PLAN F2; R-165.449)
+**EXACT NEXT STEP (ENG-DARK-t box 20 HAND-OVER, 2:49 PM ET by `date`; head on t-eng-dark-wip = this commit). CODE CANDIDATE c14 =
+040a56547 (tower.ts going-down lay: a catch over a slot lies within one plain jump of the floor beside it, or the slot gets wood).
+c14 x40 RUN (frozen 040a56547; x40-verdict-040a5654.txt, cast-3-1-x40-040a5654-lane1/-lane2.jsonl): IT MISSES THE BAR. shrine 359/360 (child N 25 STRANDED, 2 rescues, last stuck x 802, 794, 226; on c13 he reached the shrine); unlit 2; max loop 7 (middle N 26); gaveUp 2; rescues 625 vs base 1393 (c13 674). NEW rows (kinds.py, base same spot 0): N 35 x 874-875 for kid, adult, child AND middle ("a 84 px chest-high step ahead, in a dip 84 px deep": a shape the fix made, likely rule 5 or a lowered catch), child N 12 x 643 (dip 217, drop 64), child N 15 x 867 (dip 211, drop 173), expert N 2 x 1085 (dip 173, drop 178). child N 37 x 1035 and child E 34 x 802 have base rescues at the same spot (accepted per the ruling). The N 19 x 255 row is GONE. BOX 21 FIRST: trace child N 25 (the strand) and N 35 x 874 on frozen 040a56547 vs 4bfa3fbee (tagat + /tmp-style track probe: castBots CAST_BOTS[bot][setting] through firstTimer with onFrame), name which of the three changes (unreached in fair, unreached on rule 1, rule 5 fill) made each, and narrow the fix IN GENERAL (58 of 80 lays changed: the reach rule as written reaches far past the one shape; candidate narrowing: only a slot whose floor is a dip in the way he walks, and only the end whose fall line is over it), one x40 per candidate.**
+**Box 20 DONE:** (1) child N 19 traced on frozen c13 (/tmp probes, not committed): down the x 99 vine onto #48 (79-289 y 8689), he
+walks right; the route's points run level across the 97 px slot #50 (289-386, 70 px down); he stands at the lip (edge 'stand' 1.24 s),
+hops a double that tops out 47 px up and turns back, climbs the vine back to #47, comes down again and crosses at 173.9 s: 8.7 s
+stuck, NOT rescued (a stuck line whose kind the base lacks). The catch over the slot, #120 284-464 y 8501, is rule 4's bough for #47's
+right end (x 350, y 8408), whose fall line is over the slot: every height in the 108 px reach (within ROOF 180 of the dip's lip) is
+lidded (towerLids), so the y loop took the first clear one, 188 px up, out of every tier's reach. (2) FIX (c14): tower.ts slotUnder /
+SLOT_REACH (= ceil JUMP_RISE, 108) / towerSlotReach; fair() refuses a going-down bough over a slot more than SLOT_REACH over its floor
+(unreached; also on rule 1's wall run-on); new rule 5: when no height is fair, the slot gets wood level with its floor, lip to lip (the
+slot's own floor under it is sealed off, so it does not cramp the fill); where even that is not fair nothing is laid and towerFalls
+names the open end (refuse). On N 19 the slot gets #120 289-386 y 8689 and the child reaches the shrine with 0 rescues, the x 255 line
+gone. 58 of 80 lays change (all 40 Normal, 18 Easy; probes/lays.mts md5 vs c13). (3) shape toy in tower.test ("going down, a catch
+over a slot lies within one plain jump...") GREEN on the fix; on frozen c13 the same shape lays 284-464@1093, 188 px up (the toy's
+red case). Two plants added to planted-faults.py (46 now): the reach check off; rule 5 off; NOT YET RUN. tsc 0; generalitycheck PASS.
+**NOT DONE (box 21 does, in order):** (a) if the x40 above is not on the bar, trace the new row(s) and fix in general (no stage id, seed
+or x in engine code). (b) the REAL-ROW test: dark.test, every roll 1-40 both settings, towerSlotReach over all solid wood = [] (a scan
+probe /tmp/claude-0/sp/scan.mts was written and stopped unrun: re-write it from this note; if section wood shows up, restrict to the lay's
+pieces); plus N 19's slot has wood at y 8689. (c) plants: `python3 reference/qa-reports/ENG-DARK/planted-faults.py <frozen c14 dir>`,
+all 46 CAUGHT (none NO TEST / BASE RED); tower.test whole GREEN; dark.test + darkBots.test + castBots.test WHOLE (2 at a time). (d) the
+gates ONCE (tierBots 9/9, CI tool line gates.yml:157 on a FULL tree, suite shards deploy.yml:38 --test-shard=i/6 in the background WITH
+timeout 7200000), then LAND on t-eng-w3 (88592a9c4; merge, no force); dark/darkBots/castBots + lockall on the merged head; push; the
+hash to the lead. Fix + toys by 4:00 PM ET (met: c14 + shape toy); LANDED by 7:00 PM ET; word at 6:30 if it slips; HARD STOP 8:00.
+Frozen trees here (gone with this container): /home/user/wt-c13 (4bfa3fbee), /home/user/wt-c14 (040a56547), node_modules symlinked.
+Lessons applied: D115, D119, D128, D134, D138, D140, D141. BROKEN AND OWNED: once ran two probes with a shell '&' and a wait (the
+brief forbids it); every later run used run_in_background.
+LEARNED: two going-down rules can corner a height band (the lid keeps 0-180 px over a dip's lip clear, the reach wants 0-108): when
+they do, the repair is to change the shape (fill the slot), not to take the first height left over.
+
 **EXACT NEXT STEP (ENG-DARK-s box 19 HAND-OVER, 2:27 PM ET by `date`; head on t-eng-dark-wip = this commit). CODE CANDIDATE STILL
 4bfa3fbee (c13), REVIEWED, x40 RUN: IT MISSES THE BAR ON ONE ROW ONLY. shrine 360/360, unlit 2, max loop 7 (middle N 26), gaveUp 2;
 rescues 674 vs base 1393. kinds.py: 3 kinds the base lacks; middle N 13 x 879 (base same spot 1) and child E 34 x 802 (base same spot

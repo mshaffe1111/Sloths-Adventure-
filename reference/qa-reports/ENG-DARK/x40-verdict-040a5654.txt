@@ -1,0 +1,39 @@
+rows 360 shrine 359
+unlit events 2
+  child easy 8 dark: went over the rim at x 515, y 4375 (right end of 251-515) at 103.37 s with its landing dark (needs 1.6 s)
+  kid easy 33 dark: went over the rim at x 346, y 6585 (left end of 346-526) at 79.53 s with its landing dark (needs 1.6 s)
+max loop (7, 'middle', 'normal', 26)
+gaveUp 2 edgeTurns 0
+rescue kinds the base lacks 6
+  a # px chest-high step ahead, in a dip # px deep
+  a # px chest-high step ahead, in a dip # px deep, a trunk beside him
+  a # px waist-high step ahead, an open drop ahead, the way on is # px down
+  an open drop ahead, a trunk beside him, the way on is # px down
+  in a dip # px deep, a drop of # px ahead
+  in a dip # px deep, a drop of # px ahead, a trunk beside him, the way on is # px down
+bot setting  shrine  median new / base  delta  rescues new/base
+kid    normal  40/40   147.6 /  174.7   -27.1  35/156
+kid    easy    40/40   201.9 /  197.0    +4.9  101/186
+child  normal  39/40   264.9 /  320.1   -55.2  32/138
+child  easy    40/40   259.9 /  306.4   -46.5  80/178
+middle normal  40/40   182.2 /  207.7   -25.5  60/126
+middle easy    40/40   227.4 /  261.5   -34.1  106/186
+adult  normal  40/40   146.7 /  164.4   -17.7  37/119
+adult  easy    40/40   205.2 /  200.3    +4.8  105/180
+expert normal  40/40   177.6 /  202.4   -24.8  69/124
+base rescues 1393 new rescues 625
+child normal 12 x 643: in a dip 217 px deep, a drop of 64 px ahead | base same spot: 0 (base rescues on this roll 23)
+expert normal 2 x 1085: in a dip 173 px deep, a drop of 178 px ahead, a trunk beside him, the way on is 134 px down | base same spot: 0 (base rescues on this roll 10)
+child normal 15 x 867: in a dip 211 px deep, a drop of 173 px ahead | base same spot: 0 (base rescues on this roll 18)
+kid normal 35 x 874: a 84 px chest-high step ahead, in a dip 84 px deep, a trunk beside him | base same spot: 0 (base rescues on this roll 15)
+adult normal 35 x 875: a 84 px chest-high step ahead, in a dip 84 px deep | base same spot: 0 (base rescues on this roll 15)
+child normal 35 x 874: a 84 px chest-high step ahead, in a dip 84 px deep, a trunk beside him | base same spot: 0 (base rescues on this roll 15)
+child normal 37 x 1035: a 20 px waist-high step ahead, an open drop ahead, the way on is 160 px down | base same spot: 3 (base rescues on this roll 14)
+    base ('child', 1011, 'the way on is 135 px down')
+    base ('middle', 1031, 'the way on is 135 px down')
+    base ('expert', 1064, 'the way on is 135 px down')
+middle normal 35 x 875: a 84 px chest-high step ahead, in a dip 84 px deep | base same spot: 0 (base rescues on this roll 15)
+child easy 34 x 802: an open drop ahead, a trunk beside him, the way on is 141 px down | base same spot: 4 (base rescues on this roll 19)
+    base ('kid', 755, 'in a dip 287 px deep, the way on is 120 px down')
+    base ('adult', 755, 'in a dip 287 px deep, the way on is 120 px down')
+    base ('child', 779, 'in a dip 281 px deep, the way on is 126 px down')
