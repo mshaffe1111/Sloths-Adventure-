@@ -1,5 +1,50 @@
 # ENG-29 REPORT: 2-9's NEW 1 (the court's tempo) and NEW 2 (the drum you hear), built ahead (R-165.449)
 
+## ENG-29-e (box 1 hand-over, 6:22 PM ET Thu 11/26 by `date`): G3 and G2 DONE on t-eng-29-wip; G1, G6 and the landing NOT started
+
+### EXACT NEXT STEP (ENG-29-e box 2)
+Re-fetch t-eng-29-wip (head 232f2bcbe or this REPORT commit after it). Read the packet (origin/ccr-ea739a2f-dfcee4
+reference/packets/2026-11-26/ENG-29-e.md) and run ReadNotifications. Then, in order:
+1. **G1 the twist's doubled drum** (not started). Code today: engine.ts:642-647 `drumStep()` calls `sound.drumTick(this.drumBeat.b,
+   this.gameTime)` with no `doubled`; conductor.ts:563 drumTick defaults doubled false; src/audio/drum.ts:14 `drumHits(b, g0, g1,
+   doubled)` exists. Add ONE data field naming where the drum doubles (my recommendation: an x-span list on TempoSpec, `double?:
+   Array<{ x0; x1 }>`, laid from the brief's section mark so no x is in engine code; the engine passes `doubled` while Pokey's x is
+   inside a span, on BOTH settings). Toy: every hit within a frame of the half-beat inside the span; RED with the field ignored.
+2. **G6 the ONE-margin gate**: riverLay lockedDrops reports ONE's early/late PRESS margin; MEASURE it on 2-9's court liana at lock 0.92
+   on the real engine; send the measured numbers and the proposed bar to the lead and WAIT for the bar (it does not time out to my own).
+3. G4 only if BUILD-29-b's READY says Normal R160 fails.
+4. The gates ONCE on the frozen final candidate (packet list: tsc; the CI tool line; the suite in shards, KID_RUNS_59 named as the
+   inherited red R-165.473; lockall --check; tierBots 9/9; generalitycheck; drawcheck, the barge draws), land on t-eng-29 (no force),
+   the hash and what BUILD-29-b can lay to the lead AND BUILD-29-b (session_01FhBbYMuSvkYA34wbeNgMjW; box 1 session_01FhBbYJfBMkxGySiVVxdxoU
+   is archived).
+NOT YET RUN on G2/G3: lockall --check (G2 touches pipeline.ts castRows and fillSockets: a listed stage must not move), drawcheck (the
+barge), the full suite, the CI tool line. Targeted runs only, below.
+
+### What landed on t-eng-29-wip (each pushed and ls-remote-confirmed)
+- **G3 the barge's look** (396c89d96, 01cb165e7, 8d49caa27; the lead APPROVED the look from the stills): RiverRow.look 'barge'
+  (river.ts, riverLay.ts); w2-next#barge packed on row 1 of World 2's next sheet (3304x732, row 0's frames unmoved; the packer
+  reference/qa-reports/ENG-29/pack-w2-next.py repacks from the PNG cuts); riverArt.ts bargeBox/logPaint/drawRiverLog draw it with the
+  deck (the inventory's walk x 80-1050 at y 222, w2NextArt.ts BARGE_DECK, tied by w2NextArt.test.ts) as the log's whole top, the prow
+  ahead the way the river runs; no waterline band over it (the raft skips it too: named, reads as floating); platformPlan's code
+  fallback 'barge'; stageManifest loads 'w2-next' with any barge row. Catalog row + inventory re-emitted (catalog_master.py --emit),
+  inventory.test 217 cut pieces left. Stills at 2x: stills/barge-normal-0.85-upright.jpg, -0.35-sideways.jpg (a scratch 2-4 row in a
+  throwaway worktree, never committed; script barge-stills.mjs).
+  **The lead's barge rule**: riverFaults judges a barge row's wait by BARGE_BARS (2) bars of the stage's tempo on that setting, only with
+  a tempo, no liana over the river and a SAFE near stand (solid, not crumbling, not moving); else the 4 s log beat. Toys
+  gen2/bargeRow.test.ts each way; reds planted (bound ignored: both fail; safe-stand check ignored: the crumbling case fails).
+- **G2 the posted royal guard** (232f2bcbe): W2_POSTED_GUARD (w2Cast.ts, tag 'posted', 36x66, 2 hits, royal); pipeline.ts castRows
+  leaves 'posted' rows out of the bag; fillSockets lays one only for an enemy socket whose allow names it, on both settings, no threat,
+  never cut on Easy, fixed in the spacing; patch of none; facing the nearest river (postFacing); a socket with no clear ground fails the
+  roll by name ('posted: ...'). Enemy.post (enemyBrain.ts patrolWalk holds him: a patrol of none made him flip facing every frame) and
+  Enemy.uncounted (goals.ts goalCounts, engine.ts both enemiesDefeated++ sites). journalMet royal_guard ['2-9'] unchanged (met on clearing
+  2-9). Toys gen2/postedGuard.test.ts (5): laid/posted/facing/count with and without the field (toy world), 2-5 moves no foe with the row
+  added, postFacing, patrolWalk each way, the real engine's count each way (2-5's sleeper). Reds planted: goalCounts and engine count
+  ignored -> toys 1 and 5 fail. HONEST: the 2-5 no-move toy stays green with castRows' exclusion removed (2-5's sockets all name rows).
+- Targeted runs green: inventory, artUse, w2NextArt, bargeRow, riverLeft, riverTail, lianaRiver, postedGuard, goalsEasy, goalsGathers,
+  snapperCount, ringKillsCounted, enemyBrain*, predator* (114 pass); tsc clean.
+- LEARNED: (1) the inventory JSON is emitted from CATALOG-MASTER.csv (catalog_master.py --emit), never hand-edited; (2) a 2-9 posted
+  socket must sit 224 px clear of any flag on its piece (patchFor), so BUILD-29-b places it with that in mind.
+
 ## EXACT NEXT STEP (session 4, ENG-29-d: steps 0-3 DONE; a gates-only extension on the FROZEN candidate f569d3957, code unchanged since)
 Re-fetch t-eng-29-wip first. Everything after f569d3957 is the REPORT only. If ENG-29-d stopped before landing, in order, on a frozen worktree
 of f569d3957 (chattr, src/game/gen2/proven left writable):
