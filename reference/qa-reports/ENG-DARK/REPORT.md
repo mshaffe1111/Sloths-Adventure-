@@ -1,5 +1,48 @@
 # ENG-DARK REPORT (the dark + light ring as one gen2 brick; WORLD-3-PLAN F2; R-165.449)
-**EXACT NEXT STEP (ENG-DARK-w box 23 HAND-OVER, 4:58 PM ET by `date`; head on t-eng-dark-wip = this commit; code = c47fa1e34 =
+**EXACT NEXT STEP (ENG-DARK-x box 24 HAND-OVER, 5:25 PM ET by `date`; head on t-eng-dark-wip = this commit; CODE CANDIDATE c17 =
+2432cfde9 = c16 c47fa1e34 + lipEnd 2805f60c2 + the roll 15 lip toys; plant 47 in 2afdc3c04). #13 FIXED AT THE CAUSE (lipEnd; the lead:
+"right"). c17's x40: ON THE BAR (shrine 360/360, unlit 1, max loop 7, rescues 579, no new-spot rescue; box 24 (3) below); NO further engine or bot change is planned, so this x40 stands unless (i)/(ii) change code. #12 RULED (the lead, box 24): the plant lost its live case (R-165.432; towerRoute.ts dropTo's walledEnd
+sends roll 11's way on off 71's left end, a right read): (i) THE SCAN IS RUN (scan-seamByFacing-2432cfde-lane1/-lane2.jsonl, instrumented wtS, not a verdict): 3 rows go over one rim 8+ times with the plant on (adult Normal 29: 12; kid Normal 29: 11; expert Normal 26: 8), and on c17 unplanted each is loop 1, unlit 0. So BOX 25 RE-POINTS the seamByFacing toy pair (darkBots.test seam11) to ADULT NORMAL 29 with CAST_BOTS.adult.normal (the scan's bot, not FT_ADULT; check both reads on a frozen tree): GREEN shrine, no rim gone over again and again (loop < 6); RED (seamByFacing) worst rim >= 8, the bar unchanged; the note names R-165.432 and why roll 11 lost the case (towerRoute.ts dropTo walledEnd at 71's right end, a right read). This is a TEST change only: no x40 re-run. (ii) not needed now; had no row gone 8+, KEEP the guard with a
+hand-built seam toy (box 22's SHAPE way, darkBots.test shapeRead's pattern: in one onFrame read set sim.platforms to roll 11's seam
+71 355-591 at Y, 180 604-784 at Y-13, 148 241-604 and 72 604-817 at Y+147, the way on along 71, down the gap at ~597 and out past 784
+on 72; call downEnd({x: 450, y: Y}) facing left: +1 unplanted, -1 with seamByFacing; restore platforms and pts), and re-point the
+plant's toy pair to it (named "R-165.432" in its note). BOX 25 FIRST: ReadNotifications; npm ci --legacy-peer-deps + unshallow fetch
+with run_in_background; frozen trees (git worktree add --detach, node_modules symlinked). Then (c) darkBots.test WHOLE + dark.test +
+castBots.test on a frozen head (2 at a time), `python3 reference/qa-reports/ENG-DARK/planted-faults.py <frozen>` all 47 CAUGHT (43-47
+and #18's included; none NO TEST or BASE RED); (e) the gates ONCE (tierBots 9/9, the CI tool line on a FULL tree, suite shards
+run_in_background + timeout 7200000), LAND on t-eng-w3 (88592a9c4; merge, no force, conflicts named), dark/darkBots/castBots + lockall
+on the merged head, push, the hash to the lead AND ENG-SPORE (session_01FhBbYM575JR77t1icVfPJ4). LANDED by 8:30 PM ET; word at 8:00
+if it slips; HARD STOP 9:30 PM ET.**
+**Box 24 (ENG-DARK-x) DONE:** (0) THE LEAD'S FACT CHECK: confirmed: c13..c16 src/tools differ only in firsttimer.ts (wayRises, the lip
+hold, placeAt's put), dark.ts (RimWatch.put) and the two tests; c15 and c16 give the identical expert N 15 run (203.1 s, 1 rescue).
+(1) #13 TO THE LINE: no stranding. The expert reaches the shrine on c16 at 203.1 s, over the toy's 200 s cap (c13 188.5 s, 3 rescues).
+The time is lost at a stall OLDER than c13: going down, at the lip of 367-719 (y 7063), his middle at 363-366 sits within 8 px of the way
+on's first point under him (362, 7104). firsttimer.ts downEnd `const d = dx > 8 ? 1 : dx < -8 ? -1 : 0` read it straight under him and
+dropped the steer, so he was turned back, and 4 px on it named the end again: to and fro 22 s (c16; c13: 20 s to a rescue). Proven with
+stk.mts frames and an instrumented copy (wtI, [D]/[E] logs; never a verdict). All 4 stalls of that run were this lip. FIX AT THE CAUSE
+(2805f60c2, lipEnd): a point past an END of his wood is off that end (the nearer one) however near his middle; a point at a climb vine
+down is still straight under. Expert N 15 on c17: shrine 134.7 s, 0 rescues, 0 stalls. TOY EACH WAY (2432cfde9): GREEN "at the lip over
+the way on's first point, he steps off that end" (at most 3 s at 367's lip, no stall there); RED "the lip read as straight under him
+(noLipEnd)" (8+ s). Frozen 2432cfde9, the 4 roll 15 toys (#13, noOpenEnd's RED, both lip toys): 4/4. Plant 47 (lipEnd off) added.
+(2) #12 TO THE LINE: tools/inspect/towerRoute.ts dropTo's open() (walledEnd), b32b0f5ee. The plant's RED holds on b32b0f5ee^ (worst rim
+11) and on b32b0f5ee with ONLY that route line undone (worst rim 11, the identical run); tower.ts's lay changes play no part. On roll
+11, 71's right end (591) reads walled by 180 (604-784, 13 px over it). He walks onto 180 rather than stepping off there, so the read is
+RIGHT, not a defect. The way on now drops off 71's left end and never goes through the seam (on c17 no frame passes x 560-640 there).
+The guard still fires on roll 11 (y 10932, 5846), and with the plant on the worst rim is 1. The plant has LOST ITS LIVE CASE
+(R-165.432); the code is not broken. THE LEAD RULED: (i) a plant scan on c17 with seamByFacing forced on, all 80 rows (wtS, instrumented,
+not a verdict): a row over one rim 8+ times re-points the toy pair to it, the bar unchanged (worst rim >= 8); (ii) if none, KEEP the
+guard with a hand-built seam toy (box 22's SHAPE way: roll 11's seam pieces with the way on set through the seam, RED with the plant),
+because walledEnd makes the shape rarer, not impossible.
+(3) c17's ONE x40 (frozen 2432cfde9; cast-3-1-x40-2432cfde-lane1/-lane2.jsonl, x40-verdict-2432cfde.txt, kinds-2432cfde-rows.txt): ON THE
+BAR and better than c16: shrine 360/360; unlit 1 (c16 5; child Easy 28 x 744, on c16 too); max loop 7 (middle N 26, as c16); rescues
+579 (c16 630, base 1393). Every row with a rescue kind the base lacks has base rescues at the same spot (child E 7 x 607: 5; middle
+E 1 x 1076: 2; middle E 37 x 1067: 2; expert N 29 x 642: 8): no new spot. c16's one new-spot row (child N 15 x 856, R-165.482) is GONE
+on c17. gaveUp 2 (c16 1): not on the bar; named here.
+**NOT DONE (box 25):** the seam toy re-point to adult N 29; NOT YET RUN on a frozen c17: darkBots.test WHOLE (#18's two toys from
+c47fa1e34 included, never run frozen), dark.test, castBots.test (lipEnd is a bot change), the 47 plants; the gates; the landing.
+Lessons applied: D115 (frozen trees for every verdict, instrumented copies wtI/wtS apart), D119, D128 (stamps from `date`), D134
+(pushed + ls-remote before the hand-over), D138 (the hand-over ends new work), D140 (ReadNotifications at each step).
+**(was) EXACT NEXT STEP (ENG-DARK-w box 23 HAND-OVER, 4:58 PM ET by `date`; head on t-eng-dark-wip = this commit; code = c47fa1e34 =
 c16 e5c098072 + the #18 test fix). c16's x40 is ON THE BAR and the lead ruled it so (shrine 360/360, unlit 5, max loop 7; child N 15 x 856 = R-165.482, not a
 stop). Kind A = R-165.481. STEP (2) IS NOT GREEN: on frozen c16 dark.test 20/20, castBots.test 16/16, darkBots.test 25/28 RED #12 #13 #18.
 #18 (the noTurnRoom plant's RED, c16's: the lip hold stops the walk-off it plants): FIXED per the lead's ruling in c47fa1e34 (the plant
