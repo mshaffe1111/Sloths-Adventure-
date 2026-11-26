@@ -328,3 +328,36 @@ test("the turn pressed at the rim's very edge (noTurnRoom, the plant): the press
   assert.ok(dark.edgeTurns.some((t) => t.includes(at)), `a turn pressed at the edge of the rim at ${at}: ${JSON.stringify(dark.edgeTurns)}`);
   assert.ok(dark.unlit.some((u) => u.includes(at)), `the rim at ${at} gone over dark: ${JSON.stringify(dark.unlit.slice(0, 3))}`);
 });
+
+/** (ENG-DARK box 17's rule on the real row, box 18's toys) the drafted 3-1 Normal 22: turn 17's vine (x 833) stops on catch #193
+ *  (824-1004, y 8384) whose LEFT end is walled (log #51, 427-807 at y 8311, 90 px thick, 17 px from it: tower.ts walledEnd). The way on
+ *  steps off the open RIGHT end (x > 1004); stepping off the walled end, the kid, the middle and the adult stood at it turning until
+ *  rescued. Planted: towerRoute's dropTo without walledEnd (the route); walledEnd false (lay, verdict, route and the bot's open ends) */
+async function n22() {
+  if (readied !== DRAFT) readyDraft(DRAFT);
+  const { generateAllLevels } = await import('../worldsData.ts');
+  const { generateStage, setLayoutVariant } = await import('../stageGenerator.ts');
+  setLayoutVariant(22);
+  const st = generateStage({ ...generateAllLevels().find((c) => c.id === DRAFT && !c.secret)!, unlocked: true }, 'normal');
+  setLayoutVariant(null);
+  return st;
+}
+
+test("the way down off a walled catch goes off its OPEN end: Normal roll 22's catch under the vine at x 833 is left by its right end (GREEN; planted: dropTo without walledEnd)", async () => {
+  const st = await n22();
+  const { towerCorners } = await import('../../../tools/inspect/towerRoute.ts');
+  const c = towerCorners(st as never, { x: st.spawnX, y: st.spawnY })!;
+  const k = c.findIndex((q) => Math.abs(q.x - 833) <= 2 && Math.abs(q.y - 8384) <= 2);
+  assert.ok(k >= 0, `the route comes down the vine onto the catch (833, 8384): ${JSON.stringify(c.filter((q) => q.y > 8200 && q.y < 8700))}`);
+  const off = c.slice(k + 1).find((q) => q.y > 8384 + 2)!;
+  assert.ok(off && off.x > 1004, `the route steps off the catch's open right end (x > 1004), not its walled left one: ${JSON.stringify(c.slice(k, k + 4))}`);
+});
+
+test("no rescue at the walled catch: the kid on Normal roll 22 passes the turn at x 833 (y 8311-8658) by himself (GREEN; planted: walledEnd false)", async () => {
+  const { firstTimer } = await import('../../../tools/inspect/firsttimer.ts');
+  const { CAST_BOTS } = await import('../../../tools/inspect/castBots.ts');
+  const r = firstTimer(DRAFT, 22, CAST_BOTS.kid.normal!, { cap: 135 });
+  const at = r.stuck.filter((s) => s.rescued && s.y >= 8311 && s.y <= 8658);
+  assert.deepEqual(at.map((s) => `${s.x},${s.y} ${s.what}`), [], 'no rescue at the walled catch');
+  assert.ok(!r.stuck.some((s) => s.y >= 8311 && s.y <= 8658 && s.t + s.dur >= 134), `not still standing at it when the cap ends (${JSON.stringify(r.stuck.slice(-2))})`);
+});

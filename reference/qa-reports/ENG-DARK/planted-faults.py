@@ -106,6 +106,20 @@ PLANTS = [
     ("the dark stop's turn room off: the turn pressed at the rim's very edge (glowWait)", 'tools/inspect/firsttimer.ts',
      'if (!this.who.noTurnRoom && stop.turn !== 1) {', 'if (false) {', "the dark stop's turn is never pressed at the rim's very edge",
      'src/game/gen2/darkBots.test.ts'),
+    # (ENG-DARK-r, box 18) the wall slot (child Normal 25's 1850 px fall) and box 17's walled-end rule, each planted back
+    ('offEnd as it was: an end 14 px in from the wall read as no end', 'src/game/gen2/tower.ts',
+     "  return dir < 0 ? (end <= 20 ? null : Math.max(20, end - 24)) : end >= width - 20 ? null : Math.min(width - 20, end + 24);",
+     "  const x = end + dir * 24; return x < 20 || x > width - 20 ? null : x;", 'offEnd: an end 14 px in from the wall', 'src/game/gen2/tower.test.ts'),
+    ("handOn's walledEnd filter removed (a walled end read as a way off)", 'src/game/gen2/tower.ts',
+     "filter((x, i): x is number => x !== null && !walledEnd(platforms, i ? r.b : r.a, i ? 1 : -1, r.y))",
+     "filter((x): x is number => x !== null)", 'a walled end is no way off: a catch', 'src/game/gen2/tower.test.ts'),
+    ("towerRoute's dropTo steps off a walled end (open without walledEnd)", 'tools/inspect/towerRoute.ts',
+     "const open = (d: -1 | 1) => (walledEnd(wood as Parameters<typeof walledEnd>[0], d < 0 ? lo : hi, d, at.y) ? undefined : underAt(d));",
+     "const open = (d: -1 | 1) => underAt(d);", 'the way down off a walled catch goes off its OPEN end', 'src/game/gen2/darkBots.test.ts'),
+    ('walledEnd false (lay, verdict and route read no walled end)', 'src/game/gen2/tower.ts',
+     "  const a = dir < 0 ? end - WALL_HALF : end, b = dir < 0 ? end : end + WALL_HALF;",
+     "  return false;\n  const a = dir < 0 ? end - WALL_HALF : end, b = dir < 0 ? end : end + WALL_HALF;", 'no rescue at the walled catch', 'src/game/gen2/darkBots.test.ts'),
+
 ]
 # (ENG-DARK box 13) ONLY='a|b': run only the plants whose name holds one of these (a re-anchor's check; the full proof runs them all)
 import os

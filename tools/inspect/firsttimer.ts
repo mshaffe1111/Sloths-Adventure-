@@ -79,7 +79,6 @@ import { bucketAngle } from '../../src/game/wheel.ts';
 import { WHEEL_FLOWN } from '../../src/game/gen2/wheelFlights.data.ts';
 import { flownKey } from '../../src/game/gen2/wheelLay.ts';
 import { DARK_AHEAD, darkRims, litAhead, RimWatch, runOffRims, type DarkRim, type RimCrossing } from '../../src/game/gen2/dark.ts';
-import { walledEnd } from '../../src/game/gen2/tower.ts';
 /** the most times he went over one rim in the dark (climbs not counted; FTRun.dark.loop): a walk back and forth over one rim (ENG-DARK box 12,
  *  the seam toy's record: since RimWatch reads a grounded step over a seam as on the piece, the loop shows here, lit or not) */
 const rimLoop = (cs: readonly RimCrossing[]) => Math.max(0, ...[...cs.filter((c) => !c.climbed).reduce((m, c) => m.set(c.rim, (m.get(c.rim) ?? 0) + 1), new Map<DarkRim, number>()).values()]);
@@ -1843,9 +1842,7 @@ export class FirstTimerRun {
     const wayOn = this.who.noOpenEnd ? null : this.downPt(p);
     if (wayOn && wayOn.x >= lo - 8 && wayOn.x <= hi + 8) {
       const walls = (this.e as unknown as { walls?: { minX: number; maxX: number } }).walls;
-      // (nor wood beside the end whose body is in his: gen2 tower.ts walledEnd, ENG-DARK box 17)
-      const wood = this.sim.platforms.filter((q) => !q.broken);
-      const openL = (!walls || lo - LAND_HALF > walls.minX) && !walledEnd(wood, lo, -1, p.y), openR = (!walls || hi + LAND_HALF < walls.maxX) && !walledEnd(wood, hi, 1, p.y);
+      const openL = !walls || lo - LAND_HALF > walls.minX, openR = !walls || hi + LAND_HALF < walls.maxX;
       if (openL && openR) return wayOn.x - lo <= hi - wayOn.x ? -1 : 1;
       if (openL) return -1;
       if (openR) return 1;

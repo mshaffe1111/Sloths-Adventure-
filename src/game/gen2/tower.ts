@@ -386,8 +386,9 @@ export function towerCatches(flow: 'up' | 'down', platforms: readonly Platform[]
     }
     const v = climbs.find((q) => a + 6 < q.x && b - 6 > q.x && y > q.topY + 10 && y < q.bottomY - 10);
     if (!v) return false;
-    // (a walled end is no way off it: walledEnd)
-    return ![offEnd(a, -1, width), offEnd(b, 1, width)].filter((x, i): x is number => x !== null && !walledEnd([...all, box], i ? b : a, i ? 1 : -1, y)).some((x) => { const l = catchUnder([...all, box], x, y, 100000); return l !== undefined && l <= v.bottomY + 2; });
+    // (box 17 read walledEnd here too; no drafted 3-1 lay of 80 changed without it, ENG-DARK box 18: taken out, the verdict's handOn
+    //  reads it)
+    return ![offEnd(a, -1, width), offEnd(b, 1, width)].filter((x): x is number => x !== null).some((x) => { const l = catchUnder([...all, box], x, y, 100000); return l !== undefined && l <= v.bottomY + 2; });
   };
   // (going down, no slot beside it: a bough within a step of the wood beside it (SLOT.step px in height) lies flush with it, a
   //  walkable crack from it (SLOT.walk) or his body and a margin clear of it (SLOT.clear). A gap about his body's width between two
