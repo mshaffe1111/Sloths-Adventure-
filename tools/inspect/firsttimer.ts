@@ -4579,7 +4579,9 @@ export class FirstTimerRun {
     //  steers nothing). Judged at fixed lags 0.03 and 0.1 s at his speed then, while decide drew 0.167-0.187 s and a run from a stand
     //  sped up, the press on its way walked him off a pad's front into the water, 2-2 kid Normal 15 (#116) and 40 (#113, #112). Where
     //  that run has him off the front before the press comes, the flight leaves the lip: he stands while it comes (pending.still), his
-    //  thumb's late lift-off first (the release thumbify draws next, on this frame, when it arms one), then the engine's brake)
+    //  thumb's late lift-off first (the release thumbify draws next, on this frame, when it arms one), then the engine's brake; judged
+    //  as that stood hop, never as the run's: a stand at the lip decided at once for every run that overshot (C5) hopped short of
+    //  #114 from 49 px back, 2-2 kid Normal 27)
     const f = this.r.fork();
     const off = hopAim(gauss(f, who.thumb)).off;
     const frames = Math.round(off / DT);
@@ -4610,7 +4612,10 @@ export class FirstTimerRun {
     // (a pond hop is a single, its hold his own: every water in a pond is under a held single's reach (padFaults PAD_FAIR.reach). The
     // plain edge's plan read the next floor at his height, a bank 900 px on, and the spot memory then kept the double a failed double
     // had left: a middle bot fell 8 times at one 110 px gap, 2-2 seed 6 (BUILD-22). His own second press stays, at his share (startJump))
-    if (lands || lead < 6 || (!onRun && dir * p.vx > 1) || (shiver && hopLandsOn(next, () => next!.x, p.x, p.y, dir, who.hold[1] + who.hold[0], t, p.vx))) {
+    // (at the very edge he presses whatever: the last frame the flight leaves from the pad, his run's front or his stand's lip, a frame's
+    //  run on from where he is (at 6 px from his feet the run at 285 px/s carried him past it before the next frame))
+    const last = lead < 6 + Math.max(0, dir * p.vx) * DT;
+    if (lands || last || (shiver && hopLandsOn(next, () => next!.x, p.x, p.y, dir, who.hold[1] + who.hold[0], t, p.vx))) {
       const out = this.decide(dir, 'single', false, onRun ? go : {});
       if (!onRun && this.pending) this.pending.still = true;
       return out;
