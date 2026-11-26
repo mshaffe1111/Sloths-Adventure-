@@ -1,6 +1,37 @@
 # LAND-26: 2-6 back on release 4's line (release 5), beat A's soil block (R-165.451)
 
-## EXACT NEXT STEP (session 2 hand-over, 3:15 PM ET Thu 11-26; branch t-land-26, head 7f9abaa55)
+## EXACT NEXT STEP (session 3 LAND-26-c hand-over, 4:12 PM ET Thu 11-26; branch t-land-26)
+The lead's rulings (session 3's brief): W stands (R-165.471; the residual, a thin-piece pocket with no walls, kid Easy 36 walks off the floor's far
+end: **R-165.476 (proposed, the lead to confirm) KNOWN, owner a lay packet after release 5** (pitSteps assumes earth walls under thin pieces;
+every world)). Code head = the commit before this REPORT commit. Done in session 3 (all pushed):
+- **R-165.475 (proposed number) rideWheel board judge** (tools/inspect/firsttimer.ts wheelRide jetty branch + hopBoards; src/game/gen2/wheelFlights.ts
+  `BOARD_BACK = 30`, board() uses it, data unchanged; switch SKILLS.boardWatch). Trace: data/rideWheel-top-child-normal-v2-7f9abaa55.txt (child
+  stops 17 px short of the lip at t 130.10, hops at 130.17 without looking, in b0 at off +67 at vx 285 at 130.70, off its end; 2 scrambles).
+  Only when stopped nearer the lip than BOARD_BACK he hops when his own hop lands inside a bucket (every lag/hold; engine.ts onFloor's catch);
+  waits up to one bucket period. Frozen tree 27196d517: rowWheels.test + wheelRide.test + wheelFlights.test 7/7 GREEN; 2-6 child N v2 top sc 2->0.
+- **R-165.474 stalk** (src/game/terrain.ts stalkFoot + renderWorldObjects' allPlatforms; engine.ts passes this.platforms): data/stalkfix/ 2x
+  upright before|after, 2-6 (beat 10's cap x741), 9-2 (x3506, x1804), 10-4 (x2313, x2017): the line is gone in every after frame. Sent to the lead.
+The next session, in this order:
+1. ReadNotifications (the lead's word on R-165.475/476 and the stills). `git fetch origin t-land-26 && git checkout -B t-land-26 origin/t-land-26`;
+   npm ci --legacy-peer-deps (run_in_background). Frozen tree per run (worktree --detach; link node_modules; chattr -R +i src tools; chattr -i
+   src/game/gen2/proven).
+2. The planted toy EACH WAY for boardWatch (the lead's ask): tools/boardWatchSearch.mts.txt (REPO=<frozen tree> npx tsx it; ~10 min,
+   run_in_background) lists toy runs (every toy wheel turns LEFT) where boardWatch on/off differ; partial list in data/boardWatch-search-partial-b1aa9639a.txt
+   (teach middle N v2, middle E v2 differ only in seconds). Need: a way -1 case with off = a scramble, on = none, and way +1 = 2-6's row child N v2
+   seed 1 top wheel (off 2 scrambles, on 0). Write tools/inspect/wheelBoard.test.ts (GREEN on, PLANTED off RED, both ways) and ADD it to the CI
+   tool line (.github/workflows/gates.yml line 157; ciTests.test.ts fails otherwise). If no way -1 case exists on the toys, a toy row turning
+   right is not available: say so to the lead with the search rows, do not invent one.
+3. Rule 28: castBots --proven 2-6 (seeds 1-40, both settings) on the final head vs data/cast-*.txt (session 2's W rows): every moved row traced
+   (boardWatch moves only runs that stop < 30 px from a jetty lip) or the change narrowed.
+4. Packet step 3 gates ONCE on the final head (session 3's brief): the CI tool line (EVERY candidate, D141) and the suite in 3 shards
+   (run_in_background, timeout 7200000); paintcheck 2-6 + the sweep (depthSteps); lockall (2-6's named moves only; 2-7 untouched: show it);
+   castBots --proven 2-6; seedlist 2-6 --check (decides seed 36); registrycheck; drawcheck (after the stalk); clipcheck; tierBots 9/9;
+   timecheck; teachFirstScan. Inherited red, not ours: firstTimerBot.test.ts:177 KID_RUNS_59 (R-165.473). Then the 2-6 rows near a pad or a
+   stand (ENG-THUMB's family) for Friday's integration.
+5. Land on t-land-26 (no force); hash + one line per gate to the lead. Never merge to main or a release branch. Lead's times: landed by 8:00 PM
+   ET, word at 7:30 if it slips, HARD STOP 9:00 PM ET.
+
+## Session 2's EXACT NEXT STEP (kept for history; session 2 hand-over, 3:15 PM ET Thu 11-26; branch t-land-26, head 7f9abaa55)
 Code head **7f9abaa55** (pushed; session 1's 42e3b30fc plus session 2's candidate). **The lead's W/P ruling on 2-6's porch gaps is OPEN**
 (R-165.471; my messages to the lead carry the data). Under W (the head as pushed): 2-6's own tests 159/160 expected, ONE red =
 rowWheels 'rideWheel ON' child Normal v2 2 scrambles on the top wheel (the bot's boarding judge after a timing shift; traced below;
@@ -151,7 +182,12 @@ The next session, in this order:
   never by eye alone; that number is also the seed of the paint gate D136 asks for.
 - A packet's 'porch 5' is an id on another tree: a spot is named by its picture or its built geometry, never an id (rule 27's shape).
 
+- (session 3) A bot judge that leans on a flown table holds only where the table was flown: name the flight's start (BOARD_BACK) and judge
+  the bot's own hop everywhere else. A predictor of a landing uses the engine's own catch (onFloor: 14 px), never a strict crossing.
+- (session 3) A draw fix is checked on the screen before and after: the first stalk cut changed nothing because the painted-ground path
+  hands the draw only the unpainted pieces.
+
 ## Lessons applied
 D115 (frozen, chattr'd worktree for every run), D119 (no heredoc in a commit chain), D128 (stamps from `date`), D134 (pushed and
 ls-remote-confirmed before the hand-over), D135 (both reds named for an R-number), D138 (a hand-over ends new work), D140 (notifications
-read at each step), D141 (the CI line named as not yet run on this candidate).
+read at each step), D141 (the CI line named as not yet run on this candidate). Session 3: D115, D119, D128, D134, D138, D140, D141.
