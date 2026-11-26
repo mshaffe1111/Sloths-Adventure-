@@ -416,13 +416,14 @@ test("a dark stop at an end that is two rims waits for the rim not yet lit: Norm
  *  right to a 97 px dip (289-386, 70 px deep); the route runs level across it; over its lip lies the catch of the storey's end above
  *  (284-464, y 8501, 188 px over his floor), the shape of every storey of the way down (622 such catches over the 80 rolls). Read as a
  *  step up (stepUp), the bough got a double: he stood his time, the standing double's second press came after the flick's hop had
- *  landed, he was steered back and went back up the vine, 8.7 s at the lip. The read at the lip, and the row to 180 s */
+ *  landed, he was steered back and went back up the vine, 8.7 s at the lip. The read at the lip (his first stand there), and the row to
+ *  240 s (with the read fixed he reaches the lip later, about 195 s: the bot's draws run differently from the first read on) */
 async function lip19(noLevelRead: boolean) {
   if (readied !== DRAFT) readyDraft(DRAFT);
   const { firstTimer } = await import('../../../tools/inspect/firsttimer.ts');
   const { CAST_BOTS } = await import('../../../tools/inspect/castBots.ts');
   const reads: string[] = [];
-  const r = firstTimer(DRAFT, 19, { ...CAST_BOTS.child.normal!, noLevelRead }, { cap: 180, dotSetting: true, onFrame(sim, b) {
+  const r = firstTimer(DRAFT, 19, { ...CAST_BOTS.child.normal!, noLevelRead }, { cap: 240, dotSetting: true, onFrame(sim, b) {
     const p = sim.p;
     if (reads.length || !p.grounded || Math.abs(p.y - 8689) > 2 || p.x < 230 || p.x > 289) return;
     const bot = b as unknown as { jumpFor(p: unknown, dir: number, here: unknown): string; floorAt(x: number, y: number, d: number): unknown };
