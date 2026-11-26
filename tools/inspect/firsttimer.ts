@@ -78,7 +78,8 @@ import type { FollowPlay } from '../../src/game/followPlay.ts';
 import { bucketAngle } from '../../src/game/wheel.ts';
 import { WHEEL_FLOWN } from '../../src/game/gen2/wheelFlights.data.ts';
 import { flownKey } from '../../src/game/gen2/wheelLay.ts';
-import { DARK_AHEAD, darkRims, litAhead, RimWatch, runOffRims, type DarkRim, type RimCrossing } from '../../src/game/gen2/dark.ts';
+import { DARK_AHEAD, darkRims, lightLitAt, litAhead, RimWatch, rimAir, runOffRims, type DarkRim, type RimCrossing } from '../../src/game/gen2/dark.ts';
+import { clockLitLeft } from '../../src/game/zones.ts';
 /** the most times he went over one rim in the dark (climbs not counted; FTRun.dark.loop): a walk back and forth over one rim (ENG-DARK box 12,
  *  the seam toy's record: since RimWatch reads a grounded step over a seam as on the piece, the loop shows here, lit or not) */
 const rimLoop = (cs: readonly RimCrossing[]) => Math.max(0, ...[...cs.filter((c) => !c.climbed).reduce((m, c) => m.set(c.rim, (m.get(c.rim) ?? 0) + 1), new Map<DarkRim, number>()).values()]);
@@ -132,6 +133,9 @@ const SNAP_THUMB = 0.1;
  *  a light that has not woken this many s into his stop he gives up on (GLOW_STILL 0.7 s + the wake's travel is well under it) */
 const GLOW_NEAR = 90;
 const GLOW_GIVEUP = 4;
+/** a clocked light's window must stay open this long past the way over (s): the step from his stand to the rim (3-1.md: from a stand
+ *  30 px from the rim) */
+const CLOCK_SPARE = 0.25;
 /** ...and the stop's turn to face the rim is pressed only this far in from it: a turn press his thumb holds TURN_FRAMES frames from a
  *  standstill, and the slide after it (traced on the 3-1 draft, middle Normal roll 16: pressed 2.4 px from rim x 920, the press turned
  *  him AND carried him off it). Nearer, he steps back first (the lead's ruling 4, 11-25) */
@@ -3511,9 +3515,10 @@ export class FirstTimerRun {
    *  that rim's light is lit DARK_AHEAD, ENG-DARK box 14; never a jump's stop, glowJump) */
   private glowRimsOf(): DarkRim[] {
     const st = this.sim.stage as Parameters<typeof darkRims>[0];
-    const own = darkRims(st).filter((r) => r.light?.sleep && r.light.id !== undefined);
+    // (a clocked light, a spore puff (ADR-004): he stands for it as for a sleeping one, until its window has been lit long enough)
+    const own = darkRims(st).filter((r) => (r.light?.sleep && r.light.id !== undefined) || !!r.light?.clock);
     // (an edge with its own rim keeps its run-off rim too: he waits there for both lights, ENG-DARK box 16)
-    return own.concat(runOffRims(st, this.who.setting).filter((r) => r.light?.id !== undefined && !own.some((o) => o.piece === r.piece && o.dir === r.dir && o.light === r.light)));
+    return own.concat(runOffRims(st, this.who.setting).filter((r) => (r.light?.id !== undefined || !!r.light?.clock) && !own.some((o) => o.piece === r.piece && o.dir === r.dir && o.light === r.light)));
   }
   private glowWait(dir: -1 | 0 | 1): Pad | null {
     if (this.who.noGlowWait) return null;
@@ -3530,9 +3535,10 @@ export class FirstTimerRun {
     if (this.glowGaveUp.size && p.grounded) for (const r of this.glowGaveUp) if (!held(r)) this.glowGaveUp.delete(r);
     if (this.glowStop) {
       const stop = this.glowStop, { rim, since } = stop;
-      const woke = e.glowWake.get(rim.light!.id!);
-      if (held(rim) && !(woke !== undefined && e.gameTime >= woke + ahead + this.who.stopReact)) {
-        if (e.gameTime - since <= GLOW_GIVEUP) {
+      if (held(rim) && !this.glowGo(rim, ahead + this.who.stopReact)) {
+        // (a clocked light comes on by itself: he waits for it, however long (its light off, he waits forever: a stage RED, never a blind
+        //  drop); the give-up is a sleeping light's)
+        if (rim.light!.clock || e.gameTime - since <= GLOW_GIVEUP) {
           if (p.facing !== rim.dir && stop.turn !== 2 && !this.who.noGlowTurn) {
             // (never a turn press within its own slide of the edge: he steps back from the rim first (no further than the piece's
             //  middle), stands still, then turns: the press that turns him also moves him)
@@ -3559,7 +3565,7 @@ export class FirstTimerRun {
     if (dir === 0) return null;
     // (the first rim there whose light is not yet lit DARK_AHEAD: an edge can hold two (its own landing's and a run-off's), and taking
     //  the first alone, its light lit, he ran off without the second's, ENG-DARK box 16)
-    const unlit = (r: DarkRim) => { const w = e.glowWake.get(r.light!.id!); return !(w !== undefined && e.gameTime >= w + ahead); };
+    const unlit = (r: DarkRim) => !this.glowGo(r, ahead);
     const rim = this.glowRims.find((r) => r.dir === dir && on(r) && !this.glowGaveUp.has(r) && (r.x - p.x) * r.dir >= 0 && (r.x - p.x) * r.dir <= GLOW_NEAR && unlit(r));
     if (!rim) return null;
     this.glowStop = { rim, since: e.gameTime };
@@ -3596,10 +3602,20 @@ export class FirstTimerRun {
     const rim = this.glowRims.find((r) => !r.runOff && r.dir === dir && !this.glowGaveUp.has(r) && (lip(r) || (p.x >= r.piece.x && p.x <= r.piece.x + r.piece.width
       && Math.abs(p.y - r.piece.y) <= 4 && (r.x - p.x) * r.dir >= 0)) && (r.x - p.x) * r.dir <= GLOW_JUMP);
     if (!rim) return null;
-    const woke = e.glowWake.get(rim.light!.id!);
-    if (woke !== undefined && e.gameTime >= woke + DARK_AHEAD[this.who.setting]) return null;
+    if (this.glowGo(rim, DARK_AHEAD[this.who.setting])) return null;
     this.glowStop = { rim, since: e.gameTime };
     return {};
+  }
+
+  /** may he go over this dark rim now? Its landing's light lit at least `lead` s (the engine's glowWake for a sleeping light; a clocked
+   *  one's current window, ADR-004), and a clocked light still lit for the way over (gen2/dark.ts rimAir) and the step to the rim
+   *  (CLOCK_SPARE): he never drops into a window about to close (3-1.md: a press that sees the landing lit lands in light) */
+  private glowGo(r: DarkRim, lead: number): boolean {
+    const e = this.e as unknown as { gameTime: number; glowWake: Map<number, number> };
+    const l = r.light!;
+    const at = lightLitAt(l, e.gameTime, (q) => e.glowWake.get(q.id ?? -1));
+    if (at === undefined || e.gameTime < at + lead) return false;
+    return !l.clock || clockLitLeft(l.clock, e.gameTime) >= rimAir(r) + CLOCK_SPARE;
   }
 
   /**

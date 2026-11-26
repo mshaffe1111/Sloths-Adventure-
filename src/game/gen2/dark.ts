@@ -17,7 +17,8 @@
  * No stage, seed or x lives here: every fact is the laid stage's.
  */
 import type { Zone } from '../zones.ts';
-import { GLOW_REACH, GLOW_STILL, glowReaches, keepsClear } from '../zones.ts';
+import { clockLitAt, GLOW_REACH, GLOW_STILL, glowReaches, keepsClear } from '../zones.ts';
+import { puffAt, puffLight } from './spore.ts';
 import type { Platform } from '../types.ts';
 import { LAND_HALF, PHYS } from '../physics.ts';
 import { PAD_FAIR } from './rideLay.ts';
@@ -115,11 +116,19 @@ function stepOnto(platforms: readonly Platform[], from: Platform, dir: -1 | 1): 
 
 /** how far out (px) a RUN off a rim carries him before he has fallen `drop` px: `frac` of a full run (PHYS.maxRun) held, gravDown to
  *  maxFall */
-const runFly = (drop: number, frac = 1) => {
-  const cap = PHYS.maxFall ** 2 / (2 * PHYS.gravDown);
-  const t = drop <= cap ? Math.sqrt((2 * drop) / PHYS.gravDown) : PHYS.maxFall / PHYS.gravDown + (drop - cap) / PHYS.maxFall;
-  return PHYS.maxRun * frac * t;
+const runFly = (drop: number, frac = 1) => PHYS.maxRun * frac * fallTime(drop);
+/** seconds to fall `drop` px from rest (gravDown to maxFall) */
+const fallTime = (drop: number) => {
+  const d = Math.max(0, drop), cap = PHYS.maxFall ** 2 / (2 * PHYS.gravDown);
+  return d <= cap ? Math.sqrt((2 * d) / PHYS.gravDown) : PHYS.maxFall / PHYS.gravDown + (d - cap) / PHYS.maxFall;
 };
+/** a rim's way over, in the air (s): a drop falls from the rim to the landing; a hop is a full jump's rise, then its fall to the landing */
+export const rimAir = (r: Pick<DarkRim, 'y' | 'land' | 'drop'>) =>
+  r.drop ? fallTime(r.land.y - r.y) : PHYS.jumpV / PHYS.gravUp + fallTime(r.land.y - r.y + PHYS.jumpV ** 2 / (2 * PHYS.gravUp));
+/** when a dark light was lit, as the watch reads it at game time t: a clocked light (ADR-004) its current window's start (undefined:
+ *  dark now), a sleeping one when it woke (`woke`, the engine's glowWake), any other always (-Infinity) */
+export const lightLitAt = (l: Light, t: number, woke: (l: Light) => number | undefined): number | undefined =>
+  l.clock ? clockLitAt(l.clock, t) : l.sleep ? woke(l) : -Infinity;
 /** the run speeds a RUN off is judged at, as fractions of a full run: he leaves an edge at any speed up to it, and the air steer slows or
  *  speeds him on the way down. Judged at full speed alone, the touchdowns between a step off and a full run went unread: the 3-1 x40 on
  *  a5e15a74d went over a sleeping rim 8 times, each one 0-35 px past a touchdown at 154-285 px/s (child Normal 22: off 106's end at
@@ -263,6 +272,9 @@ function glowZone(out: StageSink, a: { x: number; y: number }, b: { x: number; y
   // (the rims are read with a stand-in light that covers everything, so every rim's landing is found; then one glowworm over each landing)
   const probe: Zone = { ...z, lights: [{ x: 0, y: 0, r: 1e9 }] };
   let id = (out.extras[GLOW_ID] as number | undefined) ?? 1;
+  // (a spore puff in the dark is the light of the shelf it stands on: it glows over its warning and its cloud, a clocked light (ADR-004),
+  //  and the landing it lights takes no glowworm: the drop is made on the puff's light, 3-1.md 'A drop on a puff's light')
+  const puffs = out.zones.filter((q) => q.kind === 'spore' && q.x1 >= z.x0 && q.x0 <= z.x1 && q.baseY >= z.top && q.baseY <= z.bottom);
   for (const r of darkRims({ platforms: out.platforms, zones: [probe] })) {
     // (over the landing, but never deeper under the rim than a stop on it reaches (GLOW_REACH.down): a wall-side rim's long drop keeps
     //  its light where its stop wakes it, still over the landing. A HOP rim gets a second light over its step-off landing: a player can
@@ -270,6 +282,12 @@ function glowZone(out: StageSink, a: { x: number; y: number }, b: { x: number; y
     //  touches down, so it reaches the edges he comes down by)
     const step = r.drop ? null : dropLanding(out.platforms, r.piece, r.dir, z, 0);
     for (const land of step ? [r.land, step] : [r.land]) {
+      const puff = puffAt(puffs, land.x, land.y);
+      if (puff) {
+        const pl = puffLight(puff, land.x, DARK_ZONE.lightUp, DARK_GLOW.light);
+        if (!z.lights!.some((l) => l.clock && Math.hypot(l.x - pl.x, l.y - pl.y) < 1)) z.lights!.push(pl);
+        continue;
+      }
       const at = { x: land.x, y: Math.min(land.y - DARK_ZONE.lightUp, r.y + GLOW_REACH.down) };
       if (z.lights!.some((l) => Math.hypot(l.x - at.x, l.y - at.y) < 70)) continue;
       z.lights!.push({ x: at.x, y: at.y, r: DARK_GLOW.light, sleep: true, id: id++ });
@@ -315,10 +333,17 @@ const at = (r: DarkRim) => `the rim at x ${r.x}, y ${Math.round(r.y)} (${r.dir >
  * sleeping light is woken by a stop on the rim's own piece, facing the rim (glowReaches from some spot he can stand on), so a player who stops can
  * always see where he lands before he goes.
  */
-export function darkGaps(stage: { platforms: readonly Platform[]; zones?: readonly Zone[] }): string[] {
+export function darkGaps(stage: { platforms: readonly Platform[]; zones?: readonly Zone[] }, setting: 'normal' | 'easy' = 'normal'): string[] {
   const out: string[] = [];
   for (const r of darkRims(stage)) {
     if (!r.light) { out.push(`dark: a gap with no light: ${at(r)}, its landing at x ${r.land.x}, y ${Math.round(r.land.y)}`); continue; }
+    // (a clocked light (ADR-004, a spore puff) counts only when its lit window holds the read ahead AND the way over: seen lit
+    //  DARK_AHEAD before he goes, and still lit when he lands)
+    if (r.light.clock) {
+      const need = DARK_AHEAD[setting] + rimAir(r);
+      if (r.light.clock.len < need - 1e-6) out.push(`dark: a clocked light too short for its drop: ${at(r)}, lit ${r.light.clock.len.toFixed(2)} s of ${r.light.clock.period.toFixed(2)} (needs ${need.toFixed(2)} s: ${DARK_AHEAD[setting]} s ahead + ${rimAir(r).toFixed(2)} s in the air)`);
+      continue;
+    }
     if (!r.light.sleep) continue;
     const p = r.piece, light = r.light;
     let wakes = false;
@@ -351,7 +376,8 @@ export function darkLandings(stage: { platforms: readonly Platform[]; zones?: re
   const stop = darkStop(setting);
   const seen = new Set<string>();
   for (const n of rims) {
-    if (!n.light?.sleep) continue;
+    // (a clocked light (a puff) may be dark when he comes down near its rim, as a sleeping one is: judged the same)
+    if (!n.light?.sleep && !n.light?.clock) continue;
     const nl = n.light;
     for (const u of ends) {
       if (u.piece === n.piece || stepOnto(stage.platforms, u.piece, u.dir) !== n.piece) continue;
@@ -446,6 +472,8 @@ export function runOffRims(stage: { platforms: readonly Platform[]; zones?: read
  *  0, but only within the same reach: an awake light far off lights nothing where he stands */
 export function litAfter(l: Light, x: number, feet: number, facing: -1 | 1): number {
   if (!glowReaches(l, x, feet, facing)) return Infinity;
+  // (a clocked light: its longest dark spell, whatever he does)
+  if (l.clock) return l.clock.period - l.clock.len;
   return l.sleep ? GLOW_STILL + Math.max(0, (l.x - x) * facing) / GLOW_REACH.speed : 0;
 }
 
@@ -549,7 +577,7 @@ export class RimWatch {
     const r = this.rims.find((q) => q.piece === from && (q.dir > 0 ? p.x > from.x + from.width : p.x < from.x));
     if (!r) return;
     this.onPiece = null;
-    const c: RimCrossing = { rim: r, t, litAt: r.light ? (r.light.sleep ? lit(r.light) : -Infinity) : undefined };
+    const c: RimCrossing = { rim: r, t, litAt: r.light ? lightLitAt(r.light, t, lit) : undefined };
     if (p.climbing) this.crossings.push({ ...c, climbed: true });
     else if (p.y > from.y + 4) this.crossings.push(c);
     else this.over = c;

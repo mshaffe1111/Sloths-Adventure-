@@ -54,6 +54,7 @@ const WHEEL_RIDER = 96;
 import type { ClockDef } from '../stageKit.types.ts';
 import type { RiverZone } from '../river.ts';
 import { CRUMBLE_TILE_W, crumbleTime, keepsClear, tideCrossTime, type Zone } from '../zones.ts';
+import { sporeZoneOn } from './spore.ts';
 import { glowFlags } from './dark.ts';
 import { creakLimb, needless } from './creak.ts';
 import { layChase } from './chaseLay.ts';
@@ -2942,6 +2943,11 @@ export function layStage(budget: StageBudget, graph: MissionGraph, kit: WorldKit
           const period = low + warn + active;
           zones.push({ kind: 'tide', x0: mud.x, x1: mud.x + mud.width, top: mud.y - 210, bottom: mud.y + 14, baseY: mud.y, dir: -1, period, warn, active, offset: R(srng() * period * 10) / 10, force: z.force ?? TIDE.force });
           placed.beats.push({ x: mud.x, letter: 'S' });
+        } else if (z.kind === 'spore') {
+          // (World 3's puff on its piece: gen2/spore.ts, on zones.ts SPORE's beat)
+          const shelf = pieceOf(z.on);
+          zones.push(sporeZoneOn(shelf, z, srng));
+          placed.beats.push({ x: shelf.x, letter: 'S' });
         } else if (z.kind === 'wind') {
           // (the gap before `on`: from the piece it is laid after to `on` itself, a pad over each lip as the old generator's gusts)
           const spec = tpl.pieces.find((pc) => pc.key === z.on);

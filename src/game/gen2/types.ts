@@ -487,10 +487,15 @@ export interface LocalRoomSpec extends Omit<RoomSpec, 'left' | 'right' | 'beyond
  *          the take-off lip to the landing with a pad on each side, blowing `dir` (a tailwind, +1, by default: it carries a glide further,
  *          and levelCheck's headwind rule would refuse a glide's gap); `idle` the lull between gusts (s, never under 2), `force` px/s
  *          (<= 160, levelCheck). Its beat is the gust (beats.ts 'wind gust')
+ *   spore  World 3's spore puff on the piece `on` (ENG-SPORE, R-165.449): zones.ts's spore cloud over the piece, its mushroom at the
+ *          piece's middle, on zones.ts SPORE's beat (3-1: 6.4 s, warn 1.0, active 2.2; `period`/`active` override it, the warn never
+ *          under levelCheck's 0.9). In a glowworms' dark (gen2/dark.ts) the puff is that piece's light: it glows over warn + active (a
+ *          clocked light, ADR-004), so a drop onto it is made on its light. Its beat on the clock is rolled per use
  * Nothing stands or flies inside a zone (no animal, no flag: levelCheck), so creature sockets and flags inside one stay empty.
  */
 export type SectionZone =
   | { kind: 'tide'; on: string; low?: Range; warn?: number; active?: number; force?: number }
+  | { kind: 'spore'; on: string; period?: number; warn?: number; active?: number }
   | { kind: 'wind'; on: string; dir?: 1 | -1; idle?: Range; active?: number; force?: number };
 
 /** a tide zone's defaults (zones.ts tideRecipes): a long low spell, a rise you can see coming, high water */

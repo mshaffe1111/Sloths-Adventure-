@@ -17,7 +17,38 @@
  * a zone is doing at any moment.
  */
 
-import { cycle3 } from './clock.ts';
+import { cycle3, cyclePos } from './clock.ts';
+
+/**
+ * A dark-zone light lit on a clock (ADR-004, ENG-SPORE: World 3's spore puff glows over its warning and its cloud): lit while the cycle
+ * position (clock.ts cyclePos of `offset`, `period`) is in [`from`, `from` + `len`). Unset on a light: it behaves as it always has.
+ */
+export interface LightClock {
+  period: number;
+  from: number;
+  len: number;
+  offset: number;
+}
+/** the game time the clocked light's CURRENT lit window opened (undefined: dark now) */
+export function clockLitAt(c: LightClock, t: number): number | undefined {
+  const into = cyclePos(t, c.offset, c.period) - c.from;
+  return into >= 0 && into < c.len ? t - into : undefined;
+}
+/** seconds left in the clocked light's current lit window (0: dark now) */
+export function clockLitLeft(c: LightClock, t: number): number {
+  const into = cyclePos(t, c.offset, c.period) - c.from;
+  return into >= 0 && into < c.len ? c.len - into : 0;
+}
+/** the ramp a clocked light opens and closes over (s): it never snaps on or off on screen (its verdict window is the whole `len`) */
+export const CLOCK_RAMP = 0.25;
+/** how lit a clocked light is drawn at t, 0..1 */
+export function clockGlow(c: LightClock, t: number): number {
+  const into = cyclePos(t, c.offset, c.period) - c.from;
+  if (into < 0 || into >= c.len) return 0;
+  return Math.min(1, into / CLOCK_RAMP, (c.len - into) / CLOCK_RAMP);
+}
+/** a spore zone's puff, as a clock: it glows over its warning and its cloud (zoneState's warn and active phases, cycle3's order) */
+export const sporeClock = (z: Pick<Zone, 'period' | 'warn' | 'active' | 'offset'>): LightClock => ({ period: z.period, from: z.period - z.warn - z.active, len: z.warn + z.active, offset: z.offset });
 
 export type ZoneKind = 'spore' | 'wind' | 'geyser' | 'bolt' | 'web' | 'tide' | 'dark' | 'crumble';
 
@@ -48,7 +79,7 @@ export interface Zone {
    * darkness: the fireflies and lanterns that light the way (world px). World 3's glowworms are `sleep`ing lights: dark until Pokey stands
    * still near them for a moment (GLOW_STILL), then they wake one after another and stay lit (engine.ts). `id` names one for its threads.
    */
-  lights?: Array<{ x: number; y: number; r: number; sleep?: boolean; id?: number }>;
+  lights?: Array<{ x: number; y: number; r: number; sleep?: boolean; id?: number; clock?: LightClock }>;
   /**
    * the puzzle kit's wind shutter (puzzleKit.ts 'shutter', World 4) has this gust lane shut: it is calm, whatever its rhythm says, until
    * the shutter opens again (the kit sets it each frame)
@@ -282,8 +313,13 @@ export interface ZonePiece {
   len: number;
 }
 
-const spore = (shape: ZoneShape, count = 0, period = 6.4, active = 2.2): ZonePiece => ({
-  kind: 'spore', shape, count, dir: 1, period, warn: 1.0, active, force: 0, len: 0,
+/** World 3's spore beat (3-1's numbers: a puff every 6.4 s, a 1 s warning, 2.2 s of cloud): the old generator's recipes and gen2's
+ *  spore zone (gen2/types.ts SectionZone 'spore') read it */
+export const SPORE = { period: 6.4, warn: 1.0, active: 2.2 } as const;
+/** a spore cloud's box over the ground its mushroom stands on (px; the hand build's, protoStage.ts sporeZone) */
+export const SPORE_BOX = { up: 220, down: 40 } as const;
+const spore = (shape: ZoneShape, count = 0, period: number = SPORE.period, active: number = SPORE.active): ZonePiece => ({
+  kind: 'spore', shape, count, dir: 1, period, warn: SPORE.warn, active, force: 0, len: 0,
 });
 /** `idle` is the quiet spell between gusts: later stages shorten it a little, but never below two seconds */
 const gust = (shape: ZoneShape, dir: 1 | -1, force = 120, idle = 2.8, active = 2.2): ZonePiece => ({

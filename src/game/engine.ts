@@ -114,7 +114,7 @@ import { driftCycle, driftProgress, driftX, floodLevel, lianasOver, logClock, lo
 import { GLOW_SHOWN, letGoLands, letGoTable, type LetGoTable } from './letGoCue.ts';
 import { heard, NOISE } from './noise.ts';
 import { mayRegrow, regrowDelay } from './regrow.ts';
-import { zoneEffect, windPush, zoneDrag, columnHit, inZone, ventLift, drowsyLevel, drowsySpeed, drowsyJump, GLOW_STILL, GLOW_REACH, glowReaches } from './zones.ts';
+import { zoneEffect, windPush, zoneDrag, columnHit, inZone, ventLift, drowsyLevel, drowsySpeed, drowsyJump, GLOW_STILL, GLOW_REACH, glowReaches, clockGlow } from './zones.ts';
 import { drawGlowworm, drawThornVine, drawW3Decor, drawW3Fern, drawW3Piece, GLOWWORM_H, w3FernHeight } from './w3Art.ts';
 import { inReach, VINE, vinePeriod, vinePhase, vineSees } from './thornVine.ts';
 import { drawAbyss, drawLandingShadow, W4Play } from './w4Play.ts';
@@ -8049,8 +8049,9 @@ export class GameEngine {
       for (const z of this.currentStage.zones ?? []) {
         if (z.kind !== 'dark' || !z.lights || z.x1 < cx0 - 300 || z.x0 > cx0 + this.camera.viewportWidth + 300) continue;
         for (const l of z.lights) {
-          // a sleeping glowworm glimmers faintly (something is up there); awake, its light opens out
-          const u = l.sleep ? this.glowLit(l.id ?? -1) : 1;
+          // a sleeping glowworm glimmers faintly (something is up there); awake, its light opens out; a clocked one (a spore puff,
+          // ADR-004) opens on its own beat, over its warning and its cloud
+          const u = l.clock ? clockGlow(l.clock, this.gameTime) : l.sleep ? this.glowLit(l.id ?? -1) : 1;
           lights.push({ x: l.x - cx0, y: l.y - cy0, r: u > 0.01 ? l.r * (0.35 + 0.65 * u) : 42 });
         }
       }
