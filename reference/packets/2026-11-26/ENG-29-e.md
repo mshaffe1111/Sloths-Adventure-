@@ -22,6 +22,11 @@ G2 THE POSTED ROYAL GUARD: w2Cast lays only the plain turtle body (no 'royal'); 
    exit and the HUD; journalMet's royal_guard met where it now stands; toys each way (the count with and without the field).
 G3 THE BARGE'S LOOK: RiverRow.look is only 'raft'; add look 'barge' and its draw path (the art is taller than its collider: deck 386 of 507),
    the barge frame packed WITH its first draw site (the art-use gate), a still at 2x beside Pokey upright and sideways (the lead judges).
+G4 (only if BUILD-29's READY shows Normal R160 fails its floor): a per-setting wheel radius on WheelRow (Normal R180, Easy R160 per 2-9.md:23-24).
+G6 THE ONE-MARGIN GATE (BUILD-29's READY (a)/(b)): riverLay lockedDrops reports ONE's early/late PRESS margin (today it reports only `one`); MEASURE
+   the press-time margin on 2-9's court liana at lock 0.92 (BUILD-29 moves the lock as data) on the real engine, then tempoFaults refuses a
+   court liana under a margin set FROM THAT MEASUREMENT (BUILD-29's 0.40/0.50 s and window 1.5/2.0 s are proposals from a phase probe, not the
+   press); a toy each way; say the measured numbers and the bar to the lead before landing it.
 GATES once on the final candidate: tsc; the CI tool line; the suite in shards (KID_RUNS_59 is the release line's inherited red, R-165.473:
 name it); lockall --check (no listed stage moves); tierBots 9/9; generalitycheck; drawcheck (the barge draws). Land on t-eng-29 (no
 force); the hash and what BUILD-29 can now lay to the lead AND to BUILD-29.
