@@ -315,6 +315,11 @@ test('going down, an end 19 px in from the wall line is run on into the wall: it
   const cs = towerCatches('down', [wood, bridge, floor], [], FLOOR, W);
   assert.ok(cs.some((c) => c.y === 600 && c.x <= 1241 && c.x + c.w >= W), `run on into the wall: ${JSON.stringify(cs)}`);
   assert.deepEqual(towerFalls('down', [wood, bridge, floor, ...cs.map((c, k) => solid(c.x, c.y, c.w, 100 + k))], FLOOR, W), [], 'no blind drop is left');
+  // (and a gap of the piece's own, on its far side, is no slot of the run-on's: Easy 34's 59-260 with wood 65 px past its right end,
+  //  read as one run with its run-on, lost its run-on 0-59 to a bough under it)
+  const short = solid(59, 600, 201, 4), past = solid(325, 600, 955, 5);
+  const ds = towerCatches('down', [short, past, floor], [], FLOOR, W);
+  assert.ok(ds.some((c) => c.y === 600 && c.x <= 0 && c.x + c.w >= 59), `the left end runs on into the wall: ${JSON.stringify(ds)}`);
 });
 
 test("leaps: the tower's jump model says yes to everything the engine flies, and no to a turn", () => {

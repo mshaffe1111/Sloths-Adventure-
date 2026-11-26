@@ -150,12 +150,15 @@ PLANTS = [
     ("lipEnd off: a point past his wood's end within 8 px read straight under him (downEnd 0)", 'tools/inspect/firsttimer.ts',
      "      const d = dx > 8 ? 1 : dx < -8 ? -1 : endOf(at);\n", "      const d = dx > 8 ? 1 : dx < -8 ? -1 : 0;\n",
      "at the lip over the way on's first point, he steps off that end", 'src/game/gen2/darkBots.test.ts'),
-    # (box 26) the run-on into the wall reads its slot off the run-on alone again: Easy 6's end 19 px from the wall line is left open
+    # (box 26) the run-on into the wall reads a slot off the run-on alone again: Easy 6's end 19 px from the wall line is left open
     ("the run-on's slot read off the run-on alone (not the run it makes)", 'src/game/gen2/tower.ts',
-     "!slotted(r0, r1, e.p.y, [e.p])", "!slotted(w0, w1, e.p.y, [e.p])",
+     "(!cramped(w0, w1, e.p.y, [e.p]) && !passes(", "(!cramped(w0, w1, e.p.y, [e.p]) && !slotted(w0, w1, e.p.y, [e.p]) && !passes(",
+     'going down, an end 19 px in from the wall line is run on into the wall', 'src/game/gen2/tower.test.ts'),
+    ("the run-on's slot read off the piece and its run-on as one (Easy 34's far-side gap)", 'src/game/gen2/tower.ts',
+     "(!cramped(w0, w1, e.p.y, [e.p]) && !passes(", "(!cramped(w0, w1, e.p.y, [e.p]) && !slotted(leftEnd ? w0 : e.p.x, leftEnd ? e.p.x + e.p.width : w1, e.p.y, [e.p]) && !passes(",
      'going down, an end 19 px in from the wall line is run on into the wall', 'src/game/gen2/tower.test.ts'),
     ("the run-on's slot read off the run-on alone: the raw 3-1 rolls (Easy 6's blind drop)", 'src/game/gen2/tower.ts',
-     "!slotted(r0, r1, e.p.y, [e.p])", "!slotted(w0, w1, e.p.y, [e.p])",
+     "(!cramped(w0, w1, e.p.y, [e.p]) && !passes(", "(!cramped(w0, w1, e.p.y, [e.p]) && !slotted(w0, w1, e.p.y, [e.p]) && !passes(",
      'head room on the way down: no piece of 24 raw rolls', 'src/game/gen2/worlds/w3.test.ts'),
 ]
 # (ENG-DARK box 13) ONLY='a|b': run only the plants whose name holds one of these (a re-anchor's check; the full proof runs them all)
