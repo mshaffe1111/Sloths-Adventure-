@@ -1,0 +1,38 @@
+runs 200 200 errors new 0
+  MOVED rescues ('child', 'normal', 14) 1 -> 0
+fields moved: {'secondPressMs': 111, 'putbacks': 36, 'pieces': 114, 'finishSeconds': 113, 'rescues': 1}
+('child', 'easy') pass False -> False checked False -> False rescues 0 -> 0 finished 40 -> 40
+    finishSeconds p50 295.6 -> 293.7 pass False -> False 
+    livesPerRun mean 0 -> 0 pass True -> True 
+    putbacksPerRun mean 0.38 -> 0.2 pass False -> False 
+    secondPressDelayMs p50 433 -> 433 pass True -> True 
+    top three pieces  ->  pass True -> True 
+    rescues 0 -> 0 pass True -> True 
+('child', 'normal') pass False -> False checked True -> True rescues 3 -> 2 finished 40 -> 40
+    finishSeconds p50 409.5 -> 405.8 pass True -> True 
+    livesPerRun mean 0 -> 0 pass False -> False 
+    putbacksPerRun mean 3.2 -> 2.95 pass True -> True 
+    secondPressDelayMs p50 367 -> 367 pass True -> True 
+    top three pieces w1-seed-perch 0 -> w1-seed-perch 0 pass True -> True 
+    rescues 3 -> 2 pass True -> True 
+('middle', 'easy') pass False -> False checked True -> True rescues 0 -> 0 finished 40 -> 40
+    finishSeconds p50 193.5 -> 193.8 pass True -> True 
+    livesPerRun mean 0 -> 0 pass True -> True 
+    putbacksPerRun mean 0.05 -> 0.2 pass False -> False 
+    secondPressDelayMs p50 433 -> 433 pass True -> True 
+    top three pieces w1-dip-double-teach 0, w1-double-teach 0, w1-learn 0 -> w1-dip-double-teach 0, w1-double-teach 0, w1-learn 0 pass True -> True 
+    rescues 0 -> 0 pass True -> True 
+('middle', 'normal') pass False -> False checked True -> True rescues 0 -> 0 finished 40 -> 40
+    finishSeconds p50 202.9 -> 202.9 pass True -> True 
+    livesPerRun mean 0 -> 0 pass False -> False 
+    putbacksPerRun mean 0.4 -> 0.45 pass True -> True 
+    secondPressDelayMs p50 433 -> 433 pass True -> True 
+    top three pieces w1-double-teach 0.31, w1-dip-double-teach 0.26, w1-canopy-rungs-level 0 -> w1-double-teach 0.31, w1-dip-double-teach 0.26, w1-canopy-rungs-level 0 pass True -> True 
+    rescues 0 -> 0 pass True -> True 
+('expert', 'normal') pass True -> True checked True -> True rescues 0 -> 0 finished 40 -> 40
+    finishSeconds p50 171.9 -> 171.6 pass True -> True 
+    livesPerRun mean 0 -> 0 pass True -> True 
+    putbacksPerRun mean 0.4 -> 0.38 pass True -> True 
+    secondPressDelayMs p50 467 -> 467 pass True -> True 
+    top three pieces w1-double-teach 0.38, w1-dip-double-teach 0.32, w1-log-chain 0.03 -> w1-double-teach 0.38, w1-dip-double-teach 0.26, w1-log-chain 0.03 pass True -> True 
+    rescues 0 -> 0 pass True -> True 
