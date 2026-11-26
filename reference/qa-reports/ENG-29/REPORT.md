@@ -1,27 +1,20 @@
 # ENG-29 REPORT: 2-9's NEW 1 (the court's tempo) and NEW 2 (the drum you hear), built ahead (R-165.449)
 
-## EXACT NEXT STEP (session 3 hand-over; NEW 2 WIRED; the gates ran ONCE on the frozen head 39cd60123: ONE red outside the base set, STOPPED)
-Re-fetch t-eng-29-wip first. Then, in order:
-0. THE RED (not mine to wave through; the order said stop): src/game/gen2/listed.test.ts:52 'nothing in the game calls withTestStage: tests
-   only' fails on src/game/gen2/worlds/w2TempoToy.ts (session 2's 1f919f98e). The file never CALLS it: two doc comments NAME it (:6 'The row a
-   test builds with `withTestStage({ [TEMPO_ID]: tempoRow() }, ...)`', :18 'withTestStage refuses a listed one'), and the rule's scan is a
-   plain text match. The fix (the file, never the rule, LAWS 22): reword both comments without the word (e.g. ':6 the row a test lays
-   through listed.ts's test seam', ':18 the test seam refuses a listed one'); then listed.test.ts GREEN, and the planted RED: the word put
-   back names the file. Comment-only, so no stage, roll or chunk can move; re-run the suite shard that holds listed.test.ts and the
-   text-scanning tests the lead names (or the suite, the lead's call on the budget).
-1. The 1b merge: merge the release-4 hash the lead names (it brings the bot fix: pacerLay 23/23) into t-eng-29-wip (no force); resolve by
-   hand; tsc. Re-run the planted toys on the merge: tempo.test, tempoToy.test, tempoResume.test, drum.test, drumBus.test, drumEngine.test
-   (each GREEN, and each planted RED still RED). Then lockall against the merge's own base and the suite shards + the CI tool line once:
-   pacerLay must now be 23/23 and listed.test green (any red is a stop).
-2. Only then packet step 3: the bots on 2-9.
-3. At ENG-29's end: rewrite reference/handoffs/engine-core.md's tempo/drum entry (the drum's path: engine drumStep -> sound -> conductor
-   drumTick -> DrumSchedule; the layering trap; DRUM_AHEAD 3 frames and why; the hold at loseLife). Not done in session 3.
-STILL OPEN (name for READY-29 if not done): (a) the LOCKED let-go window (2-9.md:21: 2.00 s Normal, 2.40 s Easy): lianaDrops judges every
-relative phase, not the locked one alone; (b) 2-9.md:21's 'river 5 frames ahead of the swing; Easy 0': TempoSpec has one `lock`; (c) the
-twist's `doubled` has no data path yet (DrumSchedule and drumTick take it; nothing lays a twist cue, the engine passes none); (d) the drum
-is only heard on the real page: no listening check yet (a clip of 2-9's court with sound, both settings, for the lead's ear); (e) hitstop
-and the boss's slow motion step game time slower than the audio clock for a moment: the hits already ahead (at most 3 frames) sound a
-little early there; 2-9 has no hitstop or slow motion on the court today.
+## EXACT NEXT STEP (session 4, ENG-29-d: steps 0-3 DONE; a gates-only extension on the FROZEN candidate f569d3957, code unchanged since)
+Re-fetch t-eng-29-wip first. Everything after f569d3957 is the REPORT only. If ENG-29-d stopped before landing, in order, on a frozen worktree
+of f569d3957 (chattr, src/game/gen2/proven left writable):
+1. lockall --layouts 16 --check against a record of c73cb9766 (the merge's base; ENG-29-d's merge 3764c59e9 read 102/102 unchanged).
+2. The suite (the CLAUDE.md glob, 6 shards, run_in_background, timeout 7200000): the only red allowed is the INHERITED firstTimerBot.test.ts:177
+   KID_RUNS_59 (the lead's ruling: the release line's own, CI-15 0ec009b4d, R-165.473 / R-165.477); pacerLay must be 23/23, listed.test green.
+3. The CI tool line (gates.yml:157, now with tools/inspect/tempoToys.test.ts) and tierBots (9/9; the bot change is keyed on a stage's tempo,
+   1-1 has none).
+4. All green but the inherited one: push t-eng-29-wip's head to t-eng-29 (no force) and send the lead the hash, READY-29's measures and (a)-(e).
+STILL OPEN for READY-29: (a) the LOCKED let-go window: now judged for ONE (tempoFaults 'a press on ONE misses'); 2-9.md's 2.00 s Normal /
+2.40 s Easy (measured on 2-1's liana) is NOT a gate: the toy's 2-4 lianas read 1.23 s / 1.97 s at the lay's lock (lockedDrops.window), the
+lead's call; (b) 'river 5 frames ahead of the swing; Easy 0': still one `lock`, no river offset path (the ONE check stands in for it); (c)
+the twist's `doubled`: no data path yet; (d) the drum is heard only on the real page: no listening check yet; (e) hitstop / slow motion
+sound the hits already ahead (at most 3 frames) a little early; 2-9 has neither on the court. NEW: Easy's 50 px pad water has no data path
+(a pad row has one gap); the child loses ~1.25 lives a run on the run-pitch pads on Normal (it hops in place, then learns).
 
 ## Session 4 (ENG-29-d): step 0 (the listed.test red), step 1 (c73cb9766 merged), step 2 (the bots on the court: TWO gaps found and fixed with the piece), step 3 (engine-core.md)
 - Step 0 (7b3ea26a): w2TempoToy.ts :6 and :18 reworded ('the row a test lays through listed.ts's test seam', 'the test seam refuses a listed
