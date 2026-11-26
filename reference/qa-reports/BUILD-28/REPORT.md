@@ -34,8 +34,29 @@ the marsh trace (stills-s11-marsh/, forkstills-s11.mjs.txt): cause sent to the l
    bot's road read (draft-fork-jump-bot.patch.txt never landed; ENG-THUMB's bot fix merges into 2-8 later; judged after it).
    lockall vs main: no listed row lays W2_FORK (w2TwoRoad only on the toy), so zero moves expected: NOT RUN. The src suite
    (w2TwoRoad.test, lineBot.test read W2_FORK): NOT RUN.
-5. NEXT SESSION, in order: record items 1 and 4; the src suite once on frozen 6545a5823; lockall vs main once; paintcheck 2/3 on the
-   head (owed); then READY-28 on 2-8's own config with the plan (level.md rule 25 step 0) once the lead rules the marsh's engine fix.
+5. THE LEAD'S RULINGS (received at the box, after the hand-over was written; NOT started here):
+   (i) the rises at 45 APPROVED (top-upright, porch-upright, top-sideways judged at 2x); the pushback accepted: put the painter's band
+       table (moss_stone: 1-49 painted thin piece, exactly 50 ONE boulder 1.15x its width, 90+ painted soil bank, 51-89 code terrain
+       for a piece this wide) in level.md's proposals in this REPORT's Learned.
+   (ii) THE MARSH: option (a), built as a PIECE, not inside the level: a GENERAL marsh lay option to OPEN with a dip at the near bank's
+       foot, its width a data field, OFF by default. On its OWN branch t-eng-marsh cut from 0f156ee79, its own commit(s): no stage id,
+       seed or x in riverLay.ts (generalitycheck); a toy each way (with the option the marsh opens on water at the bank's foot; without
+       it the old shape); lockall --check: NO listed stage moves; tsc + the CI tool line. Then merge t-eng-marsh into t-build-28-wip and
+       set 2-8's data: the first dip wide enough that from the lip, UPRIGHT, water fills the frame's lower part beside and below him
+       (MEASURED with the still: he stands right of centre, the frame reaches about 210 px left of his feet). Stills lip-upright and
+       lip-sideways to the lead BEFORE going on. Option (b) (wet marsh) NOT this week. Pokey passing up into the porch log's picture
+       mid-hop: judged acceptable (not a defect).
+   (iii) TWO LOOK ITEMS for READY-28, a still each, AFTER the marsh: (1) top-upright (stills-s11-rises45), under the log, the pocket's
+       RIGHT bank (~x 330 of 824, y 730 down) starts with a straight vertical side and no rooted lip (porch-upright's pocket has rooted
+       lips both sides): is it FIX-SOIL-c's square seam (seamR) meeting a hung bank, and does a lip belong there; (2) top-sideways, a dark
+       flat band right under the log deck (~y 365-400 at 1x of the 1830-wide still): what draws it (the ceiling's underside FIX-SOIL-c
+       added, or a void), and does it read as shade or as a hole. Fix only if 2-8's lay; if the soil fix's draw, bring the lead the line.
+   TIME (the lead): the marsh piece + its stills by 4:30 PM ET; READY-28 by 6:00 PM ET (say at 5:30 if it slips).
+6. NEXT SESSION, in order: record item 1 (the gates still running at the box, finished by session 11 if it can: check this REPORT's
+   'Session 11 gate results' line and the scratchpad logs are gone with the container, so re-run any not recorded); the marsh piece
+   (5 (ii)) and its stills; THEN rule 28 ONCE on the head with the marsh change (not before: it moves the fork's rows again), the src
+   suite once, lockall vs main once, paintcheck 2/3 on the head (owed); READY-28 on 2-8's own config with the must-show (from the fork,
+   upright, the low road reads as WATER), walk vs paddle named from 2-8.md, the two look items, and the plan (level.md rule 25 step 0).
    Wait for GO before BUILD-28.
 
 ## EXACT NEXT STEP (session 10, W2-LANE j, started 1:05 PM ET (from the session hook date); code head cb52396a3)
