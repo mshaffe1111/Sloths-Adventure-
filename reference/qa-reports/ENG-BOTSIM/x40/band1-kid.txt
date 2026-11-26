@@ -1,0 +1,9 @@
+castBots 2-4, seeds 1-40; the floor 120 s (STAGE-RULES.md:77)
+kid    normal PASS 38/40; under the floor 0; time median 172.2 s (min 163.3); hits 0 lives 88 (water 88); cleared none; told of traps 0/40; first trap sprung 0/40; traps sprung 0/0; turned back 0; left 0
+        fail 2: shrine rescued x1  (seeds 4,14)
+kid    easy   PASS 38/40; under the floor 0; time median 168.8 s (min 135.8); hits 0 lives 0 (none); cleared none; told of traps 0/40; first trap sprung 0/40; traps sprung 0/0; turned back 0; left 0
+        fail 2: shrine rescued x1  (seeds 7,27)
+
+real	1m10.746s
+user	4m19.227s
+sys	0m5.237s

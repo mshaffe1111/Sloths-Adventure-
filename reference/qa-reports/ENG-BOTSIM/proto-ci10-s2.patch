@@ -1,0 +1,230 @@
+diff --git a/tools/inspect/castBots.ts b/tools/inspect/castBots.ts
+index 54c38360..cd899eb0 100644
+--- a/tools/inspect/castBots.ts
++++ b/tools/inspect/castBots.ts
+@@ -56,7 +56,7 @@ export function castRun(bot: string, setting: Setting, stage: string, seed: numb
+   for (const h of r.harms) hitBy[h.cause] = (hitBy[h.cause] ?? 0) + 1;
+   const goalFull = !r.goal || r.goal.got >= r.goal.need;
+   return {
+-    bot, setting, stage, seed, end: r.end, pass: r.end === 'shrine' && goalFull && r.rescues === 0, time: r.time, goal: r.goal, rescues: r.rescues, turnBacks: r.turnBacks ?? 0,
++    bot, setting, stage, seed, end: r.end, pass: r.end === 'shrine' && goalFull && r.rescues === 0, time: r.time, goal: r.goal, rescues: r.rescues, botsim: r.botsim, turnBacks: r.turnBacks ?? 0,
+     hits: r.harms.filter((h) => h.kind === 'hit').length, lives: r.harms.filter((h) => h.kind === 'life').length, hitBy, cast: r.cast ?? null,
+     stuck: r.stuck.map((s) => ({ x: Math.round((s as { x: number }).x), what: String((s as { what?: string }).what ?? '') })),
+   };
+diff --git a/tools/inspect/firsttimer.ts b/tools/inspect/firsttimer.ts
+index 02aca740..78544fa3 100644
+--- a/tools/inspect/firsttimer.ts
++++ b/tools/inspect/firsttimer.ts
+@@ -28,6 +28,11 @@
+  * loseLife and damagePlayer (the harness stubs them), and sizes the view to a phone held sideways (844 x 390).
+  */
+ import { DT, RealPlay, levelConfig, type Pad } from '../../src/game/realPlay.ts';
++import { probe } from './engineFork.ts';
++import { stableSample } from './botsim/stable.ts';
++const STABLE = typeof process !== 'undefined' && !!process.env.BOTSIM_STABLE;
++/** ENG-BOTSIM prototype: vineFromLog's standing catch asks the engine (a probe of the press plan) and the bot plays the plan */
++export const BOTSIM = { on: typeof process !== 'undefined' && !!process.env.BOTSIM, probes: 0, ms: 0 };
+ import { glanceView, glancing, hurt, touches } from '../../src/game/predators/core.ts';
+ import type { PredatorDef, PredatorState } from '../../src/game/predators/types.ts';
+ import { GameEngine, LIP_IN } from '../../src/game/engine.ts';
+@@ -872,6 +877,8 @@ export interface FTRun {
+   stops: { n: number; firstJumpFailed: number; heights: number[] };
+   puzzles: Array<{ id: string; x: number; t: number }>;
+   rescues: number;
++  /** ENG-BOTSIM: planned presses (a probed plan played) and the lives lost inside one or within 0.5 s of its end */
++  botsim?: { plans: number; deaths: number };
+   /** (ENG-SNAP) snapper bonks: the hops he took as a bonk (snapperPlan), and the stomps he came down on without meaning to and took as
+    *  his bonk (adoptBonk: a hop off the last snap stone onto it, the landing's re-check) */
+   bonkHops?: number;
+@@ -1514,6 +1521,87 @@ export class FirstTimerRun {
+   private landRide: number | null = null;
+   /** SKILLS.runUp: the run-up vineFromLog sent him on, on this log (its id), last judged at this game time */
+   private runUp: { id: number; t: number } | null = null;
++  /** ENG-BOTSIM: the pads of a probed press plan, played verbatim from the next frame (the judged press is the press flown) */
++  private plan: Pad[] | null = null;
++  /** ENG-BOTSIM: the press plan of a standing hop at thumb lag `lag`: he stands, presses on frame m (pressIn), the jump held while the
++   *  engine counts it held ((j - m) * DT < hold), the steer from the press frame or when his thumb gets there (steerFrom); frame 1 = now */
++  private standPlan(lag: number, dir: -1 | 1, hold: number, t: number, n = 60, run = false): Pad[] {
++    const m = Math.round(pressIn(lag) / DT);
++    const sf = this.steerFrom(dir, t);
++    const tail = run ? { dir: 0 as const, n: 0 } : this.standTail(t);
++    const out: Pad[] = [];
++    for (let j = 1; j <= m + n; j++) {
++      const steer = (run || j >= m) && t + (j - 1) * DT >= sf - 1e-9;
++      // (ENG-BOTSIM fix b: before the press, the steer his thumb still holds as thumbify plays a stand (standTail): the plan flies it)
++      const pad: Pad = steer ? side1(dir) : j < m && j <= tail.n && tail.dir !== 0 ? side1(tail.dir) : {};
++      if (j === m) { pad.press = true; pad.jump = true; } else if (j > m && (j - m) * DT < hold) pad.jump = true;
++      out.push(pad);
++    }
++    return out;
++  }
++  /** ENG-BOTSIM fix b: the steer thumbify still gives a want of no steer on the frames from now: none while his thumb travels or slips
++   *  (thumbify drops it); a late lift-off armed (releaseLeft frames); else (KID and ADULT re-arm every frame, R-165.59) held to the
++   *  press; a tier bot's (holdQ) its median lift-off */
++  private standTail(t: number): { dir: -1 | 0 | 1; n: number } {
++    if (this.lastSteer === 0 || t < this.travelUntil || t < this.driftUntil) return { dir: 0, n: 0 };
++    if (this.releaseArmed && (this.who.holdQ || this.stopMeant)) return { dir: this.lastSteer, n: this.releaseLeft };
++    if (!this.who.holdQ) return { dir: this.lastSteer, n: Infinity };
++    const [lo, hi] = this.who.releaseMax;
++    return { dir: this.lastSteer, n: Math.max(lo, Math.min(hi, Math.round(Math.exp(this.who.release[0])))) };
++  }
++  /** ENG-BOTSIM: the frame (1-based) on which the engine, flying `plan` from now, has him swinging on liana `v`; -(frame) if he comes
++   *  down, dies or never reaches it first */
++  private planCatch(plan: Pad[], v: Vine): number {
++    let at = -plan.length, last = 0;
++    const m = plan.findIndex((q) => q.press) + 1;
++    const r = probe(this.e as never, plan, (e, i) => {
++      last = i + 1;
++      const pl = e.player as { isVineSwinging?: boolean; swingVineId?: number; grounded: boolean };
++      if (pl.isVineSwinging) { at = pl.swingVineId === v.id ? i + 1 : -(i + 1); return 'stop'; }
++      if (i + 1 > m + 2 && pl.grounded) { at = -(i + 1); return 'stop'; }
++      return 0;
++    });
++    BOTSIM.probes++;
++    BOTSIM.ms += r.ms;
++    // (ENG-BOTSIM fix c: a death ends the plan on the frame it came; the whole plan was played on through the death and the respawn, 2-4
++    //  kid Normal 2 at 107.53, holding right on log #91 for 1.4 s after he was put back)
++    if (r.died) at = -last;
++    this.lastDied = !!r.died;
++    return at;
++  }
++  private planLives = 0;
++  private lastDied = false;
++  planCount = 0;
++  planDeaths = 0;
++  private planT = -9;
++  private livesSeen = -1;
++  /** ENG-BOTSIM: the plan's next pad, or null (a life lost since it was made drops it: fix c) */
++  private planNext(): Pad | null {
++    if (!this.plan?.length) return null;
++    if ((this.e as unknown as { lives: number }).lives !== this.planLives) { this.plan = null; return null; }
++    return this.playPlan();
++  }
++  private playPlan(): Pad {
++    const out = this.plan!.shift()!;
++    if (!this.plan!.length) this.plan = null;
++    this.planT = this.t;
++    // (ENG-BOTSIM fix b: the thumb as thumbify leaves it for these pads: a steer on the stick ends any late lift-off and its arming; a
++    //  frame with none after the tail has run is a thumb let go (lastSteer 0, releaseLeft 0); the plan skipped thumbify and its stale
++    //  releaseArmed made the first stop after a plan a perfect one)
++    const steer: -1 | 0 | 1 = out.right ? 1 : out.left ? -1 : 0;
++    if (steer !== 0) { this.releaseLeft = 0; this.releaseArmed = false; } else this.releaseLeft = 0;
++    this.lastSteer = steer;
++    if (out.press) this.lastPress = this.t;
++    return out;
++  }
++  /** ENG-BOTSIM: set the plan he plays from this frame (the travel its steer waited for, kept) */
++  private setPlan(plan: Pad[], end: number, dir: -1 | 1, t: number): void {
++    this.travelUntil = Math.max(this.travelUntil, this.steerFrom(dir, t));
++    this.pending = null;
++    this.plan = plan.slice(0, Math.max(1, end));
++    this.planLives = (this.e as unknown as { lives: number }).lives;
++    this.planCount++;
++  }
+   /** SKILLS.runUp: the hold the run-up's jump was judged with (runPress: who.hold[0]), and when; startJump holds at least that */
+   private runUpHold: { hold: number; t: number } | null = null;
+   /** the game time a press decided on (decide) was aimed to reach the engine (pressIn), for the press this frame's pad carries */
+@@ -2442,10 +2530,15 @@ export class FirstTimerRun {
+       return x > lx + 10 && x < lx + here.width - 10 && !under && hopCatches(v, x, p.y, dir, hold, clock + aim.clock, vx + carry, 0, carry);
+     });
+     const lags = [mid, Math.max(0, mid - sd / 2), mid + sd / 2];
++    // (ENG-BOTSIM band: the probe's lags; BOTSIM_BAND=1 flies mid +- 1 sd (the edges first: a miss there ends the check soonest))
++    const band = Number(process.env.BOTSIM_BAND ?? 0.5);
++    const plags = band > 0.5 ? [mid - band * sd, mid + band * sd, ...lags] : lags;
+     // (SKILLS.runUp, ENG-PLANT-g: a run-up he is on (sent last frame, this log); else none)
+     const running = SKILLS.runUp && !!this.runUp && this.runUp.id === here.id && t - this.runUp.t < DT * 1.5;
+     this.runUp = null;
+-    if (!running && !lags.every(catches)) {
++    if (process.env.BOTSIM === '2' && !running) for (const lag of lags) this.planCatch(this.standPlan(lag, dir, hold, t), v);
++    const judged = !running && (BOTSIM.on && process.env.BOTSIM !== '2' ? plags.every((lag) => this.planCatch(this.standPlan(lag, dir, hold, t), v) > 0) : lags.every(catches));
++    if (!running && !judged) {
+       // (SKILLS.runUp, ENG-PLANT-g: from a stand a PERFECT thumb catches 2-4's tailed-river liana 0 of ~560 frames; a running jump off the
+       //  same log catches it (2-4 adult Normal 6, 52 of 541 frames; main crossed by an unjudged full-run leap). The hop he can make is
+       //  judged: a run along the log (groundStep, his own thumb lag and spread on the run press and the jump press, the take-off still on
+@@ -2469,10 +2562,21 @@ export class FirstTimerRun {
+         this.stopMeant = true;
+         return {};
+       }
+-      if (!lags.every((lag) => this.runPress(p.x, p.vx, 0, lag, p, dir, here, v, carry, hold, clock, t))) {
++      const probed = BOTSIM.on && process.env.BOTSIM !== '2';
++      if (!(probed ? plags : lags).every((lag) => probed ? this.planCatch(this.standPlan(lag, dir, hold, t, 60, true), v) > 0 : this.runPress(p.x, p.vx, 0, lag, p, dir, here, v, carry, hold, clock, t))) {
+         this.runUp = { id: here.id, t };
+         return side1(dir);
+       }
++      if (probed) {
++        // (ENG-BOTSIM fix a: the run-up's press asked the old model (runPress) and the bot flew decide's press; 2-4 kid Normal 2 at 105.30
++        //  judged a catch from 21249 and came down in the water. Now the probe at three lags, and the plan at his drawn lag is played)
++        const lag = gauss(this.r, this.who.thumb);
++        const plan = this.standPlan(lag, dir, hold, t, 60, true);
++        const got = this.planCatch(plan, v), end = Math.abs(got);
++        if (TRACE) process.stderr.write(`  ${t.toFixed(2)} BOTSIM run plan x ${Math.round(p.x)} on #${here.id} drawn ${lag.toFixed(3)}:${got}${this.lastDied ? ' DIED' : ''}\n`);
++        this.setPlan(plan, end, dir, t);
++        return side1(dir);
++      }
+       this.runUpHold = { hold, t };
+       this.pressJudged = true;
+       const go = this.decide(dir, 'single', true, side1(dir));
+@@ -2480,6 +2584,15 @@ export class FirstTimerRun {
+       if (this.pending) this.pending.judged = true;
+       return go;
+     }
++    if (BOTSIM.on && process.env.BOTSIM !== '2') {
++      // (ENG-BOTSIM: his lag drawn as decide draws it; the plan at that lag is the press he makes, frame by frame, to its probed end)
++      const lag = gauss(this.r, this.who.thumb);
++      const plan = this.standPlan(lag, dir, hold, t);
++      const end = Math.abs(this.planCatch(plan, v));
++      this.setPlan(plan, end, dir, t);
++      if (TRACE) process.stderr.write(`  ${t.toFixed(2)} BOTSIM plan x ${Math.round(p.x)} on #${here.id} lags ${lags.map((l) => `${l.toFixed(3)}:${this.planCatch(this.standPlan(l, dir, hold, t), v)}`).join(' ')} drawn ${lag.toFixed(3)}:${this.planCatch(plan, v)}${this.lastDied ? ' DIED' : ''} len ${plan.length} thumb ${this.who.thumb.join('/')}\n`);
++      return {};
++    }
+     // (judged here: decide's immediate press (a lag under half a frame) reaches startJump now, so the flag is up for it too; candidate
+     //  10 marked only the queued press and 2-4 adult Normal 6 had two liana presses refused, x 21,600 and 24,700, UNJUDGED)
+     this.pressJudged = true;
+@@ -4984,6 +5097,8 @@ export class FirstTimerRun {
+     this.steady = false;
+     this.stopMeant = false;
+     const intended = this.intend();
++    const planned = this.planNext();
++    if (planned) return planned;
+     const want = this.rollHeld || this.steady || this.runnerAhead() ? intended : this.rhythm(intended);
+     const out = this.figTap ? this.tapped(want) : this.thumbify(want);
+     this.wasOnTrunk = !!this.sim.p.climbing;
+@@ -5238,6 +5353,7 @@ export class FirstTimerRun {
+       const f = this.floorAt(q.x, q.y - 2, 8);
+       if (!f || f.type === 'fragile') continue;
+       this.rescues++;
++      if (TRACE) process.stderr.write(`  ${this.t.toFixed(2)} RESCUE from ${Math.round(p.x)},${Math.round(p.y)} on ${this.e.standingOnId} stuck ${JSON.stringify(this.stuckOpen ?? null).slice(0, 160)}\n`);
+       this.rescueXs.push(Math.round(p.x));
+       this.lastRescue = i;
+       if (this.stuckOpen) this.stuckOpen.rescued = true;
+@@ -5503,8 +5619,12 @@ export class FirstTimerRun {
+     const e = this.e;
+     while (this.t < cap) {
+       this.pressWant = undefined;
+-      const pad = this.pad();
++      const fromPlan = !!this.plan?.length;
++      const pad = this.planNext() ?? this.pad();
+       this.sim.frame(pad);
++      if (STABLE) stableSample(this.e as never);
++      if (e.lives < this.livesSeen && this.t - this.planT < 0.5) this.planDeaths++;
++      this.livesSeen = e.lives;
+       if (PRESS_TRACE.on && pad.press && this.pressWant !== undefined) PRESS_TRACE.rows.push({ want: this.pressWant, got: this.t });
+       if (this.hopOpen) {
+         const o = this.hopOpen;
+@@ -5527,7 +5647,7 @@ export class FirstTimerRun {
+         }
+         this.wasSwinging = sw;
+       }
+-      if (TRACE_FRAMES && this.t > TRACE_FRAMES[0] && this.t < TRACE_FRAMES[1]) process.stderr.write(`    f ${this.t.toFixed(2)} ${Math.round(this.sim.p.x)},${Math.round(this.sim.p.y)} g${+this.sim.p.grounded} vx${Math.round(this.sim.p.vx)} pad ${JSON.stringify(pad)} on ${this.e.standingOnId}\n`);
++      if (TRACE_FRAMES && this.t > TRACE_FRAMES[0] && this.t < TRACE_FRAMES[1]) process.stderr.write(`    f ${this.t.toFixed(2)} ${Math.round(this.sim.p.x)},${Math.round(this.sim.p.y)} g${+this.sim.p.grounded} vx${Math.round(this.sim.p.vx)} pad ${JSON.stringify(pad)} on ${this.e.standingOnId}${fromPlan ? ' PLAN' : ''} th ${this.lastSteer}/${+this.releaseArmed}/${this.releaseLeft}/${(this.travelUntil - this.t).toFixed(2)}\n`);
+       this.frames++;
+       e.guideView(this.view);
+       this.dot.tick(this.view, this.t, (tp) => this.far(tp));
+@@ -5675,6 +5795,7 @@ export function firstTimer(id: string, seed: number, who: FirstTimer, opts: RunO
+     stops: run.stopsReport(),
+     puzzles: run.puzzles,
+     rescues: run.rescues,
++    botsim: { plans: run.planCount, deaths: run.planDeaths },
+     bonkHops: run.bonkHops,
+     adopted: run.adopted,
+     rescueXs: run.rescueXs,

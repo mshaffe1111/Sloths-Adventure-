@@ -231,24 +231,37 @@ export function graphPrint(root: object): string {
  * back exactly. The engine's own hooks (the bot's loseLife, damagePlayer, softFall, guide) are swapped for the probe's (a death noted)
  * and come back with the restore. Returns what `read` said on each frame and whether he died.
  */
+/** ENG-BOTSIM step 2: where a probe's time goes (BOTSIM_STATS=1 prints it at exit) */
+export const PROBE_STATS = { n: 0, snap: 0, fly: 0, rest: 0, frames: 0, objects: 0 };
+if (typeof process !== 'undefined' && process.env.BOTSIM_STATS) process.on('exit', () => {
+  const q = PROBE_STATS, n = Math.max(1, q.n);
+  process.stderr.write(`PROBES ${q.n}: snapshot ${(q.snap / n).toFixed(2)} ms, fly ${(q.fly / n).toFixed(2)} ms (${(q.frames / n).toFixed(1)} frames, ${(q.fly / Math.max(1, q.frames)).toFixed(3)} ms a frame), restore ${(q.rest / n).toFixed(2)} ms, objects ${(q.objects / n).toFixed(0)}; total ${((q.snap + q.fly + q.rest) / 1000).toFixed(2)} s\n`);
+});
+
 export function probe<R>(e: Record<string, any>, pads: ReadonlyArray<Parameters<typeof stepFork>[1]>, read: (e: Record<string, any>, i: number) => R | 'stop'): { rows: R[]; died: string | null; ms: number } {
   const t0 = performance.now();
   const s = snapshot(e);
+  const t1 = performance.now();
   const f: Fork = { e, input: e.input as Record<string, any>, died: null, stats: { objects: s.pairs.size, ms: s.ms } };
   e.loseLife = (reason?: string) => { f.died ??= reason ?? 'life'; };
   e.softFall = () => { f.died ??= 'soft'; return true; };
   e.damagePlayer = () => { f.died ??= 'hurt'; };
   e.guide = () => {};
   const rows: R[] = [];
+  let frames = 0, t2 = 0;
   try {
     for (let i = 0; i < pads.length && !f.died; i++) {
       stepFork(f, pads[i]);
+      frames++;
       const r = read(e, i);
       if (r === 'stop') break;
       rows.push(r);
     }
   } finally {
+    t2 = performance.now();
     restore(e, s);
   }
-  return { rows, died: f.died, ms: performance.now() - t0 };
+  const t3 = performance.now();
+  PROBE_STATS.n++; PROBE_STATS.snap += t1 - t0; PROBE_STATS.fly += t2 - t1; PROBE_STATS.rest += t3 - t2; PROBE_STATS.frames += frames; PROBE_STATS.objects += s.pairs.size;
+  return { rows, died: f.died, ms: t3 - t0 };
 }

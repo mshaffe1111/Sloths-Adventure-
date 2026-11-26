@@ -1,29 +1,63 @@
 # ENG-BOTSIM: can the bots ask the GAME how a press flies? (R-165.462, spike; branch t-eng-botsim from c73cb9766)
 
-## EXACT NEXT STEP (session 1 hand-over, written 1:24 PM ET; items 1, 2 (the toy), 3 DONE; item 4 drafted below)
-Recreate the old-code tree: `git worktree add --detach ../bs-ci10 8134a9a56`, `ln -s <main>/node_modules ../bs-ci10/node_modules`,
-`git -C ../bs-ci10 apply <main>/reference/qa-reports/ENG-BOTSIM/proto-ci10.patch`, `cp tools/inspect/engineFork.ts ../bs-ci10/tools/inspect/`.
-`BOTSIM=1` = the probe judge acts; `BOTSIM=2` = probes run, answers thrown away (the leak check); unset = the old judge.
-1. **Trace kid Normal's extra water lives (item 3: 17 rows up, 10 down, net +17), seed 2 first** (`castBots.ts --stage 2-4 --seeds 2
-   --bots kid --setting normal` both ways, FT_TRACE=1 around the first life that differs). Hypothesis, NOT checked: the probe judge
-   accepts a press that catches only across mid +- sd/2, and the kid's drawn lag falls outside that band most of the time (about 62% of
-   a normal draw does), so he tries more marginal catches than the old, wrong-but-cautious model let him. If so: the band (thumbLags,
-   or a wider one) is a fidelity number to calibrate, separate from physics. Then kid Easy seed 8 (the one new rescue).
-   FIRST LOOK (seed 2, FT_TRACE=1, both ways; 1:28 PM ET): old judge 2 lives (114.13 a single off 21333,808; 156.07 no jump on the ground
-   at 24319,780), 183.2 s, stuck twice 'on a vine with no way on' (21402, 23052). Probe judge 4 lives, 163.5 s, never stuck: 105.30 a
-   RUN-UP press off 21249,780 (`run true`: the run-up branch, still the OLD model in the prototype), then 107.53, 123.73, 136.20 'no
-   jump, ground' (rode or walked off a log: 21369,808; 22836,780; 24314,780). So the extra lives here are NOT marginal standing catches:
-   check (a) the run-up branch (old model) now reached where the standing judge used to refuse and he stood; (b) a stale thumb after a
-   played plan (playPlan skips thumbify: releaseArmed, releaseLeft, driftPx, travelUntil keep their pre-plan values, so the stop after
-   a plan may not hold: CI-13 / CI-15's class). The fix for (b) belongs in the core (plan step 1): a played plan leaves the thumb state
-   as thumbify would have.
-2. **Snapshot cost:** count how many of the ~750 copied objects are the stage's fixed data (platforms that never move, vines' shape,
-   art), freeze them (or mark them shared in engineFork's SHARE), and re-time the probe (target: under 1 ms for snapshot + restore).
-   STARTED (tools/inspect/botsim/snapSize.ts, 2-4 seed 35 at 8 s): best of 20 snapshot 1.18 ms + restore 1.14 ms (the x40's mean probe
-   was 8-10 ms: GC and the frames flown); the objects by engine field: currentStage 345, drawPlats 169, proto 106, swingVines 14, the
-   rest 1-3 each. Left: which of currentStage / drawPlats / proto change in play (a drifting log's x, a crumble's state) and which never
-   do; share the never-changing ones; re-time; and time the frames flown per probe (early exit at the catch or the set-down).
-3. **Item 4:** finish THE ANSWER below with 1 and 2 (it stands as YES, gated on 1's cause and 2's cost); send it to the lead.
+## EXACT NEXT STEP (session 2 hand-over, written 1:43 PM ET; order step 1 DONE with a NO-BACK result below; steps 2, 3 open)
+Tree: `git worktree add --detach ../bs-ci10 8134a9a56`; `npm ci --no-audit --no-fund --legacy-peer-deps` in the main tree (plain npm ci
+fails ERESOLVE), `ln -s <main>/node_modules ../bs-ci10/node_modules`; `git -C ../bs-ci10 apply <main>/reference/qa-reports/ENG-BOTSIM/
+proto-ci10-s2.patch` (REPLACES proto-ci10.patch: session 1's judge + session 2's fixes a-c, the band switch, the plan counters, the trace);
+`cp tools/inspect/engineFork.ts ../bs-ci10/tools/inspect/; mkdir -p ../bs-ci10/tools/inspect/botsim; cp tools/inspect/botsim/stable.ts
+../bs-ci10/tools/inspect/botsim/`. Switches: `BOTSIM=1` probe judge, `BOTSIM_BAND=1` judged lags mid +- 1 sd (default +- sd/2),
+`BOTSIM_STATS=1` a probe's time split at exit, `BOTSIM_STABLE=1` the never-changing stage objects at exit (stderr). Rows carry
+`botsim: {plans, deaths}` (lives lost inside a played plan or 0.5 s after it).
+1. **Step 2, the snapshot cut (first):** (a) `BOTSIM=1 BOTSIM_BAND=1 BOTSIM_STATS=1 npx tsx tools/inspect/castBots.ts --stage 2-4 --seeds 35
+   --bots kid --setting easy` (one run, par 1): snapshot / fly / restore ms and frames a probe. (b) the same with `BOTSIM_STABLE=1`: how
+   many of the ~620 objects under currentStage / drawPlats / proto never change (NOTE engine.platforms IS currentStage.platforms,
+   engine.ts:1069: currentStage holds the moving logs, vines, foes; it cannot be shared whole). (c) share the never-changed set: deep-freeze
+   it at the first probe (Object.freeze: a write to it THROWS in the strict-mode engine, so a wrong share is loud, not a silent leak) and add
+   it to engineFork's SHARE (frozen objects are shared already); re-run (a) for the new ms; then ONE x40 kid + adult (`--setting both
+   --par 4`, time it) vs the old judge's 62.3 s / 230 s CPU (x40/off.txt) and session 1's 117.6 s / 447 s; any TypeError = an object that
+   changes: take it out of the set. Also count the frames flown a probe: the early exit (stop at the catch / the set-down) is the other cut.
+2. **Step 3, THE ANSWER (final):** rewrite the section below with step 1's numbers (below) and step 2's; the ordered plan as drafted, sized;
+   say plainly that the probe alone did NOT bring kid Normal back (the band is a calibration of its own, item c below) and what the
+   SMALLER first step (seam + core + vineFromLog + the hopFlight/gate family) buys. Then message the lead (no clock times).
+
+## Session 2, order step 1: kid Normal seed 2 and kid Easy seed 8 traced; three faults fixed in the prototype; kid Normal NOT back
+**Seed 2 (kid Normal), four lives on the probe judge vs two on the old:** 105.30 a RUN-UP press (the run-up's press still on the old model,
+runPress: suspect a, CONFIRMED); 107.53 a planned standing press whose drawn lag (0.026 s, about 1 sd early) fell outside the judged band
+(mid +- sd/2) and came down in the water, AND the plan then played on through the death and the respawn (holding right on log #91 for
+1.4 s after he was put back: a third fault, c); 123.73 and 136.20 the OLD hop chain landing on a log's front lip and running off (the old
+run loses the same life at 24319, 156.07). Suspect b (stale thumb after a plan) is real (playPlan skipped thumbify, so releaseArmed kept
+its pre-plan value and the first stop after a plan was a perfect one; and the plan's pre-press frames let go of a held steer at once,
+which KID / ADULT never do, R-165.59) but it cost no life on seed 2.
+**Seed 8 (kid Easy), the one new rescue:** the planned catch at 73.30 is right (caught on frame 16); the rescue (82.80) is three splash-backs
+off logs #77, #78, #74 after the liana let-go (the old hop-and-stop code running off log ends), reached 9.8 s sooner than the old run
+got there. Not the probe judge's flight.
+**Fixes in the prototype (proto-ci10-s2.patch):** (a) the run-up's press asks the probe (run held from now, three lags) and the plan at his
+drawn lag is played; (b) the plan's pre-press frames carry the steer his thumb still holds (standTail: none while travelling / slipping, an
+armed lift-off's frames, else KID / ADULT held to the press), and each planned pad leaves the thumb as thumbify would (a steer clears the
+lift-off and its arming; travelUntil kept to the steer's start); (c) a death ends the plan on its frame and a life lost drops the plan.
+Seed 2 after a-c: 1 life (old 2), 163.3 s, every run-up press planned and caught.
+**But the x40 (kid, 2-4, seeds 1-40, both settings) got WORSE, and the cause is the band, not the physics:**
+
+| kid, 2-4 x40 | Normal pass | Normal lives | of which planned presses (of plans) | other judges' lives | Easy pass |
+|---|---|---|---|---|---|
+| old judge (session 1) | 40/40 | 61 | - | - | 33/40 |
+| probe judge, session 1 | 40/40 | 78 | - | - | 39/40 |
+| + fixes a-c, band +- sd/2 | 37/40 (rescued 4, 29, 36) | 105 | 39 (of 355) | 66 | 39/40 (13) |
+| + fixes a-c, band +- 1 sd | 38/40 (rescued 4, 14) | 88 | 25 (of 340) | 63 | 38/40 (7, 27) |
+
+Why: the probe is exact, so the judge presses on the FIRST frame every judged lag catches: the far edge of a moving catch window (the
+log drifts, the liana swings, he runs). With lags mid +- sd/2 only 38% of his draws are inside; the 31% earlier come down short (seed 30:
+run-up presses drawn at 0.007, -0.041, -0.001 s, each in the water). The old model's own errors happened to give margin. Widening the
+judged band to +- 1 sd cuts the planned-press lives 39 -> 25 and seed 30 8 -> 4, seed 29 7 + a rescue -> 2 and a pass. So: (1) the
+physics half holds: at band +- 1 sd, all 25 planned-press deaths were drawn OUTSIDE the band, none inside (340 plans, kid Normal x40,
+FT_TRACE 'DIED' lines; the traced re-run reproduced 88 lives and 38/40 exactly); (2) WHEN a kid presses inside a window is a calibration
+of its own (the band, or aiming for the window's middle rather than its first frame), to fit to the testers as R-165.317 did, NOT a
+physics number; (3) the "other" lives (63-66) are the still-model judges (hopFlight, the landing stop, lianaWait) on the paths the new
+judge sends him on, already above the old run's 61 in total: the old judges fail at their own rate wherever he arrives; moving one judge
+alone moves where the rest fail. Untraced: the band-1 rescues (Normal 4, 14; Easy 7, 27), and the old run's lives split by judge (the old
+path has no plan counter: add one on vineFromLog's pressJudged presses to compare like for like).
+Evidence: x40/fix-kid.txt, band1-kid.txt, x40-fix-kid.jsonl, x40-band1-kid.jsonl (`botsim` per row); time: 70-72 s wall, 258-264 s CPU
+for the 80 kid runs (the old judge's 160 kid + adult runs: 62.3 s / 230 s).
 
 ## THE ANSWER (item 4, DRAFT: final after next steps 1-2): YES, with two halves and one engine seam
 **The judges ask the engine, and the bot plays what was judged.** The probe removes the PHYSICS half of the class by construction (the
