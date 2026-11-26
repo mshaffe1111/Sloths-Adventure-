@@ -133,3 +133,15 @@ test("flood lay: a water marked 'teach' is laid as its OWN rise (FloodWater.own,
     }
   }
 });
+
+test("'@flood' through the pipeline (the toy's twist node over the teach twin): the brief names the flood, the ask is laid; RED with no flood in the brief, and on the out leg's crossing whose river is unmarked, each by name", () => {
+  const code = (at: 'twist' | 'first') => (at === 'twist' ? HOME_CODE.replace('Ww1>', 'Ww1>:#water@flood') : HOME_CODE.replace('Xw1>', 'Xw1>:#water@flood'));
+  const lay = (c: string, flood?: FloodRow) => {
+    const k = floodKit(true, flood, FORK, TEACH_RIVERS);
+    const kit = { ...k, manifest: { ...k.manifest, graphs: { ...k.manifest.graphs!, list: k.manifest.graphs!.list.map((g) => ({ ...g, code: c })) } } } as WorldKit;
+    return buildGen2Stage({ config: { ...towerCfg(ID, 'sprint'), unlocked: true }, kit, seed: 1, difficulty: 'normal' }).gen2.errors.filter((e) => /@flood/.test(e));
+  };
+  assert.deepEqual(lay(code('twist'), TEACH_ROW), [], 'GREEN: a water fall over the teach-marked twin, the brief names the flood');
+  assert.match(lay(code('twist')).join('; '), /hazard #water@flood: the stage's brief names no flood/, 'RED: no flood in the brief');
+  assert.match(lay(code('first'), TEACH_ROW).join('; '), /hazard #water@flood: its water fall ends in no water marked for the flood/, 'RED: the out leg\'s unmarked river under its falls (it shares x with the home leg\'s marked ones)');
+});

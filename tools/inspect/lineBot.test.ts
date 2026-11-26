@@ -23,7 +23,8 @@ import { SAME_GROUND, spook, type Follower } from '../../src/game/follow.ts';
 import { W2_FLOOD, W2_FOLLOW } from '../../src/game/gen2/worlds/w2.ts';
 import { W2_FORK, W2_FORK_RIVERS } from '../../src/game/gen2/worlds/w2.ts';
 import { FloodClock, floodTailOff, highRoad, type Flood } from '../../src/game/flood.ts';
-import { FLOOD_HOP, FLOOD_STEP, floodWaterOf } from '../../src/game/gen2/floodLay.ts';
+import { FLOOD_HOP, FLOOD_STEP, floodWaterOf, teachWaterOf } from '../../src/game/gen2/floodLay.ts';
+import { floodLevel } from '../../src/game/river.ts';
 import { FLOOD_FORK_JUMP } from '../../src/game/gen2/floodLay.ts';
 import { layRiver } from '../../src/game/gen2/riverLay.ts';
 import type { RiverZone } from '../../src/game/river.ts';
@@ -630,5 +631,167 @@ test("the reroute's walked top (2-8's ruled fork, late 19: too late for the line
     assert.ok(off.end !== 'shrine' || off.rescues > 0, `middle seed 1 late 19, the walked top off: ${JSON.stringify(off)}`);
   } finally {
     REROUTE_SKILL.walkedTop = true;
+  }
+});
+
+/**
+ * THE RISING WATER'S TEACH (ENG-FLOOD28, P1; READY-28 item 1; 2-8.md beat 2 "a dip between banks fills as he watches (to paddling depth
+ * only, soft) ... leads the line through while it's shallow"): a toy marsh in the real engine, gen2's own piece (riverLay layRiver, a row
+ * marked 'teach'; its water floodLay.ts teachWaterOf), two 100 px dips, no cage freed (the flood clock never starts): the water rises on
+ * its OWN start, the first frame he is over it (flood.ts FloodClock.over, stepped by the engine). Three little ones behind him. Counted:
+ * where and when it started, its level frame by frame, the paddles (each against the water's LIVE surface), and the ends.
+ */
+const TEACH_S = 4;
+interface TeachRun {
+  end: string;
+  home: number;
+  rescues: number;
+  /** his x and the game time on the frame the teach water started (undefined: it never did) */
+  startX?: number;
+  startT?: number;
+  /** its surface: laid, at the end, and after a respawn at the end */
+  y0: number;
+  y1: number;
+  endY: number;
+  respawnY: number;
+  /** frames a little one paddled over a dip; of them, at the water's risen level (over its laid level), and off the live surface by > 1 px */
+  paddles: number;
+  risenPaddles: number;
+  offSurface: number;
+  /** every frame: game time, his x, the water's surface */
+  trace: Array<[number, number, number]>;
+}
+function teachRun(who: FirstTimer, seed: number, plant: { riseOff?: boolean; readOff?: boolean } = {}): TeachRun {
+  freshPhone(who.setting);
+  const mr = Math.random;
+  Math.random = rng(seed * 7919 + 3);
+  try {
+    const W0 = 1000;
+    const W1 = 1600;
+    const MF = 60;
+    const route = Array.from({ length: Math.ceil((EXIT + 100 - START) / 24) + 1 }, (_, i) => {
+      const x = START + i * 24;
+      return { x, y: x > W0 && x < W1 ? Y + MF : Y };
+    });
+    const run = new FirstTimerRun('2-3', 1, who, { route, cap: 200 });
+    const e = run.e as unknown as Record<string, any>;
+    const solid = (id: number, x: number, width: number, y: number, height = 200) => ({ id, x, y, width, height, type: 'solid' }) as Platform;
+    let nid = 50;
+    const low = layRiver({ dir: 1, speed: 0, logW: 0, logs: 0, safe: true, flood: 'teach', marsh: { width: W1 - W0, floor: MF, dips: 2, dip: 100 } }, W0, Y, () => nid++);
+    const dipsAt = low.floor.slice(1).map((q, i) => [low.floor[i].x + low.floor[i].width, q.x] as const);
+    run.sim.bare([solid(1, 0, W0, Y), ...low.floor, solid(3, W1, 6000 - W1, Y)]);
+    const cages = [420, 470, 520].map((x, i) => ({ id: 300 + i, x, y: Y - 26, type: 'cage', collected: true, critter: (['duck', 'otter', 'capy'] as const)[i] }) as Collectible);
+    e.collectibles = [...cages, { id: 400, x: EXIT, y: Y - 40, type: 'exit_totem', collected: false } as Collectible];
+    const st = e.currentStage;
+    st.exitTotemX = EXIT;
+    st.exitTotemY = Y;
+    st.config = { ...st.config, objectiveType: 'rescue', targetCount: 3, levelWidth: 6000 };
+    e.walls = e.mode.bounds({ levelWidth: 6000, exit: { x: EXIT, y: Y }, spawn: { x: START, y: Y } });
+    st.spawnX = START;
+    st.spawnY = Y;
+    st.checkpoints = [];
+    e.checkpoint = { x: START, y: Y };
+    const river = low.zone;
+    assert.equal(river.floodMark?.kind, 'teach', 'the row marked teach lays a teach-marked water');
+    st.rivers = [river];
+    const easy = who.setting === 'easy';
+    const w = teachWaterOf(river, 0, TEACH_S);
+    // (no cage is freed: the clock's own start never comes; its close and tail-off are the table's, unused)
+    const flood: Flood = {
+      start: { id: cages[2].id, x: cages[2].x, y: Y }, close: easy ? W2_FLOOD.close.easy : W2_FLOOD.close.normal, px: 1,
+      waters: [w], tailOff: 0, spare: easy ? W2_FLOOD.spare.easy : W2_FLOOD.spare.normal,
+    };
+    st.flood = flood;
+    e.floodClock = new FloodClock(flood);
+    if (plant.riseOff) e.floodClock.over = () => [];
+    e.proto = { hints: [], covers: [], beats: [], movedPickups: [], bushes: [], watch: [], follow: W2_FOLLOW };
+    e.kit = undefined;
+    e.currentStage.kit = undefined;
+    run.sim.stand(START, Y);
+    e.startFollow();
+    // (planted: the line reads the water at its LAID level, never its live surface: engine.ts startFollow's safeWater getter replaced)
+    if (plant.readOff) for (const q of e.follow.stage.safeWater) if (q.lip !== undefined) Object.defineProperty(q, 'y', { value: w.y0 });
+    for (const c of cages) e.follow.free(c.critter, { x: c.x - 300, y: Y }, { x: c.x - 300, y: Y });
+    for (let i = 0; i < 30; i++) run.sim.frame({});
+    run.prog.relocate(run.sim.p);
+    const out: TeachRun = { end: '', home: 0, rescues: 0, y0: w.y0, y1: w.y1, endY: 0, respawnY: 0, paddles: 0, risenPaddles: 0, offSurface: 0, trace: [] };
+    const over = e.floodClock.over.bind(e.floodClock);
+    e.floodClock.over = (x: number, t: number) => {
+      const got = over(x, t) as unknown[];
+      if (got.length && out.startX === undefined) {
+        out.startX = x;
+        out.startT = t;
+      }
+      return got;
+    };
+    const on = run.sim.frame.bind(run.sim);
+    run.sim.frame = (...a: unknown[]) => {
+      const r = on(...(a as [never]));
+      out.trace.push([e.gameTime, Math.round(run.sim.p.x), river.surfaceY]);
+      for (const f of e.follow.line as Follower[]) {
+        if (!f.paddle || !dipsAt.some(([a0, b0]) => f.x > a0 && f.x < b0)) continue;
+        out.paddles++;
+        if (river.surfaceY < w.y0 - 1) out.risenPaddles++;
+        if (Math.abs(f.y - river.surfaceY) > 1) out.offSurface++;
+      }
+      return r;
+    };
+    run.play();
+    out.end = run.end;
+    out.home = e.follow.home();
+    out.rescues = run.rescues;
+    out.endY = river.surfaceY;
+    // (a respawn: he comes back at his flag, the water as it was: nothing drains)
+    e.respawnAtCheckpoint('water');
+    for (let i = 0; i < 10; i++) on({});
+    out.respawnY = river.surfaceY;
+    return out;
+  } finally {
+    Math.random = mr;
+  }
+}
+
+test("the teach (P1): every tier, both settings, seeds 1-3: the water rises on its OWN start as he comes over it, to paddling depth, and never drains (a respawn keeps it); the bot leads the line through, home, no rescue; the little ones paddle the RISING water at its live surface", () => {
+  for (const [name, who] of TIERS) for (const seed of SEEDS) {
+    const r = teachRun(who, seed);
+    const { trace: _t, ...rest } = r;
+    const at = `${name} seed ${seed}: ${JSON.stringify(rest)}`;
+    assert.equal(r.end, 'shrine', at);
+    assert.equal(r.home, 3, at);
+    assert.equal(r.rescues, 0, at);
+    assert.ok(r.startX !== undefined && r.startX > 1000 && r.startX < 1000 + 40, `${at}: it started as he came over its near edge`);
+    assert.ok(r.trace.filter(([t]) => t < r.startT!).every(([, , y]) => y === r.y0), `${at}: nothing rose before`);
+    assert.ok(r.y1 < r.y0 && r.endY === r.y1, `${at}: paddling depth`);
+    assert.equal(r.respawnY, r.y1, `${at}: a respawn keeps it`);
+    assert.ok(r.paddles > 0 && r.risenPaddles > 0, `${at}: the line met the risen water`);
+    assert.equal(r.offSurface, 0, `${at}: every paddle at the live surface`);
+  }
+});
+
+test('planted (the teach): with its own start removed the water never rises (RED); with the line\'s live read removed the little ones paddle under the risen water (RED)', () => {
+  const off = teachRun(FT_MIDDLE, 1, { riseOff: true });
+  assert.equal(off.startX, undefined, 'RED: no start');
+  assert.equal(off.endY, off.y0, 'RED: never rose');
+  assert.equal(off.risenPaddles, 0, 'RED: the line never met a risen water');
+  const read = teachRun(FT_MIDDLE, 1, { readOff: true });
+  assert.ok(read.offSurface > 0, `RED: a paddle off the live surface (${read.offSurface} frames)`);
+});
+
+test("the hand build's rise-on-approach (engine.ts:1988-2011, w2Stages.ts floodBasin) reproduced by the piece: the same rise from y0 to y1 over the same seconds from his approach, started no later (its trigger was 30 px in); kept, where it drained", () => {
+  for (const [name, who] of TIERS) {
+    const r = teachRun(who, 1);
+    const at = `${name} seed 1`;
+    // (the hand build's own rule, w2Stages.ts:663 and engine.ts:1995-2011: it starts the first frame he is past `trigger` = x0 + 30 and
+    //  short of x1 + 10, and stands at river.ts floodLevel(f, y0, since))
+    const hand = r.trace.find(([, x]) => x > 1000 + 30 && x < 1600 + 10)!;
+    assert.ok(r.startT! <= hand[0] && hand[0] - r.startT! <= 0.5, `${at}: the piece starts on his approach, no later than the hand build (${r.startT} vs ${hand[0]})`);
+    for (const [t, , y] of r.trace) {
+      const want = floodLevel({ y1: r.y1, seconds: TEACH_S }, r.y0, t >= r.startT! ? t - r.startT! : undefined);
+      assert.ok(Math.abs(y - want) < 1e-6, `${at} t ${t}: ${y} against the hand build's rule ${want}`);
+    }
+    // (the ruled change, 2-8.md "Nothing drains": the hand build drained once he stood out of the basin (engine.ts:1996-2001) and on a
+    //  respawn (engine.ts:6216, :3028); the piece keeps it)
+    assert.equal(r.endY, r.y1, `${at}: kept after he left it`);
+    assert.equal(r.respawnY, r.y1, `${at}: kept over a respawn`);
   }
 });

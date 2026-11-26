@@ -1,0 +1,176 @@
+/**
+ * The bot's line skills (firsttimer.ts LINE_SKILL; 2-3.md "Bot skills"; level.md rule 21, toys first): the real first-timer bot (the
+ * middle and adult thumbs) on a toy marsh in the real engine, each skill switched off to prove the bot needs it.
+ *   - WAIT-FOR-THE-TAIL: two reed clumps (300 px) over 400 px of open mud under one heron; three little ones follow him. With the skill
+ *     he crosses with nobody spooked; without it (he runs straight on) the look catches the line out on the mud.
+ *   - FETCH-THE-SPOOKED: one little one is spooked back to the stretch's start before he sets off; with the skill he goes back for it
+ *     and brings all three home (the door opens); without it the door stays sealed.
+ *   - HOP-BACK (ENG-CAGE), on 2-3's OWN gen2 row (D75): seed 5 Normal, beat 4's two clumps over open mud with World 2's 50 px boulder
+ *     between them; the line spooked back to the stretch's start, he stands in the far clump. He walks back, stopped dead against the
+ *     boulder's face he hops it, and fetches them with no rescue; without the hop he stood against it until rescued (castBots 2-3 child
+ *     Normal seed 5 x 11590, the traced miss).
+ *   - FETCH-CLOCK (ENG-CAGE-b), the same setup with the CHILD (his testers' slow steer rhythm): the fetch and the walk on take him longer
+ *     than the 20 s stuck clock; with the clock held through the fetch he brings them back with no rescue; with it running (the old bot)
+ *     he is rescued mid-fetch (castBots 2-3 child Normal seeds 5 and 8, x 11166-11968: a rescue put him past his line, the next look
+ *     spooked it, and so on).
+ */
+import { test } from 'node:test';
+import assert from 'node:assert/strict';
+import { DT } from '../../src/game/realPlay.ts';
+import { FirstTimerRun, FT_ADULT, FT_CHILD, FT_CHILD_EASY, FT_EXPERT, FT_MIDDLE, FT_MIDDLE_EASY, LINE_SKILL, ROAD_TRIPS, freshPhone, rng, type FirstTimer } from './firsttimer.ts';
+import { FORK_JUMP_SKILL, REROUTE_SKILL } from './firsttimer.ts';
+import { SAME_GROUND, spook, type Follower } from '../../src/game/follow.ts';
+import { W2_FLOOD, W2_FOLLOW } from '../../src/game/gen2/worlds/w2.ts';
+import { W2_FORK, W2_FORK_RIVERS } from '../../src/game/gen2/worlds/w2.ts';
+import { FloodClock, floodTailOff, highRoad, type Flood } from '../../src/game/flood.ts';
+import { FLOOD_HOP, FLOOD_STEP, floodWaterOf, teachWaterOf } from '../../src/game/gen2/floodLay.ts';
+import { floodLevel } from '../../src/game/river.ts';
+import { FLOOD_FORK_JUMP } from '../../src/game/gen2/floodLay.ts';
+import { layRiver } from '../../src/game/gen2/riverLay.ts';
+import type { RiverZone } from '../../src/game/river.ts';
+import type { WatchZone } from '../../src/game/watcher.ts';
+import type { Collectible, Platform } from '../../src/game/types.ts';
+const Y = 800;
+const START = 300;
+const EXIT = 3000;
+/**
+ * THE RISING WATER'S TEACH (ENG-FLOOD28, P1; READY-28 item 1; 2-8.md beat 2 "a dip between banks fills as he watches (to paddling depth
+ * only, soft) ... leads the line through while it's shallow"): a toy marsh in the real engine, gen2's own piece (riverLay layRiver, a row
+ * marked 'teach'; its water floodLay.ts teachWaterOf), two 100 px dips, no cage freed (the flood clock never starts): the water rises on
+ * its OWN start, the first frame he is over it (flood.ts FloodClock.over, stepped by the engine). Three little ones behind him. Counted:
+ * where and when it started, its level frame by frame, the paddles (each against the water's LIVE surface), and the ends.
+ */
+const TEACH_S = 4;
+interface TeachRun {
+  end: string;
+  home: number;
+  rescues: number;
+  /** his x and the game time on the frame the teach water started (undefined: it never did) */
+  startX?: number;
+  startT?: number;
+  /** its surface: laid, at the end, and after a respawn at the end */
+  y0: number;
+  y1: number;
+  endY: number;
+  respawnY: number;
+  /** frames a little one paddled over a dip; of them, at the water's risen level (over its laid level), and off the live surface by > 1 px */
+  paddles: number;
+  risenPaddles: number;
+  offSurface: number;
+  /** every frame: game time, his x, the water's surface */
+  trace: Array<[number, number, number]>;
+}
+function teachRun(who: FirstTimer, seed: number, plant: { riseOff?: boolean; readOff?: boolean; hand?: boolean } = {}): TeachRun {
+  freshPhone(who.setting);
+  const mr = Math.random;
+  Math.random = rng(seed * 7919 + 3);
+  try {
+    const W0 = 1000;
+    const W1 = 1600;
+    const MF = 60;
+    const route = Array.from({ length: Math.ceil((EXIT + 100 - START) / 24) + 1 }, (_, i) => {
+      const x = START + i * 24;
+      return { x, y: x > W0 && x < W1 ? Y + MF : Y };
+    });
+    const run = new FirstTimerRun('2-3', 1, who, { route, cap: 200 });
+    const e = run.e as unknown as Record<string, any>;
+    const solid = (id: number, x: number, width: number, y: number, height = 200) => ({ id, x, y, width, height, type: 'solid' }) as Platform;
+    let nid = 50;
+    const low = layRiver({ dir: 1, speed: 0, logW: 0, logs: 0, safe: true, flood: 'teach', marsh: { width: W1 - W0, floor: MF, dips: 2, dip: 100 } }, W0, Y, () => nid++);
+    const dipsAt = low.floor.slice(1).map((q, i) => [low.floor[i].x + low.floor[i].width, q.x] as const);
+    run.sim.bare([solid(1, 0, W0, Y), ...low.floor, solid(3, W1, 6000 - W1, Y)]);
+    const cages = [420, 470, 520].map((x, i) => ({ id: 300 + i, x, y: Y - 26, type: 'cage', collected: true, critter: (['duck', 'otter', 'capy'] as const)[i] }) as Collectible);
+    e.collectibles = [...cages, { id: 400, x: EXIT, y: Y - 40, type: 'exit_totem', collected: false } as Collectible];
+    const st = e.currentStage;
+    st.exitTotemX = EXIT;
+    st.exitTotemY = Y;
+    st.config = { ...st.config, objectiveType: 'rescue', targetCount: 3, levelWidth: 6000 };
+    e.walls = e.mode.bounds({ levelWidth: 6000, exit: { x: EXIT, y: Y }, spawn: { x: START, y: Y } });
+    st.spawnX = START;
+    st.spawnY = Y;
+    st.checkpoints = [];
+    e.checkpoint = { x: START, y: Y };
+    const river: RiverZone = plant.hand ? { ...low.zone, floodMark: undefined, flood: { y1: teachWaterOf(low.zone, 0, TEACH_S).y1, seconds: TEACH_S, trigger: W0 + 30 } } : low.zone;
+    st.rivers = [river];
+    const easy = who.setting === 'easy';
+    const w = teachWaterOf(low.zone, 0, TEACH_S);
+    // (no cage is freed: the clock's own start never comes; its close and tail-off are the table's, unused)
+    const flood: Flood = {
+      start: { id: cages[2].id, x: cages[2].x, y: Y }, close: easy ? W2_FLOOD.close.easy : W2_FLOOD.close.normal, px: 1,
+      waters: [w], tailOff: 0, spare: easy ? W2_FLOOD.spare.easy : W2_FLOOD.spare.normal,
+    };
+    st.flood = flood;
+    e.floodClock = plant.hand ? null : new FloodClock(flood);
+    if (plant.riseOff) e.floodClock.over = () => [];
+    e.proto = { hints: [], covers: [], beats: [], movedPickups: [], bushes: [], watch: [], follow: W2_FOLLOW };
+    e.kit = undefined;
+    e.currentStage.kit = undefined;
+    run.sim.stand(START, Y);
+    e.startFollow();
+    // (planted: the line reads the water at its LAID level, never its live surface: engine.ts startFollow's safeWater getter replaced)
+    if (plant.readOff) for (const q of e.follow.stage.safeWater) if (q.lip !== undefined) Object.defineProperty(q, 'y', { value: w.y0 });
+    for (const c of cages) e.follow.free(c.critter, { x: c.x - 300, y: Y }, { x: c.x - 300, y: Y });
+    for (let i = 0; i < 30; i++) run.sim.frame({});
+    run.prog.relocate(run.sim.p);
+    const out: TeachRun = { end: '', home: 0, rescues: 0, y0: w.y0, y1: w.y1, endY: 0, respawnY: 0, paddles: 0, risenPaddles: 0, offSurface: 0, trace: [] };
+    const over = plant.hand ? () => [] : e.floodClock.over.bind(e.floodClock);
+    if (!plant.hand) e.floodClock.over = (x: number, t: number) => {
+      const got = over(x, t) as unknown[];
+      if (got.length && out.startX === undefined) {
+        out.startX = x;
+        out.startT = t;
+      }
+      return got;
+    };
+    const on = run.sim.frame.bind(run.sim);
+    run.sim.frame = (...a: unknown[]) => {
+      const r = on(...(a as [never]));
+      out.trace.push([e.gameTime, run.sim.p.x, river.surfaceY, run.sim.p.grounded ? 1 : 0] as never);
+      for (const f of e.follow.line as Follower[]) {
+        if (!f.paddle || !dipsAt.some(([a0, b0]) => f.x > a0 && f.x < b0)) continue;
+        out.paddles++;
+        if (river.surfaceY < w.y0 - 1) out.risenPaddles++;
+        if (Math.abs(f.y - river.surfaceY) > 1) out.offSurface++;
+      }
+      return r;
+    };
+    run.play();
+    out.end = run.end;
+    out.home = e.follow.home();
+    out.rescues = run.rescues;
+    out.endY = river.surfaceY;
+    // (a respawn: he comes back at his flag, the water as it was: nothing drains)
+    e.respawnAtCheckpoint('water');
+    for (let i = 0; i < 10; i++) on({});
+    out.respawnY = river.surfaceY;
+    return out;
+  } finally {
+    Math.random = mr;
+  }
+}
+
+
+// ONE-OFF PROBE (ENG-FLOOD28, on the base that still has the hand build's block): the engine's own engine.ts:1988-2011 on the same toy
+// against the piece, frame by frame. Run from tools/inspect/ (copied there as probeHand.test.ts), never committed as a test.
+test('probe: the hand build block vs the piece', () => {
+  const lines: string[] = [];
+  for (const [name, who] of [['child', FT_CHILD], ['middle', FT_MIDDLE], ['adult', FT_ADULT], ['expert', FT_EXPERT], ['child-easy', FT_CHILD_EASY], ['middle-easy', FT_MIDDLE_EASY]] as const) {
+    const h = teachRun(who, 1, { hand: true });
+    const p = teachRun(who, 1);
+    const tr = h.trace as unknown as number[][];
+    const pt = p.trace as unknown as number[][];
+    const hStart = tr.findIndex((q, k) => k > 0 && q[2] !== tr[k - 1][2]);
+    const pStart = pt.findIndex((q, k) => k > 0 && q[2] !== pt[k - 1][2]);
+    // the hand build's curve from its own start against the piece's from its own: the same y every frame after
+    let worst = 0;
+    for (let k = 0; hStart + k < tr.length && pStart + k < pt.length; k++) {
+      const hx = tr[hStart + k], px = pt[pStart + k];
+      const handIn = hx[1] > 1000 + 30 && hx[1] < 1600 + 10;
+      if (!handIn && hx[3]) break;
+      worst = Math.max(worst, Math.abs(hx[2] - px[2]));
+    }
+    const drained = tr.findIndex((q, k) => k > hStart && q[2] > tr[k - 1][2]);
+    lines.push(`${name}: hand start frame ${hStart} (x ${tr[hStart - 1]?.[1]?.toFixed(1)}), piece start frame ${pStart} (x ${pt[pStart - 1]?.[1]?.toFixed(1)}); same curve while he is in the basin: worst ${worst.toFixed(6)} px; hand drains from frame ${drained} (x ${tr[drained]?.[1]?.toFixed(1)}) to ${h.endY} (laid ${h.y0}), after respawn ${h.respawnY}; piece end ${p.endY}, after respawn ${p.respawnY} (paddling depth ${p.y1}); ends hand ${h.end}/${h.home}, piece ${p.end}/${p.home}`);
+  }
+  console.log(lines.join('\n'));
+});

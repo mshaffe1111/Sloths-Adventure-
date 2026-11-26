@@ -74,12 +74,13 @@ test('node asks (planted): each element asked and not laid is named; laid, it pa
   // hazard on the FLOOD (ENG-FLOOD28 P1, 2-8's 'Tw1:#soft@flood'): no Later; the fall of that kind AND a flood-marked water in its span
   assert.equal(m('Tw1:#soft@flood', { sections: [{ content: 'water', double: false, dy: 0 }] }), '', '@flood is checked by the lay, never Later');
   assert.match(m('Tw1:#lava@flood'), /hazard #lava@flood: Later: no world hazard of that id/);
-  const soft = [{ x0: 200, x1: 300, kind: 'soft' }];
-  assert.deepEqual(hazardMiss(ask('Tw1:#soft@flood'), 'n2', 'T', [100, 400], soft, [{ x0: 150, x1: 350 }]), []);
-  assert.match(hazardMiss(ask('Tw1:#soft@flood'), 'n2', 'T', [100, 400], soft, [{ x0: 600, x1: 900 }]).join(), /hazard #soft@flood: no water marked for the flood in its span/);
+  const soft = [{ x0: 200, x1: 300, kind: 'soft', flood: true }];
+  assert.deepEqual(hazardMiss(ask('Tw1:#soft@flood'), 'n2', 'T', [100, 400], soft, true), []);
+  assert.match(hazardMiss(ask('Tw1:#soft@flood'), 'n2', 'T', [100, 400], [{ ...soft[0], flood: false }], true).join(), /hazard #soft@flood: its soft fall ends in no water marked for the flood/);
   assert.match(hazardMiss(ask('Tw1:#soft@flood'), 'n2', 'T', [100, 400], soft).join(), /hazard #soft@flood: the stage's brief names no flood/);
-  assert.match(hazardMiss(ask('Tw1:#water@flood'), 'n2', 'T', [100, 400], soft, [{ x0: 150, x1: 350 }]).join(), /hazard #water@flood: laid soft/);
-  assert.deepEqual(hazardMiss(ask('P:#pods@beat'), 'n2', 'P', [100, 400], soft, [{ x0: 150, x1: 350 }]), [], 'another clock is still Later (askMisses names it)');
+  assert.match(hazardMiss(ask('Tw1:#water@flood'), 'n2', 'T', [100, 400], soft, true).join(), /hazard #water@flood: laid soft/);
+  assert.deepEqual(hazardMiss(ask('P:#soft'), 'n2', 'P', [100, 400], [{ ...soft[0], flood: false }]), [], 'a plain hazard asks no flood');
+  assert.deepEqual(hazardMiss(ask('P:#pods@beat'), 'n2', 'P', [100, 400], soft, true), [], 'another clock is still Later (askMisses names it)');
 });
 
 const ID = '5-95';
