@@ -14,6 +14,11 @@ order to take them (all named by the pipeline, none estimated):
    (ketsu): the pool is spent". NEXT: read pipeline.ts:600-700 (how a designed code's F[P+|P] roads are counted as nodes) and how the
    deleted hand build's B-bot runs laid the fork (cc85378b0, 6c407a578). If a designed code cannot hold exactly ONE fork without the coin,
    that is an ENGINE GAP: STOP and take it to the lead (the packet's order) with these two lines.
+   READ THIS BOX (pipeline.ts:610-613, :651-656): a fork's roads are ONE two-road section (one node, job 'fork'), so the code is right;
+   but the brief's fork count is 'none' 0, 'some' 1 + a coin for a 2nd (:651), 'lots' 3-4, and :653-656 adds forks at open
+   practise/flow/climb slots up to that count. NO brief value keeps a designed code's ONE fork on every roll: an ENGINE GAP (no designed
+   arc in the game has an F yet: grep of src/game/gen2/worlds for "F[" finds none). TAKEN TO THE LEAD in box 3's hand-over; the next
+   box waits for the ruling (an engine packet: e.g. a designed code's forks are its own count) before going on with item 1.
 2. LEGS: "leg 2 (left) overlays leg 1 (right) at x 6401-20764: the lower leg's top 680 is -336 px under the higher leg's foot 1016 (needs
    260, legs.ts:214 LEG_CLEAR): a leg laid back over another needs its own ground (a column between them)". Beat 6's three 45 px steps do
    not part the legs; 2-7 parts them with its D column (Dc_). The steps' height (or a column at the turn) is a DESIGN call: to the lead,
