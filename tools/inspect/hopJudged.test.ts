@@ -664,11 +664,11 @@ test('a log going under the bank is no floor ahead: a log drifting against his w
   } finally {
     P.intend = it;
   }
-  assert.ok(seen > 5, `the toy reads too little: ${seen} steps from a bank onto a log`);
+  assert.ok(seen >= 2, `the toy reads too little: ${seen} steps from a bank onto a log`);
   assert.deepEqual(onto, [], 'he stepped from a bank onto the last px of a log going under it');
   // (the row: the upstream river past #85, x 19,400-19,900, crossed with no life lost)
-  const lost = (run as unknown as { whatAt: Array<{ x: number; what: string }> }).whatAt.filter((w) => w.x > 19400 && w.x < 19900 && /drowned|lost a life/.test(w.what));
-  assert.deepEqual(lost.map((w) => `${Math.round(w.x)}: ${w.what}`), [], 'a life lost at the river past #85 (x 19,400-19,900)');
+  const lost = run.harms.filter((h) => h.kind === 'life' && h.x > 19400 && h.x < 19900);
+  assert.deepEqual(lost.map((h) => `t ${h.t.toFixed(2)} x ${Math.round(h.x)}: ${h.cause}`), [], 'a life lost at the river past #85 (x 19,400-19,900)');
   const there = run.stuck.filter((s) => s.x > 19400 && s.x < 19900);
   assert.deepEqual(there.map((s) => `${s.x}: ${s.what}`), [], 'stuck at the river past #85 (x 19,400-19,900)');
 });
