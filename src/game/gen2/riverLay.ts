@@ -362,6 +362,8 @@ export function lianaDrops(v: Vine, logs: readonly DriftInfo[], difficulty: Diff
  *  Infinity when none lands), and the WINDOW (s): the longest run of presses in a row that land, the let-go a player can aim for */
 export interface LockedDrops extends LianaDrops {
   window: number;
+  /** a press on ONE (where the swing's clock is a whole swing: the drum's ONE, the lock's) lands, on every swing of the joint cycle */
+  one: boolean;
 }
 
 /**
@@ -380,10 +382,14 @@ export function lockedDrops(v: Vine, logs: readonly DriftInfo[], difficulty: Dif
     // (the swings in one joint cycle: the fewest whole swings that are a whole number of log spacings; at most 8)
     let reps = 1;
     while (reps < 8 && Math.abs((reps * period) / spacing - Math.round((reps * period) / spacing)) > 1e-3) reps++;
-    let share = 1, wait = 0, window = Infinity;
+    let share = 1, wait = 0, window = Infinity, one = true;
     for (const g of LIANA_RIVER.grips) {
       const L = pressLaunches(v, g);
       const n = L.length, N = n * reps;
+      // (the press on ONE: the one whose clock is nearest a whole swing)
+      const ring = (x: number) => { const u = ((x % period) + period) % period; return Math.min(u, period - u); };
+      let k1 = 0;
+      L.forEach((l, k) => { if (ring(l.pt) < ring(L[k1].pt)) k1 = k; });
       const G = new Uint8Array(N);
       L.forEach((l, k) => {
         const f = letGoFall(l, d0);
@@ -392,6 +398,7 @@ export function lockedDrops(v: Vine, logs: readonly DriftInfo[], difficulty: Dif
       let lands = 0;
       for (let i = 0; i < N; i++) lands += G[i];
       share = Math.min(share, lands / N);
+      for (let r = 0; r < reps; r++) if (!G[r * n + k1]) one = false;
       if (!lands) { wait = Infinity; window = 0; continue; }
       let worst = 0, run = 0, best = 0;
       for (let i = 0; i < N; i++) {
@@ -404,8 +411,27 @@ export function lockedDrops(v: Vine, logs: readonly DriftInfo[], difficulty: Dif
       wait = Math.max(wait, worst * FRAME);
       window = Math.min(window, best * FRAME);
     }
-    return { share, wait, period, window };
+    return { share, wait, period, window, one };
   });
+}
+
+/**
+ * Every swinging liana over a log river's logs (river.ts lianasOverLogs), each judged LOCKED (lockedDrops) in its river's own frame (a river
+ * crossed right to left turned about itself, as riverFaults reads it): tempo.ts tempoFaults names one whose press on ONE misses. Still
+ * water, open water, a raft's or a flood's river: none.
+ */
+export function lockedLianas(st: { platforms: readonly Platform[]; rivers?: readonly RiverZone[]; vines?: readonly Vine[] }, difficulty: Difficulty): Array<{ river: RiverZone; liana: Vine; drops: LockedDrops }> {
+  const out: Array<{ river: RiverZone; liana: Vine; drops: LockedDrops }> = [];
+  for (const r0 of st.rivers ?? []) {
+    if (r0.speed === 0 || r0.open || r0.raft || r0.flood) continue;
+    const { r, platforms, vines } = r0.way === -1 ? rightwards(r0, st.platforms, st.vines ?? []) : { r: r0, platforms: st.platforms, vines: st.vines ?? [] };
+    const logs = platforms.filter((p) => p.type === 'drift' && p.drift && onRiver(p.drift, r)).map((p) => p.drift!);
+    if (!logs.length) continue;
+    const turned = lianasOverLogs(vines, r);
+    // (each reported as laid: the river and the liana in the stage's own frame)
+    for (const v of turned) out.push({ river: r0, liana: (st.vines ?? []).find((q) => q.id === v.id) ?? v, drops: lockedDrops(v, logs, difficulty) });
+  }
+  return out;
 }
 
 /**

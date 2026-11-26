@@ -3,7 +3,8 @@
 // beats, under a brief with the court's tempo) built by gen2 through withTestStage. GREEN on seeds 1-4, both settings: no stage error, the
 // tempo check clean, every liana locked to the bar. RED, each by name: the court's speed 80 -> 82 and a stone row off the beat (its bar,
 // its wave's stagger) in gen2's own errors; a liana unlocked and the stones' clock moved off the beat, by the check gen2 runs; and the same
-// stage laid WITHOUT the tempo fails it (the lay is what keeps the beat).
+// stage laid WITHOUT the tempo fails it (the lay is what keeps the beat). The let-go on ONE (ENG-29d): every court liana's press on the drum's
+// ONE lands its logs (riverLay lockedDrops, the one pairing a locked court plays); RED by name with the lock at 0.15 of a bar.
 import '../headlessDom.ts';
 import test from 'node:test';
 import assert from 'node:assert/strict';
@@ -12,6 +13,7 @@ import { withTestStage } from './listed.ts';
 import { COURT_STONES, COURT_TEMPO, TEMPO_ID, tempoCfg, tempoKit, tempoRow, type TempoToyOpts } from './worlds/w2TempoToy.ts';
 import { W2_RIVERS } from './worlds/w2.ts';
 import { tempoFaults } from '../tempo.ts';
+import { lockedLianas } from './riverLay.ts';
 
 const build = (seed: number, difficulty: 'normal' | 'easy', o: TempoToyOpts = {}) =>
   withTestStage({ [TEMPO_ID]: tempoRow(o) }, () => buildGen2Stage({ config: tempoCfg(), kit: tempoKit(o), seed, difficulty }));
@@ -61,4 +63,18 @@ test('tempo toy (planted): the same stage laid WITHOUT the tempo fails the check
   const st = build(1, 'normal', { tempo: null });
   assert.equal(st.tempo, undefined);
   assert.match(tempoFaults(st, COURT_TEMPO, false).join('; '), /the liana at x \d+: its swing is not locked to the bar/);
+});
+
+test('tempo toy: every court liana\'s press on ONE lands its logs, seeds 1-4, both settings; RED by name, in gen2\'s errors, with the lock at 0.15 of a bar', () => {
+  for (const difficulty of ['normal', 'easy'] as const) for (const seed of [1, 2, 3, 4]) {
+    const L = lockedLianas(build(seed, difficulty), difficulty);
+    assert.ok(L.length >= 3, `${difficulty} seed ${seed}: the court's lianas over logs (${L.length})`);
+    assert.deepEqual(L.filter((q) => !q.drops.one).map((q) => Math.round(q.liana.x)), [], `${difficulty} seed ${seed}: a press on ONE lands`);
+  }
+  // (planted: ONE moved to 0.15 of the swing, near its forward end, where a press drops him short of the logs)
+  const tempo = { ...COURT_TEMPO, lock: 0.15 };
+  for (const difficulty of ['normal', 'easy'] as const) {
+    const st = build(2, difficulty, { tempo });
+    assert.match(st.gen2.errors.join('; '), /the liana at x \d+ over the river at x \d+-\d+: a press on ONE misses its logs on every bar \(locked: \d+% of a bar's presses land, the longest run [\d.]+ s\)/, difficulty);
+  }
 });

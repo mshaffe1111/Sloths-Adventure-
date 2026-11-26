@@ -13,6 +13,7 @@ import type { ClockDef } from './stageKit.types.ts';
 import { driftCycle, onRiver, type RiverZone } from './river.ts';
 import { vinePeriod } from './physics.ts';
 import { bucketPeriod, type Wheel } from './wheel.ts';
+import { lockedLianas } from './gen2/riverLay.ts';
 
 /** a stage's tempo (data: the stage's brief, gen2 GraphBrief.tempo) */
 export interface TempoSpec {
@@ -96,6 +97,12 @@ export function tempoFaults(st: TempoStage, tempo: TempoSpec, easy: boolean): st
     if (Math.abs(p - bar) > TEMPO_EPS) out.push(`${at}: a swing of ${s3(p)} s is not the bar (${s3(bar)} s)`);
     if (v.swingPhase === undefined) out.push(`${at}: its swing is not locked to the bar (no phase; the lock is ${s3(tempo.lock)})`);
     else if (phaseOff(v.swingPhase, tempo.lock) * p > TEMPO_EPS) out.push(`${at}: its swing is not locked to the bar (phase ${s3(v.swingPhase)}, the lock ${s3(tempo.lock)})`);
+  }
+  // (a liana over a court river: the swing and the river keep one clock, so the drum's ONE meets the logs the same way on every bar; a
+  //  press on ONE that misses misses for good, and the drum's lesson, "let go on ONE" (2-9.md), would drown him. ENG-29d)
+  for (const { river, liana, drops } of lockedLianas(st, easy ? 'easy' : 'normal')) {
+    if (drops.one) continue;
+    out.push(`the liana at x ${Math.round(liana.x)} over the river at x ${Math.round(river.x0)}-${Math.round(river.x1)}: a press on ONE misses its logs on every bar (locked: ${Math.round(drops.share * 100)}% of a bar's presses land, the longest run ${s3(drops.window)} s)`);
   }
   for (const c of st.clocks ?? []) {
     const at = `the clock '${c.id}'`;
