@@ -809,3 +809,32 @@ test("a log running his way, his middle past its end: the feet read leaves it to
     ft.SKILLS.vineFromLog = was;
   }
 });
+
+test("his middle past the front of a log running at him and no judged hop: never a stand at the lip he has passed (2-1 kid Normal 13 to t 110, R-165.465 C14)", async () => {
+  const ft = await import('./firsttimer.ts');
+  const { CAST_BOTS } = await import('./castBots.ts');
+  // (C12/C13 read #72 (running back at him) by his feet at 102.47, x 19,928, as his floor for every river block: the gate pressed no hop
+  //  and its stand gave no input, his walk slid him off the front with no press, into the water (102.63, set back to x 19,389). C11
+  //  and C14: the edge plan's press, pending, flies him off the lip and he crosses. The other way, the judged hop flown, is the toy
+  //  'his middle past a drifting log's front')
+  type R = { t: number; sim: { p: { x: number } } };
+  const P = ft.FirstTimerRun.prototype as unknown as { intend: (this: R) => unknown };
+  const it = P.intend;
+  const backs: string[] = [];
+  let lastT = -1, lastX = 0;
+  P.intend = function (this: R) {
+    const x = this.sim.p.x;
+    if (lastT >= 0 && Math.abs(this.t - lastT - 1 / 30) < 1e-3 && Math.abs(x - lastX) >= 100 && lastX > 19300 && lastX < 20600) backs.push(`t ${this.t.toFixed(2)} x ${Math.round(lastX)} -> ${Math.round(x)}`);
+    const o = it.call(this);
+    lastT = this.t; lastX = this.sim.p.x;
+    return o;
+  };
+  let run: ReturnType<typeof ft.firstTimer>;
+  try {
+    run = ft.firstTimer('2-1', 13, CAST_BOTS.kid.normal!, { cap: 110, dotSetting: true });
+  } finally {
+    P.intend = it;
+  }
+  assert.deepEqual(backs, [], 'put back at the river past #85 (x 19,300-20,600)');
+  assert.ok(run.x > 20202, `the toy reads too little: he stands at x ${Math.round(run.x)} at t 110, short of the river's far bank`);
+});

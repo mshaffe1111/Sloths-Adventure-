@@ -333,14 +333,8 @@ const plantedRide = (who: FirstTimer, on: boolean, phases: readonly number[] = [
 
 /** the phases of the bare at-him river (gap 80) that test the re-aim (ENG-PLANT-CI session 11, by phase): the gate's `next` reads a log in
  *  reach with a real margin, and reAim splits them (on = hop, off = back). 0.25-0.75, 1.25 and 2.25 ride back either way (`next` false
- *  at the press, margin 21-23 under the gate's 24); 1.75, 2 and 3 hop either way; 2.75 splits but its press margin is 26 (kept out)
- *  Re-planted at the SAME bar on R-165.465 C13 (ENG-THUMB box 7, as ruling 4 re-planted riverRide's against-the-flow plant): 1.5 no
- *  longer splits. With reAim off he lands on log 17 with his middle 1 px past its front, and C12's feet read lets the upstream gate
- *  draw and judge its own hop there (2.43 s, onto log 16, a hop that lands); the planted tap held by the edge plan is never pressed.
- *  The fault still bites on that run (he rides log 16 back to the bank), but past the first log, which the plant does not measure.
- *  On C13 the splits are 0 / 1 / 2.5 / 2.75 / 3 (on hop, off back); 3 is new (margin at the press 43, never under 43 on a frame `next`
- *  reads one), 2.75 stays out (26). 0.25-0.75, 1.25, 2, 2.25 ride back either way; 1.5, 1.75 hop either way (ENG-THUMB d/reaim-c13.txt) */
-const REAIM_PHASES = [0, 1, 2.5, 3] as const;
+ *  at the press, margin 21-23 under the gate's 24); 1.75, 2 and 3 hop either way; 2.75 splits but its press margin is 26 (kept out) */
+const REAIM_PHASES = [0, 1, 1.5, 2.5] as const;
 const DT_S = 1 / 30;
 
 test('in the real engine: on a log flowing AT him, a held hop the upstream gate refuses is aimed again after his reaction, never held for the whole ride back (SKILLS.reAim; RED with it off)', () => {
@@ -350,8 +344,7 @@ test('in the real engine: on a log flowing AT him, a held hop the upstream gate 
   //  while he stands on a log is that tap; every later draw is his own. A bare river of 150 px logs 80 px apart flowing at him, 6 phases)
   //  Re-planted BY PHASE at gap 80 (the lead's ruling, ENG-PLANT-CI session 11; a gap change scrambles the phases): the kept phases are
   //  REAIM_PHASES, where the upstream gate's `next` reads a log in reach with a real margin (at the press 63 / 54 / 49 / 45 px, never under
-  //  27 on a frame it reads one; the gate's own is 24) and the skill splits them, on = hop, off = back (s11/margins-gap80-ci14.txt).
-  //  On C13 (phase 3 for 1.5): at the press 63 / 54 / 45 / 43, never under 61 / 33 / 31 / 43 (ENG-THUMB d/reaim-c13.txt)
+  //  27 on a frame it reads one; the gate's own is 24) and the skill splits them, on = hop, off = back (s11/margins-gap80-ci14.txt)
   const first = (on: boolean) => plantedRide(FT_CHILD, on, REAIM_PHASES).map((r) => r.split('@')[0]);
   const on = first(true), off = first(false);
   assert.ok(on.every((s) => s === 'hop'), `with the skill: he aims again and hops off the first log every phase (${on.join(' ')})`);
