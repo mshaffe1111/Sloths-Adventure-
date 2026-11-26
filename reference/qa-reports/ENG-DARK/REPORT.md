@@ -1,4 +1,39 @@
 # ENG-DARK REPORT (the dark + light ring as one gen2 brick; WORLD-3-PLAN F2; R-165.449)
+**EXACT NEXT STEP (ENG-DARK-q box 17 HAND-OVER, 1:26 PM ET by `date`; head on t-eng-dark-wip = this commit; CODE CANDIDATE b1c17c9b1 (c9).
+The lead's answer (box 17): KEEP ENG-DOWNBOT's lay in this landing; ONE walled-end rule read by handOn and dropTo; no catch laid
+without an open end (repair where it can, refuse where it can't); toys and plants each way; N 25's wall fall traced; then a fresh
+x40 vs the bar; if 6:00 slips, tell the lead at 5:30 with what is left.)**
+**DONE (c9 b1c17c9b1, frozen worktree, rows in kinds-b1c17c9b1-rows.txt; tower.test 37/37 GREEN there):** tower.ts `walledEnd` (wood not
+level with an end, within his HALF-WIDTH 22 px past it, its body inside his 48 px: no way off; 66 px was too wide: Normal 22's bough
+28 px past an end at y 11421 he goes by, and the first try (b32b0f5ee) stalled every bot there), read by `handOn` (towerHandOns),
+the lay's catch guard `passes`, towerRoute `dropTo` and firsttimer `downEnd` (open ends). Rows vs c7: kid N 22 174.7 -> 147.6 s,
+rescues 2 -> 1; adult N 22 175.7 -> 149.1, 2 -> 1; middle N 22 204.2 -> 184.1, 2 -> 1 (none on floor 16); child N 22 289.8 -> 284.8,
+one stall left on catch #193 that is a BASE kind ('the way on is 114 px down': at the open end he jumps up onto #169, y 8251,
+instead of dropping: not the wall); adult E 37: the walled catch is refused, the roll re-lays (floors moved), 249.3 -> 230.1 s, 3
+base-kind rescues. **NEW KINDS LEFT: child N 25 only** ('in a dip 48 px deep, a drop of 125 px ahead, a trunk beside him, the way on is
+125 px down', unchanged on c9).
+**N 25 TRACE SO FAR (c7 and c9 alike; FT_FRAMES 126-131):** on #47 (80-281, y 7659) the turn's trunk 16 stands at x 54, 26 px PAST its
+left end (7659 -> 7940, onto log #48 34-389, y 7940, h 90). He stands at x 112 about 1.2 s (the dark stop, by its look), then a JUMP
+left (press at 128.67 s) carries him past the trunk to x 20 at the wall, where the 34 px slot between the wall and #48's left end lets
+him fall 1850 px to #185 (y 9445), far ahead of the way; the rescue puts him on #59 (367, 9493). The base lays the same wood there
+(same slot, same trunk); its child does not jump there. TWO open questions for box 18: (a) why a jump (glowJump re-planned after
+the dark stop? startJump toward the trunk's grab?); (b) the lay: towerFalls/openEnds treat an end near the wall as no end (the engine
+keeps him in [20, width - 20]), but a 44 px body with its middle at x 20 falls past wood that starts at 34: a slot at the wall.
+**BOX 18 DOES, in order:** (1) trace N 25's jump to its line, fix it (and, if it is the lay's wall slot, the lay), toy each way, re-run
+child N 25 (and its base row) on a frozen tree. (2) toys + plants for box 17's rule: tower.test SHAPE toy (turn {x 500, 580 -> 927},
+catch solid(408, 753, 180), the storey only under the left end, a log 17 px left of the catch's end, 73 px up, 90 px thick: towerHandOns
+names it; without the log, kept; walledEnd values: flush 62 px up h 24 = walled, 28 px off = open, level = open) planted RED by handOn's
+filter removed; towerRoute toy (real row Normal 22: the corner after (833, 8384) is off the right end, x > 1004; planted: dropTo's
+`open` without walledEnd); darkBots toy kid N 22 cap 135 s: no rescue with y 8311-8658 (planted: walledEnd false). The `passes` guard
+and downEnd's read each need a toy or are taken out if no row needs them (rule: no bot change without its toy). (3) step 2 of the
+order (box 16's toys, glowJump re-anchor) on the final lay: NOTE the lay changed, so box 16's anchors (Normal 22's run off at 699,
+5658; child N 22's unlit) must be re-checked on it. (4) the fresh x40 (2 lanes, about 6 min each) vs THE BAR and the kinds per the
+ruling. (5) gates, LAND as ordered.
+Worktrees (container-local): /home/user/wt/{c1008d8e,119680d33,b32b0f5ee,b1c17c9b1}. Probes: onerun.mts, probes/tagat.mts (wood, trunk,
+floor at a point), probes/legs.mts (the route's corners in a y band), kinds.py (per-row kinds vs base).
+Lessons applied: D115 (every row on a frozen tree), D119, D128, D134, D138, D140 (ReadNotifications at each step), D141 (the CI line:
+NOT yet run on c9: box 18 runs it on its candidate).
+
 **BOX 17 STEP 1 (ENG-DARK-q, 1:19 PM ET by `date`): THE RULING APPLIED, PER ROW. ALL 4 KINDS ARE NEW FAILURES (no base rescue at the
 same place family). Base rescues 1393 (x40 base c1008d8e) vs c7 620.** Method: each c7 row re-run on frozen 119680d33 (probes onerun.mts,
 kinds-c7-rows.txt: the x40 rows reproduce exactly), the base's 5 bots on the same roll and setting on frozen c1008d8e (kinds-base-rows.txt),
