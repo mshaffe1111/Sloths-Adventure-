@@ -1,6 +1,6 @@
 # ENG-BOTSIM: can the bots ask the GAME how a press flies? (R-165.462, spike; branch t-eng-botsim from c73cb9766)
 
-## EXACT NEXT STEP (session 2 hand-over, written 1:51 PM ET; order step 1 DONE with a NO-BACK result below; step 2 (a)-(b) DONE, (c) open; step 3 open)
+## EXACT NEXT STEP (session 2 hand-over, written 1:45 PM ET; order step 1 DONE with a NO-BACK result below; step 2 (a)-(b) DONE, (c) open; step 3 open)
 Tree: `git worktree add --detach ../bs-ci10 8134a9a56`; `npm ci --no-audit --no-fund --legacy-peer-deps` in the main tree (plain npm ci
 fails ERESOLVE), `ln -s <main>/node_modules ../bs-ci10/node_modules`; `git -C ../bs-ci10 apply <main>/reference/qa-reports/ENG-BOTSIM/
 proto-ci10-s2.patch` (REPLACES proto-ci10.patch: session 1's judge + session 2's fixes a-c, the band switch, the plan counters, the trace);
