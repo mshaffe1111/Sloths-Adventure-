@@ -26,6 +26,11 @@ box lays everything else in the court (pads 130/50 as flown, the rest of the bea
    edge within 2 px) or look not carried, it is ENG-29-e's (message them with the numbers, rule 26); if it is the draft's data, fix it.
    Also check 456 px / 80 px/s = 5.70 s against 2 bars x 2.85 = 5.70 s: equal, inside the +1e-6 bound, but Easy is 462/70 = 6.6 s
    against 2 x 3.3 = 6.6 s: equal too; a hair over on either is a refusal, so read the built spacing.
+2. G2 is on t-eng-29-wip 232f2bcbe (NOT landed; ENG-29-e's note): add W2_POSTED_GUARD (w2Cast.ts, id 'royal-guard-posted', tag
+   'posted') to SNAPPERS_29's creatures and an enemy socket on beat 10's landing piece (the barge's far bank 'z') with allow
+   ['royal-guard-posted']; laid both settings, from no threat, never cut on Easy, faces the nearest river, Enemy.uncounted (out of the
+   goal, the HUD and the sealed exit); patchFor keeps him 224 px from a flag on that piece and off its jump clearance, else the roll
+   fails by name. journalMet royal_guard stays ['2-9']: KEEP stageSheets 'foe:guard' and journalMet's royal_guard off the deletion list.
 2. ENG-29-e's G1/G2/G3/G6 notes (t-eng-29-wip): when G3 lands, re-roll WITHOUT the stand-in; when G2 lands, the guard on beat 10's landing.
 3. READY-29 on the draft, each ONCE on a frozen worktree of the head (git worktree add --detach; chattr -R +i src tools; node_modules
    symlinked), each lane its OWN run_in_background call (never a shell '&'):
