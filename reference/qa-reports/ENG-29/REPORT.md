@@ -68,6 +68,9 @@ little early there; 2-9 has no hitstop or slow motion on the court today.
     with a run, then three hops of 0.03-0.08 s held from a stand land back on the same pad ('FELL BACK', run false) until it sinks: 2
     lives; then a 0.27 s hold and the row crossed in four hops a beat apart. The child's own small-pad play (it hops in place, then
     learns), not the court's: NOT retuned here (the child is calibrated on 1-1, BOTS.md); named for READY-29.
+- THE STOP (step 1's suite): firstTimerBot.test.ts:177 '5-9's Easy goal rests on the kid's runs (KID_RUNS_59)': kid 5-9 Easy measures
+  [8,9,7,7,4,7], recorded [3,5,6,7,6,5]; the same red on a frozen c73cb9766 ALONE. INHERITED, not ENG-29's: the lead's ruling, the release
+  line's own red, bisected to CI-15 0ec009b4d (R-165.473, held for Matt as R-165.477); landed with it named.
 - Step 3: reference/handoffs/engine-core.md §0zs-TEMPO (the tempo, the locked let-go, the bot on a court, the drum's path, the traps:
   layering, DRUM_AHEAD 3 frames and why, DRUM_JUMP, the hold at loseLife, the comment that trips listed.test; the toy; what is open).
 - A miss of mine: one probe ran three locks with a shell '&' and `wait` (the brief says never); every later run went through
