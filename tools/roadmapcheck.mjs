@@ -1,7 +1,8 @@
 /**
  * The roadmap check (reference/methods/roadmap.md, LAWS.md law 5): open work that lives in the repo must be on reference/ROADMAP.md.
  *
- *   node tools/roadmapcheck.mjs          (seconds; exit 1 on an orphan or a bad proof, 2 when it can't run)
+ *   node tools/roadmapcheck.mjs          (seconds; exit 1 on an orphan, a bad row or a bad proof; 2 when the rows pass but a shallow
+ *                                         clone or no git left the proofs unchecked: the row checks always run and print)
  *
  * It fails when:
  *   1. ROADMAP.md is missing, or an R-id appears twice as an item (ids are never reused);
@@ -17,7 +18,7 @@
  *   7. a defect in the log has no line in reference/LESSONS.md (and no open R-item to add it); a method file is missing from
  *      reference/methods/README.md.
  * Numbers: R-n and R-n.m are open items, A-n archived ones; the "Draft numbers retired" table is skipped (never reused).
- * It needs the full history (CI: gates.yml checks out with fetch-depth 0).
+ * Check 5 needs the full history (CI: gates.yml checks out with fetch-depth 0); on a shallow clone it is skipped and says so.
  */
 import { execFileSync } from 'node:child_process';
 import fs from 'node:fs';
@@ -178,11 +179,12 @@ for (const k of JSON.parse(read('src/game/playerText.known.json')).known) {
 })(path.join(root, 'reference'));
 
 // ---- 5. done items name real proof
+// Only this section needs the full history. A shallow clone (or no git) still runs every row check above and below and says the proofs
+// were skipped: it used to exit 2 here before printing a single row failure, which hid 171 bad rows (CI #91, R-165.489, 2026-11-26).
 const head = tryGit('rev-parse', 'HEAD');
-if (!head) { console.log('roadmap check: not a git checkout: FAIL'); process.exit(2); }
-if (tryGit('rev-parse', '--is-shallow-repository') === 'true') { console.log('roadmap check: shallow clone, proofs cannot be checked (fetch-depth 0): FAIL'); process.exit(2); }
-const merged = new Set((tryGit('log', '--format=%s', 'HEAD') ?? '').split('\n').map((s) => s.match(/^Merge pull request #(\d+) from/)?.[1]).filter(Boolean));
-for (const it of items.filter((i) => i.done)) {
+const noProofs = !head ? 'not a git checkout' : tryGit('rev-parse', '--is-shallow-repository') === 'true' ? 'shallow clone (fetch-depth 0, or git fetch --unshallow)' : null;
+const merged = new Set(noProofs ? [] : (tryGit('log', '--format=%s', 'HEAD') ?? '').split('\n').map((s) => s.match(/^Merge pull request #(\d+) from/)?.[1]).filter(Boolean));
+for (const it of noProofs ? [] : items.filter((i) => i.done)) {
   const prs = [...it.proof.matchAll(/PR #(\d+)/g)].map((m) => m[1]);
   const shas = [...it.proof.matchAll(/\b([0-9a-f]{7,40})\b/g)].map((m) => m[1]);
   if (!prs.length && !shas.length) { fail(`${it.id} is done but names no PR or commit`); continue; }
@@ -224,5 +226,11 @@ if (fs.existsSync(path.join(root, 'reference/BUILD-PLAN.md'))) {
 }
 
 for (const f of fails) console.log(`✗ ${f}`);
+if (noProofs) {
+  // the rows are judged in full; the run is still not a pass, because the done items' proofs were not checked
+  console.log(`roadmap check: ${noProofs}: the proof checks (done items' commits and PRs) were SKIPPED; every other check ran`);
+  console.log(fails.length ? `FAIL (${fails.length})` : 'INCOMPLETE (rows pass; proofs not checked)');
+  process.exit(fails.length ? 1 : 2);
+}
 console.log(fails.length ? `FAIL (${fails.length})` : 'PASS');
 process.exit(fails.length ? 1 : 0);
