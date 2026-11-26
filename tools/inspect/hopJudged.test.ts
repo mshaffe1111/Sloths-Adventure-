@@ -536,3 +536,33 @@ test('a bare stand is a stop the thumb lets go, its late lift-off kept: 2-1 kid 
   assert.deepEqual(long, [], `a bare stand never let go (more than releaseMax[1] = ${hi} frames steered): ${long.slice(0, 6).join('; ')}`);
   assert.ok(kept >= 0.9 * lifts, `the late lift-off is gone: ${kept} of ${lifts} let-gos into a stand held the steer ${lo} frame(s)`);
 });
+
+test('the way he keeps is the way he flew: in the air on a jump the jump steers, never the route point lagging under him: 2-1 kid Easy 25 to t 40 (R-165.465 step 1)', async () => {
+  const ft = await import('./firsttimer.ts');
+  const { CAST_BOTS } = await import('./castBots.ts');
+  type R = { t: number; way: number; jump: { dir: number } | null; sim: { p: { grounded: boolean; x: number } } };
+  const P = ft.FirstTimerRun.prototype as unknown as { intend: (this: R) => unknown };
+  const it = P.intend;
+  const turned: string[] = [];
+  let airFrames = 0;
+  P.intend = function (this: R) {
+    const o = it.call(this);
+    const j = this.jump;
+    if (j && j.dir !== 0 && !this.sim.p.grounded) {
+      airFrames++;
+      if (this.way !== j.dir) turned.push(`t ${this.t.toFixed(2)} x ${Math.round(this.sim.p.x)}: way ${this.way}, the jump's ${j.dir}`);
+    }
+    return o;
+  };
+  let run: ReturnType<typeof ft.firstTimer>;
+  try {
+    run = ft.firstTimer('2-1', 25, CAST_BOTS.kid.easy!, { cap: 40, dotSetting: true });
+  } finally {
+    P.intend = it;
+  }
+  assert.ok(airFrames > 200, `the toy reads too little: ${airFrames} air frames on a jump`);
+  assert.deepEqual(turned.slice(0, 6), [], `in the air the way turned against the jump flying him (${turned.length} frames)`);
+  // (the row: down on #13 off the liana at 20.2 s he goes on right, never back off its left end into the pit at x 4,042)
+  const there = run.stuck.filter((s) => s.x > 3600 && s.x < 4500);
+  assert.deepEqual(there.map((s) => `${s.x}: ${s.what}`), [], 'stuck at the liana and #13 (x 3,600-4,500)');
+});

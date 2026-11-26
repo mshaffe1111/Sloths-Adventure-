@@ -3009,7 +3009,12 @@ export class FirstTimerRun {
     // (turned back for an animal he passed: its way, not the route's)
     const prey = this.hunt ? (e.enemies as Array<{ id: number; x: number }>).find((m) => m.id === this.hunt!.id) : undefined;
     if (prey) dir = prey.x > p.x + 16 ? 1 : prey.x < p.x - 16 ? -1 : prey.x >= p.x ? 1 : -1;
-    if (dir !== 0) this.way = dir;
+    // (the way he was going is the way he steered: in the air on a jump the jump's own way steers him (j.dir), never the route's point,
+    //  which lags under a high flight (step() follows him only within 160 px). 2-1 kid Easy 25, the hop off the liana at x 4,017: over
+    //  the route's floor 238 px down, its point fell behind him and the way turned LEFT in the air; down on #13 (the way on below, close
+    //  across) he kept that stale way and walked back off #13's left end into the pit, three set-downs. R-165.465 step 1)
+    const going = this.jump && !p.grounded && this.jump.dir !== 0 ? this.jump.dir : dir;
+    if (going !== 0) this.way = going;
     const fdir: -1 | 1 = dir === 0 ? (p.facing >= 0 ? 1 : -1) : dir;
     const side = (d: -1 | 0 | 1): Pad => (d > 0 ? { right: true } : d < 0 ? { left: true } : {});
     this.takeIn();
