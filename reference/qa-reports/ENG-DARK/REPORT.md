@@ -1,4 +1,17 @@
 # ENG-DARK REPORT (the dark + light ring as one gen2 brick; WORLD-3-PLAN F2; R-165.449)
+**EXACT NEXT STEP (ENG-DARK-z box 26 HAND-OVER, 6:56 PM ET by `date`): THE CANDIDATE = 93e05e98d** (merge of t-eng-w3 88592a9c4 into
+t-eng-dark-wip at c20 b83522463 + the REPORT; clean, engine.ts auto-merged as in box 25's trial). Code since c18: tower.ts rule 1 only
+(+ the toy in tower.test.ts, plants 48-50 in planted-faults.py). GATES ON FROZEN 93e05e98d (chattr'd worktree), box 26 so far: tsc 0;
+generalitycheck PASS (26 literals, 26 known); suite shards 1-3 and 4-6 RUNNING (two lanes, each shard in turn, deploy.yml:38
+--test-shard=i/6). STILL TO RUN on the same frozen candidate, two at a time: the CI tool line (gates.yml:157, full tree); tierBots
+(`npx tsx --test tools/inspect/tierBots.test.ts`, 9/9); dark.test, darkBots.test, castBots.test each alone; lockall (`--layouts 16 --out`
+on frozen t-eng-w3 88592a9c4, then `--check` on the candidate: no stage may move, 3-1 being a draft); plants
+`python3 reference/qa-reports/ENG-DARK/planted-faults.py <UNFROZEN worktree of 93e05e98d>` 50/50 CAUGHT (48-50 new). The shard bar (the lead,
+c18): every shard 0 fail, the two standing TODOs (shard 3 R-165.312, shard 5 4-3's wall check); KID_RUNS_59 is the release line's
+inherited red (R-165.473) and is the ONLY red allowed. All green -> LAND: `git push origin 93e05e98d:refs/heads/t-eng-w3` (a fast-forward
+of 88592a9c4, never a force), confirm with `git ls-remote`, send the lead the hash and each shard's totals. Anything red: trace it,
+never re-point a bar.
+
 **BOX 26 (ENG-DARK-z): THE LAY FIX, c20 = b83522463 (tower.ts towerCatches rule 1: the run-on into the wall reads no slot).**
 CAUSE (probe, an instrumented copy, never a verdict): the guard DOES read Easy 6's end at 1241 (offEnd's point, x 1260 on the wall line)
 and runs on it every pass. Rule 1 (run the piece on into the wall) was refused by `slotted`: the run-on 1241-1280 read ALONE is 65 px
@@ -26,19 +39,6 @@ none at the run-on. Easy 34 x2 (child 243.3->249.6, middle 186.3->185.6, rescues
 1196, y 9767 run on into the wall (1196-1280) where c18 laid a catch 1082-1256, y 10048 under it. Lays moved (lays-c18-vs-b8352246.txt):
 Easy 4 5 6 14 17 23 34 35 38, no Normal; Easy 14 = the end at 1199, y 2774 run on (1199-1280) for the catch 1081-1256, y 3055; its rows
 do not move. The other lays' rows do not move.
-**EXACT NEXT STEP (ENG-DARK-z box 26 HAND-OVER, 6:56 PM ET by `date`): THE CANDIDATE = 93e05e98d** (merge of t-eng-w3 88592a9c4 into
-t-eng-dark-wip at c20 b83522463 + the REPORT; clean, engine.ts auto-merged as in box 25's trial). Code since c18: tower.ts rule 1 only
-(+ the toy in tower.test.ts, plants 48-50 in planted-faults.py). GATES ON FROZEN 93e05e98d (chattr'd worktree), box 26 so far: tsc 0;
-generalitycheck PASS (26 literals, 26 known); suite shards 1-3 and 4-6 RUNNING (two lanes, each shard in turn, deploy.yml:38
---test-shard=i/6). STILL TO RUN on the same frozen candidate, two at a time: the CI tool line (gates.yml:157, full tree); tierBots
-(`npx tsx --test tools/inspect/tierBots.test.ts`, 9/9); dark.test, darkBots.test, castBots.test each alone; lockall (`--layouts 16 --out`
-on frozen t-eng-w3 88592a9c4, then `--check` on the candidate: no stage may move, 3-1 being a draft); plants
-`python3 reference/qa-reports/ENG-DARK/planted-faults.py <UNFROZEN worktree of 93e05e98d>` 50/50 CAUGHT (48-50 new). The shard bar (the lead,
-c18): every shard 0 fail, the two standing TODOs (shard 3 R-165.312, shard 5 4-3's wall check); KID_RUNS_59 is the release line's
-inherited red (R-165.473) and is the ONLY red allowed. All green -> LAND: `git push origin 93e05e98d:refs/heads/t-eng-w3` (a fast-forward
-of 88592a9c4, never a force), confirm with `git ls-remote`, send the lead the hash and each shard's totals. Anything red: trace it,
-never re-point a bar.
-
 **BOX 25 STOP (ENG-DARK-y, after the hand-over; the landing NOT done): a suite red, traced.** Suite shard 2/6 on frozen c18 38e4892e1:
 658 pass / 3 fail, all in src/game/gen2/worlds/w3.test.ts (:108 every roll clean, :129 head room on the way down, :143 a catch crosses a
 vine), with one cause: 'easy 6: tower: a blind drop off the piece at x 1176-1241, y 2830: 568 px to its landing (in view: within 300)'.
