@@ -7,8 +7,8 @@ Head: see the hand-over message (pushed to t-eng-sim, ls-remote confirmed). Box 
    run_in_background + timeout 7200000): the CI tool line (gates.yml line 157, about 10 min; it runs the probe-equality gate, about
    5 min of it), the suite in 3 shards (CLAUDE.md's src globs), tsc, generalitycheck, timecheck `--range c73cb9766..HEAD`. Record each
    under "Step 2" below with the hash. Box 2 ran on step 2 (ee33a442b): tsc PASS, the invariant test 1/1 PASS and its plant RED.
-2. If the CI line's step 1 run (f3acbc87d) was not recorded as PASS below, that run is the one that counts for step 1 too (the step 2
-   commit only adds src/game/pressPlan.ts, its test, and the bot's planNext/setPlan, which nothing calls until a judge sets a plan).
+2. Step 1's CI tool line PASSED on f3acbc87d (recorded under Step 1); step 2 adds only src/game/pressPlan.ts, its test and the bot's
+   planNext/setPlan (nothing calls them until a judge sets a plan), so item 1 is the step 2 candidate's full set.
 3. Then packet step 3 (READY only, do NOT start it): the one-page plan, in this REPORT (packet items: the judges as ONE family with their
    toy rows; the press-timing calibration and its honest limit; the re-baseline list). The lead GOs step 3 after ENG-THUMB lands.
 
@@ -58,7 +58,8 @@ Head: see the hand-over message (pushed to t-eng-sim, ls-remote confirmed). Box 
 - **NO row moved:** the kid on Easy, one seed of every world (1-1 s3, 2-4 s35, 3-1..10-1 s1), base c73cb9766 vs f3acbc87d: the 10 rows
   identical (firstTimer's whole FTRun, wall ms aside).
 - **Checks on f3acbc87d:** tsc PASS; the gate 11/11; generalitycheck PASS (26 literals, 26 known); timecheck c73cb9766..HEAD PASS;
-  probe unit tests 6/6; clock.test.ts 10/10. The CI tool line: CI_LINE_S1.
+  probe unit tests 6/6; clock.test.ts 10/10. The CI tool line (gates.yml line 157, frozen worktree): PASS, 432 tests, 431 pass, 0 fail, 1 todo (chaseBots'
+  CHILD-on-Normal fork, OPEN todo, ENG-B4), 598 s.
 
 ## Step 2: THE PLAN-AND-PLAY CORE (box 2, ee33a442b)
 - src/game/pressPlan.ts: PressPlan (the pads, frame 1 = next), pressPlan(spec) (a press on frame m, the hold, the steer from its frame,
