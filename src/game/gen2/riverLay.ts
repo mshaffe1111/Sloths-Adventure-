@@ -161,7 +161,10 @@ function rightwards(r: RiverZone, platforms: readonly Platform[], vines: readonl
 /** a barge row's longest wait on its safe stand, in bars of the stage's tempo (riverFaults; 2-9.md:25: a barge every two bars) */
 export const BARGE_BARS = 2;
 
-export function riverFaults(st: { platforms: readonly Platform[]; rivers?: readonly RiverZone[]; vines?: readonly Vine[]; tempo?: TempoSpec }, difficulty: Difficulty = 'normal'): string[] {
+export function riverFaults(st: { platforms: readonly Platform[]; rivers?: readonly RiverZone[]; vines?: readonly Vine[]; tempo?: TempoSpec; gen2?: { brief?: { tempo?: TempoSpec } } }, difficulty: Difficulty = 'normal'): string[] {
+  // (the stage's tempo: the built stage's, else its brief's: the pipeline judges a stage (checkStage) before it sets st.tempo, its last
+  //  step, so a barge row read only st.tempo and kept the log's beat on every roll; BUILD-29-c's find, ENG-29-f)
+  const tempo = st.tempo ?? st.gen2?.brief?.tempo;
   const out: string[] = [];
   for (const r0 of st.rivers ?? []) {
     if (r0.speed === 0 || r0.open || r0.raft || r0.flood) continue;
@@ -196,7 +199,7 @@ export function riverFaults(st: { platforms: readonly Platform[]; rivers?: reado
     //  a liana, keeps the log's beat)
     const stand = solids.find((p) => Math.abs(p.x + p.width - r.x0) <= 2);
     const safeStand = !!stand && stand.crumbleAfter === undefined && !stand.drift;
-    const bargeBound = d.look === 'barge' && st.tempo && !over.length && safeStand ? BARGE_BARS * st.tempo.bar * (difficulty === 'easy' ? st.tempo.easyStretch : 1) : undefined;
+    const bargeBound = d.look === 'barge' && tempo && !over.length && safeStand ? BARGE_BARS * tempo.bar * (difficulty === 'easy' ? tempo.easyStretch : 1) : undefined;
     if (bargeBound !== undefined) {
       if (spacing / d.speed > bargeBound + 1e-6) out.push(`${at}: a barge every ${(spacing / d.speed).toFixed(1)} s, over ${BARGE_BARS} bars (${bargeBound.toFixed(2)} s) at the stage's tempo`);
     } else if (spacing / d.speed > RIVER_LAY.beat + 1e-6) out.push(`${at}: a log every ${(spacing / d.speed).toFixed(1)} s, over ${RIVER_LAY.beat}`);
