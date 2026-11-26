@@ -6,9 +6,7 @@ import { STAGE_29, draft29Cfg, draft29Row, kitLib29 } from '../../../../src/game
 const seeds = (process.argv[2] ?? '1,2').split(',').map(Number);
 for (const d of ['normal', 'easy'] as const) for (const seed of seeds) {
   const st = withTestStage({ [STAGE_29]: draft29Row() }, () => buildGen2Stage({ config: draft29Cfg(), kit: kitLib29(), seed, difficulty: d })) as unknown as Record<string, any>;
-  if (seed === seeds[0] && d === 'normal') console.log(Object.keys(st).join(' '));
-  const tips = (st.tips ?? st.dotTips ?? []).map((t: any) => `${t.id ?? t.tip ?? t.line}@${Math.round(t.x)}`);
+  const tips = (st.gen2.fills as any[]).filter((f) => f.role === 'tip').map((f) => `${f.what}@${Math.round(f.x)}${f.unsaid ? ' UNSAID' : ''}`);
   const sec = (st.gen2.sections as any[]).map((s) => `${s.template.replace('w2-29-', '')}@${Math.round(s.x0)}`);
-  const first = (pred: (p: any) => boolean) => Math.round(Math.min(...st.platforms.filter(pred).map((p: any) => p.x)));
   console.log(d, seed, 'tips', tips.join(' '), '| sections', sec.join(' '), '| enemies', st.enemies.map((e: any) => Math.round(e.x)).join(','));
 }

@@ -5,6 +5,9 @@ Branch t-build-29, cut from origin/t-eng-29 = 098047713 (the lead's named base).
 0. Re-fetch t-build-29, t-eng-29-wip and the lead's branch; ReadNotifications (D140). READ THE LEAD'S REPLY on the GOAL (sent this
    session: (A) countSet, 7 snappers seated (beat 5 three, beat 8 four), goal 5 of 7; (B) countSet, the 4 seated, goal 4; (C) keep the
    top-up, an engine lane keeps it inside the snapper nodes). No reply 20 minutes after it was sent: (A), on the draft only (CI #89), said first.
+   AND THE LEAD'S REPLY on the STONES (sent this session, design level: built 80 px at 30 px lose the design's counts; (A) a pieces lane
+   makes a 130 px snap stone, judged by pitch, laid 130 + 60 Normal / 130 + 50 Easy and flown again; (B) re-design beats 5 and 8 on the
+   30 px counts; (C) the lead's row). No reply: (A) is only RECOMMENDED in the REPORT (it needs an engine lane; nothing built by me).
 1. Lay the goal ruling in the DRAFT (w2Arc29.ts: draft29Cfg's `countSet: true` with GOAL_29, and the extra `snapper(...)` sockets +
    `snapperGround` patches in `snappers` / `grandDance`), then roll: `npx tsx reference/qa-reports/BUILD-29/probes/draft1.ts 1,2,3,5,8`
    (seed 1: a top-up snapper at x 2000 on beat 1; 3: a floor over a snapper; 5, 8: 'snapper*2: laid 3') and the yield
@@ -17,9 +20,10 @@ Branch t-build-29, cut from origin/t-eng-29 = 098047713 (the lead's named base).
      middle expert; about 3 s a run): every tier at the shrine both settings, no run under 120 s, each tier's FASTEST clean run named,
      every miss traced (rule 28: two runs a cause, seed, x, frame, what took him). Session 2's partial look (top-up goal, superseded):
      adult Normal 12/12 at the shrine, 153-168 s; `pass` false on seeds 3 and 8 though at the shrine: read why (goal got 5 / 6 of 5).
-   - met order (D130) and teach-first: `npx tsx reference/qa-reports/BUILD-29/probes/teach.ts 1,2` prints sections and enemies from the
-     BUILT stage; the tips are NOT on the built stage's keys (find where Dot's teach tips are laid: st.meta or st.collectibles; the
-     drum tip must stand 800 px+ before the first stone of `hear`, nothing that hurts between).
+   - met order (D130) and teach-first: `npx tsx reference/qa-reports/BUILD-29/probes/teach.ts 1,2` (tips from gen2.fills, sections,
+     enemies, all BUILT). Session 2 (top-up goal): `w29.drum` at x 688, the first stone at 2210: 1,522 px before (800+ holds) on both
+     settings; `w29.roar` 500 px into the twist. BUT Normal's top-up seats a snapper at x 2000, between the drum tip and the first stone
+     (rule 6 'nothing that hurts in between' and rule 7 fail): re-read after the goal ruling (countSet lays no top-up).
    - drawcheck on the draft (D131) and yield done in step 1.
    - FLOWN AGAIN on 098047713 (rule 24): `reference/specs/sims/court29.ts` (copied from t-design-29) in the frozen worktree
      scratchpad/wt-base; this session ran `beat` on both settings (results below if they landed; else re-run): the stones at 30 px,
