@@ -636,26 +636,22 @@ test('a put-back by the game spends the edge plan: a teaching river splashes him
   assert.deepEqual(there.map((s) => `${s.x}: ${s.what}`), [], 'stuck at the river before #94 (x 24,000-24,900)');
 });
 
-test('a log going under the bank is no floor ahead: a log drifting against his way that is mostly under the lip only shrinks, so he never steps down onto its end (2-1 middle Normal 17 to t 120, R-165.465 step 3)', async () => {
+test('landed on the very end of a small log, the pause comes: he never walks off a log unpressed within half a second of landing on it (2-1 middle Normal 17 to t 120, R-165.465 step 3)', async () => {
   const ft = await import('./firsttimer.ts');
   const { CAST_BOTS } = await import('./castBots.ts');
-  type R = { t: number; sim: { standingOn: number | null; platforms: Array<{ id: number; x: number; width: number; drift?: { dir: number } }>; p: { grounded: boolean; x: number } } };
+  type R = { t: number; sim: { standingOn: number | null; platforms: Array<{ id: number; x: number; width: number; drift?: unknown }>; p: { grounded: boolean; x: number; vy: number } } };
   const P = ft.FirstTimerRun.prototype as unknown as { intend: (this: R) => unknown };
   const it = P.intend;
-  const onto: string[] = [];
-  let was: number | null = null, seen = 0;
+  const off: string[] = [];
+  let land: { t: number; id: number } | null = null, was: { g: boolean; on: number | null } = { g: false, on: null }, landings = 0;
   P.intend = function (this: R) {
-    const s = this.sim, on = s.p.grounded ? s.standingOn : null;
-    // (a step from still ground onto a drifting log: where that log is, how much of it is left ahead of him, and which way it drifts)
-    const q = on !== null && on !== was ? s.platforms.find((u) => u.id === on) : undefined;
-    const from = was !== null ? s.platforms.find((u) => u.id === was) : undefined;
-    if (q?.drift && from && !from.drift) {
-      seen++;
-      const way = (s.p as { vx?: number }).vx! < 0 ? -1 : 1;
-      const left = way > 0 ? q.x + q.width - s.p.x : s.p.x - q.x;
-      if (q.drift.dir === -way && left < 40) onto.push(`t ${this.t.toFixed(2)} x ${Math.round(s.p.x)}: onto #${q.id} (${Math.round(q.x)}-${Math.round(q.x + q.width)}, drifting against him) with ${Math.round(left)} px of it ahead`);
-    }
-    if (s.p.grounded && s.standingOn !== null) was = s.standingOn;
+    const s = this.sim, g = s.p.grounded, on = g ? s.standingOn : null;
+    const q = on !== null ? s.platforms.find((u) => u.id === on) : undefined;
+    // (a landing on a drifting log: down from the air, or down a step onto it)
+    if (g && q?.drift && (!was.g || was.on !== on)) { land = { t: this.t, id: on! }; landings++; }
+    // (off that log with no press: in the air, not going up, within 0.5 s of the landing)
+    if (!g && was.g && land && was.on === land.id && s.p.vy >= 0 && this.t - land.t < 0.5) off.push(`t ${this.t.toFixed(2)} x ${Math.round(s.p.x)}: walked off log #${land.id} ${(this.t - land.t).toFixed(2)} s after landing on it`);
+    was = { g, on };
     return it.call(this);
   };
   let run: ReturnType<typeof ft.firstTimer>;
@@ -664,8 +660,8 @@ test('a log going under the bank is no floor ahead: a log drifting against his w
   } finally {
     P.intend = it;
   }
-  assert.ok(seen >= 2, `the toy reads too little: ${seen} steps from a bank onto a log`);
-  assert.deepEqual(onto, [], 'he stepped from a bank onto the last px of a log going under it');
+  assert.ok(landings >= 3, `the toy reads too little: ${landings} landings on a log`);
+  assert.deepEqual(off, [], 'he walked off a log he had just landed on, unpressed');
   // (the row: the upstream river past #85, x 19,400-19,900, crossed with no life lost)
   const lost = run.harms.filter((h) => h.kind === 'life' && h.x > 19400 && h.x < 19900);
   assert.deepEqual(lost.map((h) => `t ${h.t.toFixed(2)} x ${Math.round(h.x)}: ${h.cause}`), [], 'a life lost at the river past #85 (x 19,400-19,900)');

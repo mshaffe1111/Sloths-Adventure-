@@ -3533,7 +3533,11 @@ export class FirstTimerRun {
         }
       }
       // (landed on a small pad or ledge: he stops on it a beat, then flicks on from where he stands if its edge is close)
-      const here = this.floorAt(p.x, p.y, 6);
+      // (the floor he landed on is the one his feet are on (the engine's standingOn) where his middle is already past its end: read by
+      //  his middle alone it was no floor, so the pause never came and the walk-on below ran him off the end he stood on. 2-1 middle
+      //  Normal 17 (R-165.465 step 3): stepped from #85 onto log #90's last px (its end 5 px behind his middle, the log going under the
+      //  bank), walked on off it, LIFE LOST at 111.47, rescued at x 19,869. hopJudged.test.ts 'landed on the very end of a small log')
+      const here = this.floorAt(p.x, p.y, 6) ?? (p.grounded ? this.sim.platforms.find((q) => q.id === this.sim.standingOn) ?? null : null);
       // (never on a sinking pad once he knows it sinks: KEEP-HOPPING, padRead; never on a drifting log running his way under a liana over
       //  its river, which the handed skill rides in (SKILLS.handed): after a let-go onto a 150 px log the pause flicked him on blind into
       //  the water, ENG-24 drop toy gap280, middle Normal 17 lives. Every other river keeps it as it was (its bots' plants are measured on
@@ -3683,12 +3687,8 @@ export class FirstTimerRun {
       //  this look's 40, he ran off the lip at full speed, came down a few px from its front and ran off it into the water: 2-7's toy,
       //  home Easy seed 1, the careful middle player, x 7650 onto a log 64 px out (of 240), again at x 5788 and 3191; 2-4 of the 4-8
       //  lives every home race lost (trace-27g.txt 5; the lead's GO, ENG-27g). "Mostly under": less than half its length past the lip)
-      //  (and a log drifting AGAINST his way that is mostly under the lip is going under the bank: what is left past the lip only
-      //  shrinks, so it is no floor ahead either. Read as floor, he stepped down onto its last few px and the landing's walk-on ran him
-      //  off it: 2-1 middle Normal 17, #90 (150 px, 70 px/s upstream) 69 px past #85's lip at 19,607, the next log #89 80 px on, LIFE
-      //  LOST at 111.47, rescued at x 19,869; R-165.465 step 3, hopJudged.test.ts 'a log going under the bank')
       const fa = this.floorAt(p.x + dir * look, p.y, 40);
-      const underLip = SKILLS.boardLog && !!under && under.type !== 'drift' && fa?.type === 'drift' && !!fa.drift && fa.y > p.y + 6 && (dir > 0 ? fa.x + fa.width - lip : lip - fa.x) < fa.width / 2;
+      const underLip = SKILLS.boardLog && !!under && under.type !== 'drift' && fa?.type === 'drift' && fa.drift?.dir === dir && fa.y > p.y + 6 && (dir > 0 ? fa.x + fa.width - lip : lip - fa.x) < fa.width / 2;
       const ahead = fa && !underLip && (!past || this.floorAt(lip + dir * 24, p.y, 40));
       // (up the far bank, SKILLS.bankUp: at a river's far end the bank stands a step up from the log (river.ts LOG_DROP, 28 px), so it
       //  reads as floor ahead and the gap logic below never runs, and a log running back at him never carries him under it to be handed
