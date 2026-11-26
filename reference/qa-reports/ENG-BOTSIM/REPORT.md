@@ -9,6 +9,14 @@ Recreate the old-code tree: `git worktree add --detach ../bs-ci10 8134a9a56`, `l
    accepts a press that catches only across mid +- sd/2, and the kid's drawn lag falls outside that band most of the time (about 62% of
    a normal draw does), so he tries more marginal catches than the old, wrong-but-cautious model let him. If so: the band (thumbLags,
    or a wider one) is a fidelity number to calibrate, separate from physics. Then kid Easy seed 8 (the one new rescue).
+   FIRST LOOK (seed 2, FT_TRACE=1, both ways; 1:28 PM ET): old judge 2 lives (114.13 a single off 21333,808; 156.07 no jump on the ground
+   at 24319,780), 183.2 s, stuck twice 'on a vine with no way on' (21402, 23052). Probe judge 4 lives, 163.5 s, never stuck: 105.30 a
+   RUN-UP press off 21249,780 (`run true`: the run-up branch, still the OLD model in the prototype), then 107.53, 123.73, 136.20 'no
+   jump, ground' (rode or walked off a log: 21369,808; 22836,780; 24314,780). So the extra lives here are NOT marginal standing catches:
+   check (a) the run-up branch (old model) now reached where the standing judge used to refuse and he stood; (b) a stale thumb after a
+   played plan (playPlan skips thumbify: releaseArmed, releaseLeft, driftPx, travelUntil keep their pre-plan values, so the stop after
+   a plan may not hold: CI-13 / CI-15's class). The fix for (b) belongs in the core (plan step 1): a played plan leaves the thumb state
+   as thumbify would have.
 2. **Snapshot cost:** count how many of the ~750 copied objects are the stage's fixed data (platforms that never move, vines' shape,
    art), freeze them (or mark them shared in engineFork's SHARE), and re-time the probe (target: under 1 ms for snapshot + restore).
    STARTED (tools/inspect/botsim/snapSize.ts, 2-4 seed 35 at 8 s): best of 20 snapshot 1.18 ms + restore 1.14 ms (the x40's mean probe
