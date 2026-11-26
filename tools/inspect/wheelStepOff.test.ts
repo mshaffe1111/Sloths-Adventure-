@@ -8,8 +8,8 @@
  *     hop 4 times (way +1), goes from where it makes the street: the shrine, no rescue.
  *   - way -1 (the wheel turns left): NO real case exists. On 2-6 the only way -1 rescue with stepOff off is adult Easy 13 (bucket #32 b2),
  *     and there stepOff never refuses (0 refusals): it goes by a timing shift (the step-off makes street #29 with a double and he bounces
- *     back into the wheel), not by the skill. Every wheel toy turns left, and the toy search (stepOff on vs off, every tier and variant)
- *     moves no run. The searches: reference/qa-reports/LAND-26/data/stepOff-*.txt and data/rule28/.
+ *     back into the wheel), not by the skill. Every wheel toy turns left, and the toy search (stepOff on vs off, every tier and variant,
+ *     70 runs) changes no scramble and no pond: 65 runs equal, 5 move in time only (at most 0.3 s). The searches: reference/qa-reports/LAND-26/data/stepOff-*.txt and data/rule28/.
  * GREEN with the skill: the shrine, no rescue, no life lost. RED with it off (the plant, boardWatch still on): a rescue.
  */
 import '../../src/game/headlessDom.ts';
