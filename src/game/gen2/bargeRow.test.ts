@@ -18,9 +18,9 @@ const bank = (id: number, x: number, w: number, y: number): Platform => ({ id, x
 /** 2-9's barge row as BUILD-29 drafted it: one barge every two court bars (Normal 80 px/s, 384 px: 5.7 s; Easy its own 70/390) */
 const BARGE: RiverRow = { dir: 1, speed: 80, logW: 384, gap: 72, logs: 2, safe: true, look: 'barge', easy: { speed: 70, logW: 390, gap: 72 } };
 
-function crossing(row: RiverRow, d: Difficulty, opts: { near?: boolean; tempo?: boolean } = {}): { platforms: Platform[]; rivers: RiverZone[]; tempo?: typeof COURT_TEMPO } {
+function crossing(row: RiverRow, d: Difficulty, opts: { near?: boolean; tempo?: boolean; crumbling?: boolean } = {}): { platforms: Platform[]; rivers: RiverZone[]; tempo?: typeof COURT_TEMPO } {
   const r = layRiver(riverRowOn(row, d), 2000, 500, ids());
-  const near = bank(1, 1700, 300, 500), far = bank(2, r.zone.x1, 300, 500);
+  const near = { ...bank(1, 1700, 300, 500), ...(opts.crumbling ? { crumbleAfter: 0.6 } : {}) }, far = bank(2, r.zone.x1, 300, 500);
   return { platforms: [...(opts.near === false ? [] : [near]), ...r.logs, far], rivers: [r.zone], ...(opts.tempo === false ? {} : { tempo: COURT_TEMPO }) };
 }
 const waitFaults = (f: string[]) => f.filter((e) => / every [\d.]+ s, over /.test(e));
@@ -37,9 +37,12 @@ test('a barge every two bars, boarded from the bank, passes on both settings (it
   }
 });
 
-test('the same barge row is refused with no safe stand, with no tempo to count it by, or past two bars; a log chain at 5.7 s is refused', () => {
+test('the same barge row is refused with no safe stand (none, or a crumbling one), with no tempo to count it by, or past two bars; a log chain at 5.7 s is refused', () => {
   for (const d of ['normal', 'easy'] as const) {
-    assert.ok(riverFaults(crossing(BARGE, d, { near: false }), d).some((e) => /no bank at one end/.test(e)), `${d}: no stand to board from`);
+    const none = riverFaults(crossing(BARGE, d, { near: false }), d);
+    assert.ok(none.some((e) => /no bank at one end/.test(e)), `${d}: no stand to board from`);
+    assert.match(waitFaults(none).join(' | '), /a log every [\d.]+ s, over 4/, `${d}: no stand: the log's beat`);
+    assert.match(waitFaults(riverFaults(crossing(BARGE, d, { crumbling: true }), d)).join(' | '), /a log every [\d.]+ s, over 4/, `${d}: a crumbling stand is no safe stand`);
     assert.match(waitFaults(riverFaults(crossing(BARGE, d, { tempo: false }), d)).join(' | '), /a log every [\d.]+ s, over 4/, `${d}: no tempo: the log's beat`);
     const slow: RiverRow = { ...BARGE, gap: 300, easy: { ...BARGE.easy!, gap: 300 } };
     assert.match(waitFaults(riverFaults(crossing(slow, d), d)).join(' | '), /a barge every [\d.]+ s, over 2 bars/, `${d}: past two bars`);

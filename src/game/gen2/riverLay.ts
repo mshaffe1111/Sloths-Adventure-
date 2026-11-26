@@ -191,9 +191,12 @@ export function riverFaults(st: { platforms: readonly Platform[]; rivers?: reado
     if (d.speed > RIVER_LAY.speed) out.push(`${at}: it runs at ${d.speed} px/s, over ${RIVER_LAY.speed}`);
     // (a BARGE row (look 'barge', ENG-29-e, the lead's ruling on 2-9's King's Barge): a carrier he boards from the bank, never a log in a
     //  hop chain, so its wait is judged by its own bound: a barge every BARGE_BARS bars at most at the stage's tempo on this setting, and
-    //  only while he waits on the near bank, a SAFE stand (no liana over it: a drop onto it is a log's crossing). Every other row, and a
-    //  barge row on a stage with no tempo or under a liana, keeps the log's beat)
-    const bargeBound = d.look === 'barge' && st.tempo && !over.length ? BARGE_BARS * st.tempo.bar * (difficulty === 'easy' ? st.tempo.easyStretch : 1) : undefined;
+    //  only while he waits on the near bank and it is a SAFE stand: solid ground, never water, a moving piece or a crumbling one, and no
+    //  liana over the river (a drop onto it is a log's crossing). Every other row, and a barge row with no tempo, no safe stand or under
+    //  a liana, keeps the log's beat)
+    const stand = solids.find((p) => Math.abs(p.x + p.width - r.x0) <= 2);
+    const safeStand = !!stand && stand.crumbleAfter === undefined && !stand.drift;
+    const bargeBound = d.look === 'barge' && st.tempo && !over.length && safeStand ? BARGE_BARS * st.tempo.bar * (difficulty === 'easy' ? st.tempo.easyStretch : 1) : undefined;
     if (bargeBound !== undefined) {
       if (spacing / d.speed > bargeBound + 1e-6) out.push(`${at}: a barge every ${(spacing / d.speed).toFixed(1)} s, over ${BARGE_BARS} bars (${bargeBound.toFixed(2)} s) at the stage's tempo`);
     } else if (spacing / d.speed > RIVER_LAY.beat + 1e-6) out.push(`${at}: a log every ${(spacing / d.speed).toFixed(1)} s, over ${RIVER_LAY.beat}`);
