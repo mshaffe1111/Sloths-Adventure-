@@ -84,7 +84,7 @@ import type { FollowPlay } from '../../src/game/followPlay.ts';
 import { bucketAngle } from '../../src/game/wheel.ts';
 import { WHEEL_FLOWN } from '../../src/game/gen2/wheelFlights.data.ts';
 import { flownKey } from '../../src/game/gen2/wheelLay.ts';
-import { PlanPlayer, type PressPlan } from '../../src/game/pressPlan.ts';
+import { PlanPlayer, planFlies, pressPlan, type PressPlan } from '../../src/game/pressPlan.ts';
 
 /**
  * The bot's clock-read skill (METER-2a, R-165.272; METER-COVERAGE §2a "read a stage clock", board + step-off half). A toy test switches
@@ -1560,8 +1560,6 @@ export class FirstTimerRun {
   private runUp: { id: number; t: number } | null = null;
   /** SKILLS.runUp: the hold the run-up's jump was judged with (runPress: who.hold[0]), and when; startJump holds at least that */
   private runUpHold: { hold: number; t: number } | null = null;
-  /** CI-11: vineFromLog's standing press, judged with this hold at this game time; startJump flies it single, held exactly that */
-  private standHold: { hold: number; t: number } | null = null;
   /** the game time a press decided on (decide) was aimed to reach the engine (pressIn), for the press this frame's pad carries */
   private pressWant: number | undefined;
 
@@ -2481,28 +2479,6 @@ export class FirstTimerRun {
     //  Normal variant 5)
     const [mid, sd] = this.who.thumb;
     const hold = this.pressHold();
-    // (and taken off while still on the log: walking on as the press came, he stepped off its front end into the water, catch toy v3)
-    // (he stands while the press comes (pending.still): flown from where the log carries him, at his speed now and at a stand)
-    // (the press's frame order: hopAim, ENG-285b)
-    // (CI-11, rule 28, the lead's ruling: the standing press flown as the engine plays it. Its first frames unsteered while his thumb
-    //  still travels (thumbify drops the steer until travelUntil / driftUntil; from a stand a turn from lastSteer -dir arms more): every
-    //  count he can play, from the travel already running (the still frames before the press put lastSteer at 0) to steerFrom's (the
-    //  turn armed too). Its hold as pressed: startJump flies it single, held exactly `hold` (standHold), and the engine holds the press's
-    //  own frame too (age 0: frames with (i - 1) * DT < hold held; hopFrame's i * DT < hold + DT). 2-4 kid Easy 35 on CI-10: judged
-    //  free 0 and hold 0.16 (cut at frame 5); flown free 2 and a drawn 0.097 (cut at frame 4), never in reach of liana #4, in the water)
-    const frees = (lag: number): number[] => {
-      const tp = t + Math.round(hopAim(lag).off / DT) * DT;
-      const n = (from: number) => Math.max(0, Math.ceil((from - tp) / DT - 1e-6));
-      return [...new Set([n(Math.max(tp, this.travelUntil, this.driftUntil)), n(this.steerFrom(dir, t))])];
-    };
-    const catches = (lag: number) => [p.vx, 0].every((vx) => {
-      const aim = hopAim(lag);
-      const x = p.x + (vx + carry) * aim.off, lx = floatAt(rivers, here)(t + aim.off);
-      // (a tailed river's log is under past the painted end at x1: no floor to take off from there, SKILLS.vineOverTail)
-      const under = SKILLS.vineOverTail && !!d.tail && x > d.x1 - 10;
-      return x > lx + 10 && x < lx + here.width - 10 && !under
-        && frees(lag).every((free) => hopCatches(v, x, p.y, dir, hold + DT, clock + aim.clock, vx + carry, free, carry));
-    });
     // (CI-12, the lead's ruling (b): judged over the thumb's whole spread (thumbLags), the lags decide draws from. The three lags mid and
     //  mid -+ sd/2 covered 56% of the kid's draws: 2-4 kid Easy 19 at t 97.700 on CI-11, judged 'catches' at take-off 0.067 / 0.100 /
     //  0.133 s, drew 0.033 s (a frame before the earliest judged), took off at 0.033 and came down on log #74, never in reach of liana #6)
@@ -2510,7 +2486,22 @@ export class FirstTimerRun {
     // (SKILLS.runUp, ENG-PLANT-g: a run-up he is on (sent last frame, this log); else none)
     const running = SKILLS.runUp && !!this.runUp && this.runUp.id === here.id && t - this.runUp.t < DT * 1.5;
     this.runUp = null;
-    if (!running && !lags.every(catches)) {
+    // (ENG-SIM step 3 1a, R-165.470: the standing press judged ON THE ENGINE, not the model: the plan at every lag of the thumb's spread
+    //  flown by planFlies (one flight per press frame the spread reaches) must swing him on `v`; the press he then makes is the plan at
+    //  the lag he draws, played verbatim, so the judged press is the press flown. Retires the stand's hopCatches model, its free-frames
+    //  count (CI-11) and the stand's held-exactly hold (standHold): the engine flies the thumb's tail, the travel and the hold itself)
+    const stood = new Map<number, { plan: PressPlan; at: number }>();
+    const standAt = (lag: number): { plan: PressPlan; at: number } => {
+      const key = Math.round(pressIn(lag) / DT);
+      let o = stood.get(key);
+      if (!o) {
+        const plan = this.standPlan(lag, dir, hold, t);
+        o = { plan, at: this.planCatches(plan, v) };
+        stood.set(key, o);
+      }
+      return o;
+    };
+    if (!running && !lags.every((lag) => standAt(lag).at > 0)) {
       // (SKILLS.runUp, ENG-PLANT-g: from a stand a PERFECT thumb catches 2-4's tailed-river liana 0 of ~560 frames; a running jump off the
       //  same log catches it (2-4 adult Normal 6, 52 of 541 frames; main crossed by an unjudged full-run leap). The hop he can make is
       //  judged: a run along the log (groundStep, his own thumb lag and spread on the run press and the jump press, the take-off still on
@@ -2538,7 +2529,6 @@ export class FirstTimerRun {
         return side1(dir);
       }
       this.runUpHold = { hold, t };
-      this.standHold = null;
       this.pressJudged = true;
       const go = this.decide(dir, 'single', true, side1(dir));
       this.pressJudged = false;
@@ -2547,14 +2537,10 @@ export class FirstTimerRun {
     }
     // (judged here: decide's immediate press (a lag under half a frame) reaches startJump now, so the flag is up for it too; candidate
     //  10 marked only the queued press and 2-4 adult Normal 6 had two liana presses refused, x 21,600 and 24,700, UNJUDGED)
-    this.pressJudged = true;
-    this.standHold = { hold, t };
-    const out = this.decide(dir, 'single', true, {});
-    this.pressJudged = false;
-    // (ENG-PLANT-e: a judged catch, so startJump's one-gate check (no unjudged hop off a carrier) lets it through when it comes;
-    //  without it candidates 5-9 refused every liana hop off a log, and the tailed river's only way on was gone)
-    if (this.pending) { this.pending.still = true; this.pending.judged = true; }
-    return out;
+    // (the lag drawn as decide draws it; its plan, flown above or now (a draw past the spread's 3 sd), is played to its flown end)
+    const drawn = standAt(gauss(this.r, this.who.thumb));
+    this.setPlan(drawn.plan, Math.abs(drawn.at), dir);
+    return {};
   }
 
   /**
@@ -5160,6 +5146,35 @@ export class FirstTimerRun {
    * The plan's next pad, or null (none, played out, or a life lost since it was set). His thumb is left as thumbify would leave it for
    * these pads (the spike's fix b): a steer on the stick ends any late lift-off and its arming; a frame with none is a thumb let go.
    */
+  /**
+   * ENG-SIM step 3 (1a): the plan of a press from a stand at thumb lag `lag`: he stands (the steer his thumb still holds first: standTail),
+   * the press on the frame decide's lag puts it on (pressIn), held `hold` as the engine counts it, the steer on from the press or when his
+   * thumb gets there (steerFrom: a travel, a slip, a turn), then `after` frames of flight. Frame 1 = the frame about to be played.
+   */
+  private standPlan(lag: number, dir: -1 | 1, hold: number, t: number, after = 60): PressPlan {
+    const press = Math.round(pressIn(lag) / DT);
+    const steerAt = Math.max(1, Math.ceil((this.steerFrom(dir, t) - t) / DT - 1e-9) + 1);
+    return pressPlan({ press, hold, dir, steerFrom: Math.max(press, steerAt), after, tail: this.standTail(t) });
+  }
+  /**
+   * The steer thumbify leaves on the stick while he stands for a press (a bare stand: R-165.465's stop he means): none while his thumb
+   * travels or slips (thumbify drops it) or holds nothing; a late lift-off already armed, its frames left; else one at his median lift-off
+   * (no draw: the plan is played as flown, and a drawn one would be his own future fumble foreseen)
+   */
+  private standTail(t: number): { dir: -1 | 0 | 1; frames: number } {
+    if (this.lastSteer === 0 || t < this.travelUntil || t < this.driftUntil) return { dir: 0, frames: 0 };
+    if (this.releaseArmed) return { dir: this.lastSteer, frames: this.releaseLeft };
+    const [lo, hi] = this.who.releaseMax;
+    return { dir: this.lastSteer, frames: Math.max(lo, Math.min(hi, Math.round(Math.exp(this.who.release[0])))) };
+  }
+  /** the plan flown on the engine (planFlies): met on the frame he is swinging on liana `v`; failed on another, or back on his feet after it */
+  private planCatches(plan: PressPlan, v: { id: number }): number {
+    return planFlies(this.sim, plan, (e, frame) => {
+      const pl = e.player as { isVineSwinging?: boolean; swingVineId?: number; grounded: boolean };
+      if (pl.isVineSwinging) return pl.swingVineId === v.id ? 'met' : 'failed';
+      if (frame > plan.press + 2 && pl.grounded) return 'failed';
+    }).at;
+  }
   private planNext(): Pad | null {
     const out = this.planner.next(this.e.lives);
     if (!out) return null;
@@ -5321,13 +5336,6 @@ export class FirstTimerRun {
         if (kind === 'double') hold = Math.min(hold, d2 - DT);
       }
       this.runUpHold = null;
-    }
-    // (CI-11: vineFromLog's standing press, single and held exactly as it was judged (catches: the engine's held frames); the draws above
-    //  are kept, so the stream is as ever. On CI-10 it flew its own draw, 0.097 s on 2-4 kid Easy 35 at t 47.600, judged at 0.16)
-    if (this.standHold) {
-      const its = this.pressJudged || (!!this.pending?.still && !!this.pending?.judged);
-      if (its && this.t - this.standHold.t < 0.5) { kind = 'single'; hold = this.standHold.hold; d2 = -1; }
-      this.standHold = null;
     }
     let upOnly = !off && this.r() < who.upOnly ? between(this.r, who.upOnlyT) : 0;
     // (a hop a gate judged, SKILLS.floatSure (rule 28, the lead's ruling): flown as drawn and judged, kind, holds, second press and the
@@ -5714,7 +5722,15 @@ export class FirstTimerRun {
     const e = this.e;
     while (this.t < cap) {
       this.pressWant = undefined;
-      const pad = this.planNext() ?? this.pad();
+      // (ENG-SIM step 3: a judge inside pad() flew its plan from this frame (planFlies: frame 1 = the frame about to be played), so a plan
+      //  set while pad() ran plays its first pad NOW and pad()'s own want is dropped; a plan set after a frame (setPlan from onFrame)
+      //  plays from the next, as ever)
+      let pad = this.planNext();
+      if (!pad) {
+        const set = this.planner.count;
+        pad = this.pad();
+        if (this.planner.count !== set) pad = this.planNext() ?? pad;
+      }
       this.sim.frame(pad);
       if (PRESS_TRACE.on && pad.press && this.pressWant !== undefined) PRESS_TRACE.rows.push({ want: this.pressWant, got: this.t });
       if (this.hopOpen) {

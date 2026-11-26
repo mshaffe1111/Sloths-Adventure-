@@ -290,16 +290,16 @@ for (const slow of [true, false]) for (const way of ['lands', 'misses'] as const
 //  pressed at once under pressJudged with no run-up) must end on a liana, never grounded or set down first.
 test('a vine from a log pressed from a stand is the catch flown: 2-4 kid Easy 35, standing on a log drifting his way at 75 px/s under liana #4 (CI-11)', async () => {
   const ft = await import('./firsttimer.ts');
-  type Run = { t: number; e: { lives: number }; sim: { p: { x: number }; standingOn: number }; pending: { still?: boolean; judged?: boolean } | null; pressJudged: boolean; runUpHold: unknown };
-  const P = ft.FirstTimerRun.prototype as unknown as { startJump: (this: Run, ...a: unknown[]) => unknown };
-  const sj = P.startJump;
-  type Row = { t: number; x: number; on: number; n: number; caught: number | null; down: string | null };
+  // (ENG-SIM step 3 1a: the standing press is a plan vineFromLog flew on the engine and set (setPlan); each one is a row from its frame 1)
+  type Run = { t: number; sim: { p: { x: number }; standingOn: number } };
+  const P = ft.FirstTimerRun.prototype as unknown as { setPlan: (this: Run, plan: { press: number }, ...a: unknown[]) => unknown };
+  const sj = P.setPlan;
+  type Row = { t: number; x: number; on: number; n: number; press: number; end: number; at: number; caught: number | null; down: string | null };
   const rows: Row[] = [];
   let open: Row | null = null;
-  P.startJump = function (this: Run, ...a: unknown[]) {
-    const stand = (this.pressJudged && !this.runUpHold) || (!!this.pending?.still && !!this.pending?.judged);
-    const out = sj.apply(this, a);
-    if (stand) rows.push((open = { t: this.t, x: this.sim.p.x, on: this.sim.standingOn, n: 0, caught: null, down: null }));
+  P.setPlan = function (this: Run, plan: { press: number }, ...a: unknown[]) {
+    const out = sj.apply(this, [plan, ...a]);
+    rows.push((open = { t: this.t, x: this.sim.p.x, on: this.sim.standingOn, n: 0, press: plan.press, end: a[0] as number, at: 0, caught: null, down: null }));
     return out;
   };
   try {
@@ -308,15 +308,17 @@ test('a vine from a log pressed from a stand is the catch flown: 2-4 kid Easy 35
       const e = (sim as unknown as { e: { player: { x: number; y: number; grounded: boolean; isVineSwinging?: boolean; swingVineId?: number }; standingOnId: number | null } }).e;
       const p = e.player;
       open.n++;
-      if (p.isVineSwinging) { open.caught = p.swingVineId ?? -1; open = null; }
-      else if (open.n > 2 && p.grounded) { open.down = `grounded on #${e.standingOnId} at x ${p.x.toFixed(1)} y ${p.y.toFixed(1)}, frame ${open.n}`; open = null; }
-      else if (open.n > 60) { open.down = 'no liana in 60 frames'; open = null; }
+      if (p.isVineSwinging) { open.caught = p.swingVineId ?? -1; open.at = open.n; open = null; }
+      else if (open.n > open.press + 2 && p.grounded) { open.down = `grounded on #${e.standingOnId} at x ${p.x.toFixed(1)} y ${p.y.toFixed(1)}, frame ${open.n}`; open = null; }
+      else if (open.n > open.press + 60) { open.down = 'no liana in 60 frames'; open = null; }
     } });
   } finally {
-    P.startJump = sj;
+    P.setPlan = sj;
   }
   assert.ok(rows.length >= 1, 'vineFromLog pressed from a stand at least once (the shape is in the row)');
   for (const r of rows) assert.ok(r.caught !== null, `the standing press at t ${r.t.toFixed(3)} from x ${r.x.toFixed(1)} on #${r.on} was judged to catch; the engine: ${r.down}`);
+  // (the invariant on the real stage: the catch comes on the very frame the probe flew it to, the plan's end)
+  for (const r of rows) assert.equal(r.at, r.end, `the standing press at t ${r.t.toFixed(3)} on #${r.on}: caught on frame ${r.at}, the probe said ${r.end}`);
 });
 
 // CI-12 (the lead's ruling (b) on ENG-PLANT-CI session 9's (A)): the standing press is judged over the thumb's WHOLE lag spread, the gauss
@@ -326,16 +328,16 @@ test('a vine from a log pressed from a stand is the catch flown: 2-4 kid Easy 35
 //  98.267. The real stage and bot, as castBots rolls them: every standing press vineFromLog judged must end on a liana.
 test('a vine from a log pressed from a stand is judged at every lag his thumb draws: 2-4 kid Easy 19, on log #73 drifting his way at 80 px/s under liana #6 (CI-12)', async () => {
   const ft = await import('./firsttimer.ts');
-  type Run = { t: number; sim: { p: { x: number }; standingOn: number }; pending: { still?: boolean; judged?: boolean } | null; pressJudged: boolean; runUpHold: unknown };
-  const P = ft.FirstTimerRun.prototype as unknown as { startJump: (this: Run, ...a: unknown[]) => unknown };
-  const sj = P.startJump;
-  type Row = { t: number; x: number; on: number; n: number; caught: number | null; down: string | null };
+  // (ENG-SIM step 3 1a: the standing press is a plan vineFromLog flew on the engine and set (setPlan); each one is a row from its frame 1)
+  type Run = { t: number; sim: { p: { x: number }; standingOn: number } };
+  const P = ft.FirstTimerRun.prototype as unknown as { setPlan: (this: Run, plan: { press: number }, ...a: unknown[]) => unknown };
+  const sj = P.setPlan;
+  type Row = { t: number; x: number; on: number; n: number; press: number; end: number; at: number; caught: number | null; down: string | null };
   const rows: Row[] = [];
   let open: Row | null = null;
-  P.startJump = function (this: Run, ...a: unknown[]) {
-    const stand = (this.pressJudged && !this.runUpHold) || (!!this.pending?.still && !!this.pending?.judged);
-    const out = sj.apply(this, a);
-    if (stand) rows.push((open = { t: this.t, x: this.sim.p.x, on: this.sim.standingOn, n: 0, caught: null, down: null }));
+  P.setPlan = function (this: Run, plan: { press: number }, ...a: unknown[]) {
+    const out = sj.apply(this, [plan, ...a]);
+    rows.push((open = { t: this.t, x: this.sim.p.x, on: this.sim.standingOn, n: 0, press: plan.press, end: a[0] as number, at: 0, caught: null, down: null }));
     return out;
   };
   try {
@@ -344,15 +346,17 @@ test('a vine from a log pressed from a stand is judged at every lag his thumb dr
       const e = (sim as unknown as { e: { player: { x: number; y: number; grounded: boolean; isVineSwinging?: boolean; swingVineId?: number }; standingOnId: number | null } }).e;
       const p = e.player;
       open.n++;
-      if (p.isVineSwinging) { open.caught = p.swingVineId ?? -1; open = null; }
-      else if (open.n > 2 && p.grounded) { open.down = `grounded on #${e.standingOnId} at x ${p.x.toFixed(1)} y ${p.y.toFixed(1)}, frame ${open.n}`; open = null; }
-      else if (open.n > 60) { open.down = 'no liana in 60 frames'; open = null; }
+      if (p.isVineSwinging) { open.caught = p.swingVineId ?? -1; open.at = open.n; open = null; }
+      else if (open.n > open.press + 2 && p.grounded) { open.down = `grounded on #${e.standingOnId} at x ${p.x.toFixed(1)} y ${p.y.toFixed(1)}, frame ${open.n}`; open = null; }
+      else if (open.n > open.press + 60) { open.down = 'no liana in 60 frames'; open = null; }
     } });
   } finally {
-    P.startJump = sj;
+    P.setPlan = sj;
   }
   assert.ok(rows.length >= 1, 'vineFromLog pressed from a stand at least once (the shape is in the row)');
   for (const r of rows) assert.ok(r.caught !== null, `the standing press at t ${r.t.toFixed(3)} from x ${r.x.toFixed(1)} on #${r.on} was judged to catch; the engine: ${r.down}`);
+  // (the invariant on the real stage: the catch comes on the very frame the probe flew it to, the plan's end)
+  for (const r of rows) assert.equal(r.at, r.end, `the standing press at t ${r.t.toFixed(3)} on #${r.on}: caught on frame ${r.at}, the probe said ${r.end}`);
 });
 
 // CI-13 (ENG-PLANT-CI session 9's (B), traced in session 10, s10/tag-*): on a log running his way he rides in (SKILLS.handed), the
