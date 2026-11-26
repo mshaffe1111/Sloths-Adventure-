@@ -761,7 +761,7 @@ export interface DotReport {
  */
 /** the log a racing hop wants on each side of where it lands (px): the flights' careful middle player (2-7.md FLOWN) */
 const RACE_MARGIN = 50;
-export const SKILLS = { trunkCatch: true, ride: true, upstream: true, bankUp: true, handed: true, dropOnLog: true, vineFromLog: true, vineOverTail: true, bonkAfterSnap: true, rideWheel: true, bonkBrake: true, letItSnap: true, race: true, rideOnly: false, fromTakeoff: true, boardLog: true, boardHop: true, floatSure: true, reAim: true, runUp: true };
+export const SKILLS = { trunkCatch: true, ride: true, upstream: true, bankUp: true, handed: true, dropOnLog: true, vineFromLog: true, vineOverTail: true, bonkAfterSnap: true, rideWheel: true, boardWatch: true, bonkBrake: true, letItSnap: true, race: true, rideOnly: false, fromTakeoff: true, boardLog: true, boardHop: true, floatSure: true, reAim: true, runUp: true };
 /**
  * (ENG-26e) `trunkCatch`, a thumb gone to the climb: a jump that catches a trunk straight off the ground (no frame in the air, so no landing
  * ends it) is over the frame he holds the trunk, its hold and its second press with it; the climb is his. With it off the jump runs on
@@ -777,6 +777,9 @@ export const SKILLS = { trunkCatch: true, ride: true, upstream: true, bankUp: tr
  * tier's reaction to the window opening (stopReact, plus a late press as often as his tier's lateShare), and only while it is still open.
  * The hops are single (no second press): a double off the jetty or off the top is no step-off. With it off he treats the buckets as
  * ledges, scrambling bucket to bucket and into the pond (wheelRide.test.ts).
+ * `boardWatch` (LAND-26c, R-165.475): stopped nearer the jetty's lip than the board was flown (wheelFlights.ts BOARD_BACK), he hops in
+ * only when his own hop (hopBoards: every lag and hold it can have) comes down inside a bucket, up to a bucket period; with it off he hops
+ * at once, and from 17 px short of the lip the hop can carry past the bucket's end (wheelBoard.test.ts). Always on outside a test.
  */
 /**
  * (ENG-24, reference/design/2-4.md NEW 2) `dropOnLog`, drop on a log: on a liana hung over a log river, he lets go at the swing's forward
@@ -4814,7 +4817,7 @@ export class FirstTimerRun {
     const min = Math.max(who.hold[0], this.pressHold());
     const holds = [min, ...(who.holdQ ? who.holdQ.map((h) => Math.min(1.5, h)) : [who.hold[0] + 1.5 * who.hold[1], Math.min(0.45, who.hold[0] + 3 * who.hold[1])]).filter((h) => h > min)];
     if (this.wheelBoardWait < 0) this.wheelBoardWait = e.gameTime;
-    const boards = toLip >= BOARD_BACK || thumbLags(who.thumb).every((lag) => holds.every((hold) => hopBoards(w, p.x, p.y, w.way, hold, e.gameTime + hopAim(lag).clock)));
+    const boards = !SKILLS.boardWatch || toLip >= BOARD_BACK || thumbLags(who.thumb).every((lag) => holds.every((hold) => hopBoards(w, p.x, p.y, w.way, hold, e.gameTime + hopAim(lag).clock)));
     if (!boards && e.gameTime - this.wheelBoardWait < bucketPeriod(w)) return !who.holdQ && Math.abs(p.vx) > BONK.still ? (p.vx > 0 ? { left: true } : { right: true }) : {};
     this.wheelBoardWait = -1;
     this.wheelHop = who.hold[0];
