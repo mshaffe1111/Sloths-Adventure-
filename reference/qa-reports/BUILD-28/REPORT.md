@@ -1,7 +1,47 @@
 # BUILD-28 REPORT (W2-LANE: 2-8 "Before the Water Rises"; R-165.430 (2), READY-28, BUILD-28). Session 1 (W2-LANE a), started 9:44 AM ET (from date). Session 2 (W2-LANE b), started 10:07 AM ET (from date). Session 3 (W2-LANE c), started 10:30 AM ET (from date). Session 4 (W2-LANE d), started 10:52 AM ET (from date). Session 5 (W2-LANE e), started 11:19 AM ET (from the session hook date) Session 6 (W2-LANE f), started 11:41 AM ET (from the session hook date) Session 7 (W2-LANE g), started 12:05 PM ET (from the session hook date) Session 8 (W2-LANE h), started 12:49 PM ET (from the session hook date) Session 9 (W2-LANE i), started 1:15 PM ET (from the session hook date) Session 10 (W2-LANE j), started 1:05 PM ET (from the session hook date) Session 12 (W2-LANE l), started 2:20 PM ET (from the session hook date)
 
 
-## EXACT NEXT STEP (BUILD-28 box 3, session 16, started 6:05 PM ET (from the session hook date); head = this commit on t-build-28-wip)
+## EXACT NEXT STEP (BUILD-28 box 4, session 17, started 6:22 PM ET (from the session hook date); head = this commit on t-build-28-wip)
+RULED (the lead, on box 3's four items):
+(1) THE FORK COUNT is an engine gap: a pieces lane, ENG-FORK28 (base e878b1f45, landing on t-eng-fork28). Its rule: a designed code's F
+    nodes ARE its forks; brief.branching is for rolled codes only. NOT worked around in 2-8's data (BRIEF_28 keeps branching 'none':
+    ENG-FORK28 says any other value now throws by name on a designed brief). When its LANDING hash comes, merge t-eng-fork28 (no force;
+    conflicts named) and roll.
+(2) THE LEGS OVERLAP: a drop COLUMN at the turn (2-7's proven D column, Dc_), not taller steps. Written in the node string. FLY it on the
+    first clean roll before calling it done (CI #92): LEG_CLEAR 260 must hold on every seed x both settings.
+(3) NOTATION: n4 Pp1 -> Pw1 and the dyke's #water@flood -> #soft@flood: YES (data). n11/n13's content asks: re-read after the merge.
+(4) FLAGS: re-check after (1)-(2).
+DONE THIS BOX (561bf3882, then this commit):
+- (2)+(3) in data: ARC_28 = 'A Pg1 Tw1:#soft@flood Pw1 Xf1 R Uc1^ /D Dc_ /L Pg1>:#soft@flood R F[P+|P] Pg1> R Pf1> R Sg1< E';
+  BRIEF_28's deal re-counted to 11 content nodes (ground 4, water 3, floating 2, climb 2: 400/11, 300/11, 200/11, 200/11, dealExact).
+- The column needs its OWN piece (found by a trial roll): on a throwaway frozen merge of 561bf3882 + ENG-FORK28's candidate 408679c3d,
+  libstage --stage 2-8 --seeds 4 threw 4 of 4 on BOTH settings: "section w2-28-dyke (2 seeds) / w2-28-fork (2 seeds) is N px wide, wider
+  than the tower's storeys" (pipeline.ts:2230): the kit had no 'descent' piece, so the deal put the dyke or the fork on the D node. Added
+  (this commit): brick 'drop' ("the drop to the dyke", jobs ['descent'], content 'climb', entry 'ledge', exitDy 260), lay `drop` = 2-7's
+  weir geometry exactly (w2Arc27.ts weir: branch 240-260, then two walk-offs dy 110-150, no gap), a petal on its middle ledge; 2-8's
+  brick() now passes entry/exitDy as 2-7's does. tsc 0. NOT YET ROLLED (the lead's hand-over order came first). Rough, named: the drop
+  has no column dress (2-7's columnDress dresses the weir); judge at first look.
+- Step 2: src/game/gen2/worlds/w2Arc28.test.ts holds LINES_28, MISSION_28, GOAL_LINES_28, FLOOD_CARD_28 (name + text) and PAGE_28 equal
+  to reference/story/lines-2-8.md (brought in from t-keeper-28 943984c2f): all 12 w28 rows, no held word without a keeper row, no
+  placeholder. PASS; planted fault (one '!' dropped from rise) RED, restored. (The 'water' REUSED row is W2_TIPS.water, not 2-8's file.)
+- ENG-FORK28's message (data): candidate 408679c3d; its own 2-8 roll: thrown 0, the out-of-order / pool short / high-road-breaks errors
+  gone; left for 2-8: legs overlay, flags, the flood's low-road tail-off, asks content 'p', the fork tip before its socket, one finish
+  fall with no bank (Normal), Easy "could not lay Normal's plan" (its REPORT.md). Its gates were still running; landing hash not sent.
+- ART-REED-28: not merged (no hash from the lead yet; t-art-28 head be98a41ac is a REPORT draft).
+NEXT (box 5), in order:
+a. When the lead sends ENG-FORK28's LANDING hash: `git merge` it into t-build-28-wip (no force; conflicts named), tsc, then
+   libstage --stage 2-8 --seeds 4 (both settings, run_in_background, on a chattr-frozen tree), every error named. Expect the tower throw
+   gone (the drop piece); if the D node still deals wrong, read the deal's job match for 'descent' (2-7's weir is the model).
+b. Fly ruling (2): LEG_CLEAR 260 on every seed x both settings (legs.ts:214). Then (3)'s n11/n13 asks and (4) flags, re-read.
+c. When the lead sends ART-REED-28's hash: merge it with its first draw site (the art-use gate).
+d. On the first clean roll: flood28.ts T_CLOSE re-flown at the laid dyke length; the 2-minute floor on every tier; then FIRST LOOK
+   stills (packet step 3: the fork from the bank's edge first, upright).
+The suite + the CI tool line are owed on the first laid candidate (D126, D141): nothing to judge on this unrolled draft.
+Lessons applied (box 4): D115 (the trial roll on a chattr-frozen worktree of its own), D119 (commit messages from files, no heredoc in a
+commit chain), D128 (stamps from date), D134/D138 (pushed and ls-remote-checked before the hand-over; the hand-over ended new work),
+D140 (ReadNotifications at the step boundary: ENG-FORK28's message), D141 (the suite owed on the candidate, named).
+
+## (superseded by box 4) EXACT NEXT STEP (BUILD-28 box 3, session 16, started 6:05 PM ET (from the session hook date); head = this commit on t-build-28-wip)
 STEP 1 (2) STARTED, NOT DONE: w2Arc28.ts written on the 2-3/2-7 brick form and REGISTERED (STAGE_TABLE '2-8' kit 'w2-28', listed.ts
 KITS/WORLD/FINISH 'w2-28' with finish28 setting proto.follow = W2_FOLLOW, the brief in kitLib28 with flood: W2_FLOOD); W2_FLOOD.teach
 {normal 6, easy 8} added (box 1's list; floodLay.test's planted RED re-pinned to { ...W2_FLOOD, teach: undefined }, same test, same bar).

@@ -120,7 +120,7 @@ const cage = (id: string, on: string, t: number, critter: 'duck' | 'otter' | 'ca
 interface Lay { pieces: SectionPiece[]; sockets: Socket[] }
 interface V { id: string; lay: Lay; easy?: Lay }
 /** one beat (2-7's form): its first piece is its entry, its last its exit (renamed `in` and `out`); an `easy` lay is its Easy version */
-function brick(o: { id: string; name: string; jobs: NodeJob[]; difficulty: number; content: Content | 'structural'; window?: [number, number]; teaches?: string; uses?: string[]; versions: V[]; phases?: SectionTemplate['phases']; maxPerStage?: number }): SectionTemplate {
+function brick(o: { id: string; name: string; jobs: NodeJob[]; difficulty: number; content: Content | 'structural'; window?: [number, number]; teaches?: string; uses?: string[]; versions: V[]; phases?: SectionTemplate['phases']; maxPerStage?: number; entry?: 'ground' | 'ledge'; exitDy?: number }): SectionTemplate {
   const ren = (ps: SectionPiece[]) => {
     const a = ps[0].key, z = ps[ps.length - 1].key;
     const f = (s: string) => (s === a ? 'in' : s === z ? 'out' : s);
@@ -135,7 +135,7 @@ function brick(o: { id: string; name: string; jobs: NodeJob[]; difficulty: numbe
   return {
     id: `w2-28-${o.id}`, name: o.name, feel: [STAGE_28], own: true, archetypes: 'any', phases: o.phases ?? ['ki', 'sho', 'ten', 'ketsu'], difficulty: o.difficulty, needs: ['jump'],
     ...(o.teaches ? { teaches: o.teaches } : {}), uses: o.uses ?? [], jobs: o.jobs, content: o.content, terrain: 'river-bank', maxPerStage: o.maxPerStage ?? 1, ...(o.window ? { window: o.window } : {}),
-    pieces: [first], subBlocks: [{ id: 'body', versions }], entry: { piece: 'in', kind: 'ground' }, exit: { piece: 'out', kind: 'ground' }, exitDy: 0, sockets: [], mirrorable: false,
+    pieces: [first], subBlocks: [{ id: 'body', versions }], entry: { piece: 'in', kind: o.entry ?? 'ground' }, exit: { piece: 'out', kind: o.entry ?? 'ground' }, exitDy: o.exitDy ?? 0, sockets: [], mirrorable: false,
   } as SectionTemplate;
 }
 
@@ -185,6 +185,17 @@ const steps: Lay = {
   pieces: [bank('a', null, 520), bank('b', 'a', 420, -45), bank('c', 'b', 420, -45), bank('d', 'c', 420, -45), bank('z', 'd', 400)],
   sockets: [cage('cage4', 'a', 0.6, 'duck'), tip('t-turn', 'a', 0.8, 'turn')],
 };
+/** [D c] beat 7, the drop column at the turn (the lead's box-3 ruling (2)): down two stepped ledges onto the dyke, 2-7's proven weir
+ *  geometry (w2Arc27.ts weir: each step walked off straight down onto the next, no gap: a gap in a column is a fall World 2's finish
+ *  reads as a river with no bank). It parts the home leg from the out leg by legs.ts LEG_CLEAR; plain ledges (no column dress yet) */
+const drop: Lay = {
+  pieces: [
+    { key: 'a', shape: 'branch', w: [240, 260], place: { kind: 'start' } },
+    { key: 'b', shape: 'branch', w: [220, 250], place: { kind: 'walk', after: 'a', dy: [110, 150] }, landing: true },
+    { key: 'z', shape: 'branch', w: [220, 260], place: { kind: 'walk', after: 'b', dy: [110, 150] }, landing: true },
+  ],
+  sockets: [petal('pb', 'b', 0.5)],
+};
 /** [Pg>] beat 8, the dyke path (~4,000 px, L2): three dips filling ahead on the flood clock (paddling depth: never deep), a flag before */
 const dyke: Lay = {
   pieces: [bank('a', null, 520), marsh('b', 'a', 'dyke28', 520), rock('rb', 'b', 0.5), bank('c', 'b', 420), marsh('d', 'c', 'dyke28', 520), bank('e', 'd', 420), marsh('f', 'e', 'dyke28', 520), bank('z', 'f', 400)],
@@ -214,6 +225,7 @@ export const BEATS_28: SectionTemplate[] = [
   brick({ id: 'pads', name: 'the pad pond', jobs: ['practise'], difficulty: 2, content: 'water', uses: [FLOOD_LESSON], versions: [{ id: 'pond', lay: padPond }] }),
   brick({ id: 'island', name: 'the reed island', jobs: ['test'], difficulty: 4, content: 'floating', versions: [{ id: 'island', lay: island }] }),
   brick({ id: 'steps', name: 'the steps', jobs: ['climb'], difficulty: 2, content: 'climb', versions: [{ id: 'steps', lay: steps }] }),
+  brick({ id: 'drop', name: 'the drop to the dyke', jobs: ['descent'], difficulty: 2, content: 'climb', entry: 'ledge', exitDy: 260, versions: [{ id: 'steps', lay: drop }] }),
   brick({ id: 'dyke', name: 'the dyke path', jobs: ['practise'], difficulty: 3, content: 'ground', uses: [FLOOD_LESSON], versions: [{ id: 'dyke', lay: dyke }] }),
   w2TwoRoad('w2-28-fork', 'fork'),
   brick({ id: 'reed-bank', name: 'the reed bank', jobs: ['practise'], difficulty: 2, content: 'ground', uses: [FLOOD_LESSON], versions: [{ id: 'reeds', lay: reedBank }] }),
