@@ -1,7 +1,18 @@
 # BUILD-28 REPORT (W2-LANE: 2-8 "Before the Water Rises"; R-165.430 (2), READY-28, BUILD-28). Session 1 (W2-LANE a), started 9:44 AM ET (from date). Session 2 (W2-LANE b), started 10:07 AM ET (from date). Session 3 (W2-LANE c), started 10:30 AM ET (from date). Session 4 (W2-LANE d), started 10:52 AM ET (from date). Session 5 (W2-LANE e), started 11:19 AM ET (from the session hook date) Session 6 (W2-LANE f), started 11:41 AM ET (from the session hook date) Session 7 (W2-LANE g), started 12:05 PM ET (from the session hook date) Session 8 (W2-LANE h), started 12:49 PM ET (from the session hook date) Session 9 (W2-LANE i), started 1:15 PM ET (from the session hook date) Session 10 (W2-LANE j), started 1:05 PM ET (from the session hook date) Session 12 (W2-LANE l), started 2:20 PM ET (from the session hook date)
 
 ## EXACT NEXT STEP (session 13, W2-LANE m, started 3:49 PM ET (from the session hook date); code head 6c407a578 on t-build-28-wip)
-READY-28 SENT to the lead (below). WAIT for the lead's rulings (L1-L4) and its GO; build nothing before it (level.md rule 25). No piece is
+## THE LEAD'S RULINGS ON READY-28 (received in session 13 after READY-28; written here as a doc commit only)
+- L1: cages by socket, F[P+|P], no side channel: YES. K written P: YES on the condition the dyke beats' pressure is the flood's water,
+  not a chase. 2-8.md (t-design-26) says it is: :36 beat 6 "The dyke path, three dips filling ahead (paddling depth only: never deep)",
+  :38 beat 9 "Water lapping the path (paddling depth)", and :78 "ours: the water you SEE rising, never a chase". So K is written P;
+  P2 is NOT needed.
+- L2: B. The dyke path is about 4,000 px, T_CLOSE is re-flown with reference/specs/sims/flood28.ts, and there is one more home beat.
+  The floor must be met on every tier as FLOWN (castBots), not estimated.
+- L3: a Hugging Face reed island. An art lane makes it and logs it in HF-SPEND.
+- L4: 2-8 FOLLOWS release 5 (the lead's recommendation; Matt has the final word on what Friday carries) and aims for release 6.
+- P1 (the teach's rising water) starts now in its own pieces lane on t-eng-flood28. BUILD-28 starts when P1 lands, with the plan below
+  as ruled (L1, L2).
+READY-28 SENT; RULED (above). BUILD-28 waits for P1 to land; build nothing before it (level.md rule 25). No piece is
 built in the level (a pieces lane builds P1). Ruling on B taken as given: fork-jump cc85378b0 + the walked-top reroute 6c407a578 LAND as
 they are; 2b stays out (rule 21). The child's 3 late-0 'PRESS off bank' rows (seeds 1-3, the fork probe, both configs) are a named BOT
 READ GAP, R-165.475: the FIX-21 water look fires from a bank whose way on steps DOWN onto a floor; owner the bot lane after release 5.
