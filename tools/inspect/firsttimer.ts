@@ -1559,6 +1559,8 @@ export class FirstTimerRun {
   /** this frame's empty steer is a stop he means (the tower's rise over him, "stopped first"): the thumb lifts off once, late by the
    *  calibrated release draw, as a tier bot's does; every other let-go keeps KID and ADULT's held steer (thumbify, R-165.59) */
   private stopMeant = false;
+  /** FT_FRAMES only: what intend() asked for this frame, before the thumb (the frame trace's 'meant') */
+  private meantPad: Pad = {};
   private driftPx = 0;
   /** waiting at an edge for something drifting across since (s), or -1 */
   private edgeWait = -1;
@@ -5004,8 +5006,11 @@ export class FirstTimerRun {
       if (m >= 0) this.driftUntil = t + m * DT;
     }
     // (R-165.59: lastSteer is not moved on while the late lift-off runs, so for KID and ADULT this re-arms every frame and the steer is
-    // never let go once held; a tier bot arms it once per let-go, as the thumb does)
-    if (steer === 0 && this.lastSteer !== 0 && !want.press && !((who.holdQ || this.stopMeant) && this.releaseArmed)) {
+    // never let go once held; a tier bot arms it once per let-go, as the thumb does. R-165.465, the root fix: a BARE stand (intend's {}:
+    // nothing steered, pressed, held or climbed) is a stop he means, so every bot's thumb lifts once with its late lift-off there; the
+    // per-stand stopMeant lines (c11's ride read, CI-13's handed ride, CI-15's pad pause and the five like them) each patched one {})
+    const bare = !Object.values(want).some(Boolean);
+    if (steer === 0 && this.lastSteer !== 0 && !want.press && !((who.holdQ || bare || this.stopMeant) && this.releaseArmed)) {
       const [lo, hi] = who.releaseMax;
       const n = Math.max(lo, Math.min(hi, Math.round(Math.exp(gauss(this.r, who.release)))));
       this.releaseLeft = pre ? pre.release[k] : n;
@@ -5032,6 +5037,7 @@ export class FirstTimerRun {
     this.steady = false;
     this.stopMeant = false;
     const intended = this.intend();
+    if (TRACE_FRAMES) this.meantPad = intended;
     const want = this.rollHeld || this.steady || this.runnerAhead() ? intended : this.rhythm(intended);
     const out = this.figTap ? this.tapped(want) : this.thumbify(want);
     this.wasOnTrunk = !!this.sim.p.climbing;
@@ -5583,7 +5589,7 @@ export class FirstTimerRun {
         }
         this.wasSwinging = sw;
       }
-      if (TRACE_FRAMES && this.t > TRACE_FRAMES[0] && this.t < TRACE_FRAMES[1]) process.stderr.write(`    f ${this.t.toFixed(2)} ${Math.round(this.sim.p.x)},${Math.round(this.sim.p.y)} g${+this.sim.p.grounded} vx${Math.round(this.sim.p.vx)} pad ${JSON.stringify(pad)} on ${this.e.standingOnId}\n`);
+      if (TRACE_FRAMES && this.t > TRACE_FRAMES[0] && this.t < TRACE_FRAMES[1]) process.stderr.write(`    f ${this.t.toFixed(2)} ${Math.round(this.sim.p.x)},${Math.round(this.sim.p.y)} g${+this.sim.p.grounded} vx${Math.round(this.sim.p.vx)} pad ${JSON.stringify(pad)} meant ${JSON.stringify(this.meantPad)}${this.stopMeant ? ' stop' : ''} on ${this.e.standingOnId}\n`);
       this.frames++;
       e.guideView(this.view);
       this.dot.tick(this.view, this.t, (tp) => this.far(tp));
