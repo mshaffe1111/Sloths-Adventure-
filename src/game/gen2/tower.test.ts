@@ -16,7 +16,7 @@ import { applyVerdicts, buildGen2Stage, HARD_JOBS, keptFoes, layLocal, layStage,
 import { packPlan, stageParts, unpackPlan } from './seedList.ts';
 import { cfg as runCfg, kit as runKit } from './toyWorld.ts';
 import { ARC_CODE, arcKit, gateKit, hopsUp, towerCfg, upKit, upManifest } from './toyTower.ts';
-import { fallSeconds, flagFurther, gapCatchY, LEAP, leaps, localExtent, offEnd, openEnds, walledEnd, reflectLocal, routeAt, routeOf, storeyLimit, TOWER, towerCatches, towerFalls, towerFlagBreaches, stopVines, towerHandOns, towerVineCuts, towerFlags, towerGates, towerSkips, towerVaults, vertical, towerLids, ROOF } from './tower.ts';
+import { fallSeconds, flagFurther, gapCatchY, LEAP, leaps, localExtent, HANG, offEnd, openEnds, walledEnd, reflectLocal, routeAt, routeOf, storeyLimit, TOWER, towerCatches, towerFalls, towerFlagBreaches, stopVines, towerHandOns, towerVineCuts, towerFlags, towerGates, towerSkips, towerVaults, vertical, towerLids, ROOF } from './tower.ts';
 import { CLIMB_CLEAR, VAULT_GAP } from '../vineTop.ts';
 import type { Gen2Stage } from './types.ts';
 
@@ -215,21 +215,27 @@ test('towerFalls: going up, a step off any end is caught by sound wood within a 
   assert.ok(Math.abs(fallSeconds(4 * TOWER.fall) - 2 * fallSeconds(TOWER.fall)) < 1e-9 && fallSeconds(TOWER.fall) > 0.4 && fallSeconds(TOWER.fall) < 1.5, 'a fall is timed from rest');
 });
 
-// (ENG-DARK box 18) the engine stands him only while his MIDDLE is over wood, and keeps his middle inside [20, width - 20]: an end
-// 14 px in from that line (the drafted 3-1 Normal 25's log #48, its left end at x 34) is a slot he falls down, 1850 px for the child
-// who jumped left against the wall. It read as no end (its body-width point, x 10, is past the wall). offEnd clamps that point to
-// the wall's line; an end on or past the line is still no end. Planted: offEnd as it was (end -/+ 24, null outside the walls).
-test('offEnd: an end 14 px in from the wall is a slot he falls down, owed a catch; an end at the wall is none', () => {
-  assert.equal(offEnd(34, -1, 1280), 20);
+// (ENG-DARK box 18) the engine stands him while his middle hangs at most HANG past an end (11 px on Normal, 16 px with Easy's
+// help), and keeps his middle inside [20, width - 20]. An end further in from that line than the hang is a slot he falls down (the
+// drafted 3-1 Normal 25's log #48, its left end at x 34, 14 px in: the child fell past it 1850 px); an end nearer is no way off (the
+// same lay's Normal 22: a bridge run on to x 1256, 4 px in, read as the way down by the shrine, and all 5 bots stood on its end).
+// Planted: offEnd with no hang (any end short of the line is an end), or offEnd as it was (end -/+ 24, null outside the walls).
+test('offEnd: an end 14 px in from the wall is a slot he falls down, owed a catch; an end 4 px in, or at the wall, is no way off', () => {
+  assert.ok(HANG.fall > 11 && HANG.fall < 12 && HANG.off > 15 && HANG.off < 16, `the engine's hang: ${HANG.fall} / ${HANG.off}`);
+  assert.equal(offEnd(34, -1, 1280, HANG.fall), 20, '14 px in: he falls (Normal)');
+  assert.equal(offEnd(34, -1, 1280), null, "14 px in: no way off on both settings (Easy's footing holds him)");
+  assert.equal(offEnd(24, -1, 1280, HANG.fall), null, '4 px in: he stands at the wall');
+  assert.equal(offEnd(1256, 1, 1280, HANG.fall), null, "4 px in at the right wall (Normal 22's bridge): he stands");
+  assert.equal(offEnd(1246, 1, 1280, HANG.fall), 1260);
   assert.equal(offEnd(100, -1, 1280), 76);
-  assert.equal(offEnd(20, -1, 1280), null);
-  assert.equal(offEnd(0, -1, 1280), null);
-  assert.equal(offEnd(1246, 1, 1280), 1260);
-  assert.equal(offEnd(1260, 1, 1280), null);
+  assert.equal(offEnd(1200, 1, 1280), 1224);
+  assert.equal(offEnd(20, -1, 1280, HANG.fall), null);
+  assert.equal(offEnd(0, -1, 1280, HANG.fall), null);
   const floor = solid(0, 1900, 1280, 1);
   const slot = openEnds([floor, solid(34, 1100, 1246, 2)], 1900, TOWER.fall, 1280);
   assert.deepEqual(slot.map((o) => o.x), [20], 'the end 14 px in from the left wall is an open end, read at the wall');
   assert.deepEqual(openEnds([floor, solid(20, 1100, 1260, 3)], 1900, TOWER.fall, 1280), [], 'wall to wall: no end');
+  assert.deepEqual(openEnds([floor, solid(24, 1100, 1232, 6)], 1900, TOWER.fall, 1280), [], '4 px in from both walls: no end');
   // (the lay closes it: rule 1 runs the storey on into the wall, no slot left)
   const cs = towerCatches('down', [floor, solid(34, 1100, 600, 4)], [], 1900, 1280);
   assert.ok(cs.some((c) => c.x <= 0 && c.x + c.w >= 34 && c.y === 1100), `the slot at the left wall is closed at its own height: ${JSON.stringify(cs)}`);

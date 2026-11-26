@@ -62,7 +62,7 @@ import { controlStyle } from './controlPrefs.ts';
 import { cardSafe, DONE_LESSONS, HARMLESS_LESSONS, lessonDone, lessonInputMode, lessonsOn, lessonsSeen, lessonStale, markLessonSeen, pickLesson, type LessonId } from './lessons.ts';
 import { rockAt } from './rockfall.ts';
 import { gameSpeed, startingLives } from './assist.ts';
-import { ASSIST, DOUBLE_RISE, JUMP_RISE, EDGE, FORGIVE, LEAN_SPEED, LET_GO, PHYS, airCarry, airTakeOff, blockBeside, lipHasRoom, secondJumpV, canGrabSwing, easeAssist, inSweetSpot, knockDir, newAirDrive, releaseCall, RELEASE, swingGrab, swingLanding, SWING_LAND, swingStep, swingSetup, timedLaunch, vineAmp, vineAngle, WALL_H, type SwingState } from './physics.ts';
+import { ASSIST, STAND_SIDE, DOUBLE_RISE, JUMP_RISE, EDGE, FORGIVE, LEAN_SPEED, LET_GO, PHYS, airCarry, airTakeOff, blockBeside, lipHasRoom, secondJumpV, canGrabSwing, easeAssist, inSweetSpot, knockDir, newAirDrive, releaseCall, RELEASE, swingGrab, swingLanding, SWING_LAND, swingStep, swingSetup, timedLaunch, vineAmp, vineAngle, WALL_H, type SwingState } from './physics.ts';
 import { jumpHelp } from './jumpHelp.ts';
 import { HAND_REACH, HANG_DROP, HANG_PICK, ROPE_FROM, ROPE_GRAB, ROPE_SLIDE, ROPE_SPEED, ropeYAt } from './rope.ts';
 import { drawRopes, ropeDip, type RopeLoad } from './ropeArt.ts';
@@ -2846,7 +2846,7 @@ export class GameEngine {
         // Check if player is horizontally within platform (generous width tolerance)
         // How far the player's CENTRE may hang past a ledge and still count as standing on it. It was 0.48 (21 px), which left
         // Pokey standing in mid-air with most of his body off the cliff. 0.26 (about 11 px) keeps a foot on the ledge.
-        const side = plat.type === 'drift' ? DRIFT_CATCH.side + (this.easy ? DRIFT_CATCH.easySide : 0) : 0.26 + ASSIST.landSide * assist;
+        const side = plat.type === 'drift' ? DRIFT_CATCH.side + (this.easy ? DRIFT_CATCH.easySide : 0) : STAND_SIDE + ASSIST.landSide * assist;
         const catchDrop = plat.type === 'drift' ? DRIFT_CATCH.drop : 14 + ASSIST.catchDrop * assist;
         if (!(p.x + p.width * side > plat.x && p.x - p.width * side < plat.x + plat.width)) {
           // ledge-landing forgiveness (physics.ts FORGIVE.landPx, every stage): falling onto it from above, a foot that misses its edge
@@ -2873,7 +2873,7 @@ export class GameEngine {
       const plat = pickFloor(floors, p.x);
       if (plat && (plat.type !== 'drift' || this.easy)) {
         // (caught by the ledge-landing forgiveness: on with a foot, as far as the usual tolerance needs)
-        const side = plat.type === 'drift' ? DRIFT_CATCH.side + DRIFT_CATCH.easySide : 0.26 + ASSIST.landSide * assist;
+        const side = plat.type === 'drift' ? DRIFT_CATCH.side + DRIFT_CATCH.easySide : STAND_SIDE + ASSIST.landSide * assist;
         const missL = plat.x - (p.x + p.width * side);
         const missR = p.x - p.width * side - (plat.x + plat.width);
         if (missL >= 0) p.x += missL + 1;

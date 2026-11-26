@@ -8,7 +8,7 @@
  *
  * Nothing here names a stage, a seed or a place: a tower's width is its world's data (WorldManifest.tower).
  */
-import { PHYS, DOUBLE_RISE, JUMP_RISE, reachJump } from '../physics.ts';
+import { ASSIST, PHYS, DOUBLE_RISE, JUMP_RISE, reachJump, STAND_SIDE } from '../physics.ts';
 import type { Platform, Vine } from '../types.ts';
 import type { LocalLayout } from './pipeline.ts';
 import { climbX, ledgeOut, vaultSide } from '../vineTop.ts';
@@ -271,15 +271,23 @@ function catchUnder(platforms: readonly Platform[], x: number, y: number, reach:
   return best;
 }
 
+/** his width (engine.ts: 44 px) */
+const BODY_W = 44;
+/** how far past an end his middle hangs still standing (engine.ts landing, physics.ts STAND_SIDE): `fall` the least (Normal, no
+ *  early-stage help: past this he can fall), `off` the most (Easy, the help's wider footing: past this he steps off on either setting) */
+export const HANG = { fall: BODY_W * STAND_SIDE, off: BODY_W * (STAND_SIDE + ASSIST.landSide) };
 /**
- * Where his middle goes stepping off the end of wood at `end` toward `dir`: a body's width past it, but never past the walls the engine
- * keeps his middle inside, [20, width - 20]; null when the end is at or past that wall (no place for him off it: no end). The engine
- * stands him only while his middle is over wood, so an end 14 px in from that line is a slot he falls down: on the drafted 3-1, log
- * #48's left end at x 34 left one, read as no end (its body-width point, x 10, is past the wall), and the child, jumping left against
- * the wall at x 20, fell past it 1850 px (ENG-DARK box 18).
+ * Where his middle comes down stepping off the end of wood at `end` toward `dir`: a body's width past it, never past the walls the
+ * engine keeps his middle inside, [20, width - 20]; null when the wall's line lies within `hang` of the end (he stands at the wall,
+ * hanging past it: no end). The engine stands him while his middle hangs at most HANG past an end, so an end further in from that
+ * line is a slot: on the drafted 3-1 Normal 25, log #48's left end at x 34 (14 px in) read as no end (its body-width point, x 10, is
+ * past the wall), and the child, jumping left against the wall, fell past it 1850 px; but a bridge run on to x 1256 (4 px in) by
+ * Normal 22's shrine is no way off: read as one, it was laid as the way down and every bot stood on its end (ENG-DARK box 18).
+ * `hang`: HANG.fall where a fall must be caught (the lay's open ends and its catches' landings); HANG.off where the end is to be a
+ * way off on both settings (handOn, the catch guard).
  */
-export function offEnd(end: number, dir: -1 | 1, width: number): number | null {
-  return dir < 0 ? (end <= 20 ? null : Math.max(20, end - 24)) : end >= width - 20 ? null : Math.min(width - 20, end + 24);
+export function offEnd(end: number, dir: -1 | 1, width: number, hang = HANG.off): number | null {
+  return dir < 0 ? (end - 20 <= hang ? null : Math.max(20, end - 24)) : width - 20 - end <= hang ? null : Math.min(width - 20, end + 24);
 }
 
 /** where stepping off either end of a standable piece falls further than `most` px (or out of the tower): the open ends a catch is
@@ -288,7 +296,7 @@ export function openEnds(platforms: readonly Platform[], floorY: number, most: n
   const out: Array<{ p: Platform; x: number; drop: number }> = [];
   for (const p of platforms) {
     if (p.type !== 'solid' || p.y >= floorY - 1) continue;
-    for (const x of [offEnd(p.x, -1, width), offEnd(p.x + p.width, 1, width)]) {
+    for (const x of [offEnd(p.x, -1, width, HANG.fall), offEnd(p.x + p.width, 1, width, HANG.fall)]) {
       if (x === null) continue;
       // (a neighbour at the same height, or one he walks onto: no fall there)
       if (platforms.some((q) => q !== p && q.type !== 'fragile' && x >= q.x && x <= q.x + q.width && q.y <= p.y + 1 && q.y + q.height > p.y)) continue;
@@ -489,7 +497,7 @@ export function towerCatches(flow: 'up' | 'down', platforms: readonly Platform[]
       //  drafted 3-1 rolls, where a bough a little higher, off the vine's top, landed both ends, ENG-DOWNBOT)
       const landed = (bx: number, y: number) => {
         const box = { id: 0, x: bx, y, width: TOWER.catchW, height: 24, type: 'solid' } as Platform;
-        return [offEnd(bx, -1, width), offEnd(bx + TOWER.catchW, 1, width)].every((x) => x === null || all.some((q) => q.type === 'solid' && Math.abs(q.y - y) <= 1 && x >= q.x && x <= q.x + q.width) || (catchUnder([...all, box], x, y, most) !== undefined));
+        return [offEnd(bx, -1, width, HANG.fall), offEnd(bx + TOWER.catchW, 1, width, HANG.fall)].every((x) => x === null || all.some((q) => q.type === 'solid' && Math.abs(q.y - y) <= 1 && x >= q.x && x <= q.x + q.width) || (catchUnder([...all, box], x, y, most) !== undefined));
       };
       let pick: { bx: number; y: number; L: number } | undefined;
       for (const y of ys) {

@@ -108,8 +108,10 @@ PLANTS = [
      'src/game/gen2/darkBots.test.ts'),
     # (ENG-DARK-r, box 18) the wall slot (child Normal 25's 1850 px fall) and box 17's walled-end rule, each planted back
     ('offEnd as it was: an end 14 px in from the wall read as no end', 'src/game/gen2/tower.ts',
-     "  return dir < 0 ? (end <= 20 ? null : Math.max(20, end - 24)) : end >= width - 20 ? null : Math.min(width - 20, end + 24);",
+     "  return dir < 0 ? (end - 20 <= hang ? null : Math.max(20, end - 24)) : width - 20 - end <= hang ? null : Math.min(width - 20, end + 24);",
      "  const x = end + dir * 24; return x < 20 || x > width - 20 ? null : x;", 'offEnd: an end 14 px in from the wall', 'src/game/gen2/tower.test.ts'),
+    ('offEnd with no hang: an end 4 px in from the wall read as a way off (Normal 22 strand)', 'src/game/gen2/tower.ts',
+     "  return dir < 0 ? (end - 20 <= hang ? null :", "  hang = 0;\n  return dir < 0 ? (end - 20 <= hang ? null :", 'offEnd: an end 14 px in from the wall', 'src/game/gen2/tower.test.ts'),
     ("handOn's walledEnd filter removed (a walled end read as a way off)", 'src/game/gen2/tower.ts',
      "filter((x, i): x is number => x !== null && !walledEnd(platforms, i ? r.b : r.a, i ? 1 : -1, r.y))",
      "filter((x): x is number => x !== null)", 'a walled end is no way off: a catch', 'src/game/gen2/tower.test.ts'),
