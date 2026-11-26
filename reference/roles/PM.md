@@ -109,6 +109,9 @@ Everything else is yours on his standing permission (11-07).
    message with no priority waits for its turn to end (D140).**
    **The catch-ahead list names every cause any lane has booked to another lane's landing ('expected to fall at the merge'): each is a
    measurement owed today, on a trial merge (CI #83).**
+   **A ruling that sets a geometry or timing number names the flight that confirms it (CI #92, 11-26):** "N if flown clean on <the
+   design's check>, else back to the lead". A judge's band (SNAP_FAIR, rideLay, a gate's limit) is another stage's flight, never the
+   design's number for this one.
    **After every ROADMAP edit the lead runs roadmapcheck and reads EVERY line, not the last (CI #91, 11-26).** On a shallow clone the
    check stopped before any row was read; until R-165.489 makes it check rows there too, run it on a full clone or read the row rules
    (10 columns: ID | What | Tier | What we get | Time 'N h (past job)' | Value A-F | Size S/M/L | State | Owner | Source).
