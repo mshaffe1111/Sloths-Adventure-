@@ -1,0 +1,45 @@
+snapBand normal: W 130 px, the bar's count 0.7125 s Normal (0.7125 s here, Easy x1.158); engine realPlay + InputEngine (Pad tap, 80 ms); 2026-11-26T23:32:40.281Z
+HOP W130 G 20: CLEAN | feet (frames from his first tap) 13-13 26-26 39-52 65-65 78-78
+HOP W130 G 25: CLEAN | feet (frames from his first tap) 13-13 26-26 39-52 65-65 78-78
+HOP W130 G 30: CLEAN | feet (frames from his first tap) 13-13 26-26 39-52 65-65 78-78
+HOP W130 G 35: CLEAN | feet (frames from his first tap) 13-13 26-39 52-52 65-65 78-91
+HOP W130 G 40: not clean (n5 d0 swam 0,1,2,3)
+HOP W130 G 45: not clean (n5 d4 swam 0,1,2,3,4)
+HOP W130 G 50: not clean (n5 d2 swam 0,1,2; n5 d4 swam 0,1,2)
+HOP W130 G 55: not clean (n3 d0 swam 0; n3 d2 swam 0,1; n3 d4 swam 0,1,2; n5 d0 swam 0; n5 d2 swam 0,1; n5 d4 swam 0,1,2)
+HOP W130 G 60: not clean (n1 d0 swam 0; n3 d0 swam 0; n3 d2 swam 0,1; n3 d4 swam 0,1; n5 d0 swam 0; n5 d2 swam 0,1; n5 d4 swam 0,1)
+HOP W130 G 65: not clean (n1 d0 swam 0; n3 d0 swam 0; n3 d2 swam 0; n3 d4 swam 0,1; n5 d0 swam 0; n5 d2 swam 0; n5 d4 swam 0,1)
+HOP W130 G 70: not clean (n1 d0 swam 0; n1 d2 swam 0; n3 d0 swam 0; n3 d2 swam 0; n3 d4 swam 0,1; n5 d0 swam 0; n5 d2 swam 0; n5 d4 swam 0,1)
+HOP W130 G 75: not clean (n1 d2 swam 0; n3 d0 swam 0,1; n3 d2 swam 0; n3 d4 swam 0; n5 d0 swam 0,1; n5 d2 swam 0; n5 d4 swam 0)
+HOP W130 G 80: not clean (n1 d2 swam 0; n1 d4 swam 0; n3 d0 swam 0,1; n3 d2 swam 0; n3 d4 swam 0; n5 d0 swam 0,1; n5 d2 swam 0; n5 d4 swam 0)
+HOP W130 G 85: not clean (n1 d2 swam 0; n1 d4 swam 0; n3 d0 swam 0,1; n3 d2 swam 0; n3 d4 swam 0; n5 d0 swam 0,1; n5 d2 swam 0; n5 d4 swam 0)
+HOP W130 G 90: not clean (n1 d2 swam 0; n1 d4 swam 0; n3 d0 swam 0,1; n3 d2 swam 0; n3 d4 swam 0; n5 d0 swam 0,1; n5 d2 swam 0; n5 d4 swam 0)
+HOP W130 G 95: not clean (n1 d2 swam 0; n1 d4 swam 0; n3 d0 swam 0,1,2; n3 d2 swam 0; n3 d4 swam 0; n5 d0 swam 0,1,2; n5 d2 swam 0; n5 d4 swam 0)
+HOP W130 G100: not clean (n1 d2 swam 0; n1 d4 swam 0; n3 d2 swam 0; n3 d4 swam 0; n5 d0 swam 0,1,2,3; n5 d2 swam 0; n5 d4 swam 0)
+HOP W130 G105: not clean (n1 d2 swam 0; n1 d4 swam 0; n3 d2 swam 0; n3 d4 swam 0; n5 d2 swam 0; n5 d4 swam 0)
+HOP W130 G110: not clean (n1 d2 swam 0; n1 d4 swam 0; n3 d2 swam 0; n3 d4 swam 0; n5 d2 swam 0; n5 d4 swam 0)
+HOP W130 G115: not clean (n1 d2 swam 0; n1 d4 swam 0; n3 d2 swam 0; n3 d4 swam 0; n5 d2 swam 0; n5 d4 swam 0)
+HOP W130 G120: not clean (n1 d0 swam ; n1 d2 swam ; n1 d4 swam ; n3 d0 swam ; n3 d2 swam ; n3 d4 swam ; n5 d0 swam ; n5 d2 swam ; n5 d4 swam )
+HOP W130: clean at G 20, 25, 30, 35
+BEAT W130 G 20: CLEAN, NOT in step with the bar (two stones in a count, or one off the beat) | feet (frames from his first tap) 13-20 21-36 37-43 56-64 77-85 | first tap on count: in step x2 [12--] 49%; in step x3 [12--] 41%; in step x5 [----] 0%; wave x2 [-23-] 51%; wave x3 [-23-] 45%; wave x5 [-23-] 42%
+BEAT W130 G 25: CLEAN, NOT in step with the bar (two stones in a count, or one off the beat) | feet (frames from his first tap) 13-21 34-37 38-43 56-64 77-85 | first tap on count: in step x2 [12--] 48%; in step x3 [12--] 41%; in step x5 [----] 0%; wave x2 [123-] 66%; wave x3 [-23-] 45%; wave x5 [-23-] 41%
+BEAT W130 G 30: CLEAN, NOT in step with the bar (two stones in a count, or one off the beat) | feet (frames from his first tap) 13-21 34-39 40-56 57-64 77-85 | first tap on count: in step x2 [12--] 45%; in step x3 [1---] 26%; in step x5 [----] 0%; wave x2 [123-] 66%; wave x3 [-23-] 48%; wave x5 [-23-] 41%
+BEAT W130 G 35: CLEAN, NOT in step with the bar (two stones in a count, or one off the beat) | feet (frames from his first tap) 13-21 34-40 42-57 59-64 77-85 | first tap on count: in step x2 [12--] 44%; in step x3 [1---] 24%; in step x5 [----] 0%; wave x2 [123-] 66%; wave x3 [-23-] 50%; wave x5 [-23-] 41%
+BEAT W130 G 40: CLEAN, NOT in step with the bar (two stones in a count, or one off the beat) | feet (frames from his first tap) 13-21 34-41 43-59 62-78 80-85 | first tap on count: in step x2 [12--] 43%; in step x3 [1---] 22%; in step x5 [----] 0%; wave x2 [123-] 66%; wave x3 [123-] 51%; wave x5 [-23-] 44%
+BEAT W130 G 45: CLEAN, NOT in step with the bar (two stones in a count, or one off the beat) | feet (frames from his first tap) 13-21 34-42 56-61 64-80 83-99 | first tap on count: in step x2 [12--] 42%; in step x3 [1---] 20%; in step x5 [----] 0%; wave x2 [123-] 66%; wave x3 [123-] 66%; wave x5 [-23-] 48%
+BEAT W130 G 50: CLEAN, NOT in step with the bar (two stones in a count, or one off the beat) | feet (frames from his first tap) 13-21 34-43 56-62 77-82 85-101 | first tap on count: in step x2 [12--] 41%; in step x3 [1---] 19%; in step x5 [----] 0%; wave x2 [12--] 65%; wave x3 [12--] 65%; wave x5 [-2--] 49%
+BEAT W130 G 55: CLEAN, IN STEP with the bar | feet (frames from his first tap) 13-21 34-43 56-64 77-84 98-104 | first tap on count: in step x2 [12--] 41%; in step x3 [1---] 16%; in step x5 [----] 0%; wave x2 [12--] 65%; wave x3 [12--] 65%; wave x5 [12--] 65%
+BEAT W130 G 60: CLEAN, IN STEP with the bar | feet (frames from his first tap) 13-21 34-43 56-64 77-85 98-107 | first tap on count: in step x2 [12--] 41%; in step x3 [1---] 16%; in step x5 [----] 0%; wave x2 [12--] 65%; wave x3 [12--] 65%; wave x5 [12--] 65%
+BEAT W130 G 65: CLEAN, IN STEP with the bar | feet (frames from his first tap) 13-21 34-43 56-64 77-85 98-107 | first tap on count: in step x2 [12--] 41%; in step x3 [1---] 16%; in step x5 [----] 0%; wave x2 [12--] 65%; wave x3 [12--] 65%; wave x5 [12--] 65%
+BEAT W130 G 70: CLEAN, IN STEP with the bar | feet (frames from his first tap) 13-21 34-43 56-64 77-85 98-107 | first tap on count: in step x2 [12--] 41%; in step x3 [1---] 16%; in step x5 [----] 0%; wave x2 [12--] 65%; wave x3 [12--] 65%; wave x5 [12--] 65%
+BEAT W130 G 75: CLEAN, IN STEP with the bar | feet (frames from his first tap) 13-21 34-43 56-64 77-85 98-107 | first tap on count: in step x2 [12--] 41%; in step x3 [1---] 16%; in step x5 [----] 0%; wave x2 [12--] 65%; wave x3 [12--] 65%; wave x5 [12--] 65%
+BEAT W130 G 80: not clean (n5 swam 0,1,2)
+BEAT W130 G 85: not clean (n3 swam 0,1; n5 swam 0,1)
+BEAT W130 G 90: not clean (n3 swam 0; n5 swam 0)
+BEAT W130 G 95: not clean (n1 swam 0; n3 swam 0; n5 swam 0)
+BEAT W130 G100: not clean (n1 swam 0; n3 swam 0; n5 swam 0)
+BEAT W130 G105: not clean (n1 swam 0; n3 swam 0; n5 swam 0)
+BEAT W130 G110: not clean (n1 swam 0; n3 swam 0; n5 swam 0)
+BEAT W130 G115: not clean (n1 swam 0; n3 swam 0; n5 swam 0)
+BEAT W130 G120: not clean (n1 swam ; n3 swam ; n5 swam )
+BEAT W130: clean at G 20, 25, 30, 35, 40, 45, 50, 55, 60, 65, 70, 75

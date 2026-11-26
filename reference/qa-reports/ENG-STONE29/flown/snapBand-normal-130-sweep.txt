@@ -1,0 +1,9 @@
+snapBand normal: W 130 px, the bar's count 0.7125 s Normal (0.7125 s here, Easy x1.158); engine realPlay + InputEngine (Pad tap, 80 ms); 2026-11-26T23:32:36.371Z
+SWEEP W130 count 0.6 (0.6000 s here): in step with the bar at G 27-51; pitch over count 262-302 px/s
+SWEEP W130 count 0.65 (0.6500 s here): in step with the bar at G 38-60; pitch over count 258-292 px/s
+SWEEP W130 count 0.7 (0.7000 s here): in step with the bar at G 49-73; pitch over count 256-290 px/s
+SWEEP W130 count 0.7125 (0.7125 s here): in step with the bar at G 49, 51-75; pitch over count 251-288 px/s
+SWEEP W130 count 0.75 (0.7500 s here): in step with the bar at G 54, 56-85; pitch over count 245-287 px/s
+SWEEP W130 count 0.8 (0.8000 s here): in step with the bar at G 71-100; pitch over count 251-288 px/s
+SWEEP W130 count 0.85 (0.8500 s here): in step with the bar at G 84-109; pitch over count 252-281 px/s
+SWEEP W130 count 0.9 (0.9000 s here): in step with the bar at G 98-116; pitch over count 253-273 px/s

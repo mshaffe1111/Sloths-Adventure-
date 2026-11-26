@@ -8,7 +8,7 @@ import '../headlessDom.ts';
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { buildGen2Stage, keptFoes } from './pipeline.ts';
-import { layPads, padFaults, snapClock, snapFaults, snapWindow, SNAP_FAIR, SNAP_LAY, type PadRow } from './rideLay.ts';
+import { layPads, padFaults, snapBeat, snapClock, snapFaults, snapWindow, SNAP_FAIR, SNAP_LAY, SNAP_WIDE, type PadRow } from './rideLay.ts';
 import { cfg as toyCfg, kit as toyKit, meadow } from './toyWorld.ts';
 import { withTestStage } from './listed.ts';
 import { packPlan, plantSeedList } from './seedList.ts';
@@ -313,4 +313,74 @@ test('a teaching row (R-165.337): the bite jolts and holds him as any bite does,
   assert.equal(t.lost, 0, 'no heart for a teach');
   const plant = bite({ ...ROWS, teach: { ...ROWS.teach, freeBite: undefined } as PadRow });
   assert.ok(!plant.free && plant.jolted && plant.lost === 1, `the plant: the same row without freeBite costs a heart (lost ${plant.lost})`);
+});
+
+// ───────── the WIDE snap stone (ENG-STONE29, R-165.490): 130 px, one stone a count, its own flown band (tools/engine/snapBand.ts) ─────────
+
+/** 2-9's court count (B = physics.ts TIMED.period / 4: 2.85 / 4 Normal) and its Easy stretch (3.3 / 2.85), as court29.ts flew it */
+const COURT = 2.85 / 4, COURT_EASY = 3.3 / 2.85;
+const wide = (pads: number, gap: number, wave = false, count = COURT): PadRow =>
+  ({ by: 'snap', pads: Array.from({ length: pads }, () => 'snap' as const), gap, snap: { count, w: 130, ...(wave ? { wave: true as const } : {}) }, easyStretch: COURT_EASY });
+function builtOn(row: PadRow, difficulty: 'normal' | 'easy') {
+  const kit = kitOf({ p: row }, 'p');
+  for (let seed = 1; seed <= 40; seed++) {
+    const st = buildGen2Stage({ config: cfg, kit, seed, difficulty });
+    if (st.platforms.some((p) => p.pad?.on === 'bites')) return st;
+  }
+  throw new Error('no roll lays the wide row');
+}
+const wideFaults = (row: PadRow, difficulty: 'normal' | 'easy' = 'normal') => snapFaults(builtOn(row, difficulty), difficulty).join(' | ');
+
+test("the wide stone's model (snapBeat) against the flights: BUILD-29-b's Normal 130+60 and ENG-STONE29's Easy 130+90, count for count", () => {
+  const def = snapClock('w', { count: COURT }, COURT_EASY);
+  const at = (n: number, wave: boolean, easy: boolean) => snapBeat(def, Array.from({ length: n }, (_, i) => (wave ? -i * COURT : 0)), easy);
+  // [n, wave, easy, the counts his first tap is safe on, the flown share of safe starts (%)] (flown/beat-normal-098047713.txt RUN W130 G60;
+  //  reference/qa-reports/ENG-STONE29/flown/snapBand-easy-130-0.7125.txt BEAT W130 G90)
+  for (const [n, wave, easy, counts, share] of [[2, false, false, '12--', 41], [3, false, false, '1---', 16], [5, false, false, '----', 0], [5, true, false, '12--', 65],
+    [2, false, true, '12--', 39], [3, false, true, '1---', 14], [5, false, true, '----', 0], [5, true, true, '12--', 63]] as const) {
+    const b = at(n, wave, easy);
+    assert.equal(b.counts, counts, `${n} ${wave ? 'wave' : 'in step'} ${easy ? 'Easy' : 'Normal'}`);
+    const bar = 4 * COURT * (easy ? COURT_EASY : 1);
+    if (share > 0) assert.ok(Math.abs(b.window / bar - share / 100) <= 0.02, `${n} ${wave ? 'wave' : 'in step'} ${easy ? 'Easy' : 'Normal'}: window ${b.window} s of ${bar} vs flown ${share}%`);
+  }
+});
+
+test('the wide stone laid: 130 px wide, its own band, 80 px rows unchanged', () => {
+  const { pads } = layPads(wide(3, 62), 'w', 0, 400, (() => { let i = 1; return () => i++; })());
+  assert.deepEqual(pads.map((p) => p.width), [130, 130, 130]);
+  assert.deepEqual(pads.map((p) => p.x), [62, 254, 446], 'one pitch of 192 px');
+  assert.throws(() => layPads({ ...wide(1, 62), snap: { count: COURT, w: 100 as 130 } }, 'w', 0, 400, () => 1), /a 100 px snap stone; the flown stones are 80 and 130 px/);
+  assert.equal(SNAP_LAY.w, 80);
+  assert.deepEqual(SNAP_FAIR.gap, [30, 40]);
+  assert.deepEqual(SNAP_WIDE.pace, [258, 281], 'snapBand.ts: in step with the bar at every count 0.65-0.87 s, both settings');
+});
+
+test('the wide stone at its measured band passes on a built stage and keeps the counts; the 80 px stone is judged as before', () => {
+  // (Normal at the court's count: water 54-70 keeps the pace; the wave of 5 safe from ONE or TWO, 2 in step from ONE or TWO)
+  for (const g of [54, 62, 70]) assert.equal(wideFaults(wide(5, g, true)), '', `the wave of 5 at 130 + ${g}`);
+  assert.equal(wideFaults(wide(2, 62)), '', '2 in step at 130 + 62');
+  // (Easy lays its own water for its stretched count: 83-102)
+  for (const g of [83, 90, 102]) assert.equal(wideFaults(wide(5, g, true), 'easy'), '', `Easy: the wave of 5 at 130 + ${g}`);
+  const def = snapClock('w', { count: COURT }, COURT_EASY);
+  assert.equal(snapBeat(def, [0, -COURT, -2 * COURT, -3 * COURT, -4 * COURT], false).counts, '12--', 'the wave of 5: ONE or TWO (2-9 beat 8)');
+  assert.equal(snapBeat(def, [0, 0, 0], false).counts, '1---', '3 in step: ONE only (2-9 beat 5), but with no slack late');
+  // the 80 px stone: 30 still passes, 60 still refused
+  assert.equal(wideFaults({ by: 'snap', pads: ['snap', 'snap', 'snap'], gap: 30, snap: { count: 0.75 } }), '', '80 at 30');
+  assert.match(wideFaults({ by: 'snap', pads: ['snap', 'snap'], gap: 60, snap: { count: 0.75 } }), /60 px of water .* not 30-40/, '80 at 60');
+});
+
+test('the wide stone refused, each by name: 30 px of water (off the beat), Normal water on Easy, too wide, a count unflown, 4 in step, a mixed run, a knife-edge count', () => {
+  assert.match(wideFaults(wide(3, 30, true)), /30 px of water beside the 130 px snap stone .*: a pitch of 160 px over a 0.7125 s count is 225 px\/s, not 258-281 \(one stone a count\)/);
+  assert.match(wideFaults(wide(3, 90, true)), /90 px of water beside the 130 px snap stone .* 309 px\/s/, 'over the band he swims');
+  assert.match(wideFaults(wide(5, 62, true), 'easy'), /62 px of water beside the 130 px snap stone at x=\d+ on Easy: .* 0.825 s count is 233 px\/s/, "Normal's water on Easy's count");
+  assert.match(wideFaults(wide(3, 30, true, 0.5)), /a 130 px stone on a 0.5 s count, outside the flown 0.65-0.87 s/);
+  assert.match(wideFaults(wide(4, 62)), /4 stones in step .* over 3/);
+  const st = builtOn(wide(2, 62), 'normal');
+  const ps = st.platforms.map((p) => ({ ...p, ...(p.pad ? { pad: { ...p.pad } } : {}) }));
+  ps.filter((p) => p.pad?.on === 'bites')[0].width = 100;
+  assert.match(snapFaults({ ...st, platforms: ps }, 'normal').join(' | '), /100 px wide, not the flown 80 or 130/);
+  ps.filter((p) => p.pad?.on === 'bites')[0].width = 80;
+  assert.match(snapFaults({ ...st, platforms: ps }, 'normal').join(' | '), /mixes 80 and 130 px stones/);
+  // (3 in step: safe only from ONE, and a tap one frame after ONE is a bite: refused by the slack, SNAP_WIDE.slack)
+  assert.match(wideFaults(wide(3, 62)), /on Normal his tap on its best count \(safe on \[1---\]\) may be 0 s off the beat, under 0.2/);
 });
