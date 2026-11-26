@@ -1,5 +1,43 @@
 # BUILD-28 REPORT (W2-LANE: 2-8 "Before the Water Rises"; R-165.430 (2), READY-28, BUILD-28). Session 1 (W2-LANE a), started 9:44 AM ET (from date). Session 2 (W2-LANE b), started 10:07 AM ET (from date). Session 3 (W2-LANE c), started 10:30 AM ET (from date). Session 4 (W2-LANE d), started 10:52 AM ET (from date). Session 5 (W2-LANE e), started 11:19 AM ET (from the session hook date) Session 6 (W2-LANE f), started 11:41 AM ET (from the session hook date) Session 7 (W2-LANE g), started 12:05 PM ET (from the session hook date) Session 8 (W2-LANE h), started 12:49 PM ET (from the session hook date) Session 9 (W2-LANE i), started 1:15 PM ET (from the session hook date) Session 10 (W2-LANE j), started 1:05 PM ET (from the session hook date)
 
+## EXACT NEXT STEP (session 11, W2-LANE k, started 1:56 PM ET (from the session hook date); code head 6545a5823; hand-over at the box)
+DONE: step 0 ff (t-build-28-wip 0f15f97d3 -> 334d94f64, no force); step 1 fork reshoot (stills-s11/: pillar GONE; the lead judged the
+upright set: confirmed); step 2 the rises (6545a5823: W2_FORK.rises h 60 -> 45 in w2.ts; stills-s11-rises45/); the lead's extra order,
+the marsh trace (stills-s11-marsh/, forkstills-s11.mjs.txt): cause sent to the lead = the ENGINE's marsh lay shape; STOPPED on it.
+1. THE SOIL FIX'S GATES (FIX-SOIL-c, frozen a9c0170c tree /tmp/claude-0/wt-a9c, each ONCE): paintcheck 0/3 PASS (0 new, 170 known);
+   1/3 PASS (0 new, 107 known); 2/3 RUNNING at the box; CI tool line (gates.yml:157) 431 tests, 430 pass, 0 fail, 1 todo (the OPEN
+   chase-bots child): GREEN; drawcheck RUNNING at the box, then lockall --check vs reference/qa-reports/FIX-SOIL-c/lock-base-0f15f97d3.json
+   (zero moves expected). Logs: the session scratchpad (paint-*.log, ciline.log, draw.log, lock.log). NEXT: the results go in this table and
+   to the lead; any red is the soil fix's: to the lead at once with the line.
+2. THE RISES (step 2): paintFalls on 2-8's own config (the toy planted as 2-8 and built the GAME's way, generateStage + finish, every
+   sheet 'loaded' as paintFall.test does; probe: the session's /tmp/claude-0/probe/rises2.mts, logic in this note): seeds 1-8 x
+   Normal/Easy: RED on the head 16/16 builds (ids 32/33 moss_stone h 60 drawn 'ground', painter '1-50, 90-420'); GREEN on 6545a5823 16/16 (0).
+   Why 45 (named): a moss_stone this wide draws h 1-49 as a PAINTED THIN PIECE, exactly 50 as ONE BOULDER (protoArt drawRockArt: 1.15x
+   its width, a 1,610 px rock: not a step; the packet's '50' was the boulder: pushback sent), 90+ as a painted soil BANK (a Pokey-tall
+   step). 45 = the nearest a painter draws as a step to 2-8.md's 60, 5 clear of the boulder line. W stays 60: on the game's build it is a
+   painted thin piece (FIX-SOIL-c's flag was a build without the finish), so the porch stays 135 over the marsh floor (ruling (c)).
+   LOOKED AT (stills-s11-rises45, upright + sideways): the rises draw as World 2's rope-tied board steps on the porch log; nothing
+   through the log. Boards, not stone, beside W's mossy cobble: the lead's to judge.
+3. THE MARSH TRACE (the lead's order, sent with the lines): water LAID and DRAWN (riverLay.ts:115 surfaceY = floor 1593 + marshWater 30,
+   riverLay.ts:85); the line PADDLES on a DRIVEN hop (frame 26, the duck at x 17169 y 1623); the old shots teleported him, so no trail
+   over the dip (harness fault, fixed in forkstills-s11). From the lip UPRIGHT no water is in frame: riverLay.ts:112-114 lays a marsh as
+   equal floor pieces starting with a PIECE at the bank's end and the water 30 under the floor's top; the nearest water (dip
+   17069..17169) is 311 px left of his feet at 17480, the upright view reaches ~17270. ENGINE: STOPPED, the lead routes it (options: a
+   marsh that OPENS with a dip at the near bank's foot, or a wet marsh with water at/over the floor). READY-28's must-show waits on it.
+4. RULE 28 (the fork probe, probe-fork.test.ts.txt: 6 tiers x seeds 1-3 x late 0/15/19 = 54, the ROAD check; rows in rule28-s11/):
+   HEAD 334d94f64 (rises 60, frozen /tmp/claude-0/wt-head): 0/54. Every run rescued once: (a) child-easy s1 late 0 'STUCK 1812/620@12.9R:
+   water ahead, the way on is 255 px down'; (b) child s1 late 0 'STUCK 1923/620@27R: water ahead, the way on is 255 px down' (middle-easy
+   s1: 195 px down). 6545a5823 (rises 45, frozen /tmp/claude-0/wt-r45): 36/54, rescues 0 on all 54. MOVED 36 rows MISS -> ok: the rescue
+   at the high road's step down is gone (cause: the bot's step-down read on the rises' far treads; 255 = 60 + 60 + 135 reads as 'water
+   ahead'; at 45 it walks down). The 18 left MISS are ALL late 0, every tier, 'ROAD FAIL highBy PRESS off W' (at late 0 he should walk the
+   low road; the bot presses up W): the SAME on the head (head late-0 lines: 'ROAD FAIL highBy PRESS off W'), so not this change: the
+   bot's road read (draft-fork-jump-bot.patch.txt never landed; ENG-THUMB's bot fix merges into 2-8 later; judged after it).
+   lockall vs main: no listed row lays W2_FORK (w2TwoRoad only on the toy), so zero moves expected: NOT RUN. The src suite
+   (w2TwoRoad.test, lineBot.test read W2_FORK): NOT RUN.
+5. NEXT SESSION, in order: record items 1 and 4; the src suite once on frozen 6545a5823; lockall vs main once; paintcheck 2/3 on the
+   head (owed); then READY-28 on 2-8's own config with the plan (level.md rule 25 step 0) once the lead rules the marsh's engine fix.
+   Wait for GO before BUILD-28.
+
 ## EXACT NEXT STEP (session 10, W2-LANE j, started 1:05 PM ET (from the session hook date); code head cb52396a3)
 STOPPED AT STEP 2 BY RULING (ii): THE SOIL COLUMN THROUGH THE PORCH LOG IS STILL THERE ON THE 1b HEAD. A NEW DEFECT, NOT PATCHED.
 Waiting for the lead's word. Nothing after step 2 was started (no rule 28, no paintcheck 2/3, no READY-28).
