@@ -71,7 +71,7 @@ function crossing(run: ReturnType<typeof play>) {
 }
 const ADULT = { ...FT_ADULT, setting: 'normal' as const };
 
-test('probe', () => {
+test.skip('probe', () => {
   for (const [name, who, o] of [['green', ADULT, {}], ['noRootWait', { ...ADULT, noRootWait: true }, {}], ['noRootWait+noLit', { ...ADULT, noRootWait: true }, { noLit: true }]] as const) {
     const t0 = Date.now();
     const out: string[] = [];
@@ -82,7 +82,7 @@ test('probe', () => {
     console.log('RUN', name, out.join(' '), Date.now() - t0, 'ms');
   }
 });
-test.skip('probe2', () => {
+test('probe2', () => {
   for (const [st, from] of [['easy', 36]] as const) {
     const run = play({ ...ADULT, setting: st }, {}, from);
     const { root } = run;

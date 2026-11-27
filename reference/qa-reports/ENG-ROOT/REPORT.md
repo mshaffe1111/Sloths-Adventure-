@@ -4,12 +4,17 @@
 1. `git fetch origin t-eng-root-wip t-eng-w3 && git switch -c t-eng-root-wip FETCH_HEAD`; merge origin/t-eng-w3 if it moved (MERGE, never rebase).
 2. ITEM 3 is IN rootBots.test.ts as a PROBE (`test('probe')` prints RUN lines; `probe2` traces one roll; flip skip with sed). Row and kit:
    src/game/gen2/toyRoot.ts (World 3's REAL kit, floor 2200, root 1600, ocelot t 0.5). Last run (8 rolls from 1,6..36 x both settings,
-   `n16` = Normal from seed 16): GREEN 15/16 unseen (`e36`: 4 alert frames left, OPEN: trace it with probe2 ['easy', 36]); noRootWait
+   `n16` = Normal from seed 16): GREEN 15/16 unseen; noRootWait
    (the plant) seen on n16 (44, hit 1) and n31 (134): RED; noRootWait + noLit (cast.step with lit false) seen on none: the light is the cause.
    Pace on the root 85 px/s on every roll. TURN THE PROBE INTO TESTS: (a) skill on: every roll took (hung on it), crossed, seen 0, hits 0;
    (b) noRootWait: seen > 0 on some roll (RED); (c) noRootWait + noLit: seen 0 where (b) was seen; (d) pace 85 +-2; plant `world: (s) =>
    ({ ...s, ropes: s.ropes.map((r) => ({ ...r, speed: undefined })) })` -> pace 120 (the creep-timing verdict reads it); (e) the root over a
    gap only: rootRow.test's 'floor under the root' (a `rope` place over a gap in toyRoot) -> RED. Drop 'took < 120 px' (n16 lands mid-root).
+   OPEN FIRST, e36 (probe2 is set to ['easy', 36]; tsc on the probe file fixed after 4492c87c8): its ocelot's PATROL runs 13950..14415,
+   past the root's END 14240 (the toy's socket t 0.5 is placed by patchFor anywhere in a free run), so on his let-go it glances back
+   (not noise: a 84 px drop is under LOUD.landing.soft 200). The roll breaks the spec rule below, not the bot. Recommended: bound the
+   row's ocelot inside the root's middle (a socket/patch bound, if SectionSocket has one; else a toy floor split so its free run is the
+   middle); NOT a bot hold within sight.ahead of a glancer (with the patrol over the end it would wait forever).
 3. Items 5 (stills), 4 (gates), 5 (land) as the box-2 brief: stills say "art: World 1's painted vine rope (ropeArt.ts drawRopes, look 'root')".
 
 ## Done in box 2 (b37f9d66e + the wip commit after it)
