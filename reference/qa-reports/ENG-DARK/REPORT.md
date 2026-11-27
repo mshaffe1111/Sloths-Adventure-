@@ -1,3 +1,20 @@
+**BOX 28 (ENG-DARK-bb), steps 1-2 DONE, no code changed (frozen 88592a9c4 and 93e05e98d, D115).**
+1. CHILD NORMAL 1 TRACED: NOT a lay cause, NOT a dead end; the bot's known weakness plus dice drift (both trees replay their rows exactly).
+- The paths are identical to frame 3180 (t 106.0). There, from x 1141 y 6487, the base FALLS 1408 px to y 7895 through the wall slot at
+  x 1260 (the fall the rule closes); the candidate lands on the new run-on (x 1244-1280, y 6933) and walks off it left (x 1260 -> 1115 by
+  f3270). The run-on joins the 806-1244 floor, so he can leave it both ways: no dead end.
+- Both trees log the same "fell back down 8 times" at x 1010 y 6450 and get the same rescue onto the y 6172 floor (cand t 109.5, base t 117.8).
+- The new stuck (x 1222, y 6172, t 116.2, f~3486, "94 px up") is on the 1150-1280 y 6172 floor, 761 px OVER the run-on. That band is
+  byte-identical on both trees. The base climbed out at x 1132 in 8 s; the candidate tried the right end first, then climbed at x 1132 (f3990).
+- The same weakness on the base (other dice, firstTimer opts.trial 1-8, frozen, the run-on absent): trial 7 stuck x 1151 y 6172 t 173.5
+  and x 1172 y 6172 t 244.2; trial 2 x 1176 y 6172 t 281.4. The later spots are also base spots: 568,3052 (base trials 2 and 8), 930,596
+  (trial 5), 930,572 (trial 7); 658,4628's floor (base trial 4: 195,4628).
+- Over trials 1-8 child Normal 1 is BETTER on the candidate: 6 rescues vs 12, mean 297 s vs 358 s. The x40 row (trial 0) is one roll of the dice.
+2. EASY 34'S BUILD MOVED (layout 34, past the lock's 16): two run-ons, Easy only, 34 px at x 1246, y 2644 and y 1081 (Normal 34 unchanged).
+  The run is identical to f6720 (same 4 stucks, 3 rescues), then parts at the y 1081 run-on (step-off at the right wall x 1260); +3.3 s.
+  Same rule, same kind of move as the 1-4 ruling (intended).
+Tools: scratch trace.mts / trials.mts (firstTimer onFrame; trial = other dice); not committed.
+
 **BOX 27 HAND-OVER (ENG-DARK-aa, 8:45 PM ET by `date`). THE LEAD RULED (b), intended: record 1-4 as the ONLY intended stage, x40, then LAND.
 EXACT NEXT STEP: TRACE child Normal 1 (rule 28: it got WORSE on the move) before anything else, on frozen 93e05e98d (D115:
 `chattr -R +i src tools`, then `chattr -i` only on src, src/game, src/game/gen2, src/game/gen2/proven).** 1-4 x40 DONE, frozen, both settings,
