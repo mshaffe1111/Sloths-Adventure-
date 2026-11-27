@@ -1,10 +1,8 @@
 # INT-R5 REPORT: release 5 (0.10.4) candidate, release-0.10.4 (packet reference/packets/2026-11-26/INT-R5.md)
 
 ## EXACT NEXT STEP (written 8:47 AM ET 11-27 by `date`; release-0.10.4, box 1 of 11-27; the old release-0.10.3 report is below the line)
-1. **The What's New TITLE**: the approved title "Two new stages" duplicates 0.9.8's title, so playerText.test fails ("What's New
-   items: exact duplicates", on 5b9389168). A ruling was asked of the lead. The recommendation is A = "Water wheels and the mail boat"
-   (B "Up the bank, then home by boat"). With no reply in 20 minutes, A goes in (reversible). Edit ONLY the 0.10.4 `title:` line in
-   src/game/whatsNew.ts; then run whatsNew.test + playerText.test (0 fail); commit; push.
+1. **DONE**: the What's New title is now "Water wheels and the mail boat" (the lead's ruling A; "Two new stages" duplicated 0.9.8's title).
+   whatsNew.test + playerText.test: 79 pass, 0 fail. This is the first commit of the final head; no code was touched.
 2. **The DISCOVERY run on 5b9389168** (frozen /home/user/wt/c1, main frozen /home/user/wt/main, results in /home/user/wt/out-c1) runs
    in box 1's container. It is the gates of the same frozen candidate, so box 1 lets it finish (D138) and pushes each lane's
    fullset-*.txt plus every failing g-*.log tail to reference/qa-reports/INT-R5/r104/out-c1/. The lanes are listed under "THE FULL
