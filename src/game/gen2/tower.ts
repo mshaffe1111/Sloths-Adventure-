@@ -382,7 +382,13 @@ function layCatches(cover: boolean, flow: 'up' | 'down', platforms: readonly Pla
     return fresh.length > 0 && near.some((q) => inRoom(fresh, q.x, q.x + q.width, q.y) !== undefined);
   };
   const lidded = (x0: number, x1: number, y: number) => flow === 'down' && (inRoom((rooms ??= hopRooms(all, vines, false)), x0, x1, y) !== undefined || made(x0, x1, y));
-  const put = (x0: number, x1: number, y: number, L: number) => {
+  // (NO WOOD IS LAID TWICE: wood wholly on solid wood already at its height lays nothing new, so `put` lays none and says so, and no
+  //  piece is laid again or trimmed onto it: every catch in the lay is distinct, by construction. Rule 2's bridge a hop past a vine's
+  //  top, missing the end's fall line, was laid again on each of the lay's 10 passes, and the mend's catch under that line made the
+  //  lay 12 catches of 3 (tower.test.ts, ENG-CATCH-b's toy), ENG-CATCH-f)
+  const already = (x0: number, x1: number, y: number, but?: Platform) => all.some((q) => q !== but && q.type === 'solid' && Math.abs(q.y - Math.round(y)) <= 1 && q.x <= Math.round(x0) && q.x + q.width >= Math.round(x1));
+  const put = (x0: number, x1: number, y: number, L: number): boolean => {
+    if (already(x0, x1, y)) return false;
     const c = { x: Math.round(x0), y: Math.round(y), w: Math.round(x1 - x0), level: L };
     out.push(c);
     const p = { id: -1 - out.length, x: c.x, y: c.y, width: c.w, height: 24, type: 'solid' } as Platform;
@@ -391,6 +397,7 @@ function layCatches(cover: boolean, flow: 'up' | 'down', platforms: readonly Pla
     laid.push(p);
     served.push(serving);
     rooms = undefined;
+    return true;
   };
   const solid = (but: ReadonlyArray<Platform>) => all.filter((q) => !but.includes(q) && q.type === 'solid');
   // (wood in its way: across other wood at another height with less than his body between the two, over it or under it; `but`: the
@@ -495,9 +502,7 @@ function layCatches(cover: boolean, flow: 'up' | 'down', platforms: readonly Pla
       //  left a way off with a 568 px blind drop, as no catch can lie under its point on the wall line (offEnd); read off the piece and
       //  run-on as one, a piece's own 65 px gap on its far side refused its run-on (drafted 3-1 Easy 6 and 34, ENG-DARK box 26))
       if ((e.x < TOWER.wall + 40 || e.x > width - TOWER.wall - 40) && ownSide && !sealed(e.p) && !byGate(w0, w1, e.p.y) && (flow !== 'down' || (!cramped(w0, w1, e.p.y, [e.p]) && !passes(w0, w1, e.p.y) && !lidded(w0, w1, e.p.y)))) {
-        put(w0, w1, e.p.y, Le);
-        added++;
-        continue;
+        if (put(w0, w1, e.p.y, Le)) { added++; continue; }
       }
       // 2. (wood under him from a body's height down: wood nearer than a storey is his own storey's, a jump back up to where he fell)
       const lo = e.p.y + BODY_H + 12, hi = Math.min(e.p.y + most, floorY - 1);
@@ -518,7 +523,7 @@ function layCatches(cover: boolean, flow: 'up' | 'down', platforms: readonly Pla
         const far = left ? Math.max(24, e.x - TOWER.catchW / 2) : Math.min(width - 24, e.x + TOWER.catchW / 2);
         const x0 = Math.min(near, far), x1 = Math.max(near, far);
         const L = x1 - x0 >= 60 && (!cover || (x0 <= e.x && x1 >= e.x)) && !overGap(x0, x1, anchor.y) ? fair(x0, x1, anchor.y, lv.get(anchor) ?? 0, [anchor]) : -1;
-        if (L >= 0) { put(x0, x1, anchor.y, L); added++; bridged = true; break; }
+        if (L >= 0 && put(x0, x1, anchor.y, L)) { added++; bridged = true; break; }
       }
       if (bridged) continue;
       // (a sealed piece is never run on, and no shelf is hung at its end: the wood under it is its own section's, or the fall is named)
@@ -527,7 +532,7 @@ function layCatches(cover: boolean, flow: 'up' | 'down', platforms: readonly Pla
       if (flow === 'up') {
         const [x0, x1] = leftEnd ? [0, e.p.x] : [e.p.x + e.p.width, width];
         const L = overGap(x0, x1, e.p.y) ? -1 : fair(x0, x1, e.p.y, Le, [e.p]);
-        if (L >= 0) { put(x0, x1, e.p.y, L); added++; continue; }
+        if (L >= 0 && put(x0, x1, e.p.y, L)) { added++; continue; }
       }
       // 4. (a bough of its own under the end)
       const x0 = Math.max(24, Math.min(width - 24 - TOWER.catchW, e.x - TOWER.catchW / 2));
@@ -578,7 +583,7 @@ function layCatches(cover: boolean, flow: 'up' | 'down', platforms: readonly Pla
         }
         if (pick && (flow !== 'down' || landed(pick.bx, pick.y))) break;
       }
-      if (pick) { put(pick.bx, pick.bx + TOWER.catchW, pick.y, pick.L); added++; }
+      if (pick && put(pick.bx, pick.bx + TOWER.catchW, pick.y, pick.L)) added++;
     }
     if (!added) break;
   }
@@ -614,9 +619,11 @@ function layCatches(cover: boolean, flow: 'up' | 'down', platforms: readonly Pla
       tries--;
       if (k !== undefined) {
         const p = laid[k];
+        // (never onto wood already there: p is out of `all` while it is laid again)
+        if (already(a, b, y, p)) return false;
         p.x = a; p.y = y; p.width = b - a;
         all.push(p);
-      } else { serving = serve; put(a, b, y, L); }
+      } else { serving = serve; if (!put(a, b, y, L)) return false; }
       const now = check();
       if (now.length < misses.length) {
         misses = now;
@@ -657,7 +664,7 @@ function layCatches(cover: boolean, flow: 'up' | 'down', platforms: readonly Pla
         for (let e = keepL ? Math.min(x1, a) : Math.max(x0, b); keepL ? e >= ex + SLIDE.back : e <= ex - SLIDE.back; e += keepL ? -10 : 10) {
           const [u, v] = keepL ? [x0, Math.round(e)] : [Math.round(e), x1];
           if (v - u < MEND.trim) break;
-          if (inWay({ ...q, x: u, width: v - u } as Platform, a, b, y)) continue;
+          if (inWay({ ...q, x: u, width: v - u } as Platform, a, b, y) || already(u, v, q.y, q)) continue;
           q.x = u; q.width = v - u; rooms = undefined;
           const joins = solidAt(q.y).filter((p) => p !== q && (Math.abs(p.x + p.width - u) <= 2 || Math.abs(p.x - v) <= 2));
           if (endsLand(u, v, q.y) && fair(u, v, q.y, lv.get(q) ?? 0, [q, ...joins]) >= 0) { out[j].x = u; out[j].w = v - u; done = true; break; }
@@ -813,7 +820,7 @@ function layCatches(cover: boolean, flow: 'up' | 'down', platforms: readonly Pla
       for (const y of ys) {
         for (const a of y === p.y ? as : [...as, p.x]) {
           for (const b of y === p.y ? bs : [...bs, p.x + p.width]) {
-            if (b - a < 60 || b - a > widest || (a === p.x && b === p.x + p.width && y === p.y) || !lands(a, b, y)) continue;
+            if (b - a < 60 || b - a > widest || (a === p.x && b === p.x + p.width && y === p.y) || !lands(a, b, y) || already(a, b, y, p)) continue;
             if (fair(a, b, y, lv.get(p) ?? 0, [...joinL, ...joinR]) < 0) continue;
             const q = { ...p, x: a, y, width: b - a } as Platform;
             if (openEnds([...all, q], floorY, most, width).length >= before.length) continue;
