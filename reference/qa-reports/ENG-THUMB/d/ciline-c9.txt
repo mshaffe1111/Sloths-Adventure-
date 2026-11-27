@@ -1,0 +1,12 @@
+ciline on e106d4a6e exit 1 589 s
+# tests 428
+# pass 422
+# fail 5
+# cancelled 0
+# todo 1
+not ok 195 - chase bots (OPEN, todo): the CHILD bot on Normal reaches the fork on 2 or more of 3 seeds # TODO measured 1 of 3 (ENG-B4): every miss a fall at a 120 px gap, never a catch
+not ok 254 - a beat row is started from a floor that stays only on a breath that crosses it: 2-2 adult Normal 4, the latch carried over pads (CI-14)
+not ok 303 - planted: with waitRise off, 2-2 takes the child on Normal the skill carries across (6, 22, 24: clean with it, rescued without)
+not ok 351 - planted: with the against-the-flow skill off, the child on Normal is rescued on 2-1 (17) and the child and the middle on Normal lose 5+ more lives (child 3, 15; middle 16)
+not ok 352 - in the real engine: on a log flowing AT him, a held hop the upstream gate refuses is aimed again after his reaction, never held for the whole ride back (SKILLS.reAim; RED with it off)
+not ok 353 - SKILLS.reAim keeps the honest aim (D121, the lead's two conditions): on a log a re-draw never comes inside his stopReact, and the press is decided on the aimed hop alone, never its drawn 

@@ -1,0 +1,3 @@
+t 65.7 x 8573 #41 8551-8751 middle 178 px short of the front, inside false, pause true, steer {} {} {} {} | 8581 8585 8588 8590 8592 8595 8597 8599 8602 8604 8606 8609
+t 203.23 x 24842 #110 24730-24910 middle 68 px short of the front, inside true, pause true, steer {} {} {} {} | 24846 24849 24851 24854 24857 24859 24862 24865 24867 24870 24873 24875
+end shrine rescues 0 lives undefined

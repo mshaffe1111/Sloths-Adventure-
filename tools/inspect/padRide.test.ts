@@ -73,22 +73,24 @@ for (const row of Object.keys(TOY_PADS) as ToyPad[]) {
 //  settings, 239 rows; 2-5 child N 1-39, kid N 1-25, nothing moved): on 2-2 the child on Normal, seeds 6, 22 and 24, crosses clean with
 //  the skill and is rescued without it (and N 4, 10, 12, 19, 28, 32, 38 lose 5+ more lives); the extra lives are at the pads (seed 24:
 //  beat pads #86 / #87 at x 21,7xx, weight pads #114 - #116 at x 28,6xx - 29,1xx), the skill's own work)
-const RISE_CASES: Array<[string, 'normal' | 'easy', number]> = [['child', 'normal', 6], ['child', 'normal', 22], ['child', 'normal', 24]];
+// (ENG-THUMB, R-165.465, the lead's ruling 3: the bar by LIVES. The kid-bot root fix made the child better at the pads with the skill off:
+//  from C6 39ee096b7 at the latest (the CI line was not run on C1-C5; green on c73cb9766) the RESCUE plant above has no live case: 2-2
+//  child Normal 6, 22 and 24 cross clean without the skill, and on C11 48af07540 all 40 seeds do (2-2 child N 1-40, waitRise on and off,
+//  castRun as here: reference/qa-reports/ENG-THUMB/d/rise-c11-2-2-childnormal.txt). The skill still saves lives, the work it is planted
+//  for: seeds 1, 4, 6, 7, 20, 26 and 39 lose more without it (3 -> 6, 3 -> 4, 2 -> 7, 4 -> 7, 1 -> 7, 3 -> 4, 0 -> 3: 22 lives over the
+//  seven; the same seven on C8). Four seeds lose fewer without it (9: 2 -> 1, 15: 1 -> 0, 21: 5 -> 2, 25: 3 -> 1): 15 lives net over 40)
+const RISE_LIVES: Array<[string, 'normal' | 'easy', number]> = [1, 4, 6, 7, 20, 26, 39].map((seed) => ['child', 'normal', seed]);
 
-test('planted: with waitRise off, 2-2 takes the child on Normal the skill carries across (6, 22, 24: clean with it, rescued without)', async () => {
+test('planted: with waitRise off, 2-2 costs the child on Normal more lives on the seeds the skill carries (1, 4, 6, 7, 20, 26, 39: more lives lost without it on each)', async () => {
   const { castRun } = await import('./castBots.ts');
-  const clean = (r: { end: string; rescues: number }) => r.end === 'shrine' && r.rescues === 0;
   const said = (r: { bot: string; setting: string; seed: number; end: string; rescues: number; lives: number }) => `${r.bot} ${r.setting} seed ${r.seed}: ${r.end}, rescues ${r.rescues}, lives ${r.lives}`;
-  for (const [bot, setting, seed] of RISE_CASES) {
-    const r = castRun(bot, setting, '2-2', seed);
-    assert.ok(clean(r), `waitRise on, not clean: ${said(r)}`);
-  }
+  const withIt = RISE_LIVES.map(([bot, setting, seed]) => castRun(bot, setting, '2-2', seed));
   PAD_SKILL.waitRise = false;
   try {
-    for (const [bot, setting, seed] of RISE_CASES) {
+    RISE_LIVES.forEach(([bot, setting, seed], i) => {
       const r = castRun(bot, setting, '2-2', seed);
-      assert.ok(!clean(r), `waitRise off, still clean: ${said(r)}`);
-    }
+      assert.ok(r.lives > withIt[i].lives, `waitRise off, no more lives lost: on ${said(withIt[i])}; off ${said(r)}`);
+    });
   } finally {
     PAD_SKILL.waitRise = true;
   }
@@ -112,6 +114,38 @@ test("OUT-AND-BACK's pin: he is followed out to the stone first, and once he has
   assert.ok(pr.cur > 12, `pulled back out to ${pr.cur} (the pin is 12)`);
   pr.relocate({ x: 100, y: 730 });
   assert.ok(pr.cur > 12, `a respawn put him back on the way out (${pr.cur})`);
+});
+
+// (R-165.465 C9, 2-2 middle Normal 7: a life lost past a spur's stone pin, the flag 1,895 px behind it; the pin floor, kept through a
+//  respawn, left no point within the off-way reach, so every rewind counted as a fall from one top: 8 and a rescue. Each way: set down
+//  ON the out-and-back ground the floor holds (never back out to the stone); set down behind the whole spur it rolls back)
+test("OUT-AND-BACK's pin and a respawn: set down beside the way back he stays on it; set down behind the spur his place is found there and the stone is his to stand at again", async () => {
+  const { Progress } = await import('./firsttimer.ts');
+  // (2,000 px of way up to the spur at y 730, every 25 px; then out along it to the stone at x 300 and back, as the pin test lays it)
+  const lead = Array.from({ length: 80 }, (_, i) => ({ x: -2000 + i * 25, y: 730 }));
+  const out = Array.from({ length: 13 }, (_, i) => ({ x: i * 25, y: 730 }));
+  const back = Array.from({ length: 13 }, (_, i) => ({ x: 312 - i * 25, y: 730 }));
+  const pts = [...lead, ...out, ...back];
+  const stone = lead.length + 12;
+  const stood = () => {
+    const pr = new Progress(pts);
+    pr.pins.push(stone);
+    pr.relocate({ x: -1990, y: 730 });
+    for (let x = -1975; x <= 300; x += 25) pr.step({ x, y: 730 });
+    assert.equal(pr.cur, stone, 'he stood at the stone');
+    return pr;
+  };
+  // (one way: set down at x 237 on the way back, beside the way out: he is placed on the way back, never on the way out to the stone)
+  const a = stood();
+  a.relocate({ x: 237, y: 730 });
+  assert.ok(a.cur >= stone, `set down beside the way back he was placed on the way out (point ${a.cur}, x ${pts[a.cur].x})`);
+  // (the other: set down at a flag 1,900 px behind the spur: his place is where he is, and the way on heads out to the stone again)
+  const b = stood();
+  b.relocate({ x: -1900, y: 730 });
+  assert.ok(Math.abs(pts[b.cur].x + 1900) < 30, `set down behind the spur his place stayed off the way (point ${b.cur}, x ${pts[b.cur].x})`);
+  assert.ok(b.off({ x: -1900, y: 730 }) < 260, 'set down behind the spur he is off the way');
+  for (let x = -1875; x <= 225; x += 25) b.step({ x, y: 730 });
+  assert.ok(b.cur < stone, `walking out again he was followed past the stone he has not stood at again (point ${b.cur})`);
 });
 
 // FIX-284 (R-165.284; the lead's ruling A, 11-19): A BREATHING ROW NEVER MEETS HIM IN LOCKSTEP. On 2-2's finale a first-timer drowned at a

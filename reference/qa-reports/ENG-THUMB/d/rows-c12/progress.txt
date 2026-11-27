@@ -1,0 +1,7 @@
+rows on 585dccbde bots kid,adult,child,middle,expert 4:33 PM ET
+2-1 exit 0 360 rows 165 s
+2-2 exit 0 360 rows 98 s
+2-4 exit 0 360 rows 143 s
+2-5 exit 0 360 rows 119 s
+1-4 exit 0 360 rows 107 s
+rows done 4:44 PM ET

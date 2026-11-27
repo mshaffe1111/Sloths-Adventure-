@@ -1,0 +1,30 @@
+# 2-2 child Easy 21: C4a vs C6 jump lists part at the first pad hop (C6 25.83 at toEdge 67, take-off 2.4 px before #8's front; C4a 26.63)
+4,77c4,76
+<   26.63 single from 2621,631 hold 0.73 up 0.00 d2 0.34 2nd false -> 2814,665 ok
+<   27.57 single from 2906,665 hold 0.70 up 0.00 d2 0.71 2nd false -> 3072,631 ok
+<   31.87 double from 3636,631 hold 1.71 up 0.00 d2 0.50 2nd true -> 3945,596 ok
+# C6 set-downs, FT_FRAMES 252-264.6 (frames where x jumps > 40 px): set down at 24292,575, runs right meaning right, off at ~24420 y 617, no jump, 8 times, then rescued onto #94 (24459-24879, not a pad)
+    f 257.33 24383,578 g0 vx285 pad {"right":true} meant {"right":true} on -1
+    f 257.37 24392,583 g0 vx268 pad {"right":true} meant {"right":true} on -1
+    f 257.40 24402,592 g0 vx285 pad {"right":true} meant {"right":true} on -1
+    f 257.43 24410,603 g0 vx268 pad {"right":true} meant {"right":true} on -1
+    f 257.47 24420,617 g0 vx285 pad {"right":true} meant {"right":true} on -1
+    f 257.50 24292,575 g1 vx0 pad {"right":true} meant {"right":true} on -1
+    f 257.53 24295,575 g1 vx87 pad {"right":true} meant {"right":true} on 92
+    f 257.57 24301,575 g1 vx173 pad {"right":true} meant {"right":true} on 92
+    f 257.60 24309,575 g1 vx260 pad {"right":true} meant {"right":true} on 92
+    f 257.63 24319,575 g1 vx285 pad {"right":true} meant {"right":true} on 92
+    f 257.67 24328,575 g1 vx268 pad {"right":true} meant {"right":true} on 92
+    f 257.70 24337,575 g1 vx285 pad {"right":true} meant {"right":true} on 92
+    f 257.73 24346,575 g1 vx268 pad {"right":true} meant {"right":true} on 92
+    f 257.77 24356,575 g1 vx285 pad {"right":true} meant {"right":true} on 92
+    f 257.80 24365,575 g1 vx268 pad {"right":true} meant {"right":true} on 92
+    f 257.83 24374,575 g1 vx285 pad {"right":true} meant {"right":true} on 92
+    f 257.87 24383,578 g0 vx268 pad {"right":true} meant {"right":true} on -1
+    f 257.90 24393,583 g0 vx285 pad {"right":true} meant {"right":true} on -1
+    f 257.93 24401,592 g0 vx268 pad {"right":true} meant {"right":true} on -1
+    f 257.97 24411,603 g0 vx285 pad {"right":true} meant {"right":true} on -1
+    f 258.00 24420,617 g0 vx268 pad {"right":true} meant {"right":true} on -1
+    f 258.03 24292,575 g1 vx0 pad {"right":true} meant {"right":true} on -1
+    f 258.07 24295,575 g1 vx87 pad {"right":true} meant {"right":true} on 92
+    f 258.10 24301,575 g1 vx173 pad {"right":true} meant {"right":true} on 92

@@ -445,7 +445,10 @@ test('a beat row is started from a floor that stays only on a breath that crosse
     P.play = play;
   }
   assert.ok(starts.some((b) => b.carried !== null), `he never started a beat row off a floor that stays reached over pads with the latch seen on another floor, by t 152 (${starts.map((b) => '#' + b.from + '@' + b.t.toFixed(2)).join(' ')})`);
-  const lagMax = ft.FT_ADULT.thumb[0] + 3 * ft.FT_ADULT.thumb[1];
+  // (his thumb's lag as thumbLags bins it, the comment above: mid + 3 sd pressed on its own frame, pressIn (the adult's 0.12 s presses at
+  //  0.167 s). The raw lag stood a frame short of that: the honest start off #50 at 75.533 (1.87 s for 2.04, the bar 1.8435) read red on
+  //  C9 and C11 and green on C10 as the run's random stream moved; R-165.465 ruling 2, a test correction)
+  const lagMax = ft.pressIn(ft.FT_ADULT.thumb[0] + 3 * ft.FT_ADULT.thumb[1]);
   for (const b of starts) assert.ok(b.left >= b.need - DT - lagMax, `he left floor #${b.from} at t ${b.t.toFixed(3)} onto beat pad #${b.on} with ${b.left.toFixed(2)} s of the breath left for a run that needs ${b.need.toFixed(2)} s`);
 });
 
@@ -486,4 +489,352 @@ test('a pause on a small log is a stop he means: he never runs off its front whi
   }
   assert.ok(pauses.length > 0, 'no pause by t 118: the toy reads nothing');
   assert.deepEqual(offs, [], `he ran off a log while its pause ran, unpressed: ${offs.join('; ')}`);
+});
+
+// R-165.465 (ENG-THUMB, the root fix): thumbify's late lift-off re-armed every frame for a bot with no holdQ (the kid, the adult),
+//  so a BARE STAND (intend's {} on a floor: nothing steered, pressed, held or climbed) was never let go unless a per-stand stopMeant
+//  line said so (c11's ride read, CI-13's handed ride, CI-15's pad pause and five more, each one {}). The real stage and bot, 2-1 kid
+//  Normal 40 (a rule-28 row) to t 150: on c73cb9766 bare stands of 5 and 6 frames (t 38.400 x 8,542; 68.500 x 14,264; 141.833
+//  x 24,341) kept the steer held every frame. (a) inside a run of bare stand frames the steer is held at most releaseMax[1] frames
+//  (the thumb lets go once); (b) the late lift-off is still his: a stand straight after a frame he meant and held a steer holds it
+//  its first releaseMax[0] frames (a drift or a turn's travel may drop one: 90% at least)
+test('a bare stand is a stop the thumb lets go, its late lift-off kept: 2-1 kid Normal 40 to t 150 (R-165.465)', async () => {
+  const ft = await import('./firsttimer.ts');
+  const { CAST_BOTS } = await import('./castBots.ts');
+  const who = CAST_BOTS.kid.normal!;
+  type Pd = { left?: boolean; right?: boolean };
+  type R = { t: number; sim: { p: { grounded: boolean } } };
+  const P = ft.FirstTimerRun.prototype as unknown as { intend: (this: R) => Pd; pad: (this: R) => Pd };
+  const it = P.intend, pd = P.pad;
+  let meant: Pd = {};
+  const frames: { t: number; bare: boolean; steer: boolean; meantSteer: boolean }[] = [];
+  P.intend = function (this: R) { meant = it.call(this); return meant; };
+  P.pad = function (this: R) {
+    const o = pd.call(this);
+    frames.push({ t: this.t, bare: this.sim.p.grounded && !Object.values(meant).some(Boolean), steer: !!(o.left || o.right), meantSteer: !!(meant.left || meant.right) });
+    return o;
+  };
+  try {
+    ft.firstTimer('2-1', 40, who, { cap: 150, dotSetting: true });
+  } finally {
+    P.intend = it;
+    P.pad = pd;
+  }
+  const [lo, hi] = who.releaseMax;
+  const long: string[] = [];
+  let lifts = 0, kept = 0;
+  for (let i = 0; i < frames.length;) {
+    if (!frames[i].bare) { i++; continue; }
+    let j = i;
+    while (j < frames.length && frames[j].bare) j++;
+    const held = frames.slice(i, j).filter((f) => f.steer).length;
+    if (held > hi) long.push(`t ${frames[i].t.toFixed(3)}: ${held} of ${j - i} bare frames steered`);
+    if (i > 0 && frames[i - 1].meantSteer && frames[i - 1].steer && j - i > lo) {
+      lifts++;
+      if (frames.slice(i, i + lo).every((f) => f.steer)) kept++;
+    }
+    i = j;
+  }
+  assert.ok(frames.length > 4000 && lifts >= 5, `the toy reads too little: ${frames.length} frames, ${lifts} let-gos into a stand`);
+  assert.deepEqual(long, [], `a bare stand never let go (more than releaseMax[1] = ${hi} frames steered): ${long.slice(0, 6).join('; ')}`);
+  assert.ok(kept >= 0.9 * lifts, `the late lift-off is gone: ${kept} of ${lifts} let-gos into a stand held the steer ${lo} frame(s)`);
+});
+
+test('the way he keeps is the way he flew: in the air on a jump the jump steers, never the route point lagging under him: 2-1 kid Easy 25 to t 40 (R-165.465 step 1)', async () => {
+  const ft = await import('./firsttimer.ts');
+  const { CAST_BOTS } = await import('./castBots.ts');
+  type R = { t: number; way: number; jump: { dir: number } | null; sim: { p: { grounded: boolean; x: number } } };
+  const P = ft.FirstTimerRun.prototype as unknown as { intend: (this: R) => unknown };
+  const it = P.intend;
+  const turned: string[] = [];
+  let airFrames = 0;
+  P.intend = function (this: R) {
+    const o = it.call(this);
+    const j = this.jump;
+    if (j && j.dir !== 0 && !this.sim.p.grounded) {
+      airFrames++;
+      if (this.way !== j.dir) turned.push(`t ${this.t.toFixed(2)} x ${Math.round(this.sim.p.x)}: way ${this.way}, the jump's ${j.dir}`);
+    }
+    return o;
+  };
+  let run: ReturnType<typeof ft.firstTimer>;
+  try {
+    run = ft.firstTimer('2-1', 25, CAST_BOTS.kid.easy!, { cap: 40, dotSetting: true });
+  } finally {
+    P.intend = it;
+  }
+  assert.ok(airFrames > 200, `the toy reads too little: ${airFrames} air frames on a jump`);
+  assert.deepEqual(turned.slice(0, 6), [], `in the air the way turned against the jump flying him (${turned.length} frames)`);
+  // (the row: down on #13 off the liana at 20.2 s he goes on right, never back off its left end into the pit at x 4,042)
+  const there = run.stuck.filter((s) => s.x > 3600 && s.x < 4500);
+  assert.deepEqual(there.map((s) => `${s.x}: ${s.what}`), [], 'stuck at the liana and #13 (x 3,600-4,500)');
+});
+
+test('a pad hop is flown from the pad: padRead judges it with the lag decide() then draws, and no press on its way walks him off the front: 2-2 kid Normal 15 to t 170 (R-165.465 step 2)', async () => {
+  const ft = await import('./firsttimer.ts');
+  const { CAST_BOTS } = await import('./castBots.ts');
+  type Pend = { at: number; fromPad?: number };
+  type R = { t: number; pending: Pend | null; jump: unknown; sim: { standingOn: number | null; p: { grounded: boolean; x: number } } };
+  const P = ft.FirstTimerRun.prototype as unknown as { intend: (this: R) => unknown; padRead: (this: R, ...a: unknown[]) => unknown };
+  const it = P.intend, pr = P.padRead;
+  const off: string[] = [];
+  let pressed = 0;
+  P.padRead = function (this: R, ...a: unknown[]) {
+    const before = this.pending;
+    const o = pr.apply(this, a);
+    if (!before && this.pending) { this.pending.fromPad = this.sim.standingOn ?? -1; pressed++; }
+    return o;
+  };
+  P.intend = function (this: R) {
+    const q = this.pending;
+    if (q && q.fromPad !== undefined && !this.jump && !this.sim.p.grounded) {
+      off.push(`t ${this.t.toFixed(2)} x ${Math.round(this.sim.p.x)}: off #${q.fromPad}'s front, the press due ${q.at.toFixed(3)}`);
+      q.fromPad = undefined;
+    }
+    return it.call(this);
+  };
+  let run: ReturnType<typeof ft.firstTimer>;
+  try {
+    run = ft.firstTimer('2-2', 15, CAST_BOTS.kid.normal!, { cap: 170, dotSetting: true });
+  } finally {
+    P.intend = it;
+    P.padRead = pr;
+  }
+  assert.ok(pressed > 30, `the toy reads too little: ${pressed} pad presses`);
+  assert.deepEqual(off, [], 'a press decided on a pad came after he walked off its front');
+  // (the row: pads #112-#116 near 2-2's end, x 28,000-30,200, cleared with no set-down)
+  const there = run.stuck.filter((s) => s.x > 28000 && s.x < 30200);
+  assert.deepEqual(there.map((s) => `${s.x}: ${s.what}`), [], 'stuck on the last pads (x 28,000-30,200)');
+});
+
+test('a put-back by the game spends the edge plan: a teaching river splashes him back with no life lost, and the lip he left has no plan left armed for it (2-2 child Easy 21 to t 266, R-165.465)', async () => {
+  const ft = await import('./firsttimer.ts');
+  const { CAST_BOTS } = await import('./castBots.ts');
+  type R = { t: number; edge: object | null; lateArmed: object | null; sim: { p: { x: number } } };
+  const P = ft.FirstTimerRun.prototype as unknown as { intend: (this: R) => unknown };
+  const it = P.intend;
+  const stale: string[] = [];
+  let backs = 0, lastT = -1, lastX = 0, held: { edge: object | null; late: object | null } = { edge: null, late: null };
+  P.intend = function (this: R) {
+    const x = this.sim.p.x;
+    // (the game moved him 100 px or more in one frame: a put-back; every plan held for the lip he left is spent by the next frame he reads)
+    if (lastT >= 0 && Math.abs(this.t - lastT - 1 / 30) < 1e-3 && Math.abs(x - lastX) >= 100 && (held.edge || held.late)) {
+      backs++;
+      if ((held.late && this.lateArmed === held.late) || (held.edge && this.edge === held.edge)) stale.push(`t ${this.t.toFixed(2)} x ${Math.round(lastX)} -> ${Math.round(x)}: ${this.lateArmed === held.late ? 'the late press' : 'the edge'} armed before it`);
+    }
+    const o = it.call(this);
+    lastT = this.t; lastX = this.sim.p.x; held = { edge: this.edge, late: this.lateArmed };
+    return o;
+  };
+  let run: ReturnType<typeof ft.firstTimer>;
+  try {
+    run = ft.firstTimer('2-2', 21, CAST_BOTS.child.easy!, { cap: 266, dotSetting: true });
+  } finally {
+    P.intend = it;
+  }
+  assert.ok(backs >= 1, `the toy reads too little: ${backs} put-backs with a plan held`);
+  assert.deepEqual(stale, [], 'a plan for the lip he left outlived the put-back');
+  // (the row: the river between #92 and #94, x 24,000-24,900, crossed with no set-down loop)
+  const there = run.stuck.filter((s) => s.x > 24000 && s.x < 24900);
+  assert.deepEqual(there.map((s) => `${s.x}: ${s.what}`), [], 'stuck at the river before #94 (x 24,000-24,900)');
+});
+
+test('landed on the very end of a small log, the pause comes: he never walks off a log unpressed within half a second of landing on it (2-1 middle Normal 17 to t 120, R-165.465 step 3)', async () => {
+  const ft = await import('./firsttimer.ts');
+  const { CAST_BOTS } = await import('./castBots.ts');
+  type R = { t: number; sim: { standingOn: number | null; platforms: Array<{ id: number; x: number; width: number; drift?: unknown }>; p: { grounded: boolean; x: number; vy: number } } };
+  const P = ft.FirstTimerRun.prototype as unknown as { intend: (this: R) => unknown };
+  const it = P.intend;
+  const off: string[] = [];
+  let land: { t: number; id: number } | null = null, was: { g: boolean; on: number | null } = { g: false, on: null }, landings = 0;
+  P.intend = function (this: R) {
+    const s = this.sim, g = s.p.grounded, on = g ? s.standingOn : null;
+    const q = on !== null ? s.platforms.find((u) => u.id === on) : undefined;
+    // (a landing on a drifting log: down from the air, or down a step onto it)
+    if (g && q?.drift && (!was.g || was.on !== on)) { land = { t: this.t, id: on! }; landings++; }
+    // (off that log with no press: in the air, not going up, within 0.5 s of the landing)
+    if (!g && was.g && land && was.on === land.id && s.p.vy >= 0 && this.t - land.t < 0.5) off.push(`t ${this.t.toFixed(2)} x ${Math.round(s.p.x)}: walked off log #${land.id} ${(this.t - land.t).toFixed(2)} s after landing on it`);
+    was = { g, on };
+    return it.call(this);
+  };
+  let run: ReturnType<typeof ft.firstTimer>;
+  try {
+    run = ft.firstTimer('2-1', 17, CAST_BOTS.middle.normal!, { cap: 120, dotSetting: true });
+  } finally {
+    P.intend = it;
+  }
+  assert.ok(landings >= 3, `the toy reads too little: ${landings} landings on a log`);
+  assert.deepEqual(off, [], 'he walked off a log he had just landed on, unpressed');
+  // (the row: the upstream river past #85, x 19,400-19,900, crossed with no life lost)
+  const lost = run.harms.filter((h) => h.kind === 'life' && h.x > 19400 && h.x < 19900);
+  assert.deepEqual(lost.map((h) => `t ${h.t.toFixed(2)} x ${Math.round(h.x)}: ${h.cause}`), [], 'a life lost at the river past #85 (x 19,400-19,900)');
+  const there = run.stuck.filter((s) => s.x > 19400 && s.x < 19900);
+  assert.deepEqual(there.map((s) => `${s.x}: ${s.what}`), [], 'stuck at the river past #85 (x 19,400-19,900)');
+});
+
+// (C11, R-165.465 step 3 narrowed: the landing floor read by his feet comes only where the walk-on would run him off: his middle past
+//  the end IN HIS WAY and no pull-back due. C10 read it everywhere his middle was off his floor, and broke two shapes: on a log running
+//  his way it replaced the pull-back with the edge plan's stand (standing, until -1), his run carried him off the front, and the stand
+//  outlived the river's splash-back: he stood at the bank until rescued (2-1 child Normal 20 at #41, 2-5 child Normal 34 at #42, 'water
+//  ahead'); and a ledge he landed short of drew a pause dropped the same frame, moving the whole run after it (2-1 kid Normal 29, 3 lives
+//  at the upstream river past #85, 'set down here 3 times'). One toy for each; 'landed on the very end of a small log' keeps C10's cure)
+test('a pull-back due on a log running his way is kept where his middle is past its front: the steer on landing is back onto it, never a stand (2-1 child Normal 20 to t 90, R-165.465 C11)', async () => {
+  const ft = await import('./firsttimer.ts');
+  const { CAST_BOTS } = await import('./castBots.ts');
+  type Pad = { left?: boolean; right?: boolean };
+  type R = { t: number; lastLand: number; sim: { standingOn: number | null; platforms: Array<{ id: number; x: number; width: number; drift?: { dir: number } }>; p: { grounded: boolean; x: number } } };
+  const P = ft.FirstTimerRun.prototype as unknown as { intend: (this: R) => Pad };
+  const it = P.intend;
+  const cases: string[] = [], bad: string[] = [];
+  P.intend = function (this: R) {
+    const s = this.sim, x = s.p.x;
+    const q = s.p.grounded && s.standingOn !== null ? s.platforms.find((u) => u.id === s.standingOn) : undefined;
+    const d = q?.drift?.dir ?? 0;
+    // (just landed on a log running his way with his middle already past its front: the case the pull-back is for)
+    const caseNow = !!q && d !== 0 && this.t - this.lastLand < 0.1 && (d > 0 ? x > q.x + q.width : x < q.x);
+    const o = it.call(this);
+    if (caseNow) {
+      cases.push(`t ${this.t.toFixed(2)} #${q!.id}`);
+      if (!(d > 0 ? o.left : o.right)) bad.push(`t ${this.t.toFixed(2)} x ${Math.round(x)} on #${q!.id} (${Math.round(q!.x)}-${Math.round(q!.x + q!.width)}): steer ${JSON.stringify(o)}, not back onto it`);
+    }
+    return o;
+  };
+  let run: ReturnType<typeof ft.firstTimer>;
+  try {
+    run = ft.firstTimer('2-1', 20, CAST_BOTS.child.normal!, { cap: 90, dotSetting: true });
+  } finally {
+    P.intend = it;
+  }
+  assert.ok(cases.length >= 1, 'the toy reads too little: no landing on a log running his way with his middle past its front');
+  assert.deepEqual(bad, [], 'the pull-back due on landing was not pressed');
+  // (the row: the first river, logs #37-#43, x 8,300-8,700, crossed with no set-down)
+  const there = run.stuck.filter((s) => s.x > 8300 && s.x < 8700);
+  assert.deepEqual(there.map((s) => `${s.x}: ${s.what}`), [], 'stuck at the first river (x 8,300-8,700)');
+});
+
+test('landed short of a small floor, the walk-on runs him onto it and no pause is drawn from his feet: the upstream river past #85 crossed with no set-down loop (2-1 kid Normal 29 to t 125, R-165.465 C11)', async () => {
+  const ft = await import('./firsttimer.ts');
+  const { CAST_BOTS } = await import('./castBots.ts');
+  // (a row toy: the pause C10 drew and dropped in one frame at #18 and #20 (x 5,650 and 5,955, his middle 13 and 8 px short of their
+  //  back ends) is not seen from outside intend; what it moved is: 3 lives at x 19,352-19,856, 108.7-111.1 s, 'set down here 3 times', rescued. C9 and C11 lose 1 there
+  //  and go on: the bar is the set-down loop)
+  const run = ft.firstTimer('2-1', 29, CAST_BOTS.kid.normal!, { cap: 125, dotSetting: true });
+  assert.ok(run.x > 19950, `the toy reads too little: he stands at x ${Math.round(run.x)} at t 125, short of the river's far side`);
+  const there = run.stuck.filter((s) => s.x > 19300 && s.x < 19950);
+  assert.deepEqual(there.map((s) => `${s.x}: ${s.what}`), [], 'stuck at the river past #85 (x 19,300-19,950)');
+});
+
+test('set down behind a stood pin, his place is found where he is: a respawn at a flag before the spur counts no falls back (2-2 middle Normal 7 to t 75, R-165.465 C9)', async () => {
+  const ft = await import('./firsttimer.ts');
+  const { CAST_BOTS } = await import('./castBots.ts');
+  const run = ft.firstTimer('2-2', 7, CAST_BOTS.middle.normal!, { cap: 75, dotSetting: true });
+  // (the row: a life lost past the stone at x 9,242 and the flag at x 7,347; no rewinds counted as falls there, and no rescue)
+  assert.ok(run.harms.some((h) => h.kind === 'life' && h.x > 9300), 'the toy reads too little: no life lost past the stone');
+  const there = run.stuck.filter((s) => s.x > 7000 && s.x < 10500);
+  assert.deepEqual(there.map((s) => `${s.x}: ${s.what}`), [], 'stuck between the flag and the stone (x 7,000-10,500)');
+  assert.deepEqual(run.rescueXs.filter((x) => x > 7000 && x < 10500), [], 'rescued between the flag and the stone');
+});
+
+test("his middle past a drifting log's front, the log is read by his feet: the river's judged hop is flown, never the edge plan's late press into the water (2-1 child Easy 3 to t 175, R-165.465 C12)", async () => {
+  const ft = await import('./firsttimer.ts');
+  const { CAST_BOTS } = await import('./castBots.ts');
+  // (C11: on #86 running back at him, a late press drawn with a look of 0 px walked him off its front at 169.80, x 20,007, into the
+  //  water; splashed back to #81 (x 19,552) and the same front again, rescued at x 19,753. The bar: the river past #85 crossed by t 175
+  //  with no put-back on it, on the far bank by t 175)
+  type R = { t: number; sim: { p: { x: number } } };
+  const P = ft.FirstTimerRun.prototype as unknown as { intend: (this: R) => unknown };
+  const it = P.intend;
+  const backs: string[] = [];
+  let lastT = -1, lastX = 0;
+  P.intend = function (this: R) {
+    const x = this.sim.p.x;
+    if (lastT >= 0 && Math.abs(this.t - lastT - 1 / 30) < 1e-3 && Math.abs(x - lastX) >= 100 && lastX > 19300 && lastX < 20600) backs.push(`t ${this.t.toFixed(2)} x ${Math.round(lastX)} -> ${Math.round(x)}`);
+    const o = it.call(this);
+    lastT = this.t; lastX = this.sim.p.x;
+    return o;
+  };
+  let run: ReturnType<typeof ft.firstTimer>;
+  try {
+    run = ft.firstTimer('2-1', 3, CAST_BOTS.child.easy!, { cap: 175, dotSetting: true });
+  } finally {
+    P.intend = it;
+  }
+  assert.deepEqual(backs, [], 'put back at the river past #85 (x 19,300-20,600)');
+  // (the far bank starts at x 20,202, a step up from the logs)
+  assert.ok(run.x > 20202, `the toy reads too little: he stands at x ${Math.round(run.x)} at t 175, short of the river's far bank`);
+});
+
+test("a put-back by the game spends the edge plan's stand: a stand drawn for the lip he left never holds him where he is set down (2-1 middle Easy 18 to t 12, R-165.465 C12)", async () => {
+  const ft = await import('./firsttimer.ts');
+  const { CAST_BOTS } = await import('./castBots.ts');
+  // (C11: standing for a lip when the game set him back 125 px at t 10.00 (x 2,135 -> 2,010), the stand kept; 2-1 child Easy 24 kept
+  //  one at t 190.10 (x 24,046 -> 23,933). On C10 such a stand held 2-1 child Normal 20 at x 8,390 until rescued)
+  type R = { t: number; standing: object | null; sim: { p: { x: number } } };
+  const P = ft.FirstTimerRun.prototype as unknown as { intend: (this: R) => unknown };
+  const it = P.intend;
+  const stale: string[] = [];
+  let backs = 0, lastT = -1, lastX = 0, held: object | null = null;
+  P.intend = function (this: R) {
+    const x = this.sim.p.x;
+    if (lastT >= 0 && Math.abs(this.t - lastT - 1 / 30) < 1e-3 && Math.abs(x - lastX) >= 100 && held) {
+      backs++;
+      if (this.standing === held) stale.push(`t ${this.t.toFixed(2)} x ${Math.round(lastX)} -> ${Math.round(x)}`);
+    }
+    const o = it.call(this);
+    lastT = this.t; lastX = this.sim.p.x; held = this.standing;
+    return o;
+  };
+  try {
+    ft.firstTimer('2-1', 18, CAST_BOTS.middle.easy!, { cap: 12, dotSetting: true });
+  } finally {
+    P.intend = it;
+  }
+  assert.ok(backs >= 1, `the toy reads too little: ${backs} put-backs with a stand held`);
+  assert.deepEqual(stale, [], 'a stand for the lip he left outlived the put-back');
+});
+
+test("a log running his way, his middle past its end: the feet read leaves it to the edge plan, which flies him to the liana (lianaRide's catch toy, middle Easy variant 2, R-165.465 C13)", async () => {
+  const ft = await import('./firsttimer.ts');
+  const { lianaRun } = await import('./lianaRiverToys.ts');
+  // (C12 read every drifting log by his feet; on this one, running his way, the ride wait ran where the edge plan had stood and
+  //  pressed: he stood at the log's end and rode past the liana, 0 catches off a log (C11 and C13: 1). The other way, a log running
+  //  back at him, is the toy above ('his middle past a drifting log's front'))
+  const was = ft.SKILLS.vineFromLog;
+  ft.SKILLS.vineFromLog = true;
+  try {
+    const r = lianaRun('catch', 'twin', 'middle', 'easy', 2, 2, 'long', { realInput: true });
+    assert.equal(r.end, 'shrine', `ended ${r.end}`);
+    assert.ok(r.fromLog >= 1, `he never jumped from the log to the liana (${r.fromLog} catches off a log)`);
+  } finally {
+    ft.SKILLS.vineFromLog = was;
+  }
+});
+
+test("his middle past the front of a log running at him and no judged hop: never a stand at the lip he has passed (2-1 kid Normal 13 to t 110, R-165.465 C14)", async () => {
+  const ft = await import('./firsttimer.ts');
+  const { CAST_BOTS } = await import('./castBots.ts');
+  // (C12/C13 read #72 (running back at him) by his feet at 102.47, x 19,928, as his floor for every river block: the gate pressed no hop
+  //  and its stand gave no input, his walk slid him off the front with no press, into the water (102.63, set back to x 19,389). C11
+  //  and C14: the edge plan's press, pending, flies him off the lip and he crosses. The other way, the judged hop flown, is the toy
+  //  'his middle past a drifting log's front')
+  type R = { t: number; sim: { p: { x: number } } };
+  const P = ft.FirstTimerRun.prototype as unknown as { intend: (this: R) => unknown };
+  const it = P.intend;
+  const backs: string[] = [];
+  let lastT = -1, lastX = 0;
+  P.intend = function (this: R) {
+    const x = this.sim.p.x;
+    if (lastT >= 0 && Math.abs(this.t - lastT - 1 / 30) < 1e-3 && Math.abs(x - lastX) >= 100 && lastX > 19300 && lastX < 20600) backs.push(`t ${this.t.toFixed(2)} x ${Math.round(lastX)} -> ${Math.round(x)}`);
+    const o = it.call(this);
+    lastT = this.t; lastX = this.sim.p.x;
+    return o;
+  };
+  let run: ReturnType<typeof ft.firstTimer>;
+  try {
+    run = ft.firstTimer('2-1', 13, CAST_BOTS.kid.normal!, { cap: 110, dotSetting: true });
+  } finally {
+    P.intend = it;
+  }
+  assert.deepEqual(backs, [], 'put back at the river past #85 (x 19,300-20,600)');
+  assert.ok(run.x > 20202, `the toy reads too little: he stands at x ${Math.round(run.x)} at t 110, short of the river's far bank`);
 });

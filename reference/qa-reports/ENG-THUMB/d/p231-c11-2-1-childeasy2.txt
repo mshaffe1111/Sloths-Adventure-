@@ -1,0 +1,6 @@
+t 72 x 8573 #43 8448-8648 middle 75 px short of the front, inside true, pause true, steer {} {} {} {} | 8577 8579 8581 8584 8586 8588 8591 8593 8595 8598 8600 8602
+t 128.83 x 14334 #64 14300-14490 middle 157 px short of the front, inside false, pause true, steer {} {} {} {} | 14341 14345 14348 14350 14353 14355 14358 14360 14363 14365 14368 14373
+t 210.37 x 24845 #112 24796-24976 middle 131 px short of the front, inside false, pause true, steer {} {} {} {} | 24857 24865 24869 24871 24874 24877 24879 24882 24885 24887 24890 24893
+t 213.47 x 24989 #111 24792-24972 middle 17 px PAST the front, inside true, pause false, steer {"left":true} {"left":true} {"right":true} {"right":true} | 24994^* 24996^* 24998^* 24709* PUTBACK 24712* 24718* 24726* 24736* 24745* 24754* 24764^* 24773^*
+t 214.37 x 24914 #111 24864-25044 middle 130 px short of the front, inside false, pause true, steer {} {} {} {} | 24926 24934 24938 24940 24943 24946 24948 24951 24957 24965 24976 24989
+end shrine rescues 0 lives undefined

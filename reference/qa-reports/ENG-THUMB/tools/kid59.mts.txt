@@ -1,0 +1,13 @@
+// kid59.mts <tree>: 5-9's kid runs as firstTimerBot.test.ts measures them (seeds 1-3, trials 0-1, Easy's goal unset): got, rescues, lives, end, time
+const T = process.argv[2];
+await import(`${T}/src/game/headlessDom.ts`);
+const { firstTimer, FT_KID } = await import(`${T}/tools/inspect/firsttimer.ts`);
+const { GEN2_STAGES } = await import(`${T}/src/game/gen2/game.ts`);
+const entry = GEN2_STAGES['5-9'] as { easyGoal?: number }; entry.easyGoal = undefined;
+const got: number[] = [];
+for (const seed of [1, 2, 3]) for (const trial of [0, 1]) {
+  const r = firstTimer('5-9', seed, FT_KID, { trial }) as any;
+  got.push(r.goal?.got ?? -1);
+  console.log(`seed ${seed} trial ${trial}: got ${r.goal?.got}/${r.goal?.need} end ${r.end} t ${r.time.toFixed(1)} lives ${r.harms.filter((h: any) => h.kind === 'life').length} rescues ${r.rescues ?? '-'} stuck ${JSON.stringify(r.stuck ?? [])}`);
+}
+console.log('runs', JSON.stringify(got));

@@ -1,0 +1,15 @@
+  153.53 no jump, ground 28778,582 -> LIFE LOST
+  158.30 no jump, ground 28774,582 -> LIFE LOST
+  162.17 no jump, ground 28524,582 -> LIFE LOST
+    f 153.40 28769,582 g1 vx268 pad {"right":true} meant {"right":true} on 113
+    f 153.43 28778,582 g1 vx285 pad {"right":true} meant {"right":true} on 113
+    f 153.47 28787,585 g0 vx268 pad {"right":true} meant {"right":true} on -1
+    f 153.50 28797,590 g0 vx285 pad {"right":true} meant {"right":true} on -1
+    f 158.17 28764,582 g1 vx268 pad {"right":true} meant {"right":true} on 113
+    f 158.20 28774,582 g1 vx285 pad {"right":true} meant {"right":true} on 113
+    f 158.23 28783,585 g0 vx268 pad {"right":true} meant {"right":true} on -1
+    f 158.27 28792,590 g0 vx285 pad {"right":true} meant {"right":true} on -1
+    f 162.03 28515,582 g1 vx285 pad {"right":true} meant {"right":true} on 112
+    f 162.07 28524,582 g1 vx268 pad {"right":true} meant {"right":true} on 112
+    f 162.10 28533,585 g0 vx285 pad {"right":true} meant {"right":true} on -1
+    f 162.13 28542,590 g0 vx268 pad {"right":true} meant {"right":true} on -1

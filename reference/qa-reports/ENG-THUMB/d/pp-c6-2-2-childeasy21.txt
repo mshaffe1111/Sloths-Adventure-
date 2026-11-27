@@ -1,0 +1,18 @@
+# C6 39ee096b7 probe (pp.py + FT_TRACE): 2-2 child Easy 21, jumps 236-266 s, every LIFE LOST, PP lines 230-266 s
+  212.37 no jump, ground 21390,607 -> LIFE LOST
+  236.47 single from 21743,579 hold 0.94 up 0.00 d2 0.38 2nd false -> 21921,613 ok
+  237.13 double from 21921,613 hold 0.12 up 0.12 d2 1.10 2nd false -> 21969,613 FELL BACK
+  237.63 single from 21958,613 hold 0.03 up 0.00 d2 0.55 2nd false -> 22057,613 ok
+  238.60 single from 22158,613 hold 0.80 up 0.00 d2 0.33 2nd false -> 22323,579 ok
+  246.13 double from 23163,579 hold 1.90 up 0.00 d2 0.37 2nd true -> 23422,525 ok
+  248.37 double from 23535,576 hold 0.31 up 0.19 d2 0.75 2nd false -> 23610,526 ok
+  251.30 single from 23707,526 hold 0.03 up 0.20 d2 0.44 2nd false -> 23669,526 FELL BACK
+  252.33 double from 23663,526 hold 0.41 up 0.10 d2 0.65 2nd false -> 23822,522 ok
+  258.67 single from 24340,575 hold 0.03 up 0.00 d2 0.75 2nd false -> 24292,575 FELL BACK
+  265.53 single from 24856,575 hold 0.68 up 0.00 d2 0.38 2nd false -> 25047,609 ok
+PP t 235.63 x 21716 vx 0 toEdge 28.1 off 0.133 x0 21743 v0 285 late 0 lead 1.3 onRun true lands true here #75 21396-21744 pad false next #85 21794,613
+PP t 236.47 x 21921 vx 25 toEdge 42.6 off 0.167 x0 21960 v0 285 late 0 lead 4.3 onRun true lands true here #85 21794-21964 pad true next #86 21994,613
+PP t 237.13 x 21969 vx -3 toEdge -5.4 off 0.100 x0 21958 v0 -63 late 2 lead 5.6 onRun false lands true here #85 21794-21964 pad true next #86 21994,613
+PP t 237.67 x 22066 vx 268 toEdge 98.1 off 0.333 x0 22158 v0 268 late 0 lead 6.0 onRun true lands true here #86 21994-22164 pad true next #76 22214,579
+PP t 264.70 x 24823 vx 268 toEdge 56.3 off 0.133 x0 24860 v0 268 late 0 lead 19.5 onRun true lands true here #94 24459-24879 pad false next #97 24929,609
+PP t 265.53 x 25047 vx 268 toEdge 51.6 off 0.133 x0 25084 v0 268 late 0 lead 14.7 onRun true lands true here #97 24929-25099 pad true next #98 25149,609

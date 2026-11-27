@@ -1,0 +1,5 @@
+rows on 39ee096b7 bots kid,adult,child,middle,expert 2:18 PM ET
+2-4 exit 0 360 rows 181 s
+2-5 exit 0 360 rows 191 s
+1-4 exit 0 360 rows 178 s
+rows done 2:27 PM ET

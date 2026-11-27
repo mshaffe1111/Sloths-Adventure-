@@ -1,0 +1,15 @@
+shard 1/6 on 5cfc9ca64 exit 0 529 s
+# tests 686 # pass 685 # fail 0 # cancelled 0 # todo 1 
+not ok 379 - R-165.312: raw seed 1 keeps the roost boa on its roost (flag placer) # TODO R-165.312: the flag placer, an engine job after release 1
+shard 2/6 on 5cfc9ca64 exit 0 578 s
+# tests 690 # pass 690 # fail 0 # cancelled 0 # todo 0 
+shard 3/6 on 5cfc9ca64 exit 0 396 s
+# tests 689 # pass 689 # fail 0 # cancelled 0 # todo 0 
+shard 4/6 on 5cfc9ca64 exit 0 673 s
+# tests 714 # pass 714 # fail 0 # cancelled 0 # todo 0 
+shard 5/6 on 5cfc9ca64 exit 1 963 s
+# tests 709 # pass 707 # fail 1 # cancelled 0 # todo 1 
+not ok 196 - 5-9's Easy goal rests on the kid's runs: re-measured, they are still the ones recorded (gen2/game.ts KID_RUNS_59)
+not ok 654 - 4-3 in the real engine: everything picked up, the shrine reached, nowhere he is stranded # TODO the engine's wall check has no bottom, so a boulder on a ledge is a wall on the floor below
+shard 6/6 on 5cfc9ca64 exit 0 395 s
+# tests 696 # pass 695 # fail 0 # cancelled 0 # todo 1 
