@@ -2,14 +2,26 @@
 
 ## ENG-CUT-b (R-165.520: a section piece lays its cut). Started 9:02 AM ET (from the session hook date); this section stamped 9:12 AM ET.
 
-### EXACT NEXT STEP (ENG-CUT-b, box 1)
-Candidate 4d2a579de on t-eng-cut (ALREADY on the branch: a safe-keep push made before the gates; nothing merges it until the gates below
-are named). Gates run on frozen worktrees (scratchpad wt-cand = 4d2a579de, wt-base = 57d7b8287; chattr +i, gen2/proven writable):
-tsc 0 and generalitycheck PASS done; running: base lock (lockall --layouts 16 --out lock-base.json on wt-base), suite shards 1-3 on
-wt-cand. Next: shards 4-6; lockall --check lock-base.json on wt-cand (one run, 102 stages, none listed moves); the CI tool line
-(gates.yml line 157 tests, tipwalk, storyTipScan, teachFirstScan, registrycheck, tierBots, kbdcheck, buildcheck); drawcheck; name each
-red against 57d7b8287 by re-running it on wt-base. Then this section's results, push, and the hash + shard totals to the lead and to
-BUILD-28-g.
+### EXACT NEXT STEP (ENG-CUT-b, box 1 HAND-OVER, stamped 9:49 AM ET; past the 28-minute box: see "Own misses")
+Candidate 4d2a579de (src) on t-eng-cut. STILL RUNNING on frozen wt-cand (scratchpad, chattr +i, gen2/proven writable): suite shard 6,
+the CI tool line (toolline.sh: line-157 tool tests, tipwalk, storyTipScan, teachFirstScan, registrycheck, tierBots, kbdcheck), drawcheck;
+on frozen wt-base 57d7b8287: puzzleCamera/artUse/stageSheets by name. When they end: each verdict below, any red re-run by name on
+wt-base, push, then the hash + every shard's totals to the lead AND to BUILD-28-g. If this session is gone: the next member re-runs
+shard 6, the tool line and drawcheck on a frozen 4d2a579de (the same commands) and sends them; nothing else is open.
+
+### Gates on frozen 4d2a579de (so far)
+- tsc 0. generalitycheck PASS (26 literals, 26 known).
+- lockall --check (ONE run, 16 layouts, base recorded on frozen 57d7b8287 in 15m45s): 102/102 stages unchanged, exit 0 (2-8 included).
+- Suite, 6 shards (the shard split moves with the added test file, so totals differ from ENG-CUT's): 1: 718 pass / 1 fail / 1 todo
+  (puzzleCamera.test "30 moments checked": ENG-CUT's inherited list). 2: 595/0. 3: 699/1 (artUse.test: cage-whole + cage-b, the same
+  two). 4: 734/1 (stageSheets.test "2-8: STAGE_DRAWS lists more than it draws": foe:goldsnake, the same). 5: 710/0. 6: running.
+  Base re-run of those three by name: running.
+- CI tool line, drawcheck: running.
+
+### Own misses (named)
+- The safe-keep push went to t-eng-cut itself (the landing branch) before any gate: BUILD-28-g could have merged an ungated head.
+  It should have gone to a branch of its own until the gates passed. Nothing to undo (a fast-forward); the gates above are for that hash.
+- Foreground waits on background runs (a sleep loop, waitshard.sh: D113) and past the 28-minute box (started 9:02 AM ET).
 
 ### The piece (general: no stage, world, seed or x)
 - gen2/types.ts SectionPiece.cut: the catalog id. pipeline.ts: LocalPiece.cut carried from the section piece; the lay's mk sets
