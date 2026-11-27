@@ -16,7 +16,7 @@ import { FIRST_RUN_11 } from '../firstRun11.ts';
 export interface StageRow {
   /** the world kit the stage is rolled from, by name (listed.ts KITS): a world's own, or a world's kit with one stage's rows over it
    *  where they are manifest-wide (1-2's corridor room, thorn row and lessons: w1Arc12.ts kitLib12) */
-  kit: 'w1' | 'w1-12' | 'w1-14' | 'w1-15' | 'w1-16' | 'w1-17' | 'w1-18' | 'w1-19' | 'w2' | 'w2-21' | 'w2-22' | 'w2-23' | 'w2-24' | 'w2-25' | 'w2-27';
+  kit: 'w1' | 'w1-12' | 'w1-14' | 'w1-15' | 'w1-16' | 'w1-17' | 'w1-18' | 'w1-19' | 'w2' | 'w2-21' | 'w2-22' | 'w2-23' | 'w2-24' | 'w2-25' | 'w2-27' | 'w2-29';
   /** its finish dresses squirrels (a roll where too few find a spot is never listed) */
   squirrels?: true;
   /** it has a fixed first run, held to its lock */
@@ -78,6 +78,9 @@ export const STAGE_TABLE: Readonly<Record<string, StageRow>> = {
   // (2-7 The Mailman's Route: the designed arc, w2Arc27.ts, its own kit 'w2-27' (kitLib27), BUILD-27 11-23: out up the mill-race against
   //  the current, down the weir, home LEFT racing the mail boat (pacer.ts); the hand-built 2-7 (w2Stages.ts) is deleted)
   '2-7': { kit: 'w2-27', judged: 'normal-2-7' },
+  // (2-9 The River King's Court: the designed arc, w2Arc29.ts, its own kit 'w2-29' (kitLib29), BUILD-29 11-26: the court's drum, the
+  //  stones and lianas on the beat, the barge's posted guard, the twist's doubled drum; the hand-built 2-9 (w2Stages.ts) is deleted)
+  '2-9': { kit: 'w2-29' },
 };
 
 /** a stage's row; undefined when the table has none (an inherited name is no row) */

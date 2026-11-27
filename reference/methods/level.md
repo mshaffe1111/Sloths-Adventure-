@@ -67,7 +67,7 @@ A level is DESIGNED by a person, then built as data, then PLAYED by the bots and
   time, and Easy's bar is stretched, so a share can read lower on Easy while its safe time is longer. 2-9's wide stones: Easy 2 in step
   0.39 x 3.30 s = 1.29 s against Normal's 0.41 x 2.85 s = 1.17 s; the wave 2.11 s against 1.85 s. Easy's window in seconds is never
   shorter than Normal's; a share is reported beside it, not judged. Check: the stage's snap/liana flights print both (2-9 flown/).
-- (Proposed by BUILD-29-e, for the lead to approve at the retro) A court liana's let-go on ONE needs 0.20 s early AND late on Normal (0.30 s on Easy) at every grip he can catch, flown on the engine
+- (APPROVED, lead 11-26; proposed by BUILD-29-e) A court liana's let-go on ONE needs 0.20 s early AND late on Normal (0.30 s on Easy) at every grip he can catch, flown on the engine
   with the child's let-go (ENG-29 probes/oneMarginR.ts), not only on the model. On 2-9 the lock alone could not do it (0.88-0.92 left a
   water hole at the twist's foot); the lianas' own length could (410 -> 365 px, both). Fly the neighbours on BOTH settings: pick the middle of
   the band both pass, never an edge (Normal failed at 380 px, Easy's 0.60 s wait at 350).
