@@ -2,6 +2,15 @@
 
 Merged at INT-14 (11-20, t-int-14): §0zq-25d/§0zq-25c ENG-25c (2-5's snap rows level, the snapper's ground, the straddle), §0zq-NOISE ENG-NOISE (one noise channel), §0zq-PROWL ENG-PROWL (sight.up + the leap), §0zq-small3 ENG-SMALL3 (R-165.317/.319/.321), and PAINT-292 (World 1's painted planks and stones; no section here). Merged at INT-13 (11-19, t-int-13): §0ENG23 ENG-23 (followers, the heron reads the line) and §0zl-168 TIME-168 (timecheck), §0zm-25b ENG-25b (the snapper bot skill, the meter's snap channel) and §0zl-25 ENG-25 (2-5's snap stones and snapper rows), §0zn-26b ENG-26b and §0zm-26 ENG-26 (the water wheel), §0W2A ART-W2A (2-3's painted follow poses), §0zo ART-W2B (the wheel's painted draw), §0zo-285c/§0zo-285b/§0zo-285 ENG-285 (the judges and bots fly the engine's Pokey), §0zp-284 FIX-284/284b (2-2's big pads, the real tap hop), §0zp-24d BUILD-24d, §0zn-24c ENG-24c (the raft look, the glow) and §0zm-24 BUILD-24 (2-4) joined; rewritten at the INT-12 merge (11-18, t-int-12): four members wrote here the same day, so labels are suffixed where they met: §0zm-22p ART-22P (CI's seed-list matrix, R-165.278); §0zl-24 ENG-24 (a liana over a river; its REPORT cites it as §0zl); §0zm BUILD-19b, §0zn ENG-19c and §0zl BUILD-19 (t-build-19, the labels its REPORT cites). Before them FIX-22b (11-15): section 0zk.
 
+## 0zs-LATE. ENG-LATE (t-eng-late from t-build-29 f4e77273, 11-27; code a467e85b): the goal's late line counted by what it is (R-165.569)
+- WHAT: `stagePlan.ts` `goalLateCount(text, world)` says whether a line is the late line `goalLine` lays in that world (any counted goal,
+  whoever owns its words: the stock template or a world's `GOAL_LINES`). `dotLines.ts` `engineGuideLine` makes such a line the goal
+  (kind `goal`, key `engine:goal.late`, `counted`), the same fields the switchboard's `goal.late` row gives. `uncountedLateLines` names a
+  world's late words with no `{n}` (refused by name in goalLine.test.ts).
+- TRAP: a switchboard row is ONE owner of a line's words, not the line's identity. Behaviour keyed on a row id (counted, kind) breaks the
+  day a world or stage writes its own words: 2-9's keeper line was laid as plain info with a stale count. Key on what the line is.
+- The sealed (locked-exit) line stays uncounted on purpose: a counted line is dropped on a replay (DotGuide.tsx), and the door must be explained.
+
 ## 0zs-STONE29. ENG-STONE29 (t-eng-stone29 from t-eng-29 098047713, 11-26; code a6ac7316b): the WIDE snap stone, 130 px (R-165.490)
 - WHAT: `PadRow.snap.w` 80 | 130 (80 when absent). rideLay.ts SNAP_WIDE { w 130, pace [258, 281] px/s, count [0.65, 0.87] s, air 13/30,
   inStep 3, slack 0.2 s }, SNAP_WIDTHS [80, 130]; snapBeat (the wide row's model); snapFaults judges each width by its own band. 80 px,
