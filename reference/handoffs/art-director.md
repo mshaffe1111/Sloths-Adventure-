@@ -5,8 +5,23 @@ art director, session_01FhBbYLmXQhDLjAzTexXzo3, 11-07) is folded in below; §1 t
 
 # Hand-off: the art director role (Content), rewritten 2026-11-21 for ART-REGRADE (§0l); §0k and below still true unless marked
 
-Last task: ART-REGRADE (§0l, t-art-next). Before it: ART-NEXT-e (§0k), ART-NEXT-d (§0j), ART-NEXT-c (reeds redo, NEXT2 catalogue, the bridge takes), ART-NEXT/-b (§0i),
+Last task: ART-REED-28 (§0n, t-art-28). Before it: ART-HERO (§0m), ART-REGRADE (§0l, t-art-next), ART-NEXT-e (§0k), ART-NEXT-d (§0j), ART-NEXT-c (reeds redo, NEXT2 catalogue, the bridge takes), ART-NEXT/-b (§0i),
 ART-W2 (§0f), ART-678b (§0e-b). The earlier art-director note (11-07) is folded in below; §1 to §7 are still true unless marked.
+
+## 0n. 11-26 ART-REED-28 (t-art-28, cut from t-build-28-wip): 2-8's reed island (the cage beat, L3) DONE, not wired
+- The piece: reference/art/hfreed28/cut/reed-isle-28.webp (720x385, 2 cut px a world px), take isleC-s23; row w2-reed28#reed-isle-28
+  (platform, grounded, world 2 then 6), walk line y 215 x 19-699 = 340 world px (3.8 Pokey); reeds stand 107 px above the line at the ends
+  (behind him); the wet foot fades out 45-85 px under the top (cut in tools/art/hfreed28/catalog.py) so 2-8's flood water shows at any level.
+  BUILD-28 wires it: copy it into a World 2 props sheet (hf-props.md), the island solid's top = walk_y; then the row's file/status/used_in
+  change and inventory.test.ts's unpacked count drops 219 -> 218.
+- Reuse first: w2-new#reed-isle-a/b were too small (147/263 cut px of top), the w2-new atlas's dark-outline hand, domed: ruled out.
+- Route that worked: Qwen-Image-Edit-2511 from PASTE-UPS of the world's own shipped pieces (w2#bank cap + soil, w2-props reeds), one
+  sandbox, packer + pull per piece. TRAP: the edit model keeps the paste-up's silhouette almost exactly (round 1: 8 box-shaped takes from a
+  box start); draw the outline you want into the start (round 2's rounded-mound mask: tools/art/hfreed28/starts.py island2). TRAP: a take
+  with a baked water ring fights a level whose water moves (2-8's flood): fade the foot instead.
+- Stills: tools/art/hfreed28/stills.mjs draws an unwired cut over the real frame at viewNow().k. Drop Pokey onto the solid by the engine's
+  physics, never pin player.y: grounded he has y = the solid's top (his 48 px box hangs below it), so pinning y = top - height floats him 48 px.
+- HF: ~$0.87 (12 takes, ~19 min), HF-SPEND 11-26.
 
 ## 0m. 11-21 ART-HERO (t-art-next): Pokey is one sloth in EVERY animation (R-165.378) HANDED OVER (strips + gates + REPORT open)
 - regrade.py now also takes the NON-idle clips: `python3 -I tools/art/hfnext/regrade.py push,move-walk,move-run,move-jab,move-cross,
