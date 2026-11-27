@@ -25,7 +25,9 @@ conflicts are expected); after each merge tsc + the CI tool line. (2) The 5-9 go
 approves the entry before the full set). (4) THE FULL SET on the exact head, every gate by name (release.md step 4 and CLAUDE.md Checks:
 the suite in 6 shards, the deploy build + chunkcheck, build:store, artcheck, knowncheck, clipcheck, drawcheck, roadmapcheck, funcheck,
 lockall --check against main's lock (only the intended stages move: 2-6, 2-7 and what C14 moves, each named), kbdcheck, buildcheck,
-seedlist 1-1, the tools tests, tierBots), and the CI time limits (step 4b). (5) PLAY-STORE §6 table. (6) The test link PRE-BUILT
+seedlist 1-1, the tools tests, tierBots), and the CI time limits (step 4b). ALSO `seedlist <stage> --check` for EVERY listed stage that has a
+proven list (1-1..1-9, 2-1..2-7) on the merged head: 2-7's list was found stale on t-build-28-wip (ENG-FORK28-b, 11-26: "replay differs
+from its search", 10 seeds x both); a stale list on the release line is rebuilt (release.md step 6) and every test that pins its seeds re-run. (5) PLAY-STORE §6 table. (6) The test link PRE-BUILT
 (python3 tools/testlink/build.py) but NOT published: the lead publishes it. STOP before the PR.
 REPORT reference/qa-reports/INT-R5/REPORT.md: EXACT NEXT STEP first, each merge and its conflicts, the gate table with each shard's totals,
 the §6 table. Lead: session_01FhBbYN2CVHnFXg7XzqKXpM. Messages carry no clock times. Never a model name in a commit beyond the standard
