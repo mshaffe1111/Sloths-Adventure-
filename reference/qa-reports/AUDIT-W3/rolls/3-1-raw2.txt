@@ -1,0 +1,74 @@
+3x normal ERR pool short at slot 5 (n3 descent: no bounce section left)
+3x normal ERR pool short at slot 6 (n3 descent: no bounce section left)
+4x normal ERR pool short at slot 15 (n7 descent: no climb section left)
+4x normal ERR pool short at slot 16 (n7 descent: no climb section left)
+4x normal ERR pool short at slot 22 (n10 practise: no bounce section left)
+4x normal ERR pool short at slot 23 (n10 practise: no bounce section left)
+4x normal ERR pool short at slot 24 (n10 practise: no bounce section left)
+3x normal ERR node code: V11 at token 11: 5 of 8 content nodes are 'g' (cap 3)
+3x normal ERR node code: V11 at token 4: 'f' on two neighbouring content nodes
+4x normal ERR node code: V11 at token 7: 'g' on two neighbouring content nodes
+4x normal ERR node code: V11 at token 11: 'g' on two neighbouring content nodes
+1x normal ERR ask: node n2 "Pg1>": hazard #soft: laid hurt
+3x normal ERR ask: node n4 "Pf1_<": hazard #dark: Later: no world hazard of that id is laid by a node yet
+2x normal ERR ask: node n5 "Xg1>": hazard #dark: Later: no world hazard of that id is laid by a node yet
+2x normal ERR ask: node n7 "Dg1_>": content 'c' (climb): 2 of 2 sections are ground
+1x normal ERR ask: node n8 "Wf1^>": hazard #dark@puff: Later: named clocks are B14's pods (t-b14)
+1x normal ERR ask: node n10 "Pg1<": content 'b' (bounce): 3 of 3 sections are ground, floating
+1x normal ERR ask: node n11 "Cg1>": hazard #dark@puff: Later: named clocks are B14's pods (t-b14)
+4x normal ERR ask: node n13 "Sg1_<": hazard #dark: Later: no world hazard of that id is laid by a node yet
+1x normal ERR node code: V11 at token 11: 6 of 8 content nodes are 'g' (cap 3)
+1x normal ERR node code: V11 at token 3: 'g' on two neighbouring content nodes
+1x normal ERR node code: V14 at token 1: 6 'g' nodes for a deal of 4
+2x normal ERR ask: node n2 "Pg1_<": hazard #soft: laid hurt
+2x normal ERR ask: node n5 "Xg1_>": hazard #dark: Later: no world hazard of that id is laid by a node yet
+1x normal ERR ask: node n7 "Dg1_>": content 'c' (climb): 2 of 2 sections are ground, floating
+1x normal ERR ask: node n8 "Wf1_>": hazard #dark@puff: Later: named clocks are B14's pods (t-b14)
+2x normal ERR ask: node n10 "Pg1_<": content 'b' (bounce): 3 of 3 sections are ground, floating
+2x normal ERR ask: node n11 "Cg1_>": hazard #dark@puff: Later: named clocks are B14's pods (t-b14)
+1x normal ERR ask: node n2 "Pg1_>": hazard #soft: laid hurt
+2x normal ERR ask: node n8 "Wf1>": hazard #dark@puff: Later: named clocks are B14's pods (t-b14)
+1x normal ERR ask: node n10 "Pg1_<": content 'b' (bounce): 3 of 3 sections are ground
+1x normal ERR pool short at slot 5 (n3 descent: no climb section left)
+1x normal ERR pool short at slot 6 (n3 descent: no climb section left)
+1x normal ERR ask: node n4 "Pf1^<": hazard #dark: Later: no world hazard of that id is laid by a node yet
+1x normal ERR ask: node n7 "Dg1_<": content 'c' (climb): 2 of 2 sections are ground, floating
+1x normal ERR ask: node n11 "Cg1^>": hazard #dark@puff: Later: named clocks are B14's pods (t-b14)
+6x easy ERR pool short at slot 5 (n3 descent: no bounce section left)
+6x easy ERR pool short at slot 6 (n3 descent: no bounce section left)
+8x easy ERR pool short at slot 15 (n7 descent: no climb section left)
+8x easy ERR pool short at slot 16 (n7 descent: no climb section left)
+8x easy ERR pool short at slot 22 (n10 practise: no bounce section left)
+8x easy ERR pool short at slot 23 (n10 practise: no bounce section left)
+8x easy ERR pool short at slot 24 (n10 practise: no bounce section left)
+6x easy ERR node code: V11 at token 11: 5 of 8 content nodes are 'g' (cap 3)
+6x easy ERR node code: V11 at token 4: 'f' on two neighbouring content nodes
+8x easy ERR node code: V11 at token 7: 'g' on two neighbouring content nodes
+8x easy ERR node code: V11 at token 11: 'g' on two neighbouring content nodes
+2x easy ERR ask: node n2 "Pg1>": hazard #soft: laid hurt
+6x easy ERR ask: node n4 "Pf1_<": hazard #dark: Later: no world hazard of that id is laid by a node yet
+4x easy ERR ask: node n5 "Xg1>": hazard #dark: Later: no world hazard of that id is laid by a node yet
+4x easy ERR ask: node n7 "Dg1_>": content 'c' (climb): 2 of 2 sections are ground
+2x easy ERR ask: node n8 "Wf1^>": hazard #dark@puff: Later: named clocks are B14's pods (t-b14)
+2x easy ERR ask: node n10 "Pg1<": content 'b' (bounce): 3 of 3 sections are ground, floating
+2x easy ERR ask: node n11 "Cg1>": hazard #dark@puff: Later: named clocks are B14's pods (t-b14)
+8x easy ERR ask: node n13 "Sg1_<": hazard #dark: Later: no world hazard of that id is laid by a node yet
+2x easy ERR node code: V11 at token 11: 6 of 8 content nodes are 'g' (cap 3)
+2x easy ERR node code: V11 at token 3: 'g' on two neighbouring content nodes
+2x easy ERR node code: V14 at token 1: 6 'g' nodes for a deal of 4
+4x easy ERR ask: node n2 "Pg1_<": hazard #soft: laid hurt
+4x easy ERR ask: node n5 "Xg1_>": hazard #dark: Later: no world hazard of that id is laid by a node yet
+2x easy ERR ask: node n7 "Dg1_>": content 'c' (climb): 2 of 2 sections are ground, floating
+2x easy ERR ask: node n8 "Wf1_>": hazard #dark@puff: Later: named clocks are B14's pods (t-b14)
+4x easy ERR ask: node n10 "Pg1_<": content 'b' (bounce): 3 of 3 sections are ground, floating
+4x easy ERR ask: node n11 "Cg1_>": hazard #dark@puff: Later: named clocks are B14's pods (t-b14)
+2x easy ERR ask: node n2 "Pg1_>": hazard #soft: laid hurt
+4x easy ERR ask: node n8 "Wf1>": hazard #dark@puff: Later: named clocks are B14's pods (t-b14)
+2x easy ERR ask: node n10 "Pg1_<": content 'b' (bounce): 3 of 3 sections are ground
+2x easy ERR pool short at slot 5 (n3 descent: no climb section left)
+2x easy ERR pool short at slot 6 (n3 descent: no climb section left)
+2x easy ERR ask: node n4 "Pf1^<": hazard #dark: Later: no world hazard of that id is laid by a node yet
+2x easy ERR ask: node n7 "Dg1_<": content 'c' (climb): 2 of 2 sections are ground, floating
+2x easy ERR ask: node n11 "Cg1^>": hazard #dark@puff: Later: named clocks are B14's pods (t-b14)
+clean 0/8
+(reused W1/W2 sections that threw on W3's budget, left out: 19)

@@ -49,7 +49,7 @@ index af075f9f3..425ef15b5 100644
  /** a stage's draft row; undefined when it has none */
 diff --git a/src/game/gen2/worlds/w3Audit.ts b/src/game/gen2/worlds/w3Audit.ts
 new file mode 100644
-index 000000000..a87b1c94f
+index 000000000..ad1574ce1
 --- /dev/null
 +++ b/src/game/gen2/worlds/w3Audit.ts
 @@ -0,0 +1,54 @@
@@ -102,7 +102,7 @@ index 000000000..a87b1c94f
 +  }
 +  const brief: GraphBrief = {
 +    ends: 'quiet', trend: (process.env.AUDIT_TREND as GraphBrief['trend']) ?? 'level', branching: 'none',
-+    teaches: process.env.AUDIT_TEACH ? process.env.AUDIT_TEACH.split(',') : [], deal, dealExact: true,
++    teaches: process.env.AUDIT_TEACH ? process.env.AUDIT_TEACH.split(',') : [], deal, dealExact: true, ...(process.env.AUDIT_SOFT === '1' ? { softFalls: true } : {}),
 +  } as GraphBrief;
 +  return { ...k, manifest: { ...M, sections: [...own, ...wide] as SectionTemplate[], required: {},
 +    graphs: { list: ARCH.map((a) => ({ id: `audit-${stage}-${a}`, archetype: a as never, code })), briefs: { [stage]: brief }, maxPerStage: Number(process.env.AUDIT_CAP ?? 6) } } } as WorldKit;
