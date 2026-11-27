@@ -1,0 +1,9 @@
+3-1 A Tg1 D_ Pf1< Xg1> R Dc1_ Wf1> R Pb1< Cg1> R Sf1_< E
+3-2 A Tc1< Pg1> Pf1< Xc1&<:&ocelot*1 R Pg1< Wf1&>:&ocelot*1 R Pc1&<:&ocelot*1 Cg1&>:&ocelot*2 R Sf1&<:&ocelot*3 E
+3-3 A Tl1&<:&ocelot*1 Pf1> Pg1&<:&ocelot*1 Xl1&>:&ocelot*2 R Pc1^< Wg1&>:&ocelot*1 R Pf1< Cg1&>:&ocelot*2 R Sl1&<:&ocelot*3 E
+3-4 A Pc1^< Tf1^< Pg1^< Xc1^> R Pf1< Wc1^> R Pb1^< Cg1^> R Sf1^< E
+3-5 A Tg1< Pf1> Pg1< Xb1> R Pc1_< Wf1> R Pg1< Cb1> R Sf1< E
+3-6 A Tg1+<:+keepsake Pf1> Pc1^+<:+keepsake Xf1> R Wg1+<:+keepsake R Pb1> Cf1+>:+keepsake R Sg1+<:+keepsake E
+3-7 A Tg1+<:+keepsake Pf1+<:+keepsake Pg1> Xf1+>:+keepsake R Pc1_< Wg1+<:+keepsake R Hf1+<:+guarana Cc1+&>:&ocelot*1:+keepsake R Sg1+<:+keepsake E
+3-8 A Tc1< Pg1< Pf1< Xc1> R Wg1< R Cf1> Pb1^< Sc1< E
+3-9 A Pg1&<:&ocelot*1 Pf1&<:&ocelot*2 Xg1&>:&ocelot*3 R Wc1> R Pb1&<:&ocelot*2 Cc1^&>:&ocelot*2 R Pf1&<:&ocelot*2 Sg1&<:&ocelot*4 E

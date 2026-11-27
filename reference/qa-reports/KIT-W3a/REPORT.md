@@ -1,5 +1,30 @@
 # KIT-W3a: World 3's TOWER bricks (R-165.504; content/kit, Opus 5.5 high). Branch t-kit-w3a, cut from t-eng-w3 13135bf6b
 
+## EXACT NEXT STEP (box 6, written 12:32 PM ET Fri 11-27 by `date`; box 5's step below is carried into the lead's box 6 brief)
+Head: t-kit-w3a = this commit, the MERGE of origin/t-eng-w3 51ef0c6ab (KIT-W3b box 2's 3-2 content) into 2a18464da (named).
+STEP 1 DONE (the merge): w3.ts conflicted in 3 hunks (imports; the tower block against KIT-W3b's level block, about 300 lines; the
+pool), w3.test.ts in 1 (imports). Resolved as the UNION: both import lists; the tower block then the level block, byte for byte; the
+pool `[...W3_DOWN, ...W3_DOWN_TOWER, ...W3_LEVEL]`. Proof (probe/w3ids.mts on each tree; probe/ids-*.txt): 2a18464da 8 sections /
+29 pieces / 22 sockets / 19 exports; 51ef0c6ab 11 / 42 / 50 / 23; merge 16 / 65 / 64 / 30 = the union exactly; no line of either
+parent's list is missing from the merge but the pool line, which is their union in order. Every line the merge drops from a parent was
+changed by the other parent from the base 9818cc87d (git diff checked: w3.test's cast check -> castLeaks(), KIT-W3b's ruling a; the
+head-room and drawn checks, my box 4). The level bricks' `feel` (W3_LEVEL_STAGES) keeps them out of 3-1's pool, so 3-1 rolls as before.
+Counts on the merge: tsc 0; generalitycheck PASS (68 engine files, 26 literals, 26 known); w3Tower.test 9/9 pass; w3Level.test (KIT-W3b,
+the 3-2 file t-eng-w3 added) 5/5; w3.test 10/12, fail 2, BOTH INHERITED (the same file on 2a18464da alone: 10/12, the same two, the
+same text): w3.test.ts:166 head room 'normal 9: x 774-844, y 8434 lies 68 px under x 745-925, y 8366' (a 180 px catch bough 68 px
+over cap-down's 70 px cap: tower wood) and w3.test.ts:196 'easy 11: tower: a blind drop off the piece at x 31-211, y 4150: 497 px' (e11,
+ENG-CATCH-e's). w3Noise 0/8 on the merge; the SAME 0/8 with the same errors on 2a18464da alone (MINE, from box 5: t-eng-w3 51ef0c6ab
+alone is 7/7): 'no roll of 3-1's draft lays the call toy' x3, '... the punch toy' x2, '... the moss toy' x3. Causes: punch, my box 5
+bug (w3Noise.test.ts:152-153 applies the drops' dropClear to the flat punch toy, which has no top, so no roll can pass); call, no roll
+of 1-40 stands the stone inside the ocelot's patrol since box 5's narrowing moved the rolls (seeds 41-160: 48 63 96 118 do); moss and
+stone, step 2 below. 3-1's rolls are the SAME on 2a18464da and the merge (8 rolls, both settings: sections, pieces, animals, errors).
+STEP 2: PUSHBACK (PUSHBACK.md here): no World 3 level-stage row exists, and on 3-2's config over World 3's real kit the run lay never
+lays the 400 px drop (0 of 40; World 3's corridor). Nothing laid for step 2; the lead's call.
+t-eng-w3 MOVED after the brief: f3014145c (ENG-ROOT landed: pipeline.ts, firsttimer.ts, w3.ts 3 lines). Not merged here (the brief
+names 51ef0c6ab); it goes in with step 3's landed merges unless the lead says otherwise.
+NEXT: step 3 (wait for the lead's LANDED hashes of ENG-CATCH-e and ENG-DEAL; merge each named; tsc + generality; probe the six configs
+1-40 x both, two at a time), then the brief's steps 4-7.
+
 
 ## EXACT NEXT STEP (box 5, written 11:54 AM ET Fri 11-27 by `date`; box 4's step below is DONE to its item 1, the rest carried here)
 Head: t-kit-w3a 37a0d67b4 + this commit = 29e074252 (merge of ENG-CATCH-d's FROZEN candidate 6d296c1b7, named) + de6feebff (the width

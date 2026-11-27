@@ -1,0 +1,15 @@
+1x normal ERR ask: node n13 "Sc1<": content 'f' (floating): 2 of 2 sections are climb, ground
+1x normal ERR the quiet line: 8.4 s with nothing to do at x 12656, over 4 s (the goal run-out excluded)
+2x normal ERR ask: node n13 "Sg1<": content 'f' (floating): 2 of 2 sections are ground
+1x normal ERR the quiet line: 8.3 s with nothing to do at x 28053, over 4 s (the goal run-out excluded)
+1x normal ERR ask: node n13 "Sg1<": content 'f' (floating): 2 of 2 sections are ground, climb
+1x normal ERR the quiet line: 6.2 s with nothing to do at x 13536, over 4 s (the goal run-out excluded)
+1x normal ERR the quiet line: 7.6 s with nothing to do at x 14400, over 4 s (the goal run-out excluded)
+2x easy ERR ask: node n13 "Sc1<": content 'f' (floating): 2 of 2 sections are climb, ground
+1x easy ERR the quiet line: 8.4 s with nothing to do at x 12656, over 4 s (the goal run-out excluded)
+4x easy ERR ask: node n13 "Sg1<": content 'f' (floating): 2 of 2 sections are ground
+1x easy ERR the quiet line: 8.3 s with nothing to do at x 28053, over 4 s (the goal run-out excluded)
+2x easy ERR ask: node n13 "Sg1<": content 'f' (floating): 2 of 2 sections are ground, climb
+1x easy ERR the quiet line: 6.2 s with nothing to do at x 13536, over 4 s (the goal run-out excluded)
+1x easy ERR the quiet line: 7.6 s with nothing to do at x 14400, over 4 s (the goal run-out excluded)
+clean 0/8

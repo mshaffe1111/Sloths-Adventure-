@@ -21,10 +21,11 @@ import { footingsFor } from '../../terrain.ts';
 import { MODEL_FAST, modelStage } from '../../stageTime.ts';
 import { routeAt, towerHandOns, towerVineCuts } from '../tower.ts';
 import type { Platform, Vine } from '../../types.ts';
+import type { SectionTemplate } from '../types.ts';
 import { buildGen2Stage } from '../pipeline.ts';
 import { LISTED, playFinish } from '../listed.ts';
 import { DRAFT_TABLE, STAGE_TABLE, draftRow } from './stageTable.ts';
-import { W3_ART, W3_CAST, w3Manifest } from './w3.ts';
+import { W3_ART, W3_CAST, W3_LEVEL, w3Manifest } from './w3.ts';
 import { BOUNCE_FRAMES } from '../../bounceAtlasData.ts';
 
 const root = path.join(path.dirname(fileURLToPath(import.meta.url)), '..', '..', '..', '..');
@@ -66,9 +67,29 @@ test("the cast rows: World 3's ocelot and jaguar, each a creature kit animal (pr
   assert.deepEqual(W3_CAST.map((c) => c.enemy), ['ocelot', 'jaguar']);
   for (const c of W3_CAST) assert.ok(castDef(c.enemy, 3), `${c.enemy} has World 3's kit def (predators/world3.ts)`);
   assert.deepEqual(w3Manifest().creatures.map((c) => c.id), W3_CAST.map((c) => c.id));
-  // (the way down casts none: no brick of it has an animal socket, so none is laid from the list)
-  for (const q of w3Manifest().sections) assert.ok(!q.sockets.some((k) => k.role === 'enemy'), `${q.id} has no animal socket`);
+  // (the way down casts none: no brick of it has an animal socket, so none is laid from the list. World 3's LEVEL bricks carry the
+  //  ocelot's sockets (KIT-W3b, w3Level.test.ts) and are in the level stages' pools only: never 3-1's)
+  assert.deepEqual(castLeaks(w3Manifest().sections), []);
+  // (planted reds, the lead's ruling (a) on KIT-W3b box 1: an animal socket put on a tower brick, and a level brick let into 3-1's pool,
+  //  each turn the scoped check red by name)
+  const tower = w3Manifest().sections.find((q) => !W3_LEVEL.includes(q))!;
+  const armed = { ...tower, sockets: [...tower.sockets, { id: 'ocelot', role: 'enemy' as const, on: tower.pieces[0].key, t: 0.5, allow: ['ocelot'] }] };
+  assert.deepEqual(castLeaks([armed, ...W3_LEVEL]), [`${tower.id} has an animal socket`]);
+  const loose = { ...W3_LEVEL[0], feel: [...(W3_LEVEL[0].feel ?? []), DRAFT] };
+  assert.deepEqual(castLeaks([loose], [loose.id]), [`${loose.id} is in ${DRAFT}'s pool`]);
 });
+
+/** the way down's cast promise, scoped (KIT-W3b box 1, the lead's ruling (a)): no NON-level brick has an animal socket, and no level brick
+ *  (they carry the ocelot by design) is in 3-1's pool. Returns each breach by name */
+function castLeaks(sections: readonly SectionTemplate[], levelIds: readonly string[] = W3_LEVEL.map((q) => q.id)): string[] {
+  const level = new Set(levelIds);
+  const out: string[] = [];
+  for (const q of sections) {
+    if (!level.has(q.id)) { if (q.sockets.some((k) => k.role === 'enemy')) out.push(`${q.id} has an animal socket`); }
+    else if (!q.feel?.length || q.feel.includes(DRAFT)) out.push(`${q.id} is in ${DRAFT}'s pool`);
+  }
+  return out;
+}
 
 test('the draft row: 3-1 drafted on World 3\'s kit going down; no game path reads it (not listed, the live 3-1 is the old section maker)', () => {
   assert.deepEqual(draftRow(DRAFT), { kit: 'w3', travel: 'down' });

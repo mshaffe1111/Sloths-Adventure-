@@ -1,0 +1,76 @@
+4x normal ERR tip "hint.1-1.bank" has no Dot line in the kit's tips
+4x normal ERR tip "hint.1-1.noMoss" has no Dot line in the kit's tips
+1x normal ERR ask: node n2 "Pc1_<": content 'l' (lure): no lure laid
+1x normal ERR ask: node n2 "Pc1_<": creatures (&): no creature laid
+1x normal ERR ask: node n2 "Pc1_<": threat ocelot*1: laid 0
+1x normal ERR ask: node n4 "Pg1<": threat ocelot*1: laid 2
+2x normal ERR ask: node n5 "Xf1_>": content 'l' (lure): no lure laid
+2x normal ERR ask: node n5 "Xf1_>": threat ocelot*2: laid 1
+1x normal ERR ask: node n8 "Wg1_>": threat ocelot*1: laid 5
+1x normal ERR ask: node n11 "Cg1^>": threat ocelot*2: laid 4
+4x normal ERR ask: node n13 "Sg1<": content 'l' (lure): no lure laid
+1x normal ERR ask: node n13 "Sg1<": threat ocelot*3: laid 2
+1x normal ERR the quiet line: 5.3 s with nothing to do at x 7443, over 4 s (the goal run-out excluded)
+3x normal ERR ask: node n2 "Pc1<": content 'l' (lure): no lure laid
+3x normal ERR ask: node n2 "Pc1<": creatures (&): no creature laid
+3x normal ERR ask: node n2 "Pc1<": threat ocelot*1: laid 0
+1x normal ERR ask: node n5 "Xf1^>": content 'l' (lure): no lure laid
+1x normal ERR ask: node n5 "Xf1^>": threat ocelot*2: laid 1
+1x normal ERR ask: node n7 "Pc1^<": shape ^ (rising): its sections rise -1 px
+1x normal ERR ask: node n8 "Wg1^>": threat ocelot*1: laid 3
+2x normal ERR ask: node n11 "Cg1>": threat ocelot*2: laid 4
+1x normal ERR the quiet line: 7.7 s with nothing to do at x 25266, over 4 s (the goal run-out excluded)
+1x normal ERR ask: node n4 "Pg1^<": threat ocelot*1: laid 2
+1x normal ERR ask: node n7 "Pc1^<": shape ^ (rising): its sections rise -5 px
+1x normal ERR ask: node n8 "Wg1>": threat ocelot*1: laid 5
+1x normal ERR the quiet line: 5.3 s with nothing to do at x 7716, over 4 s (the goal run-out excluded)
+1x normal ERR ask: node n4 "Pg1_<": threat ocelot*1: laid 2
+1x normal ERR ask: node n5 "Xf1>": content 'l' (lure): no lure laid
+1x normal ERR ask: node n5 "Xf1>": threat ocelot*2: laid 1
+1x normal ERR ask: node n7 "Pc1^<": shape ^ (rising): its sections rise 0 px
+1x normal ERR ask: node n8 "Wg1^>": threat ocelot*1: laid 4
+1x normal ERR ask: node n11 "Cg1>": threat ocelot*2: laid 3
+1x normal ERR the quiet line: 7 s with nothing to do at x 25852, over 4 s (the goal run-out excluded)
+8x easy ERR tip "hint.1-1.bank" has no Dot line in the kit's tips
+8x easy ERR tip "hint.1-1.noMoss" has no Dot line in the kit's tips
+2x easy ERR ask: node n2 "Pc1_<": content 'l' (lure): no lure laid
+2x easy ERR ask: node n2 "Pc1_<": creatures (&): no creature laid
+1x easy ERR ask: node n2 "Pc1_<": threat ocelot*1: laid 0
+1x easy ERR ask: node n4 "Pg1<": threat ocelot*1: laid 2
+4x easy ERR ask: node n5 "Xf1_>": content 'l' (lure): no lure laid
+2x easy ERR ask: node n5 "Xf1_>": threat ocelot*2: laid 1
+1x easy ERR ask: node n8 "Wg1_>": threat ocelot*1: laid 5
+1x easy ERR ask: node n11 "Cg1^>": threat ocelot*2: laid 4
+8x easy ERR ask: node n13 "Sg1<": content 'l' (lure): no lure laid
+1x easy ERR ask: node n13 "Sg1<": threat ocelot*3: laid 2
+1x easy ERR the quiet line: 5.3 s with nothing to do at x 7443, over 4 s (the goal run-out excluded)
+1x easy ERR ask: node n2 "Pc1_<": threat ocelot*1: laid 0 on Easy
+1x easy ERR ask: node n4 "Pg1<": threat ocelot*1: laid 2 on Easy
+1x easy ERR ask: node n8 "Wg1_>": threat ocelot*1: laid 3 on Easy
+6x easy ERR ask: node n2 "Pc1<": content 'l' (lure): no lure laid
+5x easy ERR ask: node n2 "Pc1<": creatures (&): no creature laid
+3x easy ERR ask: node n2 "Pc1<": threat ocelot*1: laid 0
+2x easy ERR ask: node n5 "Xf1^>": content 'l' (lure): no lure laid
+1x easy ERR ask: node n5 "Xf1^>": threat ocelot*2: laid 1
+2x easy ERR ask: node n7 "Pc1^<": shape ^ (rising): its sections rise -1 px
+1x easy ERR ask: node n8 "Wg1^>": threat ocelot*1: laid 3
+2x easy ERR ask: node n11 "Cg1>": threat ocelot*2: laid 4
+1x easy ERR the quiet line: 7.7 s with nothing to do at x 25266, over 4 s (the goal run-out excluded)
+2x easy ERR ask: node n2 "Pc1<": threat ocelot*1: laid 0 on Easy
+1x easy ERR ask: node n8 "Wg1^>": threat ocelot*1: laid 3 on Easy
+1x easy ERR ask: node n4 "Pg1^<": threat ocelot*1: laid 2
+2x easy ERR ask: node n7 "Pc1^<": shape ^ (rising): its sections rise -5 px
+1x easy ERR ask: node n8 "Wg1>": threat ocelot*1: laid 5
+1x easy ERR the quiet line: 5.3 s with nothing to do at x 7716, over 4 s (the goal run-out excluded)
+1x easy ERR ask: node n8 "Wg1>": threat ocelot*1: laid 3 on Easy
+1x easy ERR ask: node n4 "Pg1_<": threat ocelot*1: laid 2
+2x easy ERR ask: node n5 "Xf1>": content 'l' (lure): no lure laid
+1x easy ERR ask: node n5 "Xf1>": threat ocelot*2: laid 1
+2x easy ERR ask: node n7 "Pc1^<": shape ^ (rising): its sections rise 0 px
+1x easy ERR ask: node n8 "Wg1^>": threat ocelot*1: laid 4
+1x easy ERR ask: node n11 "Cg1>": threat ocelot*2: laid 3
+1x easy ERR the quiet line: 7 s with nothing to do at x 25852, over 4 s (the goal run-out excluded)
+1x easy ERR ask: node n4 "Pg1_<": threat ocelot*1: laid 2 on Easy
+1x easy ERR ask: node n5 "Xf1>": threat ocelot*2: laid 3 on Easy
+1x easy ERR ask: node n8 "Wg1^>": threat ocelot*1: laid 2 on Easy
+clean 0/8
