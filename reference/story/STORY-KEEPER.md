@@ -496,4 +496,4 @@ Brief the new lead from this file when it messages.
 
 **Lesson (11-27, my second miss of this kind after way.1-8 on 11-14):** before cutting or writing a wayside, check its SPEAKER in wayside.ts; a Pokey line must carry I/me/my (wayside.test.ts). Now part of my check for every wayside.
 
-**11-27 6:42 PM ET, w2_book hint (finds.ts:416 DOT_HINTS), for BUILD-28:** "Look along the banks in Before the Water Rises. Hurry!" -> "Before the Water Rises: peek in the Hush Ferns!" (8). True on every roll (the find is always in a Hush Fern in 2-8; "along the banks" fails 8 of 32 rolls); "Hurry!" goes (the fork line says the high road is never wrong, and no hurry wording).
+**11-27 6:42 PM ET, w2_book hint (finds.ts:416 DOT_HINTS), for BUILD-28:** "Look along the banks in Before the Water Rises. Hurry!" -> "Before the Water Rises: peek in the Hush Ferns!" (9). True on every roll (the find is always in a Hush Fern in 2-8; "along the banks" fails 8 of 32 rolls); "Hurry!" goes (the fork line says the high road is never wrong, and no hurry wording).
