@@ -154,6 +154,10 @@ about 1-2 s a row, every finished row kept.
 
 **A lane's bar uses the release's own range (CI #86, 11-25).** A bot change's final 'wide sample' runs rule 28's range (seeds 1-40, every stage the release ships) on its final candidate, not a faster subset: release 4's bot fix passed seeds 1-10 and failed the release on seeds 15-40.
 
+**A commit to a SHARED lay file runs the FULL lock (11-26, ENG-DARK-aa).** Every engine packet says: a commit to a file every stage lays
+through (tower.ts, pipeline.ts, legs.ts, rideLay.ts, riverLay.ts, nodeAsks.ts...) runs `lockall --check` over ALL listed stages against the
+landing base on that commit, not only the lane's own stage. 3-1's lane ran the lock on 3-1 alone from box 18 on, and a general wall-slot
+rule moved World 1's 1-4 unseen for nine candidates (a good move, closing a 642 px pit, but never recorded).
 **The suite is never left to the landing (CI #93, 11-26; D141 again).** Every packet says: the CI tool line on EVERY candidate; the
 suite shards on every candidate brought to the lead for a ruling AND on the final one. A ruling request and a landing message carry each
 shard's pass/fail totals for THAT hash. Never write "GATES once on the final candidate" alone: that wording left 3-1's w3.test red for 9
