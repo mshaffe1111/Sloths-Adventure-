@@ -1,6 +1,54 @@
 # BUILD-28 REPORT (W2-LANE: 2-8 "Before the Water Rises"; R-165.430 (2), READY-28, BUILD-28). Session 1 (W2-LANE a), started 9:44 AM ET (from date). Session 2 (W2-LANE b), started 10:07 AM ET (from date). Session 3 (W2-LANE c), started 10:30 AM ET (from date). Session 4 (W2-LANE d), started 10:52 AM ET (from date). Session 5 (W2-LANE e), started 11:19 AM ET (from the session hook date) Session 6 (W2-LANE f), started 11:41 AM ET (from the session hook date) Session 7 (W2-LANE g), started 12:05 PM ET (from the session hook date) Session 8 (W2-LANE h), started 12:49 PM ET (from the session hook date) Session 9 (W2-LANE i), started 1:15 PM ET (from the session hook date) Session 10 (W2-LANE j), started 1:05 PM ET (from the session hook date) Session 12 (W2-LANE l), started 2:20 PM ET (from the session hook date)
 
-## EXACT NEXT STEP (BUILD-28 box 5, BUILD-28-e, session 18, started 9:22 PM ET (from the session hook date); head = this commit on t-build-28-wip)
+## EXACT NEXT STEP (BUILD-28 box 6, BUILD-28-f, started 8:34 AM ET (from the session hook date); code head 25d527e40 on t-build-28-wip)
+DONE THIS BOX (every number from the built stage, rule 27):
+1. MERGED, no force, no conflicts, tsc 0 after each: t-eng-tipleft 8a97567b3 (a FAST-FORWARD: the tree is ENG-TIPLEFT's own, its gates
+   carry), then t-eng-cut 57d7b8287 (merge a2c959be5). The CI tool line on a frozen a2c959be5 (scratchpad toolline.sh): tsc 0; engine
+   tools' tests 437 / 435 pass / 1 fail (registrycheck.test "every stage-table stage registered": 2-8's seeds + flown, item 4 below; the
+   other not-ok is a TODO); tipwalk PASS; storyTipScan, teachFirstScan, registrycheck, tierBots, buildcheck, kbdcheck were still running at
+   the hand-over (re-run them on the next candidate anyway: it moves). storyTipScan --check FAILED on a2c959be5: 2-8's two lines are
+   'info' rows, "The low road's quick, but filling. High road's dry." (w28.fork) and "The river's rising! Up the steps, back home!"
+   (w28.turn): lay each at its source (a warning with StageHint.warn, a story beat in storyTips, or the stage's coaching in teachTips,
+   R-165.412). This is the packet's "storyTipScan (its two 2-8 lines)": NOT done this box.
+2. SEED 3's FORK LINE (ruled, the lead): no job is the fork rest's alone (every R is 'rest'; Y 'story' is LATER, V13), so the fork-rest
+   brick has window [0.45, 0.62]: only n10, the fork's own rest, lies inside (n6 0.31, n13/n15 0.69-0.85). Without it the deal put it on
+   n6 (the OUTBOUND rest) on seeds 1, 3, 7, 8, ... Test w2Arc28.test "Dot's fork line is laid at the fork's own rest", seeds 1-40 x both
+   settings: PASS; window removed: RED (plant CAUGHT, 04b4fec2c).
+3. THE REED ISLAND (ruled (b)): solid 340 wide (Normal; Easy's landing widening makes it 388 = 1.14x, the lead judges it on the Easy
+   still), laid as a level PORCH over the channel, not a bank, so ONE river runs under its whole width, its surface 42 px under its top on
+   every probed roll (normal 1: island 16305+340 @778, river 15668-17251 ~820). Test w2Arc28.test "the reed island stands in the water",
+   seeds 1-40 x both: PASS; laid as a bank again: RED (plant CAUGHT). Its CUT does not draw yet: SectionPiece has no `cut` field: RULED
+   ENGINE, ENG-CUT-b (SectionPiece.cut -> Platform.cut in the lay's mk), first in the queue, its hash comes here. NO stopgap in finish28.
+   Once it lands: name the cut 'w2-reed28#reed-isle-28' on piece 'i', and check the flood caption against its foot on the stills.
+4. ROLL on a frozen 25d527e40, libstage --stage 2-8 --seeds 40: CLEAN 40 of 40 on BOTH settings, thrown 0, 2 beat orders, seconds
+   241-251 (est.), pool sections never laid: none (04b4fec2c also 40/40).
+5. FOUND, a missing piece (D148): registrycheck --stage 2-8 says 2 MISSING: (a) seeds: no proven list; (b) FLOWN: its row has no
+   `judged` scope, so Normal lays to the unflown reach. Every other World 2 row is judged (normal-2-1..2-7). Judging it CHANGES THE LAY
+   on Normal, so it comes BEFORE the seed list, the roll, the lock and the suite. The flight was started on a frozen 25d527e40:
+   FLIGHT_STAGE=2-8 npx tsx reference/specs/sims/flight.ts normal all: DONE, rc 0, log reference/qa-reports/BUILD-28/fly-2-8.txt (frozen
+   25d527e40). Against fly-2-7.txt it is a pixel under 2-7 on the double moves (double hold 201/200/191/191 vs 202/201/192/192; single
+   flick 123/70/112/75 vs 123/70/113/76; double flick 200/198/189/189; double tap 146/129/136/125; widest single-hold thin 236 vs 237);
+   single hold, single tap and bounce alone unchanged. The rows are NOT entered yet (next box, item a).
+   Seed-list workers ran on 25d527e40 (25 of 25 kept each, 100%) but the MERGE was NOT run: the list waits for the judged row.
+6. tools/perf/limits.json: "2-8" added to drawcheck's scenarios, the SAME limits (registrycheck's drawcheck line). Not yet run.
+NEXT (box 7), in order:
+a0. Lay storyTipScan's two 2-8 lines at their source (item 1); storyTipScan --check PASS.
+a. ReadNotifications. Enter 2-8's flown Normal rows the way 2-7's were (BUILD-27d 2590fcacf + BUILD-27c's rows): flownArcs.ts
+   `n28 = nW2('2-8')` with the 8 moves (single-hold/flick/tap, double-hold/flick/tap-tap, bounce, bounce-air: climb block/thin and gap
+   from70/lastGround/any from fly-2-8's "[dist]" tables; copy the log to reference/qa-reports/BUILD-28/fly-2-8.txt), stageTable '2-8'
+   judged: 'normal-2-8', judgedTable.test's two JUDGED lists, chain.md §1 "Rows ... Normal 2-8". Re-fly if fly-2-8.txt is gone.
+b. Roll 40 x both on a frozen tree: CLEAN 40 (the judged reach may refuse some rolls: name each error).
+c. Seed list: 4 workers (seedlist.ts 2-8 --count 100 --worker i/4 --from 1 --to 2000 --part ...), then --merge, in the frozen tree with
+   src/game/gen2/proven/ and provenIndex.ts writable (D115); copy seeds-2-8.ts + provenIndex.ts back; --check PASS. registrycheck
+   --stage 2-8: READY.
+d. Commit = the candidate. FULL GATES on it (frozen): the suite in 6 shards (scratchpad shards.sh, deploy.yml's line with
+   --test-shard=k/6), each total named; the ~49 inherited "2-8 no seed of 24 builds cleanly" reds should clear (name any that stay);
+   lockall --layouts 16 --check against ENG-CUT's base lock (reference/qa-reports/ENG-CUT/lock-base-a0d85e961.json.gz, gunzip) with
+   --intended 2-8,1-4 (ONE run, 102 stages, counts: only 2-8 moves, plus 1-4's intended hints); the CI tool line in full; drawcheck with
+   2-8; the 2-7-pinned tests (release.md step 6); storyTipScan's two 2-8 lines.
+e. Stills (box item 6, all but the island until ENG-CUT-b), then bots x40 both settings every tier (rule 28), the 2-minute floor.
+
+## (was the EXACT NEXT STEP) (BUILD-28 box 5, BUILD-28-e, session 18, started 9:22 PM ET (from the session hook date); head = this commit on t-build-28-wip)
 DONE THIS BOX (every number from the built stage, rule 27):
 1. MERGED, no force, no conflicts, tsc 0 after each: t-eng-fork28 8fbdb72ac (7e39d459d), then t-art-28 d84ca4a76 (b06515dbf: the cut and
    its inventory row only; no image packed in src, so the art-use gate is not touched yet). The CI tool line's fast part on 7e39d459d
