@@ -54,13 +54,18 @@ member below your id and its next report-by; arm your own 30-minute check-in (th
 first message of all to the story keeper. Nothing pauses for the switch.
 LANES AT THE HAND-OVER (each reports to the BACKUP's id until you message it; PM.md §9):
 - INT-R5-c session_01FhBbYK3yZH8BvQ5xoKtfmF: release 5 DONE (see above), idle, stopped before the PR.
-- ENG-DEAL session_01FhBbYPCPBNnRGWbxCcBZLu (a bounded tail): its LAST re-gate runs on 98f424884 (t-eng-deal; a lettered node holds its
-  type through every loosening, and a slot with none of its type is a named 'pool short', so the roll is refused, never laid quietly).
-  If green, it lands on t-eng-w3 with the KIT rolls' clean / tried counts (3-2 may refuse every roll until its rope section exists).
-  If red, it records, pushes and stops. Either way, archive it after (get_session first).
+- ENG-DEAL LANDED t-eng-w3 = 7a580aefc (code 98f424884; 2:28 PM ET).
+  - Gates on the frozen code, each once: tsc 0; generality; CI line 50/0; tierBots 9/9; all 14 seed lists; suite 6 shards 0 fail, except
+    the named ctestPicker red (R-165.550).
+  - Lock 101/102: 1-8's gen2 graph types, intended; nothing laid moves.
+  - KIT rolls (4 seeds x both): 3-1 w3 CLEAN 8/8 (was 0/8); 3-1 wide 7/8 (the 1 left is Easy's flags line, on the list before).
+  - **3-2 refuses EVERY roll (0/8) until its rope section exists: the root brick, KIT-W3b-c.** Its notes name the letter 'r' at n2, n8
+    and n13.
+  - 3-3 is 0/8: its 'l' lure lines are ENG-LURE-b's, and n11 combine has no section left.
+  - Archive it after a get_session look if the outgoing lead has not.
 - Story keeper session_01FhBbYMCa3JXWmyQicbmxuu: told a new lead is coming; your first message goes to it.
 - Everyone else is ARCHIVED. Their work is on these branches:
-  - t-eng-w3 f3014145c (ENG-ROOT landed);
+  - t-eng-w3 7a580aefc (ENG-ROOT, then ENG-DEAL, landed);
   - t-eng-29 337ba7d0b (ENG-CAM29 + ENG-DECOR);
   - t-eng-catch-e f5f2aa16e and t-eng-catch-c 859baaa65 (not landed: tower.test.ts:856);
   - t-kit-w3a 38c1b2b20 (step 1 merge done);
@@ -78,7 +83,7 @@ QUEUE, the outgoing lead's order (a proposal only: Matt left what comes after to
    guarantee 18a353e4a (t-eng-catch-e f5f2aa16e, not landed; its REPORT names the fix box's starting point). Everything else on 18a353e4a is
    green: tsc 0, generality 26/26, CI line 354/0, lock 102/102 on base 51ef0c6ab, tierBots 9/9, the proof six configs 80/80, leaks 0, worst
    cost 7% of rolls refused. The fix: the mend's keep() / cover lay must not hand back a bough twice; the toy red first, then every proof and
-   gate once, then land on t-eng-w3 (now f3014145c or later). Lesson for the brief: run the tower's WHOLE test file before any freeze.
+   gate once, then land on t-eng-w3 (now 7a580aefc or later). Lesson for the brief: run the tower's WHOLE test file before any freeze.
 0b. KIT-W3a-f (3-1's kit, fresh; session_01FhBbYLDxrBNgHaqMuXbqVy was stopped before its merge): reference/packets/2026-11-27/KIT-W3a-f.md
    (merge t-eng-w3's newest head with step 3's landed hashes).
 1. BUILD-29-l (2-9, release 6): READY: ENG-CAM29 and ENG-DECOR are both on t-eng-29 = 337ba7d0b. R-165.544 riverFaults FIRST (a
@@ -89,7 +94,8 @@ QUEUE, the outgoing lead's order (a proposal only: Matt left what comes after to
 2. After 0a and 0b land: BUILD-31 (rule 23: open 3-1's roll file first; dark.test over every listed seed until R-165.537 lands). A LEAD
    CALL first: KIT-W3a's PUSHBACK.md (t-kit-w3a 38c1b2b20): no World 3 level-stage row exists and World 3's run lay never lays the 400 px
    drop, so the drop toys need an engine change (run lay lays a designed drop past its corridor) or stay red by name until 3-5's build.
-3. KIT-W3b-c (3-3's rising climb, then the root brick): READY: ENG-ROOT landed on t-eng-w3 f3014145c; the root brick SPEC is in
+3. KIT-W3b-c (3-3's rising climb, then the root brick): READY, and the ROOT BRICK GOES FIRST now, since 3-2 refuses every roll until its
+   rope section exists (ENG-DEAL's named 'r' notes). ENG-ROOT landed on t-eng-w3 f3014145c, and ENG-DEAL landed on top at 7a580aefc; the root brick SPEC is in
    ENG-ROOT's REPORT (box 2's W note was wrong and is corrected there: build from the REPORT, not the old note).
 4. ENG-LURE-b (3-3, fresh): t-eng-lure-wip 0e646f2ef's REPORT "NEXT BOX": R-165.527 topUpFoes skip on dialled nodes + 3-3's layable
    purge count; item 3 verdict; item 4 skills; ENG-DEAL merge; stills; gates once (the lock proves the opt-in SectionZone 'spore' span
