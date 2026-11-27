@@ -11,8 +11,13 @@ ground; the court bell's engine code stays held there); P-03 (puzzleGateWall.tes
 FOUND by the 41 test files that name 2-9 or Dot's lines (301 tests, 296 pass, 5 fail on 2cb7b0a4a): listed through the game's own
 config, 2-9 built NO seed of 24 ('node n7 "Pg1>": threat snapper*3: laid 5'): the draft's goal (GOAL_29, countSet) lived only in
 draft29Cfg. FIXED in data: stagePlan.ts's 2-9 row in 2-5's form `{ ...S('gauntlet', ..., MISSION_29's words), count: 5 }` (the
-keeper's mission too). That cleared 4 of the 5 (plainWalk x2, w1NewArt and P-03 all failed on that build); the re-run of plainWalk +
-w1NewArt + puzzleCamera on the next commit was running at the hand-over. ENGINE-WORTHY (rule 26, not coded around): puzzleCamera's
+keeper's mission too). That cleared 4 of the 5 (plainWalk x2, w1NewArt and P-03 all failed on that build). RE-RUN on 8500f85a0 (plainWalk + w1NewArt + puzzleCamera): 20 tests, 18 pass, 2 fail:
+puzzleCamera (below) and plainWalk's one-jump steps, a 2-9 DATA defect (7 lines, seeds 1-3, Normal): the 50 px step at x 8724
+(beat 4) and x 15210 / 15352 (the twist) a straight flick does not climb (4 of the 7 only leaning away; seed 2 x 8724 both ways).
+It is w2Arc29.ts:158/:166 `rock('rc', 'c', 0.15)`: a 110-120 px moss stone 50 px tall on the court liana's far bank, 34 px past the lip
+where he lands (the bank 340 px at y 770-838, the stone at y 720-788). The draft never met plainWalk (the seam has no stage row).
+MY RECOMMENDATION (the lead's call: it moves the flown landing): `rock('rc', 'z', 0.5)`, the far bank's middle, as 'ra' sits on 'a';
+then RE-FLY both lianas both settings (probes/oneMarginG.ts at 365 px, judge29.ts 3) BEFORE use (rule 24), then plainWalk on 2-9. ENGINE-WORTHY (rule 26, not coded around): puzzleCamera's
 leave-the-room test on the kit's bell room: the camera's y jumps 54 px in one frame walking out left at 390x844
 ((3772.9, -494.0) -> (3757.8, -440.0); the bar is 24). 2-9's old room never hit it. The test stays as the honest check: it is RED
 until an engine lane fixes the camera (or the lead rules a different room).
