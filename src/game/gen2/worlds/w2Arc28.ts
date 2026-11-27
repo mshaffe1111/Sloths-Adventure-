@@ -35,19 +35,28 @@ export const STAGE_28 = '2-8';
 
 /** 2-8's ONE graph (READY-28 §1's node string as LAID, the lead's L1 and L2: the dyke path, then one more home beat) */
 /* THE LEAD'S BOX-3 RULINGS in this string: (2) the legs are parted by a DROP COLUMN at the turn, 2-7's proven `/D Dc_` (w2Arc27.ts
- * ARC_27), not taller steps (legs.ts LEG_CLEAR 260 must hold, flown on the first clean roll); (3) n4 is `Pw1` (the pad pond's content is
+ * ARC_27), not taller steps (legs.ts LEG_CLEAR 260 must hold, flown on the first clean roll). BUILD-28-e: written `Df_` (its ledges are
+ * planks he walks off, content floating), not `Dc_`: `Uc1^ Dc_` put 'c' on two neighbouring content nodes (checkCode V11, every roll); (3) n4 is `Pw1` (the pad pond's content is
  * water, 2-2's pads), and the dyke is `#soft@flood` (paddling depth, 2-8.md:36). */
-export const ARC_28: Record<string, string> = { 'flood-28-arc': 'A Pg1 Tw1:#soft@flood Pw1 Xf1 R Uc1^ /D Dc_ /L Pg1>:#soft@flood R F[P+|P] Pg1> R Pf1> R Sg1< E' };
+export const ARC_28: Record<string, string> = { 'flood-28-arc': 'A Pg1 Tw1:#soft@flood Pw1 Xf1 R Uc1^ /D Df_ /L Pg1>:#soft@flood R F[P+|P] Pg1> R Pf1> R Sg1< E' };
 
 /** the lesson 2-8 teaches: this water rises when he comes near, and it stays up */
 export const FLOOD_LESSON = 'flood-rise';
 
+/** 2-8's flood (World 2's row, its close and its flown leg RE-FLOWN at the LAID length: BUILD-28-e, reference/specs/sims/flood28.ts with
+ *  PRE 11,300 px, the laid turn-to-fork road, out/flood28-laid-<setting>.txt). The design's flight (3,400 px, tail-off 22.0 / 17.9 s) was
+ *  on a 2,000 px road; the laid road from the last cage to off the low road is 12,400-13,000 px (libstage 2-8, seeds 1-4), and the line's
+ *  prompt tail-off over 12,700 px is 70.9 s Normal, 58.3 s Easy (its rate is not the short road's: the dips' waits are a smaller share).
+ *  The close: one number on both settings (the design's form: Easy never harder), the Normal need (tail-off + 4 s) over every listed
+ *  seed's laid px, rounded up */
+export const FLOOD_28: typeof W2_FLOOD = { ...W2_FLOOD, close: { normal: 78, easy: 78 }, flown: { px: 12700, tailOff: { normal: 70.9, easy: 58.3 } } };
+
 /** 2-8's brief, all of it data (a rescue on two legs: 11 content nodes: ground 4, water 3, floating 2, climb 2: the steps and the drop
- *  column at the turn, the lead's box-3 ruling (2)); the flood clock */
+ *  column at the turn, the lead's box-3 ruling (2); BUILD-28-e: the column is floating, `Df_`, so climb 1 and floating 3); the flood clock */
 export const BRIEF_28: GraphBrief = {
   ends: 'quiet', trend: 'level', branching: 'none', teaches: [FLOOD_LESSON],
-  deal: { ground: 400 / 11, water: 300 / 11, floating: 200 / 11, climb: 200 / 11 }, dealExact: true,
-  tags: true, petals: 'few', flood: W2_FLOOD,
+  deal: { ground: 400 / 11, water: 300 / 11, floating: 300 / 11, climb: 100 / 11 }, dealExact: true,
+  tags: true, petals: 'few', flood: FLOOD_28,
 };
 
 /** the story keeper's lines for 2-8, verbatim (reference/story/lines-2-8.md, KEEPER-28, t-keeper-28@943984c2f). The only player words this
@@ -185,14 +194,16 @@ const steps: Lay = {
   pieces: [bank('a', null, 520), bank('b', 'a', 420, -45), bank('c', 'b', 420, -45), bank('d', 'c', 420, -45), bank('z', 'd', 400)],
   sockets: [cage('cage4', 'a', 0.6, 'duck'), tip('t-turn', 'a', 0.8, 'turn')],
 };
-/** [D c] beat 7, the drop column at the turn (the lead's box-3 ruling (2)): down two stepped ledges onto the dyke, 2-7's proven weir
+/** [D f] beat 7, the drop column at the turn (the lead's box-3 ruling (2)): down two stepped ledges onto the dyke, 2-7's proven weir
  *  geometry (w2Arc27.ts weir: each step walked off straight down onto the next, no gap: a gap in a column is a fall World 2's finish
  *  reads as a river with no bank). It parts the home leg from the out leg by legs.ts LEG_CLEAR; plain ledges (no column dress yet) */
 const drop: Lay = {
   pieces: [
     { key: 'a', shape: 'branch', w: [240, 260], place: { kind: 'start' } },
-    { key: 'b', shape: 'branch', w: [220, 250], place: { kind: 'walk', after: 'a', dy: [110, 150] }, landing: true },
-    { key: 'z', shape: 'branch', w: [220, 260], place: { kind: 'walk', after: 'b', dy: [110, 150] }, landing: true },
+    // (BUILD-28-e: THREE walk-offs, not 2-7's two: seed 4 parted the legs by 198 px on two (LEG_CLEAR 260); each step 110-130 as 2-7's)
+    { key: 'b', shape: 'branch', w: [220, 250], place: { kind: 'walk', after: 'a', dy: [110, 130] }, landing: true },
+    { key: 'c', shape: 'branch', w: [220, 250], place: { kind: 'walk', after: 'b', dy: [110, 130] }, landing: true },
+    { key: 'z', shape: 'branch', w: [220, 260], place: { kind: 'walk', after: 'c', dy: [110, 130] }, landing: true },
   ],
   sockets: [petal('pb', 'b', 0.5)],
 };
@@ -225,7 +236,7 @@ export const BEATS_28: SectionTemplate[] = [
   brick({ id: 'pads', name: 'the pad pond', jobs: ['practise'], difficulty: 2, content: 'water', uses: [FLOOD_LESSON], versions: [{ id: 'pond', lay: padPond }] }),
   brick({ id: 'island', name: 'the reed island', jobs: ['test'], difficulty: 4, content: 'floating', versions: [{ id: 'island', lay: island }] }),
   brick({ id: 'steps', name: 'the steps', jobs: ['climb'], difficulty: 2, content: 'climb', versions: [{ id: 'steps', lay: steps }] }),
-  brick({ id: 'drop', name: 'the drop to the dyke', jobs: ['descent'], difficulty: 2, content: 'climb', entry: 'ledge', exitDy: 260, versions: [{ id: 'steps', lay: drop }] }),
+  brick({ id: 'drop', name: 'the drop to the dyke', jobs: ['descent'], difficulty: 2, content: 'floating', entry: 'ledge', exitDy: 360, versions: [{ id: 'steps', lay: drop }] }),
   brick({ id: 'dyke', name: 'the dyke path', jobs: ['practise'], difficulty: 3, content: 'ground', uses: [FLOOD_LESSON], versions: [{ id: 'dyke', lay: dyke }] }),
   w2TwoRoad('w2-28-fork', 'fork'),
   brick({ id: 'reed-bank', name: 'the reed bank', jobs: ['practise'], difficulty: 2, content: 'ground', uses: [FLOOD_LESSON], versions: [{ id: 'reeds', lay: reedBank }] }),
