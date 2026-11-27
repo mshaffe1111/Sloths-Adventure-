@@ -101,7 +101,7 @@ that has its setup in the scene: the slowest animal in the forest, on the beat. 
    words (ask 3).
 4. **Old 2-9 rows the design makes false:** `hint.2-9.court` (dotLinesData.ts:170, "Kick one guard into the rest!": there is no row of
    guards) and `hint.2-9.guards` (:171, a second teach of the same guard, one tip one channel): retired. **Stay:** `hint.2-9.kick` (:156,
-   the posted guard's first-meeting teach, "Head-on he blocks. Kick him!"), `float.blocked` (:155), `way.2-9` (:187, true), the clue
+   the posted guard's first-meeting teach, "Head-on he blocks. Kick him!"), `float.blocked` (:155), `way.2-9` (dotLinesData.ts:167 both slots and wayside.ts:103, now "I bet Meeca admired the whole river out loud.", Pokey's thought in the first person: the keeper's fix (2)(a), t-story 6be229994), the clue
    (stageClue.ts:35).
 5. **The king's words:** none in 2-9 (ask 2): 2-10's "HALT!" is his entrance (STORY-REWRITE.md:258).
 

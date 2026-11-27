@@ -100,7 +100,7 @@ export const WAYSIDE: Record<number, WorldWay> = {
       6: pokey('half', 'Every house in the bank has a round door, and every door says PLEASE BE PATIENT. I\'m climbing past them very patiently.'),
       7: dotOn('post:letter:4', 'I asked the mailman for the time. He said, "Soon." I\'m going to hold him to that.'),
       8: petal('start', 'The river\'s rising. Gruntlewick, up on the bank, just reached that part.'),
-      9: pokey('start', 'Meeca came through here first. I bet she admired the whole river out loud.'),
+      9: pokey('start', 'I bet Meeca admired the whole river out loud.'),
     },
     hurt: [
       hDot('Take your time getting up. Everybody in this village would.'),

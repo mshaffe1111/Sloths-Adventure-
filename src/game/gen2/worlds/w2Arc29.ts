@@ -231,6 +231,10 @@ export function kitLib29(id: string = STAGE_29): WorldKit {
       required: {},
       tips: { ...M.tips, ...Object.fromEntries((Object.keys(LINES_29) as Array<keyof typeof LINES_29>).map((key) => [lineId29(key), LINES_29[key]])), ...(KICK_WORDS_29 ? { [KICK_29]: KICK_WORDS_29 } : {}) },
       teachTips: [...(M.teachTips ?? []), ...TEACH_29.map(lineId29)],
+      // (the stage's once-only story beat, by the speaker its line table names (lines-2-9.md:19: Dot, once, right after the king's roar
+      // at the twist): a story line on every help setting with the story switch on. As a plain tip Tips dropped it, Normal's default:
+      // storyTipScan, R-165.571, the form 2-1 uses, R-165.412)
+      storyTips: { ...(M.storyTips ?? {}), [lineId29('roar')]: 'Dot' },
       graphs: { ...G, list: [...G.list.filter((g) => g.archetype !== 'gauntlet'), ...Object.entries(ARC_29).map(([id, code]) => ({ id, archetype: 'gauntlet' as const, code }))], briefs: { ...G.briefs, [id]: BRIEF_29 } },
     } } as WorldKit;
 }

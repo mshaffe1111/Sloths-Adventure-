@@ -164,7 +164,7 @@ export const DOT_LINES: readonly DotLineRow[] = [
   ["way.2-6", "2-6", "wayside", "story", "Every house in the bank has a round door, and every door says PLEASE BE PATIENT. I'm climbing past them very patiently.", "PLEASE BE PATIENT, every door, every door, I'm being so patient, look.", null, null, null],
   ["way.2-7", "2-7", "wayside", "story", "I asked the mailman for the time. He said, \"Soon.\" I'm going to hold him to that.", "I asked the mailman the time. \"Soon.\" I'll hold him to it.", null, null, null],
   ["way.2-8", "2-8", "wayside", "story", "The river's rising. Gruntlewick, up on the bank, just reached that part.", "The river's rising. Gruntlewick, up on the bank, just reached that part.", null, null, null],
-  ["way.2-9", "2-9", "wayside", "story", "Meeca came through here first. I bet she admired the whole river out loud.", "Meeca came this way. Bet she admired the whole river out loud.", null, null, null],
+  ["way.2-9", "2-9", "wayside", "story", "I bet Meeca admired the whole river out loud.", "I bet Meeca admired the whole river out loud.", null, null, null],
   ["eng.watch.hide.fern", "3-2", "guide", "move", "Here it comes! Slide down inside a fern to hide", "Slide down in a fern to hide!", null, "slide-down", "nearest fern"],
   ["eng.watch.seen.fern", "3-2", "guide", "move", "It saw you! Get into a fern before it reaches you", "It saw you! Slide down in a fern!", null, "slide-down", "nearest fern"],
   ["hint.3-2.eyes", "3-2", "stage hint", "move", "Eyes in the dark! Slide down inside a fern to hide", "Eyes! Slide down in a fern to hide.", null, "slide-down", "nearest fern"],
