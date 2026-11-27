@@ -1,6 +1,8 @@
 # ENG-FORK28 REPORT (rule 26: the engine piece 2-8's build found missing). Started 6:17 PM ET 2026-11-26 (from the session hook date).
 
-## EXACT NEXT STEP (rewritten 7:08 PM ET from `date`; candidate 8fbdb72ac, its gates RUNNING in frozen trees)
+## EXACT NEXT STEP (rewritten 9:20 PM ET from `date`): LANDED. Candidate 8fbdb72ac on t-eng-fork28, every gate run, no red mine; the lead's
+next box (2-8's build) starts from it. Nothing open in this piece.
+## The gates of 8fbdb72ac (was: the next step while they ran)
 CANDIDATE 8fbdb72ac = 408679c3d's piece + POST_CODE's 'Fg1>' written 'Pg1>' (toyHome.ts:59, the comment corrected: "a practise of
 ground"; F is the fork letter). PROVEN byte-for-byte: the toy's laid stage, raw buildGen2Stage(homeKit('2-97', POST_CODE)) and after
 w2Finish, sha256 per seed, seeds 1-12 x Normal and Easy: all 24 equal on e878b1f45 (its 'Fg1>') and 8fbdb72ac ('Pg1>'), combined
@@ -15,7 +17,10 @@ tool line on cand/: [1] the engine tools' tests 437/435/1 (registrycheck.test, i
 PASS; [7] buildcheck: the first run RED (1-1 Normal p95 168 ms vs 150) while the base re-runs loaded the box; then base/ and cand/ back
 to back under one load: base p95 130 PASS, cand p95 123 PASS (a re-run, named as one: the lead weighs it; the piece does not touch a
 rolled graph's lay, 1-1's fork counts pinned by designedForks.test); kbdcheck PASS; seedlists 1-1..1-9, 2-1, 2-2, 2-3 PASS; the run
-was stopped at its 2-hour limit inside 2-4, so 2-4, 2-5, 2-7 were restarted (3 at once, cand/): RUNNING. 2-8 has no list. lockall --check: 101/102 unchanged, 2-8 the one
+was stopped at its 2-hour limit inside 2-4, so 2-4, 2-5, 2-7 were restarted (3 at once, cand/): 2-4 PASS, 2-5 PASS, 2-7 RED and
+INHERITED: 10 seeds (11, 12, 15, 17, 22 among them) x both settings "its replay differs from its search (platforms, vines, rivers,
+collectibles): rebuild the list", the SAME 20 lines word for word on base/ (e878b1f45). 2-8 has no list. Proposed: 2-7's list is the
+lead's to rebuild or route (not this piece: red on the base). lockall --check: 101/102 unchanged, 2-8 the one
 (an error on both heads). THE SUITE, 6 shards on 8fbdb72ac (tests/pass/fail): 1: 752/749/3; 2: 715/703/12; 3: 702/694/7 (todo 1);
 4: 656/647/7 (one a TODO, R-165.312); 5: 679/669/10; 6: 698/688/10. EVERY red is red on e878b1f45 too (each file re-run on base/, the
 red names compared): shard 1 chaseRespawnReal, pitPocket, stageSheets; shard 2 artUse, easyMode x4, harpy, levels x3, stageStart x2,
