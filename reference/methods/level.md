@@ -62,6 +62,16 @@ A level is DESIGNED by a person, then built as data, then PLAYED by the bots and
 - The snake: shy, 0.5 s rear, strikes where he WAS; every ending is the glide. Drop traps: `predator-kit.md`.
 - Petals on a landing go where the landing sets him (0.88 of the way); no stretch over 1,050 px without a socket petal, or the shared fill (petals.ts fillGaps) lays them on pit floors; a creaky limb can't hold a petal (flowerReach.ts:140) (BUILD-16c, 11-14).
 
+## World 2 notes (World 2's own)
+- Rule 4 on a timing window is judged in SECONDS, not as a share of the bar (the lead's ruling R1 on 2-9, 11-26): the player feels
+  time, and Easy's bar is stretched, so a share can read lower on Easy while its safe time is longer. 2-9's wide stones: Easy 2 in step
+  0.39 x 3.30 s = 1.29 s against Normal's 0.41 x 2.85 s = 1.17 s; the wave 2.11 s against 1.85 s. Easy's window in seconds is never
+  shorter than Normal's; a share is reported beside it, not judged. Check: the stage's snap/liana flights print both (2-9 flown/).
+- (Proposed by BUILD-29-e, for the lead to approve at the retro) A court liana's let-go on ONE needs 0.20 s early AND late on Normal (0.30 s on Easy) at every grip he can catch, flown on the engine
+  with the child's let-go (ENG-29 probes/oneMarginR.ts), not only on the model. On 2-9 the lock alone could not do it (0.88-0.92 left a
+  water hole at the twist's foot); the lianas' own length could (410 -> 365 px, both). Fly the neighbours on BOTH settings: pick the middle of
+  the band both pass, never an edge (Normal failed at 380 px, Easy's 0.60 s wait at 350).
+
 ## Learned, level by level
 | Level | Builder | Better or worse than the last level | Rule changed |
 |---|---|---|---|

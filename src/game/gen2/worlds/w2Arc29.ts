@@ -109,7 +109,11 @@ const rock = (key: string, on: string, at: number): SectionPiece => ({ key, shap
 const spring = (key: string, on: string, at: number): SectionPiece => ({ key, shape: 'bouncy', w: [70, 70], place: { kind: 'on', on, at: [at, at], h: [30, 30] } });
 const pond = (key: string, after: string, row: Pond29, w: number): SectionPiece => ({ key, shape: 'bank', w: [w, w], place: { kind: 'pads', after, row }, style: 'log', main: true, landing: true });
 const river = (key: string, after: string, row: Row29, w: number): SectionPiece => ({ key, shape: 'bank', w: [w, w], place: { kind: 'river', after, row }, style: 'log', main: true, landing: true });
-const liana = (key: string, after: string): SectionPiece => ({ key, shape: 'liana', w: [0, 0], place: { kind: 'swing', after, top: [410, 410], reach: [165, 165], len: [410, 410] } });
+/** a court liana, 365 px (both: beat 4's and the twist's). At 410 a let-go on ONE from the twist's foot (grip 0.95) dropped him between
+ *  the double river's logs on Normal at every lock 0.88-0.92 (the engine, the child's let-go), and G6's court judge (COURT_SAG) gave
+ *  beat 4 on Easy 0.07 s late. Flown (BUILD-29-e): the twist passes the engine on Normal at 340-370 (380: 0.17 s), Easy's 0.60 s wait
+ *  at 355-370 (350: 0.63 s); beat 4 passes the judge at 340-395 (410 fails Easy). qa-reports/BUILD-29/flown/court365-*.txt */
+const liana = (key: string, after: string, len = 365): SectionPiece => ({ key, shape: 'liana', w: [0, 0], place: { kind: 'swing', after, top: [410, 410], reach: [165, 165], len: [len, len] } });
 const wheel = (key: string, after: string, row: keyof typeof WHEELS_29, w: number): SectionPiece => ({ key, shape: 'branch', w: [w, w], place: { kind: 'wheel', after, row }, main: true, landing: true });
 const SNAP_PATCH = 150;
 const snapperGround = (k: string, after: string): SectionPiece[] => [bank(`${k}-in`, after, SNAP_PATCH), bank(k, `${k}-in`, SNAP_PATCH), bank(`${k}-out`, k, SNAP_PATCH)];
