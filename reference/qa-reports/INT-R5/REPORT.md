@@ -1,6 +1,20 @@
 # INT-R5 REPORT: release 5 (0.10.4) candidate, release-0.10.4 (packet reference/packets/2026-11-26/INT-R5.md)
 
-## EXACT NEXT STEP for INT-R5-d (written 11:16 AM ET 11-27 by `date`; box 3, INT-R5-c; supersedes box 2's 10:28 step below)
+## EXACT NEXT STEP (written 11:59 AM ET 11-27 by `date`; box 3, INT-R5-c; supersedes the 11:16 step below)
+**THE FROZEN HEAD is c9770adb2** (release-0.10.4): fixes 2-4 (fc31f6e1f, 581e7198b, a323cdf97, f506a2068) + the soil merge 3dece8b3b
+(origin/t-soil-ease 826a437e4, the lead's landed hash; fix df06d9753; NO conflicts; 16 files) + INT-R5-b's docs-only eb475c965. tsc clean
+after the merge. Frozen in INT-R5-c's container: /home/user/wt/c3 (chattr src tools .github; src/game/gen2/proven writable); main base
+/home/user/wt/main (4bf2cbaaa); the lock's second base /home/user/wt/pre = eb475c965 (release-0.10.4's head before the merge, code =
+56a197f2b); results /home/user/wt/out-c3; lanes from a copy of r104 (run1.sh now also has lockpre/lockvspre).
+1. **THE FULL SET is RUNNING on c9770adb2**, ten lanes: A1 suite1-2 | A2 suite3-4 | A3 suite5-6 | T toolline | B seedlists seed11 shardplan
+   registrycheck | P pinwide | C tsc vitebuild chunkcheck artcheck knowncheck generalitycheck coveragecheck roadmapcheck timecheck
+   drawcheck kbdcheck buildstore validate world1 | D lockbase lockall (vs main) lockpre lockvspre (vs eb475c965: expect 102/102 unchanged,
+   the soil is draw-only) paint0-2 | E1 tipwalk storytipscan teachfirst castbots26 funcheck fundiff | E2 castbots27 tierbots.
+2. When every lane is done: buildcheck ALONE (a FAIL gets 2 re-runs alone, all reported; 2 of 3 = red), then clipcheck ALONE. Then the test
+   link PRE-BUILT in its own worktree of c9770adb2 (python3 tools/testlink/build.py), not published. The gate table with each shard's
+   totals, the lock counts lines, depthSteps shrunk (108 -> 0), funcheck 22 = the accepted set (fundiff), the §6 table. STOP before the PR.
+
+## Box 3's earlier step (written 11:16 AM ET 11-27 by `date`; box 3, INT-R5-c; supersedes box 2's 10:28 step below)
 release-0.10.4 now holds ALL of fixes 2-4 on top of 59f5f1930 (code = ab5673531): fc31f6e1f (goalsEasy), 581e7198b (2-6's view line),
 a323cdf97 (wheelStepOff re-planted), f506a2068 (wheelBoard re-planted). tsc clean after each; each changed test passes alone (goalsEasy 3,
 w2Arc26 5, wheelStepOff 2, wheelBoard 4) and storyTipScan --check is 0 dropped. **The CI tool line has NOT run on these yet** (46 files,
