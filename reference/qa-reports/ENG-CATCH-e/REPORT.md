@@ -5,8 +5,11 @@ Candidate 18a353e4a = ENG-CATCH-d's 6d296c1b7 + this box (bc94dab78 guarantee, a
 by hash: t-eng-w3's head when this box started, D159). Sent to the lead and KIT-W3a-e. tsc 0; generalitycheck PASS (26 literals, 26 known).
 RUNNING past the box (the SAME frozen candidate only, D138), logs in this session's scratchpad:
 - PROOF on wt-try (frozen: bricks de6feebff, byte-identical to t-kit-w3a 39a3c5b52 / 2a18464da's, the FINAL pieces; tower.ts and pipeline.ts
-  byte-identical to 18a353e4a's), seeds 1-40 x both, probe.mts: chains (all five, then cap-down), (shelf-hops, then two-roots),
-  (cap-steps, then root-down). proof-*.log.
+  byte-identical to 18a353e4a's), seeds 1-40 x both, probe/proof.mts here (probe.mts + every refusal COUNTED and NAMED as it is made, a
+  'name' setter on TowerRefusal's prototype, no engine change; LEAK = a down verdict line in a returned stage): chains (all five, then
+  cap-down), (shelf-hops, then two-roots), (cap-steps, then root-down). proof-<config>.log; line 1 is the counts line. Seed 11 alone, all
+  five: ok 2/2, refusals 2 in 2 builds (Normal's search refused the e11 shape on Easy's lay, the next roll clean), leaks 0.
+- CI tool line on wt-cand (ciline.log).
 - LOCK run 1: `lockall.ts --layouts 16 --out base.json` on 51ef0c6ab (wt-base). lock-base.log.
 Next:
 1. ReadNotifications. Read each proof's first line and its reds. The bar: NO roll in any config ends with a tower miss that is not a
