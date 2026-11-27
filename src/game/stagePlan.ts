@@ -214,6 +214,8 @@ export function goalLine(kind: 'start' | 'late' | 'sealed', world: number, type:
   const g = GOAL_WORDS(world, type);
   if (!g) return '';
   const noun = n === 1 ? g.one : g.many;
+  const fixed = kind !== 'sealed' ? GOAL_LINES[`${world}:${type}`]?.[kind] : undefined;
+  if (fixed) return fixed.replace('{n}', String(n)).replace(g.many, noun);
   if (kind === 'start') return `${g.verb} ${n} ${noun} to open the sanctuary`;
   if (kind === 'late') return `Still ${n} ${noun} to ${g.verb.toLowerCase()} before the sanctuary opens`;
   return `Sealed: ${g.verb.toLowerCase()} ${n} more ${noun} to open it`;
@@ -231,6 +233,14 @@ export const SEALED_LINES: Readonly<Record<string, string>> = {
   '1:gauntlet': 'We passed some of her petals. Back we creep!',
   // (World 2's only purge is 2-5: the story keeper's line 8, reference/story/lines-2-5.md, w2Arc25.ts SEALED_25; nobody is hurt in World 2)
   '2:purge': 'Some snappers are still back there. Send them home!',
+  // (World 2's only gauntlet is 2-9: the story keeper's `sealed`, reference/story/lines-2-9.md, w2Arc29.ts LINES_29.sealed)
+  '2:gauntlet': 'Snappers still on the court! Back we go!',
+};
+/** Dot's goal lines, 'start' and 'late', by world and goal, where the story keeper wrote them in place of goalLine's ({n} the live count,
+ *  the noun said once at n = 1). World 2's only gauntlet is 2-9: reference/story/lines-2-9.md `goalStart` / `goalLate` (the template's
+ *  'late' is 10 words, over the box's 10), held equal to w2Arc29.ts LINES_29 by w2Arc29.test.ts */
+const GOAL_LINES: Readonly<Record<string, { start: string; late: string }>> = {
+  '2:gauntlet': { start: 'Chase off {n} snappers to open the sanctuary', late: 'Still {n} snappers to chase off' },
 };
 export const sealedLine = (world: number, type: string): string | null => SEALED_LINES[`${world}:${type}`] ?? null;
 /** a world whose purge animals are only chased off, never beaten (World 2: nobody is hurt; the story keeper's conflicts 1 and 4, KEEPER-25):
@@ -251,7 +261,8 @@ function GOAL_WORDS(world: number, type: string): { verb: string; one: string; m
   if (type === 'gauntlet' && world === 4) return { verb: 'Defeat', one: 'guard', many: 'guards' };
   // (World 2's purge, 2-5: nobody is hurt in World 2, the snappers are only chased off (the story keeper's conflict 1, KEEPER-25))
   const own = PURGE_WORDS[world];
-  if (type === 'purge' && own) return { verb: 'Chase off', one: own[0], many: own[1] };
+  // (and its gauntlet, 2-9's court: the snappers are chased off there too, the story keeper's lines-2-9.md)
+  if ((type === 'purge' || type === 'gauntlet') && own) return { verb: 'Chase off', one: own[0], many: own[1] };
   if (type === 'purge' || type === 'gauntlet') return { verb: 'Defeat', one: 'predator', many: 'predators' };
   if (type === 'rescue') return { verb: 'Free', one: 'animal', many: 'animals' };
   return null;
@@ -263,7 +274,8 @@ export function countWord(world: number, type: string): string {
   if (type === 'relic_hunt') return ({ 1: 'marks', 3: 'keepsakes', 5: 'messages', 9: 'threads' } as Record<number, string>)[world] ?? 'relics';
   // (4-9 The Aerie: the capuchin guards the wind blows off their ledges)
   if (type === 'gauntlet' && world === 4) return 'guards';
-  if (type === 'purge' && PURGE_WORDS[world]) return PURGE_WORDS[world][1];
+  // (World 2's gauntlet, 2-9, counts its snappers: the story keeper's countWord, lines-2-9.md)
+  if ((type === 'purge' || type === 'gauntlet') && PURGE_WORDS[world]) return PURGE_WORDS[world][1];
   if (type === 'purge' || type === 'gauntlet') return 'predators';
   if (type === 'rescue') return 'animals freed';
   return '';

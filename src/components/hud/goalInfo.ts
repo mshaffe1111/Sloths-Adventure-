@@ -65,6 +65,8 @@ function words(world: number, type: string): { verb: string; one: string; many: 
     return { verb: 'find', one: w[0], many: w[1] };
   }
   if (type === 'gauntlet' && world === 4) return { verb: 'beat', one: 'guard', many: 'guards' };
+  // (World 2's gauntlet, 2-9's court: nobody is hurt in World 2, its snappers are chased off, as stagePlan.ts GOAL_WORDS says)
+  if (type === 'gauntlet' && purgeNoun(world, 2)) return { verb: 'chase off', one: purgeNoun(world, 1)!, many: purgeNoun(world, 2)! };
   if (type === 'purge' || type === 'gauntlet') return { verb: 'beat', one: 'predator', many: 'predators' };
   if (type === 'rescue') return { verb: 'free', one: 'animal', many: 'animals' };
   return null;

@@ -61,7 +61,9 @@ export const LINES_29 = {
  *  chase off 5; no top-up (it seated snappers on the drum's teach and under higher floors); Easy easyMode's share */
 export const GOAL_29 = 5;
 export const MISSION_29 = "Dance to the king's drum, chase off his snappers, reach the shrine.";
-export const DRUM_CARD_29 = 'Crocodiles signal by slapping their heads on water. This king prefers drums.';
+/** the journal card (the story keeper's `drumCard`, lines-2-9.md ask 5): held as 2-3's HERON_CARD_23 is, until the lead rules its picture
+ *  (a road card needs its own painted art, journal.test.ts; or a journal page beside 2-4's kapok) */
+export const DRUM_CARD_29 = { name: "The King's Drum", tip: 'Crocodiles signal by slapping their heads on water. This king prefers drums.' } as const;
 export const lineId29 = (line: keyof typeof LINES_29): string => `w29.${line}`;
 /** the teach lines (said on the first meeting, never waiting out Dot's calm gap) */
 export const TEACH_29 = ['drum'] as const;
@@ -155,7 +157,7 @@ const logsOnBeat: Lay = { pieces: [bank('a', null, 360), river('c', 'a', 'court2
 /** [P f1>] beat 3, pads on the beat: five small weight pads at the run pitch, splash-back */
 const padsOnBeat: Lay = { pieces: [bank('a', null, 360), pond('c', 'a', 'pads29', 340), bank('z', 'c', 300)], sockets: [petal('pz', 'z', 0.5)] };
 /** [X r1>] beat 4, let go on ONE: 2-4's liana over a splash-back court river, locked to the bar; the flag before */
-const letGoOnOne: Lay = { pieces: [bank('a', null, 420), rock('ra', 'a', 0.5), bank('b', 'a', 400), liana('l', 'b'), river('c', 'l', 'court', 340), rock('rc', 'c', 0.15), bank('z', 'c', 300)], sockets: [flag('a')] };
+const letGoOnOne: Lay = { pieces: [bank('a', null, 420), rock('ra', 'a', 0.5), bank('b', 'a', 400), liana('l', 'b'), river('c', 'l', 'court', 340), bank('z', 'c', 300), rock('rc', 'z', 0.5)], sockets: [flag('a')] };
 /** [P p1&>] beat 5, the snappers: TWO in step (go on ONE; TWO forgiven), then the snappers on the court's jaws */
 const snappers = (easy: boolean): Lay => ({
   pieces: [bank('a', null, 360), pond('c', 'a', easy ? 'two29e' : 'two29', 340), bank('m', 'c', 300), ...snapperGround('s1', 'm'), bank('n', 's1-out', 240), ...snapperGround('s2', 'n'), bank('o', 's2-out', 240), ...snapperGround('s3', 'o'), bank('z', 's3-out', 300)],
@@ -163,7 +165,7 @@ const snappers = (easy: boolean): Lay => ({
 });
 /** [W r1>] beat 6, the TWIST: the king's roar (Dot's `roar` on the rest bank before), a liana over the `double` river (deep); the flag
  *  before. The drum's doubling is NOT laid (G1, ENG-29-e) */
-const twist: Lay = { pieces: [bank('a', null, 420), rock('ra', 'a', 0.5), bank('b', 'a', 400), liana('l', 'b'), river('c', 'l', 'double29', 340), rock('rc', 'c', 0.15), bank('z', 'c', 300)], sockets: [flag('a'), tip('t-roar', 'b', 0.2, 'roar')] };
+const twist: Lay = { pieces: [bank('a', null, 420), rock('ra', 'a', 0.5), bank('b', 'a', 400), liana('l', 'b'), river('c', 'l', 'double29', 340), bank('z', 'c', 300), rock('rc', 'z', 0.5)], sockets: [flag('a'), tip('t-roar', 'b', 0.2, 'roar')] };
 /** [U c^<] beat 7, up the terrace: the court wheel, one bucket a bar, a street IN over the top */
 const terrace: Lay = { pieces: [bank('a', null, 300), wheel('z', 'a', 'court', 300)], sockets: [] };
 /** [C p1&>] beat 8, the grand dance: the wave (Easy two pairs), a court log (deep), two snappers; the flag before */

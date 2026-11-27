@@ -136,6 +136,7 @@ export const REMINDS_OF: Readonly<Record<string, string>> = {
   'Hide! Into a bush!': 'watcher',
   // World 2
   'hint.2-8.deep': 'lesson:water',
+  'hint.2-9.kick': 'spearGuard',
   // World 3
   'hint.3-2.dark': 'dark',
   'hint.3-2.fern': 'eyes',

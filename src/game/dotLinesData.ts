@@ -145,6 +145,7 @@ export const DOT_LINES: readonly DotLineRow[] = [
   ["hint.2-6.climb", "2-6", "stage hint", "move", "Up through the village! Slide up a post to climb", "Up through the village! Slide up a post.", null, "climb-up", "post"],
   ["hint.2-8.post", "2-8", "stage hint", "move", "One is up the post. Climb above the water!", "One's up the post. Slide up to climb!", null, "climb-up", "post"],
   ["float.blocked", "2-9", "float", "move", "BLOCKED! GET BEHIND HIM, OR KICK HIM", "BLOCKED! KICK, OR GET BEHIND HIM", null, "flick-side", "guard"],
+  ["hint.2-9.kick", "2-9", "stage hint", "move", "Head-on he blocks. Kick him!", "Head-on he blocks. Flick sideways to kick!", null, "flick-side", "guard"],
   ["float.logs", "2-1", "float", "info", "LOGS DRIFT! HOP ON AND RIDE", null, null, null, null],
   ["hint.2-2.pads", "2-2", "stage hint", "info", "Hop the lily pads. The flowers show the way.", "Hop the lily pads. The petals show the way.", null, null, "lily pads"],
   ["eng.flood", "2-8", "guide", "info", "The water is rising! Free them and get back to the bank!", "The water's rising!", null, null, "river bank"],
