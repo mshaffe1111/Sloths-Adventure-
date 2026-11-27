@@ -30,7 +30,7 @@ import { CLIMB_CLEAR, climbX } from '../vineTop.ts';
 import { LAND_IN, repairLandings } from './landings.ts';
 import { findW1Pits } from '../w1Pits.ts';
 import type { Drop, JudgedStage } from './verdicts.types.ts';
-import { SWING_CAM, SWING_SEEN } from '../cameraFollow.ts';
+import { AHEAD, landingAhead, SWING_CAM, SWING_SEEN } from '../cameraFollow.ts';
 import { CHAIN, chainPhase, chainWindow, DOUBLE_RISE, forwardEndLands, JUMP_RISE, LETGO_FLIGHTS, PHYS, pressWindow, reachGlide, reachJump, SWING, SWING_CLEAR, swingClearance, swingReach, TAKEOFF_SLACK, vineAmp, WALL_H, type AirBody, type SwingVine } from '../physics.ts';
 import { bounceReusedAt, comboGuaranteedAt, missionOf, skillGuaranteedAt } from '../skills.ts';
 import { SHRINE_STOP } from '../rules.ts';
@@ -1753,12 +1753,38 @@ export function layLocal(tpl: SectionTemplate, budget: StageBudget, rng: Rng, mi
 }
 
 /** everything pass 3 hands on */
+/** a designed drop's laid fall may differ from what it declares by the roll's tempo (dy x T.rise: a 400 px drop lays 392-407 px) */
+const DROP_TOL = 12;
+/** how far past the lip a walk-off off a designed drop comes down (about 140 px in, w3Noise's toy), with a margin: the fall's column */
+export const DROP_LAND = 180;
+/**
+ * A designed drop as laid (ENG-DROP, R-165.562): undefined when its landing is in view before the fall, else why not, by name. In view:
+ * the fall is within what the camera shows under him (AHEAD.down), no wood lies across the fall from the lip to DROP_LAND past the
+ * landing's near end, and the camera's own look from the lip (cameraFollow.ts landingAhead, the code the screen runs) finds the landing.
+ */
+export function dropSeen(top: Platform, floor: Platform, platforms: readonly Platform[]): string | undefined {
+  const f = floor.x + floor.width / 2 >= top.x + top.width / 2 ? 1 : -1;
+  const lip = f > 0 ? top.x + top.width : top.x;
+  const fall = Math.round(floor.y - top.y);
+  if (fall > AHEAD.down) return `falls ${fall} px, past what the view shows under him (${AHEAD.down} px): a blind drop`;
+  const near = f > 0 ? floor.x : floor.x + floor.width;
+  const [lo, hi] = f > 0 ? [lip, Math.max(lip, near) + DROP_LAND] : [Math.min(lip, near) - DROP_LAND, lip];
+  const across = platforms.find((p) => p !== top && p !== floor && p.width > 0 && p.y > top.y + 2 && p.y < floor.y - 2 && p.x < hi && p.x + p.width > lo);
+  if (across) return `has wood across its fall (x ${Math.round(across.x)}-${Math.round(across.x + across.width)} at y ${Math.round(across.y)}): he lands on that, not the drop`;
+  const seen = landingAhead(lip - f * 20, f, top, platforms);
+  if (!seen || seen.y1 - 4 !== floor.y) return `is not what the view looks to from its lip (${seen ? `it looks to y ${Math.round(seen.y1 - 4)}` : 'it looks to nothing'})`;
+  return undefined;
+}
+
 export interface Laid {
   sections: PlacedSection[];
   /** a rolled graph's required sections that found no node, and why: the roll fails */
   missing?: string[];
   /** a rolled graph's sections whose laid exit left the corridor (a version that ends far from its declared exitDy): swapped */
   strays?: Array<{ uid: string; y: number }>;
+  /** its designed drops (SectionTemplate.drop) as laid: each judged in view on the finished stage (checkAndRepair, dropSeen); a miss is
+   *  swapped by name, never laid blind (ENG-DROP) */
+  drops?: Array<{ uid: string; id: string; px: number; top: Platform; floor: Platform }>;
   /** pieces the world's settle could not keep on their ground (WorldKit.settle): the section each lies in, and where: swapped */
   unsettled?: Array<{ uid: string; x: number }>;
   /** V19's late rise as laid: each mustRise node, the height it had to end above (minus 20 px) and where it ended */
@@ -2104,6 +2130,8 @@ export function layStage(budget: StageBudget, graph: MissionGraph, kit: WorldKit
   let frame: Frame = { x0: 0, x1: TW };
   let floorAt = M.ground.y;
   let gy = M.ground.y, ctop = M.corridor.top, cbot = M.corridor.bottom;
+  /** the designed drops laid (SectionTemplate.drop): each judged in view once the stage is laid (dropSeen) */
+  const drops: Array<{ uid: string; id: string; px: number; top: Platform; floor: Platform }> = [];
   // (a bank aloft in a tower is a slab, never a column down through the storeys under it; on an ascent's floor it is ground as ever)
   const slab = (y: number) => tower && !(flow === 'up' && y >= floorAt - 1);
   const tagged = !!M.graphs?.briefs?.[budget.id]?.tags;
@@ -2362,8 +2390,14 @@ export function layStage(budget: StageBudget, graph: MissionGraph, kit: WorldKit
   const needsRise = (n: MissionNode) => upStage && (!!n.mustRise || (endHigh && n.job === 'signature' && descentY === undefined));
   /** where the next section enters: the join clamps it into the corridor */
   const entryY = () => Math.max(ctop, Math.min(cbot, cur.y));
+  /** a DESIGNED drop (SectionTemplate.drop) the run lay may lay past the corridor's floor: on a run, its fall within what the view shows
+   *  under him (cameraFollow.ts AHEAD.down), and its exit as laid the drop it declares. Its landing is then the run's ground
+   *  (below); whether the landing is really in view is judged on the laid stage (dropSeen), and a miss is swapped by name */
+  const dropsPast = (t: SectionTemplate) => !tower && t.drop !== undefined && t.drop <= AHEAD.down && Math.abs(exitDyOf(t) - t.drop) <= DROP_TOL;
   const fits = (t: SectionTemplate, n: MissionNode, i: number, loose: 0 | 1 | 2 | 3 = 0) =>
     jobFits(t, n, loose) &&
+    // (a designed drop is never laid in a tower: a way down drops no more than TOWER.see, and its storeys are the tower's own)
+    (t.drop === undefined || !tower) &&
     (!n.mustRise || loose >= 2 || exitDyOf(t) < 0) &&
     // (V19 and V19b on an up stage, 11-06: the node after a late descent (or, with none, the signature) ends higher than both where the
     // descent began and where the bough window begins, 20 px clear; rising at all was weaker than the line, and stage.ts's V19 / V19b failed on Roll A. Nothing that fits: the slot
@@ -2454,7 +2488,7 @@ export function layStage(budget: StageBudget, graph: MissionGraph, kit: WorldKit
       const endY = Math.max(ctop, Math.min(cbot, cur.y)) + exitDyOf(t);
       // (on a rolled graph a required section stands in its own reward node, the key's H, by its phase, window and uses)
       const reqFits = n.job ? n.job === 'reward' && fits(t, n, i, 2) : fits(t, n, i);
-      if (!placedReq.has(r.section) && (!r.phase || r.phase === n.phase) && reqFits && (tower || (endY >= ctop && endY <= cbot))) return t;
+      if (!placedReq.has(r.section) && (!r.phase || r.phase === n.phase) && reqFits && (tower || (endY >= ctop && (endY <= cbot || dropsPast(t))))) return t;
     }
     // (a required section is never drawn by weight: it comes once, where the plan puts it)
     let cands = M.sections.filter((t) => fits(t, n, i) && !must.some((r) => r.section === t.id));
@@ -2502,7 +2536,7 @@ export function layStage(budget: StageBudget, graph: MissionGraph, kit: WorldKit
       // (the corridor clamp, Part 3 §1: near the top lean to sections that go down, near the bottom to ones that go up; one that
       // would leave the corridor is never picked)
       const endY = cur.y + exitDyOf(t);
-      if (!tower && (endY < room.top || endY > room.bottom)) return 0;
+      if (!tower && (endY < room.top || (endY > room.bottom && !dropsPast(t)))) return 0;
       const ed = exitDyOf(t);
       if (lean !== 0) w *= Math.sign(ed) === lean ? 3 : ed === 0 ? 1 : 0.3;
       // (a level stage, GraphBrief.trend: the route swings round the height it began at. Past LEVEL_SWING px from it the way back is
@@ -3063,7 +3097,7 @@ export function layStage(budget: StageBudget, graph: MissionGraph, kit: WorldKit
       }
       secs += placed.seconds;
       sections.push(placed);
-      if (routed && !tower) corridorOf.set(placed.uid, [ctop, cbot]);
+      if (!tower) corridorOf.set(placed.uid, [ctop, cbot]);
       if (M.creak && tpl.teaches === M.creak.lesson) creakTaught = true;
       // (a slot filled past its rule keeps its note with the plan, so a kept slot still says so)
       const loose = fixed ? fixed.loose : lastLoose;
@@ -3074,6 +3108,16 @@ export function layStage(budget: StageBudget, graph: MissionGraph, kit: WorldKit
       if (tpl.teaches) taught.add(tpl.teaches);
       const exitP = pieceOf(L.exit.piece);
       cur = { x: ox + L.exit.x, y: oy + L.exit.y, kind: L.exit.kind, piece: exitP };
+      // (a DESIGNED drop, SectionTemplate.drop: its landing is the run's ground from here, the corridor and the banks' foot measured from
+      // it, as a run leg's are from where it begins; its own exit is judged in that corridor. Its view is judged once all is laid)
+      if (!tower && tpl.drop !== undefined) {
+        gy = cur.y;
+        ctop = gy - (M.ground.y - M.corridor.top);
+        cbot = gy + (M.corridor.bottom - M.ground.y);
+        baseline = cbot + M.ground.bankH;
+        corridorOf.set(placed.uid, [ctop, cbot]);
+        drops.push({ uid: placed.uid, id: tpl.id, px: tpl.drop, top: pieceOf(tpl.entry.piece), floor: exitP });
+      }
       // (a safe start, M.safeStart: the runway and the start section's ground, unbroken from the spawn; a plain bank after the start
       // for what they leave short, so the next section's first gap or animal is past it)
       if (!tower && n.phase === 'start' && M.safeStart && cur.kind === 'ground') {
@@ -3201,7 +3245,7 @@ export function layStage(budget: StageBudget, graph: MissionGraph, kit: WorldKit
   // (a stage of legs: each run leg's sections against the corridor at that leg's own ground; a column has no corridor)
   const strays = !graph.id ? [] : routed
     ? sections.filter((q) => { const c = corridorOf.get(q.uid); return !!c && (q.exit.y < c[0] - 20 || q.exit.y > c[1] + 20); }).map((q) => ({ uid: q.uid, y: Math.round(q.exit.y) }))
-    : !tower ? sections.filter((q) => q.exit.y < ctop - 20 || q.exit.y > cbot + 20).map((q) => ({ uid: q.uid, y: Math.round(q.exit.y) })) : [];
+    : !tower ? sections.filter((q) => { const c = corridorOf.get(q.uid) ?? [ctop, cbot]; return q.exit.y < c[0] - 20 || q.exit.y > c[1] + 20; }).map((q) => ({ uid: q.uid, y: Math.round(q.exit.y) })) : [];
   let shiftedDown = 0;
   // (a rolled graph's stage that climbs above the camera's reach is moved down whole: the camera never scrolls above y 0, so its highest
   // platform, vine, rope or socket is brought to CAMERA_TOP, where the shipped stages keep theirs (290-335 px), with room for a pickup
@@ -3276,6 +3320,7 @@ export function layStage(budget: StageBudget, graph: MissionGraph, kit: WorldKit
     ...(unsettled.length ? { unsettled } : {}),
     ...(blocks.length ? { blocks } : {}),
     ...(strays.length ? { strays } : {}),
+    ...(drops.length ? { drops } : {}),
     ...(plan.some((p) => p.loose) ? { loosened: plan.flatMap((p, k) => (p.loose ? [`slot ${k + 1} (${p.loose})`] : [])) } : {}),
     plan,
     platforms,
@@ -4422,6 +4467,12 @@ export function checkAndRepair(b: Built, budget: StageBudget, repairs: Repair[],
   // (and one whose laid exit left the corridor: the way on is lost past it, whichever section comes next)
   const stray = b.laid.strays?.[0];
   if (stray) return { ok: false, swap: Number(stray.uid.slice(1)) - 1, why: `its exit at y ${stray.y} is outside the corridor` };
+  // (and a designed drop not in view on the finished stage (its landing from its lip, nothing across its fall): swapped by name, never
+  // laid blind, ENG-DROP; judged here, once every piece is laid, as the camera will see it)
+  for (const d of b.laid.drops ?? []) {
+    const why = dropSeen(d.top, d.floor, st.platforms);
+    if (why) return { ok: false, swap: Number(d.uid.slice(1)) - 1, why: `${d.id}: its designed drop of ${d.px} px ${why}` };
+  }
   // (R-165.226: a stone no piece and no move keeps on its ground: its section is swapped)
   const loose = b.laid.unsettled?.[0];
   if (loose) return { ok: false, swap: Number(loose.uid.slice(1)) - 1, why: `a stone at x ${loose.x} is drawn past its ground's lip` };

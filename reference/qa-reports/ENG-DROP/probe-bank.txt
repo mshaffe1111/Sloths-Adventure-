@@ -1,0 +1,6 @@
+3-2 normal (drop declared): clean 39/40, toy laid 33/40, laid+clean 33/40, laid in view (dropSeen) 28/33
+  5 x final stage not in view: no top found
+  1 x THROW gen# #-#: no section fits node n# (ketsu): the pool is spent (# that fit are laid already, slot #)
+3-2 easy (drop declared): clean 39/40, toy laid 33/40, laid+clean 33/40, laid in view (dropSeen) 28/33
+  5 x final stage not in view: no top found
+  1 x THROW gen# #-#: no section fits node n# (ketsu): the pool is spent (# that fit are laid already, slot #)
