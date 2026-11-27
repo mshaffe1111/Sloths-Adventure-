@@ -55,6 +55,11 @@ t-keeper-3x (no force); the hash and the changed lines verbatim to the lead.
 puzzleCamera's leave-the-room test on t-build-29 (93562b80b): walking out left of the kit's bell room at 390x844 the camera jumps 54 px in y in
 ONE frame (the bar is 24). Ease the camera out of a puzzle room under the bar at every phone size (upright and sideways); the test green by the
 fix with a planted red; lockall --check (no listed stage moves); land on t-eng-29; the hash to BUILD-29's current session.
+ADDED 11-27 10:35 AM ET (BUILD-28-i, 31451e6be on t-build-28-wip): puzzleCamera's NEW gate-less-bell moment FAILS UPRIGHT on 2-9's gallery1:
+at 390x844 (zoom 0.938, view x 8279-8695, Pokey 8470) and 360x740 (zoom 0.822, view 8268-8706) guard:9 (8740-8772) and guard:10 (8960-8992)
+are out of view when he rings the bell; sideways 844x390 frames them all. The camera frames the bell AND every guard it calls, upright, at
+every phone size (the moment as puzzleCamera now writes it). ONE lane with the leave-the-room jump: both are puzzleCamera; proof = puzzleCamera.test
+GREEN on t-build-28-wip's moments and t-build-29's 2-9, plants red. Effort high; the lock as two runs (CI #100).
 
 ## NEW 11-27 10:00 AM ET: ART-W3, today's list (packets/2026-11-25/ART-W3.md's rules; these lines win; R-165.507, R-165.533)
 Art (core tier), Opus 5.5 high, started in the HUGGING FACE environment. HF cap $12 for this job (balance about $50 at the last check; keep $10
