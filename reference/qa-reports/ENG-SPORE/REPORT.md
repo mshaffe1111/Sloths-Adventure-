@@ -7,8 +7,9 @@ reference/qa-reports/ENG-DARK/LOCK-1-4-INTENDED.md from bbcc1513c (docs only). N
 DONE on d653d3994 (frozen worktree, chattr -R +i src tools, src/game/gen2/proven writable, R-165.494): planted faults on a copy
 ALL 6 CAUGHT (plants-d653d3994.txt); sporeBots + dark + darkBots 58/58 GREEN (darkspore-d653d3994.txt: ENG-DARK's three reds fixed);
 generalitycheck PASS (26 literals, 26 known).
-RUNNING on the same frozen d653d3994 at hand-over (box 3 finishes and reports them; same candidate, D138): castBots 3-1 x40 (seeds 1-20,
-both, par 2) to compare row for row with c20's cast-3-1-x40-b8352246-lane1/-lane2 (no stage lays spore yet: expect 3-1 unmoved); the
+castBots 3-1 (seeds 1-20, both, par 2; cast-3-1-seeds1-20-d653d399.jsonl): 180/180 rows IDENTICAL to c20's cast-3-1-x40-b8352246-lane1
+(every field; 0 moved, 0 missing): 3-1 unmoved, as expected (no stage lays spore yet). Seeds 21-40 (c20's lane2) NOT run (budget; named).
+RUNNING on the same frozen d653d3994 at hand-over (box 3 finishes and reports them; same candidate, D138): the
 CI tool line (gates.yml:157); the suite in 6 shards (KID_RUNS_59 the only inherited red allowed, named); tierBots 9/9; lockall: base
 `--layouts 16 --out` on frozen a8bc662e5, then `--check` on d653d3994, ALL stages in one run (no --stages chunks: R-165.515), count the
 stages and builds (expect 102 / 3264), expect 0 moves (1-4's move is already in a8bc662e5's own lock).
