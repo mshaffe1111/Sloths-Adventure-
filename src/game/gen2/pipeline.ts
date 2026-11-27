@@ -4564,9 +4564,9 @@ export function tipBand(sec: Pick<PlacedSection, 'entry' | 'exit' | 'pieces' | '
  * descending stage's storeys share their x, and x alone said 1-4's teach lines 1,200-3,500 px of climb early.
  */
 /** the hint a socket tip is said by (its fill's x is the socket): a right-running one's `x`, a leftward one's `beforeX` (pipeline tips,
- *  TIP_LEFT_KEEP). Not a water warning: those stand at their lip, not at a socket */
-export function tipHintOf<H extends Pick<StageHint, 'x' | 'beforeX' | 'band' | 'warn'>>(hints: readonly H[], f: { x: number }): H | undefined {
-  return hints.find((q) => !q.warn && q.band && (q.beforeX ?? q.x) === f.x);
+ *  TIP_LEFT_KEEP). A tip laid as a warning (StageHint.warn, 1-8's nut) is found the same way */
+export function tipHintOf<H extends Pick<StageHint, 'x' | 'beforeX' | 'band'>>(hints: readonly H[], f: { x: number }): H | undefined {
+  return hints.find((q) => q.band && q.x === f.x) ?? hints.find((q) => q.band && q.beforeX === f.x);
 }
 
 export function tipReach(st: Pick<Gen2Stage, 'spawnX'> & { proto?: { hints?: readonly StageHint[] }; gen2: Pick<Gen2Stage['gen2'], 'fills' | 'tower'> }): Array<{ what: string; x: number; y: number; at: number; socket: number; early: number }> {
