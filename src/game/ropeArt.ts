@@ -160,11 +160,14 @@ export function drawRopes(
   for (const r of ropes) {
     // (a vine's trees stand back from its ends, their crowns over the tie: Rope.look)
     const vine = r.look === 'vine';
+    // (a root under a cave roof, look 'root': World 1's painted vine along the sag until World 3's painted root lands (ART-W3), with no
+    // tree and no post: both its ends go into the rock of the roof)
+    const root = r.look === 'root';
     const tk = vine ? trunkScale(r.y, Math.max(r.g0, r.g1)) : 0;
-    const side = vine ? TRUNK_TIE.back * tk : POST_W * 3;
+    const side = vine ? TRUNK_TIE.back * tk : root ? ROPE_THICK : POST_W * 3;
     if (flat && (m.a * (r.x1 + side) + m.e < 0 || m.a * (r.x0 - side) + m.e > W)) continue;
     // (or wholly above or below it: the post caps reach a little over the tie, the poles down to the ground)
-    if (flat && m.d > 0 && (m.d * (Math.max(r.g0, r.g1) + 20) + m.f < 0 || m.d * (r.y - (vine ? TRUNK_TIE.up * tk : 80)) + m.f > H)) continue;
+    if (flat && m.d > 0 && (m.d * (Math.max(r.g0, r.g1) + 20) + m.f < 0 || m.d * (r.y - (vine ? TRUNK_TIE.up * tk : root ? ROPE_THICK : 80)) + m.f > H)) continue;
     // the rope is only a rope to someone who has learned the skill; before that it is still drawn (it is part of the jungle)
     const n = Math.max(2, Math.ceil((r.x1 - r.x0) / SLICE));
     const pts = ropePts;
@@ -179,8 +182,9 @@ export function drawRopes(
       const i = pts.findIndex(([x]) => x > ld.x);
       if (i > 0) pts.splice(i, 0, [ld.x, ropeDrawY(r, ld.x, ld)]);
     }
-    const v = vine ? vineTile() : null;
-    if (v) {
+    const v = vine || root ? vineTile() : null;
+    if (v && root) layRope(ctx, v.src, pts, ROPE_THICK, v.tile);
+    else if (v) {
       // World 1's vine: the painted vine along the sag, then a living tree at each end, its leaves over the vine's tied end
       layRope(ctx, v.src, pts, ROPE_THICK, v.tile);
       // (a tree off to the side of the screen is skipped)
@@ -193,7 +197,7 @@ export function drawRopes(
       };
       if (treeOn(r.x0, r.g0, 1)) drawTrunk(ctx, r.x0, r.y, r.g0, 1);
       if (treeOn(r.x1, r.g1, -1)) drawTrunk(ctx, r.x1, r.y, r.g1, -1);
-    } else if (im && !vine) {
+    } else if (im && !vine && !root) {
       layRope(ctx, im, pts);
       // (a post off to the side of the screen is skipped)
       const postOn = (x: number) => !flat || (m.a * (x + POST_W * 3) + m.e >= 0 && m.a * (x - POST_W * 3) + m.e <= W);
@@ -201,7 +205,7 @@ export function drawRopes(
       if (postOn(r.x1)) paintedPost(ctx, im, r.x1, r.g1, r.y);
     } else {
       // (the painted pieces are still on their way: a plain rope (or vine) for a moment, so it never vanishes)
-      ctx.strokeStyle = vine ? '#7d8a36' : '#9a7656';
+      ctx.strokeStyle = vine || root ? '#7d8a36' : '#9a7656';
       ctx.lineWidth = ROPE_THICK * 0.8;
       ctx.lineCap = 'round';
       ctx.beginPath();

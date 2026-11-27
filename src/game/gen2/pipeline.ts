@@ -42,7 +42,7 @@ import type { GeneratedStage } from '../stageGenerator.ts';
 import { fastFloor, MODEL_FAST, MODEL_TYPICAL, modelStage, targetSeconds, TIME, walkSpeed, type ModelParams } from '../stageTime.ts';
 import type { Collectible, Enemy, LevelConfig, Platform, Rope, Vine } from '../types.ts';
 import { goalCountsPetals, heldEasyGoal } from '../goals.ts';
-import { ROPE_MIN_GAP, ROPE_OVERLAP, ROPE_RISE } from '../rope.ts';
+import { ROOT_SPEED, ROPE_MIN_GAP, ROPE_OVERLAP, ROPE_RISE } from '../rope.ts';
 import { layRiver, riverFaults, riverWidth } from './riverLay.ts';
 import { layPads, padFaults, padRowWidth, snapFaults, PAD_LAY } from './rideLay.ts';
 import { castDef } from '../predators/registry.ts';
@@ -55,7 +55,7 @@ import type { ClockDef } from '../stageKit.types.ts';
 import type { RiverZone } from '../river.ts';
 import { CRUMBLE_TILE_W, crumbleTime, keepsClear, tideCrossTime, type Zone } from '../zones.ts';
 import { sporeZoneOn } from './spore.ts';
-import { glowFlags } from './dark.ts';
+import { glowFlags, rootPatches } from './dark.ts';
 import { creakLimb, needless } from './creak.ts';
 import { layChase } from './chaseLay.ts';
 import { rollsOf } from './rollLay.ts';
@@ -749,6 +749,10 @@ function rolledGraph(budget: StageBudget, M: WorldManifest, seed: number): Missi
     for (const n of nodes) n.count = quiet(n) ? 1 : got[work.indexOf(n)];
   }
   const deal = dealContent(nodes, M, brief, budget, r, seed);
+  // (R-165.541: a node whose code writes a content letter is that letter's type, every slot of it, whatever its job: a signature sits
+  // outside the mix and was left untyped, so its slots took any kind its job holds and the ask named the miss. A letterless node stays
+  // free; a letter with no type (a Later block) is named by the asks)
+  for (const n of nodes) { const t = n.asked?.content ? TYPE_OF_LETTER[n.asked.content] : undefined; if (t) n.content = t; }
   // (the count was written after the type until the deal came to read it; a node's record keeps that order of fields, so the
   // stage lock's fingerprint of a built stage's graph is the one it always was)
   for (const n of nodes) if (n.count !== undefined) { const c = n.count; delete n.count; n.count = c; }
@@ -808,10 +812,10 @@ function poolFits(V: PoolView): (t: SectionTemplate, n: MissionNode, i: number) 
       if (n.job !== 'reward' || !t.phases.includes(n.phase)) return false;
     } else if (n.job === 'teach') {
       if (!(n.teaches ? t.teaches === n.teaches : !!t.teaches)) return false;
-      if (n.content && t.content && t.content !== n.content) return false;
+      if (!typeFits(t, n, 0)) return false;
     } else {
       if (t.teaches && teachAt.has(t.teaches) && !taught(t.teaches)) return false;
-      if (n.content && t.content && t.content !== n.content) return false;
+      if (!typeFits(t, n, 0)) return false;
       if (n.job === 'fork' || n.job === 'reward') { if (!t.jobs?.includes(n.job)) return false; }
       else if (!(n.job && t.jobs ? servesJob(t.jobs, n.job) : t.phases.includes(n.phase))) return false;
     }
@@ -832,6 +836,16 @@ function poolFits(V: PoolView): (t: SectionTemplate, n: MissionNode, i: number) 
  */
 const SERVED_BY: Partial<Record<NodeJob, readonly NodeJob[]>> = { pressure: ['pressure', 'practise', 'flow'] };
 export const servesJob = (jobs: readonly string[] | undefined, job: NodeJob): boolean => !!jobs && (SERVED_BY[job] ?? [job]).some((j) => jobs.includes(j));
+
+/**
+ * Whether a section's type may fill a node's slot (R-165.541): a node the deal typed takes no section of another type (one with no
+ * type may) and, loosened (`loose` 1 or 2), takes any; a node whose CODE writes a content letter takes only a section of exactly that type
+ * (one with no type is no fill either) through loose 2 (its job dropped, its phase kept), and only past that (`loose` 3, the lay's last
+ * resort) any type, its slot note then naming the letter (the lay's choose), so a slot is never quietly another kind. A node with no
+ * type is free.
+ */
+const typeFits = (t: SectionTemplate, n: MissionNode, loose: number): boolean =>
+  !n.content || loose >= 3 ? true : n.asked?.content ? t.content === n.content : loose > 0 || !t.content || t.content === n.content;
 
 /** the jobs a content node holds (NODES.md §7.1: structural nodes, and the signature, sit outside the mix) */
 const CONTENT_JOBS: ReadonlySet<NodeJob> = new Set(['teach', 'practise', 'fork', 'flow', 'combine', 'climb', 'descent', 'twist', 'test']);
@@ -1164,6 +1178,9 @@ interface LocalPiece {
   ropeFree?: true;
   /** that rope's look (place `rope` with `look`) */
   ropeLook?: 'vine';
+  /** a ROOF ROOT (place `root`): the piece is the root itself (x its left end, w its length, y the floor under it), hung `up` over that
+   *  floor; its glowworm patches at `t` (0-1 along it, left to right) with their rings, this setting's */
+  root?: { up: number; patches: Array<{ t: number; r: number }> };
   /** a far bank past a river (place `river`): the world's river row the water between is laid from, and the near bank's key (layStage
    *  lays the water and its logs between the two) */
   river?: { row: string; from: string };
@@ -1288,7 +1305,7 @@ export function chooseVersions(tpl: SectionTemplate, rng: Rng, once?: WorldOnce<
 /** a piece's reference to another piece of its section (the one it is placed after, on or over) */
 const refOf = (pc: SectionPiece): string | null => {
   const pl = pc.place;
-  return pl.kind === 'start' ? null : pl.kind === 'on' || pl.kind === 'over' || pl.kind === 'climb' ? pl.on : pl.after;
+  return pl.kind === 'start' ? null : pl.kind === 'on' || pl.kind === 'over' || pl.kind === 'climb' || pl.kind === 'root' ? pl.on : pl.after;
 };
 
 /**
@@ -1379,6 +1396,7 @@ export function layLocal(tpl: SectionTemplate, budget: StageBudget, rng: Rng, mi
     let y = 0;
     let h = pc.h ?? 24;
     let hang: LocalPiece['hang'];
+    let root: LocalPiece['root'];
     // (a river's near bank, when `after` names a liana over it: the bank the liana is caught from)
     let riverFrom: string | undefined;
     const pl = pc.place;
@@ -1629,6 +1647,16 @@ export function layLocal(tpl: SectionTemplate, budget: StageBudget, rng: Rng, mi
       y = a.y - h;
       w = 0;
       hang = { kind: 'vine' };
+    } else if (pl.kind === 'root') {
+      // (a roof root over walkable floor, ENG-ROOT: its whole length over `on`, never past its ends)
+      const a = ref(pl.on);
+      if (pc.shape !== 'vine') throw new Error(`gen2 section ${tpl.id}: ${pc.key} is a root, so its shape is 'vine'`);
+      const easy = budget.difficulty === 'easy';
+      w = Math.min(a.w, roll(rng, pl.len));
+      x = a.x + roll(rng, pl.at) * (a.w - w);
+      y = a.y;
+      h = 0;
+      root = { up: easy ? pl.up.easy : pl.up.normal, patches: (pl.patches ?? []).filter((q) => !(easy && q.normalOnly)).map((q) => ({ t: q.at, r: easy ? q.r.easy : q.r.normal })) };
     } else if (pl.kind === 'on') {
       const a = ref(pl.on);
       const rolled = roll(rng, pl.h);
@@ -1653,12 +1681,12 @@ export function layLocal(tpl: SectionTemplate, budget: StageBudget, rng: Rng, mi
     }
     // (a crumbling tile is a tile's width whatever the roll or Easy's pad: levelCheck holds every tile to it; never main, never needed)
     const crumble = !!pc.crumble && !hang;
-    const landing = (!!pc.landing || pl.kind === 'land') && pl.kind !== 'start' && !hang && !crumble;
+    const landing = (!!pc.landing || pl.kind === 'land') && pl.kind !== 'start' && !hang && !root && !crumble;
     if (landing) w += budget.landingPad;
     if (crumble) (w = CRUMBLE_TILE_W), (h = CRUMBLE_H);
     const p: LocalPiece = {
-      key: pc.key, x: R(x), y: R(y), w: R(w), h: R(h), shape: pc.shape, style: pc.style, main: crumble ? false : pc.main ?? pl.kind !== 'over', landing, hop: pl.kind === 'on', ...(pc.sealed ? { sealed: true } : {}),
-      ...(hang ? { hang } : {}), ...(crumble ? { crumble } : {}), ...(pc.creak && !hang && !crumble ? { creak: true } : {}), ...(pc.quiet && !hang ? { quiet: true } : {}), ...(pl.kind === 'rope' ? { ropeFrom: pl.after, ...(pl.free ? { ropeFree: true as const } : {}), ...(pl.look ? { ropeLook: pl.look } : {}) } : {}), ...(pl.kind === 'river' ? { river: { row: pl.row, from: riverFrom ?? pl.after } } : {}), ...(pl.kind === 'pads' ? { pads: { row: pl.row, from: pl.after }, ...(pl.rope ? { ropeFrom: pl.rope } : {}) } : {}), ...(pl.kind === 'wheel' ? { wheel: { row: pl.row, from: pl.after } } : {}), ...(pc.slot && !hang && !crumble ? { slot: pc.slot } : {}),
+      key: pc.key, x: R(x), y: R(y), w: R(w), h: R(h), shape: pc.shape, style: pc.style, main: crumble || root ? false : pc.main ?? pl.kind !== 'over', landing, hop: pl.kind === 'on', ...(pc.sealed ? { sealed: true } : {}),
+      ...(hang ? { hang } : {}), ...(root ? { root } : {}), ...(crumble ? { crumble } : {}), ...(pc.creak && !hang && !crumble ? { creak: true } : {}), ...(pc.quiet && !hang ? { quiet: true } : {}), ...(pl.kind === 'rope' ? { ropeFrom: pl.after, ...(pl.free ? { ropeFree: true as const } : {}), ...(pl.look ? { ropeLook: pl.look } : {}) } : {}), ...(pl.kind === 'river' ? { river: { row: pl.row, from: riverFrom ?? pl.after } } : {}), ...(pl.kind === 'pads' ? { pads: { row: pl.row, from: pl.after }, ...(pl.rope ? { ropeFrom: pl.rope } : {}) } : {}), ...(pl.kind === 'wheel' ? { wheel: { row: pl.row, from: pl.after } } : {}), ...(pc.slot && !hang && !crumble ? { slot: pc.slot } : {}),
     };
     by.set(pc.key, p);
     out.push(p);
@@ -1694,6 +1722,8 @@ export function layLocal(tpl: SectionTemplate, budget: StageBudget, rng: Rng, mi
   const left = Math.min(...out.map((p) => p.x));
   if (mirrored) {
     for (const p of out) p.x = right + left - (p.x + p.w);
+    // (a root's patches turn with it: `t` runs left to right)
+    for (const p of out) if (p.root) p.root.patches = p.root.patches.map((q) => ({ ...q, t: 1 - q.t })).reverse();
     for (const g of gaps) [g.x0, g.x1] = [right + left - g.x1, right + left - g.x0];
     // (mirrored, he takes off from the other lip: the take-off and the landing swap)
     for (const k of asks) [k.x0, k.x1, k.yTake, k.yLand] = [right + left - k.x1, right + left - k.x0, k.yLand, k.yTake];
@@ -1752,8 +1782,11 @@ export interface Laid {
   exit: { x: number; y: number; piece: Platform };
   /** the lianas and climbing vines the sections hang */
   vines: Vine[];
-  /** the shimmy ropes (place `rope`) */
+  /** the shimmy ropes (place `rope`), and the roof roots (place `root`) */
   ropes: Rope[];
+  /** the roof roots (place `root`; each also in `ropes`) and their glowworm patches, `t` along the root left to right: fillSockets lays
+   *  each patch as a fixed light of the dark zone over it (gen2/dark.ts rootPatches) */
+  roots?: Array<{ rope: Rope; patches: Array<{ t: number; r: number }> }>;
   /** the log rivers (place `river`): each one's water; its logs are among `platforms` (type 'drift') */
   rivers: RiverZone[];
   /** the petals that ride those logs (RiverRow.petals): each one's log and where on it; the fill lays them as riding pickups */
@@ -2100,6 +2133,7 @@ export function layStage(budget: StageBudget, graph: MissionGraph, kit: WorldKit
   const asks: NonNullable<Laid['asks']> = [];
   const vines: Vine[] = [];
   const ropes: Rope[] = [];
+  const roots: NonNullable<Laid['roots']> = [];
   const rivers: RiverZone[] = [];
   const riverPetals: NonNullable<Laid['riverPetals']> = [];
   const padClocks: ClockDef[] = [];
@@ -2287,13 +2321,13 @@ export function layStage(budget: StageBudget, graph: MissionGraph, kit: WorldKit
   const ahead = (id: string, i: number) => (graph.id && opt.plan ? opt.plan.filter((p, k) => k > i && !opt.open?.has(k) && p.template === id).length : 0);
   const teachHere = new Set(graph.nodes.flatMap((n) => (n.job === 'teach' && n.teaches ? [n.teaches] : [])));
   // (`loose`: 0 the node's job and its dealt type; 1 its job only, when no section of its type is left; 2 its phase only)
-  const jobFits = (t: SectionTemplate, n: MissionNode, loose: 0 | 1 | 2) => {
+  const jobFits = (t: SectionTemplate, n: MissionNode, loose: 0 | 1 | 2 | 3) => {
     if (!n.job) return t.phases.includes(n.phase);
     // (a teach node with no move named, a brief that names none: any section that teaches a move not yet taught)
-    if (n.job === 'teach' && loose < 2) return (n.teaches ? t.teaches === n.teaches : !!t.teaches && !taught.has(t.teaches)) && !(loose === 0 && n.content && t.content && t.content !== n.content);
+    if (n.job === 'teach' && loose < 2) return (n.teaches ? t.teaches === n.teaches : !!t.teaches && !taught.has(t.teaches)) && typeFits(t, n, loose);
     if (t.teaches && teachHere.has(t.teaches) && !taught.has(t.teaches)) return false;
-    // (the deal's type: a section of another type never fills a typed node; one with no type may)
-    if (loose === 0 && n.content && t.content && t.content !== n.content) return false;
+    // (the deal's type: a section of another type never fills a typed node; one with no type may, but not a lettered node's, typeFits)
+    if (!typeFits(t, n, loose)) return false;
     // (a fork is two roads: only a section that names the job; loosened all the way, the node is a plain practise by its phase)
     if (n.job === 'fork' && loose < 2) return !!t.jobs?.includes('fork');
     // (and the H node is the stage's find: only a section that names the job)
@@ -2328,13 +2362,13 @@ export function layStage(budget: StageBudget, graph: MissionGraph, kit: WorldKit
   const needsRise = (n: MissionNode) => upStage && (!!n.mustRise || (endHigh && n.job === 'signature' && descentY === undefined));
   /** where the next section enters: the join clamps it into the corridor */
   const entryY = () => Math.max(ctop, Math.min(cbot, cur.y));
-  const fits = (t: SectionTemplate, n: MissionNode, i: number, loose: 0 | 1 | 2 = 0) =>
+  const fits = (t: SectionTemplate, n: MissionNode, i: number, loose: 0 | 1 | 2 | 3 = 0) =>
     jobFits(t, n, loose) &&
-    (!n.mustRise || loose === 2 || exitDyOf(t) < 0) &&
+    (!n.mustRise || loose >= 2 || exitDyOf(t) < 0) &&
     // (V19 and V19b on an up stage, 11-06: the node after a late descent (or, with none, the signature) ends higher than both where the
     // descent began and where the bough window begins, 20 px clear; rising at all was weaker than the line, and stage.ts's V19 / V19b failed on Roll A. Nothing that fits: the slot
     // loosens and the roll fails by name)
-    (riseTo === undefined || loose === 2 || !needsRise(n) || entryY() + exitDyOf(t) <= riseTo - 20) &&
+    (riseTo === undefined || loose >= 2 || !needsRise(n) || entryY() + exitDyOf(t) <= riseTo - 20) &&
     (t.archetypes === 'any' || t.archetypes.includes(budget.archetype)) &&
     (t.needs ?? []).every((m) => budget.moves.includes(m)) &&
     hangsNeed(t).every((m) => budget.moves.includes(m)) &&
@@ -2434,6 +2468,16 @@ export function layStage(budget: StageBudget, graph: MissionGraph, kit: WorldKit
     if (!cands.length && n.job) {
       cands = M.sections.filter((t) => fits(t, n, i, 2) && !must.some((r) => r.section === t.id));
       if (cands.length) lastLoose = `${n.id} ${n.job}: no ${n.mustRise ? 'rising section (V19) ' : 'section for the job '}left, filled by its phase`;
+    }
+    if (!cands.length && n.asked?.content && n.content) {
+      // (a lettered node, typeFits, that no section of its letter fits even by its phase: the last resort, any type by its phase, and the
+      // slot's note names the LETTER, so the roll is refused by name and never quietly laid with another kind. The pool has none of the
+      // type, or those it has are spent or barred at this slot. The roll goes on, so every other node is still laid and judged)
+      cands = M.sections.filter((t) => fits(t, n, i, 3) && !must.some((r) => r.section === t.id));
+      const L = n.asked.content;
+      const ofType = M.sections.filter((t) => t.content === n.content && jobFits(t, n, 2));
+      const spent = ofType.filter((t) => (used.get(t.id) ?? 0) >= (t.maxPerStage ?? M.graphs?.maxPerStage ?? Infinity)).length;
+      lastLoose = `${n.id} ${n.job}: asks '${L}' (${n.content}): ${ofType.length ? `no ${L} section left (${ofType.length} in the pool${spent ? `, ${spent} laid already` : ''})` : `no ${L} section in the pool`}`;
     }
     if (!cands.length) {
       // (the hard no-repeat's own failure, named: every section that would fit here is already laid)
@@ -2664,6 +2708,8 @@ export function layStage(budget: StageBudget, graph: MissionGraph, kit: WorldKit
       // (a river in a leg laid left: its current and its fairness are read for a player running right; ENG-W2b REPORT, ENGINE-WORTHY, ready by 2-7)
       if (rivers.length > mark.rv) throw new Error(`gen2 legs: a river in a leg laid left is not mirrored yet (at x ${R(rivers[mark.rv].x0)})`);
       reflectLeg({ platforms: own, vines: vines.slice(mark.v), ropes: ropes.slice(mark.r), zones: zones.slice(mark.z), gaps: gaps.slice(mark.g), asks: asks.slice(mark.a), heartFalls: heartFalls.slice(mark.h), sections: mine }, leftSum);
+      // (a root turned with its leg: its patches' `t` runs left to right)
+      for (const rt of roots) if (ropes.indexOf(rt.rope) >= mark.r) rt.patches = rt.patches.map((q) => ({ ...q, t: 1 - q.t })).reverse();
       cur = { ...cur, x: leftSum - cur.x };
       dir = -1;
     } else dir = 1;
@@ -2789,6 +2835,15 @@ export function layStage(budget: StageBudget, graph: MissionGraph, kit: WorldKit
         placed.seam.push(...platforms.slice(before));
       }
       for (const lp of L.pieces) {
+        if (lp.root) {
+          // (a roof root, ENG-ROOT: a Rope over the floor it names, both ends in the roof (no posts), crept at the root's own speed; never
+          // required: the floor under it is walkable)
+          const g = R(oy + lp.y);
+          const rope: Rope = { id: ropes.length + 1, x0: R(ox + lp.x), x1: R(ox + lp.x + lp.w), y: g - lp.root.up, g0: g, g1: g, required: false, look: 'root', speed: ROOT_SPEED };
+          ropes.push(rope);
+          roots.push({ rope, patches: lp.root.patches.map((q) => ({ ...q })) });
+          continue;
+        }
         if (lp.hang) {
           // (a liana or a climbing vine: the engine's Vine; a liana's own swing goes with it, for the engine's self-swinging vines)
           const liana = lp.hang.kind === 'liana';
@@ -2941,7 +2996,9 @@ export function layStage(budget: StageBudget, graph: MissionGraph, kit: WorldKit
         // (a socket at the foot of a SPUR's far bank (t 0) is on its dead-end stone, which stands against that foot out of his reach:
         // Dot's line there is said as he stands on the stone, FIX-22)
         const spur = t0 === 0 ? spurAt.get(s.on) : undefined;
-        placed.sockets.push({ socket: s, x: spur ? R(spur.x) : R(p.x + t * p.width), y: spur ? R(spur.y - (s.dn ?? 0)) : R(p.y - (s.dn ?? 0)), piece: p });
+        // (an enemy socket's patch bound, in world x: its ends flip with the section as t does)
+        const pb = s.patch && (mirrored !== leftward ? [1 - s.patch[1], 1 - s.patch[0]] : s.patch);
+        placed.sockets.push({ socket: s, x: spur ? R(spur.x) : R(p.x + t * p.width), y: spur ? R(spur.y - (s.dn ?? 0)) : R(p.y - (s.dn ?? 0)), piece: p, ...(pb ? { patch: [R(p.x + pb[0] * p.width), R(p.x + pb[1] * p.width)] as [number, number] } : {}) });
       }
       if (tpl.room) placed.room = placeRoom(tpl.room, placed.uid, (k) => pieceOf(k).id, (k) => {
         // (a vine a room's piece names is the kit's: a ladder rolled up, a sapling, a silk line; levelCheck leaves it to the room's check)
@@ -3231,6 +3288,7 @@ export function layStage(budget: StageBudget, graph: MissionGraph, kit: WorldKit
     exit: { x: exitX, y: shrine.y, piece: shrine },
     vines,
     ropes,
+    ...(roots.length ? { roots } : {}),
     rivers,
     ...(riverPetals.length ? { riverPetals } : {}),
     ...(padClocks.length ? { padClocks } : {}),
@@ -3287,10 +3345,17 @@ function hasBlock(t: SectionTemplate): boolean {
   return [...t.pieces, ...(t.subBlocks ?? []).flatMap((b) => b.versions.flatMap((v) => v.pieces))].some((p) => !!p.block);
 }
 
-/** the moves a section's hanging pieces ask for (its own pieces and every sub-block version's): a liana swings, a vine climbs */
+/**
+ * The moves a section's hanging pieces ask for (its own pieces and every sub-block version's): a liana swings, a vine climbs, and a
+ * roof root (place 'root': shape 'vine', but laid as a Rope he creeps along hand over hand, never climbed up or down) asks the rope's
+ * move. Read by its PLACE before its shape: the root's 'vine' shape is its draw family, not a climb (ENG-ROOT box 2: a root row was
+ * refused from every pool on a kit without 'climb', and on one with it would have been let in without 'rope').
+ */
 function hangsNeed(t: SectionTemplate): Move[] {
-  const shapes = new Set([...t.pieces, ...(t.subBlocks ?? []).flatMap((b) => b.versions.flatMap((v) => v.pieces))].map((p) => p.shape));
-  return [...(shapes.has('liana') ? (['swing'] as const) : []), ...(shapes.has('vine') ? (['climb'] as const) : [])];
+  const pieces = [...t.pieces, ...(t.subBlocks ?? []).flatMap((b) => b.versions.flatMap((v) => v.pieces))];
+  const roots = pieces.filter((p) => p.place.kind === 'root');
+  const shapes = new Set(pieces.filter((p) => !roots.includes(p)).map((p) => p.shape));
+  return [...(shapes.has('liana') ? (['swing'] as const) : []), ...(shapes.has('vine') ? (['climb'] as const) : []), ...(roots.length ? (['rope'] as const) : [])];
 }
 
 /**
@@ -3639,7 +3704,8 @@ export function fillSockets(laid: Laid, budget: StageBudget, kit: WorldKit, seed
           c = kept === undefined ? undefined : rows.find((cr) => cr.id === kept);
         }
         if (!(want || ask) || !c || (dropOnEasy && !c.easyFirst) || opening(k.x, k.y)) continue;
-        const pf = patchFor(k.x, k.piece, safe, c.minGround, clear.get(k.piece));
+        // (a socket's patch bound narrows the piece the patch is cut from: its animal patrols there, or not at all)
+        const pf = patchFor(k.x, k.patch ? { ...k.piece, x: k.patch[0], width: k.patch[1] - k.patch[0] } : k.piece, safe, c.minGround, clear.get(k.piece));
         if (!pf) continue;
         threat -= c.threat;
         if (ask) { const q = ask.find((x) => x.kind === c!.id); if (q) q.left--; }
@@ -3852,6 +3918,8 @@ export function fillSockets(laid: Laid, budget: StageBudget, kit: WorldKit, seed
   const flags = checkpoints.filter((c) => !flagInZone(sink.zones, c.x, c.y));
   // (and a flag in the glowworms' dark lights a glow within a second of standing still there: never a blind respawn; gen2/dark.ts)
   glowFlags(sink, flags);
+  // (each roof root's glowworm patches: fixed lights of the dark zone over them, ENG-ROOT)
+  rootPatches(sink, laid.roots ?? []);
   return { enemies: sink.enemies, collectibles: C, checkpoints: flags, hints, fills, barren, extras: sink.extras };
 }
 

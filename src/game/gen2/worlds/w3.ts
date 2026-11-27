@@ -297,7 +297,8 @@ export const W3_HAZARDS: readonly HazardDef[] = [
 export function w3Manifest(): WorldManifest {
   return {
     world: 3, name: 'Mossy Grotto',
-    moves: ['double', 'climb', 'swing'],
+    // (the rope: World 1 taught it at 1-3; 3-2's roof root is crept on it, hangsNeed in pipeline.ts)
+    moves: ['double', 'climb', 'swing', 'rope'],
     ground: { y: W3_GROUND.y, bankH: W3_GROUND.bankH, style: 'log' },
     pit: 'soft', pitDepth: W3_GROUND.pitDepth,
     rollRanges: W1_KIT.rollRanges,

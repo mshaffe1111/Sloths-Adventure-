@@ -313,6 +313,15 @@ export type PlaceRule =
    *  in World 1); Easy keeps the soft pit, its stair back up to the take-off (1-6.md: "Easy: moss under every chain") */
   | { kind: 'land'; after: string; dy?: Range; share?: Range; water?: boolean; soft?: boolean; hurt?: boolean; window?: { normal?: number; easy?: number } }
   | { kind: 'climb'; on: string; at: Range; h: Range }
+  /** a ROOF ROOT (ENG-ROOT; 3-2.md NEW 2, R-165.452): a root hung `up` px over the walkable piece `on` (no posts: both its ends go into the
+   *  roof's rock), `len` px long, from `at` along that piece, its whole length over it (never over a gap: walk under it, or hang and creep).
+   *  The piece IS the root (shape 'vine', w its length): laid as a Rope with look 'root' and the root's own creep, ROOT_SPEED (rope.ts),
+   *  never a platform. `up` by setting (3-2.md: Normal 190, a held jump catches; Easy 170, a tap does). `patches`: fixed glowworm patches on
+   *  it, each `at` (0-1) along the root with its ring `r` by setting (3-2.md: Normal r 90, Easy r 60), `normalOnly` left out of Easy; each
+   *  is a light of the dark zone over it ('lit = seen': in its ring the ocelot sees him at any height). A patch under no dark zone fails the
+   *  stage by name (gen2/dark.ts rootPatches) */
+  | { kind: 'root'; on: string; at: Range; len: Range; up: { normal: number; easy: number };
+      patches?: ReadonlyArray<{ at: number; r: { normal: number; easy: number }; normalOnly?: boolean }> }
   | { kind: 'rope'; after: string; gap: Range; soft?: boolean;
       /** the rope is a try-it, never the way (a stage laid before the Shimmy skill is his, or a second road): its pit is soft with the
        *  plain steps out the far side, so he can always walk down and through, and the rope is hung `required: false` */
@@ -435,6 +444,10 @@ export interface Socket {
   link?: string;
   /** enemy sockets: the most threat it may take */
   maxThreat?: number;
+  /** enemy sockets: the stretch of its piece its animal may patrol (0 left end, 1 right end; flips with a mirrored section). Unset:
+   *  the piece's whole free run. A kit bounds a watcher this way so its patrol and its sight stay inside what the section asks
+   *  (a roof root's ends outside the floor's watch, ENG-ROOT) */
+  patch?: [number, number];
   /** a socket the roll may leave empty (0..1 chance of filling); required sockets have none */
   chance?: number;
   /** on Easy: keep it, drop it, or keep it softened (a slower creature, a longer tell). All three still answer to Easy's count cut
@@ -809,7 +822,7 @@ export interface PlacedSection {
   /** its hanging pieces (lianas and climbing vines), by key; a liana carries its own swing */
   vines: Array<{ key: string; vine: Vine; swing?: LianaSwing; window?: number; gap?: [number, number] }>;
   /** the sockets resolved to world points (filled in pass 4) */
-  sockets: Array<{ socket: Socket; x: number; y: number; piece: Platform }>;
+  sockets: Array<{ socket: Socket; x: number; y: number; piece: Platform; patch?: [number, number] }>;
   room?: RoomSpec;
   beats: Array<{ x: number; letter: SectionBeat['letter']; /** a designed group's key (Socket.group): its own animals keep no gap to it */ group?: string }>;
   /** the seconds the time model expects (the walk plus extraSeconds) */

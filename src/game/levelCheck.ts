@@ -96,6 +96,15 @@ export const PICKUP_APART = 36;
 /** the clear approach kept around the start, every flag and the exit: no animal's patch comes closer than this */
 export const SAFE_APPROACH = 200;
 
+/** is there standing floor at height y under the whole of x0..x1 (still pieces only, joined end to end within 2 px)? */
+function floorUnder(plats: readonly Platform[], y: number, x0: number, x1: number): boolean {
+  const spans = plats.filter((p) => Math.abs(p.y - y) < 3 && p.type !== 'moving' && p.type !== 'drift' && p.type !== 'fragile' && !p.broken)
+    .map((p) => [p.x, p.x + p.width] as const).sort((a, b) => a[0] - b[0]);
+  let at = x0;
+  for (const [a, b] of spans) { if (a > at + 2) break; at = Math.max(at, b); if (at >= x1) return true; }
+  return false;
+}
+
 const ext = (p: Platform): [number, number] =>
   p.type === 'moving'
     ? [(p.baseX ?? p.x) - (p.moveRange ?? 0), (p.baseX ?? p.x) + (p.moveRange ?? 0) + p.width]
@@ -852,6 +861,9 @@ function validateStageOn(stage: GeneratedStage, opts: CheckOptions): CheckResult
     for (const r of stage.ropes ?? []) {
       if (firstWalk && r.required && !ropesCount) errors.push(`rope #${r.id} is needed here, but the player may not have learned the skill yet`);
       if (!ropesCount) continue;
+      // (a rope hung over walkable floor its whole length, 3-2's roof root (gen2 place 'root'), crosses no gap: the floor under it already
+      //  joins its ends, so it adds no edge and is no fault. Read from the floor, never the rope's look)
+      if (floorUnder(plats, r.g0, r.x0, r.x1)) continue;
       const gapStart = r.x0 + ROPE_OVERLAP;
       const gapEnd = r.x1 - ROPE_OVERLAP;
       const left = plats.filter((p) => Math.abs(p.y - r.g0) < 3 && Math.abs(ext(p)[1] - gapStart) < 8);

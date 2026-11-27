@@ -11,7 +11,7 @@
  */
 import { checkClock } from '../clock.ts';
 import { hears as reaches, sound, stunned as isStunned, type Sound } from '../heroNoise.ts';
-import { ROPE_SPEED } from '../rope.ts';
+import { ROOT_SPEED, ROPE_SPEED } from '../rope.ts';
 import { watcherSees } from '../stillness.ts';
 import type { ClockDef } from '../stageKit.types.ts';
 import type { Act, Box, Glance, Outcome, Phase, Post, PredatorDef, PredatorEvents, PredatorState, Prey, Scene, Way } from './types.ts';
@@ -87,7 +87,8 @@ export function checkPredator(def: PredatorDef): string[] {
     // off when it ends (Easy's calm-in is under every tell: STILLNESS.easy.calmIn 0.35 s < TELL_MIN), or CREEP ON along the rope away from
     // it: the leap goes where he hung when the tell began, so the creep must carry his body clear of its box in the Easy tell)
     if (!def.callsOff) say('a leaper calls its tell off when it no longer sees him: freezing on the rope must stop the leap');
-    const creep = ROPE_SPEED * tellOf(def, true), clear = l.reach / 2 + HERO_HALF_W;
+    // (held to the SLOWEST creep a rope has: a root's, ROOT_SPEED, is under every shipped rope's ROPE_SPEED)
+    const creep = Math.min(ROPE_SPEED, ROOT_SPEED) * tellOf(def, true), clear = l.reach / 2 + HERO_HALF_W;
     if (!(creep >= clear)) say(`creeping on along the rope for its Easy tell (${Math.round(creep)} px) does not clear its leap (${Math.round(clear)} px from where he hung)`);
   }
   if (!real(def.giveUp) || !(def.recover >= 0) || !(def.cool >= 0) || !real(def.engage)) say('giveUp and engage above 0; recover and cool not below 0');
@@ -262,13 +263,13 @@ export const eyeOf = (def: PredatorDef, s: PredatorState): number => (def.habit 
  * carries ENG-DARK's report that he is inside a light's ring, this returns Infinity for him. Not built here (D40: ENG-DARK defines how a
  * ring is reported); the one place `up` is read is this function, so ENG-DARK changes only it (and Prey, and castPlay's prey fill)
  */
-export const upOf = (def: PredatorDef): number => def.sight.up ?? def.sight.tall;
+export const upOf = (def: PredatorDef, hero?: Pick<Prey, 'lit'>): number => (hero?.lit ? Infinity : def.sight.up ?? def.sight.tall);
 
 const inSight = (def: PredatorDef, s: PredatorState, hero: Prey): boolean => {
   const dx = hero.x - eyeOf(def, s);
   // (above its feet up to `up`, below them down to `tall`: the y axis points down, so he is above when his feet are under its y)
   const over = s.y - hero.y;
-  return Math.abs(dx) <= (dx * s.facing >= 0 ? def.sight.ahead : def.sight.behind) && (over > 0 ? over <= upOf(def) : -over <= def.sight.tall);
+  return Math.abs(dx) <= (dx * s.facing >= 0 ? def.sight.ahead : def.sight.behind) && (over > 0 ? over <= upOf(def, hero) : -over <= def.sight.tall);
 };
 
 /** does it see him this frame? Its own box, then stillness.ts's rule */

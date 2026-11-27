@@ -262,6 +262,9 @@ export interface Prey {
   moving?: boolean;
   /** hanging from a rope by his hands (castPlay.ts CastHero.hanging): a kind with a leap answers him with it. Unset: not hanging */
   hanging?: boolean;
+  /** inside a lit light's ring (zones.ts litRing; 'lit = seen', 3-2.md NEW 1, R-165.529): seen at any height over its feet (core.ts upOf).
+   *  Unset: dark, today's sight. The ONE definition: ENG-LIGHT's carried light (3-6, 3-9) feeds this same field, never a second one */
+  lit?: boolean;
 }
 
 /** one fixed step of the stage, as a predator sees it */

@@ -507,7 +507,11 @@ export interface Rope {
   required: boolean;
   /** how it is drawn (only the drawing; it is the same rope to hang on): 'vine', a painted vine tied to the arms of two living trees
    *  (World 1, where nothing is made: castArt.ts vineTile and drawTrunk); unset, World 2's twisted rope between posts (ropeArt.ts) */
-  look?: 'vine';
+  look?: 'vine' | 'root';
+  /** how fast he creeps along it (px/s; rope.ts ropeSpeed): unset is ROPE_SPEED (120), every rope laid before roots; a root under a cave
+   *  roof creeps at ROOT_SPEED (85, Matt's B 'slower and tense', R-165.452). The hand-over-hand cycle is paced by distance (heroRope.ts),
+   *  so it slows with it */
+  speed?: number;
 }
 
 export interface Collectible {

@@ -129,6 +129,28 @@ export function glowReaches(l: { x: number; y: number }, x: number, feet: number
  * that is a grotto's own air, not a hazard (its lights sleep until he stops; ENG-DARK, the lead's ruling A pending): 3-1's flags and 3-2's
  * prowlers stand in it. The fireflies' dark (Worlds 6 and 8) keeps the rule, unchanged.
  */
+/** how far over his feet a light's ring is measured to (px): his middle, hanging or standing (rope.ts HANG_PICK) */
+export const LIT_MID = 50;
+/**
+ * Is he inside a LIT light's ring now ('lit = seen', 3-2.md NEW 1; the seam ENG-PROWL left, predators/core.ts upOf)? A dark zone's light
+ * is lit while its clock's window is open (clockLitAt), once it has woken (`woke`: the engine's glowWake; a sleeping glowworm), or always
+ * (a light with neither: a root's fixed glowworm patch, the cave mouth's). Its ring is `r` round it, measured to his middle. Allocates nothing
+ */
+export function litRing(zones: readonly Zone[] | undefined, x: number, feet: number, t: number, woke: (id: number) => number | undefined): boolean {
+  if (!zones) return false;
+  const y = feet - LIT_MID;
+  for (const z of zones) {
+    if (z.kind !== 'dark' || !z.lights) continue;
+    for (const l of z.lights) {
+      const dx = x - l.x, dy = y - l.y;
+      if (dx * dx + dy * dy > l.r * l.r) continue;
+      const at = l.clock ? clockLitAt(l.clock, t) : l.sleep ? (l.id === undefined ? undefined : woke(l.id)) : -Infinity;
+      if (at !== undefined && t >= at) return true;
+    }
+  }
+  return false;
+}
+
 export const keepsClear = (z: Pick<Zone, 'kind' | 'lights'>) => !(z.kind === 'dark' && !!z.lights?.some((l) => l.sleep));
 
 /** webs, darkness and crumbling ruins never change: they are simply on */

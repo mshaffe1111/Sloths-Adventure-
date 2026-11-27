@@ -1,0 +1,90 @@
+import assert from 'node:assert/strict';
+/**
+ * w3Level.test — World 3's LEVEL bricks (KIT-W3b, R-165.505), counted where a level's TRIMMED code asks for them (AUDIT-W3,
+ * codes-trim-rolled.txt), through the real pipeline (buildGen2Stage), never placed by hand.
+ *
+ * THE OCELOT'S GROUND (w3-prowl-floor, w3-prowl-pair): 3-2's C beat, a ground node asking two ocelots ('Cg1&>:&ocelot*2'), is laid from
+ * them with both ocelots, and no refusal names it. The pool is the audit's "nearest piece" pool (World 3's bricks over every typed World
+ * 1-2 section) until World 3's own climb and rope bricks land: the other beats' refusals are those bricks' to clear, not this test's.
+ * PLANTED RED: the same roll without World 3's level bricks refuses the C node by name (no ground section left / its sections floating /
+ * its ocelots not laid).
+ */
+import '../../headlessDom.ts';
+import { generateAllLevels } from '../../worldsData.ts';
+import { buildGen2Stage } from '../pipeline.ts';
+import { parseCode } from '../nodeCode.ts';
+import { TYPE_OF_LETTER } from '../nodeAsks.ts';
+import type { ContentType, GraphBrief, SectionTemplate, WorldKit } from '../types.ts';
+import { w1World } from './w1.ts';
+import { w2World } from './w2.ts';
+import { W3_CLIMBS, W3_LEVEL, W3_LEVEL_STAGES, w3Ledge, w3World } from './w3.ts';
+
+/** 3-2's trimmed code as the audit rolls it (codes-trim-rolled.txt: the asks the base can check; #dark joins with ENG-ASKS-b) */
+const CODE_32 = 'A Tc1< Pg1> Pf1< Xc1&<:&ocelot*1 R Pg1< Wf1&>:&ocelot*1 R Pc1&<:&ocelot*1 Cg1&>:&ocelot*2 R Sf1&<:&ocelot*3 E';
+const BOTH = ['normal', 'easy'] as const;
+const SEEDS = [1, 2, 3];
+
+/** the audit's "nearest piece" kit for one stage and one code: World 3's arrival/rest/exit ledge, `own` (World 3's typed bricks), and
+ *  every typed World 1-2 section as a stand-in for the bricks still to come (their tips left off: World 3 has none) */
+function rollKit(stage: string, code: string, own: readonly SectionTemplate[]): WorldKit {
+  const k = w3World(), M = k.manifest;
+  const cap = 20;
+  const arrive: SectionTemplate = { ...w3Ledge, id: 'lv-arrive', jobs: ['arrive'], content: 'structural', phases: ['start'] };
+  const rest: SectionTemplate = { ...w3Ledge, id: 'lv-rest', jobs: ['rest'], content: 'structural', phases: ['rest'], maxPerStage: cap };
+  const exit: SectionTemplate = { ...w3Ledge, id: 'lv-exit', jobs: ['exit'], content: 'structural', phases: ['goal'] };
+  const typed = (s: SectionTemplate) => !!s.jobs?.length && !!s.content && s.content !== 'structural';
+  const wide = [...w1World().manifest.sections, ...w2World().manifest.sections].filter(typed)
+    .map((s) => ({ ...s, feel: undefined, own: undefined, maxPerStage: cap, sockets: (s.sockets ?? []).filter((q) => q.role !== 'tip') }));
+  const deal: Partial<Record<ContentType, number>> = {};
+  for (const t of parseCode(code)) { const ty = t.content ? TYPE_OF_LETTER[t.content] : undefined; if (ty) deal[ty] = (deal[ty] ?? 0) + 1; }
+  const brief = { ends: 'quiet', trend: 'level', branching: 'none', teaches: [], deal, dealExact: true } as unknown as GraphBrief;
+  return { ...k, manifest: { ...M, sections: [arrive, rest, exit, ...own, ...wide] as SectionTemplate[], required: {},
+    graphs: { list: [{ id: `lv-${stage}`, archetype: 'stealth' as never, code }], briefs: { [stage]: brief }, maxPerStage: cap } } } as WorldKit;
+}
+
+type Built = { gen2: { errors?: string[]; nodes: Array<{ token: string }>; graph: { nodes: Array<{ id: string }> }; sections: Array<{ uid: string; template: string; node?: string }>; fills: Array<{ role: string; section: string; socket: string; what?: string }> } };
+type Rolled = { errors: string[]; secs: string[]; onSockets: number; node?: string; token?: string };
+/** one roll of a code; a stand-in World 1-2 section that throws on World 3's budget by name is left out and the seed re-rolled (the
+ *  audit's raw.ts way). Returns the C node's laid sections and the ocelots standing on `own`'s OWN sockets there (not a top-up) */
+function roll(stage: string, code: string, own: readonly SectionTemplate[], seed: number, d: (typeof BOTH)[number], at: string | number = 'C'): Rolled {
+  const config = generateAllLevels().find((c) => c.id === stage && !c.secret)!;
+  const out = new Set<string>();
+  for (let tries = 0; tries < 60; tries++) {
+    try {
+      const k = rollKit(stage, code, own);
+      k.manifest.sections = k.manifest.sections.filter((q) => !out.has(q.id));
+      const g = (buildGen2Stage({ config, kit: k, seed, difficulty: d }) as unknown as Built).gen2;
+      // (a node by its place in the code, or by its first letters AS LAID: a node's token is its laid code)
+      const i = typeof at === 'number' ? at : g.nodes.findIndex((n) => n.token.startsWith(at));
+      assert.equal(g.nodes.length, code.split(' ').length, 'one laid node per token of the code');
+      const id = g.graph.nodes[i].id;
+      const here = g.sections.filter((q) => q.node === id);
+      const uids = new Set(here.map((q) => q.uid));
+      const mine = new Set(own.flatMap((q) => q.sockets.filter((x) => x.role === 'enemy').map((x) => x.id)));
+      const onSockets = g.fills.filter((f) => f.role === 'enemy' && f.what === 'ocelot' && uids.has(f.section) && mine.has(f.socket)).length;
+      return { errors: [...(g.errors ?? [])], secs: here.map((q) => q.template), onSockets, node: id, token: g.nodes[i].token };
+    } catch (e) {
+      // (a roll the pipeline cannot finish for want of a node's content is a refusal too: "no section fits node")
+      const m = String((e as Error).message);
+      const w = /^gen2 section (w[12]-\S+?):? |section (w[12]-\S+) is \d+ px wide, wider than the tower/.exec(m);
+      if (!w) return { errors: [m], secs: [], onSockets: 0 };
+      out.add(w[1] ?? w[2]);
+    }
+  }
+  return { errors: ['60 stand-ins thrown'], secs: [], onSockets: 0 };
+}
+
+/** the refusals that name 3-2's C node (the ground beat with two ocelots) or the pool's ground at it */
+const cRefusals = (r: Rolled) => r.errors.filter((e) => /node n\d+ "C[^"]*": (threat ocelot|creatures|content 'g')|no ground section left|no section fits/.test(e));
+const CODE_32_DARK = 'A Tr1<:#dark Pg1> Pf1<:#dark Xc1&<:#dark:&ocelot*1 R Pg1< Wr1&>:#dark:&ocelot*1 R Pc1&<:&ocelot*1 Cg1&>:#dark:&ocelot*2 R Sr1&<:#dark:&ocelot*3 E';
+let clean = 0, tried = 0; const notes = new Map<string, number>(); let errs = 0;
+for (const seed of [1, 2, 3, 4]) for (const d of BOTH) {
+  tried++;
+  const r = roll('3-2', CODE_32_DARK, W3_LEVEL, seed, d);
+  if (!r.errors.length) clean++;
+  errs += r.errors.length;
+  for (const e of r.errors) { const m = /^pool short at slot \d+ \((.*)\)$/.exec(e); if (m) notes.set(m[1], (notes.get(m[1]) ?? 0) + 1); }
+}
+
+console.log(`3-2 dark form (W3_LEVEL pool, seeds 1-4 x both): clean ${clean}/${tried}, ${errs} refusal lines`);
+for (const [k, v] of notes) console.log(`  ${v}x pool short (${k})`);
