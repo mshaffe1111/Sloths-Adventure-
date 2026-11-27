@@ -1,7 +1,7 @@
 # BUILD-29 REPORT: 2-9 "The River King's Court" (the World 2 finale; R-165.449), release 6
 Branch t-build-29, cut from origin/t-eng-29 = 098047713 (the lead's named base). Session 1 started 5:45 PM ET Thu 11/26 (by `date`).
 
-## EXACT NEXT STEP (session 13, BUILD-29-m, hand-over 6:33 PM ET Fri 11/27 by `date`; head = this commit, on branch t-build-29-m, NOT on t-build-29)
+## EXACT NEXT STEP (session 13, BUILD-29-m, hand-over 6:42 PM ET Fri 11/27 by `date`; head = this commit, on branch t-build-29-m, NOT on t-build-29)
 BOX CLOCK (by `date`): start 6:21:42 PM ET; stops (each with its cause): 6:26 the roar line did not show on the real page from a teleport
 (Pokey placed at the tip's x, 20 s wait: the line never rose; the scan passes, the page still is NOT proven); 6:27-6:29 the frog found by
 eye on a full still after the probe's world-to-screen sum missed (the dress `b` is not screen y less camera y: crop by eye, not by sum);
@@ -37,6 +37,10 @@ DONE (steps 1-3, 5 in part, 4 in part):
      (6:33 PM): no Dot box (the bank, flag and river read; no line). The engine-level proof is storyTipScan (PASS, above). Next box:
      use tipwalk's way (a gate on the list, it walks Dot's tips) or read how a tip fires (engine.ts / DotGuide.tsx queue) before shooting.
    - The journal line (fix (1), pokeyJournal.ts:69): NOT shot.
+6 (the lock's BASE only, run ALONE after the hand-over push, nothing else running): `npx tsx tools/engine/lockall.ts --layouts 16 --out
+   base.json` on main 49fdc8cb6 (detached worktree), 6:34:48-6:41:58 PM ET (7m10s), exit 0: **"lock: wrote 3264 builds of 102 stages"**.
+   Committed gzipped: gates/lock-base-49fdc8cb6.json.gz (sha256 of the json 764b4dd982f2af88...; `gunzip -k` it, then `--check` it on
+   the frozen head ALONE). Log: gates/lock-base-49fdc8cb6.txt.
 LEFT (the next box, in order):
 a. ReadNotifications. Check out t-build-29-m (above). `git ls-remote` t-build-29 f4e77273, t-eng-late 6ce4aa9b, main 49fdc8cb6.
 b. STILLS on the head: (i) the roar line: walk Pokey into the twist's bank from the left (hold right a second from about 400 px before
@@ -44,7 +48,8 @@ b. STILLS on the head: (i) the roar line: walk Pokey into the twist's bank from 
    the frog upright both settings (Pokey at frog x - 200 puts it on an upright screen); (iii) the journal page with fix (1)'s words;
    (iv) guard / quay / pads, both settings, both ways (the Easy sideways quay still fell to x 25683: place on the quay's own top).
    Judge each by eye at a crop before calling it.
-c. PRE-FREEZE then FREEZE in a detached worktree (dispatch-packet.md line 81), then THE ONE GATE RUN (brief step 6, every line), LAND
+c. PRE-FREEZE then FREEZE in a detached worktree (dispatch-packet.md line 81), then THE ONE GATE RUN (brief step 6, every line; the
+   lock's base is done above: run only the `--check` half), LAND
    (step 7: fast-forward origin/t-build-29 to the frozen head, no force), DEBRIEF (step 8).
 LEARNED (m): (1) a teleport does not say a tip: Dot's guide needs him to walk in (shoot lines by walking, the engine running). (2) a dress
    record's `b` is not screen y less camera y: find the piece by eye on the full still, then crop.
