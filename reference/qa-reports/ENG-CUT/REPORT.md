@@ -20,8 +20,8 @@ wrong id is refused at the lay.
   600 rolls); registrycheck FAIL (2-8 not in drawcheck scenarios, no proven list, not flown: RED on 57d7b8287 too, 2-8 mid-build);
   tierBots 9/0; kbdcheck PASS.
 - drawcheck PASS (1092 s), exit 0.
-- Not run (not in this packet's GATES): the deploy build + chunkcheck (pipeline now imports art/invCut.ts), paintcheck, clipcheck.
-  Suggestion: the next build box runs the deploy build and chunkcheck once on its merge.
+- Deploy build (BASE_PATH=/Sloths-Adventure-/) on frozen 4d2a579de: exit 0; chunkcheck PASS (pipeline now imports art/invCut.ts).
+- Not run (not in this packet's GATES): paintcheck, clipcheck (no draw or menu change here).
 
 ### Own misses (named)
 - The safe-keep push went to t-eng-cut itself (the landing branch) before any gate: BUILD-28-g could have merged an ungated head.
