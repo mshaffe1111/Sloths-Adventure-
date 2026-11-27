@@ -59,7 +59,7 @@ import { layChase } from './chaseLay.ts';
 import { rollsOf } from './rollLay.ts';
 import { CooldownQueue, pickWeighted, poissonPlace, ShuffleBag, WorldOnce, type RoutePiece } from './variety.ts';
 import { checkCode, formatToken, JOB_OF, LETTER_OF, MARK_OF, parseCode, type CodeToken } from './nodeCode.ts';
-import { askMisses, asksOf, hazardMiss, TYPE_OF_LETTER, type NodeAsks } from './nodeAsks.ts';
+import { askMisses, asksOf, HAZARDS, hazardMiss, hazardNeeds, hazardRegistry, sectionLays, TYPE_OF_LETTER, type NodeAsks } from './nodeAsks.ts';
 import { columnFrame, columnWalls, legMarks, legsOf, mixed, reflectLeg, upOrDown, WALL, type Frame, type LaidLeg, type Travel } from './legs.ts';
 import {
   EASY_ENEMY_SHARE,
@@ -851,6 +851,7 @@ function dealContent(nodes: MissionNode[], M: WorldManifest, brief: GraphBrief, 
   if (!N) return undefined;
   // (the fixed ones: a climb is a climb; a teach is its teacher's type)
   const fixed = new Map<number, ContentType>();
+  const reg = hazardRegistry(M.hazards);
   for (const { n, i } of slots) {
     // (a designer's content letter is the node's type, nodeAsks.ts; a letter with no type in the pool is named after the lay)
     const askedType = n.asked?.content ? TYPE_OF_LETTER[n.asked.content] : undefined;
@@ -858,8 +859,8 @@ function dealContent(nodes: MissionNode[], M: WorldManifest, brief: GraphBrief, 
     // (a shape or move the node asks that ONE type of section of its job lays in this pool is that type, as a designed graph's
     // dealExact node is: the deal plans the neighbours round it. Dealt at random, its neighbour often took the type and the node got one
     // with no section that rises (falls, asks the double), so the roll named the ask (nodeMix, R-165.198))
-    if (n.asked?.shape || n.asked?.move) {
-      const served = new Set(M.sections.filter((q) => q.content && q.content !== 'structural' && askServes(n, q.content, M.sections)).map((q) => q.content as ContentType));
+    if (n.asked?.shape || n.asked?.move || hazardLays(n, reg).length) {
+      const served = new Set(M.sections.filter((q) => q.content && q.content !== 'structural' && askServes(n, q.content, M.sections, reg)).map((q) => q.content as ContentType));
       if (served.size === 1) { fixed.set(i, [...served][0]); continue; }
     }
     if (n.job === 'climb') fixed.set(i, 'climb');
@@ -934,7 +935,7 @@ function dealContent(nodes: MissionNode[], M: WorldManifest, brief: GraphBrief, 
         const order = (xs: ContentType[]) => xs.map((t) => [t, (left.get(t) ?? 0) + r() * 0.5] as const).sort((a, b) => b[1] - a[1]).map(([t]) => t);
         // (a designer's shape or move ask, nodeAsks.ts: first a type whose pool has a section for the node's job that rises, falls, or
         // asks the double as asked; a node with no such ask reads exactly as before: the extra tries hold nothing and draw nothing)
-        const can = (t: ContentType) => askServes(n, t, M.sections);
+        const can = (t: ContentType) => askServes(n, t, M.sections, reg);
         c = order(pool.filter((t) => (left.get(t) ?? 0) > 0 && ok(t) && can(t)))[0] ?? order(pool.filter((t) => ok(t) && can(t)))[0]
           ?? order(pool.filter((t) => (left.get(t) ?? 0) > 0 && ok(t)))[0] ?? order(pool.filter(ok))[0];
         if (!c) { bad++; c = order(pool)[0]; }
@@ -1055,13 +1056,23 @@ export function askRefusal(n: MissionNode): string | undefined {
 
 /** may type `t` lay node `n`'s shape and move asks (nodeAsks.ts): a section of the node's job and that type in the pool rises (`^`), falls
  *  (`_`), or asks the double (`2`) or not (`1`) as asked. A node with neither ask: every type serves */
-function askServes(n: MissionNode, t: ContentType, sections: readonly SectionTemplate[]): boolean {
+function askServes(n: MissionNode, t: ContentType, sections: readonly SectionTemplate[], reg: ReturnType<typeof hazardRegistry>): boolean {
   const a = n.asked;
   const shape = a?.shape === '^' ? -1 : a?.shape === '_' ? 1 : 0;
-  if (!shape && !a?.move) return true;
+  const lays = hazardLays(n, reg);
+  if (!shape && !a?.move && !lays.length) return true;
   return sections.some((q) => q.content === t && !!n.job && servesJob(q.jobs, n.job)
     && (!shape || Math.sign(q.exitDy ?? 0) === shape)
-    && (!a!.move || (a!.move === '2') === (q.teaches === 'double' || (q.uses ?? []).includes('double') || (q.needs ?? []).includes('double'))));
+    && (!a!.move || (a!.move === '2') === (q.teaches === 'double' || (q.uses ?? []).includes('double') || (q.needs ?? []).includes('double')))
+    && lays.every((l) => sectionLays(q, l)));
+}
+
+/** the bricks node `n`'s hazard ask needs a section to lay (a registered hazard's, its clock's; none for a bare fall or a refused ask) */
+function hazardLays(n: MissionNode, reg: ReturnType<typeof hazardRegistry>) {
+  const h = n.asked?.dials?.hazard;
+  if (!h) return [];
+  const need = hazardNeeds(h, reg);
+  return 'refused' in need ? [] : need.lays;
 }
 
 /** a content type's letter in the node code (§8.0) */
@@ -2411,6 +2422,7 @@ export function layStage(budget: StageBudget, graph: MissionGraph, kit: WorldKit
     }
     // (a required section is never drawn by weight: it comes once, where the plan puts it)
     let cands = M.sections.filter((t) => fits(t, n, i) && !must.some((r) => r.section === t.id));
+    const hazards = hazardRegistry(M.hazards);
     // (no section named for the node's job is left, a swap having banned it: the node takes what fits its phase; a teach node so loosened
     // teaches nothing, and the required-move gate names it)
     if (!cands.length && n.job && n.content) {
@@ -2475,6 +2487,8 @@ export function layStage(budget: StageBudget, graph: MissionGraph, kit: WorldKit
       const dbl = t.teaches === 'double' || (t.uses ?? []).includes('double') || (t.needs ?? []).includes('double');
       if (a.move) out.push((a.move === '2') === dbl);
       if (a.shape === '^' || a.shape === '_') out.push(Math.sign(exitDyOf(t)) === (a.shape === '^' ? -1 : 1));
+      // (a registered hazard or clock the node asks (nodeAsks.ts hazardNeeds): the section lays each of its bricks; a fall alone asks none)
+      if (a.dials?.hazard) { const need = hazardNeeds(a.dials.hazard, hazards); if (!('refused' in need) && need.lays.length) out.push(need.lays.every((l) => sectionLays(t, l))); }
       return out;
     };
     // (the asks are a rule wherever the slot can keep them, R-165.198: the x20 weight alone was outdrawn, a bag gives every candidate a
@@ -4222,6 +4236,8 @@ function dialMisses(st: Gen2Stage, M: WorldManifest, easy: boolean): string[] {
   // (a node's hazard ask is a fall the node lays on its route: a hole under the route is the earth's, never the node's hazard, DropSite)
   const falls = (st.gen2.drops ?? []).filter((d) => !d.site).map((d) => ({ x0: d.x0, x1: d.x1, kind: d.ends.kind === 'putback' ? 'soft' : d.ends.kind === 'life' ? (d.ends as { cause: string }).cause : 'hurt' }));
   const out: string[] = [];
+  const reg = hazardRegistry(M.hazards);
+  const zones = (st.zones ?? []).map((z) => ({ x0: z.x0, x1: z.x1, kind: z.kind as string }));
   nodes.forEach((n, k) => {
     if (!n.asked) return;
     const token = st.gen2.code?.[k] ?? n.id;
@@ -4237,7 +4253,10 @@ function dialMisses(st: Gen2Stage, M: WorldManifest, easy: boolean): string[] {
     };
     if (!laidNodes && (n.asked.shape || n.asked.content || n.asked.move)) out.push(`node ${n.id} "${token}": its sections' heights were not kept for the check`);
     out.push(...askMisses(n.asked, laidNode, M.creatures, easy));
-    if (secs.length) out.push(...hazardMiss(n.asked, n.id, token, [Math.min(...secs.map((q) => q.x0)), Math.max(...secs.map((q) => q.x1))], falls));
+    // (a registered hazard's refusal is named whether or not the node laid a section; a fall is read under the sections, as ever)
+    const span: [number, number] = secs.length ? [Math.min(...secs.map((q) => q.x0)), Math.max(...secs.map((q) => q.x1))] : [0, 0];
+    const h = n.asked.dials?.hazard;
+    if (secs.length || (h && (h.clock || !(HAZARDS as readonly string[]).includes(h.kind)))) out.push(...hazardMiss(n.asked, n.id, token, span, falls, reg, zones, M.sections));
   });
   return out;
 }

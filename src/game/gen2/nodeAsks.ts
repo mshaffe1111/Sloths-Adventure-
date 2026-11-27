@@ -50,8 +50,67 @@ export const FILL_LETTER: Readonly<Record<string, string>> = { m: 'hide', l: 'lu
  *  letter table's `unlaid` rows, nodeLetters.ts) */
 export const LATER_CONTENT: Readonly<Record<string, string>> = Object.fromEntries(Object.entries(CONTENT_LETTERS).flatMap(([k, v]) => ('unlaid' in v ? [[k, v.unlaid]] : [])));
 
-/** the hazard kinds the lay reads from the built stage's falls (any other id is a world's own hazard, Later) */
+/** the hazard kinds the lay reads from the built stage's falls: registered in every world (any other id is a world's own, HazardDef) */
 export const HAZARDS = ['soft', 'water', 'hurt', 'void'] as const;
+
+/** what lays a hazard or a clock: the bricks that can (a section with a zone of one of `zones`' kinds, or a prop socket that allows one
+ *  of `props`), and what the BUILT stage holds where it was laid (`zone`: a zone of that kind, zones.ts, over the node's span) */
+export interface HazardLay {
+  /** the built stage's zone kind it is read by (st.zones) */
+  zone: string;
+  /** a section lays it when one of its zones (SectionZone.kind) is of these kinds */
+  zones?: readonly string[];
+  /** or when one of its prop sockets allows one of these props (an emitter lays the zone: the dark's ends, gen2/dark.ts) */
+  props?: readonly string[];
+}
+
+/**
+ * THE HAZARD REGISTRY (ENG-ASKS, R-165.501; AUDIT-W3 finding 1): a world's own hazards, by id, as its data fills them
+ * (WorldManifest.hazards). A node code's `:#id` asks for that hazard on the node, `:#id@clock` for it on that named clock: the deal draws a
+ * section of the pool that lays it (and the clock), and the built roll holds its zone over the node's span, or the roll fails BY NAME
+ * ('#moon is not a registered hazard', 'no section in the pool lays #spore'). The four fall kinds (HAZARDS) are registered everywhere and
+ * read from the falls as they always were; a world's row of one of their ids adds only its clocks (World 3's '#soft@moon').
+ */
+export interface HazardDef extends Partial<HazardLay> {
+  id: string;
+  /** the named clocks it runs on (the world's: the puff, the moon, the doze), each laid as a hazard is */
+  clocks?: Readonly<Record<string, HazardLay>>;
+}
+
+/** a world's registry: the four falls, then its own rows (a fall's row adds clocks to it) */
+export function hazardRegistry(rows: readonly HazardDef[] | undefined): ReadonlyMap<string, HazardDef> {
+  const reg = new Map<string, HazardDef>(HAZARDS.map((k) => [k, { id: k }]));
+  for (const r of rows ?? []) {
+    const fall = (HAZARDS as readonly string[]).includes(r.id);
+    reg.set(r.id, fall ? { id: r.id, ...(r.clocks ? { clocks: r.clocks } : {}) } : r);
+  }
+  return reg;
+}
+
+/** may section `t` lay `lay` (its zones, or a prop its sockets allow) */
+export function sectionLays(t: { zones?: ReadonlyArray<{ kind: string }>; sockets: ReadonlyArray<{ role: string; allow?: readonly string[] }> }, lay: Partial<HazardLay>): boolean {
+  return (t.zones ?? []).some((z) => (lay.zones ?? []).includes(z.kind))
+    || t.sockets.some((s) => s.role === 'prop' && (s.allow ?? []).some((p) => (lay.props ?? []).includes(p)));
+}
+
+/** what a node's hazard ask needs a section to lay (its hazard's bricks unless it is a fall, its clock's), or why it cannot be asked */
+export function hazardNeeds(h: { kind: string; clock?: string }, reg: ReadonlyMap<string, HazardDef>): { lays: HazardLay[]; fall?: string } | { refused: string } {
+  const def = reg.get(h.kind);
+  if (!def) return { refused: `#${h.kind} is not a registered hazard in this world` };
+  const fall = (HAZARDS as readonly string[]).includes(h.kind) ? h.kind : undefined;
+  const lays: HazardLay[] = [];
+  if (!fall) {
+    // (a row that names no zone is world data written wrong: it cannot be checked, so it is refused by name, never passed)
+    if (!def.zone) return { refused: `#${h.kind} names no zone it is laid as` };
+    lays.push({ zone: def.zone, ...(def.zones ? { zones: def.zones } : {}), ...(def.props ? { props: def.props } : {}) });
+  }
+  if (h.clock) {
+    const c = def.clocks?.[h.clock];
+    if (!c) return { refused: `@${h.clock} is not a clock #${h.kind} runs on in this world` };
+    lays.push(c);
+  }
+  return { lays, ...(fall ? { fall } : {}) };
+}
 
 export type ElementStatus = 'laid' | 'checked' | 'later';
 /** every element of the key, what it does today (one source: NODE-KEY.html's cards and the tests read it) */
@@ -68,7 +127,8 @@ export const ELEMENTS: ReadonlyArray<{ element: string; mark: string; status: El
   { element: 'threat :&kind*n!', mark: ':&snake*2', status: 'laid', how: "the node's enemy sockets take only its kinds, up to their counts; each kind's count is checked" },
   { element: 'threat asleep z', mark: ':&snake*1z', status: 'checked', how: "asleep only where the world lays that kind asleep (tag 'sleeper'); awake only where it does not" },
   { element: 'hazard :#soft :#water :#hurt :#void', mark: ':#hurt', status: 'checked', how: "a fall of that kind lies in the node's span, or the roll fails by name" },
-  { element: 'hazard on a clock :#kind@clock', mark: ':#pods@beat', status: 'later', how: "named clocks are B14's pods (t-b14): the roll fails by name" },
+  { element: "hazard of the world's registry :#id", mark: ':#dark', status: 'laid', how: "the world's registry (WorldManifest.hazards) names its bricks: the node draws a section that lays it and its zone lies in the node's span; an id not registered, or one no section of the pool lays, fails by name" },
+  { element: 'hazard on a clock :#id@clock', mark: ':#dark@puff', status: 'laid', how: "the registry's row names the clocks it runs on (the world's data: the puff, the moon): a section that lays the hazard and the clock, both zones in the span; any other clock fails by name" },
   { element: 'reward :+find', mark: ':+seed', status: 'checked', how: 'the find laid in the node is that one' },
   { element: 'reward :$n', mark: ':$8', status: 'checked', how: 'the pickups laid in the node number exactly n' },
   { element: 'beat :t0.9', mark: ':t0.9', status: 'later', how: 'no clock piece in this tree keeps a beat: the roll fails by name' },
@@ -160,16 +220,33 @@ export function askMisses(a: NodeAsks | undefined, n: LaidNode, cast: ReadonlyAr
     if (d.reward?.pickups !== undefined && n.pickups !== d.reward.pickups) miss(`reward $${d.reward.pickups}`, `laid ${n.pickups} pickups`);
     if (d.beat !== undefined) miss(`beat t${d.beat}`, 'Later: no clock piece in this tree keeps a beat');
     if (d.points !== undefined) miss(`points p${d.points}`, 'Later: the meter does not score a node inside the lay');
-    if (d.hazard?.clock) miss(`hazard #${d.hazard.kind}@${d.hazard.clock}`, "Later: named clocks are B14's pods (t-b14)");
-    else if (d.hazard && !(HAZARDS as readonly string[]).includes(d.hazard.kind)) miss(`hazard #${d.hazard.kind}`, "Later: no world hazard of that id is laid by a node yet");
   }
   return out;
 }
 
-/** a node's hazard ask against the built stage's falls over its span (x0..x1): each fall's kind as the drops name it */
-export function hazardMiss(a: NodeAsks | undefined, id: string, token: string, span: readonly [number, number], falls: ReadonlyArray<{ x0: number; x1: number; kind: string }>): string[] {
+/** a span's overlap with an x range */
+const over = <T extends { x0: number; x1: number }>(xs: readonly T[], span: readonly [number, number]) => xs.filter((f) => f.x1 > span[0] && f.x0 < span[1]);
+
+/**
+ * a node's hazard ask against the built stage over its span (x0..x1), by the world's registry (hazardRegistry): refused by name when the id
+ * or clock is not registered or no section of the pool lays it; else a fall of that kind (the four, as the drops name them) and each
+ * zone it needs (its own, its clock's) over the span, or the miss by name
+ */
+export function hazardMiss(a: NodeAsks | undefined, id: string, token: string, span: readonly [number, number], falls: ReadonlyArray<{ x0: number; x1: number; kind: string }>,
+  reg: ReadonlyMap<string, HazardDef> = hazardRegistry(undefined), zones: ReadonlyArray<{ x0: number; x1: number; kind: string }> = [],
+  pool?: ReadonlyArray<Parameters<typeof sectionLays>[0]>): string[] {
   const h = a?.dials?.hazard;
-  if (!h || h.clock || !(HAZARDS as readonly string[]).includes(h.kind)) return [];
-  const over = falls.filter((f) => f.x1 > span[0] && f.x0 < span[1]);
-  return over.some((f) => f.kind === h.kind) ? [] : [`node ${id} "${token}": hazard #${h.kind}: ${over.length ? `laid ${[...new Set(over.map((f) => f.kind))].join(', ')}` : 'no fall in its span'}`];
+  if (!h) return [];
+  const what = `hazard #${h.kind}${h.clock ? `@${h.clock}` : ''}`;
+  const miss = (why: string) => [`node ${id} "${token}": ${what}: ${why}`];
+  const need = hazardNeeds(h, reg);
+  if ('refused' in need) return miss(need.refused);
+  for (const l of need.lays) if (pool && !pool.some((t) => sectionLays(t, l))) return miss(`no section in the pool lays ${l === need.lays[0] && !need.fall ? `#${h.kind}` : `@${h.clock}`}`);
+  if (need.fall) {
+    const f = over(falls, span);
+    if (!f.some((q) => q.kind === need.fall)) return miss(f.length ? `laid ${[...new Set(f.map((q) => q.kind))].join(', ')}` : 'no fall in its span');
+  }
+  const z = over(zones, span);
+  for (const l of need.lays) if (!z.some((q) => q.kind === l.zone)) return miss(`no ${l.zone} zone in its span${z.length ? ` (laid ${[...new Set(z.map((q) => q.kind))].join(', ')})` : ''}`);
+  return [];
 }

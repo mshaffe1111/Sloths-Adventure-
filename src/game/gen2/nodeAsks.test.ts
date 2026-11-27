@@ -4,7 +4,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import '../headlessDom.ts';
-import { askMisses, asksOf, ELEMENTS, hazardMiss, type LaidNode, type NodeAsks } from './nodeAsks.ts';
+import { askMisses, asksOf, ELEMENTS, hazardMiss, hazardRegistry, sectionLays, type LaidNode, type NodeAsks } from './nodeAsks.ts';
 import { JOB_OF, parseCode } from './nodeCode.ts';
 import { legMarks } from './legs.ts';
 import { buildGen2Stage } from './pipeline.ts';
@@ -62,8 +62,24 @@ test('node asks (planted): each element asked and not laid is named; laid, it pa
   assert.equal(m('P:$3', { pickups: 3 }), '');
   assert.match(m('P:t0.9'), /beat t0.9: Later/);
   assert.match(m('P:p5'), /points p5: Later/);
-  assert.match(m('P:#pods@beat'), /hazard #pods@beat: Later/);
-  assert.match(m('P:#lava'), /hazard #lava: Later/);
+  // hazard: an id or clock the world's registry does not hold is refused by name (ENG-ASKS; the toy rolls: hazardAsks.test.ts)
+  const reg = hazardRegistry([{ id: 'dark', zone: 'dark', props: ['darkFrom'], clocks: { puff: { zone: 'spore', zones: ['spore'] } } }, { id: 'soft', clocks: { moon: { zone: 'moon', zones: ['moon'] } } }]);
+  const hz = (c: string, zones: Array<{ x0: number; x1: number; kind: string }> = [], falls: Array<{ x0: number; x1: number; kind: string }> = []) =>
+    hazardMiss(ask(c), 'n2', c, [100, 400], falls, reg, zones).join();
+  assert.match(hazardMiss(ask('P:#pods@beat'), 'n2', 'P', [100, 400], []).join(), /hazard #pods@beat: #pods is not a registered hazard/);
+  assert.match(hazardMiss(ask('P:#lava'), 'n2', 'P', [100, 400], []).join(), /hazard #lava: #lava is not a registered hazard/);
+  assert.match(hz('P:#dark@doze'), /@doze is not a clock #dark runs on/);
+  assert.match(hz('P:#water@moon'), /@moon is not a clock #water runs on/);
+  assert.equal(hz('P:#dark', [{ x0: 300, x1: 900, kind: 'dark' }]), '');
+  assert.match(hz('P:#dark', [{ x0: 500, x1: 900, kind: 'dark' }]), /hazard #dark: no dark zone in its span$/);
+  assert.match(hz('P:#dark@puff', [{ x0: 300, x1: 900, kind: 'dark' }]), /hazard #dark@puff: no spore zone in its span \(laid dark\)/);
+  assert.equal(hz('P:#dark@puff', [{ x0: 300, x1: 900, kind: 'dark' }, { x0: 150, x1: 200, kind: 'spore' }]), '');
+  assert.equal(hz('P:#soft@moon', [{ x0: 150, x1: 200, kind: 'moon' }], [{ x0: 200, x1: 300, kind: 'soft' }]), '');
+  assert.match(hz('P:#soft@moon', [], [{ x0: 200, x1: 300, kind: 'soft' }]), /hazard #soft@moon: no moon zone in its span/);
+  assert.match(hazardMiss(ask('P:#dark'), 'n2', 'P', [100, 400], [], reg, [], [{ sockets: [] }]).join(), /no section in the pool lays #dark/);
+  assert.equal(sectionLays({ sockets: [{ role: 'prop', allow: ['darkFrom'] }] }, { props: ['darkFrom'] }), true);
+  assert.equal(sectionLays({ zones: [{ kind: 'spore' }], sockets: [] }, { zones: ['spore'] }), true);
+  assert.equal(sectionLays({ sockets: [{ role: 'pickup', allow: ['darkFrom'] }] }, { props: ['darkFrom'] }), false);
   // hazard: a fall of that kind under the node's span
   assert.deepEqual(hazardMiss(ask('P:#water'), 'n2', 'P', [100, 400], [{ x0: 200, x1: 300, kind: 'water' }]), []);
   assert.match(hazardMiss(ask('P:#hurt'), 'n2', 'P', [100, 400], [{ x0: 200, x1: 300, kind: 'water' }]).join(), /hazard #hurt: laid water/);
