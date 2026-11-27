@@ -1,3 +1,21 @@
+**BOX 27 (ENG-DARK-aa): THE LOCK RED TRACED, no code changed. EXACT NEXT STEP (hand-over, 8:30 PM ET by `date`): WAIT FOR THE LEAD'S RULING
+on the 1-4 move (recommended (b), intended). If (b): run 1-4's bots x40 on both settings on frozen 93e05e98d (rule 28) and the lock as
+`npx tsx tools/engine/lockall.ts --layouts 16 --intended 1-4 --check <lock of frozen 88592a9c4>`; then LAND per box 26's step below.
+If (a): fix at the cause in tower.ts openEnds and plant a toy. 20 minutes with no reply: (b), the reversible one.**
+THE CAUSE (bisect of the lane c1008d8ed..b83522463 on `lockall --layouts 16 --stages 1-4 --check` vs 88592a9c4's lock): TWO commits,
+both box 18, the general tower lay (tower.ts openEnds via offEnd, flow-blind, so every tower incl. 1-4, a World 1 climb):
+(1) 8cc3a319a offEnd: an end within 24 px of the wall clamp [20, width-20] used to be skipped as "no end"; now its step-off point
+clamps to 20, so an end 30-38 px from the wall is an open end and towerCatches rule 1 runs the piece on into the wall.
+(2) 4bfa3fbee offEnd reads the engine's hang (HANG.fall = 44 x STAND_SIDE 0.26 = 11.4 px): an end <= 31.4 px from the wall is no
+end (he still stands there), so (1)'s 30-31 px run-ons go again. 4bfa3fbee's 1-4 == 93e05e98d's 1-4 (lock 1/1 unchanged). c20 (box 26,
+rule 1's slot read) is NOT the cause: it sits in the down-only arm. engine.ts only renamed 0.26 -> STAND_SIDE (no play change).
+THE MOVE on 1-4 (11 of 32 builds; Normal 1 2 8 10 11 12 13 14 16, Easy 5 6): platforms ONLY ADDED, 1-2 per build, each a 34-38 px
+branch from the wall to a piece's end (x 0 or x 1242-1245), at y 9369-9802 (8 builds), 5177-6933, 1321-2022. Base drop under each:
+561-2004 px (642 in 8). Collectibles: the flower trails re-place (a column moves, e.g. Normal 1 x 490 -> 250; count +-2) as a knock-on;
+size/target count unchanged. REAL ENGINE (RealPlay, hold left 3 s from x 80 on the y 9802 piece): base 88592a9c4 Normal 1/2/12 FELL
+642 px at the wall; 93e05e98d fell 0. A real pit on main's World 1 stage, closed by a general rule: intended, never recorded (the
+lane's lock runs judged 3-1 only). Still (1x, landscape, Normal 1): reference/qa-reports/ENG-DARK/ENG-DARK-aa-1-4-N1-wallslot.png.
+
 # ENG-DARK REPORT (the dark + light ring as one gen2 brick; WORLD-3-PLAN F2; R-165.449)
 **BOX 26 STOP ON A LOCK RED (93e05e98d; NOT landed, t-eng-w3 untouched at 88592a9c4).** lockall --layouts 16 --check on wtU vs the
 lock written on frozen t-eng-w3 (3264 builds, 102 stages): EXIT 1, 101/102 unchanged, '1-4: platforms, collectibles'. Not traced (the
