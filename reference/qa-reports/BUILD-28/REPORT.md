@@ -27,6 +27,18 @@ DONE THIS BOX (b0, the fish trap, the lead's ruling A):
 6. THE LOCK GATE, run 1 of 2 (CI #100): base 1558489a2 `lockall.ts --layouts 16 --out <scratch>/base.json`: 'lock: wrote 3264 builds of
    102 stages' (exit 0; about 11 minutes alone). Run 2, `--check base.json` on cb7b9af11 (/home/user/cand-cb7): STARTED alone
    (<scratch>/lockcheck.log). If the container is fresh, base.json is gone: re-run run 1 first.
+7. THE LOCK GATE, run 2: `--check base.json` on cb7b9af11: COUNTS LINE 'lock: 69/102 stages unchanged', exit 1: RED, NOT only 2-8.
+   Moved (33): 2-8 (expected: the whole lay, incl. proto.invDress, the trap); 1-4 (size, platforms, vines, collectibles, spawnY, exitTotemX,
+   checkpoints, gen2, clusters, gates, pods, proto.hints, proto.beats, proto.kitDecor, proto.dress); 2-7 (size, platforms, vines, rivers,
+   enemies, collectibles, spawn, exit, checkpoints, waterY, gen2, pacer, post, columnDress, proto.hints/beats/findSpot/gen2/decor/dress,
+   waterSigns, proto.movedPickups); and 30 on proto.hints ONLY: 1-1 1-2 1-7 1-8 1-9 2-1 2-2 2-4 2-5 5-9 6-1 6-2 6-3 6-4 6-5 6-6 6-7 6-9 7-1 7-3 7-5 7-6 7-7 7-9 8-1 8-2 8-5 8-6 8-8 8-9. Also 'gen2 gained verdicts and drops (not
+   hashed)' on 39 stages. UNTRACED (box clock out, hand-over 11:33 AM ET (from date)). These are NOT the fish trap (it writes
+   only 2-8's invDress): they come from this branch's merges against the base 1558489a2 (t-eng-w2fall 8bcd15cdb, t-eng-cut ea75ffdf8,
+   box 6's 5b6494404 line kinds?, or main moving under the base). The log is <scratch>/lockcheck.log in this container only.
+NEXT a2 (FIRST, before any other gate): TRACE the lock moves by rule 28 against MAIN (D132): for 1-4, 2-7 and one proto.hints-only
+   stage (1-7), `git log --oneline 1558489a2..cb7b9af11 -- <the files that build it>` and a bisect on `lockall --stages <id> --check`
+   (a 1-stage base from 1558489a2 is seconds); name the commit and whether its lane meant it (each landing's REPORT names its
+   intended moves). The lead rules whether each move is intended before the rest of the gate run counts.
 NEXT, in order (ReadNotifications at every step boundary; generalitycheck with tsc at each, D156):
 a. DONE (the lead's artUse ruling (or A on the timeout): apply, commit, push; THAT hash is the frozen candidate (git worktree add --detach
    /home/user/cand-<hash>; node_modules symlinked). If the container is fresh: base.json is gone, re-run the base first, alone.
