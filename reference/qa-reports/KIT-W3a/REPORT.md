@@ -32,6 +32,14 @@ DONE this box:
   roll only when its fall column is clear (dropClear, with a PLANTED test), so the moss and stone tests fail by name: "no roll of 3-1's
   draft lays the moss toy". That is the honest state, not a fix. The lead's call: shorten the drop to what a down tower allows (a design and
   noise number: LOUD.landing carries 360 px only off 400), or lay the drop toys outside a tower.
+THE LEAD'S RULINGS (arrived just after this hand-over was written; they replace the open asks above):
+- KEEP the narrowing (it is the rule).
+- e11, e19, n33 (and the others above) go to a NEW engine box, ENG-CATCH-e: a down tower never returns a lay with a miss (a miss its mend
+  cannot fix refuses the roll by name; the seed search skips it). Its FROZEN hash comes to box 6. n33's brick: w3-cap-steps ALONE (n33 and
+  e33, x 283-463 y 10965, 319 px). Repro: `GEN2_DRAFT=3-1 KEEP=w3-cap-steps VERBOSE=1 SEEDS=33 npx tsx reference/qa-reports/KIT-W3a/probe/widths.mts`.
+- The drop toys: LAY THEM OUTSIDE A TOWER, on a level-stage row where the 400 px drop is in view, keeping dropClear and its plant. The drop
+  number does NOT change (3-5's design).
+- The gate run and the ONE landing wait for ENG-CATCH-e's hash.
 1. Box 6: `git fetch origin +refs/heads/t-kit-w3a:refs/remotes/origin/t-kit-w3a && git checkout -B t-kit-w3a origin/t-kit-w3a`; npm ci
    --legacy-peer-deps in the background; ReadNotifications FIRST: the lead's rulings on (a) the tower-wood reds above and (b) the drop toys,
    ENG-CATCH-d's landed hash, and ENG-DEAL's landed hash.
