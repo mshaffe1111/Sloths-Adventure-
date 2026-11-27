@@ -42,7 +42,7 @@ import { buildW5Stage54 } from './w5Stage54.ts';
 import type { FruitTree, W4Extras } from './w4Play.ts';
 import type { Waterfall } from './waterfalls.ts';
 import type { Capuchin } from './capuchin.ts';
-import { DRESS_WORLDS, dressSets, dressStage } from './artDress.ts';
+import { clearLookalikes, DRESS_WORLDS, dressSets, dressStage } from './artDress.ts';
 import { w1Section, type Slot, type W1Kit, type W1Stage } from './w1Sections.ts';
 import { W4Roll } from './w4Sections.ts';
 import { buildFromSpec } from './mixer/w1mix.ts';
@@ -468,7 +468,9 @@ export function addDress(st: GeneratedStage & { proto?: ProtoExtras; kit?: { roo
   if (!DRESS_WORLDS.includes(c.worldIndex as (typeof DRESS_WORLDS)[number]) || c.objectiveType === 'boss_lair') return;
   // (Worlds 1-7's old-generator stages, 5-6, 5-8, 7-2, 7-8: dressed too since hf-props, 2026-10-31; theirs go on the stage's own `dress`)
   if (!st.proto && c.worldIndex < 8 && c.secret) return;
-  let ds = dressSets({ world: c.worldIndex, stage: c.miniIndex, seed, platforms: st.platforms, rooms: st.kit?.rooms ?? [], collectibles: st.collectibles, checkpoints: st.checkpoints });
+  // (decor never looks like a danger: a piece showing a foe this stage fields is swapped or left out, artDress.ts HAZARD_LOOKALIKE)
+  const foes = new Set<string>(st.enemies.map((e) => e.type));
+  let ds = clearLookalikes(dressSets({ world: c.worldIndex, stage: c.miniIndex, seed, platforms: st.platforms, rooms: st.kit?.rooms ?? [], collectibles: st.collectibles, checkpoints: st.checkpoints }), foes);
   // (nothing stands on Pokey at the start, and nothing on a stage's own set dressing: no piece within one body width (44 px) of his
   // spawn, none overlapping a set piece such as 1-1's squirrels (the lead, 11-05: the frog sat on a squirrel). On every stage the engine
   // builds from its spec; the shipped stages' 60 start pieces (hollows, logs, cages at some worlds' starts) wait on the designer's ruling,
@@ -482,7 +484,7 @@ export function addDress(st: GeneratedStage & { proto?: ProtoExtras; kit?: { roo
   if (!ds.length) return;
   // (a stage's own set dressing, laid by its builder before the sets (1-5's leaf-signs and root tunnel, its emitters; her marks in their
   // trunks, World 1's finish), is kept and drawn over the sets: the sets used to replace it)
-  if (st.proto) st.proto.dress = [...ds, ...(st.proto.dress ?? [])];
+  if (st.proto) st.proto.dress = [...ds, ...clearLookalikes(st.proto.dress ?? [], foes)];
   else st.dress = ds;
 }
 
