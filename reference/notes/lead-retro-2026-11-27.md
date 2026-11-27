@@ -94,7 +94,8 @@ The measure: errors per level, and boxes lost to them, in LEVEL-LOG.md. It must 
    - tower.test.ts:856 inside two frozen candidates.
 9. **I trusted helpers' words when I should have inspected their work.** I took "landed", "proven" and "every gate green" from summaries,
    and found the hole later (ENG-DARK's missing seam; ENG-CATCH-d's partial test run; members' "about 30%" context). §1b is the fix.
-10. **I stayed lead too long.** 13 days in one session. Drift builds slowly, and the backup's memory is the only cost of rotating
+10. **I stayed lead too long.** Matt, 11-27 1:29 PM ET: "I probably let you go a little too long, so that's my fault that you started
+   drifting." Do not wait for him to notice. Flag the rotation yourself at about a week, or at the first repeated miss. 13 days in one session. Drift builds slowly, and the backup's memory is the only cost of rotating
    earlier.
 
 ## 3. What worked: keep it, and build on it
