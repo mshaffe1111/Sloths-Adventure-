@@ -127,6 +127,17 @@ const dropTop = (platforms: readonly Platform[], floor: Platform): Platform | un
     const gap = p.x < floor.x ? floor.x - (p.x + p.width) : p.x - (floor.x + floor.width);
     return gap >= 8 && gap <= 20;
   });
+/**
+ * the drops, by PROPERTY (KIT-W3a box 5, D151): the toy's DROP px fall is CLEAR, no other wood between its top and its floor from the
+ * top's near end to the sleeper. 3-1's seed 2 laid a storey 287 px under the top (x 242-929, between it and the floor at y 9804): he
+ * landed on that, never on the toy floor, so it is not the toy as designed
+ */
+const dropClear = (platforms: readonly Platform[], f: Platform, x: number) => {
+  const top = dropTop(platforms, f);
+  if (!top) return false;
+  const [lo, hi] = top.x < f.x ? [top.x + top.width, x] : [x, top.x];
+  return !platforms.some((p) => p !== top && p !== f && p.y > top.y + 2 && p.y < f.y - 2 && p.x < hi && p.x + p.width > lo);
+};
 function built(row: Row) {
   const had = builds.get(row);
   if (had) return had;
@@ -139,7 +150,7 @@ function built(row: Row) {
     const stone = st.proto?.cast?.sounds?.[0];
     // (the call: the stone inside the ocelot's own patch, so it can come under it; the drops: toyFloor holds the section's top DROP px over it)
     const fits = !!e && !!fl && (row === 'call' ? !!stone && stone.x >= e.patrolMinX && stone.x <= e.patrolMaxX
-      : true);
+      : dropClear(st.platforms, fl, e.x));
     if (fits) {
       builds.set(row, { st, kit, seed });
       return builds.get(row)!;
@@ -327,4 +338,15 @@ test('planted: the ground\'s quiet ignored (the cast hears every landing as on s
   assert.ok(r.awake, 'moss ignored: the 400 px drop wakes it');
   assert.deepEqual(r.heard, ['landing']);
   t.diagnostic(`planted: moss ignored -> ${r.awake ? 'woke' : 'slept'} [${r.heard}] (sleeper ${r.by.toFixed(0)} px off)`);
+});
+
+test("PLANTED: wood laid across the drops' fall column (between the top and the floor) -> the pick refuses the roll", () => {
+  const { st } = built('moss');
+  const e = st.enemies.find((q) => q.type === 'ocelot' && toyFloor(st.platforms, q, W3_OCELOT.footY ?? 0, 'moss'))!;
+  const floor = toyFloor(st.platforms, e, W3_OCELOT.footY ?? 0, 'moss')!;
+  assert.ok(dropClear(st.platforms, floor, e.x), 'the picked roll: its fall column is clear');
+  const top = dropTop(st.platforms, floor)!;
+  const mid = (top.x < floor.x ? top.x + top.width : top.x) + (top.x < floor.x ? 40 : -140);
+  const wood = { ...floor, x: mid, width: 100, y: top.y + 280 } as Platform;
+  assert.ok(!dropClear([...st.platforms, wood], floor, e.x), 'planted wood 280 px under the top, in the fall: refused');
 });
