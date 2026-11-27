@@ -45,6 +45,22 @@ knowncheck generalitycheck coveragecheck roadmapcheck timecheck drawcheck clipch
 paint0 paint1 paint2 | E toolline tipwalk storytipscan teachfirst castbots26 castbots27 funcheck fundiff tierbots.
 Known so far: playerText.test 1 fail (the title). Everything else is running.
 
+## PLAY-STORE §6 (draft from the diff origin/main..release-0.10.4 -- src; the gate-proved rows are filled when the final head's lanes finish)
+The diff touches no screen, menu, sound, save or setting file. Outside src/game it touches only src/App.tsx (a `?fixture=home` dev toy added
+beside main's chase and wheel fixtures), components/dot/DotGuide.tsx (Dot's line gains `who` and `warn`: the race's end line and the
+deep-water warning) and components/stageClue.ts (2-6's clue). A grep of the added lines finds no fetch, XMLHttpRequest, sendBeacon,
+localStorage write, wake lock, new Audio or URL.
+| # | Item | Holds? | Proof |
+|---|---|---|---|
+| 1 | Nothing under the insets, both ways, foldable | pending | clipcheck on the final head (lane C); the What's New card's new entry is the only menu text that changed |
+| 2 | Back is sensible | holds: no new screen | diff: no new screen or route |
+| 3 | Nothing new sent off the phone | holds by diff; build:store pending | no network call added (grep above); `npm run build:store` (checkStoreBuild) on the final head |
+| 4 | Works offline | holds by diff; pending buildcheck | no web load added; buildcheck on the final head |
+| 5 | Sound stops in the background; no wake lock | holds: no audio or wake-lock change | diff: no src/audio file, no wakeLock |
+| 6 | Leave/return/rotate keeps the place | holds: no save or resume change | diff: no save file; 2-6/2-7 rotate per the suite's stage tests (final head) |
+| 7 | No dead ends or placeholders in the store build | pending build:store | `?fixture=home` is a URL-only dev toy, like main's chase/wheel fixtures. **For the lead (release.md step 2, "remove test-only toggles"):** it is existing debt that this release adds to, so I am not deleting it; ruling asked |
+| 8 | Saves survive everything | not checked here: no save code changed; the real-phone kill check is Matt's closed-test step | diff |
+
 ## Lessons applied
 D92 (tsc + the CI tool line after each merge), D115 (every run on a frozen, chattr'd tree; the plants in fresh trees), D119 (no heredoc in
 a commit chain), D128 (stamps from `date`), D134 (this step pushed and ls-remote checked before the hand-over), D138 (only this candidate's
