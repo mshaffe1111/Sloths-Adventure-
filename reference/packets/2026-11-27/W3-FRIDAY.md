@@ -20,6 +20,9 @@ BASE for every World 3 lane: origin/t-eng-w3 once ENG-DARK (3-1's tower fix + th
   ENG-SOFT-W3). An up tower refuses a storey reached by jumps alone (tower.ts:607): the moonflower steps are the way up.
 - ENG-LURE (packets/2026-11-25/ENG-LURE.md; 3-3's signature; AFTER ENG-SPORE lands). Trims: x -> l at T, X, S (no B15); C -> g with an
   ocelot. The lure's fear:'spore' + the skills ring-to-call and bait-and-climb. '#spore@puff' through ENG-ASKS.
+  ADDED 11-27 9:25 AM ET (R-165.527, KIT-W3b): the purge / gauntlet top-up (pipeline.ts topUpFoes, goal+2 on the widest main pieces) never
+  stands an animal in a node whose code names its threat count; it lays only in nodes with no threat dial (3-3 is a purge of 16; 15 top-up
+  animals land in g nodes asking ocelot*1). A toy each way; lockall names every purge stage that moves.
 - ENG-VINE (packets/2026-11-25/ENG-VINE.md; 3-5 and 3-8). '#vine' and '#thornvine@doze' through ENG-ASKS; 3-5's h -> a vine-socket brick
   (KIT-W3a's), m -> g, r -> f; the skills quiet-route and wake-from-afar.
 
