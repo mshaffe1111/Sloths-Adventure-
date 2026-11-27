@@ -2,13 +2,18 @@
 
 ## ENG-29-i (box 5, the lead's scope ruling: never looser, not an exact match; started 8:16 PM ET Thu 11/26 by `date`): the conservative court judge 28c848dbd, PROVEN on the whole table; gates RUNNING on the frozen tree
 
-### EXACT NEXT STEP (if this box hands over before the landing)
-Candidate = 28c848dbd on t-eng-29-wip (code: riverLay.ts COURT_SAG + courtFalls/courtLands; the toy in oneMargin.test.ts). Rebuild a
-FROZEN tree at 28c848dbd (D115: chattr -R +i src tools, then chattr -R -i src/game/gen2/proven) and run, once each: tsc (clean here);
-generalitycheck (PASS here); the CI tool line (gates.yml:157); the 6 shards (deploy.yml:38, --test-shard=k/6; KID_RUNS_59 the inherited
-red); tierBots (gates.yml:177, 9/9); lockall: record on c3816fbb3 (`--layouts 16 --out`), then `--check` that record on 28c848dbd: a
-listed stage whose lianaDrops / verdicts move -> STOP, send the lead the moved stages, never re-pin. All green: merge into t-eng-29
-(d1038af49 is inside wip; no force), send the hash and each shard's totals to the lead AND BUILD-29-d (session_01FhBbYPDj47E8NFzXvBGkd3).
+### EXACT NEXT STEP (box 6; hand-over 8:47 PM ET Thu 11/26 by `date`, on the 28-minute work clock, gates part-run)
+Candidate = 28c848dbd on t-eng-29-wip (code: riverLay.ts COURT_SAG + courtFalls/courtLands; the toy in oneMargin.test.ts); the head is
+the REPORT/turnover commits after it (no code). The LEAD APPROVED COURT_SAG [0, 5, 10] and its named Easy cost. Rebuild a FROZEN tree
+at 28c848dbd (D115: `git worktree add --detach`, link node_modules, `chattr -R +i src tools`, then `chattr -i src/game/gen2` stays +i and
+`chattr -R -i src/game/gen2/proven`). Gates already GREEN on box 5's frozen tree (they stand for the same hash; re-run only if the lead
+says so): tsc clean; generalitycheck PASS (26 literals, 26 known); the CI tool line (gates.yml:157) 427 tests, 426 pass, 0 fail, 1 todo
+(chaseBots ENG-B4, OPEN todo); shard 1/6 692 tests 691 pass 0 fail (1 todo/skip); shard 2/6 692 / 692 / 0. NOT finished at the hand-over:
+shards 3-6 (shard 3 had ONE red at 383 tests: firstTimerBot.test.ts:177 KID_RUNS_59, the inherited red), lockall --check, tierBots.
+Run: shards 3-6 (deploy.yml:38, `--test-shard=k/6`, run_in_background, timeout 7200000); tierBots (gates.yml:177, 9/9); lockall: record
+on c3816fbb3 (`npx tsx tools/engine/lockall.ts --layouts 16 --out <f>`, about 20 min) then `--check <f>` on 28c848dbd: a listed stage
+that moves -> STOP, send the lead the moved stages, never re-pin. All green: merge t-eng-29-wip into t-eng-29 (no force), send the hash
+and each shard's totals to the lead AND BUILD-29-f (session_01FhBbYJfmZvznPebcgnKL3E; BUILD-29-d and -e have handed over).
 
 ### The choice and why
 - **COURT_SAG = [0, 5, 10] px**: each court let-go (lockedDrops) is flown from the model's launch AND from it lowered 5 and 10 px (screen
@@ -38,7 +43,8 @@ listed stage whose lianaDrops / verdicts move -> STOP, send the lead the moved s
 
 ### Gates (frozen tree at 28c848dbd, D115: src and tools immutable, src/game/gen2/proven writable)
 - tsc clean. generalitycheck PASS (26 literals, 26 known).
-- RUNNING: the CI tool line; the 6 shards; lockall (record on c3816fbb3, then check). tierBots after.
+- CI tool line 427 / 426 pass / 0 fail / 1 todo. Shard 1: 692 / 691 / 0. Shard 2: 692 / 692 / 0. Shards 3-6, lockall --check and
+  tierBots were mid-run at the hand-over (shard 3's one red so far: KID_RUNS_59, inherited).
 
 Lessons applied: D115 (frozen, immutable tree), D119, D128 (stamps from `date`), D133 (the invariant proven on the whole table, not 10
 rows), D134, D138, D140, D146.
