@@ -3,15 +3,18 @@
 **Box 1 hand-over, stamped Fri Nov 27 6:51 PM ET (`TZ=America/New_York date`). Branch t-eng-drop on 7a580aefc. WIP, NOT gated, NOT landed.**
 
 ## EXACT NEXT STEP (the successor starts here)
-1. Read `reference/qa-reports/ENG-DROP/drop-w3noise.txt` (w3Noise.test.ts WHOLE on t-eng-drop, started 6:51 PM, takes about 9-10 min;
-   if the file is missing, re-run: `npx tsx --test src/game/gen2/worlds/w3Noise.test.ts`). Expected: 12 tests, the 4 new ENG-DROP ones
-   included. Any red: file:line and fix it.
+1. DONE in box 1: w3Noise.test.ts WHOLE on t-eng-drop, `# tests 11 # pass 11 # fail 0` (`drop-w3noise.txt`; moss 393 px fall, slept,
+   sleeper 295 px off; stone woke on [landing], 293 px off; 3-2 seed 2). The first run (`drop-w3noise-first-run.txt`) was 10/11: :329
+   "moss: the sleeper lies about 300 px past where he lands (255 px)": off 3-2's cliff he lands about 185 px in, not 140 as off the tower's
+   branch, so the toy's SLEEP_T went 0.55 -> 0.6 (the toy's placement for this row; the +-30 px assertion is unchanged).
 2. Check the probe's 5 "no top found" rolls (below): the engine's own dropSeen passed them (no swap), the probe's top-finder (gap 8-20 px,
    |dy - 400| <= 12) missed them. Print one (TOP=bank VERBOSE probe) and say whether the cliff top merged with the ground before it.
 3. **Ask the lead first (see "For the lead" 1):** on the trial merge the CALL and PUNCH toys are red too, not only moss/stone.
-4. The trial-merge proof: in the scratch worktree (a scratch branch from 7a580aefc + `git merge 38c1b2b20`, never pushed), merge
-   t-eng-drop, resolve w3Noise.test.ts as the union (KIT-W3a's dropClear + its plant at its :135/:343, and this branch's 3-2 row and the
-   toy's cliff top and `drop: DROP`; built() keeps dropClear), then w3Noise WHOLE.
+4. The trial-merge proof: DONE in box 1 up to the run. Recipe: a scratch branch from 7a580aefc, `git merge 38c1b2b20` (clean), then
+   `git merge t-eng-drop`: ONE conflict, w3Noise.test.ts, resolved as the union (KIT-W3a's PLANTED dropClear test closed with `});`,
+   then this branch's four ENG-DROP tests); the resolved file is `trial-union-w3Noise.test.ts.txt` here (copy it over, tsc clean).
+   Its w3Noise WHOLE run was started at 6:53 PM with SLEEP_T 0.55 (before the fix above): result in `trial2-w3noise.txt` if box 1
+   recorded it. Re-run it with the saved union file (which now has SLEEP_T 0.6): that is the proof on the trial tree.
 5. Then packet steps 4-7 as written: the lock (lockall --layouts 16 on 7a580aefc ALONE, then --check on the frozen head ALONE,
    expected 102/102), 3-1's kit rolls before = after, pre-freeze (every importer of pipeline.ts / types.ts / stageTable.ts, by grep,
    with totals; w3.test, w3Level.test, w3Noise, tower.test), `git ls-remote origin refs/heads/t-eng-w3` (it will move for ENG-CATCH-i:

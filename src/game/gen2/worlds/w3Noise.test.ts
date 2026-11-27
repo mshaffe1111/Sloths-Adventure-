@@ -62,9 +62,9 @@ const TOY_THREAT = 1;
 const DROP = 400;
 /** the drops' floor: the top (up to 240 px), its gap (up to 20) and this floor make one storey (1140 px) */
 const DROP_W = 800;
-/** where the drops' sleeper lies along the floor (t, from the top's side): about 300 px past where a walk-off from the top lands (he
- *  comes down about 140 px in) */
-const SLEEP_T = 0.55;
+/** where the drops' sleeper lies along the floor (t, from the top's side): about 300 px past where a walk-off from the top lands. Off
+ *  3-2's cliff he comes down about 185 px in (off 3-1's tower branch it was about 140: 0.55 put him 255 px off, ENG-DROP box 1) */
+const SLEEP_T = 0.6;
 const dropRow = (row: Row) => row === 'moss' || row === 'stone';
 /**
  * the ONE test-only section a toy adds to the row's pool: a long stone (or moss) floor, the stone and the animal on it. The drops build their
