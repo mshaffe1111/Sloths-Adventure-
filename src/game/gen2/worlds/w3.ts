@@ -227,9 +227,36 @@ export const w3CapDown: SectionTemplate = {
 };
 
 /** the down tower's climb and bounce bricks (a pool reads them after the way down's) */
-// (w3-cap-steps, box 1's second bounce brick, was DROPPED in box 2: 8 of 12 draft rolls clean, refused for a tower catch passing its storey
-//  and blind drops off the tower's own catch boughs, an ENGINE-WORTHY tower fault (rule 26). Its cost: one bounce shape in the down tower.
-//  It is in git history (782df622e) to re-probe once the tower's catch lands within TOWER.see)
+/** [b] steps down to the cap, up onto the lip: two short drops to a stone shelf with the cap at its end, the bounce up a shelf 64-72 px
+ *  under the entry and 360-400 px out from it (past a double; nothing rises over the entry), a drop on (as w3CapDown's) */
+export const w3CapSteps: SectionTemplate = {
+  id: 'w3-cap-steps',
+  name: 'steps down to the cap, up onto the lip',
+  archetypes: 'any',
+  phases: ['sho', 'ten', 'ketsu'],
+  difficulty: 3,
+  content: 'bounce',
+  jobs: W3_BOUNCE_JOBS,
+  pieces: [
+    { key: 'a', shape: 'branch', w: [140, 160], place: { kind: 'start' } },
+    { key: 's', shape: 'branch', w: [140, 160], place: { kind: 'walk', after: 'a', dy: [120, 120] }, landing: true },
+    { key: 'b', shape: 'branch', w: [220, 240], place: { kind: 'walk', after: 's', dy: [126, 130] }, landing: true },
+    w3Cap('m', 'b', 0.74),
+    w3BounceLip('w', 'b', 'm', [140, 160]),
+    { key: 'c', shape: 'branch', w: [220, 240], place: { kind: 'walk', after: 'w', dy: [150, 150] }, landing: true },
+  ],
+  entry: { piece: 'a', kind: 'ledge' },
+  exit: { piece: 'c', kind: 'ledge' },
+  exitDy: 220,
+  sockets: [{ id: 'petal', role: 'pickup', on: 's', t: 0.5, dn: 34 }, { id: 'petals', role: 'pickup', on: 'w', t: 0.45, dn: 34, count: 2, span: 90 }, { id: 'flag', role: 'flag', on: 'c', t: 0.6 }],
+  mirrorable: false,
+};
+
+// (w3-cap-steps is PARKED, not dropped (the lead's ruling, 11-27): 8 of 12 draft rolls clean, refused by the tower's catch faults (lane
+//  ENG-CATCH, R-165.526). It re-probes with w3-cap-down once ENG-CATCH merges and comes back into W3_DOWN_TOWER; until then the down
+//  tower has ONE bounce shape)
+/** bricks held out of the kit until their engine lane lands (each one's reason above it) */
+export const W3_PARKED: readonly SectionTemplate[] = [w3CapSteps];
 export const W3_DOWN_TOWER: readonly SectionTemplate[] = [w3RootDown, w3TwoRoots, w3CapDown];
 
 // ───────────────────────────── the manifest and the kit ─────────────────────────────
