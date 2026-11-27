@@ -1,6 +1,13 @@
 # ENG-DEAL (R-165.541): the deal follows the code's letters, every slot, every job
 
-## THE EXACT NEXT STEP (box 1; written 11:26 AM ET Fri 11-27 by `date`)
+## THE EXACT NEXT STEP (box 2; written 11:38 AM ET Fri 11-27 by `date`)
+LOCK: base 9818cc87 3264 builds / 102 stages; check on 037f82071: "lock: 101/102 stages unchanged", the move "1-8: gen2" (LISTED).
+Why (probe `$S/probe18.mts`, 32 builds field by field): the ONLY gen2 field that differs is `graph`: 1-8 (no mix, so the deal returned
+early) now carries its code letters' types on 7 nodes (n2 hazard, n3/n10 ground, n5/n13 rope, n7 bounce, n9 hazard); plan, sections,
+errors and every non-gen2 part are identical. SENT to the lead with my recommendation (land, 1-8 named intended; the record says what the
+code says). WAITING for the lead's word (CI #89: 20 minutes, from the send just after 11:36 AM ET by `date`, then my own recommendation).
+Running: tierBots on `$S/head` (log `$S/tierbots.log`), shards 3-6. Then land per item 4.
+### Box 1's step (items 1-3 done but the landing)
 Branch `t-eng-deal` holds the fix (commit c6340c0d8 on t-eng-w3 9818cc87). NOT gated, NOT landed. DONE: 3-1 w3 + wide, 3-2 and 3-3 old
 vs new (below); tsc 0; generalitycheck PASS; CI tool line 50/50; the lock BASE on 9818cc87 (3264 builds of 102 stages, `$S/base.json`);
 shard 1 of 6: 725 pass, 0 fail. RUNNING on the frozen worktree `$S/head` (8ad1a8e9; code the same as this branch's head): shards 2-6
