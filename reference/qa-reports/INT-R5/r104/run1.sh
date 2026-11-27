@@ -37,6 +37,8 @@ g lockall "npx tsx tools/engine/lockall.ts --layouts 4 --check $O/lock-main.json
 g seedlists 'for s in $(npx tsx tools/engine/registrycheck.ts --lists); do echo "== $s $(date +%s)"; npx tsx tools/engine/seedlist.ts "$s" --check; echo "== $s exit $?"; done; ! grep -q "exit [1-9]" '"$O"'/g-seedlists.log'
 g seed11 "npx tsx tools/engine/seedlist.ts 1-1 --check"
 g shardplan 'P=$(npx tsx tools/engine/registrycheck.ts --shards --print); echo "plan $P"; N=$(echo "$P" | tr -d "[] " | tr "," "\n" | wc -l); for k in $(seq 1 $N); do echo "shard $k/$N: $(npx tsx tools/engine/registrycheck.ts --lists --shard $k/$N 2>&1 | tr "\n" " ")"; done'
+g lockpre "cd $PRE && npx tsx tools/engine/lockall.ts --layouts 4 --out $O/lock-pre.json"
+g lockvspre "npx tsx tools/engine/lockall.ts --layouts 4 --check $O/lock-pre.json"
 g paint0 "npx tsx tools/engine/paintcheck.ts --part 0/3"
 g paint1 "npx tsx tools/engine/paintcheck.ts --part 1/3"
 g paint2 "npx tsx tools/engine/paintcheck.ts --part 2/3"
