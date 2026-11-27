@@ -15,6 +15,7 @@ const DIR = join(process.env.LEADGUARD_DIR ?? tmpdir(), 'sloths-leadguard');
 const FRESH_MS = 15 * 60 * 1000;
 // words in a session's task_summary / status_detail that mean something is still running there
 const RUN_WORDS = /\b(running|re-running|after|waiting on|in flight|gating|still)\b/i;
+const NOT_RUN = /\b(nothing|not|no longer|none)\s+(is\s+|are\s+)?(running|re-running|in flight|gating|still running)\b/gi;
 
 export function judgeBash(cmd) {
   if (/<</.test(cmd) && /\bgit\s+commit\b/.test(cmd)) {
@@ -31,7 +32,8 @@ export function lookFrom(resp) {
   const st = s.match(new RegExp(`session_status${q}\\s*:\\s*${q}(SESSION_STATUS_[A-Z_]+)`));
   const sums = [...s.matchAll(new RegExp(`(?:task_summary|status_detail)${q}\\s*:\\s*${q}([^"\\\\]*)`, 'g'))].map((m) => m[1]);
   if (!id || !st) return null;
-  const idle = st[1] === 'SESSION_STATUS_IDLE' && !sums.some((t) => RUN_WORDS.test(t));
+  // a negated run ('nothing running', 'not running', 'no longer gating') says the opposite: drop it before the word check
+  const idle = st[1] === 'SESSION_STATUS_IDLE' && !sums.some((t) => RUN_WORDS.test(t.replace(NOT_RUN, '')));
   return { id: id[1], status: st[1], sums, idle };
 }
 
@@ -61,15 +63,17 @@ if (process.argv[2] === '--self-test') {
   const idle = { ccr: { id: 'session_AAA111', session_status: 'SESSION_STATUS_IDLE', post_turn_summary: { status_detail: 'box done; report written' } } };
   const busy = { ccr: { id: 'session_BBB222', session_status: 'SESSION_STATUS_IDLE', post_turn_summary: { status_detail: 'drawcheck run on stage 1 of 22; commit after ~6 min' } } };
   const run = { ccr: { id: 'session_CCC333', session_status: 'SESSION_STATUS_RUNNING' } };
+  const quiet = { ccr: { id: 'session_FFF666', session_status: 'SESSION_STATUS_IDLE', post_turn_summary: { status_detail: 'handed over; branch pushed, nothing running' } } };
   const wrapped = { content: [{ type: 'text', text: `<other-session nonce="x">${JSON.stringify(idle).replace('AAA111', 'DDD444')}</other-session>` }] };
-  for (const r of [idle, busy, run, wrapped]) { const l = lookFrom(r); if (l) recordLook(l); else { bad++; console.log('FAIL no look', JSON.stringify(r).slice(0, 80)); } }
+  for (const r of [idle, busy, run, wrapped, quiet]) { const l = lookFrom(r); if (l) recordLook(l); else { bad++; console.log('FAIL no look', JSON.stringify(r).slice(0, 80)); } }
   t('idle archive allowed', judgeArchive('session_AAA111').ok, true);
   t('a named run refused', judgeArchive('session_BBB222').ok, false);
   t('a RUNNING session refused', judgeArchive('session_CCC333').ok, false);
   t('a wrapped idle look allowed', judgeArchive('session_DDD444').ok, true);
+  t("'nothing running' allowed", judgeArchive('session_FFF666').ok, true);
   t('no look refused', judgeArchive('session_EEE555').ok, false);
   t('a stale look refused', judgeArchive('session_AAA111', Date.now() + FRESH_MS + 1000).ok, false);
-  console.log(bad ? `${bad} FAIL` : 'PASS 9/9'); process.exit(bad ? 1 : 0);
+  console.log(bad ? `${bad} FAIL` : 'PASS 10/10'); process.exit(bad ? 1 : 0);
 } else {
   let raw = ''; for await (const ch of process.stdin) raw += ch;
   const ev = JSON.parse(raw || '{}');
