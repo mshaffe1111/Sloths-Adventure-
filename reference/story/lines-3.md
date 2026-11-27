@@ -57,6 +57,19 @@ Other conflicts found and settled (the same mistake in its pairs, LESSONS D21):
 
 ## The lines, stage by stage (verbatim; the builder copies these, a test holds them equal)
 
+**Trim review (KEEPER-W3, 11-27, approved under Matt's 11-13 authority).** Every line below was checked against the TRIMMED codes
+(origin/t-audit-w3 0b8930e64 reference/qa-reports/AUDIT-W3/codes/codes-trim.txt; the lead's rulings, plans/W3-LANES.md). Lines a trim
+made false are rewritten and marked CHANGED or NEW or MOVED; every other line stands as approved 11-19. Beats are named by their node
+letter in the trimmed code (T, X, W, C, S), not by number: the trims moved the beat numbers.
+
+**Stable ids (a builder holds these in a test).** Each line's id is in the first column: `3-N.teach.<key>` (a T line, said on Normal's
+default Tips and on Help), `3-N.dot.<key>` (Dot's story line, said once), `3-N.mission`, `3-N.sealed`, `3-N.names`, `3-N.find`,
+`3-N.ring.go` / `3-N.ring.open`, `3-N.page` (Pokey's journal page), `3.count.<goal>.<form>` (World 3's goal words), `3.journal.<card>.tip`
+/ `.lore`, and `3-H.*` for the hidden stage. **How a builder cites one:** the stage's test keeps a table `{ '3-1.teach.still': 'Stand
+still. Glowworms wake for still sloths!', ... }` copied verbatim from here and asserts each shipped string equals its entry; the test's
+comment, the commit and the REPORT name the id and this file (`lines-3.md 3-1.teach.still`). An id never changes; a reworded line keeps
+its id, and the keeper changes the words here first.
+
 Ids follow 2-5's: `w3N.key` for Dot's lines, MISSION_3N for the card, `SEALED_LINES['3:type']` held equal to the kit's SEALED_3N. TEACH
 lines (said on Normal's default Tips as on Help, D50) are marked T. A dash in "Sealed" means the exit cannot lock: goals.ts:76-83 counts
 only a harvest or a `gathers` stage, and GOAL_WORDS has no words for sprint, ascent, stealth or vine_runner, so those exits never seal
@@ -65,37 +78,38 @@ only a harvest or a `gathers` stage, and GOAL_WORDS has no words for sprint, asc
 ### 3-1 Into the Grotto (sprint)
 | Key | Who, where | Line | Words |
 |---|---|---|---|
-| `still` T | Dot, 800+ px before beat 1 (the first rim) | Stop at the edge. Glowworms wake for still sloths! | 9 |
-| `puff` T | Dot, 800+ px before beat 6 (the puffs light the way) | Puffs light up too! Don't land in the cloud! | 9 |
-| `sky` | Dot, once, at beat 9 when he stands still and the glowworm sky wakes | Oh. Oh, Pokey. There's a whole sky down here. | 9 |
-| mission | stagePlan.ts:77, REPLACES "Follow the glowworm light down into the grotto." | Stand still, and the glowworms show the way down. | 9 |
-| sealed | - (sprint) | | |
+| `3-1.teach.still` T | Dot, 800+ px before T (the dark shelf WALK, no drop under it: trim a) | Stand still. Glowworms wake for still sloths! | 7 |
+| `3-1.teach.puff` T | Dot, 800+ px before W (the puffs light the way) | Puffs light up too! Don't land in the cloud! | 9 |
+| `3-1.dot.sky` | Dot, once, at S when he stands still on the last rim and they all wake at once (trim b: one big wake, no wide sky) | Oh. Oh, Pokey. They all woke up for you. | 9 |
+| `3-1.mission` | stagePlan.ts:77, REPLACES "Follow the glowworm light down into the grotto." | Stand still, and the glowworms show the way down. | 9 |
+| `3-1.sealed` | - (sprint) | | |
 
 ### 3-2 Glowworm Path (stealth)
 | Key | Who, where | Line | Words |
 |---|---|---|---|
-| `hang` T | Dot, 800+ px before beat 1 (the safe root); echoes 1-3's "Flick up to grab, slide to creep." (dotLinesData.ts:106) | Jump up, grab a root, and creep along! | 8 |
-| `glow` T | Dot, 800+ px before beat 9 (the glow patches) | Mind the glow! In the light, they see you. | 9 |
-| mission | stagePlan.ts:78 (conflict 1) | Prowlers never look up. Hang high, and stay out of the light. | 12 |
-| sealed | - (stealth) | | |
+| `3-2.teach.hang` T | Dot, 800+ px before T (the first root, over a walkable floor: no #soft, first try cannot fail); echoes 1-3's "Flick up to grab, slide to creep." (dotLinesData.ts:106) | Jump up, grab a root, and creep along! | 8 |
+| `3-2.teach.still` T | Dot, 800+ px before C (Cg1&, his first floor with prowlers on it; if the kit lays X's ocelot on his floor, before X instead). NEW 11-27: C is ground now, so holding still is the rule there (OCELOT beatenBy still, world3.ts:18; `sees` goes through watcherSees with hero.still, core.ts:242-243) | Prowlers on the floor! Hold still, they lose you! | 9 |
+| `3-2.teach.glow` T | Dot, 800+ px before S (the den root under the roof's lit patches). MOVED 11-27 from the combine: C is ground now, and said there it would tell him the dark floor is safe (lit = seen only lifts their sight UP: the upOf seam, origin/t-eng-dark-wip core.ts:258-265) | Mind the glow! In the light, they see you. | 9 |
+| `3-2.mission` | stagePlan.ts:78 (conflict 1) | Prowlers never look up. Hang high, and stay out of the light. | 12 |
+| `3-2.sealed` | - (stealth) | | |
 
 ### 3-3 Footprints in a Circle (purge)
 | Key | Who, where | Line | Words |
 |---|---|---|---|
-| `chime` T | Dot, 800+ px before beat 1 (the first chime stone) | Ring a stone, prowlers come. Puffs send them home! | 9 |
-| `yawn` | Dot, once, at beat 1 when the first prowler falls asleep and pads home (with a big soft yawn sound: the lead's audio ask) | Aww, it yawned! Off to bed, then. | 7 |
-| `bait` T | Dot, 800+ px before beat 6 (be the bait) | They come where you land, too. Be the bait! | 9 |
-| mission | stagePlan.ts:79, REPLACES "Drive off the prowlers circling in the dark." | Ring the stones. The sleepy puffs send the prowlers home. | 10 |
-| sealed | SEALED_LINES `'3:purge'` (3-3 is World 3's only purge) | Some prowlers are still up. Ring them home! | 8 |
+| `3-3.teach.chime` T | Dot, 800+ px before T (the first lure: its chime stone) | Ring a stone, prowlers come. Puffs send them home! | 9 |
+| `3-3.dot.yawn` | Dot, once, at T when the first prowler falls asleep and pads home (with a big soft yawn sound: the lead's audio ask) | Aww, it yawned! Off to bed, then. | 7 |
+| `3-3.teach.bait` T | Dot, 800+ px before W (be the bait; C is a bait beat too now, no stone) | They come where you land, too. Be the bait! | 9 |
+| `3-3.mission` | stagePlan.ts:79, REPLACES "Drive off the prowlers circling in the dark." | Ring the stones. The sleepy puffs send the prowlers home. | 10 |
+| `3-3.sealed` | SEALED_LINES `'3:purge'` (3-3 is World 3's only purge). CHANGED 11-27: C has no stone now (x -> g), so "Ring them home" could send him to a stone that is not there | Prowlers still up back there! Send them home! | 8 |
 
 ### 3-4 The Sinkhole (ascent)
 | Key | Who, where | Line | Words |
 |---|---|---|---|
-| `bloom` T | Dot, 800+ px before beat 2 (the first flowers) | Moonflowers open where the moonlight touches. Climb on them! | 9 |
-| `rise` T | Dot, 800+ px before beat 6 (the moon rises) | The moon's moving! Keep up, or the flowers close! | 9 |
-| `full` | Dot, once, at beat 9 when the whole wall blooms | Every flower open at once. Oh, Pokey, look! | 8 |
-| mission | stagePlan.ts:80, REPLACES "Climb the sinkhole wall toward the moonlight." | Climb the moonflowers. They open where the moonlight touches. | 9 |
-| sealed | - (ascent) | | |
+| `3-4.teach.bloom` T | Dot, 800+ px before T (the first flowers, over a walkable floor) | Moonflowers open where the moonlight touches. Climb on them! | 9 |
+| `3-4.teach.rise` T | Dot, 800+ px before W (the moon rises) | The moon's moving! Keep up, or the flowers close! | 9 |
+| `3-4.dot.full` | Dot, once, at S when the whole wall blooms | Every flower open at once. Oh, Pokey, look! | 8 |
+| `3-4.mission` | stagePlan.ts:80, REPLACES "Climb the sinkhole wall toward the moonlight." | Climb the moonflowers. They open where the moonlight touches. | 9 |
+| `3-4.sealed` | - (ascent) | | |
 
 ### 3-5 Sleeping Vines (stealth)
 | Key | Who, where | Line | Words |
@@ -197,10 +211,13 @@ for the card's back, written as creatureLore.ts writes them (the narrator: plain
 
 - 3-1 `still`: the stage's one idea in a child's words, with the pun the world is built on ("still sloths"). *9 words; said before the
   first rim, where stopping is free.* `puff`: the twist's danger in one clause (the cloud), the help in the other. `sky`: Dot's dead stop
-  when something is real (STORY-KEEPER §2); it pays off the design's "There's a sky under the ground!"
-- 3-2 `hang`: the move, in the order he does it, echoing 1-3's card. `glow`: the one rule that still catches a hanging sloth (lit
-  patches), said before the patches, not a repeat of the mission.
+  when something is real (STORY-KEEPER §2); since trim b (one big wake on the last rim, no wide sky) it says what the picture is sure to
+  show: every glowworm waking at once because he stood still.
+- 3-2 `hang`: the move, in the order he does it, echoing 1-3's card. `still`: since C went to ground (V11 fix), the combine is the one
+  place he meets prowlers on their own floor; the mission's "hang high" cannot help there, so Dot gives the floor's rule once, before it.
+  `glow`: the one rule that still catches a hanging sloth (lit patches), said before the den's patches, not a repeat of the mission.
 - 3-3 `chime`: input and resolution together (ring, they come, the puffs send them home), with "home" matching the count words.
+  `sealed`: true whichever prowler was left, one at a stone or one at C's bait floor.
   `yawn`: makes it bedtime, never fear (ask 3); the sound does the rest. `bait`: the twist named the design's way.
 - 3-4 `bloom`, `rise`, `full`: the teach, the twist (the light moves), and wonder with no instruction in it.
 - 3-5 `loud`: the rule and both ways round it. `wake`: the twist, told as permission (the mission no longer forbids it). `moss`: the two
