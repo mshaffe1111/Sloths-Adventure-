@@ -171,3 +171,5 @@ branch, change a test bar or change a rule still waits. (The lead's worker resta
 - THE LOCK GATE is two runs, spelled out (CI #100): `npx tsx tools/engine/lockall.ts --layouts 16 --out <base>.json` on the LANDING BASE,
   then `--layouts 16 --check <base>.json` on the frozen candidate. A bare `--check` compares nothing and exits 0; a lock result without its
   counts line (N/102 unchanged, the moved stages named) is NOT RUN.
+- A geometry or verdict fix is PROVEN on at least the seed range of the world test that guards the stage (e.g. w3.test's rolls 1-40 x both),
+  never on a probe's default seeds; it is briefed as the INVARIANT, not the one case in hand (CI #101).
