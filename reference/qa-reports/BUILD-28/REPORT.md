@@ -1,6 +1,6 @@
 # BUILD-28 REPORT (W2-LANE: 2-8 "Before the Water Rises"; R-165.430 (2), READY-28, BUILD-28). Session 1 (W2-LANE a), started 9:44 AM ET (from date). Session 2 (W2-LANE b), started 10:07 AM ET (from date). Session 3 (W2-LANE c), started 10:30 AM ET (from date). Session 4 (W2-LANE d), started 10:52 AM ET (from date). Session 5 (W2-LANE e), started 11:19 AM ET (from the session hook date) Session 6 (W2-LANE f), started 11:41 AM ET (from the session hook date) Session 7 (W2-LANE g), started 12:05 PM ET (from the session hook date) Session 8 (W2-LANE h), started 12:49 PM ET (from the session hook date) Session 9 (W2-LANE i), started 1:15 PM ET (from the session hook date) Session 10 (W2-LANE j), started 1:05 PM ET (from the session hook date) Session 12 (W2-LANE l), started 2:20 PM ET (from the session hook date) Session 13 (BUILD-28-j, box 10), started 10:43 AM ET (from the session hook date) Session 14 (BUILD-28-k, box 11), started 11:08 AM ET (from the session hook date)
 
-## EXACT NEXT STEP (BUILD-28 box 11, BUILD-28-k, started 11:08 AM ET (from the session hook date); code head 5b4665d28 on t-build-28-wip)
+## EXACT NEXT STEP (BUILD-28 box 11, BUILD-28-k, started 11:08 AM ET (from the session hook date); FROZEN CANDIDATE cb7b9af11 on t-build-28-wip)
 DONE THIS BOX (b0, the fish trap, the lead's ruling A):
 1. 61979c555: the cut src/assets/w2-cut/fish-trap-28.webp (193x269, 15.8 KB, w2-new.webp frame 0,727 193x269, no repaint; named
    fish-trap-28, not cage-whole, so no text match can mark the old frame used); catalog row w2-cut28#fish-trap-28 (World 2 only, decor
@@ -20,8 +20,12 @@ DONE THIS BOX (b0, the fish trap, the lead's ruling A):
    growth, the lead's rule); C leave it red. A stands 20 minutes after the ask with no ruling. A changes no lay.
 4. THE LOCK GATE base run STARTED alone: worktree /home/user/base-155 (merge-base 1558489a2), `lockall.ts --layouts 16 --out
    <scratch>/base.json` (scratchpad lockbase.log). Read its counts line ('lock: wrote N builds of 102 stages') before anything else heavy.
+5. THE LEAD RULED A (APPROVED), applied in cb7b9af11: the 'cage-whole' frame entry deleted from src/assets/w1to4art/w2-new.json; catalog
+   row w2-new#cage-whole KEPT, status 'superseded by w2-cut28#fish-trap-28'; re-emitted (w2, w6, w7, w8, w10 json: the status text).
+   tsc 0, generality PASS; related tests 57 pass, 1 fail = artUse's unused set, now exactly 'W10 w10alt.json#cage-b' (R-165.543, the
+   lead's); cage-whole CLEARED. FROZEN CANDIDATE cb7b9af11 (worktree /home/user/cand-cb7, node_modules symlinked).
 NEXT, in order (ReadNotifications at every step boundary; generalitycheck with tsc at each, D156):
-a. The lead's artUse ruling (or A on the timeout): apply, commit, push; THAT hash is the frozen candidate (git worktree add --detach
+a. DONE (the lead's artUse ruling (or A on the timeout): apply, commit, push; THAT hash is the frozen candidate (git worktree add --detach
    /home/user/cand-<hash>; node_modules symlinked). If the container is fresh: base.json is gone, re-run the base first, alone.
 b. The one gate run on the candidate, in box 10's order: lock --check base.json to its counts line (only 2-8 moves), then tsc +
    generality, the CI tool line (gates.yml), the suite in 6 shards with totals, seedlist --check for every list, drawcheck (2-8 a scenario,
