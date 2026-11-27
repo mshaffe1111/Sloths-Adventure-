@@ -1,6 +1,7 @@
 // The deal follows the code's letters (R-165.541, ENG-DEAL): a node whose code writes a content letter has EVERY one of its slots
 // dealt that letter's type, whatever its job (a signature too, which sits outside the mix), and never a section of another kind or
-// one with no kind; a node with no letter is dealt freely, as ever; a letter no section of the pool serves refuses the roll by name.
+// one with no kind; a node with no letter is dealt freely, as ever; a letter no section of the pool serves refuses the roll by name
+// (each such slot's 'pool short' note names the letter; the roll goes on, so the other nodes are still laid and judged).
 // Planted on the toy legs world (toyLegs.ts): the signature job is served by floating AND ground sections, so an untyped signature
 // node rolls a mix.
 import test from 'node:test';
@@ -55,6 +56,13 @@ test('the deal: a letterless node is dealt freely (its slots take either kind th
   assert.deepEqual([...seen].sort(), ['floating', 'ground'], 'over six seeds the free node lays both kinds');
 });
 
-test('the deal (planted): a letter no section of the pool serves refuses the roll by name, never another kind', () => {
-  assert.throws(() => build('A P R Sf E', 1, false), /node n4 asks 'f' \(floating\): no f section in the pool/);
+test('the deal (planted): a letter no section of the pool serves refuses the roll by name, never quietly with another kind', () => {
+  for (const seed of SEEDS) {
+    const { st, n, kinds } = kindsIn('A P R Sf E', seed, false);
+    assert.equal(n.content, 'floating', `seed ${seed}: the node keeps its letter's type`);
+    const named = st.gen2.errors.filter((e) => /^pool short at slot \d+ \(n4 signature: asks 'f' \(floating\): no f section in the pool\)$/.test(e));
+    assert.equal(named.length, kinds.length, `seed ${seed}: each of the ${kinds.length} slots refused by name (${st.gen2.errors.slice(0, 3).join(' | ')})`);
+    // (and the roll goes on: every other node is laid)
+    assert.ok(st.gen2.graph.nodes.every((q) => st.gen2.sections.some((x) => x.node === q.id)), `seed ${seed}: every node laid`);
+  }
 });

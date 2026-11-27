@@ -839,11 +839,12 @@ export const servesJob = (jobs: readonly string[] | undefined, job: NodeJob): bo
 
 /**
  * Whether a section's type may fill a node's slot (R-165.541): a node the deal typed takes no section of another type (one with no
- * type may), and loosened (`loose` above 0) takes any; a node whose CODE writes a content letter takes only a section of exactly that
- * type, at every loosening, so a slot is never quietly another kind: with none left the lay refuses by name. A node with no type is free.
+ * type may); a node whose CODE writes a content letter takes only a section of exactly that type (one with no type is no fill either).
+ * Loosened (`loose` above 0, none of its type fits) either takes any, and a lettered node's slot note then names its letter (the lay's
+ * choose), so a slot is never quietly another kind. A node with no type is free.
  */
 const typeFits = (t: SectionTemplate, n: MissionNode, loose: number): boolean =>
-  !n.content ? true : n.asked?.content ? t.content === n.content : loose > 0 || !t.content || t.content === n.content;
+  !n.content || loose > 0 ? true : n.asked?.content ? t.content === n.content : !t.content || t.content === n.content;
 
 /** the jobs a content node holds (NODES.md §7.1: structural nodes, and the signature, sit outside the mix) */
 const CONTENT_JOBS: ReadonlySet<NodeJob> = new Set(['teach', 'practise', 'fork', 'flow', 'combine', 'climb', 'descent', 'twist', 'test']);
@@ -2324,8 +2325,7 @@ export function layStage(budget: StageBudget, graph: MissionGraph, kit: WorldKit
     // (a teach node with no move named, a brief that names none: any section that teaches a move not yet taught)
     if (n.job === 'teach' && loose < 2) return (n.teaches ? t.teaches === n.teaches : !!t.teaches && !taught.has(t.teaches)) && typeFits(t, n, loose);
     if (t.teaches && teachHere.has(t.teaches) && !taught.has(t.teaches)) return false;
-    // (the deal's type: a section of another type never fills a typed node; one with no type may. A lettered node holds its type at
-    // every loosening, typeFits)
+    // (the deal's type: a section of another type never fills a typed node; one with no type may, but not a lettered node's, typeFits)
     if (!typeFits(t, n, loose)) return false;
     // (a fork is two roads: only a section that names the job; loosened all the way, the node is a plain practise by its phase)
     if (n.job === 'fork' && loose < 2) return !!t.jobs?.includes('fork');
@@ -2468,13 +2468,14 @@ export function layStage(budget: StageBudget, graph: MissionGraph, kit: WorldKit
       cands = M.sections.filter((t) => fits(t, n, i, 2) && !must.some((r) => r.section === t.id));
       if (cands.length) lastLoose = `${n.id} ${n.job}: no ${n.mustRise ? 'rising section (V19) ' : 'section for the job '}left, filled by its phase`;
     }
-    if (!cands.length && n.asked?.content && n.content) {
-      // (a lettered node, typeFits: no section of its letter fits the slot; never filled with another kind. Named: the pool has none of
-      // the type for the job, or those it has are spent or barred here)
+    if (lastLoose && n.asked?.content && n.content) {
+      // (a lettered node, typeFits, that no section of its letter fits: filled past its rule as any node, but the slot's note names the
+      // LETTER, so the roll is refused by name and never quietly laid with another kind. The pool has none of the type for the job, or
+      // those it has are spent or barred at this slot. The roll goes on, so every other node is still laid and judged)
       const L = n.asked.content;
       const ofType = M.sections.filter((t) => t.content === n.content && jobFits(t, n, 2));
       const spent = ofType.filter((t) => (used.get(t.id) ?? 0) >= (t.maxPerStage ?? M.graphs?.maxPerStage ?? Infinity)).length;
-      throw new Error(`gen2 ${budget.id}: node ${n.id} asks '${L}' (${n.content}): ${ofType.length ? `no ${L} section left for slot ${i + 1} (${ofType.length} in the pool${spent ? `, ${spent} laid already` : ''})` : `no ${L} section in the pool`}`);
+      lastLoose = `${n.id} ${n.job}: asks '${L}' (${n.content}): ${ofType.length ? `no ${L} section left (${ofType.length} in the pool${spent ? `, ${spent} laid already` : ''})` : `no ${L} section in the pool`}`;
     }
     if (!cands.length) {
       // (the hard no-repeat's own failure, named: every section that would fit here is already laid)
