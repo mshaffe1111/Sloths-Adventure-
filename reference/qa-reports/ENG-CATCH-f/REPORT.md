@@ -3,7 +3,7 @@
 ## EXACT NEXT STEP
 (box 2, ENG-CATCH-g, handed over, written 6:11 PM ET Fri 11-27 by `date`; t-eng-w3 checked at 7a580aefc then)
 CANDIDATE = origin/t-eng-catch-f HEAD (the hash in the lead message). Its code is 8ab05d35c (box 2's overlap rule on box 1's 056b22736;
-the commits after it are this REPORT only). Box 2's steps 1-3 DONE (below: the rule, its two tests and plants, the six-config proof,
+the commits after it are this REPORT folder only: the REPORT and proof-g/). Box 2's steps 1-3 DONE (below: the rule, its two tests and plants, the six-config proof,
 the overlap scan, the pre-freeze tests); step 4 (freeze, gates, land) NOT STARTED.
 1. Re-check base: `git ls-remote origin refs/heads/t-eng-w3` must still be 7a580aefc. If it moved: merge it by hash, tsc + generality,
    and re-run box 1's pre-freeze list whole (tower, towerMend, towerBots, legs, legsLay, camRepick, cameraFollow, worlds/w3,
@@ -15,11 +15,15 @@ the overlap scan, the pre-freeze tests); step 4 (freeze, gates, land) NOT STARTE
    in a detached worktree at 7a580aefc, then `--layouts 16 --check <scratch>/base.json` on the frozen head. A stage that moves is
    EXPECTED only where its old lay laid wood twice (box 1) or laid wood over wood at one height (box 2; going up too, the same `put`):
    prove each move by comparing the two lays' catches (a same-height overlap or duplicate in the old lay, gone in the new), else send
-   it to the lead. tierBots. Every red: file:line, run alone on 7a580aefc (R-165.550 ctestPicker:78 is inherited and owned).
+   it to the lead (the tool: proof-g/scan.mts reads the invariant itself, every same-height overlapping pair of solid wood in a
+   built stage; it builds 3-1 with the five pieces: point ROOT at each tree, and for another stage change its buildStage id). tierBots. Every red: file:line, run alone on 7a580aefc (R-165.550 ctestPicker:78 is inherited and owned).
 4. Land on t-eng-w3 by fast-forward (`git push origin <CANDIDATE>:refs/heads/t-eng-w3`, no force), `git ls-remote` equal, message
    the lead the landed hash and every counts line.
 
 ## Box 2 (ENG-CATCH-g): no two catches overlap at one height (the lead's ruling: fixed BEFORE the freeze)
+- SCOPE, MY CALL (said first to the lead; reversible, one filter, `cut` in `fit`): the rule reads every solid wood at the height,
+  the stage's own too, not only other catches: the toy's catch lay 18 px over the storey as well, and the scan found 102 of the 303
+  old overlaps were catches over the stage's own logs, the same rough spot (an end cap mid-plank).
 - THE RULE (tower.ts layCatches `overlaps` / `fit`, general: no stage id, seed or x): wood is never laid across solid wood at its height
   (|dy| <= 1, strict overlap). `put`: a piece wholly over laid pieces TAKES THEIR PLACE (they leave `laid`, `out`, `served`, `all`; the
   mend's keep puts them back, at their own indices, when it undoes the lay); a piece that only partly overlaps wood (laid or the
