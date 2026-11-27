@@ -1,14 +1,18 @@
 # ENG-QUIET: is a wait for ONE on 2-9's drum "quiet"? (Engine, from t-build-29 4c3ff9d8)
 
-## EXACT NEXT STEP (ENG-QUIET-e, 11-27 9:47 AM ET; NOT landed yet: t-eng-29 still 28c848dbd)
-- Re-pin done: origin/t-eng-quiet-e 7387d089a (one test file over f589b979a). tools/inspect/firsttimer.test.ts run-up test now finds its
-  row by property: the first of 2-4's listed rows (child, Normal) with a run-up jump -> seed 4 on this list (old seed 8's new roll has
-  none). Same assertions, bot, setting. Green alone; PLANT (startJump's runUpHold max off) RED on seed 4: flown 0.085 s vs 0.16 judged.
-- Green on 7387d089a: tsc, generalitycheck (26/26). RUNNING: the CI tool line (whole) on 7387d089a; the widened pin set (185 files) on
-  f589b979a. Pin-set red so far: src/game/firstTimerBot.test.ts:177 5-9 KID_RUNS_59, ALSO RED on 28c848dbd (pre-existing, R-165.473/
-  477/496), not from this candidate.
-- Next: when both runs end, re-run firsttimer.test.ts in the pin set on 7387d089a; any new red alone; then fast-forward t-eng-29
-  28c848dbd -> 7387d089a (git push origin 7387d089a:refs/heads/t-eng-29, no force), ls-remote, message the lead.
+## LANDED (ENG-QUIET-e, 11-27 10:15 AM ET): t-eng-29 28c848dbd -> 7387d089a (fast-forward, ls-remote confirmed). EXACT NEXT STEP: the lead's (2-9's build)
+- The one red, re-pinned by property: tools/inspect/firsttimer.test.ts run-up test, old '2-4 child Normal seed 8' -> the first of
+  2-4's listed rows (child, Normal) with a run-up jump runPress judged; on this list seed 4 (82.63 s, judged 0.16, flown 0.16).
+  Same assertions (a run-up jump; every one held at least as judged; shrine; no rescue), same bot, same setting. Its seed is found, never
+  an x. PLANT (startJump's runUpHold max off): RED on seed 4, flown 0.085 s vs 0.16 judged. Rows with the property on 1-60: 4 12 14 19 27
+  36 37 48 49 50 55 58 59 (11 of 13 RED under the plant).
+- Gates on 7387d089a: CI tool line 429 tests 428 pass 0 fail 1 todo; widened pin grep (185 files) 1458 tests 1443 pass 13 fail 2 todo;
+  tsc clean; generalitycheck PASS (26/26). The 13 reds are ALL red on 28c848dbd too (not this lane): src/game/firstTimerBot.test.ts:177
+  5-9 KID_RUNS_59 (R-165.473/477/496) and 12 in tools/validate/validate.test.ts + world1.test.ts (on no CI line). On f589b979a the pin
+  set was 14 fail: those 13 + the run-up test.
+- No shard holds the re-pinned file (the 6 shards are src only). lockall unchanged: a test-only change over f589b979a (diff:
+  tools/inspect/firsttimer.test.ts only).
+- Countermeasure (D151): the widened grep catches 185 files; release.md item 6 should name it.
 
 ## RED, NOT LANDED (ENG-QUIET-d, 11-27 9:35 AM ET): t-eng-29 stays 28c848dbd; the lead rules the next step
 - The CI tool line on frozen f589b979a: 429 tests, 427 pass, 1 FAIL (#195 the chase-bots child-fork line is a TODO, not a fail).
