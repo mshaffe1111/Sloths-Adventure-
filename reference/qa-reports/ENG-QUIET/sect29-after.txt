@@ -1,0 +1,6 @@
+  s1 gate 4.9->B 4.9 C 4.9 BC 4.9 | terrace 10.5->B 10.5 C 10.5 BC 10.5 | barge 5.5->B 5.5 C 5.1 BC 5.1
+  s2 gate 4.9->B 4.9 C 4.9 BC 4.9 | terrace 10.5->B 10.5 C 10.5 BC 10.5 | barge 5.5->B 5.5 C 5.1 BC 5.1
+  s3 gate 4.9->B 4.9 C 4.9 BC 4.9 | terrace 12.0->B 12.0 C 12.0 BC 12.0 | barge 5.5->B 5.5 C 5.1 BC 5.1
+  s5 gate 4.9->B 4.9 C 4.9 BC 4.9 | terrace 10.5->B 10.5 C 10.5 BC 10.5 | barge 5.5->B 5.5 C 5.1 BC 5.1
+  s6 gate 4.9->B 4.9 C 4.9 BC 4.9 | terrace 12.0->B 12.0 C 12.0 BC 12.0 | barge 5.5->B 5.5 C 5.1 BC 5.1
+2-9: lets-go/catches 10; verdict flips 0 | s1 10.5!/B10.5/C10.5/BC10.5! rest0->1 | s2 10.5!/B10.5/C10.5/BC10.5! rest0->1 | s3 12!/B12/C12/BC12! rest0->1 | s4 throw | s5 10.5!/B10.5/C10.5/BC10.5! | s6 12!/B12/C12/BC12! rest0->1

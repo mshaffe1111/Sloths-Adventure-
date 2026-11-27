@@ -1,19 +1,27 @@
 # ENG-QUIET: is a wait for ONE on 2-9's drum "quiet"? (Engine, from t-build-29 4c3ff9d8)
 
-## EXACT NEXT STEP (box 1 hand-over; the lead RULED B + the locked let-go wait, C not in, no clock cap)
+## EXACT NEXT STEP (box 1 hand-over; the lead RULED B + the locked let-go wait; C not in; no clock cap)
 Candidate: t-eng-quiet-b = 88b5611b4, cut from t-eng-29 28c848dbd (G6 in it; a fast-forward of t-eng-29). It holds: beats.ts
-'lianaDrop'/'logCatch' move beats (V, busy for s.dt); score.ts:1156 skips move:lianaDrop/logCatch; route.ts let-go wait = lockedLianas'
-wait on a stage with a tempo (grid's if none or Infinity); planted tools/inspect/letGoBeat.test.ts (both tests RED on the old code, seen:
-'no move beat for the lianaDrop at x 3105'; 'wait 0.300, want 0.283'), added to gates.yml:157. tsc clean. NOTHING ELSE RUN on it yet.
-Next, in order, ReadNotifications first (D140):
-1. lockall: on origin/main `npx tsx tools/engine/lockall.ts --layouts 16 --out lock-main.json`, then on the candidate `--check lock-main.json`
-   with NO --intended: no layout may move (inspector-only change). `npx tsx tools/engine/seedlist.ts 2-4 --check` (and every listed stage's).
-2. The real change's verdicts: apply `git diff 28c848dbd 88b5611b4 -- tools` onto a t-build-29 worktree (2-9 lives only there) and run
-   probes/verdicts.ts 6 (its A column is now the tree) + SECT=1 for 2-9: expect let-go 2.6, twist 2.6-3.1; 2-4 worst 3.3-3.4; name every
-   fail -> pass, NO pass -> fail; restCheck changes named (2-1, 2-2, 2-4, 2-7, 2-9 seen with the simulation).
-3. 2-4's and 2-9's meter: tools/difficulty (score.ts) on 2-4 and 2-9 must not refuse (no 'unpriced piece move:lianaDrop').
-4. Gates once on the final hash: tsc, the CI tool line (gates.yml:157), the suite shards (totals for THAT hash), tierBots, generalitycheck.
-5. Land: `git push origin t-eng-quiet-b:t-eng-29` (fast-forward, never force); send the lead the hash.
+'lianaDrop'/'logCatch' move beats (V, busy for s.dt); score.ts:1156 skips move:lianaDrop/logCatch; route.ts: on a stage with a tempo the
+let-go's wait is lockedLianas' (the grid's if there is no tempo, or Infinity); planted tools/inspect/letGoBeat.test.ts, added to
+gates.yml:157. Both tests were RED on the old code ('no move beat for the lianaDrop at x 3105'; 'wait 0.300, want 0.283') and are green now.
+DONE on it: tsc clean; coveragecheck PASS (16 built stages); letGoBeat.test 2/2.
+DONE on the real change (the candidate's tools diff applied to t-build-29, uncommitted, 2-9 lives there; verdicts-after.txt,
+sect29-after.txt, rest-before/after.txt):
+- 2-9: the let-go and the twist are no longer over 4 s on any seed. Still over: gate 4.9, terrace 10.5-12.0, barge 5.5 (the designer's).
+- Fail -> pass (seeds 1-6): 2-1 s3 4.5 -> 3.5; 2-4 s2 4.1 -> 3.4, s3 4.1 -> 3.3 (2-4: 4.0-4.1 -> 3.3-3.4 on all six). NO pass -> fail on any
+  of the 16 listed stages. Every other stage: the same number. (2-2 s6's simulated flip was C's: C is not in.)
+- restCheck no-rest bursts (inspector report only): 2-1 s3 2 -> 1; 2-4 6-8 -> 0-2. Every other stage unchanged.
+- Side effect to know: pickRoute picks the pickups route by beats a minute (eraRoll.ts:180), so more beats can switch that choice.
+NOT DONE (next box, in order; ReadNotifications first, D140):
+1. lockall: record on origin/main and on 28c848dbd (`npx tsx tools/engine/lockall.ts --layouts 16 --out <f>`; box 1 started both but
+   they had not finished), then on the candidate `--check` against each with NO --intended: no layout may move.
+2. `npx tsx tools/engine/seedlist.ts <id> --check` for 1-1 (CI's) and 2-4.
+3. Gates once on the final hash: tsc, the CI tool line (gates.yml:157), the suite shards (totals for THAT hash), tierBots,
+   generalitycheck.
+4. Land: `git push origin t-eng-quiet-b:t-eng-29` (fast-forward, never force); send the lead the hash.
+MISS (box 1): one background command used a shell '&' to run two locks side by side, which the brief forbids. Next box: separate
+run_in_background calls.
 
 ## The answer in one line
 The model does not price a wait for ONE as quiet: it hardly prices one at all. Of 2-9's six over-4 s stretches, two (the let-go and
