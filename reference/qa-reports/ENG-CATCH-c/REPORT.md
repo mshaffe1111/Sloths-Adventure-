@@ -1,5 +1,36 @@
 # ENG-CATCH-c (R-165.534; engine, Opus 5.5 xhigh): THE DOWN TOWER'S INVARIANT, proven on the whole seed range. Branch t-eng-catch-c
 
+## EXACT NEXT STEP (ENG-CATCH-d, box 2; written 11:23 AM ET Fri 11-27 by `date`). CANDIDATE 6d296c1b7 FROZEN (pushed, ls-remote equal); NOT LANDED; GATES NOT RUN
+Candidate 6d296c1b7 on t-eng-catch-c = box 1's WIP + this box's (tower.ts mend; src/game/gen2/towerMend.test.ts; probe/crop.mts, toyrun.mts).
+tsc 0; generalitycheck PASS (26 literals, 26 known). The engine (tower.ts, pipeline.ts) is unchanged since e303f5f77.
+What box 2 added (tower.ts mend, general: no stage id, seed or x):
+- Remedy 4 (trimKeep): remedy 2's run-on or 3's bough refused ONLY by the tower's own pieces in its way (inWay: cramped or slotted, as
+  fair reads them) is laid with those pieces trimmed back off it, each on the side of the end it serves (served[k] fall line and
+  SLIDE.back kept, MEND.trim 60 px at least, at most MEND.trimmed 3 pieces), each trimmed piece fair and its ends landing (endsLand);
+  kept only if the invariant leaves FEWER misses, else every piece restored. Remedies 2 and 3 are now generators (runOns, boughs), tried
+  plain first, then with trims.
+- A catch that passes its storey: remedy 1 now runs for a miss with no trail (a wall-to-wall catch has none; it was skipped before), and
+  for a 'pass' the catch's ends are laid free too (not locked to the wood run on level with it; fair keeps a slot's margin off it).
+Results (kit tree 1b300ebc3 + this tower.ts/pipeline.ts, worktree wt-try, immutable):
+- REPLAY: 58/58 captured reds clean (captured this box: all five 14, shelf-hops alone 34, cap-steps alone 10; the box-1 count was 55).
+- PROOF, seeds 1-40 x both (probe/probe.mts): ALL FIVE TOGETHER 80/80. shelf-hops alone, root-down alone, two-roots alone: running
+  (logs in the scratchpad, proof-*.log); cap-down alone and cap-steps alone: not started. cap-steps alone THROWS on n40 and e40 ('section
+  w3-cap-steps is 1142 px wide', the kit's brick, the lead's ruling: excluded and named).
+- TOYS (towerMend.test.ts, 9): 8 shapes cut from the captured reds (crop.mts: a band of storeys, a floor under it), each RED on d49de60f0
+  (8 fail on the verdict assertion) and green here (9/9); 5 of them (trim-n7, trim-n9, runon-n2, pass-joined, pass-walled) are also red on
+  box 1's WIP without this box's two changes (worktree wt-v), so they pin THIS box; the clean toy pins a lay with no miss untouched
+  (its lay piece for piece as d49de60f0 laid it).
+Next step:
+1. ReadNotifications. Finish the proofs on the SAME frozen tree (wt-try = 1b300ebc3 + 6d296c1b7's tower.ts and pipeline.ts): each brick
+   alone, `GEN2_DRAFT=3-1 ROOT=<wt-try> KEEP=<brick> SEEDS=40 VERBOSE=1 npx tsx probe/probe.mts`, two at a time; name each count
+   (cap-steps alone: 78 of 78 that do not throw is the bar; its two throws are the kit's). Any red: STOP, it is not frozen; tell the lead.
+2. GATES once on 6d296c1b7 (a frozen worktree of it, chattr -R +i src tools, proven/ writable): tsc; generalitycheck; the CI tool line;
+   THE LOCK as two runs (`npx tsx tools/engine/lockall.ts --layouts 16 --out base.json` on t-eng-w3 9818cc87d, then `--check base.json`
+   on 6d296c1b7, counts line; ANY listed stage moves = STOP and send the lead each and why); the suite in 6 shards; tierBots 9/9.
+3. LAND: merge 6d296c1b7 onto origin/t-eng-w3 (no force, never rebase; refused: fetch, re-merge, re-check); ls-remote; send the lead the
+   hash and each shard's totals.
+Lessons applied: D115 (each run on its own frozen worktree), D119, D128, D134, D138, D140, D154 (the invariant on the whole range), D156.
+
 ## EXACT NEXT STEP (box 1 hand-over, written 11:04 AM ET Fri 11-27 by `date`). NOT FROZEN, NOT LANDED, NO GATE RUN
 Base: t-eng-catch-c = merge of t-eng-w3 9818cc87d (ENG-CATCH, landed) into ENG-CATCH-b's frozen 861e2a22e (d49de60f0), + this box's WIP
 commit (tower.ts, pipeline.ts's one call). tsc 0 on the WIP. No toy written yet; no probe, suite, lock or tierBots run on it.
