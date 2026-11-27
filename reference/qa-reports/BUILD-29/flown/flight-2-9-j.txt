@@ -1,0 +1,183 @@
+
+[consts] the builder's numbers (normal, margin 0.82)
+                 JUMP_RISE    107.8
+               DOUBLE_RISE    184.5
+              BOUNCE_REACH    258.0
+       reachJump(0) single    174.7
+       reachJump(0) double    313.2
+     reachBounce(0) single    221.1
+          maxGap(0) single    143.3
+          maxGap(0) double    229.8
+          riseLimit single     88.4laid x0.9     79.5
+          riseLimit double    151.3laid x0.95    143.7
+ TAKEOFF_SLACK / LAND_HALF     70.0     21.0
+   engine on 1-1: coyote s      0.2   landPx      8.0    stand     15.8
+      double launch on 1-1    604.8
+
+[apex] normal: highest his feet rise over the take-off floor (px), standing start, no piece to land on
+               single hold     97.8
+          double hold best    175.0     f2=2min f2 2-12: 166.9
+              single flick     97.2
+         double flick best    173.5     f2=4min f2 2-12: 163.0
+                single tap     61.7
+           double tap best    120.5     f2=3min f2 2-12: 68.6
+        bounce (Jump free)    197.6
+        bounce (Jump held)    198.1
+   bounce+double hold best    275.4     f=10
+  bounce+double flick best    275.4
+  (bounce figures are over the FLOOR; the cap is 30 px up, so over the cap = figure - 30)
+
+[rise] normal: the highest top he ends up standing on (px over the floor), running at it, best of the take-off spots
+                              block    (worst spot)    thin   (worst spot)
+               single hold    123.0     84.0    113.0     74.0
+               double hold    200.0    199.0    190.0    188.0
+              single flick    123.0     70.0    112.0     59.0
+              double flick    199.0    198.0    188.0    187.0
+                single tap     87.0     39.0     77.0     39.0
+                double tap    146.0    129.0    136.0    119.0
+              bounce alone    223.0    106.0    213.0    120.0
+        bounce+double hold    302.0    295.0    290.0    286.0
+       bounce+double flick    302.0    293.0    290.0    286.0
+         bounce+double tap    302.0    293.0    290.0    286.0
+
+[rshare] normal: share of tries that end standing on a BLOCK top H px over the floor. Take-off 10-110 px from the face (11 spots); a double's second press 2-16 frames after the first
+     H  1 hold  1 flick   1 tap  2 hold 2 flick   2 tap
+    84    100%    100%     64%    100%    100%     98%
+   100    100%    100%      0%    100%    100%     66%
+   110    100%    100%      0%    100%    100%     60%
+   114     91%     91%      0%    100%    100%     59%
+   118     91%     91%      0%    100%    100%     59%
+   123     91%     91%      0%    100%    100%     53%
+   124      0%      0%      0%    100%    100%     53%
+   128      0%      0%      0%    100%    100%     52%
+   132      0%      0%      0%    100%    100%     42%
+   136      0%      0%      0%    100%     99%     37%
+   140      0%      0%      0%    100%     99%     24%
+   150      0%      0%      0%     99%     93%      0%
+   165      0%      0%      0%     93%     86%      0%
+   180      0%      0%      0%     85%     78%      0%
+   195      0%      0%      0%     61%     48%      0%
+   205      0%      0%      0%      0%      0%      0%
+   212      0%      0%      0%      0%      0%      0%
+   215      0%      0%      0%      0%      0%      0%
+
+[rshare] normal: the floor mushroom (70 x 30). Its right edge 20-100 px from the face (5 spots); an air jump 6-36 frames after the cap throws him
+     H  bounce alone  +flick   +tap   frames of the 31 that clear (+flick, mushroom 40 px from the face)
+   190        100%    100%    100%   ###############################
+   200         80%     92%     91%   ###############################
+   210         80%     91%     90%   ###############################
+   216         80%     91%     90%   ###############################
+   220         60%     82%     81%   ###############################
+   223         60%     82%     81%   ###############################
+   226          0%     59%     55%   ################...............
+   232          0%     59%     55%   ################...............
+   240          0%     59%     52%   ################...............
+   246          0%     55%     52%   ###############................
+   250          0%     55%     52%   ###############................
+   260          0%     52%     49%   ##############.................
+   280          0%     49%     43%   #############..................
+   300          0%     18%     18%   ####...........................
+   310          0%      0%      0%   ...............................
+
+[tshare] normal: share of tries that end standing on a THIN top H px over the floor. Take-off 10-110 px before its near end (11 spots); a double's second press 2-16 frames after the first
+     H  1 hold  1 flick   1 tap  2 hold 2 flick   2 tap
+   110    100%    100%      0%    100%    100%     60%
+   114      0%      0%      0%    100%    100%     53%
+   117      0%      0%      0%    100%    100%     53%
+   118      0%      0%      0%    100%    100%     53%
+   122      0%      0%      0%    100%    100%     46%
+   125      0%      0%      0%    100%    100%     45%
+   128      0%      0%      0%    100%    100%     33%
+   131      0%      0%      0%    100%    100%      7%
+   134      0%      0%      0%    100%     93%      7%
+   136      0%      0%      0%    100%     93%      6%
+   140      0%      0%      0%    100%     93%      0%
+   150      0%      0%      0%     93%     87%      0%
+   180      0%      0%      0%     73%     60%      0%
+   200      0%      0%      0%      0%      0%      0%
+   206      0%      0%      0%      0%      0%      0%
+   209      0%      0%      0%      0%      0%      0%
+
+[dist] normal: widest gap crossed (px, lip to lip), full run, far top 0 px up; by where the jump registered
+                              block     thin    (coyote: most airborne frames that still jumped)
+  single hold   (coyote frames 7)
+           >=70 before lip    134.0    134.0
+           >=35 before lip    169.0    169.0
+      centre at/before lip    204.0    204.0
+         last ground frame    217.0    217.0
+                coyote 1-2    226.0    227.0
+                 coyote 3+    243.0    237.0
+            ANY (physical)    243.0    237.0
+  single flick   (coyote frames 7)
+           >=70 before lip    125.0    125.0
+           >=35 before lip    159.0    159.0
+      centre at/before lip    195.0    195.0
+         last ground frame    208.0    208.0
+                coyote 1-2    217.0    218.0
+                 coyote 3+    234.0    227.0
+            ANY (physical)    234.0    227.0
+  single tap   (coyote frames 7)
+           >=70 before lip     77.0     71.0
+           >=35 before lip    112.0    106.0
+      centre at/before lip    147.0    141.0
+         last ground frame    160.0    153.0
+                coyote 1-2    171.0    172.0
+                 coyote 3+    180.0    181.0
+            ANY (physical)    180.0    181.0
+
+[ddist] normal: widest gap crossed (px, lip to lip), full run, far top 0 px up; by where the jump registered
+                              block     thin    (coyote: most airborne frames that still jumped)
+  double hold   (coyote frames 7)
+           >=70 before lip    280.0    280.0
+           >=35 before lip    316.0    317.0
+      centre at/before lip    351.0    352.0
+         last ground frame    362.0    364.0
+                coyote 1-2    381.0    381.0
+                 coyote 3+    390.0    391.0
+            ANY (physical)    390.0    391.0
+  double flick   (coyote frames 7)
+           >=70 before lip    261.0    262.0
+           >=35 before lip    298.0    299.0
+      centre at/before lip    332.0    333.0
+         last ground frame    344.0    345.0
+                coyote 1-2    362.0    364.0
+                 coyote 3+    372.0    373.0
+            ANY (physical)    372.0    373.0
+  double tap   (coyote frames 7)
+           >=70 before lip    187.0    188.0
+           >=35 before lip    224.0    225.0
+      centre at/before lip    259.0    260.0
+         last ground frame    270.0    272.0
+                coyote 1-2    287.0    280.0
+                 coyote 3+    296.0    290.0
+            ANY (physical)    296.0    290.0
+
+[bdist] normal: widest level gap crossed off a floor mushroom whose right edge is d px before the lip (block far side)
+                         d    bounce alone   +air jump (best moment)
+                         0    175.0    323.0
+                        20    155.0    303.0
+                        40    135.0    283.0
+
+[touch] normal: the Pad's Jump button TAPPED twice over a level gap. Share of take-offs that cross (first tap from 70 px before the lip to the last ground frame; second tap 3-14 frames later)
+                gap    tap,tap   flick,flick   hold,hold   (block far side)
+               150    95% (324)   100% (324)   100% (324)
+               195    68% (324)    98% (324)    99% (324)
+               205    54% (324)    93% (324)    96% (324)
+               228    30% (324)    79% (324)    85% (324)
+               245    15% (324)    63% (324)    70% (324)
+               250    12% (324)    60% (324)    69% (324)
+               256     8% (324)    53% (324)    63% (324)
+               262     5% (324)    46% (324)    56% (324)
+               270     1% (324)    35% (324)    44% (324)
+               283     0% (324)    24% (324)    31% (324)
+               300     0% (324)    12% (324)    17% (324)
+
+[harness] normal: realPlay's FakeInput against the game's InputEngine (pressKeep 0.166 s; FakeInput keeps a press 0.160 s)
+                              real     fake
+          apex single hold     97.8     97.8
+         apex single flick     97.2     29.6
+           apex single tap     61.7     29.6
+  widest single hold block    242.0    242.0
+   widest single hold thin    236.0    236.0
+ early press kept (frames)      4.0      4.0
+exit 0

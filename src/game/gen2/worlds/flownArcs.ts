@@ -59,7 +59,7 @@ const n14 = (move: ReachMove, climb: [number, number], n: [number, number, numbe
 const nW2 = (stage: string) => (move: ReachMove, climb: [number, number], n: [number, number, number], source: string): FlownArc[] => [
   { move, scope: `normal-${stage}`, climb: { block: climb[0], thin: climb[1] }, gap: { from70: n[0], lastGround: n[1], any: n[2] }, source },
 ];
-const n21 = nW2('2-1'), n22 = nW2('2-2'), n23 = nW2('2-3'), n24 = nW2('2-4'), n25 = nW2('2-5'), n27 = nW2('2-7');
+const n21 = nW2('2-1'), n22 = nW2('2-2'), n23 = nW2('2-3'), n24 = nW2('2-4'), n25 = nW2('2-5'), n27 = nW2('2-7'), n29 = nW2('2-9');
 
 /** every flown row: reach.md §2 ("Normal 1-1 and Easy are the same unless two figures are given"), then 1-2's Normal (chain.md §1) */
 export const FLOWN_ROWS: readonly FlownArc[] = [
@@ -221,5 +221,16 @@ export const FLOWN_ROWS: readonly FlownArc[] = [
   ...n27('double-tap-tap', [146, 136], [188, 273, 299], 'chain.md §1 "2-7: double-tap-tap 146 / 136, gap 188 / 273 / 299"'),
   ...n27('bounce', [223, 213], [176, 176, 176], 'chain.md §1 "2-7: bounce 223 / 213, gap 176"'),
   ...n27('bounce-air', [303, 292], [323, 323, 323], 'chain.md §1 "2-7: bounce-air 303 / 292, gap 323"'),
+  // 2-9 on Normal (BUILD-29-j, 11-27): flown on its own stage on World 2's kit (FLIGHT_STAGE=2-9 reference/specs/sims/flight.ts normal all
+  // on t-build-29 1903ca7c4, reference/qa-reports/BUILD-29/flown/flight-2-9-j.txt; block columns: [rise], [dist]/[ddist] >=70, last ground, ANY,
+  // [bdist] d 0); within 0-7 px of 2-7's
+  ...n29('single-hold', [123, 113], [134, 217, 243], 'reference/qa-reports/BUILD-29/flown/flight-2-9-j.txt "2-9: single-hold 123 / 113, gap 134 / 217 / 243"'),
+  ...n29('single-flick', [123, 112], [125, 208, 234], 'reference/qa-reports/BUILD-29/flown/flight-2-9-j.txt "2-9: single-flick 123 / 112, gap 125 / 208 / 234"'),
+  ...n29('single-tap', [87, 77], [77, 160, 180], 'reference/qa-reports/BUILD-29/flown/flight-2-9-j.txt "2-9: single-tap 87 / 77, gap 77 / 160 / 180"'),
+  ...n29('double-hold', [200, 190], [280, 362, 390], 'reference/qa-reports/BUILD-29/flown/flight-2-9-j.txt "2-9: double-hold 200 / 190, gap 280 / 362 / 390"'),
+  ...n29('double-flick', [199, 188], [261, 344, 372], 'reference/qa-reports/BUILD-29/flown/flight-2-9-j.txt "2-9: double-flick 199 / 188, gap 261 / 344 / 372"'),
+  ...n29('double-tap-tap', [146, 136], [187, 270, 296], 'reference/qa-reports/BUILD-29/flown/flight-2-9-j.txt "2-9: double-tap-tap 146 / 136, gap 187 / 270 / 296"'),
+  ...n29('bounce', [223, 213], [175, 175, 175], 'reference/qa-reports/BUILD-29/flown/flight-2-9-j.txt "2-9: bounce 223 / 213, gap 175"'),
+  ...n29('bounce-air', [302, 290], [323, 323, 323], 'reference/qa-reports/BUILD-29/flown/flight-2-9-j.txt "2-9: bounce-air 302 / 290, gap 323"'),
 ];
 

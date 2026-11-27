@@ -20,6 +20,7 @@ import { DOT_LINES } from '../../dotLinesData.ts';
 /** the kick line's words as the kit says them (its row's old words; dotLines.ts swaps the new look's in where it is said) */
 const LINES_KICK = (): string => { const r = DOT_LINES.find((q) => q[0] === KICK_29)!; return (r[4] ?? r[5])!; };
 import { STAGE_TABLE } from './stageTable.ts';
+import { loadSeedList, provenSeeds } from '../seedList.ts';
 
 const root = path.join(path.dirname(fileURLToPath(import.meta.url)), '..', '..', '..', '..');
 const read = (f: string): string => fs.readFileSync(path.join(root, f), 'utf8');
@@ -38,6 +39,10 @@ function built(seed: number, d: 'normal' | 'easy'): Any {
   return memo.get(k)!;
 }
 const SEEDS = [1, 2, 3];
+/** 2-9's proven seeds (the list Play rolls from): the kick line and the posted guard are counted on every one */
+await loadSeedList(STAGE_29);
+const LISTED = provenSeeds(STAGE_29);
+test('2-9 has its proven seed list (100 seeds)', () => assert.ok(LISTED.length >= 100, `${LISTED.length} listed seeds`));
 const BOTH = ['normal', 'easy'] as const;
 
 test("2-9's lines are the story keeper's, word for word (reference/story/lines-2-9.md, KEEPER-23-29 t-keeper-23-29), and the game says them", () => {
@@ -85,9 +90,9 @@ test("2-9: the court lianas' far-bank moss stone stands in its bank's middle, ne
   }
 });
 
-test("2-9: Dot's kick line (hint.2-9.kick) is laid on EVERY seed, both settings, said 800 px+ before the posted guard (level.md rule 6; a ruled socket the engine refuses vanishes silently, R-165.518: BUILD-29-j)", () => {
+test("2-9: Dot's kick line (hint.2-9.kick) is laid on EVERY listed seed, both settings, said 800 px+ before the posted guard (level.md rule 6; a ruled socket the engine refuses vanishes silently, R-165.518: BUILD-29-j)", () => {
   const words = LINES_KICK();
-  for (const d of BOTH) for (let s = 1; s <= 12; s++) {
+  for (const d of BOTH) for (const s of LISTED) {
     const st = built(s, d);
     const fill = st.gen2.fills.filter((f: Any) => f.role === 'tip' && f.what === KICK_29);
     assert.equal(fill.length, 1, `${d} seed ${s}: one kick socket filled (found ${fill.length})`);
@@ -102,8 +107,8 @@ test("2-9: Dot's kick line (hint.2-9.kick) is laid on EVERY seed, both settings,
 });
 
 test("2-9: the king's posted guard is laid on EVERY seed, both settings, on the barge's landing past the river (a ruled socket the engine refuses vanishes silently: BUILD-29-i, two barges refused him at t 0.5-0.8)", () => {
-  // (seeds 1-12 until 2-9's seed list exists; then the list's seeds)
-  for (const d of BOTH) for (let s = 1; s <= 12; s++) {
+  // (the list's seeds, BUILD-29-j: 2-9's seed list exists)
+  for (const d of BOTH) for (const s of LISTED) {
     const st = built(s, d);
     const guards = st.enemies.filter((e: Any) => e.royal && e.post !== undefined);
     assert.equal(guards.length, 1, `${d} seed ${s}: one posted guard (found ${guards.length})`);
