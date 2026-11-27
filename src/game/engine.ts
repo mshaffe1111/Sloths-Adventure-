@@ -1,3 +1,4 @@
+import { flowerOpen, moonFlowers, type Flower } from './moon.ts';
 import { applySetting } from './settingDials.ts';
 import { buzz } from './haptics.ts';
 import { nativeApp } from './appShell.ts';
@@ -647,6 +648,8 @@ export class GameEngine {
   /** World 3's glowworms (zones.ts): how long he has stood still in the dark, and when each sleeping light woke (game time, by id) */
   private glowStill = 0;
   private glowWake = new Map<number, number>();
+  /** the stage's moonflower steps on this setting, with their open windows (moon.ts; 3-4): solid only while open (stepMoon) */
+  private moonSteps: Flower<Platform>[] = [];
   /** World 3's thorn vines: a lash under way (by vine index: when it saw him, which way, whether it has landed), and the cycle it was in */
   private vineLash = new Map<number, { at: number; dir: number; landed: boolean; cycle: number }>();
   /** and the noise (its game time) each vine last struck at (3-5's pebble lure: once per noise) */
@@ -1104,6 +1107,8 @@ export class GameEngine {
     this.bushRustle.clear();
     this.glowStill = 0;
     this.glowWake.clear();
+    this.moonSteps = moonFlowers(this.currentStage, this.easy ? 'easy' : 'normal');
+    this.stepMoon();
     this.cueRivers = null;
     this.cueTables.clear();
     this.cueTab = null;
@@ -2030,6 +2035,7 @@ export class GameEngine {
       if (this.lanternRun) want = this.lanternRun.night();
       this.darkShow += (want - this.darkShow) * Math.min(1, dt * 3);
       this.stepGlowworms(dt, zones);
+      this.stepMoon();
       if (this.proto?.thorns) this.stepThornVines();
       if (this.w4) this.stepW4(dt);
       if (this.w5) this.stepW5(dt);
@@ -9206,6 +9212,12 @@ export class GameEngine {
    * World 3's glowworms: standing still in the dark for GLOW_STILL wakes the sleeping lights near him, the far ones a moment later, and
    * they stay lit (the story: he stopped to listen, and the glowworms noticed).
    */
+  /** the moonflowers open and close on the beam's clock (moon.ts): a closed one is out of the world, as a broken crumble is (he falls
+   *  through it the frame it closes; w3flight35.ts flew it so) */
+  private stepMoon() {
+    for (const f of this.moonSteps) f.p.broken = !flowerOpen(f.clocks, this.gameTime);
+  }
+
   private stepGlowworms(dt: number, zones: readonly import('./zones.ts').Zone[] | undefined) {
     const p = this.player;
     // a glowing mushroom's light wakes the glowworms it reaches, carried or set down (puzzleKit.ts ITEM.mushroom)

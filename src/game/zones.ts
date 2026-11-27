@@ -50,7 +50,7 @@ export function clockGlow(c: LightClock, t: number): number {
 /** a spore zone's puff, as a clock: it glows over its warning and its cloud (zoneState's warn and active phases, cycle3's order) */
 export const sporeClock = (z: Pick<Zone, 'period' | 'warn' | 'active' | 'offset'>): LightClock => ({ period: z.period, from: z.period - z.warn - z.active, len: z.warn + z.active, offset: z.offset });
 
-export type ZoneKind = 'spore' | 'wind' | 'geyser' | 'bolt' | 'web' | 'tide' | 'dark' | 'crumble';
+export type ZoneKind = 'spore' | 'wind' | 'geyser' | 'bolt' | 'web' | 'tide' | 'dark' | 'crumble' | 'moon';
 
 export interface Zone {
   kind: ZoneKind;
@@ -85,6 +85,9 @@ export interface Zone {
    * the shutter opens again (the kit sets it each frame)
    */
   shut?: boolean;
+  /** a 'moon' zone (3-4, ENG-MOON; moon.ts): the moving beam on its clock, each setting's band and droop; the moonflower steps in its box
+   *  open and close by it. World px, as the lights are (the pipeline moves and mirrors it with the zone) */
+  moon?: import('./moon.ts').MoonDef;
   /** webs: a web bridge strung over a gap (painted as the silk bridge, zoneArt.ts), not a patch on the ground */
   bridge?: boolean;
 }

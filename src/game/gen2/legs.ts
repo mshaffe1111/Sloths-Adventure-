@@ -7,6 +7,7 @@
  *
  * Nothing here names a stage, a seed or a place.
  */
+import { mirrorMoon } from '../moon.ts';
 import type { Platform, Rope, Vine } from '../types.ts';
 import type { Zone } from '../zones.ts';
 import { TOWER } from './tower.ts';
@@ -157,6 +158,7 @@ export function reflectLeg(laid: LegLaid, sum: number): void {
     z.dir = -z.dir as 1 | -1;
     if (z.emit) z.emit = z.emit.map((x) => sum - x);
     for (const l of z.lights ?? []) l.x = sum - l.x;
+    if (z.moon) mirrorMoon(z.moon, sum);
   }
   for (const g of laid.gaps) span(g);
   for (const k of laid.asks) span(k);

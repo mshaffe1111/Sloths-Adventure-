@@ -14,6 +14,7 @@
  * The result is a GeneratedStage (what the engine already plays) with the hand-built stages' proto extras, and `gen2` (what was built).
  * Same seed, same stage; Easy and Normal share the seed AND the section sequence (Normal picks, Easy lays the same picks by its rules).
  */
+import { moveMoon } from '../moon.ts';
 import { withSetting } from '../settingDials.ts';
 import { LAID_ASKS } from './walkedSpan.ts';
 import { rollLook } from '../artRoll.ts';
@@ -3113,7 +3114,7 @@ export function layStage(budget: StageBudget, graph: MissionGraph, kit: WorldKit
       // (a water wheel's axle: its buckets moved with the rest, and the piece turns them round it)
       for (const w of stageWheels(platforms)) w.cx += right;
       for (const o of [...gaps, ...asks, ...heartFalls]) { o.x0 += right; o.x1 += right; }
-      for (const z of zones) { z.x0 += right; z.x1 += right; if (z.emit) z.emit = z.emit.map((x) => x + right); for (const l of z.lights ?? []) l.x += right; }
+      for (const z of zones) { z.x0 += right; z.x1 += right; if (z.emit) z.emit = z.emit.map((x) => x + right); for (const l of z.lights ?? []) l.x += right; if (z.moon) moveMoon(z.moon, right, 0); }
       for (const q of sections) {
         q.entry.x += right; q.exit.x += right; q.x0 += right; q.x1 += right;
         for (const k of q.sockets) k.x += right;
@@ -3169,7 +3170,7 @@ export function layStage(budget: StageBudget, graph: MissionGraph, kit: WorldKit
       for (const w of stageWheels(platforms)) w.cy += down;
       for (const g of gaps) g.y += down;
       for (const k of asks) { k.yTake += down; k.yLand += down; }
-      for (const z of zones) { z.top += down; z.bottom += down; z.baseY += down; for (const l of z.lights ?? []) l.y += down; }
+      for (const z of zones) { z.top += down; z.bottom += down; z.baseY += down; for (const l of z.lights ?? []) l.y += down; if (z.moon) moveMoon(z.moon, 0, down); }
       // (a hollow's hurt line is its floor's top: it moves with the floor (found on 1-1's sections, briefPits.test.ts: the line stood
       // `down` px over the floor on every rolled stage, which is every World 1 stage))
       for (const z of heartFalls) if (z.y !== undefined) z.y += down;

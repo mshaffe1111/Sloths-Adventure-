@@ -321,6 +321,9 @@ export interface Platform {
   /** QUIET ground (moss; ENG-NOISE, 3-5.md): a landing on it makes no noise however far he fell (heroNoise.ts landingNoise reads it).
    *  Play only: its look is the piece's own art, never this field (World 1's 'moss_stone' style is a look, and it is not quiet) */
   quiet?: boolean;
+  /** a MOONFLOWER step (3-4, ENG-MOON; moon.ts): solid only while the moon zone's beam has it open (it opens BLOOM s after the band
+   *  reaches it, droops after the band leaves, then closes: the engine reads it as broken, and he falls through) */
+  moonflower?: true;
   /** drawn as bare bark: the branch picture without its bromeliad and moss (draw only) */
   bare?: boolean;
   /** the branch picture drawn this much thicker or thinner (0.8-1.3; draw only, the walkable top is unchanged) */
