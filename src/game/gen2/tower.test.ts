@@ -17,7 +17,7 @@ import { packPlan, stageParts, unpackPlan } from './seedList.ts';
 import { cfg as runCfg, kit as runKit } from './toyWorld.ts';
 import { ARC_CODE, arcKit, gateKit, hopsUp, towerCfg, upKit, upManifest } from './toyTower.ts';
 import { fallSeconds, flagFurther, gapCatchY, LEAP, leaps, localExtent, HANG, offEnd, openEnds, walledEnd, reflectLocal, routeAt, routeOf, storeyLimit, TOWER, towerCatches, towerFalls, towerFlagBreaches, stopVines, towerHandOns, towerVineCuts, towerFlags, towerGates, towerSkips, towerVaults, vertical, towerLids, ROOF } from './tower.ts';
-import { CLIMB_CLEAR, VAULT_GAP } from '../vineTop.ts';
+import { climbX, CLIMB_CLEAR, VAULT_GAP } from '../vineTop.ts';
 import type { Gen2Stage } from './types.ts';
 
 const ID = '5-93';
@@ -805,4 +805,48 @@ test('going down, no slot: a catch beside near-level wood lies flush, a crack fr
   assert.deepEqual(slots, [], lay);
   assert.deepEqual(towerFalls('down', all, FLOOR, W), []);
   assert.deepEqual(towerLids([vine], all), [], lay);
+});
+
+// ── ENG-CATCH (R-165.526): going down, a catch or a run-on's own ends land in view, and a catch never passes its storey ──
+// (each plant is red on the lay before ENG-CATCH: a keep-out box (a wheel's sweep, towerCatches keepOut) under the overhang stops the
+//  next pass catching the piece's own end, as the drafted 3-1's wood did)
+
+test("going down, a catch bough whose own end is a blind drop is laid again so it ends over the wood under it (the drafted 3-1's Easy 1, ENG-CATCH)", () => {
+  const W = 1280, FLOOR = 1600;
+  // (a shelf's open end at x 724 drops 350 px onto a mat that runs from the wall to x 800; the bough laid under the end (614-794)
+  //  steps off at 818, past the mat's end, and drops 427 px, with no wood allowed under it; laid again it ends over the mat)
+  const base = [solid(0, 1000, 700, 1), solid(0, 1350, 800, 2), solid(0, FLOOR, W, 3)];
+  const cs = towerCatches('down', base, [], FLOOR, W, [], () => 0, () => false, [{ x0: 802, x1: W, y0: 1100, y1: 1590 }]);
+  const all = [...base, ...cs.map((c, k) => solid(c.x, c.y, c.w, 100 + k))];
+  assert.ok(cs.some((c) => c.x <= 724 - 30 && c.x + c.w >= 724 + 30 && c.y > 1000 && c.y < 1300), `the shelf's end is caught: ${JSON.stringify(cs)}`);
+  assert.deepEqual(towerFalls('down', all, FLOOR, W), [], "no blind drop is left, off the catch's own end above all");
+  assert.ok(cs.every((c) => c.w >= 60), 'every catch keeps a footing');
+});
+
+test("going down, a bridge whose far end misses the shelf under it is laid shorter, so it ends over that shelf (the drafted 3-1's seed 5, ENG-CATCH)", () => {
+  const W = 1280, FLOOR = 1600;
+  // (a shelf's open end at x 724; the wood 200 px under it ends at x 700 and is bridged out under the end, 700-814; its far end steps
+  //  off at 838, 8 px past the shelf under it (to 830), and drops 400 px with no wood allowed under it; 700-804 steps off onto it)
+  const base = [solid(0, 1000, 700, 1), solid(0, 1200, 700, 2), solid(0, 1400, 830, 3), solid(0, FLOOR, W, 4)];
+  const cs = towerCatches('down', base, [], FLOOR, W, [], () => 0, () => false, [{ x0: 832, x1: W, y0: 1210, y1: 1590 }]);
+  const all = [...base, ...cs.map((c, k) => solid(c.x, c.y, c.w, 100 + k))];
+  assert.ok(cs.some((c) => c.y === 1200 && c.x <= 700 && c.x + c.w >= 724 + 30), `the end is bridged from the wood under it: ${JSON.stringify(cs)}`);
+  assert.deepEqual(towerFalls('down', all, FLOOR, W), [], "no blind drop is left, off the bridge's own end above all");
+});
+
+test("going down, no wood is run on level with a vine's catch, read where the vine will hang, if the run has no way off: it passes the storey (the drafted 3-1's seed 3, ENG-CATCH)", () => {
+  const W = 1280, FLOOR = 1900;
+  // (the vine comes down from the end of a log (x 467-798, y 1000, 90 px thick) to its storey (x 628-1026, y 1347): laid at x 798, on
+  //  the log's face, it hangs 21 px out (climbX), across the catch beside it (x 799-979, y 1062). A shelf's open end over it (x 1117)
+  //  was bridged from that catch (979-1207) and run on into the wall: one run from 799 to the wall whose left end walks into the
+  //  log's side, so he can never step off it)
+  const vine = { id: 1, x: 798, topY: 1000, bottomY: 1347, swaySpeed: 1, swayPhase: 0, vineType: 'tree_climb' } as Vine;
+  const log = { ...solid(467, 1000, 331, 1), height: 90 }, own = solid(799, 1062, 180, 2), storey = solid(628, 1347, 398, 3), shelf = solid(825, 800, 268, 4), floor = solid(0, FLOOR, W, 5);
+  const base = [log, own, storey, shelf, floor];
+  assert.ok(walledEnd(base, 799, -1, 1062), "the plant: the catch's left end walks into the log's side");
+  assert.ok(climbX(vine, base) > own.x + 6, 'the plant: the vine will hang across the catch');
+  const cs = towerCatches('down', base, [vine], FLOOR, W);
+  const all = [...base, ...cs.map((c, k) => solid(c.x, c.y, c.w, 100 + k))];
+  assert.deepEqual(towerHandOns([{ x: climbX(vine, all), from: 1000, to: 1347 }], all, W), [], `the vine's catch hands him on to its storey: ${JSON.stringify(cs)}`);
+  assert.deepEqual(towerFalls('down', all, FLOOR, W), [], 'and every end is caught');
 });
