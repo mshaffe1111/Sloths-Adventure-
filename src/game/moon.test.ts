@@ -59,3 +59,37 @@ test("the rising band opens a flower as its top reaches it and closes it `droop`
   assert.ok(!flowerOpen(cs, 400 / 70 + 1.05));
   assert.equal(flowerClocks(rise, 1800, 1900, 1).length, 0, 'out of the band across');
 });
+
+import { layMoon, moonFlowers } from './moon.ts';
+const stair = (x: number, y: number) => [0, 1, 2].map((i) => ({ x: x + i * 120, y: y - (i + 1) * 100, width: 120, moonflower: undefined as true | undefined }));
+
+test('two swing storeys on opposite walls are ONE beam: the same motion at every t', () => {
+  const a = layMoon(stair(1000, 5000), 'swing', 600, 1);
+  const b = layMoon(stair(1600, 4600), 'swing', 600, -1);
+  for (const t of [0, 1.3, 3.7, 5.1, 6.6, 9.9, 11.4]) {
+    for (const s of ['normal', 'easy'] as const) near(bandAt(a.moon.band[s], t).x, bandAt(b.moon.band[s], t).x);
+  }
+});
+
+test("the teach's resting beam opens its flowers for good; the stage's flowers are read from their zone on each setting", () => {
+  const steps = stair(1000, 5000);
+  const z = layMoon(steps, 'rest', 0, 1);
+  assert.ok(steps.every((p) => p.moonflower));
+  const st = { platforms: steps.map((p, i) => ({ ...p, id: i })), zones: [{ kind: 'moon', ...z }] };
+  const fl = moonFlowers(st, 'normal');
+  assert.equal(fl.length, 3);
+  assert.ok(fl.every((f) => flowerOpen(f.clocks, 0.5) && flowerOpen(f.clocks, 500)));
+  assert.equal(moonFlowers({ platforms: st.platforms, zones: [] }, 'easy')[0].clocks.length, 0, 'a flower in no moon never opens');
+});
+
+test('the rising band opens the stair bottom to top and closes it the same way', () => {
+  const steps = stair(1000, 5000);
+  const z = layMoon(steps, 'rise', 0, 1);
+  const st = { platforms: steps.map((p, i) => ({ ...p, id: i })), zones: [{ kind: 'moon', ...z }] };
+  for (const s of ['normal', 'easy'] as const) {
+    const fl = moonFlowers(st, s);
+    // (each flower's first OPENING: closed, then open; the top one's droop runs over the band's restart, so it can be open at t 0)
+    const opens = fl.map((f) => { for (let t = 0.05; t < 30; t += 0.05) if (flowerOpen(f.clocks, t) && !flowerOpen(f.clocks, t - 0.05)) return t; return Infinity; });
+    assert.ok(opens[0] < opens[1] && opens[1] < opens[2], `${s}: ${opens.join(' ')}`);
+  }
+});

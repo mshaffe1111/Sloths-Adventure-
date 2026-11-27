@@ -14,7 +14,7 @@
  * The result is a GeneratedStage (what the engine already plays) with the hand-built stages' proto extras, and `gen2` (what was built).
  * Same seed, same stage; Easy and Normal share the seed AND the section sequence (Normal picks, Easy lays the same picks by its rules).
  */
-import { moveMoon } from '../moon.ts';
+import { layMoon, moveMoon } from '../moon.ts';
 import { withSetting } from '../settingDials.ts';
 import { LAID_ASKS } from './walkedSpan.ts';
 import { rollLook } from '../artRoll.ts';
@@ -2958,6 +2958,11 @@ export function layStage(budget: StageBudget, graph: MissionGraph, kit: WorldKit
           const period = low + warn + active;
           zones.push({ kind: 'tide', x0: mud.x, x1: mud.x + mud.width, top: mud.y - 210, bottom: mud.y + 14, baseY: mud.y, dir: -1, period, warn, active, offset: R(srng() * period * 10) / 10, force: z.force ?? TIDE.force });
           placed.beats.push({ x: mud.x, letter: 'S' });
+        } else if (z.kind === 'moon') {
+          // (World 3's moon over its steps: moon.ts layMoon marks them moonflowers; the beam's clock is the stage's own, from t 0)
+          const m = layMoon(z.steps.map(pieceOf), z.band, z.far ?? 0, mirrored !== leftward ? -1 : 1);
+          zones.push({ kind: 'moon', x0: R(m.x0), x1: R(m.x1), top: R(m.top), bottom: R(m.bottom), baseY: R(m.bottom), dir: 1, period: 0, warn: 0, active: 0, offset: 0, force: 0, moon: m.moon });
+          placed.beats.push({ x: R(m.x0), letter: 'S' });
         } else if (z.kind === 'spore') {
           // (World 3's puff on its piece: gen2/spore.ts, on zones.ts SPORE's beat)
           const shelf = pieceOf(z.on);

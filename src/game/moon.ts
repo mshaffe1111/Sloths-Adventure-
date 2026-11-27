@@ -192,3 +192,54 @@ export function moonFlowers<P extends FlowerPlatform>(stage: { platforms: readon
   }
   return out;
 }
+
+/** 3-4's numbers, flown (3-4.md 'The numbers, FLOWN'; w3flight35.ts beam): Normal rest 3.6 / slide 2.4 / droop 1.0 / rise 70 px/s, band
+ *  300; Easy rest 4.8 / slide 2.4 / droop 1.6 / rise 55 px/s, band 400 (Easy is the design's own numbers, not a stretch) */
+export const MOON = {
+  normal: { rest: 3.6, slide: 2.4, droop: 1.0, rise: 70, h: 300 },
+  easy: { rest: 4.8, slide: 2.4, droop: 1.6, rise: 55, h: 400 },
+} as const;
+/** the band's reach past the stair's own ends (px): it lights the whole stair at rest, its stones' lips included */
+export const MOON_PAD = 40;
+/** how far over the band the mouth is (px): the shaft slants in from up there */
+export const MOON_MOUTH = 520;
+
+/**
+ * Lay a moon over its steps (the section's zone, pipeline.ts): marks each step a moonflower and returns the zone, its box over the
+ * stair with room under it (where a fall from a flower lands) and over it. `dir`: the section's way across (-1 laid mirrored), so a
+ * swing's far wall is mirrored with it. A swing on the RIGHT-hand wall runs half a period behind (rest + slide), so every swing in a
+ * stage is the one beam going wall to wall (the same walls, the same motion, whichever storey laid it)
+ */
+export function layMoon(
+  steps: ReadonlyArray<{ x: number; y: number; width: number; moonflower?: true }>,
+  band: 'rest' | 'swing' | 'rise',
+  far: number,
+  dir: 1 | -1,
+): { x0: number; x1: number; top: number; bottom: number; moon: MoonDef } {
+  for (const p of steps) p.moonflower = true;
+  const x0 = Math.min(...steps.map((p) => p.x)) - MOON_PAD;
+  const x1 = Math.max(...steps.map((p) => p.x + p.width)) + MOON_PAD;
+  const hi = Math.min(...steps.map((p) => p.y));
+  const lo = Math.max(...steps.map((p) => p.y));
+  const c = (x0 + x1) / 2, half = (x1 - x0) / 2;
+  const across = far * dir;
+  const mk = (s: 'normal' | 'easy'): MoonBand => {
+    const n = MOON[s];
+    if (band === 'rise') {
+      // the top starts under the lowest flower and climbs until the band's foot is over the highest; then it starts again
+      return { kind: 'rise', x: c, half, from: lo + 2, to: hi - n.h - 2, rise: n.rise, h: n.h, rest: n.rest, offset: 0 };
+    }
+    if (band === 'rest' || !across) return { kind: 'swing', walls: [c, c], rest: n.rest, slide: n.slide, half, offset: 0 };
+    const right = across < 0;
+    const walls: [number, number] = [c, c + across];
+    return { kind: 'swing', walls, rest: n.rest, slide: n.slide, half, offset: right ? n.rest + n.slide : 0 };
+  };
+  const wallsX = band === 'swing' && across ? [c, c + across] : [c, c];
+  const moon: MoonDef = {
+    band: { normal: mk('normal'), easy: mk('easy') },
+    droop: { normal: MOON.normal.droop, easy: MOON.easy.droop },
+    mouth: { x: (wallsX[0] + wallsX[1]) / 2, y: hi - MOON_MOUTH },
+  };
+  const bx0 = Math.min(x0, ...wallsX.map((x) => x - half)), bx1 = Math.max(x1, ...wallsX.map((x) => x + half));
+  return { x0: bx0, x1: bx1, top: hi - 300, bottom: lo + 200, moon };
+}

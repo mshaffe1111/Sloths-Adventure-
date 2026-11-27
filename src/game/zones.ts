@@ -135,7 +135,7 @@ export function glowReaches(l: { x: number; y: number }, x: number, feet: number
 export const keepsClear = (z: Pick<Zone, 'kind' | 'lights'>) => !(z.kind === 'dark' && !!z.lights?.some((l) => l.sleep));
 
 /** webs, darkness and crumbling ruins never change: they are simply on */
-export const isStatic = (z: Pick<Zone, 'kind'>) => z.kind === 'web' || z.kind === 'dark' || z.kind === 'crumble';
+export const isStatic = (z: Pick<Zone, 'kind'>) => z.kind === 'web' || z.kind === 'dark' || z.kind === 'crumble' || z.kind === 'moon';
 
 export function zoneState(z: Zone, t: number): ZoneState {
   if (z.shut) return { phase: 'idle', u: 0, strength: 0, untilActive: Infinity };
