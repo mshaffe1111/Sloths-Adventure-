@@ -27,8 +27,17 @@ DONE:
    true on every layout'): 'along the banks' does not hold on 8/32 rolls as laid. Nothing in finds.ts changed (the keeper's words).
 2. PRE-FREEZE on 4cabd94d3 (the main checkout, code = 4cabd94d3): `git ls-remote`: main 49fdc8cb6, t-eng-29 337ba7d0b (unmoved).
    tsc rc=0; generalitycheck PASS. THE WHOLE TEST FILES (60: the 7 box 14 names + firstTimerBot.test.ts +
-   every test importing riverLay.ts, firsttimer.ts or provenIndex.ts; `npx tsx --test <60 files>`, started 6:35:54 PM ET): RUNNING at
-   hand-over, 211 ok and 0 not ok so far; the totals go in this line when it ends (the box records it before it stops).
+   every test importing riverLay.ts, firsttimer.ts or provenIndex.ts; `npx tsx --test <60 files>`, started 6:35:54 PM ET): ENDED 6:50:53 PM
+   ET (899 s), rc=1: '# tests 534, # pass 531, # fail 2, # cancelled 0, # skipped 0, # todo 1'. TWO REDS (not yet run alone on main):
+   - tools/inspect/lineBot.test.ts:455 'the marsh low road with a dip: he leads the line over its floor and it swims the dip...':
+     'some tier hopped the dip floor to floor' (expected true, actual false). lineBot.test.ts and riverLay.ts's marsh were resolved
+     at box 14's t-eng-29 merge (ours' superset; ours' teach/marsh + theirs' easy): suspect that merge, UNPROVEN.
+   - tools/inspect/riverRide.test.ts:278 'planted: with the against-the-flow skill off, the child on Normal is rescued on 2-1 (16)
+     and loses 5+ more lives': 'upstream off, 1 more lives (at least 5): on child normal seed 8: shrine, rescues 0, lives 1 ... off:
+     lives 2, stuck [x 19577 an open drop ahead, water ahead]'. 2-1's lay moved with 74d88d236 (rule B lists): suspect t-eng-29,
+     UNPROVEN.
+   NEXT for both, before the freeze: run each file ALONE on main 49fdc8cb6, on t-eng-29 337ba7d0b and on 4cabd94d3; inherited only
+   if it fails on its base; otherwise it is this branch's to fix at its root (never loosen the test).
 NEXT, in order (ReadNotifications at every step boundary; the lead's reply to the step-0 message first):
    (0) THE LEAD'S RULING on step 1 (message received at this box's hand-over; quoted word for word): "Your step 1 is answered. The
        story keeper approved the World 2 book hint (t-story ee84f05b5, checked by ls-remote). Wire it word for word BEFORE you freeze:
