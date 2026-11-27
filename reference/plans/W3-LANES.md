@@ -55,3 +55,9 @@ BUILD-31 when KIT-W3a's down c/b land and the keeper's review of 3-1's lines is 
 3-1: 48 asks, 48 LAID (#dark 32, #dark@puff 16), 0 refused. 3-2: 48 #dark asks, 30 laid, 18 REFUSED 'no dark zone in its span' at the climb
 node Xc and the rope nodes Wr / Sr: World 3 has no DARK climb or DARK rope section. KIT-W3b's list gains: a dark climb brick and a dark rope
 brick (3-2). A sharper refusal line ('no climb section in the pool lays #dark') is a parking-lot engine ask (R-165.521).
+
+## 11-27 9:35 AM ET: the 'lit = seen' seam (R-165.529, CI #97) and KEEPER-W3's rulings
+ENG-DARK landed WITHOUT 'lit = seen' (ENG-PROWL REPORT §3 left it for ENG-DARK): ENG-ROOT builds it (one definition; ENG-LIGHT feeds it).
+3-1's dark descent has no prowler, so 3-1 is not blocked; 3-2, 3-6, 3-9 are until it lands. KEEPER-W3 (t-keeper-3x 958121290): every line has
+a stable id; 3-H keeps no door this build (R-165.528); the jaguar is met first at the lair 3-10, 3.teach.jaguar said before it beside a fern on a
+walk. 3-2's Wr / Sr 'dark rope' IS the root (ENG-ROOT's lay), not a KIT-W3b rope kind.

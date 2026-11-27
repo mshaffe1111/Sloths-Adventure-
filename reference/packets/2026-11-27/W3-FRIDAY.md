@@ -26,6 +26,10 @@ BASE for every World 3 lane: origin/t-eng-w3 once ENG-DARK (3-1's tower fix + th
 - ENG-VINE (packets/2026-11-25/ENG-VINE.md; 3-5 and 3-8). '#vine' and '#thornvine@doze' through ENG-ASKS; 3-5's h -> a vine-socket brick
   (KIT-W3a's), m -> g, r -> f; the skills quiet-route and wake-from-afar.
 
+## ADDED 11-27 9:35 AM ET: ENG-LIGHT (3-6, 3-9) feeds ENG-ROOT's 'lit = seen' seam (R-165.529)
+ENG-ROOT builds Prey.lit (from the zone lights' rings; upOf takes the hero). ENG-LIGHT's carried and tossed light feeds the SAME field: one
+definition, never a second 'lit' read. Its toys plant the carried light off -> unseen.
+
 ## NEW: KIT-W3a, World 3's TOWER bricks (R-165.504; the long pole; content/kit, Opus 5.5 high)
 WHY: the audit (finding 3): towers' 1140 px storeys fit no World 1-2 climb or bounce section, and level stages cannot borrow World 1-2 sections
 either (they ask for the double, carry hint.1-1 tips, 6-11 s quiet lines). FIRST the down c and b bricks (3-1: with only g and f in a down tower

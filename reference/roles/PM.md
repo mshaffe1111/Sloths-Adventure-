@@ -119,6 +119,8 @@ Everything else is yours on his standing permission (11-07).
    **Count the lanes before EVERY create_session (CI #94, 11-26).** The week's cap (WEEK-1125: at most 4 helpers taking turns at once,
    plus ENG-SIM) is checked first: a lane that waits on another lane's landing is QUEUED, not started; a tail running only the gates of
    its frozen candidate does not count, but it is archived the moment it reports. Over the cap, the newest waiting lane hands over.
+   **A lane is LANDED only with its named seams (CI #97, 11-27).** Before the lead marks an engine lane landed, it greps every report for
+   'for <lane>' / 'not built' seams and checks each in the landed code; a missing one gets an R-row and an owner the same turn.
    **"On the bar" needs the suite totals for that hash (CI #93, 11-26).** Without each shard's pass/fail for the candidate's hash the
    lead rules "bots on the bar, suite owed", never "on the bar" (3-1's c17 was ruled on bot tables while w3.test was red since c10).
    **A ruling that sets a geometry or timing number names the flight that confirms it (CI #92, 11-26):** "N if flown clean on <the
