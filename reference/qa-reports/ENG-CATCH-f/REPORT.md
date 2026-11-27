@@ -1,6 +1,84 @@
-# ENG-CATCH-f: the down tower never lays a catch twice; the tower guarantee onto t-eng-w3 (R-165.561)
+# ENG-CATCH-f: the down tower never lays a catch twice, no two pieces of wood overlap, and the named check refuses any that do; onto t-eng-w3 (R-165.561)
 
 ## EXACT NEXT STEP
+(box 3, ENG-CATCH-h, handed over, written 6:34 PM ET Fri 11-27 by `date`; t-eng-w3 checked at 7a580aefc then)
+CANDIDATE = origin/t-eng-catch-f HEAD (the hash in the lead message). Its code is 9afeaf31c (box 3's named overlap check on box 2's
+8ab05d35c; the commits after it are this REPORT folder only: the REPORT and proof-h/). Box 3's steps 1-3 DONE (below: the check, its
+two tests and plant, the cost, the six-config proof, the overlap scan, the pre-freeze tests); step 4 (freeze, gates, land) NOT STARTED.
+1. Re-check base: `git ls-remote origin refs/heads/t-eng-w3` must still be 7a580aefc. If it moved: merge it by hash, tsc + generality,
+   and re-run the pre-freeze list whole (tower, towerMend, towerBots, legs, legsLay, camRepick, cameraFollow, worlds/w3, worlds/w3Noise:
+   every test that imports tower.ts, by grep, plus w3Noise).
+2. Freeze: `git worktree add --detach <scratch>/wt-frozen <CANDIDATE>` (dispatch-packet.md line 81 on the lead branch), node_modules
+   symlinked; every gate below runs there.
+3. The gates once on the frozen head, each with its verdict word and counts line: the CI tool line; the suite in 6 shards with
+   totals; THE LOCK as two runs ALONE (nothing else running): `npx tsx tools/engine/lockall.ts --layouts 16 --out <scratch>/base.json`
+   in a detached worktree at 7a580aefc, then `--layouts 16 --check <scratch>/base.json` on the frozen head. A stage that moves is
+   EXPECTED only where its old lay laid wood twice (box 1) or laid wood over wood at one height (box 2): box 3's check refuses nothing
+   new by construction (step 2's proof below: refusals byte for byte box 2's). Prove each move by proof-g/scan.mts (old tree against
+   frozen head: a same-height overlap or duplicate in the old lay, gone in the new; point ROOT at each tree, and for another stage
+   change its buildStage id), else send it to the lead. tierBots. Every red: file:line, run alone on 7a580aefc (R-165.550
+   ctestPicker:78 is inherited and owned).
+4. Land on t-eng-w3 by fast-forward (`git push origin <CANDIDATE>:refs/heads/t-eng-w3`, no force), `git ls-remote` equal, message
+   the lead the landed hash and every counts line.
+
+## Box 3 (ENG-CATCH-h): the tower's named check refuses any overlap
+(started 6:14 PM ET Fri 11-27 by `date`, on a4f5a6474; the lead's ruling: no-overlap INTO downInvariant, the check every final lay
+passes and the guarantee refuses on, so ANY path that leaves an overlap is refused by name, and plant THAT)
+- THE CHECK (tower.ts): `woodOverlaps(platforms)` (exported): every two pieces of solid wood (type 'solid': the stage's own and the
+  catches alike) at one height (|dy| <= 1) that overlap strictly along x (end to end is none), each by name: "tower: two pieces of
+  solid wood overlap at one height: x A-B and x C-D at y Y". Box 2's definition and scan.mts's, exactly. downInvariant lists these
+  FIRST (DownMiss.what 'overlap', no piece), so (a) the guarantee's refusal (misses[0]) names the overlap whenever a lay has one, (b) the
+  mend never keeps a remedy that lays one (it would not leave fewer misses), (c) the mend tries no remedy on it (no piece: it is the
+  roll's to answer). The type change: DownMiss.what gains 'overlap' (the lead's ruling names downInvariant's misses as the place; no
+  consumer outside tower.ts reads `what`, by grep).
+- TESTS (both new, tower.test.ts, RED FIRST: 47/49 before the check): "THE DOWN TOWER'S INVARIANT names any two pieces of solid wood that
+  overlap at one height ..." (a 50 px overlap 1 px apart, and one wholly over another, named; end to end, 2 px apart, or a fragile piece,
+  not); "THE GUARANTEE refuses by name a down tower that would leave two pieces of solid wood overlapping at one height ..." (a tower
+  whose own wood overlaps: TowerRefusal, its miss the overlap's name exactly; and box 2's three toys (ENG-CATCH-b's, the 50 px gap, the
+  60 px gap) return lays the invariant reads clean). With the check: 49/49.
+- PLANT (the lead's): box 2's `cut` filter removed (fit lays a partly overlapping piece whole, taking only the laid pieces inside it)
+  -> tower.test.ts 47/49 RED: both box 2's trim-or-refuse test and the new guarantee test throw TowerRefusal "tower: unmendable miss:
+  tower: two pieces of solid wood overlap at one height: x 475-590 and x 525-825 at y 1200": the invariant names the overlap and the
+  roll is refused. Restored -> 49/49.
+- COST (it runs on every lay and every try of the mend): woodOverlaps alone, measured directly: 13.7 us per call on a whole drafted 3-1's wood (avg 168 pieces, seeds 1-5
+  normal, 200 calls each; proof-h/bench.mts, old tree wt-old = a4f5a6474, new wt-try), about 3% of downInvariant's 0.49 ms. The same run's
+  whole-call numbers (before 0.491 ms, after 0.670 ms) differ by more than the new check itself costs: the two were timed one after the
+  other while nothing else ran, old first, so that gap is run order and JIT, not the check; read it as noise, NOT as the cost. (A
+  tower's lay passes far fewer pieces than the whole stage, so per lay it is less.) An interleaved re-time would settle the totals.
+- tsc 0; generalitycheck PASS (26 literals, 26 known).
+- PROOF, box 1's command (box 1's proof/proof.mts unchanged; tree wt-try = 9afeaf31c with src/game/gen2/worlds/w3.ts = t-kit-w3a
+  39a3c5b52's byte for byte; run in wt-try: `GEN2_DRAFT=3-1 ROOT=<wt-try> KEEP=<config> FROM=1 SEEDS=40 VERBOSE=1 npx tsx <proof.mts>`),
+  seeds 1-40 x both settings; logs proof-h/*.txt; each against box 2's number:
+  - all five: ok 80/80, leaks 0, refusals 6 in 6 builds, Normal's rolls refused 3 / tried 42 (7%), worst stage 1 (n11). Box 2: 3/42.
+  - root-down: ok 80/80, leaks 0, refused 0 / tried 40 (0%). Box 2: 0/40.
+  - two-roots: ok 80/80, leaks 0, refused 0 / tried 40 (0%). Box 2: 0/40.
+  - cap-down: ok 80/80, leaks 0, refused 1 / tried 40 (3%), worst stage 1 (n3). Box 2: 1/40.
+  - cap-steps: ok 80/80, leaks 0, refused 1 / tried 41 (2%), worst stage 1 (n33). Box 2: 1/41.
+  - shelf-hops: ok 80/80, leaks 0, refused 3 / tried 43 (7%), worst stage 1 (n13). Box 2: 3/43.
+  Every log is byte for byte box 2's (`diff proof-g/<c>.txt proof-h/<c>.txt`: no difference, all six). 0 THROW in every log. As
+  expected by construction: nothing new to refuse.
+- THE OVERLAP SCAN (proof-g/scan.mts, the five pieces, seeds 1-40 x both, wt-try): 0 pairs in 0 of 80 built stages (proof-h/scan-h.txt), 0 throws; box 2: 0 in 80.
+- PRE-FREEZE on 9afeaf31c, each file WHOLE: tower.test.ts 49/49; towerMend 13/13; towerBots 9/9; legs 7/7; legsLay 10/10; camRepick
+  8/8; cameraFollow 14/14; worlds/w3.test 10/10; worlds/w3Noise 7/7 (every test that imports tower.ts, by grep, plus w3Noise): 127/127,
+  0 fail. tsc 0; generalitycheck PASS (26/26).
+  `git ls-remote origin refs/heads/t-eng-w3` = 7a580aefc.
+- Learned: a check the lay keeps by construction still belongs in the named invariant: the plant shows the invariant alone turns a
+  broken lay path into a refusal by name, so no future path (the move paths included, which no toy reaches) can ship an overlap.
+- Box 3's lessons applied: D30/D128 (every stamp from `date`), D115 (each run in its own worktree: wt-try for the proof, wt-old for
+  the cost), D119 (commit by -m, no heredoc), D154 (by construction, proven on seeds 1-40 x both, all six configs, plus the scan),
+  D156 (generality with tsc), D159 (the base by hash).
+
+- Polish check (box 3): engine only; no lay changed (every proof log byte for byte box 2's, scan 0 in 80), so no screen changed and
+  no still was taken. Box 2's ask stands for the freeze box: one moved 3-1 seed on a phone-sized screen, upright and sideways, where a
+  trimmed catch meets other wood end to end.
+- Pushback: none. The packet's one type change (DownMiss.what gains 'overlap') is the Architect's wall; it is inside tower.ts and the
+  lead's ruling names downInvariant's misses as the place, so it was made and is named here.
+- Unresolved: step 4 (freeze, gates, lock, tierBots, land) NOT STARTED (the box ran out); the turnover note reference/handoffs/
+  engine-core.md not rewritten (the landing box writes it with the landed hash).
+- Method update: a check kept by construction still gets its named invariant, planted by breaking the construction (here box 2's `cut`
+  filter) so the invariant alone is shown to refuse the roll by name.
+
+## Box 2's EXACT NEXT STEP (superseded by the one above)
 (box 2, ENG-CATCH-g, handed over, written 6:11 PM ET Fri 11-27 by `date`; t-eng-w3 checked at 7a580aefc then)
 CANDIDATE = origin/t-eng-catch-f HEAD (the hash in the lead message). Its code is 8ab05d35c (box 2's overlap rule on box 1's 056b22736;
 the commits after it are this REPORT folder only: the REPORT and proof-g/). Box 2's steps 1-3 DONE (below: the rule, its two tests and plants, the six-config proof,
