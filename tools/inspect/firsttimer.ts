@@ -61,7 +61,7 @@ import type { Enemy, Platform, PlayerState, Rope, Vine } from '../../src/game/ty
 import { headRect, MOVES } from '../../src/game/fight.ts';
 import { runnerLip, RUNNER } from '../../src/game/runnerLiana.ts';
 import { scares } from '../../src/game/dropTrap.ts';
-import { engageOf } from '../../src/game/predators/core.ts';
+import { engageOf, speedOf } from '../../src/game/predators/core.ts';
 import type { TrapPost } from '../../src/game/castPlay.types.ts';
 import { findRoute } from './route.ts';
 import { markUp } from './markClimb.ts';
@@ -109,6 +109,41 @@ function rootWatched(members: ReadonlyArray<{ def: PredatorDef; s: RootWatcher }
   });
 }
 type RootWatcher = { x: number; y: number; minX: number; maxX: number; facing: 1 | -1; leaving?: boolean };
+
+/** px his late lift-off and a ring's edge add either way to a watcher's sight in rootSeen (ADULT's release runs a few frames at 85 px/s) */
+const ROOT_PAD = 20;
+
+/**
+ * Would a leaper of the cast see him in the lit stretch ahead if he creeps on now (rootPlan; 3-2.md beat 9, "creeps through each lit patch
+ * while both look away")? He goes from x along `fdir` at `speed` px/s, in the light from `d0` to `d1` px on; each animal walks its patrol
+ * as core.ts's rest does (at its Easy speed on Easy, turning at its ends) and sees him by its facing (sight ahead, or behind), ROOT_PAD
+ * wider. Over the whole stretch, not its first point: on Easy he closes on a slowed watcher walking away and came inside its sight behind
+ * halfway through the light (Easy roll 1, ENG-ROOT box 3). Once in the light he creeps on (stopping there is the worst place), so the
+ * stretch is judged before it, whole. Its data only: no stage, kind or x.
+ */
+function rootSeen(members: ReadonlyArray<{ def: PredatorDef; s: RootWatcher }>, x: number, fdir: -1 | 1, d0: number, d1: number, speed: number, easy: boolean): boolean {
+  const T = (d1 + ROOT_PAD) / speed;
+  return members.some((m) => {
+    if (!m.def.leap || m.s.leaving) return false;
+    const v = m.def.speed.rest * speedOf(m.def, easy);
+    let ox = m.s.x;
+    let f = m.s.facing;
+    for (let t = 0; t <= T; t += DT) {
+      const d = speed * t;
+      if (d >= d0 - ROOT_PAD) {
+        const dx = x + fdir * d - ox;
+        if (Math.abs(dx) <= (dx * f >= 0 ? m.def.sight.ahead : m.def.sight.behind) + ROOT_PAD) return true;
+      }
+      if (v > 0 && m.s.maxX > m.s.minX) {
+        ox += f * v * DT;
+        if (ox <= m.s.minX) f = 1;
+        else if (ox >= m.s.maxX) f = -1;
+        ox = Math.max(m.s.minX, Math.min(m.s.maxX, ox));
+      }
+    }
+    return false;
+  });
+}
 
 /** px into a roof root's span from its near end from where he jumps up for it (rootTake): under it, never short of its end; up to half
  *  its length (a jump into the row can land him past its end; off it at its far end he is past the half, so he never takes it back) */
@@ -1357,6 +1392,9 @@ export class FirstTimerRun {
   /** the dark's rims (gen2/dark.ts darkRims, read once), the stop he is making at one, and the rims whose light he waited out unlit */
   private glowRims: DarkRim[] | null = null;
   private glowStop: { rim: DarkRim; since: number; turn?: 1 | 2 } | null = null;
+  /** this frame he holds still on a roof root (rootPlan's wait, the hold before its end): his thumb comes off armed once, as at the
+   *  dark's stop (thumbify; re-armed every frame, KID's and ADULT's late lift-off never let go and he crept on into the light) */
+  private rootHeld = false;
   private readonly glowGaveUp = new Set<DarkRim>();
   /** each stop waited out unlit: the rim and the time (FTRun.dark.gaveUp) */
   readonly glowGiveUps: string[] = [];
@@ -2890,7 +2928,10 @@ export class FirstTimerRun {
         //  floor the dark does not hide him); held there till it looks away; down at its end)
         const c = this.e.cast as { members: Array<{ def: PredatorDef; s: RootWatcher }> } | null;
         const below = (c?.members ?? []).filter((m) => Math.abs(m.s.y - root.g0) < 40);
-        if (rootWatched(below, p.x + fdir * left, this.who.stopReact + ROOT_DROP_S)) return {};
+        if (rootWatched(below, p.x + fdir * left, this.who.stopReact + ROOT_DROP_S)) {
+          this.rootHeld = true;
+          return {};
+        }
         return left > 12 ? side(fdir) : { down: true };
       }
       // (caught a rope his way does not take yet (a hop down the steps under 2-2's rope, before the spur's stone): he drops off it (down,
@@ -3749,23 +3790,24 @@ export class FirstTimerRun {
       if (x < rope.x0 || x > rope.x1 || (d > ROOT_LOOK && !lit(x))) break;
       if (lit(x)) lightPx = d;
     }
-    const inLight = lightPx / ropeSpeed(rope) + this.who.stopReact;
-    let ahead = false;
-    for (let d = 10; d <= ROOT_LOOK; d += 10) {
+    let d0 = 0;
+    for (let d = 10; d <= ROOT_LOOK && !d0; d += 10) {
       const x = p.x + fdir * d;
       if (x < rope.x0 || x > rope.x1) break;
-      if (lit(x) && rootWatched(c.members, x, inLight)) {
-        ahead = true;
-        break;
-      }
+      if (lit(x)) d0 = d;
     }
+    const ahead = d0 > 0 && rootSeen(c.members, p.x, fdir, d0, lightPx, ropeSpeed(rope), this.who.setting === 'easy');
     if (ahead) {
       this.rootWatch = { watched: true, go: Infinity };
+      this.rootHeld = true;
       return {};
     }
     // (it has just looked away: his reaction before the thumb goes back on)
     if (this.rootWatch?.watched) this.rootWatch = { watched: false, go: t + this.who.stopReact };
-    if (this.rootWatch && t < this.rootWatch.go) return {};
+    if (this.rootWatch && t < this.rootWatch.go) {
+      this.rootHeld = true;
+      return {};
+    }
     this.rootWatch = null;
     return null;
   }
@@ -4387,7 +4429,7 @@ export class FirstTimerRun {
     // (R-165.59: lastSteer is not moved on while the late lift-off runs, so for KID and ADULT this re-arms every frame and the steer is
     // never let go once held; a tier bot arms it once per let-go, as the thumb does. At the dark's stop (glowWait) every bot arms it once:
     // he means to stand, and the KID's re-arming never let him, so he walked off every dark rim)
-    if (steer === 0 && this.lastSteer !== 0 && !want.press && !((who.holdQ || this.glowStop) && this.releaseArmed)) {
+    if (steer === 0 && this.lastSteer !== 0 && !want.press && !((who.holdQ || this.glowStop || this.rootHeld) && this.releaseArmed)) {
       const [lo, hi] = who.releaseMax;
       this.releaseLeft = Math.max(lo, Math.min(hi, Math.round(Math.exp(gauss(this.r, who.release)))));
       this.releaseArmed = true;
@@ -4411,6 +4453,7 @@ export class FirstTimerRun {
     this.figTap = false;
     this.rollHeld = false;
     this.steady = false;
+    this.rootHeld = false;
     const intended = this.intend();
     const want = this.rollHeld || this.steady || this.runnerAhead() ? intended : this.rhythm(intended);
     const out = this.figTap ? this.tapped(want) : this.thumbify(want);

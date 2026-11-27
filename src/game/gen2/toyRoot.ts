@@ -20,11 +20,14 @@ export const rootRow: SectionTemplate = {
   pieces: [
     { key: 'floor', shape: 'bank', w: [2200, 2200], place: { kind: 'start' }, main: true },
     // (the root starts and ends outside the ocelot's watch of the floor (its patrol, about 400 px, and its 240 px sight): on the dark floor
-    //  it sees him at its own height, lit or not; only on the root, over its sight's 40 px up, does the dark hide him)
+    //  it sees him at its own height, lit or not; only on the root, over its sight's 40 px up, does the dark hide him. The socket's patch
+    //  bounds it: 0.26..0.74 of 2200 is 572..1628 (patchFor's 24 px in: 596..1604), its watch (sight.ahead 240) 356..1844, the root
+    //  300..1900: 56 px clear at each end. A patrol held to the patch's middle alone (0.41..0.59) keeps it under the lit patch: seen on
+    //  14 of 16 rolls, so the bound is the watch rule, no tighter)
     { key: 'root', shape: 'vine', w: [0, 0], place: { kind: 'root', on: 'floor', at: [0.5, 0.5], len: [1600, 1600], up: { normal: 190, easy: 170 },
       patches: [{ at: 0.5, r: { normal: 90, easy: 60 } }] } },
   ],
-  sockets: [...darkEnds('floor', 'floor', 'glow'), { id: 'ocelot', role: 'enemy', on: 'floor', t: [0.5, 0.5], maxThreat: 3, chance: 1 }],
+  sockets: [...darkEnds('floor', 'floor', 'glow'), { id: 'ocelot', role: 'enemy', on: 'floor', t: [0.5, 0.5], patch: [0.26, 0.74], maxThreat: 3, chance: 1 }],
   entry: { piece: 'floor', kind: 'ground' }, exit: { piece: 'floor', kind: 'ground' }, exitDy: 0, mirrorable: false,
 };
 const W3 = w3World();

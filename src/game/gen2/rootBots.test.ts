@@ -50,7 +50,7 @@ function play(who: FirstTimer, o: Opts = {}, from = 1) {
 }
 
 const ALERT = new Set(['tell', 'act', 'hunt']);
-/** the verdicts on his crossing: took the root near its near end, left it near its far end, the cast alerted while he was on it or
+/** the verdicts on his crossing: hung on the root, left it near its far end, the cast alerted while he was on it or
  *  under it, and his creep's pace on it (px/s over the frames he moved) */
 function crossing(run: ReturnType<typeof play>) {
   const { frames, root } = run;
@@ -64,28 +64,33 @@ function crossing(run: ReturnType<typeof play>) {
     if (dx > 0.5) { dist += dx; time += frames[k].t - frames[k - 1].t; }
   }
   return {
-    took: on.length > 0 && on[0].x - root.x0 < 120, crossed: on.length > 0 && root.x1 - on.at(-1)!.x < 120,
+    took: on.length > 0, crossed: on.length > 0 && root.x1 - on.at(-1)!.x < 120,
     seen: seen.length, litOn: on.filter((f) => f.lit).length, pace: time ? dist / time : 0,
     hits: run.r.harms.filter((h) => h.x >= root.x0 - 60 && h.x <= root.x1 + 60).length,
   };
 }
 const ADULT = { ...FT_ADULT, setting: 'normal' as const };
 
-test.skip('probe', () => {
-  for (const [name, who, o] of [['green', ADULT, {}], ['noRootWait', { ...ADULT, noRootWait: true }, {}], ['noRootWait+noLit', { ...ADULT, noRootWait: true }, { noLit: true }]] as const) {
-    const t0 = Date.now();
-    const out: string[] = [];
-    for (const setting of ['normal', 'easy'] as const) for (let from = 1; from <= 40; from += 5) {
-      const c = crossing(play({ ...who, setting }, o, from));
-      out.push(`${setting[0]}${from}:${c.took ? 'T' : '-'}${c.crossed ? 'X' : '-'}s${c.seen}h${c.hits}p${Math.round(c.pace)}`);
-    }
-    console.log('RUN', name, out.join(' '), Date.now() - t0, 'ms');
-  }
+const ROLLS = (['normal', 'easy'] as const).flatMap((setting) => [1, 6, 11, 16, 21, 26, 31, 36].map((from) => ({ setting, from })));
+const tag = (q: { setting: string; from: number }) => `${q.setting[0]}${q.from}`;
+const runs = (who: FirstTimer, o: Opts = {}) => ROLLS.map((q) => ({ q, c: crossing(play({ ...who, setting: q.setting }, o, q.from)) }));
+
+test('the first-timer creeps the root unseen under its ocelot: on it, across, never seen, never hit, both settings, 16 rolls', () => {
+  const bad = runs(ADULT).filter(({ c }) => !(c.took && c.crossed && c.seen === 0 && c.hits === 0));
+  assert.deepEqual(bad.map(({ q, c }) => `${tag(q)} took ${c.took} crossed ${c.crossed} seen ${c.seen} hits ${c.hits}`), []);
 });
-test('probe2', () => {
-  for (const [st, from] of [['easy', 36]] as const) {
-    const run = play({ ...ADULT, setting: st }, {}, from);
-    const { root } = run;
-    console.log('P2', st, from, 'root', root.x0, root.x1, root.y, root.g0, run.frames.filter((f) => f.x >= root.x0 - 400 && f.x <= root.x1 + 100).filter((f, i) => i % 8 === 0 || f.phases.some((q) => q !== 'rest')).map((f) => `${f.t.toFixed(1)}:${Math.round(f.x)}${f.onRoot ? 'R' : ''}${f.lit ? 'L' : ''}:${f.phases.join('/')}:${f.ms}`).join(' | '));
-  }
+
+test('PLANTS: without the wait he is seen; without the light (Prey.lit false) the same creep is never seen', () => {
+  const rushed = runs({ ...ADULT, noRootWait: true });
+  const seen = rushed.filter(({ c }) => c.seen > 0).map(({ q }) => tag(q));
+  assert.ok(seen.length >= 4, `the rushed creep is seen on ${seen.length} rolls (${seen.join(' ')}): the wait must be what keeps him unseen`);
+  const dark = runs({ ...ADULT, noRootWait: true }, { noLit: true }).filter(({ q, c }) => seen.includes(tag(q)) && c.seen > 0);
+  assert.deepEqual(dark.map(({ q }) => tag(q)), [], 'lit off, the rushed creep is unseen: the light is what sees him');
+});
+
+test('his creep on the root is the root\'s 85 px/s; PLANT the rope\'s own speed away and it is 120', () => {
+  const pace = crossing(play(ADULT)).pace;
+  assert.ok(Math.abs(pace - 85) <= 2, `pace ${pace.toFixed(1)}`);
+  const plant = crossing(play(ADULT, { world: (st) => ({ ...(st as object), ropes: ((st as { ropes?: Rope[] }).ropes ?? []).map((r) => ({ ...r, speed: undefined })) }) as typeof st })).pace;
+  assert.ok(Math.abs(plant - 120) <= 2, `planted pace ${plant.toFixed(1)}`);
 });

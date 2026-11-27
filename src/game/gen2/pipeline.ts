@@ -2969,7 +2969,9 @@ export function layStage(budget: StageBudget, graph: MissionGraph, kit: WorldKit
         // (a socket at the foot of a SPUR's far bank (t 0) is on its dead-end stone, which stands against that foot out of his reach:
         // Dot's line there is said as he stands on the stone, FIX-22)
         const spur = t0 === 0 ? spurAt.get(s.on) : undefined;
-        placed.sockets.push({ socket: s, x: spur ? R(spur.x) : R(p.x + t * p.width), y: spur ? R(spur.y - (s.dn ?? 0)) : R(p.y - (s.dn ?? 0)), piece: p });
+        // (an enemy socket's patch bound, in world x: its ends flip with the section as t does)
+        const pb = s.patch && (mirrored !== leftward ? [1 - s.patch[1], 1 - s.patch[0]] : s.patch);
+        placed.sockets.push({ socket: s, x: spur ? R(spur.x) : R(p.x + t * p.width), y: spur ? R(spur.y - (s.dn ?? 0)) : R(p.y - (s.dn ?? 0)), piece: p, ...(pb ? { patch: [R(p.x + pb[0] * p.width), R(p.x + pb[1] * p.width)] as [number, number] } : {}) });
       }
       if (tpl.room) placed.room = placeRoom(tpl.room, placed.uid, (k) => pieceOf(k).id, (k) => {
         // (a vine a room's piece names is the kit's: a ladder rolled up, a sapling, a silk line; levelCheck leaves it to the room's check)
@@ -3675,7 +3677,8 @@ export function fillSockets(laid: Laid, budget: StageBudget, kit: WorldKit, seed
           c = kept === undefined ? undefined : rows.find((cr) => cr.id === kept);
         }
         if (!(want || ask) || !c || (dropOnEasy && !c.easyFirst) || opening(k.x, k.y)) continue;
-        const pf = patchFor(k.x, k.piece, safe, c.minGround, clear.get(k.piece));
+        // (a socket's patch bound narrows the piece the patch is cut from: its animal patrols there, or not at all)
+        const pf = patchFor(k.x, k.patch ? { ...k.piece, x: k.patch[0], width: k.patch[1] - k.patch[0] } : k.piece, safe, c.minGround, clear.get(k.piece));
         if (!pf) continue;
         threat -= c.threat;
         if (ask) { const q = ask.find((x) => x.kind === c!.id); if (q) q.left--; }

@@ -47,3 +47,16 @@ test("the pool reads the root as the rope's move, never a climb (hangsNeed by pl
     }
   }
 });
+
+test('the watch rule: the root starts and ends outside its ocelot\'s watch of the floor (its patrol and its sight ahead), 16 rolls; PLANT the socket\'s patch bound away and a roll breaks it', () => {
+  const SIGHT = 240; // (World 3's ocelot, predators/world3.ts sight.ahead)
+  const broken = (K: WorldKit) => (['normal', 'easy'] as const).flatMap((difficulty) => [1, 6, 11, 16, 21, 26, 31, 36].flatMap((from) => {
+    const { st, seed } = built(difficulty, K, from);
+    const root = st.ropes!.find((r) => r.look === 'root')!;
+    return st.enemies.filter((e) => e.type === 'ocelot' && Math.abs(e.y - root.g0) < 40 && e.patrolMinX < root.x1 && e.patrolMaxX > root.x0)
+      .filter((e) => e.patrolMinX - SIGHT < root.x0 || e.patrolMaxX + SIGHT > root.x1).map((e) => `${difficulty[0]}${seed}: patrol ${e.patrolMinX}..${e.patrolMaxX}, root ${root.x0}..${root.x1}`);
+  }));
+  assert.deepEqual(broken(kit), []);
+  const unbound: WorldKit = { ...kit, manifest: { ...kit.manifest, sections: kit.manifest.sections.map((s) => (s.id === 'toy-root-row' ? { ...s, sockets: s.sockets.map((k) => (k.role === 'enemy' ? { ...k, patch: undefined } : k)) } : s)) } };
+  assert.ok(broken(unbound).length > 0, 'unbound, the ocelot patrols the whole floor past the root\'s ends');
+});

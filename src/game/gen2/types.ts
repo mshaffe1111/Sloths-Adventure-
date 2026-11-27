@@ -444,6 +444,10 @@ export interface Socket {
   link?: string;
   /** enemy sockets: the most threat it may take */
   maxThreat?: number;
+  /** enemy sockets: the stretch of its piece its animal may patrol (0 left end, 1 right end; flips with a mirrored section). Unset:
+   *  the piece's whole free run. A kit bounds a watcher this way so its patrol and its sight stay inside what the section asks
+   *  (a roof root's ends outside the floor's watch, ENG-ROOT) */
+  patch?: [number, number];
   /** a socket the roll may leave empty (0..1 chance of filling); required sockets have none */
   chance?: number;
   /** on Easy: keep it, drop it, or keep it softened (a slower creature, a longer tell). All three still answer to Easy's count cut
@@ -818,7 +822,7 @@ export interface PlacedSection {
   /** its hanging pieces (lianas and climbing vines), by key; a liana carries its own swing */
   vines: Array<{ key: string; vine: Vine; swing?: LianaSwing; window?: number; gap?: [number, number] }>;
   /** the sockets resolved to world points (filled in pass 4) */
-  sockets: Array<{ socket: Socket; x: number; y: number; piece: Platform }>;
+  sockets: Array<{ socket: Socket; x: number; y: number; piece: Platform; patch?: [number, number] }>;
   room?: RoomSpec;
   beats: Array<{ x: number; letter: SectionBeat['letter']; /** a designed group's key (Socket.group): its own animals keep no gap to it */ group?: string }>;
   /** the seconds the time model expects (the walk plus extraSeconds) */
