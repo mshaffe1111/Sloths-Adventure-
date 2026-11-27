@@ -38,16 +38,22 @@ test("the lay: river.ts's own rules (its window a whole number of spacings, logL
 });
 
 test('the hand-built World 2 stages lay every log river through the lay, and every one is fair (seeds 1-3)', () => {
-  // (2-6 is gen2's now, BUILD-26: its millrace is judged by riverFaults in w2Arc26.test.ts)
+  // (RE-SCOPED, R-165.544, BUILD-29-l: the floor is what W2_STAGES still lays, plan by plan. It was 10 log rivers over seeds 1-3, and the
+  //  hand-built 2-9 laid every one of them; 2cb7b0a4a (BUILD-29-f) deleted that build (new replaces old), so the count fell to 0 and its
+  //  check went with it. The check MOVED, it was not loosened (Law 22): the gen2 2-9's log rivers are judged by riverFaults in
+  //  w2Arc29.test.ts "2-9's log rivers are fair on every listed seed", every listed seed on both settings, with a floor and a plant.
+  //  What stays here: the hand-built 2-6 lays no river and 2-8 only still water (speed 0, riverFaults' other rule), seeds 1-3, so each
+  //  plan names its own floor, and a hand-built plan added without one fails)
+  const FLOOR: Record<string, number> = { '2-6': 0, '2-8': 0 };
   const plans = Object.entries(W2_STAGES);
-  let rivers = 0;
+  assert.deepEqual(plans.map(([id]) => id).sort(), Object.keys(FLOOR).sort(), 'every hand-built World 2 plan names its log-river floor');
   for (const [id, plan] of plans) for (const s of [1, 2, 3]) {
     const cfg = generateAllLevels().find((c) => c.id === id && !c.secret)!;
     const st = buildW2Stage(cfg, s, plan);
     assert.deepEqual(riverFaults(st), [], `${id} seed ${s}`);
-    rivers += (st.rivers ?? []).filter((r) => r.speed > 0 && !r.open && !r.raft && !r.flood).length;
+    const rivers = (st.rivers ?? []).filter((r) => r.speed > 0 && !r.open && !r.raft && !r.flood).length;
+    assert.ok(rivers >= FLOOR[id], `${id} seed ${s}: ${rivers} log rivers judged, under ${FLOOR[id]}`);
   }
-  assert.ok(rivers >= 10, `${rivers} log rivers judged`);
 });
 
 test("World 2's river rows lay fair under World 2's banks and under World 6's (the lay is world-neutral)", () => {

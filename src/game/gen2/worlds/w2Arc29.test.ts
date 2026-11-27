@@ -21,6 +21,7 @@ import { DOT_LINES } from '../../dotLinesData.ts';
 const LINES_KICK = (): string => { const r = DOT_LINES.find((q) => q[0] === KICK_29)!; return (r[4] ?? r[5])!; };
 import { STAGE_TABLE } from './stageTable.ts';
 import { loadSeedList, provenSeeds } from '../seedList.ts';
+import { riverFaults } from '../riverLay.ts';
 
 const root = path.join(path.dirname(fileURLToPath(import.meta.url)), '..', '..', '..', '..');
 const read = (f: string): string => fs.readFileSync(path.join(root, f), 'utf8');
@@ -103,6 +104,36 @@ test("2-9: Dot's kick line (hint.2-9.kick) is laid on EVERY listed seed, both se
     assert.ok(guard, `${d} seed ${s}: the posted guard`);
     const ahead = guard.x - hint[0].x;
     assert.ok(ahead >= 800, `${d} seed ${s}: the kick line at x ${Math.round(hint[0].x)} is ${Math.round(ahead)} px before the guard at x ${Math.round(guard.x)} (800 px+)`);
+  }
+});
+
+/** the log rivers riverFaults judges (a moving current he hops or boards; still, open, raft and flood water are judged elsewhere) */
+const logRivers = (st: Any): Any[] => (st.rivers ?? []).filter((r: Any) => r.speed > 0 && !r.open && !r.raft && !r.flood);
+const onRiver = (st: Any, r: Any): Any[] => st.platforms.filter((p: Any) => p.type === 'drift' && p.drift && p.drift.x0 >= r.x0 - 1 && p.drift.x0 <= r.x1);
+
+test("2-9's log rivers are fair on every listed seed, both settings (riverFaults == []), and a barge's gap widened past the reach is named (R-165.544)", () => {
+  // (the check MOVED here from riverLay.test.ts, Law 22: the hand-built 2-9 held the last log rivers that test counted, and its deletion
+  //  (2cb7b0a4a, BUILD-29-f) left the gen2 2-9's rivers judged nowhere. Floor: every build lays its five log rivers, the last the King's Barge)
+  let judged = 0;
+  for (const d of BOTH) for (const s of LISTED) {
+    const st = built(s, d);
+    assert.deepEqual(riverFaults(st, d), [], `${d} seed ${s}`);
+    const rv = logRivers(st);
+    assert.ok(rv.length >= 5, `${d} seed ${s}: ${rv.length} log rivers, under 5`);
+    assert.equal(rv.filter((r) => onRiver(st, r).some((p) => p.drift.look === 'barge')).length, 1, `${d} seed ${s}: one barge row`);
+    judged += rv.length;
+  }
+  assert.ok(judged >= 5 * 2 * LISTED.length, `${judged} log rivers judged`);
+  // (the plant: the barge river and its row's window stretched 900 px, so its three barges' gap grows 300 px, past a hop; riverFaults
+  //  must name it)
+  for (const d of BOTH) {
+    const st = built(1, d);
+    const barge = logRivers(st).find((r) => onRiver(st, r).some((p) => p.drift.look === 'barge'))!;
+    const mine = new Set(onRiver(st, barge));
+    const platforms = st.platforms.map((p: Any) => (mine.has(p) ? { ...p, drift: { ...p.drift, x1: p.drift.x1 + 900 } } : p));
+    const rivers = st.rivers.map((r: Any) => (r === barge ? { ...r, x1: r.x1 + 900 } : r));
+    const planted = riverFaults({ ...st, platforms, rivers }, d);
+    assert.ok(planted.some((f) => /between logs, past a hop/.test(f)), `${d}: the widened barge gap is named (${planted.join(' | ')})`);
   }
 });
 
