@@ -45,6 +45,22 @@ knowncheck generalitycheck coveragecheck roadmapcheck timecheck drawcheck clipch
 paint0 paint1 paint2 | E toolline tipwalk storytipscan teachfirst castbots26 castbots27 funcheck fundiff tierbots.
 Known so far: playerText.test 1 fail (the title). Everything else is running.
 
+## release.md 4b: the CI time limits, the BASE numbers (main's last deploy, run 45742721127 on 4bf2cbaaa, all green)
+| Job (limit) | main's time | share |
+|---|---|---|
+| gates (25) | 13.8 | 55% |
+| drawcheck (30) | 15.0 | 50% |
+| seedplan (10) | 0.8 | 8% |
+| seedlists 1/2/3/4 (45 each) | 5.7 / 7.8 / 21.0 / 20.8 | 13-47% |
+| paintcheck 0/1/2 (25 each) | 5.1 / 9.3 / 6.5 | 20-37% |
+| rolled (60) | 16.6 | 28% |
+| test 1-6 (deploy.yml: no timeout-minutes) | 8.6 / 19.0 / 7.1 / 11.9 / 16.4 / 5.9 | n/a |
+**Still to do (D124):** the candidate adds TWO proven lists that main does not run, 2-6 and 2-7 (seeds-2-6.ts, seeds-2-7.ts are new vs
+main), so the shards reshuffle. Take the candidate's shard plan from out-c1 g-shardplan.log (`registrycheck --lists --shard k/n`) and
+each list's time from the deploy's seedlists logs (the '== <id>' timestamps; get_job_logs on the four seedlists jobs of 45742721127).
+2-6 and 2-7 have no CI time, so use the local g-seedlists.log '== <id> <epoch>' deltas, scaled by the ratio of a list both runs share.
+Then sum per shard. Any shard within 20% of 45 (36 min or more) is split BEFORE the PR.
+
 ## PLAY-STORE §6 (draft from the diff origin/main..release-0.10.4 -- src; the gate-proved rows are filled when the final head's lanes finish)
 The diff touches no screen, menu, sound, save or setting file. Outside src/game it touches only src/App.tsx (a `?fixture=home` dev toy added
 beside main's chase and wheel fixtures), components/dot/DotGuide.tsx (Dot's line gains `who` and `warn`: the race's end line and the
