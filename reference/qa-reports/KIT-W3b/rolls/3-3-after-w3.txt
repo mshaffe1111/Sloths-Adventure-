@@ -1,0 +1,128 @@
+4x normal ERR pool short at slot 2 (n2 practise: no climb section left)
+3x normal ERR pool short at slot 13 (n7 practise: no climb section left)
+2x normal ERR pool short at slot 14 (n7 practise: no climb section left)
+2x normal ERR pool short at slot 23 (n11 combine: no ground section left)
+3x normal ERR pool short at slot 24 (n11 combine: no ground section left)
+3x normal ERR pool short at slot 25 (n11 combine: no ground section left)
+3x normal ERR node code: V11 at token 8: 4 of 8 content nodes are 'g' (cap 3)
+3x normal ERR node code: V11 at token 11: 4 of 8 content nodes are 'f' (cap 3)
+4x normal ERR node code: V11 at token 8: 'g' on two neighbouring content nodes
+3x normal ERR node code: V11 at token 11: 'f' on two neighbouring content nodes
+1x normal ERR ask: node n2 "Pg1_<": content 'l' (lure): no lure laid
+1x normal ERR ask: node n2 "Pg1_<": threat ocelot*1: laid 4
+1x normal ERR ask: node n4 "Pg1<": threat ocelot*1: laid 5
+2x normal ERR ask: node n5 "Xf1_>": content 'l' (lure): no lure laid
+2x normal ERR ask: node n5 "Xf1_>": creatures (&): no creature laid
+2x normal ERR ask: node n5 "Xf1_>": threat ocelot*2: laid 0
+3x normal ERR ask: node n7 "Pg1^<": content 'c' (climb): 2 of 2 sections are ground
+1x normal ERR ask: node n7 "Pg1^<": shape ^ (rising): its sections rise -3 px
+1x normal ERR ask: node n8 "Wg1_>": threat ocelot*1: laid 3
+1x normal ERR ask: node n11 "Cf1^>": content 'g' (ground): 3 of 3 sections are floating
+1x normal ERR ask: node n11 "Cf1^>": threat ocelot*2: laid 1
+4x normal ERR ask: node n13 "Sf1<": content 'l' (lure): no lure laid
+3x normal ERR ask: node n13 "Sf1<": creatures (&): no creature laid
+3x normal ERR ask: node n13 "Sf1<": threat ocelot*3: laid 0
+1x normal ERR the quiet line: 4.5 s with nothing to do at x 17763, over 4 s (the goal run-out excluded)
+2x normal ERR pool short at slot 3 (n2 practise: no climb section left)
+1x normal ERR pool short at slot 15 (n7 practise: no climb section left)
+1x normal ERR pool short at slot 16 (n7 practise: no climb section left)
+1x normal ERR pool short at slot 18 (n8 twist: no ground section left)
+1x normal ERR pool short at slot 26 (n11 combine: no ground section left)
+3x normal ERR ask: node n2 "Pg1<": content 'l' (lure): no lure laid
+2x normal ERR ask: node n2 "Pg1<": threat ocelot*1: laid 5
+1x normal ERR ask: node n4 "Pg1_<": threat ocelot*1: laid 5
+1x normal ERR ask: node n5 "Xf1^>": content 'l' (lure): no lure laid
+1x normal ERR ask: node n5 "Xf1^>": creatures (&): no creature laid
+1x normal ERR ask: node n5 "Xf1^>": threat ocelot*2: laid 0
+2x normal ERR ask: node n7 "Pg1^<": shape ^ (rising): its sections rise -7 px
+1x normal ERR ask: node n8 "Wg1^>": content 'g' (ground): 1 of 2 sections are floating
+2x normal ERR ask: node n8 "Wg1^>": threat ocelot*1: laid 4
+2x normal ERR ask: node n11 "Cf1>": content 'g' (ground): 3 of 3 sections are floating
+1x normal ERR ask: node n11 "Cf1>": creatures (&): no creature laid
+1x normal ERR ask: node n11 "Cf1>": threat ocelot*2: laid 0
+1x normal ERR pool short at slot 7 (n4 practise: no ground section left)
+1x normal ERR node code: V11 at token 11: 5 of 8 content nodes are 'g' (cap 3)
+1x normal ERR ask: node n2 "Pg1<": threat ocelot*1: laid 3
+1x normal ERR ask: node n4 "Pg1^<": content 'g' (ground): 1 of 2 sections are floating
+1x normal ERR ask: node n4 "Pg1^<": threat ocelot*1: laid 3
+1x normal ERR ask: node n7 "Pg1^<": content 'c' (climb): 1 of 1 sections are ground
+1x normal ERR ask: node n7 "Pg1^<": shape ^ (rising): its sections rise 0 px
+1x normal ERR ask: node n8 "Wg1>": threat ocelot*1: laid 5
+1x normal ERR ask: node n11 "Cg1>": threat ocelot*2: laid 3
+1x normal ERR the quiet line: 4.8 s with nothing to do at x 22377, over 4 s (the goal run-out excluded)
+1x normal ERR ask: node n4 "Pg1_<": threat ocelot*1: laid 3
+1x normal ERR ask: node n5 "Xf1>": content 'l' (lure): no lure laid
+1x normal ERR ask: node n5 "Xf1>": creatures (&): no creature laid
+1x normal ERR ask: node n5 "Xf1>": threat ocelot*2: laid 0
+1x normal ERR ask: node n11 "Cf1>": threat ocelot*2: laid 1
+1x normal ERR ask: node n13 "Sf1<": threat ocelot*3: laid 1
+1x normal ERR the quiet line: 4.7 s with nothing to do at x 17281, over 4 s (the goal run-out excluded)
+8x easy ERR pool short at slot 2 (n2 practise: no climb section left)
+6x easy ERR pool short at slot 13 (n7 practise: no climb section left)
+4x easy ERR pool short at slot 14 (n7 practise: no climb section left)
+4x easy ERR pool short at slot 23 (n11 combine: no ground section left)
+6x easy ERR pool short at slot 24 (n11 combine: no ground section left)
+6x easy ERR pool short at slot 25 (n11 combine: no ground section left)
+6x easy ERR node code: V11 at token 8: 4 of 8 content nodes are 'g' (cap 3)
+6x easy ERR node code: V11 at token 11: 4 of 8 content nodes are 'f' (cap 3)
+8x easy ERR node code: V11 at token 8: 'g' on two neighbouring content nodes
+6x easy ERR node code: V11 at token 11: 'f' on two neighbouring content nodes
+2x easy ERR ask: node n2 "Pg1_<": content 'l' (lure): no lure laid
+1x easy ERR ask: node n2 "Pg1_<": threat ocelot*1: laid 4
+1x easy ERR ask: node n4 "Pg1<": threat ocelot*1: laid 5
+4x easy ERR ask: node n5 "Xf1_>": content 'l' (lure): no lure laid
+2x easy ERR ask: node n5 "Xf1_>": creatures (&): no creature laid
+2x easy ERR ask: node n5 "Xf1_>": threat ocelot*2: laid 0
+6x easy ERR ask: node n7 "Pg1^<": content 'c' (climb): 2 of 2 sections are ground
+2x easy ERR ask: node n7 "Pg1^<": shape ^ (rising): its sections rise -3 px
+1x easy ERR ask: node n8 "Wg1_>": threat ocelot*1: laid 3
+2x easy ERR ask: node n11 "Cf1^>": content 'g' (ground): 3 of 3 sections are floating
+1x easy ERR ask: node n11 "Cf1^>": threat ocelot*2: laid 1
+8x easy ERR ask: node n13 "Sf1<": content 'l' (lure): no lure laid
+4x easy ERR ask: node n13 "Sf1<": creatures (&): no creature laid
+3x easy ERR ask: node n13 "Sf1<": threat ocelot*3: laid 0
+1x easy ERR the quiet line: 4.5 s with nothing to do at x 17763, over 4 s (the goal run-out excluded)
+1x easy ERR ask: node n2 "Pg1_<": threat ocelot*1: laid 2 on Easy
+1x easy ERR ask: node n4 "Pg1<": threat ocelot*1: laid 3 on Easy
+1x easy ERR ask: node n8 "Wg1_>": threat ocelot*1: laid 2 on Easy
+4x easy ERR pool short at slot 3 (n2 practise: no climb section left)
+2x easy ERR pool short at slot 15 (n7 practise: no climb section left)
+2x easy ERR pool short at slot 16 (n7 practise: no climb section left)
+2x easy ERR pool short at slot 18 (n8 twist: no ground section left)
+2x easy ERR pool short at slot 26 (n11 combine: no ground section left)
+6x easy ERR ask: node n2 "Pg1<": content 'l' (lure): no lure laid
+2x easy ERR ask: node n2 "Pg1<": threat ocelot*1: laid 5
+1x easy ERR ask: node n4 "Pg1_<": threat ocelot*1: laid 5
+2x easy ERR ask: node n5 "Xf1^>": content 'l' (lure): no lure laid
+1x easy ERR ask: node n5 "Xf1^>": creatures (&): no creature laid
+1x easy ERR ask: node n5 "Xf1^>": threat ocelot*2: laid 0
+4x easy ERR ask: node n7 "Pg1^<": shape ^ (rising): its sections rise -7 px
+2x easy ERR ask: node n8 "Wg1^>": content 'g' (ground): 1 of 2 sections are floating
+2x easy ERR ask: node n8 "Wg1^>": threat ocelot*1: laid 4
+4x easy ERR ask: node n11 "Cf1>": content 'g' (ground): 3 of 3 sections are floating
+1x easy ERR ask: node n11 "Cf1>": creatures (&): no creature laid
+1x easy ERR ask: node n11 "Cf1>": threat ocelot*2: laid 0
+2x easy ERR ask: node n2 "Pg1<": threat ocelot*1: laid 3 on Easy
+2x easy ERR ask: node n4 "Pg1_<": threat ocelot*1: laid 2 on Easy
+2x easy ERR ask: node n8 "Wg1^>": threat ocelot*1: laid 2 on Easy
+1x easy ERR ask: node n13 "Sf1<": threat ocelot*3: laid 0 on Easy
+2x easy ERR pool short at slot 7 (n4 practise: no ground section left)
+2x easy ERR node code: V11 at token 11: 5 of 8 content nodes are 'g' (cap 3)
+1x easy ERR ask: node n2 "Pg1<": threat ocelot*1: laid 3
+2x easy ERR ask: node n4 "Pg1^<": content 'g' (ground): 1 of 2 sections are floating
+1x easy ERR ask: node n4 "Pg1^<": threat ocelot*1: laid 3
+2x easy ERR ask: node n7 "Pg1^<": content 'c' (climb): 1 of 1 sections are ground
+2x easy ERR ask: node n7 "Pg1^<": shape ^ (rising): its sections rise 0 px
+1x easy ERR ask: node n8 "Wg1>": threat ocelot*1: laid 5
+1x easy ERR ask: node n11 "Cg1>": threat ocelot*2: laid 3
+1x easy ERR the quiet line: 4.8 s with nothing to do at x 22377, over 4 s (the goal run-out excluded)
+1x easy ERR ask: node n2 "Pg1<": threat ocelot*1: laid 2 on Easy
+1x easy ERR ask: node n8 "Wg1>": threat ocelot*1: laid 2 on Easy
+1x easy ERR ask: node n4 "Pg1_<": threat ocelot*1: laid 3
+2x easy ERR ask: node n5 "Xf1>": content 'l' (lure): no lure laid
+1x easy ERR ask: node n5 "Xf1>": creatures (&): no creature laid
+1x easy ERR ask: node n5 "Xf1>": threat ocelot*2: laid 0
+1x easy ERR ask: node n11 "Cf1>": threat ocelot*2: laid 1
+1x easy ERR ask: node n13 "Sf1<": threat ocelot*3: laid 1
+1x easy ERR the quiet line: 4.7 s with nothing to do at x 17281, over 4 s (the goal run-out excluded)
+clean 0/8
