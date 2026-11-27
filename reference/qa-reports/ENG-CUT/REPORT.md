@@ -14,6 +14,8 @@ of this head (D115: `git worktree add --detach <scratch>/frz <head>`, node_modul
    teachFirstScan, registrycheck, tierBots, buildcheck, kbdcheck, seedlist --check). Name reds inherited from a0d85e961 by re-running
    that one file on a frozen a0d85e961 (known so far: artUse.test, cage-whole and cage-b: RED on a0d85e961 itself, checked this box;
    registrycheck.test per BUILD-28's REPORT item 1).
+3b. NOT DONE this box: the World 1 before/after still (a cut stone on 1-1, a0d85e961 vs this head, same frame, upright and sideways);
+   the code path for a World 1 cut is unchanged (drawCutArt is called first, unedited), but the brief asks for the still.
 4. Totals here, push, `git ls-remote origin t-eng-cut`, then the landing message (hash, totals, the stills) to the lead AND BUILD-28's
    current session (the lead names it: asked in the hand-over message).
 
