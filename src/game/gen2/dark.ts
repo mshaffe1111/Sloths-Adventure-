@@ -477,6 +477,30 @@ export function litAfter(l: Light, x: number, feet: number, facing: -1 | 1): num
   return l.sleep ? GLOW_STILL + Math.max(0, (l.x - x) * facing) / GLOW_REACH.speed : 0;
 }
 
+/** how far under a root a glowworm patch hangs (px): the worms cling under the root, his hands are at it */
+export const ROOT_PATCH_DROP = 10;
+
+/**
+ * A roof root's glowworm patches (place `root`, ENG-ROOT; 3-2.md NEW 2): each a FIXED light (lit from the start, never asleep) just under
+ * the root at its `t`, its ring `r`, added to the dark zone over it ('lit = seen': in its ring the ocelot sees him at any height,
+ * zones.ts litRing). A patch under no dark zone fails the stage by name: a patch is a light IN the dark brick, never a lamp of its own
+ */
+export function rootPatches(out: StageSink, roots: ReadonlyArray<{ rope: { x0: number; x1: number; y: number }; patches: ReadonlyArray<{ t: number; r: number }> }>): void {
+  if (!roots.some((rt) => rt.patches.length)) return;
+  let id = (out.extras[GLOW_ID] as number | undefined) ?? 1;
+  for (const rt of roots) {
+    for (const q of rt.patches) {
+      const x = Math.round(rt.rope.x0 + q.t * (rt.rope.x1 - rt.rope.x0));
+      const y = Math.round(rt.rope.y + ROOT_PATCH_DROP);
+      const z = out.zones.find((zz) => zz.kind === 'dark' && x >= zz.x0 && x <= zz.x1 && y >= zz.top && y <= zz.bottom);
+      if (!z) throw new Error(`gen2 root at x ${Math.round(rt.rope.x0)}-${Math.round(rt.rope.x1)}: its glowworm patch at x ${x} is under no dark zone (a patch is a light in the dark brick)`);
+      (z.lights ??= []).push({ x, y, r: q.r, id: id++ });
+      z.lights.sort((a, b) => a.x - b.x);
+    }
+  }
+  out.extras[GLOW_ID] = id;
+}
+
 /** the glowworm-dark zones a flag at (x, y) stands in */
 const glowDarkAt = (zones: readonly Zone[] | undefined, x: number, y: number) => (zones ?? []).filter((z) => z.kind === 'dark' && !keepsClear(z) && inBox(z, x, y));
 /** does standing still at a flag at (x, y), facing either way, light one of these within DARK_FLAG_LIT s? */

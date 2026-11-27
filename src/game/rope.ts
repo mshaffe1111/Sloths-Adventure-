@@ -6,6 +6,9 @@ import type { Rope } from './types.ts';
 export const ROPE_SAG = 12;
 /** how fast Pokey creeps along a rope (px/s): well under his running speed, so a crossing feels deliberate */
 export const ROPE_SPEED = 120;
+/** how fast he creeps along a ROOT under a cave roof (px/s; Rope.speed on every root gen2 lays, look 'root'): Matt's B, 'slower and
+ *  tense' (R-165.452, 3-2.md NEW 2): the slowest creep any rope has, so the kit's leap-escape check (predators/core.ts) is held to it */
+export const ROOT_SPEED = 85;
 /** from the rope down to his feet while hanging (his arms are raised: the painted jump_up pose is 94 px tall) */
 export const HANG_DROP = 86;
 /** while he hangs, what he picks up is measured from this far above his feet (his middle: a bloom just under the rope is at his arms) */
@@ -24,6 +27,11 @@ export const ROPE_FROM = 300;
 export const ROPE_SLIDE = 420;
 /** the shortest gap worth a rope: wider than a double jump can clear (313 px at best), with margin */
 export const ROPE_MIN_GAP = 370;
+
+/** how fast he creeps along this rope (px/s): its own speed, ROPE_SPEED when it has none (every rope laid before roots) */
+export function ropeSpeed(r: Pick<Rope, 'speed'>): number {
+  return r.speed ?? ROPE_SPEED;
+}
 
 /** the rope's height at x (it sags a little between its ends) */
 export function ropeYAt(r: Rope, x: number): number {

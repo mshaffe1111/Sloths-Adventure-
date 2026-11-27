@@ -57,11 +57,11 @@ import { airStep, canGrabSwing, DOUBLE_RISE, JUMP_RISE, LAND_HALF, PHYS, SWING, 
 import { MIN_TOUCH_JUMP_HOLD_MS } from '../../src/game/inputEngine.ts';
 import { handsAlong } from '../../src/game/pieces/vineSnakePiece.ts';
 import { onVine, type SnakeNow } from '../../src/game/vineSnake.ts';
-import type { Enemy, Platform, PlayerState, Vine } from '../../src/game/types.ts';
+import type { Enemy, Platform, PlayerState, Rope, Vine } from '../../src/game/types.ts';
 import { headRect, MOVES } from '../../src/game/fight.ts';
 import { runnerLip, RUNNER } from '../../src/game/runnerLiana.ts';
 import { scares } from '../../src/game/dropTrap.ts';
-import { engageOf } from '../../src/game/predators/core.ts';
+import { engageOf, speedOf } from '../../src/game/predators/core.ts';
 import type { TrapPost } from '../../src/game/castPlay.types.ts';
 import { findRoute } from './route.ts';
 import { markUp } from './markClimb.ts';
@@ -79,7 +79,75 @@ import { bucketAngle } from '../../src/game/wheel.ts';
 import { WHEEL_FLOWN } from '../../src/game/gen2/wheelFlights.data.ts';
 import { flownKey } from '../../src/game/gen2/wheelLay.ts';
 import { DARK_AHEAD, darkRims, litAhead, RimWatch, rimAir, runOffRims, type DarkRim, type RimCrossing } from '../../src/game/gen2/dark.ts';
-import { clockLitAt, clockLitLeft } from '../../src/game/zones.ts';
+import { clockLitAt, clockLitLeft, litRing } from '../../src/game/zones.ts';
+import { ropeSpeed } from '../../src/game/rope.ts';
+
+/** how far ahead along a roof root a creeping first-timer looks for a watched glowworm ring (px): he stops just short of its edge, in the dark
+ *  (rootPlan; at the root's 85 px/s a thumb off stops him on the frame) */
+const ROOT_LOOK = 30;
+/** px of light ahead along a roof root that rootPlan measures (a patch's ring is 90 px across its middle at most, either way) */
+const ROOT_LIGHT_MAX = 240;
+/** s from his let-go at a root's end until he has walked out of a watcher's sight (the 104 px fall, then a walk of about 100 px) */
+const ROOT_DROP_S = 1;
+/** px before a roof root's end where he checks the floor below before going on to his let-go (the engine lets go at the end itself) */
+const ROOT_END = 40;
+
+/**
+ * Does a leaper of the cast watch x, now or within `within` s (rootPlan, the hold at a root's end): facing him, its sight ahead plus what
+ * its patrol's walk (speed.rest) closes in that time; facing away, its sight behind. 3-2.md beat 9: "creeps through each lit patch while
+ * both look away".
+ */
+function rootWatched(members: ReadonlyArray<{ def: PredatorDef; s: RootWatcher }>, x: number, within: number): boolean {
+  return members.some((m) => {
+    if (!m.def.leap || m.s.leaving) return false;
+    const dx = x - m.s.x, v = m.def.speed.rest;
+    if (dx * m.s.facing >= 0) return Math.abs(dx) <= m.def.sight.ahead + v * within;
+    // (facing away: it turns at its patrol's end; turning inside the time, it faces him from that far off)
+    const turn = v > 0 ? (m.s.facing > 0 ? m.s.maxX - m.s.x : m.s.x - m.s.minX) / v : Infinity;
+    if (turn < within) return Math.abs(dx) + v * turn <= m.def.sight.ahead + v * (within - turn);
+    return Math.abs(dx) <= m.def.sight.behind;
+  });
+}
+type RootWatcher = { x: number; y: number; minX: number; maxX: number; facing: 1 | -1; leaving?: boolean };
+
+/** px his late lift-off and a ring's edge add either way to a watcher's sight in rootSeen (ADULT's release runs a few frames at 85 px/s) */
+const ROOT_PAD = 20;
+
+/**
+ * Would a leaper of the cast see him in the lit stretch ahead if he creeps on now (rootPlan; 3-2.md beat 9, "creeps through each lit patch
+ * while both look away")? He goes from x along `fdir` at `speed` px/s, in the light from `d0` to `d1` px on; each animal walks its patrol
+ * as core.ts's rest does (at its Easy speed on Easy, turning at its ends) and sees him by its facing (sight ahead, or behind), ROOT_PAD
+ * wider. Over the whole stretch, not its first point: on Easy he closes on a slowed watcher walking away and came inside its sight behind
+ * halfway through the light (Easy roll 1, ENG-ROOT box 3). Once in the light he creeps on (stopping there is the worst place), so the
+ * stretch is judged before it, whole. Its data only: no stage, kind or x.
+ */
+function rootSeen(members: ReadonlyArray<{ def: PredatorDef; s: RootWatcher }>, x: number, fdir: -1 | 1, d0: number, d1: number, speed: number, easy: boolean): boolean {
+  const T = (d1 + ROOT_PAD) / speed;
+  return members.some((m) => {
+    if (!m.def.leap || m.s.leaving) return false;
+    const v = m.def.speed.rest * speedOf(m.def, easy);
+    let ox = m.s.x;
+    let f = m.s.facing;
+    for (let t = 0; t <= T; t += DT) {
+      const d = speed * t;
+      if (d >= d0 - ROOT_PAD) {
+        const dx = x + fdir * d - ox;
+        if (Math.abs(dx) <= (dx * f >= 0 ? m.def.sight.ahead : m.def.sight.behind) + ROOT_PAD) return true;
+      }
+      if (v > 0 && m.s.maxX > m.s.minX) {
+        ox += f * v * DT;
+        if (ox <= m.s.minX) f = 1;
+        else if (ox >= m.s.maxX) f = -1;
+        ox = Math.max(m.s.minX, Math.min(m.s.maxX, ox));
+      }
+    }
+    return false;
+  });
+}
+
+/** px into a roof root's span from its near end from where he jumps up for it (rootTake): under it, never short of its end; up to half
+ *  its length (a jump into the row can land him past its end; off it at its far end he is past the half, so he never takes it back) */
+const ROOT_TAKE_IN = 10;
 /** the most times he went over one rim in the dark (climbs not counted; FTRun.dark.loop): a walk back and forth over one rim (ENG-DARK box 12,
  *  the seam toy's record: since RimWatch reads a grounded step over a seam as on the piece, the loop shows here, lit or not) */
 const rimLoop = (cs: readonly RimCrossing[]) => Math.max(0, ...[...cs.filter((c) => !c.climbed).reduce((m, c) => m.set(c.rim, (m.get(c.rim) ?? 0) + 1), new Map<DarkRim, number>()).values()]);
@@ -296,6 +364,9 @@ export interface FirstTimer {
    *  walks on over it with its landing still dark. Every bot has it (3-1.md: "Stand still, and the glowworms show the way down"; the
    *  tag line and Dot teach it): glowWait */
   noGlowWait?: boolean;
+  /** creep under a watcher REMOVED (ENG-ROOT's planted toy only, src/game/gen2/rootBots.test.ts): on a roof root he creeps on into a lit
+   *  patch an animal watches. Every bot has it (3-2.md beat 9): rootPlan */
+  noRootWait?: boolean;
   /** the dark stop's turn to face the rim REMOVED (darkBots.test's give-up toy only): he stands the way he was facing (glowWait) */
   noGlowTurn?: boolean;
   /** the dark stop's turn pressed at the rim's very edge again (darkBots.test's turn-room toy only): no step back first (glowWait) */
@@ -1321,6 +1392,9 @@ export class FirstTimerRun {
   /** the dark's rims (gen2/dark.ts darkRims, read once), the stop he is making at one, and the rims whose light he waited out unlit */
   private glowRims: DarkRim[] | null = null;
   private glowStop: { rim: DarkRim; since: number; turn?: 1 | 2 } | null = null;
+  /** this frame he holds still on a roof root (rootPlan's wait, the hold before its end): his thumb comes off armed once, as at the
+   *  dark's stop (thumbify; re-armed every frame, KID's and ADULT's late lift-off never let go and he crept on into the light) */
+  private rootHeld = false;
   private readonly glowGaveUp = new Set<DarkRim>();
   /** each stop waited out unlit: the rim and the time (FTRun.dark.gaveUp) */
   readonly glowGiveUps: string[] = [];
@@ -2842,6 +2916,24 @@ export class FirstTimerRun {
     this.swingT = 0;
     // on a rope: along it the way on, off at its end
     if (p.hanging) {
+      // (on a roof root: creep under a watcher first (rootPlan), then along the root his way to its end, and down off it there: the root
+      //  is a hiding place over walkable floor, never a gap's crossing, so the route's rope points do not name it)
+      const rw = this.rootPlan(fdir);
+      if (rw) return rw;
+      const root = this.onRoot();
+      if (root) {
+        const left = fdir > 0 ? root.x1 - p.x : p.x - root.x0;
+        if (left > ROOT_END) return side(fdir);
+        // (near its end, before the engine lets him go at it: on only while no leaper on the floor below watches where he lands (on the
+        //  floor the dark does not hide him); held there till it looks away; down at its end)
+        const c = this.e.cast as { members: Array<{ def: PredatorDef; s: RootWatcher }> } | null;
+        const below = (c?.members ?? []).filter((m) => Math.abs(m.s.y - root.g0) < 40);
+        if (rootWatched(below, p.x + fdir * left, this.who.stopReact + ROOT_DROP_S)) {
+          this.rootHeld = true;
+          return {};
+        }
+        return left > 12 ? side(fdir) : { down: true };
+      }
       // (caught a rope his way does not take yet (a hop down the steps under 2-2's rope, before the spur's stone): he drops off it (down,
       // the engine's let-go), as a person drops off a rope he grabbed by mistake; hanging on, he shimmied to and fro under the way out
       // until rescued, and a jump off it caught it again: FIX-22)
@@ -3017,6 +3109,8 @@ export class FirstTimerRun {
     }
     // a stage's cast: a hunter rearing at him, once told to freeze (freezePlan); a drop trap whose load hangs over an animal ahead, once
     // he has been told of it (castPlan). Any stage by its data
+    const rt = this.rootTake(fdir);
+    if (rt) return rt;
     const fz = this.freezePlan();
     if (fz) return fz;
     if (this.punchAt === null) {
@@ -3630,6 +3724,92 @@ export class FirstTimerRun {
     // (any other light as before ENG-SPORE, bit for bit: lit once the engine woke it (a light laid awake is never in glowWake))
     const woke = e.glowWake.get(l.id!);
     return woke !== undefined && e.gameTime >= woke + lead;
+  }
+
+  /** creep under a watcher (rootPlan): when the stretch ahead was last seen watched, and when he may go on (his reaction after it cleared) */
+  private rootWatch: { watched: boolean; go: number } | null = null;
+
+  /** the roof root he hangs on (Rope.look 'root'), or none */
+  private onRoot(): Rope | undefined {
+    const e = this.e as unknown as { ropes: Rope[]; ropeId: number };
+    const r = this.sim.p.hanging ? e.ropes.find((q) => q.id === e.ropeId) : undefined;
+    return r?.look === 'root' ? r : undefined;
+  }
+
+  /**
+   * Take the root (ENG-ROOT item 3; 3-2.md W: "the root IS the hiding place"): on the ground just inside a roof root's near end his way
+   * (Rope.look 'root', its floor his floor; ROOT_TAKE_IN to half its length), with an animal of the cast that leaps (PredatorDef.leap) on that floor whose
+   * patrol (minX..maxX) or its sight from it reaches the root's span, he jumps straight up under the root and catches it (the engine's rope catch, hands rising
+   * through it). Then rootPlan and the hanging branch take him along it. No leaper there: he walks the floor. Its data only.
+   */
+  private rootTake(fdir: -1 | 1): Pad | null {
+    const c = this.e.cast as { members: Array<{ def: PredatorDef; s: { x: number; y: number; minX: number; maxX: number; leaving?: boolean } }> } | null;
+    const p = this.sim.p;
+    if (!c || !p.grounded || this.pending || this.jump) return null;
+    // (the stretch it holds: its whole patrol, as far as it sees from either end; never where it happens to stand this frame)
+    const holds = (m: (typeof c.members)[number], r: Rope) => {
+      const see = Math.max(m.def.sight.ahead, m.def.sight.behind);
+      return !!m.def.leap && !m.s.leaving && Math.abs(m.s.y - r.g0) < 40 && Math.min(m.s.minX, m.s.x) - see < r.x1 && Math.max(m.s.maxX, m.s.x) + see > r.x0;
+    };
+    for (const r of (this.e as unknown as { ropes: Rope[] }).ropes) {
+      if (r.look !== 'root' || Math.abs(r.g0 - p.y) > 6) continue;
+      const d = (p.x - (fdir > 0 ? r.x0 : r.x1)) * fdir;
+      if (d < ROOT_TAKE_IN || d > (r.x1 - r.x0) / 2) continue;
+      if (c.members.some((m) => holds(m, r))) return this.decide(0, 'single', false, { up: true });
+    }
+    return null;
+  }
+
+  /**
+   * Creep under a watcher (ENG-ROOT item 3; 3-2.md beat 9: "waits in the dark, creeps through each lit patch while both look away"). Hanging
+   * on a roof root (Rope.look 'root'), when the next stretch of his creep (ROOT_LOOK px his way) enters a LIT glowworm ring (zones.ts
+   * litRing: 'lit = seen') that an animal of the cast with a leap (PredatorDef.leap) has inside its sight by its facing (its ahead, or its
+   * behind), he takes his thumb off in the dark (still on a rope wakes nothing) until no such animal watches it; then, his reaction later
+   * (stopReact), he creeps on. Already in the light he creeps on (stopping there is the worst place). Its data only: no stage, kind or x.
+   */
+  private rootPlan(fdir: -1 | 1): Pad | null {
+    const c = this.e.cast as { members: Array<{ def: PredatorDef; s: RootWatcher }> } | null;
+    const p = this.sim.p, t = this.t;
+    const rope = p.hanging ? (this.e as unknown as { ropes: Rope[]; ropeId: number }).ropes.find((r) => r.id === (this.e as unknown as { ropeId: number }).ropeId) : undefined;
+    if (this.who.noRootWait || !c || !rope || rope.look !== 'root') {
+      this.rootWatch = null;
+      return null;
+    }
+    const zones = this.e.currentStage.zones;
+    const wake = (this.e as unknown as { glowWake: Map<number, number> }).glowWake;
+    const woke = (id: number) => wake.get(id);
+    const lit = (x: number) => litRing(zones, x, p.y, this.e.gameTime, woke);
+    if (lit(p.x)) {
+      this.rootWatch = null;
+      return null;
+    }
+    // (the lit stretch ahead from x, along the root: how long he is in the light if he creeps on now)
+    let lightPx = 0;
+    for (let d = 10; d <= ROOT_LIGHT_MAX; d += 10) {
+      const x = p.x + fdir * d;
+      if (x < rope.x0 || x > rope.x1 || (d > ROOT_LOOK && !lit(x))) break;
+      if (lit(x)) lightPx = d;
+    }
+    let d0 = 0;
+    for (let d = 10; d <= ROOT_LOOK && !d0; d += 10) {
+      const x = p.x + fdir * d;
+      if (x < rope.x0 || x > rope.x1) break;
+      if (lit(x)) d0 = d;
+    }
+    const ahead = d0 > 0 && rootSeen(c.members, p.x, fdir, d0, lightPx, ropeSpeed(rope), this.who.setting === 'easy');
+    if (ahead) {
+      this.rootWatch = { watched: true, go: Infinity };
+      this.rootHeld = true;
+      return {};
+    }
+    // (it has just looked away: his reaction before the thumb goes back on)
+    if (this.rootWatch?.watched) this.rootWatch = { watched: false, go: t + this.who.stopReact };
+    if (this.rootWatch && t < this.rootWatch.go) {
+      this.rootHeld = true;
+      return {};
+    }
+    this.rootWatch = null;
+    return null;
   }
 
   /**
@@ -4249,7 +4429,7 @@ export class FirstTimerRun {
     // (R-165.59: lastSteer is not moved on while the late lift-off runs, so for KID and ADULT this re-arms every frame and the steer is
     // never let go once held; a tier bot arms it once per let-go, as the thumb does. At the dark's stop (glowWait) every bot arms it once:
     // he means to stand, and the KID's re-arming never let him, so he walked off every dark rim)
-    if (steer === 0 && this.lastSteer !== 0 && !want.press && !((who.holdQ || this.glowStop) && this.releaseArmed)) {
+    if (steer === 0 && this.lastSteer !== 0 && !want.press && !((who.holdQ || this.glowStop || this.rootHeld) && this.releaseArmed)) {
       const [lo, hi] = who.releaseMax;
       this.releaseLeft = Math.max(lo, Math.min(hi, Math.round(Math.exp(gauss(this.r, who.release)))));
       this.releaseArmed = true;
@@ -4273,6 +4453,7 @@ export class FirstTimerRun {
     this.figTap = false;
     this.rollHeld = false;
     this.steady = false;
+    this.rootHeld = false;
     const intended = this.intend();
     const want = this.rollHeld || this.steady || this.runnerAhead() ? intended : this.rhythm(intended);
     const out = this.figTap ? this.tapped(want) : this.thumbify(want);
