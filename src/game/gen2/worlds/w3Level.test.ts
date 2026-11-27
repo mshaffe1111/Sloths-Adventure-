@@ -18,7 +18,7 @@ import { TYPE_OF_LETTER } from '../nodeAsks.ts';
 import type { ContentType, GraphBrief, SectionTemplate, WorldKit } from '../types.ts';
 import { w1World } from './w1.ts';
 import { w2World } from './w2.ts';
-import { W3_LEVEL, W3_LEVEL_STAGES, w3Ledge, w3ProwlClimb, w3ProwlClimbDark, w3World } from './w3.ts';
+import { W3_CLIMBS, W3_LEVEL, W3_LEVEL_STAGES, w3Ledge, w3World } from './w3.ts';
 
 /** 3-2's trimmed code as the audit rolls it (codes-trim-rolled.txt: the asks the base can check; #dark joins with ENG-ASKS-b) */
 const CODE_32 = 'A Tc1< Pg1> Pf1< Xc1&<:&ocelot*1 R Pg1< Wf1&>:&ocelot*1 R Pc1&<:&ocelot*1 Cg1&>:&ocelot*2 R Sf1&<:&ocelot*3 E';
@@ -44,7 +44,7 @@ function rollKit(stage: string, code: string, own: readonly SectionTemplate[]): 
 }
 
 type Built = { gen2: { errors?: string[]; nodes: Array<{ token: string }>; graph: { nodes: Array<{ id: string }> }; sections: Array<{ uid: string; template: string; node?: string }>; fills: Array<{ role: string; section: string; socket: string; what?: string }> } };
-type Rolled = { errors: string[]; secs: string[]; onSockets: number };
+type Rolled = { errors: string[]; secs: string[]; onSockets: number; node?: string; token?: string };
 /** one roll of a code; a stand-in World 1-2 section that throws on World 3's budget by name is left out and the seed re-rolled (the
  *  audit's raw.ts way). Returns the C node's laid sections and the ocelots standing on `own`'s OWN sockets there (not a top-up) */
 function roll(stage: string, code: string, own: readonly SectionTemplate[], seed: number, d: (typeof BOTH)[number], at: string | number = 'C'): Rolled {
@@ -63,7 +63,7 @@ function roll(stage: string, code: string, own: readonly SectionTemplate[], seed
       const uids = new Set(here.map((q) => q.uid));
       const mine = new Set(own.flatMap((q) => q.sockets.filter((x) => x.role === 'enemy').map((x) => x.id)));
       const onSockets = g.fills.filter((f) => f.role === 'enemy' && f.what === 'ocelot' && uids.has(f.section) && mine.has(f.socket)).length;
-      return { errors: [...(g.errors ?? [])], secs: here.map((q) => q.template), onSockets };
+      return { errors: [...(g.errors ?? [])], secs: here.map((q) => q.template), onSockets, node: id, token: g.nodes[i].token };
     } catch (e) {
       // (a roll the pipeline cannot finish for want of a node's content is a refusal too: "no section fits node")
       const m = String((e as Error).message);
@@ -78,7 +78,8 @@ function roll(stage: string, code: string, own: readonly SectionTemplate[], seed
 /** the refusals that name 3-2's C node (the ground beat with two ocelots) or the pool's ground at it */
 const cRefusals = (r: Rolled) => r.errors.filter((e) => /node n\d+ "C[^"]*": (threat ocelot|creatures|content 'g')|no ground section left|no section fits/.test(e));
 const LEVEL_IDS = new Set(W3_LEVEL.map((s) => s.id));
-const CLIMB_IDS = new Set([w3ProwlClimb.id, w3ProwlClimbDark.id]);
+const CLIMB_IDS = new Set(W3_CLIMBS.map((q) => q.id));
+const DARK_CLIMB_IDS = new Set(W3_CLIMBS.filter((q) => q.sockets.some((k) => k.id === 'darkFrom')).map((q) => q.id));
 /** the same bricks with no animal socket (planted red 1: the count on them drops to 0) */
 const NO_SOCKETS = W3_LEVEL.map((s) => ({ ...s, sockets: s.sockets.filter((q) => q.role !== 'enemy') }));
 
@@ -94,12 +95,15 @@ test("World 3's level bricks are in its level stages' pools only (feel), so the 
     for (const q of foes) { const p = s.pieces.find((x) => x.key === q.on)!; assert.ok((p.w as [number, number])[0] >= 240, `${s.id}: ${q.on} floor`); }
     // (plain steps only: nothing asks for the double, AUDIT-W3 finding 4)
     // (a climb's one drop is the walk off its shelf back down the vine's height, R-165.524: a walk, never a jump)
-    const shelf = new Set(s.pieces.filter((p) => p.place.kind === 'over').map((p) => p.key));
-    for (const p of s.pieces) if (p.place.kind === 'walk') for (const v of [p.place.dy ?? 0].flat() as number[]) {
-      const vine = s.pieces.find((x) => x.place.kind === 'climb');
-      if (shelf.has(p.place.after) && vine?.place.kind === 'climb') assert.ok(v > 60 && v <= Number(vine.place.h), `${s.id}: ${p.key} drop, no deeper than the vine`);
+    const vine = s.pieces.find((x) => x.place.kind === 'climb');
+    const up = vine ? s.pieces.findIndex((x) => x.place.kind === 'over') : Infinity;
+    let drops = 0;
+    s.pieces.forEach((p, i) => { if (p.place.kind === 'walk') for (const v of [p.place.dy ?? 0].flat() as number[]) {
+      if (i > up && v > 60 && vine?.place.kind === 'climb') { drops++; assert.ok(v <= Number(vine.place.h) + 60, `${s.id}: ${p.key} drop, no deeper than the vine and a step`); }
       else assert.ok(Math.abs(v) <= 60, `${s.id}: ${p.key} step`);
-    }
+    } });
+    assert.ok(drops <= 1, `${s.id}: one drop, off the top`);
+    if (vine) assert.equal(s.pieces.reduce((y, p) => y + (p.place.kind === 'walk' ? Number(p.place.dy ?? 0) : p.place.kind === 'over' && vine?.place.kind === 'climb' ? -Number(vine.place.h) : 0), 0), s.exitDy, `${s.id}: it leaves at its exitDy`);
     assert.ok(!s.pieces.some((p) => p.place.kind === 'jump' || p.place.kind === 'double'), `${s.id}: no jump piece (plain walks and steps)`);
   }
 });
@@ -124,7 +128,7 @@ test("3-2's C beat ('Cg1&>:&ocelot*2'): laid from World 3's ocelot ground, both 
 
 /** the refusals that name 3-2's P(c) node (the climb beat with one ocelot, 'Pc1&<:&ocelot*1') or the pool's climb at it */
 const PC_32 = CODE_32.split(' ').indexOf('Pc1&<:&ocelot*1');
-const pcRefusals = (r: Rolled) => r.errors.filter((e) => new RegExp(`node n${PC_32} "[^"]*": (threat ocelot|creatures|content 'c')|no climb section left|no section fits`).test(e));
+const pcRefusals = (r: Rolled) => r.errors.filter((e) => new RegExp(`node ${r.node} "[^"]*": (threat ocelot|creatures|content 'c')|no climb section left|no section fits`).test(e));
 
 test("3-2's climb beat P(c) ('Pc1&<:&ocelot*1'): laid from World 3's climb out, its ocelot on the brick's OWN foot socket, on every roll (planted red)", () => {
   for (const seed of SEEDS) for (const d of BOTH) {
@@ -138,4 +142,25 @@ test("3-2's climb beat P(c) ('Pc1&<:&ocelot*1'): laid from World 3's climb out, 
     // (planted red: the same bricks with their ocelot sockets stripped; the count on them drops to 0 on every roll)
     assert.equal(roll('3-2', CODE_32, NO_SOCKETS, seed, d, PC_32).onSockets, 0, `seed ${seed} ${d}: sockets removed`);
   }
+});
+
+/** 3-2's trimmed code in ENG-ASKS-b's form (AUDIT-W3 codes-trim.txt, the dark asked by node: '#dark') */
+const CODE_32_DARK = 'A Tr1<:#dark Pg1> Pf1<:#dark Xc1&<:#dark:&ocelot*1 R Pg1< Wr1&>:#dark:&ocelot*1 R Pc1&<:&ocelot*1 Cg1&>:#dark:&ocelot*2 R Sr1&<:#dark:&ocelot*3 E';
+const XC_32 = CODE_32_DARK.split(' ').indexOf('Xc1&<:#dark:&ocelot*1');
+const xcRefusals = (r: Rolled) => r.errors.filter((e) => e.includes(`node ${r.node} "`) || /no climb section left|no section fits/.test(e));
+
+test("3-2's dark climb X(c) ('Xc1&<:#dark:&ocelot*1'): laid from the climb out IN THE DARK, the dark zone over its span, its ocelot on the foot socket (planted reds)", () => {
+  for (const seed of SEEDS) for (const d of BOTH) {
+    const r = roll('3-2', CODE_32_DARK, W3_LEVEL, seed, d, XC_32);
+    assert.deepEqual(xcRefusals(r), [], `seed ${seed} ${d}: X(c) laid ${r.secs.join(', ')}`);
+    assert.ok(r.secs.length > 0 && r.secs.every((t) => CLIMB_IDS.has(t)) && r.secs.some((t) => DARK_CLIMB_IDS.has(t)), `seed ${seed} ${d}: X(c) laid ${r.secs.join(', ')}`);
+    if (d === 'normal') assert.equal(r.onSockets, 1, `seed ${seed} ${d}: the ocelot on the dark climb's foot socket`);
+    else assert.ok(r.onSockets <= 1, `seed ${seed} ${d}: ${r.onSockets} on Easy`);
+    // (planted red 1: the sockets stripped, the count on them drops to 0)
+    assert.equal(roll('3-2', CODE_32_DARK, NO_SOCKETS, seed, d, XC_32).onSockets, 0, `seed ${seed} ${d}: sockets removed`);
+  }
+  // (planted red 2: the dark climb with its dark ends taken out; X(c) is refused 'no dark zone in its span' or by the pool, by name)
+  const unlit = W3_LEVEL.map((s) => ({ ...s, sockets: s.sockets.filter((q) => q.id !== 'darkFrom' && q.id !== 'darkTo') }));
+  const r = roll('3-2', CODE_32_DARK, unlit, 1, 'normal', XC_32);
+  assert.ok(r.errors.some((e) => new RegExp(`node ${r.node} ".*#dark`).test(e) || /lays #dark/.test(e)), `no dark refusal: ${r.errors.slice(0, 3).join(' | ')}`);
 });

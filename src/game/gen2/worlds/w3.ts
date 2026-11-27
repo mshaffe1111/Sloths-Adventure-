@@ -219,10 +219,11 @@ const PROWL_STEP = 54;
  * (World 3's climb, drawn as the kit's trunk) onto a branch shelf and walks off it down onto the exit bank (a walk, never a jump: only a
  * jump's dy is scaled by the rise, R-165.524). Plain jumps only. `dark`: the dark stretch over the whole brick, a glowworm at its end.
  */
-function prowlClimb(dark: boolean): SectionTemplate {
+function prowlClimb(dark: boolean, high = false): SectionTemplate {
+  const top = high ? 'ledge' : 'shelf';
   return {
-    id: dark ? 'w3-prowl-climb-dark' : 'w3-prowl-climb',
-    name: dark ? 'the climb out, in the dark' : 'the climb out',
+    id: `w3-prowl-climb${high ? '-high' : ''}${dark ? '-dark' : ''}`,
+    name: `the climb out${high ? ' and up' : ''}${dark ? ', in the dark' : ''}`,
     feel: W3_LEVEL_STAGES, archetypes: 'any',
     phases: ['sho', 'ten', 'ketsu'],
     difficulty: dark ? 4 : 3, needs: ['climb'], jobs: PROWL_JOBS, content: 'climb', maxPerStage: 3,
@@ -231,7 +232,9 @@ function prowlClimb(dark: boolean): SectionTemplate {
       { key: 'foot', shape: 'bank', w: PROWL_FLOOR, place: { kind: 'walk', after: 'in', dy: PROWL_STEP } },
       { key: 'vine', shape: 'vine', w: 0, place: { kind: 'climb', on: 'foot', at: 1, h: PROWL_CLIMB_H } },
       { key: 'shelf', shape: 'branch', w: [220, 260], place: { kind: 'over', on: 'vine', at: 0, dy: 0 }, main: true },
-      { key: 'out', shape: 'bank', w: [280, 320], place: { kind: 'walk', after: 'shelf', dy: PROWL_CLIMB_H - PROWL_STEP } },
+      // (`high`: a plain step up off the shelf onto a higher branch, and the walk off is from there)
+      ...(high ? [{ key: 'ledge', shape: 'branch' as const, w: [200, 240] as [number, number], place: { kind: 'walk' as const, after: 'shelf', dy: -PROWL_STEP } }] : []),
+      { key: 'out', shape: 'bank', w: [280, 320], place: { kind: 'walk', after: top, dy: PROWL_CLIMB_H - PROWL_STEP + (high ? PROWL_STEP : 0) } },
     ],
     entry: { piece: 'in', kind: 'ground' },
     exit: { piece: 'out', kind: 'ground' },
@@ -239,7 +242,7 @@ function prowlClimb(dark: boolean): SectionTemplate {
     sockets: [
       ...(dark ? darkEnds('in', 'out', 'glow') : []),
       ocelotAt('ocelot', 'foot', [0.3, 0.45]),
-      { id: 'petals', role: 'pickup', on: 'shelf', t: [0.4, 0.6], dn: 34, count: 2, span: 90, allow: ['pickups'] },
+      { id: 'petals', role: 'pickup', on: top, t: [0.4, 0.6], dn: 34, count: 2, span: 90, allow: ['pickups'] },
       { id: 'petal', role: 'pickup', on: 'out', t: 0.35, dn: 34 },
       // (a flag that falls in the brick stands on its exit bank, never at the ocelot's floor: pipeline.ts patchFor, SAFE_APPROACH)
       { id: 'flag', role: 'flag', on: 'out', t: 0.7 },
@@ -249,9 +252,13 @@ function prowlClimb(dark: boolean): SectionTemplate {
 }
 export const w3ProwlClimb: SectionTemplate = prowlClimb(false);
 export const w3ProwlClimbDark: SectionTemplate = prowlClimb(true);
+export const w3ProwlClimbHigh: SectionTemplate = prowlClimb(false, true);
+export const w3ProwlClimbHighDark: SectionTemplate = prowlClimb(true, true);
+/** the climb bricks (a climb node takes two: two shapes, so its second is World 3's own, not a World 1-2 stand-in) */
+export const W3_CLIMBS: readonly SectionTemplate[] = [w3ProwlClimb, w3ProwlClimbDark, w3ProwlClimbHigh, w3ProwlClimbHighDark];
 
 /** World 3's level bricks, in the order a pool reads them (the ocelot's ground, the climb out; the root rope next, ENG-ROOT) */
-export const W3_LEVEL: readonly SectionTemplate[] = [w3ProwlFloor, w3ProwlPair, w3ProwlClimb, w3ProwlClimbDark];
+export const W3_LEVEL: readonly SectionTemplate[] = [w3ProwlFloor, w3ProwlPair, ...W3_CLIMBS];
 // ───────────────────────────── the hazards a node code may ask ─────────────────────────────
 
 /** the puff's clock (the spore piece, gen2/spore.ts: a section's SectionZone 'spore' lays its cloud on zones.ts SPORE's beat) */
