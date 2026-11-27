@@ -1,0 +1,7 @@
+2-7 v51 child normal: end shrine t 520.2 rescues 0 (at x [])
+  stuck t115.1 dur12 x9858,758 rescued=false water ahead @ w2-27-at-him[8513..10493]
+  harm life water t175.5 x13173,787 @ w2-27-upstream[12788..14808]
+  harm life water t259.6 x14399,784 @ w2-27-upstream[12788..14808]
+  harm life water t417.8 x6564,1500 @ w2-27-doors[5953..8513]
+  harm life water t441.2 x6651,1482 @ w2-27-doors[5953..8513]
+w2-27-jetty@4651 w2-27-doors@5953 w2-27-at-him@8513 w2-27-porches@10493 w2-27-upstream@12788 w2-27-rest@14808 w2-27-weir@15628 w2-27-reed-bank@13588 w2-27-with@10950 w2-27-bend@9350 w2-27-keep-running@7831 w2-27-rest@7011 w2-27-stilts@4675 w2-27-rest@3855 w2-27-neck@1421 w2-27-home-jetty@560

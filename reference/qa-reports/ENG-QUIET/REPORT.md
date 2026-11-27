@@ -1,6 +1,43 @@
 # ENG-QUIET: is a wait for ONE on 2-9's drum "quiet"? (Engine, from t-build-29 4c3ff9d8)
 
-## EXACT NEXT STEP (box 3 hand-over, ENG-QUIET-c; NOT landed: t-eng-29 still 28c848dbd; work branch t-eng-quiet-b = f589b979a)
+## EXACT NEXT STEP (box 4 hand-over, ENG-QUIET-d, 11-27 9:03 AM ET; NOT landed: t-eng-29 still 28c848dbd; work branch t-eng-quiet-b = f589b979a, unchanged in box 4)
+1. WAIT for the lead's ruling on the table below (sent to the lead; the 2-7 half also to INT-R5-b). The recommendation: KEEP THE ROLLS.
+   If there is no reply in 20 minutes, take that reversible recommendation and go on to step 2 (box 3's step 3, unchanged: every
+   roll/seed-pinning test, then GATES once on f589b979a, freeze per D115 with src/game/gen2/proven/ writable, land on t-eng-29 as a
+   fast-forward, message the lead with each shard's totals).
+2. If the lead rules "narrow B" or "a pieces lane" instead, nothing in t-eng-quiet-b is kept as is: re-plan from the ruling.
+
+### Box 4 findings (ENG-QUIET-d, 11-27): rule 28, every moved bot row traced
+Variants are 0-based (list row = variant + 1). Evidence in box4/ (one probe file per run, named new|old-stage-variant-bot-setting) and
+the probes miss.ts (stalls, rescues, lives with the piece under each), geo.ts (blocks, logs, rivers of a variant), frames.ts (his state
+changes between two x). The old list = 88b5611b4's src/game/gen2/proven/ checked into a worktree of f589b979a (same engine and bots).
+- 2-7 old list on the 35 changed variants (box4/bots27-old.jsonl, done): **309/315 -> new 305/315**. 10 rows worse (kid N v48 v68;
+  child N v7 v11 v43 v51 v58 v65 v85; child E v43), 6 rows better (kid N v67; child N v36 v67; child E v27; middle N v36; middle E v16).
+  None under the floor either list.
+- Every new miss on 2-4 and 2-7 is one of three BOT causes, each also seen on the OLD list; no LAYOUT cause found (the piece each miss is
+  in has the same geometry in the old and the new roll, shifted in x/y; so no still: there is no new hazard to show):
+  - C1 set-down loop (he walks off a plain water gap without jumping, is set back near the edge, repeats; 3 or 8 times = rescued):
+    NEW 2-4 child E v64: root-planks, a 98 px flat water gap 13480..13578, set down at 13410, walks off at 13501 (frames f4105..f4300),
+    8 loops, rescued to 13649; the OLD roll has the same gap (13593..13691) and he jumps it at 13611. NEW 2-7 porches: child N v7
+    (11795), v58 (11920), child E v43 (11800), kid N v68 (11630). OLD 2-7 porches: kid N v67 (11941, x3), child E v27 (12285, x8);
+    OLD 2-1 child E v85 (17470, x8).
+  - C2 a 20 s stand at water with logs (never boards), then rescued: NEW 2-4 child E v85: long-relay, stand at 22863 (logs 160 px every
+    232 px at 75 px/s, identical to the old roll's), then a 50 px far-bank step at 24192 = OLD 2-4 child E v74's miss (step at 23875,
+    same piece). NEW 2-7 at-him child N v11 (8834), v51 (9221); upstream child N v43 (13952), v85 (14202). OLD 2-7 the same stands,
+    11-13 s, recovered: at-him v11 (9415), v51 (9858), v43 (8934); upstream v8, v71, v75.
+  - C3 the kid rides a no-land log to its end and slides off without jumping for the liana: NEW 2-4 kid N v66: x 16855, 3 times
+    (t92.1, 96.3, 104.8), 3 lives at one place -> rescued; the piece is identical in the old roll (log x1 = vine x - 90, speed 100;
+    only the liana's swayPhase 0 vs 4). The same slide on the NEW list's passing rows v1 (16839), v64 (16825), v78 (16602), and on the
+    OLD list 3 times over 10 old variants (passing). 2-7 kid N v48: 3 water lives in upstream then set down x3 at 13196 (C3 + C1);
+    old v48 lost a life in upstream too.
+- The 2-4 brief's reading "hangs on drop-ride-drop's vine and is rescued" is not what happened: that vine stall (8136 / 8204, 13-14 s)
+  recovers on its own and shows on 7 OLD child Easy rows (v1 v2 v7 v8 v47 v72 v94); the rescues are C1 (v64) and C2 (v85).
+- Recommendation: keep the rolls. The moves are the same three bot loops landing on different variants (2-7: 10 worse, 6 better, same
+  causes both ways), not a layout the old quiet judge refused for a reason. Narrowing B costs 2-9 what B is for: its let-go and log-catch beats counted busy, so its drum wait is not refused as quiet
+  (box 1-3). The bot fixes (C1 take-off after a set-down near an edge; C2 boarding a
+  log after a long stand; C3 the jump from a log's end to the liana) are a Critic bot packet, not a pieces lane.
+
+## Box 3 next step (superseded by box 4; box 3 hand-over, ENG-QUIET-c; NOT landed: t-eng-29 still 28c848dbd; work branch t-eng-quiet-b = f589b979a)
 t-eng-quiet-b now holds the candidate 88b5611b4 + 74d88d236 (2-1's and 2-4's lists rebuilt under B) + f589b979a (2-7's list rebuilt).
 Lists only (src/game/gen2/proven/seeds-2-{1,4,7}.ts + provenIndex.ts); no engine or tools change in box 3. NEXT BOX, in order:
 1. 2-4's three new bot misses (below) are UNRESOLVED: trace each (rule 28: two runs per cause, seed, x, frame, what took him) and bring

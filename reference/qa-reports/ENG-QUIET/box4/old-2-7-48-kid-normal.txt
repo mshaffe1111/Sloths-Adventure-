@@ -1,0 +1,4 @@
+2-7 v48 kid normal: end shrine t 196.8 rescues 0 (at x [])
+  stuck t77.7 dur8.5 x13091,758 rescued=false an open drop ahead, water ahead @ w2-27-upstream[12515..14535]
+  harm life water t67.1 x14176,786 @ w2-27-upstream[12515..14535]
+w2-27-jetty@4230 w2-27-doors@5390 w2-27-at-him@8092 w2-27-porches@10072 w2-27-upstream@12515 w2-27-rest@14535 w2-27-weir@15355 w2-27-reed-bank@13315 w2-27-with@10677 w2-27-bend@9077 w2-27-keep-running@7699 w2-27-rest@6879 w2-27-stilts@4543 w2-27-rest@3723 w2-27-neck@1431 w2-27-home-jetty@560

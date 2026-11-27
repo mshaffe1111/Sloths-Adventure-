@@ -1,0 +1,3 @@
+2-7 v43 child normal: end shrine t 407.8 rescues 1 (at x [13813])
+  stuck t190 dur20 x13952,747 rescued=true an open drop ahead, water ahead @ w2-27-upstream[12646..14666]
+w2-27-jetty@4444 w2-27-doors@5744 w2-27-at-him@8304 w2-27-porches@10284 w2-27-upstream@12646 w2-27-rest@14666 w2-27-weir@15486 w2-27-reed-bank@13446 w2-27-with@10950 w2-27-bend@9350 w2-27-keep-running@7831 w2-27-rest@7011 w2-27-stilts@4675 w2-27-rest@3855 w2-27-neck@1421 w2-27-home-jetty@560

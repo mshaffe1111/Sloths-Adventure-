@@ -1,0 +1,3 @@
+2-7 v85 child normal: end shrine t 326.5 rescues 0 (at x [])
+  harm life water t299 x1909,1547 @ w2-27-neck[1430..3722]
+w2-27-jetty@4771 w2-27-doors@5931 w2-27-at-him@8491 w2-27-porches@10471 w2-27-upstream@12798 w2-27-rest@14818 w2-27-weir@15638 w2-27-reed-bank@13456 w2-27-with@10818 w2-27-bend@9218 w2-27-keep-running@7840 w2-27-rest@7020 w2-27-stilts@4684 w2-27-rest@3864 w2-27-neck@1430 w2-27-home-jetty@560

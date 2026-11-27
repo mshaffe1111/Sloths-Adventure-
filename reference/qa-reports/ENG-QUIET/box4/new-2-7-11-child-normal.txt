@@ -1,0 +1,8 @@
+2-7 v11 child normal: end shrine t 464.5 rescues 2 (at x [8734,9360])
+  stuck t72.5 dur20 x8834,778 rescued=true water ahead @ w2-27-at-him[8501..10481]
+  stuck t92.5 dur20 x9360,750 rescued=true nothing in the way the bot can see @ w2-27-at-him[8501..10481]
+  stuck t226.7 dur14.9 x13348,780 rescued=false an open drop ahead, water ahead @ w2-27-upstream[12935..14955]
+  harm life water t411.4 x5521,1519 @ w2-27-jetty[4497..5657]
+  harm life water t413.7 x5338,1519 @ w2-27-jetty[4497..5657]
+  harm life water t414.8 x5447,1528 @ w2-27-jetty[4497..5657]
+w2-27-jetty@4497 w2-27-doors@5799 w2-27-at-him@8501 w2-27-porches@10622 w2-27-upstream@12935 w2-27-rest@14955 w2-27-weir@15775 w2-27-reed-bank@13593 w2-27-with@11097 w2-27-bend@9355 w2-27-keep-running@7835 w2-27-rest@7015 w2-27-stilts@4537 w2-27-rest@3717 w2-27-neck@1425 w2-27-home-jetty@560
