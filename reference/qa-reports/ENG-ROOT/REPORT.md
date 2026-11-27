@@ -1,24 +1,28 @@
 # ENG-ROOT REPORT (3-2's roof root; R-165.452; the 'lit = seen' seam R-165.529) — t-eng-root-wip, base t-eng-w3 13135bf6b
 
-## EXACT NEXT STEP (box 4, a fresh member; box 3 ENG-ROOT-c handed over on the clock; head on t-eng-root-wip = the commit carrying this)
-1. `git fetch origin t-eng-root-wip t-eng-w3 && git switch -c t-eng-root-wip FETCH_HEAD`. t-eng-w3 has MOVED (f79963053 at box 3's end, base
-   was 13135bf6b): MERGE it in first (never rebase), then tsc. Item 1 is DONE (below); the src/tool change is FROZEN unless the merge breaks it.
-2. ITEM 2, THE STILLS (not started). Method: copy tools/engine/draftshoot.mjs (vite + a boot imported before /src/main.tsx + Pokey pinned in an
-   e.render override) to a scratch shooter in the scratchpad; the boot (a file under tools/ so vite serves it, NOT committed) lists the toy:
-   `LISTED[id] = { kit: () => rootKit, world: (s) => s }` and `plantSeedList(id, { dict, seeds: [seed], plans: [packed] })` exactly as
-   rootBots.test.ts play() does (rootBuilt + packPlan + keptFoes). OPEN QUESTION: the page plays a stage by id through levelConfig(id); the toy
-   id 3-97 has no STAGE_PLAN entry. Either give the boot a STAGE_PLAN[3][96] entry from toyRoot's rootCfg, or list it under a World 3 id that
-   has a plan entry with HAND_STAGES[id] deleted (readyDraft's pattern) and check the replayed plan builds the same row (print root x0/x1 and the
-   ocelot patrol, D62). The pin: `p.hanging = true; this.ropeId = root.id; p.x = X; p.y = root.y + HAND_REACH (70, rope.ts)`, vx/vy 0. Shots:
-   Normal e.g. roll 1 (root 14463..16063, patch at its middle) with Pokey (a) in the dark before the patch and (b) IN the lit ring over the
-   ocelot; Easy the same; upright 390x844 and sideways 844x390 at 2x. Each still says "art: World 1's painted vine rope (ropeArt.ts drawRopes,
-   look 'root') until ART-W3 batch 2's root lands" and names its draw path. Judge as Matt on a phone: the root reads as a root, hands on it, the
-   ocelot readable, the ring visible. Send them to the lead.
-3. GATES ONCE on the frozen candidate (D115, src/game/gen2/proven/ writable): tsc; the CI tool line; THE LOCK GATE as two runs (D153):
-   `npx tsx tools/engine/lockall.ts --layouts 16 --out base.json` on t-eng-w3's head, then `--layouts 16 --check base.json` on the candidate,
-   with the counts line (no listed stage moves, every shipped rope 120); the suite in 6 shards; tierBots 9/9; generalitycheck.
-4. LAND: merge onto origin/t-eng-w3 (no force, never rebase), re-run tsc and the lock check, ls-remote. To the lead: the hash, each shard's
-   totals, the stills, what 3-2's build can measure, and the brick spec below (KIT-W3b's next box builds the brick).
+## EXACT NEXT STEP (box 4 ENG-ROOT-d; head on t-eng-root-wip = the commit carrying this; FROZEN CANDIDATE a619ea16a, code unchanged after it)
+1. GATES running on frozen a619ea16a (scratchpad worktree, src/tools read-only, gen2/proven writable): the 6 suite shards; the LOCK BASE
+   `lockall --layouts 16 --out base.json` on t-eng-w3 f79963053. Then, in order: `--layouts 16 --check base.json` on a619ea16a (counts
+   line; no listed stage moves, every shipped rope 120); tierBots 9/9; the CI tool line on a619ea16a. DONE on it: tsc 0, generality PASS.
+   A fresh member re-runs any gate whose result is not recorded below: it runs ONCE, on a619ea16a (or the head, if only this file moved).
+2. LAND: `git fetch origin t-eng-w3`; if it has not moved past f79963053 the merge is a fast-forward; else merge it into the branch (never
+   rebase), tsc + `lockall --check` on the merge; push HEAD:t-eng-w3 (no force), ls-remote. Send the lead the hash, the shard totals,
+   what 3-2's build can measure and the brick spec (KIT-W3b section below; the watch rule is box 3's).
+
+## Done in box 4 (ENG-ROOT-d)
+- MERGE: t-eng-w3 f79963053 was already in the branch (box 3's 65ad413f9); nothing new. tsc 0; CI tool line 355 tests, 354 pass, 0 fail
+  (1 todo: the known chase-bot CHILD todo).
+- ITEM 2, THE STILLS (dc54e89cf; reference/qa-reports/ENG-ROOT/stills/, 8 jpgs, sent to the lead): tools/engine/rootshoot.mjs <out> <slot>
+  + tools/engine/rootBoot.ts, committed, test-only, no shipped path: the boot lists the toy row under a LENT slot id given on the command
+  line (3-1 used) and the row's WORLD FINISH hands the page the toy's own roll. Why not a plain replay under the slot: D62 caught it, a
+  plan replay is laid by the stage's place in its world (miniIndex 1: root 520 px off and NO ocelot: a world's first stage lays none);
+  a STAGE_PLAN[3][96] entry would make the world's list sparse. Every page printed LAID = BUILT (Normal root 14463..16063, ocelot
+  patrol 14759..15767; Easy 14369..15969, 14665..15673; speed 85). The slot's own Dot hint card is tapped away before each shot.
+  Polish: ocelot readable in all 8, the ring reads in the dark stills; ROUGH: the art is World 1's vine rope (ART-W3), he hangs by ONE
+  paw while still, the glowworm hides behind him in the lit stills; FINDING sent: Pokey is as bright in the dark as in the light.
+- GENERALITY FAILED on box 1's code (toyRoot.ts:15 ROOT_TOY '3-97' in gen2 engine code; no gate had run): the file is a World 3 test
+  harness (read by rootRow/rootBots tests and the stills tool only): renamed src/game/gen2/rootHarness.ts under the rule's own
+  *Harness.ts exemption, the rule unchanged (a619ea16a). PASS after.
 
 ## Done in box 3 (8e2a62ad0)
 - ITEM 1, the toy's placement: Easy 36's ocelot patrolled the WHOLE floor (patrolMinX..MaxX = the piece less 24 px: patchFor cuts the patch
