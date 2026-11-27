@@ -850,3 +850,33 @@ test("going down, no wood is run on level with a vine's catch, read where the vi
   assert.deepEqual(towerHandOns([{ x: climbX(vine, all), from: 1000, to: 1347 }], all, W), [], `the vine's catch hands him on to its storey: ${JSON.stringify(cs)}`);
   assert.deepEqual(towerFalls('down', all, FLOOR, W), [], 'and every end is caught');
 });
+
+// ── ENG-CATCH-b (R-165.534): going down, a storey's hole never sits under a piece's fall line; a lay with no blind drop is never touched ──
+
+test("going down, a bridge started a hop past a vine's top that misses the end's fall line is no catch: the end gets one of its own (the drafted 3-1's Easy 2 and 4, ENG-CATCH-b)", () => {
+  const W = 1280, FLOOR = 1481;
+  // (a shelf x 650-919, y 1000, its left end's fall line at x 626; the storey under it ends at x 554, where the turn's vine hangs down
+  //  to the floor. Bridged from that storey, the bridge starts a hop past the vine, 654: the hole 554-654 lies under the fall line and
+  //  the walk off the shelf's end falls 481 px, past the storey)
+  const vine = { id: 1, x: 554, topY: 1256, bottomY: FLOOR, swaySpeed: 1, swayPhase: 0, vineType: 'tree_climb' } as Vine;
+  const shelf = solid(650, 1000, 269, 1), storey = solid(136, 1256, 418, 2), floor = solid(0, FLOOR, W, 3);
+  const base = [shelf, storey, floor];
+  assert.equal(offEnd(650, -1, W, HANG.fall), 626, "the plant: the shelf's left end falls at x 626, inside the vine's hop");
+  const cs = towerCatches('down', base, [vine], FLOOR, W);
+  const all = [...base, ...cs.map((c, k) => solid(c.x, c.y, c.w, 100 + k))];
+  assert.ok(cs.some((c) => c.x <= 626 && c.x + c.w >= 626 && c.y > 1000 && c.y <= 1000 + TOWER.see), `the shelf's end is caught under its fall line: ${JSON.stringify(cs)}`);
+  assert.deepEqual(towerFalls('down', all, FLOOR, W), [], 'no blind drop is left');
+  assert.equal(new Set(cs.map((c) => `${c.x},${c.y},${c.w}`)).size, cs.length, 'no catch is laid twice');
+});
+
+test("going down, a bridge started a hop past a vine's top that reaches the end's fall line is laid as before (a clean lay is never touched, ENG-CATCH-b)", () => {
+  const W = 1280, FLOOR = 1481;
+  // (the same tower, the shelf moved right: its left end's fall line, x 726, lies past the hop, so the bridge from the storey caught it
+  //  before and still does, starting TOWER.hop + 30 px past the vine's top)
+  const vine = { id: 1, x: 554, topY: 1256, bottomY: FLOOR, swaySpeed: 1, swayPhase: 0, vineType: 'tree_climb' } as Vine;
+  const base = [solid(750, 1000, 269, 1), solid(136, 1256, 418, 2), solid(0, FLOOR, W, 3)];
+  const cs = towerCatches('down', base, [vine], FLOOR, W);
+  const all = [...base, ...cs.map((c, k) => solid(c.x, c.y, c.w, 100 + k))];
+  assert.ok(cs.some((c) => c.y === 1256 && c.x === 554 + TOWER.hop + 30 && c.x + c.w >= 726), `the end is bridged from the storey, a hop past the vine: ${JSON.stringify(cs)}`);
+  assert.deepEqual(towerFalls('down', all, FLOOR, W), [], 'no blind drop is left');
+});

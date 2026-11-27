@@ -325,6 +325,23 @@ export function openEnds(platforms: readonly Platform[], floorY: number, most: n
 export function towerCatches(flow: 'up' | 'down', platforms: readonly Platform[], vines: readonly Vine[], floorY: number, width: number, gaps: ReadonlyArray<{ x0: number; x1: number; y: number }> = [], level: (p: Platform) => number = () => 0, sealed: (p: Platform) => boolean = () => false,
   /** boxes no bough may lie in (a water wheel's sweep and its rider over it, ENG-26: a bough there knocks him out of his bucket) */
   keepOut: ReadonlyArray<{ x0: number; x1: number; y0: number; y1: number }> = []): Array<{ x: number; y: number; w: number; level: number }> {
+  const first = layCatches(false, flow, platforms, vines, floorY, width, gaps, level, sealed, keepOut);
+  if (flow !== 'down') return first;
+  // (going down, a lay that leaves a blind drop is laid once more with every bridge reaching under the fall line it is laid for; a lay
+  //  with none left is never touched. Next to a vine's top a bridge starts a hop past the vine (rule 2), and where the end's fall line
+  //  lies in that hop the bridge caught nothing: the drafted 3-1's storey hole x 554-654 at y 7377, under a bounce brick's cap shelf
+  //  (its far end x 650, the fall line 626), was bridged 654-716 on every pass and the walk off the shelf fell 481 px past the storey
+  //  (Easy 2; Easy 4 the same, 477 px), ENG-CATCH-b. Kept only if it leaves fewer blind drops)
+  const left = (cs: ReadonlyArray<{ x: number; y: number; w: number }>) => openEnds([...platforms, ...cs.map((c, k) => ({ id: -1 - k, x: c.x, y: c.y, width: c.w, height: 24, type: 'solid' }) as Platform)], floorY, TOWER.see, width).length;
+  const before = left(first);
+  if (!before) return first;
+  const again = layCatches(true, flow, platforms, vines, floorY, width, gaps, level, sealed, keepOut);
+  return left(again) < before ? again : first;
+}
+
+/** towerCatches' lay. `cover`: a bridge is laid only where it reaches under the fall line of the end it is laid for */
+function layCatches(cover: boolean, flow: 'up' | 'down', platforms: readonly Platform[], vines: readonly Vine[], floorY: number, width: number, gaps: ReadonlyArray<{ x0: number; x1: number; y: number }>, level: (p: Platform) => number, sealed: (p: Platform) => boolean,
+  keepOut: ReadonlyArray<{ x0: number; x1: number; y0: number; y1: number }>): Array<{ x: number; y: number; w: number; level: number }> {
   const most = flow === 'up' ? TOWER.fall : TOWER.see;
   const all: Platform[] = [...platforms];
   const lv = new Map<Platform, number>(platforms.map((p) => [p, level(p)]));
@@ -472,7 +489,7 @@ export function towerCatches(flow: 'up' | 'down', platforms: readonly Platform[]
         const near = vine ? tip + (left ? -1 : 1) * (TOWER.hop + 30) : tip;
         const far = left ? Math.max(24, e.x - TOWER.catchW / 2) : Math.min(width - 24, e.x + TOWER.catchW / 2);
         const x0 = Math.min(near, far), x1 = Math.max(near, far);
-        const L = x1 - x0 >= 60 && !overGap(x0, x1, anchor.y) ? fair(x0, x1, anchor.y, lv.get(anchor) ?? 0, [anchor]) : -1;
+        const L = x1 - x0 >= 60 && (!cover || (x0 <= e.x && x1 >= e.x)) && !overGap(x0, x1, anchor.y) ? fair(x0, x1, anchor.y, lv.get(anchor) ?? 0, [anchor]) : -1;
         if (L >= 0) { put(x0, x1, anchor.y, L); added++; bridged = true; break; }
       }
       if (bridged) continue;
