@@ -20,6 +20,26 @@
             "command": "node \"$CLAUDE_PROJECT_DIR/tools/team/modelgate.mjs\""
           }
         ]
+      },
+      {
+        "matcher": "Bash|mcp__claude-code-remote__archive_session",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node \"$CLAUDE_PROJECT_DIR/tools/team/leadguard.mjs\""
+          }
+        ]
+      }
+    ],
+    "PostToolUse": [
+      {
+        "matcher": "mcp__claude-code-remote__get_session",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node \"$CLAUDE_PROJECT_DIR/tools/team/leadguard.mjs\""
+          }
+        ]
       }
     ],
     "UserPromptSubmit": [
