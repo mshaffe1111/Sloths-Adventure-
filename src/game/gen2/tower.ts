@@ -329,6 +329,9 @@ export function towerCatches(flow: 'up' | 'down', platforms: readonly Platform[]
   const all: Platform[] = [...platforms];
   const lv = new Map<Platform, number>(platforms.map((p) => [p, level(p)]));
   const out: Array<{ x: number; y: number; w: number; level: number }> = [];
+  /** each laid piece's platform in `all`, and the fall line (x) of the open end it was laid for */
+  const laid: Platform[] = [], served: Array<{ x: number; y: number }> = [];
+  let serving = { x: 0, y: 0 };
   // (going down, his hop's room: no bough within ROOF over a dip's lip or a climb vine's top, the rooms towerLids reads; read again
   //  after each bough, which may itself be a lip)
   let rooms: ReturnType<typeof hopRooms> | undefined;
@@ -348,6 +351,8 @@ export function towerCatches(flow: 'up' | 'down', platforms: readonly Platform[]
     const p = { id: -1 - out.length, x: c.x, y: c.y, width: c.w, height: 24, type: 'solid' } as Platform;
     all.push(p);
     lv.set(p, L);
+    laid.push(p);
+    served.push(serving);
     rooms = undefined;
   };
   const solid = (but: ReadonlyArray<Platform>) => all.filter((q) => !but.includes(q) && q.type === 'solid');
@@ -392,11 +397,16 @@ export function towerCatches(flow: 'up' | 'down', platforms: readonly Platform[]
       grew = false;
       for (const q of lvl) if (q.x <= b + 2 && q.x + q.width >= a - 2 && (q.x < a || q.x + q.width > b)) { a = Math.min(a, q.x); b = Math.max(b, q.x + q.width); grew = true; }
     }
-    const v = climbs.find((q) => a + 6 < q.x && b - 6 > q.x && y > q.topY + 10 && y < q.bottomY - 10);
+    // (the vine where it will hang: a vine on the face of the wood at its top is moved CLIMB_CLEAR out in front of it (climbX,
+    //  clearClimbs), so read there too. The drafted 3-1's vine at x 798, flush with a log's end, was moved to 819 onto the catch
+    //  799-979 beside it, after a bridge 979-1207 and its run-on into the wall were laid level with that catch (seed 3, both
+    //  settings), ENG-CATCH)
+    const wood = [...all, box];
+    const v = climbs.find((q) => [q.x, climbX(q, wood)].some((x) => a + 6 < x && b - 6 > x) && y > q.topY + 10 && y < q.bottomY - 10);
     if (!v) return false;
-    // (box 17 read walledEnd here too; no drafted 3-1 lay of 80 changed without it, ENG-DARK box 18: taken out, the verdict's handOn
-    //  reads it)
-    return ![offEnd(a, -1, width), offEnd(b, 1, width)].filter((x): x is number => x !== null).some((x) => { const l = catchUnder([...all, box], x, y, 100000); return l !== undefined && l <= v.bottomY + 2; });
+    // (and a walled end is no way off (walledEnd), as the verdict's handOn reads it: that run's left end walked into the log's side,
+    //  so it ran wall to wall with no way off. ENG-DARK box 18 had taken it out when no lay of 80 changed without it)
+    return ![a, b].map((end, i) => (walledEnd(wood, end, i ? 1 : -1, y) ? null : offEnd(end, i ? 1 : -1, width))).filter((x): x is number => x !== null).some((x) => { const l = catchUnder(wood, x, y, 100000); return l !== undefined && l <= v.bottomY + 2; });
   };
   // (going down, no slot beside it: a bough within a step of the wood beside it (SLOT.step px in height) lies flush with it, a
   //  walkable crack from it (SLOT.walk) or his body and a margin clear of it (SLOT.clear). A gap about his body's width between two
@@ -411,6 +421,14 @@ export function towerCatches(flow: 'up' | 'down', platforms: readonly Platform[]
    *  or (going down) runs a catch on past its storey or lies in his hop's room (hopRooms: a lid over a dip's lip, a roof over a vine's
    *  top) */
   const fair = (x0: number, x1: number, y: number, L: number, but: ReadonlyArray<Platform>): number => (cramped(x0, x1, y, but) || slotted(x0, x1, y, but) || byGate(x0, x1, y) || passes(x0, x1, y) || lidded(x0, x1, y) ? -1 : storeyAt(x0, x1, y, L, but));
+  /** going down, every own end of a piece at (x0-x1, y) lands in view: a body's width past it (offEnd) he walks onto wood level with
+   *  it, stands at a wall, or comes down within `most` */
+  const lands = (x0: number, x1: number, y: number): boolean => {
+    const box = { id: 0, x: x0, y, width: x1 - x0, height: 24, type: 'solid' } as Platform;
+    return [offEnd(x0, -1, width, HANG.fall), offEnd(x1, 1, width, HANG.fall)].every((x) => x === null
+      || all.some((q) => q.type === 'solid' && Math.abs(q.y - y) <= 1 && x >= q.x && x <= q.x + q.width)
+      || catchUnder([...all, box], x, y, most) !== undefined);
+  };
   for (let pass = 0; pass < 10; pass++) {
     const ends = openEnds(all, floorY, most, width);
     if (!ends.length) break;
@@ -418,6 +436,7 @@ export function towerCatches(flow: 'up' | 'down', platforms: readonly Platform[]
     for (const e of ends) {
       // (an earlier bough of this pass may already catch it)
       if (catchUnder(all, e.x, e.p.y, most) !== undefined) continue;
+      serving = { x: e.x, y: e.p.y };
       const Le = lv.get(e.p) ?? 0;
       const leftEnd = e.x < e.p.x;
       // 1. (an end near a side of the tower: the piece runs on into the wall, at its own height, so no slot is left to fall down)
@@ -518,7 +537,65 @@ export function towerCatches(flow: 'up' | 'down', platforms: readonly Platform[]
     }
     if (!added) break;
   }
+  if (flow === 'down') reLay();
   return out;
+
+  /**
+   * Going down, a piece the lay laid whose OWN end is still a blind drop once the lay is done (no later pass caught it) is laid again
+   * shorter or moved along, still under the end it was laid for (SLIDE.back of it either side of that fall line), with any end joined
+   * to level wood kept; a piece joined to none may also lie at another height under that end (its own height first, then the nearest,
+   * a head's room under the end at the least and in view of it): the first fair lay whose own ends land in view (lands), kept only if
+   * it leaves fewer open ends.
+   * A lay with no blind drop left is never touched. The drafted 3-1's catch 934-1114 under a bridge's end overhung the exit shelf
+   * and dropped 370 px (Easy 1), and a bridge 718-934 ended 6 px past its shelf's end and dropped 323 px (seed 5, both settings),
+   * ENG-CATCH.
+   */
+  function reLay(): void {
+    for (let k = 0; k < laid.length; k++) {
+      const p = laid[k], ex = served[k].x;
+      const before = openEnds(all, floorY, most, width);
+      if (!before.some((o) => o.p === p)) continue;
+      const level = (q: Platform) => q !== p && q.type === 'solid' && Math.abs(q.y - p.y) <= 1;
+      const joinL = all.filter((q) => level(q) && Math.abs(q.x + q.width - p.x) <= 2), joinR = all.filter((q) => level(q) && Math.abs(q.x - (p.x + p.width)) <= 2);
+      const span = (from: number, to: number, keep: number | undefined) => {
+        if (keep !== undefined) return [keep];
+        const xs: number[] = [];
+        for (let x = from; from < to ? x <= to : x >= to; x += from < to ? 10 : -10) xs.push(Math.round(x));
+        return xs;
+      };
+      // (free ends from the furthest in to the fall line's SLIDE.back: the most footing first, never wider than it was or catchW)
+      const as = span(Math.max(24, ex - TOWER.catchW), ex - SLIDE.back, joinL.length ? p.x : undefined);
+      const bs = span(Math.min(width - 24, ex + TOWER.catchW), ex + SLIDE.back, joinR.length ? p.x + p.width : undefined);
+      const widest = Math.max(TOWER.catchW, p.width);
+      const ys = [p.y];
+      if (!joinL.length && !joinR.length) {
+        for (let y = served[k].y + HEAD; y <= served[k].y + most - 4; y += 10) if (Math.abs(y - p.y) > 2 && y < floorY - TOWER.hop) ys.push(y);
+        ys.sort((a, b) => Math.abs(a - p.y) - Math.abs(b - p.y));
+      }
+      const at = all.indexOf(p);
+      all.splice(at, 1);
+      rooms = undefined;
+      let done = false;
+      for (const y of ys) {
+        for (const a of y === p.y ? as : [...as, p.x]) {
+          for (const b of y === p.y ? bs : [...bs, p.x + p.width]) {
+            if (b - a < 60 || b - a > widest || (a === p.x && b === p.x + p.width && y === p.y) || !lands(a, b, y)) continue;
+            if (fair(a, b, y, lv.get(p) ?? 0, [...joinL, ...joinR]) < 0) continue;
+            const q = { ...p, x: a, y, width: b - a } as Platform;
+            if (openEnds([...all, q], floorY, most, width).length >= before.length) continue;
+            p.x = a; p.y = y; p.width = b - a;
+            out[k].x = a; out[k].y = y; out[k].w = b - a;
+            done = true;
+            break;
+          }
+          if (done) break;
+        }
+        if (done) break;
+      }
+      all.splice(at, 0, p);
+      rooms = undefined;
+    }
+  }
 }
 
 /** how far a way down's catch bough (towerCatches rule 4) may lie along from the centre under an open end: at least `out` px of it

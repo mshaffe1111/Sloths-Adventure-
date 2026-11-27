@@ -1,9 +1,9 @@
 import '/home/user/Sloths-Adventure-/src/game/headlessDom.ts';
 import '/home/user/Sloths-Adventure-/tools/engine/draft.ts';
-import { W3_DOWN_TOWER, W3_PARKED } from '/home/user/Sloths-Adventure-/src/game/gen2/worlds/w3.ts';
+import { W3_DOWN_TOWER } from '/home/user/Sloths-Adventure-/src/game/gen2/worlds/w3.ts';
 import { buildStage, SETTINGS } from '/home/user/Sloths-Adventure-/tools/engine/libstage.ts';
 const keep = (process.env.KEEP ?? '').split(',');
-const arr = W3_DOWN_TOWER as any[]; const kept = [...arr, ...(W3_PARKED as any[])].filter((q) => keep.includes(q.id)); arr.splice(0, arr.length, ...kept);
+const arr = W3_DOWN_TOWER as any[]; const kept = [...arr].filter((q) => keep.includes(q.id)); arr.splice(0, arr.length, ...kept);
 // PATCH: "key.w=a,b;key.dy=a,b;key.at=a;exitDy=n" applied to the first kept brick (pieces are shared objects only within it)
 const t = arr[0]; t.pieces = t.pieces.map((p: any) => ({ ...p, place: { ...p.place } }));
 for (const part of (process.env.PATCH ?? '').split(';').filter(Boolean)) {
