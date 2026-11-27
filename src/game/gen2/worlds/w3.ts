@@ -24,7 +24,7 @@
  */
 import { G } from '../../protoStage.ts';
 import { DARK_EMIT, DARK_GLOW_PROPS, darkEnds } from '../dark.ts';
-import type { CreatureDef, SectionTemplate, WorldKit, WorldManifest } from '../types.ts';
+import type { CreatureDef, NodeJob, SectionTemplate, Socket, WorldKit, WorldManifest } from '../types.ts';
 import { W1_KIT } from './w1.ts';
 
 /** World 3's ground: the floor line (the bottom of the way down), a ledge's depth and how deep a soft fall's bed lies */
@@ -127,6 +127,81 @@ export const w3Walk: SectionTemplate = {
 /** the way down's bricks, in the order a pool reads them */
 export const W3_DOWN: readonly SectionTemplate[] = [w3Ledge, w3Drops, w3Walk];
 
+// ───────────────────────────── the level bricks (KIT-W3b, R-165.505) ─────────────────────────────
+// (World 3's LEVEL stages, the ones that go along and not down: the bricks a level code's nodes ask for, each World 3's own. A level stage
+//  cannot borrow World 1-2's sections: they ask for the double, carry World 1's tips and leave 6-11 s quiet lines (AUDIT-W3 finding 4))
+
+/** the World 3 stages laid ALONG (not a tower): a level brick is in their pools and no other (its `feel`), so the towers' rolls never move */
+export const W3_LEVEL_STAGES = ['3-2', '3-3', '3-6', '3-7', '3-8', '3-9'] as const;
+
+/** the node jobs a level brick with an animal serves: never a teach (the first of a kind is the build's, level.md rule 7) */
+const PROWL_JOBS: NodeJob[] = ['practise', 'test', 'combine', 'twist', 'signature'];
+
+/** the ocelot's floor (px): past its minGround (W3_CAST 220) and its sight ahead (240), so it prowls the floor and he stands still on it */
+const PROWL_FLOOR: [number, number] = [540, 620];
+
+/** an ocelot socket: World 3's prowler and nothing else (the jaguar waits above, threat 5), softened on Easy */
+const ocelotAt = (id: string, on: string, t: [number, number]): Socket => ({ id, role: 'enemy', on, t, dn: 0, allow: ['ocelot'], maxThreat: 3, easy: 'soften' });
+
+/**
+ * THE OCELOT'S GROUND (3-2's and 3-3's ocelot beats on a ground node, AUDIT-W3 'ocelot sockets laid 0'): a stone bank, a step down onto
+ * the long stone floor the ocelot prowls, a step back up. He walks in, sees it, and stands still until it loses him (OCELOT beatenBy
+ * still) or slips past while its back is turned. Plain steps only (56 px, under a single's reach): nothing asks for the double.
+ */
+export const w3ProwlFloor: SectionTemplate = {
+  id: 'w3-prowl-floor',
+  name: "the ocelot's floor",
+  feel: W3_LEVEL_STAGES, archetypes: 'any',
+  phases: ['ki', 'sho', 'ten', 'ketsu'],
+  difficulty: 3, needs: ['jump'], jobs: PROWL_JOBS, content: 'ground', maxPerStage: 4,
+  pieces: [
+    { key: 'in', shape: 'bank', w: [300, 340], place: { kind: 'start' } },
+    { key: 'floor', shape: 'bank', w: PROWL_FLOOR, place: { kind: 'walk', after: 'in', dy: [50, 56] } },
+    { key: 'out', shape: 'bank', w: [280, 320], place: { kind: 'walk', after: 'floor', dy: [-56, -50] } },
+  ],
+  entry: { piece: 'in', kind: 'ground' },
+  exit: { piece: 'out', kind: 'ground' },
+  exitDy: 0,
+  sockets: [
+    { id: 'petals', role: 'pickup', on: 'in', t: [0.3, 0.5], dn: 34, count: 2, span: 90, allow: ['pickups'] },
+    ocelotAt('ocelot', 'floor', [0.55, 0.65]),
+    { id: 'petal', role: 'pickup', on: 'out', t: 0.5, dn: 34 },
+  ],
+  mirrorable: false,
+};
+
+/**
+ * THE TWO FLOORS (an ocelot beat that asks two or more, 3-2's C and 3-3's C: '&ocelot*2'): two stone floors, a step up between them, an
+ * ocelot's socket on each (the node's ask fills them up to its count, nodeAsks.ts 'threat'). The step is the stand-still spot: one floor
+ * at a time.
+ */
+export const w3ProwlPair: SectionTemplate = {
+  id: 'w3-prowl-pair',
+  name: 'two ocelot floors',
+  feel: W3_LEVEL_STAGES, archetypes: 'any',
+  phases: ['sho', 'ten', 'ketsu'],
+  difficulty: 4, needs: ['jump'], jobs: PROWL_JOBS, content: 'ground', maxPerStage: 3,
+  pieces: [
+    { key: 'in', shape: 'bank', w: [280, 320], place: { kind: 'start' } },
+    { key: 'low', shape: 'bank', w: PROWL_FLOOR, place: { kind: 'walk', after: 'in', dy: [50, 56] } },
+    { key: 'high', shape: 'bank', w: PROWL_FLOOR, place: { kind: 'walk', after: 'low', dy: [-56, -50] } },
+    { key: 'out', shape: 'bank', w: [260, 300], place: { kind: 'walk', after: 'high', dy: [0, 0] } },
+  ],
+  entry: { piece: 'in', kind: 'ground' },
+  exit: { piece: 'out', kind: 'ground' },
+  exitDy: 0,
+  sockets: [
+    { id: 'petals', role: 'pickup', on: 'in', t: [0.3, 0.5], dn: 34, count: 2, span: 90, allow: ['pickups'] },
+    ocelotAt('ocelot1', 'low', [0.55, 0.65]),
+    ocelotAt('ocelot2', 'high', [0.5, 0.6]),
+    { id: 'petal', role: 'pickup', on: 'out', t: 0.5, dn: 34 },
+  ],
+  mirrorable: false,
+};
+
+/** World 3's level bricks, in the order a pool reads them (the ocelot's ground first; the dark climb and rope next, ENG-ASKS-b) */
+export const W3_LEVEL: readonly SectionTemplate[] = [w3ProwlFloor, w3ProwlPair];
+
 // ───────────────────────────── the manifest and the kit ─────────────────────────────
 
 /**
@@ -144,7 +219,7 @@ export function w3Manifest(): WorldManifest {
     themeShare: [1, 1],
     creatures: [...W3_CAST], props: [...DARK_GLOW_PROPS], pairs: [], decor: [],
     flowers: ['orchid', 'hibiscus'],
-    sections: [...W3_DOWN],
+    sections: [...W3_DOWN, ...W3_LEVEL],
     handBuilt: [],
     lessons: { jump: '1-1', double: '1-1', bounce: '1-1', climb: '1-4', creak: '1-5', swing: '1-6' },
     tips: W3_TIPS,
