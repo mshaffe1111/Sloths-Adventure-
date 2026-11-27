@@ -1,5 +1,21 @@
 # ENG-QUIET: is a wait for ONE on 2-9's drum "quiet"? (Engine, from t-build-29 4c3ff9d8)
 
+## EXACT NEXT STEP (box 2 hand-over, 11-26 10:50 PM ET; NOT landed: t-eng-29 still 28c848dbd; candidate 88b5611b4 untouched)
+WAITS ON THE LEAD: rule B moves THREE proven lists' search (not the shipped replays). On frozen 88b5611b4, `seedlist.ts <id> --check`:
+2-4 seed 65, 2-1 seed 100, 2-7 seed 22 (both settings each): 'its replay differs from its search (platforms, vines, rivers,
+collectibles): rebuild the list' (src/game/gen2/seedList.ts:277). Cause: the list search's quiet judge, tools/engine/listRules.ts:25
+quietOf -> :31 pickRoute (eraRoll.ts:180, beats a minute) + the new let-go/log-catch beats, so the search accepts a different attempt
+for those seeds. A route-picking-only variant would NOT fix this: quietOf itself is the judgment B changes. Choices for the lead:
+(a) rebuild 2-1, 2-4, 2-7's lists under B (their listed layouts change; every roll/seed-pinning test re-run, release.md item 6);
+(b) the list search's quietOf keeps today's beats (B for the inspector/score/2-9's line only). Is 28c848dbd red on the same three?
+the base check (wt-base) was RUNNING at the hand-over: run `seedlist.ts 2-4 --check` (then 2-1, 2-7) on 28c848dbd FIRST.
+DONE on frozen 88b5611b4 (box 2):
+- lockall --check vs 28c848dbd's lock (recorded this box: 3264 builds of 102 stages), one run, no --intended: 102/102 unchanged, exit 0.
+- seedlist --check PASS: 1-1 (161), 1-2, 1-3, 1-4, 1-5 (150), 1-7, 1-8, 1-9, 2-2, 2-3, 2-5. FAIL: 2-1, 2-4, 2-7 (above). 1-6 running.
+- Suite shards (tests/pass/fail/todo): 1: 692/691/0/1; 2: 692/692/0/0; 3: 831/830/1/0 (KID_RUNS_59, the inherited red: '5-9's Easy goal
+  rests on the kid's runs', gen2/game.ts); 4: 740/740/0/0; 5: 636/635/0/1; 6: 652/651/0/1. Only red: KID_RUNS_59.
+- generalitycheck PASS (26 literals, 26 known). tierBots: running at the hand-over (tier.txt in box 2's scratch).
+
 ## EXACT NEXT STEP (box 1 hand-over; the lead RULED B + the locked let-go wait; C not in; no clock cap)
 Candidate: t-eng-quiet-b = 88b5611b4, cut from t-eng-29 28c848dbd (G6 in it; a fast-forward of t-eng-29). It holds: beats.ts
 'lianaDrop'/'logCatch' move beats (V, busy for s.dt); score.ts:1156 skips move:lianaDrop/logCatch; route.ts: on a stage with a tempo the
