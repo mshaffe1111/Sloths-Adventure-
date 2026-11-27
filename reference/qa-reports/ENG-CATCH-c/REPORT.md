@@ -16,6 +16,10 @@ The WIP (tower.ts; general, no stage id, seed or x):
   PASS (26 literals, 26 known) on the WIP.
 Replay (fast, ms per lay): 55 captured failing lays (every red of the kit tree 1b300ebc3 on seeds 1-40 x both: all five 14 rolls, each
 brick alone, shelf-hops alone 34): base 17/55 clean (the 17 are Easy copies of Normal's lines), this WIP 48/55.
+FOUND AT HAND-OVER: cap-steps ALONE THROWS on a roll after e32 (seeds 33-40): "gen2 3-1: section w3-cap-steps is 1142 px wide, wider
+than the tower's storeys (1140)" (pipeline.ts buildRolled). A kit brick's width, not tower wood: cap-steps alone cannot be 80/80 on
+1b300ebc3 whatever the tower does (the kit's; the lead's call). The box-1 capture had no try/catch and stopped there; probe/capture.mts
+now records a THROW and goes on, so cap-steps-alone fixtures past e32 were NOT captured.
 The 7 left (all the same class: a dip floor's far end over a storey hole, with the tower's OWN catches stacked in the way):
   shelf-hops n7 x 777-859 y 10527 (C#75 683-863 overhangs the end 4 px, cramping every run-on of C#73 887-1067 under the fall line 883);
   n9 x 789-879 y 10662 (C#75 705-885, 6 px); n2 x 549-647 y 6896 (C#42 708-904 @6927: its run-on to 647 leaves an openEnds end under

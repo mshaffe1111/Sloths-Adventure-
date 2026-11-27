@@ -14,7 +14,8 @@ const ALL = Array.from({ length: 40 }, (_, k) => k + 1).flatMap((k) => [`n${k}`,
 for (const r of process.env.ROLLS === 'ALL' ? ALL : (process.env.ROLLS ?? '').split(',').filter(Boolean)) {
   const d = SETTINGS.find((x: string) => x[0] === r[0]); const s = Number(r.slice(1));
   (globalThis as any).__TC = [];
-  const st: any = buildStage('3-1', s, d);
+  let st: any;
+  try { st = buildStage('3-1', s, d); } catch (e) { console.log(r, 'THROW', String((e as Error).message).slice(0, 160)); continue; }
   const calls: any[] = (globalThis as any).__TC;
   const has = (c: any, fx: number) => st.platforms.some((q: any) => Math.abs(q.x - (c.x + fx)) <= 1 && Math.abs(q.y - c.y) <= 1 && Math.abs(q.width - c.w) <= 1);
   let pick = -1;
