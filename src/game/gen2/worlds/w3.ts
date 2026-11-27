@@ -142,7 +142,10 @@ export const W3_DOWN: readonly SectionTemplate[] = [w3Ledge, w3Drops, w3Walk];
 
 /** the jobs a down tower's climb serves (a descent's beat, and the arc's middle); a bounce's (the arc's beats that use one) */
 const W3_CLIMB_JOBS: NodeJob[] = ['descent', 'practise', 'test', 'twist', 'flow'];
-const W3_BOUNCE_JOBS: NodeJob[] = ['practise', 'test', 'combine', 'twist', 'flow'];
+// (a bounce serves a descent too: a letterless D_ takes any content, and the deal may type it a bounce; the lead's ruling, KIT-W3a box 4)
+const W3_BOUNCE_JOBS: NodeJob[] = ['descent', 'practise', 'test', 'combine', 'twist', 'flow'];
+/** the jobs a down tower's floating brick serves: the arc's middle, and the signature's way down (3-1's trimmed code: 'Sf1_<') */
+const W3_FLOAT_JOBS: NodeJob[] = ['practise', 'test', 'twist', 'flow', 'signature'];
 
 /** [c] down the root: a vine climbed down to the shelf under the tip of the one he leaves, 235 px (2.6 of his heights). The foot is laid
  *  by `walk` (its drop is never scaled by the roll's tempo, as a jump's is, so the vine's top stays at the shelf's height), starting at the
@@ -253,9 +256,33 @@ export const w3CapSteps: SectionTemplate = {
   mirrorable: false,
 };
 
-/** the down tower's climb and bounce bricks (a pool reads them after the way down's): two climb shapes (root-down, two-roots) and two
- *  bounce shapes (cap-down, cap-steps); cap-steps came back from parking when ENG-CATCH (R-165.526) fixed the tower's catch faults */
-export const W3_DOWN_TOWER: readonly SectionTemplate[] = [w3RootDown, w3TwoRoots, w3CapDown, w3CapSteps];
+/** [f] hops down the shelves: four of World 3's branch shelves in the air, each a plain jump (90-110 px across, under a single's 128-137
+ *  from 70 px, reach.ts) and 60-80 px down from the last; never a double, never a walk-off (each lands past the last's end). 1030 px at its
+ *  widest roll, inside a storey's 1140. The middle shelves 140-150 px (1.6 Pokeys), the last wide (200-220) as every exit before a turn */
+export const w3ShelfHops: SectionTemplate = {
+  id: 'w3-shelf-hops',
+  name: 'hops down the shelves',
+  archetypes: 'any',
+  phases: ['sho', 'ten', 'ketsu'],
+  difficulty: 3,
+  content: 'floating',
+  jobs: W3_FLOAT_JOBS,
+  pieces: [
+    { key: 'a', shape: 'branch', w: [160, 180], place: { kind: 'start' } },
+    { key: 'b', shape: 'branch', w: [140, 150], place: { kind: 'jump', after: 'a', dy: [60, 80], gapPx: [90, 110] }, landing: true },
+    { key: 'c', shape: 'branch', w: [140, 150], place: { kind: 'jump', after: 'b', dy: [60, 80], gapPx: [90, 110] }, landing: true },
+    { key: 'd', shape: 'branch', w: [200, 220], place: { kind: 'jump', after: 'c', dy: [60, 80], gapPx: [90, 110] }, landing: true },
+  ],
+  entry: { piece: 'a', kind: 'ledge' },
+  exit: { piece: 'd', kind: 'ledge' },
+  exitDy: 210,
+  sockets: [{ id: 'petal', role: 'pickup', on: 'b', t: 0.5, dn: 34 }, { id: 'petal2', role: 'pickup', on: 'c', t: 0.5, dn: 34 }, { id: 'flag', role: 'flag', on: 'd', t: 0.6 }],
+  mirrorable: false,
+};
+
+/** the down tower's bricks (a pool reads them after the way down's): two climb shapes (root-down, two-roots), two bounce shapes (cap-down,
+ *  cap-steps; cap-steps came back from parking when ENG-CATCH, R-165.526, fixed the tower's catch faults) and one floating (shelf-hops) */
+export const W3_DOWN_TOWER: readonly SectionTemplate[] = [w3RootDown, w3TwoRoots, w3CapDown, w3CapSteps, w3ShelfHops];
 
 // ───────────────────────────── the hazards a node code may ask ─────────────────────────────
 

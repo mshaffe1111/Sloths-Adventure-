@@ -25,6 +25,7 @@ import { buildGen2Stage } from '../pipeline.ts';
 import { LISTED, playFinish } from '../listed.ts';
 import { DRAFT_TABLE, STAGE_TABLE, draftRow } from './stageTable.ts';
 import { W3_ART, W3_CAST, w3Manifest } from './w3.ts';
+import { BOUNCE_FRAMES } from '../../bounceAtlasData.ts';
 
 const root = path.join(path.dirname(fileURLToPath(import.meta.url)), '..', '..', '..', '..');
 const DRAFT = '3-1';
@@ -32,6 +33,21 @@ const SEEDS = [1, 2, 3, 4, 5, 6];
 const BOTH = ['normal', 'easy'] as const;
 /** how the engine draws World 3's pieces (terrain.ts footingsFor): its painted kit's bank and branch, the floor */
 const W3_DRAWN = new Set(['ground', 'painted-bank', 'painted thin piece', 'step', 'pillar']);
+/** World 3's bounce cap (w3.ts w3Cap; KIT-W3a): 70 px, its top 30 px up on the shelf it stands on, drawn by World 3's own plant
+ *  (W3_ART.bounce, bounceArt.ts's atlas frame cap-w3; a world with no frame of its own would get World 1's mushroom) */
+const W3_CAP = { w: 70, up: 30, art: 'bounce#cap-w3', frame: 'cap-w3' };
+/** the shelf a World 3 cap stands on (none: p is no cap of the kit's) */
+const capShelf = (p: Platform, all: readonly Platform[]) =>
+  p.type === 'bouncy' && Math.round(p.width) === W3_CAP.w
+    ? all.find((q) => q !== p && q.type !== 'bouncy' && Math.abs(q.y - (p.y + W3_CAP.up)) <= 1 && q.x <= p.x && q.x + q.width >= p.x + p.width)
+    : undefined;
+/** why piece p, drawn `drawn`, is not World 3's own kit (null: it is): its bank and branch, or its cap on its shelf in World 3's cap art */
+function offKit(p: Platform, drawn: string, all: readonly Platform[], frames: Record<string, unknown> = BOUNCE_FRAMES): string | null {
+  if (W3_DRAWN.has(drawn)) return null;
+  if (drawn !== 'bounce') return `drawn as ${drawn}`;
+  if (!(W3_ART.bounce as readonly string[]).includes(W3_CAP.art) || !frames[W3_CAP.frame]) return "drawn as a bounce with no World 3 cap art (World 1's mushroom)";
+  return capShelf(p, all) ? null : `drawn as a bounce but no World 3 cap (${Math.round(p.width)} px, on no shelf ${W3_CAP.up} px under it)`;
+}
 
 test('the kit: every World 3 art row it names is in the World 3 inventory, in game, usable and in scale with Pokey (R-165.107)', () => {
   const inv = JSON.parse(fs.readFileSync(path.join(root, 'src/game/art/inventory/w3.json'), 'utf8')) as { cols: string[]; rows: unknown[][] };
@@ -133,11 +149,27 @@ test('head room on the way down: no piece of 24 raw rolls has wood across it les
     const st = draftRaw(seed, d);
     assert.ok(!(st.gen2.errors ?? []).some((e) => e.includes('blind drop')), `${d} ${seed}: ${(st.gen2.errors ?? []).find((e) => e.includes('blind drop'))}`);
     const P = st.platforms.filter((p) => p.type !== 'fragile' && p.type !== 'block' && p.y < st.gen2.tower!.floorY - 1);
-    for (const a of P) for (const b of P) {
-      const across = Math.min(a.x + a.width, b.x + b.width) - Math.max(a.x, b.x), over = a.y - b.y;
-      assert.ok(!(across > 30 && over > 1 && over < 84), `${d} ${seed}: x ${a.x}-${a.x + a.width}, y ${a.y} lies ${over} px under x ${b.x}-${b.x + b.width}, y ${b.y}`);
-    }
+    assert.deepEqual(headRoomHits(P as unknown as Platform[]), [], `${d} ${seed}`);
   }
+});
+
+/** each pair of pieces with wood across one less than his body over it (World 3's cap on its own shelf is stood on, never walked under) */
+function headRoomHits(P: readonly Platform[]): string[] {
+  const out: string[] = [];
+  for (const a of P) for (const b of P) {
+    const across = Math.min(a.x + a.width, b.x + b.width) - Math.max(a.x, b.x), over = a.y - b.y;
+    if (across > 30 && over > 1 && over < 84 && capShelf(b, P) !== a) out.push(`x ${a.x}-${a.x + a.width}, y ${a.y} lies ${over} px under x ${b.x}-${b.x + b.width}, y ${b.y}`);
+  }
+  return out;
+}
+
+test('PLANTED: head room knows only a World 3 cap on its own shelf: a 70 px piece of wood 30 px over a shelf, or a cap over another shelf, is caught', () => {
+  const shelf = { id: 1, x: 300, y: 1000, width: 240, height: 20, type: 'solid' } as Platform;
+  const cap = { id: 2, x: 460, y: 1000 - W3_CAP.up, width: W3_CAP.w, height: 20, type: 'bouncy' } as Platform;
+  assert.deepEqual(headRoomHits([shelf, cap]), [], 'the cap on its shelf');
+  assert.equal(headRoomHits([shelf, { ...cap, type: 'solid' } as Platform]).length, 1, 'wood 30 px over a shelf passes');
+  const under = { ...shelf, id: 3, y: 1000 + 40 } as Platform;
+  assert.equal(headRoomHits([shelf, cap, under]).length, 2, 'a shelf 40 px under the cap and its shelf passes');
 });
 
 test("a catch crosses a vine: going down no wood lies across a climb vine; the vine stops ON the catch, whose ends hand him on within TOWER.see (the lead's ruling (b), ENG-DOWNBOT)", () => {
@@ -177,8 +209,25 @@ test("every piece of the draft is drawn by World 3's painted kit (terrain.ts foo
     for (const p of st.platforms) {
       const f = feet.get(p.id);
       assert.ok(f, `${d}: piece ${p.id} at x ${Math.round(p.x)} y ${p.y} has a footing`);
-      assert.ok(W3_DRAWN.has(f.drawn), `${d}: piece ${p.id} is drawn as ${f.drawn}`);
+      const off = offKit(p as Platform, f.drawn, st.platforms as unknown as Platform[]);
+      assert.equal(off, null, `${d}: piece ${p.id} at x ${Math.round(p.x)} y ${p.y}: ${off}`);
       assert.equal(p.cut, undefined, `${d}: piece ${p.id} carries World 1's cut art`);
     }
   }
+});
+
+test("PLANTED: a piece drawn as a bounce that is no World 3 cap on its shelf, or a cap with no World 3 frame, is caught", () => {
+  const st = draftBuilt(1, 'normal');
+  const feet = footingsFor(st as never, 3);
+  const all = st.platforms as unknown as Platform[];
+  const caps = all.filter((p) => feet.get(p.id)?.drawn === 'bounce');
+  assert.ok(caps.length > 0, "the roll lays World 3's cap (the plant needs one)");
+  for (const p of caps) assert.equal(offKit(p, 'bounce', all), null, `cap ${p.id} is World 3's own`);
+  // (a shelf typed bouncy: drawn as a bounce, no cap of the kit's)
+  const shelf = all.find((p) => feet.get(p.id)?.drawn !== 'bounce' && p.width >= 140)!;
+  const fake = { ...shelf, type: 'bouncy' } as Platform;
+  assert.notEqual(offKit(fake, 'bounce', all.map((p) => (p === shelf ? fake : p))), null, 'a shelf drawn as a bounce passes');
+  // (World 3's frame gone: the cap would be World 1's mushroom)
+  const noW3 = Object.fromEntries(Object.entries(BOUNCE_FRAMES).filter(([k]) => k !== W3_CAP.frame));
+  assert.notEqual(offKit(caps[0], 'bounce', all, noW3), null, 'a cap with no World 3 frame passes');
 });
