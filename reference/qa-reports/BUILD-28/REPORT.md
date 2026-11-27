@@ -1,6 +1,38 @@
-# BUILD-28 REPORT (W2-LANE: 2-8 "Before the Water Rises"; R-165.430 (2), READY-28, BUILD-28). Session 1 (W2-LANE a), started 9:44 AM ET (from date). Session 2 (W2-LANE b), started 10:07 AM ET (from date). Session 3 (W2-LANE c), started 10:30 AM ET (from date). Session 4 (W2-LANE d), started 10:52 AM ET (from date). Session 5 (W2-LANE e), started 11:19 AM ET (from the session hook date) Session 6 (W2-LANE f), started 11:41 AM ET (from the session hook date) Session 7 (W2-LANE g), started 12:05 PM ET (from the session hook date) Session 8 (W2-LANE h), started 12:49 PM ET (from the session hook date) Session 9 (W2-LANE i), started 1:15 PM ET (from the session hook date) Session 10 (W2-LANE j), started 1:05 PM ET (from the session hook date) Session 12 (W2-LANE l), started 2:20 PM ET (from the session hook date) Session 13 (BUILD-28-j, box 10), started 10:43 AM ET (from the session hook date)
+# BUILD-28 REPORT (W2-LANE: 2-8 "Before the Water Rises"; R-165.430 (2), READY-28, BUILD-28). Session 1 (W2-LANE a), started 9:44 AM ET (from date). Session 2 (W2-LANE b), started 10:07 AM ET (from date). Session 3 (W2-LANE c), started 10:30 AM ET (from date). Session 4 (W2-LANE d), started 10:52 AM ET (from date). Session 5 (W2-LANE e), started 11:19 AM ET (from the session hook date) Session 6 (W2-LANE f), started 11:41 AM ET (from the session hook date) Session 7 (W2-LANE g), started 12:05 PM ET (from the session hook date) Session 8 (W2-LANE h), started 12:49 PM ET (from the session hook date) Session 9 (W2-LANE i), started 1:15 PM ET (from the session hook date) Session 10 (W2-LANE j), started 1:05 PM ET (from the session hook date) Session 12 (W2-LANE l), started 2:20 PM ET (from the session hook date) Session 13 (BUILD-28-j, box 10), started 10:43 AM ET (from the session hook date) Session 14 (BUILD-28-k, box 11), started 11:08 AM ET (from the session hook date)
 
-## EXACT NEXT STEP (BUILD-28 box 10, BUILD-28-j, started 10:43 AM ET (from the session hook date); hand-over 11:06 AM ET (from date); code head f8d311f4b on t-build-28-wip: an EARLY-READ candidate, NOT final (the fish trap, ruling A, changes the lay first))
+## EXACT NEXT STEP (BUILD-28 box 11, BUILD-28-k, started 11:08 AM ET (from the session hook date); code head 5b4665d28 on t-build-28-wip)
+DONE THIS BOX (b0, the fish trap, the lead's ruling A):
+1. 61979c555: the cut src/assets/w2-cut/fish-trap-28.webp (193x269, 15.8 KB, w2-new.webp frame 0,727 193x269, no repaint; named
+   fish-trap-28, not cage-whole, so no text match can mark the old frame used); catalog row w2-cut28#fish-trap-28 (World 2 only, decor
+   near, pokey_scale 1.46, scale_ok y), `catalog_master.py --emit` (only w2.json moved); finish28 (w2Arc28.ts TRAP_28, TRAP_SPOTS_28) writes
+   2 proto.invDress rows {behind, foot on the laid boards}: the jetty (w2-28-jetty piece b at 0.2) and the parade home (w2-28-parade piece
+   b at 0.75 of the laid box), each clear of its bank's rock; throws by name if the piece is not laid. Seed 1 normal: x 8034 (y 793) and
+   x 3821 (y 1597); cage1 at 9390 is the nearest rescue cage. Draw path: engine.ts drawInvDress (art/invDress.ts), behind the play layer,
+   130 px tall; no collision, no shake, no sparkle: a punch does nothing.
+   w2Arc28.test 'the fish trap stands twice ...', seeds 1-40 x both: PASS. Plant (a spot on w2-28-island): RED by name ('is on
+   w2-28-island ...; within a screen of rescue cage3'), restored from the commit.
+2. 5b4665d28: invDress.test names w2Arc28.ts as a writer (the listed-stage gate builds 2-8) and asserts 2-8's trap is laid through the
+   gate: 6/6 PASS (68 rows on 16 listed stages). Plant (unknown id 'w2-cut28#no-such-trap'): RED by name. tsc 0, generalitycheck PASS.
+3. ARTUSE, honest by draw: the PACKED frame w1to4art/w2-new.json#cage-whole still reads UNUSED (correct: the game draws the cut, never
+   the sheet frame), so artUse.test 7 stays red on cage-whole + cage-b (R-165.543, the lead's). RULING ASKED of the lead: A (my
+   recommendation, reversible: retire the packed frame, its w2-new.json frame entry deleted (the sheet ships in no build) and catalog row
+   w2-new#cage-whole marked superseded by w2-cut28#fish-trap-28; the unused set shrinks, no allow-list growth); B allow-list it (a known-list
+   growth, the lead's rule); C leave it red. A stands 20 minutes after the ask with no ruling. A changes no lay.
+4. THE LOCK GATE base run STARTED alone: worktree /home/user/base-155 (merge-base 1558489a2), `lockall.ts --layouts 16 --out
+   <scratch>/base.json` (scratchpad lockbase.log). Read its counts line ('lock: wrote N builds of 102 stages') before anything else heavy.
+NEXT, in order (ReadNotifications at every step boundary; generalitycheck with tsc at each, D156):
+a. The lead's artUse ruling (or A on the timeout): apply, commit, push; THAT hash is the frozen candidate (git worktree add --detach
+   /home/user/cand-<hash>; node_modules symlinked). If the container is fresh: base.json is gone, re-run the base first, alone.
+b. The one gate run on the candidate, in box 10's order: lock --check base.json to its counts line (only 2-8 moves), then tsc +
+   generality, the CI tool line (gates.yml), the suite in 6 shards with totals, seedlist --check for every list, drawcheck (2-8 a scenario,
+   same limits), clipcheck, tierBots, paintcheck, the widened pin grep. Inherited reds named: R-165.535; R-165.531; cage-b = R-165.543, the
+   lead's; puzzleCamera gallery1 = ENG-CAM29's.
+c. Bots x40 both settings, every tier (castBots --stage 2-8 --seeds 1-40 --bots kid,adult,child,middle,expert --setting both --par 4).
+d. Stills from the committed lay, upright and sideways: plank gaps + splash-back river, the reed island in the water, the fork, the
+   fork-rest, BOTH trap placements (jetty x ~8034, parade x ~3821 on seed 1 normal); sent to the lead, who judges basket vs cage.
+e. Learned, then Law 12's debrief.
+
+## (was the EXACT NEXT STEP) (BUILD-28 box 10, BUILD-28-j, started 10:43 AM ET (from the session hook date); hand-over 11:06 AM ET (from date); code head f8d311f4b on t-build-28-wip: an EARLY-READ candidate, NOT final (the fish trap, ruling A, changes the lay first))
 DONE THIS BOX (packet reference/packets/2026-11-27/BUILD-28-h.md items 3-4; box 9's NEXT b-d):
 1. THE ISLAND CUT, 1500a24bf: w2Arc28.ts's island piece 'i' names cut 'w2-reed28#reed-isle-28' (SectionPiece.cut -> Platform.cut, ENG-CUT-b's
    lay, pipeline.ts:2864). w2Arc28.test.ts AWAITS loadInventory(2) at module top, and the island test asserts the platform under cage 3
