@@ -1,14 +1,22 @@
 # ENG-SIM: the bots ask the GAME how a press flies (R-165.470; packet reference/packets/2026-11-26/ENG-SIM.md on the lead's branch)
 Branch t-eng-sim from origin/release-0.10.3 c73cb9766. Nothing here lands on release-0.10.3, main or a release 5 branch.
 
-## EXACT NEXT STEP (box 5 hand-over): the 2-4 s35 red SEALED at the cause (candidate 47ff85629, the gate 11/11); NEXT: 1a-ii, TIMED first
-Head: the hand-over message's hash (pushed to t-eng-sim, ls-remote confirmed). The step 3 GO (the lead, box 4's brief): (0) then (1) in
-the plan's order; rows WILL move from (1) on (the re-baseline's job, not a stop); the cost check stands (one World 2 x40 over 3x the old
-CPU is a finding to bring to the lead). Nothing lands on release-0.10.3, main or a release branch.
-1. **DONE (box 5): 0b92b3fcb's ONE red traced and sealed at the cause: candidate 47ff85629** (the trace, the seal, the plant and every
-   total: 'Step 3 box 5' below). The gate is unchanged. The candidate's ONE suite red is the inherited KID_RUNS_59 (traced there, rule 28:
-   moved by neither 1a-i nor the seal). Start 1a-ii FROM 47ff85629.
-2. **1a-ii: the run-up on plans** (firsttimer.ts vineFromLog's `running` branch, runUpCatches / runPress, about 1 h): a run plan = the steer
+## EXACT NEXT STEP (box 6 hand-over): 1a-ii BUILT and TIMED (candidate bb5e7fb2d, 1.65x the merge); NEXT: its checks, then 1b
+Head: the hand-over message's hash (pushed to t-eng-sim, ls-remote confirmed). Nothing lands on release-0.10.3, main or a release branch.
+1. **DONE (box 6): 1a-ii, the run-up on plans, candidate bb5e7fb2d** (built from 47ff85629; 'Step 3 box 6' below). Ruling 1 TRIPPED on
+   the first build 70c035eb7 (3.53x the merge: 84 refused run-ups, 602 catch flights) and went to the lead with the numbers BEFORE going
+   on, with option A (an exact prune) measured at 1.60x; the lead's ruling (A or B) PENDING at this push.
+2. **NEXT, on bb5e7fb2d, ONCE each, a chattr-frozen worktree (src/game/gen2/proven writable, R-165.494):** the CI tool line (gates.yml)
+   and the suite in 3 shards (CLAUDE.md's src globs, `split -n l/3` of the sorted list, as box 5), each total in the message; then
+   **rule 28**: every moved bot row traced to the run plan, or the change narrowed. Known moved already: 2-4 child Normal 8's run-up now
+   comes at t 79.2 on log #36 (k 8, press frame 14, caught on frame 21 as the probe said); c24's note had it at t 120.77. The inherited
+   KID_RUNS_59 (shard 0) stays the release line's (box 5's trace) unless its numbers move again: then trace it.
+3. Then 1b (hopFlight + the gate family + the landing stop), 1c, 1d, 1e, 1f in the plan's order (below). The cost check stands per
+   judge: time each against the merge 114944b5b on its own stage and seed before going on; over 3x goes to the lead with the numbers.
+
+## Step 3 box 6 (from 7:23 PM ET): 1a-ii, the run-up on plans, built, TIMED, pruned (candidate bb5e7fb2d)
+- **The spec (box 5's next step, as given):**
+  2. **1a-ii: the run-up on plans** (firsttimer.ts vineFromLog's `running` branch, runUpCatches / runPress, about 1 h): a run plan = the steer
    `dir` from frame 1 (no tail: he is running; steerFrom still gates it, as c25's brake), the press on frame P, the hold `hold`. **A run
    plan depends on the press frame P ALONE** (the run's steer is the same from frame 1 whatever k and the lag), so k + pressIn(lag)/DT = P:
    fly ONE unpressed run first (the frame his feet leave `here` bounds P: the engine's take-off, not runPress' 10 px margin), then
@@ -26,7 +34,36 @@ CPU is a finding to bring to the lead). Nothing lands on release-0.10.3, main or
    trees of the merge 114944b5b and of the run-up candidate, nothing else on the cores); **anything over 3x goes to the lead WITH THE
    NUMBERS BEFORE going on.** Rule 28 on the candidate (every moved bot row traced, or the change narrowed); the CI tool line AND the
    three suite shards on the candidate's hash, each shard's pass/fail totals in every ruling request and hand-over (the lead, CI #93).
-3. Then 1b (hopFlight + the gate family + the landing stop), 1c, 1d, 1e, 1f in the plan's order (below).
+
+- **Built (70c035eb7, then bb5e7fb2d):** vineFromLog's run-up is `runUpPlan` (tools/inspect/firsttimer.ts): a run plan = pressPlan with
+  the steer `dir` from steerAt (steerFrom's gate: a travel, a slip, a turn), no tail, the press on frame P, the hold `pressHold()`, 60
+  frames after. One UNPRESSED run (the same steer, no press) flown first: the frame his feet leave the log (not grounded, or standing on
+  another) bounds P; then P = k + m searched over [lo, min(bound, 44 + lo + w - 1)], each P flown once (planCatches, cached per call);
+  the first run of w consecutive catching P's (w = the thumb's press frames: kid 10, adult 5) gives the smallest k. The drawn lag
+  (gauss(this.r, who.thumb)) presses on frame k + m and is set and played (setPlan, end = |at|). Retired: runUpCatches, runPress,
+  this.runUp / runUpHold, the run / give-up / re-judge branch, startJump's run-up hold block, vineFromLog's carry / clock.
+- **THE COST CHECK (ruling 1), 2-4 kid Easy 19 to t 99, wall ms of firstTimer, frozen worktrees, nothing else on the cores, 3 runs:**
+  merge 114944b5b 1,215 / 1,216 / 1,186 (median 1,215); seal 47ff85629 1,693 / 1,785 / 1,693 (1.39x); **70c035eb7 4,458 / 4,284 /
+  4,277 (3.53x): OVER 3x, to the lead with the numbers.** Counted (a wrapped run, nothing changed): 84 runUpPlan calls, ALL refused
+  (log #48 59 frames, #72 24, #36 1), 602 catch flights + 84 unpressed runs, 2,421 ms of the 4.3 s; the run itself is the seal's (same
+  end, x 19,489 at t 99). **Option A (taken): prune the search, never the answer:** `firstWindow` (src/game/pressPlan.ts): any window of
+  w consecutive yeses holds exactly one frame of the lattice lo + w - 1 + j w, so those are asked first and a yes widened to its run.
+  The same 84 refusals fly 16 catches (295 ms). **bb5e7fb2d: 2,032 / 2,001 / 1,964 (median 2,001) = 1.65x the merge, 1.18x the seal.**
+  Option B (the REPORT's fallback: cache the refusal per log until lives / log change) NOT taken: it changes play (a run-up that becomes
+  possible later on the same log is never tried).
+- **Toys on bb5e7fb2d:** pressPlan.test 'firstWindow finds the plain scan's first window ... on every pattern up to 12 frames' (lo 1 and
+  3, w 1-6, every mask: the same first window, no frame outside [lo, hi], never more distinct frames than the plain scan asks): GREEN;
+  **PLANTED RED** (the left widening removed): 0/1. firsttimer.test :351 re-pointed: 'the run-up is ONE plan runUpPlan flew on the
+  engine' (rows: plans runUpPlan's own flights returned, set by setPlan; each probe-caught one must catch its liana on the frame the
+  probe said; the row ends at the shrine, 0 rescues): GREEN, 1 row (t 79.2, x 7,051, log #36, k 8, press 14, probe 21, caught 21);
+  **PLANTED RED** (the loop's play-now removed: the plan a frame late): 0/1. hopJudged's two stand toys (CI-11 2-4 kid Easy 35, CI-12 2-4 kid
+  Easy 19) PASS on bb5e7fb2d; lianaRide's 'A VINE FROM A LOG' / 'A VINE OVER THE TAIL' outcome rows RUNNING at this push.
+- **Hours (box 6):** the timing harness and the merge / seal baselines 8 min; the run plan 7 min; the over-3x count, the message and
+  option A's measure 8 min; firstWindow, its exhaustive test and the :351 toy with both plants 10 min. The spike's 1 h for 1a-ii holds
+  for the code; the checks (CI line + shards, about 50 min of wall clock) and rule 28 are box 7's.
+- **Lessons applied (box 6):** D113 (no foreground wait on a background run: the toys ran while the REPORT was written); D128 (stamps
+  from `date`); D134 (the next step pushed and ls-remote confirmed before the hand-over); D138 (the hand-over ends new work); D140
+  (notifications read at each step boundary); D141 (the CI line is NOT dropped: it is box 7's first job on THIS hash, not skipped).
 
 ## Step 3 box 5 (from 6:26 PM ET): the gate's 2-4 s35 red traced to the probe's cue memo and SEALED at the cause (47ff85629)
 - **The trace** (a scratch tracer, the gate's own setup: both worlds, the kid on 2-4 Easy 35, harness 1 frames 5300-6310, the stack read
