@@ -1,6 +1,11 @@
 # ENG-ASKS: a node code can ask any registered hazard and named clock (R-165.501; AUDIT-W3 finding 1)
 
-## EXACT NEXT STEP (box 1, 8:29 PM ET Thu 11-26 by `date`)
+## EXACT NEXT STEP (box 1 hand-over, 8:40 PM ET Thu 11-26 by `date`)
+STATE at hand-over: base lock RECORDED (3264 builds of 102 stages, `<scratchpad>/lock-base.json`); the candidate's `lockall --check` against
+it RUNNING in `<scratchpad>/cand` (log `<scratchpad>/lock-check.log`, last line `lockcheck=<code>`); gates.sh RUNNING: tsc=0,
+generality=0, shard1 757 pass 0 fail, shards 2-6, tool line and tierBots to come (`<scratchpad>/g1/summary.txt`). t-eng-w3 is still
+88592a9c4 (ENG-DARK-z not landed). NEXT: read both logs; all green -> step 3 below; any red -> name it, fix on t-eng-asks, a new candidate.
+(the steps as written in box 1:)
 DONE box 1: the toy test `src/game/gen2/hazardAsks.test.ts` GREEN 5/5 on 9244283f3; PLANTED: the same test on t-eng-w3's three engine
 files (`git checkout origin/t-eng-w3 -- nodeAsks.ts pipeline.ts types.ts`, then restored from HEAD) RED 0/5. nodeAsks.test 7/7.
 RUNNING (background, frozen worktrees in the scratchpad, never the working tree, D115):
