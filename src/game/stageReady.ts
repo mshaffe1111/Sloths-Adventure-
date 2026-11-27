@@ -26,6 +26,7 @@ import { loadPlain, plainUrls, warmPlain } from './plainSheets.ts';
 import { backdropReady, revealSet, stageUsesCanopy } from './paintedBackdrops.ts';
 import { perfNote } from './perfLog.ts';
 import { builtStageKeys, revealOf, type BuiltStage, type RevealStrips } from './stageManifest.ts';
+import { readyInvCuts } from './art/invCut.ts';
 import { readyInvDress } from './art/invDress.ts';
 import { preloadEnabled, start } from './stagePreload.ts';
 import type { LevelConfig } from './types.ts';
@@ -101,6 +102,9 @@ export async function readyBuiltStage(
   // below holds them too: art/invDress.ts)
   const inv = (stage.proto as { invDress?: Parameters<typeof readyInvDress>[0] } | null | undefined)?.invDress;
   if (inv?.length) await Promise.race([readyInvDress(inv, cfg.worldIndex), sleep(left())]);
+  // (the cut pieces of a world other than World 1 its platforms are drawn as: resolved against its world's inventory, each picture asked
+  // for, so the wait below holds them too: art/invCut.ts. World 1's own cut sheet is stageManifest's 'w1-cut')
+  if (stage.platforms?.some((p) => (p as { cut?: string }).cut)) await Promise.race([readyInvCuts(stage.platforms as unknown as Parameters<typeof readyInvCuts>[0], cfg.worldIndex), sleep(left())]);
   frame();
   await waitAll(urls);
   // each creature's clips baked (a clip sheet bakes as it arrives: this is a last check, for one still on its way), then shrunk to the

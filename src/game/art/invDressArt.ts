@@ -1,5 +1,6 @@
 /**
- * invDressArt — the build's folders a stage may place inventory pictures from as dressing (invDress.ts). A picture ships only when code
+ * invDressArt — the build's folders a stage may place inventory pictures from, as dressing (invDress.ts) or as a platform's cut piece
+ * (invCut.ts). A picture ships only when code
  * names it, so each folder is one static pattern here: the bundler ships that folder's pictures and gives each its address (as
  * pieces/rollingPiece.ts names src/assets/w1-18/ for the nut and the fruit, so that folder already ships). A piece whose file is in no
  * folder here is refused by name by the gate (invDress.ts invDressBreaches: "its picture is not in the build"); the fix is its folder's
@@ -9,6 +10,8 @@
 /** each folder (the inventory's `file` prefix, src/...): a picture's address in the build by its file name */
 const FOLDERS: ReadonlyArray<readonly [string, (name: string) => string]> = [
   ['src/assets/w1-18/', (n) => new URL(`../../assets/w1-18/${n}`, import.meta.url).href],
+  // (the cut pieces of worlds other than World 1, one picture a piece: drawn as a platform by art/invCut.ts, ENG-CUT)
+  ['src/assets/w2-cut/', (n) => new URL(`../../assets/w2-cut/${n}`, import.meta.url).href],
 ];
 
 /** the address in the build of an inventory row's picture (its `file`), or undefined when no folder here ships it */
