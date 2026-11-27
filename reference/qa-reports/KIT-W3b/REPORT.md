@@ -1,33 +1,69 @@
 # KIT-W3b: World 3's LEVEL bricks (R-165.505; content/kit, Opus 5.5 high). Branch t-kit-w3b, cut from t-eng-w3 13135bf6b
 
-## EXACT NEXT STEP (box 1 hand-over, 9:26 AM ET Fri 11-27 by `date`)
-1. Box 2: `git fetch origin +refs/heads/t-kit-w3b:refs/remotes/origin/t-kit-w3b && git checkout -B t-kit-w3b origin/t-kit-w3b`;
-   `npm ci --legacy-peer-deps` and `git fetch --unshallow origin` with run_in_background. Candidate: the branch head, code last at 630edec12 (brick 1, the ocelot
-   ground: w3-prowl-floor + w3-prowl-pair in src/game/gen2/worlds/w3.ts W3_LEVEL; counting test src/game/gen2/worlds/w3Level.test.ts,
-   2/2 green in 3.7 s; w3.test.ts's cast-rows check scoped to the way down, see Gates). NOT yet gated, NOT yet landed.
-2. ENG-ASKS-b's hash: ReadNotifications first; if the lead has sent it, `git merge --no-edit <hash>` (merge, never rebase) BEFORE any
-   dark brick, then switch CODE_32 in w3Level.test.ts to 3-2's ENG-ASKS form (codes-trim.txt: `A Tr1<:#dark Pg1> Pf1<:#dark
-   Xc1&<:#dark:&ocelot*1 R Pg1< Wr1&>:#dark:&ocelot*1 R Pc1&<:&ocelot*1 Cg1&>:#dark:&ocelot*2 R Sr1&<:#dark:&ocelot*3 E`) only if
-   the C beat still lays (the C node asks #dark too: the prowl bricks carry no dark zone yet; if Cg refuses 'no dark zone in its span',
-   add `...darkEnds('in', 'out', 'glow')` to both prowl bricks' sockets, the w3Drops way, and re-run the test).
-3. Brick 2 (3-2's DARK CLIMB + DARK ROPE, after ENG-ASKS-b): a World 3 level climb section (content 'climb', feel W3_LEVEL_STAGES,
-   a stone bank, a vine up to a branch shelf and down, plain jumps only, `darkEnds` over its span) in a lit version for P(c) and a dark
-   version for X(c), EACH with one ocelot socket (`ocelotAt`) on its foot bank (3-2's Pc1&<:&ocelot*1 refuses 'laid 0' x11 today:
-   no climb carries an ocelot socket). Rope W r / S r: 'r' is ENG-ROOT's root rope (packets/2026-11-25/ENG-ROOT.md); if World 3 has no
-   rope section kind laid by gen2 yet, that is rule 26: STOP and send the lead the exact ask (the rope section kind, not a level hack).
-   KIT-W3a's trap (R-165.524): every drop in a vine brick is a `walk`, never a `jump` (only a jump's dy is scaled by T.rise).
-4. Roll: scratch worktree `git worktree add --detach <S>/wt <candidate>`, `ln -s <repo>/node_modules node_modules`, `git apply`
-   origin/t-audit-w3:reference/qa-reports/AUDIT-W3/scratch.patch, then in src/game/gen2/worlds/w3Audit.ts import W3_LEVEL and end
-   w3AuditBricks with `...(process.env.AUDIT_LEVEL === '0' ? [] : W3_LEVEL)`; copy rolls/codes-trim-rolled.txt (or the ENG-ASKS form)
-   to `<S>/codes-<tag>.txt`, `mkdir <S>/out`, `./tools/audit/four.sh <tag> 3-2 3-3` in the background. Read a roll with the grouping
-   line in "How to read" below.
-5. GATES once, on the frozen candidate (D115: a worktree of the commit, src/game/gen2/proven/ writable): tsc; the CI tool line; the
-   suite in 6 shards; `npx tsx tools/engine/lockall.ts --check` ONE run (102 stages, counts; w3.ts is a shared lay file, so the FULL
-   lock; NO listed stage may move: the bricks' `feel` keeps them out of every listed pool and out of 3-1's draft); seedlist --check on
-   every list the files touch; generalitycheck. LAND: merge onto origin/t-eng-w3 (no force; KIT-W3a lands there too), re-run tsc and
-   lockall after the merge; send the lead the hash, each shard's totals and the before/after refusal counts below.
+## EXACT NEXT STEP (box 2 hand-over, 9:53 AM ET Fri 11-27 by `date`)
+Candidate: **5035c191a** (t-kit-w3b; ENG-ASKS-b merged: its code 5196f738f, then its landing f79963053 on top, code-identical). Box 2 is
+staying on as a TAIL running only this candidate's gates (frozen worktree, src/game/gen2/proven/ writable): 6 shards + the CI tool line,
+and ONE `lockall --check` (full, 102 stages). Done before the hand-over: tsc 0, generalitycheck PASS (26 literals, 26 known). It sends the
+lead each shard's totals, the tool line and the lock counts. Box 3:
+1. `git fetch origin +refs/heads/t-kit-w3b:refs/remotes/origin/t-kit-w3b && git checkout -B t-kit-w3b origin/t-kit-w3b`; `npm ci
+   --legacy-peer-deps` and `git fetch --unshallow origin` with run_in_background. ReadNotifications: take the tail's gate totals.
+2. If the tail's gates are green and no listed stage moved: seedlist --check on every list w3.ts touches (`npx tsx tools/engine/registrycheck.ts
+   --lists`, then the World 3 / shared ones; none was run in box 2), then LAND: `git fetch origin t-eng-w3`, `git merge --no-edit
+   origin/t-eng-w3` into t-kit-w3b, then onto t-eng-w3 by merge (no force, never rebase), re-run tsc and the FULL lockall after the
+   merge, push, `git ls-remote`, send the lead the hash, each shard's totals and the before/after counts below.
+3. If a gate is red: fix on the branch, NEW candidate, the gates ONCE on it.
+4. Next brick (NOT started, the lead to rule order): 3-3's `Pc1^<` asks a RISING climb and every World 3 climb leaves level ('shape ^
+   (rising): its sections rise 0 px' x12 on 3-3). A rising climb out (no walk off the shelf: the exit bank at the shelf's height, exitDy
+   -(180-54)) is the w3.ts prowlClimb way with a third flag; counted by a test on 3-3's code with its planted red.
 
-## Brick 1: the ocelot's ground (R-165.505; AUDIT-W3 "ocelot sockets laid 0")
+## Box 2 (R-165.505): the climb out, in the light and the dark
+### The bricks (src/game/gen2/worlds/w3.ts; all `feel` = W3_LEVEL_STAGES, jobs PROWL_JOBS (never a teach), ocelot sockets only)
+- `w3-prowl-climb` / `-dark` (content 'climb', needs climb): an entry bank 280-320, a plain 54 px step (0.61 Pokey) down onto the ocelot's
+  stone floor 540-620 (ONE ocelot socket, t 0.3-0.45), a 180 px vine at its end (2.0 Pokeys: past a plain jump's rise, so the vine is the
+  way), a branch shelf 220-260 over the vine's top, a walk off the shelf down 126 px onto the exit bank (back at the entry's height; a walk,
+  never a jump, R-165.524). Petals on the shelf and the exit bank, the flag socket on the exit bank (t 0.7: never within SAFE_APPROACH of
+  the ocelot's patch).
+- `w3-prowl-climb-high` / `-high-dark`: the same, a plain step UP off the shelf onto a higher branch 200-240, the walk off from there. A
+  climb node takes two sections; with one shape, X(c)'s second was a World 1 stand-in that asks the double (box 1's 'X double' x12).
+- `w3-prowl-floor-dark`, `w3-prowl-pair-dark`: box 1's ocelot ground with the dark stretch over it (darkEnds entry -> exit, a glowworm), for
+  3-2's '#dark' C beat ('Cg1&>:#dark:&ocelot*2' refused 'no dark zone in its span' x12 on the #dark form).
+- `-dark` = `darkEnds(entry, exit, 'glow')`: the node that asks #dark draws it (pipeline 2493, a section that lays the node's hazard).
+- Art: World 3's painted stone bank (w3#bank/#fill/#bankEnd) and branch (w3#branch), the rows W3_ART names and w3.test holds; the vine is
+  drawn as the kit's climb trunk, **w3#trunk, whose inventory row says 'needs fix: grey square in its top-right corner; flat cut edges'**:
+  every World 3 climb draws it (3-1's too). NAMED, not fixed here (an art job). No stills shot in box 2: the gates took the box.
+
+### The count (w3Level.test.ts, 5 tests, about 15 s, seeds 1-3 x both)
+- 3-2's P(c) ('Pc1&<:&ocelot*1'), the node picked by its PLACE in the code (a node's token is its laid code: the Pf node laid as climb read
+  'Pc', box 2's first try counted the wrong node): no refusal names it, its sections are World 3 climbs, Normal's ocelot on the brick's own
+  foot socket (1). PLANTED RED: sockets stripped -> 0 on every roll.
+- 3-2's X(c) on ENG-ASKS-b's form ('Xc1&<:#dark:&ocelot*1'): no refusal names it, at least one dark climb, Normal's ocelot on its socket.
+  PLANTED REDS: sockets stripped -> 0; dark ends stripped -> refused '#dark' by name.
+- 3-2's dark C ('Cg1&>:#dark:&ocelot*2'): no refusal, a dark ocelot ground laid, 2 on Normal's sockets. PLANTED RED: dark ends stripped.
+- Easy: its 60% cut (pipeline.ts 'Easy's enemy budget') can take a later ocelot off its socket; the node's ask then stands it back on the
+  node's main ground as a top-up (the ask's 'at least one on Easy'). Kept as noted; the lead: R-165.527 (ENG-LURE) settles it.
+- w3.test (ruling a): the cast check is `castLeaks()`. PLANTED REDS: an ocelot socket put on a tower brick -> 'w3-ledge has an animal
+  socket'; a level brick with 3-1 in its feel -> '<id> is in 3-1's pool'. w3.test 10/10, w3HazardAsks.test green.
+
+### Before / after (4 seeds x both, the audit's wide pool; rolls/*-box2-r.txt on box 1's code form, *-box2-d.txt on ENG-ASKS-b's #dark form)
+| Stage | Box 1 (7be2c37e8) | Box 2 (5035c191a) |
+|---|---|---|
+| 3-2, codes-trim-rolled | 66 refusal lines, clean 0/8 | **20**, clean 0/8 |
+| 3-3, codes-trim-rolled | 138, clean 0/8 | **105**, clean 0/8 |
+| 3-2, #dark form (codes-trim.txt) | (not rolled) / 170 on box 2's first climb (7aa521c08) | 149, clean 0/8 |
+| 3-3, #spore form | (not rolled) | 207 (ENG-SPORE's puff and ENG-LURE's lure lines) |
+
+3-2 cleared by name: P(c) 'ocelot*1: laid 0' x11 and 'no creature laid' x11; X 'move 1: a section asks for the double' x12; World 1's tip
+keys x12 (no World 1-2 climb stand-in left at P/X). On the #dark form: **X(c)'s 'no dark zone in its span' cleared**, C's x12 cleared.
+Left on 3-2 (box 1's form): the quiet line x8 (finding 4), S 'content f (floating): sections are ground / climb' x12: S asks floating and
+World 3 has no floating brick with an ocelot (on the #dark form S asks r: the root rope). **Wr / Sr stay ENG-ROOT's**: 'pool short ... no
+rope section left' x45 and 'content r: sections are ground / climb' by name; their '#dark' lines no longer print only because a dark
+ground or climb now stands in that node, so the rope's content refusal is the one that names them.
+3-3 by line (box 1 -> box 2): Pc 'no creature' 11 -> 0, Pc 'ocelot*1 laid' 11 -> 0, Pc 'rise -1/-5 px' 6 -> 0, World 1's tip keys 12 ->
+0 and 12 -> 9, Cg ocelot*2 8 -> 4; NEW: **Pc 'shape ^ (rising): its sections rise 0 px' 3 -> 12** (3-3's Pc1^< asks a rising climb; World
+3's climbs leave level: next step 4); Sc 'content l: no lure' 0 -> 9 (S laid climbs where it asks the lure: ENG-LURE's). The over-laid
+purge counts are R-165.527.
+
+## Box 1: the ocelot's ground (R-165.505; AUDIT-W3 "ocelot sockets laid 0")
 - `w3-prowl-floor` (1 ocelot socket): a stone bank 300-340, a 50-56 px step down onto the ocelot's floor 540-620, a step up onto the exit
   bank 280-320 (petals in, a petal and the flag socket on the exit bank).
 - `w3-prowl-pair` (2 ocelot sockets, for '&ocelot*2' beats): in bank, a low floor and a high floor (540-620 each, a 50-56 px step between:
@@ -95,3 +131,18 @@ A node's label is the code AS LAID (its laid letters), not the asked code: an S 
 - Rule 23 (or a new short rule): "A brick with an animal socket is proven by the count ON its own sockets (FilledSocket.socket), with a
   planted red that strips the sockets; a flag socket keeps the checkpoint off the animal's floor." Evidence: 3-2 seed 1 Normal lost its
   second ocelot to a checkpoint until the flag socket went in; the brick-removed red passed on 3-2 seed 2 Normal.
+
+## Learned (box 2)
+- A node's token in `gen2.nodes` and in every refusal is its LAID code, and node ids are 1-based (n1 = A): a test that finds a node by its
+  asked letters ('Pc') can count the wrong node (box 2's first P(c) count read the Pf node laid as climb). Pick the node by its place in the
+  code and match refusals on the id the roll returns.
+- A climb node takes two sections: one World 3 shape hands the second to a World 1-2 stand-in, with its double and its tips. Two shapes per
+  content (lit and dark) cleared 3-2's X double and the tip keys at once (Matt's variety rule: more pieces, not rerolls).
+- An animal socket on Easy is not 'laid' by the brick alone: Easy's 60% cut can move it to the node's ask top-up. Count Normal on the socket,
+  Easy by the ask.
+- Lessons applied: D115 (frozen worktree, proven writable), D119 (no heredoc in a commit chain), D128 (stamps from `date`), D134 (next step
+  pushed and ls-remote-confirmed before the hand-over), D138 (the hand-over ends new work; box 2 stays a gates-only tail), D140
+  (ReadNotifications at each step), D141 (the CI tool line on the candidate), CI #89 (the 20-minute recommendation: merging 5196f738f).
+- Proposed rule (for the lead's retro, with box 1's): **every content letter a level's code uses gets at least two World 3 shapes, each lit
+  and dark where the code asks #dark**, checked by a test that rolls the trimmed code and asserts no section at that node is another
+  world's stand-in.

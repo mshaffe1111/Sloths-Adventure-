@@ -1,0 +1,63 @@
+4x normal ERR pool short at slot 2 (n2 practise: no rope section left)
+3x normal ERR pool short at slot 3 (n2 practise: no rope section left)
+2x normal ERR pool short at slot 16 (n8 twist: no rope section left)
+3x normal ERR pool short at slot 17 (n8 twist: no rope section left)
+2x normal ERR node code: V11 at token 11: 5 of 8 content nodes are 'g' (cap 3)
+4x normal ERR node code: V11 at token 3: 'g' on two neighbouring content nodes
+2x normal ERR node code: V11 at token 8: 'g' on two neighbouring content nodes
+4x normal ERR node code: V14 at token 1: 0 'r' nodes for a deal of 2
+2x normal ERR node code: V14 at token 1: 5 'g' nodes for a deal of 3
+1x normal ERR ask: node n2 "Pg1_<": content 'r' (rope): 2 of 2 sections are ground
+1x normal ERR ask: node n8 "Wg1_>": content 'r' (rope): 2 of 2 sections are ground
+2x normal ERR ask: node n13 "Sg1<": content 'r' (rope): 2 of 2 sections are ground, climb
+1x normal ERR the quiet line: 6.3 s with nothing to do at x 4013, over 4 s (the goal run-out excluded)
+1x normal ERR pool short at slot 18 (n8 twist: no rope section left)
+2x normal ERR node code: V11 at token 11: 4 of 8 content nodes are 'g' (cap 3)
+2x normal ERR node code: V11 at token 10: 'c' on two neighbouring content nodes
+1x normal ERR ask: node n2 "Pg1<": content 'r' (rope): 2 of 2 sections are ground, climb
+1x normal ERR ask: node n8 "Wc1^>": content 'r' (rope): 2 of 2 sections are climb, ground
+1x normal ERR ask: node n13 "Sc1<": content 'r' (rope): 2 of 2 sections are climb, ground
+2x normal ERR ask: node n13 "Sc1<": threat ocelot*3: laid 2
+1x normal ERR the quiet line: 6.4 s with nothing to do at x 19809, over 4 s (the goal run-out excluded)
+1x normal ERR pool short at slot 14 (n8 twist: no rope section left)
+1x normal ERR pool short at slot 15 (n8 twist: no rope section left)
+1x normal ERR ask: node n2 "Pg1<": content 'r' (rope): 1 of 1 sections are ground
+1x normal ERR ask: node n8 "Wc1>": content 'r' (rope): 2 of 2 sections are climb
+1x normal ERR ask: node n13 "Sc1<": content 'r' (rope): 2 of 2 sections are climb
+1x normal ERR the quiet line: 6.6 s with nothing to do at x 2926, over 4 s (the goal run-out excluded)
+1x normal ERR ask: node n2 "Pg1<": content 'r' (rope): 2 of 2 sections are ground
+1x normal ERR ask: node n8 "Wg1^>": content 'r' (rope): 2 of 2 sections are ground, climb
+1x normal ERR ask: node n13 "Sg1<": threat ocelot*3: laid 2
+1x normal ERR the quiet line: 7.1 s with nothing to do at x 27402, over 4 s (the goal run-out excluded)
+8x easy ERR pool short at slot 2 (n2 practise: no rope section left)
+6x easy ERR pool short at slot 3 (n2 practise: no rope section left)
+4x easy ERR pool short at slot 16 (n8 twist: no rope section left)
+6x easy ERR pool short at slot 17 (n8 twist: no rope section left)
+4x easy ERR node code: V11 at token 11: 5 of 8 content nodes are 'g' (cap 3)
+8x easy ERR node code: V11 at token 3: 'g' on two neighbouring content nodes
+4x easy ERR node code: V11 at token 8: 'g' on two neighbouring content nodes
+8x easy ERR node code: V14 at token 1: 0 'r' nodes for a deal of 2
+4x easy ERR node code: V14 at token 1: 5 'g' nodes for a deal of 3
+2x easy ERR ask: node n2 "Pg1_<": content 'r' (rope): 2 of 2 sections are ground
+2x easy ERR ask: node n8 "Wg1_>": content 'r' (rope): 2 of 2 sections are ground
+4x easy ERR ask: node n13 "Sg1<": content 'r' (rope): 2 of 2 sections are ground, climb
+1x easy ERR the quiet line: 6.3 s with nothing to do at x 4013, over 4 s (the goal run-out excluded)
+2x easy ERR pool short at slot 18 (n8 twist: no rope section left)
+4x easy ERR node code: V11 at token 11: 4 of 8 content nodes are 'g' (cap 3)
+4x easy ERR node code: V11 at token 10: 'c' on two neighbouring content nodes
+2x easy ERR ask: node n2 "Pg1<": content 'r' (rope): 2 of 2 sections are ground, climb
+2x easy ERR ask: node n8 "Wc1^>": content 'r' (rope): 2 of 2 sections are climb, ground
+2x easy ERR ask: node n13 "Sc1<": content 'r' (rope): 2 of 2 sections are climb, ground
+2x easy ERR ask: node n13 "Sc1<": threat ocelot*3: laid 2
+1x easy ERR the quiet line: 6.4 s with nothing to do at x 19809, over 4 s (the goal run-out excluded)
+2x easy ERR pool short at slot 14 (n8 twist: no rope section left)
+2x easy ERR pool short at slot 15 (n8 twist: no rope section left)
+2x easy ERR ask: node n2 "Pg1<": content 'r' (rope): 1 of 1 sections are ground
+2x easy ERR ask: node n8 "Wc1>": content 'r' (rope): 2 of 2 sections are climb
+2x easy ERR ask: node n13 "Sc1<": content 'r' (rope): 2 of 2 sections are climb
+1x easy ERR the quiet line: 6.6 s with nothing to do at x 2926, over 4 s (the goal run-out excluded)
+2x easy ERR ask: node n2 "Pg1<": content 'r' (rope): 2 of 2 sections are ground
+2x easy ERR ask: node n8 "Wg1^>": content 'r' (rope): 2 of 2 sections are ground, climb
+1x easy ERR ask: node n13 "Sg1<": threat ocelot*3: laid 2
+1x easy ERR the quiet line: 7.1 s with nothing to do at x 27402, over 4 s (the goal run-out excluded)
+clean 0/8
