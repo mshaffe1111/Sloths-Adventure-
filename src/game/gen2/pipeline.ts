@@ -839,12 +839,13 @@ export const servesJob = (jobs: readonly string[] | undefined, job: NodeJob): bo
 
 /**
  * Whether a section's type may fill a node's slot (R-165.541): a node the deal typed takes no section of another type (one with no
- * type may); a node whose CODE writes a content letter takes only a section of exactly that type (one with no type is no fill either).
- * Loosened (`loose` above 0, none of its type fits) either takes any, and a lettered node's slot note then names its letter (the lay's
- * choose), so a slot is never quietly another kind. A node with no type is free.
+ * type may) and, loosened (`loose` 1 or 2), takes any; a node whose CODE writes a content letter takes only a section of exactly that type
+ * (one with no type is no fill either) through loose 2 (its job dropped, its phase kept), and only past that (`loose` 3, the lay's last
+ * resort) any type, its slot note then naming the letter (the lay's choose), so a slot is never quietly another kind. A node with no
+ * type is free.
  */
 const typeFits = (t: SectionTemplate, n: MissionNode, loose: number): boolean =>
-  !n.content || loose > 0 ? true : n.asked?.content ? t.content === n.content : !t.content || t.content === n.content;
+  !n.content || loose >= 3 ? true : n.asked?.content ? t.content === n.content : loose > 0 || !t.content || t.content === n.content;
 
 /** the jobs a content node holds (NODES.md §7.1: structural nodes, and the signature, sit outside the mix) */
 const CONTENT_JOBS: ReadonlySet<NodeJob> = new Set(['teach', 'practise', 'fork', 'flow', 'combine', 'climb', 'descent', 'twist', 'test']);
@@ -2320,7 +2321,7 @@ export function layStage(budget: StageBudget, graph: MissionGraph, kit: WorldKit
   const ahead = (id: string, i: number) => (graph.id && opt.plan ? opt.plan.filter((p, k) => k > i && !opt.open?.has(k) && p.template === id).length : 0);
   const teachHere = new Set(graph.nodes.flatMap((n) => (n.job === 'teach' && n.teaches ? [n.teaches] : [])));
   // (`loose`: 0 the node's job and its dealt type; 1 its job only, when no section of its type is left; 2 its phase only)
-  const jobFits = (t: SectionTemplate, n: MissionNode, loose: 0 | 1 | 2) => {
+  const jobFits = (t: SectionTemplate, n: MissionNode, loose: 0 | 1 | 2 | 3) => {
     if (!n.job) return t.phases.includes(n.phase);
     // (a teach node with no move named, a brief that names none: any section that teaches a move not yet taught)
     if (n.job === 'teach' && loose < 2) return (n.teaches ? t.teaches === n.teaches : !!t.teaches && !taught.has(t.teaches)) && typeFits(t, n, loose);
@@ -2361,13 +2362,13 @@ export function layStage(budget: StageBudget, graph: MissionGraph, kit: WorldKit
   const needsRise = (n: MissionNode) => upStage && (!!n.mustRise || (endHigh && n.job === 'signature' && descentY === undefined));
   /** where the next section enters: the join clamps it into the corridor */
   const entryY = () => Math.max(ctop, Math.min(cbot, cur.y));
-  const fits = (t: SectionTemplate, n: MissionNode, i: number, loose: 0 | 1 | 2 = 0) =>
+  const fits = (t: SectionTemplate, n: MissionNode, i: number, loose: 0 | 1 | 2 | 3 = 0) =>
     jobFits(t, n, loose) &&
-    (!n.mustRise || loose === 2 || exitDyOf(t) < 0) &&
+    (!n.mustRise || loose >= 2 || exitDyOf(t) < 0) &&
     // (V19 and V19b on an up stage, 11-06: the node after a late descent (or, with none, the signature) ends higher than both where the
     // descent began and where the bough window begins, 20 px clear; rising at all was weaker than the line, and stage.ts's V19 / V19b failed on Roll A. Nothing that fits: the slot
     // loosens and the roll fails by name)
-    (riseTo === undefined || loose === 2 || !needsRise(n) || entryY() + exitDyOf(t) <= riseTo - 20) &&
+    (riseTo === undefined || loose >= 2 || !needsRise(n) || entryY() + exitDyOf(t) <= riseTo - 20) &&
     (t.archetypes === 'any' || t.archetypes.includes(budget.archetype)) &&
     (t.needs ?? []).every((m) => budget.moves.includes(m)) &&
     hangsNeed(t).every((m) => budget.moves.includes(m)) &&
@@ -2468,10 +2469,11 @@ export function layStage(budget: StageBudget, graph: MissionGraph, kit: WorldKit
       cands = M.sections.filter((t) => fits(t, n, i, 2) && !must.some((r) => r.section === t.id));
       if (cands.length) lastLoose = `${n.id} ${n.job}: no ${n.mustRise ? 'rising section (V19) ' : 'section for the job '}left, filled by its phase`;
     }
-    if (lastLoose && n.asked?.content && n.content) {
-      // (a lettered node, typeFits, that no section of its letter fits: filled past its rule as any node, but the slot's note names the
-      // LETTER, so the roll is refused by name and never quietly laid with another kind. The pool has none of the type for the job, or
-      // those it has are spent or barred at this slot. The roll goes on, so every other node is still laid and judged)
+    if (!cands.length && n.asked?.content && n.content) {
+      // (a lettered node, typeFits, that no section of its letter fits even by its phase: the last resort, any type by its phase, and the
+      // slot's note names the LETTER, so the roll is refused by name and never quietly laid with another kind. The pool has none of the
+      // type, or those it has are spent or barred at this slot. The roll goes on, so every other node is still laid and judged)
+      cands = M.sections.filter((t) => fits(t, n, i, 3) && !must.some((r) => r.section === t.id));
       const L = n.asked.content;
       const ofType = M.sections.filter((t) => t.content === n.content && jobFits(t, n, 2));
       const spent = ofType.filter((t) => (used.get(t.id) ?? 0) >= (t.maxPerStage ?? M.graphs?.maxPerStage ?? Infinity)).length;
