@@ -1,0 +1,5 @@
+== FULL SET lane D on c9770adb2 (main base 4bf2cbaaa) 11:58 AM ET
+lockbase PASS (exit 0, 487 s)
+lockall FAIL (exit 1, 544 s)
+lockpre PASS (exit 0, 580 s)
+lockvspre PASS (exit 0, 498 s)
