@@ -1,30 +1,32 @@
 # BUILD-29 REPORT: 2-9 "The River King's Court" (the World 2 finale; R-165.449), release 6
 Branch t-build-29, cut from origin/t-eng-29 = 098047713 (the lead's named base). Session 1 started 5:45 PM ET Thu 11/26 (by `date`).
 
-## EXACT NEXT STEP (session 10 hand-over, BUILD-29-j, 10:30 AM ET Fri 11/27; head = this commit)
-ReadNotifications first (D140). Box 10 DID (steps 1-4 of the lead's box; 5-8 open):
-1. MERGED t-eng-29 7387d089a (B) at 0419d0736, no conflicts. tsc clean. CI tool line on a FROZEN tree of 0419d0736: 429 tests, 427 pass,
-   1 fail, 1 todo (chase bots ENG-B4, a todo, inherited). The fail is OURS, the registry gate (registrycheck: 2-9 drawcheck, seeds, flown);
-   drawcheck and seeds are fixed in 011c0886; FLOWN is open (below). (The first tool-line run was thrown away: D115, src edited under it.)
-2. fly.sh (flown/quiet-j.txt): nothing counted over 4 s, Normal seeds 1-6 (the shrine walk 5.41-5.68 raw, counted 1.34-1.40).
-   libstage 24 x both (flown/roll-j.txt): CLEAN 24/24 Normal and Easy, 0 thrown, no refusal. Easy wheel try (flown/easy-wheel-j.txt):
-   easyV 114.24 reads 4.32 s, over; the lead RULED: keep easyV 45.7, Easy's own quiet judge is the engine ask R-165.538.
-3. KICK HINT laid (14bb9b41): socket t-kick on the barge brick's quay, t 0.7 (126 px from the lip, where he waits for a barge), words in
-   kitLib29's tips (KICK_29 from dotLinesData's row). 1694 px before the guard on Normal, 1754 on Easy (the river 984 px). Not refused:
-   the kit had no words for it and no socket. Test w2Arc29 'Dot's kick line ... EVERY seed': seeds 1-12 both; plants RED (socket removed:
-   'found 0'; socket on the landing t 0.1: '168 px before the guard').
-4. addlevel 2-9 (bots/addlevel-j.txt): list WRITTEN 100/100 (version 243229eb), --check PASS; NOT READY on 3:
-   - bots, kid Normal 0/40 (hits 583, foe:turtle 931; rule 4: Normal is not softened for the kid) and kid Easy 4/40 (most fails 'shrine
-     rescued x1-x3', hits foe:turtle 26): RUNNING, castBots kid easy 1-40 --rows bots/kid-easy-j.jsonl, to trace each miss (rule 28).
-   - FLOWN: 2-9's row has no `judged` scope. RUNNING: flight.ts (flown/flight-2-9-j.txt). Then enter its Normal rows in flownArcs.ts
-     (scope 'normal-2-9', 1-3's n13 form) and `judged: 'normal-2-9'` on stageTable.ts's 2-9 row. That CHANGES THE LAY (flown reach):
-     re-roll libstage, REBUILD the list (`seedlist.ts 2-9 --relist`), re-run addlevel; only then bots x40 every tier (step 5).
-   - Adult, child, middle 40/40 both; expert Normal 40/40. Pin grep: 185 files; the 11 that can read 2-9's list: 54/55, the one red
-     puzzleCamera 'leaving a room' (same numbers on 0419d0736: INHERITED, ENG-CAM29 R-165.513, the engine lane's).
-NEXT: (a) when the flight lands, judged row + relist + addlevel; (b) widen the kick and guard tests to provenSeeds('2-9') (100 seeds,
-~100 ms a build: about 20 s both settings); (c) drawcheck (2-9 now a scenario, same limits); (d) the first-look stills, upright first, from
-the committed lay (a worktree, vite 5199; /tmp/claude-0/beats.ts prints each beat's x and draw path: banks 'ground' as on 2-5/2-7, stones
-'painted rock', snap stones own art, river art, the wheel own art); (e) the full gate run (step 8), the lock as two runs on 7387d089a.
+## EXACT NEXT STEP (session 10 hand-over, BUILD-29-j, 10:38 AM ET Fri 11/27; head = this commit)
+ReadNotifications first (D140); the lead has two messages from j to answer (the kid on Easy, below). Box 10 DID steps 1-4, 5 in part:
+1. MERGED t-eng-29 7387d089a (B) at 0419d0736, no conflicts; tsc clean. CI tool line on a FROZEN tree of 0419d0736: 429, 427 pass, 1 fail,
+   1 todo (chase bots ENG-B4, inherited). The fail was OURS (registrycheck: 2-9 drawcheck/seeds/flown): all three now in (below).
+   (The first tool-line run was thrown away: D115, src edited under it; re-run on a frozen worktree.)
+2. fly.sh (flown/quiet-j.txt): nothing counted over 4 s, Normal 1-6 (the shrine walk 5.41-5.68 raw, 1.34-1.40 counted). libstage 24 x
+   both (flown/roll-j.txt): CLEAN 24/24 both, 0 thrown, no refusal. Easy wheel try easyV 114.24: 4.32 s, over (flown/easy-wheel-j.txt);
+   the lead RULED: keep easyV 45.7; Easy's own quiet judge is the engine ask R-165.538.
+3. KICK HINT (14bb9b41): socket t-kick, barge brick's quay t 0.7 (126 px from the lip), words in kitLib29's tips (KICK_29): 1694 px before
+   the guard Normal, 1754 Easy (the river 984 px). Not refused: the kit had no words and no socket. Test on ALL 100 listed seeds both
+   settings (with the guard test, a75c69455); plants RED (removed: 'found 0'; on the landing t 0.1: '168 px before the guard').
+4. addlevel (bots/addlevel-j.txt, then -j2.txt after the judged row): list 100/100 --check PASS (version 243229eb; the relist came out
+   byte-identical); FLOWN: flight-2-9-j.txt, normal-2-9 rows in flownArcs (within 0-7 px of 2-7's), judged on the row; registered
+   everywhere. Pin grep 185 files; the 11 reading 2-9's list: 54/55, the red puzzleCamera 'leaving a room' = the same numbers on
+   0419d0736, INHERITED (ENG-CAM29 R-165.513).
+5. BOTS x40 (-j2): adult/child/middle 40/40 both, expert Normal 40/40; kid Normal 0/40 (rule 4: not softened); KID EASY 5/40: all 40 at
+   the shrine, 0 hits, 35 fail on 1-4 rescues; every stuck place beside an uncleared snapper (dance 125, snappers 95, guard 7; 228
+   kicked, 92 left; bots/kid-easy-j.jsonl). WHY it stalls is NOT traced yet. SENT to the lead with a reversible fix on Easy only (the
+   dance wave at 2, or a pause stone before each snapper): WAIT 20 min for the ruling, then your own reversible call (CI #89).
+RUNNING at hand-over: drawcheck with 2-9 as a scenario, same limits (flown/drawcheck-j.txt; read it, name every 2-9 call site).
+NEXT: (a) the lead's kid ruling, laid + bots again; (b) drawcheck's result; (c) the FIRST-LOOK stills, upright first, from the committed
+lay (a worktree, vite 5199, stills-at-setting.mjs; /tmp/claude-0/beats.ts printed each beat's x and draw path: banks 'ground' as on 2-5/2-7,
+stones 'painted rock', snap stones own art, logs river art, the wheel own art, the barge a log in river art (G3)); (d) the full gate run
+(step 8) on a frozen candidate, the lock as two runs on 7387d089a, 6 shards, every seedlist --check, clipcheck, tierBots, generalitycheck.
+LEARNED (j): a stage's registry gate goes red on the CI tool line the moment its row enters the table: run registrycheck --stage before
+the tool line, not after it. I edited src under a running tool line (D115 again): start long runs in a worktree from the first one.
 
 ## (superseded) EXACT NEXT STEP (session 9 hand-over, BUILD-29-i; QUEUED until ENG-QUIET's B lands on t-eng-29, still 28c848dbd at 9:33 PM ET Thu 11/26)
 Head: this commit. ReadNotifications first (D140). The lead APPROVED all three proposals (below) and they are LAID (5286a1bc7): the gate

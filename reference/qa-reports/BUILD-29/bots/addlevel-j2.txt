@@ -1,0 +1,71 @@
+
+== 1. the row (at 0 s)
+
+== 2. the rolls: 24 seeds x both settings (libstage.ts) (at 0 s)
+2-9: 24 seeds x both settings, built from its stage-table row as the seed-list search builds it
+== normal: CLEAN 24 of 24 (100%), thrown 0; 1 distinct beat orders; graphs court-29-arc 24
+   cast turtle 24; creatures per clean roll turtle 8-8; seconds 227-231.6; width 28485-29338 px
+== easy: CLEAN 24 of 24 (100%), thrown 0; 1 distinct beat orders; graphs court-29-arc 24
+   cast turtle 24; creatures per clean roll turtle 8-8; seconds 236-239.6; width 29587-30266 px
+clean on BOTH settings: 24 of 24 seeds (first: 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12)
+pool sections never laid: none
+
+== 3. the seed list (tools/engine/seedlist.ts) (at 3 s)
+  the list file src/game/gen2/proven/seeds-2-9.ts: 28150 bytes, its own chunk (the main script holds only its line in provenIndex.ts)
+seedlist 2-9: 100 proven of 100 tried (100%), 23 s; the quiet line bound at 4 s: 0 clean seeds over it left out
+  quiet line (REPORTED, outro excluded; binds at FR9): longest 3.9 s, median 3.9 s, under 4 s on 100 of 100
+  outro (goal section): 860-880 px
+  yield, graph court-29-arc: 100 kept of 100 fresh seeds tried (100%)
+
+seedlist 2-9: the verdicts refuse 0 of 100 listed seeds
+seedlist 2-9: PASS (100 seeds, each clean on both settings)
+
+
+== 4. the bots (tools/inspect/castBots.ts --seeds 1-40, both settings) (at 73 s)
+castBots 2-9, seeds 1-40; the floor 120 s (STAGE-RULES.md:77)
+kid    normal PASS 0/40; under the floor 0; time median - s (min -); hits 555 lives 337 (foe:turtle 885, water 7); cleared kick 120; told of traps 0/40; first trap sprung 0/40; traps sprung 0/0; turned back 177; left 200
+        fail 9: stranded goal 2/5 rescued x13  (seeds 1,33,6,22,26,30,20,32,7)
+        fail 7: stranded goal 1/5 rescued x14  (seeds 5,37,38,24,28,23,31)
+        fail 7: stranded goal 3/5 rescued x12  (seeds 9,13,25,18,34,4,12)
+        fail 4: shrine rescued x5  (seeds 8,3,15,27)
+        fail 3: shrine rescued x4  (seeds 17,11,19)
+        fail 2: shrine rescued x2  (seeds 21,36)
+        fail 2: stranded goal 2/5 rescued x14  (seeds 10,40)
+        fail 1: stranded goal 3/5 rescued x10  (seeds 29)
+        fail 1: stranded goal 4/5 rescued x6  (seeds 2)
+        fail 1: stranded goal 3/5 rescued x13  (seeds 14)
+        fail 1: stranded goal 3/5 rescued x14  (seeds 16)
+        fail 1: stranded goal 2/5 rescued x11  (seeds 35)
+        fail 1: stranded goal 2/5 rescued x15  (seeds 39)
+kid    easy   PASS 5/40; under the floor 0; time median 227.3 s (min 214.4); hits 0 lives 2 (water 2); cleared kick 228; told of traps 0/40; first trap sprung 0/40; traps sprung 0/0; turned back 0; left 92
+        fail 16: shrine rescued x1  (seeds 1,9,18,30,34,8,16,20,24,28,32,36,3,11,31,35)
+        fail 12: shrine rescued x2  (seeds 5,21,25,33,22,26,38,4,40,7,19,23)
+        fail 6: shrine rescued x3  (seeds 13,29,6,10,14,27)
+        fail 1: shrine rescued x4  (seeds 15)
+adult  normal PASS 40/40; under the floor 0; time median 174.7 s (min 162.6); hits 41 lives 1 (foe:turtle 41, water 1); cleared kick 280; told of traps 0/40; first trap sprung 0/40; traps sprung 0/0; turned back 0; left 40
+adult  easy   PASS 40/40; under the floor 0; time median 181.6 s (min 174.3); hits 55 lives 0 (foe:turtle 55); cleared kick 280; told of traps 0/40; first trap sprung 0/40; traps sprung 0/0; turned back 0; left 40
+child  normal PASS 40/40; under the floor 0; time median 367.5 s (min 335.2); hits 2 lives 14 (water 14, foe:turtle 1, other 1); cleared kick 280; told of traps 0/40; first trap sprung 0/40; traps sprung 0/0; turned back 0; left 40
+child  easy   PASS 40/40; under the floor 0; time median 294 s (min 272.7); hits 4 lives 29 (foe:turtle 2, other 2, water 29); cleared kick 281; told of traps 0/40; first trap sprung 0/40; traps sprung 0/0; turned back 0; left 39
+middle normal PASS 40/40; under the floor 0; time median 201.1 s (min 184.8); hits 1 lives 2 (foe:turtle 1, water 2); cleared kick 280; told of traps 0/40; first trap sprung 0/40; traps sprung 0/0; turned back 0; left 40
+middle easy   PASS 40/40; under the floor 0; time median 205.3 s (min 192.4); hits 3 lives 4 (water 4, other 1, foe:turtle 2); cleared kick 280; told of traps 0/40; first trap sprung 0/40; traps sprung 0/0; turned back 0; left 40
+expert normal PASS 40/40; under the floor 0; time median 184.1 s (min 172.3); hits 0 lives 5 (water 5); cleared kick 280; told of traps 0/40; first trap sprung 0/40; traps sprung 0/0; turned back 0; left 40
+
+
+== 5. the flown rows (at 222 s)
+  judged on "normal-2-9", every move Easy flies has its row
+
+== 6. every other registration (tools/engine/registrycheck.ts --stage) (at 222 s)
+registrycheck 2-9: registered everywhere (row, kit, config, routed, attempts, sheets, drawcheck, seeds, flown)
+
+
+== addlevel 2-9: 224 s
+  DONE     row, kit and config resolve
+  DONE     rolls: 24/24 Normal, 24/24 Easy clean; 24/24 on both
+  DONE     seed list written: 100 proven of 100 tried (100%), 23 s; the quiet line bound at 4 s: 0 clean seeds over it left out
+  DONE     seed list: --check PASS
+  DONE     flown: judged on normal-2-9
+  DONE     registered everywhere registrycheck looks
+  MISSING  bots: kid normal passes 0/40 (fails above, by cause)
+  MISSING  bots: kid easy passes 5/40 (fails above, by cause)
+addlevel 2-9: NOT READY (2 missing above)
+exit 1
