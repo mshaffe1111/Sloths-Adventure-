@@ -1,5 +1,28 @@
 # INT-R5 REPORT: release 5 (0.10.4) candidate, release-0.10.4 (packet reference/packets/2026-11-26/INT-R5.md)
 
+## EXACT NEXT STEP (written 9:04 AM ET 11-27 by `date`; box 2 of 11-27, INT-R5-b; box 1's step list is below and still stands)
+1. **2-7's list (critical path):** rebuilt on a work tree of d1d44c988 (`seedlist 2-7 --count 100`, 20 s): **version c9e1e269, the SAME
+   as the other two branches**; the same 100 seeds, 35 plans changed (variants 3 8 9 11 12 15 17 19 20 22 27 28 33 37 44 49 52 59 64 66
+   68 69 70 72 73 75 76 77 80 81 83 86 87 88 90). The old list's `--check`: FAIL, "replay differs" on 3 8 9 11 12 15 17 19 20 22 (both
+   settings). NOT YET COMMITTED: the rebuilt files (src/game/gen2/proven/seeds-2-7.ts, provenIndex.ts version line) wait on the lead's
+   ruling on the one new bot miss. To recreate: the same command on the release head gives the same bytes.
+2. **castBots, old list vs new, the 35 changed variants, adult/child/middle/expert, both settings** (expert is Normal only, castBots.ts:37;
+   245 runs each): adult 35/35 both; child N old 32/35 (miss 59 75 81), new 32/35 (miss 11 59 81); child E 35/35 both; middle N 34/35
+   both (miss 88); middle E 35/35; expert N 35/35; none under the 120 s floor. **ONE NEW MISS: child Normal variant 11** ("water ahead"
+   at x 8834 and 9662 at the relaid log-drift river, 2 rescues, 0 lives, 471 s), the same family as 59 and 81; **ONE FIXED: child N 75**.
+   Sent to the lead with recommendation A (take the new list); 20-minute default A.
+3. **Item 1 DONE:** the R-165.487 row carried, docs only, f45b37d63; roadmapcheck PASS (needs every branch fetched:
+   `git fetch origin '+refs/heads/*:refs/remotes/origin/*'`, else 13 "commit not in this history" lines that are only a shallow clone).
+4. **Item 2 (coveragecheck):** t-land-26 2f681402e ITSELF fails the same line, so it came in with 2-6. 2-6's moving platforms are the
+   water-wheel buckets (wheelLay.ts:116: type 'moving' + `wheel`, 30 a layout). Their bot exists as the wheel's own piece, move:wheel
+   (meter-coverage.json:449, firsttimer SKILLS.rideWheel). CAUSE: score.ts piecesUsed (:1277) counts every bucket as `platform:moving`.
+   FIX proposed to the lead (not made): a bucket counts as move:wheel, as a sinking pad counts as pad:<by>, with a planted RED in
+   coveragecheck.test. Waiting on A (me) / B (engine lane); 20-minute default A.
+5. Item 3: `?fixture=home` stays; it goes in the PR notes beside main's chase and wheel fixtures.
+6. Then: commit the list, the step-6 tests (running: buildAhead rollEnv pitPocket w1CutArt stage11gen2 seedListLoad listed seedList
+   dblPractice w2Arc27 judgedTable seedListChunk), tsc + the CI tool line; the coverage fix; then ONE final head and THE FULL SET (box 1's
+   step 3-4 below).
+
 ## EXACT NEXT STEP (written 8:47 AM ET 11-27 by `date`; release-0.10.4, box 1 of 11-27; the old release-0.10.3 report is below the line)
 0. **CRITICAL PATH, FIRST (the lead's message, 8:52 AM ET 11-27):** 2-7's proven list is STALE on this candidate. t-land-26's 5a67dba93
    (ENG-26e: the drop judge reads water through river.ts waterUnder) changed 2-7's lays, and the list was built without it. ENG-QUIET-c
