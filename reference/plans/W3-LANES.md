@@ -45,3 +45,8 @@ night; 3-5 to 3-9 by mid next week (no tokens Mon-Tue).
 cut piece (ART-W3's puffball, moonflowers, lamp, guarana, thorn-vine liana; and any w3-next cut the audit called 'nothing missing') needs the
 same path. ENG-CUT (session_01FhBbYMwGKj4oBjAEW1669C, started 11-26) builds it on t-eng-cut; every art lane names its DRAW PATH (existing,
 or ENG-CUT) before it paints, and the audit's 'art: nothing missing' rows are re-read against a draw path, not only the inventory.
+
+## 11-26 10:15 PM ET: LANDED on t-eng-w3 = 13135bf6b: the DARK piece (a8bc662e5), ENG-ASKS's hazard registry (11e2af1a0) and the SPORE piece
+(d653d3994), fully gated (6 shards 0 fail, lockall 102/102 in one run, tierBots 9/9). FRIDAY FIRST: ENG-ASKS-b, World 3's registry rows
+(#dark, #dark@puff, #spore@puff, #soft@moon; #vine and #thornvine@doze when ENG-VINE lands) as a small data candidate on t-eng-w3; then
+BUILD-31 when KIT-W3a's down c/b land and the keeper's review of 3-1's lines is in (rule 23: the lead opens 3-1's roll file first).
