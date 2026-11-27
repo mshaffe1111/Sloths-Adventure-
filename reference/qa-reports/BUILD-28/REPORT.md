@@ -1,6 +1,6 @@
 # BUILD-28 REPORT (W2-LANE: 2-8 "Before the Water Rises"; R-165.430 (2), READY-28, BUILD-28). Session 1 (W2-LANE a), started 9:44 AM ET (from date). Session 2 (W2-LANE b), started 10:07 AM ET (from date). Session 3 (W2-LANE c), started 10:30 AM ET (from date). Session 4 (W2-LANE d), started 10:52 AM ET (from date). Session 5 (W2-LANE e), started 11:19 AM ET (from the session hook date) Session 6 (W2-LANE f), started 11:41 AM ET (from the session hook date) Session 7 (W2-LANE g), started 12:05 PM ET (from the session hook date) Session 8 (W2-LANE h), started 12:49 PM ET (from the session hook date) Session 9 (W2-LANE i), started 1:15 PM ET (from the session hook date) Session 10 (W2-LANE j), started 1:05 PM ET (from the session hook date) Session 12 (W2-LANE l), started 2:20 PM ET (from the session hook date) Session 13 (BUILD-28-j, box 10), started 10:43 AM ET (from the session hook date) Session 14 (BUILD-28-k, box 11), started 11:08 AM ET (from the session hook date) Session 15 (BUILD-28-l, box 12), started 11:35 AM ET (from the session hook date)
 
-## EXACT NEXT STEP (BUILD-28 box 12, BUILD-28-l, started 11:35 AM ET (from the session hook date); FROZEN CANDIDATE cb7b9af11 on t-build-28-wip)
+## EXACT NEXT STEP (BUILD-28 box 12, BUILD-28-l, started 11:35 AM ET (from the session hook date); hand-over 12:07 PM ET (from date); FROZEN CANDIDATE cb7b9af11 on t-build-28-wip)
 THE LEAD'S RULING ON THE LOCK (D159): box 11's base 1558489a2 predates release-0.10.3 c73cb9766, which this branch contains (merge-base
 checked here too: c73cb9766 is an ancestor of cb7b9af11). The lock base is c73cb9766 BY HASH.
 a. THE SET BY NAME (confirmed): box 11's 33 moved = 2-8 + INT-R5c's run1.sh --intended list (9d4330707), stage for stage:
@@ -8,11 +8,27 @@ a. THE SET BY NAME (confirmed): box 11's 33 moved = 2-8 + INT-R5c's run1.sh --in
    - 2-7: release-0.10.3's new lay (t-build-27e/t-eng-27): intended there.
    - 30 proto.hints-only: WARN-412's 22 UNION TEACH-11's 18 = 30 exactly = box 11's 30 (none missing, none extra; 8-5 is TEACH-11's).
    - 2-8: this build.
-b. THE LOCK RE-RUN, base c73cb9766 (/home/user/base-c73, node_modules symlinked): run 1 `lockall.ts --layouts 16 --out <scratch>/base.json`
-   alone: COUNTS LINE 'lock: wrote 3264 builds of 102 stages' (exit 0; 13 minutes alone). Run 2 `--check base.json` on cb7b9af11 (/home/user/cand-cb7): STARTED alone (<scratch>/lockcheck.log). If the
-   container is fresh: both worktrees and base.json are gone; re-make them and re-run run 1.
-NEXT: the counts line of run 2 (expect only 2-8 + ENG-W2FALL verdict-only lines; any OTHER stage: STOP, to the lead); then the rest of the
-ONE gate run on cb7b9af11 (box 11's list c-e below).
+b. THE LOCK RE-RUN (CI #100's two runs, alone): run 1 on c73cb9766 (/home/user/base-c73) `--layouts 16 --out <scratch>/base.json`:
+   'lock: wrote 3264 builds of 102 stages' (exit 0, 13 min). Run 2 on cb7b9af11 (/home/user/cand-cb7) `--check base.json`: COUNTS LINE
+   'lock: 99/102 stages unchanged', exit 1. RED BEYOND 2-8 (lockall-s15-c73cb9766-vs-cb7b9af11.txt):
+   - 2-8: the whole lay (expected).
+   - 1-4: proto.hints ONLY. NOT ENG-TIPLEFT 8a2045547 (the one tip-code commit in c73cb9766..cb7b9af11): a 1-stage lock 8a2045547^ ->
+     8a2045547 reads '1/1 unchanged'. UNTRACED beyond that.
+   - 2-7: size, platforms, vines, rivers, collectibles, spawnX/Y, exitTotemY, checkpoints, waterY, gen2, pacer, post, columnDress, proto.hints
+     /beats/findSpot/gen2/decor/dress. Lead evidence: BUILD-28-e 241695723 rebuilt 2-7's proven list on this branch (version c9e1e269);
+     src/game/gen2/proven/seeds-2-7.ts here is BYTE-IDENTICAL to release-0.10.4 (5a8954928): 2-7 moves to release 5's own list. Not
+     proven by a 1-stage lock yet.
+   - gen2 verdict-only (not hashed) on 39 stages (ENG-W2FALL's kind).
+   STOPPED per the lead's order: sent to the lead. NO other gate started on cb7b9af11.
+NEXT (on the lead's ruling; a 20-minute wait ends on my recommendation, reversible): RECOMMENDED: the lock base is the head 2-8 lands on in
+   release 6 (release-0.10.4's head, D159 'the head the candidate lands on'), not 0.10.3; if the lead names that hash, re-run the two runs on
+   it (expect 2-8 only; 1-4's hints move then is real and gets a 1-stage bisect c73cb9766..cb7b9af11 on `--stages 1-4`, seconds each).
+   2-7 at once: 1-stage lock 241695723^ -> 241695723 `--stages 2-7` proves the list is its whole cause.
+THEN the ONE gate run on cb7b9af11 by <repo>/reference/qa-reports/BUILD-28/gates-s15.sh.txt (copy to the scratchpad, `bash gates.sh
+   /home/user/cand-cb7 <scratch>` with run_in_background; one gate at a time: tsc, generality, CI tool line, suite 6 shards, seedlist every
+   list, the widened pin grep, tierBots, drawcheck (2-8 already a scenario in limits.json, same limits), clipcheck; PASS/FAIL in
+   <scratch>/gates.txt, each log <scratch>/g-<name>.log). Inherited reds as named: R-165.535; R-165.531; cage-b = R-165.543; puzzleCamera
+   gallery1 = ENG-CAM29's (landing on t-eng-29). Then box 11's c-e below (bots x40, stills, Learned, debrief).
 
 ## (was the EXACT NEXT STEP) (BUILD-28 box 11, BUILD-28-k, started 11:08 AM ET (from the session hook date); FROZEN CANDIDATE cb7b9af11 on t-build-28-wip)
 DONE THIS BOX (b0, the fish trap, the lead's ruling A):
