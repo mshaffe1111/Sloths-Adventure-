@@ -1,6 +1,16 @@
 # INT-R5 REPORT: release 5 (0.10.4) candidate, release-0.10.4 (packet reference/packets/2026-11-26/INT-R5.md)
 
 ## EXACT NEXT STEP (written 8:47 AM ET 11-27 by `date`; release-0.10.4, box 1 of 11-27; the old release-0.10.3 report is below the line)
+0. **CRITICAL PATH, FIRST (the lead's message, 8:52 AM ET 11-27):** 2-7's proven list is STALE on this candidate. t-land-26's 5a67dba93
+   (ENG-26e: the drop judge reads water through river.ts waterUnder) changed 2-7's lays, and the list was built without it. ENG-QUIET-c
+   (t-eng-quiet fc315db2e) found seeds 3 8 9 11 12 15 17 19 20 22 and more fail with "replay differs from its search". Do these in order:
+   (a) Prove it on the release head: `npx tsx tools/engine/seedlist.ts 2-7 --check` (box 1's discovery g-seedlists.log will show it too).
+   (b) Rebuild the list on a work tree of the head: `npx tsx tools/engine/seedlist.ts 2-7 --count 100` (or the --worker i/n parts, then
+       --merge; seedlist.ts:153). Two other branches rebuilt it to version c9e1e269 with 35 seeds changed: say whether this rebuild differs.
+   (c) castBots on EVERY changed variant, both settings, the old list vs the new one (rule 28: trace every miss). ANY new miss goes to the
+       lead BEFORE the final full set.
+   (d) Every test that pins a 2-7 roll or seed (release.md step 6; the grep finds src/game/gen2/judgedTable.test.ts, but run the full
+       step-6 grep). Then tsc and the CI tool line. Commit the list; push.
 1. **DONE**: the What's New title is now "Water wheels and the mail boat" (the lead's ruling A; "Two new stages" duplicated 0.9.8's title).
    whatsNew.test + playerText.test: 79 pass, 0 fail. This is the first commit of the final head; no code was touched.
 2. **The DISCOVERY run on 5b9389168** (frozen /home/user/wt/c1, main frozen /home/user/wt/main, results in /home/user/wt/out-c1) runs
