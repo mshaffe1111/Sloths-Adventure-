@@ -16,7 +16,7 @@
  * bell on the steps' arch. The liana beats are written `r` (2-4's letter): the design's `s` is unlaid (G5, the lead's call).
  */
 import { W2_RIVERS, W2_WHEELS, w2World } from './w2.ts';
-import { w2CastSpawn, w2Snappers } from './w2Cast.ts';
+import { W2_POSTED_GUARD, w2CastSpawn, w2Snappers } from './w2Cast.ts';
 import { generateAllLevels } from '../../worldsData.ts';
 import type { TempoSpec } from '../../tempo.ts';
 import type { PadRow } from '../rideLay.ts';
@@ -38,7 +38,7 @@ export const ARC_29: Record<string, string> = { 'court-29-arc': 'A Tp1<:#soft Pw
 export const BEAT_LESSON = 'beat';
 
 /** the court's tempo (2-9.md:6-7): one liana swing (TIMED.period 2.85 s Normal, 3.3 s Easy) is a bar of four; every liana on the lock */
-export const TEMPO_29: TempoSpec = { beats: 4, bar: 2.85, easyStretch: 3.3 / 2.85, lock: 0.92 };
+export const TEMPO_29: TempoSpec = { beats: 4, bar: 2.85, easyStretch: 3.3 / 2.85, lock: 0.9, doubleIn: ['w2-29-double'] };
 /** one count of the court's jaws on Normal (s): a beat, 0.7125 s */
 const COUNT = TEMPO_29.bar / TEMPO_29.beats;
 
@@ -66,17 +66,22 @@ export const lineId29 = (line: keyof typeof LINES_29): string => `w29.${line}`;
 /** the teach lines (said on the first meeting, never waiting out Dot's calm gap) */
 export const TEACH_29 = ['drum'] as const;
 
-/** the court's rows of snap stones and pads (2-9.md:10-17; stones at 30 px, 2-5's flown row; the pads at 50 px: the lead's ruling (vi)) */
-const snapRow = (n: number, o: Partial<PadRow> = {}): PadRow =>
-  ({ by: 'snap', pads: Array.from({ length: n }, () => 'snap'), gap: 30, snap: { count: COUNT }, clock: 'court', easyStretch: TEMPO_29.easyStretch, ...o }) as PadRow;
+/** the court's rows of snap stones and pads (2-9.md:10-17). The stones are the WIDE snap stone (130 px, ENG-STONE29's flown band, a pace of
+ *  258-281 px/s): Normal 130 + 62, Easy its own twin rows at 130 + 92 (mid-band; Easy 130 + 50 is off the beat), the lead's ruling 3; flown
+ *  on the real engine before use (BUILD-29 probes/stone29.ts: 2 in step and the wave of 5 [12--]). The pads at 50 px: the lead's ruling (vi) */
+const STONE_GAP_29 = { normal: 62, easy: 92 } as const;
+const snapRow = (n: number, easy: boolean, o: Partial<PadRow> = {}): PadRow =>
+  ({ by: 'snap', pads: Array.from({ length: n }, () => 'snap'), gap: easy ? STONE_GAP_29.easy : STONE_GAP_29.normal, clock: 'court', easyStretch: TEMPO_29.easyStretch, ...o, snap: { count: COUNT, w: 130, ...o.snap } }) as PadRow;
 export const PADS_29 = {
   /** beat 1: two in step, splash-back, the bite free (the drum is the hint, not the rule) */
-  teach29: snapRow(2, { safe: true, freeBite: true }),
-  /** beat 5: three in step (only from ONE), splash-back */
-  three29: snapRow(3, { safe: true }),
+  teach29: snapRow(2, false, { safe: true, freeBite: true }),
+  teach29e: snapRow(2, true, { safe: true, freeBite: true }),
+  /** beat 5: TWO in step (Dot says go on ONE; TWO is the forgiveness, never THREE: 3 in step is 0 frames late, the lead's ruling 3), splash-back */
+  two29: snapRow(2, false, { safe: true }),
+  two29e: snapRow(2, true, { safe: true }),
   /** beat 8: the WAVE of five (each a count later); Easy two pairs (Easy lays no wave longer than 2, rule 4) */
-  wave29: snapRow(5, { snap: { count: COUNT, wave: true } }),
-  wave29e: snapRow(2, { snap: { count: COUNT, wave: true }, safe: true }),
+  wave29: snapRow(5, false, { snap: { count: COUNT, wave: true } }),
+  wave29e: snapRow(2, true, { snap: { count: COUNT, wave: true }, safe: true }),
   /** beat 3: five small weight pads at the run pitch, one beat a pad never sinks */
   pads29: { by: 'weight', pads: ['small', 'small', 'small', 'small', 'small'], gap: 50, safe: true } as PadRow,
 } as const satisfies Record<string, PadRow>;
@@ -88,14 +93,14 @@ export const RIVERS_29 = {
   ...W2_RIVERS,
   court29s: { ...W2_RIVERS.court, safe: true },
   double29: { dir: 1, speed: 140, logW: 127.5, gap: 72, logs: 3, easy: { speed: 70, logW: 159 } },
-  barge29: { dir: 1, speed: 80, logW: 384, gap: 72, logs: 3, easy: { speed: 70, logW: 390 } },
+  barge29: { dir: 1, look: 'barge', speed: 80, logW: 384, gap: 72, logs: 3, easy: { speed: 70, logW: 390 } },
 } as const satisfies Record<string, RiverRow>;
 type Row29 = keyof typeof RIVERS_29;
 /** World 2's wheels; the terrace lays W2_WHEELS.court (R160 both settings, the lead's ruling G4; flown: wheelFlights.data.ts) */
 export const WHEELS_29 = W2_WHEELS;
 
 /** the snappers, on the court's jaws (the stones' clock: PadRow.clock 'court') */
-export const SNAPPERS_29: CreatureDef[] = w2Snappers('snap-court').map((c) => ({ ...c, minGround: 100 }));
+export const SNAPPERS_29: CreatureDef[] = [...w2Snappers('snap-court').map((c) => ({ ...c, minGround: 100 })), W2_POSTED_GUARD];
 
 // ───────────────────────────── the pieces ─────────────────────────────
 const bank = (key: string, after: string | null, w: number): SectionPiece => ({ key, shape: 'bank', w: [w, w], place: after ? { kind: 'walk', after, dy: [0, 0] } : { kind: 'start' }, style: 'log', main: true });
@@ -140,18 +145,18 @@ function brick(o: { id: string; name: string; jobs: NodeJob[]; difficulty: numbe
 /** [A] the water gate: the drum alone; Dot's `drum` TEACH 800 px+ before beat 1's stones (0.1 of a 480 bank + 400 + 300 to the pond) */
 const arrival: Lay = { pieces: [bank('a', null, 480), rock('ra', 'a', 0.6), bank('b', 'a', 400), bank('z', 'b', 300)], sockets: [tip('t-drum', 'a', 0.1, 'drum')] };
 /** [T p1<] beat 1, hear the drum: two stones in step over splash-back water, the bite free */
-const hearDrum: Lay = { pieces: [bank('a', null, 360), pond('c', 'a', 'teach29', 340), bank('z', 'c', 300)], sockets: [petal('pz', 'z', 0.5)] };
+const hearDrum = (easy: boolean): Lay => ({ pieces: [bank('a', null, 360), pond('c', 'a', easy ? 'teach29e' : 'teach29', 340), bank('z', 'c', 300)], sockets: [petal('pz', 'z', 0.5)] });
 /** [P w1>] beat 2, logs on the beat: a splash-back court river, a log knocking out on every ONE */
 const logsOnBeat: Lay = { pieces: [bank('a', null, 360), river('c', 'a', 'court29s', 340), bank('z', 'c', 300)], sockets: [] };
 /** [P f1>] beat 3, pads on the beat: five small weight pads at the run pitch, splash-back */
 const padsOnBeat: Lay = { pieces: [bank('a', null, 360), pond('c', 'a', 'pads29', 340), bank('z', 'c', 300)], sockets: [petal('pz', 'z', 0.5)] };
 /** [X r1>] beat 4, let go on ONE: 2-4's liana over a splash-back court river, locked to the bar; the flag before */
 const letGoOnOne: Lay = { pieces: [bank('a', null, 420), rock('ra', 'a', 0.5), bank('b', 'a', 400), liana('l', 'b'), river('c', 'l', 'court', 340), rock('rc', 'c', 0.15), bank('z', 'c', 300)], sockets: [flag('a')] };
-/** [P p1&>] beat 5, the snappers: three in step from ONE, then two snappers on the court's jaws */
-const snappers: Lay = {
-  pieces: [bank('a', null, 360), pond('c', 'a', 'three29', 340), bank('m', 'c', 300), ...snapperGround('s1', 'm'), bank('n', 's1-out', 240), ...snapperGround('s2', 'n'), bank('o', 's2-out', 240), ...snapperGround('s3', 'o'), bank('z', 's3-out', 300)],
+/** [P p1&>] beat 5, the snappers: TWO in step (go on ONE; TWO forgiven), then the snappers on the court's jaws */
+const snappers = (easy: boolean): Lay => ({
+  pieces: [bank('a', null, 360), pond('c', 'a', easy ? 'two29e' : 'two29', 340), bank('m', 'c', 300), ...snapperGround('s1', 'm'), bank('n', 's1-out', 240), ...snapperGround('s2', 'n'), bank('o', 's2-out', 240), ...snapperGround('s3', 'o'), bank('z', 's3-out', 300)],
   sockets: [snapper('e1', 's1', 0.5), snapper('e2', 's2', 0.5), snapper('e3', 's3', 0.5)],
-};
+});
 /** [W r1>] beat 6, the TWIST: the king's roar (Dot's `roar` on the rest bank before), a liana over the `double` river (deep); the flag
  *  before. The drum's doubling is NOT laid (G1, ENG-29-e) */
 const twist: Lay = { pieces: [bank('a', null, 420), rock('ra', 'a', 0.5), bank('b', 'a', 400), liana('l', 'b'), river('c', 'l', 'double29', 340), rock('rc', 'c', 0.15), bank('z', 'c', 300)], sockets: [flag('a'), tip('t-roar', 'b', 0.2, 'roar')] };
@@ -165,18 +170,21 @@ const grandDance = (easy: boolean): Lay => ({
 /** [P b1^<] beat 9, up to the quay: World 2's bounce to the royal quay */
 const upQuay: Lay = { pieces: [bank('a', null, 360), spring('sp', 'a', 0.7), rise('z', 'a', 420, -160)], sockets: [] };
 /** [S w1>] beat 10, the King's Barge: from the quay to the shrine steps (G3: its own look; the bell on the arch, not in the draft) */
-const barge: Lay = { pieces: [bank('a', null, 420), river('c', 'a', 'barge29', 360), bank('z', 'c', 300)], sockets: [] };
+// (beat 10's landing: the king's guard POSTED on the far bank (G2, the lead's rulings (1)(4)(5)), facing the barge, out of the goal)
+// (the far bank 560 px, not 300: the stage's last flag (ROLLED_FLAGS.last) lands on it on 19 of 40 rolls, and the guard keeps SAFE_APPROACH +
+//  24 = 224 px from a flag; at 300 px both cannot stand on it, and patchFor refuses the post by name. BUILD-29-d)
+const barge: Lay = { pieces: [bank('a', null, 420), river('c', 'a', 'barge29', 360), bank('z', 'c', 560)], sockets: [{ id: 'guard', role: 'enemy', on: 'z', t: 0.8, allow: [W2_POSTED_GUARD.id] }] };
 /** [R] a rest on the bank */
 const rest: Lay = { pieces: [bank('a', null, 240), bank('b', 'a', 300), rock('rb', 'b', 0.5), bank('z', 'b', 240)], sockets: [{ id: 'find', role: 'findSpot', on: 'a', t: 0.5 }] };
 
 /** THE ARC'S BRICKS (2-9.md), one job each */
 export const BEATS_29: SectionTemplate[] = [
   brick({ id: 'gate', name: 'the water gate', jobs: ['arrive'], difficulty: 1, content: 'structural', phases: ['start'], versions: [{ id: 'gate', lay: arrival }] }),
-  brick({ id: 'hear', name: 'hear the drum', jobs: ['teach'], difficulty: 1, content: 'floating', teaches: BEAT_LESSON, versions: [{ id: 'two', lay: hearDrum }] }),
+  brick({ id: 'hear', name: 'hear the drum', jobs: ['teach'], difficulty: 1, content: 'floating', teaches: BEAT_LESSON, versions: [{ id: 'two', lay: hearDrum(false), easy: hearDrum(true) }] }),
   brick({ id: 'logs', name: 'logs on the beat', jobs: ['practise'], difficulty: 2, content: 'water', uses: [BEAT_LESSON], versions: [{ id: 'court', lay: logsOnBeat }] }),
   brick({ id: 'pads', name: 'pads on the beat', jobs: ['practise'], difficulty: 2, content: 'floating', uses: [BEAT_LESSON], versions: [{ id: 'five', lay: padsOnBeat }] }),
   brick({ id: 'let-go', name: 'let go on ONE', jobs: ['test'], difficulty: 3, content: 'rope', uses: [BEAT_LESSON], versions: [{ id: 'one', lay: letGoOnOne }] }),
-  brick({ id: 'snappers', name: 'the snappers', jobs: ['practise'], difficulty: 3, content: 'ground', uses: [BEAT_LESSON], versions: [{ id: 'three', lay: snappers }] }),
+  brick({ id: 'snappers', name: 'the snappers', jobs: ['practise'], difficulty: 3, content: 'ground', uses: [BEAT_LESSON], versions: [{ id: 'two', lay: snappers(false), easy: snappers(true) }] }),
   brick({ id: 'double', name: 'double time', jobs: ['twist'], difficulty: 5, content: 'rope', uses: [BEAT_LESSON], versions: [{ id: 'double', lay: twist }] }),
   brick({ id: 'terrace', name: 'up the terrace', jobs: ['climb'], difficulty: 3, content: 'climb', uses: [BEAT_LESSON], versions: [{ id: 'wheel', lay: terrace }] }),
   brick({ id: 'dance', name: 'the grand dance', jobs: ['combine'], difficulty: 6, content: 'floating', uses: [BEAT_LESSON], versions: [{ id: 'wave', lay: grandDance(false), easy: grandDance(true) }] }),

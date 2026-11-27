@@ -1,0 +1,5 @@
+snapBand normal: W 130 px, the bar's count 0.7125 s Normal (0.7125 s here, Easy x1.158); engine realPlay + InputEngine (Pad tap, 80 ms); 2026-11-27T00:48:40.766Z
+HOP W130 G 62: not clean (n1 d0 swam 0; n3 d0 swam 0; n3 d2 swam 0,1; n3 d4 swam 0,1; n5 d0 swam 0; n5 d2 swam 0,1; n5 d4 swam 0,1)
+HOP W130: clean at G none
+BEAT W130 G 62: CLEAN, IN STEP with the bar | feet (frames from his first tap) 13-21 34-43 56-64 77-85 98-107 | first tap on count: in step x2 [12--] 41%; in step x3 [1---] 16%; in step x5 [----] 0%; wave x2 [12--] 65%; wave x3 [12--] 65%; wave x5 [12--] 65%
+BEAT W130: clean at G 62

@@ -1,0 +1,15 @@
+snapBand easy: W 130 px, the bar's count 0.7125 s Normal (0.8250 s here, Easy x1.158); engine realPlay + InputEngine (Pad tap, 80 ms); 2026-11-27T00:48:51.664Z
+HOP W130 G 83: not clean (n1 d2 swam 0; n1 d4 swam 0; n3 d0 swam 0,1; n3 d2 swam 0; n3 d4 swam 0; n5 d0 swam 0,1; n5 d2 swam 0; n5 d4 swam 0)
+HOP W130 G 86: not clean (n1 d2 swam 0; n1 d4 swam 0; n3 d0 swam 0,1; n3 d2 swam 0; n3 d4 swam 0; n5 d0 swam 0,1; n5 d2 swam 0; n5 d4 swam 0)
+HOP W130 G 89: not clean (n1 d2 swam 0; n1 d4 swam 0; n3 d0 swam 0,1; n3 d2 swam 0; n3 d4 swam 0; n5 d0 swam 0,1; n5 d2 swam 0; n5 d4 swam 0)
+HOP W130 G 95: not clean (n1 d2 swam 0; n1 d4 swam 0; n3 d0 swam 0,1,2; n3 d2 swam 0; n3 d4 swam 0; n5 d0 swam 0,1,2; n5 d2 swam 0; n5 d4 swam 0)
+HOP W130 G 98: not clean (n1 d2 swam 0; n1 d4 swam 0; n3 d2 swam 0; n3 d4 swam 0; n5 d0 swam 0,1,2,3; n5 d2 swam 0; n5 d4 swam 0)
+HOP W130 G102: not clean (n1 d2 swam 0; n1 d4 swam 0; n3 d2 swam 0; n3 d4 swam 0; n5 d2 swam 0; n5 d4 swam 0)
+HOP W130: clean at G none
+BEAT W130 G 83: CLEAN, IN STEP with the bar | feet (frames from his first tap) 13-25 38-49 62-73 87-97 112-120 | first tap on count: in step x2 [12--] 39%; in step x3 [1---] 15%; in step x5 [----] 0%; wave x2 [12--] 64%; wave x3 [12--] 63%; wave x5 [12--] 63%
+BEAT W130 G 86: CLEAN, IN STEP with the bar | feet (frames from his first tap) 13-25 38-49 62-74 87-98 112-121 | first tap on count: in step x2 [12--] 39%; in step x3 [1---] 14%; in step x5 [----] 0%; wave x2 [12--] 64%; wave x3 [12--] 63%; wave x5 [12--] 63%
+BEAT W130 G 89: CLEAN, IN STEP with the bar | feet (frames from his first tap) 13-25 38-49 62-74 87-99 112-123 | first tap on count: in step x2 [12--] 39%; in step x3 [1---] 14%; in step x5 [----] 0%; wave x2 [12--] 64%; wave x3 [12--] 63%; wave x5 [12--] 63%
+BEAT W130 G 95: CLEAN, IN STEP with the bar | feet (frames from his first tap) 13-25 38-49 62-74 87-99 112-124 | first tap on count: in step x2 [12--] 39%; in step x3 [1---] 14%; in step x5 [----] 0%; wave x2 [12--] 64%; wave x3 [12--] 63%; wave x5 [12--] 63%
+BEAT W130 G 98: CLEAN, IN STEP with the bar | feet (frames from his first tap) 13-25 38-49 62-74 87-99 112-124 | first tap on count: in step x2 [12--] 39%; in step x3 [1---] 14%; in step x5 [----] 0%; wave x2 [12--] 64%; wave x3 [12--] 63%; wave x5 [12--] 63%
+BEAT W130 G102: CLEAN, IN STEP with the bar | feet (frames from his first tap) 13-25 38-49 62-74 87-99 112-124 | first tap on count: in step x2 [12--] 39%; in step x3 [1---] 14%; in step x5 [----] 0%; wave x2 [12--] 64%; wave x3 [12--] 63%; wave x5 [12--] 63%
+BEAT W130: clean at G 83, 86, 89, 95, 98, 102

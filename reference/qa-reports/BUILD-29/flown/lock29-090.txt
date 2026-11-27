@@ -1,0 +1,13 @@
+TEMPO_29.lock 0.9
+normal s1 x8099 one=true window=1.90s share=86% ONE early-side 0.37s late-side 0.57s
+normal s1 x14671 one=true window=1.17s share=91% ONE early-side 0.06s late-side 0.54s
+normal s2 x8099 one=true window=1.90s share=86% ONE early-side 0.37s late-side 0.57s
+normal s2 x14813 one=true window=1.17s share=91% ONE early-side 0.06s late-side 0.54s
+normal s3 x8099 one=true window=1.90s share=86% ONE early-side 0.37s late-side 0.57s
+normal s3 x14955 one=true window=1.17s share=91% ONE early-side 0.06s late-side 0.54s
+easy s1 x8312 one=true window=3.20s share=97% ONE early-side 1.58s late-side 0.64s
+easy s1 x15079 one=true window=3.20s share=97% ONE early-side 1.58s late-side 0.64s
+easy s2 x8312 one=true window=3.20s share=97% ONE early-side 1.58s late-side 0.64s
+easy s2 x15191 one=true window=3.20s share=97% ONE early-side 1.58s late-side 0.64s
+easy s3 x8312 one=true window=3.20s share=97% ONE early-side 1.58s late-side 0.64s
+easy s3 x15303 one=true window=3.20s share=97% ONE early-side 1.58s late-side 0.64s

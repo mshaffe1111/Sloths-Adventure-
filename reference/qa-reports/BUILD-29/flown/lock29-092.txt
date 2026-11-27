@@ -1,0 +1,5 @@
+TEMPO_29.lock 0.92
+normal s1 x8099 one=true window=1.83s share=83% ONE early-side 0.43s late-side 0.51s
+normal s1 x14671 one=true window=2.20s share=91% ONE early-side 0.11s late-side 0.48s
+easy s1 x8312 one=true window=2.13s share=95% ONE early-side 1.65s late-side 0.58s
+easy s1 x15079 one=true window=2.13s share=95% ONE early-side 1.65s late-side 0.58s

@@ -1,0 +1,18 @@
+LOCK 0.90
+normal s1 x3105 one=true window=1.90s share=86% ONE early-side 0.37s late-side 0.57s
+normal s1 x7938 one=true window=1.90s share=86% ONE early-side 0.37s late-side 0.57s
+normal s1 x9214 one=true window=1.90s share=86% ONE early-side 0.37s late-side 0.57s
+normal s1 x11450 one=true window=1.90s share=86% ONE early-side 0.37s late-side 0.57s
+normal s1 x12726 one=true window=1.90s share=86% ONE early-side 0.37s late-side 0.57s
+normal s1 x15099 one=true window=1.90s share=86% ONE early-side 0.37s late-side 0.57s
+normal s1 x16375 one=true window=1.90s share=86% ONE early-side 0.37s late-side 0.57s
+normal s1 x18611 one=true window=1.90s share=86% ONE early-side 0.37s late-side 0.57s
+LOCK 0.92
+normal s1 x3105 one=true window=1.83s share=83% ONE early-side 0.43s late-side 0.51s
+normal s1 x7938 one=true window=1.83s share=83% ONE early-side 0.43s late-side 0.51s
+normal s1 x9214 one=true window=1.83s share=83% ONE early-side 0.43s late-side 0.51s
+normal s1 x11450 one=true window=1.83s share=83% ONE early-side 0.43s late-side 0.51s
+normal s1 x12726 one=true window=1.83s share=83% ONE early-side 0.43s late-side 0.51s
+normal s1 x15099 one=true window=1.83s share=83% ONE early-side 0.43s late-side 0.51s
+normal s1 x16375 one=true window=1.83s share=83% ONE early-side 0.43s late-side 0.51s
+normal s1 x18611 one=true window=1.83s share=83% ONE early-side 0.43s late-side 0.51s
