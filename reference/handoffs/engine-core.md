@@ -2,6 +2,28 @@
 
 Merged at INT-14 (11-20, t-int-14): §0zq-25d/§0zq-25c ENG-25c (2-5's snap rows level, the snapper's ground, the straddle), §0zq-NOISE ENG-NOISE (one noise channel), §0zq-PROWL ENG-PROWL (sight.up + the leap), §0zq-small3 ENG-SMALL3 (R-165.317/.319/.321), and PAINT-292 (World 1's painted planks and stones; no section here). Merged at INT-13 (11-19, t-int-13): §0ENG23 ENG-23 (followers, the heron reads the line) and §0zl-168 TIME-168 (timecheck), §0zm-25b ENG-25b (the snapper bot skill, the meter's snap channel) and §0zl-25 ENG-25 (2-5's snap stones and snapper rows), §0zn-26b ENG-26b and §0zm-26 ENG-26 (the water wheel), §0W2A ART-W2A (2-3's painted follow poses), §0zo ART-W2B (the wheel's painted draw), §0zo-285c/§0zo-285b/§0zo-285 ENG-285 (the judges and bots fly the engine's Pokey), §0zp-284 FIX-284/284b (2-2's big pads, the real tap hop), §0zp-24d BUILD-24d, §0zn-24c ENG-24c (the raft look, the glow) and §0zm-24 BUILD-24 (2-4) joined; rewritten at the INT-12 merge (11-18, t-int-12): four members wrote here the same day, so labels are suffixed where they met: §0zm-22p ART-22P (CI's seed-list matrix, R-165.278); §0zl-24 ENG-24 (a liana over a river; its REPORT cites it as §0zl); §0zm BUILD-19b, §0zn ENG-19c and §0zl BUILD-19 (t-build-19, the labels its REPORT cites). Before them FIX-22b (11-15): section 0zk.
 
+## 0zr-CATCH. ENG-CATCH-f..i (t-eng-catch-f -> t-eng-w3, 11-27): the down tower's guarantee (R-165.561)
+- THE THREE INVARIANTS (tower.ts, going down; general: no stage id, seed or x):
+  1. no catch is laid twice: `already(x0, x1, y, but?)` (layCatches): wood wholly on solid wood at its height (|dy| <= 1) lays nothing
+     new; `put` refuses it (box 1: one bridge was PUT 10 times by the first lay).
+  2. no two pieces of solid wood overlap at one height: `overlaps(x0, x1, y, but?)` / `fit` in layCatches and every move of the mend
+     (`keep` refuses a move that lies over wood, `overlapRefused`): the stage's own wood and the catches alike, strictly along x (end to
+     end is none). Box 2's scan of real lays: 303 pairs on 79 of 80 drafted 3-1s before, 0 in 80 after.
+  3. the named check: `downInvariant(platforms, vines, turns, floorY, width)` is THE ONE check every final lay passes; it lists
+     `woodOverlaps(platforms)` FIRST (DownMiss.what 'overlap', one line per pair: "tower: two pieces of solid wood overlap at one height:
+     x A-B and x C-D at y Y"), then drop/gives (fallMisses), pass (handOnMisses), lid (towerLids). 1 and 2 keep it by construction;
+     this is the net under every path, the move paths included.
+- THE REFUSAL BY NAME: towerCatches' guarantee (tower.ts `if (misses.length) throw new TowerRefusal(misses[0].line)`): a lay with any
+  miss is never returned; the roll is refused by that line and the seed search rolls again (pipeline.ts buildRolledOn). An overlap is
+  misses[0] whenever a lay has one, and the mend never keeps a remedy that lays one (it would not leave fewer misses).
+- THE PROOF: tests `npx tsx --test src/game/gen2/tower.test.ts` (49: "no two catches overlap at one height", "a catch that only partly
+  overlaps", "THE DOWN TOWER'S INVARIANT names any two pieces of solid wood that overlap"; plant: drop `fit`'s `cut` filter -> RED by
+  name); the six-config proof `GEN2_DRAFT=3-1 ROOT=<tree> KEEP=<config> FROM=1 SEEDS=40 VERBOSE=1 npx tsx
+  reference/qa-reports/ENG-CATCH-f/proof/proof.mts` (80/80 every config, leaks 0); the overlap scan
+  reference/qa-reports/ENG-CATCH-f/proof-g/scan.mts (0 pairs in 80). Cost: woodOverlaps ~14 us per call on a whole drafted 3-1.
+- TRAP: a lock move after a tower change is "intended" only with the scan's proof (old tree against new: a duplicate or same-height
+  overlap in the old lay, gone in the new); everything else goes to the lead.
+
 ## 0zr-W3a. ENG-W3a (t-eng-w3, 11-23): World 3's gen2 kit, a GENERAL draft state, 3-1 drafted DOWN; gen2's down flow fixed (WORLD-3-PLAN F1, R-165.313; lane 2, R-165.404)
 - WHERE: gen2/worlds/w3.ts (W3_GROUND, W3_ART, W3_CAST ocelot/jaguar, the way-down pool w3Ledge/w3Drops/w3Walk: drops are STEP-OFFS,
   gapPx 8-20); listed.ts KITS 'w3', World 3's finish W3 (identity, never World 1's), draftListed; stageTable.ts DRAFT_TABLE + draftRow.
