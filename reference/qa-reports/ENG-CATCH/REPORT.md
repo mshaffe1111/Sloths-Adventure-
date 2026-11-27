@@ -1,5 +1,36 @@
 # ENG-CATCH (R-165.526; engine, Opus 5.5 high): the down tower's own catch boughs. Branch t-eng-catch, cut from t-eng-w3 13135bf6b
 
+## ENG-CATCH-b (R-165.534): EXACT NEXT STEP (box 1 hand-over, written 10:23 AM ET Fri 11-27 by `date`). Branch t-eng-catch-b. NOT LANDED (the lead's rule: a red in the widened proof = do not land)
+Frozen candidate 861e2a22e = ENG-CATCH's frozen 8a204af87 (not landed; t-eng-w3 still f79963053, an ancestor) + tower.ts/tower.test.ts.
+- Cause fixed (Easy 2 / Easy 4, 481 / 477 px): towerCatches rule 2 starts a bridge a hop past a vine's top (tip + TOWER.hop + 30);
+  where the end's fall line lies inside that hop (storey ends at 554 by the turn vine, cap shelf b's end 650, fall line 626) the bridge
+  654-716 caught nothing, still counted as laid, and was laid again every pass (9 stacked copies). Fix: towerCatches = layCatches(false);
+  going down, if that lay leaves a blind drop, layCatches(true) with every bridge reaching under its end's fall line (else rule 4's own
+  bough), kept only if it leaves fewer blind drops. A lay with no blind drop is returned untouched.
+- Toys (tower.test.ts, ENG-CATCH-b): 'misses the fall line' RED on 8a204af87 (ENG-CATCH tests 4/5), green 5/5 on 861e2a22e; the
+  'reaches the fall line' toy pins the old bridge (x = 554 + hop + 30) unchanged. tsc 0. generalitycheck PASS (26 literals, 26 known).
+- Proof (t-kit-w3a efed85aa2 + 861e2a22e's tower.ts, reference/qa-reports/KIT-W3a/probe/patch.mts with its paths pointed at that tree):
+  seeds 1-6: four together 12/12; root-down, two-roots, cap-down, cap-steps each alone 12/12.
+  seeds 1-12 x both, four together: 22/24, RED n8 e8. With 'descent' in W3_BOUNCE_JOBS: 22/24, the same n8 e8 only (the 319/321 drops gone).
+- OPEN (next box): Normal 8 / Easy 8, "a blind drop off the piece at x 1039-1219, y 7936: 389 px". It is the tower's OWN rule-4 bough
+  (180 wide) serving an end at x 1129, y 7649 (the bough 287 px under it); its LEFT end's fall line x 1015 drops 389 px. reLay finds no
+  fair lay on either lay (trace: TDBG instrumentation, every pass's rule 4 'pick undefined' for that end). Note: diag.mts's
+  platform list at Y 7700 does NOT show a piece at 1039-1219 y 7936: read whether the error's coordinates are column-local or pre-shift
+  before reading x/y off the final stage.
+Next step:
+1. ReadNotifications. `git fetch origin t-eng-catch-b t-kit-w3a t-eng-w3`; worktree t-kit-w3a efed85aa2 (or newer) with 861e2a22e's
+   tower.ts; `GEN2_DRAFT=3-1 SEEDS=12 KEEP=w3-root-down,w3-two-roots,w3-cap-down,w3-cap-steps VERBOSE=1 npx tsx <patch.mts>` -> 22/24.
+2. Trace seed 8 (either setting) inside layCatches: why rule 4 has no fair bough for the end at x 1015 y 7936 and why reLay of the
+   bough laid for (1129, 7649) finds none (which of cramped/slotted/byGate/passes/lidded refuses each, and lands()). Fix general, in
+   the second (cover) lay only, so a clean roll stays untouched; toy red on 861e2a22e, green on the fix.
+3. Proof: 24/24 both with and without 'descent'; each brick alone 12/12; w3.test :108 :129 :143 on the kit tree.
+4. Gates on the new frozen candidate: tsc; CI tool line (gates.yml line 157); lock as two runs (`lockall --layouts 16 --out base.json` on
+   8a204af87 (or ENG-CATCH's landing), `--check base.json` on the candidate, counts line); suite in 6 shards; generalitycheck.
+   Box 1 started on 861e2a22e: base lock on 8a204af87 and the CI tool line (container-local, die with it).
+5. Land on origin/t-eng-w3 (merge, no force, never rebase), ls-remote, send the lead the hash and each shard's totals.
+Lessons applied: D115 (frozen worktrees), D119 (no heredoc in a commit chain), D128 (stamp from `date`), D134, D138, D140, D153 (lock as two runs).
+Miss to log: a stray send_message 'placeholder' went to ENG-CATCH's old session (corrected at once); a backup cp wrote /tower.fix.ts at the container root ($TMPDIR unset), rm blocked by the safety check.
+
 ## EXACT NEXT STEP (box 1 hand-over, rewritten 9:48 AM ET Fri 11-27 by `date`)
 t-eng-w3 moved to f79963053 (ENG-ASKS-b: w3.ts W3_HAZARDS + w3HazardAsks.test.ts, no engine file; its lock 102/102 unchanged vs
 13135bf6b). Merged into this branch: candidate = 8a204af87 (merge of 4b9adaa81 and f79963053; the commit after it changes only this
