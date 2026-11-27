@@ -24,6 +24,9 @@ DONE THIS BOX (b0, the fish trap, the lead's ruling A):
    row w2-new#cage-whole KEPT, status 'superseded by w2-cut28#fish-trap-28'; re-emitted (w2, w6, w7, w8, w10 json: the status text).
    tsc 0, generality PASS; related tests 57 pass, 1 fail = artUse's unused set, now exactly 'W10 w10alt.json#cage-b' (R-165.543, the
    lead's); cage-whole CLEARED. FROZEN CANDIDATE cb7b9af11 (worktree /home/user/cand-cb7, node_modules symlinked).
+6. THE LOCK GATE, run 1 of 2 (CI #100): base 1558489a2 `lockall.ts --layouts 16 --out <scratch>/base.json`: 'lock: wrote 3264 builds of
+   102 stages' (exit 0; about 11 minutes alone). Run 2, `--check base.json` on cb7b9af11 (/home/user/cand-cb7): STARTED alone
+   (<scratch>/lockcheck.log). If the container is fresh, base.json is gone: re-run run 1 first.
 NEXT, in order (ReadNotifications at every step boundary; generalitycheck with tsc at each, D156):
 a. DONE (the lead's artUse ruling (or A on the timeout): apply, commit, push; THAT hash is the frozen candidate (git worktree add --detach
    /home/user/cand-<hash>; node_modules symlinked). If the container is fresh: base.json is gone, re-run the base first, alone.
