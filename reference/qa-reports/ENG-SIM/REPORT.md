@@ -1,21 +1,13 @@
 # ENG-SIM: the bots ask the GAME how a press flies (R-165.470; packet reference/packets/2026-11-26/ENG-SIM.md on the lead's branch)
 Branch t-eng-sim from origin/release-0.10.3 c73cb9766. Nothing here lands on release-0.10.3, main or a release 5 branch.
 
-## EXACT NEXT STEP (box 4 hand-over): step 3 (0) DONE (merge 114944b5b); 1a-i CANDIDATE 0b92b3fcb has ONE gate red: trace it, then 1a-ii
+## EXACT NEXT STEP (box 5 hand-over): the 2-4 s35 red SEALED at the cause (candidate 47ff85629, the gate 11/11); NEXT: 1a-ii, TIMED first
 Head: the hand-over message's hash (pushed to t-eng-sim, ls-remote confirmed). The step 3 GO (the lead, box 4's brief): (0) then (1) in
 the plan's order; rows WILL move from (1) on (the re-baseline's job, not a stop); the cost check stands (one World 2 x40 over 3x the old
 CPU is a finding to bring to the lead). Nothing lands on release-0.10.3, main or a release branch.
-1. **FIRST: trace the ONE red of 0b92b3fcb's CI tool line** (box 4 ran it on a frozen worktree: 445 tests, 443 pass, **1 FAIL**, 1 todo,
-   543 s): the probe-equality gate's `2-4 seed 35, the kid on Easy: answers thrown away` (tools/engine/probeEqual.test.ts:144): "a
-   checkpoint differs: checkpoint 8 (harness 1 frame 6300): token 10068: probed `... late false } ] } "1:1:296.28393291656784" { T` | plain
-   `... late false } ] } "1:1:400" { T`". GREEN on the merge 114944b5b, so it is 1a-i's: since 1a-i THE BOT ITSELF PROBES (the stand
-   judge's planFlies) in both worlds, so a gate probe in world A now differs from world B only if it changes something the bot's own
-   later probe or play reads. Find the binding at that token (graphPrint's path at token 10068; a map keyed "1:1:<number>" with a `late`
-   field: look first at what a probe keeps on purpose, engine.cueTables (the cue memo, shared, not frozen) and the NEVER_CHANGES share
-   frozen at the FIRST probe, which is the gate's in world A and the bot's in world B). If it is a real leak, seal it at the cause (the
-   seam) and the gate goes GREEN; if it is the gate's own artifact, fix the gate's setup only as box 2 did for the scene seed (what it
-   compares unchanged). NEVER loosen the gate (laws 5, 22). Every other CI-line row PASSED on 0b92b3fcb: the stand's move moved no
-   pinned row (rows may still move on stages the line does not pin; the re-baseline's job).
+1. **DONE (box 5): 0b92b3fcb's ONE red traced and sealed at the cause: candidate 47ff85629** (the trace, the seal, the plant and every
+   total: 'Step 3 box 5' below). The gate is unchanged. The candidate's ONE suite red is the inherited KID_RUNS_59 (traced there, rule 28:
+   moved by neither 1a-i nor the seal). Start 1a-ii FROM 47ff85629.
 2. **1a-ii: the run-up on plans** (firsttimer.ts vineFromLog's `running` branch, runUpCatches / runPress, about 1 h): a run plan = the steer
    `dir` from frame 1 (no tail: he is running; steerFrom still gates it, as c25's brake), the press on frame P, the hold `hold`. **A run
    plan depends on the press frame P ALONE** (the run's steer is the same from frame 1 whatever k and the lag), so k + pressIn(lag)/DT = P:
@@ -30,7 +22,47 @@ CPU is a finding to bring to the lead). Nothing lands on release-0.10.3, main or
    Toys: firsttimer.test.ts :351 (the run-up's jump held at least as runPress judged it, 2-4 child Normal 8): re-point to the run plan
    (its catch on the frame the probe flew it to, as hopJudged :291 / :327 now do) and plant it RED (the plan one frame late, as box 4
    planted the stand). lianaRide.test :104 / :125 outcome rows: KEPT, re-measured.
+   **THE LEAD'S RULING 2 (box 5's brief): time it FIRST** (2-4 kid Easy 19 to t 99, the same stage, seed and stop, wall clock, on frozen
+   trees of the merge 114944b5b and of the run-up candidate, nothing else on the cores); **anything over 3x goes to the lead WITH THE
+   NUMBERS BEFORE going on.** Rule 28 on the candidate (every moved bot row traced, or the change narrowed); the CI tool line AND the
+   three suite shards on the candidate's hash, each shard's pass/fail totals in every ruling request and hand-over (the lead, CI #93).
 3. Then 1b (hopFlight + the gate family + the landing stop), 1c, 1d, 1e, 1f in the plan's order (below).
+
+## Step 3 box 5 (from 6:26 PM ET): the gate's 2-4 s35 red traced to the probe's cue memo and SEALED at the cause (47ff85629)
+- **The trace** (a scratch tracer, the gate's own setup: both worlds, the kid on 2-4 Easy 35, harness 1 frames 5300-6310, the stack read
+  at each frame): the first difference is at frame 5300, INSIDE THE BOT'S OWN FLIGHT (1a-i: the stand judge probes, and the gate's
+  watch counts its flight frames as harness frames, so checkpoint 8 fell inside one). There the live let-go cue memo
+  (engine.cueTables) ended in `1:1:296.28393291656784` (probed) vs `1:1:400` (plain); player x and y equal; the rows equal. **Cause:**
+  cueFly lent the side memo's tables (probeCue: a module WeakMap of every table any flight built, per stage; the gate's store print
+  cannot see a WeakMap) by PUTTING THEM IN THE LIVE MAP at a flight's start. So a table one of the gate's probes had built sat in the bot's
+  later flight, where the unprobed run's flight held the bot's own: a probe that changed a later probe's world. It is a real leak by the
+  gate's bar, not the gate's artifact; the gate is unchanged (laws 5, 22). Box 4's other suspect (the share frozen at the FIRST probe)
+  did not show: no frame differed before the cue memo.
+- **The seal (src/game/engine.ts, src/game/engineProbe.ts):** the engine builds a let-go table through ONE private method,
+  `cueTable(key, v, len, dir, d0)` (the live run's build unchanged: letGoTable); a flight swaps it for its own (an own property: restore
+  takes it off, as it does the life hooks, and cueFly's put-back deletes it while it is still its own, so a flight inside a flight keeps
+  the outer's), which lends the side memo's table ONLY where the engine itself would build one. At every frame of a flight, the Map holds,
+  key for key and in order, what it would hold had no probe ever flown. The Map's entries are put back as before; a table is still never
+  built twice.
+- **The planted toy** (src/game/engineProbe.test.ts 'the let-go cue memo: a flight's memo gains a table only where the engine builds one,
+  never one an earlier probe built': a toy engine with the real memo's shape; a gate probe, then a bot probe): **RED on 0b92b3fcb**
+  (`+ 'gate'`: the gate's table in the bot's flight), **GREEN on 47ff85629** (plus: the memo put back, the flight's build taken off, no
+  table built twice).
+- **Checks on a chattr-frozen worktree of 47ff85629** (src and tools frozen except src/game/gen2/proven): tsc PASS (22 s);
+  generalitycheck PASS (70 engine files, 26 literals, 26 known); **the CI tool line PASS: 445 tests, 444 pass, 0 fail, 1 todo** (chaseBots'
+  CHILD-on-Normal fork, OPEN, ENG-B4), 1,852 s (sharing 4 cores with the three shards); **the probe gate 11/11** (the B3 plant + one seed of
+  every world, the 2-4 s35 row among them). **The suite in 3 shards** (651 files, CLAUDE.md's src globs, `split -n l/3` of the sorted list):
+  shard 0: 1,244 tests, 1,243 pass, **1 FAIL** (KID_RUNS_59, below), 0 todo, 1,191 s; shard 1 and shard 2: RUNNING on the frozen tree (their totals go in this line and the hand-over message).
+- **Rule 28 on the one suite red, KID_RUNS_59** (src/game/firstTimerBot.test.ts:177: 5-9, the kid on Easy, seeds 1-3 x 2 trials,
+  recorded [3, 5, 6, 7, 6, 5]). Run on frozen trees of each hash: release-0.10.3 c73cb9766, the whole file, gives [8, 9, 7, 7, 4, 7] (10/11:
+  the release line's inherited red, as STATE records). From ENG-THUMB's head 35d5252c2 it gives [14, 13, 17, 18, 5, 5], and the merge
+  114944b5b, 1a-i 0b92b3fcb and the seal 47ff85629 all give exactly that. **ENG-THUMB's change moved it (on top of the inherited red);
+  neither 1a-i nor the seal moved it.** The re-baseline (step 5) re-records it; the inherited red is the release line's.
+- **A miss, owned:** one command ran two of those row checks under one background command with a shell `&` (and a `wait`): against
+  the box's rule (CI #85). It was stopped at once and re-run as two separate background commands, nothing recorded from it. Kept: one
+  run per background command, never a shell `&`.
+- **Hours (box 5):** the trace 10 min (tracer included); the seal and the plant 10 min; the checks about 35 min of wall clock (4 cores
+  shared by the CI line and three shards), plus the 5-9 row's trace across four hashes, about 5 min.
 
 ## Step 3 box 4 (the lead's GO; from 6:00 PM ET)
 - **(0) The merge, 114944b5b** = t-eng-sim d8f6a5125 + ENG-THUMB's FINAL head origin/t-eng-thumb-wip 35d5252c2 (C14 1457e1daf + the 357
