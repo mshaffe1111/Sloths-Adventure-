@@ -107,3 +107,23 @@ test('oneBeam: every swing moon of a stage is the same band between its stairs; 
   // both stairs open on the one beam, on both settings
   for (const s of ['normal', 'easy'] as const) for (const [k, mid] of [[0, 1180], [1, 1240]] as const) assert.ok(flowerClocks(one[k].moon.band[s], mid, 4700, one[k].moon.droop[s]).length > 0, `${s} stair ${k}`);
 });
+
+import { moonVerdicts } from './moon.ts';
+test("the moon's verdicts: kept on a laid storey; planted: droop 0, the beam stopped away, a flower off its stone, each RED by name", () => {
+  const build = (band: 'swing' | 'rise') => {
+    const steps = stair(1000, 5000);
+    const z = { kind: 'moon', ...layMoon(steps, band, 600, 1) };
+    const foot = { id: 99, x: 900, y: 5000, width: 620, type: 'solid' };
+    return { platforms: [foot, ...steps.map((p, i) => ({ ...p, id: i, type: 'solid' }))], zones: [z] };
+  };
+  for (const s of ['normal', 'easy'] as const) for (const band of ['swing', 'rise'] as const) assert.deepEqual(moonVerdicts(build(band), s), [], `${band} ${s}`);
+  const noDroop = build('swing');
+  noDroop.zones[0].moon.droop = { normal: 0, easy: 0 };
+  assert.match(moonVerdicts(noDroop, 'normal').join('\n'), /is open 4\.\d+ s, under 5 s/);
+  const away = build('swing');
+  away.zones[0].moon.band = { normal: { ...away.zones[0].moon.band.normal, walls: [3000, 3600] } as typeof away.zones[0]['moon']['band']['normal'], easy: away.zones[0].moon.band.easy };
+  assert.match(moonVerdicts(away, 'normal').join('\n'), /never opens/);
+  const off = build('rise');
+  off.platforms[0].x = 1300;
+  assert.match(moonVerdicts(off, 'easy').join('\n'), /x 1000, y 4900 \(easy\) stands over no stone/);
+});

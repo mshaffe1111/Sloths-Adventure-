@@ -1,6 +1,6 @@
 # ENG-MOON: 3-4's moving moonbeam and the moonflower step (R-165.503 / R-165.449; Engine, Opus 5.5 high). Branch t-eng-moon-wip, cut from t-eng-w3 13135bf6b
 
-## EXACT NEXT STEP (box 1, written 10:00 AM ET Fri 11-27 by `date`; steps 2-3 done by 10:05 AM ET; box 2 starts at step 4)
+## EXACT NEXT STEP (box 1, written 10:00 AM ET Fri 11-27 by `date`; steps 2-3 done by 10:05 AM ET; box 2 starts at step 4's wiring)
 1. Box 2: `git fetch origin t-eng-moon-wip t-eng-w3 && git checkout -B t-eng-moon-wip origin/t-eng-moon-wip`; `npm ci --legacy-peer-deps`
    (run_in_background). ReadNotifications FIRST.
 2. DONE in box 1 (10:03 AM ET): the moon lays its own steps EXACTLY (SectionZone 'moon' `{ on, n, rise, step, w, band, far? }`;
@@ -10,10 +10,14 @@
    stair middles, offset 0), called in pipeline.ts before the layout's shifts (they move it whole); moon.test 9/9 (planted: per
    storey, two beams), moonLay.test asserts one beam on every swing roll. `far` stays on the zone only as the lone storey's far wall.
    BOX 2 STARTS AT STEP 4.
-4. Item 3 verdicts (moon.ts + a gen2 verdict wired where darkGaps is read, pipeline.ts): 'every flower's open window >= the flown stair
-   time of a 0.5 s reader + margin' (Normal 5.0 s, Easy 6.8 s: read `flowerLeft` at the moment the band reaches the storey's first flower)
-   and 'every flower over its own storey's stone' (the foot under it). Planted tests: droop 0 -> red; the beam stopped away -> no flower
-   opens -> red; a flower off its stone -> red.
+4. Item 3 verdicts: WRITTEN in box 1 (10:05 AM ET), NOT YET WIRED. moon.ts `moonVerdicts(stage, setting)`: (1) every flower opens and
+   every open window (BLOOM + its clock's len) >= MOON_WINDOW (Normal 5.0, Easy 6.8); (2) every flower over a stone of its storey (a
+   solid non-flower piece under its whole width within 400 px). moon.test 10/10 with three planted reds (droop 0 -> 'open 4.x s, under
+   5 s'; the beam stopped away -> 'never opens'; the stone moved off -> 'stands over no stone'). BOX 2 STARTS HERE: wire it where the
+   roll's own errors are made on BOTH settings. darkGaps / darkLandings are NOT called from pipeline.ts (grep found only dark.ts and
+   tests), so first find how World 3's dark verdicts reach `st.gen2.errors` (`grep -rn "darkFlags\|runOffRims\|litAhead" src tools`;
+   the verdict registry, gen2/verdicts.ts or promises11.ts) and add moonVerdicts the same way; then moonLay.test's
+   `st.gen2.errors` empty proves it kept, and a planted droop-0 roll proves it red through the pipeline.
 5. Item 4 the bot skill `wait-for-light` (firsttimer.ts SKILLS, ~:726; read how tools/engine/towerFly.ts flies a tower): on stone, wait
    until `flowerOpen` of the next step and `flowerLeft` >= the stair time; jump only to an open flower. Then item 5's toys (towerFly in
    the real engine, the up fixture with the moon storey) and item 6's stills (tools/art/kitaudit/shoot.mjs).

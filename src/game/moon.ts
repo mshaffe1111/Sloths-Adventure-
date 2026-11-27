@@ -265,3 +265,27 @@ export function oneBeam(zones: ReadonlyArray<{ kind: string; moon?: MoonDef }>):
     m.mouth = { x: (a + b) / 2, y: m.mouth.y };
   }
 }
+
+/** the least open window a flower may have, from the band reaching it to its close (s): the flown stair time of a 0.5 s reader plus the
+ *  margin (3-4.md 'A storey in the beam': Normal 0.4 + 3.6 + 1.0 = 5.0 s, Easy 0.4 + 4.8 + 1.6 = 6.8 s) */
+export const MOON_WINDOW = { normal: 5.0, easy: 6.8 } as const;
+/** how far under a flower its own storey's stone may be (px): the stair's full rise (3 x 100) and its last step */
+export const MOON_STONE_DROP = 400;
+
+/**
+ * The moon's verdicts on a laid stage, by name (empty: kept): (1) every flower opens, and every open window it has (band arrival to
+ * close: BLOOM + its clock's len) is at least MOON_WINDOW of the setting; (2) every flower stands over its own storey's stone (a
+ * solid piece, not a flower, under its whole width within MOON_STONE_DROP px), so a closing flower drops him onto stone, never a fall.
+ */
+export function moonVerdicts(stage: { platforms: ReadonlyArray<FlowerPlatform & { type?: string; broken?: boolean }>; zones?: readonly MoonZone[] }, setting: Setting): string[] {
+  const out: string[] = [];
+  const R = Math.round;
+  for (const f of moonFlowers(stage, setting)) {
+    const at = `moon: the flower at x ${R(f.p.x)}, y ${R(f.p.y)} (${setting})`;
+    if (!f.clocks.length) out.push(`${at} never opens`);
+    for (const c of f.clocks) if (c.len !== Infinity && c.len + BLOOM < MOON_WINDOW[setting] - 1e-6) out.push(`${at} is open ${(c.len + BLOOM).toFixed(2)} s, under ${MOON_WINDOW[setting]} s`);
+    const stone = stage.platforms.some((q) => !q.moonflower && q.type !== 'bouncy' && q.y > f.p.y && q.y <= f.p.y + MOON_STONE_DROP && q.x <= f.p.x && q.x + q.width >= f.p.x + f.p.width);
+    if (!stone) out.push(`${at} stands over no stone of its storey (a closing flower would drop him into a fall)`);
+  }
+  return out;
+}
