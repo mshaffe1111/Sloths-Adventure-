@@ -15,13 +15,28 @@ DONE THIS BOX (every number from the built stage, rule 27):
    never met it (their soft gaps fall onto a lower storey or a laid river; 2-8's island the same: seed 1, 5 of 7 of its gaps fall onto the
    dyke leg's banks). REPORTED to the lead as ENGINE-WORTHY (proposed packet ENG-W2FALL: World 2's manifest declares its fall painter,
    one rule shared with w2Finish; dropsOf -> putback / safe-water-art; floorlessGaps counts it wet; a planted toy test). NO stopgap in w2Arc28.
-3. The suite in 6 shards on frozen cc06d2f90: running (scratchpad shards.sh), totals to the lead with the ruling.
+3. RULED (the lead, as proposed): ENG-W2FALL is an engine pieces lane; HOLD the roll, the list and the gates until ENG-W2FALL and
+   ENG-CUT-b land (both hashes come here). No stopgap in w2Arc28.
+4. THE SUITE in 6 shards on frozen cc06d2f90 (deploy.yml's line, --test-shard=k/6): s1 710/702/7, s2 620/611/9, s3 657/643/14,
+   s4 762/758/4, s5 726/718/8, s6 742/733/7 (tests/pass/fail; TODOs not counted). 49 reds:
+   - 45 are 2-8's build ("gen2 2-8: no seed of 24 builds cleanly", the boardwalk's look-lies): 42 by that error, plus 3 whole files that
+     crash on it (chaseRespawn.test, chaseRespawnReal.test, recipes.test). They clear with ENG-W2FALL.
+   - 4 are BRANCH-MADE, not 2-8's registration: green on main 4bf2cbaaa, red on box 6's 5b649440 already:
+     (i) puzzleCamera.test "every puzzle room ...": 30 moments checked, needs > 80 (main 87): box 2 (69c3c1640) deleted the hand-built
+         2-8 and its pulley rooms and took '2-8' out of STAGES, but kept the floor;
+     (ii) groundwork.test "goals: every hand-built stage ...": 5 stages checked, needs >= 6: the same deletion (2-8 was a W2_STAGES row);
+     (iii) artUse.test: unused art W2 w2-new.json#cage-whole and W10 w10alt.json#cage-b: most likely drawn by the hand-built 2-8 alone
+         (unconfirmed; re-check once 2-8 builds: the designed 2-8's cages may draw them);
+     (iv) firstTimerBot.test "5-9's Easy goal rests on the kid's runs": "the kid bot or 5-9 changed: re-measure": NOT traced (a merge on
+         this branch moved the kid bot or 5-9; find which before re-measuring).
+   (i) and (ii) are floors set with the deleted stage counted: re-setting them is the LEAD's ruling (rule 22), NOT changed here.
 NEXT, in order:
 a. ReadNotifications. Merge ENG-W2FALL's hash when it lands (no force; tsc 0), then box 6's items b-e from the roll on: roll 40 x both
    CLEAN 40 (name each error), the seed list (4 workers, --merge, D115 writable proven/), the full gates once on the frozen candidate
    (6 shards each total named, lockall --check one run 102 stages, CI tool line, drawcheck with 2-8, registrycheck --stage 2-8, the
    2-7-pinned tests), stills (fork from the bank's edge first, upright), bots x40 both settings every tier, the 2-minute floor.
 b. If the lead rules otherwise (e.g. a data river under the planks), follow the ruling.
+c. Ask the lead to rule on reds (i)-(iv) above (the floors, the cage art, the 5-9 re-measure) before the full gates; name each one's state.
 
 ## (was the EXACT NEXT STEP) (BUILD-28 box 6, BUILD-28-f, started 8:34 AM ET (from the session hook date); code head = the commit after 9be0afcff on t-build-28-wip (the lines' kinds); rolled and flown on 25d527e40)
 DONE THIS BOX (every number from the built stage, rule 27):
