@@ -4,10 +4,17 @@ Box 1, written 7:58 PM ET Thu 11-26 (stamp from `date`). Architect lane; NO engi
 ## EXACT NEXT STEP (box 2, 8:10 PM ET Thu 11-26 by `date`; box 1's setup steps kept below it)
 0. Setup as box 1 step 1, BUT the scratch base is now origin/t-eng-dark-wip @ 3d41ece6 (it contains 93e05e98d). Fetch each branch by
    explicit refspec (`git fetch origin +refs/heads/X:refs/remotes/origin/X`): a plain multi-branch fetch leaves FETCH_HEAD on the first.
-1. DONE box 2: 3-1..3-4 TRIMS rolled (codes/codes-trim.txt; rolls/*-trim.txt; 3-1 cut variant codes-cut.txt / rolls/3-1-cut.txt); THE TABLE
+1. DONE box 2: 3-1..3-4 TRIMS rolled (codes/codes-trim-rolled.txt; rolls/*-trim.txt; 3-1 cut variant codes-cut.txt / rolls/3-1-cut.txt); THE TABLE
    rows 3-1..3-4 and THE LANE LIST written and SENT to the lead. 3-5..3-9 AS WRITTEN rolled (rolls/3-5..3-9-raw.txt).
-2. DONE box 2 (8:13 PM ET): 3-5..3-9 trims rolled (codes/codes-trim.txt lines 5-9, rolls/3-5..3-9-trim.txt); all nine rows and the full
+2. DONE box 2 (8:13 PM ET): 3-5..3-9 trims rolled (codes/codes-trim-rolled.txt lines 5-9, rolls/3-5..3-9-trim.txt); all nine rows and the full
    LANE LIST are in, SENT to the lead. No level is clean yet: every remaining refusal is a missing World 3 brick (KIT-W3) or a lane named.
+2b. LEAD RULED (box 2): 3-1..3-4 trims APPROVED as written; B14/B15 not needed; ENG-ASKS starts now; KIT-W3 Friday (down c/b,
+   ocelot ground first). **codes/codes-trim.txt is now the BUILDERS' STARTING CODES** (asks kept for ENG-ASKS, approved swaps, every line
+   V11-checked: at most 3 of one letter, no two neighbours alike). 3-5..3-9's lines there are PROPOSED (not ruled). It cannot be rolled until
+   ENG-ASKS lands; codes/codes-trim-rolled.txt is the rollable form. Three V11 fixes the approved trims needed (flagged to the lead): 3-2 keeps
+   r at T, W, S only (X and C as c/g: 6 r's breaks the cap); 3-4's moon beats keep `p` laid by ENG-MOON (p -> f gives 6 f's), X as c on the
+   moon; 3-8 as written has 4 s's and two neighbours alike (Ts Ps): one practise swing -> f under a sleeper. `#soft` dropped from 3-2's T,
+   3-5's T, 3-6's beat 2 (a W3 miss "laid hurt", rolls/3-2-raw.txt, 3-6-raw.txt); 3-4's `#soft@moon` needs ENG-SOFT-W3 or a respawn miss.
 3. NEXT (box 3, only if the lead asks): re-roll any trim the lead changes (edit <scratch>/codes-trim.txt, four.sh trim <stages>); the
    optional checks not done: the W1 vine columns' scale (3-1, 2.24 Pokey, unscored) and the art member's stills for 3-2's W7 anchors.
 
@@ -28,7 +35,7 @@ Box 1, written 7:58 PM ET Thu 11-26 (stamp from `date`). Architect lane; NO engi
 4. Then 3-5..3-9 the same way (four.sh sets travel: 3-5 down, 3-7 left, others right): as written first, then trims; then their rows to the lead.
 5. Art column: check each design's "Art" paragraph against src/game/art/inventory/w3.json (box 1 saved no art verdicts yet).
 
-## THE TABLE (box 2, written 8:08 PM ET Thu 11-26 by `date`, 3-5..3-9 added 8:13 PM; every row from the TRIM rolls, codes/codes-trim.txt, rolls/*-trim.txt; as-written rolls rolls/*-raw*.txt)
+## THE TABLE (box 2, written 8:08 PM ET Thu 11-26 by `date`, 3-5..3-9 added 8:13 PM; every row from the TRIM rolls, codes/codes-trim-rolled.txt (what four.sh rolled: refused dials dropped), rolls/*-trim.txt; as-written rolls rolls/*-raw*.txt)
 Trim rolls assume ENG-ASKS (the lead's ruling): every refused dial is dropped from the rolled code and listed as the ask the level uses.
 Sizes: S = under a box, M = 1-3 boxes, L = more. "Proven" = the beats whose bricks rolled with no refusal on 4 seeds x both settings.
 | level | proven / total | MISSING engine | MISSING kit (KIT-W3) | MISSING art | MISSING lines (KEEPER-W3) | signature piece | trim (for the lead to rule) | build-ready after |
