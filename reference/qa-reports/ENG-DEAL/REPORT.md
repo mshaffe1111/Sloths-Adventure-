@@ -1,6 +1,33 @@
 # ENG-DEAL (R-165.541): the deal follows the code's letters, every slot, every job
 
-## THE EXACT NEXT STEP (box 6; written 1:33 PM ET Fri 11-27 by `date`)
+## LANDED (box 6; written 2:27 PM ET Fri 11-27 by `date`)
+LANDED on t-eng-w3 as a fast-forward of f3014145c: the code is 98f424884 (merged onto t-eng-w3 f3014145c), this REPORT commit on top.
+The landed hash is the one this commit pushes (named in the landing message). EXACT NEXT STEP: none for ENG-DEAL; idle. The new lead decides.
+Gates, all on the frozen 98f424884 (`$S/g4`), each ONCE:
+- tsc 0; generalitycheck PASS; CI tool line 50 pass / 0 fail; timecheck PASS and roadmapcheck PASS over this branch.
+- LOCK as two runs: `--out base2.json` on f3014145c "wrote 3264 builds of 102 stages"; `--check` on 98f424884 "lock: 101/102 stages
+  unchanged", the move **1-8: gen2, INTENDED: graph types now written; no laid field moves** (the lead's ruling). Probed 32 builds field
+  by field: only gen2.graph differs, and inside it only nodes[].content (n2 hazard, n3/n10 ground, n5/n13 rope, n7 bounce, n9 hazard: 1-8
+  has no mix, so the deal returned early and its lettered nodes were never typed). Plan, sections, errors, platforms, enemies identical.
+- Seedlists (`seedlist <id> --check`): 1-8 PASS (100 seeds) on 98f424884; all 14 PASS on 9818cc87 + box 1's fix: 1-1 (161), 1-2,
+  1-3, 1-4 (100 each), 1-5 (150), 1-6, 1-7, 1-8, 1-9, 2-1, 2-2, 2-3, 2-4, 2-5 (100 each). Not re-run on 98f424884 but 1-8: nothing laid
+  moves on any stage (the lock: every non-gen2 part unchanged on all 102, gen2 moved only on 1-8's graph record).
+- tierBots 9/9.
+- Suite in 6 shards: 703/0, 798/0, 635/0, 733/0, **649/1**, 648/0. The 1 is **t-eng-w3's, not this change's (R-165.550)**:
+  src/components/ctestPicker.test.ts:78, the end screen matches /1-5|Where She Walked/; red identically on 9818cc87 alone.
+COST of the rule on the KIT rolls (4 seeds x both, KIT-W3a's tree + this fix; refusal lines weighted):
+- 3-1 w3: clean **8/8** (before 0/8, 15 lines; n13's 12 GONE); 0 pool-short notes.
+- 3-1 wide: clean **7/8** (before 17 lines); 0 pool-short notes; the 1 left is Easy's flags line "none before the hard node n5, 14183 px"
+  (on the list before, flag spacing).
+- 3-2 (codes-trim-rolled): clean 0/8 before and after; 144 -> 143 lines; content-kind 15 -> 0; pool short 48 -> 45, every one "n11
+  combine: no section for the job left" (its letter g HELD, ground laid by phase), **0 notes by a letter** (no last resort).
+- 3-3: clean 0/8 before and after; 250 -> 216 lines; content-kind 48 -> 36, all 36 'l' (lure: no section type yet, ENG-LURE's); pool short
+  33 -> 39, every one "n11 combine: no section for the job left"; **0 notes by a letter**.
+- **3-2 in its #dark form (w3Level's code, the candidate's own W3_LEVEL pool, seeds 1-4 x both): it refuses EVERY roll, 0/8, before
+  (154 lines) and after (169), until its rope section exists (the root brick, KIT-W3b-c).** Notes by letter after: 21x n2 "asks 'r'
+  (rope): no r section in the pool", 12x n8 and 24x n13 "no r section left (1 in the pool)". Before: n2 21x and n8 24x "no rope section
+  left", and n13 (Sr) took other kinds QUIETLY; it now names its letter.
+### Box 6's step (done: landed)
 658d4e50f's KIT rolls showed it dropped the letter at the FIRST loosening (loose 1, job kept, type dropped) before trying the letter by
 its phase: 3-2's content lines came back, 0 -> 12 (v2-32.txt), 3-3's 36 -> 48 (v2-33.txt), each named by the new note but laid the wrong
 kind where box 1's fix had laid the right one. FIX 98f424884: typeFits holds a lettered node's type through loose 2 (job dropped, phase
