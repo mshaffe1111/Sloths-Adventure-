@@ -1,6 +1,17 @@
 # ENG-CATCH (R-165.526; engine, Opus 5.5 high): the down tower's own catch boughs. Branch t-eng-catch, cut from t-eng-w3 13135bf6b
 
-## EXACT NEXT STEP (box 1 hand-over, rewritten 9:48 AM ET Fri 11-27 by `date`)
+## STATUS (written 10:39 AM ET Fri 11-27 by `date`): every gate GREEN on frozen 8a204af87; landed on t-eng-w3 by fast-forward to this commit
+(src identical to 8a204af87; this commit changes only this report). The lead's ruling: the pushback is accepted; this box finishes and lands.
+- tsc 0. CI tool line 50/50. generalitycheck PASS (26 literals, 26 known).
+- lockall --layouts 16 --check vs a fresh lock of frozen 13135bf6b, ONE run: 3264 builds, 102/102 stages UNCHANGED, exit 0
+  (f79963053 moves none: ENG-ASKS-b). No World 1-2 stage moved: no tierBots.
+- Suite, 6 shards (tests/pass/fail/todo): 1: 671/670/0/1; 2: 780/780/0/0; 3: 731/731/0/0; 4: 605/604/0/1; 5: 694/693/0/1;
+  6: 669/669/0/0. The 3 todos are pre-existing, in files this lane did not touch: w1Arc19 (R-165.312 flag placer), w4Runtime and the
+  4-3 engine run (the boulder wall check).
+- Bricks (KIT-W3a 610ef2e63 + this tower.ts, 3-1 draft, seeds 1-6 x both): root-down 12/12, two-roots 12/12, cap-down 12/12,
+  the three together 12/12, cap-steps (parked) 12/12.
+
+## The box 1 hand-over's next step (done, above; kept for the record; written 9:48 AM ET Fri 11-27 by `date`)
 t-eng-w3 moved to f79963053 (ENG-ASKS-b: w3.ts W3_HAZARDS + w3HazardAsks.test.ts, no engine file; its lock 102/102 unchanged vs
 13135bf6b). Merged into this branch: candidate = 8a204af87 (merge of 4b9adaa81 and f79963053; the commit after it changes only this
 report, src identical). Done: on 4b9adaa81 the CI tool line 50/50, generalitycheck PASS (26 literals, 26 known), probe 12/12 on every
