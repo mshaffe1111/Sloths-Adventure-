@@ -10,7 +10,14 @@ real designed F is 2-8's own `F[P+|P]` (w2Arc28.ts:37), meant. No real stage's c
 GATES (frozen trees in the scratchpad: cand/ = 8fbdb72ac, base/ = e878b1f45; chattr -R +i src and tools, then chattr -i on the ONE
 folder src/game/gen2/proven/ so seedListChunk.test's mkdtemp can write its planted-* folder there; verified: touch in src fails EPERM,
 mkdir in proven/ works): tsc 0; generalitycheck PASS (26/26 known); lockall (16 layouts: record on base/, --check on cand/), the CI
-tool line (gates.yml rolled job's 7 lines, kbdcheck, every seedlist --check) and the suite's 6 shards (3 streams of 2): RUNNING.
+tool line (gates.yml rolled job's 7 lines, kbdcheck, every seedlist --check): RUNNING. lockall --check: 101/102 unchanged, 2-8 the one
+(an error on both heads). THE SUITE, 6 shards on 8fbdb72ac (tests/pass/fail): 1: 752/749/3; 2: 715/703/12; 3: 702/694/7 (todo 1);
+4: 656/647/7 (one a TODO, R-165.312); 5: 679/669/10; 6: 698/688/10. EVERY red is red on e878b1f45 too (each file re-run on base/, the
+red names compared): shard 1 chaseRespawnReal, pitPocket, stageSheets; shard 2 artUse, easyMode x4, harpy, levels x3, stageStart x2,
+w1NewArt (lily pads); shard 3 finds, flowerReach, glideStages, groundwork, plainWalk x2, stageManifest; shard 4 findsPlaced, petals x2,
+puzzleCamera, river x2, skills; shard 5 KID_RUNS_59 (R-165.473), chasePiece, jumpTrails, liftRide, pickups x2, rollGuard (2-8's),
+tipBand x2, zones; shard 6 chaseRespawn (file), recipes (file), stageQuality x5, vineSelfSwing x3. Each that names a stage throws on
+2-8 ("no seed of 24 builds cleanly"). NONE is mine. The lead's inherited list was short by the shard 3-6 names (box 1 had not read them).
 NEXT: read each log; sort every red against e878b1f45 (the inherited list in the lead's ruling: storyTipScan, registrycheck(.test),
 chaseRespawnReal, pitPocket, stageSheets, easyMode x4, levels x3, stageStart x2, harpy, artUse, w1NewArt; KID_RUNS_59 if it shows).
 A red green on base is a stop: report it. None: send the lead 8fbdb72ac with each shard's totals and the inherited list.
