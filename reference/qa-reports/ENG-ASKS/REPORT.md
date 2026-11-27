@@ -1,6 +1,17 @@
 # ENG-ASKS: a node code can ask any registered hazard and named clock (R-165.501; AUDIT-W3 finding 1)
 
-## EXACT NEXT STEP (box 1 hand-over, 8:40 PM ET Thu 11-26 by `date`)
+## EXACT NEXT STEP (closed, 10:13 PM ET Thu 11-26 by `date`)
+ENG-ASKS is DONE: the lead lands the registry through ENG-SPORE-c's frozen d653d3994, which contains the merge 11e2af1a0 and is green on
+every gate (the lead's report). There is no next step here. ENG-ASKS-b adds World 3's rows (#dark, #spore, @puff) on the new t-eng-w3.
+GATE RECORD (frozen trees in the scratchpad; each heavy run once):
+- 11e2af1a0 (9244283f3 + ENG-DARK's a8bc662e5, no conflicts): tsc 0; generalitycheck 0; lockall --check vs a8bc662e5's own lock
+  (3264 builds of 102 stages) = 102/102 stages unchanged, exit 0; shards 1-6 = 791 / 572 / 724 / 616 / 629 / 798 pass, 0 fail each; the
+  CI tool line (gates.yml:157) 354 pass, 0 fail; tierBots NOT finished (stopped on the lead's word: d653d3994's tierBots 9/9 covers it).
+- 9244283f3 (the registry on 88592a9c4): tsc 0; generality 0; lockall --check vs 88592a9c4's lock = 102/102 unchanged, exit 0; shards 1-4
+  = 757 / 625 / 580 / 786 pass, 0 fail; shards 5-6, the tool line and tierBots stopped once the merge became the landing.
+- Toy hazardAsks.test.ts GREEN 5/5; planted on t-eng-w3's engine files RED 0/5. nodeAsks.test 7/7.
+
+## Box 1's hand-over step (8:40 PM ET Thu 11-26 by `date`, superseded)
 STATE at hand-over: base lock RECORDED (3264 builds of 102 stages, `<scratchpad>/lock-base.json`); the candidate's `lockall --check` against
 it RUNNING in `<scratchpad>/cand` (log `<scratchpad>/lock-check.log`, last line `lockcheck=<code>`); gates.sh RUNNING: tsc=0,
 generality=0, shard1 757 pass 0 fail, shards 2-6, tool line and tierBots to come (`<scratchpad>/g1/summary.txt`). t-eng-w3 is still
