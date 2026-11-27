@@ -8,7 +8,7 @@ import '../headlessDom.ts';
 import type { Platform, Vine } from '../types.ts';
 import { withSetting } from '../settingDials.ts';
 import { clearClimbs } from './pipeline.ts';
-import { stopVines, towerCatches, towerFalls, towerHandOns, towerLids, towerVineCuts } from './tower.ts';
+import { stopVines, towerCatches, towerFalls, towerHandOns, towerLids, TowerRefusal, towerVineCuts, UNMENDABLE } from './tower.ts';
 
 /** a toy tower: pieces [id, x, y, width, height, type (0 solid), storey, sealed], vines [id, x, topY, bottomY, type], turns [vine id,
  *  from, to], the sections' gaps [x0, x1, y] and kept-out boxes [x0, x1, y0, y1]; `roll` names the setting (n normal, e easy) */
@@ -22,6 +22,8 @@ const TOYS: Record<string, Toy> = {
   'bridge-e2': {"roll":"e2","W":1280,"floorY":1801,"P":[[67,24,1023,154,24,0,18,0],[68,259,1094,191,24,0,18,0],[69,544,1165,190,24,0,18,0],[70,822,1230,245,24,0,18,0],[71,178,1164,81,24,0,18,0],[72,450,1235,94,24,0,18,0],[73,734,1300,88,24,0,18,0],[74,727,1581,386,90,0,19,0],[99999,0,1801,1280,24,0,0,0]],"V":[[23,70,1000,1023,"tree_climb"],[24,1067,1230,1581,"tree_climb"],[25,727,1581,1801,"tree_climb"]],"turns":[[24,1230,1581]],"Gp":[[178,259,1023],[450,544,1094],[734,822,1165]],"keepOut":[]},
   'dip-n12': {"roll":"n12","W":1280,"floorY":1871,"P":[[57,1100,1008,156,24,0,18,0],[58,867,1077,145,24,0,18,0],[59,645,1152,140,24,0,18,0],[60,364,1230,197,24,0,18,0],[61,1012,1147,88,24,0,18,0],[62,785,1222,82,24,0,18,0],[63,561,1300,84,24,0,18,0],[64,318,1581,233,24,0,19,0],[65,675,1581,303,24,0,19,0],[66,551,1651,124,24,0,19,0],[99999,0,1871,1280,24,0,0,0]],"V":[[18,1210,1000,1008,"tree_climb"],[19,364,1230,1581,"tree_climb"],[20,978,1581,1871,"tree_climb"]],"turns":[[19,1230,1581]],"Gp":[[1012,1100,1008],[785,867,1077],[561,645,1152],[551,675,1581]],"keepOut":[]},
   'pass-n7': {"roll":"n7","W":1280,"floorY":1919,"P":[[13,595,1061,141,24,0,4,0],[14,830,1127,190,24,0,4,0],[15,276,1060,93,24,0,4,0],[16,511,1131,84,24,0,4,0],[17,736,1197,94,24,0,4,0],[18,918,1478,148,24,0,5,0],[19,759,1598,159,24,0,5,0],[21,568,1697,70,30,"bouncy",5,0],[22,384,1549,142,24,0,5,0],[23,153,1699,231,24,0,5,0],[99999,0,1919,1280,24,0,0,0]],"V":[[6,1020,1127,1478,"tree_climb"],[7,153,1699,1919,"tree_climb"]],"turns":[[6,1127,1478]],"Gp":[[736,830,1061]],"keepOut":[]},
+  // (THE GUARANTEE's toy, ENG-CATCH-e: a shelf over a 1400 px drop with the whole tower kept out of every bough, so no remedy can mend it)
+  'unmendable': {"roll":"n1","W":1280,"floorY":2400,"P":[[1,400,1000,200,24,0,0,0]],"V":[],"turns":[],"Gp":[],"keepOut":[[0,1280,0,2400]]},
   'clean': {"roll":"n12","W":1280,"floorY":1878,"P":[[61,280,1057,233,24,0,19,0],[62,637,1057,303,24,0,19,0],[63,513,1127,124,24,0,19,0],[64,756,1408,230,24,0,20,0],[65,511,1525,228,24,0,20,0],[66,293,1658,207,24,0,20,0],[99999,0,1878,1280,24,0,0,0]],"V":[[19,326,1000,1057,"tree_climb"],[20,940,1057,1408,"tree_climb"],[21,293,1658,1878,"tree_climb"]],"turns":[[20,1057,1408]],"Gp":[[513,637,1057],[739,756,1408],[500,511,1525]],"keepOut":[]},
 };
 
@@ -100,4 +102,14 @@ test("going down, a lay with no miss of the invariant is never touched by the me
   const { out, errs } = lay(TOYS.clean);
   assert.deepEqual(errs, []);
   assert.deepEqual(out.map((c) => [c.x, c.y, c.w, c.level]), [[166, 1344, 180, 19], [874, 1230, 180, 19], [346, 1344, 233, 19], [581, 1300, 180, 19], [739, 1525, 361, 20], [500, 1658, 353, 20], [52, 1631, 180, 19], [853, 1658, 361, 20]]);
+});
+
+test("THE GUARANTEE: a down tower never returns a lay with a miss; a miss its mend cannot mend refuses the roll by name, ENG-CATCH-e", () => {
+  // (planted: with the refusal removed, towerCatches returned this toy's lay and the verdict named its blind drop: RED)
+  assert.throws(() => lay(TOYS.unmendable), (e: unknown) => {
+    assert.ok(e instanceof TowerRefusal, 'refused by the tower, not thrown by anything else');
+    assert.ok(e.message.startsWith(UNMENDABLE), e.message);
+    assert.match(e.miss, /^tower: a blind drop off the piece at x 400-600, y 1000: nothing under it/, 'the refusal names the miss as the verdict does');
+    return true;
+  });
 });

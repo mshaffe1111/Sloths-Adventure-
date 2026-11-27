@@ -334,11 +334,29 @@ export function towerCatches(flow: 'up' | 'down', platforms: readonly Platform[]
   //  lies in that hop the bridge caught nothing: the drafted 3-1's storey hole x 554-654 at y 7377, under a bounce brick's cap shelf
   //  (its far end x 650, the fall line 626), was bridged 654-716 on every pass and the walk off the shelf fell 481 px past the storey
   //  (Easy 2; Easy 4 the same, 477 px), ENG-CATCH-b. Kept only if it leaves fewer misses of the down tower's invariant, ENG-CATCH-c)
-  const left = (cs: ReadonlyArray<{ x: number; y: number; w: number }>) => downInvariant([...platforms, ...cs.map((c, k) => ({ id: -1 - k, x: c.x, y: c.y, width: c.w, height: 24, type: 'solid' }) as Platform)], vines, turns, floorY, width).length;
+  const left = (cs: ReadonlyArray<{ x: number; y: number; w: number }>) => downInvariant([...platforms, ...cs.map((c, k) => ({ id: -1 - k, x: c.x, y: c.y, width: c.w, height: 24, type: 'solid' }) as Platform)], vines, turns, floorY, width);
   const before = left(first);
-  if (!before) return first;
+  if (!before.length) return first;
   const again = layCatches(true, flow, platforms, vines, floorY, width, gaps, level, sealed, keepOut, turns);
-  return left(again) < before ? again : first;
+  const after = left(again);
+  const better = after.length < before.length;
+  const lay = better ? again : first, misses = better ? after : before;
+  // THE GUARANTEE (ENG-CATCH-e, R-165.534): a down tower never returns a lay with a miss. A miss the mend's bounded tries left is the
+  // roll's to answer, not the stage's to ship: the roll is refused by name (TowerRefusal), and the seed search rolls again (pipeline.ts
+  // buildRolledOn). On the narrowed kit de6feebff, a catch against the wall whose far end saw nothing under it was returned and the
+  // stage verdict named it after the build (Easy 11, 19; Normal 33): the mend's fourth shape-by-shape box, ENG-CATCH-e
+  if (misses.length) throw new TowerRefusal(misses[0].line);
+  return lay;
+}
+
+/** the name a down tower's refusal carries: a miss the mend could not mend (towerCatches' guarantee) */
+export const UNMENDABLE = 'tower: unmendable miss: ';
+/** a down tower's lay that still has a miss once its mend is done: the roll is refused by name and the seed search rolls again */
+export class TowerRefusal extends Error {
+  constructor(readonly miss: string) {
+    super(UNMENDABLE + miss);
+    this.name = 'TowerRefusal';
+  }
 }
 
 /** towerCatches' lay. `cover`: a bridge is laid only where it reaches under the fall line of the end it is laid for */

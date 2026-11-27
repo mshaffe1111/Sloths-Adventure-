@@ -25,7 +25,7 @@ import { JUMP_CLEAR, jumpEdges } from '../stageMetrics.ts';
 import { APEX, BANDS, bounceLipOverCap, CAP_UP, gapEnvelope, judgedOnArcs, linkArcs, lesserArcs, riseEnvelope, BLOCK_H, SPARE } from './reach.ts';
 import { classify, headroomOf, judgeRoll, NOT_JUDGED_ALL, TAUGHT, verdictLines, type Judged11, type RouteAsk } from './verdicts.ts';
 import { PROMISES_11, realFalls } from './promises11.ts';
-import { gapCatchY, localExtent, reflectLocal, routeAt, routeOf, storeyLimit, TOWER, towerCatches, towerFalls, towerFlagBreaches, towerFlags, towerGates, stopVines, towerHandOns, towerLids, towerSkips, towerVaults, towerVineCuts, vertical } from './tower.ts';
+import { gapCatchY, localExtent, reflectLocal, routeAt, routeOf, storeyLimit, TOWER, towerCatches, towerFalls, towerFlagBreaches, towerFlags, towerGates, stopVines, towerHandOns, towerLids, towerSkips, TowerRefusal, towerVaults, towerVineCuts, vertical } from './tower.ts';
 import { CLIMB_CLEAR, climbX } from '../vineTop.ts';
 import { LAND_IN, repairLandings } from './landings.ts';
 import { findW1Pits } from '../w1Pits.ts';
@@ -4829,6 +4829,8 @@ function buildRolledOn(req: BuildRequest): Gen2Stage {
   let best: Gen2Stage | null = null;
   // (the first roll that passed its check and was refused by a rule judged on the built stage: what a seed with no clean roll returns)
   let refused: Gen2Stage | null = null;
+  /** the first roll a down tower refused (tower.ts TowerRefusal): named if no roll was laid at all */
+  let towerRefused: string | undefined;
   const maxRerolls = req.maxRerolls ?? 6;
   const failedAt = new Map<string, number>();
   const versionTries = new Map<string, Set<string>>();
@@ -4850,9 +4852,16 @@ function buildRolledOn(req: BuildRequest): Gen2Stage {
     }
     const repairs: Repair[] = [...(n?.gen2.repairs ?? [])];
     // (and only the animals Normal kept: Easy's are a subset of Normal's)
-    const b = R
-      ? assemble(req, budget, graph, R.seed, { plan: R.plan }, new Map(R.foes))
-      : assemble(req, budget, graph, n!.gen2.seed, { plan: n!.gen2.plan }, keptFoes(n!));
+    // (Normal's search took no plan its Easy tower refused; a refused roll it hands back may be refused on Easy too: by name, ENG-CATCH-e)
+    let b: Built;
+    try {
+      b = R
+        ? assemble(req, budget, graph, R.seed, { plan: R.plan }, new Map(R.foes))
+        : assemble(req, budget, graph, n!.gen2.seed, { plan: n!.gen2.plan }, keptFoes(n!));
+    } catch (e) {
+      if (e instanceof TowerRefusal) throw new Error(`gen2 ${req.config.id} (easy): Normal's plan refused on Easy: ${e.message}`);
+      throw e;
+    }
     const v = checkAndRepair(b, budget, repairs, new Set());
     const st = b.stage;
     const fast = gen2Model(st, MODEL_FAST);
@@ -4923,6 +4932,9 @@ function buildRolledOn(req: BuildRequest): Gen2Stage {
         try {
           b = assemble(req, budget, graph, seed, { bans, recent: req.recent, usedVersions: req.usedVersions, plan, open, lift, pace: !!refused });
         } catch (e) {
+          // (a down tower that could not mend a miss refuses the roll by name, tower.ts TowerRefusal: the roll is skipped and the stage
+          // rolled again, never thrown and never shipped with the miss, ENG-CATCH-e)
+          if (e instanceof TowerRefusal) { towerRefused ??= e.message; repairs.push({ kind: 'reroll', note: `roll ${roll}: ${e.message}` }); break; }
           // (a slot the after-rules' swaps left with no section: this roll's repairs are spent, and the stage is rolled again; a build
           // that throws with no such swap behind it throws as it always did. And a slot the SEARCH's own stage-wide bans left with no
           // section (a section refused twice, bans[-1]: on a designed arc, the one brick of its beat): the roll is refused, never thrown;
@@ -4939,8 +4951,12 @@ function buildRolledOn(req: BuildRequest): Gen2Stage {
         let eb: Built | undefined;
         if (v.ok) {
           // (on Easy's dials, R-165.258: Normal's build had checked Easy's lay on Normal's swing)
-          const ev = withSetting('easy', () => {
-            eb = assemble(easyReq, easyBudget, graph, seed, { plan: b.laid.plan }, keptFoes(st));
+          // (Easy's tower refusing its lay refuses the plan, as a failed check on Easy does: Easy is Normal's stage, ENG-CATCH-e)
+          const ev = withSetting('easy', (): Verdict => {
+            try { eb = assemble(easyReq, easyBudget, graph, seed, { plan: b.laid.plan }, keptFoes(st)); } catch (e) {
+              if (!(e instanceof TowerRefusal)) throw e;
+              return { ok: false, why: e.message };
+            }
             return checkAndRepair(eb, easyBudget, [], new Set(), landings);
           });
           if (!ev.ok) v = { ...ev, why: `on Easy: ${ev.why ?? 'its check fails'}` };
@@ -5090,8 +5106,11 @@ function buildRolledOn(req: BuildRequest): Gen2Stage {
       repairs.push({ kind: 'reroll', note: `roll ${roll} failed` });
     }
   }
-  // (no clean roll either way: the first search's refused roll, as before)
-  return firstRefused ?? refused ?? best!;
+  // (no clean roll either way: the first search's refused roll, as before; every roll refused by its down tower before it was laid:
+  // the refusal by name, ENG-CATCH-e)
+  const last = firstRefused ?? refused ?? best;
+  if (!last && towerRefused) throw new Error(`gen2 ${req.config.id} (${req.difficulty}): every roll refused: ${towerRefused}`);
+  return last!;
 }
 
 /** the plan with one more slot, chosen fresh (its index is returned as `open`), at the end of the node before the shrine's */
