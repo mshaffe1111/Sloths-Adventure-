@@ -14,6 +14,16 @@ DONE:
    off -> tests 2 and 4 RED. Declaration removed (painter {}): void-dark + unmarked (test 3).
 3. 2-8 ROLL on frozen db2947730 (libstage --stage 2-8 --seeds 40): CLEAN 40 of 40 on BOTH settings (was 0/40), thrown 0, seconds
    241.3-251.3.
+4. TYPE (ACCEPTED by the lead): WorldManifest.pitPainter widened from 'w1Pits' to PitPainter ('w1Pits' | 'splashRivers', fallPaint.ts).
+5. LOCK on frozen db2947730 (lockall --layouts 16 --check, ONE run, against a lock recorded on frozen cc06d2f90): 101/102 stages
+   unchanged; 2-8 moved: on cc06d2f90 all 32 of its builds THREW ("no seed of 24 from N builds cleanly (the first: verdict
+   drop.look-lies ...)"), now they build. No other layout moved.
+6. VERDICT-ONLY changes (lockall strips verdicts and drops; scratchpad verdictdump.mts, the same 3264 builds on both trees): 3232
+   identical in drops AND verdicts; the 32 that differ are 2-8's (threw on base). NONE elsewhere: no World 1, no other World 2 stage.
+7. generalitycheck PASS (26 literals, 26 known). CI tool line: 437 tests, 435 pass, 1 fail, 1 todo: the fail is registrycheck.test
+   "every stage-table stage registered" = INHERITED (red on frozen cc06d2f90 too: 2-8 has no proven seed list yet, BUILD-28's item).
+8. SUITE shard 0 (110 files): 741 pass, 1 fail: groundwork.test "goals: every hand-built stage of Worlds 1-4 ... lands in Matt's band"
+   ('5 stages checked') = INHERITED (red on frozen cc06d2f90 too). Shards 1-5: running.
 NEXT, in order:
 a. ReadNotifications. Gates on the frozen candidate (scratchpad cand): lockall --check against lock-base.json (recorded on frozen
    cc06d2f90), counts, name every verdict-only change, no layout may move; CI tool line; generalitycheck; suite 6 shards (scratchpad
