@@ -24,13 +24,34 @@ DONE THIS BOX (packet reference/packets/2026-11-27/BUILD-28-h.md, items 2(iv), 2
    SENT to the lead for a ruling; recommended (reversible): a moment for a gateless bell / thrown pebble: 'the bell and every guard it calls'.
 4. MERGES NOT DONE: neither lane LANDED (ENG-W2FALL db2947730: shards 1-5 running; ENG-CUT-b 4d2a579de: shard 6, tool line, drawcheck
    running). Asked the lead: wait for LANDED (recommended) or merge the frozen candidates.
+5. THE LEAD'S RULINGS (received this box):
+   - R-165.535: KEEP CI-15 (a real bot fix, R-165.59). The kidMedian re-set is DECLINED (Matt 11-26, R-165.496: 5-9's Easy goal stays 5;
+     no bot run raises a goal). NO re-record on this branch: release 5's 4799f6026 makes the goal data (EASY_GOAL_59 = 5; kidReaches
+     needs the goal at or under the kid's lower median, 7 with [8,9,7,7,4,7]). In the gate table this red is 'inherited, resolved by
+     release 5's 4799f6026 (R-165.496 / R-165.535)'; this branch takes it when release 6's integration merges main after release 5.
+   - gallery1 (RULING 1, ACCEPTED): puzzleCamera learns moments for a bell or thrown pebble with no gate: 'at the bell: the bell and
+     every guard it calls' (boxOf over the guards), so 2-9's gallery1 is checked, never skipped. The derived floor found a REAL GAP that
+     main hid behind the hand-built 2-8's count. If the new moments FAIL (the camera does not frame the guards), that is 2-9's camera
+     work (ENG-CAM29, R-165.513): name it and send it to the lead; never fix the camera in 2-8's lane. Kit rooms bell/light/wind/sluice
+     stay exempted by name.
+   - The merges (RULING 2): WAIT for LANDED.
 NEXT, in order:
-a. ReadNotifications; read the lead's rulings on gallery1 and the merge. Fresh container: `npm install --no-audit --no-fund
+a. ReadNotifications. Fresh container: `npm install --no-audit --no-fund
    --legacy-peer-deps` first, and `git fetch --deepen=400` before any bisect.
 b. Merge t-eng-w2fall at the hash its REPORT names LANDED, then t-eng-cut at ENG-CUT-b's LANDED hash (no force; tsc + the CI tool line
    after each; 2-8's tests and tools await loadInventory(2)); name stageSheets' '2-8 foe:goldsnake' red by cause.
-c. Re-run puzzleCamera.test and groundwork.test on the merged head; apply the gallery1 ruling; artUse.test re-check (2(iii)).
+c. The gallery1 moments (ruling 1): in moments(), a bell (or a source whose item has no 'for') with no gate gets 'at <bell>: the bell
+   and every guard it calls' (the guards: the stage's enemies within the bell's earshot, noise.ts; boxOf over each); a planted red (the
+   new moment removed -> gallery1 RED again). Re-run puzzleCamera.test and groundwork.test on the merged head; artUse.test re-check
+   (2(iii)).
 d. Packet items 3-6: roll 40 x both, seedlist + the WIDENED pin grep, ONE full gate run, stills from the committed lay, bots x40.
+
+LEARNED (box 8): (1) a fresh container is SHALLOW: git bisect stops on a grafted root and calls it 'first bad', and timecheck /
+roadmapcheck refuse: `git fetch --unshallow` (about a minute) before any bisect or those two checks. (2) A derived floor finds what a
+hard number hid: 'more than 80 moments' passed on main with 2-9's gallery room never checked. Count each part's own items and require
+each part > 0. (3) A per-part map compared with deepEqual must be seeded with every expected key at 0, or a part with nothing checked is
+a missing key, not a zero. PROPOSED RULE (level.md, for the lead): "A floor is per-part and derived (each room, stage or row counted from
+the list the game reads, each > 0), never one hard total; the plant skips one part." Check: the planted skip goes red.
 
 ## (was the EXACT NEXT STEP) (BUILD-28 box 7, BUILD-28-g, started 8:57 AM ET (from the session hook date); code head cc06d2f90 on t-build-28-wip)
 DONE THIS BOX (every number from the built stage, rule 27):
