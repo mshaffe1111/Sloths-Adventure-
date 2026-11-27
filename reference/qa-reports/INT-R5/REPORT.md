@@ -1,18 +1,71 @@
 # INT-R5 REPORT: release 5 (0.10.4) candidate, release-0.10.4 (packet reference/packets/2026-11-26/INT-R5.md)
 
-## EXACT NEXT STEP (written 11:59 AM ET 11-27 by `date`; box 3, INT-R5-c; supersedes the 11:16 step below)
-**THE FROZEN HEAD is c9770adb2** (release-0.10.4): fixes 2-4 (fc31f6e1f, 581e7198b, a323cdf97, f506a2068) + the soil merge 3dece8b3b
-(origin/t-soil-ease 826a437e4, the lead's landed hash; fix df06d9753; NO conflicts; 16 files) + INT-R5-b's docs-only eb475c965. tsc clean
-after the merge. Frozen in INT-R5-c's container: /home/user/wt/c3 (chattr src tools .github; src/game/gen2/proven writable); main base
-/home/user/wt/main (4bf2cbaaa); the lock's second base /home/user/wt/pre = eb475c965 (release-0.10.4's head before the merge, code =
-56a197f2b); results /home/user/wt/out-c3; lanes from a copy of r104 (run1.sh now also has lockpre/lockvspre).
-1. **THE FULL SET is RUNNING on c9770adb2**, ten lanes: A1 suite1-2 | A2 suite3-4 | A3 suite5-6 | T toolline | B seedlists seed11 shardplan
-   registrycheck | P pinwide | C tsc vitebuild chunkcheck artcheck knowncheck generalitycheck coveragecheck roadmapcheck timecheck
-   drawcheck kbdcheck buildstore validate world1 | D lockbase lockall (vs main) lockpre lockvspre (vs eb475c965: expect 102/102 unchanged,
-   the soil is draw-only) paint0-2 | E1 tipwalk storytipscan teachfirst castbots26 funcheck fundiff | E2 castbots27 tierbots.
-2. When every lane is done: buildcheck ALONE (a FAIL gets 2 re-runs alone, all reported; 2 of 3 = red), then clipcheck ALONE. Then the test
-   link PRE-BUILT in its own worktree of c9770adb2 (python3 tools/testlink/build.py), not published. The gate table with each shard's
-   totals, the lock counts lines, depthSteps shrunk (108 -> 0), funcheck 22 = the accepted set (fundiff), the §6 table. STOP before the PR.
+## EXACT NEXT STEP (written 1:28 PM ET 11-27 by `date`; box 3, INT-R5-c; supersedes the 11:59 step)
+**THE FROZEN HEAD is c9770adb2** (release-0.10.4; later commits on the branch are REPORT/out-c3 docs only). Everything below ran on it, in
+INT-R5-c's container (frozen /home/user/wt/c3; main base /home/user/wt/main 4bf2cbaaa; results /home/user/wt/out-c3, copied to
+r104/out-c3/ as each lane landed). A new lead takes over this afternoon (Matt's decision): report to the current lead.
+1. **Still running: lane B** (seedlists for every listed stage, seed11, shardplan, registrycheck): 1-1..1-9 and 2-1..2-3 PASS so far.
+2. **Then, ALONE (no lane running):** `node tools/perf/buildcheck.mjs` (a FAIL gets 2 re-runs alone, all reported; 2 of 3 = red; main itself
+   read 172 FAIL alone, ab5673531 172/127/148/146), then `node tools/perf/clipcheck.mjs`. Fill their rows below and §6 rows 1 and 4.
+3. Send the final counts to the current lead. STOP before the PR (the lead opens it on Matt's "push").
+
+## THE FULL SET on c9770adb2 (the gate table; each shard's totals; logs r104/out-c3/)
+| Gate | Result | Counts line / note |
+|---|---|---|
+| tsc | PASS | 37 s |
+| suite 1/6 | PASS | 723 tests, 721 pass, 0 fail, 2 todo (R-165.312 and 4-3's wall check: both on main; `todo:` in src tests 4 = main's 4) |
+| suite 2/6 | PASS | 642 tests, 641 pass, 0 fail, 1 todo |
+| suite 3/6 | PASS | 609 tests, 609 pass, 0 fail |
+| suite 4/6 | PASS | 697 tests, 697 pass, 0 fail (discovery 696/697: goalsEasy, now fixed) |
+| suite 5/6 | PASS | 762 tests, 762 pass, 0 fail |
+| suite 6/6 | PASS | 759 tests, 759 pass, 0 fail |
+| CI tool line (gates.yml, own lane) | PASS | 449 tests, 448 pass, 0 fail, 1 todo ("chase bots (OPEN, todo)", on main too); wheelBoard and wheelStepOff re-planted, green |
+| deploy build (BASE_PATH vite build) + chunkcheck | PASS | largest chunk 259,526 B, 3,734,778 spare |
+| build:store | PASS | "dist has no tracking, ads, collector, service worker or outside addresses" |
+| artcheck | PASS | largest thornbark-anim-2.webp 2048x6942 |
+| knowncheck | PASS | depthSteps.known.json **108 -> 0** (the soil ease; "new list (0 entries), not on the base yet": main has no list) |
+| generalitycheck | PASS | 26 literals, 26 known |
+| coveragecheck | PASS | 17 built stages, 31 pieces, 5 known gaps |
+| roadmapcheck | PASS | |
+| timecheck | PASS | 799 commits, 120 stamps |
+| drawcheck | PASS | 1493 s |
+| clipcheck | PENDING | runs ALONE after lane B |
+| kbdcheck (CI=1 FORCE_COLOR=1) | PASS | 258 s |
+| buildcheck | PENDING | runs ALONE after lane B (the lead's re-run rule) |
+| funcheck | FAIL, ACCEPTED | 22 worse or new = INT-14's accepted set: fundiff "mine 22, INT-14 22, IDENTICAL 22/22" |
+| THE LOCK GATE vs main 4bf2cbaaa (two runs) | moves as expected | "lock: 70/102 stages unchanged"; 32 moved = 2-6, 2-7, 1-4 + 29 proto.hints-only (1-1 1-2 1-7 1-8 1-9 2-1 2-2 2-4 2-5 5-9 6-1..6-7 6-9 7-1 7-3 7-5 7-6 7-7 7-9 8-1 8-2 8-6 8-8 8-9; no 8-5), the SAME set as item 6 on ab5673531; nothing else moves |
+| lock vs the pre-merge head eb475c965 (info) | PASS | "lock: 102/102 stages unchanged": the soil merge moves no layout |
+| paintcheck 0/3, 1/3, 2/3 | PASS x3 | each "0 known depth steps seen, R-165.487" (170 / 107 / 106 known ids seen, 0 new); paint1 was the discovery red |
+| seedlist --check, every listed stage | RUNNING | 1-1..1-9, 2-1..2-3 PASS so far (lane B) |
+| seedlist 1-1 --check | RUNNING | lane B |
+| storyTipScan --check | PASS | 0 dropped (2-6's view line now laid as Pokey's story line) |
+| tipwalk, teachFirstScan | PASS | teachFirstScan: 0 misses over 3422 rolls of 16 stages |
+| castBots 2-6 (4 bots, both settings, 100 seeds) | PASS | every row 100/100, 0 lives (castbots26-counts.txt) |
+| castBots 2-7 | PASS | adult N/E 100, child N 83 (16 x1 rescue, 1 x2: seed 11) / E 100, middle N 98 (91, 88) / E 99 (94), expert N 100 (castbots27-counts.txt) |
+| tierBots.test | PASS | 9 pass, 0 fail |
+| the WIDENED pin grep (release.md step 6, CI #98; 185 files) | 12 fail = inherited only | 1475 tests, 1461 pass, 12 fail: EXACTLY validate.test (5) + world1.test (7), names diffed equal; every other pinned test passes |
+| tools/validate/validate.test.ts | inherited, not in CI, R-165.531 | 43 tests, 38 pass, 5 fail (= main) |
+| tools/validate/world1.test.ts | inherited, not in CI, R-165.531 | 7 tests, 0 pass, 7 fail (= main) |
+| test link PRE-BUILT | DONE, NOT published | /home/user/wt/tl (worktree of c9770adb2): 414 files (limit 480), largest 10.5 MB; smoke.mjs OK (title, 1-1, 2-5: 0 problems; stills r104/out-c3/smoke/). No dist-published there: the map lists every file; before publishing, list the artifact's files and add each live path not in dist as null (build.py's own note) |
+
+## PLAY-STORE §6 on c9770adb2 (this candidate)
+| # | Item | Holds? | Proof |
+|---|---|---|---|
+| 1 | Nothing under the insets, both ways, foldable | pending clipcheck (alone) | kbdcheck PASS; no screen or menu changed (the What's New entry is the only menu text) |
+| 2 | Back is sensible | holds | no new screen or route |
+| 3 | Nothing new sent off the phone | holds | build:store PASS; no fetch/XHR/sendBeacon/localStorage write added |
+| 4 | Works offline | holds by diff; pending buildcheck | no web load added; smoke.mjs: 0 failed requests |
+| 5 | Sound stops in background; no wake lock | holds | no src/audio or wakeLock change |
+| 6 | Leave/return/rotate keeps the place | holds | no save/resume change; the suite's 2-6/2-7 stage tests PASS |
+| 7 | No dead ends or placeholders in the store build | holds; one ruling open | build:store PASS; `?fixture=home` is a URL-only dev toy beside main's chase/wheel fixtures (box 1's open ruling, the lead's row) |
+| 8 | Saves survive everything | not checked here | no save code changed; the real-phone kill check is Matt's closed-test step |
+
+## Accepted reds and inherited, named
+- funcheck: 22, IDENTICAL to INT-14's accepted set (release.md step 7: named in the PR body with its numbers and Matt's acceptance).
+- lockall exit 1: the 32 intended moves above, judged by the lead (item 6).
+- validate.test 5 / world1.test 7: inherited, not in CI, R-165.531 (= main 4bf2cbaaa); the widened pin grep's 12 are these.
+- Player text: no new string. 2-6's view line is the keeper's own words, now SAID (it was dropped); send it to the story keeper with
+  the whatsNew entry (release.md "Added 11-11").
 
 ## Box 3's earlier step (written 11:16 AM ET 11-27 by `date`; box 3, INT-R5-c; supersedes box 2's 10:28 step below)
 release-0.10.4 now holds ALL of fixes 2-4 on top of 59f5f1930 (code = ab5673531): fc31f6e1f (goalsEasy), 581e7198b (2-6's view line),
