@@ -29,7 +29,7 @@ export function judgeCreate(prompt) {
 
 export function judgeBash(cmd) {
   if (/<</.test(cmd) && /\bgit\s+commit\b/.test(cmd)) {
-    return { ok: false, why: 'Lead guard (D119, CI #99): this call holds a heredoc AND git commit. Write the multi-line edit in its OWN call (Write, or a scratch script), then commit in a one-line call starting `set -o pipefail;` gated on roadmapcheck.' };
+    return { ok: false, why: 'Lead guard (D119, CI #99): this call holds a heredoc AND git commit. Write the multi-line edit in its OWN call (Write, or a scratch script), then commit with `bash tools/team/leadcommit.sh "<subject>" <paths>` (roadmapcheck by exit code, CI #109).' };
   }
   return { ok: true };
 }

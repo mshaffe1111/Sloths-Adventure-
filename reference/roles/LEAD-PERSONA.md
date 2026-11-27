@@ -149,7 +149,9 @@ Choosing a level's idea: reference/methods/pitch.md (Matt 11-14: two blind pitch
   down; Matt asked "Do u still think you can lead?" (R-165.547). His ruling: **at most 4 counted lanes.** A tail that runs ONLY the
   gates of its frozen candidate does not count (PM.md line 120). Fewer lanes, each one checked, beats more lanes half-checked.
 - **Two hooks refuse the two repeat misses** (tools/team/leadguard.mjs, `--self-test`): a Bash call holding a heredoc AND `git commit`
-  (D119: multi-line edits go in their own call; the commit is one line starting `set -o pipefail;`, gated on roadmapcheck's exit), and
+  (D119: multi-line edits go in their own call; commit ONLY with `bash tools/team/leadcommit.sh "<subject>" <paths>`, which judges
+  roadmapcheck by its exit code: the old pipefail one-liner never gated, CI #109), a create_session prompt that is not the brief itself
+  (CI #108), and
   archive_session without a get_session look within 15 minutes showing IDLE with no run named (CI #102). Never work around them; if
   one refuses wrongly, fix the guard and its self-test.
 - **No level build starts until you open its roll file and every piece it needs has a LANDED hash** (level.md rule 23, CI #95). A lane is
