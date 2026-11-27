@@ -64,7 +64,7 @@ import { rockAt } from './rockfall.ts';
 import { gameSpeed, startingLives } from './assist.ts';
 import { ASSIST, STAND_SIDE, DOUBLE_RISE, JUMP_RISE, EDGE, FORGIVE, LEAN_SPEED, LET_GO, PHYS, airCarry, airTakeOff, blockBeside, lipHasRoom, secondJumpV, canGrabSwing, easeAssist, inSweetSpot, knockDir, newAirDrive, releaseCall, RELEASE, swingGrab, swingLanding, SWING_LAND, swingStep, swingSetup, timedLaunch, vineAmp, vineAngle, WALL_H, type SwingState } from './physics.ts';
 import { jumpHelp } from './jumpHelp.ts';
-import { HAND_REACH, HANG_DROP, HANG_PICK, ROPE_FROM, ROPE_GRAB, ROPE_SLIDE, ROPE_SPEED, ropeYAt } from './rope.ts';
+import { HAND_REACH, HANG_DROP, HANG_PICK, ROPE_FROM, ROPE_GRAB, ROPE_SLIDE, ropeSpeed, ropeYAt } from './rope.ts';
 import { drawRopes, ropeDip, type RopeLoad } from './ropeArt.ts';
 import { learnedSkills, type SkillId } from './skills.ts';
 import { newGlide, glideStep, glideBrake, glideLift, drawGlideLeaf } from './glide.ts';
@@ -5674,7 +5674,7 @@ export class GameEngine {
     const dir = (inp.right ? 1 : 0) - (inp.left ? 1 : 0);
     p.grounded = false;
     p.vy = 0;
-    p.vx = dir * ROPE_SPEED;
+    p.vx = dir * ropeSpeed(rope);
     if (dir !== 0) p.facing = dir as 1 | -1;
     p.x += p.vx * dt;
     if (dir !== 0) this.statShimmySec += dt;

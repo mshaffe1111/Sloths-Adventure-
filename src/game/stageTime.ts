@@ -22,7 +22,7 @@
 import type { GeneratedStage } from './stageGenerator.ts';
 import type { LaneFork, LaneRoute, ObjectiveType } from './types.ts';
 import { PHYS } from './physics.ts';
-import { ROPE_SPEED } from './rope.ts';
+import { ropeSpeed } from './rope.ts';
 
 export interface ModelParams {
   name: 'fast' | 'typical' | 'slow';
@@ -141,7 +141,7 @@ export function laneSeconds(stage: GeneratedStage, fork: LaneFork, r: LaneRoute,
   for (const rp of stage.ropes ?? []) {
     if (!ropes.has(rp.id) || !rp.required) continue;
     const gw = rp.x1 - rp.x0 - 88;
-    t += (gw + 88) / ROPE_SPEED + TIME.ropeOverhead - gw / v;
+    t += (gw + 88) / ropeSpeed(rp) + TIME.ropeOverhead - gw / v;
   }
   const foes = new Set(r.enemies);
   for (const e of stage.enemies) if (foes.has(e.id)) t += e.type === 'eagle' ? P.fightFlier : P.fightGround;
@@ -190,7 +190,7 @@ export function modelStage(stage: GeneratedStage, P: ModelParams = MODEL_TYPICAL
   for (const r of stage.ropes ?? []) {
     if (!r.required || inLane.ropes.has(r.id)) continue;
     const gw = r.x1 - r.x0 - 88;
-    special += (gw + 88) / ROPE_SPEED + TIME.ropeOverhead - gw / v;
+    special += (gw + 88) / ropeSpeed(r) + TIME.ropeOverhead - gw / v;
   }
   special += (stage.rivers ?? []).length * TIME.riverExtra;
 

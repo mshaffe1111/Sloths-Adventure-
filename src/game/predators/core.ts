@@ -11,7 +11,7 @@
  */
 import { checkClock } from '../clock.ts';
 import { hears as reaches, sound, stunned as isStunned, type Sound } from '../heroNoise.ts';
-import { ROPE_SPEED } from '../rope.ts';
+import { ROOT_SPEED, ROPE_SPEED } from '../rope.ts';
 import { watcherSees } from '../stillness.ts';
 import type { ClockDef } from '../stageKit.types.ts';
 import type { Act, Box, Glance, Outcome, Phase, Post, PredatorDef, PredatorEvents, PredatorState, Prey, Scene, Way } from './types.ts';
@@ -87,7 +87,8 @@ export function checkPredator(def: PredatorDef): string[] {
     // off when it ends (Easy's calm-in is under every tell: STILLNESS.easy.calmIn 0.35 s < TELL_MIN), or CREEP ON along the rope away from
     // it: the leap goes where he hung when the tell began, so the creep must carry his body clear of its box in the Easy tell)
     if (!def.callsOff) say('a leaper calls its tell off when it no longer sees him: freezing on the rope must stop the leap');
-    const creep = ROPE_SPEED * tellOf(def, true), clear = l.reach / 2 + HERO_HALF_W;
+    // (held to the SLOWEST creep a rope has: a root's, ROOT_SPEED, is under every shipped rope's ROPE_SPEED)
+    const creep = Math.min(ROPE_SPEED, ROOT_SPEED) * tellOf(def, true), clear = l.reach / 2 + HERO_HALF_W;
     if (!(creep >= clear)) say(`creeping on along the rope for its Easy tell (${Math.round(creep)} px) does not clear its leap (${Math.round(clear)} px from where he hung)`);
   }
   if (!real(def.giveUp) || !(def.recover >= 0) || !(def.cool >= 0) || !real(def.engage)) say('giveUp and engage above 0; recover and cool not below 0');

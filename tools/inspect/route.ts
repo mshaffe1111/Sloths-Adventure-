@@ -11,7 +11,7 @@
 import { validateAsJudged, jumpOK, lianaCaught, type CheckGraph } from '../../src/game/levelCheck.ts';
 import { lesserArcs } from '../../src/game/gen2/reach.ts';
 import { PHYS, JUMP_RISE, reachJump } from '../../src/game/physics.ts';
-import { ROPE_SPEED } from '../../src/game/rope.ts';
+import { ROPE_SPEED, ropeSpeed } from '../../src/game/rope.ts';
 import { TIME, MODEL_TYPICAL, MODEL_FAST } from '../../src/game/stageTime.ts';
 import type { Platform, Vine } from '../../src/game/types.ts';
 import { lianasOver, onRiver } from '../../src/game/river.ts';
@@ -389,7 +389,8 @@ function move(stage: Stage, a: Node, b: Node, kind: Edge['kind'], at: At): Step 
     const rise = A.y - B.y;
     let k: MoveKind;
     const lo = Math.min(tx, lx), hi = Math.max(tx, lx);
-    const byRope = gap > 60 && (stage.ropes ?? []).some((r) => r.x0 <= lo + 90 && r.x1 >= hi - 90 && Math.abs(r.g0 - A.y) < 60 && Math.abs(r.g1 - B.y) < 60);
+    const overRope = (stage.ropes ?? []).find((r) => r.x0 <= lo + 90 && r.x1 >= hi - 90 && Math.abs(r.g0 - A.y) < 60 && Math.abs(r.g1 - B.y) < 60);
+    const byRope = gap > 60 && !!overRope;
     if (kind === 'wheel') k = 'wheel';
     else if (kind === 'presumed') { k = 'presumed'; penalty = 4; }
     else if (kind === 'rope' || byRope) k = 'rope';
@@ -412,7 +413,7 @@ function move(stage: Stage, a: Node, b: Node, kind: Edge['kind'], at: At): Step 
     else if (k === 'timedHop') dt += 0.4;
     else if (k === 'lift') dt += Math.abs(rise) / 120 + TIME.movingExtra;
     else if (k === 'swing') dt = gap / SWING_PACE + 1.2;
-    else if (k === 'rope') dt = gap / ROPE_SPEED + TIME.ropeOverhead * K;
+    else if (k === 'rope') dt = gap / (overRope ? ropeSpeed(overRope) : ROPE_SPEED) + TIME.ropeOverhead * K;
     else if (k === 'drop') dt += Math.sqrt((2 * Math.max(0, -rise)) / 1800);
     else if (k === 'wheel') {
       // (the wait for a bucket at the jetty, half a bucket's period on average, then the ride from the foot over to the street: half a turn)
