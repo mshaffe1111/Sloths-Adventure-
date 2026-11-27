@@ -1,6 +1,20 @@
-# BUILD-28 REPORT (W2-LANE: 2-8 "Before the Water Rises"; R-165.430 (2), READY-28, BUILD-28). Session 1 (W2-LANE a), started 9:44 AM ET (from date). Session 2 (W2-LANE b), started 10:07 AM ET (from date). Session 3 (W2-LANE c), started 10:30 AM ET (from date). Session 4 (W2-LANE d), started 10:52 AM ET (from date). Session 5 (W2-LANE e), started 11:19 AM ET (from the session hook date) Session 6 (W2-LANE f), started 11:41 AM ET (from the session hook date) Session 7 (W2-LANE g), started 12:05 PM ET (from the session hook date) Session 8 (W2-LANE h), started 12:49 PM ET (from the session hook date) Session 9 (W2-LANE i), started 1:15 PM ET (from the session hook date) Session 10 (W2-LANE j), started 1:05 PM ET (from the session hook date) Session 12 (W2-LANE l), started 2:20 PM ET (from the session hook date) Session 13 (BUILD-28-j, box 10), started 10:43 AM ET (from the session hook date) Session 14 (BUILD-28-k, box 11), started 11:08 AM ET (from the session hook date)
+# BUILD-28 REPORT (W2-LANE: 2-8 "Before the Water Rises"; R-165.430 (2), READY-28, BUILD-28). Session 1 (W2-LANE a), started 9:44 AM ET (from date). Session 2 (W2-LANE b), started 10:07 AM ET (from date). Session 3 (W2-LANE c), started 10:30 AM ET (from date). Session 4 (W2-LANE d), started 10:52 AM ET (from date). Session 5 (W2-LANE e), started 11:19 AM ET (from the session hook date) Session 6 (W2-LANE f), started 11:41 AM ET (from the session hook date) Session 7 (W2-LANE g), started 12:05 PM ET (from the session hook date) Session 8 (W2-LANE h), started 12:49 PM ET (from the session hook date) Session 9 (W2-LANE i), started 1:15 PM ET (from the session hook date) Session 10 (W2-LANE j), started 1:05 PM ET (from the session hook date) Session 12 (W2-LANE l), started 2:20 PM ET (from the session hook date) Session 13 (BUILD-28-j, box 10), started 10:43 AM ET (from the session hook date) Session 14 (BUILD-28-k, box 11), started 11:08 AM ET (from the session hook date) Session 15 (BUILD-28-l, box 12), started 11:35 AM ET (from the session hook date)
 
-## EXACT NEXT STEP (BUILD-28 box 11, BUILD-28-k, started 11:08 AM ET (from the session hook date); FROZEN CANDIDATE cb7b9af11 on t-build-28-wip)
+## EXACT NEXT STEP (BUILD-28 box 12, BUILD-28-l, started 11:35 AM ET (from the session hook date); FROZEN CANDIDATE cb7b9af11 on t-build-28-wip)
+THE LEAD'S RULING ON THE LOCK (D159): box 11's base 1558489a2 predates release-0.10.3 c73cb9766, which this branch contains (merge-base
+checked here too: c73cb9766 is an ancestor of cb7b9af11). The lock base is c73cb9766 BY HASH.
+a. THE SET BY NAME (confirmed): box 11's 33 moved = 2-8 + INT-R5c's run1.sh --intended list (9d4330707), stage for stage:
+   - 1-4: release-0.10.3's relist and fill (FILL-14/14b, t-build-26): intended there.
+   - 2-7: release-0.10.3's new lay (t-build-27e/t-eng-27): intended there.
+   - 30 proto.hints-only: WARN-412's 22 UNION TEACH-11's 18 = 30 exactly = box 11's 30 (none missing, none extra; 8-5 is TEACH-11's).
+   - 2-8: this build.
+b. THE LOCK RE-RUN, base c73cb9766 (/home/user/base-c73, node_modules symlinked): run 1 `lockall.ts --layouts 16 --out <scratch>/base.json`
+   STARTED alone (<scratch>/lockbase.log). Run 2 `--check base.json` on cb7b9af11 (/home/user/cand-cb7) after its counts line. If the
+   container is fresh: both worktrees and base.json are gone; re-make them and re-run run 1.
+NEXT: the counts line of run 2 (expect only 2-8 + ENG-W2FALL verdict-only lines; any OTHER stage: STOP, to the lead); then the rest of the
+ONE gate run on cb7b9af11 (box 11's list c-e below).
+
+## (was the EXACT NEXT STEP) (BUILD-28 box 11, BUILD-28-k, started 11:08 AM ET (from the session hook date); FROZEN CANDIDATE cb7b9af11 on t-build-28-wip)
 DONE THIS BOX (b0, the fish trap, the lead's ruling A):
 1. 61979c555: the cut src/assets/w2-cut/fish-trap-28.webp (193x269, 15.8 KB, w2-new.webp frame 0,727 193x269, no repaint; named
    fish-trap-28, not cage-whole, so no text match can mark the old frame used); catalog row w2-cut28#fish-trap-28 (World 2 only, decor
