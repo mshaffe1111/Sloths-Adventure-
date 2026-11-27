@@ -1,19 +1,11 @@
 # INT-R5 REPORT: release 5 (0.10.4) candidate, release-0.10.4 (packet reference/packets/2026-11-26/INT-R5.md)
 
-## EXACT NEXT STEP for INT-R5-d (written 11:11 AM ET 11-27 by `date`; box 3, INT-R5-c; supersedes box 2's 10:28 step below)
-release-0.10.4 now holds fixes 3, 4 and half of 2 on top of 59f5f1930 (code = ab5673531): fc31f6e1f (goalsEasy), 581e7198b (2-6's view
-line), a323cdf97 (wheelStepOff re-planted). tsc clean after each. NOT YET: wheelBoard #4's re-plant, SOIL-EASE's landed hash, the CI tool
-line on the fix head, the freeze and the full set. Do, in order:
-1. **wheelBoard.test.ts #3/#4 (way +1): find a LIVE case.** The search: reference/qa-reports/INT-R5/replant/. A real case needs, on one way
-   +1 wheel: boardWatch OFF >= 2 scrambles (the old assertion, unchanged), ON 0 scrambles 0 pond, AND ON boardWatch HELD him on that
-   wheel's jetty (wheelBoardWait set after pad; `wt` in the lines). The wait test is what tells the skill from a timing shift: 2-6 adult
-   Normal 5's second edge wheel goes sc2 -> sc0 with NO wait there (board-probe-adult-normal-5.txt): NOT a plant.
-   - Tier bots (rowWheelRuns child/middle, Normal/Easy, v1 v2; board-1-100.txt, scramble rule only): no case on the seeds it reached.
-   - Cast bots with the wait rule (searchCast.ts; cast-1-50.txt, cast-51-100.txt): read the HIT lines.
-   If a HIT exists: rewrite #3/#4 on it, the wheel found by what the bot does (the way +1 wheel where OFF scrambles most and ON waited),
-   never by an x; old row "2-6 seed 1, child Normal v2, top wheel" -> new row named; prove it live (skill off in the ON test -> RED; on ->
-   green) as replant/step-proof.txt does. If NO case exists anywhere: send the lead the search totals and ask (it is a test removal or a
-   new toy, the lead's call, never a looser assertion); 20 minutes no reply = keep waiting (a test change, not reversible by you).
+## EXACT NEXT STEP for INT-R5-d (written 11:18 AM ET 11-27 by `date`; box 3, INT-R5-c; supersedes box 2's 10:28 step below)
+release-0.10.4 now holds ALL of fixes 2-4 on top of 59f5f1930 (code = ab5673531): fc31f6e1f (goalsEasy), 581e7198b (2-6's view line),
+a323cdf97 (wheelStepOff re-planted), f506a2068 (wheelBoard re-planted). tsc clean after each; each changed test passes alone (goalsEasy 3,
+w2Arc26 5, wheelStepOff 2, wheelBoard 4) and storyTipScan --check is 0 dropped. **The CI tool line has NOT run on these yet** (46 files,
+about 60 min): it runs once after the soil merge (step 2), which covers both. NOT YET: SOIL-EASE's landed hash, the freeze, the full set.
+1. (done: see "Box 3 done" below for both re-plants and their live proofs.)
 2. Merge SOIL-EASE's LANDED hash only (it sends it; t-soil-ease df06d9753 is its fix, 303bd69eb its REPORT; do not take an unlanded
    hash), --no-ff, conflicts named; then tsc + the CI tool line (gates.yml's line; about 60 min alone, run_in_background).
 3. Freeze that ONE head (D115, src/game/gen2/proven writable). main's frozen worktree is ready in this container's /home/user/wt/main
@@ -37,6 +29,15 @@ line on the fix head, the freeze and the full set. Do, in order:
 - **Fix 3, storyTipScan (581e7198b):** "Look at it all. Didn't lift a claw." (LINES_26.view, Pokey on the great wheel) was laid with no
   speaker, so Dot's guide took it as plain information and Tips dropped it. Laid at its SOURCE: kitLib26 (w2Arc26.ts) storyTips
   `w26.view: 'Pokey'`, as 2-4's own view line (w2Arc24.ts:292). storyTipScan --check: 0 dropped, 16 stages, 147 lines; w2Arc26.test 5 pass.
+- **Fix 2b, wheelBoard.test.ts #3/#4, way +1 (f506a2068):** old row 2-6 seed 1, child Normal v2 tier bot, the top wheel (dead: 0 scrambles
+  off). New row: **seed 29, the cast child on Easy** (castRun's who), wheel #2 (top, way +1). The wheel is found by what the bot does: of
+  the way +1 wheels on whose jetty boardWatch HELD him (wheelBoardWait set after pad), the one he scrambles most on with it off. Same
+  assertions (ON: way +1, 0 pond, 0 scrambles; OFF: >= 2 scrambles). The wait is what tells the skill from a timing shift: the tier bots
+  (board-1-100.txt, 800 runs) gave one scramble hit, 77 child Easy v1, with NO wait at that wheel (board-probe-child-easy-v1-77.txt), and
+  adult Normal 5 the same (board-probe-adult-normal-5.txt): neither is a plant. Cast bots with the wait rule (cast-*.txt, 878 of 900 runs
+  before it was stopped): 29 child Easy top, 37 adult Normal edge #1, 37 child Normal top. **Live:** skill off in both runs -> #3 and #4
+  RED ("boardWatch held him on no way +1 jetty"); on in both -> #4 RED ("0 scrambles with the skill off"); as committed 4 pass
+  (replant/board-proof.txt).
 - **Fix 2a, wheelStepOff.test.ts (a323cdf97):** old row 2-6 adult Easy seed 12 (dead: OFF = ON, shrine 139.1 s, 0 rescues; ON refuses
   8 times, it no longer matters). New row: **seed 39**. Search over all 100 listed seeds (replant/step-1-100.txt): 39 and 56 rescue with
   the skill off; 56's ON run never refuses (a timing shift, not the skill), so 39 is the plant (step-where.txt: OFF rides bucket #52 b4,
