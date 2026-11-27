@@ -67,10 +67,28 @@ check held to min(ROPE_SPEED, ROOT_SPEED) (Easy tell 0.65 s x 85 = 55 px >= clea
 new build replaces): w3Sections.ts:238, protoStage.ts:4753 (their ropes have no speed, so ROPE_SPEED is their number). Draw: ropeArt.ts
 look 'root' = World 1's vine tile, no trees, no posts; sheetWarm warms it.
 
-## KIT-W3b: what the brick needs (rule 26: the piece is the engine's, its placement the kit's)
-KIND `root` (gen2/types.ts): `{ kind: 'root', on: <the floor piece>, at, len, up: { normal: 190, easy: 170 }, patches: [{ at, r: { normal:
-90, easy: 60 }, normalOnly? }] }`, piece shape 'vine', w [0, 0] (the length is `len`). The floor piece under it must be WALKABLE its whole
-length (the root is clamped to it). Patches only inside the node's `#dark` stretch (else the roll fails by name). T: no patches, a soft
-dip under (3-2.md beat 1); W: the root IS the hiding place (no cover brick), ends over the ocelot's stretch; S: the longest root, patches.
+## KIT-W3b: THE ROOT BRICK SPEC (rule 26: the piece is the engine's, its placement the kit's; box 4 final, the watch rule folded in)
+KIND `root` (gen2/types.ts place): `{ kind: 'root', on: <the floor piece>, at, len, up: { normal: 190, easy: 170 }, patches: [{ at,
+r: { normal: 90, easy: 60 }, normalOnly? }] }`; the piece: shape 'vine', w [0, 0] (the length is `len`). Laid as a Rope (look 'root',
+speed ROOT_SPEED 85, required false, no posts), never main, never a landing. FIELDS: `on` = the floor piece under it, which must be
+WALKABLE its whole length (the root is clamped to it); `at` 0..1 along that floor; `len` px; `up` the root's height over the floor per
+setting; `patches[].at` 0..1 along the root, `r` the lit ring's radius per setting, `normalOnly` drops it on Easy. Patches only inside
+the node's `#dark` stretch (dark.ts darkEnds 'glow'; else the roll fails by name). The watcher: an enemy socket on the same floor with
+`patch: [a, b]` (Socket.patch, 0..1 of its piece, flips with a mirror).
+THE WATCH RULE (rootRow.test 'the watch rule'; plant: bound off -> red): patrolMinX - sight.ahead >= root.x0 and patrolMaxX + sight.ahead
+<= root.x1 (ocelot sight.ahead 240): the root STARTS AND ENDS OUTSIDE the watcher's watch of the floor (on the dark floor it sees him at
+its own height, lit or not; only on the root, over sight.up 40, does the dark hide him), and the patrol keeps room to walk AWAY from the
+patch (not only the patch's middle: 0.41..0.59 kept it under the light, seen on 14/16; the toy's 0.26..0.74 of 2200 is clear by 56 px).
+T: no patches, a soft dip under (3-2.md beat 1). W: the root IS the hiding place (no cover brick); it spans the ocelot's whole watch,
+starting and ending outside it (box 2's 'ends over the ocelot's stretch' was wrong: it broke the watch rule). S: the longest root, patches.
+
+## What 3-2's build can measure (rootBots.test.ts's play()/crossing(), firstTimer on the built roll, both settings)
+- took (he jumps up onto the root), crossed (left it near its far end), seen (frames with the watcher in tell/act/hunt while he is on or
+  under it), hits; GREEN on the toy: 16/16 took, crossed, seen 0, hits 0.
+- pace on the root: 85 px/s (Rope.speed; plant unset -> 120); stageTime counts the root at its own speed.
+- the light: Prey.lit per frame (castHero.lit), the cast's 'lit = seen' read; rootSeen judges a whole lit stretch with the watcher
+  walking its patrol at its setting's speed. Plants: noRootWait -> seen 10/16; noRootWait + lit off -> seen 0.
+- the stills: tools/engine/rootshoot.mjs <out> <slot> (any unlisted slot; LAID = BUILT printed). For 3-2's own build, use draftshoot.mjs
+  on the draft id instead (the root then comes from 3-2's own roll).
 
 ## Gates (box 4, frozen a619ea16a): tsc 0, generality PASS; the rest: the next step above. Pushback: 'lit = seen' was missing (sent; accepted). Lessons applied: D134, D138, D140, D148, D40.
