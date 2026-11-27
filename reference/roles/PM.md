@@ -109,6 +109,10 @@ Everything else is yours on his standing permission (11-07).
    message with no priority waits for its turn to end (D140).**
    **The catch-ahead list names every cause any lane has booked to another lane's landing ('expected to fall at the merge'): each is a
    measurement owed today, on a trial merge (CI #83).**
+   **No level build starts without its ROLLED piece list (CI #95, 11-26; level.md rule 23).** Before create_session for any level build,
+   the lead opens the roll file its packet cites (the design's whole node string through the real pipeline, 4 seeds, both settings) and
+   checks every MISSING piece has a LANDED hash. Matt 11-26: "Shouldn't you be telling the helpers to make sure that they're getting all
+   the pieces in?" Rule 23 already said so; the lead did not enforce it for 2-8 and 2-9.
    **Count the lanes before EVERY create_session (CI #94, 11-26).** The week's cap (WEEK-1125: at most 4 helpers taking turns at once,
    plus ENG-SIM) is checked first: a lane that waits on another lane's landing is QUEUED, not started; a tail running only the gates of
    its frozen candidate does not count, but it is archived the moment it reports. Over the cap, the newest waiting lane hands over.
