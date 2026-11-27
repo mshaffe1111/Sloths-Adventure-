@@ -3316,10 +3316,17 @@ function hasBlock(t: SectionTemplate): boolean {
   return [...t.pieces, ...(t.subBlocks ?? []).flatMap((b) => b.versions.flatMap((v) => v.pieces))].some((p) => !!p.block);
 }
 
-/** the moves a section's hanging pieces ask for (its own pieces and every sub-block version's): a liana swings, a vine climbs */
+/**
+ * The moves a section's hanging pieces ask for (its own pieces and every sub-block version's): a liana swings, a vine climbs, and a
+ * roof root (place 'root': shape 'vine', but laid as a Rope he creeps along hand over hand, never climbed up or down) asks the rope's
+ * move. Read by its PLACE before its shape: the root's 'vine' shape is its draw family, not a climb (ENG-ROOT box 2: a root row was
+ * refused from every pool on a kit without 'climb', and on one with it would have been let in without 'rope').
+ */
 function hangsNeed(t: SectionTemplate): Move[] {
-  const shapes = new Set([...t.pieces, ...(t.subBlocks ?? []).flatMap((b) => b.versions.flatMap((v) => v.pieces))].map((p) => p.shape));
-  return [...(shapes.has('liana') ? (['swing'] as const) : []), ...(shapes.has('vine') ? (['climb'] as const) : [])];
+  const pieces = [...t.pieces, ...(t.subBlocks ?? []).flatMap((b) => b.versions.flatMap((v) => v.pieces))];
+  const roots = pieces.filter((p) => p.place.kind === 'root');
+  const shapes = new Set(pieces.filter((p) => !roots.includes(p)).map((p) => p.shape));
+  return [...(shapes.has('liana') ? (['swing'] as const) : []), ...(shapes.has('vine') ? (['climb'] as const) : []), ...(roots.length ? (['rope'] as const) : [])];
 }
 
 /**
