@@ -1,0 +1,10 @@
+base rescues 1393 new rescues 630
+child normal 15 x 322: a drop of 178 px ahead, a trunk beside him, the way on is 111 px down | base same spot: 1 (base rescues on this roll 18)
+    base ('kid', 300, 'in a dip 70 px deep, a trunk beside him, the way on is 141 px down')
+child normal 15 x 856: in a dip 211 px deep, a drop of 173 px ahead | base same spot: 0 (base rescues on this roll 18)
+middle easy 1 x 1076: in a dip 209 px deep, a drop of 434 px ahead, a trunk beside him, the way on is 141 px down | base same spot: 2 (base rescues on this roll 17)
+    base ('child', 986, 'in a dip 70 px deep, a trunk beside him, the way on is 117 px down')
+    base ('middle', 1036, 'a drop of 108 px ahead, the way on is 131 px down')
+middle easy 37 x 1067: in a dip 202 px deep, a drop of 434 px ahead, a trunk beside him, the way on is 141 px down | base same spot: 2 (base rescues on this roll 7)
+    base ('kid', 1042, 'a trunk beside him, the way on is 138 px down')
+    base ('child', 1102, 'a trunk beside him, the way on is 115 px down')

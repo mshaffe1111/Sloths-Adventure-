@@ -425,7 +425,12 @@ export function towerCatches(flow: 'up' | 'down', platforms: readonly Platform[]
       // (going down, only into the wall on the end's own side, with his head room kept: the right end of a 60 px bridge by the left
       //  wall ran on to the RIGHT wall, a plank across the whole tower 70 px over a storey, ENG-DOWNBOT, drafted 3-1 easy 18)
       const ownSide = flow !== 'down' || (leftEnd ? e.x < TOWER.wall + 40 : e.x > width - TOWER.wall - 40);
-      if ((e.x < TOWER.wall + 40 || e.x > width - TOWER.wall - 40) && ownSide && !sealed(e.p) && !byGate(w0, w1, e.p.y) && (flow !== 'down' || (!cramped(w0, w1, e.p.y, [e.p]) && !slotted(w0, w1, e.p.y, [e.p]) && !passes(w0, w1, e.p.y) && !lidded(w0, w1, e.p.y)))) {
+      // (no slot is read here: a run-on opens no gap, one end at the wall and the other joined to the piece's own end, so a gap beside
+      //  it is the piece's own, there before it. Read off the run-on alone, a bridge 1176-1241 laid on wood ending at 1176 made the
+      //  run-on 1241-1280 65 px from that wood, a slot, though the bridge fills the gap; refused, the end 19 px in from the wall line was
+      //  left a way off with a 568 px blind drop, as no catch can lie under its point on the wall line (offEnd); read off the piece and
+      //  run-on as one, a piece's own 65 px gap on its far side refused its run-on (drafted 3-1 Easy 6 and 34, ENG-DARK box 26))
+      if ((e.x < TOWER.wall + 40 || e.x > width - TOWER.wall - 40) && ownSide && !sealed(e.p) && !byGate(w0, w1, e.p.y) && (flow !== 'down' || (!cramped(w0, w1, e.p.y, [e.p]) && !passes(w0, w1, e.p.y) && !lidded(w0, w1, e.p.y)))) {
         put(w0, w1, e.p.y, Le);
         added++;
         continue;

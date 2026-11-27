@@ -47,8 +47,9 @@ PLANTS = [
     # (ENG-DARK-d) unlit cause 2: the stop taken facing away is never turned to the rim; the give-up kept for the whole run
     ("the dark stop never turns him to face the rim", 'tools/inspect/firsttimer.ts',
      'if (p.facing !== rim.dir && stop.turn !== 2 && !this.who.noGlowTurn) {', 'if (false) {', "stop FACES the rim", 'src/game/gen2/darkBots.test.ts'),
+    # (ENG-DARK box 25) re-anchored: box 22's c16 (23fae3c18) changed on(r) to held(r) on this line; NO ANCHOR (no plant test) from c16 to c18
     ("a dark give-up kept for the whole run", 'tools/inspect/firsttimer.ts',
-     '    if (this.glowGaveUp.size && p.grounded) for (const r of this.glowGaveUp) if (!on(r)) this.glowGaveUp.delete(r);', '', "give-up ends with the visit", 'src/game/gen2/darkBots.test.ts'),
+     '    if (this.glowGaveUp.size && p.grounded) for (const r of this.glowGaveUp) if (!held(r)) this.glowGaveUp.delete(r);', '', "give-up ends with the visit", 'src/game/gen2/darkBots.test.ts'),
     # (ENG-DARK-d) unlit cause 3: the stop reads only the route's way, never the steer the thumb presses
     ("the dark stop never reads the pressed steer (glowSteer not called)", 'tools/inspect/firsttimer.ts',
      '    this.glowSteer(out);\n', '', "stop reads the THUMB", 'src/game/gen2/darkBots.test.ts'),
@@ -145,6 +146,20 @@ PLANTS = [
     ("glowWait takes the first rim at an end (89ef9a985's bot change reverted)", 'tools/inspect/firsttimer.ts',
      "<= GLOW_NEAR && unlit(r));\n    if (!rim) return null;", "<= GLOW_NEAR);\n    if (!rim || !unlit(rim)) return null;",
      'a dark stop at an end that is two rims', 'src/game/gen2/darkBots.test.ts'),
+    # (ENG-DARK box 24, plant 47) at the lip the way on's first point within 8 px of his middle read as straight under him (expert N 15 x 367)
+    ("lipEnd off: a point past his wood's end within 8 px read straight under him (downEnd 0)", 'tools/inspect/firsttimer.ts',
+     "      const d = dx > 8 ? 1 : dx < -8 ? -1 : endOf(at);\n", "      const d = dx > 8 ? 1 : dx < -8 ? -1 : 0;\n",
+     "at the lip over the way on's first point, he steps off that end", 'src/game/gen2/darkBots.test.ts'),
+    # (box 26) the run-on into the wall reads a slot off the run-on alone again: Easy 6's end 19 px from the wall line is left open
+    ("the run-on's slot read off the run-on alone (not the run it makes)", 'src/game/gen2/tower.ts',
+     "(!cramped(w0, w1, e.p.y, [e.p]) && !passes(", "(!cramped(w0, w1, e.p.y, [e.p]) && !slotted(w0, w1, e.p.y, [e.p]) && !passes(",
+     'going down, an end 19 px in from the wall line is run on into the wall', 'src/game/gen2/tower.test.ts'),
+    ("the run-on's slot read off the piece and its run-on as one (Easy 34's far-side gap)", 'src/game/gen2/tower.ts',
+     "(!cramped(w0, w1, e.p.y, [e.p]) && !passes(", "(!cramped(w0, w1, e.p.y, [e.p]) && !slotted(leftEnd ? w0 : e.p.x, leftEnd ? e.p.x + e.p.width : w1, e.p.y, [e.p]) && !passes(",
+     'going down, an end 19 px in from the wall line is run on into the wall', 'src/game/gen2/tower.test.ts'),
+    ("the run-on's slot read off the run-on alone: the raw 3-1 rolls (Easy 6's blind drop)", 'src/game/gen2/tower.ts',
+     "(!cramped(w0, w1, e.p.y, [e.p]) && !passes(", "(!cramped(w0, w1, e.p.y, [e.p]) && !slotted(w0, w1, e.p.y, [e.p]) && !passes(",
+     'head room on the way down: no piece of 24 raw rolls', 'src/game/gen2/worlds/w3.test.ts'),
 ]
 # (ENG-DARK box 13) ONLY='a|b': run only the plants whose name holds one of these (a re-anchor's check; the full proof runs them all)
 import os

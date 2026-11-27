@@ -3,6 +3,8 @@
  * and the things on screen she may perch on or point at. The engine fills one of these in place (GameEngine.guideView), so reading it
  * every frame allocates nothing; the arrays are the engine's own, read-only here.
  */
+import type { Travel } from './stageKit.types.ts';
+
 export interface GuideThing {
   x: number;
   y: number;
@@ -63,6 +65,9 @@ export interface GuideView {
   /** a stage is running at all (false before the engine exists, and in Dot's own flight stage) */
   live: boolean;
   stageId: string;
+  /** which way the stage travels (its data, LevelConfig.travel; unset is 'right'): on a way down the way on is BELOW him, so her words
+   *  keep off the drop and sit above him (R-165.456, 3-1 upright: the card under him covered the ledge and the glowworm he reads) */
+  travel: Travel;
   /** seconds of play (stands still while paused) */
   t: number;
   paused: boolean;
@@ -139,6 +144,7 @@ export function emptyGuideView(): GuideView {
   return {
     live: false,
     stageId: '',
+    travel: 'right',
     t: 0,
     paused: true,
     zoom: 1,

@@ -305,6 +305,23 @@ test('towerCatches going down keeps his head room both ways: no bridge under a s
   roomy([stub, low, floor], c);
 });
 
+test('going down, an end 19 px in from the wall line is run on into the wall: its slot read off the run it makes, never the run-on alone (ENG-DARK box 26, the drafted 3-1 Easy 6)', () => {
+  const W = 1280, FLOOR = 1900;
+  // (wood to 1176, a bridge 1176-1241 on it: the bridge's right end steps off onto the wall line, x 1260 (offEnd), where no catch can
+  //  lie; the run-on 1241-1280 read alone was 65 px from the wood at 1176, a slot, though the bridge fills that gap: refused, a 1,300 px
+  //  blind drop was left)
+  const wood = solid(0, 600, 1176, 1), bridge = solid(1176, 600, 65, 2), floor = solid(0, FLOOR, W, 3);
+  assert.equal(offEnd(1241, 1, W, HANG.fall), W - 20, 'the plant: the end is a way off, its point on the wall line');
+  const cs = towerCatches('down', [wood, bridge, floor], [], FLOOR, W);
+  assert.ok(cs.some((c) => c.y === 600 && c.x <= 1241 && c.x + c.w >= W), `run on into the wall: ${JSON.stringify(cs)}`);
+  assert.deepEqual(towerFalls('down', [wood, bridge, floor, ...cs.map((c, k) => solid(c.x, c.y, c.w, 100 + k))], FLOOR, W), [], 'no blind drop is left');
+  // (and a gap of the piece's own, on its far side, is no slot of the run-on's: Easy 34's 59-260 with wood 65 px past its right end,
+  //  read as one run with its run-on, lost its run-on 0-59 to a bough under it)
+  const short = solid(59, 600, 201, 4), past = solid(325, 600, 955, 5);
+  const ds = towerCatches('down', [short, past, floor], [], FLOOR, W);
+  assert.ok(ds.some((c) => c.y === 600 && c.x <= 0 && c.x + c.w >= 59), `the left end runs on into the wall: ${JSON.stringify(ds)}`);
+});
+
 test("leaps: the tower's jump model says yes to everything the engine flies, and no to a turn", () => {
   const a = solid(0, 1000, 300);
   assert.ok(leaps(a, solid(300, 1000 - 214, 200)), 'the flown climb of a double jump onto a lip (214 px, reach.md §2)');

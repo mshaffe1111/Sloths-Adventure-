@@ -124,6 +124,9 @@ export interface WorldManifest {
   ground: { y: number; bankH: number; style: NonNullable<Platform['style']>; look?: 'bough' };
   /** a fall: soft pits (a mossy floor and a step out: a miss costs a climb), water (a life), or nothing (a life) */
   pit: PitKind;
+  /** the world's own hazards and named clocks a node code may ask (`:#id`, `:#id@clock`; nodeAsks.ts hazardRegistry, ENG-ASKS R-165.501):
+   *  each row names the bricks that lay it and the zone the built stage holds. None: only the four falls */
+  hazards?: readonly import('./nodeAsks.ts').HazardDef[];
   /** how deep a soft pit's floor lies under its lips at most (px): a pit too narrow for wide steps out is shallower, its floor one
    *  plain hop under the far lip (pipeline pitSteps: every dip has a one-jump way out, every step a tread a thumb can land on) */
   pitDepth: number;

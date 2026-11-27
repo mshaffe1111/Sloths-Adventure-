@@ -241,14 +241,20 @@ test("a seam read as a way down (noSeamWalk, the plant): both sides of the seam 
 
 /** roll 11's seam (ENG-DARK box 15): the way on drops through a 13 px gap from 355-591 (y 11405) to 604-784, 13 px UP (a step he walks
  *  over), and comes out past 784 on the storey under it (604-817, y 11552). Steered by his facing, a turn on 355-591 flipped him and he
- *  walked to and fro over the rim at 604 eleven times (probes/seamscan.mts); he steps off the run's end the way on comes out past */
+ *  walked to and fro over the rim at 604 eleven times (probes/seamscan.mts); he steps off the run's end the way on comes out past.
+ *  R-165.432 (ENG-DARK box 25): on roll 11 the plant has LOST ITS LIVE CASE: towerRoute.ts dropTo's walledEnd (b32b0f5ee) reads 71's
+ *  right end walled by 180 (a right read), so the way on drops off 71's left end and never goes through the seam. The scan with
+ *  seamByFacing on (scan-seamByFacing-2432cfde-lane1/-lane2.jsonl) found the live case on ADULT NORMAL 29 (CAST_BOTS.adult.normal, the
+ *  scan's bot): 12 times over one rim planted; on c17 unplanted shrine 182.3 s, crossed 33, unlit [], loop 1. The pair is re-pointed
+ *  there, the bar unchanged (planted: worst rim >= 8) */
 async function seam11(seamByFacing: boolean) {
   if (readied !== DRAFT) readyDraft(DRAFT);
-  const { firstTimer, FT_ADULT } = await import('../../../tools/inspect/firsttimer.ts');
-  return firstTimer(DRAFT, 11, { ...FT_ADULT, setting: 'normal', seamByFacing }, { cap: 200 });
+  const { firstTimer } = await import('../../../tools/inspect/firsttimer.ts');
+  const { CAST_BOTS } = await import('../../../tools/inspect/castBots.ts');
+  return firstTimer(DRAFT, 29, { ...CAST_BOTS.adult.normal!, seamByFacing }, { cap: 200 });
 }
 
-test("the way on under a seam run comes out past its far end: on roll 11's 13 px seam he steps off that end and reaches the shrine, no rim gone over again and again (GREEN; planted: seamByFacing)", async () => {
+test("the way on under a seam run comes out past its far end: the adult on Normal roll 29 reaches the shrine, no rim gone over again and again (GREEN; planted: seamByFacing; R-165.432: was roll 11)", async () => {
   const r = await seam11(false);
   assert.equal(r.end, 'shrine', `he reached the shrine (${r.end} at ${r.time})`);
   assert.ok(r.dark && r.dark.crossed >= 20, `he went over dark rims (${r.dark?.crossed})`);
@@ -256,7 +262,7 @@ test("the way on under a seam run comes out past its far end: on roll 11's 13 px
   assert.ok(r.dark.loop < 6, `no rim gone over again and again (the most over one rim: ${r.dark.loop})`);
 });
 
-test("the seam run's end picked by his facing (seamByFacing, the plant): turned on the low side, he walks to and fro over roll 11's seam (RED)", async () => {
+test("the seam run's end picked by his facing (seamByFacing, the plant): turned on the low side, the adult on Normal roll 29 walks to and fro over one rim (RED; R-165.432: was roll 11)", async () => {
   const r = await seam11(true);
   assert.ok(r.dark, 'the drafted 3-1 has a lit dark (FTRun.dark)');
   assert.ok(Math.max(r.dark.loop, worstRim(r.dark.unlit)) >= 8, `one rim gone over again and again (the most over one rim: ${r.dark.loop})`);
@@ -277,6 +283,34 @@ test("the way on straight under a run that ends at a side wall: on Normal roll 1
   const r = await wall15(false);
   assert.equal(r.end, 'shrine', `he reached the shrine (${r.end} at ${r.time}; ${JSON.stringify(r.stuck.slice(-2).map((s) => s.what))})`);
   assert.ok(!r.stuck.some((s) => /fell back down/.test(s.what)), `never fell back down again and again (${JSON.stringify(r.stuck.map((s) => s.what))})`);
+});
+
+/** roll 15's lip (ENG-DARK box 24): going down, the expert on Normal walks left on 367-719 (y 7063) to its end, the way on dropping
+ *  past it to 253-605 (y 7185), the drop's first point at x 362. The engine stands him to STAND_SIDE past the end, his middle at
+ *  363-366 over that point: read as straight under him (downEnd's 0), the steer dropped and he was turned back, and 4 px on it named
+ *  the end again: to and fro at the lip 22 s (c16), 20 s to a rescue (c13). A point past an end of his wood is off that end (lipEnd) */
+async function lip15(noLipEnd: boolean) {
+  if (readied !== DRAFT) readyDraft(DRAFT);
+  const { firstTimer } = await import('../../../tools/inspect/firsttimer.ts');
+  const { CAST_BOTS } = await import('../../../tools/inspect/castBots.ts');
+  let atLip = 0;
+  const r = firstTimer(DRAFT, 15, { ...CAST_BOTS.expert.normal!, noLipEnd }, { cap: 125, onFrame(sim) {
+    const p = sim.p;
+    if (p.grounded && Math.abs(p.y - 7063) <= 4 && p.x >= 355 && p.x <= 380) atLip += 1 / 30;
+  } });
+  return { r, atLip };
+}
+
+test("at the lip over the way on's first point, he steps off that end: on Normal roll 15 the expert stands at most 3 s at 367's lip and never stalls there (GREEN; planted: noLipEnd)", async () => {
+  const { r, atLip } = await lip15(false);
+  assert.ok(atLip > 0, `he came to the lip (${atLip.toFixed(1)} s there)`);
+  assert.ok(atLip <= 3, `he stepped off the lip (${atLip.toFixed(1)} s there)`);
+  assert.ok(!r.stuck.some((s) => Math.abs(s.y - 7063) <= 4 && s.x >= 355 && s.x <= 380), `no stall at the lip (${JSON.stringify(r.stuck)})`);
+});
+
+test("the lip read as straight under him (noLipEnd, the plant): the expert goes to and fro at 367's lip on Normal roll 15 (RED)", async () => {
+  const { atLip } = await lip15(true);
+  assert.ok(atLip >= 8, `to and fro at the lip (${atLip.toFixed(1)} s there)`);
 });
 
 test("no end picked under that run (noOpenEnd, the plant): the expert stands over the shrine by roll 15's right wall until stranded (RED)", async () => {
@@ -310,12 +344,12 @@ test("followed by the point over his head (noLandAhead, the plant): the middle c
  *  rim's very edge, so he is STOOD there: the middle on Normal roll 1, at 0.5 s set standing 2 px in from the draft's first sleeping rim,
  *  facing away from it, its landing dark (asleepRim, box 14); the run then plays on (12 s). Box 10's real case: roll 16 x 920 on the lay before the second
  *  lights. FTRun.dark.edgeTurns names each turn press nearer the rim than its turn room */
-async function turnRun(noTurnRoom: boolean) {
+async function turnRun(noTurnRoom: boolean, noLipHold = false) {
   if (readied !== DRAFT) readyDraft(DRAFT);
   const { firstTimer, FT_MIDDLE } = await import('../../../tools/inspect/firsttimer.ts');
   const { darkRims } = await import('./dark.ts');
   let rim: ReturnType<typeof darkRims>[number] | undefined, undo = () => {};
-  const r = firstTimer(DRAFT, 1, { ...FT_MIDDLE, setting: 'normal', noTurnRoom }, { cap: 12, onFrame(sim, b) {
+  const r = firstTimer(DRAFT, 1, { ...FT_MIDDLE, setting: 'normal', noTurnRoom, noLipHold }, { cap: 12, onFrame(sim, b) {
     if (rim || sim.e.gameTime <= 0.5) return;
     ({ rim, undo } = asleepRim(sim, b, darkRims as never) as unknown as { rim: ReturnType<typeof darkRims>[number]; undo: () => void });
     assert.ok(rim, 'the draft has a sleeping rim');
@@ -334,10 +368,19 @@ test("the dark stop's turn is never pressed at the rim's very edge: stood 2 px i
   assert.deepEqual(dark.unlit, []);
 });
 
-test("the turn pressed at the rim's very edge (noTurnRoom, the plant): the press that turns him carries him off that rim into the dark (RED)", async () => {
-  const { dark, at } = await turnRun(true);
+// (ENG-DARK box 23, the lead's ruling) since c16 two guards cover this one walk-off: the turn room (no turn pressed within its slide of
+//  the edge) and the lip hold (the stop held while the engine stands him on the rim's piece, his middle past its end). The turn room alone
+//  off, the lip hold still holds him (the toy after this one); both off, off he goes RED. Whether the turn room is still needed alone: R-165.483
+test("the turn pressed at the rim's very edge (noTurnRoom + noLipHold, the plant): the press that turns him carries him off that rim into the dark (RED)", async () => {
+  const { dark, at } = await turnRun(true, true);
   assert.ok(dark.edgeTurns.some((t) => t.includes(at)), `a turn pressed at the edge of the rim at ${at}: ${JSON.stringify(dark.edgeTurns)}`);
   assert.ok(dark.unlit.some((u) => u.includes(at)), `the rim at ${at} gone over dark: ${JSON.stringify(dark.unlit.slice(0, 3))}`);
+});
+
+test("the lip hold alone holds at the rim's very edge: the turn room off (noTurnRoom), the press at the edge carries his middle past the end, the engine still stands him on the piece, the stop holds, and no rim is gone over dark (GREEN; planted: noLipHold, the toy before)", async () => {
+  const { dark, at } = await turnRun(true);
+  assert.ok(dark.edgeTurns.some((t) => t.includes(at)), `a turn pressed at the edge of the rim at ${at}: ${JSON.stringify(dark.edgeTurns)}`);
+  assert.deepEqual(dark.unlit, [], `no rim gone over dark (the rim at ${at})`);
 });
 
 /** (ENG-DARK box 17's rule on the real row, box 18's toys) the drafted 3-1 Normal 22: turn 17's vine (x 833) stops on catch #193
@@ -439,10 +482,31 @@ test("going down, a ledge over him is a step up only where the way rises: at Nor
   assert.deepEqual(lip.map((s) => s.what), [], 'no stuck line at the dip');
 });
 
-test("every ledge over him read as a step up (noLevelRead, the plant): at Normal roll 19's dip the child reads a double and stands at its lip (RED)", async () => {
-  const { read, lip } = await lip19(true);
-  assert.equal(read, 'double', 'the bough 188 px over his floor read as a step up');
-  assert.ok(lip.some((s) => /in a dip 188 px deep/.test(s.what)), `stuck at the dip's lip (${JSON.stringify(lip.map((s) => s.what))})`);
+/** the plant's live case moved (R-165.432, ENG-DARK box 25): on c17 lipEnd (2805f60c2, #13's fix: a point past an end of his wood is
+ *  off that end however near his middle) steps the planted child off roll 19's lip, the double still read there, so that row no longer
+ *  stands (c16: "in a dip 188 px deep" at 255; c17: none). The scan (child Normal rolls 1-40, noLevelRead, c17) found the same shape on
+ *  Normal roll 2: at the lip by x 458 (y 6602) the bough over it reads a double planted, a single unplanted, and the planted child
+ *  stands there (in a dip 208 px deep, at 141.7 s; unplanted no stuck line there). The RED is re-pointed there, the bar unchanged
+ *  (the read a double AND a stand in that dip); the GREEN stays on roll 19 */
+async function lip2(noLevelRead: boolean) {
+  if (readied !== DRAFT) readyDraft(DRAFT);
+  const { firstTimer } = await import('../../../tools/inspect/firsttimer.ts');
+  const { CAST_BOTS } = await import('../../../tools/inspect/castBots.ts');
+  const reads: string[] = [];
+  const r = firstTimer(DRAFT, 2, { ...CAST_BOTS.child.normal!, noLevelRead }, { cap: 240, dotSetting: true, onFrame(sim, b) {
+    const p = sim.p;
+    if (reads.length || !p.grounded || Math.abs(p.y - 6602) > 2 || Math.abs(p.x - 458) > 40) return;
+    const bot = b as unknown as { jumpFor(p: unknown, dir: number, here: unknown): string; floorAt(x: number, y: number, d: number): unknown };
+    reads.push(bot.jumpFor(p, p.facing < 0 ? -1 : 1, bot.floorAt(p.x, p.y, 6)));
+  } });
+  const lip = r.stuck.filter((s) => Math.abs(s.y - 6602) < 4 && Math.abs(s.x - 458) < 60);
+  return { read: reads[0], lip, end: r.end };
+}
+
+test("every ledge over him read as a step up (noLevelRead, the plant): at Normal roll 2's dip the child reads a double and stands at its lip (RED; R-165.432: was roll 19)", async () => {
+  const { read, lip } = await lip2(true);
+  assert.equal(read, 'double', 'the bough over his floor read as a step up');
+  assert.ok(lip.some((s) => /in a dip 208 px deep/.test(s.what)), `stuck at the dip's lip (${JSON.stringify(lip.map((s) => s.what))})`);
 });
 
 /** the SHAPE of roll 19's dip, hand-built (ENG-DARK box 22, the lead's ruling: a toy each way, N 19's row and the shape alone). On the

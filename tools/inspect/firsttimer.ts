@@ -306,6 +306,10 @@ export interface FirstTimer {
   /** under a seam run, his facing picks the end he steps off again, not the end the way on comes out past (darkBots.test's roll 11
    *  toy only): turned by anything else, he walks to and fro over the seam */
   seamByFacing?: boolean;
+  /** at the lip, the way on's first point under him within 8 px of his middle read as straight under him (darkBots.test's roll 15 lip
+   *  toy only): his middle past his wood's end and the engine still standing him on it, the steer drops, he is turned back and walks to
+   *  and fro at the lip */
+  noLipEnd?: boolean;
   /** with the way on straight under his run and never coming out past it, no end of the run picked (darkBots.test's roll 15 toy only):
    *  he stands over it turning, by a side wall, until stranded */
   noOpenEnd?: boolean;
@@ -1837,10 +1841,16 @@ export class FirstTimerRun {
     //  wood and stood turning over the bottom storey, 'the way on is 93 px down')
     const downVines = this.sim.vines.filter((v) => v.vineType === 'tree_climb' && !v.off && Math.abs(v.topY - p.y) <= 20 && v.bottomY > p.y + 40);
     const offWood = (q: Pt) => q.x <= lo + 8 || q.x >= hi - 8 || downVines.some((v) => Math.abs(v.x - q.x) <= 12);
+    // (the end of his wood a point off it lies past, the nearer one; 0 for a point at a climb vine down: lipEnd's note below)
+    const endOf = (q: Pt): -1 | 0 | 1 => (this.who.noLipEnd || downVines.some((v) => Math.abs(v.x - q.x) <= 12) ? 0 : q.x - lo <= hi - q.x ? -1 : 1);
     for (let j = this.prog.cur; j < Math.min(pts.length, this.prog.cur + 160); j++) {
       if (pts[j].y <= p.y + 40 || !offWood(pts[j])) continue;
       const at = pts[j], dx = at.x - p.x;
-      const d = dx > 8 ? 1 : dx < -8 ? -1 : 0;
+      // (lipEnd: a point past an END of his wood is off that end however near his middle it lies: at the lip the engine stands him to STAND_SIDE
+      //  past the end, his middle over the drop's first point (362 under a lip at 367), and read as straight under him (0) the steer
+      //  dropped, he was turned back, and 4 px on it said the end again: to and fro at the lip for 22 s, the expert on Normal roll 15
+      //  (367, y 7063), ENG-DARK box 24. Straight under him is a point over his own wood or a climb vine down)
+      const d = dx > 8 ? 1 : dx < -8 ? -1 : endOf(at);
       if (d === 0 || this.who.noSeamWalk) return d;
       // (a hop across is no way down: his ledge runs on over every gap narrower than his body to a piece at his height (he cannot fall
       //  through one; the engine lands him within LAND_HALF of an edge), so a way-on point past his own piece's end but under that run
