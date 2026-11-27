@@ -1,7 +1,7 @@
 # BUILD-29 REPORT: 2-9 "The River King's Court" (the World 2 finale; R-165.449), release 6
 Branch t-build-29, cut from origin/t-eng-29 = 098047713 (the lead's named base). Session 1 started 5:45 PM ET Thu 11/26 (by `date`).
 
-## EXACT NEXT STEP (session 10 hand-over, BUILD-29-j, 10:38 AM ET Fri 11/27; head = this commit)
+## EXACT NEXT STEP (session 10 hand-over, BUILD-29-j, 10:37 AM ET Fri 11/27 by `date`; head = this commit)
 ReadNotifications first (D140); the lead has two messages from j to answer (the kid on Easy, below). Box 10 DID steps 1-4, 5 in part:
 1. MERGED t-eng-29 7387d089a (B) at 0419d0736, no conflicts; tsc clean. CI tool line on a FROZEN tree of 0419d0736: 429, 427 pass, 1 fail,
    1 todo (chase bots ENG-B4, inherited). The fail was OURS (registrycheck: 2-9 drawcheck/seeds/flown): all three now in (below).
