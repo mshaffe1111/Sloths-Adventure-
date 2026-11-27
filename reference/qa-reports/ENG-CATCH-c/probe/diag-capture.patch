@@ -1,0 +1,15 @@
+diff --git a/src/game/gen2/pipeline.ts b/src/game/gen2/pipeline.ts
+index b72258480..3c5aa4e17 100644
+--- a/src/game/gen2/pipeline.ts
++++ b/src/game/gen2/pipeline.ts
+@@ -2563,7 +2563,9 @@ export function layStage(budget: StageBudget, graph: MissionGraph, kit: WorldKit
+     const mine = !routed ? sections : sections.slice(mark.s);
+     // (and no catch bough lies in a wheel's sweep or over it where its rider rides: wheel.ts sweepBox, his body over the top floor)
+     const keepOut = stageWheels(platforms).map((w) => { const b = sweepBox(w); return { x0: b.x0 - (routed ? fx : 0), x1: b.x1 - (routed ? fx : 0), y0: b.y0 - WHEEL_RIDER, y1: b.y1 }; });
+-    for (const c of towerCatches(flow as 'up' | 'down', P, V, floorY, TW, Gp, (q) => storeyOf.get(q.id) ?? 0, (q) => sealedIds.has(q.id), keepOut)) {
++    const __out = towerCatches(flow as 'up' | 'down', P, V, floorY, TW, Gp, (q) => storeyOf.get(q.id) ?? 0, (q) => sealedIds.has(q.id), keepOut);
++    ((globalThis as any).__TC ??= []).push(JSON.parse(JSON.stringify({ flow, P, V, floorY, TW, Gp, levels: P.map((q) => [q.id, storeyOf.get(q.id) ?? 0]), sealed: P.filter((q) => sealedIds.has(q.id)).map((q) => q.id), keepOut, fx, turns: turns.slice(mark.t).map((t) => ({ vid: t.vine.id, from: t.from, to: t.to })), out: __out })));
++    for (const c of __out) {
+       storeyNow = c.level;
+       const cx = c.x + fx;
+       const b = mk(cx, c.y, c.w, 'branch', 0);
