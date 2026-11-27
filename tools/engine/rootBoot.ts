@@ -1,6 +1,6 @@
 /**
  * A page's root toy (tools/engine/rootshoot.mjs; ENG-ROOT item 2, the stills): loaded before the game's entry, it lists World 3's root row
- * (gen2/toyRoot.ts, the toy rootBots.test.ts plays) under the slot id the page names (globalThis __ROOT_SLOT, set before any script runs),
+ * (gen2/rootHarness.ts, the toy rootBots.test.ts plays) under the slot id the page names (globalThis __ROOT_SLOT, set before any script runs),
  * so the game's own build plays it as rootBots.test.ts's play() does: the first roll that lays the row whole, packed (packPlan + keptFoes)
  * and planted as the slot's only seed, the slot's hand-built shadow lifted (draftReady.ts's pattern). The toy's own id has no STAGE_PLAN
  * entry, so the page cannot play it by id; the slot lends it a stage plan entry, and the row's world finish hands the page the toy's own
@@ -10,7 +10,7 @@
 import { LISTED } from '../../src/game/gen2/listed.ts';
 import { packPlan, plantSeedList } from '../../src/game/gen2/seedList.ts';
 import { keptFoes } from '../../src/game/gen2/pipeline.ts';
-import { rootBuilt, rootKit } from '../../src/game/gen2/toyRoot.ts';
+import { rootBuilt, rootKit } from '../../src/game/gen2/rootHarness.ts';
 import { HAND_STAGES } from '../../src/game/protoStage.ts';
 import { W2_STAGES } from '../../src/game/w2Stages.ts';
 import { difficulty } from '../../src/game/difficulty.ts';

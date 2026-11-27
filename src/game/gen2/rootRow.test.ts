@@ -5,7 +5,7 @@
  * game, a toy id on World 3's own kit.
  *   - laid: the root is a Rope with look 'root' and ROOT_SPEED, its whole length over the floor, 190 up on Normal and 170 on Easy, the
  *     patch a fixed light (no sleep) in the dark zone at its place, r 90 / 60, the ocelot on the floor under the root.
- * The row is toyRoot.ts's (World 3's real kit). The bot's creep under the ocelot: rootBots.test.ts.
+ * The row is rootHarness.ts's (World 3's real kit). The bot's creep under the ocelot: rootBots.test.ts.
  */
 import '../headlessDom.ts';
 import { test } from 'node:test';
@@ -13,7 +13,7 @@ import assert from 'node:assert/strict';
 import { buildGen2Stage } from './pipeline.ts';
 import { ROOT_PATCH_DROP } from './dark.ts';
 import { ROOT_SPEED } from '../rope.ts';
-import { rootBuilt as built, rootCfg as cfg, rootKit as kit } from './toyRoot.ts';
+import { rootBuilt as built, rootCfg as cfg, rootKit as kit } from './rootHarness.ts';
 import type { WorldKit } from './types.ts';
 
 test('laid by gen2: a root over its walkable floor at the root\'s speed, its patch a fixed light of the dark over it, the ocelot under it', () => {

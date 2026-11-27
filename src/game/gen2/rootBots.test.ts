@@ -1,5 +1,5 @@
 /**
- * CREEP UNDER A WATCHER (ENG-ROOT item 3; 3-2.md beat 9; level.md rules 21, 23): the first-timer on World 3's root row (toyRoot.ts, laid by
+ * CREEP UNDER A WATCHER (ENG-ROOT item 3; 3-2.md beat 9; level.md rules 21, 23): the first-timer on World 3's root row (rootHarness.ts, laid by
  * gen2 on World 3's real kit) plays it in the real engine.
  */
 import '../headlessDom.ts';
@@ -9,7 +9,7 @@ import { keptFoes } from './pipeline.ts';
 import { withTestStage } from './listed.ts';
 import { packPlan, plantSeedList } from './seedList.ts';
 import { withFixtureConfig, type RealPlay } from '../realPlay.ts';
-import { ROOT_TOY, rootBuilt, rootCfg, rootKit } from './toyRoot.ts';
+import { ROOT_TOY, rootBuilt, rootCfg, rootKit } from './rootHarness.ts';
 import { firstTimer, FT_ADULT, type FirstTimer } from '../../../tools/inspect/firsttimer.ts';
 import type { Rope } from '../types.ts';
 import type { CastPlay } from '../castPlay.ts';

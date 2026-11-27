@@ -1,5 +1,5 @@
 /**
- * The roof root's toy row on World 3's REAL kit (ENG-ROOT items 4-5; 3-2.md NEW 2; level.md rules 21, 23): World 3's manifest (its moves,
+ * The roof root's toy row on World 3's REAL kit (a World 3 test HARNESS: generalitycheck.ts exempts *Harness.ts; it names the toy id, so it may not be engine code; renamed from toyRoot.ts, ENG-ROOT box 4) (ENG-ROOT items 4-5; 3-2.md NEW 2; level.md rules 21, 23): World 3's manifest (its moves,
  * its cast's ocelot, its glowworm dark and emitters) with its way-down bricks, its shelf walk on every phase as the filler, and one row: a
  * root from the place `root` over a walkable floor, a glowworm dark over it (dark.ts darkEnds 'glow'), one fixed patch on the root and an
  * ocelot from its socket under it. At the tense phases, where World 3's threat budget pays for an ocelot. A toy id, no stage of the game.

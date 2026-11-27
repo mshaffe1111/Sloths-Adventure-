@@ -1,5 +1,5 @@
 /**
- * Stills of World 3's root toy (ENG-ROOT item 2; gen2/toyRoot.ts, the row rootBots.test.ts plays): real game frames, upright 390x844 and
+ * Stills of World 3's root toy (ENG-ROOT item 2; gen2/rootHarness.ts, the row rootBots.test.ts plays): real game frames, upright 390x844 and
  * sideways 844x390 at 2x, Normal and Easy, Pokey pinned HANGING on the root (p.y = the root's y + HAND_REACH 70, rope.ts), (a) in the dark
  * before the patch and (b) in the patch's lit ring, each shot taken when the ocelot below has walked under him.
  *   node tools/engine/rootshoot.mjs <outDir> <slot id> [port]
