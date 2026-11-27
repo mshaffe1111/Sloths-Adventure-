@@ -1,0 +1,134 @@
+4x normal ERR pool short at slot 2 (n2 practise: no climb section left)
+4x normal ERR pool short at slot 3 (n2 practise: no climb section left)
+4x normal ERR pool short at slot 4 (n2 practise: no climb section left)
+4x normal ERR pool short at slot 5 (n3 practise: no rope section left)
+4x normal ERR pool short at slot 6 (n3 practise: no rope section left)
+4x normal ERR pool short at slot 7 (n3 practise: no rope section left)
+4x normal ERR pool short at slot 11 (n5 test: no climb section left)
+4x normal ERR pool short at slot 12 (n5 test: no climb section left)
+4x normal ERR pool short at slot 13 (n5 test: no climb section left)
+4x normal ERR pool short at slot 16 (n7 practise: no rope section left)
+4x normal ERR pool short at slot 17 (n7 practise: no rope section left)
+1x normal ERR pool short at slot 22 (n10 practise: no bounce section left)
+4x normal ERR pool short at slot 23 (n10 practise: no bounce section left)
+4x normal ERR pool short at slot 24 (n10 practise: no bounce section left)
+4x normal ERR node code: V11 at token 11: 7 of 8 content nodes are 'f' (cap 3)
+4x normal ERR node code: V11 at token 3: 'f' on two neighbouring content nodes
+4x normal ERR node code: V11 at token 4: 'f' on two neighbouring content nodes
+4x normal ERR node code: V11 at token 5: 'f' on two neighbouring content nodes
+4x normal ERR node code: V11 at token 10: 'f' on two neighbouring content nodes
+4x normal ERR node code: V11 at token 11: 'f' on two neighbouring content nodes
+4x normal ERR node code: V14 at token 1: 0 'c' nodes for a deal of 2
+4x normal ERR node code: V14 at token 1: 7 'f' nodes for a deal of 3
+4x normal ERR node code: V14 at token 1: 0 'r' nodes for a deal of 2
+1x normal ERR flags: 4373 px of way apart after the flag at x 532, y 7061 (900-4000)
+1x normal ERR tower: a fall off the piece at x 611-696, y 5205 drops 459 px (sound wood within 450)
+1x normal ERR tower: the storey at y 585 is reached from y 1085 by jumps alone (onto the piece at x 358-720, y 585): the vine at x 332 is not the only way up
+4x normal ERR ask: node n2 "Pf1^<": content 'c' (climb): 3 of 3 sections are floating
+4x normal ERR ask: node n2 "Pf1^<": shape ^ (rising): its sections rise 0 px
+4x normal ERR ask: node n3 "Pf1^<": content 'p' (beat): Later: beat pieces on a clock (pods, snap stones): B14's emitter on t-b14, not merged
+4x normal ERR ask: node n3 "Pf1^<": shape ^ (rising): its sections rise 0 px
+4x normal ERR ask: node n3 "Pf1^<": hazard #soft@moon: Later: named clocks are B14's pods (t-b14)
+4x normal ERR ask: node n4 "Pf1^<": shape ^ (rising): its sections rise 0 px
+4x normal ERR ask: node n5 "Xf1^>": content 'p' (beat): Later: beat pieces on a clock (pods, snap stones): B14's emitter on t-b14, not merged
+4x normal ERR ask: node n5 "Xf1^>": shape ^ (rising): its sections rise 0 px
+4x normal ERR ask: node n5 "Xf1^>": hazard #soft@moon: Later: named clocks are B14's pods (t-b14)
+1x normal ERR ask: node n7 "Pg1^<": content 'r' (rope): 2 of 2 sections are ground
+4x normal ERR ask: node n8 "Wf1^>": content 'p' (beat): Later: beat pieces on a clock (pods, snap stones): B14's emitter on t-b14, not merged
+4x normal ERR ask: node n8 "Wf1^>": shape ^ (rising): its sections rise 0 px
+4x normal ERR ask: node n8 "Wf1^>": hazard #soft@moon: Later: named clocks are B14's pods (t-b14)
+4x normal ERR ask: node n10 "Pf1^<": content 'b' (bounce): 3 of 3 sections are floating
+4x normal ERR ask: node n10 "Pf1^<": shape ^ (rising): its sections rise 0 px
+1x normal ERR ask: node n11 "Cf1^>": shape ^ (rising): its sections rise 0 px
+4x normal ERR ask: node n11 "Cf1^>": hazard #soft@moon: Later: named clocks are B14's pods (t-b14)
+4x normal ERR ask: node n13 "Sg1^<": content 'p' (beat): Later: beat pieces on a clock (pods, snap stones): B14's emitter on t-b14, not merged
+1x normal ERR ask: node n13 "Sg1^<": shape ^ (rising): its sections rise -636 px
+4x normal ERR ask: node n13 "Sg1^<": hazard #soft@moon: Later: named clocks are B14's pods (t-b14)
+3x normal ERR pool short at slot 25 (n10 practise: no bounce section left)
+3x normal ERR pool short at slot 28 (n11 combine: no floating section left)
+1x normal ERR tower: the storey at y 585 is reached from y 1071 by jumps alone (onto the piece at x 395-779, y 585): the vine at x 369 is not the only way up
+2x normal ERR ask: node n7 "Pg1<": content 'r' (rope): 2 of 2 sections are ground
+3x normal ERR ask: node n11 "Cf1^>": content 'f' (floating): 1 of 3 sections are ground
+1x normal ERR ask: node n11 "Cf1^>": shape ^ (rising): its sections rise -226 px
+1x normal ERR ask: node n13 "Sg1^<": shape ^ (rising): its sections rise -813 px
+1x normal ERR ask: node n11 "Cf1^>": shape ^ (rising): its sections rise -223 px
+1x normal ERR ask: node n13 "Sg1^<": shape ^ (rising): its sections rise -724 px
+1x normal ERR tower: a fall off the piece at x 330-578, y 2016 drops 541 px (sound wood within 450)
+1x normal ERR tower: a fall off the piece at x 718-898, y 2243 drops 452 px (sound wood within 450)
+1x normal ERR tower: the storey at y 2470 is reached from y 2695 by jumps alone (onto the piece at x 114-364, y 2429): the vine at x 825 is not the only way up
+1x normal ERR tower: the storey at y 1898 is reached from y 2123 by jumps alone (onto the piece at x 593-832, y 1898): the vine at x 858 is not the only way up
+1x normal ERR tower: the storey at y 585 is reached from y 1069 by jumps alone (onto the piece at x 118-529, y 585): the vine at x 92 is not the only way up
+1x normal ERR ask: node n7 "Pg1_<": content 'r' (rope): 2 of 2 sections are ground
+1x normal ERR ask: node n11 "Cf1^>": shape ^ (rising): its sections rise -266 px
+1x normal ERR ask: node n13 "Sg1^<": shape ^ (rising): its sections rise -782 px
+8x easy ERR pool short at slot 2 (n2 practise: no climb section left)
+8x easy ERR pool short at slot 3 (n2 practise: no climb section left)
+8x easy ERR pool short at slot 4 (n2 practise: no climb section left)
+8x easy ERR pool short at slot 5 (n3 practise: no rope section left)
+8x easy ERR pool short at slot 6 (n3 practise: no rope section left)
+8x easy ERR pool short at slot 7 (n3 practise: no rope section left)
+8x easy ERR pool short at slot 11 (n5 test: no climb section left)
+8x easy ERR pool short at slot 12 (n5 test: no climb section left)
+8x easy ERR pool short at slot 13 (n5 test: no climb section left)
+8x easy ERR pool short at slot 16 (n7 practise: no rope section left)
+8x easy ERR pool short at slot 17 (n7 practise: no rope section left)
+2x easy ERR pool short at slot 22 (n10 practise: no bounce section left)
+8x easy ERR pool short at slot 23 (n10 practise: no bounce section left)
+8x easy ERR pool short at slot 24 (n10 practise: no bounce section left)
+8x easy ERR node code: V11 at token 11: 7 of 8 content nodes are 'f' (cap 3)
+8x easy ERR node code: V11 at token 3: 'f' on two neighbouring content nodes
+8x easy ERR node code: V11 at token 4: 'f' on two neighbouring content nodes
+8x easy ERR node code: V11 at token 5: 'f' on two neighbouring content nodes
+8x easy ERR node code: V11 at token 10: 'f' on two neighbouring content nodes
+8x easy ERR node code: V11 at token 11: 'f' on two neighbouring content nodes
+8x easy ERR node code: V14 at token 1: 0 'c' nodes for a deal of 2
+8x easy ERR node code: V14 at token 1: 7 'f' nodes for a deal of 3
+8x easy ERR node code: V14 at token 1: 0 'r' nodes for a deal of 2
+1x easy ERR flags: 4373 px of way apart after the flag at x 532, y 7061 (900-4000)
+1x easy ERR tower: a fall off the piece at x 611-696, y 5205 drops 459 px (sound wood within 450)
+1x easy ERR tower: the storey at y 585 is reached from y 1085 by jumps alone (onto the piece at x 358-720, y 585): the vine at x 332 is not the only way up
+8x easy ERR ask: node n2 "Pf1^<": content 'c' (climb): 3 of 3 sections are floating
+8x easy ERR ask: node n2 "Pf1^<": shape ^ (rising): its sections rise 0 px
+8x easy ERR ask: node n3 "Pf1^<": content 'p' (beat): Later: beat pieces on a clock (pods, snap stones): B14's emitter on t-b14, not merged
+8x easy ERR ask: node n3 "Pf1^<": shape ^ (rising): its sections rise 0 px
+8x easy ERR ask: node n3 "Pf1^<": hazard #soft@moon: Later: named clocks are B14's pods (t-b14)
+8x easy ERR ask: node n4 "Pf1^<": shape ^ (rising): its sections rise 0 px
+8x easy ERR ask: node n5 "Xf1^>": content 'p' (beat): Later: beat pieces on a clock (pods, snap stones): B14's emitter on t-b14, not merged
+8x easy ERR ask: node n5 "Xf1^>": shape ^ (rising): its sections rise 0 px
+8x easy ERR ask: node n5 "Xf1^>": hazard #soft@moon: Later: named clocks are B14's pods (t-b14)
+2x easy ERR ask: node n7 "Pg1^<": content 'r' (rope): 2 of 2 sections are ground
+8x easy ERR ask: node n8 "Wf1^>": content 'p' (beat): Later: beat pieces on a clock (pods, snap stones): B14's emitter on t-b14, not merged
+8x easy ERR ask: node n8 "Wf1^>": shape ^ (rising): its sections rise 0 px
+8x easy ERR ask: node n8 "Wf1^>": hazard #soft@moon: Later: named clocks are B14's pods (t-b14)
+8x easy ERR ask: node n10 "Pf1^<": content 'b' (bounce): 3 of 3 sections are floating
+8x easy ERR ask: node n10 "Pf1^<": shape ^ (rising): its sections rise 0 px
+2x easy ERR ask: node n11 "Cf1^>": shape ^ (rising): its sections rise 0 px
+8x easy ERR ask: node n11 "Cf1^>": hazard #soft@moon: Later: named clocks are B14's pods (t-b14)
+8x easy ERR ask: node n13 "Sg1^<": content 'p' (beat): Later: beat pieces on a clock (pods, snap stones): B14's emitter on t-b14, not merged
+2x easy ERR ask: node n13 "Sg1^<": shape ^ (rising): its sections rise -636 px
+8x easy ERR ask: node n13 "Sg1^<": hazard #soft@moon: Later: named clocks are B14's pods (t-b14)
+1x easy ERR tower: the storey at y 585 is reached from y 1085 by jumps alone (onto the piece at x 364-726, y 585): the vine at x 338 is not the only way up
+6x easy ERR pool short at slot 25 (n10 practise: no bounce section left)
+6x easy ERR pool short at slot 28 (n11 combine: no floating section left)
+1x easy ERR tower: the storey at y 585 is reached from y 1071 by jumps alone (onto the piece at x 395-779, y 585): the vine at x 369 is not the only way up
+4x easy ERR ask: node n7 "Pg1<": content 'r' (rope): 2 of 2 sections are ground
+6x easy ERR ask: node n11 "Cf1^>": content 'f' (floating): 1 of 3 sections are ground
+2x easy ERR ask: node n11 "Cf1^>": shape ^ (rising): its sections rise -226 px
+2x easy ERR ask: node n13 "Sg1^<": shape ^ (rising): its sections rise -813 px
+1x easy ERR tower: the storey at y 585 is reached from y 1071 by jumps alone (onto the piece at x 245-629, y 585): the vine at x 219 is not the only way up
+2x easy ERR ask: node n11 "Cf1^>": shape ^ (rising): its sections rise -223 px
+2x easy ERR ask: node n13 "Sg1^<": shape ^ (rising): its sections rise -724 px
+1x easy ERR tower: a fall off the piece at x 330-578, y 2016 drops 541 px (sound wood within 450)
+1x easy ERR tower: a fall off the piece at x 718-898, y 2243 drops 452 px (sound wood within 450)
+1x easy ERR tower: the storey at y 2470 is reached from y 2695 by jumps alone (onto the piece at x 114-364, y 2429): the vine at x 825 is not the only way up
+1x easy ERR tower: the storey at y 1898 is reached from y 2123 by jumps alone (onto the piece at x 593-832, y 1898): the vine at x 858 is not the only way up
+1x easy ERR tower: the storey at y 585 is reached from y 1069 by jumps alone (onto the piece at x 118-529, y 585): the vine at x 92 is not the only way up
+2x easy ERR ask: node n7 "Pg1_<": content 'r' (rope): 2 of 2 sections are ground
+2x easy ERR ask: node n11 "Cf1^>": shape ^ (rising): its sections rise -266 px
+2x easy ERR ask: node n13 "Sg1^<": shape ^ (rising): its sections rise -782 px
+1x easy ERR flags: 5027 px of way apart after the flag at x 976, y 7726 (900-4000)
+1x easy ERR flags: none before the hard node n8, 19415 px along the way (within 2400 px)
+1x easy ERR tower: the storey at y 2654 is reached from y 3139 by jumps alone (onto the piece at x 549-903, y 2654): the vine at x 929 is not the only way up
+1x easy ERR tower: the storey at y 585 is reached from y 1069 by jumps alone (onto the piece at x 663-1074, y 585): the vine at x 1100 is not the only way up
+clean 0/8
+(reused W1/W2 sections that threw on W3's budget, left out: 42)

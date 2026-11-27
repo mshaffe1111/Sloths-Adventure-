@@ -1,0 +1,9 @@
+3-1 A Tg1:#soft D_ Pf1<:#dark Xg1>:#dark R Dc1_ Wf1>:#dark@puff R Pb1< Cg1>:#dark@puff R Sg1_<:#dark E
+3-2 A Tr1<:#soft Pg1> Pr1<:#dark Pc1> Xr1&<:#dark:&ocelot*1 R Pf1< Wm1&>:#dark:&ocelot*1 R Pg1&<:&ocelot*1 Cr1&>:#dark:&ocelot*2 R Sr1&<:#dark:&ocelot*3 E
+3-3 A Tx1&<:#spore@puff:&ocelot*1 Pf1> Pg1&<:#spore@puff:&ocelot*1 Xx1&>:#spore@puff:&ocelot*2 R Pc1^< Wg1&>:#spore@puff:&ocelot*1 R Pf1< Cx1&>:#spore@puff:&ocelot*2 R Sx1&<:#spore@puff:&ocelot*3 E
+3-4 A Pc1^< Tp1^<:#soft@moon Pf1^< Xp1^>:#soft@moon R Pr1< Wp1^>:#soft@moon R Pb1^< Cf1^>:#soft@moon R Sp1^<:#soft@moon E
+3-5 A Th1<:#soft:#vine Pg1> Pr1<:#vine Xh1>:#vine R Pc1_< Wh1>:#vine R Pf1< Cm1>:#vine R Sr1<:#vine E
+3-6 A Tg1+<:#dark:+keepsake Pf1>:#dark:#soft Pc1^+<:#dark:+keepsake Xf1>:#dark R Wg1+<:#dark:+keepsake R Pb1> Cf1+>:#dark:+keepsake R Sg1+<:#dark:+keepsake E
+3-7 A Tg1+<:+keepsake Pg1+<:+keepsake Pf1> Xg1+>:#spore@puff:+keepsake R Pc1_< Wr1+<:#dark:+keepsake R Hr1+<:+guarana Cm1+&>:&eyes*2:+keepsake R Sg1+<:+keepsake E
+3-8 A Ts1<:#soft:#thornvine@doze Ps1<:#thornvine@doze Pg1< Xs1>:#thornvine@doze R Wf1<:#thornvine@doze R Cr1>:#thornvine@doze Pc1^< Ss1<:#thornvine@doze E
+3-9 A Pg1&<:#dark:&ocelot*1 Pr1&<:#dark:&ocelot*2 Xg1&>:#dark:&ocelot*3 R Ws1>:#thornvine@doze R Pm1&<:&ocelot*2 Cc1^&>:#dark:&ocelot*2 R Vg1&<:#dark:&ocelot*2 Sg1&<:#dark:&ocelot*4 E

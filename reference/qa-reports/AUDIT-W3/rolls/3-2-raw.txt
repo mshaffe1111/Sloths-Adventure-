@@ -1,0 +1,150 @@
+4x normal ERR tip "hint.1-1.bank" has no Dot line in the kit's tips
+4x normal ERR tip "hint.1-1.noMoss" has no Dot line in the kit's tips
+4x normal ERR pool short at slot 2 (n2 practise: no rope section left)
+3x normal ERR pool short at slot 5 (n4 practise: no rope section left)
+3x normal ERR pool short at slot 7 (n6 test: no rope section left)
+1x normal ERR pool short at slot 19 (n12 combine: no rope section left)
+4x normal ERR node code: V11 at token 3: 'g' on two neighbouring content nodes
+3x normal ERR node code: V11 at token 8: 'f' on two neighbouring content nodes
+4x normal ERR node code: V14 at token 1: 0 'r' nodes for a deal of 5
+2x normal ERR node code: V14 at token 1: 4 'f' nodes for a deal of 1
+1x normal ERR ask: node n2 "Pg1_<": content 'r' (rope): 1 of 1 sections are ground
+1x normal ERR ask: node n2 "Pg1_<": hazard #soft: laid hurt
+1x normal ERR ask: node n4 "Pf1<": content 'r' (rope): 1 of 1 sections are floating
+1x normal ERR ask: node n4 "Pf1<": hazard #dark: Later: no world hazard of that id is laid by a node yet
+1x normal ERR ask: node n6 "Xf1<": content 'r' (rope): 1 of 1 sections are floating
+1x normal ERR ask: node n6 "Xf1<": creatures (&): no creature laid
+1x normal ERR ask: node n6 "Xf1<": threat ocelot*1: laid 0
+1x normal ERR ask: node n6 "Xf1<": hazard #dark: Later: no world hazard of that id is laid by a node yet
+1x normal ERR ask: node n9 "Wc1_>": content 'm' (cover): no hide laid
+1x normal ERR ask: node n9 "Wc1_>": hazard #dark: Later: no world hazard of that id is laid by a node yet
+2x normal ERR ask: node n12 "Cf2^>": content 'r' (rope): 1 of 1 sections are floating
+2x normal ERR ask: node n12 "Cf2^>": move 1 (plain jumps): a section there asks for the double
+2x normal ERR ask: node n12 "Cf2^>": threat ocelot*2: laid 1
+2x normal ERR ask: node n12 "Cf2^>": hazard #dark: Later: no world hazard of that id is laid by a node yet
+1x normal ERR ask: node n14 "Sf1<": content 'r' (rope): 2 of 2 sections are floating, ground
+4x normal ERR ask: node n14 "Sf1<": hazard #dark: Later: no world hazard of that id is laid by a node yet
+1x normal ERR the quiet line: 7.2 s with nothing to do at x 37181, over 4 s (the goal run-out excluded)
+2x normal ERR pool short at slot 4 (n4 practise: no rope section left)
+1x normal ERR pool short at slot 18 (n12 combine: no rope section left)
+1x normal ERR node code: V11 at token 4: 'g' on two neighbouring content nodes
+2x normal ERR node code: V14 at token 1: 4 'g' nodes for a deal of 2
+1x normal ERR node code: V14 at token 1: 3 'c' nodes for a deal of 1
+3x normal ERR ask: node n2 "Pg1<": content 'r' (rope): 1 of 1 sections are ground
+3x normal ERR ask: node n2 "Pg1<": hazard #soft: laid hurt
+1x normal ERR ask: node n4 "Pg1_<": content 'r' (rope): 2 of 2 sections are ground, floating
+1x normal ERR ask: node n4 "Pg1_<": hazard #dark: Later: no world hazard of that id is laid by a node yet
+1x normal ERR ask: node n6 "Xf1_<": content 'r' (rope): 1 of 1 sections are floating
+1x normal ERR ask: node n6 "Xf1_<": hazard #dark: Later: no world hazard of that id is laid by a node yet
+2x normal ERR ask: node n9 "Wc1>": content 'm' (cover): no hide laid
+2x normal ERR ask: node n9 "Wc1>": hazard #dark: Later: no world hazard of that id is laid by a node yet
+1x normal ERR ask: node n12 "Cc2_>": content 'r' (rope): 1 of 1 sections are climb
+1x normal ERR ask: node n12 "Cc2_>": move 1 (plain jumps): a section there asks for the double
+1x normal ERR ask: node n12 "Cc2_>": hazard #dark: Later: no world hazard of that id is laid by a node yet
+2x normal ERR ask: node n14 "Sf1<": content 'r' (rope): 1 of 1 sections are floating
+2x normal ERR ask: node n14 "Sf1<": creatures (&): no creature laid
+2x normal ERR ask: node n14 "Sf1<": threat ocelot*3: laid 0
+1x normal ERR the quiet line: 5.9 s with nothing to do at x 27543, over 4 s (the goal run-out excluded)
+2x normal ERR pool short at slot 17 (n12 combine: no rope section left)
+1x normal ERR ask: node n4 "Pf1^<": content 'r' (rope): 1 of 1 sections are floating
+1x normal ERR ask: node n4 "Pf1^<": hazard #dark: Later: no world hazard of that id is laid by a node yet
+1x normal ERR ask: node n6 "Xf1^<": content 'r' (rope): 1 of 1 sections are floating
+1x normal ERR ask: node n6 "Xf1^<": hazard #dark: Later: no world hazard of that id is laid by a node yet
+1x normal ERR ask: node n12 "Cf2>": content 'r' (rope): 1 of 1 sections are floating
+1x normal ERR ask: node n12 "Cf2>": move 1 (plain jumps): a section there asks for the double
+1x normal ERR ask: node n12 "Cf2>": threat ocelot*2: laid 1
+1x normal ERR ask: node n12 "Cf2>": hazard #dark: Later: no world hazard of that id is laid by a node yet
+1x normal ERR the quiet line: 7.4 s with nothing to do at x 34870, over 4 s (the goal run-out excluded)
+1x normal ERR pool short at slot 6 (n6 test: no rope section left)
+1x normal ERR pool short at slot 11 (n9 twist: no climb section left)
+1x normal ERR node code: V11 at token 6: 'c' on two neighbouring content nodes
+1x normal ERR node code: V11 at token 11: 'g' on two neighbouring content nodes
+1x normal ERR node code: V14 at token 1: 3 'f' nodes for a deal of 1
+1x normal ERR ask: node n4 "Pf1_<": content 'r' (rope): 1 of 1 sections are floating
+1x normal ERR ask: node n4 "Pf1_<": hazard #dark: Later: no world hazard of that id is laid by a node yet
+1x normal ERR ask: node n6 "Xc2<": content 'r' (rope): 1 of 1 sections are climb
+1x normal ERR ask: node n6 "Xc2<": move 1 (plain jumps): a section there asks for the double
+1x normal ERR ask: node n6 "Xc2<": hazard #dark: Later: no world hazard of that id is laid by a node yet
+1x normal ERR ask: node n9 "Wg1>": content 'm' (cover): no hide laid
+1x normal ERR ask: node n9 "Wg1>": creatures (&): no creature laid
+1x normal ERR ask: node n9 "Wg1>": threat ocelot*1: laid 0
+1x normal ERR ask: node n9 "Wg1>": hazard #dark: Later: no world hazard of that id is laid by a node yet
+1x normal ERR ask: node n14 "Sf1<": content 'r' (rope): 2 of 2 sections are floating
+1x normal ERR ask: node n14 "Sf1<": threat ocelot*3: laid 2
+1x normal ERR the quiet line: 5.9 s with nothing to do at x 32730, over 4 s (the goal run-out excluded)
+8x easy ERR tip "hint.1-1.bank" has no Dot line in the kit's tips
+8x easy ERR tip "hint.1-1.noMoss" has no Dot line in the kit's tips
+8x easy ERR pool short at slot 2 (n2 practise: no rope section left)
+6x easy ERR pool short at slot 5 (n4 practise: no rope section left)
+6x easy ERR pool short at slot 7 (n6 test: no rope section left)
+2x easy ERR pool short at slot 19 (n12 combine: no rope section left)
+8x easy ERR node code: V11 at token 3: 'g' on two neighbouring content nodes
+6x easy ERR node code: V11 at token 8: 'f' on two neighbouring content nodes
+8x easy ERR node code: V14 at token 1: 0 'r' nodes for a deal of 5
+4x easy ERR node code: V14 at token 1: 4 'f' nodes for a deal of 1
+2x easy ERR ask: node n2 "Pg1_<": content 'r' (rope): 1 of 1 sections are ground
+2x easy ERR ask: node n2 "Pg1_<": hazard #soft: laid hurt
+2x easy ERR ask: node n4 "Pf1<": content 'r' (rope): 1 of 1 sections are floating
+2x easy ERR ask: node n4 "Pf1<": hazard #dark: Later: no world hazard of that id is laid by a node yet
+2x easy ERR ask: node n6 "Xf1<": content 'r' (rope): 1 of 1 sections are floating
+1x easy ERR ask: node n6 "Xf1<": creatures (&): no creature laid
+1x easy ERR ask: node n6 "Xf1<": threat ocelot*1: laid 0
+2x easy ERR ask: node n6 "Xf1<": hazard #dark: Later: no world hazard of that id is laid by a node yet
+2x easy ERR ask: node n9 "Wc1_>": content 'm' (cover): no hide laid
+2x easy ERR ask: node n9 "Wc1_>": hazard #dark: Later: no world hazard of that id is laid by a node yet
+4x easy ERR ask: node n12 "Cf2^>": content 'r' (rope): 1 of 1 sections are floating
+4x easy ERR ask: node n12 "Cf2^>": move 1 (plain jumps): a section there asks for the double
+2x easy ERR ask: node n12 "Cf2^>": threat ocelot*2: laid 1
+4x easy ERR ask: node n12 "Cf2^>": hazard #dark: Later: no world hazard of that id is laid by a node yet
+2x easy ERR ask: node n14 "Sf1<": content 'r' (rope): 2 of 2 sections are floating, ground
+8x easy ERR ask: node n14 "Sf1<": hazard #dark: Later: no world hazard of that id is laid by a node yet
+1x easy ERR the quiet line: 7.2 s with nothing to do at x 37181, over 4 s (the goal run-out excluded)
+4x easy ERR pool short at slot 4 (n4 practise: no rope section left)
+2x easy ERR pool short at slot 18 (n12 combine: no rope section left)
+2x easy ERR node code: V11 at token 4: 'g' on two neighbouring content nodes
+4x easy ERR node code: V14 at token 1: 4 'g' nodes for a deal of 2
+2x easy ERR node code: V14 at token 1: 3 'c' nodes for a deal of 1
+6x easy ERR ask: node n2 "Pg1<": content 'r' (rope): 1 of 1 sections are ground
+6x easy ERR ask: node n2 "Pg1<": hazard #soft: laid hurt
+2x easy ERR ask: node n4 "Pg1_<": content 'r' (rope): 2 of 2 sections are ground, floating
+2x easy ERR ask: node n4 "Pg1_<": hazard #dark: Later: no world hazard of that id is laid by a node yet
+2x easy ERR ask: node n6 "Xf1_<": content 'r' (rope): 1 of 1 sections are floating
+2x easy ERR ask: node n6 "Xf1_<": hazard #dark: Later: no world hazard of that id is laid by a node yet
+4x easy ERR ask: node n9 "Wc1>": content 'm' (cover): no hide laid
+4x easy ERR ask: node n9 "Wc1>": hazard #dark: Later: no world hazard of that id is laid by a node yet
+2x easy ERR ask: node n12 "Cc2_>": content 'r' (rope): 1 of 1 sections are climb
+2x easy ERR ask: node n12 "Cc2_>": move 1 (plain jumps): a section there asks for the double
+2x easy ERR ask: node n12 "Cc2_>": hazard #dark: Later: no world hazard of that id is laid by a node yet
+4x easy ERR ask: node n14 "Sf1<": content 'r' (rope): 1 of 1 sections are floating
+2x easy ERR ask: node n14 "Sf1<": creatures (&): no creature laid
+2x easy ERR ask: node n14 "Sf1<": threat ocelot*3: laid 0
+1x easy ERR the quiet line: 5.9 s with nothing to do at x 27543, over 4 s (the goal run-out excluded)
+4x easy ERR pool short at slot 17 (n12 combine: no rope section left)
+2x easy ERR ask: node n4 "Pf1^<": content 'r' (rope): 1 of 1 sections are floating
+2x easy ERR ask: node n4 "Pf1^<": hazard #dark: Later: no world hazard of that id is laid by a node yet
+2x easy ERR ask: node n6 "Xf1^<": content 'r' (rope): 1 of 1 sections are floating
+2x easy ERR ask: node n6 "Xf1^<": hazard #dark: Later: no world hazard of that id is laid by a node yet
+2x easy ERR ask: node n12 "Cf2>": content 'r' (rope): 1 of 1 sections are floating
+2x easy ERR ask: node n12 "Cf2>": move 1 (plain jumps): a section there asks for the double
+1x easy ERR ask: node n12 "Cf2>": threat ocelot*2: laid 1
+2x easy ERR ask: node n12 "Cf2>": hazard #dark: Later: no world hazard of that id is laid by a node yet
+1x easy ERR the quiet line: 7.4 s with nothing to do at x 34870, over 4 s (the goal run-out excluded)
+2x easy ERR pool short at slot 6 (n6 test: no rope section left)
+2x easy ERR pool short at slot 11 (n9 twist: no climb section left)
+2x easy ERR node code: V11 at token 6: 'c' on two neighbouring content nodes
+2x easy ERR node code: V11 at token 11: 'g' on two neighbouring content nodes
+2x easy ERR node code: V14 at token 1: 3 'f' nodes for a deal of 1
+2x easy ERR ask: node n4 "Pf1_<": content 'r' (rope): 1 of 1 sections are floating
+2x easy ERR ask: node n4 "Pf1_<": hazard #dark: Later: no world hazard of that id is laid by a node yet
+2x easy ERR ask: node n6 "Xc2<": content 'r' (rope): 1 of 1 sections are climb
+2x easy ERR ask: node n6 "Xc2<": move 1 (plain jumps): a section there asks for the double
+2x easy ERR ask: node n6 "Xc2<": hazard #dark: Later: no world hazard of that id is laid by a node yet
+2x easy ERR ask: node n9 "Wg1>": content 'm' (cover): no hide laid
+1x easy ERR ask: node n9 "Wg1>": creatures (&): no creature laid
+1x easy ERR ask: node n9 "Wg1>": threat ocelot*1: laid 0
+2x easy ERR ask: node n9 "Wg1>": hazard #dark: Later: no world hazard of that id is laid by a node yet
+2x easy ERR ask: node n14 "Sf1<": content 'r' (rope): 2 of 2 sections are floating
+1x easy ERR ask: node n14 "Sf1<": threat ocelot*3: laid 2
+1x easy ERR the quiet line: 5.9 s with nothing to do at x 32730, over 4 s (the goal run-out excluded)
+clean 0/8
+(reused W1/W2 sections that threw on W3's budget, left out: 4)

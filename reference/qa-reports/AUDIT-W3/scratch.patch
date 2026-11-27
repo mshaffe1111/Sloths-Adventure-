@@ -1,0 +1,189 @@
+diff --git a/src/game/gen2/listed.ts b/src/game/gen2/listed.ts
+index ea75e9587..c65692be3 100644
+--- a/src/game/gen2/listed.ts
++++ b/src/game/gen2/listed.ts
+@@ -1,3 +1,4 @@
++import { auditKit } from './worlds/w3Audit.ts';
+ /**
+  * The listed stages (packet E12 item 1; D43): the ONE definition of "a stage rolled from a proven seed list". A row per stage: its kit,
+  * and what is that stage's alone as FIELDS. Moving a stage onto gen2 is a row here, its world's rows and its seed list (proven/seeds-<stage>.ts and its line in provenIndex.ts,
+@@ -42,7 +43,7 @@ export interface ListedStage {
+ }
+ 
+ /** the world kits a row names (worlds/stageTable.ts `kit`); 'w1-12' is World 1's with 1-2's manifest-wide rows over it (w1Arc12.ts) */
+-const KITS: Record<string, () => WorldKit> = { w1: w1World, 'w1-12': () => kitLib12(), 'w1-14': kitLib14, 'w1-15': kitLib15, 'w1-16': kitLib16, 'w1-17': kitLib17, 'w1-18': kitLib18, 'w1-19': kitLib19, w2: w2World, 'w2-21': kitLib21, 'w2-22': kitLib22, 'w2-23': kitLib23, 'w2-24': kitLib24, 'w2-25': kitLib25, w3: w3World };
++const KITS: Record<string, () => WorldKit> = { w1: w1World, 'w1-12': () => kitLib12(), 'w1-14': kitLib14, 'w1-15': kitLib15, 'w1-16': kitLib16, 'w1-17': kitLib17, 'w1-18': kitLib18, 'w1-19': kitLib19, w2: w2World, 'w2-21': kitLib21, 'w2-22': kitLib22, 'w2-23': kitLib23, 'w2-24': kitLib24, 'w2-25': kitLib25, w3: w3World, 'w3-audit': auditKit };
+ /** each kit's world finish (by kit name; every World 1 kit runs World 1's). A row's world finish, World 1's when it names none (a test's fixture) */
+ type WorldFinish = NonNullable<ListedStage['world']>;
+ const W1: WorldFinish = (st, squirrels) => w1Finish(st as never, squirrels) as typeof st;
+@@ -50,7 +51,7 @@ const W2: WorldFinish = (st, _squirrels, difficulty) => w2Finish(st as never, di
+ export const worldFinish = (row: Pick<ListedStage, 'world'>): WorldFinish => row.world ?? W1;
+ /** World 3's finish: none yet (its dark, glowworms and spores come with their own pieces, ENG-DARK, ENG-SPORE); never World 1's */
+ const W3: WorldFinish = (st) => st;
+-const WORLD: Record<string, WorldFinish> = { w1: W1, 'w1-12': W1, 'w1-14': W1, 'w1-15': W1, 'w1-16': W1, 'w1-17': W1, 'w1-18': W1, 'w1-19': W1, w2: W2, 'w2-21': W2, 'w2-22': W2, 'w2-23': W2, 'w2-24': W2, 'w2-25': W2, w3: W3 };
++const WORLD: Record<string, WorldFinish> = { w1: W1, 'w1-12': W1, 'w1-14': W1, 'w1-15': W1, 'w1-16': W1, 'w1-17': W1, 'w1-18': W1, 'w1-19': W1, w2: W2, 'w2-21': W2, 'w2-22': W2, 'w2-23': W2, 'w2-24': W2, 'w2-25': W2, w3: W3, 'w3-audit': W3 };
+ /** the kits' own finishes, run after the world's (by kit name) */
+ const FINISH: Record<string, ListedStage['finish']> = { 'w1-14': finish14 as ListedStage['finish'], 'w1-16': finish16 as ListedStage['finish'], 'w1-17': finish17 as ListedStage['finish'], 'w1-18': finish18 as ListedStage['finish'], 'w1-19': finish19 as ListedStage['finish'], 'w2-21': finish21 as ListedStage['finish'], 'w2-23': finish23 as ListedStage['finish'] };
+ 
+diff --git a/src/game/gen2/worlds/stageTable.ts b/src/game/gen2/worlds/stageTable.ts
+index af075f9f3..425ef15b5 100644
+--- a/src/game/gen2/worlds/stageTable.ts
++++ b/src/game/gen2/worlds/stageTable.ts
+@@ -93,7 +93,16 @@ export interface DraftRow extends Pick<StageRow, 'kit' | 'squirrels'> {
+ export const DRAFT_TABLE: Readonly<Record<string, DraftRow>> = {
+   // (3-1 Into the Grotto: World 3's first stage, laid DOWN on World 3's kit (w3.ts, ENG-W3a 11-23; WORLD-3-PLAN F1). The live 3-1 is
+   //  the old section maker until 3-1's build designs its arc on its own kit over 'w3' and lists it)
+-  '3-1': { kit: 'w3', travel: 'down' },
++  '3-1': { kit: (process.env.AUDIT_CODE ? 'w3-audit' : 'w3'), travel: (process.env.AUDIT_TRAVEL ?? 'down') as never },
++  '3-2': { kit: 'w3-audit', travel: (process.env.AUDIT_TRAVEL ?? 'right') as never },
++  '3-3': { kit: 'w3-audit', travel: (process.env.AUDIT_TRAVEL ?? 'right') as never },
++  '3-4': { kit: 'w3-audit', travel: (process.env.AUDIT_TRAVEL ?? 'right') as never },
++  '3-5': { kit: 'w3-audit', travel: (process.env.AUDIT_TRAVEL ?? 'right') as never },
++  '3-6': { kit: 'w3-audit', travel: (process.env.AUDIT_TRAVEL ?? 'right') as never },
++  '3-7': { kit: 'w3-audit', travel: (process.env.AUDIT_TRAVEL ?? 'right') as never },
++  '3-8': { kit: 'w3-audit', travel: (process.env.AUDIT_TRAVEL ?? 'right') as never },
++  '3-9': { kit: 'w3-audit', travel: (process.env.AUDIT_TRAVEL ?? 'right') as never },
++
+ };
+ 
+ /** a stage's draft row; undefined when it has none */
+diff --git a/src/game/gen2/worlds/w3Audit.ts b/src/game/gen2/worlds/w3Audit.ts
+new file mode 100644
+index 000000000..a87b1c94f
+--- /dev/null
++++ b/src/game/gen2/worlds/w3Audit.ts
+@@ -0,0 +1,54 @@
++/**
++ * AUDIT-W3 SCRATCH ONLY (never lands): World 3's kit (dark + spore merged) with a design's node string as its one graph, so the real
++ * pipeline rolls the design. AUDIT_CODE = the node string; AUDIT_POOL = 'w3' (World 3's own bricks only) or 'wide' (every typed section
++ * Worlds 1-2 hold, World 3's bricks over them: the "nearest existing piece" test); AUDIT_TREND / AUDIT_TEACH optional.
++ */
++import { parseCode } from '../nodeCode.ts';
++import { TYPE_OF_LETTER } from '../nodeAsks.ts';
++import type { ContentType, GraphBrief, NodeJob, SectionTemplate, WorldKit } from '../types.ts';
++import { generateAllLevels } from '../../worldsData.ts';
++import { w1World } from './w1.ts';
++import { w2World } from './w2.ts';
++import { w3World, w3Drops, w3Walk, w3Ledge } from './w3.ts';
++import { darkEnds } from '../dark.ts';
++
++const ARCH = ['sprint', 'harvest', 'purge', 'ascent', 'stealth', 'vine_runner', 'relic_hunt', 'rescue', 'gauntlet', 'snake', 'eagle', 'ocelot', 'turtle', 'jaguar', 'boa', 'caiman', 'tayra'];
++const ALL_JOBS: NodeJob[] = ['teach', 'practise', 'test', 'combine', 'twist', 'signature', 'descent', 'climb', 'flow'];
++
++/** World 3's own bricks as an audit pool: the dark drops (glowworms), the same with a puff on the middle shelf, the shelf walk */
++export function w3AuditBricks(): SectionTemplate[] {
++  const cap = Number(process.env.AUDIT_CAP ?? 6);
++  const drops: SectionTemplate = { ...w3Drops, maxPerStage: cap, id: 'audit-dark-drops', jobs: ALL_JOBS, content: 'ground' };
++  const puff: SectionTemplate = { ...w3Drops, maxPerStage: cap, id: 'audit-puff-drops', jobs: ALL_JOBS, content: 'ground', zones: [...(w3Drops.zones ?? []), { kind: 'spore', on: 'b' }] };
++  const walk: SectionTemplate = { ...w3Walk, maxPerStage: cap, id: 'audit-walk', jobs: ALL_JOBS, content: 'floating', sockets: [...darkEnds('near', 'far', 'glow'), ...w3Walk.sockets] };
++  const arrive: SectionTemplate = { ...w3Ledge, id: 'audit-arrive', jobs: ['arrive'], content: 'structural', phases: ['start'] };
++  const rest: SectionTemplate = { ...w3Ledge, id: 'audit-rest', jobs: ['rest'], content: 'structural', phases: ['rest'], maxPerStage: cap };
++  const exit: SectionTemplate = { ...w3Ledge, id: 'audit-exit', jobs: ['exit'], content: 'structural', phases: ['goal'] };
++  return [arrive, rest, exit, drops, puff, walk];
++}
++
++export function auditKit(): WorldKit {
++  const stage = process.env.AUDIT_STAGE ?? '3-1';
++  const code = process.env.AUDIT_CODE ?? '';
++  const k = w3World(), M = k.manifest;
++  const cfg = generateAllLevels().find((c) => c.id === stage)!;
++  const archetype = ((cfg as unknown as { objective?: { type?: string } }).objective?.type ?? 'sprint') as never;
++  const own = w3AuditBricks();
++  const maxW = Number(process.env.AUDIT_MAXW ?? 1e9);
++  const span = (s: SectionTemplate) => s.pieces.reduce((a, q) => a + (Array.isArray(q.w) ? q.w[1] : (q.w as number ?? 0)) + 120, 0);
++  const typed = (s: SectionTemplate) => !!s.jobs?.length && !!s.content && s.content !== 'structural' && span(s) <= maxW && !(process.env.AUDIT_EXCLUDE ?? '').split(',').includes(s.id);
++  const wide = process.env.AUDIT_POOL === 'wide'
++    ? [...w1World().manifest.sections, ...w2World().manifest.sections].filter(typed).map((s) => ({ ...s, feel: undefined, own: undefined, maxPerStage: Number(process.env.AUDIT_CAP ?? 6), sockets: (s.sockets ?? []).filter((q) => q.role !== 'tip') }))
++    : [];
++  const deal: Partial<Record<ContentType, number>> = {};
++  for (const t of parseCode(code.replace(/F\[.*?\]/g, ''))) {
++    const ty = t.content ? TYPE_OF_LETTER[t.content] : undefined;
++    if (ty) deal[ty] = (deal[ty] ?? 0) + 1;
++  }
++  const brief: GraphBrief = {
++    ends: 'quiet', trend: (process.env.AUDIT_TREND as GraphBrief['trend']) ?? 'level', branching: 'none',
++    teaches: process.env.AUDIT_TEACH ? process.env.AUDIT_TEACH.split(',') : [], deal, dealExact: true,
++  } as GraphBrief;
++  return { ...k, manifest: { ...M, sections: [...own, ...wide] as SectionTemplate[], required: {},
++    graphs: { list: ARCH.map((a) => ({ id: `audit-${stage}-${a}`, archetype: a as never, code })), briefs: { [stage]: brief }, maxPerStage: Number(process.env.AUDIT_CAP ?? 6) } } } as WorldKit;
++}
+diff --git a/tools/audit/arch.ts b/tools/audit/arch.ts
+new file mode 100644
+index 000000000..e08cb9715
+--- /dev/null
++++ b/tools/audit/arch.ts
+@@ -0,0 +1,3 @@
++import '../../src/game/headlessDom.ts';
++import { generateAllLevels } from '../../src/game/worldsData.ts';
++for (const c of generateAllLevels().filter((c) => c.id.startsWith('3-'))) console.log(c.id, JSON.stringify((c as any).objective)?.slice(0, 80), (c as any).archetype, (c as any).travel);
+diff --git a/tools/audit/four.sh b/tools/audit/four.sh
+new file mode 100755
+index 000000000..86ed37b03
+--- /dev/null
++++ b/tools/audit/four.sh
+@@ -0,0 +1,9 @@
++#!/bin/bash
++# four.sh <tag> <stage...>: rolls each stage's code from ../codes-<tag>.txt on the wide pool, in turn
++tag=$1; shift
++for st in "$@"; do
++  C=$(grep "^$st " ../codes-$tag.txt | cut -d' ' -f2-)
++  case $st in 3-1|3-5) tr=down; td=down;; 3-4) tr=up; td=up;; 3-7) tr=left; td=level;; *) tr=right; td=level;; esac
++  AUDIT_CAP=20 ./tools/audit/roll.sh $st wide "$C" $tr $td > ../out/$st-$tag.txt 2>&1
++done
++echo done
+diff --git a/tools/audit/pool.ts b/tools/audit/pool.ts
+new file mode 100644
+index 000000000..8e98b1de3
+--- /dev/null
++++ b/tools/audit/pool.ts
+@@ -0,0 +1,9 @@
++import '../../src/game/headlessDom.ts';
++import { listedStage } from '../../src/game/gen2/listed.ts';
++const ids = process.argv.slice(2);
++for (const id of ids) { const r = listedStage(id); if (!r) { console.log(id, 'no row'); continue; }
++  const k = r.kit(); const s = k.manifest.sections;
++  const c: Record<string, string[]> = {};
++  for (const t of s) { const key = `${(t.jobs ?? ['-']).join('/')}:${t.content ?? '-'}`; (c[key] ??= []).push(t.id); }
++  console.log(id, s.length, Object.entries(c).map(([k, v]) => `${k}=${v.length}`).join(' '));
++}
+diff --git a/tools/audit/raw.ts b/tools/audit/raw.ts
+new file mode 100644
+index 000000000..db90a9f3f
+--- /dev/null
++++ b/tools/audit/raw.ts
+@@ -0,0 +1,25 @@
++import '../../src/game/headlessDom.ts';
++import '../engine/draft.ts';
++import { buildStage, SETTINGS } from '../engine/libstage.ts';
++const id = process.env.AUDIT_STAGE!; const n = Number(process.env.SEEDS ?? 4);
++const seen = new Map<string, number>();
++const note = (k: string) => seen.set(k, (seen.get(k) ?? 0) + 1);
++let clean = 0;
++for (const d of SETTINGS) for (let s = 1; s <= n; s++) {
++  for (let tries = 0; ; tries++) try {
++    const st: any = buildStage(id, s, d);
++    const v = st.gen2.verdicts?.[d];
++    const errs = [...(v && !v.accepted ? v.failed.map((f: any) => `verdict ${f.name}: ${f.line}`) : []), ...(st.gen2.errors ?? [])];
++    if (!errs.length) { clean++; note(`${d} CLEAN plan=${(st.gen2.plan ?? []).map((p: any) => p.template).join(',')} code=${st.gen2.codeString ?? ''}`); }
++    for (const e of errs) note(`${d} ERR ${String(e).slice(0, 400)}`);
++    break;
++  } catch (e) {
++    const er = e as Error;
++    const wide = /^gen2 section (w[12]-\S+?):? |section (w[12]-\S+) is \d+ px wide, wider than the tower/.exec(er.message);
++    if (wide && tries < 60) { process.env.AUDIT_EXCLUDE = `${process.env.AUDIT_EXCLUDE ?? ''},${wide[1] ?? wide[2]}`; continue; } const at = (er.stack ?? '').split('\n').find((l) => /src\/game|tools\/engine/.test(l))?.trim().replace(/.*wt\//, '') ?? '';
++    note(`${d} THROW ${er.message.slice(0, 400)} @ ${at}`);
++    break;
++  }
++}
++for (const [k, c] of seen) console.log(`${c}x ${k}`);
++console.log(`clean ${clean}/${2 * n}`); if (process.env.AUDIT_EXCLUDE) console.log(`(reused W1/W2 sections that threw on W3's budget, left out: ${process.env.AUDIT_EXCLUDE.split(',').filter(Boolean).length})`);
+diff --git a/tools/audit/roll.sh b/tools/audit/roll.sh
+new file mode 100755
+index 000000000..5b1c46e19
+--- /dev/null
++++ b/tools/audit/roll.sh
+@@ -0,0 +1,4 @@
++#!/bin/bash
++# roll.sh <stage> <pool w3|wide> <code> [travel] [trend]
++export GEN2_DRAFT=$1 AUDIT_STAGE=$1 AUDIT_POOL=$2 AUDIT_CODE="$3" AUDIT_TRAVEL=${4:-right} AUDIT_TREND=${5:-level}
++timeout 900 npx tsx tools/audit/raw.ts 2>&1
