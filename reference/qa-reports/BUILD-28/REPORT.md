@@ -1,6 +1,29 @@
 # BUILD-28 REPORT (W2-LANE: 2-8 "Before the Water Rises"; R-165.430 (2), READY-28, BUILD-28). Session 1 (W2-LANE a), started 9:44 AM ET (from date). Session 2 (W2-LANE b), started 10:07 AM ET (from date). Session 3 (W2-LANE c), started 10:30 AM ET (from date). Session 4 (W2-LANE d), started 10:52 AM ET (from date). Session 5 (W2-LANE e), started 11:19 AM ET (from the session hook date) Session 6 (W2-LANE f), started 11:41 AM ET (from the session hook date) Session 7 (W2-LANE g), started 12:05 PM ET (from the session hook date) Session 8 (W2-LANE h), started 12:49 PM ET (from the session hook date) Session 9 (W2-LANE i), started 1:15 PM ET (from the session hook date) Session 10 (W2-LANE j), started 1:05 PM ET (from the session hook date) Session 12 (W2-LANE l), started 2:20 PM ET (from the session hook date)
 
-## EXACT NEXT STEP (BUILD-28 box 6, BUILD-28-f, started 8:34 AM ET (from the session hook date); code head = the commit after 9be0afcff on t-build-28-wip (the lines' kinds); rolled and flown on 25d527e40)
+## EXACT NEXT STEP (BUILD-28 box 7, BUILD-28-g, started 8:57 AM ET (from the session hook date); code head cc06d2f90 on t-build-28-wip)
+DONE THIS BOX (every number from the built stage, rule 27):
+1. JUDGED (box 6 item a): cc06d2f90 enters 2-8's flown Normal rows (flownArcs.ts n28 = nW2('2-8'), 8 moves from fly-2-8.txt, flown on
+   25d527e40: climb from [rise] block/thin, gap from70 / last ground / ANY from [dist] and [ddist] block, bounce from [bdist] d=0),
+   stageTable '2-8' judged 'normal-2-8', judgedTable.test's two JUDGED lists, chain.md §1 "Rows ... Normal 2-8". tsc 0; judgedTable,
+   flown*, reach* tests 10/10. CORRECTION to box 6 item 5: single hold and bounce are NOT unchanged: single-hold last-ground / any
+   217 / 243 (2-7 218 / 244), single-flick last-ground 208 (209), single-tap any 180 (181), bounce gap 175 (176). Entered as flown.
+2. ROLL on frozen cc06d2f90 (libstage --stage 2-8 --seeds 40): CLEAN 0 of 40 on BOTH settings. Every roll: drop.look-lies x5 ("the soft
+   drop ... is drawn as void-dark"); floor.unmarked Normal 30/40, Easy 38/40. ALL on the boardwalk's 5 plank gaps (home leg, beat 13;
+   Normal seed 1 x 6368-7679). ROOT CAUSE, ENGINE: w2Finish (worlds/w2.ts:390) lays a safe splash-back river under every soft fall (seed
+   1 finished: safe river 6368-7679, what the player sees), but the verdicts are judged in the pipeline BEFORE the finish (pipeline.ts:4774
+   dropsOf, which knows only World 1's painter 'w1Pits'; promises11.ts:59 floorlessGaps): a false refusal of what is drawn. 2-1..2-7
+   never met it (their soft gaps fall onto a lower storey or a laid river; 2-8's island the same: seed 1, 5 of 7 of its gaps fall onto the
+   dyke leg's banks). REPORTED to the lead as ENGINE-WORTHY (proposed packet ENG-W2FALL: World 2's manifest declares its fall painter,
+   one rule shared with w2Finish; dropsOf -> putback / safe-water-art; floorlessGaps counts it wet; a planted toy test). NO stopgap in w2Arc28.
+3. The suite in 6 shards on frozen cc06d2f90: running (scratchpad shards.sh), totals to the lead with the ruling.
+NEXT, in order:
+a. ReadNotifications. Merge ENG-W2FALL's hash when it lands (no force; tsc 0), then box 6's items b-e from the roll on: roll 40 x both
+   CLEAN 40 (name each error), the seed list (4 workers, --merge, D115 writable proven/), the full gates once on the frozen candidate
+   (6 shards each total named, lockall --check one run 102 stages, CI tool line, drawcheck with 2-8, registrycheck --stage 2-8, the
+   2-7-pinned tests), stills (fork from the bank's edge first, upright), bots x40 both settings every tier, the 2-minute floor.
+b. If the lead rules otherwise (e.g. a data river under the planks), follow the ruling.
+
+## (was the EXACT NEXT STEP) (BUILD-28 box 6, BUILD-28-f, started 8:34 AM ET (from the session hook date); code head = the commit after 9be0afcff on t-build-28-wip (the lines' kinds); rolled and flown on 25d527e40)
 DONE THIS BOX (every number from the built stage, rule 27):
 1. MERGED, no force, no conflicts, tsc 0 after each: t-eng-tipleft 8a97567b3 (a FAST-FORWARD: the tree is ENG-TIPLEFT's own, its gates
    carry), then t-eng-cut 57d7b8287 (merge a2c959be5). The CI tool line on a frozen a2c959be5 (scratchpad toolline.sh): tsc 0; engine
