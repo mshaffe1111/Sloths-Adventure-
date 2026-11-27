@@ -11,7 +11,6 @@
  * of the stage's shipped rolls, `seeds[variant % n]`: a retry keeps the roll, a fresh entry changes it, and every roll that can be
  * played was checked by the curation tool (tools/gen2/curate.ts) and is guarded by seeds.test.ts / game.test.ts.
  */
-import { kidMedian } from '../goals.ts';
 import type { Difficulty } from '../difficulty.ts';
 import type { LevelConfig } from '../types.ts';
 import { provenGen2Stage } from './pipeline.ts';
@@ -38,11 +37,11 @@ export interface Gen2Entry {
   kitName: string;
   /**
    * the first-timer kid bot's recorded Easy runs on a fight stage (seeds 1-3, two trials each): how many animals it beat before the shrine.
-   * Easy's goal is the median of them under the 65% floor (goals.ts kidMedian, gen2EasyGoal: the lead, 2026-10-30). Normal keeps its
+   * They CHECK Easy's goal (it must be in the kid's reach: goals.ts kidReaches, R-165.496), never set it. Normal keeps its
    * share of what the stage holds (goals.ts)
    */
   kidRuns?: readonly number[];
-  /** Easy's goal for a fight stage, from `kidRuns` (kidMedian) */
+  /** Easy's goal for a fight stage: a set number (data), at or under the kid's reach (`kidRuns`, goals.ts kidReaches) */
   easyGoal?: number;
 }
 
@@ -85,12 +84,16 @@ const w8Entry = (stage: number, o: Partial<Gen2Entry> = {}): Gen2Entry => ({
 // at 7e9fe4d8^ the recorded runs exactly (firstTimerBot.test GREEN there); the median is 5 either way, so 5-9's Easy goal is unchanged)
 // (re-measured 11-15 by INT-10d, the petal rule decoupled (the lead's ruling 1:54 PM ET: placement back to main's lay): 3, 5, 6, 7, 6, 5,
 // main 73e7bed0's record exactly; the median is 5, so 5-9's Easy goal is unchanged)
-export const KID_RUNS_59 = [3, 5, 6, 7, 6, 5] as const;
+// (re-measured 11-27 by INT-R5 on the release-0.10.4 merge abdc6e4d1, after the bot root fix C14 (t-eng-thumb-wip 35d5252c2): 14, 13,
+// 17, 18, 5, 5; the kid now reaches far more than 5, so the record no longer sets the goal (Matt 11-26 7:30 PM ET, R-165.496: "Keep it at 5"))
+export const KID_RUNS_59 = [14, 13, 17, 18, 5, 5] as const;
+/** 5-9's Easy goal: DATA (Matt, R-165.496: 5 of 18), never derived from a bot's runs; firstTimerBot.test.ts only checks the kid can reach it */
+export const EASY_GOAL_59 = 5;
 
 export const GEN2_STAGES: Readonly<Record<string, Gen2Entry>> = {
   '5-7': { kit: () => w5Kit(7), kitName: 'w5.ts:w5Kit(7)' },
-  // (5-9 Easy: the kid beat 3, 5, 6, 7, 6 and 5 spiders on seeds 1-3 before the shrine: the median, 5)
-  '5-9': { kit: w5ArenaKit, kitName: 'w5Arena.ts:w5ArenaKit(9)', kidRuns: KID_RUNS_59, easyGoal: kidMedian(KID_RUNS_59) },
+  // (5-9 Easy: 5 of 18, Matt's number (R-165.496); the kid's recorded runs only have to reach it, goals.ts kidReaches)
+  '5-9': { kit: w5ArenaKit, kitName: 'w5Arena.ts:w5ArenaKit(9)', kidRuns: KID_RUNS_59, easyGoal: EASY_GOAL_59 },
   ...Object.fromEntries(W6_GAME_STAGES.map((id) => [id, w6Entry(Number(id.split('-')[1]))])),
   ...Object.fromEntries(W7_GAME_STAGES.map((id) => [id, w7Entry(Number(id.split('-')[1]))])),
   ...Object.fromEntries(W8_GAME_STAGES.map((id) => [id, w8Entry(Number(id.split('-')[1]))])),

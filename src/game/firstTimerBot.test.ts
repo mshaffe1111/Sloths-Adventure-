@@ -15,7 +15,8 @@ import assert from 'node:assert/strict';
 import { FirstTimerRun, firstTimer, freshPhone, FT_ADULT, FT_KID, type FirstTimer } from '../../tools/inspect/firsttimer.ts';
 import type { Pad } from './realPlay.ts';
 import type { Platform } from './types.ts';
-import { GEN2_STAGES, KID_RUNS_59 } from './gen2/game.ts';
+import { EASY_GOAL_59, GEN2_STAGES, KID_RUNS_59 } from './gen2/game.ts';
+import { kidMedian, kidReaches } from './goals.ts';
 
 const Y = 580;
 const ground = (id: number, x: number, width: number): Platform => ({ id, x, y: Y, width, height: 90, type: 'solid' }) as Platform;
@@ -182,8 +183,21 @@ test("5-9's Easy goal rests on the kid's runs: re-measured, they are still the o
   try {
     const runs: number[] = [];
     for (const seed of [1, 2, 3]) for (const trial of [0, 1]) runs.push(firstTimer('5-9', seed, FT_KID, { trial }).goal?.got ?? -1);
-    assert.deepEqual(runs, [...KID_RUNS_59], 'the kid bot or 5-9 changed: re-measure, and set the goal from the new runs (goals.ts kidMedian)');
+    assert.deepEqual(runs, [...KID_RUNS_59], 'the kid bot or 5-9 changed: re-measure and re-record KID_RUNS_59 (the goal stays EASY_GOAL_59)');
   } finally {
     entry.easyGoal = kept;
   }
+});
+
+test("5-9's Easy goal is Matt's 5 of 18 and only has to be in the kid's reach; no re-record of the kid's runs moves it (R-165.496)", () => {
+  const goal = (GEN2_STAGES['5-9'] as { easyGoal?: number }).easyGoal;
+  assert.equal(EASY_GOAL_59, 5, "5-9's Easy goal is data: 5 (Matt 11-26: 'Keep it at 5')");
+  assert.equal(goal, EASY_GOAL_59, "5-9's entry uses the set goal, not one derived from the runs");
+  assert.ok(kidReaches(goal!, KID_RUNS_59), `the kid's runs ${KID_RUNS_59.join(', ')} (lower median ${kidMedian(KID_RUNS_59)}) do not reach the goal ${goal}`);
+  // (planted, a goal above the kid's reach fails: 14 over runs whose lower median is 13)
+  assert.equal(kidReaches(14, [14, 13, 17, 18, 5, 5]), false, 'a goal above the lower median must fail');
+  assert.equal(kidReaches(13, [14, 13, 17, 18, 5, 5]), true, 'a goal at the lower median is in reach');
+  assert.equal(kidReaches(5, []), false, 'no runs: nothing shows the goal is in reach');
+  // (a re-record that would lift the goal does not move it: the entry holds EASY_GOAL_59, whatever KID_RUNS_59 reads; planted RED
+  // 11-27, INT-R5 REPORT: easyGoal back to kidMedian(KID_RUNS_59) reads 13 and fails the second assert above)
 });
