@@ -55,3 +55,18 @@ t-keeper-3x (no force); the hash and the changed lines verbatim to the lead.
 puzzleCamera's leave-the-room test on t-build-29 (93562b80b): walking out left of the kit's bell room at 390x844 the camera jumps 54 px in y in
 ONE frame (the bar is 24). Ease the camera out of a puzzle room under the bar at every phone size (upright and sideways); the test green by the
 fix with a planted red; lockall --check (no listed stage moves); land on t-eng-29; the hash to BUILD-29's current session.
+
+## NEW 11-27 10:00 AM ET: ART-W3, today's list (packets/2026-11-25/ART-W3.md's rules; these lines win; R-165.507, R-165.533)
+Art (core tier), Opus 5.5 high, started in the HUGGING FACE environment. HF cap $12 for this job (balance about $50 at the last check; keep $10
+in reserve; every job in reference/art/HF-SPEND.md with what it bought). Every piece NAMES ITS DRAW PATH before it is made (ENG-CUT-b's
+SectionPiece.cut -> Platform.cut -> invCutBox for a cut piece; the kit sheet for a kit piece), is sized against Pokey (89.1 px), and gets its
+inventory row; stills of each beside Pokey, upright and sideways, from the COMMITTED lay (never a scratch hook). IN ORDER:
+1. R-165.533 FIRST: w3#trunk (kits/w3.webp#trunk 714,0 232x420), World 3's climb trunk that every World 3 climb draws (3-1 included): its
+   inventory row says 'needs fix: grey square top-right, flat cut edges'. Re-cut it clean (no grey square, soft natural edges), or regenerate
+   if the source cannot be cut clean; stills on a 3-1 climb. No Hugging Face spend if a re-cut does it.
+2. ENG-MOON's moonflower (closed, open, drooping) + the beam's look, at the sizes ENG-MOON names (3-4).
+3. The puffball (3-3, the spore patch's look) and the lamp (3-6 / 3-9's carried light).
+4. The guarana in a plain fern (3-7) and the thorn-vine liana x3 (3-5, 3-8).
+5. The ROOT's own art for 3-2 (ENG-ROOT's stills use World 1's painted vine rope until this lands).
+Not in this lane: 2-9's court art (built on 2-9's branch). Land on t-art-w3; the hash and the stills to the lead.
+
