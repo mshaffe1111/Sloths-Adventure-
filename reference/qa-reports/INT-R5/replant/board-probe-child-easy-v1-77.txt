@@ -1,0 +1,2 @@
+boardWatch OFF: shrine 186 s rescues 0 | #0 teachL sc1 pd0 wt0, #1 edgeL sc0 pd0 wt0, #2 topR sc0 pd0 wt0, #3 edgeR sc2 pd0 wt0, #4 greatR sc0 pd0 wt0
+boardWatch ON : shrine 179 s rescues 0 | #0 teachL sc0 pd0 wt3 (from t 22.17), #1 edgeL sc0 pd0 wt0, #2 topR sc0 pd0 wt0, #3 edgeR sc0 pd0 wt0, #4 greatR sc0 pd0 wt0

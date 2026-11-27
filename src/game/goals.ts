@@ -134,6 +134,11 @@ export function kidMedian(runs: readonly number[]): number {
   return r[Math.floor((r.length - 1) / 2)];
 }
 
+/** a set Easy goal is in the kid bot's reach: at or under the lower median of its recorded runs (R-165.496: the runs check the goal, never set it) */
+export function kidReaches(goal: number, runs: readonly number[]): boolean {
+  return runs.length > 0 && goal <= kidMedian(runs);
+}
+
 /**
  * A gen2 stage's Easy goal (LV-24, lead 2026-10-30): the 65% floor, but never more than the kid first-timer bot's median where its runs
  * were recorded (gen2/game.ts kidRuns: 5-9's kid beat 5, 6, 4, 6, 6 and 5 spiders, so 5). Hand-built stages keep LV-6's rule.

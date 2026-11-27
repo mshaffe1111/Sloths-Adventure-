@@ -1,0 +1,58 @@
+t 95.03 x 673 y 3182 vx 0 vy 0 wheel@801,3309 way 1 b2  past -0.79 [-0.74,0.60] up off -2 pad -
+t 95.57 x 706 y 3126 vx 192 vy -513 air  pad right+jump
+t 96.10 x 853 y 3069 vx 285 vy 0 solid#47 821-1169 y3069  pad right
+t 96.63 x 961 y 3069 vx 0 vy 0 solid#47 821-1169 y3069  pad -
+t 97.17 x 1015 y 3069 vx 268 vy 0 solid#47 821-1169 y3069  pad right
+t 97.70 x 1087 y 3069 vx 0 vy 0 solid#47 821-1169 y3069  pad -
+t 98.23 x 1151 y 3062 vx 0 vy 0 air  pad right+press+jump
+t 98.77 x 1151 y 2944 vx 0 vy 0 air  pad up
+t 99.30 x 1151 y 2827 vx 0 vy 0 air  pad up
+t 99.83 x 1043 y 2788 vx -268 vy 0 solid#54 865-1125 y2788  pad left
+t 100.37 x 895 y 2788 vx -268 vy 0 solid#54 865-1125 y2788  pad left
+t 100.90 x 748 y 2788 vx -268 vy 0 solid#55 597-865 y2788  pad left
+t 101.43 x 612 y 2788 vx -41 vy 0 solid#55 597-865 y2788  pad -
+t 101.97 x 567 y 2788 vx -285 vy 0 solid#56 70-597 y2788  pad left
+t 102.50 x 420 y 2788 vx -285 vy 0 solid#56 70-597 y2788  pad left
+t 103.03 x 338 y 2788 vx 0 vy 0 solid#56 70-597 y2788  pad -
+t 103.57 x 210 y 2788 vx -268 vy 0 solid#56 70-597 y2788  pad left
+t 104.10 x 88 y 2744 vx 0 vy 0 air  pad up
+t 104.63 x 88 y 2627 vx 0 vy 0 air  pad up
+t 105.17 x 302 y 2186 vx 268 vy -70 air  pad -
+t 105.70 x 277 y 2215 vx 0 vy 0 wheel@430,2131 way 1 b3  past -2.05 [-0.03,1.13] edge off 6 pad -
+t 106.23 x 266 y 2190 vx 0 vy 0 wheel@430,2131 way 1 b3  past -1.91 [-0.03,1.13] edge off 6 pad -
+t 106.77 x 259 y 2165 vx 0 vy 0 wheel@430,2131 way 1 b3  past -1.76 [-0.03,1.13] edge off 6 pad -
+t 107.30 x 256 y 2138 vx 0 vy 0 wheel@430,2131 way 1 b3  past -1.61 [-0.03,1.13] edge off 6 pad -
+t 107.83 x 257 y 2111 vx 0 vy 0 wheel@430,2131 way 1 b3  past -1.46 [-0.03,1.13] edge off 6 pad -
+t 108.37 x 262 y 2085 vx 0 vy 0 wheel@430,2131 way 1 b3  past -1.31 [-0.03,1.13] edge off 6 pad -
+t 108.90 x 271 y 2060 vx 0 vy 0 wheel@430,2131 way 1 b3  past -1.17 [-0.03,1.13] edge off 6 pad -
+t 109.43 x 283 y 2036 vx 0 vy 0 wheel@430,2131 way 1 b3  past -1.02 [-0.03,1.13] edge off 6 pad -
+t 109.97 x 299 y 2015 vx 0 vy 0 wheel@430,2131 way 1 b3  past -0.87 [-0.03,1.13] edge off 6 pad -
+t 110.50 x 317 y 1996 vx 0 vy 0 wheel@430,2131 way 1 b3  past -0.72 [-0.03,1.13] edge off 6 pad -
+t 111.03 x 339 y 1980 vx 0 vy 0 wheel@430,2131 way 1 b3  past -0.57 [-0.03,1.13] edge off 6 pad -
+t 111.57 x 362 y 1967 vx 0 vy 0 wheel@430,2131 way 1 b3  past -0.43 [-0.03,1.13] edge off 6 pad -
+t 112.10 x 387 y 1958 vx 0 vy 0 wheel@430,2131 way 1 b3  past -0.28 [-0.03,1.13] edge off 6 pad -
+t 112.63 x 413 y 1952 vx 0 vy 0 wheel@430,2131 way 1 b3  past -0.13 [-0.03,1.13] edge off 6 pad -
+t 113.17 x 440 y 1951 vx 0 vy 0 wheel@430,2131 way 1 b3  past 0.02 [-0.03,1.13] edge off 6 pad -
+t 113.70 x 520 y 1857 vx 285 vy -133 air  pad right+jump
+t 114.23 x 667 y 1979 vx 268 vy 0 solid#58 587-875 y1979  pad right
+t 114.77 x 816 y 1935 vx 285 vy 473 air  pad -
+t 115.30 x 964 y 1733 vx 268 vy -419 air  pad right+jump
+t 115.83 x 1145 y 1749 vx 0 vy 0 air  pad up+right
+t 116.37 x 1145 y 1631 vx 0 vy 0 air  pad up
+t 116.90 x 1129 y 1500 vx -273 vy -63 air  pad left
+t 117.43 x 981 y 1518 vx -268 vy 0 solid#67 859-1119 y1518  pad left
+t 117.97 x 901 y 1518 vx 0 vy 0 solid#67 859-1119 y1518  pad -
+t 118.50 x 901 y 1518 vx 0 vy 0 solid#67 859-1119 y1518  pad -
+t 119.03 x 810 y 1518 vx -268 vy 0 solid#68 591-859 y1518  pad left
+t 119.57 x 663 y 1518 vx -268 vy 0 solid#68 591-859 y1518  pad left
+t 120.10 x 609 y 1408 vx 0 vy 0 air  pad up
+t 120.63 x 609 y 1291 vx 0 vy 0 air  pad up
+t 121.17 x 609 y 1173 vx 0 vy 0 air  pad up
+t 121.70 x 609 y 1056 vx 0 vy 0 air  pad up
+t 122.23 x 674 y 1013 vx 285 vy 0 solid#69 635-875 y1013  pad right
+t 122.77 x 821 y 1013 vx 285 vy 0 solid#69 635-875 y1013  pad right
+t 123.30 x 915 y 916 vx 268 vy -7 air  pad right
+t 123.83 x 973 y 1017 vx 0 vy 0 wheel@1037,841 way 1 b1  past -2.64 [-0.66,0.56] in off 32 pad -
+t 124.37 x 946 y 999 vx 0 vy 0 wheel@1037,841 way 1 b1  past -2.48 [-0.66,0.56] in off 32 pad -
+t 124.90 x 923 y 978 vx 0 vy 0 wheel@1037,841 way 1 b1  past -2.32 [-0.66,0.56] in off 32 pad -
+END shrine 141.5 rescues 0

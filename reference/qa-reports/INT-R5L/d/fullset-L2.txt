@@ -1,0 +1,6 @@
+== FULL SET lane L2 on 2b5f0d6c8 (main base cdffdc627) 5:58 PM ET
+seedlists PASS (exit 0, 3429 s)
+shardplan PASS (exit 0, 4 s)
+lockbase PASS (exit 0, 130 s)
+lockall PASS (exit 0, 132 s)
+== lane L2 done 7:00 PM ET

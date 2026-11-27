@@ -1,0 +1,11 @@
+adult  normal PASS 100/100; under the floor 0; time median 161.7 s (min 153.8); hits 0 lives 1 (water 1); cleared none; told of traps 0/100; first trap sprung 0/100; traps sprung 0/0; turned back 0; left 0
+adult  easy   PASS 100/100; under the floor 0; time median 169 s (min 161.5); hits 0 lives 0 (none); cleared none; told of traps 0/100; first trap sprung 0/100; traps sprung 0/0; turned back 0; left 0
+child  normal PASS 83/100; under the floor 0; time median 387.9 s (min 312.1); hits 0 lives 155 (water 155); cleared none; told of traps 0/100; first trap sprung 0/100; traps sprung 0/0; turned back 0; left 0
+        fail 16: shrine rescued x1  (seeds 5,57,65,81,7,43,59,71,99,10,26,34,46,58,78,100)
+        fail 1: shrine rescued x2  (seeds 11)
+child  easy   PASS 100/100; under the floor 0; time median 256.8 s (min 218.4); hits 0 lives 0 (none); cleared none; told of traps 0/100; first trap sprung 0/100; traps sprung 0/0; turned back 0; left 0
+middle normal PASS 98/100; under the floor 0; time median 198.2 s (min 174.5); hits 0 lives 67 (water 67); cleared none; told of traps 0/100; first trap sprung 0/100; traps sprung 0/0; turned back 0; left 0
+        fail 2: shrine rescued x1  (seeds 91,88)
+middle easy   PASS 99/100; under the floor 0; time median 187.4 s (min 168.2); hits 0 lives 0 (none); cleared none; told of traps 0/100; first trap sprung 0/100; traps sprung 0/0; turned back 0; left 0
+        fail 1: shrine rescued x1  (seeds 94)
+expert normal PASS 100/100; under the floor 0; time median 170.1 s (min 151.8); hits 0 lives 69 (water 69); cleared none; told of traps 0/100; first trap sprung 0/100; traps sprung 0/0; turned back 0; left 0

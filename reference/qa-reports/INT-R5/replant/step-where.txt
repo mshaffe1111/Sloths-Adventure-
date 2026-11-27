@@ -1,0 +1,6 @@
+adult easy 39 stepOff OFF: shrine 163.7 s res 1 | refusals 0 () first - | rescue t 117.7 at x 1177 y 3068; last wheel bucket #52 b4 way 1 at t 117.6 x 845 y 3458
+adult easy 39 stepOff ON : shrine 139.1 s res 0 | refusals 6 (way 1) first way 1 t 95.5 | no rescue
+adult easy 56 stepOff OFF: shrine 163.8 s res 1 | refusals 0 () first - | rescue t 117.5 at x 1186 y 3064; last wheel bucket #53 b5 way 1 at t 117.4 x 800 y 3470
+adult easy 56 stepOff ON : shrine 135.7 s res 0 | refusals 0 () first - | no rescue
+adult easy 12 stepOff OFF: shrine 139.1 s res 0 | refusals 0 () first - | no rescue
+adult easy 12 stepOff ON : shrine 139.1 s res 0 | refusals 8 (way 1) first way 1 t 95.5 | no rescue

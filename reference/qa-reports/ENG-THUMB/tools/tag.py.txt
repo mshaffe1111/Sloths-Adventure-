@@ -1,0 +1,21 @@
+# tag.py <copy of tools/inspect/firsttimer.ts>: on a PROBE copy only (never a frozen tree), tags every one-line return in intend()
+# (found by 'private intend(): Pad' to its first '  }' line) with its original line number, and FT_FRAMES prints 'why <line>' before 'meant': the branch that chose the frame's steer, in one line
+import re,sys
+p=sys.argv[1]; L=open(p).read().split('\n')
+n=0; skip=0
+a=next(i for i,x in enumerate(L) if 'private intend(): Pad' in x); b=next(i for i in range(a+1,len(L)) if L[i]=='  }')
+for i in range(a,b):
+    s=L[i]
+    m=re.search(r'\breturn (?!;)(.*);\s*(//.*)?$',s)
+    if m and s.count('return ')==1 and (s[:m.start()].count('(')==s[:m.start()].count(')')):
+        e=m.group(1)
+        L[i]=s[:m.start()]+'return __w(%d, %s);'%(i+1,e)+(' '+m.group(2) if m.group(2) else '')
+        n+=1
+    elif 'return ' in s and 'return;' not in s: skip+=1
+for i,s in enumerate(L):
+    if 'if (TRACE_FRAMES) this.meantPad = intended;' in s:
+        L[i]=s.replace('this.meantPad = intended;','{ this.meantPad = intended; (this as any).whyL = __WHY; }')
+    if 'meant ${' in s and i>5000:
+        L[i]=s.replace('meant ${','why ${(this as any).whyL} meant ${',1)
+L.insert(0,'let __WHY = 0; function __w<T>(n: number, v: T): T { __WHY = n; return v; }')
+open(p,'w').write('\n'.join(L)); print('tagged',n,'skipped',skip)

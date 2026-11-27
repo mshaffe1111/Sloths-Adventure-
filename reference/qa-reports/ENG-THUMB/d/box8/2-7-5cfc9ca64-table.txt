@@ -1,0 +1,7 @@
+adult  normal PASS 40/40; under the floor 0; time median 161.7 s (min 153.8); hits 0 lives 0 (none); cleared none; told of traps 0/40; first trap sprung 0/40; traps sprung 0/0; turned back 0; left 0
+adult  easy   PASS 40/40; under the floor 0; time median 169 s (min 161.5); hits 0 lives 0 (none); cleared none; told of traps 0/40; first trap sprung 0/40; traps sprung 0/0; turned back 0; left 0
+child  normal PASS 38/40; under the floor 0; time median 364 s (min 312.1); hits 0 lives 49 (water 49); cleared none; told of traps 0/40; first trap sprung 0/40; traps sprung 0/0; turned back 0; left 
+child  easy   PASS 40/40; under the floor 0; time median 256 s (min 235.6); hits 0 lives 0 (none); cleared none; told of traps 0/40; first trap sprung 0/40; traps sprung 0/0; turned back 0; left 0
+middle normal PASS 40/40; under the floor 0; time median 199.6 s (min 174.5); hits 0 lives 31 (water 31); cleared none; told of traps 0/40; first trap sprung 0/40; traps sprung 0/0; turned back 0; lef
+middle easy   PASS 40/40; under the floor 0; time median 187.4 s (min 169.2); hits 0 lives 0 (none); cleared none; told of traps 0/40; first trap sprung 0/40; traps sprung 0/0; turned back 0; left 0
+expert normal PASS 40/40; under the floor 0; time median 170 s (min 147.2); hits 0 lives 15 (water 15); cleared none; told of traps 0/40; first trap sprung 0/40; traps sprung 0/0; turned back 0; left 

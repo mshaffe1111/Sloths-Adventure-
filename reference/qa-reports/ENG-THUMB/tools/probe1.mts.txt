@@ -1,0 +1,18 @@
+// probe1.mts <tree> <stage> <seed> <bot> <setting> <t0> <t1>: edge plan, edgeWait, the float under him and floats near, each frame in [t0,t1]
+const [T, st, sd, bot, set, a, b] = process.argv.slice(2);
+await import(`${T}/src/game/headlessDom.ts`);
+const ft = await import(`${T}/tools/inspect/firsttimer.ts`);
+const { castRun } = await import(`${T}/tools/inspect/castBots.ts`);
+const P = ft.FirstTimerRun.prototype as any; const it = P.intend;
+P.intend = function () {
+  const o = it.call(this); const p = this.sim.p, t = this.t;
+  if (t >= +a && t <= +b) {
+    const u = this.sim.platforms.findIndex((q: any) => q.y >= p.y - 2 && q.y <= p.y + 8 && p.x >= q.x - 2 && p.x <= q.x + q.width + 2);
+    const q = u >= 0 ? this.sim.platforms[u] : null;
+    const fl = this.sim.platforms.map((q: any, i: number) => [i, q]).filter(([i, q]: any) => q.type === 'drift' && Math.abs(q.y - p.y) < 70 && q.x < p.x + 500 && q.x + q.width > p.x - 300).map(([i, q]: any) => `#${i} ${Math.round(q.x)}-${Math.round(q.x + q.width)} y${Math.round(q.y)} d${q.drift?.dir}`).join(' ');
+    console.log(`t ${t.toFixed(2)} x ${p.x.toFixed(0)} y ${p.y.toFixed(0)} g${p.grounded ? 1 : 0} vx ${p.vx.toFixed(0)} out ${JSON.stringify(o)} edge ${JSON.stringify(this.edge)} lateArmed ${this.lateArmed ? this.lateArmed.dir : '-'} standing ${JSON.stringify(this.standing)} edgeWait ${this.edgeWait?.toFixed?.(2)} under ${q ? `#${u} ${q.type} ${Math.round(q.x)}-${Math.round(q.x + q.width)} d${q.drift?.dir}` : '-'} | ${fl}`);
+  }
+  return o;
+};
+const r = castRun(bot, set, st, +sd);
+console.log(`end ${r.end} rescues ${r.rescues} lives ${r.lives}`);

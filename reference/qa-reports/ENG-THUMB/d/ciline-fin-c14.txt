@@ -1,0 +1,8 @@
+ciline on 7bb313874 exit 1 645 s
+# tests 434
+# pass 432
+# fail 1
+# cancelled 0
+# todo 1
+not ok 357 - planted: with the against-the-flow skill off, the child on Normal is rescued on 2-1 (16) and loses 5+ more lives (15, 8, 7)
+  error: 'upstream off, 0 more lives (at least 5): on child normal seed 7: shrine, rescues 0, lives 1, stuck [{"x":19739,"what":"water ahead"}]; off child normal seed 7: shrine, rescues 1, lives 1, stuck [{"x":25663,"what":"an open drop ahead, water ahead"}]'

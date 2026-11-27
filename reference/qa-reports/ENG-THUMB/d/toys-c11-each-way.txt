@@ -1,0 +1,14 @@
+C10 ok 1 - landed on the very end of a small log, the pause comes: he never walks off a log unpressed within half a second of landing on it (2-1 middle Normal 17 to t 120, R-165.465 step 3)
+C10 not ok 2 - a pull-back due on a log running his way is kept where his middle is past its front: the steer on landing is back onto it, never a stand (2-1 child Normal 20 to t 90, R-165.465 C11)
+C10 not ok 3 - landed short of a small floor, the walk-on runs him onto it and no pause is drawn from his feet: the upstream river past \#85 crossed with no set-down loop (2-1 kid Normal 29 to t 125, R-165.465 C11)
+C10 # tests 3
+C10 # pass 1
+C10 # fail 2
+    +   't 81.23 x 8627 on #41 (8444-8614): steer {}, not back onto it'
+    +   '19892: set down here 3 times'
+C11 ok 1 - landed on the very end of a small log, the pause comes: he never walks off a log unpressed within half a second of landing on it (2-1 middle Normal 17 to t 120, R-165.465 step 3)
+C11 ok 2 - a pull-back due on a log running his way is kept where his middle is past its front: the steer on landing is back onto it, never a stand (2-1 child Normal 20 to t 90, R-165.465 C11)
+C11 ok 3 - landed short of a small floor, the walk-on runs him onto it and no pause is drawn from his feet: the upstream river past \#85 crossed with no set-down loop (2-1 kid Normal 29 to t 125, R-165.465 C11)
+C11 # tests 3
+C11 # pass 3
+C11 # fail 0

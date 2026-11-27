@@ -1,0 +1,19 @@
+# tests 1475
+# pass 1461
+# fail 12
+# cancelled 0
+# skipped 0
+# todo 2
+its 12 fails = EXACTLY validate.test.ts (5) + world1.test.ts (7), the inherited R-165.531 set (same names, diff empty); every other pinned test passes:
+"everything feels the same": 1-1, 1-2, 1-5 and 1-6 read over 80% alike in their moves
+beats: rotten wood that goes before a run gets across it is a hop; rotten wood that holds a run is walked
+branches can be outrun: 1-5's breaking branch runs are crossed by just holding right, none giving way under him
+chase: on open ground holding right pulls away (outrun); a wall that stops him lets it catch him
+eagles can be outrun: most of 1-7's watched stretches are crossed unhurt by just holding right, never hiding
+nothing bites, the truer rule (a fall of over 200 px bites, the lead 11-04): 1-2 and 1-7 still cost nothing; 1-1's high branches bite
+nothing bites: on 1-1, 1-2 and 1-7 a miss costs nothing on over 80% of the beats after the first 30 s (the old rule, as found)
+one tempo and flat pacing: no World 1 stage asks both to hurry and to wait; most never get tight
+padding: 1-1's finish is over half the stage, its piece laid again and again (the supervisor's clip: about 10 times)
+route: a fall deeper than a fall zone allows, inside the zone, is a respawn, never the way down
+route: a jump down past ground in between lands on that ground first
+route: down onto ground right under his own, he walks off an open end, never through it, and never through a trunk at the end

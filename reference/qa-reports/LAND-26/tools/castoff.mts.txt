@@ -1,0 +1,6 @@
+// castBots in-process with SKILLS.boardWatch off (the plant), argv passed through
+const R = process.env.REPO!;
+const { SKILLS } = await import(`${R}/tools/inspect/firsttimer.ts`);
+SKILLS.boardWatch = false;
+process.argv[1] = `${R}/tools/inspect/castBots.ts`;
+await import(`${R}/tools/inspect/castBots.ts`);

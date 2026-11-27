@@ -1,3 +1,272 @@
+# INT-R5 REPORT: release 5 (0.10.4) candidate, release-0.10.4 (packet reference/packets/2026-11-26/INT-R5.md)
+
+## EXACT NEXT STEP (written 1:28 PM ET 11-27 by `date`; box 3, INT-R5-c; supersedes the 11:59 step)
+**THE FROZEN HEAD is c9770adb2** (release-0.10.4; later commits on the branch are REPORT/out-c3 docs only). Everything below ran on it, in
+INT-R5-c's container (frozen /home/user/wt/c3; main base /home/user/wt/main 4bf2cbaaa; results /home/user/wt/out-c3, copied to
+r104/out-c3/ as each lane landed). A new lead takes over this afternoon (Matt's decision): report to the current lead.
+1. **THE FULL SET IS DONE on c9770adb2: every gate green or a named, accepted/inherited red** (table below). buildcheck and clipcheck
+   ran ALONE and PASS. The test link is PRE-BUILT, not published.
+2. NEXT (the lead): Matt plays the pre-built link (published by the lead), the story keeper gets the whatsNew entry and 2-6's now-said
+   view line, then the PR on Matt's "push" (release.md: body with this gate table, the §6 table, funcheck's 22 named). Nothing more for
+   integration unless a red appears; a fix would be a new head and a new full set.
+3. Send the final counts to the current lead. STOP before the PR (the lead opens it on Matt's "push").
+
+## THE FULL SET on c9770adb2 (the gate table; each shard's totals; logs r104/out-c3/)
+| Gate | Result | Counts line / note |
+|---|---|---|
+| tsc | PASS | 37 s |
+| suite 1/6 | PASS | 723 tests, 721 pass, 0 fail, 2 todo (R-165.312 and 4-3's wall check: both on main; `todo:` in src tests 4 = main's 4) |
+| suite 2/6 | PASS | 642 tests, 641 pass, 0 fail, 1 todo |
+| suite 3/6 | PASS | 609 tests, 609 pass, 0 fail |
+| suite 4/6 | PASS | 697 tests, 697 pass, 0 fail (discovery 696/697: goalsEasy, now fixed) |
+| suite 5/6 | PASS | 762 tests, 762 pass, 0 fail |
+| suite 6/6 | PASS | 759 tests, 759 pass, 0 fail |
+| CI tool line (gates.yml, own lane) | PASS | 449 tests, 448 pass, 0 fail, 1 todo ("chase bots (OPEN, todo)", on main too); wheelBoard and wheelStepOff re-planted, green |
+| deploy build (BASE_PATH vite build) + chunkcheck | PASS | largest chunk 259,526 B, 3,734,778 spare |
+| build:store | PASS | "dist has no tracking, ads, collector, service worker or outside addresses" |
+| artcheck | PASS | largest thornbark-anim-2.webp 2048x6942 |
+| knowncheck | PASS | depthSteps.known.json **108 -> 0** (the soil ease; "new list (0 entries), not on the base yet": main has no list) |
+| generalitycheck | PASS | 26 literals, 26 known |
+| coveragecheck | PASS | 17 built stages, 31 pieces, 5 known gaps |
+| roadmapcheck | PASS | |
+| timecheck | PASS | 799 commits, 120 stamps |
+| drawcheck | PASS | 1493 s |
+| clipcheck (ALONE, no lane running) | PASS | "PASS (83 known)", 436 s, 0 new. The What's New card upright/fresh looked at (r104/out-c3/clip/whatsnew-up-fresh.png): the 0.10.4 entry wraps cleanly; its marked boxes are the About screen's known rows behind the pop-up (clipknown) |
+| kbdcheck (CI=1 FORCE_COLOR=1) | PASS | 258 s |
+| buildcheck (ALONE, no lane running) | PASS | run 1 alone: "budget p95 <= 150 ms at CPU x4: PASS", normal p50 51 / p95 103 / max 125 ms, easy p50 43 / p95 70 / max 71 ms (30 builds each); a PASS, so no re-runs |
+| funcheck | FAIL, ACCEPTED | 22 worse or new = INT-14's accepted set: fundiff "mine 22, INT-14 22, IDENTICAL 22/22" |
+| THE LOCK GATE vs main 4bf2cbaaa (two runs) | moves as expected | "lock: 70/102 stages unchanged"; 32 moved = 2-6, 2-7, 1-4 + 29 proto.hints-only (1-1 1-2 1-7 1-8 1-9 2-1 2-2 2-4 2-5 5-9 6-1..6-7 6-9 7-1 7-3 7-5 7-6 7-7 7-9 8-1 8-2 8-6 8-8 8-9; no 8-5), the SAME set as item 6 on ab5673531; nothing else moves |
+| lock vs the pre-merge head eb475c965 (info) | PASS | "lock: 102/102 stages unchanged": the soil merge moves no layout |
+| paintcheck 0/3, 1/3, 2/3 | PASS x3 | each "0 known depth steps seen, R-165.487" (170 / 107 / 106 known ids seen, 0 new); paint1 was the discovery red |
+| seedlist --check, every listed stage | PASS | all 16 (1-1..1-9, 2-1..2-7) exit 0 (5695 s) |
+| seedlist 1-1 --check | PASS | "refuse 0 of 161 listed seeds"; PASS, 161 seeds clean on both settings |
+| shardplan / registrycheck | PASS | 4 shards (1: 1-1 1-8 2-3 2-7; 2: 1-5 1-7 2-2 2-6; 3: 1-2 1-4 1-9 2-4; 4: 1-3 1-6 2-1 2-5); registrycheck 16 stages registered everywhere |
+| storyTipScan --check | PASS | 0 dropped (2-6's view line now laid as Pokey's story line) |
+| tipwalk, teachFirstScan | PASS | teachFirstScan: 0 misses over 3422 rolls of 16 stages |
+| castBots 2-6 (4 bots, both settings, 100 seeds) | PASS | every row 100/100, 0 lives (castbots26-counts.txt) |
+| castBots 2-7 | PASS | adult N/E 100, child N 83 (16 x1 rescue, 1 x2: seed 11) / E 100, middle N 98 (91, 88) / E 99 (94), expert N 100 (castbots27-counts.txt) |
+| tierBots.test | PASS | 9 pass, 0 fail |
+| the WIDENED pin grep (release.md step 6, CI #98; 185 files) | 12 fail = inherited only | 1475 tests, 1461 pass, 12 fail: EXACTLY validate.test (5) + world1.test (7), names diffed equal; every other pinned test passes |
+| tools/validate/validate.test.ts | inherited, not in CI, R-165.531 | 43 tests, 38 pass, 5 fail (= main) |
+| tools/validate/world1.test.ts | inherited, not in CI, R-165.531 | 7 tests, 0 pass, 7 fail (= main) |
+| test link PRE-BUILT | DONE, NOT published | /home/user/wt/tl (worktree of c9770adb2): 414 files (limit 480), largest 10.5 MB; smoke.mjs OK (title, 1-1, 2-5: 0 problems; stills r104/out-c3/smoke/). No dist-published there: the map lists every file; before publishing, list the artifact's files and add each live path not in dist as null (build.py's own note) |
+
+## PLAY-STORE §6 on c9770adb2 (this candidate)
+| # | Item | Holds? | Proof |
+|---|---|---|---|
+| 1 | Nothing under the insets, both ways, foldable | holds | clipcheck PASS alone (83 known, 0 new, both orientations, fresh/old/done saves); kbdcheck PASS; the What's New entry looked at |
+| 2 | Back is sensible | holds | no new screen or route |
+| 3 | Nothing new sent off the phone | holds | build:store PASS; no fetch/XHR/sendBeacon/localStorage write added |
+| 4 | Works offline | holds | no web load added; smoke.mjs: 0 failed requests; buildcheck PASS alone |
+| 5 | Sound stops in background; no wake lock | holds | no src/audio or wakeLock change |
+| 6 | Leave/return/rotate keeps the place | holds | no save/resume change; the suite's 2-6/2-7 stage tests PASS |
+| 7 | No dead ends or placeholders in the store build | holds; one ruling open | build:store PASS; `?fixture=home` is a URL-only dev toy beside main's chase/wheel fixtures (box 1's open ruling, the lead's row) |
+| 8 | Saves survive everything | not checked here | no save code changed; the real-phone kill check is Matt's closed-test step |
+
+## Accepted reds and inherited, named
+- funcheck: 22, IDENTICAL to INT-14's accepted set (release.md step 7: named in the PR body with its numbers and Matt's acceptance).
+- lockall exit 1: the 32 intended moves above, judged by the lead (item 6).
+- validate.test 5 / world1.test 7: inherited, not in CI, R-165.531 (= main 4bf2cbaaa); the widened pin grep's 12 are these.
+- Player text: no new string. 2-6's view line is the keeper's own words, now SAID (it was dropped); send it to the story keeper with
+  the whatsNew entry (release.md "Added 11-11").
+
+## Box 3's earlier step (written 11:16 AM ET 11-27 by `date`; box 3, INT-R5-c; supersedes box 2's 10:28 step below)
+release-0.10.4 now holds ALL of fixes 2-4 on top of 59f5f1930 (code = ab5673531): fc31f6e1f (goalsEasy), 581e7198b (2-6's view line),
+a323cdf97 (wheelStepOff re-planted), f506a2068 (wheelBoard re-planted). tsc clean after each; each changed test passes alone (goalsEasy 3,
+w2Arc26 5, wheelStepOff 2, wheelBoard 4) and storyTipScan --check is 0 dropped. **The CI tool line has NOT run on these yet** (46 files,
+about 60 min): it runs once after the soil merge (step 2), which covers both. NOT YET: SOIL-EASE's landed hash, the freeze, the full set.
+1. (done: see "Box 3 done" below for both re-plants and their live proofs.)
+2. Merge SOIL-EASE's LANDED hash only (it sends it; t-soil-ease df06d9753 is its fix, 303bd69eb its REPORT; do not take an unlanded
+   hash), --no-ff, conflicts named; then tsc + the CI tool line (gates.yml's line; about 60 min alone, run_in_background).
+3. Freeze that ONE head (D115, src/game/gen2/proven writable). main's frozen worktree is ready in this container's /home/user/wt/main
+   (4bf2cbaaa, node_modules linked): a fresh container makes its own. THE FULL SET with r104/lane.sh: run1.sh now also has `pinwide`
+   (release.md step 6's widened grep, 185 files), `validate` and `world1` (inherited, not in CI, R-165.531). knowncheck must show
+   depthSteps SHRUNK (108 -> 0); lockall's moves named against box 2's list (2-6, 2-7, 1-4, the 29 hints-only stages; the view line is a
+   2-6 hints change).
+4. **The lead's lane rulings (its message to box 3, from INT-R5-b's discovery 1ad2d020c):** buildcheck (1-1 Normal p95, budget 150 ms at CPU
+   x4) is noisy at its budget, main too (4bf2cbaaa alone 172 FAIL; ab5673531 alone 172/127/148/146): run it ALONE with no other lane running;
+   one FAIL gets 2 re-runs alone, report all; two FAILs of three is a red. clipcheck: ALONE too. The CI tool line: its own lane (3529 s
+   loaded; a lane hit the 2 h limit). Every other discovery gate passed on ab5673531; castbots27, funcheck, fundiff, tierBots were re-running
+   in INT-R5-b's tail (results to the lead and to the next member).
+5. The §6 table, the test link PRE-BUILT and not published. STOP before the PR.
+
+## Box 3 (INT-R5-c) done, with the evidence
+- **Fix 4, goalsEasy.test.ts (fc31f6e1f):** the kidRuns pin [3,5,6,7,6,5] is gone; the test holds R-165.496's rule: 5-9's entry uses
+  EASY_GOAL_59, it is 5 (data), the kid's recorded runs reach it (kidReaches: at or under the lower median), and the rule's own negative
+  (median + 1 is out of reach). 3 pass. **Planted RED:** KID_RUNS_59 re-recorded as [3,3,4,4,4,4]: "5-9: the kid's runs 3, 3, 4, 4, 4, 4
+  (lower median 4) do not reach the Easy goal 5", 2 pass 1 fail; reverted. **This was box 1's miss:** 4799f6026 re-recorded the runs
+  and ran only firstTimerBot.test; the whole suite (or the widened step-6 grep) would have caught goalsEasy.test:18.
+- **Fix 3, storyTipScan (581e7198b):** "Look at it all. Didn't lift a claw." (LINES_26.view, Pokey on the great wheel) was laid with no
+  speaker, so Dot's guide took it as plain information and Tips dropped it. Laid at its SOURCE: kitLib26 (w2Arc26.ts) storyTips
+  `w26.view: 'Pokey'`, as 2-4's own view line (w2Arc24.ts:292). storyTipScan --check: 0 dropped, 16 stages, 147 lines; w2Arc26.test 5 pass.
+- **Fix 2b, wheelBoard.test.ts #3/#4, way +1 (f506a2068):** old row 2-6 seed 1, child Normal v2 tier bot, the top wheel (dead: 0 scrambles
+  off). New row: **seed 29, the cast child on Easy** (castRun's who), wheel #2 (top, way +1). The wheel is found by what the bot does: of
+  the way +1 wheels on whose jetty boardWatch HELD him (wheelBoardWait set after pad), the one he scrambles most on with it off. Same
+  assertions (ON: way +1, 0 pond, 0 scrambles; OFF: >= 2 scrambles). The wait is what tells the skill from a timing shift: the tier bots
+  (board-1-100.txt, 800 runs) gave one scramble hit, 77 child Easy v1, with NO wait at that wheel (board-probe-child-easy-v1-77.txt), and
+  adult Normal 5 the same (board-probe-adult-normal-5.txt): neither is a plant. Cast bots with the wait rule (cast-*.txt, 878 of 900 runs
+  before it was stopped): 29 child Easy top, 37 adult Normal edge #1, 37 child Normal top. **Live:** skill off in both runs -> #3 and #4
+  RED ("boardWatch held him on no way +1 jetty"); on in both -> #4 RED ("0 scrambles with the skill off"); as committed 4 pass
+  (replant/board-proof.txt).
+- **Fix 2a, wheelStepOff.test.ts (a323cdf97):** old row 2-6 adult Easy seed 12 (dead: OFF = ON, shrine 139.1 s, 0 rescues; ON refuses
+  8 times, it no longer matters). New row: **seed 39**. Search over all 100 listed seeds (replant/step-1-100.txt): 39 and 56 rescue with
+  the skill off; 56's ON run never refuses (a timing shift, not the skill), so 39 is the plant (step-where.txt: OFF rides bucket #52 b4,
+  way +1, rescue t 117.7; ON refuses 6 way +1 hops, no rescue). Same assertions, plus two that hold the row by what the bot does (ON
+  refuses a way +1 step-off; OFF's rescue follows a way +1 bucket). **Live:** skill off in the ON test -> RED (rescues 1, refusals 0);
+  on -> 2 pass (replant/step-proof.txt).
+
+## EXACT NEXT STEP for INT-R5-c (written 10:28 AM ET 11-27 by `date`; box 2, INT-R5-b; supersedes box 2's 9:10 step below)
+The DISCOVERY full set on ab5673531 found four reds; the lead ruled each. INT-R5-b fixes nothing (D138). INT-R5-c makes ONE new head
+from release-0.10.4 with fixes 2-4 plus the soil-ease merge, then runs THE FULL SET once on it (r104/lane.sh lanes, as below). Target: the
+full set green by about 3 PM ET today.
+1. **paint1 (depthSteps): ruling B, FIX THE SOIL EASE** (R-165.487's own fix). A soil-ease member starts from ab5673531, draw-only, on its
+   own branch; INT-R5-c MERGES it (--no-ff, conflicts named, tsc + the CI tool line after). Why it was red: 2-7's rebuilt list (c9e1e269)
+   re-keyed the same faint soil steps: 31 NEW 2-7 DEPTH STEP lines (49-63 px, 18 Easy, 13 Normal) on the changed variants, 34 known ids
+   (the old plans' roll seeds) "fixed, still listed". Re-keying the known list was DECLINED (knowncheck refuses a gain; release.md step 7).
+   The soil fix must EMPTY depthSteps.known.json's 2-7 lines (the list only shrinks). First failing line: out-c2/g-paint1.tail.log.
+2. **The two dead plants: RE-PLANT BY PROPERTY** on a case where C14's bot still fails with the skill off. Each test finds its row by what
+   the bot does, never by an x. Same assertions, nothing loosened. tools/inspect/wheelBoard.test.ts #4 "boardWatch PLANTED OFF, way +1
+   (2-6 seed 1, child Normal v2, top wheel)": "0 scrambles with the skill off: the plant is not live"; tools/inspect/wheelStepOff.test.ts
+   "stepOff PLANTED OFF, way +1 (2-6 adult Easy seed 12)": "no rescue with the skill off: the plant is not live". MERGE-BORN: both pass on
+   t-land-26 2f681402e, fail on merge 3 abdc6e4d1 and on ab5673531 (re-run alone); the only bot change between them is C14 (firsttimer.ts).
+3. **storyTipScan**: "2-6 seed 1 (normal+easy) | info | Look at it all. Didn't lift a claw." is dropped on Tips. Lay the line at its
+   source (StageHint.warn / storyTips / teachTips, R-165.412). INHERITED: t-land-26 2f681402e fails it the same way.
+4. **goalsEasy.test.ts:10** pins 5-9's kidRuns [3,5,6,7,6,5]; 4799f6026 re-recorded them to [14,13,17,18,5,5]. The line stops pinning the
+   runs and holds R-165.496's rule (EASY_GOAL_59 = 5 is data; the kid's lower median reaches it). **BOX 1's MISS** (it ran only
+   firstTimerBot.test after the re-record; the widened step-6 grep or the whole suite would have caught it). suite4: 696/697.
+5. **Inherited, not in CI, R-165.531 (the lead's ruling B):** tools/validate/validate.test.ts 38/43 (5 fail) and world1.test.ts 0/7, the
+   SAME on main 4bf2cbaaa. In the gate table as "inherited, not in CI, R-165.531" with both logs (out-c2/g-validate*, g-world1*).
+6. Lockall on ab5673531: 70/102 unchanged, 32 moved = 2-6, 2-7, 1-4 and 29 proto.hints-only stages (release-0.10.3's hint list less 8-5,
+   which now matches main); NOTED by the lead. C14 moves no layout. Re-check the same set on the new head (the soil fix is draw-only).
+7. The rest of the discovery lanes' totals: r104/out-c2/fullset-*.txt (INT-R5-b pushes each as it lands).
+
+## EXACT NEXT STEP (written 9:10 AM ET 11-27 by `date`; box 2 of 11-27, INT-R5-b)
+**THE FINAL HEAD is ab5673531** (on release-0.10.4): the title (box 1), 2-7's list c9e1e269 (de3b6814c), the R-165.487 row
+(f45b37d63) and the wheel-bucket mapping fix (ab5673531). tsc clean; the CI tool line 58 pass, 0 fail; coveragecheck PASS; roadmapcheck
+PASS; 2-7 --check PASS (100 seeds); the step-6 pinned tests 51 pass, 0 fail. Any later commit is REPORT-only (docs).
+1. **THE FULL SET is RUNNING on ab5673531**, in INT-R5-b's container: frozen tree /home/user/wt/c2 (chattr -R +i src tools .github;
+   src/game/gen2/proven writable), main base /home/user/wt/main (origin/main 4bf2cbaaa), results /home/user/wt/out-c2, the lanes from a
+   copy of r104 (/home/user/wt/r104): A1 suite1-3 | A2 suite4-6 | B seedlists seed11 shardplan registrycheck | C tsc vitebuild chunkcheck
+   artcheck knowncheck generalitycheck coveragecheck roadmapcheck timecheck drawcheck clipcheck kbdcheck buildcheck buildstore | D lockbase
+   lockall paint0-2 | E toolline tipwalk storytipscan teachfirst castbots26 castbots27 funcheck fundiff tierbots. INT-R5-b stays up only to
+   let these finish (D138) and pushes each fullset-*.txt and every failing g-*.log tail to reference/qa-reports/INT-R5/r104/out-c2/.
+2. NEXT MEMBER: read the pushed out-c2 results; fill the gate table with each shard's totals; name lockall's moves (2-6, 2-7, C14's and
+   release-0.10.3's) and judge each; release.md 4b from g-shardplan.log; the PLAY-STORE §6 table's pending rows; the test link PRE-BUILT
+   (python3 tools/testlink/build.py in its own worktree of ab5673531), NOT published. STOP before the PR. A red: a fix is a new head and a
+   new full set (the lead's call first).
+3. **Done in box 2 (the evidence):** 2-7 rebuilt to c9e1e269, the same as the other two branches (same 100 seeds, 35 plans changed).
+   castBots old vs new, the 35 changed variants, adult/child/middle/expert, both settings: equal counts; child N misses 59 75 81 -> 11 59 81
+   (11 traced: "water ahead" at the relaid log river x 8834 and 9662, 2 rescues; the same family as 59 and 81), middle N 88 on both; the
+   lead ruled A. ENG-QUIET-d's table (its engine f589b979a, five bots) is not this head's: on THIS head the counts are equal.
+   coveragecheck: t-land-26 2f681402e itself failed it; the cause was score.ts piecesUsed counting 2-6's wheel buckets as
+   platform:moving; fixed as move:wheel (the lead's A), planted RED in a fresh tree: the mapping reverted fails the new test (7 pass, 1 fail).
+4. PR NOTES to carry: `?fixture=home` in App.tsx stays (beside main's chase and wheel fixtures, URL-only; the lead logs gating dev
+   fixtures as its own row); the wheel-bucket meter mapping (ab5673531).
+
+## EXACT NEXT STEP (written 8:47 AM ET 11-27 by `date`; release-0.10.4, box 1 of 11-27; the old release-0.10.3 report is below the line)
+0. **CRITICAL PATH, FIRST (the lead's message, 8:52 AM ET 11-27):** 2-7's proven list is STALE on this candidate. t-land-26's 5a67dba93
+   (ENG-26e: the drop judge reads water through river.ts waterUnder) changed 2-7's lays, and the list was built without it. ENG-QUIET-c
+   (t-eng-quiet fc315db2e) found seeds 3 8 9 11 12 15 17 19 20 22 and more fail with "replay differs from its search". Do these in order:
+   (a) Prove it on the release head: `npx tsx tools/engine/seedlist.ts 2-7 --check` (box 1's discovery g-seedlists.log will show it too).
+   (b) Rebuild the list on a work tree of the head: `npx tsx tools/engine/seedlist.ts 2-7 --count 100` (or the --worker i/n parts, then
+       --merge; seedlist.ts:153). Two other branches rebuilt it to version c9e1e269 with 35 seeds changed: say whether this rebuild differs.
+   (c) castBots on EVERY changed variant, both settings, the old list vs the new one (rule 28: trace every miss). ANY new miss goes to the
+       lead BEFORE the final full set.
+   (d) Every test that pins a 2-7 roll or seed (release.md step 6; the grep finds src/game/gen2/judgedTable.test.ts, but run the full
+       step-6 grep). Then tsc and the CI tool line. Commit the list; push.
+0b. **Discovery reds so far on 5b9389168 (box 1 pushes the rest as its lanes finish):**
+   - roadmapcheck: "tools/engine/depthSteps.known.json still lists 108 known defects, but no open R-item cites it in its Source". The
+     R-165.487 row is on the LEAD branch's ROADMAP (ccr-ea739a2f-dfcee4 ROADMAP.md:975) but not on the release line's ROADMAP.md.
+     Carry that row (its Source citing the file) into release-0.10.4's ROADMAP.md, then re-run roadmapcheck.
+   - coveragecheck: "FAIL (b) platform:moving on 2-6: no bot (a built stage uses it: give it one, METER-COVERAGE §2)". Check t-land-26
+     2f681402e's own result first (D135: no red is called inherited without it). Then the fix (a bot for 2-6's moving platform, or the
+     lead's ruling) comes from the lead or the engine lane: it is not integration's to invent.
+1. **DONE**: the What's New title is now "Water wheels and the mail boat" (the lead's ruling A; "Two new stages" duplicated 0.9.8's title).
+   whatsNew.test + playerText.test: 79 pass, 0 fail. This is the first commit of the final head; no code was touched.
+2. **The DISCOVERY run on 5b9389168** (frozen /home/user/wt/c1, main frozen /home/user/wt/main, results in /home/user/wt/out-c1) runs
+   in box 1's container. It is the gates of the same frozen candidate, so box 1 lets it finish (D138) and pushes each lane's
+   fullset-*.txt plus every failing g-*.log tail to reference/qa-reports/INT-R5/r104/out-c1/. The lanes are listed under "THE FULL
+   SET" below. Read the pushed results; fix every red (a stale seed list per release.md step 6, then the roll/seed-pinning tests);
+   each fix is its own commit, with tsc and the CI tool line after it.
+3. Then THE FULL SET on the FINAL head: freeze it (git worktree add --detach; chattr per dispatch-packet.md D115, src/game/gen2/proven
+   writable), the same six lanes with r104/lane.sh (r104/run1.sh holds every gate line; read the lane list below). Each shard's totals
+   go in the gate table. The lockall moves must be NAMED: 2-6, 2-7, C14's and release-0.10.3's own (INT-R5 below listed them), each judged.
+4. The PLAY-STORE §6 table; release.md 4b (CI time limits per the candidate's shard plan: g-shardplan.log); the test link PRE-BUILT
+   (python3 tools/testlink/build.py, in its own worktree of the final head) and NOT published. STOP before the PR.
+
+## Merges (release-0.10.4 cut from origin/main 4bf2cbaaa, every merge --no-ff, in the packet's order)
+| # | Branch @ head | Merge commit | Commits | Conflicts (named) | tsc | CI tool line |
+|---|---|---|---|---|---|---|
+| 1 | release-0.10.3 c73cb9766 | 96998505d | 681 not on main (1558489a2..c73cb9766) | whatsNew.ts (kept main's SHIPPED 0.10.3 "Two little fixes" entry, which players saw); reference/handoffs/engine-core.md (one blank line: took release-0.10.3's) | clean | running (box 1 pushes the totals) |
+| 2 | t-eng-thumb-wip 35d5252c2 | 2576ddf24 | 42 over release-0.10.3 | none | clean | running |
+| 3 | t-land-26 2f681402e | abdc6e4d1 | 38 over release-0.10.3 | none: the expected protoArt conflict did NOT arise (release-0.10.3 already holds the soil fix's protoArt) | clean | running |
+
+## 5-9's Easy goal (R-165.496), commit 4799f6026
+- KID_RUNS_59 re-measured on merge 3 (abdc6e4d1): **[14, 13, 17, 18, 5, 5]**, as the packet expected. Re-recorded in gen2/game.ts.
+- EASY_GOAL_59 = 5 is DATA in gen2/game.ts, and 5-9's entry uses it. The kidMedian derivation is gone. goals.ts kidReaches(goal, runs): goal at or
+  under the runs' lower median (13 here).
+- firstTimerBot.test.ts: the re-measure test (it now says "re-record KID_RUNS_59 (the goal stays EASY_GOAL_59)"), plus a new test:
+  the goal is 5, the entry uses it, the kid reaches it, and the test's own negatives (14 over those runs fails; 13 passes; no runs fails).
+- Frozen 4799f6026: 2 pass, 0 fail. **Planted RED A** (runs re-recorded as [3,3,4,4,4,4]): both fail, "the kid's runs 3, 3, 4, 4, 4, 4
+  (lower median 4) do not reach the goal 5". **Planted RED B** (easyGoal back to kidMedian(KID_RUNS_59), the "re-record lifts the goal"
+  case): test 2 fails, actual 13, expected 5. Each plant ran in its own fresh worktree, which was removed afterwards.
+- Other stages: no other Easy goal comes from a bot's runs. `kidRuns` appears only on 5-9 (grep src). World 1's marks goals (w1mix.ts:1264)
+  come from the stage designs' goal counts. stageGenerator.ts:2955 only caps the gen2 goal at the enemies laid.
+
+## Version and What's New (commit fca8ed1cb): 0.10.4, package.json + package-lock.json; the lead APPROVED the entry as drafted (A)
+"Two new stages": Up the Bank Houses (water wheels); The Mailman's Route; Dot warns before deep water, on every setting; the rivers run
+smoother and the bouncy plants' stems reach the ground they grow from. Lines 2-4 come from release-0.10.3's approved draft, which never shipped.
+**The title is a duplicate (step 1 above).**
+
+## THE FULL SET: discovery run on 5b9389168 (NOT the green run: the title must change)
+Lanes (r104/lane.sh <frozen> <main> <out> <lane> <gates>; each run_in_background, timeout 7,200,000 ms):
+A1 suite1 suite2 suite3 | A2 suite4 suite5 suite6 | B seedlists seed11 shardplan registrycheck | C tsc vitebuild chunkcheck artcheck
+knowncheck generalitycheck coveragecheck roadmapcheck timecheck drawcheck clipcheck kbdcheck buildcheck buildstore | D lockbase lockall
+paint0 paint1 paint2 | E toolline tipwalk storytipscan teachfirst castbots26 castbots27 funcheck fundiff tierbots.
+Known so far: playerText.test 1 fail (the title). Everything else is running.
+
+## release.md 4b: the CI time limits, the BASE numbers (main's last deploy, run 45742721127 on 4bf2cbaaa, all green)
+| Job (limit) | main's time | share |
+|---|---|---|
+| gates (25) | 13.8 | 55% |
+| drawcheck (30) | 15.0 | 50% |
+| seedplan (10) | 0.8 | 8% |
+| seedlists 1/2/3/4 (45 each) | 5.7 / 7.8 / 21.0 / 20.8 | 13-47% |
+| paintcheck 0/1/2 (25 each) | 5.1 / 9.3 / 6.5 | 20-37% |
+| rolled (60) | 16.6 | 28% |
+| test 1-6 (deploy.yml: no timeout-minutes) | 8.6 / 19.0 / 7.1 / 11.9 / 16.4 / 5.9 | n/a |
+**Still to do (D124):** the candidate adds TWO proven lists that main does not run, 2-6 and 2-7 (seeds-2-6.ts, seeds-2-7.ts are new vs
+main), so the shards reshuffle. Take the candidate's shard plan from out-c1 g-shardplan.log (`registrycheck --lists --shard k/n`) and
+each list's time from the deploy's seedlists logs (the '== <id>' timestamps; get_job_logs on the four seedlists jobs of 45742721127).
+2-6 and 2-7 have no CI time, so use the local g-seedlists.log '== <id> <epoch>' deltas, scaled by the ratio of a list both runs share.
+Then sum per shard. Any shard within 20% of 45 (36 min or more) is split BEFORE the PR.
+
+## PLAY-STORE §6 (draft from the diff origin/main..release-0.10.4 -- src; the gate-proved rows are filled when the final head's lanes finish)
+The diff touches no screen, menu, sound, save or setting file. Outside src/game it touches only src/App.tsx (a `?fixture=home` dev toy added
+beside main's chase and wheel fixtures), components/dot/DotGuide.tsx (Dot's line gains `who` and `warn`: the race's end line and the
+deep-water warning) and components/stageClue.ts (2-6's clue). A grep of the added lines finds no fetch, XMLHttpRequest, sendBeacon,
+localStorage write, wake lock, new Audio or URL.
+| # | Item | Holds? | Proof |
+|---|---|---|---|
+| 1 | Nothing under the insets, both ways, foldable | pending | clipcheck on the final head (lane C); the What's New card's new entry is the only menu text that changed |
+| 2 | Back is sensible | holds: no new screen | diff: no new screen or route |
+| 3 | Nothing new sent off the phone | holds by diff; build:store pending | no network call added (grep above); `npm run build:store` (checkStoreBuild) on the final head |
+| 4 | Works offline | holds by diff; pending buildcheck | no web load added; buildcheck on the final head |
+| 5 | Sound stops in the background; no wake lock | holds: no audio or wake-lock change | diff: no src/audio file, no wakeLock |
+| 6 | Leave/return/rotate keeps the place | holds: no save or resume change | diff: no save file; 2-6/2-7 rotate per the suite's stage tests (final head) |
+| 7 | No dead ends or placeholders in the store build | pending build:store | `?fixture=home` is a URL-only dev toy, like main's chase/wheel fixtures. **For the lead (release.md step 2, "remove test-only toggles"):** it is existing debt that this release adds to, so I am not deleting it; ruling asked |
+| 8 | Saves survive everything | not checked here: no save code changed; the real-phone kill check is Matt's closed-test step | diff |
+
+## Lessons applied
+D92 (tsc + the CI tool line after each merge), D115 (every run on a frozen, chattr'd tree; the plants in fresh trees), D119 (no heredoc in
+a commit chain), D128 (stamps from `date`), D134 (this step pushed and ls-remote checked before the hand-over), D138 (only this candidate's
+gates run past the box), D140 (ReadNotifications at each step), CI #89 (20-minute default), CI #93 (totals for the hash in each message).
+**My miss (for LESSONS): I ran whatsNew.test after drafting and then edited a line without re-running it, and never ran playerText.test,
+which checks titles for duplicates across every release. Countermeasure proposed: release.md step 3 names BOTH tests (whatsNew.test
+and playerText.test), re-run after ANY edit to the entry, before the lead is asked.**
+
+---
+
 # INT-R5 REPORT: release 4 (0.10.3) candidate, release-0.10.3
 
 Session 1: started 2:31 PM ET 11-24 (by `date`), handed over at the 28-minute box. Lead: session_01FhBbYN2CVHnFXg7XzqKXpM.

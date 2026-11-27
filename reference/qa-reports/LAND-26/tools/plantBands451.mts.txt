@@ -1,0 +1,13 @@
+(globalThis as any).Image = class { onload:any=null; onerror:any=null; width=1;height=1;naturalWidth=1;naturalHeight=1;complete=true; set src(_u:string){this.onload?.();} decode(){return {then:(ok:()=>void)=>ok()};} };
+const R = process.cwd() + '/src/game/';
+const { groundBanks, groundLine } = await import(R + 'protoArt.ts') as any;
+const { depthRuns } = await import(R + 'groundPaint.ts') as any;
+const { generateAllLevels } = await import(R + 'worldsData.ts');
+const { listedStage, playFinish } = await import(R + 'gen2/listed.ts') as any;
+const { buildGen2Stage } = await import(R + 'gen2/pipeline.ts') as any;
+const cfg = generateAllLevels().find((c:any) => c.id === '2-6' && !c.secret)!;
+const row = listedStage('2-6')!;
+const st = playFinish(row, buildGen2Stage({ config: cfg, kit: row.kit(), seed: 1, difficulty: 'normal' }), 'normal');
+const banks = groundBanks(st.platforms), foot = Math.max(...banks.map((b:any) => b.y + b.height));
+const old = groundLine(banks.map((b:any) => ({ ...b, height: foot - b.y })));
+for (const b of banks) if (b.x <= 1060 && 1040 <= b.x + b.width) { console.log('bank', b.x, b.x+b.width, b.y); for (const r of depthRuns(b.x, b.x + b.width, old)) if (r.x0 > 900 && r.x0 < 1300) console.log(JSON.stringify({ ...r, mid: r.vt + (r.vb - r.vt) * 0.5 })); }

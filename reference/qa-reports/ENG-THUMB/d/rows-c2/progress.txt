@@ -1,0 +1,3 @@
+rows on 71d478017 bots kid,adult 1:19 PM ET
+2-1 exit 0 160 rows 130 s
+2-2 exit 0 160 rows 69 s

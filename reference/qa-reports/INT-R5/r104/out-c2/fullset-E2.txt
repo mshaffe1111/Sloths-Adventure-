@@ -1,0 +1,6 @@
+== FULL SET lane E2 on ab5673531 (main base 4bf2cbaaa) 11:12 AM ET
+castbots27 PASS (exit 0, 256 s)
+funcheck FAIL (exit 1, 106 s)
+fundiff PASS (exit 0, 0 s)
+tierbots PASS (exit 0, 242 s)
+== lane E2 done 11:22 AM ET

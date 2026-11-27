@@ -1275,7 +1275,10 @@ export function piecesUsed(st: any, route: Route, beats: readonly Beat[], follow
     // moving floor's: its bot is the pad skills and its price the dwell, METER-COVERAGE #21)
     // (a snap stone, a 'beat' pad that BITES, is its own piece: its bot is OFF-BEFORE-FOUR and its price the run's window, snapChallenges;
     // ENG-25's coverage row 'pad:snap' was never read before ENG-25b: every snap stone read as 'pad:beat', the sinking pads' row)
-    out.add(p.pad ? (p.pad.on === 'bites' ? 'pad:snap' : `pad:${p.pad.by}`) : `platform:${p.type}`);
+    // (a water wheel's bucket (gen2/wheelLay.ts: a 'moving' platform with `wheel`) is the wheel's own piece, move:wheel: its bot is the
+    //  first-timer's rideWheel and its price wheelChallenges, never a generic moving floor's (2-6's 30 buckets read as platform:moving,
+    //  which has no bot; INT-R5, the lead's ruling A))
+    out.add(p.pad ? (p.pad.on === 'bites' ? 'pad:snap' : `pad:${p.pad.by}`) : p.wheel ? 'move:wheel' : `platform:${p.type}`);
     // (a ride across moves sideways, a ride up moves up and down: ride.ts paths, gen2/rideLay.ts RideWay)
     if (p.ride) out.add(`ride:${p.ride.path.some((q: any, i: number) => i > 0 && Math.abs(q.y - p.ride.path[0].y) > Math.abs(q.x - p.ride.path[0].x)) ? 'up' : 'across'}`);
   }

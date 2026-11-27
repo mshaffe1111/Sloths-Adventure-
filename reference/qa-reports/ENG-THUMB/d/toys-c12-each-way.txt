@@ -1,0 +1,5 @@
+# toys each way (box 6): name | C11 (probe copy of ccd80b08 + these tests) | C12 c0cc0810e
+his middle past a drifting log's front ... (2-1 child Easy 3 to t 175) | RED: put back 't 169.90 x 20025 -> 19552', 't 171.17 x 19676 -> 19552' | GREEN
+a put-back by the game spends the edge plan's stand ... (2-1 middle Easy 18 to t 12) | RED: 't 10.00 x 2135 -> 2010' | GREEN
+CI-14 beat row, allowance pressIn(mid + 3 sd) (ruling 2) | planted (CI-14 padSeen reset removed, C12 probe): RED '#109 at t 145.100 onto #115 with 1.50 s for 2.17' | GREEN
+c23 one rule (231): C11 GREEN | C12 GREEN (old test also green on C12: no past-front landing on this run)

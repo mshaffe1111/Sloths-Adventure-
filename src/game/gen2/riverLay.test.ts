@@ -42,9 +42,10 @@ test('the hand-built World 2 stages lay every log river through the lay, and eve
   //  hand-built 2-9 laid every one of them; 2cb7b0a4a (BUILD-29-f) deleted that build (new replaces old), so the count fell to 0 and its
   //  check went with it. The check MOVED, it was not loosened (Law 22): the gen2 2-9's log rivers are judged by riverFaults in
   //  w2Arc29.test.ts "2-9's log rivers are fair on every listed seed", every listed seed on both settings, with a floor and a plant.
-  //  What stays here: the hand-built 2-6 lays no river and 2-8 only still water (speed 0, riverFaults' other rule), seeds 1-3, so each
-  //  plan names its own floor, and a hand-built plan added without one fails)
-  const FLOOR: Record<string, number> = { '2-6': 0, '2-8': 0 };
+  //  What stays here (2-6 is gen2's too, release 5: its millrace is judged by riverFaults in w2Arc26.test.ts): the hand-built 2-8 lays
+  //  only still water (speed 0, riverFaults' other rule), seeds 1-3, so each plan names its own floor, and a hand-built plan added
+  //  without one fails)
+  const FLOOR: Record<string, number> = { '2-8': 0 };
   const plans = Object.entries(W2_STAGES);
   assert.deepEqual(plans.map(([id]) => id).sort(), Object.keys(FLOOR).sort(), 'every hand-built World 2 plan names its log-river floor');
   for (const [id, plan] of plans) for (const s of [1, 2, 3]) {

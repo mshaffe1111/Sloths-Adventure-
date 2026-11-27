@@ -1,0 +1,25 @@
+import json, sys
+# calcmp.py <committed> <new>: run rows moved by field; end/lives/rescues moves named; every calibration check's pass old -> new
+def load(p):
+    runs, cal = {}, {}
+    for l in open(p):
+        o = json.loads(l)
+        if 'calibration' in o: c = o['calibration']; cal[(c['tier'], c['setting'])] = c
+        elif 'variant' in o: runs[(o['tier'], o['setting'], o['variant'])] = o
+    return runs, cal
+a, ca = load(sys.argv[1]); b, cb = load(sys.argv[2])
+print('runs', len(a), len(b), 'errors new', sum(1 for r in b.values() if 'error' in r))
+mv = {}
+for k in a:
+    if k not in b: print('MISSING', k); continue
+    for f in set(a[k]) | set(b[k]):
+        if a[k].get(f) != b[k].get(f): mv[f] = mv.get(f, 0) + 1
+    for f in ('end', 'lives', 'rescues'):
+        if a[k].get(f) != b[k].get(f): print('  MOVED', f, k, a[k].get(f), '->', b[k].get(f))
+print('fields moved:', mv)
+for k in ca:
+    x, y = ca[k], cb.get(k)
+    print(k, 'pass', x['pass'], '->', y and y['pass'], 'checked', x['checked'], '->', y and y['checked'], 'rescues', x['rescues'], '->', y and y['rescues'], 'finished', x['finished'], '->', y and y['finished'])
+    for cx, cy in zip(x['checks'], y['checks'] if y else []):
+        flag = '' if cx['pass'] == cy['pass'] else '  VERDICT MOVED'
+        print('   ', cx['name'], cx['bot'], '->', cy['bot'], 'pass', cx['pass'], '->', cy['pass'], flag)

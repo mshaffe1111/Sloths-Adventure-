@@ -1,0 +1,35 @@
+# usage: hunks.py show FILE  | hunks.py pick FILE SPEC   (SPEC: per hunk 'o','t','ot','to', or 'x:python-expr' using O,T lists)
+import sys,re
+mode,f=sys.argv[1],sys.argv[2]
+L=open(f).read().split('\n')
+hunks=[];i=0;out=[];cur=None
+while i<len(L):
+    l=L[i]
+    if l.startswith('<<<<<<< '):
+        O=[];T=[];i+=1
+        while not L[i].startswith('======='): O.append(L[i]);i+=1
+        i+=1
+        while not L[i].startswith('>>>>>>> '): T.append(L[i]);i+=1
+        hunks.append((O,T));out.append(len(hunks)-1)
+    else: out.append(l)
+    i+=1
+if mode=='show':
+    for k,(O,T) in enumerate(hunks):
+        print(f'--- hunk {k} OURS({len(O)})');[print('  O|'+x[:int(sys.argv[3]) if len(sys.argv)>3 else 200]) for x in O]
+        print(f'    THEIRS({len(T)})');[print('  T|'+x[:int(sys.argv[3]) if len(sys.argv)>3 else 200]) for x in T]
+else:
+    specs=sys.argv[3:]
+    assert len(specs)==len(hunks),(len(specs),len(hunks))
+    res=[]
+    for x in out:
+        if isinstance(x,int):
+            O,T=hunks[x];s=specs[x]
+            if s=='o':res+=O
+            elif s=='t':res+=T
+            elif s=='ot':res+=O+T
+            elif s=='to':res+=T+O
+            elif s.startswith('x:'):res+=eval(s[2:])
+            else: raise SystemExit('bad spec '+s)
+        else: res.append(x)
+    open(f,'w').write('\n'.join(res))
+    print('wrote',f,len(hunks),'hunks')

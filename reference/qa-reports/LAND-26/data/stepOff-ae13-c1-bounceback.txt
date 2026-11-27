@@ -1,0 +1,22 @@
+t 75.03 x 925 y 4613 vx -230 vy -450 air pad left+jump
+t 76.07 x 896 y 4584 vx 268 vy -513 air pad right+jump
+t 77.10 x 1009 y 4534 vx -215 vy -323 air pad left+jump
+t 78.13 x 927 y 4604 vx -180 vy -513 air pad left+jump
+t 79.17 x 864 y 4620 vx 268 vy 0 solid#29 555-903 y4620 pad right
+t 80.20 x 990 y 4563 vx -191 vy -513 air pad left+jump
+t 81.23 x 901 y 4620 vx 285 vy 0 solid#29 555-903 y4620 pad right
+t 82.27 x 804 y 4593 vx -285 vy 473 air pad left
+t 83.30 x 999 y 4546 vx 285 vy 273 air pad right
+t 84.33 x 877 y 4571 vx -268 vy 557 air pad left
+t 85.37 x 1065 y 4687 vx 268 vy 857 air pad right
+t 86.40 x 1170 y 4875 vx 0 vy 0 wheel@1060,4772 way -1 b2 pad -
+t 87.43 x 1192 y 4829 vx 0 vy 0 wheel@1060,4772 way -1 b2 pad -
+t 88.47 x 1201 y 4778 vx 0 vy 0 wheel@1060,4772 way -1 b2 pad -
+t 89.50 x 1196 y 4727 vx 0 vy 0 wheel@1060,4772 way -1 b2 pad -
+t 90.53 x 1176 y 4680 vx 0 vy 0 wheel@1060,4772 way -1 b2 pad -
+t 91.57 x 1143 y 4640 vx 0 vy 0 wheel@1060,4772 way -1 b2 pad -
+t 92.60 x 1101 y 4611 vx 0 vy 0 wheel@1060,4772 way -1 b2 pad -
+t 93.63 x 1052 y 4595 vx 0 vy 0 wheel@1060,4772 way -1 b2 pad -
+t 94.67 x 976 y 4528 vx -285 vy -387 air pad left+jump
+t 95.70 x 573 y 4591 vx 0 vy 0 air pad up
+END shrine 163.8 rescues 1

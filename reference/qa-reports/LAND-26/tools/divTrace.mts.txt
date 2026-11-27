@@ -1,0 +1,27 @@
+// the 14 untraced kid rows: each row run with boardWatch+stepOff OFF and ON (same seed); the FIRST frame whose pad differs is the first
+// acting frame. Prints the state there (wheel, bucket, off from its middle x way, vx, past) and both pads.
+const R = process.env.REPO!;
+await import(`${R}/src/game/headlessDom.ts`);
+const { FirstTimerRun, SKILLS } = await import(`${R}/tools/inspect/firsttimer.ts`);
+const { castRun } = await import(`${R}/tools/inspect/castBots.ts`);
+const FP: any = FirstTimerRun.prototype;
+let rec: any[] = [];
+let wr: any = 'none'; const w0 = FP.wheelRide; FP.wheelRide = function (...a: any[]) { const o = w0.apply(this, a); wr = JSON.stringify(o); return o; };
+const p0 = FP.pad; FP.pad = function (...a: any[]) {
+  wr = 'none'; const o = p0.apply(this, a); const p = this.sim.p;
+  const q = this.sim.platforms.find((x: any) => x.id === this.sim.standingOn);
+  const w = q?.wheel?.w; const off = w ? (p.x - (q.x + q.width / 2)) * w.way : null;
+  rec.push({ t: this.sim.t, x: p.x, vx: p.vx, g: p.grounded, on: this.sim.standingOn, wi: q?.wheel?.i, way: w?.way, off, edge: 22 + this.who.edgeAim, wr, pad: JSON.stringify(o) });
+  return o;
+};
+const rows = (process.env.ROWS ?? '').split(';').filter(Boolean);
+for (const l of rows) {
+  const [bot, set, seed] = l.trim().split(' ');
+  const go = (on: boolean) => { SKILLS.boardWatch = on; SKILLS.stepOff = on; rec = []; const r = castRun(bot, set as any, '2-6', Number(seed)); return { r, rec }; };
+  const A = go(false), B = go(true);
+  SKILLS.boardWatch = true; SKILLS.stepOff = true;
+  let i = 0; while (i < A.rec.length && i < B.rec.length && A.rec[i].pad === B.rec[i].pad && Math.abs(A.rec[i].x - B.rec[i].x) < 1e-9) i++;
+  const a = A.rec[i], b = B.rec[i], pv = B.rec[Math.max(0, i - 1)];
+  const f = (n: any) => (n == null ? '-' : Number(n).toFixed(1));
+  console.log(`${l.padEnd(14)} | frame ${i} t ${f(b?.t)} x ${f(b?.x)} vx ${f(b?.vx)} g ${b?.g} on #${b?.on} wheel ${b?.wi ?? '-'} way ${b?.way ?? '-'} off*way ${f(b?.off)} (edge ${f(b?.edge)}) | off-run ${a?.pad} on-run ${b?.pad} | wheelRide off-run ${a?.wr} on-run ${b?.wr} | prev vx ${f(pv?.vx)} | off end ${A.r.end} ${A.r.time.toFixed(1)} res ${A.r.rescues} / on end ${B.r.end} ${B.r.time.toFixed(1)} res ${B.r.rescues}`);
+}

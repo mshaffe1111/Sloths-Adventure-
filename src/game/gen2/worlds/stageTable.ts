@@ -16,7 +16,7 @@ import { FIRST_RUN_11 } from '../firstRun11.ts';
 export interface StageRow {
   /** the world kit the stage is rolled from, by name (listed.ts KITS): a world's own, or a world's kit with one stage's rows over it
    *  where they are manifest-wide (1-2's corridor room, thorn row and lessons: w1Arc12.ts kitLib12) */
-  kit: 'w1' | 'w1-12' | 'w1-14' | 'w1-15' | 'w1-16' | 'w1-17' | 'w1-18' | 'w1-19' | 'w2' | 'w2-21' | 'w2-22' | 'w2-23' | 'w2-24' | 'w2-25' | 'w2-27' | 'w2-29';
+  kit: 'w1' | 'w1-12' | 'w1-14' | 'w1-15' | 'w1-16' | 'w1-17' | 'w1-18' | 'w1-19' | 'w2' | 'w2-21' | 'w2-22' | 'w2-23' | 'w2-24' | 'w2-25' | 'w2-26' | 'w2-27' | 'w2-29';
   /** its finish dresses squirrels (a roll where too few find a spot is never listed) */
   squirrels?: true;
   /** it has a fixed first run, held to its lock */
@@ -75,6 +75,10 @@ export const STAGE_TABLE: Readonly<Record<string, StageRow>> = {
   //  with the banks, ENG-25c) and World 2's snappers on their clock (w2Cast.ts); the hand-built 2-5 (w2Stages.ts) is deleted. Judged on its own
   //  flown rows, flownArcs.ts normal-2-5, BUILD-25c 11-20)
   '2-5': { kit: 'w2-25', judged: 'normal-2-5' },
+  // (2-6 Up the Bank Houses, The Water Wheels: the designed arc, w2Arc26.ts, its own kit 'w2-26' (kitLib26), BUILD-26 11-21: World 2's water
+  //  wheels (ENG-26..26f, wheel.ts, wheelLay.ts) up a 1700 px tower; the hand-built 2-6 (w2Stages.ts, protoStage.ts's village climb) is deleted)
+  //  Judged on its own flown rows, flownArcs.ts normal-2-6, ENG-26s 11-23)
+  '2-6': { kit: 'w2-26', judged: 'normal-2-6' },
   // (2-7 The Mailman's Route: the designed arc, w2Arc27.ts, its own kit 'w2-27' (kitLib27), BUILD-27 11-23: out up the mill-race against
   //  the current, down the weir, home LEFT racing the mail boat (pacer.ts); the hand-built 2-7 (w2Stages.ts) is deleted)
   '2-7': { kit: 'w2-27', judged: 'normal-2-7' },

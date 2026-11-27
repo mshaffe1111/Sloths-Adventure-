@@ -165,6 +165,9 @@ export function kitLib26(): WorldKit {
       lessons: { ...M.lessons, [WHEEL_LESSON]: STAGE_26 },
       tips: { ...M.tips, ...Object.fromEntries((Object.keys(LINES_26) as Array<keyof typeof LINES_26>).map((key) => [lineId26(key), LINES_26[key]])) },
       teachTips: [...(M.teachTips ?? []), ...TEACH_26.map(lineId26)],
+      // (Pokey's once-only story beat on the great wheel is laid as HIS story line (storyTips), so Tips says it: as plain information
+      //  it was dropped on both defaults; storyTipScan, R-165.412, as 2-4's own view line w2Arc24.ts)
+      storyTips: { ...(M.storyTips ?? {}), [lineId26('view')]: 'Pokey' },
       required: {},
       graphs: { ...G, list: [...G.list.filter((g) => g.archetype !== 'ascent'), ...Object.entries(ARC_26).map(([id, code]) => ({ id, archetype: 'ascent' as const, code }))], briefs: { ...G.briefs, [STAGE_26]: BRIEF_26 } },
     } } as WorldKit;

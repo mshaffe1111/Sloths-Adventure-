@@ -1,0 +1,7 @@
+rows on dbb1a02dd bots kid,adult,child,middle,expert 2:28 PM ET
+2-2 exit 0 360 rows 85 s
+2-1 exit 0 360 rows 107 s
+2-4 exit 0 360 rows 112 s
+2-5 exit 0 360 rows 89 s
+1-4 exit 0 360 rows 82 s
+rows done 2:36 PM ET

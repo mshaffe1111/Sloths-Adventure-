@@ -14,13 +14,8 @@ import { DT, RealPlay } from '../realPlay.ts';
 import { setDifficulty } from '../difficulty.ts';
 import type { RiverZone } from '../river.ts';
 import type { Platform } from '../types.ts';
-import { generateAllLevels } from '../worldsData.ts';
-import { withTestStage } from './listed.ts';
-import { buildGen2Stage, keptFoes } from './pipeline.ts';
-import { packPlan, plantSeedList } from './seedList.ts';
-import { w2Finish } from './worlds/w2.ts';
-import { kitLib26, STAGE_26 } from './worlds/w2Arc26.ts';
-import { W2_STAGES } from '../w2Stages.ts';
+import { loadSeedList } from './seedList.ts';
+import { STAGE_26 } from './worlds/w2Arc26.ts';
 
 const LOW = 3000, HIGH = 1500;
 
@@ -53,31 +48,18 @@ test('a storey under water: standing beneath a higher pond or river he is in nei
   assert.ok(back, `a fall into the higher pond splashes him back to its jetty (at ${Math.round(sim.p.x)}, ${Math.round(sim.p.y)})`);
 });
 
-test("2-6's draft row (a tower with five wheels' ponds over its lower storeys): the first frames keep him at the spawn, both settings", () => {
-  const cfg = generateAllLevels().find((c) => c.id === STAGE_26 && !c.secret)!;
-  for (const d of ['easy', 'normal'] as const) for (const seed of [1, 2, 3]) {
-    const kit = kitLib26();
-    const st = buildGen2Stage({ config: cfg, kit, seed, difficulty: 'normal' });
-    const dict: string[] = [];
-    const packed = packPlan({ seed: st.gen2.seed, rerolls: st.gen2.rerolls, plan: st.gen2.plan, foes: [...keptFoes(st)] }, dict);
-    withTestStage({ [STAGE_26]: { kit: () => kit, world: (s, _sq, dd) => w2Finish(s as never, dd) as typeof s, seeds: [] } }, () => {
-      const undo = plantSeedList(STAGE_26, { dict, seeds: [seed], plans: [packed] });
-      // (the hand-built 2-6 is routed before any listed row: hidden for the run, as the bots' runner does)
-      const hand = (W2_STAGES as Record<string, unknown>)[STAGE_26];
-      delete (W2_STAGES as Record<string, unknown>)[STAGE_26];
-      try {
-        setDifficulty(d);
-        const sim = new RealPlay(STAGE_26, 1);
-        const s = sim.stage;
-        // (the row really stacks water over its spawn: some pond's window holds the spawn's x, storeys above him)
-        assert.ok((s.rivers ?? []).some((r) => r.x0 < s.spawnX && r.x1 > s.spawnX && r.surfaceY < s.spawnY - 400), `seed ${seed} ${d}: water stacked over the spawn`);
-        for (let k = 0; k < 4; k++) sim.frame({});
-        assert.ok(Math.abs(sim.p.x - s.spawnX) < 60 && Math.abs(sim.p.y - s.spawnY) < 60, `seed ${seed} ${d}: at the spawn (${s.spawnX}, ${s.spawnY}), not set on a pond's jetty (he is at ${Math.round(sim.p.x)}, ${Math.round(sim.p.y)})`);
-        assert.ok(!sim.died, `seed ${seed} ${d}: no life lost at the start`);
-      } finally {
-        undo();
-        (W2_STAGES as Record<string, unknown>)[STAGE_26] = hand;
-      }
-    });
+test("the listed 2-6 (a tower with five wheels' ponds over its lower storeys): the first frames keep him at the spawn, both settings", async () => {
+  // (re-pointed at the LISTED 2-6, ENG-26k on the lead's ruling: the draft row is now the real stage, rolled from its proven list; its
+  // first three layout variants, as Play rolls them)
+  assert.ok(await loadSeedList(STAGE_26), '2-6 is listed');
+  for (const d of ['easy', 'normal'] as const) for (const variant of [1, 2, 3]) {
+    setDifficulty(d);
+    const sim = new RealPlay(STAGE_26, variant);
+    const s = sim.stage;
+    // (the row really stacks water over its spawn: some pond's window holds the spawn's x, storeys above him)
+    assert.ok((s.rivers ?? []).some((r) => r.x0 < s.spawnX && r.x1 > s.spawnX && r.surfaceY < s.spawnY - 400), `layout ${variant} ${d}: water stacked over the spawn`);
+    for (let k = 0; k < 4; k++) sim.frame({});
+    assert.ok(Math.abs(sim.p.x - s.spawnX) < 60 && Math.abs(sim.p.y - s.spawnY) < 60, `layout ${variant} ${d}: at the spawn (${s.spawnX}, ${s.spawnY}), not set on a pond's jetty (he is at ${Math.round(sim.p.x)}, ${Math.round(sim.p.y)})`);
+    assert.ok(!sim.died, `layout ${variant} ${d}: no life lost at the start`);
   }
 });

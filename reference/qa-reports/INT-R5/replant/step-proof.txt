@@ -1,0 +1,8 @@
+wheelStepOff.test.ts re-planted on 2-6 adult Easy seed 39 (INT-R5-c, the lead's ruling 2). Old row: seed 12 (dead after C14 1457e1daf:
+OFF shrine 139.1 s r0, ON shrine 139.1 s r0 with 8 way +1 refusals). New row: seed 39 (search: step-1-100.txt; trace: step-where.txt).
+Skill ON  (as committed):                 2 pass, 0 fail.
+Skill OFF (plant: the ON test runs with SKILLS.stepOff = false): 1 pass, 1 fail:
+  "seed 39: shrine 163.7 s, rescues 1, lives 0, refusals 0 (ways -), rescues after a bucket of way 1: the skill never refused a way +1 step-off"
+Judge neutered (plant: stepOffLands returns true): 1 pass, 1 fail ("refusals 0 ... the skill never refused a way +1 step-off").
+Same assertions as before (ON: shrine, rescues 0, lives 0; OFF: rescues >= 1), plus two that hold the row by what the bot does:
+ON refuses at least one way +1 step-off; OFF's rescue follows a way +1 bucket.
