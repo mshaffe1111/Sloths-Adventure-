@@ -1,15 +1,18 @@
 # ENG-ASKS: a node code can ask any registered hazard and named clock (R-165.501; AUDIT-W3 finding 1)
 
-## EXACT NEXT STEP (box 1, 8:27 PM ET Thu 11-26 by `date`)
-1. Toy test `src/game/gen2/hazardAsks.test.ts` was running (80 rolls x 2 codes on the legs fixture); read its pass/fail. If red, the
-   failure is in the deal (pipeline.ts askParts / askServes hazard lines) or the check (pipeline.ts dialMisses -> nodeAsks.ts hazardMiss).
-2. Planted failure: `git stash push src/game/gen2/nodeAsks.ts src/game/gen2/pipeline.ts src/game/gen2/types.ts`, run the toy test (must be
-   RED: '#dark' refused as "Later"), `git stash pop`.
-3. Base lock: scratch worktree `<scratchpad>/base` (origin/t-eng-w3 88592a9c4) records `<scratchpad>/lock-base.json`; then on this branch
-   `npx tsx tools/engine/lockall.ts --layouts 16 --check <scratchpad>/lock-base.json` (no listed stage may move).
+## EXACT NEXT STEP (box 1, 8:29 PM ET Thu 11-26 by `date`)
+DONE box 1: the toy test `src/game/gen2/hazardAsks.test.ts` GREEN 5/5 on 9244283f3; PLANTED: the same test on t-eng-w3's three engine
+files (`git checkout origin/t-eng-w3 -- nodeAsks.ts pipeline.ts types.ts`, then restored from HEAD) RED 0/5. nodeAsks.test 7/7.
+RUNNING (background, frozen worktrees in the scratchpad, never the working tree, D115):
+1. `<scratchpad>/base` = origin/t-eng-w3 88592a9c4 records `<scratchpad>/lock-base.json` (lock-base.log). When it ends, in
+   `<scratchpad>/cand` (= 9244283f3): `npx tsx tools/engine/lockall.ts --layouts 16 --check <scratchpad>/lock-base.json` (no stage may move).
+2. `<scratchpad>/gates.sh <scratchpad>/cand <scratchpad>/g1 <scratchpad>/toolline.sh`: tsc=0 and generality=0 already; then shards 1-6,
+   the CI tool line (gates.yml:157), tierBots, each line in `<scratchpad>/g1/summary.txt`.
+If the scratchpad is lost: re-make both worktrees (`git worktree add --detach <dir> <hash>`, symlink node_modules) and re-run 1 and 2.
+3. All green: merge into t-eng-w3 (no force), push, `git ls-remote`, send the lead the hash and each shard's totals.
 4. When ENG-DARK-z's 93e05e98d (or its landing) is on origin/t-eng-w3: merge it, add World 3's row to w3.ts manifest
    (`hazards: [{ id: 'dark', zone: 'dark', props: ['darkFrom'] }]`), and a toy roll of '#dark' on World 3's kit.
-5. Gates once on the final candidate: tsc; CI tool line; lockall --check; the suite in 6 shards; tierBots; generalitycheck. Land on t-eng-w3
+5. (after 4) Gates once on that candidate: tsc; CI tool line; lockall --check; the suite in 6 shards; tierBots; generalitycheck. Land on t-eng-w3
    (no force); hash + each shard's totals to the lead.
 
 ## What is built (box 1)
