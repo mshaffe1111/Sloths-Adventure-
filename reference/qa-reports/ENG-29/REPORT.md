@@ -1,5 +1,48 @@
 # ENG-29 REPORT: 2-9's NEW 1 (the court's tempo) and NEW 2 (the drum you hear), built ahead (R-165.449)
 
+## ENG-29-i (box 5, the lead's scope ruling: never looser, not an exact match; started 8:16 PM ET Thu 11/26 by `date`): the conservative court judge 28c848dbd, PROVEN on the whole table; gates RUNNING on the frozen tree
+
+### EXACT NEXT STEP (if this box hands over before the landing)
+Candidate = 28c848dbd on t-eng-29-wip (code: riverLay.ts COURT_SAG + courtFalls/courtLands; the toy in oneMargin.test.ts). Rebuild a
+FROZEN tree at 28c848dbd (D115: chattr -R +i src tools, then chattr -R -i src/game/gen2/proven) and run, once each: tsc (clean here);
+generalitycheck (PASS here); the CI tool line (gates.yml:157); the 6 shards (deploy.yml:38, --test-shard=k/6; KID_RUNS_59 the inherited
+red); tierBots (gates.yml:177, 9/9); lockall: record on c3816fbb3 (`--layouts 16 --out`), then `--check` that record on 28c848dbd: a
+listed stage whose lianaDrops / verdicts move -> STOP, send the lead the moved stages, never re-pin. All green: merge into t-eng-29
+(d1038af49 is inside wip; no force), send the hash and each shard's totals to the lead AND BUILD-29-d (session_01FhBbYPDj47E8NFzXvBGkd3).
+
+### The choice and why
+- **COURT_SAG = [0, 5, 10] px**: each court let-go (lockedDrops) is flown from the model's launch AND from it lowered 5 and 10 px (screen
+  y down), held and released (courtFalls: 6 flights), and lands only if EVERY flight lands (courtLands). Why: the model's launch matches
+  the engine's in x to 0.4 px and sits 5-10 px higher (box 4: 9.99 px on one frame grid, 5.02 on the other); the cause is left alone (the
+  ruling). The middle 5 px is flown because a landing is not monotone in height. A denser set (0/2.5/5/7.5/10) reads the same 48 rows
+  byte for byte (probes: run with the scratch-only SAG env, not in the code), so 0/5/10 is enough on this table.
+- Why not 7 px: at 0.92 Normal x14389 grip 0.95 still passes at [0, 7] (late 1.33); only the measured 10 px closes it (0.17 s).
+- **The cost, named: it is STRICTER than the engine on Easy grip 0.95 at locks 0.88 and 0.90** (8 of 48 rows: x8026 and the second
+  liana, both seeds: the engine lands every late press to the read's 1.50 s cap; the model keeps 0.13 s (0.88) and 0.07 s (0.90) late,
+  under Easy's 0.30). Even a 5 px sag does it (0.17 s at 0.88). Neither lock passes the engine at Normal on 2-9's draft (x14389 grip 0.95
+  misses ONE on the engine), so the STAGE verdict at every lock of the table is the engine's; but a future court whose Easy late presses
+  ride that close to the far bank is refused where the engine lands it. That is the never-looser bound's price; the alternative
+  (the sag on Normal only, where it was measured) is not shown never-looser on Easy, so I did not take it.
+
+### The proof (probes/modelgrip29.ts on t-build-29 fa92fce1d + wip, barge29 `look: 'barge'`, LOCK29, NOMARGIN=1; the stage built with
+### both grips as the game builds it, then read per grip; probes/cmpgrip29.py against the engine's probes/oneMarginR-reread-h.txt)
+- 48 rows (locks 0.88/0.90/0.92 x Normal/Easy x seeds 1-2 x both lianas x grips 0.7/0.95). **Verdict-looser: 2 before (0.92 Normal
+  x14389/x14531 grip 0.95: engine 1.00/0.10 refuse, model 0.97/1.33 pass), 0 after (model 0.97/0.17 refuse).** Wherever the engine
+  refuses (6 rows: 0.88/0.90 ONE misses, 0.92 the 0.10 s hole) the model refuses; wherever the model passes, the engine passes the bar.
+  probes/cmpgrip29-before-i.txt, cmpgrip29-after-i.txt (row by row), modelgrip29-before-i.txt / -after-i.txt (the raw reads).
+- 'looser-num' rows (a margin a frame or two above the engine's, both sides of the bar the same) remain; they never change a verdict.
+- The toy (oneMargin.test.ts 'the court judge is never looser than the engine'): 2-9's draft x14389 at 0.92 Normal seed 1 as laid
+  (vine and 4 logs literal), lockedDrops: PLANTED RED with COURT_SAG [0] (late 1.333 s, passes the bar), GREEN at [0, 5, 10] (late 0.167
+  s, refused). Targeted tests 61/61 (oneMargin, tempo x2, tempoToy, lianaRiver, riverLay, riverLeft, riverSection, bargeRow, letGoCue,
+  tempoResume).
+
+### Gates (frozen tree at 28c848dbd, D115: src and tools immutable, src/game/gen2/proven writable)
+- tsc clean. generalitycheck PASS (26 literals, 26 known).
+- RUNNING: the CI tool line; the 6 shards; lockall (record on c3816fbb3, then check). tierBots after.
+
+Lessons applied: D115 (frozen, immutable tree), D119, D128 (stamps from `date`), D133 (the invariant proven on the whole table, not 10
+rows), D134, D138, D140, D146.
+
 ## ENG-29-h (box 4, the lead's rulings 1-5; hand-over 8:02 PM ET Thu 11/26 by `date`): ruling 1 READ, ruling 2 HALF CLOSED (two causes found and fixed, a third open), ruling 3 RE-READ; G6 NOT landed, gates NOT run
 
 ### EXACT NEXT STEP (box 5)
