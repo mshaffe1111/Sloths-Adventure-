@@ -1,7 +1,56 @@
 # BUILD-29 REPORT: 2-9 "The River King's Court" (the World 2 finale; R-165.449), release 6
 Branch t-build-29, cut from origin/t-eng-29 = 098047713 (the lead's named base). Session 1 started 5:45 PM ET Thu 11/26 (by `date`).
 
-## EXACT NEXT STEP (session 3 hand-over, BUILD-29-c, 6:29 PM ET Thu 11/26 by `date`; the lead's HAND OVER NOW (helper cap); GO for laying not given)
+## EXACT NEXT STEP (session 4, BUILD-29-d, 8:13 PM ET Thu 11/26 by `date`; GO given; the lead's rulings 1-6 of this box)
+Head 9731ac221 + this REPORT. ReadNotifications first (D140).
+1. WAITING ON THE LEAD: THE PLAN (sent; below, "Session 4"). Two rulings asked: (R1) rule 4 on the wide stones (Easy's share of the bar
+   39% / 64% vs Normal's 41% / 65%, its safe TIME longer); (R2) the page's way in for drawcheck and the FIRST LOOK stills (the draft is
+   not on a stageTable row: `window.__play('2-9')` plays the OLD 2-9; my recommendation: list 2-9 now with addlevel, new replaces old).
+2. On (R2): `npx tsx tools/engine/addlevel.ts 2-9` (READY or MISSING by file), then drawcheck with 2-9 added, then the stills at 2x
+   (the court, the barge, the twist, the home), upright first.
+3. The kid (rule 28, traced, below) is the 2-5 snapper bot gap, not 2-9 data: name it, never soften Normal.
+
+## Session 4 (BUILD-29-d): what was done, on which head
+- Merged origin/t-eng-29 d1038af49 (be70f523e) then origin/t-eng-stone29 9506c2c39 (98bdb8739): no conflicts, no force. After each:
+  tsc clean; the CI tool line (gates.yml:157) 427 tests, 426 pass, 0 fail, 1 todo (ENG-B4's chase-bot TODO), both times.
+- 9731ac221: landing-g2g3.patch applied (the posted guard on the barge's far bank, barge29 look 'barge'); TEMPO_29 doubleIn
+  ['w2-29-double'] (built: st.tempo.double = the twist section's [x0, x1) on both settings, seeds 1-2) and lock 0.90; the stones
+  130 px (snap.w 130), Normal 62 px water, Easy its own twin rows at 92 (teach29e, two29e, wave29e); beat 5 TWO in step (two29/two29e);
+  reference/design/2-9.md brought from t-design-29 562a8e719 with beat 5 and an AS LAID note (NAME IT: it is now on two branches).
+- The far bank of the barge 300 -> 560 px, the guard t 0.75 -> 0.8 (FOUND by the roll: 19 of 40 a setting failed `posted: s14/guard
+  ... no clear ground`: the stage's last flag (ROLLED_FLAGS.last 2000) lands on that bank, e.g. seed 7 Normal the flag at 27813 on
+  the bank 27713+300, and the guard keeps SAFE_APPROACH 200 + 24 px from a flag; at 300 px both cannot stand there). Data, not engine:
+  the engine refused by name, as G2 says it must.
+- ROLL (yield29.ts, 9731ac221's tree): Normal 40/40 clean, Easy 40/40 clean.
+- BUILT (rule 27, probes/widths.ts seed 1): beat 1 Normal 2 x 130 at 62 px, Easy 2 x 130 at 92 px; the pads 5 x 130 at 50.
+- FLOWN (probes/stone29.ts = snapBand.ts at the court's gaps; flown/stone29-*.txt): Normal 130+62 2 in step [12--] 41%, wave x5 [12--]
+  65%; Easy 130+92 2 in step [12--] 39%, wave x2 [12--] 64%, wave x5 [12--] 63%; 83-102 px all read the same on Easy. The design's counts
+  hold (safe from ONE, TWO forgiven, never THREE). Rule 4: Easy's share is 2 points under Normal's at every Easy gap; in seconds Easy's
+  safe time is longer (2 in step 0.39 x 3.30 = 1.29 s vs 0.41 x 2.85 = 1.17 s; wave 2.11 s vs 1.85 s). To the lead (R1).
+- LOCK 0.90 FLOWN on the draft's own lianas (probes/lock29.ts, flown/lock29-090.txt vs -092.txt), seeds 1-3: beat 4 Normal window 1.90 s,
+  ONE 0.37 s early / 0.57 late (0.92: 1.83 s, 0.43 / 0.51); the TWIST Normal 1.17 s, ONE 0.06 s early / 0.54 late (0.92: 2.20 s, 0.11 /
+  0.48); Easy 3.20 s, ONE 1.58 / 0.64 both lianas. ONE is inside every window; the twist's early side is 2 frames at 0.90 (named).
+- The keeper's lines-2-9.md (origin/t-keeper-23-29 e5f754d8d) has NO beat-5 line, so no "only on ONE" to re-approve.
+- BOTS (tools/inspect/draft29.ts on a worktree of 9731ac221, no stand-in; bots/castbots-9731ac221.jsonl, 360 rows):
+  | bot | Normal pass / min s / median | Easy pass / min s / median |
+  |---|---|---|
+  | expert | 40/40, 177.5, 195.6 | (no Easy profile in CAST_BOTS) |
+  | middle | 40/40, 200.3, 214.1 | 40/40, 197.0, 211.2 |
+  | adult | 40/40, 174.1, 182.0 | 40/40, 180.9, 189.5 |
+  | child | 40/40, 351.8, 371.0 | 40/40, 267.0, 291.5 |
+  | kid | 0/40 (38 stranded, 2 shrine), 237, 419 | 8/40 (40 at the shrine, goal full; 32 with rescues), 226.8, 260.1 |
+  The 2-minute floor: every run of every tier is over 120 s (fastest 174.1 s, the adult on Normal).
+- KID, traced (rule 28; probes/kidTrace.ts, with the fixture id 2-91): every miss is at a snapper (Easy 32/32, Normal 40/40).
+  Easy s1: x 12103, f ~1900-2170, he walks up to the first snapper (patch 12138-12240), it goes alert/strike/rear, he backs and
+  comes again, never bops, rescued. Easy s2: rescues at 12163, 13581, 23178 (beat 5's first and third snapper, beat 8). Normal s1:
+  x 11670-11776, f 1820-2140, the same dither at the first snapper (11730-11832), bitten (foe:turtle 25 hits a run), stranded.
+  2-5 (the same w2Cast snapper, listed): kid 0/40 both settings, every miss at a turtle (BUILD-25 castrows-2-5-25d.jsonl), "the kid is
+  not the bar" there. The cause is the kid bot's foe skill against an on-beat snapper: a BOT gap (ENGINE-WORTHY, the bots' lane).
+- drawcheck NOT RUN: it plays limits.json scenarios through `window.__play(<stage id>)`; the draft is not on a stageTable row, so
+  '2-9' is the old stage. The dev fixtures (homeFixtureStage etc.) are engine code in App.tsx and stageGenerator.ts. To the lead (R2).
+- BOX 3's open item 6 (a model name in 664f9e24f's trailer) stands; not rewritten.
+
+## (superseded) EXACT NEXT STEP (session 3 hand-over, BUILD-29-c, 6:29 PM ET Thu 11/26 by `date`; the lead's HAND OVER NOW (helper cap); GO for laying not given)
 The next box starts when ENG-29-f (t-eng-29) and ENG-STONE29 (t-eng-stone29) land. ReadNotifications first (D140).
 1. **THE BARGE: ENG-29-f reads which of the four is false** (G3's own check, the lead's ruling). Box 3 already read it and sent it to
    ENG-29-f and the lead: the false need is **st.tempo**. On addc4a20 + 7cfbe307c (barge29 `look: 'barge'`), riverFaults on the barge reads
