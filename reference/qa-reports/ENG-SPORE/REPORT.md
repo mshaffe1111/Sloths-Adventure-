@@ -1,6 +1,24 @@
 # ENG-SPORE REPORT (spore puffs as a gen2 zone brick, their light on a clock; 3-1 NEW 2; R-165.449; ADR-004)
 
-**EXACT NEXT STEP (box 2 hand-over; head on t-eng-spore-wip = the commit that carries this line).** Box 2 did (1)-(2) on the code head
+**EXACT NEXT STEP (box 3, ENG-SPORE-c, hand-over; head on t-eng-spore-wip = the commit that carries this line).** THE CANDIDATE is
+d653d3994 = `git merge --no-ff 11e2af1a0` (t-eng-asks = t-eng-w3 a8bc662e5 + ENG-ASKS's hazard registry, the lead's base change) into
+5dd854b15: NO conflicts (engine.ts, pipeline.ts, types.ts, firsttimer.ts auto-merged), plus ENG-DARK-bb's corrected
+reference/qa-reports/ENG-DARK/LOCK-1-4-INTENDED.md from bbcc1513c (docs only). No src/tools change after the merge. tsc 0.
+DONE on d653d3994 (frozen worktree, chattr -R +i src tools, src/game/gen2/proven writable, R-165.494): planted faults on a copy
+ALL 6 CAUGHT (plants-d653d3994.txt); sporeBots + dark + darkBots 58/58 GREEN (darkspore-d653d3994.txt: ENG-DARK's three reds fixed);
+generalitycheck PASS (26 literals, 26 known).
+RUNNING on the same frozen d653d3994 at hand-over (box 3 finishes and reports them; same candidate, D138): castBots 3-1 x40 (seeds 1-20,
+both, par 2) to compare row for row with c20's cast-3-1-x40-b8352246-lane1/-lane2 (no stage lays spore yet: expect 3-1 unmoved); the
+CI tool line (gates.yml:157); the suite in 6 shards (KID_RUNS_59 the only inherited red allowed, named); tierBots 9/9; lockall: base
+`--layouts 16 --out` on frozen a8bc662e5, then `--check` on d653d3994, ALL stages in one run (no --stages chunks: R-165.515), count the
+stages and builds (expect 102 / 3264), expect 0 moves (1-4's move is already in a8bc662e5's own lock).
+NEXT (the next box, if box 3 has not): ReadNotifications; read box 3's gate results in this file; if all green and ENG-ASKS's hash is on
+t-eng-w3 (`git ls-remote origin t-eng-w3` = 11e2af1a0 or a descendant of it that d653d3994's head contains), LAND: `git push origin
+t-eng-spore-wip:t-eng-w3` as a fast-forward ONLY (no force; if t-eng-w3 is not an ancestor of the head, stop and tell the lead), ls-remote
+confirm, and send the lead the hash, each shard's totals and the lock verdict with its counts. If ENG-ASKS has not landed: wait (the
+lead's order: do not land before it). If t-eng-w3 moved past 11e2af1a0 to something not in the head: stop and tell the lead.
+
+**Box 2's next step (done by box 3 above; history) (box 2 hand-over; head on t-eng-spore-wip = the commit that carries this line).** Box 2 did (1)-(2) on the code head
 8477445a5 (no src or tools change since): (1) planted faults on a copy tree: ALL 6 CAUGHT (plants-8477445a5.txt; both box-1 misses
 caught by their toys); (2) dark.test + darkBots.test + sporeBots.test on a chattr-frozen tree: 55 tests, 52 pass, 3 RED, exactly ENG-DARK's
 inherited three (darkspore-8477445a5.txt: 'seamByFacing, the plant', 'noOpenEnd' GREEN half, 'noTurnRoom, the plant'; proven red on the

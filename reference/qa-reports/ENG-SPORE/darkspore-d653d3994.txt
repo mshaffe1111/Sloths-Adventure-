@@ -1,0 +1,359 @@
+TAP version 13
+# Subtest: the brick: World 6 lays the one lifted dark (its props and emitters ARE gen2/dark.ts's)
+ok 1 - the brick: World 6 lays the one lifted dark (its props and emitters ARE gen2/dark.ts's)
+  ---
+  duration_ms: 6.214382
+  type: 'test'
+  ...
+# Subtest: the brick on a real World 3 row, EVERY roll (1-40, both settings): 3-1's drops lie in the dark; every light inside the dark sleeps, EXCEPT the landings you reach from outside it: the cave mouth is lit; and the verdicts hold: darkGaps, darkFlags, darkLandings
+ok 2 - the brick on a real World 3 row, EVERY roll (1-40, both settings): 3-1's drops lie in the dark; every light inside the dark sleeps, EXCEPT the landings you reach from outside it: the cave mouth is lit; and the verdicts hold: darkGaps, darkFlags, darkLandings
+  ---
+  duration_ms: 262939.813166
+  type: 'test'
+  ...
+# Subtest: the lay leaves every other stage as it was: a stage with no glowworm dark (World 1's, World 6's firefly dark) builds with no glowworm counter in its gen2 extras (lockall moved 37 stages' proto.gen2 when glowFlags wrote it everywhere)
+ok 3 - the lay leaves every other stage as it was: a stage with no glowworm dark (World 1's, World 6's firefly dark) builds with no glowworm counter in its gen2 extras (lockall moved 37 stages' proto.gen2 when glowFlags wrote it everywhere)
+  ---
+  duration_ms: 4487.240146
+  type: 'test'
+  ...
+# Subtest: ruling A: the glowworms' dark is the grotto's air: 3-1's first draft roll builds with its flags standing in it (the fireflies' dark keeps the rule)
+ok 4 - ruling A: the glowworms' dark is the grotto's air: 3-1's first draft roll builds with its flags standing in it (the fireflies' dark keeps the rule)
+  ---
+  duration_ms: 5585.431958
+  type: 'test'
+  ...
+# Subtest: darkFlags: a flag in the glowworms' dark with no glow lit within 1 s of standing at it: RED (its glowworms taken away); the roll as laid: GREEN
+ok 5 - darkFlags: a flag in the glowworms' dark with no glow lit within 1 s of standing at it: RED (its glowworms taken away); the roll as laid: GREEN
+  ---
+  duration_ms: 5143.84361
+  type: 'test'
+  ...
+# Subtest: the wake reaches below, bounded: a stop at a real rim wakes the light over its landing under him, never one in the shaft far below (one dark over the whole shaft: the reach bounds it, not a stretch's box)
+ok 6 - the wake reaches below, bounded: a stop at a real rim wakes the light over its landing under him, never one in the shaft far below (one dark over the whole shaft: the reach bounds it, not a stretch's box)
+  ---
+  duration_ms: 4685.147057
+  type: 'test'
+  ...
+# Subtest: RimWatch: a rim's piece he left some other way is no crossing when he later walks past its end on ground below it
+ok 7 - RimWatch: a rim's piece he left some other way is no crossing when he later walks past its end on ground below it
+  ---
+  duration_ms: 4297.745413
+  type: 'test'
+  ...
+# Subtest: RimWatch: a climb down a trunk past a dark rim is its own kind ('climbed'), never 'went over', and 'lit 1 s ahead' does not count it; the same pass as a drop: RED
+ok 8 - RimWatch: a climb down a trunk past a dark rim is its own kind ('climbed'), never 'went over', and 'lit 1 s ahead' does not count it; the same pass as a drop: RED
+  ---
+  duration_ms: 4350.293705
+  type: 'test'
+  ...
+# Subtest: 'every gap lit 1 s ahead' (litAhead): walked off a dark rim at once, before its landing's light: RED
+ok 9 - 'every gap lit 1 s ahead' (litAhead): walked off a dark rim at once, before its landing's light: RED
+  ---
+  duration_ms: 3855.220275
+  type: 'test'
+  ...
+# Subtest: 'every gap lit 1 s ahead' (litAhead): stood still until the landing woke and a second more, then walked off: GREEN on Normal; Easy asks 1.6 s
+ok 10 - 'every gap lit 1 s ahead' (litAhead): stood still until the landing woke and a second more, then walked off: GREEN on Normal; Easy asks 1.6 s
+  ---
+  duration_ms: 4705.867124
+  type: 'test'
+  ...
+# Subtest: the cave mouth is lit (ruling (ii)): adult Easy roll 30 drops in from OUTSIDE the dark (x 175) onto a piece whose rim light is laid awake: darkLandings GREEN; that entry landing asleep: RED, the drop named
+ok 11 - the cave mouth is lit (ruling (ii)): adult Easy roll 30 drops in from OUTSIDE the dark (x 175) onto a piece whose rim light is laid awake: darkLandings GREEN; that entry landing asleep: RED, the drop named
+  ---
+  duration_ms: 3764.500271
+  type: 'test'
+  ...
+# Subtest: a hop rim's step-off landing is lit (the lead's ruling A, 11-25): a SHAPE toy on a real hop rim (hopStep): its step-off piece ends 13 px behind his touchdown; the lay's second light over that touchdown lights it (darkLandings GREEN); the lay without the second lights: RED, the hop rim named
+ok 12 - a hop rim's step-off landing is lit (the lead's ruling A, 11-25): a SHAPE toy on a real hop rim (hopStep): its step-off piece ends 13 px behind his touchdown; the lay's second light over that touchdown lights it (darkLandings GREEN); the lay without the second lights: RED, the hop rim named
+  ---
+  duration_ms: 39115.345517
+  type: 'test'
+  ...
+# Subtest: a RUN off a rim with no stop is judged where it lands (darkLandings (iii), ENG-DARK box 14): Normal roll 3 runs off x 442, y 5351 (no stop there) and comes down 36 px from the sleeping rim at x 214, y 5811; the lay wakes that light (GREEN); asleep again: RED, the running step off named
+ok 13 - a RUN off a rim with no stop is judged where it lands (darkLandings (iii), ENG-DARK box 14): Normal roll 3 runs off x 442, y 5351 (no stop there) and comes down 36 px from the sleeping rim at x 214, y 5811; the lay wakes that light (GREEN); asleep again: RED, the running step off named
+  ---
+  duration_ms: 3299.002346
+  type: 'test'
+  ...
+# Subtest: RimWatch: a grounded slide on the edge grace that turns back is no going over (the lead's ruling, 11-25: child Easy 21 x 191 slid 2 px past and turned); a real step off still is
+ok 14 - RimWatch: a grounded slide on the edge grace that turns back is no going over (the lead's ruling, 11-25: child Easy 21 x 191 slid 2 px past and turned); a real step off still is
+  ---
+  duration_ms: 8312.559344
+  type: 'test'
+  ...
+# Subtest: RimWatch: a jump UP over a rim onto higher ground is no crossing (the lead's ruling, 11-25: middle Easy 1 x 517 passed 161 px above it); the same jump coming down below the rim is
+ok 15 - RimWatch: a jump UP over a rim onto higher ground is no crossing (the lead's ruling, 11-25: middle Easy 1 x 517 passed 161 px above it); the same jump coming down below the rim is
+  ---
+  duration_ms: 11630.328384
+  type: 'test'
+  ...
+# Subtest: a wall rim's light hangs no deeper than a stop on the rim reaches (GLOW_REACH.down): a SHAPE toy, a deep drop on a real rim (deepDrop): its light hangs within the reach and a stop wakes it (darkGaps GREEN); its light hung over the landing as before, past the reach: RED
+ok 16 - a wall rim's light hangs no deeper than a stop on the rim reaches (GLOW_REACH.down): a SHAPE toy, a deep drop on a real rim (deepDrop): its light hangs within the reach and a stop wakes it (darkGaps GREEN); its light hung over the landing as before, past the reach: RED
+  ---
+  duration_ms: 4222.877315
+  type: 'test'
+  ...
+# Subtest: an edge BEHIND a dark-rim drop's landing is no edge he lands toward (the lead's ruling (i)): a SHAPE toy, a deep drop on a real rim whose landing piece ends 60 px behind his touchdown (BEHIND), out of that drop's light: darkLandings GREEN; that edge judged as one he lands toward: RED (the plant)
+ok 17 - an edge BEHIND a dark-rim drop's landing is no edge he lands toward (the lead's ruling (i)): a SHAPE toy, a deep drop on a real rim whose landing piece ends 60 px behind his touchdown (BEHIND), out of that drop's light: darkLandings GREEN; that edge judged as one he lands toward: RED (the plant)
+  ---
+  duration_ms: 5771.593809
+  type: 'test'
+  ...
+# Subtest: a RUN off an edge with its OWN dark stop is judged too: Normal roll 22's run off piece 106's left end (699, 5658) is a rim to stop at for the rim it meets (GREEN; planted: such an edge skipped)
+ok 18 - a RUN off an edge with its OWN dark stop is judged too: Normal roll 22's run off piece 106's left end (699, 5658) is a rim to stop at for the rim it meets (GREEN; planted: such an edge skipped)
+  ---
+  duration_ms: 4271.388818
+  type: 'test'
+  ...
+# Subtest: RimWatch: a put-back (a rescue) from a rim's piece to past its end is no crossing: the watch starts again where he is put (GREEN; planted: put() a no-op)
+ok 19 - RimWatch: a put-back (a rescue) from a rim's piece to past its end is no crossing: the watch starts again where he is put (GREEN; planted: put() a no-op)
+  ---
+  duration_ms: 4639.058938
+  type: 'test'
+  ...
+# Subtest: RimWatch without the put-back (the old watch): the same put across the rim counts it gone over, its landing dark (RED)
+ok 20 - RimWatch without the put-back (the old watch): the same put across the rim counts it gone over, its landing dark (RED)
+  ---
+  duration_ms: 3755.645754
+  type: 'test'
+  ...
+# Subtest: the dark's skill: he stands at a dark rim until its landing is lit, then goes: every rim he went over was lit 1 s ahead (GREEN)
+ok 21 - the dark's skill: he stands at a dark rim until its landing is lit, then goes: every rim he went over was lit 1 s ahead (GREEN)
+  ---
+  duration_ms: 23750.590029
+  type: 'test'
+  ...
+# Subtest: the dark's skill REMOVED (noGlowWait, rule 21's plant): he walks off into the dark (RED)
+ok 22 - the dark's skill REMOVED (noGlowWait, rule 21's plant): he walks off into the dark (RED)
+  ---
+  duration_ms: 9126.744493
+  type: 'test'
+  ...
+# Subtest: the dark's skill holds a running JUMP too: the expert running at a hop rim whose landing is dark waits for its light (GREEN; planted: glowJump removed)
+ok 23 - the dark's skill holds a running JUMP too: the expert running at a hop rim whose landing is dark waits for its light (GREEN; planted: glowJump removed)
+  ---
+  duration_ms: 9803.149141
+  type: 'test'
+  ...
+# Subtest: the dark's stop FACES the rim: the child's stop, taken facing away 40 px in from a rim, turns him to it and its light wakes (GREEN; planted: the turn removed)
+ok 24 - the dark's stop FACES the rim: the child's stop, taken facing away 40 px in from a rim, turns him to it and its light wakes (GREEN; planted: the turn removed)
+  ---
+  duration_ms: 8990.121607
+  type: 'test'
+  ...
+# Subtest: a dark give-up ends with the visit: with the turn removed (noGlowTurn) he waits out the same rim facing away on BOTH visits (GREEN; planted: the give-up kept for the run)
+ok 25 - a dark give-up ends with the visit: with the turn removed (noGlowTurn) he waits out the same rim facing away on BOTH visits (GREEN; planted: the give-up kept for the run)
+  ---
+  duration_ms: 10380.765595
+  type: 'test'
+  ...
+# Subtest: the dark's stop reads the THUMB: the KID's held steer that carries him toward a dark rim stops him there (GREEN; planted: glowSteer not read)
+ok 26 - the dark's stop reads the THUMB: the KID's held steer that carries him toward a dark rim stops him there (GREEN; planted: glowSteer not read)
+  ---
+  duration_ms: 10992.354931
+  type: 'test'
+  ...
+# Subtest: the way down a trunk he stands beside MID-WAY (roll 33 Easy): the child takes it with up and climbs down past the ledge (GREEN; planted: the one-sided top test back, the mid-trunk grab removed)
+ok 27 - the way down a trunk he stands beside MID-WAY (roll 33 Easy): the child takes it with up and climbs down past the ledge (GREEN; planted: the one-sided top test back, the mid-trunk grab removed)
+  ---
+  duration_ms: 10734.727447
+  type: 'test'
+  ...
+# Subtest: a RUN off a lit edge in the dark whose touchdown lies within his slide of a sleeping rim: he stops at that edge until that rim's light is lit, then runs on, and goes over it lit (adult Normal roll 1: x 556, y 3672 onto x 673, y 3850) (GREEN; planted: runOffRims not read)
+ok 28 - a RUN off a lit edge in the dark whose touchdown lies within his slide of a sleeping rim: he stops at that edge until that rim's light is lit, then runs on, and goes over it lit (adult Normal roll 1: x 556, y 3672 onto x 673, y 3850) (GREEN; planted: runOffRims not read)
+  ---
+  duration_ms: 6830.48391
+  type: 'test'
+  ...
+# Subtest: a seam he walks over is no way down: over roll 6's 22 px seam (a 15 px step) with the way on under it, he goes on and every rim he went over was lit (GREEN; planted: noSeamWalk)
+ok 29 - a seam he walks over is no way down: over roll 6's 22 px seam (a 15 px step) with the way on under it, he goes on and every rim he went over was lit (GREEN; planted: noSeamWalk)
+  ---
+  duration_ms: 5711.389916
+  type: 'test'
+  ...
+# Subtest: a seam read as a way down (noSeamWalk, the plant): both sides of the seam point him at the way on under it, and he walks back and forth over one dark rim (RED)
+ok 30 - a seam read as a way down (noSeamWalk, the plant): both sides of the seam point him at the way on under it, and he walks back and forth over one dark rim (RED)
+  ---
+  duration_ms: 6254.772721
+  type: 'test'
+  ...
+# Subtest: the way on under a seam run comes out past its far end: the adult on Normal roll 29 reaches the shrine, no rim gone over again and again (GREEN; planted: seamByFacing; R-165.432: was roll 11)
+ok 31 - the way on under a seam run comes out past its far end: the adult on Normal roll 29 reaches the shrine, no rim gone over again and again (GREEN; planted: seamByFacing; R-165.432: was roll 11)
+  ---
+  duration_ms: 5908.854755
+  type: 'test'
+  ...
+# Subtest: the seam run's end picked by his facing (seamByFacing, the plant): turned on the low side, the adult on Normal roll 29 walks to and fro over one rim (RED; R-165.432: was roll 11)
+ok 32 - the seam run's end picked by his facing (seamByFacing, the plant): turned on the low side, the adult on Normal roll 29 walks to and fro over one rim (RED; R-165.432: was roll 11)
+  ---
+  duration_ms: 5122.690112
+  type: 'test'
+  ...
+# Subtest: the way on straight under a run that ends at a side wall: on Normal roll 15 the expert steps off its open end and reaches the shrine (GREEN; planted: noOpenEnd)
+ok 33 - the way on straight under a run that ends at a side wall: on Normal roll 15 the expert steps off its open end and reaches the shrine (GREEN; planted: noOpenEnd)
+  ---
+  duration_ms: 5876.230331
+  type: 'test'
+  ...
+# Subtest: at the lip over the way on's first point, he steps off that end: on Normal roll 15 the expert stands at most 3 s at 367's lip and never stalls there (GREEN; planted: noLipEnd)
+ok 34 - at the lip over the way on's first point, he steps off that end: on Normal roll 15 the expert stands at most 3 s at 367's lip and never stalls there (GREEN; planted: noLipEnd)
+  ---
+  duration_ms: 6166.107003
+  type: 'test'
+  ...
+# Subtest: the lip read as straight under him (noLipEnd, the plant): the expert goes to and fro at 367's lip on Normal roll 15 (RED)
+ok 35 - the lip read as straight under him (noLipEnd, the plant): the expert goes to and fro at 367's lip on Normal roll 15 (RED)
+  ---
+  duration_ms: 4672.197783
+  type: 'test'
+  ...
+# Subtest: no end picked under that run (noOpenEnd, the plant): the expert stands over the shrine by roll 15's right wall until stranded (RED)
+ok 36 - no end picked under that run (noOpenEnd, the plant): the expert stands over the shrine by roll 15's right wall until stranded (RED)
+  ---
+  duration_ms: 4351.889683
+  type: 'test'
+  ...
+# Subtest: landed ahead on the way's own floor: on Normal roll 26 the middle walks on from where he came down, never back up the trunk (GREEN; planted: noLandAhead)
+ok 37 - landed ahead on the way's own floor: on Normal roll 26 the middle walks on from where he came down, never back up the trunk (GREEN; planted: noLandAhead)
+  ---
+  duration_ms: 3038.85835
+  type: 'test'
+  ...
+# Subtest: followed by the point over his head (noLandAhead, the plant): the middle climbs roll 26's trunk back up and falls again until rescued (RED)
+ok 38 - followed by the point over his head (noLandAhead, the plant): the middle climbs roll 26's trunk back up and falls again until rescued (RED)
+  ---
+  duration_ms: 2376.895134
+  type: 'test'
+  ...
+# Subtest: the dark stop's turn is never pressed at the rim's very edge: stood 2 px in from a sleeping rim facing away, he steps back, then turns, and no rim is gone over dark (GREEN; planted: noTurnRoom)
+ok 39 - the dark stop's turn is never pressed at the rim's very edge: stood 2 px in from a sleeping rim facing away, he steps back, then turns, and no rim is gone over dark (GREEN; planted: noTurnRoom)
+  ---
+  duration_ms: 4976.550922
+  type: 'test'
+  ...
+# Subtest: the turn pressed at the rim's very edge (noTurnRoom + noLipHold, the plant): the press that turns him carries him off that rim into the dark (RED)
+ok 40 - the turn pressed at the rim's very edge (noTurnRoom + noLipHold, the plant): the press that turns him carries him off that rim into the dark (RED)
+  ---
+  duration_ms: 5768.977631
+  type: 'test'
+  ...
+# Subtest: the lip hold alone holds at the rim's very edge: the turn room off (noTurnRoom), the press at the edge carries his middle past the end, the engine still stands him on the piece, the stop holds, and no rim is gone over dark (GREEN; planted: noLipHold, the toy before)
+ok 41 - the lip hold alone holds at the rim's very edge: the turn room off (noTurnRoom), the press at the edge carries his middle past the end, the engine still stands him on the piece, the stop holds, and no rim is gone over dark (GREEN; planted: noLipHold, the toy before)
+  ---
+  duration_ms: 5261.720784
+  type: 'test'
+  ...
+# Subtest: the way down off a walled catch goes off its OPEN end: Normal roll 22's catch under the vine at x 833 is left by its right end (GREEN; planted: dropTo without walledEnd)
+ok 42 - the way down off a walled catch goes off its OPEN end: Normal roll 22's catch under the vine at x 833 is left by its right end (GREEN; planted: dropTo without walledEnd)
+  ---
+  duration_ms: 1972.799584
+  type: 'test'
+  ...
+# Subtest: no rescue at the walled catch: the kid on Normal roll 22 passes the turn at x 833 (y 8311-8658) by himself (GREEN; planted: walledEnd false)
+ok 43 - no rescue at the walled catch: the kid on Normal roll 22 passes the turn at x 833 (y 8311-8658) by himself (GREEN; planted: walledEnd false)
+  ---
+  duration_ms: 6661.273105
+  type: 'test'
+  ...
+# Subtest: a dark stop at an end that is two rims waits for the rim not yet lit: Normal roll 22's piece 106, its own rim lit, the run's rim asleep: he goes only once that rim's light is lit DARK_AHEAD (GREEN; planted: glowWait takes the first rim)
+ok 44 - a dark stop at an end that is two rims waits for the rim not yet lit: Normal roll 22's piece 106, its own rim lit, the run's rim asleep: he goes only once that rim's light is lit DARK_AHEAD (GREEN; planted: glowWait takes the first rim)
+  ---
+  duration_ms: 3816.025889
+  type: 'test'
+  ...
+# Subtest: going down, a ledge over him is a step up only where the way rises: at Normal roll 19's dip, the way level across it, the child reads a single, and crosses without a stand at its lip (GREEN; planted: noLevelRead)
+ok 45 - going down, a ledge over him is a step up only where the way rises: at Normal roll 19's dip, the way level across it, the child reads a single, and crosses without a stand at its lip (GREEN; planted: noLevelRead)
+  ---
+  duration_ms: 6841.236657
+  type: 'test'
+  ...
+# Subtest: every ledge over him read as a step up (noLevelRead, the plant): at Normal roll 2's dip the child reads a double and stands at its lip (RED; R-165.432: was roll 19)
+ok 46 - every ledge over him read as a step up (noLevelRead, the plant): at Normal roll 2's dip the child reads a double and stands at its lip (RED; R-165.432: was roll 19)
+  ---
+  duration_ms: 5737.285258
+  type: 'test'
+  ...
+# Subtest: going down, a ledge over him is a step up only where the way rises: the SHAPE hand-built (a 97 px dip, a bough 188 px over its lip): the way level across it, a single; the way rising 120 px past it, a double (GREEN; planted: noLevelRead)
+ok 47 - going down, a ledge over him is a step up only where the way rises: the SHAPE hand-built (a 97 px dip, a bough 188 px over its lip): the way level across it, a single; the way rising 120 px past it, a double (GREEN; planted: noLevelRead)
+  ---
+  duration_ms: 23713.106069
+  type: 'test'
+  ...
+# Subtest: every ledge over him read as a step up (noLevelRead, the plant): the SHAPE hand-built, the way level across the dip, reads a double (RED)
+ok 48 - every ledge over him read as a step up (noLevelRead, the plant): the SHAPE hand-built, the way level across the dip, reads a double (RED)
+  ---
+  duration_ms: 7503.094
+  type: 'test'
+  ...
+# Subtest: a dark stop holds at the lip: his middle past the rim's end, the engine still standing him on its piece (child Easy roll 8, the rim at x 515, y 4375): he stands there until its landing is lit, and does not go over it dark (GREEN; planted: noLipHold)
+ok 49 - a dark stop holds at the lip: his middle past the rim's end, the engine still standing him on its piece (child Easy roll 8, the rim at x 515, y 4375): he stands there until its landing is lit, and does not go over it dark (GREEN; planted: noLipHold)
+  ---
+  duration_ms: 8444.731519
+  type: 'test'
+  ...
+# Subtest: the stop read by the piece's span alone (noLipHold, the plant): at roll 8's lip he walks over the rim at x 515, y 4375 dark (RED)
+ok 50 - the stop read by the piece's span alone (noLipHold, the plant): at roll 8's lip he walks over the rim at x 515, y 4375 dark (RED)
+  ---
+  duration_ms: 9659.664939
+  type: 'test'
+  ...
+# Subtest: the bot's own put-back (placeAt: a rescue, a room's put-back) starts the dark's rim watch again: a teleport is no crossing (dark.test's put-back toy; GREEN; planted: placeAt without RimWatch.put)
+ok 51 - the bot's own put-back (placeAt: a rescue, a room's put-back) starts the dark's rim watch again: a teleport is no crossing (dark.test's put-back toy; GREEN; planted: placeAt without RimWatch.put)
+  ---
+  duration_ms: 7126.177966
+  type: 'test'
+  ...
+# flown: 53/128 presses land in light (41.4% of the cycle), press to touchdown 0.57 s, worst wait 3.75 s
+# Subtest: the puff's light: put at the rim with the puff dark, the bot stands until it has been lit 1 s, drops, and lands in light (GREEN)
+ok 52 - the puff's light: put at the rim with the puff dark, the bot stands until it has been lit 1 s, drops, and lands in light (GREEN)
+  ---
+  duration_ms: 22699.760088
+  type: 'test'
+  ...
+# Subtest: put at the rim as the puff's window is closing (lit 2.8 s, 0.4 s left: less than the way down): he does not drop into it; he waits for the next window and lands in light (GREEN)
+ok 53 - put at the rim as the puff's window is closing (lit 2.8 s, 0.4 s left: less than the way down): he does not drop into it; he waits for the next window and lands in light (GREEN)
+  ---
+  duration_ms: 10798.558829
+  type: 'test'
+  ...
+# Subtest: PLANT the puff's light off: the bot waits at the rim forever (RED), and darkGaps names the rim (RED)
+ok 54 - PLANT the puff's light off: the bot waits at the rim forever (RED), and darkGaps names the rim (RED)
+  ---
+  duration_ms: 10281.481766
+  type: 'test'
+  ...
+# Subtest: the laid row's verdicts: darkGaps keeps the puff's 3.2 s window; the light off, it names the rim; no warn, levelCheck refuses the puff (RED)
+ok 55 - the laid row's verdicts: darkGaps keeps the puff's 3.2 s window; the light off, it names the rim; no warn, levelCheck refuses the puff (RED)
+  ---
+  duration_ms: 14255.275905
+  type: 'test'
+  ...
+# Subtest: the bot's wait for a clocked light REMOVED (noGlowWait, rule 21's plant): put at the rim with the puff dark, he drops on the dark (RED)
+ok 56 - the bot's wait for a clocked light REMOVED (noGlowWait, rule 21's plant): put at the rim with the puff dark, he drops on the dark (RED)
+  ---
+  duration_ms: 9213.541459
+  type: 'test'
+  ...
+# Subtest: flown (3-1.md 'A drop on a puff's light'): from a stand 30 px from the rim, a press that sees the landing lit lands in light 38-42% of the cycle
+ok 57 - flown (3-1.md 'A drop on a puff's light'): from a stand 30 px from the rim, a press that sees the landing lit lands in light 38-42% of the cycle
+  ---
+  duration_ms: 6196.926189
+  type: 'test'
+  ...
+# Subtest: the brick lays it: the recipe is zones.ts's data (SPORE, 3-1's beat), and the glowworms' dark the brick lays over a puff shelf hangs the puff's clocked light over that landing, no glowworm
+ok 58 - the brick lays it: the recipe is zones.ts's data (SPORE, 3-1's beat), and the glowworms' dark the brick lays over a puff shelf hangs the puff's clocked light over that landing, no glowworm
+  ---
+  duration_ms: 4612.009453
+  type: 'test'
+  ...
+1..58
+# tests 58
+# suites 0
+# pass 58
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 394975.276434
