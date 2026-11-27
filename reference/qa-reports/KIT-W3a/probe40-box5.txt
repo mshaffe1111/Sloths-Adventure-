@@ -1,0 +1,28 @@
+   easy 11 tower: a blind drop off the piece at x 31-211, y 4150: 497 px to its landing (in view: within 300)
+   easy 19 tower: a blind drop off the piece at x 33-213, y 4109: 498 px to its landing (in view: within 300)
+KEEP w3-root-down,w3-two-roots,w3-cap-down,w3-cap-steps,w3-shelf-hops ok 78 of 80 reds e11 e19 throws 0
+  laid widest w3-root-down 641 laid 244 times
+  laid widest w3-two-roots 943 laid 152 times
+  laid widest w3-cap-down 1010 laid 150 times
+  laid widest w3-cap-steps 1014 laid 144 times
+  laid widest w3-shelf-hops 1017 laid 150 times
+KEEP w3-root-down ok 80 of 80 reds - throws 0
+  laid widest w3-root-down 647 laid 508 times
+KEEP w3-two-roots ok 80 of 80 reds - throws 0
+  laid widest w3-two-roots 949 laid 354 times
+KEEP w3-cap-down ok 80 of 80 reds - throws 0
+  laid widest w3-cap-down 1013 laid 428 times
+   normal 33 tower: a blind drop off the piece at x 283-463, y 10965: 319 px to its landing (in view: within 300)
+   easy 33 tower: a blind drop off the piece at x 283-463, y 10965: 319 px to its landing (in view: within 300)
+KEEP w3-cap-steps ok 78 of 80 reds n33 e33 throws 0
+  laid widest w3-cap-steps 1019 laid 432 times
+   normal 13 tower: a blind drop off the piece at x 535-892, y 3382: 311 px to its landing (in view: within 300)
+   normal 24 tower: a blind drop off the piece at x 475-605, y 6639: 314 px to its landing (in view: within 300)
+   normal 24 tower: a blind drop off the piece at x 703-929, y 9889: 307 px to its landing (in view: within 300)
+   normal 36 tower: a blind drop off the piece at x 578-930, y 3418: 314 px to its landing (in view: within 300)
+   easy 13 tower: a blind drop off the piece at x 535-892, y 3382: 311 px to its landing (in view: within 300)
+   easy 24 tower: a blind drop off the piece at x 475-605, y 6639: 314 px to its landing (in view: within 300)
+   easy 24 tower: a blind drop off the piece at x 703-929, y 9889: 307 px to its landing (in view: within 300)
+   easy 36 tower: a blind drop off the piece at x 578-930, y 3418: 314 px to its landing (in view: within 300)
+KEEP w3-shelf-hops ok 74 of 80 reds n13 n24 n36 e13 e24 e36 throws 0
+  laid widest w3-shelf-hops 1013 laid 438 times

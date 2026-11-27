@@ -1,7 +1,59 @@
 # KIT-W3a: World 3's TOWER bricks (R-165.504; content/kit, Opus 5.5 high). Branch t-kit-w3a, cut from t-eng-w3 13135bf6b
 
 
-## EXACT NEXT STEP (box 4, written 10:35 AM ET Fri 11-27 by `date`; box 3's step below is DONE to its item 2)
+## EXACT NEXT STEP (box 5, written 11:54 AM ET Fri 11-27 by `date`; box 4's step below is DONE to its item 1, the rest carried here)
+Head: t-kit-w3a 37a0d67b4 + this commit = 29e074252 (merge of ENG-CATCH-d's FROZEN candidate 6d296c1b7, named) + de6feebff (the width
+bar) + 37a0d67b4 (w3Noise's drop pick by property). tsc 0, generalitycheck PASS (26 literals, 26 known) at 29e074252 and de6feebff.
+NOT GATED, NOT LANDED: blocked on tower wood (rule 26, asked of the lead) and on ENG-DEAL, which has not landed on t-eng-w3 (its head is
+still 51ef0c6ab); ENG-CATCH-d's landing hash has not come either.
+DONE this box:
+- Step 1: merged 6d296c1b7 (named). On it, before narrowing, all five together on 1-40 x both: 80/80, no throw. Laid widest: root-down
+  641, two-roots 943, cap-down 1080, cap-steps 1129, shelf-hops 1091.
+- Step 2, the width bar (APPROVED by the lead this box): a down brick's DECLARED widest roll = widest widths + widest gaps + EASY_LANDING
+  (48) on every landing piece (layLocal adds it on Easy; that pad IS the "about 11%": cap-steps had 960 px of widths and 4 landings, so
+  1152, which laid 1142 and threw). Bar: at least 10% under the 1140 storey = 1026 (w3.ts W3_TOWER_WIDEST 0.9). Narrowed (exits kept wide,
+  every piece at least 120 px): cap-down a 120-130, lip w 140-160 (c 260-280 kept); cap-steps a and s 120-130, b 210-220, lip w 120-130,
+  c 210-224; shelf-hops a 124-134, b and c 136-140, gaps 80-89 (d 190-200 kept). Declared / laid widest (1-40 x both, each brick alone):
+  root-down 648 / 647, two-roots 956 / 949, cap-down 1024 / 1013, cap-steps 1026 / 1019, shelf-hops 1025 / 1017. No throw in any config.
+  w3Tower.test: 'every down tower brick declares its widest roll at least 10% under a storey' PASS + its PLANT (cap-steps at its box-4
+  widths) refused by name ('w3-cap-steps declares 1152 px'). Only those two tests were run; the whole w3Tower file was NOT re-run.
+- Step 4, RE-PROBE 1-40 x both, the six configs on de6feebff (probe40-box5.txt here; probe/widths.mts): all five 78/80 (e11 e19);
+  root-down 80/80; two-roots 80/80; cap-down 80/80; cap-steps 78/80 (n33 e33); shelf-hops 74/80 (n13 n24 n36 e13 e24 e36). Every red is a
+  'tower: a blind drop off the piece', TOWER WOOD:
+  - e11 x 31-211 y 4150 497 px; e19 x 33-213 y 4109 498 px (180 px = TOWER.catchW, at the left wall: a catch bough with nothing in view
+    under it);
+  - n33/e33 x 283-463 y 10965 319 px (180 px: a catch bough);
+  - n13/e13 x 535-892 y 3382 311 px; n36/e36 x 578-930 y 3418 314 px (352-357 px pieces: no brick lays one, so storey wood); n24/e24
+    x 475-605 y 6639 314 px (130 px: shelf-hops' a) and x 703-929 y 9889 307 px (226 px). The fall-line hole class from box 3's ruling.
+  Sent to the lead with my reversible recommendation: keep the narrowing, send these shapes to ENG-CATCH-d. NO RULING YET.
+- Step 3, w3Noise:317 (moss): NAMED to the lead. On this head every clean Normal roll (1-40) that lays a drop toy has wood inside its
+  400 px fall (seeds 2 3 8 9 13 15 17 20 27 32): mostly 180 px catch boughs 287-290 px under the top (the tower's own catch for a fall past
+  TOWER.see 300; seed 2 also has a whole storey 287 px under the top, x 242-929 y 9698, where he lands). w3Noise.test now picks a drop
+  roll only when its fall column is clear (dropClear, with a PLANTED test), so the moss and stone tests fail by name: "no roll of 3-1's
+  draft lays the moss toy". That is the honest state, not a fix. The lead's call: shorten the drop to what a down tower allows (a design and
+  noise number: LOUD.landing carries 360 px only off 400), or lay the drop toys outside a tower.
+1. Box 6: `git fetch origin +refs/heads/t-kit-w3a:refs/remotes/origin/t-kit-w3a && git checkout -B t-kit-w3a origin/t-kit-w3a`; npm ci
+   --legacy-peer-deps in the background; ReadNotifications FIRST: the lead's rulings on (a) the tower-wood reds above and (b) the drop toys,
+   ENG-CATCH-d's landed hash, and ENG-DEAL's landed hash.
+2. Merge ENG-CATCH-d's landing (and any new mend for the shapes above), named; tsc + generalitycheck; RE-PROBE the six configs on 1-40 x
+   both (`GEN2_DRAFT=3-1 VERBOSE=1 [KEEP=<id>] npx tsx reference/qa-reports/KIT-W3a/probe/widths.mts`, about 3.5 min each, two at a time):
+   80/80 each is the bar, and the narrowed widths stay inside the bar.
+3. The drop toys on the lead's ruling (commit before planting).
+4. Merge ENG-DEAL's LANDED hash; 3-1's after-roll (4 seeds x both, against box 4's 22 lines). Still owed: the lead asked for the narrowed
+   widths in stills. Rule 29: no stills of a stage whose bots are red, so shoot them once the probe is 80/80.
+5. Tests: w3Tower.test (the WHOLE file), w3.test, w3Noise, w3HazardAsks. Then ONE gate run on the frozen candidate (packet 7: tsc,
+   generalitycheck, the CI tool line, the suite in 6 shards, THE LOCK GATE as two runs with its counts line, seedlist --check per list
+   touched), ONE landing onto origin/t-eng-w3 (no force, never rebase), the hash and numbers to the lead.
+Learned (box 5): a percentage guessed from two laid widths ("about 11%") hid a fixed per-piece cost: Easy's 48 px pad on every landing.
+Compute the widest roll from the template, never from a ratio. Narrowing changed the storeys and brought out 10 tower-wood reds that the
+old widths hid, so a brick's change re-runs every config on the whole seed range before anything is called clean. A test toy whose drop
+is past the tower's TOWER.see is caught by the tower's own invariant: check a toy against the world's lay rules before writing it.
+Lessons applied: D151 (pick by property), D153 (no gate without its counts line: none claimed), D154 (proved on 1-40, not 1-12), D156
+(generalitycheck with tsc at each step), D128 (stamps from `date`).
+PROPOSED RULE for level.md (the lead approved the bar this box; its wording is for the lead's retro): "A tower brick's widest roll is
+DECLARED from its template (widest widths + widest gaps + EASY_LANDING per landing piece) and is at least 10% under a storey (1026 of
+1140). Check: the kit's tower test computes it and refuses a brick past it by name (w3Tower.test, planted)."
+## (box 4's step, DONE to item 1; carried into box 5's) EXACT NEXT STEP (box 4, written 10:35 AM ET Fri 11-27 by `date`; box 3's step below is DONE to its item 2)
 Head: t-kit-w3a = 05071f33d (merge of ENG-CATCH-b's frozen 861e2a22e, on ENG-CATCH 8a204af87) + 358787809 (rulings 1-3) + this commit
 (shelf-hops narrowed, the w3Tower plants re-picked by property). tsc 0. w3Tower.test 7/7 pass (the f brick counted + planted). NOT GATED,
 NOT LANDED: the ONE gate run and ONE landing wait for ENG-CATCH-c's candidate hash (the lead's message, box 4).
