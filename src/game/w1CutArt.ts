@@ -15,6 +15,8 @@ import FRAMES from '../assets/w1to4art/w1-cut.json';
 
 type Cut = { kind: 'stone' | 'stump' | 'perch' | 'log'; x: number; y: number; w: number; h: number; fy: number; fx0: number; fx1: number; fb?: number };
 export const W1_CUT: Record<string, Cut> = FRAMES as Record<string, Cut>;
+/** true when `cut` names a frame of this atlas (anything else on Platform.cut is another world's piece: art/invCut.ts) */
+export const isW1Cut = (cut: string): boolean => Object.prototype.hasOwnProperty.call(W1_CUT, cut);
 export const W1_CUT_URL = new URL('../assets/w1to4art/w1-cut.webp', import.meta.url).href;
 let img: HTMLImageElement | null = null;
 let ready = false;

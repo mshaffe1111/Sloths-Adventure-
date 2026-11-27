@@ -18,6 +18,7 @@
 import { trackAtlas } from './atlasLoader.ts';
 import { drawEnd, drawLip, endFace } from './groundPaint.ts';
 import type { Platform } from './types.ts';
+import { isW1Cut } from './w1CutArt.ts';
 import { W15_CREEK_ART, drawW15Creek, w15CreekReady } from './w15Creek.ts';
 
 const URL_OF = {
@@ -94,7 +95,9 @@ const floorish = (q: Platform) => !q.broken && q.type !== 'bouncy' && q.type !==
  * a piece the ground painter draws as a bank of earth, its soil running down out of sight (protoArt.ts drawProtoScene's `banks`, which
  * calls this: one rule for the ground and its pits)
  */
-export const paintedBank = (q: Platform) => (q.height >= 90 || !!q.soil) && !q.push && !q.broken && !q.art && !q.hollow;
+// (a cut piece of a world other than World 1 is the platform's whole look, its own sides and foot painted in it: never also a bank of
+//  earth under it, art/invCut.ts. World 1's own cuts are as before)
+export const paintedBank = (q: Platform) => (q.height >= 90 || !!q.soil) && !q.push && !q.broken && !q.art && !q.hollow && !(q.cut && !isW1Cut(q.cut));
 /**
  * a marked drop's walls: a bank of earth ends at each side of it, and nothing that stands (a floor, a stone, a log) lies in it below its
  * lip. Else undefined: the gap is open air

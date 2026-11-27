@@ -26,6 +26,7 @@
 import { stageAnims, stageExtras, type StageDraws } from './sheetWarm.ts';
 import { narrowPosts } from './narrowBank.ts';
 import type { Platform } from './types.ts';
+import { isW1Cut } from './w1CutArt.ts';
 
 /** the sheets every stage draws or may draw from its first frame, whatever it holds */
 export const ALWAYS: readonly string[] = ['hud', 'perch', 'hero-clips', 'pickups'];
@@ -72,7 +73,8 @@ export function builtStageKeys(st: BuiltStage): string[] {
   // (a bank narrower than Pokey standing alone, drawn as the live post: narrowBank.ts, livePostArt.ts, R-165.440)
   if (narrowPosts(st.platforms as unknown as readonly Platform[]).length) out.add('live-post');
   // (the art director's cut World 1 pieces, gen2 1-1's stones, stumps and planks: w1CutArt.ts)
-  if (st.platforms.some((p) => (p as { cut?: string }).cut)) out.add('w1-cut');
+  // (only a World 1 cut: any other world's is read through its inventory, art/invCut.ts, readied by stageReady.ts)
+  if (st.platforms.some((p) => { const c = (p as { cut?: string }).cut; return !!c && isW1Cut(c); })) out.add('w1-cut');
   // (World 1's moss cover, the Spanish moss on a mossy liana and the perched eagle on its snag: w17Art.ts, 1-7)
   const MOSS = ['moss', 'mossPatch', 'mossHang'];
   if (st.proto?.bushes?.some((b) => MOSS.includes((b as { kind?: string }).kind ?? '')) || st.vines?.some((v) => (v as { mossy?: boolean }).mossy) ||

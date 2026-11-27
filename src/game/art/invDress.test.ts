@@ -37,7 +37,7 @@ test('planted: a row with an id the inventory lacks fails by name; an out-of-sca
   assert.match(one('fx/no-size')[0] ?? '', /'fx\/no-size' has no fixed size against Pokey/);
   assert.match(one('fx/made')[0] ?? '', /'fx\/made' is a made thing: never World 1 art/);
   assert.match(one('fx/needs-fix')[0] ?? '', /'fx\/needs-fix' is waiting on a fix \(needs fix: torn edge\)/);
-  assert.match(one('fx/not-built')[0] ?? '', /'fx\/not-built': its picture origin\/art-raw:cut\/fx.png is not in the build \(src\/game\/art\/invDressArt.ts ships src\/assets\/w1-18\/\)/);
+  assert.match(one('fx/not-built')[0] ?? '', /'fx\/not-built': its picture origin\/art-raw:cut\/fx.png is not in the build \(src\/game\/art\/invDressArt.ts ships src\/assets\/w1-18\/(, [^)]+)?\)/);
   assert.match(one('fx/frame-no-rect')[0] ?? '', /a frame with no rect on its sheet/);
   assert.match(one('fx/good', { layer: 'front' as never })[0] ?? '', /asks for layer 'front' \(offered: behind\)/);
   assert.match(one('fx/good', { y: Number.NaN })[0] ?? '', /has no place/);
