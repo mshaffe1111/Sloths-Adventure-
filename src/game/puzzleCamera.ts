@@ -24,6 +24,13 @@ export const ROOM_CAM = {
   sideH: 540,
   /** how quickly the zoom eases (per second) */
   ease: 2.2,
+  /**
+   * the most the view's size (its longer side, world px) changes in a second as a room eases its zoom, in or out (roomZoomStep): the
+   * ease alone is fastest at its start, and leaving a room while still pulling back flipped it at full speed (the kit's bell room, 390x844:
+   * the view, held to the level's bottom, grew 54 px shorter in one frame; ENG-CAM29). 360 is 12 px a frame at 30 fps, under the 24 a
+   * frame the camera may move
+   */
+  slew: 360,
   /** coming into a room or leaving it, its framing blends in or out over this long (s) */
   blend: 0.8,
   /** the first time a far gate opens, the view goes to it for this long (s) */
@@ -47,6 +54,20 @@ export function unionBox(a: CamBox, b: CamBox): CamBox {
 /** Pokey's own box (his middle px, feet py): his body and a step of room either side */
 export function heroBox(px: number, feetY: number): CamBox {
   return { x0: px - 45, x1: px + 45, y0: feetY - 115, y1: feetY + 8 };
+}
+
+/**
+ * A watcher that hears the kit's noises (noise.ts: World 2's snapping turtles and royal guards), as the camera must show it: its middle x,
+ * its feet y, and its body (predatorAI.ts: the royal guard's upright body, x +-16, from 46 above his feet to 12 below)
+ */
+export interface CamEar {
+  x: number;
+  y: number;
+  box: CamBox;
+}
+
+export function earOf(x: number, feetY: number): CamEar {
+  return { x, y: feetY, box: { x0: x - 16, x1: x + 16, y0: feetY - 46, y1: feetY + 12 } };
 }
 
 /**
@@ -110,4 +131,18 @@ export function roomView(cx: number, cy: number, vw: number, vh: number, px: num
   // (his feet above the bottom tenth, his head well under the top)
   y = Math.max(py - vh * 0.9, Math.min(py - 130, y));
   return { x, y };
+}
+
+/**
+ * One frame of the room's zoom ease (of the usual: 1 out of a room, `want` in one): exponential, as it always was, but never changing the
+ * view's longer side (`size` world px at the usual zoom: the view is size / zoom) by more than ROOM_CAM.slew a second, so the view never
+ * jumps, coming in, leaving or turning round. Continuous in everything: it never snaps.
+ */
+export function roomZoomStep(zoom: number, want: number, dt: number, size: number): number {
+  let next = zoom + (want - zoom) * Math.min(1, dt * ROOM_CAM.ease);
+  if (Math.abs(want - next) < 0.002) next = want;
+  if (!(size > 0) || !(zoom > 0)) return next;
+  const d = (ROOM_CAM.slew * dt) / size;
+  const inv = Math.max(1 / zoom - d, Math.min(1 / zoom + d, 1 / next));
+  return 1 / inv;
 }
