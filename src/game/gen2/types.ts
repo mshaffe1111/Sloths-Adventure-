@@ -106,6 +106,7 @@ export interface DecorSet {
 
 /** how a fall into a gap ends */
 export type PitKind = 'soft' | 'water' | 'void';
+import type { PitPainter } from './fallPaint.ts';
 
 export interface WorldManifest {
   world: number;
@@ -129,8 +130,10 @@ export interface WorldManifest {
   pitDepth: number;
   /** the world's pit painter, how its falls LOOK (pipeline.ts dropsOf, read by the verdicts' drop.look-lies; INT-E 11-12, the lead: the
    *  world's pit rules, never a world number): today only World 1's, 'w1Pits' (w1Pits.ts paints a soft pit's floor, a marked fall as a
-   *  drop and a hollow's hurt floor as the thorn bed, hurtFloor.art 'w1-thorn'). Absent, nothing paints a pit floor */
-  pitPainter?: 'w1Pits';
+   *  drop and a hollow's hurt floor as the thorn bed, hurtFloor.art 'w1-thorn'); 'splashRivers', World 2's (its finish lays a splash-back
+   *  river under every open soft fall, a deep river under a water fall: fallPaint.ts FALL_PAINT, the one definition its finish and the
+   *  judges read, ENG-W2FALL). Absent, nothing paints a pit floor */
+  pitPainter?: PitPainter;
   /**
    * World 1's floor families (the planner's floor road, engine-floorroad 4fd9e992; the designer's floor ruling, WORLD-RULEBOOK 9a22b846):
    * each roll draws a hop family by weight. A hop roll (h >= `hopRoll`) keeps every soft pit's floor `shallow` under its lips and leans

@@ -58,10 +58,21 @@ export function realFalls(platforms: readonly Platform[]): ReturnType<typeof fin
  *  river (RiverZone, a log river's water) is no unmarked gap. World 1's floorless gap the painter reads as water is still one */
 export function floorlessGaps(st: Pick<Built, 'platforms' | 'heartFalls'>): Array<[number, number]> {
   const soft = (st.heartFalls ?? []).filter((z) => z.soft);
-  const w = st as { rivers?: ReadonlyArray<{ x0: number; x1: number }>; gen2?: { falls?: ReadonlyArray<{ x0: number; x1: number; kind: string }> } };
+  const w = st as { rivers?: ReadonlyArray<{ x0: number; x1: number }>; gen2?: { falls?: ReadonlyArray<{ x0: number; x1: number; kind: string }>; drops?: ReadonlyArray<{ x0: number; x1: number; look: string }> } };
   const wet = [...(w.rivers ?? []), ...(w.gen2?.falls ?? []).filter((f) => f.kind === 'water')];
+  // (and a gap whose every open slot the drop judge read as SAFE water: the river the world's painter lays there after the verdicts, World 2's
+  //  finish under open soft falls, fallPaint.ts; ENG-W2FALL. A run of soft falls joined by planks is one gap to findW1Pits (a plank is no
+  //  floor), and one river to the finish, so the gap is wet when those drops and the pieces over it cover it lip to lip)
+  const splash = (w.gen2?.drops ?? []).filter((d) => d.look === 'safe-water-art');
+  const painted = (q: { x0: number; x1: number }) => {
+    if (!splash.some((d) => d.x0 < q.x1 && d.x1 > q.x0)) return false;
+    const cover = [...splash, ...st.platforms.filter((p) => p.type === 'solid').map((p) => ({ x0: p.x, x1: p.x + p.width }))].filter((c) => c.x0 < q.x1 && c.x1 > q.x0).sort((a, b) => a.x0 - b.x0);
+    let at = q.x0 + 4;
+    for (const c of cover) { if (c.x0 > at) return false; at = Math.max(at, c.x1); }
+    return at >= q.x1 - 4;
+  };
   const inside = (q: { x0: number; x1: number }, z: { x0: number; x1: number }) => q.x0 >= z.x0 - 4 && q.x1 <= z.x1 + 4;
-  return realFalls(st.platforms).filter((q) => !q.drop && !soft.some((z) => inside(q, z)) && !wet.some((z) => inside(q, z))).map((q) => [q.x0, q.x1]);
+  return realFalls(st.platforms).filter((q) => !q.drop && !soft.some((z) => inside(q, z)) && !wet.some((z) => inside(q, z)) && !painted(q)).map((q) => [q.x0, q.x1]);
 }
 
 /** from `tip` on, the first gap within 1,500 px one jump at its best can't cross and a double flick can (reach.ts, flown, `setting`);

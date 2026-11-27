@@ -35,6 +35,7 @@ import { alongOf, gapCatchY, inMetOrder, localExtent, reflectLocal, routeAt, rou
 import { CLIMB_CLEAR } from '../vineTop.ts';
 import { LAND_IN, repairLandings } from './landings.ts';
 import { findW1Pits } from '../w1Pits.ts';
+import { paintsUnder } from './fallPaint.ts';
 import type { Drop, JudgedStage } from './verdicts.types.ts';
 import { SWING_CAM, SWING_SEEN } from '../cameraFollow.ts';
 import { CHAIN, chainPhase, chainWindow, DOUBLE_RISE, forwardEndLands, JUMP_RISE, LETGO_FLIGHTS, PHYS, pressWindow, reachGlide, reachJump, SWING, SWING_CLEAR, swingClearance, swingReach, TAKEOFF_SLACK, vineAmp, WALL_H, type AirBody, type SwingVine } from '../physics.ts';
@@ -4706,6 +4707,7 @@ export function dropsOf(st: Gen2Stage, pits: Pick<WorldManifest, 'pitPainter'> =
     if (river?.safe) return { x0: f.x0, x1: f.x1, lipY: f.y, ...(f.site ? { site: f.site } : {}), ends: { kind: 'putback', to: 'take-off' }, look: 'safe-water-art' } as Drop;
     const ground = river ? undefined : floors.reduce<Platform | undefined>((g, p) => (!g || p.y < g.y ? p : g), undefined);
     const zone = zones.find((z) => z.soft && mid >= z.x0 && mid <= z.x1);
+    const paints = river || ground ? undefined : paintsUnder(pits, f.kind);
     const at = { x0: f.x0, x1: f.x1, lipY: f.y, ...(f.site ? { site: f.site } : {}) };
     // (a hollow's hurt floor: a heart fall, on both settings (Easy waives the heart, never the look). Its look is the hurt look only where
     // the world's painter draws it; until then it is what is drawn there today, and drop.look-lies refuses it by name)
@@ -4726,6 +4728,9 @@ export function dropsOf(st: Gen2Stage, pits: Pick<WorldManifest, 'pitPainter'> =
       const warn = h && sign ? { warn: { dotLine: h.text, leadPx: R(left ? h.beforeX! - f.x1 : f.x0 - h.x), sign: true as const } } : {};
       return { ...at, ends: { kind: 'life', cause: river || f.kind === 'water' ? 'water' : 'void' }, look: river || f.kind === 'water' || world !== 8 ? 'water-art' : 'void-dark', ...warn } as Drop;
     }
+    // (a soft fall the world's painter turns into a splash-back river (World 2's finish, run after these verdicts: fallPaint.ts, the one
+    // rule both read, ENG-W2FALL): what he sees is that river's safe water, and its splash sets him back on the bank he left)
+    if (paints === 'safe-river') return { ...at, ends: { kind: 'putback', to: 'take-off' }, look: 'safe-water-art' } as Drop;
     if (zone) return { ...at, ends: { kind: 'putback', to: 'take-off' }, look: 'pit-floor-art' };
     // (a soft fall with nothing drawn under it: World 1's painter, w1Pits, draws it as water unless the gap is marked as a drop)
     const marked = painted && findW1Pits(st.platforms).some((q) => q.kind === 'fall' && q.drop && q.x0 < f.x1 && q.x1 > f.x0);
