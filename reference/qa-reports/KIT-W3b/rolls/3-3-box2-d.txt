@@ -1,0 +1,111 @@
+4x normal ERR node code: V11 at token 11: 5 of 8 content nodes are 'g' (cap 3)
+4x normal ERR node code: V11 at token 5: 'g' on two neighbouring content nodes
+1x normal ERR ask: node n2 "Pg1_<": content 'l' (lure): no lure laid
+1x normal ERR ask: node n2 "Pg1_<": threat ocelot*1: laid 4
+1x normal ERR ask: node n2 "Pg1_<": hazard #spore@puff: no spore zone in its span (laid dark)
+1x normal ERR ask: node n4 "Pg1<": threat ocelot*1: laid 3
+1x normal ERR ask: node n4 "Pg1<": hazard #spore@puff: no spore zone in its span
+1x normal ERR ask: node n5 "Xg1_>": content 'l' (lure): no lure laid
+1x normal ERR ask: node n5 "Xg1_>": threat ocelot*2: laid 3
+1x normal ERR ask: node n5 "Xg1_>": hazard #spore@puff: no spore zone in its span
+4x normal ERR ask: node n7 "Pc1^<": shape ^ (rising): its sections rise 0 px
+1x normal ERR ask: node n8 "Wg2_>": move 1 (plain jumps): a section there asks for the double
+1x normal ERR ask: node n8 "Wg2_>": creatures (&): no creature laid
+1x normal ERR ask: node n8 "Wg2_>": threat ocelot*1: laid 0
+1x normal ERR ask: node n8 "Wg2_>": hazard #spore@puff: no spore zone in its span
+1x normal ERR ask: node n11 "Cg1^>": hazard #spore@puff: no spore zone in its span
+2x normal ERR ask: node n13 "Sg1<": content 'l' (lure): no lure laid
+2x normal ERR ask: node n13 "Sg1<": hazard #spore@puff: no spore zone in its span (laid dark)
+1x normal ERR the quiet line: 6.5 s with nothing to do at x 22913, over 4 s (the goal run-out excluded)
+2x normal ERR tip "hint.1-1.noMoss" has no Dot line in the kit's tips
+3x normal ERR ask: node n2 "Pg1<": content 'l' (lure): no lure laid
+1x normal ERR ask: node n2 "Pg1<": threat ocelot*1: laid 4
+2x normal ERR ask: node n2 "Pg1<": hazard #spore@puff: no spore zone in its span
+2x normal ERR ask: node n4 "Pg1_<": hazard #spore@puff: no spore zone in its span (laid dark)
+1x normal ERR ask: node n5 "Xg1^>": content 'l' (lure): no lure laid
+1x normal ERR ask: node n5 "Xg1^>": hazard #spore@puff: no spore zone in its span
+1x normal ERR ask: node n8 "Wg1^>": threat ocelot*1: laid 4
+2x normal ERR ask: node n8 "Wg1^>": hazard #spore@puff: no spore zone in its span (laid dark)
+1x normal ERR ask: node n11 "Cg1>": hazard #spore@puff: no spore zone in its span
+1x normal ERR ask: node n13 "Sg1<": threat ocelot*3: laid 2
+1x normal ERR the quiet line: 5.4 s with nothing to do at x 15471, over 4 s (the goal run-out excluded)
+2x normal ERR ask: node n2 "Pg1<": threat ocelot*1: laid 3
+1x normal ERR ask: node n2 "Pg1<": hazard #spore@puff: no spore zone in its span (laid dark)
+1x normal ERR ask: node n4 "Pg1^<": threat ocelot*1: laid 4
+1x normal ERR ask: node n4 "Pg1^<": hazard #spore@puff: no spore zone in its span (laid dark)
+1x normal ERR ask: node n5 "Xg2_>": content 'l' (lure): no lure laid
+1x normal ERR ask: node n5 "Xg2_>": move 1 (plain jumps): a section there asks for the double
+1x normal ERR ask: node n5 "Xg2_>": hazard #spore@puff: no spore zone in its span
+1x normal ERR ask: node n8 "Wg1>": threat ocelot*1: laid 2
+1x normal ERR ask: node n8 "Wg1>": hazard #spore@puff: no spore zone in its span (laid dark)
+1x normal ERR ask: node n11 "Cg1>": threat ocelot*2: laid 3
+2x normal ERR ask: node n11 "Cg1>": hazard #spore@puff: no spore zone in its span (laid dark)
+2x normal ERR ask: node n13 "Sc1<": content 'l' (lure): no lure laid
+1x normal ERR ask: node n13 "Sc1<": threat ocelot*3: laid 2
+2x normal ERR ask: node n13 "Sc1<": hazard #spore@puff: no spore zone in its span (laid dark)
+1x normal ERR the quiet line: 5.6 s with nothing to do at x 25409, over 4 s (the goal run-out excluded)
+1x normal ERR ask: node n4 "Pg1_<": threat ocelot*1: laid 3
+1x normal ERR ask: node n5 "Xg1>": content 'l' (lure): no lure laid
+1x normal ERR ask: node n5 "Xg1>": hazard #spore@puff: no spore zone in its span (laid dark)
+1x normal ERR ask: node n8 "Wg1^>": threat ocelot*1: laid 3
+1x normal ERR the quiet line: 8.4 s with nothing to do at x 14906, over 4 s (the goal run-out excluded)
+8x easy ERR node code: V11 at token 11: 5 of 8 content nodes are 'g' (cap 3)
+8x easy ERR node code: V11 at token 5: 'g' on two neighbouring content nodes
+2x easy ERR ask: node n2 "Pg1_<": content 'l' (lure): no lure laid
+1x easy ERR ask: node n2 "Pg1_<": threat ocelot*1: laid 4
+2x easy ERR ask: node n2 "Pg1_<": hazard #spore@puff: no spore zone in its span (laid dark)
+1x easy ERR ask: node n4 "Pg1<": threat ocelot*1: laid 3
+2x easy ERR ask: node n4 "Pg1<": hazard #spore@puff: no spore zone in its span
+2x easy ERR ask: node n5 "Xg1_>": content 'l' (lure): no lure laid
+1x easy ERR ask: node n5 "Xg1_>": threat ocelot*2: laid 3
+2x easy ERR ask: node n5 "Xg1_>": hazard #spore@puff: no spore zone in its span
+8x easy ERR ask: node n7 "Pc1^<": shape ^ (rising): its sections rise 0 px
+2x easy ERR ask: node n8 "Wg2_>": move 1 (plain jumps): a section there asks for the double
+1x easy ERR ask: node n8 "Wg2_>": creatures (&): no creature laid
+1x easy ERR ask: node n8 "Wg2_>": threat ocelot*1: laid 0
+2x easy ERR ask: node n8 "Wg2_>": hazard #spore@puff: no spore zone in its span
+2x easy ERR ask: node n11 "Cg1^>": hazard #spore@puff: no spore zone in its span
+4x easy ERR ask: node n13 "Sg1<": content 'l' (lure): no lure laid
+4x easy ERR ask: node n13 "Sg1<": hazard #spore@puff: no spore zone in its span (laid dark)
+1x easy ERR the quiet line: 6.5 s with nothing to do at x 22913, over 4 s (the goal run-out excluded)
+1x easy ERR ask: node n2 "Pg1_<": threat ocelot*1: laid 2 on Easy
+1x easy ERR ask: node n4 "Pg1<": threat ocelot*1: laid 2 on Easy
+4x easy ERR tip "hint.1-1.noMoss" has no Dot line in the kit's tips
+6x easy ERR ask: node n2 "Pg1<": content 'l' (lure): no lure laid
+1x easy ERR ask: node n2 "Pg1<": threat ocelot*1: laid 4
+4x easy ERR ask: node n2 "Pg1<": hazard #spore@puff: no spore zone in its span
+4x easy ERR ask: node n4 "Pg1_<": hazard #spore@puff: no spore zone in its span (laid dark)
+2x easy ERR ask: node n5 "Xg1^>": content 'l' (lure): no lure laid
+2x easy ERR ask: node n5 "Xg1^>": hazard #spore@puff: no spore zone in its span
+1x easy ERR ask: node n8 "Wg1^>": threat ocelot*1: laid 4
+4x easy ERR ask: node n8 "Wg1^>": hazard #spore@puff: no spore zone in its span (laid dark)
+2x easy ERR ask: node n11 "Cg1>": hazard #spore@puff: no spore zone in its span
+1x easy ERR ask: node n13 "Sg1<": threat ocelot*3: laid 2
+1x easy ERR the quiet line: 5.4 s with nothing to do at x 15471, over 4 s (the goal run-out excluded)
+3x easy ERR ask: node n2 "Pg1<": threat ocelot*1: laid 2 on Easy
+2x easy ERR ask: node n4 "Pg1_<": threat ocelot*1: laid 2 on Easy
+2x easy ERR ask: node n8 "Wg1^>": threat ocelot*1: laid 2 on Easy
+2x easy ERR ask: node n2 "Pg1<": threat ocelot*1: laid 3
+2x easy ERR ask: node n2 "Pg1<": hazard #spore@puff: no spore zone in its span (laid dark)
+1x easy ERR ask: node n4 "Pg1^<": threat ocelot*1: laid 4
+2x easy ERR ask: node n4 "Pg1^<": hazard #spore@puff: no spore zone in its span (laid dark)
+2x easy ERR ask: node n5 "Xg2_>": content 'l' (lure): no lure laid
+2x easy ERR ask: node n5 "Xg2_>": move 1 (plain jumps): a section there asks for the double
+2x easy ERR ask: node n5 "Xg2_>": hazard #spore@puff: no spore zone in its span
+1x easy ERR ask: node n8 "Wg1>": threat ocelot*1: laid 2
+2x easy ERR ask: node n8 "Wg1>": hazard #spore@puff: no spore zone in its span (laid dark)
+1x easy ERR ask: node n11 "Cg1>": threat ocelot*2: laid 3
+4x easy ERR ask: node n11 "Cg1>": hazard #spore@puff: no spore zone in its span (laid dark)
+4x easy ERR ask: node n13 "Sc1<": content 'l' (lure): no lure laid
+1x easy ERR ask: node n13 "Sc1<": threat ocelot*3: laid 2
+4x easy ERR ask: node n13 "Sc1<": hazard #spore@puff: no spore zone in its span (laid dark)
+1x easy ERR the quiet line: 5.6 s with nothing to do at x 25409, over 4 s (the goal run-out excluded)
+1x easy ERR ask: node n4 "Pg1^<": threat ocelot*1: laid 2 on Easy
+1x easy ERR ask: node n8 "Wg1>": threat ocelot*1: laid 2 on Easy
+1x easy ERR ask: node n4 "Pg1_<": threat ocelot*1: laid 3
+2x easy ERR ask: node n5 "Xg1>": content 'l' (lure): no lure laid
+2x easy ERR ask: node n5 "Xg1>": hazard #spore@puff: no spore zone in its span (laid dark)
+1x easy ERR ask: node n8 "Wg1^>": threat ocelot*1: laid 3
+1x easy ERR the quiet line: 8.4 s with nothing to do at x 14906, over 4 s (the goal run-out excluded)
+clean 0/8
+(reused W1/W2 sections that threw on W3's budget, left out: 1)

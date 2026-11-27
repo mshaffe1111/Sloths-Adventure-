@@ -1,0 +1,127 @@
+4x normal ERR tip "hint.1-1.bank" has no Dot line in the kit's tips
+4x normal ERR tip "hint.1-1.noMoss" has no Dot line in the kit's tips
+2x normal ERR pool short at slot 15 (n11 combine: no ground section left)
+4x normal ERR pool short at slot 16 (n11 combine: no ground section left)
+2x normal ERR pool short at slot 17 (n11 combine: no ground section left)
+3x normal ERR node code: V11 at token 11: 4 of 8 content nodes are 'f' (cap 3)
+3x normal ERR node code: V11 at token 11: 'f' on two neighbouring content nodes
+4x normal ERR node code: V14 at token 1: 2 'g' nodes for a deal of 4
+1x normal ERR ask: node n2 "Pc1_<": content 'l' (lure): no lure laid
+1x normal ERR ask: node n2 "Pc1_<": creatures (&): no creature laid
+1x normal ERR ask: node n2 "Pc1_<": threat ocelot*1: laid 0
+1x normal ERR ask: node n4 "Pg1<": threat ocelot*1: laid 2
+2x normal ERR ask: node n5 "Xf1_>": content 'l' (lure): no lure laid
+2x normal ERR ask: node n5 "Xf1_>": threat ocelot*2: laid 1
+1x normal ERR ask: node n8 "Wg2_>": move 1 (plain jumps): a section there asks for the double
+1x normal ERR ask: node n8 "Wg2_>": creatures (&): no creature laid
+1x normal ERR ask: node n8 "Wg2_>": threat ocelot*1: laid 0
+1x normal ERR ask: node n11 "Cf2^>": content 'g' (ground): 3 of 3 sections are floating, bounce
+1x normal ERR ask: node n11 "Cf2^>": move 1 (plain jumps): a section there asks for the double
+2x normal ERR ask: node n13 "Sf1<": content 'l' (lure): no lure laid
+1x normal ERR ask: node n13 "Sf1<": threat ocelot*3: laid 5
+1x normal ERR the quiet line: 5.2 s with nothing to do at x 33396, over 4 s (the goal run-out excluded)
+1x normal ERR pool short at slot 18 (n11 combine: no ground section left)
+3x normal ERR ask: node n2 "Pc1<": content 'l' (lure): no lure laid
+3x normal ERR ask: node n2 "Pc1<": creatures (&): no creature laid
+3x normal ERR ask: node n2 "Pc1<": threat ocelot*1: laid 0
+1x normal ERR ask: node n4 "Pg1_<": creatures (&): no creature laid
+1x normal ERR ask: node n4 "Pg1_<": threat ocelot*1: laid 0
+1x normal ERR ask: node n5 "Xf1^>": content 'l' (lure): no lure laid
+1x normal ERR ask: node n5 "Xf1^>": threat ocelot*2: laid 1
+2x normal ERR ask: node n8 "Wg2^>": move 1 (plain jumps): a section there asks for the double
+2x normal ERR ask: node n8 "Wg2^>": creatures (&): no creature laid
+2x normal ERR ask: node n8 "Wg2^>": threat ocelot*1: laid 0
+1x normal ERR ask: node n11 "Cf2>": content 'g' (ground): 2 of 3 sections are floating, climb
+2x normal ERR ask: node n11 "Cf2>": move 1 (plain jumps): a section there asks for the double
+1x normal ERR ask: node n11 "Cf2>": threat ocelot*2: laid 8
+1x normal ERR ask: node n13 "Sf1<": creatures (&): no creature laid
+1x normal ERR ask: node n13 "Sf1<": threat ocelot*3: laid 0
+1x normal ERR the quiet line: 4.6 s with nothing to do at x 21763, over 4 s (the goal run-out excluded)
+1x normal ERR pool short at slot 14 (n11 combine: no ground section left)
+1x normal ERR ask: node n7 "Pc1^<": shape ^ (rising): its sections rise -5 px
+1x normal ERR ask: node n8 "Wg2>": move 1 (plain jumps): a section there asks for the double
+1x normal ERR ask: node n8 "Wg2>": creatures (&): no creature laid
+1x normal ERR ask: node n8 "Wg2>": threat ocelot*1: laid 0
+1x normal ERR ask: node n11 "Cf2>": content 'g' (ground): 2 of 3 sections are floating
+1x normal ERR ask: node n11 "Cf2>": threat ocelot*2: laid 5
+2x normal ERR ask: node n13 "Sb<": content 'l' (lure): no lure laid
+1x normal ERR ask: node n13 "Sb<": threat ocelot*3: laid 4
+1x normal ERR the quiet line: 5.1 s with nothing to do at x 30680, over 4 s (the goal run-out excluded)
+1x normal ERR node code: V14 at token 1: 3 'c' nodes for a deal of 1
+1x normal ERR ask: node n4 "Pg1_<": threat ocelot*1: laid 2
+1x normal ERR ask: node n5 "Xf1>": content 'l' (lure): no lure laid
+1x normal ERR ask: node n5 "Xf1>": threat ocelot*2: laid 1
+1x normal ERR ask: node n7 "Pc1^<": shape ^ (rising): its sections rise 0 px
+1x normal ERR ask: node n11 "Cc2>": content 'g' (ground): 3 of 3 sections are climb, floating
+1x normal ERR ask: node n11 "Cc2>": move 1 (plain jumps): a section there asks for the double
+1x normal ERR ask: node n11 "Cc2>": threat ocelot*2: laid 4
+1x normal ERR ask: node n13 "Sb<": threat ocelot*3: laid 5
+1x normal ERR the quiet line: 6.3 s with nothing to do at x 23181, over 4 s (the goal run-out excluded)
+8x easy ERR tip "hint.1-1.bank" has no Dot line in the kit's tips
+8x easy ERR tip "hint.1-1.noMoss" has no Dot line in the kit's tips
+4x easy ERR pool short at slot 15 (n11 combine: no ground section left)
+8x easy ERR pool short at slot 16 (n11 combine: no ground section left)
+4x easy ERR pool short at slot 17 (n11 combine: no ground section left)
+6x easy ERR node code: V11 at token 11: 4 of 8 content nodes are 'f' (cap 3)
+6x easy ERR node code: V11 at token 11: 'f' on two neighbouring content nodes
+8x easy ERR node code: V14 at token 1: 2 'g' nodes for a deal of 4
+2x easy ERR ask: node n2 "Pc1_<": content 'l' (lure): no lure laid
+2x easy ERR ask: node n2 "Pc1_<": creatures (&): no creature laid
+1x easy ERR ask: node n2 "Pc1_<": threat ocelot*1: laid 0
+1x easy ERR ask: node n4 "Pg1<": threat ocelot*1: laid 2
+4x easy ERR ask: node n5 "Xf1_>": content 'l' (lure): no lure laid
+2x easy ERR ask: node n5 "Xf1_>": threat ocelot*2: laid 1
+2x easy ERR ask: node n8 "Wg2_>": move 1 (plain jumps): a section there asks for the double
+1x easy ERR ask: node n8 "Wg2_>": creatures (&): no creature laid
+1x easy ERR ask: node n8 "Wg2_>": threat ocelot*1: laid 0
+2x easy ERR ask: node n11 "Cf2^>": content 'g' (ground): 3 of 3 sections are floating, bounce
+2x easy ERR ask: node n11 "Cf2^>": move 1 (plain jumps): a section there asks for the double
+4x easy ERR ask: node n13 "Sf1<": content 'l' (lure): no lure laid
+1x easy ERR ask: node n13 "Sf1<": threat ocelot*3: laid 5
+1x easy ERR the quiet line: 5.2 s with nothing to do at x 33396, over 4 s (the goal run-out excluded)
+1x easy ERR ask: node n2 "Pc1_<": threat ocelot*1: laid 0 on Easy
+1x easy ERR ask: node n13 "Sf1<": threat ocelot*3: laid 7 on Easy
+2x easy ERR pool short at slot 18 (n11 combine: no ground section left)
+6x easy ERR ask: node n2 "Pc1<": content 'l' (lure): no lure laid
+5x easy ERR ask: node n2 "Pc1<": creatures (&): no creature laid
+3x easy ERR ask: node n2 "Pc1<": threat ocelot*1: laid 0
+1x easy ERR ask: node n4 "Pg1_<": creatures (&): no creature laid
+1x easy ERR ask: node n4 "Pg1_<": threat ocelot*1: laid 0
+2x easy ERR ask: node n5 "Xf1^>": content 'l' (lure): no lure laid
+1x easy ERR ask: node n5 "Xf1^>": threat ocelot*2: laid 1
+4x easy ERR ask: node n8 "Wg2^>": move 1 (plain jumps): a section there asks for the double
+2x easy ERR ask: node n8 "Wg2^>": creatures (&): no creature laid
+2x easy ERR ask: node n8 "Wg2^>": threat ocelot*1: laid 0
+2x easy ERR ask: node n11 "Cf2>": content 'g' (ground): 2 of 3 sections are floating, climb
+4x easy ERR ask: node n11 "Cf2>": move 1 (plain jumps): a section there asks for the double
+1x easy ERR ask: node n11 "Cf2>": threat ocelot*2: laid 8
+1x easy ERR ask: node n13 "Sf1<": creatures (&): no creature laid
+1x easy ERR ask: node n13 "Sf1<": threat ocelot*3: laid 0
+1x easy ERR the quiet line: 4.6 s with nothing to do at x 21763, over 4 s (the goal run-out excluded)
+2x easy ERR ask: node n2 "Pc1<": threat ocelot*1: laid 0 on Easy
+1x easy ERR ask: node n11 "Cf2>": threat ocelot*2: laid 5 on Easy
+2x easy ERR pool short at slot 14 (n11 combine: no ground section left)
+2x easy ERR ask: node n7 "Pc1^<": shape ^ (rising): its sections rise -5 px
+2x easy ERR ask: node n8 "Wg2>": move 1 (plain jumps): a section there asks for the double
+1x easy ERR ask: node n8 "Wg2>": creatures (&): no creature laid
+1x easy ERR ask: node n8 "Wg2>": threat ocelot*1: laid 0
+2x easy ERR ask: node n11 "Cf2>": content 'g' (ground): 2 of 3 sections are floating
+1x easy ERR ask: node n11 "Cf2>": threat ocelot*2: laid 5
+4x easy ERR ask: node n13 "Sb<": content 'l' (lure): no lure laid
+1x easy ERR ask: node n13 "Sb<": threat ocelot*3: laid 4
+1x easy ERR the quiet line: 5.1 s with nothing to do at x 30680, over 4 s (the goal run-out excluded)
+1x easy ERR ask: node n13 "Sb<": threat ocelot*3: laid 7 on Easy
+2x easy ERR node code: V14 at token 1: 3 'c' nodes for a deal of 1
+1x easy ERR ask: node n4 "Pg1_<": threat ocelot*1: laid 2
+2x easy ERR ask: node n5 "Xf1>": content 'l' (lure): no lure laid
+1x easy ERR ask: node n5 "Xf1>": threat ocelot*2: laid 1
+2x easy ERR ask: node n7 "Pc1^<": shape ^ (rising): its sections rise 0 px
+2x easy ERR ask: node n11 "Cc2>": content 'g' (ground): 3 of 3 sections are climb, floating
+2x easy ERR ask: node n11 "Cc2>": move 1 (plain jumps): a section there asks for the double
+1x easy ERR ask: node n11 "Cc2>": threat ocelot*2: laid 4
+1x easy ERR ask: node n13 "Sb<": threat ocelot*3: laid 5
+1x easy ERR the quiet line: 6.3 s with nothing to do at x 23181, over 4 s (the goal run-out excluded)
+1x easy ERR ask: node n5 "Xf1>": threat ocelot*2: laid 3 on Easy
+1x easy ERR ask: node n13 "Sb<": threat ocelot*3: laid 8 on Easy
+clean 0/8
+(reused W1/W2 sections that threw on W3's budget, left out: 1)

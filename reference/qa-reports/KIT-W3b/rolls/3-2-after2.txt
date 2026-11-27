@@ -1,0 +1,28 @@
+4x normal ERR tip "hint.1-1.bank" has no Dot line in the kit's tips
+2x normal ERR ask: node n5 "Xc2_<": move 1 (plain jumps): a section there asks for the double
+1x normal ERR ask: node n10 "Pc1^<": creatures (&): no creature laid
+1x normal ERR ask: node n10 "Pc1^<": threat ocelot*1: laid 0
+4x normal ERR ask: node n13 "Sg1<": content 'f' (floating): 2 of 2 sections are ground
+1x normal ERR the quiet line: 7.8 s with nothing to do at x 31246, over 4 s (the goal run-out excluded)
+1x normal ERR ask: node n5 "Xc2^<": move 1 (plain jumps): a section there asks for the double
+3x normal ERR ask: node n10 "Pc1<": creatures (&): no creature laid
+3x normal ERR ask: node n10 "Pc1<": threat ocelot*1: laid 0
+1x normal ERR the quiet line: 10.7 s with nothing to do at x 14759, over 4 s (the goal run-out excluded)
+1x normal ERR the quiet line: 9 s with nothing to do at x 32915, over 4 s (the goal run-out excluded)
+1x normal ERR ask: node n5 "Xc2<": move 1 (plain jumps): a section there asks for the double
+1x normal ERR the quiet line: 11.2 s with nothing to do at x 14593, over 4 s (the goal run-out excluded)
+8x easy ERR tip "hint.1-1.bank" has no Dot line in the kit's tips
+4x easy ERR ask: node n5 "Xc2_<": move 1 (plain jumps): a section there asks for the double
+1x easy ERR ask: node n10 "Pc1^<": creatures (&): no creature laid
+1x easy ERR ask: node n10 "Pc1^<": threat ocelot*1: laid 0
+8x easy ERR ask: node n13 "Sg1<": content 'f' (floating): 2 of 2 sections are ground
+1x easy ERR the quiet line: 7.8 s with nothing to do at x 31246, over 4 s (the goal run-out excluded)
+2x easy ERR ask: node n5 "Xc2^<": move 1 (plain jumps): a section there asks for the double
+6x easy ERR ask: node n10 "Pc1<": creatures (&): no creature laid
+3x easy ERR ask: node n10 "Pc1<": threat ocelot*1: laid 0
+1x easy ERR the quiet line: 10.7 s with nothing to do at x 14759, over 4 s (the goal run-out excluded)
+3x easy ERR ask: node n10 "Pc1<": threat ocelot*1: laid 0 on Easy
+1x easy ERR the quiet line: 9 s with nothing to do at x 32915, over 4 s (the goal run-out excluded)
+2x easy ERR ask: node n5 "Xc2<": move 1 (plain jumps): a section there asks for the double
+1x easy ERR the quiet line: 11.2 s with nothing to do at x 14593, over 4 s (the goal run-out excluded)
+clean 0/8
