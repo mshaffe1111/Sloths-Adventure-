@@ -47,9 +47,9 @@ export const FLOOD_LESSON = 'flood-rise';
  *  PRE 11,300 px, the laid turn-to-fork road, out/flood28-laid-<setting>.txt). The design's flight (3,400 px, tail-off 22.0 / 17.9 s) was
  *  on a 2,000 px road; the laid road from the last cage to off the low road is 12,400-13,000 px (libstage 2-8, seeds 1-4), and the line's
  *  prompt tail-off over 12,700 px is 70.9 s Normal, 58.3 s Easy (its rate is not the short road's: the dips' waits are a smaller share).
- *  The close: one number on both settings (the design's form: Easy never harder), the Normal need (tail-off + 4 s) over every listed
- *  seed's laid px, rounded up */
-export const FLOOD_28: typeof W2_FLOOD = { ...W2_FLOOD, close: { normal: 78, easy: 78 }, flown: { px: 12700, tailOff: { normal: 70.9, easy: 58.3 } } };
+ *  The close: one number on both settings (the design's form: Easy never harder), over the Normal need (tail-off + 4 s) of every rolled
+ *  seed's laid px: seeds 1-40 lay 12,400-13,287 px (seed 2 the longest: 74.2 + 4 = 78.2 s), so 80 s holds to 13,613 px */
+export const FLOOD_28: typeof W2_FLOOD = { ...W2_FLOOD, close: { normal: 80, easy: 80 }, flown: { px: 12700, tailOff: { normal: 70.9, easy: 58.3 } } };
 
 /** 2-8's brief, all of it data (a rescue on two legs: 11 content nodes: ground 4, water 3, floating 2, climb 2: the steps and the drop
  *  column at the turn, the lead's box-3 ruling (2); BUILD-28-e: the column is floating, `Df_`, so climb 1 and floating 3); the flood clock */
@@ -200,10 +200,11 @@ const steps: Lay = {
 const drop: Lay = {
   pieces: [
     { key: 'a', shape: 'branch', w: [240, 260], place: { kind: 'start' } },
-    // (BUILD-28-e: THREE walk-offs, not 2-7's two: seed 4 parted the legs by 198 px on two (LEG_CLEAR 260); each step 110-130 as 2-7's)
-    { key: 'b', shape: 'branch', w: [220, 250], place: { kind: 'walk', after: 'a', dy: [110, 130] }, landing: true },
-    { key: 'c', shape: 'branch', w: [220, 250], place: { kind: 'walk', after: 'b', dy: [110, 130] }, landing: true },
-    { key: 'z', shape: 'branch', w: [220, 260], place: { kind: 'walk', after: 'c', dy: [110, 130] }, landing: true },
+    // (BUILD-28-e: THREE walk-offs, not 2-7's two: seed 4 parted the legs by 198 px on two (LEG_CLEAR 260); each step 110-130 as 2-7's;
+    //  the ledges 200-240 wide so the column (at most 960 px) stays inside the tower's storey (1,140: 2-7's widths threw on 2 of 40))
+    { key: 'b', shape: 'branch', w: [200, 230], place: { kind: 'walk', after: 'a', dy: [110, 130] }, landing: true },
+    { key: 'c', shape: 'branch', w: [200, 230], place: { kind: 'walk', after: 'b', dy: [110, 130] }, landing: true },
+    { key: 'z', shape: 'branch', w: [210, 240], place: { kind: 'walk', after: 'c', dy: [110, 130] }, landing: true },
   ],
   sockets: [petal('pb', 'b', 0.5)],
 };
