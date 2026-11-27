@@ -1,6 +1,6 @@
 # ENG-ASKS: a node code can ask any registered hazard and named clock (R-165.501; AUDIT-W3 finding 1)
 
-## ENG-ASKS-b: World 3's rows. EXACT NEXT STEP (8:45 AM ET Fri 11-27 by `date`)
+## ENG-ASKS-b: World 3's rows. EXACT NEXT STEP (box 1 hand-over, 8:56 AM ET Fri 11-27 by `date`)
 CANDIDATE 5196f738f on t-eng-asks-b (base t-eng-w3 13135bf6b): World 3's rows in worlds/w3.ts W3_HAZARDS (manifest `hazards`): #dark
 (zone dark, prop darkFrom; clock puff), #spore (zone spore; clock puff), #soft@moon (clock moon: refused 'no section in the pool lays @moon'
 until ENG-MOON's brick; ENG-MOON sets its zone). #vine / #thornvine@doze NOT added (ENG-VINE): refused '#vine is not a registered hazard'.
@@ -9,9 +9,10 @@ AUDIT ROLLS (scratch.patch kit, codes-trim.txt WITH asks, wide pool, 4 seeds x b
 - 3-1: 48 asks, 48 LAID (#dark 32, #dark@puff 16), 0 refused, 0 throws.
 - 3-2: 48 #dark asks, 30 LAID, 18 REFUSED 'no dark zone in its span': climb node (Xc) 8/8, rope twist (Wr) 6/8, rope signature (Sr) 4/8.
   Missing brick: World 3 has no dark climb or dark rope section (KIT-W3a/b); the node then draws a W1/W2 brick with no dark ends.
-GATES on frozen 5196f738f: tsc 0; generalitycheck PASS; running: shards 1-6, CI tool line, lockall --check vs 13135bf6b's lock.
-NEXT: read `<scratchpad>/g1/summary.txt` and `<scratchpad>/lock-base.log`; then `cd <scratchpad>/cand && npx tsx tools/engine/lockall.ts
---layouts 16 --check <scratchpad>/lock-base.json`; all green: merge into t-eng-w3 (ff, else merge + re-gate), push, ls-remote, hash + each
+GATES on frozen 5196f738f: tsc 0; generalitycheck PASS; base lock RECORDED (13135bf6b: 3264 builds of 102 stages, <scratchpad>/lock-base.json);
+RUNNING: shards 1-6 + CI tool line (<scratchpad>/g1/summary.txt), lockall --check (<scratchpad>/lock-check.log, last line lockcheck=<code>).
+NEXT: read both logs (re-run a timing red alone before calling it red); any red: name it, fix, a new candidate. (The check, if lost: `cd <scratchpad>/cand && npx tsx tools/engine/lockall.ts
+--layouts 16 --check <scratchpad>/lock-base.json`.) All green: merge into t-eng-w3 (ff, else merge + re-gate), push, ls-remote, hash + each
 shard's totals to the lead. Scratchpad lost: re-make worktrees (`git worktree add --detach`, node_modules link, chattr +i src tools), re-run.
 
 
