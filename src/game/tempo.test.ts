@@ -29,8 +29,10 @@ test('tempo: the court row, a locked liana and a bar-long clock keep the beat on
 });
 
 test('tempo (planted): one row\'s speed 80 -> 82 is off the beat, named by its river and numbers', () => {
-  const f = tempoFaults(court(false, { ...COURT_ROW, speed: 82 }), COURT, false);
-  assert.equal(f.length, 1, f.join('; '));
+  // (an off-beat row also drifts under its locked liana, so ONE's margin can fall short too: ENG-29-f G6 names that as its own fault)
+  const all = tempoFaults(court(false, { ...COURT_ROW, speed: 82 }), COURT, false);
+  const f = all.filter((q) => !/a press on ONE keeps/.test(q));
+  assert.equal(f.length, 1, all.join('; '));
   assert.match(f[0], /^the river at x 1000-\d+ \(82 px\/s, 156 px logs, a log every 2\.78 s\): a log every 2\.78 s is not a whole number of beats \(the beat 0\.7125 s/);
   // (and the Normal row on Easy: Easy keeps the liana's bar, so the river's Easy numbers are its own data, never Normal's stretched)
   assert.match(tempoFaults(court(true, COURT_ROW), COURT, true).join('; '), /a log every 2\.85 s is not a whole number of beats \(the beat 0\.825 s/);

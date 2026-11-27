@@ -383,6 +383,11 @@ export interface LockedDrops extends LianaDrops {
   window: number;
   /** a press on ONE (where the swing's clock is a whole swing: the drum's ONE, the lock's) lands, on every swing of the joint cycle */
   one: boolean;
+  /** ONE's press margin (s): the landing presses in a row just BEFORE (early) and just AFTER (late) the press on ONE, contiguous with it,
+   *  read round the joint cycle (consecutive presses are consecutive frames), the least over LIANA_RIVER.grips and the cycle's swings;
+   *  0 on a side where ONE itself misses. What tempoFaults judges against ONE_MARGIN (ENG-29-f's real-engine read: `one` alone is blind) */
+  early: number;
+  late: number;
 }
 
 /**
@@ -401,7 +406,7 @@ export function lockedDrops(v: Vine, logs: readonly DriftInfo[], difficulty: Dif
     // (the swings in one joint cycle: the fewest whole swings that are a whole number of log spacings; at most 8)
     let reps = 1;
     while (reps < 8 && Math.abs((reps * period) / spacing - Math.round((reps * period) / spacing)) > 1e-3) reps++;
-    let share = 1, wait = 0, window = Infinity, one = true;
+    let share = 1, wait = 0, window = Infinity, one = true, early = Infinity, late = Infinity;
     for (const g of LIANA_RIVER.grips) {
       const L = pressLaunches(v, g);
       const n = L.length, N = n * reps;
@@ -417,7 +422,15 @@ export function lockedDrops(v: Vine, logs: readonly DriftInfo[], difficulty: Dif
       let lands = 0;
       for (let i = 0; i < N; i++) lands += G[i];
       share = Math.min(share, lands / N);
-      for (let r = 0; r < reps; r++) if (!G[r * n + k1]) one = false;
+      for (let r = 0; r < reps; r++) {
+        const i0 = r * n + k1;
+        if (!G[i0]) { one = false; early = 0; late = 0; continue; }
+        let e = 0, l = 0;
+        while (e < N - 1 && G[(i0 - e - 1 + N) % N]) e++;
+        while (l < N - 1 && G[(i0 + l + 1) % N]) l++;
+        early = Math.min(early, e * FRAME);
+        late = Math.min(late, l * FRAME);
+      }
       if (!lands) { wait = Infinity; window = 0; continue; }
       let worst = 0, run = 0, best = 0;
       for (let i = 0; i < N; i++) {
@@ -430,7 +443,7 @@ export function lockedDrops(v: Vine, logs: readonly DriftInfo[], difficulty: Dif
       wait = Math.max(wait, worst * FRAME);
       window = Math.min(window, best * FRAME);
     }
-    return { share, wait, period, window, one };
+    return { share, wait, period, window, one, early, late };
   });
 }
 
