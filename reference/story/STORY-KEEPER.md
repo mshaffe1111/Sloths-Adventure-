@@ -495,3 +495,5 @@ Brief the new lead from this file when it messages.
 **NEW LEAD (11-27, about 2:40 PM ET): session_01FhBbYMA2VnzJXGxeHFhKxi** (lead.md line 1 not yet updated at 2:50 PM; flagged). Sent it the open list: approved-not-built (R-165.260 1-7 boxes and the World 1 waysides; R-165.180 1-5 develop line; R-165.192; R-165.193), my backlog (prologue compare, R-165.45), and the helper keepers' files (2-8 t-keeper-28, 2-9 t-keeper-23-29 / t-build-29, World 3 lines-3.md on t-keeper-3x with two rulings for the lead).
 
 **Lesson (11-27, my second miss of this kind after way.1-8 on 11-14):** before cutting or writing a wayside, check its SPEAKER in wayside.ts; a Pokey line must carry I/me/my (wayside.test.ts). Now part of my check for every wayside.
+
+**11-27 6:42 PM ET, w2_book hint (finds.ts:416 DOT_HINTS), for BUILD-28:** "Look along the banks in Before the Water Rises. Hurry!" -> "Before the Water Rises: peek in the Hush Ferns!" (8). True on every roll (the find is always in a Hush Fern in 2-8; "along the banks" fails 8 of 32 rolls); "Hurry!" goes (the fork line says the high road is never wrong, and no hurry wording).
