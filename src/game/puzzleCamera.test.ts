@@ -8,7 +8,10 @@
  */
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { RealPlay } from './realPlay.ts';
+import { levelConfig, RealPlay } from './realPlay.ts';
+import { generateStage, setLayoutVariant } from './stageGenerator.ts';
+import { generateAllLevels } from './worldsData.ts';
+import { KIT_STAGE_ID } from './kitStage.ts';
 import { GameEngine } from './engine.ts';
 import { boxFits, fitZoom, ROOM_CAM, roomCentre, roomFloor, type CamBox } from './puzzleCamera.ts';
 import { KIT } from './puzzleKit.ts';
@@ -18,7 +21,22 @@ import { KIT } from './puzzleKit.ts';
 // (1-6's seesaws and 1-7's acorn meadow left with their hand-built stages, R-165.238 and BUILD-17: the rolled 1-6 and 1-7 have no room)
 // (2-2's ferry room went with the hand-built 2-2, ENG-W2 11-14: the rolled 2-2 has no puzzle room)
 // (2-8's pulley cages went with the hand-built 2-8, BUILD-28: the designed 2-8 holds its cages by socket, no puzzle room)
-const STAGES = ['2-9', 'kit'];
+// The stages are READ FROM the game's stages, never a hand list, and the floor is derived, never a hard number (BUILD-28-h 2(i): the old
+// 'more than 80 moments' counted the hand-built 2-8's pulley rooms and went red when they left): every stage of Worlds 1 and 2, built as
+// the game builds it (seed 1, as engineFor), that has puzzle rooms, then the kit's test room. Every room is checked at every moment of its own.
+function roomStages(): string[] {
+  const out: string[] = [];
+  for (const c of generateAllLevels().filter((l) => l.worldIndex <= 2)) {
+    setLayoutVariant(1);
+    try {
+      if (generateStage(levelConfig(c.id), 'normal').kit?.rooms.length) out.push(c.id);
+    } finally {
+      setLayoutVariant(null);
+    }
+  }
+  return [...out, KIT_STAGE_ID];
+}
+const STAGES = roomStages();
 const PHONES: Array<[number, number]> = [[390, 844], [360, 740], [844, 390]];
 
 type Room = {
@@ -104,6 +122,17 @@ function engineFor(id: string, w: number, h: number) {
 test('every puzzle room in Worlds 1 and 2 and the kit test room: what he works and what it works are in view together, upright and sideways', () => {
   let smallest = Infinity;
   let checked = 0;
+  // (the floor, derived: each room's own moments, counted from its pieces before anything is checked, times the phones; a spot in two
+  //  rooms belongs to the first)
+  const inBox = (m: { x: number; y: number }, q: Room) => m.x >= q.box.x0 && m.x <= q.box.x1 && m.y >= q.box.y0 && m.y <= q.box.y1;
+  const want = new Map<string, number>();
+  const got = new Map<string, number>();
+  for (const id of STAGES) {
+    const rooms = (engineFor(id, ...PHONES[0]).e.kit?.rooms ?? []) as Room[];
+    assert.ok(rooms.length, `${id} has puzzle rooms`);
+    rooms.forEach((room, ri) => want.set(`${id} #${ri} ${room.spec.id}`, moments(room).filter((m) => rooms.findIndex((q) => inBox(m, q)) === ri).length * PHONES.length));
+  }
+  for (const k of want.keys()) got.set(k, 0);
   for (const [w, h] of PHONES) {
     for (const id of STAGES) {
       const { r, e } = engineFor(id, w, h);
@@ -140,6 +169,7 @@ test('every puzzle room in Worlds 1 and 2 and the kit test room: what he works a
           assert.ok(e.zoom >= (Math.min(w, h) / ROOM_CAM.sideH) * ROOM_CAM.minZoom - 1e-6, `${w}x${h} ${id}: zoom ${e.zoom}`);
           smallest = Math.min(smallest, e.zoom);
           checked++;
+          got.set(`${id} #${ri} ${room.spec.id}`, (got.get(`${id} #${ri} ${room.spec.id}`) ?? 0) + 1);
           if (m.hold !== undefined) {
             kit.held = null;
             room.items[m.hold].mode = 'wait';
@@ -149,7 +179,11 @@ test('every puzzle room in Worlds 1 and 2 and the kit test room: what he works a
     }
   }
   console.log(`camera: ${checked} moments checked, smallest scale ${smallest.toFixed(3)}`);
-  assert.ok(checked > 80, `${checked} moments checked`);
+  console.log(`camera: rooms ${[...want].map(([k, n]) => `${k} ${n}`).join(', ')}`);
+  assert.deepEqual(Object.fromEntries(got), Object.fromEntries(want), 'every puzzle room is checked at each of its own moments, on every phone');
+  // (and every room of a shipped stage has a moment to check: a room this test cannot read is a room nobody checked; the kit's test room
+  //  holds pieces for other tests too)
+  for (const [k, n] of want) if (!k.startsWith(`${KIT_STAGE_ID} `)) assert.ok(n > 0, `${k}: no moment of its own to check`);
   assert.ok(smallest >= 0.5 - 1e-6, `the smallest scale: ${smallest.toFixed(3)} css px a world px`);
 });
 

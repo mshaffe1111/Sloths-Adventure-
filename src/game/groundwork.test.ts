@@ -70,6 +70,12 @@ test('goals: Normal gets its share; Easy asks round(Normal x 0.65), never under 
 
 test('goals: every hand-built stage of Worlds 1-4 with a count lands in Matt\'s band on Normal (small counts round as near as they can)', () => {
   const levels = generateAllLevels().filter((c) => c.worldIndex <= 4 && c.objectiveType !== 'boss_lair');
+  // (the floor is DERIVED from STAGES' hand-built lists, protoStage HAND_STAGES and w2Stages W2_STAGES, never a hard number: hand-built
+  //  stages leave by design as the generated ones replace them (BUILD-28-h 2(ii): 'at least 6' went red when the hand-built 2-8 left). Every
+  //  listed stage of Worlds 1-4 is built here and is either checked or has nothing to count; at least one is checked.)
+  const listed = levels.filter((c) => HAND_STAGES[c.id] || W2_STAGES[c.id]).map((c) => c.id);
+  const seen: string[] = [];
+  const countless: string[] = [];
   let checked = 0;
   for (const c of levels) {
     const hand = HAND_STAGES[c.id] ? buildProtoStage(c, 1, HAND_STAGES[c.id]) : W2_STAGES[c.id] ? buildW2Stage(c, 1, W2_STAGES[c.id]) : null;
@@ -78,7 +84,11 @@ test('goals: every hand-built stage of Worlds 1-4 with a count lands in Matt\'s 
     const n = goalCounts(st as never);
     const t = c.objectiveType;
     const have = t === 'harvest' ? n.petals : t === 'rescue' ? n.rescuable : t === 'purge' || t === 'gauntlet' ? n.animals : 0;
-    if (!have) continue;
+    if (!have) {
+      countless.push(c.id);
+      continue;
+    }
+    seen.push(c.id);
     const share = st.config.targetCount / have;
     const band = t === 'harvest' ? [0.85, 0.9] : t === 'rescue' ? [1, 1] : [0.7, 0.8];
     // (with few things to count, the nearest whole number can sit a little outside the band)
@@ -87,7 +97,9 @@ test('goals: every hand-built stage of Worlds 1-4 with a count lands in Matt\'s 
     assert.ok((st.easyGoal ?? 0) <= st.config.targetCount, `${c.id}: Easy asks no more than Normal`);
     checked++;
   }
-  assert.ok(checked >= 6, `${checked} stages checked`);
+  console.log(`goals: checked ${seen.join(' ')}; nothing to count ${countless.join(' ') || '(none)'}`);
+  assert.deepEqual([...seen, ...countless].sort(), [...listed].sort(), 'every hand-built stage of Worlds 1-4 in STAGES is built and judged');
+  assert.ok(checked >= 1 && checked === seen.length, `${checked} stages checked`);
 });
 
 // ───────────────────────────── crumbling platforms ─────────────────────────────

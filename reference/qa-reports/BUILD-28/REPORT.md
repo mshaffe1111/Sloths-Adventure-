@@ -1,6 +1,38 @@
 # BUILD-28 REPORT (W2-LANE: 2-8 "Before the Water Rises"; R-165.430 (2), READY-28, BUILD-28). Session 1 (W2-LANE a), started 9:44 AM ET (from date). Session 2 (W2-LANE b), started 10:07 AM ET (from date). Session 3 (W2-LANE c), started 10:30 AM ET (from date). Session 4 (W2-LANE d), started 10:52 AM ET (from date). Session 5 (W2-LANE e), started 11:19 AM ET (from the session hook date) Session 6 (W2-LANE f), started 11:41 AM ET (from the session hook date) Session 7 (W2-LANE g), started 12:05 PM ET (from the session hook date) Session 8 (W2-LANE h), started 12:49 PM ET (from the session hook date) Session 9 (W2-LANE i), started 1:15 PM ET (from the session hook date) Session 10 (W2-LANE j), started 1:05 PM ET (from the session hook date) Session 12 (W2-LANE l), started 2:20 PM ET (from the session hook date)
 
-## EXACT NEXT STEP (BUILD-28 box 7, BUILD-28-g, started 8:57 AM ET (from the session hook date); code head cc06d2f90 on t-build-28-wip)
+## EXACT NEXT STEP (BUILD-28 box 8, BUILD-28-h, started 9:56 AM ET (from the session hook date); hand-over 10:13 AM ET (from date); code head = the commit after 1e461ed0f on t-build-28-wip (two test files); no merge yet)
+DONE THIS BOX (packet reference/packets/2026-11-27/BUILD-28-h.md, items 2(iv), 2(i), 2(ii)):
+1. 2(iv) / R-165.535 TRACED by git bisect run on that one test (scratchpad bistest.sh: pass 1 good, 're-measure' bad, else skip). The clone
+   was SHALLOW: the first bisect stopped on a grafted root (361993001, 19,915 files): deepen first (git fetch --deepen=400). Range: good
+   main 4bf2cbaaa, bad c73cb9766 (= merge-base of t-eng-29 and t-build-28-wip, the lead's fact). FIRST BAD: 0ec009b4d "ENG-PLANT-CI CI-15:
+   padPause's stand on a small log is a stop he means (stopMeant)" (tools/inspect/firsttimer.ts:3511); parent 7d1bcd9e5 GREEN. 5-9 kid
+   runs (seeds 1-3 x trial 0/1, easyGoal unset): 7d1bcd9e5 3,5,6,7,6,5 (= KID_RUNS_59) -> 0ec009b4d 8,9,7,7,4,7 -> cc06d2f90 8,9,7,7,4,7.
+   kidMedian 5.5 -> 7. Other rows CI-15 moves (its own CI-REDS.md FINAL CHECKS): 2-7 x40 vs CI-14 160 rows (kid 80, adult 80; child,
+   middle, expert identical), 1 PASS->FAIL kid E 17 (FAIL on main too), 41 FAIL->PASS; wide sample 2-1/2-2/2-4 0 BAR PASS->FAIL vs main.
+   In the suite only this test goes red (goalsEasy.test reads the constant). SENT to the lead (a kid-bot change is the lead's call);
+   recommended: keep CI-15, re-record KID_RUNS_59 = [8,9,7,7,4,7] and 5-9's easyGoal by kidMedian, goalsEasy.test's literal with it.
+2. 2(ii) groundwork.test "every hand-built stage": floor DERIVED from HAND_STAGES + W2_STAGES (each listed W1-4 stage built and checked
+   or 'nothing to count'; at least one). GREEN: checked 2-9 3-3 3-9 4-8 4-9 (5; main 6 with the hand-built 2-8); nothing to count 1-1
+   2-6 3-1 3-2 3-4 3-5 3-6 3-7 3-8 4-1 4-2 4-3 4-4 4-5 4-6 4-7. Plant (3-3 skipped): RED (CAUGHT). tsc 0.
+3. 2(i) puzzleCamera.test: STAGES READ from the game (every World 1/2 stage built by generateStage at seed 1, kept if it has rooms, + kit);
+   the floor = each room's own moments x 3 phones, counted before checking; got must equal want. Main 87 (2-8's pulley rooms) / 30 on
+   the branch; want 30 = 2-9 bell0 3 + kit carry 6, lure 9, throw 6, seesaw 3, trade 3. The generated 2-8 lays NO puzzle room (seed 1,
+   run on a scratch db2947730 where 2-8 builds). Plant (kit carry skipped): RED on the floor ('kit #0 carry' 0 vs 6, CAUGHT). UNPLANTED
+   it is RED on a REAL GAP: '2-9 #1 gallery1: no moment of its own to check' (the bell-lures-guards room: bell with no gate, pebble with
+   no 'for'; moments() never checked it, on main too, hidden by 2-8's count). Kit rooms bell, light, wind, sluice: 0 too (test room,
+   exempted by name in the test). On t-build-28-wip it stays red until 2-8 builds (roomStages builds 2-8: no catch, by design).
+   SENT to the lead for a ruling; recommended (reversible): a moment for a gateless bell / thrown pebble: 'the bell and every guard it calls'.
+4. MERGES NOT DONE: neither lane LANDED (ENG-W2FALL db2947730: shards 1-5 running; ENG-CUT-b 4d2a579de: shard 6, tool line, drawcheck
+   running). Asked the lead: wait for LANDED (recommended) or merge the frozen candidates.
+NEXT, in order:
+a. ReadNotifications; read the lead's rulings on gallery1 and the merge. Fresh container: `npm install --no-audit --no-fund
+   --legacy-peer-deps` first, and `git fetch --deepen=400` before any bisect.
+b. Merge t-eng-w2fall at the hash its REPORT names LANDED, then t-eng-cut at ENG-CUT-b's LANDED hash (no force; tsc + the CI tool line
+   after each; 2-8's tests and tools await loadInventory(2)); name stageSheets' '2-8 foe:goldsnake' red by cause.
+c. Re-run puzzleCamera.test and groundwork.test on the merged head; apply the gallery1 ruling; artUse.test re-check (2(iii)).
+d. Packet items 3-6: roll 40 x both, seedlist + the WIDENED pin grep, ONE full gate run, stills from the committed lay, bots x40.
+
+## (was the EXACT NEXT STEP) (BUILD-28 box 7, BUILD-28-g, started 8:57 AM ET (from the session hook date); code head cc06d2f90 on t-build-28-wip)
 DONE THIS BOX (every number from the built stage, rule 27):
 1. JUDGED (box 6 item a): cc06d2f90 enters 2-8's flown Normal rows (flownArcs.ts n28 = nW2('2-8'), 8 moves from fly-2-8.txt, flown on
    25d527e40: climb from [rise] block/thin, gap from70 / last ground / ANY from [dist] and [ddist] block, bounce from [bdist] d=0),
