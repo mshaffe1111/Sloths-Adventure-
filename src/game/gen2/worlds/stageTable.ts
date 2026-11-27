@@ -80,7 +80,7 @@ export const STAGE_TABLE: Readonly<Record<string, StageRow>> = {
   '2-7': { kit: 'w2-27', judged: 'normal-2-7' },
   // (2-8 Before the Water Rises: the designed arc, w2Arc28.ts, its own kit 'w2-28' (kitLib28), BUILD-28: free the marsh's little ones,
   //  then home LEFT along the dyke before the water rises; the fork the water decides (w2TwoRoad); the hand build is deleted, 69c3c1640)
-  '2-8': { kit: 'w2-28' },
+  '2-8': { kit: 'w2-28', judged: 'normal-2-8' },
 };
 
 /** a stage's row; undefined when the table has none (an inherited name is no row) */

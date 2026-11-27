@@ -59,7 +59,7 @@ const n14 = (move: ReachMove, climb: [number, number], n: [number, number, numbe
 const nW2 = (stage: string) => (move: ReachMove, climb: [number, number], n: [number, number, number], source: string): FlownArc[] => [
   { move, scope: `normal-${stage}`, climb: { block: climb[0], thin: climb[1] }, gap: { from70: n[0], lastGround: n[1], any: n[2] }, source },
 ];
-const n21 = nW2('2-1'), n22 = nW2('2-2'), n23 = nW2('2-3'), n24 = nW2('2-4'), n25 = nW2('2-5'), n27 = nW2('2-7');
+const n21 = nW2('2-1'), n22 = nW2('2-2'), n23 = nW2('2-3'), n24 = nW2('2-4'), n25 = nW2('2-5'), n27 = nW2('2-7'), n28 = nW2('2-8');
 
 /** every flown row: reach.md §2 ("Normal 1-1 and Easy are the same unless two figures are given"), then 1-2's Normal (chain.md §1) */
 export const FLOWN_ROWS: readonly FlownArc[] = [
@@ -221,5 +221,16 @@ export const FLOWN_ROWS: readonly FlownArc[] = [
   ...n27('double-tap-tap', [146, 136], [188, 273, 299], 'chain.md §1 "2-7: double-tap-tap 146 / 136, gap 188 / 273 / 299"'),
   ...n27('bounce', [223, 213], [176, 176, 176], 'chain.md §1 "2-7: bounce 223 / 213, gap 176"'),
   ...n27('bounce-air', [303, 292], [323, 323, 323], 'chain.md §1 "2-7: bounce-air 303 / 292, gap 323"'),
+  // 2-8 on Normal (BUILD-28): flown on its own stage on World 2's kit (FLIGHT_STAGE=2-8 reference/specs/sims/flight.ts normal all
+  // on t-build-28-wip 25d527e40, reference/qa-reports/BUILD-28/fly-2-8.txt; entered in chain.md §1 "Rows ... Normal 2-8"): stage 8's help,
+  // a pixel or a few under 2-7's on the double moves
+  ...n28('single-hold', [123, 113], [134, 217, 243], 'chain.md §1 "2-8: single-hold 123 / 113, gap 134 / 217 / 243"'),
+  ...n28('single-flick', [123, 112], [125, 208, 234], 'chain.md §1 "2-8: single-flick 123 / 112, gap 125 / 208 / 234"'),
+  ...n28('single-tap', [87, 77], [77, 160, 180], 'chain.md §1 "2-8: single-tap 87 / 77, gap 77 / 160 / 180"'),
+  ...n28('double-hold', [201, 191], [280, 362, 390], 'chain.md §1 "2-8: double-hold 201 / 191, gap 280 / 362 / 390"'),
+  ...n28('double-flick', [200, 189], [268, 352, 372], 'chain.md §1 "2-8: double-flick 200 / 189, gap 268 / 352 / 372"'),
+  ...n28('double-tap-tap', [146, 136], [188, 270, 296], 'chain.md §1 "2-8: double-tap-tap 146 / 136, gap 188 / 270 / 296"'),
+  ...n28('bounce', [223, 213], [175, 175, 175], 'chain.md §1 "2-8: bounce 223 / 213, gap 175"'),
+  ...n28('bounce-air', [303, 291], [323, 323, 323], 'chain.md §1 "2-8: bounce-air 303 / 291, gap 323"'),
 ];
 
