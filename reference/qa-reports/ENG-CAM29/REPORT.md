@@ -1,5 +1,15 @@
 # ENG-CAM29 (R-165.513): the puzzle-room camera, leaving a room and framing a gate-less bell
 
+## LANDED (11-27 12:28 PM ET, from `date`) on t-eng-29, by the lead's ruling (a)
+- **The 5-9 red** (firstTimerBot.test.ts:177, KID_RUNS_59) is **t-eng-29's, owner BUILD-29-l (4799f6026)**. Release 5's
+  EASY_GOAL_59 data and the re-recorded KID_RUNS_59 (R-165.496) are not on t-eng-29 yet. BUILD-29-l merges release 5's frozen head and
+  re-records the runs there.
+- **The last three gates on frozen 6ea9e7623:**
+  - clipcheck: 'PASS (83 known) (468 s)';
+  - drawcheck: 'PASS (879 s)';
+  - generalitycheck: '71 engine files (228 exempt under the engine folders), 26 literals, 26 known' PASS.
+- t-eng-29 had not moved from 7387d089a, so the earlier tsc and lock results stand ('lock: 102/102 stages unchanged').
+
 ## TAIL RESULT (11-27 12:05 PM ET, from `date`): STOPPED ON A RED, NOT LANDED
 The tail ran the gates on the frozen 6ea9e7623, as the lead ruled.
 - **The red:** shard 3, firstTimerBot.test.ts:177, "5-9's Easy goal rests on the kid's runs". KID_RUNS_59 is expected [3,5,6,7,6,5]; the
