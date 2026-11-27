@@ -199,9 +199,9 @@ export interface DepthStep {
   /** how far the darkening's start moves between the two bands (px) */
   jump: number;
 }
-/** the most the darkening's start may move between two neighbouring bands (px): the eased line over LINE_REACH moves it at most a few
- *  px a strip; the block was 176-224 */
-export const DEPTH_STEP_MAX = 48;
+/** the most the darkening's start may move between two neighbouring bands (px): the largest of the lead's planted steps that shows
+ *  nothing (R-165.487: 24 nothing, 32-48 faint, 64 plain; the block was 176-224). The line is eased to it (protoArt.ts DEPTH_EASE). */
+export const DEPTH_STEP_MAX = 24;
 export function depthSteps(platforms: readonly Platform[], line?: DepthAt): DepthStep[] {
   const banks = groundBanks(platforms);
   const at = line ?? groundLine(banks as Platform[], groundCeilings(platforms, banks));
