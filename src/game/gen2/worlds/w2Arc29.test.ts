@@ -15,7 +15,10 @@ import { generateAllLevels } from '../../worldsData.ts';
 import { W2_STAGES } from '../../w2Stages.ts';
 import { STAGE_LINES } from '../../pokeyJournal.ts';
 import { countWord, goalLine, sealedLine } from '../../stagePlan.ts';
-import { DRUM_CARD_29, LINES_29, MISSION_29, STAGE_29 } from './w2Arc29.ts';
+import { DRUM_CARD_29, KICK_29, LINES_29, MISSION_29, STAGE_29 } from './w2Arc29.ts';
+import { DOT_LINES } from '../../dotLinesData.ts';
+/** the kick line's words as the kit says them (its row's old words; dotLines.ts swaps the new look's in where it is said) */
+const LINES_KICK = (): string => { const r = DOT_LINES.find((q) => q[0] === KICK_29)!; return (r[4] ?? r[5])!; };
 import { STAGE_TABLE } from './stageTable.ts';
 
 const root = path.join(path.dirname(fileURLToPath(import.meta.url)), '..', '..', '..', '..');
@@ -79,6 +82,22 @@ test("2-9: the court lianas' far-bank moss stone stands in its bank's middle, ne
       const mid = (far.x + far.width / 2 - under.x) / under.width;
       assert.ok(mid > 0.4 && mid < 0.6, `${d} seed ${s} ${q.template}: the stone at ${mid.toFixed(2)} of its ${Math.round(under.width)} px bank`);
     }
+  }
+});
+
+test("2-9: Dot's kick line (hint.2-9.kick) is laid on EVERY seed, both settings, said 800 px+ before the posted guard (level.md rule 6; a ruled socket the engine refuses vanishes silently, R-165.518: BUILD-29-j)", () => {
+  const words = LINES_KICK();
+  for (const d of BOTH) for (let s = 1; s <= 12; s++) {
+    const st = built(s, d);
+    const fill = st.gen2.fills.filter((f: Any) => f.role === 'tip' && f.what === KICK_29);
+    assert.equal(fill.length, 1, `${d} seed ${s}: one kick socket filled (found ${fill.length})`);
+    assert.ok(!fill[0].unsaid, `${d} seed ${s}: the kit has words for ${KICK_29}`);
+    const hint = ((st.proto?.hints ?? []) as Any[]).filter((h) => h.text === words);
+    assert.equal(hint.length, 1, `${d} seed ${s}: Dot says "${words}" once (found ${hint.length})`);
+    const guard = st.enemies.find((e: Any) => e.royal && e.post !== undefined);
+    assert.ok(guard, `${d} seed ${s}: the posted guard`);
+    const ahead = guard.x - hint[0].x;
+    assert.ok(ahead >= 800, `${d} seed ${s}: the kick line at x ${Math.round(hint[0].x)} is ${Math.round(ahead)} px before the guard at x ${Math.round(guard.x)} (800 px+)`);
   }
 });
 

@@ -26,6 +26,7 @@ import type { ListedStage } from '../listed.ts';
 import type { CreatureDef, GraphBrief, NodeJob, SectionPiece, SectionTemplate, Socket, WorldKit } from '../types.ts';
 import type { LevelConfig } from '../../types.ts';
 import { w2Finish } from './w2.ts';
+import { DOT_LINES } from '../../dotLinesData.ts';
 
 export const STAGE_29 = '2-9';
 /** the draft's bot id (the bots fly a fixture by an id no stage of the game has, realPlay.ts withFixtureConfig; the tempo toy is 2-90) */
@@ -65,6 +66,9 @@ export const MISSION_29 = "Dance to the king's drum, chase off his snappers, rea
  *  (a road card needs its own painted art, journal.test.ts; or a journal page beside 2-4's kapok) */
 export const DRUM_CARD_29 = { name: "The King's Drum", tip: 'Crocodiles signal by slapping their heads on water. This king prefers drums.' } as const;
 export const lineId29 = (line: keyof typeof LINES_29): string => `w29.${line}`;
+/** Dot's line for the king's guard (dotLinesData.ts's row, its old words as W1_TIPS keeps them: dotLines.ts swaps the new look's in) */
+export const KICK_29 = 'hint.2-9.kick';
+const KICK_WORDS_29 = ((r) => r?.[4] ?? r?.[5] ?? undefined)(DOT_LINES.find((q) => q[0] === KICK_29));
 /** the teach lines (said on the first meeting, never waiting out Dot's calm gap) */
 export const TEACH_29 = ['drum'] as const;
 
@@ -179,7 +183,10 @@ const upQuay: Lay = { pieces: [bank('a', null, 360), spring('sp', 'a', 0.7), ris
 // (beat 10's landing: the king's guard POSTED on the far bank (G2, the lead's rulings (1)(4)(5)), facing the barge, out of the goal; at t 0.4 (224 px in; BUILD-29-i: with TWO barges, the quiet line, t 0.5-0.8 are refused, silently, on every seed): the nearest post to the landing the engine's safe spot allows (t 0.3-0.5 refused on 14 of 24 seeds both settings, 'no clear ground', patchFor), the lead's ruling (b) as swept, BUILD-29-h)
 // (the far bank 560 px, not 300: the stage's last flag (ROLLED_FLAGS.last) lands on it on 19 of 40 rolls, and the guard keeps SAFE_APPROACH +
 //  24 = 224 px from a flag; at 300 px both cannot stand on it, and patchFor refuses the post by name. BUILD-29-d)
-const barge: Lay = { pieces: [bank('a', null, 420), river('c', 'a', 'barge29', 360), bank('z', 'c', 560)], sockets: [{ id: 'guard', role: 'enemy', on: 'z', t: 0.4, allow: [W2_POSTED_GUARD.id] }] };
+// (Dot's kick line, the guard's first meeting (hint.2-9.kick, a reminder of the spear guard, dotTips.ts REMINDS_OF): on the quay, 0.7 of
+//  its 420 px (126 px from the lip, where he waits for a barge), said before he boards, 1600 px+ before the guard across the two barges' 984 px
+//  river (level.md rule 6: 800 px+; w2Arc29.test counts it on every seed). BUILD-29-j)
+const barge: Lay = { pieces: [bank('a', null, 420), river('c', 'a', 'barge29', 360), bank('z', 'c', 560)], sockets: [{ id: 'guard', role: 'enemy', on: 'z', t: 0.4, allow: [W2_POSTED_GUARD.id] }, { id: 't-kick', role: 'tip', on: 'a', t: 0.7, allow: [KICK_29] }] };
 /** [R] a rest on the bank */
 const rest: Lay = { pieces: [bank('a', null, 240), bank('b', 'a', 300), rock('rb', 'b', 0.5), bank('z', 'b', 240)], sockets: [{ id: 'find', role: 'findSpot', on: 'a', t: 0.5 }] };
 
@@ -222,7 +229,7 @@ export function kitLib29(id: string = STAGE_29): WorldKit {
       creatures: SNAPPERS_29,
       lessons: { ...M.lessons, [BEAT_LESSON]: id },
       required: {},
-      tips: { ...M.tips, ...Object.fromEntries((Object.keys(LINES_29) as Array<keyof typeof LINES_29>).map((key) => [lineId29(key), LINES_29[key]])) },
+      tips: { ...M.tips, ...Object.fromEntries((Object.keys(LINES_29) as Array<keyof typeof LINES_29>).map((key) => [lineId29(key), LINES_29[key]])), ...(KICK_WORDS_29 ? { [KICK_29]: KICK_WORDS_29 } : {}) },
       teachTips: [...(M.teachTips ?? []), ...TEACH_29.map(lineId29)],
       graphs: { ...G, list: [...G.list.filter((g) => g.archetype !== 'gauntlet'), ...Object.entries(ARC_29).map(([id, code]) => ({ id, archetype: 'gauntlet' as const, code }))], briefs: { ...G.briefs, [id]: BRIEF_29 } },
     } } as WorldKit;

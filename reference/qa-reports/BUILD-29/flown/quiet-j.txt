@@ -1,0 +1,18 @@
+s1 w2-29-shrine 5.48 counts 1.34
+     SUM walk 5.48
+s1 2-9 s1 normal: total 151.2 move 122.2; quiet stretches > 4 s
+s2 w2-29-shrine 5.41 counts 1.34
+     SUM walk 5.41
+s2 2-9 s2 normal: total 154.4 move 123.4; quiet stretches > 4 s
+s3 w2-29-shrine 5.44 counts 1.34
+     SUM walk 5.44
+s3 2-9 s3 normal: total 154.7 move 123.7; quiet stretches > 4 s
+s4 w2-29-shrine 5.47 counts 1.34
+     SUM walk 5.47
+s4 2-9 s4 normal: total 147.2 move 120.2; quiet stretches > 4 s
+s5 w2-29-shrine 5.68 counts 1.40
+     SUM walk 5.43, drop 0.25
+s5 2-9 s5 normal: total 150.9 move 121.9; quiet stretches > 4 s
+s6 w2-29-shrine 5.46 counts 1.34
+     SUM walk 5.46
+s6 2-9 s6 normal: total 151.0 move 122.0; quiet stretches > 4 s

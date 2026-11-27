@@ -1,0 +1,9 @@
+BUILD-29-j: ONE Easy court-wheel try (scratch edit of W2_WHEELS.court easyV, reverted; parts.ts 2-9 seed 1 easy)
+base easyV 45.7 (a bucket every 5 Easy beats, turn 16.5 s):
+10.51 s x17354-17826 w2-29-terrace | after "ride a water wheel up" (act 0.50 dur 0.00) | before "hop up a step" | move-clock 10.51 s, waits inside 0.00 s
+  beats at the stretch's start base: V:ride a water wheel up act 0.50 dur 0.00
+  quietOf share 1.00 -> counts 10.51 s
+try easyV 114.24 (a bucket every 2 Easy beats, turn 6.6 s = 8 beats of Easy's 3.3 s bar):
+4.32 s x17374-17826 w2-29-terrace | after "ride a water wheel up" (act 0.50 dur 0.00) | before "hop up a step" | move-clock 4.32 s, waits inside 0.00 s
+  beats at the stretch's start base: V:ride a water wheel up act 0.50 dur 0.00
+  quietOf share 1.00 -> counts 4.32 s
