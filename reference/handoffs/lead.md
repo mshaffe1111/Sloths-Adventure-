@@ -111,28 +111,31 @@ code-checked plan (ENGINE-NEEDS.md); "add a level" in one step; every lead keeps
 3. **The lead manages; members engineer.** The lead decides scope, priority, time and the bar, judges the evidence and unsticks; it does not do the work or design the code. A member's technical fork goes back as 'decide it within your budget and show me the evidence', unless it changes scope, the bar, a shipped stage or Matt's taste.
 4. **The scoreboard in every report to Matt:** levels on his link this week vs the plan; hours per level vs 2 h; pieces landed ahead; **2-HOUR PROGRESS** (Matt 11-23, R-165.409): what was done today toward the 2-hour level (reference/plans/TWO-HOUR-PLAN.md and its schedule).
 
-## RIGHT NOW (11-26 night, drafted 9:30 PM ET, refreshed at the wrap; this block wins over everything below, R-165.242)
-MATT TONIGHT (read these first): R-165.495 release 5 = A (2-6, 2-7, the bot fix, the stalk fix Friday; 2-8 + 2-9 release 6);
-R-165.496 5-9's Easy goal stays 5 (a goal only has to be reachable by the kid bot; no bot run raises it); R-165.497 "Sunday is not
-acceptable... Why do we keep doing the same shit" + "Shouldn't you be telling the helpers to make sure that they're getting all the pieces
-in?"; R-165.498 his choice: FIX + keep 4 helpers (every World 3 piece found up front by rolling the designs; trims to existing pieces + at
-most ONE new; pieces side by side); R-165.500 the bot switch PAUSED to Wednesday, its slot to World 3 (5 slots).
-THE NEW STANDARD (CI #95, level.md rule 23, PM.md): NO level build starts until the lead OPENS its roll file (the whole node string through
-the real pipeline) and every piece it names has a LANDED hash. Also tonight: CI #92 (a ruled number names its flight), #93 (no 'on the bar'
-without suite totals), #94 (count lanes before every create_session; the cap), dispatch-packet (a shared lay file runs the FULL lock).
-WORLD 3 (plans/W3-LANES.md = the plan of record; packets/2026-11-27/W3-FRIDAY.md = Friday's packets): AUDIT-W3 rolled all nine designs
-(t-audit-w3 0b8930e64; codes/codes-trim.txt = builders' starting codes); trims ruled; 14 lanes. LANDED tonight on t-eng-w3: a8bc662e5
-(3-1's tower fix + the DARK piece; 1-4's intended lock move, 101/102). Landing next on t-eng-w3, in this order: ENG-ASKS (the hazard registry,
-merge 11e2af1a0) then ENG-SPORE-c (d653d3994 built on it). Then ENG-ASKS-b (World 3's #dark/#spore/@puff rows). World 3's LINES EXIST
-(t-keeper-3x 5b63cd8c6 lines-3.md): KEEPER-W3 is a review.
-WORLD 2: 2-6 LANDED (t-land-26 2f681402e). 2-9: every engine piece landed (t-eng-29 28c848dbd: barge, guard, drum, G6 COURT_SAG; wide stone
-t-eng-stone29 a6ac7316b); listed, hand build deleted; lianas 365 px; ENG-QUIET fixing the quiet-line model (rule B: a let-go reads as a move);
-BUILD-29-i proposing data for the gate walk / terrace ride / barge ride. 2-8: fork landed (t-eng-fork28 8fbdb72ac); BUILD-28-e: a clean roll
-first, 2-7's stale seed list rebuilt on its branch. Target: World 2 done Saturday (release 6).
-FRIDAY 8:30 AM ET: INT-R5 (packets/2026-11-26/INT-R5.md; every seed list checked, not only 1-1), KIT-W3a + KIT-W3b (the long pole), KEEPER-W3,
-ENG-ROOT, ENG-MOON, ENG-CAM29 (R-165.513, before release 6), BUILD-31 when its roll is clean. QUEUED: TOOLS-AMP (t-amp-hook; widened to D119),
-R-165.492 (the cap as a gate), R-165.494 (the freeze trap), R-165.499 (roadmapcheck's lesson numbers), R-165.515 (lockall's count).
-OPEN WITH MATT: nothing asked and unanswered. Tell him Friday evening where World 3 stands against: 3-1..3-4 by Sunday night, the rest mid next week.
+## RIGHT NOW (11-26 night wrap, 11:00 PM ET by `date`; this block wins over everything below, R-165.242)
+MATT TONIGHT: R-165.495 release 5 = A (2-6, 2-7, the bot fix, the stalk fix Friday); R-165.496 5-9's Easy goal stays 5; R-165.497 "Sunday is
+not acceptable... Why do we keep doing the same shit" + "Shouldn't you be telling the helpers to make sure that they're getting all the pieces
+in?"; R-165.498 FIX + keep 4 helpers; R-165.500 the bot switch PAUSED to Wednesday (its slot to World 3: 5 slots).
+THE NEW STANDARD (CI #95; level.md rule 23; PM.md): NO level build starts until the lead OPENS its roll file and every piece has a LANDED hash.
+Every art lane names its DRAW PATH before it paints (W3-LANES addendum). Also CI #92-#94, the full-lock rule for shared lay files.
+LANDED TONIGHT: t-land-26 2f681402e (2-6); t-eng-29 28c848dbd (2-9's barge, guard, drum, G6 COURT_SAG) + t-eng-stone29 a6ac7316b (wide
+stone); t-eng-fork28 8fbdb72ac (designed forks); t-eng-w3 13135bf6b (3-1's tower fix + the DARK piece + the hazard REGISTRY + the SPORE
+piece, all gated together; 1-4's intended lock move).
+IN GATES at the wrap (archive each when it reports): ENG-QUIET-b (rule B, t-eng-quiet-b 88b5611b4: NOT to land as is: RULED (a): 2-1/2-4/2-7's
+lists rebuilt under B on t-eng-29 first (check base 28c848dbd red on the same three seeds first)); ENG-TIPLEFT (t-eng-tipleft, candidate 0057bd6f5:
+1-4 hints + 2-8 intended); ENG-CUT (t-eng-cut fd455b8cc: any world's cut pieces draw; path APPROVED).
+FRIDAY 8:30 AM ET, first starts, inside the cap (5 slots), each with rule 23 where it is a build:
+1. INT-R5 (packets/2026-11-26/INT-R5.md): release 5; every seed list checked, not only 1-1.
+2. ENG-ASKS-b: World 3's registry rows (#dark, #dark@puff, #spore@puff, #soft@moon) on t-eng-w3.
+3. KIT-W3a (down c/b first) and KIT-W3b (ocelot ground first): packets/2026-11-27/W3-FRIDAY.md.
+4. ENG-QUIET-c: the base check, then the three lists rebuilt under B, then land on t-eng-29 -> BUILD-29-j (merge, roll 24 x both, addlevel,
+   bots x40, drawcheck WITH 2-9 added as a scenario (same limits), stills; hint.2-9.kick laid 800 px+ before the guard; ONE Easy wheel row try).
+5. BUILD-28-f after ENG-TIPLEFT + ENG-CUT land: merge both; the fork-rest dealt ONLY to the fork's own rest (seed 3) + a test; the reed
+   island laid 340 wide with its foot IN the water and the caption clear (re-shoot, the lead judges); the pinned 2-7 tests; the suite; bots.
+Then KEEPER-W3 (a review of lines-3.md), ENG-ROOT, ENG-MOON, ENG-CAM29 (R-165.513), ENG-SOCKET (R-165.518), BUILD-31 on a clean roll.
+TARGETS told to Matt: release 5 Friday evening; 2-8 + 2-9 (release 6) Saturday; 3-1..3-4 Sunday night; the rest of World 3 mid next week.
+SPEND: the evening's 33 archived helper sessions $180.81 (6 PM-10:15 PM; the lead's session and the day before 6 PM not in it).
+OPEN WITH MATT: how Friday starts (A fresh lead at 8:30 / B this session at 8:30 / C his word); default B armed. The lead ROTATES when Matt
+says so (this session is very large).
 
 ## RIGHT NOW (11-25 evening, written about 5:20 PM ET, refreshed at the wrap about 9:35 PM ET; SUPERSEDED by the 11-26 block above)
 THE WEEK (Matt R-165.449, R-165.461/.462 answered 'A' at 4:23 PM): finish World 2 (release 4 tonight; LAND-26, 2-8, 2-9 -> release 5 Friday);
