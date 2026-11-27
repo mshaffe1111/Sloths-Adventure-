@@ -1,7 +1,24 @@
 # BUILD-29 REPORT: 2-9 "The River King's Court" (the World 2 finale; R-165.449), release 6
 Branch t-build-29, cut from origin/t-eng-29 = 098047713 (the lead's named base). Session 1 started 5:45 PM ET Thu 11/26 (by `date`).
 
-## EXACT NEXT STEP (session 9, BUILD-29-i; WAITING for the lead's ruling on the three quiet proposals, sent 9:28 PM ET Thu 11/26)
+## EXACT NEXT STEP (session 9 hand-over, BUILD-29-i; QUEUED until ENG-QUIET's B lands on t-eng-29, still 28c848dbd at 9:33 PM ET Thu 11/26)
+Head: this commit. ReadNotifications first (D140). The lead APPROVED all three proposals (below) and they are LAID (5286a1bc7): the gate
+stone, the court wheel R120 V132.28 easyV45.7 N4 + a 150 px street + a 50 px step up, two barges + the guard at t 0.4; wheelflights
+--write (only the court row moved: Normal step 1.67 s, Easy walk-off 2.73 s); AS LAID notes in 2-9.md; the code comments updated.
+- NEW TEST (the lead's order): w2Arc29.test "the king's posted guard is laid on EVERY seed" (seeds 1-12 both, past the barge's river);
+  plant t 0.6: RED ('normal seed 1: one posted guard (found 0)'). Tests on the changed rows: 68/68 (badges, wheel, w2, w2Arc29,
+  stageBackdrops, w1NewArt, wheelChannel). tsc clean.
+- Quiet re-flown on the laid tree (flown/quiet-applied.txt): over 4 s only the let-go 5.41-5.81 and the twist 5.65-6.83 (B's).
+- Roll, libstage 24 x both (flown/roll-applied-i.txt): 0 thrown, every pool section laid, CLEAN 0/24: the ONLY refusing line is the
+  quiet line, and Easy's rows carry Normal's (seed 1 both: '5.7 s ... at x 15020', the twist): the pair is judged together.
+  Easy's own wheel ride (a turn 16.5 s) reads 10.5 s quiet in parts.ts easy, but quietJudge judges Normal only (listRules.ts:85).
+- hint.2-9.kick (the guard's first-meeting line) is kept in dotLinesData but laid by no socket on the kit stage: nothing moved with him.
+- ENGINE-WORTHY (the lead logs the row): a ruled enemy socket the engine refuses vanishes with no error.
+NEXT, when B lands: merge t-eng-29 (no force, conflicts named); fly.sh once (expect nothing over 4 s); libstage 24 x both (expect
+clean); then addlevel (seed list), bots x40 every tier (rule 28; every miss traced), drawcheck (2-9 is NOT in limits.json's five
+stages: ask the lead how it is measured, D131), the FIRST LOOK stills (upright first, to the lead), the whole suite's totals.
+
+## (superseded) EXACT NEXT STEP (session 9, BUILD-29-i; WAITING for the lead's ruling on the three quiet proposals, sent 9:28 PM ET Thu 11/26)
 Head: this commit. ReadNotifications first (D140). Box 9 DID:
 1. MERGED t-eng-29 at 28c848dbd (G6, COURT_SAG), no conflicts (c42447a23). judge29 + ENG-29's per-grip read on the merged head
    (flown/judge29-g6-i.txt, modelgrip29-g6-i.txt), seeds 1-3: every court liana at both grips (0.70, 0.95) has ONE early/late
