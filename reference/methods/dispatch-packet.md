@@ -174,3 +174,5 @@ branch, change a test bar or change a rule still waits. (The lead's worker resta
 - A geometry or verdict fix is PROVEN on at least the seed range of the world test that guards the stage (e.g. w3.test's rolls 1-40 x both),
   never on a probe's default seeds; it is briefed as the INVARIANT, not the one case in hand (CI #101).
 - generalitycheck (seconds) runs WITH tsc at every step boundary in every engine and kit lane, never only at the final gates (CI #103).
+- Deleting a hand build (new replaces old): grep every test that iterates its registry (W2_STAGES, STAGES, HAND_STAGES ...) and MOVE each
+  check onto the new lay IN THE SAME COMMIT, with a plant; a floor is per-part and derived, never one hard total (CI #104).
