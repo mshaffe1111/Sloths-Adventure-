@@ -1,5 +1,28 @@
 # ENG-CAM29 (R-165.513): the puzzle-room camera, leaving a room and framing a gate-less bell
 
+## TAIL RESULT (11-27 12:05 PM ET, from `date`): STOPPED ON A RED, NOT LANDED
+The tail ran the gates on the frozen 6ea9e7623, as the lead ruled.
+- **The red:** shard 3, firstTimerBot.test.ts:177, "5-9's Easy goal rests on the kid's runs". KID_RUNS_59 is expected [3,5,6,7,6,5]; the
+  actual is [8,9,7,7,4,7]. The SAME test on the frozen base 7387d089a fails with the IDENTICAL actual [8,9,7,7,4,7]. It is on t-eng-29
+  itself, not caused by this camera change. Following the lead's rule: recorded, no fix, not merged.
+- **Lock gate:**
+  - run 1 on 7387d089a: 'lock: wrote 3264 builds of 102 stages';
+  - run 2, `--check` on 6ea9e7623: 'lock: 102/102 stages unchanged', exit 0.
+- **The 6 shards:**
+
+  | Shard | Tests | Pass | Fail | Notes |
+  |---|---|---|---|---|
+  | 1 | 692 | 691 | 0 | todo 1 |
+  | 2 | 692 | 692 | 0 | |
+  | 3 | 831 | 830 | 1 | the red above |
+  | 4 | 740 | 740 | 0 | |
+  | 5 | 636 | 635 | 0 | todo 1, R-165.312 |
+  | 6 | 652 | 651 | 0 | todo 1, the 4-3 wall check |
+
+- **Other gates:** tsc clean; the CI tool line (gates.yml:157) exit 0; generalitycheck PASS on 471d6fead. Clipcheck, drawcheck and
+  generalitycheck on 6ea9e7623 were still running in the tail's chain at this stamp.
+- **puzzleCamera.test with the final patch:** t-build-28-wip 4/4 (its own test file and the final one), t-build-29 4/4.
+
 ## EXACT NEXT STEP (hand-over, 11-27 11:03 AM ET, from `date`)
 Candidate: **6ea9e7623** on origin/eng-cam29 (base t-eng-29 7387d089a). Both defects are fixed, puzzleCamera.test is GREEN, and both plants are RED.
 The GATES are NOT RUN on 6ea9e7623. The next session runs them ONCE, in this order, on a FROZEN worktree of 6ea9e7623 (D115, with
