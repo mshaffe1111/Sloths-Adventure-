@@ -4,9 +4,9 @@
 **THE FROZEN HEAD is c9770adb2** (release-0.10.4; later commits on the branch are REPORT/out-c3 docs only). Everything below ran on it, in
 INT-R5-c's container (frozen /home/user/wt/c3; main base /home/user/wt/main 4bf2cbaaa; results /home/user/wt/out-c3, copied to
 r104/out-c3/ as each lane landed). A new lead takes over this afternoon (Matt's decision): report to the current lead.
-1. **Still running: lane B** (seedlists for every listed stage, seed11, shardplan, registrycheck): 1-1..1-9 and 2-1..2-3 PASS so far.
-2. **Then, ALONE (no lane running):** `node tools/perf/buildcheck.mjs` (a FAIL gets 2 re-runs alone, all reported; 2 of 3 = red; main itself
-   read 172 FAIL alone, ab5673531 172/127/148/146), then `node tools/perf/clipcheck.mjs`. Fill their rows below and §6 rows 1 and 4.
+1. Lane B DONE (all PASS); buildcheck ALONE PASS (p95 103 ms). **RUNNING ALONE now: clipcheck** (`node tools/perf/clipcheck.mjs` in
+   /home/user/wt/c3, log /home/user/wt/out-c3/g-clipcheck.log). Fill its row below and §6 row 1.
+2. (buildcheck done.)
 3. Send the final counts to the current lead. STOP before the PR (the lead opens it on Matt's "push").
 
 ## THE FULL SET on c9770adb2 (the gate table; each shard's totals; logs r104/out-c3/)
@@ -31,13 +31,14 @@ r104/out-c3/ as each lane landed). A new lead takes over this afternoon (Matt's 
 | drawcheck | PASS | 1493 s |
 | clipcheck | PENDING | runs ALONE after lane B |
 | kbdcheck (CI=1 FORCE_COLOR=1) | PASS | 258 s |
-| buildcheck | PENDING | runs ALONE after lane B (the lead's re-run rule) |
+| buildcheck (ALONE, no lane running) | PASS | run 1 alone: "budget p95 <= 150 ms at CPU x4: PASS", normal p50 51 / p95 103 / max 125 ms, easy p50 43 / p95 70 / max 71 ms (30 builds each); a PASS, so no re-runs |
 | funcheck | FAIL, ACCEPTED | 22 worse or new = INT-14's accepted set: fundiff "mine 22, INT-14 22, IDENTICAL 22/22" |
 | THE LOCK GATE vs main 4bf2cbaaa (two runs) | moves as expected | "lock: 70/102 stages unchanged"; 32 moved = 2-6, 2-7, 1-4 + 29 proto.hints-only (1-1 1-2 1-7 1-8 1-9 2-1 2-2 2-4 2-5 5-9 6-1..6-7 6-9 7-1 7-3 7-5 7-6 7-7 7-9 8-1 8-2 8-6 8-8 8-9; no 8-5), the SAME set as item 6 on ab5673531; nothing else moves |
 | lock vs the pre-merge head eb475c965 (info) | PASS | "lock: 102/102 stages unchanged": the soil merge moves no layout |
 | paintcheck 0/3, 1/3, 2/3 | PASS x3 | each "0 known depth steps seen, R-165.487" (170 / 107 / 106 known ids seen, 0 new); paint1 was the discovery red |
-| seedlist --check, every listed stage | RUNNING | 1-1..1-9, 2-1..2-3 PASS so far (lane B) |
-| seedlist 1-1 --check | RUNNING | lane B |
+| seedlist --check, every listed stage | PASS | all 16 (1-1..1-9, 2-1..2-7) exit 0 (5695 s) |
+| seedlist 1-1 --check | PASS | "refuse 0 of 161 listed seeds"; PASS, 161 seeds clean on both settings |
+| shardplan / registrycheck | PASS | 4 shards (1: 1-1 1-8 2-3 2-7; 2: 1-5 1-7 2-2 2-6; 3: 1-2 1-4 1-9 2-4; 4: 1-3 1-6 2-1 2-5); registrycheck 16 stages registered everywhere |
 | storyTipScan --check | PASS | 0 dropped (2-6's view line now laid as Pokey's story line) |
 | tipwalk, teachFirstScan | PASS | teachFirstScan: 0 misses over 3422 rolls of 16 stages |
 | castBots 2-6 (4 bots, both settings, 100 seeds) | PASS | every row 100/100, 0 lives (castbots26-counts.txt) |
@@ -54,7 +55,7 @@ r104/out-c3/ as each lane landed). A new lead takes over this afternoon (Matt's 
 | 1 | Nothing under the insets, both ways, foldable | pending clipcheck (alone) | kbdcheck PASS; no screen or menu changed (the What's New entry is the only menu text) |
 | 2 | Back is sensible | holds | no new screen or route |
 | 3 | Nothing new sent off the phone | holds | build:store PASS; no fetch/XHR/sendBeacon/localStorage write added |
-| 4 | Works offline | holds by diff; pending buildcheck | no web load added; smoke.mjs: 0 failed requests |
+| 4 | Works offline | holds | no web load added; smoke.mjs: 0 failed requests; buildcheck PASS alone |
 | 5 | Sound stops in background; no wake lock | holds | no src/audio or wakeLock change |
 | 6 | Leave/return/rotate keeps the place | holds | no save/resume change; the suite's 2-6/2-7 stage tests PASS |
 | 7 | No dead ends or placeholders in the store build | holds; one ruling open | build:store PASS; `?fixture=home` is a URL-only dev toy beside main's chase/wheel fixtures (box 1's open ruling, the lead's row) |
