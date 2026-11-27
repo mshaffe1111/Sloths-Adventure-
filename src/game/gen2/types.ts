@@ -397,6 +397,15 @@ export interface SectionPiece {
    * ends are caught by its own section's wood under them, or the roll is refused by name (towerFalls). Off unless a piece says so
    */
   sealed?: boolean;
+  /**
+   * a CUT PIECE (art/invCut.ts, R-165.520): the painted piece it is drawn as, by its catalog id exactly as its world's inventory has it
+   * (art/inventory/w<N>.json `id`, e.g. 'w2-reed28#reed-isle-28'). The lay sets Platform.cut to it and keeps the width the section gives:
+   * the piece is drawn by its stand span (invCutBox: its walk line on the top, its stand span the platform's width, one even scale), never
+   * as the world's code terrain. Only a piece he stands on wears one (never a hanging piece or a crumbling tile), and an id the world's
+   * inventory refuses (art/invCut.ts layCutRefusal: not in it, no footing, out of scale, waiting on a fix) fails the section at the lay,
+   * by name. Off unless a piece says so
+   */
+  cut?: string;
 }
 
 /** a world's creaky limb (WorldManifest.creak) */

@@ -169,8 +169,12 @@ export function loadInventory(which: number | 'cast'): Promise<Inventory> {
   if (!load) return Promise.reject(new Error(`no inventory file for ${String(which)}`));
   let p = loading.get(name);
   if (!p) {
-    p = load().then((m) => new Inventory((m.default ?? m) as InventoryFile));
+    p = load().then((m) => { const inv = new Inventory((m.default ?? m) as InventoryFile); inHand.set(name, inv); return inv; });
     loading.set(name, p);
   }
   return p;
 }
+const inHand = new Map<InventoryName, Inventory>();
+/** a world's inventory once loadInventory has read it, or undefined before (no load is started: a sync reader, gen2's lay, sees only
+ *  what is in hand; art/invCut.ts layCutRefusal) */
+export const inventoryInHand = (which: number | 'cast'): Inventory | undefined => inHand.get(which === 'cast' ? 'cast' : `w${which}`);

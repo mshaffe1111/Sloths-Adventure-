@@ -1,5 +1,46 @@
 # ENG-CUT REPORT (Engine, the general cut-piece draw path; base t-build-28-wip a0d85e961; lands on t-eng-cut). Session 1 started 9:42 PM ET (from the session hook date).
 
+## ENG-CUT-b (R-165.520: a section piece lays its cut). Started 9:02 AM ET (from the session hook date); this section stamped 9:12 AM ET.
+
+### EXACT NEXT STEP (ENG-CUT-b, LANDED, stamped 10:22 AM ET)
+NOTHING LEFT IN THIS LANE. 4d2a579de (src) is landed on t-eng-cut; every gate below ran on a frozen 4d2a579de, every red re-run by
+name on a frozen 57d7b8287 and RED there too. Next owner: 2-8's next build box (the lead's ruling): name the cut
+'w2-reed28#reed-isle-28' on the island's section piece (SectionPiece.cut) and, in its test, await loadInventory(2) before building so a
+wrong id is refused at the lay.
+
+### Gates on frozen 4d2a579de (final)
+- tsc 0. generalitycheck PASS (26 literals, 26 known).
+- lockall --check (ONE run, 16 layouts, base recorded on frozen 57d7b8287): 102/102 stages unchanged, exit 0 (2-8 included).
+- Suite, 6 shards (the split moves with the added test file): 1: 718 pass / 1 fail / 1 todo (puzzleCamera "30 moments checked").
+  2: 595/0. 3: 699/1 (artUse: cage-whole + cage-b). 4: 734/1 (stageSheets "2-8: STAGE_DRAWS lists more than it draws": foe:goldsnake).
+  5: 710/0. 6: 758/2, 2 todo (firstTimerBot KID_RUNS_59; groundwork "5 stages checked"). TOTAL 4,214 pass, 5 fail, 3 todo: all 5
+  INHERITED (each re-run by name on frozen 57d7b8287: RED there, the same messages; goldsnake included).
+- CI tool line: engine tools' tests 435 pass / 1 fail / 1 todo (registrycheck.test "the shipped table passes the gate": RED on
+  57d7b8287 too); tipwalk PASS; storyTipScan --check FAIL (2 of 2-8's laid lines: RED on 57d7b8287 too); teachFirstScan PASS (0 misses,
+  600 rolls); registrycheck FAIL (2-8 not in drawcheck scenarios, no proven list, not flown: RED on 57d7b8287 too, 2-8 mid-build);
+  tierBots 9/0; kbdcheck PASS.
+- drawcheck PASS (1092 s), exit 0.
+- Deploy build (BASE_PATH=/Sloths-Adventure-/) on frozen 4d2a579de: exit 0; chunkcheck PASS (pipeline now imports art/invCut.ts).
+- Not run (not in this packet's GATES): paintcheck, clipcheck (no draw or menu change here).
+
+### Own misses (named)
+- The safe-keep push went to t-eng-cut itself (the landing branch) before any gate: BUILD-28-g could have merged an ungated head.
+  It should have gone to a branch of its own until the gates passed. Nothing to undo (a fast-forward); the gates above are for that hash.
+- Foreground waits on background runs (a sleep loop, waitshard.sh: D113) and past the 28-minute box (started 9:02 AM ET).
+
+### The piece (general: no stage, world, seed or x)
+- gen2/types.ts SectionPiece.cut: the catalog id. pipeline.ts: LocalPiece.cut carried from the section piece; the lay's mk sets
+  Platform.cut to it (pipeline ~2858), keeping the width the section gave (Easy's landing pad included); invCut's invCutBox draws it by
+  its stand span. A cut on a hanging piece or a crumbling tile fails the section by name (it would never be drawn).
+- art/invCut.ts layCutRefusal(id, world): the gate's own refusal, read against the world's inventory when it is in hand
+  (art/inventory.ts inventoryInHand, set when loadInventory resolves). A World 1 cut passes (w1CutArt's). LIMIT, named: the lay is sync
+  and each inventory is its own lazy chunk, so before a world's inventory is read (a stage's first build in the game) the lay cannot see
+  it; there the same refusal keeps the piece undrawn (readyInvCuts) and invCut.test's listed-stage gate fails it by name. A builder's own
+  test sees the refusal at the lay by awaiting loadInventory(world) first (layCut.test does).
+- Toys (src/game/gen2/layCut.test.ts, 3): every standing block of 2-1's kit names the reed island: 114 laid platforms wear it on both
+  settings, World 2's finish keeps cut and width, one blit at invCutBox; an unknown id fails the section at the lay by name; a cut on a
+  hanging piece fails by name. ALL THREE RED on 57d7b8287's lay (no platform wore it; no throw; no throw), GREEN on 4d2a579de.
+
 ## EXACT NEXT STEP (box 2, LANDED: the lead approved the engine path; the gates ran on the frozen candidate past the box, no new code)
 NOTHING LEFT IN THIS LANE. The code is fd455b8cc's (src identical to the frozen 0a584713a every gate ran on); this commit adds the report
 and the World 1 stills only. Every red below is RED on a frozen a0d85e961 too (each re-run there by name). Next owner of the look:

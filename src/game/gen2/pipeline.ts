@@ -23,6 +23,7 @@ import { layColumnDress } from './columnDressLay.ts';
 import { withSetting } from '../settingDials.ts';
 import { LAID_ASKS } from './walkedSpan.ts';
 import { rollLook } from '../artRoll.ts';
+import { layCutRefusal } from '../art/invCut.ts';
 import { hollowLogSize } from '../w1NewArt.ts';
 import { FLAG_H } from '../stageArt.ts';
 import { STAGE_ART_FRAMES } from '../stageArtData.ts';
@@ -1155,6 +1156,8 @@ interface LocalPiece {
   quiet?: boolean;
   /** a sealed piece (SectionPiece.sealed) */
   sealed?: boolean;
+  /** its cut piece's catalog id (SectionPiece.cut: Platform.cut at the lay) */
+  cut?: string;
   /** a hanging piece (x is where it hangs, y its top, h its length, w 0): a liana with its swing, or a climbing vine */
   hang?: { kind: 'liana' | 'vine'; swing?: LianaSwing; from?: string; window?: number; gap?: [number, number] };
   /** a ledge a rope crosses to (place `rope`): the piece the rope hangs from */
@@ -1655,9 +1658,12 @@ export function layLocal(tpl: SectionTemplate, budget: StageBudget, rng: Rng, mi
     const landing = (!!pc.landing || pl.kind === 'land') && pl.kind !== 'start' && !hang && !crumble;
     if (landing) w += budget.landingPad;
     if (crumble) (w = CRUMBLE_TILE_W), (h = CRUMBLE_H);
+    // (a cut piece is drawn only on a piece he stands on: on a hanging piece or a crumbling tile it would never be drawn, so the section
+    // is refused by name, never laid with it quietly dropped)
+    if (pc.cut && (hang || crumble)) throw new Error(`gen2 section ${tpl.id}: piece ${pc.key} names cut '${pc.cut}' but is ${hang ? 'a hanging piece' : 'a crumbling tile'}: a cut piece is drawn only on a piece he stands on`);
     const p: LocalPiece = {
       key: pc.key, x: R(x), y: R(y), w: R(w), h: R(h), shape: pc.shape, style: pc.style, main: crumble ? false : pc.main ?? pl.kind !== 'over', landing, hop: pl.kind === 'on', ...(pc.sealed ? { sealed: true } : {}),
-      ...(hang ? { hang } : {}), ...(crumble ? { crumble } : {}), ...(pc.creak && !hang && !crumble ? { creak: true } : {}), ...(pc.quiet && !hang ? { quiet: true } : {}), ...(pl.kind === 'rope' ? { ropeFrom: pl.after, ...(pl.free ? { ropeFree: true as const } : {}), ...(pl.look ? { ropeLook: pl.look } : {}) } : {}), ...(pl.kind === 'river' ? { river: { row: pl.row, from: riverFrom ?? pl.after } } : {}), ...(pl.kind === 'pads' ? { pads: { row: pl.row, from: pl.after }, ...(pl.rope ? { ropeFrom: pl.rope } : {}) } : {}), ...(pl.kind === 'wheel' ? { wheel: { row: pl.row, from: pl.after } } : {}), ...(pc.slot && !hang && !crumble ? { slot: pc.slot } : {}),
+      ...(hang ? { hang } : {}), ...(crumble ? { crumble } : {}), ...(pc.creak && !hang && !crumble ? { creak: true } : {}), ...(pc.quiet && !hang ? { quiet: true } : {}), ...(pl.kind === 'rope' ? { ropeFrom: pl.after, ...(pl.free ? { ropeFree: true as const } : {}), ...(pl.look ? { ropeLook: pl.look } : {}) } : {}), ...(pl.kind === 'river' ? { river: { row: pl.row, from: riverFrom ?? pl.after } } : {}), ...(pl.kind === 'pads' ? { pads: { row: pl.row, from: pl.after }, ...(pl.rope ? { ropeFrom: pl.rope } : {}) } : {}), ...(pl.kind === 'wheel' ? { wheel: { row: pl.row, from: pl.after } } : {}), ...(pc.slot && !hang && !crumble ? { slot: pc.slot } : {}), ...(pc.cut ? { cut: pc.cut } : {}),
     };
     by.set(pc.key, p);
     out.push(p);
@@ -2853,6 +2859,13 @@ export function layStage(budget: StageBudget, graph: MissionGraph, kit: WorldKit
         if (tagged) (p as Platform & { tag?: string }).tag = `${placed.uid}:${lp.key}`;
         if (lp.creak) creakLimb(p, M, budget.difficulty, !creakTaught);
         if (lp.quiet) p.quiet = true;
+        // (its cut piece, SectionPiece.cut: the width the section gave is kept, the piece drawn by its stand span (art/invCut.ts); one the
+        // world's inventory refuses fails the section here, by name)
+        if (lp.cut) {
+          const why = layCutRefusal(lp.cut, budget.world);
+          if (why) throw new Error(`gen2 section ${tpl.id}: piece ${lp.key}: ${why}`);
+          p.cut = lp.cut;
+        }
         if (lp.sealed) { sealedIds.add(p.id); gateSec.set(p.id, placed); }
         placed.pieces.push({ key: lp.key, platform: p, main: lp.main, landing: lp.landing, ...(row ? { slot: lp.slot, art: row.art[Math.floor(rngFor(seed, 83, p.x, p.y)() * row.art.length)] } : {}) });
       }
