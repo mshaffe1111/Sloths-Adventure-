@@ -13,6 +13,14 @@ import type { Platform, Vine } from './types.ts';
 /** how far a climbing vine stands out in front of the face of the bough it leads up to (px): Pokey's half-width (21) and a little */
 export const CLIMB_CLEAR = 26;
 
+/** where a climbing vine stands once it is moved off the face of the bough it leads up to (pipeline.ts clearClimbs): CLIMB_CLEAR px out
+ *  in front of that bough's end; a vine on no face stays where it is */
+export function climbX(v: Vine, platforms: readonly Platform[]): number {
+  if (v.vineType !== 'tree_climb') return v.x;
+  const face = platforms.find((p) => p.type === 'solid' && Math.abs(p.y - v.topY) <= 2 && (Math.abs(p.x - v.x) <= 2 || Math.abs(p.x + p.width - v.x) <= 2));
+  return !face ? v.x : v.x + (Math.abs(face.x - v.x) <= 2 ? -CLIMB_CLEAR : CLIMB_CLEAR);
+}
+
 /**
  * how far out from a climbing vine the wood at its top may begin and still be a place the straight-up vault lands (px). The vault
  * (engine.ts: up 190 px/s, along 160 px/s from 12 px over the top) lands on wood that begins up to 56 px out (measured on the real

@@ -1,0 +1,2 @@
+shipped stages 102, builds 3264, build errors 0; gen2.tower.flow: {"no tower":3232,"up":32}; going down: none
+exit 0

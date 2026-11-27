@@ -62,7 +62,7 @@ import { controlStyle } from './controlPrefs.ts';
 import { cardSafe, DONE_LESSONS, HARMLESS_LESSONS, lessonDone, lessonInputMode, lessonsOn, lessonsSeen, lessonStale, markLessonSeen, pickLesson, type LessonId } from './lessons.ts';
 import { rockAt } from './rockfall.ts';
 import { gameSpeed, startingLives } from './assist.ts';
-import { ASSIST, DOUBLE_RISE, JUMP_RISE, EDGE, FORGIVE, LEAN_SPEED, LET_GO, PHYS, airCarry, airTakeOff, blockBeside, lipHasRoom, secondJumpV, canGrabSwing, easeAssist, inSweetSpot, knockDir, newAirDrive, releaseCall, RELEASE, swingGrab, swingLanding, SWING_LAND, swingStep, swingSetup, timedLaunch, vineAmp, vineAngle, WALL_H, type SwingState } from './physics.ts';
+import { ASSIST, STAND_SIDE, DOUBLE_RISE, JUMP_RISE, EDGE, FORGIVE, LEAN_SPEED, LET_GO, PHYS, airCarry, airTakeOff, blockBeside, lipHasRoom, secondJumpV, canGrabSwing, easeAssist, inSweetSpot, knockDir, newAirDrive, releaseCall, RELEASE, swingGrab, swingLanding, SWING_LAND, swingStep, swingSetup, timedLaunch, vineAmp, vineAngle, WALL_H, type SwingState } from './physics.ts';
 import { jumpHelp } from './jumpHelp.ts';
 import { HAND_REACH, HANG_DROP, HANG_PICK, ROPE_FROM, ROPE_GRAB, ROPE_SLIDE, ROPE_SPEED, ropeYAt } from './rope.ts';
 import { drawRopes, ropeDip, type RopeLoad } from './ropeArt.ts';
@@ -104,6 +104,8 @@ import { stageClock, type StageClock } from './clock.ts';
 import { moveRide } from './ridePlay.ts';
 /** how far inside a bank's end the water drawn over him stays (its painted face leans up to about this far) */
 const ZONE_INSET = 14;
+/** a glowworm laid awake (the cave mouth's) is drawn as one awake this long (s): past its first wave, hanging lit */
+const GLOW_AWAKE_AGE = 60;
 import { drawLadder, drawLily, drawLogComing, drawRiverFoam, drawRiverLog, drawRiverTailEnd, TAIL_END, drawReedClump, drawRiverWater, drawSafeRiverOver, safeLogLine, riverWaterOutline, drawW2Cage, drawW2Decor, drawW2Lift, riverArtReady, RIVER_UNDER_BANK, w2Sheet } from './riverArt.ts';
 import type { RiverZone } from './river.ts';
 import { rideHidden, ridersOf, stepRiders, type Riders } from './ridePickups.ts';
@@ -112,7 +114,7 @@ import { driftCycle, driftProgress, driftX, floodLevel, lianasOver, logClock, lo
 import { GLOW_SHOWN, letGoLands, letGoTable, type LetGoTable } from './letGoCue.ts';
 import { heard, NOISE } from './noise.ts';
 import { mayRegrow, regrowDelay } from './regrow.ts';
-import { zoneEffect, windPush, zoneDrag, columnHit, inZone, ventLift, drowsyLevel, drowsySpeed, drowsyJump, GLOW_STILL, GLOW_REACH } from './zones.ts';
+import { zoneEffect, windPush, zoneDrag, columnHit, inZone, ventLift, drowsyLevel, drowsySpeed, drowsyJump, GLOW_STILL, GLOW_REACH, glowReaches } from './zones.ts';
 import { drawGlowworm, drawThornVine, drawW3Decor, drawW3Fern, drawW3Piece, GLOWWORM_H, w3FernHeight } from './w3Art.ts';
 import { inReach, VINE, vinePeriod, vinePhase, vineSees } from './thornVine.ts';
 import { drawAbyss, drawLandingShadow, W4Play } from './w4Play.ts';
@@ -2021,7 +2023,8 @@ export class GameEngine {
       let want = 0;
       for (const z of zones ?? []) {
         if (z.kind !== 'dark') continue;
-        const out = Math.max(z.x0 - p.x, p.x - z.x1, 0);
+        // (by its box, up and down too: a dark stretch in a shaft darkens its own storeys, not every storey over and under it; ENG-DARK)
+        const out = Math.max(z.x0 - p.x, p.x - z.x1, z.top - p.y, p.y - z.bottom, 0);
         want = Math.max(want, Math.max(0, 1 - out / 220));
       }
       if (this.lanternRun) want = this.lanternRun.night();
@@ -2843,7 +2846,7 @@ export class GameEngine {
         // Check if player is horizontally within platform (generous width tolerance)
         // How far the player's CENTRE may hang past a ledge and still count as standing on it. It was 0.48 (21 px), which left
         // Pokey standing in mid-air with most of his body off the cliff. 0.26 (about 11 px) keeps a foot on the ledge.
-        const side = plat.type === 'drift' ? DRIFT_CATCH.side + (this.easy ? DRIFT_CATCH.easySide : 0) : 0.26 + ASSIST.landSide * assist;
+        const side = plat.type === 'drift' ? DRIFT_CATCH.side + (this.easy ? DRIFT_CATCH.easySide : 0) : STAND_SIDE + ASSIST.landSide * assist;
         const catchDrop = plat.type === 'drift' ? DRIFT_CATCH.drop : 14 + ASSIST.catchDrop * assist;
         if (!(p.x + p.width * side > plat.x && p.x - p.width * side < plat.x + plat.width)) {
           // ledge-landing forgiveness (physics.ts FORGIVE.landPx, every stage): falling onto it from above, a foot that misses its edge
@@ -2870,7 +2873,7 @@ export class GameEngine {
       const plat = pickFloor(floors, p.x);
       if (plat && (plat.type !== 'drift' || this.easy)) {
         // (caught by the ledge-landing forgiveness: on with a foot, as far as the usual tolerance needs)
-        const side = plat.type === 'drift' ? DRIFT_CATCH.side + DRIFT_CATCH.easySide : 0.26 + ASSIST.landSide * assist;
+        const side = plat.type === 'drift' ? DRIFT_CATCH.side + DRIFT_CATCH.easySide : STAND_SIDE + ASSIST.landSide * assist;
         const missL = plat.x - (p.x + p.width * side);
         const missR = p.x - p.width * side - (plat.x + plat.width);
         if (missL >= 0) p.x += missL + 1;
@@ -7702,13 +7705,14 @@ export class GameEngine {
     this.kit?.drawBack(ctx, { x0: this.camera.x, x1: this.camera.x + this.camera.viewportWidth });
     if (this.mc) drawMeecaBack(ctx, this.mc, { x0: this.camera.x, x1: this.camera.x + this.camera.viewportWidth }, this.gameTime);
     this.markKeepOuts();
-    // World 3's glowworms, hanging over the dark (asleep until he stands still: stepGlowworms)
+    // World 3's glowworms, hanging over the dark (asleep until he stands still: stepGlowworms); the cave mouth's are laid awake
+    // (gen2/dark.ts entryPieces) and hang lit from the start
     for (const z of this.currentStage.zones ?? []) {
       if (z.kind !== 'dark' || !z.lights) continue;
       for (const l of z.lights) {
-        if (!l.sleep || !this.onScreen(l.x, l.y, 200)) continue;
-        const at = this.glowWake.get(l.id ?? -1);
-        drawGlowworm(ctx, l.x, l.y - GLOWWORM_H / 2, at === undefined || this.gameTime < at ? -1 : this.gameTime - at, this.gameTime, l.id ?? 0);
+        if (l.id === undefined || !this.onScreen(l.x, l.y, 200)) continue;
+        const at = l.sleep ? this.glowWake.get(l.id) : -GLOW_AWAKE_AGE;
+        drawGlowworm(ctx, l.x, l.y - GLOWWORM_H / 2, at === undefined || this.gameTime < at ? -1 : this.gameTime - at, this.gameTime, l.id);
       }
     }
     // trunk hollows (1-4): over the trunk, glowing once he is close enough to see in
@@ -9214,7 +9218,7 @@ export class GameEngine {
         }
       }
     }
-    const dark = (zones ?? []).filter((z) => z.kind === 'dark' && z.lights?.some((l) => l.sleep) && p.x >= z.x0 - 120 && p.x <= z.x1 + 120);
+    const dark = (zones ?? []).filter((z) => z.kind === 'dark' && z.lights?.some((l) => l.sleep) && p.x >= z.x0 - 120 && p.x <= z.x1 + 120 && p.y >= z.top - 120 && p.y <= z.bottom + 120);
     if (!dark.length) {
       this.glowStill = 0;
       return;
@@ -9226,8 +9230,9 @@ export class GameEngine {
     for (const z of dark) {
       for (const l of z.lights!) {
         if (!l.sleep || l.id === undefined || this.glowWake.has(l.id)) continue;
-        if (l.x < p.x - GLOW_REACH.back || l.x > p.x + GLOW_REACH.ahead) continue;
-        this.glowWake.set(l.id, this.gameTime + Math.max(0, l.x - p.x) / GLOW_REACH.speed);
+        // (in reach ahead and behind, and up and down from his feet: zones.ts glowReaches, ENG-DARK)
+        if (!glowReaches(l, p.x, p.y, p.facing)) continue;
+        this.glowWake.set(l.id, this.gameTime + Math.max(0, (l.x - p.x) * (p.facing < 0 ? -1 : 1)) / GLOW_REACH.speed);
         woke++;
       }
     }

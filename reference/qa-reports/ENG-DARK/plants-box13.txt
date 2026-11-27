@@ -1,0 +1,40 @@
+# box 13 (ENG-DARK-m): planted-faults.py on a3117f7c0 (clean worktree), then darkBots.test whole
+CAUGHT  the wake unbounded below (GLOW_REACH.down huge)  -> 'the wake reaches below, bounded'
+CAUGHT  the engine wakes by x alone again (no glowReaches)  -> 'the wake reaches below, bounded'
+CAUGHT  no glowworm over a landing (the glow stretch lays none)  -> 'the brick on a real World 3 row'
+NO ANCHOR  a glowworm hung 500 px over its landing (out of any stop's reach)  (src/game/gen2/dark.ts)
+CAUGHT  litAhead asks nothing (need 0)  -> 'stood still until the landing woke'
+CAUGHT  litAhead counts a landing never lit as lit  -> 'walked off a dark rim at once'
+CAUGHT  ruling A off: the glowworms' dark keeps 'nothing stands inside'  -> 'ruling A'
+CAUGHT  the lay hangs no glowworm by a dark flag (glowFlags off)  -> 'the brick on a real World 3 row'
+CAUGHT  darkFlags asks nothing of a dark flag  -> 'darkFlags'
+CAUGHT  World 6 copies its own dark (not the lifted one)  -> 'World 6 lays the one lifted dark'
+CAUGHT  the glow counter written into every stage's extras again  -> 'the lay leaves every other stage'
+CAUGHT  the bots' dark stop removed (glowWait never stops him)  -> 'the dark's skill: he stands'
+CAUGHT  the bots' dark stop skips a jump (glowJump not read)  -> 'holds a running JUMP'
+CAUGHT  the dark stop never turns him to face the rim  -> 'stop FACES the rim'
+CAUGHT  a dark give-up kept for the whole run  -> 'give-up ends with the visit'
+CAUGHT  the dark stop never reads the pressed steer (glowSteer not called)  -> 'stop reads the THUMB'
+NO ANCHOR  RimWatch hides a climb inside 'went over' (no 'climbed' kind)  (src/game/gen2/dark.ts)
+CAUGHT  litAhead counts a climb past a rim as a blind drop  -> 'own kind ('climbed')'
+CAUGHT  the way-down plan's top test one-sided again  -> 'MID-WAY'
+CAUGHT  the way-down plan never takes a trunk mid-way (no up grab)  -> 'MID-WAY'
+CAUGHT  the cave mouth laid asleep (ruling (ii) off)  -> 'the cave mouth is lit'
+CAUGHT  every light in the dark laid awake (not only the cave mouth's)  -> 'the brick on a real World 3 row'
+CAUGHT  darkLandings asks no room of a drop in from outside  -> 'the cave mouth is lit'
+CAUGHT  ruling (i) off: a dark-rim drop's edge inside its own light does not pass  -> 'the brick on a real World 3 row'
+NO ANCHOR  an edge behind a dark-rim drop's landing judged as one he lands toward  (src/game/gen2/dark.ts)
+NO ANCHOR  a wall rim's light hung over its landing past the stop's reach (the depth bound off)  (src/game/gen2/dark.ts)
+CAUGHT  an awake light counts as lit from anywhere (no reach)  -> 'darkFlags: a flag'
+CAUGHT  the seam check off: a seam he walks over read as a way down (downEnd)  -> 'a seam he walks over is no way down'
+CAUGHT  the dark stop's turn room off: the turn pressed at the rim's very edge (glowWait)  -> 'the dark stop's turn is never pressed at the rim's very edge'
+plants rc=1
+dbt rc=0
+darkBots.test whole on a3117f7c0:
+# pass 11
+# fail 0
+# re-anchored (the 4 NO ANCHOR: anchors from before box 11's rewrite), ONLY= run on a3117f7c0:
+CAUGHT  a glowworm hung 500 px over its landing  -> 'the brick on a real World 3 row'
+CAUGHT  RimWatch hides a climb inside 'went over'  -> 'own kind ('climbed')'
+CAUGHT  a wall rim's light ... (the depth bound off)  -> 'a wall rim's light hangs no deeper'
+MISSED  an edge behind a dark-rim drop's landing judged as one he lands toward (the exemption removed): no real row decides it; behind.mts rolls 1-12 Normal, every sleeping rim light moved 5000 px up one at a time: darkLandings [] planted and unplanted (be-base = be-plant, 588 rows)

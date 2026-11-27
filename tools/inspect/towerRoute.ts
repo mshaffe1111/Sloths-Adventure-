@@ -6,13 +6,15 @@
  * the storey above and dithered (1-4, INT-4, 11-13). The same order tools/engine/towerFly.ts flies: the turn's foot, its top, the
  * leg's entry, the leg's exit; after the last leg, a last turn (if laid) to the shrine's ledge, then the shrine. No stage id or x.
  */
+import { walledEnd } from '../../src/game/gen2/tower.ts';
+
 export interface Pt { x: number; y: number }
 
 /** px of height a plain hop takes him (the bots step or jump it; more is a climb) */
 const HOP = 60;
 type StageLike = {
   gen2?: unknown; exitTotemX?: number; exitTotemY?: number; vines?: ReadonlyArray<{ x: number; topY: number; bottomY: number; vineType?: string }>;
-  platforms?: ReadonlyArray<{ x: number; y: number; width: number; type?: string }>;
+  platforms?: ReadonlyArray<{ x: number; y: number; width: number; height?: number; type?: string }>;
 };
 
 interface TowerMeta {
@@ -31,13 +33,34 @@ export function towerCorners(stage: StageLike, spawn: Pt): Pt[] | null {
   if (!g || !T || !T.route?.legs?.length) return null;
   const out: Pt[] = [{ x: spawn.x, y: spawn.y }];
   let ti = 0;
+  /** a way down: the wood the way dropped to past a turn's storey (climb): a leg whose storey lies over it is passed, never climbed
+   *  back to (seed 1's last catches: the way pointed 132 px up to the storey he had dropped past, and he turned on the catch, ENG-DOWNBOT) */
+  let past: number | undefined;
   // (from where he is to a turn's foot: across first at his own height, then the climb straight up or down the vine)
-  const climb = (t: { x: number; from: number; to: number }) => {
+  const climb = (t: { x: number; from: number; to: number }, toward?: Pt) => {
     const at = out[out.length - 1];
     // (a way DOWN: the turn's vine top stands just past his ledge's end, so the way on from there is straight down it: a point at the
     //  vine level with the ledge read as a gap to jump, and he jumped past the vine and fell two storeys, ENG-W3a's drafted 3-1)
-    if (T!.flow === 'down' && t.to > t.from) out.push({ x: t.x, y: t.to });
-    else out.push({ x: t.x, y: at.y }, { x: t.x, y: t.from }, { x: t.x, y: t.to });
+    if (T!.flow === 'down' && t.to > t.from) {
+      // (first along the wood he stands on to its end by the vine, when the lay ran it on past the leg's exit: a slant from the exit
+      //  to the vine's foot runs under that wood, and he stood over it, 'the way on is 105 px down', ENG-DOWNBOT)
+      const run = runOf(at);
+      if (run && (t.x < run[0] || t.x > run[1])) out.push({ x: t.x < run[0] ? run[0] + 8 : run[1] - 8, y: at.y });
+      // (the vine's top stands ON that wood (a storey wall to wall, its way down a vine from its floor): across to it at his own height
+      //  first; a slant from the leg's exit ran through the floor to the vine's foot and every bot stood under it, 'in a dip 174 px deep,
+      //  the way on is 90 px down', the drafted way down's top 'rest' cause, ENG-DOWNBOT)
+      else if (run && Math.abs(t.x - at.x) > 8) out.push({ x: t.x, y: at.y });
+      // (a vine that stops on a catch over the storey on (gen2 tower.ts stopVines, the lead's ruling (b)): down it onto the catch, then
+      //  off the catch's end toward where the way goes on (the leg's exit), down to the storey; straight on down the vine's old line
+      //  ran through the catch, and every bot stood on it turning, 'the way on is 84 px down', ENG-DOWNBOT)
+      const v = vines.find((q) => Math.abs(q.x - t.x) <= 2 && Math.abs(q.topY - t.from) <= 6);
+      if (v && v.bottomY < t.to - HOP) {
+        out.push({ x: t.x, y: v.bottomY });
+        const land = dropTo({ x: t.x, y: v.bottomY }, { x: toward?.x ?? t.x, y: t.to });
+        // (off the catch he can land PAST the turn's storey (the catch lies over all of it): the way goes on from where he lands)
+        if (land.y > t.to + HOP) past = land.y;
+      } else out.push({ x: t.x, y: t.to });
+    } else out.push({ x: t.x, y: at.y }, { x: t.x, y: t.from }, { x: t.x, y: t.to });
   };
   // (a leg that rises or drops inside its own section (a vine field, a climb between two ledges): across to the nearest vine that
   // leads on, up or down it, and on again, storey by storey, never the straight line from its entry to its exit, which cuts through
@@ -49,20 +72,34 @@ export function towerCorners(stage: StageLike, spawn: Pt): Pt[] | null {
   // gen2's towerFalls; a climb never comes here)
   const down = T.flow === 'down';
   const wood = (stage.platforms ?? []).filter((p) => p.type !== 'fragile' && p.type !== 'bouncy');
+  /** the run of wood he walks along at his height (its x ends), or null when he stands on none */
+  const runOf = (at: Pt): [number, number] | null => {
+    const on = wood.filter((p) => at.x >= p.x - 2 && at.x <= p.x + p.width + 2 && Math.abs(p.y - at.y) <= 4);
+    if (!on.length) return null;
+    let lo = Math.min(...on.map((p) => p.x)), hi = Math.max(...on.map((p) => p.x + p.width));
+    for (let grew = true; grew; ) {
+      grew = false;
+      for (const p of wood) if (Math.abs(p.y - at.y) <= 4 && p.x <= hi + 2 && p.x + p.width >= lo - 2 && (p.x < lo || p.x + p.width > hi)) { lo = Math.min(lo, p.x); hi = Math.max(hi, p.x + p.width); grew = true; }
+    }
+    return [lo, hi];
+  };
   const dropTo = (a: Pt, b: Pt): Pt => {
     let at = a;
     for (let n = 0; n < 12 && b.y - at.y > HOP; n++) {
-      const on = wood.filter((p) => at.x >= p.x - 2 && at.x <= p.x + p.width + 2 && Math.abs(p.y - at.y) <= 4);
-      if (!on.length) break;
-      const dir = b.x < at.x ? -1 : 1;
       // (the run of wood he walks along at this height, to its end the way on lies)
-      let lo = Math.min(...on.map((p) => p.x)), hi = Math.max(...on.map((p) => p.x + p.width));
-      for (let grew = true; grew; ) {
-        grew = false;
-        for (const p of wood) if (Math.abs(p.y - at.y) <= 4 && p.x <= hi + 2 && p.x + p.width >= lo - 2 && (p.x < lo || p.x + p.width > hi)) { lo = Math.min(lo, p.x); hi = Math.max(hi, p.x + p.width); grew = true; }
-      }
-      const off = dir < 0 ? lo - 30 : hi + 30;
-      const under = wood.filter((p) => off >= p.x && off <= p.x + p.width && p.y > at.y + 4).sort((p, q) => p.y - q.y)[0];
+      const run = runOf(at);
+      if (!run) break;
+      const [lo, hi] = run;
+      // (the end toward where the way goes on first; when nothing lies under it (the wood runs on into the wall), the other end: the
+      //  last catch of a way down ran on into the wall by the shrine, the way slanted through it, and he was stranded on it, ENG-DOWNBOT)
+      const toward = b.x < at.x ? -1 : 1;
+      const offAt = (d: number) => (d < 0 ? lo - 30 : hi + 30);
+      const underAt = (d: number) => wood.filter((p) => offAt(d) >= p.x && offAt(d) <= p.x + p.width && p.y > at.y + 4).sort((p, q) => p.y - q.y)[0];
+      // (a walled end, other wood's body inside his past it, is no way off: he walked into the side of a log 17 px past a catch's end and
+      //  stood there until rescued (the drafted 3-1 Normal 22), gen2 tower.ts walledEnd, ENG-DARK box 17)
+      const open = (d: -1 | 1) => (walledEnd(wood as Parameters<typeof walledEnd>[0], d < 0 ? lo : hi, d, at.y) ? undefined : underAt(d));
+      const dir = open(toward) ? toward : (-toward as -1 | 1);
+      const off = offAt(dir), under = open(dir);
       if (!under) break;
       // (to the end of the wood, then down to where he lands past it: a point in the air level with the wood read as a gap to jump,
       // and he jumped it onto the catch beyond, ENG-W3a)
@@ -97,11 +134,13 @@ export function towerCorners(stage: StageLike, spawn: Pt): Pt[] | null {
     out.push({ x: b.x, y: b.y });
   };
   T.route.legs.forEach((leg, k) => {
-    if (g.plan[k]?.join === 'turn' && T.turns[ti]) climb(T.turns[ti++]);
+    if (g.plan[k]?.join === 'turn' && T.turns[ti]) climb(T.turns[ti++], leg.exit);
+    if (past !== undefined && Math.max(leg.entry.y, leg.exit.y) < past - HOP) return;
+    past = undefined;
     out.push({ x: leg.entry.x, y: leg.entry.y });
     within(leg.entry, leg.exit);
   });
-  if (T.turns[ti]) climb(T.turns[ti]);
+  if (T.turns[ti]) climb(T.turns[ti], stage.exitTotemX !== undefined ? { x: stage.exitTotemX, y: stage.exitTotemY ?? T.turns[ti].to } : undefined);
   if (stage.exitTotemX !== undefined) out.push({ x: stage.exitTotemX, y: stage.exitTotemY ?? out[out.length - 1].y });
   // (a corner on top of the one before it adds nothing)
   const c = out.filter((p, i) => i === 0 || Math.abs(p.x - out[i - 1].x) + Math.abs(p.y - out[i - 1].y) > 0.5);
@@ -110,7 +149,12 @@ export function towerCorners(stage: StageLike, spawn: Pt): Pt[] | null {
   for (let i = 1; i + 1 < c.length; ) {
     const a = c[i - 1], b = c[i], d = c[i + 1];
     const flat = Math.abs(b.y - a.y) <= HOP && Math.abs(d.y - b.y) <= HOP;
-    if (flat && (b.x - a.x) * (d.x - b.x) < 0 && Math.min(a.x, b.x) <= d.x && d.x <= Math.max(a.x, b.x)) c.splice(i, 1);
+    // (a way DOWN: and back PAST where he came in, too. A drop off a stopped vine's catch lands him on a shelf whose leg comes in at its
+    //  far end and goes back the way he came: out to that end and back over the same wood, the route's cursor flipped between the two
+    //  legs and he turned on the shelf until rescued, 'in a dip 174 px deep', the top vine cause once the dark's stop held him on the
+    //  catch (castBots Easy seeds 28 and 5, ENG-DOWNBOT). From where he lands, the way back past it is the same walk without the out leg)
+    const back = Math.min(a.x, b.x) <= d.x && d.x <= Math.max(a.x, b.x);
+    if (flat && (b.x - a.x) * (d.x - b.x) < 0 && (back || down)) c.splice(i, 1);
     else i++;
   }
   return c;

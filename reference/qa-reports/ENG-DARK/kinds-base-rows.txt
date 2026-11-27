@@ -1,0 +1,56 @@
+kid normal 22 end shrine t 139.6 rescues 2 dark null
+  stuck {"x":1107,"y":4808,"t":40,"what":"the way on is 119 px down"}
+  stuck {"x":833,"y":10168,"t":110.4,"what":"in a dip 281 px deep, the way on is 105 px down"}
+child normal 22 end time t 360.0 rescues 5 dark null
+  stuck {"x":393,"y":2378,"t":30.2,"what":"fell back down from here 8 times"}
+  stuck {"x":1147,"y":4808,"t":72.9,"what":"the way on is 143 px down"}
+  stuck {"x":965,"y":6429,"t":141.3,"what":"the way on is 129 px down"}
+  stuck {"x":1122,"y":6429,"t":175.3,"what":"the way on is 211 px down"}
+  stuck {"x":1150,"y":7358,"t":214.1,"what":"a trunk beside him, the way on is 117 px down"}
+  stuck {"x":928,"y":7639,"t":240.9,"what":"in a dip 281 px deep, the way on is 119 px down"}
+  stuck {"x":883,"y":10168,"t":320.2,"what":"in a dip 281 px deep, the way on is 117 px down"}
+middle normal 22 end shrine t 233.2 rescues 4 dark null
+  stuck {"x":661,"y":1656,"t":10.4,"what":"in a dip 154 px deep"}
+  stuck {"x":393,"y":2378,"t":21.6,"what":"fell back down from here 8 times"}
+  stuck {"x":1146,"y":4808,"t":49.8,"what":"the way on is 143 px down"}
+  stuck {"x":1023,"y":6429,"t":100.1,"what":"the way on is 152 px down"}
+  stuck {"x":1115,"y":6429,"t":124.4,"what":"the way on is 211 px down"}
+  stuck {"x":1120,"y":10168,"t":199.2,"what":"the way on is 211 px down"}
+adult normal 22 end shrine t 182.8 rescues 3 dark null
+  stuck {"x":1125,"y":4808,"t":42.9,"what":"the way on is 119 px down"}
+  stuck {"x":853,"y":6429,"t":85.5,"what":"in a dip 281 px deep, the way on is 105 px down"}
+  stuck {"x":827,"y":10168,"t":145.1,"what":"in a dip 281 px deep, the way on is 105 px down"}
+  stuck {"x":853,"y":10168,"t":153.8,"what":"in a dip 281 px deep, the way on is 105 px down"}
+expert normal 22 end shrine t 216.8 rescues 2 dark null
+  stuck {"x":1122,"y":4808,"t":45.4,"what":"the way on is 119 px down"}
+  stuck {"x":868,"y":6429,"t":88.8,"what":"in a dip 281 px deep, the way on is 105 px down"}
+  stuck {"x":1004,"y":6429,"t":114.6,"what":"the way on is 141 px down"}
+  stuck {"x":1046,"y":6429,"t":124.1,"what":"the way on is 164 px down"}
+  stuck {"x":1027,"y":10168,"t":185.2,"what":"the way on is 164 px down"}
+kid normal 25 end shrine t 161.1 rescues 3 dark null
+  stuck {"x":438,"y":3180,"t":22.3,"what":"in a dip 70 px deep, a trunk beside him, the way on is 141 px down"}
+  stuck {"x":1050,"y":8941,"t":100,"what":"a trunk beside him, the way on is 117 px down"}
+  stuck {"x":639,"y":10131,"t":129.8,"what":"in a dip 287 px deep, the way on is 90 px down"}
+child normal 25 end shrine t 271.6 rescues 2 dark null
+  stuck {"x":404,"y":2290,"t":20.5,"what":"fell back down from here 8 times"}
+  stuck {"x":282,"y":10131,"t":223.8,"what":"in a dip 287 px deep, the way on is 224 px down"}
+middle normal 25 end shrine t 176.7 rescues 2 dark null
+  stuck {"x":404,"y":2290,"t":15.3,"what":"fell back down from here 8 times"}
+  stuck {"x":324,"y":10131,"t":131.2,"what":"in a dip 287 px deep, the way on is 202 px down"}
+  stuck {"x":302,"y":10131,"t":145.4,"what":"in a dip 287 px deep, the way on is 213 px down"}
+adult normal 25 end shrine t 130.3 rescues 1 dark null
+  stuck {"x":639,"y":10131,"t":99.5,"what":"in a dip 287 px deep, the way on is 90 px down"}
+expert normal 25 end shrine t 178.5 rescues 1 dark null
+  stuck {"x":556,"y":10131,"t":124.8,"what":"in a dip 287 px deep, the way on is 112 px down"}
+  stuck {"x":426,"y":10131,"t":144.8,"what":"in a dip 287 px deep, the way on is 146 px down"}
+kid easy 37 end shrine t 162.6 rescues 3 dark null
+  stuck {"x":1042,"y":1775,"t":12.9,"what":"a trunk beside him, the way on is 138 px down"}
+  stuck {"x":892,"y":2007,"t":34,"what":"in a dip 232 px deep, a drop of 134 px ahead, the way on is 134 px down"}
+  stuck {"x":848,"y":5797,"t":94.3,"what":"in a dip 281 px deep, the way on is 125 px down"}
+child easy 37 end shrine t 218.8 rescues 2 dark null
+  stuck {"x":1102,"y":1775,"t":23.5,"what":"a trunk beside him, the way on is 115 px down"}
+  stuck {"x":305,"y":2973,"t":68,"what":"in a dip 173 px deep, the way on is 131 px down"}
+middle easy 37 end shrine t 134.0 rescues 0 dark null
+adult easy 37 end shrine t 142.0 rescues 2 dark null
+  stuck {"x":845,"y":2013,"t":15.3,"what":"in a dip 287 px deep, the way on is 128 px down"}
+  stuck {"x":872,"y":5797,"t":73.6,"what":"in a dip 281 px deep, a drop of 125 px ahead, the way on is 125 px down"}

@@ -1,0 +1,27 @@
+kid normal 22 end shrine t 147.6 rescues 1 dark {"crossed":30,"climbed":5,"unlit":[],"gaveUp":[],"edgeTurns":[],"loop":1}
+  stuck {"x":176,"y":5138,"t":52.2,"what":"in a dip 281 px deep, the way on is 93 px down"}
+middle normal 22 end shrine t 184.1 rescues 1 dark {"crossed":30,"climbed":2,"unlit":[],"gaveUp":[],"edgeTurns":[],"loop":1}
+  stuck {"x":779,"y":3741,"t":31.8,"what":"in a dip 224 px deep, the way on is 101 px down"}
+  stuck {"x":182,"y":5138,"t":58.9,"what":"in a dip 281 px deep, the way on is 93 px down"}
+  stuck {"x":661,"y":9236,"t":128.2,"what":"in a dip 281 px deep"}
+adult normal 22 end shrine t 149.1 rescues 1 dark {"crossed":30,"climbed":5,"unlit":[],"gaveUp":[],"edgeTurns":[],"loop":1}
+  stuck {"x":167,"y":5138,"t":53,"what":"in a dip 281 px deep, the way on is 93 px down"}
+child normal 22 end shrine t 284.8 rescues 2 dark {"crossed":29,"climbed":1,"unlit":[],"gaveUp":[],"edgeTurns":[],"loop":1}
+  stuck {"x":581,"y":1802,"t":20.8,"what":"in a dip 146 px deep"}
+  stuck {"x":1092,"y":3883,"t":69.3,"what":"fell back down from here 8 times"}
+  stuck {"x":937,"y":8384,"t":185,"what":"the way on is 114 px down"}
+adult easy 37 end shrine t 230.1 rescues 3 dark {"crossed":32,"climbed":3,"unlit":[],"gaveUp":[],"edgeTurns":[],"loop":1}
+  stuck {"x":133,"y":4483,"t":56,"what":"the way on is 94 px down"}
+  stuck {"x":392,"y":8302,"t":120.2,"what":"the way on is 87 px down"}
+  stuck {"x":938,"y":11622,"t":181.7,"what":"the way on is 87 px down"}
+child normal 25 end shrine t 211.4 rescues 3 dark {"crossed":24,"climbed":2,"unlit":[],"gaveUp":[],"edgeTurns":[],"loop":1}
+  stuck {"x":492,"y":1732,"t":20,"what":"in a dip 125 px deep"}
+  stuck {"x":916,"y":3570,"t":50.4,"what":"in a dip 173 px deep, a drop of 35 px ahead, the way on is 120 px down"}
+  stuck {"x":699,"y":4300,"t":66.8,"what":"in a dip 217 px deep, the way on is 179 px down"}
+  stuck {"x":802,"y":5251,"t":85.7,"what":"fell back down from here 8 times"}
+  stuck {"x":367,"y":9493,"t":129.4,"what":"in a dip 48 px deep, a drop of 125 px ahead, a trunk beside him, the way on is 125 px down"}
+  stuck {"x":773,"y":9774,"t":146.6,"what":"in a dip 281 px deep"}
+  stuck {"x":615,"y":10957,"t":175.6,"what":"in a dip 217 px deep, a drop of 64 px ahead, the way on is 172 px down"}
+  stuck {"x":629,"y":11929,"t":197.2,"what":"in a dip 174 px deep"}
+# pass 37
+# fail 0

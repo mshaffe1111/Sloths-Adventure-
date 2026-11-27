@@ -1,0 +1,10 @@
+child normal 11 rim 581,6560 at 129.33: last grounded {"t":128.46666666666195,"x":384,"y":6560,"piece":"206-428@6560"}; take-offs in last 3 s 126.50@194,6541 127.47@461,6541 128.50@388,6541; last dark stop 902,4416 t 90.00
+child normal 19 rim 472,11457 at 265.23: last grounded {"t":265.1999999999953,"x":480,"y":11457,"piece":"?"}; take-offs in last 3 s 262.63@123,11000; last dark stop 472,11457 t 265.20
+child easy 4 rim 549,9202 at 211.30: last grounded {"t":211.26666666665724,"x":563,"y":9202,"piece":"?"}; take-offs in last 3 s ; last dark stop 549,9202 t 211.23
+child easy 8 rim 515,4375 at 103.37: last grounded {"t":103.33333333333003,"x":524,"y":4375,"piece":"?"}; take-offs in last 3 s ; last dark stop 515,4375 t 102.67
+kid normal 29 rim 582,3380 at 31.53: last grounded {"t":31.500000000000725,"x":572,"y":3380,"piece":"?"}; take-offs in last 3 s 30.40@822,3074; last dark stop 582,3380 t 31.47
+expert normal 25 rim 648,11021 at 159.80: last grounded {"t":159.76666666666017,"x":800,"y":11021,"piece":"648-885@11021"}; take-offs in last 3 s 159.80@218,11282; last dark stop 595,9844 t 115.60
+child easy 26 rim 514,11367 at 240.37: last grounded {"t":240.33333333332226,"x":525,"y":11367,"piece":"?"}; take-offs in last 3 s 237.47@143,10932; last dark stop 514,11367 t 240.30
+child easy 28 rim 744,10919 at 202.13: last grounded {"t":202.0999999999911,"x":735,"y":10919,"piece":"?"}; take-offs in last 3 s ; last dark stop 744,10919 t 202.10
+child easy 36 rim 522,6193 at 116.80: last grounded {"t":116.7666666666626,"x":537,"y":6193,"piece":"?"}; take-offs in last 3 s ; last dark stop 522,6193 t 116.73
+exit 0

@@ -1,0 +1,30 @@
+adult easy 37 end shrine t 249.3 rescues 6 dark {"crossed":27,"climbed":2,"unlit":[],"gaveUp":[],"edgeTurns":[],"loop":1}
+  stuck {"x":532,"y":3969,"t":47.1,"what":"in a dip 281 px deep, the way on is 87 px down"}
+  stuck {"x":167,"y":4874,"t":79.1,"what":"the way on is 93 px down"}
+  stuck {"x":1077,"y":5508,"t":107.2,"what":"a drop of 289 px ahead, a trunk beside him, the way on is 133 px down"}
+  stuck {"x":1103,"y":7237,"t":146.5,"what":"the way on is 93 px down"}
+  stuck {"x":1104,"y":7931,"t":173.2,"what":"in a dip 347 px deep, the way on is 94 px down"}
+  stuck {"x":810,"y":9706,"t":215.9,"what":"in a dip 281 px deep, the way on is 87 px down"}
+child normal 25 end shrine t 204.6 rescues 2 dark {"crossed":26,"climbed":2,"unlit":[],"gaveUp":[],"edgeTurns":[],"loop":1}
+  stuck {"x":492,"y":1732,"t":20,"what":"in a dip 125 px deep"}
+  stuck {"x":916,"y":3570,"t":50.4,"what":"in a dip 173 px deep, a drop of 35 px ahead, the way on is 120 px down"}
+  stuck {"x":699,"y":4300,"t":66.8,"what":"in a dip 217 px deep, the way on is 179 px down"}
+  stuck {"x":802,"y":5251,"t":85.7,"what":"fell back down from here 8 times"}
+  stuck {"x":367,"y":9493,"t":129.4,"what":"in a dip 48 px deep, a drop of 125 px ahead, a trunk beside him, the way on is 125 px down"}
+  stuck {"x":773,"y":9774,"t":146.6,"what":"in a dip 281 px deep"}
+  stuck {"x":711,"y":11021,"t":175.6,"what":"in a dip 64 px deep, the way on is 89 px down"}
+  stuck {"x":716,"y":11929,"t":190.8,"what":"in a dip 174 px deep"}
+kid normal 22 end shrine t 174.7 rescues 2 dark {"crossed":34,"climbed":5,"unlit":[],"gaveUp":[],"edgeTurns":[],"loop":1}
+  stuck {"x":176,"y":5138,"t":52.2,"what":"in a dip 281 px deep, the way on is 93 px down"}
+  stuck {"x":826,"y":8384,"t":109.4,"what":"a 73 px waist-high step ahead, a drop of 100 px ahead, a trunk beside him, the way on is 100 px down"}
+adult normal 22 end shrine t 175.7 rescues 2 dark {"crossed":33,"climbed":5,"unlit":[],"gaveUp":[],"edgeTurns":[],"loop":1}
+  stuck {"x":167,"y":5138,"t":53,"what":"in a dip 281 px deep, the way on is 93 px down"}
+  stuck {"x":866,"y":8384,"t":110.4,"what":"a 73 px waist-high step ahead, in a dip 73 px deep, a drop of 100 px ahead, a trunk beside him, the way on is 100 px down"}
+child normal 22 end shrine t 289.8 rescues 2 dark {"crossed":31,"climbed":1,"unlit":[],"gaveUp":[],"edgeTurns":[],"loop":1}
+  stuck {"x":581,"y":1802,"t":20.8,"what":"in a dip 146 px deep"}
+  stuck {"x":1092,"y":3883,"t":69.3,"what":"fell back down from here 8 times"}
+  stuck {"x":773,"y":8311,"t":183.5,"what":"in a dip 174 px deep, a drop of 73 px ahead, a trunk beside him, the way on is 113 px down"}
+middle normal 22 end shrine t 204.2 rescues 2 dark {"crossed":33,"climbed":2,"unlit":[],"gaveUp":[],"edgeTurns":[],"loop":1}
+  stuck {"x":779,"y":3741,"t":31.8,"what":"in a dip 224 px deep, the way on is 101 px down"}
+  stuck {"x":182,"y":5138,"t":58.9,"what":"in a dip 281 px deep, the way on is 93 px down"}
+  stuck {"x":826,"y":8384,"t":126.9,"what":"a 73 px waist-high step ahead, a drop of 100 px ahead, a trunk beside him, the way on is 100 px down"}

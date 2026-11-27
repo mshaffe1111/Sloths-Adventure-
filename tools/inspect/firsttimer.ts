@@ -30,7 +30,7 @@
 import { DT, RealPlay, levelConfig, type Pad } from '../../src/game/realPlay.ts';
 import { glanceView, glancing, hurt, touches } from '../../src/game/predators/core.ts';
 import type { PredatorDef, PredatorState } from '../../src/game/predators/types.ts';
-import { GameEngine } from '../../src/game/engine.ts';
+import { GameEngine, STEP_UP } from '../../src/game/engine.ts';
 import { frontBehind, type ChaseRun } from '../../src/game/chase.ts';
 import { rollRadius } from '../../src/game/rolling.ts';
 import type { Rolling } from '../../src/game/pieces/rollingPiece.ts';
@@ -53,7 +53,7 @@ import { RIDE } from '../../src/game/ride.ts';
 import { padShows } from '../../src/game/pieces/padPiece.ts';
 import { PAD_FAIR } from '../../src/game/gen2/rideLay.ts';
 import { beatAt, beatOf, type Beat } from '../../src/game/clock.ts';
-import { airStep, canGrabSwing, DOUBLE_RISE, JUMP_RISE, PHYS, SWING, reachJump, reachJumpHeld, TIMED, pressLaunches, groundStep, takeOffStep, vineAmp, vinePeriod } from '../../src/game/physics.ts';
+import { airStep, canGrabSwing, DOUBLE_RISE, JUMP_RISE, LAND_HALF, PHYS, SWING, reachJump, reachJumpHeld, TIMED, pressLaunches, groundStep, takeOffStep, vineAmp, vinePeriod } from '../../src/game/physics.ts';
 import { MIN_TOUCH_JUMP_HOLD_MS } from '../../src/game/inputEngine.ts';
 import { handsAlong } from '../../src/game/pieces/vineSnakePiece.ts';
 import { onVine, type SnakeNow } from '../../src/game/vineSnake.ts';
@@ -78,6 +78,10 @@ import type { FollowPlay } from '../../src/game/followPlay.ts';
 import { bucketAngle } from '../../src/game/wheel.ts';
 import { WHEEL_FLOWN } from '../../src/game/gen2/wheelFlights.data.ts';
 import { flownKey } from '../../src/game/gen2/wheelLay.ts';
+import { DARK_AHEAD, darkRims, litAhead, RimWatch, runOffRims, type DarkRim, type RimCrossing } from '../../src/game/gen2/dark.ts';
+/** the most times he went over one rim in the dark (climbs not counted; FTRun.dark.loop): a walk back and forth over one rim (ENG-DARK box 12,
+ *  the seam toy's record: since RimWatch reads a grounded step over a seam as on the piece, the loop shows here, lit or not) */
+const rimLoop = (cs: readonly RimCrossing[]) => Math.max(0, ...[...cs.filter((c) => !c.climbed).reduce((m, c) => m.set(c.rim, (m.get(c.rim) ?? 0) + 1), new Map<DarkRim, number>()).values()]);
 
 /**
  * The bot's clock-read skill (METER-2a, R-165.272; METER-COVERAGE §2a "read a stage clock", board + step-off half). A toy test switches
@@ -124,6 +128,18 @@ const SNAP_TAP = 0.08;
 const BONK = { half: 14, margin: 12, band: 8, from: [50, 90], kick: [0, 58], dazedLeft: 0.3, still: 20, clear: 100, sameGround: 24, sees: 220, behind: 200, restomp: 18, lastPush: 0.15, landTol: 3 } as const;
 /** his thumb: from deciding to the press leaving the floor (s) */
 const SNAP_THUMB = 0.1;
+/** the dark's stop (glowWait): he means to stand within this many px of a dark rim (his late lift-off carries him a little nearer), and
+ *  a light that has not woken this many s into his stop he gives up on (GLOW_STILL 0.7 s + the wake's travel is well under it) */
+const GLOW_NEAR = 90;
+const GLOW_GIVEUP = 4;
+/** ...and the stop's turn to face the rim is pressed only this far in from it: a turn press his thumb holds TURN_FRAMES frames from a
+ *  standstill, and the slide after it (traced on the 3-1 draft, middle Normal roll 16: pressed 2.4 px from rim x 920, the press turned
+ *  him AND carried him off it). Nearer, he steps back first (the lead's ruling 4, 11-25) */
+const TURN_FRAMES = 3;
+const GLOW_TURN_ROOM = Math.ceil(((PHYS.groundAcc / 30) * (TURN_FRAMES * (TURN_FRAMES + 1)) / 2) / 30 + (PHYS.groundAcc * TURN_FRAMES / 30) ** 2 / (2 * PHYS.groundDec));
+/** ...and a running jump over a dark rim is pressed up to this many px before it (traced on the 3-1 draft: the expert pressed 94 px out,
+ *  just past GLOW_NEAR, and jumped into the dark): a jump toward a dark rim on his piece within a jump's carry stops him first (glowJump) */
+const GLOW_JUMP = 200;
 
 /**
  * The bot's skills with the little ones that follow him home (ENG-23; 2-3.md "Bot skills"; level.md rule 21, toys first:
@@ -272,6 +288,36 @@ export interface FirstTimer {
    *  thumb by his rhythm (gapQ) on the run to a liana phased to a runner too, stops short and waits for it. Every bot has it: running at
    *  a runner liana's lip (1-8 NEW 4: it swings to meet a full run), his thumb stays down, as on a chase and under a fruit */
   noRunnerHold?: boolean;
+  /** the dark's stop REMOVED (level.md rule 21's planted toy test only, src/game/gen2/dark.test.ts): at a rim in the glowworms' dark he
+   *  walks on over it with its landing still dark. Every bot has it (3-1.md: "Stand still, and the glowworms show the way down"; the
+   *  tag line and Dot teach it): glowWait */
+  noGlowWait?: boolean;
+  /** the dark stop's turn to face the rim REMOVED (darkBots.test's give-up toy only): he stands the way he was facing (glowWait) */
+  noGlowTurn?: boolean;
+  /** the dark stop's turn pressed at the rim's very edge again (darkBots.test's turn-room toy only): no step back first (glowWait) */
+  noTurnRoom?: boolean;
+  /** a seam he walks over read as a way down again (darkBots.test's seam toy only): downEnd steers him at a way-on point under a gap
+   *  narrower than his body from both sides, and he walks back and forth over it */
+  noSeamWalk?: boolean;
+  /** under a seam run, his facing picks the end he steps off again, not the end the way on comes out past (darkBots.test's roll 11
+   *  toy only): turned by anything else, he walks to and fro over the seam */
+  seamByFacing?: boolean;
+  /** at the lip, the way on's first point under him within 8 px of his middle read as straight under him (darkBots.test's roll 15 lip
+   *  toy only): his middle past his wood's end and the engine still standing him on it, the steer drops, he is turned back and walks to
+   *  and fro at the lip */
+  noLipEnd?: boolean;
+  /** with the way on straight under his run and never coming out past it, no end of the run picked (darkBots.test's roll 15 toy only):
+   *  he stands over it turning, by a side wall, until stranded */
+  noOpenEnd?: boolean;
+  /** landed ahead on the way's own floor, still followed by the point over his head (darkBots.test's roll 26 toy only): he climbs the
+   *  trunk beside him back up and falls again until rescued */
+  noLandAhead?: boolean;
+  /** going down, a ledge over him read as a step up whatever way the route runs (darkBots.test's roll 19 toy only): at a dip's lip with a
+   *  bough overhead and the way on level across the dip, he doubles at the bough */
+  noLevelRead?: boolean;
+  /** his dark stop held only while his middle is over the rim's piece (darkBots.test's lip toy only): at the lip, his middle past the
+   *  end and the engine still standing him on it, the stop drops and he walks over the rim dark */
+  noLipHold?: boolean;
   /** at a gap or a face he must clear, his hold is drawn from this quantile of holdQ up (he reads the jump): a tuning field */
   readHold?: number;
   /** and a double up a step gets its second press from dbl2Q's quantiles up to this one (early enough to climb): a tuning field */
@@ -487,6 +533,15 @@ export class Progress {
     if (more) this.hi = this.cur;
     if (this.cur > this.best) this.best = this.cur;
     return more;
+  }
+  /** put him at point `k` ahead (up to the next pin he has not stood at), never followed back before it (`floor`): he came down on
+   *  the way's own ground further on. False when `k` is not ahead or lies past that pin */
+  ahead(k: number): boolean {
+    if (k <= this.cur || this.cap(k) !== k) return false;
+    this.cur = this.floor = k;
+    if (k > this.hi) this.hi = k;
+    if (k > this.best) this.best = k;
+    return true;
   }
   /** how far he stands from the point he is at along the way (0 with no route) */
   off(p: Pt): number {
@@ -813,6 +868,11 @@ export interface FTRun {
   harms: Harm[];
   /** Easy's soft falls on land (no life lost: engine.ts softFall) */
   softFalls?: number;
+  /** the dark (gen2/dark.ts; any stage with a lit dark): the rims he went over, and each one whose landing was not lit DARK_AHEAD s
+   *  before he went ('every gap lit 1 s ahead', litAhead's names; empty: GREEN), and each stop he waited out GLOW_GIVEUP s unlit (the rim
+   *  and when he gave up; a give-up lasts the visit, so a rim waited out on two visits is named twice); `climbed`: rims he passed on a
+   *  climb (a trunk grab past the end: RimCrossing.climbed, its own kind; `crossed` counts the ones he went over) */
+  dark?: { crossed: number; climbed: number; unlit: string[]; gaveUp: string[]; edgeTurns: string[]; loop: number };
   /** the spur stones he stood on (a spur pond's dead-end stone, RiverZone.spur: OUT-AND-BACK, FIX-22) */
   spurs?: number;
   /** times a log carried him under a bank and he stepped up onto it, never in the air between (engine.ts drift loop; SKILLS.handed) */
@@ -1096,8 +1156,8 @@ export interface RunOptions {
   /** drive the engine through the game's own InputEngine (RealPlay.useRealInput: the touch layer's calls and minimum hold), never FakeInput's
    *  bare press: true for the touch's hold, a number for another (ms, the Pad button's PAD_HOP_MS) (ENG-24) */
   realInput?: true | number;
-  /** called after every frame with the run's sim (a clip's recording, ENG-24 lianaClip) */
-  onFrame?: (sim: RealPlay) => void;
+  /** called after every frame with the run's sim (a clip's recording, ENG-24 lianaClip) and the bot (a hand-built toy's press, ENG-DARK) */
+  onFrame?: (sim: RealPlay, bot: object) => void;
   /** the route's points; default: the inspector's main route on the engine's own stage */
   route?: Pt[];
   /** stuck this long (s) without progress: put him further on */
@@ -1254,6 +1314,17 @@ export class FirstTimerRun {
   private glanceAt = -1;
   /** a rear he has seen start (freezePlan): which animal, and when his thumb comes off (his reaction) */
   private rearSeen: { m: unknown; at: number } | null = null;
+  /** the dark's rims (gen2/dark.ts darkRims, read once), the stop he is making at one, and the rims whose light he waited out unlit */
+  private glowRims: DarkRim[] | null = null;
+  private glowStop: { rim: DarkRim; since: number; turn?: 1 | 2 } | null = null;
+  private readonly glowGaveUp = new Set<DarkRim>();
+  /** each stop waited out unlit: the rim and the time (FTRun.dark.gaveUp) */
+  readonly glowGiveUps: string[] = [];
+  /** each dark stop's turn press made nearer the rim than its turn room, min(GLOW_TURN_ROOM, half the piece) (FTRun.dark.edgeTurns:
+   *  the press that turns him also moves him, so a press there can carry him off; ENG-DARK box 12, the turn-room toy's record) */
+  readonly glowEdgeTurns: string[] = [];
+  /** the dark's rim crossings of this run (gen2/dark.ts RimWatch; null: no lit dark on the stage): FTRun.dark reads them */
+  rimWatch: RimWatch | null | undefined;
   private swingT = 0;
   private ropeStill = 0;
   private climbStill = 0;
@@ -1291,6 +1362,8 @@ export class FirstTimerRun {
   /** he follows a tower's own route (towerRoute.ts): corners, no jump arcs, so he reads a stair of ledges himself */
   private onTower = false;
   private climbDown = false;
+  /** the way-down plan caught a trunk mid-way with UP to climb DOWN it (the next climb's way is down, once) */
+  private grabDown = false;
   private climbTurned = false;
   /** he was on a trunk when the last choice was made */
   private wasOnTrunk = false;
@@ -1577,7 +1650,25 @@ export class FirstTimerRun {
     const one = this.who.setting === 'easy' ? reachJumpHeld(0, false) : reachJump(0, false);
     if (gap > one && gap < 600) return 'double';
     // (a tier bot reads a step up as well: the next ledge ahead over a single jump's height (about 108 px; 90 with his margin) gets a double)
-    return this.who.knowsDouble && this.stepUp(here, dir) ? 'double' : 'single';
+    // (going down a tower, only where the way on rises ahead of him (wayRises): at a 97 px dip's lip with a bough 188 px over his floor
+    //  and the way on level across the dip, the bough read as a step up; the child stood his time, pressed a standing double whose
+    //  second press came after the flick's hop had landed, was steered back and went back up the vine, 8.7 s at the lip, 3-1 Normal 19,
+    //  ENG-DARK box 21. That bough is the catch of the end over the dip, on every storey of the way down: 622 of them over 80 rolls)
+    return this.who.knowsDouble && this.stepUp(here, dir) && this.wayRises(p) ? 'double' : 'single';
+  }
+
+  /** a step up is a way on only where the way rises: going down a tower (gen2.tower.flow 'down'), the route's points ahead of him, within
+   *  a step up's read (stepUp: 260 px past the edge, 300 px from him), rise past a single's height with his margin (90 px) before they
+   *  drop away (40 px under his feet); off a way down (or noLevelRead) every ledge over him is read as before */
+  private wayRises(p: { x: number; y: number }): boolean {
+    if (this.who.noLevelRead || (this.sim.stage as { gen2?: { tower?: { flow?: string } } }).gen2?.tower?.flow !== 'down') return true;
+    const pts = this.prog.pts;
+    for (let i = this.prog.cur; i < pts.length; i++) {
+      const q = pts[i];
+      if (Math.abs(q.x - p.x) > 300 || q.y > p.y + 40) break;
+      if (p.y - q.y > 90) return true;
+    }
+    return false;
   }
 
   /** a tier bot's read of a step up: a ledge ahead of the edge of `here` (within 260 px) over a single jump's height (90 px with margin) */
@@ -1730,12 +1821,120 @@ export class FirstTimerRun {
   private downEnd(p: { x: number; y: number }): -1 | 0 | 1 {
     if ((this.sim.stage as { gen2?: { tower?: { flow?: string } } }).gen2?.tower?.flow !== 'down') return 0;
     const pts = this.prog.pts;
-    for (let j = this.prog.cur; j < Math.min(pts.length, this.prog.cur + 80); j++) {
-      if (pts[j].y <= p.y + 40) continue;
-      const dx = pts[j].x - p.x;
-      return dx > 8 ? 1 : dx < -8 ? -1 : 0;
+    // (the run of wood he stands on: the way on under it is no way off it. On wood that lies over the way on (a catch run on over the
+    //  storey under it) the first point under him was straight under, and he stood there turning until rescued: he walks off the end
+    //  where the way comes out from under his wood, ENG-DOWNBOT)
+    const feet = this.sim.platforms.filter((q) => !q.broken && q.type !== 'bouncy' && Math.abs(q.y - p.y) <= 4);
+    // (seeded from the wood under his feet, a half body either side of his middle: at the lip his middle is past the end, the run came
+    //  out empty, and the answer flipped with each step, to and fro at a shelf's end, ENG-DOWNBOT)
+    const under = feet.filter((q) => p.x >= q.x - 24 && p.x <= q.x + q.width + 24);
+    let lo = under.length ? Math.min(...under.map((q) => q.x)) : p.x, hi = under.length ? Math.max(...under.map((q) => q.x + q.width)) : p.x;
+    for (let grew = true; grew; ) {
+      grew = false;
+      for (const q of feet) if (q.x <= hi + 2 && q.x + q.width >= lo - 2 && (q.x < lo || q.x + q.width > hi)) { lo = Math.min(lo, q.x); hi = Math.max(hi, q.x + q.width); grew = true; }
+    }
+    // (a climb vine down from his wood's height is a way off it too: read as under his wood, he went for the far end of wall-to-wall
+    //  wood and stood turning over the bottom storey, 'the way on is 93 px down')
+    const downVines = this.sim.vines.filter((v) => v.vineType === 'tree_climb' && !v.off && Math.abs(v.topY - p.y) <= 20 && v.bottomY > p.y + 40);
+    const offWood = (q: Pt) => q.x <= lo + 8 || q.x >= hi - 8 || downVines.some((v) => Math.abs(v.x - q.x) <= 12);
+    // (the end of his wood a point off it lies past, the nearer one; 0 for a point at a climb vine down: lipEnd's note below)
+    const endOf = (q: Pt): -1 | 0 | 1 => (this.who.noLipEnd || downVines.some((v) => Math.abs(v.x - q.x) <= 12) ? 0 : q.x - lo <= hi - q.x ? -1 : 1);
+    for (let j = this.prog.cur; j < Math.min(pts.length, this.prog.cur + 160); j++) {
+      if (pts[j].y <= p.y + 40 || !offWood(pts[j])) continue;
+      const at = pts[j], dx = at.x - p.x;
+      // (lipEnd: a point past an END of his wood is off that end however near his middle it lies: at the lip the engine stands him to STAND_SIDE
+      //  past the end, his middle over the drop's first point (362 under a lip at 367), and read as straight under him (0) the steer
+      //  dropped, he was turned back, and 4 px on it said the end again: to and fro at the lip for 22 s, the expert on Normal roll 15
+      //  (367, y 7063), ENG-DARK box 24. Straight under him is a point over his own wood or a climb vine down)
+      const d = dx > 8 ? 1 : dx < -8 ? -1 : endOf(at);
+      if (d === 0 || this.who.noSeamWalk) return d;
+      // (a hop across is no way down: his ledge runs on over every gap narrower than his body to a piece at his height (he cannot fall
+      //  through one; the engine lands him within LAND_HALF of an edge), so a way-on point past his own piece's end but under that run
+      //  is no way off that end. Read as a way down, the seam's two sides each pointed him at the point under it, and he walked back and
+      //  forth over it, a dark rim each pass: 3-1 draft adult and kid Normal 32, 31 and 26 crossings, ENG-DARK. Then the steer keeps
+      //  him the way he was going. A point under his own piece is left as it was)
+      const end = this.ledgeEnds(p, d);
+      if (!end || (at.x - end.own) * d <= 0 || (at.x - end.run) * d > 0) return d;
+      // (then he steps off the end of the whole run (both ways over every seam) that the way on comes out from under: its first later
+      //  point past either end. Kept the way he was facing, any other turn (a dark stop, the route's x) flipped him and the next pass
+      //  kept the new facing: the adult Normal on roll 11 walked to and fro over a 13 px seam to a piece 13 px up 11 times, the way on
+      //  dropping through it and out past the far end, ENG-DARK box 15. His facing only when the way on never comes out in reach)
+      const back = this.who.seamByFacing ? null : this.ledgeEnds(p, d > 0 ? -1 : 1);
+      if (this.who.seamByFacing) return this.sim.p.facing < 0 ? -1 : 1;
+      const lo = Math.min(end.run, back ? back.run : p.x), hi = Math.max(end.run, back ? back.run : p.x);
+      for (let k = j + 1; k < Math.min(pts.length, this.prog.cur + 160); k++) {
+        if (pts[k].x < lo - 8) return -1;
+        if (pts[k].x > hi + 8) return 1;
+      }
+      return this.sim.p.facing < 0 ? -1 : 1;
+    }
+    // (the way on straight UNDER his run, never coming out past it in reach (the route's end, the shrine, under wood that runs on to a
+    //  side wall): no point above was off his wood, and with 0 the route's x held him over it, turning and hopping. Carried past the
+    //  piece the way drops onto, the expert on Normal roll 15 landed on 826-1280 (y 11320) by the right wall with the shrine 347 px under
+    //  it, and stood there until stranded (child and middle too, and Easy 27), ENG-DARK box 16. He steps off an OPEN end of the run (one
+    //  his middle can pass before the side wall stops him), the one nearer the way on)
+    const wayOn = this.who.noOpenEnd ? null : this.downPt(p);
+    if (wayOn && wayOn.x >= lo - 8 && wayOn.x <= hi + 8) {
+      const walls = (this.e as unknown as { walls?: { minX: number; maxX: number } }).walls;
+      const openL = !walls || lo - LAND_HALF > walls.minX, openR = !walls || hi + LAND_HALF < walls.maxX;
+      if (openL && openR) return wayOn.x - lo <= hi - wayOn.x ? -1 : 1;
+      if (openL) return -1;
+      if (openR) return 1;
     }
     return 0;
+  }
+  /**
+   * Landed AHEAD on the way's own ground (a way down): run past the piece the way drops onto, he came down on the floor the way reaches
+   * further on, under the point he was at. Followed by the nearest point, that point over his head pulled him up the trunk beside him,
+   * and he climbed, ran off and fell back again until rescued: the middle on Normal 26 off 5 (y 1188) past 6 (224-460, y 1469) onto
+   * 0-703 (y 1599), the way's floor 15 points on ('a trunk beside him, on a trunk', 6 rows of the 3-1 x40 on 89ef9a985), ENG-DARK box 16.
+   * He is put at the first point ahead (of the next 80) on the run of wood he stands on (both ways over every seam, ledgeEnds), when the
+   * point he was at is 60+ px over him and the way does not go under his floor before it
+   */
+  /** the floor he was put on the way at by landedAhead, and the point: walking it to that point he is not off the way */
+  private aheadRun: { k: number; y: number; lo: number; hi: number } | null = null;
+  private landedAhead(p: { x: number; y: number }): boolean {
+    if (this.who.noLandAhead || (this.sim.stage as { gen2?: { tower?: { flow?: string } } }).gen2?.tower?.flow !== 'down') return false;
+    const pts = this.prog.pts, cur = this.prog.cur;
+    if (!pts.length || pts[cur].y >= p.y - 60) return false;
+    const r = this.ledgeEnds(p, 1), l = this.ledgeEnds(p, -1);
+    if (!r || !l) return false;
+    for (let k = cur + 1; k < Math.min(pts.length, cur + 80); k++) {
+      if (pts[k].y > p.y + 40) return false;
+      if (Math.abs(pts[k].y - p.y) <= 4 && pts[k].x >= l.run && pts[k].x <= r.run) {
+        if (!this.prog.ahead(k)) return false;
+        this.aheadRun = { k, y: p.y, lo: l.run, hi: r.run };
+        return true;
+      }
+    }
+    return false;
+  }
+  /** going `d`: the end of the piece under his feet (`own`) and of the ledge it runs on into over every seam he walks over (`run`: a gap
+   *  narrower than his body to a piece within a step of his height, STEP_UP.min); null: no piece under his feet */
+  private ledgeEnds(p: { x: number; y: number }, d: -1 | 1): { own: number; run: number } | null {
+    const at = (q: Platform, y: number) => this.solid(q) && q.type !== 'bouncy' && Math.abs(q.y - y) <= 8;
+    const end = (q: Platform) => (d > 0 ? q.x + q.width : q.x);
+    const first = this.sim.platforms.find((q) => at(q, p.y) && p.x >= q.x - LAND_HALF && p.x <= q.x + q.width + LAND_HALF);
+    if (!first) return null;
+    let cur: Platform = first;
+    const own = end(cur);
+    for (let n = 0; n < 40; n++) {
+      const e = end(cur), y = cur.y, from: Platform = cur;
+      const gap = (q: Platform) => ((d > 0 ? q.x : q.x + q.width) - e) * d;
+      // (across the gap, a piece within a step he walks over (under STEP_UP.min, the rise a plain walk takes with no jump), not within 8 px:
+      //  a 22 px gap to a piece 15 px lower was no seam to the 8 px test, and the adult Normal on rolls 6, 11 and 35 walked to and fro over
+      //  it 17-30 times, the way on under the gap (ENG-DARK box 14))
+      const next: Platform | undefined = this.sim.platforms.find((q) => q !== from && this.solid(q) && q.type !== 'bouncy' && Math.abs(q.y - y) < STEP_UP.min && gap(q) >= -1 && gap(q) < 2 * LAND_HALF && (end(q) - e) * d > 0);
+      if (!next) break;
+      cur = next;
+    }
+    return { own, run: end(cur) };
+  }
+  /** the way on's first point (of the next 80) that lies under him (40+ px down) */
+  private downPt(p: { x: number; y: number }): Pt | null {
+    const pts = this.prog.pts;
+    for (let j = this.prog.cur; j < Math.min(pts.length, this.prog.cur + 80); j++) if (pts[j].y > p.y + 40) return pts[j];
+    return null;
   }
   private pitWayBack(tgt: Pt | null): -1 | 0 | 1 {
     const p = this.sim.p;
@@ -2355,11 +2554,13 @@ export class FirstTimerRun {
         // (kept until he stands on other ground (the engine's standingOnId) or 6 s pass: at the lip his middle is past the ledge and it
         // no longer reads as his floor)
         if (who.holdQ && this.dropOff) dir = this.dropOff.dir;
-        // (a way DOWN: the end of his ledge to step off is the one whose landing lies nearest the way on, never just the way he was
-        //  going: the run's rule walked him off the far end of a shelf into the storey under the way, and he stood there, ENG-W3a)
-        const end = p.grounded ? this.downEnd(p) : 0;
-        if (end) dir = end;
       }
+      // (a way DOWN: the end of his ledge to step off is the one whose landing lies nearest the way on, never just the way he was
+      //  going: the run's rule walked him off the far end of a shelf into the storey under the way, and he stood there, ENG-W3a.
+      //  Whenever the way on is below him, not only close across: read only close across, the route's x walked him back toward a way
+      //  on under his wood each time he was 120 px from it, and he went to and fro on a catch over the storey, ENG-DOWNBOT)
+      const end = p.grounded && dy > 40 && !p.isVineSwinging ? this.downEnd(p) : 0;
+      if (end) dir = end;
     }
     // (fallen into a pit the way on cannot be reached from: back up its stair the way he came, pitWayBack)
     const back = this.pitWayBack(tgt);
@@ -2373,6 +2574,10 @@ export class FirstTimerRun {
     this.takeIn();
     this.hiding = false;
     this.fetching = false;
+    // the glowworms' dark: at a rim whose landing is still dark, he stands until it is lit (glowWait), before any other plan steers him
+    // (placed after the freeze, a landing's own steer walked the KID straight over the next rim, 3-1 draft seed 1). Any stage by its zones
+    const gw = this.glowWait(dir);
+    if (gw) return gw;
 
     // a puzzle room: stand at its entrance a moment, then on past it
     if (this.puzzleWait) {
@@ -2572,8 +2777,9 @@ export class FirstTimerRun {
       if (this.climbVine !== e.nearTreeVine || !this.wasOnTrunk) {
         this.climbVine = e.nearTreeVine;
         // (never down a trunk whose top is where her mark stands: he caught it to go up for it, markClimb.ts)
-        this.climbDown = !!(tgt && tgt.y > p.y + 40 && Math.abs(tgt.x - p.x) < 60) && !(e.nearTreeVine && markUp(e.nearTreeVine, p, this.sim.collectibles as never, dir));
+        this.climbDown = this.grabDown || !!(tgt && tgt.y > p.y + 40 && Math.abs(tgt.x - p.x) < 60) && !(e.nearTreeVine && markUp(e.nearTreeVine, p, this.sim.collectibles as never, dir));
         this.climbTurned = false;
+        this.grabDown = false;
       }
       if (this.climbStill < 0.4) return this.climbDown ? { down: true } : { up: true };
       this.climbStill = 0;
@@ -2824,8 +3030,20 @@ export class FirstTimerRun {
     // (a way DOWN turns on a vine whose top stands at his ledge's end (or that runs past a catch he landed on): with the way on under
     //  him, straight down takes it, as the plain
     //  action does (STAGE-RULES §1: straight down on a vine always climbs; towerFly.ts presses the same); without it he hopped off the
-    //  end past the vine, ENG-W3a's drafted 3-1. A climb never comes here)
-    if (this.onTower && e.nearTreeVine && p.grounded && !p.climbing && tgt && tgt.y > p.y + 60 && e.nearTreeVine.topY <= p.y + 14 && e.nearTreeVine.bottomY > p.y + 60 && (this.sim.stage as { gen2?: { tower?: { flow?: string } } }).gen2?.tower?.flow === 'down') return { down: true };
+    //  end past the vine, ENG-W3a's drafted 3-1. A climb never comes here. The top must be AT his feet, both ways, as the engine's
+    //  downAtTop asks (engine.ts: from the ground only the vine's very top climbs down): one-sided, he held down mid-trunk 20 s beside a
+    //  vine whose top stood 281 px above him and never moved, ENG-DARK child Easy 25)
+    if (this.onTower && e.nearTreeVine && p.grounded && !p.climbing && tgt && tgt.y > p.y + 60 && e.nearTreeVine.bottomY > p.y + 60 && (this.sim.stage as { gen2?: { tower?: { flow?: string } } }).gen2?.tower?.flow === 'down') {
+      if (Math.abs(e.nearTreeVine.topY - p.y) <= 14) return { down: true };
+      // (a trunk that runs on up past his ledge, the way on going down it (the route's next point under him on the trunk): from the
+      //  ground mid-trunk only UP takes a trunk (engine.ts wantGrab), and the climb then goes down; without it the route's point under
+      //  him turned him at the trunk, left and right, until rescued, ENG-DARK child Easy 25)
+      const under = this.downPt(p);
+      if (e.nearTreeVine.topY < p.y - 14 && under && Math.abs(under.x - e.nearTreeVine.x) <= 16) {
+        this.grabDown = true;
+        return { up: true };
+      }
+    }
     // a trunk he is touching, and the way goes up (or he is stopped beside it): straight up
     // (holding up at the top of the trunk he just came up takes him nowhere: after a moment he lets the trunk be and goes on as on
     // open ground, a hop up to the ledge above, round 5 2026-10-29)
@@ -3284,6 +3502,114 @@ export class FirstTimerRun {
     if (!m || m.s.phase !== 'stunned' || Math.abs(m.s.y - p.y) > BONK.clear) return null;
     const mine: -1 | 1 = this.bonkSide ?? (p.x < m.s.x ? -1 : 1);
     return this.steerToLand(this.offItsBack(m, mine === -1 ? 1 : -1), m.s.y, Infinity, BONK.landTol);
+  }
+
+  /**
+   * The dark (gen2/dark.ts; 3-1.md "Stand still, and the glowworms show the way down"; any stage by its zones): grounded on a piece with
+   * a rim in the dark he is heading over, within GLOW_NEAR px of it, its landing's light asleep or lit under DARK_AHEAD[setting] s ago,
+   * the thumb comes off: he stands, still facing the rim (the wake reaches ahead and below, zones.ts glowReaches), until the light has
+   * been lit DARK_AHEAD + his reaction (stopReact); then he goes on. A light that never wakes he waits out GLOW_GIVEUP s, then goes
+   * (litAhead names that crossing). Off the piece, the stop is over. noGlowWait removes the skill (rule 21's plant).
+   * He stands FACING the rim: the stop is taken the frame his way turns toward it, often still facing away (the wake reaches only
+   * GLOW_REACH.back behind him; child Normal on the 3-1 draft's roll 19 stood 40 px in from a rim, its light 357 px behind him, and waited it
+   * out dark), so he first presses toward the rim until he faces it (his thumb's own travel), then a clean let-go (tapped: no late lift-off
+   * walks him on to the rim). A give-up ends with the visit: grounded off that rim's piece (a rescue, a fall, the way on), he stops at it
+   * again (kept for the run, the same child came back to that rim and went over it 0.34 s after its light woke, with no stop).
+   */
+  /** the rims his dark stop is made at (glowWait): every dark rim whose landing's light sleeps, and every lit edge in the dark whose RUN
+   *  off comes down within his stopping distance of a sleeping rim a stop there wakes (runOffRims, marked runOff: he stands there until
+   *  that rim's light is lit DARK_AHEAD, ENG-DARK box 14; never a jump's stop, glowJump) */
+  private glowRimsOf(): DarkRim[] {
+    const st = this.sim.stage as Parameters<typeof darkRims>[0];
+    const own = darkRims(st).filter((r) => r.light?.sleep && r.light.id !== undefined);
+    // (an edge with its own rim keeps its run-off rim too: he waits there for both lights, ENG-DARK box 16)
+    return own.concat(runOffRims(st, this.who.setting).filter((r) => r.light?.id !== undefined && !own.some((o) => o.piece === r.piece && o.dir === r.dir && o.light === r.light)));
+  }
+  private glowWait(dir: -1 | 0 | 1): Pad | null {
+    if (this.who.noGlowWait) return null;
+    this.glowRims ??= this.glowRimsOf();
+    if (!this.glowRims.length) return null;
+    const p = this.sim.p;
+    const e = this.e as unknown as { gameTime: number; glowWake: Map<number, number>; standingOnId: number };
+    const on = (r: DarkRim) => p.grounded && p.x >= r.piece.x && p.x <= r.piece.x + r.piece.width && Math.abs(p.y - r.piece.y) <= 4;
+    // (a stop is held while the engine stands him on the rim's piece (standingOnId), his middle past its end at the lip as well: the
+    //  engine keeps him standing to STAND_SIDE of his width past an end (more with Easy's assist), and the span alone dropped the stop
+    //  there, 8-15 px past the end: he walked over the rim dark. 7 of the 9 unlit crossings of c15's 3-1 x40, ENG-DARK box 22)
+    const held = (r: DarkRim) => on(r) || (!this.who.noLipHold && p.grounded && e.standingOnId === r.piece.id);
+    const ahead = DARK_AHEAD[this.who.setting];
+    if (this.glowGaveUp.size && p.grounded) for (const r of this.glowGaveUp) if (!held(r)) this.glowGaveUp.delete(r);
+    if (this.glowStop) {
+      const stop = this.glowStop, { rim, since } = stop;
+      const woke = e.glowWake.get(rim.light!.id!);
+      if (held(rim) && !(woke !== undefined && e.gameTime >= woke + ahead + this.who.stopReact)) {
+        if (e.gameTime - since <= GLOW_GIVEUP) {
+          if (p.facing !== rim.dir && stop.turn !== 2 && !this.who.noGlowTurn) {
+            // (never a turn press within its own slide of the edge: he steps back from the rim first (no further than the piece's
+            //  middle), stands still, then turns: the press that turns him also moves him)
+            if (!this.who.noTurnRoom && stop.turn !== 1) {
+              if ((rim.x - p.x) * rim.dir < Math.min(GLOW_TURN_ROOM, rim.piece.width / 2)) return rim.dir > 0 ? { left: true } : { right: true };
+              if (Math.abs(p.vx) > 5) return {};
+            }
+            stop.turn = 1;
+            if ((rim.x - p.x) * rim.dir < Math.min(GLOW_TURN_ROOM, rim.piece.width / 2)) this.glowEdgeTurns.push(`the rim at x ${rim.x}, y ${Math.round(rim.y)}, ${Math.round((rim.x - p.x) * rim.dir)} px in at ${e.gameTime.toFixed(2)} s`);
+            return rim.dir > 0 ? { right: true } : { left: true };
+          }
+          if (stop.turn === 1) {
+            stop.turn = 2;
+            this.figTap = true;
+          }
+          return {};
+        }
+        this.glowGaveUp.add(rim);
+        this.glowGiveUps.push(`the rim at x ${rim.x}, y ${Math.round(rim.y)} at ${e.gameTime.toFixed(2)} s`);
+      }
+      this.glowStop = null;
+      return null;
+    }
+    if (dir === 0) return null;
+    // (the first rim there whose light is not yet lit DARK_AHEAD: an edge can hold two (its own landing's and a run-off's), and taking
+    //  the first alone, its light lit, he ran off without the second's, ENG-DARK box 16)
+    const unlit = (r: DarkRim) => { const w = e.glowWake.get(r.light!.id!); return !(w !== undefined && e.gameTime >= w + ahead); };
+    const rim = this.glowRims.find((r) => r.dir === dir && on(r) && !this.glowGaveUp.has(r) && (r.x - p.x) * r.dir >= 0 && (r.x - p.x) * r.dir <= GLOW_NEAR && unlit(r));
+    if (!rim) return null;
+    this.glowStop = { rim, since: e.gameTime };
+    return {};
+  }
+
+  /**
+   * The dark's stop on the steer his thumb actually presses (glowWait's third half): glowWait starts the stop for a rim in the ROUTE's way,
+   * but the thumb can carry him the other way: the KID's late lift-off re-arms every frame (thumbify, R-165.59), so a steer he let go is
+   * still pressed. On the 3-1 draft's roll 16 he landed on a piece steering left in the air, meant to stand (intended {}), and his held
+   * thumb ran him 90 px left over the dark rim at its left end, no stop at all. A press toward a dark rim on his piece within GLOW_NEAR, its
+   * landing not yet lit DARK_AHEAD: the stop starts; this frame's press stands (the thumb is down), and from the next frame glowWait holds
+   * him: the thumb comes off with its own lag, armed once (thumbify's glowStop clause). A jump press is glowJump's.
+   */
+  private glowSteer(out: Pad): void {
+    if (this.glowStop || out.press || !out.left === !out.right) return;
+    this.glowWait(out.right ? 1 : -1);
+  }
+
+  /**
+   * The dark's stop for a JUMP (glowWait's other half): a running jump over a dark rim is pressed before he is within GLOW_NEAR of it (the
+   * expert pressed 94 px out and went over with its landing dark, 3-1 draft). Grounded on a dark rim's piece, about to jump toward that rim
+   * within GLOW_JUMP, its landing's light asleep or lit under DARK_AHEAD[setting] s: the jump is not pressed; the stop starts (glowWait
+   * holds him until the landing has been lit DARK_AHEAD + stopReact), then the jump is planned again. noGlowWait removes it with the rest.
+   */
+  private glowJump(dir: -1 | 0 | 1): Pad | null {
+    if (this.who.noGlowWait || dir === 0 || this.glowStop || !this.sim.p.grounded) return null;
+    this.glowRims ??= this.glowRimsOf();
+    const p = this.sim.p;
+    const e = this.e as unknown as { gameTime: number; glowWake: Map<number, number>; standingOnId: number };
+    // (on the rim's piece as the engine stands him (standingOnId), his middle past its end at the lip as well: there the rim is behind
+    //  his middle and a jump toward it goes over it; glowWait holds the stop the same way, ENG-DARK box 22)
+    const lip = (r: DarkRim) => !this.who.noLipHold && e.standingOnId === r.piece.id;
+    const rim = this.glowRims.find((r) => !r.runOff && r.dir === dir && !this.glowGaveUp.has(r) && (lip(r) || (p.x >= r.piece.x && p.x <= r.piece.x + r.piece.width
+      && Math.abs(p.y - r.piece.y) <= 4 && (r.x - p.x) * r.dir >= 0)) && (r.x - p.x) * r.dir <= GLOW_JUMP);
+    if (!rim) return null;
+    const woke = e.glowWake.get(rim.light!.id!);
+    if (woke !== undefined && e.gameTime >= woke + DARK_AHEAD[this.who.setting]) return null;
+    this.glowStop = { rim, since: e.gameTime };
+    return {};
   }
 
   /**
@@ -3901,8 +4227,9 @@ export class FirstTimerRun {
     }
     if (steer !== 0 && this.r() < who.slip * DT) this.driftUntil = t + Math.round(between(this.r, who.slipFrames)) * DT;
     // (R-165.59: lastSteer is not moved on while the late lift-off runs, so for KID and ADULT this re-arms every frame and the steer is
-    // never let go once held; a tier bot arms it once per let-go, as the thumb does)
-    if (steer === 0 && this.lastSteer !== 0 && !want.press && !(who.holdQ && this.releaseArmed)) {
+    // never let go once held; a tier bot arms it once per let-go, as the thumb does. At the dark's stop (glowWait) every bot arms it once:
+    // he means to stand, and the KID's re-arming never let him, so he walked off every dark rim)
+    if (steer === 0 && this.lastSteer !== 0 && !want.press && !((who.holdQ || this.glowStop) && this.releaseArmed)) {
       const [lo, hi] = who.releaseMax;
       this.releaseLeft = Math.max(lo, Math.min(hi, Math.round(Math.exp(gauss(this.r, who.release)))));
       this.releaseArmed = true;
@@ -3929,6 +4256,7 @@ export class FirstTimerRun {
     const intended = this.intend();
     const want = this.rollHeld || this.steady || this.runnerAhead() ? intended : this.rhythm(intended);
     const out = this.figTap ? this.tapped(want) : this.thumbify(want);
+    this.glowSteer(out);
     this.wasOnTrunk = !!this.sim.p.climbing;
     if (out.press) this.lastPress = this.t;
     return out;
@@ -3936,6 +4264,9 @@ export class FirstTimerRun {
 
   /** a flick up: short, sometimes straight up for a moment; a second flick only where a single one failed before */
   private startJump(dir: -1 | 0 | 1, kind: 'single' | 'double', off: boolean): Pad {
+    // (the dark: a jump toward a dark rim whose landing is still dark waits for its light, read before the jump's own state moves)
+    const gj = this.glowJump(dir);
+    if (gj) return gj;
     const p = this.sim.p, who = this.who;
     // (a tier bot: where a jump has failed him he holds on longer; any jump may get its second press, at his own delay)
     const overhead = this.climbJump;
@@ -4003,6 +4334,8 @@ export class FirstTimerRun {
     this.blockedT = 0;
     this.prog.relocate(sim.p);
     this.placed = true;
+    // (a put-back is no crossing of the rim he was put away from: gen2/dark.ts RimWatch.put)
+    this.rimWatch?.put();
   }
 
   /** the route point nearest a spot */
@@ -4073,7 +4406,8 @@ export class FirstTimerRun {
   /** after a frame: landings, progress, stuck spots, game over */
   private after() {
     const sim = this.sim, p = sim.p, e = this.e, t = this.t;
-    const more = this.prog.step(p);
+    let more = this.prog.step(p);
+    if (p.grounded && this.airFrom && this.landedAhead(p)) more = true;
     // landings: did the jump get him on?
     const held = p.climbing || p.isVineSwinging || p.hanging;
     if (!p.grounded && !held && !this.airFrom) this.airFrom = { t, x: p.x, y: p.y, cur: this.prog.cur };
@@ -4107,7 +4441,11 @@ export class FirstTimerRun {
     // fallen off the way (a miss in a climb drops him to a branch or the floor far under where he was): once he stands there a moment,
     // he finds his place along the way again and heads back to the way up, as a person climbs back (round 5, 2026-10-29: the bot kept
     // heading for the point straight over his head, never walked back to the trunk, and the tall climbs ran out the clock)
-    if (this.prog.off(p) > 260 && !held) {
+    // (and not while he walks his own floor to the point he was put at on landing ahead (landedAhead): 452 px from it on roll 26, he
+    //  read as off the way, was put back at the point over his head and counted a fall back, ENG-DARK box 16)
+    const onRun = this.aheadRun && this.prog.cur === this.aheadRun.k && Math.abs(p.y - this.aheadRun.y) <= 4 && p.x >= this.aheadRun.lo - 24 && p.x <= this.aheadRun.hi + 24;
+    if (!onRun) this.aheadRun = null;
+    if (this.prog.off(p) > 260 && !held && !onRun) {
       this.offRoute += DT;
       if (this.offRoute > 0.5 && p.grounded) {
         const top = this.prog.best;
@@ -4261,6 +4599,17 @@ export class FirstTimerRun {
   }
 
   /** the whole run, until the shrine, a sealed shrine, or the time cap */
+  /** one frame of the dark's watch: the rims he goes over, with when each landing's light woke (the engine's own glowWake) */
+  private watchRims() {
+    if (this.rimWatch === undefined) {
+      const rims = darkRims(this.sim.stage as Parameters<typeof darkRims>[0]);
+      this.rimWatch = rims.length ? new RimWatch(rims) : null;
+    }
+    if (!this.rimWatch) return;
+    const e = this.e as unknown as { gameTime: number; glowWake: Map<number, number> };
+    this.rimWatch.step(e.gameTime, this.sim.p, (l) => e.glowWake.get(l.id ?? -1));
+  }
+
   play(): this {
     // (three times the stage's own length where it has one (STAGE_SECONDS), as 360 s is for a two-minute stage: World 4's longer stages ran out of time at 360 s while
     // the bot was still making its way up, round 5 2026-10-29)
@@ -4270,8 +4619,9 @@ export class FirstTimerRun {
       this.pressWant = undefined;
       const pad = this.pad();
       this.sim.frame(pad);
+      this.watchRims();
       if (PRESS_TRACE.on && pad.press && this.pressWant !== undefined) PRESS_TRACE.rows.push({ want: this.pressWant, got: this.t });
-      this.opts.onFrame?.(this.sim);
+      this.opts.onFrame?.(this.sim, this);
       { const on = this.sim.p.grounded ? this.sim.platforms.find((q) => q.id === this.sim.standingOn) : undefined; if (this.wasOnLog && on && on.type !== 'drift') this.handed++; this.wasOnLog = !!on && on.type === 'drift'; }
       {
         const p = this.sim.p, sw = !!p.isVineSwinging;
@@ -4447,6 +4797,7 @@ export function firstTimer(id: string, seed: number, who: FirstTimer, opts: RunO
     ...(who.holdQ ? { secondPressMs: run.secondPressMs, maxX: Math.round(run.maxX), far: Math.round(run.farOn), xTrace: run.xTrace } : {}),
     ...(run.sim.e.cast ? { cast: castTally({ cast: run.sim.e.cast, player0: run.start }, run.knows('trap')) } : {}),
     ...(run.turnBacks ? { turnBacks: run.turnBacks } : {}),
+    ...(run.rimWatch ? { dark: { crossed: run.rimWatch.crossings.filter((c) => !c.climbed).length, climbed: run.rimWatch.crossings.filter((c) => c.climbed).length, unlit: litAhead(run.rimWatch.crossings, who.setting), gaveUp: run.glowGiveUps, edgeTurns: run.glowEdgeTurns, loop: rimLoop(run.rimWatch.crossings) } } : {}),
     ms: Date.now() - t0,
   };
   out.flags = flagsFor(out);

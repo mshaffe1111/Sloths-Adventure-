@@ -25,8 +25,8 @@ import { JUMP_CLEAR, jumpEdges } from '../stageMetrics.ts';
 import { APEX, BANDS, bounceLipOverCap, CAP_UP, gapEnvelope, judgedOnArcs, linkArcs, lesserArcs, riseEnvelope, BLOCK_H, SPARE } from './reach.ts';
 import { classify, headroomOf, judgeRoll, NOT_JUDGED_ALL, TAUGHT, verdictLines, type Judged11, type RouteAsk } from './verdicts.ts';
 import { PROMISES_11, realFalls } from './promises11.ts';
-import { gapCatchY, localExtent, reflectLocal, routeAt, routeOf, storeyLimit, TOWER, towerCatches, towerFalls, towerFlagBreaches, towerFlags, towerGates, towerSkips, towerVaults, vertical } from './tower.ts';
-import { CLIMB_CLEAR } from '../vineTop.ts';
+import { gapCatchY, localExtent, reflectLocal, routeAt, routeOf, storeyLimit, TOWER, towerCatches, towerFalls, towerFlagBreaches, towerFlags, towerGates, stopVines, towerHandOns, towerLids, towerSkips, towerVaults, towerVineCuts, vertical } from './tower.ts';
+import { CLIMB_CLEAR, climbX } from '../vineTop.ts';
 import { LAND_IN, repairLandings } from './landings.ts';
 import { findW1Pits } from '../w1Pits.ts';
 import type { Drop, JudgedStage } from './verdicts.types.ts';
@@ -53,7 +53,8 @@ import { sweepBox } from '../wheel.ts';
 const WHEEL_RIDER = 96;
 import type { ClockDef } from '../stageKit.types.ts';
 import type { RiverZone } from '../river.ts';
-import { CRUMBLE_TILE_W, crumbleTime, tideCrossTime, type Zone } from '../zones.ts';
+import { CRUMBLE_TILE_W, crumbleTime, keepsClear, tideCrossTime, type Zone } from '../zones.ts';
+import { glowFlags } from './dark.ts';
 import { creakLimb, needless } from './creak.ts';
 import { layChase } from './chaseLay.ts';
 import { rollsOf } from './rollLay.ts';
@@ -3084,6 +3085,10 @@ export function layStage(budget: StageBudget, graph: MissionGraph, kit: WorldKit
     if (routed) { const sum = leftSum; endLeg(legK); if (sum !== undefined) exitX = sum - exitX; }
   }
   clearClimbs(vines, platforms);
+  // (going down, a climb vine stops on the highest wood across it, a landing on the way down: a turn's drop is past TOWER.see, so the
+  //  catch owed under the end its vine hangs from lay across the vine (tower.ts stopVines; the lead's ruling (b), ENG-DOWNBOT))
+  if (!routed) { if (flow === 'down') stopVines(vines, platforms); }
+  else for (const g of laidLegs) if (g.travel === 'down') stopVines(vines.filter((v) => v.x > g.x0 && v.x < g.x1 && v.bottomY > g.y0 && v.topY < g.y1 + 1), platforms.filter((q) => q.x < g.x1 && q.x + q.width > g.x0));
   // (a turn's x is its vine's, where clearClimbs left it)
   for (const t of turns) t.x = t.vine.x;
   // (a stage of legs: a leg laid left may run past x 0, so the whole stage is moved right until it begins at x 0, and its width and
@@ -3300,11 +3305,7 @@ export { CLIMB_CLEAR };
  * 2026-10-29). The vault off the vine's top still lands on the bough.
  */
 export function clearClimbs(vines: Vine[], platforms: readonly Platform[]): void {
-  for (const v of vines) {
-    if (v.vineType !== 'tree_climb') continue;
-    const face = platforms.find((p) => p.type === 'solid' && Math.abs(p.y - v.topY) <= 2 && (Math.abs(p.x - v.x) <= 2 || Math.abs(p.x + p.width - v.x) <= 2));
-    if (face) v.x += Math.abs(face.x - v.x) <= 2 ? -CLIMB_CLEAR : CLIMB_CLEAR;
-  }
+  for (const v of vines) v.x = climbX(v, platforms);
 }
 
 /** a stage id's place in the game ('5-7' -> 507), for lessons taught by an earlier stage */
@@ -3840,12 +3841,14 @@ export function fillSockets(laid: Laid, budget: StageBudget, kit: WorldKit, seed
   }
   // (a flag an emitter's zone has come to cover is taken down: nothing stands in a zone)
   const flags = checkpoints.filter((c) => !flagInZone(sink.zones, c.x, c.y));
+  // (and a flag in the glowworms' dark lights a glow within a second of standing still there: never a blind respawn; gen2/dark.ts)
+  glowFlags(sink, flags);
   return { enemies: sink.enemies, collectibles: C, checkpoints: flags, hints, fills, barren, extras: sink.extras };
 }
 
 /** levelCheck's zone rules: an animal inside a zone's box (30 px either side, 60 below), a flag inside it */
-const foeInZone = (zones: readonly Zone[], x: number, y: number) => zones.some((z) => x > z.x0 - 30 && x < z.x1 + 30 && y > z.top && y < z.bottom + 60);
-const flagInZone = (zones: readonly Zone[], x: number, y: number) => zones.some((z) => x >= z.x0 - 1 && x <= z.x1 + 1 && y > z.top && y < z.bottom);
+const foeInZone = (zones: readonly Zone[], x: number, y: number) => zones.some((z) => keepsClear(z) && x > z.x0 - 30 && x < z.x1 + 30 && y > z.top && y < z.bottom + 60);
+const flagInZone = (zones: readonly Zone[], x: number, y: number) => zones.some((z) => keepsClear(z) && x >= z.x0 - 1 && x <= z.x1 + 1 && y > z.top && y < z.bottom);
 
 /** the quota items a section's node asks for, shared out among the node's sections in turn */
 function graphObjectives(laid: Laid, sec: PlacedSection): number {
@@ -4674,9 +4677,12 @@ function applyVerdictsOn(st: Gen2Stage, req: BuildRequest): void {
       ? (T.legs ?? []).flatMap((g) => (g.frame && upOrDown(g.travel) ? [{ flow: g.travel, x0: g.frame.x0, floorY: g.floorY ?? T.floorY, turns: g.turns ?? [], own: st.platforms.filter((q) => q.x + q.width > g.frame!.x0 && q.x < g.frame!.x1 && q.y >= g.y0 - WALL.over - 1 && q.y <= (g.floorY ?? g.y1) + 1).map((q) => ({ ...q, x: q.x - g.frame!.x0 })) }] : []))
       : [{ flow: T.flow, x0: 0, floorY: T.floorY, turns: T.turns, own: st.platforms }];
     // (and straight up at every vine's top lands him on the wood there, whichever way he faces: tower.ts towerVaults, the engine's finder)
+    // (and going down, no wood lies across a climb vine: the vine stops on it, tower.ts stopVines; 'a catch crosses a vine', ENG-DOWNBOT)
+    // (and going down, a stopped vine's catch hands him on to its own storey, never past it: tower.ts towerHandOns, ENG-DOWNBOT)
+    // (and going down, nothing lies in his hop's room over a dip's lip or a climb vine's top: tower.ts towerLids, ENG-DOWNBOT)
     // (a wheel's pond is what lies under the ends over it: wheelLay.ts pondFloors)
     const ponds = pondFloors(st.rivers ?? []);
-    const falls = [...cols.flatMap((c) => [...towerFalls(c.flow, ponds.length ? [...c.own, ...ponds] : c.own, c.floorY, T.width), ...(c.flow === 'up' ? towerSkips(c.turns, c.own) : [])].map((m) => (c.x0 ? `${m} [the column at x ${c.x0}]` : m))), ...towerGates(gates, st.platforms, st.vines), ...towerVaults(st.vines, st.platforms)];
+    const falls = [...cols.flatMap((c) => [...towerFalls(c.flow, ponds.length ? [...c.own, ...ponds] : c.own, c.floorY, T.width), ...(c.flow === 'up' ? towerSkips(c.turns, c.own) : []), ...(c.flow === 'down' ? [...towerVineCuts(c.x0 ? st.vines.map((v) => ({ ...v, x: v.x - c.x0 })) : st.vines, c.own), ...towerLids(c.x0 ? st.vines.map((v) => ({ ...v, x: v.x - c.x0 })) : st.vines, c.own), ...towerHandOns(c.x0 ? c.turns.map((t) => ({ ...t, x: t.x - c.x0 })) : c.turns, c.own, T.width)] : [])].map((m) => (c.x0 ? `${m} [the column at x ${c.x0}]` : m))), ...towerGates(gates, st.platforms, st.vines), ...towerVaults(st.vines, st.platforms)];
     // (and its tips, R-165.236: none said more than TIP_NEAR px of climb before its socket, each in the first section to show what it
     // teaches: tipMisses. x alone said 1-4's four teach lines on the start floor)
     falls.push(...tipMisses(st, req.kit.manifest));

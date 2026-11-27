@@ -1,0 +1,17 @@
+rows 360 shrine 360
+unlit events 0
+max loop (34, 'adult', 'easy', 6)
+gaveUp 0 edgeTurns 0
+rescue kinds the base lacks 2
+  a drop of # px ahead, a trunk beside him, the way on is # px down
+  in a dip # px deep, a drop of # px ahead, a trunk beside him, the way on is # px down
+bot setting  shrine  median new / base  delta  rescues new/base
+kid    normal  40/40   201.3 /  174.7   +26.7  151/156
+kid    easy    40/40   235.7 /  197.0   +38.7  186/186
+child  normal  40/40   320.6 /  320.1    +0.6  142/138
+child  easy    40/40   326.9 /  306.4   +20.5  169/178
+middle normal  40/40   244.6 /  207.7   +36.9  151/126
+middle easy    40/40   292.2 /  261.5   +30.7  187/186
+adult  normal  40/40   191.9 /  164.4   +27.6  119/119
+adult  easy    40/40   232.4 /  200.3   +32.1  184/180
+expert normal  40/40   236.4 /  202.4   +34.0  148/124

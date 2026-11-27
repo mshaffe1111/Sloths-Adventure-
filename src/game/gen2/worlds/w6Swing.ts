@@ -16,6 +16,7 @@
 import type { Zone } from '../../zones.ts';
 import type { Difficulty, Phase, PropDef, PropEmitter, SectionPiece, SectionTemplate, Socket, StageSink, WorldKit } from '../types.ts';
 import { withW6Rooms } from './w6Rooms.ts';
+import { DARK_EMIT as W6S_EMIT, DARK_PROPS as W6S_PROPS, darkEnds } from '../dark.ts';
 
 // ───────────────────────────── the tags (World 6's manifest, gen2/worlds/w6.ts W6_TAG, names what these ask for) ─────────────────────────────
 
@@ -398,72 +399,9 @@ const swingRun: SectionTemplate = {
 export const W6_DARK = 'w6:dark';
 export const W6S_TIPS: Record<string, string> = { [W6_DARK]: 'The roots go dark. Only the firefly glows.' };
 
-/** the props that lay a dark stretch: its start, its end (with the firefly's lights), and a room's end (no lights: its firefly is the
- *  room's own glow, puzzleKit 'glow') */
-export const W6S_PROP = { darkFrom: 'darkFrom', darkTo: 'darkTo', darkToBare: 'darkToBare' } as const;
-export const W6S_PROPS: PropDef[] = [
-  { id: W6S_PROP.darkFrom, tags: [W6S_PROP.darkFrom], w: 10, minApart: 0 },
-  { id: W6S_PROP.darkTo, tags: [W6S_PROP.darkTo], w: 10, minApart: 0 },
-  { id: W6S_PROP.darkToBare, tags: [W6S_PROP.darkToBare], w: 10, minApart: 0 },
-];
-/** the dark's box over its ground, and the firefly's lights: over a gap, and along the way */
-export const DARK_ZONE = { up: 800, down: 400, gapLight: 190, wayLight: 130, every: 420, lightUp: 90 } as const;
-
-/** a dark stretch's two ends, as sockets on its first and last pieces */
-export const darkEnds = (from: string, to: string, lights = true): Socket[] => [
-  { id: 'darkFrom', role: 'prop', on: from, t: 0, allow: [W6S_PROP.darkFrom], easy: 'keep' },
-  { id: 'darkTo', role: 'prop', on: to, t: 1, allow: [lights ? W6S_PROP.darkTo : W6S_PROP.darkToBare], easy: 'keep' },
-];
-
-/** the end of a dark stretch filled first, waiting for the other (in sink.extras: one at a time, a section's own two) */
-const OPEN = 'w6sDarkFrom';
-
-/** the ground under x (a piece whose top is within a step of the dark's ground): no ground, a gap the firefly hangs over */
-function groundAt(out: StageSink, x: number, y: number): boolean {
-  return out.platforms.some((p) => x >= p.x && x <= p.x + p.width && p.y >= y - 140 && p.y <= y + 40);
-}
-
-/** the dark stretch from the open start to `x1`, with the firefly's lights (or none) */
-function darkZone(out: StageSink, x0: number, y: number, x1: number, lights: boolean): Zone {
-  const L: NonNullable<Zone['lights']> = [];
-  if (lights) {
-    // (a light over the middle of every gap)
-    let gap0: number | null = null;
-    for (let x = x0; x <= x1; x += 10) {
-      const g = !groundAt(out, x, y);
-      if (g && gap0 === null) gap0 = x;
-      if (!g && gap0 !== null) {
-        L.push({ x: Math.round((gap0 + x) / 2), y: y - DARK_ZONE.lightUp, r: DARK_ZONE.gapLight });
-        gap0 = null;
-      }
-    }
-    // (and a dimmer one along the way where none is near)
-    for (let x = x0 + 200; x < x1 - 120; x += DARK_ZONE.every) if (!L.some((l) => Math.abs(l.x - x) < 220)) L.push({ x, y: y - DARK_ZONE.lightUp + 20, r: DARK_ZONE.wayLight });
-    L.sort((a, b) => a.x - b.x);
-  }
-  return { kind: 'dark', x0: Math.round(x0), x1: Math.round(x1), top: y - DARK_ZONE.up, bottom: y + DARK_ZONE.down, baseY: y, dir: 1, period: 1, warn: 0, active: 1, force: 0, offset: 0, lights: L };
-}
-
-/**
- * The dark props' emitters: the first end filled remembers its spot, the second lays the dark between them (a mirrored section reads its
- * sockets 1 - t, so its "end" comes first: either order works). The end socket says whether the firefly's lights hang in it.
- */
-export const W6S_EMIT: Record<string, PropEmitter> = {
-  darkFrom: (f, _p, out) => darkEnd(out, f.x, f.y, null),
-  darkTo: (f, _p, out) => darkEnd(out, f.x, f.y, true),
-  darkToBare: (f, _p, out) => darkEnd(out, f.x, f.y, false),
-};
-function darkEnd(out: StageSink, x: number, y: number, lights: boolean | null) {
-  const open = out.extras[OPEN] as { x: number; y: number; lights: boolean | null } | undefined;
-  if (!open) {
-    out.extras[OPEN] = { x, y, lights };
-    return;
-  }
-  delete out.extras[OPEN];
-  const [a, b] = open.x <= x ? [open, { x, y, lights }] : [{ x, y, lights }, open];
-  if (b.x - a.x < 100) return;
-  out.zones.push(darkZone(out, a.x, a.y, b.x, (open.lights ?? lights) !== false));
-}
+// (the dark stretch, its props and emitters are one gen2 brick any world lays: gen2/dark.ts, lifted from here (ENG-DARK). World 6's
+//  names stay, so World 6 and World 8 lay the same stretch, light for light)
+export { DARK_PROP as W6S_PROP, DARK_PROPS as W6S_PROPS, DARK_ZONE, darkEnds, DARK_EMIT as W6S_EMIT } from '../dark.ts';
 
 const darkTip = (on: string): Socket => ({ id: 'tip-dark', role: 'tip', on, t: 0.1, allow: [W6_DARK] });
 

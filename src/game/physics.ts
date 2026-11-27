@@ -67,6 +67,11 @@ export const EDGE = {
   snapV: 600,
 };
 
+/** how far his CENTRE may hang past the end of a ledge and still stand on it, as a share of his width (engine.ts: 0.48 left him in
+ *  mid-air; 0.26, about 11 px, keeps a foot on). The early-stage help adds ASSIST.landSide (Easy: the whole game). gen2 tower.ts reads
+ *  it: an end nearer the wall's line than this is no way off (he stands there), one further in is a slot he falls down (offEnd) */
+export const STAND_SIDE = 0.26;
+
 /** the early-stage help, as the numbers it changes: longer to still jump after leaving a ledge, a longer memory for a jump pressed just early, a stronger second jump, and a wider landing */
 export const ASSIST = {
   coyote: 0.08,

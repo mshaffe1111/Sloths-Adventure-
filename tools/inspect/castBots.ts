@@ -42,6 +42,8 @@ export const CAST_BOTS: Record<string, Partial<Record<Setting, FirstTimer>>> = {
 export interface CastRun {
   bot: string; setting: Setting; stage: string; seed: number; end: FTRun['end']; pass: boolean; time: number; goal: FTRun['goal'];
   rescues: number; turnBacks: number; hits: number; lives: number; hitBy: Record<string, number>; cast: FTRun['cast'] | null; stuck: Array<{ x: number; what: string }>;
+  /** the dark: rims gone over, and the ones not lit 1 s ahead (FTRun.dark; absent on a stage with no lit dark) */
+  dark?: FTRun['dark'];
   error?: string;
 }
 
@@ -61,6 +63,7 @@ export function castRun(bot: string, setting: Setting, stage: string, seed: numb
     bot, setting, stage, seed, end: r.end, pass: r.end === 'shrine' && goalFull && r.rescues === 0, time: r.time, goal: r.goal, rescues: r.rescues, turnBacks: r.turnBacks ?? 0,
     hits: r.harms.filter((h) => h.kind === 'hit').length, lives: r.harms.filter((h) => h.kind === 'life').length, hitBy, cast: r.cast ?? null,
     stuck: r.stuck.map((s) => ({ x: Math.round((s as { x: number }).x), what: String((s as { what?: string }).what ?? '') })),
+    ...(r.dark ? { dark: r.dark } : {}),
   };
 }
 
