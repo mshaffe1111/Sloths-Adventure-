@@ -218,10 +218,10 @@ export const w3CapDown: SectionTemplate = {
   content: 'bounce',
   jobs: W3_BOUNCE_JOBS,
   pieces: [
-    { key: 'a', shape: 'branch', w: [160, 180], place: { kind: 'start' } },
+    { key: 'a', shape: 'branch', w: [120, 130], place: { kind: 'start' } },
     { key: 'b', shape: 'branch', w: [290, 310], place: { kind: 'walk', after: 'a', dy: [250, 250] }, landing: true },
     w3Cap('m', 'b', 0.74),
-    w3BounceLip('w', 'b', 'm', [160, 180]),
+    w3BounceLip('w', 'b', 'm', [140, 160]),
     { key: 'c', shape: 'branch', w: [260, 280], place: { kind: 'walk', after: 'w', dy: [150, 150] }, landing: true },
   ],
   entry: { piece: 'a', kind: 'ledge' },
@@ -242,12 +242,12 @@ export const w3CapSteps: SectionTemplate = {
   content: 'bounce',
   jobs: W3_BOUNCE_JOBS,
   pieces: [
-    { key: 'a', shape: 'branch', w: [140, 160], place: { kind: 'start' } },
-    { key: 's', shape: 'branch', w: [140, 160], place: { kind: 'walk', after: 'a', dy: [120, 120] }, landing: true },
-    { key: 'b', shape: 'branch', w: [220, 240], place: { kind: 'walk', after: 's', dy: [126, 130] }, landing: true },
+    { key: 'a', shape: 'branch', w: [120, 130], place: { kind: 'start' } },
+    { key: 's', shape: 'branch', w: [120, 130], place: { kind: 'walk', after: 'a', dy: [120, 120] }, landing: true },
+    { key: 'b', shape: 'branch', w: [210, 220], place: { kind: 'walk', after: 's', dy: [126, 130] }, landing: true },
     w3Cap('m', 'b', 0.74),
-    w3BounceLip('w', 'b', 'm', [140, 160]),
-    { key: 'c', shape: 'branch', w: [220, 240], place: { kind: 'walk', after: 'w', dy: [150, 150] }, landing: true },
+    w3BounceLip('w', 'b', 'm', [120, 130]),
+    { key: 'c', shape: 'branch', w: [210, 224], place: { kind: 'walk', after: 'w', dy: [150, 150] }, landing: true },
   ],
   entry: { piece: 'a', kind: 'ledge' },
   exit: { piece: 'c', kind: 'ledge' },
@@ -256,10 +256,10 @@ export const w3CapSteps: SectionTemplate = {
   mirrorable: false,
 };
 
-/** [f] hops down the shelves: four of World 3's branch shelves in the air, each a plain jump (80-100 px across, under a single's 128-137
- *  from 70 px, reach.ts) and 60-80 px down from the last; never a double, never a walk-off (each lands past the last's end). 960 px
- *  declared at its widest (the roll's tempo widens it about 11%: 1030 declared laid 1143-1144, past a storey's 1140, box 4). The middle
- *  shelves 140-145 px (1.6 Pokeys), the last wide (190-200) as every exit before a turn; none 180 px, a tower catch bough's width */
+/** [f] hops down the shelves: four of World 3's branch shelves in the air, each a plain jump (80-89 px across, under a single's 128-137
+ *  from 70 px, reach.ts) and 60-80 px down from the last; never a double, never a walk-off (each lands past the last's end). 1025 px
+ *  declared at its widest Easy roll (W3_TOWER_WIDEST below). The middle shelves 136-140 px (1.5 Pokeys), the last wide (190-200) as every
+ *  exit before a turn; none 180 px, a tower catch bough's width */
 export const w3ShelfHops: SectionTemplate = {
   id: 'w3-shelf-hops',
   name: 'hops down the shelves',
@@ -269,10 +269,10 @@ export const w3ShelfHops: SectionTemplate = {
   content: 'floating',
   jobs: W3_FLOAT_JOBS,
   pieces: [
-    { key: 'a', shape: 'branch', w: [150, 170], place: { kind: 'start' } },
-    { key: 'b', shape: 'branch', w: [140, 145], place: { kind: 'jump', after: 'a', dy: [60, 80], gapPx: [80, 100] }, landing: true },
-    { key: 'c', shape: 'branch', w: [140, 145], place: { kind: 'jump', after: 'b', dy: [60, 80], gapPx: [80, 100] }, landing: true },
-    { key: 'd', shape: 'branch', w: [190, 200], place: { kind: 'jump', after: 'c', dy: [60, 80], gapPx: [80, 100] }, landing: true },
+    { key: 'a', shape: 'branch', w: [124, 134], place: { kind: 'start' } },
+    { key: 'b', shape: 'branch', w: [136, 140], place: { kind: 'jump', after: 'a', dy: [60, 80], gapPx: [80, 89] }, landing: true },
+    { key: 'c', shape: 'branch', w: [136, 140], place: { kind: 'jump', after: 'b', dy: [60, 80], gapPx: [80, 89] }, landing: true },
+    { key: 'd', shape: 'branch', w: [190, 200], place: { kind: 'jump', after: 'c', dy: [60, 80], gapPx: [80, 89] }, landing: true },
   ],
   entry: { piece: 'a', kind: 'ledge' },
   exit: { piece: 'd', kind: 'ledge' },
@@ -284,6 +284,10 @@ export const w3ShelfHops: SectionTemplate = {
 /** the down tower's bricks (a pool reads them after the way down's): two climb shapes (root-down, two-roots), two bounce shapes (cap-down,
  *  cap-steps; cap-steps came back from parking when ENG-CATCH, R-165.526, fixed the tower's catch faults) and one floating (shelf-hops) */
 export const W3_DOWN_TOWER: readonly SectionTemplate[] = [w3RootDown, w3TwoRoots, w3CapDown, w3CapSteps, w3ShelfHops];
+/** the widest a down tower brick may DECLARE (KIT-W3a box 5, the lead's rule): at least 10% under a storey (TOWER.width less two walls,
+ *  1140). Declared = its widest widths and gaps plus Easy's landing pad on every landing piece (layLocal: EASY_LANDING, 48 px each; the
+ *  "about 11% wide" a brick lays is that pad: cap-steps at 960 px of widths laid 1142 and threw). w3Tower.test refuses a brick past it */
+export const W3_TOWER_WIDEST = 0.9;
 
 // ───────────────────────────── the hazards a node code may ask ─────────────────────────────
 

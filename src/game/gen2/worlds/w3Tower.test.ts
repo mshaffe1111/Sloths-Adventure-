@@ -20,7 +20,9 @@ import { TYPE_OF_LETTER } from '../nodeAsks.ts';
 import { FLOWN_ARCS } from '../reach.ts';
 import { generateAllLevels } from '../../worldsData.ts';
 import type { ContentType, GraphBrief, NodeJob, SectionTemplate, StageBudget, WorldKit } from '../types.ts';
-import { W3_DOWN_TOWER, w3CapDown, w3Drops, w3Ledge, w3Walk } from './w3.ts';
+import { W3_DOWN_TOWER, W3_TOWER_WIDEST, w3CapDown, w3CapSteps, w3Drops, w3Ledge, w3Walk } from './w3.ts';
+import { TOWER } from '../tower.ts';
+import { EASY_LANDING } from '../types.ts';
 
 const DRAFT = '3-1';
 /** 3-1's trimmed code (AUDIT-W3 codes-trim-rolled.txt): its c and b beats are the tower's climb and bounce */
@@ -163,4 +165,39 @@ test("PLANTED: w3-cap-down's ledge back at 240-260 lets the double reach the lip
   const planted: SectionTemplate = { ...w3CapDown, pieces: w3CapDown.pieces.map((p) => (p.key === 'b' ? { ...p, w: [240, 260] as [number, number] } : p)) };
   const g = lipGap(planted);
   assert.ok(g <= DOUBLE_REACH, `planted ledge 240-260: entry shelf to lip ${Math.round(g)} px, past the double's ${DOUBLE_REACH} px (the plant is not caught)`);
+});
+
+// ── the width bar (KIT-W3a box 5, the lead's rule): a down brick's widest DECLARED roll is at least 10% under a storey ──
+const STOREY = TOWER.width - 2 * TOWER.wall;
+const BAR = Math.floor(W3_TOWER_WIDEST * STOREY);
+/** a brick's widest roll as its template declares it: every piece at its widest, every gap at its widest band, and Easy's landing pad
+ *  on each landing piece (layLocal); a piece this cannot read (no pixel band on a jump, a kind with no x of its own) fails by name */
+function declaredWidest(t: SectionTemplate): number {
+  const at = new Map<string, { x: number; w: number }>();
+  for (const pc of t.pieces) {
+    const pl = pc.place;
+    if (pl.kind === 'on' || pl.kind === 'climb') continue;
+    const w = (Array.isArray(pc.w) ? pc.w[1] : pc.w) + (pc.landing && pl.kind !== 'start' ? EASY_LANDING : 0);
+    if (pl.kind === 'start') { at.set(pc.key, { x: 0, w }); continue; }
+    const a = at.get((pl as { after?: string }).after ?? '');
+    assert.ok(a, `${t.id}: ${pc.key} (${pl.kind}) has no laid piece before it to measure from`);
+    if (pl.kind === 'walk') at.set(pc.key, { x: a.x + a.w, w });
+    else if (pl.kind === 'jump' && pl.gapPx) at.set(pc.key, { x: a.x + a.w + pl.gapPx[1], w });
+    else assert.fail(`${t.id}: ${pc.key} is a ${pl.kind} with no declared pixel band: its widest roll cannot be read`);
+  }
+  const ps = [...at.values()];
+  return Math.max(...ps.map((p) => p.x + p.w)) - Math.min(...ps.map((p) => p.x));
+}
+/** the bricks over the bar, each named with its declared widest */
+const overBar = (tower: readonly SectionTemplate[]) => tower.map((t) => [t.id, declaredWidest(t)] as const).filter(([, w]) => w > BAR).map(([id, w]) => `${id} declares ${w} px`);
+
+test(`every down tower brick declares its widest roll at least 10% under a storey (${BAR} of ${STOREY} px, Easy's pad counted)`, () => {
+  assert.equal(STOREY, 1140);
+  assert.deepEqual(overBar(W3_DOWN_TOWER), [], `over the ${BAR} px bar`);
+});
+
+test('PLANTED: w3-cap-steps back at its box-4 widths (960 px of widths, 1152 declared) is refused by name', () => {
+  const back: Record<string, [number, number]> = { a: [140, 160], s: [140, 160], b: [220, 240], w: [140, 160], c: [220, 240] };
+  const planted: SectionTemplate = { ...w3CapSteps, pieces: w3CapSteps.pieces.map((p) => (back[p.key] ? { ...p, w: back[p.key] } : p)) };
+  assert.deepEqual(overBar([...W3_DOWN_TOWER.filter((t) => t.id !== planted.id), planted]), ['w3-cap-steps declares 1152 px']);
 });
