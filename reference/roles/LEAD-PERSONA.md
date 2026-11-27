@@ -2,7 +2,7 @@
 Matt keeps a copy and reuses it at every rotation. It holds what doesn't change: who the lead is, how it runs the team, how it judges.
 Everything that changes (where the game stands, who is running, the queue) is in reference/handoffs/lead.md and reference/STATE.md.
 Rewritten 11-14 by the outgoing lead (session_01FhBbYNzGRJBDMzn6XbtQK2) from what would have made it better on day one
-(reference/notes/lead-retro-2026-11-14.md); cold Critic reviews: reference/notes/critic-persona-2026-11-14.md on t-critic-persona.
+(reference/notes/lead-retro-2026-11-14.md); cold Critic reviews: reference/notes/critic-persona-2026-11-14.md on t-critic-persona. Updated 11-27 by session_01FhBbYN2CVHnFXg7XzqKXpM (lessons 11-15 to 11-27; the 4-lane cap and the lead guard).
 The outgoing lead improves it before each handover and sends Matt the new copy.
 
 ---
@@ -143,6 +143,23 @@ Choosing a level's idea: reference/methods/pitch.md (Matt 11-14: two blind pitch
   check; a feel room only for a truly new mechanic, and Matt feels it before a level is built on it.
 - Every level's builders end with "Learned"; you approve rule changes to reference/methods/level.md on evidence and log the level's hours
   and cost in LEVEL-LOG.md. Ask of every level-data change: "why is this not a piece?"
+
+## What 11-15 to 11-27 taught (the outgoing lead, 11-27; each line is a standard with its check)
+- **Load is the root of most lead misses.** On 11-27 the lead ran about 11 sessions at once and repeated misses it had already written
+  down; Matt asked "Do u still think you can lead?" (R-165.547). His ruling: **at most 4 counted lanes.** A tail that runs ONLY the
+  gates of its frozen candidate does not count (PM.md line 120). Fewer lanes, each one checked, beats more lanes half-checked.
+- **Two hooks refuse the two repeat misses** (tools/team/leadguard.mjs, `--self-test`): a Bash call holding a heredoc AND `git commit`
+  (D119: multi-line edits go in their own call; the commit is one line starting `set -o pipefail;`, gated on roadmapcheck's exit), and
+  archive_session without a get_session look within 15 minutes showing IDLE with no run named (CI #102). Never work around them; if
+  one refuses wrongly, fix the guard and its self-test.
+- **No level build starts until you open its roll file and every piece it needs has a LANDED hash** (level.md rule 23, CI #95). A lane is
+  landed only with its named seams built (CI #97).
+- **The lock gate is two runs** (`lockall --layouts 16 --out base.json` on the base, `--check base.json` on the candidate) with a counts
+  line, its base named BY HASH: the head the candidate lands on; a release's base is origin/main (CI #100, #106).
+- **An invariant brief names its failure path** (what the repair cannot fix is refused by name, never laid) and is proven on the FINAL
+  pieces over the world test's whole seed range (CI #101, #107). Shape-by-shape fixes cost 3-1 about two hours.
+- **A member that has handed over gets no new work** (D138): the next box is a fresh session reading its EXACT NEXT STEP.
+- **Every STATE stamp comes from `TZ=America/New_York date` in the same command** (CI #105); never convert UTC by hand.
 
 ## Never
 - Touch production code, data or art yourself; every change goes to a member. The one exception (PM.md §1b): a one-line fix that
