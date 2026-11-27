@@ -7,6 +7,8 @@
    26 known); lockall baseline re-recorded on 28c848dbd (3264 builds, 102 stages; scratch lock-base.json); shard 1 691 pass 0 fail;
    seedlist --check 1-1..1-4 PASS. RUNNING in ENG-QUIET-d's container: seedlist the other 11 lists, shards 2-6, lockall --check
    (--intended 2-1,2-4,2-7), the CI tool line, tierBots. If that container is gone: re-run those five on f589b979a, then land.
+   RULED (the lead, after the hand-over): ENG-QUIET-d lands it once EVERY gate is green (fast-forward only, ls-remote, hash + shard
+   totals to the lead); ANY red: no land, no fix, record the red and its first failing line, tell the lead, stop.
    If there is no reply in 20 minutes, take that reversible recommendation and go on to step 2 (box 3's step 3, unchanged: every
    roll/seed-pinning test, then GATES once on f589b979a, freeze per D115 with src/game/gen2/proven/ writable, land on t-eng-29 as a
    fast-forward, message the lead with each shard's totals).
