@@ -11,6 +11,13 @@ Head: this commit (src as 9731ac221). ReadNotifications first (D140).
    stageTable row); recommend list 2-9 now with addlevel (new replaces old). 20 minutes with no reply: take (R2) on t-build-29.
 2. On (R2): `npx tsx tools/engine/addlevel.ts 2-9` (READY or MISSING by file), then drawcheck with 2-9 added to its scenarios, then the
    stills at 2x (the court, the barge, the twist, the home), upright first, judged as Matt on a phone.
+2b. THE LEAD'S FINDING (after the hand-over; ENG-29-h on the child's own let-go input): the TWIST's court liana (Normal x14389 on
+   their seed; x14671 on seed 1 here, grip 0.95) misses ONE at lock 0.88 and 0.90, and at 0.92 has a one-frame late hole (1.00 / 0.10 s);
+   x7903 (beat 4) is fine at 0.92 (1.07 / 0.70); Easy passes at every lock. Lock 0.90 does NOT clear the 0.20 s bar there. 2-9's DATA,
+   this lane: change that liana's grip band (or its length, or the lock) so ONE gives >= 0.20 s early AND late on Normal at every grip
+   the child can catch; FLY it with reference/qa-reports/ENG-29/probes/oneMargin.ts (origin/t-eng-29-wip) on the child's input before
+   use, the table in this REPORT; then castBots child x40 both settings as the real-play check. (Matches box 4's own read:
+   flown/lock29-090.txt, the twist ONE 0.06 s early at 0.90.) Do this BEFORE (R2)'s listing: listing re-pins on the final data.
 3. The kid (rule 28, traced below) is the 2-5 snapper bot gap, not 2-9 data: name it to the lead as ENGINE-WORTHY; never soften Normal.
 4. Two copies of reference/design/2-9.md (t-design-29 and here, with beat 5 and the AS LAID note): name it at the integration merge.
 
