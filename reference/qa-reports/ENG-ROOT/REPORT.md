@@ -3,11 +3,9 @@
 ## EXACT NEXT STEP (box 2, a fresh member)
 1. `git fetch origin t-eng-root-wip t-eng-w3 && git switch -c t-eng-root-wip FETCH_HEAD` (the wip head); merge origin/t-eng-w3 if it moved
    (ENG-ASKS-b, ENG-CATCH land there today: MERGE, never rebase).
-2. ITEM 3, the bot skill 'creep under a watcher', in tools/inspect/firsttimer.ts: a plan beside `freezePlan` (wired at :3020, before it):
-   while `p.hanging` on a rope with `look === 'root'`, if the next ~(his creep in the tell + a patch's r) px of his creep lie in a lit
-   patch ring (zones.ts `litRing` at the stepped x) AND a cast member with a leap (OCELOT) has him inside its sight.ahead/behind from
-   there, take the thumb off (hold still in the dark: stillness wakes nothing while he hangs) until that member faces away; then creep on.
-   The kit reads him as castPlay's CastHero (x middle, y feet). Learned-skill gate like freezePlan's (`this.learned`), on every tier.
+2. ITEM 3 is WRITTEN, NOT YET TESTED: tools/inspect/firsttimer.ts `rootPlan` (wired before `freezePlan`; ROOT_LOOK 30 px): hanging on a
+   look 'root' rope, a lit ring (litRing) within 30 px ahead that a leaper of the cast has in its sight by its facing -> thumb off in the
+   dark until clear, then stopReact, then creep on; already lit -> creep on. Its test is item 4's toy (and its plant: rootPlan -> null).
 3. ITEM 4, toys on a REAL World 3 row (tools/inspect or src/game/gen2, a test-only brick: a root `{kind:'root'}` over a floor with one
    ocelot socket under it inside a `#dark` stretch, laid through w3.ts's kit): the bot creeps it unseen; PLANTS (each RED): the skill
    removed -> leapt at; the root laid over a gap (a `rope` place in place of `root`) -> the floor check fails; the root's speed back

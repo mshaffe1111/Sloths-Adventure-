@@ -57,7 +57,7 @@ import { airStep, canGrabSwing, DOUBLE_RISE, JUMP_RISE, LAND_HALF, PHYS, SWING, 
 import { MIN_TOUCH_JUMP_HOLD_MS } from '../../src/game/inputEngine.ts';
 import { handsAlong } from '../../src/game/pieces/vineSnakePiece.ts';
 import { onVine, type SnakeNow } from '../../src/game/vineSnake.ts';
-import type { Enemy, Platform, PlayerState, Vine } from '../../src/game/types.ts';
+import type { Enemy, Platform, PlayerState, Rope, Vine } from '../../src/game/types.ts';
 import { headRect, MOVES } from '../../src/game/fight.ts';
 import { runnerLip, RUNNER } from '../../src/game/runnerLiana.ts';
 import { scares } from '../../src/game/dropTrap.ts';
@@ -79,7 +79,11 @@ import { bucketAngle } from '../../src/game/wheel.ts';
 import { WHEEL_FLOWN } from '../../src/game/gen2/wheelFlights.data.ts';
 import { flownKey } from '../../src/game/gen2/wheelLay.ts';
 import { DARK_AHEAD, darkRims, litAhead, RimWatch, rimAir, runOffRims, type DarkRim, type RimCrossing } from '../../src/game/gen2/dark.ts';
-import { clockLitAt, clockLitLeft } from '../../src/game/zones.ts';
+import { clockLitAt, clockLitLeft, litRing } from '../../src/game/zones.ts';
+
+/** how far ahead along a roof root a creeping first-timer looks for a watched glowworm ring (px): he stops just short of its edge, in the dark
+ *  (rootPlan; at the root's 85 px/s a thumb off stops him on the frame) */
+const ROOT_LOOK = 30;
 /** the most times he went over one rim in the dark (climbs not counted; FTRun.dark.loop): a walk back and forth over one rim (ENG-DARK box 12,
  *  the seam toy's record: since RimWatch reads a grounded step over a seam as on the piece, the loop shows here, lit or not) */
 const rimLoop = (cs: readonly RimCrossing[]) => Math.max(0, ...[...cs.filter((c) => !c.climbed).reduce((m, c) => m.set(c.rim, (m.get(c.rim) ?? 0) + 1), new Map<DarkRim, number>()).values()]);
@@ -3017,6 +3021,8 @@ export class FirstTimerRun {
     }
     // a stage's cast: a hunter rearing at him, once told to freeze (freezePlan); a drop trap whose load hangs over an animal ahead, once
     // he has been told of it (castPlan). Any stage by its data
+    const rw = this.rootPlan(fdir);
+    if (rw) return rw;
     const fz = this.freezePlan();
     if (fz) return fz;
     if (this.punchAt === null) {
@@ -3630,6 +3636,57 @@ export class FirstTimerRun {
     // (any other light as before ENG-SPORE, bit for bit: lit once the engine woke it (a light laid awake is never in glowWake))
     const woke = e.glowWake.get(l.id!);
     return woke !== undefined && e.gameTime >= woke + lead;
+  }
+
+  /** creep under a watcher (rootPlan): when the stretch ahead was last seen watched, and when he may go on (his reaction after it cleared) */
+  private rootWatch: { watched: boolean; go: number } | null = null;
+
+  /**
+   * Creep under a watcher (ENG-ROOT item 3; 3-2.md beat 9: "waits in the dark, creeps through each lit patch while both look away"). Hanging
+   * on a roof root (Rope.look 'root'), when the next stretch of his creep (ROOT_LOOK px his way) enters a LIT glowworm ring (zones.ts
+   * litRing: 'lit = seen') that an animal of the cast with a leap (PredatorDef.leap) has inside its sight by its facing (its ahead, or its
+   * behind), he takes his thumb off in the dark (still on a rope wakes nothing) until no such animal watches it; then, his reaction later
+   * (stopReact), he creeps on. Already in the light he creeps on (stopping there is the worst place). Its data only: no stage, kind or x.
+   */
+  private rootPlan(fdir: -1 | 1): Pad | null {
+    const c = this.e.cast as { members: Array<{ def: PredatorDef; s: { x: number; y: number; facing: 1 | -1; leaving?: boolean } }> } | null;
+    const p = this.sim.p, t = this.t;
+    const rope = p.hanging ? (this.e as unknown as { ropes: Rope[]; ropeId: number }).ropes.find((r) => r.id === (this.e as unknown as { ropeId: number }).ropeId) : undefined;
+    if (!c || !rope || rope.look !== 'root') {
+      this.rootWatch = null;
+      return null;
+    }
+    const zones = this.e.currentStage.zones;
+    const wake = (this.e as unknown as { glowWake: Map<number, number> }).glowWake;
+    const woke = (id: number) => wake.get(id);
+    const lit = (x: number) => litRing(zones, x, p.y, this.e.gameTime, woke);
+    if (lit(p.x)) {
+      this.rootWatch = null;
+      return null;
+    }
+    const watched = (x: number) => c.members.some((m) => {
+      if (!m.def.leap || m.s.leaving) return false;
+      const dx = x - m.s.x;
+      return Math.abs(dx) <= (dx * m.s.facing >= 0 ? m.def.sight.ahead : m.def.sight.behind);
+    });
+    let ahead = false;
+    for (let d = 10; d <= ROOT_LOOK; d += 10) {
+      const x = p.x + fdir * d;
+      if (x < rope.x0 || x > rope.x1) break;
+      if (lit(x) && watched(x)) {
+        ahead = true;
+        break;
+      }
+    }
+    if (ahead) {
+      this.rootWatch = { watched: true, go: Infinity };
+      return {};
+    }
+    // (it has just looked away: his reaction before the thumb goes back on)
+    if (this.rootWatch?.watched) this.rootWatch = { watched: false, go: t + this.who.stopReact };
+    if (this.rootWatch && t < this.rootWatch.go) return {};
+    this.rootWatch = null;
+    return null;
   }
 
   /**
