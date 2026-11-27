@@ -18,7 +18,7 @@ import { stream } from './protoStage.ts';
 import type { RoomTips } from './puzzleKit.ts';
 import type { Collectible, LevelConfig, Platform, Vine } from './types.ts';
 
-export type W2Plan = '2-6' | '2-8' | '2-9';
+export type W2Plan = '2-6' | '2-8';
 type Critter = 'capy' | 'duck' | 'otter';
 type Stream = ReturnType<typeof stream>;
 
@@ -54,8 +54,6 @@ export interface W2Kit {
   porchRun(n: number, water: boolean, tail?: number, safe?: boolean): { path: Platform | null; xs: number; px: number };
   floodBasin(islands: number, cageAt: number[], seconds: number, opts?: { safe?: boolean; across?: boolean; need?: number; tips?: RoomTips }): void;
   cageRoom(o: { need: number; mode: 'bank' | 'across' | 'high'; critter: Critter; safe?: boolean; tips?: RoomTips }): void;
-  bellGate(tips: RoomTips): { gateX: number; bellX: number };
-  bellGallery(guards: number): void;
   sandbar(dirA: 1 | -1, dirB: 1 | -1, speed: number, logW: number, opts?: { safe?: boolean; flowers?: number; tag?: string }): void;
   island(len: number): void;
   postUp(): void;
@@ -67,7 +65,6 @@ export interface W2Kit {
   arc(x0: number, x1: number, yTop: number, n: number, v?: Collectible['botanicalVariant'], lift?: number): void;
   flower(x: number, y: number, v?: Collectible['botanicalVariant']): void;
   turtle(x: number, surface?: number, range?: number): void;
-  guard(x: number, surface?: number, range?: number): void;
   snake(x: number, surface: number, range?: number): void;
   /** note a stretch as one piece of the stage (meta.pieces) */
   mark(k: string, x0: number): void;
@@ -88,7 +85,6 @@ export interface W2Kit {
 /** the flavours each stage rolls among (2-6 is World 1's climbing stage built up the bank houses: protoStage.ts buildKapok) */
 export const W2_FLAVOURS: Record<Exclude<W2Plan, '2-6'>, readonly string[]> = {
   '2-8': ['islands', 'channels', 'reeds', 'logs'],
-  '2-9': ['lilies', 'porches', 'sandbars', 'gates'],
 };
 const LOOKS: readonly W2Look[] = ['reeds', 'moorings', 'cottages'];
 
@@ -107,7 +103,6 @@ export interface W2Picks {
  */
 const BY_DRAW: Record<Exclude<W2Plan, '2-6'>, readonly string[]> = {
   '2-8': ['channels', 'reeds', 'logs', 'islands'],
-  '2-9': ['porches', 'lilies', 'sandbars', 'gates'],
 };
 
 /** which versions a layout number gets: the stage's flavour and the bank's dressing (a retry with the same number gets the same) */
@@ -341,156 +336,6 @@ const PLANS: Record<Exclude<W2Plan, '2-6'>, (k: W2Kit, flavour: string, rng: Rng
         if (++n % 2 === 0) k.flag();
       }
       k.rest(R.r(300, 400), false);
-    });
-  },
-
-  // ======================================================================================================================
-  // 2-9 The River King's Court: fight through the court to the king. His guards (royal snappers, upright with spears) block a blow to
-  // the front, jab further than a snapper bites, and need two hits; from behind, or open after a jab, they go down; a kick staggers one
-  // back into whoever stands behind him. The court's bell is the stage's own: rung, every guard in earshot comes to look at it
-  // (noise.ts), noticing nobody. Learn: the court gate opens to the bell, and one guard at a time; then the court, rolled: its lily ponds
-  // with guards between, its porches over the water, or its sandbars; the twist is the gallery, porches over the court floor with the
-  // bell at their head: ring it and the guards below all turn to it, and he hops down behind them; then a row of guards close enough for
-  // one good kick to bowl them over, to the king.
-  '2-9': (k, flavour, rng) => {
-    const { R } = k;
-    /** a stretch of bank with guards (and snappers between them) spread along it, clear of the flags at either end */
-    const guardBank = (n: number, spacing: [number, number], snappers = 0) => {
-      const x0g = k.x;
-      k.run(R.r(110, 140));
-      for (let i = 0; i < n; i++) {
-        k.run(R.r(spacing[0], spacing[1]));
-        k.guard(k.x);
-        if (i < snappers) {
-          k.run(R.r(spacing[0] * 0.6, spacing[1] * 0.6));
-          k.turtle(k.x);
-        }
-      }
-      k.run(R.r(200, 230));
-      k.row(x0g + 100, k.x - 100, k.G - 34, Math.max(2, Math.round((k.x - x0g) / 220)), 'hibiscus');
-      k.addExpert((k.x - x0g) / 285 + n * 2.4 + snappers * 1.6);
-      k.mark(`guards${n}`, x0g);
-    };
-    /** the court's dressing along a stretch of bank: lanterns on posts and the king's banners, taking turns (Matt's court sheet) */
-    const courtLanterns = (x0c: number, x1c: number) => {
-      let i = 0;
-      for (let lx = x0c + 80; lx < x1c - 60; lx += R.r(240, 320)) {
-        if (i++ % 2) k.piece('banner', lx, k.G + 6, 64, { flip: R.chance(0.5) });
-        else k.piece('lantern', lx, k.G + 4, 40);
-      }
-    };
-    // the court's ways between its guard banks, by the roll: its lily ponds; its porches over the water up the carved steps; its sandbars;
-    // or its gates, each opened by a bell (the guards come to look at it)
-    type T = Kind | 'gate';
-    const kinds: Record<string, T[]> = {
-      lilies: ['pond', 'pond', 'stones'],
-      porches: ['porches', 'porches', 'with'],
-      sandbars: ['sandbar', 'back', 'sandbar'],
-      gates: ['gate', 'gate', 'with'],
-    };
-    const cross = new Crossings(k, { speed: 62 });
-    cross.know('with');
-    const turns = new Turns<T>(rng, kinds[flavour], 0);
-    const way = (n: number) => {
-      const t = turns.next();
-      if (t === 'gate') {
-        k.breath();
-        // another of the court's gates: its bell, and a guard past it within earshot (a bell nobody hears is no puzzle: puzzleCheck)
-        const g = k.bellGate({});
-        // (the guard well within the bell's earshot, noise.ts NOISE.hear 520 px, and close past the gate: a long walk either side of
-        // him was the dead time on the gates' rolls)
-        k.run(R.r(130, 160));
-        k.guard(Math.max(k.x, g.bellX + 420), k.G, 100);
-        k.run(R.r(200, 230));
-        k.addExpert(4);
-      } else if (t === 'porches' && k.expert > k.EXPERT_SECONDS - 24) cross.step('with', n, [], true);
-      else cross.step(t, n, kinds[flavour].filter((x): x is Kind => x !== 'gate'), true);
-    };
-    k.beat('Learn: the court bell, one guard', () => {
-      k.run(R.r(120, 150));
-      k.hint(120, 'The river king’s court! The gate opens to the bell.');
-      k.piece('sign', 120, k.G + 4, 132, { text: ['THE KING’S', 'COURT'] });
-      // the court gate: the bell beside it (the first bell: no guard this side of the gate, and nothing to fall in)
-      const g = k.bellGate({ enter: "The court gate's shut.", open: 'Dong! The gate opens. The guards come looking.', nudge: 'That bell, by the gate.', move: 'Ring the court bell. Tap it!', mech: 'bellGate' });
-      // the first guard, past the gate: near enough to hear the bell, and come to look
-      // (the guard's tip before the first guard: it was said 240 px past him, after the first jab, the first-timer bot 2026-10-28)
-      // (and further back, by the bell: the tip 360 px short of the guard was up only after his first jab, 2026-10-28)
-      k.hint(g.bellX + 40, 'Head-on he blocks. Hit him from behind, or kick him!');
-      k.run(R.r(220, 260));
-      k.guard(Math.max(k.x, g.bellX + 520), k.G, 100);
-      k.run(R.r(280, 320));
-      k.addExpert(4);
-      guardBank(2, [320, 380]);
-      // (the court's first river costs no life, and Dot speaks of it first: the first-timer drowned in it before any word of water)
-      k.hint(k.x - 200, 'Flick up when a log drifts close.');
-      narrow(k, 1, 62, { safe: true });
-      k.flag();
-    });
-    k.beat(`Develop: the court’s ${flavour}`, () => {
-      way(0);
-      guardBank(1, [200, 240]);
-      way(1);
-      k.heart(k.x - 40, k.G - 60);
-      guardBank(2, [280, 340], 2);
-      way(2);
-      k.flag();
-    });
-    k.beat('Twist: the gallery', () => {
-      k.breath();
-      k.hint(k.x + 20, 'Up to the gallery! Ring the bell, and come down behind the guards.');
-      k.bellGallery(3);
-      k.heart(k.x - 40, k.G - 60);
-      const c0 = k.x;
-      // close together: a guard kicked along this bank meets every one behind him
-      k.hint(k.x + 20, 'The court! Kick one guard into the rest!');
-      guardBank(4, [110, 140]);
-      courtLanterns(c0, k.x);
-      // a golden seed high over the court: the top of a double jump from the middle of the bank
-      k.goldenSeed((c0 + k.x) / 2, k.G - 190);
-      way(3);
-      k.flag();
-    });
-    k.beat('Finish: to the king', () => {
-      let n = 0;
-      while (k.expert < k.EXPERT_SECONDS + 8 && n < 14) {
-        k.breath();
-        const c = k.x;
-        // (the court's guards by the roll too: rows of four on the porches' court, pairs by the ponds, one at each gate, and snappers
-        // out on the sandbars)
-        if (flavour === 'porches') guardBank(n % 2 ? 3 : 4, [120, 150]);
-        else if (flavour === 'gates') guardBank(n % 2 ? 1 : 2, [260, 320], 1);
-        else if (flavour === 'sandbars') {
-          guardBank(1, [200, 240]);
-          k.island(R.r(470, 520));
-          k.turtle(k.x - R.r(250, 290), k.G, 90);
-          k.turtle(k.x - R.r(120, 140), k.G, 60);
-          k.addExpert(4);
-        } else guardBank(n % 3 === 0 ? 4 : 2, n % 3 === 0 ? [120, 150] : [260, 320], n % 2);
-        courtLanterns(c, k.x);
-        way(n + 4);
-        if (++n % 2 === 0) k.flag();
-      }
-      // the king's court: through the archway, along the lily-pad carpet between the banners, to his throne on its dais, the shell
-      // gong beside it. (The throne is empty: the king waits in his lair, the boss fight.)
-      k.rest(R.r(140, 200), false);
-      const k0 = k.x;
-      k.run(100);
-      k.piece('archway', k.x, k.G + 6, 230);
-      k.run(110);
-      k.piece('sign', k.x, k.G + 4, 140, { text: ['BOW TO', 'THE KING'] });
-      // the king's own guard at the foot of the carpet, the last of them
-      k.guard(k.x + 150, k.G, 90);
-      k.addExpert(2.4);
-      k.run(100);
-      for (let i = 0; i < 3; i++) k.piece('lilyCarpet', k.x + 90 + i * 170, k.G + 16, 200);
-      k.piece('banner', k.x + 30, k.G + 6, 70);
-      k.piece('banner', k.x + 480, k.G + 6, 70, { flip: true });
-      k.run(460);
-      k.piece('gong', k.x - 30, k.G + 6, 120);
-      k.piece('dais', k.x + 140, k.G + 14, 250);
-      k.piece('throne', k.x + 140, k.G - 30, 200);
-      k.run(480); // the sanctuary door stands past the dais, not in front of the throne
-      k.addExpert((k.x - k0) / 285);
     });
   },
 };

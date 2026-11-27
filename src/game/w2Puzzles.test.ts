@@ -1,8 +1,8 @@
 /**
  * World 2's puzzle rooms (2026-10-28), built from the puzzle kit (puzzleKit.ts): the reed cages hung on pulleys over the water (2-8; 2-3's hand build is gone,
  * BUILD-23 11-20: its pulley tests stand on 2-8's cages, the same kit rooms),
- * lifted out by river stones in their counter-baskets; the ferry's raft behind its sluice (2-2); the court bell that opens the court
- * gate and calls the guards to look (2-9). Their rules, their check, and the rooms played in the real engine.
+ * lifted out by river stones in their counter-baskets; the ferry's raft behind its sluice (2-2).
+ * Their rules, their check, and the rooms played in the real engine.
  */
 import test from 'node:test';
 import assert from 'node:assert/strict';
@@ -94,43 +94,6 @@ test('2-8: every cage in the rising basins hangs off a reed island, and every ro
     assert.deepEqual(roomErrors(st), [], `seed ${s}`);
     assert.ok(st.collectibles.filter((c) => c.type === 'cage').every((c) => st.kit!.rooms.some((r) => r.pieces.some((p) => p.kind === 'lift' && p.cage === c.id))));
   }
-});
-
-test('the court bell: a tap rings it, the court gate opens and stays open, and the guard past the gate comes to look', () => {
-  const st = buildW2Stage(cfg('2-9'), 1, '2-9');
-  const room = st.kit!.rooms[0];
-  assert.ok(room.pieces.some((p) => p.kind === 'gate' && p.latch && p.open === room.pieces.find((q) => q.kind === 'bell')!.id));
-  // (no animal on the bell's side of the gate)
-  const gate = room.pieces.find((p) => p.kind === 'gate')!;
-  const gx = st.platforms.find((p) => p.id === kitPlatId(0, gate.id, 0))!.x;
-  assert.equal(st.enemies.filter((e) => e.patrolMaxX < gx).length, 0);
-  // the check needs the ring (a gate the bell only opens for a moment would not do)
-  assert.deepEqual(roomErrors(st), []);
-  if (gate.kind === 'gate') gate.latch = false;
-  assert.ok(roomErrors(st).some((e) => e.includes('can never be opened')));
-});
-
-test('the court bell in play: tapped, the gate opens for good, and the first guard hears it', () => {
-  const r = new RealPlay('2-9', 1);
-  const kit = r.e.kit as KitPlay;
-  assert.ok(kit, 'the stage has its rooms in the engine');
-  const room = kit.rooms[0];
-  const bell = room.bells[0];
-  const gate = room.gates[0];
-  r.stand(bell.x - 30, G);
-  r.frame({ right: true });
-  r.frame();
-  r.frame({ punch: true });
-  r.frame();
-  assert.equal(kit.noises.length, 1, 'the bell rang');
-  r.wait(0.5);
-  assert.ok(gate.open && gate.latched, 'the gate is open');
-  r.wait(6);
-  assert.ok(gate.open, 'and stays open after the ring has gone');
-  const first = r.e.enemies.filter((e: { x: number }) => e.x > gate.x).sort((a: { x: number }, b: { x: number }) => a.x - b.x)[0];
-  assert.ok(first, 'a guard past the gate');
-  assert.ok(Math.abs(first.x - bell.x) <= 680, 'within earshot of the bell');
-  void heard;
 });
 
 test('a hanging cage in play: no punch breaks it; a stone set in its basket lifts it out and frees the little one', () => {

@@ -32,13 +32,10 @@ export type { W2Plan } from './w2Sections.ts';
 export const W2_STAGES: Record<string, W2Plan> = {
   '2-6': '2-6',
   '2-8': '2-8',
-  '2-9': '2-9',
 };
 
 /** 2-8 Reed Cages asks for 7 more little ones (the stage holds about one and a half times that) */
 export const CAGES_28 = 7;
-/** 2-9 The River King's Court asks for 14 of the court's guards and snappers (it holds about one and a half times that) */
-export const COURT_GOAL_29 = 14;
 /** a reed island's top in a rising river: just above the still water (it starts 20 px below), so the water covers it as it rises */
 export const ISLAND_TOP = 600;
 /**
@@ -46,9 +43,9 @@ export const ISLAND_TOP = 600;
  * so Dot's first tip (she waits 2.5 s at a stage's start: dotGuide.ts CALM) is up before anything can hurt him (stageStart.test.ts)
  */
 export const START_WALK = 1150;
-/** the stages with puzzle rooms (puzzleKit.ts): the reed cages on their pulleys (2-8), the court's bell (2-9). (2-3's is gone with its
- *  hand build: the designed 2-3 has none, the lead's ruling 8:05 PM ET 11-20; World 2 keeps two, STAGE-RULES' 2-3 per world) */
-export const W2_PUZZLES: ReadonlySet<string> = new Set(['2-8', '2-9']);
+/** the stages with puzzle rooms (puzzleKit.ts): the reed cages on their pulleys (2-8). (2-3's is gone with its hand build:
+ *  the designed 2-3 has none, the lead's ruling 8:05 PM ET 11-20; 2-9's court bell went with 2-9's hand build, BUILD-29 11-26) */
+export const W2_PUZZLES: ReadonlySet<string> = new Set(['2-8']);
 /** a stone weighs this much in a counter-basket (puzzleKit.ts ITEM.stone) */
 const STONE = 2;
 /** a hanging cage's pool: a hop across, the cage over its middle; how far over the bank the cage comes up, its floor dropping open */
@@ -186,14 +183,6 @@ function buildW2Plan(config: LevelConfig, seed: number, plan: W2Plan): Generated
     E.push({
       id: eid++, type: 'turtle', x: tx, y: surface - 14, vx: 22, vy: 0, width: 48, height: 24, hp: 1, maxHp: 1, facing: R.chance(0.5) ? 1 : -1,
       patrolMinX: tx - range / 2, patrolMaxX: tx + range / 2, attackCooldown: 1.5, telegraphTimer: 0, isAttacking: false,
-      animTimer: 0, hitFlashTimer: 0, defeated: false, koTimer: 0, behaviorTimer: 0,
-    } as Enemy);
-  };
-  /** one of the river king's guards (2-9): a royal snapper, upright with a spear, marching his patch (predatorAI.ts, `royal`) */
-  const guard = (gx: number, surface = G, range = 120) => {
-    E.push({
-      id: eid++, type: 'turtle', royal: true, x: gx, y: surface - 14, vx: 20, vy: 0, width: 36, height: 66, hp: 2, maxHp: 2, facing: R.chance(0.5) ? 1 : -1,
-      patrolMinX: gx - range / 2, patrolMaxX: gx + range / 2, attackCooldown: 1.6, telegraphTimer: 0, isAttacking: false,
       animTimer: 0, hitFlashTimer: 0, defeated: false, koTimer: 0, behaviorTimer: 0,
     } as Enemy);
   };
@@ -879,71 +868,6 @@ function buildW2Plan(config: LevelConfig, seed: number, plan: W2Plan): Generated
   }
 
 
-  /**
-   * The court gate (2-9): a latched gate in the court's wall, the court bell beside it. Ring the bell (a tap by it) and the gate opens
-   * and stays open, and every guard in earshot comes to look at the bell for a while (noise.ts): a guard stands past the gate to hear it.
-   */
-  function bellGate(tips: RoomTips) {
-    const ri = rooms.length;
-    const x0 = x;
-    run(R.r(60, 70));
-    const postX = x;
-    run(R.r(120, 140));
-    const bellX = x;
-    run(R.r(150, 170));
-    const gateX = x;
-    run(R.r(110, 130));
-    const A = close()!;
-    open(x);
-    rooms.push({
-      id: `bell${ri}`, left: at(A, x0 + 2), right: at(A, A.x + A.width - 10), above: 420, below: 80,
-      pieces: [
-        { kind: 'reset', id: `post${ri}`, at: at(A, postX) },
-        { kind: 'bell', id: `bell${ri}`, at: at(A, bellX) },
-        { kind: 'gate', id: `gate${ri}`, at: at(A, gateX), open: `bell${ri}`, latch: true, look: 'reeds' },
-      ],
-      exit: `gate${ri}`, beyond: at(A, gateX + 110), ground: [A.id], tips,
-    });
-    piece('archway', gateX, G + 6, 230);
-    expert += (x - x0) / RUN + 2;
-    pieces.push({ k: 'bellGate', x0, x1: x });
-    return { gateX, bellX };
-  }
-
-  /**
-   * The court's gallery (2-9's twist): up the carved steps to a walk of porches over the court, the court bell at the top of the steps,
-   * the guards on the court floor below. Ring the bell and they all go to stand under it, looking at it (noise.ts), their backs to the
-   * far end of the gallery, where he hops down behind them. A pile of pebbles waits there: a pebble thrown back along the court turns
-   * them again.
-   */
-  function bellGallery(guards: number) {
-    const ri = rooms.length;
-    const x0 = x;
-    stairs(Math.round(R.r(130, 150)), true);
-    const high = bankY;
-    run(R.r(40, 60));
-    const bellX = x;
-    const gal = porchRun(4, false, Math.round(R.r(220, 260)));
-    const path = gal.path!;
-    // the guards keep to the court floor under the porches, within earshot of the bell and clear of where he hops down at its far end
-    const span = Math.min(440, gal.px - gal.xs - 380);
-    for (let i = 0; i < guards; i++) guard(gal.xs + 110 + (span * i) / Math.max(1, guards - 1), G, 110);
-    const pileX = gal.px - 70;
-    const highBank = P.find((p) => p.type === 'solid' && Math.abs(p.y - high) < 1 && p.x <= bellX && p.x + p.width >= bellX)!;
-    rooms.push({
-      id: `gallery${ri}`, left: at(highBank, Math.max(highBank.x + 4, bellX - 140)), right: at(path, gal.px - 4), above: 300, below: G - high + 80,
-      pieces: [
-        { kind: 'bell', id: `bell${ri}`, at: at(highBank, bellX) },
-        { kind: 'source', id: `pile${ri}`, variant: 'pebble', at: at(path, pileX), look: 'pile' },
-        { kind: 'item', id: `pebble${ri}`, variant: 'pebble', source: `pile${ri}` },
-      ],
-      exit: `bell${ri}`, beyond: at(path, gal.px - 20), ground: [path.id],
-      tips: { enter: 'Too many guards. Can we distract them?', hold: 'Throw it back along the court. Clack!', nudge: 'That bell up there is loud.', move: 'Ring the bell. The guards come to look.' },
-    });
-    expert += guards * 2.4 + 2;
-    pieces.push({ k: 'gallery', x0, x1: x });
-  }
-
   // ----- the stage: its sections in the versions the roll picks (w2Sections.ts) -----
   const picks = w2Picks(plan, seed);
   const sec: W2Kit = {
@@ -953,9 +877,9 @@ function buildW2Plan(config: LevelConfig, seed: number, plan: W2Plan): Generated
     get expert() { return expert; },
     addExpert: (s) => { expert += s; },
     run, open, beat, flag, hint, rest, breath, snakeBank, guardedRest, river, stones, lilyPond, swingRiver, stairs, porchRun,
-    floodBasin, cageRoom, bellGate, bellGallery, sandbar, island, postUp, channels, startWalk, heart, goldenSeed,
+    floodBasin, cageRoom, sandbar, island, postUp, channels, startWalk, heart, goldenSeed,
     piece: (n, px, b, w, extra) => piece(n as W2Decor['n'], px, b, w, extra as Partial<W2Decor>),
-    row, arc, flower, turtle, guard, snake,
+    row, arc, flower, turtle, snake,
     mark: (k, x0) => pieces.push({ k, x0, x1: x }),
     nextCid: () => cid++,
     enemies: () => E.length,
@@ -987,7 +911,7 @@ function buildW2Plan(config: LevelConfig, seed: number, plan: W2Plan): Generated
   });
 
   const width = Math.ceil(x + 20);
-  const targetCount = plan === '2-8' ? CAGES_28 : plan === '2-9' ? COURT_GOAL_29 : config.targetCount;
+  const targetCount = plan === '2-8' ? CAGES_28 : config.targetCount;
   const cfg: LevelConfig = {
     ...config,
     levelWidth: width,

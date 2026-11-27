@@ -1,7 +1,32 @@
 # BUILD-29 REPORT: 2-9 "The River King's Court" (the World 2 finale; R-165.449), release 6
 Branch t-build-29, cut from origin/t-eng-29 = 098047713 (the lead's named base). Session 1 started 5:45 PM ET Thu 11/26 (by `date`).
 
-## EXACT NEXT STEP (session 5 hand-over, BUILD-29-e, 8:36 PM ET Thu 11/26 by `date`; box clock reached)
+## EXACT NEXT STEP (session 6 hand-over, BUILD-29-f; box clock reached)
+Head: this commit. ReadNotifications first (D140). Box 6 DID: the liana note marked APPROVED (level.md, lead 11-26); R2 part 1 (the
+stageTable row `'2-9': { kit: 'w2-29' }`, unjudged as the draft rolled; listed.ts KITS + WORLD; 5c2961080, listing tests 16/0); R2 part 2
+STARTED (the hand-built 2-9 deleted: w2Stages.ts '2-9' + COURT_GOAL_29 + W2_PUZZLES '2-9' + bellGate/bellGallery/guard; w2Sections.ts
+W2Plan '2-9', its flavours and its PLANS row; dotTips/dotLinesData hint.2-9.kick/court/guards; w2Stages.test's court test;
+w2Puzzles.test's two court-bell tests; puzzleCamera.test's leave-the-room test RE-POINTED to the kit stage's own bell room (plain
+ground; the court bell's engine code stays held there); tsc clean; the 41 test files that name 2-9 or Dot's lines: see the commit).
+1. THE SUITE for a6a74323a: shards 2-5 were running in BUILD-29-f's container at the hand-over (frozen worktree); their totals go to
+   the lead from it if it lives; if not, re-run 2-5 (CLAUDE.md glob, 661 files, sorted, `awk 'NR%6==i'`) + bargeRow.test.
+2. G6: COURT_SAG was NOT yet on t-eng-29 (head d1038af49 at the hand-over). When ENG-29-i's hash comes: merge (no force; conflicts
+   named), probes/judge29.ts 3, the court >= 0.20 Normal / 0.30 Easy both sides.
+3. R2 part 2, LEFT (in order): (a) the keeper's words (origin/t-keeper-23-29 reference/story/lines-2-9.md): mission on the card
+   (stagePlan.ts the 2-9 row: "Dance to the king's drum, chase off his snappers, reach the shrine." = MISSION_29), the page
+   (pokeyJournal.ts '2-9': "The whole court danced to the king's drum. I danced too, slowly, but on the beat. Then I rang his bell."),
+   sealed (stagePlan.ts SEALED_LINES '2:gauntlet' = LINES_29.sealed), the journal card The King's Drum (DRUM_CARD_29), goalStart /
+   goalLate as 2-3's GOAL_LINES_23 (read w2Arc23.test.ts:55-62 for how they are held), the old rows the keeper names
+   (dotLinesData way.2-9 and its :171/:187 rows; read lines-2-9.md:28-40 first); the clue 'A Crooked Crown' STAYS; journalMet
+   royal_guard ['2-9'] stays (the posted guard is the same guard, row 7). (b) w2Arc29.test.ts on w2Arc27.test.ts's pattern, the
+   keeper's lines held verbatim. (c) the whole suite, then `npx tsx tools/engine/addlevel.ts 2-9` (it pins the list and runs castBots
+   x40 both settings: run it AFTER G6 lands, rule 20). (d) drawcheck with 2-9, the FIRST LOOK stills at 2x, upright first, to the lead.
+   (e) tools/inspect/draft29.ts and the DRAFT_ID_29 seam go once castBots runs on the listed '2-9' (new replaces old).
+4. TO THE LEAD (information): with 2-9's court bell gone, World 2 has ONE puzzle room (2-8's cages); STAGE-RULES:188 asks for 2-3
+   puzzle MOMENTS a world (the new 2-9's bell is a beat, not a room). stageSheets '2-9' ['foe:guard','foe:turtle'] kept (the posted
+   guard and the snappers).
+
+## (superseded) EXACT NEXT STEP (session 5 hand-over, BUILD-29-e, 8:36 PM ET Thu 11/26 by `date`; box clock reached)
 Head: this commit (src as a6a74323a: the court lianas 365 px). ReadNotifications first (D140). Steps 0-2 of session 4 are DONE (below).
 1. THE SUITE for a6a74323a = 9731ac221's 6 shards (the CLAUDE.md glob, 661 files, round robin `awk 'NR%6==i'` on the sorted list)
    + `src/game/gen2/bargeRow.test.ts` re-run (3/3 here; the ONLY test that imports w2Arc29.ts; no test reads level.md). Shard 0 on
