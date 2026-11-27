@@ -11,6 +11,13 @@
        lead BEFORE the final full set.
    (d) Every test that pins a 2-7 roll or seed (release.md step 6; the grep finds src/game/gen2/judgedTable.test.ts, but run the full
        step-6 grep). Then tsc and the CI tool line. Commit the list; push.
+0b. **Discovery reds so far on 5b9389168 (box 1 pushes the rest as its lanes finish):**
+   - roadmapcheck: "tools/engine/depthSteps.known.json still lists 108 known defects, but no open R-item cites it in its Source". The
+     R-165.487 row is on the LEAD branch's ROADMAP (ccr-ea739a2f-dfcee4 ROADMAP.md:975) but not on the release line's ROADMAP.md.
+     Carry that row (its Source citing the file) into release-0.10.4's ROADMAP.md, then re-run roadmapcheck.
+   - coveragecheck: "FAIL (b) platform:moving on 2-6: no bot (a built stage uses it: give it one, METER-COVERAGE §2)". Check t-land-26
+     2f681402e's own result first (D135: no red is called inherited without it). Then the fix (a bot for 2-6's moving platform, or the
+     lead's ruling) comes from the lead or the engine lane: it is not integration's to invent.
 1. **DONE**: the What's New title is now "Water wheels and the mail boat" (the lead's ruling A; "Two new stages" duplicated 0.9.8's title).
    whatsNew.test + playerText.test: 79 pass, 0 fail. This is the first commit of the final head; no code was touched.
 2. **The DISCOVERY run on 5b9389168** (frozen /home/user/wt/c1, main frozen /home/user/wt/main, results in /home/user/wt/out-c1) runs
