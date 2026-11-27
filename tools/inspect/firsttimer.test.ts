@@ -348,31 +348,49 @@ test('on the run it was found on, 2-1 child Easy seed 2: landing on a small log 
   assert.equal(r.rescues, 0, `no rescue (${r.rescues})`);
 });
 
-test('on the run it was found on, 2-4 child Normal seed 8: the run-up\'s jump (SKILLS.runUp: runPress passed at every lag, then the judged press) is held at least as long as runPress judged it; the row ends at the shrine with no rescue (c24; RED on c23 ccca3d305: flown at flickHold\'s draw, 0.065 / 0.093 / 0.114 s against the 0.16 judged, he peaked under the liana\'s foot and fell in, rescued)', () => {
-  // (the real stage and bot, as castBots rolls them; read by what he does, never where: a run-up press is decide's judged single press
-  //  in the frame whose last runPress was the direct one (from where he stands, s0 0) and passed; the next startJump inside 0.5 s is its
-  //  jump, and this.jump.hold is what he flies. The proof of the RED half on c23 is in reference/qa-reports/ENG-PLANT/REPORT.md, ENG-PLANT-s)
-  type Run = { t: number; pressJudged: boolean; sim: { p: { x: number } }; jump: { hold: number } | null };
-  const P = FirstTimerRun.prototype as unknown as Record<'runPress' | 'decide' | 'startJump', (this: Run, ...a: unknown[]) => unknown>;
-  const { runPress, decide, startJump } = P;
-  let last: { t: number; direct: boolean; ok: boolean; hold: number } | null = null, judged: { t: number; hold: number } | null = null;
-  const jumps: Array<{ t: number; judged: number; flown: number }> = [];
-  P.runPress = function (...a) { const ok = runPress.apply(this, a) as boolean; last = { t: this.t, direct: a[2] === 0 && a[0] === (a[4] as { x: number }).x, ok, hold: a[9] as number }; return ok; };
-  P.decide = function (...a) { if (this.pressJudged && a[1] === 'single' && a[2] === true && last && last.t === this.t && last.direct && last.ok) judged = { t: this.t, hold: last.hold }; return decide.apply(this, a); };
-  P.startJump = function (...a) {
-    const out = startJump.apply(this, a);
-    if (judged && this.t - judged.t < 0.5 && this.jump) jumps.push({ t: +judged.t.toFixed(2), judged: judged.hold, flown: this.jump.hold });
-    judged = null;
+test('on the run it was found on, 2-4 child Normal seed 8: the run-up is ONE plan runUpPlan flew on the engine (ENG-SIM step 3 1a-ii): every one he plays catches its liana on the very frame the probe flew it to (the plan\'s end), and the row ends at the shrine with no rescue (c24 held the run-up\'s jump short of the judged hold and he fell in, rescued; PLANTED RED: the plan played a frame late)', () => {
+  // (the real stage and bot, as castBots rolls them; read by what he does, never where: a run-up is a plan runUpPlan's own flights
+  //  returned (its k, the drawn press frame P), set by setPlan; each is a row from its frame 1, the frame the probe flew first)
+  type Run = { t: number; sim: { p: { x: number }; standingOn: number } };
+  type Flown = { plan: { press: number }; at: number };
+  const P = FirstTimerRun.prototype as unknown as Record<'runUpPlan' | 'setPlan', (this: Run, ...a: unknown[]) => unknown>;
+  const { runUpPlan, setPlan } = P;
+  const ran = new Map<object, { k: number; at: number }>();
+  type Row = { t: number; x: number; on: number; k: number; press: number; probe: number; n: number; caught: number | null; down: string | null };
+  const rows: Row[] = [];
+  let open: Row | null = null;
+  P.runUpPlan = function (...a) {
+    const out = runUpPlan.apply(this, a) as { k: number; at: (P: number) => Flown } | null;
+    if (!out) return out;
+    const at = out.at;
+    return { k: out.k, at: (q: number) => { const o = at(q); ran.set(o.plan, { k: out.k, at: o.at }); return o; } };
+  };
+  P.setPlan = function (plan, ...a) {
+    const out = setPlan.apply(this, [plan, ...a]);
+    const r = ran.get(plan as object);
+    if (r) rows.push((open = { t: this.t, x: this.sim.p.x, on: this.sim.standingOn, k: r.k, press: (plan as Flown['plan']).press, probe: r.at, n: 0, caught: null, down: null }));
+    else open = null;
     return out;
   };
   let r: ReturnType<typeof firstTimer>;
   try {
-    r = firstTimer('2-4', 8, FT_CHILD, { cap: 1200, dotSetting: true });
+    r = firstTimer('2-4', 8, FT_CHILD, { cap: 1200, dotSetting: true, onFrame: (sim) => {
+      if (!open) return;
+      const e = (sim as unknown as { e: { player: { x: number; y: number; grounded: boolean; isVineSwinging?: boolean; swingVineId?: number }; standingOnId: number | null; lives: number } }).e;
+      const p = e.player;
+      open.n++;
+      if (p.isVineSwinging) { open.caught = open.n; open = null; }
+      else if (open.n > open.press + 2 && p.grounded) { open.down = `grounded on #${e.standingOnId} at x ${p.x.toFixed(1)}, frame ${open.n}`; open = null; }
+      else if (open.n > open.press + 60) { open.down = 'no liana in 60 frames'; open = null; }
+    } });
   } finally {
-    Object.assign(P, { runPress, decide, startJump });
+    Object.assign(P, { runUpPlan, setPlan });
   }
-  assert.ok(jumps.length >= 1, 'he made a run-up jump');
-  assert.deepEqual(jumps.filter((j) => j.flown < j.judged - 1e-9), [], `every run-up jump held at least as judged (${JSON.stringify(jumps)})`);
+  assert.ok(rows.length >= 1, 'he made a run-up');
+  // (a press drawn inside the judged spread was flown to a catch; a draw past its 3 sd may not be, and is then played to its flown end)
+  const caught = rows.filter((q) => q.probe > 0);
+  assert.ok(caught.length >= 1, `a run-up the probe flew to a catch (${JSON.stringify(rows)})`);
+  for (const q of caught) assert.equal(q.caught, q.probe, `the run-up at t ${q.t.toFixed(3)} from x ${q.x.toFixed(1)} on #${q.on} (k ${q.k}, press frame ${q.press}): caught on frame ${q.caught}, the probe said ${q.probe}; the engine: ${q.down}`);
   assert.equal(r.end, 'shrine', `he reaches the shrine (${r.end})`);
   assert.equal(r.rescues, 0, `no rescue (${r.rescues})`);
 });

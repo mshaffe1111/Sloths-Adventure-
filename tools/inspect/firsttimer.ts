@@ -84,7 +84,7 @@ import type { FollowPlay } from '../../src/game/followPlay.ts';
 import { bucketAngle } from '../../src/game/wheel.ts';
 import { WHEEL_FLOWN } from '../../src/game/gen2/wheelFlights.data.ts';
 import { flownKey } from '../../src/game/gen2/wheelLay.ts';
-import { PlanPlayer, planFlies, pressPlan, type PressPlan } from '../../src/game/pressPlan.ts';
+import { PlanPlayer, firstWindow, planFlies, pressPlan, type PressPlan } from '../../src/game/pressPlan.ts';
 
 /**
  * The bot's clock-read skill (METER-2a, R-165.272; METER-COVERAGE §2a "read a stage clock", board + step-off half). A toy test switches
@@ -2542,18 +2542,10 @@ export class FirstTimerRun {
       }
       return o;
     };
-    // (the search pruned, never the answer: any run of w consecutive P's inside [lo, bound] holds exactly one P of the lattice
-    //  lo + w - 1 + j w, so those are flown first and a catch is widened to its run; the first run found starts where the plain scan's
-    //  does (the smallest k: firsttimer.test pins it against that scan). A refusal on a short log flies no catch at all: its unpressed
-    //  run leaves under w press frames, 2-4 kid Easy 19's 84 refusals flew 602 catches frame by frame)
-    for (let Q = lo + w - 1; Q <= bound; Q += w) {
-      if (at(Q).at <= 0) continue;
-      let a = Q, b = Q;
-      while (a > Math.max(lo, Q - w + 1) && at(a - 1).at > 0) a--;
-      while (b - a + 1 < w && b < bound && at(b + 1).at > 0) b++;
-      if (b - a + 1 >= w) return { k: a - lo, at };
-    }
-    return null;
+    // (the search pruned, never the answer (firstWindow: the plain scan's first window, asking far fewer P's): 2-4 kid Easy 19's 84
+    //  refusals flew 602 catches frame by frame, 3.5x the merge's CPU to t 99; pruned, 16)
+    const s = firstWindow(lo, w, bound, (P) => at(P).at > 0);
+    return s < 0 ? null : { k: s - lo, at };
   }
 
   /**

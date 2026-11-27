@@ -7,7 +7,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { FirstTimerRun, FT_KID, freshPhone, rng } from '../../tools/inspect/firsttimer.ts';
-import { planFlies, pressPlan, type PlanFlight } from './pressPlan.ts';
+import { firstWindow, planFlies, pressPlan, type PlanFlight } from './pressPlan.ts';
 import type { RealPlay } from './realPlay.ts';
 
 type Eng = Record<string, any>;
@@ -82,3 +82,35 @@ test('a press drawn anywhere inside the judged spread, played by the bot, ends e
   // (the spread is a real one: the draws do not all land on the same frame)
   assert.ok(new Set(rows.map((r) => r.split(':')[1])).size > 1, rows.join(' '));
 });
+
+// ENG-SIM step 3 1a-ii: the run-up's press-frame search (firstWindow) is the plain scan's answer, asked less: on every yes / no pattern
+//  of 1 to 12 frames, every window width 1 to 6 and a first frame of 1 or 3, the same first window (or none), never a frame outside
+//  [lo, hi], and never more distinct frames asked than the plain scan asks (the caller keeps each frame's flight: runUpPlan's cache)
+test('firstWindow finds the plain scan\'s first window of w consecutive yeses on every pattern up to 12 frames, asking no more often', () => {
+  for (const lo of [1, 3]) {
+    for (let n = 1; n <= 12; n++) {
+      const hi = lo + n - 1;
+      for (let mask = 0; mask < 1 << n; mask++) {
+        const yes = (f: number) => ((mask >> (f - lo)) & 1) === 1;
+        for (let w = 1; w <= 6; w++) {
+          let plain = -1, plainAsks = 0;
+          for (let f = lo, run = 0; f <= hi; f++) {
+            plainAsks++;
+            run = yes(f) ? run + 1 : 0;
+            if (run === w) { plain = f - w + 1; break; }
+          }
+          const asked = new Set<number>();
+          const got = firstWindow(lo, w, hi, (f) => {
+            assert.ok(f >= lo && f <= hi, `asked frame ${f} outside [${lo}, ${hi}]`);
+            asked.add(f);
+            return yes(f);
+          });
+          const at = `lo ${lo} n ${n} mask ${mask.toString(2)} w ${w}`;
+          assert.equal(got, plain, `${at}: the plain scan's first window`);
+          assert.ok(asked.size <= plainAsks, `${at}: ${asked.size} frames asked against the plain scan's ${plainAsks}`);
+        }
+      }
+    }
+  }
+});
+

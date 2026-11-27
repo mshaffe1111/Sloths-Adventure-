@@ -78,6 +78,23 @@ export function planFlies<P extends Pad>(sim: ProbeSim<P>, plan: PressPlan, goal
   return { at, died: r.died, frames: r.frames, ms: r.ms };
 }
 
+/**
+ * The first window of `w` consecutive frames inside [lo, hi] at which `ok` holds: its first frame, or -1 when none. The plain scan's
+ * answer, found by asking `ok` far less often: any such window holds exactly one frame of the lattice lo + w - 1 + j w, so those are
+ * asked first and a yes is widened to its run (a judge that flies a plan per frame asks it once per flight; a refusal over fewer than
+ * `w` frames asks nothing). pressPlan.test.ts pins it against the plain scan on every pattern up to 12 frames.
+ */
+export function firstWindow(lo: number, w: number, hi: number, ok: (frame: number) => boolean): number {
+  for (let q = lo + w - 1; q <= hi; q += w) {
+    if (!ok(q)) continue;
+    let a = q, b = q;
+    while (a > Math.max(lo, q - w + 1) && ok(a - 1)) a--;
+    while (b - a + 1 < w && b < hi && ok(b + 1)) b++;
+    if (b - a + 1 >= w) return a;
+  }
+  return -1;
+}
+
 /** a bot's plan in play: its pads one a frame, verbatim; a life lost since it was set drops the rest */
 export class PlanPlayer {
   private pads: Pad[] = [];
