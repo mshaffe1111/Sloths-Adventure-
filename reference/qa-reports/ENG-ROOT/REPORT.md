@@ -6,10 +6,14 @@
 2. ITEM 3 is WRITTEN, NOT YET TESTED: tools/inspect/firsttimer.ts `rootPlan` (wired before `freezePlan`; ROOT_LOOK 30 px): hanging on a
    look 'root' rope, a lit ring (litRing) within 30 px ahead that a leaper of the cast has in its sight by its facing -> thumb off in the
    dark until clear, then stopReact, then creep on; already lit -> creep on. Its test is item 4's toy (and its plant: rootPlan -> null).
-3. ITEM 4, toys on a REAL World 3 row (tools/inspect or src/game/gen2, a test-only brick: a root `{kind:'root'}` over a floor with one
-   ocelot socket under it inside a `#dark` stretch, laid through w3.ts's kit): the bot creeps it unseen; PLANTS (each RED): the skill
-   removed -> leapt at; the root laid over a gap (a `rope` place in place of `root`) -> the floor check fails; the root's speed back
-   to 120 (`speed` unset) -> the creep-timing verdict reads it.
+3. ITEM 4: the DRAFT toy is reference/qa-reports/ENG-ROOT/wip/rootRow.test.ts.txt (move it to src/game/gen2/rootRow.test.ts; drop
+   its ROOT_PROBE / ROOT_NOROOT / ROOT_NODARK debug lines when done). It follows src/game/gen2/noiseRow.test.ts (toyWorld kit, World 3,
+   buildGen2Stage, withTestStage + RealPlay). OPEN BUG FIRST: no roll picks its 'toy-root-row' section (plan = meadows only, errors []);
+   ROOT_NOROOT=1 (root piece removed) lays it with the ocelot, ROOT_NODARK=1 does not: the ROOT PIECE stops the section after layLocal
+   (layLocal itself lays it: rootLay.test). Suspects: layStage's piece loop / a section check that reads every piece (its w, shape
+   'vine', main false), or the stage time estimate. Fix in the pipeline, then: the bot creeps it unseen (firstTimer on the toy id);
+   PLANTS (each RED): rootPlan -> null -> leapt at; the root as a `rope` place over a gap -> red; `speed` unset (120) -> the
+   creep-timing verdict reads it.
 4. ITEM 5 stills (tools/art/kitaudit/shoot.mjs, both ways): Pokey on the root over a prowler with a patch lit; label: "art: World 1's
    painted vine rope (ropeArt.ts drawRopes, look 'root' branch: vineTile, no trees, no posts) until ART-W3's root lands".
 5. GATES once on the frozen candidate (D115, src/game/gen2/proven/ writable): tsc; CI tool line; base lock on 13135bf6b then
