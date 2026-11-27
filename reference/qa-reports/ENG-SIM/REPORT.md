@@ -64,6 +64,10 @@ Head: the hand-over message's hash (pushed to t-eng-sim, ls-remote confirmed). N
   **PLANTED RED** (the loop's play-now removed: the plan a frame late): 0/1. hopJudged's two stand toys (CI-11 2-4 kid Easy 35, CI-12 2-4 kid
   Easy 19) PASS on bb5e7fb2d; lianaRide's 'A VINE FROM A LOG' (with its planted half) and 'A VINE OVER THE TAIL' outcome rows: KEPT, re-measured, PASS (4/4
   with hopJudged's two, 66 s, the frozen tree of bb5e7fb2d).
+- **Checks on 9133e2b5e (a chattr-frozen worktree, src/game/gen2/proven writable; the four run together on 4 cores):** shard 0: 1,244
+  tests, 1,243 pass, **1 FAIL = KID_RUNS_59**, 0 todo, 1,107 s. Rule 28 on it: measured [14, 13, 17, 18, 5, 5], exactly box 5's numbers
+  for ENG-THUMB's head 35d5252c2, the merge, 1a-i and the seal: **not moved by 1a-ii** (the inherited red, held for Matt R-165.477).
+  SHARDS_12_CI
 - **Hours (box 6):** the timing harness and the merge / seal baselines 8 min; the run plan 7 min; the over-3x count, the message and
   option A's measure 8 min; firstWindow, its exhaustive test and the :351 toy with both plants 10 min. The spike's 1 h for 1a-ii holds
   for the code; the checks (CI line + shards, about 50 min of wall clock) and rule 28 are box 7's.
