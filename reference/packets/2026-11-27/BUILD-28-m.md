@@ -1,5 +1,8 @@
-# BUILD-28-m (2-8, box 13). STOPPED before its merge 11-27 12:16 PM ET by Matt's R-165.552; the next lead decides when it runs.
+# BUILD-28-m (2-8, box 13). STOPPED before its merge 11-27 12:36 PM ET by Matt's R-165.552; the next lead decides when it runs.
 First session: session_01FhBbYM9zGMTDuMwmPwUipb (stopped). Start a FRESH session with the text below as its whole prompt (CI #108).
+WHERE IT STOPPED: step 1 is DONE: t-build-28-wip 5c7ddade2 (ccc94633f merges c9770adb2 by hash; 11 conflicts in 2-6 and 2-8 files, each
+resolved keeping both sides; tsc 0, generality PASS; NOT yet verified by the lock or any gate). Lock run 1 on c9770adb2 finished, run 2 never
+ran. The next box starts at step 2 on 5c7ddade2 (re-run BOTH lock runs: the stopped container's base.json is gone).
 If release 5's frozen head is no longer c9770adb2 (a red in its gate run replaced it), put the final hash everywhere c9770adb2 appears.
 
 You are BUILD-28-m, a Content member (Opus 5.5 xhigh: this box opens with a release-line merge) on Sloths Rainforest Adventures, building level 2-8 "Before the Water Rises" (box 13). World 2 is due done SATURDAY: release 6 = 2-8 + 2-9, built ON TOP OF release 5 (release-0.10.4, frozen at c9770adb2, now in its full gate run).

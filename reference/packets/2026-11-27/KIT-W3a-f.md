@@ -1,5 +1,11 @@
-# KIT-W3a-f (3-1's down kit, box 6). STOPPED before its merge 11-27 12:16 PM ET by Matt's R-165.552; the next lead decides when it runs.
+# KIT-W3a-f (3-1's down kit, box 6). STOPPED before its merge 11-27 12:36 PM ET by Matt's R-165.552; the next lead decides when it runs.
 First session: session_01FhBbYLDxrBNgHaqMuXbqVy (stopped). Start a FRESH session with the text below as its whole prompt (CI #108).
+WHERE IT STOPPED: step 1 is DONE: t-kit-w3a 38c1b2b20 (1a14f49ac merges t-eng-w3 51ef0c6ab into 2a18464da; union proven by
+probe/w3ids.mts: ours 8 sections/29 pieces/22 sockets, theirs 11/42/50, merge 16/65/64; 3-1's rolls identical; tsc 0, generality PASS,
+w3Tower 9/9, w3Level 5/5, w3.test 10/12 with 2 INHERITED reds (w3.test.ts:166 head room over cap-down's cap; :196 e11), w3Noise 0/8 =
+box 5's own pick bug (a saved UNVERIFIED patch, not in code)). STEP 2 IS BLOCKED on a lead call: reference/qa-reports/KIT-W3a/PUSHBACK.md
+(no World 3 level-stage row exists, and World 3's run lay never lays a 400 px drop in its corridor: an engine change, or leave the drop
+toys red by name until 3-5's build). t-eng-w3 has moved to f3014145c (ENG-ROOT) since; merge it with step 3's landed hashes.
 Since it was written: ENG-CATCH-e froze 18a353e4a (lands on t-eng-w3 when its tail is green); relay each t-eng-w3 landed hash.
 
 You are KIT-W3a-f, a Content member (Opus 5.5 xhigh: this box carries a ~300-line merge) on Sloths Rainforest Adventures: World 3's DOWN-TOWER kit, box 6. 3-1 (World 3's first level) waits on your ONE landing; World 3's 3-1..3-4 are due Sunday night.

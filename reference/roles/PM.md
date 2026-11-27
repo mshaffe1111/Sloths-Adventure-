@@ -296,3 +296,5 @@ every rotation and whenever something looks off. Check per-task members at every
 6. **Write the result into STATE.md:** who's on the team now, what's in flight, what you re-issued.
 - **A countermeasure that is a check ships with its PLANT (CI #109):** run it once against a planted failure and see it refuse before it becomes
   the standard. The lead commits only through `bash tools/team/leadcommit.sh "<subject>" <paths>` (roadmapcheck by exit code, both branches).
+- **The time of any message, Matt's answers included, comes from `TZ=America/New_York date` run then (CI #105 recurrence, 11-27):** an
+  AskUserQuestion answer carries no 'Now:' hook line, so a typed time is a guess.
