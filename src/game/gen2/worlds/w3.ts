@@ -24,7 +24,7 @@
  */
 import { G } from '../../protoStage.ts';
 import { DARK_EMIT, DARK_GLOW_PROPS, darkEnds } from '../dark.ts';
-import type { CreatureDef, SectionTemplate, WorldKit, WorldManifest } from '../types.ts';
+import type { CreatureDef, NodeJob, SectionPiece, SectionTemplate, WorldKit, WorldManifest } from '../types.ts';
 import { W1_KIT } from './w1.ts';
 
 /** World 3's ground: the floor line (the bottom of the way down), a ledge's depth and how deep a soft fall's bed lies */
@@ -41,6 +41,8 @@ export const W3_ART = {
   shelf: ['w3#branch'],
   /** a rock: the kit's low boulder (w3.webp) */
   rock: ['w3#boulder'],
+  /** a bounce: World 3's own cap on its stalk (bounceArt.ts, cap-w3 / stalk-w3) */
+  bounce: ['bounce#cap-w3', 'bounce#stalk-w3'],
   /** the grotto's lamps and ferns at a ledge (w3-props.webp) */
   glow: ['w3-props#glowLit', 'w3-props#mushrooms'],
   fern: ['w3-props#fern', 'w3-props#mossCurtain'],
@@ -127,6 +129,130 @@ export const w3Walk: SectionTemplate = {
 /** the way down's bricks, in the order a pool reads them */
 export const W3_DOWN: readonly SectionTemplate[] = [w3Ledge, w3Drops, w3Walk];
 
+// ───────────────────────────── the DOWN tower's climb and bounce bricks (KIT-W3a, R-165.504) ─────────────────────────────
+// (AUDIT-W3 finding 3: a down tower's storeys are 1140 px (tower.ts TOWER.width less two walls) and no World 1-2 climb or bounce section
+//  fits; with only ground and floating bricks a down stage's code cannot meet V11 (3 of a letter at most), so World 3 lays its own. Each
+//  is narrower than a storey at its widest roll, so the tower lays it whole; each is World 3's art only: the stone bank and branch shelf
+//  (w3.webp), World 3's own bounce cap on its stalk (bounce#cap-w3, bounceArt.ts), the tower's own climbing vine (the one every turn of
+//  the way down hangs). No tip, no animal: a level's are its build's. LIT, no dark ends: the trimmed codes ask #dark on every beat but
+//  their c and b (AUDIT-W3 codes-trim.txt 3-1, 3-5), the breath between dark beats; and a flag never stands in a dark zone (pipeline
+//  flagInZone), so a dark climb beside dark drops left the 3-1 draft 4,803-4,991 px of way unflagged on 3 of 12 rolls)
+
+/** the jobs a down tower's climb serves (a descent's beat, and the arc's middle); a bounce's (the arc's beats that use one) */
+const W3_CLIMB_JOBS: NodeJob[] = ['descent', 'practise', 'test', 'twist', 'flow'];
+const W3_BOUNCE_JOBS: NodeJob[] = ['practise', 'test', 'combine', 'twist', 'flow'];
+
+/** [c] down the root: a vine climbed down to the shelf under the tip of the one he leaves, 235 px (2.6 of his heights). The foot is laid
+ *  by `walk` (its drop is never scaled by the roll's tempo, as a jump's is, so the vine's top stays at the shelf's height), starting at the
+ *  tip; the vine stands 31-33 px out on it (past CLIMB_CLEAR, inside the vault's VAULT_GAP: straight up lands him on the shelf). 235, not
+ *  more: a tower catch over the next storey stands up to 287 px above its own landing (the 3-1 draft's easy rolls, 260 left 324 px, past
+ *  TOWER.see) */
+export const w3RootDown: SectionTemplate = {
+  id: 'w3-root-down',
+  name: 'down the root',
+  archetypes: 'any',
+  phases: ['ki', 'sho', 'ten', 'ketsu'],
+  difficulty: 2,
+  content: 'climb',
+  jobs: W3_CLIMB_JOBS,
+  pieces: [
+    { key: 'top', shape: 'branch', w: [240, 300], place: { kind: 'start' } },
+    { key: 'foot', shape: 'branch', w: [280, 300], place: { kind: 'walk', after: 'top', dy: [235, 235] }, landing: true },
+    { key: 'vine', shape: 'vine', w: 0, place: { kind: 'climb', on: 'foot', at: 0.11, h: 235 } },
+  ],
+  entry: { piece: 'top', kind: 'ledge' },
+  exit: { piece: 'foot', kind: 'ledge' },
+  exitDy: 235,
+  sockets: [{ id: 'petals', role: 'pickup', on: 'foot', t: 0.6, dn: 34, count: 2, span: 90 }, { id: 'flag', role: 'flag', on: 'foot', t: 0.8 }],
+  mirrorable: false,
+};
+
+/** [c] two roots down: a vine down to a middle shelf, a walk along it, a second vine down to the foot (each 235 px, laid as w3RootDown's) */
+export const w3TwoRoots: SectionTemplate = {
+  id: 'w3-two-roots',
+  name: 'two roots down',
+  archetypes: 'any',
+  phases: ['sho', 'ten', 'ketsu'],
+  difficulty: 3,
+  content: 'climb',
+  jobs: W3_CLIMB_JOBS,
+  pieces: [
+    { key: 'top', shape: 'branch', w: [220, 260], place: { kind: 'start' } },
+    { key: 'mid', shape: 'branch', w: [280, 300], place: { kind: 'walk', after: 'top', dy: [235, 235] }, landing: true },
+    { key: 'v1', shape: 'vine', w: 0, place: { kind: 'climb', on: 'mid', at: 0.11, h: 235 } },
+    { key: 'foot', shape: 'branch', w: [280, 300], place: { kind: 'walk', after: 'mid', dy: [235, 235] }, landing: true },
+    { key: 'v2', shape: 'vine', w: 0, place: { kind: 'climb', on: 'foot', at: 0.11, h: 235 } },
+  ],
+  entry: { piece: 'top', kind: 'ledge' },
+  exit: { piece: 'foot', kind: 'ledge' },
+  exitDy: 470,
+  sockets: [{ id: 'petal', role: 'pickup', on: 'mid', t: 0.6, dn: 34 }, { id: 'petals', role: 'pickup', on: 'foot', t: 0.6, dn: 34, count: 2, span: 90 }, { id: 'flag', role: 'flag', on: 'foot', t: 0.8 }],
+  mirrorable: false,
+};
+
+/** World 3's bounce cap standing on `on` (bounceArt.ts draws World 3's own cap and stalk): 30 px over the bank, the bounce height every
+ *  world's bots and players know (2-1's spring, World 1's mushroom) */
+const w3Cap = (key: string, on: string, at: number): SectionPiece => ({ key, shape: 'bouncy', w: [70, 70], place: { kind: 'on', on, at: [at, at], h: [30, 30] } });
+/** a stone bank 174-180 px over `after`, reached from the cap `from` alone (a plain bounce lands it, past one jump: 2-1's high bank band,
+ *  reach.ts 'bounce-teach'; never the bounce + air jump combo no stage teaches, FIX-21) */
+const w3BounceLip = (key: string, after: string, from: string, w: [number, number]): SectionPiece => ({ key, shape: 'branch', w, place: { kind: 'walk', after, dy: [-180, -174] }, main: true, landing: true, block: 'bounce', from });
+
+/** [b] down to the cap, up onto the lip: a drop to a stone ledge with World 3's cap at its end, the bounce up a stone lip, a drop on. NOTHING
+ *  rises over the shelf he enters on: a down tower hangs the catch for the turn above in the band over a section's entry, and a lip that
+ *  rose 180 px over it was laid level with that catch, so the turn's vine stopped on it short of his storey (the 3-1 draft, 9 of 12 rolls:
+ *  "a catch passes its storey"). Every drop is a `walk` (never scaled by the roll's tempo): 250 px down, in view (TOWER.see 300). The
+ *  ledge is 280-300 px, so the lip (70-76 px under the entry) lies past a double from the entry shelf: the bounce is the way; the last
+ *  shelf is wide (260-280), as the root bricks' feet are: a narrow exit before a turn left the tower's catch no fair height */
+export const w3CapDown: SectionTemplate = {
+  id: 'w3-cap-down',
+  name: 'down to the cap, up onto the lip',
+  archetypes: 'any',
+  phases: ['sho', 'ten', 'ketsu'],
+  difficulty: 3,
+  content: 'bounce',
+  jobs: W3_BOUNCE_JOBS,
+  pieces: [
+    { key: 'a', shape: 'branch', w: [160, 180], place: { kind: 'start' } },
+    { key: 'b', shape: 'branch', w: [280, 300], place: { kind: 'walk', after: 'a', dy: [250, 250] }, landing: true },
+    w3Cap('m', 'b', 0.74),
+    w3BounceLip('w', 'b', 'm', [160, 180]),
+    { key: 'c', shape: 'branch', w: [260, 280], place: { kind: 'walk', after: 'w', dy: [150, 150] }, landing: true },
+  ],
+  entry: { piece: 'a', kind: 'ledge' },
+  exit: { piece: 'c', kind: 'ledge' },
+  exitDy: 224,
+  sockets: [{ id: 'petal', role: 'pickup', on: 'b', t: 0.35, dn: 34 }, { id: 'petals', role: 'pickup', on: 'w', t: 0.5, dn: 34, count: 2, span: 90 }, { id: 'flag', role: 'flag', on: 'c', t: 0.6 }],
+  mirrorable: false,
+};
+
+/** [b] steps down to the cap, up onto the lip: two short drops to a stone shelf with the cap at its end, the bounce up a shelf 64-72 px
+ *  under the entry and 360-400 px out from it (past a double; nothing rises over the entry), a drop on (as w3CapDown's) */
+export const w3CapSteps: SectionTemplate = {
+  id: 'w3-cap-steps',
+  name: 'steps down to the cap, up onto the lip',
+  archetypes: 'any',
+  phases: ['sho', 'ten', 'ketsu'],
+  difficulty: 3,
+  content: 'bounce',
+  jobs: W3_BOUNCE_JOBS,
+  pieces: [
+    { key: 'a', shape: 'branch', w: [140, 160], place: { kind: 'start' } },
+    { key: 's', shape: 'branch', w: [140, 160], place: { kind: 'walk', after: 'a', dy: [120, 120] }, landing: true },
+    { key: 'b', shape: 'branch', w: [220, 240], place: { kind: 'walk', after: 's', dy: [126, 130] }, landing: true },
+    w3Cap('m', 'b', 0.74),
+    w3BounceLip('w', 'b', 'm', [140, 160]),
+    { key: 'c', shape: 'branch', w: [220, 240], place: { kind: 'walk', after: 'w', dy: [150, 150] }, landing: true },
+  ],
+  entry: { piece: 'a', kind: 'ledge' },
+  exit: { piece: 'c', kind: 'ledge' },
+  exitDy: 220,
+  sockets: [{ id: 'petal', role: 'pickup', on: 's', t: 0.5, dn: 34 }, { id: 'petals', role: 'pickup', on: 'w', t: 0.45, dn: 34, count: 2, span: 90 }, { id: 'flag', role: 'flag', on: 'c', t: 0.6 }],
+  mirrorable: false,
+};
+
+/** the down tower's climb and bounce bricks (a pool reads them after the way down's) */
+export const W3_DOWN_TOWER: readonly SectionTemplate[] = [w3RootDown, w3TwoRoots, w3CapDown, w3CapSteps];
+
 // ───────────────────────────── the manifest and the kit ─────────────────────────────
 
 /**
@@ -144,7 +270,7 @@ export function w3Manifest(): WorldManifest {
     themeShare: [1, 1],
     creatures: [...W3_CAST], props: [...DARK_GLOW_PROPS], pairs: [], decor: [],
     flowers: ['orchid', 'hibiscus'],
-    sections: [...W3_DOWN],
+    sections: [...W3_DOWN, ...W3_DOWN_TOWER],
     handBuilt: [],
     lessons: { jump: '1-1', double: '1-1', bounce: '1-1', climb: '1-4', creak: '1-5', swing: '1-6' },
     tips: W3_TIPS,

@@ -1,0 +1,16 @@
+import '/home/user/Sloths-Adventure-/src/game/headlessDom.ts';
+import '/home/user/Sloths-Adventure-/tools/engine/draft.ts';
+import { W3_DOWN_TOWER } from '/home/user/Sloths-Adventure-/src/game/gen2/worlds/w3.ts';
+import { buildStage } from '/home/user/Sloths-Adventure-/tools/engine/libstage.ts';
+const keep = (process.env.KEEP ?? '').split(',');
+const arr = W3_DOWN_TOWER as any[]; const kept = arr.filter((q) => keep.includes(q.id)); arr.splice(0, arr.length, ...kept);
+const st: any = buildStage('3-1', Number(process.env.SEED ?? 1), (process.env.D ?? 'normal') as any);
+const e = (st.gen2.errors ?? []).filter((x: string) => /vaults|blind|catch passes|flags/.test(x));
+console.log(e.slice(0, 2).join('\n'));
+const m = /x (\d+) \(y (\d+)\)/.exec(e[0] ?? '') ?? /x (\d+)-\d+, y (\d+)/.exec(e[0] ?? '');
+const X = Number(m?.[1]), Y = Number(m?.[2]);
+const secs = (st.gen2.sections ?? []).map((q: any) => `${q.template}:${Math.round(q.x0 ?? q.x ?? 0)}`);
+for (const p of st.platforms) if (Math.abs(p.y - Y) < 400 && p.x < X + 500 && p.x + p.width > X - 500) console.log(' P', p.id, Math.round(p.x), Math.round(p.x + p.width), Math.round(p.y), p.type, p.tag ?? '', p.section ?? '');
+for (const v of st.vines ?? []) if (Math.abs(v.topY - Y) < 400) console.log(' V', Math.round(v.x), Math.round(v.topY), Math.round(v.bottomY ?? v.y ?? 0), v.vineType);
+console.log(Object.keys(st.gen2.sections?.[0] ?? {}).join(','));
+for (const q of st.gen2.sections) if (/root|cap/.test(q.template)) console.log(' S', q.template, q.mirrored, Math.round(q.x0), Math.round(q.x1), JSON.stringify(Object.fromEntries(Object.entries(q).filter(([k]) => /y|piece/i.test(k)))).slice(0, 200));
