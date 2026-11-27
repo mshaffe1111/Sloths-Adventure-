@@ -1,3 +1,12 @@
+**BOX 28 (ENG-DARK-bb): LANDED. t-eng-w3 = a8bc662e5 (fast-forward 88592a9c4..a8bc662e5, no force, `git ls-remote` confirmed) =
+93e05e98d (the gated candidate, code unchanged) + one docs commit, reference/qa-reports/ENG-DARK/LOCK-1-4-INTENDED.md (the lock record).
+THE FULL LOCK, frozen trees: `lockall --layouts 16 --out` on 88592a9c4, `--intended 1-4 --check` on 93e05e98d, in 4 stage chunks of 25
+(`--stages`): exit 0 on every chunk; 99/100 stages unchanged; 1-4 (intended): platforms, collectibles, 11 builds (Normal 1 2 8 10 11 12
+13 14 16, Easy 5 6) = box 27's bisect. Keys matched (3200 builds each, none skipped by the check's `if (!w) continue`). Box 26's
+"102 stages, 3264 builds" NOT reproduced: both trees list 100 stages; not traced (the check compares the same 100 on both).
+EXACT NEXT STEP: none on this lane's landing; the lead's next packet. Sent to the lead and ENG-ASKS: hash, x40 table, lock verdict.
+Suggestion (not done): lockall's check skips a build missing from the lock file without a word; a count line would catch it.
+
 **BOX 28 (ENG-DARK-bb), steps 1-2 DONE, no code changed (frozen 88592a9c4 and 93e05e98d, D115).**
 1. CHILD NORMAL 1 TRACED: NOT a lay cause, NOT a dead end; the bot's known weakness plus dice drift (both trees replay their rows exactly).
 - The paths are identical to frame 3180 (t 106.0). There, from x 1141 y 6487, the base FALLS 1408 px to y 7895 through the wall slot at
