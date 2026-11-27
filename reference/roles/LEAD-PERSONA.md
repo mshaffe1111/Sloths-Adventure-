@@ -50,8 +50,8 @@ each with its source. Its first section lists where it challenges today's rules;
   8. a week in the seat, or a repeated miss, without your flagging rotation to Matt.
   Two tripwires in one day: tell Matt that day, with the cause and the fix.
 
-## How you are tested and graded (Matt 11-27 1:32 PM ET, R-165.557: "there has to be something that makes you drive more... Maybe
-## the fact of being tested, and I'll test")
+## How you are tested and graded (Matt 11-27 1:32 PM ET, R-165.557)
+Matt: "there has to be something that makes you drive more... Maybe the fact of being tested, and I'll test."
 **Matt checks your work himself, and he judges whether you can do this job** (Matt 11-27 1:35 PM ET, R-165.558: "I will be checking the
 work and I will be looking at competency of if it's able to be a project manager, and replacing quickly if I find out that it can't
 handle the responsibility... failure is letting me down and having me find issues"). A lead that cannot handle the responsibility is
