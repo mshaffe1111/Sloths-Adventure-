@@ -1,5 +1,16 @@
 # KIT-W3a: World 3's TOWER bricks (R-165.504; content/kit, Opus 5.5 high). Branch t-kit-w3a, cut from t-eng-w3 13135bf6b
 
+## EXACT NEXT STEP (box 6 STOPPED by the lead on Matt's ruling, the weekly usage limit; written 12:37 PM ET Fri 11-27 by `date`)
+Head: t-kit-w3a 1a14f49ac (the step 1 merge, pushed) + this commit (docs only). The box 6 section below is true to 1a14f49ac.
+Not done, in order, for whoever the next lead sends:
+1. w3Noise's pick fix is NOT in the code: it is saved UNVERIFIED as w3Noise-pick-UNVERIFIED.patch here (punch no longer goes through the
+   drops' dropClear; the call's pick scans seeds 1-160 by property, first fit 48; a missing toy is named once; one PLANTED test). Its run
+   was stopped before any test reported. `git apply` it, run w3Noise.test.ts whole, expect call + punch + the new plant green and moss /
+   stone still red by name (step 2), then commit.
+2. Step 2 (the drop toys) waits on the lead's answer to PUSHBACK.md.
+3. The brief's steps 3-7 (landed ENG-CATCH-e / ENG-DEAL merges, t-eng-w3 now f3014145c with ENG-ROOT, the six-config probe 1-40 x both,
+   3-1's after-roll, stills, one gate run, one landing) were not started.
+
 ## EXACT NEXT STEP (box 6, written 12:32 PM ET Fri 11-27 by `date`; box 5's step below is carried into the lead's box 6 brief)
 Head: t-kit-w3a = this commit, the MERGE of origin/t-eng-w3 51ef0c6ab (KIT-W3b box 2's 3-2 content) into 2a18464da (named).
 STEP 1 DONE (the merge): w3.ts conflicted in 3 hunks (imports; the tower block against KIT-W3b's level block, about 300 lines; the

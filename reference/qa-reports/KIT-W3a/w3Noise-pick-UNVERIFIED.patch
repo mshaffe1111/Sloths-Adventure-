@@ -1,0 +1,75 @@
+diff --git a/src/game/gen2/worlds/w3Noise.test.ts b/src/game/gen2/worlds/w3Noise.test.ts
+index 4a76d940..8b3cfac9 100644
+--- a/src/game/gen2/worlds/w3Noise.test.ts
++++ b/src/game/gen2/worlds/w3Noise.test.ts
+@@ -112,7 +112,7 @@ const toyFloor = (platforms: readonly Platform[], e: { x: number; y: number; wid
+     (dropRow(row) ? p.width === DROP_W && !!dropTop(platforms, p) : p.width >= TOY_W));
+ 
+ const builds = new Map<Row, { st: ReturnType<typeof buildGen2Stage>; kit: WorldKit; seed: number }>();
+-/** the first clean roll (seeds 1-40, Normal) that lays the row's toy, built once per row */
++/** the first clean roll (seeds 1-TOY_SEEDS, Normal) that lays the row's toy with its property, built once per row */
+ /** the harness moves him (stand, fly): a teleport is not a fall, so his fall starts where he is put (as a flag's respawn does: calm) */
+ const teleported = (cast: CastPlay) => { (cast as unknown as { fall: FallState }).fall = newFall(); };
+ /** the roll's tempo scales a laid drop (pipeline.ts: dy x T.rise; 3-1's rolls lay this one 392-407 px): the toy takes it within this */
+@@ -138,24 +138,36 @@ const dropClear = (platforms: readonly Platform[], f: Platform, x: number) => {
+   const [lo, hi] = top.x < f.x ? [top.x + top.width, x] : [x, top.x];
+   return !platforms.some((p) => p !== top && p !== f && p.y > top.y + 2 && p.y < f.y - 2 && p.x < hi && p.x + p.width > lo);
+ };
++/**
++ * the rolls a toy is looked for in (Normal), first clean one that has the toy's PROPERTY (D151): the call's stone inside its ocelot's
++ * patrol is rare on 3-1's narrowed tower (KIT-W3a box 6: none of seeds 1-40, the first at 48, then 63 96 118), so the search runs past 40
++ */
++const TOY_SEEDS = 160;
++/** a toy no roll lays, named once (the search is not run again for every test that asks) */
++const missing = new Set<Row>();
++/** a toy's property on a laid roll: the call's stone inside the ocelot's own patch, so it can come under it; a drop's fall column clear
++ *  (toyFloor holds the section's top DROP px over it); the punch's sleeper on its floor is all it asks */
++const toyFits = (row: Row, st: ReturnType<typeof buildGen2Stage>, e: Enemy, fl: Platform): boolean => {
++  const stone = st.proto?.cast?.sounds?.[0];
++  if (row === 'call') return !!stone && stone.x >= e.patrolMinX && stone.x <= e.patrolMaxX;
++  return dropRow(row) ? dropClear(st.platforms, fl, e.x) : true;
++};
+ function built(row: Row) {
+   const had = builds.get(row);
+   if (had) return had;
++  if (missing.has(row)) throw new Error(`no roll of ${DRAFT}'s draft lays the ${row} toy`);
+   const kit = kitOf(row);
+-  for (let seed = 1; seed <= 40; seed++) {
++  for (let seed = 1; seed <= TOY_SEEDS; seed++) {
+     const st = buildGen2Stage({ config: cfg, kit, seed, difficulty: 'normal' });
+     if (st.gen2.errors?.length) continue;
+     const e = st.enemies.find((q) => q.type === 'ocelot' && toyFloor(st.platforms, q, W3_OCELOT.footY ?? 0, row));
+     const fl = e && toyFloor(st.platforms, e, W3_OCELOT.footY ?? 0, row);
+-    const stone = st.proto?.cast?.sounds?.[0];
+-    // (the call: the stone inside the ocelot's own patch, so it can come under it; the drops: toyFloor holds the section's top DROP px over it)
+-    const fits = !!e && !!fl && (row === 'call' ? !!stone && stone.x >= e.patrolMinX && stone.x <= e.patrolMaxX
+-      : dropClear(st.platforms, fl, e.x));
+-    if (fits) {
++    if (e && fl && toyFits(row, st, e, fl)) {
+       builds.set(row, { st, kit, seed });
+       return builds.get(row)!;
+     }
+   }
++  missing.add(row);
+   throw new Error(`no roll of ${DRAFT}'s draft lays the ${row} toy`);
+ }
+ 
+@@ -350,3 +362,18 @@ test("PLANTED: wood laid across the drops' fall column (between the top and the
+   const wood = { ...floor, x: mid, width: 100, y: top.y + 280 } as Platform;
+   assert.ok(!dropClear([...st.platforms, wood], floor, e.x), 'planted wood 280 px under the top, in the fall: refused');
+ });
++
++test("PLANTED: each toy is picked by ITS OWN property: the drops' clear-fall check refuses the flat punch toy (box 5's pick bug); the call's stone moved past the ocelot's patrol is refused", () => {
++  const p = built('punch');
++  const pe = p.st.enemies.find((q) => q.type === 'ocelot' && toyFloor(p.st.platforms, q, W3_OCELOT.footY ?? 0, 'punch'))!;
++  const pf = toyFloor(p.st.platforms, pe, W3_OCELOT.footY ?? 0, 'punch')!;
++  assert.ok(toyFits('punch', p.st, pe, pf), 'the punch: its sleeper on its floor');
++  assert.ok(!dropClear(p.st.platforms, pf, pe.x), "the drops' check on the flat toy (no top over it): refused, so it must not be the punch's");
++  const c = built('call');
++  const ce = c.st.enemies.find((q) => q.type === 'ocelot' && toyFloor(c.st.platforms, q, W3_OCELOT.footY ?? 0, 'call'))!;
++  const cf = toyFloor(c.st.platforms, ce, W3_OCELOT.footY ?? 0, 'call')!;
++  assert.ok(toyFits('call', c.st, ce, cf), 'the picked call roll: the stone inside the patrol');
++  const cast = c.st.proto!.cast!;
++  const moved = { ...c.st, proto: { ...c.st.proto, cast: { ...cast, sounds: [{ ...cast.sounds![0], x: ce.patrolMaxX + 50 }] } } } as typeof c.st;
++  assert.ok(!toyFits('call', moved, ce, cf), 'the stone 50 px past the patrol: refused');
++});
