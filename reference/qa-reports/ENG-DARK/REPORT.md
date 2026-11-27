@@ -1,3 +1,24 @@
+**BOX 27 HAND-OVER (ENG-DARK-aa, 8:45 PM ET by `date`). THE LEAD RULED (b), intended: record 1-4 as the ONLY intended stage, x40, then LAND.
+EXACT NEXT STEP: TRACE child Normal 1 (rule 28: it got WORSE on the move) before anything else, on frozen 93e05e98d (D115:
+`chattr -R +i src tools`, then `chattr -i` only on src, src/game, src/game/gen2, src/game/gen2/proven).** 1-4 x40 DONE, frozen, both settings,
+every tier (`npx tsx tools/inspect/castBots.ts --stage 1-4 --seeds 1-40 --setting both --par 2 --rows ...`; rows here:
+cast-1-4-x40-88592a9c-frozen.jsonl (base) and -93e05e98-frozen.jsonl (candidate), each 360 rows, each replaying an unfrozen run
+exactly; compare: `node reference/qa-reports/ENG-DARK/cast-cmp-1-4.cjs <base> <cand>`). 5 rows differ, ALL ELSE IDENTICAL (every tier's
+pass, shrine, max time, under-2:00 count the same on both; rescues child N 55->58, middle E 17->16):
+- child Normal 1 WORSE: rescues 1->4, hits 2->9 (hitBy other 2->10), stuck 2->5, 303.7->326.8 s, lives 0->1. NEW stuck at x 1222 "the
+  way on is 94 px up", beside the new RIGHT-wall run-on x 1244-1280, y 6933 (Normal 1's 2nd run-on); then x 658, 568, 930 (knock-on?).
+  TRACE IT: two runs per cause, one line each (seed, x, frame); is the run-on the cause (he walks onto it at the wall and the way on is
+  94 px up, a dead end?) or a bot path knock-on? A cause in the lay = back to the lead before LAND.
+- child Easy 34 (UNMOVED by the lock, which covers layouts 1-16 only): 241.1->244.4 s, the same rescues 3 and stuck 4. Check whether 1-4
+  Easy 34's build moved (a run-on past layout 16) and name it.
+- BETTER: middle Easy 6 (fail -> pass, rescue 1->0, stuck 1->0), expert Normal 1 (266.9->184.8 s, hits 3->0); middle Normal 1 level.
+- STANDING on both trees (not this move): runs under 2:00 (kid E 7, adult N 19, adult E 36), middle/expert 1200 s timeouts, as before.
+THEN: the full lock, frozen: `lockall --layouts 16 --out` on frozen 88592a9c4, then on frozen 93e05e98d `--intended 1-4 --check` with the
+reason "offEnd (8cc3a319a + 4bfa3fbee) closes wall slots where he fell 561-2004 px"; every other stage unchanged. THEN LAND per box 26
+(`git push origin 93e05e98d:refs/heads/t-eng-w3`, never a force; `git ls-remote`), and send the hash, the x40 table and the lock verdict
+to the lead (session_01FhBbYN2CVHnFXg7XzqKXpM) AND ENG-ASKS (session_01FhBbYKr5yCaiLSxXwmhihy). Countermeasure ACCEPTED by the lead
+(a commit to a shared lay file runs the FULL lockall --check against the landing base on that commit).
+
 **BOX 27 (ENG-DARK-aa): THE LOCK RED TRACED, no code changed. EXACT NEXT STEP (hand-over, 8:30 PM ET by `date`): WAIT FOR THE LEAD'S RULING
 on the 1-4 move (recommended (b), intended). If (b): run 1-4's bots x40 on both settings on frozen 93e05e98d (rule 28) and the lock as
 `npx tsx tools/engine/lockall.ts --layouts 16 --intended 1-4 --check <lock of frozen 88592a9c4>`; then LAND per box 26's step below.
