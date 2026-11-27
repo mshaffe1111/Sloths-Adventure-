@@ -1,6 +1,19 @@
 # ENG-DEAL (R-165.541): the deal follows the code's letters, every slot, every job
 
-## THE EXACT NEXT STEP (box 4; written 12:24 PM ET Fri 11-27 by `date`; box 4's first push 8f35c4489 carried a hand-typed stamp 3 min after its own commit: D128, my miss, fixed here)
+## THE EXACT NEXT STEP (box 5; written 1:28 PM ET Fri 11-27 by `date`)
+THE MERGE'S RE-CHECK CAUGHT A RED OF MINE: on 9fec4226d, shard 5 was 647 pass / 3 fail: ctestPicker (t-eng-w3's, known) and
+src/game/gen2/worlds/w3Level.test.ts:152 and :168 (KIT-W3b's 3-2 dark X(c) and C tests), green on f3014145c alone, red on the merge.
+Cause: 3-2's dark code letters T, W and S 'r' (rope) and World 3's level pool has no rope section yet; box 1's fix THREW on a lettered
+node with none of its type, which killed the whole roll, so the X(c) and C nodes the tests judge were never laid. FIX (658d4e50f): a
+lettered node takes only its own type while one fits; with none, the slot is filled past its rule as any node, and its 'pool short'
+note NAMES THE LETTER ("pool short at slot k (nX job: asks 'f' (floating): no f section in the pool)"), so the roll is refused by name,
+never quietly, and every other node is still laid and judged. Toy 3 now asserts that note on each slot and every node laid. On
+658d4e50f: tsc 0, generality PASS, w3Level + nodeAsks 12/12, dealLetters 3/3. The 9fec4226d re-check is STOPPED (stale).
+RUNNING the full re-gate on the frozen `$S/g3` = 658d4e50f (lines to `$S/g3-gates.txt`): chain A (`$S/chainA.sh`): lock --check
+vs `$S/base2.json` (f3014145c), tierBots, seedlist 1-8, CI tool line; chain B (`$S/chainB.sh`): the KIT rolls again on `$S/kit` (with
+`$S/delta.patch` applied: 3-1 w3 + wide, 3-2, 3-3, files `$S/v2-*.txt`), then the suite in 6 shards. All pass (ctestPicker the one
+known red) -> fetch t-eng-w3; if it has not moved, push 658d4e50f's branch onto it (a fast-forward); if it moved, merge and re-check.
+### Box 4's step (merged; its re-check stopped: see box 5)
 t-eng-w3 MOVED to f3014145c (KIT-W3b box 2 + ENG-ROOT box 4; ENG-ROOT changed 68 lines of pipeline.ts) before I landed. Merged it in:
 9fec4226d, no conflicts; on the merge: tsc 0, generalitycheck PASS, dealLetters + nodeAsks 10/10. The gates above ran on 9818cc87 +
 the fix, so the merge is RE-CHECKED: RUNNING the lock pair (`--out $S/base2.json` on `$S/base2` = f3014145c, then `--check` on the
