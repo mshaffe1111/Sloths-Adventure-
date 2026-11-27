@@ -1,14 +1,18 @@
 # BUILD-29 REPORT: 2-9 "The River King's Court" (the World 2 finale; R-165.449), release 6
 Branch t-build-29, cut from origin/t-eng-29 = 098047713 (the lead's named base). Session 1 started 5:45 PM ET Thu 11/26 (by `date`).
 
-## EXACT NEXT STEP (session 4, BUILD-29-d, 8:13 PM ET Thu 11/26 by `date`; GO given; the lead's rulings 1-6 of this box)
-Head 9731ac221 + this REPORT. ReadNotifications first (D140).
-1. WAITING ON THE LEAD: THE PLAN (sent; below, "Session 4"). Two rulings asked: (R1) rule 4 on the wide stones (Easy's share of the bar
-   39% / 64% vs Normal's 41% / 65%, its safe TIME longer); (R2) the page's way in for drawcheck and the FIRST LOOK stills (the draft is
-   not on a stageTable row: `window.__play('2-9')` plays the OLD 2-9; my recommendation: list 2-9 now with addlevel, new replaces old).
-2. On (R2): `npx tsx tools/engine/addlevel.ts 2-9` (READY or MISSING by file), then drawcheck with 2-9 added, then the stills at 2x
-   (the court, the barge, the twist, the home), upright first.
-3. The kid (rule 28, traced, below) is the 2-5 snapper bot gap, not 2-9 data: name it, never soften Normal.
+## EXACT NEXT STEP (session 4 hand-over, BUILD-29-d, 8:22 PM ET Thu 11/26 by `date`; GO given; box clock reached)
+Head: this commit (src as 9731ac221). ReadNotifications first (D140).
+0. THE SUITE on 9731ac221 was running in BUILD-29-d's container at the hand-over (6 shards round robin, the CLAUDE.md glob, 661 files).
+   If BUILD-29-d has not sent its totals to the lead, run the 6 shards on this head FIRST (CI #93: they go with any ruling request).
+1. THE PLAN went to the lead as information (below, "Session 4"); two RULINGS to ask WITH the shard totals: (R1) rule 4 on the wide
+   stones (Easy's share of the bar 39% / 64% vs Normal's 41% / 65%, its safe TIME longer: recommend judge in seconds, lay as is);
+   (R2) the page's way in for drawcheck and the FIRST LOOK stills: `window.__play('2-9')` plays the OLD 2-9 (the draft has no
+   stageTable row); recommend list 2-9 now with addlevel (new replaces old). 20 minutes with no reply: take (R2) on t-build-29.
+2. On (R2): `npx tsx tools/engine/addlevel.ts 2-9` (READY or MISSING by file), then drawcheck with 2-9 added to its scenarios, then the
+   stills at 2x (the court, the barge, the twist, the home), upright first, judged as Matt on a phone.
+3. The kid (rule 28, traced below) is the 2-5 snapper bot gap, not 2-9 data: name it to the lead as ENGINE-WORTHY; never soften Normal.
+4. Two copies of reference/design/2-9.md (t-design-29 and here, with beat 5 and the AS LAID note): name it at the integration merge.
 
 ## Session 4 (BUILD-29-d): what was done, on which head
 - Merged origin/t-eng-29 d1038af49 (be70f523e) then origin/t-eng-stone29 9506c2c39 (98bdb8739): no conflicts, no force. After each:
