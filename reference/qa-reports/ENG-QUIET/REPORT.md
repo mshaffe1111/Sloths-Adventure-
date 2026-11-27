@@ -1,7 +1,11 @@
 # ENG-QUIET: is a wait for ONE on 2-9's drum "quiet"? (Engine, from t-build-29 4c3ff9d8)
 
 ## EXACT NEXT STEP (box 2 hand-over, 11-26 10:50 PM ET; NOT landed: t-eng-29 still 28c848dbd; candidate 88b5611b4 untouched)
-WAITS ON THE LEAD: rule B moves THREE proven lists' search (not the shipped replays). On frozen 88b5611b4, `seedlist.ts <id> --check`:
+THE LEAD RULED (a), not (b): rule B stays general (rule 22); (b) would keep 2-9's own list search on today's beats (its let-go 5.4 s and
+twist still refused, so 2-9 could not list). NEXT BOX (Friday morning), in order: (1) on base 28c848dbd, `seedlist.ts 2-4|2-1|2-7 --check`:
+red on the same seeds = inherited staleness, not B's; (2) rebuild 2-1's, 2-4's and 2-7's lists under B on t-eng-29, every changed seed
+traced (the new attempt replayed, bots on it, rule 28), every roll/seed-pinning test re-run (release.md item 6); they ship with release 6,
+not release 5. Box 2 (below) found it: rule B moves THREE proven lists' search (not the shipped replays). On frozen 88b5611b4, `seedlist.ts <id> --check`:
 2-4 seed 65, 2-1 seed 100, 2-7 seed 22 (both settings each): 'its replay differs from its search (platforms, vines, rivers,
 collectibles): rebuild the list' (src/game/gen2/seedList.ts:277). Cause: the list search's quiet judge, tools/engine/listRules.ts:25
 quietOf -> :31 pickRoute (eraRoll.ts:180, beats a minute) + the new let-go/log-catch beats, so the search accepts a different attempt
