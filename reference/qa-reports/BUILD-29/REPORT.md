@@ -49,7 +49,11 @@ one gate run, land, debrief): the next box starts at the two questions below, th
    in place of the decorative turtle (at sheet size I could not tell it by eye): the next box crops each spot to the dress pieces.
 4b. RE-ROLL (flown/roll-l.txt, 4b605cdf, libstage 24 x both): CLEAN 24/24 both, thrown 0, 1 beat order, cast turtle 8-8, no refusal, no
    pool section unlaid. Against roll-j: Normal identical; Easy width 29587-30266 px (j 29586-30259): main's or ENG-DECOR's, not a refusal.
-NEXT (box 13): ReadNotifications; the lead's answers to Q1 (the wayside words) and Q2 (the uncounted late line); then step 5 PRE-FREEZE on this head (tsc; generality; the whole test file of every source changed in box 12 and its importers,
+THE LEAD'S ANSWERS (received after the hand-over): Q1: the keeper approved "I bet Meeca admired the whole river out loud." (9 words, Pokey's
+   line, one form for both slots: dotLinesData.ts way.2-9 old AND new text, and wayside.ts:103, word for word). Q2: an ENGINE fix,
+   R-165.569, by ENG-LATE on its own branch from 7b55f15bf, landed on t-build-29; the next 2-9 box starts after that landing.
+NEXT (box 13): ReadNotifications; after ENG-LATE lands, apply Q1's words, run the 47 importing test files whole (wayside.test:49 and
+   w5Order.test:905 must both pass); then step 5 PRE-FREEZE on this head (tsc; generality; the whole test file of every source changed in box 12 and its importers,
    already run above: re-run only if src moves; ls-remote t-eng-29 / main), FREEZE (dispatch-packet.md:81), then step 6's ONE gate run,
    7 land, 8 debrief. The lock's expected moves vs main: 2-9 and 2-5's proto.dress (ENG-DECOR); ALSO watch 2-1 and 2-4: provenIndex
    carries ours' versions (2-1 0c8ad7fe, 2-4 917a538d; main 1950fa0c, 08c32188), so seedlist --check for 2-1 and 2-4 is the first to read. DISCOVERY after the hand-over
