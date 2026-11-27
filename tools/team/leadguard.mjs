@@ -6,6 +6,8 @@
 // 2. archive_session (PreToolUse): refused unless a get_session of the SAME session within the last 15 minutes showed it IDLE with
 //    no run named in its summaries (CI #102: BUILD-29-g on 11-26 and BUILD-29-j on 11-27 were archived mid-run).
 //    get_session (PostToolUse) records that look.
+// 3. create_session (PreToolUse): refused when the prompt is not the brief itself: under 600 characters, or a pointer such as
+//    'PASTE-FILE:' (CI #108: KIT-W3a-f was started with a pointer to the lead's scratchpad, which a member cannot read).
 // `node tools/team/leadguard.mjs --self-test` runs the planted cases.
 import { mkdirSync, writeFileSync, readFileSync, existsSync } from 'node:fs';
 import { join } from 'node:path';
@@ -16,6 +18,14 @@ const FRESH_MS = 15 * 60 * 1000;
 // words in a session's task_summary / status_detail that mean something is still running there
 const RUN_WORDS = /\b(running|re-running|after|waiting on|in flight|gating|still)\b/i;
 const NOT_RUN = /\b(nothing|not|no longer|none)\s+(is\s+|are\s+)?(running|re-running|in flight|gating|still running)\b/gi;
+
+export function judgeCreate(prompt) {
+  const p = String(prompt ?? '');
+  if (p.length < 600 || /PASTE-FILE/i.test(p)) {
+    return { ok: false, why: `Lead guard (CI #108): this create_session prompt is ${p.length} characters${/PASTE-FILE/i.test(p) ? ' and points at a file' : ''}. A member cannot read the lead's scratchpad: put the WHOLE brief in the prompt.` };
+  }
+  return { ok: true };
+}
 
 export function judgeBash(cmd) {
   if (/<</.test(cmd) && /\bgit\s+commit\b/.test(cmd)) {
@@ -57,6 +67,8 @@ if (process.argv[2] === '--self-test') {
   process.env.LEADGUARD_DIR ??= join(tmpdir(), 'leadguard-selftest');
   let bad = 0;
   const t = (name, got, want) => { if (got !== want) { bad++; console.log('FAIL', name, got, 'want', want); } };
+  t('a pointer prompt refused', judgeCreate('Read your brief.\n\nPASTE-FILE: kitf-prompt.txt').ok, false);
+  t('a whole brief allowed', judgeCreate('x'.repeat(2000)).ok, true);
   t('heredoc + commit refused', judgeBash("cat >> a <<'EOF'\nx\nEOF\ngit add a && git commit -m x").ok, false);
   t('heredoc alone allowed', judgeBash("cat > a <<'EOF'\nx\nEOF").ok, true);
   t('one-line commit allowed', judgeBash('set -o pipefail; git add -A && git commit -q -m "x"').ok, true);
@@ -73,7 +85,7 @@ if (process.argv[2] === '--self-test') {
   t("'nothing running' allowed", judgeArchive('session_FFF666').ok, true);
   t('no look refused', judgeArchive('session_EEE555').ok, false);
   t('a stale look refused', judgeArchive('session_AAA111', Date.now() + FRESH_MS + 1000).ok, false);
-  console.log(bad ? `${bad} FAIL` : 'PASS 10/10'); process.exit(bad ? 1 : 0);
+  console.log(bad ? `${bad} FAIL` : 'PASS 12/12'); process.exit(bad ? 1 : 0);
 } else {
   let raw = ''; for await (const ch of process.stdin) raw += ch;
   const ev = JSON.parse(raw || '{}');
@@ -83,6 +95,9 @@ if (process.argv[2] === '--self-test') {
     if (l) recordLook(l);
   } else if (tool === 'Bash') {
     const r = judgeBash(ev.tool_input?.command ?? '');
+    if (!r.ok) deny(r.why);
+  } else if (/create_session$/.test(tool)) {
+    const r = judgeCreate(ev.tool_input?.prompt);
     if (!r.ok) deny(r.why);
   } else if (/archive_session$/.test(tool)) {
     const r = judgeArchive(ev.tool_input?.session_id);

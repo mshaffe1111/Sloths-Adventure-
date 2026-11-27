@@ -22,7 +22,7 @@
         ]
       },
       {
-        "matcher": "Bash|mcp__claude-code-remote__archive_session",
+        "matcher": "Bash|mcp__claude-code-remote__archive_session|mcp__claude-code-remote__create_session",
         "hooks": [
           {
             "type": "command",
