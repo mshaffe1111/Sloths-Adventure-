@@ -1,5 +1,29 @@
 # ENG-CUT REPORT (Engine, the general cut-piece draw path; base t-build-28-wip a0d85e961; lands on t-eng-cut). Session 1 started 9:42 PM ET (from the session hook date).
 
+## ENG-CUT-b (R-165.520: a section piece lays its cut). Started 9:02 AM ET (from the session hook date); this section stamped 9:12 AM ET.
+
+### EXACT NEXT STEP (ENG-CUT-b, box 1)
+Candidate 4d2a579de on t-eng-cut (ALREADY on the branch: a safe-keep push made before the gates; nothing merges it until the gates below
+are named). Gates run on frozen worktrees (scratchpad wt-cand = 4d2a579de, wt-base = 57d7b8287; chattr +i, gen2/proven writable):
+tsc 0 and generalitycheck PASS done; running: base lock (lockall --layouts 16 --out lock-base.json on wt-base), suite shards 1-3 on
+wt-cand. Next: shards 4-6; lockall --check lock-base.json on wt-cand (one run, 102 stages, none listed moves); the CI tool line
+(gates.yml line 157 tests, tipwalk, storyTipScan, teachFirstScan, registrycheck, tierBots, kbdcheck, buildcheck); drawcheck; name each
+red against 57d7b8287 by re-running it on wt-base. Then this section's results, push, and the hash + shard totals to the lead and to
+BUILD-28-g.
+
+### The piece (general: no stage, world, seed or x)
+- gen2/types.ts SectionPiece.cut: the catalog id. pipeline.ts: LocalPiece.cut carried from the section piece; the lay's mk sets
+  Platform.cut to it (pipeline ~2858), keeping the width the section gave (Easy's landing pad included); invCut's invCutBox draws it by
+  its stand span. A cut on a hanging piece or a crumbling tile fails the section by name (it would never be drawn).
+- art/invCut.ts layCutRefusal(id, world): the gate's own refusal, read against the world's inventory when it is in hand
+  (art/inventory.ts inventoryInHand, set when loadInventory resolves). A World 1 cut passes (w1CutArt's). LIMIT, named: the lay is sync
+  and each inventory is its own lazy chunk, so before a world's inventory is read (a stage's first build in the game) the lay cannot see
+  it; there the same refusal keeps the piece undrawn (readyInvCuts) and invCut.test's listed-stage gate fails it by name. A builder's own
+  test sees the refusal at the lay by awaiting loadInventory(world) first (layCut.test does).
+- Toys (src/game/gen2/layCut.test.ts, 3): every standing block of 2-1's kit names the reed island: 114 laid platforms wear it on both
+  settings, World 2's finish keeps cut and width, one blit at invCutBox; an unknown id fails the section at the lay by name; a cut on a
+  hanging piece fails by name. ALL THREE RED on 57d7b8287's lay (no platform wore it; no throw; no throw), GREEN on 4d2a579de.
+
 ## EXACT NEXT STEP (box 2, LANDED: the lead approved the engine path; the gates ran on the frozen candidate past the box, no new code)
 NOTHING LEFT IN THIS LANE. The code is fd455b8cc's (src identical to the frozen 0a584713a every gate ran on); this commit adds the report
 and the World 1 stills only. Every red below is RED on a frozen a0d85e961 too (each re-run there by name). Next owner of the look:
