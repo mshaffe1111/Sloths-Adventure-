@@ -1,6 +1,6 @@
 # ENG-MOON: 3-4's moving moonbeam and the moonflower step (R-165.503 / R-165.449; Engine, Opus 5.5 high). Branch t-eng-moon-wip, cut from t-eng-w3 13135bf6b
 
-## EXACT NEXT STEP (box 2 hand-over, written 10:29 AM ET Fri 11-27 by `date`; box 3 starts at step 3, the draw)
+## EXACT NEXT STEP (box 2 hand-over, written 10:29 AM ET Fri 11-27 by `date`, refreshed 10:32 AM ET; box 3 starts at step 3, the draw)
 1. Box 3: `git fetch origin t-eng-moon-wip t-eng-w3 && git checkout -B t-eng-moon-wip origin/t-eng-moon-wip`; `npm ci --legacy-peer-deps`
    (run_in_background). ReadNotifications FIRST: the lead may have ruled on the SWING GEOMETRY (below); its ruling wins.
 2. DONE in box 2:
@@ -22,7 +22,14 @@
      opposite walls (KIT RULE M1, 'For the lead' below); the verdict 'a swing flower never closes' is MINE: DONE in box 2 (moon.ts
      moonVerdicts; moon.test 11/11, planted: the stacked swing RED by name on both settings, opposite walls clean on every verdict). The
      bot toy uses 'rise' because the fixture stacks its storeys.
-3. THE DRAW (not started), engine.ts:
+3. THE DRAW (not started; scoped in box 2), engine.ts:
+   - FOUND in box 2: litRing is NOT on t-eng-w3 (f79963053 has no litRing; it is on origin/t-eng-root-wip zones.ts:139): the lit read
+     waits for ENG-ROOT-c's landing; do the draw first. PAINTED moon art EXISTS (the puzzle room's moonflower, puzzlePlay.ts:2655
+     drawMoon): drawNightPiece 'moonBud' (60 x 187 sheet, k 0.600) and 'moonOpen' (168 x 190, k 0.620), meecaNightData.ts:43-44. Use
+     THEM for the step's bud and open looks (one definition; check inventory.ts / the master catalog labels them for World 3 first,
+     R-165.104) over the 120 x 22 tread; only the DROOP has no art (a tilt and dim of moonOpen: a code transform of painted art, NAMED;
+     ART-W3 paints a real droop). The moonflower steps are 'stone' pieces drawn by the terrain painter today: decide whether the tread
+     stays painted stone with the flower over it (paintcheck then unchanged) or the flower replaces it (paintcheck must stay green).
    - the lit read: in the dark lights loop (engine.ts ~8056, `for (const z of this.currentStage.zones ?? [])`), for z.kind 'moon' push
      bandAt(z.moon.band[setting], gameTime) as a light (x, the band's middle y, r = half). BUT check first whether ENG-ROOT-c has landed
      litRing (zones.ts) on t-eng-w3: if it has, merge t-eng-w3 and make litRing read moon bands through moon.ts bandCovers INSIDE litRing
