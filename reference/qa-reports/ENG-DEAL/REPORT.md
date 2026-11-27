@@ -1,6 +1,15 @@
 # ENG-DEAL (R-165.541): the deal follows the code's letters, every slot, every job
 
-## THE EXACT NEXT STEP (box 3; written 12:08 PM ET Fri 11-27 by `date`)
+## THE EXACT NEXT STEP (box 4; written 12:27 PM ET Fri 11-27 by `date`)
+t-eng-w3 MOVED to f3014145c (KIT-W3b box 2 + ENG-ROOT box 4; ENG-ROOT changed 68 lines of pipeline.ts) before I landed. Merged it in:
+9fec4226d, no conflicts; on the merge: tsc 0, generalitycheck PASS, dealLetters + nodeAsks 10/10. The gates above ran on 9818cc87 +
+the fix, so the merge is RE-CHECKED: RUNNING the lock pair (`--out $S/base2.json` on `$S/base2` = f3014145c, then `--check` on the
+frozen `$S/merge` = 9fec4226d; lines to `$S/merge-gates.txt`), and 1-6's list on `$S/head`. Next on `$S/merge`: the suite in 6 shards,
+the CI tool line, seedlist 1-8 (and every list again if the lock moves anything beyond 1-8's graph record), tierBots if World 1-2
+lays differently; then push 9fec4226d's branch onto origin/t-eng-w3 (a fast-forward of it) and send the hash.
+Known red, t-eng-w3's not this change's (the lead's ruling): src/components/ctestPicker.test.ts:78, the end screen matches
+/1-5|Where She Walked/ (shard 5, 1 fail; red identically on 9818cc87 alone).
+### Box 3's step (done but 1-6's list)
 THE LEAD ACCEPTED the 1-8 record move on a condition: `seedlist <id> --check` for 1-8 AND every list on the candidate, plus tierBots 9/9;
 all pass -> land with 1-8 named in the commit and here as "intended: graph types now written; no laid field moves"; 1-8's list fails ->
 STOP and send it. DONE on `$S/head` (8ad1a8e9): tierBots 9/9; seedlists PASS 1-8 (100), 1-1 (161), 1-2, 1-3, 1-4 (100 each), 1-5 (150),
