@@ -283,6 +283,10 @@ export function moonVerdicts(stage: { platforms: ReadonlyArray<FlowerPlatform & 
   for (const f of moonFlowers(stage, setting)) {
     const at = `moon: the flower at x ${R(f.p.x)}, y ${R(f.p.y)} (${setting})`;
     if (!f.clocks.length) out.push(`${at} never opens`);
+    // (a swing whose beam never leaves its stair: a swing flower open for good is a dead swing, never shipped (the lead, ENG-MOON-b). A
+    //  swing's walls far enough apart are the kit's (its storeys' stairs at opposite walls); a rest band (walls the same) stays open by design)
+    const b = f.zone.moon?.band[setting];
+    if (b?.kind === 'swing' && b.walls[0] !== b.walls[1] && f.clocks.some((c) => c.len === Infinity)) out.push(`${at} never closes: its swing's beam never leaves it (walls ${R(b.walls[0])}-${R(b.walls[1])}, half ${R(b.half)}: the storeys' stairs must stand at opposite walls)`);
     for (const c of f.clocks) if (c.len !== Infinity && c.len + BLOOM < MOON_WINDOW[setting] - 1e-6) out.push(`${at} is open ${(c.len + BLOOM).toFixed(2)} s, under ${MOON_WINDOW[setting]} s`);
     const stone = stage.platforms.some((q) => !q.moonflower && q.type !== 'bouncy' && q.y > f.p.y && q.y <= f.p.y + MOON_STONE_DROP && q.x <= f.p.x && q.x + q.width >= f.p.x + f.p.width);
     if (!stone) out.push(`${at} stands over no stone of its storey (a closing flower would drop him into a fall)`);

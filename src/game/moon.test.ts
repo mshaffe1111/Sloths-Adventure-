@@ -109,6 +109,20 @@ test('oneBeam: every swing moon of a stage is the same band between its stairs; 
 });
 
 import { moonVerdicts } from './moon.ts';
+test("the moon's verdict 'a swing flower never closes' (the lead's ruling, ENG-MOON-b): two swing storeys at OPPOSITE walls, one beam: kept; planted: the same storeys stacked in one column (stairs 60 px apart), the beam never leaves them: RED by name, both settings", () => {
+  const stage = (x2: number) => {
+    const a = stair(1000, 5000), b = stair(x2, 4600);
+    const zs = [layMoon(a, 'swing', 600, 1), layMoon(b, 'swing', 600, -1)].map((z) => ({ kind: 'moon', ...z }));
+    oneBeam(zs);
+    const feet = [{ id: 98, x: 900, y: 5000, width: 620, type: 'solid' }, { id: 99, x: x2 - 100, y: 4600, width: 620, type: 'solid' }];
+    return { platforms: [...feet, ...[...a, ...b].map((p, i) => ({ ...p, id: i, type: 'solid' }))], zones: zs };
+  };
+  for (const s of ['normal', 'easy'] as const) {
+    assert.deepEqual(moonVerdicts(stage(1600), s), [], `${s}: opposite walls, every verdict kept`);
+    const red = moonVerdicts(stage(1060), s).filter((l) => l.includes('never closes'));
+    assert.ok(red.length > 0, `${s}: the stacked swing is refused by name`);
+  }
+});
 test("the moon's verdicts: kept on a laid storey; planted: droop 0, the beam stopped away, a flower off its stone, each RED by name", () => {
   const build = (band: 'swing' | 'rise') => {
     const steps = stair(1000, 5000);

@@ -18,8 +18,10 @@
    - A FINDING sent to the lead (ruling asked; my reversible recommendation taken at 20 minutes): in a stacked shaft, oneBeam's walls (the
      stair middles) collapse to ~70 px, so a swing's flowers are open for good (len Infinity); the far-wall alternative leaves the stairs
      mid-shaft, lit 1.75-1.92 s, refused by the 5.0 s window. The geometry is the fault: a swing needs its storeys' stairs at OPPOSITE
-     shaft walls >= ~520 px (Normal) / 720 (Easy) apart; the KIT lays that (rule 26); the Designer may add 'a swing flower never closes'.
-     oneBeam is UNCHANGED (box 1's). The toy uses 'rise' for this reason.
+     shaft walls >= ~520 px (Normal) / 720 (Easy) apart. RULED by the lead: oneBeam UNCHANGED (box 1's); the kit lays the stairs at
+     opposite walls (KIT RULE M1, 'For the lead' below); the verdict 'a swing flower never closes' is MINE: DONE in box 2 (moon.ts
+     moonVerdicts; moon.test 11/11, planted: the stacked swing RED by name on both settings, opposite walls clean on every verdict). The
+     bot toy uses 'rise' because the fixture stacks its storeys.
 3. THE DRAW (not started), engine.ts:
    - the lit read: in the dark lights loop (engine.ts ~8056, `for (const z of this.currentStage.zones ?? [])`), for z.kind 'moon' push
      bandAt(z.moon.band[setting], gameTime) as a light (x, the band's middle y, r = half). BUT check first whether ENG-ROOT-c has landed
@@ -65,6 +67,9 @@
 - Box 2: the swing geometry in a stacked shaft (see the EXACT NEXT STEP, 2): a swing's flowers open for good when its storeys' stairs share a column; ruling asked.
 
 ## For the lead (rule 26: the piece is mine, its placement the kit's)
+- KIT RULE M1 (the lead's ruling, box 2): 3-4's swing storeys (n4 Xc1^, n8 Cf1^) are laid with their stairs at OPPOSITE walls of the
+  shaft, their stair middles at least 2 x half + 2 x 40 pad apart: 520 px on Normal (half 220), 720 px on Easy (half 320). Stacked in one
+  column, the one beam never leaves them, and moonVerdicts refuses the roll by name ('never closes: its swing's beam never leaves it').
 - The KIND the kit asks for: a section zone `{ kind: 'moon', ... }` (gen2/types.ts SectionZone). It is what ENG-ASKS-b's registry row
   reads (w3.ts:150 `soft: { clocks: { moon: { zone: 'moon', zones: ['moon'] } } }`), so `:#soft@moon` is laid by any section that
   carries it. 3-4's code (AUDIT-W3 codes-trim) asks it on 5 nodes: n2 Tp1^ (rest: the teach), n4 Xc1^ (swing), n6 Wp1^ (rise), n8 Cf1^
