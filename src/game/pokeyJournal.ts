@@ -62,7 +62,8 @@ export const STAGE_LINES: Record<string, string> = {
   '2-3': "Led a line of little ones home past a heron. For once I was the fast one. I waited for them anyway.",
   '2-4': "Dropped from the vines onto passing logs and jumped back up. Meeca's note said don't swim, so I flew instead.",
   '2-5': 'Snapping turtles. They snap. It says so right in the name. I respected the honesty, and asked them to leave.',
-  '2-6': 'Climbed up past every front door in the village. Each one said PLEASE BE PATIENT. I already was.',
+  // (the story keeper's line 4c, lines-2-6.md; held equal to w2Arc26.ts JOURNAL_26 by w2Arc26.test.ts)
+  '2-6': "Rode the water wheels up the bank in buckets meant for water. The water didn't mind sharing.",
   '2-7': 'Took the post up the mill-race, came down the weir, and raced the mailman home. The URGENT one stayed in his bag.',
   '2-8': "The water rose the moment I stepped in. Little ones out first. Then I remembered I don't swim.",
   '2-9': "The king's guards stood up straight and held their spears just so. I bowed. Then we got on with it.",

@@ -81,8 +81,9 @@ import { towerCorners, towerRoutePts } from './towerRoute.ts';
 import type { Stage } from './stages.ts';
 import { liftStop } from '../../src/game/lift.ts';
 import type { FollowPlay } from '../../src/game/followPlay.ts';
-import { bucketAngle } from '../../src/game/wheel.ts';
+import { bucketAngle, bucketAt, bucketPeriod, type Wheel } from '../../src/game/wheel.ts';
 import { WHEEL_FLOWN } from '../../src/game/gen2/wheelFlights.data.ts';
+import { BOARD_BACK } from '../../src/game/gen2/wheelFlights.ts';
 import { flownKey } from '../../src/game/gen2/wheelLay.ts';
 
 /**
@@ -793,7 +794,7 @@ export interface DotReport {
  */
 /** the log a racing hop wants on each side of where it lands (px): the flights' careful middle player (2-7.md FLOWN) */
 const RACE_MARGIN = 50;
-export const SKILLS = { trunkCatch: true, ride: true, upstream: true, bankUp: true, handed: true, dropOnLog: true, vineFromLog: true, vineOverTail: true, bonkAfterSnap: true, rideWheel: true, bonkBrake: true, letItSnap: true, race: true, rideOnly: false, fromTakeoff: true, boardLog: true, boardHop: true, floatSure: true, reAim: true, runUp: true };
+export const SKILLS = { trunkCatch: true, ride: true, upstream: true, bankUp: true, handed: true, dropOnLog: true, vineFromLog: true, vineOverTail: true, bonkAfterSnap: true, rideWheel: true, boardWatch: true, stepOff: true, bonkBrake: true, letItSnap: true, race: true, rideOnly: false, fromTakeoff: true, boardLog: true, boardHop: true, floatSure: true, reAim: true, runUp: true };
 /**
  * (ENG-26e) `trunkCatch`, a thumb gone to the climb: a jump that catches a trunk straight off the ground (no frame in the air, so no landing
  * ends it) is over the frame he holds the trunk, its hold and its second press with it; the climb is his. With it off the jump runs on
@@ -809,6 +810,13 @@ export const SKILLS = { trunkCatch: true, ride: true, upstream: true, bankUp: tr
  * tier's reaction to the window opening (stopReact, plus a late press as often as his tier's lateShare), and only while it is still open.
  * The hops are single (no second press): a double off the jetty or off the top is no step-off. With it off he treats the buckets as
  * ledges, scrambling bucket to bucket and into the pond (wheelRide.test.ts).
+ * `boardWatch` (LAND-26c, R-165.478): stopped nearer the jetty's lip than the board was flown (wheelFlights.ts BOARD_BACK), he hops in
+ * only when his own hop (hopBoards: every lag and hold it can have) comes down inside a bucket, up to a bucket period; with it off he hops
+ * at once, and from 17 px short of the lip the hop can carry past the bucket's end (wheelBoard.test.ts). Always on outside a test.
+ * `stepOff` (LAND-26d, R-165.478): the step-off window was flown from the bucket's middle; in it he goes only when his own hop from where
+ * he stands (stepOffLands: every lag and hold, the bucket's carry kept) comes down on the street, else he waits in the window, or rides on
+ * and settles (behind the middle, he walks up to it); with it off he goes at the window from wherever he stands, and from a bucket's
+ * trailing end the hop falls short (2-6 adult Easy 12 and 13: wheelStepOff.test.ts). Always on outside a test.
  */
 /**
  * (ENG-24, reference/design/2-4.md NEW 2) `dropOnLog`, drop on a log: on a liana hung over a log river, he lets go at the swing's forward
@@ -1071,6 +1079,30 @@ export function hopLandsOn(q: Platform, at: (t: number) => number, x: number, y:
       if (q.drift && (b.x < q.drift.x0 || b.x > q.drift.x1)) return false;
       const lx = at(t0 + i * DT);
       return b.x >= lx + margin && b.x <= lx + q.width - margin;
+    }
+    if (b.y > y + 200) return false;
+  }
+  return false;
+}
+/**
+ * SKILLS.rideWheel's board (LAND-26c, R-165.478): a hop pressed from (x, y) toward `dir`, held `hold` s and steered `dir` through the
+ * flight, comes down IN a bucket of wheel `w` (each bucket's floor where it is on the wheel's clock, bucketAt: frame i at t0 + i * DT),
+ * his middle `margin` px or more inside its ends. False when it comes down on a bucket's end (he slides off it, as 2-6 child Normal v2 did
+ * at the top wheel from 17 px short of the jetty's lip) or into no bucket. wheelFlights' board (a tap hop boards at every moment) was
+ * flown from 30 px back of the lip: from nearer, at some moments the hop carries past the bucket coming up.
+ */
+export function hopBoards(w: Wheel, x: number, y: number, dir: -1 | 1, hold: number, t0: number, vx0 = 0, margin = 24): boolean {
+  const b = { x, y, vx: vx0, vy: -PHYS.jumpV };
+  const seats = (k: number) => Array.from({ length: w.N }, (_, j) => bucketAt(w, j, t0 + k * DT));
+  for (let i = 1; i < 60; i++) {
+    const py = b.y;
+    hopFrame(b, i, dir, hold);
+    const now = seats(i);
+    // (the engine's catch, engine.ts onFloor: falling, his feet last frame no more than 14 px under the floor's top and on or under it now,
+    // his middle within about a quarter of his width (and the ledge forgiveness) of its ends)
+    if (b.vy >= 0) for (let j = 0; j < w.N; j++) {
+      const q = now[j];
+      if (py <= q.y + 14 && b.y >= q.y && b.x > q.x - 20 && b.x < q.x + w.W + 20) return b.x >= q.x + margin && b.x <= q.x + w.W - margin;
     }
     if (b.y > y + 200) return false;
   }
@@ -1603,6 +1635,8 @@ export class FirstTimerRun {
   private wheelSeen = -1;
   private wheelDelay = 0;
   private wheelHop = 0;
+  /** SKILLS.rideWheel: when he first stood at a jetty's lip waiting for a bucket his hop boards (game time, -1: not waiting) */
+  private wheelBoardWait = -1;
   /** a pond's pad ahead first read ready (s), or -1 (padRead's reaction) */
   private padSeen = -1;
   /** he has hopped since padSeen was set (CI-14: the next floor that stays he reaches is a new edge, read afresh) */
@@ -4824,6 +4858,22 @@ export class FirstTimerRun {
    * SKILLS.rideWheel (ENG-26): the jetty, the bucket and the step-off as a person who has watched the wheel plays them. Returns a pad to
    * hold, or null when he is on neither a wheel's jetty (going its way) nor in a bucket.
    */
+  /** SKILLS.stepOff (LAND-26d, R-165.478): his hop off bucket `i` toward the wheel's way, pressed at every lag his thumb presses at
+   *  (thumbLags, hopAim's clock: the bucket carries him meanwhile) and held every hold the press can have (at least `hop`, wheelRide's
+   *  wheelHop), keeping the bucket's sideways speed (RIDE.keep), comes down on the street (hopLandsOn, the engine's catch, no margin) */
+  private stepOffLands(w: Wheel, i: number, streetId: number | undefined, hop: number, now: number): boolean {
+    const street = this.sim.platforms.find((q) => q.id === streetId);
+    if (!street) return true;
+    const p = this.sim.p, who = this.who, b0 = bucketAt(w, i, now);
+    const min = Math.max(hop, this.pressHold());
+    const holds = [min, ...(who.holdQ ? who.holdQ.map((h) => Math.min(1.5, h)) : [who.hold[0] + 1.5 * who.hold[1], Math.min(0.45, who.hold[0] + 3 * who.hold[1])]).filter((h) => h > min)];
+    return thumbLags(who.thumb).every((lag) => {
+      const t1 = now + hopAim(lag).clock, b1 = bucketAt(w, i, t1), b2 = bucketAt(w, i, t1 + DT);
+      const way = w.way as -1 | 1;
+      return holds.every((hold) => hopLandsOn(street, () => street.x, p.x + b1.x - b0.x, p.y + b1.y - b0.y, way, hold, t1, 0, 0, (b2.x - b1.x) / DT));
+    });
+  }
+
   private wheelRide(p: PlayerState, dir: -1 | 0 | 1, t: number): Pad | null {
     if (!p.grounded) return null;
     // (the floor the engine has him on: at a bucket's front end his middle is past it, and the look under his middle finds none)
@@ -4860,7 +4910,8 @@ export class FirstTimerRun {
         // (the kid: toward the middle from outside his stand distance of it, a brake inside it (a press toward the middle carried him past it
         // and off the far end, a full swing every ~0.9 s))
         if (!who.holdQ) {
-          if (Math.abs(off) > 22 + who.edgeAim) return off > 0 ? { left: true } : { right: true };
+          // (and behind the middle, where the step-off falls short, he goes up to it: the step-off, SKILLS.stepOff)
+          if (Math.abs(off) > 22 + who.edgeAim || (SKILLS.stepOff && off * w.way < -16)) return off > 0 ? { left: true } : { right: true };
           return stand();
         }
         return Math.abs(off) > 16 ? (off > 0 ? { left: true } : { right: true }) : {};
@@ -4874,6 +4925,11 @@ export class FirstTimerRun {
       // (the kid's step-off waits for the brake to have him still: a hop decided while a brake's press still carried him went off the wrong
       // end (the wheel toy, top kid Normal v2, 15.4 s))
       if (!who.holdQ && Math.abs(p.vx) > BONK.still) return stand();
+      // (the window was flown from the bucket's middle: from where he stands it may fall short (2-6 adult Easy 12, the top wheel: off -37
+      // at the window where off +36 made the street; back in a bucket, round and round to a rescue. LAND-26d, R-165.478). The hop judged is
+      // the hop flown (level.md rule 28): he goes while the window is open when his own hop, at every lag his thumb presses at and every
+      // hold it can have, comes down on the street (stepOffLands); none in the window and he rides on and settles)
+      if (SKILLS.stepOff && !this.stepOffLands(w, here.wheel.i, lay.streetId, lay.street === 'edge' ? who.hold[0] : 0.5, e.gameTime)) return stand();
       this.wheelSeen = -1;
       // (a street at the sweep's edge: a hop off toward it, the flight's tap; off the top: a single jump held to its top, the way on held,
       // the flight's jump)
@@ -4888,10 +4944,22 @@ export class FirstTimerRun {
     if (!w || dir !== w.way) return null;
     const lip = w.way > 0 ? here.x + here.width : here.x;
     const toLip = (lip - p.x) * w.way;
-    if (toLip > (who.aimQ ? who.aimQ[1] + 31 : 22 + who.edgeAim)) return w.way > 0 ? { right: true } : { left: true };
+    if (toLip > (who.aimQ ? who.aimQ[1] + 31 : 22 + who.edgeAim)) { this.wheelBoardWait = -1; return w.way > 0 ? { right: true } : { left: true }; }
     // (the stand at the lip: a thumb that does not let go (no holdQ) keeps the walk-up press held through a `{}` and walks off the lip
     // into the pond (the wheel toy, sparse kid Normal v2, 6.1 s): for him the stand is a brake, a press against his motion. BUILD-26n)
     if (Math.abs(p.vx) > 10) return who.holdQ ? {} : p.vx > 0 ? { left: true } : { right: true };
+    // (the board was flown from BOARD_BACK px back of the lip, where a tap hop boards at every moment (wheelFlights.ts); stopped nearer it,
+    // at some moments the hop carries past the bucket's end and he slides off it (2-6 child Normal v2, the top wheel: 17 px short of the
+    // lip, in at its end, 2 scrambles. LAND-26c, R-165.478). There he hops when a bucket coming up takes the hop, as a person who has
+    // watched the wheel does, at every lag his thumb presses at (thumbLags, hopAim's clock); every moment comes round once a bucket
+    // period: none in one, and he hops as before)
+    // (and at every hold the press can have: the wheel hop is held at least who.hold[0] (wheelHop), his draw above it as drawn)
+    const min = Math.max(who.hold[0], this.pressHold());
+    const holds = [min, ...(who.holdQ ? who.holdQ.map((h) => Math.min(1.5, h)) : [who.hold[0] + 1.5 * who.hold[1], Math.min(0.45, who.hold[0] + 3 * who.hold[1])]).filter((h) => h > min)];
+    if (this.wheelBoardWait < 0) this.wheelBoardWait = e.gameTime;
+    const boards = !SKILLS.boardWatch || toLip >= BOARD_BACK || thumbLags(who.thumb).every((lag) => holds.every((hold) => hopBoards(w, p.x, p.y, w.way, hold, e.gameTime + hopAim(lag).clock)));
+    if (!boards && e.gameTime - this.wheelBoardWait < bucketPeriod(w)) return !who.holdQ && Math.abs(p.vx) > BONK.still ? (p.vx > 0 ? { left: true } : { right: true }) : {};
+    this.wheelBoardWait = -1;
     this.wheelHop = who.hold[0];
     const out = this.decide(w.way, 'single', true, {});
     // (decide may have set a press to come: he stands while it comes, as off a log, vineFromLog)

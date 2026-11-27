@@ -1,0 +1,26 @@
+// one castBots run: where he is every 0.5 s between T0 and T1 (x, y, vx, vy, on what: a wheel bucket, a jetty, a block), the pad
+const R = process.env.REPO!;
+await import(`${R}/src/game/headlessDom.ts`);
+const { SKILLS } = await import(`${R}/tools/inspect/firsttimer.ts`);
+if (process.env.BW === '0') SKILLS.boardWatch = false;
+const { RealPlay } = await import(`${R}/src/game/realPlay.ts`);
+const { bucketAngle } = await import(`${R}/src/game/wheel.ts`);
+const { WHEEL_FLOWN } = await import(`${R}/src/game/gen2/wheelFlights.data.ts`);
+const { flownKey } = await import(`${R}/src/game/gen2/wheelLay.ts`);
+const { castRun } = await import(`${R}/tools/inspect/castBots.ts`);
+const T0 = Number(process.env.T0), T1 = Number(process.env.T1), STEP = Number(process.env.STEP ?? 0.5);
+let next = T0;
+const f0 = RealPlay.prototype.frame;
+RealPlay.prototype.frame = function (this: any, pad: any = {}) {
+  const o = f0.call(this, pad);
+  if (this.t >= next && this.t <= T1) {
+    next = this.t + STEP;
+    const q = this.platforms.find((p: any) => p.id === this.standingOn);
+    const ph = q?.wheel ? (() => { const w = q.wheel.w, lay = w.lay; const fk = WHEEL_FLOWN[flownKey({ R: w.R, V: w.V, N: w.N, W: w.W, street: lay.street, up: lay.up }, process.env.SET === "easy" ? "easy" : "normal")]; const rd = lay.street === "up" ? fk?.jump : fk?.tap; const phi = bucketAngle(w, q.wheel.i, this.e.gameTime); const past = (((phi - Math.PI) % (2 * Math.PI)) + 3 * Math.PI) % (2 * Math.PI) - Math.PI; return ` past ${past.toFixed(2)} [${rd?.from?.toFixed(2)},${rd?.to?.toFixed(2)}] ${lay.street} off ${(this.p.x - (q.x + q.width / 2)).toFixed(0)}`; })() : "";
+    const what = !q ? "air" : q.wheel ? `wheel@${Math.round(q.wheel.w.cx)},${Math.round(q.wheel.w.cy)} way ${q.wheel.w.way} b${q.wheel.i}` : `${q.type ?? 'block'}#${q.id} ${Math.round(q.x)}-${Math.round(q.x + q.width)} y${Math.round(q.y)}${q.wheelJetty || q.jetty ? ' jetty' : ''}`;
+    console.log(`t ${this.t.toFixed(2)} x ${this.p.x.toFixed(0)} y ${this.p.y.toFixed(0)} vx ${this.p.vx.toFixed(0)} vy ${this.p.vy.toFixed(0)} ${what} ${ph} pad ${Object.keys(pad).filter((k) => pad[k]).join('+') || '-'}`);
+  }
+  return o;
+};
+const row = castRun(process.env.BOT!, process.env.SET as any, '2-6', Number(process.env.SEED));
+console.log('END', row.end, row.time, 'rescues', row.rescues);

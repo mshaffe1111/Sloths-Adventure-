@@ -1,0 +1,20 @@
+(globalThis as any).Image = class { onload:any=null; onerror:any=null; width=1;height=1;naturalWidth=1;naturalHeight=1;complete=true; set src(_u:string){this.onload?.();} decode(){return {then:(ok:()=>void)=>ok()};} };
+const R = process.cwd() + '/src/game/';
+const { generateAllLevels } = await import(R + 'worldsData.ts');
+const { generateStage, setLayoutVariant } = await import(R + 'stageGenerator.ts');
+const { easyStage } = await import(R + 'easyMode.ts');
+const { withGoals } = await import(R + 'goals.ts');
+const { loadSeedList } = await import(R + 'gen2/seedList.ts');
+const { setGroundStacks } = await import(R + 'protoArt.ts');
+const { stackZonesOf } = await import(R + 'groundStack.ts');
+const { depthRuns } = await import(R + 'groundPaint.ts') as any; const { groundBanks, groundLine, groundCeilings } = await import(R + 'protoArt.ts') as any;
+const { depthSteps } = await import(process.cwd() + '/tools/engine/paintFall.ts');
+const c = generateAllLevels().find((l:any) => l.id === '2-7'); await loadSeedList('2-7');
+const [setting, v, X] = [process.argv[2], +process.argv[3], +process.argv[4]];
+setLayoutVariant(v);
+const st:any = setting === 'easy' ? easyStage(withGoals(generateStage({ ...c, unlocked: true }, 'easy'))) : withGoals(generateStage({ ...c, unlocked: true }, 'normal'));
+setLayoutVariant(null);
+const g2s = st.gen2 ? st : st.proto; setGroundStacks(stackZonesOf(g2s.gen2?.tower?.legs), g2s.rivers);
+console.log('steps', JSON.stringify(depthSteps(st.platforms)));
+const banks = groundBanks(st.platforms); const at = groundLine(banks, groundCeilings(st.platforms, banks));
+for (const b of banks) if (b.x <= X && X <= b.x + b.width) { console.log('bank', b.x, b.x + b.width, b.y); for (const r of depthRuns(b.x, b.x + b.width, at)) if (Math.abs(r.x0 - X) < 120) console.log(JSON.stringify(r)); }

@@ -1,0 +1,25 @@
+diff --git a/src/game/groundPaint.ts b/src/game/groundPaint.ts
+index 2e40e5ad4..6f63ef1d6 100644
+--- a/src/game/groundPaint.ts
++++ b/src/game/groundPaint.ts
+@@ -227,6 +227,7 @@ export function depthRuns(x0: number, x1: number, depthAt: DepthAt): Array<{ x0:
+ /** the darkening with depth over x0..x1: nothing above the view's middle, DEPTH_DARK by its bottom and below */
+ function depthBand(ctx: C, deep: GroundSheet['deep'], x0: number, x1: number, top: number, bottom: number, viewBottom: number, vt: number) {
+   const y0 = vt + (viewBottom - vt) * 0.5;
++  { const lx = (globalThis as any).__depthXs as number[] | undefined; if (lx) { const o = ((globalThis as any).__bandOut ??= []); for (const xx of lx) if (x0 <= xx && xx < x1 && o.length < 40) o.push({ xx, x0, x1, top, bottom, viewBottom, vt, y0, tf: (() => { const m = (ctx as any).getTransform?.(); const cv = (ctx as any).canvas; return m ? [m.a, m.b, m.c, m.d, Math.round(m.e), Math.round(m.f), cv?.width, cv?.height, cv === document.querySelector("canvas")] : null; })(), st: (new Error().stack ?? "").split("\n").slice(2, 9).map((l) => (l.trim().split(" ")[1] ?? "?")).join(" < ") }); } }
+   const gr = bottom > y0 && typeof ctx.createLinearGradient === 'function' ? ctx.createLinearGradient(0, y0, 0, viewBottom) : null;
+   if (!gr) return;
+   gr.addColorStop(0, `rgba(${deep[0]},${deep[1]},${deep[2]},0)`);
+diff --git a/src/game/protoArt.ts b/src/game/protoArt.ts
+index 0b9fe8026..56eb6d39b 100644
+--- a/src/game/protoArt.ts
++++ b/src/game/protoArt.ts
+@@ -2029,6 +2029,8 @@ function paintTile(platforms: Platform[], banks: Platform[], cx: number, cy: num
+     return cv;
+   }
+   groundDepth = groundLine(banks, groundCeilings(platforms, banks));
++  { const lx = (globalThis as any).__depthXs as number[] | undefined; if (lx) { const o = ((globalThis as any).__depthOut ??= {}); for (const xx of lx) o[xx] = { d: groundDepth!(xx), np: platforms.length, nb: banks.length, bk: banks.filter((b) => b.x <= xx && xx <= b.x + b.width).map((b) => [b.x, b.width, b.y]) }; } }
++  { const pl = (globalThis as any).__depthPlant; if (pl) { const g0 = groundDepth!; groundDepth = ((xx: number) => { const r = g0(xx) as number[]; return (xx >= pl.x ? [r[0] + pl.j, r[1] + pl.j] : r) as never; }) as never; } }
+   drawGround(g, platforms, banks, { x0: x - CHUNK_PAD - 300, x1: x + CHUNK + CHUNK_PAD + 300, y0: y - CHUNK_PAD, y1: y + CHUNK + CHUNK_PAD + 4 });
+   groundDepth = null;
+   return cv;

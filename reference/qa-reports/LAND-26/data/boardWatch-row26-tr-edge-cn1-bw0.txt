@@ -1,0 +1,47 @@
+JETTY 283 523 4423 wheel cx 679.4157663455517 cy 4271 R 180 way 1 edgeAim 73 aimQ [1,28,73,119,232] holdQ [0.022,0.049,0.074,0.115,0.231] hold [0.16,0.08]
+J0 P0 H0 WR null t 78.33 gt 78.33 jetty x 285 y 4423 vx 285 vy 0 g 1 pad right 
+J0 P0 H0 WR {"right":true} t 78.37 gt 78.37 jetty x 294 y 4423 vx 268 vy 0 g 1 pad right 
+J0 P0 H0 WR {"right":true} t 78.40 gt 78.40 jetty x 304 y 4423 vx 285 vy 0 g 1 pad right 
+J0 P0 H0 WR {"right":true} t 78.43 gt 78.43 jetty x 313 y 4423 vx 268 vy 0 g 1 pad right 
+J0 P0 H0 WR {"right":true} t 79.27 gt 79.27 jetty x 322 y 4423 vx 87 vy 0 g 1 pad right 
+J0 P0 H0 WR {"right":true} t 79.30 gt 79.30 jetty x 328 y 4423 vx 173 vy 0 g 1 pad right 
+J0 P0 H0 WR {"right":true} t 79.33 gt 79.33 jetty x 336 y 4423 vx 260 vy 0 g 1 pad right 
+J0 P0 H0 WR {"right":true} t 79.37 gt 79.37 jetty x 346 y 4423 vx 285 vy 0 g 1 pad right 
+J0 P0 H0 WR {"right":true} t 79.40 gt 79.40 jetty x 355 y 4423 vx 268 vy 0 g 1 pad right 
+J0 P0 H0 WR {"right":true} t 79.43 gt 79.43 jetty x 364 y 4423 vx 285 vy 0 g 1 pad right 
+J0 P0 H0 WR {"right":true} t 79.47 gt 79.47 jetty x 373 y 4423 vx 268 vy 0 g 1 pad right 
+J0 P0 H0 WR {"right":true} t 79.50 gt 79.50 jetty x 383 y 4423 vx 285 vy 0 g 1 pad right 
+J0 P0 H0 WR {"right":true} t 79.53 gt 79.53 jetty x 392 y 4423 vx 268 vy 0 g 1 pad right 
+J0 P0 H0 WR {"right":true} t 79.57 gt 79.57 jetty x 401 y 4423 vx 285 vy 0 g 1 pad right 
+J0 P0 H0 WR {"right":true} t 79.60 gt 79.60 jetty x 410 y 4423 vx 268 vy 0 g 1 pad right 
+J0 P0 H0 WR {"right":true} t 79.63 gt 79.63 jetty x 420 y 4423 vx 285 vy 0 g 1 pad right 
+J0 P0 H0 WR {"right":true} t 79.67 gt 79.67 jetty x 428 y 4423 vx 268 vy 0 g 1 pad right 
+J0 P0 H0 WR {"right":true} t 79.70 gt 79.70 jetty x 438 y 4423 vx 285 vy 0 g 1 pad right 
+J0 P0 H0 WR {"right":true} t 79.73 gt 79.73 jetty x 447 y 4423 vx 268 vy 0 g 1 pad right 
+J0 P0 H0 WR {"right":true} t 79.77 gt 79.77 jetty x 456 y 4423 vx 285 vy 0 g 1 pad right 
+J1 P0 H0 WR nc t 80.00 gt 80.00 air x 467 y 4404 vx 87 vy -577 g 0 pad right+press+jump 
+J1 P0 H0 WR nc t 80.03 gt 80.03 air x 472 y 4387 vx 143 vy -513 g 0 pad right+jump 
+J1 P0 H0 WR nc t 80.07 gt 80.07 air x 478 y 4372 vx 200 vy -450 g 0 pad right+jump 
+J1 P0 H0 WR nc t 80.10 gt 80.10 air x 487 y 4359 vx 257 vy -387 g 0 pad right+jump 
+J1 P0 H0 WR nc t 80.13 gt 80.13 air x 496 y 4348 vx 285 vy -323 g 0 pad right+jump 
+J1 P0 H0 WR nc t 80.17 gt 80.17 air x 505 y 4342 vx 268 vy -167 g 0 pad right 
+J1 P0 H0 WR nc t 80.20 gt 80.20 air x 515 y 4339 vx 285 vy -103 g 0 pad right 
+J1 P0 H0 WR nc t 80.23 gt 80.23 air x 524 y 4338 vx 268 vy -40 g 0 pad right 
+J1 P0 H0 WR nc t 80.27 gt 80.27 air x 533 y 4338 vx 285 vy 23 g 0 pad right 
+J1 P0 H0 WR nc t 80.40 gt 80.40 air x 568 y 4369 vx 198 vy 357 g 0 pad left 
+J1 P0 H0 WR nc t 80.43 gt 80.43 b1 x 572 y 4381 vx 112 vy 0 g 1 pad left past -2.23 [-0.02,1.08] off 35 bw 120
+J0 P0 H0 WR {"left":true} t 80.47 gt 80.47 b1 x 569 y 4379 vx -48 vy 0 g 1 pad left past -2.22 [-0.02,1.08] off 33 bw 120
+J0 P0 H0 WR {"left":true} t 80.50 gt 80.50 b1 x 563 y 4378 vx -135 vy 0 g 1 pad left past -2.20 [-0.02,1.08] off 29 bw 120
+J0 P0 H0 WR {"left":true} t 81.27 gt 81.27 b1 x 535 y 4330 vx -87 vy 0 g 1 pad left past -1.91 [-0.02,1.08] off 25 bw 120
+J0 P0 H0 WR {"left":true} t 81.30 gt 81.30 b1 x 528 y 4328 vx -173 vy 0 g 1 pad left past -1.89 [-0.02,1.08] off 19 bw 120
+J0 P0 H0 WR {"left":true} t 81.33 gt 81.33 b1 x 519 y 4326 vx -260 vy 0 g 1 pad left past -1.88 [-0.02,1.08] off 11 bw 120
+J0 P0 H0 WR {} t 81.37 gt 81.37 b1 x 509 y 4324 vx -285 vy 0 g 1 pad left past -1.87 [-0.02,1.08] off 1 bw 120
+J1 P0 H0 WR nc t 86.73 gt 86.73 air x 717 y 4076 vx 155 vy -577 g 0 pad right+press+jump 
+J1 P0 H0 WR nc t 86.77 gt 86.77 air x 724 y 4059 vx 212 vy -513 g 0 pad right+jump 
+J1 P0 H0 WR nc t 86.80 gt 86.80 air x 733 y 4044 vx 268 vy -450 g 0 pad right+jump 
+J1 P0 H0 WR nc t 86.83 gt 86.83 air x 743 y 4031 vx 285 vy -387 g 0 pad right+jump 
+J1 P0 H0 WR nc t 86.87 gt 86.87 air x 752 y 4020 vx 268 vy -323 g 0 pad right+jump 
+J1 P0 H0 WR nc t 86.90 gt 86.90 air x 761 y 4015 vx 285 vy -167 g 0 pad right 
+J1 P0 H0 WR nc t 86.93 gt 86.93 air x 770 y 4011 vx 268 vy -103 g 0 pad right 
+J1 P0 H0 WR nc t 86.97 gt 86.97 air x 780 y 4010 vx 285 vy -40 g 0 pad right 
+J1 P0 H0 WR nc t 87.30 gt 87.30 STREET x 874 y 4119 vx 268 vy 0 g 1 pad right 

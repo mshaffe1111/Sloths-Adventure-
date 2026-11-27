@@ -1,0 +1,11 @@
+// boardWatch on vs off over the wheel toys (all turn left) and 2-6's row: the runs whose scrambles differ
+const R = process.env.REPO!;
+const { SKILLS } = await import(`${R}/tools/inspect/firsttimer.ts`);
+const { wheelCrossing, fixtureSeed, TOY_WHEELS } = await import(`${R}/tools/inspect/wheelToys.ts`);
+const tiers: any[] = [['child', 'easy'], ['child', 'normal'], ['middle', 'normal'], ['middle', 'easy'], ['expert', 'normal'], ['kid', 'easy'], ['kid', 'normal']];
+for (const row of Object.keys(TOY_WHEELS)) for (const [tier, set] of tiers) for (const v of [1, 2]) {
+  const seed = fixtureSeed(row as any)!;
+  const res: string[] = [];
+  for (const on of [true, false]) { SKILLS.boardWatch = on; const c = wheelCrossing(row as any, tier, set, seed, v); res.push(`sc${c.scrambles} pd${c.pond} ${c.seconds}s`); }
+  console.log(res[0] !== res[1] ? 'DIFF' : 'same', row, tier, set, `v${v}`, 'on', res[0], 'off', res[1]);
+}

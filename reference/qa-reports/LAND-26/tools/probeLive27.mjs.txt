@@ -1,0 +1,21 @@
+const PWm = await import('/opt/node-tools/node_modules/playwright/index.js'); const chromium = PWm.chromium ?? PWm.default.chromium;
+const [port, diff, layout, XS] = process.argv.slice(2); const xs = XS.split(',').map(Number);
+const b = await chromium.launch();
+const E = "(typeof window.__engine === 'function' ? window.__engine() : window.__engine)";
+const ctx = await b.newContext({ viewport: { width: 412, height: 915 }, deviceScaleFactor: 1 });
+await ctx.addInitScript(([d, xs]) => { try { localStorage.setItem('sloth_difficulty', d); } catch {} globalThis.__depthXs = xs; }, [diff, xs]);
+const p = await ctx.newPage(); p.on('pageerror', (e) => console.log('ERR', e.message));
+await p.goto(`http://127.0.0.1:${port}/?lessons=off`); await p.waitForTimeout(2500);
+await p.evaluate((l) => window.__play('2-7', l), +layout); await p.waitForTimeout(4000);
+await p.waitForFunction((E) => { const e = eval(E); return !!(e && e.currentStage && e.player && e.platforms); }, E, { timeout: 90000 });
+await p.waitForTimeout(2000);
+const px = xs[0];
+await p.evaluate(([E, px]) => { const e = eval(E); e.isPaused = true; const q = e.platforms.filter((q) => q.x <= px && q.x + q.width >= px).sort((a, b) => b.y - a.y)[0];
+  Object.assign(e.player, { x: px - e.player.width / 2, y: q.y - e.player.height - 2, vx: 0, vy: 0, grounded: false, invincibleTimer: 0 }); for (let i = 0; i < 45; i++) e.update(1 / 30); }, [E, px]);
+for (let i = 0; i < 10; i++) { await p.evaluate((E) => { const e = eval(E); e.update(1 / 30); e.render(); }, E); await p.evaluate(() => new Promise((r) => requestAnimationFrame(() => r(0)))); }
+await p.evaluate(() => { globalThis.__bandOut = []; });
+for (let i = 0; i < 5; i++) { await p.evaluate((E) => { const e = eval(E); e.update(1 / 30); e.render(); }, E); await p.evaluate(() => new Promise((r) => requestAnimationFrame(() => r(0)))); }
+const out = await p.evaluate(([E, xs]) => { const e = eval(E); return { seed: e.currentStage?.seed ?? e.currentStage?.gen2?.seed, np: e.platforms.length, cam: [e.camera.x, e.camera.y], live: globalThis.__depthOut, band: globalThis.__bandOut,
+  near: e.platforms.filter((q) => q.x <= xs[0] + 200 && q.x + q.width >= xs[0] - 200).map((q) => [q.x, q.y, q.width, q.height, q.type ?? '', q.broken ? 'B' : '']) }; }, [E, xs]);
+console.log(JSON.stringify(out));
+await b.close();

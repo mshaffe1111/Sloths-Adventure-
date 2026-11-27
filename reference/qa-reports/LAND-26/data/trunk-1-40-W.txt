@@ -1,0 +1,40 @@
+seed 1 rescues on 0 off 1 mnv2 on 0r0l shrine / off 1r0l shrine
+seed 2 rescues on 0 off 1 mnv2 on 0r0l shrine / off 1r0l shrine
+seed 3 rescues on 0 off 0 
+seed 4 rescues on 0 off 1 mnv2 on 0r0l shrine / off 1r0l shrine
+seed 5 rescues on 0 off 1 mnv1 on 0r0l shrine / off 1r0l shrine
+seed 6 rescues on 0 off 0 
+seed 7 rescues on 0 off 0 
+seed 8 rescues on 0 off 0 
+seed 9 rescues on 0 off 1 mnv1 on 0r0l shrine / off 1r0l shrine
+seed 10 rescues on 0 off 1 mnv1 on 0r0l shrine / off 1r0l shrine
+seed 11 rescues on 0 off 1 mnv1 on 0r0l shrine / off 1r0l shrine
+seed 12 rescues on 0 off 0 
+seed 13 rescues on 0 off 1 mnv1 on 0r0l shrine / off 1r0l shrine
+seed 14 rescues on 0 off 1 mnv1 on 0r0l shrine / off 1r0l shrine
+seed 15 rescues on 0 off 0 
+seed 16 rescues on 0 off 1 cnv1 on 0r0l shrine / off 1r0l shrine
+seed 17 rescues on 0 off 1 mnv2 on 0r0l shrine / off 1r0l shrine
+seed 18 rescues on 0 off 1 cnv2 on 0r0l shrine / off 1r0l shrine
+seed 19 rescues on 0 off 1 env2 on 0r0l shrine / off 1r0l shrine
+seed 20 rescues on 0 off 3 mnv1 on 0r0l shrine / off 1r0l shrine; mnv2 on 0r0l shrine / off 1r0l shrine; mev2 on 0r0l shrine / off 1r0l shrine
+seed 21 rescues on 0 off 0 
+seed 22 rescues on 0 off 1 cnv2 on 0r0l shrine / off 1r0l shrine
+seed 23 rescues on 0 off 1 cev1 on 0r0l shrine / off 1r0l shrine
+seed 24 rescues on 0 off 2 mnv2 on 0r0l shrine / off 2r0l shrine
+seed 25 rescues on 0 off 1 mnv2 on 0r0l shrine / off 1r0l shrine
+seed 26 rescues on 0 off 1 mnv1 on 0r0l shrine / off 1r0l shrine
+seed 27 rescues on 0 off 2 mnv2 on 0r0l shrine / off 1r0l shrine; env2 on 0r0l shrine / off 1r0l shrine
+seed 28 rescues on 0 off 1 mev1 on 0r0l shrine / off 1r0l shrine
+seed 29 rescues on 0 off 1 mnv1 on 0r0l shrine / off 1r0l shrine
+seed 30 rescues on 0 off 0 
+seed 31 rescues on 0 off 2 mnv1 on 0r0l shrine / off 1r0l shrine; mnv2 on 0r0l shrine / off 1r0l shrine
+seed 32 rescues on 0 off 2 cnv2 on 0r0l shrine / off 1r0l shrine; mnv2 on 0r0l shrine / off 1r0l shrine
+seed 33 rescues on 0 off 1 mnv1 on 0r0l shrine / off 1r0l shrine
+seed 34 rescues on 0 off 1 mnv1 on 0r0l shrine / off 1r0l shrine
+seed 35 rescues on 0 off 1 mnv1 on 0r0l shrine / off 1r0l shrine
+seed 36 rescues on 0 off 2 mev1 on 0r0l shrine / off 1r0l shrine; mev2 on 0r0l shrine / off 1r0l shrine
+seed 37 rescues on 0 off 0 
+seed 38 rescues on 0 off 1 mnv2 on 0r0l shrine / off 1r0l shrine
+seed 39 rescues on 0 off 2 mnv1 on 0r0l shrine / off 2r0l shrine
+seed 40 rescues on 0 off 2 mnv1 on 0r0l shrine / off 1r0l shrine; mev1 on 0r0l shrine / off 1r0l shrine

@@ -1,0 +1,22 @@
+// rule 28, the moved rows: for each castBots row (bot setting seed) in FILE lines LO..HI, the FIRST frame where boardWatch or stepOff
+// acts (before it the run is the run with both off, frame for frame): a boardWatch wait (he stands at the lip for a bucket), a stepOff
+// refusal (his own hop off would not make the street) or a stepOff settle press (behind the middle). One line a row.
+const R = process.env.REPO!;
+await import(`${R}/src/game/headlessDom.ts`);
+const fs = await import('node:fs');
+const { FirstTimerRun } = await import(`${R}/tools/inspect/firsttimer.ts`);
+const { castRun } = await import(`${R}/tools/inspect/castBots.ts`);
+const FP: any = FirstTimerRun.prototype;
+let first: string | null = null;
+const where = (b: any) => { const q = b.sim.platforms.find((p: any) => p.id === b.sim.standingOn); const w = q?.wheel?.w ?? null; return { w, q }; };
+const s0 = FP.stepOffLands; FP.stepOffLands = function (w: any, ...a: any[]) { const ok = s0.call(this, w, ...a); if (!ok && !first) first = `stepOff refuse t ${this.sim.t.toFixed(2)} x ${this.sim.p.x.toFixed(0)} wheel ${Math.round(w.cx)},${Math.round(w.cy)} way ${w.way}`; return ok; };
+const w0 = FP.wheelRide; FP.wheelRide = function (p: any, ...a: any[]) {
+  const { w, q } = where(this);
+  const pre = w && q ? (p.x - (q.x + q.width / 2)) * w.way : 0;
+  const o = w0.call(this, p, ...a);
+  if (!first && this.wheelBoardWait >= 0) { const j = this.sim.platforms.find((x: any) => x.id === this.sim.standingOn); first = `boardWatch wait t ${this.sim.t.toFixed(2)} x ${p.x.toFixed(0)} on #${j?.id}`; }
+  if (!first && w && !this.who.holdQ && pre < -16 && Math.abs(pre) <= 22 + this.who.edgeAim && Math.abs(p.vx) < 5 && o && (w.way > 0 ? o.right : o.left)) first = `stepOff settle t ${this.sim.t.toFixed(2)} x ${p.x.toFixed(0)} wheel ${Math.round(w.cx)},${Math.round(w.cy)} way ${w.way} off ${pre.toFixed(0)}`;
+  return o;
+};
+const rows = fs.readFileSync(process.env.FILE!, 'utf8').trim().split('\n').slice(Number(process.env.LO), Number(process.env.HI));
+for (const l of rows) { const [bot, set, seed] = l.split(' '); first = null; const r = castRun(bot, set as any, '2-6', Number(seed)); console.log(`${l.padEnd(17)} | ${first ?? 'NONE (no skill acted)'} | end ${r.end} ${r.time} s res ${r.rescues}`); }
