@@ -15,6 +15,12 @@ Merged at INT-14 (11-20, t-int-14): §0zq-25d/§0zq-25c ENG-25c (2-5's snap rows
   on the drum's ONE lands, every swing). lockedLianas(st, difficulty) walks every log river in its rightward frame. tempoFaults names a
   court liana whose press on ONE misses ('a press on ONE misses its logs on every bar'); gen2 then refuses the roll (lock 0.15 plants it).
   A clock only WEIGHT pads read is skipped: its count runs only while he stands on that pad (ride.ts 'weight'), it keeps no bar.
+- THE COURT JUDGE IS A BOUND, NOT A COPY (ENG-29-h/i, the lead's scope ruling): lockedDrops' early/late (ONE's margin, tempo.ts ONE_MARGIN)
+  must never be LOOSER than the engine; it may be stricter. courtFalls flies each let-go held AND released, from the model's launch AND it
+  lowered by COURT_SAG (0/5/10 px: the model's launch sits 5-10 px above the engine's, cause not found); courtLands needs every flight.
+  Known price: stricter than the engine on 2-9's draft Easy grip 0.95 at locks 0.88/0.90 (late 0.13/0.07 s; the engine 1.50). Proof
+  method: reference/qa-reports/ENG-29/probes/modelgrip29.ts (build with both grips, THEN read per grip: setting LIANA_RIVER.grips before
+  the build changes the stage, the generator reads the judge) and cmpgrip29.py against the engine's reread (oneMarginR.ts).
 - THE BOT ON A COURT (ENG-29d, tools/inspect/firsttimer.ts liana branch, onOne): a let-go only at the forward end (LET_GO_AT) that misses
   the logs misses on EVERY bar on a locked court: the middle Easy and the expert Normal hung on a liana to a rescue (also on the same court
   with no tempo: 2-4's 2.85 s swing and the court river's 2.85 s log are locked anyway). On a stage with a tempo, after a whole swing he
