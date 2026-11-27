@@ -44,6 +44,18 @@ the commits after it are this REPORT only). Steps 1-4 DONE (below); step 5 partl
   buildRolledOn here, ENG-ROOT / ENG-DEAL there) merged by git with both sides' hunks kept; 50 files from t-eng-w3, tower.ts untouched
   by it. tsc 0; generalitycheck PASS (26 literals, 26 known).
 
+## Pre-freeze (step 5) on the merged head 056b22736, each test file WHOLE
+- Every test that imports tower.ts (grep): tower.test.ts 45/45; towerMend.test.ts 13/13; towerBots.test.ts 9/9; legs.test.ts 7/7;
+  legsLay.test.ts 10/10; camRepick.test.ts 8/8; cameraFollow.test.ts 14/14; worlds/w3.test.ts 10/10. The only source changed is
+  tower.ts. src/game/gen2/worlds/w3Noise.test.ts 7/7 (stays green). 0 fail anywhere. tsc 0; generalitycheck PASS (26/26).
+
+## PROOF (step 4), as ENG-CATCH-e ran it (its probe/proof.mts, copied unchanged), seeds 1-40 x both settings
+- Tree wt-try: the candidate 056b22736 with src/game/gen2/worlds/w3.ts = t-kit-w3a 39a3c5b52's w3.ts byte for byte (`git show`); tsc
+  on it: errors in test files only (w3.test.ts, w3Level.test.ts want 3-2's exports the kit's w3.ts does not have), none in any source.
+  Run: `GEN2_DRAFT=3-1 ROOT=<wt-try> KEEP=<config> FROM=1 SEEDS=40 VERBOSE=1 npx tsx proof.mts` (the first run left GEN2_DRAFT out:
+  every build threw "no row for 3-1" (the draft row is installed only by GEN2_DRAFT); re-run with it, the numbers below).
+PROOF_LINES
+
 ## Open finding (named, not fixed in this box)
 - No catch is laid twice now, but a LATER, wider catch may still lie over an earlier one: the toy's 536-716 lies over 654-716 (same
   height). Physically harmless (no new footing, no new end), but two planks drawn over each other can show an end cap in the middle of
