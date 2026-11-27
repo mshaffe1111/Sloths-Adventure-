@@ -1,7 +1,8 @@
 # ENG-QUIET: is a wait for ONE on 2-9's drum "quiet"? (Engine, from t-build-29 4c3ff9d8)
 
 ## EXACT NEXT STEP (box 4 hand-over, ENG-QUIET-d, 11-27 9:03 AM ET; NOT landed: t-eng-29 still 28c848dbd; work branch t-eng-quiet-b = f589b979a, unchanged in box 4)
-1. WAIT for the lead's ruling on the table below (sent to the lead; the 2-7 half also to INT-R5-b). The recommendation: KEEP THE ROLLS.
+1. RULED (the lead, 11-27 9:05 AM ET): KEEP THE ROLLS; C1-C3 logged as one bots row. Go on with step 2 below (gates list as ruled:
+   tsc, the CI tool line, ALL 15 seed lists, lockall ONE run (102 stages), the 6 shards, tierBots, generalitycheck), then land on t-eng-29.
    If there is no reply in 20 minutes, take that reversible recommendation and go on to step 2 (box 3's step 3, unchanged: every
    roll/seed-pinning test, then GATES once on f589b979a, freeze per D115 with src/game/gen2/proven/ writable, land on t-eng-29 as a
    fast-forward, message the lead with each shard's totals).
