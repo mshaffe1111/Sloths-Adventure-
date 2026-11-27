@@ -1,0 +1,26 @@
+4x normal ERR tip "hint.1-1.bank" has no Dot line in the kit's tips
+4x normal ERR tip "hint.1-1.noMoss" has no Dot line in the kit's tips
+2x normal ERR ask: node n5 "Xc2_>": move 1 (plain jumps): a section there asks for the double
+1x normal ERR ask: node n7 "Wg2<": move 1 (plain jumps): a section there asks for the double
+2x normal ERR ask: node n10 "Pb^<": shape ^ (rising): its sections rise -1 px
+4x normal ERR ask: node n11 "Sf1<": content 'c' (climb): 2 of 2 sections are floating
+1x normal ERR the quiet line: 6.4 s with nothing to do at x 18401, over 4 s (the goal run-out excluded)
+1x normal ERR ask: node n7 "Wg2^<": move 1 (plain jumps): a section there asks for the double
+1x normal ERR the quiet line: 7.6 s with nothing to do at x 20221, over 4 s (the goal run-out excluded)
+2x normal ERR ask: node n7 "Wg2_<": move 1 (plain jumps): a section there asks for the double
+1x normal ERR the quiet line: 11.1 s with nothing to do at x 18200, over 4 s (the goal run-out excluded)
+1x normal ERR the quiet line: 10.3 s with nothing to do at x 15775, over 4 s (the goal run-out excluded)
+8x easy ERR tip "hint.1-1.bank" has no Dot line in the kit's tips
+8x easy ERR tip "hint.1-1.noMoss" has no Dot line in the kit's tips
+4x easy ERR ask: node n5 "Xc2_>": move 1 (plain jumps): a section there asks for the double
+2x easy ERR ask: node n7 "Wg2<": move 1 (plain jumps): a section there asks for the double
+4x easy ERR ask: node n10 "Pb^<": shape ^ (rising): its sections rise -1 px
+8x easy ERR ask: node n11 "Sf1<": content 'c' (climb): 2 of 2 sections are floating
+1x easy ERR the quiet line: 6.4 s with nothing to do at x 18401, over 4 s (the goal run-out excluded)
+2x easy ERR ask: node n7 "Wg2^<": move 1 (plain jumps): a section there asks for the double
+1x easy ERR the quiet line: 7.6 s with nothing to do at x 20221, over 4 s (the goal run-out excluded)
+4x easy ERR ask: node n7 "Wg2_<": move 1 (plain jumps): a section there asks for the double
+1x easy ERR the quiet line: 11.1 s with nothing to do at x 18200, over 4 s (the goal run-out excluded)
+1x easy ERR the quiet line: 10.3 s with nothing to do at x 15775, over 4 s (the goal run-out excluded)
+clean 0/8
+(reused W1/W2 sections that threw on W3's budget, left out: 1)
