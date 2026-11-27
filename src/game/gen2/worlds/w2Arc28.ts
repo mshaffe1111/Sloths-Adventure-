@@ -174,7 +174,10 @@ const padPond: Lay = {
  *  island a solid bank with cage 3 (2 capybaras), then planks on to the far bank. The island's painted reed art (ART-REED-28, t-art-28)
  *  dresses it when it lands; until then the soil-bank block */
 const island: Lay = {
-  pieces: [bank('a', null, 360), porch('p1', 'a', 170, -20), porch('p2', 'p1', 170, 0), { ...porch('i', 'p2', 340, 0), shape: 'bank', style: 'log', main: true },
+  // (the island IN the water, the lead's ruling (b) to BUILD-28-f: a porch over the channel, not a bank, so the river runs under it; the
+  //  hops up to it level, so its top is the near bank's and the surface sits about 42 px under it, as cut (the row's mud foot under it);
+  //  340 wide, the row's stand line (ENG-CUT: 420 drew it 1.24x). Its cut is drawn once the lay carries SectionPiece.cut (ENG-CUT-b))
+  pieces: [bank('a', null, 360), porch('p1', 'a', 170, 0), porch('p2', 'p1', 170, 0), { ...porch('i', 'p2', 340, 0), main: true },
     porch('p3', 'i', 170, -20), porch('p4', 'p3', 170, 0), { ...porch('y', 'p4', 320, 0), shape: 'bank', style: 'log', main: true },
     { ...bank('z', 'y', 300), place: { kind: 'walk', after: 'y', dy: [36, 44] } }],
   sockets: [flag('a', 0.3), cage('cage3', 'i', 0.55, 'capy'), petal('pz', 'z', 0.4)],

@@ -9,7 +9,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { buildGen2Stage } from '../pipeline.ts';
-import { listedStage } from '../listed.ts';
+import { listedStage, worldFinish } from '../listed.ts';
 import { generateAllLevels } from '../../worldsData.ts';
 import { FLOOD_CARD_28, GOAL_LINES_28, LINES_28, MISSION_28, PAGE_28, lineId28 } from './w2Arc28.ts';
 
@@ -79,6 +79,36 @@ test("2-8: Dot's fork line is laid at the fork's own rest (the node just before 
       rest && (rest.x0 < fork.x1 - 1 || g.sections.some((s: any) => s !== rest && s !== fork && s.x0 >= fork.x1 - 1 && s.x1 <= rest.x0 + 1 && s.x1 > s.x0))
         && `the rest (${rest.x0}-${rest.x1}) is not beside the fork (${fork.x0}-${fork.x1})`,
       rest && !(tips[0].x >= rest.x0 && tips[0].x <= rest.x1) && `the line x ${tips[0].x} is outside its rest`,
+    ].filter(Boolean);
+    if (why.length) bad.push(`${d} ${seed}: ${why.join('; ')}`);
+  }
+  assert.deepEqual(bad, [], bad.slice(0, 6).join('\n'));
+});
+
+// (BUILD-28-f, the lead's ruling (b): the reed island stands IN the water: a porch over the channel, the river under its whole width, its
+//  surface about 42 px under the island's top, as cut; 340 wide on Normal, the row's stand line; Easy's landing widening is accepted)
+test('2-8: the reed island stands in the water (the river under its whole width, its surface 35-50 px under its top), 340 wide on Normal, seeds 1-40 x both settings', () => {
+  const cfg = generateAllLevels().find((c) => c.id === '2-8' && !c.secret)!;
+  const row = listedStage('2-8')!;
+  const bad: string[] = [];
+  for (const d of ['normal', 'easy'] as const) for (let seed = 1; seed <= 40; seed++) {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const st0 = buildGen2Stage({ config: cfg, kit: row.kit(), seed, difficulty: d }) as any;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const sec = st0.gen2.sections.find((s: any) => s.template === 'w2-28-island');
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const st = worldFinish(row)(st0, false, d) as any;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const cage = st0.gen2.fills.find((f: any) => f.socket === 'cage3');
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const isl = st.platforms.find((p: any) => cage && p.x <= cage.x && p.x + p.width >= cage.x && p.y >= cage.y - 5 && p.y <= cage.y + 60);
+    if (!sec || !isl) { bad.push(`${d} ${seed}: no island under cage 3`); continue; }
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const under = (st.rivers ?? []).find((r: any) => r.x0 <= isl.x && r.x1 >= isl.x + isl.width && r.surfaceY > isl.y);
+    const why = [
+      !under && `no river under its whole width (${Math.round(isl.x)}+${isl.width})`,
+      under && !(under.surfaceY - isl.y >= 35 && under.surfaceY - isl.y <= 50) && `the surface is ${under.surfaceY - isl.y} px under its top`,
+      d === 'normal' && isl.width !== 340 && `${isl.width} px wide, not 340`,
     ].filter(Boolean);
     if (why.length) bad.push(`${d} ${seed}: ${why.join('; ')}`);
   }
