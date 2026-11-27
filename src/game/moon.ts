@@ -243,3 +243,25 @@ export function layMoon(
   const bx0 = Math.min(x0, ...wallsX.map((x) => x - half)), bx1 = Math.max(x1, ...wallsX.map((x) => x + half));
   return { x0: bx0, x1: bx1, top: hi - 300, bottom: lo + 200, moon };
 }
+
+/**
+ * ONE beam (3-4.md beat 4: 'the beam swings wall to wall'): every swing moon of a stage is set to the same band, between the leftmost
+ * and the rightmost of their stairs' middles, on the stage's one clock (offset 0), so storeys anywhere across the shaft are lit by the
+ * one beam as it passes (a stair between the walls is lit twice a period: litWindows). In place; translation-free, so it may run
+ * before or after the layout's shifts. Rest and rise moons keep their own.
+ */
+export function oneBeam(zones: ReadonlyArray<{ kind: string; moon?: MoonDef }>): void {
+  const swings = zones.filter((z) => z.kind === 'moon' && z.moon && z.moon.band.normal.kind === 'swing' && z.moon.band.normal.walls[0] !== z.moon.band.normal.walls[1]);
+  if (!swings.length) return;
+  const mids = swings.map((z) => (z.moon!.band.normal as Extract<MoonBand, { kind: 'swing' }>).walls[0]);
+  const a = Math.min(...mids), b = Math.max(...mids);
+  for (const z of swings) {
+    const m = z.moon!;
+    const set = (s: 'normal' | 'easy') => {
+      const o = m.band[s] as Extract<MoonBand, { kind: 'swing' }>;
+      return { ...o, walls: [a, b === a ? a + (o.walls[1] - o.walls[0]) : b] as [number, number], offset: 0 };
+    };
+    m.band = { normal: set('normal'), easy: set('easy') };
+    m.mouth = { x: (a + b) / 2, y: m.mouth.y };
+  }
+}

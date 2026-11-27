@@ -52,6 +52,10 @@ test('a moon storey in the up tower: its steps are moonflowers in a moon zone, r
         const under = st.platforms.find((q) => !q.moonflower && q.y === a.y + 100 && q.x <= Math.min(a.x, c.x) && q.x + q.width >= Math.max(a.x, c.x) + 120);
         assert.ok(under, `${band} ${difficulty} ${seed}: the stair at x ${a.x} stands over its stone`);
       }
+      if (band === 'swing') {
+        const bands = (st.zones ?? []).filter((z) => z.moon).map((z) => JSON.stringify(z.moon!.band));
+        assert.equal(new Set(bands).size, 1, `${band} ${difficulty} ${seed}: one beam`);
+      }
       assert.deepEqual(st.gen2.errors, [], `${band} ${difficulty} ${seed}: the roll's own checks`);
     }
     assert.ok(laid > 0, `${band} ${difficulty}: no roll laid the moon's storey`);

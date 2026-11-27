@@ -14,7 +14,7 @@
  * The result is a GeneratedStage (what the engine already plays) with the hand-built stages' proto extras, and `gen2` (what was built).
  * Same seed, same stage; Easy and Normal share the seed AND the section sequence (Normal picks, Easy lays the same picks by its rules).
  */
-import { layMoon, moveMoon } from '../moon.ts';
+import { layMoon, moveMoon, oneBeam } from '../moon.ts';
 import { withSetting } from '../settingDials.ts';
 import { LAID_ASKS } from './walkedSpan.ts';
 import { rollLook } from '../artRoll.ts';
@@ -3109,6 +3109,8 @@ export function layStage(budget: StageBudget, graph: MissionGraph, kit: WorldKit
   for (const t of turns) t.x = t.vine.x;
   // (a stage of legs: a leg laid left may run past x 0, so the whole stage is moved right until it begins at x 0, and its width and
   // foot are those of everything laid)
+  // (every swing moon is the one beam, between its stairs: moon.ts oneBeam; the layout is laid, the shifts below move it whole)
+  oneBeam(zones);
   let spawnX = firstLeft ? RUNWAY - SPAWN_X : SPAWN_X;
   if (routed) {
     const right = R(Math.max(0, -Math.min(...platforms.map((q) => q.x), ...vines.map((v) => v.x - 40))));

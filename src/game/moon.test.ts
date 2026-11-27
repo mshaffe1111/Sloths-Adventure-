@@ -93,3 +93,17 @@ test('the rising band opens the stair bottom to top and closes it the same way',
     assert.ok(opens[0] < opens[1] && opens[1] < opens[2], `${s}: ${opens.join(' ')}`);
   }
 });
+
+import { oneBeam } from './moon.ts';
+test('oneBeam: every swing moon of a stage is the same band between its stairs; rest and rise keep their own (planted: left per storey, they differ)', () => {
+  const zs = () => [layMoon(stair(1000, 5000), 'swing', 600, 1), layMoon(stair(1060, 4600), 'swing', 600, -1), layMoon(stair(1000, 4200), 'rise', 0, 1)].map((z) => ({ kind: 'moon', ...z }));
+  const per = zs();
+  assert.notDeepEqual(per[0].moon.band.normal, per[1].moon.band.normal, 'planted: per storey, two beams');
+  const one = zs();
+  const rise0 = JSON.stringify(one[2].moon.band);
+  oneBeam(one);
+  assert.deepEqual(one[0].moon.band, one[1].moon.band);
+  assert.equal(JSON.stringify(one[2].moon.band), rise0);
+  // both stairs open on the one beam, on both settings
+  for (const s of ['normal', 'easy'] as const) for (const [k, mid] of [[0, 1180], [1, 1240]] as const) assert.ok(flowerClocks(one[k].moon.band[s], mid, 4700, one[k].moon.droop[s]).length > 0, `${s} stair ${k}`);
+});

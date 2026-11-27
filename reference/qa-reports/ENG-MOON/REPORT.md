@@ -1,16 +1,15 @@
 # ENG-MOON: 3-4's moving moonbeam and the moonflower step (R-165.503 / R-165.449; Engine, Opus 5.5 high). Branch t-eng-moon-wip, cut from t-eng-w3 13135bf6b
 
-## EXACT NEXT STEP (box 1, written 10:00 AM ET Fri 11-27 by `date`; step 2 done at 10:03 AM ET; box 2 starts at step 3)
+## EXACT NEXT STEP (box 1, written 10:00 AM ET Fri 11-27 by `date`; steps 2-3 done by 10:05 AM ET; box 2 starts at step 4)
 1. Box 2: `git fetch origin t-eng-moon-wip t-eng-w3 && git checkout -B t-eng-moon-wip origin/t-eng-moon-wip`; `npm ci --legacy-peer-deps`
    (run_in_background). ReadNotifications FIRST.
 2. DONE in box 1 (10:03 AM ET): the moon lays its own steps EXACTLY (SectionZone 'moon' `{ on, n, rise, step, w, band, far? }`;
    pipeline.ts zone branch lays them through `mk` over the far end of their stone; the toy storey is foot 600-620 + top 'over' at 1.0
    dy -400). moonLay.test asserts rises 100, steps on 120, 120 wide, each stair over its own stone, `st.gen2.errors` empty: 36/36 rolls.
-3. **One beam (swing):** the up tower's storeys do not stand 600 px apart on two walls (probe seed 1: stair centres 550 and 610), so a
-   per-section `far` makes two beams. Add a pass after the tower is laid (pipeline.ts, beside the zone shifts at ~3116): every swing moon
-   zone of the stage gets the SAME walls [min, max of the swing stairs' centres] and offset 0 (moon.ts `oneBeam(zones)`), then
-   moonFlowers reads each flower's windows off the one band (a stair between the walls is lit twice a period: litWindows handles it).
-   Drop `far` from the zone. Test: every swing zone's band equal; planted: walls left per-section -> the test is red.
+3. DONE in box 1 (10:05 AM ET): moon.ts `oneBeam(zones)` (every swing moon of a stage the same band between the leftmost and rightmost
+   stair middles, offset 0), called in pipeline.ts before the layout's shifts (they move it whole); moon.test 9/9 (planted: per
+   storey, two beams), moonLay.test asserts one beam on every swing roll. `far` stays on the zone only as the lone storey's far wall.
+   BOX 2 STARTS AT STEP 4.
 4. Item 3 verdicts (moon.ts + a gen2 verdict wired where darkGaps is read, pipeline.ts): 'every flower's open window >= the flown stair
    time of a 0.5 s reader + margin' (Normal 5.0 s, Easy 6.8 s: read `flowerLeft` at the moment the band reaches the storey's first flower)
    and 'every flower over its own storey's stone' (the foot under it). Planted tests: droop 0 -> red; the beam stopped away -> no flower
@@ -45,7 +44,7 @@
 
 ## Open faults (named plainly)
 - FIXED: the steps rose 84, not 100 (a 'jump' piece's dy is scaled by the roll's tempo, pipeline.ts:1413 `dy *= T.rise`); the moon now lays them itself.
-- Swing `far` makes one beam per storey: step 3.
+- FIXED: swing `far` made one beam per storey; oneBeam now sets one band.
 - Not yet run: lockall, the suite, tierBots, the CI line, generalitycheck. No stills yet.
 
 ## For the lead (rule 26: the piece is mine, its placement the kit's)
