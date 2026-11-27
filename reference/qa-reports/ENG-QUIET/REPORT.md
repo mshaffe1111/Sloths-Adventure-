@@ -1,5 +1,15 @@
 # ENG-QUIET: is a wait for ONE on 2-9's drum "quiet"? (Engine, from t-build-29 4c3ff9d8)
 
+## EXACT NEXT STEP (ENG-QUIET-e, 11-27 9:47 AM ET; NOT landed yet: t-eng-29 still 28c848dbd)
+- Re-pin done: origin/t-eng-quiet-e 7387d089a (one test file over f589b979a). tools/inspect/firsttimer.test.ts run-up test now finds its
+  row by property: the first of 2-4's listed rows (child, Normal) with a run-up jump -> seed 4 on this list (old seed 8's new roll has
+  none). Same assertions, bot, setting. Green alone; PLANT (startJump's runUpHold max off) RED on seed 4: flown 0.085 s vs 0.16 judged.
+- Green on 7387d089a: tsc, generalitycheck (26/26). RUNNING: the CI tool line (whole) on 7387d089a; the widened pin set (185 files) on
+  f589b979a. Pin-set red so far: src/game/firstTimerBot.test.ts:177 5-9 KID_RUNS_59, ALSO RED on 28c848dbd (pre-existing, R-165.473/
+  477/496), not from this candidate.
+- Next: when both runs end, re-run firsttimer.test.ts in the pin set on 7387d089a; any new red alone; then fast-forward t-eng-29
+  28c848dbd -> 7387d089a (git push origin 7387d089a:refs/heads/t-eng-29, no force), ls-remote, message the lead.
+
 ## RED, NOT LANDED (ENG-QUIET-d, 11-27 9:35 AM ET): t-eng-29 stays 28c848dbd; the lead rules the next step
 - The CI tool line on frozen f589b979a: 429 tests, 427 pass, 1 FAIL (#195 the chase-bots child-fork line is a TODO, not a fail).
   First failing line: tools/inspect/firsttimer.test.ts:369 `not ok 232 - on the run it was found on, 2-4 child Normal seed 8: the
