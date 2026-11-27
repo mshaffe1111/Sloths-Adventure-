@@ -8,7 +8,7 @@
   36 37 48 49 50 55 58 59 (11 of 13 RED under the plant).
 - Gates on 7387d089a: CI tool line 429 tests 428 pass 0 fail 1 todo; widened pin grep (185 files) 1458 tests 1443 pass 13 fail 2 todo;
   tsc clean; generalitycheck PASS (26/26). The 13 reds are ALL red on 28c848dbd too (not this lane): src/game/firstTimerBot.test.ts:177
-  5-9 KID_RUNS_59 (R-165.473/477/496) and 12 in tools/validate/validate.test.ts + world1.test.ts (on no CI line). On f589b979a the pin
+  5-9 KID_RUNS_59 (inherited, R-165.535) and 12 in tools/validate/validate.test.ts + world1.test.ts (on no CI line). On f589b979a the pin
   set was 14 fail: those 13 + the run-up test.
 - No shard holds the re-pinned file (the 6 shards are src only). lockall unchanged: a test-only change over f589b979a (diff:
   tools/inspect/firsttimer.test.ts only).
