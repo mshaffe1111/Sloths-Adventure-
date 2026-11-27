@@ -201,7 +201,8 @@ const w3BounceLip = (key: string, after: string, from: string, w: [number, numbe
  *  rises over the shelf he enters on: a down tower hangs the catch for the turn above in the band over a section's entry, and a lip that
  *  rose 180 px over it was laid level with that catch, so the turn's vine stopped on it short of his storey (the 3-1 draft, 9 of 12 rolls:
  *  "a catch passes its storey"). Every drop is a `walk` (never scaled by the roll's tempo): 250 px down, in view (TOWER.see 300). The
- *  ledge is 280-300 px, so the lip (70-76 px under the entry) lies past a double from the entry shelf: the bounce is the way; the last
+ *  ledge is 290-310 px, so the lip (70-76 px under the entry) lies past a double from the entry shelf (a double flick from 70 px
+ *  reaches 283-287 px, reach.ts; 240-260 rolled clean but let him double onto the lip and skip the bounce, box 2): the bounce is the way; the last
  *  shelf is wide (260-280), as the root bricks' feet are: a narrow exit before a turn left the tower's catch no fair height */
 export const w3CapDown: SectionTemplate = {
   id: 'w3-cap-down',
@@ -213,7 +214,7 @@ export const w3CapDown: SectionTemplate = {
   jobs: W3_BOUNCE_JOBS,
   pieces: [
     { key: 'a', shape: 'branch', w: [160, 180], place: { kind: 'start' } },
-    { key: 'b', shape: 'branch', w: [280, 300], place: { kind: 'walk', after: 'a', dy: [250, 250] }, landing: true },
+    { key: 'b', shape: 'branch', w: [290, 310], place: { kind: 'walk', after: 'a', dy: [250, 250] }, landing: true },
     w3Cap('m', 'b', 0.74),
     w3BounceLip('w', 'b', 'm', [160, 180]),
     { key: 'c', shape: 'branch', w: [260, 280], place: { kind: 'walk', after: 'w', dy: [150, 150] }, landing: true },
@@ -225,33 +226,11 @@ export const w3CapDown: SectionTemplate = {
   mirrorable: false,
 };
 
-/** [b] steps down to the cap, up onto the lip: two short drops to a stone shelf with the cap at its end, the bounce up a shelf 64-72 px
- *  under the entry and 360-400 px out from it (past a double; nothing rises over the entry), a drop on (as w3CapDown's) */
-export const w3CapSteps: SectionTemplate = {
-  id: 'w3-cap-steps',
-  name: 'steps down to the cap, up onto the lip',
-  archetypes: 'any',
-  phases: ['sho', 'ten', 'ketsu'],
-  difficulty: 3,
-  content: 'bounce',
-  jobs: W3_BOUNCE_JOBS,
-  pieces: [
-    { key: 'a', shape: 'branch', w: [140, 160], place: { kind: 'start' } },
-    { key: 's', shape: 'branch', w: [140, 160], place: { kind: 'walk', after: 'a', dy: [120, 120] }, landing: true },
-    { key: 'b', shape: 'branch', w: [220, 240], place: { kind: 'walk', after: 's', dy: [126, 130] }, landing: true },
-    w3Cap('m', 'b', 0.74),
-    w3BounceLip('w', 'b', 'm', [140, 160]),
-    { key: 'c', shape: 'branch', w: [220, 240], place: { kind: 'walk', after: 'w', dy: [150, 150] }, landing: true },
-  ],
-  entry: { piece: 'a', kind: 'ledge' },
-  exit: { piece: 'c', kind: 'ledge' },
-  exitDy: 220,
-  sockets: [{ id: 'petal', role: 'pickup', on: 's', t: 0.5, dn: 34 }, { id: 'petals', role: 'pickup', on: 'w', t: 0.45, dn: 34, count: 2, span: 90 }, { id: 'flag', role: 'flag', on: 'c', t: 0.6 }],
-  mirrorable: false,
-};
-
 /** the down tower's climb and bounce bricks (a pool reads them after the way down's) */
-export const W3_DOWN_TOWER: readonly SectionTemplate[] = [w3RootDown, w3TwoRoots, w3CapDown, w3CapSteps];
+// (w3-cap-steps, box 1's second bounce brick, was DROPPED in box 2: 8 of 12 draft rolls clean, refused for a tower catch passing its storey
+//  and blind drops off the tower's own catch boughs, an ENGINE-WORTHY tower fault (rule 26). Its cost: one bounce shape in the down tower.
+//  It is in git history (782df622e) to re-probe once the tower's catch lands within TOWER.see)
+export const W3_DOWN_TOWER: readonly SectionTemplate[] = [w3RootDown, w3TwoRoots, w3CapDown];
 
 // ───────────────────────────── the manifest and the kit ─────────────────────────────
 

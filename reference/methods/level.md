@@ -62,6 +62,13 @@ A level is DESIGNED by a person, then built as data, then PLAYED by the bots and
 - The snake: shy, 0.5 s rear, strikes where he WAS; every ending is the glide. Drop traps: `predator-kit.md`.
 - Petals on a landing go where the landing sets him (0.88 of the way); no stretch over 1,050 px without a socket petal, or the shared fill (petals.ts fillGaps) lays them on pit floors; a creaky limb can't hold a petal (flowerReach.ts:140) (BUILD-16c, 11-14).
 
+## World 3 notes (World 3's own)
+- PROPOSED (KIT-W3a, 11-27, for the retro): in a DOWN tower nothing in a brick rises over the shelf he enters on. The tower hangs the
+  turn's catch in the band over a section's entry, and a lip 180 px over it was laid level with that catch: "a catch passes its storey"
+  on 9 of 12 draft rolls. Check: the brick's probe (reference/qa-reports/KIT-W3a/probe/one.mts) on the 3-1 draft, 12 rolls clean.
+- A vine's height is not scaled by the roll's tempo, a jump's drop is (pipeline.ts `dy *= T.rise`): a drop to a vine's foot is laid as a
+  `walk` (unscaled) until the engine lane rules (ENGINE-WORTHY, the lead's row).
+
 ## Learned, level by level
 | Level | Builder | Better or worse than the last level | Rule changed |
 |---|---|---|---|
