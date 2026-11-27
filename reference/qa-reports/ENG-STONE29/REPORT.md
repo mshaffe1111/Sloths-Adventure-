@@ -1,8 +1,7 @@
 # ENG-STONE29: the wide snap stone (130 px) with its own flown band (R-165.490)
 
-**EXACT NEXT STEP:** the CI tool line PASSED on a6ac7316b; lockall --check and the 6 suite shards are running on its frozen worktree. When they end:
-record each total in §1b, commit, push, ls-remote, and send the lead the landing hash, the band, the stills (stills/, shot) and each
-shard's totals (lead only; BUILD-29-c handed over). KID_RUNS_59 (firstTimerBot.test.ts) is the release line's inherited red: name it.
+**EXACT NEXT STEP:** none: LANDED. Code a6ac7316b on t-eng-stone29 (no force), every gate green but the inherited KID_RUNS_59, the
+lead approved the build and the stills. The commits after a6ac7316b are this REPORT, the stills and the turnover note only.
 
 Base: t-eng-29 098047713 (ENG-29-e's barge/guard/drum on t-eng-29-wip untouched). Code candidate: a6ac7316b (gates below are of it).
 
@@ -71,7 +70,10 @@ GATES (frozen worktree of a6ac7316b, `git status` empty after): see §1b.
 - tsc: clean. generalitycheck: PASS (71 engine files, 26 literals, 26 known). snapRow.test.ts: 17/17.
 - The CI tool line (gates.yml line 157): 427 tests, 426 pass, 0 fail, 1 todo (chase bots ENG-B4, a standing TODO), exit 0.
 - lockall --layouts 16 --check against a record of 098047713 (3,264 builds of 102 stages): "lock: 102/102 stages unchanged", exit 0 (2-5 among them: its 80 px stones untouched).
-- The suite, 6 shards round robin (the CLAUDE.md glob, 657 files): (running)
+- The suite, 6 shards round robin (the CLAUDE.md glob, 657 files): 4,229 tests, 4,225 pass, 1 fail, 3 todo. Shard 0: 701/701. Shard 1:
+  649, 647 pass, 2 todo (one R-165.312, the flag placer). Shard 2: 757, 755 pass, 1 todo, ONE fail: KID_RUNS_59 ("5-9's Easy goal rests on the
+  kid's runs ... gen2/game.ts KID_RUNS_59"), the release line's INHERITED red (R-165.473), not this change. Shard 3: 725/725. Shard 4:
+  690/690. Shard 5: 707/707. No other red.
 - drawcheck: not run; no new draw path (the snap stone's own drawer, scaled by width as before).
 
 ## 2. Polish check
