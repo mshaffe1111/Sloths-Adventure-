@@ -173,3 +173,4 @@ branch, change a test bar or change a rule still waits. (The lead's worker resta
   counts line (N/102 unchanged, the moved stages named) is NOT RUN.
 - A geometry or verdict fix is PROVEN on at least the seed range of the world test that guards the stage (e.g. w3.test's rolls 1-40 x both),
   never on a probe's default seeds; it is briefed as the INVARIANT, not the one case in hand (CI #101).
+- generalitycheck (seconds) runs WITH tsc at every step boundary in every engine and kit lane, never only at the final gates (CI #103).
