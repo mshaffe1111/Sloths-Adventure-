@@ -1,5 +1,43 @@
 # KIT-W3a: World 3's TOWER bricks (R-165.504; content/kit, Opus 5.5 high). Branch t-kit-w3a, cut from t-eng-w3 13135bf6b
 
+
+## EXACT NEXT STEP (box 4, written 10:35 AM ET Fri 11-27 by `date`; box 3's step below is DONE to its item 2)
+Head: t-kit-w3a = 05071f33d (merge of ENG-CATCH-b's frozen 861e2a22e, on ENG-CATCH 8a204af87) + 358787809 (rulings 1-3) + this commit
+(shelf-hops narrowed, the w3Tower plants re-picked by property). tsc 0. w3Tower.test 7/7 pass (the f brick counted + planted). NOT GATED,
+NOT LANDED: the ONE gate run and ONE landing wait for ENG-CATCH-c's candidate hash (the lead's message, box 4).
+DONE this box: ruling 1 'descent' in W3_BOUNCE_JOBS (every 'n3 descent: no bounce section left' line GONE, 12 of 12). Ruling 2: World 3's
+DOWN f brick w3-shelf-hops (w3.ts: four branch shelves, plain hops 80-100 px across and 60-80 px down, 140-200 px wide, 960 declared /
+about 1066 laid, inside the 1140 storey; 1030 declared laid 1143-1144 and threw, so narrowed). Ruling 3 (w3.test.ts): the drawn test knows
+World 3's cap (offKit: a 70 px bouncy piece 30 px up on its shelf, W3_ART.bounce has bounce#cap-w3, BOUNCE_FRAMES has cap-w3) with a
+PLANTED test (a shelf typed bouncy -> red; the cap-w3 frame gone -> red); head room (:129) learns the cap on its own shelf (headRoomHits)
+with a PLANTED test (70 px solid wood 30 px over a shelf -> red; a shelf 40 px under the cap -> red). w3.test / w3Noise NOT RUN yet.
+1. Box 5: `git fetch origin +refs/heads/t-kit-w3a:refs/remotes/origin/t-kit-w3a && git checkout -B t-kit-w3a origin/t-kit-w3a`; npm ci in
+   the background; ReadNotifications FIRST (ENG-CATCH-c's hash, and the lead's call on the shelf-hops cases below).
+2. PROBE (probe12-box4.txt here; SEEDS=12 both): all FIVE together 20/24, reds n7 e2 e4 e7; root-down 24/24, two-roots 24/24 alone;
+   shelf-hops ALONE 13/24 (19 blind drops). The four without hops: the lead's 22/24 (n8/e8, ENG-CATCH-c's rule-4 bough, 389 px). Cases:
+   - n7/e7 "a catch passes its storey: catch x 226-406 y 5439, vine x 314, past its storey at y 5617" (and e7 x 954-1134 y 2898): a tower
+     catch (180 wide) under a turn vine: tower wood, ENG-CATCH-c's.
+   - e2 "blind drop off x 734-822, y 9600: 454 px" and "x 516-658, y 9751: 303 px"; e4 "x 144-324, y 5777: 392 px". 516-658 (142 px) is a
+     shelf-hops hop shelf b/c: its far end overhangs the hop gap, and the storey under it lies 303 px down (TOWER.see 300); 734-822 (88 px)
+     is narrower than any brick piece (140 least): a tower bridge. The same class as box 3's cap-shelf hole (the lead's box-3 ruling: the
+     storey's hole under a brick piece's fall line is tower wood). Hops alone: e9 x 515-653 y 11152 310 px, x 731-813 y 11008 454 px; e12 x
+     561-645 y 8780 351 px. RECOMMENDATION (reversible, my own branch): hops stays IN (ruling 2's brick); its fall-line holes go to
+     ENG-CATCH-c with the cases above. The other way (a data dodge: hop gaps under a walk-off) is refused (rule 26).
+3. 3-1's AFTER-ROLL (box 4; after4-31-w3.txt / after4-31-wide.txt here; worktree on the head + AUDIT-W3 scratch.patch + W3_DOWN_TOWER in
+   w3AuditBricks): box 3's 24 lines -> 22 (w3) / 21 (wide), clean 0/8 each. By line against box 3's 24:
+   - 12x "pool short (n3 descent: no bounce section left)": GONE (ruling 1).
+   - 12x "ask n13 Sf1_<: content 'f': 3 of 3 ground": still 12, now "1 of 3" / "2 of 3 sections are ground": shelf-hops IS laid in n13 on
+     every roll (w3Tower.test asserts it), the other slots are the way down's drops because the deal leaves n13 UNTYPED (box 3's finding:
+     the deal does not follow the code's letters). THE DEAL'S, not a brick's: ENG-ASKS's lane / the lead's call. A data dodge (a second
+     falling floating brick to fill the node's three slots) is possible but would not fix the deal; ask the lead before adding one.
+   - NEW (10 lines w3): 5 blind drops (x 657-739 y 3864 351 px; x 415-513 y 7544 351 px; x 707-1107 y 12744 358 px), 4 "catch passes
+     its storey" (x 208-388 y 12559; x 212-392 y 4548), 1 flags (easy: none before n5, 14183 px). Wide also 2 flags lines (5347 px apart).
+     Tower wood (pieces 82-98 px and 180 px catches) except the flags lines: read them on ENG-CATCH-c's merge.
+4. Ruling 4 (w3Noise): its `built()` ALREADY picks by property (the first clean Normal roll of seeds 1-40 that lays the toy, w3Noise.test
+   :130-149), so 'no roll lays the call toy' is a property miss, not a pin: run w3Noise once on the head; if still red, read which rolls
+   lay the toy but are not clean (st.gen2.errors) and name them (tower wood -> the lead), never widen the 40 or drop the clean bar.
+5. Then on ENG-CATCH-c's hash: merge it (named), re-probe all five on 1-12 x both (24/24 the bar, each alone too), w3Tower + w3 + w3Noise,
+   the after-roll by line against THIS box's 22, the gates ONCE (packet), the lock as TWO runs with the counts line (D153), LAND ONCE.
 ## ENG-CATCH-b repro (R-165.534; the lead's ruling, box 3: the storey's hole under a brick piece's fall line is tower wood)
 Branch t-kit-w3a 88b0a0304 (= 610ef2e63 + t-eng-catch 8a204af87; cap-steps back in W3_DOWN_TOWER, all four tower bricks in the kit).
 Repro: `GEN2_DRAFT=3-1 KEEP=w3-root-down,w3-two-roots,w3-cap-down,w3-cap-steps VERBOSE=1 npx tsx reference/qa-reports/KIT-W3a/probe/patch.mts`
@@ -110,6 +148,14 @@ rule 26); NO landing until all four bricks roll 12/12 together (Law 7). Head: t-
 - bounce: World 3's own cap and stalk, bounce#cap-w3 / bounce#stalk-w3 (in game, 0.55 Pokey, scale ok): named in W3_ART.bounce.
 - shelves: World 3's branch shelf w3#branch (in game). Every shelf 140 px or wider (1.6 Pokeys and more).
 - Not used (no draw path, NAMED not stretched): w3-next#mat-s23 (the fungus mat), w3-next#rim*-s11/-s23 (lit rims): "cut, not placed".
+
+## Learned (box 4)
+- A new brick's declared width is not its laid width: the roll's tempo widened shelf-hops about 11% (1030 declared, 1143 laid). Size a
+  tower brick against the storey with that margin, and probe it ALONE first: alone it showed 19 blind drops its four siblings never had.
+- A test that already picks by property (w3Noise built()) is red for a property reason: read the rolls, never re-pin.
+- Lessons applied: D119/D152 (no heredoc in a commit call), D128 (stamps from `date`), D134 (next step pushed + ls-remote), D140, D151.
+- Proposed rule (level.md, kit bricks): "A tower brick's widest declared roll is 10% or more under the storey's width (the tempo widens
+  jumps), and the brick is probed alone on the test's seed range before it joins the kit." Check: the pipeline's own width throw.
 
 ## Learned (box 3)
 - A brick set that is clean one by one and three together can still fail four together: the deal moves which brick meets which turn.

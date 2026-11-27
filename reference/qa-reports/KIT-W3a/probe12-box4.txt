@@ -1,0 +1,18 @@
+   normal 7 tower: a catch passes its storey: the catch at x 226-406, y 5439, where the vine at x 314 stops, hands him past its storey at y 5617 (off its ends he lands at y 5737 and 5496, and never comes down at its storey's height)
+   easy 2 tower: a blind drop off the piece at x 734-822, y 9600: 454 px to its landing (in view: within 300)
+   easy 2 tower: a blind drop off the piece at x 516-658, y 9751: 303 px to its landing (in view: within 300)
+   easy 4 tower: a blind drop off the piece at x 144-324, y 5777: 392 px to its landing (in view: within 300)
+   easy 7 tower: a catch passes its storey: the catch at x 954-1134, y 2898, where the vine at x 1046 stops, hands him past its storey at y 3076 (off its ends he lands at y 2945 and 3196, and never comes down at its storey's height)
+   easy 7 tower: a catch passes its storey: the catch at x 226-406, y 5439, where the vine at x 314 stops, hands him past its storey at y 5617 (off its ends he lands at y 5737 and 5496, and never comes down at its storey's height)
+w3-root-down,w3-two-roots,w3-cap-down,w3-cap-steps,w3-shelf-hops undefined ok 20 n7 e2 e4 e7
+  4 tower: a catch passes its storey: the catch at x #-#, y #, where the v
+  3 tower: a blind drop off the piece at x #-#, y #: # px to its landing (
+   easy 9 tower: a blind drop off the piece at x 789-879, y 10662: 350 px to its landing (in view: within 300)
+   easy 9 tower: a blind drop off the piece at x 47-227, y 6758: 304 px to its landing (in view: within 300)
+   easy 9 tower: a blind drop off the piece at x 731-813, y 11008: 454 px to its landing (in view: within 300)
+   easy 9 tower: a blind drop off the piece at x 515-653, y 11152: 310 px to its landing (in view: within 300)
+   easy 11 tower: a blind drop off the piece at x 78-258, y 10084: 323 px to its landing (in view: within 300)
+   easy 12 tower: a blind drop off the piece at x 561-645, y 8780: 351 px to its landing (in view: within 300)
+   easy 12 tower: a blind drop off the piece at x 908-1088, y 9069: 320 px to its landing (in view: within 300)
+w3-shelf-hops undefined ok 13 n2 n7 n9 n11 n12 e2 e7 e8 e9 e11 e12
+  19 tower: a blind drop off the piece at x #-#, y #: # px to its landing (

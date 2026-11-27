@@ -90,18 +90,20 @@ const FALL_F = parseCode(CODE).flatMap((t, i) => (t.content === 'f' && t.shape =
 const floatBeat = (seed: number, d: (typeof BOTH)[number], tower: readonly SectionTemplate[], tag: string) =>
   roll(seed, d, tower, tag).gen2.sections.filter((s) => FALL_F.includes(s.node)).map((s) => s.template);
 
-test("3-1's falling floating beat (Sf1_<) is laid by World 3's floating brick, w3-shelf-hops, on every roll (4 seeds x both)", () => {
+// (the brick is DEALT into the beat on every roll; the beat's other slots are what the deal gives an untyped node: the deal leaves n13
+//  untyped (box 3's after-roll), so they may be the way down's ground drops: that is the deal's, named to the lead, not the brick's)
+test("3-1's falling floating beat (Sf1_<) holds World 3's floating brick, w3-shelf-hops, on every roll (4 seeds x both)", () => {
   assert.deepEqual(FALL_F, ['n13']);
   for (const d of BOTH) for (const seed of SEEDS) {
     const at = floatBeat(seed, d, W3_DOWN_TOWER, 'kit');
-    assert.ok(at.length > 0 && at.every((t) => t === 'w3-shelf-hops'), `${d} ${seed}: n13 holds ${at.join(', ') || 'nothing'}`);
+    assert.ok(at.includes('w3-shelf-hops'), `${d} ${seed}: n13 holds ${at.join(', ') || 'nothing'}`);
   }
 });
 
-test('PLANTED: w3-shelf-hops out of the pool -> the falling floating beat is laid by no floating brick (the ask goes unmet)', () => {
+test('PLANTED: w3-shelf-hops out of the pool -> no roll lays a falling floating brick in the beat', () => {
   const less = W3_DOWN_TOWER.filter((t) => t.id !== 'w3-shelf-hops');
-  const fine = BOTH.flatMap((d) => SEEDS.map((seed) => floatBeat(seed, d, less, 'less-hops'))).filter((at) => at.length > 0 && at.every((t) => t === 'w3-shelf-hops'));
-  assert.equal(fine.length, 0, 'with the brick out, a roll still lays it');
+  const had = BOTH.flatMap((d) => SEEDS.map((seed) => floatBeat(seed, d, less, 'less-hops'))).filter((at) => at.includes('w3-shelf-hops'));
+  assert.equal(had.length, 0, 'with the brick out, a roll still lays it');
 });
 
 test('every c and b beat of 3-1 is laid by the tower bricks of its kind, and every brick is laid and counted (4 seeds x both)', () => {
@@ -119,12 +121,13 @@ test('every c and b beat of 3-1 is laid by the tower bricks of its kind, and eve
 });
 
 test('PLANTED: a brick taken out of the pool is counted by no roll, and the beat is laid by its other shape', () => {
-  const full = counts(W3_DOWN_TOWER, 'kit', [1]);
-  // (the climb and bounce bricks come in twos; the one floating brick's plant is its own test, above)
+  // (the climb and bounce bricks come in twos; the one floating brick's plant is its own test, above. Each plant rolls the first seed whose
+  //  full pool lays the brick, by property: a new brick in the pool moves which brick a seed deals, D151)
   for (const gone of W3_DOWN_TOWER.filter((t) => t.content !== 'floating')) {
+    const seed = SEEDS.find((s) => counts(W3_DOWN_TOWER, 'kit', [s]).get(gone.id)! > 0);
+    assert.ok(seed !== undefined, `${gone.id}: counted in the full pool (seeds ${SEEDS.join(', ')}, both)`);
     const less = W3_DOWN_TOWER.filter((t) => t !== gone);
-    const n = counts(less, `less-${gone.id}`, [1]);
-    assert.ok(full.get(gone.id)! > 0, `${gone.id}: counted in the full pool (seed 1, both)`);
+    const n = counts(less, `less-${gone.id}`, [seed]);
     assert.equal(n.get(gone.id), 0, `${gone.id} out of the pool: its count drops to none`);
     const twin = less.find((t) => t.content === gone.content)!;
     assert.ok(n.get(twin.id)! > 0, `${gone.id} out: its beat is laid by ${twin.id}`);

@@ -256,9 +256,10 @@ export const w3CapSteps: SectionTemplate = {
   mirrorable: false,
 };
 
-/** [f] hops down the shelves: four of World 3's branch shelves in the air, each a plain jump (90-110 px across, under a single's 128-137
- *  from 70 px, reach.ts) and 60-80 px down from the last; never a double, never a walk-off (each lands past the last's end). 1030 px at its
- *  widest roll, inside a storey's 1140. The middle shelves 140-150 px (1.6 Pokeys), the last wide (200-220) as every exit before a turn */
+/** [f] hops down the shelves: four of World 3's branch shelves in the air, each a plain jump (80-100 px across, under a single's 128-137
+ *  from 70 px, reach.ts) and 60-80 px down from the last; never a double, never a walk-off (each lands past the last's end). 960 px
+ *  declared at its widest (the roll's tempo widens it about 11%: 1030 declared laid 1143-1144, past a storey's 1140, box 4). The middle
+ *  shelves 140-145 px (1.6 Pokeys), the last wide (190-200) as every exit before a turn; none 180 px, a tower catch bough's width */
 export const w3ShelfHops: SectionTemplate = {
   id: 'w3-shelf-hops',
   name: 'hops down the shelves',
@@ -268,10 +269,10 @@ export const w3ShelfHops: SectionTemplate = {
   content: 'floating',
   jobs: W3_FLOAT_JOBS,
   pieces: [
-    { key: 'a', shape: 'branch', w: [160, 180], place: { kind: 'start' } },
-    { key: 'b', shape: 'branch', w: [140, 150], place: { kind: 'jump', after: 'a', dy: [60, 80], gapPx: [90, 110] }, landing: true },
-    { key: 'c', shape: 'branch', w: [140, 150], place: { kind: 'jump', after: 'b', dy: [60, 80], gapPx: [90, 110] }, landing: true },
-    { key: 'd', shape: 'branch', w: [200, 220], place: { kind: 'jump', after: 'c', dy: [60, 80], gapPx: [90, 110] }, landing: true },
+    { key: 'a', shape: 'branch', w: [150, 170], place: { kind: 'start' } },
+    { key: 'b', shape: 'branch', w: [140, 145], place: { kind: 'jump', after: 'a', dy: [60, 80], gapPx: [80, 100] }, landing: true },
+    { key: 'c', shape: 'branch', w: [140, 145], place: { kind: 'jump', after: 'b', dy: [60, 80], gapPx: [80, 100] }, landing: true },
+    { key: 'd', shape: 'branch', w: [190, 200], place: { kind: 'jump', after: 'c', dy: [60, 80], gapPx: [80, 100] }, landing: true },
   ],
   entry: { piece: 'a', kind: 'ledge' },
   exit: { piece: 'd', kind: 'ledge' },

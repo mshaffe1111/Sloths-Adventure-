@@ -1,0 +1,17 @@
+1x normal ERR flags: 5347 px of way apart after the flag at x 1032, y 13345 (900-4000)
+1x normal ERR ask: node n13 "Sg1_<": content 'f' (floating): 2 of 3 sections are ground
+1x normal ERR tower: a blind drop off the piece at x 657-739, y 3864: 351 px to its landing (in view: within 300)
+1x normal ERR tower: a blind drop off the piece at x 415-513, y 7544: 351 px to its landing (in view: within 300)
+1x normal ERR ask: node n13 "Sf1_<": content 'f' (floating): 1 of 3 sections are ground
+1x normal ERR tower: a catch passes its storey: the catch at x 212-392, y 4548, where the vine at x 300 stops, hands him past its storey at y 4726 (off its ends he lands at y 4835 and 4593, and never comes down at its storey's height)
+2x normal ERR ask: node n13 "Sf1_<": content 'f' (floating): 2 of 3 sections are ground
+1x easy ERR flags: 5347 px of way apart after the flag at x 1032, y 13345 (900-4000)
+2x easy ERR ask: node n13 "Sg1_<": content 'f' (floating): 2 of 3 sections are ground
+1x easy ERR flags: none before the hard node n5, 14183 px along the way (within 2400 px)
+1x easy ERR tower: a blind drop off the piece at x 657-739, y 3864: 351 px to its landing (in view: within 300)
+1x easy ERR tower: a blind drop off the piece at x 415-513, y 7544: 351 px to its landing (in view: within 300)
+2x easy ERR ask: node n13 "Sf1_<": content 'f' (floating): 1 of 3 sections are ground
+1x easy ERR tower: a catch passes its storey: the catch at x 212-392, y 4548, where the vine at x 300 stops, hands him past its storey at y 4726 (off its ends he lands at y 4835 and 4593, and never comes down at its storey's height)
+4x easy ERR ask: node n13 "Sf1_<": content 'f' (floating): 2 of 3 sections are ground
+clean 0/8
+(reused W1/W2 sections that threw on W3's budget, left out: 14)
