@@ -22,6 +22,9 @@ Box 8 DID (each on t-build-29; files in flown/):
 NEXT (the lead's ruling first; no data change until it comes): does a timed wait on 2-9's drum count as quiet in the time model (an
 engine or inspector question: no rule is changed here), or does each of the six beats get something to do or a shorter wait (data:
 the keeper and the designer)? Then rules 28/29 from step 1 (rolls clean 24 x both), G6, addlevel, bots, drawcheck, stills, the suite.
+G6 LANDED (ENG-29-i, after this hand-over was sent): t-eng-29 = 28c848dbd (fast-forward from d1038af49; COURT_SAG in riverLay.ts
+lockedDrops; stricter than the engine on Easy grip 0.95 at locks 0.88/0.90). Merge it (no force), then probes/judge29.ts 3 on the court
+(>= 0.20 s Normal / 0.30 Easy both sides of ONE). ENG-29 probes/modelgrip29.ts + cmpgrip29.py read a court the way the engine lane did.
 
 ## (superseded) EXACT NEXT STEP (session 6 hand-over, BUILD-29-f; box clock reached)
 Head: this commit. ReadNotifications first (D140). Box 6 DID: the liana note marked APPROVED (level.md, lead 11-26); R2 part 1 (the
