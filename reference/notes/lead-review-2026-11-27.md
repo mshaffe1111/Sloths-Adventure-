@@ -18,7 +18,7 @@ reversed, change 3 moved to 3-1, change 6 withdrawn until measured.
   CONTINUOUS-IMPROVEMENT.md (90 KB) is the lead's read (CONTINUOUS-IMPROVEMENT.md:7), not the members'.
 
 ## What I would change (each is mine to decide unless marked MATT)
-1. **Measure before anything else, including what fills a box.** The first member job (research tier, high, one or more 28-minute
+1. **Measure before anything else, including what fills a box.** The first member job (role tag research, core tier, high, one or more 28-minute
    boxes, no src/ change): LEVEL-LOG rows for 2-6, 2-7, 2-8, 2-9 and 3-1 (rows for levels not landed marked in progress, LEVEL-LOG.md:2),
    each level's hours split into building the level / pieces found mid-build / merging and re-gating / tracing reds / waiting on the lead
    / gates re-run; and for three recent boxes, what their first 25 minutes read and cost in tokens. The retro asked for the first part
@@ -28,7 +28,7 @@ reversed, change 3 moved to 3-1, change 6 withdrawn until measured.
    first, for 3-1). ENG-CATCH-f (tower.ts, pipeline.ts) shares no file with the kits; it waits only for capacity (change 7), not for
    files. LAWS 23 (LAWS.md:93-94) still holds: pieces are built ahead, side by side where files allow.
 3. **The 2-hour trial is 3-1, not 3-2.** 3-1 has a real stage row (stageTable.ts:93-97 DRAFT_TABLE on t-eng-w3 holds 3-1 alone,
-   PUSHBACK.md:7-8) and rolls CLEAN 8/8 on the w3 kit after ENG-DEAL (ENG-DEAL REPORT:19 on t-eng-w3). 3-2 has no row and its roll still
+   PUSHBACK.md:7-8) and rolls CLEAN 8/8 on the w3 kit after ENG-DEAL (ENG-DEAL REPORT:19 on t-eng-w3; rolled on ENG-DEAL's kit tree, BEFORE KIT-W3a's narrowing, REPORT:18, :87-89: the rule 23 roll on the final kit decides). 3-2 has no row and its roll still
    refuses on the root brick, n11's combine, the double asks at n5 / n11, ocelots laid 0 of 1 at n10 and 1-2 of 3 at n13, quiet stretches
    and missing Dot tip lines (32-kit.txt; ENG-DEAL REPORT:22, :26-28). 3-1's open items: tower.test.ts:856 (R-165.561, ENG-CATCH-f), the
    drop toys (R-165.562, ENG-DROP, change 4), then KIT-W3a-f's merge, probe and landing; then its whole node string rolled (rule 23,
@@ -38,13 +38,15 @@ reversed, change 3 moved to 3-1, change 6 withdrawn until measured.
    one: the run lay refuses a section that leaves the 320 px corridor (pipeline.ts:2420 on t-kit-w3a 38c1b2b20; :2454 on t-eng-w3).
    Ruling: PUSHBACK option 1 (the member's own recommendation): ENG-DROP, an engine job, lets the run lay lay a DESIGNED drop past its
    corridor (place.drop), proven by a toy on a real row, then the toys play on a 3-2 draft row with dropClear and its plant kept. It lands
-   BEFORE KIT-W3a-f does. The toys are never deleted, skipped or known-listed (LAWS 5, 22; PM.md:245-246). Option 2 (red by name until
+   BEFORE KIT-W3a-f does. LANDING ORDER, from a run, not a guess (the Critic's revision-2 must-fix): w3Noise.test.ts was run WHOLE on
+   t-eng-catch-e f5f2aa16e (ENG-CATCH-e's tree, which carries the tower invariant) before ENG-CATCH-f is briefed; if :308 / :322 are red
+   there, ENG-DROP lands before or with ENG-CATCH-f, and ENG-CATCH-f's pre-freeze names w3Noise.test.ts either way. Result: w3Noise.test.ts on f5f2aa16e (worktree, npm ci, `npx tsx --test src/game/gen2/worlds/w3Noise.test.ts`, 11-27 afternoon): 7 tests, 7 pass, 0 fail. So the tower invariant alone does NOT break the toys; ENG-CATCH-f may land first, and ENG-DROP must land before KIT-W3a-f (whose own changes break them). The toys are never deleted, skipped or known-listed (LAWS 5, 22; PM.md:245-246). Option 2 (red by name until
    3-5) is refused: a red test cannot land.
 5. **World 2 finishes on one release line, each level landing when green.** Release 6 is cut from main 49fdc8cb6 (release 5 is in main,
    PR #80). 2-9 goes first (its pieces are landed on t-eng-29 337ba7d0b; it owns R-165.535 and R-165.544); 2-8 next, and its next box must
    ALSO merge t-eng-29 (2-8's line lacks ENG-CAM29's 3d635eb6e: puzzleCamera gallery1, R-165.513, BUILD-28 REPORT:58-59). A green 2-9 is
    not held behind 2-8: release when done, small and often (LEADER-STANDARD-WORK.md:52). BUILD-29-l is a finish box on an already-laid
-   stage; PM.md:112's roll-file check is met by 2-9's listed seed list and its w2Arc29.test (BUILD-29 REPORT).
+   stage; PM.md:112's roll-file check is met by 2-9's own roll file, as the rule names it: BUILD-29 REPORT:67-68 on t-build-29, flown/roll-j.txt (libstage 24 x both: CLEAN 24/24, 0 thrown, no refusal), and BUILD-29-l RE-ROLLS it on its merged head before its gates.
 6. **(WITHDRAWN until measured) a separate cap on tails.** I have no evidence for a number; the measurement counts the lead rulings each
    tail cost on 11-27 first (lead-knowledge.md:9-11 says "about a dozen in two hours"). If it proposes a cap, the guard enforces it, and
    Matt is told in one line, since it tightens the option he picked (lead.md:14-15).
