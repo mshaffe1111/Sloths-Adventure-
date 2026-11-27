@@ -81,3 +81,15 @@ test("2-9: the court lianas' far-bank moss stone stands in its bank's middle, ne
     }
   }
 });
+
+test("2-9: the king's posted guard is laid on EVERY seed, both settings, on the barge's landing past the river (a ruled socket the engine refuses vanishes silently: BUILD-29-i, two barges refused him at t 0.5-0.8)", () => {
+  // (seeds 1-12 until 2-9's seed list exists; then the list's seeds)
+  for (const d of BOTH) for (let s = 1; s <= 12; s++) {
+    const st = built(s, d);
+    const guards = st.enemies.filter((e: Any) => e.royal && e.post !== undefined);
+    assert.equal(guards.length, 1, `${d} seed ${s}: one posted guard (found ${guards.length})`);
+    const barge = (st.rivers ?? []).find((r: Any) => st.platforms.some((p: Any) => p.drift?.look === 'barge' && p.drift.x0 >= r.x0 - 1 && p.drift.x0 <= r.x1));
+    assert.ok(barge, `${d} seed ${s}: the barge's river`);
+    assert.ok(guards[0].x > barge.x1, `${d} seed ${s}: the guard at x ${Math.round(guards[0].x)} stands past the barge's river (ends x ${Math.round(barge.x1)})`);
+  }
+});

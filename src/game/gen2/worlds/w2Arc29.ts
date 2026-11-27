@@ -8,7 +8,7 @@
  *   A    the water gate, the drum alone; Dot's `drum` 800 px+ before beat 1   Xr1>  2-4's liana over a court river, let go on ONE
  *   Tp1< two snap stones in step on the court's jaws, splash-back, free bite    Pp1&> three in step, then two snappers on the court's jaws
  *   Pw1> a court river, a log a bar, splash-back                               Wr1>  the twist: a liana over the `double` river (two beats)
- *   Pf1> five small weight pads at the run pitch, splash-back                  Uc^<  the wheel up the terrace, one bucket a bar
+ *   Pf1> five small weight pads at the run pitch, splash-back                  Uc^<  the wheel up the terrace, on the drum (N4)
  *   Cp1&> the wave of five (Easy two pairs), a court log, two snappers         Pb1^< World 2's bounce up the quay
  *   Sw1> the King's Barge from the quay to the shrine steps                     E     the shrine
  * NOT IN THE DRAFT (each named in reference/qa-reports/BUILD-29/REPORT.md, built by the pieces lane ENG-29-e, never here): the drum
@@ -95,10 +95,10 @@ export const RIVERS_29 = {
   ...W2_RIVERS,
   court29s: { ...W2_RIVERS.court, safe: true },
   double29: { dir: 1, speed: 140, logW: 127.5, gap: 72, logs: 3, easy: { speed: 70, logW: 159 } },
-  barge29: { dir: 1, look: 'barge', speed: 80, logW: 384, gap: 72, logs: 3, easy: { speed: 70, logW: 390 } },
+  barge29: { dir: 1, look: 'barge', speed: 80, logW: 384, gap: 72, logs: 2, easy: { speed: 70, logW: 390 } },
 } as const satisfies Record<string, RiverRow>;
 type Row29 = keyof typeof RIVERS_29;
-/** World 2's wheels; the terrace lays W2_WHEELS.court (R160 both settings, the lead's ruling G4; flown: wheelFlights.data.ts) */
+/** World 2's wheels; the terrace lays W2_WHEELS.court (R120 N4 both settings, the lead's rulings G4 and BUILD-29-i; flown: wheelFlights.data.ts) */
 export const WHEELS_29 = W2_WHEELS;
 
 /** the snappers, on the court's jaws (the stones' clock: PadRow.clock 'court') */
@@ -149,7 +149,7 @@ function brick(o: { id: string; name: string; jobs: NodeJob[]; difficulty: numbe
 
 // ───────────────────────────── the beats ─────────────────────────────
 /** [A] the water gate: the drum alone; Dot's `drum` TEACH 800 px+ before beat 1's stones (0.1 of a 480 bank + 400 + 300 to the pond) */
-const arrival: Lay = { pieces: [bank('a', null, 480), rock('ra', 'a', 0.6), bank('b', 'a', 400), bank('z', 'b', 300)], sockets: [tip('t-drum', 'a', 0.1, 'drum')] };
+const arrival: Lay = { pieces: [bank('a', null, 480), rock('ra', 'a', 0.6), bank('b', 'a', 400), rock('rb', 'b', 0.5), bank('z', 'b', 300)], sockets: [tip('t-drum', 'a', 0.1, 'drum')] };
 /** [T p1<] beat 1, hear the drum: two stones in step over splash-back water, the bite free */
 const hearDrum = (easy: boolean): Lay => ({ pieces: [bank('a', null, 360), pond('c', 'a', easy ? 'teach29e' : 'teach29', 340), bank('z', 'c', 300)], sockets: [petal('pz', 'z', 0.5)] });
 /** [P w1>] beat 2, logs on the beat: a splash-back court river, a log knocking out on every ONE */
@@ -166,8 +166,8 @@ const snappers = (easy: boolean): Lay => ({
 /** [W r1>] beat 6, the TWIST: the king's roar (Dot's `roar` on the rest bank before), a liana over the `double` river (deep); the flag
  *  before. The drum's doubling is NOT laid (G1, ENG-29-e) */
 const twist: Lay = { pieces: [bank('a', null, 420), rock('ra', 'a', 0.5), bank('b', 'a', 400), liana('l', 'b'), river('c', 'l', 'double29', 340), bank('z', 'c', 300), rock('rc', 'z', 0.5)], sockets: [flag('a'), tip('t-roar', 'b', 0.2, 'roar')] };
-/** [U c^<] beat 7, up the terrace: the court wheel, one bucket a bar, a street IN over the top */
-const terrace: Lay = { pieces: [bank('a', null, 300), wheel('z', 'a', 'court', 300)], sockets: [] };
+/** [U c^<] beat 7, up the terrace: the court wheel (N4, a bucket every two beats), a 150 px street, a 50 px step up (BUILD-29-i: the quiet line) */
+const terrace: Lay = { pieces: [bank('a', null, 300), wheel('w', 'a', 'court', 150), rise('z', 'w', 300, -50)], sockets: [] };
 /** [C p1&>] beat 8, the grand dance: the wave (Easy two pairs), a court log (deep), two snappers; the flag before */
 const grandDance = (easy: boolean): Lay => ({
   pieces: [bank('a', null, 420), pond('c', 'a', easy ? 'wave29e' : 'wave29', 340), ...(easy ? [pond('d', 'c', 'wave29e', 300)] : [bank('d', 'c', 300)]), river('e', 'd', 'court', 340), ...snapperGround('s1', 'e'), bank('n', 's1-out', 240), ...snapperGround('s2', 'n'), bank('o', 's2-out', 240), ...snapperGround('s3', 'o'), bank('p', 's3-out', 240), ...snapperGround('s4', 'p'), bank('z', 's4-out', 300)],
@@ -176,10 +176,10 @@ const grandDance = (easy: boolean): Lay => ({
 /** [P b1^<] beat 9, up to the quay: World 2's bounce to the royal quay */
 const upQuay: Lay = { pieces: [bank('a', null, 360), spring('sp', 'a', 0.7), rise('z', 'a', 420, -160)], sockets: [] };
 /** [S w1>] beat 10, the King's Barge: from the quay to the shrine steps (G3: its own look; the bell on the arch, not in the draft) */
-// (beat 10's landing: the king's guard POSTED on the far bank (G2, the lead's rulings (1)(4)(5)), facing the barge, out of the goal; at t 0.6 (336 px in): the nearest post to the landing the engine's safe spot allows (t 0.3-0.5 refused on 14 of 24 seeds both settings, 'no clear ground', patchFor), the lead's ruling (b) as swept, BUILD-29-h)
+// (beat 10's landing: the king's guard POSTED on the far bank (G2, the lead's rulings (1)(4)(5)), facing the barge, out of the goal; at t 0.4 (224 px in; BUILD-29-i: with TWO barges, the quiet line, t 0.5-0.8 are refused, silently, on every seed): the nearest post to the landing the engine's safe spot allows (t 0.3-0.5 refused on 14 of 24 seeds both settings, 'no clear ground', patchFor), the lead's ruling (b) as swept, BUILD-29-h)
 // (the far bank 560 px, not 300: the stage's last flag (ROLLED_FLAGS.last) lands on it on 19 of 40 rolls, and the guard keeps SAFE_APPROACH +
 //  24 = 224 px from a flag; at 300 px both cannot stand on it, and patchFor refuses the post by name. BUILD-29-d)
-const barge: Lay = { pieces: [bank('a', null, 420), river('c', 'a', 'barge29', 360), bank('z', 'c', 560)], sockets: [{ id: 'guard', role: 'enemy', on: 'z', t: 0.6, allow: [W2_POSTED_GUARD.id] }] };
+const barge: Lay = { pieces: [bank('a', null, 420), river('c', 'a', 'barge29', 360), bank('z', 'c', 560)], sockets: [{ id: 'guard', role: 'enemy', on: 'z', t: 0.4, allow: [W2_POSTED_GUARD.id] }] };
 /** [R] a rest on the bank */
 const rest: Lay = { pieces: [bank('a', null, 240), bank('b', 'a', 300), rock('rb', 'b', 0.5), bank('z', 'b', 240)], sockets: [{ id: 'find', role: 'findSpot', on: 'a', t: 0.5 }] };
 
