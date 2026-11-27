@@ -6,7 +6,10 @@ chain (D119); stamps from `date` (D128); NEVER a force-push; freeze per D115 wit
 20 minutes on your own reversible recommendation (CI #89); the WIDENED pin grep after the list (release.md step 6, CI #98). Lead:
 session_01FhBbYN2CVHnFXg7XzqKXpM. Messages carry no clock times.
 1. MERGE (named, conflicts named): t-eng-w2fall (ENG-W2FALL's landing; 2-8 libstage 40/40 clean both on its candidate db2947730) and t-eng-cut
-   (ENG-CUT-b's landing: SectionPiece.cut -> Platform.cut). tsc + the CI tool line after each.
+   (ENG-CUT-b's landing: SectionPiece.cut -> Platform.cut). tsc + the CI tool line after each. Merge t-eng-cut ONLY at the hash ENG-CUT-b's
+   REPORT names as LANDED (its candidate 4d2a579de was pushed to t-eng-cut before its gates). The lay sees a world's inventory only after
+   loadInventory(world) (ENG-CUT-b's named limit): 2-8's tests and tools AWAIT loadInventory(2) before building; a cut the inventory refuses
+   fails the section at the lay by name. ALSO name stageSheets' '2-8 foe:goldsnake' red (ENG-CUT-b's inherited list) by cause.
 2. THE FOUR BRANCH-MADE REDS (green on main 4bf2cbaaa; made by box 2's deletion of the hand-built 2-8, 69c3c1640), the lead's rulings:
    (i) puzzleCamera.test's floor (30 moments, needs > 80; main 87): the hard number counted the deleted pulley rooms. Rewrite the floor as
        DERIVED, never lowered: every puzzle room on a shipped stage is checked at its own moment count, and the room count read from STAGES;
