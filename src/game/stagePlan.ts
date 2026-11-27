@@ -244,6 +244,26 @@ export const SEALED_LINES: Readonly<Record<string, string>> = {
 const GOAL_LINES: Readonly<Record<string, { start: string; late: string }>> = {
   '2:gauntlet': { start: 'Chase off {n} snappers to open the sanctuary', late: 'Still {n} snappers to chase off' },
 };
+/** the late lines that cannot be counted: a world's own late words with no {n}. Dot's guide puts the live count in place of the line's
+ *  number as it is read (dotGuide.ts countedText); with none, a stale or missing count. goalLine.test.ts refuses each by name (R-165.569) */
+export function uncountedLateLines(table: Readonly<Record<string, { start: string; late: string }>> = GOAL_LINES): string[] {
+  return Object.entries(table)
+    .filter(([, l]) => !l.late.includes('{n}'))
+    .map(([k]) => k);
+}
+/** the goals that count to a number: the ones with goal lines (goalLine) */
+const COUNTED_GOALS = ['harvest', 'relic_hunt', 'purge', 'gauntlet', 'rescue'] as const;
+/**
+ * Is `text` the goal's late line ("Still {n} ..."), as goalLine lays it in this world, whoever owns its words (the stock template, a
+ * world's GOAL_LINES)? Its count, or null. Dot's guide counts a late line by what it is, never by one switchboard row: marked by the
+ * row's id alone, 2-9's keeper words were laid uncounted and she would have said the count it was sent with (R-165.569)
+ */
+export function goalLateCount(text: string, world: number): number | null {
+  const m = /\d+/.exec(text);
+  if (!m) return null;
+  const n = Number(m[0]);
+  return COUNTED_GOALS.some((t) => goalLine('late', world, t, n) === text) ? n : null;
+}
 export const sealedLine = (world: number, type: string): string | null => SEALED_LINES[`${world}:${type}`] ?? null;
 /** a world whose purge animals are only chased off, never beaten (World 2: nobody is hurt; the story keeper's conflicts 1 and 4, KEEPER-25):
  *  its animal's word, one and many. Dot's goal lines, the counter and the purge card (hud/goalInfo.ts) all say it */

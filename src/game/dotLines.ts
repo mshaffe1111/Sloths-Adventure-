@@ -11,6 +11,7 @@ import type { GuideKind, GuideLine, GuideWho, MoveId, TopicId } from './dotGuide
 import { GUIDE, classifyLine, topicOf } from './dotGuide.ts';
 import { firstOf, PUZZLE_LATER, PUZZLE_STEPS, roomLineOf } from './dotTips.ts';
 import { ctestEnabled } from './playRecorder.ts';
+import { goalLateCount } from './stagePlan.ts';
 
 /** first-time control tips that may not wait (GuideLine.soon) */
 const SOON_TIPS: ReadonlySet<string> = new Set(['w5.silk']);
@@ -212,6 +213,15 @@ export function engineGuideLine(text: string, stageId: string, o: { boss?: boole
     // (only a move row asks for a move: a thing's tip that names the thing and its rule, never the move, is read and goes)
     move = k === 'move' ? c.move ?? gestureMove(sw.line.gesture, topic) : undefined;
   }
+  // (the goal's late line, "Still {n} ...", by what it is: goalLine's late words for this stage's world, whoever owns them (the switchboard's
+  // goal.late row, a world's own GOAL_LINES: 2-9's keeper words). It is the goal, and its number is put in live as it is read (counted,
+  // dotGuide.ts countedText). Marked by the row's id alone, 2-9's line was laid as plain information with the count it was sent with: the
+  // 5-3 bug again, R-165.569)
+  const late = goalLateCount(text, Number.parseInt(stageId, 10)) !== null;
+  if (late && kind !== 'must' && kind !== 'danger') {
+    kind = 'goal';
+    move = undefined;
+  }
   // (a stage's own teach line, its data says so: taught, not passing information. It waits its turn and stays its reading time; a
   // stock lesson never cuts in over a teach line, GuideQueue.cutsIn)
   if (o.teach && kind !== 'must' && kind !== 'danger') kind = 'teach';
@@ -237,7 +247,7 @@ export function engineGuideLine(text: string, stageId: string, o: { boss?: boole
   // (a scene's line says who speaks it: 5-5's pouch scene is Pokey, Dot and the narrator in turn, w5Lines.ts)
   const who: GuideWho = (sw && W5_SPEAKERS.get(sw.line.id)) ?? (o.dot === false ? 'Pokey' : 'Dot');
   const scene = !!sw && W5_SCENE_IDS.has(sw.line.id);
-  const key = `engine:${sw?.line.id ?? text}`;
+  const key = `engine:${late ? 'goal.late' : sw?.line.id ?? text}`;
   // (what Tips says, dotTips.ts: the first line about a new thing, and a puzzle's steps)
   const room = roomLineOf(text);
   const id = sw?.line.id ?? '';
@@ -270,8 +280,8 @@ export function engineGuideLine(text: string, stageId: string, o: { boss?: boole
     ...(thing ? { thing: true } : {}),
     // (a scene's lines are sent one after another, and may wait behind tips and the moments a spider is near: they keep their place)
     ...(scene ? { scene: true, waitMs: SCENE_WAIT_MS } : {}),
-    // (the goal's "Still {n}" line: its number as it is when read, dotGuide.ts countedText)
-    ...(sw?.line.id === 'goal.late' ? { counted: true } : {}),
+    // (the goal's "Still {n}" line, whoever owns its words: its number as it is when read, dotGuide.ts countedText)
+    ...(late ? { counted: true } : {}),
     // (the engine's own time is for its old, longer words: the reading time of the new ones is the floor)
     ms: sw || o.boss ? undefined : o.ms,
     // a boss fight's warning or tip goes when its attack ends (the engine says so), or after about 6 s
