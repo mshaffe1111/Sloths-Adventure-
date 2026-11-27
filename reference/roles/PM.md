@@ -294,3 +294,5 @@ every rotation and whenever something looks off. Check per-task members at every
 4. **Every result not yet passed goes to a fresh Critic** before you accept it, however finished it looks.
 5. **Re-create scheduled tasks** under your own session, and delete the old lead's (or ask the backup to).
 6. **Write the result into STATE.md:** who's on the team now, what's in flight, what you re-issued.
+- **A countermeasure that is a check ships with its PLANT (CI #109):** run it once against a planted failure and see it refuse before it becomes
+  the standard. The lead commits only through `bash tools/team/leadcommit.sh "<subject>" <paths>` (roadmapcheck by exit code, both branches).
