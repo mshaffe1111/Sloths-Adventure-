@@ -70,7 +70,7 @@ GATES (frozen worktree of a6ac7316b, `git status` empty after): see §1b.
 ## 1b. Gates (all on a chattr-frozen worktree of a6ac7316b; `git status` empty after each)
 - tsc: clean. generalitycheck: PASS (71 engine files, 26 literals, 26 known). snapRow.test.ts: 17/17.
 - The CI tool line (gates.yml line 157): 427 tests, 426 pass, 0 fail, 1 todo (chase bots ENG-B4, a standing TODO), exit 0.
-- lockall --layouts 16 --check against a record of 098047713 (3,264 builds of 102 stages): (running)
+- lockall --layouts 16 --check against a record of 098047713 (3,264 builds of 102 stages): "lock: 102/102 stages unchanged", exit 0 (2-5 among them: its 80 px stones untouched).
 - The suite, 6 shards round robin (the CLAUDE.md glob, 657 files): (running)
 - drawcheck: not run; no new draw path (the snap stone's own drawer, scaled by width as before).
 
