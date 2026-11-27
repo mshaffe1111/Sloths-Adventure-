@@ -14,6 +14,22 @@ builds with a socket tip on a home leg, part proto.hints; 2-8 is not a listed st
 (session_01FhBbYL1nsSeWoAHrXUFj15) was INACTIVE when messaged: the lead names BUILD-28's next session.
 If these temp paths are gone (a new container): rebuild both worktrees from the two hashes above and re-run (1)-(2).
 
+## GATES on 0057bd6f5 (frozen worktree; base a0d85e961 frozen beside it)
+- tsc 0. generalitycheck PASS (26 literals, 26 known).
+- LOCK, one run, lockall --layouts 16 over ALL 102 stages (3,264 builds) against the base's own lock: 100/102 unchanged. Moves, every one:
+  - 1-4, part proto.hints ONLY, all 32 builds (layouts unchanged): its two left-running storeys' tips now carry beforeX. Layout 1
+    Normal: "field" (s5, entry x 550 -> exit 110) was { x 484 }, now { x 110, beforeX 484 }; "figs" (s7, entry 1166 -> exit 540) was
+    { x 1069 }, now { x 354, beforeX 1069 }. Before, each was said on entering the storey, 66 and 97 px before its socket; now at it.
+    seedlist 1-4 --check: PASS (100 seeds, each clean on both settings).
+  - 2-8, every part, on variants 2, 4, 5, 6, 9, 10, 12, 16 (both settings): on the base those rolls were REFUSED (the fork tip early)
+    and the build fell to another seed (variant 2: seed 7921, 4: 11955, 5: 12964); now each builds clean on its own seed. Intended:
+    2-8 is mid-build and has no seed list.
+- CI tool line ('rolled'): tools tests 437: 435 pass, 1 fail, 1 todo (the fail = registrycheck.test, inherited, as ENG-FORK28's);
+  tipwalk --layouts 4 PASS; teachFirstScan --check --seeds 20 PASS (0 misses, 600 rolls); tierBots 9/9 PASS.
+  INHERITED reds (2-8 mid-build): registrycheck (2-8 not in drawcheck scenarios, no seed list, not flown); storyTipScan --check
+  FAIL on 2-8's fork and rise lines dropped on Tips: IDENTICAL on the base (BUILD-28's data: storyTips/teachTips for those two lines).
+- SUITE, 6 shards: see the landing message (shard 2's one red, artUse.test "cage-whole"/"cage-b" unused art, is identical on base).
+
 ## Done-items
 1. (a) THE PIECE: pipeline.ts socket tips: a tip on a section he walks leftward (its exit left of its entry: a leg laid left) gets
    `{ x: min(section x0, socket - TIP_LEFT_KEEP 40), beforeX: socket }` (the water warning's way): said from the socket on, walking
