@@ -1,7 +1,10 @@
 # ENG-DEAL (R-165.541): the deal follows the code's letters, every slot, every job
 
-## THE EXACT NEXT STEP (box 1; written 11:16 AM ET Fri 11-27 by `date`)
-Branch `t-eng-deal` holds the fix (commit c6340c0d8 on t-eng-w3 9818cc87). NOT gated, NOT landed.
+## THE EXACT NEXT STEP (box 1; written 11:19 AM ET Fri 11-27 by `date`)
+Branch `t-eng-deal` holds the fix (commit c6340c0d8 on t-eng-w3 9818cc87). NOT gated, NOT landed. DONE: 3-1 w3 + wide, 3-2 and 3-3 old
+vs new (below); tsc 0; generalitycheck PASS; CI tool line 50/50. RUNNING: the lock base (item 2) and the suite's 6 shards on a frozen
+worktree `$S/head` of 8ad1a8e9 (`$S/shards.sh $S`, totals to `$S/shards.txt`). Left: item 3's lock --check (on `$S/head`), tierBots
+if World 1-2 moved, then item 4.
 1. Scratch trees (re-make if the container is gone): `$S/kit` = worktree of 9818cc87 + `git merge 1b300ebc3` + `git apply`
    origin/t-audit-w3:reference/qa-reports/AUDIT-W3/scratch.patch + `...W3_DOWN_TOWER` appended to w3AuditBricks' return (imported from
    ./w3.ts) + this branch's pipeline.ts; `$S/kitold` = the same with 9818cc87's pipeline.ts; `$S/base` = worktree of 9818cc87.
@@ -40,3 +43,17 @@ Branch `t-eng-deal` holds the fix (commit c6340c0d8 on t-eng-w3 9818cc87). NOT g
 - BEFORE (old pipeline): 15 lines, identical to KIT-W3a's after4-31-w3.txt (31-before-w3.txt here), clean 0/8.
 - AFTER: **clean 8/8**, 0 refusal lines (31-after-w3.txt here). n13's 12 lines are gone. The 3 tower lines (blind drops, catch passes its
   storey, flags) are gone only because the plans changed on these seeds; they are not fixed by this change.
+- 3-1 on the WIDE pool (AUDIT_CAP=20 roll.sh 3-1 wide, down down): KIT's after4-31-wide.txt 17 lines -> **clean 7/8**; one line left,
+  easy seed 4 "flags: none before the hard node n5, 14183 px along the way (within 2400 px)" (on KIT's list before; flag spacing,
+  not the deal). 31-after-wide.txt here.
+
+## 3-2 and 3-3 on the same KIT tree (wide pool, right/level, KIT-W3b's codes-trim-rolled codes; old = 9818cc87's pipeline)
+Line counts sum each "Nx" line. Files 32-kitold / 32-kit / 33-kitold / 33-kit here. Neither stage rolls clean, before or after (0/8).
+- 3-2: 144 -> 143 lines. Content-kind lines 8 -> **0**: the S (Sf) node's "content 'f': 1 of 1 sections are bounce" and n11's (Cg) "content
+  'g': 4 of 4 sections are floating[, climb]" are gone (n11 now lays ground). Moved: n11's 7 "pool short (n11 combine: no ground section
+  left)" now read "no section for the job left" (the same slots, the letter held); NEW on n11: "creatures (&): no creature laid" and
+  "threat ocelot*2: laid 0" (World 3 has no ground combine brick with an ocelot: a missing brick, KIT-W3b's lane, now named by the ask
+  instead of hidden behind a floating stand-in); S's "threat ocelot*3: laid 1" -> "laid 2".
+- 3-3: 250 -> 216 lines. Content-kind lines 22 -> 14; **the 14 left are all 'l' (lure): "no lure laid"**: 'l' has no section type yet
+  (TYPE_OF_LETTER has none), so an l node stays free and the ask names it: ENG-LURE's. n11's (Cg) "content 'g': sections are climb /
+  floating / bounce" lines are gone, with the same NEW "no creature laid" / "ocelot*2: laid 0" as 3-2; Sb's threat counts moved.
