@@ -1,6 +1,13 @@
 # ENG-DEAL (R-165.541): the deal follows the code's letters, every slot, every job
 
-## THE EXACT NEXT STEP (box 2; written 11:38 AM ET Fri 11-27 by `date`)
+## THE EXACT NEXT STEP (box 3; written 12:08 PM ET Fri 11-27 by `date`)
+THE LEAD ACCEPTED the 1-8 record move on a condition: `seedlist <id> --check` for 1-8 AND every list on the candidate, plus tierBots 9/9;
+all pass -> land with 1-8 named in the commit and here as "intended: graph types now written; no laid field moves"; 1-8's list fails ->
+STOP and send it. DONE on `$S/head` (8ad1a8e9): tierBots 9/9; seedlists PASS 1-8 (100), 1-1 (161), 1-2, 1-3, 1-4 (100 each), 1-5 (150),
+1-7, 1-9 (100 each); shards 1-4: 725/0, 617/0, 763/0, 736/0. RUNNING: shards 5-6 (`$S/shards.txt`); seedlists 2-1..2-5 then 1-6
+(`$S/seedlists.sh`, `$S/seedlists.txt`). When all pass: merge this branch onto a fresh fetch of origin/t-eng-w3 (no force, no rebase),
+tsc + generalitycheck on the merge, push, ls-remote, then send the landed hash to the lead AND KIT-W3a-e (session_01FhBbYNzFgpSDqYvvxo7xXs).
+### Box 2's step (the lock, done)
 LOCK: base 9818cc87 3264 builds / 102 stages; check on 037f82071: "lock: 101/102 stages unchanged", the move "1-8: gen2" (LISTED).
 Why (probe `$S/probe18.mts`, 32 builds field by field): the ONLY gen2 field that differs is `graph`: 1-8 (no mix, so the deal returned
 early) now carries its code letters' types on 7 nodes (n2 hazard, n3/n10 ground, n5/n13 rope, n7 bounce, n9 hazard); plan, sections,
