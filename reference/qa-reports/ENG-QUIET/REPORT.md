@@ -20,6 +20,11 @@
   without it. Countermeasure to propose: widen the item-6 grep to tests that call firstTimer/castRun/RealPlay on a listed stage.
 - Green at the red: seed-pinning 34/34, tsc, generalitycheck, lockall --check (99/102 unchanged; only 2-1, 2-4 and 2-7 moved, as
   intended), tierBots 9/9, shard 1 691/0, seed lists 1-1..1-5. Still running then: seed lists 1-6.., shards 2-6.
+- FINAL GATES on frozen f589b979a (ENG-QUIET-d, 11-27 10:00 AM ET; the lead ruled: ENG-QUIET-e re-pins and lands, not this box):
+  seedlist --check ALL 15 lists PASS (1-1..1-9, 2-1..2-5, 2-7). Shards: 1 691/0, 2 692/0, 3 830/1, 4 740/0, 5 635/0, 6 651/0.
+  Shard 3's red is NOT this candidate's: src/game/firstTimerBot.test.ts:177 `not ok 208 - 5-9's Easy goal rests on the kid's runs:
+  re-measured, they are still the ones recorded (gen2/game.ts KID_RUNS_59)` (actual has 8, 9; expected 3, 5, 6 ...) FAILS alone on
+  28c848dbd too (pre-existing on t-eng-29's base; 5-9 is not a stage this change touches; lockall shows 5-9 unchanged).
 - Not fixed, as ruled. The fix belongs to whoever the lead names: re-pin the test to a roll that still holds a run-up (properties, not x),
   or keep 2-4 v8's old roll.
 
