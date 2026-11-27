@@ -1,33 +1,45 @@
 # ENG-MOON: 3-4's moving moonbeam and the moonflower step (R-165.503 / R-165.449; Engine, Opus 5.5 high). Branch t-eng-moon-wip, cut from t-eng-w3 13135bf6b
 
-## EXACT NEXT STEP (box 1, written 10:00 AM ET Fri 11-27 by `date`; steps 2-3 done by 10:05 AM ET; box 2 starts at step 4's wiring)
-1. Box 2: `git fetch origin t-eng-moon-wip t-eng-w3 && git checkout -B t-eng-moon-wip origin/t-eng-moon-wip`; `npm ci --legacy-peer-deps`
-   (run_in_background). ReadNotifications FIRST.
-2. DONE in box 1 (10:03 AM ET): the moon lays its own steps EXACTLY (SectionZone 'moon' `{ on, n, rise, step, w, band, far? }`;
-   pipeline.ts zone branch lays them through `mk` over the far end of their stone; the toy storey is foot 600-620 + top 'over' at 1.0
-   dy -400). moonLay.test asserts rises 100, steps on 120, 120 wide, each stair over its own stone, `st.gen2.errors` empty: 36/36 rolls.
-3. DONE in box 1 (10:05 AM ET): moon.ts `oneBeam(zones)` (every swing moon of a stage the same band between the leftmost and rightmost
-   stair middles, offset 0), called in pipeline.ts before the layout's shifts (they move it whole); moon.test 9/9 (planted: per
-   storey, two beams), moonLay.test asserts one beam on every swing roll. `far` stays on the zone only as the lone storey's far wall.
-   BOX 2 STARTS AT STEP 4.
-4. Item 3 verdicts: WRITTEN in box 1 (10:05 AM ET), NOT YET WIRED. moon.ts `moonVerdicts(stage, setting)`: (1) every flower opens and
-   every open window (BLOOM + its clock's len) >= MOON_WINDOW (Normal 5.0, Easy 6.8); (2) every flower over a stone of its storey (a
-   solid non-flower piece under its whole width within 400 px). moon.test 10/10 with three planted reds (droop 0 -> 'open 4.x s, under
-   5 s'; the beam stopped away -> 'never opens'; the stone moved off -> 'stands over no stone'). BOX 2 STARTS HERE: wire it where the
-   roll's own errors are made on BOTH settings. darkGaps / darkLandings are NOT called from pipeline.ts (grep found only dark.ts and
-   tests), so first find how World 3's dark verdicts reach `st.gen2.errors` (`grep -rn "darkFlags\|runOffRims\|litAhead" src tools`;
-   the verdict registry, gen2/verdicts.ts or promises11.ts) and add moonVerdicts the same way; then moonLay.test's
-   `st.gen2.errors` empty proves it kept, and a planted droop-0 roll proves it red through the pipeline.
-5. Item 4 the bot skill `wait-for-light` (firsttimer.ts SKILLS, ~:726; read how tools/engine/towerFly.ts flies a tower): on stone, wait
-   until `flowerOpen` of the next step and `flowerLeft` >= the stair time; jump only to an open flower. Then item 5's toys (towerFly in
-   the real engine, the up fixture with the moon storey) and item 6's stills (tools/art/kitaudit/shoot.mjs).
-6. Engine draw (not started): the beam as a slanted shaft from `moon.mouth` to `bandAt` (moon.ts), and a light in the dark mask
-   (engine.ts ~8049, the dark lights loop: push the band's centre with r = half); the flower's three looks (bud closed, open, drooping
-   by `flowerDroop`). No flower art in the inventory fits (3-4.md Art: paint it): code-drawn stand-in, NAMED as such, and tell ART-W3.
-   'lit = seen': when ENG-ROOT's `litRing` (zones.ts, origin/t-eng-root-wip) lands on t-eng-w3, make it read moon bands through
-   moon.ts `bandCovers` INSIDE litRing (one definition), never a second read.
-7. Then GATES once on a frozen candidate (D115, src/game/gen2/proven/ writable): tsc; the CI tool line; lockall --check (102 stages,
-   counts, no listed stage moves); the suite in 6 shards; tierBots 9/9; generalitycheck. Merge onto origin/t-eng-w3 (no force).
+## EXACT NEXT STEP (box 2 hand-over, written 10:29 AM ET Fri 11-27 by `date`; box 3 starts at step 3, the draw)
+1. Box 3: `git fetch origin t-eng-moon-wip t-eng-w3 && git checkout -B t-eng-moon-wip origin/t-eng-moon-wip`; `npm ci --legacy-peer-deps`
+   (run_in_background). ReadNotifications FIRST: the lead may have ruled on the SWING GEOMETRY (below); its ruling wins.
+2. DONE in box 2:
+   - R-165.537 (3fb22a84d, sent to the lead on its own): WorldManifest.verdicts (gen2/types.ts) names a world's own judges from ONE registry,
+     gen2/worldVerdicts.ts WORLD_VERDICTS (darkGaps, darkLandings, darkFlags, moon); pipeline.ts runs worldVerdictLines into gen2.errors in
+     buildGen2StageOn (after `also`) and in Easy's Normal build (as `also`). w3Manifest declares all four. worldVerdicts.test 3/3: planted
+     through the real pipeline (3-1 seed 1 with its glowworms lifted 3000 px: darkGaps lines refuse it on both settings, off the manifest
+     they do not; a moon storey with steps 300 apart: 'stands over no stone' refuses it, off the manifest not; the 120 stair clean).
+     NEWLY REFUSED (tools/inspect/worldVerdictScan.ts 3-1 1-60): NONE; counts: 117 clean both ways, 0 newly refused, 3 refused already.
+   - Item 4 (b0701fd58): firsttimer.ts SKILLS.waitForLight + moonWait (after glowWait in the step: grounded, the flower one rise over his
+     feet (MOON_UP 60-140) within MOON_REACH 260 on his way, he stands until it is open with flowerLeft >= steps-left x MOON_STEP_T 0.8 +
+     stopReact; MOON_GIVEUP 20 s). moonBots.test 1/1 in the REAL engine on a RISING storey (up fixture '5-94', placed on the lowest
+     storey's stone the frame its first step closes): skill on waits 47 frames, 0 steps into a closed flower, climbs past the storey;
+     planted, skill off: falls through 1 (RED).
+   - A FINDING sent to the lead (ruling asked; my reversible recommendation taken at 20 minutes): in a stacked shaft, oneBeam's walls (the
+     stair middles) collapse to ~70 px, so a swing's flowers are open for good (len Infinity); the far-wall alternative leaves the stairs
+     mid-shaft, lit 1.75-1.92 s, refused by the 5.0 s window. The geometry is the fault: a swing needs its storeys' stairs at OPPOSITE
+     shaft walls >= ~520 px (Normal) / 720 (Easy) apart; the KIT lays that (rule 26); the Designer may add 'a swing flower never closes'.
+     oneBeam is UNCHANGED (box 1's). The toy uses 'rise' for this reason.
+3. THE DRAW (not started), engine.ts:
+   - the lit read: in the dark lights loop (engine.ts ~8056, `for (const z of this.currentStage.zones ?? [])`), for z.kind 'moon' push
+     bandAt(z.moon.band[setting], gameTime) as a light (x, the band's middle y, r = half). BUT check first whether ENG-ROOT-c has landed
+     litRing (zones.ts) on t-eng-w3: if it has, merge t-eng-w3 and make litRing read moon bands through moon.ts bandCovers INSIDE litRing
+     (ONE 'lit = seen' field, R-165.529); never a second read. The loop only runs while darkShow > 0.01 (dark zones only): a moon outside a
+     dark zone needs its own glow (say so if 3-4's moon is not inside a dark zone).
+   - the shaft: a code-drawn STAND-IN, NAMED as such: a soft slanted quad from moon.mouth to the band's top (gradient, alpha <= 0.25,
+     one path; PERFORMANCE-RULES §1: no per-frame gradient creation, cache it).
+   - the flower: code-drawn STAND-IN (no flower art in the inventory fits; 3-4.md Art: paint it): bud closed (a small shut bud on its
+     stem), open (petals over a 120 x 22 tread), drooping by flowerDroop (petals fold down, colour dims). Find where a broken crumble is
+     skipped/drawn (grep 'broken' in engine.ts draw) so a closed flower draws as the bud, not nothing.
+   - Tell the lead what ART-W3 paints: moonflower 3 looks (bud / open / droop), each 120 x ~60 px at ship size (tread 120 wide, 22 deep,
+     petals over it), and the beam's shaft (a tall soft light, ~440 wide at the band (2 x half), ~520 tall from the mouth), painted on HF.
+4. STILLS (tools/art/kitaudit/shoot.mjs), upright and sideways: the beam over a storey, a drooping flower beside Pokey; each still names
+   its draw path ('code-drawn stand-in').
+5. GATES ONCE on the frozen candidate (D115, src/game/gen2/proven/ writable): tsc; the CI tool line; THE LOCK AS TWO RUNS (CI #100):
+   `npx tsx tools/engine/lockall.ts --layouts 16 --out base.json` on origin/t-eng-w3's head (box 2's base.json was in its own container's
+   scratchpad: re-run it), then `--check base.json` on the candidate, WITH its counts line; no listed stage moves (World 3 has no list);
+   the suite in 6 shards; tierBots 9/9; generalitycheck. Then merge onto origin/t-eng-w3 (no force, never rebase), re-run tsc and the
+   lock check after the merge; hash, shard totals, stills to the lead.
 
 ## Done (box 1)
 - `src/game/moon.ts`: the band on one clock (clock.ts cyclePos): swing `{ walls, rest, slide, half, offset }` and rise
@@ -49,7 +61,8 @@
 ## Open faults (named plainly)
 - FIXED: the steps rose 84, not 100 (a 'jump' piece's dy is scaled by the roll's tempo, pipeline.ts:1413 `dy *= T.rise`); the moon now lays them itself.
 - FIXED: swing `far` made one beam per storey; oneBeam now sets one band.
-- Not yet run: lockall, the suite, tierBots, the CI line, generalitycheck. No stills yet.
+- Not yet run: lockall (base run started in box 2, not compared), the suite, tierBots, the CI line, generalitycheck. No stills yet.
+- Box 2: the swing geometry in a stacked shaft (see the EXACT NEXT STEP, 2): a swing's flowers open for good when its storeys' stairs share a column; ruling asked.
 
 ## For the lead (rule 26: the piece is mine, its placement the kit's)
 - The KIND the kit asks for: a section zone `{ kind: 'moon', ... }` (gen2/types.ts SectionZone). It is what ENG-ASKS-b's registry row
@@ -65,6 +78,9 @@
 - none yet.
 
 ## Lessons applied
+- Box 2: D153 (the lock gate spelled out as two runs with its counts line; not yet compared), D140 (ReadNotifications at each step), D128
+  (every stamp from `date`; my sense of the clock ran ~5 minutes fast again), D145 (the swing's geometry judged by the flown window, not by
+  a number from memory), D143 (a ruling asked with my own reversible recommendation and a 20-minute clock).
 - D128 (stamps from `date`: my own sense of the clock ran ~10 minutes fast this box; every stamp here is from `date`), D134 (the next
   step pushed and ls-remote-confirmed first), D140 (ReadNotifications at step boundaries), D150 (the 'lit = seen' seam named for ENG-ROOT's
   litRing, step 6).
