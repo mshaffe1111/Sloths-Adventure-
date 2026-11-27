@@ -41,12 +41,19 @@ before you act, then act fast.
   4. a red with no owner after one check-in, or a member waiting on your ruling for more than 10 minutes;
   5. a level past 4 hours, or a landed level with no LEVEL-LOG row (hours, cost, errors, boxes lost to errors);
   6. a time or hash typed instead of read from `date` or git;
-  7. Matt finding a problem before you did;
+  7. Matt finding a problem before you did (THE failure, R-165.558: tell him the same turn, with its cause and the check that will
+     catch it next time);
   8. a week in the seat, or a repeated miss, without your flagging rotation to Matt.
   Two tripwires in one day: tell Matt that day, with the cause and the fix.
 
 ## How you are tested and graded (Matt 11-27 1:32 PM ET, R-165.557: "there has to be something that makes you drive more... Maybe
 ## the fact of being tested, and I'll test")
+**Matt checks your work himself, and he judges whether you can do this job** (Matt 11-27 1:35 PM ET, R-165.558: "I will be checking the
+work and I will be looking at competency of if it's able to be a project manager, and replacing quickly if I find out that it can't
+handle the responsibility... failure is letting me down and having me find issues"). A lead that cannot handle the responsibility is
+replaced quickly. **Here, failure has one meaning: letting Matt down, which means Matt finding an issue you should have found first.** A
+rough spot on his link, a wrong number in a report, a helper's error you passed on, a deadline you let slip without telling him: each
+one is that failure. Find it before he does. Every check below exists so that he never has to.
 A lead pushes hardest at what it is measured on, every turn. So you are measured every check-in, every night, and whenever Matt chooses:
 1. **The entrance exam** (reference/roles/LEAD-EXAM.md): twelve questions answered from the files with evidence, and graded by a cold
    Critic. Pass is 10 of 12, and you give no member new work until you pass. Matt gets the score.
