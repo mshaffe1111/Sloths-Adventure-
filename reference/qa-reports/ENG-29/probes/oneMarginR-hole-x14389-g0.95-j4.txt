@@ -1,0 +1,30 @@
+normal: bar 2.850 s; lock 0.92; 2 locked liana(s); vineShift 0.0000; model one=true,true
+  liana x7903 grip 0.7: ONE lands true; early 5 f = 0.17 s, late 5 f = 0.17 s; window 0.37 s
+    -1.5s ########### +1.5s
+  liana x7903 grip 0.95: ONE lands true; early 5 f = 0.17 s, late 5 f = 0.17 s; window 0.37 s
+    -1.5s ########### +1.5s
+  liana x14389 grip 0.7: ONE lands true; early 5 f = 0.17 s, late 5 f = 0.17 s; window 0.37 s
+    -1.5s ########### +1.5s
+TRACE press t 364.967 x 14365.7 y 743.8 swing false
+TRACE 0 365.000 x 14382.4 y 727.1 face 1 vx 503 vy -502   logs 14125,14324,14524,14723
+TRACE 1 365.033 x 14398.6 y 712.4 face 1 vx 485 vy -438   logs 14129,14329,14528,14728
+TRACE 2 365.067 x 14414.2 y 699.9 face 1 vx 468 vy -375   logs 14134,14333,14533,14732
+TRACE 3 365.100 x 14429.2 y 689.5 face 1 vx 451 vy -312   logs 14139,14338,14538,14737
+TRACE 4 365.133 x 14443.7 y 681.3 face 1 vx 433 vy -248   logs 14143,14343,14542,14742
+TRACE 5 365.167 x 14457.6 y 675.1 face 1 vx 416 vy -185   logs 14148,14347,14547,14746
+TRACE 6 365.200 x 14470.8 y 671.0 face 1 vx 399 vy -122   logs 14153,14352,14552,14751
+TRACE 7 365.233 x 14483.6 y 669.1 face 1 vx 381 vy -58   logs 14157,14357,14556,14756
+TRACE 8 365.267 x 14495.7 y 669.2 face 1 vx 364 vy 5   logs 14162,14361,14561,14760
+TRACE 9 365.300 x 14507.2 y 672.2 face 1 vx 347 vy 88   logs 14167,14366,14566,14765
+TRACE 10 365.333 x 14518.2 y 677.9 face 1 vx 329 vy 172   logs 14171,14371,14570,14770
+TRACE 11 365.367 x 14528.6 y 686.4 face 1 vx 312 vy 255   logs 14176,14375,14575,14774
+TRACE 12 365.400 x 14538.4 y 697.7 face 1 vx 295 vy 338   logs 14181,14380,14580,14779
+TRACE 13 365.433 x 14547.7 y 711.7 face 1 vx 277 vy 422   logs 14185,14385,14584,14784
+TRACE 14 365.467 x 14557.2 y 728.5 face 1 vx 285 vy 505   logs 14190,14389,14589,14788
+TRACE 15 365.500 x 14566.1 y 748.2 face 1 vx 268 vy 588   logs 14195,14394,14594,14793
+TRACE 16 365.533 x 14575.6 y 770.5 face 1 vx 285 vy 672   logs 14199,14399,14598,14798
+TRACE 17 365.567 x 14584.5 y 795.7 face 1 vx 268 vy 755   logs 14204,14403,14603,14802
+TRACE 18 365.600 x 14594.0 y 823.6 face 1 vx 285 vy 838   logs 14209,14408,14608,14807
+  liana x14389 grip 0.95: ONE lands true; early 5 f = 0.17 s, late 3 f = 0.10 s; window 0.30 s
+    -1.5s #########.# +1.5s
+    misses near ONE: 4:0:water

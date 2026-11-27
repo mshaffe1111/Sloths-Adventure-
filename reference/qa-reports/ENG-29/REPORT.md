@@ -13,6 +13,11 @@ matched by the end of box 4). The lead's answer on WHICH INPUT the gate judges (
    the '#.#.#.#' run round ONE on some bars with the jump released on the vine, oneMarginR-flick-0.92.txt). Chase one: trace it
    (probes/oneMarginR.ts TRACE=14389 GRIP=0.95 TJ=4 HOLDVINE=1 RIGHT=1 FLICK=1) against probes/fly29.ts (OWN=1 GRIP=0.95) frame by frame;
    a 1-frame hole is either an engine catch quirk the model should carry (then the model reads it) or a harness carry-over.
+   STARTED (probes/oneMarginR-hole-x14389-g0.95-j4.txt): the press at j +4 leaps on its own frame (no hold); he falls through the log
+   top (832) at about x 14603 between the log ending about 14564 and the next starting about 14608-14611 (this river's pitch is about
+   200 px), and dies in water at frame 19. The model's catch (centre within 13.2 px of the log) takes it: an EDGE of a few px. Next: read
+   the engine's drift catch at that frame (engine.ts:2902-2912: which log x it reads, before or after the drift loop at :1957 moves it this
+   frame, and its prevFeet/catchDrop test) against fallOnLog's driftX at the crossing time; put the engine's order into the model.
 2. Then re-read the engine on the model's input at 0.88 / 0.90 / 0.92, Normal and Easy, seeds 1-2 (LOCK29 env in the scratch tree:
    t-build-29 + wip + barge29 look 'barge' + `lock: Number(process.env.LOCK29 ?? 0.92)`; node_modules symlinked), and the model's
    (probes/model29.ts); never looser = the model's early/late <= the engine's at every lock and setting; say both and the bar to the
