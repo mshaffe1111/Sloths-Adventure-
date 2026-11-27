@@ -9,10 +9,11 @@ ALL 6 CAUGHT (plants-d653d3994.txt); sporeBots + dark + darkBots 58/58 GREEN (da
 generalitycheck PASS (26 literals, 26 known).
 castBots 3-1 (seeds 1-20, both, par 2; cast-3-1-seeds1-20-d653d399.jsonl): 180/180 rows IDENTICAL to c20's cast-3-1-x40-b8352246-lane1
 (every field; 0 moved, 0 missing): 3-1 unmoved, as expected (no stage lays spore yet). Seeds 21-40 (c20's lane2) NOT run (budget; named).
-RUNNING on the same frozen d653d3994 at hand-over (box 3 finishes and reports them; same candidate, D138): the
-CI tool line (gates.yml:157); the suite in 6 shards (KID_RUNS_59 the only inherited red allowed, named); tierBots 9/9; lockall: base
-`--layouts 16 --out` on frozen a8bc662e5, then `--check` on d653d3994, ALL stages in one run (no --stages chunks: R-165.515), count the
-stages and builds (expect 102 / 3264), expect 0 moves (1-4's move is already in a8bc662e5's own lock).
+GATES ON d653d3994, ALL GREEN (box 3 finished them past its box on the same frozen candidate, D138; gates-d653d3994.txt): CI tool line
+355 tests 354 pass 0 fail 1 todo (chase bots, OPEN); suite shard 1 814/814 0 fail; 2 733/733 0 fail; 3 604 603 pass 0 fail 1 todo (4-3
+wall check); 4 676 675 pass 0 fail 1 todo (boulder wall check); 5 664/664 0 fail; 6 649 648 pass 0 fail 1 todo (R-165.312); KID_RUNS_59
+GREEN this run (shard 3 ok 155; no inherited red). tierBots 9/9. lockall --layouts 16 --check vs a fresh lock of frozen a8bc662e5 in one
+run, no chunks: 3264 builds of 102 stages (4-D, 5-M in), 102/102 UNCHANGED, exit 0, no intended moves needed (lock-check-d653d3994.txt).
 NEXT (the next box, if box 3 has not): ReadNotifications; read box 3's gate results in this file; if all green and ENG-ASKS's hash is on
 t-eng-w3 (`git ls-remote origin t-eng-w3` = 11e2af1a0 or a descendant of it that d653d3994's head contains), LAND: `git push origin
 t-eng-spore-wip:t-eng-w3` as a fast-forward ONLY (no force; if t-eng-w3 is not an ancestor of the head, stop and tell the lead), ls-remote

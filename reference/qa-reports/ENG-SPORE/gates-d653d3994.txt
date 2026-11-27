@@ -1,6 +1,8 @@
 ciline: # tests 355 # pass 354 # fail 0 # todo 1 
 shard1: # tests 814 # pass 814 # fail 0 # todo 0 
 shard2: # tests 733 # pass 733 # fail 0 # todo 0 
+shard3: # tests 604 # pass 603 # fail 0 # todo 1 
 shard4: # tests 676 # pass 675 # fail 0 # todo 1 
 shard5: # tests 664 # pass 664 # fail 0 # todo 0 
 shard6: # tests 649 # pass 648 # fail 0 # todo 1 
+tierbots: # tests 9 # pass 9 # fail 0 # todo 0 
