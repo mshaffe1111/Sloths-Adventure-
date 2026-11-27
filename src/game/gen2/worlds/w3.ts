@@ -164,8 +164,11 @@ export const w3ProwlFloor: SectionTemplate = {
   exitDy: 0,
   sockets: [
     { id: 'petals', role: 'pickup', on: 'in', t: [0.3, 0.5], dn: 34, count: 2, span: 90, allow: ['pickups'] },
-    ocelotAt('ocelot', 'floor', [0.55, 0.65]),
-    { id: 'petal', role: 'pickup', on: 'out', t: 0.5, dn: 34 },
+    ocelotAt('ocelot', 'floor', [0.4, 0.5]),
+    { id: 'petal', role: 'pickup', on: 'out', t: 0.35, dn: 34 },
+    // (a flag that falls in the brick stands on its exit bank, never on a floor: a safe spot within SAFE_APPROACH, levelCheck.ts,
+    //  takes an ocelot's patch away, pipeline.ts patchFor)
+    { id: 'flag', role: 'flag', on: 'out', t: 0.7 },
   ],
   mirrorable: false,
 };
@@ -192,9 +195,12 @@ export const w3ProwlPair: SectionTemplate = {
   exitDy: 0,
   sockets: [
     { id: 'petals', role: 'pickup', on: 'in', t: [0.3, 0.5], dn: 34, count: 2, span: 90, allow: ['pickups'] },
-    ocelotAt('ocelot1', 'low', [0.55, 0.65]),
-    ocelotAt('ocelot2', 'high', [0.5, 0.6]),
-    { id: 'petal', role: 'pickup', on: 'out', t: 0.5, dn: 34 },
+    ocelotAt('ocelot1', 'low', [0.4, 0.5]),
+    ocelotAt('ocelot2', 'high', [0.3, 0.4]),
+    { id: 'petal', role: 'pickup', on: 'out', t: 0.35, dn: 34 },
+    // (a flag that falls in the brick stands on its exit bank, never on a floor: a safe spot within SAFE_APPROACH, levelCheck.ts,
+    //  takes an ocelot's patch away, pipeline.ts patchFor)
+    { id: 'flag', role: 'flag', on: 'out', t: 0.7 },
   ],
   mirrorable: false,
 };
