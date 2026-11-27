@@ -9,7 +9,7 @@ a. THE SET BY NAME (confirmed): box 11's 33 moved = 2-8 + INT-R5c's run1.sh --in
    - 30 proto.hints-only: WARN-412's 22 UNION TEACH-11's 18 = 30 exactly = box 11's 30 (none missing, none extra; 8-5 is TEACH-11's).
    - 2-8: this build.
 b. THE LOCK RE-RUN, base c73cb9766 (/home/user/base-c73, node_modules symlinked): run 1 `lockall.ts --layouts 16 --out <scratch>/base.json`
-   STARTED alone (<scratch>/lockbase.log). Run 2 `--check base.json` on cb7b9af11 (/home/user/cand-cb7) after its counts line. If the
+   alone: COUNTS LINE 'lock: wrote 3264 builds of 102 stages' (exit 0; 13 minutes alone). Run 2 `--check base.json` on cb7b9af11 (/home/user/cand-cb7): STARTED alone (<scratch>/lockcheck.log). If the
    container is fresh: both worktrees and base.json are gone; re-make them and re-run run 1.
 NEXT: the counts line of run 2 (expect only 2-8 + ENG-W2FALL verdict-only lines; any OTHER stage: STOP, to the lead); then the rest of the
 ONE gate run on cb7b9af11 (box 11's list c-e below).
