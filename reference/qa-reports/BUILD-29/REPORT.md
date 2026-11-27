@@ -1,11 +1,11 @@
 # BUILD-29 REPORT: 2-9 "The River King's Court" (the World 2 finale; R-165.449), release 6
 Branch t-build-29, cut from origin/t-eng-29 = 098047713 (the lead's named base). Session 1 started 5:45 PM ET Thu 11/26 (by `date`).
 
-## EXACT NEXT STEP (session 13, BUILD-29-m, hand-over 6:31 PM ET Fri 11/27 by `date`; head = this commit, on branch t-build-29-m, NOT on t-build-29)
+## EXACT NEXT STEP (session 13, BUILD-29-m, hand-over 6:33 PM ET Fri 11/27 by `date`; head = this commit, on branch t-build-29-m, NOT on t-build-29)
 BOX CLOCK (by `date`): start 6:21:42 PM ET; stops (each with its cause): 6:26 the roar line did not show on the real page from a teleport
 (Pokey placed at the tip's x, 20 s wait: the line never rose; the scan passes, the page still is NOT proven); 6:27-6:29 the frog found by
 eye on a full still after the probe's world-to-screen sum missed (the dress `b` is not screen y less camera y: crop by eye, not by sum);
-hand-over at the time above (inside the 28-minute box).
+6:32-6:34 the roar line walked in twice, not raised (below); hand-over at the time above (inside the 28-minute box).
 WHERE IT IS: origin/t-build-29 is STILL f4e77273 on purpose (ENG-LATE is not landed until the one gate run passes); this box's head is
 pushed to **t-build-29-m** (safe-keeping). The next box: `git fetch origin t-build-29-m && git checkout -B t-build-29 origin/t-build-29-m`.
 DONE (steps 1-3, 5 in part, 4 in part):
@@ -32,7 +32,10 @@ DONE (steps 1-3, 5 in part, 4 in part):
    - THE WAYSIDE LINE (stills-m/wayside-normal-upright.jpg): Normal upright, "I bet Meeca admired the whole river out loud." whole in
      Pokey's box, top of screen, two lines, nothing cut. Shown on all four (Normal/Easy x upright/sideways: the DOM text found each time);
      only Normal upright judged by eye.
-   - THE ROAR LINE: NOT shown on the real page (above). NOT judged.
+   - THE ROAR LINE: NOT shown on the real page. NOT judged. Tried three ways (stills-m/roar.mjs): a teleport to the tip's x; the
+     keyboard (no effect: touch only); his x stepped 7 px a frame from 420 px before the tip to 80 px past it, the engine running
+     (6:33 PM): no Dot box (the bank, flag and river read; no line). The engine-level proof is storyTipScan (PASS, above). Next box:
+     use tipwalk's way (a gate on the list, it walks Dot's tips) or read how a tip fires (engine.ts / DotGuide.tsx queue) before shooting.
    - The journal line (fix (1), pokeyJournal.ts:69): NOT shot.
 LEFT (the next box, in order):
 a. ReadNotifications. Check out t-build-29-m (above). `git ls-remote` t-build-29 f4e77273, t-eng-late 6ce4aa9b, main 49fdc8cb6.
