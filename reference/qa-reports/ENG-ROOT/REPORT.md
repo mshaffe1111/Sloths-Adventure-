@@ -73,4 +73,4 @@ KIND `root` (gen2/types.ts): `{ kind: 'root', on: <the floor piece>, at, len, up
 length (the root is clamped to it). Patches only inside the node's `#dark` stretch (else the roll fails by name). T: no patches, a soft
 dip under (3-2.md beat 1); W: the root IS the hiding place (no cover brick), ends over the ocelot's stretch; S: the longest root, patches.
 
-## Gates: NOT YET RUN (box 4's step 3; box 3 ran tsc 0 and the root tests only). Pushback: 'lit = seen' was missing (sent; accepted). Lessons applied: D134, D138, D140, D148, D40.
+## Gates (box 4, frozen a619ea16a): tsc 0, generality PASS; the rest: the next step above. Pushback: 'lit = seen' was missing (sent; accepted). Lessons applied: D134, D138, D140, D148, D40.
