@@ -1,20 +1,12 @@
 # ENG-TIPLEFT REPORT (the left-leg socket tip; 2-8's engine gap; rule 26). Session 1, started 9:39 PM ET (from the session hook date)
 
-## EXACT NEXT STEP (box 1; candidate 0057bd6f5 on t-eng-tipleft, base a0d85e961)
-Gates are RUNNING on frozen worktrees (chattr +i on src and tools, src/game/gen2/proven writable, D115):
-- base lock: /tmp/claude-0/wt-base (a0d85e961) `npx tsx tools/engine/lockall.ts --layouts 16 --out /tmp/claude-0/s/lock-base.json`
-- the suite, 6 shards, on /tmp/claude-0/wt-cand (0057bd6f5): logs /tmp/claude-0/s/shard1..6.log
-- the CI tool line (gates.yml 'rolled': tools tests, tipwalk --layouts 4, storyTipScan --check, teachFirstScan --check --seeds 20,
-  registrycheck, tierBots) on /tmp/claude-0/wt-cand: /tmp/claude-0/s/toolline.log
-NEXT, in order: (1) when the base lock is written, on wt-cand:
-`npx tsx tools/engine/lockall.ts --layouts 16 --check /tmp/claude-0/s/lock-base.json` ONE run; name every move (expected: only 2-8
-builds with a socket tip on a home leg, part proto.hints; 2-8 is not a listed stage yet if it is absent from the count).
-(2) every red shard test: run that file alone on wt-base; red there too = inherited (name it), red only on the candidate = mine (fix).
-(3) send the hash, each shard's totals, the tool line and the lock verdict to the lead (session_01FhBbYN2CVHnFXg7XzqKXpM). BUILD-28-e
-(session_01FhBbYL1nsSeWoAHrXUFj15) was INACTIVE when messaged: the lead names BUILD-28's next session.
-If these temp paths are gone (a new container): rebuild both worktrees from the two hashes above and re-run (1)-(2).
+## EXACT NEXT STEP (LANDED: 8a2045547 on t-eng-tipleft, base a0d85e961)
+BUILD-28's next session: `git merge origin/t-eng-tipleft` into t-build-28-wip (fast-forward base, no conflicts expected), tsc, then
+libstage --stage 2-8 --seeds 40 on a frozen tree. Seed 2's fork line is fixed (said at its socket walking left). Seed 3's is 2-8's
+DEAL (fork-rest dealt to the outbound rest n6): pin fork-rest to the R before F, in data. Also data, inherited and identical on base:
+storyTipScan's two 2-8 lines (fork, rise) dropped on Tips.
 
-## GATES on 0057bd6f5 (frozen worktree; base a0d85e961 frozen beside it)
+## GATES (frozen worktrees; base a0d85e961 frozen beside them). Full run on 0057bd6f5; the final 8a2045547 re-checked where it differs
 - tsc 0. generalitycheck PASS (26 literals, 26 known).
 - LOCK, one run, lockall --layouts 16 over ALL 102 stages (3,264 builds) against the base's own lock: 100/102 unchanged. Moves, every one:
   - 1-4, part proto.hints ONLY, all 32 builds (layouts unchanged): its two left-running storeys' tips now carry beforeX. Layout 1
@@ -28,7 +20,15 @@ If these temp paths are gone (a new container): rebuild both worktrees from the 
   tipwalk --layouts 4 PASS; teachFirstScan --check --seeds 20 PASS (0 misses, 600 rolls); tierBots 9/9 PASS.
   INHERITED reds (2-8 mid-build): registrycheck (2-8 not in drawcheck scenarios, no seed list, not flown); storyTipScan --check
   FAIL on 2-8's fork and rise lines dropped on Tips: IDENTICAL on the base (BUILD-28's data: storyTips/teachTips for those two lines).
-- SUITE, 6 shards: see the landing message (shard 2's one red, artUse.test "cage-whole"/"cage-b" unused art, is identical on base).
+- SUITE on 0057bd6f5, 6 shards (tests / pass / fail / todo): 1: 674/673/1/0; 2: 657/656/1/0; 3: 742/741/1/0; 4: 754/754/0/0;
+  5: 705/701/2/2; 6: 684/682/1/1.
+  MINE, fixed in 8a2045547: shard 1 tipBand.test "every rolled tip carries its section band": 1-8's "w18.nut" is laid as a WARNING
+  and tipHintOf skipped warnings. Now it matches by x first (the old matcher exactly), then by beforeX. On 8a2045547: tipBand.test +
+  tipLeft.test 10/10 PASS; lockall --stages 1-4,1-8,2-8 (96 builds): identical to 0057bd6f5's (1-8 unmoved vs base; 1-4 hints only;
+  2-8 the 16 builds above).
+  INHERITED, each red on the frozen base too: shard 2 artUse.test (cage-whole, cage-b unused art); shard 3 stageSheets.test (a sheet
+  not in its preload list); shard 5 firstTimerBot.test 5-9's Easy goal (KID_RUNS_59, the release line's) and groundwork.test (a
+  World 1-4 count outside Matt's band); shard 6 puzzleCamera.test (Worlds 1-2 puzzle rooms). The todos are the files' own TODOs.
 
 ## Done-items
 1. (a) THE PIECE: pipeline.ts socket tips: a tip on a section he walks leftward (its exit left of its entry: a leg laid left) gets
