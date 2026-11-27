@@ -16,7 +16,7 @@ import { applyVerdicts, buildGen2Stage, HARD_JOBS, keptFoes, layLocal, layStage,
 import { packPlan, stageParts, unpackPlan } from './seedList.ts';
 import { cfg as runCfg, kit as runKit } from './toyWorld.ts';
 import { ARC_CODE, arcKit, gateKit, hopsUp, towerCfg, upKit, upManifest } from './toyTower.ts';
-import { fallSeconds, flagFurther, gapCatchY, LEAP, leaps, localExtent, HANG, offEnd, openEnds, walledEnd, reflectLocal, routeAt, routeOf, storeyLimit, TOWER, towerCatches, towerFalls, towerFlagBreaches, stopVines, towerHandOns, towerVineCuts, towerFlags, towerGates, towerSkips, towerVaults, vertical, towerLids, ROOF } from './tower.ts';
+import { fallSeconds, flagFurther, gapCatchY, LEAP, leaps, localExtent, HANG, offEnd, openEnds, walledEnd, reflectLocal, routeAt, routeOf, storeyLimit, TOWER, towerCatches, towerFalls, towerFlagBreaches, stopVines, towerHandOns, towerVineCuts, towerFlags, towerGates, towerSkips, towerVaults, vertical, towerLids, ROOF, overlapRefused } from './tower.ts';
 import { climbX, CLIMB_CLEAR, VAULT_GAP } from '../vineTop.ts';
 import type { Gen2Stage } from './types.ts';
 
@@ -882,6 +882,29 @@ test("going down, no two catches overlap at one height: a later, wider catch tak
   const all = [...base, ...cs.map((c, k) => solid(c.x, c.y, c.w, 100 + k))];
   assert.ok(cs.some((c) => c.x <= 626 && c.x + c.w >= 626 && c.y > 1000 && c.y <= 1000 + TOWER.see), `the shelf's end is still caught under its fall line: ${JSON.stringify(cs)}`);
   assert.deepEqual(towerFalls('down', all, FLOOR, W), [], 'no blind drop is left');
+});
+
+test("going down, a catch that only partly overlaps wood at its height is trimmed to the open span under its fall line, or REFUSED by name when too little is left (ENG-CATCH-g)", () => {
+  const W = 1280, FLOOR = 1481;
+  const over = (base: Platform[], cs: ReadonlyArray<{ x: number; y: number; w: number }>) => {
+    const wood = [...base.map((p) => ({ x: p.x, y: p.y, w: p.width })), ...cs];
+    return cs.flatMap((c) => wood.filter((q) => q !== c && Math.abs(q.y - c.y) <= 1 && q.x < c.x + c.w && q.x + q.w > c.x).map((q) => `${c.x}-${c.x + c.w} over ${q.x}-${q.x + q.w}`));
+  };
+  // (a shelf x 524-924, y 1000, its left end's fall line at x 500; under it, at y 1200, two pieces with a gap under that line)
+  assert.equal(offEnd(524, -1, W, HANG.fall), 500, "the plant: the shelf's left end falls at x 500");
+  // a gap of 50 px, under MEND.trim: every bough over it at its height is refused, by name, and the end is caught lower down
+  const narrow = [solid(524, 1000, 400, 1), solid(200, 1200, 275, 2), solid(525, 1200, 300, 3), solid(0, FLOOR, W, 4)];
+  const cn = towerCatches('down', narrow, [], FLOOR, W);
+  assert.deepEqual(over(narrow, cn), [], `no catch lies over other wood at its height: ${JSON.stringify(cn)}`);
+  assert.ok(overlapRefused.length > 0 && overlapRefused.every((w) => /^overlap: .* lies over .* no open span of 60 px is left under its fall line x 500$/.test(w)), `the bough over the 50 px gap is refused by name: ${JSON.stringify(overlapRefused)}`);
+  assert.ok(cn.some((c) => c.x <= 500 && c.x + c.w >= 500 && c.y > 1200), `the end is caught under its fall line, lower down: ${JSON.stringify(cn)}`);
+  assert.deepEqual(towerFalls('down', [...narrow, ...cn.map((c, k) => solid(c.x, c.y, c.w, 100 + k))], FLOOR, W), [], 'no blind drop is left');
+  // a gap of 60 px: the bough is trimmed to it, joined to the wood either side, none refused
+  const fits = [solid(524, 1000, 400, 1), solid(200, 1200, 270, 2), solid(530, 1200, 300, 3), solid(0, FLOOR, W, 4)];
+  const cf = towerCatches('down', fits, [], FLOOR, W);
+  assert.deepEqual(over(fits, cf), [], `no catch lies over other wood at its height: ${JSON.stringify(cf)}`);
+  assert.ok(cf.some((c) => c.x === 470 && c.w === 60 && c.y === 1200), `the bough is trimmed to the open span 470-530: ${JSON.stringify(cf)}`);
+  assert.deepEqual(overlapRefused, [], 'none refused');
 });
 
 test("going down, a bridge started a hop past a vine's top that reaches the end's fall line is laid as before (a clean lay is never touched, ENG-CATCH-b)", () => {
