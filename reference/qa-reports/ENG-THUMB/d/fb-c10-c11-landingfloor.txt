@@ -1,0 +1,75 @@
+== C10 2-1-child-normal-20
+FB t 37.433 x 4239.0 y 682 dir 1 id 13 type solid w 300 hx 3931.0 drift - pull false pp false
+FB t 81.233 x 8627.0 y 839 dir 1 id 41 type drift w 170 hx 8444.3 drift 1 pull true pp false
+FB t 190.567 x 16345.2 y 808 dir 1 id 70 type solid w 260 hx 16075.0 drift - pull false pp false
+FB t 261.300 x 23854.0 y 839 dir 1 id 104 type solid w 360 hx 23860.0 drift - pull false pp false
+FB t 286.767 x 26032.0 y 839 dir 1 id 108 type solid w 360 hx 26038.0 drift - pull false pp false
+FB t 286.800 x 26037.7 y 839 dir 1 id 108 type solid w 360 hx 26038.0 drift - pull false pp false
+FB t 311.433 x 27952.0 y 869 dir 1 id 122 type solid w 320 hx 27958.0 drift - pull false pp false
+FB t 318.000 x 28872.0 y 817 dir 1 id 126 type solid w 260 hx 28878.0 drift - pull false pp false
+== C10 2-1-kid-normal-29
+FB t 13.633 x 2936.0 y 642 dir 1 id 8 type solid w 300 hx 2630.0 drift - pull false pp false
+FB t 15.767 x 3376.0 y 748 dir 1 id 10 type solid w 220 hx 3150.0 drift - pull false pp false
+FB t 20.400 x 4215.7 y 679 dir 1 id 13 type solid w 300 hx 3915.0 drift - pull false pp false
+FB t 20.433 x 4224.6 y 679 dir 1 id 13 type solid w 300 hx 3915.0 drift - pull false pp false
+FB t 25.667 x 5650.0 y 783 dir 1 id 18 type solid w 116 hx 5663.0 drift - pull false pp false
+FB t 25.700 x 5658.9 y 783 dir 1 id 18 type solid w 116 hx 5663.0 drift - pull false pp false
+FB t 27.800 x 5955.3 y 783 dir 1 id 20 type solid w 117 hx 5963.0 drift - pull false pp false
+FB t 55.867 x 10538.6 y 781 dir 1 id 45 type solid w 300 hx 10238.0 drift - pull false pp false
+FB t 95.933 x 18493.8 y 752 dir 1 id 81 type solid w 480 hx 18499.0 drift - pull false pp false
+FB t 110.900 x 19456.6 y 780 dir 1 id 88 type drift w 150 hx 19306.0 drift -1 pull false pp true
+== C10 2-5-child-normal-34
+FB t 34.433 x 2754.0 y 580 dir 1 id 10 type solid w 340 hx 2760.0 drift - pull false pp false
+FB t 108.800 x 8647.4 y 608 dir 1 id 42 type drift w 170 hx 8466.0 drift 1 pull true pp false
+FB t 145.600 x 10558.6 y 580 dir 1 id 39 type solid w 300 hx 10250.0 drift - pull false pp false
+FB t 217.967 x 17196.0 y 589 dir 1 id 80 type solid w 240 hx 16950.0 drift - pull false pp false
+== C10 2-1-middle-normal-17
+FB t 17.667 x 3475.0 y 801 dir 1 id 10 type solid w 220 hx 3249.0 drift - pull false pp false
+FB t 39.700 x 7190.0 y 789 dir 1 id 35 type solid w 260 hx 7203.0 drift - pull false pp false
+FB t 39.733 x 7199.5 y 789 dir 1 id 35 type solid w 260 hx 7203.0 drift - pull false pp false
+FB t 56.567 x 10226.0 y 876 dir 1 id 47 type solid w 320 hx 10232.0 drift - pull false pp false
+FB t 98.767 x 17412.0 y 874 dir 1 id 77 type solid w 340 hx 17418.0 drift - pull false pp false
+FB t 98.800 x 17417.7 y 874 dir 1 id 77 type solid w 340 hx 17418.0 drift - pull false pp false
+FB t 111.300 x 19641.5 y 854 dir 1 id 90 type drift w 150 hx 19486.0 drift -1 pull false pp false
+FB t 169.633 x 29013.5 y 829 dir 1 id 128 type solid w 260 hx 29017.0 drift - pull false pp false
+== C10 2-1-middle-easy-9
+FB t 31.200 x 6811.2 y 665 dir 1 id 33 type solid w 162 hx 6814.0 drift - pull false pp false
+FB t 91.100 x 16501.6 y 722 dir 1 id 70 type solid w 260 hx 16241.0 drift - pull false pp false
+FB t 91.133 x 16510.5 y 722 dir 1 id 70 type solid w 260 hx 16241.0 drift - pull false pp false
+FB t 92.833 x 16837.8 y 723 dir 1 id 73 type solid w 260 hx 16841.0 drift - pull false pp false
+FB t 120.533 x 21563.2 y 652 dir 1 id 92 type solid w 165 hx 21578.0 drift - pull false pp false
+FB t 127.333 x 22955.2 y 481 dir 1 id 99 type solid w 163 hx 22970.0 drift - pull false pp false
+FB t 127.367 x 22964.1 y 481 dir 1 id 99 type solid w 163 hx 22970.0 drift - pull false pp false
+FB t 127.400 x 22969.2 y 481 dir 1 id 99 type solid w 163 hx 22970.0 drift - pull false pp false
+FB t 132.300 x 23818.0 y 686 dir 1 id 101 type solid w 300 hx 23512.0 drift - pull false pp false
+FB t 132.333 x 23827.5 y 686 dir 1 id 101 type solid w 300 hx 23512.0 drift - pull false pp false
+FB t 165.833 x 29375.5 y 762 dir 1 id 126 type solid w 260 hx 29376.0 drift - pull false pp false
+FB t 169.567 x 30148.0 y 768 dir 1 id 130 type solid w 163 hx 30154.0 drift - pull false pp false
+== p10 2-1 child easy 3
+FB t 67.867 x 8683.6 dir 1 id 43 type drift w 200 hx 8480.7 drift 1 pull true pp false
+FB t 84.700 x 10643.0 dir 1 id 47 type solid w 161 hx 10649.0 drift - pull false pp false
+FB t 106.433 x 12697.3 dir 1 id 54 type solid w 260 hx 12435.0 drift - pull false pp false
+FB t 106.467 x 12706.8 dir 1 id 54 type solid w 260 hx 12435.0 drift - pull false pp false
+FB t 184.000 x 21490.9 dir 1 id 88 type solid w 260 hx 21230.0 drift - pull false pp false
+FB t 192.833 x 22890.6 dir 1 id 96 type solid w 166 hx 22895.0 drift - pull false pp false
+FB t 200.133 x 23744.0 dir 1 id 98 type solid w 300 hx 23438.0 drift - pull false pp false
+FB t 200.167 x 23752.9 dir 1 id 98 type solid w 300 hx 23438.0 drift - pull false pp false
+FB t 206.333 x 24850.7 dir 1 id 110 type drift w 180 hx 24664.7 drift 1 pull true pp false
+FB t 206.367 x 24858.5 dir 1 id 110 type drift w 180 hx 24667.3 drift 1 pull true pp false
+FB t 206.400 x 24862.5 dir 1 id 110 type drift w 180 hx 24670.0 drift 1 pull true pp false
+FB t 206.433 x 24865.2 dir 1 id 110 type drift w 180 hx 24672.7 drift 1 pull true pp false
+FB t 249.633 x 28965.9 dir 1 id 120 type solid w 260 hx 28702.0 drift - pull false pp false
+FB t 249.667 x 28974.8 dir 1 id 120 type solid w 260 hx 28702.0 drift - pull false pp false
+== p11 2-1 child easy 3
+FB t 67.867 x 8683.6 dir 1 id 43 type drift w 200 hx 8480.7 drift 1 pull true used false pp false
+FB t 67.900 x 8689.5 dir 1 id 43 type drift w 200 hx 8483.0 drift 1 pull true used false pp false
+FB t 67.933 x 8690.1 dir 1 id 43 type drift w 200 hx 8485.3 drift 1 pull true used false pp false
+FB t 67.967 x 8687.8 dir 1 id 43 type drift w 200 hx 8487.7 drift 1 pull true used false pp false
+FB t 86.267 x 10230.7 dir 1 id 45 type solid w 320 hx 10235.0 drift - pull false used false pp false
+FB t 104.300 x 12701.9 dir 1 id 54 type solid w 260 hx 12435.0 drift - pull false used true pp false
+FB t 108.233 x 13029.0 dir 1 id 57 type solid w 260 hx 13035.0 drift - pull false used false pp false
+FB t 139.667 x 16637.2 dir 1 id 71 type solid w 166 hx 16652.0 drift - pull false used false pp false
+FB t 139.700 x 16646.1 dir 1 id 71 type solid w 166 hx 16652.0 drift - pull false used false pp false
+FB t 139.733 x 16651.2 dir 1 id 71 type solid w 166 hx 16652.0 drift - pull false used false pp false
+FB t 203.033 x 21497.2 dir 1 id 88 type solid w 260 hx 21230.0 drift - pull false used true pp false
+FB t 258.567 x 28969.2 dir 1 id 120 type solid w 260 hx 28702.0 drift - pull false used true pp false

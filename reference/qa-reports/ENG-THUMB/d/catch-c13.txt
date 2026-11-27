@@ -1,0 +1,17 @@
+# 268 lianaRide catch toy (twin, seed 2, long, middle, vineFromLog on), fromLog per variant 1-5 (p268.mts)
+c11 easy: 1,1,1,1,0
+c12 easy: 1,0,1,1,0
+c13 easy: 1,1,1,1,0  normal: 1,1,1,1,1
+## v2 easy: frames on the log (1604-1844 at 9.10, running HIS way, dir 1) with no floor by his middle
+### C11 (edge plan stands, presses at 9.40: caught)
+  t 9.23 x 1865 log 1615-1855 dir 1 out {} edge 1 late - standing 1
+  t 9.27 x 1868 log 1617-1857 dir 1 out {} edge 1 late - standing 1
+  t 9.30 x 1870 log 1620-1860 dir 1 out {} edge 1 late - standing 1
+  t 9.33 x 1870 log 1623-1863 dir 1 out {} edge 1 late - standing 1
+  t 9.37 x 1873 log 1625-1865 dir 1 out {} edge 1 late - standing 1
+  t 9.40 x 1875 log 1628-1868 dir 1 out {"right":true,"press":true,"jump":true} edge 0 late - standing 0
+### C12 (the ride wait: 221 such frames, never presses)
+  t 9.23 x 1865 log 1615-1855 dir 1 out {} edge 1 late - standing 0
+  t 9.27 x 1868 log 1617-1857 dir 1 out {} edge 1 late - standing 0
+  t 9.30 x 1870 log 1620-1860 dir 1 out {} edge 1 late - standing 0
+c14 1457e1daf easy: 1,1,1,1,0  normal: 1,1,1,1,1; hopJudged toys 1-5: 5/5 ok

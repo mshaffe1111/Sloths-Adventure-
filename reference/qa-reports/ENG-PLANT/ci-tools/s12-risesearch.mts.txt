@@ -1,0 +1,20 @@
+// risesearch: R-165.432's search for the waitRise plant on a tree: the rise fixture (padRide's), every tier and setting, variants a-b,
+// waitRise on and off; a live case = crossed on, not crossed off. usage: tsx risesearch.mts <tree> <a-b>
+const [T, vS] = process.argv.slice(2);
+await import(T + '/src/game/headlessDom.ts');
+const ft: any = await import(T + '/tools/inspect/firsttimer.ts');
+const pt: any = await import(T + '/tools/inspect/padToys.ts');
+const [a, b] = vS.split('-').map(Number);
+const seed = pt.fixtureSeed('rise');
+for (const tier of ['middle', 'child', 'expert']) for (const setting of ['normal', 'easy']) {
+  const live: string[] = []; let n = 0, err = '';
+  for (let v = a; v <= b; v++) {
+    let on: any, off: any;
+    try { on = pt.padRun('rise', tier, setting, seed, v); } catch (e) { err = String(e).slice(0, 80); break; }
+    ft.PAD_SKILL.waitRise = false;
+    try { off = pt.padRun('rise', tier, setting, seed, v); } finally { ft.PAD_SKILL.waitRise = true; }
+    n++;
+    if (pt.crossed(on, 'rise') && !pt.crossed(off, 'rise')) live.push(`v${v}: ${pt.told(off, 'rise')}`);
+  }
+  console.log(`${tier} ${setting}: ${n} variants, live ${live.length}${err ? ' ERR ' + err : ''} | ${live.join(' ; ').slice(0, 600)}`);
+}

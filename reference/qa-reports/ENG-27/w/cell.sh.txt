@@ -1,0 +1,12 @@
+#!/bin/bash
+# cell.sh <tree> <label> <gap> <pace> : the 19 rows of one grid cell (middle 7, expert 5, ride-only 7), one line each
+T=$1; L=$2; G=$3; P=$4; S=$(dirname "$0")
+cd "$T"
+for tier in middle ride; do
+  for r in "home normal 1" "home normal 2" "home normal 3" "home easy 1" "home easy 3" "post normal 4" "post normal 5"; do
+    npx tsx $S/table-27w.mts "$T" "$L" $tier $r $G $P 2>&1 | tail -1
+  done
+done
+for r in "home normal 1" "home normal 2" "home normal 3" "post normal 4" "post normal 5"; do
+  npx tsx $S/table-27w.mts "$T" "$L" expert $r $G $P 2>&1 | tail -1
+done

@@ -1,0 +1,12 @@
+// up.mts <tree> <bot>: 2-1 <bot> Normal seeds 1-40, SKILLS.upstream on and off: clean (shrine, 0 rescues) on / off, lives, rescues
+const T = process.argv[2], bot = process.argv[3];
+await import(`${T}/src/game/headlessDom.ts`);
+const { SKILLS } = await import(`${T}/tools/inspect/firsttimer.ts`);
+const { castRun } = await import(`${T}/tools/inspect/castBots.ts`);
+const s = (r: any) => `${r.end === 'shrine' && r.rescues === 0 ? 'CLEAN' : 'not'} res ${r.rescues} lives ${r.lives}`;
+for (let seed = 1; seed <= 40; seed++) {
+  SKILLS.upstream = true; const on = castRun(bot, 'normal', '2-1', seed);
+  SKILLS.upstream = false; const off = castRun(bot, 'normal', '2-1', seed);
+  SKILLS.upstream = true;
+  console.log(`${bot} seed ${seed} on ${s(on)} | off ${s(off)}`);
+}

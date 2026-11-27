@@ -1,0 +1,10 @@
+== child easy seed 17: shrine 190.6 s rescues 1
+   t 116.3 x 1190 y 4965 dur 0 [#77 solid/branch x 491-968 y 5048] fell back down from here 8 times
+== child easy seed 35: shrine 200 s rescues 1
+   t 104.1 x 1190 y 4588 dur 0 [#39 solid/branch x 234-1164 y 4684] fell back down from here 8 times
+== adult normal seed 23: shrine 124.1 s rescues 1
+   t 86.6 x 899 y 4411 dur 0 [#38 solid/branch x 312-712 y 4588; #40 solid/branch x 116-1046 y 4267; #82 solid/branch x 812-1160 y 4588; #102 solid/branch x 1160-1256 y 4588; #107 solid/branch x 1160-1280 y 4588] fell back down from here 3 times
+== child normal seed 20: shrine 274.1 s rescues 1
+   t 108.6 x 1137 y 6896 dur 17.6 [#28 solid/branch x 334-1034 y 6708; #72 solid/branch x 707-1280 y 6989; #75 solid/branch x 1034-1168 y 6708; #106 solid/branch x 1168-1256 y 6708] the way on is 301 px down
+   t 164.2 x 245 y 6079 dur 0 [#34 solid/branch x 70-570 y 5987; #77 solid/branch x 0-70 y 5987] fell back down from here 8 times
+EXIT 0

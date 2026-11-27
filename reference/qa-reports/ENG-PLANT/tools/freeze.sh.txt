@@ -1,0 +1,9 @@
+#!/bin/bash
+# usage: freeze.sh <dir> <hash>
+set -e
+cd /home/user/plant-work
+git worktree add --detach "$1" "$2" >/dev/null 2>&1
+ln -s /home/user/plant-work/node_modules "$1/node_modules"
+chattr -R +i "$1/src" "$1/tools"
+chattr -i "$1/src/game/gen2/proven"
+echo "frozen $1 at $(git -C "$1" rev-parse --short HEAD)"

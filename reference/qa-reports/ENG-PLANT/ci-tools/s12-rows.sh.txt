@@ -1,0 +1,8 @@
+#!/bin/bash
+# rows.sh <name>: the 7 kid rows on frozen tree <name>
+d=/home/user/fz/$1; o=/home/user/fz/out/$1
+cd "$d" || exit 1
+npx tsx tools/inspect/castBots.ts --stage 2-1 --bots kid --setting normal --seeds 2,7,10 --par 3 --rows $o-21n.jsonl > $o-21n.log 2>&1
+npx tsx tools/inspect/castBots.ts --stage 2-1 --bots kid --setting easy --seeds 10 --rows $o-21e.jsonl > $o-21e.log 2>&1
+npx tsx tools/inspect/castBots.ts --stage 2-2 --bots kid --setting normal --seeds 4,6,8 --par 3 --rows $o-22n.jsonl > $o-22n.log 2>&1
+echo "$1 done $(date +%T)"

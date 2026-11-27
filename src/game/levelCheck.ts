@@ -649,7 +649,13 @@ function validateStageOn(stage: GeneratedStage, opts: CheckOptions): CheckResult
    * height or higher stands against it (a wall, or the road going on)
    */
   const gen2Built = !!(stage as { gen2?: unknown }).gen2;
-  const roofedDrop = (a: Platform, b: Platform, bx0: number, bx1: number, dy: number): boolean => {
+  /** a surface's run (the pieces joined to it at its height) and whether each end of it is closed: the same for every drop off `a`, so
+   *  found once a walk (ENG-26h, load speed: a tall tower asked it of every pair, each a pass over every piece; `runs` is cleared when a
+   *  walk starts, as the ground may have changed) */
+  const runs = new Map<Platform, { rx0: number; rx1: number; shutL: boolean; shutR: boolean }>();
+  const runOf = (a: Platform) => {
+    let r = runs.get(a);
+    if (r) return r;
     let rx0 = ext(a)[0], rx1 = ext(a)[1];
     for (let grew = true; grew; ) {
       grew = false;
@@ -659,16 +665,46 @@ function validateStageOn(stage: GeneratedStage, opts: CheckOptions): CheckResult
         if (q0 <= rx1 + 4 && q1 >= rx0 - 4 && (q0 < rx0 || q1 > rx1)) { rx0 = Math.min(rx0, q0); rx1 = Math.max(rx1, q1); grew = true; }
       }
     }
-    if (bx0 < rx0 || bx1 > rx1) return false;
     const closed = (x: number) => plats.some((q) => !q.broken && q.type !== 'bouncy' && q.y <= a.y + 3 && q.y + q.height > a.y && ext(q)[0] <= x + 4 && ext(q)[1] >= x - 4 && !(ext(q)[0] >= rx0 && ext(q)[1] <= rx1));
+    r = { rx0, rx1, shutL: closed(rx0 - 1), shutR: closed(rx1 + 1) };
+    runs.set(a, r);
+    return r;
+  };
+  const roofedDrop = (a: Platform, b: Platform, bx0: number, bx1: number, dy: number): boolean => {
+    const { rx0, rx1, shutL, shutR } = runOf(a);
+    if (bx0 < rx0 || bx1 > rx1) return false;
     const back = (Math.max(reachJump(dy, false), allowDouble ? reachJump(dy, true) : -1) * MARGIN - TAKEOFF_SLACK) / 2;
-    const inL = closed(rx0 - 1) ? Infinity : bx0 - rx0, inR = closed(rx1 + 1) ? Infinity : rx1 - bx1;
+    const inL = shutL ? Infinity : bx0 - rx0, inR = shutR ? Infinity : rx1 - bx1;
     return !(Math.min(inL, inR) <= back);
+  };
+
+  /** a stage of legs (gen2 legs.ts, flow 'legs'): each platform's RUN leg (right or left), by the leg's box as laid; a column's pieces
+   *  and the walls between legs belong to none */
+  const runLegOf = new Map<number, number>();
+  const legBoxes = (stage as { gen2?: { tower?: { flow?: string; legs?: ReadonlyArray<{ travel: string; x0: number; x1: number; y0: number; y1: number }> } } }).gen2?.tower;
+  const runLegs = () => {
+    runLegOf.clear();
+    if (!gen2Built || legBoxes?.flow !== 'legs') return;
+    const runs = (legBoxes.legs ?? []).map((g, k) => ({ g, k })).filter(({ g }) => g.travel === 'right' || g.travel === 'left');
+    if (runs.length > 1) for (const p of plats) {
+      const [x0, x1] = ext(p);
+      // (the leg whose span holds it and whose heights lie nearest: a floor or a catch the lay hangs after the leg's box was taken (a pit's
+      // floor, a catch bough) lies a little under it, and two run legs that share x are kept LEG_CLEAR apart)
+      let on: { k: number; d: number } | undefined;
+      for (const { g, k } of runs) {
+        if (x0 < g.x0 - 1 || x1 > g.x1 + 1) continue;
+        const d = Math.max(0, g.y0 - p.y, p.y - g.y1);
+        if (!on || d < on.d) on = { k, d };
+      }
+      if (on) runLegOf.set(p.id, on.k);
+    }
   };
 
   /** build the graph over the ground as `layout` left it, and walk it from the spawn point (false: nothing under the spawn point) */
   const walk = (): boolean => {
     adj.clear();
+    runs.clear();
+    runLegs();
     usedSwing.clear();
     maxGapUsed = 0;
     swingEdges = 0;
@@ -732,6 +768,10 @@ function validateStageOn(stage: GeneratedStage, opts: CheckOptions): CheckResult
           // (gen2 stages only for this release, the lead 11-06: roofedDrop moved 4-9 layout 4's find; only 1-1 may change in 0.9.5, so the
           // old generator's stages keep main's check: 4-9's dead stair is its own roadmap item)
           if (gen2Built && a.type !== 'bouncy' && dy < -8 && roofedDrop(a, b, bx0, bx1, dy)) continue;
+          // (a stage of legs: two RUN legs meet only through the column between them, never by a jump or a fall from one to the other;
+          // ENG-27, gen2 legs.ts legOverlaps keeps them a jump and his height apart, and the lay's fall verdict refuses a fall from one
+          // onto the other. Unjudged, every bank of the out leg linked down to the home leg under it, through the banks themselves)
+          if (runLegOf.size) { const la = runLegOf.get(a.id), lb = runLegOf.get(b.id); if (la !== undefined && lb !== undefined && la !== lb) continue; }
           link(pid(a), pid(b));
           if (a.type !== 'bouncy') maxGapUsed = Math.max(maxGapUsed, gap);
         }
@@ -1004,8 +1044,10 @@ function validateStageOn(stage: GeneratedStage, opts: CheckOptions): CheckResult
   for (const c of stage.collectibles) {
     if (c.type === 'exit_totem') continue;
     if (c.x < stripLo || c.x > stripHi) errors.push(`${c.type} #${c.id} is outside the walkable strip`);
-    // (in a stage that is not a climb the engine stops him at the shrine: nothing beyond it can be picked up)
-    if (cfg.objectiveType !== 'ascent' && stage.exitTotemX > 0 && c.x > stage.exitTotemX + PAST_SHRINE) errors.push(`${c.type} #${c.id} lies past the shrine, where he cannot go`);
+    // (in a stage that is not a climb the engine stops him at the shrine: nothing beyond it can be picked up. Beyond is the way he travels
+    //  at the end: a stage whose last leg runs LEFT (config.travel 'left', gen2 legs) has its shrine at its left end, ENG-27)
+    const ahead = cfg.travel === 'left' ? -1 : 1;
+    if (cfg.objectiveType !== 'ascent' && stage.exitTotemX > 0 && (c.x - stage.exitTotemX) * ahead > PAST_SHRINE) errors.push(`${c.type} #${c.id} lies past the shrine, where he cannot go`);
     for (const p of stage.platforms) {
       if (p.broken || p.type === 'drift' || p.type === 'moving') continue;
       if (c.x >= p.x && c.x <= p.x + p.width && c.y > p.y + 2 && c.y < p.y + p.height - 2) {
@@ -1077,7 +1119,8 @@ function validateStageOn(stage: GeneratedStage, opts: CheckOptions): CheckResult
       const d = logs[0].drift!;
       const spacing = ((d.x1 - d.x0 + d.width) / logs.length);
       const gap = spacing - d.width;
-      const limit = hopLimit(d.dir);
+      // (the current against him or with him: a river he crosses right to left (RiverZone.way, a leg laid left) flows with him at dir -1)
+      const limit = hopLimit((d.dir * (r.way ?? 1)) as 1 | -1);
       if (gap < 60) errors.push(`river at x=${Math.round(r.x0)}: logs overlap or nearly touch`);
       // (under a liana the logs are a let-go's landing, never hopped: gen2/riverLay.ts lianaRiverFaults holds the drop instead, ENG-24; a
       //  liana over the river's TAIL throws over open water, so the logs before it are hopped as ever: river.ts lianasOverLogs, ENG-24f)

@@ -1,0 +1,40 @@
+// R-165.451: which draw makes the brightness step at screen x EX (beat A, Pokey on the lowest floor under x 790): after every main-canvas
+// draw call, read columns EX-D..EX-2 and EX+2..EX+D over screen y Y0..Y1; log each call that moves the step (right minus left), with its stack
+const PWm = await import('/opt/node-tools/node_modules/playwright/index.js'); const chromium = PWm.chromium ?? PWm.default.chromium;
+const [port, diff = 'normal', orient = 'upright'] = process.argv.slice(2);
+const [EX, Y0, Y1] = (process.env.EDGE ?? '393,775,905').split(',').map(Number);
+const b = await chromium.launch();
+const E = "(typeof window.__engine === 'function' ? window.__engine() : window.__engine)";
+const vp = orient === 'upright' ? { width: 412, height: 915 } : { width: 915, height: 412 };
+const ctx = await b.newContext({ viewport: vp, deviceScaleFactor: 1 });
+await ctx.addInitScript((d) => { try { localStorage.setItem('sloth_difficulty', d); } catch {} }, diff);
+const p = await ctx.newPage();
+p.on('pageerror', (e) => console.log('ERR', e.message));
+await p.goto(`http://127.0.0.1:${port}/?lessons=off`);
+await p.waitForTimeout(2500);
+await p.evaluate(() => window.__play('2-6', 0));
+await p.waitForTimeout(4000);
+await p.waitForFunction((E) => { const e = eval(E); return !!(e && e.currentStage && e.player && e.platforms); }, E, { timeout: 90000 });
+await p.waitForFunction(() => document.documentElement.dataset.hudCard !== '1', null, { timeout: 30000 }).catch(() => {});
+await p.waitForTimeout(2000);
+await p.evaluate((E) => { const e = eval(E); e.isPaused = true; const q = e.platforms.filter((q) => q.x <= 790 && q.x + q.width >= 790).sort((a, b) => b.y - a.y)[0];
+  const pw = e.player.width, ph = e.player.height; for (const hh of e.currentStage?.proto?.hints ?? []) hh.shown = true;
+  Object.assign(e.player, { x: 790 - pw / 2, y: q.y - ph - 2, vx: 0, vy: 0, grounded: false, invincibleTimer: 9 }); for (let i = 0; i < 45; i++) e.update(1 / 30); }, E);
+for (let i = 0; i < 10; i++) { await p.evaluate((E) => { const e = eval(E); e.update(1 / 30); e.clearGuide?.(); e.render(); }, E); await p.evaluate(() => new Promise((r) => requestAnimationFrame(() => r(0)))); }
+const res = await p.evaluate(([E, EX, Y0, Y1, LIVE]) => {
+  const e = eval(E); const main = document.querySelector('canvas'); const g = main.getContext('2d'); const P = CanvasRenderingContext2D.prototype;
+  const names = ['drawImage', 'fillRect', 'fill', 'stroke', 'putImageData', 'fillText', 'strokeRect', 'clearRect'];
+  const orig = Object.fromEntries(names.map((n) => [n, P[n]]));
+  const dpr = main.width / main.getBoundingClientRect().width;
+  const D = 6;
+  const col = (x) => { const d = orig.drawImage && g.getImageData(Math.round(x * dpr), Math.round(Y0 * dpr), 1, Math.round((Y1 - Y0) * dpr)).data; let s = 0; for (let i = 0; i < d.length; i += 4) s += (d[i] + d[i + 1] + d[i + 2]) / 3; return s / (d.length / 4); };
+  const step = () => { let l = 0, r = 0; for (let k = 2; k < 2 + D; k++) { l += col(EX - k); r += col(EX + k); } return (r - l) / D; };
+  const out = []; let last = 0, n = 0;
+  for (const nm of names) P[nm] = function (...a) { const v = orig[nm].apply(this, a); if (this.canvas === main) { n++; const s = step(); if (Math.abs(s - last) > 2) { const st = (new Error().stack ?? '').split('\n').slice(2, 8).map((q) => q.trim().replace(/https?:\/\/[^/]+\//, '').replace(/\?[^:]*/, '')).join(' < '); const T = P.getTransform.call(this); out.push({ n, nm, tf: [T.a, T.e, T.f].map((v) => +v.toFixed(3)), from: +last.toFixed(1), to: +s.toFixed(1), args: a.slice(1, 9).map((x) => typeof x === 'number' ? Math.round(x) : typeof x), img: a[0] && a[0].width ? `${a[0].width}x${a[0].height}${a[0].src ? ' ' + String(a[0].src).split('/').pop() : ''}` : '', fs: typeof this.fillStyle === 'string' ? this.fillStyle : 'pattern/grad', ga: this.globalAlpha, st }); } last = s; } return v; };
+  const GT = P.getTransform; if (LIVE) g.getTransform = function () { const m = GT.call(this); return new DOMMatrix([m.a, 0.25, m.c, m.d, m.e, m.f]); };
+  try { e.render(); } finally { Object.assign(P, orig); delete g.getTransform; }
+  return { calls: n, final: +step().toFixed(1), out };
+}, [E, EX, Y0, Y1, !!process.env.LIVE]);
+console.log('calls', res.calls, 'final step', res.final);
+for (const o of res.out) console.log(JSON.stringify(o).slice(0, 700));
+await b.close();

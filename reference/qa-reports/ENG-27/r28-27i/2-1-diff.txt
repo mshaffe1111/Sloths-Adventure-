@@ -1,0 +1,13 @@
+kid    normal pass base 32/40, 27g head 35/40, new head 35/40; lives 229 -> 193; boardHop moved   0; flips vs base 9:F->P,11:P->F,17:F->P,31:F->P,32:F->P
+kid    easy   pass base 40/40, 27g head 40/40, new head 40/40; lives 0 -> 0; boardHop moved   0; flips vs base -
+adult  normal pass base 40/40, 27g head 40/40, new head 40/40; lives 38 -> 42; boardHop moved   0; flips vs base -
+adult  easy   pass base 40/40, 27g head 40/40, new head 40/40; lives 0 -> 0; boardHop moved   0; flips vs base -
+child  normal pass base 40/40, 27g head 40/40, new head 40/40; lives 101 -> 93; boardHop moved  24; flips vs base -
+child  easy   pass base 40/40, 27g head 40/40, new head 40/40; lives 0 -> 0; boardHop moved  23; flips vs base -
+middle normal pass base 40/40, 27g head 40/40, new head 40/40; lives 54 -> 58; boardHop moved  11; flips vs base -
+middle easy   pass base 40/40, 27g head 40/40, new head 40/40; lives 0 -> 0; boardHop moved  17; flips vs base -
+expert normal pass base 40/40, 27g head 40/40, new head 40/40; lives 45 -> 42; boardHop moved  12; flips vs base -
+2-1: vs base P->F 1 ['kid normal 11'], F->P 4; tier counts dropped: none
+2-1: boardHop moved 87 of 360 rows (27g head -> new); with no log across a lip in jumpFor: none
+2-1: the 8 traced flips (27g head) now: [('kid normal 11', 'F')]
+2-1 lives 27g head -> new: child N 102->93; expert N 40->42; middle N 51->58

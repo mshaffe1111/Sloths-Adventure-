@@ -1,0 +1,22 @@
+// scratch probe (ENG-27c, never committed): the race table on the out-and-back toy
+import '../../src/game/headlessDom.ts';
+import { homeRun } from './homeToys.ts';
+import { SKILLS } from './firsttimer.ts';
+import { HOME_CODE, POST_CODE } from '../../src/game/gen2/toyHome.ts';
+const CODE = process.argv[3] === 'post' ? POST_CODE : HOME_CODE;
+const rows: string[] = [];
+const one = (label: string, tier: 'child' | 'middle' | 'expert', setting: 'normal' | 'easy', seed: number) => {
+  let piece: any;
+  const r = homeRun(tier, setting, seed, 1, { onFrame: (sim: any) => { piece ??= sim.e.pieces.find((q: any) => q.kind === 'pacer'); } } as never, CODE);
+  const v = piece?.verdict;
+  const line = `${label}\t${setting}\t${seed}\t${r.end}\tlives ${r.lives}\tdeaths ${(r as any).deaths ?? '?'}\tfinish ${r.finishSeconds}\t` + (v ? `${v.won ? 'WON' : 'lost'} him ${v.him} boat ${v.boat} gap ${Math.round((v.boat - v.him) * 10) / 10}` : 'no verdict') + (piece ? `\tP.middle ${piece.p?.middle ?? piece.pacer?.middle ?? ''}` : '');
+  rows.push(line); console.log(line);
+};
+const tiers = (process.argv[2] ?? 'middle,expert,ride').split(',');
+const seeds = (process.argv[4] ?? '1,2,3,4,5,6').split(',').map(Number);
+for (const t of tiers) for (const setting of ['normal', 'easy'] as const) for (const seed of seeds) {
+  if (t === 'ride') {
+    const was = { race: SKILLS.race, rideOnly: SKILLS.rideOnly };
+    try { Object.assign(SKILLS, { race: false, rideOnly: true }); one('ride-only', 'middle', setting, seed); } finally { Object.assign(SKILLS, was); }
+  } else one(t, t as never, setting, seed);
+}

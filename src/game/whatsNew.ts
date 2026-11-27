@@ -20,6 +20,17 @@ export interface Release {
 
 export const WHATS_NEW: Release[] = [
   {
+    version: '0.10.4',
+    date: '2026-11-27',
+    title: 'Water wheels and the mail boat',
+    items: [
+      'New stage: Up the Bank Houses. I ride the water wheels up to the top of the bank.',
+      'New stage: The Mailman’s Route. I post the letters, then race the mail boat home.',
+      'Dot warns me before deep water, on every setting.',
+      'The rivers run smoother, and the bouncy plants’ stems reach the ground they grow from.',
+    ],
+  },
+  {
     version: '0.10.3',
     date: '2026-11-25',
     title: 'Two little fixes',

@@ -1,0 +1,6 @@
+#!/bin/bash
+# usage: dc26.sh <worktree> <outdir> : drawcheck's play for 2-6 alone (both orientations), then drawcheck judges it verbose
+W="$1"; O="$2"; mkdir -p "$O"; cd "$W" || exit 9
+PERF_Q=0 PERF_TIME_FRAMES=0 PERF_SPOTS=4 node tools/perf/run.mjs port "$W" 47311 "$O" 2-6 port > "$O/play-port.log" 2>&1
+PERF_Q=0 PERF_TIME_FRAMES=0 PERF_SPOTS=4 node tools/perf/run.mjs land "$W" 47312 "$O" 2-6 land > "$O/play-land.log" 2>&1
+DRAWCHECK_VERBOSE=1 DRAWCHECK_RESULTS="$O" node tools/perf/drawcheck.mjs > "$O/judge.log" 2>&1; echo "judge exit=$?" >> "$O/judge.log"

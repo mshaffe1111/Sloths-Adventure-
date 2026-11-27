@@ -1,0 +1,66 @@
+JETTY 1216 1456 4927 wheel cx 1059.5842336544483 cy 4775 R 180 way -1 edgeAim 71 aimQ [0,27,71,161,245] holdQ [0.049,0.1,0.219,0.395,1.108] hold [0.16,0.08]
+J0 P0 H0 WR null t 85.30 gt 85.30 jetty x 1454 y 4927 vx -285 vy 0 g 1 pad left 
+J0 P0 H0 WR {"left":true} t 85.33 gt 85.33 jetty x 1445 y 4927 vx -268 vy 0 g 1 pad left 
+J0 P0 H0 WR {"left":true} t 85.37 gt 85.37 jetty x 1435 y 4927 vx -285 vy 0 g 1 pad left 
+J0 P0 H0 WR {"left":true} t 85.70 gt 85.70 jetty x 1425 y 4927 vx -87 vy 0 g 1 pad left 
+J0 P0 H0 WR {"left":true} t 85.73 gt 85.73 jetty x 1419 y 4927 vx -173 vy 0 g 1 pad left 
+J0 P0 H0 WR {"left":true} t 85.77 gt 85.77 jetty x 1410 y 4927 vx -260 vy 0 g 1 pad left 
+J0 P0 H0 WR {"left":true} t 85.80 gt 85.80 jetty x 1401 y 4927 vx -285 vy 0 g 1 pad left 
+J0 P0 H0 WR {"left":true} t 85.83 gt 85.83 jetty x 1392 y 4927 vx -268 vy 0 g 1 pad left 
+J0 P0 H0 WR {"left":true} t 85.87 gt 85.87 jetty x 1382 y 4927 vx -285 vy 0 g 1 pad left 
+J0 P0 H0 WR {"left":true} t 86.47 gt 86.47 jetty x 1372 y 4927 vx -87 vy 0 g 1 pad left 
+J0 P0 H0 WR {"left":true} t 86.50 gt 86.50 jetty x 1366 y 4927 vx -173 vy 0 g 1 pad left 
+J0 P0 H0 WR {"left":true} t 86.53 gt 86.53 jetty x 1357 y 4927 vx -260 vy 0 g 1 pad left 
+J0 P0 H0 WR {"left":true} t 86.57 gt 86.57 jetty x 1348 y 4927 vx -285 vy 0 g 1 pad left 
+J0 P0 H0 WR {"left":true} t 86.60 gt 86.60 jetty x 1339 y 4927 vx -268 vy 0 g 1 pad left 
+J0 P0 H0 WR {"left":true} t 86.63 gt 86.63 jetty x 1330 y 4927 vx -285 vy 0 g 1 pad left 
+J0 P0 H0 WR {"left":true} t 86.67 gt 86.67 jetty x 1321 y 4927 vx -268 vy 0 g 1 pad left 
+J0 P0 H0 WR {"left":true} t 86.70 gt 86.70 jetty x 1311 y 4927 vx -285 vy 0 g 1 pad left 
+J0 P0 H0 WR {"left":true} t 86.73 gt 86.73 jetty x 1302 y 4927 vx -268 vy 0 g 1 pad left 
+J0 P0 H0 WR {"left":true} t 86.80 gt 86.80 jetty x 1289 y 4927 vx -241 vy 0 g 1 pad left 
+J0 P0 H0 WR {"left":true} t 86.83 gt 86.83 jetty x 1280 y 4927 vx -285 vy 0 g 1 pad left 
+J0 P0 H0 WR {"left":true} t 86.87 gt 86.87 jetty x 1271 y 4927 vx -268 vy 0 g 1 pad left 
+J0 P0 H0 WR {} t 86.90 gt 86.90 jetty x 1261 y 4927 vx -285 vy 0 g 1 pad left 
+J0 P0 H0 WR {} t 86.93 gt 86.93 jetty x 1252 y 4927 vx -268 vy 0 g 1 pad left 
+J1 P0 H0 WR nc t 91.03 gt 91.03 air x 1243 y 4908 vx -87 vy -577 g 0 pad left+press+jump 
+J1 P0 H0 WR nc t 91.07 gt 91.07 air x 1238 y 4891 vx -143 vy -513 g 0 pad left+jump 
+J1 P0 H0 WR nc t 91.10 gt 91.10 air x 1231 y 4876 vx -200 vy -450 g 0 pad left+jump 
+J1 P0 H0 WR nc t 91.13 gt 91.13 air x 1223 y 4863 vx -257 vy -387 g 0 pad left+jump 
+J1 P0 H0 WR nc t 91.17 gt 91.17 air x 1213 y 4852 vx -285 vy -323 g 0 pad left+jump 
+J1 P0 H0 WR nc t 91.20 gt 91.20 air x 1204 y 4843 vx -268 vy -260 g 0 pad left+jump 
+J1 P0 H0 WR nc t 91.23 gt 91.23 air x 1195 y 4837 vx -285 vy -197 g 0 pad left+jump 
+J1 P0 H0 WR nc t 91.27 gt 91.27 air x 1186 y 4832 vx -268 vy -133 g 0 pad left+jump 
+J1 P0 H0 WR nc t 91.30 gt 91.30 air x 1176 y 4830 vx -285 vy -70 g 0 pad left+jump 
+J1 P0 H0 WR nc t 91.33 gt 91.33 air x 1168 y 4829 vx -268 vy -24 g 0 pad left+jump 
+J1 P0 H0 WR nc t 91.37 gt 91.37 b1 x 1158 y 4824 vx -285 vy 0 g 1 pad left+jump past -1.85 [-0.03,1.13] off -75 bw 120
+J0 P0 H0 WR {"right":true} t 91.40 gt 91.40 air x 1150 y 4825 vx -268 vy 83 g 0 pad left 
+J0 P0 H0 WR nc t 91.43 gt 91.43 air x 1140 y 4831 vx -285 vy 167 g 0 pad left 
+J0 P0 H0 WR nc t 91.47 gt 91.47 air x 1131 y 4839 vx -268 vy 250 g 0 pad left 
+J0 P0 H0 WR nc t 91.50 gt 91.50 air x 1122 y 4850 vx -285 vy 333 g 0 pad left 
+J0 P0 H0 WR nc t 91.67 gt 91.67 b0 x 1074 y 4945 vx -285 vy 0 g 1 pad - past -2.81 [-0.03,1.13] off -44 bw 120
+J0 P0 H0 WR {"right":true} t 91.70 gt 91.70 b0 x 1072 y 4945 vx -125 vy 0 g 1 pad right past -2.80 [-0.03,1.13] off -48 bw 120
+J0 P0 H0 WR {"right":true} t 91.73 gt 91.73 b0 x 1074 y 4944 vx 35 vy 0 g 1 pad right past -2.79 [-0.03,1.13] off -47 bw 120
+J0 P0 H0 WR {"right":true} t 91.77 gt 91.77 b0 x 1080 y 4944 vx 122 vy 0 g 1 pad right past -2.78 [-0.03,1.13] off -43 bw 120
+J0 P0 H0 WR {"right":true} t 91.80 gt 91.80 b0 x 1088 y 4943 vx 208 vy 0 g 1 pad right past -2.77 [-0.03,1.13] off -36 bw 120
+J0 P0 H0 WR {"right":true} t 91.83 gt 91.83 b0 x 1099 y 4942 vx 285 vy 0 g 1 pad right past -2.77 [-0.03,1.13] off -26 bw 120
+J0 P0 H0 WR {"right":true} t 91.87 gt 91.87 b0 x 1110 y 4942 vx 268 vy 0 g 1 pad right past -2.76 [-0.03,1.13] off -17 bw 120
+J1 P0 H0 WR nc t 102.47 gt 102.47 air x 1010 y 4579 vx -136 vy -577 g 0 pad left+press+jump 
+J1 P0 H0 WR nc t 102.50 gt 102.50 air x 1004 y 4562 vx -192 vy -513 g 0 pad left+jump 
+J1 P0 H0 WR nc t 102.53 gt 102.53 air x 996 y 4547 vx -249 vy -450 g 0 pad left+jump 
+J1 P0 H0 WR nc t 102.57 gt 102.57 air x 986 y 4534 vx -285 vy -387 g 0 pad left+jump 
+J1 P0 H0 WR nc t 102.60 gt 102.60 air x 977 y 4523 vx -268 vy -323 g 0 pad left+jump 
+J1 P0 H0 WR nc t 102.63 gt 102.63 air x 968 y 4515 vx -285 vy -260 g 0 pad left+jump 
+J1 P0 H0 WR nc t 102.67 gt 102.67 air x 959 y 4508 vx -268 vy -197 g 0 pad left+jump 
+J1 P0 H0 WR nc t 102.70 gt 102.70 air x 949 y 4504 vx -285 vy -133 g 0 pad left+jump 
+J1 P0 H0 WR nc t 102.73 gt 102.73 air x 940 y 4501 vx -268 vy -70 g 0 pad left 
+J1 P0 H0 WR nc t 102.77 gt 102.77 air x 931 y 4501 vx -285 vy -7 g 0 pad left 
+J1 P0 H0 WR nc t 102.80 gt 102.80 air x 922 y 4503 vx -268 vy 57 g 0 pad left 
+J1 P0 H0 WR nc t 102.83 gt 102.83 air x 913 y 4508 vx -285 vy 140 g 0 pad left 
+J1 P0 H0 WR nc t 102.87 gt 102.87 air x 904 y 4515 vx -268 vy 223 g 0 pad left 
+J1 P0 H0 WR nc t 102.90 gt 102.90 air x 894 y 4525 vx -285 vy 307 g 0 pad left 
+J1 P0 H0 WR nc t 102.93 gt 102.93 air x 885 y 4538 vx -268 vy 390 g 0 pad left 
+J1 P0 H0 WR nc t 102.97 gt 102.97 air x 876 y 4554 vx -285 vy 473 g 0 pad left 
+J1 P0 H0 WR nc t 103.00 gt 103.00 air x 867 y 4573 vx -268 vy 557 g 0 pad left 
+J1 P0 H0 WR nc t 103.03 gt 103.03 air x 857 y 4594 vx -285 vy 640 g 0 pad left 
+J1 P0 H0 WR nc t 103.07 gt 103.07 air x 848 y 4618 vx -268 vy 723 g 0 pad left 
+J1 P0 H0 WR nc t 103.10 gt 103.10 STREET x 839 y 4623 vx -268 vy 0 g 1 pad - 

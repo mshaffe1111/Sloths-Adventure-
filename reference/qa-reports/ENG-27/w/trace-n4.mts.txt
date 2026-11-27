@@ -1,0 +1,26 @@
+// the post N4 middle trace: where the race-leg seconds went (stalls >= 1 s, falls, what he stood on), E+J as laid
+const [tree] = process.argv.slice(2);
+await import(`${tree}/src/game/headlessDom.ts`);
+const { homeRun } = await import(`${tree}/tools/inspect/homeToys.ts`);
+const { POST_CODE } = await import(`${tree}/src/game/gen2/toyHome.ts`);
+const { pacerMargin, pacerOff } = await import(`${tree}/src/game/pacer.ts`);
+let t = 0, piece: any, lives = -1, stall: any = null, lastStand = '', seg: any = null;
+const out: string[] = [];
+const r: any = homeRun('middle' as never, 'normal' as never, 4, 1, { onFrame: (sim: any) => {
+  t += 1 / 30; const e = sim.e as any, p = sim.p;
+  piece ??= (e.pieces ?? []).find((q: any) => q.kind === 'pacer');
+  const on = piece && piece.clock !== null && !piece.verdict;
+  const m = on ? pacerMargin(piece.pacer, p.x, piece.clock) : null;
+  const st = sim.standingOn; const q = st == null ? null : sim.platforms.find((z: any) => z === st || z.id === st);
+  const what = q ? `${q.type}#${q.id}` : (st == null ? 'air' : String(st));
+  if (lives >= 0 && e.lives < lives) out.push(`t ${t.toFixed(1)} FELL x ${Math.round(p.x)} margin ${m?.toFixed(1)} clock ${piece?.clock?.toFixed(1)}`);
+  lives = e.lives;
+  if (on) {
+    // stalls: a window where he moves < 20 px leftward in 1 s
+    seg ??= { t, x: p.x };
+    if (t - seg.t >= 1) { const prog = (seg.x - p.x); if (prog < 20) { stall ??= { t: seg.t, x: seg.x, m: m, on: what, n: 0 }; stall.n++; } else if (stall) { out.push(`t ${stall.t.toFixed(1)} STALL ${stall.n} s at x ${Math.round(stall.x)} on ${stall.on} margin ${stall.m?.toFixed(1)} -> ${m?.toFixed(1)}`); stall = null; } seg = { t, x: p.x }; }
+    if (Math.round(t * 30) % 150 === 0) out.push(`t ${t.toFixed(1)} x ${Math.round(p.x)} on ${what} margin ${m?.toFixed(1)}`);
+  }
+} } as never, POST_CODE);
+console.log(out.join('\n'));
+console.log('end', r.end, 'verdict', JSON.stringify(piece?.verdict), 'race', JSON.stringify({ x0: piece?.pacer.x0, x1: piece?.pacer.x1, s: piece?.pacer.seconds }));

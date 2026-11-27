@@ -1,0 +1,10 @@
+import fs from 'node:fs';
+const rd = (f) => new Map(fs.readFileSync(f, 'utf8').trim().split('\n').map((l) => JSON.parse(l)).map((r) => [`${r.bot} ${r.setting} ${r.seed}`, r]));
+const a = rd(process.argv[2]), b = rd(process.argv[3]);
+let same = 0, moved = 0;
+const s = (r) => `${r.end} pass ${r.pass} t ${r.time} res ${r.rescues} lives ${r.lives} hits ${r.hits}`;
+for (const [k, r] of a) { const q = b.get(k); if (!q) { console.log('GONE', k); continue; }
+  if (JSON.stringify(r) === JSON.stringify(q)) { same++; continue; }
+  moved++; const big = r.pass !== q.pass || r.rescues !== q.rescues || r.lives !== q.lives || r.end !== q.end;
+  console.log(big ? 'BIG ' : 'time', k.padEnd(18), '|', s(r), '->', s(q)); }
+console.log('same', same, 'moved', moved, 'of', a.size);

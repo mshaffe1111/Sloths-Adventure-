@@ -1,0 +1,18 @@
+import '../../src/game/headlessDom.ts';
+import { homeRun } from './homeToys.ts';
+import { HOME_CODE, POST_CODE } from '../../src/game/gen2/toyHome.ts';
+import { SKILLS } from './firsttimer.ts'; for (const k of (process.env.OFF ?? '').split(',').filter(Boolean)) (SKILLS as any)[k] = false;
+const seed = Number(process.argv[2] ?? 2), setting = (process.argv[3] ?? 'normal') as 'normal' | 'easy', code = process.argv[4] === 'post' ? POST_CODE : HOME_CODE;
+let piece: any, lives: number | undefined, wasG = false; const ring: string[] = []; const out: string[] = [];
+homeRun('middle', setting, seed, 1, { onFrame: (sim: any) => {
+  const e = sim.e, p = e.player; piece ??= e.pieces.find((q: any) => q.kind === 'pacer');
+  const on = p.grounded ? e.platforms.find((q: any) => q.id === e.standingOnId) : null;
+  const inp = sim.input?.state ?? e.input?.state ?? {};
+  ring.push(`t ${e.gameTime.toFixed(2)} x ${Math.round(p.x)} y ${Math.round(p.y)} vx ${Math.round(p.vx)} vy ${Math.round(p.vy)} ${p.grounded ? 'ON ' + (on ? `${on.type}#${on.id} ${Math.round(on.x)}-${Math.round(on.x + on.width)}` : '?') : 'air'} in ${['left','right','jump'].filter((k) => inp[k]).join('+')}`);
+  if (wasG && !p.grounded) { const d = piece?.pacer?.dir ?? -1; const ah = e.platforms.filter((q: any) => q.id !== e.standingOnId && Math.abs(q.y - (p.y + p.height)) < 160 && ((d < 0 && q.x + q.width < p.x + 5 && q.x + q.width > p.x - 420) || (d > 0 && q.x > p.x + p.width - 5 && q.x < p.x + p.width + 420))).map((q: any) => `${q.type}#${q.id} ${Math.round(q.x)}-${Math.round(q.x + q.width)} top ${Math.round(q.y)}`); ring.push(`  TAKEOFF feet ${Math.round(p.y + p.height)} ahead: ${ah.join(' | ') || 'NOTHING within 420'}`); }
+  wasG = p.grounded;
+  if (ring.length > 45) ring.shift();
+  if (lives !== undefined && e.lives < lives && piece?.clock !== null) { out.push(`== LIFE LOST t ${e.gameTime.toFixed(2)} x ${Math.round(p.x)} (${e.lostTo})`); out.push(...ring.filter((l, i) => l.startsWith('  TAKEOFF') || i > 40)); }
+  lives = e.lives;
+} } as never, code);
+console.log(out.join('\n'));

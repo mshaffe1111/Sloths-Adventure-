@@ -1,0 +1,15 @@
+# fire.py stage on.jsonl... -- off.jsonl...: lives within 3 s after a boardHop fire with it on, against the same row with NO_HOP=1
+import json, sys
+a = sys.argv[2:]; i = a.index('--'); 
+def load(fs): return {(r['bot'], r['setting'], r['seed']): r for f in fs for r in map(json.loads, [l for l in open(f) if l.startswith('{')])}
+on, off = load(a[:i]), load(a[i+1:])
+same = nearOff = 0; cand = []; dl = 0; fires = 0
+for k, r in on.items():
+    o = off.get(k); 
+    if not o: continue
+    fires += len(r['fires']); dl += len(r['lost']) - len(o['lost'])
+    for l in r['after']:
+        if any(abs(m['x'] - l['x']) < 250 and abs(m['t'] - l['t']) < 4 for m in o['lost']): nearOff += 1
+        else: cand.append((k, l['t'], l['x'], [f for f in r['fires'] if 0 <= l['t'] - f['t'] < 3][-1]))
+print(f"{sys.argv[1]}: rows {len(on)}, fires {fires}, lives on-off {dl:+d}; lives within 3 s after a fire: {nearOff + len(cand)} ({nearOff} lost the same way with boardHop off; {len(cand)} not)")
+for c in cand: print('  ', f"{c[0][0]} {c[0][1]} {c[0][2]}: fire t {c[3]['t']} x {c[3]['x']} -> life t {c[1]} x {c[2]}")

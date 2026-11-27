@@ -1,0 +1,16 @@
+    f 111.33 19638,573 g0 vx285 pad {"right":true} why 3200 pend - rl 1 meant {} on -1
+    f 111.37 19647,577 g1 vx268 pad {"right":true} why 3200 pend - rl 1 meant {} on 85
+    f 111.40 19657,577 g1 vx285 pad {"right":true} why 3338 pend - rl 0 meant {"right":true} on 85
+    f 111.43 19666,577 g1 vx268 pad {"right":true} why 3338 pend - rl 0 meant {"right":true} on 85
+    f 111.47 19675,577 g1 vx285 pad {"right":true} why 3338 pend - rl 0 meant {"right":true} on 85
+    f 111.50 19684,577 g1 vx268 pad {"right":true} why 3338 pend - rl 0 meant {"right":true} on 85
+    f 111.53 19694,577 g1 vx285 pad {"right":true} why 3338 pend - rl 0 meant {"right":true} on 85
+    f 111.57 19703,577 g1 vx268 pad {"right":true} why 3338 pend - rl 0 meant {"right":true} on 85
+    f 111.60 19712,577 g1 vx285 pad {"right":true} why 3338 pend - rl 0 meant {"right":true} on 85
+    f 111.63 19721,577 g1 vx268 pad {"right":true} why 3338 pend - rl 0 meant {"right":true} on 85
+    f 111.67 19731,577 g1 vx285 pad {"right":true} why 3338 pend - rl 0 meant {"right":true} on 85
+    f 111.70 19739,577 g1 vx268 pad {"right":true} why 3338 pend 111.887/1 rl 3 meant {} on 85
+    f 111.73 19749,577 g1 vx285 pad {"right":true} why 3481 pend 111.887/1 rl 2 meant {} on 85
+    f 111.77 19758,577 g1 vx268 pad {"right":true} why 3481 pend 111.887/1 rl 1 meant {} on 85
+    f 111.80 19767,580 g0 vx285 pad {"right":true} why 3481 pend 111.887/1 rl 0 meant {} on -1
+    f 111.83 19776,585 g0 vx268 pad {"right":true} why 3312 pend 111.887/1 rl 0 meant {"right":true} on -1

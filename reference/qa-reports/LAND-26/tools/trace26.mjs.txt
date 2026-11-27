@@ -1,0 +1,54 @@
+// 2-6 stills: Pokey on porch #5 (beat A), on the start floor under it, and on the climb's top bank
+import fs from 'node:fs';
+const PWm = await import('/opt/node-tools/node_modules/playwright/index.js'); const chromium = PWm.chromium ?? PWm.default.chromium;
+const [port, out, diff = 'normal', orient = 'sideways', tag = 'x'] = process.argv.slice(2);
+fs.mkdirSync(out, { recursive: true });
+const b = await chromium.launch();
+const E = "(typeof window.__engine === 'function' ? window.__engine() : window.__engine)";
+const vp = orient === 'upright' ? { width: 412, height: 915 } : { width: 915, height: 412 };
+const ctx = await b.newContext({ viewport: vp, deviceScaleFactor: 1 });
+await ctx.addInitScript((d) => { try { localStorage.setItem('sloth_difficulty', d); } catch {} }, diff);
+const p = await ctx.newPage();
+p.on('pageerror', (e) => console.log('ERR', e.message));
+await p.goto(`http://127.0.0.1:${port}/?lessons=off`);
+await p.waitForTimeout(2500);
+await p.evaluate(() => window.__play('2-6', 0));
+await p.waitForTimeout(4000);
+await p.waitForFunction((E) => { const e = eval(E); return !!(e && e.currentStage && e.player && e.platforms); }, E, { timeout: 90000 });
+await p.waitForFunction(() => document.documentElement.dataset.hudCard !== '1', null, { timeout: 30000 }).catch(() => {});
+await p.waitForTimeout(2000);
+const spots = [['A-porch5', (e) => { const q = e.platforms.find((q) => q.id === 5); return [790, q.y]; }], ['B-floor-under5', (e) => { const q = e.platforms.find((q) => q.id === 1); return [420, q.y]; }], ['C-top91', (e) => { const q = e.platforms.find((q) => q.id === 91); return [q.x + q.width / 2, q.y]; }]];
+// LAND-26 trace: beat A (porch 5), log every draw whose device-space rect has a vertical edge inside [ex0, ex1] and spans y in [ey0, ey1]
+const [ex0, ex1, ey0, ey1] = (process.env.EDGE ?? '330,400,300,700').split(',').map(Number);
+const r = await p.evaluate(([E]) => {
+  const e = eval(E); e.isPaused = true; const q = e.platforms.find((q) => q.id === 5); const x = 790, y = q.y;
+  const pw = e.player.width, ph = e.player.height;
+  for (const hh of e.currentStage?.proto?.hints ?? []) hh.shown = true;
+  Object.assign(e.player, { x: x - pw / 2, y: y - ph - 2, vx: 0, vy: 0, grounded: false, invincibleTimer: 9 });
+  for (let i = 0; i < 45; i++) e.update(1 / 30);
+  return { x, y, seed: e.currentStage.gen2?.seed };
+}, [E]);
+for (let i = 0; i < 10; i++) { await p.evaluate((E) => { const e = eval(E); e.update(1 / 30); e.clearGuide?.(); e.render(); }, E); await p.evaluate(() => new Promise((r) => requestAnimationFrame(() => r(0)))); }
+await p.screenshot({ path: `${out}/${tag}-A-porch5-${diff}-${orient}.jpg`, type: 'jpeg', quality: 82 });
+const hits = await p.evaluate(([E, ex0, ex1, ey0, ey1]) => {
+  const e = eval(E); const P = CanvasRenderingContext2D.prototype; const out = [];
+  const orig = { drawImage: P.drawImage, fillRect: P.fillRect, fill: P.fill };
+  const dpr = window.devicePixelRatio || 1;
+  const rec = (ctx, kind, x, y, w, h, extra) => {
+    if (ctx.canvas !== document.querySelector('canvas')) { /* offscreen: note only */ }
+    const m = ctx.getTransform(); const pts = [[x, y], [x + w, y], [x, y + h], [x + w, y + h]].map(([a, b]) => [(m.a * a + m.c * b + m.e) / dpr, (m.b * a + m.d * b + m.f) / dpr]);
+    const X0 = Math.min(...pts.map((p) => p[0])), X1 = Math.max(...pts.map((p) => p[0])), Y0 = Math.min(...pts.map((p) => p[1])), Y1 = Math.max(...pts.map((p) => p[1]));
+    const edge = (X0 >= ex0 && X0 <= ex1) || (X1 >= ex0 && X1 <= ex1);
+    if (!edge || Y1 < ey0 || Y0 > ey1) return;
+    const st = (new Error().stack ?? '').split('\n').slice(2, 7).map((s) => s.trim().replace(/https?:\/\/[^/]+\//, '').replace(/\?[^:]*/, '')).join(' < ');
+    out.push({ kind, X0: Math.round(X0), X1: Math.round(X1), Y0: Math.round(Y0), Y1: Math.round(Y1), main: ctx.canvas === document.querySelector('canvas'), clip: extra, alpha: ctx.globalAlpha, fs: typeof ctx.fillStyle === 'string' ? ctx.fillStyle : 'pattern', st });
+  };
+  P.drawImage = function (...a) { if (a.length === 3) rec(this, 'img', a[1], a[2], a[0].width, a[0].height); else if (a.length === 5) rec(this, 'img', a[1], a[2], a[3], a[4]); else rec(this, 'img9', a[5], a[6], a[7], a[8]); return orig.drawImage.apply(this, a); };
+  P.fillRect = function (x, y, w, h) { rec(this, 'rect', x, y, w, h); return orig.fillRect.call(this, x, y, w, h); };
+  try { e.render(); } finally { Object.assign(P, orig); }
+  const cam = e.camera ? { x: Math.round(e.camera.x), y: Math.round(e.camera.y), z: e.camera.zoom ?? e.camera.scale } : null;
+  return { cam, out };
+}, [E, ex0, ex1, ey0, ey1]);
+console.log(JSON.stringify(r), 'cam', JSON.stringify(hits.cam), 'hits', hits.out.length);
+for (const h of hits.out) console.log(JSON.stringify(h));
+await b.close();

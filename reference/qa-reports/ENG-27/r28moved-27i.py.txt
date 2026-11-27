@@ -1,0 +1,9 @@
+import json, sys
+def load(p):
+    d = {}
+    for l in open(p):
+        if l.strip(): r = json.loads(l); d[(r['bot'], r['setting'], r['seed'])] = r
+    return d
+old, new = load(sys.argv[1]), load(sys.argv[2])
+K = ['end', 'pass', 'time', 'goal', 'rescues', 'turnBacks', 'hits', 'lives', 'hitBy', 'cast', 'stuck']
+print(' '.join(f"{k[0]}:{k[1]}:{k[2]}" for k in old if any(old[k].get(x) != new[k].get(x) for x in K)))

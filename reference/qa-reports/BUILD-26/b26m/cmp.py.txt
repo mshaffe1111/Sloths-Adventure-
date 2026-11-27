@@ -1,0 +1,24 @@
+import json,sys,collections
+def load(f):
+    d={}
+    for l in open(f):
+        l=l.strip()
+        if not l: continue
+        r=json.loads(l); d[(r['bot'],r['setting'][0].upper(),r['seed'])]=r
+    return d
+names=sys.argv[1::2]; files=sys.argv[2::2]
+D=[load(f) for f in files]
+tiers=sorted({(k[0],k[1]) for d in D for k in d})
+print('| tier | '+' | '.join(names)+' |'); print('|---|'+'---|'*len(names))
+for t in tiers:
+    print(f'| {t[0]} {t[1]} | '+' | '.join(str(sum(1 for k,r in d.items() if (k[0],k[1])==t and r['pass'])) for d in D)+' |')
+a,b=D[0],D[-1]
+print(f'\nFLIPS {names[0]} -> {names[-1]}:')
+mv=0
+for k in sorted(set(a)&set(b)):
+    ra,rb=a[k],b[k]
+    if ra['pass']!=rb['pass']:
+        s=rb['stuck'][0] if rb['stuck'] else (ra['stuck'][0] if ra['stuck'] else {})
+        print(f"  {k[0]} {k[1]} {k[2]}: {ra['pass']}({ra['time']}s,{ra['end']},r{ra['rescues']}) -> {rb['pass']}({rb['time']}s,{rb['end']},r{rb['rescues']}) stuck0={s.get('x')},{s.get('what','')[:90]}")
+    elif abs(ra['time']-rb['time'])>0.05: mv+=1
+print('time-only moves:',mv)

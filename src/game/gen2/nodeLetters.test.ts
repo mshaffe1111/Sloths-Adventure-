@@ -7,7 +7,7 @@ import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { CONTENT_LETTERS, CONTENT_WORDS, JOB_LETTERS, PIECE_WORDS, keyBlocks } from './nodeLetters.ts';
 import { CONTENT_OF, JOB_OF, checkCode, parseCode } from './nodeCode.ts';
-import { FILL_LETTER, LATER_CONTENT, TYPE_OF_LETTER, askMisses } from './nodeAsks.ts';
+import { CLOCK_LETTER, FILL_LETTER, LATER_CONTENT, TYPE_OF_LETTER, askMisses } from './nodeAsks.ts';
 import { LURE_TAG } from './lureLay.ts';
 
 const KEY = new URL('../../../reference/engine/NODE-KEY.html', import.meta.url);
@@ -47,12 +47,13 @@ test('one letter grammar: a job the code refuses (V13 LATER) is never shown as n
 
 test('one letter grammar: a letter the deal does not lay is later in the key and names why (nodeAsks LATER_CONTENT)', () => {
   for (const l of Object.keys(CONTENT_LETTERS)) {
-    // (laid by the deal's section type, or by what a node's sections fill: m, cover, by its hides, nodeAsks FILL_LETTER)
-    const laid = !!TYPE_OF_LETTER[l] || !!FILL_LETTER[l];
+    // (laid by the deal's section type, by what a node's sections fill: m, cover, by its hides, nodeAsks FILL_LETTER, or by a piece on
+    // a clock: p, the beat, nodeAsks CLOCK_LETTER, G1)
+    const laid = !!TYPE_OF_LETTER[l] || !!FILL_LETTER[l] || CLOCK_LETTER.has(l);
     assert.equal(laid, !LATER_CONTENT[l], `${l}: laid by the deal or its fills XOR named as later`);
     if (!laid) assert.equal(CONTENT_LETTERS[l as keyof typeof CONTENT_LETTERS].key, 'later', `${l} has no lay but the key says now`);
   }
-  assert.deepEqual(Object.keys(LATER_CONTENT), ['s', 'v', 'p', 't', 'x', 'n']);
+  assert.deepEqual(Object.keys(LATER_CONTENT), ['s', 'v', 't', 'x', 'n']);
   assert.equal(CONTENT_LETTERS.m.key, 'now', 'm (cover) is laid by World 1\'s hides (1-7 NEW 5)');
   // (ENG-S4: n, the vine snake, names its lay (a stage finish by piece key, gen2/snakeLay.ts) and the false liana as its 'still' route)
   assert.match(CONTENT_LETTERS.n.unlaid, /snakeLay\.ts laySnakes/);

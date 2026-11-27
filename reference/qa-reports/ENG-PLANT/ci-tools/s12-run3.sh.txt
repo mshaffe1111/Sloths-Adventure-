@@ -1,0 +1,7 @@
+#!/bin/bash
+# run3.sh <step>...: reds 1-3 of the CI line on each probe copy, one line each
+for s in "$@"; do
+  /home/user/fz/mkprobe.sh $s; cd /home/user/fz/pt-$s
+  npx tsx --test --test-name-pattern "small log running his way|against-the-flow skill off|waitRise off" tools/inspect/firsttimer.test.ts tools/inspect/riverRide.test.ts tools/inspect/padRide.test.ts > /home/user/fz/out/r3-$s.txt 2>&1
+  echo "$s: $(grep -E '^(not )?ok [0-9]+ - ' /home/user/fz/out/r3-$s.txt | sed -E 's/^(not ok|ok) [0-9]+ - (.{0,28}).*/\1:\2/' | tr '\n' '|')"
+done

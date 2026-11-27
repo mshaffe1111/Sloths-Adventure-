@@ -1,0 +1,22 @@
+# classify.py <trace dir> <fire-on.jsonl> seeds...: every life on 2-4 child Normal (boardHop on) by where he left the ground: a drifting log
+# (the ride's), a bank with a boardHop fire at take-off (within 0.05 s and 40 px), or a bank without one
+import json, sys
+d, fp, seeds = sys.argv[1], sys.argv[2], [int(x) for x in sys.argv[3:]]
+F = {}
+for l in open(fp):
+    if l.startswith('{'):
+        r = json.loads(l)
+        if r['bot'] == 'child' and r['setting'] == 'normal': F[r['seed']] = r['fires']
+tot = {'log': 0, 'bank-nofire': 0, 'bank-fire': 0}
+for sd in seeds:
+    L = [json.loads(l) for l in open(f'{d}/2-4-c{sd}-head.jsonl')][:-1]
+    print('== 2-4 child normal seed', sd, '(boardHop on); fires', [(f['t'], f['x']) for f in F[sd]])
+    for i in range(1, len(L)):
+        if L[i]['l'] < L[i-1]['l']:
+            j = i - 1
+            while j > 0 and not L[j]['g']: j -= 1
+            jm = L[i-1].get('jmp') or ''; jt = float(jm.split(':')[0]) if jm else None
+            fire = any(jt is not None and abs(f['t'] - jt) <= 0.05 and abs(f['x'] - L[j]['x']) < 40 for f in F[sd])
+            c = 'log' if ':drift' in L[j]['on'] else ('bank-fire' if fire else 'bank-nofire'); tot[c] += 1
+            print(f"  life t {L[i]['t']} x {L[i]['x']}: last ground t {L[j]['t']} x {L[j]['x']} on {L[j]['on'].split(',')[0]}; jump {jm or 'none (walked off)'}; {c}")
+print('totals', tot)

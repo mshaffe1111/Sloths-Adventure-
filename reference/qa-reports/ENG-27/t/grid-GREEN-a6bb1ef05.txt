@@ -1,0 +1,25 @@
+TAP version 13
+# \# home: 41 race-leg falls judged; 299 frames of ease on the grid
+# \# post: 48 race-leg falls judged; 531 frames of ease on the grid
+# Subtest: 2-7 home: back at a race-leg fall's x, his margin is never better than at the fall (a fall never pays, end to end)
+ok 1 - 2-7 home: back at a race-leg fall's x, his margin is never better than at the fall (a fall never pays, end to end)
+  ---
+  duration_ms: 18557.518287
+  type: 'test'
+  ...
+# Subtest: 2-7 post: back at a race-leg fall's x, his margin is never better than at the fall (a fall never pays, end to end)
+ok 2 - 2-7 post: back at a race-leg fall's x, his margin is never better than at the fall (a fall never pays, end to end)
+  ---
+  duration_ms: 16466.803013
+  type: 'test'
+  ...
+1..2
+# tests 2
+# suites 0
+# pass 2
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 38763.233882
+EXIT 0 20:41:53

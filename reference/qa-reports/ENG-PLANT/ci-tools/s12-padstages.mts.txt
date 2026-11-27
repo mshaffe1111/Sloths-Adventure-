@@ -1,0 +1,14 @@
+// padstages: which World 2 stages lay beat pads (rolled as castRun rolls them, seeds 1-10): per stage, seeds with any, and pads seen
+const [T] = process.argv.slice(2);
+await import(T + '/src/game/headlessDom.ts');
+const ft: any = await import(T + '/tools/inspect/firsttimer.ts');
+const cb: any = await import(T + '/tools/inspect/castBots.ts');
+for (const st of ['2-1', '2-2', '2-3', '2-4', '2-5', '2-6', '2-7', '2-8', '2-9']) {
+  const got: string[] = [];
+  for (let seed = 1; seed <= 10; seed++) {
+    let n = -1;
+    try { ft.firstTimer(st, seed, cb.CAST_BOTS.middle.normal, { cap: 0.05, dotSetting: true, onFrame: (s: any) => { if (n < 0) n = s.platforms.filter((q: any) => q.pad?.by === 'beat').length; } }); } catch (e) { got.push(`s${seed}:ERR`); continue; }
+    if (n > 0) got.push(`s${seed}:${n}`);
+  }
+  console.log(st, got.join(' ') || 'none');
+}

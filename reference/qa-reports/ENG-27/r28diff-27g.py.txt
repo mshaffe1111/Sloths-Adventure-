@@ -1,0 +1,35 @@
+# usage: r28diff.py stage base.jsonl head.jsonl [committed.jsonl]: rule 28 for ENG-27g's two bot changes
+import json, sys
+def load(p):
+    d = {}
+    for l in open(p):
+        if l.strip(): r = json.loads(l); d[(r['bot'], r['setting'], r['seed'])] = r
+    return d
+st, base, head = sys.argv[1], load(sys.argv[2]), load(sys.argv[3])
+K = ['end', 'pass', 'time', 'goal', 'rescues', 'turnBacks', 'hits', 'lives', 'hitBy', 'cast', 'stuck']
+same = lambda a, b: all(a.get(x) == b.get(x) for x in K)
+errs = [k for k in base if 'error' in base[k] or 'error' in head.get(k, {})]
+if errs: print('ERRORS', errs)
+if len(sys.argv) > 4:
+    c = load(sys.argv[4]); bad = [k for k in c if k not in base or not same(c[k], base[k])]
+    print(f"{st}: base run (both skills off) vs the committed rows: {len(c) - len(bad)}/{len(c)} equal" + (f"; DIFFER {sorted(bad)[:10]}" if bad else ''))
+groups = []
+for k in base:
+    if (k[0], k[1]) not in groups: groups.append((k[0], k[1]))
+moved = []; flips = []
+for g in groups:
+    ks = sorted(k for k in base if (k[0], k[1]) == g)
+    mv = [k for k in ks if not same(base[k], head[k])]; moved += mv
+    pa, pb = sum(base[k]['pass'] for k in ks), sum(head[k]['pass'] for k in ks)
+    fl = [f"{k[2]}:{'P' if base[k]['pass'] else 'F'}->{'P' if head[k]['pass'] else 'F'}" for k in ks if base[k]['pass'] != head[k]['pass']]; flips += [(k, base[k]['pass'], head[k]['pass']) for k in ks if base[k]['pass'] != head[k]['pass']]
+    print(f"{g[0]:6} {g[1]:6} rows {len(ks)} moved {len(mv):3}  pass {pa}/{len(ks)} -> {pb}/{len(ks)}  flips {','.join(fl) or '-'}")
+print(f"{st}: moved {len(moved)} of {len(base)}; P->F {sum(1 for f in flips if f[1] and not f[2])}, F->P {sum(1 for f in flips if not f[1] and f[2])}")
+un = [k for k in moved if not base[k]['ftReads'] and not base[k]['blReads']]
+print(f"moved rows with no read either skill changes on the base run: {un or 'none'}")
+ft = sum(1 for k in moved if base[k]['ftReads']); bl = sum(1 for k in moved if base[k]['blReads'])
+print(f"moved rows touched by the take-off read (a stand over water): {ft}; by the boarding hop (a log his way under the lip): {bl}")
+for k in sorted(moved):
+    b, h = base[k], head[k]; t = []
+    if b['ftFirst']: t.append(f"stand over water x {b['ftFirst']['x']} (run {b['ftFirst']['run']} + gap {b['ftFirst']['gap']}) t {b['ftFirst']['t']}")
+    if b['blFirst']: t.append(f"log under the lip x {b['blFirst']['x']} ({b['blFirst']['out']} px out) t {b['blFirst']['t']}")
+    print(f"  {k[0]:6} {k[1]:6} {k[2]:2} {'P' if b['pass'] else 'F'}->{'P' if h['pass'] else 'F'} time {b['time']} -> {h['time']} lives {b['lives']}->{h['lives']} rescues {b['rescues']}->{h['rescues']}; first: {'; '.join(t)}")

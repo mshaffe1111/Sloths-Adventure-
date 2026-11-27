@@ -1,0 +1,2 @@
+# 2-2 middle Normal 7 on C8: each 0.5 s rewind (far) counted as a fall from point 559 (x 9,242, the spur's stone pin) after the respawn at the flag x 7,347
+FB0 57.20 at 7314,635 far true top 559:9242,645 cur 559 best 559 (n 0 -> 8 by 61.63, then 'fell back down from here 8 times' + rescue)

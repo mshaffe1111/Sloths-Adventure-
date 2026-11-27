@@ -1,0 +1,143 @@
+== 2-4 adult-normal-24
+CI-10 shrine 163.4 r0 stuck [{'x': 21885, 'what': 'on a vine at 21885,755 with no way on'}] | CI-11 shrine 163.3 r0 stuck [{'x': 21885, 'what': 'on a vine at 21885,750 with no way on'}]
+part at frame 2426 t 80.900: CI-10 x 16308.86 y 811.49 | CI-11 x 16309.19 y 816.48; before: x 16260.18 on #-1 g0
+  CI-10 presses near: ['80.633 x16179.1 on#76 single h0.23553056785272516']
+    CI-10 80.633 -> caught swing #5 at 80.900 (frame 8) x 16308.9
+  CI-11 presses near: ['80.633 x16179.1 on#76 single h0.2 STAND h0.2']
+    CI-11 80.633 -> caught swing #5 at 80.900 (frame 8) x 16309.2
+CI-11 standing presses (all):
+  32.300 x 7039.6 y 896 off log #34 held 0.2 -> caught swing #2 at 32.367 (frame 2) x 7056.1
+  38.400 x 8119.3 y 896 off log #37 held 0.2 -> caught swing #3 at 38.933 (frame 16) x 8213.0
+  80.633 x 16179.1 y 910 off log #76 held 0.2 -> caught swing #5 at 80.900 (frame 8) x 16309.2
+== 2-4 adult-normal-32
+CI-10 shrine 171.9 r0 stuck [{'x': 21985, 'what': 'on a vine at 21985,740 with no way on'}] | CI-11 shrine 163.3 r0 stuck [{'x': 21985, 'what': 'on a vine at 21985,740 with no way on'}]
+part at frame 1133 t 37.800: CI-10 x 8141.60 y 938.00 | CI-11 x 8144.10 y 918.78; before: x 8130.18 on #37 g1
+  CI-10 presses near: ['36.967 x7904.1 on#29 single h0.20765652112320013', '37.800 x8141.6 on#37 single h0.2']
+    CI-10 36.967 -> down on #37 at 37.700 (frame 22) x 8106.8 y 938
+    CI-10 37.800 -> caught swing #3 at 38.067 (frame 8) x 8268.1
+  CI-11 presses near: ['36.967 x7904.1 on#29 single h0.20765652112320013', '37.767 x8130.2 on#37 single h0.2 STAND h0.2']
+    CI-11 36.967 -> down on #37 at 37.700 (frame 22) x 8106.8 y 938
+    CI-11 37.767 -> caught swing #3 at 38.067 (frame 9) x 8265.5
+CI-11 standing presses (all):
+  37.767 x 8130.2 y 938 off log #37 held 0.2 -> caught swing #3 at 38.067 (frame 9) x 8265.5
+  154.567 x 28274.9 y 888 off log #119 held 0.2 -> caught swing #13 at 155.067 (frame 15) x 28442.4
+== 2-4 child-easy-11
+CI-10 shrine 239.2 r0 stuck [] | CI-11 shrine 239.7 r0 stuck []
+part at frame 2458 t 81.967: CI-10 x 10718.19 y 1002.00 | CI-11 x 10723.58 y 982.78; before: x 10715.69 on #50 g1
+  CI-10 presses near: ['82.033 x10723.2 on#50 single h0.10904039028286934']
+    CI-10 82.033 -> caught swing #4 at 82.400 (frame 11) x 10863.8
+  CI-11 presses near: ['81.933 x10715.7 on#50 single h0.16 STAND h0.16']
+    CI-11 81.933 -> caught swing #4 at 82.333 (frame 12) x 10880.7
+CI-11 standing presses (all):
+  81.933 x 10715.7 y 1002 off log #50 held 0.16 -> caught swing #4 at 82.333 (frame 12) x 10880.7
+== 2-4 child-easy-23
+CI-10 shrine 256.4 r0 stuck [{'x': 8160, 'what': 'on a vine at 8160,790 with no way on'}] | CI-11 shrine 246.8 r0 stuck [{'x': 8160, 'what': 'on a vine at 8160,790 with no way on'}]
+part at frame 2902 t 96.767: CI-10 x 10428.94 y 965.00 | CI-11 x 10438.11 y 945.78; before: x 10424.50 on #47 g1
+  CI-10 presses near: ['95.767 x10149.4 on#41 single h0.1401759237898514', '96.967 x10443.9 on#47 double h0.16']
+    CI-10 95.767 -> down on #47 at 96.367 (frame 18) x 10315.2 y 965
+    CI-10 96.967 -> caught swing #4 at 97.233 (frame 8) x 10544.8
+  CI-11 presses near: ['95.767 x10149.4 on#41 single h0.1401759237898514', '96.733 x10424.5 on#47 single h0.16 STAND h0.16']
+    CI-11 95.767 -> down on #47 at 96.367 (frame 18) x 10315.2 y 965
+    CI-11 96.733 -> caught swing #4 at 97.000 (frame 8) x 10493.3
+CI-11 standing presses (all):
+  96.733 x 10424.5 y 965 off log #47 held 0.16 -> caught swing #4 at 97.000 (frame 8) x 10493.3
+  187.833 x 22626.0 y 891 off log #105 held 0.16 -> caught swing #9 at 187.933 (frame 3) x 22698.8
+  200.233 x 24283.6 y 891 off log #113 held 0.16 -> caught swing #11 at 200.300 (frame 2) x 24337.2
+  228.667 x 28302.8 y 888 off log #129 held 0.16 -> caught swing #13 at 229.033 (frame 11) x 28466.7
+== 2-4 child-normal-8
+CI-10 shrine 330.7 r0 stuck [{'x': 22044, 'what': 'on a vine at 22044,758 with no way on'}, {'x': 24471, 'what': 'on a vine at 24471,851 with no way on'}] | CI-11 shrine 341.7 r0 stuck []
+part at frame 3599 t 120.000: CI-10 x 10795.43 y 957.00 | CI-11 x 10800.99 y 937.78; before: x 10792.77 on #46 g1
+  CI-10 presses near: []
+  CI-11 presses near: ['119.967 x10792.8 on#46 single h0.16 STAND h0.16']
+    CI-11 119.967 -> caught swing #4 at 120.267 (frame 9) x 10849.8
+CI-11 standing presses (all):
+  119.967 x 10792.8 y 957 off log #46 held 0.16 -> caught swing #4 at 120.267 (frame 9) x 10849.8
+== 2-4 child-normal-39
+CI-10 shrine 350.8 r0 stuck [{'x': 21362, 'what': 'on a vine at 21362,793 with no way on'}] | CI-11 shrine 345 r0 stuck [{'x': 21375, 'what': 'drowned going on from here'}]
+part at frame 3265 t 108.867: CI-10 x 10889.79 y 936.00 | CI-11 x 10895.34 y 916.78; before: x 10887.12 on #47 g1
+  CI-10 presses near: []
+  CI-11 presses near: ['108.833 x10887.1 on#47 single h0.16 STAND h0.16']
+    CI-11 108.833 -> caught swing #4 at 109.167 (frame 10) x 10942.3
+CI-11 standing presses (all):
+  108.833 x 10887.1 y 936 off log #47 held 0.16 -> caught swing #4 at 109.167 (frame 10) x 10942.3
+  166.467 x 16266.9 y 937 off log #77 held 0.16 -> caught swing #5 at 166.567 (frame 3) x 16341.7
+  181.867 x 16814.1 y 937 off log #76 held 0.16 -> down on #70 at 182.500 (frame 42) x 16024.0 y 909
+  255.333 x 21783.2 y 837 off log #100 held 0.16 -> caught swing #8 at 255.667 (frame 10) x 21857.5
+  321.500 x 28287.1 y 888 off log #121 held 0.16 -> caught swing #13 at 321.800 (frame 9) x 28301.3
+== 2-4 kid-easy-2
+CI-10 shrine 149.2 r1 stuck [{'x': 17053, 'what': 'set down here 3 times'}, {'x': 28395, 'what': 'on a vine at 28395,764 with no way on'}] | CI-11 shrine 168.7 r0 stuck []
+part at frame 2096 t 69.900: CI-10 x 16148.28 y 925.78 | CI-11 x 16145.61 y 945.00; before: x 16133.44 on #77 g1
+  CI-10 presses near: ['69.867 x16133.4 on#77 single h0.22883422167294154']
+    CI-10 69.867 -> caught swing #5 at 70.200 (frame 10) x 16293.9
+  CI-11 presses near: ['69.900 x16145.6 on#77 single h0.16 STAND h0.16']
+    CI-11 69.900 -> caught swing #5 at 70.200 (frame 9) x 16297.6
+CI-11 standing presses (all):
+  69.900 x 16145.6 y 945 off log #77 held 0.16 -> caught swing #5 at 70.200 (frame 9) x 16297.6
+  113.533 x 21798.2 y 822 off log #105 held 0.16 -> caught swing #8 at 113.933 (frame 12) x 21964.2
+  126.000 x 23335.4 y 822 off log #111 held 0.16 -> down on #112 at 126.567 (frame 17) x 23488.7 y 822
+  138.467 x 24988.8 y 822 off log #113 held 0.16 -> caught swing #12 at 138.833 (frame 11) x 25138.0
+== 2-4 kid-easy-12
+CI-10 shrine 181 r0 stuck [{'x': 7062, 'what': 'on a vine at 7062,894 with no way on'}, {'x': 8204, 'what': 'on a vine at 8204,848 with no way on'}] | CI-11 shrine 172.7 r0 stuck []
+part at frame 887 t 29.600: CI-10 x 7129.40 y 1013.00 | CI-11 x 7134.62 y 993.78; before: x 7127.07 on #35 g1
+  CI-10 presses near: ['29.667 x7134.1 on#35 single h0.24050126833073748']
+    CI-10 29.667 -> caught swing #2 at 30.100 (frame 13) x 7308.3
+  CI-11 presses near: ['29.567 x7127.1 on#35 single h0.16 STAND h0.16']
+    CI-11 29.567 -> caught swing #2 at 30.133 (frame 17) x 7320.8
+CI-11 standing presses (all):
+  29.567 x 7127.1 y 1013 off log #35 held 0.16 -> caught swing #2 at 30.133 (frame 17) x 7320.8
+  52.233 x 10653.3 y 1013 off log #47 held 0.16 -> caught swing #4 at 52.533 (frame 9) x 10795.5
+  76.367 x 16170.3 y 995 off log #75 held 0.16 -> caught swing #5 at 76.667 (frame 9) x 16316.3
+  84.667 x 16641.8 y 995 off log #74 held 0.16 -> caught swing #6 at 85.033 (frame 11) x 16799.4
+  113.667 x 21708.2 y 889 off log #104 held 0.16 -> caught swing #8 at 114.000 (frame 10) x 21852.6
+  126.000 x 23263.6 y 889 off log #110 held 0.16 -> caught swing #10 at 126.400 (frame 12) x 23428.5
+  137.600 x 24356.3 y 889 off log #116 held 0.16 -> caught swing #11 at 137.667 (frame 2) x 24415.7
+== 2-4 kid-easy-13
+CI-10 shrine 172.3 r1 stuck [{'x': 10970, 'what': 'set down here 3 times'}] | CI-11 shrine 172.2 r0 stuck [{'x': 21883, 'what': 'on a vine at 21883,739 with no way on'}]
+part at frame 354 t 11.833: CI-10 x 3059.31 y 945.00 | CI-11 x 3064.87 y 925.78; before: x 3056.64 on #13 g1
+  CI-10 presses near: ['11.867 x3062.0 on#13 single h0.14602315713444786']
+    CI-10 11.867 -> caught swing #1 at 12.300 (frame 13) x 3239.6
+  CI-11 presses near: ['11.800 x3056.6 on#13 single h0.16 STAND h0.16']
+    CI-11 11.800 -> caught swing #1 at 12.300 (frame 15) x 3250.3
+CI-11 standing presses (all):
+  11.800 x 3056.6 y 945 off log #13 held 0.16 -> caught swing #1 at 12.300 (frame 15) x 3250.3
+  52.667 x 10498.4 y 974 off log #46 held 0.16 -> caught swing #4 at 53.033 (frame 11) x 10664.6
+  84.433 x 16735.4 y 979 off log #75 held 0.16 -> down on #76 at 85.000 (frame 17) x 16889.3 y 979
+  126.133 x 23429.4 y 884 off log #112 held 0.16 -> caught swing #10 at 126.500 (frame 11) x 23581.3
+== 2-4 kid-easy-19
+CI-10 shrine 178.8 r0 stuck [] | CI-11 shrine 169 r1 stuck [{'x': 16822, 'what': 'set down here 3 times'}]
+part at frame 356 t 11.900: CI-10 x 3051.32 y 901.00 | CI-11 x 3056.88 y 881.78; before: x 3048.66 on #13 g1
+  CI-10 presses near: ['11.933 x3054.0 on#13 single h0.12183895727603869']
+    CI-10 11.933 -> caught swing #1 at 12.400 (frame 14) x 3229.7
+  CI-11 presses near: ['11.867 x3048.7 on#13 single h0.16 STAND h0.16']
+    CI-11 11.867 -> caught swing #1 at 12.367 (frame 15) x 3237.1
+CI-11 standing presses (all):
+  11.867 x 3048.7 y 901 off log #13 held 0.16 -> caught swing #1 at 12.367 (frame 15) x 3237.1
+  50.333 x 10437.6 y 904 off log #46 held 0.16 -> caught swing #4 at 50.567 (frame 7) x 10463.9
+  73.600 x 15956.8 y 904 off log #74 held 0.16 -> caught swing #5 at 73.700 (frame 3) x 16052.6
+  97.700 x 16434.6 y 904 off log #73 held 0.16 -> down on #74 at 98.267 (frame 17) x 16588.6 y 904
+  129.400 x 23353.7 y 853 off log #109 held 0.16 -> caught swing #10 at 129.633 (frame 7) x 23344.0
+  141.800 x 24780.9 y 853 off log #116 held 0.16 -> caught swing #12 at 142.167 (frame 11) x 24932.6
+== 2-4 kid-easy-20
+CI-10 shrine 178.7 r1 stuck [{'x': 17149, 'what': 'set down here 3 times'}] | CI-11 shrine 171.9 r1 stuck [{'x': 17149, 'what': 'set down here 3 times'}]
+part at frame 3406 t 113.567: CI-10 x 21928.60 y 891.00 | CI-11 x 21934.15 y 871.78; before: x 21925.93 on #106 g1
+  CI-10 presses near: ['113.700 x21939.3 on#106 single h0.06666666666666667']
+    CI-10 113.700 -> down on #107 at 114.133 (frame 13) x 22056.4 y 891
+  CI-11 presses near: ['113.533 x21925.9 on#106 single h0.16 STAND h0.16']
+    CI-11 113.533 -> caught swing #8 at 113.933 (frame 12) x 22090.2
+CI-11 standing presses (all):
+  113.533 x 21925.9 y 891 off log #106 held 0.16 -> caught swing #8 at 113.933 (frame 12) x 22090.2
+  126.033 x 23457.3 y 891 off log #112 held 0.16 -> down on #113 at 126.600 (frame 17) x 23610.6 y 891
+  140.433 x 24732.7 y 891 off log #118 held 0.16 -> caught swing #11 at 140.500 (frame 2) x 24776.2
+  144.933 x 25137.9 y 891 off log #118 held 0.16 -> caught swing #12 at 145.333 (frame 12) x 25291.7
+== 2-4 kid-easy-35
+CI-10 shrine 185.4 r1 stuck [{'x': 10812, 'what': 'set down here 3 times'}, {'x': 22773, 'what': 'on a vine at 22773,752 with no way on'}, {'x': 28417, 'what': 'on a vine at 28417,799 with no way on'}] | CI-11 shrine 171.9 r0 stuck [{'x': 24412, 'what': 'on a vine at 24412,761 with no way on'}]
+part at frame 1412 t 47.100: CI-10 x 10504.72 y 975.00 | CI-11 x 10510.11 y 955.78; before: x 10502.22 on #48 g1
+  CI-10 presses near: []
+  CI-11 presses near: ['47.067 x10502.2 on#48 single h0.16 STAND h0.16']
+    CI-11 47.067 -> caught swing #4 at 47.400 (frame 10) x 10565.7
+CI-11 standing presses (all):
+  47.067 x 10502.2 y 975 off log #48 held 0.16 -> caught swing #4 at 47.400 (frame 10) x 10565.7
+  70.133 x 16074.8 y 955 off log #77 held 0.16 -> caught swing #5 at 70.433 (frame 9) x 16234.5
+  96.967 x 21814.2 y 858 off log #105 held 0.16 -> caught swing #8 at 97.400 (frame 13) x 21980.4
+  134.667 x 25115.1 y 858 off log #115 held 0.16 -> caught swing #12 at 135.033 (frame 11) x 25257.4
+  159.433 x 28586.9 y 888 off log #131 held 0.16 -> caught swing #13 at 159.633 (frame 6) x 28702.7

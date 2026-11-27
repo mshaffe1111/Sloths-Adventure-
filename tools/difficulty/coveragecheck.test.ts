@@ -5,7 +5,7 @@ import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import path from 'node:path';
 import { judge, unionOf, fieldUnionOf, beatFamiliesOf, resolves, vocabulary, TABLE_FILE, KNOWN_FILE, type Table } from './coveragecheck.ts';
-import { scoreStage, unpriced, UnpricedPiece, COVERAGE_KNOWN, type CoverageKnown } from './score.ts';
+import { scoreStage, unpriced, UnpricedPiece, COVERAGE_KNOWN, piecesUsed, type CoverageKnown } from './score.ts';
 
 const ROOT = path.resolve(import.meta.dirname, '../..');
 const TABLE: Table = JSON.parse(fs.readFileSync(path.join(ROOT, TABLE_FILE), 'utf8'));
@@ -75,4 +75,20 @@ test("on real stages: a stage with an unpriced piece is refused (4-2's wind), ne
   assert.ok(crumble.length > 0, '1-4 has its crumbling branch');
   for (const c of crumble) { assert.equal(c.bits, 2); assert.match(c.note, /\[unpriced: beat:crumbling branches, known R-165\.272\]/); }
   assert.ok(r.pieces.includes('beat:crumbling branches') && r.pieces.includes('platform:fragile') && r.pieces.includes('move:climb'));
+});
+
+test("a water wheel's bucket is the wheel's piece (move:wheel), not a moving floor; with no rideWheel bot the gate still FAILS (b)", () => {
+  // (2-6's buckets, gen2/wheelLay.ts: 'moving' platforms with `wheel`; INT-R5: they read as platform:moving, which has no bot)
+  const st = { platforms: [{ id: 1, x: 0, y: 0, width: 40, height: 12, type: 'moving', wheel: { i: 0 } }, { id: 2, x: 0, y: 0, width: 40, height: 12, type: 'moving' }] };
+  const got = piecesUsed(st, { segs: [] } as never, []);
+  assert.ok(got.includes('move:wheel'), got.join(' '));
+  assert.ok(got.includes('platform:moving'), 'a moving floor that is no bucket is still platform:moving');
+  const onlyBucket = piecesUsed({ platforms: [st.platforms[0]] }, { segs: [] } as never, []);
+  assert.ok(!onlyBucket.includes('platform:moving'), onlyBucket.join(' '));
+  // (the plant: the wheel's bot taken away, a stage with a bucket fails by name; platform:moving keeps bot null)
+  assert.equal(TABLE.pieces['platform:moving'].bot, null);
+  const t: Table = { ...TABLE, pieces: { ...TABLE.pieces, 'move:wheel': { ...TABLE.pieces['move:wheel'], bot: null } } };
+  const f = faults(VOCAB, t, [...COVERAGE_KNOWN], uses(['move:wheel', '2-6']));
+  assert.ok(f.some((x) => x.startsWith('(b) move:wheel on 2-6: no bot')), f.join('\n'));
+  assert.ok(!faults(VOCAB, TABLE, [...COVERAGE_KNOWN], uses(['move:wheel', '2-6'])).some((x) => x.includes('move:wheel')), 'with rideWheel the wheel passes');
 });

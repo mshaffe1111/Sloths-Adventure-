@@ -1,0 +1,10 @@
+child easy v1: shrine 156.9 s, lives 0, put-backs 0, rescues 0 | teachL 15.5s sc0 pd0, edgeR 13.2s sc0 pd0, topR 10.3s sc0 pd0, edgeR 12.7s sc0 pd0, greatL 15.2s sc0 pd0
+child easy v2: shrine 142.8 s, lives 0, put-backs 0, rescues 0 | teachL 12.2s sc0 pd0, edgeR 14.2s sc0 pd0, topR 9s sc0 pd0, edgeR 8.5s sc0 pd0, greatL 12.3s sc0 pd0
+child normal v1: shrine 142.1 s, lives 0, put-backs 0, rescues 0 | teachL 12.2s sc0 pd0, edgeR 12s sc0 pd0, topR 11s sc1 pd0, edgeR 9.4s sc0 pd0, greatL 11.5s sc0 pd0
+child normal v2: shrine 157.5 s, lives 0, put-backs 0, rescues 0 | teachL 9.4s sc0 pd0, edgeR 11.1s sc0 pd0, topR 10.1s sc0 pd0, edgeR 8.4s sc0 pd0, greatL 13.7s sc0 pd0
+middle normal v1: shrine 110.9 s, lives 0, put-backs 0, rescues 0 | teachL 10.8s sc0 pd0, edgeR 9.9s sc0 pd0, topR 7s sc0 pd0, edgeR 7.7s sc0 pd0, greatL 10.4s sc0 pd0
+middle normal v2: shrine 110.9 s, lives 0, put-backs 0, rescues 0 | teachL 10.7s sc0 pd0, edgeR 8.9s sc0 pd0, topR 8.2s sc0 pd0, edgeR 6.2s sc0 pd0, greatL 10.9s sc0 pd0
+middle easy v1: shrine 123.3 s, lives 0, put-backs 0, rescues 0 | teachL 11.7s sc0 pd0, edgeR 14.6s sc0 pd0, topR 8.4s sc1 pd0, edgeR 13.6s sc0 pd0, greatL 11.9s sc0 pd0
+middle easy v2: shrine 124.9 s, lives 0, put-backs 0, rescues 0 | teachL 11.9s sc0 pd0, edgeR 14.4s sc0 pd0, topR 8.7s sc1 pd0, edgeR 12.9s sc0 pd0, greatL 11.7s sc0 pd0
+expert normal v1: shrine 102.4 s, lives 0, put-backs 0, rescues 0 | teachL 9.9s sc0 pd0, edgeR 7.6s sc0 pd0, topR 9.3s sc0 pd0, edgeR 8s sc0 pd0, greatL 9.7s sc0 pd0
+expert normal v2: shrine 121 s, lives 0, put-backs 0, rescues 0 | teachL 9.6s sc0 pd0, edgeR 9s sc0 pd0, topR 6s sc0 pd0, edgeR 8.1s sc0 pd0, greatL 10.6s sc0 pd0

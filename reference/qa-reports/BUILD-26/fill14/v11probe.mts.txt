@@ -1,0 +1,5 @@
+import '../../../../src/game/headlessDom.ts';
+const { provenSeeds, provenSeedFor } = await import('../../../../src/game/gen2/seedList.ts');
+const { listedRoll } = await import('../../../../src/game/stageGenerator.ts');
+const s = provenSeeds('1-1');
+console.log('1-1 n', s.length, 'seeds[10]', s[10], 'seeds[11]', s[11], 'provenSeedFor(11)', provenSeedFor('1-1', 11), 'listedRoll(1-1)', !!listedRoll({ id: '1-1' } as any), 'listedRoll(1-4)', !!listedRoll({ id: '1-4' } as any));

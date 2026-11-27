@@ -1,0 +1,12 @@
+const [root, id, seedS, d] = process.argv.slice(2);
+await import(`${root}/src/game/headlessDom.ts`);
+const { generateAllLevels } = await import(`${root}/src/game/worldsData.ts`);
+const { buildGen2Stage } = await import(`${root}/src/game/gen2/pipeline.ts`);
+const { listedStage } = await import(`${root}/src/game/gen2/listed.ts`);
+const cfg = generateAllLevels().find((l: any) => l.id === id)!;
+(globalThis as any).__tcWhy = [];
+const st: any = buildGen2Stage({ config: { ...cfg, unlocked: true }, kit: listedStage(id)!.kit(), seed: Number(seedS), difficulty: d });
+console.log('errors', JSON.stringify(st.gen2.errors ?? []).slice(0, 600), 'W', st.config.levelWidth);
+const w: string[] = (globalThis as any).__tcWhy;
+const want = (process.argv[6] ?? '8120').split(',');
+for (const l of w) console.log(l);

@@ -1,0 +1,59 @@
+// s9-judge: a CI-11 standing vineFromLog press, the judge's own flights (every lag, vx, free; hopCatchAt's hopFrame re-flown here frame
+// by frame with canGrabSwing) beside the engine's frames after the press (x y vx vy held, the bot's pad).
+// usage: npx tsx s9-judge.mts <tree> <stage> <bot> <setting> <seed> <tDecide>
+const [T, stage, bot, setting, seedS, tdS] = process.argv.slice(2);
+const td = Number(tdS);
+await import(T + '/src/game/headlessDom.ts');
+const ft: any = await import(T + '/tools/inspect/firsttimer.ts');
+const cb: any = await import(T + '/tools/inspect/castBots.ts');
+const ph: any = await import(T + '/src/game/physics.ts');
+const { DT } = await import(T + '/src/game/realPlay.ts') as any;
+const { PHYS, takeOffStep, airStep, canGrabSwing } = ph;
+const P = ft.FirstTimerRun.prototype, vf = P.vineFromLog, th = P.thumbify;
+let J: any = null; const eng: string[] = []; const pads: string[] = [];
+P.vineFromLog = function (this: any, p: any, dir: number, t: number) {
+  if (t > td - 0.6 && t < td + DT / 2 && !J) {
+    const here = this.sim.platforms.find((q: any) => q.id === this.sim.standingOn);
+    const v = this.sim.vines.filter((q: any) => (q.vineType === 'swing_liana' || q.isSwingingVine) && !q.off && dir * (q.x - p.x) > -30 && dir * (q.x - p.x) < 420)[0];
+    J = { t, x: p.x, y: p.y, vx: p.vx, dir, log: here?.id, logX: here?.x, v, clock: this.e.vineClock, travelUntil: this.travelUntil, driftUntil: this.driftUntil, steerFrom: this.steerFrom(dir, t), thumb: this.who.thumb, hold: this.pressHold() };
+    const r0 = vf.call(this, p, dir, t);
+    if (!(this.standHold && Math.abs(this.standHold.t - t) < 1e-6) && !(this.jump && Math.abs(this.jump.t0 - t) < 1e-6 && this.jump.hold === J.hold)) { J = null; jt = -1; }
+    return r0;
+  }
+  return vf.call(this, p, dir, t);
+};
+let jt = -1; const sj0 = P.startJump; P.startJump = function (this: any, ...q: any[]) { const o = sj0.apply(this, q); if (J && jt < 0 && this.t >= J.t - 1e-6) jt = +this.t.toFixed(3); return o; };
+P.thumbify = function (this: any, want: any) { const o = th.call(this, want); if (this.t > td - 0.05 && this.t < td + 0.6) pads.push(`${this.t.toFixed(3)} want ${want.right ? 'R' : want.left ? 'L' : '-'}${want.jump ? 'J' : ''} out ${o.right ? 'R' : o.left ? 'L' : '-'}${o.jump ? 'J' : ''}`); return o; };
+let logNext: number | null = null;
+ft.firstTimer(stage, Number(seedS), cb.CAST_BOTS[bot][setting], { cap: Math.ceil(td) + 2, dotSetting: true, onFrame: (sim: any) => {
+  const e = sim.e, p = e.player;
+  if (J && logNext === null) logNext = sim.platforms.find((q: any) => q.id === J.log).x;
+  if (sim.t > td - 0.01 && sim.t < td + 0.7) eng.push(`${sim.t.toFixed(3)} x ${p.x.toFixed(2)} y ${p.y.toFixed(2)} vx ${p.vx.toFixed(1)} vy ${p.vy.toFixed(1)} g ${p.grounded ? 1 : 0} held ${e.input?.state?.jumpHeld ? 1 : 0} grab ${J?.v && canGrabSwing(p.x, p.y, J.v) ? 1 : 0} sw ${p.isVineSwinging ? p.swingVineId : '-'}`);
+} });
+const carry = ((logNext! - J.logX) / DT) * 1; // RIDE.keep.x printed below
+const ride: any = await import(T + '/src/game/ride.ts');
+const keep = ride.RIDE.keep.x, cv = carry * keep;
+console.log('JUDGE', 'pressAt', jt, 'off', (jt - J.t).toFixed(3), JSON.stringify({ ...J, v: { id: J.v.id, x: J.v.x, y: J.v.y }, carryRaw: carry, keep }));
+const [mid, sd] = J.thumb;
+for (const lag of [mid, Math.max(0, mid - sd / 2), mid + sd / 2]) {
+  const aim = ft.hopAim(lag);
+  const tp = J.t + Math.round(aim.off / DT) * DT;
+  const n = (from: number) => Math.max(0, Math.ceil((from - tp) / DT - 1e-6));
+  const frees = [...new Set([n(Math.max(tp, J.travelUntil, J.driftUntil)), n(J.steerFrom)])];
+  for (const vx of [J.vx, 0]) for (const free of frees) {
+    const x = J.x + (vx + cv) * aim.off, hold = J.hold + DT, t0 = J.clock + aim.clock, b = { x, y: J.y, vx: vx + cv - cv, vy: -PHYS.jumpV };
+    const path: string[] = []; let at = -1;
+    for (let i = 1; i < 40; i++) {
+      const held = i * DT < hold;
+      if (!held && b.vy < -PHYS.cutV) b.vy = -PHYS.cutV;
+      if (i === 1) takeOffStep(b, DT, i <= free ? 0 : J.dir, held, cv); else airStep(b, DT, i <= free ? 0 : J.dir, held);
+      const g = canGrabSwing(b.x, b.y, J.v, t0 + i * DT);
+      path.push(`${i}:${b.x.toFixed(1)},${b.y.toFixed(1)}${held ? 'H' : ''}${g ? '*' : ''}`);
+      if (g && at < 0) { at = i; break; }
+      if (b.y > J.y + 200) break;
+    }
+    console.log(`MODEL lag ${lag.toFixed(3)} off ${aim.off.toFixed(3)} vx ${vx} free ${free} (frees ${frees}) catch@${at}: ${path.join(' ')}`);
+  }
+}
+for (const l of pads) console.log('PAD', l);
+for (const l of eng) console.log('ENG', l);

@@ -1,0 +1,233 @@
+From 36669742f07d20ffe48c022eba5c280070f3dd1e Mon Sep 17 00:00:00 2001
+From: BUILD-26m <noreply@anthropic.com>
+Date: Sun, 22 Nov 2026 02:27:39 +0000
+Subject: [PATCH] cut 5 re-judged: 477258310 + cut5 patch + the bound
+ (BUILD-26l figsWork 8 s, vine stuck spot) hand-merged
+
+---
+ tools/inspect/castBots.test.ts | 57 ++++++++++++++++++++++++++++++++++
+ tools/inspect/figPush.ts       | 12 +++++++
+ tools/inspect/firsttimer.ts    | 56 +++++++++++++++++++++++++++------
+ 3 files changed, 116 insertions(+), 9 deletions(-)
+
+diff --git a/tools/inspect/castBots.test.ts b/tools/inspect/castBots.test.ts
+index b0e455b53..c82e07dc8 100644
+--- a/tools/inspect/castBots.test.ts
++++ b/tools/inspect/castBots.test.ts
+@@ -285,3 +285,60 @@ test('at a climbing vine\'s foot, come in going away from it, the tier bot jumps
+   const planted = play(true);
+   assert.ok(planted.low > 1300, `PLANT: with the skill taken away he doubles off the ledge's end onto the street (lowest y ${planted.low})`);
+ });
++
++test('fallen from a leg to the floor 379 px under it, Progress rewinds to the way up: he walks to the vine and climbs, never hops under the leg (BUILD-26f, 2-6 adult N 26)', async () => {
++  const { FirstTimerRun, FT_ADULT } = await import('./firsttimer.ts');
++  // (2-6 Normal seed 26's ground there, 3118 px higher: the floor #28/#35/#36/#84 at y 1000, its seams opened to 40 px gaps so he hops
++  //  along it as he did there (every hop took `off` under 260 in the air: b26f/dbgOff.txt), the leg #37/#38/#39 at y 621
++  //  with the dips #41/#42 at 691 between them, the climbing vine V#6 from the floor to the leg, here at the
++  //  leg's right end 790 px from him (x 1900; there 1587, 480 px), so no hop of his drifts him to it; b26e/win.mts)
++  const plats = [
++    { id: 1, x: 400, y: 1000, width: 425, height: 100, type: 'solid' },
++    { id: 28, x: 825, y: 1000, width: 280, height: 24, type: 'solid' },
++    { id: 35, x: 1145, y: 1000, width: 220, height: 24, type: 'solid' },
++    { id: 36, x: 1405, y: 1000, width: 200, height: 24, type: 'solid' },
++    { id: 90, x: 0, y: 1400, width: 2000, height: 100, type: 'solid' },
++    { id: 84, x: 1605, y: 1000, width: 395, height: 24, type: 'solid' },
++    { id: 37, x: 1321, y: 621, width: 594, height: 24, type: 'solid' },
++    { id: 38, x: 1029, y: 621, width: 200, height: 24, type: 'solid' },
++    { id: 39, x: 744, y: 621, width: 200, height: 24, type: 'solid' },
++    { id: 41, x: 1229, y: 691, width: 92, height: 24, type: 'solid' },
++    { id: 42, x: 944, y: 691, width: 85, height: 24, type: 'solid' },
++  ];
++  const vine = { id: 6, x: 1900, topY: 621, bottomY: 1000, swaySpeed: 0, swayPhase: 0, vineType: 'tree_climb' };
++  const legY = (x: number) => (x > 1229 && x < 1321) || (x > 944 && x < 1029) ? 691 : 621;
++  const floor = Array.from({ length: 62 }, (_, i) => ({ x: 430 + i * 24, y: 1000 }));
++  const climb = Array.from({ length: 16 }, (_, i) => ({ x: 1900, y: 1000 - i * 24 }));
++  const leg = Array.from({ length: 47 }, (_, i) => ({ x: 1876 - i * 24, y: legY(1876 - i * 24) }));
++  const route = [...floor, ...climb, ...leg];
++  const at = floor.length + climb.length + leg.findIndex((q) => q.x < 1170);
++  const back = floor.length + climb.length;
++  const play = (plant: boolean) => {
++    let top = 9999, frames = 0, rewound = -1;
++    // eslint-disable-next-line prefer-const
++    let run: InstanceType<typeof FirstTimerRun>;
++    const onFrame = (s: { p: { y: number } }) => {
++      top = Math.min(top, s.p.y);
++      frames++;
++      if (rewound < 0 && run.prog.cur < back) rewound = frames / 30;
++    };
++    run = new FirstTimerRun('1-1', 1, { ...FT_ADULT, look: 0 }, { route, cap: 20, rescueAfter: 100, onFrame });
++    run.sim.bare(plats as never, [vine as never]);
++    run.sim.stand(1109, 1000);
++    run.sim.p.facing = 1;
++    if (plant) (run.prog as unknown as { under: () => boolean }).under = () => false;
++    // (his place along the way is still on the leg over his head, as Progress kept it after the fall: #38's point at x ~1167)
++    run.prog.cur = run.prog.hi = run.prog.best = at;
++    run.play();
++    return { x: Math.round(run.sim.p.x), y: Math.round(run.sim.p.y), top: Math.round(top), rewound, rescues: (run as unknown as { rescueXs: number[] }).rescueXs.length };
++  };
++  // (the fix: Progress goes back to the floor within 1.5 s whatever his hops do, and he walks to the vine and climbs onto the leg)
++  const up = play(false);
++  // (1.5 s: the rewind waits out 0.5 s of the clock and his first hop; 1.23 s on the fix, 4.5 s on 2f188c552)
++  assert.ok(up.rewound >= 0 && up.rewound <= 1.5, `his place along the way goes back to the floor within 1.5 s (at ${up.rewound} s)`);
++  assert.ok(up.top < 700 && up.rescues === 0, `he climbs the vine onto the leg, no rescue (ends ${up.x},${up.y}, highest y ${up.top}, rescues ${up.rescues})`);
++  // (the plant: every hop resets the fall-back clock in the air, so it stays on the leg while he hops under it. Here a still moment
++  //  between hops lets the old rewind fire late (about 5.6 s); on 2-6 none came, and he hopped 19.6 s to a rescue)
++  const planted = play(true);
++  assert.ok(planted.rewound < 0 || planted.rewound > 2.5, `PLANT: with the rewind taken away his place stays on the leg through his hops (back at ${planted.rewound} s)`);
++});
+diff --git a/tools/inspect/figPush.ts b/tools/inspect/figPush.ts
+index cf059ef33..349895835 100644
+--- a/tools/inspect/figPush.ts
++++ b/tools/inspect/figPush.ts
+@@ -48,6 +48,11 @@ export class FigPush {
+     return !!this.target || t - this.lastAct < 4;
+   }
+ 
++  /** when the field last moved under his work (a fig bunch torn free or gone, a gate sprung open): the bot's no-progress clock lets his
++   *  work off only while it gets somewhere (firsttimer.ts figsWork; BUILD-26l, 1-4 adult N 39's shuffle under a gate, 1200 s) */
++  changedAt = -1e9;
++  private sig = -1;
++
+   /** a pod knocked him off in the last few seconds: a fall that is a hit, not a missed climb (the bot's fell-back count leaves it out) */
+   knockedRecently(t: number): boolean {
+     return t - this.lastKnock < 6;
+@@ -79,6 +84,13 @@ export class FigPush {
+   /** this frame's thumb, or null (the bot's own climb) */
+   step(v: FieldView, p: PlayerState, t: number): Pad | null {
+     if ((v.knocked ?? 0) > 0) this.lastKnock = t;
++    if (v.field) {
++      const sig = v.clusters.filter((c) => c.falling || c.gone).length * 1000 + v.field.gates.filter((g) => gateLeft(g, v.clusters) === 0).length;
++      if (sig !== this.sig) {
++        if (this.sig >= 0) this.changedAt = t;
++        this.sig = sig;
++      }
++    }
+     if (Math.abs(p.x - this.movedAt.x) > 2 || Math.abs(p.y - this.movedAt.y) > 2) this.movedAt = { x: p.x, y: p.y, t };
+     const pad = this.choose(v, p, t);
+     if (pad) this.lastAct = t;
+diff --git a/tools/inspect/firsttimer.ts b/tools/inspect/firsttimer.ts
+index 27df90084..35389bb60 100644
+--- a/tools/inspect/firsttimer.ts
++++ b/tools/inspect/firsttimer.ts
+@@ -66,6 +66,9 @@ import type { TrapPost } from '../../src/game/castPlay.types.ts';
+ import { findRoute } from './route.ts';
+ import { markUp } from './markClimb.ts';
+ import { FigPush, type FieldView } from './figPush.ts';
++/** s the figs' work keeps the no-progress clock off with nothing moving (no fig freed, no gate opened, no step further on): the bot's
++ *  own stuck rule, RULES.wayOn ('never stopped 8 s with no progress'), read where it is used (the lead's ruling, D116: no number by eye) */
++const figGrace = () => RULES.wayOn.stuckSecs;
+ /** the objectives whose goal is a count (engine.ts isQuotaType); every other stage's goal is the shrine */
+ const QUOTA_TYPES = new Set(['harvest', 'purge', 'relic_hunt', 'rescue', 'gauntlet']);
+ import { buildRoll } from './eraRoll.ts';
+@@ -426,6 +429,8 @@ export interface Pt { x: number; y: number; /** a point along a shimmy rope (rou
+ const PIN_AT = 50;
+ /** px: how far along x a fallen bot's `level` point may be (Progress.relocate); past it, the plain nearest point (ENG-285) */
+ export const LEVEL_REACH = 600;
++/** px: more than a double's reach under the point he is at along the way: he fell off it (Progress.under, BUILD-26f) */
++export const UNDER_REACH = 175;
+ export class Progress {
+   cur = 0;
+   hi = 0;
+@@ -475,13 +480,23 @@ export class Progress {
+   off(p: Pt): number {
+     return this.pts.length ? this.d(this.cur, p) : 0;
+   }
++  /** he stands more than a double's reach under the point he is at, and the way has a point about his height near him to go back to:
++   *  he fell off the leg he was on, and the way on starts back at his height (the climb that leads up). BUILD-26f, 2-6 adult N 26 and 33:
++   *  he fell from the leg at y 3741 to the floor at y 4118; his hops along the floor kept `off` under 260 in the air, so the fall-back
++   *  rewind never fired, cur stayed on the leg 379 px over his head and he jumped to and fro under it, never to the vine at x 1587 */
++  under(p: Pt): boolean {
++    if (!this.pts.length || p.y - this.pts[this.cur].y <= UNDER_REACH) return false;
++    return this.pts.some((q, i) => i !== this.cur && this.cap(i) === i && i >= this.pinFloor && !q.rope && Math.abs(q.y - p.y) <= 80 && Math.abs(q.x - p.x) <= LEVEL_REACH);
++  }
+   /** after a respawn or a rescue: find him anywhere along the way */
+-  relocate(p: Pt, level = false): void {
++  relocate(p: Pt, level = false, band = Infinity): void {
+     let bi = 0, bd = Infinity;
+     // (`level`: after a fall, only the points about his height or below, and near him (LEVEL_REACH): the way back up starts where he can
+     //  walk to. With no reach limit a point at his height 35,000 px on was "nearest": 1-6 kid Normal layout 13, BUILD-24b; ENG-285)
+     const ok = (i: number) => this.cap(i) === i && i >= this.pinFloor && !this.pts[i].rope
+-      && (!level || (this.pts[i].y >= p.y - 80 && Math.abs(this.pts[i].x - p.x) <= LEVEL_REACH));
++      && (!level || (this.pts[i].y >= p.y - 80 && this.pts[i].y <= p.y + band && Math.abs(this.pts[i].x - p.x) <= LEVEL_REACH));
++    // (`band`: a rewind by `under` takes only the points about his own height: with the plain 'his height or below' it took a point
++    //  500 px under him (2-6 adult N 3 at x 1023, y 1076 -> 1024,1577), and the far-off rewinds from there were three falls and a rescue)
+     if (level && !this.pts.some((_, i) => ok(i))) level = false;
+     for (let i = 0; i < this.pts.length; i++) {
+       if (!ok(i)) continue;
+@@ -1264,6 +1279,10 @@ export class FirstTimerRun {
+   private climbVine: unknown = null;
+   /** in a vine field: the figs under a shut gate pushed free, a pod's column stepped off (figPush.ts) */
+   private figs: FigPush | null = null;
++  /** the figs' work: when its stretch began, his best place and when it last rose (the no-progress clock's bound on it, figsWork) */
++  private figFrom = 0;
++  private figBest = 0;
++  private figBestAt = 0;
+   /** this frame's want is a fig push's tap (or its let-go): kept as it is, never run through the thumb (tapped) */
+   private figTap = false;
+   /** he follows a tower's own route (towerRoute.ts): corners, no jump arcs, so he reads a stair of ledges himself */
+@@ -3975,18 +3994,28 @@ export class FirstTimerRun {
+     // fallen off the way (a miss in a climb drops him to a branch or the floor far under where he was): once he stands there a moment,
+     // he finds his place along the way again and heads back to the way up, as a person climbs back (round 5, 2026-10-29: the bot kept
+     // heading for the point straight over his head, never walked back to the trunk, and the tall climbs ran out the clock)
+-    if (this.prog.off(p) > 260 && !held) {
++    // (or he stands more than a double's reach under it, hopping or not: Progress.under, BUILD-26f; his hops took `off` under 260)
++    const far = this.prog.off(p) > 260;
++    // (never on a moving piece: riding a wheel's car he is under the route over the wheel by design; the rewind pulled him off it at the
++    //  car's bottom, 2-6 adult N 3 at x 1023 y 1076 on the great wheel, then three far-off falls and a rescue. BUILD-26f)
++    const rides = this.sim.platforms.find((q) => q.id === this.e.standingOnId);
++    const under = !(p.grounded && rides && (rides.type === 'moving' || rides.type === 'drift' || (rides as { wheel?: unknown }).wheel)) && this.prog.under(p);
++    if ((far || under) && !held) {
+       this.offRoute += DT;
+       if (this.offRoute > 0.5 && p.grounded) {
+         const top = this.prog.best;
+-        this.prog.relocate(p, true);
++        this.prog.relocate(p, true, far ? Infinity : 80);
+         this.offRoute = 0;
++        // (a rewind by `under` alone is never counted as a fall-back: a hop's top pulls his place back up onto the leg over him
++        //  (Progress.step), and counted, three hops were 'fell back down from here 3 times' and a rescue (2-6 adult N 33 -> 23); counted
++        //  after a takeoff over 175 px up, falls the old rewind never saw (off under 260) became rescues (kid E 15 rows moved). BUILD-26f)
++        const fell = far;
+         // (the same fall three times, never getting higher: noted as a loop and he is put past it, as the same death three times is.
+         // bot-fix 2026-11-01: each fall moved his place back down the way, so the climb back up counted as progress and the 20 s clock
+         // never ran out: on 1-4 he climbed and fell from the same branch every 24 s until the cap, and the run read "time")
+         // (a pod's knock off a vine field is a hit, counted as one, never a missed climb: figPush.ts knockedRecently)
+-        if (top === this.fallTop && !this.figs?.knockedRecently(t)) this.fallBacks++;
+-        else {
++        if (fell && top === this.fallTop && !this.figs?.knockedRecently(t)) this.fallBacks++;
++        else if (fell) {
+           this.fallTop = top;
+           this.fallBacks = 1;
+         }
+@@ -4002,7 +4031,15 @@ export class FirstTimerRun {
+     // stuck: no progress for 8 s (not while standing at a puzzle)
+     // (and not while he works a vine field's gate or steps off a pod's column: figPush.ts busy, the figs are the way on)
+     // (and not while he climbs back out of a pit, pitWayBack: the way back up is a person's retry, and three of them are a loop there)
+-    if (more || this.huntMore || this.puzzleWait || this.stillSpot || this.figs?.busy(t) || this.climbBack) {
++    // (the figs' work is the way on only while it gets somewhere: a fig freed, a gate opened, his best place further on; with none of
++    //  those for RULES.wayOn.stuckSecs (8 s) the clock runs as at any stall, so a miss ends in a rescue, never a silent cap. BUILD-26l: 1-4 adult N 39
++    //  was pushed left, let go, right, let go between two field vines from t 110 to the 1200 s cap with every clock off)
++    if (this.prog.best > this.figBest) {
++      this.figBest = this.prog.best;
++      this.figBestAt = t;
++    }
++    const figsWork = this.figs?.busy(t) ? t - Math.max(this.figFrom, this.figs.changedAt, this.figBestAt) < figGrace() : ((this.figFrom = t), false);
++    if (more || this.huntMore || this.puzzleWait || this.stillSpot || figsWork || this.climbBack) {
+       if (this.stuckOpen && this.noProg >= 8) this.stuckOpen.dur = +this.noProg.toFixed(1);
+       this.stuckOpen = null;
+       this.noProg = 0;
+@@ -4016,9 +4053,10 @@ export class FirstTimerRun {
+         const g = this.ground;
+         const w = p.grounded ? null : this.whatAt.find((q) => Math.abs(q.x - g.x) < 80 && Math.abs(q.y - g.y) < 40);
+         const dir = (this.prog.target(p)?.x ?? p.x + 1) >= p.x ? 1 : -1;
+-        const d = w ?? (p.grounded ? this.describe(dir) : null);
++        // (on a vine, his hands on it and no way on: named too, so a stall there is never a run with no stuck spot. BUILD-26l)
++        const d = w ?? (p.grounded ? this.describe(dir) : held ? { what: `on a vine at ${Math.round(p.x)},${Math.round(p.y)} with no way on`, step: null, dip: null, puzzle: false } : null);
+         if (d) {
+-          const at = p.grounded ? p : g;
++          const at = p.grounded || held ? p : g;
+           this.stuckOpen = { x: Math.round(at.x), y: Math.round(at.y), t: +(t - this.noProg).toFixed(1), dur: 8, what: d.what, step: d.step, dip: d.dip, puzzle: d.puzzle, rescued: false };
+           this.stuck.push(this.stuckOpen);
+         }
+-- 
+2.43.0
+

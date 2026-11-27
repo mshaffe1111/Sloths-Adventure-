@@ -213,3 +213,116 @@ test('R-165.441: a hung bank is not the ground: the soil\'s darkening line under
   assert.deepEqual(line(500), line(0), 'under the summit the line is the floor\'s');
   assert.deepEqual(line(700), line(1200));
 });
+
+// INT-R5d planted (R-165.441 x the stacked legs): a bank a stacked leg's ceiling runs under is never hung; the ceiling owns its end. The
+// plant is 2-7's normal layout 0 bank #1 (x 3881-4521, y 747, h 170) over the race leg (y 1500), its ceiling's line at about 1040-1270:
+// hung, its soil stopped at 917 over the backdrop, 120+ over the line where the ceiling's own underside is drawn (INT-R5d's stills).
+const { soilShorts } = await import('./paintFall.ts');
+const { STEP } = await import('../../src/game/groundStack.ts');
+test('stacked legs RED: a hung bank over a ceiling stops short of its line (soilShorts); GREEN: with the ceilings it is not hung, its soil reaches the line, and the leg under the line is clear (soilOvers)', () => {
+  const up = bank(3881, 747, 640, 170), race = bank(3700, 1500, 1100, 190);
+  const st = [up, race];
+  paintOn(st);
+  const n = Math.floor((4700 - 3800) / STEP) + 1;
+  const cs = [{ x0: 3800, x1: 3800 + (n - 1) * STEP, ys: Array.from({ length: n }, () => 1100), lower: [race] }];
+  // (the plant: the soil fix alone, no ceilings: hung, short of the line by 1100 - 917 = 183)
+  assert.equal(bankOpen(up, st)!.open.underside, true, 'without the ceilings the soil fix hangs it (the gap is 583)');
+  const red = soilShorts(st, cs, groundSoil(st));
+  assert.equal(red.length, 1, JSON.stringify(red));
+  assert.equal(red[0].bank.id, up.id);
+  assert.ok(red[0].gap >= 150 && red[0].short > 400, JSON.stringify(red[0]));
+  // (drawn with the ceilings: not hung, its soil runs on to the line and past it, where drawGround clips it)
+  assert.equal(bankOpen(up, st, undefined, cs)!.open.underside, undefined);
+  assert.deepEqual(soilShorts(st, cs), []);
+  // (the race leg's top is under the line: the clipped air, no soil over it)
+  assert.deepEqual(soilOvers(st, groundSoil(st, undefined, cs), cs), []);
+  // (and the clip is what clears it: the same soil judged with no ceiling covers the race leg's top)
+  assert.equal(soilOvers(st, groundSoil(st, undefined, cs), []).length, 1);
+});
+
+// R-165.451 planted on the SHIPPED case: 2-6's beat A (seed 1, Normal), the start floor's soil under the storeys hung over it. The gate
+// (paintFall.ts depthSteps) reads the darkening's bands as the square painter draws them. RED: the line t-build-26 drew, with the hung
+// banks standing in it as ground (the storeys thousands of px up pulled it, a 192-224 px jump at x 1040-1056, the straight edge Matt's
+// still showed); GREEN: the line drawn now (FIX-SOIL-b c22702edc: a hung bank leaves the line, R-165.441).
+test('R-165.451 RED: the depth line with the hung storeys in it steps under 2-6\'s start floor; GREEN: as drawn, no straight-sided block', async () => {
+  const { depthSteps } = await import('./paintFall.ts');
+  const { groundBanks } = await import('../../src/game/protoArt.ts');
+  const { generateAllLevels } = await import('../../src/game/worldsData.ts');
+  const { listedStage, playFinish } = await import('../../src/game/gen2/listed.ts');
+  const { buildGen2Stage } = await import('../../src/game/gen2/pipeline.ts');
+  const cfg = generateAllLevels().find((c) => c.id === '2-6' && !c.secret)!;
+  const row = listedStage('2-6')!;
+  const st = playFinish(row, buildGen2Stage({ config: cfg, kit: row.kit(), seed: 1, difficulty: 'normal' }) as never, 'normal') as { platforms: Platform[] };
+  assert.deepEqual(depthSteps(st.platforms), [], 'drawn: no step in the soil\'s darkening');
+  // (the plant: every bank standing as ground down to the deepest floor, as t-build-26's line took them, and the line it drew then: the
+  // weighed mean, not yet eased, R-165.487)
+  const banks = groundBanks(st.platforms), foot = Math.max(...banks.map((b) => b.y + b.height));
+  const old = await meanAt(banks.map((b) => ({ ...b, height: foot - b.y })).filter((b) => !b.soil));
+  const red = depthSteps(st.platforms, old);
+  assert.ok(red.some((d) => d.x >= 1024 && d.x <= 1072 && d.jump > 150), `the old line steps at beat A's edge: ${JSON.stringify(red.slice(0, 3))}`);
+});
+
+/** the line as drawn before R-165.487 (protoArt.ts meanLine, not eased), as the square painter lays it out at the gate's view (900) */
+async function meanAt(tops: Platform[]): Promise<(x: number) => [number, number]> {
+  const { meanLine } = await import('../../src/game/protoArt.ts');
+  return (x) => { const y = meanLine(tops, x); return [y - 0.55 * 900, y + 0.45 * 900]; };
+}
+
+// R-165.487 planted on the SHIPPED case: 2-7's bank starts (INT-R5-b's paint1: 49-73 px DEPTH STEPs at x 3420-3780 and 15500-16900, the
+// faint straight line the lead judged on strip-Jm50-0-48). The weighed mean alone moves the darkening's start 49-73 px in one 16 px strip
+// where a bank starts with only a sliver of another top in reach. The bar is the largest of the lead's planted steps that shows nothing
+// (24: 24 nothing, 32-48 faint, 64 plain). RED: the mean line on the first 2-7 Normal layout where it steps past the old bar (48) at a
+// bank (found by what the line does, never an x); GREEN: the same build as drawn, no strip moves more than 24.
+test('R-165.487 RED: the mean depth line steps past 48 at a 2-7 bank start; GREEN: as drawn (eased), no strip moves more than 24', async () => {
+  const { depthSteps, DEPTH_STEP_MAX } = await import('./paintFall.ts');
+  const { groundBanks, groundCeilings, setGroundStacks, DEPTH_EASE } = await import('../../src/game/protoArt.ts');
+  const { stackZonesOf } = await import('../../src/game/groundStack.ts');
+  const { generateAllLevels } = await import('../../src/game/worldsData.ts');
+  const { generateStage, setLayoutVariant } = await import('../../src/game/stageGenerator.ts');
+  const { withGoals } = await import('../../src/game/goals.ts');
+  const { loadSeedList } = await import('../../src/game/gen2/seedList.ts');
+  assert.equal(DEPTH_STEP_MAX, 24, 'the bar is the largest planted step that shows nothing');
+  assert.ok(DEPTH_EASE < DEPTH_STEP_MAX, 'the line eases under the bar, a unit for the strip\'s rounding');
+  const cfg = generateAllLevels().find((c) => c.id === '2-7' && !c.secret)!;
+  assert.ok(await loadSeedList('2-7'));
+  let found = false;
+  for (let v = 0; v < 40 && !found; v++) {
+    setLayoutVariant(v);
+    const st = withGoals(generateStage({ ...cfg, unlocked: true }, 'normal')) as { platforms: Platform[]; rivers?: never; gen2?: { tower?: { legs?: never } } };
+    setLayoutVariant(null);
+    setGroundStacks(stackZonesOf(st.gen2?.tower?.legs), st.rivers);
+    const banks = groundBanks(st.platforms);
+    const cs = groundCeilings(st.platforms, banks);
+    const tops = banks.filter((b) => !b.soil && !bankOpen(b, banks, undefined, cs)?.open.underside);
+    const red = depthSteps(st.platforms, await meanAt(tops)).filter((d) => d.jump > 48);
+    if (!red.length) continue;
+    found = true;
+    // (each red step is within LINE_REACH and a strip of a top's edge: where that top's reach starts to take in a sliver)
+    assert.ok(red.every((d) => tops.some((b) => Math.abs(d.x - b.x) <= 256 || Math.abs(d.x - b.x - b.width) <= 256)), JSON.stringify(red.slice(0, 3)));
+    assert.deepEqual(depthSteps(st.platforms), [], `drawn on layout ${v}: no strip moves the darkening more than ${DEPTH_STEP_MAX}`);
+  }
+  setGroundStacks([], undefined);
+  assert.ok(found, 'a 2-7 Normal layout where the mean line steps past 48 (the plant is live)');
+});
+
+test('R-165.487: the eased line is the mean wherever the mean already eases, and a ramp of at most DEPTH_EASE a strip across a step', async () => {
+  const { groundLine, meanLine, DEPTH_EASE } = await import('../../src/game/protoArt.ts');
+  const { DEPTH_STRIP } = await import('../../src/game/groundPaint.ts');
+  // (a wide pit: a high bank, 900 of gap, a bank 700 lower: in the pit's middle no top is in reach and the mean jumps to the nearer one)
+  const hi = bank(0, 800, 2000, 300), lo = bank(2900, 1500, 2000, 300);
+  const st = [hi, lo];
+  paintOn(st);
+  const line = groundLine(st), mean = await meanAt(st);
+  const mid = (x: number) => (line(x)[0] + line(x)[1]) / 2;
+  let worstMean = 0, worst = 0;
+  for (let x = DEPTH_STRIP / 2; x < 5000; x += DEPTH_STRIP) {
+    worstMean = Math.max(worstMean, Math.abs((mean(x + DEPTH_STRIP)[0] - mean(x)[0])));
+    worst = Math.max(worst, Math.abs(mid(x + DEPTH_STRIP) - mid(x)));
+  }
+  assert.ok(worstMean > 48, `the plant: the mean steps ${worstMean} in a strip`);
+  assert.ok(worst <= DEPTH_EASE + 1e-9 && worst <= 24, `eased: ${worst} a strip (the bar: 24, the largest planted step that shows nothing)`);
+  // (far from the step, the line is the bank's own top, as before)
+  assert.equal(Math.round(mid(200 + DEPTH_STRIP / 2) - mid(200 + DEPTH_STRIP / 2 - 16)), 0);
+  assert.equal(Math.round(line(400)[0]), Math.round(meanLine(st, 400) - 0.55 * 900));
+  assert.equal(Math.round(line(4600)[0]), Math.round(meanLine(st, 4600) - 0.55 * 900));
+});

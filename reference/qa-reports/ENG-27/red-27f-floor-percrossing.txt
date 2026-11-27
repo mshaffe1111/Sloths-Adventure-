@@ -1,0 +1,30 @@
+TAP version 13
+# Subtest: pacer (planted): after a fall the floor counts each crossing left, never more than a clean run's margin, post Normal seed 4
+not ok 1 - pacer (planted): after a fall the floor counts each crossing left, never more than a clean run's margin, post Normal seed 4
+  ---
+  duration_ms: 263.203135
+  type: 'test'
+  location: '/home/user/Sloths-Adventure-/src/game/gen2/pacerLay.test.ts:72:1'
+  failureType: 'testCodeFailure'
+  error: "early: 12.596260162601624 s, a clean run's 6.590000000000003 (RED per crossing alone: 11.7)"
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: true
+  actual: false
+  operator: '=='
+  stack: |-
+    TestContext.<anonymous> (/home/user/Sloths-Adventure-/src/game/gen2/pacerLay.test.ts:88:10)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.start (node:internal/test_runner/test:944:17)
+    startSubtestAfterBootstrap (node:internal/test_runner/harness:296:17)
+  ...
+1..1
+# tests 1
+# suites 0
+# pass 0
+# fail 1
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 797.859277

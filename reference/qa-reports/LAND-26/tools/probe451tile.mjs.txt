@@ -1,0 +1,39 @@
+// R-165.451: which draw makes the brightness step at screen x EX (beat A, Pokey on the lowest floor under x 790): after every main-canvas
+// draw call, read columns EX-D..EX-2 and EX+2..EX+D over screen y Y0..Y1; log each call that moves the step (right minus left), with its stack
+const PWm = await import('/opt/node-tools/node_modules/playwright/index.js'); const chromium = PWm.chromium ?? PWm.default.chromium;
+const [port, diff = 'normal', orient = 'upright'] = process.argv.slice(2);
+const [EX, Y0, Y1] = (process.env.EDGE ?? '393,775,905').split(',').map(Number);
+const b = await chromium.launch();
+const E = "(typeof window.__engine === 'function' ? window.__engine() : window.__engine)";
+const vp = orient === 'upright' ? { width: 412, height: 915 } : { width: 915, height: 412 };
+const ctx = await b.newContext({ viewport: vp, deviceScaleFactor: 1 });
+await ctx.addInitScript((d) => { try { localStorage.setItem('sloth_difficulty', d); } catch {} }, diff);
+const p = await ctx.newPage();
+p.on('pageerror', (e) => console.log('ERR', e.message));
+await p.goto(`http://127.0.0.1:${port}/?lessons=off`);
+await p.waitForTimeout(2500);
+await p.evaluate(() => window.__play('2-6', 0));
+await p.waitForTimeout(4000);
+await p.waitForFunction((E) => { const e = eval(E); return !!(e && e.currentStage && e.player && e.platforms); }, E, { timeout: 90000 });
+await p.waitForFunction(() => document.documentElement.dataset.hudCard !== '1', null, { timeout: 30000 }).catch(() => {});
+await p.waitForTimeout(2000);
+await p.evaluate(([E, WX, WY0, WY1]) => {
+  const e = eval(E); const main = document.querySelector('canvas'); const P = CanvasRenderingContext2D.prototype;
+  const names = ['drawImage', 'fillRect', 'fill', 'stroke', 'putImageData', 'fillText', 'strokeRect', 'clearRect'];
+  const orig = Object.fromEntries([...names, 'setTransform'].map((n) => [n, P[n]]));
+  P.setTransform = function (...a) { if (this.canvas !== main && a.length === 6 && !this.__base) this.__base = a; return orig.setTransform.apply(this, a); };
+  const out = window.__out = []; window.__n = 0; const last = new Map(); let n = 0;
+  const col = (g, x, y0, y1) => { const d = g.getImageData(Math.round(x), Math.round(y0), 1, Math.max(1, Math.round(y1 - y0))).data; let s = 0; for (let i = 0; i < d.length; i += 4) s += (d[i] + d[i + 1] + d[i + 2]) / 3; return s / (d.length / 4); };
+  for (const nm of names) P[nm] = function (...a) { const v = orig[nm].apply(this, a); const B = this.__base; if (B && this.canvas !== main) { const [sa, , , , se, sf] = B; const X = WX * sa + se, Y0 = WY0 * sa + sf, Y1 = WY1 * sa + sf, W = this.canvas.width, H = this.canvas.height;
+      if (X > 8 && X < W - 8 && Y1 > 0 && Y0 < H) { window.__n++; let l = 0, r = 0; for (let k = 2; k < 8; k++) { l += col(this, X - k, Math.max(0, Y0), Math.min(H, Y1)); r += col(this, X + k, Math.max(0, Y0), Math.min(H, Y1)); } const st = (r - l) / 6; const was = last.get(this.canvas) ?? 0;
+        if (Math.abs(st - was) > 2) { const tr = (new Error().stack ?? '').split('\n').slice(2, 9).map((q) => q.trim().replace(/https?:\/\/[^/]+\//, '').replace(/\?[^:]*/, '')).join(' < '); out.push({ n: window.__n, nm, cv: `${W}x${H}`, base: B.map((q) => Math.round(q)), from: +was.toFixed(1), to: +st.toFixed(1), args: a.slice(0, 8).map((x) => typeof x === 'number' ? Math.round(x) : (x && x.width ? `img${x.width}x${x.height}` : typeof x)), fs: typeof this.fillStyle === 'string' ? this.fillStyle : 'pattern/grad', ga: this.globalAlpha, tr }); }
+        last.set(this.canvas, st); } } return v; };
+}, [E, +(process.env.WX ?? 1056.6), +(process.env.WY0 ?? 6765), +(process.env.WY1 ?? 6904)]);
+await p.evaluate((E) => { const e = eval(E); e.isPaused = true; const q = e.platforms.filter((q) => q.x <= 790 && q.x + q.width >= 790).sort((a, b) => b.y - a.y)[0];
+  const pw = e.player.width, ph = e.player.height; for (const hh of e.currentStage?.proto?.hints ?? []) hh.shown = true;
+  Object.assign(e.player, { x: 790 - pw / 2, y: q.y - ph - 2, vx: 0, vy: 0, grounded: false, invincibleTimer: 9 }); for (let i = 0; i < 45; i++) e.update(1 / 30); }, E);
+for (let i = 0; i < 10; i++) { await p.evaluate((E) => { const e = eval(E); e.update(1 / 30); e.clearGuide?.(); e.render(); }, E); await p.evaluate(() => new Promise((r) => requestAnimationFrame(() => r(0)))); }
+const res = await p.evaluate(() => ({ n: window.__n, out: window.__out }));
+console.log('tile draws probed', res.n);
+for (const o of res.out) console.log(JSON.stringify(o).slice(0, 900));
+await b.close();

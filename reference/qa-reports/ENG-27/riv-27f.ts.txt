@@ -1,0 +1,12 @@
+import '../../src/game/headlessDom.ts';
+import { homeRun } from './homeToys.ts';
+import { HOME_CODE, POST_CODE } from '../../src/game/gen2/toyHome.ts';
+import { riverAt } from '../../src/game/river.ts';
+const [tier, setting, seedS, codeS, fS] = process.argv.slice(2);
+let f = 0;
+homeRun(tier as never, setting as never, Number(seedS), 1, { onFrame: (sim: any) => {
+  f++; if (f !== Number(fS)) return; const e = sim.e, p = e.player;
+  const r = riverAt(e.currentStage.rivers, p.x, p.y);
+  console.log('him', Math.round(p.x), Math.round(p.y), 'river', JSON.stringify(r && { x0: r.x0, x1: r.x1, surfaceY: r.surfaceY, safe: r.safe, way: r.way, bed: (r as any).bedY, y0: (r as any).y0 }));
+  for (const q of e.currentStage.rivers) if (q.safe) console.log('safe', q.x0, q.x1, q.surfaceY, JSON.stringify(q.safe));
+} } as never, codeS === 'post' ? POST_CODE : HOME_CODE);

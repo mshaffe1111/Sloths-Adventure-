@@ -1,0 +1,33 @@
+// p356.mts <tree> <reAim 0|1> <phases> [trace]: riverRide.test's plantedRide (the bare at-him river, gap 80, first on-log draw = 0.033 tap)
+// per phase: hop/back@frame; with trace, every frame on a log where floorAt by his middle is null (C12's feetOn read) and every press
+const [T, on, ps, tr] = process.argv.slice(2);
+await import(`${T}/src/game/headlessDom.ts`);
+const ft = await import(`${T}/tools/inspect/firsttimer.ts`);
+const { SKILLS, FirstTimerRun, FT_CHILD } = ft;
+const w = 150, gap = 80, speed = 75, x0 = 1000, x1 = 2840, TT = (x1 - x0 + w) / speed, n = Math.round((x1 - x0 + w) / (w + gap));
+const pieces = (phase: number): any[] => [
+  { id: 1, x: 0, y: 600, width: x0, height: 90, type: 'solid' }, { id: 2, x: x1, y: 600, width: 1200, height: 90, type: 'solid' },
+  ...Array.from({ length: n }, (_, k) => ({ id: 10 + k, x: 0, y: 628, width: w, height: 24, type: 'drift', drift: { x0, x1, dir: -1, speed, width: w, baseY: 628, offset: ((k * (w + gap)) / speed + phase) % TT } })),
+];
+SKILLS.reAim = on === '1';
+const P = FirstTimerRun.prototype as any; const it = P.intend;
+P.intend = function (...a: any[]) {
+  const o = it.apply(this, a); const p = this.sim.p; if (tr && p.grounded !== this.__g) { console.log(`  ${p.grounded ? "LAND" : "AIR"} t ${this.t.toFixed(2)} x ${p.x.toFixed(1)} on ${this.sim.standingOn} lives ${this.lives ?? "?"}`); this.__g = p.grounded; }
+  if (tr) { const f = this.sim.platforms.find((q: any) => q.id === this.sim.standingOn);
+    if ((p.grounded && f?.type === 'drift' && !this.floorAt(p.x, p.y, 6)) || o.jump || o.press) console.log(`  t ${this.t.toFixed(2)} x ${p.x.toFixed(1)} g${p.grounded ? 1 : 0} on ${f ? `${f.id} ${f.x.toFixed(0)}-${(f.x + f.width).toFixed(0)}` : '-'} mid ${this.floorAt(p.x, p.y, 6) ? 1 : 0} out ${JSON.stringify(o)} edge ${this.edge ? 1 : 0} late ${this.lateArmed ? this.lateArmed.dir : '-'} st ${this.standing ? 1 : 0}`); }
+  return o;
+};
+for (const phase of ps.split(',').map(Number)) {
+  const line = Array.from({ length: 200 }, (_, i) => ({ x: 100 + i * 24, y: 600 }));
+  let log: number | null = null, onLog = false, f = 0, fEnd = -1, stubbed = false, prev = { g: false, id: null as number | null }, end = '';
+  const run = new FirstTimerRun('1-1', 1, FT_CHILD, { route: line, cap: 20, rescueAfter: 1000, onFrame: (sim: any) => {
+    const e = sim.e; f++; const here = e.platforms.find((q: any) => q.id === e.standingOnId);
+    onLog = !!here?.drift && e.player.grounded; if (onLog && log === null) log = here!.id;
+    if (log !== null && !end) { if (prev.g && prev.id === log && !e.player.grounded && e.player.vy < 0) end = 'hop'; else if (e.player.grounded && here?.id === 1) end = 'back'; if (end) fEnd = f; }
+    prev = { g: e.player.grounded, id: here?.id ?? null };
+  } }) as any;
+  const real = run.drawHop.bind(run);
+  run.drawHop = (d: any) => { const h = real(d); if (!stubbed && onLog) { stubbed = true; if (tr) console.log(`  STUB at t ${run.t.toFixed(2)} x ${run.sim.p.x.toFixed(1)}`); return { ...h, kind: 'single', hold: 0.033, d2: -1 }; } return h; };
+  run.sim.bare(pieces(phase)); run.sim.e.currentStage.config.levelHeight = 720; run.sim.stand(700, 600); run.prog.relocate(run.sim.p); run.play();
+  console.log(`phase ${phase} reAim ${on}: ${stubbed ? `${end || 'none'}@${fEnd}` : 'unplanted'} log ${log}`);
+}

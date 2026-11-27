@@ -1,0 +1,13 @@
+// 2-6's row, boardWatch on vs off, per wheel (way R/L): seeds from argv
+const R = process.env.REPO!;
+await import(`${R}/src/game/headlessDom.ts`);
+const { SKILLS } = await import(`${R}/tools/inspect/firsttimer.ts`);
+const { rowWheelRuns, runLine } = await import(`${R}/tools/inspect/rowWheels.ts`);
+const { w2Finish } = await import(`${R}/src/game/gen2/worlds/w2.ts`);
+const { kitLib26, STAGE_26 } = await import(`${R}/src/game/gen2/worlds/w2Arc26.ts`);
+const ROW = { stage: STAGE_26, kit: kitLib26, world: w2Finish };
+for (const seed of process.argv.slice(2).map(Number)) {
+  SKILLS.boardWatch = true; const on = rowWheelRuns(ROW as any, seed);
+  SKILLS.boardWatch = false; const off = rowWheelRuns(ROW as any, seed);
+  on.forEach((r: any, i: number) => { const a = runLine(r), b = runLine(off[i]); console.log(a === b ? 'same' : 'DIFF', 'seed', seed, '\n on ', a, a === b ? '' : '\n off ' + b); });
+}

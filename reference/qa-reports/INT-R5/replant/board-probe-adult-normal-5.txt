@@ -1,0 +1,2 @@
+boardWatch OFF: shrine 116.9 s rescues 0 | teachL sc1 pd0, edgeR sc0 pd0, topR sc0 pd0, edgeR sc2 pd0, greatL sc0 pd0 | waits by wheel: none
+boardWatch ON : shrine 125.8 s rescues 0 | teachL sc2 pd0, edgeR sc0 pd0, topR sc1 pd0, edgeR sc0 pd0, greatL sc1 pd0 | waits by wheel: #0 (cy 6023): 92 frames from t 9.47; #1 (cy 4271): 36 frames from t 57.37; #2 (cy 3083): 30 frames from t 80.47

@@ -1,0 +1,13 @@
+import '../../src/game/headlessDom.ts';
+import { homeRun } from './homeToys.ts';
+import { HOME_CODE, POST_CODE } from '../../src/game/gen2/toyHome.ts';
+const [tier, setting, seedS, codeS, f0, f1] = process.argv.slice(2);
+let f = 0, armed: any = null;
+homeRun(tier as never, setting as never, Number(seedS), 1, { onFrame: (sim: any) => {
+  f++; const p = sim.e.player;
+  if (f === Number(f0) && !armed) {
+    armed = p; let vx = p.x, vy = p.y;
+    Object.defineProperty(p, 'x', { get: () => vx, set: (v: number) => { if (Math.abs(v - vx) > 40 && f <= Number(f1)) console.log(`f ${f} x ${Math.round(vx)} -> ${Math.round(v)}\n` + new Error().stack!.split('\n').slice(2, 9).join('\n')); vx = v; }, configurable: true });
+    Object.defineProperty(p, 'y', { get: () => vy, set: (v: number) => { if (Math.abs(v - vy) > 40 && f <= Number(f1)) console.log(`f ${f} y ${Math.round(vy)} -> ${Math.round(v)}`); vy = v; }, configurable: true });
+  }
+} } as never, codeS === 'post' ? POST_CODE : HOME_CODE);

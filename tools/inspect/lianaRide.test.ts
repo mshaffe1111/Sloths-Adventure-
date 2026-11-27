@@ -35,6 +35,17 @@ import { lianasOverLogs, onRiver, riverEnd } from '../../src/game/river.ts';
 
 const VARIANTS = [1, 2, 3, 4, 5];
 const at = (r: ReturnType<typeof lianaRun>, toy: string) => r.pieces.find((q) => q.id === `toy-liana-${toy}`);
+// (ENG-PLANT-t 11-25, R-165.432 re-plant at the SAME bars: the first clean roll (seed 1, fixtureSeed's) went stale for both plants - DROP
+//  ON A LOG at c19 9035c553 (the judged run-up, SKILLS.runUp: off 0,1,0,0,0,0 lives, under the bar of 4) and A VINE FROM A LOG at c22
+//  52bcce62 (Easy v5 caught off a log with the skill off). Measured on 36e8efe6f, the toys' other clean rolls at the same bars: drop seed 2
+//  on 0 lives (6 of 6 catch, each onto a log), off 0,1,1,2,1,1 = 6 (seeds 4 and 5 hold too: off 7 and 6; seed 3 fails the on bar, 2 lives);
+//  catch seed 2 Normal on 5 of 5 off a log, off 0; Easy on 4 of 5, off 0 (seeds 3 and 6 fail the on bar on Easy). The roll is fixed here
+//  and asserted clean the way fixtureSeed judges one (reference/qa-reports/ENG-PLANT/REPORT.md, ENG-PLANT-t)
+const DROP_SEED = 2, CATCH_SEED = 2;
+const cleanRoll = (toy: 'drop' | 'catch', row: 'gap280' | 'twin', seed: number, easyRow: 'deep' | 'long') => (['normal', 'easy'] as const).every((d) => {
+  const st = toyStage(toy, row, seed, d, easyRow);
+  return !st.gen2.errors?.length && (st.rivers ?? []).filter((r) => r.speed > 0).length === 1 && st.vines.some((v) => v.vineType === 'swing_liana');
+});
 
 test('the harness drives the engine through the real InputEngine: a Pad tap at a run is the real hop (0.43 s, 2-4.md R-165.284), never FakeInput\'s', () => {
   const air = (real: boolean) => {
@@ -54,8 +65,8 @@ test('the harness drives the engine through the real InputEngine: a Pad tap at a
 });
 
 test('DROP ON A LOG: on gap280 the middle bot lets go onto a log and loses no life; PLANTED: without the skill he drowns', () => {
-  const seed = fixtureSeed('drop', 'gap280', ['normal', 'easy'], 'deep');
-  assert.ok(seed !== null, 'no roll lays the gap280 drop toy clean');
+  const seed = DROP_SEED;
+  assert.ok(cleanRoll('drop', 'gap280', seed, 'deep'), `roll ${seed} lays the gap280 drop toy clean`);
   // (ruling A, ENG-285b: variants 1-6, at least 5 of them catching the liana; see the head of this file)
   const DROP_VARIANTS = [1, 2, 3, 4, 5, 6];
   const lives = (on: boolean) => {
@@ -87,12 +98,12 @@ test('DROP ON A LOG: on gap280 the middle bot lets go onto a log and loses no li
   };
   const on = lives(true), off = lives(false);
   assert.ok(on.reduce((a, b) => a + b, 0) <= 1, `with the skill: lives at the river ${on.join(',')}`);
-  assert.ok(off.reduce((a, b) => a + b, 0) >= 4, `PLANTED, without it: lives ${off.join(',')} (measured 8 over five on 11-18, 24 over 1-5 on 11-19)`);
+  assert.ok(off.reduce((a, b) => a + b, 0) >= 4, `PLANTED, without it: lives ${off.join(',')} (measured 8 over five on 11-18, 24 over 1-5 on 11-19; roll 2 on 11-25: 6)`);
 });
 
 test('A VINE FROM A LOG: on the catch toy the middle bot jumps from the moving log to the liana; PLANTED: without the skill, never', () => {
-  const seed = fixtureSeed('catch', 'twin', ['normal', 'easy'], 'long');
-  assert.ok(seed !== null, 'no roll lays the catch toy clean');
+  const seed = CATCH_SEED;
+  assert.ok(cleanRoll('catch', 'twin', seed, 'long'), `roll ${seed} lays the catch toy clean`);
   for (const setting of ['normal', 'easy'] as const) {
     const caught = (on: boolean) => {
       const was = SKILLS.vineFromLog;

@@ -87,6 +87,9 @@ export interface StageStats {
   prior?: Omit<StageStats, 'prior'>;
   /** the stage was left with the run under way (the pause menu's exits, Restart): its counts are filed, the streak is not touched */
   left?: boolean;
+  /** a stage's pacer race (pacer.ts; 2-7's mail boat): won when he reached the dock before it; its time and his, s from the start of
+   *  the race leg. A medal's, never a fail; absent on a stage with no pacer or a run that never reached the dock */
+  race?: { won: boolean; boat: number; him: number };
 }
 
 export interface BadgeCounters {

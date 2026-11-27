@@ -1,0 +1,9 @@
+import '../src/game/headlessDom.ts';
+import { setDifficulty } from '../src/game/difficulty.ts';
+import { RealPlay } from '../src/game/realPlay.ts';
+const [id, setting, seed, y0, y1] = process.argv.slice(2);
+setDifficulty(setting as any);
+const sim: any = new RealPlay(id, Number(seed));
+for (const p of sim.stage.platforms.filter((p: any) => p.y >= Number(y0) && p.y <= Number(y1)).sort((a: any, b: any) => a.y - b.y || a.x - b.x))
+  console.log(`#${p.id} ${p.type}${p.style ? '/' + p.style : ''} x ${Math.round(p.x)}-${Math.round(p.x + p.width)} y ${Math.round(p.y)}${p.crumble ? ' crumble' : ''}`);
+for (const v of (sim.stage.vines ?? []).filter((v: any) => v.bottomY >= Number(y0) && v.topY <= Number(y1))) console.log(`vine ${v.vineType} x ${Math.round(v.x)} ${Math.round(v.topY)}-${Math.round(v.bottomY)}`);

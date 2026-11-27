@@ -16,6 +16,7 @@ import { trackAtlas } from './atlasLoader.ts';
 import { GROUND_FRAMES, type GroundSheet } from './groundAtlasData.ts';
 import { lookHash } from './artRoll.ts';
 import { canvasLost } from './canvasLost.ts';
+import { cropToBox } from './drawThrift.ts';
 
 type C = CanvasRenderingContext2D;
 
@@ -54,6 +55,8 @@ function sheet(w: number): { img: HTMLImageElement; g: GroundSheet } | null {
   const img = imgs.get(w);
   return img ? { img, g: GROUND_FRAMES[w] } : null;
 }
+/** a world's ground sheet once it has loaded (groundStack.ts draws a painted underside strip from it), or null */
+export const groundSheetImage = (w: number): HTMLImageElement | null => sheet(w)?.img ?? null;
 
 /**
  * which soil tile (col, row) wears. With four (the clean sweep, G1): (col + 2 row) mod 4, so a tile never matches the one beside it or
@@ -138,7 +141,7 @@ const BLOB_PERIOD = 3000;
  */
 export type DepthAt = (x: number) => [number, number];
 /** the strips the darkening is drawn in when it follows the ground (world units; drawn once, into the ground's squares) */
-const DEPTH_STRIP = 16;
+export const DEPTH_STRIP = 16;
 
 /**
  * Paint the world's soil over the box x0..x1 by top..bottom (already clipped by the caller to the bank's shape), with the darkening
@@ -157,6 +160,25 @@ export function drawSoil(
     ctx.drawImage(img, sx, sy, sw, sh, cell.x, cell.y, SOIL_TILE + 0.6, SOIL_TILE + 0.6);
   }
   if (shade) shadeSoil(ctx, w, x0, x1, top, bottom, viewBottom, viewTop, depthAt);
+  return true;
+}
+
+/**
+ * drawSoil's tiles with no shading, each cut at the box x0..x1, top..bottom by its own source rect (drawThrift.ts cropToBox): the same
+ * pixels as drawSoil under a clip to that box, with no clip and none of a 600-unit tile's area past the box drawn (DRESS-27b: the clip
+ * a river laid under its bed's soil was 1 of 2-7's 21-24 clips a frame, and the tiles' overhang counted in its drawImage screens)
+ */
+export function drawSoilCut(ctx: C, w: number, x0: number, x1: number, top: number, bottom: number): boolean {
+  const s = sheet(w);
+  if (!s) return false;
+  if (x1 <= x0 || bottom <= top) return true;
+  const { img, g } = s;
+  const T = SOIL_TILE + 0.6;
+  for (const cell of soilCells(x0, x1, top, bottom, SOIL_TILE, g.fills.length)) {
+    const [sx, sy, sw, sh] = fillSrc(g.fills[cell.v % g.fills.length]);
+    const c = cropToBox(cell.x, cell.y, T, T, sw, sh, x0, top, x1, bottom);
+    if (c) ctx.drawImage(img, sx + c[0], sy + c[1], c[2], c[3], c[4], c[5], c[6], c[7]);
+  }
   return true;
 }
 
@@ -181,15 +203,25 @@ export function shadeSoil(ctx: C, w: number, x0: number, x1: number, top: number
     depthBand(ctx, g.deep, x0, x1, top, bottom, viewBottom, viewTop ?? viewBottom - 900);
     return true;
   }
-  // (strips where the line runs level are one band: over a flat bank that is one gradient, as before)
+  for (const r of depthRuns(x0, x1, depthAt)) depthBand(ctx, g.deep, r.x0, r.x1, top, bottom, r.vb, r.vt);
+  return true;
+}
+
+/**
+ * The bands the darkening with depth is drawn in over x0..x1 when it follows the ground (shadeSoil): DEPTH_STRIP strips, each laid out
+ * from the line at its middle, strips where the line runs level joined into one band (over a flat bank, one gradient). The paint gate
+ * reads these same bands (tools/engine/paintFall.ts depthSteps, R-165.451): what is drawn, not a copy of the rule.
+ */
+export function depthRuns(x0: number, x1: number, depthAt: DepthAt): Array<{ x0: number; x1: number; vt: number; vb: number }> {
+  const out: Array<{ x0: number; x1: number; vt: number; vb: number }> = [];
   let run = -1, rt = 0, rb = 0;
   for (let x = Math.floor(x0 / DEPTH_STRIP) * DEPTH_STRIP; x < x1; x += DEPTH_STRIP) {
     const [vt, vb] = depthAt(x + DEPTH_STRIP / 2).map(Math.round);
-    if (run >= 0 && (vt !== rt || vb !== rb)) depthBand(ctx, g.deep, Math.max(x0, run), x, top, bottom, rb, rt);
+    if (run >= 0 && (vt !== rt || vb !== rb)) out.push({ x0: Math.max(x0, run), x1: x, vt: rt, vb: rb });
     if (run < 0 || vt !== rt || vb !== rb) { run = x; rt = vt; rb = vb; }
   }
-  if (run >= 0) depthBand(ctx, g.deep, Math.max(x0, run), x1, top, bottom, rb, rt);
-  return true;
+  if (run >= 0) out.push({ x0: Math.max(x0, run), x1, vt: rt, vb: rb });
+  return out;
 }
 
 /** the darkening with depth over x0..x1: nothing above the view's middle, DEPTH_DARK by its bottom and below */
@@ -331,11 +363,14 @@ export function lipSrc(l: { x: number; y: number; w: number; h: number }): [numb
   return [l.x, l.y + LIP_INSET, l.w, l.h - 2 * LIP_INSET];
 }
 
+/** how far the wobble's centre keeps out from the bank's other side (its swing is at most 19), and the depth it eases out over */
+export const FACE_CLEAR = 28, FACE_EASE = 120;
+
 /**
  * The bank end's shape for a right end at x (the walkable end) with the walking line at y: where the face runs at each height, down to
  * `bottom` (below the painted piece the edge carries on down with a wobble). For a left end, mirrored about x.
  */
-export function endFace(w: number, x: number, y: number, bottom: number, right: boolean): Array<[number, number]> {
+export function endFace(w: number, x: number, y: number, bottom: number, right: boolean, inner?: number): Array<[number, number]> {
   const g = GROUND_FRAMES[w];
   if (!g) return [[x, y], [x, bottom]];
   const e = endFrame(g, x);
@@ -349,10 +384,15 @@ export function endFace(w: number, x: number, y: number, bottom: number, right: 
   for (let i = 0; i < e.face.length; i++) pts.push([px(e.face[i]), top + (END_H * i) / (e.face.length - 1)]);
   const [lx, ly] = pts[pts.length - 1];
   const seed = Math.round(x);
+  // (`inner`: the bank's other side. On a bank narrower than the piece's foot comes in (a 60-wide wall), the wobble swung back in past
+  // that side, the soil's outline crossed itself, and past the floor's end nothing was painted from about 240 under the wall's foot down:
+  // the lead's corner still, ENG-GROUND-e. Its centre keeps FACE_CLEAR out from that side, eased in over FACE_EASE, the wobble kept)
+  const base = inner === undefined ? lx : right ? Math.max(lx, inner + FACE_CLEAR) : Math.min(lx, inner - FACE_CLEAR);
   for (let yy = ly + 24; yy < bottom + 24; yy += 24) {
     const t = yy - ly;
     const wob = 10 * Math.sin(t / 41 + lookHash(seed, 3) * 6) + 6 * Math.sin(t / 17 + lookHash(seed, 5) * 6) + (lookHash(seed + yy, 9) - 0.5) * 6;
-    pts.push([lx + dir * wob, yy]);
+    const u = Math.min(1, t / FACE_EASE), at = lx + (base - lx) * u * u * (3 - 2 * u);
+    pts.push([at + dir * wob, yy]);
   }
   return pts;
 }

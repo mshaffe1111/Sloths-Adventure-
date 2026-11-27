@@ -1,0 +1,25 @@
+toy-post normal seed1: plank #28 x18178+174 y1430 h24; pockets x18098..18178 surf 1472 | x18352..18429 surf 1492
+toy-post normal seed1: plank #29 x17927+171 y1430 h24; pockets x17862..17927 surf 1492 | x18098..18178 surf 1472
+toy-post normal seed2: plank #27 x17942+178 y1410 h24; pockets x17864..17942 surf 1452 | x18120..18202 surf 1472
+toy-post normal seed2: plank #28 x17706+158 y1410 h24; pockets x17617..17706 surf 1472 | x17864..17942 surf 1452
+toy-post normal seed3: plank #28 x17748+180 y1460 h24; pockets x17664..17748 surf 1502 | x17928..18014 surf 1522
+toy-post normal seed3: plank #29 x17485+179 y1460 h24; pockets x17405..17485 surf 1522 | x17664..17748 surf 1502
+toy-post normal seed4: plank #27 x17621+177 y1459 h24; pockets x17551..17621 surf 1501 | x17798..17874 surf 1501
+toy-post normal seed4: plank #28 x17379+172 y1459 h24; pockets x17295..17379 surf 1521 | x17551..17621 surf 1501
+toy-post easy seed1: plank #28 x18598+222 y1430 h24; pockets x18535..18598 surf 1472 | x18820..18881 surf 1492
+toy-post easy seed1: plank #29 x18316+219 y1430 h24; pockets x18256..18316 surf 1492 | x18535..18598 surf 1472
+toy-post easy seed2: plank #27 x18407+226 y1410 h24; pockets x18345..18407 surf 1452 | x18633..18698 surf 1472
+toy-post easy seed2: plank #28 x18139+206 y1410 h24; pockets x18069..18139 surf 1472 | x18345..18407 surf 1452
+toy-post easy seed3: plank #28 x18263+228 y1455 h24; pockets x18197..18263 surf 1497 | x18491..18559 surf 1517
+toy-post easy seed3: plank #29 x17970+227 y1455 h24; pockets x17906..17970 surf 1517 | x18197..18263 surf 1497
+toy-post easy seed4: plank #27 x18169+225 y1459 h24; pockets x18109..18169 surf 1501 | x18394..18454 surf 1501
+toy-post easy seed4: plank #28 x17889+220 y1459 h24; pockets x17822..17889 surf 1521 | x18109..18169 surf 1501
+toy-home normal seed1: plank #31 x16852+174 y1478 h24; pockets x16772..16852 surf 1520 | x17026..17103 surf 1540
+toy-home normal seed2: plank #32 x16658+178 y1458 h24; pockets x16580..16658 surf 1500 | x16836..16918 surf 1520
+toy-home normal seed3: plank #32 x16467+180 y1435 h24; pockets x16383..16467 surf 1477 | x16647..16733 surf 1497
+toy-home normal seed4: plank #33 x17304+157 y1418 h24; pockets x17217..17304 surf 1460 | x17461..17544 surf 1480
+toy-home easy seed1: plank #31 x17224+222 y1470 h24; pockets x17161..17224 surf 1512 | x17446..17507 surf 1532
+toy-home easy seed2: plank #32 x17075+226 y1450 h24; pockets x17013..17075 surf 1492 | x17301..17366 surf 1512
+toy-home easy seed3: plank #32 x16934+228 y1431 h24; pockets x16868..16934 surf 1473 | x17162..17230 surf 1493
+toy-home easy seed4: plank #33 x17905+205 y1418 h24; pockets x17836..17905 surf 1460 | x18110..18176 surf 1480
+plankscan: 3264 builds; stages with a plank between two pockets on any build: toy-post 8, toy-home 8

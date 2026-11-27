@@ -1,0 +1,47 @@
+// needs a copy patched after the upstream gate's 'const next = ...' line (firsttimer.ts, SKILLS.ride): if globalThis.__MP, push {t, id, x, best, next}
+//  to globalThis.__MR, best = the largest hopLandsOn margin (80..0) at which that line's lands (who.hold[0], lags 0/0.1/0.2) reads a log. usage: npx tsx mg.mts <tree> [phases]
+// next-margin per phase: plantedRide (riverRide :344's), child, reAim on/off; per phase: end on/off, the largest margin at which the upstream
+// gate's next reads a log in reach (max over the frames he rides his FIRST log), and the frame count where next is true at 24
+const T = process.argv[2], GAP = 80;
+const G = globalThis as any; G.__MP = true; G.__MR = [];
+await import(T + '/src/game/headlessDom.ts');
+const ft = await import(T + '/tools/inspect/firsttimer.ts');
+const { FirstTimerRun, FT_CHILD, SKILLS, HOP_TRACE } = ft as any;
+const w = 150, gap = GAP, speed = 75, x0 = 1000, x1 = 2840, TT = (x1 - x0 + w) / speed, n = Math.round((x1 - x0 + w) / (w + gap));
+const pieces = (ph: number) => [
+  { id: 1, x: 0, y: 600, width: x0, height: 90, type: 'solid' },
+  { id: 2, x: x1, y: 600, width: 1200, height: 90, type: 'solid' },
+  ...Array.from({ length: n }, (_, k) => ({ id: 10 + k, x: 0, y: 628, width: w, height: 24, type: 'drift', drift: { x0, x1, dir: -1, speed, width: w, baseY: 628, offset: ((k * (w + gap)) / speed + ph) % TT } })),
+];
+const one = (phase: number, on: boolean) => {
+  const was = SKILLS.reAim; SKILLS.reAim = on; HOP_TRACE.on = true; HOP_TRACE.rows.length = 0; G.__MR = [];
+  const line = Array.from({ length: 200 }, (_, i) => ({ x: 100 + i * 24, y: 600 }));
+  let log: number | null = null, onLog = false, stubbed = false, end = '', prev = { g: false, id: null as number | null }, firstOff = -1, t = 0;
+  const run = new FirstTimerRun('1-1', 1, FT_CHILD, { route: line, cap: 20, rescueAfter: 1000, onFrame: (sim: any) => {
+    const e = sim.e; t = sim.t;
+    const here = e.platforms.find((q: any) => q.id === e.standingOnId);
+    onLog = !!here?.drift && e.player.grounded;
+    if (onLog && log === null) log = here.id;
+    if (onLog && prev.g && false) firstOff = t;
+    if (log !== null && !end) {
+      if (prev.g && prev.id === log && !e.player.grounded && e.player.vy < 0) end = 'hop';
+      else if (e.player.grounded && here?.id === 1) end = 'back';
+    }
+    if (firstOff < 0 && prev.g && prev.id !== null && prev.id >= 10 && !e.player.grounded && e.player.vy < 0) firstOff = t;
+    prev = { g: e.player.grounded, id: here?.id ?? null };
+  } });
+  const own = run as any; const real = own.drawHop.bind(run);
+  own.drawHop = (d: number) => { const h = real(d); if (!stubbed && onLog) { stubbed = true; return { ...h, kind: 'single', hold: 0.033, d2: -1 }; } return h; };
+  run.sim.bare(pieces(phase)); run.sim.e.currentStage.config.levelHeight = 720;
+  run.sim.stand(700, 600); run.prog.relocate(run.sim.p); run.play();
+  SKILLS.reAim = was;
+  const rows = (G.__MR as any[]).filter((r) => r.id === log);
+  const up = HOP_TRACE.rows.find((r: any) => r.site === 'upstream');
+  const atUp = up ? rows.filter((r) => r.t <= up.t + 1e-6).pop() : null;
+  const nexts = rows.filter((r) => r.next).map((r) => r.best);
+  return { atUp: atUp ? atUp.best + (atUp.next ? '' : '(next false)') : '-', minNext: nexts.length ? Math.min(...nexts) : -1, end: stubbed ? end || 'none' : 'unplanted', best: rows.length ? Math.max(...rows.map((r) => r.best)) : -1, at24: rows.filter((r) => r.next).length, frames: rows.length, up: up ? +up.t.toFixed(3) : -1, firstOff: +firstOff.toFixed(3) };
+};
+for (const ph of (process.argv[3] ?? '0,0.25,0.5,0.75,1,1.25,1.5,1.75,2,2.25,2.5,2.75,3').split(',').map(Number)) {
+  const a = one(ph, true), b = one(ph, false);
+  console.log(`phase ${ph.toFixed(2)} on ${a.end} off ${b.end} | margin at the press ${a.atUp}, min over frames next ${a.minNext}, max ${a.best} (frames next@24 ${a.at24}/${a.frames}) | first upstream press ${a.up} first on-log hop ${a.firstOff}`);
+}

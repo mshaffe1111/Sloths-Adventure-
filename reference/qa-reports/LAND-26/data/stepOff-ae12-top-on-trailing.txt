@@ -1,0 +1,64 @@
+t 103.53 x 604 y 3225 vx 0 vy 0 wheel@801,3308 way 1 b5  past -1.09 [-0.74,0.60] up off -37 pad -
+t 103.57 x 605 y 3224 vx 0 vy 0 wheel@801,3308 way 1 b5  past -1.08 [-0.74,0.60] up off -37 pad -
+t 103.60 x 606 y 3222 vx 0 vy 0 wheel@801,3308 way 1 b5  past -1.07 [-0.74,0.60] up off -37 pad -
+t 103.63 x 607 y 3220 vx 0 vy 0 wheel@801,3308 way 1 b5  past -1.06 [-0.74,0.60] up off -37 pad -
+t 103.67 x 608 y 3218 vx 0 vy 0 wheel@801,3308 way 1 b5  past -1.05 [-0.74,0.60] up off -37 pad -
+t 103.70 x 609 y 3217 vx 0 vy 0 wheel@801,3308 way 1 b5  past -1.04 [-0.74,0.60] up off -37 pad -
+t 103.73 x 610 y 3215 vx 0 vy 0 wheel@801,3308 way 1 b5  past -1.03 [-0.74,0.60] up off -37 pad -
+t 103.77 x 611 y 3213 vx 0 vy 0 wheel@801,3308 way 1 b5  past -1.02 [-0.74,0.60] up off -37 pad -
+t 103.80 x 612 y 3211 vx 0 vy 0 wheel@801,3308 way 1 b5  past -1.00 [-0.74,0.60] up off -37 pad -
+t 103.83 x 613 y 3210 vx 0 vy 0 wheel@801,3308 way 1 b5  past -0.99 [-0.74,0.60] up off -37 pad -
+t 103.87 x 614 y 3208 vx 0 vy 0 wheel@801,3308 way 1 b5  past -0.98 [-0.74,0.60] up off -37 pad -
+t 103.90 x 615 y 3206 vx 0 vy 0 wheel@801,3308 way 1 b5  past -0.97 [-0.74,0.60] up off -37 pad -
+t 103.93 x 616 y 3205 vx 0 vy 0 wheel@801,3308 way 1 b5  past -0.96 [-0.74,0.60] up off -37 pad -
+t 103.97 x 618 y 3203 vx 0 vy 0 wheel@801,3308 way 1 b5  past -0.95 [-0.74,0.60] up off -37 pad -
+t 104.00 x 619 y 3202 vx 0 vy 0 wheel@801,3308 way 1 b5  past -0.94 [-0.74,0.60] up off -37 pad -
+t 104.03 x 620 y 3200 vx 0 vy 0 wheel@801,3308 way 1 b5  past -0.93 [-0.74,0.60] up off -37 pad -
+t 104.07 x 621 y 3198 vx 0 vy 0 wheel@801,3308 way 1 b5  past -0.92 [-0.74,0.60] up off -37 pad -
+t 104.10 x 622 y 3197 vx 0 vy 0 wheel@801,3308 way 1 b5  past -0.90 [-0.74,0.60] up off -37 pad -
+t 104.13 x 624 y 3195 vx 0 vy 0 wheel@801,3308 way 1 b5  past -0.89 [-0.74,0.60] up off -37 pad -
+t 104.17 x 625 y 3194 vx 0 vy 0 wheel@801,3308 way 1 b5  past -0.88 [-0.74,0.60] up off -37 pad -
+t 104.20 x 626 y 3192 vx 0 vy 0 wheel@801,3308 way 1 b5  past -0.87 [-0.74,0.60] up off -37 pad -
+t 104.23 x 628 y 3191 vx 0 vy 0 wheel@801,3308 way 1 b5  past -0.86 [-0.74,0.60] up off -37 pad -
+t 104.27 x 629 y 3189 vx 0 vy 0 wheel@801,3308 way 1 b5  past -0.85 [-0.74,0.60] up off -37 pad -
+t 104.30 x 630 y 3188 vx 0 vy 0 wheel@801,3308 way 1 b5  past -0.84 [-0.74,0.60] up off -37 pad -
+t 104.33 x 632 y 3186 vx 0 vy 0 wheel@801,3308 way 1 b5  past -0.83 [-0.74,0.60] up off -37 pad -
+t 104.37 x 633 y 3185 vx 0 vy 0 wheel@801,3308 way 1 b5  past -0.82 [-0.74,0.60] up off -37 pad -
+t 104.40 x 634 y 3183 vx 0 vy 0 wheel@801,3308 way 1 b5  past -0.80 [-0.74,0.60] up off -37 pad -
+t 104.43 x 636 y 3182 vx 0 vy 0 wheel@801,3308 way 1 b5  past -0.79 [-0.74,0.60] up off -37 pad -
+t 104.47 x 637 y 3180 vx 0 vy 0 wheel@801,3308 way 1 b5  past -0.78 [-0.74,0.60] up off -37 pad -
+t 104.50 x 638 y 3179 vx 0 vy 0 wheel@801,3308 way 1 b5  past -0.77 [-0.74,0.60] up off -37 pad -
+t 104.53 x 640 y 3178 vx 0 vy 0 wheel@801,3308 way 1 b5  past -0.76 [-0.74,0.60] up off -37 pad -
+t 104.57 x 641 y 3176 vx 0 vy 0 wheel@801,3308 way 1 b5  past -0.75 [-0.74,0.60] up off -37 pad -
+t 104.60 x 643 y 3175 vx 0 vy 0 wheel@801,3308 way 1 b5  past -0.74 [-0.74,0.60] up off -37 pad -
+t 104.63 x 644 y 3174 vx 0 vy 0 wheel@801,3308 way 1 b5  past -0.73 [-0.74,0.60] up off -37 pad -
+t 104.67 x 646 y 3172 vx 0 vy 0 wheel@801,3308 way 1 b5  past -0.72 [-0.74,0.60] up off -37 pad -
+t 104.70 x 647 y 3171 vx 0 vy 0 wheel@801,3308 way 1 b5  past -0.70 [-0.74,0.60] up off -37 pad -
+t 104.73 x 649 y 3170 vx 0 vy 0 wheel@801,3308 way 1 b5  past -0.69 [-0.74,0.60] up off -37 pad -
+t 104.77 x 650 y 3168 vx 0 vy 0 wheel@801,3308 way 1 b5  past -0.68 [-0.74,0.60] up off -37 pad -
+t 104.80 x 652 y 3167 vx 0 vy 0 wheel@801,3308 way 1 b5  past -0.67 [-0.74,0.60] up off -37 pad -
+t 104.83 x 654 y 3166 vx 0 vy 0 wheel@801,3308 way 1 b5  past -0.66 [-0.74,0.60] up off -37 pad -
+t 104.87 x 655 y 3165 vx 0 vy 0 wheel@801,3308 way 1 b5  past -0.65 [-0.74,0.60] up off -37 pad -
+t 104.90 x 657 y 3163 vx 0 vy 0 wheel@801,3308 way 1 b5  past -0.64 [-0.74,0.60] up off -37 pad -
+t 104.93 x 658 y 3162 vx 0 vy 0 wheel@801,3308 way 1 b5  past -0.63 [-0.74,0.60] up off -37 pad -
+t 104.97 x 660 y 3161 vx 0 vy 0 wheel@801,3308 way 1 b5  past -0.62 [-0.74,0.60] up off -37 pad -
+t 105.00 x 666 y 3141 vx 136 vy -577 air  pad right+press+jump
+t 105.03 x 673 y 3124 vx 193 vy -513 air  pad right+jump
+t 105.07 x 681 y 3109 vx 249 vy -450 air  pad right+jump
+t 105.10 x 690 y 3096 vx 285 vy -387 air  pad right+jump
+t 105.13 x 699 y 3085 vx 268 vy -323 air  pad right+jump
+t 105.17 x 709 y 3076 vx 285 vy -260 air  pad right+jump
+t 105.20 x 718 y 3070 vx 268 vy -197 air  pad right+jump
+t 105.23 x 727 y 3065 vx 285 vy -133 air  pad right+jump
+t 105.27 x 736 y 3063 vx 268 vy -70 air  pad right+jump
+t 105.30 x 746 y 3062 vx 285 vy -24 air  pad right+jump
+t 105.33 x 755 y 3063 vx 285 vy 21 air  pad jump
+t 105.37 x 765 y 3066 vx 285 vy 81 air  pad jump
+t 105.40 x 774 y 3070 vx 285 vy 141 air  pad jump
+t 105.43 x 784 y 3078 vx 285 vy 225 air  pad jump
+t 105.47 x 793 y 3088 vx 285 vy 308 air  pad jump
+t 105.50 x 803 y 3101 vx 285 vy 391 air  pad jump
+t 105.53 x 812 y 3117 vx 285 vy 475 air  pad -
+t 105.57 x 822 y 3135 vx 285 vy 558 air  pad -
+t 105.60 x 831 y 3157 vx 268 vy 641 air  pad right
+END shrine 170.5 rescues 1

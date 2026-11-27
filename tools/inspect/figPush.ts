@@ -48,6 +48,16 @@ export class FigPush {
     return !!this.target || t - this.lastAct < 4;
   }
 
+  /** when the field last moved under his work (a fig bunch torn free or gone, a gate sprung open): the bot's no-progress clock lets his
+   *  work off only while it gets somewhere (firsttimer.ts figsWork; BUILD-26l, 1-4 adult N 39's shuffle under a gate, 1200 s) */
+  changedAt = -1e9;
+  private sig = -1;
+
+  /** a knock read off the engine (FieldView.knocked) on any frame, climbing or not: the knock's own frame takes him off the vine */
+  sawKnock(knocked: number | undefined, t: number): void {
+    if ((knocked ?? 0) > 0) this.lastKnock = t;
+  }
+
   /** a pod knocked him off in the last few seconds: a fall that is a hit, not a missed climb (the bot's fell-back count leaves it out) */
   knockedRecently(t: number): boolean {
     return t - this.lastKnock < 6;
@@ -79,6 +89,13 @@ export class FigPush {
   /** this frame's thumb, or null (the bot's own climb) */
   step(v: FieldView, p: PlayerState, t: number): Pad | null {
     if ((v.knocked ?? 0) > 0) this.lastKnock = t;
+    if (v.field) {
+      const sig = v.clusters.filter((c) => c.falling || c.gone).length * 1000 + v.field.gates.filter((g) => gateLeft(g, v.clusters) === 0).length;
+      if (sig !== this.sig) {
+        if (this.sig >= 0) this.changedAt = t;
+        this.sig = sig;
+      }
+    }
     if (Math.abs(p.x - this.movedAt.x) > 2 || Math.abs(p.y - this.movedAt.y) > 2) this.movedAt = { x: p.x, y: p.y, t };
     const pad = this.choose(v, p, t);
     if (pad) this.lastAct = t;
@@ -100,7 +117,15 @@ export class FigPush {
       if (dir !== 0 && (h.b || this.sideVine(v, h.a, dir, p.y))) return this.push(dir);
       return {};
     }
-    // the figs: only under a shut gate's bough, or on the way to one already chosen
+    // the figs: only under a shut gate's bough, or on the way to one already chosen, and only one on a vine he can reach from his hands'
+    // row (one he holds, or one spanning the height his hands are at: the way across to it his own). A fall off the gate's row with the
+    // target held left him pushing left and right between two vines of a lower row under its x for ever, the no-progress clock held by
+    // the target, until a rescue (BUILD-26m/n, 1-4 adult N 9 and expert N 20 at x 871, child N 38); out of reach, his own climb takes him
+    const reach = (c: VineCluster) => {
+      const cv = v.vines.find((q) => q.id === c.vine);
+      return !!cv && (holds(cv.id) || (p.y >= cv.topY - 4 && p.y <= cv.bottomY + 4));
+    };
+    if (this.target && !this.target.falling && !this.target.gone && !reach(this.target)) this.target = null;
     if (!this.target || this.target.falling || this.target.gone) {
       this.target = null;
       const top = h.b && h.b.topY > h.a.topY ? h.b : h.a;
@@ -111,7 +136,7 @@ export class FigPush {
       let best: VineCluster | null = null, bd = Infinity;
       for (const c of this.held(v)) {
         const cv = v.vines.find((q) => q.id === c.vine);
-        if (!cv) continue;
+        if (!cv || !reach(c)) continue;
         const d = Math.abs(cv.x - p.x) + Math.abs(c.y - p.y) * 0.5;
         if (d < bd) { bd = d; best = c; }
       }
@@ -173,7 +198,12 @@ export class FigPush {
       if (!busy(h.a) && busy(h.b)) return h.a.x < h.b.x ? -1 : 1;
       if (!busy(h.b)) return h.b.x < h.a.x ? -1 : 1;
     }
-    for (const dir of [-1, 1] as const) {
+    // (toward the fig he is going for first, when that side is free: a dodge that always tried the left first stepped him away from a
+    //  fig to his right at every tell, back and forth over the same three vines, never reaching it. BUILD-26l, 1-4 adult N 32 and
+    //  middle N 14, fig 7 on vine 48 from vines 43-46)
+    const cv = this.target ? v.vines.find((q) => q.id === this.target!.vine) : undefined;
+    const first: -1 | 1 = cv && cv.x > p.x + 1 ? 1 : -1;
+    for (const dir of [first, -first as -1 | 1]) {
       const q = this.sideVine(v, h.a, dir, p.y);
       if (q && !busy(q)) return dir;
     }

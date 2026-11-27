@@ -1,0 +1,10 @@
+ciline on c0cc0810e exit 1 561 s
+# tests 432
+# pass 427
+# fail 4
+# cancelled 0
+# todo 1
+not ok 254 - a beat row is started from a floor that stays only on a breath that crosses it: 2-2 adult Normal 4, the latch carried over pads (CI-14)
+not ok 268 - A VINE FROM A LOG: on the catch toy the middle bot jumps from the moving log to the liana; PLANTED: without the skill, never
+not ok 355 - planted: with the against-the-flow skill off, the child on Normal is rescued on 2-1 (17) and the child and the middle on Normal lose 5+ more lives (child 3, 15; middle 16)
+not ok 356 - in the real engine: on a log flowing AT him, a held hop the upstream gate refuses is aimed again after his reaction, never held for the whole ride back (SKILLS.reAim; RED with it off)

@@ -1,0 +1,25 @@
+// s9-vfl: one castBots row, every vineFromLog call in a window: its return (null / run-up steer / press), the run-up state, the liana
+// it would aim at (vineFromLog's own pick), and the engine frame. usage: npx tsx s9-vfl.mts <tree> <stage> <bot> <setting> <seed> <t0> <t1>
+const [T, stage, bot, setting, seedS, a, b] = process.argv.slice(2);
+const t0 = Number(a), t1 = Number(b);
+await import(T + '/src/game/headlessDom.ts');
+const ft: any = await import(T + '/tools/inspect/firsttimer.ts');
+const cb: any = await import(T + '/tools/inspect/castBots.ts');
+const P = ft.FirstTimerRun.prototype, vf = P.vineFromLog, sj = P.startJump;
+const out: string[] = [];
+P.vineFromLog = function (this: any, p: any, dir: number, t: number) {
+  const r = vf.call(this, p, dir, t);
+  if (t >= t0 && t <= t1) {
+    const here = this.sim.platforms.find((q: any) => q.id === this.sim.standingOn);
+    const v = this.sim.vines.filter((q: any) => (q.vineType === 'swing_liana' || q.isSwingingVine) && !q.off && dir * (q.x - p.x) > -30 && dir * (q.x - p.x) < 420).map((q: any) => `#${q.id}@${q.x.toFixed(0)}`).join(',');
+    const ret = r === null ? 'null' : JSON.stringify(r);
+    out.push(`VFL ${t.toFixed(3)} x ${p.x.toFixed(1)} vx ${p.vx.toFixed(0)} g ${p.grounded ? 1 : 0} on #${here?.id ?? '-'}${here?.drift ? ` log ${here.x.toFixed(0)}-${(here.x + here.width).toFixed(0)}` : ''} vines ${v || '-'} -> ${ret} runUp ${this.runUp ? this.runUp.id : '-'} stand ${this.standHold ? this.standHold.hold : '-'}`);
+  }
+  return r;
+};
+P.startJump = function (this: any, ...q: any[]) { const o = sj.apply(this, q); if (this.t >= t0 && this.t <= t1) out.push(`JUMP ${this.t.toFixed(3)} x ${this.sim.p.x.toFixed(1)} ${JSON.stringify(this.jump)}`); return o; };
+ft.firstTimer(stage, Number(seedS), cb.CAST_BOTS[bot][setting], { cap: Math.ceil(t1) + 1, dotSetting: true, onFrame: (sim: any) => {
+  const p = sim.e.player;
+  if (sim.t >= t0 && sim.t <= t1) out.push(`ENG ${sim.t.toFixed(3)} x ${p.x.toFixed(1)} y ${p.y.toFixed(1)} vx ${p.vx.toFixed(0)} g ${p.grounded ? 1 : 0} on #${sim.e.standingOnId ?? '-'} sw ${p.isVineSwinging ? p.swingVineId : '-'}`);
+} });
+console.log(out.join('\n'));

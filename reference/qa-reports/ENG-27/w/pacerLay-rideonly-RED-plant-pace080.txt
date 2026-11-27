@@ -1,0 +1,107 @@
+TAP version 13
+# Subtest: pacer race (the bots): the ride-only player never wins, by 2 s or more, normal seed 1
+ok 1 - pacer race (the bots): the ride-only player never wins, by 2 s or more, normal seed 1
+  ---
+  duration_ms: 3191.899227
+  type: 'test'
+  ...
+# Subtest: pacer race (the bots): the ride-only player never wins, by 2 s or more, normal seed 2
+ok 2 - pacer race (the bots): the ride-only player never wins, by 2 s or more, normal seed 2
+  ---
+  duration_ms: 984.58902
+  type: 'test'
+  ...
+# Subtest: pacer race (the bots): the ride-only player never wins, by 2 s or more, normal seed 3
+ok 3 - pacer race (the bots): the ride-only player never wins, by 2 s or more, normal seed 3
+  ---
+  duration_ms: 793.549245
+  type: 'test'
+  ...
+# Subtest: pacer race (the bots): the ride-only player never wins, by 2 s or more, easy seed 1
+not ok 4 - pacer race (the bots): the ride-only player never wins, by 2 s or more, easy seed 1
+  ---
+  duration_ms: 679.509068
+  type: 'test'
+  location: '/home/user/fzplant/src/game/gen2/pacerLay.test.ts:199:5'
+  failureType: 'testCodeFailure'
+  error: "ride-only easy seed 1: 123.8 s against the boat's 121.92 s: not 2 s behind it"
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: true
+  actual: false
+  operator: '=='
+  stack: |-
+    TestContext.<anonymous> (/home/user/fzplant/src/game/gen2/pacerLay.test.ts:201:14)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: pacer race (the bots): the ride-only player never wins, by 2 s or more, easy seed 2
+not ok 5 - pacer race (the bots): the ride-only player never wins, by 2 s or more, easy seed 2
+  ---
+  duration_ms: 599.862071
+  type: 'test'
+  location: '/home/user/fzplant/src/game/gen2/pacerLay.test.ts:199:5'
+  failureType: 'testCodeFailure'
+  error: "ride-only easy seed 2: 112.8 s against the boat's 120.4 s: not 2 s behind it"
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: true
+  actual: false
+  operator: '=='
+  stack: |-
+    TestContext.<anonymous> (/home/user/fzplant/src/game/gen2/pacerLay.test.ts:201:14)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: pacer race (the bots): the ride-only player never wins, by 2 s or more, easy seed 3
+ok 6 - pacer race (the bots): the ride-only player never wins, by 2 s or more, easy seed 3
+  ---
+  duration_ms: 592.797447
+  type: 'test'
+  ...
+# Subtest: pacer race (the bots): the ride-only player never wins the post's race, by 2 s or more, normal seed 4
+ok 7 - pacer race (the bots): the ride-only player never wins the post's race, by 2 s or more, normal seed 4
+  ---
+  duration_ms: 737.573686
+  type: 'test'
+  ...
+# Subtest: pacer race (the bots): the ride-only player never wins the post's race, by 2 s or more, normal seed 5
+ok 8 - pacer race (the bots): the ride-only player never wins the post's race, by 2 s or more, normal seed 5
+  ---
+  duration_ms: 680.566856
+  type: 'test'
+  ...
+# Subtest: pacer race (the bots): the ride-only player never wins the post's race, by 2 s or more, easy seed 4
+ok 9 - pacer race (the bots): the ride-only player never wins the post's race, by 2 s or more, easy seed 4
+  ---
+  duration_ms: 654.225326
+  type: 'test'
+  ...
+# Subtest: pacer race (the bots): the ride-only player never wins the post's race, by 2 s or more, easy seed 5
+not ok 10 - pacer race (the bots): the ride-only player never wins the post's race, by 2 s or more, easy seed 5
+  ---
+  duration_ms: 562.603776
+  type: 'test'
+  location: '/home/user/fzplant/src/game/gen2/pacerLay.test.ts:210:5'
+  failureType: 'testCodeFailure'
+  error: "ride-only post easy seed 5: 124.2 s against the boat's 134.44 s: not 2 s behind it"
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: true
+  actual: false
+  operator: '=='
+  stack: |-
+    TestContext.<anonymous> (/home/user/fzplant/src/game/gen2/pacerLay.test.ts:212:14)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+1..10
+# tests 10
+# suites 0
+# pass 7
+# fail 3
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 11545.779453
+PLANT EXIT 1

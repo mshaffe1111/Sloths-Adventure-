@@ -30,7 +30,7 @@
 import { DT, RealPlay, levelConfig, type Pad } from '../../src/game/realPlay.ts';
 import { glanceView, glancing, hurt, touches } from '../../src/game/predators/core.ts';
 import type { PredatorDef, PredatorState } from '../../src/game/predators/types.ts';
-import { GameEngine } from '../../src/game/engine.ts';
+import { GameEngine, LIP_IN } from '../../src/game/engine.ts';
 import { frontBehind, type ChaseRun } from '../../src/game/chase.ts';
 import { rollRadius } from '../../src/game/rolling.ts';
 import type { Rolling } from '../../src/game/pieces/rollingPiece.ts';
@@ -48,12 +48,15 @@ import { findTarget } from '../../src/game/dotGuidePerch.ts';
 
 /** a move tip about one of these is over once none is in view (as DotGuide.tsx has it) */
 const GONE_TOPICS = new Set<TopicId>(['trunk', 'vine', 'rope', 'log', 'foe']);
-import { driftX, DRIFT_CATCH, lianasOver, LOG_DROP, logClock, onRiver, riverEnd, type RiverZone } from '../../src/game/river.ts';
+import { driftCycle, driftX, DRIFT_CATCH, lianasOver, LOG_DROP, logClock, onRiver, riverAt, riverEnd, type RiverZone } from '../../src/game/river.ts';
+import { pacerOff, type Pacer } from '../../src/game/pacer.ts';
 import { RIDE } from '../../src/game/ride.ts';
 import { padShows } from '../../src/game/pieces/padPiece.ts';
 import { PAD_FAIR } from '../../src/game/gen2/rideLay.ts';
 import { beatAt, beatOf, type Beat } from '../../src/game/clock.ts';
-import { airStep, canGrabSwing, DOUBLE_RISE, JUMP_RISE, PHYS, SWING, reachJump, reachJumpHeld, TIMED, pressLaunches, groundStep, takeOffStep, vineAmp, vinePeriod } from '../../src/game/physics.ts';
+import { drowsyJump } from '../../src/game/zones.ts';
+import { airStep, ASSIST, blockBeside, canGrabSwing, lipHasRoom, WALL_H, DOUBLE_RISE, FORGIVE, secondJumpV, JUMP_RISE, PHYS, SWING, reachJump, reachJumpHeld, TIMED, pressLaunches, groundStep, takeOffStep, vineAmp, vinePeriod } from '../../src/game/physics.ts';
+import { GLIDE, glideBrake } from '../../src/game/glide.ts';
 import { MIN_TOUCH_JUMP_HOLD_MS } from '../../src/game/inputEngine.ts';
 import { handsAlong } from '../../src/game/pieces/vineSnakePiece.ts';
 import { onVine, type SnakeNow } from '../../src/game/vineSnake.ts';
@@ -66,17 +69,21 @@ import type { TrapPost } from '../../src/game/castPlay.types.ts';
 import { findRoute } from './route.ts';
 import { markUp } from './markClimb.ts';
 import { FigPush, type FieldView } from './figPush.ts';
+/** s the figs' work keeps the no-progress clock off with nothing moving (no fig freed, no gate opened, no step further on): the bot's
+ *  own stuck rule, RULES.wayOn ('never stopped 8 s with no progress'), read where it is used (the lead's ruling, D116: no number by eye) */
+const figGrace = () => RULES.wayOn.stuckSecs;
 /** the objectives whose goal is a count (engine.ts isQuotaType); every other stage's goal is the shrine */
 const QUOTA_TYPES = new Set(['harvest', 'purge', 'relic_hunt', 'rescue', 'gauntlet']);
 import { buildRoll } from './eraRoll.ts';
 import { STAGE_SECONDS } from '../../src/game/protoStage.ts';
 import { sampleRoute } from './beats.ts';
-import { towerRoutePts } from './towerRoute.ts';
+import { towerCorners, towerRoutePts } from './towerRoute.ts';
 import type { Stage } from './stages.ts';
 import { liftStop } from '../../src/game/lift.ts';
 import type { FollowPlay } from '../../src/game/followPlay.ts';
-import { bucketAngle } from '../../src/game/wheel.ts';
+import { bucketAngle, bucketAt, bucketPeriod, type Wheel } from '../../src/game/wheel.ts';
 import { WHEEL_FLOWN } from '../../src/game/gen2/wheelFlights.data.ts';
+import { BOARD_BACK } from '../../src/game/gen2/wheelFlights.ts';
 import { flownKey } from '../../src/game/gen2/wheelLay.ts';
 
 /**
@@ -267,6 +274,10 @@ export interface FirstTimer {
   /** (ENG-SNAP, R-165.339; SKILLS.letItSnap) an awake snapper on a clock he plays the TAUGHT way (Dot's line: stand back, let it snap,
    *  then kick; the lead's ruling 11-18): the child and the kid. Unset, he bonks it (BONK-AFTER-THE-SNAP), as middle, expert and adult */
   letSnap?: boolean;
+  /** (ENG-BOT27b, SKILLS.reAim; the lead's ruling 11-23: the CHILD bot's skill only, R-165.413) at the upstream gate, standing on a log, a
+   *  held aim the gate refuses for his stopReact ends its wait and is drawn again. Unset, he holds the aim (the middle, expert, adult and
+   *  kid, as before): the race is calibrated on the careful middle (pacerLay), so the middle's play changes only by its own ruling */
+  reAim?: boolean;
 
   /** the runner liana's held thumb REMOVED (level.md rule 21's planted toy test only, chaseBots.test.ts): on open ground he lifts his
    *  thumb by his rhythm (gapQ) on the run to a liana phased to a runner too, stops short and waits for it. Every bot has it: running at
@@ -283,6 +294,10 @@ export interface FirstTimer {
    *  every moving ground press near an edge, hops along flat ground among them): a tuning field */
   readAim?: number;
 }
+/** whether a bot follows the tower's own laid route (towerRoute.ts): on any stage laid as a tower, and wherever the inspector cannot
+ * trace the stage; a tower's trace slants each turn's climb through the floors (2-6, BUILD-26c) */
+export const takesTowerRoute = (stage: Parameters<typeof towerCorners>[0], spawn: { x: number; y: number }, traced: string): boolean =>
+  traced === 'failed' || !!towerCorners(stage, spawn);
 export const FT_KID: FirstTimer = {
   name: 'KID', setting: 'easy', look: 1.2, heed: 1.1, stopReact: 0.4, thumb: [0.09, 0.065], hold: [0.16, 0.08], short: 0.08, upOnly: 0.45,
   upOnlyT: [0.08, 0.2], edgeAim: 32, dblAt: [-260, 160], hopFoe: 0.55, hesitate: 0.4, swap: [0.133, 0.2], drift: [4, 2], thumbSpeed: 180,
@@ -321,14 +336,14 @@ export const FT_MIDDLE_EASY: FirstTimer = {
   steerQ: ms([107, 169, 367, 767, 1401]), gapQ: ms([102, 233, 393, 615, 863]),
 };
 export const FT_CHILD: FirstTimer = {
-  ...KEPT_KID, name: 'CHILD', setting: 'normal', letSnap: true, upOnly: 0.16, edgeAim: 73, knowsDouble: true, readHold: 0.5, readDbl: 0.5, readGap: [0, 0.9],
+  ...KEPT_KID, name: 'CHILD', setting: 'normal', letSnap: true, reAim: true, upOnly: 0.16, edgeAim: 73, knowsDouble: true, readHold: 0.5, readDbl: 0.5, readGap: [0, 0.9],
   holdQ: ms([22, 49, 74, 115, 231]), aimQ: [1, 28, 73, 119, 232], lateShare: 0.121, lateQ: ms([18, 46, 83, 113, 129]),
   standShare: 0.81, standQ: ms([237, 394, 560, 740, 1131]), dblShare: 0.234, dbl2Q: ms([291, 323, 406, 530, 710]),
   steerQ: ms([56, 80, 120, 192, 524]), gapQ: ms([268, 420, 630, 1041, 1489]),
 };
 /** the child tier's one Easy run (P27, 37 minutes, 187 put-backs): an outlier no bot is tuned to; printed, never checked */
 export const FT_CHILD_EASY: FirstTimer = {
-  ...KEPT_KID, name: 'CHILD', setting: 'easy', letSnap: true, upOnly: 0.16, edgeAim: 71, knowsDouble: true, readHold: 0.5, readDbl: 0.5, readGap: [0, 0.9],
+  ...KEPT_KID, name: 'CHILD', setting: 'easy', letSnap: true, reAim: true, upOnly: 0.16, edgeAim: 71, knowsDouble: true, readHold: 0.5, readDbl: 0.5, readGap: [0, 0.9],
   holdQ: ms([49, 100, 219, 395, 1108]), aimQ: [0, 27, 71, 161, 245], lateShare: 0.25, lateQ: ms([65, 100, 180, 247, 362]),
   standShare: 0.663, standQ: ms([132, 263, 631, 1187, 2371]), dblShare: 0.3, dbl2Q: ms([361, 413, 543, 724, 1251]),
   steerQ: ms([64, 132, 231, 444, 931]), gapQ: ms([50, 83, 297, 717, 1708]),
@@ -341,16 +356,29 @@ const UNDER_AT = 240;
 /** a chased player's stand at an edge leaves this much of the front's stop budget (s): his jump and the step after it still to come */
 const CHASE_MARGIN = 0.8;
 
-/** seeded random numbers (mulberry32): the same seed plays the same run */
-export function rng(seed: number): () => number {
+/** seeded random numbers (mulberry32): the same seed plays the same run. `fork()` is a copy of the stream from where it stands: its draws
+ *  are the stream's next draws, and drawing from it consumes nothing of the stream (a judge peeks the draw a decision will make: padRead) */
+export type Rng = (() => number) & { fork: () => () => number };
+const mulberry = (a: number): number => {
+  let t = a;
+  t = Math.imul(t ^ (t >>> 15), t | 1);
+  t ^= t + Math.imul(t ^ (t >>> 7), t | 61);
+  return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+};
+export function rng(seed: number): Rng {
   let a = seed >>> 0;
-  return () => {
+  const r = (() => {
     a = (a + 0x6d2b79f5) >>> 0;
-    let t = a;
-    t = Math.imul(t ^ (t >>> 15), t | 1);
-    t ^= t + Math.imul(t ^ (t >>> 7), t | 61);
-    return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+    return mulberry(a);
+  }) as Rng;
+  r.fork = () => {
+    let b = a;
+    return () => {
+      b = (b + 0x6d2b79f5) >>> 0;
+      return mulberry(b);
+    };
   };
+  return r;
 }
 const between = (r: () => number, [a, b]: [number, number]) => a + (b - a) * r();
 /** a normal draw (Box-Muller) */
@@ -441,8 +469,14 @@ export interface Pt { x: number; y: number; /** a point along a shimmy rope (rou
  */
 /** how near a pin's point he stands to have reached it (px, Progress.d: the stone's half width less a step) */
 const PIN_AT = 50;
+/** off the way: further than this from his place along it (Progress.off), he has fallen off it (the fall-back rewind; relocate's pin floor) */
+const OFF_WAY = 260;
 /** px: how far along x a fallen bot's `level` point may be (Progress.relocate); past it, the plain nearest point (ENG-285) */
 export const LEVEL_REACH = 600;
+/** px: more than a double's reach under the point he is at along the way: he fell off it (Progress.under, BUILD-26f) */
+export const UNDER_REACH = 175;
+/** a rewind's reach across from a climbing vine at his feet (Progress.relocate's `climb`): a field's vines stand 80 px apart, one step */
+export const CLIMB_ACROSS = 90;
 export class Progress {
   cur = 0;
   hi = 0;
@@ -492,20 +526,55 @@ export class Progress {
   off(p: Pt): number {
     return this.pts.length ? this.d(this.cur, p) : 0;
   }
+  /** he stands more than a double's reach under the point he is at, and the way has a point about his height near him to go back to:
+   *  he fell off the leg he was on, and the way on starts back at his height (the climb that leads up). BUILD-26f, 2-6 adult N 26 and 33:
+   *  he fell from the leg at y 3741 to the floor at y 4118; his hops along the floor kept `off` under 260 in the air, so the fall-back
+   *  rewind never fired, cur stayed on the leg 379 px over his head and he jumped to and fro under it, never to the vine at x 1587 */
+  under(p: Pt): boolean {
+    if (!this.pts.length || p.y - this.pts[this.cur].y <= UNDER_REACH) return false;
+    return this.pts.some((q, i) => i !== this.cur && this.cap(i) === i && i >= this.pinFloor && !q.rope && Math.abs(q.y - p.y) <= 80 && Math.abs(q.x - p.x) <= LEVEL_REACH);
+  }
   /** after a respawn or a rescue: find him anywhere along the way */
-  relocate(p: Pt, level = false): void {
+  relocate(p: Pt, level = false, band = Infinity, climb?: { x: number; topY: number }): void {
     let bi = 0, bd = Infinity;
-    // (`level`: after a fall, only the points about his height or below, and near him (LEVEL_REACH): the way back up starts where he can
-    //  walk to. With no reach limit a point at his height 35,000 px on was "nearest": 1-6 kid Normal layout 13, BUILD-24b; ENG-285)
+    // (`climb`: a climbing vine that rises from his feet (climbUpVine). After a fall, the points he can reach from where he stands come
+    //  first: the way on his own floor (about his height) and up that vine (within CLIMB_ACROSS of it, to its top); only with none of
+    //  those, the points under him. Ranked by distance alone, a leg 320 px UNDER the floor he stood on (y weighs 0.7) beat the way along
+    //  that floor 325 px off: a pod's knock off 1-4's vine field left him standing over a leg he could not drop to, each rewind a 'fall',
+    //  to a rescue (child N 8 and 14, BUILD-26k))
     const ok = (i: number) => this.cap(i) === i && i >= this.pinFloor && !this.pts[i].rope
-      && (!level || (this.pts[i].y >= p.y - 80 && Math.abs(this.pts[i].x - p.x) <= LEVEL_REACH));
-    if (level && !this.pts.some((_, i) => ok(i))) level = false;
+      && (!level || (this.pts[i].y >= p.y - 80 && this.pts[i].y <= p.y + band && Math.abs(this.pts[i].x - p.x) <= LEVEL_REACH));
+    // (`band`: a rewind by `under` takes only the points about his own height: with the plain 'his height or below' it took a point
+    //  500 px under him (2-6 adult N 3 at x 1023, y 1076 -> 1024,1577), and the far-off rewinds from there were three falls and a rescue)
+    const reach = (i: number) => { const q = this.pts[i]; return this.cap(i) === i && i >= this.pinFloor && !q.rope && Math.abs(q.x - p.x) <= LEVEL_REACH
+      && (Math.abs(q.y - p.y) <= 80 || (!!climb && Math.abs(q.x - climb.x) <= CLIMB_ACROSS && q.y >= climb.topY - 40 && q.y < p.y)); };
+    let pick = ok;
+    if (level && this.pts.some((_, i) => reach(i))) pick = reach;
+    else if (level && !this.pts.some((_, i) => ok(i))) level = false;
     for (let i = 0; i < this.pts.length; i++) {
-      if (!ok(i)) continue;
+      if (!pick(i)) continue;
       const d = this.d(i, p);
       if (d < bd) {
         bd = d;
         bi = i;
+      }
+    }
+    // (set down BEHIND the last pin he stood at: a respawn at a flag before the spur's out-and-back ground. The floor keeps him from
+    //  being followed back out over that ground (kept through a respawn); with no point at or past it within the off-way reach
+    //  (OFF_WAY, the fall-back rewind's own test) it kept him off the way for good, and every rewind from there counted as a fall from
+    //  one top: 2-2 middle Normal 7 (R-165.465 C6), a life lost past the stone pin at x 9,242 and the flag 1,895 px behind it, 8 'fell
+    //  back down' and a rescue. The pins past the point nearest him are his to stand at again; the floor drops to the last one before it)
+    if (this.pin > 0 && bd > OFF_WAY) {
+      let near = 0, nd = Infinity;
+      for (let i = 0; i < this.pts.length; i++) {
+        if (this.pts[i].rope) continue;
+        const d = this.d(i, p);
+        if (d < nd) { nd = d; near = i; }
+      }
+      if (near < this.pinFloor) {
+        while (this.pin > 0 && this.pins[this.pin - 1] > near) this.pin--;
+        this.pinFloor = this.pin > 0 ? this.pins[this.pin - 1] : 0;
+        return this.relocate(p, level, band, climb);
       }
     }
     this.cur = bi;
@@ -723,7 +792,15 @@ export interface DotReport {
  * will be (hopLandsOn), and on a log he rides it until such a hop takes him to the next log, or the bank is near (riverRide.test.ts: with
  * it off, he hops at a river's edge whatever the logs are doing). Always on outside a test.
  */
-export const SKILLS = { ride: true, upstream: true, bankUp: true, handed: true, dropOnLog: true, vineFromLog: true, vineOverTail: true, bonkAfterSnap: true, rideWheel: true, bonkBrake: true, letItSnap: true };
+/** the log a racing hop wants on each side of where it lands (px): the flights' careful middle player (2-7.md FLOWN) */
+const RACE_MARGIN = 50;
+export const SKILLS = { trunkCatch: true, ride: true, upstream: true, bankUp: true, handed: true, dropOnLog: true, vineFromLog: true, vineOverTail: true, bonkAfterSnap: true, rideWheel: true, boardWatch: true, stepOff: true, bonkBrake: true, letItSnap: true, race: true, rideOnly: false, fromTakeoff: true, boardLog: true, boardHop: true, floatSure: true, reAim: true, runUp: true };
+/**
+ * (ENG-26e) `trunkCatch`, a thumb gone to the climb: a jump that catches a trunk straight off the ground (no frame in the air, so no landing
+ * ends it) is over the frame he holds the trunk, its hold and its second press with it; the climb is his. With it off the jump runs on
+ * and a double's second press flicks him off the trunk (2-6's draft tower: every tier, the expert too, off the turn's vine onto the catch
+ * bough under it, to a rescue; trunkCatch.test.ts). Always on outside a test.
+ */
 /**
  * (ENG-26, reference/design/2-6.md NEW 2) `rideWheel`, ride a water wheel (wheel.ts) as a person does: on the jetty he walks up to its lip,
  * stands, and boards with a hop toward the wheel (a tap hop off the jetty boards at every moment of the wheel: wheelFlights.data.ts); in a
@@ -733,6 +810,13 @@ export const SKILLS = { ride: true, upstream: true, bankUp: true, handed: true, 
  * tier's reaction to the window opening (stopReact, plus a late press as often as his tier's lateShare), and only while it is still open.
  * The hops are single (no second press): a double off the jetty or off the top is no step-off. With it off he treats the buckets as
  * ledges, scrambling bucket to bucket and into the pond (wheelRide.test.ts).
+ * `boardWatch` (LAND-26c, R-165.478): stopped nearer the jetty's lip than the board was flown (wheelFlights.ts BOARD_BACK), he hops in
+ * only when his own hop (hopBoards: every lag and hold it can have) comes down inside a bucket, up to a bucket period; with it off he hops
+ * at once, and from 17 px short of the lip the hop can carry past the bucket's end (wheelBoard.test.ts). Always on outside a test.
+ * `stepOff` (LAND-26d, R-165.478): the step-off window was flown from the bucket's middle; in it he goes only when his own hop from where
+ * he stands (stepOffLands: every lag and hold, the bucket's carry kept) comes down on the street, else he waits in the window, or rides on
+ * and settles (behind the middle, he walks up to it); with it off he goes at the window from wherever he stands, and from a bucket's
+ * trailing end the hop falls short (2-6 adult Easy 12 and 13: wheelStepOff.test.ts). Always on outside a test.
  */
 /**
  * (ENG-24, reference/design/2-4.md NEW 2) `dropOnLog`, drop on a log: on a liana hung over a log river, he lets go at the swing's forward
@@ -953,10 +1037,11 @@ const side1 = (d: -1 | 1): Pad => (d > 0 ? { right: true } : { left: true });
  * One frame of a hop off the ground (frame i = 1 is the press's), the jump held `hold` s (then the engine's cut, PHYS.cutV): the press frame
  * steered on the ground (physics.ts takeOffStep), the rest with the engine's air tick (airStep). (hopCatches, hopLandsOn: one flight)
  */
-function hopFrame(b: { x: number; y: number; vx: number; vy: number }, i: number, dir: -1 | 1, hold: number): void {
+function hopFrame(b: { x: number; y: number; vx: number; vy: number }, i: number, dir: -1 | 1, hold: number, free = 0, carry = 0): void {
   const held = i * DT < hold;
   if (!held && b.vy < -PHYS.cutV) b.vy = -PHYS.cutV;
-  (i === 1 ? takeOffStep : airStep)(b, DT, dir, held);
+  if (i === 1) takeOffStep(b, DT, i <= free ? 0 : dir, held, carry);
+  else airStep(b, DT, i <= free ? 0 : dir, held);
 }
 /**
  * Does a hop off (x, y) toward `dir` (at `vx0`, a run by default), the jump held `hold` s, meet liana `v` where the engine catches
@@ -965,14 +1050,15 @@ function hopFrame(b: { x: number; y: number; vx: number; vy: number }, i: number
  * looks, then he moves), so his place after frame i meets the vine at t0 + i * DT. Flown frame by frame (hopFrame) until he is 200 px
  * under the take-off. (FirstTimerRun.lianaWait, vineFromLog; pitClimb.test.ts; lianaRide.test.ts pins it against the engine)
  */
-export function hopCatches(v: Parameters<typeof canGrabSwing>[2], x: number, y: number, dir: -1 | 1, hold: number, t0: number, vx0 = dir * PHYS.maxRun): boolean {
-  return hopCatchAt(v, x, y, dir, hold, t0, vx0) > 0;
+export function hopCatches(v: Parameters<typeof canGrabSwing>[2], x: number, y: number, dir: -1 | 1, hold: number, t0: number, vx0 = dir * PHYS.maxRun, free = 0, carry = 0): boolean {
+  return hopCatchAt(v, x, y, dir, hold, t0, vx0, free, carry) > 0;
 }
-/** hopCatches' hop: the frame after the press's on which the engine has him on the liana (1: the one after it), or -1 */
-export function hopCatchAt(v: Parameters<typeof canGrabSwing>[2], x: number, y: number, dir: -1 | 1, hold: number, t0: number, vx0 = dir * PHYS.maxRun): number {
-  const b = { x, y, vx: vx0, vy: -PHYS.jumpV };
+/** hopCatches' hop: the frame after the press's on which the engine has him on the liana (1: the one after it), or -1; the first `free`
+ *  frames (the press's is 1) flown with no steer (the thumb still travelling or slipped: FirstTimerRun.steerFrom, SKILLS.runUp) */
+export function hopCatchAt(v: Parameters<typeof canGrabSwing>[2], x: number, y: number, dir: -1 | 1, hold: number, t0: number, vx0 = dir * PHYS.maxRun, free = 0, carry = 0): number {
+  const b = { x, y, vx: vx0 - carry, vy: -PHYS.jumpV };
   for (let i = 1; i < 60; i++) {
-    hopFrame(b, i, dir, hold);
+    hopFrame(b, i, dir, hold, free, carry);
     if (canGrabSwing(b.x, b.y, v, t0 + i * DT)) return i;
     if (b.y > y + 200) return -1;
   }
@@ -984,11 +1070,11 @@ export function hopCatchAt(v: Parameters<typeof canGrabSwing>[2], x: number, y: 
  * Flown frame by frame as the engine flies it (airStep), as hopCatches flies a hop to a liana (ENG-W2b: the old "a log is near" read a log
  * within 90 px of the edge as boardable ~90% of its cycle, and the middle bot drowned 5 times in one deep river on Normal).
  */
-export function hopLandsOn(q: Platform, at: (t: number) => number, x: number, y: number, dir: -1 | 1, hold: number, t0: number, vx0: number, margin = 24): boolean {
-  const b = { x, y, vx: vx0, vy: -PHYS.jumpV };
+export function hopLandsOn(q: Platform, at: (t: number) => number, x: number, y: number, dir: -1 | 1, hold: number, t0: number, vx0: number, margin = 24, carry = 0): boolean {
+  const b = { x, y, vx: vx0 - carry, vy: -PHYS.jumpV };
   for (let i = 1; i < 60; i++) {
     const prev = b.y;
-    hopFrame(b, i, dir, hold);
+    hopFrame(b, i, dir, hold, 0, carry);
     if (b.vy >= 0 && prev <= q.y && b.y >= q.y) {
       if (q.drift && (b.x < q.drift.x0 || b.x > q.drift.x1)) return false;
       const lx = at(t0 + i * DT);
@@ -997,6 +1083,191 @@ export function hopLandsOn(q: Platform, at: (t: number) => number, x: number, y:
     if (b.y > y + 200) return false;
   }
   return false;
+}
+/**
+ * SKILLS.rideWheel's board (LAND-26c, R-165.478): a hop pressed from (x, y) toward `dir`, held `hold` s and steered `dir` through the
+ * flight, comes down IN a bucket of wheel `w` (each bucket's floor where it is on the wheel's clock, bucketAt: frame i at t0 + i * DT),
+ * his middle `margin` px or more inside its ends. False when it comes down on a bucket's end (he slides off it, as 2-6 child Normal v2 did
+ * at the top wheel from 17 px short of the jetty's lip) or into no bucket. wheelFlights' board (a tap hop boards at every moment) was
+ * flown from 30 px back of the lip: from nearer, at some moments the hop carries past the bucket coming up.
+ */
+export function hopBoards(w: Wheel, x: number, y: number, dir: -1 | 1, hold: number, t0: number, vx0 = 0, margin = 24): boolean {
+  const b = { x, y, vx: vx0, vy: -PHYS.jumpV };
+  const seats = (k: number) => Array.from({ length: w.N }, (_, j) => bucketAt(w, j, t0 + k * DT));
+  for (let i = 1; i < 60; i++) {
+    const py = b.y;
+    hopFrame(b, i, dir, hold);
+    const now = seats(i);
+    // (the engine's catch, engine.ts onFloor: falling, his feet last frame no more than 14 px under the floor's top and on or under it now,
+    // his middle within about a quarter of his width (and the ledge forgiveness) of its ends)
+    if (b.vy >= 0) for (let j = 0; j < w.N; j++) {
+      const q = now[j];
+      if (py <= q.y + 14 && b.y >= q.y && b.x > q.x - 20 && b.x < q.x + w.W + 20) return b.x >= q.x + margin && b.x <= q.x + w.W - margin;
+    }
+    if (b.y > y + 200) return false;
+  }
+  return false;
+}
+/**
+ * A hop as the bot will press it (level.md rule 28, the hop judged is the hop flown; the lead's ruling 11-21, ENG-27n): its kind, the
+ * first press's hold, the second press (`d2` s after the first, a tier bot's dbl2Q; -1: at `dblAt`, falling past it) and its hold
+ * (`hold2`), and the beat with no steer (`upOnly`). Drawn once per wait (FirstTimerRun.drawHop, by the testers' habit), judged by
+ * hopFlies from where he stands, and flown unchanged by startJump.
+ */
+export type DrawnHop = { kind: 'single' | 'double'; hold: number; d2: number; dblAt: number; hold2: number; upOnly: number; thumb?: DrawnThumb };
+/**
+ * The thumb's fumbles for a gate's hop (ENG-27o; ENG-27n's root for 2-7 home middle Normal 2 x 14674's lost double: the steer back came
+ * the thumb's travel late, which the judge did not fly), pre-drawn on the judge's own stream (rHop) with the hop, one entry per frame
+ * from the press (index 0: the press frame): `drift`, the px the thumb drifts held the same way; `slip`, a slip's frames with no steer
+ * (-1: none); `release`, the late lift-off's frames at a let-go (clamped to releaseMax). hopFlies flies them; thumbify, on the gate hop's
+ * frames, uses them in place of its own draws (still made, so the main stream is as ever).
+ */
+/** what else a judged flight may come down on first (hopFlies): the platforms near, where each is at a game time, his width, Easy, the help */
+/** (`h`, `mantle`, `stepHelp`: his height, forgive.mantle and the engine's step help, for a block's lip hoist: hopFlight) */
+export type FlightOthers = { list: Platform[]; at: (q: Platform) => (t: number) => number; w: number; easy: boolean; assist: number; land: number; glide?: boolean; h?: number; mantle?: number; stepHelp?: boolean };
+export type DrawnThumb = { drift: number[]; slip: number[]; release: number[] };
+/** the thumb at a judgment (FirstTimerRun.thumbify's state): the steer it holds, its drift, the late lift-off armed and left, and when
+ *  the travel and a slip end (s from the judgment), with the habit (thumbSpeed, a tier bot's one lift-off per let-go) */
+export type ThumbAt = { last: -1 | 0 | 1; driftPx: number; armed: boolean; releaseLeft: number; travel: number; slip: number; speed: number; once: boolean };
+/**
+ * Does the drawn hop `h`, pressed from (x, y) at game time t0 (at `vx0`), come down on float `q` (`at(t)`: where it is), `margin` px in
+ * from either end, inside its river's window? hopLandsOn's flight, flown as FirstTimerRun's jump steer flies it: no steer for the first
+ * `upOnly` s; the second press on its frame (the engine's secondJumpV at `v2`, engine.ts), held `hold2` s from there (counted from its
+ * own frame, a frame longer than the first press's count, as the engine flies it); and, falling over the small float he comes down on, the
+ * thumb's let-go short of its middle and steer back past it (overSmall, read for `q` only).
+ */
+export function hopFlies(q: Platform, at: (t: number) => number, x: number, y: number, dir: -1 | 1, h: DrawnHop, t0: number, vx0: number, margin = 24, v2: number = PHYS.doubleV, thumb?: ThumbAt, others?: FlightOthers, carry = 0): boolean {
+  return hopFlight(q, at, x, y, dir, h, t0, vx0, margin, v2, thumb, others, carry) !== null;
+}
+/** hopFlies' flight, read for its AIRTIME (ENG-27w, E's order as the lead ruled it): the s from the take-off to his landing on `q` with
+ *  `margin`, or null where hopFlies says false (short, past it, or something else catches him first) */
+export function hopFlight(q: Platform, at: (t: number) => number, x: number, y: number, dir: -1 | 1, h: DrawnHop, t0: number, vx0: number, margin = 24, v2: number = PHYS.doubleV, thumb?: ThumbAt, others?: FlightOthers, carry = 0): number | null {
+  // (`vx0` is his speed as he leaves, the floor's `carry` in it; the take-off steers his own and then adds the carry, as the engine does)
+  const b = { x, y, vx: vx0 - carry, vy: -PHYS.jumpV };
+  let until = h.hold;
+  let pressed2 = false;
+  // (the thumb's own state, flown frame by frame as thumbify plays it: a copy, so each float judged starts from the same thumb)
+  const th = thumb && h.thumb ? { ...thumb } : null;
+  // (the Leaf Glide, as the engine flies it (engine.ts update: glideStep after gravity, glideBrake before the move): a fresh leaf at the
+  //  take-off; falling past GLIDE.minFall for GLIDE.onset with Jump held, his fall is braked to GLIDE.fallSpeed)
+  let fallT = 0, leaf: number = GLIDE.maxTime;
+  for (let i = 1; i < 75; i++) {
+    const age = (i - 1) * DT;
+    const prev = b.y;
+    // (the steer the bot reads before frame i: off for upOnly; over the small float, overSmall's let-go (1) and steer back (2))
+    let steer: -1 | 0 | 1 = age < h.upOnly ? 0 : dir;
+    const lx0 = at(t0 + age);
+    if (steer !== 0 && b.vy >= -60 && q.width < 220 && b.x >= lx0 && b.x <= lx0 + q.width && q.y >= b.y - 2 && q.y <= b.y + 140) {
+      const past = dir * (b.x - (lx0 + q.width / 2));
+      if (past > q.width * 0.15) steer = dir === 1 ? -1 : 1;
+      else if (past > -q.width * 0.25) steer = 0;
+    }
+    let press = i === 1;
+    if (h.kind === 'double' && !pressed2 && i > 1 && (h.d2 >= 0 ? age >= h.d2 - 1e-6 : age > h.hold + DT && b.vy > h.dblAt)) {
+      pressed2 = true;
+      press = true;
+      b.vy = secondJumpV(b.vy, v2);
+      until = age + h.hold2;
+    }
+    // (ENG-27o: what the engine gets is the steer after the thumb's fumbles, thumbify's order: the drift held the same way, the travel
+    //  when turning, a slip, the late lift-off at a let-go (not on a press frame))
+    if (th && h.thumb) {
+      const k = i - 1, w = h.thumb;
+      if (steer !== 0 && steer === th.last) th.driftPx = Math.min(30, th.driftPx + w.drift[k]);
+      if (steer !== 0 && th.last !== 0 && steer !== th.last) {
+        th.travel = age + (2 * 16 + th.driftPx) / th.speed;
+        th.driftPx = 0;
+      }
+      if (steer !== 0 && w.slip[k] >= 0) th.slip = age + w.slip[k] * DT;
+      if (steer === 0 && th.last !== 0 && !press && !(th.once && th.armed)) {
+        th.releaseLeft = w.release[k];
+        th.armed = true;
+      }
+      if (steer !== 0) {
+        th.releaseLeft = 0;
+        th.armed = false;
+      }
+      if (age < th.travel || age < th.slip) {
+        th.last = steer;
+        steer = 0;
+      } else if (steer === 0 && th.releaseLeft > 0) {
+        th.releaseLeft--;
+        steer = th.last;
+      } else th.last = steer;
+    }
+    // (each press is held on every frame whose pad carries jump, the press frame included (engine.ts, the cut reads this frame's
+    //  jumpHeld; the bot's jump pad: age < hold): ENG-27o, 2-7 home middle Easy 5: a one-frame tap judged cut on its press frame flew
+    //  20 px higher in the engine and came down past the log's end (x 15540, o/diag-easy5-q11-27o.txt); a 0.185 s hold cut a frame early
+    //  (x 13811, q49). The second press was already counted this way, ENG-27n)
+    const held = age < until;
+    if (!held && b.vy < -PHYS.cutV) b.vy = -PHYS.cutV;
+    if (i === 1) takeOffStep(b, DT, steer, held, carry);
+    else airStep(b, DT, steer, held);
+    // (ENG-27v: the judge flew no leaf. 2-7 home middle Normal 2 x 8256 (ENG-27q's double off log #68): held after the second press, the
+    //  engine braked his fall to 125 px/s two frames and he came down on bank #66, 6 px past its end; the judge, no leaf, came down 30 px
+    //  past it, on log #69 (v/hf-n2-8256.txt, frame by frame). airStep has moved him already: the brake's change to vy moves y back)
+    if (others?.glide) {
+      if (b.vy <= -GLIDE.refillUp) leaf = GLIDE.maxTime;
+      fallT = b.vy > GLIDE.minFall ? fallT + DT : 0;
+      if (held && fallT >= GLIDE.onset - 1e-9 && leaf > 0) {
+        leaf = Math.max(0, leaf - DT);
+        const vy = glideBrake(b.vy, GLIDE.fallSpeed, DT);
+        b.y += (vy - b.vy) * DT;
+        b.vy = vy;
+      }
+    }
+    // (ENG-PLANT-CI red 4: and a block's lip hoist, the engine's walls (engine.ts, before the floors): a solid WALL_H or taller beside him
+    //  (blockBeside; his body, 19 px each side of his centre, into it), his feet at most forgive.mantle under its top, not rising faster than
+    //  120 px/s, met at its face from outside (his x before the move 2 px clear of it) or, with the step help, his body at most LIP_IN into
+    //  the face on its near half, and room on its top there (lipHasRoom): hoisted onto it. 2-7 home middle Easy 2 t 121.97 (bank #76, hoisted
+    //  to x 6094) and Normal 2 t 156.80 (bank #87, to x 3216), each falling past the face of the bank he hopped from, the body 1.5 / 4.3 px
+    //  into it (data/ci/red4-hoist.txt): the old forgiveness ("taken either way he moves") had stood in for this catch)
+    if (others?.mantle !== undefined && others.h !== undefined && b.vy >= -120) {
+      for (const o of others.list) {
+        if (o === q || o.broken || o.type !== 'solid' || o.height < WALL_H) continue;
+        if (!blockBeside(b.y, others.h, o) || b.x + 19 <= o.x || b.x - 19 >= o.x + o.width) continue;
+        const px = b.x - b.vx * DT;
+        const fromL = px + 19 <= o.x + 2, fromR = px - 19 >= o.x + o.width - 2;
+        const lipL = !!others.stepHelp && !fromL && !fromR && b.x + 19 - o.x <= LIP_IN && b.x < o.x + o.width / 2;
+        const lipR = !!others.stepHelp && !fromL && !fromR && o.x + o.width - (b.x - 19) <= LIP_IN && b.x >= o.x + o.width / 2;
+        if ((fromL || fromR || lipL || lipR) && b.y <= o.y + others.mantle && lipHasRoom(others.list, o, fromL || lipL ? -1 : 1, others.h)) return null;
+      }
+    }
+    // (ENG-27o: anything else he comes down on first catches him there, by the engine's own catch (engine.ts onFloor: the side a centre
+    //  may hang past it, a log's wider on Easy, and the drop it catches from): 2-7 home middle Easy 5 x 13811 judged through the bank he
+    //  hopped from onto the log under its lip (came down on the bank, o/diag-easy5-q49-27o.txt); Easy 5 x 12053 and Easy 2 x 13569 judged
+    //  over a log above the one judged (came down on #53, #47; o/diag-easy5-q55-27o.txt, o/diag-easy2-q52-27o.txt))
+    if (others && b.vy >= 0) {
+      for (const o of others.list) {
+        if (o === q || o.broken) continue;
+        const drift = o.type === 'drift';
+        if (drift && o.drift && (b.x < o.drift.x0 || b.x > o.drift.x1)) continue;
+        const ox = others.at(o)(t0 + i * DT);
+        const side = drift ? DRIFT_CATCH.side + (others.easy ? DRIFT_CATCH.easySide : 0) : 0.26 + ASSIST.landSide * others.assist;
+        const drop = drift ? DRIFT_CATCH.drop : 14 + ASSIST.catchDrop * others.assist;
+        // (and the ledge-landing forgiveness, a foot short by up to landPx (a log's too on Easy), by the engine's own three conditions
+        //  (engine.ts onFloor): never a drifting log on Normal; his feet at least 2 px above its top before the frame (prev; the engine's
+        //  playerPrevFeet, p.y - p.vy * dt, is the same y); and the jump carrying him toward it at 30 px/s or more (b.vx after the move).
+        //  ENG-PLANT-CI red 4, 2-7 home middle Easy 5 (hopJudged): "taken either way he moves" caught him on bank #14 with his feet 0.3 px above its
+        //  top before the frame (720.7 vs 721), centre 23.8 px past its end; the engine does not, and he lands on #18 (data/ci/red4-flight.txt))
+        const sx = others.w * side;
+        if (!(b.x + sx > ox && b.x - sx < ox + o.width)) {
+          if ((drift && !others.easy) || !(prev < o.y - 2)) continue;
+          const missL = ox - (b.x + sx);
+          const missR = b.x - sx - (ox + o.width);
+          if (Math.max(missL, missR) > others.land || (missL > 0 ? b.vx : -b.vx) < 30) continue;
+        }
+        if (prev <= o.y + drop && b.y >= o.y) return null;
+      }
+    }
+    if (b.vy >= 0 && prev <= q.y && b.y >= q.y) {
+      if (q.drift && (b.x < q.drift.x0 || b.x > q.drift.x1)) return null;
+      const lx = at(t0 + i * DT);
+      return b.x >= lx + margin && b.x <= lx + q.width - margin ? i * DT : null;
+    }
+    if (b.y > y + 200) return null;
+  }
+  return null;
 }
 /** where a float's left edge is at game time t: a drifting log on its river's clock (river.ts logClock), anything else where it stands */
 const floatAt = (rivers: readonly RiverZone[] | undefined, q: Platform) => (t: number): number => (q.drift ? driftX(q.drift, logClock(rivers, q.drift, t)) : q.x);
@@ -1008,6 +1279,111 @@ const floatAt = (rivers: readonly RiverZone[] | undefined, q: Platform) => (t: n
  */
 /** TEST: when on, every decided press the bot makes: the game time it aimed it at (pressIn, what the drop aim reads) and the game time
  *  of the frame it reached the engine on (tools/inspect/lianaRide.test.ts, ENG-285) */
+/** TEST (level.md rule 28, the hop judged is the hop flown, ENG-27m): when on, every hop a gate judged with hopLandsOn and the press
+ *  that followed it: the gate (`site`), the float or bank it judged he comes down on (`q`), the frame, x, hold and thumb lag it judged
+ *  from, the hop flown (the press's frame, x, hold and kind) and where he came down (a platform id, or 'lost'). Records only: no draw,
+ *  no decision reads it (tools/inspect/hopJudged.test.ts) */
+/**
+ * The aim of a wait at a drawn-hop gate (edgeStand, edgeWait, race, upstream; rule 28): the hop he will press, drawn by the testers'
+ * habit (drawHop) when the wait begins (a target comes in reach: the lead's ruling, ENG-27s, R-165.59: a player picks his hop when he
+ * sees the log) and HELD until he presses or the target leaves reach (end(), or a frame the gate is not reached, or he turns). No redraw
+ * inside a wait (D's 0.5 s beat had no source, D116), except SKILLS.reAim's at the upstream gate (the child only, FirstTimer.reAim): an aim refused for his stopReact on a
+ * log ends its wait (the gap to the next log never changes on a river). The decision reads the aim only (gateLands); its thumb noise is flown, never read.
+ */
+export class WaitAim {
+  private hop: DrawnHop | null = null;
+  private dir = 0;
+  private last = -1;
+  /** draws made (the toy reads it) */
+  draws = 0;
+  /** when the held aim was drawn (SKILLS.reAim reads its age) */
+  since = -1;
+  /** (ENG-PLANT-CI, rule 28, SKILLS.reAim's honest aim: on a log a re-draw never comes inside his stopReact) set every frame by the run:
+   *  the log he stands on (null: none) and his reaction (0: the tier has no reAim). A new wait opened on the SAME log inside his
+   *  reaction from the last draw there keeps that aim (no draw): padPause's flick refused, then the upstream gate's wait 0.2 s later
+   *  drew afresh (riverRide's honest-aim toy, phase 0 on candidate 2, traced) */
+  onLog: number | null = null;
+  react = 0;
+  private drawn: { hop: DrawnHop; dir: number; t: number; log: number } | null = null;
+  /** his reaction has not passed since the last draw on the log he stands on (the reAim tier only) */
+  fresh(t: number): boolean {
+    return this.react > 0 && this.onLog !== null && !!this.drawn && this.drawn.log === this.onLog && t - this.drawn.t < this.react - 1e-9;
+  }
+  at(dir: -1 | 1, t: number, draw: (dir: -1 | 1) => DrawnHop): DrawnHop {
+    if (!this.hop || this.dir !== dir || t - this.last > 1.5 * DT) {
+      if (this.fresh(t) && this.drawn!.dir === dir) { this.hop = this.drawn!.hop; this.dir = dir; this.since = this.drawn!.t; }
+      else {
+        this.hop = draw(dir); this.dir = dir; this.draws++; this.since = t;
+        if (this.onLog !== null) this.drawn = { hop: this.hop, dir, t, log: this.onLog };
+      }
+    }
+    this.last = t;
+    return this.hop;
+  }
+  /** a draw made outside a wait (tablePick's thumb) on the log he stands on: the reaction counts from it too */
+  note(dir: -1 | 1, t: number, hop: DrawnHop): void { if (this.onLog !== null) this.drawn = { hop, dir, t, log: this.onLog }; }
+  /** the wait is over: he pressed, or the target left reach */
+  end(): void { this.hop = null; }
+}
+
+/**
+ * E, the honest middle at the race gate (the lead's ruling, ENG-27t/u/v): the hops he could aim, from the tier's calibrated tables with no
+ * noise (drawHop's own: the singles at holdQ's five quantiles, then, if the tier presses doubles (dblShare), a double at each of dbl2Q's
+ * quantiles with its first press held the median hold, cut a frame short of the second press as drawHop cuts it), smallest first. A tier
+ * with no holdQ has no table: [] (the gate keeps the drawn aim).
+ */
+export function raceCandidates(who: FirstTimer): DrawnHop[] {
+  if (!who.holdQ) return [];
+  const dblAt = (who.dblAt[0] + who.dblAt[1]) / 2;
+  const mid = Math.min(1.5, Math.max(DT, who.holdQ[2]));
+  const out: DrawnHop[] = who.holdQ.map((h) => ({ kind: 'single' as const, hold: Math.min(1.5, Math.max(DT, h)), d2: -1, dblAt, hold2: mid, upOnly: 0 }));
+  if (who.dbl2Q && (who.dblShare ?? 0) > 0) {
+    for (const d of who.dbl2Q) { const d2 = Math.max(2 * DT, d); out.push({ kind: 'double', hold: Math.min(mid, d2 - DT), d2, dblAt, hold2: mid, upOnly: 0 }); }
+  }
+  return out;
+}
+/**
+ * E's decision (no foresight), as the lead ruled "smallest" (ENG-27w): the candidate whose AIMED flight comes down safe (`air` reads the aim
+ * only, gateAirtime: the s from the take-off to the landing with the gate's margin, null for none) in the SHORTEST airtime; ties: the
+ * smaller hold (then the table's order). It was kind-then-hold (ENG-27v: the first that lands, singles before doubles), which picked the
+ * expert's 0.70 s glide single over a quicker safe double once the judge flew the leaf. None lands: null (he rides on). The press flies
+ * the pick with the thumb's noise drawn at the press, never read here.
+ */
+export function racePick(cands: DrawnHop[], air: (h: DrawnHop) => number | null): DrawnHop | null {
+  let best: DrawnHop | null = null, bestAir = Infinity;
+  for (const h of cands) {
+    const a = air(h);
+    if (a === null) continue;
+    if (a < bestAir - 1e-9 || (Math.abs(a - bestAir) <= 1e-9 && best && h.hold < best.hold - 1e-9)) {
+      best = h;
+      bestAir = a;
+    }
+  }
+  return best;
+}
+
+/**
+ * What a drawn-hop gate (edgeStand, edgeWait, race, upstream; rule 28) reads when it decides to press (ENG-27r, the lead's concern: a
+ * player cannot see his thumb slip before he presses). The hop AS AIMED: its kind, holds, second press and beat with no steer (the
+ * tier's draws, his plan), the log and the gap; never the thumb's noise drawn for it (drift, slip, late let-go) nor the thumb's state now.
+ * The press then flies the aim WITH that noise (startJump's flyThumb), and judge() records the flown draw's prediction, a fall included.
+ */
+export function gateLands(q: Platform, at: (t: number) => number, x: number, y: number, dir: -1 | 1, h: DrawnHop, t0: number, vx0: number, margin: number, v2: number, _thumb?: ThumbAt, others?: FlightOthers, carry = 0): boolean {
+  return gateAirtime(q, at, x, y, dir, h, t0, vx0, margin, v2, _thumb, others, carry) !== null;
+}
+/** gateLands read for the aimed flight's airtime (s from the take-off to the landing with `margin`; null: it does not land): E's order */
+export function gateAirtime(q: Platform, at: (t: number) => number, x: number, y: number, dir: -1 | 1, h: DrawnHop, t0: number, vx0: number, margin: number, v2: number, _thumb?: ThumbAt, others?: FlightOthers, carry = 0): number | null {
+  return hopFlight(q, at, x, y, dir, { ...h, thumb: undefined }, t0, vx0, margin, v2, undefined, others, carry);
+}
+
+export type HopRow = { site: string; q: number; t: number; x: number; hold: number; lag: number; kind?: 'single' | 'double'; flown?: { t: number; x: number; hold: number; kind: 'single' | 'double' }; landed?: number | 'lost'; landedType?: string };
+export const HOP_TRACE: { on: boolean; rows: HopRow[] } = { on: false, rows: [] };
+/** hops off a carrier refused at startJump because no gate judged them (ENG-PLANT-e, the lead's ruling 1: zero on every row) */
+export const UNJUDGED = { n: 0 };
+/** TEST (c27, the lead's ruling's NO DEADLOCK): when on, every by-choice stand past W1's cap (the bank-edge float wait's 6 s): the cap's
+ *  game time (t0), his x, the longest it lasted (dur, s) and the longest drift cycle of the logs in view (cycle, s, driftCycle). Records
+ *  only: no decision reads it (castBots --json writes it to stderr per row under W1CAP=1) */
+export const W1_CAP: { on: boolean; rows: { t0: number; x: number; dur: number; cycle: number }[] } = { on: false, rows: [] };
 export const PRESS_TRACE: { on: boolean; rows: Array<{ want: number; got: number }> } = { on: false, rows: [] };
 export const pressIn = (lag: number): number => (lag <= DT / 2 ? 1 : Math.max(1, Math.ceil(lag / DT - 1e-9)) + 1) * DT;
 /**
@@ -1018,6 +1394,16 @@ export const pressIn = (lag: number): number => (lag <= DT / 2 ? 1 : Math.max(1,
  */
 export const hopAim = (lag: number): { off: number; clock: number } => ({ off: pressIn(lag) - DT, clock: pressIn(lag) });
 /**
+ * CI-12 (the lead's ruling (b), ENG-PLANT-CI session 9's (A)): every lag a thumb N(mid, sd) presses at, as decide draws it (the full
+ * gauss; a draw <= DT/2 pressed at once, pressIn), over its whole spread: from that clip (or mid - 3 sd) to mid + 3 sd (the process spread,
+ * 99.7% of draws), one lag per press frame (pressIn bins the lag to its frame, and the judges read only the frame: hopAim). Fixed by the
+ * thumb, never a draw. The KID's thumb [0.09, 0.065] presses at 10 frames (take-off 0 to 0.300 s); the ADULT's [0.03, 0.03] at 5
+ */
+export const thumbLags = ([mid, sd]: [number, number]): number[] => {
+  const lo = Math.round(pressIn(mid - 3 * sd) / DT), hi = Math.round(pressIn(mid + 3 * sd) / DT);
+  return Array.from({ length: hi - lo + 1 }, (_, i) => (lo + i === 1 ? 0 : (lo + i - 1) * DT));
+};
+/**
  * The hold (s, as hopCatches / hopLandsOn count it: frame i is held while i * DT < hold) a press with the bot's own hold `own` gets on the
  * phone's touch layer, whose minimum `minMs` restarts at the take-off AFTER that frame's countdown (inputEngine.ts noteTakeOff, update):
  * so the press frame is held and then the minimum's frames, ceil(min / DT) in all (220 ms: 7 frames, 233 ms). It was max(own, min): a
@@ -1027,6 +1413,11 @@ export const touchHeld = (own: number, minMs: number): number => Math.max(own, m
 
 /** px: the highest ledge over him he hops for on a tower's stair (a single jump rises 108 px, stageMetrics JUMP_RISE; a stair step is 60) */
 const STAIR_HOP = 100;
+/** a step UP at a lip (stepUpAtLip): a ledge whose near end is within `seam` px of the lip (jumpFor's own 'a piece that starts at the
+ *  edge itself carries the same ground on', d < 5 there) and whose top is over `low` px up (the tower stop's 'higher than a seam',
+ *  q.y < p.y - 30 in intend) and under STAIR_HOP: the floor goes on a step up with no face to walk into (1-4 Easy 10 s14:b -> s14:c,
+ *  Easy 37 #44 -> #45, each a thin bough 40 px up starting at the lip, BUILD-26j) */
+const LIP_STEP = { seam: 5, low: 30 };
 const TRACE_FRAMES = typeof process !== 'undefined' && process.env.FT_FRAMES ? process.env.FT_FRAMES.split(",").map(Number) : null;
 
 interface Jump {
@@ -1042,6 +1433,8 @@ interface Jump {
   dblAt: number;
   /** a tier bot's second press: s after the first (dbl2Q), or -1 */
   d2: number;
+  /** the second press's hold, drawn with the hop a gate judged (DrawnHop.hold2; the mid-air draw is still made, so the stream is as ever) */
+  hold2?: number;
   /** a tier bot's hop back onto a bounce mushroom: the way on, steered once the bounce throws him up (0: none) */
   back?: -1 | 0 | 1;
   /** the mushroom's middle: he steers back until he is over it, then lets go */
@@ -1133,10 +1526,32 @@ export function stillCoverNear(bushes: ReadonlyArray<{ x: number; w: number; y: 
   return best && d(best) < 600 ? best : null;
 }
 
+/** px short of a log's front he lets go of a walk to it (c26, the front stand): his run-on after a let-go at full run, the 12 px slide to a
+ *  stop (maxRun^2 / 2 groundDec) and his OWN latest lift-off (releaseMax[1] frames at full run, as the stop read at the bonk does); he
+ *  rests at the front, the furthest-forward take-off the gate judges from (p.x), never past it (session 13's experiment walked to 30).
+ *  (ENG-PLANT-CI, rule 28: c26 read 2 frames (19 px) for every tier, 31 px; the kid and the child lift off up to 4 frames late (38 px), so the
+ *  child walked past a log's front and stood 9 px beyond its end, where no gate is reached: riverRide's reAim toy phase 1.5, traced. The
+ *  adult family (releaseMax [0, 2]) keeps 31; the kid and the child 50) */
+export const frontStandPx = (who: { releaseMax: [number, number] }): number => Math.round(PHYS.maxRun * PHYS.maxRun / (2 * PHYS.groundDec) + who.releaseMax[1] * PHYS.maxRun * DT);
+
+/** px short of a log's front he lets go of the RACE LEG's front-stand walk (CI-3/CI-4's places only; the lead's ruling, D133 narrow):
+ *  frontStandPx plus the DECISION frame (the walk is judged once a frame, so he lets go up to one frame's run inside the number), and
+ *  the stand there is a stop he MEANS (a bare stand, let go: thumbify, R-165.465; once the stopMeant line). ENG-PLANT-CI-c,
+ *  rule 28: racefront adult phase 0 on CI-4 let go 23 px from #10's front at 260 px/s, held {right} 3 frames, ran 5 px past it, and the
+ *  edge's blind press (no floor at p.x) fired into the water. Adult 41, kid and child 60 */
+export const raceStandPx = (who: { releaseMax: [number, number] }): number => frontStandPx(who) + Math.round(PHYS.maxRun * DT);
+
+/** px short of a log's front he lets go of a walk at c26's three front stands (the bank's float wait at the cap, the refused log running
+ *  back at him, nothing in reach): frontStandPx for the CHILD (SKILLS.reAim's tier: CI-1's traced case, riverRide's reAim toy phase 1.5),
+ *  c26's 31 for every other tier (the lead's ruling, D133 narrow; ENG-PLANT-CI-d, rule 28: the kid's 50 is a let-go at FULL run, but on
+ *  2-1 kid Normal 19 (f2981, t 99.37) he stood still 40 px behind log #86's front (a log running back at him), inside 50, so he never
+ *  walked to the front and no hop was judged landing; c27 walked to 31 and hopped on to #85. No kid case was traced) */
+export const c26StandPx = (who: { releaseMax: [number, number]; reAim?: boolean }): number => frontStandPx(SKILLS.reAim && who.reAim ? who : { releaseMax: [0, 2] });
+
 export class FirstTimerRun {
   readonly sim: RealPlay;
   readonly e: Eng;
-  readonly r: () => number;
+  readonly r: Rng;
   readonly prog: Progress;
   readonly mem = new SpotMemory();
   readonly dot: DotShadow;
@@ -1167,7 +1582,17 @@ export class FirstTimerRun {
   private blockedT = 0;
   private lastX = 0;
   /** a press he has decided on, and when the thumb gets there */
-  private pending: { at: number; dir: -1 | 0 | 1; kind: 'single' | 'double'; off: boolean; still?: boolean; want: number } | null = null;
+  private pending: { at: number; dir: -1 | 0 | 1; kind: 'single' | 'double'; off: boolean; still?: boolean; want: number; judged?: boolean } | null = null;
+  /** the press now coming is one its own catch judge passed (vineFromLog's liana catch): startJump's one-gate check lets it through */
+  private pressJudged = false;
+  /** ruling 2 (ENG-PLANT-g): the log running his way he landed on (its id): he rides it, never the default walk, while on it */
+  private landRide: number | null = null;
+  /** SKILLS.runUp: the run-up vineFromLog sent him on, on this log (its id), last judged at this game time */
+  private runUp: { id: number; t: number } | null = null;
+  /** SKILLS.runUp: the hold the run-up's jump was judged with (runPress: who.hold[0]), and when; startJump holds at least that */
+  private runUpHold: { hold: number; t: number } | null = null;
+  /** CI-11: vineFromLog's standing press, judged with this hold at this game time; startJump flies it single, held exactly that */
+  private standHold: { hold: number; t: number } | null = null;
   /** the game time a press decided on (decide) was aimed to reach the engine (pressIn), for the press this frame's pad carries */
   private pressWant: number | undefined;
 
@@ -1196,6 +1621,10 @@ export class FirstTimerRun {
   private releaseLeft = 0;
   /** a tier bot's late lift-off has been drawn for this let-go */
   private releaseArmed = false;
+  /** this frame's empty steer is a stop he means (the tower's rise over him, "stopped first"): the thumb lifts off once, late by the
+   *  calibrated release draw, as a tier bot's does; every other let-go keeps KID and ADULT's held steer (thumbify, R-165.59) */
+  /** FT_FRAMES only: what intend() asked for this frame, before the thumb (the frame trace's 'meant') */
+  private meantPad: Pad = {};
   private driftPx = 0;
   /** waiting at an edge for something drifting across since (s), or -1 */
   private edgeWait = -1;
@@ -1206,8 +1635,12 @@ export class FirstTimerRun {
   private wheelSeen = -1;
   private wheelDelay = 0;
   private wheelHop = 0;
+  /** SKILLS.rideWheel: when he first stood at a jetty's lip waiting for a bucket his hop boards (game time, -1: not waiting) */
+  private wheelBoardWait = -1;
   /** a pond's pad ahead first read ready (s), or -1 (padRead's reaction) */
   private padSeen = -1;
+  /** he has hopped since padSeen was set (CI-14: the next floor that stays he reaches is a new edge, read afresh) */
+  private padSeenHop = false;
   /** with KEEP-HOPPING off: the pad he stops on and until when (padRead) */
   private padStop: { id: number; until: number } | null = null;
   private offDelay = 0;
@@ -1286,6 +1719,10 @@ export class FirstTimerRun {
   private climbVine: unknown = null;
   /** in a vine field: the figs under a shut gate pushed free, a pod's column stepped off (figPush.ts) */
   private figs: FigPush | null = null;
+  /** the figs' work: when its stretch began, his best place and when it last rose (the no-progress clock's bound on it, figsWork) */
+  private figFrom = 0;
+  private figBest = 0;
+  private figBestAt = 0;
   /** this frame's want is a fig push's tap (or its let-go): kept as it is, never run through the thumb (tapped) */
   private figTap = false;
   /** he follows a tower's own route (towerRoute.ts): corners, no jump arcs, so he reads a stair of ledges himself */
@@ -1322,6 +1759,17 @@ export class FirstTimerRun {
   private lianaWaitT = 0;
   /** the press decided on is a hop for a liana (lianaWait; startJump marks the jump) */
   private lianaHop = false;
+  /** SKILLS.floatSure (rule 28, the lead's ruling): the hop a wait drew, kept until a gate presses it (drawn once per wait, drawHop) */
+  private readonly aim = new WaitAim();
+  /** the hop a gate judged and is pressing now: startJump flies it unchanged (its own draws are still made, so the stream is as ever) */
+  private gateHop: DrawnHop | null = null;
+  /** the gate hop's pre-drawn thumb (DrawnHop.thumb) and the frame of it thumbify is on, from the press until he is down (ENG-27o) */
+  private flyThumb: { th: DrawnThumb; k: number } | null = null;
+  /** drawHop's own stream: a hop drawn ahead for a gate never moves the bot's other draws (rule 28's row diff stays readable) */
+  private readonly rHop: () => number;
+  /** HOP_TRACE: the latest hop a gate judged, waiting for the press; the hop in the air, waiting for its landing */
+  private judged: (HopRow & { on: number }) | null = null;
+  private hopOpen: { row: HopRow; air: boolean; lives: number } | null = null;
   gameOvers = 0;
   frames = 0;
   private lastCause = 'other';
@@ -1386,6 +1834,7 @@ export class FirstTimerRun {
 
   constructor(readonly id: string, readonly seed: number, readonly who: FirstTimer, readonly opts: RunOptions = {}) {
     this.r = rng(seed * 7919 + (opts.trial ?? 0) * 104723 + salt(who, 1, 2));
+    this.rHop = rng(seed * 7919 + (opts.trial ?? 0) * 104723 + salt(who, 1, 2) + 50021);
     this.sim = new RealPlay(id, seed);
     if (opts.realInput) this.sim.useRealInput(opts.realInput === true ? undefined : opts.realInput);
     this.start = { x: this.sim.p.x };
@@ -1469,7 +1918,14 @@ export class FirstTimerRun {
       // (a tower the inspector cannot trace: the stage's own laid route, each turn's climb where its vine stands (towerRoute.ts), before
       // any rebuild: buildRoll's roll of a LISTED tower is not the proven variant he plays, and its route led him under the storey
       // above to dither (1-4 seed 1: 'the way on is 123 px up' at a vine he never walked to; INT-4 11-13))
-      const tower = route.traced === 'failed' ? towerRoutePts(st, this.sim.p) : null;
+      // (and a tower the inspector DOES trace: its trace draws each turn's climb as a slant from the vine's foot to a point on the storey
+      // above, through the floors, and he stood under the slant short of the vine: 2-6 adult Easy 2 at x 1527 under 1612,4315->1346,4034,
+      // kid and adult 0/40, BUILD-26c. A tower's own laid route is the way on whenever the stage has one)
+      // (a stage of LEGS (gen2 legs.ts): the stage's own laid route too, leg by leg. The inspector links one run leg to another under it
+      // and drops through a column's storeys and walls (ENG-27: the toy's route hopped from the out leg's end to the column's floor,
+      // 742 px down through its wall, and he stood at the top until rescued)
+      const legsLaid = (st as { gen2?: { tower?: { flow?: string } } }).gen2?.tower?.flow === 'legs';
+      const tower = takesTowerRoute(st, this.sim.p, route.traced) || legsLaid ? towerRoutePts(st, this.sim.p) : null;
       this.onTower = !!tower;
       if (route.traced === 'failed' && !tower) route = findRoute(buildRoll(levelConfig(this.id), this.seed, this.who.setting === 'easy'), [], { spurs: PAD_SKILL.outBack });
       pts = tower ?? (route.traced === 'failed' ? [] : sampleRoute(route).map((s) => ({ x: s.x, y: s.y, ...(s.seg.kind === 'rope' ? { rope: true } : {}) })));
@@ -1563,6 +2019,16 @@ export class FirstTimerRun {
     const plan = this.mem.plan(p.x, p.y);
     if (plan === 'double' || !(this.learned.has('double') || this.who.knowsDouble) || !here || dir === 0) return plan;
     const edgeX = dir > 0 ? here.x + here.width : here.x;
+    // (SKILLS.boardHop: a log drifting his way across the lip, a step down (river.ts LOG_DROP), is the floor the boarding hop is for
+    //  (SKILLS.boardLog waits at the lip until a hop comes down on a log): where a single from here comes down on a log, it is a single.
+    //  Read past it, as a piece that starts behind the edge, the gap was the next log's: 2-2 child Normal seed 36 stood at the lip with log
+    //  79 under it, read the 214 px to log 80 as a double, flew over 79 and came down in the 72 px of water between them (x 20212;
+    //  trace-27h.txt 9). Only where the single lands: with log 79 only 75 px out, middle Normal seed 17's single from a stand 35 px back
+    //  came down 20 px past its front, in the water, where the gap read's double reached log 80 (x 20114; rule 28 for it, ENG-27h))
+    if (SKILLS.boardHop && SKILLS.boardLog && here.type !== 'drift' && this.logAcross(here, dir) && this.singleLands(p, dir)) {
+      if (HOP_TRACE.on) this.judge('boardHop', this.sim.platforms.filter((q) => q.type === 'drift' && !q.broken), [0], dir, this.who.hold[0], this.sim.p.vx, 0);
+      return 'single';
+    }
     let gap = Infinity;
     for (const q of this.sim.platforms) {
       if (q.broken || q === here || Math.abs(q.y - here.y) > 40) continue;
@@ -1571,9 +2037,132 @@ export class FirstTimerRun {
       if (d >= 5 && d < gap) gap = d;
     }
     const one = this.who.setting === 'easy' ? reachJumpHeld(0, false) : reachJump(0, false);
-    if (gap > one && gap < 600) return 'double';
+    // (SKILLS.fromTakeoff: a jump from a STAND over WATER is flown from where he stands, so the gap is read from there, his own ground to
+    //  the lip included: he stood 165 px before a 133 px safe pond and took a single, eight splashes (2-7's toy, post Normal seed 5,
+    //  x 6591), and stood 107 px back on a log toward the next 72 px past its front and fell in (post Normal seed 4, x 2749), ENG-27f.
+    //  Narrowed to where that cause lives (rule 28, ENG-27g): counted on every jump it moved 183 of 360 of 2-3's rows and flipped child
+    //  Normal seed 30 to a rescue (x 20968, castdiff-2-3-27f.txt). So only from a stand (under 10 px/s, as `standing` reads one): a
+    //  running single carries farther than this lip read's 175 px (207 px from a press 70 px before the lip, flownArcs.ts single-hold
+    //  from70, reach.md §2), and 2-3's running singles carried. Only over water (wetBetween, FIX-21's read), the two misses: a dry pit
+    //  the same width is left to the lip read, as before. And only a run-up a single can carry: from farther back a single comes down on
+    //  his own ground before the lip, so the gap is not this jump's (2-3, every tier: a stand 330 px before a 60 px pond))
+    const stood = SKILLS.fromTakeoff && Math.abs(this.sim.p.vx) < 10 && gap < 600 && this.wetBetween(edgeX, edgeX + dir * gap) ? Math.max(0, (edgeX - p.x) * dir) : 0;
+    const run = stood < one ? stood : 0;
+    if (gap + run > one && gap < 600) return 'double';
     // (a tier bot reads a step up as well: the next ledge ahead over a single jump's height (about 108 px; 90 with his margin) gets a double)
     return this.who.knowsDouble && this.stepUp(here, dir) ? 'double' : 'single';
+  }
+
+  /** a log drifting `dir`'s way that crosses the lip of `here` (its back behind the lip, its front past it), a step down (6-40 px):
+   *  SKILLS.boardHop's floor ahead */
+  private logAcross(here: Platform, dir: -1 | 1): boolean {
+    const edgeX = dir > 0 ? here.x + here.width : here.x;
+    return this.sim.platforms.some((q) => q.type === 'drift' && !q.broken && q.drift?.dir === dir && q.y - here.y > 6 && q.y - here.y <= 40
+      && (dir > 0 ? q.x < edgeX && q.x + q.width > edgeX : q.x + q.width > edgeX && q.x < edgeX));
+  }
+
+  /** W1_CAP (records only): a by-choice stand past W1's cap at game time t, x, with these logs in view */
+  private capNote(t: number, x: number, drifts: Platform[]) {
+    const t0 = this.edgeWait + 6, dur = t - t0, cycle = Math.max(0, ...drifts.map((q) => (q.drift ? driftCycle(q.drift) : 0)));
+    const last = W1_CAP.rows[W1_CAP.rows.length - 1];
+    if (last && last.t0 === t0) { last.dur = Math.max(last.dur, dur); last.cycle = Math.max(last.cycle, cycle); } else W1_CAP.rows.push({ t0, x, dur, cycle });
+  }
+
+  /** the gate's read (gateLands, ENG-27r) */
+  private gateSees(q: Platform, at: (t: number) => number, x: number, y: number, dir: -1 | 1, h: DrawnHop, t0: number, vx0: number, margin: number, carry = 0): boolean {
+    return this.gateAir(q, at, x, y, dir, h, t0, vx0, margin, carry) !== null;
+  }
+  /** the gate's read of the aimed flight's airtime (gateAirtime; null: it does not land with `margin`) */
+  private gateAir(q: Platform, at: (t: number) => number, x: number, y: number, dir: -1 | 1, h: DrawnHop, t0: number, vx0: number, margin: number, carry = 0): number | null {
+    return gateAirtime(q, at, x, y, dir, h, t0, vx0, margin, this.v2(), this.thumbAt(), this.flightOthers(), carry);
+  }
+
+  /** HOP_TRACE: a gate judged a hop: the first platform of `qs` the hop comes down on, at the first lag of `lags` that lands */
+  private judge(site: string, qs: Platform[], lags: number[], dir: -1 | 1, hold: number, vx: number, carry: number, margin = 24, h?: DrawnHop) {
+    if (!HOP_TRACE.on) return;
+    const p = this.sim.p, rivers = (this.sim.stage as { rivers?: RiverZone[] }).rivers;
+    // (the log's carry inside `vx`, as the gates sum it: the take-off adds it after his own steer, as the engine does)
+    const cv = Math.abs(carry) < 400 ? carry : 0;
+    // (a drawn hop, rule 28: judged as flown, at lag 0 from where he stands; the row carries its kind and hold)
+    if (h) {
+      for (const q of qs) {
+        if (hopFlies(q, floatAt(rivers, q), p.x, p.y, dir, h, this.t, vx, margin, this.v2(), this.thumbAt(), this.flightOthers(), cv)) {
+          this.judged = { site, q: q.id, t: this.t, x: p.x, hold: h.hold, lag: 0, kind: h.kind, on: this.sim.standingOn };
+          return;
+        }
+      }
+      // (ENG-27v: none with the gate's margin: where the engine catches the flown draw, by its own side catch (engine.ts onFloor, the
+      //  centre past the end by up to 0.26 w on solid, DRIFT_CATCH.side on a log), on anything near; ENG-27q's red row: the double off
+      //  log #68 came down on bank #66 6 px past its end, inside the catch, with no log or bank judged with the margin)
+      const fo = this.flightOthers();
+      for (const q of fo.list) {
+        const side = q.type === 'drift' ? DRIFT_CATCH.side + (fo.easy ? DRIFT_CATCH.easySide : 0) : 0.26 + ASSIST.landSide * fo.assist;
+        if (hopFlies(q, floatAt(rivers, q), p.x, p.y, dir, h, this.t, vx, -side * fo.w, this.v2(), this.thumbAt(), fo, cv)) {
+          this.judged = { site, q: q.id, t: this.t, x: p.x, hold: h.hold, lag: 0, kind: h.kind, on: this.sim.standingOn };
+          return;
+        }
+      }
+      // (ENG-27r: the gate pressed on the aim; the flown draw, its thumb noise included, comes down on none of them: predicted a fall, q -2)
+      this.judged = { site, q: -2, t: this.t, x: p.x, hold: h.hold, lag: 0, kind: h.kind, on: this.sim.standingOn };
+      return;
+    }
+    for (const lag of lags) for (const q of qs) {
+      if (hopLandsOn(q, floatAt(rivers, q), p.x + (p.vx + carry) * lag, p.y, dir, hold, this.t + lag, vx, margin, cv)) {
+        this.judged = { site, q: q.id, t: this.t, x: p.x, hold, lag, on: this.sim.standingOn };
+        return;
+      }
+    }
+  }
+
+  /** rule 28, the lead's ruling A (ENG-27p): standing on a river's bank (not a float) facing `dir`, the drifting logs near its edge
+   *  (edgeWait's window: within 400 px of the edge, within 70 px of his feet), else null. NOT edgeWait's `near` read (a single held
+   *  who.hold[0], lags 0..0.2): at 2-7 home middle Normal 2 x 15632 that read was false on the stand's press frame and he flew a double
+   *  onto log #40. Draws nothing, moves nothing: the edge stand's gate and hopJudged's invariant read it */
+  private edgeFloats(dir: -1 | 1): Platform[] | null {
+    const p = this.sim.p;
+    if (!p.grounded) return null;
+    const here = this.floorAt(p.x, p.y, 6);
+    if (!here || here.type === 'drift' || here.type === 'moving') return null;
+    const edgeX = dir > 0 ? here.x + here.width : here.x;
+    const drifts = this.sim.platforms.filter((q) => q.type === 'drift' && !q.broken && Math.abs(q.y - p.y) < 70 && Math.abs(q.x + q.width / 2 - edgeX) < 400);
+    return drifts.length ? drifts : null;
+  }
+
+  /** SKILLS.floatSure (ENG-PLANT-c, the lead's packet: a refused hop leaves a WAY ON): at a log gate the drawn aim (his habit) was
+   *  refused; the tier's own table (raceCandidates: his calibrated holds and doubles, no noise) is asked for the hop whose AIMED flight
+   *  comes down on one of `targets` with `margin` soonest (racePick, as the race's honest middle picks), its thumb noise drawn at the
+   *  press and flown (gateHop). A player who sees his hop will not reach presses harder; he never stands at a bank in reach until a
+   *  rescue: 2-1 child Normal seed 1, refused twice at the far bank 28 px up (x 19,890), stood 6 s and 5 s as the log carried him back,
+   *  rescued (candidate 2, ea573b4e4). null: no hop of his lands (a tier with no table, kid and adult, keeps the drawn aim only) */
+  private tablePick(targets: Platform[], dir: -1 | 1, vx: number, margin: number, carry = 0): DrawnHop | null {
+    const cands = raceCandidates(this.who);
+    if (!cands.length || !targets.length) return null;
+    const p = this.sim.p, t = this.t, rivers = (this.sim.stage as { rivers?: RiverZone[] }).rivers;
+    const air = (c: DrawnHop): number | null => {
+      let a: number | null = null;
+      for (const q of targets) { const v = this.gateAir(q, floatAt(rivers, q), p.x, p.y, dir, c, t, vx, margin, carry); if (v !== null && (a === null || v < a)) a = v; }
+      return a;
+    };
+    // (ENG-PLANT-CI, rule 28, SKILLS.reAim's honest aim: a player who sees his hop will not reach presses harder only once he has SEEN it
+    //  refused, his reaction after the aim was drawn on this log; inside it the child keeps the aim (the gates' reAim decides after it).
+    //  c3b drew the pick's thumb in the same frame as the refused aim: riverRide's honest-aim toy, phase 0, a re-draw 0.000 s apart, traced)
+    if (this.aim.fresh(t)) return null;
+    const pick = racePick(cands, air);
+    if (!pick) return null;
+    const drawn = this.drawHop(dir);
+    this.aim.note(dir, t, drawn);
+    return { ...pick, thumb: drawn.thumb };
+  }
+
+  /** a single pressed now from (p.x, p.y) comes down on a drifting log, where the log will be then (hopLandsOn): SKILLS.boardHop's test */
+  private singleLands(p: { x: number; y: number }, dir: -1 | 1): boolean {
+    const rivers = (this.sim.stage as { rivers?: RiverZone[] }).rivers;
+    return this.sim.platforms.some((q) => q.type === 'drift' && !q.broken && hopLandsOn(q, floatAt(rivers, q), p.x, p.y, dir, this.who.hold[0], this.t, this.sim.p.vx));
+  }
+
+  /** water (a river or a pond, safe or not) anywhere between two x: FIX-21's read of a gap over a creek, and SKILLS.fromTakeoff's */
+  private wetBetween(x0: number, x1: number): boolean {
+    return ((this.sim.stage as { rivers?: Array<{ x0: number; x1: number }> }).rivers ?? []).some((rv) => rv.x1 > Math.min(x0, x1) && rv.x0 < Math.max(x0, x1));
   }
 
   /** a tier bot's read of a step up: a ledge ahead of the edge of `here` (within 260 px) over a single jump's height (90 px with margin) */
@@ -1591,9 +2180,13 @@ export class FirstTimerRun {
   floorAt(x: number, y: number, down = 40): Platform | null {
     // (a top under the water is no floor to him: a cage's lift resting in its pool, 10 px under the surface, round 5 2-8, read as a
     // step down and was walked onto, a drowning, again and again; a person sees it is under water)
-    const river = (this.sim.stage.rivers ?? []).find((r) => x > r.x0 && x < r.x1);
+    // (the river is the one whose WATER the top is in, read by x and the top's y as the engine reads him, river.ts riverAt: read by x
+    //  alone, a climb's river high up the stage put every branch under its window 'under water', 2,500 px down, so he saw no floor under
+    //  him or ahead, jumped short of lips and ran off them in the landing's beat: 2-6's climb loop, R-165.390, BUILD-26p)
+    const rivers = this.sim.stage.rivers;
     for (const q of this.sim.platforms) {
       if (!this.solid(q)) continue;
+      const river = rivers?.length ? riverAt(rivers, x, q.y) : undefined;
       if (river && q.type !== 'drift' && q.y > river.surfaceY) continue;
       if (x >= q.x && x <= q.x + q.width && q.y >= y - 6 && q.y <= y + down) return q;
     }
@@ -1640,8 +2233,16 @@ export class FirstTimerRun {
     if (dir === 0 || (rising && !this.onTower)) return 0;
     // (rising, only a step higher than the one he jumped from: the step under his take-off is behind him)
     const from = this.airFrom?.y ?? p.y;
+    // (the strip just past a small landing's end where the engine still sets a falling foot on it (FORGIVE landPx) counts as over it: his
+    //  middle crossing its end dropped the steer back a frame before the thumb's reversal arrived, so he came down on its last inch at a
+    //  run and ran off (the wheel toy, sparse middle Easy v1, bucket #9 at 9.0 s; ENG-26t, R-165.398's lip family). Only while he comes
+    //  down on it now, within two frames: a landing 40 px under him as he sails past its end is not where he lands (v2: steered back over
+    //  bucket #9's strip, he fell short of #8 into the pond). Never a log's strip: on the river toy it did the ride skill's job (ENG-26t))
+    const strip = FORGIVE[this.who.setting === 'easy' ? 'easy' : 'normal'].landPx;
+    const now = Math.max(0, p.vy) * 2 * DT + 0.5 * PHYS.gravDown * (2 * DT) ** 2;
     for (const q of this.sim.platforms) {
-      if (q.broken || q.width >= 220 || p.x < q.x || p.x > q.x + q.width || q.y < p.y - 2 || q.y > p.y + 140) continue;
+      if (q.broken || q.width >= 220 || p.x < q.x - strip || p.x > q.x + q.width + strip || q.y < p.y - 2 || q.y > p.y + 140) continue;
+      if ((p.x < q.x || p.x > q.x + q.width) && (q.y - p.y > now || q.type === 'drift' || !!q.drift)) continue;
       // (never the snap stone a snap hop leaves: he is going on, not back; ENG-25c)
       if (leaving !== undefined && q.id === leaving) continue;
       if (rising && q.y > from - 20) continue;
@@ -1682,7 +2283,7 @@ export class FirstTimerRun {
       parts.push(top === null ? 'an open drop ahead' : `a drop of ${Math.round(top - p.y)} px ahead`);
     }
     const st = this.sim.stage as any;
-    const river = (st.rivers ?? []).find((rv: any) => p.x + dir * 120 > rv.x0 && p.x + dir * 120 < rv.x1);
+    const river = riverAt(st.rivers as RiverZone[] | undefined, p.x + dir * 120, p.y);
     if (river) parts.push('water ahead');
     const foe = (e.enemies as any[]).find((m) => !m.defeated && Math.abs(m.x - p.x) < 200 && Math.abs(m.y - p.y) < 160);
     if (foe) parts.push(`a ${foe.type} near`);
@@ -1908,24 +2509,146 @@ export class FirstTimerRun {
     const rivers = this.sim.stage.rivers;
     const carry = ((floatAt(rivers, here)(t + DT) - floatAt(rivers, here)(t)) / DT) * RIDE.keep.x;
     const clock = (this.e as unknown as { vineClock: number }).vineClock;
-    // (the press after his thumb's lag, drawn about thumb[0] (decide): it must catch at the lag's middle and half a spread either side,
-    //  as dropWaits aims; a press at the middle alone missed it on the catch toy, middle Normal variant 5)
+    // (the press after his thumb's lag, drawn from the thumb's gauss (decide): it must catch at every lag of the thumb's whole spread (CI-12;
+    //  it was the middle and half a spread either side, as dropWaits aims; a press at the middle alone missed it on the catch toy, middle
+    //  Normal variant 5)
     const [mid, sd] = this.who.thumb;
     const hold = this.pressHold();
     // (and taken off while still on the log: walking on as the press came, he stepped off its front end into the water, catch toy v3)
     // (he stands while the press comes (pending.still): flown from where the log carries him, at his speed now and at a stand)
     // (the press's frame order: hopAim, ENG-285b)
+    // (CI-11, rule 28, the lead's ruling: the standing press flown as the engine plays it. Its first frames unsteered while his thumb
+    //  still travels (thumbify drops the steer until travelUntil / driftUntil; from a stand a turn from lastSteer -dir arms more): every
+    //  count he can play, from the travel already running (the still frames before the press put lastSteer at 0) to steerFrom's (the
+    //  turn armed too). Its hold as pressed: startJump flies it single, held exactly `hold` (standHold), and the engine holds the press's
+    //  own frame too (age 0: frames with (i - 1) * DT < hold held; hopFrame's i * DT < hold + DT). 2-4 kid Easy 35 on CI-10: judged
+    //  free 0 and hold 0.16 (cut at frame 5); flown free 2 and a drawn 0.097 (cut at frame 4), never in reach of liana #4, in the water)
+    const frees = (lag: number): number[] => {
+      const tp = t + Math.round(hopAim(lag).off / DT) * DT;
+      const n = (from: number) => Math.max(0, Math.ceil((from - tp) / DT - 1e-6));
+      return [...new Set([n(Math.max(tp, this.travelUntil, this.driftUntil)), n(this.steerFrom(dir, t))])];
+    };
     const catches = (lag: number) => [p.vx, 0].every((vx) => {
       const aim = hopAim(lag);
       const x = p.x + (vx + carry) * aim.off, lx = floatAt(rivers, here)(t + aim.off);
       // (a tailed river's log is under past the painted end at x1: no floor to take off from there, SKILLS.vineOverTail)
       const under = SKILLS.vineOverTail && !!d.tail && x > d.x1 - 10;
-      return x > lx + 10 && x < lx + here.width - 10 && !under && hopCatches(v, x, p.y, dir, hold, clock + aim.clock, vx + carry);
+      return x > lx + 10 && x < lx + here.width - 10 && !under
+        && frees(lag).every((free) => hopCatches(v, x, p.y, dir, hold + DT, clock + aim.clock, vx + carry, free, carry));
     });
-    if (![mid, Math.max(0, mid - sd / 2), mid + sd / 2].every(catches)) return null;
+    // (CI-12, the lead's ruling (b): judged over the thumb's whole spread (thumbLags), the lags decide draws from. The three lags mid and
+    //  mid -+ sd/2 covered 56% of the kid's draws: 2-4 kid Easy 19 at t 97.700 on CI-11, judged 'catches' at take-off 0.067 / 0.100 /
+    //  0.133 s, drew 0.033 s (a frame before the earliest judged), took off at 0.033 and came down on log #74, never in reach of liana #6)
+    const lags = thumbLags([mid, sd]);
+    // (SKILLS.runUp, ENG-PLANT-g: a run-up he is on (sent last frame, this log); else none)
+    const running = SKILLS.runUp && !!this.runUp && this.runUp.id === here.id && t - this.runUp.t < DT * 1.5;
+    this.runUp = null;
+    if (!running && !lags.every(catches)) {
+      // (SKILLS.runUp, ENG-PLANT-g: from a stand a PERFECT thumb catches 2-4's tailed-river liana 0 of ~560 frames; a running jump off the
+      //  same log catches it (2-4 adult Normal 6, 52 of 541 frames; main crossed by an unjudged full-run leap). The hop he can make is
+      //  judged: a run along the log (groundStep, his own thumb lag and spread on the run press and the jump press, the take-off still on
+      //  the log and before a tailed river's x1 - 10), then a jump, catches it at all three lags: he runs. Else the stand and hop-back stay)
+      // (and with the steer held from now, as the bot plays it (no lag on a steer from a stand, thumbify): judged from a stand alone, the
+      //  next frame's judge on the run refused it and he flickered run / stand / run on #104 (2-4 adult Normal 6 on candidate 15, t 147.27-
+      //  147.47) until his let-go ran him off the front, x 24,872)
+      if (!SKILLS.runUp || !this.runUpCatches(p, dir, here, v, lags, carry, hold, clock, t, false) || !this.runUpCatches(p, dir, here, v, lags, carry, hold, clock, t, true)) return null;
+      this.runUp = { id: here.id, t };
+      return side1(dir);
+    }
+    if (running) {
+      // (on the run-up: the press now, judged at his running speed, the run kept through his thumb's lag (no pending.still)); else
+      //  on while a later press catches; else the stand and hop-back stay)
+      if (!this.runUpCatches(p, dir, here, v, lags, carry, hold, clock, t, true)) {
+        // (a run-up given up: a stop he means (a bare stand, let go: thumbify, R-165.465), and inside
+        //  his run-out of the front he pulls the thumb back (a turn drops the press at once), as the landing stop does (c9); a bare null
+        //  fell to a stand his let-go ran on, off #104's front (2-4 adult Normal 6 on candidate 15, x 24,872))
+        const front = dir > 0 ? here.x + here.width : here.x;
+        if (dir * (front - p.x) < this.runOut()) return side1((-dir) as -1 | 1);
+        return {};
+      }
+      if (!lags.every((lag) => this.runPress(p.x, p.vx, 0, lag, p, dir, here, v, carry, hold, clock, t))) {
+        this.runUp = { id: here.id, t };
+        return side1(dir);
+      }
+      this.runUpHold = { hold, t };
+      this.standHold = null;
+      this.pressJudged = true;
+      const go = this.decide(dir, 'single', true, side1(dir));
+      this.pressJudged = false;
+      if (this.pending) this.pending.judged = true;
+      return go;
+    }
+    // (judged here: decide's immediate press (a lag under half a frame) reaches startJump now, so the flag is up for it too; candidate
+    //  10 marked only the queued press and 2-4 adult Normal 6 had two liana presses refused, x 21,600 and 24,700, UNJUDGED)
+    this.pressJudged = true;
+    this.standHold = { hold, t };
     const out = this.decide(dir, 'single', true, {});
-    if (this.pending) this.pending.still = true;
+    this.pressJudged = false;
+    // (ENG-PLANT-e: a judged catch, so startJump's one-gate check (no unjudged hop off a carrier) lets it through when it comes;
+    //  without it candidates 5-9 refused every liana hop off a log, and the tailed river's only way on was gone)
+    if (this.pending) { this.pending.still = true; this.pending.judged = true; }
     return out;
+  }
+
+  /**
+   * SKILLS.runUp (vineFromLog): a jump decided `s0` s from now at (x0, vx0) (x0 as if the log stood still), pressed after his thumb's
+   * `lag` with the run held through it (groundStep): taken off still on the log (10 px in, never past a tailed river's x1 - 10) and
+   * catching liana `v`?
+   */
+  private runPress(x0: number, vx0: number, s0: number, lag: number, p: RealPlay['p'], dir: -1 | 1, here: Platform, v: Parameters<typeof canGrabSwing>[2], carry: number, hold: number, clock: number, t: number): boolean {
+    const rivers = this.sim.stage.rivers;
+    const at = floatAt(rivers, here), d = here.drift!;
+    const aim = hopAim(lag);
+    const b = { x: x0, y: p.y, vx: vx0, vy: 0 };
+    // (c25: his steer only from steerFrom (the thumb's travel and slip still to run): before it he brakes on the log and flies the
+    //  hop's first frames unsteered, as thumbify drops them; 2-4 kid Easy 35 flew on the carry alone, judged 'held from now')
+    const from = this.steerFrom(dir, t), n = Math.round(aim.off / DT);
+    for (let j = 0; j < n; j++) groundStep(b, DT, t + s0 + j * DT >= from - 1e-6 ? dir : 0);
+    const when = t + s0 + aim.off;
+    const free = Math.max(0, Math.ceil((from - (t + s0 + n * DT)) / DT - 1e-6));
+    const x = b.x + at(when) - at(t), lx = at(when);
+    const under = SKILLS.vineOverTail && !!d.tail && x > d.x1 - 10;
+    return x > lx + 10 && x < lx + here.width - 10 && !under && hopCatches(v, x, p.y, dir, hold, clock + s0 + aim.clock, b.vx + carry, free, carry);
+  }
+
+  /**
+   * SKILLS.runUp (vineFromLog): does a run along this log, then a jump, catch liana `v` at every lag of `lags`? One plan (run k frames,
+   * then press), flown at each lag of `lags`, his thumb's lag and spread on both presses: from a stand the run press comes after the lag
+   * (braking meanwhile), on the run (`running`) it is held now; then k frames of run on the log, then the jump press after the lag
+   * (runPress). Some k at which every lag catches.
+   */
+  private runUpCatches(p: RealPlay['p'], dir: -1 | 1, here: Platform, v: Parameters<typeof canGrabSwing>[2], lags: number[], carry: number, hold: number, clock: number, t: number, running: boolean): boolean {
+    const rivers = this.sim.stage.rivers;
+    const at = floatAt(rivers, here), d = here.drift!;
+    const from = this.steerFrom(dir, t);
+    const runs = lags.map((lag) => {
+      const b = { x: p.x, y: p.y, vx: p.vx, vy: 0, s: 0 };
+      for (let f = running ? 0 : Math.round(hopAim(lag).off / DT); f > 0; f--) { groundStep(b, DT, 0); b.s += DT; }
+      return b;
+    });
+    for (let k = 0; k < 45; k++) {
+      const on = runs.map((b) => {
+        const x = b.x + at(t + b.s) - at(t), lx = at(t + b.s);
+        return x > lx + 10 && x < lx + here.width - 10 && !(SKILLS.vineOverTail && !!d.tail && x > d.x1 - 10);
+      });
+      if (!on.some(Boolean)) return false;
+      if (on.every(Boolean) && runs.every((b, i) => this.runPress(b.x, b.vx, b.s, lags[i], p, dir, here, v, carry, hold, clock, t))) return true;
+      // (c25: the run press steers only from steerFrom: the thumb still travelling, he brakes)
+      for (const b of runs) { groundStep(b, DT, t + b.s >= from - 1e-6 ? dir : 0); b.s += DT; }
+    }
+    return false;
+  }
+
+  /**
+   * SKILLS.runUp, c25 (the lead's GO, rule 28: the judged hop is the hop flown): the game time from which a steer `dir` wanted at `t`
+   * reaches the stick: the thumb's travel still to run (travelUntil: a turn already made; a turn this want makes now, from lastSteer the
+   * other way, arms (2 * 16 + driftPx) / thumbSpeed, as thumbify does) and any slip already drawn (driftUntil). 2-4 kid Easy 35 on c24: a
+   * run / pull-back / run flicker on log #48 left travelUntil at 47.711 when the judge pressed at 47.567 'with the steer held from now';
+   * he flew on the log's carry alone and came down in the water short of swing #4.
+   */
+  private steerFrom(dir: -1 | 1, t: number): number {
+    const turn = !this.figTap && this.lastSteer === -dir ? t + (2 * 16 + this.driftPx) / this.who.thumbSpeed : -1;
+    return Math.max(t, this.travelUntil, this.driftUntil, turn);
   }
 
   private lianaWait(dir: -1 | 1): Pad | null {
@@ -2294,6 +3017,12 @@ export class FirstTimerRun {
   /** what he means to do this frame (before the thumb's own fumbles) */
   private intend(): Pad {
     const sim = this.sim, p = sim.p, e = this.e, t = this.t, who = this.who;
+    // (SKILLS.reAim's honest aim, the child only: the log he stands on and his reaction, read by every wait's draw (WaitAim.fresh))
+    {
+      const on = p.grounded ? sim.platforms.find((q) => q.id === e.standingOnId) : undefined;
+      this.aim.onLog = on && on.type === 'drift' ? on.id : null;
+      this.aim.react = SKILLS.reAim && who.reAim ? who.stopReact : 0;
+    }
     // (a spur's dead-end stone stood on: counted, FTRun.spurs)
     if (p.grounded) for (const r of (sim.stage as Stage).rivers ?? []) if (r.spur && Math.abs(p.x - r.spur.x) < 70 && Math.abs(p.y - r.spur.y) < 10) this.spursMet.add(r.x0);
     const tgt = p.isVineSwinging ? this.pastLiana(p) : this.prog.target(p);
@@ -2347,7 +3076,12 @@ export class FirstTimerRun {
     // (turned back for an animal he passed: its way, not the route's)
     const prey = this.hunt ? (e.enemies as Array<{ id: number; x: number }>).find((m) => m.id === this.hunt!.id) : undefined;
     if (prey) dir = prey.x > p.x + 16 ? 1 : prey.x < p.x - 16 ? -1 : prey.x >= p.x ? 1 : -1;
-    if (dir !== 0) this.way = dir;
+    // (the way he was going is the way he steered: in the air on a jump the jump's own way steers him (j.dir), never the route's point,
+    //  which lags under a high flight (step() follows him only within 160 px). 2-1 kid Easy 25, the hop off the liana at x 4,017: over
+    //  the route's floor 238 px down, its point fell behind him and the way turned LEFT in the air; down on #13 (the way on below, close
+    //  across) he kept that stale way and walked back off #13's left end into the pit, three set-downs. R-165.465 step 1)
+    const going = this.jump && !p.grounded && this.jump.dir !== 0 ? this.jump.dir : dir;
+    if (going !== 0) this.way = going;
     const fdir: -1 | 1 = dir === 0 ? (p.facing >= 0 ? 1 : -1) : dir;
     const side = (d: -1 | 0 | 1): Pad => (d > 0 ? { right: true } : d < 0 ? { left: true } : {});
     this.takeIn();
@@ -2398,7 +3132,9 @@ export class FirstTimerRun {
       const q = this.pending;
       this.pending = null;
       if (p.grounded || p.climbing || p.isVineSwinging || p.hanging || t - (this.airFrom?.t ?? t) < 0.4) {
+        this.pressJudged = !!q.judged;
         const out = this.startJump(q.dir, q.kind, q.off);
+        this.pressJudged = false;
         this.pressWant = q.want;
         return out;
       }
@@ -2521,7 +3257,8 @@ export class FirstTimerRun {
         out.press = true;
         out.jump = true;
         this.lastPress = t;
-        j.hold = age + flickHold(this.r, who, j.needs || j.bounced ? (who.readHold ?? 0) : 0);
+        const h2 = flickHold(this.r, who, j.needs || j.bounced ? (who.readHold ?? 0) : 0);
+        j.hold = age + (j.hold2 !== undefined && !j.bounced ? j.hold2 : h2);
       }
       if (this.learned.has('glide') && e.skills?.has('glide') && !p.grounded && p.vy > 150 && age > 0.4) out.jump = true;
       return out;
@@ -2659,6 +3396,9 @@ export class FirstTimerRun {
       const held = this.padRead(p, dir, t);
       if (held) {
         this.clockHeld = !held.left && !held.right && !held.jump;
+        // (c11's piece kept in the lean candidate (ENG-PLANT-i): a stand on a ride read is a stop he MEANS (a bare stand, let go:
+        //  thumbify, R-165.465; once this line's stopMeant): 2-2 adult Normal 24 landed on lift #117, padRead
+        //  stood him and his thumb ran him off its front, rescued; it fails on the lean candidate with c5's pieces alone and passes with this)
         return held;
       }
     }
@@ -2677,6 +3417,37 @@ export class FirstTimerRun {
       const s = this.standing;
       if (s.until < 0 && Math.abs(p.vx) < 10) s.until = t + (this.edge?.stand ?? 0.2);
       if (s.until < 0 || t < s.until) return {};
+      // (the lead's ruling A, ENG-27p (rule 28: every bot gate that judges a hop): at a river's edge with a float within reach, the
+      //  stand's jump goes through edgeWait's drawn-hop gate: the hop he will fly, drawn once for the wait by the testers' habit, judged
+      //  from where he stands at lag 0 and pressed when it lands. When it does not, the stand's own press as before: from these banks
+      //  13 of 14 such presses over the four hopJudged runs were bank-to-bank hops (came down on solid), and hopJudged fails any that
+      //  comes down on a log unjudged. 2-7 home middle Normal 2 x 15632: the stand pressed its own jumpFor hop 0.37 s after the gate
+      //  refused, a double no gate judged (it came down on log #40 by luck), ENG-27o)
+      const drifts = SKILLS.floatSure ? this.edgeFloats(s.dir) : null;
+      if (drifts) {
+        const rivers = (this.sim.stage as { rivers?: RiverZone[] }).rivers, dir1 = s.dir;
+        const h = this.aim.at(dir1, t, (d) => this.drawHop(d));
+        if (drifts.some((q) => this.gateSees(q, floatAt(rivers, q), p.x, p.y, dir1, h, t, p.vx, 24))) {
+          this.standing = null;
+          if (HOP_TRACE.on) { this.judged = null; this.judge('edgeStand', drifts, [0], dir1, h.hold, p.vx, 0, 24, h); }
+          this.gateHop = h;
+          this.aim.end();
+          return this.startJump(dir1, 'single', false);
+        }
+        if (HOP_TRACE.on) this.judged = null;
+        // (and no bank in reach past the edge (within 400 px, -120..+300 px of his feet): the stand's own hop, drawn in startJump and
+        //  flown unjudged, could only come down on a log or in the water, so he stands by choice (the lead: 'stands by choice only when the
+        //  trace shows the fallback cannot know'), the drawn hop drawn anew each 0.5 s beat as edgeWait's. Traced, ENG-27p: of the twelve
+        //  refused stands over the four hopJudged runs, eleven had a bank 300-430 px on (all came down on it); x 15632 had none (logs #39,
+        //  #40 only) and its drawn hop was a 0.033 s tap)
+        const here = this.floorAt(p.x, p.y, 6), edgeX = here ? (dir1 > 0 ? here.x + here.width : here.x) : p.x;
+        const bank = this.sim.platforms.some((q) => q.type !== 'drift' && q !== here && !q.broken && q.y - p.y > -120 && q.y - p.y < 300 && (dir1 > 0 ? q.x - edgeX : edgeX - (q.x + q.width)) > -10 && (dir1 > 0 ? q.x - edgeX : edgeX - (q.x + q.width)) < 400);
+        if (!bank) {
+          this.pending = null; this.lateArmed = null; this.clockHeld = true; this.blockedT = 0;
+          return {};
+        }
+        this.aim.end();
+      }
       this.standing = null;
       return this.startJump(s.dir, this.jumpFor(p, s.dir, this.floorAt(p.x, p.y, 6)), false);
     }
@@ -2737,8 +3508,16 @@ export class FirstTimerRun {
       // ledges, 137 and 142 px, from a block's corner; steering on the whole way he flew off the block, 8 times)
       // (no ledge there, the route's point in the air on a way down: he goes on the way the route does, as before)
       const far = this.prog.target(p, 200);
+      // (no ledge, and the way up is a climbing vine beside him: he jumps for the vine, toward it or straight up, never his facing.
+      // A jump away from a trunk never grabs it (engine.ts wantGrab), and his facing ran off the ledge's end: 2-6 child Normal 3, 5,
+      // 7, 8, 18, from x 235 on the edge-wheel turn's ledge (x 225-465), 15 px left of its vine (x 250), a double left off the end,
+      // 351 px down to the street, 8 times, rescued (BUILD-26d))
+      // (and he steers to the vine's x and lets go there, as for a ledge: held the whole double he flew past it, off the ledge's far
+      // end: 2-6 child Normal 4, 8, 23, 24, middle Normal 27, from x 1497 on #66 (x 1327-1547), the vine at 1529, a double right to the
+      // floor 175 px down, 8 times, rescued (BUILD-26e))
+      const trunk = q ? undefined : this.climbUpVine(p);
       const d: -1 | 1 = far && Math.abs(far.x - p.x) > 16 ? (far.x > p.x ? 1 : -1) : fdir;
-      const toX = q ? Math.max(q.x + 30, Math.min(q.x + q.width - 30, p.x)) : null;
+      const toX = q ? Math.max(q.x + 30, Math.min(q.x + q.width - 30, p.x)) : trunk ? trunk.x : null;
       this.climbJump = true;
       this.climbToX = toX;
       return this.decide(toX === null ? d : toX > p.x + 6 ? 1 : toX < p.x - 6 ? -1 : 0, tgt.y < p.y - 90 ? 'double' : this.mem.plan(p.x, p.y), false, {});
@@ -2764,24 +3543,95 @@ export class FirstTimerRun {
     if (this.pending) return this.pending.still ? {} : side(this.pending.dir);
     // (just landed: the thumb comes back down before the next flick)
     if (t - this.lastLand < 0.1) {
+      // (SKILLS.floatSure, ENG-PLANT-i (the lean candidate, the lead's ruling 1): landed on a log running his way whose front goes under
+      //  or leaves no floor ahead (rideCase), he stops pressing on landing; the walk-on below kept him running 0.1 s, and his thumb's
+      //  let-go (releaseMax frames, the testers' own) ran him on: 2-1 child Normal 11 landed 40 px from #137's front (x 30,394 on
+      //  30,194-30,434) and ran off it 4+ times, rescued. Where the front is inside that run-out he pulls the thumb back (a turn drops the
+      //  press at once, thumbify), never off. On EVERY log running his way only that pull-back is kept (c5's landing stop narrowed): the
+      //  lean candidate c19 fails 2-1 child Normal 11, 2-2 adult Normal 4 and 2-4 child Easy 11 at c4's own x, and each passes with it;
+      //  the stand itself stays only in rideCase (c21 stood on every such log and broke 2-1 child Easy 6, middle Normal 7 and 10 at the
+      //  back river, x 25,840-26,040; c5's other piece, the river block's standingOn 'here', broke 2-1 adult Normal 1/2/4/6/8/9: not kept).
+      //  Off rideCase the pull-back comes only where he would walk on (no pad pause below; ENG-PLANT-j, c23): pulled back on landing on a
+      //  small log he pauses on anyway (2-1 child Easy 2, #43 at x 8,565), the turn skipped the pause and its draw, and his path drowned
+      //  him at the back river (26,069); c19 passes it, and the three flips the pull-back is kept for still pass with it narrowed
+      const ridden = SKILLS.floatSure && SKILLS.handed && p.grounded ? this.sim.platforms.find((q) => q.id === this.sim.standingOn) : undefined;
+      let pullBack = false;
+      if (ridden?.drift && dir !== 0 && ridden.drift.dir === dir) {
+        const inRide = this.rideCase(ridden, dir);
+        if (inRide) this.landRide = ridden.id;
+        const front = dir > 0 ? ridden.x + ridden.width : ridden.x;
+        pullBack = dir * (front - p.x) < this.runOut();
+        if (inRide) {
+          if (pullBack) return side(-dir as -1 | 1);
+          return {};
+        }
+      }
       // (landed on a small pad or ledge: he stops on it a beat, then flicks on from where he stands if its edge is close)
-      const here = this.floorAt(p.x, p.y, 6);
+      // (the floor he landed on is the one his feet are on (the engine's standingOn) where his middle is already past its end: read by
+      //  his middle alone it was no floor, so the walk-on below ran him off the end he stood on. 2-1 middle Normal 17 (R-165.465 step
+      //  3): stepped from #85 onto log #90's last px (its end 5 px behind his middle, the log going under the bank), walked on off it,
+      //  LIFE LOST at 111.47, rescued at x 19,869. Read by his feet, the pause is started and the walk-on skipped; the pause's own block
+      //  reads his middle and drops it that frame, so the edge plan below decides (N 17: it jumps him on from #90's end at 111.33, the
+      //  next log reached, 0 lives). hopJudged.test.ts 'landed on the very end of a small log'. The pause's length is drawn from the
+      //  run's random stream even when it is dropped, so every firing moves the run after it.
+      //  Only where that walk-on would run him off: his middle past the end IN HIS WAY (short of the back end the walk-on runs him onto
+      //  the floor: read as a pause there, a 116 px ledge held 2-1 kid Normal 29 0.3 s at x 5,695 and the shifted run lost 3 lives at
+      //  the upstream river, 'set down here 3 times') and no pull-back due (the pull-back already turns him back from a log running his
+      //  way; the pause read by his middle drops at once and the stand let his run carry him off its front: 2-1 child Normal 20 off #41
+      //  at x 8,634 and 2-5 child Normal 34 off #42 at x 8,655, 'water ahead'. hopJudged.test.ts 'a pull-back due on a log running his
+      //  way is kept' and 'landed short of a small floor')
+      const feet = p.grounded && dir !== 0 && !pullBack ? this.sim.platforms.find((q) => q.id === this.sim.standingOn) : undefined;
+      const here = this.floorAt(p.x, p.y, 6) ?? (feet && dir * (p.x - (dir > 0 ? feet.x + feet.width : feet.x)) > 0 ? feet : null);
       // (never on a sinking pad once he knows it sinks: KEEP-HOPPING, padRead; never on a drifting log running his way under a liana over
       //  its river, which the handed skill rides in (SKILLS.handed): after a let-go onto a 150 px log the pause flicked him on blind into
       //  the water, ENG-24 drop toy gap280, middle Normal 17 lives. Every other river keeps it as it was (its bots' plants are measured on
       //  it, riverRide.test; the general change is ENG-24 REPORT's suggestion)
       if (here && here.width < 220 && !this.padPause && !(PAD_SKILL.keepHopping && here.pad) && !(SKILLS.ride && SKILLS.handed && SKILLS.dropOnLog && here.drift && here.drift.dir === dir && this.lianaRiver(here))) this.padPause = { until: t + between(this.r, [0.25, 0.5]), id: here.id };
-      if (!this.padPause) return side(dir);
+      if (!this.padPause) return side(pullBack ? (-dir as -1 | 1) : dir);
     }
     if (this.padPause) {
       const here = this.floorAt(p.x, p.y, 6);
       if (!here || here.id !== this.padPause.id) this.padPause = null;
+      // (CI-15, rule 28: the pause is a stop he MEANS (a bare stand, let go: thumbify, R-165.465; once this line's stopMeant): a bare {} was never let
+      //  go by a bot with no holdQ (the kid, the adult; thumbify's late lift-off re-arms every frame, R-165.59), so 'he stops on it a beat'
+      //  ran him on at 285 px/s off the small log's front into the water. 2-1 kid Easy 10 on CI-14: landed on upstream log #116 56 px from
+      //  its front at 117.100, ran off it at 117.367, his 3rd life at one flag, rescued; the same off #85 / #86 / #87 at x 19,4xx (2-1 kid
+      //  Normal 2 and 7) and off #68 at x 15,0xx (2-1 kid Normal 10, CI-10): ENG-PLANT-CI session 12)
       else if (t < this.padPause.until) return {};
       else {
         this.padPause = null;
         if (dir !== 0 && !this.floorAt(p.x + dir * 80, p.y, 40)) {
           const on = this.prog.target(p, 160);
-          if (!(on && on.y > p.y + 50)) return this.decide(dir, this.jumpFor(p, dir, here), false, side(dir));
+          // (SKILLS.floatSure, ENG-PLANT (the lead's ruling A, rule 28): off a drifting log the flick after the pause is the hop judged:
+          //  drawn once, pressed only when gateSees lands it on a log (24 px) or the bank ahead; refused, no flick: the ride's own gates
+          //  (edgeWait, upstream, handed) decide from where he stands. Flicked blind (jumpFor, after his thumb's lag) it came down in the
+          //  water: 2-1 adult Normal seed 12, x 24,631 and 24,301 on the river running his way, the rescue's last two lives)
+          if (!(on && on.y > p.y + 50) && SKILLS.floatSure && here.type === 'drift' && here.drift) {
+            const rv = (this.sim.stage as { rivers?: RiverZone[] }).rivers;
+            const cr = ((floatAt(rv, here)(t + DT) - floatAt(rv, here)(t)) / DT) * RIDE.keep.x;
+            const cv = Math.abs(cr) < 400 ? cr : 0, vx = p.vx + cv;
+            const edgeX = dir > 0 ? here.x + here.width : here.x;
+            const to = this.sim.platforms.filter((q) => q !== here && !q.broken && Math.abs(q.y - p.y) < 70 && (q.type === 'drift' ? Math.abs(q.x - here.x) < 600 : (dir > 0 ? q.x - edgeX < 80 && q.x + q.width > edgeX : edgeX - (q.x + q.width) < 80 && q.x < edgeX)));
+            const h = this.aim.at(dir as -1 | 1, t, (d) => this.drawHop(d));
+            if (to.some((q) => this.gateSees(q, floatAt(rv, q), p.x, p.y, dir as -1 | 1, h, t, vx, 24, cv))) {
+              if (HOP_TRACE.on) { this.judged = null; this.judge('padPause', to, [0], dir as -1 | 1, h.hold, vx, cr, 24, h); }
+              this.gateHop = h;
+              this.aim.end();
+              return this.startJump(dir, 'single', false);
+            }
+            // (ENG-PLANT-c, the lead's packet: a refused hop leaves a WAY ON. Refused here, the ride's gates below judged the same held aim
+            //  and refused it too: on 2-1's back river (logs 150 px, gaps 80 px, running back at him) the middle on Normal, seed 25, landed
+            //  on a log 59 px from its front, the flick refused, stood 4.5 s while the log carried him back to the bank, three boardings,
+            //  rescued at x 19,674 (candidate 3 before this line; the release head flicked blind and crossed). The hop of his own table that
+            //  the gate lands on the next log or the bank is pressed (tablePick); none: the ride's gates decide as before)
+            const alt = this.tablePick(to, dir as -1 | 1, vx, 24, cv);
+            if (alt) {
+              if (HOP_TRACE.on) { this.judged = null; this.judge('padPause', to, [0], dir as -1 | 1, alt.hold, vx, cr, 24, alt); }
+              this.gateHop = alt;
+              this.aim.end();
+              return this.startJump(dir, alt.kind, false);
+            }
+          } else if (!(on && on.y > p.y + 50)) return this.decide(dir, this.jumpFor(p, dir, here), false, side(dir));
         }
       }
     }
@@ -2851,9 +3701,17 @@ export class FirstTimerRun {
     // (and straight up through it, stopped first: a jump on the run carried him past the step's far end, the thumb's latency on top)
     if (rise && rise.y < p.y - 40) {
       const over = this.sim.platforms.some((q) => this.solid(q) && q.y < p.y - 30 && q.y > p.y - STAIR_HOP && p.x >= q.x + 12 && p.x <= q.x + q.width - 12 && rise.y <= q.y + 20);
+      // (BUILD-26g, 1-4 A/B: KID and ADULT's held steer re-armed its late lift-off every frame, so this stop never let go of the run, he
+      // walked on under the raised row and off its floor's end; the stop is a lift a real thumb makes, once)
       if (over) return Math.abs(p.vx) > 40 ? {} : this.decide(0, this.mem.plan(p.x, p.y), false, {});
     }
     if (dir !== 0) {
+      // (the ride-only player, SKILLS.rideOnly, off unless a test asks: the race's planted loser (2-7.md FLOWN: he boards, then lets the
+      // current carry him; he walks the banks): on a log running his way he stands, never walks along it or hops on)
+      if (SKILLS.rideOnly && p.grounded) {
+        const on = this.floorAt(p.x, p.y, 6);
+        if (on?.drift && on.drift.dir === dir) return {};
+      }
       // an edge coming: he means to jump `edgeAim` px before it (the thumb's latency moves it), unless the way on drops down
       // (a tier bot looks his own press distance ahead, drawn afresh for each edge; a stand lets go at the press distance's p25 and
       // 31 px more (his lift-off up to 2 frames late, 19 px, and the 12 px Pokey slides to a stop), so he stands about p25 before the lip:
@@ -2867,9 +3725,15 @@ export class FirstTimerRun {
       const lip = under ? (dir > 0 ? under.x + under.width : under.x) : NaN;
       // (only over WATER: the creek he walked into. A pit gap the same width is left to the edge's own press, as before: with this look
       //  on every gap the middle bot jumped 1-8's 120 px chase gaps from his full press distance and fell in, chaseBots, INT-11 11-15)
-      const wet = (x0: number, x1: number) => ((this.sim.stage as { rivers?: Array<{ x0: number; x1: number }> }).rivers ?? []).some((rv) => rv.x1 > Math.min(x0, x1) && rv.x0 < Math.max(x0, x1));
-      const past = under && dir * (p.x + dir * look - lip) > 0 && wet(lip, p.x + dir * look);
-      const ahead = this.floorAt(p.x + dir * look, p.y, 40) && (!past || this.floorAt(lip + dir * 24, p.y, 40));
+      const past = under && dir * (p.x + dir * look - lip) > 0 && this.wetBetween(lip, p.x + dir * look);
+      // (SKILLS.boardLog: a log drifting his way that is still mostly under the bank's lip is no floor ahead until he can stop on it,
+      //  so he waits at the lip and hops on as at any river (the ride wait below). Read as floor, 28 px down (river.ts LOG_DROP) inside
+      //  this look's 40, he ran off the lip at full speed, came down a few px from its front and ran off it into the water: 2-7's toy,
+      //  home Easy seed 1, the careful middle player, x 7650 onto a log 64 px out (of 240), again at x 5788 and 3191; 2-4 of the 4-8
+      //  lives every home race lost (trace-27g.txt 5; the lead's GO, ENG-27g). "Mostly under": less than half its length past the lip)
+      const fa = this.floorAt(p.x + dir * look, p.y, 40);
+      const underLip = SKILLS.boardLog && !!under && under.type !== 'drift' && fa?.type === 'drift' && fa.drift?.dir === dir && fa.y > p.y + 6 && (dir > 0 ? fa.x + fa.width - lip : lip - fa.x) < fa.width / 2;
+      const ahead = fa && !underLip && (!past || this.floorAt(lip + dir * 24, p.y, 40));
       // (up the far bank, SKILLS.bankUp: at a river's far end the bank stands a step up from the log (river.ts LOG_DROP, 28 px), so it
       //  reads as floor ahead and the gap logic below never runs, and a log running back at him never carries him under it to be handed
       //  over. He walked into its face, stood while the log carried him off, walked off its end and splashed back, again, until rescued:
@@ -2877,6 +3741,38 @@ export class FirstTimerRun {
       if (SKILLS.bankUp && under?.type === 'drift' && under.drift && under.drift.dir !== dir) {
         const front = dir > 0 ? under.x + under.width : under.x;
         const up = this.sim.platforms.find((q) => q.type !== 'drift' && !q.broken && q.y < p.y - 6 && q.y > p.y - 70 && (dir > 0 ? q.x >= front - 2 && q.x - p.x < 90 : q.x + q.width <= front + 2 && p.x - (q.x + q.width) < 90));
+        // (SKILLS.floatSure, ENG-PLANT (the lead's ruling A, rule 28): the hop up the face is the hop judged, as the race judges its
+        //  bank hop: drawn once for the wait, pressed only when gateSees lands it on the bank with the gate's 24 px; refused, he stands and
+        //  the log hands him back. Pressed blind (jumpFor) off a log running back at him, the log carried him away through his thumb's lag
+        //  and he came down short of the face: 2-1 adult Normal seed 12, three lives at the both-ways back river and rescued (riverRide.test))
+        if (up && SKILLS.floatSure) {
+          const rv = (this.sim.stage as { rivers?: RiverZone[] }).rivers;
+          const cr = ((floatAt(rv, under)(t + DT) - floatAt(rv, under)(t)) / DT) * RIDE.keep.x;
+          const cv = Math.abs(cr) < 400 ? cr : 0, vx = p.vx + cv;
+          const h = this.aim.at(dir as -1 | 1, t, (d) => this.drawHop(d));
+          if (this.gateSees(up, floatAt(rv, up), p.x, p.y, dir as -1 | 1, h, t, vx, 24, cv)) {
+            if (HOP_TRACE.on) { this.judged = null; this.judge('bankUp', [up], [0], dir as -1 | 1, h.hold, vx, cr, 24, h); }
+            this.gateHop = h;
+            this.aim.end();
+            return this.startJump(dir, 'single', false);
+          }
+          // (ENG-PLANT-c, the lead's packet: a refused hop leaves a WAY ON, never a stand until rescued. Standing, the log running back at
+          //  him carries him away from the face, so a refused aim is refused for the whole ride: 2-1 child Normal seed 1 stood 6 s, rode
+          //  back, boarded, stood 5 s and was rescued at x 19,576 (candidate 2). (1) the hop of his own table that the gate lands on the
+          //  bank (tablePick); (2) none yet and the face still ahead with log under his feet: he walks on toward it, nearer each frame,
+          //  and the gate asks again; (3) at the face with no hop of his that lands: he stands, and the log hands him back)
+          const alt = this.tablePick([up], dir as -1 | 1, vx, 24, cv);
+          if (alt) {
+            if (HOP_TRACE.on) { this.judged = null; this.judge('bankUp', [up], [0], dir as -1 | 1, alt.hold, vx, cr, 24, alt); }
+            this.gateHop = alt;
+            this.aim.end();
+            return this.startJump(dir, alt.kind, false);
+          }
+          if (HOP_TRACE.on) this.judged = null;
+          const face = dir > 0 ? up.x : up.x + up.width;
+          this.pending = null; this.lateArmed = null; this.clockHeld = true; this.blockedT = 0;
+          return dir * (face - p.x) > 30 && dir * (front - p.x) > 30 ? side(dir) : {};
+        }
         if (up) return this.startJump(dir, this.jumpFor(p, dir, under), false);
       }
       if (!ahead) {
@@ -2888,22 +3784,121 @@ export class FirstTimerRun {
         const pit = !!who.holdQ && !this.floorAt(p.x + dir * (look + 40), p.y, 400);
         const drops = on && on.y > p.y + 50 && !across && !pit;
         // (a log or a lily pad drifting across the gap: he can see it, so he waits at the edge until it is near, up to 6 s)
+        // (the drifting log he stands on, read by his feet (the engine's standingOn) where his middle is already past its end in his way,
+        //  counts for ONE thing: the upstream gate's judged hop to the next log, pressed from where he stands (below, after `lands`).
+        //  2-1 child Easy 3 (R-165.465 C12): read by his middle alone #86 (running back at him) was no floor, the gate never judged the
+        //  hop to #87, and the edge plan's late press (a look of 0 px) walked him off its front at x 19,993 into the water, splashed
+        //  back to #81 and the same front again until rescued. C12 read it as his floor for every river block: on a log running HIS way
+        //  the ride wait ran where the edge plan had flown him to the liana (lianaRide's catch toy, middle Easy v2: 1,1,1,1,0 to
+        //  1,0,1,1,0); on one running at him, where the gate refused or nothing was in reach, its stand gave no input at a lip he had
+        //  already passed, and his walk slid him off it with no press (2-1 kid Normal 13 at 102.47, #72, x 19,928: drowned; C11's edge
+        //  plan had a press pending and flew him off the lip). So (C14) the floor stays the one by his middle, and the log by his feet
+        //  only adds that judged hop; refused, he goes on exactly as before. hopJudged.test.ts 'his middle past a drifting log's front')
+        const feetOn = p.grounded ? this.sim.platforms.find((q) => q.id === this.sim.standingOn) : undefined;
         const here = this.floorAt(p.x, p.y, 6);
+        const feetLog = !here && feetOn?.type === 'drift' && feetOn.drift && feetOn.drift.dir !== dir && dir * (p.x - (dir > 0 ? feetOn.x + feetOn.width : feetOn.x)) > 0 ? feetOn : null;
         // (ENG-W2b: a float is near when a hop he makes now, or a beat later as his thumb gets there, comes down on it where it will be,
         // hopLandsOn; drifting logs come out from under the bank at his feet, so every log on the water is looked at, not only those ahead)
         const rivers = (this.sim.stage as { rivers?: RiverZone[] }).rivers;
         // (a hop off a log keeps the log's sideways speed, the one carry rule (engine.ts groundJump, RIDE.keep): flown with it)
         const carry = here?.drift ? ((floatAt(rivers, here)(t + DT) - floatAt(rivers, here)(t)) / DT) * RIDE.keep.x : 0;
-        const lands = (q: Platform) => [0, 0.1, 0.2].some((lag) => hopLandsOn(q, floatAt(rivers, q), p.x + (p.vx + carry) * lag, p.y, dir as -1 | 1, who.hold[0], t + lag, p.vx + (Math.abs(carry) < 400 ? carry : 0)));
+        const lands = (q: Platform) => [0, 0.1, 0.2].some((lag) => hopLandsOn(q, floatAt(rivers, q), p.x + (p.vx + carry) * lag, p.y, dir as -1 | 1, who.hold[0], t + lag, p.vx + (Math.abs(carry) < 400 ? carry : 0), 24, Math.abs(carry) < 400 ? carry : 0));
+        // (the log by his feet, his middle past its front: the upstream gate's judged hop to the next log, as the gate below flies it from
+        //  a log he stands on (SKILLS.floatSure's `next`: lands at lag 0, 0.1 or 0.2; the aim held for the wait; gateSees with 24 px))
+        if (feetLog && SKILLS.ride && !drops && SKILLS.upstream && SKILLS.floatSure) {
+          const fc = ((floatAt(rivers, feetLog)(t + DT) - floatAt(rivers, feetLog)(t)) / DT) * RIDE.keep.x, cv = Math.abs(fc) < 400 ? fc : 0, vx = p.vx + cv;
+          const logs = this.sim.platforms.filter((q) => q !== feetLog && q.type === 'drift' && !q.broken && Math.abs(q.y - p.y) < 70 && Math.abs(q.x - feetLog.x) < 600);
+          if (logs.some((q) => [0, 0.1, 0.2].some((lag) => hopLandsOn(q, floatAt(rivers, q), p.x + (p.vx + fc) * lag, p.y, dir as -1 | 1, who.hold[0], t + lag, vx, 24, cv)))) {
+            const h = this.aim.at(dir as -1 | 1, t, (d) => this.drawHop(d));
+            if (logs.some((q) => this.gateSees(q, floatAt(rivers, q), p.x, p.y, dir as -1 | 1, h, t, vx, 24, cv))) {
+              if (HOP_TRACE.on) { this.judged = null; this.judge('upstream', logs, [0], dir as -1 | 1, h.hold, vx, fc, 24, h); }
+              this.gateHop = h;
+              this.aim.end();
+              this.edgeWait = -1;
+              return this.startJump(dir, 'single', false);
+            }
+          }
+        }
         if (SKILLS.ride && !drops && here && here.type !== 'drift' && here.type !== 'moving') {
           const edgeX = dir > 0 ? here.x + here.width : here.x;
           // (a lift or a lily pad, 'moving', keeps the read it always had: near the edge now)
           const ahead = (q: Platform) => (dir > 0 ? q.x + q.width > edgeX && q.x < edgeX + 320 : q.x < edgeX && q.x + q.width > edgeX - 320);
           const floats = this.sim.platforms.filter((q) => (q.type === 'drift' || q.type === 'moving') && !q.broken && Math.abs(q.y - p.y) < 70 && (q.type === 'drift' ? Math.abs(q.x + q.width / 2 - edgeX) < 400 : ahead(q)));
           const near = floats.some((q) => (q.type === 'drift' ? lands(q) : dir > 0 ? q.x - edgeX < 90 && q.x + q.width - edgeX > 40 : edgeX - (q.x + q.width) < 90 && edgeX - q.x > 40));
+          if (HOP_TRACE.on && near) this.judge('edgeWait', floats.filter((q) => q.type === 'drift'), [0, 0.1, 0.2], dir as -1 | 1, who.hold[0], p.vx + (Math.abs(carry) < 400 ? carry : 0), carry);
+          // (SKILLS.floatSure, ENG-27m M2, the hop judged is the hop flown (level.md rule 28): the wait ended on a hop at lag 0, 0.1 OR
+          //  0.2 s from where he stands, held who.hold[0], and the edge code below then pressed another hop (its aim point, his thumb lag, a
+          //  hold drawn from holdQ, kind drawn): later, from another x, held shorter, and he came down behind a log drifting away (2-7 home
+          //  middle Normal 5: judged x 8990 lag 0.1, flown 0.7 s later from x 8964 held 0.169, lost; judged x 4833 lag 0.2, flown x 4825
+          //  held 0.137, lost; hopJudged.test.ts). Now the hop is pressed only on the frame it lands from where he stands (lag 0), a single
+          //  held exactly the hold judged; a hop that lands only a beat later is waited for, standing, and judged again next frame)
+          if (SKILLS.floatSure && near) {
+            const cv = Math.abs(carry) < 400 ? carry : 0, vx = p.vx + cv;
+            const drifts = floats.filter((q) => q.type === 'drift');
+            if (drifts.some((q) => lands(q))) {
+              // (the lead's ruling: the hop he will fly, drawn once for the wait by the testers' habit, judged from where he stands)
+              const h = this.aim.at(dir as -1 | 1, t, (d) => this.drawHop(d));
+              if (drifts.some((q) => this.gateSees(q, floatAt(rivers, q), p.x, p.y, dir as -1 | 1, h, t, vx, 24, cv))) {
+                this.edgeWait = -1;
+                if (HOP_TRACE.on) { this.judged = null; this.judge('edgeWait', drifts, [0], dir as -1 | 1, h.hold, vx, carry, 24, h); }
+                this.gateHop = h;
+                this.aim.end();
+                return this.startJump(dir, 'single', false);
+              }
+              // (the gate refused: the `near` probe's judgment above is no judgment of a hop he will press (the lead's ruling A, ENG-27p:
+              //  left in place, the edge stand's press 0.37 s later picked it up, 2-7 home middle Normal 2 x 15632))
+              if (HOP_TRACE.on) this.judged = null;
+              // (refused with the target in reach (lands): he stands by choice (clockHeld), holding the aim drawn when the wait began, and the
+              //  gate judges it again next frame as the logs move; a press decided before (a pending thumb, a late walk-off armed) is dropped,
+              //  so the stopped-dead read never decides a hop no gate judged (seed 2 x 11408; home middle Normal 2 t 20.17 x 14674, ENG-27n).
+              //  The 0.5 s beat and its redraw are deleted (the lead's ruling, ENG-27s): a wait has one aim)
+              if (this.edgeWait < 0) this.edgeWait = t;
+              this.pending = null; this.lateArmed = null; this.clockHeld = true; this.blockedT = 0; return {};
+            } else this.aim.end();
+          }
           if (floats.length && !near) {
             if (this.edgeWait < 0) this.edgeWait = t;
-            if (t - this.edgeWait < 6) return {};
+            // (SKILLS.floatSure: he stands by choice, clockHeld, so the stopped-dead read never decides a hop no gate judged)
+            if (t - this.edgeWait < 6) { if (SKILLS.floatSure) { this.clockHeld = true; this.blockedT = 0; this.pending = null; } return {}; }
+            // (c27, the lead's ruling (A)+(B) (SKILLS.floatSure, rule 28: the judged hop is the hop flown): at the wait's 6 s cap he went
+            //  BLIND (the fall-through to the edge's own press: a bank hop no gate judged, from wherever the wait stood him, 46-81 px back
+            //  of the lip), fell short, was set back by the water and waited 6 s again, three rounds (2-7 c26 race home middle Normal 1 at
+            //  bank f83, post middle Normal 5 at f78: WON -> LOST). The logs W1 waits for there run under the banks and never bridge the
+            //  gap: the way on is the far bank. Now, at the cap only: (B) he walks to his take-off point at the lip (FRONT_STAND_PX, the
+            //  front stand's on a log); then (A) the gate judges the far bank in view and the logs in view with the hop he will press (the
+            //  aim drawn by the testers' habit, held for the wait: a double only when his own habit draws one) from where he stands; judged
+            //  -> pressed as judged; refused -> he stands by choice and the gate judges again next frame (the `near` gate above as a log
+            //  comes near). The wait and its 6 s are untouched; a lift or a lily pad alone keeps the old go)
+            const drifts = floats.filter((q) => q.type === 'drift');
+            if (SKILLS.floatSure && drifts.length) {
+              if (dir * (edgeX - p.x) > c26StandPx(who)) { this.pending = null; this.lateArmed = null; return side(dir); }
+              const banks = this.sim.platforms.filter((q) => q !== here && q.type !== 'drift' && q.type !== 'moving' && !q.broken && Math.abs(q.y - p.y) < 70 && (dir > 0 ? q.x >= edgeX && q.x - edgeX < 400 : q.x + q.width <= edgeX && edgeX - (q.x + q.width) < 400));
+              const to = [...banks, ...drifts];
+              const cv = Math.abs(carry) < 400 ? carry : 0, vx = p.vx + cv;
+              const h = this.aim.at(dir as -1 | 1, t, (d) => this.drawHop(d));
+              if (to.some((q) => this.gateSees(q, floatAt(rivers, q), p.x, p.y, dir as -1 | 1, h, t, vx, 24, cv))) {
+                this.edgeWait = -1;
+                if (HOP_TRACE.on) { this.judged = null; this.judge('edgeCap', to, [0], dir as -1 | 1, h.hold, vx, carry, 24, h); }
+                this.gateHop = h;
+                this.aim.end();
+                return this.startJump(dir, h.kind, false);
+              }
+              // (the held aim was drawn for the logs when the wait began, a short single by his habit; refused, the hop of his own table
+              //  the gate lands (tablePick, bankUp's step 1, ENG-PLANT-c: a refused hop leaves a WAY ON; a double only where his own table
+              //  has one): c27 (A)+(B) with the held aim alone stood 21 s at the lip of 2-7's home f71 and post f78 (the far bank ~150 px,
+              //  the aim 0.111-0.159), rescued, while his single 0.329 and doubles 0.118 landed every frame)
+              const alt = this.tablePick(to, dir as -1 | 1, vx, 24, cv);
+              if (alt) {
+                this.edgeWait = -1;
+                if (HOP_TRACE.on) { this.judged = null; this.judge('edgeCap', to, [0], dir as -1 | 1, alt.hold, vx, carry, 24, alt); }
+                this.gateHop = alt;
+                this.aim.end();
+                return this.startJump(dir, alt.kind, false);
+              }
+              if (HOP_TRACE.on) this.judged = null;
+              if (W1_CAP.on) this.capNote(t, p.x, drifts);
+              this.pending = null; this.lateArmed = null; this.clockHeld = true; this.blockedT = 0; return {};
+            }
           }
         }
         // (and riding a drifting log: he waits on it until the next log or the bank is near, LV-2 round 2: he used to hop off the end
@@ -2912,15 +3907,169 @@ export class FirstTimerRun {
           const edgeX = dir > 0 ? here.x + here.width : here.x;
           const bank = this.sim.platforms.some((q) => q !== here && q.type !== 'drift' && !q.broken && Math.abs(q.y - p.y) < 70 && (dir > 0 ? q.x - edgeX < 80 && q.x + q.width > edgeX : edgeX - (q.x + q.width) < 80 && q.x < edgeX));
           const next = this.sim.platforms.some((q) => q !== here && q.type === 'drift' && !q.broken && Math.abs(q.y - p.y) < 70 && Math.abs(q.x - here.x) < 600 && lands(q));
+          // (racing, SKILLS.race: on a stage's race leg with its pacer off (pacer.ts, 2-7's mail boat) a log running his way is ridden only
+          // while nothing is in reach: the next log or the far bank in a hop, he hops now off its front end, as the flights' careful middle
+          // player does (2-7.md FLOWN: a hop the first frame its landing is sure, wanting 50 px of log each side); riding every log in is
+          // the ride-only player, who loses the race by its rule)
+          const pacer = (this.sim.stage as { pacer?: Pacer }).pacer;
+          const bankIn = (q: Platform) => q !== here && q.type !== 'drift' && !q.broken && Math.abs(q.y - p.y) < 70 && (dir > 0 ? q.x - edgeX < 80 && q.x + q.width > edgeX : edgeX - (q.x + q.width) < 80 && q.x < edgeX);
+          // (SKILLS.floatSure, the lead's ruling (rule 28): the hop he will fly, drawn once for the ride by the testers' habit (a double
+          //  as often as they press one), is the hop judged, from where he stands, onto the bank or the next log; not sure, he rides on.
+          //  It was judged a single held who.hold[0] and flown as jumpFor and the draws made it: every race row a double, hopJudged.test)
+          const raceLegal = SKILLS.race && pacer && here.drift && here.drift.dir === dir && pacerOff(pacer, p.x, p.y);
+          if (SKILLS.floatSure && raceLegal) {
+            const cv = Math.abs(carry) < 400 ? carry : 0, vx = p.vx + cv;
+            const banks = this.sim.platforms.filter(bankIn);
+            const logs = this.sim.platforms.filter((q) => q !== here && q.type === 'drift' && !q.broken && Math.abs(q.y - p.y) < 70 && Math.abs(q.x - here.x) < 600);
+            const seesBank = (c: DrawnHop) => banks.some((q) => this.gateSees(q, floatAt(rivers, q), p.x, p.y, dir as -1 | 1, c, t, vx, 24, cv));
+            const sees = (c: DrawnHop) => seesBank(c) || logs.some((q) => this.gateSees(q, floatAt(rivers, q), p.x, p.y, dir as -1 | 1, c, t, vx, RACE_MARGIN, cv));
+            // (the aimed flight's airtime to its safe landing: on a bank with 24 px, on a log with RACE_MARGIN, as `sees` reads it; one
+            //  flight comes down once, so the first it lands on)
+            const air = (c: DrawnHop): number | null => {
+              let a: number | null = null;
+              for (const q of banks) { const v = this.gateAir(q, floatAt(rivers, q), p.x, p.y, dir as -1 | 1, c, t, vx, 24, cv); if (v !== null && (a === null || v < a)) a = v; }
+              for (const q of logs) { const v = this.gateAir(q, floatAt(rivers, q), p.x, p.y, dir as -1 | 1, c, t, vx, RACE_MARGIN, cv); if (v !== null && (a === null || v < a)) a = v; }
+              return a;
+            };
+            // (E, the honest middle (the lead's ruling): he picks, from the tier's calibrated tables with no noise, the hop whose AIMED
+            //  flight comes down safe SOONEST (the shortest airtime; ties: the smaller hold; the lead's ruling on "smallest", ENG-27w), and
+            //  only then is the thumb's noise drawn for it (drawHop at the press: its drift, slip and late let-go flown, never read by the
+            //  pick). A tier with no table keeps the held drawn aim (D'))
+            const cands = raceCandidates(who);
+            const pick = cands.length ? racePick(cands, air) : null;
+            const h = cands.length ? (pick ? { ...pick, thumb: this.drawHop(dir as -1 | 1).thumb } : null) : this.aim.at(dir as -1 | 1, t, (d) => this.drawHop(d));
+            const onBank = !!h && seesBank(h);
+            if (h && (cands.length || onBank || sees(h))) {
+              this.edgeWait = -1;
+              if (HOP_TRACE.on) {
+                this.judged = null;
+                if (onBank) this.judge('race', banks, [0], dir as -1 | 1, h.hold, vx, 0, 24, h);
+                else this.judge('race', logs, [0], dir as -1 | 1, h.hold, vx, 0, RACE_MARGIN, h);
+              }
+              this.gateHop = h;
+              this.aim.end();
+              return this.startJump(dir, this.jumpFor(p, dir, here), false);
+            }
+            // (ENG-PLANT-CI, rule 28, the race's FRONT STAND (c26's front stand, the lead's ruling (A), on the race leg's log running HIS
+            //  way): refused mid-log, he walks to the log's front before he rides, where the hop onto the next log lands ("he hops now off
+            //  its front end"), never where his landing set him down. 2-7 post middle Normal 5 (CI-2): down on #51 143 px behind its front,
+            //  every pick refused for 4.3 s, ridden to the far bank, the race LOST by 3.20 s; from the front the double onto #52 lands.
+            //  Only where the log is handed on to a floor, or he can walk back from its front before it goes under (the handed stand's own
+            //  rule below: a bot never stands on a carrier until it carries him into a rescue))
+            if (here.drift && dir * (edgeX - p.x) > raceStandPx(who)) {
+              const d = here.drift, endX = dir > 0 ? d.x1 : d.x0, fx = edgeX - dir * raceStandPx(who), rear = dir > 0 ? here.x : here.x + here.width;
+              const handedOn = this.sim.platforms.some((q) => q.type !== 'drift' && !q.broken && Math.abs(q.y - p.y) < 70 && q.x - 80 < endX && q.x + q.width + 80 > endX);
+              if (handedOn || ((endX - dir * 10) - fx) * dir / d.speed >= who.stopReact + Math.abs(fx - rear) / PHYS.maxRun) { this.pending = null; this.lateArmed = null; return side(dir); }
+            }
+          }
           // (handed to the bank, SKILLS.handed: a log running his way carries him onto the bank it slides under; he rides it in)
           if (SKILLS.handed && here.drift && here.drift.dir === dir) {
             this.edgeWait = -1;
+            // (SKILLS.floatSure, ENG-PLANT-d, the lead's invariant: a bot that refuses a hop never stands on a carrier until it is carried
+            //  into a rescue. A log is handed on only where its run ends under a floor; a tailed river's log goes under at its run's end
+            //  with the bank `tail` px on (riverEnd), so the stand rides him into the water: 2-4 adult Normal 30, x 10,766, set down 3
+            //  times, rescued (vineFromLog refused the liana over the tail each ride). He waits while the hop stays open; before his feet
+            //  reach the under point (his stopReact plus the walk back to the log's rear end), he steps back: the hop onto the log behind
+            //  him when the gate lands it (gateSees, the aim he draws for it), else the walk back toward the log's rear end, never off it)
+            const d = here.drift, endX = dir > 0 ? d.x1 : d.x0;
+            const handedOn = this.sim.platforms.some((q) => q.type !== 'drift' && !q.broken && Math.abs(q.y - p.y) < 70 && q.x - 80 < endX && q.x + q.width + 80 > endX);
+            if (SKILLS.floatSure && !handedOn) {
+              const back = (-dir) as -1 | 1, rear = dir > 0 ? here.x : here.x + here.width;
+              const left = ((endX - dir * 10) - p.x) * dir / d.speed;
+              const walk = Math.abs(p.x - rear) / PHYS.maxRun;
+              if (left < who.stopReact + walk) {
+                const cv = Math.abs(carry) < 400 ? carry : 0, vx = p.vx + cv;
+                const behind = this.sim.platforms.filter((q) => q !== here && q.type === 'drift' && !q.broken && q.drift?.dir === dir && Math.abs(q.y - p.y) < 70 && back * (q.x + q.width / 2 - (here.x + here.width / 2)) > 0 && Math.abs(q.x - here.x) < 600);
+                const h = this.aim.at(back, t, (k) => this.drawHop(k));
+                if (behind.some((q) => this.gateSees(q, floatAt(rivers, q), p.x, p.y, back, h, t, vx, 24, cv))) {
+                  if (HOP_TRACE.on) { this.judged = null; this.judge('stepBack', behind, [0], back, h.hold, vx, carry, 24, h); }
+                  this.gateHop = h;
+                  this.aim.end();
+                  return this.startJump(back, 'single', false);
+                }
+                if (Math.abs(p.x - rear) > 20) return side(back);
+              }
+            }
+            // (CI-13, rule 28: the ride is a stop he MEANS (a bare stand, let go: thumbify, R-165.465; once this line's stopMeant): a bare {} was
+            //  never let go by a bot with no holdQ (the kid, the adult; thumbify's late lift-off re-arms every frame, R-165.59). 2-4 kid Easy
+            //  19 on CI-12: handed this stand on log #48 52 px from its front at 47.833, ran on at 285 px/s and off the front into the water
+            //  at 48.100, set down; on CI-11 the same off #75 at 77.633)
             return {};
           }
           // (against the flow, SKILLS.upstream: the next log or the bank in reach, he hops now off the front end, a press made standing on
           // the log, never a late walk-off into the water; out of reach, he stands, and the log hands him back to the bank he came from)
           if (SKILLS.upstream && here.drift && here.drift.dir !== dir) {
             this.edgeWait = -1;
+            if (HOP_TRACE.on && next) {
+              this.judged = null;
+              this.judge('upstream', this.sim.platforms.filter((q) => q !== here && q.type === 'drift' && !q.broken && Math.abs(q.y - p.y) < 70 && Math.abs(q.x - here.x) < 600), [0, 0.1, 0.2], dir as -1 | 1, who.hold[0], p.vx + (Math.abs(carry) < 400 ? carry : 0), carry);
+            }
+            // (SKILLS.floatSure, ENG-27m: the next log judged (lands: lag 0, 0.1 or 0.2) is hopped to on the frame the hop lands from
+            //  where he stands, a single held exactly as judged; a beat later is stood for on the log, which carries him as lands reads.
+            //  The press drew its own hold (as short as 0.034 s) and kind: 2-7 home middle Normal 2 x 14902, judged lag 0.1, flown at once
+            //  as a double, lost; hopJudged.test.ts)
+            if (SKILLS.floatSure && next) {
+              const cv = Math.abs(carry) < 400 ? carry : 0, vx = p.vx + cv;
+              const logs = this.sim.platforms.filter((q) => q !== here && q.type === 'drift' && !q.broken && Math.abs(q.y - p.y) < 70 && Math.abs(q.x - here.x) < 600);
+              const h = this.aim.at(dir as -1 | 1, t, (d) => this.drawHop(d));
+              if (logs.some((q) => this.gateSees(q, floatAt(rivers, q), p.x, p.y, dir as -1 | 1, h, t, vx, 24, cv))) {
+                if (HOP_TRACE.on) { this.judged = null; this.judge('upstream', logs, [0], dir as -1 | 1, h.hold, vx, carry, 24, h); }
+                this.gateHop = h;
+                this.aim.end();
+                return this.startJump(dir, 'single', false);
+              }
+              // (refused with the next log in reach: he stands on the log holding the aim (the log hands him on); the 0.5 s beat and its
+              //  redraw deleted, ENG-27s. The old press here fired a hop no gate judged, home middle Normal 2 t 21.67, 36.47, 39.33, ENG-27n)
+              // (SKILLS.reAim, ENG-BOT27: on a river every log runs at one speed, so from a log the gap to the next never changes while he
+              //  waits: a held aim the gate refuses now is refused for the whole ride. Seen refused for his tier's reaction (stopReact), the
+              //  wait ends and he picks again, as a player who sees his hop will not reach does. Held, the child stood at an at-him log's
+              //  front end with a 0.033 s tap the gate never saw reach the next log 80 px off, rode back to the bank and boarded again until
+              //  rescued: 2-7 draft child Normal seeds 6 x 9412 and 8 x 8702, the stage's 'water ahead' stall (seeds 1-20 rescues 11 -> 3)
+              //  The child's skill only (FirstTimer.reAim, ENG-BOT27b, the lead's ruling): on every bot it moved pacerLay's careful middle)
+              // (c26, the FRONT STAND (the lead's ruling (A), rule 28: the judged hop is the hop flown, from where he actually stands): on a log
+              //  running back at him, refused mid-log, he walks to the front before he stands. The gap branch fires where his tier's press
+              //  distance reaches past the lip, and gateSees judges from p.x, so from mid-log no hop ever landed and the log handed him back
+              //  until rescued: 2-7 c25 expert Normal 29 on #37 76 px behind its front (x 13,079), five hand-backs; handBack toy, riverRide.test)
+              // (ENG-PLANT-CI, rule 28: the reAim expiry comes BEFORE the front stand's walk. On c26 the walk returned first, so a refused aim
+              //  was never ended while the walk was asked for; the child's rhythm (intend -> rhythm) eats that walk, so he stood mid-log with the
+              //  stale aim and rode back to the bank: riverRide's reAim toy, phases 0.5 and 1.5 'back' (traced: intend {right}, rhythm {}, no
+              //  re-draw for 1.2 s at 46 px from the front; base re-drew at +0.467 s and hopped). The child's skill only, as before)
+              if (SKILLS.reAim && who.reAim && t - this.aim.since > who.stopReact) this.aim.end();
+              if (dir * (edgeX - p.x) > c26StandPx(who)) { this.pending = null; this.lateArmed = null; return side(dir); }
+              this.pending = null; this.lateArmed = null; this.clockHeld = true; this.blockedT = 0; return {};
+            }
+            // (SKILLS.floatSure, ENG-PLANT (the lead's ruling A, rule 28): the far bank in reach and no log, the hop onto the bank is the hop
+            //  judged, as the race judges its bank hop: pressed only when gateSees lands it on the bank with the gate's 24 px; refused,
+            //  he stands and the log hands him back. Pressed blind (jumpFor) off a log running back at him, the log carried him away through
+            //  his thumb's lag and he came down short of the bank: 2-1 adult Normal seed 12, x 25,440 -> 25,607 into the water, three lives
+            //  at the both-ways back river and rescued (riverRide.test; it crossed clean only by the phase the run reached it at))
+            if (SKILLS.floatSure && bank) {
+              const cv = Math.abs(carry) < 400 ? carry : 0, vx = p.vx + cv;
+              const banks = this.sim.platforms.filter((q) => q !== here && q.type !== 'drift' && !q.broken && Math.abs(q.y - p.y) < 70 && (dir > 0 ? q.x - edgeX < 80 && q.x + q.width > edgeX : edgeX - (q.x + q.width) < 80 && q.x < edgeX));
+              const h = this.aim.at(dir as -1 | 1, t, (d) => this.drawHop(d));
+              if (banks.some((q) => this.gateSees(q, floatAt(rivers, q), p.x, p.y, dir as -1 | 1, h, t, vx, 24, cv))) {
+                if (HOP_TRACE.on) { this.judged = null; this.judge('upstream', banks, [0], dir as -1 | 1, h.hold, vx, carry, 24, h); }
+                this.gateHop = h;
+                this.aim.end();
+                return this.startJump(dir, 'single', false);
+              }
+              // (ENG-PLANT-c, the lead's packet: a refused hop leaves a WAY ON. The log runs back at him, so the bank he stands refused at
+              //  only draws away: the hop of his own table that the gate lands on it (tablePick) is pressed; none: he stands at the log's
+              //  front, and the log hands him back to the bank behind, a new boarding and a new aim)
+              const alt = this.tablePick(banks, dir as -1 | 1, vx, 24, cv);
+              if (alt) {
+                if (HOP_TRACE.on) { this.judged = null; this.judge('upstream', banks, [0], dir as -1 | 1, alt.hold, vx, carry, 24, alt); }
+                this.gateHop = alt;
+                this.aim.end();
+                return this.startJump(dir, alt.kind, false);
+              }
+              if (HOP_TRACE.on) this.judged = null;
+              this.pending = null; this.lateArmed = null; this.clockHeld = true; this.blockedT = 0; return {};
+            }
+            this.aim.end();
+            // (c26, the front stand: nothing in reach, he stands at the log's front, where a hop lands when the next log comes round, not
+            //  where his look stopped him: 2-7 c25 middle Easy 11 stood on #19 37 px from its rear (x 9,379), handed back to #16, rescued)
+            if (!next && !bank && dir * (edgeX - p.x) > c26StandPx(who)) return side(dir);
             return next || bank ? this.startJump(dir, this.jumpFor(p, dir, here), false) : {};
           }
           if (!bank && !next) {
@@ -2938,6 +4087,19 @@ export class FirstTimerRun {
           // (a late press is a walk-off: with a face ahead (a stump at a log's end, middle v3 on 164e4cf8: 9.4 s pressed against it,
           // the plan re-armed every second) there is no lip to walk off, so he jumps)
           if (tierEdge.how === 'late' && this.faceAhead(dir, 40) !== null) tierEdge.how = 'run';
+          // (nor where the floor goes on a step UP from the lip with no face: a thin bough starting at the lip a hop up. A late press there
+          // walks him off under it: middle Easy 10 dropped 320 px under s14:c (BUILD-26g); child Easy 37, once the way is read as one
+          // slant (C), walked off #44 at 360 under #45 and fell back 8 times, rescued (BUILD-26j b26j/c37-lip.txt). He presses on the run,
+          // as at a face; measured from the LIP, not from him: he presses `look` px before it)
+          // (bounded by the jump's own reach: the run press comes only where a jump from where he stands lands on the step, reachJump /
+          // reachJumpHeld (src/game/physics.ts:477, :485, jumpFor's own pick by setting) at the step's height; out of it he walks on to
+          // it. Unbounded, child Normal 1-4 seed 8 pressed 227 px out from lip 955, a single reaching 156 there, BUILD-26j)
+          const stepUp = tierEdge.how === 'late' ? this.stepUpAtLip(lip, p, dir) : null;
+          if (stepUp) {
+            const reach = this.who.setting === 'easy' ? reachJumpHeld(p.y - stepUp.y, kind === 'double') : reachJump(p.y - stepUp.y, kind === 'double');
+            if (Math.abs(lip - p.x) > reach) return side(dir);
+            tierEdge.how = 'run';
+          }
           if (tierEdge.how === 'run' && kind === 'double' && who.readAim !== undefined && !tierEdge.read) {
             tierEdge.read = true;
             const near = drawQ(this.r, who.aimQ!, 0, 0, who.readAim);
@@ -2977,6 +4139,33 @@ export class FirstTimerRun {
           return {};
         }
         if (this.foeSeen.get(m.id) && dx < 90) return this.decide(dir, 'single', false, side(dir));
+      }
+    }
+    // (ENG-PLANT-i, the lean candidate (the lead's ruling 1; c18's ride narrowed): landed on a log running his way whose front goes under
+    //  or leaves no floor ahead (rideCase), he rides it (a stop he means) instead of this walk while that holds; the ride never carries
+    //  him into a rescue (c4's handed check: a floor within 80 px of the run's end, else the walk back to its rear in time). The landing
+    //  stop held only 0.1 s, then this walk ran him along #65 at a full run and his let-go ran him off its front: 2-1 adult Easy 5 on
+    //  candidate 12, x 14,766, set down 3 times, rescued. c18 rode every log with no bank ahead and broke 7 of 2-1's 8 BAR rows)
+    if (this.landRide !== null && SKILLS.floatSure && SKILLS.handed && p.grounded && dir !== 0) {
+      const lr = this.sim.platforms.find((q) => q.id === this.sim.standingOn);
+      if (!lr || lr.id !== this.landRide || !this.rideCase(lr, dir)) this.landRide = null;
+      else {
+        const d = lr.drift!, endX = dir > 0 ? d.x1 : d.x0;
+        if (!this.handedAt(endX, p.y)) {
+          const rear = dir > 0 ? lr.x : lr.x + lr.width;
+          const left = ((endX - dir * 10) - p.x) * dir / d.speed;
+          if (left < who.stopReact + Math.abs(p.x - rear) / PHYS.maxRun && Math.abs(p.x - rear) > 20) return side((-dir) as -1 | 1);
+        }
+        // (ENG-PLANT-CI, rule 28, the race's FRONT STAND, the second place that held him: on the race leg the log is ridden from its front,
+        //  where the race gate's look reaches past it, never where the landing stop set him down. 2-7 post middle Normal 5 (CI-2): down on
+        //  #51 at a run, the landing stop held him 143 px behind its front for 4.3 s (the race gate never looked), ridden to the far bank:
+        //  the race LOST by 3.20 s. Only where the log is handed on to a floor or he can walk back from its front before it goes under)
+        const pacer = (this.sim.stage as { pacer?: Pacer }).pacer, front = dir > 0 ? lr.x + lr.width : lr.x, fs = raceStandPx(who);
+        if (SKILLS.race && pacer && d.dir === dir && pacerOff(pacer, p.x, p.y) && dir * (front - p.x) > fs) {
+          const fx = front - dir * fs, rear = dir > 0 ? lr.x : lr.x + lr.width;
+          if (this.handedAt(endX, p.y) || ((endX - dir * 10) - fx) * dir / d.speed >= who.stopReact + Math.abs(fx - rear) / PHYS.maxRun) return side(dir);
+        }
+        return {};
       }
     }
     return side(dir);
@@ -3388,6 +4577,12 @@ export class FirstTimerRun {
     // the plain edge's jump then went blind onto a beat pad; BUILD-22, the rise toy's child-Normal trace)
     const here = (p.grounded ? this.sim.platforms.find((q) => q.id === this.sim.standingOn) : undefined) ?? this.floorAt(p.x, p.y, 6);
     if (!here) { this.padSeen = -1; return null; }
+    // (CI-14, rule 28: 'once he has seen it ready he is going' holds from the floor where he saw it, over the pads he hops; a NEW floor that
+    //  stays is a new edge and its breath is read afresh. Carried from #108 (set 133.733) over weight pads #113 and #114 to #109, the stale
+    //  read skipped CROSS-ON-THE-BREATH there and he started beat row #115 / #116 with 1.3 s of breath left for a 500 px run that needs
+    //  2.47 s (PAD_FAIR); it went under with him on #115: 2-2 adult Normal 4, ENG-PLANT-CI session 11, s11/)
+    //  (a hop, not a seam: walking from one floor piece onto the next is the same edge)
+    if (!here.pad && this.padSeen >= 0 && this.padSeenHop) this.padSeen = -1;
     const shows = (q: Platform) => padShows(q) ?? { solid: !q.broken, tell: 0 };
     const edgeX = dir > 0 ? here.x + here.width : here.x;
     const toEdge = dir > 0 ? edgeX - p.x : p.x - edgeX;
@@ -3420,7 +4615,7 @@ export class FirstTimerRun {
       const lag = react + (stay ? Math.max(0, toEdge - 40) / PHYS.maxRun : 0) + SNAP_THUMB;
       if (!this.snapGo(p, dir, here, next, lag)) { this.padSeen = -1; return approach(); }
       if (stay) {
-        if (this.padSeen < 0) this.padSeen = t;
+        if (this.padSeen < 0) { this.padSeen = t; this.padSeenHop = false; }
         if (t - this.padSeen < who.stopReact) return approach();
       }
       // (the hop: as soon as his own press, or a tap, from where he stands comes down on the next floor; never a walk to the lip first)
@@ -3469,19 +4664,58 @@ export class FirstTimerRun {
     if (!ready) { this.padSeen = -1; return approach(); }
     // (from a floor that stays, he goes after his own reaction to it being ready; on a pad he is already going)
     if (!here.pad) {
-      if (this.padSeen < 0) this.padSeen = t;
+      if (this.padSeen < 0) { this.padSeen = t; this.padSeenHop = false; }
       if (t - this.padSeen < who.stopReact) return approach();
     }
     // (the hop: he presses where a flown hop comes down on it whatever he holds, a tap or a full hold, after his thumb's lag; where no
     // press point lands both, within 40 px of the edge where his own usual hold does; at the very edge he presses whatever)
-    const flies = (hold: number, lag: number) => hopLandsOn(next!, () => next!.x, p.x + p.vx * lag, p.y, dir, hold, t + lag, p.vx, 6);
-    const lands = [0.03, 0.1].every((lag) => flies(0, lag) && flies(0.7, lag)) || (toEdge < 40 && [0.03, 0.1].every((lag) => flies(who.hold[0], lag)));
+    // (R-165.465 step 2, the lead's ruling; rule 28, the hop judged is the hop flown: the lag is the one decide() draws next, peeked on a
+    //  fork of his stream (nothing consumed: every draw as ever), and the hop is flown from where he takes off after it, hopAim's frame,
+    //  his run on through the lag as the engine runs it (groundStep: from a stand he speeds up; a thumb's travel or slip already running
+    //  steers nothing). Judged at fixed lags 0.03 and 0.1 s at his speed then, while decide drew 0.167-0.187 s and a run from a stand
+    //  sped up, the press on its way walked him off a pad's front into the water, 2-2 kid Normal 15 (#116) and 40 (#113, #112). Where
+    //  that run has him off the front before the press comes, the flight leaves the lip: he stands while it comes (pending.still), his
+    //  thumb's late lift-off first (the release thumbify draws next, on this frame, when it arms one), then the engine's brake; judged
+    //  as that stood hop, never as the run's: a stand at the lip decided at once for every run that overshot (C5) hopped short of
+    //  #114 from 49 px back, 2-2 kid Normal 27)
+    const f = this.r.fork();
+    const off = hopAim(gauss(f, who.thumb)).off;
+    const frames = Math.round(off / DT);
+    // (`steer`: his steer on each frame his thumb is free; `n` frames of it, then none (Infinity: all of them))
+    const fly = (steer: -1 | 1, n: number) => {
+      const b = { x: p.x, y: p.y, vx: p.vx, vy: 0 };
+      for (let i = 0; i < frames; i++) {
+        const free = t + i * DT >= Math.max(this.travelUntil, this.driftUntil);
+        groundStep(b, DT, free && n > 0 ? steer : 0);
+        if (free) n--;
+      }
+      return b;
+    };
+    const ran = fly(dir, Infinity);
+    const onRun = dir * (edgeX - ran.x) >= 0;
+    let late = this.releaseLeft;
+    if (!onRun && this.lastSteer !== 0 && !((who.holdQ || p.grounded) && this.releaseArmed)) {
+      const [lo, hi] = who.releaseMax;
+      late = Math.max(lo, Math.min(hi, Math.round(Math.exp(gauss(f, who.release)))));
+    }
+    const stood = onRun ? ran : fly(this.lastSteer > 0 ? 1 : -1, late);
+    const x0 = stood.x, v0 = stood.vx;
+    const lead = dir * (edgeX - x0);
+    const flies = (hold: number) => hopLandsOn(next!, () => next!.x, x0, p.y, dir, hold, t + off, v0, 6);
+    const lands = (flies(0) && flies(0.7)) || (lead < 40 && flies(who.hold[0]));
     // (KEEP-HOPPING: his pad shivers; he does not walk on to his usual press point, he goes now)
     const shiver = here.pad && PAD_SKILL.keepHopping && shows(here).tell > 0;
     // (a pond hop is a single, its hold his own: every water in a pond is under a held single's reach (padFaults PAD_FAIR.reach). The
     // plain edge's plan read the next floor at his height, a bank 900 px on, and the spot memory then kept the double a failed double
     // had left: a middle bot fell 8 times at one 110 px gap, 2-2 seed 6 (BUILD-22). His own second press stays, at his share (startJump))
-    if (lands || toEdge < 6 || (shiver && hopLandsOn(next, () => next!.x, p.x, p.y, dir, who.hold[1] + who.hold[0], t, p.vx))) return this.decide(dir, 'single', false, go);
+    // (at the very edge he presses whatever: the last frame the flight leaves from the pad, his run's front or his stand's lip, a frame's
+    //  run on from where he is (at 6 px from his feet the run at 285 px/s carried him past it before the next frame))
+    const last = lead < 6 + Math.max(0, dir * p.vx) * DT;
+    if (lands || last || (shiver && hopLandsOn(next, () => next!.x, p.x, p.y, dir, who.hold[1] + who.hold[0], t, p.vx))) {
+      const out = this.decide(dir, 'single', false, onRun ? go : {});
+      if (!onRun && this.pending) this.pending.still = true;
+      return out;
+    }
     return go;
   }
 
@@ -3624,6 +4858,22 @@ export class FirstTimerRun {
    * SKILLS.rideWheel (ENG-26): the jetty, the bucket and the step-off as a person who has watched the wheel plays them. Returns a pad to
    * hold, or null when he is on neither a wheel's jetty (going its way) nor in a bucket.
    */
+  /** SKILLS.stepOff (LAND-26d, R-165.478): his hop off bucket `i` toward the wheel's way, pressed at every lag his thumb presses at
+   *  (thumbLags, hopAim's clock: the bucket carries him meanwhile) and held every hold the press can have (at least `hop`, wheelRide's
+   *  wheelHop), keeping the bucket's sideways speed (RIDE.keep), comes down on the street (hopLandsOn, the engine's catch, no margin) */
+  private stepOffLands(w: Wheel, i: number, streetId: number | undefined, hop: number, now: number): boolean {
+    const street = this.sim.platforms.find((q) => q.id === streetId);
+    if (!street) return true;
+    const p = this.sim.p, who = this.who, b0 = bucketAt(w, i, now);
+    const min = Math.max(hop, this.pressHold());
+    const holds = [min, ...(who.holdQ ? who.holdQ.map((h) => Math.min(1.5, h)) : [who.hold[0] + 1.5 * who.hold[1], Math.min(0.45, who.hold[0] + 3 * who.hold[1])]).filter((h) => h > min)];
+    return thumbLags(who.thumb).every((lag) => {
+      const t1 = now + hopAim(lag).clock, b1 = bucketAt(w, i, t1), b2 = bucketAt(w, i, t1 + DT);
+      const way = w.way as -1 | 1;
+      return holds.every((hold) => hopLandsOn(street, () => street.x, p.x + b1.x - b0.x, p.y + b1.y - b0.y, way, hold, t1, 0, 0, (b2.x - b1.x) / DT));
+    });
+  }
+
   private wheelRide(p: PlayerState, dir: -1 | 0 | 1, t: number): Pad | null {
     if (!p.grounded) return null;
     // (the floor the engine has him on: at a bucket's front end his middle is past it, and the look under his middle finds none)
@@ -3640,10 +4890,14 @@ export class FirstTimerRun {
     if (here.wheel) {
       const w = here.wheel.w, lay = w.lay;
       if (!lay) return null;
+      // (a thumb that does not let go (no holdQ: the kid, R-165.59) keeps his last press held through a `{}`: in a bucket every stand is a
+      // brake for him, a press against his motion while he moves, nothing once still; else he runs on off the bucket's end (2-6 kid E 22,
+      // bucket #51; the wheel toy, sparse kid Easy v1, boarding by the window). BUILD-26m/n)
+      const stand = (): Pad => !who.holdQ && Math.abs(p.vx) > BONK.still ? (p.vx > 0 ? { left: true } : { right: true }) : {};
       const f = WHEEL_FLOWN[flownKey({ R: w.R, V: w.V, N: w.N, W: w.W, street: lay.street, up: lay.up }, who.setting === 'easy' ? 'easy' : 'normal')];
       const read = !f ? undefined : lay.street === 'up' ? f.jump : lay.street === 'edge' ? f.tap : undefined;
       // (a street in over the top sets him down on it: he rides; an unflown wheel he only rides)
-      if (!read || read.from === undefined || read.to === undefined) { this.wheelSeen = -1; return {}; }
+      if (!read || read.from === undefined || read.to === undefined) { this.wheelSeen = -1; return stand(); }
       const phi = bucketAngle(w, here.wheel.i, e.gameTime);
       const past = (((phi - Math.PI) % (2 * Math.PI)) + 3 * Math.PI) % (2 * Math.PI) - Math.PI;
       if (past < read.from || past > read.to) {
@@ -3652,14 +4906,30 @@ export class FirstTimerRun {
         // it as the window opened left him still sliding back as he stepped off): a step off from its front end goes early and falls short
         // of the street, the expert on the sparse toy)
         const off = p.x - (here.x + here.width / 2);
-        return past < read.from - 0.6 && Math.abs(off) > 16 ? (off > 0 ? { left: true } : { right: true }) : {};
+        if (past >= read.from - 0.6) return stand();
+        // (the kid: toward the middle from outside his stand distance of it, a brake inside it (a press toward the middle carried him past it
+        // and off the far end, a full swing every ~0.9 s))
+        if (!who.holdQ) {
+          // (and behind the middle, where the step-off falls short, he goes up to it: the step-off, SKILLS.stepOff)
+          if (Math.abs(off) > 22 + who.edgeAim || (SKILLS.stepOff && off * w.way < -16)) return off > 0 ? { left: true } : { right: true };
+          return stand();
+        }
+        return Math.abs(off) > 16 ? (off > 0 ? { left: true } : { right: true }) : {};
       }
       // (the window is open: he reacts to it, as to a ride coming to a stand (clockRide), and goes only while it is still open)
       if (this.wheelSeen < 0) {
         this.wheelSeen = t;
         this.wheelDelay = who.stopReact + (who.lateQ && this.r() < (who.lateShare ?? 0) ? drawQ(this.r, who.lateQ) : 0);
       }
-      if (t - this.wheelSeen < this.wheelDelay) return {};
+      if (t - this.wheelSeen < this.wheelDelay) return stand();
+      // (the kid's step-off waits for the brake to have him still: a hop decided while a brake's press still carried him went off the wrong
+      // end (the wheel toy, top kid Normal v2, 15.4 s))
+      if (!who.holdQ && Math.abs(p.vx) > BONK.still) return stand();
+      // (the window was flown from the bucket's middle: from where he stands it may fall short (2-6 adult Easy 12, the top wheel: off -37
+      // at the window where off +36 made the street; back in a bucket, round and round to a rescue. LAND-26d, R-165.478). The hop judged is
+      // the hop flown (level.md rule 28): he goes while the window is open when his own hop, at every lag his thumb presses at and every
+      // hold it can have, comes down on the street (stepOffLands); none in the window and he rides on and settles)
+      if (SKILLS.stepOff && !this.stepOffLands(w, here.wheel.i, lay.streetId, lay.street === 'edge' ? who.hold[0] : 0.5, e.gameTime)) return stand();
       this.wheelSeen = -1;
       // (a street at the sweep's edge: a hop off toward it, the flight's tap; off the top: a single jump held to its top, the way on held,
       // the flight's jump)
@@ -3674,8 +4944,22 @@ export class FirstTimerRun {
     if (!w || dir !== w.way) return null;
     const lip = w.way > 0 ? here.x + here.width : here.x;
     const toLip = (lip - p.x) * w.way;
-    if (toLip > (who.aimQ ? who.aimQ[1] + 31 : 22 + who.edgeAim)) return w.way > 0 ? { right: true } : { left: true };
-    if (Math.abs(p.vx) > 10) return {};
+    if (toLip > (who.aimQ ? who.aimQ[1] + 31 : 22 + who.edgeAim)) { this.wheelBoardWait = -1; return w.way > 0 ? { right: true } : { left: true }; }
+    // (the stand at the lip: a thumb that does not let go (no holdQ) keeps the walk-up press held through a `{}` and walks off the lip
+    // into the pond (the wheel toy, sparse kid Normal v2, 6.1 s): for him the stand is a brake, a press against his motion. BUILD-26n)
+    if (Math.abs(p.vx) > 10) return who.holdQ ? {} : p.vx > 0 ? { left: true } : { right: true };
+    // (the board was flown from BOARD_BACK px back of the lip, where a tap hop boards at every moment (wheelFlights.ts); stopped nearer it,
+    // at some moments the hop carries past the bucket's end and he slides off it (2-6 child Normal v2, the top wheel: 17 px short of the
+    // lip, in at its end, 2 scrambles. LAND-26c, R-165.478). There he hops when a bucket coming up takes the hop, as a person who has
+    // watched the wheel does, at every lag his thumb presses at (thumbLags, hopAim's clock); every moment comes round once a bucket
+    // period: none in one, and he hops as before)
+    // (and at every hold the press can have: the wheel hop is held at least who.hold[0] (wheelHop), his draw above it as drawn)
+    const min = Math.max(who.hold[0], this.pressHold());
+    const holds = [min, ...(who.holdQ ? who.holdQ.map((h) => Math.min(1.5, h)) : [who.hold[0] + 1.5 * who.hold[1], Math.min(0.45, who.hold[0] + 3 * who.hold[1])]).filter((h) => h > min)];
+    if (this.wheelBoardWait < 0) this.wheelBoardWait = e.gameTime;
+    const boards = !SKILLS.boardWatch || toLip >= BOARD_BACK || thumbLags(who.thumb).every((lag) => holds.every((hold) => hopBoards(w, p.x, p.y, w.way, hold, e.gameTime + hopAim(lag).clock)));
+    if (!boards && e.gameTime - this.wheelBoardWait < bucketPeriod(w)) return !who.holdQ && Math.abs(p.vx) > BONK.still ? (p.vx > 0 ? { left: true } : { right: true }) : {};
+    this.wheelBoardWait = -1;
     this.wheelHop = who.hold[0];
     const out = this.decide(w.way, 'single', true, {});
     // (decide may have set a press to come: he stands while it comes, as off a log, vineFromLog)
@@ -3804,6 +5088,16 @@ export class FirstTimerRun {
     return false;
   }
 
+  /** the climbing vine within 60 px across that leads up from his feet (its foot at or under them, its top a hop over them), nearest first */
+  climbUpVine(p: { x: number; y: number }): Vine | undefined {
+    let best: Vine | undefined;
+    for (const v of this.sim.vines as Vine[]) {
+      if (v.vineType !== 'tree_climb' || v.off || Math.abs(v.x - p.x) > 60 || v.topY > p.y - 60 || v.bottomY < p.y - 12) continue;
+      if (!best || Math.abs(v.x - p.x) < Math.abs(best.x - p.x)) best = v;
+    }
+    return best;
+  }
+
   /** a tier bot's steering rhythm on open ground: a direction held its time, then let go its time (the profiles' moveHoldMs, moveGapMs) */
   private rhythm(want: Pad): Pad {
     const w = this.who, p = this.sim.p, t = this.t;
@@ -3828,6 +5122,13 @@ export class FirstTimerRun {
     delete out.left;
     delete out.right;
     return out;
+  }
+
+  /** the ledge the floor steps UP onto at `lip` on `dir`'s side (LIP_STEP: its near end at the lip, its top a hop up), or null */
+  stepUpAtLip(lip: number, p: { y: number }, dir: -1 | 1): Platform | null {
+    if (!Number.isFinite(lip)) return null;
+    return this.sim.platforms.find((q) => this.solid(q) && q.y < p.y - LIP_STEP.low && q.y > p.y - STAIR_HOP &&
+      Math.abs((dir > 0 ? q.x : q.x + q.width) - lip) < LIP_STEP.seam) ?? null;
   }
 
   /** he decides to flick: it comes after the thumb's latency (N(mean, sd); an early one comes at once) */
@@ -3862,7 +5163,16 @@ export class FirstTimerRun {
       delete out.right;
       delete out.left;
     };
-    if (steer !== 0 && steer === this.lastSteer) this.driftPx = Math.min(30, this.driftPx + Math.max(0, gauss(this.r, who.drift)) * DT);
+    // (ENG-27o: on a gate hop's frames, the fumbles hopFlies judged it with, pre-drawn on rHop (DrawnHop.thumb); this.r's draws are
+    //  still made, so the main stream is as ever)
+    const ft = this.flyThumb;
+    const k = ft ? ft.k++ : 0;
+    if (ft && (k >= ft.th.drift.length || (k > 0 && this.sim.p.grounded))) this.flyThumb = null;
+    const pre = this.flyThumb ? ft!.th : null;
+    if (steer !== 0 && steer === this.lastSteer) {
+      const g = Math.max(0, gauss(this.r, who.drift)) * DT;
+      this.driftPx = Math.min(30, this.driftPx + (pre ? pre.drift[k] : g));
+    }
     if (steer !== 0 && this.lastSteer !== 0 && steer !== this.lastSteer) {
       const lag = (2 * 16 + this.driftPx) / who.thumbSpeed;
       this.travelUntil = t + lag;
@@ -3870,12 +5180,21 @@ export class FirstTimerRun {
       this.turnLag += lag;
       this.driftPx = 0;
     }
-    if (steer !== 0 && this.r() < who.slip * DT) this.driftUntil = t + Math.round(between(this.r, who.slipFrames)) * DT;
+    if (steer !== 0) {
+      const n = this.r() < who.slip * DT ? Math.round(between(this.r, who.slipFrames)) : -1;
+      const m = pre ? pre.slip[k] : n;
+      if (m >= 0) this.driftUntil = t + m * DT;
+    }
     // (R-165.59: lastSteer is not moved on while the late lift-off runs, so for KID and ADULT this re-arms every frame and the steer is
-    // never let go once held; a tier bot arms it once per let-go, as the thumb does)
-    if (steer === 0 && this.lastSteer !== 0 && !want.press && !(who.holdQ && this.releaseArmed)) {
+    // never let go once held; a tier bot arms it once per let-go, as the thumb does. R-165.465, the root fix: a BARE STAND (intend's {}
+    // with his feet on a floor: nothing steered, pressed, held or climbed) is a stop he means, so every bot's thumb lifts once with its
+    // late lift-off there; the per-stand stopMeant lines (c11's ride read, CI-13's handed ride, CI-15's pad pause and the five like them)
+    // each patched one {}. In the air a {} is no stand: the kid's thumb rides the jump on as it always has)
+    const bare = this.sim.p.grounded && !Object.values(want).some(Boolean);
+    if (steer === 0 && this.lastSteer !== 0 && !want.press && !((who.holdQ || bare) && this.releaseArmed)) {
       const [lo, hi] = who.releaseMax;
-      this.releaseLeft = Math.max(lo, Math.min(hi, Math.round(Math.exp(gauss(this.r, who.release)))));
+      const n = Math.max(lo, Math.min(hi, Math.round(Math.exp(gauss(this.r, who.release)))));
+      this.releaseLeft = pre ? pre.release[k] : n;
       this.releaseArmed = true;
     }
     if (steer !== 0) {
@@ -3898,6 +5217,7 @@ export class FirstTimerRun {
     this.rollHeld = false;
     this.steady = false;
     const intended = this.intend();
+    if (TRACE_FRAMES) this.meantPad = intended;
     const want = this.rollHeld || this.steady || this.runnerAhead() ? intended : this.rhythm(intended);
     const out = this.figTap ? this.tapped(want) : this.thumbify(want);
     this.wasOnTrunk = !!this.sim.p.climbing;
@@ -3906,8 +5226,108 @@ export class FirstTimerRun {
   }
 
   /** a flick up: short, sometimes straight up for a moment; a second flick only where a single one failed before */
+  /**
+   * The hop he will press at a gate, drawn by the testers' habit as startJump draws it (the hold, the double's share and second press,
+   * the beat with no steer, then the second press's hold), from its own stream (rHop), once per wait: kept until a gate presses it, so
+   * the hop judged frame to frame is one hop and no other draw of the bot's moves (level.md rule 28; the lead's ruling, ENG-27n).
+   */
+  /** the engine's second-jump speed now (engine.ts, the air press: the early-stage and Easy help, a drag zone, the spore cloud's drowse) */
+  private v2(): number {
+    const e = this.e as unknown as { assistNow?: () => number; dragJump?: number; flightClear?: boolean; drowsy?: number };
+    return PHYS.doubleV * (1 + ASSIST.doubleJump * (e.assistNow?.() ?? 0)) * (e.flightClear ? 1 : drowsyJump(e.drowsy ?? 0)) * (e.dragJump ?? 1);
+  }
+
+  private drawHop(dir: -1 | 1): DrawnHop {
+    const p = this.sim.p, who = this.who, r = this.rHop;
+    const needs = who.readHold !== undefined && (this.faceAhead(dir, 60) !== null || !this.floorAt(p.x + dir * ((this.edge?.aim ?? 0) + 100), p.y, 40));
+    const lo = who.retryHold && this.mem.fails(p.x, p.y) > 0 ? who.retryHold : needs ? (who.readHold ?? 0) : 0;
+    let hold = flickHold(r, who, lo);
+    let kind: 'single' | 'double' = 'single';
+    let d2 = -1;
+    if (who.dbl2Q) {
+      if (r() < (who.dblShare ?? 0)) kind = 'double';
+      const here = this.floorAt(p.x, p.y, 6);
+      const climb = needs && !!here && this.stepUp(here, dir);
+      const [a, b] = climb ? [0, who.readDbl ?? 1] : needs ? (who.readGap ?? [0, 1]) : [0, 1];
+      d2 = drawQ(r, who.dbl2Q, 2 * DT, a, b);
+      if (kind === 'double') hold = Math.min(hold, d2 - DT);
+    }
+    const upOnly = r() < who.upOnly ? between(r, who.upOnlyT) : 0;
+    const dblAt = between(r, who.dblAt);
+    const hold2 = flickHold(r, who, needs ? (who.readHold ?? 0) : 0);
+    // (ENG-27o: the thumb's fumbles for the flight, one per frame, drawn after the hop's own so its draws are as they were)
+    const thumb: DrawnThumb = { drift: [], slip: [], release: [] };
+    const [rlo, rhi] = who.releaseMax;
+    for (let k = 0; k < 75; k++) {
+      thumb.drift.push(Math.max(0, gauss(r, who.drift)) * DT);
+      thumb.slip.push(r() < who.slip * DT ? Math.round(between(r, who.slipFrames)) : -1);
+      thumb.release.push(Math.max(rlo, Math.min(rhi, Math.round(Math.exp(gauss(r, who.release))))));
+    }
+    return { kind, hold, d2, dblAt, hold2, upOnly, thumb };
+  }
+
+  /** the platforms a judged hop from here may come down on first (hopFlies, ENG-27o) */
+  private flightOthers(): FlightOthers {
+    const p = this.sim.p, rivers = (this.sim.stage as { rivers?: RiverZone[] }).rivers;
+    const e = this.e as unknown as { assistNow?: () => number; easy?: boolean; stepHelp?: boolean; forgive?: { landPx: number; mantle: number }; skills?: { has: (k: string) => boolean }; kit?: { holding?: unknown } };
+    const list = this.sim.platforms.filter((o) => !o.broken && o.y > p.y - 160 && o.y < p.y + 220 && (o.drift ? o.drift.x1 > p.x - 700 && o.drift.x0 < p.x + 700 : o.x < p.x + 700 && o.x + o.width > p.x - 700));
+    return { list, at: (o) => floatAt(rivers, o), w: p.width, easy: !!e.easy, assist: e.assistNow?.() ?? 0, land: e.forgive?.landPx ?? 0, glide: !!e.skills?.has('glide') && !e.kit?.holding, h: p.height, mantle: e.forgive?.mantle, stepHelp: !!e.stepHelp };
+  }
+
+  /** the thumb now, for hopFlies (ENG-27o): thumbify's state, its ends counted from now */
+  private thumbAt(): ThumbAt {
+    const t = this.t;
+    return { last: this.lastSteer, driftPx: this.driftPx, armed: this.releaseArmed, releaseLeft: this.releaseLeft, travel: this.travelUntil - t, slip: this.driftUntil - t, speed: this.who.thumbSpeed, once: !!this.who.holdQ };
+  }
+
+  /** a floor (not a log) within 80 px of x at his height: a log's run ending there hands him on (c4's handed check) */
+  private handedAt(x: number, y: number): boolean {
+    return this.sim.platforms.some((b) => b.type !== 'drift' && !b.broken && Math.abs(b.y - y) < 70 && b.x - 80 < x && b.x + b.width + 80 > x);
+  }
+
+  /**
+   * The lean ride's case (ENG-PLANT-i, the lead's ruling 1): log `lr` runs his way (`dir`), no bank stands within 80 px of its front, and
+   * either its front goes under (its run ends with no floor to hand him on: handedAt) or no floor at all (bank or another log) is within
+   * 80 px ahead of its front. Every other log: main's walk.
+   */
+  private rideCase(lr: Platform, dir: -1 | 1): boolean {
+    if (lr.type !== 'drift' || !lr.drift || lr.drift.dir !== dir) return false;
+    const p = this.sim.p;
+    const front = dir > 0 ? lr.x + lr.width : lr.x;
+    const near = (b: Platform): boolean => b !== lr && !b.broken && Math.abs(b.y - p.y) < 70 && (dir > 0 ? b.x - front < 80 && b.x + b.width > front : front - (b.x + b.width) < 80 && b.x < front);
+    if (this.sim.platforms.some((b) => b.type !== 'drift' && near(b))) return false;
+    const goesUnder = !this.handedAt(dir > 0 ? lr.drift.x1 : lr.drift.x0, p.y);
+    return goesUnder || !this.sim.platforms.some(near);
+  }
+
+  /** px he runs on after he lets go at a full run (a walk he starts from a stand reaches it in a few frames, so his speed NOW is no
+   *  bound: candidate 6, 2-4 adult Normal 6, stood at vx 0 81 px from #47's front, looked 24 px, ran on and off it): his thumb's
+   *  longest let-go (releaseMax) and the 3 frames he slides to a stop, and the gate's 24 px (ENG-PLANT-e: the stand on a log running his
+   *  way comes at least this far from its front) */
+  private runOut(): number {
+    return PHYS.maxRun * DT * (this.who.releaseMax[1] + 3) + 24;
+  }
+
+  /**
+   * startJump's gate (SKILLS.floatSure, the lead's steer, D133): does hop `h` toward `dir` off drifting log `here`, flown as drawn
+   * (gateSees, his thumb and the floors it may meet first), come down on another drifting log that goes under before it can hand him on:
+   * no floor (not a log) within 80 px of the end of that log's run (the handed check, c4)?
+   */
+  private hopOntoSinker(here: Platform, dir: -1 | 1, h: DrawnHop): boolean {
+    const p = this.sim.p, t = this.t;
+    const rv = this.sim.stage.rivers;
+    const cr = ((floatAt(rv, here)(t + DT) - floatAt(rv, here)(t)) / DT) * RIDE.keep.x;
+    const cv = Math.abs(cr) < 400 ? cr : 0, vx = p.vx + cv;
+    return this.sim.platforms.some((q) => {
+      if (q === here || q.type !== 'drift' || !q.drift || q.broken || Math.abs(q.y - p.y) >= 70 || Math.abs(q.x - here.x) >= 600) return false;
+      const endX = q.drift.dir > 0 ? q.drift.x1 : q.drift.x0;
+      return !this.handedAt(endX, p.y) && this.gateSees(q, floatAt(rv, q), p.x, p.y, dir, h, t, vx, 0, cv);
+    });
+  }
+
   private startJump(dir: -1 | 0 | 1, kind: 'single' | 'double', off: boolean): Pad {
     const p = this.sim.p, who = this.who;
+    if (this.padSeen >= 0) this.padSeenHop = true;
     // (a tier bot: where a jump has failed him he holds on longer; any jump may get its second press, at his own delay)
     const overhead = this.climbJump;
     const toX = this.climbToX;
@@ -3934,7 +5354,41 @@ export class FirstTimerRun {
       d2 = -1;
       this.wheelHop = 0;
     }
-    const upOnly = !off && this.r() < who.upOnly ? between(this.r, who.upOnlyT) : 0;
+    // (the run-up's jump, SKILLS.runUp: held at least as long as runPress judged it (who.hold[0]), as the race's, the liana's and the
+    //  wheel's hops are; a shorter draw (0.093 s on 2-4 child Normal 8, t 120.77) peaked at y 895 under liana #4's foot (859) and fell in)
+    if (this.runUpHold) {
+      if (this.t - this.runUpHold.t < 0.5) {
+        hold = Math.max(hold, this.runUpHold.hold);
+        if (kind === 'double') hold = Math.min(hold, d2 - DT);
+      }
+      this.runUpHold = null;
+    }
+    // (CI-11: vineFromLog's standing press, single and held exactly as it was judged (catches: the engine's held frames); the draws above
+    //  are kept, so the stream is as ever. On CI-10 it flew its own draw, 0.097 s on 2-4 kid Easy 35 at t 47.600, judged at 0.16)
+    if (this.standHold) {
+      const its = this.pressJudged || (!!this.pending?.still && !!this.pending?.judged);
+      if (its && this.t - this.standHold.t < 0.5) { kind = 'single'; hold = this.standHold.hold; d2 = -1; }
+      this.standHold = null;
+    }
+    let upOnly = !off && this.r() < who.upOnly ? between(this.r, who.upOnlyT) : 0;
+    // (a hop a gate judged, SKILLS.floatSure (rule 28, the lead's ruling): flown as drawn and judged, kind, holds, second press and the
+    //  beat with no steer; the draws above (and dblAt's below) are still made, so the stream is as ever)
+    const gate = this.gateHop;
+    this.gateHop = null;
+    if (gate) { kind = gate.kind; hold = gate.hold; d2 = gate.d2; upOnly = gate.upOnly; }
+    // (SKILLS.floatSure, ENG-PLANT-g, the lead's steer (D133, inverted): an unjudged hop off a drifting log is refused ONLY in the traced
+    //  bad case: flown as drawn, it comes down on another log that goes under before it can hand him on (no floor within 80 px of its
+    //  run's end: the handed check, c4). 2-4 adult Normal 6 on candidate 4: the edge code's hop back onto #46, a log going under before
+    //  the bank, set down 3 times, rescued. Every other press goes as main's does; refused, counted (UNJUDGED) and dropped, and the
+    //  river block judges him again next frame. c5-c16 refused every unjudged press off a log and needed an exception per kind (D133))
+    if (SKILLS.floatSure && !gate && !this.pressJudged && p.grounded && dir !== 0) {
+      const here = this.sim.platforms.find((q) => q.id === this.sim.standingOn);
+      if (here?.type === 'drift' && this.hopOntoSinker(here, dir, { kind, hold, d2, dblAt: (who.dblAt[0] + who.dblAt[1]) / 2, hold2: hold, upOnly })) {
+        UNJUDGED.n++;
+        this.pending = null; this.lateArmed = null;
+        return {};
+      }
+    }
     this.pending = null;
     // (OFF-BEFORE-FOUR: a hop for a snap stone is a tap, one stone at a time, never a double; after his own draws, so no other jump moves)
     const snapFrom = this.snapHop ? this.sim.standingOn : undefined;
@@ -3947,6 +5401,13 @@ export class FirstTimerRun {
     this.nextStop = null;
     if (bonk) { this.jump.bonk = bonk.id; this.jump.bonkDir = bonk.dir; if (bonk.beside) this.jump.bonkUp = true; }
     if (snapFrom !== undefined && snapFrom >= 0) this.jump.snapFrom = snapFrom;
+    // (ENG-PLANT-CI, rule 28, the hop judged is the hop flown: a hop a gate judged off a drifting log is flown as the judge flies it
+    //  (hopFlight reads overSmall for the judged landing only), so in the air he never steers back onto the log he leaves, as a snap
+    //  stone's hop never does. 2-7 home middle Normal 2 (c26 on): padPause judged a double off #49 onto #50 at t 83.97; at t 84.33 overSmall
+    //  read #49 under him past its middle and steered back (right), and he came down on #49's end, traced frame by frame)
+    else if (gate && this.sim.platforms.find((q) => q.id === this.sim.standingOn)?.type === 'drift') this.jump.snapFrom = this.sim.standingOn;
+    if (gate) { this.jump.dblAt = gate.dblAt; this.jump.hold2 = gate.hold2; }
+    this.flyThumb = gate?.thumb ? { th: gate.thumb, k: 0 } : null;
     if (this.lianaHop) {
       this.jump.liana = true;
       this.lianaHop = false;
@@ -3954,6 +5415,23 @@ export class FirstTimerRun {
       // 22-231 ms) was often shorter than the hop it decided on, so a hop judged to catch fell short onto the lip's end and he walked off
       // it into the gap (ENG-B6, the MIDDLE strider at a runner liana, trace in chaseBots.test). The decision and the act now agree)
       this.jump.hold = Math.max(this.jump.hold, this.who.hold[0]);
+    }
+    if (HOP_TRACE.on) {
+      const j = this.judged;
+      this.judged = null;
+      // (the lead's ruling A's invariant (D112): a press at a river's edge with a float within reach flies on a judgment made at its OWN
+      //  press frame; one with none ('unjudged') or one left from an earlier frame or another branch ('stale') is a row the test fails.
+      //  2-7 home middle Normal 2 x 15632: the edge stand pressed 0.37 s after the edgeWait probe's judgment, ENG-27o)
+      const fresh = !!j && j.on === this.sim.standingOn && Math.abs(this.t - j.t) < DT / 2;
+      if (dir !== 0 && !fresh && this.edgeFloats(dir)) {
+        const row: HopRow = { site: j ? `stale ${j.site}` : 'unjudged', q: j?.q ?? -1, t: j?.t ?? this.t, x: j?.x ?? p.x, hold: j?.hold ?? this.jump.hold, lag: j?.lag ?? 0, kind: j?.kind, flown: { t: this.t, x: p.x, hold: this.jump.hold, kind: this.jump.kind } };
+        HOP_TRACE.rows.push(row);
+        this.hopOpen = { row, air: false, lives: this.e.lives };
+      } else if (j && j.on === this.sim.standingOn && this.t - j.t <= 1) {
+        const row: HopRow = { site: j.site, q: j.q, t: j.t, x: j.x, hold: j.hold, lag: j.lag, kind: j.kind, flown: { t: this.t, x: p.x, hold: this.jump.hold, kind: this.jump.kind } };
+        HOP_TRACE.rows.push(row);
+        this.hopOpen = { row, air: false, lives: this.e.lives };
+      }
     }
     const out: Pad = upOnly > 0 ? {} : dir > 0 ? { right: true } : dir < 0 ? { left: true } : {};
     out.press = true;
@@ -4070,6 +5548,13 @@ export class FirstTimerRun {
       this.airFrom = null;
       this.jump = null;
     }
+    // (a jump that caught a trunk straight off the ground, no frame in the air, is over as a landing ends one: its hold and its second
+    // press, still to come, are a thumb that has gone to the climb. ENG-26e: a double's second press 0.43 s on flicked him off 2-6's
+    // tower vines (the turn at x 1369, every tier, the expert too) onto the catch bough under them, to a rescue)
+    if (SKILLS.trunkCatch && this.jump && !this.airFrom && p.climbing) {
+      this.mem.result(this.jump.x, this.jump.y, this.jump.kind, true);
+      this.jump = null;
+    }
     if (this.jump && !this.airFrom && t - this.jump.t0 > 0.5) {
       // (the flick never left the ground: a jump under a ceiling, or eaten)
       this.mem.result(this.jump.x, this.jump.y, this.jump.kind, false);
@@ -4078,18 +5563,30 @@ export class FirstTimerRun {
     // fallen off the way (a miss in a climb drops him to a branch or the floor far under where he was): once he stands there a moment,
     // he finds his place along the way again and heads back to the way up, as a person climbs back (round 5, 2026-10-29: the bot kept
     // heading for the point straight over his head, never walked back to the trunk, and the tall climbs ran out the clock)
-    if (this.prog.off(p) > 260 && !held) {
+    // (or he stands more than a double's reach under it, hopping or not: Progress.under, BUILD-26f; his hops took `off` under 260)
+    // (a pod's knock ends the climb in the frame it lands, so the field's own step, run only while he climbs, never saw it: read it here)
+    this.figs?.sawKnock((this.e as unknown as FieldView).knocked, t);
+    const far = this.prog.off(p) > OFF_WAY;
+    // (never on a moving piece: riding a wheel's car he is under the route over the wheel by design; the rewind pulled him off it at the
+    //  car's bottom, 2-6 adult N 3 at x 1023 y 1076 on the great wheel, then three far-off falls and a rescue. BUILD-26f)
+    const rides = this.sim.platforms.find((q) => q.id === this.e.standingOnId);
+    const under = !(p.grounded && rides && (rides.type === 'moving' || rides.type === 'drift' || (rides as { wheel?: unknown }).wheel)) && this.prog.under(p);
+    if ((far || under) && !held) {
       this.offRoute += DT;
       if (this.offRoute > 0.5 && p.grounded) {
         const top = this.prog.best;
-        this.prog.relocate(p, true);
+        this.prog.relocate(p, true, far ? Infinity : 80, far ? this.climbUpVine(p) : undefined);
         this.offRoute = 0;
+        // (a rewind by `under` alone is never counted as a fall-back: a hop's top pulls his place back up onto the leg over him
+        //  (Progress.step), and counted, three hops were 'fell back down from here 3 times' and a rescue (2-6 adult N 33 -> 23); counted
+        //  after a takeoff over 175 px up, falls the old rewind never saw (off under 260) became rescues (kid E 15 rows moved). BUILD-26f)
+        const fell = far;
         // (the same fall three times, never getting higher: noted as a loop and he is put past it, as the same death three times is.
         // bot-fix 2026-11-01: each fall moved his place back down the way, so the climb back up counted as progress and the 20 s clock
         // never ran out: on 1-4 he climbed and fell from the same branch every 24 s until the cap, and the run read "time")
         // (a pod's knock off a vine field is a hit, counted as one, never a missed climb: figPush.ts knockedRecently)
-        if (top === this.fallTop && !this.figs?.knockedRecently(t)) this.fallBacks++;
-        else {
+        if (fell && top === this.fallTop && !this.figs?.knockedRecently(t)) this.fallBacks++;
+        else if (fell) {
           this.fallTop = top;
           this.fallBacks = 1;
         }
@@ -4105,6 +5602,14 @@ export class FirstTimerRun {
     // stuck: no progress for 8 s (not while standing at a puzzle)
     // (and not while he works a vine field's gate or steps off a pod's column: figPush.ts busy, the figs are the way on)
     // (and not while he climbs back out of a pit, pitWayBack: the way back up is a person's retry, and three of them are a loop there)
+    // (the figs' work is the way on only while it gets somewhere: a fig freed, a gate opened, his best place further on; with none of
+    //  those for RULES.wayOn.stuckSecs (8 s) the clock runs as at any stall, so a miss ends in a rescue, never a silent cap. BUILD-26l: 1-4 adult N 39
+    //  was pushed left, let go, right, let go between two field vines from t 110 to the 1200 s cap with every clock off)
+    if (this.prog.best > this.figBest) {
+      this.figBest = this.prog.best;
+      this.figBestAt = t;
+    }
+    const figsWork = this.figs?.busy(t) ? t - Math.max(this.figFrom, this.figs.changedAt, this.figBestAt) < figGrace() : ((this.figFrom = t), false);
     // (FETCH-CLOCK: back for a spooked little one is the line's own demand, not a spot he cannot pass: the clock HOLDS while he fetches,
     //  as it does while he hides. Three fetches with no step further are a loop, as three falls back are, and the clock runs again. The
     //  clock had run through every fetch: on 2-3's watched mud the child (his testers' steer rhythm, about 40 px a second on open ground)
@@ -4114,7 +5619,7 @@ export class FirstTimerRun {
     const fetched = LINE_SKILL.fetchClock && this.wasFetching && !this.fetching && this.fetchLoops < this.tries3;
     this.wasFetching = this.fetching;
     if (more) this.fetchLoops = 0;
-    if (more || fetched || this.huntMore || this.puzzleWait || this.stillSpot || this.figs?.busy(t) || this.climbBack) {
+    if (more || fetched || this.huntMore || this.puzzleWait || this.stillSpot || figsWork || this.climbBack) {
       if (this.stuckOpen && this.noProg >= 8) this.stuckOpen.dur = +this.noProg.toFixed(1);
       this.stuckOpen = null;
       this.noProg = 0;
@@ -4128,9 +5633,10 @@ export class FirstTimerRun {
         const g = this.ground;
         const w = p.grounded ? null : this.whatAt.find((q) => Math.abs(q.x - g.x) < 80 && Math.abs(q.y - g.y) < 40);
         const dir = (this.prog.target(p)?.x ?? p.x + 1) >= p.x ? 1 : -1;
-        const d = w ?? (p.grounded ? this.describe(dir) : null);
+        // (on a vine, his hands on it and no way on: named too, so a stall there is never a run with no stuck spot. BUILD-26l)
+        const d = w ?? (p.grounded ? this.describe(dir) : held ? { what: `on a vine at ${Math.round(p.x)},${Math.round(p.y)} with no way on`, step: null, dip: null, puzzle: false } : null);
         if (d) {
-          const at = p.grounded ? p : g;
+          const at = p.grounded || held ? p : g;
           this.stuckOpen = { x: Math.round(at.x), y: Math.round(at.y), t: +(t - this.noProg).toFixed(1), dur: 8, what: d.what, step: d.step, dip: d.dip, puzzle: d.puzzle, rescued: false };
           this.stuck.push(this.stuckOpen);
         }
@@ -4210,6 +5716,16 @@ export class FirstTimerRun {
       const top = this.prog.best;
       this.prog.relocate(p);
       this.climbBack = null;
+      // (a put-back by the game spends the edge he drew for the lip he left and the late press armed for it: edgePlan's 'kept until he
+      //  jumps or is put back'. A teaching river's splash-back (engine.ts river.safe, safeWater) moves him with no loseLife or softFall,
+      //  so respawned() never ran for it: 2-2 child Easy 21 (R-165.465 C6) walked off #92 on a late press, splashed back, and walked off
+      //  the same lip again on the press armed before the splash, 8 times, rescued. hopJudged.test.ts 'a put-back by the game')
+      //  The edge plan's stand is that plan too ('stand', held in `standing` until he jumps): kept, it held him wherever the game set
+      //  him down, the lip he stood for left behind. 2-1 child Normal 20 on C10 (R-165.465): stood for #41's front, splashed back to
+      //  x 8,424, and the stand held him there until rescued. hopJudged.test.ts 'a put-back by the game spends the edge plan's stand')
+      this.edge = null;
+      this.lateArmed = null;
+      this.standing = null;
       // (set down at the same place again and again, never getting further: three are a loop, as three falls back are, and he is put
       // past. A splash-back costs no life, and each relocate wound his progress back, so the walk on to the same pond counted as
       // progress and no rescue ever came: 2-3's sinking-pad pond, the kid Normal set down at its near bank every 20 s to the 1200 s cap,
@@ -4242,6 +5758,13 @@ export class FirstTimerRun {
       const pad = this.pad();
       this.sim.frame(pad);
       if (PRESS_TRACE.on && pad.press && this.pressWant !== undefined) PRESS_TRACE.rows.push({ want: this.pressWant, got: this.t });
+      if (this.hopOpen) {
+        const o = this.hopOpen;
+        if (e.lives < o.lives) { o.row.landed = 'lost'; this.hopOpen = null; }
+        else if (!this.sim.p.grounded) o.air = true;
+        else if (o.air) { o.row.landed = this.sim.standingOn; o.row.landedType = (this.sim.platforms.find((q) => q.id === this.sim.standingOn) ?? this.floorAt(this.sim.p.x, this.sim.p.y, 6))?.type; this.hopOpen = null; }
+      }
+      if (HOP_TRACE.on && !this.sim.p.grounded && !this.hopOpen) this.judged = null;
       this.opts.onFrame?.(this.sim);
       { const on = this.sim.p.grounded ? this.sim.platforms.find((q) => q.id === this.sim.standingOn) : undefined; if (this.wasOnLog && on && on.type !== 'drift') this.handed++; this.wasOnLog = !!on && on.type === 'drift'; }
       {
@@ -4256,7 +5779,7 @@ export class FirstTimerRun {
         }
         this.wasSwinging = sw;
       }
-      if (TRACE_FRAMES && this.t > TRACE_FRAMES[0] && this.t < TRACE_FRAMES[1]) process.stderr.write(`    f ${this.t.toFixed(2)} ${Math.round(this.sim.p.x)},${Math.round(this.sim.p.y)} g${+this.sim.p.grounded} vx${Math.round(this.sim.p.vx)} pad ${JSON.stringify(pad)} on ${this.e.standingOnId}\n`);
+      if (TRACE_FRAMES && this.t > TRACE_FRAMES[0] && this.t < TRACE_FRAMES[1]) process.stderr.write(`    f ${this.t.toFixed(2)} ${Math.round(this.sim.p.x)},${Math.round(this.sim.p.y)} g${+this.sim.p.grounded} vx${Math.round(this.sim.p.vx)} pad ${JSON.stringify(pad)} meant ${JSON.stringify(this.meantPad)} on ${this.e.standingOnId}\n`);
       this.frames++;
       e.guideView(this.view);
       this.dot.tick(this.view, this.t, (tp) => this.far(tp));

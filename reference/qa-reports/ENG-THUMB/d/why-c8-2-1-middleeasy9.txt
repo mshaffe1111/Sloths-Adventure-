@@ -1,0 +1,9 @@
+# 2-1 middle Easy 9 on C8: underLip (C8) at 110.10 x 19,544 look 61 fa #88 19,471-19,641 d-1 past the lip 43/170 -> no floor ahead, the edge taken 36 px earlier than C7; then on #88's front (line 3947, the upstream front stand, the held aim) 190 frames at 115.00 and 173 at 126.30, put back by the river twice
+  107.20 double from 18897,654 hold 0.58 up 0.00 d2 0.37 2nd true -> 19172,654 ok
+  110.77 single from 19544,654 hold 0.23 up 0.00 d2 0.52 2nd false -> 19728,682 ok
+  112.23 single from 19740,682 hold 0.10 up 0.00 d2 0.40 2nd false -> 19855,682 ok
+  113.47 single from 19906,682 hold 0.09 up 0.00 d2 0.24 2nd false -> 20021,682 ok
+  121.77 single from 19592,654 hold 0.07 up 0.00 d2 0.26 2nd false -> 19698,682 ok
+  123.07 single from 19719,682 hold 0.18 up 0.00 d2 0.22 2nd false -> 19881,682 ok
+  125.07 single from 19828,682 hold 0.32 up 0.00 d2 0.40 2nd false -> 19999,682 ok
+  134.20 single from 20159,682 hold 0.14 up 0.00 d2 0.48 2nd false -> 20270,654 ok

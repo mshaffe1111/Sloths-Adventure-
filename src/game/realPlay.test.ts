@@ -12,6 +12,7 @@ import { buildW2Stage, W2_STAGES } from './w2Stages.ts';
 import { levelConfig } from './realPlay.ts';
 import { validateStage } from './levelCheck.ts';
 import { PAST_SHRINE, SHRINE_STOP } from './rules.ts';
+import { MODES } from './stageModes.ts';
 import { learnedSkills } from './skills.ts';
 import type { Platform, Vine } from './types.ts';
 
@@ -158,6 +159,26 @@ test('the engine stops him at the shrine, so nothing in a hand-built stage lies 
   const st = buildProtoStage(levelConfig('4-5'), 1, '4-5');
   st.collectibles.push({ id: 9999, type: 'flower', x: st.exitTotemX + 180, y: st.exitTotemY - 34, collected: false, bobPhase: 0 });
   assert.ok(validateStage(st).errors.some((e) => /past the shrine/.test(e)));
+});
+
+test("the level check's 'past the shrine' is the engine's own wall, whichever way the stage travels (a left stage's beyond is its left)", () => {
+  // (ENG-27 made the check read config.travel for a stage whose last leg runs left, gen2 legs; ENG-27k: the check and the engine's wall,
+  //  stageModes walls, must agree both ways, so a pickup the check passes is one he can reach and one it refuses is one he cannot)
+  const base = buildProtoStage(levelConfig('4-5'), 1, '4-5');
+  for (const travel of ['right', 'left'] as const) {
+    const ahead = travel === 'left' ? -1 : 1;
+    const st = { ...base, config: { ...base.config, travel }, collectibles: [...base.collectibles] };
+    const wall = MODES[travel].bounds({ levelWidth: st.config.levelWidth, exit: { x: st.exitTotemX, y: st.exitTotemY }, spawn: { x: st.spawnX, y: st.spawnY } });
+    const at = (x: number) => wall.minX <= x && x <= wall.maxX;
+    const beyond = st.exitTotemX + ahead * (PAST_SHRINE + 120), before = st.exitTotemX - ahead * 180;
+    st.collectibles.push({ id: 9998, type: 'flower', x: beyond, y: st.exitTotemY - 34, collected: false, bobPhase: 0 });
+    st.collectibles.push({ id: 9997, type: 'flower', x: before, y: st.exitTotemY - 34, collected: false, bobPhase: 0 });
+    const past = (id: number) => validateStage(st as never).errors.some((e) => e.includes(`#${id} `) && /past the shrine/.test(e));
+    assert.equal(at(beyond), false, `${travel}: the engine's wall keeps him from x ${beyond}`);
+    assert.ok(past(9998), `${travel}: a flower beyond the shrine (x ${beyond}, shrine ${st.exitTotemX}) is refused`);
+    assert.equal(at(before), true, `${travel}: he can reach x ${before}`);
+    assert.equal(past(9997), false, `${travel}: a flower before the shrine (x ${before}) is not called past it`);
+  }
 });
 
 /**

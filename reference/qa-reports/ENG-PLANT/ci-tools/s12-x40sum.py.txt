@@ -1,0 +1,12 @@
+import json, sys
+# x40sum.py <rows.jsonl>: seeds where adult, child, middle, expert all PASS on every setting they have (the bar's count, >= 29), the same
+# with the kid too, and per bot/setting pass counts
+R = [json.loads(l) for l in open(sys.argv[1]) if l.startswith('{')]
+seeds = sorted({r['seed'] for r in R})
+def ok(s, bots): rs = [r for r in R if r['seed'] == s and r['bot'] in bots]; return len(rs) > 0 and all(r['pass'] and r['rescues'] == 0 for r in rs)
+four = [s for s in seeds if ok(s, ('adult', 'child', 'middle', 'expert'))]
+five = [s for s in seeds if ok(s, ('kid', 'adult', 'child', 'middle', 'expert'))]
+print(f"rows {len(R)}; adult+child+middle+expert all PASS both settings, no rescue: {len(four)}/{len(seeds)}; with the kid: {len(five)}/{len(seeds)} {five}")
+for b in ('kid', 'adult', 'child', 'middle', 'expert'):
+    print(b, ' '.join(f"{st[0].upper()} {sum(r['pass'] for r in R if r['bot'] == b and r['setting'] == st)}/{sum(1 for r in R if r['bot'] == b and r['setting'] == st)}" for st in ('normal', 'easy')))
+print('4-tier fails:', [s for s in seeds if s not in four])

@@ -1,0 +1,136 @@
+TAP version 13
+# Subtest: pacer: laid on the race leg by the design's rule, every roll and both settings; RED when its time breaks either bound
+ok 1 - pacer: laid on the race leg by the design's rule, every roll and both settings; RED when its time breaks either bound
+  ---
+  duration_ms: 672.200063
+  type: 'test'
+  ...
+# Subtest: pacer (planted): a river on the race leg that no flown row matches is refused by name, and a stage with no race leg lays none
+ok 2 - pacer (planted): a river on the race leg that no flown row matches is refused by name, and a stage with no race leg lays none
+  ---
+  duration_ms: 68.654281
+  type: 'test'
+  ...
+# Subtest: pacer: it waits, sets off as he steps onto the race leg, docks, and on a respawn keeps exactly the margin he had when he fell
+ok 3 - pacer: it waits, sets off as he steps onto the race leg, docks, and on a respawn keeps exactly the margin he had when he fell
+  ---
+  duration_ms: 62.061138
+  type: 'test'
+  ...
+# Subtest: pacer race (the bots): the careful middle player (SKILLS.race) beats it, normal seed 1
+ok 4 - pacer race (the bots): the careful middle player (SKILLS.race) beats it, normal seed 1
+  ---
+  duration_ms: 2197.943714
+  type: 'test'
+  ...
+# Subtest: pacer race (the bots): the ride-only player never wins, normal seed 1
+ok 5 - pacer race (the bots): the ride-only player never wins, normal seed 1
+  ---
+  duration_ms: 582.312755
+  type: 'test'
+  ...
+# Subtest: pacer race (the bots): the careful middle player (SKILLS.race) beats it, normal seed 2
+ok 6 - pacer race (the bots): the careful middle player (SKILLS.race) beats it, normal seed 2
+  ---
+  duration_ms: 536.358764
+  type: 'test'
+  ...
+# Subtest: pacer race (the bots): the ride-only player never wins, normal seed 2
+ok 7 - pacer race (the bots): the ride-only player never wins, normal seed 2
+  ---
+  duration_ms: 535.76357
+  type: 'test'
+  ...
+# Subtest: pacer race (the bots): the careful middle player (SKILLS.race) beats it, normal seed 3
+ok 8 - pacer race (the bots): the careful middle player (SKILLS.race) beats it, normal seed 3
+  ---
+  duration_ms: 491.423266
+  type: 'test'
+  ...
+# Subtest: pacer race (the bots): the ride-only player never wins, normal seed 3
+ok 9 - pacer race (the bots): the ride-only player never wins, normal seed 3
+  ---
+  duration_ms: 507.826477
+  type: 'test'
+  ...
+# Subtest: pacer race (the bots): the careful middle player (SKILLS.race) beats it, easy seed 1
+ok 10 - pacer race (the bots): the careful middle player (SKILLS.race) beats it, easy seed 1
+  ---
+  duration_ms: 492.556835
+  type: 'test'
+  ...
+# Subtest: pacer race (the bots): the ride-only player never wins, easy seed 1
+ok 11 - pacer race (the bots): the ride-only player never wins, easy seed 1
+  ---
+  duration_ms: 471.712044
+  type: 'test'
+  ...
+# Subtest: pacer race (the bots): the careful middle player (SKILLS.race) beats it, easy seed 2
+ok 12 - pacer race (the bots): the careful middle player (SKILLS.race) beats it, easy seed 2
+  ---
+  duration_ms: 473.501285
+  type: 'test'
+  ...
+# Subtest: pacer race (the bots): the ride-only player never wins, easy seed 2
+ok 13 - pacer race (the bots): the ride-only player never wins, easy seed 2
+  ---
+  duration_ms: 489.72825
+  type: 'test'
+  ...
+# Subtest: pacer race (the bots): the careful middle player (SKILLS.race) beats it, easy seed 3
+ok 14 - pacer race (the bots): the careful middle player (SKILLS.race) beats it, easy seed 3
+  ---
+  duration_ms: 413.439072
+  type: 'test'
+  ...
+# Subtest: pacer race (the bots): the ride-only player never wins, easy seed 3
+ok 15 - pacer race (the bots): the ride-only player never wins, easy seed 3
+  ---
+  duration_ms: 440.231416
+  type: 'test'
+  ...
+# Subtest: bot: he reads a gap from where he takes off, and the careful middle player wins post Normal seed 4 (its RED: firsttimer.test's laid pond)
+ok 16 - bot: he reads a gap from where he takes off, and the careful middle player wins post Normal seed 4 (its RED: firsttimer.test's laid pond)
+  ---
+  duration_ms: 456.390746
+  type: 'test'
+  ...
+# Subtest: bot: he reads a gap from where he takes off, and the careful middle player wins post Normal seed 5 (its RED: firsttimer.test's laid pond)
+ok 17 - bot: he reads a gap from where he takes off, and the careful middle player wins post Normal seed 5 (its RED: firsttimer.test's laid pond)
+  ---
+  duration_ms: 455.94279
+  type: 'test'
+  ...
+# Subtest: bot (planted): a log drifting his way, still mostly under the lip, is boarded by a hop, so the careful middle player wins home Easy seed 1; RED without it
+not ok 18 - bot (planted): a log drifting his way, still mostly under the lip, is boarded by a hop, so the careful middle player wins home Easy seed 1; RED without it
+  ---
+  duration_ms: 817.687491
+  type: 'test'
+  location: '/home/user/f-b7a68a8bd/src/game/gen2/pacerLay.test.ts:211:1'
+  failureType: 'testCodeFailure'
+  error: 'RED: without the skill the plant must lose (86.6 s against 97.53 s)'
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: true
+  actual: false
+  operator: '=='
+  stack: |-
+    TestContext.<anonymous> (/home/user/f-b7a68a8bd/src/game/gen2/pacerLay.test.ts:229:10)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: bot (planted): the racing hop off a log lands where it was judged to, so the bank 28 px up is reached, not fallen short of; RED without it
+ok 19 - bot (planted): the racing hop off a log lands where it was judged to, so the bank 28 px up is reached, not fallen short of; RED without it
+  ---
+  duration_ms: 2021.033515
+  type: 'test'
+  ...
+1..19
+# tests 19
+# suites 0
+# pass 18
+# fail 1
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 13522.880131

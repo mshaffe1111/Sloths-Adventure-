@@ -1,0 +1,18 @@
+diff --git a/tools/inspect/firsttimer.ts b/tools/inspect/firsttimer.ts
+index 2abf8c746..6aa7d2038 100644
+--- a/tools/inspect/firsttimer.ts
++++ b/tools/inspect/firsttimer.ts
+@@ -3582,8 +3582,12 @@ export class FirstTimerRun {
+         // (riding up to it he settles in the middle of the bucket, where the window was flown from, well before it opens (a turn back for
+         // it as the window opened left him still sliding back as he stepped off): a step off from its front end goes early and falls short
+         // of the street, the expert on the sparse toy)
++        // (and he lets go where he comes to a stand, his own stand distance (clockRide's: his press distance's p25 and 31 px, or 22 px and
++        // his edgeAim), never a 16 px mark: the kid's thumb lifts late and he slid 35 px past the middle each way, back and forth across
++        // the bucket the whole way up, until a swing carried him off its end. BUILD-26m, 2-6 kid E 22, bucket #51)
+         const off = p.x - (here.x + here.width / 2);
+-        return past < read.from - 0.6 && Math.abs(off) > 16 ? (off > 0 ? { left: true } : { right: true }) : {};
++        const stand = Math.max(16, who.aimQ ? who.aimQ[1] + 31 : 22 + who.edgeAim);
++        return past < read.from - 0.6 && Math.abs(off) > stand ? (off > 0 ? { left: true } : { right: true }) : {};
+       }
+       // (the window is open: he reacts to it, as to a ride coming to a stand (clockRide), and goes only while it is still open)
+       if (this.wheelSeen < 0) {

@@ -1,0 +1,56 @@
+ok 1 - home toy (planted RED): turned back LEFT at the out leg's own ground, the home leg lies on top of it: refused by name on every roll
+ok 2 - home toy (GREEN): out right, down the column, home left: clean on 6 seeds and both settings, the same stage from the same seed
+ok 3 - home toy (planted): a river crossed right to left is judged in its own frame: the mirror of a fair river is fair, unmarked it is not
+ok 4 - home toy (planted): the start's back is walled when the home leg runs on past it, and the way on never leaves the out leg but by the column
+ok 5 - home toy (planted): the river he is in is found by where he is, never by x alone; a splash on the home leg sets him back on the bank he came from
+ok 6 - home toy (planted): a splash pond sets him back on its own storey, never on the leg laid over it (its banks are the solids at its lips on the fall's height, never the topmost solid at that x)
+ok 7 - home toy (planted): the column's last turn is climbed at the column's foot, and the bots walk home: every seed finishes, no rescue
+ok 8 - pacer: laid on the race leg by the design's rule, every roll and both settings; RED when its time breaks either bound
+ok 9 - pacer (planted): after a fall the floor counts each crossing left, never more than a clean run's margin, post Normal seed 4
+ok 10 - pacer (planted): a river on the race leg that no flown row matches is refused by name, and a stage with no race leg lays none
+ok 11 - pacer: it waits, sets off as he steps onto the race leg, docks, and on a respawn is put back level with him plus the margin's share
+ok 12 - pacer race (the bots): the careful middle player (SKILLS.race) beats it, normal seed 1
+ok 13 - pacer race (the bots): the ride-only player never wins without a fall on the last crossing, normal seed 1
+ok 14 - pacer race (the bots): the careful middle player (SKILLS.race) beats it, normal seed 2
+ok 15 - pacer race (the bots): the ride-only player never wins without a fall on the last crossing, normal seed 2
+ok 16 - pacer race (the bots): the careful middle player (SKILLS.race) beats it, normal seed 3
+ok 17 - pacer race (the bots): the ride-only player never wins without a fall on the last crossing, normal seed 3
+ok 18 - pacer race (the bots): the careful middle player (SKILLS.race) beats it, easy seed 1
+ok 19 - pacer race (the bots): the ride-only player never wins without a fall on the last crossing, easy seed 1
+ok 20 - pacer race (the bots): the careful middle player (SKILLS.race) beats it, easy seed 2
+ok 21 - pacer race (the bots): the ride-only player never wins without a fall on the last crossing, easy seed 2
+ok 22 - pacer race (the bots): the careful middle player (SKILLS.race) beats it, easy seed 3
+ok 23 - pacer race (the bots): the ride-only player never wins without a fall on the last crossing, easy seed 3
+not ok 24 - bot (planted): he reads a gap from where he takes off, so the careful middle player wins post Normal seed 4; RED without it
+not ok 25 - bot (planted): he reads a gap from where he takes off, so the careful middle player wins post Normal seed 5; RED without it
+not ok 26 - bot (planted): a log drifting his way, still mostly under the lip, is boarded by a hop, so the careful middle player wins home Easy seed 1; RED without it
+ok 27 - post: every slot on his path on every roll and both settings; RED with one moved 60 px off it
+ok 28 - post: a door opens the step he passes its slot, and stays open
+ok 29 - post (the bots): every letter posted on every roll; RED with one slot moved 60 px off his path
+ok 30 - the kit: every World 2 art row it names is in the World 2 inventory, usable and in scale with Pokey (R-165.107)
+ok 31 - the rows: 2-1 and 2-2 roll from their own kits over World 2's, with World 2's finish; the hand-built 2-1 and 2-2 and the placeholder arcs are gone (new replaces old)
+ok 32 - the look: every piece is drawn by World 2 art as the engine draws it (no World 1 cut piece, no squirrels)
+ok 33 - the rivers: every fall is a river with a bank at each end; soft falls splash him back, water falls are deep
+ok 34 - the first deep river: a flag before it and Dot's warning in the keeper's words (lines-2-1.md `deep`, verbatim)
+ok 35 - the finish: a fall with no bank at one end throws (such a roll is never listed); a second call changes nothing
+ok 36 - World 2 finish: planks between falls are a bridge over ONE river, bank to bank (the out-and-back toy, every roll, both settings)
+ok 37 - World 2 finish: a soft gap between two thin pieces over a lower leg's floor is left open, its drop onto wood within the fall rule (the out-and-back toy, every roll, both settings)
+ok 38 - the out-and-back toy (normal): the race leg under the out leg and its rivers show, the out leg's earth ends above them as a ceiling, not a straight cut
+ok 39 - the out-and-back toy (easy): the race leg under the out leg and its rivers show, the out leg's earth ends above them as a ceiling, not a straight cut
+ok 40 - a stage whose lay stacks no leg has no stacked zone, so its ground draws exactly as before (the ruling (b): 1-4 and 7-4 untouched)
+ok 41 - the out-and-back toy (normal): the out leg's rivers end at the ceiling, not in a column over the race leg (the engine's own river painter)
+ok 42 - the out-and-back toy (easy): the out leg's rivers end at the ceiling, not in a column over the race leg (the engine's own river painter)
+ok 43 - the out-and-back toy: the painted underside hangs its roots below the ceiling line (banks and pools), over their own spans only
+ok 44 - the out-and-back toy (normal, seed 1): no other leg's paint stands in his air anywhere over the race leg's band, ends and the descent's floor included
+ok 45 - the out-and-back toy (normal, seed 2): no other leg's paint stands in his air anywhere over the race leg's band, ends and the descent's floor included
+ok 46 - the out-and-back toy (normal, seed 3): no other leg's paint stands in his air anywhere over the race leg's band, ends and the descent's floor included
+ok 47 - the out-and-back toy (easy, seed 1): no other leg's paint stands in his air anywhere over the race leg's band, ends and the descent's floor included
+ok 48 - the out-and-back toy (easy, seed 2): no other leg's paint stands in his air anywhere over the race leg's band, ends and the descent's floor included
+ok 49 - the out-and-back toy (easy, seed 3): no other leg's paint stands in his air anywhere over the race leg's band, ends and the descent's floor included
+ok 50 - the out-and-back toy (normal): a wall standing on the race leg's band is drawn whole, as with no ceiling
+ok 51 - the out-and-back toy (easy): a wall standing on the race leg's band is drawn whole, as with no ceiling
+ok 52 - pacer behind the banks 1: drawn BEFORE the bank's face, where a bank stands over its lane (layer 'under', before the ground in the engine's frame)
+ok 53 - pacer behind the banks 2 (HOME_CODE): swept along its whole leg, nothing of it shows over a bank that stands over its lane; over a river it shows, its waterline on THAT river's surface
+ok 54 - pacer behind the banks 2 (POST_CODE): swept along its whole leg, nothing of it shows over a bank that stands over its lane; over a river it shows, its waterline on THAT river's surface
+ok 55 - pacer behind the banks 3: the leg's rivers stand at different heights, and it rides each one's own surface (never the lowest everywhere)
+ok 56 - pacer seen at both ends: waiting at its race point (before he sets it off) and docked, its whole hull is drawn over the river it lies on; home and post, both settings, seeds 1-6

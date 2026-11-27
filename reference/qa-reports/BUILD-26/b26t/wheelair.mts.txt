@@ -1,0 +1,14 @@
+// usage: tsx wheelair.mts <tree> row tier setting v t0 t1: each frame in [t0,t1]: him, and every bucket within 200 px
+const T = process.argv[2];
+const [row, tier, setting, v, a, b] = [process.argv[3], process.argv[4], process.argv[5], Number(process.argv[6]), Number(process.argv[7]), Number(process.argv[8])];
+await import(`${T}/src/game/headlessDom.ts`);
+const { wheelRun, fixtureSeed } = await import(`${T}/tools/inspect/wheelToys.ts`);
+const seed = fixtureSeed(row);
+const run = wheelRun(row, tier, setting, seed, v, { onFrame: (sim: any) => {
+  if (sim.t < a || sim.t > b) return;
+  const p = sim.p;
+  const near = sim.platforms.filter((q: any) => q.wheel && p.x > q.x - 60 && p.x < q.x + q.width + 60 && Math.abs(q.y - p.y) < 160)
+    .map((q: any) => `#${q.id}[${Math.round(q.x)}-${Math.round(q.x + q.width)} y${Math.round(q.y)}]`).join(' ');
+  console.log(`t ${sim.t.toFixed(3)} x ${p.x.toFixed(1)} y ${p.y.toFixed(1)} vx ${Math.round(p.vx)} vy ${Math.round(p.vy)} g ${p.grounded ? 1 : 0} on ${sim.standingOn} | ${near}`);
+} });
+console.log('end', run.end, 'lives', run.lives);

@@ -1,0 +1,4 @@
+#!/bin/bash
+# riverRide.test + firsttimer.test on the pre-27e merge head and the 27e merge head, one after another
+for c in 8d094787c b3195f31e; do cd /tmp/claude-0/-home-user-Sloths-Adventure-/40f5929c-81cd-5301-ace1-89d8ef8fe963/scratchpad/wt-$c || exit 9; echo "=== $c $(git rev-parse --short=9 HEAD)"; npx tsx --test tools/inspect/riverRide.test.ts tools/inspect/firsttimer.test.ts > /tmp/claude-0/-home-user-Sloths-Adventure-/40f5929c-81cd-5301-ace1-89d8ef8fe963/scratchpad/logs/bisect-$c.log 2>&1; echo "=== EXIT $? $c $(grep -E '^# (pass|fail)' /tmp/claude-0/-home-user-Sloths-Adventure-/40f5929c-81cd-5301-ace1-89d8ef8fe963/scratchpad/logs/bisect-$c.log | tr '\n' ' ')"; grep -E '^not ok' /tmp/claude-0/-home-user-Sloths-Adventure-/40f5929c-81cd-5301-ace1-89d8ef8fe963/scratchpad/logs/bisect-$c.log | cut -c1-120; done
+echo "=== BISECT DONE"

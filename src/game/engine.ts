@@ -12,6 +12,7 @@ import { goalLine, sealedLine } from './stagePlan.ts';
 import { bindSent, FIRST_OF_STAGE, forgetSent, markTipHeard, tipHeard } from './tipMemory.ts';
 import { FERN_HMM, ZONE_LINE } from './dotTips.ts';
 import { harmlessPass, hidden, lureShadow, newWatch, sees, shadowX as plainShadowX, stepWatch, WATCH, zoneAt, type WatchState } from './watcher.ts';
+import { drawPostItem } from './postDraw.ts';
 import { stretchAt } from './chase.ts';
 import { newTide, onHeld, restartTide, stepTide, surging, TIDE, type TideSetting, type TideState } from './risingTide.ts';
 import { drawBadWater } from './badWaterArt.ts';
@@ -28,6 +29,9 @@ import { isGen2Stage } from './gen2/game.ts';
 import { maxGap, softFallStage, TIP_SAY_S } from './gen2/pipeline.ts';
 import { drawDoorPlate } from './sanctuaryDoor.ts';
 import { MODES, type TravelMode } from './stageModes.ts';
+import { routeBarOf, type RouteBar } from './routeBar.ts';
+import { postMoments } from './post.ts';
+import type { PostPiece } from './pieces/postPiece.ts';
 import { flagFurther, towerLead } from './gen2/tower.ts';
 import { vaultSide as vaultSideOf } from './vineTop.ts';
 import { carry as settleCarry, climbEnd, drawnOff, newSettle, settleStep } from './vineFeel.ts';
@@ -62,7 +66,7 @@ import { controlStyle } from './controlPrefs.ts';
 import { cardSafe, DONE_LESSONS, HARMLESS_LESSONS, lessonDone, lessonInputMode, lessonsOn, lessonsSeen, lessonStale, markLessonSeen, pickLesson, type LessonId } from './lessons.ts';
 import { rockAt } from './rockfall.ts';
 import { gameSpeed, startingLives } from './assist.ts';
-import { ASSIST, DOUBLE_RISE, JUMP_RISE, EDGE, FORGIVE, LEAN_SPEED, LET_GO, PHYS, airCarry, airTakeOff, blockBeside, lipHasRoom, secondJumpV, canGrabSwing, easeAssist, inSweetSpot, knockDir, newAirDrive, releaseCall, RELEASE, swingGrab, swingLanding, SWING_LAND, swingStep, swingSetup, timedLaunch, vineAmp, vineAngle, WALL_H, type SwingState } from './physics.ts';
+import { ASSIST, DOWN_SECS, DOUBLE_RISE, JUMP_RISE, EDGE, FORGIVE, LEAN_SPEED, LET_GO, PHYS, airCarry, airTakeOff, blockBeside, lipHasRoom, secondJumpV, canGrabSwing, easeAssist, inSweetSpot, knockDir, newAirDrive, releaseCall, RELEASE, swingGrab, swingLanding, SWING_LAND, swingStep, swingSetup, timedLaunch, vineAmp, vineAngle, WALL_H, type SwingState } from './physics.ts';
 import { jumpHelp } from './jumpHelp.ts';
 import { HAND_REACH, HANG_DROP, HANG_PICK, ROPE_FROM, ROPE_GRAB, ROPE_SLIDE, ROPE_SPEED, ropeYAt } from './rope.ts';
 import { drawRopes, ropeDip, type RopeLoad } from './ropeArt.ts';
@@ -100,15 +104,18 @@ import { swimHeadY } from './heroSwim.ts';
 import { CLUE_NAME, clearOfHollowLogs, drawHollowLog, drawW1Clue, drawW1Dress, insideHollow } from './w1NewArt.ts';
 import { drawMudSplash, drawW1Creek } from './w1Creek.ts';
 import { paintedBank, setW1PitWater } from './w1Pits.ts';
+import { stackZonesOf, aboveLinesPath } from './groundStack.ts';
+import { polygonInBox, vGradient } from './drawThrift.ts';
+import { OVER_WATER_PAINTED, OVER_WATER_PLAIN } from './riverArt.ts';
 import { stageClock, type StageClock } from './clock.ts';
 import { moveRide } from './ridePlay.ts';
 /** how far inside a bank's end the water drawn over him stays (its painted face leans up to about this far) */
 const ZONE_INSET = 14;
-import { drawLadder, drawLily, drawLogComing, drawRiverFoam, drawRiverLog, drawRiverTailEnd, TAIL_END, drawReedClump, drawRiverWater, drawSafeRiverOver, safeLogLine, riverWaterOutline, drawW2Cage, drawW2Decor, drawW2Lift, riverArtReady, RIVER_UNDER_BANK, w2Sheet } from './riverArt.ts';
+import { drawLadder, drawLily, drawLogComing, drawRiverFoam, drawRiverLog, drawRiverTailEnd, TAIL_END, drawReedClump, drawRiverWater, drawSafeRiverOver, safeLogLine, riverWaterOutline, drawW2Cage, drawW2Decor, drawW2Lift, riverArtReady, RIVER_UNDER_BANK, w2Sheet, deepFillFoot, riverPaintFoot } from './riverArt.ts';
 import type { RiverZone } from './river.ts';
 import { rideHidden, ridersOf, stepRiders, type Riders } from './ridePickups.ts';
 import { RIDE } from './ride.ts';
-import { driftCycle, driftProgress, driftX, floodLevel, lianasOver, logClock, logKnocks, LOG_DROP, DRIFT_CATCH, onRiver, type DriftInfo } from './river.ts';
+import { driftCycle, driftProgress, driftX, floodLevel, lianasOver, logClock, logKnocks, LOG_DROP, DRIFT_CATCH, onRiver, riverAt, type DriftInfo } from './river.ts';
 import { GLOW_SHOWN, letGoLands, letGoTable, type LetGoTable } from './letGoCue.ts';
 import { heard, NOISE } from './noise.ts';
 import { mayRegrow, regrowDelay } from './regrow.ts';
@@ -132,6 +139,8 @@ import { drawWaterSign, signRattle } from './waterSign.ts';
 import { ROOM_CAM, roomCentre, roomFloor, roomLean, roomView } from './puzzleCamera.ts';
 /** no World 5 pieces for Dot to point at (any other world) */
 const NO_W5_THINGS: readonly never[] = [];
+/** over a stacked leg's earth (stackViewFloor), the lowest share of the view his feet may sit at when the view's foot is held up */
+const STACK_FEET_MAX = 0.85;
 import { setGuideKeepOuts, type KeepOutBox } from './guideKeepOut.ts';
 import { recordCake } from './w5Kit.ts';
 import { DotRun } from './dotFlightRun.ts';
@@ -198,7 +207,9 @@ import { maxHearts } from './secret.ts';
 import { drawLeafCover, drawPushLog, drawSeed, markSeedFound, seedFound, waterArt, type ProtoExtras } from './protoStage.ts';
 import { CHEER_SECONDS, footfallsBetween, hasClip, heroClipsEnabled, heroClipsLive, resetHeroClips, warmHeroClips } from './heroClips.ts';
 import { releaseDecorPics } from './envKit.ts';
-import { bushHeight, drawBranchArt, drawBushArt, drawEarthWall, setLianaTops, drawCurtainArt, drawHollowArt, drawProtoScene, drawSeedArt, hasKit, releaseGroundChunks, paintedKitEnabled, setDecoTrunks, setDepthView, setGroundPaint, setKitWorld, setRockLooks, setGroundLook, setBoughJoins, paintedPlatforms, protoArtReady, type ProtoSceneState } from './protoArt.ts';
+import { bushHeight, drawBranchArt, drawBushArt, drawEarthWall, earthWallCovers, setLianaTops, drawCurtainArt, drawHollowArt, drawProtoScene, drawSeedArt, hasKit, releaseGroundChunks, paintedKitEnabled, setDecoTrunks, setDepthView, setGroundPaint, setKitWorld, setRockLooks, setGroundLook, setBoughJoins, paintedPlatforms, protoArtReady, type ProtoSceneState , setGroundStacks, riverLid, riverUnderside, drawKitColumn, setClimbFeet, stackViewFloor } from './protoArt.ts';
+import { dressFeet } from './columnDress.ts';
+import { drawPorchPosts, porchPosts, type PorchPost } from './porchPosts.ts';
 import { drawFx, fxFrame } from './bossFx.ts';
 import { drawGritBit, drawSoftShadow } from './w4Grit.ts';
 import { drawBossFighter, drawHazards } from './bossArt.ts';
@@ -230,6 +241,7 @@ import { drawEdgeMarks, edgeMarks, safeInsets, stillMarks, type EdgeMark, type M
 import { lineFaces, type Face } from './followFaces.ts';
 import { aimBreaths, noteArrivals, type BreathWatch } from './breathAim.ts';
 import type { PodCost } from './podfall.ts';
+import { raceEndLine, type RaceEndWho } from './pacer.ts';
 
 /** how far right of the painted tea table the Queen stands for her tea (her pot hangs over it as she faces left) */
 const TEA_STAND = 150;
@@ -240,8 +252,7 @@ const FREEZE_SLOW = 0.6;
 /** a landing this fast (px/s down) buzzes the phone (AN-9): a drop of about two body heights or more, not a hop */
 const HARD_LAND_VY = 560;
 /** the life-lost beat (AN-1): how long the world holds while he goes down and the dark closes in (s), and how long it takes to open at the flag */
-const DOWN_SECS = 0.75;
-const IRIS_OPEN_SECS = 0.45;
+export const IRIS_OPEN_SECS = 0.45;
 
 /** the banner that dodges Pokey (markWayDodge): on for everyone since Matt approved it (2026-10-24); `?waydodge=0` turns it off */
 function wayDodgeOn(): boolean {
@@ -459,9 +470,11 @@ const FAIL_LIMIT = 20;
 /** what the engine hands Dot with a stage's own teach line (StageHint.teach) */
 const TEACH_LINE = { teach: true } as const;
 const LOCK_LINE = { lock: true } as const;
+const WARN_LINE = { warn: true } as const;
 /** what a guiding line is, as the engine knows it (onGuide): the stage's own teach line, or the locked exit's line (`lock`: Dot says it
- *  at once, whatever its words, R-165.241) */
-export interface GuideOpts { teach?: true; lock?: true }
+ *  at once, whatever its words, R-165.241), or a stage's own story moment said by the speaker its data names (`who`: a race's end,
+ *  sayRaceEnd; dotLines.ts engineGuideLine makes it a story line, on the story switch like the wayside's beats) */
+export interface GuideOpts { teach?: true; lock?: true; who?: RaceEndWho; /** a stage's warning (StageHint.warn): a must on every setting */ warn?: true }
 
 export class GameEngine {
   private canvas: HTMLCanvasElement;
@@ -707,6 +720,9 @@ export class GameEngine {
   private sweepT = 0;
   /** the stage's runtime pieces on the one hook (pieces/index.ts): every registered kind its data lays, started at the stage's start */
   private pieces: StagePiece[] = [];
+  /** the race (its pacer piece) whose end line has been said: once a race. A respawn keeps the piece and its verdict, so a finish crossed
+   *  again after a fall says nothing; a stage start lays a new race (startPieces), whose own finish is said once */
+  private raceEndOf: StagePiece | null = null;
   /** what a piece may read of the engine (stagePiece.types.ts PieceHost): made once, it reads the engine live */
   private readonly pieceHost: PieceHost = ((e: GameEngine): PieceHost => ({
     get t() { return e.gameTime; },
@@ -956,6 +972,8 @@ export class GameEngine {
   private startAt: Mark = { x: 0, y: 0 };
   private exitAt: Mark = { x: 0, y: 0 };
   private bestAt: Mark = { x: 0, y: 0 };
+  /** a stage laid as more than one leg (out, then back): the bar is measured along its laid route, never by x alone (routeBar.ts) */
+  private routeBar: RouteBar | null = null;
   private travelStart() {
     const st = this.currentStage;
     this.mode = MODES[st.config.travel ?? 'right'];
@@ -963,6 +981,7 @@ export class GameEngine {
     this.bestAt = { ...this.startAt };
     this.exitAt = { x: st.exitTotemX || st.config.levelWidth, y: st.exitTotemY };
     this.walls = this.mode.bounds({ levelWidth: st.config.levelWidth, exit: { x: st.exitTotemX, y: st.exitTotemY }, spawn: this.startAt });
+    this.routeBar = routeBarOf(st);
   }
   private daisyRescued: boolean = false;
   private isGameOver: boolean = false;
@@ -1162,6 +1181,10 @@ export class GameEngine {
     setDecoTrunks(this.proto?.trunks, this.proto?.leaves, this.platforms, this.proto?.water);
     // (the water it declares fills World 1's drops under it: w1Pits.ts paints none there)
     setW1PitWater(this.proto?.water);
+    // (a leg the lay stacks under another: the upper leg's earth ends at a ceiling over it, groundStack.ts; none on any other stage)
+    setGroundStacks(stackZonesOf((this.currentStage as { gen2?: { tower?: { legs?: Array<{ travel: string; x0: number; x1: number; y0: number; y1: number }> } } }).gen2?.tower?.legs), this.currentStage.rivers);
+    // (a climb standing in a column dress goes down behind its foam: columnDress.ts dressFeet, protoArt.ts; none on any other stage)
+    setClimbFeet(dressFeet(this.currentStage.columnDress ?? [], this.currentStage.vines ?? []));
     // (no bank dressing stands where a hollow log lies: it drew over the log's body and in its mouths, the designer's review)
     if (this.proto?.dress && this.platforms.some((pl) => pl.hollow)) this.proto.dress = clearOfHollowLogs(this.proto.dress, this.platforms);
     // the stage's painted backdrop (World 5's light changes through the world: w5Backdrop.ts)
@@ -1882,7 +1905,14 @@ export class GameEngine {
     const under = p.grounded ? this.platforms.find((q) => q.id === this.standingOnId) : undefined;
     const underX = under?.x;
     this.camFocus = null;
-    if (this.pieces.length) stepPieces(this.pieces, dt, this.pieceHost);
+    if (this.pieces.length) {
+      stepPieces(this.pieces, dt, this.pieceHost);
+      // (the post's letters posted so far, each a moment a story line can wait on: post.ts postMoments, wayside.ts StageWay.on)
+      const post = this.pieces.find((q) => q.kind === 'post') as PostPiece | undefined;
+      if (post) for (const m of postMoments(post.open)) if (!this.moments.includes(m)) this.moments.push(m);
+    }
+    // (a race that ends at its finish this step: its end line, once, sayRaceEnd)
+    if (this.currentStage.pacer?.ends) this.sayRaceEnd();
     // (a swing over a hollow that hurts: the view keeps its floor in, him whole first, unless a piece asked for its own focus:
     // cameraFollow.ts hurtFocus; the stage's hurt floors listed once per platform list)
     if (!this.camFocus && this.player.isVineSwinging) {
@@ -2953,7 +2983,7 @@ export class GameEngine {
       if (this.splashedIn && (p.grounded || p.climbing || p.y < this.splashedIn.y - 30)) this.splashedIn = null;
       // Pits and water: falling below the surface costs a life (Mario-style)
       const waterY = this.currentStage.waterY;
-      const river = this.currentStage.rivers?.find((r) => p.x > r.x0 && p.x < r.x1);
+      const river = riverAt(this.currentStage.rivers, p.x, p.y);
       // a teaching pool under the floor (waterTeach.ts, LV-8): a splash and back on the bank, no life
       const pool = waterY !== undefined && !river ? this.currentStage.safeWater?.find((s) => p.x > s.x0 && p.x < s.x1) : undefined;
       if (pool && p.y > waterY! + 20 && !this.isGameOver) {
@@ -3305,7 +3335,7 @@ export class GameEngine {
         if (h.firstOf) markTipHeard(FIRST_OF_STAGE, h.firstOf);
         const mode = lessonInputMode();
         const said = mode === 'pad' ? h.pad : mode === 'keys' ? h.keys : h.text;
-        this.guide(said, TIP_SAY_S, h.teach ? TEACH_LINE : undefined);
+        this.guide(said, TIP_SAY_S, h.warn ? WARN_LINE : h.teach ? TEACH_LINE : h.story ? { who: h.story } : undefined);
         if (h.passX !== undefined) this.passTips.push({ x: h.passX, text: said });
       }
       // a move tip about one spot goes once he is on the ground past it, done or not (StageHint.passX)
@@ -3726,7 +3756,9 @@ export class GameEngine {
       this.bestAt.x = b.x;
       this.bestAt.y = b.y;
     }
-    const distanceRatio = this.mc ? this.mc.ratio() : this.mode.progress(this.startAt, this.exitAt, this.bestAt);
+    // (a stage of legs: along its route, where he stands or climbs, never back; routeBar.ts)
+    if (this.routeBar && (p.grounded || p.climbing)) this.routeBar.stood(p);
+    const distanceRatio = this.mc ? this.mc.ratio() : this.routeBar ? this.routeBar.ratio() : this.mode.progress(this.startAt, this.exitAt, this.bestAt);
 
     // Notify HUD
     this.callbacks.onProgressUpdate(
@@ -5227,6 +5259,8 @@ export class GameEngine {
       punches: this.statPunches,
       kicks: this.statKicks,
       freed: this.player.crittersRescued,
+      // (a stage's pacer, pieces/pacerPiece.ts: the race's verdict when he reached the dock; a medal's, never a fail)
+      ...((v) => (v ? { race: v } : {}))((this.pieces.find((q) => q.kind === 'pacer') as { verdict?: StageStats['race'] } | undefined)?.verdict),
       ...(this.w5 ? this.w5.tally(this.collectibles, win) : {}),
       ...(this.dotRun ? { scratches: this.dotRun.fl.scratches } : {}),
       ...(this.mc ? { hints: this.mc.hintsAsked } : {}),
@@ -6262,6 +6296,18 @@ export class GameEngine {
    * World 2 rivers. Before the platforms: the water body between the banks, with streaks that show the flow.
    * After them (`over`): a translucent sheet across the lower half of every log, so the logs sit in the water, not on it.
    */
+  /** the stage's porch posts (porchPosts.ts), found once a stage from its plank spans and rivers */
+  private porchPostsFor: { stage: GeneratedStage; posts: PorchPost[] } | null = null;
+  private drawPorchPostsNow(ctx: CanvasRenderingContext2D) {
+    const st = this.currentStage;
+    if (!st.rivers?.length || !this.paintKit || !protoArtReady()) return;
+    if (this.porchPostsFor?.stage !== st) this.porchPostsFor = { stage: st, posts: porchPosts(this.platforms, st.rivers) };
+    const posts = this.porchPostsFor.posts;
+    if (!posts.length) return;
+    const view = { x0: this.camera.x, x1: this.camera.x + this.camera.viewportWidth, y0: this.camera.y, y1: this.camera.y + this.camera.viewportHeight };
+    drawPorchPosts(ctx, posts, view, (c, x, top, foot, w) => drawKitColumn(c, 'trunk', x, top, foot, w));
+  }
+
   private drawRivers(ctx: CanvasRenderingContext2D, world: (typeof WORLDS_DATA)[number], over: boolean, floodsOnly = false) {
     const rivers = floodsOnly ? this.currentStage.rivers?.filter((r) => r.flood && this.floodAt.has(r)) : this.currentStage.rivers;
     if (!rivers?.length) return;
@@ -6272,31 +6318,57 @@ export class GameEngine {
       // (behind the banks, the water, its bed and the soil under it run on under each bank that meets the river (riverUnderBanks): a
       // bank's painted cliff tapers in below its top, and where the river stopped at the bank's edge the backdrop showed through as a
       // grey wall, a dark strip and a pale patch of the backdrop's water under every river bank, upright; BUILD-24c, 2-1, 2-2 and 2-4)
-      const [ul, ur] = over ? [0, 0] : this.riverUnderBanks(r);
+      // (a deep river's sheet over its logs (the over pass) runs on under its banks too, inside the same faces as its water, in the box's
+      //  one clip: it stopped at the lip's x, and under a bank whose face slopes back in the water there showed as a lighter teal strip
+      //  from the surface to the floor between the river and the wall, BUILD-27f's finding 2 at 2-7's deep river, DRESS-27c. A safe
+      //  river's over pass draws only on its logs, and a flood's has no bank)
+      const [ul, ur] = over && (r.safe || floodsOnly) ? [0, 0] : this.riverUnderBanks(r);
       const x0 = r.x0 - ul, x1 = r.x1 + ur;
       if (x1 < cam.x - 40 || x0 > cam.x + cam.viewportWidth + 40) continue;
       const a = Math.max(x0, cam.x - 20);
       const b = Math.min(x1, cam.x + cam.viewportWidth + 20);
       ctx.save();
-      ctx.beginPath();
-      ctx.rect(x0, r.surfaceY - 30, x1 - x0, bottom - r.surfaceY + 30);
-      ctx.clip();
+      // the river's box: x0..x1, from 30 over its surface to the view's foot; over a TAIL's safe river (its over pass), each log's waterline
+      // only as far as the log is drawn, behind the reeds where they go under (drawRiverTailEnd): the box ends there
+      const top = r.surfaceY - 30;
+      const xr = over && r.safe && r.tail ? Math.max(x0, Math.min(x1, r.x1 - r.tail + TAIL_END.hide)) : x1;
+      // (a river on a leg another leg runs under: its water, bed and soil end at the ceiling as its banks' earth does, the underside on its
+      // soil; they ran to the view's foot as columns of earth over the race leg's banks and planks, 2-7's re-shoot: groundStack.ts,
+      // ENG-GROUND-b. None where no leg is stacked)
+      const lid = riverLid(this.platforms, r.x0, r.x1, r.surfaceY);
+      const lidPath = lid ? aboveLinesPath(lid, x0, x1, top) : null;
       // (under a painted bank, only as far as its face slopes back in, never behind it: riverArt.ts riverWaterOutline, ENG-24e 2c)
+      let face: Array<[number, number]> | null = null;
       if ((ul || ur) && this.paintKit && protoArtReady()) {
         const bk = this.riverBanks(r);
         // (the face the bank's soil is clipped to: its own edge and top, the kit's world, protoArt.ts setKitWorld)
         const nb = ul ? bk.near : undefined, fb = ur ? bk.far : undefined;
-        const o = riverWaterOutline(hasKit(world.id) ? world.id : 1, nb ? nb.x + nb.width : r.x0, fb ? fb.x : r.x1, nb ? nb.y : null, fb ? fb.y : null, r.surfaceY - 40, bottom);
+        face = riverWaterOutline(hasKit(world.id) ? world.id : 1, nb ? nb.x + nb.width : r.x0, fb ? fb.x : r.x1, nb ? nb.y : null, fb ? fb.y : null, r.surfaceY - 40, bottom);
+      }
+      // (the box, the ceiling and the faces in as few clips as the same region takes: a ceiling or a face cut to the box is one clip,
+      // drawThrift.ts polygonInBox; it was the box, then each in turn, 2-7's rivers 21-24 clips a frame over the limit 19, DRESS-27b. A
+      // ceiling that rises over the box's top (never, riverLid) keeps the old clips)
+      const clipTo = (o: ReadonlyArray<readonly [number, number]>) => {
         ctx.beginPath();
-        ctx.moveTo(o[0][0], o[0][1]);
+        if (o.length) ctx.moveTo(o[0][0], o[0][1]);
         for (let i = 1; i < o.length; i++) ctx.lineTo(o[i][0], o[i][1]);
         ctx.closePath();
         ctx.clip();
+      };
+      const lidInBox = !!lidPath && lidPath.every((p) => p[1] >= top);
+      if (lidPath && lidInBox) clipTo(polygonInBox(lidPath, x0, top, xr, bottom));
+      else if (face && !lidPath) clipTo(polygonInBox(face, x0, top, xr, bottom));
+      else {
+        ctx.beginPath();
+        ctx.rect(x0, top, xr - x0, bottom - top);
+        ctx.clip();
+        if (lidPath) clipTo(lidPath);
       }
+      if (face && lidPath) clipTo(face);
       const wave = (x: number) => r.surfaceY + Math.sin(x * 0.03 + t * 2.2 * r.dir) * 2.5 + Math.sin(x * 0.07 - t * 1.5 * r.dir) * 1.5;
       const painted = this.paintedRivers(world.id) && riverArtReady();
       if (!over) {
-        if (!painted || !drawRiverWater(ctx, a, b, r.surfaceY, bottom, t, r.dir, r.speed, !!r.safe, world.id)) drawWater(ctx, world.id, a, b, r.surfaceY, bottom, t);
+        if (!painted || !drawRiverWater(ctx, a, b, r.surfaceY, bottom, t, r.dir, r.speed, !!r.safe, world.id, !!lid)) drawWater(ctx, world.id, a, b, r.surfaceY, bottom, t);
         // the current: the river's own painted foam sliding along the surface the way the logs go (still water, a lily pond, has
         // none; the old pale code streaks are gone, Matt 2026-10-29: repeating effects are painted)
         if (r.speed > 0 && painted) {
@@ -6313,12 +6385,8 @@ export class GameEngine {
         // (a safe river: on each log its own waterline, low on its body, in the river's own shallow water, and the foam along it; never the
         // deep sheet below, nor a band across the open water; nothing until its strip loads: riverArt.ts drawSafeRiverOver, ENG-24e 2b)
         const logs = this.logsOf(r).filter((lg) => !lg.broken && lg.x + lg.width > a && lg.x < b);
-        // (a TAIL: each log's waterline only as far as the log is drawn, behind the reeds where they go under, drawRiverTailEnd)
-        if (r.tail) {
-          ctx.beginPath();
-          ctx.rect(x0, r.surfaceY - 200, r.x1 - r.tail + TAIL_END.hide - x0, bottom - r.surfaceY + 200);
-          ctx.clip();
-        }
+        // (a TAIL: each log's waterline only as far as the log is drawn, behind the reeds where they go under, drawRiverTailEnd: the
+        //  river's box above ends there, one clip, DRESS-27b)
         if (painted && drawSafeRiverOver(ctx, logs, r.surfaceY, t, r.dir, r.speed)) {
           for (const lg of logs) {
             if (lg.drift?.look === 'raft') continue;
@@ -6327,22 +6395,25 @@ export class GameEngine {
           }
         }
       } else {
-        const g = ctx.createLinearGradient(0, r.surfaceY, 0, r.surfaceY + 60);
-        // (the painted river's own colours when it is painted, so the logs sink into the same water)
-        g.addColorStop(0, painted ? 'rgba(96, 160, 152, 0.3)' : 'rgba(56, 148, 168, 0.55)');
-        g.addColorStop(1, painted ? 'rgba(38, 66, 71, 0.75)' : 'rgba(24, 90, 120, 0.8)');
-        ctx.fillStyle = g;
+        // (the painted river's own colours when it is painted, so the logs sink into the same water; made once, drawThrift.ts, DRESS-27b)
+        ctx.fillStyle = vGradient(ctx, r.surfaceY, r.surfaceY + 60, painted ? OVER_WATER_PAINTED : OVER_WATER_PLAIN);
+        // (over a leg laid under it the river has a bed under its painted strip (riverArt.ts deepFillFoot): this water ends there too, or it
+        //  dimmed the bed's earth to the deep colour down to the ceiling, READY-27)
+        const foot = lid ? deepFillFoot(riverPaintFoot(r.surfaceY, false), bottom, true) : bottom;
         ctx.beginPath();
-        ctx.moveTo(a, bottom);
+        ctx.moveTo(a, foot);
         ctx.lineTo(a, wave(a));
         for (let x = a; x <= b + 12; x += 12) ctx.lineTo(x, wave(x));
-        ctx.lineTo(b, bottom);
+        ctx.lineTo(b, foot);
         ctx.closePath();
         ctx.fill();
-        // foam where the logs cut the surface: the river's own painted foam along the waterline (no hard white line)
-        if (painted) for (let x = Math.floor(a / 54) * 54; x <= b + 54; x += 54) drawRiverFoam(ctx, Math.round(x / 54), x, wave(x) + 3, 70, 0.8, Math.round(x / 54) % 2 === 0);
+        // foam where the logs cut the surface: the river's own painted foam along the waterline (no hard white line), over its own span
+        const fa = Math.max(a, r.x0), fz = Math.min(b, r.x1);
+        if (painted) for (let x = Math.floor(fa / 54) * 54; x <= fz + 54; x += 54) drawRiverFoam(ctx, Math.round(x / 54), x, wave(x) + 3, 70, 0.8, Math.round(x / 54) % 2 === 0);
       }
       ctx.restore();
+      // (its underside after the clip is lifted, over the river's own span: the strip's roots hang below the line, ENG-GROUND-b)
+      if (lid && !over) riverUnderside(ctx, lid, r.x0, r.x1, { x0: a, x1: b });
     }
   }
 
@@ -6769,6 +6840,12 @@ export class GameEngine {
       this.camera.targetY = Math.min(this.camera.targetY, Math.max(crown - vh * 0.22, p.y - vh * 0.9));
     }
 
+    // over a leg laid under another (groundStack.ts), on the upper leg's earth: the view's foot stays in that earth, above its underside's
+    // band (protoArt.ts stackViewFloor). Upright on 2-7's raised out leg it framed past the soil's end: the stand-in underside's column
+    // seams over the air under the ceiling and the lower leg's backdrop (BUILD-27f's finding 1, DRESS-27c). Never so far that his feet
+    // leave the view's lower part; none on the lower leg or where no leg is stacked
+    const floorY = this.paintKit && protoArtReady() ? stackViewFloor(this.platforms, this.camera.targetX, this.camera.targetX + vw, p.x, p.y) : null;
+    if (floorY !== null) this.camera.targetY = Math.min(this.camera.targetY, Math.max(floorY - vh, p.y - vh * STACK_FEET_MAX));
     // his head stays under the HUD along the top, whatever the view wanted (cameraFollow.ts HUD_BAND): measured from the ground he
     // stands on (in the air, the height the camera keeps level with), so a hop does not drag the view up after him
     const band = (this.viewCssH > this.viewCssW ? HUD_BAND.port : HUD_BAND.land) / this.zoom;
@@ -7499,7 +7576,12 @@ export class GameEngine {
     // as sideways and not a soft, 2.2x crop of their misty middle; their painted sky fills the room above: scenery.ts stripTop)
     const vw = this.camera.viewportWidth, vh = this.camera.viewportHeight;
     const stripVh = vh > vw ? (WORLD_VIEW_H * vw) / PORTRAIT_VIEW_W : vh;
-    if (!ownScene) {
+    // 2-6: when the bank's opaque earth wall fills the whole view (sheets in, past every edge by more than the shake and the snap), the
+    // backdrop and the rivers under the wall are hidden under it: they are left undrawn (protoArt.ts earthWallCovers; 2-6's draw budget,
+    // ENG-26r: the backdrop, its vignette and the rivers' soil were drawn in full and then covered, 4 to 6 screens of image a frame)
+    const wallView = { x0: this.camera.x, x1: this.camera.x + vw, y0: this.camera.y, y1: this.camera.y + vh };
+    const walled = !!this.proto?.bankWall && earthWallCovers(this.proto.bankWall, wallView, Math.max(Math.abs(shakeX), Math.abs(shakeY)) + 1);
+    if (!ownScene && !walled) {
       renderScenery(ctx, world.id, this.camera.x - shakeX, this.camera.y - shakeY, vw, vh, this.gameTime, this.quality > 0, stripVh);
       // the falling petals or leaves drift behind the stage, so the ground and its soil hide them (scenery.ts renderDrift; BUILD-24c)
       setWeatherAvoid(this.player.x - this.camera.x, this.player.y - 28 - this.camera.y);
@@ -7530,12 +7612,16 @@ export class GameEngine {
     this.drawWaterAndFlags(ctx, world);
     // 6-8: the root wall and the hides and arches behind the climb
     if (this.proto?.stilt) drawStiltDecor(ctx, this.proto.stilt, { x0: this.camera.x, x1: this.camera.x + this.camera.viewportWidth, y0: this.camera.y, y1: this.camera.y + this.camera.viewportHeight });
-    this.drawRivers(ctx, world, false);
+    // the posts under a plank deck over a river, drawn before the water so its surface covers their feet (porchPosts.ts, DRESS-27); both
+    // left undrawn when the bank's opaque earth wall fills the view (protoArt.ts earthWallCovers, ENG-26r), as the rivers are
+    if (!walled) {
+      this.drawPorchPostsNow(ctx);
+      this.drawRivers(ctx, world, false);
+    }
     // World 5's petals drift behind the stage, as every world's weather does (w5Play drawDrift; BUILD-24c)
     this.w5?.drawDrift(ctx, this.gameTime, { x0: this.camera.x, x1: this.camera.x + this.camera.viewportWidth, y0: this.camera.y, y1: this.camera.y + this.camera.viewportHeight });
     // 2-6: the river bank the village is dug into, behind the whole climb
-    if (this.proto?.bankWall)
-      drawEarthWall(ctx, this.proto.bankWall, { x0: this.camera.x, x1: this.camera.x + this.camera.viewportWidth, y0: this.camera.y, y1: this.camera.y + this.camera.viewportHeight });
+    if (this.proto?.bankWall) drawEarthWall(ctx, this.proto.bankWall, wallView);
 
     // the bounce mushrooms wear the gold rim too (they sit in the scenery's colours): about the painted cap itself, and none while the
     // cap is not in (a rim over nothing read as an empty pickup ring, F12: bounceArt.ts bounceAuraBox)
@@ -7561,6 +7647,9 @@ export class GameEngine {
     //  bank above runs down through the wheel's sweep); drawn ground: here, before the platforms. Once a frame either way)
     const drawBack = () => { if (this.pieces.length) drawPieces(this.pieces, ctx, 'back', this.pieceHost); };
     const paintedGround = this.paintKit && protoArtReady();
+    // (layer 'under': over the river's body, BEHIND the ground's earth and every platform, either ground: here, before the drawn
+    //  platforms, the water's sheet and the painted ground (drawProtoScene, below). 2-7's mail boat passes behind the banks, ENG-27d)
+    if (this.pieces.length) drawPieces(this.pieces, ctx, 'under', this.pieceHost);
     if (!paintedGround) drawBack();
     // Render In-World Trees, Vines and Platforms
     if (ownScene && lair) drawLairObjects(ctx, lair, this.platforms, this.vines, this.currentStage.trees, this.camera, this.gameTime);
@@ -7571,7 +7660,8 @@ export class GameEngine {
       this.paintKit && protoArtReady() ? this.swingVines : this.drawnVines,
       this.paintKit && protoArtReady() ? [] : this.currentStage.trees,
       this.camera,
-      this.gameTime
+      this.gameTime,
+      this.platforms
     );
     // the Spanish moss on a mossy liana (holding one is cover, 1-7 NEW 6), hanging from the rope where its swing puts it (w17Art.ts)
     for (const v of this.vines) {
@@ -7744,6 +7834,8 @@ export class GameEngine {
       if (item.type === 'cage' && item.critter && drawW2Cage(ctx, item, this.gameTime, false, !!this.follow)) return;
       // 4-8's eaglets in their nests, the netting over them, and their parents (w4Nests.ts)
       if (item.type === 'cage' && item.critter === 'eaglet') return drawNest(ctx, item, this.gameTime);
+      // (the post's letters and replies, post.ts: their art, else the plain petal)
+      if ((item.mark === 'letter' || item.mark === 'reply') && !item.collected && this.currentStage.post && drawPostItem(ctx, item, this.gameTime, this.currentStage.post.art)) return;
       drawCollectible(ctx, item, this.gameTime, this.currentStage.config.worldIndex, this.currentStage.config.miniIndex);
     });
 
@@ -9669,6 +9761,26 @@ export class GameEngine {
     this.bossGuideUp = false;
     this.guideN++;
     this.callbacks.onGuide?.(text, seconds, undefined, o);
+  }
+
+  /**
+   * A pacer race's END (pacer.ts Pacer.ends, from the stage's brief): the step he reaches the dock, won (before the pacer) or lost (it
+   * docked first), its line is said ONCE, by the speaker the line names. Never mid-race: the pacer keeps a verdict only when HE reaches
+   * the dock (pieces/pacerPiece.ts; the boat docking first says nothing until he arrives). Never twice: the verdict outlives a respawn
+   * (a fall after the dock rewinds nothing), this race is marked said, and each line is a stage tip's once on this device (a retry's
+   * replay of the same finish says nothing). No stage id: any stage whose brief names race-end lines
+   */
+  private sayRaceEnd() {
+    const race = this.pieces.find((q) => q.kind === 'pacer') as (StagePiece & { verdict?: { won: boolean } | null }) | undefined;
+    if (!race?.verdict || this.raceEndOf === race) return;
+    this.raceEndOf = race;
+    const line = raceEndLine(this.currentStage.pacer!.ends!, race.verdict);
+    // (each line once a stage on this device, as a stage tip: a retry or a replay that finishes the same way says nothing; one that
+    //  finishes the other way says its own line once. Kept only once shown, tipMemory.ts: a line the setting dropped is said next time)
+    const id = `race:${line.text}`;
+    if (tipHeard(this.currentStage.config.id, id)) return;
+    markTipHeard(this.currentStage.config.id, id);
+    this.guide(line.text, TIP_SAY_S, { who: line.who });
   }
 
   /** take Dot's line down now (an empty line clears it: Wayside.tsx) */

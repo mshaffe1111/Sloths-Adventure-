@@ -1,0 +1,18 @@
+// rowprobe.mts <tree> <bot> <setting> <stage> <seed>: the castBots row with per-frame x/vx/standing/lives; prints the frames around each life lost
+const [tree, bot, setting, stage, seedS] = process.argv.slice(2);
+await import(`${tree}/src/game/headlessDom.ts`);
+const ft = await import(`${tree}/tools/inspect/firsttimer.ts`);
+const cb = await import(`${tree}/tools/inspect/castBots.ts`);
+const who = (cb as any).CAST_BOTS[bot][setting];
+ft.HOP_TRACE.on = true; ft.HOP_TRACE.rows.length = 0;
+const F: string[] = []; let f = 0, lives = -1;
+ft.firstTimer(stage, Number(seedS), who, { cap: 1200, dotSetting: true, onFrame: (sim: any) => {
+  const e = sim.e; f++;
+  const on = e.platforms.find((q: any) => q.id === e.standingOnId);
+  F.push(`f${f} t${(f / 30).toFixed(2)} x${e.player.x.toFixed(0)} y${e.player.y.toFixed(0)} vx${e.player.vx.toFixed(0)} g${e.player.grounded ? 1 : 0} on${e.standingOnId}${on ? ':' + (on.type ?? '-') + ':' + Math.round(on.x) + '..' + Math.round(on.x + on.width) : ''} L${e.lives}`);
+  if (process.env.ALL) console.log(F[F.length - 1]);
+  if (process.env.W0 && f / 30 >= Number(process.env.W0) && f / 30 <= Number(process.env.W1) && f % 3 === 0) console.log(F[F.length - 1]);
+  if (lives >= 0 && e.lives < lives) console.log('LIFE LOST\n' + F.slice(-Number(process.env.BACK ?? 60)).filter((_, i, a) => i % 3 === 0 || i > a.length - 4).join('\n'));
+  lives = e.lives;
+  while ((globalThis as any).__seen === undefined ? ((globalThis as any).__seen = 0, false) : (globalThis as any).__seen < ft.HOP_TRACE.rows.length) { const h: any = ft.HOP_TRACE.rows[(globalThis as any).__seen++]; if (h.t > Number(process.env.T0 ?? 0)) console.log(`H ${h.site} q#${h.q} t ${h.t.toFixed(2)} x ${Math.round(h.x)} hold ${h.hold.toFixed(3)} ${h.kind ?? ""} flown ${h.flown ? h.flown.kind + " " + h.flown.hold.toFixed(3) : "-"}`); }
+} } as any);

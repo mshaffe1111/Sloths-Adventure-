@@ -1,0 +1,18 @@
+const W = process.env.WT!;
+await import(W + '/src/game/headlessDom.ts');
+const { setDifficulty } = await import(W + '/src/game/difficulty.ts');
+const FT: any = await import(W + '/tools/inspect/firsttimer.ts');
+const set = process.env.SET ?? 'easy'; setDifficulty(set);
+const T0 = Number(process.env.T0 ?? 107.15), T1 = Number(process.env.T1 ?? 107.55);
+const out: string[] = []; let run: any;
+const P = FT.FirstTimerRun.prototype;
+for (const n of Object.getOwnPropertyNames(P)) {
+  const dsc = Object.getOwnPropertyDescriptor(P, n)!; if (!('value' in dsc)) continue; const f = dsc.value; if (typeof f !== 'function' || n === 'constructor' || n === 'play') continue;
+  P[n] = function (...a: any[]) { const r = f.apply(this, a); if (run && run.t > T0 && run.t < T1 && r && typeof r === 'object' && (r.left || r.right || n === 'intend' || n === 'clockRide' || n==='thumbify')) { const s = JSON.stringify(r); if (s.length < 80) out.push(`${run.t.toFixed(2)} ${n}(${a.filter((x) => typeof x === 'number' || typeof x === 'boolean').join(',')}) -> ${s}`); } return r; };
+}
+run = new FT.FirstTimerRun(process.env.STAGE ?? '2-6', Number(process.argv[2]), { ...FT[process.env.BOT ?? 'FT_KID'], setting: set }, { onFrame: (s: any) => {
+  if (run.t > T0 && run.t < T1) { const tg = run.prog.target(s.p); out.push(`== ${run.t.toFixed(2)} ${Math.round(s.p.x)},${Math.round(s.p.y)} vx ${Math.round(s.p.vx)} tgt ${tg ? Math.round(tg.x) : '-'} standing ${JSON.stringify(run.standing ?? null)} clb ${s.p.climbing} gr ${s.p.grounded} knock ${(run.e as any).knocked ?? "-"}`); }
+} });
+const res = run.play();
+console.log(out.join('\n'));
+console.log(JSON.stringify({ t: +run.t.toFixed(1), rescues: res.rescues, rescueXs: run.rescueXs }));

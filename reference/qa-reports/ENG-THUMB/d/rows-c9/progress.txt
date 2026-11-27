@@ -1,0 +1,7 @@
+rows on e106d4a6e bots kid,adult,child,middle,expert 2:42 PM ET
+2-2 exit 0 360 rows 144 s
+2-1 exit 0 360 rows 190 s
+2-4 exit 0 360 rows 205 s
+2-5 exit 0 360 rows 126 s
+1-4 exit 0 360 rows 85 s
+rows done 2:55 PM ET

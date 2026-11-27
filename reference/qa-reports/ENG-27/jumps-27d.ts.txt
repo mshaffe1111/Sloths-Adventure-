@@ -1,0 +1,7 @@
+import '../../src/game/headlessDom.ts';
+import { homeRun } from './homeToys.ts';
+import { HOME_CODE } from '../../src/game/gen2/toyHome.ts';
+let f = 0; const jumps: string[] = []; let prev: any;
+const r: any = homeRun('middle', 'easy', 2, 1, { onFrame: (sim: any) => { f++; const p = sim.e.player; if (prev && Math.hypot(p.x - prev[0], p.y - prev[1]) > 150) jumps.push(`f ${f}: (${prev}) -> (${Math.round(p.x)},${Math.round(p.y)})`); prev = [Math.round(p.x), Math.round(p.y)]; } } as never, HOME_CODE);
+console.log('rescues', r.rescues, 'xs', JSON.stringify(r.rescueXs ?? r.sim?.rescueXs), 'keys', Object.keys(r).join(','));
+console.log(jumps.join('\n'));

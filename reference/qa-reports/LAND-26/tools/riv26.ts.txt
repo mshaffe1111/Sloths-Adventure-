@@ -1,0 +1,8 @@
+import '/TREE/src/game/headlessDom.ts';
+import { generateAllLevels } from '/TREE/src/game/worldsData.ts';
+import { listedStage, playFinish } from '/TREE/src/game/gen2/listed.ts';
+import { buildGen2Stage } from '/TREE/src/game/gen2/pipeline.ts';
+const cfg = generateAllLevels().find((c) => c.id === '2-6' && !c.secret)!;
+const row = listedStage('2-6')!;
+const st: any = playFinish(row, buildGen2Stage({ config: cfg, kit: row.kit(), seed: 1, difficulty: 'normal' }) as never, 'normal');
+for (const r of st.rivers ?? []) console.log(JSON.stringify(Object.fromEntries(Object.entries(r).filter(([k, v]) => typeof v !== 'object').map(([k, v]) => [k, typeof v === 'number' ? Math.round(v as number) : v]))).slice(0, 300));

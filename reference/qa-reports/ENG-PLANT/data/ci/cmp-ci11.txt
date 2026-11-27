@@ -1,0 +1,24 @@
+2-1-child-easy           2 | c27 PASS 268.7 r0 l0       | ci10 PASS 288.2 r0 l0       | ci11 PASS 288.2 r0 l0       MOVED
+2-1-child-normal        11 | c27 PASS 376.1 r0 l0       | ci10 PASS 354.5 r0 l0       | ci11 PASS 354.5 r0 l0       MOVED
+2-1-kid-normal          19 | c27 FAIL 156.4 r2 l6       | ci10 FAIL 156.4 r2 l6       | ci11 FAIL 156.4 r2 l6       =
+2-1-kid-normal          21 | c27 FAIL 152.4 r1 l6       | ci10 FAIL 153.5 r1 l6       | ci11 FAIL 153.5 r1 l6       MOVED
+2-2-adult-normal         4 | c27 PASS 143.9 r0 l0       | ci10 PASS 143.9 r0 l0       | ci11 PASS 143.9 r0 l0       =
+2-2-adult-normal        24 | c27 PASS 166.5 r0 l1       | ci10 PASS 166.5 r0 l1       | ci11 PASS 166.5 r0 l1       =
+2-2-kid-easy            37 | c27 FAIL 154.3 r1 l0       | ci10 FAIL 154.3 r1 l0       | ci11 FAIL 154.3 r1 l0       =
+2-2-kid-normal           3 | c27 FAIL 168.9 r1 l4       | ci10 FAIL 168.9 r1 l4       | ci11 FAIL 168.9 r1 l4       =
+2-2-kid-normal          33 | c27 FAIL 162.5 r1 l4       | ci10 FAIL 162.5 r1 l4       | ci11 FAIL 162.5 r1 l4       =
+2-4-adult-normal         6 | c27 PASS 163.3 r0 l0       | ci10 PASS 171.9 r0 l2       | ci11 PASS 171.9 r0 l2       MOVED
+2-4-adult-normal         8 | c27 PASS 163.3 r0 l1       | ci10 PASS 163.3 r0 l0       | ci11 PASS 163.3 r0 l0       MOVED
+2-4-adult-normal        24 | c27 PASS 163.3 r0 l1       | ci10 PASS 163.4 r0 l0       | ci11 PASS 163.3 r0 l0       MOVED
+2-4-adult-normal        32 | c27 PASS 163.3 r0 l0       | ci10 PASS 171.9 r0 l1       | ci11 PASS 163.3 r0 l1       MOVED
+2-4-child-easy          11 | c27 PASS 239.2 r0 l0       | ci10 PASS 239.2 r0 l0       | ci11 PASS 239.7 r0 l0       MOVED
+2-4-child-easy          23 | c27 PASS 290.2 r0 l0       | ci10 PASS 256.4 r0 l0       | ci11 PASS 246.8 r0 l0       MOVED
+2-4-child-normal         8 | c27 PASS 356.1 r0 l1       | ci10 PASS 330.7 r0 l2       | ci11 PASS 341.7 r0 l4       MOVED
+2-4-child-normal        39 | c27 PASS 337.8 r0 l2       | ci10 PASS 350.8 r0 l4       | ci11 PASS 345 r0 l5         MOVED
+2-4-kid-easy             2 | c27 FAIL 149.2 r1 l0       | ci10 FAIL 149.2 r1 l0       | ci11 PASS 168.7 r0 l0       MOVED
+2-4-kid-easy            12 | c27 FAIL 182.3 r1 l0       | ci10 PASS 181 r0 l0         | ci11 PASS 172.7 r0 l0       MOVED
+2-4-kid-easy            13 | c27 FAIL 149.2 r1 l0       | ci10 FAIL 172.3 r1 l0       | ci11 PASS 172.2 r0 l0       MOVED
+2-4-kid-easy            19 | c27 FAIL 168.8 r1 l0       | ci10 PASS 178.8 r0 l0       | ci11 FAIL 169 r1 l0         MOVED
+2-4-kid-easy            20 | c27 FAIL 178.7 r1 l0       | ci10 FAIL 178.7 r1 l0       | ci11 FAIL 171.9 r1 l0       MOVED
+2-4-kid-easy            35 | c27 PASS 175.2 r0 l0       | ci10 FAIL 185.4 r1 l0       | ci11 PASS 171.9 r0 l0       MOVED
+rows equal to c27: 6, moved: 17

@@ -1,0 +1,12 @@
+kid    normal rows 40 moved   0  pass 0/40 -> 0/40  flips -
+kid    easy   rows 40 moved   0  pass 0/40 -> 0/40  flips -
+adult  normal rows 40 moved   0  pass 0/40 -> 0/40  flips -
+adult  easy   rows 40 moved   0  pass 0/40 -> 0/40  flips -
+child  normal rows 40 moved   0  pass 0/40 -> 0/40  flips -
+child  easy   rows 40 moved   0  pass 0/40 -> 0/40  flips -
+middle normal rows 40 moved   0  pass 0/40 -> 0/40  flips -
+middle easy   rows 40 moved   0  pass 0/40 -> 0/40  flips -
+expert normal rows 40 moved   0  pass 0/40 -> 0/40  flips -
+2-6: moved 0 of 360; P->F 0, F->P 0
+moved rows with no read either skill changes on the base run: none
+moved rows touched by the take-off read (a stand over water): 0; by the boarding hop (a log his way under the lip): 0

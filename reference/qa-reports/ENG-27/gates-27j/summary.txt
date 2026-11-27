@@ -1,0 +1,5 @@
+tsc PASS 4s | 
+suite1 PASS 209s | # tests 634 # pass 634 # fail 0 # todo 0 
+suite2 PASS 631s | # tests 617 # pass 616 # fail 0 # todo 1 
+suite3 PASS 307s | # tests 810 # pass 809 # fail 0 # todo 1 
+suite4 FAIL(1) 313s | # tests 617 # pass 615 # fail 1 # todo 1 

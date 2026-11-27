@@ -1,0 +1,16 @@
+const W = process.env.WT!;
+await import(W + '/src/game/headlessDom.ts');
+const { setDifficulty } = await import(W + '/src/game/difficulty.ts');
+const FT: any = await import(W + '/tools/inspect/firsttimer.ts');
+const set = process.env.SET ?? 'easy'; setDifficulty(set);
+const out: string[] = []; let run: any; let prev = ''; let leftAt: any = null;
+run = new FT.FirstTimerRun(process.env.STAGE ?? '2-6', Number(process.argv[2]), { ...FT[process.env.BOT ?? 'FT_KID'], setting: set }, { onFrame: (s: any) => {
+  const q = s.platforms.find((p: any) => p.id === s.standingOn);
+  const w = q?.wheel ? 'bucket' + q.id : q ? 'plat' + q.id : 'air';
+  if (prev.startsWith('bucket') && w === 'air') leftAt = { t: run.t, x: Math.round(s.p.x), y: Math.round(s.p.y), from: prev, vx: Math.round(s.p.vx) };
+  if (leftAt && w !== 'air') { out.push(`${leftAt.t.toFixed(2)} left ${leftAt.from} at ${leftAt.x},${leftAt.y} vx ${leftAt.vx} -> ${w} at ${Math.round(s.p.x)},${Math.round(s.p.y)} (${(run.t - leftAt.t).toFixed(2)} s)`); leftAt = null; }
+  prev = w;
+} });
+const res = run.play();
+console.log(out.join('\n'));
+console.log(JSON.stringify({ t: +run.t.toFixed(1), pass: res.pass, rescues: res.rescues, stuck: (res.stuck ?? []).map((k: any) => `${k.t?.toFixed?.(1)} ${k.x},${k.y} ${k.what}`) }));

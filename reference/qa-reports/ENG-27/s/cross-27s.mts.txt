@@ -1,0 +1,26 @@
+// one run's race-leg falls: the respawn-to-fall stretch crossed the first time vs after the respawn (s), and the margins
+const [tree, where, setting, seed] = process.argv.slice(2);
+await import(`${tree}/src/game/headlessDom.ts`);
+const { homeRun } = await import(`${tree}/tools/inspect/homeToys.ts`);
+const { HOME_CODE, POST_CODE } = await import(`${tree}/src/game/gen2/toyHome.ts`);
+const { pacerMargin } = await import(`${tree}/src/game/pacer.ts`);
+let t = 0, lives: number | undefined, mLast: number | null = null, piece: any, fall: any = null, wasDown = false;
+const path: { t: number; x: number; m: number | null }[] = [];
+const out: string[] = [];
+homeRun('middle', setting as never, Number(seed), 1, { onFrame: (sim: any) => {
+  t += 1 / 30; const e = sim.e, p = e.player;
+  piece ??= (e.pieces ?? []).find((q: any) => q.kind === 'pacer');
+  if (!piece) return;
+  const m = piece.clock === null || piece.verdict ? null : pacerMargin(piece.pacer, p.x, piece.clock);
+  const d = piece.pacer.dir;
+  if (lives !== undefined && e.lives < lives && mLast !== null) fall = { t, x: p.x, m: mLast, xr: null as any };
+  if (fall && wasDown && !e.down && fall.xr === null) { fall.xr = p.x; fall.tr = t; fall.mr = m; }
+  if (fall && fall.xr !== null && m !== null && p.grounded && (p.x - fall.x) * d >= 0) {
+    const t1 = path.find((s) => (s.x - fall.xr) * d >= 0), t2 = path.find((s) => (s.x - fall.x) * d >= 0);
+    out.push(`fall x ${Math.round(fall.x)} m ${fall.m.toFixed(2)} | respawn x ${Math.round(fall.xr)} m ${fall.mr?.toFixed(2)} (first pass there m ${t1?.m?.toFixed(2)}) | stretch ${Math.round((fall.x - fall.xr) * d)} px: first crossing ${t1 && t2 ? (t2.t - t1.t).toFixed(2) : '?'} s, second ${(t - fall.tr).toFixed(2)} s | back m ${m.toFixed(2)} (${(m - fall.m >= 0 ? '+' : '') + (m - fall.m).toFixed(2)})`);
+    fall = null;
+  }
+  if (!fall || fall.xr === null) { if (!e.down) path.push({ t, x: p.x, m }); }
+  wasDown = !!e.down; lives = e.lives; mLast = m;
+} } as never, where === 'post' ? POST_CODE : HOME_CODE);
+console.log(`${where} ${setting} ${seed}:\n  ` + out.join('\n  '));

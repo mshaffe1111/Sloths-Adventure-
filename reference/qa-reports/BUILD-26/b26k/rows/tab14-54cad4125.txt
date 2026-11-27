@@ -1,0 +1,13 @@
+castBots 1-4, seeds 1-40; the floor 100 s (STAGE-RULES.md:77: a climb, 20 s short)
+kid    normal PASS 40/40; under the floor 0; time median 133.9 s (min 125.6); hits 48 lives 0 (other 48); cleared none; told of traps 0/40; first trap sprung 0/40; traps sprung 0/0; turned back 0; left 0
+kid    easy   PASS 40/40; under the floor 0; time median 125.1 s (min 120); hits 0 lives 0 (none); cleared none; told of traps 0/40; first trap sprung 0/40; traps sprung 0/0; turned back 0; left 0
+adult  normal PASS 39/40; under the floor 0; time median 123.4 s (min 117.9); hits 62 lives 2 (other 64); cleared none; told of traps 0/40; first trap sprung 0/40; traps sprung 0/0; turned back 0; left 0
+        fail 1: time goal 0/1  (seeds 39)
+adult  easy   PASS 40/40; under the floor 0; time median 115.7 s (min 109.5); hits 0 lives 0 (none); cleared none; told of traps 0/40; first trap sprung 0/40; traps sprung 0/0; turned back 0; left 0
+child  normal PASS 39/40; under the floor 0; time median 214.2 s (min 188.2); hits 101 lives 6 (other 107); cleared none; told of traps 0/40; first trap sprung 0/40; traps sprung 0/0; turned back 0; left 0
+        fail 1: time goal 0/1  (seeds 10)
+child  easy   PASS 40/40; under the floor 0; time median 164.8 s (min 153.1); hits 0 lives 0 (none); cleared none; told of traps 0/40; first trap sprung 0/40; traps sprung 0/0; turned back 0; left 0
+middle normal PASS 38/40; under the floor 0; time median 144.6 s (min 133.3); hits 76 lives 2 (other 78); cleared none; told of traps 0/40; first trap sprung 0/40; traps sprung 0/0; turned back 0; left 0
+        fail 2: time goal 0/1  (seeds 36,1)
+middle easy   PASS 40/40; under the floor 0; time median 133 s (min 124.5); hits 0 lives 0 (none); cleared none; told of traps 0/40; first trap sprung 0/40; traps sprung 0/0; turned back 0; left 0
+expert normal PASS 40/40; under the floor 0; time median 135.3 s (min 125.8); hits 51 lives 0 (other 51); cleared none; told of traps 0/40; first trap sprung 0/40; traps sprung 0/0; turned back 0; left 0

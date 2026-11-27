@@ -1,0 +1,16 @@
+== FULL SET lane C on c9770adb2 (main base 4bf2cbaaa) 11:58 AM ET
+tsc PASS (exit 0, 37 s)
+vitebuild PASS (exit 0, 29 s)
+chunkcheck PASS (exit 0, 0 s)
+artcheck PASS (exit 0, 1 s)
+knowncheck PASS (exit 0, 0 s)
+generalitycheck PASS (exit 0, 3 s)
+coveragecheck PASS (exit 0, 251 s)
+roadmapcheck PASS (exit 0, 14 s)
+timecheck PASS (exit 0, 18 s)
+drawcheck PASS (exit 0, 1493 s)
+kbdcheck PASS (exit 0, 258 s)
+buildstore PASS (exit 0, 22 s)
+validate FAIL (exit 1, 47 s)
+world1 FAIL (exit 1, 26 s)
+== lane C done 12:35 PM ET

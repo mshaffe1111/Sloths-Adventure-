@@ -11,13 +11,14 @@ import type { LevelConfig } from './types.ts';
 
 const cfg = (id: W2Plan): LevelConfig =>
   ({
-    worldIndex: 2, miniIndex: Number(id.split('-')[1]), id, name: id, objectiveType: id === '2-7' ? 'sprint' : id === '2-9' ? 'gauntlet' : 'rescue',
+    worldIndex: 2, miniIndex: Number(id.split('-')[1]), id, name: id, objectiveType: id === '2-9' ? 'gauntlet' : 'rescue',
     targetCount: 1, timeLimit: 0, levelWidth: 9000, levelHeight: 900, description: '', unlocked: true, completed: false, stars: 0, highScore: 0, bestTime: 0,
   }) as LevelConfig;
 const SEEDS = Array.from({ length: 16 }, (_, i) => 1 + i * 37);
 // (2-4 is gen2's since BUILD-24, 11-18: gen2/worlds/w2Arc24.ts; its crossings are held in w2Arc24.test.ts. 2-3 is gen2's since BUILD-23,
 //  11-20: gen2/worlds/w2Arc23.ts, held in w2Arc23.test.ts)
-const PLANS: W2Plan[] = ['2-7', '2-8', '2-9'];
+// (2-7 is gen2's since BUILD-27, 11-23: gen2/worlds/w2Arc27.ts, held in w2Arc27.test.ts)
+const PLANS: W2Plan[] = ['2-8', '2-9'];
 
 test('World 2 trio: every roll passes the reachability check, keeps its beats in order, has one exit and hearts on the way', () => {
   for (const plan of PLANS) {
@@ -117,30 +118,6 @@ test('2-9: the court: guards (royal snappers) and snappers, about one and a half
   }
 });
 
-test('2-7: steps up, porches, lifts up to ground a double jump cannot reach, swing frames, and the village at the end', () => {
-  for (const s of SEEDS) {
-    const st = buildW2Stage({ ...cfg('2-7'), id: '2-7', miniIndex: 7, objectiveType: 'sprint' } as LevelConfig, s, '2-7');
-    const lifts = st.platforms.filter((p) => p.lift);
-    // (every round rides the basket up at least twice; the ride back down became a drop off the high ground's end, 2026-10-28)
-    assert.ok(lifts.length >= 2, `seed ${s}: ${lifts.length} lifts`);
-    // a lift going up climbs higher than any jump (so riding it is the way), and stops level with the ground at each end
-    for (const l of lifts) {
-      assert.ok(l.lift!.bottom === 580 && l.lift!.bottom - l.lift!.top >= 120, `seed ${s}: lift ${l.id}`);
-      const highGround = st.platforms.some((p) => p.type === 'solid' && !p.art && Math.abs(p.y - l.lift!.top) < 2 && (Math.abs(p.x - (l.x + l.width + 6)) < 12 || Math.abs(p.x + p.width - (l.x - 6)) < 12));
-      assert.ok(highGround, `seed ${s}: lift ${l.id} meets high ground at its top`);
-    }
-    assert.ok(lifts.some((l) => l.lift!.postRight && l.lift!.bottom - l.lift!.top > 200), `seed ${s}: a lift up past a double jump`);
-    assert.ok(st.platforms.filter((p) => p.art === 'porch').length >= 6, `seed ${s}: porches`);
-    assert.ok(st.platforms.some((p) => p.art === 'steps'), `seed ${s}: steps`);
-    // (every round crosses the river on the swing frames at least once; the swings' roll all the way)
-    assert.ok(st.proto.decor!.filter((d) => d.n === 'swingFrame').length >= (w2Picks('2-7', s).flavour === 'swings' ? 5 : 2), `seed ${s}: swing frames`);
-    assert.ok(st.proto.decor!.some((d) => d.text?.join(' ') === 'PLEASE BE PATIENT'));
-    assert.ok(st.proto.decor!.some((d) => d.cel?.startsWith('po.') && d.walk), `seed ${s}: the mailman`);
-  }
-});
-
-// (2-5's own tests moved with it to gen2/worlds/w2Arc25.test.ts when the hand build was deleted, BUILD-25: its snappers, its goal)
-
 test('the snapper: head-on it hides, its shell is kicked away, and from behind (or open after a snap) the blow lands', () => {
   const t = (state: string, facing: 1 | -1) => ({ x: 100, state, facing }) as unknown as Enemy;
   assert.equal(turtleGuard(t('patrol', -1), 40, false), 'shell', 'he is on the side it faces');
@@ -152,15 +129,4 @@ test('the snapper: head-on it hides, its shell is kicked away, and from behind (
   assert.equal(turtleGuard(t('dizzy', -1), 40, false), 'hit');
 });
 
-test('2-6: the climb up the bank village, with the bank behind it, doors on the porches and Gruntlewick at the top', () => {
-  for (const s of SEEDS.slice(0, 8)) {
-    const st = buildW2Stage({ ...cfg('2-6'), id: '2-6', miniIndex: 6, objectiveType: 'ascent' } as LevelConfig, s, '2-6');
-    assert.ok(st.proto.bankWall, `seed ${s}`);
-    assert.ok(st.proto.decor!.filter((d) => d.n === 'doorRoof').length >= 5, `seed ${s}: doors`);
-    assert.ok(st.proto.ladders, 'the climbs are ladders');
-    assert.ok(st.proto.decor!.some((d) => d.cel?.startsWith('tc.')), `seed ${s}: Gruntlewick`);
-    assert.ok(st.vines.some((v) => v.vineType === 'tree_climb'));
-    assert.ok(st.collectibles.filter((c) => c.type === 'heart').length >= 2, `seed ${s}: hearts`);
-    assert.equal(st.proto.hollows?.length ?? 0, 0, 'the lit window stands in for the hollow');
-  }
-});
+// (2-6's look test moved to gen2/worlds/w2Arc26.test.ts with its assertions when the hand build was deleted, BUILD-26)

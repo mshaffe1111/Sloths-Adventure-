@@ -1,0 +1,24 @@
+2-1-child-easy           2 | c27 PASS 268.7 r0 l0       | ci6 PASS 288.2 r0 l0       | ci7 PASS 288.2 r0 l0       MOVED
+2-1-child-normal        11 | c27 PASS 376.1 r0 l0       | ci6 PASS 354.5 r0 l0       | ci7 PASS 354.5 r0 l0       MOVED
+2-1-kid-normal          19 | c27 FAIL 156.4 r2 l6       | ci6 FAIL 148.8 r1 l4       | ci7 PASS 164 r0 l0         MOVED
+2-1-kid-normal          21 | c27 FAIL 152.4 r1 l6       | ci6 FAIL 171.7 r1 l8       | ci7 PASS 160.2 r0 l0       MOVED
+2-2-adult-normal         4 | c27 PASS 143.9 r0 l0       | ci6 PASS 149.6 r0 l0       | ci7 PASS 159.2 r0 l0       MOVED
+2-2-adult-normal        24 | c27 PASS 166.5 r0 l1       | ci6 PASS 159.3 r0 l0       | ci7 PASS 159.2 r0 l0       MOVED
+2-2-kid-easy            37 | c27 FAIL 154.3 r1 l0       | ci6 FAIL 164.4 r1 l0       | ci7 PASS 170.8 r0 l1       MOVED
+2-2-kid-normal           3 | c27 FAIL 168.9 r1 l4       | ci6 PASS 168.5 r0 l2       | ci7 PASS 165.7 r0 l1       MOVED
+2-2-kid-normal          33 | c27 FAIL 162.5 r1 l4       | ci6 PASS 168.5 r0 l2       | ci7 PASS 167.6 r0 l1       MOVED
+2-4-adult-normal         6 | c27 PASS 163.3 r0 l0       | ci6 PASS 171.9 r0 l2       | ci7 PASS 163.3 r0 l1       MOVED
+2-4-adult-normal         8 | c27 PASS 163.3 r0 l1       | ci6 PASS 171.8 r0 l3       | ci7 PASS 163.3 r0 l1       =
+2-4-adult-normal        24 | c27 PASS 163.3 r0 l1       | ci6 PASS 171.8 r0 l2       | ci7 PASS 163.4 r0 l0       MOVED
+2-4-adult-normal        32 | c27 PASS 163.3 r0 l0       | ci6 PASS 163.3 r0 l1       | ci7 PASS 174.7 r0 l1       MOVED
+2-4-child-easy          11 | c27 PASS 239.2 r0 l0       | ci6 PASS 243.9 r0 l0       | ci7 PASS 243.9 r0 l0       MOVED
+2-4-child-easy          23 | c27 PASS 290.2 r0 l0       | ci6 PASS 257.9 r0 l0       | ci7 PASS 257.9 r0 l0       MOVED
+2-4-child-normal         8 | c27 PASS 356.1 r0 l1       | ci6 PASS 385.2 r0 l4       | ci7 PASS 385.2 r0 l4       MOVED
+2-4-child-normal        39 | c27 PASS 337.8 r0 l2       | ci6 PASS 349 r0 l2         | ci7 PASS 349 r0 l2         MOVED
+2-4-kid-easy             2 | c27 FAIL 149.2 r1 l0       | ci6 PASS 146.8 r0 l0       | ci7 PASS 172.1 r0 l0       MOVED
+2-4-kid-easy            12 | c27 FAIL 182.3 r1 l0       | ci6 PASS 168.6 r0 l0       | ci7 PASS 168.7 r0 l0       MOVED
+2-4-kid-easy            13 | c27 FAIL 149.2 r1 l0       | ci6 PASS 172 r0 l0         | ci7 PASS 168.8 r0 l0       MOVED
+2-4-kid-easy            19 | c27 FAIL 168.8 r1 l0       | ci6 PASS 151 r0 l0         | ci7 PASS 182.1 r0 l0       MOVED
+2-4-kid-easy            20 | c27 FAIL 178.7 r1 l0       | ci6 PASS 168.6 r0 l0       | ci7 PASS 182 r0 l0         MOVED
+2-4-kid-easy            35 | c27 PASS 175.2 r0 l0       | ci6 PASS 146.8 r0 l0       | ci7 PASS 172 r0 l0         MOVED
+rows equal to c27: 1, moved: 22

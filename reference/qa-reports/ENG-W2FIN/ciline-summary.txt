@@ -1,0 +1,15 @@
+CI tool line (gates.yml:157) on frozen 78bf17d60
+# tests 386
+# pass 378
+# fail 7
+# todo 1
+not ok 179 - chase bots (OPEN, todo): the CHILD bot on Normal reaches the fork on 2 or more of 3 seeds # TODO measured 1 of 3 (ENG-B4): every miss a fall at a 120 px gap, never a catch
+not ok 210 - on the runs it was found on, 2-2 child Normal seed 36 and middle Normal seed 17: no life lost in the 3 s after he stands at a lip with a log his way across it (SKILLS.boardHop; the child RED with it off)
+not ok 295 - planted: with the ride skill off, the middle and child bots drown in the river
+not ok 304 - planted: with the handed-to-the-bank skill off, the middle on Normal hops at the water off the long log and drowns over the bar
+not ok 305 - 2-1, against the flow and up the far bank on: the adult on Normal (12), the child on Normal (4, 23, 40) and the middle on Normal (26) cross clean
+not ok 306 - planted: with the against-the-flow skill off, the adult on Normal is rescued at 2-1's back river (12) and the child and the middle on Normal lose 5+ more lives (child 4, 23; middle 26)
+not ok 307 - planted: with the up-the-far-bank skill off, the child on Normal loses 5+ more lives on 2-1 and reaches the both-ways far bank 2+ s later (40)
+not ok 319 - PLANTED: trunkCatch OFF, a double that grabs a trunk or turn vine straight off the ground flicks him off it: rescues come back (RED)
+'no bank at one end' lines: 0
+ciline exit 1

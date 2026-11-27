@@ -1,0 +1,17 @@
+import json, sys
+# s9-win.py <run.json> <t0> <t1>: presses (with outcome) and set-downs (a jump of over 40 px in a frame) in the window
+sys.path.insert(0, sys.argv[0].rsplit('/', 1)[0])
+R = json.load(open(sys.argv[1])); a, b = float(sys.argv[2]), float(sys.argv[3])
+fr = R['fr']
+def after(t0, n=150):
+    i = next((k for k, f in enumerate(fr) if f[0] > t0 - 1e-6), len(fr))
+    for k in range(i + 1, min(i + n, len(fr))):
+        f, g = fr[k - 1], fr[k]
+        if g[5] is not None and f[5] is None: return f"caught #{g[5]} {g[0]:.3f} x{g[1]:.0f}"
+        if g[3] and not f[3]: return f"down #{g[4]} {g[0]:.3f} x{g[1]:.0f} y{g[2]:.0f}"
+        if abs(g[1] - f[1]) > 40: return f"SET DOWN {g[0]:.3f} from x{f[1]:.0f} y{f[2]:.0f} to x{g[1]:.0f}"
+    return '-'
+for j in R['jumps']:
+    if a <= j['t'] <= b: print(f"J {j['t']:.3f} x{j['x']:.0f} y{j['y']:.0f} on#{j['on']} {j['j']['k'] if j['j'] else '-'} h{(j['j']['h'] if j['j'] else 0):.3f}{' STAND' if j['stand'] else ''} -> {after(j['t'])}")
+for k in range(1, len(fr)):
+    if a <= fr[k][0] <= b and abs(fr[k][1] - fr[k-1][1]) > 40: print(f"SETDOWN {fr[k][0]:.3f} from x{fr[k-1][1]:.0f} y{fr[k-1][2]:.0f} on#{fr[k-1][4]} to x{fr[k][1]:.0f}")

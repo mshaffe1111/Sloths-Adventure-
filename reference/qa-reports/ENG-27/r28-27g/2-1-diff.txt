@@ -1,0 +1,322 @@
+kid    normal rows 40 moved  35  pass 32/40 -> 35/40  flips 9:F->P,11:P->F,17:F->P,31:F->P,32:F->P
+kid    easy   rows 40 moved  38  pass 40/40 -> 40/40  flips -
+adult  normal rows 40 moved  30  pass 40/40 -> 40/40  flips -
+adult  easy   rows 40 moved  21  pass 40/40 -> 40/40  flips -
+child  normal rows 40 moved  39  pass 40/40 -> 40/40  flips -
+child  easy   rows 40 moved  38  pass 40/40 -> 40/40  flips -
+middle normal rows 40 moved  38  pass 40/40 -> 40/40  flips -
+middle easy   rows 40 moved  37  pass 40/40 -> 40/40  flips -
+expert normal rows 40 moved  34  pass 40/40 -> 40/40  flips -
+2-1: moved 310 of 360; P->F 1, F->P 4
+moved rows with no read either skill changes on the base run: none
+moved rows touched by the take-off read (a stand over water): 95; by the boarding hop (a log his way under the lip): 307
+  adult  easy    2 P->P time 144.7 -> 141.4 lives 0->0 rescues 0->0; first: log under the lip x 8465 (99 px out) t 40.3
+  adult  easy    3 P->P time 158.8 -> 160.6 lives 0->0 rescues 0->0; first: log under the lip x 24679 (49 px out) t 123.5
+  adult  easy    5 P->P time 145.1 -> 142.2 lives 0->0 rescues 0->0; first: log under the lip x 8535 (57 px out) t 39.7
+  adult  easy    6 P->P time 150.6 -> 148.9 lives 0->0 rescues 0->0; first: log under the lip x 14363 (86 px out) t 64
+  adult  easy   11 P->P time 142 -> 141.1 lives 0->0 rescues 0->0; first: log under the lip x 14279 (38 px out) t 59.9
+  adult  easy   12 P->P time 145 -> 138.8 lives 0->0 rescues 0->0; first: log under the lip x 30375 (43 px out) t 129.2
+  adult  easy   15 P->P time 152.1 -> 160.4 lives 0->0 rescues 0->0; first: log under the lip x 8459 (22 px out) t 39.2
+  adult  easy   16 P->P time 145.3 -> 140.4 lives 0->0 rescues 0->0; first: log under the lip x 14282 (79 px out) t 63.9
+  adult  easy   17 P->P time 145.6 -> 140.5 lives 0->0 rescues 0->0; first: log under the lip x 8588 (71 px out) t 39.9
+  adult  easy   18 P->P time 146.5 -> 146.4 lives 0->0 rescues 0->0; first: log under the lip x 30736 (29 px out) t 136.9
+  adult  easy   19 P->P time 139.4 -> 139 lives 0->0 rescues 0->0; first: log under the lip x 14155 (38 px out) t 59.9
+  adult  easy   20 P->P time 144.5 -> 156.6 lives 0->0 rescues 0->0; first: log under the lip x 8368 (78 px out) t 40
+  adult  easy   23 P->P time 137.1 -> 140.8 lives 0->0 rescues 0->0; first: log under the lip x 14277 (35 px out) t 56.4
+  adult  easy   24 P->P time 144.7 -> 144.9 lives 0->0 rescues 0->0; first: log under the lip x 8468 (54 px out) t 39.6
+  adult  easy   26 P->P time 145 -> 138.9 lives 0->0 rescues 0->0; first: log under the lip x 14192 (71 px out) t 60.3
+  adult  easy   27 P->P time 160.5 -> 156.4 lives 0->0 rescues 0->0; first: log under the lip x 14516 (53 px out) t 74.1
+  adult  easy   30 P->P time 150.3 -> 148.1 lives 0->0 rescues 0->0; first: log under the lip x 14466 (81 px out) t 64
+  adult  easy   33 P->P time 144.8 -> 135.7 lives 0->0 rescues 0->0; first: log under the lip x 14427 (26 px out) t 59.7
+  adult  easy   35 P->P time 139 -> 140.9 lives 0->0 rescues 0->0; first: log under the lip x 30515 (61 px out) t 129.5
+  adult  easy   38 P->P time 144.9 -> 139.8 lives 0->0 rescues 0->0; first: log under the lip x 14123 (89 px out) t 64.1
+  adult  easy   40 P->P time 148.6 -> 149 lives 0->0 rescues 0->0; first: log under the lip x 8524 (14 px out) t 46.8
+  adult  normal  3 P->P time 144.7 -> 139.9 lives 1->1 rescues 0->0; first: log under the lip x 8597 (49 px out) t 38.7
+  adult  normal  4 P->P time 148.7 -> 148.6 lives 1->1 rescues 0->0; first: log under the lip x 8632 (38 px out) t 38.6
+  adult  normal  5 P->P time 157.8 -> 156.1 lives 1->1 rescues 0->0; first: log under the lip x 8605 (16 px out) t 45.2
+  adult  normal  6 P->P time 148.3 -> 143.3 lives 0->0 rescues 0->0; first: log under the lip x 8659 (24 px out) t 38.4
+  adult  normal  8 P->P time 133.6 -> 131.7 lives 0->0 rescues 0->0; first: log under the lip x 8437 (39 px out) t 35.1
+  adult  normal  9 P->P time 144.4 -> 144.7 lives 0->2 rescues 0->0; first: log under the lip x 8659 (84 px out) t 35.8
+  adult  normal 11 P->P time 142.2 -> 142.1 lives 0->0 rescues 0->0; first: log under the lip x 30262 (29 px out) t 133
+  adult  normal 12 P->P time 139.5 -> 152.1 lives 0->2 rescues 0->0; first: log under the lip x 8413 (49 px out) t 35.3
+  adult  normal 13 P->P time 144.6 -> 144.7 lives 1->1 rescues 0->0; first: log under the lip x 14338 (22 px out) t 62.2
+  adult  normal 14 P->P time 150.2 -> 150.1 lives 2->2 rescues 0->0; first: log under the lip x 24486 (39 px out) t 117
+  adult  normal 15 P->P time 148.7 -> 141.9 lives 1->0 rescues 0->0; first: log under the lip x 8516 (24 px out) t 38.4
+  adult  normal 17 P->P time 146.6 -> 146.5 lives 1->1 rescues 0->0; first: log under the lip x 30222 (72 px out) t 137.4
+  adult  normal 18 P->P time 140.6 -> 136.4 lives 0->0 rescues 0->0; first: log under the lip x 24314 (23 px out) t 103
+  adult  normal 20 P->P time 134.4 -> 136.9 lives 0->0 rescues 0->0; first: log under the lip x 8456 (18 px out) t 34.8
+  adult  normal 21 P->P time 152.3 -> 141.3 lives 3->2 rescues 0->0; first: log under the lip x 8450 (82 px out) t 39.2
+  adult  normal 22 P->P time 132.8 -> 134.2 lives 0->0 rescues 0->0; first: log under the lip x 8602 (70 px out) t 35.6
+  adult  normal 23 P->P time 140 -> 144.7 lives 3->2 rescues 0->0; first: log under the lip x 24545 (33 px out) t 105.9
+  adult  normal 24 P->P time 150.5 -> 149.3 lives 0->3 rescues 0->0; first: log under the lip x 8532 (83 px out) t 42.7
+  adult  normal 25 P->P time 139.2 -> 152.6 lives 2->3 rescues 0->0; first: log under the lip x 14253 (29 px out) t 59.2
+  adult  normal 26 P->P time 136.6 -> 139.7 lives 0->0 rescues 0->0; first: log under the lip x 8529 (70 px out) t 35.6
+  adult  normal 27 P->P time 149.4 -> 155.4 lives 2->2 rescues 0->0; first: log under the lip x 14455 (3 px out) t 68.1
+  adult  normal 28 P->P time 145.5 -> 152.2 lives 0->2 rescues 0->0; first: log under the lip x 8500 (69 px out) t 42.5
+  adult  normal 29 P->P time 135.2 -> 136.8 lives 0->0 rescues 0->0; first: log under the lip x 29922 (43 px out) t 125.3
+  adult  normal 31 P->P time 151.5 -> 140.6 lives 4->1 rescues 0->0; first: log under the lip x 8661 (40 px out) t 38.6
+  adult  normal 32 P->P time 137.7 -> 140 lives 0->0 rescues 0->0; first: log under the lip x 8495 (42 px out) t 35.2
+  adult  normal 36 P->P time 139.3 -> 146.1 lives 1->3 rescues 0->0; first: log under the lip x 24578 (41 px out) t 106
+  adult  normal 37 P->P time 153.5 -> 146.2 lives 2->0 rescues 0->0; first: log under the lip x 8724 (24 px out) t 38.4
+  adult  normal 38 P->P time 138.6 -> 136.6 lives 0->0 rescues 0->0; first: log under the lip x 14048 (74 px out) t 59.8
+  adult  normal 39 P->P time 137.6 -> 140.9 lives 0->0 rescues 0->0; first: log under the lip x 24232 (23 px out) t 105.7
+  adult  normal 40 P->P time 152.3 -> 152.5 lives 1->1 rescues 0->0; first: log under the lip x 24350 (10 px out) t 113.9
+  child  easy    1 P->P time 260.7 -> 250.5 lives 0->0 rescues 0->0; first: stand over water x 20018 (run 68 + gap 80) t 151.6; log under the lip x 14308 (53 px out) t 112.5
+  child  easy    2 P->P time 280.9 -> 279.9 lives 0->0 rescues 0->0; first: stand over water x 8600 (run 74 + gap 72) t 72.4; log under the lip x 24725 (88 px out) t 202.7
+  child  easy    3 P->P time 282.4 -> 268.9 lives 0->0 rescues 0->0; first: stand over water x 19766 (run 72 + gap 80) t 157.6; log under the lip x 8501 (47 px out) t 66.7
+  child  easy    5 P->P time 297.4 -> 276.8 lives 0->0 rescues 0->0; first: stand over water x 20036 (run 77 + gap 80) t 175.6; log under the lip x 14365 (19 px out) t 115.5
+  child  easy    6 P->P time 283.8 -> 265.2 lives 0->0 rescues 0->0; first: stand over water x 20280 (run 76 + gap 80) t 150.5; log under the lip x 30951 (45 px out) t 258
+  child  easy    7 P->P time 278.7 -> 277 lives 0->0 rescues 0->0; first: stand over water x 8527 (run 33 + gap 128) t 63; log under the lip x 24878 (23 px out) t 198.7
+  child  easy    8 P->P time 267.1 -> 282.3 lives 0->0 rescues 0->0; first: stand over water x 26156 (run 79 + gap 80) t 209.9; log under the lip x 8422 (31 px out) t 66.5
+  child  easy    9 P->P time 278.9 -> 272.4 lives 0->0 rescues 0->0; first: stand over water x 19757 (run 75 + gap 80) t 157.4; log under the lip x 8549 (44 px out) t 55
+  child  easy   10 P->P time 255.6 -> 259.1 lives 0->0 rescues 0->0; first: stand over water x 20202 (run 71 + gap 80) t 140; log under the lip x 14274 (51 px out) t 98.5
+  child  easy   11 P->P time 267.5 -> 270.4 lives 0->0 rescues 0->0; first: stand over water x 20120 (run 77 + gap 80) t 160.9; log under the lip x 24944 (60 px out) t 205.5
+  child  easy   12 P->P time 260.6 -> 276.5 lives 0->0 rescues 0->0; first: stand over water x 14347 (run 76 + gap 72) t 117.4; log under the lip x 14210 (79 px out) t 116.3
+  child  easy   13 P->P time 306.5 -> 282.3 lives 0->0 rescues 0->0; first: stand over water x 19624 (run 93 + gap 67) t 160.9; log under the lip x 30867 (109 px out) t 274.4
+  child  easy   14 P->P time 274.7 -> 276.4 lives 0->0 rescues 0->0; first: stand over water x 8422 (run 102 + gap 79) t 62.3; log under the lip x 8475 (44 px out) t 62.8
+  child  easy   15 P->P time 272.2 -> 254.8 lives 0->0 rescues 0->0; first: stand over water x 24718 (run 114 + gap 73) t 192.2; log under the lip x 8450 (37 px out) t 70.5
+  child  easy   16 P->P time 288.4 -> 289.6 lives 0->0 rescues 0->0; first: log under the lip x 14268 (34 px out) t 119.2
+  child  easy   17 P->P time 284.1 -> 291.3 lives 0->0 rescues 0->0; first: stand over water x 14569 (run 74 + gap 72) t 131.5; log under the lip x 24890 (87 px out) t 212.1
+  child  easy   18 P->P time 282.3 -> 253.5 lives 0->0 rescues 0->0; first: stand over water x 24746 (run 24 + gap 121) t 205.4; log under the lip x 8530 (24 px out) t 66.4
+  child  easy   19 P->P time 277.1 -> 243.8 lives 0->0 rescues 0->0; first: stand over water x 26027 (run 67 + gap 80) t 212.2; log under the lip x 14141 (15 px out) t 105
+  child  easy   20 P->P time 268.2 -> 276.5 lives 0->0 rescues 0->0; first: stand over water x 8355 (run 55 + gap 92) t 70.2; log under the lip x 8355 (4 px out) t 70
+  child  easy   21 P->P time 308.1 -> 282.7 lives 0->0 rescues 0->0; first: stand over water x 8496 (run 76 + gap 72) t 68.4; log under the lip x 8355 (71 px out) t 67.1
+  child  easy   22 P->P time 265.6 -> 265.9 lives 0->0 rescues 0->0; first: stand over water x 25885 (run 77 + gap 80) t 198.6; log under the lip x 8501 (59 px out) t 59.1
+  child  easy   23 P->P time 282.5 -> 274.4 lives 0->0 rescues 0->0; first: stand over water x 26407 (run 129 + gap 51) t 227.8; log under the lip x 24837 (45 px out) t 214.8
+  child  easy   24 P->P time 264.6 -> 268.4 lives 0->0 rescues 0->0; first: stand over water x 19808 (run 68 + gap 80) t 152.7
+  child  easy   25 P->P time 259.6 -> 249.1 lives 0->0 rescues 0->0; first: log under the lip x 24883 (40 px out) t 183.2
+  child  easy   26 P->P time 300.3 -> 300.7 lives 0->0 rescues 0->0; first: stand over water x 19923 (run 71 + gap 80) t 180.4; log under the lip x 8420 (49 px out) t 74.5
+  child  easy   27 P->P time 276.8 -> 269.3 lives 0->0 rescues 0->0; first: stand over water x 20003 (run 66 + gap 80) t 161.4; log under the lip x 14498 (23 px out) t 108.6
+  child  easy   29 P->P time 282.7 -> 270.2 lives 0->0 rescues 0->0; first: stand over water x 8320 (run 91 + gap 63) t 54.3; log under the lip x 8361 (77 px out) t 55.5
+  child  easy   30 P->P time 261.9 -> 265.8 lives 0->0 rescues 0->0; first: stand over water x 20210 (run 77 + gap 80) t 157.5; log under the lip x 8613 (34 px out) t 58.8
+  child  easy   31 P->P time 273.4 -> 282.8 lives 0->0 rescues 0->0; first: stand over water x 20033 (run 118 + gap 65) t 160.5; log under the lip x 8603 (78 px out) t 67.2
+  child  easy   32 P->P time 269.4 -> 271.5 lives 0->0 rescues 0->0; first: log under the lip x 8395 (52 px out) t 59
+  child  easy   33 P->P time 303 -> 299 lives 0->0 rescues 0->0; first: stand over water x 20061 (run 75 + gap 80) t 181.7; log under the lip x 14410 (25 px out) t 126.1
+  child  easy   34 P->P time 257.4 -> 260.2 lives 0->0 rescues 0->0; first: stand over water x 19714 (run 77 + gap 80) t 150.8; log under the lip x 8317 (28 px out) t 62.6
+  child  easy   35 P->P time 281.5 -> 274.1 lives 0->0 rescues 0->0; first: stand over water x 8968 (run 73 + gap 72) t 69.9; log under the lip x 8447 (92 px out) t 67.4
+  child  easy   36 P->P time 290.2 -> 293.8 lives 0->0 rescues 0->0; first: stand over water x 20083 (run 72 + gap 80) t 171.2; log under the lip x 24931 (57 px out) t 205.5
+  child  easy   37 P->P time 265.5 -> 268.3 lives 0->0 rescues 0->0; first: log under the lip x 8653 (65 px out) t 63.1
+  child  easy   38 P->P time 285.8 -> 279.5 lives 0->0 rescues 0->0; first: stand over water x 19626 (run 76 + gap 80) t 161.1; log under the lip x 8354 (87 px out) t 67.3
+  child  easy   39 P->P time 289.2 -> 247.2 lives 0->0 rescues 0->0; first: stand over water x 8531 (run 27 + gap 130) t 63; log under the lip x 24659 (15 px out) t 211.2
+  child  easy   40 P->P time 265.6 -> 266.8 lives 0->0 rescues 0->0; first: log under the lip x 8510 (30 px out) t 62.6
+  child  normal  1 P->P time 521.3 -> 412.2 lives 19->9 rescues 0->0; first: stand over water x 19449 (run 29 + gap 155) t 212.5; log under the lip x 8427 (61 px out) t 87.3
+  child  normal  2 P->P time 380.1 -> 353.9 lives 5->0 rescues 0->0; first: log under the lip x 8529 (62 px out) t 94.2
+  child  normal  3 P->P time 400.7 -> 383 lives 4->2 rescues 0->0; first: log under the lip x 24164 (31 px out) t 280.7
+  child  normal  4 P->P time 376.5 -> 393.3 lives 1->2 rescues 0->0; first: stand over water x 8640 (run 35 + gap 148) t 80.6; log under the lip x 14202 (7 px out) t 154.8
+  child  normal  5 P->P time 362.4 -> 392.6 lives 1->3 rescues 0->0; first: log under the lip x 8600 (81 px out) t 80.7
+  child  normal  6 P->P time 355.6 -> 351.9 lives 0->0 rescues 0->0; first: log under the lip x 30400 (93 px out) t 321
+  child  normal  7 P->P time 354 -> 337.8 lives 0->0 rescues 0->0; first: log under the lip x 14247 (73 px out) t 143.3
+  child  normal  8 P->P time 336.9 -> 334.6 lives 0->2 rescues 0->0; first: log under the lip x 14044 (76 px out) t 134
+  child  normal  9 P->P time 382.2 -> 360 lives 4->2 rescues 0->0; first: stand over water x 22007 (run 55 + gap 123) t 267.1; log under the lip x 14158 (4 px out) t 148.5
+  child  normal 11 P->P time 377.7 -> 391 lives 3->0 rescues 0->0; first: log under the lip x 14150 (37 px out) t 152.1
+  child  normal 12 P->P time 383.7 -> 384.1 lives 1->1 rescues 0->0; first: log under the lip x 29720 (107 px out) t 348.4
+  child  normal 13 P->P time 359.3 -> 359.4 lives 1->2 rescues 0->0; first: stand over water x 19358 (run 151 + gap 50) t 207.4; log under the lip x 8495 (35 px out) t 83.5
+  child  normal 14 P->P time 400 -> 379.9 lives 3->6 rescues 0->0; first: log under the lip x 24452 (31 px out) t 239
+  child  normal 15 P->P time 351.7 -> 353.7 lives 0->0 rescues 0->0; first: log under the lip x 30013 (67 px out) t 308.9
+  child  normal 16 P->P time 354.5 -> 392.9 lives 3->3 rescues 0->0; first: stand over water x 17066 (run 67 + gap 111) t 182.4; log under the lip x 14147 (80 px out) t 155.7
+  child  normal 17 P->P time 352 -> 325.2 lives 3->1 rescues 0->0; first: stand over water x 24526 (run 41 + gap 145) t 242.3; log under the lip x 24437 (41 px out) t 241.9
+  child  normal 18 P->P time 389.4 -> 341.5 lives 5->2 rescues 0->0; first: stand over water x 8574 (run 36 + gap 153) t 80.7; log under the lip x 8551 (3 px out) t 76.1
+  child  normal 19 P->P time 375 -> 372.4 lives 4->1 rescues 0->0; first: stand over water x 19253 (run 17 + gap 168) t 199.2; log under the lip x 8457 (30 px out) t 83.4
+  child  normal 20 P->P time 362.6 -> 370 lives 1->6 rescues 0->0; first: log under the lip x 8413 (78 px out) t 80.6
+  child  normal 21 P->P time 398.6 -> 397 lives 4->4 rescues 0->0; first: log under the lip x 24345 (13 px out) t 291.5
+  child  normal 22 P->P time 331.5 -> 327.9 lives 0->1 rescues 0->0; first: stand over water x 14219 (run 43 + gap 132) t 140; log under the lip x 30005 (67 px out) t 297.2
+  child  normal 23 P->P time 346.3 -> 343.2 lives 0->1 rescues 0->0; first: log under the lip x 14224 (47 px out) t 136.7
+  child  normal 24 P->P time 374.5 -> 374.8 lives 3->3 rescues 0->0; first: log under the lip x 29909 (43 px out) t 343.7
+  child  normal 25 P->P time 377.1 -> 375.6 lives 2->2 rescues 0->0; first: log under the lip x 30148 (88 px out) t 344.3
+  child  normal 26 P->P time 368.7 -> 351.2 lives 0->2 rescues 0->0; first: stand over water x 8445 (run 126 + gap 73) t 89.9; log under the lip x 8539 (38 px out) t 90.4
+  child  normal 27 P->P time 369 -> 425 lives 1->8 rescues 0->0; first: log under the lip x 8727 (77 px out) t 84.1
+  child  normal 28 P->P time 396.1 -> 375.3 lives 3->2 rescues 0->0; first: log under the lip x 24519 (5 px out) t 258.1
+  child  normal 29 P->P time 370.1 -> 380.1 lives 4->4 rescues 0->0; first: log under the lip x 14117 (36 px out) t 145.9
+  child  normal 30 P->P time 367.1 -> 349.1 lives 2->3 rescues 0->0; first: stand over water x 8678 (run 37 + gap 150) t 77.2; log under the lip x 24568 (52 px out) t 261.5
+  child  normal 31 P->P time 339.1 -> 348 lives 3->4 rescues 0->0; first: log under the lip x 14263 (5 px out) t 123.8
+  child  normal 32 P->P time 343.7 -> 377.7 lives 5->7 rescues 0->0; first: stand over water x 25577 (run 39 + gap 165) t 251.9; log under the lip x 24558 (61 px out) t 258.8
+  child  normal 33 P->P time 366.4 -> 329.1 lives 2->0 rescues 0->0; first: log under the lip x 8706 (21 px out) t 72.9
+  child  normal 34 P->P time 362.6 -> 348.4 lives 1->1 rescues 0->0; first: log under the lip x 8544 (19 px out) t 76.3
+  child  normal 35 P->P time 363.4 -> 330.8 lives 1->1 rescues 0->0; first: log under the lip x 14165 (67 px out) t 140.1
+  child  normal 36 P->P time 400.9 -> 371.5 lives 6->4 rescues 0->0; first: stand over water x 25423 (run 171 + gap 36) t 293.8; log under the lip x 24564 (50 px out) t 303.1
+  child  normal 37 P->P time 351.3 -> 369.4 lives 0->2 rescues 0->0; first: log under the lip x 14323 (60 px out) t 158.6
+  child  normal 38 P->P time 340.6 -> 339.4 lives 1->1 rescues 0->0; first: stand over water x 24184 (run 110 + gap 73) t 252.5; log under the lip x 29841 (32 px out) t 312.4
+  child  normal 39 P->P time 371.1 -> 368.6 lives 2->4 rescues 0->0; first: log under the lip x 14145 (48 px out) t 146
+  child  normal 40 P->P time 353.2 -> 392 lives 2->5 rescues 0->0; first: log under the lip x 14250 (76 px out) t 149.5
+  expert normal  1 P->P time 185.3 -> 185.9 lives 1->1 rescues 0->0; first: log under the lip x 24396 (29 px out) t 133.6
+  expert normal  2 P->P time 183.1 -> 190.5 lives 0->2 rescues 0->0; first: stand over water x 23596 (run 58 + gap 123) t 128.9; log under the lip x 8530 (50 px out) t 42.2
+  expert normal  3 P->P time 169.8 -> 165.3 lives 0->0 rescues 0->0; first: log under the lip x 29880 (107 px out) t 153.4
+  expert normal  4 P->P time 186.2 -> 186.7 lives 0->1 rescues 0->0; first: stand over water x 19315 (run 6 + gap 173) t 107.1; log under the lip x 30097 (101 px out) t 169
+  expert normal  5 P->P time 200.5 -> 174.1 lives 3->1 rescues 0->0; first: stand over water x 24264 (run 112 + gap 87) t 127.8; log under the lip x 8578 (31 px out) t 41.9
+  expert normal  6 P->P time 192.9 -> 175.2 lives 1->0 rescues 0->0; first: stand over water x 25594 (run 6 + gap 175) t 154.1; log under the lip x 14249 (27 px out) t 74.6
+  expert normal  7 P->P time 183.3 -> 189 lives 1->1 rescues 0->0; first: log under the lip x 14247 (49 px out) t 74.9
+  expert normal  9 P->P time 198.1 -> 192.2 lives 3->3 rescues 0->0; first: log under the lip x 30077 (51 px out) t 180
+  expert normal 10 P->P time 188.6 -> 187.8 lives 1->1 rescues 0->0; first: log under the lip x 30303 (56 px out) t 172.3
+  expert normal 11 P->P time 198.1 -> 178 lives 5->0 rescues 0->0; first: log under the lip x 24574 (49 px out) t 131
+  expert normal 12 P->P time 173 -> 176.5 lives 2->0 rescues 0->0; first: log under the lip x 8408 (62 px out) t 42.4
+  expert normal 13 P->P time 192.1 -> 188.2 lives 0->1 rescues 0->0; first: stand over water x 8426 (run 122 + gap 74) t 48.4; log under the lip x 8505 (77 px out) t 49.5
+  expert normal 14 P->P time 173.2 -> 173.8 lives 1->0 rescues 0->0; first: stand over water x 14243 (run 98 + gap 93) t 71.4; log under the lip x 8596 (73 px out) t 39.1
+  expert normal 16 P->P time 178.5 -> 172.9 lives 0->0 rescues 0->0; first: log under the lip x 24402 (49 px out) t 131
+  expert normal 19 P->P time 185.8 -> 187.8 lives 4->3 rescues 0->0; first: log under the lip x 14068 (29 px out) t 71.5
+  expert normal 20 P->P time 171.1 -> 165.3 lives 0->0 rescues 0->0; first: log under the lip x 8446 (77 px out) t 39.1
+  expert normal 21 P->P time 172.9 -> 160.9 lives 0->0 rescues 0->0; first: log under the lip x 8357 (80 px out) t 39.2
+  expert normal 23 P->P time 174 -> 180.8 lives 0->0 rescues 0->0; first: log under the lip x 8500 (62 px out) t 42.4
+  expert normal 24 P->P time 180.3 -> 192.4 lives 0->2 rescues 0->0; first: stand over water x 14073 (run 119 + gap 82) t 77.5; log under the lip x 8569 (58 px out) t 45.8
+  expert normal 25 P->P time 211.3 -> 205.3 lives 5->5 rescues 0->0; first: log under the lip x 24442 (45 px out) t 144.9
+  expert normal 26 P->P time 186.1 -> 184.9 lives 2->2 rescues 0->0; first: stand over water x 24362 (run 10 + gap 167) t 126.1; log under the lip x 14135 (74 px out) t 75.2
+  expert normal 28 P->P time 170.4 -> 180.5 lives 1->0 rescues 0->0; first: stand over water x 8439 (run 103 + gap 92) t 41.8; log under the lip x 8423 (10 px out) t 41.6
+  expert normal 29 P->P time 173.6 -> 181.3 lives 3->3 rescues 0->0; first: log under the lip x 14089 (31 px out) t 71.6
+  expert normal 30 P->P time 173.6 -> 177 lives 0->0 rescues 0->0; first: log under the lip x 8626 (35 px out) t 38.5
+  expert normal 31 P->P time 186.7 -> 189.9 lives 1->0 rescues 0->0; first: stand over water x 24223 (run 80 + gap 105) t 141.9; log under the lip x 24257 (71 px out) t 139.6
+  expert normal 32 P->P time 181.5 -> 186.8 lives 1->5 rescues 0->0; first: stand over water x 8490 (run 40 + gap 161) t 39.3; log under the lip x 8390 (59 px out) t 38.9
+  expert normal 33 P->P time 177.5 -> 177.3 lives 1->1 rescues 0->0; first: stand over water x 14347 (run 34 + gap 156) t 72.3; log under the lip x 8697 (13 px out) t 41.7
+  expert normal 34 P->P time 169.5 -> 174.5 lives 0->0 rescues 0->0; first: log under the lip x 14171 (24 px out) t 71.5
+  expert normal 35 P->P time 178.9 -> 185.4 lives 0->1 rescues 0->0; first: stand over water x 8465 (run 103 + gap 90) t 45.2; log under the lip x 29890 (43 px out) t 164.3
+  expert normal 36 P->P time 181.4 -> 181 lives 2->0 rescues 0->0; first: log under the lip x 14349 (44 px out) t 71.7
+  expert normal 37 P->P time 190.4 -> 181.8 lives 1->0 rescues 0->0; first: log under the lip x 14303 (40 px out) t 77.9
+  expert normal 38 P->P time 173.6 -> 174.1 lives 0->0 rescues 0->0; first: log under the lip x 29828 (107 px out) t 157.3
+  expert normal 39 P->P time 170.4 -> 161.7 lives 0->0 rescues 0->0; first: log under the lip x 8529 (84 px out) t 39.2
+  expert normal 40 P->P time 173.2 -> 173.1 lives 0->1 rescues 0->0; first: log under the lip x 14208 (18 px out) t 68.3
+  kid    easy    1 P->P time 151 -> 152.2 lives 0->0 rescues 0->0; first: log under the lip x 30733 (80 px out) t 141.4
+  kid    easy    2 P->P time 144.2 -> 147.8 lives 0->0 rescues 0->0; first: log under the lip x 14207 (43 px out) t 60
+  kid    easy    3 P->P time 140.9 -> 137.9 lives 0->0 rescues 0->0; first: log under the lip x 14342 (89 px out) t 64.1
+  kid    easy    4 P->P time 139.4 -> 139.2 lives 0->0 rescues 0->0; first: log under the lip x 8522 (51 px out) t 35.7
+  kid    easy    5 P->P time 135.6 -> 144.3 lives 0->0 rescues 0->0; first: log under the lip x 14366 (66 px out) t 60.3
+  kid    easy    7 P->P time 136 -> 136.8 lives 0->0 rescues 0->0; first: log under the lip x 14267 (60 px out) t 56.7
+  kid    easy    8 P->P time 139.3 -> 143.5 lives 0->0 rescues 0->0; first: log under the lip x 30433 (85 px out) t 129.8
+  kid    easy    9 P->P time 144.6 -> 146.3 lives 0->0 rescues 0->0; first: log under the lip x 8553 (67 px out) t 43.7
+  kid    easy   10 P->P time 139.4 -> 143 lives 0->0 rescues 0->0; first: log under the lip x 30871 (85 px out) t 129.8
+  kid    easy   11 P->P time 139.5 -> 140.4 lives 0->0 rescues 0->0; first: log under the lip x 14270 (58 px out) t 56.7
+  kid    easy   12 P->P time 134 -> 137.9 lives 0->0 rescues 0->0; first: log under the lip x 14216 (43 px out) t 56.5
+  kid    easy   13 P->P time 147.4 -> 148.4 lives 0->0 rescues 0->0; first: log under the lip x 30832 (107 px out) t 137.8
+  kid    easy   14 P->P time 142.1 -> 138.7 lives 0->0 rescues 0->0; first: log under the lip x 24798 (83 px out) t 101.8
+  kid    easy   16 P->P time 139.8 -> 140.5 lives 0->0 rescues 0->0; first: log under the lip x 14273 (76 px out) t 60.4
+  kid    easy   17 P->P time 156.4 -> 157.5 lives 0->0 rescues 0->0; first: log under the lip x 14423 (31 px out) t 80.8
+  kid    easy   18 P->P time 137.5 -> 136.8 lives 0->0 rescues 0->0; first: log under the lip x 8534 (70 px out) t 36
+  kid    easy   19 P->P time 135.7 -> 137.8 lives 0->0 rescues 0->0; first: log under the lip x 8383 (98 px out) t 36.4
+  kid    easy   20 P->P time 131.7 -> 132.8 lives 0->0 rescues 0->0; first: log under the lip x 30601 (99 px out) t 122.1
+  kid    easy   21 P->P time 138.7 -> 138 lives 0->0 rescues 0->0; first: log under the lip x 14191 (31 px out) t 59.8
+  kid    easy   22 P->P time 153 -> 150.9 lives 0->0 rescues 0->0; first: log under the lip x 30587 (69 px out) t 141.3
+  kid    easy   23 P->P time 139.7 -> 141.9 lives 0->0 rescues 0->0; first: log under the lip x 14269 (30 px out) t 56.3
+  kid    easy   24 P->P time 137.9 -> 140.7 lives 0->0 rescues 0->0; first: log under the lip x 8455 (29 px out) t 39.3
+  kid    easy   25 P->P time 144.9 -> 141.1 lives 0->0 rescues 0->0; first: log under the lip x 8499 (59 px out) t 39.7
+  kid    easy   26 P->P time 163.4 -> 138.4 lives 0->0 rescues 0->0; first: log under the lip x 8422 (93 px out) t 36.3
+  kid    easy   27 P->P time 150.3 -> 150.4 lives 0->0 rescues 0->0; first: log under the lip x 14507 (5 px out) t 73.4
+  kid    easy   28 P->P time 138.8 -> 148.3 lives 0->0 rescues 0->0; first: log under the lip x 14283 (63 px out) t 60.2
+  kid    easy   29 P->P time 131.7 -> 136.5 lives 0->0 rescues 0->0; first: log under the lip x 14193 (80 px out) t 57
+  kid    easy   30 P->P time 135.9 -> 136.3 lives 0->0 rescues 0->0; first: log under the lip x 14462 (30 px out) t 56.3
+  kid    easy   31 P->P time 157 -> 162.4 lives 0->0 rescues 0->0; first: log under the lip x 24681 (76 px out) t 123.8
+  kid    easy   32 P->P time 143 -> 136.2 lives 0->0 rescues 0->0; first: log under the lip x 24902 (44 px out) t 104.5
+  kid    easy   33 P->P time 153.1 -> 141 lives 0->0 rescues 0->0; first: log under the lip x 14410 (61 px out) t 60.2
+  kid    easy   34 P->P time 135.4 -> 136.5 lives 0->0 rescues 0->0; first: log under the lip x 30465 (80 px out) t 125.8
+  kid    easy   35 P->P time 137.6 -> 136.6 lives 0->0 rescues 0->0; first: log under the lip x 30507 (91 px out) t 125.9
+  kid    easy   36 P->P time 139.3 -> 134.5 lives 0->0 rescues 0->0; first: log under the lip x 24934 (48 px out) t 101.4
+  kid    easy   37 P->P time 141.5 -> 140.1 lives 0->0 rescues 0->0; first: log under the lip x 14416 (58 px out) t 60.2
+  kid    easy   38 P->P time 136.7 -> 142.1 lives 0->0 rescues 0->0; first: log under the lip x 8353 (81 px out) t 36.1
+  kid    easy   39 P->P time 146.1 -> 136 lives 0->0 rescues 0->0; first: log under the lip x 14269 (56 px out) t 60.1
+  kid    easy   40 P->P time 137.5 -> 133.9 lives 0->0 rescues 0->0; first: log under the lip x 14357 (61 px out) t 60.2
+  kid    normal  1 P->P time 146.9 -> 158 lives 7->10 rescues 0->0; first: log under the lip x 14276 (57 px out) t 59.5
+  kid    normal  2 P->P time 140.5 -> 147.9 lives 3->6 rescues 0->0; first: log under the lip x 24389 (60 px out) t 106.2
+  kid    normal  3 P->P time 142.4 -> 156.3 lives 5->9 rescues 0->0; first: log under the lip x 14312 (72 px out) t 59.7
+  kid    normal  4 P->P time 167.5 -> 144.1 lives 11->5 rescues 0->0; first: log under the lip x 24353 (21 px out) t 111.3
+  kid    normal  6 P->P time 150.6 -> 135.4 lives 6->0 rescues 0->0; first: log under the lip x 8645 (31 px out) t 38.5
+  kid    normal  7 P->P time 145.1 -> 151.6 lives 2->5 rescues 0->0; first: log under the lip x 8631 (73 px out) t 39.1
+  kid    normal  8 P->P time 139.2 -> 134.3 lives 2->2 rescues 0->0; first: log under the lip x 24165 (53 px out) t 100.6
+  kid    normal  9 F->P time 168.2 -> 148.2 lives 12->4 rescues 1->0; first: log under the lip x 24392 (63 px out) t 106.2
+  kid    normal 10 P->P time 150.7 -> 148.4 lives 4->2 rescues 0->0; first: log under the lip x 8637 (57 px out) t 42.3
+  kid    normal 11 P->F time 149.2 -> 162.4 lives 4->9 rescues 0->1; first: log under the lip x 24545 (65 px out) t 109
+  kid    normal 12 P->P time 136.4 -> 140.5 lives 3->4 rescues 0->0; first: log under the lip x 14138 (24 px out) t 59.1
+  kid    normal 15 P->P time 136.6 -> 155.6 lives 2->8 rescues 0->0; first: log under the lip x 8499 (25 px out) t 34.9
+  kid    normal 16 P->P time 146.9 -> 150.7 lives 4->4 rescues 0->0; first: log under the lip x 8431 (11 px out) t 34.7
+  kid    normal 17 F->P time 166.7 -> 144.5 lives 11->2 rescues 2->0; first: log under the lip x 24514 (38 px out) t 108.7
+  kid    normal 18 P->P time 148.1 -> 146.1 lives 4->4 rescues 0->0; first: log under the lip x 24308 (39 px out) t 105.9
+  kid    normal 19 P->P time 136.8 -> 139.2 lives 2->2 rescues 0->0; first: log under the lip x 14080 (64 px out) t 59.6
+  kid    normal 20 P->P time 156.2 -> 156.4 lives 7->4 rescues 0->0; first: log under the lip x 24466 (42 px out) t 114.3
+  kid    normal 21 P->P time 144.1 -> 142.1 lives 4->4 rescues 0->0; first: log under the lip x 29973 (27 px out) t 132.9
+  kid    normal 22 F->F time 152.1 -> 156 lives 9->9 rescues 1->1; first: log under the lip x 14215 (9 px out) t 58.9
+  kid    normal 23 F->F time 179.5 -> 156.9 lives 17->10 rescues 1->1; first: log under the lip x 14233 (9 px out) t 58.9
+  kid    normal 24 P->P time 159.6 -> 160.8 lives 4->4 rescues 0->0; first: log under the lip x 29922 (93 px out) t 149.4
+  kid    normal 25 P->P time 150 -> 164.1 lives 5->10 rescues 0->0; first: log under the lip x 8521 (25 px out) t 34.9
+  kid    normal 26 P->P time 144.2 -> 153 lives 4->5 rescues 0->0; first: log under the lip x 8521 (45 px out) t 38.7
+  kid    normal 27 P->P time 140.4 -> 138.1 lives 2->1 rescues 0->0; first: log under the lip x 8769 (47 px out) t 38.7
+  kid    normal 29 P->P time 143.1 -> 137.5 lives 4->1 rescues 0->0; first: log under the lip x 8408 (14 px out) t 34.8
+  kid    normal 31 F->P time 168.4 -> 148.4 lives 15->4 rescues 2->0; first: log under the lip x 8700 (49 px out) t 38.7
+  kid    normal 32 F->P time 159 -> 141.5 lives 9->4 rescues 1->0; first: log under the lip x 8484 (46 px out) t 35.2
+  kid    normal 33 P->P time 151.8 -> 148.2 lives 4->1 rescues 0->0; first: log under the lip x 8716 (64 px out) t 42.4
+  kid    normal 34 P->P time 134.9 -> 133 lives 3->1 rescues 0->0; first: log under the lip x 8550 (23 px out) t 34.9
+  kid    normal 35 P->P time 137.6 -> 144.9 lives 1->4 rescues 0->0; first: log under the lip x 14227 (80 px out) t 62.9
+  kid    normal 36 P->P time 136.9 -> 140 lives 1->3 rescues 0->0; first: log under the lip x 14361 (47 px out) t 59.4
+  kid    normal 37 P->P time 160.1 -> 156.9 lives 10->7 rescues 0->0; first: log under the lip x 14326 (69 px out) t 59.7
+  kid    normal 38 F->F time 152.9 -> 153.9 lives 8->13 rescues 1->3; first: log under the lip x 24241 (57 px out) t 106.2
+  kid    normal 39 P->P time 156.9 -> 140.7 lives 11->6 rescues 0->0; first: log under the lip x 24221 (61 px out) t 103.4
+  kid    normal 40 P->P time 145.1 -> 136.8 lives 3->0 rescues 0->0; first: log under the lip x 8535 (50 px out) t 42.2
+  middle easy    1 P->P time 211.3 -> 196.4 lives 0->0 rescues 0->0; first: stand over water x 9963 (run 59 + gap 87) t 61.6; log under the lip x 8383 (35 px out) t 47.1
+  middle easy    2 P->P time 195.9 -> 198.6 lives 0->0 rescues 0->0; first: log under the lip x 8451 (60 px out) t 43.6
+  middle easy    3 P->P time 204.3 -> 192.5 lives 0->0 rescues 0->0; first: stand over water x 19663 (run 76 + gap 80) t 119.8; log under the lip x 30489 (83 px out) t 184.3
+  middle easy    4 P->P time 190.9 -> 213.3 lives 0->0 rescues 0->0; first: log under the lip x 14322 (27 px out) t 87.7
+  middle easy    5 P->P time 197.5 -> 202.2 lives 0->0 rescues 0->0; first: stand over water x 19995 (run 75 + gap 80) t 119.1; log under the lip x 30415 (112 px out) t 180.8
+  middle easy    6 P->P time 211.4 -> 203.1 lives 0->0 rescues 0->0; first: stand over water x 24910 (run 80 + gap 88) t 151.4
+  middle easy    7 P->P time 203 -> 199.1 lives 0->0 rescues 0->0; first: stand over water x 14277 (run 39 + gap 109) t 84.3; log under the lip x 14262 (12 px out) t 84
+  middle easy    8 P->P time 194.3 -> 193.1 lives 0->0 rescues 0->0; first: stand over water x 8434 (run 44 + gap 104) t 43.2; log under the lip x 8420 (6 px out) t 42.8
+  middle easy    9 P->P time 187.7 -> 188.2 lives 0->0 rescues 0->0; first: stand over water x 26071 (run 66 + gap 80) t 147.1
+  middle easy   10 P->P time 195.4 -> 190.4 lives 0->0 rescues 0->0; first: log under the lip x 24829 (64 px out) t 145.7
+  middle easy   11 P->P time 205.9 -> 193.3 lives 0->0 rescues 0->0; first: stand over water x 8429 (run 133 + gap 72) t 46.6; log under the lip x 8519 (73 px out) t 47.7
+  middle easy   12 P->P time 194.3 -> 199.9 lives 0->0 rescues 0->0; first: log under the lip x 8360 (88 px out) t 44
+  middle easy   13 P->P time 206.6 -> 207.3 lives 0->0 rescues 0->0; first: log under the lip x 30830 (91 px out) t 188.3
+  middle easy   14 P->P time 199 -> 185.9 lives 0->0 rescues 0->0; first: stand over water x 19784 (run 69 + gap 80) t 116.4; log under the lip x 8466 (28 px out) t 47
+  middle easy   15 P->P time 207.5 -> 198.9 lives 0->0 rescues 0->0; first: stand over water x 20076 (run 72 + gap 78) t 125; log under the lip x 14218 (75 px out) t 88.3
+  middle easy   16 P->P time 208.5 -> 203.6 lives 0->0 rescues 0->0; first: stand over water x 14217 (run 101 + gap 86) t 84; log under the lip x 14217 (12 px out) t 84
+  middle easy   17 P->P time 202.6 -> 202.4 lives 0->0 rescues 0->0; first: log under the lip x 8536 (85 px out) t 51.7
+  middle easy   18 P->P time 188.2 -> 188.3 lives 0->0 rescues 0->0; first: stand over water x 20037 (run 71 + gap 80) t 111.7; log under the lip x 24650 (65 px out) t 136.3
+  middle easy   19 P->P time 189.4 -> 192.4 lives 0->0 rescues 0->0; first: stand over water x 19539 (run 70 + gap 80) t 109.3; log under the lip x 30539 (109 px out) t 173
+  middle easy   20 P->P time 202.5 -> 185.2 lives 0->0 rescues 0->0; first: stand over water x 14291 (run 46 + gap 108) t 80.8; log under the lip x 8202 (33 px out) t 39.3
+  middle easy   21 P->P time 197.5 -> 184.4 lives 0->0 rescues 0->0; first: stand over water x 19810 (run 74 + gap 80) t 113.4; log under the lip x 8194 (58 px out) t 43.6
+  middle easy   22 P->P time 204.7 -> 181.2 lives 0->0 rescues 0->0; first: log under the lip x 8494 (39 px out) t 43.3
+  middle easy   23 P->P time 199.7 -> 191.3 lives 0->0 rescues 0->0; first: stand over water x 14288 (run 28 + gap 125) t 77.6; log under the lip x 8390 (72 px out) t 43.8
+  middle easy   24 P->P time 192.7 -> 189.8 lives 0->0 rescues 0->0; first: stand over water x 24839 (run 80 + gap 72) t 140.8; log under the lip x 8451 (86 px out) t 44
+  middle easy   25 P->P time 197.6 -> 195.2 lives 0->0 rescues 0->0; first: log under the lip x 8492 (86 px out) t 44
+  middle easy   27 P->P time 198.4 -> 210.1 lives 0->0 rescues 0->0; first: stand over water x 20002 (run 68 + gap 80) t 114.9; log under the lip x 8666 (38 px out) t 47.2
+  middle easy   29 P->P time 202 -> 201.7 lives 0->0 rescues 0->0; first: stand over water x 25914 (run 79 + gap 80) t 154.4; log under the lip x 8351 (52 px out) t 47.4
+  middle easy   30 P->P time 197.8 -> 204.6 lives 0->0 rescues 0->0; first: log under the lip x 8606 (41 px out) t 51.1
+  middle easy   31 P->P time 195.2 -> 192.2 lives 0->0 rescues 0->0; first: stand over water x 26062 (run 74 + gap 80) t 146.4; log under the lip x 14354 (8 px out) t 77
+  middle easy   32 P->P time 207.1 -> 201.3 lives 0->0 rescues 0->0; first: log under the lip x 14328 (64 px out) t 84.7
+  middle easy   33 P->P time 208 -> 209.9 lives 0->0 rescues 0->0; first: stand over water x 20040 (run 69 + gap 80) t 121.4; log under the lip x 30817 (101 px out) t 192.4
+  middle easy   34 P->P time 203.1 -> 194.1 lives 0->0 rescues 0->0; first: stand over water x 19661 (run 73 + gap 80) t 115.9; log under the lip x 14250 (84 px out) t 81.5
+  middle easy   35 P->P time 189.8 -> 191 lives 0->0 rescues 0->0; first: stand over water x 25891 (run 80 + gap 80) t 148.5; log under the lip x 8450 (67 px out) t 43.7
+  middle easy   36 P->P time 213.4 -> 195.5 lives 0->0 rescues 0->0; first: stand over water x 26169 (run 79 + gap 80) t 163.8; log under the lip x 14434 (72 px out) t 84.8
+  middle easy   38 P->P time 196.5 -> 194.6 lives 0->0 rescues 0->0; first: log under the lip x 8309 (13 px out) t 42.9
+  middle easy   39 P->P time 200.2 -> 190.9 lives 0->0 rescues 0->0; first: stand over water x 8651 (run 76 + gap 72) t 45.2; log under the lip x 14248 (43 px out) t 77.4
+  middle easy   40 P->P time 190.4 -> 178.8 lives 0->0 rescues 0->0; first: stand over water x 14351 (run 51 + gap 103) t 77.3; log under the lip x 8381 (54 px out) t 39.6
+  middle normal  1 P->P time 217.7 -> 217.1 lives 2->2 rescues 0->0; first: log under the lip x 14272 (25 px out) t 93.1
+  middle normal  2 P->P time 205.9 -> 201.6 lives 3->0 rescues 0->0; first: log under the lip x 8526 (58 px out) t 45.8
+  middle normal  3 P->P time 211.5 -> 200.9 lives 1->2 rescues 0->0; first: stand over water x 14201 (run 164 + gap 61) t 86.5; log under the lip x 14302 (57 px out) t 90.5
+  middle normal  4 P->P time 209.5 -> 221.6 lives 0->2 rescues 0->0; first: stand over water x 19196 (run 125 + gap 100) t 118; log under the lip x 30037 (19 px out) t 191.3
+  middle normal  5 P->P time 201.1 -> 211.6 lives 2->2 rescues 0->0; first: log under the lip x 14313 (12 px out) t 89.9
+  middle normal  6 P->P time 213 -> 216.2 lives 0->0 rescues 0->0; first: log under the lip x 8657 (40 px out) t 49
+  middle normal  7 P->P time 216.2 -> 212.4 lives 4->1 rescues 0->0; first: stand over water x 14177 (run 125 + gap 56) t 89.5; log under the lip x 14280 (44 px out) t 90.3
+  middle normal  8 P->P time 205.1 -> 216.5 lives 1->3 rescues 0->0; first: log under the lip x 13975 (77 px out) t 78.4
+  middle normal  9 P->P time 204.4 -> 193.5 lives 0->0 rescues 0->0; first: log under the lip x 8639 (34 px out) t 45.4
+  middle normal 10 P->P time 191 -> 181.5 lives 0->0 rescues 0->0; first: log under the lip x 14368 (32 px out) t 77.8
+  middle normal 11 P->P time 195.2 -> 196.9 lives 0->0 rescues 0->0; first: stand over water x 24589 (run 9 + gap 171) t 145.5; log under the lip x 14182 (41 px out) t 87.2
+  middle normal 12 P->P time 197.9 -> 198 lives 0->0 rescues 0->0; first: log under the lip x 24150 (69 px out) t 147.9
+  middle normal 13 P->P time 192.8 -> 197.5 lives 0->0 rescues 0->0; first: log under the lip x 8489 (59 px out) t 42.3
+  middle normal 14 P->P time 197.3 -> 204.5 lives 0->0 rescues 0->0; first: log under the lip x 8570 (58 px out) t 45.8
+  middle normal 15 P->P time 203.5 -> 199.1 lives 0->2 rescues 0->0; first: log under the lip x 8494 (62 px out) t 45.8
+  middle normal 16 P->P time 210 -> 226.6 lives 1->5 rescues 0->0; first: stand over water x 24355 (run 80 + gap 104) t 155.8; log under the lip x 8451 (23 px out) t 45.3
+  middle normal 17 P->P time 223.3 -> 209.5 lives 6->1 rescues 0->0; first: log under the lip x 8480 (67 px out) t 45.9
+  middle normal 18 P->P time 203.9 -> 233.2 lives 1->7 rescues 0->0; first: log under the lip x 24331 (75 px out) t 145.2
+  middle normal 20 P->P time 201.5 -> 203 lives 1->0 rescues 0->0; first: stand over water x 25492 (run 6 + gap 173) t 159.8; log under the lip x 8440 (79 px out) t 46.1
+  middle normal 21 P->P time 213.5 -> 207.5 lives 5->2 rescues 0->0; first: log under the lip x 24423 (33 px out) t 153
+  middle normal 22 P->P time 209.3 -> 202.7 lives 0->0 rescues 0->0; first: log under the lip x 24318 (44 px out) t 150.4
+  middle normal 24 P->P time 203.4 -> 198 lives 1->0 rescues 0->0; first: log under the lip x 14124 (25 px out) t 80.8
+  middle normal 25 P->P time 206.3 -> 205.8 lives 0->0 rescues 0->0; first: log under the lip x 14232 (78 px out) t 81.5
+  middle normal 26 P->P time 206.6 -> 215.8 lives 0->2 rescues 0->0; first: log under the lip x 14182 (14 px out) t 86.8
+  middle normal 27 P->P time 198.7 -> 202.5 lives 0->0 rescues 0->0; first: log under the lip x 24625 (40 px out) t 144.8
+  middle normal 28 P->P time 203.1 -> 199.8 lives 2->0 rescues 0->0; first: log under the lip x 24476 (23 px out) t 150.1
+  middle normal 29 P->P time 226.8 -> 206.2 lives 3->0 rescues 0->0; first: log under the lip x 14108 (43 px out) t 84.1
+  middle normal 30 P->P time 217.5 -> 252.5 lives 1->5 rescues 0->0; first: log under the lip x 8628 (39 px out) t 55.9
+  middle normal 31 P->P time 198.2 -> 196.7 lives 0->0 rescues 0->0; first: stand over water x 29772 (run 129 + gap 75) t 179.4; log under the lip x 29891 (53 px out) t 180.1
+  middle normal 32 P->P time 218.4 -> 210.8 lives 2->1 rescues 0->0; first: stand over water x 25453 (run 163 + gap 68) t 166.9; log under the lip x 8445 (58 px out) t 49.2
+  middle normal 33 P->P time 211.4 -> 209.3 lives 0->0 rescues 0->0; first: log under the lip x 8701 (78 px out) t 53
+  middle normal 34 P->P time 203 -> 194.1 lives 2->0 rescues 0->0; first: log under the lip x 14148 (61 px out) t 87.4
+  middle normal 35 P->P time 186.6 -> 184.2 lives 3->1 rescues 0->0; first: stand over water x 29819 (run 136 + gap 67) t 171.5; log under the lip x 14216 (24 px out) t 74.6
+  middle normal 36 P->P time 211.1 -> 209.3 lives 2->1 rescues 0->0; first: log under the lip x 14219 (15 px out) t 77.5
+  middle normal 37 P->P time 226.2 -> 212.3 lives 3->4 rescues 0->0; first: log under the lip x 8699 (12 px out) t 52
+  middle normal 38 P->P time 198.4 -> 222.7 lives 1->4 rescues 0->0; first: log under the lip x 8458 (51 px out) t 49.1
+  middle normal 39 P->P time 212.8 -> 197.9 lives 4->0 rescues 0->0; first: log under the lip x 8565 (51 px out) t 45.7
+  middle normal 40 P->P time 193.2 -> 202.8 lives 0->1 rescues 0->0; first: log under the lip x 14295 (70 px out) t 81.4

@@ -1,0 +1,11 @@
+import '../../src/game/headlessDom.ts';
+import { CAST_BOTS } from './castBots.ts';
+import { firstTimer } from './firsttimer.ts';
+import { setDifficulty } from '../../src/game/difficulty.ts';
+const [id, bot, setting, seedsArg] = process.argv.slice(2) as [string, string, 'normal' | 'easy', string];
+for (const seed of seedsArg.split(',').map(Number)) {
+  setDifficulty(setting);
+  const r: any = firstTimer(id, seed, (CAST_BOTS as any)[bot][setting]!, { cap: 1200, dotSetting: true });
+  console.log(`== ${id} ${bot} ${setting} seed ${seed} reach ${process.env.B26I_REACH ?? 'GRAB'}: ${r.end} ${r.time} s rescues ${r.rescues}`);
+  for (const s of r.stuck) console.log(`   t ${s.t} x ${s.x} y ${s.y} dur ${s.dur} ${s.what}`);
+}

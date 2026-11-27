@@ -1,0 +1,5 @@
+import '../../../../src/game/headlessDom.ts';
+const { RealPlay } = await import('../../../../src/game/realPlay.ts');
+const { provenList } = await import('../../../../src/game/gen2/seedList.ts');
+const L = provenList('1-4')!;
+for (const v of [1, 26, 27, 45, 66, 69, 100]) { const rp = new RealPlay('1-4', v); const g = (rp.stage as any).gen2; console.log('variant', v, '-> gen2', g?.seed + ':' + g?.rerolls, '| plan[v-1]', L.plans[v - 1].split('|')[0], '(list seed', L.seeds[v - 1] + ') | plan[v%n]', L.plans[v % 100].split('|')[0], '(list seed', L.seeds[v % 100] + ')'); }

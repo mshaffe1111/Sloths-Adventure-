@@ -1,0 +1,432 @@
+TAP version 13
+# fixture: no still fork: still fork 0: its ground breaks at 20488 (the cover and the post stand on unbroken ground); still fork 0: no ground for its post within 420 px of the cover's start (on one upright screen with him)
+# Subtest: a listed stage with no list yet fails --check by name, not by a throw (a list taken out of the index, in a scratch worktree)
+not ok 1 - a listed stage with no list yet fails --check by name, not by a throw (a list taken out of the index, in a scratch worktree)
+  ---
+  duration_ms: 10512.623796
+  type: 'test'
+  location: '/home/user/fz27w/tools/engine/seedlist.test.ts:15:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    error: unable to write file reference/story-report/s6-mockups/mock-satchel-up.png
+    error: unable to write file reference/story-report/s6-stills/gates-falls-side.webp
+    error: unable to write file reference/story-report/s6-stills/gates-falls-up.webp
+    error: unable to write file reference/story-report/s6-stills/gates-soldiers-side.webp
+    error: unable to write file reference/story-report/s6-stills/gates-soldiers-up.webp
+    error: unable to write file reference/story-report/s6-stills/reader-w1_notch-up.webp
+    error: unable to write file reference/story-report/s6-stills/reader-w6_note-up.webp
+    error: unable to write file reference/story-report/s6-stills/reader-w8_pocket-side.webp
+    error: unable to write file reference/story-report/s6-stills/reader-w8_pocket-up.webp
+    error: unable to write file reference/story-report/s6-stills/satchel-journal-side.webp
+    error: unable to write file reference/story-report/s6-stills/satchel-journal-up.webp
+    error: unable to write file reference/story-report/s6-stills/satchel-satchel-side.webp
+    error: unable to write file reference/story-report/s6-stills/satchel-satchel-up.webp
+    error: unable to write file reference/story-report/s6-stills/satchel-scenes-up.webp
+    error: unable to write file reference/story-report/s6-stills/w8-soup-side.webp
+    error: unable to write file reference/story-report/s6-stills/w8-soup-up.webp
+    error: unable to write file reference/story-report/s7-stills/card-flicker-side.webp
+    error: unable to write file reference/story-report/s7-stills/card-flicker-up.webp
+    error: unable to write file reference/story-report/s7-stills/card-magma-drake-side.webp
+    error: unable to write file reference/story-report/s7-stills/card-magma-drake-up.webp
+    error: unable to write file reference/story-report/s7-stills/card-pell-side.webp
+    error: unable to write file reference/story-report/s7-stills/card-pell-up.webp
+    error: unable to write file reference/story-report/s7-stills/card-squirrels-side.webp
+    error: unable to write file reference/story-report/s7-stills/card-squirrels-up.webp
+    error: unable to write file reference/story-report/s7-stills/card-tarantula-queen-side.webp
+    error: unable to write file reference/story-report/s7-stills/card-tarantula-queen-up.webp
+    error: unable to write file reference/story-report/s7-stills/card-venom-fang-side.webp
+    error: unable to write file reference/story-report/s7-stills/card-venom-fang-up.webp
+    error: unable to write file reference/story-report/s7-stills/snail-7-3-side.webp
+    error: unable to write file reference/story-report/s7-stills/snail-7-3-up.webp
+    error: unable to write file reference/story-report/s9-report.md
+    fatal: cannot create directory at 'reference/story-report/s9-stills': No space left on device
+    
+    
+    128 !== 0
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 0
+  actual: 128
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (/home/user/fz27w/tools/engine/seedlist.test.ts:22:12)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.start (node:internal/test_runner/test:944:17)
+    startSubtestAfterBootstrap (node:internal/test_runner/harness:296:17)
+  ...
+# Subtest: an id with no row exits 2, by name
+ok 2 - an id with no row exits 2, by name
+  ---
+  duration_ms: 1241.865499
+  type: 'test'
+  ...
+# Subtest: neither tool holds a stage id or a table of its own: both read the listed-stage table
+ok 3 - neither tool holds a stage id or a table of its own: both read the listed-stage table
+  ---
+  duration_ms: 0.578992
+  type: 'test'
+  ...
+# Subtest: searchYield: per graph, seeds tried and kept, and how many each refusing rule refused (a roll once per rule)
+ok 4 - searchYield: per graph, seeds tried and kept, and how many each refusing rule refused (a roll once per rule)
+  ---
+  duration_ms: 6.878746
+  type: 'test'
+  ...
+# Subtest: room for help is the list judge's own rule: planted on 1-1 seed 33825 Easy, as the list's search lays it (dropped by the relist that added it)
+ok 5 - room for help is the list judge's own rule: planted on 1-1 seed 33825 Easy, as the list's search lays it (dropped by the relist that added it)
+  ---
+  duration_ms: 3078.231015
+  type: 'test'
+  ...
+# Subtest: the quiet line sees a laid chase: each stretch and each rolling nut and fruit a beat, judged on the roll as its finish lays it
+ok 6 - the quiet line sees a laid chase: each stretch and each rolling nut and fruit a beat, judged on the roll as its finish lays it
+  ---
+  duration_ms: 1875.17181
+  type: 'test'
+  ...
+# Subtest: the list judges each seed with its row's whole finish, as Play builds it: a finish that throws on a setting is refused by name
+ok 7 - the list judges each seed with its row's whole finish, as Play builds it: a finish that throws on a setting is refused by name
+  ---
+  duration_ms: 277.897003
+  type: 'test'
+  ...
+# Subtest: the list judges each listed seed's dressing rows against its world's inventory: a row the inventory lacks is refused by name
+ok 8 - the list judges each listed seed's dressing rows against its world's inventory: a row the inventory lacks is refused by name
+  ---
+  duration_ms: 296.194388
+  type: 'test'
+  ...
+# Subtest: a lure post as played works on an animal that fears it: the roost boa out of its roost's reach is refused by the list's judge
+ok 9 - a lure post as played works on an animal that fears it: the roost boa out of its roost's reach is refused by the list's judge
+  ---
+  duration_ms: 367.633394
+  type: 'test'
+  ...
+# Subtest: a socket predator stands on its designed piece: read-bare's boa moved onto 's1' is refused by the list's judge (R-165.327)
+ok 10 - a socket predator stands on its designed piece: read-bare's boa moved onto 's1' is refused by the list's judge (R-165.327)
+  ---
+  duration_ms: 367.343919
+  type: 'test'
+  ...
+# Subtest: spot memory: a single jump that fails at a spot is followed by a double there; two falls back are a loop
+ok 11 - spot memory: a single jump that fails at a spot is followed by a double there; two falls back are a loop
+  ---
+  duration_ms: 1.255816
+  type: 'test'
+  ...
+# Subtest: progress follows him along the route, never jumps to a far part of it, and finds him again after a respawn
+ok 12 - progress follows him along the route, never jumps to a far part of it, and finds him again after a respawn
+  ---
+  duration_ms: 0.437031
+  type: 'test'
+  ...
+# Subtest: after a fall, the way back up is found near him: a level point is taken only within LEVEL_REACH, else the plain nearest (ENG-285; 1-6 kid Normal layout 13 picked one 35,000 px on, BUILD-24b)
+ok 13 - after a fall, the way back up is found near him: a level point is taken only within LEVEL_REACH, else the plain nearest (ENG-285; 1-6 kid Normal layout 13 picked one 35,000 px on, BUILD-24b)
+  ---
+  duration_ms: 0.17928
+  type: 'test'
+  ...
+# Subtest: the thumb: reaction and hold noise as the Gemini research's Stage B, never a flick under 2 frames
+ok 14 - the thumb: reaction and hold noise as the Gemini research's Stage B, never a flick under 2 frames
+  ---
+  duration_ms: 9.079314
+  type: 'test'
+  ...
+# Subtest: Dot: repeats, lines too close (a warning may come at once), lines up 20 s+ with their thing out of reach, re-teaching, wordy lines
+ok 15 - Dot: repeats, lines too close (a warning may come at once), lines up 20 s+ with their thing out of reach, re-teaching, wordy lines
+  ---
+  duration_ms: 0.598452
+  type: 'test'
+  ...
+# Subtest: the first harm of each kind against the first tip that teaches it (on screen a reaction before it)
+ok 16 - the first harm of each kind against the first tip that teaches it (on screen a reaction before it)
+  ---
+  duration_ms: 0.386695
+  type: 'test'
+  ...
+# Subtest: the gates: survival per edge over the tries, and peak stress per burst before a rest
+ok 17 - the gates: survival per edge over the tries, and peak stress per burst before a rest
+  ---
+  duration_ms: 0.255718
+  type: 'test'
+  ...
+# Subtest: in the real engine: a waist-high step is got over with a plain flick; a tall wall stops him and is reported with its height
+ok 18 - in the real engine: a waist-high step is got over with a plain flick; a tall wall stops him and is reported with its height
+  ---
+  duration_ms: 495.892942
+  type: 'test'
+  ...
+# Subtest: in the real engine: after a put-back the game's steer hold is not a wall; the adult runs up to the lip for his next jump (POLISH-9)
+ok 19 - in the real engine: after a put-back the game's steer hold is not a wall; the adult runs up to the lip for his next jump (POLISH-9)
+  ---
+  duration_ms: 967.828655
+  type: 'test'
+  ...
+# Subtest: in the real engine: a log drifting his way across the lip is the floor his boarding hop is for: a single where a single comes down on it, never a double read past it to the next log (SKILLS.boardHop; RED with it off)
+ok 20 - in the real engine: a log drifting his way across the lip is the floor his boarding hop is for: a single where a single comes down on it, never a double read past it to the next log (SKILLS.boardHop; RED with it off)
+  ---
+  duration_ms: 563.855494
+  type: 'test'
+  ...
+# Subtest: on the runs it was found on, 2-2 child Normal seed 36 and middle Normal seed 17: no life lost in the 3 s after he stands at a lip with a log his way across it (SKILLS.boardHop; the child RED with it off)
+not ok 21 - on the runs it was found on, 2-2 child Normal seed 36 and middle Normal seed 17: no life lost in the 3 s after he stands at a lip with a log his way across it (SKILLS.boardHop; the child RED with it off)
+  ---
+  duration_ms: 4423.56491
+  type: 'test'
+  location: '/home/user/fz27w/tools/inspect/firsttimer.test.ts:184:1'
+  failureType: 'testCodeFailure'
+  error: 'he stood at such a lip (0)'
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: true
+  actual: false
+  operator: '=='
+  stack: |-
+    TestContext.<anonymous> (/home/user/fz27w/tools/inspect/firsttimer.test.ts:210:10)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: in the real engine: a jump from a STAND over a laid pond reads the gap from where he stands, so a single that cannot carry his own ground to the lip and the pond is a double (SKILLS.fromTakeoff; RED with it off)
+ok 22 - in the real engine: a jump from a STAND over a laid pond reads the gap from where he stands, so a single that cannot carry his own ground to the lip and the pond is a double (SKILLS.fromTakeoff; RED with it off)
+  ---
+  duration_ms: 860.167578
+  type: 'test'
+  ...
+# Subtest: the findings name the rule each breaks
+ok 23 - the findings name the rule each breaks
+  ---
+  duration_ms: 0.613525
+  type: 'test'
+  ...
+# Subtest: the fixture: one deep log river, rolled clean
+ok 24 - the fixture: one deep log river, rolled clean
+  ---
+  duration_ms: 108.511559
+  type: 'test'
+  ...
+# Subtest: middle, normal: rides the logs across the river and reaches the shrine
+ok 25 - middle, normal: rides the logs across the river and reaches the shrine
+  ---
+  duration_ms: 1321.739958
+  type: 'test'
+  ...
+# Subtest: middle, easy: rides the logs across the river and reaches the shrine
+ok 26 - middle, easy: rides the logs across the river and reaches the shrine
+  ---
+  duration_ms: 1095.868907
+  type: 'test'
+  ...
+# Subtest: child, normal: rides the logs across the river and reaches the shrine
+ok 27 - child, normal: rides the logs across the river and reaches the shrine
+  ---
+  duration_ms: 1298.96636
+  type: 'test'
+  ...
+# Subtest: child, easy: rides the logs across the river and reaches the shrine
+ok 28 - child, easy: rides the logs across the river and reaches the shrine
+  ---
+  duration_ms: 762.961179
+  type: 'test'
+  ...
+# Subtest: planted: with the ride skill off, the middle and child bots drown in the river
+not ok 29 - planted: with the ride skill off, the middle and child bots drown in the river
+  ---
+  duration_ms: 3152.899482
+  type: 'test'
+  location: '/home/user/fz27w/tools/inspect/riverRide.test.ts:106:1'
+  failureType: 'testCodeFailure'
+  error: 'with no ride skill every tier still crossed within 2 lives: middle normal: ended shrine, at the river {"id":"toy-one-river","lives":1,"putbacks":0,"seconds":14.5} (at most 2 lives), stuck []; middle easy: ended shrine, at the river {"id":"toy-one-river","lives":0,"putbacks":0,"seconds":8} (at most 2 lives), stuck []; child normal: ended shrine, at the river {"id":"toy-one-river","lives":0,"putbacks":0,"seconds":13} (at most 2 lives), stuck []; child easy: ended shrine, at the river {"id":"toy-one-river","lives":0,"putbacks":0,"seconds":9} (at most 2 lives), stuck []'
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: true
+  actual: false
+  operator: '=='
+  stack: |-
+    TestContext.<anonymous> (/home/user/fz27w/tools/inspect/riverRide.test.ts:116:12)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: middle, normal: against the flow (W2_RIVERS.back), hops log to log off each front end and reaches the shrine
+ok 30 - middle, normal: against the flow (W2_RIVERS.back), hops log to log off each front end and reaches the shrine
+  ---
+  duration_ms: 479.219064
+  type: 'test'
+  ...
+# Subtest: middle, normal: the long log (W2_RIVERS.long, laid deep) rides him in and hands him onto the far bank
+ok 31 - middle, normal: the long log (W2_RIVERS.long, laid deep) rides him in and hands him onto the far bank
+  ---
+  duration_ms: 375.182598
+  type: 'test'
+  ...
+# Subtest: middle, easy: against the flow (W2_RIVERS.back), hops log to log off each front end and reaches the shrine
+ok 32 - middle, easy: against the flow (W2_RIVERS.back), hops log to log off each front end and reaches the shrine
+  ---
+  duration_ms: 383.90287
+  type: 'test'
+  ...
+# Subtest: middle, easy: the long log (W2_RIVERS.long, laid deep) rides him in and hands him onto the far bank
+ok 33 - middle, easy: the long log (W2_RIVERS.long, laid deep) rides him in and hands him onto the far bank
+  ---
+  duration_ms: 355.110865
+  type: 'test'
+  ...
+# Subtest: child, normal: against the flow (W2_RIVERS.back), hops log to log off each front end and reaches the shrine
+ok 34 - child, normal: against the flow (W2_RIVERS.back), hops log to log off each front end and reaches the shrine
+  ---
+  duration_ms: 868.110959
+  type: 'test'
+  ...
+# Subtest: child, normal: the long log (W2_RIVERS.long, laid deep) rides him in and hands him onto the far bank
+ok 35 - child, normal: the long log (W2_RIVERS.long, laid deep) rides him in and hands him onto the far bank
+  ---
+  duration_ms: 890.406073
+  type: 'test'
+  ...
+# Subtest: child, easy: against the flow (W2_RIVERS.back), hops log to log off each front end and reaches the shrine
+ok 36 - child, easy: against the flow (W2_RIVERS.back), hops log to log off each front end and reaches the shrine
+  ---
+  duration_ms: 594.967243
+  type: 'test'
+  ...
+# Subtest: child, easy: the long log (W2_RIVERS.long, laid deep) rides him in and hands him onto the far bank
+ok 37 - child, easy: the long log (W2_RIVERS.long, laid deep) rides him in and hands him onto the far bank
+  ---
+  duration_ms: 577.743227
+  type: 'test'
+  ...
+# Subtest: planted: with the handed-to-the-bank skill off, the middle on Normal hops at the water off the long log and drowns over the bar
+not ok 38 - planted: with the handed-to-the-bank skill off, the middle on Normal hops at the water off the long log and drowns over the bar
+  ---
+  duration_ms: 508.179283
+  type: 'test'
+  location: '/home/user/fz27w/tools/inspect/riverRide.test.ts:144:1'
+  failureType: 'testCodeFailure'
+  error: 'handed off, the middle on Normal still crossed within 1: handed 0, ended shrine, at the river {"id":"toy-one-river","lives":0,"putbacks":0,"seconds":12.5} (at most 2 lives), stuck []'
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: true
+  actual: false
+  operator: '=='
+  stack: |-
+    TestContext.<anonymous> (/home/user/fz27w/tools/inspect/riverRide.test.ts:148:12)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: 2-1, against the flow and up the far bank on: the adult on Normal (12), the child on Normal (4, 5) and on Easy (22) cross clean
+ok 39 - 2-1, against the flow and up the far bank on: the adult on Normal (12), the child on Normal (4, 5) and on Easy (22) cross clean
+  ---
+  duration_ms: 8004.7501
+  type: 'test'
+  ...
+# Subtest: planted: with the against-the-flow skill off, the adult on Normal is rescued at 2-1's back river (12) and the child on Normal loses 5+ more lives (4, 5)
+not ok 40 - planted: with the against-the-flow skill off, the adult on Normal is rescued at 2-1's back river (12) and the child on Normal loses 5+ more lives (4, 5)
+  ---
+  duration_ms: 1996.408021
+  type: 'test'
+  location: '/home/user/fz27w/tools/inspect/riverRide.test.ts:202:1'
+  failureType: 'testCodeFailure'
+  error: 'upstream off, still clean: adult normal seed 12: shrine, rescues 0, lives 3, stuck []'
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: true
+  actual: false
+  operator: '=='
+  stack: |-
+    TestContext.<anonymous> (/home/user/fz27w/tools/inspect/riverRide.test.ts:208:14)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: planted (THIN): with the up-the-far-bank skill off, the child on Easy is carried back on 2-1's both-ways log and reaches its far bank 2+ s later (22)
+not ok 41 - planted (THIN): with the up-the-far-bank skill off, the child on Easy is carried back on 2-1's both-ways log and reaches its far bank 2+ s later (22)
+  ---
+  duration_ms: 1423.594172
+  type: 'test'
+  location: '/home/user/fz27w/tools/inspect/riverRide.test.ts:218:1'
+  failureType: 'testCodeFailure'
+  error: 'bankUp off, child easy seed 22: boarding to far bank 4.70 s on, 4.70 s off (+0.00, at least 2)'
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: true
+  actual: false
+  operator: '=='
+  stack: |-
+    <anonymous> (/home/user/fz27w/tools/inspect/riverRide.test.ts:225:14)
+    Array.forEach (<anonymous>)
+    TestContext.<anonymous> (/home/user/fz27w/tools/inspect/riverRide.test.ts:222:18)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: rideWheel ON: every tier boards, rides and steps off the wheel: no scramble, no pond, across in about half a turn
+not ok 42 - rideWheel ON: every tier boards, rides and steps off the wheel: no scramble, no pond, across in about half a turn
+  ---
+  duration_ms: 1979.439515
+  type: 'test'
+  location: '/home/user/fz27w/tools/inspect/wheelRide.test.ts:26:1'
+  failureType: 'testCodeFailure'
+  error: 'World 2 finish: the fall at x=335-731 has no bank at one end'
+  code: 'ERR_TEST_FAILURE'
+  stack: |-
+    w2Finish (/home/user/fz27w/src/game/gen2/worlds/w2.ts:320:31)
+    world (/home/user/fz27w/tools/inspect/wheelToys.ts:28:72)
+    playFinish (/home/user/fz27w/src/game/gen2/listed.ts:70:31)
+    generateStageOn (/home/user/fz27w/src/game/stageGenerator.ts:2950:9)
+    <anonymous> (/home/user/fz27w/src/game/stageGenerator.ts:2889:40)
+    withSetting (/home/user/fz27w/src/game/settingDials.ts:45:12)
+    generateStage (/home/user/fz27w/src/game/stageGenerator.ts:2889:10)
+    new GameEngine (/home/user/fz27w/src/game/engine.ts:1042:57)
+    new RealPlay (/home/user/fz27w/src/game/realPlay.ts:156:15)
+    piecesOf (/home/user/fz27w/tools/inspect/tierBots.ts:54:14)
+  ...
+# Subtest: PLANTED: rideWheel OFF, every tier scrambles bucket to bucket instead of riding (RED)
+not ok 43 - PLANTED: rideWheel OFF, every tier scrambles bucket to bucket instead of riding (RED)
+  ---
+  duration_ms: 673.687393
+  type: 'test'
+  location: '/home/user/fz27w/tools/inspect/wheelRide.test.ts:42:1'
+  failureType: 'testCodeFailure'
+  error: 'World 2 finish: the fall at x=335-731 has no bank at one end'
+  code: 'ERR_TEST_FAILURE'
+  stack: |-
+    w2Finish (/home/user/fz27w/src/game/gen2/worlds/w2.ts:320:31)
+    world (/home/user/fz27w/tools/inspect/wheelToys.ts:28:72)
+    playFinish (/home/user/fz27w/src/game/gen2/listed.ts:70:31)
+    generateStageOn (/home/user/fz27w/src/game/stageGenerator.ts:2950:9)
+    <anonymous> (/home/user/fz27w/src/game/stageGenerator.ts:2889:40)
+    withSetting (/home/user/fz27w/src/game/settingDials.ts:45:12)
+    generateStage (/home/user/fz27w/src/game/stageGenerator.ts:2889:10)
+    new GameEngine (/home/user/fz27w/src/game/engine.ts:1042:57)
+    new RealPlay (/home/user/fz27w/src/game/realPlay.ts:156:15)
+    piecesOf (/home/user/fz27w/tools/inspect/tierBots.ts:54:14)
+  ...
+1..43
+# tests 43
+# suites 0
+# pass 35
+# fail 8
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 25561.356596
+EXIT 1

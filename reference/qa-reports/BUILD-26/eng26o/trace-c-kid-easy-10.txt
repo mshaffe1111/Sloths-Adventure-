@@ -1,0 +1,114 @@
+# ENG-26o: 1-4 kid Easy 10 on frozen 4b6ce810f (copy with stderr prints, never committed): the route around s17:top, then every 12th frame 93-123 s
+PT 830 1053,3936 {}
+PT 832 1053,3889 {}
+PT 834 1053,3843 {}
+PT 836 1053,3796 {}
+PT 838 1053,3749 {}
+PT 840 1053,3702 {}
+PT 842 1008,3702 {}
+PT 844 962,3702 {}
+PT 846 917,3702 {}
+PT 848 872,3702 {}
+PT 850 826,3702 {}
+PT 852 781,3702 {}
+PT 854 781,3654 {}
+PT 856 781,3606 {}
+PT 858 781,3558 {}
+PT 860 781,3510 {}
+PT 862 781,3462 {}
+PT 864 781,3414 {}
+PT 866 781,3366 {}
+PT 868 758,3342 {}
+PT 870 712,3342 {}
+PT 872 666,3342 {}
+PT 874 619,3342 {}
+PT 876 573,3342 {}
+PT 878 527,3342 {}
+PT 880 481,3342 {}
+PT 882 528,3342 {}
+PT 884 575,3342 {}
+PT 886 622,3342 {}
+PT 888 669,3342 {}
+PT 890 716,3342 {}
+PT 892 763,3342 {}
+PT 894 786,3319 {}
+PT 896 786,3272 {}
+PT 898 786,3225 {}
+PT 900 786,3178 {}
+PT 902 786,3131 {}
+PT 904 786,3084 {}
+DBG t 93.07 x 541 y 3621 g 0 cl undefined pad {"up":true} cur 854 (781,3654 ) next (781,3630 )
+DBG t 93.47 x 541 y 3569 g 0 cl undefined pad {"up":true} cur 854 (781,3654 ) next (781,3630 )
+DBG t 93.87 x 541 y 3516 g 0 cl undefined pad {"up":true} cur 877 (550,3342 ) next (527,3342 )
+DBG t 94.27 x 541 y 3442 g 0 cl undefined pad {"up":true} cur 877 (550,3342 ) next (527,3342 )
+DBG t 94.67 x 541 y 3330 g 0 cl - pad {"right":true} cur 877 (550,3342 ) next (527,3342 )
+DBG t 95.07 x 610 y 3342 g 1 cl - pad {} cur 874 (619,3342 ) next (596,3342 )
+DBG t 95.47 x 610 y 3342 g 1 cl - pad {} cur 874 (619,3342 ) next (596,3342 )
+DBG t 95.87 x 607 y 3342 g 1 cl - pad {"right":true} cur 885 (598,3342 ) next (622,3342 )
+DBG t 96.27 x 607 y 3342 g 1 cl - pad {} cur 885 (598,3342 ) next (622,3342 )
+DBG t 96.67 x 607 y 3342 g 1 cl - pad {} cur 885 (598,3342 ) next (622,3342 )
+DBG t 97.07 x 607 y 3342 g 1 cl - pad {} cur 885 (598,3342 ) next (622,3342 )
+DBG t 97.47 x 610 y 3342 g 1 cl - pad {} cur 874 (619,3342 ) next (596,3342 )
+DBG t 97.87 x 610 y 3342 g 1 cl - pad {} cur 874 (619,3342 ) next (596,3342 )
+DBG t 98.27 x 610 y 3342 g 1 cl - pad {} cur 874 (619,3342 ) next (596,3342 )
+DBG t 98.67 x 607 y 3342 g 1 cl - pad {"right":true} cur 885 (598,3342 ) next (622,3342 )
+DBG t 99.07 x 607 y 3342 g 1 cl - pad {} cur 885 (598,3342 ) next (622,3342 )
+DBG t 99.47 x 607 y 3342 g 1 cl - pad {} cur 885 (598,3342 ) next (622,3342 )
+DBG t 99.87 x 607 y 3342 g 1 cl - pad {} cur 885 (598,3342 ) next (622,3342 )
+DBG t 100.27 x 610 y 3342 g 1 cl - pad {} cur 874 (619,3342 ) next (596,3342 )
+DBG t 100.67 x 610 y 3342 g 1 cl - pad {} cur 874 (619,3342 ) next (596,3342 )
+DBG t 101.07 x 610 y 3342 g 1 cl - pad {} cur 874 (619,3342 ) next (596,3342 )
+DBG t 101.47 x 607 y 3342 g 1 cl - pad {"right":true} cur 885 (598,3342 ) next (622,3342 )
+DBG t 101.87 x 607 y 3342 g 1 cl - pad {} cur 885 (598,3342 ) next (622,3342 )
+DBG t 102.27 x 607 y 3342 g 1 cl - pad {} cur 885 (598,3342 ) next (622,3342 )
+DBG t 102.67 x 607 y 3342 g 1 cl - pad {} cur 885 (598,3342 ) next (622,3342 )
+DBG t 103.07 x 610 y 3342 g 1 cl - pad {} cur 874 (619,3342 ) next (596,3342 )
+DBG t 103.47 x 610 y 3342 g 1 cl - pad {} cur 874 (619,3342 ) next (596,3342 )
+DBG t 103.87 x 610 y 3342 g 1 cl - pad {} cur 874 (619,3342 ) next (596,3342 )
+DBG t 104.27 x 607 y 3342 g 1 cl - pad {"right":true} cur 885 (598,3342 ) next (622,3342 )
+DBG t 104.67 x 607 y 3342 g 1 cl - pad {} cur 885 (598,3342 ) next (622,3342 )
+DBG t 105.07 x 607 y 3342 g 1 cl - pad {} cur 885 (598,3342 ) next (622,3342 )
+DBG t 105.47 x 607 y 3342 g 1 cl - pad {} cur 885 (598,3342 ) next (622,3342 )
+DBG t 105.87 x 610 y 3342 g 1 cl - pad {} cur 874 (619,3342 ) next (596,3342 )
+DBG t 106.27 x 610 y 3342 g 1 cl - pad {} cur 874 (619,3342 ) next (596,3342 )
+DBG t 106.67 x 610 y 3342 g 1 cl - pad {} cur 874 (619,3342 ) next (596,3342 )
+DBG t 107.07 x 607 y 3342 g 1 cl - pad {"right":true} cur 885 (598,3342 ) next (622,3342 )
+DBG t 107.47 x 607 y 3342 g 1 cl - pad {} cur 885 (598,3342 ) next (622,3342 )
+DBG t 107.87 x 607 y 3342 g 1 cl - pad {} cur 885 (598,3342 ) next (622,3342 )
+DBG t 108.27 x 607 y 3342 g 1 cl - pad {} cur 885 (598,3342 ) next (622,3342 )
+DBG t 108.67 x 610 y 3342 g 1 cl - pad {} cur 874 (619,3342 ) next (596,3342 )
+DBG t 109.07 x 610 y 3342 g 1 cl - pad {} cur 874 (619,3342 ) next (596,3342 )
+DBG t 109.47 x 610 y 3342 g 1 cl - pad {} cur 874 (619,3342 ) next (596,3342 )
+DBG t 109.87 x 607 y 3342 g 1 cl - pad {"right":true} cur 885 (598,3342 ) next (622,3342 )
+DBG t 110.27 x 607 y 3342 g 1 cl - pad {} cur 885 (598,3342 ) next (622,3342 )
+DBG t 110.67 x 607 y 3342 g 1 cl - pad {} cur 885 (598,3342 ) next (622,3342 )
+DBG t 111.07 x 607 y 3342 g 1 cl - pad {} cur 885 (598,3342 ) next (622,3342 )
+DBG t 111.47 x 610 y 3342 g 1 cl - pad {} cur 874 (619,3342 ) next (596,3342 )
+DBG t 111.87 x 610 y 3342 g 1 cl - pad {} cur 874 (619,3342 ) next (596,3342 )
+DBG t 112.27 x 610 y 3342 g 1 cl - pad {} cur 874 (619,3342 ) next (596,3342 )
+DBG t 112.67 x 607 y 3342 g 1 cl - pad {"right":true} cur 885 (598,3342 ) next (622,3342 )
+DBG t 113.07 x 607 y 3342 g 1 cl - pad {} cur 885 (598,3342 ) next (622,3342 )
+DBG t 113.47 x 607 y 3342 g 1 cl - pad {} cur 885 (598,3342 ) next (622,3342 )
+DBG t 113.87 x 607 y 3342 g 1 cl - pad {} cur 885 (598,3342 ) next (622,3342 )
+DBG t 114.27 x 610 y 3342 g 1 cl - pad {} cur 874 (619,3342 ) next (596,3342 )
+DBG t 114.67 x 610 y 3342 g 1 cl - pad {} cur 874 (619,3342 ) next (596,3342 )
+DBG t 115.07 x 610 y 3342 g 1 cl - pad {} cur 874 (619,3342 ) next (596,3342 )
+DBG t 115.47 x 607 y 3342 g 1 cl - pad {"right":true} cur 885 (598,3342 ) next (622,3342 )
+DBG t 115.87 x 607 y 3342 g 1 cl - pad {} cur 885 (598,3342 ) next (622,3342 )
+DBG t 116.27 x 607 y 3342 g 1 cl - pad {} cur 885 (598,3342 ) next (622,3342 )
+DBG t 116.67 x 607 y 3342 g 1 cl - pad {} cur 885 (598,3342 ) next (622,3342 )
+DBG t 117.07 x 610 y 3342 g 1 cl - pad {} cur 874 (619,3342 ) next (596,3342 )
+DBG t 117.47 x 610 y 3342 g 1 cl - pad {} cur 874 (619,3342 ) next (596,3342 )
+DBG t 117.87 x 610 y 3342 g 1 cl - pad {} cur 874 (619,3342 ) next (596,3342 )
+DBG t 118.27 x 786 y 3308 g 0 cl undefined pad {"up":true} cur 894 (786,3319 ) next (786,3295 )
+DBG t 118.67 x 786 y 3220 g 0 cl undefined pad {"up":true} cur 898 (786,3225 ) next (786,3202 )
+DBG t 119.07 x 786 y 3132 g 0 cl undefined pad {"up":true} cur 902 (786,3131 ) next (786,3108 )
+DBG t 119.47 x 760 y 3043 g 0 cl - pad {"left":true} cur 906 (763,3060 ) next (740,3058 )
+DBG t 119.87 x 650 y 3061 g 1 cl - pad {"left":true} cur 911 (647,3053 ) next (624,3052 )
+DBG t 120.27 x 539 y 3061 g 1 cl - pad {"left":true} cur 916 (531,3046 ) next (508,3045 )
+DBG t 120.67 x 433 y 3061 g 1 cl - pad {} cur 920 (438,3041 ) next (415,3040 )
+DBG t 121.07 x 386 y 3061 g 1 cl - pad {"left":true} cur 922 (392,3038 ) next (368,3037 )
+DBG t 121.47 x 278 y 2986 g 0 cl - pad {"left":true} cur 927 (276,3032 ) next (252,3030 )
+DBG t 121.87 x 167 y 3021 g 1 cl - pad {"left":true} cur 932 (160,3025 ) next (136,3024 )
+DBG t 122.27 x 90 y 2962 g 0 cl undefined pad {"up":true,"left":true} cur 938 (90,2951 ) next (90,2927 )
+DBG t 122.67 x 90 y 2874 g 0 cl undefined pad {"up":true,"left":true} cur 941 (90,2881 ) next (90,2857 )

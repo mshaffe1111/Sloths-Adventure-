@@ -279,6 +279,9 @@ export function kitLib12(o: LibOpts = {}): WorldKit {
     required: {},
     tips: { ...M.tips, ...LINES_12 },
     teachTips: [...(M.teachTips ?? []), ...TEACH_12],
+    // (the stage's once-only story beats, each by the speaker its line table names: a story line on every help setting with the story switch
+    // on. As plain tips Tips dropped them, Normal's default: ENG-JETTY's scan, R-165.412)
+    storyTips: { ...(M.storyTips ?? {}), roots: 'Dot' },
     graphs: { ...G, list: [...G.list.filter((g) => g.archetype !== 'harvest'), ...Object.entries(ARC_12).map(([id, code]) => ({ id, archetype: 'harvest', code }))], briefs: { ...(o.flown ? {} : G.briefs), [ID]: brief } },
   } } as WorldKit;
 }

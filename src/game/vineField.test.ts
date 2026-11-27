@@ -121,3 +121,24 @@ test('gatesOpened: the stage as it is once every fig gate is open (bough, the bo
   const none = { platforms: [{ id: 1, broken: true }], vines: [] as import('./types.ts').Vine[] };
   assert.equal(gatesOpened(none), none, 'no gates: the same stage');
 });
+
+test('pairPetals (planted, ENG-26q): a petal moves to the middle of a pair only where no other pickup lies within the check\'s apart; the next mate\'s middle when that one is taken, else it stays', async () => {
+  const { pairPetals } = await import('./vineField.ts');
+  const { PICKUP_APART } = await import('./levelCheck.ts');
+  const v = (id: number, x: number) => ({ id, x, topY: 2965, bottomY: 3325, field: true }) as unknown as Vine;
+  // (1-4 ?layout=72140: field vines at 767, 847, 927; a petal laid at 838, on 847's line; the Notch at 911, 3299)
+  const vines = [v(51, 767), v(52, 847), v(53, 927)];
+  const find = { type: 'find', x: 911, y: 3299 };
+  const items = [find, { type: 'flower', x: 838, y: 3285 }];
+  assert.equal(pairPetals(items, vines, new Set(), PICKUP_APART), 1);
+  assert.equal(items[1].x, 807, 'the middle of 847/927 (887) is 28 px from the find: the petal hangs between 767 and 847 instead');
+  for (const o of items.slice(1)) assert.ok(Math.hypot(o.x - find.x, o.y - find.y) >= PICKUP_APART, 'no petal on the find');
+  // (both middles taken: it stays where it was laid)
+  const boxed = [{ type: 'heart', x: 807, y: 3285 }, { type: 'find', x: 887, y: 3285 }, { type: 'flower', x: 838, y: 3285 }];
+  assert.equal(pairPetals(boxed, vines, new Set(), PICKUP_APART), 0);
+  assert.equal(boxed[2].x, 838, 'no clear middle: unmoved');
+  // (nothing near: the nearest mate's middle, as before)
+  const free = [{ type: 'flower', x: 838, y: 3285 }];
+  pairPetals(free, vines, new Set(), PICKUP_APART);
+  assert.equal(free[0].x, 887);
+});

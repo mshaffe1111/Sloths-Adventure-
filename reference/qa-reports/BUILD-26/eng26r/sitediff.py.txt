@@ -1,0 +1,22 @@
+# usage: python3 -I sitediff.py <base results dir> <candidate results dir> <scenario> <orient> <metric>: the per-frame count per call
+# site at the scenario's spots, base vs candidate, the sites that differ (drawcheck's own per-site measures)
+import json, sys, os
+B, C, scen, o, met = sys.argv[1:6]
+KEYS = {'drawImageCalls': lambda s: s['n'].get('drawImage', 0), 'shrunkOver2_5x': lambda s: s['n'].get('shrunk>2.5x', 0),
+        'clips': lambda s: s['n'].get('clip', 0), 'drawImageScreens': lambda s: s['area'].get('drawImage', 0) / 1e6}
+def load(d):
+    for f in os.listdir(d):
+        if not f.endswith('.json') or 'partial' in f: continue
+        for r in json.load(open(os.path.join(d, f)))['results']:
+            if r['scenario'] == scen and r['orient'] == o:
+                n = len(r['frames']); out = {}
+                for s in r['sites']: out[(s['site'].rsplit(':',1)[0], s['fn'])] = out.get((s['site'].rsplit(':',1)[0], s['fn']), 0) + KEYS[met](s) / n
+                spots = {}
+                for fr in r['frames']: spots.setdefault(fr['spot'], []).append(fr)
+                return out, n
+    return {}, 0
+a, na = load(B); b, nb = load(C)
+d = sorted(((b.get(k, 0) - a.get(k, 0), k) for k in set(a) | set(b)), key=lambda x: -abs(x[0]))
+print(scen, o, met, f'frames {na}/{nb}')
+for v, k in d[:5]:
+    if abs(v) > 1e-6: print(f'   {v:+.3f}/frame  {k[0]} ({k[1]})  base {a.get(k,0):.3f} cand {b.get(k,0):.3f}')

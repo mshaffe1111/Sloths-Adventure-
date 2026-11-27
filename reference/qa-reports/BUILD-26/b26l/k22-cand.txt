@@ -1,0 +1,147 @@
+t 0 at 143,7550 G cur 0 best 0
+t 1 at 415,7550 G cur 11 best 11
+t 2 at 683,7550 G cur 22 best 22
+t 3 at 900,7486  cur 32 best 32
+t 4 at 1170,7425  cur 43 best 43
+t 5 at 1447,7550 G cur 55 best 55
+t 6 at 1610,7334 C cur 71 best 71
+t 7 at 1610,7114 C cur 81 best 81
+t 8 at 1646,6995 G cur 86 best 86
+t 9 at 1444,6995 G cur 93 best 93
+t 9.8 relocate from 1384,6995 lvl false climb - cur 96 -> 96 (1386,6920)
+t 10 at 1384,6976  cur 96 best 101
+t 11 at 1301,6897 G cur 100 best 101
+t 12 at 1304,6848 G cur 100 best 101
+t 13 at 1292,6800 G cur 100 best 101
+t 14 at 1265,6757 G cur 101 best 101
+t 15 at 1227,6726 G cur 103 best 103
+t 16 at 1181,6707 G cur 105 best 105
+t 17 at 1133,6703 G cur 107 best 107
+t 18 at 1084,6715 G cur 110 best 110
+t 19 at 1028,6731 G cur 112 best 112
+t 20 at 752,6686  cur 124 best 124
+t 21 at 476,6669  cur 135 best 135
+t 22 at 199,6667  cur 147 best 147
+t 23 at 88,6643 C cur 155 best 156
+t 24 at 104,6411  cur 165 best 165
+t 25 at 381,6410  cur 177 best 177
+t 26 at 543,6295  cur 184 best 184
+t 27 at 820,6380 G cur 195 best 195
+t 28 at 1115,6264 C cur 213 best 213
+t 29 at 1126,6031  cur 222 best 222
+t 30 at 1015,6049 G cur 226 best 226
+t 31 at 879,5806 C cur 242 best 242
+t 32 at 623,5785 G cur 254 best 254
+t 33 at 346,5785 G cur 266 best 266
+t 34 at 88,5763 C cur 278 best 278
+t 35 at 88,5543 C cur 287 best 287
+t 36 at 88,5479 C cur 290 best 292
+t 37 at 316,5349  cur 301 best 301
+t 38 at 623,5462 G cur 314 best 314
+t 39 at 949,5462 G cur 328 best 328
+t 40 at 1249,5504  cur 341 best 341
+t 41.0 relocate from 1312,5785 lvl true climb - cur 343 -> 222 (1115,6049)
+t 41 at 1303,5785 G cur 222 best 343
+t 42 at 1026,5785 G cur 243 best 343
+t 43 at 752,5701  cur 248 best 343
+t 44 at 478,5785 G cur 260 best 343
+t 45 at 200,5785 G cur 272 best 343
+t 46 at 88,5558 C cur 286 best 343
+t 47 at 215,5434 G cur 297 best 343
+t 48 at 496,5462 G cur 309 best 343
+t 49 at 821,5462 G cur 323 best 343
+t 50 at 1155,5462 G cur 337 best 343
+t 51 at 1482,5419 C cur 351 best 351
+t 52 at 1482,5199 C cur 361 best 361
+t 53 at 1482,4979 C cur 370 best 370
+t 54 at 1411,4929 G cur 376 best 376
+t 55 at 1146,4923 G cur 387 best 387
+t 56 at 1176,4888 G cur 386 best 388
+t 57 at 1236,4845 G cur 384 best 388
+t 58 at 1266,4797 G cur 383 best 388
+t 59 at 1229,4747 G cur 384 best 388
+t 60 at 1197,4700 G cur 386 best 388
+t 61 at 1205,4658 G cur 386 best 388
+t 62 at 1222,4626 G cur 385 best 388
+t 63 at 1225,4736 G cur 385 best 388
+t 64 at 1242,4689 G cur 384 best 388
+t 65 at 1195,4650 G cur 385 best 388
+t 66 at 1149,4620 G cur 388 best 388
+t 67 at 1103,4602 G cur 390 best 390
+t 68 at 1053,4597 G cur 392 best 392
+t 69 at 895,4625 G cur 399 best 399
+t 70 at 620,4541  cur 418 best 418
+t 71 at 573,4304  cur 428 best 428
+t 72 at 729,4316 G cur 434 best 434
+t 73 at 1006,4252  cur 446 best 446
+t 74 at 1283,4221  cur 458 best 458
+t 75 at 1561,4316 G cur 470 best 470
+t 76 at 1612,4103 C cur 482 best 482
+t 77 at 1612,4039 C cur 485 best 488
+t 78 at 1419,3870  cur 496 best 496
+t 79 at 1142,4313  cur 506 best 506
+t 79.7 relocate from 1259,4316 lvl true climb - cur 506 -> 458 (1266,4316)
+t 80 at 1342,4265  cur 461 best 506
+t 81 at 1612,4279 C cur 474 best 506
+t 82 at 1612,4059 C cur 484 best 506
+t 83 at 1612,3995 C cur 486 best 506
+t 84 at 1367,3856  cur 498 best 506
+t 85 at 1091,3946  cur 509 best 509
+t 86 at 815,3929  cur 521 best 521
+t 87 at 596,3903  cur 530 best 530
+t 88 at 389,3833 C cur 544 best 544
+t 89 at 389,3613 C cur 554 best 554
+t 90 at 445,3460 G cur 563 best 563
+t 91 at 721,3518  cur 576 best 576
+t 91.2 relocate from 615,3460 lvl false climb - cur 571 -> 571 (603,3354)
+t 92 at 646,3346 G cur 573 best 576
+t 93 at 607,3287 G cur 571 best 576
+t 94 at 666,3229 G cur 574 best 576
+t 95 at 701,3181 G cur 576 best 576
+t 96 at 840,3068 G cur 582 best 582
+t 97 at 1117,3068 G cur 595 best 595
+t 98 at 1161,2848 C cur 608 best 608
+t 99 at 1145,2769  cur 611 best 611
+t 100 at 868,2787 G cur 623 best 623
+t 101 at 595,2712  cur 635 best 635
+t 102 at 317,2757  cur 647 best 647
+t 103 at 88,2672 C cur 662 best 662
+t 103.4 relocate from 234,2282 lvl false climb - cur 686 -> 686 (239,2214)
+t 104 at 265,2282 G cur 687 best 687
+t 105 at 269,2242 G cur 687 best 691
+t 106 at 288,2199 G cur 688 best 691
+t 107 at 267,2150 G cur 688 best 691
+t 108 at 224,2101 G cur 686 best 691
+t 109 at 247,2053 G cur 686 best 691
+t 110 at 319,2011 G cur 690 best 691
+t 111 at 348,1979 G cur 691 best 692
+t 112 at 391,1958 G cur 693 best 693
+t 113 at 441,1950 G cur 695 best 695
+t 114 at 597,1904  cur 702 best 702
+t 115 at 816,1794  cur 713 best 713
+t 116 at 1093,1799 G cur 725 best 725
+t 117 at 1145,1586 C cur 739 best 739
+t 118 at 1138,1502  cur 742 best 742
+t 119 at 861,1518 G cur 754 best 754
+t 120 at 609,1467 C cur 767 best 767
+t 121 at 609,1247 C cur 777 best 777
+t 122 at 609,1013 GC cur 786 best 786
+t 123 at 755,1013 G cur 793 best 793
+t 124 at 1008,1013  cur 805 best 805
+t 124.4 relocate from 835,1013 lvl false climb - cur 797 -> 797 (824,920)
+t 125 at 931,972 G cur 802 best 807
+t 126 at 898,921 G cur 800 best 807
+t 127 at 882,863 G cur 800 best 807
+t 128 at 885,804 G cur 800 best 807
+t 129 at 904,747 G cur 801 best 807
+t 130 at 940,699 G cur 802 best 807
+t 131 at 988,664 G cur 805 best 807
+t 132 at 1045,644 G cur 807 best 807
+t 133 at 1104,642 G cur 810 best 810
+t 134 at 1162,658 G cur 813 best 813
+t 135 at 1294,669 G cur 819 best 819
+t 136 at 1387,493 C cur 832 best 832
+t 137 at 1387,427 C cur 835 best 838
+t 138 at 1186,360 G cur 846 best 846
+t 139 at 910,360 G cur 858 best 858
+{"t":139.7,"rescues":0,"rescueXs":[],"stuck":[{"x":1234,"y":4734,"t":55,"dur":11.3,"what":"in a dip 130 px deep, a drop of 173 px ahead, water ahead, the way on is 84 px down","step":null,"dip":130,"puzzle":false,"rescued":false}]}

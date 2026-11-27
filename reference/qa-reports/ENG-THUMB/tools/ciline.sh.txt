@@ -1,0 +1,5 @@
+#!/bin/bash
+# ciline.sh <frozen tree> <out>: gates.yml:157, the CI tool line, on the tree; the tap summary and every failing test name to <out>
+cd $1 || exit 9; t0=$SECONDS
+bash -c "$(cat /tmp/claude-0/-home-user-Sloths-Adventure-/4fdcfd8c-abad-5e01-9a89-f21005dcd6b1/scratchpad/ciline.cmd)" > $2.tap 2>&1; ec=$?
+{ echo "ciline on $(git rev-parse --short=9 HEAD) exit $ec $((SECONDS-t0)) s"; grep -E "^# (tests|pass|fail|todo|cancelled)" $2.tap; grep -E "^not ok|^    not ok" $2.tap | cut -c1-200; } > $2

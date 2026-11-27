@@ -123,11 +123,18 @@ export function layWheel(row: WheelRow, rowName: string, near: Platform, far: Pl
   return { buckets, zone, wheel };
 }
 
-/** each wheel pond as the floor the tower's falls read under its ends (tower.ts towerCatches, towerFalls): a miss off the jetty, the street
- *  or a bucket lands in it (a splash back onto the jetty), so it is what lies under those ends. A 'moving' platform, so never wood to run on
- *  or a ledge with ends of its own; never laid, only read. `dx`: moved by this much (a column's frame) */
-export const pondFloors = (rivers: readonly RiverZone[], dx = 0): Platform[] =>
-  rivers.filter((r) => r.wheelPond).map((r, k) => ({ id: -9000 - k, x: r.x0 - dx, y: r.surfaceY, width: r.x1 - r.x0, height: 24, type: 'moving' }));
+/** each river's water as the floor the tower's falls read under its ends (tower.ts towerCatches, towerFalls): a miss off a bank, a jetty,
+ *  a wheel's street or a bucket lands in it (a splash back, or the life a deep river costs by design), so it is what lies under those ends.
+ *  A 'moving' platform, so never wood to run on or a ledge with ends of its own; never laid, only read. `dx`: moved by this much (a
+ *  column's frame). Every river, not only a wheel's pond (ENG-26e: 2-6's millrace on a tower storey, a ride river, read as an open end
+ *  over nothing, so a catch bough was laid 58 px under its surface and under its near bank; the bots' route ran through it to a rescue) */
+export const waterFloors = (rivers: readonly RiverZone[], dx = 0): Platform[] =>
+  rivers.map((r, k) => ({ id: WATER_ID - k, x: r.x0 - dx, y: r.surfaceY, width: r.x1 - r.x0, height: 24, type: 'moving' }));
+/** waterFloors' ids count down from here (one a river) */
+const WATER_ID = -9000;
+/** is this piece one of waterFloors' (a river's water, read as a floor)? The water takes him by his middle, strictly inside its ends
+ *  (river.ts riverAt), never by a foot over its end as wood does (tower.ts walkOff) */
+export const isWaterFloor = (p: { id: number }): boolean => p.id <= WATER_ID && p.id > WATER_ID - 1000;
 
 /** the stage's wheels (each once), from its buckets' seats */
 export const stageWheels = (platforms: readonly Platform[]): Wheel[] => {

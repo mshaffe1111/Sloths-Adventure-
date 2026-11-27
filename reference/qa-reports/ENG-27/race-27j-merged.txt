@@ -1,0 +1,78 @@
+## middle-home (merged head af127d21e)
+middle	normal	1	shrine	lives 8	deaths ?	finish 173	WON him 84.9 boat 93.89 gap 9	P.middle 87.75
+middle	normal	2	shrine	lives 6	deaths ?	finish 219.8	WON him 89.9 boat 92.37 gap 2.5	P.middle 86.33
+middle	normal	3	shrine	lives 6	deaths ?	finish 194.9	WON him 86.8 boat 92.06 gap 5.3	P.middle 86.04
+middle	normal	4	shrine	lives 9	deaths ?	finish 195.1	WON him 91.3 boat 99.82 gap 8.5	P.middle 93.29
+middle	normal	5	shrine	lives 1	deaths ?	finish 152.3	WON him 81.2 boat 93.63 gap 12.4	P.middle 87.5
+middle	normal	6	shrine	lives 8	deaths ?	finish 191.1	WON him 87.1 boat 91.82 gap 4.7	P.middle 85.82
+middle	easy	1	shrine	lives 3	deaths ?	finish 137.8	WON him 91.7 boat 97.53 gap 5.8	P.middle 88.67
+middle	easy	2	shrine	lives 4	deaths ?	finish 176.3	WON him 89.7 boat 96.32 gap 6.6	P.middle 87.56
+middle	easy	3	shrine	lives 4	deaths ?	finish 165.4	WON him 90.2 boat 96.09 gap 5.9	P.middle 87.35
+middle	easy	4	shrine	lives 6	deaths ?	finish 170.3	WON him 98.2 boat 104.55 gap 6.3	P.middle 95.05
+middle	easy	5	shrine	lives 1	deaths ?	finish 156.5	WON him 92.9 boat 97.38 gap 4.5	P.middle 88.52
+middle	easy	6	shrine	lives 3	deaths ?	finish 153.1	WON him 83.5 boat 95.88 gap 12.4	P.middle 87.16
+## middle-post (merged head af127d21e)
+middle	normal	1	shrine	lives 9	deaths ?	finish 192.8	WON him 98.2 boat 103.21 gap 5	P.middle 96.46
+middle	normal	2	shrine	lives 6	deaths ?	finish 169	WON him 98.3 boat 101.69 gap 3.4	P.middle 95.04
+middle	normal	3	shrine	lives 7	deaths ?	finish 162.1	WON him 97.3 boat 101.38 gap 4.1	P.middle 94.75
+middle	normal	4	shrine	lives 1	deaths ?	finish 148.8	WON him 89.2 boat 100.76 gap 11.6	P.middle 94.17
+middle	normal	5	shrine	lives 6	deaths ?	finish 186.8	WON him 98.6 boat 103.44 gap 4.8	P.middle 96.67
+middle	normal	6	shrine	lives 3	deaths ?	finish 162.5	WON him 95.8 boat 101.14 gap 5.3	P.middle 94.53
+middle	easy	1	shrine	lives 2	deaths ?	finish 149.8	WON him 99.6 boat 107.31 gap 7.7	P.middle 97.55
+middle	easy	2	shrine	lives 3	deaths ?	finish 161.2	WON him 92.4 boat 106.09 gap 13.7	P.middle 96.45
+middle	easy	3	shrine	lives 2	deaths ?	finish 133.8	WON him 101.8 boat 105.86 gap 4.1	P.middle 96.24
+middle	easy	4	shrine	lives 0	deaths ?	finish 140.8	WON him 86.4 boat 105.33 gap 18.9	P.middle 95.76
+middle	easy	5	shrine	lives 4	deaths ?	finish 153.6	WON him 103.4 boat 107.55 gap 4.1	P.middle 97.77
+middle	easy	6	shrine	lives 4	deaths ?	finish 165.3	WON him 89.4 boat 105.32 gap 15.9	P.middle 95.75
+## expert-home (merged head af127d21e)
+expert	normal	1	shrine	lives 4	deaths ?	finish 150	WON him 87.8 boat 93.89 gap 6.1	P.middle 87.75
+expert	normal	2	shrine	lives 4	deaths ?	finish 152.5	WON him 89.9 boat 92.37 gap 2.5	P.middle 86.33
+expert	normal	3	shrine	lives 0	deaths ?	finish 134.3	WON him 74.2 boat 92.06 gap 17.9	P.middle 86.04
+expert	normal	4	shrine	lives 5	deaths ?	finish 165.1	WON him 95.7 boat 99.82 gap 4.1	P.middle 93.29
+expert	normal	5	shrine	lives 5	deaths ?	finish 161.8	WON him 88.4 boat 93.63 gap 5.2	P.middle 87.5
+expert	normal	6	shrine	lives 6	deaths ?	finish 146.2	WON him 89.9 boat 91.82 gap 1.9	P.middle 85.82
+expert	easy	1	no bot (no expert bot on easy)
+expert	easy	2	no bot (no expert bot on easy)
+expert	easy	3	no bot (no expert bot on easy)
+expert	easy	4	no bot (no expert bot on easy)
+expert	easy	5	no bot (no expert bot on easy)
+expert	easy	6	no bot (no expert bot on easy)
+## expert-post (merged head af127d21e)
+expert	normal	1	shrine	lives 3	deaths ?	finish 148.6	WON him 87.5 boat 103.21 gap 15.7	P.middle 96.46
+expert	normal	2	shrine	lives 8	deaths ?	finish 168.6	WON him 93.8 boat 101.69 gap 7.9	P.middle 95.04
+expert	normal	3	shrine	lives 2	deaths ?	finish 156.9	WON him 96.8 boat 101.38 gap 4.6	P.middle 94.75
+expert	normal	4	shrine	lives 0	deaths ?	finish 132.9	WON him 82.5 boat 100.76 gap 18.3	P.middle 94.17
+expert	normal	5	shrine	lives 3	deaths ?	finish 144.1	WON him 97.3 boat 103.44 gap 6.1	P.middle 96.67
+expert	normal	6	shrine	lives 4	deaths ?	finish 145.6	WON him 95.8 boat 101.14 gap 5.3	P.middle 94.53
+expert	easy	1	no bot (no expert bot on easy)
+expert	easy	2	no bot (no expert bot on easy)
+expert	easy	3	no bot (no expert bot on easy)
+expert	easy	4	no bot (no expert bot on easy)
+expert	easy	5	no bot (no expert bot on easy)
+expert	easy	6	no bot (no expert bot on easy)
+## ride-home (merged head af127d21e)
+ride-only	normal	1	shrine	lives 5	deaths ?	finish 205.9	WON him 93.5 boat 93.89 gap 0.4	P.middle 87.75
+ride-only	normal	2	shrine	lives 5	deaths ?	finish 222.2	WON him 91.8 boat 92.37 gap 0.6	P.middle 86.33
+ride-only	normal	3	shrine	lives 3	deaths ?	finish 207.6	lost him 102.3 boat 92.06 gap -10.2	P.middle 86.04
+ride-only	normal	4	shrine	lives 2	deaths ?	finish 190.8	lost him 113.5 boat 99.82 gap -13.7	P.middle 93.29
+ride-only	normal	5	shrine	lives 3	deaths ?	finish 182.9	lost him 95.8 boat 93.63 gap -2.2	P.middle 87.5
+ride-only	normal	6	shrine	lives 1	deaths ?	finish 181.7	lost him 97.1 boat 91.82 gap -5.3	P.middle 85.82
+ride-only	easy	1	shrine	lives 2	deaths ?	finish 175.3	lost him 98 boat 97.53 gap -0.5	P.middle 88.67
+ride-only	easy	2	shrine	lives 4	deaths ?	finish 203.2	lost him 105.5 boat 96.32 gap -9.2	P.middle 87.56
+ride-only	easy	3	shrine	lives 0	deaths ?	finish 170.5	lost him 103.2 boat 96.09 gap -7.1	P.middle 87.35
+ride-only	easy	4	shrine	lives 5	deaths ?	finish 191.6	lost him 107 boat 104.55 gap -2.5	P.middle 95.05
+ride-only	easy	5	shrine	lives 0	deaths ?	finish 172.8	lost him 105.5 boat 97.38 gap -8.1	P.middle 88.52
+ride-only	easy	6	shrine	lives 1	deaths ?	finish 175	lost him 103.9 boat 95.88 gap -8	P.middle 87.16
+## ride-post (merged head af127d21e)
+ride-only	normal	1	shrine	lives 2	deaths ?	finish 194.3	lost him 110.5 boat 103.21 gap -7.3	P.middle 96.46
+ride-only	normal	2	shrine	lives 3	deaths ?	finish 190.2	lost him 102.6 boat 101.69 gap -0.9	P.middle 95.04
+ride-only	normal	3	shrine	lives 1	deaths ?	finish 175.5	lost him 113.6 boat 101.38 gap -12.2	P.middle 94.75
+ride-only	normal	4	shrine	lives 1	deaths ?	finish 191.2	lost him 121.4 boat 100.76 gap -20.6	P.middle 94.17
+ride-only	normal	5	shrine	lives 2	deaths ?	finish 201.6	lost him 117.4 boat 103.44 gap -14	P.middle 96.67
+ride-only	normal	6	shrine	lives 2	deaths ?	finish 178.2	lost him 102.4 boat 101.14 gap -1.3	P.middle 94.53
+ride-only	easy	1	shrine	lives 0	deaths ?	finish 177.9	lost him 125.2 boat 107.31 gap -17.9	P.middle 97.55
+ride-only	easy	2	shrine	lives 0	deaths ?	finish 175.6	lost him 112.8 boat 106.09 gap -6.7	P.middle 96.45
+ride-only	easy	3	shrine	lives 1	deaths ?	finish 167.7	lost him 112.1 boat 105.86 gap -6.2	P.middle 96.24
+ride-only	easy	4	shrine	lives 0	deaths ?	finish 165.9	lost him 110.4 boat 105.33 gap -5.1	P.middle 95.76
+ride-only	easy	5	shrine	lives 1	deaths ?	finish 177.2	lost him 107.9 boat 107.55 gap -0.4	P.middle 97.77
+ride-only	easy	6	shrine	lives 0	deaths ?	finish 178.3	lost him 118.2 boat 105.32 gap -12.9	P.middle 95.75

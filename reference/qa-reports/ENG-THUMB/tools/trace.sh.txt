@@ -1,0 +1,4 @@
+#!/bin/bash
+# trace.sh <tree> <stage> <seed> <bot> <setting> <out>: every frame (FT_FRAMES 0-999) and every jump (FT_TRACE) of one run
+cd $1 || exit 9
+FT_TRACE=1 FT_FRAMES=0,9999 timeout 900 npx tsx tools/inspect/castBots.ts --stage $2 --seeds $3 --bots $4 --setting $5 --par 1 --json > $6.json 2> $6.err

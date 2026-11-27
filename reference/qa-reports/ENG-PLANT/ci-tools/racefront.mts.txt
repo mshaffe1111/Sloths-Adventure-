@@ -1,0 +1,41 @@
+// racefront.mts <tree> [gap] [back] [tail]: the race leg's log running HIS way; he is set down `back` px behind log A's front.
+// Prints how he leaves log A: 'hop' (pressed off it onto another log), 'handed' (carried onto a floor), 'water' (a life), and when.
+const [tree, gapS = '150', backS = '143', tailS = '0'] = process.argv.slice(2);
+await import(`${tree}/src/game/headlessDom.ts`);
+const ft = await import(`${tree}/tools/inspect/firsttimer.ts`);
+const gap = Number(gapS), back = Number(backS), tail = Number(tailS);
+const w = 240, speed = 80, x0 = 1000, x1 = 3600, T = (x1 - x0 + w) / speed, n = Math.round((x1 - x0 + w) / (w + gap));
+const piecesAt = (PH: number) => [
+  { id: 1, x: 0, y: 600, width: x0, height: 90, type: 'solid' },
+  { id: 2, x: x1 + tail, y: 600, width: 1200, height: 90, type: 'solid' },
+  ...Array.from({ length: n }, (_, k) => ({ id: 10 + k, x: 0, y: 628, width: w, height: 24, type: 'drift', drift: { x0, x1, dir: 1, speed, width: w, baseY: 628, offset: ((k * (w + gap)) / speed + PH) % T } })),
+];
+const tiers = (process.env.ONLY ? [[process.env.ONLY, (ft as any)['FT_' + process.env.ONLY.toUpperCase()]]] : process.env.DBG ? [['middle', ft.FT_MIDDLE]] : [['middle', ft.FT_MIDDLE], ['adult', ft.FT_ADULT], ['child', ft.FT_CHILD], ['expert', ft.FT_EXPERT]]) as any;
+for (const [name, who] of tiers) for (const phase of [0, 0.5, 1, 1.5, 2, 2.5, 3, 3.5]) {
+  let A: number | null = null, end = '', f = 0, prevG = false, prevId: number | null = null, lives = -1, minFront = 1e9;
+  const line = Array.from({ length: 260 }, (_, i) => ({ x: 100 + i * 24, y: 600 }));
+  const run = new ft.FirstTimerRun('1-1', 1, who, { route: line, cap: 25, rescueAfter: 1000, onFrame: (sim: any) => {
+    const e = sim.e; f++;
+    if (lives < 0) lives = e.lives;
+    const here = e.platforms.find((q: any) => q.id === e.standingOnId);
+    if (process.env.DBG && name === (process.env.DBGT ?? 'middle') && phase === Number(process.env.DBGP ?? 1) && f >= Number(process.env.F0 ?? 0) && f <= Number(process.env.F1 ?? 200) && f % Number(process.env.FS ?? 6) === 0) console.log(`f${f} x ${e.player.x.toFixed(0)} y ${e.player.y.toFixed(0)} g ${e.player.grounded ? 1 : 0} on ${e.standingOnId} vx ${e.player.vx.toFixed(0)} L ${e.lives} fr ${here ? Math.round(here.x + here.width - e.player.x) : "-"}`);
+    if (A === null && e.player.grounded && here?.drift) A = here.id;
+    if (A !== null && !end) {
+      const a = e.platforms.find((q: any) => q.id === A);
+      if (e.player.grounded && here?.id === A) minFront = Math.min(minFront, a.x + a.width - e.player.x);
+      if (e.lives < lives) end = 'water';
+      else if (prevG && prevId === A && !e.player.grounded && e.player.vy < 0) end = 'hop';
+      else if (e.player.grounded && here && here.id !== A) end = (here.drift ? 'log' : 'handed') + '#' + here.id + ' x' + Math.round(e.player.x) + ' A' + Math.round(a.x) + '..' + Math.round(a.x + a.width);
+      if (end) end += `@${(f / 30).toFixed(2)}s`;
+    }
+    prevG = e.player.grounded; prevId = here?.id ?? null;
+  } });
+  { const oi = (run as any).intend?.bind(run); let lastI: any = null; if (oi) (run as any).intend = (...a: any[]) => { lastI = oi(...a); return lastI; }; const op = (run as any).pad.bind(run); let k = 0; (run as any).pad = () => { const r = op(); if (process.env.PDBG && name === (process.env.DBGT ?? 'middle') && phase === Number(process.env.DBGP ?? 1) && k++ >= 68 && k <= 80) console.log(`R ${(globalThis as any).__R} intend ${JSON.stringify(lastI)} pad ${JSON.stringify(r)} x ${run.sim.p.x.toFixed(0)} jump ${!!(run as any).jump} pend ${!!(run as any).pending} stand ${!!(run as any).standing} late ${!!(run as any).lateArmed} wait ${(run as any).edgeWait} sm ${(run as any).stopMeant} rl ${(run as any).releaseLeft} ls ${(run as any).lastSteer}`); return r; }; }
+  run.sim.bare(piecesAt(phase) as any);
+  run.sim.e.currentStage.config.levelHeight = 720;
+  run.sim.stage.pacer = { x0: 0, x1: 99999, lane: 628, dir: 1, yMin: 0, seconds: 999, middle: 100, rideOnly: 200, under: 0, art: [] };
+  run.sim.stand(700, 600);
+  run.prog.relocate(run.sim.p);
+  run.play();
+  console.log(`${name} ph ${phase}: ${end || 'none'} minFront ${Math.round(minFront)} (A #${A}, gap ${gap})`);
+}

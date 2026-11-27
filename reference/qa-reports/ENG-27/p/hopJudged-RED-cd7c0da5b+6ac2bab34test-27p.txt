@@ -1,0 +1,130 @@
+TAP version 13
+#   [bank press] unjudged q\#-1 judged t 124.57 x 6657 lag 0 hold 0.157 | flown t 124.57 x 6657 hold 0.157 single | came down \#-1
+#   [bank press] unjudged q\#-1 judged t 131.80 x 6648 lag 0 hold 0.166 | flown t 131.80 x 6648 hold 0.166 double | came down \#75 solid
+#   [bank press] unjudged q\#-1 judged t 142.23 x 5258 lag 0 hold 0.102 | flown t 142.23 x 5258 hold 0.102 double | came down \#-1
+#   [bank press] unjudged q\#-1 judged t 172.57 x 2358 lag 0 hold 0.162 | flown t 172.57 x 2358 hold 0.162 single | came down \#93 solid
+# normal seed 5: 14 judged hops pressed (edgeWait, race, unjudged); unjudged or stale 2, flown not as judged 0, came down elsewhere 0
+#   unjudged q\#-1 judged t 124.57 x 6657 lag 0 hold 0.157 | flown t 124.57 x 6657 hold 0.157 single | came down \#-1
+#   unjudged q\#-1 judged t 142.23 x 5258 lag 0 hold 0.102 | flown t 142.23 x 5258 hold 0.102 double | came down \#-1
+#   [bank press] stale edgeWait q\#40 judged t 79.30 x 15632 lag 0 hold 0.200 | flown t 79.67 x 15632 hold 0.162 double | came down \#40 drift
+#   [bank press] unjudged q\#-1 judged t 144.73 x 7686 lag 0 hold 0.116 | flown t 144.73 x 7686 hold 0.116 double | came down \#71 solid
+#   [bank press] unjudged q\#-1 judged t 157.60 x 6255 lag 0 hold 0.120 | flown t 157.60 x 6255 hold 0.120 single | came down \#76 solid
+# normal seed 2: 22 judged hops pressed (edgeWait, upstream, stale edgeWait, race, unjudged); unjudged or stale 1, flown not as judged 0, came down elsewhere 0
+#   stale edgeWait q\#40 judged t 79.30 x 15632 lag 0 hold 0.200 | flown t 79.67 x 15632 hold 0.162 double | came down \#40 drift
+#   [bank press] unjudged q\#-1 judged t 142.57 x 6748 lag 0 hold 0.098 | flown t 142.57 x 6748 hold 0.098 single | came down \#-1
+#   [bank press] unjudged q\#-1 judged t 174.20 x 2402 lag 0 hold 0.092 | flown t 174.20 x 2402 hold 0.092 single | came down \#93 solid
+# easy seed 5: 23 judged hops pressed (edgeWait, upstream, race, unjudged); unjudged or stale 1, flown not as judged 0, came down elsewhere 0
+#   unjudged q\#-1 judged t 142.57 x 6748 lag 0 hold 0.098 | flown t 142.57 x 6748 hold 0.098 single | came down \#-1
+#   [bank press] unjudged q\#-1 judged t 107.37 x 10647 lag 0 hold 0.359 | flown t 107.37 x 10647 hold 0.359 single | came down \#60 solid
+#   [bank press] unjudged q\#-1 judged t 126.83 x 7854 lag 0 hold 0.433 | flown t 126.83 x 7854 hold 0.433 single | came down \#71 solid
+#   [bank press] unjudged q\#-1 judged t 141.43 x 6420 lag 0 hold 0.256 | flown t 141.43 x 6420 hold 0.256 single | came down \#76 solid
+#   [bank press] unjudged q\#-1 judged t 158.27 x 3730 lag 0 hold 0.499 | flown t 158.27 x 3730 hold 0.499 single | came down \#87 solid
+# easy seed 2: 24 judged hops pressed (edgeWait, upstream, race, unjudged); unjudged or stale 0, flown not as judged 0, came down elsewhere 0
+# Subtest: 2-7 home, middle Normal seed 5: every judged hop is flown as judged and comes down where the gate said; every press from a bank with logs near its edge flies on a judgment of its own frame or comes down on solid (ruling A)
+not ok 1 - 2-7 home, middle Normal seed 5: every judged hop is flown as judged and comes down where the gate said; every press from a bank with logs near its edge flies on a judgment of its own frame or comes down on solid (ruling A)
+  ---
+  duration_ms: 901.36127
+  type: 'test'
+  location: '/home/user/f-red3/tools/inspect/hopJudged.test.ts:36:3'
+  failureType: 'testCodeFailure'
+  error: |-
+    a gate judged one hop and the bot flew another
+    + actual - expected
+    
+    + [
+    +   'unjudged q#-1 judged t 124.57 x 6657 lag 0 hold 0.157 | flown t 124.57 x 6657 hold 0.157 single | came down #-1',
+    +   'unjudged q#-1 judged t 142.23 x 5258 lag 0 hold 0.102 | flown t 142.23 x 5258 hold 0.102 double | came down #-1'
+    + ]
+    - []
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+  actual:
+    0: 'unjudged q#-1 judged t 124.57 x 6657 lag 0 hold 0.157 | flown t 124.57 x 6657 hold 0.157 single | came down #-1'
+    1: 'unjudged q#-1 judged t 142.23 x 5258 lag 0 hold 0.102 | flown t 142.23 x 5258 hold 0.102 double | came down #-1'
+  operator: 'deepStrictEqual'
+  stack: |-
+    TestContext.<anonymous> (/home/user/f-red3/tools/inspect/hopJudged.test.ts:54:12)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.start (node:internal/test_runner/test:944:17)
+    startSubtestAfterBootstrap (node:internal/test_runner/harness:296:17)
+  ...
+# Subtest: 2-7 home, middle Normal seed 2: every judged hop is flown as judged and comes down where the gate said; every press from a bank with logs near its edge flies on a judgment of its own frame or comes down on solid (ruling A)
+not ok 2 - 2-7 home, middle Normal seed 2: every judged hop is flown as judged and comes down where the gate said; every press from a bank with logs near its edge flies on a judgment of its own frame or comes down on solid (ruling A)
+  ---
+  duration_ms: 618.761701
+  type: 'test'
+  location: '/home/user/f-red3/tools/inspect/hopJudged.test.ts:36:3'
+  failureType: 'testCodeFailure'
+  error: |-
+    a gate judged one hop and the bot flew another
+    + actual - expected
+    
+    + [
+    +   'stale edgeWait q#40 judged t 79.30 x 15632 lag 0 hold 0.200 | flown t 79.67 x 15632 hold 0.162 double | came down #40 drift'
+    + ]
+    - []
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+  actual:
+    0: 'stale edgeWait q#40 judged t 79.30 x 15632 lag 0 hold 0.200 | flown t 79.67 x 15632 hold 0.162 double | came down #40 drift'
+  operator: 'deepStrictEqual'
+  stack: |-
+    TestContext.<anonymous> (/home/user/f-red3/tools/inspect/hopJudged.test.ts:54:12)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
+  ...
+# Subtest: 2-7 home, middle Easy seed 5: every judged hop is flown as judged and comes down where the gate said; every press from a bank with logs near its edge flies on a judgment of its own frame or comes down on solid (ruling A)
+not ok 3 - 2-7 home, middle Easy seed 5: every judged hop is flown as judged and comes down where the gate said; every press from a bank with logs near its edge flies on a judgment of its own frame or comes down on solid (ruling A)
+  ---
+  duration_ms: 609.157782
+  type: 'test'
+  location: '/home/user/f-red3/tools/inspect/hopJudged.test.ts:36:3'
+  failureType: 'testCodeFailure'
+  error: |-
+    a gate judged one hop and the bot flew another
+    + actual - expected
+    
+    + [
+    +   'unjudged q#-1 judged t 142.57 x 6748 lag 0 hold 0.098 | flown t 142.57 x 6748 hold 0.098 single | came down #-1'
+    + ]
+    - []
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+  actual:
+    0: 'unjudged q#-1 judged t 142.57 x 6748 lag 0 hold 0.098 | flown t 142.57 x 6748 hold 0.098 single | came down #-1'
+  operator: 'deepStrictEqual'
+  stack: |-
+    TestContext.<anonymous> (/home/user/f-red3/tools/inspect/hopJudged.test.ts:54:12)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: 2-7 home, middle Easy seed 2: every judged hop is flown as judged and comes down where the gate said; every press from a bank with logs near its edge flies on a judgment of its own frame or comes down on solid (ruling A)
+ok 4 - 2-7 home, middle Easy seed 2: every judged hop is flown as judged and comes down where the gate said; every press from a bank with logs near its edge flies on a judgment of its own frame or comes down on solid (ruling A)
+  ---
+  duration_ms: 516.648705
+  type: 'test'
+  ...
+1..4
+# tests 4
+# suites 0
+# pass 1
+# fail 3
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 5597.66889

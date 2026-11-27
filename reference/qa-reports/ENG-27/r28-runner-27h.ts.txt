@@ -1,0 +1,21 @@
+// scratch (ENG-27g rule 28): every bot and setting on a stage, for the seeds given: castRun's row (castBots.ts) and the reads each skill would change
+import { CAST_BOTS } from './castBots.ts';
+import { firstTimer } from './firsttimer.ts';
+const stage = process.argv[2], seeds = process.argv[3].split(',').map(Number);
+for (const bot of Object.keys(CAST_BOTS)) for (const setting of ['normal', 'easy'] as const) {
+  const who = CAST_BOTS[bot][setting]; if (!who) continue;
+  for (const seed of seeds) {
+    (globalThis as any).__ft = []; (globalThis as any).__bl = []; (globalThis as any).__bh = [];
+    let row: any;
+    try {
+      const r = firstTimer(stage, seed, who, { cap: 1200, dotSetting: true });
+      const hitBy: Record<string, number> = {}; for (const h of r.harms) hitBy[h.cause] = (hitBy[h.cause] ?? 0) + 1;
+      const goalFull = !r.goal || r.goal.got >= r.goal.need;
+      row = { bot, setting, stage, seed, end: r.end, pass: r.end === 'shrine' && goalFull && r.rescues === 0, time: r.time, goal: r.goal, rescues: r.rescues, turnBacks: r.turnBacks ?? 0,
+        hits: r.harms.filter((h) => h.kind === 'hit').length, lives: r.harms.filter((h) => h.kind === 'life').length, hitBy, cast: r.cast ?? null,
+        stuck: r.stuck.map((s) => ({ x: Math.round((s as { x: number }).x), what: String((s as { what?: string }).what ?? '') })) };
+    } catch (e) { row = { bot, setting, stage, seed, error: String(e) }; }
+    const ft = (globalThis as any).__ft as any[], bl = (globalThis as any).__bl as any[], bh = (globalThis as any).__bh as any[];
+    console.log(JSON.stringify({ ...row, ftReads: ft.length, ftFirst: ft[0] ?? null, blReads: bl.length, blFirst: bl[0] ?? null, bhReads: bh.length, bhFirst: bh[0] ?? null }));
+  }
+}

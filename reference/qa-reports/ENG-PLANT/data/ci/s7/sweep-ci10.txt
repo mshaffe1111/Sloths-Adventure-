@@ -1,0 +1,6 @@
+gap 80 reAim on : hop@126 up4.17>16 | back@119 up6.83>14 | hop@104 up3.43>16 | hop@94 up3.10>16 | hop@93 up5.27>15 | hop@142 up4.70>15
+gap 80 reAim off: back@151 up10.87>12 | back@119 up7.83>13 | back@114 up7.33>13 | back@120 up12.80>12 | hop@93 up18.50>16 | back@168 up15.53>11
+gap 70 reAim on : hop@93 up5.30>16 | hop@132 up4.37>16 | back@111 up5.80>15 | hop@117 up3.87>16 | hop@102 up3.37>16 | hop@90 up2.97>16
+gap 70 reAim off: hop@93 up13.33>12 | hop@133 up4.40>16 | back@111 up6.30>15 | back@127 up10.87>10 | back@112 up10.37>10 | hop@62 up5.73>13
+gap 60 reAim on : hop@101 up3.33>17 | hop@93 up3.07>17 | back@93 up4.40>15 | hop@131 up4.33>16 | back@119 up9.13>13 | hop@110 up3.63>16
+gap 60 reAim off: back@116 up4.77>16 | hop@88 up2.90>17 | back@93 up9.90>12 | back@153 up12.10>13 | hop@85 up4.23>15 | back@125 up5.07>15
