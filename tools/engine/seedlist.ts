@@ -32,6 +32,9 @@ const row = listedStage(id);
 if (!row) { console.error(`seedlist: no listed stage "${id}" (src/game/gen2/listed.ts)`); process.exit(2); }
 const kit = row.kit;
 const cfg = generateAllLevels().find((l) => l.id === id)!;
+// (the lay checks a section's cut against its world's inventory only once loadInventory has read it (ENG-CUT-b): every mode here waits for
+// the stage's world's first, so a cut the inventory refuses fails its section by name in the search, never a seed listed unchecked)
+await loadInventory(cfg.worldIndex);
 
 // (the quiet line is the search's own rule here, R-165.120: a roll over it is repaired or rolled again, never only thrown away; the
 // list's check asks the same search, so a seed's replay is still its search)

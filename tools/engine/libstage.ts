@@ -18,6 +18,7 @@ import { buildGen2Stage, stagePool } from '../../src/game/gen2/pipeline.ts';
 import { listedStage, playFinish } from '../../src/game/gen2/listed.ts';
 import { generateAllLevels } from '../../src/game/worldsData.ts';
 import { listJudge } from './listRules.ts';
+import { loadInventory } from '../../src/game/art/inventory.ts';
 import type { LevelConfig } from '../../src/game/types.ts';
 import type { WorldKit } from '../../src/game/gen2/types.ts';
 
@@ -148,6 +149,9 @@ if (process.argv[1] && fileURLToPath(import.meta.url) === process.argv[1]) {
   const stage = val('--stage');
   if (!stage) { console.error('usage: npx tsx tools/engine/libstage.ts --stage <id> [--seeds 24] [--from 1] [--par 4] [--json]'); process.exit(2); }
   try { stageSource(stage); } catch (e) { console.error(String((e as Error).message)); process.exit(2); }
+  // (the lay checks a section's cut against its world's inventory only once loadInventory has read it (ENG-CUT-b); every roll waits for
+  //  the stage's world's, so a cut the inventory refuses fails its section by name here, as in the game, never laid unchecked)
+  await loadInventory(stageSource(stage).cfg.worldIndex);
   const n = Number(val('--seeds') ?? 24), from = Number(val('--from') ?? 1), par = Number(val('--par') ?? 1);
   if (argv.includes('--json')) { for (const r of rollMany(stage, n, from)) console.log(JSON.stringify(r)); process.exit(0); }
   const s = summarize(stage, await rollPar(stage, n, from, par));
