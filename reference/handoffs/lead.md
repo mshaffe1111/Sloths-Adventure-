@@ -9,6 +9,7 @@ reference/TEAM.md "Cost rules", LESSONS.md D45. The lead never touches code (Mat
 READ FIRST: reference/notes/lead-retro-2026-11-27.md (your mission: 2-hour levels; trust no helper; the last lead's failures and the
 higher bar you start from). This block is the status only.
 ## RIGHT NOW (11-27 HAND-OVER to a fresh lead, written 1:51 PM ET by `date`; this block wins over everything below, R-165.242)
+NEW LEAD 11-27 from 2:39 PM ET: session_01FhBbYMA2VnzJXGxeHFhKxi. THE TEAM DOCUMENTS NOW LIVE ON ccr-44890de1-9ymp4v (the new lead may push only to its own branch; ccr-ea739a2f-dfcee4 / ccr-e71c7674-i0i93u stop at 7ca52267c and name the old lead). Every brief names the lead by session id, never "line 1 of lead.md". Status: entrance exam and cold review with Critics; packets MEASURE-1127, BUILD-29-l, KIT-W3b-c written, not sent; no member running; story keeper at 411k context, health check sent.
 WHY A FRESH LEAD: Matt 11-27 11:48 AM ET (R-165.547): "Do u still think you can lead?  Making a ton of errors". The outgoing lead
 (session_01FhBbYN2CVHnFXg7XzqKXpM, now the BACKUP: facts only) answered with its count of misses (CI #96-#107; D149-D160) and asked one
 question; Matt chose "Fix + fresh lead at 3 PM": (1) a hook refuses the repeat misses (THE GUARDS below); (2) AT MOST 4 COUNTED LANES (a tail running only its frozen
