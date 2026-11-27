@@ -348,6 +348,36 @@ test('on the run it was found on, 2-1 child Easy seed 2: landing on a small log 
   assert.equal(r.rescues, 0, `no rescue (${r.rescues})`);
 });
 
+// ENG-SIM step 3 1a-ii (the lead's ruling A): the run-up's search is pruned, never its answer. On the real runs (2-4 child Normal 8 to
+//  the shrine, where a run-up is found; 2-4 kid Easy 19 to t 99, the 84 refusals that cost 3.5x unpruned), every runUpPlan search's
+//  first window equals the plain scan's over the same press frames and the same flights (each P flown once, kept: the probe changes
+//  nothing). PLANTED RED: firstWindow without its left widening (a later k)
+test('the run-up\'s pruned search gives the plain scan\'s k on every call of the real run: 2-4 child Normal 8 and 2-4 kid Easy 19 (ENG-SIM 1a-ii, the lead\'s ruling A)', () => {
+  type Ok = (P: number) => boolean;
+  const P = FirstTimerRun.prototype as unknown as Record<'runUpFirst', (this: unknown, lo: number, w: number, bound: number, ok: Ok) => number>;
+  const { runUpFirst } = P;
+  const calls: Array<{ lo: number; w: number; bound: number; got: number; plain: number }> = [];
+  P.runUpFirst = function (lo, w, bound, ok) {
+    const got = runUpFirst.call(this, lo, w, bound, ok);
+    let plain = -1;
+    for (let f = lo, n = 0; f <= bound; f++) {
+      n = ok(f) ? n + 1 : 0;
+      if (n === w) { plain = f - w + 1; break; }
+    }
+    calls.push({ lo, w, bound, got, plain });
+    return got;
+  };
+  try {
+    firstTimer('2-4', 8, FT_CHILD, { cap: 1200, dotSetting: true });
+    firstTimer('2-4', 19, FT_KID, { cap: 99 });
+  } finally {
+    P.runUpFirst = runUpFirst;
+  }
+  assert.ok(calls.length >= 80, `the run-up searched (${calls.length} calls)`);
+  assert.ok(calls.some((c) => c.got >= 0), 'a run-up found on the runs');
+  assert.deepEqual(calls.filter((c) => c.got !== c.plain), [], `every call's first window is the plain scan's (${calls.length} calls, ${calls.filter((c) => c.got >= 0).length} found)`);
+});
+
 test('on the run it was found on, 2-4 child Normal seed 8: the run-up is ONE plan runUpPlan flew on the engine (ENG-SIM step 3 1a-ii): every one he plays catches its liana on the very frame the probe flew it to (the plan\'s end), and the row ends at the shrine with no rescue (c24 held the run-up\'s jump short of the judged hold and he fell in, rescued; PLANTED RED: the plan played a frame late)', () => {
   // (the real stage and bot, as castBots rolls them; read by what he does, never where: a run-up is a plan runUpPlan's own flights
   //  returned (its k, the drawn press frame P), set by setPlan; each is a row from its frame 1, the frame the probe flew first)

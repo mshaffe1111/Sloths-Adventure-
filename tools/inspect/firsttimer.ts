@@ -2544,8 +2544,13 @@ export class FirstTimerRun {
     };
     // (the search pruned, never the answer (firstWindow: the plain scan's first window, asking far fewer P's): 2-4 kid Easy 19's 84
     //  refusals flew 602 catches frame by frame, 3.5x the merge's CPU to t 99; pruned, 16)
-    const s = firstWindow(lo, w, bound, (P) => at(P).at > 0);
+    const s = this.runUpFirst(lo, w, bound, (P) => at(P).at > 0);
     return s < 0 ? null : { k: s - lo, at };
+  }
+  /** runUpPlan's search: the first press frame of w consecutive catching ones in [lo, bound], or -1 (firstWindow; firsttimer.test pins
+   *  it against the plain scan on every call of a real run) */
+  private runUpFirst(lo: number, w: number, bound: number, ok: (P: number) => boolean): number {
+    return firstWindow(lo, w, bound, ok);
   }
 
   /**
