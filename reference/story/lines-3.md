@@ -51,6 +51,7 @@ Other conflicts found and settled (the same mistake in its pairs, LESSONS D21):
 - **For Matt (creatureLore.ts is his, "change only with his OK"):** the jaguar's lore says "The jaguars of the cascades answer to nobody"
   (creatureLore.ts:14), but the jaguar is first met in the grotto (3-7) and never in World 4 (roster.ts:31-37). Proposed: "The jaguars of
   the grotto answer to nobody..." (rest unchanged). The lead asks him, one question.
+  (11-27: the trims laid no jaguar in 3-1..3-9; the question stands only if its first meeting stays in the grotto, the lair 3-10.)
 - **For the builders (finds.ts hints follow the BUILT layout):** `w3_keepsake` "Sleeping Vines: after a log, just before the bell room."
   and `w3_note` "Glowworm Path: past the third flag, before the watching eyes." name rooms and flag counts the new 3-5 and 3-2 may not
   have. Each builder checks its hint against its built stage and sends the keeper a new one if it is false.
@@ -69,6 +70,13 @@ default Tips and on Help), `3-N.dot.<key>` (Dot's story line, said once), `3-N.m
 still. Glowworms wake for still sloths!', ... }` copied verbatim from here and asserts each shipped string equals its entry; the test's
 comment, the commit and the REPORT name the id and this file (`lines-3.md 3-1.teach.still`). An id never changes; a reworded line keeps
 its id, and the keeper changes the words here first.
+
+Ids for the lines outside the stage tables: Pokey's pages `3-2.page`, `3-5.page`, `3-8.page`, `3-9.page` (the "new" text under "Pokey's
+pages" above); the ocelot and jaguar tips `3.journal.ocelot.tip`, `3.journal.jaguar.tip`; the five road cards `3.journal.<glowworms |
+moonflowers | thornvines | glowcaps | ferns>.tip` and `.lore`; World 3's purge words `3.count.purge.verb` ("Send home"),
+`.noun` ("prowler"/"prowlers"), `.goal` ("Send home 8 prowlers to open the sanctuary"), `.still` ("Still 3 prowlers to send home
+before the sanctuary opens"); the gauntlet's `3.count.gauntlet.verb` ("Slip past"), `.noun` ("ring"/"rings"), `.goal`, `.still`,
+`.sealed` (conflict 3's three sentences, in that order); the jaguar lore proposal for Matt `3.lore.jaguar`.
 
 Ids follow 2-5's: `w3N.key` for Dot's lines, MISSION_3N for the card, `SEALED_LINES['3:type']` held equal to the kit's SEALED_3N. TEACH
 lines (said on Normal's default Tips as on Help, D50) are marked T. A dash in "Sealed" means the exit cannot lock: goals.ts:76-83 counts
@@ -114,63 +122,63 @@ only a harvest or a `gathers` stage, and GOAL_WORDS has no words for sprint, asc
 ### 3-5 Sleeping Vines (stealth)
 | Key | Who, where | Line | Words |
 |---|---|---|---|
-| `loud` T | Dot, 800+ px before beat 1 | Thump, and vines wake! Climb down, or land soft. | 9 |
-| `wake` T | Dot, 800+ px before beat 6 (wake them yourself) | Wake them yourself, from where they can't reach you! | 9 |
-| `moss` T | Dot, 800+ px before beat 8 (moss and the punch) | Moss is quiet. Punches are not! | 6 |
-| `oldest` | Dot, once, at beat 9 as the oldest vine's eye follows him (thornVine.ts:2-3's line, cut to fit a box) | Grandma said they were asleep. That one looked! | 8 |
-| mission | stagePlan.ts:81 (settled above) | The old thorn vines are asleep. Take the quiet way down. | 11 |
-| sealed | - (stealth) | | |
+| `3-5.teach.loud` T | Dot, 800+ px before T (now a walk past a sleeping vine: h -> g, no #soft, no root down beside it). CHANGED 11-27: "Climb down, or land soft" named T's removed root and soft drop | Shh! Big thumps wake vines. Little drops are quiet! | 9 |
+| `3-5.teach.wake` T | Dot, 800+ px before W (wake them yourself; W h -> f, the vine-socket ledge keeps the job) | Wake them yourself, from where they can't reach you! | 9 |
+| `3-5.teach.moss` T | Dot, 800+ px before the first moss landing the kit lays ("moss landing (quiet)", AUDIT-W3 THE TABLE 3-5). CHANGED 11-27: C is a bounce now (m -> b): the punch rock and fern nook are gone, so the line names only the moss | Moss is quiet. Drop onto moss, not stone! | 8 |
+| `3-5.dot.oldest` | Dot, once, at S as the oldest vine's eye follows him (S r -> f: the builder keeps the scripted look; if S has no look, the line is cut, not moved) (thornVine.ts:2-3's line, cut to fit a box) | Grandma said they were asleep. That one looked! | 8 |
+| `3-5.mission` | stagePlan.ts:81 (settled above) | The old thorn vines are asleep. Take the quiet way down. | 11 |
+| `3-5.sealed` | - (stealth) | | |
 
 ### 3-6 Grandma's Things (relic hunt, 5)
 | Key | Who, where | Line | Words |
 |---|---|---|---|
-| `carry` T | Dot, 800+ px before beat 1 | Carry the glow cap. What it lights is real! | 9 |
-| `toss` T | Dot, 800+ px before beat 2 | Tap Kick to toss it. Hands full, no jumping! | 9 |
-| `roof` T | Dot, 800+ px before beat 5 (wake the roof) | Set it down under the sleeping roof. Watch! | 8 |
-| `lamp` | Dot, once, when Grandma's lamp comes into view (beat 7, before he lights it; she knew the grotto, thornVine.ts:2) | Oh. Grandma's old lamp. Toss the cap up in. | 9 |
-| mission | stagePlan.ts:82, KEPT (true: Dot hid them, STORY-REWRITE:387) | Dot hid Grandma's things in the ferns. Find {n} of them. | 11 |
-| sealed | SEALED_LINES `'3:relic_hunt'` (3-6 and 3-7, World 3's two searches) | We left some of Grandma's things. Back we go! | 9 |
-| names | protoStage.ts THINGS for 3-6 | locket, rattle, teddy bear, bell, garden trowel | |
+| `3-6.teach.carry` T | Dot, 800+ px before T | Carry the glow cap. What it lights is real! | 9 |
+| `3-6.teach.toss` T | Dot, 800+ px before the first P after T (the toss ahead, now on a walk: no #soft; words still true) | Tap Kick to toss it. Hands full, no jumping! | 9 |
+| `3-6.teach.roof` T | Dot, 800+ px before W (wake the roof) | Set it down under the sleeping roof. Watch! | 8 |
+| `3-6.dot.lamp` | Dot, once, when Grandma's lamp (S) comes into view from C (before he lights it; she knew the grotto, thornVine.ts:2) | Oh. Grandma's old lamp. Toss the cap up in. | 9 |
+| `3-6.mission` | stagePlan.ts:82, KEPT (true: Dot hid them, STORY-REWRITE:387) | Dot hid Grandma's things in the ferns. Find {n} of them. | 11 |
+| `3-6.sealed` | SEALED_LINES `'3:relic_hunt'` (3-6 and 3-7, World 3's two searches) | We left some of Grandma's things. Back we go! | 9 |
+| `3-6.names` | protoStage.ts THINGS for 3-6 | locket, rattle, teddy bear, bell, garden trowel | |
 
 ### 3-7 Which Fern? (relic hunt, 6; runs left)
 | Key | Who, where | Line | Words |
 |---|---|---|---|
-| `listen` T | Dot, 800+ px before beat 1 (ruling c: "go slow or stop") | Go slow or stop. The right fern rustles! | 8 |
-| `jaguar` T | Dot, 800+ px before beat 8, the jaguar's first meeting (ruling d), before its safe teach | Jaguar above! When it growls, hide in a fern! | 9 |
-| `river` | Dot, once, when the arch shadow's secret opens (beat 7) | Listen. Water, behind the wall. A secret river! | 8 |
-| hidden find | the find behind the arch (the design's A) | The Golden Guarana | |
-| mission | stagePlan.ts:83, KEPT | All ferns look alike. Find {n} more of Grandma's things. | 10 |
-| sealed | `'3:relic_hunt'` (as 3-6) | We left some of Grandma's things. Back we go! | 9 |
-| names | protoStage.ts THINGS for 3-7 (conflict 4) | teacup, spectacles, thimble, ball of wool, seed pouch, button tin | |
+| `3-7.teach.listen` T | Dot, 800+ px before T (ruling c: "go slow or stop") | Go slow or stop. The right fern rustles! | 8 |
+| `3.teach.jaguar` T | HELD 11-27 (was 3-7's, before beat 8): the trim made 3-7's C a climb with one passing ocelot (&eyes -> &ocelot*1, m -> c: no ferns as cover there) and no trimmed World 3 code lays a jaguar. Said 800+ px before the first jaguar any stage lays, only where a fern stands to hide in; the passing ocelot needs no line (taught in 3-2: no repeated tips) | Jaguar above! When it growls, hide in a fern! | 9 |
+| `3-7.dot.river` | HELD 11-27: the arch shadow's secret (the door to the hidden stage) is cut; the guarana sits in a plain fern at H. Said only if a door to the hidden river is built, when it opens; NOT at the plain fern | Listen. Water, behind the wall. A secret river! | 8 |
+| `3-7.find` | the find in a plain fern at H (no shadow puzzle; the shadow is painted dressing only) | The Golden Guarana | |
+| `3-7.mission` | stagePlan.ts:83, KEPT | All ferns look alike. Find {n} more of Grandma's things. | 10 |
+| `3-7.sealed` | `'3:relic_hunt'` (as 3-6) | We left some of Grandma's things. Back we go! | 9 |
+| `3-7.names` | protoStage.ts THINGS for 3-7 (conflict 4) | teacup, spectacles, thimble, ball of wool, seed pouch, button tin | |
 
 ### 3-8 Thorn Vine Swing (vine runner)
 | Key | Who, where | Line | Words |
 |---|---|---|---|
-| `ride` T | Dot, 800+ px before beat 1 | Ride the sleeping vines. Eye opens? Let go! | 8 |
-| `oldvine` | Dot, once, whispered as the Old Vine comes into view (beat 8) | Shh. That's the Old Vine. Gently now. | 7 |
-| mission | stagePlan.ts:84 (conflict 2) | Ride the sleeping thorn vines. Let go when an eye opens. | 11 |
-| sealed | - (vine_runner with no `gathers`) | | |
+| `3-8.teach.ride` T | Dot, 800+ px before T | Ride the sleeping vines. Eye opens? Let go! | 8 |
+| `3-8.dot.oldvine` | Dot, once, whispered as the Old Vine (S) comes into view | Shh. That's the Old Vine. Gently now. | 7 |
+| `3-8.mission` | stagePlan.ts:84 (conflict 2) | Ride the sleeping thorn vines. Let go when an eye opens. | 11 |
+| `3-8.sealed` | - (vine_runner with no `gathers`) | | |
 
 ### 3-9 The Prowler's Ring (gauntlet)
 | Key | Who, where | Line | Words |
 |---|---|---|---|
-| `bait` T | Dot, 800+ px before beat 1 (the safe taste) | Toss the light where you aren't. They'll all look! | 9 |
-| `ringgo` | the ring's 'go' line for World 3 prowler rings (engine.ts:8248's prowler branch; conflict 3): story, not a second tip | Eyes all round us. Oh, I don't like this. | 9 |
-| `hold` T | Dot, 800+ px before beat 7 (the light they won't cross) | Hold the light up. They won't come into it. | 9 |
-| `lair` | Dot, once, at the exit (beat 9), the last line before the lair: she asks if he has eaten when it is real (STORY-KEEPER §2) | His den. Shadow Prowler. Have you eaten anything, Pokey? | 9 |
-| mission | stagePlan.ts:85, KEPT (conflict 3) | Break out of the Prowler's ring and reach the shrine. | 10 |
-| sealed | SEALED_LINES `'3:gauntlet'` (said only if a ring can be left behind unslipped) | A ring's still shut back there. Slip past it! | 9 |
-| `ring:open` | engine.ts:8273, KEPT | The way is open! | 4 |
+| `3-9.teach.bait` T | Dot, 800+ px before the first P (the safe taste) | Toss the light where you aren't. They'll all look! | 9 |
+| `3-9.ring.go` | the ring's 'go' line for World 3 prowler rings (engine.ts:8248's prowler branch; conflict 3): story, not a second tip | Eyes all round us. Oh, I don't like this. | 9 |
+| `3-9.teach.hold` T | Dot, 800+ px before the last P (V -> P: the ring's last practise now carries "the light they won't cross"; if the kit lays no carried-light beat there, before S, where he carries the cap up the steps). MOVED 11-27 off the cut preview; words unchanged | Hold the light up. They won't come into it. | 9 |
+| `3-9.dot.lair` | Dot, once, at the exit (E), the last line before the lair: she asks if he has eaten when it is real (STORY-KEEPER §2) | His den. Shadow Prowler. Have you eaten anything, Pokey? | 9 |
+| `3-9.mission` | stagePlan.ts:85, KEPT (conflict 3) | Break out of the Prowler's ring and reach the shrine. | 10 |
+| `3-9.sealed` | SEALED_LINES `'3:gauntlet'` (said only if a ring can be left behind unslipped) | A ring's still shut back there. Slip past it! | 9 |
+| `3-9.ring.open` | engine.ts:8273, KEPT | The way is open! | 4 |
 
 ### World 3's hidden stage: The Glowworm River
 | Key | Who, where | Line | Words |
 |---|---|---|---|
-| name | the stage's name (PITCH-36B's working name, approved) | The Glowworm River | |
-| `stars` T | Dot, before beat 1 (the safe teach) | Stand still, stars show the rocks. Move, they dim. | 9 |
-| `dome` | Dot, once, whispered at beat 8 when the whole dome wakes | Pokey. Look up. Don't say anything. | 6 |
-| mission | its stage card | Ride the glowworm river. Stand still, and the stars show the rocks. | 12 |
-| reward | **(a), without a keepsake**: World 3 already has its one keepsake, the medal (finds.ts:108, in 3-5), and a second would break "one a world" and the ending's tea table. The reward is the stage itself, the Glowworms card, and Pokey's page below. The lasting gifts stay with Thornbark's secret (secret.ts). | | |
-| Pokey's page | pokeyJournal, keyed by the hidden stage's id | A river under the grotto, with its own night sky. I floated under it for a long time. Nobody asked me to hurry. | |
+| `3-H.name` | the stage's name (PITCH-36B's working name, approved). Its door (3-7's arch secret, ENG-SECRET) is cut by 3-7's trim: the lead's call when it returns | The Glowworm River | |
+| `3-H.teach.stars` T | Dot, before beat 1 (the safe teach) | Stand still, stars show the rocks. Move, they dim. | 9 |
+| `3-H.dot.dome` | Dot, once, whispered at beat 8 when the whole dome wakes | Pokey. Look up. Don't say anything. | 6 |
+| `3-H.mission` | its stage card | Ride the glowworm river. Stand still, and the stars show the rocks. | 12 |
+| `3-H.reward` | **(a), without a keepsake**: World 3 already has its one keepsake, the medal (finds.ts:108, in 3-5), and a second would break "one a world" and the ending's tea table. The reward is the stage itself, the Glowworms card, and Pokey's page below. The lasting gifts stay with Thornbark's secret (secret.ts). | | |
+| `3-H.page` | pokeyJournal, keyed by the hidden stage's id | A river under the grotto, with its own night sky. I floated under it for a long time. Nobody asked me to hurry. | |
 
 ## The journal (fact-checked)
 
@@ -220,16 +228,17 @@ for the card's back, written as creatureLore.ts writes them (the narrator: plain
   `sealed`: true whichever prowler was left, one at a stone or one at C's bait floor.
   `yawn`: makes it bedtime, never fear (ask 3); the sound does the rest. `bait`: the twist named the design's way.
 - 3-4 `bloom`, `rise`, `full`: the teach, the twist (the light moves), and wonder with no instruction in it.
-- 3-5 `loud`: the rule and both ways round it. `wake`: the twist, told as permission (the mission no longer forbids it). `moss`: the two
-  noises of the combine in five words. `oldest`: Grandma's line from thornVine.ts, cut to fit, so the vine she talked about is the one
+- 3-5 `loud`: the rule and the way round it (since the trim, T is a walk: the drops it names come after, on the vine ledges). `wake`: the twist, told as permission (the mission no longer forbids it). `moss`: the quiet landing
+  and the loud one, now that the combine's punch rock is cut. `oldest`: Grandma's line from thornVine.ts, cut to fit, so the vine she talked about is the one
   that looks at him.
 - 3-6 `carry`: "what it lights is real" is the stage's promise (PICKS-36-39). `toss`: the button and the cost (no jump) together; Kick
   is the pad's name for it (3-6.md ask 2). `roof`: says what to do, not what happens. `lamp`: Dot goes quiet for Grandma, and the line is
   also the signature's instruction.
-- 3-7 `listen`: the lead's ruling c in Dot's mouth. `jaguar`: the tell (the growl) and the answer (a fern), both true on the kit.
-  `river`: the secret heard before it is seen, in a world about listening.
+- 3-7 `listen`: the lead's ruling c in Dot's mouth. `jaguar` (HELD, now `3.teach.jaguar`): the tell (the growl) and the answer (a
+  fern); it waits for the first stage that lays a jaguar beside a fern. `river` (HELD): the secret heard before it is seen; it waits for a door.
 - 3-8 `ride`: the whole rule, in the order it happens. `oldvine`: a whisper, so the signature feels like the biggest sleeper.
-- 3-9 `bait`, `hold`: the two light rules (lying = lure, carried = flee; 3-9.md:71-72), each before its beat. `ringgo`: Dot's nerves, so
+- 3-9 `bait`, `hold`: the two light rules (lying = lure, carried = flee; 3-9.md:71-72), each before its beat (`hold` now before the
+  practise that replaced the preview). `ringgo`: Dot's nerves, so
   the ring's arrival is a feeling, not a third tip. `lair`: the last line before a guardian is Dot being a second mother.
 - Hidden `stars`, `dome`: the river's only rule, then a whisper at the dome. No keepsake (one a world).
 
