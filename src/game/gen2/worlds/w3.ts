@@ -257,8 +257,16 @@ export const w3ProwlClimbHighDark: SectionTemplate = prowlClimb(true, true);
 /** the climb bricks (a climb node takes two: two shapes, so its second is World 3's own, not a World 1-2 stand-in) */
 export const W3_CLIMBS: readonly SectionTemplate[] = [w3ProwlClimb, w3ProwlClimbDark, w3ProwlClimbHigh, w3ProwlClimbHighDark];
 
+/** a brick in the dark (3-2's '#dark' beats on the ocelot's ground, 'Cg1&>:#dark:&ocelot*2'): the dark stretch from its entry to its exit,
+ *  a glowworm at its end (gen2/dark.ts darkEnds); a node that asks #dark draws it (pipeline: a section that lays the node's hazard) */
+const inTheDark = (s: SectionTemplate, name: string): SectionTemplate => ({
+  ...s, id: `${s.id}-dark`, name, difficulty: s.difficulty + 1, sockets: [...darkEnds(s.entry.piece, s.exit.piece, 'glow'), ...s.sockets],
+});
+export const w3ProwlFloorDark: SectionTemplate = inTheDark(w3ProwlFloor, "the ocelot's floor, in the dark");
+export const w3ProwlPairDark: SectionTemplate = inTheDark(w3ProwlPair, 'two ocelot floors, in the dark');
+
 /** World 3's level bricks, in the order a pool reads them (the ocelot's ground, the climb out; the root rope next, ENG-ROOT) */
-export const W3_LEVEL: readonly SectionTemplate[] = [w3ProwlFloor, w3ProwlPair, ...W3_CLIMBS];
+export const W3_LEVEL: readonly SectionTemplate[] = [w3ProwlFloor, w3ProwlPair, w3ProwlFloorDark, w3ProwlPairDark, ...W3_CLIMBS];
 // ───────────────────────────── the hazards a node code may ask ─────────────────────────────
 
 /** the puff's clock (the spore piece, gen2/spore.ts: a section's SectionZone 'spore' lays its cloud on zones.ts SPORE's beat) */

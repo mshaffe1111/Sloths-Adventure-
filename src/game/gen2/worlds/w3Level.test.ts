@@ -164,3 +164,18 @@ test("3-2's dark climb X(c) ('Xc1&<:#dark:&ocelot*1'): laid from the climb out I
   const r = roll('3-2', CODE_32_DARK, unlit, 1, 'normal', XC_32);
   assert.ok(r.errors.some((e) => new RegExp(`node ${r.node} ".*#dark`).test(e) || /lays #dark/.test(e)), `no dark refusal: ${r.errors.slice(0, 3).join(' | ')}`);
 });
+
+test("3-2's dark C beat ('Cg1&>:#dark:&ocelot*2'): laid from the ocelot's ground in the dark, both ocelots on its sockets on Normal (planted red: no dark ends)", () => {
+  const CG = CODE_32_DARK.split(' ').indexOf('Cg1&>:#dark:&ocelot*2');
+  const DARK_IDS = new Set(W3_LEVEL.filter((q) => q.content === 'ground' && q.sockets.some((k) => k.id === 'darkFrom')).map((q) => q.id));
+  assert.equal(DARK_IDS.size, 2);
+  for (const seed of SEEDS) for (const d of BOTH) {
+    const r = roll('3-2', CODE_32_DARK, W3_LEVEL, seed, d, CG);
+    assert.deepEqual(r.errors.filter((e) => e.includes(`node ${r.node} "`)), [], `seed ${seed} ${d}: C laid ${r.secs.join(', ')}`);
+    assert.ok(r.secs.some((t) => DARK_IDS.has(t)) && r.secs.every((t) => LEVEL_IDS.has(t)), `seed ${seed} ${d}: C laid ${r.secs.join(', ')}`);
+    if (d === 'normal') assert.equal(r.onSockets, 2, `seed ${seed} ${d}`);
+  }
+  const unlit = W3_LEVEL.map((s) => ({ ...s, sockets: s.sockets.filter((q) => q.id !== 'darkFrom' && q.id !== 'darkTo') }));
+  const r = roll('3-2', CODE_32_DARK, unlit, 1, 'normal', CG);
+  assert.ok(r.errors.some((e) => new RegExp(`node ${r.node} ".*#dark`).test(e) || /lays #dark/.test(e)), `no dark refusal: ${r.errors.slice(0, 3).join(' | ')}`);
+});
