@@ -10,7 +10,14 @@ DOWN f brick w3-shelf-hops (w3.ts: four branch shelves, plain hops 80-100 px acr
 about 1066 laid, inside the 1140 storey; 1030 declared laid 1143-1144 and threw, so narrowed). Ruling 3 (w3.test.ts): the drawn test knows
 World 3's cap (offKit: a 70 px bouncy piece 30 px up on its shelf, W3_ART.bounce has bounce#cap-w3, BOUNCE_FRAMES has cap-w3) with a
 PLANTED test (a shelf typed bouncy -> red; the cap-w3 frame gone -> red); head room (:129) learns the cap on its own shelf (headRoomHits)
-with a PLANTED test (70 px solid wood 30 px over a shelf -> red; a shelf 40 px under the cap -> red). w3.test / w3Noise NOT RUN yet.
+with a PLANTED test (70 px solid wood 30 px over a shelf -> red; a shelf 40 px under the cap -> red).
+w3.test + w3Noise ONCE on 5e4fdf7b6 (box 4): 14 pass, 5 FAIL. :170 drawn + both new plants PASS; :129's '30 px under a cap' line GONE.
+The 5: w3.test:124 'every roll clean' (easy 2: x 734-822 y 9600 454 px, x 516-658 y 9751 303 px), :129 head room (normal 13: blind drop
+x 1017-1197 y 8740 321 px), :143 vine (easy 2, the same), :191 'a catch hands on' (normal 7: catches x 954-1134 y 2898, x 226-406 y 5439):
+ALL the probe's tower-wood cases below (ENG-CATCH-c's). w3Noise: 4 of its 5 reds now PASS (the call toy is laid again, by property);
+1 left, w3Noise:308/317 'moss: the sleeper lies about 300 px past where he lands (260 px)': the picked drop roll lands him 40 px further
+along than SLEEP_T assumes: box 5 reads it (the sleeper's t from the landing the roll really lays, or the first roll where the drop
+lands as designed, by property, D151), the kit's own, not tower wood.
 1. Box 5: `git fetch origin +refs/heads/t-kit-w3a:refs/remotes/origin/t-kit-w3a && git checkout -B t-kit-w3a origin/t-kit-w3a`; npm ci in
    the background; ReadNotifications FIRST (ENG-CATCH-c's hash, and the lead's call on the shelf-hops cases below).
 2. PROBE (probe12-box4.txt here; SEEDS=12 both): all FIVE together 20/24, reds n7 e2 e4 e7; root-down 24/24, two-roots 24/24 alone;
