@@ -142,6 +142,11 @@ export function findBeats(stage: Stage, route: Route, samples: Sample[]): BeatRe
       case 'rope': raw.push({ ...at, letter: 'V', what: 'shimmy along a rope' }); break;
       case 'lift': raw.push({ ...at, letter: 'V', what: 'ride the basket lift' }); break;
       case 'wheel': raw.push({ ...at, letter: 'V', what: 'ride a water wheel up' }); break;
+      // (a let-go over a river onto its log, and a jump off a riding log up to a liana: moves, busy for their whole time as a swing is
+      //  (STAGE-RULES 'Dead time': vines and timing choices count as action). With no case here 2-9's let-go and twist read as 2.8-2.9 s
+      //  of nothing each (ENG-QUIET, the lead's ruling B, 11-26))
+      case 'lianaDrop': raw.push({ ...at, letter: 'V', what: 'let go over the river onto a log' }); break;
+      case 'logCatch': raw.push({ ...at, letter: 'V', what: 'jump off a riding log up to a liana' }); break;
       case 'draft': raw.push({ ...at, letter: 'V', what: 'ride the warm air' }); break;
       default: break;
     }

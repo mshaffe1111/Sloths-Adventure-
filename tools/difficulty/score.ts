@@ -1153,7 +1153,8 @@ export function scoreStage(id: string, setting: Setting, seed: number, seen: Map
       // (a swing is scored once a liana, at its release, with what a miss there costs: swingChallenges below)
       // (a swing is priced at its release, swingChallenges; a lift by the ride channel, rideChallenges)
       // (a wheel by the wheel channel, wheelChallenges)
-      if (b.fam === 'move:swing' || b.fam === 'move:lift' || b.fam === 'move:wheel') continue;
+      // (a let-go and a log catch by the liana channel, lianaChallenges, from the route's own segs)
+      if (b.fam === 'move:swing' || b.fam === 'move:lift' || b.fam === 'move:wheel' || b.fam === 'move:lianaDrop' || b.fam === 'move:logCatch') continue;
       // (a climb up a trunk or vine: OTHER_BITS.climb. A rope shimmy is the same self-paced hold (METER-COVERAGE #7, SP): the route's rope
       // runs ledge to ledge (route.ts 'rope' edges), so its let-go at the end is onto the far ledge it overhangs, no jump to price (a rope
       // whose end let-go is a jump is row 7's later half, 3-2). A lift or warm air scored as that climb: now refused, unless known)
