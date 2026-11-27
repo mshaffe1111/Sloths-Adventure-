@@ -15,6 +15,7 @@ import { KIT_STAGE_ID } from './kitStage.ts';
 import { GameEngine } from './engine.ts';
 import { boxFits, fitZoom, ROOM_CAM, roomCentre, roomFloor, type CamBox } from './puzzleCamera.ts';
 import { KIT } from './puzzleKit.ts';
+import { NOISE } from './noise.ts';
 
 // (1-6's seesaw rooms went with the hand-built 1-6's proto plan: the gen2 1-6 replaced it, R-165.238 11-14; it has no puzzle room)
 // (1-4's squirrel-lift rooms went with the hand-built 1-4: the gen2 1-4 replaced it, B14 11-13; its fig gates are field pieces, no room)
@@ -77,13 +78,28 @@ function boxOf(room: Room, id: string): CamBox | null {
   return null;
 }
 
+/** a watcher that hears the kit's noises (noise.ts: a snapper or a royal guard, engine.ts lureX) */
+type Ear = { id: number; type: string; x: number; y: number; defeated?: boolean };
+const earsOf = (e: object): Ear[] => ((e as unknown as { enemies: Ear[] }).enemies).filter((q) => q.type === 'turtle' && !q.defeated);
+/** a guard's body as it must show (predatorAI.ts: the royal guard's upright body, x +-16, from 46 above his feet to 12 below) */
+const guardBox = (g: Ear): CamBox => ({ x0: g.x - 16, x1: g.x + 16, y0: g.y - 46, y1: g.y + 12 });
+/** the watchers a noise made at (x, y) with reach r calls (noise.ts heard) */
+const calls = (ears: Ear[], x: number, y: number, r: number): string[] =>
+  ears.filter((g) => Math.abs(g.x - x) <= r && Math.abs(g.y - y) <= NOISE.hearY).map((g) => `guard:${g.id}`);
+
 /** each moment to check: where he stands, what he holds, and the pieces that must show together */
-function moments(room: Room): Array<{ name: string; x: number; y: number; hold?: number; show: string[] }> {
+function moments(room: Room, ears: Ear[]): Array<{ name: string; x: number; y: number; hold?: number; show: string[] }> {
   const out: Array<{ name: string; x: number; y: number; hold?: number; show: string[] }> = [];
   room.items.forEach((it, k) => {
     const src = room.sources.find((s) => s.spec.id === it.spec.source);
     const target = it.spec.for;
-    if (!target) return;
+    if (!target) {
+      // a thing for nobody's gate (2-9's gallery pebble, BUILD-28-i, ruling 1): it is thrown to turn the guards, so at its pile: the
+      // pebble and every guard a landing near it turns (noise.ts: within a landing's reach)
+      const called = src ? calls(ears, src.x, src.y, NOISE.hear) : [];
+      if (src && called.length) out.push({ name: `${it.spec.id} at its ${src.spec.id}: the pebble and every guard it turns`, x: src.x - 30, y: src.y, show: [it.spec.id, ...called] });
+      return;
+    }
     const tBox = boxOf(room, target);
     if (!tBox) return;
     // at the source (or where the thing lies): the thing and what it is for
@@ -102,6 +118,13 @@ function moments(room: Room): Array<{ name: string; x: number; y: number; hold?:
   for (const pc of [...room.levers, ...room.bells, ...room.plates]) {
     const gates = room.gates.filter((g) => wireReads(g.spec.open, pc.spec.id)).map((g) => g.spec.id);
     if (gates.length && !room.items.some((it) => it.spec.for === pc.spec.id)) out.push({ name: `at ${pc.spec.id}`, x: pc.x - 50, y: pc.y, show: [pc.spec.id, ...gates] });
+  }
+  // a bell with no gate (2-9's gallery, BUILD-28-i, the lead's ruling 1): it is rung to call the guards, so at the bell: the bell and
+  // every guard it calls (noise.ts: within a bell's reach of it)
+  for (const bl of room.bells) {
+    if (room.gates.some((g) => wireReads(g.spec.open, bl.spec.id))) continue;
+    const called = calls(ears, bl.x, bl.y, NOISE.bellHear);
+    if (called.length) out.push({ name: `at ${bl.spec.id}: the bell and every guard it calls`, x: bl.x - 50, y: bl.y, show: [bl.spec.id, ...called] });
   }
   // coming up to a seesaw: its whole plank and the end it raises
   for (const s of room.seesaws) out.push({ name: `by ${s.spec.id}`, x: room.box.x0 + 50, y: room.box.y1 - 70, show: [`seesaw:${s.spec.id}`] });
@@ -128,9 +151,20 @@ test('every puzzle room in Worlds 1 and 2 and the kit test room: what he works a
   const want = new Map<string, number>();
   const got = new Map<string, number>();
   for (const id of STAGES) {
-    const rooms = (engineFor(id, ...PHONES[0]).e.kit?.rooms ?? []) as Room[];
+    const e0 = engineFor(id, ...PHONES[0]).e;
+    const rooms = (e0.kit?.rooms ?? []) as Room[];
+    const ears = earsOf(e0);
     assert.ok(rooms.length, `${id} has puzzle rooms`);
-    rooms.forEach((room, ri) => want.set(`${id} #${ri} ${room.spec.id}`, moments(room).filter((m) => rooms.findIndex((q) => inBox(m, q)) === ri).length * PHONES.length));
+    rooms.forEach((room, ri) => {
+      const ms = moments(room, ears).filter((m) => rooms.findIndex((q) => inBox(m, q)) === ri);
+      want.set(`${id} #${ri} ${room.spec.id}`, ms.length * PHONES.length);
+      // (and every bell, lever, plate and thing to carry or throw in a shipped room is in a moment of its own room: a piece no moment
+      //  shows is a piece nobody checked; BUILD-28-i, 2-9's gallery bell and pebble had none)
+      if (id === KIT_STAGE_ID) return;
+      for (const pc of [...room.bells, ...room.levers, ...room.plates, ...room.items]) {
+        assert.ok(ms.some((m) => m.show.includes(pc.spec.id)), `${id} #${ri} ${room.spec.id}: ${pc.spec.id} is in no moment to check`);
+      }
+    });
   }
   for (const k of want.keys()) got.set(k, 0);
   for (const [w, h] of PHONES) {
@@ -139,7 +173,7 @@ test('every puzzle room in Worlds 1 and 2 and the kit test room: what he works a
       const kit = e.kit;
       assert.ok(kit?.rooms.length, `${id} has puzzle rooms`);
       (kit.rooms as Room[]).forEach((room, ri) => {
-        for (const m of moments(room)) {
+        for (const m of moments(room, earsOf(e))) {
           r.stand(m.x, m.y);
           if (m.hold !== undefined) {
             room.items[m.hold].mode = 'held';
@@ -159,7 +193,8 @@ test('every puzzle room in Worlds 1 and 2 and the kit test room: what he works a
           const v = { x0: e.camera.x, x1: e.camera.x + e.camera.viewportWidth, y0: e.camera.y, y1: e.camera.y + e.camera.viewportHeight };
           for (const s of m.show) {
             const ss = s.startsWith('seesaw:') ? room.seesaws.find((q) => q.spec.id === s.slice(7)) : null;
-            const b = ss ? { x0: ss.x - ss.w / 2, x1: ss.x + ss.w / 2, y0: ss.y - ss.rise, y1: ss.y } : boxOf(room, s);
+            const gd = s.startsWith('guard:') ? earsOf(e).find((q) => `guard:${q.id}` === s) : null;
+            const b = ss ? { x0: ss.x - ss.w / 2, x1: ss.x + ss.w / 2, y0: ss.y - ss.rise, y1: ss.y } : gd ? guardBox(gd) : boxOf(room, s);
             assert.ok(b, `${id} ${room.spec.id}: ${s}`);
             const where = `${w}x${h} ${id} ${room.spec.id}, ${m.name}: ${s} [${Math.round(b.x0)}..${Math.round(b.x1)}, ${Math.round(b.y0)}..${Math.round(b.y1)}] in view [${Math.round(v.x0)}..${Math.round(v.x1)}, ${Math.round(v.y0)}..${Math.round(v.y1)}]`;
             assert.ok(b.x0 >= v.x0 - 1 && b.x1 <= v.x1 + 1 && b.y0 >= v.y0 - 1 && b.y1 <= v.y1 + 1, where);
