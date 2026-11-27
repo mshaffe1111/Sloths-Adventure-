@@ -1,6 +1,97 @@
-# BUILD-28 REPORT (W2-LANE: 2-8 "Before the Water Rises"; R-165.430 (2), READY-28, BUILD-28). Session 1 (W2-LANE a), started 9:44 AM ET (from date). Session 2 (W2-LANE b), started 10:07 AM ET (from date). Session 3 (W2-LANE c), started 10:30 AM ET (from date). Session 4 (W2-LANE d), started 10:52 AM ET (from date). Session 5 (W2-LANE e), started 11:19 AM ET (from the session hook date) Session 6 (W2-LANE f), started 11:41 AM ET (from the session hook date) Session 7 (W2-LANE g), started 12:05 PM ET (from the session hook date) Session 8 (W2-LANE h), started 12:49 PM ET (from the session hook date) Session 9 (W2-LANE i), started 1:15 PM ET (from the session hook date) Session 10 (W2-LANE j), started 1:05 PM ET (from the session hook date) Session 12 (W2-LANE l), started 2:20 PM ET (from the session hook date)
+# BUILD-28 REPORT (W2-LANE: 2-8 "Before the Water Rises"; R-165.430 (2), READY-28, BUILD-28). Session 1 (W2-LANE a), started 9:44 AM ET (from date). Session 2 (W2-LANE b), started 10:07 AM ET (from date). Session 3 (W2-LANE c), started 10:30 AM ET (from date). Session 4 (W2-LANE d), started 10:52 AM ET (from date). Session 5 (W2-LANE e), started 11:19 AM ET (from the session hook date) Session 6 (W2-LANE f), started 11:41 AM ET (from the session hook date) Session 7 (W2-LANE g), started 12:05 PM ET (from the session hook date) Session 8 (W2-LANE h), started 12:49 PM ET (from the session hook date) Session 9 (W2-LANE i), started 1:15 PM ET (from the session hook date) Session 10 (W2-LANE j), started 1:05 PM ET (from the session hook date) Session 12 (W2-LANE l), started 2:20 PM ET (from the session hook date) Session 13 (BUILD-28-j, box 10), started 10:43 AM ET (from the session hook date)
 
-## EXACT NEXT STEP (BUILD-28 box 9, BUILD-28-i, started 10:18 AM ET (from the session hook date); hand-over 10:38 AM ET (from date); code head a25e3ed7b (merges 8bcd15cdb + ea75ffdf8, the test and the data fix) on t-build-28-wip)
+## EXACT NEXT STEP (BUILD-28 box 10, BUILD-28-j, started 10:43 AM ET (from the session hook date); hand-over 11:06 AM ET (from date); code head f8d311f4b on t-build-28-wip: an EARLY-READ candidate, NOT final (the fish trap, ruling A, changes the lay first))
+DONE THIS BOX (packet reference/packets/2026-11-27/BUILD-28-h.md items 3-4; box 9's NEXT b-d):
+1. THE ISLAND CUT, 1500a24bf: w2Arc28.ts's island piece 'i' names cut 'w2-reed28#reed-isle-28' (SectionPiece.cut -> Platform.cut, ENG-CUT-b's
+   lay, pipeline.ts:2864). w2Arc28.test.ts AWAITS loadInventory(2) at module top, and the island test asserts the platform under cage 3
+   wears that cut, seeds 1-40 x both: 4/4 PASS. Plants (each RED, CAUGHT): (a) unknown id 'w2-reed28#no-such-isle': tests 3 and 4 fail
+   at the lay BY NAME ("gen2 section w2-28-island: piece i: cut 'w2-reed28#no-such-isle' is neither a World 1 cut ... nor in any row of
+   World 2's inventory"); (b) the cut removed: test 4 RED "normal 1: it wears cut 'undefined', not the reed island's painted piece".
+2. THE TOOLS AWAIT THE INVENTORY too, f8d311f4b (generic, no stage id): libstage.ts main and seedlist.ts (every mode) await
+   loadInventory(cfg.worldIndex) before laying. Without it the lay's layCutRefusal (invCut.ts:71) returns undefined (no inventory in
+   hand) and a refused cut would be laid UNCHECKED in the roll and the list search.
+3. THE ROLL (libstage --stage 2-8 --seeds 40 --par 4, on 1500a24bf + the await): Normal CLEAN 40/40, Easy CLEAN 40/40, thrown 0, no
+   refusals; graph flood-28-arc 40; 2 beat orders each; seconds Normal 241.3-246.8, Easy 247-251.3; pool sections never laid: non4. THE LIST, f8d311f4b: seedlist 2-8 -> 100 proven of 100 tried (100%), 19 s; quiet line longest 1.1 s (bound 4 s); outro 860-880 px;
+   src/game/gen2/proven/seeds-2-8.ts (16952 bytes, own chunk), provenIndex '2-8' n 100 version 06be25e5. seedlist 2-8 --check: PASS
+   (100 seeds, verdicts refuse 0). registrycheck's 2-8 red (box 9's CI tool line) should clear with it: read in the tool line below.
+5. THE WIDENED PIN GREP (release.md step 6): 7 files name 2-8 (w2Puzzles, w1NewArt, puzzleCamera, plainWalk, writtenKeys,
+   firsttimer.test, riverRide.test). Only plainWalk (STAGES env list incl. 2-8) and w1NewArt (stage loop incl. 2-8) BUILD 2-8 and now
+   take its listed seed; the rest name 2-8 in comments only (the deleted hand build, the old river rolls 9..26). No pinned 2-8 row to
+   re-pin; plainWalk and w1NewArt are read in the suite shards below.
+6. THE FULL GATE RUN on the frozen candidate f8d311f4b (worktree /home/user/cand-f8d in this container; the lock base worktree
+   /home/user/base-155 = merge-base(origin/main, HEAD) 1558489a2):
+   EARLY READ ONLY (the lead: the fish trap changes the lay, so the one gate run is on the NEXT candidate). Read at hand-over:
+   - tsc 0, generalitycheck PASS (72 files, 26 literals, 26 known) on f8d311f4b.
+   - seedlist 2-8 --check PASS (100). Roll CLEAN 40/40 both (item 3).
+   - suite shard 1/6: 784 tests, 783 pass, 0 fail, 1 todo (R-165.312 flag placer, TODO). Shard 2/6: RUNNING at hand-over, 587 top-level results, 0 'not ok' so far; shards 3-6 not started (stopped at hand-over, the lead's ruling).
+   - lock base (1558489a2, --layouts 16 --out base.json): 'lock: wrote 3264 builds of 102 stages'. Lock --check on f8d311f4b: RUNNING at hand-over (at 6-6 of 102), NO counts line: NOT RUN (D153); stopped at hand-over.
+   - artUse: 2 fresh unused rows: cage-whole (clears with the fish trap, ruling A) and cage-b = 'R-165.543, the lead's' (item 8).
+   - NOT RUN this box: the CI tool line (box 9's started run was killed unread: it shared 4 cores with the shards; it was on a mixed tree,
+     not the candidate), drawcheck, clipcheck, tierBots, every other list's seedlist --check, storyTipScan --check, bots, stills.
+   The logs live in this container only; the next box re-runs everything once on its own candidate.
+7. CAGE-WHOLE (packet 2(iii), after the roll): still UNUSED (nothing in src names 'cage-whole'; the roll lays 'cage' objective items,
+   drawn in code). PROPOSAL sent to the lead (no known-list entry): it is OPAQUE inside (0 of 24,700 inner
+   pixels see-through: the "solid bundle that hid the little one", riverArt.ts:794, why drawW2Cage draws cageB), so never a cage he punches.
+   RECOMMENDED (A, reversible): a non-interactive village prop (the woven fish trap the village keeps), drawn at the rescue cage's height
+   (about 84 px), on the village jetty (beat 0) and the parade boardwalk home (beat 14), never on a beat with a rescue cage; B: the jetty
+   only (if a child would punch it); C: leave it for a W2 stage with a fishing beat. A stands if no ruling in 20 minutes.
+8. CAGE-B FACTS for the lead (asked; nothing changed: not artUse, not any list): w10alt.webp ships in NO build (no src code names it;
+   only w6to10/manifest.json, which no src imports, its json, artUse.allow.json and tools/art). Of its 6 pieces 5 are unused: banner-b,
+   weapon-rack-b, brazier-b, spout-b (allow-listed since 10-31, 'w10-pieces helper') and cage-b (not listed); crates-b reads 'used' by
+   text only. It surfaced when 69c3c1640 deleted the last `cage-${o.mode}` template (w2Stages.ts:877, from 9bba5f1fb 10-28) that artuse.mjs
+   counted as a dynamic name for every 'cage-*' frame. artuse on f8d311f4b: exactly 2 fresh rows, cage-whole (clears with the fish trap)
+   and cage-b (release 6's artUse blocker). Options sent: (a) allow-list beside its sheet-mates (a known-list growth: the lead's rule),
+   (b) a W10 placement (not this lane), (c) leave red. I leaned (a). THE LEAD'S RULING: cage-b is NOT this lane's and does not block
+   the box; the lead takes it as R-165.543 and rules before release 6's integration; artUse and every list stay untouched. Name it in
+   the gate table as 'R-165.543, the lead's'.
+NEXT, in order (ReadNotifications at every step boundary; generalitycheck with tsc at each, D156):
+a. Fresh container: `npm install --no-audit --no-fund --legacy-peer-deps` and `git fetch --unshallow` (run_in_background). The
+   candidate f8d311f4b is NOT final: b0 changes the lay.
+b0. FIRST, BEFORE THE GATE RUN (D40: it changes 2-8's lay): CAGE-WHOLE, the lead's ruling A (APPROVED, with a condition): a NON-interactive
+   woven fish trap on the jetty (beat 0) and the parade boardwalk home (beat 14), never on a rescue-cage beat; a punch on it does nothing;
+   no shake, no sparkle; BOTH placements in the stills, upright and sideways; the lead judges basket/trap vs cage, and if it reads as a
+   cage it comes out (ruling C). Route (my reply to the lead, reed-isle-28's form): (i) cut it to its own picture
+   src/assets/w2-cut/cage-whole.webp from src/assets/w1to4art/w2-new.webp frame (0,727 193x269) (w1to4art/ is in no invDressArt folder;
+   shipping the whole folder for one piece is wrong); (ii) a catalog row in reference/art/CATALOG-MASTER.csv pointing at it, then
+   `python3 tools/art/catalog_master.py --emit` (never hand-edit w2.json); (iii) finish28 (w2Arc28.ts:295) writes proto.invDress rows
+   {inv, x, y: the bank's top, hang: false, layer: 'behind'} at the jetty and parade sections (w1Arc18.ts:352 is the model), placed by the
+   built stage's sections (rule 27), clear of the families and any cage; (iv) a test: on seeds 1-40 x both, exactly 2 rows, each on a
+   jetty/parade section, none within a screen of a 'cage' item, invDressBreaches empty; plant (a row on the island beat) -> RED. Drawn at
+   its inventory scale, about 130 px (pokey_scale 1.46 x 89.1; a row cannot size it); behind the play layer, so a punch cannot touch it.
+   WATCH (artUse, honest by draw, not by text): the unused row is the PACKED frame w1to4art/w2-new.json#cage-whole (catalog row 403,
+   'w2-new#cage-whole'). A cut copy in w2-cut/ is a NEW file with its own catalog row (reed-isle-28's row 418 is the model; scale_basis,
+   pokey_scale 1.46 carried). Before committing, run `node tools/art/artuse.mjs --json <scratch>/a.json` and say to the lead exactly
+   how the old frame reads: if it reads 'used' only because a string 'cage-whole' now appears in code, that is box 9's Learned (1)
+   again (a text match, not a draw). Then the honest fix is the lead's (retire the packed frame's row as superseded by the cut, or
+   draw from the sheet), never a quiet pass.
+   Then a NEW frozen candidate, and step b's whole gate run on it (the run on f8d311f4b becomes an early read). The ORDER was put
+   to the lead (prop first, then one gate run); ReadNotifications first: if the lead said finish the gates on f8d311f4b, do b first.
+b. THE ONE gate run on the new candidate (after b0) in a frozen worktree (git worktree add --detach; node_modules symlinked), each heavy check ONCE,
+   at most 2 at a time on 4 cores (this box ran the suite and the lock together: the lock's base ran about 20 s a stage): the gates NOT
+   finished above, then the CI tool line (gates.yml:157, expect registrycheck GREEN now 2-8 has its list), drawcheck (2-8 is already a
+   scenario in tools/perf/limits.json, the SAME limits), clipcheck, tierBots (npx tsx --test tools/inspect/tierBots.test.ts),
+   seedlist --check for EVERY list (tools/engine/registrycheck.ts --shards --print gives the lists), storyTipScan --check, generalitycheck.
+c. BOTS x40: `npx tsx tools/inspect/castBots.ts --stage 2-8 --seeds 1-40 --bots kid,adult,child,middle,expert --setting both --par 4
+   --rows <scratch>/rows28.jsonl`; every miss traced (rule 28: seed, x, frame, what took him), two runs per cause.
+d. STILLS from the COMMITTED lay, only once the bots are GREEN (rule 29), upright 412x915 and sideways 915x412 (level.md step 5:
+   tools/engine/runs/trap-stills.mjs / stills-at.mjs on `npx vite --port 5199`): the boardwalk's plank gaps with the splash-back river,
+   the reed island IN the water (draw path: Platform.cut 'w2-reed28#reed-isle-28' -> art/invCut.ts by its stand span), the fork, the
+   fork-rest, AND both fish-trap placements (jetty, parade; the lead's condition); judged as Matt would on a phone; sent to the lead.
+e. Inherited reds, named as such: artUse cage-b = 'R-165.543, the lead's'; R-165.535 (5-9 kid runs; resolved by release 5's 4799f6026), R-165.531 (tools/validate, in no CI line),
+   puzzleCamera's gallery1 bell moment upright (ENG-CAM29, R-165.513).
+f. Then Law 12: the debrief Matt asks for, once 2-8 is built and green.
+
+LEARNED (box 10): (1) A plant made with `git checkout <file>` to restore wipes an UNCOMMITTED edit in that file (it cost a re-apply):
+commit the change first, then plant, then restore from the commit. (2) A tool that lays a stage synchronously never sees a world's
+inventory unless it awaits loadInventory first: layCutRefusal returns undefined with no inventory in hand, so a wrong cut is laid
+unchecked in the roll and the list search; the await belongs in every tool that lays (generic, by cfg.worldIndex). (3) The suite and the
+lock together on 4 cores do not fit one 28-minute box: the lock's two runs alone are about 102 stages x 16 layouts x 2 settings, twicLESSONS APPLIED: D119/D152 (no heredoc in a commit call), D128 (stamps from date), D134 (NEXT STEP pushed and ls-remote checked),
+D138 (hand-over ends new work), D140 (ReadNotifications at boundaries), D153 (a lock without its counts line is NOT RUN), D156
+(generalitycheck with tsc), D40 (the prop before the gate run).
+PROPOSED RULES (level.md, for the lead): "every tool and test that lays a stage awaits loadInventory(world) first; a planted wrong cut goes
+red by name in the roll"; "a box plans its heavy gates by measured minutes: the lock's two runs start first, alone, at the box's start".
+
+## (was the EXACT NEXT STEP) (BUILD-28 box 9, BUILD-28-i, started 10:18 AM ET (from the session hook date); hand-over 10:38 AM ET (from date); code head a25e3ed7b (merges 8bcd15cdb + ea75ffdf8, the test and the data fix) on t-build-28-wip)
 DONE THIS BOX (packet reference/packets/2026-11-27/BUILD-28-h.md; the lead's rulings in box 8's section below):
 1. RULING 1, the gallery1 moments, commit 31451e6be (src/game/puzzleCamera.test.ts): moments(room, ears) now has
    (a) at a bell with no gate: 'at bellN: the bell and every guard it calls' (ears = the stage's live turtles, not defeated; called = within
