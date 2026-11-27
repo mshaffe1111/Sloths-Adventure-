@@ -1,0 +1,23 @@
+import '../../../../src/game/headlessDom.ts';
+import { withTestStage } from '../../../../src/game/gen2/listed.ts';
+import { buildGen2Stage } from '../../../../src/game/gen2/pipeline.ts';
+import { DRAFT_ID_29, draft29Cfg, draft29Row, kitLib29 } from '../../../../src/game/gen2/worlds/w2Arc29.ts';
+import { letGoFall, fallOnLog } from '../../../../src/game/gen2/riverLay.ts';
+import { lianasOverLogs, onRiver, driftX } from '../../../../src/game/river.ts';
+import { pressLaunches, vinePeriod, flyLaunch } from '../../../../src/game/physics.ts';
+import { withSetting } from '../../../../src/game/settingDials.ts';
+const st = withTestStage({ [DRAFT_ID_29]: draft29Row([], DRAFT_ID_29) }, () => buildGen2Stage({ config: draft29Cfg(DRAFT_ID_29), kit: kitLib29(DRAFT_ID_29), seed: 1, difficulty: 'normal' }));
+withSetting('normal', () => {
+  const r = (st.rivers ?? []).find((q) => q.x0 < 7903 && q.x1 > 7903)!;
+  const logs = st.platforms.filter((p) => p.type === 'drift' && p.drift && onRiver(p.drift, r)).map((p) => p.drift!);
+  const v = lianasOverLogs(st.vines ?? [], r).find((q) => Math.round(q.x) === 7903)!;
+  const T = vinePeriod(v), L = pressLaunches(v, 0.95);
+  const ring = (x: number) => { const u = ((x % T) + T) % T; return Math.min(u, T - u); };
+  let k1 = 0; L.forEach((l, k) => { if (ring(l.pt) < ring(L[k1].pt)) k1 = k; });
+  const l = L[k1];
+  console.log('river', r.x0, r.x1, 'top', logs[0].baseY, 'launch pt', l.pt.toFixed(3), 't', l.t.toFixed(3), 'x', l.x.toFixed(1), 'y', l.y.toFixed(1), 'vx', l.vx.toFixed(0), 'vy', l.vy.toFixed(0), l.call);
+  let i = 0;
+  flyLaunch(l, { held: 99, dbl: 99 }, logs[0].baseY + 200, (c, t) => { if (i++ % 3 === 0 && i < 60) console.log(' f', t.toFixed(3), 'x', c.x.toFixed(1), 'y', c.y.toFixed(1), 'vx', c.vx.toFixed(0), 'vy', c.vy.toFixed(0), 'logs(at t+14.25 shift)', logs.map((d) => Math.round(driftX(d, t))).join(',')); return false; });
+  const f = letGoFall(l, logs[0]);
+  console.log('cross', JSON.stringify(f.cross.map((q) => ({ x: Math.round(q.x), dt: +q.dt.toFixed(3) }))), 'far', f.far, 'lands', fallOnLog(f, logs, l.pt, false));
+});

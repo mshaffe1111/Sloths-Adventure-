@@ -1,5 +1,49 @@
 # ENG-29 REPORT: 2-9's NEW 1 (the court's tempo) and NEW 2 (the drum you hear), built ahead (R-165.449)
 
+## ENG-29-g (box 3, ENG-29-e's packet; 7:29 PM ET Thu 11/26 by `date`): G6 CODED on wip (ca30a4885), NOT landed: the model and the bar's engine read judge DIFFERENT inputs
+
+### EXACT NEXT STEP (box 4)
+Re-fetch t-eng-29-wip (head: this REPORT commit). Run ReadNotifications and read the lead's ruling on the INPUT (asked: (a) Right held,
+jump released, a flick: the model's and LIANA_RIVER's convention; (b) no direction held, box 2's read; (c) the worse of the two; the
+default (c) after 20 minutes with no reply, reversible). `git ls-remote origin t-eng-29`: if it is box 2's landing (d1038af49), merge it
+into wip. Then:
+1. (a) ruled: the model stands (it matches the engine on the flick within about 2 frames, below). Find the x14389 grip-0.95 flicker
+   first (the engine's read moves with WHICH bar the probe uses on a one-log-a-bar river: probes/oneMarginR.ts MOFF 0/1/2 below): a harness
+   carry-over between tries or a real engine non-periodicity; then re-measure the bar on the flick (2-9 draft, locks 0.85-0.95) and
+   take it to the lead (0.20/0.30 was set from (b)); then the gates and the landing as box 2's step 5-6.
+2. (b) or (c) ruled: lockedDrops needs a second flight, no direction held (the engine's leapDir falls back to p.facing; no Right in
+   the air, so no air steering), judged worst with the flick for (c). Build it in riverLay (pressLaunches/letGoFall with the input as a
+   parameter), then this box's check again: the model's grid against probes/oneMargin.ts (no direction) on the draft, never looser.
+3. The toy (oneMargin.test.ts) and the tempo.test.ts:33 filter stay as they are unless the bar moves; re-run them on the new model.
+
+### Done this box (pushed to t-eng-29-wip, ls-remote-confirmed)
+- **G6 coded** (ca30a4885): riverLay lockedDrops reports `early` and `late` (s): the landing presses contiguous with the press on ONE
+  on each side, read round the joint cycle, worst over LIANA_RIVER.grips and the cycle's swings, 0 where ONE misses (`one` kept).
+  tempo.ts ONE_MARGIN { normal 0.2, easy 0.3 } (the lead's ruling cited); tempoFaults refuses each short side by name: 'the liana at
+  x .. over the river at x ..-..: a press on ONE keeps 0.133 s late, under the 0.2 s a side Normal needs (ONE's margin: ..)'.
+  Toy src/game/gen2/oneMargin.test.ts (3): the bar (Easy never under Normal); the tempo toy at its lock 0 GREEN seeds 1-4 both settings
+  (model Normal 0.40 / 0.33, Easy 1.40 / 0.40); REFUSED at lock 0.06 by name (ONE still lands, `one` true: the old check is blind;
+  Normal late 0.13, Easy late 0.17). PLANTED RED (the refusal filtered to nothing): 'normal seed 1'. tempo.test.ts:33 (the 82 px/s
+  row: exactly one fault) now also gets the drifting row's liana fault (0.033 s early), a true fault: the test keeps its count on the
+  non-margin faults. tsc clean; tempo, gen2 tempo, tempoToy, lianaRiver, bargeRow, tempoResume, drumDouble 30/30.
+- **THE CHECK (scratch: t-build-29 + ca30a4885 + barge29 look 'barge', TEMPO_29.lock from env LOCK29; probes/model29.ts)**, model worst
+  early / late, seeds 1-2: 0.92 Normal 0.83 / 0.70 (box 2's engine read 0.37 / 0.17), Easy 1.20 / 0.77 (0.47 / 0.23); 0.90 Normal
+  0.83 / 0.20 (0.30 / 0.23), Easy 1.17 / 1.90 (0.37 / 0.33); 0.88 Normal 0.77 / 0.00 (0.20 / 0.33; the model REFUSES x14389). Looser
+  at 0.92: the gate as coded passes the lock the bar's read fails. Said to the lead before any landing.
+- **WHY (found, probes/fly29.ts, grid29.ts, oneMarginR.ts)**: box 2's engine probe presses with NO direction held and flies with
+  nothing held (leap toward p.facing, no air steering); the model flies the press with Right held and jump released (a flick). Same
+  press, x7903 grip 0.95 at ONE: the model's launch x 7889.8 y 750.3 vx 520 vy -562 at 5.891 s; the engine's x 7886.9 y 758.1 vx 520
+  vy -563 three frames after the press (the same hold to the sweet spot); the river within 1 px. With jump HELD in flight the engine
+  GLIDES (vy capped 125 from frame 15) and overshoots to ground at x 8488 (oneMarginR-righthold-J20-0.92.txt): a third input again.
+- **The engine on the MODEL's input (the flick; oneMarginR-flick-0.92.txt, seeds 1-2, 4 bars, j +-45)**: Normal x7903 grip 0.7
+  1.07 / 1.00 s, grip 0.95 1.17 / 0.70, x14389 grip 0.7 0.90 / 1.27; Easy 1.23-1.50 a side. The grids match the model's
+  (grid29-0.92-normal.txt) within about 2 frames on those. The exception: x14389 grip 0.95, the engine '#.#.#.#.#' round ONE (water
+  every other frame on the first bar). It moves with the bar the probe starts on: 1 bar per press, MOFF 0 and 2 alternate, MOFF 1 all
+  land; with 4 bars MOFF 1 ONE misses (water, j -5..1). The river is one log a bar (3 logs, 228 px pitch at 80 px/s = 2.85 s), so a
+  bar-periodic court should not move: unexplained (a harness carry-over or an engine clock that is not the bar's). NOT chased further.
+- On the flick, the engine would pass 2-9's lock 0.92 (except the flicker), so the 0.20 / 0.30 s bar and "0.92 refused" stand on
+  the no-direction read only. The input is the lead's call (asked, with (c) as the default).
+
 ## ENG-29-f (box 2, ENG-29-e's packet; hand-over 7:14 PM ET Thu 11/26 by `date`): ruling 0, G1 and G3's tempo fix DONE; G6 MEASURED and RULED (code: box 3); d1038af49 landing
 
 ### EXACT NEXT STEP (box 3)
