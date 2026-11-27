@@ -29,6 +29,7 @@
  */
 import { w2World, W2_FLOOD, W2_FOLLOW, W2_FORK_RIVERS, W2_PADS, w2TwoRoad } from './w2.ts';
 import type { RiverRow } from '../riverLay.ts';
+import type { InvDress } from '../../art/invDress.ts';
 import type { GraphBrief, NodeJob, SectionPiece, SectionTemplate, Socket, WorldKit } from '../types.ts';
 
 export const STAGE_28 = '2-8';
@@ -291,8 +292,29 @@ export function kitLib28(): WorldKit {
       graphs: { ...G, list: [...G.list.filter((g) => g.archetype !== 'rescue'), ...Object.entries(ARC_28).map(([id, code]) => ({ id, archetype: 'rescue' as const, code }))], briefs: { ...G.briefs, [STAGE_28]: BRIEF_28 } },
     } } as WorldKit;
 }
-/** 2-8's finish (listed.ts FINISH 'w2-28'): the little ones follow him (proto.follow = World 2's row; 2-3's finish23 form) */
+/**
+ * The village's woven fish trap (the lead's ruling A to BUILD-28-j: World 2's packed cage-whole frame, cut alone as
+ * src/assets/w2-cut/fish-trap-28.webp, inventory row TRAP_28): a prop the village keeps, standing on the jetty (beat 0) and on the
+ * parade's long bank home (beat 14), never on a beat with a rescue cage. Dressing behind the play layer (art/invDress.ts): drawn at its
+ * inventory scale against Pokey (pokey_scale 1.46, about 130 px tall), nothing to punch, no shake, no sparkle. Each spot is a section
+ * template, the laid piece (its tag key) the trap stands on, and where along that piece's laid box its middle stands (0 its left edge, 1
+ * its right; read on the LAID box, so a leg laid running left has already turned it): each clear of the piece's rock.
+ */
+export const TRAP_28 = 'w2-cut28#fish-trap-28';
+export const TRAP_SPOTS_28: ReadonlyArray<{ template: string; piece: string; at: number }> = [
+  { template: 'w2-28-jetty', piece: 'b', at: 0.2 },
+  { template: 'w2-28-parade', piece: 'b', at: 0.75 },
+];
+/** 2-8's finish (listed.ts FINISH 'w2-28'): the little ones follow him (proto.follow = World 2's row; 2-3's finish23 form); the fish traps */
 export function finish28<T extends { proto?: object }>(st: T): T {
-  ((st as unknown as { proto: { follow?: typeof W2_FOLLOW } }).proto ??= {}).follow = W2_FOLLOW;
+  const proto = ((st as unknown as { proto: { follow?: typeof W2_FOLLOW; invDress?: InvDress[] } }).proto ??= {});
+  proto.follow = W2_FOLLOW;
+  const laid = st as unknown as { platforms: Array<{ x: number; y: number; width: number; tag?: string }>; gen2?: { sections: Array<{ uid: string; template: string }> } };
+  for (const spot of TRAP_SPOTS_28) {
+    const sec = laid.gen2?.sections.find((s) => s.template === spot.template);
+    const p = sec && laid.platforms.find((q) => q.tag === `${sec.uid}:${spot.piece}`);
+    if (!p) throw new Error(`2-8 finish: the fish trap: no piece '${spot.piece}' of section ${spot.template} laid`);
+    (proto.invDress ??= []).push({ inv: TRAP_28, x: p.x + spot.at * p.width, y: p.y, hang: false, layer: 'behind' });
+  }
   return st;
 }

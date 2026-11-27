@@ -9,14 +9,15 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { buildGen2Stage } from '../pipeline.ts';
-import { listedStage, worldFinish } from '../listed.ts';
+import { listedStage, playFinish, worldFinish } from '../listed.ts';
 import { generateAllLevels } from '../../worldsData.ts';
-import { FLOOD_CARD_28, GOAL_LINES_28, LINES_28, MISSION_28, PAGE_28, lineId28 } from './w2Arc28.ts';
+import { FLOOD_CARD_28, GOAL_LINES_28, LINES_28, MISSION_28, PAGE_28, TRAP_28, lineId28 } from './w2Arc28.ts';
+import { invDressBreaches, invDressSize } from '../../art/invDress.ts';
 import { loadInventory } from '../../art/inventory.ts';
 
 // (ENG-CUT-b's named limit: the lay checks a cut against its world's inventory only once loadInventory(world) has read it; every 2-8
 //  build here waits for World 2's, so a cut the inventory refuses fails the island's section by name instead of being laid unchecked)
-await loadInventory(2);
+const INV2 = await loadInventory(2);
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../../../..');
 
@@ -116,6 +117,47 @@ test('2-8: the reed island stands in the water (the river under its whole width,
       d === 'normal' && isl.width !== 340 && `${isl.width} px wide, not 340`,
       isl.cut !== 'w2-reed28#reed-isle-28' && `it wears cut '${isl.cut}', not the reed island's painted piece`,
     ].filter(Boolean);
+    if (why.length) bad.push(`${d} ${seed}: ${why.join('; ')}`);
+  }
+  assert.deepEqual(bad, [], bad.slice(0, 6).join('\n'));
+});
+
+// (BUILD-28-k, the lead's ruling A: World 2's woven fish trap, a village prop and never a rescue cage: dressing behind the play layer on the
+//  jetty (beat 0) and the parade home (beat 14), standing on the laid boards, clear of the boards' rock, far from every rescue cage, drawn
+//  at its inventory scale; the gate (invDressBreaches) passes it on World 2's own inventory)
+test('2-8: the fish trap stands twice, on the jetty and the parade home, on the boards, clear of the rock and a screen from every rescue cage, at its inventory scale, seeds 1-40 x both settings', () => {
+  const cfg = generateAllLevels().find((c) => c.id === '2-8' && !c.secret)!;
+  const row = listedStage('2-8')!;
+  const size = invDressSize(INV2.byId(TRAP_28)!, INV2.pokeyUnits)!;
+  assert.ok(size && size.h > 120 && size.h < 140, `the trap draws ${size?.h} px tall: about 130 (pokey_scale 1.46)`);
+  const SCREEN = 960;
+  const bad: string[] = [];
+  for (const d of ['normal', 'easy'] as const) for (let seed = 1; seed <= 40; seed++) {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const st0 = buildGen2Stage({ config: cfg, kit: row.kit(), seed, difficulty: d }) as any;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const st = playFinish(row, st0, d) as any;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const traps = (st.proto?.invDress ?? []).filter((r: any) => r.inv === TRAP_28);
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const cages = st.gen2.fills.filter((f: any) => /^cage/.test(f.socket));
+    const why: string[] = [];
+    if (traps.length !== 2) why.push(`${traps.length} traps, not 2`);
+    why.push(...invDressBreaches(st.proto?.invDress ?? [], INV2, 2));
+    for (const t of traps) {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const sec = st.gen2.sections.find((s: any) => s.x0 <= t.x && t.x <= s.x1);
+      if (!sec || !['w2-28-jetty', 'w2-28-parade'].includes(sec.template)) why.push(`a trap at x ${Math.round(t.x)} is on ${sec?.template ?? 'no section'}, not the jetty or the parade`);
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const on = st.platforms.find((p: any) => p.type === 'solid' && Math.abs(p.y - t.y) < 1 && p.x <= t.x - size.w / 2 && t.x + size.w / 2 <= p.x + p.width);
+      if (!on) why.push(`a trap at x ${Math.round(t.x)} does not stand on laid boards its whole width`);
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const rock = st.platforms.find((p: any) => p !== on && p.y < t.y && p.y > t.y - size.h && p.x < t.x + size.w / 2 && p.x + p.width > t.x - size.w / 2);
+      if (rock) why.push(`a trap at x ${Math.round(t.x)} stands in a block at x ${Math.round(rock.x)}`);
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const near = cages.find((c: any) => Math.abs(c.x - t.x) < SCREEN);
+      if (near) why.push(`a trap at x ${Math.round(t.x)} is within a screen of rescue ${near.socket} at x ${Math.round(near.x)}`);
+    }
     if (why.length) bad.push(`${d} ${seed}: ${why.join('; ')}`);
   }
   assert.deepEqual(bad, [], bad.slice(0, 6).join('\n'));
