@@ -1,0 +1,40 @@
+### TLEN=340 (Normal seed 1, NOMARGIN, twist only)
+  liana x8099 grip 0.7: ONE lands true; early 31 f = 1.03 s, late 32 f = 1.07 s; window 2.13 s
+  liana x8099 grip 0.95: ONE lands true; early 34 f = 1.13 s, late 23 f = 0.77 s; window 1.93 s
+  liana x14671 grip 0.7: ONE lands true; early 22 f = 0.73 s, late 30 f = 1.00 s; window 1.77 s
+  liana x14671 grip 0.95: ONE lands true; early 27 f = 0.90 s, late 39 f = 1.30 s; window 2.23 s
+### TLEN=350 (Normal seed 1, NOMARGIN, twist only)
+  liana x8099 grip 0.7: ONE lands true; early 31 f = 1.03 s, late 32 f = 1.07 s; window 2.13 s
+  liana x8099 grip 0.95: ONE lands true; early 34 f = 1.13 s, late 23 f = 0.77 s; window 1.93 s
+  liana x14671 grip 0.7: ONE lands true; early 23 f = 0.77 s, late 31 f = 1.03 s; window 1.83 s
+  liana x14671 grip 0.95: ONE lands true; early 27 f = 0.90 s, late 39 f = 1.30 s; window 2.23 s
+### TLEN=360 (Normal seed 1, NOMARGIN, twist only)
+  liana x8099 grip 0.7: ONE lands true; early 31 f = 1.03 s, late 32 f = 1.07 s; window 2.13 s
+  liana x8099 grip 0.95: ONE lands true; early 34 f = 1.13 s, late 23 f = 0.77 s; window 1.93 s
+  liana x14671 grip 0.7: ONE lands true; early 23 f = 0.77 s, late 39 f = 1.30 s; window 2.10 s
+  liana x14671 grip 0.95: ONE lands true; early 27 f = 0.90 s, late 39 f = 1.30 s; window 2.23 s
+### TLEN=370 (Normal seed 1, NOMARGIN, twist only)
+  liana x8099 grip 0.7: ONE lands true; early 31 f = 1.03 s, late 32 f = 1.07 s; window 2.13 s
+  liana x8099 grip 0.95: ONE lands true; early 34 f = 1.13 s, late 23 f = 0.77 s; window 1.93 s
+  liana x14671 grip 0.7: ONE lands true; early 24 f = 0.80 s, late 39 f = 1.30 s; window 2.13 s
+  liana x14671 grip 0.95: ONE lands true; early 27 f = 0.90 s, late 39 f = 1.30 s; window 2.23 s
+### TLEN=380 (Normal seed 1, NOMARGIN, twist only)
+  liana x8099 grip 0.7: ONE lands true; early 31 f = 1.03 s, late 32 f = 1.07 s; window 2.13 s
+  liana x8099 grip 0.95: ONE lands true; early 34 f = 1.13 s, late 23 f = 0.77 s; window 1.93 s
+  liana x14671 grip 0.7: ONE lands true; early 25 f = 0.83 s, late 39 f = 1.30 s; window 2.17 s
+  liana x14671 grip 0.95: ONE lands true; early 28 f = 0.93 s, late 5 f = 0.17 s; window 1.13 s
+### LOCK29=0.93 (Normal seed 1, NOMARGIN, twist only)
+  liana x8099 grip 0.7: ONE lands true; early 33 f = 1.10 s, late 29 f = 0.97 s; window 2.10 s
+  liana x8099 grip 0.95: ONE lands true; early 36 f = 1.20 s, late 19 f = 0.63 s; window 1.87 s
+  liana x14671 grip 0.7: ONE lands true; early 27 f = 0.90 s, late 37 f = 1.23 s; window 2.17 s
+  liana x14671 grip 0.95: ONE lands true; early 30 f = 1.00 s, late 38 f = 1.27 s; window 2.30 s
+### LOCK29=0.94 (Normal seed 1, NOMARGIN, twist only)
+  liana x8099 grip 0.7: ONE lands true; early 33 f = 1.10 s, late 28 f = 0.93 s; window 2.07 s
+  liana x8099 grip 0.95: ONE lands true; early 37 f = 1.23 s, late 17 f = 0.57 s; window 1.83 s
+  liana x14671 grip 0.7: ONE lands true; early 28 f = 0.93 s, late 37 f = 1.23 s; window 2.20 s
+  liana x14671 grip 0.95: ONE lands true; early 31 f = 1.03 s, late 37 f = 1.23 s; window 2.30 s
+### LOCK29=0.96 (Normal seed 1, NOMARGIN, twist only)
+  liana x8099 grip 0.7: ONE lands true; early 35 f = 1.17 s, late 27 f = 0.90 s; window 2.10 s
+  liana x8099 grip 0.95: ONE lands true; early 38 f = 1.27 s, late 14 f = 0.47 s; window 1.77 s
+  liana x14671 grip 0.7: ONE lands true; early 28 f = 0.93 s, late 36 f = 1.20 s; window 2.17 s
+  liana x14671 grip 0.95: ONE lands true; early 32 f = 1.07 s, late 36 f = 1.20 s; window 2.30 s

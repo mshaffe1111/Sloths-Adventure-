@@ -1,7 +1,55 @@
 # BUILD-29 REPORT: 2-9 "The River King's Court" (the World 2 finale; R-165.449), release 6
 Branch t-build-29, cut from origin/t-eng-29 = 098047713 (the lead's named base). Session 1 started 5:45 PM ET Thu 11/26 (by `date`).
 
-## EXACT NEXT STEP (session 4 hand-over, BUILD-29-d, 8:22 PM ET Thu 11/26 by `date`; GO given; box clock reached)
+## EXACT NEXT STEP (session 5 hand-over, BUILD-29-e, 8:36 PM ET Thu 11/26 by `date`; box clock reached)
+Head: this commit (src as a6a74323a: the court lianas 365 px). ReadNotifications first (D140). Steps 0-2 of session 4 are DONE (below).
+1. THE SUITE for a6a74323a = 9731ac221's 6 shards (the CLAUDE.md glob, 661 files, round robin `awk 'NR%6==i'` on the sorted list)
+   + `src/game/gen2/bargeRow.test.ts` re-run (3/3 here; the ONLY test that imports w2Arc29.ts; no test reads level.md). Shard 0 on
+   9731ac221: 607 tests, 606 pass, 0 fail, 1 todo. Shards 1-5 were running in BUILD-29-e's container at the hand-over: if their totals
+   did not reach the lead, run shards 1-5 FIRST (frozen worktree, D115).
+2. G6: when ENG-29-i's landing hash comes (t-eng-29), merge it into t-build-29 and re-run probes/judge29.ts 3 (needs no env now: the
+   data is in the file) and the 6 shards; the court must still read Normal >= 0.20 / Easy >= 0.30 both sides (here, on wip dcd3c8452:
+   Normal beat 4 0.93 / 1.13, twist 0.73 / 1.37; Easy 1.10 / 1.93 both).
+3. (R2, ruled) LIST 2-9: mirror 2-7's two commits: 7c040dfd4 (stageTable row `'2-9': { kit: 'w2-29', judged: ... }`, the kit union,
+   listed.ts KITS + WORLD with kitLib29) and 3c53f63b2 (the hand-built 2-9 deleted: w2Stages.ts '2-9' + W2_PUZZLES + COURT_GOAL_29,
+   w2Sections.ts W2Plan '2-9' and its rows, stageSheets, stagePlan, dotLinesData/dotTips, the hand build's tests re-pointed; the
+   keeper's words from origin/t-keeper-23-29 lines-2-9.md on the card, journal and find; a w2Arc29.test.ts like w2Arc27.test.ts).
+   Then `npx tsx tools/engine/addlevel.ts 2-9` (READY or MISSING by file), drawcheck with 2-9 in its scenarios, the FIRST LOOK stills
+   at 2x (the court, the barge, the twist, the home), upright first, judged as Matt on a phone; the upright ones to the lead.
+4. Bots x40 both settings on the listed court (rule 28: every moved row traced against bots/castbots-9731ac221.jsonl). Only the two
+   lianas moved (their length; x unchanged), so beat 4 and the twist are the rows to trace.
+5. The kid (the 2-5 snapper bot gap) stays the bots' lane. Two copies of reference/design/2-9.md (t-design-29 and here, with beat 5
+   and the AS LAID note): name it at the integration merge.
+
+## Session 5 (BUILD-29-e): the court lianas, flown
+- a6a74323a: both court lianas 410 -> 365 px (w2Arc29.ts `liana`, one length for beat 4 and the twist; top, reach, lock 0.90 unchanged).
+  level.md gets a World 2 section: R1 written as the lead ruled (rule 4 judged in seconds for timing windows), and a liana note
+  PROPOSED for the lead's retro.
+- WHY (flown/court-sweep-normal.txt, the engine, the child's let-go HOLDVINE=1 RIGHT=1 FLICK=1, 4 bars, seed 1): at 410 the twist's
+  grip 0.95 ONE drops in water j 0..+6 at 0.90 (as ENG-29-h read). The twist alone: 340 / 350 / 360 / 370 px all pass Normal (worst
+  0.73 s), 380 gives 0.17 s late. Lock alone: 0.93 / 0.94 / 0.96 pass Normal (worst 0.57 s at 0.94 beat 4) but move beat 4 too.
+  Easy's own build check (LIANA_RIVER.wait.easy 0.60 s, probes/build29.ts): 350 px refuses (0.63 s), 355-370 build seeds 1-3 both.
+  G6's court judge (wip dcd3c8452, COURT_SAG; probes/judge29.ts) on beat 4: 340-395 px pass both settings, 410 Easy 0.07 s late
+  (ENG-29-i's warning), 430 Easy misses ONE. 365 = the middle of where all three pass (15 px from 350 and 380).
+- THE TABLE (flown/court365-s1..3.txt; probes/oneMarginG.ts = ENG-29's oneMarginR.ts with a GRIPS list; tree = t-build-29 + wip
+  dcd3c8452 + probes/court-env.patch, XLEN=TLEN=365): ONE early / late in seconds, the same on seeds 1, 2 and 3:
+  | liana | grip 0.7 | 0.8 | 0.88 | 0.95 |
+  |---|---|---|---|---|
+  | Normal beat 4 (x8099) | 1.00 / 1.50 | 1.03 / 1.07 | 1.07 / 1.07 | 1.10 / 1.07 |
+  | Normal twist (x14671 / 14813 / 14955) | 0.80 / 1.30 | 0.87 / 1.30 | 0.90 / 1.30 | 0.90 / 1.30 |
+  | Easy beat 4 (x8312) | 1.13 / 1.50 | 1.20 / 1.50 | 1.23 / 1.50 | 1.27 / 1.50 |
+  | Easy twist (x15079 / 15191 / 15303) | 1.13 / 1.50 | 1.20 / 1.50 | 1.23 / 1.50 | 1.27 / 1.50 |
+  Every ONE lands; the bar (0.20 Normal, 0.30 Easy) is cleared by 0.60 s or more. Easy is never under Normal in seconds (rule 4).
+  (1.50 is the probe's +45-frame edge: the late side runs past it.) G6's judge at 365 (flown/court365-judge.txt): Normal beat 4
+  0.93 / 1.13, twist 0.73 / 1.37; Easy 1.10 / 1.93 both; seeds 1-3 the same.
+- NOTE: the judge is not yet wired into the build (at 410 the draft still builds with the twist's 0.00 s late), so "it builds" is not
+  the gate; judge29.ts's printed margins are.
+- ROLL (yield29.ts 1 40, a6a74323a frozen): Normal 40/40 clean, Easy 40/40 clean. tsc clean; bargeRow.test 3/3.
+- NOT done this box: R2 (listing, drawcheck, stills), bots x40 on the changed court, shards 1-5's totals (running at the hand-over).
+- Lessons applied: D115 (every run on a frozen worktree), D119 (no heredoc in a commit chain), D128, D134, D138, D140, D145 (the
+  number names its flight), D146 (totals with the hash).
+
+## (superseded) EXACT NEXT STEP (session 4 hand-over, BUILD-29-d, 8:22 PM ET Thu 11/26 by `date`; GO given; box clock reached)
 Head: this commit (src as 9731ac221). ReadNotifications first (D140).
 0. THE SUITE on 9731ac221 was running in BUILD-29-d's container at the hand-over (6 shards round robin, the CLAUDE.md glob, 661 files).
    If BUILD-29-d has not sent its totals to the lead, run the 6 shards on this head FIRST (CI #93: they go with any ruling request).

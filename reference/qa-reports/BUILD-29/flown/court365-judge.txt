@@ -1,0 +1,6 @@
+normal s1 seed1 | x8099 len365 one=true e0.93 l1.13 | x14671 len365 one=true e0.73 l1.37
+normal s2 seed2 | x8099 len365 one=true e0.93 l1.13 | x14813 len365 one=true e0.73 l1.37
+normal s3 seed3 | x8099 len365 one=true e0.93 l1.13 | x14955 len365 one=true e0.73 l1.37
+easy s1 seed1 | x8312 len365 one=true e1.10 l1.93 | x15079 len365 one=true e1.10 l1.93
+easy s2 seed2 | x8312 len365 one=true e1.10 l1.93 | x15191 len365 one=true e1.10 l1.93
+easy s3 seed3 | x8312 len365 one=true e1.10 l1.93 | x15303 len365 one=true e1.10 l1.93
