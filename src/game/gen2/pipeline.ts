@@ -14,6 +14,7 @@
  * The result is a GeneratedStage (what the engine already plays) with the hand-built stages' proto extras, and `gen2` (what was built).
  * Same seed, same stage; Easy and Normal share the seed AND the section sequence (Normal picks, Easy lays the same picks by its rules).
  */
+import { hintDue } from '../hintDue.ts';
 import { layPacer } from './pacerLay.ts';
 import { layFlood } from './floodLay.ts';
 import { raceEndsOf, type RaceEndSaid, type RaceEnds } from '../pacer.ts';
@@ -3649,7 +3650,12 @@ export function fillSockets(laid: Laid, budget: StageBudget, kit: WorldKit, seed
           // where "hint.1-1.double" itself was on screen)
           const text = tipWords(M.tips, m);
           // (and only inside its section's height band, R-165.236: on a climbing stage x alone said 1-4's teach lines on the start floor)
-          if (text) hints.push({ x: k.x, text, pad: text, keys: text, band: tipBand(sec), ...(M.teachTips?.includes(m) || (teachSecs.has(sec.template) && !M.storyTips?.[m]) ? { teach: true as const } : M.storyTips?.[m] ? { story: M.storyTips[m] } : {}) });
+          // (on a section he walks LEFTWARD (its exit left of its entry: a leg laid left) he comes at the socket from the right, so a
+          // line said once p.x >= x was said the moment he entered the leg (2-8's fork line, 7,029 px early on seed 2): there it is said
+          // from the socket on, walking left: from `beforeX` (the socket) down to the section's left end (the water warning's way,
+          // StageHint.beforeX; at least TIP_LEFT_KEEP px, so a socket at the section's edge still has frames to be met in). A right-running one as ever)
+          const reach = sec.exit.x < sec.entry.x ? { x: R(Math.min(sec.x0, k.x - TIP_LEFT_KEEP)), beforeX: k.x } : { x: k.x };
+          if (text) hints.push({ ...reach, text, pad: text, keys: text, band: tipBand(sec), ...(M.teachTips?.includes(m) || (teachSecs.has(sec.template) && !M.storyTips?.[m]) ? { teach: true as const } : M.storyTips?.[m] ? { story: M.storyTips[m] } : {}) });
           fills.push({ section: sec.uid, socket: s.id, role: 'tip', what: m, x: k.x, y: k.y, ...(text ? {} : { unsaid: true }) });
         }
       } else if (s.role === 'roll') {
@@ -4541,6 +4547,9 @@ export function checkAndRepair(b: Built, budget: StageBudget, repairs: Repair[],
  * climbing stage the storeys stand apart, and a tip waits for his height (src/game/tipBand.test.ts).
  */
 export const TIP_BAND = { over: BOUNCE_REACH, under: DOUBLE_RISE } as const;
+/** the least px a leftward tip's window runs left of its socket (pipeline tips: a leg laid left): four frames at his full run (PHYS.maxRun
+ *  285 px/s at 30 fps is 9.5 px a frame), so a socket at its section's left edge is still met walking left */
+export const TIP_LEFT_KEEP = 40;
 export function tipBand(sec: Pick<PlacedSection, 'entry' | 'exit' | 'pieces' | 'seam' | 'vines'>): [number, number] {
   const ys = [sec.entry.y, sec.exit.y, ...sec.pieces.map((p) => p.platform.y), ...sec.vines.flatMap((v) => [v.vine.topY, v.vine.bottomY])];
   return [R(Math.min(...ys) - TIP_BAND.over), R(Math.max(...ys) + TIP_BAND.under)];
@@ -4548,11 +4557,18 @@ export function tipBand(sec: Pick<PlacedSection, 'entry' | 'exit' | 'pieces' | '
 
 /**
  * Where on its route a rolled stage's tips can first be said (R-165.236). The route's line (tower.ts routeOf: the spawn, each section's
- * entry and exit in order, the totem) is walked in 4 px steps, his feet on it; a tip is said at the first step past its x with his feet in
- * its band (StageHint.band, the engine's rule), or failing that at its socket. `early`: route px from there to the tip's own socket (the
+ * entry and exit in order, the totem) is walked in 4 px steps the way he walks it (each leg in its own direction), his feet on it; a tip
+ * is said at the first step inside its x (and its `beforeX`, a leftward tip's) with his feet in its band (StageHint.band, the engine's
+ * rule, engine.ts), or failing that at its socket. `early`: route px from there to the tip's own socket (the
  * place the designer put the line, by what it teaches). A run's route is x itself, so there `early` is 0 by construction; a climbing or
  * descending stage's storeys share their x, and x alone said 1-4's teach lines 1,200-3,500 px of climb early.
  */
+/** the hint a socket tip is said by (its fill's x is the socket): a right-running one's `x`, a leftward one's `beforeX` (pipeline tips,
+ *  TIP_LEFT_KEEP). Not a water warning: those stand at their lip, not at a socket */
+export function tipHintOf<H extends Pick<StageHint, 'x' | 'beforeX' | 'band' | 'warn'>>(hints: readonly H[], f: { x: number }): H | undefined {
+  return hints.find((q) => !q.warn && q.band && (q.beforeX ?? q.x) === f.x);
+}
+
 export function tipReach(st: Pick<Gen2Stage, 'spawnX'> & { proto?: { hints?: readonly StageHint[] }; gen2: Pick<Gen2Stage['gen2'], 'fills' | 'tower'> }): Array<{ what: string; x: number; y: number; at: number; socket: number; early: number }> {
   const route = st.gen2.tower?.route;
   const line = route ? [route.spawn, ...route.legs.flatMap((g) => [g.entry, g.exit]), route.exit] : [];
@@ -4560,7 +4576,7 @@ export function tipReach(st: Pick<Gen2Stage, 'spawnX'> & { proto?: { hints?: rea
   const out: Array<{ what: string; x: number; y: number; at: number; socket: number; early: number }> = [];
   for (const f of st.gen2.fills) {
     if (f.role !== 'tip' || !f.what || f.unsaid || f.socket === 'water') continue;
-    const h = hints.find((q) => q.x === f.x && q.band);
+    const h = tipHintOf(hints, f);
     if (!h?.band) continue;
     // (a run's route is x: nothing past x is before the socket)
     const socket = route ? routeAt(route, f.x, f.y) : f.x - st.spawnX;
@@ -4569,7 +4585,7 @@ export function tipReach(st: Pick<Gen2Stage, 'spawnX'> & { proto?: { hints?: rea
       const a = line[i - 1], b = line[i], len = Math.abs(b.x - a.x) + Math.abs(b.y - a.y), n = Math.max(1, Math.ceil(len / 4));
       for (let j = 0; j <= n; j++) {
         const x = a.x + ((b.x - a.x) * j) / n, y = a.y + ((b.y - a.y) * j) / n;
-        if (x >= h.x && y >= h.band[0] && y <= h.band[1]) { at = Math.min(at, s + (len * j) / n); break walk; }
+        if (hintDue(h, x, y, y, true)) { at = Math.min(at, s + (len * j) / n); break walk; }
       }
       s += len;
     }

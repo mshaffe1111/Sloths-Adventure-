@@ -206,6 +206,7 @@ import { fadeShove, gustPush, makePillars, PILLAR, screechShove, type SkyPillar 
 import { CHIME_POSTS, chimeAngle, drawBackCue, drawChimePost, drawScreechCue, setSovereignPillars } from './sovereignArt.ts';
 import { maxHearts } from './secret.ts';
 import { drawLeafCover, drawPushLog, drawSeed, markSeedFound, seedFound, waterArt, type ProtoExtras } from './protoStage.ts';
+import { hintDue } from './hintDue.ts';
 import { CHEER_SECONDS, footfallsBetween, hasClip, heroClipsEnabled, heroClipsLive, resetHeroClips, warmHeroClips } from './heroClips.ts';
 import { releaseDecorPics } from './envKit.ts';
 import { bushHeight, drawBranchArt, drawBushArt, drawEarthWall, earthWallCovers, setLianaTops, drawCurtainArt, drawHollowArt, drawProtoScene, drawSeedArt, hasKit, releaseGroundChunks, paintedKitEnabled, setDecoTrunks, setDepthView, setGroundPaint, setKitWorld, setRockLooks, setGroundLook, setBoughJoins, paintedPlatforms, protoArtReady, type ProtoSceneState , setGroundStacks, riverLid, riverUnderside, drawKitColumn, setClimbFeet, stackViewFloor } from './protoArt.ts';
@@ -3310,7 +3311,7 @@ export class GameEngine {
       // line nobody saw is not lost for good)
       // (a rolled stage's tip waits for his feet inside its section's height band, in the air or not: StageHint.band, R-165.236)
       const feet = p.y + p.height;
-      const due = p.swim ? [] : this.proto.hints.filter((h) => !(h.shown || p.x < h.x || (h.belowY !== undefined && (p.y < h.belowY || !p.grounded)) || (h.aboveY !== undefined && p.y > h.aboveY) || (h.beforeX !== undefined && p.x > h.beforeX) || (h.band !== undefined && (feet < h.band[0] || feet > h.band[1]))));
+      const due = p.swim ? [] : this.proto.hints.filter((h) => !h.shown && hintDue(h, p.x, p.y, feet, p.grounded));
       for (const h of due) {
         h.shown = true;
         if (h !== due[due.length - 1]) continue;

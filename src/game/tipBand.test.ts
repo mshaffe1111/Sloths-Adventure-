@@ -11,7 +11,7 @@ import { generateAllLevels } from './worldsData.ts';
 import { generateStage, setLayoutVariant } from './stageGenerator.ts';
 import type { StageHint } from './protoStage.ts';
 import { FirstTimerRun, FT_ADULT, FT_CHILD_EASY, freshPhone, rng, type FirstTimer } from '../../tools/inspect/firsttimer.ts';
-import { tipMisses, TIP_NEAR } from './gen2/pipeline.ts';
+import { tipHintOf, tipMisses, TIP_NEAR } from './gen2/pipeline.ts';
 import { LISTED } from './gen2/listed.ts';
 import { GEN2_STAGES } from './gen2/game.ts';
 import type { Gen2Stage } from './gen2/types.ts';
@@ -63,7 +63,7 @@ test('every rolled tip carries its section band, and the band holds the socket i
       if (!g) continue;
       const hints = st.proto?.hints ?? [];
       for (const f of g.fills.filter((q) => q.role === 'tip' && q.socket !== 'water' && q.what && !q.unsaid)) {
-        const h = hints.find((q) => q.x === f.x && q.band);
+        const h = tipHintOf(hints, f);
         assert.ok(h, `${c.id} ${setting}: the tip "${f.what}" at x ${f.x} carries no band`);
         assert.ok(h!.band![0] < f.y && f.y < h!.band![1], `${c.id} ${setting}: "${f.what}"'s band ${h!.band!.join('..')} misses its socket's y ${f.y}`);
         n++;

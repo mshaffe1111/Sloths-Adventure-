@@ -67,7 +67,7 @@ export function teachFirstMisses(r: TeachRoll): string[] {
     if (!tip) { out.push(`${m}: no teach line laid; first shown in ${at}`); continue; }
     const ti = order.indexOf(tip.section);
     if (ti > need) { out.push(`${m}: teach line "${tip.what}" laid in ${tip.section}, after ${at} shows it first`); continue; }
-    const h = r.hints.find((q) => Math.abs(q.x - tip.x) < 1);
+    const h = r.hints.find((q) => Math.abs(q.x - tip.x) < 1 || (!q.warn && q.beforeX !== undefined && Math.abs(q.beforeX - tip.x) < 1));
     if (!h) { out.push(`${m}: teach line "${tip.what}" filled at x ${Math.round(tip.x)} but no hint laid there`); continue; }
     if (droppedOnTips(r.stageId, [h]).length) out.push(`${m}: teach line "${tip.what}" is dropped on Tips (Normal's default)`);
     if (!h.teach && !h.warn) out.push(`${m}: teach line "${tip.what}" laid as a plain tip (not StageHint.teach): it waits out Dot's gap between lines (Tips 30 s) and can come after ${at}`);
@@ -130,7 +130,7 @@ export async function walkSaid(id: string, seed: number, setting: 'normal' | 'ea
   const tpl = new Map(LISTED[id].kit().manifest.sections.map((t) => [t.id, t]));
   const order = st.gen2.sections.map((q) => q.uid);
   const fill = st.gen2.fills.filter((f) => f.role === 'tip' && f.what && tpl.get(st.gen2.sections[order.indexOf(f.section)]?.template ?? '')?.teaches === m).sort((a, b) => order.indexOf(a.section) - order.indexOf(b.section))[0];
-  const hint = fill && (st.proto?.hints ?? []).find((h) => Math.abs(h.x - fill.x) < 1);
+  const hint = fill && (st.proto?.hints ?? []).find((h) => Math.abs(h.x - fill.x) < 1 || (!h.warn && h.beforeX !== undefined && Math.abs(h.beforeX - fill.x) < 1));
   if (hint && o.plain) delete (hint as { teach?: true }).teach;
   const ask = laidAsks(st as never).find((a) => a.move === m || a.block === m);
   const needX = ask ? Math.min(ask.x0, ask.x1) : Infinity;
