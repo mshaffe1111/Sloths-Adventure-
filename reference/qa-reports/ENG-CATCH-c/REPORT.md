@@ -1,5 +1,23 @@
 # ENG-CATCH-c (R-165.534; engine, Opus 5.5 xhigh): THE DOWN TOWER'S INVARIANT, proven on the whole seed range. Branch t-eng-catch-c
 
+## EXACT NEXT STEP (ENG-CATCH-d tail; written 12:21 PM ET Fri 11-27 by `date`). A RED GATE: NOT LANDED. Stopped, no fix (the lead's ruling)
+THE RED: suite shard 4 on the landing merge 1681f79c1 (local, worktree only; t-eng-w3 51ef0c6ab + b8d707a8b): src/game/gen2/tower.test.ts:856
+(ENG-CATCH-b's "a bridge started a hop past a vine's top that misses the end's fall line is no catch"), 'no catch is laid twice': 12
+catches laid, 3 distinct. Green on d49de60f0; RED the same (12 vs 3) on box 1's own WIP 2ae9bc58, on box 1's WIP + this box's
+refactor without remedy 4 or the pass change, and on the candidate 6d296c1b7: box 1's mend brought it in, this box carried it into
+the freeze. My miss: before freezing I ran only towerMend.test.ts, not tower.test.ts (the tower's own toys, seconds).
+Every other gate on 1681f79c1: tsc 0; generalitycheck PASS (26/26); LOCK as two runs: base 3264 builds of 102 stages on 51ef0c6ab,
+--check '102/102 stages unchanged' (the 'gained verdicts' line lists stages that carry the fields, not a diff); shards 1 742/0 fail
+(1 todo), 2 598/0 (1 todo), 3 679/0, 4 762 pass 1 FAIL, 5 741/0, 6 (see the lead message); tierBots 9/9; CI tool line 354/0 (1 todo).
+PROOFS on frozen 6d296c1b7 (kit tree 1b300ebc3, seeds 1-40 x both): all five 80/80; root-down 80/80; two-roots 80/80; cap-down 80/80;
+shelf-hops 80/80; cap-steps 78/78 that build (n40, e40 throw: the kit's 1142 px brick). Replay 58/58.
+Also a miss (D115 in a new form): a checkout of t-eng-w3 in the main tree took the probe folder from under a queued proof (two-roots
+died loading its script; re-run from a frozen copy; root-down and shelf-hops had loaded and read only the frozen try tree).
+Next step (the lead decides; the likely shape, unchecked: the mend's keep(), or the cover lay, hands the same bough back more than once):
+1. ReadNotifications; follow the lead's ruling. If a fix box: that toy is the planted red (already red); find where the duplicate is
+   pushed (keep()'s put, reLay, the cover lay), fix it, then tower.test.ts AND towerMend.test.ts, the replay, all six proofs, and every
+   gate again on a new frozen candidate; land on t-eng-w3 (no force).
+
 ## EXACT NEXT STEP (ENG-CATCH-d, box 2; written 11:23 AM ET Fri 11-27 by `date`). CANDIDATE 6d296c1b7 FROZEN (pushed, ls-remote equal); NOT LANDED; GATES NOT RUN
 Candidate 6d296c1b7 on t-eng-catch-c = box 1's WIP + this box's (tower.ts mend; src/game/gen2/towerMend.test.ts; probe/crop.mts, toyrun.mts).
 tsc 0; generalitycheck PASS (26 literals, 26 known). The engine (tower.ts, pipeline.ts) is unchanged since e303f5f77.
