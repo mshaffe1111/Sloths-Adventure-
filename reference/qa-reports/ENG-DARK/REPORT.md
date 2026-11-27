@@ -1,3 +1,10 @@
+**BOX 28 CORRECTION (the lead's owed gate): THE FULL LOCK IS 101/102, 1-4 the only (intended) move.** My 4 chunks covered 100 stages:
+I listed the ids by importing worldsData alone, and the two extra stages 4-D and 5-M register only once stageGenerator is imported (as
+lockall does), so lockall lists 102 (box 26's count was right). Owed gate run: `lockall --layouts 16 --stages 4-D,5-M --out` on frozen
+88592a9c4, `--intended 1-4 --check` on frozen 93e05e98d: exit 0, 2/2 unchanged, 64 builds each, the same keys. LOCK-1-4-INTENDED.md on
+t-eng-w3 (a8bc662e5) still says "100 stages ... 102 not reproduced": wrong, a docs line, left for the lead's word.
+Lesson: a stage list for --stages chunks comes from the tool's own imports (or the tool's own "wrote N builds of M stages" line), never a narrower import.
+
 **BOX 28 (ENG-DARK-bb): LANDED. t-eng-w3 = a8bc662e5 (fast-forward 88592a9c4..a8bc662e5, no force, `git ls-remote` confirmed) =
 93e05e98d (the gated candidate, code unchanged) + one docs commit, reference/qa-reports/ENG-DARK/LOCK-1-4-INTENDED.md (the lock record).
 THE FULL LOCK, frozen trees: `lockall --layouts 16 --out` on 88592a9c4, `--intended 1-4 --check` on 93e05e98d, in 4 stage chunks of 25
