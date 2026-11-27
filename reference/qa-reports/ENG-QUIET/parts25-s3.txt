@@ -1,0 +1,164 @@
+2-5 s3 normal: total 154.4 move 121.4; quiet stretches > 2.5 s
+
+2.60 s x821-1496 w2-25-reach | after "hop up a step" (act 0.28 dur 0.00) | before "hop up a step" | move-clock 2.60 s, waits inside 0.00 s
+  beats at the stretch's start base: h:hop up a step act 0.28 dur 0.00
+  quietOf share 1.00 -> counts 2.60 s
+  walk     0.39 s of 0.39  x821->932 y530->530  solid
+  drop     0.24 s of 0.24  x932->932 y530->580  solid
+  walk     0.52 s of 0.52  x932->1080 y580->580  solid
+  walk     1.26 s of 1.26  x1080->1440 y580->580  solid
+  walk     0.20 s of 0.20  x1440->1496 y580->580  solid
+  SUM walk 2.37, drop 0.24
+
+2.55 s x2103-2762 w2-25-one-stone | after "hop up a step" (act 0.28 dur 0.00) | before "jump over a gap" | move-clock 2.55 s, waits inside 0.00 s
+  beats at the stretch's start base: h:hop up a step act 0.28 dur 0.00
+  quietOf share 1.00 -> counts 2.55 s
+  walk     0.39 s of 0.39  x2103->2214 y530->530  solid
+  drop     0.24 s of 0.24  x2214->2214 y530->580  solid
+  walk     0.52 s of 0.52  x2214->2362 y580->580  solid
+  walk     1.40 s of 1.40  x2362->2762 y580->580  solid
+  SUM walk 2.31, drop 0.24
+
+2.57 s x2762-3351 w2-25-one-stone | after "river crossing: read the logs" (act 0.00 dur 1.00) | before "hop up a step" | move-clock 2.57 s, waits inside 0.00 s
+  beats at the stretch's start base: J:jump over a gap act 0.99 dur 0.00 | Z:river crossing: read the logs act 0.00 dur 1.00
+  quietOf share 1.00 -> counts 2.57 s
+  jump     0.99 s of 0.99  x2762->2902 y580->580  solid
+  walk     1.19 s of 1.19  x2902->3242 y580->580  solid
+  walk     0.38 s of 0.38  x3242->3351 y580->580  solid
+  SUM jump 0.99, walk 1.58
+
+3.02 s x3758-4551 w2-25-sleeper | after "hop up a step" (act 0.28 dur 0.00) | before "snapper (asleep)" | move-clock 3.02 s, waits inside 0.00 s
+  beats at the stretch's start base: h:hop up a step act 0.28 dur 0.00
+  quietOf share 1.00 -> counts 3.02 s
+  walk     0.42 s of 0.42  x3758->3878 y530->530  solid
+  drop     0.24 s of 0.24  x3878->3878 y530->580  solid
+  walk     0.51 s of 0.51  x3878->4022 y580->580  solid
+  walk     1.40 s of 1.40  x4022->4422 y580->580  solid
+  walk     0.45 s of 0.53  x4422->4572 y580->580  solid
+  SUM walk 2.78, drop 0.24
+
+2.72 s x4551-5325 w2-25-sleeper | after "snapper (asleep)" (act 0.00 dur 2.00) | before "hop up a step" | move-clock 2.72 s, waits inside 0.00 s
+  beats at the stretch's start base: C:snapper (asleep) act 0.00 dur 2.00
+  quietOf share 1.00 -> counts 2.72 s
+  walk     0.08 s of 0.53  x4422->4572 y580->580  solid
+  walk     0.26 s of 0.26  x4572->4647 y580->580  solid
+  walk     0.26 s of 0.26  x4647->4722 y580->580  solid
+  walk     0.53 s of 0.53  x4722->4872 y580->580  solid
+  walk     1.05 s of 1.05  x4872->5172 y580->580  solid
+  walk     0.54 s of 0.54  x5172->5325 y580->580  solid
+  SUM walk 2.72
+
+3.20 s x8531-9329 w2-25-awake | after "river crossing: read the logs" (act 0.00 dur 1.00) | before "hop onto a moving log or platform" | move-clock 3.20 s, waits inside 0.00 s
+  beats at the stretch's start base: J:hop onto a moving log or platform act 0.40 dur 0.00 | Z:river crossing: read the logs act 0.00 dur 1.00
+  quietOf share 1.00 -> counts 3.20 s
+  timedHop 0.40 s of 0.40  x8531->8531 y580->608  drift
+  walk     2.80 s of 2.80  x8531->9329 y608->608  drift
+  SUM timedHop 0.40, walk 2.80
+
+2.58 s x9919-10370 w2-25-awake | after "river crossing: read the logs" (act 0.00 dur 1.00) | before "hop up a step" | move-clock 2.96 s, waits inside -0.38 s
+  beats at the stretch's start base: J:long jump act 1.38 dur 0.00 | Z:river crossing: read the logs act 0.00 dur 1.00
+  quietOf share 1.00 -> counts 2.58 s
+  glide    1.38 s of 1.38  x9669->9919 y580->580  solid
+  walk     1.19 s of 1.19  x9919->10259 y580->580  solid
+  walk     0.39 s of 0.39  x10259->10370 y580->580  solid
+  SUM glide 1.38, walk 1.58
+
+2.50 s x12653-13082 w2-25-rope | after "river crossing: read the logs" (act 0.00 dur 1.00) | before "snapper" | move-clock 6.56 s, waits inside -4.05 s
+  beats at the stretch's start base: V:shimmy along a rope act 5.05 dur 0.00 | Z:river crossing: read the logs act 0.00 dur 1.00
+  quietOf share 1.00 -> counts 2.50 s
+  rope     5.05 s of 5.05  x12193->12653 y604->604  solid
+  walk     1.05 s of 1.05  x12653->12953 y604->604  solid
+  walk     0.45 s of 0.53  x12953->13103 y604->604  solid
+  SUM rope 5.05, walk 1.50
+
+2.63 s x13082-13832 w2-25-rope | after "snapper" (act 0.00 dur 2.00) | before "snapper" | move-clock 2.63 s, waits inside 0.00 s
+  beats at the stretch's start base: C:snapper act 0.00 dur 2.00
+  quietOf share 1.00 -> counts 2.63 s
+  walk     0.08 s of 0.53  x12953->13103 y604->604  solid
+  walk     0.26 s of 0.26  x13103->13178 y604->604  solid
+  walk     0.26 s of 0.26  x13178->13253 y604->604  solid
+  walk     0.53 s of 0.53  x13253->13403 y604->604  solid
+  walk     1.05 s of 1.05  x13403->13703 y604->604  solid
+  walk     0.45 s of 0.53  x13703->13853 y604->604  solid
+  SUM walk 2.63
+
+2.56 s x14808-15471 w2-25-wave | after "hop up a step" (act 0.28 dur 0.00) | before "long jump" | move-clock 2.56 s, waits inside 0.00 s
+  beats at the stretch's start base: h:hop up a step act 0.28 dur 0.00
+  quietOf share 1.00 -> counts 2.56 s
+  walk     0.41 s of 0.41  x14808->14926 y554->554  solid
+  drop     0.24 s of 0.24  x14926->14926 y554->604  solid
+  walk     0.51 s of 0.51  x14926->15071 y604->604  solid
+  walk     1.40 s of 1.40  x15071->15471 y604->604  solid
+  SUM walk 2.33, drop 0.24
+
+3.57 s x17025-17900 w2-25-rest | after "hop up a step" (act 0.28 dur 0.00) | before "snapper" | move-clock 3.57 s, waits inside 0.00 s
+  beats at the stretch's start base: h:hop up a step act 0.28 dur 0.00
+  quietOf share 1.00 -> counts 3.57 s
+  walk     0.40 s of 0.40  x17025->17138 y491->491  solid
+  drop     0.24 s of 0.24  x17138->17138 y491->541  solid
+  walk     0.33 s of 0.33  x17138->17231 y541->541  solid
+  walk     0.84 s of 0.84  x17231->17471 y541->541  solid
+  drop     0.26 s of 0.26  x17471->17471 y541->603  solid
+  walk     1.05 s of 1.05  x17471->17771 y603->603  solid
+  walk     0.45 s of 0.53  x17771->17921 y603->603  solid
+  SUM walk 3.07, drop 0.50
+
+2.63 s x17900-18650 w2-25-sandbars | after "snapper" (act 0.00 dur 2.00) | before "snapper" | move-clock 2.63 s, waits inside 0.00 s
+  beats at the stretch's start base: C:snapper act 0.00 dur 2.00
+  quietOf share 1.00 -> counts 2.63 s
+  walk     0.08 s of 0.53  x17771->17921 y603->603  solid
+  walk     0.26 s of 0.26  x17921->17996 y603->603  solid
+  walk     0.26 s of 0.26  x17996->18071 y603->603  solid
+  walk     0.53 s of 0.53  x18071->18221 y603->603  solid
+  walk     1.05 s of 1.05  x18221->18521 y603->603  solid
+  walk     0.45 s of 0.53  x18521->18671 y603->603  solid
+  SUM walk 2.63
+
+2.63 s x18650-19400 w2-25-sandbars | after "snapper" (act 0.00 dur 2.00) | before "snapper" | move-clock 2.63 s, waits inside 0.00 s
+  beats at the stretch's start base: C:snapper act 0.00 dur 2.00
+  quietOf share 1.00 -> counts 2.63 s
+  walk     0.08 s of 0.53  x18521->18671 y603->603  solid
+  walk     0.26 s of 0.26  x18671->18746 y603->603  solid
+  walk     0.26 s of 0.26  x18746->18821 y603->603  solid
+  walk     0.53 s of 0.53  x18821->18971 y603->603  solid
+  walk     1.05 s of 1.05  x18971->19271 y603->603  solid
+  walk     0.45 s of 0.53  x19271->19421 y603->603  solid
+  SUM walk 2.63
+
+2.82 s x19400-20203 w2-25-sandbars | after "snapper" (act 0.00 dur 2.00) | before "hop up a step" | move-clock 2.82 s, waits inside 0.00 s
+  beats at the stretch's start base: C:snapper act 0.00 dur 2.00
+  quietOf share 1.00 -> counts 2.82 s
+  walk     0.08 s of 0.53  x19271->19421 y603->603  solid
+  walk     0.26 s of 0.26  x19421->19496 y603->603  solid
+  walk     0.26 s of 0.26  x19496->19571 y603->603  solid
+  walk     0.53 s of 0.53  x19571->19721 y603->603  solid
+  walk     1.05 s of 1.05  x19721->20021 y603->603  solid
+  walk     0.64 s of 0.64  x20021->20203 y603->603  solid
+  SUM walk 2.82
+
+3.09 s x21441-22209 w2-25-quickening | after "river crossing: read the logs" (act 0.00 dur 1.00) | before "hop onto a moving log or platform" | move-clock 3.09 s, waits inside 0.00 s
+  beats at the stretch's start base: J:hop onto a moving log or platform act 0.40 dur 0.00 | Z:river crossing: read the logs act 0.00 dur 1.00
+  quietOf share 1.00 -> counts 3.09 s
+  timedHop 0.40 s of 0.40  x21441->21441 y603->631  drift
+  walk     2.69 s of 2.69  x21441->22209 y631->631  drift
+  SUM timedHop 0.40, walk 2.69
+
+2.63 s x22758-23508 w2-25-quickening | after "snapper" (act 0.00 dur 2.00) | before "snapper" | move-clock 2.63 s, waits inside 0.00 s
+  beats at the stretch's start base: C:snapper act 0.00 dur 2.00
+  quietOf share 1.00 -> counts 2.63 s
+  walk     0.08 s of 0.53  x22629->22779 y603->603  solid
+  walk     0.26 s of 0.26  x22779->22854 y603->603  solid
+  walk     0.26 s of 0.26  x22854->22929 y603->603  solid
+  walk     0.53 s of 0.53  x22929->23079 y603->603  solid
+  walk     1.05 s of 1.05  x23079->23379 y603->603  solid
+  walk     0.45 s of 0.53  x23379->23529 y603->603  solid
+  SUM walk 2.63
+
+3.42 s x24189-25164 w2-25-quickening | after "small hop" (act 0.39 dur 0.00) | before "hop up a step" | move-clock 3.42 s, waits inside 0.00 s
+  beats at the stretch's start base: h:small hop act 0.39 dur 0.00
+  quietOf share 1.00 -> counts 3.42 s
+  walk     1.19 s of 1.19  x24189->24529 y603->603  solid
+  walk     1.05 s of 1.05  x24529->24829 y603->603  solid
+  walk     0.84 s of 0.84  x24829->25069 y603->603  solid
+  walk     0.33 s of 0.33  x25069->25164 y603->603  solid
+  SUM walk 3.42

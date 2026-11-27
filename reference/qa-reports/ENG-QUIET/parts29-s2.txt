@@ -1,0 +1,58 @@
+2-9 s2 normal: total 161.6 move 130.6; quiet stretches > 4 s
+
+4.87 s x858-2180 w2-29-gate | after "hop up a step" (act 0.28 dur 0.00) | before "jump over a gap" | move-clock 4.87 s, waits inside 0.00 s
+  beats at the stretch's start base: h:hop up a step act 0.28 dur 0.00
+  quietOf share 1.00 -> counts 4.87 s
+  walk     0.41 s of 0.41  x858->974 y697->697  solid
+  drop     0.24 s of 0.24  x974->974 y697->747  solid
+  walk     0.51 s of 0.51  x974->1120 y747->747  solid
+  walk     1.40 s of 1.40  x1120->1520 y747->747  solid
+  walk     1.05 s of 1.05  x1520->1820 y747->747  solid
+  walk     1.26 s of 1.26  x1820->2180 y747->747  solid
+  SUM walk 4.64, drop 0.24
+
+5.81 s x7934-9239 w2-29-let-go | after "river crossing: read the logs" (act 0.00 dur 1.00) | before "hop up a step" | move-clock 5.81 s, waits inside 0.00 s
+  beats at the stretch's start base: V:swing on a liana act 0.98 dur 0.00 | Z:river crossing: read the logs act 0.00 dur 1.00
+  quietOf share 1.00 -> counts 5.81 s
+  swing    0.98 s of 0.98  x7934->8099 y770->725 added 
+    let-go parts: swing-out 1.37 + flat 1.20 + wait/2 0.33 (route uses the UNLOCKED grid: worst 0.67, vine period 2.85) | LOCKED (lockedDrops): worst 0.17 window 2.10 oneLands true share 0.93
+  lianaDrop 2.91 s of 2.91  x8099->8690 y725->770 added solid
+  walk     1.19 s of 1.19  x8690->9030 y770->770  solid
+  walk     0.73 s of 0.73  x9030->9239 y770->770  solid
+  SUM swing(added) 0.98, lianaDrop(added) 2.91, walk 1.93
+
+6.83 s x14557-16110 w2-29-double | after "river crossing: read the logs" (act 0.00 dur 1.00) | before "hop up a step" | move-clock 6.83 s, waits inside 0.00 s
+  beats at the stretch's start base: V:swing on a liana act 0.98 dur 0.00 | Z:river crossing: read the logs act 0.00 dur 1.00
+  quietOf share 1.00 -> counts 6.83 s
+  swing    0.98 s of 0.98  x14557->14722 y788->743 added 
+    let-go parts: swing-out 1.18 + flat 1.20 + wait/2 0.38 (route uses the UNLOCKED grid: worst 0.77, vine period 2.85) | LOCKED (lockedDrops): worst 0.17 window 2.13 oneLands true share 0.90
+  lianaDrop 2.76 s of 2.76  x14722->15228 y743->788 added solid
+  walk     1.19 s of 1.19  x15228->15568 y788->788  solid
+  walk     0.74 s of 0.74  x15568->15778 y788->788  solid
+  walk     0.84 s of 0.84  x15778->16018 y796->796  solid
+  walk     0.32 s of 0.32  x16018->16110 y796->796  solid
+  SUM swing(added) 0.98, lianaDrop(added) 2.76, walk 3.09
+
+10.53 s x17000-17601 w2-29-terrace | after "ride a water wheel up" (act 0.50 dur 0.00) | before "jump over a gap" | move-clock 10.53 s, waits inside 0.00 s
+  beats at the stretch's start base: V:ride a water wheel up act 0.50 dur 0.00
+  quietOf share 1.00 -> counts 10.53 s
+  wheel    9.48 s of 9.98  x17000->17301 y796->532 added solid
+  walk     1.05 s of 1.05  x17301->17601 y532->532  solid
+  SUM wheel(added) 9.48, walk 1.05
+
+5.45 s x25863-27303 w2-29-barge | after "river crossing: read the logs" (act 0.00 dur 1.00) | before "hop onto a moving log or platform" | move-clock 5.45 s, waits inside 0.00 s
+  beats at the stretch's start base: J:hop onto a moving log or platform act 0.40 dur 0.00 | Z:river crossing: read the logs act 0.00 dur 1.00
+  quietOf share 1.00 -> counts 5.45 s
+  timedHop 0.40 s of 0.40  x25863->25863 y452->480  drift
+  walk     5.05 s of 5.05  x25863->27303 y480->480  drift
+  SUM timedHop 0.40, walk 5.05
+
+5.03 s x27951-29385 w2-29-shrine | after "snapper" (act 0.00 dur 2.00) | before "undefined" | move-clock 5.03 s, waits inside -0.00 s
+  beats at the stretch's start base: C:snapper act 0.00 dur 2.00
+  quietOf share 0.19 -> counts 0.95 s
+  walk     0.17 s of 1.18  x27663->27999 y452->452  solid
+  walk     0.79 s of 0.79  x27999->28223 y452->452  solid
+  walk     1.05 s of 1.05  x28223->28523 y452->452  solid
+  walk     1.97 s of 1.97  x28523->29085 y452->452  solid
+  walk     1.05 s of 1.05  x29085->29385 y452->452  solid
+  SUM walk 5.03

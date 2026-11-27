@@ -1,0 +1,4 @@
+one-bar clock wait (count to ONE)  wait 2.85 s | now, in a move's time: quiet 2.85 | now, as a dur: quiet 0.00 | PROPOSED: quiet 0.00 -> ok
+3-bar idle wait on the clock       wait 8.55 s | now, in a move's time: quiet 8.55 | now, as a dur: quiet 0.00 | PROPOSED: quiet 5.70 -> OVER 4 s
+plain stand, no clock, 1 bar long  wait 2.85 s | now, in a move's time: quiet 2.85 | now, as a dur: quiet 0.00 | PROPOSED: quiet 2.85 -> ok
+plain stand, no clock, 4.5 s       wait 4.50 s | now, in a move's time: quiet 4.50 | now, as a dur: quiet 0.00 | PROPOSED: quiet 4.50 -> OVER 4 s
