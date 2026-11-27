@@ -1,21 +1,23 @@
 # ENG-CATCH (R-165.526; engine, Opus 5.5 high): the down tower's own catch boughs. Branch t-eng-catch, cut from t-eng-w3 13135bf6b
 
-## EXACT NEXT STEP (box 1 hand-over, written 9:43 AM ET Fri 11-27 by `date`)
-Candidate = 4b9adaa81 (src/game/gen2/tower.ts + tower.test.ts; the commit after it changes only this report). Done on it: tsc 0; CI
-tool line 50/50; generalitycheck PASS (26 literals, 26 known); probe 12/12 on every brick (below); toys red 3/3 on base, green 3/3.
+## EXACT NEXT STEP (box 1 hand-over, rewritten 9:48 AM ET Fri 11-27 by `date`)
+t-eng-w3 moved to f79963053 (ENG-ASKS-b: w3.ts W3_HAZARDS + w3HazardAsks.test.ts, no engine file; its lock 102/102 unchanged vs
+13135bf6b). Merged into this branch: candidate = 8a204af87 (merge of 4b9adaa81 and f79963053; the commit after it changes only this
+report, src identical). Done: on 4b9adaa81 the CI tool line 50/50, generalitycheck PASS (26 literals, 26 known), probe 12/12 on every
+brick (below), toys red 3/3 on base, green 3/3; on 8a204af87 tsc 0.
 1. Box 1 left four runs going in its own container (they die with it): a base lock of frozen 13135bf6b
    (`npx tsx tools/engine/lockall.ts --layouts 16 --out lock-base-13135bf6b.json` in a worktree of 13135bf6b), and suite shards 1-3 of 6
-   on 4b9adaa81. If they are gone: re-run them, each command alone with run_in_background (NEVER a shell '&').
-2. Lock: in a frozen worktree of 4b9adaa81, `npx tsx tools/engine/lockall.ts --layouts 16 --check <that base json>`: ONE run, 102 stages,
-   3264 builds. ANY moved stage = STOP before landing; send the lead each moved stage and why (a seed-list rebuild is the lead's call).
-   Expected: none move (reLay touches only a lay that still has a blind drop off a piece it laid; passes() only reads differently a
-   vine that hangs on a face end; a listed stage has no blind drop and no catch past its storey). tierBots only if a World 1-2 stage moves.
-3. Suite: `npx tsx --test --test-shard=i/6 <CLAUDE.md's file list>` for i = 1..6, 3 at a time on 4 cores; frozen tree, only
-   src/game/gen2/proven/ writable. Note each shard's tests/pass/fail.
-4. Land: `git fetch origin t-eng-w3`; in a worktree of origin/t-eng-w3, `git merge --no-ff origin/t-eng-catch` (no force, never rebase;
-   ENG-ASKS-b may have landed: merge as is); if t-eng-w3 moved, re-run tsc + the shards on the merge. Push HEAD:t-eng-w3, prove with
-   `git ls-remote`. Engine files only (tower.ts, tower.test.ts, this report). Send the lead: the hash, each shard's totals, the lock
-   verdict with counts, the four brick counts.
+   on 8a204af87 (worktree /home/user/wt-gate). If they are gone: re-run them, each command alone with run_in_background (NEVER a '&').
+2. Lock: in the frozen worktree of 8a204af87, `npx tsx tools/engine/lockall.ts --layouts 16 --check <that base json>`: ONE run, 102
+   stages, 3264 builds (f79963053 moves none vs 13135bf6b: ENG-ASKS-b's lock). ANY moved stage = STOP before landing; send the lead each
+   moved stage and why (a seed-list rebuild is the lead's call). Expected: none move (reLay touches only a lay that still has a blind
+   drop off a piece it laid; passes() reads differently only a vine that hangs on a face end; a listed stage has neither).
+   tierBots only if a World 1-2 stage moves.
+3. Suite on 8a204af87: `npx tsx --test --test-shard=i/6 <CLAUDE.md's file list>` for i = 1..6, 3 at a time on 4 cores; frozen tree, only
+   src/game/gen2/proven/ writable. Note each shard's tests/pass/fail. Then the CI tool line + generalitycheck again on the merge.
+4. Land: `git fetch origin t-eng-w3`; if it is still f79963053, push origin/t-eng-catch's head to t-eng-w3 (a fast-forward; no force,
+   never rebase); if it moved again, merge it into t-eng-catch and re-run tsc + the shards on that merge. Prove with `git ls-remote`.
+   Send the lead: the hash, each shard's totals, the lock verdict with counts, the four brick counts.
 
 ## The fix (tower.ts towerCatches; general: no stage id, seed or x)
 - passes(): reads the vine where clearClimbs will hang it (climbX) as well as where it is laid, and a walled end is no way off.
