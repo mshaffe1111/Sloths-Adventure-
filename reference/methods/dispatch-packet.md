@@ -177,3 +177,5 @@ branch, change a test bar or change a rule still waits. (The lead's worker resta
 - Deleting a hand build (new replaces old): grep every test that iterates its registry (W2_STAGES, STAGES, HAND_STAGES ...) and MOVE each
   check onto the new lay IN THE SAME COMMIT, with a plant; a floor is per-part and derived, never one hard total (CI #104).
 - The lock BASE is named BY HASH in the brief: the head the candidate lands on (or the release line it carries), never 'the merge base' (CI #106).
+- An INVARIANT brief names its failure path: what the repair cannot fix is REFUSED by name, never laid. Its proof runs on the FINAL pieces: a known
+  pending change to the proof's inputs (a brick's width, a kit rule) lands first (CI #107, D40).
