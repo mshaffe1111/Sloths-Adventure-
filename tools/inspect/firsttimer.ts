@@ -78,6 +78,7 @@ import type { FollowPlay } from '../../src/game/followPlay.ts';
 import { bucketAngle } from '../../src/game/wheel.ts';
 import { WHEEL_FLOWN } from '../../src/game/gen2/wheelFlights.data.ts';
 import { flownKey } from '../../src/game/gen2/wheelLay.ts';
+import { flowerLeft, flowerOpen, moonFlowers, type Flower } from '../../src/game/moon.ts';
 import { DARK_AHEAD, darkRims, litAhead, RimWatch, rimAir, runOffRims, type DarkRim, type RimCrossing } from '../../src/game/gen2/dark.ts';
 import { clockLitAt, clockLitLeft } from '../../src/game/zones.ts';
 /** the most times he went over one rim in the dark (climbs not counted; FTRun.dark.loop): a walk back and forth over one rim (ENG-DARK box 12,
@@ -133,6 +134,13 @@ const SNAP_THUMB = 0.1;
  *  a light that has not woken this many s into his stop he gives up on (GLOW_STILL 0.7 s + the wake's travel is well under it) */
 const GLOW_NEAR = 90;
 const GLOW_GIVEUP = 4;
+/** the moon's stair (waitForLight; moon.ts, 3-4.md NEW 2): the next step is a flower one rise over his feet (px, 3-4's rise is 100) within
+ *  MOON_REACH px across; each step still to climb is MOON_STEP_T s of his (a hop up 100 on 120 and its landing); a flower that does not
+ *  open this many s into his wait he gives up on (a stopped beam: the moon's verdict refuses that roll; the bot never hangs) */
+const MOON_UP = [60, 140] as const;
+const MOON_REACH = 260;
+const MOON_STEP_T = 0.8;
+const MOON_GIVEUP = 20;
 /** a clocked light's window must stay open this long past the way over (s): the step from his stand to the rim (3-1.md: from a stand
  *  30 px from the rim) */
 const CLOCK_SPARE = 0.25;
@@ -782,7 +790,7 @@ export interface DotReport {
  * will be (hopLandsOn), and on a log he rides it until such a hop takes him to the next log, or the bank is near (riverRide.test.ts: with
  * it off, he hops at a river's edge whatever the logs are doing). Always on outside a test.
  */
-export const SKILLS = { ride: true, upstream: true, bankUp: true, handed: true, dropOnLog: true, vineFromLog: true, vineOverTail: true, bonkAfterSnap: true, rideWheel: true, bonkBrake: true, letItSnap: true };
+export const SKILLS = { ride: true, upstream: true, bankUp: true, handed: true, dropOnLog: true, vineFromLog: true, vineOverTail: true, bonkAfterSnap: true, rideWheel: true, bonkBrake: true, letItSnap: true, waitForLight: true };
 /**
  * (ENG-26, reference/design/2-6.md NEW 2) `rideWheel`, ride a water wheel (wheel.ts) as a person does: on the jetty he walks up to its lip,
  * stands, and boards with a hop toward the wheel (a tap hop off the jetty boards at every moment of the wheel: wheelFlights.data.ts); in a
@@ -1320,6 +1328,11 @@ export class FirstTimerRun {
   private rearSeen: { m: unknown; at: number } | null = null;
   /** the dark's rims (gen2/dark.ts darkRims, read once), the stop he is making at one, and the rims whose light he waited out unlit */
   private glowRims: DarkRim[] | null = null;
+  /** the stage's moonflowers on his setting (waitForLight), read once; when his wait for the next one began (-1: not waiting) */
+  private moonFl: Flower[] | null = null;
+  private moonSince = -1;
+  /** his waits on the moon's stair, frames (waitForLight's count: a toy proves he waited) */
+  moonWaitFrames = 0;
   private glowStop: { rim: DarkRim; since: number; turn?: 1 | 2 } | null = null;
   private readonly glowGaveUp = new Set<DarkRim>();
   /** each stop waited out unlit: the rim and the time (FTRun.dark.gaveUp) */
@@ -2582,6 +2595,9 @@ export class FirstTimerRun {
     // (placed after the freeze, a landing's own steer walked the KID straight over the next rim, 3-1 draft seed 1). Any stage by its zones
     const gw = this.glowWait(dir);
     if (gw) return gw;
+    // the moon's stair: on stone or a flower, the next flower not yet open long enough for the steps left, he stands (waitForLight)
+    const mw = this.moonWait(dir);
+    if (mw) return mw;
 
     // a puzzle room: stand at its entrance a moment, then on past it
     if (this.puzzleWait) {
@@ -3520,6 +3536,33 @@ export class FirstTimerRun {
    * walks him on to the rim). A give-up ends with the visit: grounded off that rim's piece (a rescue, a fall, the way on), he stops at it
    * again (kept for the run, the same child came back to that rim and went over it 0.34 s after its light woke, with no stop).
    */
+  /**
+   * The moon's stair (SKILLS.waitForLight; 3-4.md NEW 2, moon.ts; any stage by its zones): grounded, with a moonflower one rise over his
+   * feet within MOON_REACH px on his way, he steps up only once that flower is open with time left for every step still to climb of its
+   * storey (MOON_STEP_T s a step, plus his reaction): on stone he waits until the storey blooms; on a rising band, on a flower, he jumps
+   * only to an open one. Until then the thumb is off and he stands. A flower that has not opened MOON_GIVEUP s into his wait he gives up
+   * on. SKILLS.waitForLight off (the plant): he climbs into a closed flower and falls through it.
+   */
+  private moonWait(dir: -1 | 0 | 1): Pad | null {
+    if (!SKILLS.waitForLight) return null;
+    this.moonFl ??= moonFlowers(this.sim.stage as unknown as Parameters<typeof moonFlowers>[0], this.who.setting);
+    const p = this.sim.p;
+    if (!this.moonFl.length || !p.grounded) return null;
+    const t = (this.e as unknown as { gameTime: number }).gameTime;
+    const mid = (f: Flower) => f.p.x + f.p.width / 2;
+    const ways = (f: Flower) => dir === 0 || Math.abs(mid(f) - p.x) <= f.p.width / 2 || Math.sign(mid(f) - p.x) === dir;
+    const next = this.moonFl
+      .filter((f) => p.y - f.p.y >= MOON_UP[0] && p.y - f.p.y <= MOON_UP[1] && Math.abs(mid(f) - p.x) <= MOON_REACH && ways(f))
+      .sort((a, b) => Math.abs(mid(a) - p.x) - Math.abs(mid(b) - p.x))[0];
+    if (!next) { this.moonSince = -1; return null; }
+    const steps = this.moonFl.filter((f) => f.zone === next.zone && f.p.y <= next.p.y).length;
+    if (flowerOpen(next.clocks, t) && flowerLeft(next.clocks, t) >= steps * MOON_STEP_T + this.who.stopReact) { this.moonSince = -1; return null; }
+    if (this.moonSince < 0) this.moonSince = t;
+    if (t - this.moonSince > MOON_GIVEUP) return null;
+    this.moonWaitFrames++;
+    return {};
+  }
+
   /** the rims his dark stop is made at (glowWait): every dark rim whose landing's light sleeps, and every lit edge in the dark whose RUN
    *  off comes down within his stopping distance of a sleeping rim a stop there wakes (runOffRims, marked runOff: he stands there until
    *  that rim's light is lit DARK_AHEAD, ENG-DARK box 14; never a jump's stop, glowJump) */
