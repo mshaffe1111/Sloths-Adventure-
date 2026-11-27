@@ -50,3 +50,8 @@ or ENG-CUT) before it paints, and the audit's 'art: nothing missing' rows are re
 (d653d3994), fully gated (6 shards 0 fail, lockall 102/102 in one run, tierBots 9/9). FRIDAY FIRST: ENG-ASKS-b, World 3's registry rows
 (#dark, #dark@puff, #spore@puff, #soft@moon; #vine and #thornvine@doze when ENG-VINE lands) as a small data candidate on t-eng-w3; then
 BUILD-31 when KIT-W3a's down c/b land and the keeper's review of 3-1's lines is in (rule 23: the lead opens 3-1's roll file first).
+
+## 11-27 8:45 AM ET: ENG-ASKS-b's audit rolls with the asks
+3-1: 48 asks, 48 LAID (#dark 32, #dark@puff 16), 0 refused. 3-2: 48 #dark asks, 30 laid, 18 REFUSED 'no dark zone in its span' at the climb
+node Xc and the rope nodes Wr / Sr: World 3 has no DARK climb or DARK rope section. KIT-W3b's list gains: a dark climb brick and a dark rope
+brick (3-2). A sharper refusal line ('no climb section in the pool lays #dark') is a parking-lot engine ask (R-165.521).
