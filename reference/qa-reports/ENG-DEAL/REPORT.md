@@ -1,10 +1,14 @@
 # ENG-DEAL (R-165.541): the deal follows the code's letters, every slot, every job
 
-## THE EXACT NEXT STEP (box 1; written 11:19 AM ET Fri 11-27 by `date`)
+## THE EXACT NEXT STEP (box 1; written 11:26 AM ET Fri 11-27 by `date`)
 Branch `t-eng-deal` holds the fix (commit c6340c0d8 on t-eng-w3 9818cc87). NOT gated, NOT landed. DONE: 3-1 w3 + wide, 3-2 and 3-3 old
-vs new (below); tsc 0; generalitycheck PASS; CI tool line 50/50. RUNNING: the lock base (item 2) and the suite's 6 shards on a frozen
-worktree `$S/head` of 8ad1a8e9 (`$S/shards.sh $S`, totals to `$S/shards.txt`). Left: item 3's lock --check (on `$S/head`), tierBots
-if World 1-2 moved, then item 4.
+vs new (below); tsc 0; generalitycheck PASS; CI tool line 50/50; the lock BASE on 9818cc87 (3264 builds of 102 stages, `$S/base.json`);
+shard 1 of 6: 725 pass, 0 fail. RUNNING on the frozen worktree `$S/head` (8ad1a8e9; code the same as this branch's head): shards 2-6
+(`$S/shards.sh $S`, totals to `$S/shards.txt`) and `lockall --layouts 16 --check $S/base.json` (log `$S/lock-check.log`). Next: read
+the check's counts line; a LISTED stage that moved STOPS the landing (send each and why to the lead); tierBots 9/9 if World 1-2 moved;
+then item 4, and send the landed hash to the lead AND to KIT-W3a-e (session_01FhBbYNzFgpSDqYvvxo7xXs; the lead's word).
+- Own miss (D119): box 1's commit c87cb1d0d ran a heredoc and the commit in one command. The commit is right (pushed, ls-remote matched);
+  every later report edit is its own call, before the commit.
 1. Scratch trees (re-make if the container is gone): `$S/kit` = worktree of 9818cc87 + `git merge 1b300ebc3` + `git apply`
    origin/t-audit-w3:reference/qa-reports/AUDIT-W3/scratch.patch + `...W3_DOWN_TOWER` appended to w3AuditBricks' return (imported from
    ./w3.ts) + this branch's pipeline.ts; `$S/kitold` = the same with 9818cc87's pipeline.ts; `$S/base` = worktree of 9818cc87.
