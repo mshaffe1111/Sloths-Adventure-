@@ -4,17 +4,17 @@
 Candidate 18a353e4a = ENG-CATCH-d's 6d296c1b7 + this box (bc94dab78 guarantee, ab059518d toys) merged with t-eng-w3 51ef0c6ab (THE LOCK BASE,
 by hash: t-eng-w3's head when this box started, D159). Sent to the lead and KIT-W3a-e. tsc 0; generalitycheck PASS (26 literals, 26 known).
 RUNNING past the box (the SAME frozen candidate only, D138), logs in this session's scratchpad:
-- PROOF on wt-try (frozen: bricks de6feebff, byte-identical to t-kit-w3a 39a3c5b52 / 2a18464da's, the FINAL pieces; tower.ts and pipeline.ts
-  byte-identical to 18a353e4a's), seeds 1-40 x both, probe/proof.mts here (probe.mts + every refusal COUNTED and NAMED as it is made, a
-  'name' setter on TowerRefusal's prototype, no engine change; LEAK = a down verdict line in a returned stage): chains (all five, then
-  cap-down), (shelf-hops, then two-roots), (cap-steps, then root-down). proof-<config>.log; line 1 is the counts line. Seed 11 alone, all
-  five: ok 2/2, refusals 2 in 2 builds (Normal's search refused the e11 shape on Easy's lay, the next roll clean), leaks 0.
+- PROOF DONE (the lead's ruling: the guarantee ACCEPTED as built; this lane a TAIL on 18a353e4a). wt-try (frozen: bricks de6feebff =
+  t-kit-w3a 39a3c5b52's w3.ts byte for byte, the FINAL pieces; tower.ts and pipeline.ts byte-identical to 18a353e4a's), seeds 1-40 x both,
+  probe/proof.mts (every refusal counted and named as it is made; LEAK = a down verdict line in a returned stage). proof/*.txt here.
+  EVERY CONFIG 80/80, LEAKS 0. Normal's rolls refused / tried: all five 3/42 (7%), root-down 0/40, two-roots 0/40, cap-down 1/40,
+  cap-steps 1/41, shelf-hops 3/43 (7%; was 74/80). Worst stage: 1 refusal. Each refused shape's next roll was clean.
 - CI tool line on wt-cand (ciline.log).
-- LOCK run 1: `lockall.ts --layouts 16 --out base.json` on 51ef0c6ab (wt-base). lock-base.log.
+- LOCK run 1 DONE: `lockall.ts --layouts 16 --out base.json` on 51ef0c6ab (wt-base): 3264 builds of 102 stages. Run 2 (--check) running.
+- Running on wt-cand: the CI tool line, suite shards 1-3, tierBots; shards 4-6 to start when a core frees.
 Next:
-1. ReadNotifications. Read each proof's first line and its reds. The bar: NO roll in any config ends with a tower miss that is not a
-   refusal ('tower: unmendable miss: ...' in the repairs; a seed with no clean roll names it); refusals at most 2 of 80 per config; all five
-   together at least 78/80. Any tower blind drop / pass / lid in gen2.errors = the guarantee leaked: STOP, it is not frozen; tell the lead.
+1. ReadNotifications. Read each gate as it finishes (logs in this session's scratchpad: ciline.log, lock-check.log, shard-<i>.log,
+   tierbots.log).
 2. GATES once on the frozen worktree wt-cand (18a353e4a, src and tools immutable): the CI tool line; LOCK run 2 `lockall.ts --layouts 16
    --check base.json` with the counts line (ANY listed stage moves = STOP, send the lead each); the suite in 6 shards; tierBots 9/9.
 3. When ENG-DEAL is on t-eng-w3: merge it into a scratch copy of wt-try and re-run shelf-hops alone (the lead: n13 is ENG-DEAL's node).

@@ -1,0 +1,3 @@
+w3-cap-steps ok 80/80 bad - | refusals 2 in 2 builds | Normal's searches: rolls refused 1 / tried 41 (2%) | worst stage 1 (n33) | leaks 0
+  n33 REFUSED tower: a blind drop off the piece at x 283-463, y 10965: 319 px to its landing (in view: within 300)
+  e33 REFUSED tower: a blind drop off the piece at x 283-463, y 10965: 319 px to its landing (in view: within 300)
