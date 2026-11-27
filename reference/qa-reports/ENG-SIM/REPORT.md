@@ -1,12 +1,13 @@
 # ENG-SIM: the bots ask the GAME how a press flies (R-165.470; packet reference/packets/2026-11-26/ENG-SIM.md on the lead's branch)
 Branch t-eng-sim from origin/release-0.10.3 c73cb9766. Nothing here lands on release-0.10.3, main or a release 5 branch.
 
-## EXACT NEXT STEP (box 6 hand-over): 1a-ii BUILT and TIMED (candidate bb5e7fb2d, 1.65x the merge); NEXT: its checks, then 1b
+## EXACT NEXT STEP (box 6 hand-over): 1a-ii BUILT, TIMED, RULED A (candidate 9133e2b5e, 1.63x the merge); NEXT: its checks, then 1b
 Head: the hand-over message's hash (pushed to t-eng-sim, ls-remote confirmed). Nothing lands on release-0.10.3, main or a release branch.
-1. **DONE (box 6): 1a-ii, the run-up on plans, candidate bb5e7fb2d** (built from 47ff85629; 'Step 3 box 6' below). Ruling 1 TRIPPED on
+1. **DONE (box 6): 1a-ii, the run-up on plans, candidate 9133e2b5e** (built from 47ff85629; 'Step 3 box 6' below). Ruling 1 TRIPPED on
    the first build 70c035eb7 (3.53x the merge: 84 refused run-ups, 602 catch flights) and went to the lead with the numbers BEFORE going
-   on, with option A (an exact prune) measured at 1.60x; the lead's ruling (A or B) PENDING at this push.
-2. **NEXT, on bb5e7fb2d, ONCE each, a chattr-frozen worktree (src/game/gen2/proven writable, R-165.494):** the CI tool line (gates.yml)
+   on, with option A (an exact prune) measured at 1.60x. **The lead RULED A** (prune the search, not the answer; B refused: it changes
+   play for a cost reason), with the plain-scan equivalence pinned ON THE RUN: done (9133e2b5e, below). Re-timed on 9133e2b5e: 1.63x.
+2. **NEXT, on 9133e2b5e, ONCE each, a chattr-frozen worktree (src/game/gen2/proven writable, R-165.494):** the CI tool line (gates.yml)
    and the suite in 3 shards (CLAUDE.md's src globs, `split -n l/3` of the sorted list, as box 5), each total in the message; then
    **rule 28**: every moved bot row traced to the run plan, or the change narrowed. Known moved already: 2-4 child Normal 8's run-up now
    comes at t 79.2 on log #36 (k 8, press frame 14, caught on frame 21 as the probe said); c24's note had it at t 120.77. The inherited
@@ -14,7 +15,7 @@ Head: the hand-over message's hash (pushed to t-eng-sim, ls-remote confirmed). N
 3. Then 1b (hopFlight + the gate family + the landing stop), 1c, 1d, 1e, 1f in the plan's order (below). The cost check stands per
    judge: time each against the merge 114944b5b on its own stage and seed before going on; over 3x goes to the lead with the numbers.
 
-## Step 3 box 6 (from 7:23 PM ET): 1a-ii, the run-up on plans, built, TIMED, pruned (candidate bb5e7fb2d)
+## Step 3 box 6 (from 7:23 PM ET): 1a-ii, the run-up on plans, built, TIMED, pruned (candidate 9133e2b5e)
 - **The spec (box 5's next step, as given):**
   2. **1a-ii: the run-up on plans** (firsttimer.ts vineFromLog's `running` branch, runUpCatches / runPress, about 1 h): a run plan = the steer
    `dir` from frame 1 (no tail: he is running; steerFrom still gates it, as c25's brake), the press on frame P, the hold `hold`. **A run
@@ -49,8 +50,12 @@ Head: the hand-over message's hash (pushed to t-eng-sim, ls-remote confirmed). N
   end, x 19,489 at t 99). **Option A (taken): prune the search, never the answer:** `firstWindow` (src/game/pressPlan.ts): any window of
   w consecutive yeses holds exactly one frame of the lattice lo + w - 1 + j w, so those are asked first and a yes widened to its run.
   The same 84 refusals fly 16 catches (295 ms). **bb5e7fb2d: 2,032 / 2,001 / 1,964 (median 2,001) = 1.65x the merge, 1.18x the seal.**
-  Option B (the REPORT's fallback: cache the refusal per log until lives / log change) NOT taken: it changes play (a run-up that becomes
-  possible later on the same log is never tried).
+  Option B (the REPORT's fallback: cache the refusal per log until lives / log change) REFUSED by the lead: it changes play (a run-up
+  that becomes possible later on the same log is never tried). **The lead's ruling A** added: the plain-scan equivalence on every call
+  of the run: 9133e2b5e names the search (runUpFirst) and firsttimer.test 'the run-up's pruned search gives the plain scan's k on every
+  call of the real run' wraps it (2-4 child Normal 8 to the shrine + 2-4 kid Easy 19 to t 99: every call's first window equals the
+  plain scan's over the same, kept flights): GREEN, 21.6 s; **PLANTED RED** (firstWindow without its left widening): 0/1, got 10 where
+  the plain scan says 9. **9133e2b5e re-timed: 2,004 / 1,977 / 1,954 ms (median 1,977) = 1.63x the merge.**
 - **Toys on bb5e7fb2d:** pressPlan.test 'firstWindow finds the plain scan's first window ... on every pattern up to 12 frames' (lo 1 and
   3, w 1-6, every mask: the same first window, no frame outside [lo, hi], never more distinct frames than the plain scan asks): GREEN;
   **PLANTED RED** (the left widening removed): 0/1. firsttimer.test :351 re-pointed: 'the run-up is ONE plan runUpPlan flew on the
