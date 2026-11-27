@@ -1,24 +1,29 @@
 # ENG-ROOT REPORT (3-2's roof root; R-165.452; the 'lit = seen' seam R-165.529) — t-eng-root-wip, base t-eng-w3 13135bf6b
 
-## EXACT NEXT STEP (box 2, a fresh member)
-1. `git fetch origin t-eng-root-wip t-eng-w3 && git switch -c t-eng-root-wip FETCH_HEAD` (the wip head); merge origin/t-eng-w3 if it moved
-   (ENG-ASKS-b, ENG-CATCH land there today: MERGE, never rebase).
-2. ITEM 3 is WRITTEN, NOT YET TESTED: tools/inspect/firsttimer.ts `rootPlan` (wired before `freezePlan`; ROOT_LOOK 30 px): hanging on a
-   look 'root' rope, a lit ring (litRing) within 30 px ahead that a leaper of the cast has in its sight by its facing -> thumb off in the
-   dark until clear, then stopReact, then creep on; already lit -> creep on. Its test is item 4's toy (and its plant: rootPlan -> null).
-3. ITEM 4: the DRAFT toy is reference/qa-reports/ENG-ROOT/wip/rootRow.test.ts.txt (move it to src/game/gen2/rootRow.test.ts; drop
-   its ROOT_PROBE / ROOT_NOROOT / ROOT_NODARK debug lines when done). It follows src/game/gen2/noiseRow.test.ts (toyWorld kit, World 3,
-   buildGen2Stage, withTestStage + RealPlay). OPEN BUG FIRST: no roll picks its 'toy-root-row' section (plan = meadows only, errors []);
-   ROOT_NOROOT=1 (root piece removed) lays it with the ocelot, ROOT_NODARK=1 does not: the ROOT PIECE stops the section after layLocal
-   (layLocal itself lays it: rootLay.test). Suspects: layStage's piece loop / a section check that reads every piece (its w, shape
-   'vine', main false), or the stage time estimate. Fix in the pipeline, then: the bot creeps it unseen (firstTimer on the toy id);
-   PLANTS (each RED): rootPlan -> null -> leapt at; the root as a `rope` place over a gap -> red; `speed` unset (120) -> the
-   creep-timing verdict reads it.
-4. ITEM 5 stills (tools/art/kitaudit/shoot.mjs, both ways): Pokey on the root over a prowler with a patch lit; label: "art: World 1's
-   painted vine rope (ropeArt.ts drawRopes, look 'root' branch: vineTile, no trees, no posts) until ART-W3's root lands".
-5. GATES once on the frozen candidate (D115, src/game/gen2/proven/ writable): tsc; CI tool line; base lock on 13135bf6b then
-   `lockall --check` (102 stages, counts, NO listed stage moves); the suite in 6 shards; tierBots 9/9; generalitycheck. Land: merge onto
-   origin/t-eng-w3 (no force); the lead gets the hash, each shard's totals, the stills, what 3-2's build can measure.
+## EXACT NEXT STEP (box 3, a fresh member; box 2 ended on the clock, tsc not yet read)
+1. `git fetch origin t-eng-root-wip t-eng-w3 && git switch -c t-eng-root-wip FETCH_HEAD`; merge origin/t-eng-w3 if it moved (MERGE, never rebase).
+2. ITEM 3 is IN rootBots.test.ts as a PROBE (`test('probe')` prints RUN lines; `probe2` traces one roll; flip skip with sed). Row and kit:
+   src/game/gen2/toyRoot.ts (World 3's REAL kit, floor 2200, root 1600, ocelot t 0.5). Last run (8 rolls from 1,6..36 x both settings,
+   `n16` = Normal from seed 16): GREEN 15/16 unseen (`e36`: 4 alert frames left, OPEN: trace it with probe2 ['easy', 36]); noRootWait
+   (the plant) seen on n16 (44, hit 1) and n31 (134): RED; noRootWait + noLit (cast.step with lit false) seen on none: the light is the cause.
+   Pace on the root 85 px/s on every roll. TURN THE PROBE INTO TESTS: (a) skill on: every roll took (hung on it), crossed, seen 0, hits 0;
+   (b) noRootWait: seen > 0 on some roll (RED); (c) noRootWait + noLit: seen 0 where (b) was seen; (d) pace 85 +-2; plant `world: (s) =>
+   ({ ...s, ropes: s.ropes.map((r) => ({ ...r, speed: undefined })) })` -> pace 120 (the creep-timing verdict reads it); (e) the root over a
+   gap only: rootRow.test's 'floor under the root' (a `rope` place over a gap in toyRoot) -> RED. Drop 'took < 120 px' (n16 lands mid-root).
+3. Items 5 (stills), 4 (gates), 5 (land) as the box-2 brief: stills say "art: World 1's painted vine rope (ropeArt.ts drawRopes, look 'root')".
+
+## Done in box 2 (b37f9d66e + the wip commit after it)
+- ITEM 4's refusal, by name: (1) the POOL, pipeline.ts poolFits:820 -> hangsNeed read the root's shape 'vine' as a CLIMB: now by place,
+  a root asks 'rope' (World 3 lists 'rope', taught at 1-3; w3.ts moves). (2) a JUDGE, levelCheck.ts 3b 'rope #1 does not join two ledges':
+  a rope over walkable floor its whole length (floorUnder: still pieces, no fragile) joins nothing new: no fault. (3) the ocelot: the toy's
+  threat budget (2.4 at sho vs W3's ocelot 3): the row moved to ten/ketsu. rootRow.test 2/2; plants: floorUnder off -> red; hangsNeed by
+  shape -> the no-climb kit's roll red.
+- BOX-1 BUG: rootPlan sat after intend()'s hanging branch, so it never ran while hanging. Now: hanging -> rootPlan first, then along the
+  root to its end. NEW (firsttimer.ts): rootTake (jumps up under a root whose floor a leaper's PATROL + sight reaches, from 10 px in to half
+  its length); rootWatched (facing him: sight.ahead + speed.rest x his time in the light; facing away: sight.behind, or its turn at its
+  patrol end); the end hold (ROOT_END 40 px before the end, the floor below watched -> hold; the engine lets go at the end itself).
+- KIT-W3b spec ADD: the root must START and END outside the ocelot's watch of the floor (patrol ~400 px + sight 240): on the dark floor it
+  sees him at its own height lit or not; only on the root (over sight.up 40) does the dark hide him.
 
 ## Done so far (box 1)
 | Item | Commit | Evidence |
