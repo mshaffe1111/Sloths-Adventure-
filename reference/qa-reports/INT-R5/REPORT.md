@@ -1,5 +1,44 @@
 # INT-R5 REPORT: release 5 (0.10.4) candidate, release-0.10.4 (packet reference/packets/2026-11-26/INT-R5.md)
 
+## EXACT NEXT STEP for INT-R5-d (written 11:11 AM ET 11-27 by `date`; box 3, INT-R5-c; supersedes box 2's 10:28 step below)
+release-0.10.4 now holds fixes 3, 4 and half of 2 on top of 59f5f1930 (code = ab5673531): fc31f6e1f (goalsEasy), 581e7198b (2-6's view
+line), a323cdf97 (wheelStepOff re-planted). tsc clean after each. NOT YET: wheelBoard #4's re-plant, SOIL-EASE's landed hash, the CI tool
+line on the fix head, the freeze and the full set. Do, in order:
+1. **wheelBoard.test.ts #3/#4 (way +1): find a LIVE case.** The search: reference/qa-reports/INT-R5/replant/. A real case needs, on one way
+   +1 wheel: boardWatch OFF >= 2 scrambles (the old assertion, unchanged), ON 0 scrambles 0 pond, AND ON boardWatch HELD him on that
+   wheel's jetty (wheelBoardWait set after pad; `wt` in the lines). The wait test is what tells the skill from a timing shift: 2-6 adult
+   Normal 5's second edge wheel goes sc2 -> sc0 with NO wait there (board-probe-adult-normal-5.txt): NOT a plant.
+   - Tier bots (rowWheelRuns child/middle, Normal/Easy, v1 v2; board-1-100.txt, scramble rule only): no case on the seeds it reached.
+   - Cast bots with the wait rule (searchCast.ts; cast-1-50.txt, cast-51-100.txt): read the HIT lines.
+   If a HIT exists: rewrite #3/#4 on it, the wheel found by what the bot does (the way +1 wheel where OFF scrambles most and ON waited),
+   never by an x; old row "2-6 seed 1, child Normal v2, top wheel" -> new row named; prove it live (skill off in the ON test -> RED; on ->
+   green) as replant/step-proof.txt does. If NO case exists anywhere: send the lead the search totals and ask (it is a test removal or a
+   new toy, the lead's call, never a looser assertion); 20 minutes no reply = keep waiting (a test change, not reversible by you).
+2. Merge SOIL-EASE's LANDED hash only (it sends it; t-soil-ease df06d9753 is its fix, 303bd69eb its REPORT; do not take an unlanded
+   hash), --no-ff, conflicts named; then tsc + the CI tool line (gates.yml's line; about 60 min alone, run_in_background).
+3. Freeze that ONE head (D115, src/game/gen2/proven writable). main's frozen worktree is ready in this container's /home/user/wt/main
+   (4bf2cbaaa, node_modules linked): a fresh container makes its own. THE FULL SET with r104/lane.sh: run1.sh now also has `pinwide`
+   (release.md step 6's widened grep, 185 files), `validate` and `world1` (inherited, not in CI, R-165.531). knowncheck must show
+   depthSteps SHRUNK (108 -> 0); lockall's moves named against box 2's list (2-6, 2-7, 1-4, the 29 hints-only stages; the view line is a
+   2-6 hints change).
+4. The §6 table, the test link PRE-BUILT and not published. STOP before the PR.
+
+## Box 3 (INT-R5-c) done, with the evidence
+- **Fix 4, goalsEasy.test.ts (fc31f6e1f):** the kidRuns pin [3,5,6,7,6,5] is gone; the test holds R-165.496's rule: 5-9's entry uses
+  EASY_GOAL_59, it is 5 (data), the kid's recorded runs reach it (kidReaches: at or under the lower median), and the rule's own negative
+  (median + 1 is out of reach). 3 pass. **Planted RED:** KID_RUNS_59 re-recorded as [3,3,4,4,4,4]: "5-9: the kid's runs 3, 3, 4, 4, 4, 4
+  (lower median 4) do not reach the Easy goal 5", 2 pass 1 fail; reverted. **This was box 1's miss:** 4799f6026 re-recorded the runs
+  and ran only firstTimerBot.test; the whole suite (or the widened step-6 grep) would have caught goalsEasy.test:18.
+- **Fix 3, storyTipScan (581e7198b):** "Look at it all. Didn't lift a claw." (LINES_26.view, Pokey on the great wheel) was laid with no
+  speaker, so Dot's guide took it as plain information and Tips dropped it. Laid at its SOURCE: kitLib26 (w2Arc26.ts) storyTips
+  `w26.view: 'Pokey'`, as 2-4's own view line (w2Arc24.ts:292). storyTipScan --check: 0 dropped, 16 stages, 147 lines; w2Arc26.test 5 pass.
+- **Fix 2a, wheelStepOff.test.ts (a323cdf97):** old row 2-6 adult Easy seed 12 (dead: OFF = ON, shrine 139.1 s, 0 rescues; ON refuses
+  8 times, it no longer matters). New row: **seed 39**. Search over all 100 listed seeds (replant/step-1-100.txt): 39 and 56 rescue with
+  the skill off; 56's ON run never refuses (a timing shift, not the skill), so 39 is the plant (step-where.txt: OFF rides bucket #52 b4,
+  way +1, rescue t 117.7; ON refuses 6 way +1 hops, no rescue). Same assertions, plus two that hold the row by what the bot does (ON
+  refuses a way +1 step-off; OFF's rescue follows a way +1 bucket). **Live:** skill off in the ON test -> RED (rescues 1, refusals 0);
+  on -> 2 pass (replant/step-proof.txt).
+
 ## EXACT NEXT STEP for INT-R5-c (written 10:28 AM ET 11-27 by `date`; box 2, INT-R5-b; supersedes box 2's 9:10 step below)
 The DISCOVERY full set on ab5673531 found four reds; the lead ruled each. INT-R5-b fixes nothing (D138). INT-R5-c makes ONE new head
 from release-0.10.4 with fixes 2-4 plus the soil-ease merge, then runs THE FULL SET once on it (r104/lane.sh lanes, as below). Target: the

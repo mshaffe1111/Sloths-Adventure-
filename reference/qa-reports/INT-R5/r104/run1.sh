@@ -44,5 +44,8 @@ g castbots26 "npx tsx tools/inspect/castBots.ts --stage 2-6 --seeds 1-100 --bots
 g castbots27 "npx tsx tools/inspect/castBots.ts --stage 2-7 --seeds 1-100 --bots adult,child,middle,expert --setting both --par 4 --rows $O/cast27-rows.jsonl --proven $O/proven27.json"
 g funcheck "npx tsx tools/validate/funcheck.ts"
 g fundiff "bash $S/fundiff.sh $O/g-funcheck.log $W"
+g pinwide 'npx tsx --test $(grep -rlE "setPick11|roll11Seed|provenSeedFor|firstTimer\(|castRun\(|RealPlay" src tools --include=*.test.ts)'
+g validate "npx tsx --test tools/validate/validate.test.ts"
+g world1 "npx tsx --test tools/validate/world1.test.ts"
 g buildstore "npm run build:store"
 g tierbots "npx tsx --test tools/inspect/tierBots.test.ts"
