@@ -19,8 +19,14 @@ ReadNotifications first (D140). Box 11 DID steps 1-3 and 5; 4 and 6 are RUNNING 
    (engine paused) and sideways it sits over the ground ahead; lives fall x3 -> x1 across the stills (placed near snappers); x24900 is
    mid-bounce (placed on the lily pad 24847-24917).
 3. GATES on the frozen worktree (1846b25b; src = candidate): tsc CLEAN; generalitycheck PASS (26 literals, 26 known).
-RUNNING at this stamp (scratchpad, lost if the box is archived): drawcheck (all 22 scenarios incl. 2-9, same limits), the lock as two
-runs (--layouts 16 --out base.json on 7387d089a, then --check on 1846b25b), the 6 shards.
+4. THE LEAD'S RULING on the stills: the lay PASSES. One change: the decorative turtle (World 2's shared clutter look
+   ['w2ReedBundle','w2Turtle','w2KingfisherPost'], dressNewLooks.ts, rolled by artDress.dressSets) stands on 2-9 beside real snappers.
+   RULED B: an ENGINE lane, ENG-DECOR, writes a HAZARD_LOOKALIKE data table {w2Turtle: family 'turtle', swap 'w2Frog'} plus a swap in
+   protoStage.addDress for any dress piece whose family is in the stage's cast. Its test covers every listed seed of every stage, with a plant.
+   The lock moves on 2-5 and 2-9 ONLY, both named. It lands on t-eng-29 beside ENG-CAM29 (rule 26: protoStage is not a Content card's file).
+   No stage id goes in engine code (generalitycheck), so this is by cast, not by 2-9.
+5. The gates on 1846b25b are DISCOVERY only (the lead's ruling): drawcheck (22 scenarios incl. 2-9), the lock as two runs (base on
+   7387d089a, check on 1846b25b) and the 6 shards were running at this stamp in the scratchpad; their totals are below if they finished.
 LEARNED (k): (1) a bot's low pass rate on one stage means nothing until the same metric runs on the stage's siblings: 2-5 at 4/40
 put 2-9's 5/40 in line in one 4-minute run, before any re-lay. (2) A two-line stderr probe (the foe's state at each rescue, then every
 6 frames over the stall) named the cause in two runs; keep it as probes/kid-trace-k.patch. (3) stills-at-setting needs
@@ -28,8 +34,13 @@ PW=/opt/node-tools/node_modules/playwright/index.mjs from a worktree (index.js g
 5 minutes because the message carried the numbers, the trace and the choice together.
 PROPOSED RULE (level.md, for the lead): "a kid-bot miss on a stage is compared on the same metric with the world's other stages that lay
 the same foe, and one stall is traced to its frame, before any re-lay" (check: the report carries both numbers and the trace file).
-NEXT: read those three if alive, else re-run them; then the CI tool line, seedlist --check for every list, clipcheck, tierBots; freeze
-per D115 with src/game/gen2/proven/ writable.
+NEXT (box 12): ReadNotifications. When ENG-DECOR and ENG-CAM29 land on t-eng-29, merge t-eng-29 (no force, conflicts named), then:
+   - re-shoot the guard/quay/pads stills: the frog, not the turtle;
+   - registrycheck --stage 2-9, then the FINAL gate run on that frozen head: tsc; the CI tool line; the 6 shards with totals;
+   - the lock as two runs (--layouts 16 --out base.json on the merged t-eng-29 head, then --check base.json on ours): only 2-9 moves;
+   - seedlist --check for every list (16); clipcheck; tierBots; generalitycheck; drawcheck if anything that draws moved;
+   - freeze per D115 with src/game/gen2/proven/ writable; the WIDENED pin grep (CI #98) if any list is rebuilt;
+   - bots x40 only if the merge moves the lay.
 
 ## (superseded) EXACT NEXT STEP (session 10 hand-over, BUILD-29-j, 10:37 AM ET Fri 11/27 by `date`; head = this commit)
 ReadNotifications first (D140); the lead has two messages from j to answer (the kid on Easy, below). Box 10 DID steps 1-4, 5 in part:
