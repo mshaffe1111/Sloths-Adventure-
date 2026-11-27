@@ -21,6 +21,13 @@ ReadNotifications first (D140). Box 11 DID steps 1-3 and 5; 4 and 6 are RUNNING 
 3. GATES on the frozen worktree (1846b25b; src = candidate): tsc CLEAN; generalitycheck PASS (26 literals, 26 known).
 RUNNING at this stamp (scratchpad, lost if the box is archived): drawcheck (all 22 scenarios incl. 2-9, same limits), the lock as two
 runs (--layouts 16 --out base.json on 7387d089a, then --check on 1846b25b), the 6 shards.
+LEARNED (k): (1) a bot's low pass rate on one stage means nothing until the same metric runs on the stage's siblings: 2-5 at 4/40
+put 2-9's 5/40 in line in one 4-minute run, before any re-lay. (2) A two-line stderr probe (the foe's state at each rescue, then every
+6 frames over the stall) named the cause in two runs; keep it as probes/kid-trace-k.patch. (3) stills-at-setting needs
+PW=/opt/node-tools/node_modules/playwright/index.mjs from a worktree (index.js gives no named chromium). (4) The lead's ruling came in
+5 minutes because the message carried the numbers, the trace and the choice together.
+PROPOSED RULE (level.md, for the lead): "a kid-bot miss on a stage is compared on the same metric with the world's other stages that lay
+the same foe, and one stall is traced to its frame, before any re-lay" (check: the report carries both numbers and the trace file).
 NEXT: read those three if alive, else re-run them; then the CI tool line, seedlist --check for every list, clipcheck, tierBots; freeze
 per D115 with src/game/gen2/proven/ writable.
 
