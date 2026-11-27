@@ -1,22 +1,28 @@
 # ENG-CUT REPORT (Engine, the general cut-piece draw path; base t-build-28-wip a0d85e961; lands on t-eng-cut). Session 1 started 9:42 PM ET (from the session hook date).
 
-## EXACT NEXT STEP (box 1 hand-over; head = this commit on t-eng-cut)
-DONE THIS BOX: the path is built and pushed (513e80707, a8ea8593e); toys red-then-green; stills of the reed island through the NEW path,
-upright and sideways at 2x (below), sent to the lead to JUDGE. NOT YET RUN: the heavy gates. The next box, in order, on a FROZEN worktree
-of this head (D115: `git worktree add --detach <scratch>/frz <head>`, node_modules symlinked; src/game/gen2/proven/ writable):
-1. ReadNotifications; read the lead's verdict on the stills (law 2). If the lead sends the still back, fix first.
-2. DONE this box: lockall --layouts 16 --check (ONE run) on a frozen 0a584713a (src = this head's) against the frozen a0d85e961 lock
-   (lock-base-a0d85e961.json.gz, 3,264 builds of 102 stages): "102/102 stages unchanged", exit 0 (it also lists 39 gen2 stages that
-   "gained verdicts and drops (not hashed)": printed by the check, not a move). Re-run only if src changes.
-3. In the background, each to a log: the suite in 6 shards (`--test-shard=i/6`, the CLAUDE.md list); the deploy build
-   (`BASE_PATH=/Sloths-Adventure-/ npx vite build`) then chunkcheck; drawcheck; the CI tool line (tools tests, tipwalk, storyTipScan,
-   teachFirstScan, registrycheck, tierBots, buildcheck, kbdcheck, seedlist --check). Name reds inherited from a0d85e961 by re-running
-   that one file on a frozen a0d85e961 (known so far: artUse.test, cage-whole and cage-b: RED on a0d85e961 itself, checked this box;
-   registrycheck.test per BUILD-28's REPORT item 1).
-3b. NOT DONE this box: the World 1 before/after still (a cut stone on 1-1, a0d85e961 vs this head, same frame, upright and sideways);
-   the code path for a World 1 cut is unchanged (drawCutArt is called first, unedited), but the brief asks for the still.
-4. Totals here, push, `git ls-remote origin t-eng-cut`, then the landing message (hash, totals, the stills) to the lead AND BUILD-28's
-   current session (the lead names it: asked in the hand-over message).
+## EXACT NEXT STEP (box 2, LANDED: the lead approved the engine path; the gates ran on the frozen candidate past the box, no new code)
+NOTHING LEFT IN THIS LANE. The code is fd455b8cc's (src identical to the frozen 0a584713a every gate ran on); this commit adds the report
+and the World 1 stills only. Every red below is RED on a frozen a0d85e961 too (each re-run there by name). Next owner of the look:
+BUILD-28 (the island's width 340, its height over the water, the caption), carried by the lead.
+
+## Gates on the frozen candidate (0a584713a = fd455b8cc's src)
+- Suite, 6 shards (the CLAUDE.md list): 1: 679 pass 0 fail. 2: 673/0. 3: 731/2 (artUse.test cage-whole + cage-b; stageSheets.test
+  "2-8: STAGE_DRAWS lists more than it draws": foe:goldsnake). 4: 760/0. 5: 655/1, 2 todo (groundwork.test goals band, "5 stages
+  checked"). 6: 713/2, 1 todo (firstTimerBot.test KID_RUNS_59, R-165.473; puzzleCamera.test "30 moments checked"). TOTAL 4,211 pass,
+  5 fail, 3 todo: all 5 INHERITED (each RED on a frozen a0d85e961, re-run by name).
+- Deploy build (BASE_PATH=/Sloths-Adventure-/) 0: reed-isle-28 ships as 68.50 kB; no asset over 4 MiB. chunkcheck PASS.
+- drawcheck PASS (972 s, under load): the per-frame limits unchanged.
+- lockall --check, ONE run: 102/102 stages unchanged (box 1).
+- CI tool line: engine tools' tests 435 pass / 1 fail (registrycheck.test "the shipped table passes the gate": INHERITED); tipwalk PASS;
+  storyTipScan --check FAIL (2 of 2-8's laid lines: INHERITED, same on a0d85e961); teachFirstScan PASS; registrycheck FAIL (2-8 not in
+  drawcheck scenarios, no proven list, not flown: INHERITED, 2-8 mid-build); tierBots 9/0; kbdcheck PASS; buildcheck FAIL under the
+  suite's load (p95 192 ms), PASS re-run ALONE (normal p95 121, easy 80: budget 150).
+- tsc 0; generalitycheck PASS; artcheck PASS; knowncheck PASS.
+
+## World 1 before/after (the brief's still): w1-cut-before-after-sheet.jpg (upright + sideways, a0d85e961 then this head) and
+w1-cut-before-after-diff-upright.jpg (the stone crop: before, after, the >8 diff). 1-1 layout 1, w1-rock-block-big (platform 7, x 743,
+191x53) with Pokey dropped beside it: the same piece in the same place at the same size. The diff is a 1 px camera offset (every edge,
+the background's too), the petal's pulse and his idle; Dot's tip and the lives badge differ by timing (w1still.mjs here).
 
 ## Done-items
 1. THE PATH (src/game/art/invCut.ts, general: no stage, world, seed or x). Platform.cut names a piece by its catalog id. World 1's own atlas
@@ -46,7 +52,7 @@ of this head (D115: `git worktree add --detach <scratch>/frz <head>`, node_modul
   (its file was origin/t-art-28:...), no breach after.
 - invCut.test.ts 7/7; art tests + w1CutArt + w1Overhang run with this box (invDress.test's message regex now allows the added folder).
 
-## Gates this box (fast ones only; the heavy ones are the next step)
+## Gates box 1 (fast ones)
 tsc 0. generalitycheck PASS (26 literals, 26 known). artcheck PASS. knowncheck PASS. Art tests (src/game/art/*.test.ts + w1CutArt +
 w1Overhang): 41 pass, 0 fail. lockall --check: 102/102 unchanged (above). artUse.test RED, INHERITED (same two on a0d85e961).
 
