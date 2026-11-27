@@ -1,19 +1,29 @@
 # ENG-SIM: the bots ask the GAME how a press flies (R-165.470; packet reference/packets/2026-11-26/ENG-SIM.md on the lead's branch)
 Branch t-eng-sim from origin/release-0.10.3 c73cb9766. Nothing here lands on release-0.10.3, main or a release 5 branch.
 
-## EXACT NEXT STEP (box 6 hand-over): 1a-ii BUILT, TIMED, RULED A (candidate 9133e2b5e, 1.63x the merge); NEXT: its checks, then 1b
+## EXACT NEXT STEP (box 6 hand-over, 8:15 PM ET): THE BOT SWITCH IS PAUSED until Wednesday (Matt's call tonight; its slot went to World 3's pieces)
 Head: the hand-over message's hash (pushed to t-eng-sim, ls-remote confirmed). Nothing lands on release-0.10.3, main or a release branch.
-1. **DONE (box 6): 1a-ii, the run-up on plans, candidate 9133e2b5e** (built from 47ff85629; 'Step 3 box 6' below). Ruling 1 TRIPPED on
-   the first build 70c035eb7 (3.53x the merge: 84 refused run-ups, 602 catch flights) and went to the lead with the numbers BEFORE going
-   on, with option A (an exact prune) measured at 1.60x. **The lead RULED A** (prune the search, not the answer; B refused: it changes
-   play for a cost reason), with the plain-scan equivalence pinned ON THE RUN: done (9133e2b5e, below). Re-timed on 9133e2b5e: 1.63x.
-2. **NEXT, on 9133e2b5e, ONCE each, a chattr-frozen worktree (src/game/gen2/proven writable, R-165.494):** the CI tool line (gates.yml)
-   and the suite in 3 shards (CLAUDE.md's src globs, `split -n l/3` of the sorted list, as box 5), each total in the message; then
-   **rule 28**: every moved bot row traced to the run plan, or the change narrowed. Known moved already: 2-4 child Normal 8's run-up now
-   comes at t 79.2 on log #36 (k 8, press frame 14, caught on frame 21 as the probe said); c24's note had it at t 120.77. The inherited
-   KID_RUNS_59 (shard 0) stays the release line's (box 5's trace) unless its numbers move again: then trace it.
-3. Then 1b (hopFlight + the gate family + the landing stop), 1c, 1d, 1e, 1f in the plan's order (below). The cost check stands per
-   judge: time each against the merge 114944b5b on its own stage and seed before going on; over 3x goes to the lead with the numbers.
+- **Option A's candidate: 9133e2b5e** (built from 47ff85629; the REPORT commits after it change only this file). 1a-ii, the run-up on
+  plans: vineFromLog's run-up is ONE plan (runUpPlan: an unpressed run bounds the press frame; each press frame flown once; the
+  smallest k at which every lag of the thumb's spread catches; the drawn press played verbatim). Its search is pruned, never its
+  answer (firstWindow in src/game/pressPlan.ts, called through runUpFirst). Retired: runUpCatches, runPress, runUp / runUpHold,
+  startJump's run-up hold. **The lead RULED A** (B refused: it changes play for a cost reason).
+- **Cost (ruling 1), 2-4 kid Easy 19 to t 99, median of 3, frozen trees, nothing else on the cores:** the merge 114944b5b 1,215 ms;
+  the seal 47ff85629 1,693 (1.39x); the unpruned build 70c035eb7 4,284 (3.53x: tripped, brought to the lead); **9133e2b5e 1,977 = 1.63x.**
+- **Gates that RAN on 9133e2b5e:** tsc PASS; pressPlan.test firstWindow (every pattern up to 12 frames) GREEN, planted RED; firsttimer.test
+  'the run-up's pruned search gives the plain scan's k on every call of the real run' GREEN (21.6 s), planted RED (k 10 against 9);
+  firsttimer.test :351 'the run-up is ONE plan' GREEN, planted RED (the plan a frame late); hopJudged's two stand toys + lianaRide's
+  'A VINE FROM A LOG' and 'A VINE OVER THE TAIL' 4/4 (on bb5e7fb2d, the same run-up code minus the named search step); **suite shard 0:
+  1,244 tests, 1,243 pass, 1 FAIL = KID_RUNS_59** (measured [14, 13, 17, 18, 5, 5]: box 5's numbers, not moved by 1a-ii; the
+  inherited red, held for Matt R-165.477), 1,107 s.
+- **NOT run (stopped unfinished at the pause, no totals):** the CI tool line (gates.yml line 157), suite shards 1 and 2, rule 28.
+- **FIRST ON WEDNESDAY:** (1) a fresh frozen worktree of 9133e2b5e (chattr src and tools, src/game/gen2/proven writable, R-165.494);
+  (2) the CI tool line and suite shards 1 and 2 (CLAUDE.md's src globs, the sorted list `split -n l/3 -d`: 651 files, 217 / 205 / 229),
+  once each, every total in the message to the lead (CI #93); (3) rule 28: every moved bot row traced to the run plan, or the change
+  narrowed (known moved: 2-4 child Normal 8's run-up now at t 79.2 on log #36, k 8, press frame 14, caught on frame 21 as the probe
+  said; c24's note had it at t 120.77); (4) only then 1b (hopFlight + the gate family + the landing stop), 1c-1f in the plan's order
+  below, each judge timed against the merge 114944b5b before going on (over 3x to the lead with the numbers). If ENG-THUMB or release 5
+  moved the bot code by then, the lead names the base to merge first.
 
 ## Step 3 box 6 (from 7:23 PM ET): 1a-ii, the run-up on plans, built, TIMED, pruned (candidate 9133e2b5e)
 - **The spec (box 5's next step, as given):**
@@ -67,7 +77,7 @@ Head: the hand-over message's hash (pushed to t-eng-sim, ls-remote confirmed). N
 - **Checks on 9133e2b5e (a chattr-frozen worktree, src/game/gen2/proven writable; the four run together on 4 cores):** shard 0: 1,244
   tests, 1,243 pass, **1 FAIL = KID_RUNS_59**, 0 todo, 1,107 s. Rule 28 on it: measured [14, 13, 17, 18, 5, 5], exactly box 5's numbers
   for ENG-THUMB's head 35d5252c2, the merge, 1a-i and the seal: **not moved by 1a-ii** (the inherited red, held for Matt R-165.477).
-  Shards 1 and 2 and the CI tool line: RUNNING at this push (no totals yet: run them once on 9133e2b5e if this box ends first).
+  Shards 1 and 2 and the CI tool line: STOPPED unfinished at the pause (the lead's order), no totals: Wednesday's first job.
 - **Hours (box 6):** the timing harness and the merge / seal baselines 8 min; the run plan 7 min; the over-3x count, the message and
   option A's measure 8 min; firstWindow, its exhaustive test and the :351 toy with both plants 10 min. The spike's 1 h for 1a-ii holds
   for the code; the checks (CI line + shards, about 50 min of wall clock) and rule 28 are box 7's.
