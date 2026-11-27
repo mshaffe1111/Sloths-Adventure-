@@ -24,7 +24,7 @@ import type { Platform, Vine } from '../../types.ts';
 import { buildGen2Stage } from '../pipeline.ts';
 import { LISTED, playFinish } from '../listed.ts';
 import { DRAFT_TABLE, STAGE_TABLE, draftRow } from './stageTable.ts';
-import { W3_ART, W3_CAST, w3Manifest } from './w3.ts';
+import { W3_ART, W3_CAST, W3_LEVEL, w3Manifest } from './w3.ts';
 
 const root = path.join(path.dirname(fileURLToPath(import.meta.url)), '..', '..', '..', '..');
 const DRAFT = '3-1';
@@ -50,8 +50,11 @@ test("the cast rows: World 3's ocelot and jaguar, each a creature kit animal (pr
   assert.deepEqual(W3_CAST.map((c) => c.enemy), ['ocelot', 'jaguar']);
   for (const c of W3_CAST) assert.ok(castDef(c.enemy, 3), `${c.enemy} has World 3's kit def (predators/world3.ts)`);
   assert.deepEqual(w3Manifest().creatures.map((c) => c.id), W3_CAST.map((c) => c.id));
-  // (the way down casts none: no brick of it has an animal socket, so none is laid from the list)
-  for (const q of w3Manifest().sections) assert.ok(!q.sockets.some((k) => k.role === 'enemy'), `${q.id} has no animal socket`);
+  // (the way down casts none: no brick of it has an animal socket, so none is laid from the list. World 3's LEVEL bricks carry the
+  //  ocelot's sockets (KIT-W3b, w3Level.test.ts) and are in the level stages' pools only: never 3-1's)
+  const level = new Set(W3_LEVEL.map((q) => q.id));
+  for (const q of w3Manifest().sections.filter((x) => !level.has(x.id))) assert.ok(!q.sockets.some((k) => k.role === 'enemy'), `${q.id} has no animal socket`);
+  for (const q of W3_LEVEL) assert.ok(q.feel?.length && !q.feel.includes(DRAFT), `${q.id} is never in ${DRAFT}'s pool`);
 });
 
 test('the draft row: 3-1 drafted on World 3\'s kit going down; no game path reads it (not listed, the live 3-1 is the old section maker)', () => {

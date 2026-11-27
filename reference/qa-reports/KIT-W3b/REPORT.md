@@ -4,7 +4,7 @@
 1. Box 2: `git fetch origin +refs/heads/t-kit-w3b:refs/remotes/origin/t-kit-w3b && git checkout -B t-kit-w3b origin/t-kit-w3b`;
    `npm ci --legacy-peer-deps` and `git fetch --unshallow origin` with run_in_background. Candidate: 7be2c37e8 (brick 1, the ocelot
    ground: w3-prowl-floor + w3-prowl-pair in src/game/gen2/worlds/w3.ts W3_LEVEL; counting test src/game/gen2/worlds/w3Level.test.ts,
-   2/2 green in 3.7 s). NOT yet gated, NOT yet landed.
+   2/2 green in 3.7 s; w3.test.ts's cast-rows check scoped to the way down, see Gates). NOT yet gated, NOT yet landed.
 2. ENG-ASKS-b's hash: ReadNotifications first; if the lead has sent it, `git merge --no-edit <hash>` (merge, never rebase) BEFORE any
    dark brick, then switch CODE_32 in w3Level.test.ts to 3-2's ENG-ASKS form (codes-trim.txt: `A Tr1<:#dark Pg1> Pf1<:#dark
    Xc1&<:#dark:&ocelot*1 R Pg1< Wr1&>:#dark:&ocelot*1 R Pc1&<:&ocelot*1 Cg1&>:#dark:&ocelot*2 R Sr1&<:#dark:&ocelot*3 E`) only if
@@ -73,7 +73,10 @@ On World 3's own pool alone (rolls/*-after-w3.txt) 3-2 and 3-3 still cannot be l
   PLANTED RED 2: no level bricks: the C beat refuses by name on at least one roll (World 1-2's stand-ins).
 
 ## Gates (not run this box: the next box runs them ONCE on the frozen candidate, step 5)
-- tsc: clean on 7be2c37e8 (this box). Everything else: NOT RUN.
+- On the head after w3.test's change (below): tsc clean; generalitycheck PASS (26 literals, 26 known); w3.test + w3Noise.test +
+  w3Level.test 19/19. NOT RUN: the CI tool line, the 6 suite shards, lockall, seedlist. (w3.test's cast-rows check 'no brick has an
+  animal socket' tripped on the level bricks, which carry them by design: it now holds every NON-level brick to it (the way down
+  casts none, as before) and adds that no level brick is in 3-1's pool. Its promise is kept, not loosened; the critic may rule.)
 
 ## How to read a roll
 `sed -E 's/^([0-9]+)x (normal|easy) /\1 /; s/node n[0-9]+ "([A-Z])([a-z]?)[^"]*"/node \1\2/; s/at x [0-9]+/at x/; s/[0-9.]+ s with/N s
