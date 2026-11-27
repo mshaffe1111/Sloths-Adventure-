@@ -1,7 +1,30 @@
 # BUILD-29 REPORT: 2-9 "The River King's Court" (the World 2 finale; R-165.449), release 6
 Branch t-build-29, cut from origin/t-eng-29 = 098047713 (the lead's named base). Session 1 started 5:45 PM ET Thu 11/26 (by `date`).
 
-## EXACT NEXT STEP (session 10 hand-over, BUILD-29-j, 10:37 AM ET Fri 11/27 by `date`; head = this commit)
+## EXACT NEXT STEP (session 11, BUILD-29-k, 10:47 AM ET Fri 11/27 by `date`; head = this commit; src UNCHANGED since 1846b25b3)
+ReadNotifications first (D140). Box 11 DID steps 1-3 and 5; 4 and 6 are RUNNING (below):
+1. KID EASY RULING (sent to the lead): LEAVE the lay, named R-165.512. Same metric, castBots --bots kid --setting easy x40 on 1846b25b:
+   2-5 (the only other World 2 stage that lays snappers; 2-7 has none) 4/40, all 40 at the shrine, 96 rescues, 22 hits, 280 kicked / 80
+   left, 206 of 225 stuck spots 'a turtle near' (bots/kid-easy-25-k.txt/.jsonl). 2-9 (j2) 5/40, all at the shrine, 0 hits, 228 kicked / 92
+   left (j's earlier jsonl: 4/40, 77 rescues, 18 hits, 205 of 227 beside a turtle). 2-9 is in line with 2-5, not worse.
+   TRACE, seed 3, the rescue at 225.0 s (bots/kid-easy-2-9-s3-trace-k.txt; probe probes/kid-trace-k.patch + .mts, reverted): the snapper
+   at 23901 patrols facing away, turns HEAD-ON (alert, d -1) at 205.0 s as he closes to about 60 px, and cycles alert/rear/strike/recover
+   facing him for 20 s; the kid presses only left/right, dithers 30-60 px in front, never presses a kick. Cause: HEAD-ON (rule 28), the
+   bot's head-on handling, not the beat or the reach.
+2. FIRST-LOOK STILLS (step 5), layout 1 (builds seed 2) Normal, upright then sideways, from the committed lay (wt at 1846b25b, vite 5199,
+   PW=/opt/node-tools/node_modules/playwright/index.mjs): stills-k/sheet-upright.jpg, sheet-sideways.jpg, 13 spots, one per beat.
+   Draw paths (beats.mts, the built stage): gate/hear/rest banks 'ground' (as 2-5/2-7); hear stones painted rock; logs river art; pads =
+   bouncy moss_stone drawn as a lily pad; the wheel its own art; snappers the turtle sheet; the guard its own sheet ('guard', red ring);
+   barge a log in river art. Nothing in the lay fails the bar. Tool or shared effects, NOT the lay: the opening story bubble stays up
+   (engine paused) and sideways it sits over the ground ahead; lives fall x3 -> x1 across the stills (placed near snappers); x24900 is
+   mid-bounce (placed on the lily pad 24847-24917).
+3. GATES on the frozen worktree (1846b25b; src = candidate): tsc CLEAN; generalitycheck PASS (26 literals, 26 known).
+RUNNING at this stamp (scratchpad, lost if the box is archived): drawcheck (all 22 scenarios incl. 2-9, same limits), the lock as two
+runs (--layouts 16 --out base.json on 7387d089a, then --check on 1846b25b), the 6 shards.
+NEXT: read those three if alive, else re-run them; then the CI tool line, seedlist --check for every list, clipcheck, tierBots; freeze
+per D115 with src/game/gen2/proven/ writable.
+
+## (superseded) EXACT NEXT STEP (session 10 hand-over, BUILD-29-j, 10:37 AM ET Fri 11/27 by `date`; head = this commit)
 ReadNotifications first (D140); the lead has two messages from j to answer (the kid on Easy, below). Box 10 DID steps 1-4, 5 in part:
 1. MERGED t-eng-29 7387d089a (B) at 0419d0736, no conflicts; tsc clean. CI tool line on a FROZEN tree of 0419d0736: 429, 427 pass, 1 fail,
    1 todo (chase bots ENG-B4, inherited). The fail was OURS (registrycheck: 2-9 drawcheck/seeds/flown): all three now in (below).

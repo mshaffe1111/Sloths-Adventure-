@@ -1,0 +1,8 @@
+castBots 2-5, seeds 1-40; the floor 120 s (STAGE-RULES.md:77)
+kid    easy   PASS 4/40; under the floor 0; time median 249.9 s (min 223.1); hits 22 lives 0 (other 22); cleared kick 280; told of traps 0/40; first trap sprung 0/40; traps sprung 0/0; turned back 3; left 80
+        fail 13: shrine rescued x2  (seeds 4,6,8,16,20,22,28,1,5,27,29,35,39)
+        fail 7: shrine rescued x3  (seeds 2,26,3,7,17,31,37)
+        fail 7: shrine rescued x1  (seeds 14,18,9,11,15,19,33)
+        fail 5: shrine rescued x4  (seeds 12,24,36,38,25)
+        fail 3: shrine rescued x5  (seeds 30,40,21)
+        fail 1: shrine rescued x7  (seeds 13)

@@ -1,0 +1,13 @@
+const { RealPlay } = await import('/home/user/Sloths-Adventure-/src/game/realPlay.ts');
+const { setDifficulty } = await import('/home/user/Sloths-Adventure-/src/game/difficulty.ts');
+setDifficulty(process.argv[3] as any);
+const r = new RealPlay('2-9', Number(process.argv[2]));
+const g: any = (r.stage as any).gen2 ?? (r.stage as any).proto?.gen2;
+console.log('keys', Object.keys(g ?? {}).join(','));
+const secs = g?.sections ?? g?.placed ?? g?.laid ?? [];
+console.log(Object.keys(secs[0]).join(','));for (const s of secs) console.log((s.template?.id ?? s.template), Math.round(s.x ?? s.x0 ?? 0), s.nodeId ?? s.node, s.beat ?? s.phase ?? '');
+const st: any = r.stage; console.log('width', st.width ?? st.length, 'enemies', (r.e as any).enemies.map((m: any) => `${m.type}${m.royal ? 'R' : ''}@${Math.round(m.x)}`).join(' '));
+const E: any = r.e; const X = Number(process.argv[4] ?? 24900);
+for (const q of E.platforms) if (q.x <= X + 150 && q.x + q.width >= X - 150) console.log('plat', q.type, q.style ?? '', Math.round(q.x), Math.round(q.y), Math.round(q.width), q.decorative ? 'deco' : '');
+for (const k of ['lianas', 'vines', 'ropes']) for (const v of (E[k] ?? E.currentStage?.[k] ?? [])) if (Math.abs((v.x ?? v.anchorX ?? 0) - X) < 200) console.log(k, JSON.stringify(v).slice(0, 160));
+for (const m of E.enemies.concat(E.critters ?? [])) if (Math.abs(m.x - X) < 400) console.log('foe/critter', m.type, Math.round(m.x), Math.round(m.y));

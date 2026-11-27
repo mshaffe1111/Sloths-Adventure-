@@ -1,0 +1,20 @@
+diff --git a/tools/inspect/firsttimer.ts b/tools/inspect/firsttimer.ts
+index ce0d3ea0c..87114780e 100644
+--- a/tools/inspect/firsttimer.ts
++++ b/tools/inspect/firsttimer.ts
+@@ -5396,6 +5396,7 @@ export class FirstTimerRun {
+       if (Math.hypot(q.x - p.x, q.y - p.y) < 160) continue;
+       const f = this.floorAt(q.x, q.y - 2, 8);
+       if (!f || f.type === 'fragile') continue;
++      if (process.env.K_RESCUE) { const fs = (this.e.enemies as any[]).filter((m) => m.type === 'turtle' && Math.abs(m.x - p.x) < 400).map((m) => ({ x: Math.round(m.x), y: Math.round(m.y), st: m.state, stT: +(m.stateT ?? 0).toFixed(2), vx: Math.round(m.vx ?? 0), dir: m.dir ?? m.facing, def: !!m.defeated, royal: !!m.royal, patrol: m.patrolL !== undefined ? [Math.round(m.patrolL), Math.round(m.patrolR)] : undefined })); process.stderr.write(`RESCUE t ${this.t.toFixed(2)} p ${Math.round(p.x)},${Math.round(p.y)} g${+p.grounded} face ${p.facing} vx ${Math.round(p.vx)} lives ${this.e.lives} inv ${(p.invincibleTimer ?? 0).toFixed(2)} stuck ${JSON.stringify(this.stuckOpen)} foes ${JSON.stringify(fs)}\n`); }
+       this.rescues++;
+       this.rescueXs.push(Math.round(p.x));
+       this.lastRescue = i;
+@@ -5687,6 +5688,7 @@ export class FirstTimerRun {
+         this.wasSwinging = sw;
+       }
+       if (TRACE_FRAMES && this.t > TRACE_FRAMES[0] && this.t < TRACE_FRAMES[1]) process.stderr.write(`    f ${this.t.toFixed(2)} ${Math.round(this.sim.p.x)},${Math.round(this.sim.p.y)} g${+this.sim.p.grounded} vx${Math.round(this.sim.p.vx)} pad ${JSON.stringify(pad)} on ${this.e.standingOnId}\n`);
++      if (process.env.K_WATCH && this.frames % 6 === 0) { const [a, b] = process.env.K_WATCH.split(',').map(Number); if (this.t > a && this.t < b) { const P = this.sim.p; const m = (e.enemies as any[]).filter((q) => q.type === 'turtle' && !q.defeated).sort((q, r) => Math.abs(q.x - P.x) - Math.abs(r.x - P.x))[0]; process.stderr.write(`W ${this.t.toFixed(1)} p ${Math.round(P.x)} vx ${Math.round(P.vx)} f ${P.facing} g${+P.grounded} att ${(P as any).attackTimer?.toFixed?.(2) ?? (P as any).attacking ?? '-'} pad ${JSON.stringify(pad)} | T ${m ? `${Math.round(m.x)} ${m.state} ${(+m.stateT).toFixed(1)} vx ${Math.round(m.vx)} d ${m.dir ?? m.facing}` : '-'}\n`); } }
+       this.frames++;
+       e.guideView(this.view);
+       this.dot.tick(this.view, this.t, (tp) => this.far(tp));
