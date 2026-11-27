@@ -39,3 +39,9 @@ FIRST (Friday morning): INT-R5 (release 5), KIT-W3a (down c/b), KIT-W3b (ocelot 
 ENG-SPORE landing as their lanes finish; then ENG-ROOT and ENG-MOON; BUILD-31 the moment its roll is clean with every piece landed; BUILD-32
 after ENG-ROOT. 2-8 and 2-9's builds keep a slot each until World 2 is done (Saturday). Honest target (told to Matt): 3-1 to 3-4 by Sunday
 night; 3-5 to 3-9 by mid next week (no tokens Mon-Tue).
+
+## ADDED 11-26 9:45 PM ET: ENG-CUT (a cut-piece sheet for ANY world on Platform.cut)
+2-8's reed island (t-art-28) has NO draw site: the only cut-piece hook is World 1's (Platform.cut -> w1CutArt.ts W1_CUT). Every World 3
+cut piece (ART-W3's puffball, moonflowers, lamp, guarana, thorn-vine liana; and any w3-next cut the audit called 'nothing missing') needs the
+same path. ENG-CUT (session_01FhBbYMwGKj4oBjAEW1669C, started 11-26) builds it on t-eng-cut; every art lane names its DRAW PATH (existing,
+or ENG-CUT) before it paints, and the audit's 'art: nothing missing' rows are re-read against a draw path, not only the inventory.
