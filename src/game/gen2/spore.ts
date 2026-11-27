@@ -15,9 +15,12 @@ type Light = NonNullable<Zone['lights']>[number];
  *  'warning too short' judges it (no clamp hides a bad one) */
 export function sporeZoneOn(shelf: Pick<Platform, 'x' | 'y' | 'width'>, z: Omit<Extract<SectionZone, { kind: 'spore' }>, 'on' | 'kind'>, roll: () => number): Zone {
   const period = z.period ?? SPORE.period, warn = z.warn ?? SPORE.warn, active = z.active ?? SPORE.active;
+  // (a patch on part of its piece: `span`, a share of it; none, the whole piece)
+  const [a, b] = z.span ?? [0, 1];
+  const x0 = Math.round(shelf.x + shelf.width * a), x1 = Math.round(shelf.x + shelf.width * b);
   return {
-    kind: 'spore', x0: shelf.x, x1: shelf.x + shelf.width, top: shelf.y - SPORE_BOX.up, bottom: shelf.y + SPORE_BOX.down, baseY: shelf.y, dir: 1,
-    period, warn, active, offset: Math.round(roll() * period * 10) / 10, force: 0, emit: [Math.round(shelf.x + shelf.width / 2)],
+    kind: 'spore', x0: z.span ? x0 : shelf.x, x1: z.span ? x1 : shelf.x + shelf.width, top: shelf.y - SPORE_BOX.up, bottom: shelf.y + SPORE_BOX.down, baseY: shelf.y, dir: 1,
+    period, warn, active, offset: Math.round(roll() * period * 10) / 10, force: 0, emit: [Math.round(z.span ? (x0 + x1) / 2 : shelf.x + shelf.width / 2)],
   };
 }
 

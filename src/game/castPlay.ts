@@ -16,13 +16,14 @@ import { TRAP, handleBox, limbGone, newTrap, scares, shake, stepTrap, type TrapS
 import { bellNoise, landingNoise, newFall, stepFall, type Sound } from './heroNoise.ts';
 import { DROWSY, GONE_AFTER, beat, coolOf, foodChain, hear, hurt, landed, newPredator, reachBox, sparedPass, stepPredator, tellOf, touches, FLEE_OFF } from './predators/core.ts';
 import { castDef } from './predators/registry.ts';
-import { stepLures, type LurePost } from './predators/lure.ts';
+import { lureGates, stepLures, type LurePost } from './predators/lure.ts';
 import { TAUGHT } from './predators/roster.ts';
 import type { Box, PredatorDef, PredatorState, Prey, Scene, Way } from './predators/types.ts';
 import { STILLNESS, calm, inCover, isStill, moving, newStill, stepStill, type Cover } from './stillness.ts';
 import { SNAG_PERCH } from './sweepPose.ts';
 import type { Enemy, Platform } from './types.ts';
 import type { StageClock } from './clock.ts';
+import type { Zone } from './zones.ts';
 
 /** how a chased-off animal is shown leaving, on top of the kit's own run: it lifts a little, then glides out and down to a lower tree */
 export const GLIDE = { far: 170, lift: 30, drop: 150 } as const;
@@ -105,8 +106,14 @@ export class CastPlay {
   readonly sounds: readonly SoundPost[];
   /** the events made since the last step (take()): the step hears them, in order, after his landing */
   private made: CastEvent[] = [];
+  /** the stones rung since the last step, and where (ring) */
+  private rung: Array<{ i: number; x: number }> = [];
+  /** who each stone's last ring called (hums) */
+  private readonly called = new Map<number, Array<{ s: PredatorState }>>();
   /** the stage's lure targets (predators/lure.ts) */
   private readonly lures: readonly LurePost[];
+  /** each lure target's gate this step (predators/lure.ts lureGates: a zone post opens on its zone's cloud) */
+  private readonly gates: (t: number) => readonly boolean[];
   /** the stage teaches the freeze, and its first one has not come yet (CastData.teachStill: the first is the moment wherever he stands) */
   private teachStill: boolean;
   private readonly out: CastStep = { noticed: [], told: [], struck: [], spared: [], hurts: [], cleared: [], fell: [], froze: [], landed: null, heard: [], woke: 0 };
@@ -117,12 +124,13 @@ export class CastPlay {
    * `enemies`: the stage's animals as the engine holds them; each of a kind the cast names (and the kit knows, as it plays in this
    * `world`) gets its kit state, on the ground under it. The rest are left to the engine.
    */
-  constructor(data: CastData, enemies: Enemy[], platforms: readonly Platform[], world: number, covers: readonly Cover[] = []) {
+  constructor(data: CastData, enemies: Enemy[], platforms: readonly Platform[], world: number, covers: readonly Cover[] = [], zones: readonly Zone[] = []) {
     this.covers = covers;
     this.ground = platforms;
     this.loud = data.landing ?? TAUGHT.landing <= world;
     this.punchLoud = TAUGHT.noise <= world;
     this.lures = data.lures ?? [];
+    this.gates = lureGates(this.lures, zones);
     this.sounds = (data.sounds ?? []).filter((p) => Number.isFinite(p.x) && Number.isFinite(p.y));
     this.teachStill = !!data.teachStill;
     this.traps = data.traps.filter((p) => Number.isFinite(p.x) && Number.isFinite(p.loadX)).map(newTrap);
@@ -206,6 +214,9 @@ export class CastPlay {
       this.made = [];
       for (const e of made) this.reach(e);
     }
+    // (who each ring just called: drawn to the stone's own spot)
+    for (const r of this.rung) this.called.set(r.i, this.members.filter((m) => m.s.drawn && m.s.goalX === r.x));
+    this.rung.length = 0;
 
     // the traps: one that comes down chases off what stands beside it
     for (const tr of this.traps) {
@@ -220,7 +231,7 @@ export class CastPlay {
     sc.dt = dt;
     sc.easy = easy;
     foodChain(this.members, t);
-    if (this.lures.length) stepLures(this.members, this.lures, t);
+    if (this.lures.length) stepLures(this.members, this.lures, t, this.gates(t));
     for (const m of this.members) {
       if (m.s.phase !== 'gone') {
         // (an animal on a stage clock reads it each step; one with none has no beat. Before ENG-25 no animal was handed a clock, so an
@@ -293,10 +304,20 @@ export class CastPlay {
   /** sounding thing `i` makes its noise at its place now (a blow landed on it, or the stage fired it): the noise made, or null */
   ring(i: number, t: number): Sound | null {
     const p = this.sounds[i];
-    if (!p) return null;
+    if (!p || this.hums(i)) return null;
     const n = bellNoise(p.x, p.y, t);
     this.noise(n);
+    this.rung.push({ i, x: n.x });
     return n;
+  }
+
+  /**
+   * ONE RING PER CALL (3-3.md NEW 1 (a)): a stone once rung hums, and cannot ring again until every animal its ring called is off the
+   * call: no longer drawn, and back on its round at rest, or gone. (A bell heard again resets a drawn animal's look, core.ts hear, so a
+   * stone rung every few seconds would hold its animal under it for good and the timing would vanish.)
+   */
+  hums(i: number): boolean {
+    return (this.called.get(i) ?? []).some((m) => m.s.drawn || (m.s.phase !== 'rest' && m.s.phase !== 'gone'));
   }
 
   /** this animal's act just took a heart (the engine's hurt): one act, one heart, it pulls up (core.ts landed) */

@@ -1,3 +1,4 @@
+import { drawChimes } from './chimeArt.ts';
 import { applySetting } from './settingDials.ts';
 import { buzz } from './haptics.ts';
 import { nativeApp } from './appShell.ts';
@@ -4778,7 +4779,7 @@ export class GameEngine {
     const world = this.currentStage.config.worldIndex;
     // (the covers: the stage's hides, and every mossy liana as cover while he holds it, 1-7 NEW 6)
     const ropes = this.vines.filter((v) => v.mossy).map((v) => ({ x: 0, w: 0, y: 0, rope: v.id }));
-    this.cast = this.proto?.cast ? new CastPlay(this.proto.cast, this.enemies, this.platforms, world, [...(this.proto.bushes ?? []), ...ropes]) : null;
+    this.cast = this.proto?.cast ? new CastPlay(this.proto.cast, this.enemies, this.platforms, world, [...(this.proto.bushes ?? []), ...ropes], this.currentStage.zones ?? []) : null;
     this.swingLenWas = NaN;
     this.quietId = -1;
     this.quietWas = false;
@@ -7792,6 +7793,8 @@ export class GameEngine {
     }
 
     // the stage's drop traps (castArt.ts): behind the animals they hang over
+    // the stage's chime stones (chimeArt.ts, a code-drawn stand-in): lit and humming while their call is out
+    if (this.cast?.sounds.length) drawChimes(ctx, this.cast.sounds, (i) => this.cast!.hums(i), this.gameTime, (x, y) => this.onScreen(x, y, 200));
     if (this.cast?.traps.length) drawTraps(ctx, this.cast.traps, this.gameTime, (x, y) => this.onScreen(x, y, 500), this.platforms, (c, pl) => drawBranchArt(c, pl, 'creak', 0));
     // (the stage's runtime pieces that draw behind him: pieces/index.ts, layer 'world')
     if (this.pieces.length) drawPieces(this.pieces, ctx, 'world', this.pieceHost);

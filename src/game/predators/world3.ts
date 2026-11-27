@@ -19,9 +19,10 @@ export const OCELOT: PredatorDef = {
   engage: 150, tell: 0.5, callsOff: true, act: { aim: 'ahead', seconds: 0.36, speed: 400, reach: 44, tall: 28 }, recover: 0.4, cool: 1.6, giveUp: 3,
   // the leap: 3-2.md's aim 'up' and tall 130; its time, speed and reach are its pounce's (no number of its own until 3-2 tunes it)
   leap: { aim: 'up', seconds: 0.36, speed: 400, reach: 44, tall: 130 },
+  fears: ['spore'],
   easy: EASY,
   beatenBy: {
-    still: { ends: 'flees', seconds: 5 }, trap: { ends: 'chasedOff' }, drum: { ends: 'stunned', seconds: 3 },
+    still: { ends: 'flees', seconds: 5 }, trap: { ends: 'chasedOff' }, lure: { ends: 'chasedOff' }, drum: { ends: 'stunned', seconds: 3 },
     punch: { ends: 'stunned', seconds: 1.5 }, light: { ends: 'flees', seconds: 6 },
   },
   first: 'still',

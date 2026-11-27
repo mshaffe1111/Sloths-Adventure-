@@ -25,6 +25,8 @@
  */
 import { G } from '../../protoStage.ts';
 import { DARK_EMIT, DARK_GLOW_PROPS, darkEnds } from '../dark.ts';
+import { lureEmitters, lureProps, type LureRow } from '../lureLay.ts';
+import { soundEmitters, soundProps, type SoundRow } from '../soundLay.ts';
 import type { HazardDef, HazardLay } from '../nodeAsks.ts';
 import type { CreatureDef, NodeJob, SectionTemplate, Socket, WorldKit, WorldManifest } from '../types.ts';
 import { W1_KIT } from './w1.ts';
@@ -288,6 +290,29 @@ export const W3_HAZARDS: readonly HazardDef[] = [
   { id: 'soft', clocks: { moon: { zone: 'moon', zones: ['moon'] } } },
 ];
 
+// ───────────────────────────── the call: the chime stone and the spore patch (3-3, ENG-LURE)
+
+/**
+ * World 3's sounding things (gen2/soundLay.ts): the chime stone, a squat grotto stone he punches (3-3.md NEW 1 (a)). Its box is about
+ * Pokey's knee to his chest (89.1 px tall: 60 x 70 px). A blow on it sends ONLY its bell (engine.ts strike), and once rung it hums until
+ * every animal it called is back on its round (castPlay.ts hums: one ring per call). Its look: chimeArt.ts (a code-drawn stand-in until
+ * ART-W3's painted stone). A section lays one with `soundSocket(id, piece, t)`.
+ */
+export const W3_SOUNDS: Readonly<Record<string, SoundRow>> = {
+  'w3-chime': { w: 60, h: 70, looks: ['chime'] },
+};
+
+/**
+ * World 3's lure targets (gen2/lureLay.ts): the spore patch, a post that stands for the spore cloud (OCELOT.fears, predators/world3.ts).
+ * It works only while the cloud over it has been out over DROWSY_MIN for 0.3 s (predators/lure.ts lureGates), so its section lays it
+ * inside a 'spore' zone (gen2/spore.ts). Its reach is about one Pokey along the ground (90 px): an ocelot called to look under the stone
+ * beside it stands inside it. Its look is the puff's own (the spore zone's mushroom and cloud). A section lays one with
+ * `lureSocket(id, piece, t, 'spore')` on the patch's piece.
+ */
+export const W3_LURE: Readonly<Record<string, LureRow>> = {
+  'w3-patch': { fear: 'spore', reach: 90, looks: ['patch'] },
+};
+
 // ───────────────────────────── the manifest and the kit ─────────────────────────────
 
 /**
@@ -303,7 +328,7 @@ export function w3Manifest(): WorldManifest {
     rollRanges: W1_KIT.rollRanges,
     corridor: { top: G - 260, bottom: G + 60, soft: 80 },
     themeShare: [1, 1],
-    creatures: [...W3_CAST], props: [...DARK_GLOW_PROPS], pairs: [], decor: [],
+    creatures: [...W3_CAST], props: [...DARK_GLOW_PROPS, ...soundProps(W3_SOUNDS), ...lureProps(W3_LURE)], pairs: [], decor: [],
     flowers: ['orchid', 'hibiscus'],
     sections: [...W3_DOWN, ...W3_LEVEL],
     handBuilt: [],
@@ -314,7 +339,8 @@ export function w3Manifest(): WorldManifest {
   };
 }
 
-/** World 3's kit: its manifest, and the dark's emitters (gen2/dark.ts: the glowworms' stretch; the spores come with their own piece) */
+/** World 3's kit: its manifest, the dark's emitters (gen2/dark.ts: the glowworms' stretch; the spores come with their own piece), the
+ *  chime stone's and the spore patch's (the call, 3-3) */
 export function w3World(): WorldKit {
-  return { manifest: w3Manifest(), emit: { ...DARK_EMIT } };
+  return { manifest: w3Manifest(), emit: { ...DARK_EMIT, ...soundEmitters(W3_SOUNDS), ...lureEmitters(W3_LURE) } };
 }

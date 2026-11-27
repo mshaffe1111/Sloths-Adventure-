@@ -498,7 +498,9 @@ export interface LocalRoomSpec extends Omit<RoomSpec, 'left' | 'right' | 'beyond
  */
 export type SectionZone =
   | { kind: 'tide'; on: string; low?: Range; warn?: number; active?: number; force?: number }
-  | { kind: 'spore'; on: string; period?: number; warn?: number; active?: number }
+  /** (`span`: the patch's share of its piece, [from, to] in 0..1 along it; none, the whole piece. A patch on part of a floor lets an
+   *  animal stand on the rest and walk its round onto the patch: 3-3's lure, predators/lure.ts) */
+  | { kind: 'spore'; on: string; period?: number; warn?: number; active?: number; span?: [number, number] }
   | { kind: 'wind'; on: string; dir?: 1 | -1; idle?: Range; active?: number; force?: number };
 
 /** a tide zone's defaults (zones.ts tideRecipes): a long low spell, a rise you can see coming, high water */
