@@ -749,6 +749,10 @@ function rolledGraph(budget: StageBudget, M: WorldManifest, seed: number): Missi
     for (const n of nodes) n.count = quiet(n) ? 1 : got[work.indexOf(n)];
   }
   const deal = dealContent(nodes, M, brief, budget, r, seed);
+  // (R-165.541: a node whose code writes a content letter is that letter's type, every slot of it, whatever its job: a signature sits
+  // outside the mix and was left untyped, so its slots took any kind its job holds and the ask named the miss. A letterless node stays
+  // free; a letter with no type (a Later block) is named by the asks)
+  for (const n of nodes) { const t = n.asked?.content ? TYPE_OF_LETTER[n.asked.content] : undefined; if (t) n.content = t; }
   // (the count was written after the type until the deal came to read it; a node's record keeps that order of fields, so the
   // stage lock's fingerprint of a built stage's graph is the one it always was)
   for (const n of nodes) if (n.count !== undefined) { const c = n.count; delete n.count; n.count = c; }
@@ -808,10 +812,10 @@ function poolFits(V: PoolView): (t: SectionTemplate, n: MissionNode, i: number) 
       if (n.job !== 'reward' || !t.phases.includes(n.phase)) return false;
     } else if (n.job === 'teach') {
       if (!(n.teaches ? t.teaches === n.teaches : !!t.teaches)) return false;
-      if (n.content && t.content && t.content !== n.content) return false;
+      if (!typeFits(t, n, 0)) return false;
     } else {
       if (t.teaches && teachAt.has(t.teaches) && !taught(t.teaches)) return false;
-      if (n.content && t.content && t.content !== n.content) return false;
+      if (!typeFits(t, n, 0)) return false;
       if (n.job === 'fork' || n.job === 'reward') { if (!t.jobs?.includes(n.job)) return false; }
       else if (!(n.job && t.jobs ? servesJob(t.jobs, n.job) : t.phases.includes(n.phase))) return false;
     }
@@ -832,6 +836,14 @@ function poolFits(V: PoolView): (t: SectionTemplate, n: MissionNode, i: number) 
  */
 const SERVED_BY: Partial<Record<NodeJob, readonly NodeJob[]>> = { pressure: ['pressure', 'practise', 'flow'] };
 export const servesJob = (jobs: readonly string[] | undefined, job: NodeJob): boolean => !!jobs && (SERVED_BY[job] ?? [job]).some((j) => jobs.includes(j));
+
+/**
+ * Whether a section's type may fill a node's slot (R-165.541): a node the deal typed takes no section of another type (one with no
+ * type may), and loosened (`loose` above 0) takes any; a node whose CODE writes a content letter takes only a section of exactly that
+ * type, at every loosening, so a slot is never quietly another kind: with none left the lay refuses by name. A node with no type is free.
+ */
+const typeFits = (t: SectionTemplate, n: MissionNode, loose: number): boolean =>
+  !n.content ? true : n.asked?.content ? t.content === n.content : loose > 0 || !t.content || t.content === n.content;
 
 /** the jobs a content node holds (NODES.md §7.1: structural nodes, and the signature, sit outside the mix) */
 const CONTENT_JOBS: ReadonlySet<NodeJob> = new Set(['teach', 'practise', 'fork', 'flow', 'combine', 'climb', 'descent', 'twist', 'test']);
@@ -2290,10 +2302,11 @@ export function layStage(budget: StageBudget, graph: MissionGraph, kit: WorldKit
   const jobFits = (t: SectionTemplate, n: MissionNode, loose: 0 | 1 | 2) => {
     if (!n.job) return t.phases.includes(n.phase);
     // (a teach node with no move named, a brief that names none: any section that teaches a move not yet taught)
-    if (n.job === 'teach' && loose < 2) return (n.teaches ? t.teaches === n.teaches : !!t.teaches && !taught.has(t.teaches)) && !(loose === 0 && n.content && t.content && t.content !== n.content);
+    if (n.job === 'teach' && loose < 2) return (n.teaches ? t.teaches === n.teaches : !!t.teaches && !taught.has(t.teaches)) && typeFits(t, n, loose);
     if (t.teaches && teachHere.has(t.teaches) && !taught.has(t.teaches)) return false;
-    // (the deal's type: a section of another type never fills a typed node; one with no type may)
-    if (loose === 0 && n.content && t.content && t.content !== n.content) return false;
+    // (the deal's type: a section of another type never fills a typed node; one with no type may. A lettered node holds its type at
+    // every loosening, typeFits)
+    if (!typeFits(t, n, loose)) return false;
     // (a fork is two roads: only a section that names the job; loosened all the way, the node is a plain practise by its phase)
     if (n.job === 'fork' && loose < 2) return !!t.jobs?.includes('fork');
     // (and the H node is the stage's find: only a section that names the job)
@@ -2434,6 +2447,14 @@ export function layStage(budget: StageBudget, graph: MissionGraph, kit: WorldKit
     if (!cands.length && n.job) {
       cands = M.sections.filter((t) => fits(t, n, i, 2) && !must.some((r) => r.section === t.id));
       if (cands.length) lastLoose = `${n.id} ${n.job}: no ${n.mustRise ? 'rising section (V19) ' : 'section for the job '}left, filled by its phase`;
+    }
+    if (!cands.length && n.asked?.content && n.content) {
+      // (a lettered node, typeFits: no section of its letter fits the slot; never filled with another kind. Named: the pool has none of
+      // the type for the job, or those it has are spent or barred here)
+      const L = n.asked.content;
+      const ofType = M.sections.filter((t) => t.content === n.content && jobFits(t, n, 2));
+      const spent = ofType.filter((t) => (used.get(t.id) ?? 0) >= (t.maxPerStage ?? M.graphs?.maxPerStage ?? Infinity)).length;
+      throw new Error(`gen2 ${budget.id}: node ${n.id} asks '${L}' (${n.content}): ${ofType.length ? `no ${L} section left for slot ${i + 1} (${ofType.length} in the pool${spent ? `, ${spent} laid already` : ''})` : `no ${L} section in the pool`}`);
     }
     if (!cands.length) {
       // (the hard no-repeat's own failure, named: every section that would fit here is already laid)
