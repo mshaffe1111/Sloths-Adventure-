@@ -869,6 +869,21 @@ test("going down, a bridge started a hop past a vine's top that misses the end's
   assert.equal(new Set(cs.map((c) => `${c.x},${c.y},${c.w}`)).size, cs.length, 'no catch is laid twice');
 });
 
+test("going down, no two catches overlap at one height: a later, wider catch takes the place of the one it covers and is trimmed off the storey it runs onto (ENG-CATCH-b's toy, ENG-CATCH-g)", () => {
+  const W = 1280, FLOOR = 1481;
+  // (the toy above: the mend's catch 536-716 lay over the lay's bridge 654-716 and 18 px over the storey 136-554, all at y 1256: two
+  //  planks drawn over each other, an end cap in the middle of a plank)
+  const vine = { id: 1, x: 554, topY: 1256, bottomY: FLOOR, swaySpeed: 1, swayPhase: 0, vineType: 'tree_climb' } as Vine;
+  const base = [solid(650, 1000, 269, 1), solid(136, 1256, 418, 2), solid(0, FLOOR, W, 3)];
+  const cs = towerCatches('down', base, [vine], FLOOR, W);
+  const wood = [...base.map((p) => ({ x: p.x, y: p.y, w: p.width })), ...cs];
+  const over = cs.flatMap((c) => wood.filter((q) => q !== c && Math.abs(q.y - c.y) <= 1 && q.x < c.x + c.w && q.x + q.w > c.x).map((q) => `${c.x}-${c.x + c.w} over ${q.x}-${q.x + q.w} at y ${c.y}`));
+  assert.deepEqual(over, [], `no catch lies over other wood at its height: ${JSON.stringify(cs)}`);
+  const all = [...base, ...cs.map((c, k) => solid(c.x, c.y, c.w, 100 + k))];
+  assert.ok(cs.some((c) => c.x <= 626 && c.x + c.w >= 626 && c.y > 1000 && c.y <= 1000 + TOWER.see), `the shelf's end is still caught under its fall line: ${JSON.stringify(cs)}`);
+  assert.deepEqual(towerFalls('down', all, FLOOR, W), [], 'no blind drop is left');
+});
+
 test("going down, a bridge started a hop past a vine's top that reaches the end's fall line is laid as before (a clean lay is never touched, ENG-CATCH-b)", () => {
   const W = 1280, FLOOR = 1481;
   // (the same tower, the shelf moved right: its left end's fall line, x 726, lies past the hop, so the bridge from the storey caught it

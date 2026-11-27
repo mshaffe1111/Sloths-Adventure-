@@ -308,6 +308,8 @@ export function openEnds(platforms: readonly Platform[], floorY: number, most: n
   return out;
 }
 
+/** the pieces the last towerCatches refused, each by name, for lying over other wood at their height (fit, ENG-CATCH-g) */
+export const overlapRefused: string[] = [];
 /**
  * The catch boughs a tower's open ends are owed (each `[x, y, w]`, a plain bough): under every end whose fall is past the tower's
  * limit (going up TOWER.fall; going down TOWER.see, where the bough is the landing he can see). In this order:
@@ -327,6 +329,7 @@ export function towerCatches(flow: 'up' | 'down', platforms: readonly Platform[]
   keepOut: ReadonlyArray<{ x0: number; x1: number; y0: number; y1: number }> = [],
   /** going down, the column's turn vines by id and the storeys each joins (pipeline.ts turns): the catch each hands on (downInvariant) */
   turns: ReadonlyArray<{ id: number; from: number; to: number }> = []): Array<{ x: number; y: number; w: number; level: number }> {
+  overlapRefused.length = 0;
   const first = layCatches(false, flow, platforms, vines, floorY, width, gaps, level, sealed, keepOut, turns);
   if (flow !== 'down') return first;
   // (going down, a lay that leaves a blind drop is laid once more with every bridge reaching under the fall line it is laid for; a lay
@@ -387,8 +390,36 @@ function layCatches(cover: boolean, flow: 'up' | 'down', platforms: readonly Pla
   //  top, missing the end's fall line, was laid again on each of the lay's 10 passes, and the mend's catch under that line made the
   //  lay 12 catches of 3 (tower.test.ts, ENG-CATCH-b's toy), ENG-CATCH-f)
   const already = (x0: number, x1: number, y: number, but?: Platform) => all.some((q) => q !== but && q.type === 'solid' && Math.abs(q.y - Math.round(y)) <= 1 && q.x <= Math.round(x0) && q.x + q.width >= Math.round(x1));
+  // (NO TWO CATCHES OVERLAP AT ONE HEIGHT: wood across solid wood at its height (|dy| <= 1) is never laid over it, so no two planks
+  //  are drawn over each other and no end cap shows in the middle of a plank. A piece put wholly over laid pieces takes their place; one
+  //  that only partly overlaps wood is trimmed to the open span under the fall line it serves (MEND.trim px of it at the least), else
+  //  REFUSED by name (overlapRefused); a piece moved (the mend's remedy 1, reLay) never moves onto other wood. The mend's catch 536-716
+  //  lay over the lay's bridge 654-716 and 18 px over the storey 136-554 (tower.test.ts, ENG-CATCH-b's toy), ENG-CATCH-g)
+  const overlaps = (x0: number, x1: number, y: number, but?: Platform) => all.filter((q) => q !== but && q.type === 'solid' && Math.abs(q.y - Math.round(y)) <= 1 && q.x < Math.round(x1) && q.x + q.width > Math.round(x0));
+  const fit = (x0: number, x1: number, y: number, at: number): { a: number; b: number; take: Platform[] } | { why: string } => {
+    const X0 = Math.round(x0), X1 = Math.round(x1), ov = overlaps(X0, X1, y);
+    const inside = (q: Platform, u: number, v: number) => laid.includes(q) && q.x >= u && q.x + q.width <= v;
+    const cut = ov.filter((q) => !inside(q, X0, X1));
+    if (!cut.length) return { a: X0, b: X1, take: ov };
+    let open: Array<[number, number]> = [[X0, X1]];
+    for (const q of cut) open = open.flatMap(([u, v]): Array<[number, number]> => [[u, Math.min(v, q.x)], [Math.max(u, q.x + q.width), v]].filter(([s, t]) => t > s) as Array<[number, number]>);
+    const span = open.find(([u, v]) => u <= at && at <= v && v - u >= MEND.trim);
+    if (!span) return { why: `overlap: ${X0}-${X1} at y ${Math.round(y)} lies over ${cut.map((q) => `${q.x}-${q.x + q.width}`).join(', ')} and no open span of ${MEND.trim} px is left under its fall line x ${Math.round(at)}` };
+    return { a: span[0], b: span[1], take: ov.filter((q) => inside(q, span[0], span[1])) };
+  };
+  /** the pieces the last put took the place of, each with where it was (undone by the mend's keep) */
+  let took: Array<{ q: Platform; j: number; c: { x: number; y: number; w: number; level: number }; s: { x: number; y: number }; i: number }> = [];
   const put = (x0: number, x1: number, y: number, L: number): boolean => {
+    took = [];
     if (already(x0, x1, y)) return false;
+    const f = fit(x0, x1, y, serving.x);
+    if ('why' in f) { overlapRefused.push(f.why); return false; }
+    for (const q of f.take) {
+      const j = laid.indexOf(q), i = all.indexOf(q);
+      took.push({ q, j, c: out[j], s: served[j], i });
+      laid.splice(j, 1); out.splice(j, 1); served.splice(j, 1); all.splice(i, 1); lv.delete(q);
+    }
+    [x0, x1] = [f.a, f.b];
     const c = { x: Math.round(x0), y: Math.round(y), w: Math.round(x1 - x0), level: L };
     out.push(c);
     const p = { id: -1 - out.length, x: c.x, y: c.y, width: c.w, height: 24, type: 'solid' } as Platform;
@@ -487,7 +518,8 @@ function layCatches(cover: boolean, flow: 'up' | 'down', platforms: readonly Pla
     let added = 0;
     for (const e of ends) {
       // (an earlier bough of this pass may already catch it)
-      if (catchUnder(all, e.x, e.p.y, most) !== undefined) continue;
+      // (nor an end of a piece another has since taken the place of)
+      if (!all.includes(e.p) || catchUnder(all, e.x, e.p.y, most) !== undefined) continue;
       serving = { x: e.x, y: e.p.y };
       const Le = lv.get(e.p) ?? 0;
       const leftEnd = e.x < e.p.x;
@@ -621,6 +653,8 @@ function layCatches(cover: boolean, flow: 'up' | 'down', platforms: readonly Pla
         const p = laid[k];
         // (never onto wood already there: p is out of `all` while it is laid again)
         if (already(a, b, y, p)) return false;
+        const on = overlaps(a, b, y, p);
+        if (on.length) { overlapRefused.push(`overlap: a move to ${Math.round(a)}-${Math.round(b)} at y ${Math.round(y)} lies over ${on.map((q) => `${q.x}-${q.x + q.width}`).join(', ')}`); return false; }
         p.x = a; p.y = y; p.width = b - a;
         all.push(p);
       } else { serving = serve; if (!put(a, b, y, L)) return false; }
@@ -631,7 +665,11 @@ function layCatches(cover: boolean, flow: 'up' | 'down', platforms: readonly Pla
         return true;
       }
       if (k !== undefined) all.pop();
-      else { const q = laid.pop()!; out.pop(); served.pop(); all.pop(); lv.delete(q); }
+      else {
+        const q = laid.pop()!; out.pop(); served.pop(); all.pop(); lv.delete(q);
+        for (const t of took.reverse()) { laid.splice(t.j, 0, t.q); out.splice(t.j, 0, t.c); served.splice(t.j, 0, t.s); all.splice(t.i, 0, t.q); lv.set(t.q, t.c.level); }
+        took = []; rooms = undefined;
+      }
       return false;
     };
     const solidAt = (y: number) => all.filter((q) => q.type === 'solid' && Math.abs(q.y - y) <= 1);
@@ -664,7 +702,7 @@ function layCatches(cover: boolean, flow: 'up' | 'down', platforms: readonly Pla
         for (let e = keepL ? Math.min(x1, a) : Math.max(x0, b); keepL ? e >= ex + SLIDE.back : e <= ex - SLIDE.back; e += keepL ? -10 : 10) {
           const [u, v] = keepL ? [x0, Math.round(e)] : [Math.round(e), x1];
           if (v - u < MEND.trim) break;
-          if (inWay({ ...q, x: u, width: v - u } as Platform, a, b, y) || already(u, v, q.y, q)) continue;
+          if (inWay({ ...q, x: u, width: v - u } as Platform, a, b, y) || overlaps(u, v, q.y, q).length) continue;
           q.x = u; q.width = v - u; rooms = undefined;
           const joins = solidAt(q.y).filter((p) => p !== q && (Math.abs(p.x + p.width - u) <= 2 || Math.abs(p.x - v) <= 2));
           if (endsLand(u, v, q.y) && fair(u, v, q.y, lv.get(q) ?? 0, [q, ...joins]) >= 0) { out[j].x = u; out[j].w = v - u; done = true; break; }
@@ -820,7 +858,7 @@ function layCatches(cover: boolean, flow: 'up' | 'down', platforms: readonly Pla
       for (const y of ys) {
         for (const a of y === p.y ? as : [...as, p.x]) {
           for (const b of y === p.y ? bs : [...bs, p.x + p.width]) {
-            if (b - a < 60 || b - a > widest || (a === p.x && b === p.x + p.width && y === p.y) || !lands(a, b, y) || already(a, b, y, p)) continue;
+            if (b - a < 60 || b - a > widest || (a === p.x && b === p.x + p.width && y === p.y) || !lands(a, b, y) || overlaps(a, b, y, p).length) continue;
             if (fair(a, b, y, lv.get(p) ?? 0, [...joinL, ...joinR]) < 0) continue;
             const q = { ...p, x: a, y, width: b - a } as Platform;
             if (openEnds([...all, q], floorY, most, width).length >= before.length) continue;
