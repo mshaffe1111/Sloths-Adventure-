@@ -2,8 +2,9 @@
 
 ## EXACT NEXT STEP (box 2 hand-over, 11-26 10:50 PM ET; NOT landed: t-eng-29 still 28c848dbd; candidate 88b5611b4 untouched)
 THE LEAD RULED (a), not (b): rule B stays general (rule 22); (b) would keep 2-9's own list search on today's beats (its let-go 5.4 s and
-twist still refused, so 2-9 could not list). NEXT BOX (Friday morning), in order: (1) on base 28c848dbd, `seedlist.ts 2-4|2-1|2-7 --check`:
-red on the same seeds = inherited staleness, not B's; (2) rebuild 2-1's, 2-4's and 2-7's lists under B on t-eng-29, every changed seed
+twist still refused, so 2-9 could not list). NEXT BOX (Friday morning), in order: (1) DONE in box 2, base 28c848dbd `seedlist --check`: 2-4 PASS (100), 2-1 PASS (100)
+= their staleness is B's; 2-7 seed 22 RED on the base too (same line, both settings) = INHERITED, already stale on t-eng-29 before B
+(its cause is not B: name it before the rebuild); (2) rebuild 2-1's, 2-4's and 2-7's lists under B on t-eng-29, every changed seed
 traced (the new attempt replayed, bots on it, rule 28), every roll/seed-pinning test re-run (release.md item 6); they ship with release 6,
 not release 5. Box 2 (below) found it: rule B moves THREE proven lists' search (not the shipped replays). On frozen 88b5611b4, `seedlist.ts <id> --check`:
 2-4 seed 65, 2-1 seed 100, 2-7 seed 22 (both settings each): 'its replay differs from its search (platforms, vines, rivers,
@@ -15,10 +16,10 @@ for those seeds. A route-picking-only variant would NOT fix this: quietOf itself
 the base check (wt-base) was RUNNING at the hand-over: run `seedlist.ts 2-4 --check` (then 2-1, 2-7) on 28c848dbd FIRST.
 DONE on frozen 88b5611b4 (box 2):
 - lockall --check vs 28c848dbd's lock (recorded this box: 3264 builds of 102 stages), one run, no --intended: 102/102 unchanged, exit 0.
-- seedlist --check PASS: 1-1 (161), 1-2, 1-3, 1-4, 1-5 (150), 1-7, 1-8, 1-9, 2-2, 2-3, 2-5. FAIL: 2-1, 2-4, 2-7 (above). 1-6 running.
+- seedlist --check PASS: 1-1 (161), 1-2, 1-3, 1-4, 1-5 (150), 1-7, 1-8, 1-9, 2-2, 2-3, 2-5, 1-6. FAIL: 2-1, 2-4, 2-7 (above).
 - Suite shards (tests/pass/fail/todo): 1: 692/691/0/1; 2: 692/692/0/0; 3: 831/830/1/0 (KID_RUNS_59, the inherited red: '5-9's Easy goal
   rests on the kid's runs', gen2/game.ts); 4: 740/740/0/0; 5: 636/635/0/1; 6: 652/651/0/1. Only red: KID_RUNS_59.
-- generalitycheck PASS (26 literals, 26 known). tierBots: running at the hand-over (tier.txt in box 2's scratch).
+- generalitycheck PASS (26 literals, 26 known). tierBots 9/9 PASS (candidate only; no base run was started).
 
 ## EXACT NEXT STEP (box 1 hand-over; the lead RULED B + the locked let-go wait; C not in; no clock cap)
 Candidate: t-eng-quiet-b = 88b5611b4, cut from t-eng-29 28c848dbd (G6 in it; a fast-forward of t-eng-29). It holds: beats.ts
