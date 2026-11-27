@@ -12,6 +12,11 @@ import { buildGen2Stage } from '../pipeline.ts';
 import { listedStage, worldFinish } from '../listed.ts';
 import { generateAllLevels } from '../../worldsData.ts';
 import { FLOOD_CARD_28, GOAL_LINES_28, LINES_28, MISSION_28, PAGE_28, lineId28 } from './w2Arc28.ts';
+import { loadInventory } from '../../art/inventory.ts';
+
+// (ENG-CUT-b's named limit: the lay checks a cut against its world's inventory only once loadInventory(world) has read it; every 2-8
+//  build here waits for World 2's, so a cut the inventory refuses fails the island's section by name instead of being laid unchecked)
+await loadInventory(2);
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../../../..');
 
@@ -87,7 +92,7 @@ test("2-8: Dot's fork line is laid at the fork's own rest (the node just before 
 
 // (BUILD-28-f, the lead's ruling (b): the reed island stands IN the water: a porch over the channel, the river under its whole width, its
 //  surface about 42 px under the island's top, as cut; 340 wide on Normal, the row's stand line; Easy's landing widening is accepted)
-test('2-8: the reed island stands in the water (the river under its whole width, its surface 35-50 px under its top), 340 wide on Normal, seeds 1-40 x both settings', () => {
+test('2-8: the reed island stands in the water (the river under its whole width, its surface 35-50 px under its top), 340 wide on Normal, wearing its painted cut (w2-reed28#reed-isle-28), seeds 1-40 x both settings', () => {
   const cfg = generateAllLevels().find((c) => c.id === '2-8' && !c.secret)!;
   const row = listedStage('2-8')!;
   const bad: string[] = [];
@@ -109,6 +114,7 @@ test('2-8: the reed island stands in the water (the river under its whole width,
       !under && `no river under its whole width (${Math.round(isl.x)}+${isl.width})`,
       under && !(under.surfaceY - isl.y >= 35 && under.surfaceY - isl.y <= 50) && `the surface is ${under.surfaceY - isl.y} px under its top`,
       d === 'normal' && isl.width !== 340 && `${isl.width} px wide, not 340`,
+      isl.cut !== 'w2-reed28#reed-isle-28' && `it wears cut '${isl.cut}', not the reed island's painted piece`,
     ].filter(Boolean);
     if (why.length) bad.push(`${d} ${seed}: ${why.join('; ')}`);
   }
