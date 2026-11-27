@@ -2,6 +2,20 @@
 
 Merged at INT-14 (11-20, t-int-14): §0zq-25d/§0zq-25c ENG-25c (2-5's snap rows level, the snapper's ground, the straddle), §0zq-NOISE ENG-NOISE (one noise channel), §0zq-PROWL ENG-PROWL (sight.up + the leap), §0zq-small3 ENG-SMALL3 (R-165.317/.319/.321), and PAINT-292 (World 1's painted planks and stones; no section here). Merged at INT-13 (11-19, t-int-13): §0ENG23 ENG-23 (followers, the heron reads the line) and §0zl-168 TIME-168 (timecheck), §0zm-25b ENG-25b (the snapper bot skill, the meter's snap channel) and §0zl-25 ENG-25 (2-5's snap stones and snapper rows), §0zn-26b ENG-26b and §0zm-26 ENG-26 (the water wheel), §0W2A ART-W2A (2-3's painted follow poses), §0zo ART-W2B (the wheel's painted draw), §0zo-285c/§0zo-285b/§0zo-285 ENG-285 (the judges and bots fly the engine's Pokey), §0zp-284 FIX-284/284b (2-2's big pads, the real tap hop), §0zp-24d BUILD-24d, §0zn-24c ENG-24c (the raft look, the glow) and §0zm-24 BUILD-24 (2-4) joined; rewritten at the INT-12 merge (11-18, t-int-12): four members wrote here the same day, so labels are suffixed where they met: §0zm-22p ART-22P (CI's seed-list matrix, R-165.278); §0zl-24 ENG-24 (a liana over a river; its REPORT cites it as §0zl); §0zm BUILD-19b, §0zn ENG-19c and §0zl BUILD-19 (t-build-19, the labels its REPORT cites). Before them FIX-22b (11-15): section 0zk.
 
+## 0zs-STONE29. ENG-STONE29 (t-eng-stone29 from t-eng-29 098047713, 11-26; code a6ac7316b): the WIDE snap stone, 130 px (R-165.490)
+- WHAT: `PadRow.snap.w` 80 | 130 (80 when absent). rideLay.ts SNAP_WIDE { w 130, pace [258, 281] px/s, count [0.65, 0.87] s, air 13/30,
+  inStep 3, slack 0.2 s }, SNAP_WIDTHS [80, 130]; snapBeat (the wide row's model); snapFaults judges each width by its own band. 80 px,
+  SNAP_FAIR and its 30-40 band are untouched.
+- THE WIDE STONE IS CROSSED ONE STONE A COUNT (a tap on every count at a run), not hop-hop-hop: its band moves with the bar's count, so it
+  is a PACE, (130 + water) / count on the setting judged (Normal and an unset call on Normal's count; an Easy build on Easy's). One water
+  cannot keep the pace on both settings: Easy needs its own (an Easy twin row). 2-9's court: Normal 130 + 62 (54-70), Easy 130 + 92 (83-102).
+- SLACK, the lead's ruling (A): a run needs a count whose tap is safe 0.2 s early AND late on each setting. 3 in step is safe only on ONE
+  with 0 frames late, so it is refused by name; 2 in step and the wave of 5 pass.
+- MEASURE AGAIN with tools/engine/snapBand.ts (normal|easy W count; SWEEP=c1,c2 STEP=1 for the band over counts). Its flights are in
+  reference/qa-reports/ENG-STONE29/flown/. snapBeat's tap rounding mirrors the flight's (a half frame to the earlier frame); the counts read
+  is the flight's own (round). Change either and the model-vs-flight toy goes red.
+- ART: the 80 px sheet scaled by width (no stretch) reads right at 130 beside Pokey (REPORT §2 stills). No new draw path.
+
 ## 0zs-TEMPO. ENG-29 (t-eng-29, sessions a-d, 11-25/11-26): 2-9's court TEMPO and the DRUM you hear (R-165.449), built ahead of 2-9
 - THE TEMPO (NEW 1): GraphBrief.tempo (gen2/types.ts: beats, bar, easyStretch, lock) is laid LAST in gen2's finish (pipeline.ts
   layChaseStage -> tempo.ts layTempo): every swinging liana swings the bar on this setting with its phase the lock, then tempoFaults names
