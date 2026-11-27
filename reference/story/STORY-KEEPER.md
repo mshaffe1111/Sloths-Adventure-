@@ -493,3 +493,5 @@ Brief the new lead from this file when it messages.
 **11-27 1:28 PM ET: notice from the lead (session_01FhBbYN2CVHnFXg7XzqKXpM):** a NEW LEAD takes over this afternoon (Matt, 11-27); its first message comes here. Take direction from the session on line 1 of reference/handoffs/lead.md (ccr-ea739a2f-dfcee4) once it writes; the outgoing lead is backup for facts only.
 
 **NEW LEAD (11-27, about 2:40 PM ET): session_01FhBbYMA2VnzJXGxeHFhKxi** (lead.md line 1 not yet updated at 2:50 PM; flagged). Sent it the open list: approved-not-built (R-165.260 1-7 boxes and the World 1 waysides; R-165.180 1-5 develop line; R-165.192; R-165.193), my backlog (prologue compare, R-165.45), and the helper keepers' files (2-8 t-keeper-28, 2-9 t-keeper-23-29 / t-build-29, World 3 lines-3.md on t-keeper-3x with two rulings for the lead).
+
+**Lesson (11-27, my second miss of this kind after way.1-8 on 11-14):** before cutting or writing a wayside, check its SPEAKER in wayside.ts; a Pokey line must carry I/me/my (wayside.test.ts). Now part of my check for every wayside.
