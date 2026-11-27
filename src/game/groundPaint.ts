@@ -141,7 +141,7 @@ const BLOB_PERIOD = 3000;
  */
 export type DepthAt = (x: number) => [number, number];
 /** the strips the darkening is drawn in when it follows the ground (world units; drawn once, into the ground's squares) */
-const DEPTH_STRIP = 16;
+export const DEPTH_STRIP = 16;
 
 /**
  * Paint the world's soil over the box x0..x1 by top..bottom (already clipped by the caller to the bank's shape), with the darkening
