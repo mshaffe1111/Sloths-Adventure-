@@ -1,0 +1,9 @@
+# 2-9 Normal, every quiet stretch over 4 s (probes/quiet29.ts), tree = 3d7062749 + court row R120 V132.28 easyV45.7 N4 edge (flown, wf2 below)
+seed 1: 4.9 s x 862-2180 w2-29-gate | 5.4 s x 7934-9125 w2-29-let-go | 5.7 s x 14411-15628 w2-29-double | 4.1 s x 16728-17282 w2-29-terrace | 5.5 s x 25544-26984 w2-29-barge | 5.1 s x 27632-29084 w2-29-shrine
+seed 2: 4.9 s x 858-2180 w2-29-gate | 5.8 s x 7934-9239 w2-29-let-go | 6.8 s x 14557-16110 w2-29-double | 4.1 s x 17020-17574 w2-29-terrace | 5.5 s x 25836-27276 w2-29-barge | 5.0 s x 27924-29358 w2-29-shrine
+seed 3: 4.9 s x 861-2180 w2-29-gate | 5.8 s x 7934-9237 w2-29-let-go | 6.8 s x 14697-16250 w2-29-double | 5.6 s x 17016-17990 w2-29-terrace | 5.5 s x 25832-27272 w2-29-barge | 5.1 s x 27920-29363 w2-29-shrine
+seed 4: 4.9 s x 856-2180 w2-29-gate | 5.8 s x 7934-9236 w2-29-let-go | 5.7 s x 14412-15628 w2-29-double | 5.8 s x 16728-17702 w2-29-terrace | 5.5 s x 25260-26700 w2-29-barge | 5.1 s x 27348-28797 w2-29-shrine
+seed 5: 4.9 s x 858-2180 w2-29-gate | 5.8 s x 7792-9095 w2-29-let-go | 5.7 s x 14555-15772 w2-29-double | 4.1 s x 16872-17426 w2-29-terrace | 5.5 s x 25546-26986 w2-29-barge | 5.3 s x 27634-29073 w2-29-shrine
+seed 6: 4.9 s x 860-2180 w2-29-gate | 5.8 s x 8076-9381 w2-29-let-go | 5.7 s x 14699-15918 w2-29-double | 5.6 s x 17018-17992 w2-29-terrace | 5.5 s x 25550-26990 w2-29-barge | 5.1 s x 27638-29086 w2-29-shrine
+normal R120 V132.28 N4 W120 edge (court): board tap 100% 1.43 s, walk 74%; ride stayed in; step 1.67 s (walk 0.93, tap 1.67, jump 0); misses {"board walk pond":11,"walk pond":66,"tap pond":44}
+easy R120 V45.7 N4 W120 edge (court): board tap 100% 4.13 s, walk 72%; ride stayed in; step 4.3 s (walk 2.73, tap 4.3, jump 0); misses {"board walk pond":35,"walk pond":236,"tap pond":183}

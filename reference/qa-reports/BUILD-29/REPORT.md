@@ -1,7 +1,29 @@
 # BUILD-29 REPORT: 2-9 "The River King's Court" (the World 2 finale; R-165.449), release 6
 Branch t-build-29, cut from origin/t-eng-29 = 098047713 (the lead's named base). Session 1 started 5:45 PM ET Thu 11/26 (by `date`).
 
-## EXACT NEXT STEP (session 6 hand-over, BUILD-29-f; box clock reached)
+## EXACT NEXT STEP (session 8 hand-over, BUILD-29-h; STOPPED for the lead's ruling on the quiet line, stage-wide)
+Head: this commit. ReadNotifications first (D140). Box 7 (BUILD-29-g) left no section here; its state is in the commit 16825e931 message.
+Box 8 DID (each on t-build-29; files in flown/):
+1. RULING (a), the court wheel on street 'edge' (w2.ts W2_WHEELS.court), flown with wheelflights --write: Normal R160 V58.79 N6 step
+   3.33 s (floor 1.5), Easy walk-off 2.57 s (floor 2.5), a miss rides round. It does NOT clear the quiet line: the ride is half a turn on
+   any street (route.ts:417-420 prices a wheel as half a period + half a turn; beats.ts:131 counts 0.5 s busy). At one bucket a bar
+   (2.85 s, N6) that is 8.55 s. (guard-t0.3-edge.txt)
+2. RULING (b), the posted guard: z t 0.3, 0.4 and 0.5 are refused on 14 of 24 seeds, both settings ('no clear ground', pipeline.ts:3681
+   patchFor: the barge landing's safe spot). t 0.6 (336 px in) is clean, and the 'pool is spent' throws fall back to 1 (they were the
+   refused post banning the barge section). The lead APPROVED the smallest passing t: t 0.6 is in w2Arc29.ts:182. (guard-t0.*.txt)
+3. N4 wheels flown (probes/wheelN4.ts, wheelN4.txt). Normal, a bucket every two beats: R160 step 1.2 s and R140 1.37 s FAIL; R120
+   V132.28 passes, step 1.67 s, ride + wait 3.56 s, lift 184 px (not 264). Easy at R120 (G4: one R): a bar 2.2 s and 3 beats 1.7 s FAIL
+   the 2.5 s walk-off; 5 beats V45.7 passes, walk 2.73 s; 6 beats V38.08, walk 3.27 s.
+   ROLLED in a frozen worktree only (court R120 V132.28 easyV45.7 N4 edge + guard t 0.6): 0 throws, but 0 of 24 clean, all on the quiet
+   line (roll-n4-guard06.txt). NOT in the tree: the lead's condition was quiet <= 4 s.
+4. THE WHOLE PICTURE (probes/quiet29.ts, every stretch over 4 s, not only the worst; quiet29-n4.txt). On seeds 1-6, all six of these
+   are over 4 s on every seed: gate 4.9; let-go (beat 4 liana) 5.4-5.8; double (the twist) 5.7-6.8; terrace 4.1-5.8 (even at N4);
+   barge 5.5; shrine 5.0-5.3. The drum's waits (a bar for ONE) read as nothing to do across the stage. Tuning one beat at a time is D148.
+NEXT (the lead's ruling first; no data change until it comes): does a timed wait on 2-9's drum count as quiet in the time model (an
+engine or inspector question: no rule is changed here), or does each of the six beats get something to do or a shorter wait (data:
+the keeper and the designer)? Then rules 28/29 from step 1 (rolls clean 24 x both), G6, addlevel, bots, drawcheck, stills, the suite.
+
+## (superseded) EXACT NEXT STEP (session 6 hand-over, BUILD-29-f; box clock reached)
 Head: this commit. ReadNotifications first (D140). Box 6 DID: the liana note marked APPROVED (level.md, lead 11-26); R2 part 1 (the
 stageTable row `'2-9': { kit: 'w2-29' }`, unjudged as the draft rolled; listed.ts KITS + WORLD; 5c2961080, listing tests 16/0); R2 part 2
 STARTED (the hand-built 2-9 deleted: w2Stages.ts '2-9' + COURT_GOAL_29 + W2_PUZZLES '2-9' + bellGate/bellGallery/guard; w2Sections.ts
