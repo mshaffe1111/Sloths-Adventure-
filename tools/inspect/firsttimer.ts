@@ -1556,10 +1556,6 @@ export class FirstTimerRun {
   private pressJudged = false;
   /** ruling 2 (ENG-PLANT-g): the log running his way he landed on (its id): he rides it, never the default walk, while on it */
   private landRide: number | null = null;
-  /** SKILLS.runUp: the run-up vineFromLog sent him on, on this log (its id), last judged at this game time */
-  private runUp: { id: number; t: number } | null = null;
-  /** SKILLS.runUp: the hold the run-up's jump was judged with (runPress: who.hold[0]), and when; startJump holds at least that */
-  private runUpHold: { hold: number; t: number } | null = null;
   /** the game time a press decided on (decide) was aimed to reach the engine (pressIn), for the press this frame's pad carries */
   private pressWant: number | undefined;
 
@@ -2471,9 +2467,6 @@ export class FirstTimerRun {
     const v = this.sim.vines.find((q) => (q.vineType === 'swing_liana' || q.isSwingingVine) && !q.off && (q.id !== this.swungOn || (SKILLS.vineOverTail && q.x >= d.x1))
       && q.x > d.x0 && q.x < end && dir * (q.x - p.x) > -30 && dir * (q.x - p.x) < 420);
     if (!v) return null;
-    const rivers = this.sim.stage.rivers;
-    const carry = ((floatAt(rivers, here)(t + DT) - floatAt(rivers, here)(t)) / DT) * RIDE.keep.x;
-    const clock = (this.e as unknown as { vineClock: number }).vineClock;
     // (the press after his thumb's lag, drawn from the thumb's gauss (decide): it must catch at every lag of the thumb's whole spread (CI-12;
     //  it was the middle and half a spread either side, as dropWaits aims; a press at the middle alone missed it on the catch toy, middle
     //  Normal variant 5)
@@ -2483,9 +2476,6 @@ export class FirstTimerRun {
     //  mid -+ sd/2 covered 56% of the kid's draws: 2-4 kid Easy 19 at t 97.700 on CI-11, judged 'catches' at take-off 0.067 / 0.100 /
     //  0.133 s, drew 0.033 s (a frame before the earliest judged), took off at 0.033 and came down on log #74, never in reach of liana #6)
     const lags = thumbLags([mid, sd]);
-    // (SKILLS.runUp, ENG-PLANT-g: a run-up he is on (sent last frame, this log); else none)
-    const running = SKILLS.runUp && !!this.runUp && this.runUp.id === here.id && t - this.runUp.t < DT * 1.5;
-    this.runUp = null;
     // (ENG-SIM step 3 1a, R-165.470: the standing press judged ON THE ENGINE, not the model: the plan at every lag of the thumb's spread
     //  flown by planFlies (one flight per press frame the spread reaches) must swing him on `v`; the press he then makes is the plan at
     //  the lag he draws, played verbatim, so the judged press is the press flown. Retires the stand's hopCatches model, its free-frames
@@ -2501,39 +2491,22 @@ export class FirstTimerRun {
       }
       return o;
     };
-    if (!running && !lags.every((lag) => standAt(lag).at > 0)) {
+    if (!lags.every((lag) => standAt(lag).at > 0)) {
       // (SKILLS.runUp, ENG-PLANT-g: from a stand a PERFECT thumb catches 2-4's tailed-river liana 0 of ~560 frames; a running jump off the
       //  same log catches it (2-4 adult Normal 6, 52 of 541 frames; main crossed by an unjudged full-run leap). The hop he can make is
-      //  judged: a run along the log (groundStep, his own thumb lag and spread on the run press and the jump press, the take-off still on
-      //  the log and before a tailed river's x1 - 10), then a jump, catches it at all three lags: he runs. Else the stand and hop-back stay)
-      // (and with the steer held from now, as the bot plays it (no lag on a steer from a stand, thumbify): judged from a stand alone, the
-      //  next frame's judge on the run refused it and he flickered run / stand / run on #104 (2-4 adult Normal 6 on candidate 15, t 147.27-
-      //  147.47) until his let-go ran him off the front, x 24,872)
-      if (!SKILLS.runUp || !this.runUpCatches(p, dir, here, v, lags, carry, hold, clock, t, false) || !this.runUpCatches(p, dir, here, v, lags, carry, hold, clock, t, true)) return null;
-      this.runUp = { id: here.id, t };
-      return side1(dir);
-    }
-    if (running) {
-      // (on the run-up: the press now, judged at his running speed, the run kept through his thumb's lag (no pending.still)); else
-      //  on while a later press catches; else the stand and hop-back stay)
-      if (!this.runUpCatches(p, dir, here, v, lags, carry, hold, clock, t, true)) {
-        // (a run-up given up: a stop he means (a bare stand, let go: thumbify, R-165.465), and inside
-        //  his run-out of the front he pulls the thumb back (a turn drops the press at once), as the landing stop does (c9); a bare null
-        //  fell to a stand his let-go ran on, off #104's front (2-4 adult Normal 6 on candidate 15, x 24,872))
-        const front = dir > 0 ? here.x + here.width : here.x;
-        if (dir * (front - p.x) < this.runOut()) return side1((-dir) as -1 | 1);
-        return {};
-      }
-      if (!lags.every((lag) => this.runPress(p.x, p.vx, 0, lag, p, dir, here, v, carry, hold, clock, t))) {
-        this.runUp = { id: here.id, t };
-        return side1(dir);
-      }
-      this.runUpHold = { hold, t };
-      this.pressJudged = true;
-      const go = this.decide(dir, 'single', true, side1(dir));
-      this.pressJudged = false;
-      if (this.pending) this.pending.judged = true;
-      return go;
+      //  judged: a run along the log then a jump catches it at every lag of his thumb's spread: he runs. Else the stand and hop-back stay)
+      // (ENG-SIM step 3 1a-ii, R-165.470: the run-up judged ON THE ENGINE as ONE plan (runUpPlan), played verbatim: the run's model
+      //  (runUpCatches / runPress: groundStep, a 10 px take-off margin, hopCatches), the frame-by-frame re-judge on the run and the run /
+      //  stand flicker it had to guard (#104, 2-4 adult Normal 6 on candidate 15, t 147.27-147.47), the give-up stop and the run-up's
+      //  held-at-least hold (startJump) are retired: the plan carries the run, the press and the hold, flown as he plays them)
+      if (!SKILLS.runUp) return null;
+      const run = this.runUpPlan(dir, here, v, lags, hold, t);
+      if (!run) return null;
+      // (the lag drawn as decide draws it, its press k frames of run later; flown above or now (a draw past the spread's 3 sd), played
+      //  to its flown end)
+      const drawn = run.at(run.k + Math.round(pressIn(gauss(this.r, this.who.thumb)) / DT));
+      this.setPlan(drawn.plan, Math.abs(drawn.at), dir);
+      return {};
     }
     // (judged here: decide's immediate press (a lag under half a frame) reaches startJump now, so the flag is up for it too; candidate
     //  10 marked only the queued press and 2-4 adult Normal 6 had two liana presses refused, x 21,600 and 24,700, UNJUDGED)
@@ -2544,52 +2517,36 @@ export class FirstTimerRun {
   }
 
   /**
-   * SKILLS.runUp (vineFromLog): a jump decided `s0` s from now at (x0, vx0) (x0 as if the log stood still), pressed after his thumb's
-   * `lag` with the run held through it (groundStep): taken off still on the log (10 px in, never past a tailed river's x1 - 10) and
-   * catching liana `v`?
+   * SKILLS.runUp (vineFromLog), ENG-SIM step 3 1a-ii: the run-up judged on the engine. A run plan (runPlan) steers `dir` from frame 1
+   * (steerFrom gates it: a travel, a slip, a turn) and presses on frame P, so it depends on P alone: frame k of the run with the lag's
+   * press frame m is P = k + m. One unpressed run, flown, bounds P (the frame his feet leave `here`: the engine's take-off); then each
+   * P from the spread's first press frame up is flown once (planCatches) to that bound or k = 44: the first run of (spread width)
+   * consecutive catching P's is the smallest k at which every lag of `lags` swings him on liana `v`. `at(P)` is P's plan and its
+   * flight (cached: the drawn press may need one more). Null: no k catches at every lag.
    */
-  private runPress(x0: number, vx0: number, s0: number, lag: number, p: RealPlay['p'], dir: -1 | 1, here: Platform, v: Parameters<typeof canGrabSwing>[2], carry: number, hold: number, clock: number, t: number): boolean {
-    const rivers = this.sim.stage.rivers;
-    const at = floatAt(rivers, here), d = here.drift!;
-    const aim = hopAim(lag);
-    const b = { x: x0, y: p.y, vx: vx0, vy: 0 };
-    // (c25: his steer only from steerFrom (the thumb's travel and slip still to run): before it he brakes on the log and flies the
-    //  hop's first frames unsteered, as thumbify drops them; 2-4 kid Easy 35 flew on the carry alone, judged 'held from now')
-    const from = this.steerFrom(dir, t), n = Math.round(aim.off / DT);
-    for (let j = 0; j < n; j++) groundStep(b, DT, t + s0 + j * DT >= from - 1e-6 ? dir : 0);
-    const when = t + s0 + aim.off;
-    const free = Math.max(0, Math.ceil((from - (t + s0 + n * DT)) / DT - 1e-6));
-    const x = b.x + at(when) - at(t), lx = at(when);
-    const under = SKILLS.vineOverTail && !!d.tail && x > d.x1 - 10;
-    return x > lx + 10 && x < lx + here.width - 10 && !under && hopCatches(v, x, p.y, dir, hold, clock + s0 + aim.clock, b.vx + carry, free, carry);
-  }
-
-  /**
-   * SKILLS.runUp (vineFromLog): does a run along this log, then a jump, catch liana `v` at every lag of `lags`? One plan (run k frames,
-   * then press), flown at each lag of `lags`, his thumb's lag and spread on both presses: from a stand the run press comes after the lag
-   * (braking meanwhile), on the run (`running`) it is held now; then k frames of run on the log, then the jump press after the lag
-   * (runPress). Some k at which every lag catches.
-   */
-  private runUpCatches(p: RealPlay['p'], dir: -1 | 1, here: Platform, v: Parameters<typeof canGrabSwing>[2], lags: number[], carry: number, hold: number, clock: number, t: number, running: boolean): boolean {
-    const rivers = this.sim.stage.rivers;
-    const at = floatAt(rivers, here), d = here.drift!;
-    const from = this.steerFrom(dir, t);
-    const runs = lags.map((lag) => {
-      const b = { x: p.x, y: p.y, vx: p.vx, vy: 0, s: 0 };
-      for (let f = running ? 0 : Math.round(hopAim(lag).off / DT); f > 0; f--) { groundStep(b, DT, 0); b.s += DT; }
-      return b;
-    });
-    for (let k = 0; k < 45; k++) {
-      const on = runs.map((b) => {
-        const x = b.x + at(t + b.s) - at(t), lx = at(t + b.s);
-        return x > lx + 10 && x < lx + here.width - 10 && !(SKILLS.vineOverTail && !!d.tail && x > d.x1 - 10);
-      });
-      if (!on.some(Boolean)) return false;
-      if (on.every(Boolean) && runs.every((b, i) => this.runPress(b.x, b.vx, b.s, lags[i], p, dir, here, v, carry, hold, clock, t))) return true;
-      // (c25: the run press steers only from steerFrom: the thumb still travelling, he brakes)
-      for (const b of runs) { groundStep(b, DT, t + b.s >= from - 1e-6 ? dir : 0); b.s += DT; }
+  private runUpPlan(dir: -1 | 1, here: Platform, v: { id: number }, lags: number[], hold: number, t: number): { k: number; at: (P: number) => { plan: PressPlan; at: number } } | null {
+    const lo = Math.round(pressIn(lags[0]) / DT), w = lags.length;
+    const steerAt = Math.max(1, Math.ceil((this.steerFrom(dir, t) - t) / DT - 1e-9) + 1);
+    const top = 44 + lo + w - 1;
+    const pad: Pad = dir > 0 ? { right: true } : { left: true };
+    const unpressed: PressPlan = { pads: Array.from({ length: top }, (_, i) => (i + 1 >= steerAt ? { ...pad } : {})), press: 0 };
+    const off = planFlies(this.sim, unpressed, (e) => (!(e.player as { grounded: boolean }).grounded || e.standingOnId !== here.id ? 'met' : undefined));
+    const bound = Math.min(top, Math.abs(off.at));
+    const flown = new Map<number, { plan: PressPlan; at: number }>();
+    const at = (P: number): { plan: PressPlan; at: number } => {
+      let o = flown.get(P);
+      if (!o) {
+        const plan = pressPlan({ press: P, hold, dir, steerFrom: steerAt, after: 60 });
+        o = { plan, at: this.planCatches(plan, v) };
+        flown.set(P, o);
+      }
+      return o;
+    };
+    for (let P = lo, n = 0; P <= bound; P++) {
+      n = at(P).at > 0 ? n + 1 : 0;
+      if (n === w) return { k: P - w + 1 - lo, at };
     }
-    return false;
+    return null;
   }
 
   /**
@@ -5327,15 +5284,6 @@ export class FirstTimerRun {
       hold = Math.max(hold, this.wheelHop);
       d2 = -1;
       this.wheelHop = 0;
-    }
-    // (the run-up's jump, SKILLS.runUp: held at least as long as runPress judged it (who.hold[0]), as the race's, the liana's and the
-    //  wheel's hops are; a shorter draw (0.093 s on 2-4 child Normal 8, t 120.77) peaked at y 895 under liana #4's foot (859) and fell in)
-    if (this.runUpHold) {
-      if (this.t - this.runUpHold.t < 0.5) {
-        hold = Math.max(hold, this.runUpHold.hold);
-        if (kind === 'double') hold = Math.min(hold, d2 - DT);
-      }
-      this.runUpHold = null;
     }
     let upOnly = !off && this.r() < who.upOnly ? between(this.r, who.upOnlyT) : 0;
     // (a hop a gate judged, SKILLS.floatSure (rule 28, the lead's ruling): flown as drawn and judged, kind, holds, second press and the
