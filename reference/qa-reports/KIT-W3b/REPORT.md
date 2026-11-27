@@ -2,7 +2,7 @@
 
 ## EXACT NEXT STEP (box 1 hand-over, 9:26 AM ET Fri 11-27 by `date`)
 1. Box 2: `git fetch origin +refs/heads/t-kit-w3b:refs/remotes/origin/t-kit-w3b && git checkout -B t-kit-w3b origin/t-kit-w3b`;
-   `npm ci --legacy-peer-deps` and `git fetch --unshallow origin` with run_in_background. Candidate: 7be2c37e8 (brick 1, the ocelot
+   `npm ci --legacy-peer-deps` and `git fetch --unshallow origin` with run_in_background. Candidate: the branch head, code last at 630edec12 (brick 1, the ocelot
    ground: w3-prowl-floor + w3-prowl-pair in src/game/gen2/worlds/w3.ts W3_LEVEL; counting test src/game/gen2/worlds/w3Level.test.ts,
    2/2 green in 3.7 s; w3.test.ts's cast-rows check scoped to the way down, see Gates). NOT yet gated, NOT yet landed.
 2. ENG-ASKS-b's hash: ReadNotifications first; if the lead has sent it, `git merge --no-edit <hash>` (merge, never rebase) BEFORE any
