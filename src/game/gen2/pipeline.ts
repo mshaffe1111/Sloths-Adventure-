@@ -2563,7 +2563,10 @@ export function layStage(budget: StageBudget, graph: MissionGraph, kit: WorldKit
     const mine = !routed ? sections : sections.slice(mark.s);
     // (and no catch bough lies in a wheel's sweep or over it where its rider rides: wheel.ts sweepBox, his body over the top floor)
     const keepOut = stageWheels(platforms).map((w) => { const b = sweepBox(w); return { x0: b.x0 - (routed ? fx : 0), x1: b.x1 - (routed ? fx : 0), y0: b.y0 - WHEEL_RIDER, y1: b.y1 }; });
-    for (const c of towerCatches(flow as 'up' | 'down', P, V, floorY, TW, Gp, (q) => storeyOf.get(q.id) ?? 0, (q) => sealedIds.has(q.id), keepOut)) {
+    // (going down, the column's turn vines and the storeys each joins: the catch each hands on is kept by the tower's invariant, tower.ts
+    //  downInvariant, ENG-CATCH-c)
+    const T = turns.slice(mark.t).map((t) => ({ id: t.vine.id, from: t.from, to: t.to }));
+    for (const c of towerCatches(flow as 'up' | 'down', P, V, floorY, TW, Gp, (q) => storeyOf.get(q.id) ?? 0, (q) => sealedIds.has(q.id), keepOut, T)) {
       storeyNow = c.level;
       const cx = c.x + fx;
       const b = mk(cx, c.y, c.w, 'branch', 0);

@@ -324,7 +324,26 @@ export function openEnds(platforms: readonly Platform[], floorY: number, most: n
  */
 export function towerCatches(flow: 'up' | 'down', platforms: readonly Platform[], vines: readonly Vine[], floorY: number, width: number, gaps: ReadonlyArray<{ x0: number; x1: number; y: number }> = [], level: (p: Platform) => number = () => 0, sealed: (p: Platform) => boolean = () => false,
   /** boxes no bough may lie in (a water wheel's sweep and its rider over it, ENG-26: a bough there knocks him out of his bucket) */
-  keepOut: ReadonlyArray<{ x0: number; x1: number; y0: number; y1: number }> = []): Array<{ x: number; y: number; w: number; level: number }> {
+  keepOut: ReadonlyArray<{ x0: number; x1: number; y0: number; y1: number }> = [],
+  /** going down, the column's turn vines by id and the storeys each joins (pipeline.ts turns): the catch each hands on (downInvariant) */
+  turns: ReadonlyArray<{ id: number; from: number; to: number }> = []): Array<{ x: number; y: number; w: number; level: number }> {
+  const first = layCatches(false, flow, platforms, vines, floorY, width, gaps, level, sealed, keepOut, turns);
+  if (flow !== 'down') return first;
+  // (going down, a lay that leaves a blind drop is laid once more with every bridge reaching under the fall line it is laid for; a lay
+  //  with none left is never touched. Next to a vine's top a bridge starts a hop past the vine (rule 2), and where the end's fall line
+  //  lies in that hop the bridge caught nothing: the drafted 3-1's storey hole x 554-654 at y 7377, under a bounce brick's cap shelf
+  //  (its far end x 650, the fall line 626), was bridged 654-716 on every pass and the walk off the shelf fell 481 px past the storey
+  //  (Easy 2; Easy 4 the same, 477 px), ENG-CATCH-b. Kept only if it leaves fewer misses of the down tower's invariant, ENG-CATCH-c)
+  const left = (cs: ReadonlyArray<{ x: number; y: number; w: number }>) => downInvariant([...platforms, ...cs.map((c, k) => ({ id: -1 - k, x: c.x, y: c.y, width: c.w, height: 24, type: 'solid' }) as Platform)], vines, turns, floorY, width).length;
+  const before = left(first);
+  if (!before) return first;
+  const again = layCatches(true, flow, platforms, vines, floorY, width, gaps, level, sealed, keepOut, turns);
+  return left(again) < before ? again : first;
+}
+
+/** towerCatches' lay. `cover`: a bridge is laid only where it reaches under the fall line of the end it is laid for */
+function layCatches(cover: boolean, flow: 'up' | 'down', platforms: readonly Platform[], vines: readonly Vine[], floorY: number, width: number, gaps: ReadonlyArray<{ x0: number; x1: number; y: number }>, level: (p: Platform) => number, sealed: (p: Platform) => boolean,
+  keepOut: ReadonlyArray<{ x0: number; x1: number; y0: number; y1: number }>, turns: ReadonlyArray<{ id: number; from: number; to: number }>): Array<{ x: number; y: number; w: number; level: number }> {
   const most = flow === 'up' ? TOWER.fall : TOWER.see;
   const all: Platform[] = [...platforms];
   const lv = new Map<Platform, number>(platforms.map((p) => [p, level(p)]));
@@ -429,6 +448,14 @@ export function towerCatches(flow: 'up' | 'down', platforms: readonly Platform[]
       || all.some((q) => q.type === 'solid' && Math.abs(q.y - y) <= 1 && x >= q.x && x <= q.x + q.width)
       || catchUnder([...all, box], x, y, most) !== undefined);
   };
+  /** going down, every own end of a piece at (x0-x1, y) is no open end as openEnds reads it (the invariant's own reading, for the mend):
+   *  at a wall, onto wood he walks onto, or coming down within `most` */
+  const endsLand = (x0: number, x1: number, y: number): boolean => {
+    const box = { id: 0, x: x0, y, width: x1 - x0, height: 24, type: 'solid' } as Platform;
+    return [offEnd(x0, -1, width, HANG.fall), offEnd(x1, 1, width, HANG.fall)].every((x) => x === null
+      || all.some((q) => q.type !== 'fragile' && x >= q.x && x <= q.x + q.width && q.y <= y + 1 && q.y + q.height > y)
+      || catchUnder([...all, box], x, y, most) !== undefined);
+  };
   for (let pass = 0; pass < 10; pass++) {
     const ends = openEnds(all, floorY, most, width);
     if (!ends.length) break;
@@ -472,7 +499,7 @@ export function towerCatches(flow: 'up' | 'down', platforms: readonly Platform[]
         const near = vine ? tip + (left ? -1 : 1) * (TOWER.hop + 30) : tip;
         const far = left ? Math.max(24, e.x - TOWER.catchW / 2) : Math.min(width - 24, e.x + TOWER.catchW / 2);
         const x0 = Math.min(near, far), x1 = Math.max(near, far);
-        const L = x1 - x0 >= 60 && !overGap(x0, x1, anchor.y) ? fair(x0, x1, anchor.y, lv.get(anchor) ?? 0, [anchor]) : -1;
+        const L = x1 - x0 >= 60 && (!cover || (x0 <= e.x && x1 >= e.x)) && !overGap(x0, x1, anchor.y) ? fair(x0, x1, anchor.y, lv.get(anchor) ?? 0, [anchor]) : -1;
         if (L >= 0) { put(x0, x1, anchor.y, L); added++; bridged = true; break; }
       }
       if (bridged) continue;
@@ -537,8 +564,197 @@ export function towerCatches(flow: 'up' | 'down', platforms: readonly Platform[]
     }
     if (!added) break;
   }
-  if (flow === 'down') reLay();
+  if (flow === 'down') { reLay(); mend(); }
   return out;
+
+  /**
+   * Going down, THE DOWN TOWER'S INVARIANT kept on the tower's own lay (downInvariant, ENG-CATCH-c): once the lay and reLay are done, each
+   * miss left is mended with the tower's own wood, and a remedy is kept only if it leaves FEWER misses, so the mend converges (each kept
+   * remedy takes one miss off; at most MEND.steps of them, MEND.checks tries in all). The remedies, in this order:
+   *   1. the piece the miss is of, if the lay laid it, laid again narrower or moved along (an end joined to level wood kept), at its own
+   *      height first, then at any height under the end it serves (a turn's catch: between the turn's storeys, still across its vine),
+   *      the least change first: a catch too wide for its storey ends where its ends land on it;
+   *      A turn's catch that passes its storey may leave the wood run on level with it (a catch never runs past its storey: the run
+   *      to the wall is trimmed back to the vine's side of it, so an end hands him on);
+   *   2. a run-on of any wood under a fall line the miss names, at its own height (flush under the lip allowed, LIP);
+   *   3. a catch under the catch: a bough of its own under a fall line the miss names (the end's; for a catch that passes its storey,
+   *      each way off he was followed along), at the turn's storey's height first, then rule 4's heights, widest first, never narrower
+   *      than SLIDE asks (he lands on it walking off);
+   *   4. 2's and 3's wood refused ONLY by the tower's own pieces in its way (cramped or slotted against them), laid with those pieces
+   *      trimmed back off it, each keeping MEND.trim px and the end it serves (trimKeep).
+   * Each is laid only fairly (fair) with its own ends landing in view (endsLand). Moving the storey or its hole is not the tower's: a
+   * section's pieces are its own (Content's), so a miss no remedy mends is left for the verdict to name (the roll is refused).
+   * A lay with no miss is never touched.
+   */
+  function mend(): void {
+    type Way = { a: number; b: number; y: number; L: number; but: ReadonlyArray<Platform>; serve: { x: number; y: number } };
+    const check = () => downInvariant(all, vines, turns, floorY, width);
+    let misses = check();
+    let tries = MEND.checks;
+    /** the lay with the piece laid (k: laid[k] moved; else a bough added) kept if it leaves fewer misses */
+    const keep = (k: number | undefined, a: number, b: number, y: number, L: number, serve: { x: number; y: number }): boolean => {
+      tries--;
+      if (k !== undefined) {
+        const p = laid[k];
+        p.x = a; p.y = y; p.width = b - a;
+        all.push(p);
+      } else { serving = serve; put(a, b, y, L); }
+      const now = check();
+      if (now.length < misses.length) {
+        misses = now;
+        if (k !== undefined) { out[k].x = a; out[k].y = y; out[k].w = b - a; }
+        return true;
+      }
+      if (k !== undefined) all.pop();
+      else { const q = laid.pop()!; out.pop(); served.pop(); all.pop(); lv.delete(q); }
+      return false;
+    };
+    const solidAt = (y: number) => all.filter((q) => q.type === 'solid' && Math.abs(q.y - y) <= 1);
+    /** the tower's own piece `q` in the way of wood at (a-b, y) as `fair` reads it: across it with less than his body between (cramped),
+     *  or a slot beside it (slotted) */
+    const inWay = (q: Platform, a: number, b: number, y: number) => {
+      const dy = Math.abs(q.y - y), gap = Math.max(q.x - b, a - (q.x + q.width));
+      return (q.x < b && q.x + q.width > a && dy > 1 && dy < HEAD) || (dy <= SLOT.step && gap > SLOT.walk && gap < SLOT.clear);
+    };
+    /**
+     * 4. wood at (a-b, y) refused ONLY by the tower's own pieces in its way (cramped or slotted against them, inWay) laid with those
+     *    pieces trimmed back off it, each on the side of the end it serves (its fall line and SLIDE.back either side of it kept, MEND.trim
+     *    px of it at the least); every trimmed piece laid fairly with its own ends landing in view, and the whole kept only if it leaves
+     *    FEWER misses (keep), else every piece as it was. The drafted 3-1's catch 683-863 overhung a dip floor's far end 4 px and cramped
+     *    every run-on under that end's fall line (shelf-hops alone, normal 7 and 9), ENG-CATCH-d
+     */
+    const trimKeep = (k: number | undefined, a: number, b: number, y: number, L: number, but: ReadonlyArray<Platform>, serve: { x: number; y: number }): boolean => {
+      const me = k !== undefined ? laid[k] : undefined;
+      const own = laid.filter((q) => q !== me && !but.includes(q) && inWay(q, a, b, y));
+      if (!own.length || own.length > MEND.trimmed || fair(a, b, y, L, [...but, ...own]) < 0) return false;
+      const was = own.map((q) => ({ q, x: q.x, w: q.width }));
+      const undo = () => { for (const w of was) { const j = laid.indexOf(w.q); w.q.x = w.x; w.q.width = w.w; out[j].x = w.x; out[j].w = w.w; } rooms = undefined; };
+      for (const q of own) {
+        const j = laid.indexOf(q), ex = served[j].x;
+        const keepL = ex + SLIDE.back <= a, keepR = ex - SLIDE.back >= b;
+        if (!keepL && !keepR) { undo(); return false; }
+        const x0 = q.x, x1 = q.x + q.width;
+        let done = false;
+        // (the least trimmed first: its end in 10 px steps back from the new wood's end to its own fall line's SLIDE.back)
+        for (let e = keepL ? Math.min(x1, a) : Math.max(x0, b); keepL ? e >= ex + SLIDE.back : e <= ex - SLIDE.back; e += keepL ? -10 : 10) {
+          const [u, v] = keepL ? [x0, Math.round(e)] : [Math.round(e), x1];
+          if (v - u < MEND.trim) break;
+          if (inWay({ ...q, x: u, width: v - u } as Platform, a, b, y)) continue;
+          q.x = u; q.width = v - u; rooms = undefined;
+          const joins = solidAt(q.y).filter((p) => p !== q && (Math.abs(p.x + p.width - u) <= 2 || Math.abs(p.x - v) <= 2));
+          if (endsLand(u, v, q.y) && fair(u, v, q.y, lv.get(q) ?? 0, [q, ...joins]) >= 0) { out[j].x = u; out[j].w = v - u; done = true; break; }
+          q.x = x0; q.width = x1 - x0;
+        }
+        if (!done) { undo(); return false; }
+      }
+      rooms = undefined;
+      if (fair(a, b, y, L, me ? [me, ...but] : but) < 0 || !endsLand(a, b, y)) { undo(); return false; }
+      if (keep(k, a, b, y, L, serve)) return true;
+      undo();
+      return false;
+    };
+    /** remedy 2's wood: a run-on of any wood under a fall line the miss names, at its own height (the nearest first) */
+    function* runOns(m: DownMiss, L: number): Generator<Way> {
+      for (const f of m.at.slice(0, MEND.lines)) for (const q of [...all]) {
+        if (q.type !== 'solid' || sealed(q) || q.y <= f.y + 1 || q.y > f.y + most || q.y >= floorY - 1) continue;
+        const right = f.x > q.x + q.width;
+        if (!right && f.x >= q.x) continue;
+        const run = runOf(solidAt(q.y), q.x, q.x + q.width, q.y);
+        // (behind the fall line SLIDE.back, or flush under the lip he steps off (offEnd's 24 px): he drops past the lip, never behind it)
+        for (const d of [LIP, ...Array.from({ length: 16 }, (_, i) => SLIDE.back + 10 * i)]) {
+          const [a, b] = right ? [run.b, Math.round(f.x + d)] : [Math.round(f.x - d), run.a];
+          if (b - a < 20 || a < 24 || b > width - 24) continue;
+          const r0 = Math.min(a, run.a), r1 = Math.max(b, run.b), fwd = f.dir > 0 ? r1 - f.x : f.x - r0;
+          if (fwd < SLIDE.out || r1 - r0 - fwd < LIP || overGap(a, b, q.y)) continue;
+          yield { a, b, y: q.y, L: lv.get(q) ?? L, but: [q], serve: { x: f.x, y: f.y } };
+        }
+      }
+    }
+    /** remedy 3's wood: a bough of its own under a fall line the miss names, at the turn's storey's height first, then rule 4's heights,
+     *  widest first, centred under the fall line first, then the nearest along, SLIDE kept */
+    function* boughs(m: DownMiss, L: number): Generator<Way> {
+      for (const f of m.at.slice(0, MEND.lines)) {
+        const ys: number[] = [];
+        if (m.turn && m.turn.to > f.y + HEAD && m.turn.to <= f.y + most) ys.push(m.turn.to);
+        const top = Math.min(f.y + TOWER.clear + 30, f.y + most - 4, floorY - TOWER.hop);
+        for (let y = top; y <= Math.min(f.y + most - 4, floorY - TOWER.hop); y += 10) ys.push(y);
+        for (let y = top - 10; y >= f.y + HEAD; y -= 10) ys.push(y);
+        for (const y of ys) for (const w of MEND.widths) {
+          const c = Math.round(f.x - w / 2);
+          for (let d = 0; d <= w; d += 10) for (const s of d ? [-d, d] : [0]) {
+            const a = c + s, b = a + w, fwd = f.dir > 0 ? b - f.x : f.x - a;
+            if (a >= 24 && b <= width - 24 && fwd >= SLIDE.out && w - fwd >= SLIDE.back) yield { a, b, y, L, but: [], serve: { x: f.x, y: f.y } };
+          }
+        }
+      }
+    }
+    for (let step = 0; step < MEND.steps && misses.length && tries > 0; step++) {
+      let mended = false;
+      for (const m of misses) {
+        if (mended || tries <= 0) break;
+        if (!m.piece) continue;
+        const L = lv.get(m.piece) ?? 0;
+        // 1. the piece itself laid again, if the lay laid it
+        const k = laid.indexOf(m.piece);
+        if (k >= 0) {
+          const p = laid[k], was = { x: p.x, y: p.y, w: p.width };
+          const joinL = solidAt(p.y).some((q) => q !== p && Math.abs(q.x + q.width - p.x) <= 2), joinR = solidAt(p.y).some((q) => q !== p && Math.abs(q.x - (p.x + p.width)) <= 2);
+          // (a turn's catch stays across its vine (a body's 6 px in from its ends, as vineCuts reads it); else the piece keeps the end it
+          //  was laid for, SLIDE.back either side of its fall line)
+          const [lo, hi] = m.turn ? [m.turn.x - 7, m.turn.x + 7] : [served[k].x - SLIDE.back, served[k].x + SLIDE.back];
+          // (a catch that passes its storey may also leave the wood run on level with it: the run it closes (to the wall, or onto the
+          //  storey's far side) is what passes, so its ends are laid free too, a slot's margin off that wood (fair). The drafted 3-1's
+          //  catch 761-1239 joined both ways ran 581 to the wall over its storey 756-986 (cap-steps alone, normal 12 and 13), ENG-CATCH-d)
+          const free = m.what === 'pass';
+          const as: number[] = [], bs: number[] = [];
+          if (joinL) as.push(p.x);
+          if (!joinL || free) for (let x = Math.floor(lo); x >= Math.max(24, hi - TOWER.catchW); x -= 10) as.push(x);
+          if (joinR) bs.push(p.x + p.width);
+          if (!joinR || free) for (let x = Math.ceil(hi); x <= Math.min(width - 24, lo + TOWER.catchW); x += 10) bs.push(x);
+          const ys = [p.y];
+          if (!joinL && !joinR) {
+            const [y0, y1] = m.turn ? [m.turn.from + HEAD, m.turn.to - HEAD] : [served[k].y + HEAD, served[k].y + most - 4];
+            for (let y = y0; y <= y1; y += 10) if (Math.abs(y - p.y) > 2 && y < floorY - TOWER.hop) ys.push(y);
+            ys.sort((u, v) => Math.abs(u - p.y) - Math.abs(v - p.y));
+          }
+          const at = all.indexOf(p);
+          all.splice(at, 1);
+          rooms = undefined;
+          const widest = Math.max(TOWER.catchW, was.w);
+          for (const y of ys) {
+            const cands: Array<[number, number]> = [];
+            for (const a of as) for (const b of bs) if (b - a >= 60 && b - a <= widest && !(a === was.x && b === was.x + was.w && y === was.y)) cands.push([a, b]);
+            cands.sort((u, v) => Math.abs(u[0] - was.x) + Math.abs(u[1] - was.x - was.w) - Math.abs(v[0] - was.x) - Math.abs(v[1] - was.x - was.w));
+            for (const [a, b] of cands) {
+              if (tries <= 0) break;
+              if (!endsLand(a, b, y) || fair(a, b, y, L, []) < 0) continue;
+              if (keep(k, a, b, y, L, served[k])) { mended = true; break; }
+            }
+            if (mended || tries <= 0) break;
+          }
+          if (!mended) { p.x = was.x; p.y = was.y; p.width = was.w; all.splice(at, 0, p); }
+          rooms = undefined;
+          if (mended) break;
+        }
+        // 2. wood under a fall line the miss names, within `most`, run on at its own height out under it (a bridge from any wood, the
+        //    lay's own included, however near under the end: rule 2 bridges only from a body's height down), SLIDE kept along the run
+        //    it joins, never over a jump its storey was laid with (overGap)
+        // 3. a catch under the catch: a bough of its own under a fall line the miss names
+        // 4. (trimKeep) 2's and 3's wood refused only by the tower's own pieces in its way, laid with those pieces trimmed back off it
+        for (const trim of [false, true]) {
+          for (const gen of [runOns, boughs]) for (const c of gen(m, L)) {
+            if (mended || tries <= 0) break;
+            if (!endsLand(c.a, c.b, c.y)) continue;
+            const fairly = fair(c.a, c.b, c.y, c.L, c.but) >= 0;
+            if (!trim ? fairly && keep(undefined, c.a, c.b, c.y, c.L, c.serve) : !fairly && trimKeep(undefined, c.a, c.b, c.y, c.L, c.but, c.serve)) mended = true;
+          }
+          if (mended || tries <= 0) break;
+        }
+        rooms = undefined;
+      }
+      if (!mended) break;
+    }
+  }
 
   /**
    * Going down, a piece the lay laid whose OWN end is still a blind drop once the lay is done (no later pass caught it) is laid again
@@ -602,6 +818,14 @@ export function towerCatches(flow: 'up' | 'down', platforms: readonly Platform[]
  *  past the end's fall line, the way he walks off (the centred bough has catchW / 2), and `back` px behind it (he steps 24 px past
  *  the lip before he drops) */
 const SLIDE = { out: 60, back: 30 } as const;
+
+/** the down tower's mend (towerCatches mend): at most `steps` remedies kept and `checks` tried in all (each kept one takes a miss off the
+ *  invariant, so it converges), the first `lines` fall lines of a miss read, and a new catch's widths, widest first (SLIDE keeps the least:
+ *  out + back); remedy 4 trims at most `trimmed` of the tower's own pieces for one piece of wood, each to `trim` px at the least (a
+ *  footing, as reLay keeps) */
+const MEND = { steps: 16, checks: 400, lines: 6, widths: [180, 160, 140, 120, 100, 90], trim: 60, trimmed: 3 } as const;
+/** how far past a lip his middle is when he drops (offEnd's step: half his body and a margin) */
+const LIP = 24;
 
 /** a way down's no-slot lay (towerCatches, `slotted`): within `step` px in height of the wood beside it, a bough's gap to that wood
  *  is at most `walk` (a crack he walks across: under half his body, so his middle never leaves wood) or at least `clear` (his body,
@@ -744,28 +968,31 @@ function runOf(solid: readonly Platform[], x0: number, x1: number, y: number): {
  * Where stepping off the ends of the run of wood at (x0-x1, y) takes him, a body's width past each end, run after run he lands on:
  * 'ok' when he comes down onto wood at the storey's height `to` (2 px) before any landing below it; 'open' when none does but a drop
  * is past `most` (going down a catch is still owed there, towerCatches); else 'past' (every way off lands below the storey, or there
- * is none). `first`: the landings off the run's own ends (none: it runs wall to wall).
+ * is none). `first`: the landings off the run's own ends (none: it runs wall to wall). `trail`: each way off he was followed along
+ * (its fall line and the height he steps off at), in the order walked: where a landing at the storey's height would hand him on.
  */
-export function handOn(platforms: readonly Platform[], x0: number, x1: number, y: number, to: number, width: number, most = Infinity): { state: 'ok' | 'open' | 'past'; run: { a: number; b: number; y: number }; first: Array<number | undefined> } {
+export function handOn(platforms: readonly Platform[], x0: number, x1: number, y: number, to: number, width: number, most = Infinity): { state: 'ok' | 'open' | 'past'; run: { a: number; b: number; y: number }; first: Array<number | undefined>; trail: Array<{ x: number; y: number; dir: -1 | 1 }> } {
   const solid = platforms.filter((p) => p.type === 'solid');
   const run = runOf(solid, x0, x1, y);
   // (a walled end is no way off: walledEnd)
   const offs = (r: { a: number; b: number; y: number }) => [offEnd(r.a, -1, width), offEnd(r.b, 1, width)].filter((x, i): x is number => x !== null && !walledEnd(platforms, i ? r.b : r.a, i ? 1 : -1, r.y)).map((x) => ({ x, l: catchUnder(platforms, x, r.y, 100000) }));
   const first = offs(run).map((o) => o.l);
+  const trail: Array<{ x: number; y: number; dir: -1 | 1 }> = [];
   let open = false;
   const todo = [run], seen = new Set([`${run.a} ${run.y}`]);
   for (let k = 0; k < todo.length && k < 60; k++) {
     for (const { x, l } of offs(todo[k])) {
+      trail.push({ x, y: todo[k].y, dir: x < todo[k].a ? -1 : 1 });
       if (l === undefined) continue;
       if (l - todo[k].y > most) { open = true; continue; }
-      if (Math.abs(l - to) <= 2) return { state: 'ok', run, first };
+      if (Math.abs(l - to) <= 2) return { state: 'ok', run, first, trail };
       if (l > to + 2) continue;
       const q = platforms.find((p) => p.type !== 'fragile' && Math.abs(p.y - l) < 0.5 && x >= p.x && x <= p.x + p.width)!;
       const r = q.type === 'solid' ? runOf(solid, q.x, q.x + q.width, l) : { a: q.x, b: q.x + q.width, y: l };
       if (!seen.has(`${r.a} ${r.y}`)) { seen.add(`${r.a} ${r.y}`); todo.push(r); }
     }
   }
-  return { state: open ? 'open' : 'past', run, first };
+  return { state: open ? 'open' : 'past', run, first, trail };
 }
 
 /**
@@ -777,7 +1004,12 @@ export function handOn(platforms: readonly Platform[], x0: number, x1: number, y
  * Each turn whose catch hands him past its storey, by name (empty: kept). `turns`: each going-down turn's vine x and storeys.
  */
 export function towerHandOns(turns: ReadonlyArray<{ x: number; from: number; to: number }>, platforms: readonly Platform[], width: number): string[] {
-  const out: string[] = [];
+  return handOnMisses(turns, platforms, width).map((m) => m.line);
+}
+
+/** towerHandOns' misses: each with the catch, the turn's storey and the ways off he was followed along (handOn's trail) */
+function handOnMisses(turns: ReadonlyArray<{ x: number; from: number; to: number }>, platforms: readonly Platform[], width: number): Array<{ line: string; c: Platform; turn: { x: number; from: number; to: number }; trail: Array<{ x: number; y: number; dir: -1 | 1 }> }> {
+  const out: Array<{ line: string; c: Platform; turn: { x: number; from: number; to: number }; trail: Array<{ x: number; y: number; dir: -1 | 1 }> }> = [];
   const solid = platforms.filter((p) => p.type === 'solid');
   for (const t of turns) {
     if (!(t.to > t.from)) continue;
@@ -786,8 +1018,29 @@ export function towerHandOns(turns: ReadonlyArray<{ x: number; from: number; to:
     if (!c) continue;
     const h = handOn(platforms, c.x, c.x + c.width, c.y, t.to, width);
     if (h.state === 'ok') continue;
-    out.push(`tower: a catch passes its storey: the catch at x ${Math.round(h.run.a)}-${Math.round(h.run.b)}, y ${Math.round(c.y)}, where the vine at x ${Math.round(t.x)} stops, hands him past its storey at y ${Math.round(t.to)} (${h.first.length ? `off its ends he lands at y ${h.first.map((y) => (y === undefined ? 'nothing' : Math.round(y))).join(' and ')}, and never comes down at its storey's height` : 'it runs wall to wall: no way off'})`);
+    out.push({ c, turn: { x: t.x, from: t.from, to: t.to }, trail: h.trail, line: `tower: a catch passes its storey: the catch at x ${Math.round(h.run.a)}-${Math.round(h.run.b)}, y ${Math.round(c.y)}, where the vine at x ${Math.round(t.x)} stops, hands him past its storey at y ${Math.round(t.to)} (${h.first.length ? `off its ends he lands at y ${h.first.map((y) => (y === undefined ? 'nothing' : Math.round(y))).join(' and ')}, and never comes down at its storey's height` : 'it runs wall to wall: no way off'})` });
   }
+  return out;
+}
+
+/** one miss of THE DOWN TOWER'S INVARIANT (downInvariant), by name: `line` is the verdict's own line; `piece` the wood it is of (the end's
+ *  piece, or the turn's catch); `at` the fall lines a landing would mend (the end's, or every way off the catch he was followed along) */
+export interface DownMiss { what: 'drop' | 'gives' | 'pass' | 'lid'; line: string; piece?: Platform; at: Array<{ x: number; y: number; dir: -1 | 1 }>; turn?: { x: number; from: number; to: number } }
+
+/**
+ * THE DOWN TOWER'S INVARIANT (ENG-CATCH-c, R-165.534; D154): going down, no piece end's fall line drops him more than TOWER.see (his landing
+ * is in view, D46: towerFalls), no piece gives way over a blind drop, no turn's catch hands him past the storey it serves (towerHandOns), and
+ * nothing lies in his hop's room (towerLids). Read with the vines where the stage will hang them (clearClimbs: climbX) and stop them
+ * (stopVines), so the lay (towerCatches, which keeps it) and the stage's verdict read one tower. Each miss by name; empty: kept.
+ * `turns`: the column's turn vines by id, with the storeys each joins (pipeline.ts turns).
+ */
+export function downInvariant(platforms: readonly Platform[], vines: readonly Vine[], turns: ReadonlyArray<{ id: number; from: number; to: number }>, floorY: number, width: number): DownMiss[] {
+  const hung = vines.map((v) => ({ ...v, x: climbX(v, platforms) }));
+  stopVines(hung, platforms);
+  const out: DownMiss[] = fallMisses('down', platforms, floorY, width).map((m) => (m.x === undefined ? { what: 'gives', line: m.line, piece: m.p, at: [] } : { what: 'drop', line: m.line, piece: m.p, at: [{ x: m.x, y: m.p.y, dir: m.x < m.p.x ? -1 : 1 }] }));
+  const T = turns.flatMap((t) => { const v = hung.find((q) => q.id === t.id); return v ? [{ x: v.x, from: t.from, to: t.to }] : []; });
+  for (const m of handOnMisses(T, platforms, width)) out.push({ what: 'pass', line: m.line, piece: m.c, at: m.trail, turn: m.turn });
+  for (const line of towerLids(hung, platforms)) out.push({ what: 'lid', line, at: [] });
   return out;
 }
 
@@ -857,17 +1110,22 @@ export function towerLids(vines: readonly Vine[], platforms: readonly Platform[]
  * `floorY`: the tower's floor (nothing is under it to catch; a piece standing on it is not judged).
  */
 export function towerFalls(flow: 'up' | 'down', platforms: readonly Platform[], floorY: number, width: number): string[] {
+  return fallMisses(flow, platforms, floorY, width).map((m) => m.line);
+}
+
+/** towerFalls' misses: each with its piece and, for an end, its fall line (x) */
+function fallMisses(flow: 'up' | 'down', platforms: readonly Platform[], floorY: number, width: number): Array<{ line: string; p: Platform; x?: number }> {
   const most = flow === 'up' ? TOWER.fall : TOWER.see;
-  const out = openEnds(platforms, floorY, most, width).map(({ p, drop }) => (flow === 'up'
+  const out: Array<{ line: string; p: Platform; x?: number }> = openEnds(platforms, floorY, most, width).map(({ p, x, drop }) => ({ p, x, line: flow === 'up'
     ? `tower: a fall off the piece at x ${Math.round(p.x)}-${Math.round(p.x + p.width)}, y ${Math.round(p.y)} drops ${drop === Infinity ? 'out of the tower' : `${Math.round(drop)} px`} (sound wood within ${TOWER.fall})`
-    : `tower: a blind drop off the piece at x ${Math.round(p.x)}-${Math.round(p.x + p.width)}, y ${Math.round(p.y)}: ${drop === Infinity ? 'nothing under it' : `${Math.round(drop)} px to its landing`} (in view: within ${TOWER.see})`));
+    : `tower: a blind drop off the piece at x ${Math.round(p.x)}-${Math.round(p.x + p.width)}, y ${Math.round(p.y)}: ${drop === Infinity ? 'nothing under it' : `${Math.round(drop)} px to its landing`} (in view: within ${TOWER.see})` }));
   // (a piece that gives way under him, a crumbling tile or a creaky limb: where it drops him, at its middle and a body in from each
   // end, sound wood catches him inside the same limit)
   for (const p of platforms) {
     if (p.type !== 'fragile' || p.y >= floorY - 1) continue;
     const xs = p.width > 64 ? [p.x + 24, p.x + p.width / 2, p.x + p.width - 24] : [p.x + p.width / 2];
     const drop = Math.max(...xs.map((x) => { const land = catchUnder(platforms, x, p.y, 100000); return land === undefined ? Infinity : land - p.y; }));
-    if (drop > most) out.push(`tower: the piece at x ${Math.round(p.x)}-${Math.round(p.x + p.width)}, y ${Math.round(p.y)} gives way over ${drop === Infinity ? 'nothing' : `a ${Math.round(drop)} px drop`} (sound wood within ${most})`);
+    if (drop > most) out.push({ p, line: `tower: the piece at x ${Math.round(p.x)}-${Math.round(p.x + p.width)}, y ${Math.round(p.y)} gives way over ${drop === Infinity ? 'nothing' : `a ${Math.round(drop)} px drop`} (sound wood within ${most})` });
   }
   return out;
 }
