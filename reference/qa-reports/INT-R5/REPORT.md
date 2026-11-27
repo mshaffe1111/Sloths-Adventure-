@@ -21,7 +21,12 @@ line on the fix head, the freeze and the full set. Do, in order:
    (release.md step 6's widened grep, 185 files), `validate` and `world1` (inherited, not in CI, R-165.531). knowncheck must show
    depthSteps SHRUNK (108 -> 0); lockall's moves named against box 2's list (2-6, 2-7, 1-4, the 29 hints-only stages; the view line is a
    2-6 hints change).
-4. The §6 table, the test link PRE-BUILT and not published. STOP before the PR.
+4. **The lead's lane rulings (its message to box 3, from INT-R5-b's discovery 1ad2d020c):** buildcheck (1-1 Normal p95, budget 150 ms at CPU
+   x4) is noisy at its budget, main too (4bf2cbaaa alone 172 FAIL; ab5673531 alone 172/127/148/146): run it ALONE with no other lane running;
+   one FAIL gets 2 re-runs alone, report all; two FAILs of three is a red. clipcheck: ALONE too. The CI tool line: its own lane (3529 s
+   loaded; a lane hit the 2 h limit). Every other discovery gate passed on ab5673531; castbots27, funcheck, fundiff, tierBots were re-running
+   in INT-R5-b's tail (results to the lead and to the next member).
+5. The §6 table, the test link PRE-BUILT and not published. STOP before the PR.
 
 ## Box 3 (INT-R5-c) done, with the evidence
 - **Fix 4, goalsEasy.test.ts (fc31f6e1f):** the kidRuns pin [3,5,6,7,6,5] is gone; the test holds R-165.496's rule: 5-9's entry uses
