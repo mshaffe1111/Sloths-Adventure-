@@ -168,3 +168,6 @@ main; no test bar, plant bar or rule changed) and goes on, saying so first in it
 branch, change a test bar or change a rule still waits. (The lead's worker restarted on 11-26 and five lanes sat 30-60 minutes.)
 - A packet that rebuilds a proven seed list runs release.md step 6's WIDENED pin grep (firstTimer( / castRun( / RealPlay in src and tools;
   CI #98) on the rebuilt head, and re-pins any red by PROPERTY, never by the old roll.
+- THE LOCK GATE is two runs, spelled out (CI #100): `npx tsx tools/engine/lockall.ts --layouts 16 --out <base>.json` on the LANDING BASE,
+  then `--layouts 16 --check <base>.json` on the frozen candidate. A bare `--check` compares nothing and exits 0; a lock result without its
+  counts line (N/102 unchanged, the moved stages named) is NOT RUN.
