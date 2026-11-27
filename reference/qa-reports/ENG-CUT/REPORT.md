@@ -5,10 +5,9 @@ DONE THIS BOX: the path is built and pushed (513e80707, a8ea8593e); toys red-the
 upright and sideways at 2x (below), sent to the lead to JUDGE. NOT YET RUN: the heavy gates. The next box, in order, on a FROZEN worktree
 of this head (D115: `git worktree add --detach <scratch>/frz <head>`, node_modules symlinked; src/game/gen2/proven/ writable):
 1. ReadNotifications; read the lead's verdict on the stills (law 2). If the lead sends the still back, fix first.
-2. `gunzip -k reference/qa-reports/ENG-CUT/lock-base-a0d85e961.json.gz` (recorded on a frozen a0d85e961: 3,264 builds of 102 stages,
-   `lockall --layouts 16 --out`), then ONE run: `npx tsx tools/engine/lockall.ts --layouts 16 --check <that json>`. Expected: NO stage
-   moves (no listed stage lays a non-World-1 cut: invCut.test prints 0 such pieces on 16 listed stages; the bank change touches only such
-   pieces). Record its counts here.
+2. DONE this box: lockall --layouts 16 --check (ONE run) on a frozen 0a584713a (src = this head's) against the frozen a0d85e961 lock
+   (lock-base-a0d85e961.json.gz, 3,264 builds of 102 stages): "102/102 stages unchanged", exit 0 (it also lists 39 gen2 stages that
+   "gained verdicts and drops (not hashed)": printed by the check, not a move). Re-run only if src changes.
 3. In the background, each to a log: the suite in 6 shards (`--test-shard=i/6`, the CLAUDE.md list); the deploy build
    (`BASE_PATH=/Sloths-Adventure-/ npx vite build`) then chunkcheck; drawcheck; the CI tool line (tools tests, tipwalk, storyTipScan,
    teachFirstScan, registrycheck, tierBots, buildcheck, kbdcheck, seedlist --check). Name reds inherited from a0d85e961 by re-running
@@ -48,7 +47,8 @@ of this head (D115: `git worktree add --detach <scratch>/frz <head>`, node_modul
 - invCut.test.ts 7/7; art tests + w1CutArt + w1Overhang run with this box (invDress.test's message regex now allows the added folder).
 
 ## Gates this box (fast ones only; the heavy ones are the next step)
-tsc 0. generalitycheck PASS (26 literals, 26 known). artcheck PASS. knowncheck PASS. artUse.test RED, INHERITED (same two on a0d85e961).
+tsc 0. generalitycheck PASS (26 literals, 26 known). artcheck PASS. knowncheck PASS. Art tests (src/game/art/*.test.ts + w1CutArt +
+w1Overhang): 41 pass, 0 fail. lockall --check: 102/102 unchanged (above). artUse.test RED, INHERITED (same two on a0d85e961).
 
 ## Polish check (the stills: reference/qa-reports/ENG-CUT/reed-isle-newpath-upright-2x.jpg, -sideways-2x.jpg)
 Shot on the real 2-8 build (designed layout) by cutstill.mjs (here), with a scratch-only build hook (stageGenerator.generateStage
