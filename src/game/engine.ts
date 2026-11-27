@@ -137,7 +137,7 @@ import { drawKitDecor } from './puzzleArt.ts';
 import { drawDress } from './dressArt.ts';
 import { drawInvDress } from './art/invDress.ts';
 import { drawWaterSign, signRattle } from './waterSign.ts';
-import { ROOM_CAM, roomCentre, roomFloor, roomLean, roomView } from './puzzleCamera.ts';
+import { earOf, ROOM_CAM, roomCentre, roomFloor, roomLean, roomView, roomZoomStep, type CamEar } from './puzzleCamera.ts';
 /** no World 5 pieces for Dot to point at (any other world) */
 const NO_W5_THINGS: readonly never[] = [];
 /** over a stacked leg's earth (stackViewFloor), the lowest share of the view his feet may sit at when the view's foot is held up */
@@ -180,6 +180,8 @@ import {
 } from './rules.ts';
 import { InputEngine } from './inputEngine.ts';
 import { sound } from './audio.ts';
+import type { DrumBeat } from '../audio/drum.ts';
+import { drumDoubled, tempoBeat, type TempoSpec } from './tempo.ts';
 import { FIND_BY_ID } from './finds.ts';
 import { bossMaterial, materialFor } from '../audio/combat.ts';
 import { FEET, endStagger, isPredator, staggerPredator, stepPredator, stepSpider, turtleGuard } from './predatorAI.ts';
@@ -632,6 +634,17 @@ export class GameEngine {
   private readonly breathLags = new Map<string, number>();
   private breathWatch: BreathWatch[] = [];
   private get gameTime(): number { return this.clock.time(); }
+  /** the court's drum (2-9.md NEW 2, R-165.449): the stage's beat on this run's setting, made once per tempo */
+  private drumBeat: { t: TempoSpec; b: DrumBeat } | null = null;
+  /** every step on a stage with a tempo (after the clock's step, and through a lost life's down, where game time stands): the drum's
+   *  hits are put on the audio clock where game time will reach them (audio/drum.ts DrumSchedule) */
+  private drumStep() {
+    const t = this.currentStage.tempo;
+    if (!t) return;
+    if (this.drumBeat?.t !== t) this.drumBeat = { t, b: { beats: t.beats, beat: tempoBeat(t, this.easy) } };
+    // (the twist, ENG-29-e G1: doubled while his middle is inside a span the brief's mark laid, tempo.ts drumDoubled, on both settings)
+    sound.drumTick(this.drumBeat.b, this.gameTime, drumDoubled(t, this.player.x + this.player.width / 2));
+  }
   private set gameTime(t: number) { this.clock.seek(t); }
   private standingOnId: number = -1;
   private riverHinted = false;
@@ -1800,9 +1813,11 @@ export class GameEngine {
     // a life lost: the world holds for the beat (AN-1; in update, so the bots that play the engine directly have it too)
     if (this.down) {
       this.stepDown(dt);
+      this.drumStep();
       return;
     }
     this.clock.step(dt);
+    this.drumStep();
     // (a breathing row aimed at his last put-back: when he reaches its mark, the pace he came back at is kept for the next: breathAim.ts)
     if (this.breathWatch.length) this.breathWatch = noteArrivals(this.breathWatch, this.player.x + this.player.width / 2, this.clock.time(), this.breathLags);
     this.irisOpen = Math.max(0, this.irisOpen - dt);
@@ -4901,7 +4916,8 @@ export class GameEngine {
         markTipHeard(FIRST_OF_STAGE, `cast:${way}`);
         this.guide(line, 4);
       }
-      p.enemiesDefeated++;
+      // (a foe the goal does not name, Enemy.uncounted, moves no count: goals.ts goalCounts leaves him out of the total too)
+      if (!e.uncounted) p.enemiesDefeated++;
       if (!e.minion && e.type !== 'boss' && e.type !== 'ant_hazard') this.statKills[e.type] = (this.statKills[e.type] ?? 0) + 1;
       recorder.event('chasedOff', e.type);
       sound.playWhoosh();
@@ -5270,7 +5286,7 @@ export class GameEngine {
     e.koTimer = 0;
     e.koAngle = 0;
     e.koLanded = false;
-    p.enemiesDefeated++;
+    if (!e.uncounted) p.enemiesDefeated++;
     if (e.groundY === undefined) e.groundY = e.y;
     if (isPredator(e.type)) staggerPredator(e); // open crouch pose, then the hop and flop
     const ko = koLaunch(e, dir);
@@ -5808,6 +5824,8 @@ export class GameEngine {
     this.player.vx = 0;
     this.camera.trauma = Math.max(this.camera.trauma, 0.25);
     this.down = { t: 0, reason, last };
+    // (game time stops here: the drum's hits not yet sounded are cut, put back on their beats when it runs again)
+    if (this.currentStage.tempo) sound.drumHold(this.gameTime);
   }
 
   /** the life-lost beat, one frame: when it is over, the flag (or the Game Over card) */
@@ -6378,7 +6396,7 @@ export class GameEngine {
         //  river's box above ends there, one clip, DRESS-27b)
         if (painted && drawSafeRiverOver(ctx, logs, r.surfaceY, t, r.dir, r.speed)) {
           for (const lg of logs) {
-            if (lg.drift?.look === 'raft') continue;
+            if (lg.drift?.look === 'raft' || lg.drift?.look === 'barge') continue;
             const ly = safeLogLine(lg, t);
             for (let x = lg.x + 22; x < lg.x + lg.width - 8; x += 50) drawRiverFoam(ctx, Math.round(x / 50) + lg.id, x, ly + 2, 56, 0.75, (lg.id + Math.round(x / 50)) % 2 === 0);
           }
@@ -6744,7 +6762,7 @@ export class GameEngine {
     }
     // a puzzle room (puzzleCamera.ts): the view leans from him toward the part of the puzzle that matters now, or goes to a far gate
     // that has just opened; outside every room this is nothing
-    const kf = !look && this.kit ? this.kit.camFocus(p, vw * this.roomZoom, vh * this.roomZoom, this.roomFloorNow()) : null;
+    const kf = !look && this.kit ? this.kit.camFocus(p, vw * this.roomZoom, vh * this.roomZoom, this.roomFloorNow(), this.kitEars()) : null;
     if (kf) {
       // (moved from the lean point just enough to keep the key box in: the stone, its basket and the cage it lifts, all at once)
       const lean = roomLean(p.x, p.y - 45, kf.x, kf.y);
@@ -6862,7 +6880,8 @@ export class GameEngine {
     // back by 60 px or more, and on 5-4's long silk lines upright (320 x 782) he swung out past the left edge (QA v200). The framing is
     // the aim's; this only keeps his whole body (and a little room) inside while the camera catches up (cameraFollow.ts keepHeroX)
     const teaK = this.teaAimK();
-    const kept = keepHeroX(this.camera.x, p.x, vw);
+    // (a puzzle room's pan to a far gate or to the far guards a bell calls goes there for a moment, leaving him: puzzlePlay.ts ring, ENG-CAM29)
+    const kept = this.roomAim?.pan ? this.camera.x : keepHeroX(this.camera.x, p.x, vw);
     this.camera.x = kept + (this.camera.x - kept) * teaK;
     // (and on a widened swing the eased camera keeps ALL of his drawn pose in, behind him too: SWING_CAM.body, cameraFollow.ts)
     if (sv && this.swingWide > 1) {
@@ -9607,6 +9626,12 @@ export class GameEngine {
     }
   }
 
+  /** the watchers that hear the kit's noises (noise.ts: the turtles and royal guards, line 'e.lureX'), for a room's camera; none outside */
+  private kitEars(): CamEar[] {
+    if (!this.kit || this.kit.inRoom < 0) return [];
+    return this.enemies.filter((q) => q.type === 'turtle' && !q.defeated).map((q) => earOf(q.x, q.y));
+  }
+
   /** the most a puzzle room may pull back now, of the usual zoom (puzzleCamera.ts roomFloor: further upright than sideways) */
   private roomFloorNow(): number {
     return roomFloor(this.viewCssW, this.viewCssH, this.roomUsual);
@@ -9618,11 +9643,11 @@ export class GameEngine {
     // (the Butler's sleepy steam: the drowsy veil, as World 5's teapots give it)
     this.drowsy = Math.max(this.drowsy, this.kit!.sleepy());
     const cam = this.camera;
-    const kf = this.kit!.camFocus(this.player, cam.viewportWidth * this.roomZoom, cam.viewportHeight * this.roomZoom, this.roomFloorNow());
+    const kf = this.kit!.camFocus(this.player, cam.viewportWidth * this.roomZoom, cam.viewportHeight * this.roomZoom, this.roomFloorNow(), this.kitEars());
     const want = kf ? (kf.pan ? this.roomZoom : kf.zoom) : 1;
     const prev = this.roomZoom;
-    this.roomZoom += (want - this.roomZoom) * Math.min(1, dt * ROOM_CAM.ease);
-    if (Math.abs(want - this.roomZoom) < 0.002) this.roomZoom = want;
+    // (eased, with the view's size changing at most ROOM_CAM.slew a second: puzzleCamera.ts roomZoomStep)
+    this.roomZoom = roomZoomStep(prev, want, dt, Math.max(cam.viewportWidth, cam.viewportHeight) * prev);
     if (this.roomZoom !== prev) this.applyZoom();
   }
 

@@ -74,7 +74,8 @@ export function goalCounts(st: Stage): { petals: number; animals: number; rescua
     //  (Collectible.walked false, petals.ts markWalked; the lead's ruling INT-10d 11-15) is a bonus: shown and counted when picked, never
     //  what the door asks for)
     petals: st.collectibles.filter((x) => (x.type === 'flower' || x.type === 'leaf') && !x.arc && x.walked !== false && !onCrumbling(x, st.platforms)).length,
-    animals: st.enemies.length + ring + guards,
+    // (a foe marked uncounted, a posted sentry (Enemy.uncounted), is never the goal's)
+    animals: st.enemies.filter((e) => !e.uncounted).length + ring + guards,
     rescuable: c((t) => t === 'cage') + (st.proto?.w5?.cocoons?.length ?? 0),
     relics: c((t) => t === 'relic'),
   };

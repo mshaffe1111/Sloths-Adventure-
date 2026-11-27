@@ -25,6 +25,45 @@ Merged at INT-14 (11-20, t-int-14): §0zq-25d/§0zq-25c ENG-25c (2-5's snap rows
 - Toys: flood.test.ts (the clock), floodLay.test.ts (the lay, '@flood' through the pipeline on toy 2-96), nodeAsks.test.ts, lineBot.test.ts
   teachRun (every tier: the bots and the line through a rising teach marsh on 2-3's engine row).
 
+## 0zs-TEMPO. ENG-29 (t-eng-29, sessions a-d, 11-25/11-26): 2-9's court TEMPO and the DRUM you hear (R-165.449), built ahead of 2-9
+- THE TEMPO (NEW 1): GraphBrief.tempo (gen2/types.ts: beats, bar, easyStretch, lock) is laid LAST in gen2's finish (pipeline.ts
+  layChaseStage -> tempo.ts layTempo): every swinging liana swings the bar on this setting with its phase the lock, then tempoFaults names
+  every clock off the beat IN WORDS (the river 'a log every 2.78 s is not a whole number of beats', the liana, stage clocks, snap stones'
+  stagger, breathing rows, wheels) into gen2's errors, so an off-beat roll is refused. The built stage carries `tempo` (stageGenerator.ts).
+  A river row's own Easy numbers: RiverRow.easy + riverRowOn (riverLay.ts), never a stretched speed. Lianas keep the bar after a flag
+  resume because engine.ts vineClock IS game time (vineShift is a test seam only).
+- THE LOCKED LET-GO (ENG-29d): the liana and its river keep ONE clock, so a waiting player meets one pairing of them, never every pair:
+  riverLay lianaDrops (free clocks: the grid of every pair) is the wrong judge there. lockedDrops(v, logs, difficulty) reads one joint
+  cycle (the press at swing clock pt against the river at that game time): share, wait, window (longest run that lands) and `one` (a press
+  on the drum's ONE lands, every swing). lockedLianas(st, difficulty) walks every log river in its rightward frame. tempoFaults names a
+  court liana whose press on ONE misses ('a press on ONE misses its logs on every bar'); gen2 then refuses the roll (lock 0.15 plants it).
+  A clock only WEIGHT pads read is skipped: its count runs only while he stands on that pad (ride.ts 'weight'), it keeps no bar.
+- THE BOT ON A COURT (ENG-29d, tools/inspect/firsttimer.ts liana branch, onOne): a let-go only at the forward end (LET_GO_AT) that misses
+  the logs misses on EVERY bar on a locked court: the middle Easy and the expert Normal hung on a liana to a rescue (also on the same court
+  with no tempo: 2-4's 2.85 s swing and the court river's 2.85 s log are locked anyway). On a stage with a tempo, after a whole swing he
+  presses on the drum's ONE (his thumb's lag ahead) when that press lands. Keyed on the stage's tempo: no listed stage's bot moves.
+- THE DRUM (NEW 2), its path: engine.ts drumStep (every step on a stage with a tempo, after the clock's step AND through a lost life's down,
+  where game time stands) -> sound.drumTick(beat, gameTime) (game/audio.ts) -> conductor.ts drumTick -> audio/drum.ts DrumSchedule.step
+  (re-anchors game time to the audio clock each step: at = audioNow + (g - gameNow)) -> drumVoice: ONE a BOOM (instruments taiko), 2-4 a
+  tok (woodblock), on one bus to the effects bus. drumHits(beat, g0, g1, doubled): hit k exactly k * step, by index (a minute drifts by
+  nothing). engine.ts loseLife calls sound.drumHold(gameTime): every hit not yet sounded is cut (the bus faded in 20 ms), and the next bus
+  starts on a beat of the new distance.
+- TRAPS: (1) THE LAYERING: src/audio imports nothing of the game (no tempo.ts): the engine hands the beat in (drumBus.test plants an
+  import of tempo.ts in drum.ts and names the file). (2) DRUM_AHEAD is THREE frames: the engine catches a late frame up in up to three
+  steps in one audio moment (a 2-frame stall), so every hit a stall passes must already be on the audio clock; two frames ahead lands a
+  stall's hits late (drum.test 'late frames'). The hold cuts what is ahead, so a longer lookahead never sounds through a down. (3) DRUM_JUMP
+  0.25 s: game time that moves more in one step jumped (a restart, a resume): it re-anchors, never bursts the beats it skipped. (4) A doc
+  comment naming listed.ts's test seam fails listed.test's plain text scan: say 'the test seam' (w2TempoToy.ts, ENG-29d step 0).
+- THE TOY: src/game/gen2/worlds/w2TempoToy.ts (id 2-90: 2-4's kit cut to its drops, every river on World 2's `court`, a pond of snap stones;
+  opts court/stones/tempo/pads: COURT_PADS is 2-9.md's run-pitch row, 4 small pads 190 px a beat, in place of the stones). Tests:
+  gen2/tempoToy, gen2/tempo, tempo, tempoResume, drum, drumBus, drumEngine (src), tools/inspect/tempoToys.test (the cast, CI's tool line).
+  The cast: `npx tsx tools/inspect/tempoToys.ts --seeds 1-4 [--pads]`.
+- OPEN (READY-29): 2-9.md's locked window numbers (2.00 s Normal, 2.40 s Easy, measured on 2-1's liana) are not a gate: the toy's 2-4
+  lianas measure 1.23 s Normal and 1.97 s Easy at the lay's lock; 'river 5 frames ahead of the swing; Easy 0' has no data path (one lock);
+  Easy's 50 px pad water has no data path (a pad row has one gap); the twist's `doubled` has no cue; hitstop and slow motion step game time
+  slower than the audio clock (at most 3 frames of hits sound early there; 2-9 has neither on the court); the drum is heard only on the
+  real page (no listening check yet).
+
 ## 0zs-SOIL. FIX-SOIL-b (t-fix-soil from main cdffdc627, 11-25; final code head 539885c37): a hung bank's soil stops at its own bottom over a painted underside (R-165.441)
 - THE CAUSE: drawGround paints banks lowest first and drawBankArt ran a bank's soil to the view's bottom, so a HIGH bank's soil was one
   column over every floor under it (SHIPPED 1-4's summit, every build; 2-6 beat A on t-build-26). paintcheck passed it: it judged the

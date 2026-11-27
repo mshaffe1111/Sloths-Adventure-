@@ -17,6 +17,7 @@
 import { hintDue } from '../hintDue.ts';
 import { layPacer } from './pacerLay.ts';
 import { layFlood } from './floodLay.ts';
+import { doubleSpans, layTempo } from '../tempo.ts';
 import { raceEndsOf, type RaceEndSaid, type RaceEnds } from '../pacer.ts';
 import { layPost } from './postLay.ts';
 import { layColumnDress } from './columnDressLay.ts';
@@ -51,7 +52,7 @@ import { fastFloor, MODEL_FAST, MODEL_TYPICAL, modelStage, targetSeconds, TIME, 
 import type { Collectible, Enemy, LevelConfig, Platform, Rope, Vine } from '../types.ts';
 import { goalCountsPetals, heldEasyGoal } from '../goals.ts';
 import { ROPE_MIN_GAP, ROPE_OVERLAP, ROPE_RISE } from '../rope.ts';
-import { layRiver, riverFaults, riverWidth } from './riverLay.ts';
+import { layRiver, riverFaults, riverRowOn, riverWidth } from './riverLay.ts';
 import { layPads, padFaults, padRowWidth, snapFaults, PAD_LAY } from './rideLay.ts';
 import { castDef } from '../predators/registry.ts';
 import { checkOnClock } from '../predators/core.ts';
@@ -1445,7 +1446,7 @@ export function layLocal(tpl: SectionTemplate, budget: StageBudget, rng: Rng, mi
       // a RIVER (ENG-W2b; riverLay.ts): the far bank the row's river width past `after`, level with it (the logs sit evenly round the window
       // only at that width); the water between is laid in layStage, where the ropes are hung, from the same row. Nothing under the water:
       // the river zone takes a fall (a life on a deep row, set back on `after` on a safe one). The crossing is asked as a ride, never a jump
-      const row = lo.rivers?.[pl.row];
+      const row = lo.rivers?.[pl.row] && riverRowOn(lo.rivers[pl.row], budget.difficulty);
       if (!row) throw new Error(`gen2 section ${tpl.id}: ${pc.key} lays river row "${pl.row}" and world ${budget.world} has no river row of that name (WorldManifest.rivers)`);
       if (mirrored) throw new Error(`gen2 section ${tpl.id}: ${pc.key} lays a river in a mirrored section, which is not mirrored yet (its current is the row's)`);
       // (`after` a LIANA (ENG-24, reference/design/2-4.md NEW 1): the liana's landing is the river. The water runs from the bank the liana
@@ -2887,7 +2888,7 @@ export function layStage(budget: StageBudget, graph: MissionGraph, kit: WorldKit
       // the check, so levelCheck and riverFaults judge the logs the game plays)
       for (const lp of L.pieces) {
         if (!lp.river) continue;
-        const row = M.rivers?.[lp.river.row];
+        const row = M.rivers?.[lp.river.row] && riverRowOn(M.rivers[lp.river.row], budget.difficulty);
         if (!row) throw new Error(`gen2 section ${tpl.id}: ${lp.key} lays river row "${lp.river.row}" and world ${budget.world} has no river row of that name`);
         const near = pieceOf(lp.river.from), far = pieceOf(lp.key);
         // (a tower's storey that runs left lays it the other way round, crossed right to left (riverLay layRiver way -1, ENG-26c); a run's
@@ -3641,6 +3642,9 @@ export function fillSockets(laid: Laid, budget: StageBudget, kit: WorldKit, seed
   const pickLeft = new Map([...(nodeAsks ?? [])].flatMap(([node, a]) => (a.dials?.reward?.pickups !== undefined ? [[node, { left: a.dials.reward.pickups }] as [string, { left: number }]] : [])));
   const threatLeft = new Map([...(nodeAsks ?? [])].flatMap(([node, a]) => (a.dials?.threat ? [[node, a.dials.threat.map((k) => ({ kind: k.kind, left: k.count }))] as const] : [])));
   const foes: Array<RoutePiece & { e: Enemy; fill: FilledSocket; sec: PlacedSection; /** its socket says `easy: 'stay'`: Easy's count cut passes it by */ stay?: true }> = [];
+  /** posted sentries (a row tagged 'posted'): laid where their sockets stand, fixed in the spacing, never cut; a socket with no ground is named */
+  const posted: Array<RoutePiece & { e: Enemy; c: CreatureDef; fill: FilledSocket; sec: PlacedSection }> = [];
+  const postedMiss: string[] = [];
 
   for (const [si, sec] of laid.sections.entries()) {
     // (Normal's threat on both difficulties, so the sockets roll alike; Easy's 60% is a count cut after the spacing, below. Props with
@@ -3695,6 +3699,21 @@ export function fillSockets(laid: Laid, budget: StageBudget, kit: WorldKit, seed
         const paid = want && !!def && (def.threat ?? 0) <= threat;
         if (paid) threat -= def!.threat ?? 0;
         fillProp(sec, k, paid && !(dropOnEasy && def!.hazard) ? what : null);
+      } else if (s.role === 'enemy' && s.allow?.length && M.creatures.some((cr) => cr.tags?.includes('posted') && s.allow!.includes(cr.id))) {
+        // (a POSTED sentry (a row tagged 'posted', ENG-29-e G2; 2-9's royal guard on the barge's landing): the designer's, laid where the
+        //  socket stands on BOTH settings, never drawn from the bag, paid from no threat and never cut on Easy; he stands at his post
+        //  (no patrol) facing the nearest river's water, and is no foe of the goal (his row's Enemy.uncounted). Fixed in the spacing)
+        const c = M.creatures.find((cr) => cr.tags?.includes('posted') && s.allow!.includes(cr.id))!;
+        const pf = patchFor(k.x, k.piece, safe, c.minGround, clear.get(k.piece));
+        if (!pf || foeInZone(sink.zones, pf.at, k.piece.y - (c.footY ?? c.h / 2))) {
+          const why = !pf ? `no clear ground at x ${R(k.x)} (a safe spot's reach or the piece's jumps leave under ${c.minGround} px)` : `x ${pf.at} is in a zone`;
+          postedMiss.push(`${sec.uid}/${s.id}: ${c.id} has ${why}`);
+          continue;
+        }
+        const e = makeEnemy(c, pf.at, k.piece.y, [pf.at, pf.at], sink.nextEnemyId(), false);
+        e.post = postFacing(laid.rivers, pf.at, c.extra?.post ?? -1);
+        e.facing = e.post;
+        posted.push({ x: pf.at, kind: c.id, e, c, sec, fill: { section: sec.uid, socket: s.id, role: 'enemy', what: c.id, x: pf.at, y: k.y } });
       } else if (s.role === 'enemy') {
         const pick = creatureBag.draw();
         // (a node whose code names its threat, nodeAsks.ts: its sockets take only the kinds it names, up to their counts, whatever the
@@ -3789,13 +3808,13 @@ export function fillSockets(laid: Laid, budget: StageBudget, kit: WorldKit, seed
   const legs = new Map((route?.legs ?? []).map((g) => [g.uid, g]));
   const beats: RoutePiece[] = laid.sections.flatMap((s) => s.beats.map((b) => ({ x: route ? legs.get(s.uid)!.s0 + Math.min(legs.get(s.uid)!.len, Math.abs(b.x - s.entry.x)) : b.x, kind: `beat:${b.letter}`, ...(b.group ? { group: b.group } : {}) })));
   const worldX = new Map<RoutePiece & { fill: FilledSocket }, number>();
-  if (along) for (const p of [...foes, ...props]) { worldX.set(p, p.x); p.x = along(p.x, p.fill.y); }
+  if (along) for (const p of [...foes, ...props, ...posted]) { worldX.set(p, p.x); p.x = along(p.x, p.fill.y); }
   const spaced = poissonPlace<RoutePiece>(foes, {
     rng,
     minGap,
     minGapAny: ANY_APART,
     maxGap: budget.quiet * budget.walkSpeed,
-    fixed: [...props, ...beats],
+    fixed: [...props, ...beats, ...posted],
     start: route ? OPEN_SECONDS * budget.walkSpeed : laid.spawn.x + OPEN_SECONDS * budget.walkSpeed,
     end: route ? route.length - 200 : laid.exit.x - 200,
   });
@@ -3825,7 +3844,15 @@ export function fillSockets(laid: Laid, budget: StageBudget, kit: WorldKit, seed
     //  it, or keptFoes, which finds an animal by its fill's x, reads it as dropped and Easy lays none there)
     if (R(f.e.x) !== f.fill.x) f.fill.x = R(f.e.x);
   }
-  const topped = topUpFoes(laid, budget, kit, seed, sink, safe, openX, [...foes.filter((f) => kept.has(f)), ...props]);
+  // (the posted sentries, every one, after the bag's: the spacing held them fixed. One with no ground is named on the built stage)
+  for (const f of posted) {
+    sink.enemies.push(f.e);
+    fills.push(f.fill);
+    f.sec.beats.push({ x: f.x, letter: 'C' });
+    kit.spawn?.(f.e, f.c, sink);
+  }
+  for (const m of postedMiss) fills.push({ section: m.split('/')[0], socket: m.split('/')[1].split(':')[0], role: 'enemy', what: null, x: 0, y: 0, unposted: m });
+  const topped = topUpFoes(laid, budget, kit, seed, sink, safe, openX, [...foes.filter((f) => kept.has(f)), ...props, ...posted]);
   fills.push(...topped);
   // (a node whose code asks for creatures (`&`, `&&`, `:&kind*n`, nodeAsks.ts) that its sockets did not lay, in a world whose pieces
   // carry no socket for them (World 1 has none): the rest walk the node's own main pieces, as a purge's top-up walks the stage's,
@@ -4090,7 +4117,21 @@ function topUpFoes(
  */
 export function castRows(M: WorldManifest, id: string): readonly CreatureDef[] {
   const cast = M.graphs?.briefs?.[id]?.cast;
-  return cast?.length ? M.creatures.filter((c) => cast.includes(c.enemy)) : M.creatures;
+  // (a POSTED row (tag 'posted', ENG-29-e) is never in the bag: a socket that names it lays it where the designer put it, fillSockets,
+  //  so a world's list can hold one without re-dealing a socket of any stage that does not name it)
+  const bag = M.creatures.filter((c) => !c.tags?.includes('posted'));
+  return cast?.length ? bag.filter((c) => cast.includes(c.enemy)) : bag;
+}
+
+/** the way a posted sentry laid at `x` faces: toward the nearest river's water (he guards it), else `fallback` (its row's) */
+export function postFacing(rivers: readonly Pick<RiverZone, 'x0' | 'x1'>[], x: number, fallback: 1 | -1): 1 | -1 {
+  let best: { d: number; way: 1 | -1 } | undefined;
+  for (const r of rivers) {
+    const d = x < r.x0 ? r.x0 - x : x > r.x1 ? x - r.x1 : 0;
+    const way: 1 | -1 = x < r.x0 ? 1 : x > r.x1 ? -1 : fallback;
+    if (!best || d < best.d) best = { d, way };
+  }
+  return best?.way ?? fallback;
 }
 
 /** the cast record a built stage carries: only when its brief names a cast (nothing is written on any other stage). A brief that teaches
@@ -4334,7 +4375,13 @@ function layChaseStage(st: Gen2Stage, piecesOf: (uid: string) => ReadonlyArray<{
   const dressSpec = st.gen2.brief?.columnDress;
   const dressed = dressSpec ? layColumnDress(st.gen2.tower?.legs ?? [], dressSpec) : { problems: [] };
   if (dressed.dress) st.columnDress = dressed.dress;
-  return [...chase.problems, ...r.problems, ...paced.problems, ...ended.problems, ...flooded.problems, ...posted.problems, ...dressed.problems];
+  // (a brief's tempo, last: every liana locked to the bar, then every clock the stage laid held to it, each one off named, tempo.ts)
+  const tempo = st.gen2.brief?.tempo;
+  const timed = tempo ? layTempo(st, tempo, easy) : { problems: [] };
+  // (the twist, ENG-29-e G1: the brief's section mark laid as the x spans where the drum doubles, tempo.ts doubleSpans)
+  const doubled = tempo ? doubleSpans(tempo, st.gen2.sections) : { problems: [] };
+  if (tempo) st.tempo = doubled.spans ? { ...tempo, double: doubled.spans } : tempo;
+  return [...chase.problems, ...r.problems, ...paced.problems, ...ended.problems, ...flooded.problems, ...posted.problems, ...dressed.problems, ...timed.problems, ...doubled.problems];
 }
 /** a graph with asks: each node's sections as laid (content type, the double, exit less entry height), read by applyVerdicts */
 const LAID_NODES = new WeakMap<Gen2Stage, Map<string, Array<{ content?: string; double: boolean; dy: number; clocked?: true }>>>();
@@ -4665,6 +4712,8 @@ export function rollErrors(g: Pick<Gen2Stage['gen2'], 'errors' | 'fills' | 'loos
   // (a tip whose id has no Dot line fails the roll: it was never shown)
   const unsaid = [...new Set(st.gen2.fills.filter((f) => f.role === 'tip' && f.unsaid).map((f) => f.what))];
   if (unsaid.length) st.gen2.errors.push(...unsaid.map((m) => `tip "${m}" has no Dot line in the kit's tips`));
+  // (a posted sentry's socket with no ground to stand on, ENG-29-e: named, never laid elsewhere)
+  st.gen2.errors.push(...st.gen2.fills.filter((f) => f.unposted).map((f) => `posted: ${f.unposted}`));
   // (Law 22, R1 §4.1, the lead's 7:00 PM ruling: a slot its rules could not fill FAILS the roll, the missing piece named; never a looser
   // rule and never a re-roll. The stage is still returned, for the report; its errors say why it fails)
   if (st.gen2.loosened?.length) st.gen2.errors.push(...st.gen2.loosened.map((l) => `pool short at ${l.replace(/, filled by its (job|phase)\)$/, ')')}`));

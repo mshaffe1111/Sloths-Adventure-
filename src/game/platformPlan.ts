@@ -128,7 +128,8 @@ export function baseLook(p: Platform): ThinLook {
   if (p.type === 'bouncy') return 'toadstool';
   if (p.type === 'moving') return 'raft';
   // (a river of rafts, RiverRow.look 'raft' (R-165.288): its carriers are the raft itself, drawn by the raft painter, never a log)
-  if (p.type === 'drift') return p.drift?.look === 'raft' ? 'raft' : 'drift';
+  // (and a barge row's, look 'barge': the code-drawn barge stands in for the painted one, ENG-29-e)
+  if (p.type === 'drift') return p.drift?.look === 'raft' ? 'raft' : p.drift?.look === 'barge' ? 'barge' : 'drift';
   switch (p.style) {
     case 'fungus_shelf': return 'shelf';
     case 'canopy_bridge': return 'bridge';

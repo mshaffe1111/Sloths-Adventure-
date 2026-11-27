@@ -348,7 +348,7 @@ test('on the run it was found on, 2-1 child Easy seed 2: landing on a small log 
   assert.equal(r.rescues, 0, `no rescue (${r.rescues})`);
 });
 
-test('on the run it was found on, 2-4 child Normal seed 8: the run-up\'s jump (SKILLS.runUp: runPress passed at every lag, then the judged press) is held at least as long as runPress judged it; the row ends at the shrine with no rescue (c24; RED on c23 ccca3d305: flown at flickHold\'s draw, 0.065 / 0.093 / 0.114 s against the 0.16 judged, he peaked under the liana\'s foot and fell in, rescued)', () => {
+test('on 2-4 child Normal, the first listed row with a run-up (found by the property, D151; first found on seed 8 before the ENG-QUIET rebuild): the run-up\'s jump (SKILLS.runUp: runPress passed at every lag, then the judged press) is held at least as long as runPress judged it; the row ends at the shrine with no rescue (c24; RED on c23 ccca3d305: flown at flickHold\'s draw, 0.065 / 0.093 / 0.114 s against the 0.16 judged, he peaked under the liana\'s foot and fell in, rescued)', () => {
   // (the real stage and bot, as castBots rolls them; read by what he does, never where: a run-up press is decide's judged single press
   //  in the frame whose last runPress was the direct one (from where he stands, s0 0) and passed; the next startJump inside 0.5 s is its
   //  jump, and this.jump.hold is what he flies. The proof of the RED half on c23 is in reference/qa-reports/ENG-PLANT/REPORT.md, ENG-PLANT-s)
@@ -365,16 +365,22 @@ test('on the run it was found on, 2-4 child Normal seed 8: the run-up\'s jump (S
     judged = null;
     return out;
   };
-  let r: ReturnType<typeof firstTimer>;
+  // (the row is found by what he does, never pinned to a roll (D151): the first of 2-4's listed rows, in order, where he makes a run-up
+  //  jump; a list rebuild that drops one row's run-up moves the test to the next row that has one, with the same assertions)
+  let r: ReturnType<typeof firstTimer> | null = null, seed = 0;
   try {
-    r = firstTimer('2-4', 8, FT_CHILD, { cap: 1200, dotSetting: true });
+    for (seed = 1; seed <= 20 && !jumps.length; seed++) {
+      last = null;
+      judged = null;
+      r = firstTimer('2-4', seed, FT_CHILD, { cap: 1200, dotSetting: true });
+    }
   } finally {
     Object.assign(P, { runPress, decide, startJump });
   }
-  assert.ok(jumps.length >= 1, 'he made a run-up jump');
-  assert.deepEqual(jumps.filter((j) => j.flown < j.judged - 1e-9), [], `every run-up jump held at least as judged (${JSON.stringify(jumps)})`);
-  assert.equal(r.end, 'shrine', `he reaches the shrine (${r.end})`);
-  assert.equal(r.rescues, 0, `no rescue (${r.rescues})`);
+  assert.ok(jumps.length >= 1 && r, 'he made a run-up jump on one of 2-4\'s first 20 listed rows');
+  assert.deepEqual(jumps.filter((j) => j.flown < j.judged - 1e-9), [], `every run-up jump held at least as judged (seed ${seed - 1}: ${JSON.stringify(jumps)})`);
+  assert.equal(r.end, 'shrine', `he reaches the shrine (seed ${seed - 1}: ${r.end})`);
+  assert.equal(r.rescues, 0, `no rescue (seed ${seed - 1}: ${r.rescues})`);
 });
 
 test('in the real engine, laid: a log drifting his way still mostly under the bank\'s lip when he comes at it at full run is boarded by a hop, not run onto: no life lost before he has stood 3 s on a log (SKILLS.boardLog; RED with it off: he runs off the lip onto it and off its front into the water; pacerLay\'s home Easy seed 1 plant laid explicitly)', () => {

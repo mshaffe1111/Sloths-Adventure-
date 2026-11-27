@@ -17,7 +17,7 @@ import { drawW8Hammock, drawW8Piece, loadW8RoomArt } from './w8RoomArt.ts';
 import { drawSeedPile, drawSeedPod } from './batArt.ts';
 import { KIT_ART, type KitArtName } from './puzzleAtlasData.ts';
 import { drawWallArt } from './protoArt.ts';
-import { boxFits, fitZoom, heroBox, ROOM_CAM, roomZoom, unionBox, type CamBox } from './puzzleCamera.ts';
+import { boxFits, fitZoom, heroBox, ROOM_CAM, roomZoom, unionBox, type CamBox, type CamEar } from './puzzleCamera.ts';
 import { NOISE, prune, type Noise } from './noise.ts';
 import { zoneEffect, type Zone } from './zones.ts';
 import { onRiver, type RiverZone } from './river.ts';
@@ -144,7 +144,7 @@ interface BeetleRun { spec: Extract<PieceSpec, { kind: 'beetle' }>; st: BeetleSt
 interface SourceRun { spec: Extract<PieceSpec, { kind: 'source' }>; x: number; y: number; plat: number }
 interface ResetRun { spec: Extract<PieceSpec, { kind: 'reset' }>; x: number; y: number; plat: number }
 interface SeesawRun { spec: Extract<PieceSpec, { kind: 'seesaw' }>; x: number; y: number; foot: number; w: number; rise: number; rest: -1 | 0 | 1; ends: [Platform, Platform]; tilt: -1 | 0 | 1; show: number }
-interface BellRun { spec: Extract<PieceSpec, { kind: 'bell' }>; x: number; y: number; plat: number; rung: number }
+interface BellRun { spec: Extract<PieceSpec, { kind: 'bell' }>; x: number; y: number; plat: number; rung: number; panned?: boolean }
 /** a leap carries a walking glow's light ahead of her (s of her flight, px below her feet, its reach), and how long a step stays lit after */
 export const LEDGE_LEAD = { s: 0.35, dy: 30, r: 120, after: 1.2 } as const;
 interface LedgeRun { spec: Extract<PieceSpec, { kind: 'ledge' }>; plat: Platform; lit: boolean; show: number; /** s since the light last found it */ dark?: number }
@@ -319,6 +319,9 @@ export class KitPlay {
   private held: { room: number; item: number } | null = null;
   private pose: Pose = null;
   private pan: { x: number; y: number; t: number } | null = null;
+  /** the watchers that hear the kit's noises, as the engine last gave them (camFocus), and the box the room's view last framed */
+  private ears: readonly CamEar[] = [];
+  private framed: CamBox | null = null;
   /** the camera is panning to a far gate (Dot holds her lines that can wait) */
   get panning(): boolean {
     return !!this.pan;
@@ -656,6 +659,22 @@ export class KitPlay {
     room.changes++;
     this.noise(b.x, b.y - 60, 'bell', h);
     h.float('DONG!', b.x, b.y - 130, '#fde68a');
+    // (the first ring of a bell wired to no gate: the guards it calls that the room's view could not fit beside him, the view goes to
+    //  for a moment, the far gate's way, then eases back; ENG-CAM29, the lead's ruling A)
+    if (!b.panned && !this.worksOn(room, b.spec.id).length) {
+      const far = this.called(this.ears, b.x, b.y - 60, NOISE.bellHear).filter((e) => !this.framed || e.box.x0 < this.framed.x0 || e.box.x1 > this.framed.x1);
+      if (far.length) {
+        b.panned = true;
+        const x0 = Math.min(...far.map((e) => e.box.x0));
+        const x1 = Math.max(...far.map((e) => e.box.x1));
+        this.pan = { x: (x0 + x1) / 2, y: Math.max(...far.map((e) => e.y)) - 90, t: ROOM_CAM.pan };
+      }
+    }
+  }
+
+  /** the watchers a noise at (x, y) with reach r calls (noise.ts heard), nearest first */
+  private called(ears: readonly CamEar[], x: number, y: number, r: number): CamEar[] {
+    return ears.filter((e) => Math.abs(e.x - x) <= r && Math.abs(e.y - y) <= NOISE.hearY).sort((a, b) => Math.abs(a.x - x) - Math.abs(b.x - x));
   }
 
   private flightWorld(room: RoomRun, platforms: readonly Platform[]): FlightWorld {
@@ -1791,9 +1810,31 @@ export class KitPlay {
    * way on is in it, the spot past the way on too (past a seesaw, the bank its raised end reaches), if that fits. Pokey is not in it: the
    * camera adds him.
    */
-  keyBox(room: RoomRun, f: Focus, vw: number, vh: number): CamBox {
+  keyBox(room: RoomRun, f: Focus, vw: number, vh: number, ears: readonly CamEar[] = [], hero?: CamBox): CamBox {
     let box: CamBox = (f.id ? this.pieceBox(room, f.id) : null) ?? { x0: f.x - f.r, x1: f.x + f.r, y0: f.y - f.r, y1: f.y + f.r };
     if (!f.id) return box;
+    box = this.keyChain(room, f.id, box, vw, vh);
+    // (a bell wired to no gate is rung to call the watchers (2-9's gallery): it works the guards it calls, nearest first, as many as fit
+    //  beside him; rung, the ones further off walk to it and come into the view as they fit, ENG-CAM29)
+    const bl = room.bells.find((q) => q.spec.id === f.id);
+    if (bl && !this.worksOn(room, bl.spec.id).length) box = this.withEars(box, ears, bl.x, bl.y - 60, NOISE.bellHear, vw, vh, hero);
+    return box;
+  }
+
+  /** the watchers a noise at (x, y) with reach r calls (noise.ts heard), nearest first, added to the box while they fit (with him) */
+  private withEars(box: CamBox, ears: readonly CamEar[], x: number, y: number, r: number, vw: number, vh: number, hero?: CamBox): CamBox {
+    for (const e of this.called(ears, x, y, r)) {
+      const u = unionBox(box, e.box);
+      if (!boxFits(hero ? unionBox(u, hero) : u, vw, vh)) break;
+      box = u;
+    }
+    return box;
+  }
+
+  /** the key box's chain from the part `id` (keyBox): what it works, nearest first, while it fits */
+  private keyChain(room: RoomRun, id0: string, box0: CamBox, vw: number, vh: number): CamBox {
+    let box = box0;
+    const f = { id: id0 };
     const seen = new Set<string>([f.id]);
     const queue = [...this.worksOn(room, f.id)];
     while (queue.length) {
@@ -1831,12 +1872,15 @@ export class KitPlay {
    * works (keyBox), but never below `floor` of the usual zoom (roomFloor), nor below ROOM_CAM.minZoom for the lean alone; for a moment
    * after a far gate opens, go to it. `vw`, `vh`: the view at the usual zoom. Null outside every room: the camera is as it always is.
    */
-  camFocus(p: Player, vw: number, vh: number, floor: number = ROOM_CAM.minZoom): { x: number; y: number; zoom: number; pan: boolean; box?: CamBox } | null {
+  camFocus(p: Player, vw: number, vh: number, floor: number = ROOM_CAM.minZoom, ears: readonly CamEar[] = []): { x: number; y: number; zoom: number; pan: boolean; box?: CamBox } | null {
+    this.ears = ears;
     if (this.pan) return { x: this.pan.x, y: this.pan.y, zoom: 1, pan: true };
-    if (this.inRoom < 0) return null;
+    if (this.inRoom < 0) return (this.framed = null);
     const f = this.focusPt;
-    const keys = this.keyBox(this.rooms[this.inRoom], f, vw / floor, vh / floor);
-    const box = unionBox(keys, heroBox(p.x, p.y));
+    const hero = heroBox(p.x, p.y);
+    const keys = this.keyBox(this.rooms[this.inRoom], f, vw / floor, vh / floor, ears, hero);
+    const box = unionBox(keys, hero);
+    this.framed = box;
     const zoom = Math.min(roomZoom(vw, vh, p.x, p.y - 45, f.x, f.y), fitZoom(vw, vh, box, floor));
     return { x: f.x, y: f.y, zoom, pan: false, box };
   }

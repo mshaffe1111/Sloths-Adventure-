@@ -1,0 +1,76 @@
+diff --git a/src/game/gen2/riverLay.ts b/src/game/gen2/riverLay.ts
+index 55b1f9f7c..61a8b81aa 100644
+--- a/src/game/gen2/riverLay.ts
++++ b/src/game/gen2/riverLay.ts
+@@ -296,7 +296,7 @@ export interface LetGoFall {
+   far: boolean;
+   cross: Array<{ x: number; vx: number; dt: number; above: boolean }>;
+ }
+-export function letGoFall(l: PressLaunch, w: Pick<DriftInfo, 'x0' | 'x1' | 'baseY' | 'tail'>): LetGoFall {
++export function letGoFall(l: PressLaunch, w: Pick<DriftInfo, 'x0' | 'x1' | 'baseY' | 'tail'>, dir: 0 | 1 = 1): LetGoFall {
+   const top = w.baseY, bankTop = top - LOG_DROP;
+   // (the far bank's lip: the logs' window's end, or past its tail of log-free water, ENG-24e: a let-go into the tail is in the water)
+   const end = riverEnd(w);
+@@ -311,7 +311,7 @@ export function letGoFall(l: PressLaunch, w: Pick<DriftInfo, 'x0' | 'x1' | 'base
+     }
+     if (inWindow && prevY <= top + DRIFT_CATCH.drop && c.y >= top) cross.push({ x: c.x, vx: c.vx, dt: t - l.pt, above: prevY < top - 2 });
+     return c.y > top + DRIFT_CATCH.drop;
+-  });
++  }, dir);
+   return { far, cross };
+ }
+ 
+@@ -422,14 +422,23 @@ export function lockedDrops(v: Vine, logs: readonly DriftInfo[], difficulty: Dif
+       let lands = 0;
+       for (let i = 0; i < N; i++) lands += G[i];
+       share = Math.min(share, lands / N);
++      // (ONE's margin: on the flick (G) and on a press with nothing held in the air (H: the leap keeps its speed), the worse counts)
++      const H = new Uint8Array(N);
++      L.forEach((l, k) => {
++        const f = letGoFall(l, d0, 0);
++        for (let r = 0; r < reps; r++) H[r * n + k] = f.far || fallOnLog(f, logs, l.pt + r * period, easy) ? 1 : 0;
++      });
+       for (let r = 0; r < reps; r++) {
+         const i0 = r * n + k1;
+-        if (!G[i0]) { one = false; early = 0; late = 0; continue; }
+-        let e = 0, l = 0;
+-        while (e < N - 1 && G[(i0 - e - 1 + N) % N]) e++;
+-        while (l < N - 1 && G[(i0 + l + 1) % N]) l++;
+-        early = Math.min(early, e * FRAME);
+-        late = Math.min(late, l * FRAME);
++        if (!G[i0]) one = false;
++        for (const Q of [G, H]) {
++          if (!Q[i0]) { early = 0; late = 0; continue; }
++          let e = 0, l = 0;
++          while (e < N - 1 && Q[(i0 - e - 1 + N) % N]) e++;
++          while (l < N - 1 && Q[(i0 + l + 1) % N]) l++;
++          early = Math.min(early, e * FRAME);
++          late = Math.min(late, l * FRAME);
++        }
+       }
+       if (!lands) { wait = Infinity; window = 0; continue; }
+       let worst = 0, run = 0, best = 0;
+diff --git a/src/game/physics.ts b/src/game/physics.ts
+index ee344ccc7..6aebf597c 100644
+--- a/src/game/physics.ts
++++ b/src/game/physics.ts
+@@ -982,7 +982,9 @@ export function pressLaunchesFrom(A: SwingVine, s0: SwingState): PressLaunch[] {
+  * to 90 frames or until he falls past `floorY`: does `hits` (asked every frame with the vine's clock, and his feet's y the frame before)
+  * say he got there?
+  */
+-export function flyLaunch(l: PressLaunch, f: { held: number; dbl: number }, floorY: number, hits: (c: AirBody, t: number, prevY: number) => boolean): boolean {
++/** `dir`: the way his thumb steers in the air (1: Right held, the flick; 0: nothing held, the leap keeps its speed: engine.ts leapDir's
++ *  fallback, ENG-29-g) */
++export function flyLaunch(l: PressLaunch, f: { held: number; dbl: number }, floorY: number, hits: (c: AirBody, t: number, prevY: number) => boolean, dir: 0 | 1 = 1): boolean {
+   const DT = 1 / 30;
+   const c: AirBody = { x: l.x, y: l.y, vx: l.vx, vy: l.vy };
+   let t = 0, used = false;
+@@ -992,7 +994,7 @@ export function flyLaunch(l: PressLaunch, f: { held: number; dbl: number }, floo
+       used = true;
+     }
+     const prevY = c.y;
+-    airStep(c, DT, 1, i <= f.held);
++    airStep(c, DT, dir, i <= f.held);
+     t += DT;
+     if (hits(c, l.t + t, prevY)) return true;
+     if (c.y > floorY) break;

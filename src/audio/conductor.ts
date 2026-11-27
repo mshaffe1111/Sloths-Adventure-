@@ -22,12 +22,18 @@ import { playSyllable, voiceReady } from './voiceBank.ts';
 import { Speech, voiceOf, type Tone } from './voiceLine.ts';
 import { playSting, STORY_STING_NAMES, stingDuck, stingVoices } from './stingers.ts';
 import { CALM, type MusicState } from './adaptive.ts';
+import { DrumSchedule, type DrumBeat, type DrumKind } from './drum.ts';
+import { taiko, woodblock } from './instruments.ts';
 import { STINGS } from './stingers.ts';
 import { busLevels, DEFAULT_MUSIC, DEFAULT_SFX } from './volumeCurve.ts';
 
 // how far ahead of the audio clock the ambience is scheduled: long enough to ride out a stalled main thread
 // (a level loading, a garbage collection) without it dropping out and then firing in one burst
 const LOOKAHEAD = 0.6;
+// the court's drum (2-9.md NEW 2): its bus under the effects, the boom on ONE a little louder than the toks between
+const DRUM_LEVEL = 0.55;
+const DRUM_BOOM = 0.9;
+const DRUM_TOK = 0.6;
 // (the music needs no clock: it is recorded. The ambience and the heartbeat are all the tick schedules)
 const TICK_MS = 100;
 /** the music bus level: the recordings already carry the old bus's 0.32 */
@@ -520,6 +526,55 @@ export class Conductor {
 
   setLowHealth(on: boolean) {
     this.lowHealth = on;
+  }
+
+  // ---- the court's drum (2-9.md NEW 2, R-165.449): the stage's beat, on game time, put on the AUDIO clock (drum.ts DrumSchedule)
+  private drum = new DrumSchedule();
+  private drumBus: GainNode | null = null;
+  /** one hit on the drum's bus: ONE of a bar the taiko's boom, every other beat the woodblock's tok (the game's own drums, never fx()) */
+  private drumVoice = (core: AudioCore, bus: AudioNode, kind: DrumKind, at: number) =>
+    (kind === 'boom' ? taiko : woodblock)(core, bus, at, kind === 'boom' ? DRUM_BOOM : DRUM_TOK);
+  private bus(core: AudioCore): GainNode {
+    if (!this.drumBus) {
+      this.drumBus = core.ctx.createGain();
+      this.drumBus.gain.value = DRUM_LEVEL;
+      this.drumBus.connect(core.sfx);
+    }
+    return this.drumBus;
+  }
+  /** the hits already on the audio clock never sound: the bus fades out in ~20 ms and is let go; the next hit gets a new one */
+  private cutDrum(core: AudioCore) {
+    const b = this.drumBus;
+    if (!b) return;
+    this.drumBus = null;
+    const t = core.ctx.currentTime;
+    b.gain.cancelScheduledValues(t);
+    b.gain.setValueAtTime(b.gain.value, t);
+    b.gain.linearRampToValueAtTime(0, t + 0.02);
+    window.setTimeout(() => b.disconnect(), 80);
+  }
+
+  /**
+   * Every engine step on a stage with a tempo (engine.ts, after the clock's step, and in a lost life's down): the drum's hits up to
+   * DRUM_AHEAD past game time go on the audio clock where game time will reach them. The beat is the ENGINE's (tempo.ts tempoBeat):
+   * nothing of the game's is imported here. No sound (headless, muted, not started yet): nothing is scheduled, and the schedule starts
+   * again from game time when sound comes (a jump, never a burst of the beats it missed).
+   */
+  drumTick(beat: DrumBeat, gameNow: number, doubled = false) {
+    const core = this.core;
+    if (!core || this.muted || core.ctx.state !== 'running') return;
+    const r = this.drum.step(beat, gameNow, core.ctx.currentTime, doubled);
+    if (r.cut) return this.cutDrum(core);
+    if (!r.play.length) return;
+    const bus = this.bus(core);
+    for (const c of r.play) this.drumVoice(core, bus, c.kind, c.at);
+  }
+
+  /** a life is lost (engine.ts, the step its down is set): game time stops here, so every hit not yet sounded is cut */
+  drumHold(gameNow: number) {
+    const core = this.core;
+    if (!core) return;
+    if (this.drum.hold(gameNow, core.ctx.currentTime)) this.cutDrum(core);
   }
 
   setMuted(m: boolean) {

@@ -11,6 +11,7 @@ import assert from 'node:assert/strict';
 import { generateAllLevels } from '../../worldsData.ts';
 import { onRiver, type RiverZone } from '../../river.ts';
 import type { Platform, Vine } from '../../types.ts';
+import type { TempoSpec } from '../../tempo.ts';
 import { WHEEL, type Wheel } from '../../wheel.ts';
 import { listedStage, playFinish } from '../listed.ts';
 import { buildGen2Stage } from '../pipeline.ts';
@@ -19,7 +20,7 @@ import { W2_WHEELS } from './w2.ts';
 import { BEATS_26, CLUE_26, JOURNAL_26, LINES_26, MISSION_26, NORIA_PAGE_26, SIGN_26, STAGE_26 } from './w2Arc26.ts';
 
 const cfg = generateAllLevels().find((c) => c.id === STAGE_26 && !c.secret)!;
-type Rolled = { platforms: Platform[]; vines: Vine[]; rivers?: RiverZone[]; exitTotemX: number; gen2: { errors?: string[]; sections: Array<{ template: string }> } };
+type Rolled = { platforms: Platform[]; vines: Vine[]; rivers?: RiverZone[]; exitTotemX: number; gen2: { errors?: string[]; sections: Array<{ template: string }>; brief?: { tempo?: TempoSpec } } };
 const SEEDS = Array.from({ length: 12 }, (_, i) => i + 1);
 const BOTH = ['normal', 'easy'] as const;
 

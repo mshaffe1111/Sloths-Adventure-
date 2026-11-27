@@ -27,7 +27,7 @@ export interface DriftInfo {
   /** the log's top edge, px */
   baseY: number;
   /** drawn as a raft, not a log (gen2/riverLay.ts RiverRow.look, R-165.288): the painted raft's deck is this top. Draw only */
-  look?: 'raft';
+  look?: 'raft' | 'barge';
   /**
    * the river's TAIL (gen2/riverLay.ts RiverRow.tail, ENG-24e): log-free water this wide (px) past `x1` before the far bank. The logs go
    * under (or come out from under) World 2's painted end at `x1`, in mid-water, so no bank stands there: nothing hands a rider over at

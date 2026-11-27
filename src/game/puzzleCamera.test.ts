@@ -88,8 +88,8 @@ const calls = (ears: Ear[], x: number, y: number, r: number): string[] =>
   ears.filter((g) => Math.abs(g.x - x) <= r && Math.abs(g.y - y) <= NOISE.hearY).map((g) => `guard:${g.id}`);
 
 /** each moment to check: where he stands, what he holds, and the pieces that must show together */
-function moments(room: Room, ears: Ear[]): Array<{ name: string; x: number; y: number; hold?: number; show: string[] }> {
-  const out: Array<{ name: string; x: number; y: number; hold?: number; show: string[] }> = [];
+function moments(room: Room, ears: Ear[]): Array<{ name: string; x: number; y: number; hold?: number; show: string[]; ring?: string }> {
+  const out: Array<{ name: string; x: number; y: number; hold?: number; show: string[]; ring?: string }> = [];
   room.items.forEach((it, k) => {
     const src = room.sources.find((s) => s.spec.id === it.spec.source);
     const target = it.spec.for;
@@ -124,7 +124,7 @@ function moments(room: Room, ears: Ear[]): Array<{ name: string; x: number; y: n
   for (const bl of room.bells) {
     if (room.gates.some((g) => wireReads(g.spec.open, bl.spec.id))) continue;
     const called = calls(ears, bl.x, bl.y, NOISE.bellHear);
-    if (called.length) out.push({ name: `at ${bl.spec.id}: the bell and every guard it calls`, x: bl.x - 50, y: bl.y, show: [bl.spec.id, ...called] });
+    if (called.length) out.push({ name: `at ${bl.spec.id}: the bell and every guard it calls`, x: bl.x - 50, y: bl.y, show: [bl.spec.id, ...called], ring: bl.spec.id });
   }
   // coming up to a seesaw: its whole plank and the end it raises
   for (const s of room.seesaws) out.push({ name: `by ${s.spec.id}`, x: room.box.x0 + 50, y: room.box.y1 - 70, show: [`seesaw:${s.spec.id}`] });
@@ -191,7 +191,30 @@ test('every puzzle room in Worlds 1 and 2 and the kit test room: what he works a
           }
           assert.equal(kit.inRoom, ri, `${id} ${room.spec.id}: ${m.name}: he is in the room`);
           const v = { x0: e.camera.x, x1: e.camera.x + e.camera.viewportWidth, y0: e.camera.y, y1: e.camera.y + e.camera.viewportHeight };
-          for (const s of m.show) {
+          // (a bell wired to no gate, the lead's ruling A for ENG-CAM29: the guards it calls NOW, nearest first, that fit beside him in the
+          //  widest view a room may take on this phone (never smaller than sideways) must be in the view; every other guard it calls, the
+          //  view goes to when he rings it)
+          let show = m.show;
+          let far: Ear[] = [];
+          const rb = m.ring ? room.bells.find((q) => q.spec.id === m.ring) : null;
+          if (rb) {
+            const scale = (Math.min(w, h) / ROOM_CAM.sideH) * ROOM_CAM.minZoom;
+            const live = earsOf(e).filter((g) => Math.abs(g.x - rb.x) <= NOISE.bellHear && Math.abs(g.y - rb.y) <= NOISE.hearY).sort((a, c) => Math.abs(a.x - rb.x) - Math.abs(c.x - rb.x));
+            let span: CamBox = { x0: Math.min(r.p.x - 45, rb.x - 24), x1: Math.max(r.p.x + 45, rb.x + 24), y0: Math.min(r.p.y - 115, rb.y - 110), y1: Math.max(r.p.y + 8, rb.y - 20) };
+            const fit: Ear[] = [];
+            for (const g of live) {
+              const gb = guardBox(g);
+              const u = { x0: Math.min(span.x0, gb.x0), x1: Math.max(span.x1, gb.x1), y0: Math.min(span.y0, gb.y0), y1: Math.max(span.y1, gb.y1) };
+              if (far.length || u.x1 - u.x0 + 2 * ROOM_CAM.keyMargin > w / scale || u.y1 - u.y0 + 2 * ROOM_CAM.keyMargin > h / scale) far.push(g);
+              else {
+                fit.push(g);
+                span = u;
+              }
+            }
+            assert.ok(fit.length, `${w}x${h} ${id} ${room.spec.id}, ${m.name}: at least the nearest guard it calls fits beside him`);
+            show = [rb.spec.id, ...fit.map((g) => `guard:${g.id}`)];
+          }
+          for (const s of show) {
             const ss = s.startsWith('seesaw:') ? room.seesaws.find((q) => q.spec.id === s.slice(7)) : null;
             const gd = s.startsWith('guard:') ? earsOf(e).find((q) => `guard:${q.id}` === s) : null;
             const b = ss ? { x0: ss.x - ss.w / 2, x1: ss.x + ss.w / 2, y0: ss.y - ss.rise, y1: ss.y } : gd ? guardBox(gd) : boxOf(room, s);
@@ -204,6 +227,24 @@ test('every puzzle room in Worlds 1 and 2 and the kit test room: what he works a
           assert.ok(e.zoom >= (Math.min(w, h) / ROOM_CAM.sideH) * ROOM_CAM.minZoom - 1e-6, `${w}x${h} ${id}: zoom ${e.zoom}`);
           smallest = Math.min(smallest, e.zoom);
           checked++;
+          if (rb && far.length) {
+            // rung: each guard it calls that did not fit is in the view at some frame while the view goes to them, and then he is back
+            const kitAny = kit as unknown as { ring(room: unknown, b: unknown, h: unknown): void };
+            kitAny.ring(room, rb, (e as unknown as { kitHost(): unknown }).kitHost());
+            const seen = new Set<number>();
+            for (let i = 0; i < 75; i++) {
+              r.frame();
+              const vv = { x0: e.camera.x, x1: e.camera.x + e.camera.viewportWidth, y0: e.camera.y, y1: e.camera.y + e.camera.viewportHeight };
+              for (const g of earsOf(e)) {
+                if (!far.some((q) => q.id === g.id)) continue;
+                const gb = guardBox(g);
+                if (gb.x0 >= vv.x0 - 1 && gb.x1 <= vv.x1 + 1 && gb.y0 >= vv.y0 - 1 && gb.y1 <= vv.y1 + 1) seen.add(g.id);
+              }
+            }
+            for (const g of far) assert.ok(seen.has(g.id), `${w}x${h} ${id} ${room.spec.id}, ${m.name}: rung, the view goes to guard:${g.id}, which did not fit beside him`);
+            for (let i = 0; i < 90; i++) r.frame();
+            assert.ok(r.p.x - 30 >= e.camera.x && r.p.x + 30 <= e.camera.x + e.camera.viewportWidth, `${w}x${h} ${id} ${room.spec.id}: after the pan the view is back on him`);
+          }
           got.set(`${id} #${ri} ${room.spec.id}`, (got.get(`${id} #${ri} ${room.spec.id}`) ?? 0) + 1);
           if (m.hold !== undefined) {
             kit.held = null;
@@ -254,10 +295,11 @@ test('the room camera centre moves smoothly: no jump as the key box grows past t
 
 test('leaving a room the view eases back out, with no jump in the zoom or the camera', () => {
   for (const [w, h] of [[390, 844], [360, 740]] as Array<[number, number]>) {
-    // (2-9's court-bell room, BUILD-23 11-20: the room this stood in, 2-3's first cage on its bank, went with 2-3's hand build; 2-8's rooms
-    //  stand on islands in their basins, so walking out of one is a splash, and the court's room has plain ground at its edge)
-    const { r, e } = engineFor('2-9', w, h);
-    const room = e.kit.rooms[0] as Room;
+    // (the kit's bell room, BUILD-29 11-26: 2-9's court-bell room, where this stood since 2-3's cage room went (BUILD-23 11-20), went with
+    //  2-9's hand build; 2-8's rooms stand on islands in their basins, so walking out of one is a splash; the kit's bell room has plain
+    //  ground at its edge)
+    const { r, e } = engineFor('kit', w, h);
+    const room = (e.kit.rooms as Room[]).find((m) => m.spec.id === 'bell')!;
     const src = (room as unknown as { bells: Array<{ x: number; y: number }> }).bells[0];
     r.stand(src.x - 30, src.y);
     for (let i = 0; i < 90; i++) r.frame();

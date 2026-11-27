@@ -1,0 +1,25 @@
+normal: bar 2.850 s; lock 0.92; 2 locked liana(s); vineShift 0.0000; model one=true,true
+  liana x7903 grip 0.7: ONE lands true; early 0 f = 0.00 s, late 4 f = 0.13 s; window 0.17 s
+    -1.5s ##############......#####...############# +1.5s
+    misses near ONE: -6:0:ground@8488 -5:0:ground@8489 -4:0:ground@8482 -3:0:ground@8488 -2:0:ground@8488 -1:0:ground@8488 5:0:ground@8488 6:0:ground@8488
+  liana x7903 grip 0.95: ONE lands false; early 0 f = 0.00 s, late 0 f = 0.00 s; window 0.03 s
+    -1.5s ###################...####...####.####### +1.5s
+    misses near ONE: -1:0:water 0:0:water 1:0:water 6:0:water 7:0:water 8:0:water
+  liana x14389 grip 0.7: ONE lands true; early 20 f = 0.67 s, late 20 f = 0.67 s; window 1.37 s
+    -1.5s ######################################### +1.5s
+  liana x14389 grip 0.95: ONE lands true; early 3 f = 0.10 s, late 9 f = 0.30 s; window 0.43 s
+    -1.5s ############.....#############..######### +1.5s
+    misses near ONE: -8:0:water -7:0:water -6:0:ground@14889 -5:0:ground@14889 -4:0:ground@14889 10:0:ground@14889 11:0:ground@14889
+easy: bar 3.300 s; lock 0.92; 2 locked liana(s); vineShift 0.0000; model one=true,true
+  liana x8026 grip 0.7: ONE lands true; early 20 f = 0.67 s, late 7 f = 0.23 s; window 0.93 s
+    -1.5s ############################...########## +1.5s
+    misses near ONE: 8:0:ground@8611 9:0:ground@8620 10:0:ground@8619
+  liana x8026 grip 0.95: ONE lands true; early 0 f = 0.00 s, late 7 f = 0.23 s; window 0.27 s
+    -1.5s #################...########..######..### +1.5s
+    misses near ONE: -3:0:water -2:0:water -1:0:water 8:0:water 9:0:water
+  liana x14617 grip 0.7: ONE lands true; early 20 f = 0.67 s, late 7 f = 0.23 s; window 0.93 s
+    -1.5s ############################...########## +1.5s
+    misses near ONE: 8:0:ground@15202 9:0:ground@15211 10:0:ground@15210
+  liana x14617 grip 0.95: ONE lands true; early 0 f = 0.00 s, late 7 f = 0.23 s; window 0.27 s
+    -1.5s #################...########..######..### +1.5s
+    misses near ONE: -3:0:water -2:0:water -1:0:water 8:0:water 9:0:water

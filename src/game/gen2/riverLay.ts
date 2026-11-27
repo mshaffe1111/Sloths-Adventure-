@@ -13,12 +13,13 @@
  */
 import type { Platform, Vine } from '../types.ts';
 import { driftCycle, driftX, gapFor, hopLimit, lianasOver, lianasOverLogs, logLayout, LOG_DROP, LOG_HEIGHT, onRiver, riverEnd, surfaceBelowBank, DRIFT_CATCH, type DriftInfo, type RiverZone } from '../river.ts';
-import { airStep, ASSIST, canGrabSwing, FORGIVE, flyLaunch, FORWARD_END, forwardEndLands, PHYS, pressLaunches, secondJumpV, vinePeriod, type AirBody, type PressLaunch } from '../physics.ts';
+import { airStep, ASSIST, canGrabSwing, FORGIVE, flyLaunch, FORWARD_END, forwardEndLands, PHYS, pressLaunches, pressLaunchesFrom, secondJumpV, vineAmp, vineAngle, vineOmega, vinePeriod, type AirBody, type PressLaunch } from '../physics.ts';
 import { withSetting } from '../settingDials.ts';
 import { gripsOf, lianaCaught } from '../levelCheck.ts';
 import { LAND_IN } from './landings.ts';
 import { RIDE } from '../ride.ts';
 import type { Difficulty } from '../difficulty.ts';
+import type { TempoSpec } from '../tempo.ts';
 
 /** a river as data: a world's row */
 export interface RiverRow {
@@ -38,8 +39,10 @@ export interface RiverRow {
    *  ridePickups.ts): at its middle, PETAL_SIT over its top, hidden with it under a bank */
   petals?: number;
   /** what floats on it (data; unset: logs). 'raft': a lashed raft (R-165.288; 2-4's last row to the jetty): the same carrier on the same
-   *  clock, drawn as World 2's painted raft (riverArt.ts drawRiverLog), its deck the walkable top (art = collider) */
-  look?: 'raft';
+   *  clock, drawn as World 2's painted raft (riverArt.ts drawRiverLog), its deck the walkable top (art = collider). 'barge': the King's
+   *  Barge (ENG-29-e G3, w2-next#barge): the same carrier, its painted deck (x 80-1050 of the frame) the log's whole top, the canopy drawn
+   *  behind him and the hull under the deck, so the art is taller than its collider (deck 386 of 507 px at a 384-390 px log) */
+  look?: 'raft' | 'barge';
   /**
    * its TAIL (ENG-24e, R-165.301; data, unset: none): log-free water this wide (px) between where the logs go under and the far bank. The
    * logs' window (`logs` spacings, as ever) ends `tail` short of the far bank, under World 2's painted end (riverArt.ts drawRiverTail), so a
@@ -63,7 +66,13 @@ export interface RiverRow {
    * from the fork, upright, the low road reads as water) while every walk-off off that edge still lands on it (flood.ts bankLandFaults)
    */
   marsh?: { width: number; floor: number; dips: number; dip: number; first?: number };
+  /** its EASY numbers (data; reference/design/2-9.md NEW 1, ENG-29): a court river keeps the tempo's Easy bar with numbers of its own (Normal
+   *  80 px/s, 156 px logs = 2.85 s; Easy 70/159 = 3.3 s), because a river's speed never stretches on Easy. Unset: Easy lays the row's own */
+  easy?: Partial<Pick<RiverRow, 'speed' | 'logW' | 'gap'>>;
 }
+
+/** the row a setting lays: Easy's own numbers over the row's (RiverRow.easy), else the row */
+export const riverRowOn = (row: RiverRow, difficulty: Difficulty): RiverRow => (difficulty === 'easy' && row.easy ? { ...row, ...row.easy } : row);
 
 /** how high over its log's top a riding petal sits (px): a petal's height over the floor it is laid on (the sections' pickup `dn`) */
 export const PETAL_SIT = 34;
@@ -181,7 +190,13 @@ function rightwards(r: RiverZone, platforms: readonly Platform[], vines: readonl
   return { r: { ...rest, x0: sum - r.x1, x1: sum - r.x0, dir: -r.dir as 1 | -1 }, platforms: platforms.map(turn), vines: vines.map((v) => ({ ...v, x: sum - v.x })) };
 }
 
-export function riverFaults(st: { platforms: readonly Platform[]; rivers?: readonly RiverZone[]; vines?: readonly Vine[] }, difficulty: Difficulty = 'normal'): string[] {
+/** a barge row's longest wait on its safe stand, in bars of the stage's tempo (riverFaults; 2-9.md:25: a barge every two bars) */
+export const BARGE_BARS = 2;
+
+export function riverFaults(st: { platforms: readonly Platform[]; rivers?: readonly RiverZone[]; vines?: readonly Vine[]; tempo?: TempoSpec; gen2?: { brief?: { tempo?: TempoSpec } } }, difficulty: Difficulty = 'normal'): string[] {
+  // (the stage's tempo: the built stage's, else its brief's: the pipeline judges a stage (checkStage) before it sets st.tempo, its last
+  //  step, so a barge row read only st.tempo and kept the log's beat on every roll; BUILD-29-c's find, ENG-29-f)
+  const tempo = st.tempo ?? st.gen2?.brief?.tempo;
   const out: string[] = [];
   for (const r0 of st.rivers ?? []) {
     if (r0.speed === 0 || r0.open || r0.raft) continue;
@@ -209,7 +224,17 @@ export function riverFaults(st: { platforms: readonly Platform[]; rivers?: reado
       if (Math.abs(next - offs[i] - T / offs.length) > 0.05) { out.push(`${at}: its logs are not evenly spaced`); break; }
     }
     if (d.speed > RIVER_LAY.speed) out.push(`${at}: it runs at ${d.speed} px/s, over ${RIVER_LAY.speed}`);
-    if (spacing / d.speed > RIVER_LAY.beat + 1e-6) out.push(`${at}: a log every ${(spacing / d.speed).toFixed(1)} s, over ${RIVER_LAY.beat}`);
+    // (a BARGE row (look 'barge', ENG-29-e, the lead's ruling on 2-9's King's Barge): a carrier he boards from the bank, never a log in a
+    //  hop chain, so its wait is judged by its own bound: a barge every BARGE_BARS bars at most at the stage's tempo on this setting, and
+    //  only while he waits on the near bank and it is a SAFE stand: solid ground, never water, a moving piece or a crumbling one, and no
+    //  liana over the river (a drop onto it is a log's crossing). Every other row, and a barge row with no tempo, no safe stand or under
+    //  a liana, keeps the log's beat)
+    const stand = solids.find((p) => Math.abs(p.x + p.width - r.x0) <= 2);
+    const safeStand = !!stand && stand.crumbleAfter === undefined && !stand.drift;
+    const bargeBound = d.look === 'barge' && tempo && !over.length && safeStand ? BARGE_BARS * tempo.bar * (difficulty === 'easy' ? tempo.easyStretch : 1) : undefined;
+    if (bargeBound !== undefined) {
+      if (spacing / d.speed > bargeBound + 1e-6) out.push(`${at}: a barge every ${(spacing / d.speed).toFixed(1)} s, over ${BARGE_BARS} bars (${bargeBound.toFixed(2)} s) at the stage's tempo`);
+    } else if (spacing / d.speed > RIVER_LAY.beat + 1e-6) out.push(`${at}: a log every ${(spacing / d.speed).toFixed(1)} s, over ${RIVER_LAY.beat}`);
     const near = solids.find((p) => Math.abs(p.x + p.width - r.x0) <= 2);
     const far = solids.find((p) => Math.abs(p.x - r.x1) <= 2);
     if (!near || !far) { out.push(`${at}: no bank at one end`); continue; }
@@ -303,13 +328,13 @@ export interface LetGoFall {
   far: boolean;
   cross: Array<{ x: number; vx: number; dt: number; above: boolean }>;
 }
-export function letGoFall(l: PressLaunch, w: Pick<DriftInfo, 'x0' | 'x1' | 'baseY' | 'tail'>): LetGoFall {
+export function letGoFall(l: PressLaunch, w: Pick<DriftInfo, 'x0' | 'x1' | 'baseY' | 'tail'>, held = 99): LetGoFall {
   const top = w.baseY, bankTop = top - LOG_DROP;
   // (the far bank's lip: the logs' window's end, or past its tail of log-free water, ENG-24e: a let-go into the tail is in the water)
   const end = riverEnd(w);
   const cross: LetGoFall['cross'] = [];
   let far = false;
-  flyLaunch(l, { held: 99, dbl: 99 }, top + 200, (c: AirBody, t: number, prevY: number) => {
+  flyLaunch(l, { held, dbl: 99 }, top + 200, (c: AirBody, t: number, prevY: number) => {
     if (c.vy < 0) return false;
     const inWindow = c.x >= w.x0 && c.x <= w.x1;
     if ((c.x < w.x0 || c.x > end) && prevY <= bankTop + 14 && c.y >= bankTop) {
@@ -382,6 +407,144 @@ export function lianaDrops(v: Vine, logs: readonly DriftInfo[], difficulty: Diff
     }
     return { share, wait, period };
   });
+}
+
+/** how a LOCKED liana's let-go lands on its river (lockedDrops): the share of one joint cycle's presses that land, the longest wait (s;
+ *  Infinity when none lands), and the WINDOW (s): the longest run of presses in a row that land, the let-go a player can aim for */
+export interface LockedDrops extends LianaDrops {
+  window: number;
+  /** a press on ONE (where the swing's clock is a whole swing: the drum's ONE, the lock's) lands, on every swing of the joint cycle */
+  one: boolean;
+  /** ONE's press margin (s): the landing presses in a row just BEFORE (early) and just AFTER (late) the press on ONE, contiguous with it,
+   *  read round the joint cycle (consecutive presses are consecutive frames), the least over LIANA_RIVER.grips and the cycle's swings;
+   *  0 on a side where ONE itself misses. What tempoFaults judges against ONE_MARGIN (ENG-29-f's real-engine read: `one` alone is blind) */
+  early: number;
+  late: number;
+}
+
+/**
+ * How much LOWER than the model's launch the engine's own launch may sit (px, screen y down), the court's judge flies each let-go from
+ * every one (courtFalls). The model's launch matches the engine's in x to 0.4 px but sits 5-10 px higher (ENG-29-h: 2-9's draft, the
+ * engine's frame 0 y 727.48 against the model's 717.49 on one frame grid, 727.1 against 722.08 on the other, probes/launch29.ts). Its
+ * cause was not found in two flown guesses, so the judge does not guess it: it takes the WORST of the model's launch and the launch
+ * lowered by the measured gap and by half of it (a landing is not monotone in the height, so the middle is flown too). The lead's
+ * scope ruling (ENG-29-i): the model is never looser than the engine, not an exact copy of it.
+ */
+export const COURT_SAG = [0, 5, 10] as const;
+
+/**
+ * A court let-go's flights (lockedDrops), from the launch and the launch lowered by each COURT_SAG: each one held through the flight
+ * (letGoFall's, the 0.72 float at the top, engine.ts air step) and let go as he leaves the vine (held 0: the climb on the vine is
+ * pressLaunches' own). A child's hold (the calibrated child bot's let-go: forward held, the press held its own drawn hold, firsttimer.ts)
+ * ends between the two, before the top on most presses.
+ */
+export function courtFalls(l: PressLaunch, w: Pick<DriftInfo, 'x0' | 'x1' | 'baseY' | 'tail'>): LetGoFall[] {
+  return COURT_SAG.flatMap((dy) => {
+    const q = dy ? { ...l, y: l.y + dy } : l;
+    return [letGoFall(q, w), letGoFall(q, w, 0)];
+  });
+}
+
+/**
+ * Does a court let-go land (lockedDrops)? Only when EVERY one of its flights does (courtFalls): the model is never looser than the engine
+ * on either end of the hold, nor at any launch height down to the engine's. Held alone it was: the float kept him over a log's top a frame longer, about 9 px on, and took a log end the engine's
+ * released flight misses by a px (ENG-29-h, 2-9's draft x14389 grip 0.95 press j +4; the engine's logs sit at driftX of the frame's own
+ * clock, as fallOnLog reads them: the catch order matched, the hold did not).
+ */
+export function courtLands(f: readonly LetGoFall[], logs: readonly DriftInfo[], off: number, easy: boolean): boolean {
+  return f.every((q) => q.far || fallOnLog(q, logs, off, easy));
+}
+
+/**
+ * lianaDrops on a LOCKED court (tempo.ts layTempo: the liana's swing is the bar, the river a log every whole number of beats, both on the
+ * game's clock, engine.ts vineClock): the vine and the river are ONE clock, so a waiting player meets one pairing only, never every pair
+ * (lianaDrops' grid): the press at swing clock `pt` with the river at that same game time, and, when a log comes less often than a swing,
+ * each swing of the joint cycle in turn. A pairing that misses misses on every bar: he hangs there for good (castBots, the tempo toy, the
+ * middle on Easy, ENG-29d). The worse of LIANA_RIVER.grips counts.
+ */
+export function lockedDrops(v: Vine, logs: readonly DriftInfo[], difficulty: Difficulty): LockedDrops {
+  return withSetting(difficulty, () => {
+    const easy = difficulty === 'easy';
+    const d0 = logs[0];
+    const spacing = driftCycle(d0) / logs.length;
+    const period = vinePeriod(v);
+    // (the swings in one joint cycle: the fewest whole swings that are a whole number of log spacings; at most 8)
+    let reps = 1;
+    while (reps < 8 && Math.abs((reps * period) / spacing - Math.round((reps * period) / spacing)) > 1e-3) reps++;
+    let share = 1, wait = 0, window = Infinity, one = true, early = Infinity, late = Infinity;
+    for (const g of LIANA_RIVER.grips) {
+      // (each swing of the cycle on the game's own frames: the bar need not be a whole number of frames (2.85 s is 85.5), so swing r's
+      //  presses sit `lag` s past its whole swings, on the vine's clock from his hang (the vine's own swing at hold g, as the engine hangs
+      //  him: swingGrab's jump-in hangs him a few px lower); ONE is the first press at or after the whole swing, as the engine and the
+      //  child's onOne press it. ENG-29-h: one grid, ONE the nearest press, missed 2-9's draft's 0.90 hole by 7 frames)
+      const LL = v.bottomY - v.topY, len = Math.min(LL * g, LL - 20);
+      const grids = new Map<number, PressLaunch[]>();
+      const gridAt = (lag: number): PressLaunch[] => {
+        const key = Math.round(lag * 1e6);
+        let q = grids.get(key);
+        if (!q) grids.set(key, (q = pressLaunchesFrom(v, { angle: vineAngle(v, lag), omega: vineOmega(v, lag), len, t: lag, amp: vineAmp(v) })));
+        return q;
+      };
+      const lagOf = (r: number) => { const f = r * period / FRAME; return ((Math.ceil(f - 1e-6) - f) * FRAME + FRAME) % FRAME; };
+      const n = gridAt(0).length, N = n * reps;
+      const ones: number[] = [];
+      const G = new Uint8Array(N);
+      for (let r = 0; r < reps; r++) {
+        const L = gridAt(lagOf(r));
+        let k1 = 0, best = Infinity;
+        L.forEach((l, k) => {
+          let u = ((l.pt % period) + period) % period;
+          if (u > period - 1e-6) u = 0;
+          if (u < best) { best = u; k1 = k; }
+          G[r * n + k] = courtLands(courtFalls(l, d0), logs, l.pt + r * period, easy) ? 1 : 0;
+        });
+        ones.push(r * n + k1);
+      }
+      let lands = 0;
+      for (let i = 0; i < N; i++) lands += G[i];
+      share = Math.min(share, lands / N);
+      for (let r = 0; r < reps; r++) {
+        const i0 = ones[r];
+        if (!G[i0]) { one = false; early = 0; late = 0; continue; }
+        let e = 0, l = 0;
+        while (e < N - 1 && G[(i0 - e - 1 + N) % N]) e++;
+        while (l < N - 1 && G[(i0 + l + 1) % N]) l++;
+        early = Math.min(early, e * FRAME);
+        late = Math.min(late, l * FRAME);
+      }
+      if (!lands) { wait = Infinity; window = 0; continue; }
+      let worst = 0, run = 0, best = 0;
+      for (let i = 0; i < N; i++) {
+        let tau = 0;
+        while (!G[(i + tau) % N]) tau++;
+        if (tau > worst) worst = tau;
+      }
+      // (the longest run of landing presses, round the cycle's end)
+      for (let i = 0; i < 2 * N; i++) { run = G[i % N] ? run + 1 : 0; if (run > best) best = Math.min(run, N); }
+      wait = Math.max(wait, worst * FRAME);
+      window = Math.min(window, best * FRAME);
+    }
+    return { share, wait, period, window, one, early, late };
+  });
+}
+
+/**
+ * Every swinging liana over a log river's logs (river.ts lianasOverLogs), each judged LOCKED (lockedDrops) in its river's own frame (a river
+ * crossed right to left turned about itself, as riverFaults reads it): tempo.ts tempoFaults names one whose press on ONE misses. Still
+ * water, open water, a raft's or a flood's river: none.
+ */
+export function lockedLianas(st: { platforms: readonly Platform[]; rivers?: readonly RiverZone[]; vines?: readonly Vine[] }, difficulty: Difficulty): Array<{ river: RiverZone; liana: Vine; drops: LockedDrops }> {
+  const out: Array<{ river: RiverZone; liana: Vine; drops: LockedDrops }> = [];
+  for (const r0 of st.rivers ?? []) {
+    if (r0.speed === 0 || r0.open || r0.raft || r0.floodMark) continue;
+    const { r, platforms, vines } = r0.way === -1 ? rightwards(r0, st.platforms, st.vines ?? []) : { r: r0, platforms: st.platforms, vines: st.vines ?? [] };
+    const logs = platforms.filter((p) => p.type === 'drift' && p.drift && onRiver(p.drift, r)).map((p) => p.drift!);
+    if (!logs.length) continue;
+    const turned = lianasOverLogs(vines, r);
+    // (each reported as laid: the river and the liana in the stage's own frame)
+    for (const v of turned) out.push({ river: r0, liana: (st.vines ?? []).find((q) => q.id === v.id) ?? v, drops: lockedDrops(v, logs, difficulty) });
+  }
+  return out;
 }
 
 /**

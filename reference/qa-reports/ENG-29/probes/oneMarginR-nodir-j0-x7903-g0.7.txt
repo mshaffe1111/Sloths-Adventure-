@@ -1,0 +1,36 @@
+normal: bar 2.850 s; lock 0.92; 2 locked liana(s); vineShift 0.0000; model one=true,true
+TRACE press t 14.300 x 7854.7 y 671.8 swing true
+TRACE 0 14.333 x 7863.3 y 673.2 face 1 vx 263 vy 37 S  logs 7817,8045,8273,7589
+TRACE 1 14.367 x 7872.2 y 674.3 face 1 vx 270 vy 30 S  logs 7819,8047,8275,7591
+TRACE 2 14.400 x 7881.3 y 675.2 face 1 vx 275 vy 21 S  logs 7822,8050,8278,7594
+TRACE 3 14.433 x 7890.5 y 675.7 face 1 vx 520 vy -562   logs 7825,8053,8281,7597
+TRACE 4 14.467 x 7907.9 y 659.1 face 1 vx 520 vy -499   logs 7827,8055,8283,7599
+TRACE 5 14.500 x 7925.2 y 644.6 face 1 vx 520 vy -435   logs 7830,8058,8286,7602
+TRACE 6 14.533 x 7942.5 y 632.2 face 1 vx 520 vy -372   logs 7833,8061,8289,7605
+TRACE 7 14.567 x 7959.9 y 621.9 face 1 vx 520 vy -309   logs 7835,8063,8291,7607
+TRACE 8 14.600 x 7977.2 y 613.7 face 1 vx 520 vy -245   logs 7838,8066,8294,7610
+TRACE 9 14.633 x 7994.5 y 607.7 face 1 vx 520 vy -182   logs 7841,8069,8297,7613
+TRACE 10 14.667 x 8011.9 y 603.7 face 1 vx 520 vy -119   logs 7843,8071,8299,7615
+TRACE 11 14.700 x 8029.2 y 601.9 face 1 vx 520 vy -55   logs 7846,8074,8302,7618
+TRACE 12 14.733 x 8046.5 y 602.1 face 1 vx 520 vy 8   logs 7849,8077,8305,7621
+TRACE 13 14.767 x 8063.9 y 605.2 face 1 vx 520 vy 91   logs 7851,8079,8307,7623
+TRACE 14 14.800 x 8081.2 y 611.0 face 1 vx 520 vy 175   logs 7854,8082,8310,7626
+TRACE 15 14.833 x 8098.5 y 619.6 face 1 vx 520 vy 258   logs 7857,8085,8313,7629
+TRACE 16 14.867 x 8115.9 y 631.0 face 1 vx 520 vy 341   logs 7859,8087,8315,7631
+TRACE 17 14.900 x 8133.2 y 645.1 face 1 vx 520 vy 425   logs 7862,8090,8318,7634
+TRACE 18 14.933 x 8150.5 y 662.0 face 1 vx 520 vy 508   logs 7865,8093,8321,7637
+TRACE 19 14.967 x 8167.9 y 681.8 face 1 vx 520 vy 591   logs 7867,8095,8323,7639
+TRACE 20 15.000 x 8185.2 y 704.2 face 1 vx 520 vy 675   logs 7870,8098,8326,7642
+TRACE 21 15.033 x 8202.5 y 729.5 face 1 vx 520 vy 758   logs 7873,8101,8329,7645
+TRACE 22 15.067 x 8219.9 y 757.6 face 1 vx 520 vy 841   logs 7875,8103,8331,7647
+TRACE 23 15.100 x 8237.2 y 788.4 face 1 vx 520 vy 925   logs 7878,8106,8334,7650
+TRACE 24 15.133 x 8254.5 y 820.0 face 1 vx 520 vy 950   logs 7881,8109,8337,7653
+TRACE 25 15.167 x 8271.9 y 832.0 face 1 vx 520 vy 0  G logs 7883,8111,8339,7655
+  liana x7903 grip 0.7: ONE lands true; early 1 f = 0.03 s, late 1 f = 0.03 s; window 0.10 s
+    -1.5s ### +1.5s
+  liana x7903 grip 0.95: ONE lands true; early 1 f = 0.03 s, late 1 f = 0.03 s; window 0.10 s
+    -1.5s ### +1.5s
+  liana x14389 grip 0.7: ONE lands true; early 1 f = 0.03 s, late 1 f = 0.03 s; window 0.10 s
+    -1.5s ### +1.5s
+  liana x14389 grip 0.95: ONE lands true; early 1 f = 0.03 s, late 1 f = 0.03 s; window 0.10 s
+    -1.5s ### +1.5s

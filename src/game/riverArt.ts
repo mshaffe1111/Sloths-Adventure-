@@ -14,6 +14,7 @@ import { drawSoilCut } from './groundPaint.ts';
 import { cropToBox, vGradient } from './drawThrift.ts';
 import { drawKitArt } from './puzzleArt.ts';
 import { drawW2New, type W2NewPiece } from './w2NewArt.ts';
+import { BARGE_DECK, drawW2Next, W2_NEXT_FRAMES } from './w2NextArt.ts';
 
 export type W2Piece = keyof typeof W2_FRAMES;
 
@@ -132,10 +133,17 @@ export const SAFE_OVER = { line: 0.7, alpha: 0.6, inset: 5 } as const;
 /** a raft's painting (drawRiverLog): drawn this tall for its width, its foot this share of that under the deck (the deck about a quarter
  *  down the painting, level with the raft's top, as the sluice rooms set it) */
 const RAFT = { h: 0.44, foot: 0.72 } as const;
+/** the King's Barge drawn over a log `width` px wide (world px): its whole size, the deck's height under the frame's top, and how far the
+ *  stern (`left`) and the prow (`right`) stand past the log's ends, the painting's prow pointing right (w2NextArt.ts BARGE_DECK) */
+export function bargeBox(width: number): { w: number; h: number; deck: number; left: number; right: number } {
+  const f = W2_NEXT_FRAMES.barge, k = width / (BARGE_DECK.x1 - BARGE_DECK.x0);
+  return { w: f.w * k, h: f.h * k, deck: BARGE_DECK.y * k, left: BARGE_DECK.x0 * k, right: (f.w - BARGE_DECK.x1) * k };
+}
 /** a log's painting (drawRiverLog): its piece, drawn size, and its bark's top and foot under the log's top (px), unbobbed; a raft's deck
  *  and foot (RiverRow.look 'raft') */
-export function logPaint(p: Pick<Platform, 'width'> & { drift?: { look?: 'raft' } }): { n: W2Piece; w: number; h: number; barkTop: number; barkFoot: number } {
+export function logPaint(p: Pick<Platform, 'width'> & { drift?: { look?: 'raft' | 'barge' } }): { n: W2Piece; w: number; h: number; barkTop: number; barkFoot: number } {
   if (p.drift?.look === 'raft') { const rh = p.width * RAFT.h; return { n: 'logLong', w: p.width * 1.1, h: rh, barkTop: 0, barkFoot: rh * RAFT.foot }; }
+  if (p.drift?.look === 'barge') { const b = bargeBox(p.width); return { n: 'logLong', w: b.w, h: b.h, barkTop: 0, barkFoot: b.h - b.deck }; }
   const n: W2Piece = p.width >= 140 ? 'logLong' : 'logShort';
   const f = W2_FRAMES[n];
   const w = p.width * 1.08;
@@ -144,7 +152,7 @@ export function logPaint(p: Pick<Platform, 'width'> & { drift?: { look?: 'raft' 
   return { n, w, h, barkTop: 2, barkFoot: 2 + h * 0.8 };
 }
 /** where a safe river's waterline crosses a floating log, under the log's top (px): `SAFE_OVER.line` of the way down its bark */
-export const logLineAt = (p: Pick<Platform, 'width'> & { drift?: { look?: 'raft' } }): number => { const b = logPaint(p); return b.barkTop + (b.barkFoot - b.barkTop) * SAFE_OVER.line; };
+export const logLineAt = (p: Pick<Platform, 'width'> & { drift?: { look?: 'raft' | 'barge' } }): number => { const b = logPaint(p); return b.barkTop + (b.barkFoot - b.barkTop) * SAFE_OVER.line; };
 export function drawSafeRiverOver(ctx: CanvasRenderingContext2D, logs: readonly Platform[], surfaceY: number, t: number, dir: 1 | -1, speed: number): boolean {
   if (!safeRiverArtReady()) return false;
   if (!logs.length) return true;
@@ -155,7 +163,7 @@ export function drawSafeRiverOver(ctx: CanvasRenderingContext2D, logs: readonly 
   for (const lg of logs) {
     // (a raft's painting is drawn whole on the water, no waterline over it: its own waterline is NOT proven yet, ENG-24e's still showed
     //  the band under its painting)
-    if (lg.drift?.look === 'raft') continue;
+    if (lg.drift?.look === 'raft' || lg.drift?.look === 'barge') continue;
     const line = lg.y + logLineAt(lg) + logBob(lg, t);
     const foot = lg.y + logPaint(lg).barkFoot + logBob(lg, t) + 2;
     const x0 = lg.x + SAFE_OVER.inset, x1 = lg.x + lg.width - SAFE_OVER.inset;
@@ -311,6 +319,13 @@ export function drawRiverLog(ctx: CanvasRenderingContext2D, p: Platform, t: numb
   if (p.drift?.look === 'raft') {
     const r = logPaint(p);
     if (drawKitArt(ctx, 'raft', p.x + p.width / 2, p.y + r.barkFoot + bob, { w: r.w, h: r.h })) return true;
+  }
+  // the King's Barge (RiverRow.look 'barge', ENG-29-e G3): w2-next#barge, its deck the log's whole top, the stern and prow past its ends,
+  // the prow ahead the way the river runs (the painting's prow points right); the log stands in only until World 2's next sheet is in
+  // (a stage that lays one asks for it: stageManifest.ts)
+  if (p.drift?.look === 'barge') {
+    const b = bargeBox(p.width), ahead = (p.drift.dir ?? 1) >= 0;
+    if (drawW2Next(ctx, 'w2-next#barge', p.x - (ahead ? b.left : b.right), p.y - b.deck + bob, b.w, b.h, !ahead)) return true;
   }
   const { n, w, h, barkTop } = logPaint(p);
   // the bark's top is about a fifth of the way down the painting (the moss and the twig stand up above it)
