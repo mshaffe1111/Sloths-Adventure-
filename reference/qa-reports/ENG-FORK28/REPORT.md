@@ -1,21 +1,19 @@
 # ENG-FORK28 REPORT (rule 26: the engine piece 2-8's build found missing). Started 6:17 PM ET 2026-11-26 (from the session hook date).
 
-## EXACT NEXT STEP (rewritten 6:58 PM ET from `date`; candidate 408679c3d is RED BY ME, the fix is the next session's (D138))
-FOUND (on 408679c3d's gates, checked on the base e878b1f45): a TOY wrote a fork it never meant. `src/game/gen2/toyHome.ts:59`
-POST_CODE = 'A Pg1> Xw1> R Fg1> R /D ...' (its comment: "a flow of ground"; F is the FORK letter, M is flow, nodeLetters.ts:42/45).
-Its brief is designed (dealExact, branching 'none'), so on e878b1f45 'none' turned that F into a practise; on 408679c3d the F is a
-fork, the toy's pool has no fork section, and every POST_CODE roll fails ("seedList: a proven plan has a loosened slot (n5 fork: no
-section for the job left ...)" / "the toy lays on most rolls (4 of 8)"). RED on 408679c3d, GREEN on the base: firstMet, postLay x2,
-easyRouted, pacerRespawn, hopJudged (2-7's post tests on the toy). PROVEN: with POST_CODE's 'Fg1>' written 'Pg1>' (what the base laid
-it as), firstMet 2/2, postLay 3/3, easyRouted 1/1, pacerRespawn 2/2 pass (a scratch edit in the main tree, restored, not committed).
-STEP 1: on t-eng-fork28, write POST_CODE's 'Fg1>' as 'Pg1>' (one letter; the toy then lays what it laid before, as it was laid:
-prove it by hashing buildGen2Stage(homeKit(id, POST_CODE)) seeds 1-12 x both settings on e878b1f45 vs the new head, equal).
-Fix the comment ("a practise of ground"). Grep every other code for an F with no roads (`/(^| )F[a-z]/`) under a dealExact brief
-(none found in src/game/gen2/worlds; toyHome's is the one). STEP 2: the new candidate's gates in full, unfrozen src this time
-(the chattr +i freeze made seedListChunk.test's mkdtemp fail EPERM: a harness fault of mine, not a red of the code; freeze only the
-files the gates must not change, or none). Inherited reds (red on the base too: name, never fix here): 2-8 itself (no seed of 24
-builds cleanly; storyTipScan, registrycheck, chaseRespawnReal, pitPocket, stageSheets, registrycheck.test, easyMode x4, levels x3,
-stageStart x2, harpy, artUse, w1NewArt in shard 2 all throw on 2-8), KID_RUNS_59 (R-165.473). Then the landing to the lead only.
+## EXACT NEXT STEP (rewritten 7:08 PM ET from `date`; candidate 8fbdb72ac, its gates RUNNING in frozen trees)
+CANDIDATE 8fbdb72ac = 408679c3d's piece + POST_CODE's 'Fg1>' written 'Pg1>' (toyHome.ts:59, the comment corrected: "a practise of
+ground"; F is the fork letter). PROVEN byte-for-byte: the toy's laid stage, raw buildGen2Stage(homeKit('2-97', POST_CODE)) and after
+w2Finish, sha256 per seed, seeds 1-12 x Normal and Easy: all 24 equal on e878b1f45 (its 'Fg1>') and 8fbdb72ac ('Pg1>'), combined
+hash b3c29699bea807eb on both, 24 distinct per-seed hashes, 0 throws (script: the scratchpad's hash/toyhash.mts, run per tree root).
+GREP (every code string in src and tools, tests included, for an F token with no roads): toyHome's POST_CODE was the ONLY one. The one
+real designed F is 2-8's own `F[P+|P]` (w2Arc28.ts:37), meant. No real stage's code changed.
+GATES (frozen trees in the scratchpad: cand/ = 8fbdb72ac, base/ = e878b1f45; chattr -R +i src and tools, then chattr -i on the ONE
+folder src/game/gen2/proven/ so seedListChunk.test's mkdtemp can write its planted-* folder there; verified: touch in src fails EPERM,
+mkdir in proven/ works): tsc 0; generalitycheck PASS (26/26 known); lockall (16 layouts: record on base/, --check on cand/), the CI
+tool line (gates.yml rolled job's 7 lines, kbdcheck, every seedlist --check) and the suite's 6 shards (3 streams of 2): RUNNING.
+NEXT: read each log; sort every red against e878b1f45 (the inherited list in the lead's ruling: storyTipScan, registrycheck(.test),
+chaseRespawnReal, pitPocket, stageSheets, easyMode x4, levels x3, stageStart x2, harpy, artUse, w1NewArt; KID_RUNS_59 if it shows).
+A red green on base is a stop: report it. None: send the lead 8fbdb72ac with each shard's totals and the inherited list.
 
 ## The piece (pipeline.ts `rolledGraph`, the fork count)
 - A DESIGNED graph (`GraphBrief.dealExact`, a level's arc) lays exactly the forks its code writes: its F nodes, at their places, every
