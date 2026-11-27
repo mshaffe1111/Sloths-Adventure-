@@ -3,7 +3,7 @@
  * and World 2's shared clutter look ['w2ReedBundle', 'w2Turtle', 'w2KingfisherPost'] stood a harmless painted turtle beside them).
  * artDress.ts HAZARD_LOOKALIKE names the foe family each lookalike piece shows; protoStage.ts addDress swaps (or leaves out) every piece
  * whose family is in the stage's own cast. The invariant, on every listed seed of every listed stage and on every other stage's first
- * 16 layouts, both settings, in every world whose dressing sets can roll a lookalike (read from DRESS_SETS, so a new row widens it):
+ * 16 layouts, on Normal, and on Easy too where the stage's cast holds a lookalike's family (the lead's ruling), in every world whose dressing sets can roll a lookalike (read from DRESS_SETS, so a new row widens it):
  * no dress piece shares a family with a foe on its stage. A stage without that foe keeps the piece.
  *   npx tsx --test src/game/dressLookalike.test.ts
  */
@@ -23,6 +23,7 @@ const levels = generateAllLevels().filter((l) => !l.secret);
 const LOOKALIKE_WORLDS = new Set(Object.entries(DRESS_SETS).filter(([, j]) => [...j.bank, ...j.hang, ...j.clutter].flat().some((n) => n in HAZARD_LOOKALIKE)).map(([w]) => Number(w) as DressWorld));
 /** the test's own copy of the families, so a plant that empties the table cannot blind the judge */
 const FAMILY: Record<string, string> = Object.fromEntries(Object.entries(HAZARD_LOOKALIKE).map(([n, v]) => [n, v!.family]));
+const FAMILIES = new Set(Object.values(FAMILY));
 /** the other stages' layouts (the lock gate's 16) */
 const LAYOUTS = 16;
 
@@ -52,13 +53,25 @@ test('clearLookalikes: a lookalike of a foe on the stage is swapped (or left out
   const ds = [{ n: 'w2Turtle' as AnyDress, x: 100, b: 500 }, { n: 'w2ReedBundle' as AnyDress, x: 200, b: 500 }];
   assert.deepEqual(clearLookalikes(ds, new Set(['turtle'])).map((d) => [d.n, d.x, d.b]), [['w2Frog', 100, 500], ['w2ReedBundle', 200, 500]]);
   assert.deepEqual(clearLookalikes(ds, new Set(['snake'])), ds, 'no snapper: the turtle stays');
-  const saved = HAZARD_LOOKALIKE.w2Frog;
-  // (a swap that is itself a lookalike on the stage is not used: the piece is left out)
-  HAZARD_LOOKALIKE.w2Frog = { family: 'frog' };
+  // (a swap that is itself a lookalike on the stage is not used: on a stage with snappers AND frogs the turtle is left out)
+  assert.deepEqual(clearLookalikes(ds, new Set(['turtle', 'frog'])).map((d) => d.n), ['w2ReedBundle']);
+  // (the frogs: on a frog stage the frog becomes the water jar, the tree frog is left out)
+  const frogs = [{ n: 'w2Frog' as AnyDress, x: 300, b: 500 }, { n: 'w1TreeFrog' as AnyDress, x: 400, b: 500 }];
+  assert.deepEqual(clearLookalikes(frogs, new Set(['frog'])).map((d) => d.n), ['w2WaterJar']);
+  assert.deepEqual(clearLookalikes(frogs, new Set(['snake'])), frogs, 'no frog foe: both frogs stay');
+});
+
+test('PLANT (frogs): with the frog rows taken out, a frog piece on a stage that fields frogs passes the swap and the judge names it', () => {
+  const st: Built = { enemies: [{ type: 'frog' }], proto: { dress: [{ n: 'w2Frog' as AnyDress, x: 300 }, { n: 'w1TreeFrog' as AnyDress, x: 400 }] } };
+  const swapped = (): Built => ({ ...st, proto: { dress: clearLookalikes(st.proto!.dress as { n: AnyDress; x: number; b: number }[], new Set(['frog'])) } });
+  assert.deepEqual(lookalikes(swapped()), [], 'with the rows: no frog left');
+  const rows = { w2Frog: HAZARD_LOOKALIKE.w2Frog, w1TreeFrog: HAZARD_LOOKALIKE.w1TreeFrog };
+  delete HAZARD_LOOKALIKE.w2Frog;
+  delete HAZARD_LOOKALIKE.w1TreeFrog;
   try {
-    assert.deepEqual(clearLookalikes(ds, new Set(['turtle', 'frog'])).map((d) => d.n), ['w2ReedBundle']);
+    assert.deepEqual(lookalikes(swapped()), ['w2Frog (a frog) at x 300', 'w1TreeFrog (a frog) at x 400']);
   } finally {
-    if (saved) HAZARD_LOOKALIKE.w2Frog = saved; else delete HAZARD_LOOKALIKE.w2Frog;
+    Object.assign(HAZARD_LOOKALIKE, rows);
   }
 });
 
@@ -77,13 +90,18 @@ test('PLANT: with the turtle row taken out of HAZARD_LOOKALIKE, 2-5 and 2-9 show
   }
 });
 
-test('no dress piece shares a family with a foe on its stage: every listed seed of every listed stage, every other stage 1-16, both settings', { timeout: 15 * 60_000 }, async () => {
+test('no dress piece shares a family with a foe on its stage: every listed seed of every listed stage, every other stage 1-16; Normal, and Easy where the cast holds a lookalike family', { timeout: 15 * 60_000 }, async () => {
   assert.ok(LOOKALIKE_WORLDS.has(2), "World 2's dressing rolls the turtle");
   const bad: string[] = [];
+  const easyChecked = new Set<string>();
   let kept = 0;
   for (const p of await plays()) {
-    for (const d of ['normal', 'easy'] as const) {
-      const st = build(p.cfg, p.n, d);
+    // (the lead's ruling: Normal everywhere; Easy too where the stage's cast holds a lookalike's family, found from the build, never named)
+    const normal = build(p.cfg, p.n, 'normal');
+    const hazard = normal.enemies.some((e) => FAMILIES.has(e.type));
+    if (hazard) easyChecked.add(p.cfg.id);
+    for (const d of hazard ? (['normal', 'easy'] as const) : (['normal'] as const)) {
+      const st = d === 'normal' ? normal : build(p.cfg, p.n, d);
       for (const h of lookalikes(st)) bad.push(`${p.label} (${d}): ${h}`);
       const foes = new Set(st.enemies.map((e) => e.type));
       kept += [...(st.proto?.dress ?? []), ...(st.dress ?? [])].filter((x) => FAMILY[x.n] && !foes.has(FAMILY[x.n])).length;
@@ -92,4 +110,6 @@ test('no dress piece shares a family with a foe on its stage: every listed seed 
   assert.deepEqual(bad.slice(0, 20), [], `${bad.length} lookalikes`);
   // (the rule is the stage's own cast, not a ban: a stage without snappers still shows the turtle)
   assert.ok(kept > 0, 'a stage without the foe keeps its lookalike piece');
+  // (the snapper stages were checked on Easy too: found from their cast)
+  assert.ok(['2-5', '2-9'].every((id) => easyChecked.has(id)), `Easy checked on ${[...easyChecked].join(', ')}`);
 });

@@ -233,6 +233,10 @@ export type DressWorld = (typeof DRESS_WORLDS)[number];
  */
 export const HAZARD_LOOKALIKE: Partial<Record<DressName, { family: string; swap?: DressName }>> = {
   w2Turtle: { family: 'turtle', swap: 'w2Frog' },
+  // (the frogs: frogs are foes in Worlds 6 and 7, so these guard a frog cast in Worlds 1-2 before it comes; the lead's ruling, rule 22.
+  // The water jar stands on the ground like the frog and is no wider (52 units to 55); the tree frog has no harmless twin: left out)
+  w2Frog: { family: 'frog', swap: 'w2WaterJar' },
+  w1TreeFrog: { family: 'frog' },
 };
 
 /** the dressing with every piece that looks like one of `foes` (the stage's own enemy types) swapped for its harmless look, or left out */
