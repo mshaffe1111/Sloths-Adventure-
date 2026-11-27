@@ -18,6 +18,7 @@ import type { GeneratedStage } from '../stageGenerator.ts';
 import type { ProtoExtras } from '../protoStage.ts';
 import type { NodeAsks } from './nodeAsks.ts';
 import type { Zone } from '../zones.ts';
+import type { WorldVerdict } from './worldVerdicts.ts';
 import type { ClockDef } from '../stageKit.types.ts';
 import type { Collectible, Enemy, EnemyType, LevelConfig, ObjectiveType, Platform, Vine } from '../types.ts';
 import type { Rng } from './variety.ts';
@@ -134,6 +135,9 @@ export interface WorldManifest {
    *  world's pit rules, never a world number): today only World 1's, 'w1Pits' (w1Pits.ts paints a soft pit's floor, a marked fall as a
    *  drop and a hollow's hurt floor as the thorn bed, hurtFloor.art 'w1-thorn'). Absent, nothing paints a pit floor */
   pitPainter?: 'w1Pits';
+  /** the world's own judges (R-165.537, worldVerdicts.ts WORLD_VERDICTS): every judge named here runs on every roll, on its own setting,
+   *  into gen2.errors (World 3: its dark brick's and its moon's). Absent, the world has none of its own */
+  verdicts?: readonly WorldVerdict[];
   /**
    * World 1's floor families (the planner's floor road, engine-floorroad 4fd9e992; the designer's floor ruling, WORLD-RULEBOOK 9a22b846):
    * each roll draws a hop family by weight. A hop roll (h >= `hopRoll`) keeps every soft pit's floor `shallow` under its lips and leans

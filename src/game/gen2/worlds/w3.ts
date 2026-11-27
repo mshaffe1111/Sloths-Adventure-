@@ -162,6 +162,8 @@ export function w3Manifest(): WorldManifest {
     moves: ['double', 'climb', 'swing'],
     ground: { y: W3_GROUND.y, bankH: W3_GROUND.bankH, style: 'log' },
     pit: 'soft', pitDepth: W3_GROUND.pitDepth,
+    // (its own judges, R-165.537: the dark brick's and the moon's, run on every roll into gen2.errors; worldVerdicts.ts)
+    verdicts: ['darkGaps', 'darkLandings', 'darkFlags', 'moon'],
     rollRanges: W1_KIT.rollRanges,
     corridor: { top: G - 260, bottom: G + 60, soft: 80 },
     themeShare: [1, 1],

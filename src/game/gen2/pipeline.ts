@@ -14,6 +14,7 @@
  * The result is a GeneratedStage (what the engine already plays) with the hand-built stages' proto extras, and `gen2` (what was built).
  * Same seed, same stage; Easy and Normal share the seed AND the section sequence (Normal picks, Easy lays the same picks by its rules).
  */
+import { worldVerdictLines } from './worldVerdicts.ts';
 import { layMoon, moveMoon, oneBeam } from '../moon.ts';
 import { withSetting } from '../settingDials.ts';
 import { LAID_ASKS } from './walkedSpan.ts';
@@ -4794,6 +4795,8 @@ function buildGen2StageOn(req: BuildRequest): Gen2Stage {
   if (traps?.length) st.gen2.errors.push(...trapFaults(traps, st.collectibles.filter((c) => c.type === 'flower' || c.type === 'fruit'), st.enemies));
   // (the caller's own rules, BuildRequest.also: their lines with the rest, each once)
   for (const u of req.also?.(st, req.difficulty) ?? []) if (!st.gen2.errors.includes(u.line)) st.gen2.errors.push(u.line);
+  // (the world's own judges, named on its manifest: R-165.537, worldVerdicts.ts)
+  for (const l of worldVerdictLines(req.kit.manifest.verdicts, st, req.difficulty)) if (!st.gen2.errors.includes(l)) st.gen2.errors.push(l);
   return st;
 }
 
@@ -4855,7 +4858,8 @@ function buildRolledOn(req: BuildRequest): Gen2Stage {
       // refused 2 of 30 chase rolls on Normal's flags from before its lay))
       const nChase = withSetting('normal', () => layChaseStage(n, (uid) => PIECES_OF.get(n)?.get(uid) ?? [], req.kit, false));
       applyVerdicts(n, { ...req, difficulty: 'normal' });
-      n.gen2.errors = [...rollErrors(n.gen2), ...nChase, ...withSetting('normal', () => req.also?.(n, 'normal') ?? []).map((u) => u.line)];
+      n.gen2.errors = [...rollErrors(n.gen2), ...nChase, ...withSetting('normal', () => req.also?.(n, 'normal') ?? []).map((u) => u.line),
+        ...withSetting('normal', () => worldVerdictLines(req.kit.manifest.verdicts, n, 'normal'))];
     }
     const repairs: Repair[] = [...(n?.gen2.repairs ?? [])];
     // (and only the animals Normal kept: Easy's are a subset of Normal's)
