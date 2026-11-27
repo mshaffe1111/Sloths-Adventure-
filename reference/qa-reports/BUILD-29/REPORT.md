@@ -1,7 +1,53 @@
 # BUILD-29 REPORT: 2-9 "The River King's Court" (the World 2 finale; R-165.449), release 6
 Branch t-build-29, cut from origin/t-eng-29 = 098047713 (the lead's named base). Session 1 started 5:45 PM ET Thu 11/26 (by `date`).
 
-## EXACT NEXT STEP (session 12, BUILD-29-l, 5:39 PM ET Fri 11/27 by `date`; head = this commit)
+## EXACT NEXT STEP (session 13, BUILD-29-m, hand-over 6:31 PM ET Fri 11/27 by `date`; head = this commit, on branch t-build-29-m, NOT on t-build-29)
+BOX CLOCK (by `date`): start 6:21:42 PM ET; stops (each with its cause): 6:26 the roar line did not show on the real page from a teleport
+(Pokey placed at the tip's x, 20 s wait: the line never rose; the scan passes, the page still is NOT proven); 6:27-6:29 the frog found by
+eye on a full still after the probe's world-to-screen sum missed (the dress `b` is not screen y less camera y: crop by eye, not by sum);
+hand-over at the time above (inside the 28-minute box).
+WHERE IT IS: origin/t-build-29 is STILL f4e77273 on purpose (ENG-LATE is not landed until the one gate run passes); this box's head is
+pushed to **t-build-29-m** (safe-keeping). The next box: `git fetch origin t-build-29-m && git checkout -B t-build-29 origin/t-build-29-m`.
+DONE (steps 1-3, 5 in part, 4 in part):
+1. MERGE t-eng-late 6ce4aa9b: a fast-forward from f4e77273 (`git merge --ff-only 6ce4aa9b`). tsc CLEAN; generalitycheck PASS (71 engine
+   files, 26 literals, 26 known).
+2. THE KEEPER'S FIX (2)(a) (637063bdd): way.2-9, dotLinesData.ts:167 BOTH slots (old and new text) and wayside.ts:103 (the row's key for
+   swapLine), word for word: "I bet Meeca admired the whole river out loud." lines-2-9.md:104 names it. wayside.test.ts WHOLE: 17/17.
+3. R-165.571 (637063bdd): w2Arc29.ts manifest `storyTips: { ...(M.storyTips ?? {}), [lineId29('roar')]: 'Dot' }` (2-1's form, R-165.412;
+   the engine's kind for a once-only line said on every help setting with the story switch on, types.ts:239-241; pipeline.ts:3648 lays it
+   `story: 'Dot'`). Words verbatim (LINES_29.roar unchanged). The built stage's hint (2-9 L1 seed 2, Normal): {x 14237, "That's the king!
+   Now the drum's twice as fast!", story: "Dot"}. **storyTipScan --check PASS: "0 laid tip line(s) dropped on Tips (Normal's default)
+   over 17 listed stage(s), 158 laid line(s) read"** (stills-m/storyTipScan-637063bdd.txt). NOTE FOR THE LEAD: lines-2-9.md:41-42 names
+   `roar` a TEACH line (D50); the brief and row :19 say a story beat. Both kinds are said on Normal's default Tips; I laid STORY as the
+   brief ordered. If the keeper wants TEACH (Dot waits for a clear moment), it is one word: TEACH_29 = ['drum', 'roar'] and no storyTips.
+5 (in part). WHOLE FILES on 637063bdd (the 13 test files that import dotLinesData / wayside / w2Arc29, plus tools/engine/storyTipScan.test.ts):
+   bossCards, castMoments, dotLines, gen2/tips, w1Arc14, w1Arc18, w2Arc27, w2Arc29, pokeyJournal, storyStyle, w5Order, w5Teach, wayside,
+   storyTipScan: **tests 136, pass 136, fail 0** (w5Order's goal-line test now green: ENG-LATE's fix).
+4 (in part, DISCOVERY, not the stills of record: shoot again on the frozen head). vite 5199, 2-9 layout 1 (seed 2), 2x, stills-m/shoot.mjs:
+   - THE FROG (judged by eye at a 3x crop, stills-m/frog-normal-sideways-crop3x.jpg): Normal sideways at the quay's bank (x 25075): a green
+     frog sitting on a grey stone, beside the kingfisher on its post and the reed bundle: it reads as a FROG, not a turtle. Polish note,
+     named plainly: a thin pale outline rings the frog-and-stone cut at 3x; at phone size it reads as the sticker outline the other dress
+     pieces carry, not a fringe. Easy's frog is at x 29464 (dress list), its crop is NOT yet judged (my crop missed it: crop by eye).
+     A second frog stands at the start (x 316), seen beside Pokey in the wayside still; a third at x 6453.
+   - THE WAYSIDE LINE (stills-m/wayside-normal-upright.jpg): Normal upright, "I bet Meeca admired the whole river out loud." whole in
+     Pokey's box, top of screen, two lines, nothing cut. Shown on all four (Normal/Easy x upright/sideways: the DOM text found each time);
+     only Normal upright judged by eye.
+   - THE ROAR LINE: NOT shown on the real page (above). NOT judged.
+   - The journal line (fix (1), pokeyJournal.ts:69): NOT shot.
+LEFT (the next box, in order):
+a. ReadNotifications. Check out t-build-29-m (above). `git ls-remote` t-build-29 f4e77273, t-eng-late 6ce4aa9b, main 49fdc8cb6.
+b. STILLS on the head: (i) the roar line: walk Pokey into the twist's bank from the left (hold right a second from about 400 px before
+   x 14237 Normal / 14665 Easy, the engine running, not a teleport), screenshot when Dot's box shows; (ii) Easy's frog crop (x 29464), and
+   the frog upright both settings (Pokey at frog x - 200 puts it on an upright screen); (iii) the journal page with fix (1)'s words;
+   (iv) guard / quay / pads, both settings, both ways (the Easy sideways quay still fell to x 25683: place on the quay's own top).
+   Judge each by eye at a crop before calling it.
+c. PRE-FREEZE then FREEZE in a detached worktree (dispatch-packet.md line 81), then THE ONE GATE RUN (brief step 6, every line), LAND
+   (step 7: fast-forward origin/t-build-29 to the frozen head, no force), DEBRIEF (step 8).
+LEARNED (m): (1) a teleport does not say a tip: Dot's guide needs him to walk in (shoot lines by walking, the engine running). (2) a dress
+   record's `b` is not screen y less camera y: find the piece by eye on the full still, then crop.
+LESSONS APPLIED: :23 (ReadNotifications first: none queued); :24 (merged ENG-LATE before shooting; every still names its head);
+   :27 (the kind read in types.ts and pipeline.ts, not a comment; the importers grepped across src and tools).
+## (superseded) EXACT NEXT STEP (session 12, BUILD-29-l, 5:39 PM ET Fri 11/27 by `date`; head = this commit)
 BOX CLOCK (the 2-hour level clock's dry run, by `date`): start 5:27:46 PM ET; stops (each with its cause): 5:29 PM the new river test RED on its own plant (the plant left the river window: fixed in 1 min by stretching the river with its row); 5:31 merge (a) 1 conflict; 5:32 merge (b) 7 conflicts + one tsc follow-on (w2Arc26.test.ts:75); 5:37 the 47-file word run 2 RED (Q1 ours-words, Q2 ours-earlier; 2 min to prove each on its base); hand-over 5:39 PM ET (inside the 28-minute box).
 ReadNotifications first. Box 12 DID steps 1, 2, 3, 3b fix (1), 4b, and 4 in part (discovery stills); fix (2) is HELD (a red, below); NOT 5-8 (freeze, the
 one gate run, land, debrief): the next box starts at the two questions below, then step 5 on this head. Inputs unchanged at hand-over: `git ls-remote` t-eng-29 337ba7d0b, main 49fdc8cb6.
