@@ -1,22 +1,23 @@
 # ENG-DECOR (R-165.542): no decoration looks like a hazard on a stage where that hazard lives
 
-## EXACT NEXT STEP (box 2)
-1. ReadNotifications. `git fetch origin t-eng-decor t-eng-29`; check out t-eng-decor. Base = origin/t-eng-29 7387d089a (merge, never
-   rebase, if ENG-CAM29 has landed there since).
-2. THE LOCK GATE. Box 1 started `lockall --layouts 16 --out base.json` on a worktree of 7387d089a (scratchpad/base, base.json in the
-   scratchpad; started, not finished at the hand-over). If that file is not in hand and complete, re-run it:
-   `git worktree add --detach <scratch>/base origin/t-eng-29`, `ln -s $PWD/node_modules <scratch>/base/node_modules`, from the worktree
-   `npx tsx tools/engine/lockall.ts --layouts 16 --out <scratch>/base.json` (run_in_background), then on t-eng-decor
-   `npx tsx tools/engine/lockall.ts --layouts 16 --check <scratch>/base.json`, with its counts line. ONLY 2-5 and 2-9 may move, and only
-   in `proto.dress` (or `dress`). Name every other move and STOP if there is one.
-3. seedlist --check for 2-5: `npx tsx tools/engine/seedlist.ts 2-5 --check` (2-9 has no list on this base). If a proven seed's play
-   moves, STOP and send it to the lead.
-4. tsc + generalitycheck; the CI tool line; the suite in 6 shards (`--test-shard=i/6`, the CLAUDE.md file list); drawcheck.
-   Freeze per D115 with src/game/gen2/proven/ writable. (dressLookalike.test.ts already PASSED on its own in box 1: 3/3, 432 s.)
-5. Re-shoot ONE still: 2-5 upright at the frog (x 20151): box 1's placement (x - 160) put Pokey over a gap, so the frog is off the
-   right edge. Place him at x 20151 - 90 on the bank under the frog. Script: box 1's shoot.mjs (scratchpad; it is the camFeel.mjs way:
-   vite dev server per tree, `window.__play(stage, 1)`, PW=/opt/node-tools/node_modules/playwright/index.mjs).
-6. Land on t-eng-29 (merge, no force); send the lead the hash, each shard's totals, the lock counts line and the stills below.
+## LANDED (box 1 tail, the lead's LAND)
+Candidate 4cb57625f merged onto t-eng-29 3d635eb6e (ENG-CAM29's landing; no force). Nothing further for ENG-DECOR: idle.
+Its follow-ups (the frog rows, the Normal-plus-cast-Easy test scope, the 2-5 upright still) wait on branch t-eng-decor-546 1e5c411d2
+for R-165.546 (not merged).
+
+## Gates (tail, on the frozen 4cb57625f; frozen worktree, chattr +i on src and tools, gen2/proven writable)
+- tsc clean; generalitycheck PASS (26 literals, 26 known).
+- THE LOCK (two runs): `--out` on 7387d089a, 3264 builds of 102 stages; `--check` on 4cb57625f: "lock: 100/102 stages unchanged",
+  the two moves 2-5 proto.dress and 2-9 proto.dress, nothing else. (The merge's own lock pair, base 3d635eb6e: see the landing commit's
+  message to the lead.)
+- seedlist 2-5 --check: PASS, 100 seeds, each clean on both settings (2-9 has no list on this base).
+- The CI tool line (gates.yml): 429 tests, 428 pass, 0 fail, 1 todo (the open chase-bot todo).
+- The suite in 6 shards: 1: 697 / 696 pass / 0 fail / 1 todo; 2: 694 / 693 / 0 / 1 todo; 3: 690 / 690 / 0; 4: 832 / 831 / 1 FAIL;
+  5: 709 / 709 / 0; 6: 624 / 623 / 0 / 1 todo. dressLookalike.test.ts runs in shard 5 and adds 419 s there.
+- THE ONE RED: firstTimerBot.test.ts:177 "5-9's Easy goal rests on the kid's runs" (KID_RUNS_59) is t-eng-29's, owner BUILD-29-l
+  (4799f6026): it fails the same way, with the same re-measured runs, on the base 7387d089a, and the lock shows 5-9 unchanged.
+- drawcheck: PASS (1098 s, the same limits).
+- Stills: below; 2-5 upright's re-shoot is on t-eng-decor-546 (R-165.546).
 
 ## Stills (box 1, layout 1 Normal, base 7387d089a vs fix d2fd4e0da)
 - `stills/2-9-up-before-after.jpg`: 2-9 upright, the quay by the pads (x 10806): BEFORE the painted turtle on a log beside the kingfisher
