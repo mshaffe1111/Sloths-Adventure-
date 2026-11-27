@@ -54,7 +54,15 @@ the commits after it are this REPORT only). Steps 1-4 DONE (below); step 5 partl
   on it: errors in test files only (w3.test.ts, w3Level.test.ts want 3-2's exports the kit's w3.ts does not have), none in any source.
   Run: `GEN2_DRAFT=3-1 ROOT=<wt-try> KEEP=<config> FROM=1 SEEDS=40 VERBOSE=1 npx tsx proof.mts` (the first run left GEN2_DRAFT out:
   every build threw "no row for 3-1" (the draft row is installed only by GEN2_DRAFT); re-run with it, the numbers below).
-PROOF_LINES
+- RESULTS (logs proof/*.txt here; every refusal named in its log), each against ENG-CATCH-e's number:
+  - all five: ok 80/80, leaks 0, refusals 6 in 6 builds, Normal's rolls refused 3 / tried 42 (7%), worst stage 1 (n11). ENG-CATCH-e: 3/42.
+    The same six named refusals as ENG-CATCH-e (n11, n19, n29 and e11, e19, e29: a blind drop off the wall catch x 31-211 / 33-213).
+  - root-down: ok 80/80, leaks 0, refused 0 / tried 40 (0%). ENG-CATCH-e: 0/40.
+  - two-roots: ok 80/80, leaks 0, refused 0 / tried 40 (0%). ENG-CATCH-e: 0/40.
+  - cap-down: ok 80/80, leaks 0, refused 1 / tried 40 (3%), worst stage 1 (n3). ENG-CATCH-e: 1/40.
+  - cap-steps: ok 80/80, leaks 0, refused 1 / tried 41 (2%), worst stage 1 (n33). ENG-CATCH-e: 1/41.
+  - SHELF_HOPS_LINE
+  0 THROW in every log. No config got worse than ENG-CATCH-e.
 
 ## Open finding (named, not fixed in this box)
 - No catch is laid twice now, but a LATER, wider catch may still lie over an earlier one: the toy's 536-716 lies over 654-716 (same

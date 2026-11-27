@@ -1,0 +1,7 @@
+w3-root-down,w3-two-roots,w3-cap-down,w3-cap-steps,w3-shelf-hops ok 80/80 bad - | refusals 6 in 6 builds | Normal's searches: rolls refused 3 / tried 42 (7%) | worst stage 1 (n11) | leaks 0
+  n11 REFUSED tower: a blind drop off the piece at x 31-211, y 4150: 497 px to its landing (in view: within 300)
+  n19 REFUSED tower: a blind drop off the piece at x 33-213, y 4109: 498 px to its landing (in view: within 300)
+  n29 REFUSED tower: a blind drop off the piece at x 31-211, y 10556: 495 px to its landing (in view: within 300)
+  e11 REFUSED tower: a blind drop off the piece at x 31-211, y 4150: 497 px to its landing (in view: within 300)
+  e19 REFUSED tower: a blind drop off the piece at x 33-213, y 4109: 498 px to its landing (in view: within 300)
+  e29 REFUSED tower: a blind drop off the piece at x 31-211, y 10556: 495 px to its landing (in view: within 300)
