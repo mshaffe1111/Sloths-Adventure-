@@ -1,0 +1,7 @@
+w3-shelf-hops ok 80/80 bad - | refusals 6 in 6 builds | Normal's searches: rolls refused 3 / tried 43 (7%) | worst stage 1 (n13) | leaks 0
+  n13 REFUSED tower: a blind drop off the piece at x 535-892, y 3382: 311 px to its landing (in view: within 300)
+  n24 REFUSED tower: a blind drop off the piece at x 475-605, y 6639: 314 px to its landing (in view: within 300)
+  n36 REFUSED tower: a blind drop off the piece at x 578-930, y 3418: 314 px to its landing (in view: within 300)
+  e13 REFUSED tower: a blind drop off the piece at x 535-892, y 3382: 311 px to its landing (in view: within 300)
+  e24 REFUSED tower: a blind drop off the piece at x 475-605, y 6639: 314 px to its landing (in view: within 300)
+  e36 REFUSED tower: a blind drop off the piece at x 578-930, y 3418: 314 px to its landing (in view: within 300)

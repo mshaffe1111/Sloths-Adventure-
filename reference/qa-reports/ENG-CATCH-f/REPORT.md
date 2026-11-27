@@ -1,12 +1,12 @@
 # ENG-CATCH-f: the down tower never lays a catch twice; the tower guarantee onto t-eng-w3 (R-165.561)
 
 ## EXACT NEXT STEP
-(stamp: HANDOVER_STAMP)
+(box 1 handed over, written 5:50 PM ET Fri 11-27 by `date`; t-eng-w3 checked at 7a580aefc then)
 CANDIDATE = origin/t-eng-catch-f HEAD (the hash in the lead message; the code is 056b22736 = 5330e490d's fix + t-eng-w3 7a580aefc merged;
-the commits after it are this REPORT only). Steps 1-4 DONE (below); step 5 partly done; steps 6-7 NOT STARTED.
+the commits after it are this REPORT only). Steps 1-5 DONE (below: the red, the fix and its plant, the merge, the proof, the pre-freeze tests); steps 6-7 NOT STARTED.
 1. Re-check base: `git ls-remote origin refs/heads/t-eng-w3` must still be 7a580aefc. If it moved: merge it by hash, tsc + generality,
    and re-run tower.test.ts + towerMend.test.ts + w3Noise.test.ts whole.
-2. Finish step 5: PRE_FREEZE_LEFT
+2. Step 5 is done on 056b22736 (totals below); the code has not changed since (the later commits are this folder only).
 3. Freeze: `git worktree add --detach <scratch>/wt-frozen <CANDIDATE>` (dispatch-packet.md line 81 on the lead branch), node_modules
    symlinked; every gate below runs there.
 4. Step 6, the gates once on the frozen head: the CI tool line; the suite in 6 shards with totals; THE LOCK as two runs ALONE (nothing
@@ -61,7 +61,8 @@ the commits after it are this REPORT only). Steps 1-4 DONE (below); step 5 partl
   - two-roots: ok 80/80, leaks 0, refused 0 / tried 40 (0%). ENG-CATCH-e: 0/40.
   - cap-down: ok 80/80, leaks 0, refused 1 / tried 40 (3%), worst stage 1 (n3). ENG-CATCH-e: 1/40.
   - cap-steps: ok 80/80, leaks 0, refused 1 / tried 41 (2%), worst stage 1 (n33). ENG-CATCH-e: 1/41.
-  - SHELF_HOPS_LINE
+  - shelf-hops: ok 80/80, leaks 0, refused 3 / tried 43 (7%), worst stage 1 (n13). ENG-CATCH-e: 3/43. The same six named refusals
+    (n13, n24, n36 and e13, e24, e36: blind drops of 311-314 px, past `see` 300).
   0 THROW in every log. No config got worse than ENG-CATCH-e.
 
 ## Open finding (named, not fixed in this box)
@@ -72,3 +73,15 @@ the commits after it are this REPORT only). Steps 1-4 DONE (below); step 5 partl
 
 ## Polish check
 Engine-only (the lay). No screen changed in this box; the overlap above is the one rough spot it can show, named.
+
+## Learned
+- The mend was blamed for this red for two boxes; it only changed which of two lays was returned. A trace of every `put` (its call site
+  printed) found the real layer in one run. Before bisecting a red by remedy, print which code path laid the bad piece.
+- An invariant "every catch distinct" belongs where wood is laid (`put`) and where it moves, not in a check after the lay: then no new
+  remedy can break it.
+- MY MISS: the first proof run left out GEN2_DRAFT=3-1 and every build threw; caught from its first line before any number was used.
+  The command line is now written in this REPORT, so the next run copies it.
+Lessons applied: D115 (each run on its own worktree: wt-try for the proof, wt-old for the d49de60f0 check), D119 (no heredoc with a
+commit), D128 (stamps from `date`), D154 (the invariant guaranteed by construction, proven on seeds 1-40 x both, all six configs),
+D156 (generality with tsc at each step), D159 (the base checked by hash with ls-remote).
+
