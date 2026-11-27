@@ -1,6 +1,31 @@
 # INT-R5 REPORT: release 5 (0.10.4) candidate, release-0.10.4 (packet reference/packets/2026-11-26/INT-R5.md)
 
-## EXACT NEXT STEP (written 9:11 AM ET 11-27 by `date`; box 2 of 11-27, INT-R5-b)
+## EXACT NEXT STEP for INT-R5-c (written 10:28 AM ET 11-27 by `date`; box 2, INT-R5-b; supersedes box 2's 9:10 step below)
+The DISCOVERY full set on ab5673531 found four reds; the lead ruled each. INT-R5-b fixes nothing (D138). INT-R5-c makes ONE new head
+from release-0.10.4 with fixes 2-4 plus the soil-ease merge, then runs THE FULL SET once on it (r104/lane.sh lanes, as below). Target: the
+full set green by about 3 PM ET today.
+1. **paint1 (depthSteps): ruling B, FIX THE SOIL EASE** (R-165.487's own fix). A soil-ease member starts from ab5673531, draw-only, on its
+   own branch; INT-R5-c MERGES it (--no-ff, conflicts named, tsc + the CI tool line after). Why it was red: 2-7's rebuilt list (c9e1e269)
+   re-keyed the same faint soil steps: 31 NEW 2-7 DEPTH STEP lines (49-63 px, 18 Easy, 13 Normal) on the changed variants, 34 known ids
+   (the old plans' roll seeds) "fixed, still listed". Re-keying the known list was DECLINED (knowncheck refuses a gain; release.md step 7).
+   The soil fix must EMPTY depthSteps.known.json's 2-7 lines (the list only shrinks). First failing line: out-c2/g-paint1.tail.log.
+2. **The two dead plants: RE-PLANT BY PROPERTY** on a case where C14's bot still fails with the skill off. Each test finds its row by what
+   the bot does, never by an x. Same assertions, nothing loosened. tools/inspect/wheelBoard.test.ts #4 "boardWatch PLANTED OFF, way +1
+   (2-6 seed 1, child Normal v2, top wheel)": "0 scrambles with the skill off: the plant is not live"; tools/inspect/wheelStepOff.test.ts
+   "stepOff PLANTED OFF, way +1 (2-6 adult Easy seed 12)": "no rescue with the skill off: the plant is not live". MERGE-BORN: both pass on
+   t-land-26 2f681402e, fail on merge 3 abdc6e4d1 and on ab5673531 (re-run alone); the only bot change between them is C14 (firsttimer.ts).
+3. **storyTipScan**: "2-6 seed 1 (normal+easy) | info | Look at it all. Didn't lift a claw." is dropped on Tips. Lay the line at its
+   source (StageHint.warn / storyTips / teachTips, R-165.412). INHERITED: t-land-26 2f681402e fails it the same way.
+4. **goalsEasy.test.ts:10** pins 5-9's kidRuns [3,5,6,7,6,5]; 4799f6026 re-recorded them to [14,13,17,18,5,5]. The line stops pinning the
+   runs and holds R-165.496's rule (EASY_GOAL_59 = 5 is data; the kid's lower median reaches it). **BOX 1's MISS** (it ran only
+   firstTimerBot.test after the re-record; the widened step-6 grep or the whole suite would have caught it). suite4: 696/697.
+5. **Inherited, not in CI, R-165.531 (the lead's ruling B):** tools/validate/validate.test.ts 38/43 (5 fail) and world1.test.ts 0/7, the
+   SAME on main 4bf2cbaaa. In the gate table as "inherited, not in CI, R-165.531" with both logs (out-c2/g-validate*, g-world1*).
+6. Lockall on ab5673531: 70/102 unchanged, 32 moved = 2-6, 2-7, 1-4 and 29 proto.hints-only stages (release-0.10.3's hint list less 8-5,
+   which now matches main); NOTED by the lead. C14 moves no layout. Re-check the same set on the new head (the soil fix is draw-only).
+7. The rest of the discovery lanes' totals: r104/out-c2/fullset-*.txt (INT-R5-b pushes each as it lands).
+
+## EXACT NEXT STEP (written 9:10 AM ET 11-27 by `date`; box 2 of 11-27, INT-R5-b)
 **THE FINAL HEAD is ab5673531** (on release-0.10.4): the title (box 1), 2-7's list c9e1e269 (de3b6814c), the R-165.487 row
 (f45b37d63) and the wheel-bucket mapping fix (ab5673531). tsc clean; the CI tool line 58 pass, 0 fail; coveragecheck PASS; roadmapcheck
 PASS; 2-7 --check PASS (100 seeds); the step-6 pinned tests 51 pass, 0 fail. Any later commit is REPORT-only (docs).
