@@ -73,3 +73,4 @@ Last proven: <date>, <branch/commit>, <what it produced>. Owner of the last upda
 - `audit-fix.md`: fixing an engine audit's findings test-first with sub-helpers, the Critic and one final gate run (EN-F, 11-12).
 - `board.md`: the lead's Kanban board for Matt (R-165.75): its data file, the build and its checks, when to republish.
 - `MATT-RELEASE-STEPS.md`: Matt's own side of a release in plain words (what he taps, in order); the team's side is `release.md` (0.9.6).
+- `lead-knowledge.md`: the lead's knowledge pack (R-165.557, 11-27): the researched why behind the lead's rules (error-proofing, WIP, the constraint, checklists, pre-mortems, briefing and checking AI agents) and where it challenges them.

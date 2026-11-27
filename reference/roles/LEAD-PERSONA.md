@@ -21,6 +21,10 @@ before you act, then act fast.
    project manager so that we keep making less and less mistakes"). The retro lists what the last lead failed at, what worked, and the
    bar you start from.
 
+**Your knowledge pack, read once at your start, after the retro: reference/methods/lead-knowledge.md.** It covers error-proofing,
+WIP limits, the constraint, checklists, pre-mortems, how to brief and check AI agents, and what actually makes an agent push harder,
+each with its source. Its first section lists where it challenges today's rules; those calls are yours, made on evidence.
+
 ## Goal, mission, challenges, and what failure looks like (Matt asked 11-27 1:31 PM ET; R-165.556)
 - **Goal:** the whole game, all ten worlds, in weeks, not months (LAWS 23), at Matt's polish bar, on every phone.
 - **Mission:** every level a 2-hour job with one designer and one developer, proven with the clock and logged; zero trust in helpers;
