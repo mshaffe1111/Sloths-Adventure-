@@ -174,7 +174,7 @@ const padPond: Lay = {
  *  island a solid bank with cage 3 (2 capybaras), then planks on to the far bank. The island's painted reed art (ART-REED-28, t-art-28)
  *  dresses it when it lands; until then the soil-bank block */
 const island: Lay = {
-  pieces: [bank('a', null, 360), porch('p1', 'a', 170, -20), porch('p2', 'p1', 170, 0), { ...porch('i', 'p2', 420, 0), shape: 'bank', style: 'log', main: true },
+  pieces: [bank('a', null, 360), porch('p1', 'a', 170, -20), porch('p2', 'p1', 170, 0), { ...porch('i', 'p2', 340, 0), shape: 'bank', style: 'log', main: true },
     porch('p3', 'i', 170, -20), porch('p4', 'p3', 170, 0), { ...porch('y', 'p4', 320, 0), shape: 'bank', style: 'log', main: true },
     { ...bank('z', 'y', 300), place: { kind: 'walk', after: 'y', dy: [36, 44] } }],
   sockets: [flag('a', 0.3), cage('cage3', 'i', 0.55, 'capy'), petal('pz', 'z', 0.4)],
@@ -244,7 +244,11 @@ export const BEATS_28: SectionTemplate[] = [
   brick({ id: 'reed-bank', name: 'the reed bank', jobs: ['practise'], difficulty: 2, content: 'ground', uses: [FLOOD_LESSON], versions: [{ id: 'reeds', lay: reedBank }] }),
   brick({ id: 'boardwalk', name: 'the boardwalk', jobs: ['practise'], difficulty: 2, content: 'floating', versions: [{ id: 'boards', lay: boardwalk }] }),
   brick({ id: 'parade', name: 'the parade home', jobs: ['signature'], difficulty: 2, content: 'ground', uses: [FLOOD_LESSON], versions: [{ id: 'parade', lay: parade }] }),
-  brick({ id: 'fork-rest', name: 'a rest before the fork', jobs: ['rest'], difficulty: 1, content: 'structural', phases: ['rest'], versions: [{ id: 'view', lay: forkRest }] }),
+  // (the fork's own rest, BUILD-28-f: its job 'rest' fits every R, and the deal gave it n6, the OUTBOUND rest, on every roll, so Dot's fork
+  //  line was said on the right leg long before the fork (ENG-TIPLEFT's finding, seed 3). No job is the fork rest's alone (every R is
+  //  'rest'; Y 'story' is a LATER letter, V13), so its WINDOW is the fork rest's slot alone: n10 (slot 9) is 0.53-0.56 of the plan; the
+  //  outbound rest n6 is 0.31-0.32, the home rests n13/n15 0.69-0.85. Pinned by w2Arc28.test 'the fork line is laid at the fork's rest')
+  brick({ id: 'fork-rest', name: 'a rest before the fork', jobs: ['rest'], difficulty: 1, content: 'structural', window: [0.45, 0.62], phases: ['rest'], versions: [{ id: 'view', lay: forkRest }] }),
   brick({ id: 'rest', name: 'a rest on the bank', jobs: ['rest'], difficulty: 1, content: 'structural', phases: ['rest'], maxPerStage: 3, versions: [{ id: 'shore', lay: rest }] }),
 ];
 

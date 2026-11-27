@@ -2,11 +2,15 @@
  * w2Arc28.test — 2-8 "Before the Water Rises": the story keeper's words, held word for word (BUILD-28 step 2; level.md rule 17).
  * The keeper's file is reference/story/lines-2-8.md (KEEPER-28, t-keeper-28@943984c2f). The stage's lay tests come with its first clean roll.
  */
+import '../../headlessDom.ts';
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { buildGen2Stage } from '../pipeline.ts';
+import { listedStage } from '../listed.ts';
+import { generateAllLevels } from '../../worldsData.ts';
 import { FLOOD_CARD_28, GOAL_LINES_28, LINES_28, MISSION_28, PAGE_28, lineId28 } from './w2Arc28.ts';
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../../../..');
@@ -47,4 +51,36 @@ test('no placeholder ships in 2-8\'s words', () => {
     assert.ok(line.trim().length > 0, 'a line is empty');
     assert.ok(!/TODO|TBD|XXX|placeholder|lorem/i.test(line), `a placeholder: ${line}`);
   }
+});
+
+// (BUILD-28-f, ENG-TIPLEFT's finding: the fork-rest brick's job 'rest' fits every R, and the deal gave it n6, the OUTBOUND rest, so Dot's
+//  fork line was said on the right leg long before the fork. Its window now pins it to the fork's own rest.)
+test("2-8: Dot's fork line is laid at the fork's own rest (the node just before the fork, beside it on the home leg), on seeds 1-40 x both settings", () => {
+  const cfg = generateAllLevels().find((c) => c.id === '2-8' && !c.secret)!;
+  const bad: string[] = [];
+  for (const d of ['normal', 'easy'] as const) for (let seed = 1; seed <= 40; seed++) {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const g = (buildGen2Stage({ config: cfg, kit: listedStage('2-8')!.kit(), seed, difficulty: d }) as any).gen2;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const tips = g.fills.filter((f: any) => f.role === 'tip' && f.what === 'w28.fork');
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const at = (uid: string) => g.sections.find((s: any) => s.uid === uid);
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const fork = g.sections.find((s: any) => s.template === 'w2-28-fork');
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const forkAt = g.plan.findIndex((p: any) => p.template === 'w2-28-fork');
+    if (tips.length !== 1 || !fork || forkAt < 1) { bad.push(`${d} ${seed}: ${tips.length} fork lines, fork ${fork ? 'laid' : 'missing'}`); continue; }
+    const rest = at(tips[0].section);
+    const why = [
+      rest?.template !== 'w2-28-fork-rest' && `said in ${rest?.template}`,
+      rest?.node !== g.plan[forkAt - 1].node && `said at ${rest?.node}, the fork's rest is ${g.plan[forkAt - 1].node}`,
+      // (beside: nothing laid between them on the home leg; a join's hop may part them)
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      rest && (rest.x0 < fork.x1 - 1 || g.sections.some((s: any) => s !== rest && s !== fork && s.x0 >= fork.x1 - 1 && s.x1 <= rest.x0 + 1 && s.x1 > s.x0))
+        && `the rest (${rest.x0}-${rest.x1}) is not beside the fork (${fork.x0}-${fork.x1})`,
+      rest && !(tips[0].x >= rest.x0 && tips[0].x <= rest.x1) && `the line x ${tips[0].x} is outside its rest`,
+    ].filter(Boolean);
+    if (why.length) bad.push(`${d} ${seed}: ${why.join('; ')}`);
+  }
+  assert.deepEqual(bad, [], bad.slice(0, 6).join('\n'));
 });
