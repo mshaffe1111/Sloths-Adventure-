@@ -7,8 +7,11 @@ Lists only (src/game/gen2/proven/seeds-2-{1,4,7}.ts + provenIndex.ts); no engine
    the lead a ruling request BEFORE the gates: the child on Easy hangs on drop-ride-drop's vine ("no way on", x 8136 v64 / 8204 v85) and
    is rescued; the kid on Normal v66 is rescued after 3 water lives. Old rolls of those variants: all three PASS. The repeat run
    (castBots 2-4 --seeds 64,85,66 --bots child,kid, both) reproduced all three exactly (same times, same stuck points: the bots are deterministic), so each is one cause, not noise.
-2. 2-7's bots on its 35 changed variants (castBots 2-7 --seeds <below> --setting both --rows, old list on frozen 88b5611b4 vs new on
-   frozen f589b979a): RUNNING at the hand-over (results below if they finished; else re-run both, D115 frozen trees).
+2. 2-7's bots on its 35 changed variants (castBots 2-7 --seeds 2,7,8,10,11,14,16,18,19,21,26,27,32,36,43,48,51,58,63,65,67,68,69,71,
+   72,74,75,76,79,80,82,85,86,87,89 --setting both --rows): NEW list (frozen f589b979a) DONE: 305/315, none under the floor; misses: kid
+   Normal v48, v68 (rescued x1); child Normal v7, v43, v51, v58, v65, v85 (x1), v11 (x2); child Easy v43 (x1) (box3/bots27-new.jsonl).
+   The OLD list's run (frozen 88b5611b4) was still RUNNING at the hand-over: re-run it (scratch only) and diff the misses old vs new;
+   trace every NEW one (rule 28) as in step 1.
 3. Then item 3-5 of the packet: every roll/seed-pinning test (release.md item 6:
    npx tsx --test $(grep -rln "setPick11\|roll11Seed\|provenSeedFor" src --include=*.test.ts)), then GATES once on the final candidate
    (tsc; the CI tool line; seedlist --check on ALL 15 lists; lockall --check ONE run vs 28c848dbd's lock (re-record it: box 1/2's lock was
