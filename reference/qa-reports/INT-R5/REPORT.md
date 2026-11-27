@@ -4,9 +4,11 @@
 **THE FROZEN HEAD is c9770adb2** (release-0.10.4; later commits on the branch are REPORT/out-c3 docs only). Everything below ran on it, in
 INT-R5-c's container (frozen /home/user/wt/c3; main base /home/user/wt/main 4bf2cbaaa; results /home/user/wt/out-c3, copied to
 r104/out-c3/ as each lane landed). A new lead takes over this afternoon (Matt's decision): report to the current lead.
-1. Lane B DONE (all PASS); buildcheck ALONE PASS (p95 103 ms). **RUNNING ALONE now: clipcheck** (`node tools/perf/clipcheck.mjs` in
-   /home/user/wt/c3, log /home/user/wt/out-c3/g-clipcheck.log). Fill its row below and §6 row 1.
-2. (buildcheck done.)
+1. **THE FULL SET IS DONE on c9770adb2: every gate green or a named, accepted/inherited red** (table below). buildcheck and clipcheck
+   ran ALONE and PASS. The test link is PRE-BUILT, not published.
+2. NEXT (the lead): Matt plays the pre-built link (published by the lead), the story keeper gets the whatsNew entry and 2-6's now-said
+   view line, then the PR on Matt's "push" (release.md: body with this gate table, the §6 table, funcheck's 22 named). Nothing more for
+   integration unless a red appears; a fix would be a new head and a new full set.
 3. Send the final counts to the current lead. STOP before the PR (the lead opens it on Matt's "push").
 
 ## THE FULL SET on c9770adb2 (the gate table; each shard's totals; logs r104/out-c3/)
@@ -29,7 +31,7 @@ r104/out-c3/ as each lane landed). A new lead takes over this afternoon (Matt's 
 | roadmapcheck | PASS | |
 | timecheck | PASS | 799 commits, 120 stamps |
 | drawcheck | PASS | 1493 s |
-| clipcheck | PENDING | runs ALONE after lane B |
+| clipcheck (ALONE, no lane running) | PASS | "PASS (83 known)", 436 s, 0 new. The What's New card upright/fresh looked at (r104/out-c3/clip/whatsnew-up-fresh.png): the 0.10.4 entry wraps cleanly; its marked boxes are the About screen's known rows behind the pop-up (clipknown) |
 | kbdcheck (CI=1 FORCE_COLOR=1) | PASS | 258 s |
 | buildcheck (ALONE, no lane running) | PASS | run 1 alone: "budget p95 <= 150 ms at CPU x4: PASS", normal p50 51 / p95 103 / max 125 ms, easy p50 43 / p95 70 / max 71 ms (30 builds each); a PASS, so no re-runs |
 | funcheck | FAIL, ACCEPTED | 22 worse or new = INT-14's accepted set: fundiff "mine 22, INT-14 22, IDENTICAL 22/22" |
@@ -52,7 +54,7 @@ r104/out-c3/ as each lane landed). A new lead takes over this afternoon (Matt's 
 ## PLAY-STORE §6 on c9770adb2 (this candidate)
 | # | Item | Holds? | Proof |
 |---|---|---|---|
-| 1 | Nothing under the insets, both ways, foldable | pending clipcheck (alone) | kbdcheck PASS; no screen or menu changed (the What's New entry is the only menu text) |
+| 1 | Nothing under the insets, both ways, foldable | holds | clipcheck PASS alone (83 known, 0 new, both orientations, fresh/old/done saves); kbdcheck PASS; the What's New entry looked at |
 | 2 | Back is sensible | holds | no new screen or route |
 | 3 | Nothing new sent off the phone | holds | build:store PASS; no fetch/XHR/sendBeacon/localStorage write added |
 | 4 | Works offline | holds | no web load added; smoke.mjs: 0 failed requests; buildcheck PASS alone |
