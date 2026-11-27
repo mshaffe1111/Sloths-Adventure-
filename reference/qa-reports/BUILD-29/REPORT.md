@@ -37,6 +37,20 @@ PW=/opt/node-tools/node_modules/playwright/index.mjs from a worktree (index.js g
 5 minutes because the message carried the numbers, the trace and the choice together.
 PROPOSED RULE (level.md, for the lead): "a kid-bot miss on a stage is compared on the same metric with the world's other stages that lay
 the same foe, and one stall is traced to its frame, before any re-lay" (check: the report carries both numbers and the trace file).
+   - SHARD 1 (discovery, partial at hand-over: 1068 results, 2 fail):
+     (i) ctestPicker.test.ts:78 'the survey names 1-4 ... nothing of the old single stage': fails on 7387d089a too, INHERITED.
+     (ii) riverLay.test.ts:40 'the hand-built World 2 stages lay every log river ... (seeds 1-3)': '0 log rivers judged' (floor 10).
+     It is OURS: it passes on 7387d089a. 2cb7b0a4a (BUILD-29-f) deleted the hand-built 2-9 from W2_STAGES (new replaces old), which
+     held the last counted log rivers (2-6 and 2-8 count none). And the gen2 2-9's rivers are judged by riverFaults NOWHERE (w2Arc29.test
+     has none), so the river fairness check was lost, not just the count. NOT fixed in box 11 (no time to prove it).
+NEXT (box 12) FIRST, before the merge: the riverLay fix, as 2-6's was (riverLay.test's own comment: "2-6 is gen2's now, BUILD-26: its
+     millrace is judged by riverFaults in w2Arc26.test.ts"):
+     - w2Arc29.test.ts gets "2-9's log rivers are fair on every listed seed, both settings (riverFaults == [])", with a count floor;
+     - prove it with a plant (a barge log's gap widened past the reach): RED;
+     - then riverLay's floor is re-scoped to what W2_STAGES still lays, with the reason in a comment (Law 22: the check MOVES to 2-9's
+       gen2 lay, it is not loosened);
+     - tell the lead the row (a test that judged a deleted build), with its cause.
+     The other discovery gates died with the box: the lock base run reached 8-1; shards 2-6 never started.
 NEXT (box 12): ReadNotifications. When ENG-DECOR and ENG-CAM29 land on t-eng-29, merge t-eng-29 (no force, conflicts named), then:
    - re-shoot the guard/quay/pads stills: the frog, not the turtle;
    - registrycheck --stage 2-9, then the FINAL gate run on that frozen head: tsc; the CI tool line; the 6 shards with totals;
