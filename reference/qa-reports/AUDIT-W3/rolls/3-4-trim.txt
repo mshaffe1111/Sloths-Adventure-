@@ -1,0 +1,96 @@
+4x normal ERR pool short at slot 2 (n2 practise: no climb section left)
+4x normal ERR pool short at slot 3 (n2 practise: no climb section left)
+4x normal ERR pool short at slot 4 (n2 practise: no climb section left)
+4x normal ERR pool short at slot 10 (n5 test: no climb section left)
+4x normal ERR pool short at slot 11 (n5 test: no climb section left)
+2x normal ERR pool short at slot 17 (n8 twist: no climb section left)
+4x normal ERR pool short at slot 18 (n8 twist: no climb section left)
+4x normal ERR pool short at slot 19 (n8 twist: no climb section left)
+2x normal ERR pool short at slot 22 (n10 practise: no bounce section left)
+4x normal ERR pool short at slot 23 (n10 practise: no bounce section left)
+4x normal ERR pool short at slot 24 (n10 practise: no bounce section left)
+4x normal ERR node code: V11 at token 10: 6 of 8 content nodes are 'f' (cap 3)
+4x normal ERR node code: V11 at token 3: 'f' on two neighbouring content nodes
+4x normal ERR node code: V11 at token 7: 'f' on two neighbouring content nodes
+4x normal ERR node code: V11 at token 8: 'f' on two neighbouring content nodes
+4x normal ERR node code: V11 at token 10: 'f' on two neighbouring content nodes
+4x normal ERR node code: V14 at token 1: 0 'c' nodes for a deal of 3
+4x normal ERR node code: V14 at token 1: 6 'f' nodes for a deal of 2
+1x normal ERR tower: the storey at y 1794 is reached from y 2335 by jumps alone (onto the piece at x 446-865, y 1794): the vine at x 420 is not the only way up
+4x normal ERR ask: node n2 "Pf1^<": content 'c' (climb): 3 of 3 sections are floating
+4x normal ERR ask: node n2 "Pf1^<": shape ^ (rising): its sections rise 0 px
+4x normal ERR ask: node n3 "Pf1^<": shape ^ (rising): its sections rise 0 px
+1x normal ERR ask: node n4 "Pg1^<": shape ^ (rising): its sections rise -677 px
+2x normal ERR ask: node n5 "Xf1^>": content 'c' (climb): 2 of 2 sections are floating
+4x normal ERR ask: node n5 "Xf1^>": shape ^ (rising): its sections rise 0 px
+4x normal ERR ask: node n8 "Wf1^>": content 'c' (climb): 3 of 3 sections are floating
+4x normal ERR ask: node n8 "Wf1^>": shape ^ (rising): its sections rise 0 px
+4x normal ERR ask: node n10 "Pf1^<": content 'b' (bounce): 3 of 3 sections are floating
+4x normal ERR ask: node n10 "Pf1^<": shape ^ (rising): its sections rise 0 px
+1x normal ERR ask: node n11 "Cg1^>": shape ^ (rising): its sections rise -721 px
+2x normal ERR ask: node n13 "Sf1^<": shape ^ (rising): its sections rise 0 px
+1x normal ERR ask: node n4 "Pg1^<": shape ^ (rising): its sections rise -557 px
+1x normal ERR ask: node n11 "Cg1^>": shape ^ (rising): its sections rise -469 px
+2x normal ERR pool short at slot 12 (n5 test: no climb section left)
+2x normal ERR pool short at slot 20 (n8 twist: no climb section left)
+2x normal ERR pool short at slot 25 (n10 practise: no bounce section left)
+1x normal ERR flags: none before the hard node n5, 11141 px along the way (within 2400 px)
+1x normal ERR ask: node n4 "Pg1^<": shape ^ (rising): its sections rise -495 px
+2x normal ERR ask: node n5 "Xf1^>": content 'c' (climb): 3 of 3 sections are floating
+1x normal ERR ask: node n11 "Cg1^>": shape ^ (rising): its sections rise -481 px
+2x normal ERR ask: node n13 "Sf1^<": content 'f' (floating): 1 of 3 sections are ground
+1x normal ERR ask: node n13 "Sf1^<": shape ^ (rising): its sections rise -233 px
+1x normal ERR tower: the storey at y 2282 is reached from y 2749 by jumps alone (onto the piece at x 162-565, y 2282): the vine at x 136 is not the only way up
+1x normal ERR ask: node n4 "Pg1^<": shape ^ (rising): its sections rise -516 px
+1x normal ERR ask: node n11 "Cg1^>": shape ^ (rising): its sections rise -487 px
+1x normal ERR ask: node n13 "Sf1^<": shape ^ (rising): its sections rise -267 px
+8x easy ERR pool short at slot 2 (n2 practise: no climb section left)
+8x easy ERR pool short at slot 3 (n2 practise: no climb section left)
+8x easy ERR pool short at slot 4 (n2 practise: no climb section left)
+8x easy ERR pool short at slot 10 (n5 test: no climb section left)
+8x easy ERR pool short at slot 11 (n5 test: no climb section left)
+4x easy ERR pool short at slot 17 (n8 twist: no climb section left)
+8x easy ERR pool short at slot 18 (n8 twist: no climb section left)
+8x easy ERR pool short at slot 19 (n8 twist: no climb section left)
+4x easy ERR pool short at slot 22 (n10 practise: no bounce section left)
+8x easy ERR pool short at slot 23 (n10 practise: no bounce section left)
+8x easy ERR pool short at slot 24 (n10 practise: no bounce section left)
+8x easy ERR node code: V11 at token 10: 6 of 8 content nodes are 'f' (cap 3)
+8x easy ERR node code: V11 at token 3: 'f' on two neighbouring content nodes
+8x easy ERR node code: V11 at token 7: 'f' on two neighbouring content nodes
+8x easy ERR node code: V11 at token 8: 'f' on two neighbouring content nodes
+8x easy ERR node code: V11 at token 10: 'f' on two neighbouring content nodes
+8x easy ERR node code: V14 at token 1: 0 'c' nodes for a deal of 3
+8x easy ERR node code: V14 at token 1: 6 'f' nodes for a deal of 2
+1x easy ERR tower: the storey at y 1794 is reached from y 2335 by jumps alone (onto the piece at x 446-865, y 1794): the vine at x 420 is not the only way up
+8x easy ERR ask: node n2 "Pf1^<": content 'c' (climb): 3 of 3 sections are floating
+8x easy ERR ask: node n2 "Pf1^<": shape ^ (rising): its sections rise 0 px
+8x easy ERR ask: node n3 "Pf1^<": shape ^ (rising): its sections rise 0 px
+2x easy ERR ask: node n4 "Pg1^<": shape ^ (rising): its sections rise -677 px
+4x easy ERR ask: node n5 "Xf1^>": content 'c' (climb): 2 of 2 sections are floating
+8x easy ERR ask: node n5 "Xf1^>": shape ^ (rising): its sections rise 0 px
+8x easy ERR ask: node n8 "Wf1^>": content 'c' (climb): 3 of 3 sections are floating
+8x easy ERR ask: node n8 "Wf1^>": shape ^ (rising): its sections rise 0 px
+8x easy ERR ask: node n10 "Pf1^<": content 'b' (bounce): 3 of 3 sections are floating
+8x easy ERR ask: node n10 "Pf1^<": shape ^ (rising): its sections rise 0 px
+2x easy ERR ask: node n11 "Cg1^>": shape ^ (rising): its sections rise -721 px
+4x easy ERR ask: node n13 "Sf1^<": shape ^ (rising): its sections rise 0 px
+1x easy ERR tower: the storey at y 1794 is reached from y 2335 by jumps alone (onto the piece at x 778-1210, y 1794): the vine at x 333 is not the only way up
+2x easy ERR ask: node n4 "Pg1^<": shape ^ (rising): its sections rise -557 px
+2x easy ERR ask: node n11 "Cg1^>": shape ^ (rising): its sections rise -469 px
+4x easy ERR pool short at slot 12 (n5 test: no climb section left)
+4x easy ERR pool short at slot 20 (n8 twist: no climb section left)
+4x easy ERR pool short at slot 25 (n10 practise: no bounce section left)
+1x easy ERR flags: none before the hard node n5, 11141 px along the way (within 2400 px)
+2x easy ERR ask: node n4 "Pg1^<": shape ^ (rising): its sections rise -495 px
+4x easy ERR ask: node n5 "Xf1^>": content 'c' (climb): 3 of 3 sections are floating
+2x easy ERR ask: node n11 "Cg1^>": shape ^ (rising): its sections rise -481 px
+4x easy ERR ask: node n13 "Sf1^<": content 'f' (floating): 1 of 3 sections are ground
+2x easy ERR ask: node n13 "Sf1^<": shape ^ (rising): its sections rise -233 px
+1x easy ERR tower: the storey at y 2282 is reached from y 2749 by jumps alone (onto the piece at x 162-565, y 2282): the vine at x 136 is not the only way up
+2x easy ERR ask: node n4 "Pg1^<": shape ^ (rising): its sections rise -516 px
+2x easy ERR ask: node n11 "Cg1^>": shape ^ (rising): its sections rise -487 px
+2x easy ERR ask: node n13 "Sf1^<": shape ^ (rising): its sections rise -267 px
+1x easy ERR tower: the storey at y 2282 is reached from y 2749 by jumps alone (onto the piece at x 126-529, y 2282): the vine at x 100 is not the only way up
+clean 0/8
+(reused W1/W2 sections that threw on W3's budget, left out: 39)

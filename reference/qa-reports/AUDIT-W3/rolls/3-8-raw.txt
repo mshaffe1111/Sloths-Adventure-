@@ -1,0 +1,87 @@
+4x normal ERR tip "hint.1-1.noMoss" has no Dot line in the kit's tips
+4x normal ERR tip "hint.1-1.bank" has no Dot line in the kit's tips
+3x normal ERR pool short at slot 6 (n5 test: no rope section left)
+2x normal ERR pool short at slot 15 (n9 combine: no rope section left)
+4x normal ERR pool short at slot 16 (n9 combine: no rope section left)
+4x normal ERR pool short at slot 17 (n9 combine: no rope section left)
+4x normal ERR pool short at slot 18 (n9 combine: no rope section left)
+4x normal ERR node code: V11 at token 9: 4 of 7 content nodes are 'f' (cap 3)
+4x normal ERR node code: V11 at token 7: 'f' on two neighbouring content nodes
+4x normal ERR node code: V11 at token 9: 'f' on two neighbouring content nodes
+4x normal ERR node code: V14 at token 1: 4 'f' nodes for a deal of 2
+4x normal ERR node code: V14 at token 1: 0 'r' nodes for a deal of 2
+1x normal ERR ask: node n2 "Pg1_<": content 's' (swing): Later: the swing vine (liana) as a content block: its emitter keyed by letter is not built
+1x normal ERR ask: node n2 "Pg1_<": hazard #thornvine@doze: Later: named clocks are B14's pods (t-b14)
+3x normal ERR ask: node n3 "Pf1<": content 's' (swing): Later: the swing vine (liana) as a content block: its emitter keyed by letter is not built
+3x normal ERR ask: node n3 "Pf1<": hazard #thornvine@doze: Later: named clocks are B14's pods (t-b14)
+2x normal ERR ask: node n5 "Xf1_>": content 's' (swing): Later: the swing vine (liana) as a content block: its emitter keyed by letter is not built
+2x normal ERR ask: node n5 "Xf1_>": hazard #thornvine@doze: Later: named clocks are B14's pods (t-b14)
+1x normal ERR ask: node n7 "Wf1<": hazard #thornvine@doze: Later: named clocks are B14's pods (t-b14)
+1x normal ERR ask: node n9 "Cf1_>": content 'r' (rope): 4 of 4 sections are floating
+1x normal ERR ask: node n9 "Cf1_>": hazard #thornvine@doze: Later: named clocks are B14's pods (t-b14)
+4x normal ERR ask: node n11 "Sf1<": content 's' (swing): Later: the swing vine (liana) as a content block: its emitter keyed by letter is not built
+4x normal ERR ask: node n11 "Sf1<": hazard #thornvine@doze: Later: named clocks are B14's pods (t-b14)
+1x normal ERR the quiet line: 5 s with nothing to do at x 14984, over 4 s (the goal run-out excluded)
+2x normal ERR pool short at slot 19 (n9 combine: no rope section left)
+3x normal ERR ask: node n2 "Pg1<": content 's' (swing): Later: the swing vine (liana) as a content block: its emitter keyed by letter is not built
+3x normal ERR ask: node n2 "Pg1<": hazard #thornvine@doze: Later: named clocks are B14's pods (t-b14)
+1x normal ERR ask: node n5 "Xf1^>": content 's' (swing): Later: the swing vine (liana) as a content block: its emitter keyed by letter is not built
+1x normal ERR ask: node n5 "Xf1^>": hazard #thornvine@doze: Later: named clocks are B14's pods (t-b14)
+1x normal ERR ask: node n7 "Wf1^<": hazard #thornvine@doze: Later: named clocks are B14's pods (t-b14)
+2x normal ERR ask: node n9 "Cf1>": content 'r' (rope): 4 of 4 sections are floating
+2x normal ERR ask: node n9 "Cf1>": hazard #thornvine@doze: Later: named clocks are B14's pods (t-b14)
+1x normal ERR the quiet line: 5.3 s with nothing to do at x 18743, over 4 s (the goal run-out excluded)
+2x normal ERR pool short at slot 7 (n5 test: no rope section left)
+1x normal ERR ask: node n3 "Pf1_<": content 's' (swing): Later: the swing vine (liana) as a content block: its emitter keyed by letter is not built
+1x normal ERR ask: node n3 "Pf1_<": hazard #thornvine@doze: Later: named clocks are B14's pods (t-b14)
+2x normal ERR ask: node n7 "Wf1_<": hazard #thornvine@doze: Later: named clocks are B14's pods (t-b14)
+1x normal ERR the quiet line: 4.8 s with nothing to do at x 20977, over 4 s (the goal run-out excluded)
+1x normal ERR ask: node n5 "Xf1>": content 's' (swing): Later: the swing vine (liana) as a content block: its emitter keyed by letter is not built
+1x normal ERR ask: node n5 "Xf1>": hazard #thornvine@doze: Later: named clocks are B14's pods (t-b14)
+1x normal ERR ask: node n9 "Cf1^>": content 'r' (rope): 4 of 4 sections are floating
+1x normal ERR ask: node n9 "Cf1^>": hazard #thornvine@doze: Later: named clocks are B14's pods (t-b14)
+1x normal ERR the quiet line: 4.8 s with nothing to do at x 20084, over 4 s (the goal run-out excluded)
+8x easy ERR tip "hint.1-1.noMoss" has no Dot line in the kit's tips
+8x easy ERR tip "hint.1-1.bank" has no Dot line in the kit's tips
+6x easy ERR pool short at slot 6 (n5 test: no rope section left)
+4x easy ERR pool short at slot 15 (n9 combine: no rope section left)
+8x easy ERR pool short at slot 16 (n9 combine: no rope section left)
+8x easy ERR pool short at slot 17 (n9 combine: no rope section left)
+8x easy ERR pool short at slot 18 (n9 combine: no rope section left)
+8x easy ERR node code: V11 at token 9: 4 of 7 content nodes are 'f' (cap 3)
+8x easy ERR node code: V11 at token 7: 'f' on two neighbouring content nodes
+8x easy ERR node code: V11 at token 9: 'f' on two neighbouring content nodes
+8x easy ERR node code: V14 at token 1: 4 'f' nodes for a deal of 2
+8x easy ERR node code: V14 at token 1: 0 'r' nodes for a deal of 2
+2x easy ERR ask: node n2 "Pg1_<": content 's' (swing): Later: the swing vine (liana) as a content block: its emitter keyed by letter is not built
+2x easy ERR ask: node n2 "Pg1_<": hazard #thornvine@doze: Later: named clocks are B14's pods (t-b14)
+6x easy ERR ask: node n3 "Pf1<": content 's' (swing): Later: the swing vine (liana) as a content block: its emitter keyed by letter is not built
+6x easy ERR ask: node n3 "Pf1<": hazard #thornvine@doze: Later: named clocks are B14's pods (t-b14)
+4x easy ERR ask: node n5 "Xf1_>": content 's' (swing): Later: the swing vine (liana) as a content block: its emitter keyed by letter is not built
+4x easy ERR ask: node n5 "Xf1_>": hazard #thornvine@doze: Later: named clocks are B14's pods (t-b14)
+2x easy ERR ask: node n7 "Wf1<": hazard #thornvine@doze: Later: named clocks are B14's pods (t-b14)
+2x easy ERR ask: node n9 "Cf1_>": content 'r' (rope): 4 of 4 sections are floating
+2x easy ERR ask: node n9 "Cf1_>": hazard #thornvine@doze: Later: named clocks are B14's pods (t-b14)
+8x easy ERR ask: node n11 "Sf1<": content 's' (swing): Later: the swing vine (liana) as a content block: its emitter keyed by letter is not built
+8x easy ERR ask: node n11 "Sf1<": hazard #thornvine@doze: Later: named clocks are B14's pods (t-b14)
+1x easy ERR the quiet line: 5 s with nothing to do at x 14984, over 4 s (the goal run-out excluded)
+4x easy ERR pool short at slot 19 (n9 combine: no rope section left)
+6x easy ERR ask: node n2 "Pg1<": content 's' (swing): Later: the swing vine (liana) as a content block: its emitter keyed by letter is not built
+6x easy ERR ask: node n2 "Pg1<": hazard #thornvine@doze: Later: named clocks are B14's pods (t-b14)
+2x easy ERR ask: node n5 "Xf1^>": content 's' (swing): Later: the swing vine (liana) as a content block: its emitter keyed by letter is not built
+2x easy ERR ask: node n5 "Xf1^>": hazard #thornvine@doze: Later: named clocks are B14's pods (t-b14)
+2x easy ERR ask: node n7 "Wf1^<": hazard #thornvine@doze: Later: named clocks are B14's pods (t-b14)
+4x easy ERR ask: node n9 "Cf1>": content 'r' (rope): 4 of 4 sections are floating
+4x easy ERR ask: node n9 "Cf1>": hazard #thornvine@doze: Later: named clocks are B14's pods (t-b14)
+1x easy ERR the quiet line: 5.3 s with nothing to do at x 18743, over 4 s (the goal run-out excluded)
+4x easy ERR pool short at slot 7 (n5 test: no rope section left)
+2x easy ERR ask: node n3 "Pf1_<": content 's' (swing): Later: the swing vine (liana) as a content block: its emitter keyed by letter is not built
+2x easy ERR ask: node n3 "Pf1_<": hazard #thornvine@doze: Later: named clocks are B14's pods (t-b14)
+4x easy ERR ask: node n7 "Wf1_<": hazard #thornvine@doze: Later: named clocks are B14's pods (t-b14)
+1x easy ERR the quiet line: 4.8 s with nothing to do at x 20977, over 4 s (the goal run-out excluded)
+2x easy ERR ask: node n5 "Xf1>": content 's' (swing): Later: the swing vine (liana) as a content block: its emitter keyed by letter is not built
+2x easy ERR ask: node n5 "Xf1>": hazard #thornvine@doze: Later: named clocks are B14's pods (t-b14)
+2x easy ERR ask: node n9 "Cf1^>": content 'r' (rope): 4 of 4 sections are floating
+2x easy ERR ask: node n9 "Cf1^>": hazard #thornvine@doze: Later: named clocks are B14's pods (t-b14)
+1x easy ERR the quiet line: 4.8 s with nothing to do at x 20084, over 4 s (the goal run-out excluded)
+clean 0/8

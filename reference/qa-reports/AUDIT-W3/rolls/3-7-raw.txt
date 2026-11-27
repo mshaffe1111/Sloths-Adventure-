@@ -1,0 +1,155 @@
+4x normal ERR not enough relics for the quota
+4x normal ERR tip "hint.1-1.bank" has no Dot line in the kit's tips
+4x normal ERR tip "hint.1-1.noMoss" has no Dot line in the kit's tips
+3x normal ERR pool short at slot 11 (n8 twist: no rope section left)
+1x normal ERR node code: V11 at token 8: 4 of 7 content nodes are 'g' (cap 3)
+4x normal ERR node code: V11 at token 3: 'g' on two neighbouring content nodes
+4x normal ERR node code: V14 at token 1: 0 'r' nodes for a deal of 2
+1x normal ERR ask: node n2 "Pg1_<": find (+): no find laid
+1x normal ERR ask: node n2 "Pg1_<": reward +keepsake: no find laid
+3x normal ERR ask: node n3 "Pg1<": find (+): no find laid
+3x normal ERR ask: node n3 "Pg1<": reward +keepsake: no find laid
+2x normal ERR ask: node n5 "Xg2_>": move 1 (plain jumps): a section there asks for the double
+2x normal ERR ask: node n5 "Xg2_>": find (+): no find laid
+2x normal ERR ask: node n5 "Xg2_>": reward +keepsake: no find laid
+2x normal ERR ask: node n5 "Xg2_>": hazard #spore@puff: Later: named clocks are B14's pods (t-b14)
+1x normal ERR ask: node n8 "Wg2_<": content 'r' (rope): 1 of 1 sections are ground
+1x normal ERR ask: node n8 "Wg2_<": move 1 (plain jumps): a section there asks for the double
+1x normal ERR ask: node n8 "Wg2_<": find (+): no find laid
+1x normal ERR ask: node n8 "Wg2_<": reward +keepsake: no find laid
+1x normal ERR ask: node n8 "Wg2_<": hazard #dark: Later: no world hazard of that id is laid by a node yet
+4x normal ERR ask: node n10 "Hb2<": content 'r' (rope): 1 of 1 sections are bounce
+4x normal ERR ask: node n10 "Hb2<": move 1 (plain jumps): a section there asks for the double
+4x normal ERR ask: node n10 "Hb2<": reward +guarana: laid seed
+2x normal ERR ask: node n11 "Cf2>": content 'm' (cover): no hide laid
+2x normal ERR ask: node n11 "Cf2>": move 1 (plain jumps): a section there asks for the double
+2x normal ERR ask: node n11 "Cf2>": find (+): no find laid
+2x normal ERR ask: node n11 "Cf2>": creatures (&): no creature laid
+2x normal ERR ask: node n11 "Cf2>": threat eyes: no creature of that id in this world's cast
+2x normal ERR ask: node n11 "Cf2>": reward +keepsake: no find laid
+4x normal ERR ask: node n13 "Sf1<": content 'g' (ground): 2 of 2 sections are floating
+4x normal ERR ask: node n13 "Sf1<": find (+): no find laid
+4x normal ERR ask: node n13 "Sf1<": reward +keepsake: no find laid
+1x normal ERR the quiet line: 8 s with nothing to do at x 32828, over 4 s (the goal run-out excluded)
+1x normal ERR pool short at slot 10 (n8 twist: no rope section left)
+1x normal ERR node code: V11 at token 8: 'c' on two neighbouring content nodes
+3x normal ERR ask: node n2 "Pg1<": find (+): no find laid
+3x normal ERR ask: node n2 "Pg1<": reward +keepsake: no find laid
+1x normal ERR ask: node n5 "Xg2^>": move 1 (plain jumps): a section there asks for the double
+1x normal ERR ask: node n5 "Xg2^>": find (+): no find laid
+1x normal ERR ask: node n5 "Xg2^>": reward +keepsake: no find laid
+1x normal ERR ask: node n5 "Xg2^>": hazard #spore@puff: Later: named clocks are B14's pods (t-b14)
+2x normal ERR ask: node n7 "Pc1_<": shape _ (falling): its sections fall 0 px
+1x normal ERR ask: node n8 "Wc1^<": content 'r' (rope): 1 of 1 sections are climb
+1x normal ERR ask: node n8 "Wc1^<": find (+): no find laid
+1x normal ERR ask: node n8 "Wc1^<": reward +keepsake: no find laid
+1x normal ERR ask: node n8 "Wc1^<": hazard #dark: Later: no world hazard of that id is laid by a node yet
+1x normal ERR ask: node n11 "Cf2^>": content 'm' (cover): no hide laid
+1x normal ERR ask: node n11 "Cf2^>": move 1 (plain jumps): a section there asks for the double
+1x normal ERR ask: node n11 "Cf2^>": find (+): no find laid
+1x normal ERR ask: node n11 "Cf2^>": creatures (&): no creature laid
+1x normal ERR ask: node n11 "Cf2^>": threat eyes: no creature of that id in this world's cast
+1x normal ERR ask: node n11 "Cf2^>": reward +keepsake: no find laid
+1x normal ERR the quiet line: 7.9 s with nothing to do at x 29959, over 4 s (the goal run-out excluded)
+2x normal ERR pool short at slot 12 (n8 twist: no rope section left)
+1x normal ERR ask: node n3 "Pg1_<": find (+): no find laid
+1x normal ERR ask: node n3 "Pg1_<": reward +keepsake: no find laid
+1x normal ERR ask: node n8 "Wb<": content 'r' (rope): 2 of 2 sections are bounce
+1x normal ERR ask: node n8 "Wb<": find (+): no find laid
+1x normal ERR ask: node n8 "Wb<": reward +keepsake: no find laid
+1x normal ERR ask: node n8 "Wb<": hazard #dark: Later: no world hazard of that id is laid by a node yet
+1x normal ERR ask: node n11 "Cf2_>": content 'm' (cover): no hide laid
+1x normal ERR ask: node n11 "Cf2_>": move 1 (plain jumps): a section there asks for the double
+1x normal ERR ask: node n11 "Cf2_>": find (+): no find laid
+1x normal ERR ask: node n11 "Cf2_>": creatures (&): no creature laid
+1x normal ERR ask: node n11 "Cf2_>": threat eyes: no creature of that id in this world's cast
+1x normal ERR ask: node n11 "Cf2_>": reward +keepsake: no find laid
+1x normal ERR the quiet line: 8.2 s with nothing to do at x 25220, over 4 s (the goal run-out excluded)
+1x normal ERR ask: node n5 "Xg2>": move 1 (plain jumps): a section there asks for the double
+1x normal ERR ask: node n5 "Xg2>": find (+): no find laid
+1x normal ERR ask: node n5 "Xg2>": reward +keepsake: no find laid
+1x normal ERR ask: node n5 "Xg2>": hazard #spore@puff: Later: named clocks are B14's pods (t-b14)
+1x normal ERR ask: node n8 "Wb^<": content 'r' (rope): 2 of 2 sections are bounce, climb
+1x normal ERR ask: node n8 "Wb^<": find (+): no find laid
+1x normal ERR ask: node n8 "Wb^<": reward +keepsake: no find laid
+1x normal ERR ask: node n8 "Wb^<": hazard #dark: Later: no world hazard of that id is laid by a node yet
+1x normal ERR the quiet line: 7.3 s with nothing to do at x 28006, over 4 s (the goal run-out excluded)
+4x easy ERR not enough relics for the quota
+8x easy ERR tip "hint.1-1.bank" has no Dot line in the kit's tips
+8x easy ERR tip "hint.1-1.noMoss" has no Dot line in the kit's tips
+6x easy ERR pool short at slot 11 (n8 twist: no rope section left)
+2x easy ERR node code: V11 at token 8: 4 of 7 content nodes are 'g' (cap 3)
+8x easy ERR node code: V11 at token 3: 'g' on two neighbouring content nodes
+8x easy ERR node code: V14 at token 1: 0 'r' nodes for a deal of 2
+2x easy ERR ask: node n2 "Pg1_<": find (+): no find laid
+2x easy ERR ask: node n2 "Pg1_<": reward +keepsake: no find laid
+6x easy ERR ask: node n3 "Pg1<": find (+): no find laid
+6x easy ERR ask: node n3 "Pg1<": reward +keepsake: no find laid
+4x easy ERR ask: node n5 "Xg2_>": move 1 (plain jumps): a section there asks for the double
+4x easy ERR ask: node n5 "Xg2_>": find (+): no find laid
+4x easy ERR ask: node n5 "Xg2_>": reward +keepsake: no find laid
+4x easy ERR ask: node n5 "Xg2_>": hazard #spore@puff: Later: named clocks are B14's pods (t-b14)
+2x easy ERR ask: node n8 "Wg2_<": content 'r' (rope): 1 of 1 sections are ground
+2x easy ERR ask: node n8 "Wg2_<": move 1 (plain jumps): a section there asks for the double
+2x easy ERR ask: node n8 "Wg2_<": find (+): no find laid
+2x easy ERR ask: node n8 "Wg2_<": reward +keepsake: no find laid
+2x easy ERR ask: node n8 "Wg2_<": hazard #dark: Later: no world hazard of that id is laid by a node yet
+8x easy ERR ask: node n10 "Hb2<": content 'r' (rope): 1 of 1 sections are bounce
+8x easy ERR ask: node n10 "Hb2<": move 1 (plain jumps): a section there asks for the double
+8x easy ERR ask: node n10 "Hb2<": reward +guarana: laid seed
+4x easy ERR ask: node n11 "Cf2>": content 'm' (cover): no hide laid
+4x easy ERR ask: node n11 "Cf2>": move 1 (plain jumps): a section there asks for the double
+4x easy ERR ask: node n11 "Cf2>": find (+): no find laid
+4x easy ERR ask: node n11 "Cf2>": creatures (&): no creature laid
+4x easy ERR ask: node n11 "Cf2>": threat eyes: no creature of that id in this world's cast
+4x easy ERR ask: node n11 "Cf2>": reward +keepsake: no find laid
+8x easy ERR ask: node n13 "Sf1<": content 'g' (ground): 2 of 2 sections are floating
+8x easy ERR ask: node n13 "Sf1<": find (+): no find laid
+8x easy ERR ask: node n13 "Sf1<": reward +keepsake: no find laid
+1x easy ERR the quiet line: 8 s with nothing to do at x 32828, over 4 s (the goal run-out excluded)
+4x easy ERR Easy could not lay Normal's plan
+2x easy ERR pool short at slot 10 (n8 twist: no rope section left)
+2x easy ERR node code: V11 at token 8: 'c' on two neighbouring content nodes
+6x easy ERR ask: node n2 "Pg1<": find (+): no find laid
+6x easy ERR ask: node n2 "Pg1<": reward +keepsake: no find laid
+2x easy ERR ask: node n5 "Xg2^>": move 1 (plain jumps): a section there asks for the double
+2x easy ERR ask: node n5 "Xg2^>": find (+): no find laid
+2x easy ERR ask: node n5 "Xg2^>": reward +keepsake: no find laid
+2x easy ERR ask: node n5 "Xg2^>": hazard #spore@puff: Later: named clocks are B14's pods (t-b14)
+4x easy ERR ask: node n7 "Pc1_<": shape _ (falling): its sections fall 0 px
+2x easy ERR ask: node n8 "Wc1^<": content 'r' (rope): 1 of 1 sections are climb
+2x easy ERR ask: node n8 "Wc1^<": find (+): no find laid
+2x easy ERR ask: node n8 "Wc1^<": reward +keepsake: no find laid
+2x easy ERR ask: node n8 "Wc1^<": hazard #dark: Later: no world hazard of that id is laid by a node yet
+2x easy ERR ask: node n11 "Cf2^>": content 'm' (cover): no hide laid
+2x easy ERR ask: node n11 "Cf2^>": move 1 (plain jumps): a section there asks for the double
+2x easy ERR ask: node n11 "Cf2^>": find (+): no find laid
+2x easy ERR ask: node n11 "Cf2^>": creatures (&): no creature laid
+2x easy ERR ask: node n11 "Cf2^>": threat eyes: no creature of that id in this world's cast
+2x easy ERR ask: node n11 "Cf2^>": reward +keepsake: no find laid
+1x easy ERR the quiet line: 7.9 s with nothing to do at x 29959, over 4 s (the goal run-out excluded)
+4x easy ERR pool short at slot 12 (n8 twist: no rope section left)
+2x easy ERR ask: node n3 "Pg1_<": find (+): no find laid
+2x easy ERR ask: node n3 "Pg1_<": reward +keepsake: no find laid
+2x easy ERR ask: node n8 "Wb<": content 'r' (rope): 2 of 2 sections are bounce
+2x easy ERR ask: node n8 "Wb<": find (+): no find laid
+2x easy ERR ask: node n8 "Wb<": reward +keepsake: no find laid
+2x easy ERR ask: node n8 "Wb<": hazard #dark: Later: no world hazard of that id is laid by a node yet
+2x easy ERR ask: node n11 "Cf2_>": content 'm' (cover): no hide laid
+2x easy ERR ask: node n11 "Cf2_>": move 1 (plain jumps): a section there asks for the double
+2x easy ERR ask: node n11 "Cf2_>": find (+): no find laid
+2x easy ERR ask: node n11 "Cf2_>": creatures (&): no creature laid
+2x easy ERR ask: node n11 "Cf2_>": threat eyes: no creature of that id in this world's cast
+2x easy ERR ask: node n11 "Cf2_>": reward +keepsake: no find laid
+1x easy ERR the quiet line: 8.2 s with nothing to do at x 25220, over 4 s (the goal run-out excluded)
+2x easy ERR ask: node n5 "Xg2>": move 1 (plain jumps): a section there asks for the double
+2x easy ERR ask: node n5 "Xg2>": find (+): no find laid
+2x easy ERR ask: node n5 "Xg2>": reward +keepsake: no find laid
+2x easy ERR ask: node n5 "Xg2>": hazard #spore@puff: Later: named clocks are B14's pods (t-b14)
+2x easy ERR ask: node n8 "Wb^<": content 'r' (rope): 2 of 2 sections are bounce, climb
+2x easy ERR ask: node n8 "Wb^<": find (+): no find laid
+2x easy ERR ask: node n8 "Wb^<": reward +keepsake: no find laid
+2x easy ERR ask: node n8 "Wb^<": hazard #dark: Later: no world hazard of that id is laid by a node yet
+1x easy ERR the quiet line: 7.3 s with nothing to do at x 28006, over 4 s (the goal run-out excluded)
+clean 0/8
+(reused W1/W2 sections that threw on W3's budget, left out: 3)

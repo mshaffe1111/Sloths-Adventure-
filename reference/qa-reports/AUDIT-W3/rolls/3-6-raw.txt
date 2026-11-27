@@ -1,0 +1,340 @@
+4x normal ERR not enough relics for the quota
+4x normal ERR tip "hint.1-1.bank" has no Dot line in the kit's tips
+4x normal ERR tip "hint.1-1.noMoss" has no Dot line in the kit's tips
+1x normal ERR ask: node n2 "Pg1_<": find (+): no find laid
+1x normal ERR ask: node n2 "Pg1_<": reward +keepsake: no find laid
+1x normal ERR ask: node n2 "Pg1_<": hazard #dark: Later: no world hazard of that id is laid by a node yet
+3x normal ERR ask: node n3 "Pf1>": hazard #soft: laid hurt
+4x normal ERR ask: node n4 "Pc1^<": find (+): no find laid
+4x normal ERR ask: node n4 "Pc1^<": reward +keepsake: no find laid
+4x normal ERR ask: node n4 "Pc1^<": hazard #dark: Later: no world hazard of that id is laid by a node yet
+2x normal ERR ask: node n5 "Xf1_>": hazard #dark: Later: no world hazard of that id is laid by a node yet
+1x normal ERR ask: node n7 "Wg2<": move 1 (plain jumps): a section there asks for the double
+1x normal ERR ask: node n7 "Wg2<": find (+): no find laid
+1x normal ERR ask: node n7 "Wg2<": reward +keepsake: no find laid
+1x normal ERR ask: node n7 "Wg2<": hazard #dark: Later: no world hazard of that id is laid by a node yet
+1x normal ERR ask: node n10 "Cf2^>": move 1 (plain jumps): a section there asks for the double
+1x normal ERR ask: node n10 "Cf2^>": find (+): no find laid
+1x normal ERR ask: node n10 "Cf2^>": reward +keepsake: no find laid
+1x normal ERR ask: node n10 "Cf2^>": hazard #dark: Later: no world hazard of that id is laid by a node yet
+2x normal ERR ask: node n12 "Sb<": content 'g' (ground): 2 of 2 sections are bounce, floating
+2x normal ERR ask: node n12 "Sb<": find (+): no find laid
+2x normal ERR ask: node n12 "Sb<": reward +keepsake: no find laid
+2x normal ERR ask: node n12 "Sb<": hazard #dark: Later: no world hazard of that id is laid by a node yet
+1x normal ERR the quiet line: 4.9 s with nothing to do at x 35187, over 4 s (the goal run-out excluded)
+3x normal ERR ask: node n2 "Pg1<": find (+): no find laid
+3x normal ERR ask: node n2 "Pg1<": reward +keepsake: no find laid
+3x normal ERR ask: node n2 "Pg1<": hazard #dark: Later: no world hazard of that id is laid by a node yet
+1x normal ERR ask: node n5 "Xf1^>": hazard #dark: Later: no world hazard of that id is laid by a node yet
+1x normal ERR ask: node n7 "Wg2^<": move 1 (plain jumps): a section there asks for the double
+1x normal ERR ask: node n7 "Wg2^<": find (+): no find laid
+1x normal ERR ask: node n7 "Wg2^<": reward +keepsake: no find laid
+1x normal ERR ask: node n7 "Wg2^<": hazard #dark: Later: no world hazard of that id is laid by a node yet
+2x normal ERR ask: node n10 "Cf2>": move 1 (plain jumps): a section there asks for the double
+2x normal ERR ask: node n10 "Cf2>": find (+): no find laid
+2x normal ERR ask: node n10 "Cf2>": reward +keepsake: no find laid
+2x normal ERR ask: node n10 "Cf2>": hazard #dark: Later: no world hazard of that id is laid by a node yet
+1x normal ERR ask: node n12 "Sf1<": content 'g' (ground): 2 of 2 sections are floating
+2x normal ERR ask: node n12 "Sf1<": find (+): no find laid
+2x normal ERR ask: node n12 "Sf1<": reward +keepsake: no find laid
+2x normal ERR ask: node n12 "Sf1<": hazard #dark: Later: no world hazard of that id is laid by a node yet
+1x normal ERR the quiet line: 6.7 s with nothing to do at x 22329, over 4 s (the goal run-out excluded)
+1x normal ERR exit platform 207 is not reachable
+1x normal ERR checkpoint at x=16400 is not on a reachable platform
+1x normal ERR checkpoint at x=19518 is not on a reachable platform
+1x normal ERR checkpoint at x=23477 is not on a reachable platform
+1x normal ERR checkpoint at x=27457 is not on a reachable platform
+1x normal ERR checkpoint at x=30238 is not on a reachable platform
+1x normal ERR checkpoint at x=33238 is not on a reachable platform
+1x normal ERR checkpoint at x=37098 is not on a reachable platform
+1x normal ERR checkpoint at x=38237 is not on a reachable platform
+1x normal ERR checkpoint at x=40217 is not on a reachable platform
+1x normal ERR checkpoint at x=42116 is not on a reachable platform
+1x normal ERR checkpoint at x=43906 is not on a reachable platform
+1x normal ERR ask: node n3 "Pf1_>": hazard #soft: laid hurt
+2x normal ERR ask: node n7 "Wg2_<": move 1 (plain jumps): a section there asks for the double
+2x normal ERR ask: node n7 "Wg2_<": find (+): no find laid
+2x normal ERR ask: node n7 "Wg2_<": reward +keepsake: no find laid
+2x normal ERR ask: node n7 "Wg2_<": hazard #dark: Later: no world hazard of that id is laid by a node yet
+1x normal ERR ask: node n12 "Sf1<": content 'g' (ground): 1 of 2 sections are floating
+1x normal ERR the quiet line: 13.7 s with nothing to do at x 26148, over 4 s (the goal run-out excluded)
+1x normal ERR exit platform 209 is not reachable
+1x normal ERR checkpoint at x=16395 is not on a reachable platform
+1x normal ERR checkpoint at x=20056 is not on a reachable platform
+1x normal ERR checkpoint at x=23895 is not on a reachable platform
+1x normal ERR checkpoint at x=27821 is not on a reachable platform
+1x normal ERR checkpoint at x=31227 is not on a reachable platform
+1x normal ERR checkpoint at x=35207 is not on a reachable platform
+1x normal ERR checkpoint at x=38477 is not on a reachable platform
+1x normal ERR checkpoint at x=40258 is not on a reachable platform
+1x normal ERR checkpoint at x=42018 is not on a reachable platform
+1x normal ERR checkpoint at x=43780 is not on a reachable platform
+1x normal ERR checkpoint at x=45760 is not on a reachable platform
+1x normal ERR ask: node n5 "Xf1>": hazard #dark: Later: no world hazard of that id is laid by a node yet
+1x normal ERR ask: node n10 "Cf2_>": move 1 (plain jumps): a section there asks for the double
+1x normal ERR ask: node n10 "Cf2_>": find (+): no find laid
+1x normal ERR ask: node n10 "Cf2_>": reward +keepsake: no find laid
+1x normal ERR ask: node n10 "Cf2_>": hazard #dark: Later: no world hazard of that id is laid by a node yet
+1x normal ERR the quiet line: 32.2 s with nothing to do at x 24853, over 4 s (the goal run-out excluded)
+4x easy ERR not enough relics for the quota
+8x easy ERR tip "hint.1-1.bank" has no Dot line in the kit's tips
+8x easy ERR tip "hint.1-1.noMoss" has no Dot line in the kit's tips
+2x easy ERR ask: node n2 "Pg1_<": find (+): no find laid
+2x easy ERR ask: node n2 "Pg1_<": reward +keepsake: no find laid
+2x easy ERR ask: node n2 "Pg1_<": hazard #dark: Later: no world hazard of that id is laid by a node yet
+6x easy ERR ask: node n3 "Pf1>": hazard #soft: laid hurt
+8x easy ERR ask: node n4 "Pc1^<": find (+): no find laid
+8x easy ERR ask: node n4 "Pc1^<": reward +keepsake: no find laid
+8x easy ERR ask: node n4 "Pc1^<": hazard #dark: Later: no world hazard of that id is laid by a node yet
+4x easy ERR ask: node n5 "Xf1_>": hazard #dark: Later: no world hazard of that id is laid by a node yet
+2x easy ERR ask: node n7 "Wg2<": move 1 (plain jumps): a section there asks for the double
+2x easy ERR ask: node n7 "Wg2<": find (+): no find laid
+2x easy ERR ask: node n7 "Wg2<": reward +keepsake: no find laid
+2x easy ERR ask: node n7 "Wg2<": hazard #dark: Later: no world hazard of that id is laid by a node yet
+2x easy ERR ask: node n10 "Cf2^>": move 1 (plain jumps): a section there asks for the double
+2x easy ERR ask: node n10 "Cf2^>": find (+): no find laid
+2x easy ERR ask: node n10 "Cf2^>": reward +keepsake: no find laid
+2x easy ERR ask: node n10 "Cf2^>": hazard #dark: Later: no world hazard of that id is laid by a node yet
+4x easy ERR ask: node n12 "Sb<": content 'g' (ground): 2 of 2 sections are bounce, floating
+4x easy ERR ask: node n12 "Sb<": find (+): no find laid
+4x easy ERR ask: node n12 "Sb<": reward +keepsake: no find laid
+4x easy ERR ask: node n12 "Sb<": hazard #dark: Later: no world hazard of that id is laid by a node yet
+1x easy ERR the quiet line: 4.9 s with nothing to do at x 35187, over 4 s (the goal run-out excluded)
+3x easy ERR Easy could not lay Normal's plan
+6x easy ERR ask: node n2 "Pg1<": find (+): no find laid
+6x easy ERR ask: node n2 "Pg1<": reward +keepsake: no find laid
+6x easy ERR ask: node n2 "Pg1<": hazard #dark: Later: no world hazard of that id is laid by a node yet
+2x easy ERR ask: node n5 "Xf1^>": hazard #dark: Later: no world hazard of that id is laid by a node yet
+2x easy ERR ask: node n7 "Wg2^<": move 1 (plain jumps): a section there asks for the double
+2x easy ERR ask: node n7 "Wg2^<": find (+): no find laid
+2x easy ERR ask: node n7 "Wg2^<": reward +keepsake: no find laid
+2x easy ERR ask: node n7 "Wg2^<": hazard #dark: Later: no world hazard of that id is laid by a node yet
+4x easy ERR ask: node n10 "Cf2>": move 1 (plain jumps): a section there asks for the double
+4x easy ERR ask: node n10 "Cf2>": find (+): no find laid
+4x easy ERR ask: node n10 "Cf2>": reward +keepsake: no find laid
+4x easy ERR ask: node n10 "Cf2>": hazard #dark: Later: no world hazard of that id is laid by a node yet
+2x easy ERR ask: node n12 "Sf1<": content 'g' (ground): 2 of 2 sections are floating
+4x easy ERR ask: node n12 "Sf1<": find (+): no find laid
+4x easy ERR ask: node n12 "Sf1<": reward +keepsake: no find laid
+4x easy ERR ask: node n12 "Sf1<": hazard #dark: Later: no world hazard of that id is laid by a node yet
+1x easy ERR the quiet line: 6.7 s with nothing to do at x 22329, over 4 s (the goal run-out excluded)
+1x easy ERR exit platform 207 is not reachable
+1x easy ERR checkpoint at x=16400 is not on a reachable platform
+1x easy ERR checkpoint at x=19518 is not on a reachable platform
+1x easy ERR checkpoint at x=23477 is not on a reachable platform
+1x easy ERR checkpoint at x=27457 is not on a reachable platform
+1x easy ERR checkpoint at x=30238 is not on a reachable platform
+1x easy ERR checkpoint at x=33238 is not on a reachable platform
+1x easy ERR checkpoint at x=37098 is not on a reachable platform
+1x easy ERR checkpoint at x=38237 is not on a reachable platform
+1x easy ERR checkpoint at x=40217 is not on a reachable platform
+1x easy ERR checkpoint at x=42116 is not on a reachable platform
+1x easy ERR checkpoint at x=43906 is not on a reachable platform
+2x easy ERR ask: node n3 "Pf1_>": hazard #soft: laid hurt
+4x easy ERR ask: node n7 "Wg2_<": move 1 (plain jumps): a section there asks for the double
+4x easy ERR ask: node n7 "Wg2_<": find (+): no find laid
+4x easy ERR ask: node n7 "Wg2_<": reward +keepsake: no find laid
+4x easy ERR ask: node n7 "Wg2_<": hazard #dark: Later: no world hazard of that id is laid by a node yet
+2x easy ERR ask: node n12 "Sf1<": content 'g' (ground): 1 of 2 sections are floating
+1x easy ERR the quiet line: 13.7 s with nothing to do at x 26148, over 4 s (the goal run-out excluded)
+1x easy ERR Easy could not lay Normal's plan: its exit at y 267 is outside the corridor
+1x easy ERR checkpoint at x=17304 is not on a reachable platform
+1x easy ERR checkpoint at x=21067 is not on a reachable platform
+1x easy ERR checkpoint at x=24895 is not on a reachable platform
+1x easy ERR checkpoint at x=28793 is not on a reachable platform
+1x easy ERR checkpoint at x=32773 is not on a reachable platform
+1x easy ERR checkpoint at x=35520 is not on a reachable platform
+1x easy ERR checkpoint at x=39500 is not on a reachable platform
+1x easy ERR checkpoint at x=40783 is not on a reachable platform
+1x easy ERR checkpoint at x=42719 is not on a reachable platform
+1x easy ERR checkpoint at x=44699 is not on a reachable platform
+1x easy ERR checkpoint at x=46644 is not on a reachable platform
+1x easy ERR flower #53 at (17922, 647) is out of reach
+1x easy ERR flower #54 at (18062, 647) is out of reach
+1x easy ERR flower #55 at (17684, 580) is out of reach
+1x easy ERR flower #56 at (17340, 513) is out of reach
+1x easy ERR flower #57 at (17005, 446) is out of reach
+1x easy ERR flower #58 at (16673, 379) is out of reach
+1x easy ERR flower #62 at (18242, 647) is out of reach
+1x easy ERR flower #63 at (18380, 647) is out of reach
+1x easy ERR flower #64 at (18607, 580) is out of reach
+1x easy ERR flower #65 at (18881, 513) is out of reach
+1x easy ERR flower #66 at (19175, 446) is out of reach
+1x easy ERR flower #67 at (19477, 379) is out of reach
+1x easy ERR flower #68 at (20284, 615) is out of reach
+1x easy ERR flower #69 at (20609, 593) is out of reach
+1x easy ERR flower #70 at (20898, 619) is out of reach
+1x easy ERR flower #71 at (21255, 639) is out of reach
+1x easy ERR flower #72 at (21335, 639) is out of reach
+1x easy ERR flower #73 at (21415, 639) is out of reach
+1x easy ERR flower #74 at (21582, 694) is out of reach
+1x easy ERR flower #75 at (21662, 694) is out of reach
+1x easy ERR flower #76 at (21742, 694) is out of reach
+1x easy ERR flower #77 at (21953, 639) is out of reach
+1x easy ERR flower #78 at (22033, 639) is out of reach
+1x easy ERR flower #79 at (22113, 639) is out of reach
+1x easy ERR flower #80 at (22318, 639) is out of reach
+1x easy ERR flower #81 at (22398, 639) is out of reach
+1x easy ERR flower #82 at (22478, 639) is out of reach
+1x easy ERR flower #83 at (22587, 639) is out of reach
+1x easy ERR flower #84 at (22711, 639) is out of reach
+1x easy ERR flower #85 at (23170, 525) is out of reach
+1x easy ERR flower #86 at (23310, 525) is out of reach
+1x easy ERR flower #87 at (23595, 604) is out of reach
+1x easy ERR flower #88 at (24178, 525) is out of reach
+1x easy ERR flower #89 at (24318, 525) is out of reach
+1x easy ERR flower #90 at (24514, 605) is out of reach
+1x easy ERR flower #91 at (25094, 525) is out of reach
+1x easy ERR flower #92 at (25234, 525) is out of reach
+1x easy ERR flower #93 at (25433, 601) is out of reach
+1x easy ERR flower #94 at (25568, 639) is out of reach
+1x easy ERR flower #95 at (25704, 639) is out of reach
+1x easy ERR flower #96 at (25986, 639) is out of reach
+1x easy ERR flower #97 at (26120, 639) is out of reach
+1x easy ERR flower #98 at (26623, 525) is out of reach
+1x easy ERR flower #99 at (26763, 525) is out of reach
+1x easy ERR flower #100 at (26297, 600) is out of reach
+1x easy ERR flower #101 at (26978, 605) is out of reach
+1x easy ERR flower #102 at (27543, 525) is out of reach
+1x easy ERR flower #103 at (27683, 525) is out of reach
+1x easy ERR flower #104 at (27248, 601) is out of reach
+1x easy ERR flower #105 at (27864, 600) is out of reach
+1x easy ERR flower #106 at (28382, 525) is out of reach
+1x easy ERR flower #107 at (28522, 525) is out of reach
+1x easy ERR flower #108 at (28123, 604) is out of reach
+1x easy ERR flower #109 at (28786, 600) is out of reach
+1x easy ERR flower #110 at (28918, 639) is out of reach
+1x easy ERR flower #111 at (29053, 639) is out of reach
+1x easy ERR flower #112 at (29245, 685) is out of reach
+1x easy ERR flower #113 at (29325, 685) is out of reach
+1x easy ERR flower #114 at (29405, 685) is out of reach
+1x easy ERR flower #115 at (29669, 685) is out of reach
+1x easy ERR flower #116 at (29749, 685) is out of reach
+1x easy ERR flower #117 at (29829, 685) is out of reach
+1x easy ERR flower #118 at (30004, 630) is out of reach
+1x easy ERR flower #119 at (30084, 630) is out of reach
+1x easy ERR flower #120 at (30164, 630) is out of reach
+1x easy ERR flower #121 at (30443, 669) is out of reach
+1x easy ERR flower #122 at (30523, 669) is out of reach
+1x easy ERR flower #123 at (30603, 669) is out of reach
+1x easy ERR flower #124 at (30720, 615) is out of reach
+1x easy ERR flower #125 at (30815, 615) is out of reach
+1x easy ERR flower #126 at (31092, 360) is out of reach
+1x easy ERR flower #127 at (31155, 360) is out of reach
+1x easy ERR flower #128 at (31219, 360) is out of reach
+1x easy ERR flower #129 at (31282, 360) is out of reach
+1x easy ERR flower #130 at (31696, 615) is out of reach
+1x easy ERR flower #131 at (32527, 576) is out of reach
+1x easy ERR flower #132 at (32790, 537) is out of reach
+1x easy ERR flower #133 at (33081, 508) is out of reach
+1x easy ERR flower #134 at (33385, 547) is out of reach
+1x easy ERR flower #135 at (33973, 616) is out of reach
+1x easy ERR flower #136 at (34026, 616) is out of reach
+1x easy ERR flower #137 at (34241, 361) is out of reach
+1x easy ERR flower #138 at (34299, 361) is out of reach
+1x easy ERR flower #139 at (34363, 361) is out of reach
+1x easy ERR flower #140 at (34426, 361) is out of reach
+1x easy ERR flower #141 at (34962, 616) is out of reach
+1x easy ERR flower #142 at (35754, 567) is out of reach
+1x easy ERR flower #143 at (35990, 518) is out of reach
+1x easy ERR flower #144 at (36273, 547) is out of reach
+1x easy ERR flower #145 at (36583, 576) is out of reach
+1x easy ERR flower #146 at (39923, 615) is out of reach
+1x easy ERR flower #147 at (40035, 615) is out of reach
+1x easy ERR flower #148 at (39472, 374) is out of reach
+1x easy ERR flower #149 at (39612, 374) is out of reach
+1x easy ERR flower #150 at (39070, 374) is out of reach
+1x easy ERR flower #151 at (39210, 374) is out of reach
+1x easy ERR flower #152 at (38611, 374) is out of reach
+1x easy ERR flower #153 at (38738, 374) is out of reach
+1x easy ERR flower #154 at (38259, 374) is out of reach
+1x easy ERR flower #155 at (38399, 374) is out of reach
+1x easy ERR flower #156 at (39355, 577) is out of reach
+1x easy ERR flower #157 at (39019, 576) is out of reach
+1x easy ERR flower #158 at (38678, 577) is out of reach
+1x easy ERR flower #159 at (38345, 577) is out of reach
+1x easy ERR flower #160 at (37822, 615) is out of reach
+1x easy ERR flower #161 at (40572, 598) is out of reach
+1x easy ERR flower #162 at (40662, 598) is out of reach
+1x easy ERR flower #163 at (41064, 669) is out of reach
+1x easy ERR flower #164 at (41144, 669) is out of reach
+1x easy ERR flower #165 at (41224, 669) is out of reach
+1x easy ERR flower #166 at (41468, 618) is out of reach
+1x easy ERR flower #167 at (41548, 618) is out of reach
+1x easy ERR flower #168 at (41628, 618) is out of reach
+1x easy ERR flower #169 at (41778, 618) is out of reach
+1x easy ERR flower #170 at (41858, 618) is out of reach
+1x easy ERR flower #171 at (41938, 618) is out of reach
+1x easy ERR flower #172 at (42121, 618) is out of reach
+1x easy ERR flower #173 at (42201, 618) is out of reach
+1x easy ERR flower #174 at (42281, 618) is out of reach
+1x easy ERR flower #175 at (42679, 753) is out of reach
+1x easy ERR flower #176 at (42819, 753) is out of reach
+1x easy ERR flower #177 at (44641, 480) is out of reach
+1x easy ERR flower #178 at (44781, 480) is out of reach
+1x easy ERR flower #179 at (45880, 524) is out of reach
+1x easy ERR flower #180 at (46440, 613) is out of reach
+1x easy ERR flower #181 at (46520, 613) is out of reach
+1x easy ERR flower #182 at (46600, 613) is out of reach
+1x easy ERR flower #194 at (25851, 578) is out of reach
+1x easy ERR flower #195 at (25888, 553) is out of reach
+1x easy ERR flower #196 at (25925, 578) is out of reach
+1x easy ERR flower #197 at (32902, 447) is out of reach
+1x easy ERR flower #198 at (32962, 447) is out of reach
+1x easy ERR flower #199 at (33201, 447) is out of reach
+1x easy ERR flower #200 at (33236, 422) is out of reach
+1x easy ERR flower #201 at (33271, 447) is out of reach
+1x easy ERR flower #202 at (33496, 486) is out of reach
+1x easy ERR flower #203 at (33558, 486) is out of reach
+1x easy ERR flower #204 at (36089, 457) is out of reach
+1x easy ERR flower #205 at (36121, 432) is out of reach
+1x easy ERR flower #206 at (36153, 457) is out of reach
+1x easy ERR flower #207 at (39282, 313) is out of reach
+1x easy ERR flower #208 at (39344, 288) is out of reach
+1x easy ERR flower #209 at (39405, 313) is out of reach
+1x easy ERR flower #210 at (38872, 313) is out of reach
+1x easy ERR flower #211 at (38933, 288) is out of reach
+1x easy ERR flower #212 at (38994, 313) is out of reach
+1x easy ERR flower #213 at (38456, 313) is out of reach
+1x easy ERR flower #214 at (38510, 288) is out of reach
+1x easy ERR flower #215 at (38564, 313) is out of reach
+1x easy ERR flower #216 at (40882, 537) is out of reach
+1x easy ERR flower #217 at (40921, 512) is out of reach
+1x easy ERR flower #218 at (40960, 537) is out of reach
+1x easy ERR flower #219 at (42436, 549) is out of reach
+1x easy ERR flower #220 at (42472, 524) is out of reach
+1x easy ERR flower #221 at (42507, 549) is out of reach
+1x easy ERR flower #222 at (46323, 552) is out of reach
+1x easy ERR flower #223 at (46355, 527) is out of reach
+1x easy ERR exit platform 209 is not reachable
+1x easy ERR checkpoint at x=16395 is not on a reachable platform
+1x easy ERR checkpoint at x=20056 is not on a reachable platform
+1x easy ERR checkpoint at x=23895 is not on a reachable platform
+1x easy ERR checkpoint at x=27821 is not on a reachable platform
+1x easy ERR checkpoint at x=31227 is not on a reachable platform
+1x easy ERR checkpoint at x=35207 is not on a reachable platform
+1x easy ERR checkpoint at x=38477 is not on a reachable platform
+1x easy ERR checkpoint at x=40258 is not on a reachable platform
+1x easy ERR checkpoint at x=42018 is not on a reachable platform
+1x easy ERR checkpoint at x=43780 is not on a reachable platform
+1x easy ERR checkpoint at x=45760 is not on a reachable platform
+2x easy ERR ask: node n5 "Xf1>": hazard #dark: Later: no world hazard of that id is laid by a node yet
+2x easy ERR ask: node n10 "Cf2_>": move 1 (plain jumps): a section there asks for the double
+2x easy ERR ask: node n10 "Cf2_>": find (+): no find laid
+2x easy ERR ask: node n10 "Cf2_>": reward +keepsake: no find laid
+2x easy ERR ask: node n10 "Cf2_>": hazard #dark: Later: no world hazard of that id is laid by a node yet
+1x easy ERR the quiet line: 32.2 s with nothing to do at x 24853, over 4 s (the goal run-out excluded)
+1x easy ERR checkpoint at x=17876 is not on a reachable platform
+1x easy ERR checkpoint at x=21739 is not on a reachable platform
+1x easy ERR checkpoint at x=25659 is not on a reachable platform
+1x easy ERR checkpoint at x=29577 is not on a reachable platform
+1x easy ERR checkpoint at x=31397 is not on a reachable platform
+1x easy ERR checkpoint at x=33751 is not on a reachable platform
+1x easy ERR checkpoint at x=37731 is not on a reachable platform
+1x easy ERR checkpoint at x=41221 is not on a reachable platform
+1x easy ERR checkpoint at x=43002 is not on a reachable platform
+1x easy ERR checkpoint at x=44932 is not on a reachable platform
+1x easy ERR checkpoint at x=46761 is not on a reachable platform
+1x easy ERR checkpoint at x=48741 is not on a reachable platform
+clean 0/8
+(reused W1/W2 sections that threw on W3's budget, left out: 1)

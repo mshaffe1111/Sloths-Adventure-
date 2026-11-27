@@ -1,0 +1,3 @@
+4x normal THROW gen2 3-9: graph audit-3-9-gauntlet "A Pg1&<:#dark:&ocelot*1 Pr1&<:#dark:&ocelot*2 Xg1&>:#dark:&ocelot*3 R Ws1>:#thornvine@doze R Pm1&<:&ocelot*2 Cc1^&>:#dark:&ocelot*2 R Vg1&<:#dark:&ocelot*2 Sg1&<:#dark:&ocelot*4 E": V13 at token 11: preview is a LATER node (NODES §6) @ src/game/gen2/pipeline.ts:602:25)
+4x easy THROW gen2 3-9: graph audit-3-9-gauntlet "A Pg1&<:#dark:&ocelot*1 Pr1&<:#dark:&ocelot*2 Xg1&>:#dark:&ocelot*3 R Ws1>:#thornvine@doze R Pm1&<:&ocelot*2 Cc1^&>:#dark:&ocelot*2 R Vg1&<:#dark:&ocelot*2 Sg1&<:#dark:&ocelot*4 E": V13 at token 11: preview is a LATER node (NODES §6) @ src/game/gen2/pipeline.ts:602:25)
+clean 0/8

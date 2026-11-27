@@ -1,0 +1,4 @@
+3-1 A Tg1 D_ Pf1< Xg1> R Dc1_ Wf1> R Pb1< Cg1> R Sf1_< E
+3-2 A Tc1< Pg1> Pf1< Xc1&<:&ocelot*1 R Pg1< Wf1&>:&ocelot*1 R Pc1&<:&ocelot*1 Cg1&>:&ocelot*2 R Sf1&<:&ocelot*3 E
+3-3 A Tl1&<:&ocelot*1 Pf1> Pg1&<:&ocelot*1 Xl1&>:&ocelot*2 R Pc1^< Wg1&>:&ocelot*1 R Pf1< Cg1&>:&ocelot*2 R Sl1&<:&ocelot*3 E
+3-4 A Pc1^< Tf1^< Pg1^< Xc1^> R Pf1< Wc1^> R Pb1^< Cg1^> R Sf1^< E

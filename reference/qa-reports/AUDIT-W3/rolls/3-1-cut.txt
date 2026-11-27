@@ -1,0 +1,10 @@
+4x normal ERR node code: V11 at token 11: 4 of 8 content nodes are 'g' (cap 3)
+4x normal ERR node code: V11 at token 10: 4 of 8 content nodes are 'f' (cap 3)
+4x normal ERR node code: V11 at token 4: 'f' on two neighbouring content nodes
+4x normal ERR ask: node n13 "Sg1_<": content 'f' (floating): 3 of 3 sections are ground
+8x easy ERR node code: V11 at token 11: 4 of 8 content nodes are 'g' (cap 3)
+8x easy ERR node code: V11 at token 10: 4 of 8 content nodes are 'f' (cap 3)
+8x easy ERR node code: V11 at token 4: 'f' on two neighbouring content nodes
+8x easy ERR ask: node n13 "Sg1_<": content 'f' (floating): 3 of 3 sections are ground
+clean 0/8
+(reused W1/W2 sections that threw on W3's budget, left out: 13)
