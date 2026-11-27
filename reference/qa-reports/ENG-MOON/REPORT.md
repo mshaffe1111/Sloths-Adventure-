@@ -1,18 +1,11 @@
 # ENG-MOON: 3-4's moving moonbeam and the moonflower step (R-165.503 / R-165.449; Engine, Opus 5.5 high). Branch t-eng-moon-wip, cut from t-eng-w3 13135bf6b
 
-## EXACT NEXT STEP (box 1, written 10:00 AM ET Fri 11-27 by `date`)
+## EXACT NEXT STEP (box 1, written 10:00 AM ET Fri 11-27 by `date`; step 2 done at 10:03 AM ET; box 2 starts at step 3)
 1. Box 2: `git fetch origin t-eng-moon-wip t-eng-w3 && git checkout -B t-eng-moon-wip origin/t-eng-moon-wip`; `npm ci --legacy-peer-deps`
    (run_in_background). ReadNotifications FIRST.
-2. **Re-lay the storey so the steps are EXACT (the open fault below):** in `src/game/gen2/types.ts` SectionZone 'moon', replace
-   `steps: string[]` with `{ on: string /* the foot stone */; n: number; rise: number; step: number; w: number }` (data: 3, 100, 120, 120).
-   In `src/game/moon.ts` layMoon, LAY the n flowers itself (the moon's own step emitter): step i at x = foot's far lip + i x step
-   (mirrored: from its near lip, going left), y = foot.y - (i + 1) x rise, width w, `moonflower: true`, through the pipeline's own `mk`
-   (pipeline.ts the zone branch at `z.kind === 'moon'`: pass mk / nextPlatformId in, push onto `platforms` and `placed` like the gap
-   catches at pipeline.ts ~2926). The toy section (src/game/gen2/moonLay.test.ts moonStorey) becomes: foot 'stone' w [600, 620] 'start'
-   (the walkable floor under the stair: the TEACH's 'first try cannot fail', and 'every flower over its own storey's stone'), top 'stone'
-   w [240, 260] placed `{ kind: 'over', on: 'foot', at: [1.0, 1.0], dy: [-400, -400] }` (an 'over' dy is NOT scaled by the tempo,
-   pipeline.ts:1646-1649), exitDy -400. Re-run `npx tsx --test src/game/gen2/moonLay.test.ts` and the probe
-   (reference/qa-reports/ENG-MOON/probe.mts, run from the repo root with absolute imports fixed up: prints each roll's errors and flower x,y): rises must read exactly 100, steps 120 apart, errors 0.
+2. DONE in box 1 (10:03 AM ET): the moon lays its own steps EXACTLY (SectionZone 'moon' `{ on, n, rise, step, w, band, far? }`;
+   pipeline.ts zone branch lays them through `mk` over the far end of their stone; the toy storey is foot 600-620 + top 'over' at 1.0
+   dy -400). moonLay.test asserts rises 100, steps on 120, 120 wide, each stair over its own stone, `st.gen2.errors` empty: 36/36 rolls.
 3. **One beam (swing):** the up tower's storeys do not stand 600 px apart on two walls (probe seed 1: stair centres 550 and 610), so a
    per-section `far` makes two beams. Add a pass after the tower is laid (pipeline.ts, beside the zone shifts at ~3116): every swing moon
    zone of the stage gets the SAME walls [min, max of the swing stairs' centres] and offset 0 (moon.ts `oneBeam(zones)`), then
@@ -51,7 +44,7 @@
 - Pushes: 456bb1afc (core), then this box's head.
 
 ## Open faults (named plainly)
-- The steps rise 84, not 100: a 'jump' piece's dy is scaled by the roll's tempo (pipeline.ts:1413 `dy *= T.rise`). Step 2 fixes it.
+- FIXED: the steps rose 84, not 100 (a 'jump' piece's dy is scaled by the roll's tempo, pipeline.ts:1413 `dy *= T.rise`); the moon now lays them itself.
 - Swing `far` makes one beam per storey: step 3.
 - Not yet run: lockall, the suite, tierBots, the CI line, generalitycheck. No stills yet.
 

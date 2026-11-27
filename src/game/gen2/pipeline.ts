@@ -2960,7 +2960,11 @@ export function layStage(budget: StageBudget, graph: MissionGraph, kit: WorldKit
           placed.beats.push({ x: mud.x, letter: 'S' });
         } else if (z.kind === 'moon') {
           // (World 3's moon over its steps: moon.ts layMoon marks them moonflowers; the beam's clock is the stage's own, from t 0)
-          const m = layMoon(z.steps.map(pieceOf), z.band, z.far ?? 0, mirrored !== leftward ? -1 : 1);
+          // (the steps are laid here, exactly, over the far end of their stone: laid leftward, its near end, going up and left)
+          const foot = pieceOf(z.on);
+          const dir = mirrored !== leftward ? -1 : 1;
+          const steps = Array.from({ length: z.n }, (_, i) => mk(dir > 0 ? foot.x + foot.width - (z.n - i) * z.step : foot.x + (z.n - 1 - i) * z.step, foot.y - (i + 1) * z.rise, z.w, 'stone', 22));
+          const m = layMoon(steps, z.band, z.far ?? 0, dir);
           zones.push({ kind: 'moon', x0: R(m.x0), x1: R(m.x1), top: R(m.top), bottom: R(m.bottom), baseY: R(m.bottom), dir: 1, period: 0, warn: 0, active: 0, offset: 0, force: 0, moon: m.moon });
           placed.beats.push({ x: R(m.x0), letter: 'S' });
         } else if (z.kind === 'spore') {

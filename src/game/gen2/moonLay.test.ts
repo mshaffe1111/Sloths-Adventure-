@@ -17,17 +17,15 @@ export const moonStorey = (band: 'rest' | 'swing' | 'rise'): SectionTemplate => 
   difficulty: 2,
   content: 'climb',
   pieces: [
-    { key: 'foot', shape: 'stone', w: [240, 260], place: { kind: 'start' } },
-    { key: 'f1', shape: 'stone', w: [120, 120], place: { kind: 'jump', after: 'foot', dy: [-100, -100], gapPx: [0, 0] }, landing: true },
-    { key: 'f2', shape: 'stone', w: [120, 120], place: { kind: 'jump', after: 'f1', dy: [-100, -100], gapPx: [0, 0] }, landing: true },
-    { key: 'f3', shape: 'stone', w: [120, 120], place: { kind: 'jump', after: 'f2', dy: [-100, -100], gapPx: [0, 0] }, landing: true },
-    { key: 'top', shape: 'stone', w: [240, 260], place: { kind: 'jump', after: 'f3', dy: [-100, -100], gapPx: [0, 0] }, landing: true },
+    // (the foot runs under the whole stair: the walkable floor a closing flower drops him onto; the top stands 400 up over its far end)
+    { key: 'foot', shape: 'stone', w: [600, 620], place: { kind: 'start' } },
+    { key: 'top', shape: 'stone', w: [240, 260], place: { kind: 'over', on: 'foot', at: [1, 1], dy: [-400, -400] }, landing: true },
   ],
   entry: { piece: 'foot', kind: 'ledge' },
   exit: { piece: 'top', kind: 'ledge' },
   exitDy: -400,
   sockets: [],
-  zones: [{ kind: 'moon', steps: ['f1', 'f2', 'f3'], band, ...(band === 'swing' ? { far: 600 } : {}) }],
+  zones: [{ kind: 'moon', on: 'foot', n: 3, rise: 100, step: 120, w: 120, band, ...(band === 'swing' ? { far: 600 } : {}) }],
   mirrorable: false,
 });
 
@@ -46,6 +44,15 @@ test('a moon storey in the up tower: its steps are moonflowers in a moon zone, r
       assert.ok(fl.every((f) => f.clocks.length > 0), `${band} ${difficulty} ${seed}: every flower opens on its beam`);
       assert.ok((st.zones ?? []).some((z) => z.kind === 'moon' && z.moon), 'the moon zone is on the built stage');
       if (band === 'rest') assert.ok(fl.every((f) => flowerOpen(f.clocks, 1)));
+      // the stair is EXACT (100 on 120, 120 wide) and over its own storey's stone
+      for (let i = 0; i < fl.length; i += 3) {
+        const [a, b, c] = fl.slice(i, i + 3).map((f) => f.p);
+        assert.ok(a.y - b.y === 100 && b.y - c.y === 100, `${band} ${difficulty} ${seed}: rises ${a.y - b.y}, ${b.y - c.y}`);
+        assert.ok(Math.abs(b.x - a.x) === 120 && Math.abs(c.x - b.x) === 120 && a.width === 120, `${band} ${difficulty} ${seed}: steps on 120`);
+        const under = st.platforms.find((q) => !q.moonflower && q.y === a.y + 100 && q.x <= Math.min(a.x, c.x) && q.x + q.width >= Math.max(a.x, c.x) + 120);
+        assert.ok(under, `${band} ${difficulty} ${seed}: the stair at x ${a.x} stands over its stone`);
+      }
+      assert.deepEqual(st.gen2.errors, [], `${band} ${difficulty} ${seed}: the roll's own checks`);
     }
     assert.ok(laid > 0, `${band} ${difficulty}: no roll laid the moon's storey`);
   }

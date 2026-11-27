@@ -500,10 +500,12 @@ export type SectionZone =
   | { kind: 'tide'; on: string; low?: Range; warn?: number; active?: number; force?: number }
   | { kind: 'spore'; on: string; period?: number; warn?: number; active?: number }
   | { kind: 'wind'; on: string; dir?: 1 | -1; idle?: Range; active?: number; force?: number }
-  /** World 3's moon (3-4, ENG-MOON; moon.ts): the pieces `steps` are MOONFLOWER steps, opened by the beam over them: `rest` the beam rests
-   *  on them (the teach: they open and stay open), `swing` it swings to the far wall `far` px across (+ right, mirrored with the section)
-   *  and back, `rise` its band climbs the wall over them. Its numbers are moon.ts MOON's, per setting */
-  | { kind: 'moon'; steps: readonly string[]; band: 'rest' | 'swing' | 'rise'; far?: number };
+  /** World 3's moon (3-4, ENG-MOON; moon.ts): `n` MOONFLOWER steps laid by the moon itself over the far end of the stone `on` (its own
+   *  storey's stone, so a closing flower drops him onto it), each `w` wide, `step` px on from the last and `rise` px up, exactly (no
+   *  tempo: 3-4.md's stair is flown at 100 on 120). The beam opens them: `rest` it rests on them (the teach: open and staying open),
+   *  `swing` it swings to the far wall `far` px across (+ right, mirrored with the section) and back, `rise` its band climbs the wall
+   *  over them. Its numbers are moon.ts MOON's, per setting */
+  | { kind: 'moon'; on: string; n: number; rise: number; step: number; w: number; band: 'rest' | 'swing' | 'rise'; far?: number };
 
 /** a tide zone's defaults (zones.ts tideRecipes): a long low spell, a rise you can see coming, high water */
 export const TIDE = { low: [5.6, 7.0], warn: 1.8, active: 2.2, force: 190 } as const;
