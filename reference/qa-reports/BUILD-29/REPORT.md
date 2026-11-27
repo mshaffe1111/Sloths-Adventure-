@@ -1,7 +1,66 @@
 # BUILD-29 REPORT: 2-9 "The River King's Court" (the World 2 finale; R-165.449), release 6
 Branch t-build-29, cut from origin/t-eng-29 = 098047713 (the lead's named base). Session 1 started 5:45 PM ET Thu 11/26 (by `date`).
 
-## EXACT NEXT STEP (session 11, BUILD-29-k, 10:47 AM ET Fri 11/27 by `date`; head = this commit; src UNCHANGED since 1846b25b3)
+## EXACT NEXT STEP (session 12, BUILD-29-l, 5:39 PM ET Fri 11/27 by `date`; head = this commit)
+BOX CLOCK (the 2-hour level clock's dry run, by `date`): start 5:27:46 PM ET; stops (each with its cause): 5:29 PM the new river test RED on its own plant (the plant left the river window: fixed in 1 min by stretching the river with its row); 5:31 merge (a) 1 conflict; 5:32 merge (b) 7 conflicts + one tsc follow-on (w2Arc26.test.ts:75); 5:37 the 47-file word run 2 RED (Q1 ours-words, Q2 ours-earlier; 2 min to prove each on its base); hand-over 5:39 PM ET (inside the 28-minute box).
+ReadNotifications first. Box 12 DID steps 1, 2, 3, 3b fix (1), 4b, and 4 in part (discovery stills); fix (2) is HELD (a red, below); NOT 5-8 (freeze, the
+one gate run, land, debrief): the next box starts at the two questions below, then step 5 on this head. Inputs unchanged at hand-over: `git ls-remote` t-eng-29 337ba7d0b, main 49fdc8cb6.
+1. RIVERS (R-165.544, c15d5015): w2Arc29.test.ts "2-9's log rivers are fair on every listed seed, both settings (riverFaults == [])":
+   all 100 listed seeds x both settings pass; floor 5 log rivers a build, one barge row; total >= 1000 judged. The plant (the barge river
+   and its row stretched 900 px: the three barges' gap 300 px past a hop) is named in the test; with riverFaults' hop rule switched off
+   (riverLay.ts:188 `false &&`, reverted, diff empty) it goes RED: "its logs are not evenly spaced | a barge every 9.4 s, over 2 bars
+   (5.70 s) | no bank at one end" (no hop fault). riverLay.test.ts's floor RE-SCOPED with its reason in a comment: { '2-8': 0 } after the
+   main merge (W2_STAGES holds only 2-8; 2-6 is gen2's and judged in w2Arc26.test.ts:75); a hand-built plan added without a floor fails.
+   ROW FOR THE LEAD: a test that counted a deleted build's rivers (riverLay.test.ts:40 floor 10) went to 0 when 2cb7b0a4a deleted the
+   hand-built 2-9; cause: the gen2 2-9 had no riverFaults check of its own (rule 12: every new arc's test file carries the world's
+   fairness judges). Countermeasure proposed below (Learned).
+2. MERGES (no rebase, no force):
+   (a) t-eng-29 337ba7d0b at 12321f6a: ONE conflict, src/game/puzzleCamera.test.ts (comments + list): ours' 2-9 line kept, theirs'
+       2-8 line and derived roomStages() kept (replaces the hand list). tsc CLEAN; generalitycheck PASS (26 literals, 26 known).
+   (b) main 49fdc8cb6 at 4b605cdf: SEVEN conflicts, both sides kept: gates.yml (main's tool line + ours' letGoBeat/tempoToys tests);
+       listed.ts KITS + WORLD, stageTable.ts kit union, flownArcs.ts nW2, provenIndex.ts (main's 2-6 rows AND ours' 2-9 rows);
+       w2Sections.ts W2Plan '2-8' (both deletions kept); firsttimer.ts imports (ours' flood + main's wheel). Follow-on: w2Arc26.test.ts:75
+       `riverFaults(st)` -> `riverFaults(st as never)` (tsc weak-type error against ours' widened parameter, ENG-29-f; as w2Arc21/24 do;
+       no assertion changed). tsc CLEAN; generalitycheck PASS (26/26).
+   Whole files on 4b605cdf: firstTimerBot 12/12, firsttimer 18/18, puzzleCamera 4/4, riverLay 4/4, w2Arc26 5/5, w2Arc29 7/7, w2Stages 3/3.
+3. KID_RUNS_59 (firstTimerBot.test.ts:177): PASSES on the merged head (file 12/12): no re-record.
+3b. THE KEEPER'S TWO FIXES (review-2-8-2-9.md, t-story f6c57c925), word for word: (1) pokeyJournal.ts:69 + lines-2-9.md:32/:35 -> "The
+   whole court danced to the king's drum. I danced too, on the beat, mostly. Then I rang his bell."; (2) way.2-9, dotLinesData.ts:167
+   both slots -> "Bet Meeca admired the whole river out loud.": HELD, NOT COMMITTED (QUESTION 1 to the lead). Applied as written (both
+   slots AND wayside.ts:103, WAYSIDE[2].stages[9]: its text is the row's key for swapLine, so the old slot and wayside.ts change
+   together or the game falls back to the old words), the 47 test files importing pokeyJournal / dotLinesData / wayside / dotLines gave
+   465 tests, 462 pass, 2 fail, 1 todo (R-165.312, known): (i) wayside.test.ts:49 "2-9: Pokey's own thought is in the first person: Bet
+   Meeca admired the whole river out loud." OURS, the words: the line is Pokey's (pokey('start', ...)) and has no "I". No test changed;
+   the words were reverted (diff empty). Options for the keeper: "I bet Meeca admired the whole river out loud." (9 words, first person,
+   under 10), or the line moves to Dot. (ii) w5Order.test.ts:905 '2-9: "Still 9 snappers to chase off" is not counted': OURS from
+   BEFORE this box (fails ALONE on t-build-29 0384423f8 and on 4b605cdf; PASSES alone on main 49fdc8cb6), not the words. Cause:
+   2-9's own late goal line (stagePlan.ts:245 '2:gauntlet' late, BUILD-29) never swaps to the 'goal.late' row, and dotLines.ts:274
+   marks a line counted only by that row's id, so Dot would say a stale count late in 2-9 (the 5-3 bug, QA v198). ENGINE-WORTHY
+   (rule 22/26: any stage-owned late goal line has it): QUESTION 2 to the lead (who fixes it: an engine lane in dotLines.ts, counted
+   by the stage's goalLine('late') pattern, or a data row). Box 11's shard 1 was partial and did not reach it.
+   With fix (1) only: pokeyJournal / playerText / w2Arc29 / wayside 117/117.
+   LINE STILLS: the wayside bubble ("Bet Meeca ...", the held words) is in every still of step 4, upright and sideways: it reads whole,
+   in Pokey's box, top of screen upright and over the dirt sideways, nothing cut. The journal page still is NOT shot (next box).
+4. STILLS (the frog, not the turtle), layout 1 (builds seed 2), 412x915 and 915x412 at 2x, Normal AND Easy, from the merged head's working
+   tree (vite 5199, stills-at-setting.mjs; spots pads 24780/25640, quay 25850/26714, guard 27350/28290 Normal/Easy), contact sheets
+   committed as stills-l/sheet-l-upright.jpg and sheet-l-sideways.jpg (the 12 full stills are in the box's scratchpad only). DISCOVERY,
+   not the stills of record (rule 29: bots not yet run on the merged head; shoot again on the frozen head). What I judged: the lily pad,
+   the quay and the barge's river, the guard in its red ring, both settings, both ways; Pokey readable; nothing cut. NOT JUDGED: the frog
+   in place of the decorative turtle (at sheet size I could not tell it by eye): the next box crops each spot to the dress pieces.
+4b. RE-ROLL (flown/roll-l.txt, 4b605cdf, libstage 24 x both): CLEAN 24/24 both, thrown 0, 1 beat order, cast turtle 8-8, no refusal, no
+   pool section unlaid. Against roll-j: Normal identical; Easy width 29587-30266 px (j 29586-30259): main's or ENG-DECOR's, not a refusal.
+NEXT (box 13): ReadNotifications; the lead's answers to Q1 (the wayside words) and Q2 (the uncounted late line); then step 5 PRE-FREEZE on this head (tsc; generality; the whole test file of every source changed in box 12 and its importers,
+   already run above: re-run only if src moves; ls-remote t-eng-29 / main), FREEZE (dispatch-packet.md:81), then step 6's ONE gate run,
+   7 land, 8 debrief. The lock's expected moves vs main: 2-9 and 2-5's proto.dress (ENG-DECOR); ALSO watch 2-1 and 2-4: provenIndex
+   carries ours' versions (2-1 0c8ad7fe, 2-4 917a538d; main 1950fa0c, 08c32188), so seedlist --check for 2-1 and 2-4 is the first to read.
+LEARNED (l): (1) a merge's semantic conflict (a widened parameter vs another branch's typed caller) is caught only by tsc after EACH merge,
+   as the brief ordered: w2Arc26.test.ts:75 did not conflict in git. (2) A floor counted across stages hides which stage it counted; a
+   per-plan floor table names it, and a new plan without a floor fails.
+LESSONS APPLIED: :24 (merged main and t-eng-29 before shooting; the stills name their head); :27 (each red proven ALONE on its base and on
+   main before naming it ours or inherited; grep of the importers, not one file).
+PROPOSED RULE (level.md, for the lead): "A designed arc's test file carries its world's fairness judges on every listed seed, both settings
+   (World 2: riverFaults), with a plant, BEFORE the hand build it replaces is deleted" (check: the deleting commit's diff adds that test).
+## (superseded) EXACT NEXT STEP (session 11, BUILD-29-k, 10:47 AM ET Fri 11/27 by `date`; head = this commit; src UNCHANGED since 1846b25b3)
 ReadNotifications first (D140). Box 11 DID steps 1-3 and 5; 4 and 6 are RUNNING (below):
 1. KID EASY RULING (sent to the lead): LEAVE the lay, named R-165.512. Same metric, castBots --bots kid --setting easy x40 on 1846b25b:
    2-5 (the only other World 2 stage that lays snappers; 2-7 has none) 4/40, all 40 at the shrine, 96 rescues, 22 hits, 280 kicked / 80
