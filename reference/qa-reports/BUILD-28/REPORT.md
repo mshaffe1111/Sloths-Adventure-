@@ -30,6 +30,13 @@ DONE:
    every test importing riverLay.ts, firsttimer.ts or provenIndex.ts; `npx tsx --test <60 files>`, started 6:35:54 PM ET): RUNNING at
    hand-over, 211 ok and 0 not ok so far; the totals go in this line when it ends (the box records it before it stops).
 NEXT, in order (ReadNotifications at every step boundary; the lead's reply to the step-0 message first):
+   (0) THE LEAD'S RULING on step 1 (message received at this box's hand-over; quoted word for word): "Your step 1 is answered. The
+       story keeper approved the World 2 book hint (t-story ee84f05b5, checked by ls-remote). Wire it word for word BEFORE you freeze:
+       finds.ts:416 DOT_HINTS w2_book -> "Before the Water Rises: peek in the Hush Ferns!". Then run the whole test file of each that
+       touches finds or DOT_HINTS (grep), and playerText.test. The keeper's reason: it is true on every roll, since 2-8 always lays a
+       Hush Fern; "along the banks" fails 8 of 32 rolls; and "Hurry!" goes, because no hurry words appear in 2-8."
+       (This box did NOT wire it: the box had handed over. The 60-file pre-freeze run below is on 4cabd94d3 WITHOUT it; after the
+       wiring, re-run every whole test file that greps finds/DOT_HINTS, and playerText.test, then freeze.)
    (a) FREEZE the pushed head of t-build-28-wip (code = 4cabd94d3; this box's commits are reference/ only) in a detached worktree.
    (b) THE ONE GATE RUN on it by reference/qa-reports/BUILD-28/gates-s16.sh.txt (each gate's verdict word and counts line; the suite in
        6 shards with totals); the lock = run 2 `--check` against `gunzip -c reference/qa-reports/BUILD-28/lockbase-49fdc8cb6.json.gz`
