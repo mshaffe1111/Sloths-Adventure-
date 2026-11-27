@@ -1,0 +1,19 @@
+normal: bar 2.850 s; lock 0.92; 2 locked liana(s); vineShift 0.0000; model one=true,true
+  liana x7903 grip 0.7: ONE lands true; early 32 f = 1.07 s, late 30 f = 1.00 s; window 2.10 s
+    -1.5s ########.....###############################################################.############## +1.5s
+  liana x7903 grip 0.95: ONE lands true; early 35 f = 1.17 s, late 21 f = 0.70 s; window 1.90 s
+    -1.5s ######....#########################################################.......##..############# +1.5s
+  liana x14389 grip 0.7: ONE lands true; early 27 f = 0.90 s, late 38 f = 1.27 s; window 2.20 s
+    -1.5s ..############....##################################################################...#### +1.5s
+  liana x14389 grip 0.95: ONE lands true; early 0 f = 0.00 s, late 0 f = 0.00 s; window 0.03 s
+    -1.5s ..##########...#########################.#.#.#.#.####################################..#### +1.5s
+    misses near ONE: -5:0:water -3:0:water -1:0:water 1:0:water 3:0:water
+easy: bar 3.300 s; lock 0.92; 2 locked liana(s); vineShift 0.0000; model one=true,true
+  liana x8026 grip 0.7: ONE lands true; early 37 f = 1.23 s, late 45 f = 1.50 s; window 2.77 s
+    -1.5s #####...################################################################################### +1.5s
+  liana x8026 grip 0.95: ONE lands true; early 41 f = 1.37 s, late 45 f = 1.50 s; window 2.90 s
+    -1.5s ##..####################################################################################### +1.5s
+  liana x14617 grip 0.7: ONE lands true; early 37 f = 1.23 s, late 45 f = 1.50 s; window 2.77 s
+    -1.5s #####...################################################################################### +1.5s
+  liana x14617 grip 0.95: ONE lands true; early 41 f = 1.37 s, late 45 f = 1.50 s; window 2.90 s
+    -1.5s ##..####################################################################################### +1.5s

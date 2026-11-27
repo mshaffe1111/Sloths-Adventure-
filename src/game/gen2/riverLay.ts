@@ -13,7 +13,7 @@
  */
 import type { Platform, Vine } from '../types.ts';
 import { driftCycle, driftX, gapFor, hopLimit, lianasOver, lianasOverLogs, logLayout, LOG_DROP, LOG_HEIGHT, onRiver, riverEnd, surfaceBelowBank, DRIFT_CATCH, type DriftInfo, type RiverZone } from '../river.ts';
-import { airStep, ASSIST, canGrabSwing, FORGIVE, flyLaunch, FORWARD_END, forwardEndLands, PHYS, pressLaunches, secondJumpV, vinePeriod, type AirBody, type PressLaunch } from '../physics.ts';
+import { airStep, ASSIST, canGrabSwing, FORGIVE, flyLaunch, FORWARD_END, forwardEndLands, PHYS, pressLaunches, pressLaunchesFrom, secondJumpV, vineAmp, vineAngle, vineOmega, vinePeriod, type AirBody, type PressLaunch } from '../physics.ts';
 import { withSetting } from '../settingDials.ts';
 import { gripsOf, lianaCaught } from '../levelCheck.ts';
 import { LAND_IN } from './landings.ts';
@@ -296,13 +296,13 @@ export interface LetGoFall {
   far: boolean;
   cross: Array<{ x: number; vx: number; dt: number; above: boolean }>;
 }
-export function letGoFall(l: PressLaunch, w: Pick<DriftInfo, 'x0' | 'x1' | 'baseY' | 'tail'>): LetGoFall {
+export function letGoFall(l: PressLaunch, w: Pick<DriftInfo, 'x0' | 'x1' | 'baseY' | 'tail'>, held = 99): LetGoFall {
   const top = w.baseY, bankTop = top - LOG_DROP;
   // (the far bank's lip: the logs' window's end, or past its tail of log-free water, ENG-24e: a let-go into the tail is in the water)
   const end = riverEnd(w);
   const cross: LetGoFall['cross'] = [];
   let far = false;
-  flyLaunch(l, { held: 99, dbl: 99 }, top + 200, (c: AirBody, t: number, prevY: number) => {
+  flyLaunch(l, { held, dbl: 99 }, top + 200, (c: AirBody, t: number, prevY: number) => {
     if (c.vy < 0) return false;
     const inWindow = c.x >= w.x0 && c.x <= w.x1;
     if ((c.x < w.x0 || c.x > end) && prevY <= bankTop + 14 && c.y >= bankTop) {
@@ -383,6 +383,44 @@ export interface LockedDrops extends LianaDrops {
   window: number;
   /** a press on ONE (where the swing's clock is a whole swing: the drum's ONE, the lock's) lands, on every swing of the joint cycle */
   one: boolean;
+  /** ONE's press margin (s): the landing presses in a row just BEFORE (early) and just AFTER (late) the press on ONE, contiguous with it,
+   *  read round the joint cycle (consecutive presses are consecutive frames), the least over LIANA_RIVER.grips and the cycle's swings;
+   *  0 on a side where ONE itself misses. What tempoFaults judges against ONE_MARGIN (ENG-29-f's real-engine read: `one` alone is blind) */
+  early: number;
+  late: number;
+}
+
+/**
+ * How much LOWER than the model's launch the engine's own launch may sit (px, screen y down), the court's judge flies each let-go from
+ * every one (courtFalls). The model's launch matches the engine's in x to 0.4 px but sits 5-10 px higher (ENG-29-h: 2-9's draft, the
+ * engine's frame 0 y 727.48 against the model's 717.49 on one frame grid, 727.1 against 722.08 on the other, probes/launch29.ts). Its
+ * cause was not found in two flown guesses, so the judge does not guess it: it takes the WORST of the model's launch and the launch
+ * lowered by the measured gap and by half of it (a landing is not monotone in the height, so the middle is flown too). The lead's
+ * scope ruling (ENG-29-i): the model is never looser than the engine, not an exact copy of it.
+ */
+export const COURT_SAG = [0, 5, 10] as const;
+
+/**
+ * A court let-go's flights (lockedDrops), from the launch and the launch lowered by each COURT_SAG: each one held through the flight
+ * (letGoFall's, the 0.72 float at the top, engine.ts air step) and let go as he leaves the vine (held 0: the climb on the vine is
+ * pressLaunches' own). A child's hold (the calibrated child bot's let-go: forward held, the press held its own drawn hold, firsttimer.ts)
+ * ends between the two, before the top on most presses.
+ */
+export function courtFalls(l: PressLaunch, w: Pick<DriftInfo, 'x0' | 'x1' | 'baseY' | 'tail'>): LetGoFall[] {
+  return COURT_SAG.flatMap((dy) => {
+    const q = dy ? { ...l, y: l.y + dy } : l;
+    return [letGoFall(q, w), letGoFall(q, w, 0)];
+  });
+}
+
+/**
+ * Does a court let-go land (lockedDrops)? Only when EVERY one of its flights does (courtFalls): the model is never looser than the engine
+ * on either end of the hold, nor at any launch height down to the engine's. Held alone it was: the float kept him over a log's top a frame longer, about 9 px on, and took a log end the engine's
+ * released flight misses by a px (ENG-29-h, 2-9's draft x14389 grip 0.95 press j +4; the engine's logs sit at driftX of the frame's own
+ * clock, as fallOnLog reads them: the catch order matched, the hold did not).
+ */
+export function courtLands(f: readonly LetGoFall[], logs: readonly DriftInfo[], off: number, easy: boolean): boolean {
+  return f.every((q) => q.far || fallOnLog(q, logs, off, easy));
 }
 
 /**
@@ -401,23 +439,47 @@ export function lockedDrops(v: Vine, logs: readonly DriftInfo[], difficulty: Dif
     // (the swings in one joint cycle: the fewest whole swings that are a whole number of log spacings; at most 8)
     let reps = 1;
     while (reps < 8 && Math.abs((reps * period) / spacing - Math.round((reps * period) / spacing)) > 1e-3) reps++;
-    let share = 1, wait = 0, window = Infinity, one = true;
+    let share = 1, wait = 0, window = Infinity, one = true, early = Infinity, late = Infinity;
     for (const g of LIANA_RIVER.grips) {
-      const L = pressLaunches(v, g);
-      const n = L.length, N = n * reps;
-      // (the press on ONE: the one whose clock is nearest a whole swing)
-      const ring = (x: number) => { const u = ((x % period) + period) % period; return Math.min(u, period - u); };
-      let k1 = 0;
-      L.forEach((l, k) => { if (ring(l.pt) < ring(L[k1].pt)) k1 = k; });
+      // (each swing of the cycle on the game's own frames: the bar need not be a whole number of frames (2.85 s is 85.5), so swing r's
+      //  presses sit `lag` s past its whole swings, on the vine's clock from his hang (the vine's own swing at hold g, as the engine hangs
+      //  him: swingGrab's jump-in hangs him a few px lower); ONE is the first press at or after the whole swing, as the engine and the
+      //  child's onOne press it. ENG-29-h: one grid, ONE the nearest press, missed 2-9's draft's 0.90 hole by 7 frames)
+      const LL = v.bottomY - v.topY, len = Math.min(LL * g, LL - 20);
+      const grids = new Map<number, PressLaunch[]>();
+      const gridAt = (lag: number): PressLaunch[] => {
+        const key = Math.round(lag * 1e6);
+        let q = grids.get(key);
+        if (!q) grids.set(key, (q = pressLaunchesFrom(v, { angle: vineAngle(v, lag), omega: vineOmega(v, lag), len, t: lag, amp: vineAmp(v) })));
+        return q;
+      };
+      const lagOf = (r: number) => { const f = r * period / FRAME; return ((Math.ceil(f - 1e-6) - f) * FRAME + FRAME) % FRAME; };
+      const n = gridAt(0).length, N = n * reps;
+      const ones: number[] = [];
       const G = new Uint8Array(N);
-      L.forEach((l, k) => {
-        const f = letGoFall(l, d0);
-        for (let r = 0; r < reps; r++) G[r * n + k] = f.far || fallOnLog(f, logs, l.pt + r * period, easy) ? 1 : 0;
-      });
+      for (let r = 0; r < reps; r++) {
+        const L = gridAt(lagOf(r));
+        let k1 = 0, best = Infinity;
+        L.forEach((l, k) => {
+          let u = ((l.pt % period) + period) % period;
+          if (u > period - 1e-6) u = 0;
+          if (u < best) { best = u; k1 = k; }
+          G[r * n + k] = courtLands(courtFalls(l, d0), logs, l.pt + r * period, easy) ? 1 : 0;
+        });
+        ones.push(r * n + k1);
+      }
       let lands = 0;
       for (let i = 0; i < N; i++) lands += G[i];
       share = Math.min(share, lands / N);
-      for (let r = 0; r < reps; r++) if (!G[r * n + k1]) one = false;
+      for (let r = 0; r < reps; r++) {
+        const i0 = ones[r];
+        if (!G[i0]) { one = false; early = 0; late = 0; continue; }
+        let e = 0, l = 0;
+        while (e < N - 1 && G[(i0 - e - 1 + N) % N]) e++;
+        while (l < N - 1 && G[(i0 + l + 1) % N]) l++;
+        early = Math.min(early, e * FRAME);
+        late = Math.min(late, l * FRAME);
+      }
       if (!lands) { wait = Infinity; window = 0; continue; }
       let worst = 0, run = 0, best = 0;
       for (let i = 0; i < N; i++) {
@@ -430,7 +492,7 @@ export function lockedDrops(v: Vine, logs: readonly DriftInfo[], difficulty: Dif
       wait = Math.max(wait, worst * FRAME);
       window = Math.min(window, best * FRAME);
     }
-    return { share, wait, period, window, one };
+    return { share, wait, period, window, one, early, late };
   });
 }
 

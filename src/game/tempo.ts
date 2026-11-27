@@ -57,6 +57,13 @@ export const tempoBar = (t: TempoSpec, easy: boolean): number => t.bar * (easy ?
 export const tempoBeat = (t: TempoSpec, easy: boolean): number => tempoBar(t, easy) / t.beats;
 /** how far a clock may miss a beat (s): the rows are designed numbers (228 px at 80 px/s is 2.85 s exactly), so this is rounding, not play */
 export const TEMPO_EPS = 1e-3;
+/**
+ * the least margin (s) a court liana's press on ONE must keep on EACH side, early and late, inside its run of landing presses (riverLay
+ * lockedDrops early/late). The lead's ruling (ENG-29-f, from the real engine's read, REPORT probes/oneMargin.ts): 0.20 s (6 frames) on
+ * Normal, 0.30 s (9 frames) on Easy; Easy is never tighter than Normal. At 2-9's lock 0.92 the engine reads Normal 0.37 s early / 0.17 s
+ * late (refused); at 0.90, 0.30 / 0.23 Normal and 0.37 / 0.33 Easy (passes).
+ */
+export const ONE_MARGIN = { normal: 0.2, easy: 0.3 } as const;
 
 /** whole beats in `s` seconds, or null when `s` is not a whole number of beats (at least one) */
 export function beatsIn(s: number, B: number): number | null {
@@ -125,7 +132,12 @@ export function tempoFaults(st: TempoStage, tempo: TempoSpec, easy: boolean): st
   // (a liana over a court river: the swing and the river keep one clock, so the drum's ONE meets the logs the same way on every bar; a
   //  press on ONE that misses misses for good, and the drum's lesson, "let go on ONE" (2-9.md), would drown him. ENG-29d)
   for (const { river, liana, drops } of lockedLianas(st, easy ? 'easy' : 'normal')) {
-    if (drops.one) continue;
+    if (drops.one) {
+      const need = easy ? ONE_MARGIN.easy : ONE_MARGIN.normal;
+      const short = (['early', 'late'] as const).filter((side) => drops[side] < need - TEMPO_EPS);
+      for (const side of short) out.push(`the liana at x ${Math.round(liana.x)} over the river at x ${Math.round(river.x0)}-${Math.round(river.x1)}: a press on ONE keeps ${s3(drops[side])} s ${side}, under the ${s3(need)} s a side ${easy ? 'Easy' : 'Normal'} needs (ONE's margin: ${s3(drops.early)} s early / ${s3(drops.late)} s late)`);
+      continue;
+    }
     out.push(`the liana at x ${Math.round(liana.x)} over the river at x ${Math.round(river.x0)}-${Math.round(river.x1)}: a press on ONE misses its logs on every bar (locked: ${Math.round(drops.share * 100)}% of a bar's presses land, the longest run ${s3(drops.window)} s)`);
   }
   // (a clock only weight pads read is no stage clock: its count runs only while he stands on that pad (ride.ts 'weight'), so it starts

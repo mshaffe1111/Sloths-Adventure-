@@ -29,8 +29,12 @@ test('tempo: the court row, a locked liana and a bar-long clock keep the beat on
 });
 
 test('tempo (planted): one row\'s speed 80 -> 82 is off the beat, named by its river and numbers', () => {
+  // (an off-beat row also drifts under its locked liana, so ONE's margin falls short too: ENG-29-g G6 names that as its own fault, held
+  //  here by name: the river's fault first, then the liana's early side, and nothing else. 0 s early since ENG-29-h's court catch
+  //  (riverLay courtLands: a press lands only if it lands released too); held-only it read 0.033 s)
   const f = tempoFaults(court(false, { ...COURT_ROW, speed: 82 }), COURT, false);
-  assert.equal(f.length, 1, f.join('; '));
+  assert.equal(f.length, 2, f.join('; '));
+  assert.match(f[1], /^the liana at x 1400 over the river at x 1000-\d+: a press on ONE keeps 0 s early, under the 0\.2 s a side Normal needs \(ONE's margin: 0 s early \/ 0\.267 s late\)$/);
   assert.match(f[0], /^the river at x 1000-\d+ \(82 px\/s, 156 px logs, a log every 2\.78 s\): a log every 2\.78 s is not a whole number of beats \(the beat 0\.7125 s/);
   // (and the Normal row on Easy: Easy keeps the liana's bar, so the river's Easy numbers are its own data, never Normal's stretched)
   assert.match(tempoFaults(court(true, COURT_ROW), COURT, true).join('; '), /a log every 2\.85 s is not a whole number of beats \(the beat 0\.825 s/);
