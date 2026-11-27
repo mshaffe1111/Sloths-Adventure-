@@ -13,9 +13,14 @@ sect29-after.txt, rest-before/after.txt):
   of the 16 listed stages. Every other stage: the same number. (2-2 s6's simulated flip was C's: C is not in.)
 - restCheck no-rest bursts (inspector report only): 2-1 s3 2 -> 1; 2-4 6-8 -> 0-2. Every other stage unchanged.
 - Side effect to know: pickRoute picks the pickups route by beats a minute (eraRoll.ts:180), so more beats can switch that choice.
+- The CI tool line (gates.yml:157) on 88b5611b4: tests 429, pass 428, fail 0, plus 1 already-open TODO (chase bots ENG-B4)
+  (ciline-88b5611b4.txt).
+- lockall recorded on origin/main 4bf2cbaaa and on 28c848dbd (3264 builds, 102 stages each; ~10 min each, kept only in box 1's scratch).
+  The candidate's `--check` against the 28c848dbd lock was STILL RUNNING at the hand-over.
 NOT DONE (next box, in order; ReadNotifications first, D140):
-1. lockall: record on origin/main and on 28c848dbd (`npx tsx tools/engine/lockall.ts --layouts 16 --out <f>`; box 1 started both but
-   they had not finished), then on the candidate `--check` against each with NO --intended: no layout may move.
+1. lockall: `npx tsx tools/engine/lockall.ts --layouts 16 --out lock-base.json` on 28c848dbd and `--out lock-main.json` on origin/main
+   (each in its own run_in_background call), then on the candidate `--check` against each, with NO --intended: no layout may move
+   (against main, name every move t-eng-29's own commits make, D132).
 2. `npx tsx tools/engine/seedlist.ts <id> --check` for 1-1 (CI's) and 2-4.
 3. Gates once on the final hash: tsc, the CI tool line (gates.yml:157), the suite shards (totals for THAT hash), tierBots,
    generalitycheck.
