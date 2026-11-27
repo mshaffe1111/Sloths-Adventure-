@@ -166,3 +166,5 @@ candidates.
 with no reply takes its OWN stated recommendation IF it is reversible (its own commit on its own branch; nothing on a release branch or
 main; no test bar, plant bar or rule changed) and goes on, saying so first in its next message; a ruling that would land on a release
 branch, change a test bar or change a rule still waits. (The lead's worker restarted on 11-26 and five lanes sat 30-60 minutes.)
+- A packet that rebuilds a proven seed list runs release.md step 6's WIDENED pin grep (firstTimer( / castRun( / RealPlay in src and tools;
+  CI #98) on the rebuilt head, and re-pins any red by PROPERTY, never by the old roll.

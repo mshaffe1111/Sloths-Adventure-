@@ -46,7 +46,8 @@ Matt, 2026-11-06, after 0.9.5: "Make sure that you note going forward how to do 
 5. **NO PR UNTIL EVERY GATE IS GREEN (D29, 0.9.5).** The lead opened PR #63 while the suite was still running. Matt merged at once, and
    one stale test (pitPocket.test pinned to an old Roll B seed) failed the deploy. It took a second PR (#64) to get the site live.
 6. **After ANY proven-seed-list rebuild**, run every test that pins a roll or a seed, BEFORE the PR:
-   `npx tsx --test $(grep -rln "setPick11\|roll11Seed\|provenSeedFor" src --include=*.test.ts)`. A test may require properties of a pinned
+   `npx tsx --test $(grep -rlE "setPick11|roll11Seed|provenSeedFor|firstTimer\(|castRun\(|RealPlay" src tools --include=*.test.ts)` (widened
+   11-27, CI #98: a test that pins a roll through firstTimer(stage, variant) was missed by the narrow grep). A test may require properties of a pinned
    roll (counts, kinds), never its exact x positions, because the pins move when the list is rebuilt.
 6b. **A NEW gate is run the way CI runs it before the PR** (D31, #65): `CI=1 FORCE_COLOR=1 node tools/perf/<gate>.mjs`. CI turns colour on,
    so a gate that reads tool output must strip colour codes (kbdcheck matched a raw "Local:" and failed the deploy; #66 fixed it).
