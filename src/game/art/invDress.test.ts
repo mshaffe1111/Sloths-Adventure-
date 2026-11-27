@@ -70,7 +70,7 @@ test('the real World 1 inventory: an out-of-scale piece the catalog has is refus
   assert.match(invDressBreaches([at(bad.id)], w1, 1)[0] ?? '', /is out of scale with Pokey/);
 });
 
-test('every listed stage, as Play builds it on both settings: each dressing row its data lays passes the gate; 1-8 lays both its pieces', async () => {
+test('every listed stage, as Play builds it on both settings: each dressing row its data lays passes the gate; 1-8 lays both its pieces, 2-8 its fish trap', async () => {
   const { generateAllLevels } = await import('../worldsData.ts');
   const { generateStage, setLayoutVariant } = await import('../stageGenerator.ts');
   const { LISTED } = await import('../gen2/listed.ts');
@@ -94,6 +94,7 @@ test('every listed stage, as Play builds it on both settings: each dressing row 
     }
   }
   assert.ok(['b', 'c', 'back-a', 'back-b'].every((v) => seen.has(`1-8 hf18/hf18-palm-${v}`)) && seen.has('1-8 hf18/hf18-cannon-trunk'), `1-8's four palms and its trunk are laid (${[...seen].join(', ')})`);
+  assert.ok(seen.has('2-8 w2-cut28#fish-trap-28'), `2-8's fish trap is laid (${[...seen].join(', ')})`);
   console.log(`  ${laid} dressing rows on ${Object.keys(LISTED).length} listed stages x 2 layouts x 2 settings, each through the gate`);
   if (threw.length) console.log(`  NOT JUDGED here, the build threw (${threw.length}):\n    ${threw.join('\n    ')}`);
 });
@@ -102,7 +103,7 @@ test('no code lays dressing rows on a stage this gate does not build: every writ
   // (the gate above builds the listed stages; a hand-built stage that lays rows must join it: name its file here with its stage)
   const files = (dir: string): string[] => fs.readdirSync(dir, { withFileTypes: true }).flatMap((e) => (e.isDirectory() ? files(`${dir}/${e.name}`) : e.name.endsWith('.ts') && !e.name.endsWith('.test.ts') ? [`${dir}/${e.name}`] : []));
   const writers = files('src').filter((f) => /invDress\s*(\?\?=|=[^=]|:\s*\[)/.test(fs.readFileSync(f, 'utf8').split('\n').filter((l) => !/^\s*(\/\/|\*|\/\*)/.test(l)).join('\n')));
-  assert.deepEqual(writers.sort(), ['src/game/gen2/worlds/w1Arc18.ts'], 'the files that lay rows');
+  assert.deepEqual(writers.sort(), ['src/game/gen2/worlds/w1Arc18.ts', 'src/game/gen2/worlds/w2Arc28.ts'], 'the files that lay rows (1-8; 2-8 its fish trap)');
 });
 
 test('readyInvDress resolves each piece ONCE (the counter counts pieces, not rows or calls); a refused or unknown id is never resolved', async () => {
