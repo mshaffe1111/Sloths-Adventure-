@@ -1,10 +1,120 @@
-LEAD SESSION (blockers route here): session_01FhBbYN2CVHnFXg7XzqKXpM (took over 2026-11-14 6:03 PM ET)
+LEAD SESSION (blockers route here): session_01FhBbYN2CVHnFXg7XzqKXpM (11-14 6:03 PM ET to the 11-27 hand-over; the NEW lead writes its id here and moves this one to line 2 as the backup)
 Backup lead: session_01FhBbYNzGRJBDMzn6XbtQK2 (lead 11-13 9:54 AM to 11-14 6:03 PM ET; questions of fact only)
 # Turnover note: the lead (PM). Last handover: 2026-11-12 late evening by session_01FhBbYP63h7cCX8DyW69stq (rotation; Matt)
 
 Read this, then reference/STATE.md (newest at the bottom: every decision tonight is dated there), reference/plans/ENGINE-PLAN.md
 (the plan, with "THE PLAN AS TOLD TO MATT"), reference/plans/MAP-REVISIONS.md (the map's changes and Matt's 84 ideas judged),
 reference/TEAM.md "Cost rules", LESSONS.md D45. The lead never touches code (Matt 11-11); it plans, dispatches, checks, decides.
+
+READ FIRST: reference/notes/lead-retro-2026-11-27.md (your mission: 2-hour levels; trust no helper; the last lead's failures and the
+higher bar you start from). This block is the status only.
+## RIGHT NOW (11-27 HAND-OVER to a fresh lead, written 1:51 PM ET by `date`; this block wins over everything below, R-165.242)
+WHY A FRESH LEAD: Matt 11-27 11:48 AM ET (R-165.547): "Do u still think you can lead?  Making a ton of errors". The outgoing lead
+(session_01FhBbYN2CVHnFXg7XzqKXpM, now the BACKUP: facts only) answered with its count of misses (CI #96-#107; D149-D160) and asked one
+question; Matt chose "Fix + fresh lead at 3 PM": (1) a hook refuses the repeat misses (THE GUARDS below); (2) AT MOST 4 COUNTED LANES (a tail running only its frozen
+candidate's gates does not count); new lanes only for release 5, World 2 and 3-1's chain until the hand-over; (3) this fresh lead.
+CAPACITY (R-165.551/.552): the account's SEVEN-DAY limit read 'allowed_warning' at 12:14 PM ET and 'allowed' again from about 1:07 PM
+(get_session rate_limit_info; resets Wed 12-02 2:00 AM ET; the share used is never shown). Matt 12:36 PM ET: "Lets just get a release and let the new lead figure out what comes after". So only
+release 5 ran after 12:36; KIT-W3a-f and BUILD-28-m were stopped at their first step; the tails landed what was in their final gates. WHAT
+COMES NEXT IS YOURS TO DECIDE, inside the limit: hitting it stops every session, Matt's own included, until Wednesday. Check
+rate_limit_info at every check-in; put your plan to Matt as one multiple-choice question before you start anything new.
+THE TEAM DOCUMENTS live on ccr-ea739a2f-dfcee4 (mirrored to ccr-e71c7674-i0i93u): check one out first; .claude/settings.json there holds
+the hooks (laws-short, modelgate, leadguard, now-et).
+WEEK TARGETS told to Matt: release 5 TODAY (2-6, 2-7, the bot fix, the stalk fix; R-165.495 A); World 2 done SATURDAY (release 6 = 2-8 +
+2-9); World 3: 3-1..3-4 by SUNDAY NIGHT, 3-5..3-9 mid next week. World 4's pitch Saturday.
+RULINGS THIS WEEK (keep): R-165.496 5-9's Easy goal stays 5 (no bot run raises it); R-165.497 every helper gets ALL the pieces in;
+R-165.498 fix + 4 helpers; R-165.500 the bot switch paused to Wednesday; R-165.547 the 4-lane cap and this rotation.
+
+RELEASE 5 (release-0.10.4): ON MATT'S TEST LINK. The code is frozen at c9770adb2; the PR head is release-0.10.4
+  ece9c7580 (c9770adb2 plus REPORT commits only). THE FULL SET is green on c9770adb2 (INT-R5-c; reference/qa-reports/INT-R5/REPORT.md
+  on release-0.10.4 holds the gate table):
+  - the suite in 6 shards, 0 fail; the tool line 448/0; tsc;
+  - deploy build, chunkcheck, build:store, artcheck, generality, coverage, roadmap, timecheck, kbdcheck;
+  - knowncheck (depthSteps 108 -> 0); drawcheck; buildcheck alone on run 1 (Normal p95 103 ms, Easy 70 ms, of 150);
+  - clipcheck alone, PASS (83 known, 0 new); paint 0/1/2 (0 depth steps); all 16 seed lists (1-1 refuses 0 of 161); storyTipScan 0
+    dropped; tipwalk; teachFirstScan 0 of 3422; castBots 2-6 100/100 on every row; castBots 2-7 (child N 83, every other row 98-100);
+    tierBots 9/9.
+  EnK5 is version 271, published by the outgoing lead from a worktree at c9770adb2 (414 files; the live set proven equal to the build
+  by sha256; the title screen checked upright and sideways, no console errors). What's New 0.10.4 "Water wheels and the mail boat":
+  Up the Bank Houses (2-6), The Mailman's Route (2-7), Dot's deep-water warning on every setting, smoother rivers, plant stems to the
+  ground. Matt was asked to play it. NEXT, on his "push" only: open the PR release-0.10.4 -> main with GitHub MCP create_pull_request
+  (NOT a draft; reference/methods/release.md; the PR body names the accepted reds below); Matt merges; then the deploy checks and the APK
+  link ("After the merge"). INT-R5-c (session_01FhBbYK3yZH8BvQ5xoKtfmF) stopped before the PR and is idle: archive it once the PR is open.
+  Accepted reds to name in the PR body: funcheck 22 (identical to INT-14's set); validate.test.ts 38/43 + world1.test.ts 0/7 (inherited,
+  the same on main 4bf2cbaaa, run in no workflow: R-165.531); buildcheck noise (R-165.545). Lock vs main 4bf2cbaaa: 70/102 unchanged, 32
+  moved = 2-6, 2-7, 1-4 and 29 proto.hints-only stages (all intended). After Matt plays and says "push": the PR with GitHub MCP
+  create_pull_request (NOT a draft; release.md), Matt merges, then the deploy checks and the APK on Releases (release.md "After the merge").
+  Tell Matt with the link: 2-7's soil step fixed (73 px to 24 a strip); the 12 inherited validate reds (R-165.531); Easy's 10.5 s wheel
+  ride on 2-6 (R-165.538, open); 3-H has no door (R-165.528).
+
+SWITCH-OVER (Matt 11-27 1:27 PM ET, R-165.555: "make sure that anybody that is still doing things... understand that a new project
+manager is coming on, so there's no issues with switching over. You need to keep moving 100%."): every active member was told at 1:27 PM
+that a new lead is coming and to report to the session that names itself as the new lead. YOUR FIRST TEN MINUTES: send each active
+member below your id and its next report-by; arm your own 30-minute check-in (the outgoing lead's trigger is deleted at the hand-over);
+first message of all to the story keeper. Nothing pauses for the switch.
+LANES AT THE HAND-OVER (each reports to the BACKUP's id until you message it; PM.md §9):
+- INT-R5-c session_01FhBbYK3yZH8BvQ5xoKtfmF: release 5 DONE (see above), idle, stopped before the PR.
+- ENG-DEAL session_01FhBbYPCPBNnRGWbxCcBZLu (a bounded tail): its LAST re-gate runs on 98f424884 (t-eng-deal; a lettered node holds its
+  type through every loosening, and a slot with none of its type is a named 'pool short', so the roll is refused, never laid quietly).
+  If green, it lands on t-eng-w3 with the KIT rolls' clean / tried counts (3-2 may refuse every roll until its rope section exists).
+  If red, it records, pushes and stops. Either way, archive it after (get_session first).
+- Story keeper session_01FhBbYMCa3JXWmyQicbmxuu: told a new lead is coming; your first message goes to it.
+- Everyone else is ARCHIVED. Their work is on these branches:
+  - t-eng-w3 f3014145c (ENG-ROOT landed);
+  - t-eng-29 337ba7d0b (ENG-CAM29 + ENG-DECOR);
+  - t-eng-catch-e f5f2aa16e and t-eng-catch-c 859baaa65 (not landed: tower.test.ts:856);
+  - t-kit-w3a 38c1b2b20 (step 1 merge done);
+  - t-build-28-wip 5c7ddade2 (release 5 merged in, not checked);
+  - t-eng-lure-wip 0e646f2ef;
+  - t-soil-ease 826a437e4 (in release 5).
+
+QUEUE, the outgoing lead's order (a proposal only: Matt left what comes after to you, R-165.552; at most 4 counted lanes):
+0. BUILD-28-m (2-8, fresh; session_01FhBbYM9zGMTDuMwmPwUipb was stopped before its merge): merge release 5's frozen head (c9770adb2 or
+   its final hash) into t-build-28-wip a29c1528a, the lock with that head as base BY HASH (2-8 + named moves only), the ONE gate run,
+   bots x40, stills incl. the fish trap (basket vs cage: the lead judges), the landing, the debrief. Whole brief, ready to paste:
+   reference/packets/2026-11-27/BUILD-28-m.md.
+0a. ENG-CATCH-f (3-1's tower, FIRST in World 3's chain): the duplicate-catch red. tower.test.ts:856 ("no catch is laid twice": 12 laid,
+   3 distinct) came in with ENG-CATCH-d box 1's mend and is in BOTH 6d296c1b7 (t-eng-catch-c 859baaa65, not landed) and ENG-CATCH-e's
+   guarantee 18a353e4a (t-eng-catch-e f5f2aa16e, not landed; its REPORT names the fix box's starting point). Everything else on 18a353e4a is
+   green: tsc 0, generality 26/26, CI line 354/0, lock 102/102 on base 51ef0c6ab, tierBots 9/9, the proof six configs 80/80, leaks 0, worst
+   cost 7% of rolls refused. The fix: the mend's keep() / cover lay must not hand back a bough twice; the toy red first, then every proof and
+   gate once, then land on t-eng-w3 (now f3014145c or later). Lesson for the brief: run the tower's WHOLE test file before any freeze.
+0b. KIT-W3a-f (3-1's kit, fresh; session_01FhBbYLDxrBNgHaqMuXbqVy was stopped before its merge): reference/packets/2026-11-27/KIT-W3a-f.md
+   (merge t-eng-w3's newest head with step 3's landed hashes).
+1. BUILD-29-l (2-9, release 6): READY: ENG-CAM29 and ENG-DECOR are both on t-eng-29 = 337ba7d0b. R-165.544 riverFaults FIRST (a
+   fairness check on 2-9's river); merge t-eng-29 337ba7d0b AND release 5's frozen head into t-build-29 0384423f8; it OWNS the 5-9 red
+   (firstTimerBot.test.ts:177 KID_RUNS_59, red on t-eng-29, cured by release 5's 4799f6026: re-record on the merged head under R-165.496,
+   the Easy goal stays 5); the final gate run (lock base = release 5's head BY HASH, expect 2-9 + named); bots x40; stills (the lead
+   judges); the debrief. Write its packet first (dispatch-packet.md; the prompt IS the brief).
+2. After 0a and 0b land: BUILD-31 (rule 23: open 3-1's roll file first; dark.test over every listed seed until R-165.537 lands). A LEAD
+   CALL first: KIT-W3a's PUSHBACK.md (t-kit-w3a 38c1b2b20): no World 3 level-stage row exists and World 3's run lay never lays the 400 px
+   drop, so the drop toys need an engine change (run lay lays a designed drop past its corridor) or stay red by name until 3-5's build.
+3. KIT-W3b-c (3-3's rising climb, then the root brick): READY: ENG-ROOT landed on t-eng-w3 f3014145c; the root brick SPEC is in
+   ENG-ROOT's REPORT (box 2's W note was wrong and is corrected there: build from the REPORT, not the old note).
+4. ENG-LURE-b (3-3, fresh): t-eng-lure-wip 0e646f2ef's REPORT "NEXT BOX": R-165.527 topUpFoes skip on dialled nodes + 3-3's layable
+   purge count; item 3 verdict; item 4 skills; ENG-DEAL merge; stills; gates once (the lock proves the opt-in SectionZone 'spore' span
+   moves no roll); land. chimeArt.ts is a CODE-DRAWN STAND-IN: the chime stone goes on ART-W3's list.
+5. ENG-MOON-c (3-4): t-eng-moon-wip 50b19683c; the painted moonBud/moonOpen art; KIT RULE M1 (swing stairs on opposite walls: 520 px+
+   Normal, 720 px+ Easy); R-165.537's first step (world verdicts declared, built on 3fb22a84d).
+6. ART-W3 (HF env): the w3#trunk re-cut first (R-165.533), then the chime stone. LIT-TELL mock-ups (R-165.539), then ask Matt.
+7. Before INT-R6: rule R-165.543 (cage-b: an allow-list entry needs Matt's word under the shrink-only rule, or World 10 places it).
+   R-165.546 (ENG-DECOR follow-ups, t-eng-decor-546).
+ALSO OPEN: R-165.550 ctestPicker.test.ts:78 red on t-eng-w3 (the end screen shows the old stage's words; owner: the next t-eng-w3
+integrator). t-eng-catch-d-wip 1681f79c1 holds ENG-CATCH-d's unlanded landing merge (reference only).
+OPEN WITH MATT: release 5 on his link (play, then "push"); 2-8's fish trap basket vs cage (the lead judges the stills first).
+THE GUARDS (after a cold review, all six must-fixes done): tools/team/leadguard.mjs acts only where ~/.sloths-lead exists (run `touch
+~/.sloths-lead` first: your container only, never a member's). It refuses any `git commit` not run through tools/team/leadcommit.sh, a
+create_session prompt that is not the whole brief, and an archive without a fresh get_session look (IDLE, status_bucket not WORKING, no
+run named). COMMIT ONLY with `bash tools/team/leadcommit.sh "<subject>" <paths>`: roadmapcheck by exit code on exactly the tree it
+commits (only the named paths may differ), the session id read from lead.md line 1, pushed to your current branch (plus
+.git/leadcommit-mirrors if you keep one). Run `bash tools/team/leadcommit.sh --plant` once at your start: it must print PASS. The lead
+branch lacks main's newest release merges (a trial merge: 3228 files, conflicts in ROADMAP.md and HF-SPEND.md); the script accepts only
+'PR #N not merged here' lines it proves merged on origin/main. Syncing the lead branch with main is open work (do it with care).
+STORY KEEPER: session_01FhBbYMCa3JXWmyQicbmxuu, alive (idle since 11-16); your first message goes to it (PM.md §4 item 0).
+SPEND TODAY: the helper sessions alive after 11:50 AM came to about $91 (whole-session costs: INT-R5-c about $11.70,
+ENG-CATCH-e $11.36, KIT-W3a-f $8.51, ENG-CATCH-d $8.24, ENG-DEAL about $9, ENG-CAM29 $7.89, ENG-DECOR $7.11, ENG-ROOT-d $6.82,
+BUILD-28-m $4.80, SOIL-EASE $4.72, KIT-W3a-e $4.37, ENG-LURE $4.02, BUILD-28-l $2.29). The outgoing lead's own session: about $1,283
+over 13 days. The morning's archived helpers are not summed here: sum them from get_session for the nightly report.
 
 ## THE LEAD'S OBJECTIVE (Matt, 11-13 10:27 AM ET): besides tonight's two levels, set the game up so it is easy to work on and planned
 ahead: "We're not reacting, but we are ready for everything that happens." Engine pieces before the levels that need them; a ranked,
@@ -111,7 +221,7 @@ code-checked plan (ENGINE-NEEDS.md); "add a level" in one step; every lead keeps
 3. **The lead manages; members engineer.** The lead decides scope, priority, time and the bar, judges the evidence and unsticks; it does not do the work or design the code. A member's technical fork goes back as 'decide it within your budget and show me the evidence', unless it changes scope, the bar, a shipped stage or Matt's taste.
 4. **The scoreboard in every report to Matt:** levels on his link this week vs the plan; hours per level vs 2 h; pieces landed ahead; **2-HOUR PROGRESS** (Matt 11-23, R-165.409): what was done today toward the 2-hour level (reference/plans/TWO-HOUR-PLAN.md and its schedule).
 
-## RIGHT NOW (11-26 night wrap, 11:00 PM ET by `date`; this block wins over everything below, R-165.242)
+## RIGHT NOW (11-26 night wrap, 11:00 PM ET by `date`; SUPERSEDED by the 11-27 hand-over block at the top)
 MATT TONIGHT: R-165.495 release 5 = A (2-6, 2-7, the bot fix, the stalk fix Friday); R-165.496 5-9's Easy goal stays 5; R-165.497 "Sunday is
 not acceptable... Why do we keep doing the same shit" + "Shouldn't you be telling the helpers to make sure that they're getting all the pieces
 in?"; R-165.498 FIX + keep 4 helpers; R-165.500 the bot switch PAUSED to Wednesday (its slot to World 3: 5 slots).
