@@ -1,0 +1,13 @@
+kid    normal pass base 0/40, 27g head 0/40, new head 0/40; lives 0 -> 0; boardHop moved   0; flips vs base -
+kid    easy   pass base 0/40, 27g head 0/40, new head 0/40; lives 0 -> 0; boardHop moved   0; flips vs base -
+adult  normal pass base 39/40, 27g head 39/40, new head 39/40; lives 0 -> 0; boardHop moved   0; flips vs base -
+adult  easy   pass base 40/40, 27g head 40/40, new head 40/40; lives 0 -> 0; boardHop moved   0; flips vs base -
+child  normal pass base 40/40, 27g head 40/40, new head 40/40; lives 0 -> 0; boardHop moved   0; flips vs base -
+child  easy   pass base 40/40, 27g head 40/40, new head 40/40; lives 0 -> 0; boardHop moved   0; flips vs base -
+middle normal pass base 40/40, 27g head 40/40, new head 40/40; lives 0 -> 0; boardHop moved   0; flips vs base -
+middle easy   pass base 40/40, 27g head 40/40, new head 40/40; lives 0 -> 0; boardHop moved   0; flips vs base -
+expert normal pass base 40/40, 27g head 40/40, new head 40/40; lives 0 -> 0; boardHop moved   0; flips vs base -
+2-3: vs base P->F 0 [], F->P 0; tier counts dropped: none
+2-3: boardHop moved 0 of 360 rows (27g head -> new); with no log across a lip in jumpFor: none
+2-3: the 8 traced flips (27g head) now: []
+2-3 lives 27g head -> new: same

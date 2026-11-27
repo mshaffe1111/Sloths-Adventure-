@@ -15,12 +15,13 @@ import { withFixtureConfig } from '../../src/game/realPlay.ts';
 import { w2Finish } from '../../src/game/gen2/worlds/w2.ts';
 import { cfg, ID, kitFor, type WheelToy } from '../../src/game/wheelFixtureStage.ts';
 import { runTier, type Setting, type Tier, type TierOpts, type TierRun } from './tierBots.ts';
+import { firstTimer, FT_KID } from './firsttimer.ts';
 
 // (the toys' kit, rows and stage live with the page's dev fixture, src/game/wheelFixtureStage.ts: one definition for the tests and the page)
 export { cfg, fixtureSeed, ID, kitFor, RUN_ID, runCfg, runKitFor, TOY_WHEELS, toyStage, wheelSection, wheelsOf, type WheelToy } from '../../src/game/wheelFixtureStage.ts';
 
 /** a tier's run over the toy, rolled the game's way (the listed row, the planted list, World 2's finish) */
-export function wheelRun(row: WheelToy, tier: Tier, setting: Setting, seed: number, variant = 1, opts: TierOpts = {}): TierRun {
+export function wheelRun(row: WheelToy, tier: Tier | 'kid', setting: Setting, seed: number, variant = 1, opts: TierOpts = {}): TierRun {
   const kit = kitFor(row);
   const st = buildGen2Stage({ config: cfg, kit, seed, difficulty: 'normal' });
   const dict: string[] = [];
@@ -28,6 +29,8 @@ export function wheelRun(row: WheelToy, tier: Tier, setting: Setting, seed: numb
   return withTestStage({ [ID]: { kit: () => kit, world: (s, _sq, d) => w2Finish(s as never, d) as typeof s, seeds: [] } }, () => {
     const undo = plantSeedList(ID, { dict, seeds: [seed], plans: [packed] });
     try {
+      // (the kid is the first-timer, no tier: his own bot on the setting, the tier run's 20 minutes. BUILD-26m: 2-6 kid E 22)
+      if (tier === 'kid') return withFixtureConfig(cfg, () => { const r = firstTimer(ID, variant, { ...FT_KID, setting }, { cap: 1200, ...opts }); return { end: r.end, rescues: r.rescues } as unknown as TierRun; });
       return withFixtureConfig(cfg, () => runTier(tier, setting, variant, ID, opts));
     } finally {
       undo();
@@ -40,7 +43,7 @@ export function wheelRun(row: WheelToy, tier: Tier, setting: Setting, seed: numb
  * the first on the street (s; null: never), how many times he left a bucket and came down anywhere but the street (a scramble bucket to
  * bucket, or into the pond), and how many times he fell into the pond (his feet past its surface inside it)
  */
-export function wheelCrossing(row: WheelToy, tier: Tier, setting: Setting, seed: number, variant = 1): { run: TierRun; seconds: number | null; scrambles: number; pond: number } {
+export function wheelCrossing(row: WheelToy, tier: Tier | 'kid', setting: Setting, seed: number, variant = 1): { run: TierRun; seconds: number | null; scrambles: number; pond: number } {
   let t0 = -1, t1 = -1, scrambles = 0, pond = 0, prev = '', wet = false, left = false;
   const run = wheelRun(row, tier, setting, seed, variant, {
     onFrame: (sim) => {

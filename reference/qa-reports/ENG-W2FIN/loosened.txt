@@ -1,0 +1,109 @@
+TAP version 13
+# Subtest: World 2 finish: a fall over a water wheel's sweep takes the wheel's pond as its river (every row, both settings, both ways round)
+ok 1 - World 2 finish: a fall over a water wheel's sweep takes the wheel's pond as its river (every row, both settings, both ways round)
+  ---
+  duration_ms: 2.736733
+  type: 'test'
+  ...
+# Subtest: World 2 finish: another storey's fall over a wheel's pond is still held to its own height and its own banks (2-7's height rule)
+not ok 2 - World 2 finish: another storey's fall over a wheel's pond is still held to its own height and its own banks (2-7's height rule)
+  ---
+  duration_ms: 2.098615
+  type: 'test'
+  location: '/home/user/w2fin/src/game/gen2/worlds/w2.test.ts:268:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly deep-equal:
+    + actual - expected
+    
+    + [
+    +   "teach normal way 1: the upper fall's river [], not its own at its height (1425-1545, 1178)",
+    +   'teach normal way 1: an upper fall with no far bank over the pond did not throw',
+    +   "teach normal way -1: the upper fall's river [], not its own at its height (2755-2875, 1178)",
+    +   'teach normal way -1: an upper fall with no far bank over the pond did not throw',
+    +   "teach easy way 1: the upper fall's river [], not its own at its height (1425-1545, 1178)",
+    +   'teach easy way 1: an upper fall with no far bank over the pond did not throw',
+    +   "teach easy way -1: the upper fall's river [], not its own at its height (2755-2875, 1178)",
+    +   'teach easy way -1: an upper fall with no far bank over the pond did not throw',
+    +   "edge normal way 1: the upper fall's river [], not its own at its height (1438-1558, 1138)",
+    +   'edge normal way 1: an upper fall with no far bank over the pond did not throw',
+    +   "edge normal way -1: the upper fall's river [], not its own at its height (2742-2862, 1138)",
+    +   'edge normal way -1: an upper fall with no far bank over the pond did not throw',
+    +   "edge easy way 1: the upper fall's river [], not its own at its height (1438-1558, 1138)",
+    +   'edge easy way 1: an upper fall with no far bank over the pond did not throw',
+    +   "edge easy way -1: the upper fall's river [], not its own at its height (2742-2862, 1138)",
+    +   'edge easy way -1: an upper fall with no far bank over the pond did not throw',
+    +   "top normal way 1: the upper fall's river [], not its own at its height (1438-1558, 1030)",
+    +   'top normal way 1: an upper fall with no far bank over the pond did not throw',
+    +   "top normal way -1: the upper fall's river [], not its own at its height (2742-2862, 1030)",
+    +   'top normal way -1: an upper fall with no far bank over the pond did not throw',
+    +   "top easy way 1: the upper fall's river [], not its own at its height (1438-1558, 1050)",
+    +   'top easy way 1: an upper fall with no far bank over the pond did not throw',
+    +   "top easy way -1: the upper fall's river [], not its own at its height (2742-2862, 1050)",
+    +   'top easy way -1: an upper fall with no far bank over the pond did not throw',
+    +   "great normal way 1: the upper fall's river [], not its own at its height (1451-1571, 1098)",
+    +   'great normal way 1: an upper fall with no far bank over the pond did not throw',
+    +   "great normal way -1: the upper fall's river [], not its own at its height (2729-2849, 1098)",
+    +   'great normal way -1: an upper fall with no far bank over the pond did not throw',
+    +   "great easy way 1: the upper fall's river [], not its own at its height (1451-1571, 1098)",
+    +   'great easy way 1: an upper fall with no far bank over the pond did not throw',
+    +   "great easy way -1: the upper fall's river [], not its own at its height (2729-2849, 1098)",
+    +   'great easy way -1: an upper fall with no far bank over the pond did not throw'
+    + ]
+    - []
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+  actual:
+    0: "teach normal way 1: the upper fall's river [], not its own at its height (1425-1545, 1178)"
+    1: 'teach normal way 1: an upper fall with no far bank over the pond did not throw'
+    2: "teach normal way -1: the upper fall's river [], not its own at its height (2755-2875, 1178)"
+    3: 'teach normal way -1: an upper fall with no far bank over the pond did not throw'
+    4: "teach easy way 1: the upper fall's river [], not its own at its height (1425-1545, 1178)"
+    5: 'teach easy way 1: an upper fall with no far bank over the pond did not throw'
+    6: "teach easy way -1: the upper fall's river [], not its own at its height (2755-2875, 1178)"
+    7: 'teach easy way -1: an upper fall with no far bank over the pond did not throw'
+    8: "edge normal way 1: the upper fall's river [], not its own at its height (1438-1558, 1138)"
+    9: 'edge normal way 1: an upper fall with no far bank over the pond did not throw'
+    10: "edge normal way -1: the upper fall's river [], not its own at its height (2742-2862, 1138)"
+    11: 'edge normal way -1: an upper fall with no far bank over the pond did not throw'
+    12: "edge easy way 1: the upper fall's river [], not its own at its height (1438-1558, 1138)"
+    13: 'edge easy way 1: an upper fall with no far bank over the pond did not throw'
+    14: "edge easy way -1: the upper fall's river [], not its own at its height (2742-2862, 1138)"
+    15: 'edge easy way -1: an upper fall with no far bank over the pond did not throw'
+    16: "top normal way 1: the upper fall's river [], not its own at its height (1438-1558, 1030)"
+    17: 'top normal way 1: an upper fall with no far bank over the pond did not throw'
+    18: "top normal way -1: the upper fall's river [], not its own at its height (2742-2862, 1030)"
+    19: 'top normal way -1: an upper fall with no far bank over the pond did not throw'
+    20: "top easy way 1: the upper fall's river [], not its own at its height (1438-1558, 1050)"
+    21: 'top easy way 1: an upper fall with no far bank over the pond did not throw'
+    22: "top easy way -1: the upper fall's river [], not its own at its height (2742-2862, 1050)"
+    23: 'top easy way -1: an upper fall with no far bank over the pond did not throw'
+    24: "great normal way 1: the upper fall's river [], not its own at its height (1451-1571, 1098)"
+    25: 'great normal way 1: an upper fall with no far bank over the pond did not throw'
+    26: "great normal way -1: the upper fall's river [], not its own at its height (2729-2849, 1098)"
+    27: 'great normal way -1: an upper fall with no far bank over the pond did not throw'
+    28: "great easy way 1: the upper fall's river [], not its own at its height (1451-1571, 1098)"
+    29: 'great easy way 1: an upper fall with no far bank over the pond did not throw'
+    30: "great easy way -1: the upper fall's river [], not its own at its height (2729-2849, 1098)"
+    31: 'great easy way -1: an upper fall with no far bank over the pond did not throw'
+  operator: 'deepStrictEqual'
+  stack: |-
+    TestContext.<anonymous> (/home/user/w2fin/src/game/gen2/worlds/w2.test.ts:284:10)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
+  ...
+1..2
+# tests 2
+# suites 0
+# pass 1
+# fail 1
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 595.493958

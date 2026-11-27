@@ -1,0 +1,11 @@
+const W = process.env.WT!;
+await import(W + '/src/game/headlessDom.ts');
+const { setDifficulty } = await import(W + '/src/game/difficulty.ts');
+const { FirstTimerRun, FT_CHILD } = await import(W + '/tools/inspect/firsttimer.ts');
+setDifficulty('normal');
+const run: any = new FirstTimerRun('1-4', 14, FT_CHILD, {});
+const pts = run.prog.pts.map((q: any, i: number) => [i, Math.round(q.x), Math.round(q.y)]).filter((r: any) => r[0] >= 880 && r[0] <= 990);
+console.log(pts.map((r: any) => r.join(',')).join(' '));
+const vs = run.sim.vines.filter((v: any) => Math.abs(v.x - 600) < 200 && v.bottomY > 2200 && v.topY < 2400).map((v: any) => `${v.id} ${v.vineType} x${Math.round(v.x)} ${Math.round(v.topY)}-${Math.round(v.bottomY)} f${v.field ? 1 : 0}`);
+console.log(vs.join(' | '));
+console.log('cv', JSON.stringify(run.climbUpVine({ x: 565, y: 2363 })?.x));

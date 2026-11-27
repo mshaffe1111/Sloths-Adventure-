@@ -1,0 +1,88 @@
+TAP version 13
+# Subtest: 2-7 home: back at a race-leg fall's x, his margin is never better than at the fall (a fall never pays, end to end)
+not ok 1 - 2-7 home: back at a race-leg fall's x, his margin is never better than at the fall (a fall never pays, end to end)
+  ---
+  duration_ms: 17871.649902
+  type: 'test'
+  location: '/home/user/wt-fp/tools/inspect/pacerRespawn.test.ts:49:3'
+  failureType: 'testCodeFailure'
+  error: |-
+    home: 5 of 41 race-leg falls paid:
+    middle normal 5 x 7425: -2.17 at the fall -> -1.34 s back at its x (+0.84)
+    middle easy 2 x 10049: -0.02 at the fall -> 0.31 s back at its x (+0.33)
+    middle easy 5 x 4656: 6.50 at the fall -> 7.19 s back at its x (+0.69)
+    middle easy 6 x 3198: 5.43 at the fall -> 5.54 s back at its x (+0.10)
+    ride easy 5 x 7533: -6.52 at the fall -> -6.02 s back at its x (+0.50)
+    + actual - expected
+    
+    + [
+    +   'middle normal 5 x 7425: -2.17 at the fall -> -1.34 s back at its x (+0.84)',
+    +   'middle easy 2 x 10049: -0.02 at the fall -> 0.31 s back at its x (+0.33)',
+    +   'middle easy 5 x 4656: 6.50 at the fall -> 7.19 s back at its x (+0.69)',
+    +   'middle easy 6 x 3198: 5.43 at the fall -> 5.54 s back at its x (+0.10)',
+    +   'ride easy 5 x 7533: -6.52 at the fall -> -6.02 s back at its x (+0.50)'
+    + ]
+    - []
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+  actual:
+    0: 'middle normal 5 x 7425: -2.17 at the fall -> -1.34 s back at its x (+0.84)'
+    1: 'middle easy 2 x 10049: -0.02 at the fall -> 0.31 s back at its x (+0.33)'
+    2: 'middle easy 5 x 4656: 6.50 at the fall -> 7.19 s back at its x (+0.69)'
+    3: 'middle easy 6 x 3198: 5.43 at the fall -> 5.54 s back at its x (+0.10)'
+    4: 'ride easy 5 x 7533: -6.52 at the fall -> -6.02 s back at its x (+0.50)'
+  operator: 'deepStrictEqual'
+  stack: |-
+    TestContext.<anonymous> (/home/user/wt-fp/tools/inspect/pacerRespawn.test.ts:67:12)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.start (node:internal/test_runner/test:944:17)
+    startSubtestAfterBootstrap (node:internal/test_runner/harness:296:17)
+  ...
+# Subtest: 2-7 post: back at a race-leg fall's x, his margin is never better than at the fall (a fall never pays, end to end)
+not ok 2 - 2-7 post: back at a race-leg fall's x, his margin is never better than at the fall (a fall never pays, end to end)
+  ---
+  duration_ms: 17287.305566
+  type: 'test'
+  location: '/home/user/wt-fp/tools/inspect/pacerRespawn.test.ts:49:3'
+  failureType: 'testCodeFailure'
+  error: |-
+    post: 2 of 48 race-leg falls paid:
+    middle normal 6 x 10125: -3.02 at the fall -> -2.34 s back at its x (+0.68)
+    expert normal 1 x 10076: 3.02 at the fall -> 3.75 s back at its x (+0.73)
+    + actual - expected
+    
+    + [
+    +   'middle normal 6 x 10125: -3.02 at the fall -> -2.34 s back at its x (+0.68)',
+    +   'expert normal 1 x 10076: 3.02 at the fall -> 3.75 s back at its x (+0.73)'
+    + ]
+    - []
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+  actual:
+    0: 'middle normal 6 x 10125: -3.02 at the fall -> -2.34 s back at its x (+0.68)'
+    1: 'expert normal 1 x 10076: 3.02 at the fall -> 3.75 s back at its x (+0.73)'
+  operator: 'deepStrictEqual'
+  stack: |-
+    TestContext.<anonymous> (/home/user/wt-fp/tools/inspect/pacerRespawn.test.ts:67:12)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
+  ...
+1..2
+# tests 2
+# suites 0
+# pass 0
+# fail 2
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 35925.506136
+rc=1

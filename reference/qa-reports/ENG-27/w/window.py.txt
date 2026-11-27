@@ -1,0 +1,31 @@
+# pace only moves the boat's clock (the bots play the same: lives and race-leg falls identical in every pace at a gap), so a row's margin at
+# pace p is boat/p - him, from the 100% row. Check it against every measured pace cell, then the pick rule's window of p.
+import re, sys, glob
+def rows(f):
+    out = {}
+    for ln in open(f):
+        c = ln.split('\t'); m = re.search(r'him ([\d.]+) boat ([\d.]+) by (-?[\d.]+)', ln)
+        out[(c[2], c[3])] = (float(m.group(2)), float(m.group(1)), float(m.group(3)))
+    return out
+d = sys.argv[1]
+base = rows(f'{d}/Ew-72-100.tsv')
+worst = 0
+for f in glob.glob(f'{d}/Ew-72-*.tsv'):
+    p = int(f.split('-')[-1].split('.')[0]) / 100
+    for k, (b, h, by) in rows(f).items():
+        B, H, _ = base[k]; worst = max(worst, abs((B / p - H) - by))
+print(f'boat/p - him against the measured cells at gap 72: worst difference {worst:.2f} s')
+def check(p, ride_by=0.0):
+    m = {k: B / p - H for k, (B, H, _) in base.items()}
+    mid = [k for k in m if k[0] == 'middle']; exp = [k for k in m if k[0] == 'expert']; ride = [k for k in m if k[0] == 'ride']
+    wins = [m[k] for k in mid + exp + ride if m[k] > 0]
+    ok = (sum(m[k] > 0 for k in exp) == 5 and sum(m[k] > 0 for k in mid) >= 6 and all(m[k] > 0 for k in mid if 'easy' in k[1])
+          and all(m[k] < -ride_by for k in ride) and all(w >= 2.0 for w in wins))
+    return ok, m
+for ride_by, name in [(0.0, 'ride-only loses (the pick rule)'), (2.0, 'ride-only loses by 2 s or more (the lay\'s under, measured)')]:
+    ps = [p / 1000 for p in range(1000, 600, -1) if check(p / 1000, ride_by)[0]]
+    print(f'{name}: passes for pace {min(ps)*100:.1f}% .. {max(ps)*100:.1f}%' if ps else f'{name}: no pace passes')
+    if ps:
+        ok, m = check(max(ps), ride_by)
+        tight = sorted(((abs(v - (2 if v > 0 else -ride_by)), k, round(v, 2)) for k, v in m.items()))[:3]
+        print('   at the top of the window, the tightest rows:', [(k, v) for _, k, v in tight])

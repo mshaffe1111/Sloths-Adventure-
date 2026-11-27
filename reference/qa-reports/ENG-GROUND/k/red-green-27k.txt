@@ -1,0 +1,27 @@
+ENG-27k: stageModes.test.ts alone, unloaded (one file, nothing else running)
+== 2d4e0752a
+not ok 8 - left in the engine (a fixture only this test builds: 1-1 read leftward, its shrine moved to the left of the start)
+  error: 'gen2 1-1 (normal): no seed of 24 from 769 builds cleanly (the first: seed #71 lies past the shrine, where he cannot go)'
+# pass 8
+# fail 1
+== 0eefc707e
+# pass 9
+# fail 0
+== d83358fad
+not ok 8 - left in the engine (a fixture only this test builds: 1-1 read leftward, its shrine moved to the left of the start)
+  error: 'gen2 1-1 (normal): no seed of 24 from 769 builds cleanly (the first: seed #71 lies past the shrine, where he cannot go)'
+# pass 8
+# fail 1
+
+== the plant 'past the shrine is the engine's own wall' on 0eefc707e's levelCheck (RED, the check read no travel)
+not ok 1 - the level check's 'past the shrine' is the engine's own wall, whichever way the stage travels (a left stage's beyond is its left)
+  error: 'left: a flower beyond the shrine (x 32548.167131997645, shrine 32728.167131997645) is refused'
+# pass 0
+# fail 1
+== the plant on the ground fix (GREEN)
+ok 1 - the level check's 'past the shrine' is the engine's own wall, whichever way the stage travels (a left stage's beyond is its left)
+# pass 1
+# fail 0
+== stageModes.test.ts on the ground fix (GREEN)
+# pass 9
+# fail 0

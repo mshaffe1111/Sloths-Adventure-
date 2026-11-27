@@ -64,6 +64,9 @@ export interface RiverZone {
   /** a water wheel's pond (gen2/wheelLay.ts layWheel, ENG-26): still water under a wheel's whole sweep, its jetty and its street standing
    *  over it, so it has no banks at its ends (levelCheck asks none); a fall into it splashes him back onto the jetty (`safe`) */
   wheelPond?: true;
+  /** he crosses it right to left (a river in a leg laid left, gen2/legs.ts reflectLeg): `dir` is still the screen's (-1 flows left, WITH
+   *  him), and its fairness is judged in its own frame, as if he crossed it rightwards (gen2/riverLay.ts riverFaults). Unset: left to right */
+  way?: -1;
   /**
    * 2-8 Reed Cages: still water that rises once he passes `trigger`, from where it starts to `y1` over `seconds`, covering the low reed
    * islands in it (the banks stay dry). Back to where it started when he respawns. `y0` is filled in by the engine (the starting level).
@@ -81,6 +84,40 @@ export interface RiverZone {
    * bank; open, the current brings it round to him). The level check lets a raft river have its one log.
    */
   raft?: boolean;
+}
+
+/** how deep a river's water runs under its surface (px): deeper than this he is UNDER the river, not in it (a leg laid under another,
+ *  gen2/legs.ts, runs beneath the out leg's rivers). A fall into a river is caught in its first frames (PHYS.maxFall 950 px/s is 32 px a
+ *  frame, and the engine takes him 8 px under the surface), so on a stage of one ground nothing changes */
+export const RIVER_DEPTH = 120;
+
+/** the river whose water he is in, or over, at (x, y): its window holds x and y is no deeper than RIVER_DEPTH under its surface; of two
+ *  that share x (a leg laid under another), the higher water. Never by x alone (ENG-27: on the home leg under the out leg's river the
+ *  engine read him as under its surface and took a life on every frame there) */
+export function riverAt<R extends Pick<RiverZone, 'x0' | 'x1' | 'surfaceY'>>(rivers: readonly R[] | undefined, x: number, y: number): R | undefined {
+  let best: R | undefined;
+  for (const r of rivers ?? []) if (x > r.x0 && x < r.x1 && y < r.surfaceY + RIVER_DEPTH && (!best || r.surfaceY < best.surfaceY)) best = r;
+  return best;
+}
+
+/** a floor that ends a fall before the water under it: still ground, not a pad (he bounces off it) nor a log (it drifts away) */
+type FloorLike = { x: number; width: number; y: number; type?: string; broken?: boolean };
+const floorsUnder = (p: FloorLike) => p.type !== 'bouncy' && p.type !== 'drift' && !p.broken;
+
+/** the water under (x, y), the FIRST thing a fall from there meets (ENG-26e: the readers that judged water by x alone, the drop judge,
+ *  Easy's flags and steps and the water lesson, read it here): riverAt's river (the water he is in, or the higher water under him), unless
+ *  a STOREY lies between: a floor that spans x, at or under y (the floor he stands on counts), more than RIVER_DEPTH over the surface.
+ *  Nearer the surface a floor is ON the river (a bank, an island, a lily, a stone: World 2's rivers carry them in their windows), and the
+ *  water is his storey's, as by x alone. One storey: riverAt */
+export function waterUnder<R extends Pick<RiverZone, 'x0' | 'x1' | 'surfaceY'>>(rivers: readonly R[] | undefined, x: number, y: number, floors: readonly FloorLike[] = []): R | undefined {
+  const r = riverAt(rivers, x, y);
+  return r && !floors.some((p) => floorsUnder(p) && p.x <= x && p.x + p.width >= x && p.y >= y && p.y < r.surfaceY - RIVER_DEPTH) ? r : undefined;
+}
+
+/** is r's water on the storey of (x, y): waterUnder at the point of r's window nearest x (he stands beside it, or over it). A river a storey
+ *  above (deeper than RIVER_DEPTH over him) or a storey below (a floor between) is not */
+export function waterNear<R extends Pick<RiverZone, 'x0' | 'x1' | 'surfaceY'>>(r: R, x: number, y: number, floors: readonly FloorLike[] = []): boolean {
+  return waterUnder([r], Math.min(r.x1 - 1, Math.max(r.x0 + 1, x)), y, floors) === r;
 }
 
 /** the clock a log moves by: its river's own when a sluice runs that river (RiverZone.flowT), else the game's */

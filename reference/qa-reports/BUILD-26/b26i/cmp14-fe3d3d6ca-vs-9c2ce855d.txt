@@ -1,0 +1,23 @@
+('adult', 'easy') 36 -> 38 
+('adult', 'normal') 37 -> 37 
+('child', 'easy') 36 -> 36 
+('child', 'normal') 39 -> 39 
+('expert', 'normal') 39 -> 39 
+('kid', 'easy') 32 -> 38 
+('kid', 'normal') 19 -> 40 
+('middle', 'easy') 37 -> 37 
+('middle', 'normal') 36 -> 36 
+LOST 1 adult N 9
+GAINED 30 adult E 17 adult E 19 adult N 36 kid E 2 kid E 11 kid E 24 kid E 31 kid E 35 kid E 40 kid N 7 kid N 9 kid N 10 kid N 11 kid N 12 kid N 13 kid N 17 kid N 18 kid N 19 kid N 20 kid N 21 kid N 22 kid N 23 kid N 24 kid N 33 kid N 34 kid N 35 kid N 36 kid N 37 kid N 39 kid N 40
+--- C+A/B (27e20ebf9) -> revert (9c2ce855d)
+('adult', 'easy') 40 -> 38 DROP
+('adult', 'normal') 37 -> 37 
+('child', 'easy') 35 -> 36 
+('child', 'normal') 39 -> 39 
+('expert', 'normal') 39 -> 39 
+('kid', 'easy') 40 -> 38 DROP
+('kid', 'normal') 40 -> 40 
+('middle', 'easy') 38 -> 37 DROP
+('middle', 'normal') 36 -> 36 
+LOST 5 adult E 10 adult E 37 kid E 10 kid E 37 middle E 37
+GAINED 1 child E 37

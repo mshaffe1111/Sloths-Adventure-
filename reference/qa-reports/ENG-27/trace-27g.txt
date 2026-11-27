@@ -1,0 +1,46 @@
+ENG-27g, rule 28 traces for SKILLS.fromTakeoff (one line per cause: seed, x, time, what took him). Probes: _trace30/_trace27b/_c1all,
+scratch copies of tools/inspect (never committed): a jumpFor log line on a frozen worktree.
+
+1. 2-3 child Normal seed 30, P -> F under the WHOLE fix (d54a47d42's jumpFor on origin/t-build-23 66775dabf). Two runs (ENG-27f's castBots row and this trace): identical, 438.2 s, the rescue at x 20968.
+   - The fix changed three of his jumps, single -> double, every one over water (a safe pond):
+       t 103.8  x 8270  lip 8320  gap 132, his ground to the lip 50 (running, a press)
+       t 110.9  x 8562  lip 8892  gap  60, his ground to the lip 330 (a stand 330 px back: a single lands on his own ground)
+       t 192.0  x 14387 lip 14444 gap 136, his ground to the lip 57 (running)
+   - The rescue came later, at x 20968 ("nothing in the way the bot can see"), time 401.8 -> 438.2: no changed jump near it. The
+     doubles shifted every later random draw (his thumb's timing), and a later draw stuck him. So the flip is the fix's, but not at a
+     jump it meant to change: the water-only candidate keeps all three (all wet) and narrows nothing here.
+
+2. 2-7's two misses (the toy, middle, post Normal, the skill OFF; put-backs read as a move of over 90 px in one frame):
+   - seed 5: t 123.3, x 6756, a STAND (vx 0) 165 px before the lip 6591 of a 133 px safe pond; eight put-backs to 6661 (from ~6540,
+     short of the far bank 6458). Also t 96.0, x 10788, a stand 52 px back of a 132 px safe pond: one put-back (10632 -> 10806).
+   - seed 4: t 155.9, x 2856, a STAND (vx 0) on a log, 107 px back of its front 2749, the next 72 px on; he fell in (2582 -> 3448,
+     a respawn). Its out-leg splashes (x 17131, four, from a RUNNING press 148 px back) are before the race and do not judge it.
+   Both misses are a stand over water: from a stand he takes off where he stands, with no run speed.
+
+3. Why not every jump (the whole fix's 183 moved rows on 2-3): of the 619 reads it changed on the 2-3 baseline (every tier, 40 seeds),
+   the running ones are presses 50-60 px before the lip that carried (the flown running single: 207 px from a press 70 px before the
+   lip, flownArcs.ts single-hold from70, reach.md §2, against this read's 175 closed-form), and a stand 330 px back of a 60 px pond
+   (every tier) is a jump that lands on his own ground. Neither is where the misses live.
+
+4. The narrowing (5ef30a5cc): the run-up counts only (a) from a stand (under 10 px/s), (b) over water (wetBetween, FIX-21's read), (c)
+   while a single can carry it (run-up under the 175 px read). Re-diffed (castdiff-2-3-27g.txt, castdiff-2-5-27g.txt): 2-3 75/360
+   moved, 2-5 104/360 moved, NO pass flips, every tier's pass count held; every moved row has a stand over water the skill changes on
+   its baseline run (75/75, 104/104), and on 30/75 and 46/104 the baseline single from that stand was put back (a splash) within 6 s.
+   A first narrowing without (b) moved 96/360 of 2-3 (castdiff-2-3-27g-stand.txt), some at dry pits: (b) takes those out.
+
+5. pacerLay on the narrowed fix (5ef30a5cc's code, a frozen copy): 17/18. The two planted take-off tests pass (post Normal 4 and 5 win;
+   RED with the skill off). FAILS: test 11, home Easy seed 1, the careful middle player: 98.4 s against the boat's 97.53 (it won with
+   no fix, 94.6 s, and with the whole fix). tierBots 1-1: 9/9 (every committed 1-1 run replays exactly).
+   Traced, two runs with the skill on (identical) and one off (_trace27c, death-27e through _deathw):
+   - The skill's one change before the race goes wrong: t 87.8, a stand 42 px back of a 107 px gap (x 10974), single -> double, landed
+     clean. After it the draws shift and the falls move.
+   - skill ON, 4 lives: three WALK-OFFS and one short jump. A walk-off: he runs off a bank's lip at full speed (x 7650, no jump) onto a
+     log drifting his way that is still mostly under the bank (log 7586-7826, 28 px down: floorAt's 40 px look reads it as floor
+     ahead), lands 6 px from its front and runs off it (x 7528; again x 5788, 3191). Short jump: x 6973, 19 px short of a far bank.
+   - skill OFF, 5 lives (four walk-offs, x 8747, 4623, 1609, 1814; one short, x 4492), he wins because his last falls are on the last
+     crossing, where the floor holds whole (ruling A).
+   - The whole fix (64d1b14f8): 2 lives, both short jumps (x 8998, 8420), and he won.
+   The same fault in every home run: middle, the skill on, seeds 1-3 both settings, lives lost per race 4-8, of them walk-offs 2-4
+   (walkoff.awk: grounded on a log, his speed kept, off within 15 px of its front). So the race test's "the careful middle player beats
+   it" holds only through the floor after falls; a draw shift moves which seeds win. The flip is the pre-existing walk-off's, made
+   visible by the shift: the fix goes where that cause lives (the bank-to-log boarding), not into the take-off read.

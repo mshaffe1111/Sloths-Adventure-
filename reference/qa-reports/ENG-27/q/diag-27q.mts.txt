@@ -1,0 +1,8 @@
+const tree = process.argv[2];
+await import(`${tree}/src/game/headlessDom.ts`);
+const { homeRun } = await import(`${tree}/tools/inspect/homeToys.ts`);
+const DT = 1 / 30; let t = 0; const out: string[] = [];
+homeRun('middle', 'normal', 2, 1, { onFrame: (sim: any) => { t += DT; if (t < 119.3 || t > 120.5) return; const p = sim.p;
+  const q66 = sim.platforms.find((o: any) => o.id === 66), q69 = sim.platforms.find((o: any) => o.id === 69);
+  out.push(`t ${t.toFixed(2)} x ${p.x.toFixed(1)} y ${p.y.toFixed(1)} vx ${p.vx.toFixed(0)} vy ${p.vy.toFixed(0)} on ${sim.standingOn} | #66 ${q66?.type} x ${q66?.x.toFixed(0)}..${(q66?.x + q66?.width).toFixed(0)} y ${q66?.y} | #69 ${q69?.type} x ${q69?.x.toFixed(0)}..${(q69?.x + q69?.width).toFixed(0)} y ${q69?.y} w ${p.width} h ${p.height}`); } });
+console.log(out.join('\n'));

@@ -10,6 +10,7 @@ import { buildKitStage, KIT_STAGE_ID } from './kitStage.ts';
 import { buildFeelPairStage, FEEL_PAIR_ID } from './feelPairStage.ts';
 import { buildChaseFixtureStage, CHASE_FIXTURE_ID, chaseFixtureConfig } from './chaseFixtureStage.ts';
 import { buildWheelFixtureStage, wheelFixtureFor } from './wheelFixtureStage.ts';
+import { buildHomeFixtureStage, homeFixtureFor } from './homeFixtureStage.ts';
 import { addDress, buildProtoStage, HAND_STAGES, protoStageEnabled } from './protoStage.ts';
 import { buildGen2ForGame, GEN2_STAGES, isGen2Stage } from './gen2/game.ts';
 import { flagsInOrder } from './gen2/tower.ts';
@@ -115,6 +116,12 @@ export interface GeneratedStage {
   /** a laid chase (any world; chase.ts ChaseLay, run by pieces/chasePiece.ts): its stretches, each ending at a living fork. The sections
    *  that fall are the platforms marked `chase`. (The hand-built 1-8's collapse is proto.chase, stepped by engine.ts until 1-8's build.) */
   chase?: import('./chase.ts').ChaseLay;
+  /** a laid pacer (any world; pacer.ts Pacer, gen2/pacerLay.ts, run by pieces/pacerPiece.ts): a runner ahead of him over the race leg */
+  pacer?: import('./pacer.ts').Pacer;
+  /** a laid post (post.ts Post, gen2/postLay.ts, run by pieces/postPiece.ts): its doors and the letters their slots take */
+  post?: import('./post.ts').Post;
+  /** the laid column dress (columnDress.ts, gen2/columnDressLay.ts, drawn by pieces/columnDressPiece.ts): set pieces at the columns' feet */
+  columnDress?: import('./columnDress.ts').ColumnDress[];
   /** the ground's look from its world data (gen2 WorldManifest.ground.look): 'bough', drawn as the painted bough (protoArt.ts setGroundLook) */
   groundLook?: 'bough';
   /** rolling nuts and bouncing fruit (any world; rolling.ts RollSpec, run by pieces/rollingPiece.ts), each set off by his x */
@@ -2904,6 +2911,8 @@ function generateStageOn(config: LevelConfig, difficulty: Difficulty): Generated
   if (config.id === CHASE_FIXTURE_ID && chaseFixtureConfig()) return buildChaseFixtureStage(config, layoutVariant ?? 1, difficulty);
   // a real laid water wheel on World 2's ground, before 2-6 is built (a dev build only: wheelFixtureStage.ts, ENG-26b)
   if (wheelFixtureFor(config.id)) return buildWheelFixtureStage(config, difficulty);
+  // the out-and-back toy with the mail boat race and the post, before 2-7 is built (a dev build only: homeFixtureStage.ts, ENG-27c)
+  if (homeFixtureFor(config.id)) return buildHomeFixtureStage(config, difficulty);
   // the hand-built 1-6 (a test, off by default: protoStage.ts)
   // Dot's netting flight, the extra stage after 4-5 (dotFlightStage.ts); it is only in the stage list with the New stages switch on
   if (config.id === DOT_STAGE_ID) return dotGeneratedStage(config, layoutVariant ?? 1);
@@ -3018,8 +3027,8 @@ function finishStage<T extends GeneratedStage>(stage: T, reachableIds: number[])
   );
   // and the petal trail: one pickup, no clutter, all of it reachable (petalPass.ts)
   const out = petalPass(stage);
-  // (then a vine field's paired stretches: the petals on them hang between the pair, for two hands: vineField.ts pairPetals)
-  pairPetals(out.collectibles, out.vines, new Set((out.pods ?? []).flatMap((q) => (q.vine === undefined ? [] : [q.vine]))));
+  // (then a vine field's paired stretches: the petals on them hang between the pair, for two hands, never onto another pickup: vineField.ts pairPetals)
+  pairPetals(out.collectibles, out.vines, new Set((out.pods ?? []).flatMap((q) => (q.vine === undefined ? [] : [q.vine]))), PICKUP_APART);
   // (last, on the stage as the game plays it: which petals the door counts, by the walked path; a gen2 stage, whose record of its falls
   //  and asks the model reads (petals.ts markWalked; the lead's ruling INT-10d 11-15). Placement is done: nothing here moves a petal)
   if ((out as { gen2?: unknown }).gen2) markWalked(out);

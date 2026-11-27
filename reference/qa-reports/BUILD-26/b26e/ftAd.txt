@@ -1,0 +1,124 @@
+  1.50 single from 378,6720 hold 0.18 up 0.00 -> 544,6720 ok
+  2.30 single from 591,6720 hold 0.21 up 0.00 -> 765,6720 ok
+  3.03 single from 821,6720 hold 0.22 up 0.00 -> 968,6670 ok
+  3.93 single from 1023,6670 hold 0.20 up 0.00 -> 1217,6720 ok
+  4.63 single from 1254,6720 hold 0.16 up 0.00 -> 1410,6720 ok
+  5.03 single from 1475,6720 hold 0.15 up 0.12 -> 1562,6648 ok
+  8.97 single from 1289,6165 hold 0.20 up 0.00 -> 1126,6189 ok
+  10.10 single from 1336,6165 hold 0.22 up 0.00 -> 1198,6161 ok
+  19.20 single from 983,5901 hold 0.17 up 0.00 -> 817,5901 ok
+  19.97 single from 780,5901 hold 0.22 up 0.00 -> 605,5901 ok
+  20.67 single from 578,5901 hold 0.18 up 0.07 -> 411,5901 ok
+  21.40 single from 383,5901 hold 0.21 up 0.12 -> 207,5901 ok
+  21.70 single from 170,5901 hold 0.15 up 0.00 -> 88,5829 ok
+  23.67 single from 178,5598 hold 0.21 up 0.00 -> 353,5598 ok
+  24.20 single from 390,5598 hold 0.21 up 0.13 -> 509,5500 ok
+  25.60 single from 721,5550 hold 0.21 up 0.00 -> 896,5550 ok
+  26.37 single from 933,5550 hold 0.22 up 0.00 -> 1108,5550 ok
+  26.83 single from 1145,5550 hold 0.23 up 0.00 -> 1274,5446 ok
+  28.53 single from 1382,5280 hold 0.19 up 0.00 -> 1548,5280 ok
+  31.23 single from 1494,4929 hold 0.20 up 0.00 -> 1321,4929 ok
+  32.30 single from 1272,4929 hold 0.23 up 0.09 -> 1088,4957 ok
+  33.83 single from 881,4957 hold 0.23 up 0.00 -> 699,4957 ok
+  34.83 single from 549,4960 hold 0.22 up 0.00 -> 392,4929 ok
+  35.20 single from 337,4929 hold 0.20 up 0.08 -> 256,4857 ok
+  46.80 single from 715,4094 hold 0.21 up 0.00 -> 895,4120 ok
+  48.10 single from 1048,4120 hold 0.19 up 0.00 -> 1214,4120 ok
+  48.90 single from 1269,4120 hold 0.20 up 0.12 -> 1434,4120 ok
+  49.33 single from 1489,4120 hold 0.26 up 0.00 -> 1597,4029 ok
+  51.60 single from 1479,3741 hold 0.14 up 0.09 -> 1322,3741 ok
+  53.10 single from 1115,4120 hold 0.17 up 0.00 -> 1281,4120 FELL BACK
+  53.87 single from 1289,4120 hold 0.22 up 0.00 -> 1127,4120 FELL BACK
+  55.00 double from 1120,4120 hold 0.48 up 0.11 -> 1342,4120 FELL BACK
+  55.57 single from 1349,4120 hold 0.07 up 0.00 -> 1243,4120 FELL BACK
+  56.67 double from 1236,4120 hold 0.48 up 0.00 -> 1489,4120 FELL BACK
+  59.60 single from 1497,3741 hold 0.23 up 0.00 -> 1323,3741 ok
+  61.63 double from 1129,4120 hold 0.65 up 0.00 -> 1424,4120 FELL BACK
+  62.40 single from 1429,4120 hold 0.17 up 0.00 -> 1268,4120 FELL BACK
+  63.63 double from 1264,4120 hold 0.57 up 0.08 -> 1532,4120 FELL BACK
+  66.43 single from 1497,3741 hold 0.20 up 0.12 -> 1331,3741 ok
+  68.37 double from 1116,4120 hold 0.50 up 0.13 -> 1383,4120 FELL BACK
+  69.47 double from 1382,4120 hold 0.40 up 0.00 -> 1134,4120 FELL BACK
+  70.63 double from 1136,4120 hold 0.49 up 0.00 -> 1403,4120 FELL BACK
+  72.33 single from 1071,3741 hold 0.18 up 0.00 -> 921,3741 ok
+  73.27 single from 828,3741 hold 0.18 up 0.12 -> 665,3741 ok
+  74.00 single from 658,3741 hold 0.20 up 0.00 -> 507,3741 ok
+  78.47 single from 676,3236 hold 0.20 up 0.00 -> 738,3150 ok
+  83.00 single from 815,2915 hold 0.50 up 0.00 -> 931,2824 ok
+  86.70 single from 853,2543 hold 0.15 up 0.00 -> 697,2543 ok
+  87.47 single from 642,2543 hold 0.15 up 0.00 -> 485,2543 ok
+  88.27 single from 430,2543 hold 0.19 up 0.00 -> 264,2543 ok
+  88.77 single from 227,2543 hold 0.14 up 0.13 -> 88,2455 ok
+  90.00 single from 234,2038 hold 0.21 up 0.00 -> 396,2049 ok
+  97.97 single from 456,1708 hold 0.21 up 0.00 -> 636,1734 ok
+  100.93 single from 1249,1556 hold 0.21 up 0.09 -> 1424,1556 ok
+  105.13 single from 1267,1051 hold 0.20 up 0.00 -> 1102,1077 ok
+  106.27 single from 1303,1051 hold 0.21 up 0.00 -> 1183,1050 ok
+  107.37 single from 1303,1051 hold 0.20 up 0.00 -> 1226,999 ok
+== adult normal seed 26: shrine 122.5 s rescues 1
+   t 52.1 x 1109 y 4120 dur 19.6 [#28 solid/branch x 825-1125 y 4118; #35 solid/branch x 1125-1385 y 4118; #36 solid/branch x 1385-1605 y 4118] in a dip 309 px deep, an open drop ahead, water ahead, the way on is 379 px up
+  1.50 single from 378,6726 hold 0.18 up 0.00 -> 544,6726 ok
+  2.23 single from 581,6726 hold 0.20 up 0.12 -> 746,6726 ok
+  2.87 single from 783,6726 hold 0.19 up 0.00 -> 921,6676 ok
+  3.70 single from 967,6676 hold 0.20 up 0.10 -> 1150,6726 ok
+  4.47 single from 1187,6726 hold 0.24 up 0.00 -> 1362,6726 ok
+  5.23 single from 1408,6726 hold 0.20 up 0.10 -> 1574,6726 ok
+  11.60 single from 1336,6171 hold 0.20 up 0.00 -> 1261,6096 ok
+  19.23 single from 1003,5907 hold 0.22 up 0.11 -> 844,5907 ok
+  19.97 single from 816,5907 hold 0.24 up 0.00 -> 641,5907 ok
+  20.77 single from 595,5907 hold 0.20 up 0.00 -> 420,5907 ok
+  21.47 single from 392,5907 hold 0.19 up 0.00 -> 226,5907 ok
+  21.83 single from 189,5907 hold 0.18 up 0.00 -> 88,5816 ok
+  23.80 single from 196,5605 hold 0.21 up 0.00 -> 372,5605 ok
+  24.30 single from 409,5605 hold 0.22 up 0.00 -> 510,5506 ok
+  25.70 single from 731,5559 hold 0.19 up 0.00 -> 896,5556 ok
+  26.50 single from 943,5556 hold 0.22 up 0.00 -> 1118,5556 ok
+  26.93 single from 1154,5556 hold 0.22 up 0.00 -> 1276,5454 ok
+  28.43 single from 1366,5276 hold 0.07 up 0.00 -> 1477,5276 ok
+  31.37 single from 1486,4925 hold 0.24 up 0.00 -> 1311,4925 ok
+  32.23 single from 1286,4925 hold 0.20 up 0.00 -> 1102,4953 ok
+  33.43 single from 905,4953 hold 0.24 up 0.00 -> 723,4953 ok
+  34.37 single from 664,4953 hold 0.24 up 0.00 -> 487,4953 ok
+  35.23 single from 409,4925 hold 0.21 up 0.00 -> 235,4925 ok
+  46.73 single from 701,4089 hold 0.24 up 0.00 -> 882,4116 ok
+  48.00 single from 1066,4116 hold 0.20 up 0.00 -> 1232,4116 ok
+  48.77 single from 1278,4116 hold 0.19 up 0.00 -> 1443,4116 ok
+  51.90 single from 1499,3737 hold 0.20 up 0.08 -> 1324,3737 ok
+  53.47 single from 1097,4116 hold 0.24 up 0.00 -> 1268,4116 FELL BACK
+  54.30 single from 1267,4116 hold 0.26 up 0.00 -> 1092,4116 FELL BACK
+  55.43 double from 1086,4116 hold 0.52 up 0.13 -> 1308,4116 FELL BACK
+  56.57 double from 1312,4116 hold 0.45 up 0.00 -> 1050,4116 ok
+  57.63 double from 1051,4116 hold 0.43 up 0.00 -> 1290,4116 FELL BACK
+  58.80 double from 1289,4116 hold 0.54 up 0.00 -> 1023,4116 ok
+  60.03 double from 1043,4116 hold 0.49 up 0.00 -> 1310,4116 FELL BACK
+  61.27 double from 1299,4116 hold 0.57 up 0.00 -> 1023,4116 ok
+  62.43 double from 1070,4116 hold 0.37 up 0.00 -> 1291,4116 ok
+  63.47 double from 1328,4116 hold 0.40 up 0.00 -> 1577,4116 ok
+  66.40 single from 1499,3737 hold 0.20 up 0.00 -> 1325,3737 ok
+  68.40 double from 1119,4116 hold 0.54 up 0.00 -> 1405,4116 FELL BACK
+  69.13 single from 1408,4116 hold 0.15 up 0.07 -> 1272,4116 FELL BACK
+  70.30 double from 1268,4116 hold 0.49 up 0.00 -> 1540,4116 FELL BACK
+  73.13 single from 1499,3737 hold 0.22 up 0.00 -> 1325,3737 ok
+  75.07 double from 1097,4116 hold 0.49 up 0.12 -> 1351,4116 FELL BACK
+  76.17 double from 1349,4116 hold 0.38 up 0.00 -> 1101,4116 ok
+  77.33 double from 1103,4116 hold 0.51 up 0.00 -> 1370,4116 FELL BACK
+  78.53 double from 1373,4116 hold 0.59 up 0.00 -> 1092,4116 ok
+  79.67 double from 1085,4116 hold 0.55 up 0.00 -> 1347,4116 FELL BACK
+  80.83 double from 1345,4116 hold 0.49 up 0.10 -> 1089,4116 ok
+  81.83 double from 1099,4116 hold 0.27 up 0.00 -> 1311,4116 FELL BACK
+  83.60 single from 1047,3737 hold 0.18 up 0.00 -> 885,3737 ok
+  84.77 single from 877,3737 hold 0.22 up 0.00 -> 701,3807 FELL BACK
+  85.33 single from 654,3810 hold 0.16 up 0.12 -> 543,3737 ok
+  96.60 single from 804,2909 hold 0.50 up 0.00 -> 930,2820 ok
+  100.37 single from 865,2539 hold 0.17 up 0.00 -> 699,2539 ok
+  101.13 single from 653,2539 hold 0.19 up 0.00 -> 487,2539 ok
+  101.97 single from 432,2539 hold 0.22 up 0.00 -> 257,2539 ok
+  102.43 single from 220,2539 hold 0.07 up 0.06 -> 88,2481 ok
+  103.80 single from 234,2034 hold 0.20 up 0.00 -> 394,2033 ok
+  111.37 single from 443,1703 hold 0.20 up 0.00 -> 625,1730 ok
+  114.30 single from 1260,1556 hold 0.25 up 0.00 -> 1436,1556 ok
+  118.67 single from 1267,1051 hold 0.27 up 0.00 -> 1303,1051 FELL BACK
+  119.37 single from 1300,1051 hold 0.24 up 0.00 -> 1123,1078 ok
+  120.83 single from 1312,1051 hold 0.24 up 0.00 -> 1236,1063 ok
+== adult normal seed 33: shrine 134.9 s rescues 1
+   t 73.8 x 1099 y 4116 dur 9.2 [#28 solid/branch x 830-1130 y 4119; #35 solid/branch x 1130-1390 y 4119; #36 solid/branch x 1390-1610 y 4119] in a dip 379 px deep, an open drop ahead, water ahead, the way on is 379 px up

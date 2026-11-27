@@ -1,0 +1,48 @@
+import json, sys
+n, S = sys.argv[1], sys.argv[2]
+def load(p):
+    L = [json.loads(l) for l in open(p)]; return L[:-1], L[-1]
+B, bs = load(f'{S}/tr/{n}-base.jsonl'); H, hs = load(f'{S}/tr/{n}-head.jsonl')
+K = ('pend', 'jmp', 'ew', 'la')
+dec = next(i for i in range(min(len(B), len(H))) if any(B[i].get(k) != H[i].get(k) for k in K))
+pth = next(i for i in range(min(len(B), len(H))) if abs(B[i]['x'] - H[i]['x']) > 0.05 or abs(B[i]['y'] - H[i]['y']) > 0.05)
+rd = [r for r in H[max(0, dec - 2):dec + 1] if r.get('bl')]
+print(f"== {n}: base {bs['time']}s lives {sum(h['k']=='life' for h in bs['harms'])} | head {hs['time']}s lives {sum(h['k']=='life' for h in hs['harms'])} rescue at {hs['rescueXs']}")
+print(f"  bot parts f {H[dec]['f']} t {H[dec]['t']} x {H[dec]['x']} on {H[dec]['on']}: read {rd[-1]['bl'][-1] if rd else None}; H ew {H[dec].get('ew')} pend {H[dec].get('pend')} | B pend {B[dec].get('pend')}")
+b, h = B[pth], H[pth]
+print(f"  path parts f {b['f']} t {b['t']} x {b['x']} ({h['f']-H[dec]['f']} frames later): B y {b['y']} vy {b['vy']} g {b['g']} on {b['on']} pend {B[pth-1].get('pend')} jmp {b.get('jmp')} | H y {h['y']} vy {h['vy']} g {h['g']} on {h['on']} pend {H[pth-1].get('pend')} jmp {h.get('jmp')}")
+def lives(T):
+    out = []; lastRead = None; lastJmp = None
+    for i in range(1, len(T)):
+        if T[i].get('bl'): lastRead = (T[i]['t'], T[i]['bl'][-1])
+        if T[i]['l'] < T[i-1]['l']:
+            j = i - 1
+            while j > 0 and T[j]['on'] == '-': j -= 1
+            out.append((T[i]['t'], round(T[i-1]['x']), T[j]['on'], round(T[i]['t'] - lastRead[0], 1) if lastRead else None, lastRead[1] if lastRead else None))
+    return out
+bl = lives(B); hl = lives(H)
+print('  base lives:', ' | '.join(f"t {l[0]} x {l[1]} off {l[2].split('@')[0]}" for l in bl))
+print('  head lives:', ' | '.join(f"t {l[0]} x {l[1]} off {l[2].split('@')[0]}{' READ '+str(l[3])+'s before at x '+str(l[4]['x']) if l[3] is not None and l[3] <= 3 else ''}" for l in hl))
+import json, sys
+n, S = sys.argv[1], sys.argv[2]
+def load(p):
+    L = [json.loads(l) for l in open(p)]; return L[:-1], L[-1]
+B, bs = load(f'{S}/tr/{n}-base.jsonl'); H, hs = load(f'{S}/tr/{n}-head.jsonl')
+def lives(T):
+    out = []; lastRead = None
+    for i in range(1, len(T)):
+        if T[i].get('bl'): lastRead = T[i]['t']
+        if T[i]['l'] < T[i-1]['l']:
+            j = i - 1
+            while j > 0 and T[j]['on'] == '-': j -= 1
+            # how he left it: a jump started within 3 frames of leaving (or in the air before the fall) or a walk-off
+            jumped = any(T[k].get('jmp') for k in range(j - 2, i))
+            out.append(dict(t=T[i]['t'], x=round(T[i-1]['x']), off=T[j]['on'].split(',')[0], vx=T[j]['vx'], how='jump' if jumped else 'walk-off', rd=round(T[i]['t'] - lastRead, 1) if lastRead else None))
+    return out
+rx = hs['rescueXs'][0]
+bl, hl = lives(B), lives(H)
+near = lambda L: [l for l in L if abs(l['x'] - rx) < 700]
+fmt = lambda L: '; '.join(f"x {l['x']} {l['how']} off {l['off']} (read {l['rd']}s before)" for l in L)
+print(f"{n} rescue x {rx}: head {len(near(hl))} lives there: {fmt(near(hl))}")
+print(f"   base {len(near(bl))} lives there: {fmt(near(bl))}")
+print(f"   head all lives by how: walk-off {sum(l['how']=='walk-off' for l in hl)}, jump {sum(l['how']=='jump' for l in hl)} | base walk-off {sum(l['how']=='walk-off' for l in bl)}, jump {sum(l['how']=='jump' for l in bl)}")

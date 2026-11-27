@@ -1,0 +1,6 @@
+middle normal: 40 variants, live 0 | 
+middle easy: 40 variants, live 0 | 
+child normal: 40 variants, live 0 | 
+child easy: 40 variants, live 0 | 
+expert normal: 40 variants, live 0 | 
+expert easy: 0 variants, live 0 ERR Error: no expert bot on easy | 

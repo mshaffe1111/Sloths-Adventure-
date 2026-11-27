@@ -1,0 +1,22 @@
+const W = process.env.WT!;
+await import(W + '/src/game/headlessDom.ts');
+const FT: any = await import(W + '/tools/inspect/firsttimer.ts');
+const { reachJumpHeld } = await import(W + '/src/game/physics.ts');
+const plats = [
+  { id: 44, x: 360, y: 1000, width: 400, height: 16, type: 'solid' },
+  { id: 45, x: -428, y: 960, width: 788, height: 16, type: 'solid' },
+  { id: 9, x: -1000, y: 1348, width: 3000, height: 100, type: 'solid' },
+];
+const route = Array.from({ length: 30 }, (_, i) => ({ x: 786 - i * 24, y: 1000 - (40 * i * 24) / 696 })).filter((q) => q.x >= 90);
+const look = Number(process.env.LOOK ?? '0');
+for (const seed of [1, 2, 3, 4, 5, 6]) {
+  let g = true, at: number | null = null, vy: number | null = null;
+  const run: any = new FT.FirstTimerRun('1-1', seed, { ...FT.FT_CHILD_EASY, look }, { route, cap: 6, rescueAfter: 100, onFrame: (s: any) => {
+    if (g && !s.p.grounded && at === null) { at = s.p.x; vy = s.p.vy; }
+    g = s.p.grounded;
+  } });
+  run.sim.bare(plats, []); run.sim.stand(700, 1000); run.sim.p.facing = -1; run.lastSteer = -1;
+  const ep = run.edgePlan.bind(run); run.edgePlan = () => { const e = ep(); if (e.how !== 'run') e.how = 'late'; return e; };
+  run.prog.relocate(run.sim.p); run.play();
+  console.log(`seed ${seed} look ${look}: left ground at x ${at === null ? '-' : Math.round(at)} (${at === null ? '-' : Math.round(at - 360)} px past the lip's x) vy ${vy === null ? '-' : Math.round(vy)}; reachHeld(40) ${Math.round(reachJumpHeld(40, false))}`);
+}

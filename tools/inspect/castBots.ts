@@ -14,7 +14,7 @@
  */
 import path from 'node:path';
 import { spawn } from 'node:child_process';
-import { firstTimer, FT_ADULT, FT_CHILD, FT_CHILD_EASY, FT_EXPERT, FT_KID, FT_MIDDLE, FT_MIDDLE_EASY, type FirstTimer, type FTRun } from './firsttimer.ts';
+import { firstTimer, FT_ADULT, FT_CHILD, FT_CHILD_EASY, FT_EXPERT, FT_KID, FT_MIDDLE, FT_MIDDLE_EASY, W1_CAP, type FirstTimer, type FTRun } from './firsttimer.ts';
 import { RULES, isClimb } from './eraRoll.ts';
 import { RealPlay, levelConfig } from '../../src/game/realPlay.ts';
 import { PAD_HOP_MS } from '../../src/game/padControl.ts';
@@ -76,6 +76,7 @@ if (process.argv[1] && path.resolve(process.argv[1]) === path.resolve(import.met
   const input = (arg('--input') ?? 'fake') as CastInput;
   if (!['fake', 'touch', 'pad'].includes(input)) throw new Error(`--input ${input}: fake, touch or pad`);
   const rows: CastRun[] = [];
+  W1_CAP.on = process.env.W1CAP === '1';
   if (process.argv.includes('--json') || par <= 1) {
     for (const bot of bots) for (const setting of settings) {
       if (!CAST_BOTS[bot]?.[setting]) continue;
@@ -85,6 +86,8 @@ if (process.argv[1] && path.resolve(process.argv[1]) === path.resolve(import.met
           row = { bot, setting, stage, seed, end: 'stranded', pass: false, time: 0, goal: null, rescues: 0, turnBacks: 0, hits: 0, lives: 0, hitBy: {}, cast: null, stuck: [], error: String(err).slice(0, 200) };
         }
         if (process.argv.includes('--json')) console.log(JSON.stringify(row));
+        // (c27's NO DEADLOCK check: every by-choice stand past the bank-edge float wait's cap, this row's, to stderr; W1CAP=1 only)
+        if (W1_CAP.on) { console.error(`W1CAP ${JSON.stringify({ bot, setting, stage, seed, cap: W1_CAP.rows })}`); W1_CAP.rows = []; }
         rows.push(row);
       }
     }

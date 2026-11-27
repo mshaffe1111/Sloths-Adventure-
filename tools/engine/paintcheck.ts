@@ -34,7 +34,9 @@ const { easyStage } = await import('../../src/game/easyMode.ts');
 const { withGoals } = await import('../../src/game/goals.ts');
 const { loadSeedList, provenSeeds } = await import('../../src/game/gen2/seedList.ts');
 const { PROVEN_INDEX } = await import('../../src/game/gen2/provenIndex.ts');
-const { soilOvers } = await import('./paintFall.ts');
+const { soilOvers, soilShorts } = await import('./paintFall.ts');
+const { setGroundStacks } = await import('../../src/game/protoArt.ts');
+const { stackZonesOf } = await import('../../src/game/groundStack.ts');
 const { stagePaintInput } = await import('./paintStage.ts');
 const { paintFalls } = await import('./paintFall.ts');
 const { sideWalls } = await import('./sideWall.ts');
@@ -110,6 +112,14 @@ for (const c of levels) {
     }
     for (const u of r.unpainted) unpaintedSeen.set(`${c.id} '${u.style}' h${u.h} -> ${u.drawn}`, `${setting} seed ${seed} x ${u.x}`);
     // (R-165.441: a top under a later bank's soil, paintFall.ts soilOvers; a bough stage's ground is its bough, drawBoughGround)
+    // (a stage whose lay stacks a leg under another, 2-7: its ceilings set exactly as engine.ts sets them at the stage's start, so the soil
+    // judged is the soil drawn, clipped at each ceiling; D136)
+    const g2s = st as { gen2?: { tower?: { legs?: Array<{ travel: string; x0: number; x1: number; y0: number; y1: number }> } }; rivers?: ReadonlyArray<{ x0: number; x1: number; surfaceY: number }> };
+    setGroundStacks(stackZonesOf(g2s.gen2?.tower?.legs), g2s.rivers);
+    if (st.groundLook !== 'bough') for (const s of soilShorts(st.platforms)) {
+      row.hit++;
+      newLines.push(`${c.id} ${setting} seed ${seed} x ${s.bank.x}: SOIL SHORT OF ITS CEILING: bank #${s.bank.id} (x ${s.bank.x}-${s.bank.x + s.bank.w} y ${s.bank.y} h ${s.bank.h})'s soil stops up to ${s.gap} units over the stacked leg's ceiling under it, across ${s.short} units: the backdrop between (R-165.441, INT-R5d)`);
+    }
     if (st.groundLook !== 'bough') for (const o of soilOvers(st.platforms)) {
       row.hit++;
       newLines.push(`${c.id} ${setting} seed ${seed} x ${o.under.x}: SOIL OVER A TOP: bank #${o.over.id} (x ${o.over.x}-${o.over.x + o.over.w} y ${o.over.y} h ${o.over.h})'s soil covers ${o.covered} units of bank #${o.under.id}'s top (x ${o.under.x}-${o.under.x + o.under.w} y ${o.under.y}), ${o.gap} under it (R-165.441)`);

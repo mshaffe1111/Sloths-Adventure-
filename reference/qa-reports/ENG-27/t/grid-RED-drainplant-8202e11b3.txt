@@ -1,0 +1,123 @@
+Preparing worktree (detached HEAD 7559289ca)
+Updating files:   7% (1376/17273)Updating files:   8% (1382/17273)Updating files:   9% (1555/17273)Updating files:  10% (1728/17273)Updating files:  11% (1901/17273)Updating files:  12% (2073/17273)Updating files:  13% (2246/17273)Updating files:  14% (2419/17273)Updating files:  15% (2591/17273)Updating files:  16% (2764/17273)Updating files:  17% (2937/17273)Updating files:  17% (2982/17273)Updating files:  18% (3110/17273)Updating files:  19% (3282/17273)Updating files:  20% (3455/17273)Updating files:  21% (3628/17273)Updating files:  22% (3801/17273)Updating files:  23% (3973/17273)Updating files:  24% (4146/17273)Updating files:  25% (4319/17273)Updating files:  25% (4354/17273)Updating files:  26% (4491/17273)Updating files:  27% (4664/17273)Updating files:  28% (4837/17273)Updating files:  29% (5010/17273)Updating files:  30% (5182/17273)Updating files:  31% (5355/17273)Updating files:  32% (5528/17273)Updating files:  33% (5701/17273)Updating files:  34% (5873/17273)Updating files:  35% (6046/17273)Updating files:  35% (6086/17273)Updating files:  36% (6219/17273)Updating files:  37% (6392/17273)Updating files:  38% (6564/17273)Updating files:  39% (6737/17273)Updating files:  40% (6910/17273)Updating files:  41% (7082/17273)Updating files:  42% (7255/17273)Updating files:  43% (7428/17273)Updating files:  44% (7601/17273)Updating files:  45% (7773/17273)Updating files:  46% (7946/17273)Updating files:  47% (8119/17273)Updating files:  48% (8292/17273)Updating files:  49% (8464/17273)Updating files:  50% (8637/17273)Updating files:  51% (8810/17273)Updating files:  52% (8982/17273)Updating files:  52% (9148/17273)Updating files:  53% (9155/17273)Updating files:  54% (9328/17273)Updating files:  55% (9501/17273)Updating files:  56% (9673/17273)Updating files:  57% (9846/17273)Updating files:  58% (10019/17273)Updating files:  59% (10192/17273)Updating files:  60% (10364/17273)Updating files:  61% (10537/17273)Updating files:  62% (10710/17273)Updating files:  63% (10882/17273)Updating files:  64% (11055/17273)Updating files:  65% (11228/17273)Updating files:  66% (11401/17273)Updating files:  67% (11573/17273)Updating files:  67% (11705/17273)Updating files:  68% (11746/17273)Updating files:  69% (11919/17273)Updating files:  70% (12092/17273)Updating files:  71% (12264/17273)Updating files:  72% (12437/17273)Updating files:  73% (12610/17273)Updating files:  74% (12783/17273)Updating files:  75% (12955/17273)Updating files:  76% (13128/17273)Updating files:  77% (13301/17273)Updating files:  78% (13473/17273)Updating files:  78% (13561/17273)Updating files:  79% (13646/17273)Updating files:  80% (13819/17273)Updating files:  81% (13992/17273)Updating files:  82% (14164/17273)Updating files:  83% (14337/17273)Updating files:  84% (14510/17273)Updating files:  85% (14683/17273)Updating files:  86% (14855/17273)Updating files:  87% (15028/17273)Updating files:  88% (15201/17273)Updating files:  89% (15373/17273)Updating files:  90% (15546/17273)Updating files:  91% (15719/17273)Updating files:  92% (15892/17273)Updating files:  93% (16064/17273)Updating files:  94% (16237/17273)Updating files:  95% (16410/17273)Updating files:  96% (16583/17273)Updating files:  97% (16755/17273)Updating files:  98% (16928/17273)Updating files:  99% (17101/17273)Updating files: 100% (17273/17273)Updating files: 100% (17273/17273), done.
+HEAD is now at 7559289ca ENG-27t pacerRespawn: the boat's place pays the excess, not only the books (D121): while it owes, its clock + owed grows by exactly a frame's dt, and the owed drains within the ease's named length
+8202e11b3
+TAP version 13
+# Subtest: 2-7 home: back at a race-leg fall's x, his margin is never better than at the fall (a fall never pays, end to end)
+not ok 1 - 2-7 home: back at a race-leg fall's x, his margin is never better than at the fall (a fall never pays, end to end)
+  ---
+  duration_ms: 17823.346174
+  type: 'test'
+  location: '/tmp/claude-0/-home-user-Sloths-Adventure-/202c7b53-66f0-57a5-9f36-89915affc394/scratchpad/fQ/tools/inspect/pacerRespawn.test.ts:94:3'
+  failureType: 'testCodeFailure'
+  error: |-
+    home: the ease broke 6 times:
+    middle normal 5: the boat still owed 0.84 s past the ease's length
+    middle normal 5: the boat still owed 0.84 s past the ease's length
+    middle easy 2: the boat still owed 0.28 s past the ease's length
+    middle easy 5: the boat still owed 0.65 s past the ease's length
+    middle easy 6: the boat still owed 0.06 s past the ease's length
+    ride easy 5: the boat still owed 0.50 s past the ease's length
+    + actual - expected
+    
+    + [
+    +   "middle normal 5: the boat still owed 0.84 s past the ease's length",
+    +   "middle normal 5: the boat still owed 0.84 s past the ease's length",
+    +   "middle easy 2: the boat still owed 0.28 s past the ease's length",
+    +   "middle easy 5: the boat still owed 0.65 s past the ease's length",
+    +   "middle easy 6: the boat still owed 0.06 s past the ease's length",
+    +   "ride easy 5: the boat still owed 0.50 s past the ease's length"
+    + ]
+    - []
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+  actual:
+    0: "middle normal 5: the boat still owed 0.84 s past the ease's length"
+    1: "middle normal 5: the boat still owed 0.84 s past the ease's length"
+    2: "middle easy 2: the boat still owed 0.28 s past the ease's length"
+    3: "middle easy 5: the boat still owed 0.65 s past the ease's length"
+    4: "middle easy 6: the boat still owed 0.06 s past the ease's length"
+    5: "ride easy 5: the boat still owed 0.50 s past the ease's length"
+    6: "middle normal 6: the boat still owed 0.73 s past the ease's length"
+    7: "middle easy 4: the boat still owed 0.02 s past the ease's length"
+    8: "middle easy 5: the boat still owed 0.03 s past the ease's length"
+    9: "expert normal 1: the boat still owed 0.73 s past the ease's length"
+  operator: 'deepStrictEqual'
+  stack: |-
+    TestContext.<anonymous> (/tmp/claude-0/-home-user-Sloths-Adventure-/202c7b53-66f0-57a5-9f36-89915affc394/scratchpad/fQ/tools/inspect/pacerRespawn.test.ts:113:12)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.start (node:internal/test_runner/test:944:17)
+    startSubtestAfterBootstrap (node:internal/test_runner/harness:296:17)
+  ...
+# Subtest: 2-7 post: back at a race-leg fall's x, his margin is never better than at the fall (a fall never pays, end to end)
+not ok 2 - 2-7 post: back at a race-leg fall's x, his margin is never better than at the fall (a fall never pays, end to end)
+  ---
+  duration_ms: 17222.374733
+  type: 'test'
+  location: '/tmp/claude-0/-home-user-Sloths-Adventure-/202c7b53-66f0-57a5-9f36-89915affc394/scratchpad/fQ/tools/inspect/pacerRespawn.test.ts:94:3'
+  failureType: 'testCodeFailure'
+  error: |-
+    post: the ease broke 10 times:
+    middle normal 5: the boat still owed 0.84 s past the ease's length
+    middle normal 5: the boat still owed 0.84 s past the ease's length
+    middle easy 2: the boat still owed 0.28 s past the ease's length
+    middle easy 5: the boat still owed 0.65 s past the ease's length
+    middle easy 6: the boat still owed 0.06 s past the ease's length
+    ride easy 5: the boat still owed 0.50 s past the ease's length
+    middle normal 6: the boat still owed 0.73 s past the ease's length
+    middle easy 4: the boat still owed 0.02 s past the ease's length
+    middle easy 5: the boat still owed 0.03 s past the ease's length
+    expert normal 1: the boat still owed 0.73 s past the ease's length
+    + actual - expected
+    
+    + [
+    +   "middle normal 5: the boat still owed 0.84 s past the ease's length",
+    +   "middle normal 5: the boat still owed 0.84 s past the ease's length",
+    +   "middle easy 2: the boat still owed 0.28 s past the ease's length",
+    +   "middle easy 5: the boat still owed 0.65 s past the ease's length",
+    +   "middle easy 6: the boat still owed 0.06 s past the ease's length",
+    +   "ride easy 5: the boat still owed 0.50 s past the ease's length",
+    +   "middle normal 6: the boat still owed 0.73 s past the ease's length",
+    +   "middle easy 4: the boat still owed 0.02 s past the ease's length",
+    +   "middle easy 5: the boat still owed 0.03 s past the ease's length",
+    +   "expert normal 1: the boat still owed 0.73 s past the ease's length"
+    + ]
+    - []
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+  actual:
+    0: "middle normal 5: the boat still owed 0.84 s past the ease's length"
+    1: "middle normal 5: the boat still owed 0.84 s past the ease's length"
+    2: "middle easy 2: the boat still owed 0.28 s past the ease's length"
+    3: "middle easy 5: the boat still owed 0.65 s past the ease's length"
+    4: "middle easy 6: the boat still owed 0.06 s past the ease's length"
+    5: "ride easy 5: the boat still owed 0.50 s past the ease's length"
+    6: "middle normal 6: the boat still owed 0.73 s past the ease's length"
+    7: "middle easy 4: the boat still owed 0.02 s past the ease's length"
+    8: "middle easy 5: the boat still owed 0.03 s past the ease's length"
+    9: "expert normal 1: the boat still owed 0.73 s past the ease's length"
+  operator: 'deepStrictEqual'
+  stack: |-
+    TestContext.<anonymous> (/tmp/claude-0/-home-user-Sloths-Adventure-/202c7b53-66f0-57a5-9f36-89915affc394/scratchpad/fQ/tools/inspect/pacerRespawn.test.ts:113:12)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
+  ...
+1..2
+# tests 2
+# suites 0
+# pass 0
+# fail 2
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 38733.880335
+EXIT 1 20:52:45

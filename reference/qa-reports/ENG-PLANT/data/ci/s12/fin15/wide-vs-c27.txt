@@ -1,0 +1,2 @@
+rows 270; BAR PASS -> FAIL vs c27: 0; FAIL -> PASS: 14; moved 253
+  FP 2-1 kid easy 1, 2-1 kid easy 4, 2-1 kid easy 7, 2-1 kid easy 9, 2-1 kid normal 1, 2-1 kid normal 3, 2-1 kid normal 4, 2-1 kid normal 5, 2-1 kid normal 6, 2-1 kid normal 8, 2-2 kid normal 3, 2-2 kid normal 10, 2-4 kid easy 1, 2-4 kid easy 2

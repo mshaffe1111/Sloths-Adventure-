@@ -1,0 +1,90 @@
+TAP version 13
+# Subtest: on the run it was found on, 2-1 child Easy seed 2: landing on a small log running his way (under 220 px), even inside his run-out of its front, he takes the pad pause and is never pulled back; the row ends at the shrine with no rescue (c23; RED on c22 52bcce623: the pull-back turned him on landing on a 200 px log 75 px from its front, his run-out 91, the pause and its draw skipped, and he was rescued at the back river)
+not ok 1 - on the run it was found on, 2-1 child Easy seed 2: landing on a small log running his way (under 220 px), even inside his run-out of its front, he takes the pad pause and is never pulled back; the row ends at the shrine with no rescue (c23; RED on c22 52bcce623: the pull-back turned him on landing on a 200 px log 75 px from its front, his run-out 91, the pause and its draw skipped, and he was rescued at the back river)
+  ---
+  duration_ms: 3668.390194
+  type: 'test'
+  location: '/home/user/fz/ci14/tools/inspect/firsttimer.test.ts:305:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    every such landing takes the pause (8 landings)
+    + actual - expected
+    
+    + [
+    +   {
+    +     inside: true,
+    +     pause: false
+    +   }
+    + ]
+    - []
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+  actual:
+    0:
+      inside: true
+      pause: false
+  operator: 'deepStrictEqual'
+  stack: |-
+    TestContext.<anonymous> (/home/user/fz/ci14/tools/inspect/firsttimer.test.ts:335:10)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.start (node:internal/test_runner/test:944:17)
+    startSubtestAfterBootstrap (node:internal/test_runner/harness:296:17)
+  ...
+# Subtest: a beat row is started from a floor that stays only on a breath that crosses it: 2-2 adult Normal 4, off \#109 onto \#115 / \#116 (CI-14)
+ok 2 - a beat row is started from a floor that stays only on a breath that crosses it: 2-2 adult Normal 4, off \#109 onto \#115 / \#116 (CI-14)
+  ---
+  duration_ms: 1446.286511
+  type: 'test'
+  ...
+# Subtest: planted: with waitRise off, the rise pond takes a bot the skill carries across
+not ok 3 - planted: with waitRise off, the rise pond takes a bot the skill carries across
+  ---
+  duration_ms: 21531.487237
+  type: 'test'
+  location: '/home/user/fz/ci14/tools/inspect/padRide.test.ts:44:3'
+  failureType: 'testCodeFailure'
+  error: 'with waitRise off no run failed that crossed with it on: middle normal v1: ended shrine, at the pond {"id":"toy-pads-rise","lives":0,"putbacks":0,"seconds":9.5} (at most 1 lives), stuck []; middle normal v2: ended shrine, at the pond {"id":"toy-pads-rise","lives":0,"putbacks":0,"seconds":13.5} (at most 1 lives), stuck []; middle normal v3: ended shrine, at the pond {"id":"toy-pads-rise","lives":0,"putbacks":0,"seconds":10} (at most 1 lives), stuck []; middle normal v4: ended shrine, at the pond {"id":"toy-pads-rise","lives":0,"putbacks":0,"seconds":10} (at most 1 lives), stuck []; middle easy v1: ended shrine, at the pond {"id":"toy-pads-rise","lives":0,"putbacks":0,"seconds":10.5} (at most 1 lives), stuck []; middle easy v2: ended shrine, at the pond {"id":"toy-pads-rise","lives":0,"putbacks":0,"seconds":13} (at most 1 lives), stuck []; middle easy v3: ended shrine, at the pond {"id":"toy-pads-rise","lives":0,"putbacks":0,"seconds":11.5} (at most 1 lives), stuck []; middle easy v4: ended shrine, at the pond {"id":"toy-pads-rise","lives":0,"putbacks":0,"seconds":13} (at most 1 lives), stuck []; child normal v1: ended shrine, at the pond {"id":"toy-pads-rise","lives":1,"putbacks":0,"seconds":19.5} (at most 1 lives), stuck []; child normal v2: ended shrine, at the pond {"id":"toy-pads-rise","lives":0,"putbacks":0,"seconds":17.5} (at most 1 lives), stuck []; child normal v3: ended shrine, at the pond {"id":"toy-pads-rise","lives":0,"putbacks":0,"seconds":15} (at most 1 lives), stuck []; child normal v4: ended shrine, at the pond {"id":"toy-pads-rise","lives":0,"putbacks":0,"seconds":22.5} (at most 1 lives), stuck []; child easy v1: ended shrine, at the pond {"id":"toy-pads-rise","lives":0,"putbacks":0,"seconds":11} (at most 1 lives), stuck []; child easy v2: ended shrine, at the pond {"id":"toy-pads-rise","lives":0,"putbacks":0,"seconds":15} (at most 1 lives), stuck []; child easy v3: ended shrine, at the pond {"id":"toy-pads-rise","lives":1,"putbacks":0,"seconds":14.5} (at most 1 lives), stuck []; child easy v4: ended shrine, at the pond {"id":"toy-pads-rise","lives":0,"putbacks":0,"seconds":14} (at most 1 lives), stuck []'
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: true
+  actual: false
+  operator: '=='
+  stack: |-
+    TestContext.<anonymous> (/home/user/fz/ci14/tools/inspect/padRide.test.ts:60:14)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.start (node:internal/test_runner/test:944:17)
+    startSubtestAfterBootstrap (node:internal/test_runner/harness:296:17)
+  ...
+# Subtest: planted: with the against-the-flow skill off, the adult on Normal is rescued on 2-1 (16) and the child and the middle on Normal lose 5+ more lives (child 11, 15; middle 16)
+not ok 4 - planted: with the against-the-flow skill off, the adult on Normal is rescued on 2-1 (16) and the child and the middle on Normal lose 5+ more lives (child 11, 15; middle 16)
+  ---
+  duration_ms: 7809.791525
+  type: 'test'
+  location: '/home/user/fz/ci14/tools/inspect/riverRide.test.ts:259:1'
+  failureType: 'testCodeFailure'
+  error: 'upstream off, still clean: adult normal seed 16: shrine, rescues 0, lives 0, stuck []'
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: true
+  actual: false
+  operator: '=='
+  stack: |-
+    TestContext.<anonymous> (/home/user/fz/ci14/tools/inspect/riverRide.test.ts:265:14)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.start (node:internal/test_runner/test:944:17)
+    startSubtestAfterBootstrap (node:internal/test_runner/harness:296:17)
+  ...
+1..4
+# tests 4
+# suites 0
+# pass 1
+# fail 3
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 23062.421673

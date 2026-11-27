@@ -1,0 +1,36 @@
+TAP version 13
+# Subtest: pacer: it waits, sets off as he steps onto the race leg, docks, and on a respawn is put back level with him plus the margin's share
+not ok 1 - pacer: it waits, sets off as he steps onto the race leg, docks, and on a respawn is put back level with him plus the margin's share
+  ---
+  duration_ms: 264.369016
+  type: 'test'
+  location: '/home/user/wt-red/src/game/gen2/pacerLay.test.ts:75:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    docked: a fall after the dock does not race it again
+    + actual - expected
+    
+    + 27.219650677345143
+    - 95.37
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 95.37
+  actual: 27.219650677345143
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (/home/user/wt-red/src/game/gen2/pacerLay.test.ts:130:10)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.start (node:internal/test_runner/test:944:17)
+    startSubtestAfterBootstrap (node:internal/test_runner/harness:296:17)
+  ...
+1..1
+# tests 1
+# suites 0
+# pass 0
+# fail 1
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 611.748241

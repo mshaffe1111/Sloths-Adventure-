@@ -1,0 +1,12 @@
+2-1 base 1465822f7 vs head 2e77837cb (castBots --seeds 1-40 --setting both)
+kid    normal  rows 40 moved   0  pass 35/40 -> 35/40  flips -
+kid    easy    rows 40 moved   0  pass 40/40 -> 40/40  flips -
+adult  normal  rows 40 moved   0  pass 40/40 -> 40/40  flips -
+adult  easy    rows 40 moved   0  pass 40/40 -> 40/40  flips -
+child  normal  rows 40 moved   0  pass 40/40 -> 40/40  flips -
+child  easy    rows 40 moved   0  pass 40/40 -> 40/40  flips -
+middle normal  rows 40 moved   0  pass 40/40 -> 40/40  flips -
+middle easy    rows 40 moved   0  pass 40/40 -> 40/40  flips -
+expert normal  rows 40 moved   0  pass 40/40 -> 40/40  flips -
+total moved 0 of 360
+

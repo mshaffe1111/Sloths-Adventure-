@@ -1,0 +1,32 @@
+ENG 97.533 x 16421.3 y 904.0 vx 0 g 1 on #73 sw -
+VFL 97.533 x 16421.3 vx 0 g 1 on #73 log 16320-16470 vines #6@16572 -> null runUp - stand -
+ENG 97.567 x 16424.0 y 904.0 vx 0 g 1 on #73 sw -
+VFL 97.567 x 16424.0 vx 0 g 1 on #73 log 16322-16472 vines #6@16572 -> null runUp - stand -
+ENG 97.600 x 16426.6 y 904.0 vx 0 g 1 on #73 sw -
+VFL 97.600 x 16426.6 vx 0 g 1 on #73 log 16325-16475 vines #6@16572 -> null runUp - stand -
+ENG 97.633 x 16429.3 y 904.0 vx 0 g 1 on #73 sw -
+VFL 97.633 x 16429.3 vx 0 g 1 on #73 log 16328-16478 vines #6@16572 -> null runUp - stand -
+ENG 97.667 x 16432.0 y 904.0 vx 0 g 1 on #73 sw -
+VFL 97.667 x 16432.0 vx 0 g 1 on #73 log 16330-16480 vines #6@16572 -> {} runUp - stand 0.16
+ENG 97.700 x 16434.6 y 904.0 vx 0 g 1 on #73 sw -
+JUMP 97.700 x 16434.6 {"t0":97.69999999999702,"x":16434.634616559706,"y":904,"cur":805,"kind":"single","hold":0.16,"upOnly":0,"dir":1,"pressed2":false,"dblAt":-180.69262074772269,"d2":-1,"left":false,"harms":0,"running":false}
+ENG 97.733 x 16442.9 y 884.8 vx 167 g 0 on #-1 sw -
+ENG 97.767 x 16450.3 y 867.7 vx 223 g 0 on #-1 sw -
+ENG 97.800 x 16459.6 y 852.7 vx 280 g 0 on #-1 sw -
+ENG 97.833 x 16469.1 y 839.8 vx 285 g 0 on #-1 sw -
+ENG 97.867 x 16478.1 y 829.0 vx 268 g 0 on #-1 sw -
+ENG 97.900 x 16487.6 y 823.4 vx 285 g 0 on #-1 sw -
+ENG 97.933 x 16496.5 y 820.0 vx 268 g 0 on #-1 sw -
+ENG 97.967 x 16506.0 y 818.7 vx 285 g 0 on #-1 sw -
+ENG 98.000 x 16514.9 y 819.4 vx 268 g 0 on #-1 sw -
+ENG 98.033 x 16524.4 y 823.0 vx 285 g 0 on #-1 sw -
+ENG 98.067 x 16533.3 y 829.3 vx 268 g 0 on #-1 sw -
+ENG 98.100 x 16542.8 y 838.4 vx 285 g 0 on #-1 sw -
+ENG 98.133 x 16551.7 y 850.3 vx 268 g 0 on #-1 sw -
+ENG 98.167 x 16561.2 y 865.0 vx 285 g 0 on #-1 sw -
+ENG 98.200 x 16570.2 y 882.4 vx 268 g 0 on #-1 sw -
+ENG 98.233 x 16579.7 y 902.7 vx 285 g 0 on #-1 sw -
+ENG 98.267 x 16588.6 y 904.0 vx 268 g 1 on #74 sw -
+VFL 98.267 x 16588.6 vx 268 g 1 on #74 log 16588-16738 vines #6@16572 -> null runUp - stand -
+ENG 98.300 x 16600.8 y 904.0 vx 285 g 1 on #74 sw -
+VFL 98.300 x 16600.8 vx 285 g 1 on #74 log 16591-16741 vines #6@16572 -> null runUp - stand -

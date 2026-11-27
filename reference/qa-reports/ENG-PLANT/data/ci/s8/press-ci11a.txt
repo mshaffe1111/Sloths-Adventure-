@@ -1,0 +1,35 @@
+JUMP {"t":47.066666666666556,"args":[1,"single",true],"j":{"t0":47.066666666666556,"x":10502.22222222221,"y":975,"cur":513,"kind":"single","hold":0.16,"upOnly":0,"dir":1,"pressed2":false,"dblAt":-84.48993908707052,"d2":-1,"left":false,"harms":0,"running":false},"travelUntil":44.893991004084214,"driftUntil":24.63333333333371,"lastSteer":0,"upOnlyDraw":0}
+PAD 46.867 want - out - tU 44.894 dU 24.633 last 0
+PAD 46.900 want - out - tU 44.894 dU 24.633 last 0
+PAD 46.933 want - out - tU 44.894 dU 24.633 last 0
+PAD 46.967 want - out - tU 44.894 dU 24.633 last 0
+PAD 47.000 want - out - tU 44.894 dU 24.633 last 0
+PAD 47.033 want - out - tU 44.894 dU 24.633 last 0
+PAD 47.067 want RJP out RJ tU 44.894 dU 24.633 last 1
+PAD 47.100 want RJ out RJ tU 44.894 dU 24.633 last 1
+PAD 47.133 want RJ out RJ tU 44.894 dU 24.633 last 1
+PAD 47.167 want RJ out RJ tU 44.894 dU 24.633 last 1
+PAD 47.200 want RJ out RJ tU 44.894 dU 24.633 last 1
+PAD 47.233 want R out R tU 44.894 dU 24.633 last 1
+PAD 47.267 want R out R tU 44.894 dU 24.633 last 1
+PAD 47.300 want R out R tU 44.894 dU 24.633 last 1
+PAD 47.333 want R out R tU 44.894 dU 24.633 last 1
+PAD 47.367 want R out R tU 44.894 dU 24.633 last 1
+PAD 47.400 want R out R tU 44.894 dU 24.633 last 1
+ENG 46.867 x 10487.22 y 975.00 vx 0.0 vy 0.0 g 1 held 0 sw - L0R0
+ENG 46.900 x 10489.72 y 975.00 vx 0.0 vy 0.0 g 1 held 0 sw - L0R0
+ENG 46.933 x 10492.22 y 975.00 vx 0.0 vy 0.0 g 1 held 0 sw - L0R0
+ENG 46.967 x 10494.72 y 975.00 vx 0.0 vy 0.0 g 1 held 0 sw - L0R0
+ENG 47.000 x 10497.22 y 975.00 vx 0.0 vy 0.0 g 1 held 0 sw - L0R0
+ENG 47.033 x 10499.72 y 975.00 vx 0.0 vy 0.0 g 1 held 0 sw - L0R0
+ENG 47.067 x 10502.22 y 975.00 vx 0.0 vy 0.0 g 1 held 0 sw - L0R0
+ENG 47.100 x 10510.11 y 955.78 vx 161.7 vy -576.7 g 0 held 1 sw - L0R1
+ENG 47.133 x 10517.39 y 938.67 vx 218.3 vy -513.3 g 0 held 1 sw - L0R1
+ENG 47.167 x 10526.56 y 923.67 vx 275.0 vy -450.0 g 0 held 1 sw - L0R1
+ENG 47.200 x 10536.06 y 910.78 vx 285.0 vy -386.7 g 0 held 1 sw - L0R1
+ENG 47.233 x 10544.98 y 900.00 vx 267.7 vy -323.3 g 0 held 1 sw - L0R1
+ENG 47.267 x 10554.48 y 894.44 vx 285.0 vy -166.7 g 0 held 0 sw - L0R1
+ENG 47.300 x 10563.40 y 891.00 vx 267.7 vy -103.3 g 0 held 0 sw - L0R1
+ENG 47.333 x 10572.90 y 889.67 vx 285.0 vy -40.0 g 0 held 0 sw - L0R1
+ENG 47.367 x 10581.82 y 890.44 vx 267.7 vy 23.3 g 0 held 0 sw - L0R1
+ENG 47.400 x 10565.69 y 842.69 vx 134.4 vy 54.7 g 0 held 0 sw 4 L0R1

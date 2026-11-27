@@ -9,6 +9,7 @@
  */
 import type { Platform, Rope, Vine } from '../types.ts';
 import type { Zone } from '../zones.ts';
+import type { RiverZone } from '../river.ts';
 import { TOWER } from './tower.ts';
 
 /** which way a node is laid */
@@ -64,6 +65,18 @@ export function legsOf(nodes: ReadonlyArray<{ travel?: Travel }>, flow: Travel):
  *  ground its corridor is measured from, and for a column
  *  (up or down) its frame, its floor's top and the storey joins it climbs or comes down by */
 export interface LaidLeg { travel: Travel; i0: number; i1: number; x0: number; x1: number; y0: number; y1: number; /** a run leg (right or left): its own ground, the height it began at */ ground?: number; frame?: Frame; floorY?: number; turns?: Array<{ x: number; from: number; to: number }> }
+
+/** his collider's height: the least clear air between a leg and the run leg laid under it */
+const STACK_CLEAR = 48;
+/**
+ * The run legs (right or left) laid wholly UNDER another run leg they share x with, his height clear between (the out-and-back toy's race
+ * leg under its out leg, 2-7): one rule for the painted ground's ceilings (groundStack.ts stackZonesOf) and World 2's finish (w2.ts, a soft
+ * gap over such a leg's floor is left open). None on a lay that stacks no leg.
+ */
+export function stackedUnder<L extends { travel: string; x0: number; x1: number; y0: number; y1: number }>(legs: readonly L[] | undefined): L[] {
+  const run = (legs ?? []).filter((l) => l.travel === 'left' || l.travel === 'right');
+  return run.filter((l) => run.some((u) => u !== l && Math.min(u.x1, l.x1) - Math.max(u.x0, l.x0) > 0 && l.y0 >= u.y1 + STACK_CLEAR));
+}
 
 /** is a graph laid as legs (a route through more than one travel, or a run laid left)? A graph of one right leg is a run and one of
  *  a single up or down leg is a tower, each laid exactly as before legs */
@@ -122,6 +135,9 @@ export interface LegLaid {
   gaps: Array<{ x0: number; x1: number }>;
   asks: Array<{ x0: number; x1: number }>;
   heartFalls: Array<{ x0: number; x1: number }>;
+  /** the water the leg laid (rivers, ponds) and the petals that ride its logs (each log is one of `platforms`): turned with it */
+  rivers?: RiverZone[];
+  riverPetals?: Array<{ log: Platform; dx: number }>;
   sections: Array<{
     uid: string;
     entry: { x: number; y: number };
@@ -145,7 +161,29 @@ export interface LegLaid {
  */
 export function reflectLeg(laid: LegLaid, sum: number): void {
   const span = (o: { x0: number; x1: number }) => { const a = sum - o.x1, b = sum - o.x0; o.x0 = a; o.x1 = b; };
-  for (const p of laid.platforms) p.x = sum - p.x - p.width;
+  for (const p of laid.platforms) {
+    p.x = sum - p.x - p.width;
+    // (a log: its window turned and its current with it, so it drifts where its mirror would: river.ts driftX reads the same offset)
+    if (p.drift) {
+      if (p.drift.tail) throw new Error('gen2 legs: a river with a tail in a leg laid left is not mirrored yet (its painted end is the window\'s right end)');
+      const d = p.drift, a = sum - d.x1, b = sum - d.x0;
+      p.drift = { ...d, x0: a, x1: b, dir: -d.dir as 1 | -1 };
+    }
+  }
+  // (a river: its water turned, its current with it, and the way he crosses it marked (RiverZone.way), so its fairness is judged in its
+  //  own frame (riverLay.ts riverFaults); a splash-back sets him on the bank he came from, now the right one)
+  for (const r of laid.rivers ?? []) {
+    if (r.wheelPond || r.raft || r.flowT !== undefined) throw new Error(`gen2 legs: a ${r.wheelPond ? 'water wheel' : 'sluice-run river'} in a leg laid left is not mirrored yet (at x ${Math.round(r.x0)})`);
+    const a = sum - r.x1, b = sum - r.x0;
+    r.x0 = a;
+    r.x1 = b;
+    r.dir = -r.dir as 1 | -1;
+    if (r.way === -1) delete r.way; else r.way = -1;
+    if (r.safe) r.safe = { ...r.safe, backX: sum - r.safe.backX };
+    if (r.spur) r.spur = { ...r.spur, x: sum - r.spur.x };
+    if (r.flood) r.flood = { ...r.flood, trigger: sum - r.flood.trigger };
+  }
+  for (const q of laid.riverPetals ?? []) q.dx = q.log.width - q.dx;
   const vines = new Set<Vine>([...laid.vines, ...laid.sections.flatMap((q) => q.vines.map((e) => e.vine))]);
   for (const v of vines) {
     if (v.vineType === 'swing_liana') throw new Error('gen2 legs: a liana in a leg laid left is not mirrored yet (its swing is the engine\'s)');
@@ -170,4 +208,30 @@ export function reflectLeg(laid: LegLaid, sum: number): void {
     for (const k of q.sockets) k.x = sum - k.x;
     for (const b of q.beats) b.x = sum - b.x;
   }
+}
+
+/** how high over the piece he stands on a leg's run must keep clear of another leg (px): a held jump's rise (PHYS: about 150) and his
+ *  drawn height (89.1, heroSprite.ts), rounded up. Clear means he can never jump into, or stand under the soil of, the other leg */
+export const LEG_CLEAR = 260;
+
+/**
+ * Where two RUN legs (right or left) of one stage overlay each other: a leg laid left runs back the way the stage came, and laid at the
+ * ground of the leg before it (a turn with no column between) it lies on top of that leg (2-7's design, Pushback 1). Each run leg holds
+ * the band from `clear` over its highest piece to the foot of its lowest; two whose spans meet in x must keep those bands apart. A column
+ * (up or down) is the way between grounds and stands beside the legs it joins, so it is not judged here. Pure: the boxes as laid.
+ */
+export function legOverlaps(legs: readonly LaidLeg[], clear = LEG_CLEAR): string[] {
+  const out: string[] = [];
+  const runs = legs.map((g, k) => ({ g, k })).filter(({ g }) => !upOrDown(g.travel));
+  for (let i = 0; i < runs.length; i++) {
+    for (let j = i + 1; j < runs.length; j++) {
+      const A = runs[i], B = runs[j];
+      const x0 = Math.max(A.g.x0, B.g.x0), x1 = Math.min(A.g.x1, B.g.x1);
+      if (x1 <= x0) continue;
+      const [hi, lo] = A.g.y0 <= B.g.y0 ? [A, B] : [B, A];
+      // (the lower leg's band begins `clear` over its highest piece; the higher one's ends at its lowest piece's foot)
+      if (lo.g.y0 - clear < hi.g.y1) out.push(`leg ${B.k + 1} (${B.g.travel}) overlays leg ${A.k + 1} (${A.g.travel}) at x ${Math.round(x0)}-${Math.round(x1)}: the lower leg's top ${Math.round(lo.g.y0)} is ${Math.round(lo.g.y0 - hi.g.y1)} px under the higher leg's foot ${Math.round(hi.g.y1)} (needs ${clear}): a leg laid back over another needs its own ground (a column between them)`);
+    }
+  }
+  return out;
 }

@@ -1,0 +1,66 @@
+head b0c6dd58647c4d64b7d0e14f2695d5e6369f08a3
+  [bank press] unjudged q#-1 judged t 95.37 x 9374 lag 0 hold 0.303 | flown t 95.37 x 9374 hold 0.303 single | came down #64 solid
+  [bank press] unjudged q#-1 judged t 115.13 x 6658 lag 0 hold 0.419 | flown t 115.13 x 6658 hold 0.419 single | came down #75 solid
+  [bank press] unjudged q#-1 judged t 126.40 x 5245 lag 0 hold 0.301 | flown t 126.40 x 5245 hold 0.301 double | came down #81 solid
+  [bank press] unjudged q#-1 judged t 141.17 x 3812 lag 0 hold 0.265 | flown t 141.17 x 3812 hold 0.265 single | came down #87 solid
+  [bank press] unjudged q#-1 judged t 152.03 x 2402 lag 0 hold 0.256 | flown t 152.03 x 2402 hold 0.256 single | came down #93 solid
+  [bank press] unjudged q#-1 judged t 158.90 x 958 lag 0 hold 0.156 | flown t 158.90 x 958 hold 0.156 double | came down #98 solid
+normal seed 5: 22 judged hops pressed (edgeWait, race, unjudged); unjudged or stale 0, flown not as judged 0, came down elsewhere 0
+  [bank press] unjudged q#-1 judged t 42.10 x 15549 lag 0 hold 0.100 | flown t 42.10 x 15549 hold 0.100 double | came down #16 solid
+  [bank press] unjudged q#-1 judged t 127.13 x 6231 lag 0 hold 0.323 | flown t 127.13 x 6231 hold 0.323 single | came down #76 solid
+  [bank press] unjudged q#-1 judged t 145.63 x 3660 lag 0 hold 0.055 | flown t 145.63 x 3660 hold 0.055 single | came down #-1 solid
+  [bank press] unjudged q#-1 judged t 152.63 x 3637 lag 0 hold 0.225 | flown t 152.63 x 3637 hold 0.225 double | came down #87 solid
+normal seed 2: 27 judged hops pressed (edgeWait, upstream, unjudged, race); unjudged or stale 0, flown not as judged 0, came down elsewhere 1
+  race q#69 judged t 118.57 x 8256 lag 0 hold 0.295 double | flown t 118.57 x 8256 hold 0.295 double | came down #66 solid
+  [bank press] unjudged q#-1 judged t 84.50 x 12209 lag 0 hold 0.367 | flown t 84.50 x 12209 hold 0.367 double | came down #53 solid
+  [bank press] unjudged q#-1 judged t 138.60 x 3862 lag 0 hold 0.184 | flown t 138.60 x 3862 hold 0.184 single | came down #87 solid
+  [bank press] unjudged q#-1 judged t 152.00 x 958 lag 0 hold 0.335 | flown t 152.00 x 958 hold 0.335 double | came down #98 solid
+easy seed 5: 25 judged hops pressed (edgeWait, race, unjudged); unjudged or stale 0, flown not as judged 0, came down elsewhere 0
+  [bank press] unjudged q#-1 judged t 111.27 x 7864 lag 0 hold 0.116 | flown t 111.27 x 7864 hold 0.116 single | came down #71 solid
+  [bank press] unjudged q#-1 judged t 122.93 x 6425 lag 0 hold 0.347 | flown t 122.93 x 6425 hold 0.347 double | came down #76 solid
+  [bank press] unjudged q#-1 judged t 138.60 x 3735 lag 0 hold 0.436 | flown t 138.60 x 3735 hold 0.436 single | came down #87 solid
+easy seed 2: 22 judged hops pressed (edgeWait, race, unjudged); unjudged or stale 0, flown not as judged 0, came down elsewhere 0
+gate frames 281 (edgeWait 14, upstream 10, edgeStand 5, race 252); refused 253; judged on a draw held from an earlier frame 0; refused then pressed the next frame 12
+✔ 2-7 home, middle Normal seed 5: every judged hop is flown as judged and comes down where the gate said; every press from a bank with logs near its edge flies on a judgment of its own frame or comes down on solid (ruling A) (1769.417507ms)
+✖ 2-7 home, middle Normal seed 2: every judged hop is flown as judged and comes down where the gate said; every press from a bank with logs near its edge flies on a judgment of its own frame or comes down on solid (ruling A) (1683.308912ms)
+✔ 2-7 home, middle Easy seed 5: every judged hop is flown as judged and comes down where the gate said; every press from a bank with logs near its edge flies on a judgment of its own frame or comes down on solid (ruling A) (2467.496501ms)
+✔ 2-7 home, middle Easy seed 2: every judged hop is flown as judged and comes down where the gate said; every press from a bank with logs near its edge flies on a judgment of its own frame or comes down on solid (ruling A) (712.474294ms)
+✔ 2-7 home, middle Normal seed 1: every frame a drawn-hop gate judges, the hop it judges is aimed that frame (no draw held from an earlier frame), and a refused aim is followed by fresh aims that land (1059.691938ms)
+✔ 2-7 home: every respawn on the race leg keeps exactly the margin he had when he fell (a fall neither costs nor pays race time) (20809.657561ms)
+✔ 2-7 post: every respawn on the race leg keeps exactly the margin he had when he fell (a fall neither costs nor pays race time) (16956.733093ms)
+ℹ tests 7
+ℹ suites 0
+ℹ pass 6
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 38842.036873
+
+✖ failing tests:
+
+test at tools/inspect/hopJudged.test.ts:36:3
+✖ 2-7 home, middle Normal seed 2: every judged hop is flown as judged and comes down where the gate said; every press from a bank with logs near its edge flies on a judgment of its own frame or comes down on solid (ruling A) (1683.308912ms)
+  AssertionError [ERR_ASSERTION]: a gate judged one hop and the bot flew another
+  + actual - expected
+  
+  + [
+  +   'race q#69 judged t 118.57 x 8256 lag 0 hold 0.295 double | flown t 118.57 x 8256 hold 0.295 double | came down #66 solid'
+  + ]
+  - []
+  
+      at TestContext.<anonymous> (/tmp/claude-0/-home-user-Sloths-Adventure-/0dbaff3f-2782-5bda-a555-79a338b0ec5d/scratchpad/plant/tools/inspect/hopJudged.test.ts:54:12)
+      at Test.runInAsyncScope (node:async_hooks:214:14)
+      at Test.run (node:internal/test_runner/test:1047:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+      at Test.postRun (node:internal/test_runner/test:1173:19)
+      at Test.run (node:internal/test_runner/test:1101:12)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: [ 'race q#69 judged t 118.57 x 8256 lag 0 hold 0.295 double | flown t 118.57 x 8256 hold 0.295 double | came down #66 solid' ],
+    expected: [],
+    operator: 'deepStrictEqual',
+    diff: 'simple'
+  }
+exit 1

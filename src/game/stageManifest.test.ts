@@ -93,3 +93,22 @@ test('a laid chase gets its long-branch sheet in behind the card; a stage withou
     if (!had) delete g.location;
   }
 });
+
+test('a laid pacer or post gets World 2\'s next sheet (the mail boat, the open door, the letters) before its first frame; a stage without either never loads it', async () => {
+  const { start } = await import('./stagePreload.ts');
+  const { W2_NEXT_URL } = await import('./w2NextArt.ts');
+  const g = globalThis as { location?: unknown };
+  const had = 'location' in g;
+  g.location ??= { search: '' };
+  try {
+    setLayoutVariant(1);
+    const st = generateStage(levels.find((l) => l.id === '1-2')!, 'normal');
+    assert.ok(!builtStageKeys(st).includes('w2-next'), 'a stage with no pacer and no post does not load the sheet');
+    assert.ok(builtStageKeys({ ...st, pacer: {} } as never).includes('w2-next'), 'a stage that lays a pacer asks for it');
+    assert.ok(builtStageKeys({ ...st, post: { doors: [] } } as never).includes('w2-next'), 'a stage that lays a post asks for it');
+    assert.ok(start(['w2-next']).includes(W2_NEXT_URL), 'and the key starts that sheet');
+  } finally {
+    setLayoutVariant(null);
+    if (!had) delete g.location;
+  }
+});

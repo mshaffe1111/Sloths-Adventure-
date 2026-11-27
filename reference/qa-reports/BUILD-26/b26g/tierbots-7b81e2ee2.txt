@@ -1,0 +1,93 @@
+TAP version 13
+# Subtest: child easy: every mapped number is its profile field
+ok 1 - child easy: every mapped number is its profile field
+  ---
+  duration_ms: 1.745338
+  type: 'test'
+  ...
+# Subtest: child normal: every mapped number is its profile field
+ok 2 - child normal: every mapped number is its profile field
+  ---
+  duration_ms: 0.370816
+  type: 'test'
+  ...
+# Subtest: middle easy: every mapped number is its profile field
+ok 3 - middle easy: every mapped number is its profile field
+  ---
+  duration_ms: 0.525602
+  type: 'test'
+  ...
+# Subtest: middle normal: every mapped number is its profile field
+ok 4 - middle normal: every mapped number is its profile field
+  ---
+  duration_ms: 0.280571
+  type: 'test'
+  ...
+# Subtest: expert normal: every mapped number is its profile field
+ok 5 - expert normal: every mapped number is its profile field
+  ---
+  duration_ms: 0.325286
+  type: 'test'
+  ...
+# Subtest: the committed calibration runs, judged again, give the committed table
+ok 6 - the committed calibration runs, judged again, give the committed table
+  ---
+  duration_ms: 3.543999
+  type: 'test'
+  ...
+# Subtest: every tier and setting in the table has its 40 variants committed, once each
+ok 7 - every tier and setting in the table has its 40 variants committed, once each
+  ---
+  duration_ms: 0.270275
+  type: 'test'
+  ...
+# Subtest: the replay check (planted, R-165.317): one moved run among 200, outside the first three variants, is named, and every run is replayed
+ok 8 - the replay check (planted, R-165.317): one moved run among 200, outside the first three variants, is named, and every run is replayed
+  ---
+  duration_ms: 16.621553
+  type: 'test'
+  ...
+# Subtest: every committed run (all 200) replays exactly as committed
+not ok 9 - every committed run (all 200) replays exactly as committed
+  ---
+  duration_ms: 226486.520677
+  type: 'test'
+  location: '/tmp/claude-0/-home-user-Sloths-Adventure-/efbdee81-97aa-590d-a817-1849d96eca9d/scratchpad/fixab/tools/inspect/tierBots.test.ts:133:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    2 of 200 runs moved: re-run the calibration and recommit calibration-main.jsonl (BOTS.md)
+    child normal variant 7: finishSeconds 397.2 -> 395.7, putbacks 8 -> 5, rescues 1 -> 0, secondPressMs [467,300,333,533,333,567,433,333,367,300,367,300,433,467,367,367,300,433,300,400,400,367,433,300,300,300,367,300,400,533] -> [467,300,333,533,333,567,433,333,367,300,367,300,433,467,367,367,300,433,300,400,400,367,367,567,400,333,567,533,400,333,367,367], pieces [{"id":"w1-home-banks","lives":0,"putbacks":0,"seconds":16.5},{"id":"w1-learn","lives":0,"putbacks":0,"seconds":32.5},{"id":"w1-dip-double-teach","lives":0,"putbacks":0,"seconds":33},{"id":"w1-mushroom-bank-teach","lives":0,"putbacks":0,"seconds":31.5},{"id":"w1-mound-log","lives":0,"putbacks":0,"seconds":52},{"id":"w1-mushroom-fork-dip","lives":0,"putbacks":0,"seconds":28.5},{"id":"w1-log-walk","lives":0,"putbacks":0,"seconds":19},{"id":"w1-stone-stair-test-back","lives":0,"putbacks":0,"seconds":45.5},{"id":"w1-fern-bank","lives":0,"putbacks":0,"seconds":13},{"id":"w1-seed-perch","lives":0,"putbacks":0,"seconds":25.5},{"id":"w1-log-chain","lives":0,"putbacks":8,"seconds":44},{"id":"w1-canopy-rungs-level","lives":0,"putbacks":0,"seconds":34},{"id":"w1-quiet-arrival","lives":0,"putbacks":0,"seconds":17}] -> [{"id":"w1-home-banks","lives":0,"putbacks":0,"seconds":16.5},{"id":"w1-learn","lives":0,"putbacks":0,"seconds":32.5},{"id":"w1-dip-double-teach","lives":0,"putbacks":0,"seconds":33},{"id":"w1-mushroom-bank-teach","lives":0,"putbacks":0,"seconds":31.5},{"id":"w1-mound-log","lives":0,"putbacks":0,"seconds":52},{"id":"w1-mushroom-fork-dip","lives":0,"putbacks":0,"seconds":28.5},{"id":"w1-log-walk","lives":0,"putbacks":0,"seconds":19},{"id":"w1-stone-stair-test-back","lives":0,"putbacks":0,"seconds":45.5},{"id":"w1-fern-bank","lives":0,"putbacks":0,"seconds":13},{"id":"w1-seed-perch","lives":0,"putbacks":0,"seconds":25.5},{"id":"w1-log-chain","lives":0,"putbacks":5,"seconds":42.5},{"id":"w1-canopy-rungs-level","lives":0,"putbacks":0,"seconds":37},{"id":"w1-quiet-arrival","lives":0,"putbacks":0,"seconds":14}]
+    child normal variant 18: finishSeconds 402.3 -> 398.8, putbacks 2 -> 1, secondPressMs [333,433,333,533,433,333,300,500,433,333,300,400,400,367,367,367,333,333,400,300,467] -> [333,433,333,533,433,333,300,500,433,333,300,400,400,367,367,367,333,300,333], pieces [{"id":"w1-meadow","lives":0,"putbacks":0,"seconds":32.5},{"id":"w1-log-teach","lives":0,"putbacks":0,"seconds":25.5},{"id":"w1-dip-double-teach","lives":0,"putbacks":1,"seconds":36.5},{"id":"w1-mushroom-lift","lives":0,"putbacks":0,"seconds":31},{"id":"w1-mound-log","lives":0,"putbacks":0,"seconds":48.5},{"id":"w1-mushroom-fork-dip","lives":0,"putbacks":0,"seconds":41},{"id":"w1-fern-bank","lives":0,"putbacks":0,"seconds":14},{"id":"w1-stone-stair-test","lives":0,"putbacks":0,"seconds":31.5},{"id":"w1-log-walk","lives":0,"putbacks":0,"seconds":18.5},{"id":"w1-seed-perch","lives":0,"putbacks":0,"seconds":34.5},{"id":"w1-log-chain","lives":0,"putbacks":1,"seconds":33.5},{"id":"w1-canopy-rungs-level","lives":0,"putbacks":0,"seconds":30.5},{"id":"w1-quiet-arrival","lives":0,"putbacks":0,"seconds":17.5}] -> [{"id":"w1-meadow","lives":0,"putbacks":0,"seconds":32.5},{"id":"w1-log-teach","lives":0,"putbacks":0,"seconds":25.5},{"id":"w1-dip-double-teach","lives":0,"putbacks":1,"seconds":36.5},{"id":"w1-mushroom-lift","lives":0,"putbacks":0,"seconds":31},{"id":"w1-mound-log","lives":0,"putbacks":0,"seconds":48.5},{"id":"w1-mushroom-fork-dip","lives":0,"putbacks":0,"seconds":41},{"id":"w1-fern-bank","lives":0,"putbacks":0,"seconds":14},{"id":"w1-stone-stair-test","lives":0,"putbacks":0,"seconds":31.5},{"id":"w1-log-walk","lives":0,"putbacks":0,"seconds":18.5},{"id":"w1-seed-perch","lives":0,"putbacks":0,"seconds":34.5},{"id":"w1-log-chain","lives":0,"putbacks":0,"seconds":36},{"id":"w1-canopy-rungs-level","lives":0,"putbacks":0,"seconds":29},{"id":"w1-quiet-arrival","lives":0,"putbacks":0,"seconds":13}]
+    + actual - expected
+    
+    + [
+    +   'child normal variant 7: finishSeconds 397.2 -> 395.7, putbacks 8 -> 5, rescues 1 -> 0, secondPressMs [467,300,333,533,333,567,433,333,367,300,367,300,433,467,367,367,300,433,300,400,400,367,433,300,300,300,367,300,400,533] -> [467,300,333,533,333,567,433,333,367,300,367,300,433,467,367,367,300,433,300,400,400,367,367,567,400,333,567,533,400,333,367,367], pieces [{"id":"w1-home-banks","lives":0,"putbacks":0,"seconds":16.5},{"id":"w1-learn","lives":0,"putbacks":0,"seconds":32.5},{"id":"w1-dip-double-teach","lives":0,"putbacks":0,"seconds":33},{"id":"w1-mushroom-bank-teach","lives":0,"putbacks":0,"seconds":31.5},{"id":"w1-mound-log","lives":0,"putbacks":0,"seconds":52},{"id":"w1-mushroom-fork-dip","lives":0,"putbacks":0,"seconds":28.5},{"id":"w1-log-walk","lives":0,"putbacks":0,"seconds":19},{"id":"w1-stone-stair-test-back","lives":0,"putbacks":0,"seconds":45.5},{"id":"w1-fern-bank","lives":0,"putbacks":0,"seconds":13},{"id":"w1-seed-perch","lives":0,"putbacks":0,"seconds":25.5},{"id":"w1-log-chain","lives":0,"putbacks":8,"seconds":44},{"id":"w1-canopy-rungs-level","lives":0,"putbacks":0,"seconds":34},{"id":"w1-quiet-arrival","lives":0,"putbacks":0,"seconds":17}] -> [{"id":"w1-home-banks","lives":0,"putbacks":0,"seconds":16.5},{"id":"w1-learn","lives":0,"putbacks":0,"seconds":32.5},{"id":"w1-dip-double-teach","lives":0,"putbacks":0,"seconds":33},{"id":"w1-mushroom-bank-teach","lives":0,"putbacks":0,"seconds":31.5},{"id":"w1-mound-log","lives":0,"putbacks":0,"seconds":52},{"id":"w1-mushroom-fork-dip","lives":0,"putbacks":0,"seconds":28.5},{"id":"w1-log-walk","lives":0,"putbacks":0,"seconds":19},{"id":"w1-stone-stair-test-back","lives":0,"putbacks":0,"seconds":45.5},{"id":"w1-fern-bank","lives":0,"putbacks":0,"seconds":13},{"id":"w1-seed-perch","lives":0,"putbacks":0,"seconds":25.5},{"id":"w1-log-chain","lives":0,"putbacks":5,"seconds":42.5},{"id":"w1-canopy-rungs-level","lives":0,"putbacks":0,"seconds":37},{"id":"w1-quiet-arrival","lives":0,"putbacks":0,"seconds":14}]',
+    +   'child normal variant 18: finishSeconds 402.3 -> 398.8, putbacks 2 -> 1, secondPressMs [333,433,333,533,433,333,300,500,433,333,300,400,400,367,367,367,333,333,400,300,467] -> [333,433,333,533,433,333,300,500,433,333,300,400,400,367,367,367,333,300,333], pieces [{"id":"w1-meadow","lives":0,"putbacks":0,"seconds":32.5},{"id":"w1-log-teach","lives":0,"putbacks":0,"seconds":25.5},{"id":"w1-dip-double-teach","lives":0,"putbacks":1,"seconds":36.5},{"id":"w1-mushroom-lift","lives":0,"putbacks":0,"seconds":31},{"id":"w1-mound-log","lives":0,"putbacks":0,"seconds":48.5},{"id":"w1-mushroom-fork-dip","lives":0,"putbacks":0,"seconds":41},{"id":"w1-fern-bank","lives":0,"putbacks":0,"seconds":14},{"id":"w1-stone-stair-test","lives":0,"putbacks":0,"seconds":31.5},{"id":"w1-log-walk","lives":0,"putbacks":0,"seconds":18.5},{"id":"w1-seed-perch","lives":0,"putbacks":0,"seconds":34.5},{"id":"w1-log-chain","lives":0,"putbacks":1,"seconds":33.5},{"id":"w1-canopy-rungs-level","lives":0,"putbacks":0,"seconds":30.5},{"id":"w1-quiet-arrival","lives":0,"putbacks":0,"seconds":17.5}] -> [{"id":"w1-meadow","lives":0,"putbacks":0,"seconds":32.5},{"id":"w1-log-teach","lives":0,"putbacks":0,"seconds":25.5},{"id":"w1-dip-double-teach","lives":0,"putbacks":1,"seconds":36.5},{"id":"w1-mushroom-lift","lives":0,"putbacks":0,"seconds":31},{"id":"w1-mound-log","lives":0,"putbacks":0,"seconds":48.5},{"id":"w1-mushroom-fork-dip","lives":0,"putbacks":0,"seconds":41},{"id":"w1-fern-bank","lives":0,"putbacks":0,"seconds":14},{"id":"w1-stone-stair-test","lives":0,"putbacks":0,"seconds":31.5},{"id":"w1-log-walk","lives":0,"putbacks":0,"seconds":18.5},{"id":"w1-seed-perch","lives":0,"putbacks":0,"seconds":34.5},{"id":"w1-log-chain","lives":0,"putbacks":0,"seconds":36},{"id":"w1-canopy-rungs-level","lives":0,"putbacks":0,"seconds":29},{"id":"w1-quiet-arrival","lives":0,"putbacks":0,"seconds":13}]'
+    + ]
+    - []
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+  actual:
+    0: 'child normal variant 7: finishSeconds 397.2 -> 395.7, putbacks 8 -> 5, rescues 1 -> 0, secondPressMs [467,300,333,533,333,567,433,333,367,300,367,300,433,467,367,367,300,433,300,400,400,367,433,300,300,300,367,300,400,533] -> [467,300,333,533,333,567,433,333,367,300,367,300,433,467,367,367,300,433,300,400,400,367,367,567,400,333,567,533,400,333,367,367], pieces [{"id":"w1-home-banks","lives":0,"putbacks":0,"seconds":16.5},{"id":"w1-learn","lives":0,"putbacks":0,"seconds":32.5},{"id":"w1-dip-double-teach","lives":0,"putbacks":0,"seconds":33},{"id":"w1-mushroom-bank-teach","lives":0,"putbacks":0,"seconds":31.5},{"id":"w1-mound-log","lives":0,"putbacks":0,"seconds":52},{"id":"w1-mushroom-fork-dip","lives":0,"putbacks":0,"seconds":28.5},{"id":"w1-log-walk","lives":0,"putbacks":0,"seconds":19},{"id":"w1-stone-stair-test-back","lives":0,"putbacks":0,"seconds":45.5},{"id":"w1-fern-bank","lives":0,"putbacks":0,"seconds":13},{"id":"w1-seed-perch","lives":0,"putbacks":0,"seconds":25.5},{"id":"w1-log-chain","lives":0,"putbacks":8,"seconds":44},{"id":"w1-canopy-rungs-level","lives":0,"putbacks":0,"seconds":34},{"id":"w1-quiet-arrival","lives":0,"putbacks":0,"seconds":17}] -> [{"id":"w1-home-banks","lives":0,"putbacks":0,"seconds":16.5},{"id":"w1-learn","lives":0,"putbacks":0,"seconds":32.5},{"id":"w1-dip-double-teach","lives":0,"putbacks":0,"seconds":33},{"id":"w1-mushroom-bank-teach","lives":0,"putbacks":0,"seconds":31.5},{"id":"w1-mound-log","lives":0,"putbacks":0,"seconds":52},{"id":"w1-mushroom-fork-dip","lives":0,"putbacks":0,"seconds":28.5},{"id":"w1-log-walk","lives":0,"putbacks":0,"seconds":19},{"id":"w1-stone-stair-test-back","lives":0,"putbacks":0,"seconds":45.5},{"id":"w1-fern-bank","lives":0,"putbacks":0,"seconds":13},{"id":"w1-seed-perch","lives":0,"putbacks":0,"seconds":25.5},{"id":"w1-log-chain","lives":0,"putbacks":5,"seconds":42.5},{"id":"w1-canopy-rungs-level","lives":0,"putbacks":0,"seconds":37},{"id":"w1-quiet-arrival","lives":0,"putbacks":0,"seconds":14}]'
+    1: 'child normal variant 18: finishSeconds 402.3 -> 398.8, putbacks 2 -> 1, secondPressMs [333,433,333,533,433,333,300,500,433,333,300,400,400,367,367,367,333,333,400,300,467] -> [333,433,333,533,433,333,300,500,433,333,300,400,400,367,367,367,333,300,333], pieces [{"id":"w1-meadow","lives":0,"putbacks":0,"seconds":32.5},{"id":"w1-log-teach","lives":0,"putbacks":0,"seconds":25.5},{"id":"w1-dip-double-teach","lives":0,"putbacks":1,"seconds":36.5},{"id":"w1-mushroom-lift","lives":0,"putbacks":0,"seconds":31},{"id":"w1-mound-log","lives":0,"putbacks":0,"seconds":48.5},{"id":"w1-mushroom-fork-dip","lives":0,"putbacks":0,"seconds":41},{"id":"w1-fern-bank","lives":0,"putbacks":0,"seconds":14},{"id":"w1-stone-stair-test","lives":0,"putbacks":0,"seconds":31.5},{"id":"w1-log-walk","lives":0,"putbacks":0,"seconds":18.5},{"id":"w1-seed-perch","lives":0,"putbacks":0,"seconds":34.5},{"id":"w1-log-chain","lives":0,"putbacks":1,"seconds":33.5},{"id":"w1-canopy-rungs-level","lives":0,"putbacks":0,"seconds":30.5},{"id":"w1-quiet-arrival","lives":0,"putbacks":0,"seconds":17.5}] -> [{"id":"w1-meadow","lives":0,"putbacks":0,"seconds":32.5},{"id":"w1-log-teach","lives":0,"putbacks":0,"seconds":25.5},{"id":"w1-dip-double-teach","lives":0,"putbacks":1,"seconds":36.5},{"id":"w1-mushroom-lift","lives":0,"putbacks":0,"seconds":31},{"id":"w1-mound-log","lives":0,"putbacks":0,"seconds":48.5},{"id":"w1-mushroom-fork-dip","lives":0,"putbacks":0,"seconds":41},{"id":"w1-fern-bank","lives":0,"putbacks":0,"seconds":14},{"id":"w1-stone-stair-test","lives":0,"putbacks":0,"seconds":31.5},{"id":"w1-log-walk","lives":0,"putbacks":0,"seconds":18.5},{"id":"w1-seed-perch","lives":0,"putbacks":0,"seconds":34.5},{"id":"w1-log-chain","lives":0,"putbacks":0,"seconds":36},{"id":"w1-canopy-rungs-level","lives":0,"putbacks":0,"seconds":29},{"id":"w1-quiet-arrival","lives":0,"putbacks":0,"seconds":13}]'
+  operator: 'deepStrictEqual'
+  stack: |-
+    TestContext.<anonymous> (/tmp/claude-0/-home-user-Sloths-Adventure-/efbdee81-97aa-590d-a817-1849d96eca9d/scratchpad/fixab/tools/inspect/tierBots.test.ts:135:10)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+1..9
+# tests 9
+# suites 0
+# pass 8
+# fail 1
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 227765.392791

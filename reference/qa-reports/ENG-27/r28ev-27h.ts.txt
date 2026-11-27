@@ -1,0 +1,19 @@
+// scratch (ENG-27h): every bot and setting on a stage, seeds given: the boarding reads, the jumps he starts (kind, from what), the lives lost
+import { CAST_BOTS } from './castBots.ts';
+import { firstTimer } from './firsttimer.ts';
+const stage = process.argv[2], seeds = process.argv[3].split(',').map(Number), only = process.argv[4];
+for (const bot of Object.keys(CAST_BOTS)) for (const setting of ['normal', 'easy'] as const) {
+  const who = (CAST_BOTS as any)[bot][setting]; if (!who || (only && only !== bot)) continue;
+  for (const seed of seeds) {
+    (globalThis as any).__bl = []; (globalThis as any).__ft = [];
+    const ev: any[] = []; let nbl = 0, lives0: number | undefined, jmp0: any = null, onLast = '-';
+    const r = firstTimer(stage, seed, who, { cap: 1200, dotSetting: true, onFrame: (sim: any) => {
+      const e = sim.e, p = e.player, R = (globalThis as any).__run, t = Math.round(sim.t * 100) / 100;
+      const on = e.platforms.find((q: any) => q.id === e.standingOnId); if (on) onLast = `${on.id}:${on.type}${on.drift ? ':' + on.drift.dir : ''}`;
+      const bl = (globalThis as any).__bl as any[]; if (bl.length > nbl) { const b = bl[bl.length - 1]; if (!ev.length || ev[ev.length - 1].k !== 'read' || t - ev[ev.length - 1].t > 1) ev.push({ k: 'read', t, x: b.x, lip: b.lip, out: b.out }); nbl = bl.length; }
+      const j = R?.jump; if (j && j !== jmp0) ev.push({ k: 'jump', t, x: Math.round(p.x), kind: j.kind, from: onLast }); jmp0 = j;
+      if (lives0 !== undefined && e.lives < lives0) ev.push({ k: 'life', t, x: Math.round(p.x), off: onLast }); lives0 = e.lives;
+    } } as never);
+    console.log(JSON.stringify({ bot, setting, stage, seed, pass: r.end === 'shrine' && r.rescues === 0, lives: r.harms.filter((h: any) => h.kind === 'life').length, rescues: r.rescues, ev }));
+  }
+}

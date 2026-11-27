@@ -1,10 +1,12 @@
 /**
  * The build-time check (PERFORMANCE-RULES §1, the lead 11-06): a rolled stage is built on the main thread when Play starts, so its build
- * is judged as a phone feels it. Chromium with the CPU slowed 4x (CDP Emulation.setCPUThrottlingRate), 1-1 built on N of its proven seeds,
+ * is judged as a phone feels it. Chromium with the CPU slowed 4x (CDP Emulation.setCPUThrottlingRate), 1-1 (or BUILDCHECK_STAGE, any listed
+ * stage, on its own kit) built on N of its proven seeds,
  * Normal and Easy (one build a play: Play draws a proven seed and replays its plan, gen2/seedList.ts buildPlayStage); FAIL when the p95 of
  * either is over the budget.
  *   node tools/perf/buildcheck.mjs              (about 2-4 minutes; exit 1 over budget)
  *   BUILDCHECK_BUDGET=<ms> BUILDCHECK_N=<n>      (the budget, 150 ms; the builds a setting, 30)
+ *   BUILDCHECK_STAGE=1-4                         (another listed stage, ENG-26h: a tower's walk-off judge is paid at load)
  */
 import { spawn } from 'node:child_process';
 import net from 'node:net';
@@ -17,6 +19,7 @@ const root = path.join(here, '..', '..');
 const { chromium } = createRequire(import.meta.url)('playwright');
 const BUDGET = Number(process.env.BUILDCHECK_BUDGET ?? 150);
 const N = Number(process.env.BUILDCHECK_N ?? 30);
+const STAGE = process.env.BUILDCHECK_STAGE ?? '1-1';
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
 const port = await new Promise((res) => { const s = net.createServer(); s.listen(0, '127.0.0.1', () => { const p = s.address().port; s.close(() => res(p)); }); });
 const vite = spawn('npx', ['vite', '--port', String(port), '--host', '127.0.0.1', '--strictPort'], { cwd: root, stdio: ['ignore', 'pipe', 'pipe'], detached: true });
@@ -30,7 +33,7 @@ try {
   if (!/Local:|ready in/.test(out)) throw new Error('vite did not start: ' + out);
   const browser = await chromium.launch();
   const page = await browser.newPage();
-  await page.goto(`http://127.0.0.1:${port}/tools/perf/buildtime.html`);
+  await page.goto(`http://127.0.0.1:${port}/tools/perf/buildtime.html?stage=${encodeURIComponent(STAGE)}`);
   await page.waitForFunction(() => document.getElementById('s')?.textContent === 'ready', null, { timeout: 120000 });
   // (one build warm before the clock: the modules' first run, as a phone's first Play after the map would have)
   await page.evaluate(() => window.buildTimes(1, 'normal'));
@@ -46,7 +49,7 @@ try {
     lines.push(`  ${d}: p50 ${s[Math.floor(s.length / 2)].toFixed(0)} ms, p95 ${p.toFixed(0)} ms, max ${s[s.length - 1].toFixed(0)} ms (${N} builds, CPU x4)${p > BUDGET ? `  OVER ${BUDGET} ms` : ''}`);
   }
   await browser.close();
-  console.log(`buildcheck (1-1, budget p95 <= ${BUDGET} ms at CPU x4): ${over ? 'FAIL' : 'PASS'}\n${lines.join('\n')}`);
+  console.log(`buildcheck (${STAGE}, budget p95 <= ${BUDGET} ms at CPU x4): ${over ? 'FAIL' : 'PASS'}\n${lines.join('\n')}`);
   code = over ? 1 : 0;
 } catch (e) {
   console.error('buildcheck: could not run:', e.message);

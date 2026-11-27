@@ -1673,7 +1673,9 @@ export function w1World(): WorldKit {
     // (the first trap's line is a TEACH line: Dot waits for a clear moment, keeps it up its reading time, and no stock lesson cuts it;
     // so are its second half, the lesson's "it only gives him a fright", and the first branch with no vine (the first appearance of
     // beating a snake without one): on Normal's default Tips they were hidden, P13's find, the lead 11-12)
-    teachTips: ['traps', 'bare'],
+    // (and 1-1's mound steps, each a wall he hops: "Up the bank! Step to step" is the first stage's own coaching, dropped on Tips as
+    // chatter, ENG-JETTY's scan, R-165.412)
+    teachTips: ['traps', 'bare', 'hint.1-1.bank'],
   };
   // (the traps are armed by the animal that stays under them: the kit's own emitters and spawn hook, w1Cast.ts armedTraps)
   // (R-165.226: each stone or stump drawn on its ground, its piece and its place settled in the lay, w1CutArt.ts settleCut)

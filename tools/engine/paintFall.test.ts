@@ -213,3 +213,29 @@ test('R-165.441: a hung bank is not the ground: the soil\'s darkening line under
   assert.deepEqual(line(500), line(0), 'under the summit the line is the floor\'s');
   assert.deepEqual(line(700), line(1200));
 });
+
+// INT-R5d planted (R-165.441 x the stacked legs): a bank a stacked leg's ceiling runs under is never hung; the ceiling owns its end. The
+// plant is 2-7's normal layout 0 bank #1 (x 3881-4521, y 747, h 170) over the race leg (y 1500), its ceiling's line at about 1040-1270:
+// hung, its soil stopped at 917 over the backdrop, 120+ over the line where the ceiling's own underside is drawn (INT-R5d's stills).
+const { soilShorts } = await import('./paintFall.ts');
+const { STEP } = await import('../../src/game/groundStack.ts');
+test('stacked legs RED: a hung bank over a ceiling stops short of its line (soilShorts); GREEN: with the ceilings it is not hung, its soil reaches the line, and the leg under the line is clear (soilOvers)', () => {
+  const up = bank(3881, 747, 640, 170), race = bank(3700, 1500, 1100, 190);
+  const st = [up, race];
+  paintOn(st);
+  const n = Math.floor((4700 - 3800) / STEP) + 1;
+  const cs = [{ x0: 3800, x1: 3800 + (n - 1) * STEP, ys: Array.from({ length: n }, () => 1100), lower: [race] }];
+  // (the plant: the soil fix alone, no ceilings: hung, short of the line by 1100 - 917 = 183)
+  assert.equal(bankOpen(up, st)!.open.underside, true, 'without the ceilings the soil fix hangs it (the gap is 583)');
+  const red = soilShorts(st, cs, groundSoil(st));
+  assert.equal(red.length, 1, JSON.stringify(red));
+  assert.equal(red[0].bank.id, up.id);
+  assert.ok(red[0].gap >= 150 && red[0].short > 400, JSON.stringify(red[0]));
+  // (drawn with the ceilings: not hung, its soil runs on to the line and past it, where drawGround clips it)
+  assert.equal(bankOpen(up, st, undefined, cs)!.open.underside, undefined);
+  assert.deepEqual(soilShorts(st, cs), []);
+  // (the race leg's top is under the line: the clipped air, no soil over it)
+  assert.deepEqual(soilOvers(st, groundSoil(st, undefined, cs), cs), []);
+  // (and the clip is what clears it: the same soil judged with no ceiling covers the race leg's top)
+  assert.equal(soilOvers(st, groundSoil(st, undefined, cs), []).length, 1);
+});

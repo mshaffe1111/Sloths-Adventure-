@@ -41,7 +41,8 @@ for (const row of Object.keys(TOY_PADS) as ToyPad[]) {
       assert.ok(crossed(r, row), `${tier} ${setting}: ${told(r, row)}`);
     });
   }
-  test(`planted: with ${SKILL_OF[row]} off, the ${row} pond takes a bot the skill carries across`, () => {
+  // (the rise plant lives on 2-2 below: R-165.432, ENG-PLANT-CI session 12)
+  if (row !== 'rise') test(`planted: with ${SKILL_OF[row]} off, the ${row} pond takes a bot the skill carries across`, () => {
     // (BUILD-22: over PLANT_VARIANTS runs a tier, the skill-off run fails where the SAME run with the skill on crossed; one run a tier
     // was luck: once the floor-read fault was fixed (padRead), the breath plant went green on variant 1 by arrival timing alone)
     const on = new Map<string, boolean>();
@@ -63,6 +64,35 @@ for (const row of Object.keys(TOY_PADS) as ToyPad[]) {
     }
   });
 }
+
+// (ENG-PLANT-CI session 12, R-165.432 re-plant at the SAME bar, the lead's ruling (A): from CI-14 bfbe09494 on (bisected: green through
+//  CI-13) the rise fixture's plant has no live case: on CI-15 0ec009b4d, middle / child / expert, both settings, variants 1-40, waitRise
+//  on and off, 200 runs, none crossed on and failed off (CI-14 reads the latch afresh at the stone, the fresh read waits for the rise).
+//  The search on the stages that lay beat pads (2-2 and 2-5, World 2's only ones: ci-tools/s12-padstages), seeds 1-40, castRun as here,
+//  waitRise on and off (reference/qa-reports/ENG-PLANT/data/ci/s12/rise/; stopped once 2-2 gave live cases: 2-2 kid, adult and child both
+//  settings, 239 rows; 2-5 child N 1-39, kid N 1-25, nothing moved): on 2-2 the child on Normal, seeds 6, 22 and 24, crosses clean with
+//  the skill and is rescued without it (and N 4, 10, 12, 19, 28, 32, 38 lose 5+ more lives); the extra lives are at the pads (seed 24:
+//  beat pads #86 / #87 at x 21,7xx, weight pads #114 - #116 at x 28,6xx - 29,1xx), the skill's own work)
+const RISE_CASES: Array<[string, 'normal' | 'easy', number]> = [['child', 'normal', 6], ['child', 'normal', 22], ['child', 'normal', 24]];
+
+test('planted: with waitRise off, 2-2 takes the child on Normal the skill carries across (6, 22, 24: clean with it, rescued without)', async () => {
+  const { castRun } = await import('./castBots.ts');
+  const clean = (r: { end: string; rescues: number }) => r.end === 'shrine' && r.rescues === 0;
+  const said = (r: { bot: string; setting: string; seed: number; end: string; rescues: number; lives: number }) => `${r.bot} ${r.setting} seed ${r.seed}: ${r.end}, rescues ${r.rescues}, lives ${r.lives}`;
+  for (const [bot, setting, seed] of RISE_CASES) {
+    const r = castRun(bot, setting, '2-2', seed);
+    assert.ok(clean(r), `waitRise on, not clean: ${said(r)}`);
+  }
+  PAD_SKILL.waitRise = false;
+  try {
+    for (const [bot, setting, seed] of RISE_CASES) {
+      const r = castRun(bot, setting, '2-2', seed);
+      assert.ok(!clean(r), `waitRise off, still clean: ${said(r)}`);
+    }
+  } finally {
+    PAD_SKILL.waitRise = true;
+  }
+});
 
 test("OUT-AND-BACK's pin: he is followed out to the stone first, and once he has stood there never back out to it from the way back (FIX-22: 2-2 Easy seed 12, a middle bot hopped stone to pad and back for 20 s)", async () => {
   const { Progress } = await import('./firsttimer.ts');

@@ -1,0 +1,16 @@
+TAP version 13
+# Subtest: pacer: it waits, sets off as he steps onto the race leg, docks, and a fall never pays: a respawn puts him on his first pass's margin less the beat, and the excess back at the fall is eased off
+ok 1 - pacer: it waits, sets off as he steps onto the race leg, docks, and a fall never pays: a respawn puts him on his first pass's margin less the beat, and the excess back at the fall is eased off
+  ---
+  duration_ms: 168.016197
+  type: 'test'
+  ...
+1..1
+# tests 1
+# suites 0
+# pass 1
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 498.777451

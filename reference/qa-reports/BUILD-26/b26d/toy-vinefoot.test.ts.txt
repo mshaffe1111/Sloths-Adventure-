@@ -1,0 +1,37 @@
+// NOT RUN BY CI: the toy whose PLANT is not RED yet (BUILD-26d). The fixed run climbs; the planted run ALSO climbs, because in the toy
+// his fallback direction (firsttimer.ts:2230 fdir, from `dir`) already points at the vine. In the real 2-6 runs `dir` was -1 (away).
+// Next: find what set dir = -1 at x 235 on seed 8 (t 57.5) and build that into the toy, then append it to castBots.test.ts.
+
+// At a climbing vine's foot with no ledge over him, the tier bot's jump for the way up goes toward the vine (or straight up), never his
+// facing: a jump away from a trunk never grabs it (engine.ts wantGrab). 2-6 child Normal 3, 5, 7, 8, 18 (BUILD-26d): from x 235 on the
+// edge-wheel turn's ledge (x 225-465), 15 px left of its vine (x 250), facing left, he doubled left off the ledge's end onto the street
+// 351 px down, 8 times, and was rescued. A toy: the ledge, its vine up to a floor 505 px over it, the street under; the plant (the skill
+// taken away) must fall off the end, or the toy no longer shows the fault.
+test('at a climbing vine\'s foot, facing away from it, the tier bot jumps for the vine and climbs: never off the ledge\'s end', async () => {
+  const { FirstTimerRun, FT_CHILD } = await import('./firsttimer.ts');
+  const plats = [
+    { id: 1, x: 225, y: 1000, width: 240, height: 24, type: 'solid' },
+    { id: 2, x: 0, y: 495, width: 1300, height: 24, type: 'solid' },
+    { id: 3, x: 0, y: 1351, width: 1300, height: 100, type: 'solid' },
+  ];
+  const vine = { id: 1, x: 250, topY: 495, bottomY: 1000, swaySpeed: 0, swayPhase: 0, vineType: 'tree_climb' };
+  const route = [
+    ...Array.from({ length: 9 }, (_, i) => ({ x: 440 - i * 24, y: 1000 })),
+    ...Array.from({ length: 22 }, (_, i) => ({ x: 250, y: 1000 - i * 24 })),
+    ...Array.from({ length: 11 }, (_, i) => ({ x: 250 + i * 24, y: 495 })),
+  ];
+  const play = (plant: boolean) => {
+    const run = new FirstTimerRun('1-1', 1, FT_CHILD, { route, cap: 12, rescueAfter: 100 });
+    run.sim.bare(plats as never, [vine as never]);
+    run.sim.stand(235, 1000);
+    run.sim.p.facing = -1;
+    if (plant) (run as unknown as { climbUpVine: () => undefined }).climbUpVine = () => undefined;
+    run.prog.relocate(run.sim.p);
+    run.play();
+    return run.sim.p;
+  };
+  const up = play(false);
+  assert.ok(up.y < 600, `he climbs the vine to the floor over it (ends at x ${Math.round(up.x)}, y ${Math.round(up.y)})`);
+  const planted = play(true);
+  assert.ok(planted.y > 1300, `PLANT: with the skill taken away he falls off the ledge's end (ends at x ${Math.round(planted.x)}, y ${Math.round(planted.y)})`);
+});

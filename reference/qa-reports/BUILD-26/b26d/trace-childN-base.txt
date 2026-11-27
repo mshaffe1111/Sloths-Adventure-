@@ -1,0 +1,34 @@
+   wheel teach cx 1146 cy 6032 R 160 way -1 jetty 5 street 6
+   wheel edge cx 686 cy 4272 R 180 way 1 jetty 27 street 28
+   wheel top cx 882 cy 3084 R 180 way 1 jetty 44 street 45
+   wheel edge cx 430 cy 1886 R 180 way 1 jetty 55 street 56
+   wheel great cx 1101 cy 879 R 200 way -1 jetty 67 street 68
+== child normal seed 3: shrine 146.5 s rescues 1
+   t 58.5 x 159 y 5276 dur 9.5 [#82 solid/branch x 132-1208 y 5280; #93 solid/branch x 24-132 y 5280; #94 solid/branch x 0-132 y 5280] a drop of 307 px ahead, water ahead, the way on is 297 px down
+   t 68 x 233 y 4856 dur 0 [#22 solid/branch x 246-486 y 4929] fell back down from here 8 times
+   wheel teach cx 1146 cy 6022 R 160 way -1 jetty 5 street 6
+   wheel edge cx 686 cy 4270 R 180 way 1 jetty 27 street 28
+   wheel top cx 886 cy 3082 R 180 way 1 jetty 44 street 45
+   wheel edge cx 430 cy 1884 R 180 way 1 jetty 55 street 56
+   wheel great cx 1101 cy 879 R 200 way -1 jetty 67 street 68
+== child normal seed 5: shrine 162.1 s rescues 1
+   t 41.9 x 1340 y 5279 dur 10.8 [#17 solid/branch x 798-1058 y 5539; #19 solid/branch x 1058-1358 y 5539; #20 solid/branch x 1308-1628 y 5278; #80 solid/branch x 1358-1700 y 5539; #82 solid/branch x 132-1208 y 5278] in a dip 323 px deep, a drop of 261 px ahead, water ahead
+   t 65.1 x 348 y 5279 dur 11.8 [#15 solid/branch x 414-714 y 5539; #16 solid/moss_stone x 518-629 y 5489; #82 solid/branch x 132-1208 y 5278; #93 solid/branch x 24-132 y 5278; #94 solid/branch x 0-132 y 5278] a drop of 301 px ahead, water ahead, the way on is 294 px down
+   t 76.9 x 401 y 4928 dur 0 [#22 solid/branch x 246-486 y 4927; #26 drift/log x 558-728 y 4955] fell back down from here 8 times
+   wheel teach cx 1146 cy 6346 R 160 way -1 jetty 5 street 6
+   wheel edge cx 1012 cy 4268 R 180 way -1 jetty 28 street 29
+   wheel top cx 809 cy 3080 R 180 way -1 jetty 45 street 46
+   wheel edge cx 1270 cy 1882 R 180 way -1 jetty 56 street 57
+   wheel great cx 599 cy 879 R 200 way 1 jetty 68 street 69
+== child normal seed 7: shrine 180.3 s rescues 1
+   t 70.4 x 243 y 4812 dur 0 [#22 solid/branch x 114-414 y 4925; #24 drift/log x 244-414 y 4953; #25 drift/log x 486-656 y 4953] fell back down from here 8 times
+   t 70.4 x 494 y 4341 dur 14.2 [] an open drop ahead, water ahead
+   wheel teach cx 1146 cy 6021 R 160 way -1 jetty 5 street 6
+   wheel edge cx 665 cy 4270 R 180 way 1 jetty 27 street 28
+   wheel top cx 862 cy 3082 R 180 way 1 jetty 44 street 45
+   wheel edge cx 430 cy 1884 R 180 way 1 jetty 55 street 56
+   wheel great cx 1101 cy 879 R 200 way -1 jetty 67 street 68
+== child normal seed 8: shrine 142.7 s rescues 1
+   t 56 x 106 y 5278 dur 9.7 [#82 solid/branch x 111-1187 y 5278; #93 solid/branch x 24-111 y 5278; #94 solid/branch x 0-111 y 5278] a drop of 302 px ahead, water ahead, the way on is 301 px down
+   t 65.7 x 250 y 4835 dur 0 [#22 solid/branch x 225-465 y 4927; #26 drift/log x 537-707 y 4955] fell back down from here 8 times
+EXIT 0

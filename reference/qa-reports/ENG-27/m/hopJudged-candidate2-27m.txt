@@ -1,0 +1,11 @@
+# seed 5: 10 judged hops pressed (edgeWait, race); flown not as judged 3, came down elsewhere 0
+#   race q\#59 judged t 94.50 x 9770 lag 0 hold 0.200 | flown t 94.50 x 9770 hold 0.200 double | came down \#59
+#   race q\#82 judged t 160.87 x 4198 lag 0 hold 0.200 | flown t 160.87 x 4198 hold 0.200 double | came down \#82
+#   race q\#88 judged t 176.93 x 2779 lag 0 hold 0.200 | flown t 176.93 x 2779 hold 0.200 double | came down \#88
+# seed 2: 16 judged hops pressed (edgeWait, upstream, race); flown not as judged 4, came down elsewhere 0
+#   race q\#61 judged t 105.43 x 9349 lag 0 hold 0.200 | flown t 105.43 x 9349 hold 0.208 double | came down \#61
+#   race q\#66 judged t 110.57 x 7970 lag 0 hold 0.200 | flown t 110.57 x 7970 hold 0.200 double | came down \#66
+#   race q\#72 judged t 125.33 x 6639 lag 0 hold 0.200 | flown t 125.33 x 6639 hold 0.200 double | came down \#72
+#   race q\#82 judged t 153.53 x 4046 lag 0 hold 0.200 | flown t 153.53 x 4046 hold 0.246 double | came down \#82
+# pass 0
+# fail 2

@@ -1,0 +1,67 @@
+ℹ red: x 28782..28989, top 1019
+ℹ red: x 34793..35026, top 971
+ℹ red: x 32210..32412, top 430
+ℹ red: x 34586..34836, top 430
+ℹ red: arc.single-gap-over: single-gap at x 400 (s1): 140 px, past a flick's 132
+ℹ red: arc.single-gap-over: single-gap at x 400 (s1): 150 px, past a flick's 143
+ℹ red: arc.single-rise-over: single-rise at x 400 (s1): 120 px, over a flick's climb 117
+ℹ red: block.lesser-passes: double-test-gap at x 400 (s1): one jump crosses 246, the block is 200
+ℹ red: block.lesser-passes: double-teach-rise at x 400 (s1): one jump climbs 123, the block is 120
+ℹ red: block.lesser-passes: bounce-air-test at x 400 (s1): a bounce alone climbs 223, the block is 212
+ℹ red: block.lesser-passes: bounce-teach at x 400 (s1): one jump climbs 123, the block is 120
+ℹ red: band.out: bounce-teach at x 400 (s1): 168 px, under the band's 174
+ℹ red: band.out: bounce-teach at x 400 (s1): 186 px, over the band's 180
+ℹ red: band.out: double-teach-first at x 400 (s1): 136 px, over the band's 132
+ℹ red: band.out: double-teach-first at x 400 (s1): 127 px, under the band's 128
+ℹ red: block.spare-thin: double-teach-first at x 400 (s1): 3 px over what one jump reaches (123), under 5
+ℹ red: block.spare-thin: double-teach-rise at x 400 (s1): 3 px over what one jump reaches (123), under 5
+ℹ red: block.taught-fails: double-test-gap at x 400 (s1): 300 px, past the taught double-flick's 283
+ℹ red: block.taught-fails: bounce-air-test at x 400 (s1): 330 px, past the taught bounce-air's 317
+ℹ red: band.out: double-teach-rise at x 400 (s1): 142 px, over the band's 140
+ℹ red: band.out: bounce-teach at x 400 (s1): 228 px, over the band's 180
+ℹ red: band.out: double-test-gap at x 400 (s1): easy has no double-test-gap (band 'none')
+ℹ red: headroom.cuts-arc: single-gap at x 400 (s1): 120 px clear over the take-off, the single-flick needs 145
+ℹ red: floor.unmarked: an unmarked floorless gap at x 2260..2600
+ℹ red: drop.lethal-in-no-lethal: a fall into water costs a life at x 1000..1300 on a no-lethal stage
+ℹ red: drop.unwarned: the lethal drop at x 1000..1300 has no Dot line
+ℹ red: drop.unwarned: the lethal drop at x 1000..1300 has no sign
+ℹ red: drop.look-lies: the soft drop at x 1000..1300 is drawn as water-art
+ℹ red: drop.look-lies: the lethal drop at x 1000..1300 is drawn as ground
+ℹ red: drop.untyped: a gap at x 1000..1300 the builder laid with no Drop record
+ℹ red: teach.double-no-gap-after: no gap only the second jump crosses within 1,500 px of the teach (x 0)
+ℹ red: teach.double-gap-unsafe: nothing under the double gap at 1000
+ℹ red: hazard.untaught: a hurt drop at x 1000..1260 before the 'spikes' lesson has shown it (its showing piece ends at x 1100)
+ℹ red: hazard.untaught: a hurt drop at x 1000..1260 before the 'spikes' lesson has shown it (its showing piece ends at x 1100)
+ℹ red: landing.dead-zone: a dead-zone landing at x 1080..1170 (top 672): no walk-off, full jump or bounce reaches it with margin and its arc uncut
+ℹ red: bounce.no-purpose: a mushroom at x 300 whose bounce lands nowhere worth going (no higher road, no find, no mushroom that leads to one) | bounce.no-purpose: a mushroom at x 500 whose bounce lands nowhere worth going (no higher road, no find, no mushroom that leads to one) | bounce.no-purpose: a mushroom at x 700 whose bounce lands nowhere worth going (no higher road, no find, no mushroom that leads to one)
+ℹ red: landing.dead-zone: a dead-zone landing at x 1080..1170 (top 672): no walk-off, full jump or bounce reaches it with margin and its arc uncut
+ℹ red: bounce.no-purpose: a mushroom at x 300 whose bounce lands nowhere worth going (no higher road, no find, no mushroom that leads to one) | bounce.no-purpose: a mushroom at x 500 whose bounce lands nowhere worth going (no higher road, no find, no mushroom that leads to one) | bounce.no-purpose: a mushroom at x 700 whose bounce lands nowhere worth going (no higher road, no find, no mushroom that leads to one)
+ℹ red: chain.mount: the bounce cap at x 700 stands 160 px over the ground he mounts it from (x 0..1000), over a plain hop's 80 (single-rise band)
+ℹ red: chain.mount: the bounce cap at x 700 stands 160 px over the ground he mounts it from (x 0..1000), over a plain hop's 63 (single-rise band)
+ℹ red: the first run (seed 7) builds ccc on easy, recorded bbb
+ℹ pad tap rise: 62 px before, 97 px at 5
+ℹ Easy: 1 grown, the piece passed on 2 plain jumps
+ℹ w1-double-teach easy: before stopped at x 6152 y 1209; 2 grown, after passed
+ℹ w1-dip-double-teach normal: before stopped at x 6924 y 1488; 7 grown, after passed
+ℹ w1-bank-double-teach normal: before stopped at x 5812 y 1096; 7 grown, after passed
+ℹ 943 openings; the tightest: skySweep, rocks whole, she is at 520, he ducked under her at 220, open 2.5 s for a 1.00 s reach
+ℹ rock slam: open 3.40 s, needs 3.13 s at most (rock 0 breaking, mark 0 left, behind the rock: her back)
+ℹ floor: open 2.80 s, needs 1.70 s at most (floor crash, head left, he stepped right: her head)
+ℹ screech: open 2.90 s, needs 2.50 s at most (screech from rock 0, he is shoved to the right: her head)
+ℹ snatch: open 2.20 s, needs 2.03 s at most (snatch, rocks whole, she is at 200, he stepped 200 off the mark at 400)
+ℹ featherVolley: open 3.10 s, needs 2.73 s at most (featherVolley, rocks whole, she is at 500, he dodged feathers 440 away at 940)
+ℹ wingGust: open 3.40 s, needs 3.27 s at most (wingGust, rocks whole, she is at 875, he blown from 420 away at 263)
+ℹ skySweep: open 2.50 s, needs 2.40 s at most (skySweep, rocks whole, she is at 520, he ducked under her at 220)
+ℹ talonRake: open 2.50 s, needs 2.37 s at most (talonRake, rocks whole, she is at 479, he ran back from a lunge from 230 at 968)
+ℹ 60 s, 6 slams, 3 rocks broken; 66 s, 5 slams, 2 rocks broken; 61 s, 6 slams, 3 rocks broken; 81 s, 6 slams, 3 rocks broken; 70 s, 6 slams, 3 rocks broken
+ℹ Normal: 66 s, 67 s, 68 s, 87 s, 57 s, 58 s, 55 s
+ℹ Easy: 49 s, 71 s, 37 s, 38 s, 38 s, 69 s, 53 s
+ℹ tests 1353
+ℹ suites 0
+ℹ pass 1353
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 1723118.073507
+EXIT 0

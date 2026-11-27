@@ -1,0 +1,14 @@
+#!/bin/bash
+# usage: set1.sh <tree> <outdir>: the run-up rows, the known flips, the 11 c4-pass kid rows
+T=$1; O=$2; mkdir -p $O; cd $T
+run() { npx tsx tools/inspect/castBots.ts --stage $1 --seeds $4 --bots $2 --setting $3 --par 2 --rows "$O/$1-$2-$3.jsonl" > "$O/$1-$2-$3.log" 2>&1; echo "$1 $2 $3 exit $?"; }
+run 2-4 adult normal 6,8,24,32
+run 2-4 child easy 23,11
+run 2-4 child normal 39,8
+run 2-1 child normal 11
+run 2-1 child easy 2
+run 2-2 adult normal 4,24
+run 2-1 kid normal 19,21
+run 2-2 kid easy 37
+run 2-2 kid normal 3,33
+run 2-4 kid easy 2,12,13,19,20,35

@@ -250,20 +250,23 @@ export function petalTrail<T extends GeneratedStage>(stage: T, unreachable: Read
   for (const c of all) if (unreachable.has(c.id)) gone.add(c);
   n.unreachable = gone.size;
   const live = () => all.filter((c) => !gone.has(c));
-  const arc = offArc(stage, live());
+  // (a letter in a door's slot is the door's, not the trail's (post.ts; 2-7): no thinning rule takes it, so the trail thins round it.
+  //  Planted: the crowded-screen rule took a letter, the lowest petal nearest its neighbours, and the door's slot stood empty)
+  const trail = () => live().filter((c) => c.mark !== 'letter');
+  const arc = offArc(stage, trail());
   arc.forEach((c) => gone.add(c));
   n.offArc = arc.size;
   // (again until none is left: every other one of a long row can leave its last two close)
   for (let k = 0; k < 4; k++) {
-    const rows = rowExtras(live());
+    const rows = rowExtras(trail());
     if (!rows.size) break;
     rows.forEach((c) => gone.add(c));
     n.rows += rows.size;
   }
-  const clump = clumpExtras(live());
+  const clump = clumpExtras(trail());
   clump.forEach((c) => gone.add(c));
   n.clumps = clump.size;
-  const crowd = screenExtras(live());
+  const crowd = screenExtras(trail());
   crowd.forEach((c) => gone.add(c));
   n.crowded = crowd.size;
   if (gone.size) stage.collectibles = stage.collectibles.filter((c) => !gone.has(c));

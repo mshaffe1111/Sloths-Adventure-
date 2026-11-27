@@ -1,0 +1,17 @@
+const tree = process.argv[2];
+await import(`${tree}/src/game/headlessDom.ts`);
+const F = await import(`${tree}/tools/inspect/firsttimer.ts`);
+const { PHYS } = await import(`${tree}/src/game/physics.ts`);
+const c = F.raceCandidates(F.FT_EXPERT);
+let n = 0, any = 0;
+for (const sp of [0, 60, 100, 140]) for (const vx0 of [0, 100, 200, 300]) for (let dx = 20; dx <= 500; dx += 10) for (const dy of [-20, 0, 10, 30]) for (const w of [100, 140, 200]) {
+  const q = { id: 1, x: 100 + dx, y: 500 + dy, width: w, height: 20, type: 'solid' } as any;
+  const at = (t: number) => q.x + sp * t;
+  const others = { list: [q], at: () => at, w: 40, easy: false, assist: 0, land: 0, glide: true };
+  const air = c.map((h: any) => F.gateAirtime(q, at, 100, 500, 1, h, 0, vx0, 50, PHYS.doubleV, undefined, others));
+  if (air[4] !== null) any++;
+  const firstLand = c.findIndex((_: any, i: number) => air[i] !== null);
+  const pick = F.racePick(c, (h: any) => air[c.indexOf(h)]);
+  if (firstLand === 4 && pick !== c[4] && n++ < 10) console.log(`sp ${sp} vx ${vx0} dx ${dx} dy ${dy} w ${w}: new ${pick.kind} ${pick.hold.toFixed(2)} d2 ${pick.d2.toFixed(2)} airs ${air.map((a: any) => a === null ? '-' : a.toFixed(2)).join(' ')}`);
+}
+console.log('found', n, 'single 0.70 lands in', any);

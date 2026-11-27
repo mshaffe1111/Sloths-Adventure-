@@ -1,0 +1,22 @@
+// padRead tag probe: per frame in [t0,t1]: intend's line, padRead's return line, here / next pad states
+const [T, stage, bot, setting, seedS, t0s, t1s, ...ids] = process.argv.slice(2);
+const t0 = Number(t0s), t1 = Number(t1s);
+const G = globalThis as any;
+G.__tgv = (n: number, v: unknown) => ((G.__TG = n), v);
+G.__tgp = (n: number, v: unknown) => ((G.__TP = n), v);
+await import(T + '/src/game/headlessDom.ts');
+const ft: any = await import(T + '/tools/inspect/firsttimer.ts');
+const cb: any = await import(T + '/tools/inspect/castBots.ts');
+const pads: any = await import(T + '/src/game/pieces/padPiece.ts').catch(() => ({}));
+const P = ft.FirstTimerRun.prototype, it = P.intend;
+P.intend = function (this: any) {
+  G.__TG = 0; G.__TP = 0;
+  const o = it.call(this);
+  if (this.t >= t0 && this.t <= t1) {
+    const p = this.sim.p;
+    const st = ids.map((id) => { const q = this.sim.platforms.find((x: any) => x.id === Number(id)); if (!q) return id + ':?'; const s = pads.padShows?.(q); return `#${id}[${q.x.toFixed(0)},${(q.x + q.width).toFixed(0)} y${q.y.toFixed(0)}]${q.broken ? 'B' : ''}${q.pad ? ' ' + (q.pad.by ?? '') + '/' + (q.pad.on ?? '') : ''}${s ? ' s' + (s.solid ? 1 : 0) + 't' + (+s.tell).toFixed(2) : ''}${q.fragileTimer !== undefined ? ' ft' + (+q.fragileTimer).toFixed(2) : ''}`; });
+    const q5 = this.sim.platforms.find((x: any) => x.id === 115); const rd = q5?.pad?.clock !== undefined ? (this.e as any).clock.read(q5.pad.clock, q5.pad.shift) : null; console.log(this.t.toFixed(3), 'seen', (+this.padSeen).toFixed(2), rd ? rd.phase + ':' + (+rd.left).toFixed(2) : '-', 'L' + G.__TG, 'P' + G.__TP, JSON.stringify(o), 'x', p.x.toFixed(1), 'g', p.grounded ? 1 : 0, 'on', this.sim.standingOn, st.join(' '));
+  }
+  return o;
+};
+ft.firstTimer(stage, Number(seedS), cb.CAST_BOTS[bot][setting], { cap: t1 + 0.1, dotSetting: true });

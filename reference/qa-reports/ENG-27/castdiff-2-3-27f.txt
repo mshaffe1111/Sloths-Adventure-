@@ -1,0 +1,11 @@
+castBots 2-3 seeds 1-40, origin/t-build-23 66775dabf + SKILLS.fromTakeoff (jumpFor hunk only) vs BUILD-23e castbots23e-rows.jsonl
+kid    normal  rows 40 moved   0  pass 0/40 -> 0/40  flips -
+kid    easy    rows 40 moved   0  pass 0/40 -> 0/40  flips -
+adult  normal  rows 40 moved   0  pass 39/40 -> 39/40  flips -
+adult  easy    rows 40 moved   0  pass 40/40 -> 40/40  flips -
+child  normal  rows 40 moved  38  pass 40/40 -> 39/40  flips 30:P->F
+child  easy    rows 40 moved  37  pass 40/40 -> 40/40  flips -
+middle normal  rows 40 moved  33  pass 40/40 -> 40/40  flips -
+middle easy    rows 40 moved  38  pass 40/40 -> 40/40  flips -
+expert normal  rows 40 moved  37  pass 40/40 -> 40/40  flips -
+total moved 183 of 360

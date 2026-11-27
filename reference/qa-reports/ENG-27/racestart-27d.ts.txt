@@ -1,0 +1,15 @@
+import '../../src/game/headlessDom.ts';
+import { homeRun } from './homeToys.ts';
+import { HOME_CODE } from '../../src/game/gen2/toyHome.ts';
+let piece: any, f = 0, lives: number | undefined, deaths = 0, startF = -1;
+const out: string[] = [];
+homeRun('middle', 'easy', 2, 1, { onFrame: (sim: any) => {
+  f++;
+  const e = sim.e, p = e.player;
+  piece ??= e.pieces.find((q: any) => q.kind === 'pacer');
+  if (lives !== undefined && e.lives < lives) deaths++;
+  lives = e.lives;
+  if (piece.clock !== null && startF < 0) startF = f;
+  if ((f >= 2570 && f <= 2590) || (f > 1700 && f < 2500 && f % 100 === 0)) out.push(`f ${f} x ${Math.round(p.x)} y ${Math.round(p.y)} down ${e.down ? e.down.t.toFixed(2) : '-'} clock ${piece.clock?.toFixed(2)} cp ${e.checkpoint?.x},${e.checkpoint?.y} soft ${JSON.stringify(e.softAt)} on ${e.softOn} hf ${e.currentStage.heartFalls?.length}`);
+} } as never, HOME_CODE);
+console.log(out.slice(0, 90).join('\n'));

@@ -410,6 +410,9 @@ export function kitLib18(): WorldKit {
       required: {},
       tips: { ...M.tips, ...Object.fromEntries((Object.keys(LINES_18) as Array<keyof typeof LINES_18>).map((q) => [lineId(q), LINES_18[q]])) },
       teachTips: [...(M.teachTips ?? []), ...(['nut', 'fruit', 'crack', 'fork'] as const).map(lineId)],
+      // (the stage's once-only story beats, each by the speaker its line table names: a story line on every help setting with the story switch
+      // on. As plain tips Tips dropped them, Normal's default: ENG-JETTY's scan, R-165.412)
+      storyTips: { ...(M.storyTips ?? {}), [lineId('mark')]: 'Dot' },
       graphs: { ...G, chunkSeconds: 120, list: [...G.list.filter((g) => g.archetype !== 'sprint'), ...Object.entries(ARC_18).map(([id, code]) => ({ id, archetype: 'sprint' as const, code }))], briefs: { ...G.briefs, [STAGE_18]: BRIEF_18 } },
     } } as WorldKit;
 }

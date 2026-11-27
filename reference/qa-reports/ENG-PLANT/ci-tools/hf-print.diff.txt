@@ -1,0 +1,29 @@
+diff --git a/tools/inspect/firsttimer.ts b/tools/inspect/firsttimer.ts
+index 38e910436..101a290fa 100644
+--- a/tools/inspect/firsttimer.ts
++++ b/tools/inspect/firsttimer.ts
+@@ -1103,6 +1103,7 @@ export function hopFlight(q: Platform, at: (t: number) => number, x: number, y:
+     }
+     // (ENG-27o: what the engine gets is the steer after the thumb's fumbles, thumbify's order: the drift held the same way, the travel
+     //  when turning, a slip, the late lift-off at a let-go (not on a press frame))
++    const pre = steer;
+     if (th && h.thumb) {
+       const k = i - 1, w = h.thumb;
+       if (steer !== 0 && steer === th.last) th.driftPx = Math.min(30, th.driftPx + w.drift[k]);
+@@ -1131,6 +1132,7 @@ export function hopFlight(q: Platform, at: (t: number) => number, x: number, y:
+     //  jumpHeld; the bot's jump pad: age < hold): ENG-27o, 2-7 home middle Easy 5: a one-frame tap judged cut on its press frame flew
+     //  20 px higher in the engine and came down past the log's end (x 15540, o/diag-easy5-q11-27o.txt); a 0.185 s hold cut a frame early
+     //  (x 13811, q49). The second press was already counted this way, ENG-27n)
++    if ((globalThis as any).__HF?.(q, t0)) console.log(`HF q${q.id} i${i} t${(t0 + age).toFixed(3)} x${b.x.toFixed(1)} y${b.y.toFixed(1)} vy${b.vy.toFixed(0)} pre${pre} steer${steer} lx${lx0.toFixed(1)} past${(dir * (b.x - (lx0 + q.width / 2))).toFixed(1)} w${q.width} hT${h.thumb ? 1 : 0} tA${thumb ? 1 : 0} rel${h.thumb ? h.thumb.release.slice(0, 9).join(",") : "-"} th ${th ? th.last + "/" + th.releaseLeft + "/" + (th.armed ? 1 : 0) + "/" + th.travel.toFixed(3) : "-"}`);
+     const held = age < until;
+     if (!held && b.vy < -PHYS.cutV) b.vy = -PHYS.cutV;
+     (i === 1 ? takeOffStep : airStep)(b, DT, steer, held);
+@@ -1162,7 +1164,7 @@ export function hopFlight(q: Platform, at: (t: number) => number, x: number, y:
+         // (and the ledge-landing forgiveness, a foot short by up to landPx (a log's too on Easy), taken either way he moves: Easy 5
+         //  x 12053, his centre 18 px past the bank's end, moving away, caught and nudged on, o/diag-easy5-q55-27o.txt)
+         const reach = drift && !others.easy ? 0 : others.land;
+-        if (b.x + others.w * side + reach > ox && b.x - others.w * side - reach < ox + o.width && prev <= o.y + drop && b.y >= o.y) return null;
++        if (b.x + others.w * side + reach > ox && b.x - others.w * side - reach < ox + o.width && prev <= o.y + drop && b.y >= o.y) { if ((globalThis as any).__HF?.(q, t0)) console.log(`CATCH i${i} by #${o.id} ${o.type} x${ox.toFixed(1)}..${(ox + o.width).toFixed(1)} y${o.y} side${side.toFixed(3)} reach${reach} w${others.w} drop${drop} b.x${b.x.toFixed(1)} b.y${b.y.toFixed(1)} prev${prev.toFixed(1)}`); return null; }
+       }
+     }
+     if (b.vy >= 0 && prev <= q.y && b.y >= q.y) {

@@ -1,0 +1,28 @@
+// every race-leg fall on pacerRespawn's grid: back-at-x margin minus at-fall margin (s, + = the fall paid), per bot: n, mean, worst gain
+const [tree] = process.argv.slice(2);
+await import(`${tree}/src/game/headlessDom.ts`);
+const { homeRun } = await import(`${tree}/tools/inspect/homeToys.ts`);
+const { SKILLS } = await import(`${tree}/tools/inspect/firsttimer.ts`);
+const { HOME_CODE, POST_CODE } = await import(`${tree}/src/game/gen2/toyHome.ts`);
+const { pacerMargin } = await import(`${tree}/src/game/pacer.ts`);
+const per: Record<string, number[]> = {}; const lines: string[] = [];
+for (const [name, code] of [['home', HOME_CODE], ['post', POST_CODE]] as const)
+  for (const bot of ['middle', 'expert', 'ride'] as const) for (const setting of ['normal', 'easy'] as const) {
+    if (bot === 'expert' && setting === 'easy') continue;
+    for (const seed of [1, 2, 3, 4, 5, 6]) {
+      const was = { ...SKILLS }; if (bot === 'ride') Object.assign(SKILLS, { race: false, rideOnly: true });
+      const out: any[] = []; let piece: any, mLast: number | null = null, lives: number | undefined;
+      try {
+        homeRun(bot === 'expert' ? 'expert' : 'middle', setting, seed, 1, { onFrame: (sim: any) => {
+          const e = sim.e, p = e.player; piece ??= (e.pieces ?? []).find((q: any) => q.kind === 'pacer'); if (!piece) return;
+          const m = piece.clock === null || piece.verdict ? null : pacerMargin(piece.pacer, p.x, piece.clock);
+          if (lives !== undefined && e.lives < lives && mLast !== null) out.push({ x: p.x, m: mLast });
+          for (const f of out) if (f.back === undefined && m !== null && !e.down && p.grounded && (p.x - f.x) * piece.pacer.dir >= 0) f.back = m;
+          mLast = m; lives = e.lives;
+        } } as never, code);
+      } finally { Object.assign(SKILLS, was); }
+      for (const f of out) if (f.back !== undefined) { const d = f.back - f.m; (per[bot] ??= []).push(d); lines.push(`${name} ${bot} ${setting} ${seed} x ${Math.round(f.x)} ${d >= 0 ? '+' : ''}${d.toFixed(2)}`); }
+    }
+  }
+for (const [b, v] of Object.entries(per)) console.log(`${b}: ${v.length} falls, ${v.filter((d) => d > 2 / 30).length} pay, mean ${(v.reduce((a, c) => a + c, 0) / v.length).toFixed(2)} s, worst gain ${Math.max(...v).toFixed(2)} s, worst cost ${Math.min(...v).toFixed(2)} s`);
+console.log(lines.join('\n'));

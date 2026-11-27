@@ -1,0 +1,123 @@
+castBots 2-5 seeds 1-40, SKILLS.fromTakeoff NARROWED: origin/t-build-25 6ddeeead2 + that hunk vs BUILD-25d castrows-2-5-25d.jsonl (ENG-27g)
+kid    normal  rows 40 moved   0  pass 0/40 -> 0/40  flips -
+kid    easy    rows 40 moved   0  pass 0/40 -> 0/40  flips -
+adult  normal  rows 40 moved   0  pass 40/40 -> 40/40  flips -
+adult  easy    rows 40 moved   0  pass 40/40 -> 40/40  flips -
+child  normal  rows 40 moved  24  pass 40/40 -> 40/40  flips -
+child  easy    rows 40 moved  21  pass 40/40 -> 40/40  flips -
+middle normal  rows 40 moved  24  pass 40/40 -> 40/40  flips -
+middle easy    rows 40 moved  22  pass 40/40 -> 40/40  flips -
+expert normal  rows 40 moved  13  pass 40/40 -> 40/40  flips -
+total moved 104 of 360
+
+Every moved row, traced (as 2-3's)
+moved 104; touched (a stand over water the skill changes, on the baseline run) 107
+moved but NOT touched: none
+touched but unmoved: 3 [('expert', 'normal', 1), ('expert', 'normal', 32), ('middle', 'normal', 3)]
+moved rows whose baseline single from that stand was put back (splashed) within 6 s: 46 of 104
+time moved (s): min -39.5, median -0.4, max 37.7; faster 56, slower 47
+moved rows (bot setting seed: time base -> new; the first stand over water the skill changes: x, run-up + gap; baseline put-backs after it)
+  child  easy    4: 292.2 -> 277.9  stand x 19733 lip 19768 run 35 + gap 113  put-backs 3
+  child  easy    7: 257.9 -> 295.6  stand x 8527 lip 8571 run 44 + gap 142  put-backs 0
+  child  easy    8: 264.4 -> 267.5  stand x 8655 lip 8730 run 75 + gap 72  put-backs 0
+  child  easy    9: 290.4 -> 305.6  stand x 5034 lip 5078 run 44 + gap 113  put-backs 1
+  child  easy   11: 261.4 -> 260  stand x 8670 lip 8748 run 78 + gap 72  put-backs 0
+  child  easy   12: 291.6 -> 285.6  stand x 5043 lip 5078 run 36 + gap 113  put-backs 0
+  child  easy   13: 281.8 -> 279.1  stand x 25669 lip 25728 run 59 + gap 97  put-backs 1
+  child  easy   14: 271.6 -> 280.2  stand x 11328 lip 11364 run 36 + gap 111  put-backs 0
+  child  easy   15: 290.8 -> 290.8  stand x 14351 lip 14401 run 50 + gap 111  put-backs 0
+  child  easy   16: 305.5 -> 312.4  stand x 25697 lip 25744 run 47 + gap 113  put-backs 1
+  child  easy   17: 285.5 -> 287.9  stand x 8337 lip 8457 run 120 + gap 63  put-backs 0
+  child  easy   20: 251.4 -> 279  stand x 5039 lip 5078 run 39 + gap 113  put-backs 0
+  child  easy   22: 247.7 -> 248.6  stand x 21060 lip 21117 run 57 + gap 113  put-backs 0
+  child  easy   23: 286.6 -> 301.9  stand x 20988 lip 21117 run 129 + gap 74  put-backs 0
+  child  easy   26: 303.7 -> 291.9  stand x 17064 lip 17100 run 36 + gap 109  put-backs 0
+  child  easy   27: 320.7 -> 293.2  stand x 11584 lip 11706 run 122 + gap 105  put-backs 3
+  child  easy   28: 297.3 -> 274.5  stand x 6847 lip 6906 run 59 + gap 113  put-backs 1
+  child  easy   30: 304.7 -> 299.8  stand x 1707 lip 1740 run 33 + gap 113  put-backs 0
+  child  easy   32: 251.4 -> 274.3  stand x 8816 lip 8893 run 77 + gap 72  put-backs 0
+  child  easy   33: 277.8 -> 285.6  stand x 25373 lip 25420 run 47 + gap 104  put-backs 0
+  child  easy   34: 281.9 -> 286.3  stand x 19831 lip 19866 run 35 + gap 113  put-backs 0
+  child  normal  1: 391.1 -> 351.6  stand x 8368 lip 8400 run 32 + gap 168  put-backs 0
+  child  normal  2: 400.6 -> 376.5  stand x 11294 lip 11339 run 45 + gap 134  put-backs 0
+  child  normal  5: 385.4 -> 385.1  stand x 8282 lip 8389 run 107 + gap 78  put-backs 0
+  child  normal  6: 376.3 -> 368.6  stand x 11024 lip 11068 run 44 + gap 142  put-backs 1
+  child  normal  7: 375.8 -> 380.3  stand x 3491 lip 3538 run 47 + gap 132  put-backs 0
+  child  normal  9: 367.9 -> 367.4  stand x 4989 lip 5030 run 41 + gap 142  put-backs 1
+  child  normal 10: 401.1 -> 404.6  stand x 5113 lip 5169 run 56 + gap 140  put-backs 1
+  child  normal 11: 370.3 -> 379.6  stand x 1691 lip 1740 run 49 + gap 139  put-backs 1
+  child  normal 12: 365.9 -> 357.7  stand x 4981 lip 5030 run 49 + gap 141  put-backs 1
+  child  normal 13: 407.8 -> 375.8  stand x 6759 lip 6810 run 51 + gap 141  put-backs 1
+  child  normal 15: 388.1 -> 391.6  stand x 4988 lip 5030 run 42 + gap 142  put-backs 1
+  child  normal 17: 356.5 -> 362.1  stand x 14140 lip 14175 run 35 + gap 142  put-backs 0
+  child  normal 18: 389 -> 387.5  stand x 21058 lip 21168 run 110 + gap 72  put-backs 0
+  child  normal 19: 379.6 -> 398.6  stand x 19438 lip 19478 run 40 + gap 142  put-backs 1
+  child  normal 20: 384.6 -> 382.8  stand x 4979 lip 5030 run 51 + gap 142  put-backs 1
+  child  normal 23: 368 -> 359.7  stand x 20856 lip 21028 run 172 + gap 73  put-backs 0
+  child  normal 24: 423.3 -> 408.4  stand x 4977 lip 5030 run 53 + gap 125  put-backs 0
+  child  normal 26: 390.4 -> 375.6  stand x 17000 lip 17058 run 58 + gap 137  put-backs 1
+  child  normal 27: 383.5 -> 378.4  stand x 1693 lip 1740 run 47 + gap 142  put-backs 0
+  child  normal 28: 387.1 -> 374.8  stand x 6755 lip 6810 run 55 + gap 142  put-backs 2
+  child  normal 30: 408.4 -> 383.4  stand x 1705 lip 1740 run 36 + gap 142  put-backs 1
+  child  normal 34: 388.3 -> 372.1  stand x 4977 lip 5030 run 53 + gap 135  put-backs 1
+  child  normal 35: 370.9 -> 397.2  stand x 14131 lip 14171 run 40 + gap 142  put-backs 1
+  child  normal 36: 394.1 -> 363.1  stand x 11302 lip 11352 run 50 + gap 129  put-backs 1
+  expert normal  2: 190.1 -> 208.4  stand x 6901 lip 6952 run 51 + gap 129  put-backs 0
+  expert normal  4: 187 -> 185.4  stand x 14142 lip 14190 run 48 + gap 137  put-backs 1
+  expert normal 11: 177.8 -> 181.3  stand x 19992 lip 20043 run 51 + gap 134  put-backs 1
+  expert normal 18: 185.3 -> 192.4  stand x 4981 lip 5030 run 49 + gap 128  put-backs 1
+  expert normal 20: 186.6 -> 186.4  stand x 4976 lip 5030 run 54 + gap 142  put-backs 1
+  expert normal 24: 178.4 -> 172.5  stand x 14126 lip 14173 run 47 + gap 138  put-backs 0
+  expert normal 25: 184.2 -> 187.4  stand x 21168 lip 21290 run 122 + gap 67  put-backs 0
+  expert normal 26: 178.3 -> 184.6  stand x 8273 lip 8390 run 117 + gap 71  put-backs 0
+  expert normal 27: 185.1 -> 196.2  stand x 5265 lip 5313 run 48 + gap 134  put-backs 0
+  expert normal 28: 170.1 -> 184.7  stand x 8336 lip 8402 run 66 + gap 127  put-backs 0
+  expert normal 34: 180 -> 175.9  stand x 19845 lip 19879 run 34 + gap 142  put-backs 1
+  expert normal 38: 189.5 -> 198.3  stand x 14141 lip 14190 run 49 + gap 129  put-backs 0
+  expert normal 40: 181.6 -> 181.2  stand x 19559 lip 19612 run 53 + gap 135  put-backs 1
+  middle easy    1: 207 -> 203.7  stand x 8568 lip 8645 run 77 + gap 72  put-backs 0
+  middle easy    2: 203.6 -> 201.6  stand x 14576 lip 14611 run 35 + gap 110  put-backs 0
+  middle easy    4: 196.6 -> 202.9  stand x 14334 lip 14401 run 67 + gap 109  put-backs 1
+  middle easy    9: 208.7 -> 189.3  stand x 8546 lip 8623 run 77 + gap 72  put-backs 1
+  middle easy   10: 204.3 -> 197.4  stand x 21449 lip 21527 run 78 + gap 72  put-backs 0
+  middle easy   11: 197.5 -> 189.3  stand x 8517 lip 8580 run 63 + gap 130  put-backs 0
+  middle easy   13: 208.6 -> 210.6  stand x 6861 lip 6906 run 45 + gap 112  put-backs 1
+  middle easy   14: 198.4 -> 193.7  stand x 1673 lip 1740 run 67 + gap 104  put-backs 0
+  middle easy   15: 204 -> 211.5  stand x 5035 lip 5078 run 43 + gap 113  put-backs 1
+  middle easy   16: 204.3 -> 201.7  stand x 14468 lip 14508 run 40 + gap 113  put-backs 0
+  middle easy   17: 207.6 -> 203.5  stand x 14344 lip 14389 run 45 + gap 113  put-backs 0
+  middle easy   19: 204.3 -> 201.6  stand x 19494 lip 19546 run 52 + gap 113  put-backs 0
+  middle easy   21: 202.1 -> 212.5  stand x 11205 lip 11260 run 55 + gap 96  put-backs 0
+  middle easy   24: 196.5 -> 192.2  stand x 14346 lip 14388 run 42 + gap 110  put-backs 0
+  middle easy   26: 196.5 -> 202.4  stand x 17060 lip 17100 run 40 + gap 109  put-backs 0
+  middle easy   27: 203.5 -> 202.9  stand x 21874 lip 21948 run 74 + gap 72  put-backs 0
+  middle easy   28: 211.4 -> 203.2  stand x 6874 lip 6906 run 32 + gap 113  put-backs 0
+  middle easy   31: 201.9 -> 202.5  stand x 6973 lip 7012 run 39 + gap 113  put-backs 0
+  middle easy   33: 189.7 -> 193.6  stand x 16942 lip 16996 run 54 + gap 112  put-backs 0
+  middle easy   34: 197.2 -> 201  stand x 5041 lip 5078 run 37 + gap 108  put-backs 0
+  middle easy   36: 207 -> 210.6  stand x 11419 lip 11486 run 67 + gap 103  put-backs 0
+  middle easy   38: 196.7 -> 204.8  stand x 17168 lip 17212 run 44 + gap 108  put-backs 0
+  middle normal  1: 200.7 -> 192.8  stand x 6770 lip 6810 run 40 + gap 140  put-backs 1
+  middle normal  2: 208.3 -> 210.1  stand x 11294 lip 11339 run 45 + gap 134  put-backs 0
+  middle normal  4: 208.9 -> 209.8  stand x 14148 lip 14190 run 42 + gap 137  put-backs 1
+  middle normal  6: 211.6 -> 209.2  stand x 11023 lip 11068 run 45 + gap 142  put-backs 1
+  middle normal  9: 207.8 -> 204.2  stand x 14147 lip 14190 run 43 + gap 135  put-backs 0
+  middle normal 10: 210.9 -> 210.4  stand x 7047 lip 7089 run 42 + gap 142  put-backs 1
+  middle normal 11: 205 -> 213.7  stand x 14275 lip 14329 run 54 + gap 142  put-backs 0
+  middle normal 12: 213 -> 205.9  stand x 4988 lip 5030 run 42 + gap 141  put-backs 1
+  middle normal 13: 194.8 -> 193.3  stand x 17256 lip 17323 run 67 + gap 132  put-backs 1
+  middle normal 14: 198.6 -> 205.4  stand x 14266 lip 14318 run 52 + gap 142  put-backs 1
+  middle normal 16: 207.5 -> 197.2  stand x 19838 lip 19896 run 58 + gap 129  put-backs 2
+  middle normal 18: 201.6 -> 208.7  stand x 11137 lip 11196 run 59 + gap 142  put-backs 1
+  middle normal 19: 192.9 -> 199.6  stand x 19435 lip 19478 run 43 + gap 142  put-backs 0
+  middle normal 21: 189.3 -> 187.8  stand x 25149 lip 25187 run 38 + gap 138  put-backs 0
+  middle normal 24: 205.5 -> 205.2  stand x 25278 lip 25329 run 51 + gap 129  put-backs 1
+  middle normal 25: 200.1 -> 192.9  stand x 6766 lip 6810 run 44 + gap 132  put-backs 1
+  middle normal 26: 205 -> 195.5  stand x 17010 lip 17058 run 48 + gap 137  put-backs 1
+  middle normal 27: 212.3 -> 217  stand x 7188 lip 7227 run 39 + gap 142  put-backs 1
+  middle normal 28: 196.7 -> 189.9  stand x 8267 lip 8402 run 135 + gap 73  put-backs 0
+  middle normal 31: 204.6 -> 197.2  stand x 6887 lip 6943 run 56 + gap 142  put-backs 1
+  middle normal 33: 201.5 -> 203.3  stand x 20943 lip 21038 run 95 + gap 94  put-backs 0
+  middle normal 34: 204.5 -> 200.8  stand x 4989 lip 5030 run 41 + gap 135  put-backs 0
+  middle normal 36: 206 -> 212.3  stand x 5139 lip 5172 run 33 + gap 142  put-backs 2
+  middle normal 38: 202.1 -> 202.6  stand x 14142 lip 14190 run 48 + gap 129  put-backs 0

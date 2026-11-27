@@ -18,12 +18,14 @@
 import { withSetting } from './settingDials.ts';
 import { signsClearOfFlags, type DressPiece } from './dressArt.ts';
 import { GEN2_STAGES } from './gen2/game.ts';
+import { alongOf } from './gen2/tower.ts';
 import type { GeneratedStage } from './stageGenerator.ts';
 import type { Collectible, Enemy, Platform } from './types.ts';
 import { doubleAllowed, heldMaxGap, jumpOK, PICKUP_APART, SAFE_APPROACH, validateStage, type CheckGraph } from './levelCheck.ts';
 import { EASY_HOLD } from './physics.ts';
 import { easyGoalFor, goalHave } from './goals.ts';
 import { floorWater } from './waterTeach.ts';
+import { waterNear, type RiverZone } from './river.ts';
 import { CLUMP_GAP, isPetal } from './petals.ts';
 import type { ProtoExtras } from './protoStage.ts';
 
@@ -67,10 +69,11 @@ export function easyStones(stage: Stage): Platform[] {
     if (plats.some((c) => c !== a && c !== b && !c.broken && jumpOK(a, c, false).ok && jumpOK(c, b, false).ok)) continue;
     if (vineXs.some((x) => x > ax1 - 60 && x < b!.x + 60)) continue;
     if (ropes.some((r) => r.x0 < b!.x && r.x1 > ax1)) continue;
-    if (rivers.some((r) => r.x0 < b!.x && r.x1 > ax1)) continue;
     // only where missing it costs something: no floor close under the gap
     const floorTop = Math.max(a.y, b.y);
     const mid = ax1 + gap / 2;
+    // (a river's own crossing: water on this gap's storey, river.ts waterNear, never a pond's window a storey above or below, ENG-26e)
+    if (rivers.some((r) => r.x0 < b!.x && r.x1 > ax1 && waterNear(r, mid, floorTop, plats))) continue;
     if (plats.some((c) => c !== a && c !== b && c.x < mid + 40 && c.x + c.width > mid - 40 && c.y > floorTop && c.y < floorTop + DROP)) continue;
     // a stone each jump can reach, clear of everything else
     const tries = [Math.round((a.y + b.y) / 2), Math.max(a.y, b.y), Math.min(a.y, b.y)];
@@ -94,6 +97,31 @@ const CATCH_W = 90;
 interface HoldOut {
   frozen?: ReadonlySet<number>;
   reach?: readonly number[];
+}
+
+/** is B's edge on that side (1: its left, -1: its right) a river's bank, where the water ends or begins on B's storey (river.ts waterNear,
+ *  ENG-26f): a pond a storey above, or a river a storey below, whose window ends at that x is not (they were, by x alone) */
+export function bankEdge(rivers: readonly RiverZone[], B: Platform, side: 1 | -1, floors: readonly Platform[]): boolean {
+  const x = side === 1 ? B.x : B.x + B.width;
+  return rivers.some((r) => Math.abs(x - (side === 1 ? r.x1 : r.x0)) <= 2 && waterNear(r, x, B.y, floors));
+}
+
+/** World 2's lily pads 40 px wider on Easy (QA 2026-10-29: a kid's hop that came down past a pad's middle ran on off its far end; the
+ *  gaps between them shrink to match, and Easy's other ledge widening leaves pads alone); and its creek stones and reed islands
+ *  (2026-10-29, the moss stones standing up out of still water) 30 px wider; never one that is a river's bank (bankEdge, its storey's
+ *  water), a reed island or the landing step at the foot of a bank: the river keeps its banks where it ends */
+export function easyPadsWider(stage: Stage): void {
+  const rivers = stage.rivers ?? [];
+  const bankOf = (p: Platform) => bankEdge(rivers, p, 1, stage.platforms) || bankEdge(rivers, p, -1, stage.platforms);
+  const creek = (p: Platform) => stage.config.worldIndex === 2 && p.style === 'moss_stone' && p.height === 110 && p.type === 'solid' && !bankOf(p);
+  // (read every stone before any grows: a widened pad must not make its neighbour a bank)
+  const grow = stage.platforms.map((p) => (p.lily ? 20 : creek(p) ? 15 : 0));
+  stage.platforms.forEach((p, i) => {
+    const d = grow[i];
+    if (!d) return;
+    p.x -= d;
+    p.width += 2 * d;
+  });
 }
 
 /**
@@ -158,7 +186,7 @@ export function easyHoldSoften(stage: Stage, frozen?: ReadonlySet<number>, out?:
     const others = stage.platforms.filter((q) => q !== B && q.id !== A.id && !q.broken);
     // (never the edge of a bank where a river begins or ends: it grew out over the water, the bank no longer stood where the water stops,
     // and the river check failed on 110 of 200 control-test rolls on Easy, 2026-10-29; a catch ledge below does the job instead)
-    const riverEdge = side === 1 ? rivers.some((r) => Math.abs(B.x - r.x1) <= 2) : side === -1 ? rivers.some((r) => Math.abs(B.x + B.width - r.x0) <= 2) : false;
+    const riverEdge = side !== 0 && bankEdge(rivers, B, side, stage.platforms);
     if (room >= 0 && side !== 0 && widenable(B) && !riverEdge) {
       // a wider landing: the ledge reaches toward him, as far as the held jump needs (and never past the gap)
       const d = Math.min(Math.max(0, gap - 4), Math.ceil(gap - room) + 6);
@@ -251,7 +279,8 @@ function flagLedge(stage: Stage, p: Platform, reach: ReadonlySet<number>, x = p.
 export const FLAG_WATER_RUNUP = 320;
 /** (a river stage with no ledge that far from the water takes the best it has, at least this much) */
 export const FLAG_WATER_RUNUP_MIN = 200;
-const clearOfWater = (stage: Stage, x: number, runup = FLAG_WATER_RUNUP) => !(stage.rivers ?? []).some((r) => x > r.x0 - runup && x < r.x1 + 40);
+/** (the water on the flag's storey, river.ts waterNear: a pond's window a storey above or below the flag is no water ahead, ENG-26e) */
+export const clearOfWater = (stage: Stage, x: number, y: number, runup = FLAG_WATER_RUNUP) => !(stage.rivers ?? []).some((r) => x > r.x0 - runup && x < r.x1 + 40 && waterNear(r, x, y, stage.platforms));
 const flagSpot = (stage: Stage, x: number, y: number) =>
   !animalNear(stage, x, y) && !(stage.zones ?? []).some((z) => x > z.x0 - 40 && x < z.x1 + 40 && y > z.top - 40 && y < z.bottom + 40);
 
@@ -305,7 +334,7 @@ export function capFlagSpans(stage: Stage, max = FLAG_SPAN_MAX, reached?: readon
           if (a > b) continue;
           const c = Math.max(a, Math.min(b, want));
           for (let d = 0; d <= b - a; d += 40) {
-            const x = [c - d, c + d].find((q) => q >= a && q <= b && flagSpot(stage, q, p.y) && clearOfWater(stage, q, runup));
+            const x = [c - d, c + d].find((q) => q >= a && q <= b && flagSpot(stage, q, p.y) && clearOfWater(stage, q, p.y, runup));
             if (x === undefined) continue;
             if (!best || Math.abs(x - want) < Math.abs(bestX - want)) {
               best = p;
@@ -379,7 +408,7 @@ export function easyWaterLandings(stage: Stage): number {
     if (!A) continue;
     const gap = B.x - (A.x + A.width);
     if (gap < WATER_GAP_MIN + 4 || gap > 320) continue;
-    if (rivers.some((r) => r.x0 < B.x && r.x1 > A!.x + A!.width)) continue;
+    if (rivers.some((r) => r.x0 < B.x && r.x1 > A!.x + A!.width && waterNear(r, B.x - gap / 2, Math.max(A!.y, B.y), stage.platforms))) continue;
     if (floor.some((q) => q !== A && q !== B && q.x < B.x && q.x + q.width > A!.x + A!.width)) continue;
     const d = Math.min(EASY_WATER_LAND, gap - (firstWater(B) ? FIRST_WATER_MIN : WATER_GAP_MIN));
     if (d <= 0) continue;
@@ -428,18 +457,8 @@ function easyStageOn(stage: Stage): Stage {
   // (the pieces Easy adds from here on: stones, steps and catch ledges, numbered after the stage's own)
   const firstAdded = Math.max(0, ...stage.platforms.map((p) => p.id)) + 1;
 
-  // (World 2's lily pads 40 px wider on Easy, QA 2026-10-29: a kid's hop that came down past a pad's middle ran on off its far end; the
-  // gaps between them shrink to match, and Easy's other ledge widening leaves pads alone)
-  // (and its creek stones and reed islands, 2026-10-29, the moss stones standing up out of still water: 30 px wider)
-  // (never one that is a river's bank, a reed island or the landing step at the foot of a bank: the river keeps its banks where it ends)
-  const bankOf = (p: Platform) => (stage.rivers ?? []).some((r) => Math.abs(p.x - r.x1) <= 2 || Math.abs(p.x + p.width - r.x0) <= 2);
-  const creek = (p: Platform) => stage.config.worldIndex === 2 && p.style === 'moss_stone' && p.height === 110 && p.type === 'solid' && !bankOf(p);
-  for (const p of stage.platforms) {
-    const d = p.lily ? 20 : creek(p) ? 15 : 0;
-    if (!d) continue;
-    p.x -= d;
-    p.width += 2 * d;
-  }
+  // (World 2's lily pads and creek stones wider on Easy, never a river's bank: easyPadsWider)
+  easyPadsWider(stage);
   // the rivers run slower (LV-5): every drifting log in slow motion, its spacing kept (speed x EASY_DRIFT, its phase / EASY_DRIFT, so
   // where it is at time t is where Normal's is at EASY_DRIFT x t), and the streaks with it
   if (!gen2) easyDrift(stage);
@@ -518,24 +537,31 @@ function easyStageOn(stage: Stage): Stage {
   const cps = (stage.checkpoints ??= []);
   if (!climb) {
     const reach = new Set(reached ?? validateStage(stage, { rooms: false }).reachableIds);
-    const marks = [stage.spawnX, ...cps.map((c) => c.x), stage.exitTotemX].sort((a, b) => a - b);
+    // (how far on a place is: its x; on a stage with a route (a gen2 tower, a stage of legs: an out-and-back's legs share x, one laid
+    // under the other) the px along the route, gen2/tower.ts alongOf, the one route order every first/last pick takes (D130), the
+    // order the engine and the level check take flags in (flagFurther), so the gaps, the middles and the order below are the
+    // route's, never x across two legs)
+    const along = alongOf(stage);
+    const marks = [along(stage.spawnX, stage.spawnY), ...cps.map((c) => along(c.x, c.y)), along(stage.exitTotemX, stage.exitTotemY)].sort((a, b) => a - b);
     for (let i = 0; i + 1 < marks.length; i++) {
       const [x0, x1] = [marks[i], marks[i + 1]];
       if (x1 - x0 < FLAG_EVERY) continue;
       const want = (x0 + x1) / 2;
       // a wide still ledge near the middle that he can reach, with no animal close
       let best: Platform | null = null;
+      let bestAt = 0;
       for (const p of stage.platforms) {
         if (!flagLedge(stage, p, reach)) continue;
         const cx = p.x + p.width / 2;
-        if (cx < x0 + 400 || cx > x1 - 400) continue;
+        const at = along(cx, p.y);
+        if (at < x0 + 400 || at > x1 - 400) continue;
         // (never inside a laid chase's stretch: its flags are its restarts, on the forks only, gen2/chaseLay.ts)
         if (stage.chase?.stretches.some((t) => cx > t.start && cx < t.end)) continue;
-        if (!best || Math.abs(cx - want) < Math.abs(best.x + best.width / 2 - want)) best = p;
+        if (!best || Math.abs(at - want) < Math.abs(bestAt - want)) [best, bestAt] = [p, at];
       }
       if (best) cps.push({ x: Math.round(best.x + best.width / 2), y: best.y, reached: false });
     }
-    cps.sort((a, b) => a.x - b.x);
+    cps.sort((a, b) => along(a.x, a.y) - along(b.x, b.y));
   }
   // (no hearts on Meeca's stage: nothing there hurts her, and a heart is only picked up when hurt, so Easy's hearts by the flags just
   // sat there, QA 2026-10-31 "not picked up"; H1 by flagHeartsOwed, below)

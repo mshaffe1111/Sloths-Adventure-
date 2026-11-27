@@ -1,0 +1,34 @@
+import '/home/user/Sloths-Adventure-/src/game/headlessDom.ts';
+const { RealPlay } = await import('/home/user/Sloths-Adventure-/src/game/realPlay.ts');
+const { airStep, takeOffStep, PHYS } = await import('/home/user/Sloths-Adventure-/src/game/physics.ts');
+const { driftX } = await import('/home/user/Sloths-Adventure-/src/game/river.ts');
+const DT = 1 / 30;
+const rp = new RealPlay('1-1', 1);
+const e = rp.e as unknown as { standingOnId: number };
+const Y = 3000, speed = 80, W = 600;
+const d = { x0: 0, x1: 20000, dir: -1 as const, speed, width: W, offset: 0, baseY: Y };
+const log = { id: 90, x: 0, y: Y, width: W, height: 30, type: 'drift' as const, drift: d };
+const floor = { id: 18, x: 0, y: Y + 60, width: 20000, height: 40, type: 'solid' as const };
+rp.bare([log as never, floor as never]);
+d.offset = (d.x1 - 10000) / speed - rp.t;
+log.x = driftX(d as never, rp.t);
+rp.fly(log.x + W - 30, Y - 1, 0, 0);
+let prev = { x: 0, y: 0, vx: 0 }, f = 0;
+for (; f < 60; f++) {
+  rp.frame({ left: true });
+  if (rp.p.grounded && e.standingOnId === 90 && rp.p.x - log.x < 70 && Math.abs(rp.p.vx) > 260) break;
+}
+prev = { x: rp.p.x, y: rp.p.y, vx: rp.p.vx };
+const carry = -speed;
+console.log('pre', f, prev, 'logx', log.x.toFixed(1), 'on', e.standingOnId);
+const eng: { x: number; y: number; vx: number }[] = [];
+for (let i = 0; i < 60; i++) { rp.frame({ left: true, jump: true, press: i === 0 }); eng.push({ x: rp.p.x, y: rp.p.y, vx: rp.p.vx }); if (rp.p.grounded && i > 2) break; }
+const fly = (vx0: number, c: number, ride: number) => {
+  const b = { x: prev.x + ride, y: prev.y, vx: vx0 - c, vy: -PHYS.jumpV };
+  const out: typeof eng = [];
+  for (let i = 1; i <= eng.length; i++) { if (i === 1) takeOffStep(b, DT, -1, true, c); else airStep(b, DT, -1, true); out.push({ ...b }); }
+  return out;
+};
+const old = fly(prev.vx + carry, 0, 0), nw = fly(prev.vx + carry, carry, 0), nwr = fly(prev.vx + carry, carry, carry * DT);
+console.log("eng", eng.length, JSON.stringify(eng.slice(0,3))); for (const i of [0, 1, 11, eng.length - 1].filter((k) => k < eng.length)) console.log(`i${i + 1} eng x ${eng[i].x.toFixed(2)} y ${eng[i].y.toFixed(2)} vx ${eng[i].vx.toFixed(1)} | old dx ${(old[i].x - eng[i].x).toFixed(2)} vx ${old[i].vx.toFixed(1)} | new dx ${(nw[i].x - eng[i].x).toFixed(2)} dy ${(nw[i].y - eng[i].y).toFixed(2)} vx ${nw[i].vx.toFixed(1)} | new+ride dx ${(nwr[i].x - eng[i].x).toFixed(2)}`);
+console.log('landed on', e.standingOnId, 'frames', eng.length);

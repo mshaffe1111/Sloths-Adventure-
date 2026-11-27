@@ -1,0 +1,51 @@
+  2.03 single from 272,6701 hold 0.21 up 0.00 d2 0.61 2nd false -> 433,6701 ok
+  3.50 single from 459,6701 hold 0.11 up 0.00 d2 0.47 2nd false -> 584,6701 ok
+  5.47 double from 636,6701 hold 0.50 up 0.14 d2 0.33 2nd true -> 849,6701 ok
+  6.60 single from 892,6701 hold 0.24 up 0.00 d2 0.47 2nd false -> 1000,6651 ok
+  8.00 single from 997,6651 hold 0.10 up 0.00 d2 0.42 2nd false -> 1140,6701 ok
+  9.17 single from 1156,6701 hold 0.27 up 0.00 d2 0.37 2nd false -> 1317,6701 ok
+  10.60 single from 1369,6701 hold 0.30 up 0.00 d2 0.30 2nd false -> 1531,6701 ok
+  16.40 single from 1343,6146 hold 0.16 up 0.00 -> 1235,6112 ok
+  24.57 single from 1024,5882 hold 0.08 up 0.11 d2 0.34 2nd false -> 992,5882 FELL BACK
+  25.57 double from 989,5882 hold 0.09 up 0.00 d2 0.52 2nd false -> 885,5882 ok
+  26.10 double from 868,5882 hold 0.08 up 0.15 d2 0.58 2nd false -> 795,5882 ok
+  27.47 single from 724,5882 hold 0.09 up 0.00 d2 0.67 2nd false -> 618,5882 ok
+  29.30 double from 584,5882 hold 0.48 up 0.00 d2 0.29 2nd true -> 349,5882 ok
+  30.83 single from 304,5882 hold 0.09 up 0.00 d2 0.41 2nd false -> 198,5882 ok
+  34.40 double from 177,5573 hold 0.11 up 0.00 d2 0.51 2nd false -> 301,5573 ok
+  36.03 double from 346,5573 hold 0.48 up 0.00 d2 0.39 2nd true -> 544,5481 ok
+  37.90 single from 596,5481 hold 0.14 up 0.00 d2 0.40 2nd false -> 772,5601 FELL BACK
+  38.53 single from 773,5601 hold 0.29 up 0.00 d2 0.39 2nd false -> 838,5531 ok
+  39.87 single from 812,5531 hold 0.10 up 0.12 d2 0.39 2nd false -> 877,5531 ok
+  41.37 double from 1132,5531 hold 0.27 up 0.00 d2 0.30 2nd false -> 1266,5427 ok
+  46.70 single from 1497,4926 hold 0.06 up 0.00 d2 0.38 2nd false -> 1401,4926 ok
+  48.50 single from 1328,4926 hold 0.13 up 0.00 d2 0.40 2nd false -> 1195,4954 ok
+  57.50 single from 464,4926 hold 0.20 up 0.00 d2 0.33 2nd false -> 312,4926 ok
+  61.60 single from 457,4421 hold 0.28 up 0.00 -> 560,4378 ok
+  68.43 single from 691,4092 hold 0.30 up 0.00 -> 873,4117 ok
+  71.53 double from 1062,4117 hold 0.55 up 0.00 d2 0.27 2nd true -> 1315,4117 ok
+  72.77 single from 1349,4117 hold 0.03 up 0.00 d2 0.42 2nd false -> 1446,4117 ok
+  76.70 single from 1463,3738 hold 0.10 up 0.00 d2 0.46 2nd false -> 1357,3738 ok
+  77.80 double from 1325,3738 hold 0.45 up 0.00 d2 0.31 2nd true -> 1086,3738 ok
+  80.30 single from 1067,3738 hold 0.20 up 0.00 d2 0.29 2nd false -> 892,3738 ok
+  81.53 single from 840,3738 hold 0.13 up 0.00 d2 0.57 2nd false -> 681,3808 FELL BACK
+  81.77 single from 681,3808 hold 0.08 up 0.00 d2 0.27 2nd false -> 637,3738 ok
+  82.87 single from 612,3738 hold 0.18 up 0.00 d2 0.45 2nd false -> 460,3738 ok
+  83.93 double from 405,3738 hold 0.40 up 0.00 d2 0.27 2nd true -> 165,3738 ok
+  85.33 single from 136,3738 hold 0.31 up 0.00 d2 0.32 2nd false -> 297,3738 FELL BACK
+  86.23 single from 323,3738 hold 0.28 up 0.00 d2 0.30 2nd false -> 445,3634 ok
+  91.63 single from 666,3233 hold 0.30 up 0.00 -> 747,3166 ok
+  96.70 single from 824,2908 hold 0.50 up 0.00 -> 949,2821 ok
+  103.90 double from 905,2540 hold 0.16 up 0.00 d2 0.67 2nd false -> 748,2540 ok
+  104.53 single from 722,2540 hold 0.10 up 0.00 d2 0.28 2nd false -> 591,2540 ok
+  107.90 single from 234,2035 hold 0.25 up 0.00 -> 301,1961 ok
+  114.33 single from 463,1708 hold 0.16 up 0.00 -> 627,1731 ok
+  115.80 double from 627,1731 hold 0.96 up 0.00 d2 0.85 2nd true -> 1035,1556 ok
+  117.03 single from 1161,1556 hold 0.20 up 0.19 d2 0.30 2nd false -> 1337,1556 ok
+  118.23 single from 1355,1556 hold 0.10 up 0.00 d2 0.29 2nd false -> 1479,1556 ok
+  119.57 double from 1543,1556 hold 0.41 up 0.00 d2 0.32 2nd true -> 1680,1731 FELL BACK
+  124.13 single from 1515,1731 hold 0.29 up 0.00 d2 0.40 2nd false -> 1339,1731 FELL BACK
+  129.63 single from 1302,1051 hold 0.16 up 0.00 -> 1159,1067 ok
+  144.57 double from 354,707 hold 0.59 up 0.00 d2 0.33 2nd true -> 78,707 ok
+== child normal seed 24: shrine 151.8 s rescues 1
+   t 124.1 x 1529 y 1395 dur 0 [#65 solid/branch x 1067-1327 y 1556; #66 solid/branch x 1327-1547 y 1556] fell back down from here 8 times

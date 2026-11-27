@@ -1,0 +1,2 @@
+seedlist 2-6: PASS (100 seeds, each clean on both settings)
+exit 0

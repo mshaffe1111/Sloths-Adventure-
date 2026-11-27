@@ -1,0 +1,12 @@
+import json, sys
+from collections import defaultdict
+rows=[json.loads(l) for l in open(sys.argv[1])]
+bar=int(sys.argv[2]); skill=rows[0]['skill'] if rows else ''
+by=defaultdict(list)
+for r in rows: by[r['seed']].append(r)
+ok=lambda x, lim: x['end']=='shrine' and x['lives'] is not None and x['lives']<=lim and x['stuck']==0
+for s,rs in sorted(by.items()):
+    on_ok=all(ok(r['on'],bar) for r in rs)
+    bites=[f"{r['tier']} {r['setting'][0]} {r['on']['lives']}->{r['off']['lives']} h{r['on']['handed']}->{r['off']['handed']}" for r in rs if not ok(r['off'],bar)]
+    line=' | '.join(f"{r['tier'][0]}{r['setting'][0]} {r['on']['lives']}->{r['off']['lives']}" for r in rs)
+    print(s, 'ON-all-ok' if on_ok else 'ON-FAIL', 'BITES' if bites else '-', line, bites)

@@ -1,0 +1,87 @@
+TAP version 13
+# Subtest: the out-and-back toy (normal): a wall beside a lower floor runs its soil down to the view's foot, no seam at the floor's end
+not ok 1 - the out-and-back toy (normal): a wall beside a lower floor runs its soil down to the view's foot, no seam at the floor's end
+  ---
+  duration_ms: 387.183822
+  type: 'test'
+  location: '/home/user/Sloths-Adventure-/src/game/groundStack.test.ts:509:3'
+  failureType: 'testCodeFailure'
+  error: |-
+    a wall's soil stops short of the view's foot
+    + actual - expected
+    
+    + [
+    +   'seed 1: the wall x 20006-20066 (foot 1450): no soil at 10 depths, first y 1540',
+    +   'seed 2: the wall x 19817-19877 (foot 1430): no soil at 9 depths, first y 1560',
+    +   'seed 2: the wall x 13904-13964 (foot 893): no soil at 11 depths, first y 903',
+    +   'seed 3: the wall x 19579-19639 (foot 1445): no soil at 12 depths, first y 1575'
+    + ]
+    - []
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+  actual:
+    0: 'seed 1: the wall x 20006-20066 (foot 1450): no soil at 10 depths, first y 1540'
+    1: 'seed 2: the wall x 19817-19877 (foot 1430): no soil at 9 depths, first y 1560'
+    2: 'seed 2: the wall x 13904-13964 (foot 893): no soil at 11 depths, first y 903'
+    3: 'seed 3: the wall x 19579-19639 (foot 1445): no soil at 12 depths, first y 1575'
+  operator: 'deepStrictEqual'
+  stack: |-
+    TestContext.<anonymous> (/home/user/Sloths-Adventure-/src/game/groundStack.test.ts:544:12)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.start (node:internal/test_runner/test:944:17)
+    startSubtestAfterBootstrap (node:internal/test_runner/harness:296:17)
+    run (node:internal/test_runner/harness:307:12)
+    test (node:internal/test_runner/harness:316:12)
+    <anonymous> (/home/user/Sloths-Adventure-/src/game/groundStack.test.ts:509:3)
+  ...
+# Subtest: the out-and-back toy (easy): a wall beside a lower floor runs its soil down to the view's foot, no seam at the floor's end
+not ok 2 - the out-and-back toy (easy): a wall beside a lower floor runs its soil down to the view's foot, no seam at the floor's end
+  ---
+  duration_ms: 235.89159
+  type: 'test'
+  location: '/home/user/Sloths-Adventure-/src/game/groundStack.test.ts:509:3'
+  failureType: 'testCodeFailure'
+  error: |-
+    a wall's soil stops short of the view's foot
+    + actual - expected
+    
+    + [
+    +   'seed 1: the wall x 20458-20518 (foot 1450): no soil at 9 depths, first y 1660',
+    +   'seed 2: the wall x 20313-20373 (foot 1430): no soil at 8 depths, first y 1600',
+    +   'seed 2: the wall x 14316-14376 (foot 870): no soil at 9 depths, first y 1040',
+    +   'seed 3: the wall x 20124-20184 (foot 1444): no soil at 9 depths, first y 1534',
+    +   'seed 3: the wall x 14201-14261 (foot 830): no soil at 10 depths, first y 940'
+    + ]
+    - []
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+  actual:
+    0: 'seed 1: the wall x 20458-20518 (foot 1450): no soil at 9 depths, first y 1660'
+    1: 'seed 2: the wall x 20313-20373 (foot 1430): no soil at 8 depths, first y 1600'
+    2: 'seed 2: the wall x 14316-14376 (foot 870): no soil at 9 depths, first y 1040'
+    3: 'seed 3: the wall x 20124-20184 (foot 1444): no soil at 9 depths, first y 1534'
+    4: 'seed 3: the wall x 14201-14261 (foot 830): no soil at 10 depths, first y 940'
+  operator: 'deepStrictEqual'
+  stack: |-
+    TestContext.<anonymous> (/home/user/Sloths-Adventure-/src/game/groundStack.test.ts:544:12)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
+  ...
+1..2
+# tests 2
+# suites 0
+# pass 0
+# fail 2
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 1426.086206

@@ -1,0 +1,1 @@
+storyTipScan: 0 laid tip line(s) dropped on Tips (Normal's default) over 13 listed stage(s), 128 laid line(s) read

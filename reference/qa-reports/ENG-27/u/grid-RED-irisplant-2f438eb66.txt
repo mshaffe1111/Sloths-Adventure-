@@ -1,0 +1,262 @@
+TAP version 13
+# Subtest: 2-7 home: back at a race-leg fall's x, his margin is never better than at the fall (a fall never pays, end to end)
+not ok 1 - 2-7 home: back at a race-leg fall's x, his margin is never better than at the fall (a fall never pays, end to end)
+  ---
+  duration_ms: 19149.366466
+  type: 'test'
+  location: '/home/user/w27u-irisplant/tools/inspect/pacerRespawn.test.ts:120:3'
+  failureType: 'testCodeFailure'
+  error: |-
+    home: 30 re-placements of the boat with the view live:
+    middle normal 1 frame 2881: the boat moved 89.73 px in a frame (its step 4.96, bound 7.44), the iris 0.000 (1 is shut) on the respawn
+    middle normal 1 frame 3843: the boat moved 123.49 px in a frame (its step 4.96, bound 7.44), the iris 0.000 (1 is shut) on the respawn
+    middle normal 5 frame 2014: the boat moved 138.60 px in a frame (its step 4.95, bound 7.42), the iris 0.000 (1 is shut) on the respawn
+    middle normal 5 frame 3321: the boat moved 42.75 px in a frame (its step 4.95, bound 7.42), the iris 0.000 (1 is shut) on the respawn
+    middle normal 5 frame 3386: the boat moved 316.59 px in a frame (its step 4.95, bound 7.42), the iris 0.000 (1 is shut) on a Game Over continue
+    middle easy 2 frame 2395: the boat moved 8.13 px in a frame (its step 4.81, bound 7.22), the iris 0.000 (1 is shut) on the respawn
+    middle easy 2 frame 3139: the boat moved 210.36 px in a frame (its step 4.81, bound 7.22), the iris 0.000 (1 is shut) on a Game Over continue
+    middle easy 4 frame 4221: the boat moved 60.72 px in a frame (its step 4.74, bound 7.11), the iris 0.000 (1 is shut) on the respawn
+    middle easy 5 frame 2794: the boat moved 90.34 px in a frame (its step 4.85, bound 7.28), the iris 0.000 (1 is shut) on the respawn
+    middle easy 5 frame 3373: the boat moved 145.18 px in a frame (its step 4.85, bound 7.28), the iris 0.000 (1 is shut) on a Game Over continue
+    middle easy 5 frame 4610: the boat moved 298.20 px in a frame (its step 4.85, bound 7.28), the iris 0.000 (1 is shut) on the respawn
+    middle easy 5 frame 5522: the boat moved 11.24 px in a frame (its step 4.85, bound 7.28), the iris 0.000 (1 is shut) on the respawn
+    middle easy 6 frame 2332: the boat moved 266.02 px in a frame (its step 4.80, bound 7.20), the iris 0.000 (1 is shut) on the respawn
+    middle easy 6 frame 4438: the boat moved 228.93 px in a frame (its step 4.80, bound 7.20), the iris 0.000 (1 is shut) on the respawn
+    expert normal 2 frame 3021: the boat moved 41.91 px in a frame (its step 4.90, bound 7.35), the iris 0.000 (1 is shut) on a Game Over continue
+    expert normal 4 frame 3652: the boat moved 47.31 px in a frame (its step 4.81, bound 7.21), the iris 0.000 (1 is shut) on the respawn
+    expert normal 5 frame 2776: the boat moved 99.67 px in a frame (its step 4.95, bound 7.42), the iris 0.000 (1 is shut) on a Game Over continue
+    ride normal 4 frame 4268: the boat moved 10.59 px in a frame (its step 4.81, bound 7.21), the iris 0.000 (1 is shut) on the respawn
+    ride normal 5 frame 3597: the boat moved 29.78 px in a frame (its step 4.95, bound 7.42), the iris 0.000 (1 is shut) on the respawn
+    ride normal 5 frame 4418: the boat moved 202.02 px in a frame (its step 4.95, bound 7.42), the iris 0.000 (1 is shut) on the respawn
+    ride normal 6 frame 3854: the boat moved 191.39 px in a frame (its step 4.88, bound 7.32), the iris 0.000 (1 is shut) on the respawn
+    ride easy 1 frame 2095: the boat moved 251.74 px in a frame (its step 4.86, bound 7.29), the iris 0.000 (1 is shut) on the respawn
+    ride easy 1 frame 2554: the boat moved 220.63 px in a frame (its step 4.86, bound 7.29), the iris 0.000 (1 is shut) on the respawn
+    ride easy 1 frame 3464: the boat moved 114.83 px in a frame (its step 4.86, bound 7.29), the iris 0.000 (1 is shut) on a Game Over continue
+    ride easy 2 frame 3609: the boat moved 166.51 px in a frame (its step 4.81, bound 7.22), the iris 0.000 (1 is shut) on the respawn
+    ride easy 4 frame 4019: the boat moved 37.37 px in a frame (its step 4.74, bound 7.11), the iris 0.000 (1 is shut) on the respawn
+    ride easy 4 frame 5057: the boat moved 10.88 px in a frame (its step 4.74, bound 7.11), the iris 0.000 (1 is shut) on the respawn
+    ride easy 5 frame 4272: the boat moved 34.03 px in a frame (its step 4.85, bound 7.28), the iris 0.000 (1 is shut) on the respawn
+    ride easy 5 frame 4333: the boat moved 291.09 px in a frame (its step 4.85, bound 7.28), the iris 0.000 (1 is shut) on a Game Over continue
+    ride easy 6 frame 4287: the boat moved 82.18 px in a frame (its step 4.80, bound 7.20), the iris 0.000 (1 is shut) on the respawn
+    + actual - expected
+    
+    + [
+    +   'middle normal 1 frame 2881: the boat moved 89.73 px in a frame (its step 4.96, bound 7.44), the iris 0.000 (1 is shut) on the respawn',
+    +   'middle normal 1 frame 3843: the boat moved 123.49 px in a frame (its step 4.96, bound 7.44), the iris 0.000 (1 is shut) on the respawn',
+    +   'middle normal 5 frame 2014: the boat moved 138.60 px in a frame (its step 4.95, bound 7.42), the iris 0.000 (1 is shut) on the respawn',
+    +   'middle normal 5 frame 3321: the boat moved 42.75 px in a frame (its step 4.95, bound 7.42), the iris 0.000 (1 is shut) on the respawn',
+    +   'middle normal 5 frame 3386: the boat moved 316.59 px in a frame (its step 4.95, bound 7.42), the iris 0.000 (1 is shut) on a Game Over continue',
+    +   'middle easy 2 frame 2395: the boat moved 8.13 px in a frame (its step 4.81, bound 7.22), the iris 0.000 (1 is shut) on the respawn',
+    +   'middle easy 2 frame 3139: the boat moved 210.36 px in a frame (its step 4.81, bound 7.22), the iris 0.000 (1 is shut) on a Game Over continue',
+    +   'middle easy 4 frame 4221: the boat moved 60.72 px in a frame (its step 4.74, bound 7.11), the iris 0.000 (1 is shut) on the respawn',
+    +   'middle easy 5 frame 2794: the boat moved 90.34 px in a frame (its step 4.85, bound 7.28), the iris 0.000 (1 is shut) on the respawn',
+    +   'middle easy 5 frame 3373: the boat moved 145.18 px in a frame (its step 4.85, bound 7.28), the iris 0.000 (1 is shut) on a Game Over continue',
+    +   'middle easy 5 frame 4610: the boat moved 298.20 px in a frame (its step 4.85, bound 7.28), the iris 0.000 (1 is shut) on the respawn',
+    +   'middle easy 5 frame 5522: the boat moved 11.24 px in a frame (its step 4.85, bound 7.28), the iris 0.000 (1 is shut) on the respawn',
+    +   'middle easy 6 frame 2332: the boat moved 266.02 px in a frame (its step 4.80, bound 7.20), the iris 0.000 (1 is shut) on the respawn',
+    +   'middle easy 6 frame 4438: the boat moved 228.93 px in a frame (its step 4.80, bound 7.20), the iris 0.000 (1 is shut) on the respawn',
+    +   'expert normal 2 frame 3021: the boat moved 41.91 px in a frame (its step 4.90, bound 7.35), the iris 0.000 (1 is shut) on a Game Over continue',
+    +   'expert normal 4 frame 3652: the boat moved 47.31 px in a frame (its step 4.81, bound 7.21), the iris 0.000 (1 is shut) on the respawn',
+    +   'expert normal 5 frame 2776: the boat moved 99.67 px in a frame (its step 4.95, bound 7.42), the iris 0.000 (1 is shut) on a Game Over continue',
+    +   'ride normal 4 frame 4268: the boat moved 10.59 px in a frame (its step 4.81, bound 7.21), the iris 0.000 (1 is shut) on the respawn',
+    +   'ride normal 5 frame 3597: the boat moved 29.78 px in a frame (its step 4.95, bound 7.42), the iris 0.000 (1 is shut) on the respawn',
+    +   'ride normal 5 frame 4418: the boat moved 202.02 px in a frame (its step 4.95, bound 7.42), the iris 0.000 (1 is shut) on the respawn',
+    +   'ride normal 6 frame 3854: the boat moved 191.39 px in a frame (its step 4.88, bound 7.32), the iris 0.000 (1 is shut) on the respawn',
+    +   'ride easy 1 frame 2095: the boat moved 251.74 px in a frame (its step 4.86, bound 7.29), the iris 0.000 (1 is shut) on the respawn',
+    +   'ride easy 1 frame 2554: the boat moved 220.63 px in a frame (its step 4.86, bound 7.29), the iris 0.000 (1 is shut) on the respawn',
+    +   'ride easy 1 frame 3464: the boat moved 114.83 px in a frame (its step 4.86, bound 7.29), the iris 0.000 (1 is shut) on a Game Over continue',
+    +   'ride easy 2 frame 3609: the boat moved 166.51 px in a frame (its step 4.81, bound 7.22), the iris 0.000 (1 is shut) on the respawn',
+    +   'ride easy 4 frame 4019: the boat moved 37.37 px in a frame (its step 4.74, bound 7.11), the iris 0.000 (1 is shut) on the respawn',
+    +   'ride easy 4 frame 5057: the boat moved 10.88 px in a frame (its step 4.74, bound 7.11), the iris 0.000 (1 is shut) on the respawn',
+    +   'ride easy 5 frame 4272: the boat moved 34.03 px in a frame (its step 4.85, bound 7.28), the iris 0.000 (1 is shut) on the respawn',
+    +   'ride easy 5 frame 4333: the boat moved 291.09 px in a frame (its step 4.85, bound 7.28), the iris 0.000 (1 is shut) on a Game Over continue',
+    +   'ride easy 6 frame 4287: the boat moved 82.18 px in a frame (its step 4.80, bound 7.20), the iris 0.000 (1 is shut) on the respawn'
+    + ]
+    - []
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+  actual:
+    0: 'middle normal 1 frame 3457: the boat moved 21.93 px in a frame (its step 4.93, bound 7.39), the iris 0.000 (1 is shut) on the respawn'
+    1: 'middle normal 2 frame 3608: the boat moved 212.09 px in a frame (its step 4.87, bound 7.31), the iris 0.000 (1 is shut) on the respawn'
+    2: 'middle normal 3 frame 2752: the boat moved 73.59 px in a frame (its step 4.86, bound 7.30), the iris 0.000 (1 is shut) on the respawn'
+    3: 'middle normal 4 frame 2189: the boat moved 28.17 px in a frame (its step 4.84, bound 7.26), the iris 0.000 (1 is shut) on the respawn'
+    4: 'middle normal 6 frame 3472: the boat moved 224.29 px in a frame (its step 4.86, bound 7.28), the iris 0.000 (1 is shut) on the respawn'
+    5: 'middle easy 1 frame 3102: the boat moved 119.13 px in a frame (its step 4.83, bound 7.25), the iris 0.000 (1 is shut) on the respawn'
+    6: 'middle easy 1 frame 3496: the boat moved 172.86 px in a frame (its step 4.83, bound 7.25), the iris 0.000 (1 is shut) on the respawn'
+    7: 'middle easy 1 frame 3957: the boat moved 108.25 px in a frame (its step 4.83, bound 7.25), the iris 0.000 (1 is shut) on a Game Over continue'
+    8: 'middle easy 2 frame 2411: the boat moved 196.73 px in a frame (its step 4.79, bound 7.19), the iris 0.000 (1 is shut) on the respawn'
+    9: 'middle easy 4 frame 2422: the boat moved 162.32 px in a frame (its step 4.77, bound 7.15), the iris 0.000 (1 is shut) on the respawn'
+    10: 'middle easy 4 frame 4557: the boat moved 274.24 px in a frame (its step 4.77, bound 7.15), the iris 0.000 (1 is shut) on the respawn'
+    11: 'middle easy 5 frame 3210: the boat moved 185.87 px in a frame (its step 4.84, bound 7.26), the iris 0.000 (1 is shut) on the respawn'
+    12: 'middle easy 5 frame 3968: the boat moved 85.80 px in a frame (its step 4.84, bound 7.26), the iris 0.000 (1 is shut) on the respawn'
+    13: 'middle easy 5 frame 4688: the boat moved 192.41 px in a frame (its step 4.84, bound 7.26), the iris 0.000 (1 is shut) on a Game Over continue'
+    14: 'middle easy 6 frame 1663: the boat moved 37.43 px in a frame (its step 4.77, bound 7.15), the iris 0.000 (1 is shut) on the respawn'
+    15: 'expert normal 1 frame 2643: the boat moved 128.72 px in a frame (its step 4.93, bound 7.39), the iris 0.000 (1 is shut) on the respawn'
+    16: 'expert normal 4 frame 3225: the boat moved 8.00 px in a frame (its step 4.84, bound 7.26), the iris 0.000 (1 is shut) on the respawn'
+    17: 'expert normal 5 frame 3500: the boat moved 26.65 px in a frame (its step 4.94, bound 7.40), the iris 0.000 (1 is shut) on the respawn'
+    18: 'ride normal 1 frame 2912: the boat moved 195.23 px in a frame (its step 4.93, bound 7.39), the iris 0.000 (1 is shut) on the respawn'
+    19: 'ride normal 3 frame 2142: the boat moved 34.50 px in a frame (its step 4.86, bound 7.30), the iris 0.000 (1 is shut) on the respawn'
+    20: 'ride normal 3 frame 4199: the boat moved 45.98 px in a frame (its step 4.86, bound 7.30), the iris 0.000 (1 is shut) on the respawn'
+    21: 'ride normal 5 frame 2336: the boat moved 180.55 px in a frame (its step 4.94, bound 7.40), the iris 0.000 (1 is shut) on the respawn'
+    22: 'ride normal 6 frame 2453: the boat moved 102.69 px in a frame (its step 4.86, bound 7.28), the iris 0.000 (1 is shut) on the respawn'
+    23: 'ride normal 6 frame 3613: the boat moved 30.74 px in a frame (its step 4.86, bound 7.28), the iris 0.000 (1 is shut) on a Game Over continue'
+    24: 'ride easy 1 frame 2973: the boat moved 102.06 px in a frame (its step 4.83, bound 7.25), the iris 0.000 (1 is shut) on the respawn'
+    25: 'ride easy 1 frame 3392: the boat moved 146.41 px in a frame (its step 4.83, bound 7.25), the iris 0.000 (1 is shut) on the respawn'
+    26: 'ride easy 2 frame 4657: the boat moved 153.99 px in a frame (its step 4.79, bound 7.19), the iris 0.000 (1 is shut) on the respawn'
+    27: 'ride easy 3 frame 2757: the boat moved 8.60 px in a frame (its step 4.79, bound 7.18), the iris 0.000 (1 is shut) on the respawn'
+    28: 'ride easy 3 frame 4083: the boat moved 55.85 px in a frame (its step 4.79, bound 7.18), the iris 0.000 (1 is shut) on a Game Over continue'
+    29: 'ride easy 3 frame 4609: the boat moved 333.59 px in a frame (its step 4.79, bound 7.18), the iris 0.000 (1 is shut) on the respawn'
+    30: 'ride easy 4 frame 2979: the boat moved 199.70 px in a frame (its step 4.77, bound 7.15), the iris 0.000 (1 is shut) on the respawn'
+    31: 'ride easy 4 frame 4551: the boat moved 204.15 px in a frame (its step 4.77, bound 7.15), the iris 0.000 (1 is shut) on the respawn'
+    32: 'ride easy 5 frame 1970: the boat moved 146.73 px in a frame (its step 4.84, bound 7.26), the iris 0.000 (1 is shut) on the respawn'
+    33: 'ride easy 5 frame 3378: the boat moved 137.17 px in a frame (its step 4.84, bound 7.26), the iris 0.000 (1 is shut) on a Game Over continue'
+  operator: 'deepStrictEqual'
+  stack: |-
+    TestContext.<anonymous> (/home/user/w27u-irisplant/tools/inspect/pacerRespawn.test.ts:143:12)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.start (node:internal/test_runner/test:944:17)
+    startSubtestAfterBootstrap (node:internal/test_runner/harness:296:17)
+  ...
+# Subtest: 2-7 post: back at a race-leg fall's x, his margin is never better than at the fall (a fall never pays, end to end)
+not ok 2 - 2-7 post: back at a race-leg fall's x, his margin is never better than at the fall (a fall never pays, end to end)
+  ---
+  duration_ms: 17290.167432
+  type: 'test'
+  location: '/home/user/w27u-irisplant/tools/inspect/pacerRespawn.test.ts:120:3'
+  failureType: 'testCodeFailure'
+  error: |-
+    post: 34 re-placements of the boat with the view live:
+    middle normal 1 frame 3457: the boat moved 21.93 px in a frame (its step 4.93, bound 7.39), the iris 0.000 (1 is shut) on the respawn
+    middle normal 2 frame 3608: the boat moved 212.09 px in a frame (its step 4.87, bound 7.31), the iris 0.000 (1 is shut) on the respawn
+    middle normal 3 frame 2752: the boat moved 73.59 px in a frame (its step 4.86, bound 7.30), the iris 0.000 (1 is shut) on the respawn
+    middle normal 4 frame 2189: the boat moved 28.17 px in a frame (its step 4.84, bound 7.26), the iris 0.000 (1 is shut) on the respawn
+    middle normal 6 frame 3472: the boat moved 224.29 px in a frame (its step 4.86, bound 7.28), the iris 0.000 (1 is shut) on the respawn
+    middle easy 1 frame 3102: the boat moved 119.13 px in a frame (its step 4.83, bound 7.25), the iris 0.000 (1 is shut) on the respawn
+    middle easy 1 frame 3496: the boat moved 172.86 px in a frame (its step 4.83, bound 7.25), the iris 0.000 (1 is shut) on the respawn
+    middle easy 1 frame 3957: the boat moved 108.25 px in a frame (its step 4.83, bound 7.25), the iris 0.000 (1 is shut) on a Game Over continue
+    middle easy 2 frame 2411: the boat moved 196.73 px in a frame (its step 4.79, bound 7.19), the iris 0.000 (1 is shut) on the respawn
+    middle easy 4 frame 2422: the boat moved 162.32 px in a frame (its step 4.77, bound 7.15), the iris 0.000 (1 is shut) on the respawn
+    middle easy 4 frame 4557: the boat moved 274.24 px in a frame (its step 4.77, bound 7.15), the iris 0.000 (1 is shut) on the respawn
+    middle easy 5 frame 3210: the boat moved 185.87 px in a frame (its step 4.84, bound 7.26), the iris 0.000 (1 is shut) on the respawn
+    middle easy 5 frame 3968: the boat moved 85.80 px in a frame (its step 4.84, bound 7.26), the iris 0.000 (1 is shut) on the respawn
+    middle easy 5 frame 4688: the boat moved 192.41 px in a frame (its step 4.84, bound 7.26), the iris 0.000 (1 is shut) on a Game Over continue
+    middle easy 6 frame 1663: the boat moved 37.43 px in a frame (its step 4.77, bound 7.15), the iris 0.000 (1 is shut) on the respawn
+    expert normal 1 frame 2643: the boat moved 128.72 px in a frame (its step 4.93, bound 7.39), the iris 0.000 (1 is shut) on the respawn
+    expert normal 4 frame 3225: the boat moved 8.00 px in a frame (its step 4.84, bound 7.26), the iris 0.000 (1 is shut) on the respawn
+    expert normal 5 frame 3500: the boat moved 26.65 px in a frame (its step 4.94, bound 7.40), the iris 0.000 (1 is shut) on the respawn
+    ride normal 1 frame 2912: the boat moved 195.23 px in a frame (its step 4.93, bound 7.39), the iris 0.000 (1 is shut) on the respawn
+    ride normal 3 frame 2142: the boat moved 34.50 px in a frame (its step 4.86, bound 7.30), the iris 0.000 (1 is shut) on the respawn
+    ride normal 3 frame 4199: the boat moved 45.98 px in a frame (its step 4.86, bound 7.30), the iris 0.000 (1 is shut) on the respawn
+    ride normal 5 frame 2336: the boat moved 180.55 px in a frame (its step 4.94, bound 7.40), the iris 0.000 (1 is shut) on the respawn
+    ride normal 6 frame 2453: the boat moved 102.69 px in a frame (its step 4.86, bound 7.28), the iris 0.000 (1 is shut) on the respawn
+    ride normal 6 frame 3613: the boat moved 30.74 px in a frame (its step 4.86, bound 7.28), the iris 0.000 (1 is shut) on a Game Over continue
+    ride easy 1 frame 2973: the boat moved 102.06 px in a frame (its step 4.83, bound 7.25), the iris 0.000 (1 is shut) on the respawn
+    ride easy 1 frame 3392: the boat moved 146.41 px in a frame (its step 4.83, bound 7.25), the iris 0.000 (1 is shut) on the respawn
+    ride easy 2 frame 4657: the boat moved 153.99 px in a frame (its step 4.79, bound 7.19), the iris 0.000 (1 is shut) on the respawn
+    ride easy 3 frame 2757: the boat moved 8.60 px in a frame (its step 4.79, bound 7.18), the iris 0.000 (1 is shut) on the respawn
+    ride easy 3 frame 4083: the boat moved 55.85 px in a frame (its step 4.79, bound 7.18), the iris 0.000 (1 is shut) on a Game Over continue
+    ride easy 3 frame 4609: the boat moved 333.59 px in a frame (its step 4.79, bound 7.18), the iris 0.000 (1 is shut) on the respawn
+    ride easy 4 frame 2979: the boat moved 199.70 px in a frame (its step 4.77, bound 7.15), the iris 0.000 (1 is shut) on the respawn
+    ride easy 4 frame 4551: the boat moved 204.15 px in a frame (its step 4.77, bound 7.15), the iris 0.000 (1 is shut) on the respawn
+    ride easy 5 frame 1970: the boat moved 146.73 px in a frame (its step 4.84, bound 7.26), the iris 0.000 (1 is shut) on the respawn
+    ride easy 5 frame 3378: the boat moved 137.17 px in a frame (its step 4.84, bound 7.26), the iris 0.000 (1 is shut) on a Game Over continue
+    + actual - expected
+    
+    + [
+    +   'middle normal 1 frame 3457: the boat moved 21.93 px in a frame (its step 4.93, bound 7.39), the iris 0.000 (1 is shut) on the respawn',
+    +   'middle normal 2 frame 3608: the boat moved 212.09 px in a frame (its step 4.87, bound 7.31), the iris 0.000 (1 is shut) on the respawn',
+    +   'middle normal 3 frame 2752: the boat moved 73.59 px in a frame (its step 4.86, bound 7.30), the iris 0.000 (1 is shut) on the respawn',
+    +   'middle normal 4 frame 2189: the boat moved 28.17 px in a frame (its step 4.84, bound 7.26), the iris 0.000 (1 is shut) on the respawn',
+    +   'middle normal 6 frame 3472: the boat moved 224.29 px in a frame (its step 4.86, bound 7.28), the iris 0.000 (1 is shut) on the respawn',
+    +   'middle easy 1 frame 3102: the boat moved 119.13 px in a frame (its step 4.83, bound 7.25), the iris 0.000 (1 is shut) on the respawn',
+    +   'middle easy 1 frame 3496: the boat moved 172.86 px in a frame (its step 4.83, bound 7.25), the iris 0.000 (1 is shut) on the respawn',
+    +   'middle easy 1 frame 3957: the boat moved 108.25 px in a frame (its step 4.83, bound 7.25), the iris 0.000 (1 is shut) on a Game Over continue',
+    +   'middle easy 2 frame 2411: the boat moved 196.73 px in a frame (its step 4.79, bound 7.19), the iris 0.000 (1 is shut) on the respawn',
+    +   'middle easy 4 frame 2422: the boat moved 162.32 px in a frame (its step 4.77, bound 7.15), the iris 0.000 (1 is shut) on the respawn',
+    +   'middle easy 4 frame 4557: the boat moved 274.24 px in a frame (its step 4.77, bound 7.15), the iris 0.000 (1 is shut) on the respawn',
+    +   'middle easy 5 frame 3210: the boat moved 185.87 px in a frame (its step 4.84, bound 7.26), the iris 0.000 (1 is shut) on the respawn',
+    +   'middle easy 5 frame 3968: the boat moved 85.80 px in a frame (its step 4.84, bound 7.26), the iris 0.000 (1 is shut) on the respawn',
+    +   'middle easy 5 frame 4688: the boat moved 192.41 px in a frame (its step 4.84, bound 7.26), the iris 0.000 (1 is shut) on a Game Over continue',
+    +   'middle easy 6 frame 1663: the boat moved 37.43 px in a frame (its step 4.77, bound 7.15), the iris 0.000 (1 is shut) on the respawn',
+    +   'expert normal 1 frame 2643: the boat moved 128.72 px in a frame (its step 4.93, bound 7.39), the iris 0.000 (1 is shut) on the respawn',
+    +   'expert normal 4 frame 3225: the boat moved 8.00 px in a frame (its step 4.84, bound 7.26), the iris 0.000 (1 is shut) on the respawn',
+    +   'expert normal 5 frame 3500: the boat moved 26.65 px in a frame (its step 4.94, bound 7.40), the iris 0.000 (1 is shut) on the respawn',
+    +   'ride normal 1 frame 2912: the boat moved 195.23 px in a frame (its step 4.93, bound 7.39), the iris 0.000 (1 is shut) on the respawn',
+    +   'ride normal 3 frame 2142: the boat moved 34.50 px in a frame (its step 4.86, bound 7.30), the iris 0.000 (1 is shut) on the respawn',
+    +   'ride normal 3 frame 4199: the boat moved 45.98 px in a frame (its step 4.86, bound 7.30), the iris 0.000 (1 is shut) on the respawn',
+    +   'ride normal 5 frame 2336: the boat moved 180.55 px in a frame (its step 4.94, bound 7.40), the iris 0.000 (1 is shut) on the respawn',
+    +   'ride normal 6 frame 2453: the boat moved 102.69 px in a frame (its step 4.86, bound 7.28), the iris 0.000 (1 is shut) on the respawn',
+    +   'ride normal 6 frame 3613: the boat moved 30.74 px in a frame (its step 4.86, bound 7.28), the iris 0.000 (1 is shut) on a Game Over continue',
+    +   'ride easy 1 frame 2973: the boat moved 102.06 px in a frame (its step 4.83, bound 7.25), the iris 0.000 (1 is shut) on the respawn',
+    +   'ride easy 1 frame 3392: the boat moved 146.41 px in a frame (its step 4.83, bound 7.25), the iris 0.000 (1 is shut) on the respawn',
+    +   'ride easy 2 frame 4657: the boat moved 153.99 px in a frame (its step 4.79, bound 7.19), the iris 0.000 (1 is shut) on the respawn',
+    +   'ride easy 3 frame 2757: the boat moved 8.60 px in a frame (its step 4.79, bound 7.18), the iris 0.000 (1 is shut) on the respawn',
+    +   'ride easy 3 frame 4083: the boat moved 55.85 px in a frame (its step 4.79, bound 7.18), the iris 0.000 (1 is shut) on a Game Over continue',
+    +   'ride easy 3 frame 4609: the boat moved 333.59 px in a frame (its step 4.79, bound 7.18), the iris 0.000 (1 is shut) on the respawn',
+    +   'ride easy 4 frame 2979: the boat moved 199.70 px in a frame (its step 4.77, bound 7.15), the iris 0.000 (1 is shut) on the respawn',
+    +   'ride easy 4 frame 4551: the boat moved 204.15 px in a frame (its step 4.77, bound 7.15), the iris 0.000 (1 is shut) on the respawn',
+    +   'ride easy 5 frame 1970: the boat moved 146.73 px in a frame (its step 4.84, bound 7.26), the iris 0.000 (1 is shut) on the respawn',
+    +   'ride easy 5 frame 3378: the boat moved 137.17 px in a frame (its step 4.84, bound 7.26), the iris 0.000 (1 is shut) on a Game Over continue'
+    + ]
+    - []
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+  actual:
+    0: 'middle normal 1 frame 3457: the boat moved 21.93 px in a frame (its step 4.93, bound 7.39), the iris 0.000 (1 is shut) on the respawn'
+    1: 'middle normal 2 frame 3608: the boat moved 212.09 px in a frame (its step 4.87, bound 7.31), the iris 0.000 (1 is shut) on the respawn'
+    2: 'middle normal 3 frame 2752: the boat moved 73.59 px in a frame (its step 4.86, bound 7.30), the iris 0.000 (1 is shut) on the respawn'
+    3: 'middle normal 4 frame 2189: the boat moved 28.17 px in a frame (its step 4.84, bound 7.26), the iris 0.000 (1 is shut) on the respawn'
+    4: 'middle normal 6 frame 3472: the boat moved 224.29 px in a frame (its step 4.86, bound 7.28), the iris 0.000 (1 is shut) on the respawn'
+    5: 'middle easy 1 frame 3102: the boat moved 119.13 px in a frame (its step 4.83, bound 7.25), the iris 0.000 (1 is shut) on the respawn'
+    6: 'middle easy 1 frame 3496: the boat moved 172.86 px in a frame (its step 4.83, bound 7.25), the iris 0.000 (1 is shut) on the respawn'
+    7: 'middle easy 1 frame 3957: the boat moved 108.25 px in a frame (its step 4.83, bound 7.25), the iris 0.000 (1 is shut) on a Game Over continue'
+    8: 'middle easy 2 frame 2411: the boat moved 196.73 px in a frame (its step 4.79, bound 7.19), the iris 0.000 (1 is shut) on the respawn'
+    9: 'middle easy 4 frame 2422: the boat moved 162.32 px in a frame (its step 4.77, bound 7.15), the iris 0.000 (1 is shut) on the respawn'
+    10: 'middle easy 4 frame 4557: the boat moved 274.24 px in a frame (its step 4.77, bound 7.15), the iris 0.000 (1 is shut) on the respawn'
+    11: 'middle easy 5 frame 3210: the boat moved 185.87 px in a frame (its step 4.84, bound 7.26), the iris 0.000 (1 is shut) on the respawn'
+    12: 'middle easy 5 frame 3968: the boat moved 85.80 px in a frame (its step 4.84, bound 7.26), the iris 0.000 (1 is shut) on the respawn'
+    13: 'middle easy 5 frame 4688: the boat moved 192.41 px in a frame (its step 4.84, bound 7.26), the iris 0.000 (1 is shut) on a Game Over continue'
+    14: 'middle easy 6 frame 1663: the boat moved 37.43 px in a frame (its step 4.77, bound 7.15), the iris 0.000 (1 is shut) on the respawn'
+    15: 'expert normal 1 frame 2643: the boat moved 128.72 px in a frame (its step 4.93, bound 7.39), the iris 0.000 (1 is shut) on the respawn'
+    16: 'expert normal 4 frame 3225: the boat moved 8.00 px in a frame (its step 4.84, bound 7.26), the iris 0.000 (1 is shut) on the respawn'
+    17: 'expert normal 5 frame 3500: the boat moved 26.65 px in a frame (its step 4.94, bound 7.40), the iris 0.000 (1 is shut) on the respawn'
+    18: 'ride normal 1 frame 2912: the boat moved 195.23 px in a frame (its step 4.93, bound 7.39), the iris 0.000 (1 is shut) on the respawn'
+    19: 'ride normal 3 frame 2142: the boat moved 34.50 px in a frame (its step 4.86, bound 7.30), the iris 0.000 (1 is shut) on the respawn'
+    20: 'ride normal 3 frame 4199: the boat moved 45.98 px in a frame (its step 4.86, bound 7.30), the iris 0.000 (1 is shut) on the respawn'
+    21: 'ride normal 5 frame 2336: the boat moved 180.55 px in a frame (its step 4.94, bound 7.40), the iris 0.000 (1 is shut) on the respawn'
+    22: 'ride normal 6 frame 2453: the boat moved 102.69 px in a frame (its step 4.86, bound 7.28), the iris 0.000 (1 is shut) on the respawn'
+    23: 'ride normal 6 frame 3613: the boat moved 30.74 px in a frame (its step 4.86, bound 7.28), the iris 0.000 (1 is shut) on a Game Over continue'
+    24: 'ride easy 1 frame 2973: the boat moved 102.06 px in a frame (its step 4.83, bound 7.25), the iris 0.000 (1 is shut) on the respawn'
+    25: 'ride easy 1 frame 3392: the boat moved 146.41 px in a frame (its step 4.83, bound 7.25), the iris 0.000 (1 is shut) on the respawn'
+    26: 'ride easy 2 frame 4657: the boat moved 153.99 px in a frame (its step 4.79, bound 7.19), the iris 0.000 (1 is shut) on the respawn'
+    27: 'ride easy 3 frame 2757: the boat moved 8.60 px in a frame (its step 4.79, bound 7.18), the iris 0.000 (1 is shut) on the respawn'
+    28: 'ride easy 3 frame 4083: the boat moved 55.85 px in a frame (its step 4.79, bound 7.18), the iris 0.000 (1 is shut) on a Game Over continue'
+    29: 'ride easy 3 frame 4609: the boat moved 333.59 px in a frame (its step 4.79, bound 7.18), the iris 0.000 (1 is shut) on the respawn'
+    30: 'ride easy 4 frame 2979: the boat moved 199.70 px in a frame (its step 4.77, bound 7.15), the iris 0.000 (1 is shut) on the respawn'
+    31: 'ride easy 4 frame 4551: the boat moved 204.15 px in a frame (its step 4.77, bound 7.15), the iris 0.000 (1 is shut) on the respawn'
+    32: 'ride easy 5 frame 1970: the boat moved 146.73 px in a frame (its step 4.84, bound 7.26), the iris 0.000 (1 is shut) on the respawn'
+    33: 'ride easy 5 frame 3378: the boat moved 137.17 px in a frame (its step 4.84, bound 7.26), the iris 0.000 (1 is shut) on a Game Over continue'
+  operator: 'deepStrictEqual'
+  stack: |-
+    TestContext.<anonymous> (/home/user/w27u-irisplant/tools/inspect/pacerRespawn.test.ts:143:12)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
+  ...
+1..2
+# tests 2
+# suites 0
+# pass 0
+# fail 2
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 40479.641681

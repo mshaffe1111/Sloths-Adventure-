@@ -1,0 +1,1 @@
+2-7 x40 CI-14 -> CI-15: rows 360; PASS -> FAIL 1 [('kid', 'easy', 17)]; FAIL -> PASS 41; moved 160; moved by bot {'kid': 80, 'adult': 80, 'child': 0, 'middle': 0, 'expert': 0}

@@ -1,0 +1,21 @@
+#!/bin/bash
+# usage: suite.sh <worktree> <logdir>
+W=$1; L=$2; mkdir -p $L; cd $W || exit 1
+echo "HEAD $(git rev-parse HEAD)" > $L/summary.txt
+run() { n=$1; shift; s=$(date +%s); "$@" > $L/$n.log 2>&1; rc=$?; echo "$n rc=$rc $(( $(date +%s)-s ))s" >> $L/summary.txt; }
+run tsc npx tsc --noEmit -p .
+run unit npx tsx --test src/audio/*.test.ts src/game/*.test.ts src/components/*.test.ts src/components/**/*.test.ts src/game/gen2/*.test.ts src/game/gen2/worlds/*.test.ts src/game/art/*.test.ts
+run build env BASE_PATH=/Sloths-Adventure-/ npx vite build
+run chunk node tools/perf/chunkcheck.mjs
+run art node tools/perf/artcheck.mjs
+run known node tools/perf/knowncheck.mjs
+run generality npx tsx tools/engine/generalitycheck.ts
+run roadmap node tools/roadmapcheck.mjs
+run kbd node tools/perf/kbdcheck.mjs
+run buildcheck node tools/perf/buildcheck.mjs
+run seedlist npx tsx tools/engine/seedlist.ts 1-1 --check
+run enginetools npx tsx --test tools/engine/library.test.ts tools/engine/seedlist.test.ts tools/engine/yield.test.ts tools/inspect/travelBots.test.ts
+run tierbots npx tsx --test tools/inspect/tierBots.test.ts
+run draw node tools/perf/drawcheck.mjs
+run clip node tools/perf/clipcheck.mjs
+echo DONE >> $L/summary.txt

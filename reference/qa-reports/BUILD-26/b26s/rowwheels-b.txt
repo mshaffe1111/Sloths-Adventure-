@@ -1,0 +1,143 @@
+TAP version 13
+# Subtest: the table: a stage is judged where it has a row; Easy is easy-any; a stage with no row is not judged
+ok 1 - the table: a stage is judged where it has a row; Easy is easy-any; a stage with no row is not judged
+  ---
+  duration_ms: 4.864387
+  type: 'test'
+  ...
+# Subtest: the lookups take the judged stage's own id: 1-1's figures are what they were, and a stage with no row has none on Normal, by name
+ok 2 - the lookups take the judged stage's own id: 1-1's figures are what they were, and a stage with no row has none on Normal, by name
+  ---
+  duration_ms: 0.808585
+  type: 'test'
+  ...
+# Subtest: any stage: one table line and the fixture stage is judged (a planted 300 px gap refused band.out); without the line it is notJudged
+ok 3 - any stage: one table line and the fixture stage is judged (a planted 300 px gap refused band.out); without the line it is notJudged
+  ---
+  duration_ms: 0.742775
+  type: 'test'
+  ...
+# Subtest: the promises read the table and the stage's brief, never a stage id: floor.unmarked judges every judged stage, the double's where the brief teaches it
+ok 4 - the promises read the table and the stage's brief, never a stage id: floor.unmarked judges every judged stage, the double's where the brief teaches it
+  ---
+  duration_ms: 992.864874
+  type: 'test'
+  ...
+# Subtest: a chain hop is a section kind, judged cap centre to cap centre (S) against chain.md §3 by the step between the two caps; band.out names it (planted)
+ok 5 - a chain hop is a section kind, judged cap centre to cap centre (S) against chain.md §3 by the step between the two caps; band.out names it (planted)
+  ---
+  duration_ms: 0.940079
+  type: 'test'
+  ...
+# Subtest: no stage id in reach.ts or verdicts.ts: the table is world data (worlds/stageTable.ts), JUDGED reads its rows
+ok 6 - no stage id in reach.ts or verdicts.ts: the table is world data (worlds/stageTable.ts), JUDGED reads its rows
+  ---
+  duration_ms: 0.584629
+  type: 'test'
+  ...
+# Subtest: the shipped table passes the gate: every stage-table stage registered everywhere, every list checked in CI (no known list)
+ok 7 - the shipped table passes the gate: every stage-table stage registered everywhere, every list checked in CI (no known list)
+  ---
+  duration_ms: 70953.92448
+  type: 'test'
+  ...
+# Subtest: planted: a stage taken out of drawcheck's scenarios fails "drawcheck" (D51), and the gate fails on it
+ok 8 - planted: a stage taken out of drawcheck's scenarios fails "drawcheck" (D51), and the gate fails on it
+  ---
+  duration_ms: 4.727357
+  type: 'test'
+  ...
+# Subtest: planted: a listed stage with its list taken away and no stand-in fails "seeds"; a stand-in alone passes
+ok 9 - planted: a listed stage with its list taken away and no stand-in fails "seeds"; a stand-in alone passes
+  ---
+  duration_ms: 0.394633
+  type: 'test'
+  ...
+# Subtest: planted: a kit name listed.ts does not hold fails "kit"; a stage with no row fails "row"
+ok 10 - planted: a kit name listed.ts does not hold fails "kit"; a stage with no row fails "row"
+  ---
+  duration_ms: 0.323183
+  type: 'test'
+  ...
+# Subtest: planted: no config, a hand-built plan shadowing the row, no levelSeeds entry each fail by name
+ok 11 - planted: no config, a hand-built plan shadowing the row, no levelSeeds entry each fail by name
+  ---
+  duration_ms: 4.426565
+  type: 'test'
+  ...
+# Subtest: planted: an unjudged row, a judged scope with no rows, and a scope missing one of Easy's moves each fail "flown"
+ok 12 - planted: an unjudged row, a judged scope with no rows, and a scope missing one of Easy's moves each fail "flown"
+  ---
+  duration_ms: 0.393603
+  type: 'test'
+  ...
+# Subtest: planted: a sheet the rolls draw that the preload list lacks fails "sheets"
+ok 13 - planted: a sheet the rolls draw that the preload list lacks fails "sheets"
+  ---
+  duration_ms: 0.456932
+  type: 'test'
+  ...
+# Subtest: planted on the real builds: a stage whose rolls lay a creature, with the creature sheets taken out of its preload list, is caught
+ok 14 - planted on the real builds: a stage whose rolls lay a creature, with the creature sheets taken out of its preload list, is caught
+  ---
+  duration_ms: 73945.204972
+  type: 'test'
+  ...
+# Subtest: R-165.365 planted: the sheet check reads the FINISHED roll; on the unfinished roll a follow stage (2-3) counts its herons as an eagle
+ok 15 - R-165.365 planted: the sheet check reads the FINISHED roll; on the unfinished roll a follow stage (2-3) counts its herons as an eagle
+  ---
+  duration_ms: 601.419185
+  type: 'test'
+  ...
+# Subtest: planted: gates.yml without a seed-list check for a list fails "ci-seedlist"; a named line or the --lists loop passes
+ok 16 - planted: gates.yml without a seed-list check for a list fails "ci-seedlist"; a named line or the --lists loop passes
+  ---
+  duration_ms: 1.038566
+  type: 'test'
+  ...
+# Subtest: R-165.278: the seed-list shards hold every list exactly once, at most SHARD_LISTS each, for 1..40 lists; the gates.yml matrix line still counts as the loop
+ok 17 - R-165.278: the seed-list shards hold every list exactly once, at most SHARD_LISTS each, for 1..40 lists; the gates.yml matrix line still counts as the loop
+  ---
+  duration_ms: 7.61241
+  type: 'test'
+  ...
+# Subtest: rideWheel ON, 2-6's row: every tier reaches the shrine, rides every wheel both ways round, no pond, across inside a turn
+ok 18 - rideWheel ON, 2-6's row: every tier reaches the shrine, rides every wheel both ways round, no pond, across inside a turn
+  ---
+  duration_ms: 10361.696052
+  type: 'test'
+  ...
+# Subtest: PLANTED: rideWheel OFF, every tier scrambles bucket to bucket on 2-6's row instead of riding (RED)
+ok 19 - PLANTED: rideWheel OFF, every tier scrambles bucket to bucket on 2-6's row instead of riding (RED)
+  ---
+  duration_ms: 5625.01438
+  type: 'test'
+  ...
+# Subtest: the meter's wheel channel prices every wheel on 2-6's row: a board each (every moment boards: 0 bits), a step-off each but the 'in' streets
+ok 20 - the meter's wheel channel prices every wheel on 2-6's row: a board each (every moment boards: 0 bits), a step-off each but the 'in' streets
+  ---
+  duration_ms: 527.360105
+  type: 'test'
+  ...
+# Subtest: the tower's turns, 2-6's row: the middle and the expert finish with NO rescue, seeds 1 and 2 (ENG-26e)
+ok 21 - the tower's turns, 2-6's row: the middle and the expert finish with NO rescue, seeds 1 and 2 (ENG-26e)
+  ---
+  duration_ms: 3834.348994
+  type: 'test'
+  ...
+# Subtest: PLANTED: trunkCatch OFF, a double that grabs a turn vine straight off the ground flicks him off it: rescues come back (RED)
+ok 22 - PLANTED: trunkCatch OFF, a double that grabs a turn vine straight off the ground flicks him off it: rescues come back (RED)
+  ---
+  duration_ms: 3033.259295
+  type: 'test'
+  ...
+1..22
+# tests 22
+# suites 0
+# pass 22
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 150893.28337
+exit 0

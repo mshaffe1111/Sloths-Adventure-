@@ -1,0 +1,127 @@
+TAP version 13
+# Subtest: pacer: laid on the race leg by the design's rule, every roll and both settings; RED when its time breaks either bound
+ok 1 - pacer: laid on the race leg by the design's rule, every roll and both settings; RED when its time breaks either bound
+  ---
+  duration_ms: 612.376683
+  type: 'test'
+  ...
+# Subtest: pacer (planted): after a fall the floor counts each crossing left, never more than a clean run's margin, post Normal seed 4
+ok 2 - pacer (planted): after a fall the floor counts each crossing left, never more than a clean run's margin, post Normal seed 4
+  ---
+  duration_ms: 70.238479
+  type: 'test'
+  ...
+# Subtest: pacer (planted): a river on the race leg that no flown row matches is refused by name, and a stage with no race leg lays none
+ok 3 - pacer (planted): a river on the race leg that no flown row matches is refused by name, and a stage with no race leg lays none
+  ---
+  duration_ms: 70.949932
+  type: 'test'
+  ...
+# Subtest: pacer: it waits, sets off as he steps onto the race leg, docks, and on a respawn is put back level with him plus the margin's share
+ok 4 - pacer: it waits, sets off as he steps onto the race leg, docks, and on a respawn is put back level with him plus the margin's share
+  ---
+  duration_ms: 127.327305
+  type: 'test'
+  ...
+# Subtest: pacer race (the bots): the careful middle player (SKILLS.race) beats it, normal seed 1
+ok 5 - pacer race (the bots): the careful middle player (SKILLS.race) beats it, normal seed 1
+  ---
+  duration_ms: 1073.585933
+  type: 'test'
+  ...
+# Subtest: pacer race (the bots): the ride-only player never wins without a fall on the last crossing, normal seed 1
+ok 6 - pacer race (the bots): the ride-only player never wins without a fall on the last crossing, normal seed 1
+  ---
+  duration_ms: 577.396898
+  type: 'test'
+  ...
+# ride-only normal seed 1: fell on the last crossing (won, 93.4 s against 93.89 s): not judged
+# Subtest: pacer race (the bots): the careful middle player (SKILLS.race) beats it, normal seed 2
+ok 7 - pacer race (the bots): the careful middle player (SKILLS.race) beats it, normal seed 2
+  ---
+  duration_ms: 522.732623
+  type: 'test'
+  ...
+# Subtest: pacer race (the bots): the ride-only player never wins without a fall on the last crossing, normal seed 2
+ok 8 - pacer race (the bots): the ride-only player never wins without a fall on the last crossing, normal seed 2
+  ---
+  duration_ms: 465.445025
+  type: 'test'
+  ...
+# Subtest: pacer race (the bots): the careful middle player (SKILLS.race) beats it, normal seed 3
+ok 9 - pacer race (the bots): the careful middle player (SKILLS.race) beats it, normal seed 3
+  ---
+  duration_ms: 450.009452
+  type: 'test'
+  ...
+# Subtest: pacer race (the bots): the ride-only player never wins without a fall on the last crossing, normal seed 3
+ok 10 - pacer race (the bots): the ride-only player never wins without a fall on the last crossing, normal seed 3
+  ---
+  duration_ms: 483.506579
+  type: 'test'
+  ...
+# ride-only normal seed 3: fell on the last crossing (lost, 110.9 s against 92.06 s): not judged
+# Subtest: pacer race (the bots): the careful middle player (SKILLS.race) beats it, easy seed 1
+ok 11 - pacer race (the bots): the careful middle player (SKILLS.race) beats it, easy seed 1
+  ---
+  duration_ms: 473.903096
+  type: 'test'
+  ...
+# Subtest: pacer race (the bots): the ride-only player never wins without a fall on the last crossing, easy seed 1
+ok 12 - pacer race (the bots): the ride-only player never wins without a fall on the last crossing, easy seed 1
+  ---
+  duration_ms: 462.895749
+  type: 'test'
+  ...
+# Subtest: pacer race (the bots): the careful middle player (SKILLS.race) beats it, easy seed 2
+ok 13 - pacer race (the bots): the careful middle player (SKILLS.race) beats it, easy seed 2
+  ---
+  duration_ms: 493.891205
+  type: 'test'
+  ...
+# Subtest: pacer race (the bots): the ride-only player never wins without a fall on the last crossing, easy seed 2
+ok 14 - pacer race (the bots): the ride-only player never wins without a fall on the last crossing, easy seed 2
+  ---
+  duration_ms: 531.899816
+  type: 'test'
+  ...
+# Subtest: pacer race (the bots): the careful middle player (SKILLS.race) beats it, easy seed 3
+ok 15 - pacer race (the bots): the careful middle player (SKILLS.race) beats it, easy seed 3
+  ---
+  duration_ms: 405.5479
+  type: 'test'
+  ...
+# Subtest: pacer race (the bots): the ride-only player never wins without a fall on the last crossing, easy seed 3
+ok 16 - pacer race (the bots): the ride-only player never wins without a fall on the last crossing, easy seed 3
+  ---
+  duration_ms: 432.292601
+  type: 'test'
+  ...
+# Subtest: bot (planted): he reads a gap from where he takes off, so the careful middle player wins post Normal seed 4; RED without it
+ok 17 - bot (planted): he reads a gap from where he takes off, so the careful middle player wins post Normal seed 4; RED without it
+  ---
+  duration_ms: 1093.509678
+  type: 'test'
+  ...
+# Subtest: bot (planted): he reads a gap from where he takes off, so the careful middle player wins post Normal seed 5; RED without it
+ok 18 - bot (planted): he reads a gap from where he takes off, so the careful middle player wins post Normal seed 5; RED without it
+  ---
+  duration_ms: 954.849916
+  type: 'test'
+  ...
+# Subtest: bot (planted): a log drifting his way, still mostly under the lip, is boarded by a hop, so the careful middle player wins home Easy seed 1; RED without it
+ok 19 - bot (planted): a log drifting his way, still mostly under the lip, is boarded by a hop, so the careful middle player wins home Easy seed 1; RED without it
+  ---
+  duration_ms: 872.430334
+  type: 'test'
+  ...
+1..19
+# tests 19
+# suites 0
+# pass 19
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 10628.412438
+exit=0

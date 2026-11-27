@@ -1,0 +1,24 @@
+rows 440, seeds 2..36
+(3, 'child', 'normal', 1) ON shrine 190.3s L0 R0 | OFF shrine 227.5s L0 R1
+(3, 'middle', 'normal', 1) ON shrine 131.4s L0 R0 | OFF shrine 161.9s L0 R1
+(5, 'child', 'normal', 1) ON shrine 196.1s L0 R0 | OFF shrine 203.8s L0 R1
+(5, 'middle', 'normal', 1) ON shrine 131.5s L0 R0 | OFF shrine 139.6s L0 R1
+(6, 'middle', 'normal', 1) ON shrine 116.6s L0 R0 | OFF shrine 184.1s L0 R1
+(8, 'middle', 'normal', 1) ON shrine 126.1s L0 R0 | OFF shrine 153.3s L0 R1
+(9, 'middle', 'normal', 1) ON shrine 132.6s L0 R0 | OFF shrine 141.7s L0 R1
+(10, 'middle', 'easy', 1) ON shrine 147.2s L0 R0 | OFF shrine 158.9s L0 R1
+(10, 'middle', 'normal', 1) ON shrine 122.6s L0 R0 | OFF shrine 148.8s L0 R1
+(11, 'middle', 'normal', 2) ON shrine 122.3s L0 R0 | OFF shrine 154.4s L0 R1
+(12, 'middle', 'normal', 2) ON shrine 126.5s L0 R0 | OFF shrine 185.5s L0 R2
+(26, 'middle', 'normal', 1) ON shrine 122.1s L0 R0 | OFF shrine 143.7s L0 R1
+(27, 'expert', 'normal', 1) ON shrine 120.8s L0 R0 | OFF shrine 138.9s L0 R1
+(27, 'middle', 'normal', 1) ON shrine 132.9s L0 R0 | OFF shrine 165.7s L0 R1
+(28, 'middle', 'easy', 1) ON shrine 139.7s L0 R0 | OFF shrine 169.7s L0 R1
+(28, 'middle', 'normal', 1) ON shrine 120.2s L0 R0 | OFF shrine 190.5s L0 R1
+(28, 'middle', 'normal', 2) ON shrine 121.4s L0 R0 | OFF shrine 157s L0 R1
+(29, 'middle', 'normal', 2) ON shrine 129.5s L0 R0 | OFF shrine 149.7s L0 R1
+(30, 'middle', 'easy', 1) ON shrine 132.7s L0 R0 | OFF shrine 146.5s L0 R1
+(31, 'middle', 'normal', 1) ON shrine 127.9s L0 R0 | OFF shrine 145.2s L0 R1
+(33, 'middle', 'normal', 1) ON shrine 129.4s L0 R0 | OFF shrine 174s L0 R2
+(34, 'middle', 'normal', 1) ON shrine 127.6s L0 R0 | OFF shrine 163.9s L0 R1
+per seed middle+expert rescues OFF/ON (runs): {3: (1, 0, 6), 5: (1, 0, 6), 6: (1, 0, 6), 8: (1, 0, 6), 9: (1, 0, 6), 10: (2, 0, 6), 11: (1, 0, 6), 12: (2, 0, 6), 26: (1, 0, 6), 27: (2, 0, 6), 28: (3, 0, 6), 29: (1, 0, 6), 30: (1, 0, 6), 31: (1, 0, 6), 33: (2, 0, 6), 34: (1, 0, 6)}

@@ -9,6 +9,7 @@
 import type { Difficulty } from '../difficulty.ts';
 import type { Platform } from '../types.ts';
 import { APEX, arc, BAND_SOURCE, BANDS, BLOCK_H, BODY_H, chainBand, lesserArcs, linkArcs, scopeFor, scopeOf, SPARE, TAKEOFF } from './reach.ts';
+import { firstMet } from './tower.ts';
 import type {
   Drop, FirstRunLayout, HurtLook, JudgedStage, LethalLook, Measure, PromiseRegistry, ReachMove, RollVerdict, SectionKind, SoftLook, Verdict, VerdictName,
 } from './verdicts.types.ts';
@@ -134,12 +135,15 @@ const isLethal = (d: Drop): boolean => d.ends.kind === 'life';
 /** each kind of end and the looks that are true of it: a soft look, a lethal look and the hurt look never stand in for one another */
 const LOOKS: Record<string, readonly string[]> = { lethal: LETHAL_LOOKS, soft: SOFT_LOOKS, heart: ['hurt-art'] satisfies readonly HurtLook[] };
 
-/** the drops' verdicts: a lethal drop on a no-lethal stage, a lethal drop unwarned, a drop drawn with the other kind's look */
-export function dropVerdicts(st: Pick<JudgedStage, 'setting' | 'policy' | 'drops'>): Verdict[] {
+/** the drops' verdicts: a lethal drop on a no-lethal stage, a lethal drop unwarned, a drop drawn with the other kind's look. `laid`: the
+ *  built stage, whose way orders the drops (gen2/tower.ts firstMet: along its route on a stage of legs, x on any other; none given: x) */
+export function dropVerdicts(st: Pick<JudgedStage, 'setting' | 'policy' | 'drops'>, laid: object = {}): Verdict[] {
   const out: Verdict[] = [];
   // (ENGINE-WORTHY 1, the lead's ruling 11-14: PAINTED water is its own danger mark, so a lethal drop drawn as water wants Dot's line at the
   // stage's FIRST such drop only (the teaching rule, WATER_WARN) and no sign; any other lethal drop (World 8's dark) wants both, every time)
-  const firstWater = (st.drops as readonly Drop[]).filter((d) => isLethal(d) && d.look === 'water-art').sort((a, b) => a.x0 - b.x0)[0];
+  // (FIRST as he meets it along the laid stage's way, never the least x: on a stacked out-and-back the way home's rivers lie under the way
+  // out at smaller x, D130; a drop is met at the lip he reaches first, its x0 on a stage with no route)
+  const firstWater = firstMet(laid, (st.drops as readonly Drop[]).filter((d) => isLethal(d) && d.look === 'water-art'), (d) => [{ x: d.x0, y: d.lipY }, { x: d.x1, y: d.lipY }]);
   for (const d of st.drops as readonly Drop[]) {
     const at = { x0: R(d.x0), x1: R(d.x1) };
     if (isLethal(d) && st.policy === 'no-lethal') out.push({ name: 'drop.lethal-in-no-lethal', setting: st.setting, at, line: `a fall into ${(d.ends as { cause: string }).cause} costs a life at x ${at.x0}..${at.x1} on a no-lethal stage` });
@@ -183,7 +187,7 @@ export function judgeRoll(st: Judged11, promises: PromiseRegistry = []): RollVer
   const notJudged: VerdictName[] = ['first-run.drift'];
   if (scopeOf(st.stageId, st.setting)) for (const q of st.asks) failed.push(...askVerdicts(q, st.setting, st.stageId));
   else notJudged.push('reach.unflown', ...ARC_VERDICTS);
-  failed.push(...dropVerdicts(st), ...untypedVerdicts(st, st.routeGaps));
+  failed.push(...dropVerdicts(st, (st as Judged11 & { built?: object }).built), ...untypedVerdicts(st, st.routeGaps));
   for (const p of promises) {
     if (p.stages !== 'all' && !p.stages.includes(st.stageId)) continue;
     if (!p.settings.includes(st.setting)) { if (!notJudged.includes(p.id)) notJudged.push(p.id); continue; }

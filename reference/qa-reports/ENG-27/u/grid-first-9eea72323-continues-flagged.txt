@@ -1,0 +1,128 @@
+TAP version 13
+# Subtest: 2-7 home: back at a race-leg fall's x, his margin is never better than at the fall (a fall never pays, end to end)
+not ok 1 - 2-7 home: back at a race-leg fall's x, his margin is never better than at the fall (a fall never pays, end to end)
+  ---
+  duration_ms: 18221.25695
+  type: 'test'
+  location: '/home/user/w27u-frz/tools/inspect/pacerRespawn.test.ts:114:3'
+  failureType: 'testCodeFailure'
+  error: |-
+    home: 7 re-placements of the boat with the view live:
+    middle normal 5 frame 3386: the boat moved 316.59 px in a frame (its step 4.95, bound 7.42), the iris 0.000 (1 is shut)
+    middle easy 2 frame 3139: the boat moved 210.36 px in a frame (its step 4.81, bound 7.22), the iris 0.000 (1 is shut)
+    middle easy 5 frame 3373: the boat moved 145.18 px in a frame (its step 4.85, bound 7.28), the iris 0.000 (1 is shut)
+    expert normal 2 frame 3021: the boat moved 41.91 px in a frame (its step 4.90, bound 7.35), the iris 0.000 (1 is shut)
+    expert normal 5 frame 2776: the boat moved 99.67 px in a frame (its step 4.95, bound 7.42), the iris 0.000 (1 is shut)
+    ride easy 1 frame 3464: the boat moved 114.83 px in a frame (its step 4.86, bound 7.29), the iris 0.000 (1 is shut)
+    ride easy 5 frame 4333: the boat moved 291.09 px in a frame (its step 4.85, bound 7.28), the iris 0.000 (1 is shut)
+    + actual - expected
+    
+    + [
+    +   'middle normal 5 frame 3386: the boat moved 316.59 px in a frame (its step 4.95, bound 7.42), the iris 0.000 (1 is shut)',
+    +   'middle easy 2 frame 3139: the boat moved 210.36 px in a frame (its step 4.81, bound 7.22), the iris 0.000 (1 is shut)',
+    +   'middle easy 5 frame 3373: the boat moved 145.18 px in a frame (its step 4.85, bound 7.28), the iris 0.000 (1 is shut)',
+    +   'expert normal 2 frame 3021: the boat moved 41.91 px in a frame (its step 4.90, bound 7.35), the iris 0.000 (1 is shut)',
+    +   'expert normal 5 frame 2776: the boat moved 99.67 px in a frame (its step 4.95, bound 7.42), the iris 0.000 (1 is shut)',
+    +   'ride easy 1 frame 3464: the boat moved 114.83 px in a frame (its step 4.86, bound 7.29), the iris 0.000 (1 is shut)',
+    +   'ride easy 5 frame 4333: the boat moved 291.09 px in a frame (its step 4.85, bound 7.28), the iris 0.000 (1 is shut)'
+    + ]
+    - []
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+  actual:
+    0: 'middle normal 5 frame 3386: the boat moved 316.59 px in a frame (its step 4.95, bound 7.42), the iris 0.000 (1 is shut)'
+    1: 'middle easy 2 frame 3139: the boat moved 210.36 px in a frame (its step 4.81, bound 7.22), the iris 0.000 (1 is shut)'
+    2: 'middle easy 5 frame 3373: the boat moved 145.18 px in a frame (its step 4.85, bound 7.28), the iris 0.000 (1 is shut)'
+    3: 'expert normal 2 frame 3021: the boat moved 41.91 px in a frame (its step 4.90, bound 7.35), the iris 0.000 (1 is shut)'
+    4: 'expert normal 5 frame 2776: the boat moved 99.67 px in a frame (its step 4.95, bound 7.42), the iris 0.000 (1 is shut)'
+    5: 'ride easy 1 frame 3464: the boat moved 114.83 px in a frame (its step 4.86, bound 7.29), the iris 0.000 (1 is shut)'
+    6: 'ride easy 5 frame 4333: the boat moved 291.09 px in a frame (its step 4.85, bound 7.28), the iris 0.000 (1 is shut)'
+    7: 'middle easy 1 frame 3957: the boat moved 108.25 px in a frame (its step 4.83, bound 7.25), the iris 0.000 (1 is shut)'
+    8: 'middle easy 5 frame 4688: the boat moved 192.41 px in a frame (its step 4.84, bound 7.26), the iris 0.000 (1 is shut)'
+    9: 'ride normal 6 frame 3613: the boat moved 30.74 px in a frame (its step 4.86, bound 7.28), the iris 0.000 (1 is shut)'
+    10: 'ride easy 3 frame 4083: the boat moved 55.85 px in a frame (its step 4.79, bound 7.18), the iris 0.000 (1 is shut)'
+    11: 'ride easy 5 frame 3378: the boat moved 137.17 px in a frame (its step 4.84, bound 7.26), the iris 0.000 (1 is shut)'
+  operator: 'deepStrictEqual'
+  stack: |-
+    TestContext.<anonymous> (/home/user/w27u-frz/tools/inspect/pacerRespawn.test.ts:135:12)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.start (node:internal/test_runner/test:944:17)
+    startSubtestAfterBootstrap (node:internal/test_runner/harness:296:17)
+  ...
+# Subtest: 2-7 post: back at a race-leg fall's x, his margin is never better than at the fall (a fall never pays, end to end)
+not ok 2 - 2-7 post: back at a race-leg fall's x, his margin is never better than at the fall (a fall never pays, end to end)
+  ---
+  duration_ms: 17402.856574
+  type: 'test'
+  location: '/home/user/w27u-frz/tools/inspect/pacerRespawn.test.ts:114:3'
+  failureType: 'testCodeFailure'
+  error: |-
+    post: 12 re-placements of the boat with the view live:
+    middle normal 5 frame 3386: the boat moved 316.59 px in a frame (its step 4.95, bound 7.42), the iris 0.000 (1 is shut)
+    middle easy 2 frame 3139: the boat moved 210.36 px in a frame (its step 4.81, bound 7.22), the iris 0.000 (1 is shut)
+    middle easy 5 frame 3373: the boat moved 145.18 px in a frame (its step 4.85, bound 7.28), the iris 0.000 (1 is shut)
+    expert normal 2 frame 3021: the boat moved 41.91 px in a frame (its step 4.90, bound 7.35), the iris 0.000 (1 is shut)
+    expert normal 5 frame 2776: the boat moved 99.67 px in a frame (its step 4.95, bound 7.42), the iris 0.000 (1 is shut)
+    ride easy 1 frame 3464: the boat moved 114.83 px in a frame (its step 4.86, bound 7.29), the iris 0.000 (1 is shut)
+    ride easy 5 frame 4333: the boat moved 291.09 px in a frame (its step 4.85, bound 7.28), the iris 0.000 (1 is shut)
+    middle easy 1 frame 3957: the boat moved 108.25 px in a frame (its step 4.83, bound 7.25), the iris 0.000 (1 is shut)
+    middle easy 5 frame 4688: the boat moved 192.41 px in a frame (its step 4.84, bound 7.26), the iris 0.000 (1 is shut)
+    ride normal 6 frame 3613: the boat moved 30.74 px in a frame (its step 4.86, bound 7.28), the iris 0.000 (1 is shut)
+    ride easy 3 frame 4083: the boat moved 55.85 px in a frame (its step 4.79, bound 7.18), the iris 0.000 (1 is shut)
+    ride easy 5 frame 3378: the boat moved 137.17 px in a frame (its step 4.84, bound 7.26), the iris 0.000 (1 is shut)
+    + actual - expected
+    
+    + [
+    +   'middle normal 5 frame 3386: the boat moved 316.59 px in a frame (its step 4.95, bound 7.42), the iris 0.000 (1 is shut)',
+    +   'middle easy 2 frame 3139: the boat moved 210.36 px in a frame (its step 4.81, bound 7.22), the iris 0.000 (1 is shut)',
+    +   'middle easy 5 frame 3373: the boat moved 145.18 px in a frame (its step 4.85, bound 7.28), the iris 0.000 (1 is shut)',
+    +   'expert normal 2 frame 3021: the boat moved 41.91 px in a frame (its step 4.90, bound 7.35), the iris 0.000 (1 is shut)',
+    +   'expert normal 5 frame 2776: the boat moved 99.67 px in a frame (its step 4.95, bound 7.42), the iris 0.000 (1 is shut)',
+    +   'ride easy 1 frame 3464: the boat moved 114.83 px in a frame (its step 4.86, bound 7.29), the iris 0.000 (1 is shut)',
+    +   'ride easy 5 frame 4333: the boat moved 291.09 px in a frame (its step 4.85, bound 7.28), the iris 0.000 (1 is shut)',
+    +   'middle easy 1 frame 3957: the boat moved 108.25 px in a frame (its step 4.83, bound 7.25), the iris 0.000 (1 is shut)',
+    +   'middle easy 5 frame 4688: the boat moved 192.41 px in a frame (its step 4.84, bound 7.26), the iris 0.000 (1 is shut)',
+    +   'ride normal 6 frame 3613: the boat moved 30.74 px in a frame (its step 4.86, bound 7.28), the iris 0.000 (1 is shut)',
+    +   'ride easy 3 frame 4083: the boat moved 55.85 px in a frame (its step 4.79, bound 7.18), the iris 0.000 (1 is shut)',
+    +   'ride easy 5 frame 3378: the boat moved 137.17 px in a frame (its step 4.84, bound 7.26), the iris 0.000 (1 is shut)'
+    + ]
+    - []
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+  actual:
+    0: 'middle normal 5 frame 3386: the boat moved 316.59 px in a frame (its step 4.95, bound 7.42), the iris 0.000 (1 is shut)'
+    1: 'middle easy 2 frame 3139: the boat moved 210.36 px in a frame (its step 4.81, bound 7.22), the iris 0.000 (1 is shut)'
+    2: 'middle easy 5 frame 3373: the boat moved 145.18 px in a frame (its step 4.85, bound 7.28), the iris 0.000 (1 is shut)'
+    3: 'expert normal 2 frame 3021: the boat moved 41.91 px in a frame (its step 4.90, bound 7.35), the iris 0.000 (1 is shut)'
+    4: 'expert normal 5 frame 2776: the boat moved 99.67 px in a frame (its step 4.95, bound 7.42), the iris 0.000 (1 is shut)'
+    5: 'ride easy 1 frame 3464: the boat moved 114.83 px in a frame (its step 4.86, bound 7.29), the iris 0.000 (1 is shut)'
+    6: 'ride easy 5 frame 4333: the boat moved 291.09 px in a frame (its step 4.85, bound 7.28), the iris 0.000 (1 is shut)'
+    7: 'middle easy 1 frame 3957: the boat moved 108.25 px in a frame (its step 4.83, bound 7.25), the iris 0.000 (1 is shut)'
+    8: 'middle easy 5 frame 4688: the boat moved 192.41 px in a frame (its step 4.84, bound 7.26), the iris 0.000 (1 is shut)'
+    9: 'ride normal 6 frame 3613: the boat moved 30.74 px in a frame (its step 4.86, bound 7.28), the iris 0.000 (1 is shut)'
+    10: 'ride easy 3 frame 4083: the boat moved 55.85 px in a frame (its step 4.79, bound 7.18), the iris 0.000 (1 is shut)'
+    11: 'ride easy 5 frame 3378: the boat moved 137.17 px in a frame (its step 4.84, bound 7.26), the iris 0.000 (1 is shut)'
+  operator: 'deepStrictEqual'
+  stack: |-
+    TestContext.<anonymous> (/home/user/w27u-frz/tools/inspect/pacerRespawn.test.ts:135:12)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
+  ...
+1..2
+# tests 2
+# suites 0
+# pass 0
+# fail 2
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 39291.86669

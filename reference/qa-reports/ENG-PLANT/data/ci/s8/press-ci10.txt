@@ -1,0 +1,29 @@
+JUMP {"t":47.59999999999986,"args":[1,"single",true],"j":{"t0":47.59999999999986,"x":10545.111111111095,"y":975,"cur":515,"kind":"single","hold":0.09665990935290085,"upOnly":0,"dir":1,"pressed2":false,"dblAt":-35.67758203018457,"d2":-1,"left":false,"harms":0,"running":false},"travelUntil":47.647035843138255,"driftUntil":24.63333333333371,"lastSteer":0,"upOnlyDraw":0}
+ENG 47.467 x 10535.11 y 975.00 vx 86.7 vy 0.0 g 1 held 0 L0R1
+ENG 47.500 x 10537.61 y 975.00 vx 0.0 vy 0.0 g 1 held 0 L0R0
+ENG 47.533 x 10540.11 y 975.00 vx 0.0 vy 0.0 g 1 held 0 L0R0
+ENG 47.567 x 10542.61 y 975.00 vx 0.0 vy 0.0 g 1 held 0 L0R0
+ENG 47.600 x 10545.11 y 975.00 vx 0.0 vy 0.0 g 1 held 0 L0R0
+ENG 47.633 x 10550.11 y 955.78 vx 75.0 vy -576.7 g 0 held 1 L0R0
+ENG 47.667 x 10552.61 y 938.67 vx 75.0 vy -513.3 g 0 held 1 L0R0
+ENG 47.700 x 10557.00 y 923.67 vx 131.7 vy -450.0 g 0 held 1 L0R1
+ENG 47.733 x 10563.28 y 918.11 vx 188.3 vy -166.7 g 0 held 0 L0R1
+ENG 47.767 x 10571.44 y 914.67 vx 245.0 vy -103.3 g 0 held 0 L0R1
+ENG 47.800 x 10580.94 y 913.33 vx 285.0 vy -40.0 g 0 held 0 L0R1
+ENG 47.833 x 10590.44 y 914.11 vx 285.0 vy 23.3 g 0 held 0 L0R0
+ENG 47.867 x 10599.94 y 917.67 vx 285.0 vy 106.7 g 0 held 0 L0R0
+ENG 47.900 x 10609.44 y 924.00 vx 285.0 vy 190.0 g 0 held 0 L0R0
+PAD 47.467 want L out - tU 47.647 dU 24.633 last -1
+PAD 47.500 want - out - tU 47.647 dU 24.633 last 0
+PAD 47.533 want - out - tU 47.647 dU 24.633 last 0
+PAD 47.567 want - out - tU 47.647 dU 24.633 last 0
+PAD 47.600 want RJP out -J tU 47.647 dU 24.633 last 1
+PAD 47.633 want RJ out -J tU 47.647 dU 24.633 last 1
+PAD 47.667 want RJ out RJ tU 47.647 dU 24.633 last 1
+PAD 47.700 want R out R tU 47.647 dU 24.633 last 1
+PAD 47.733 want R out R tU 47.647 dU 24.633 last 1
+PAD 47.767 want R out R tU 47.647 dU 24.633 last 1
+PAD 47.800 want L out - tU 47.982 dU 24.633 last -1
+PAD 47.833 want L out - tU 47.982 dU 24.633 last -1
+PAD 47.867 want L out - tU 47.982 dU 24.633 last -1
+PAD 47.900 want R out - tU 48.079 dU 24.633 last 1

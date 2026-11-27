@@ -14,14 +14,18 @@ import type { Platform, PlayerState } from './types.ts';
 
 /**
  * Where in the frame a piece draws (engine.ts render, in this order):
+ *   'under'  in the world, over the river's body, BEHIND the ground's earth and every platform: a piece that passes behind the banks
+ *            (2-7's mail boat, on the water of each river and out of sight behind the bank's face between them; ENG-27d, the lead's
+ *            ruling 11-21). Painted ground: protoArt.ts drawProtoScene draws it just before its ground; drawn ground: before the platforms
  *   'back'   in the world, over the water's body and the bank wall, BEHIND the platforms (a water wheel turning behind its jetty and
- *            street, 2-6.md: the jetty and the street drawn in front of it)
+ *            street, 2-6.md: the jetty and the street drawn in front of it). Painted ground: over the ground's earth (the wheel stands in
+ *            front of the bank it is dug into)
  *   'world'  in the world, after the platforms and the cast's traps, BEHIND him (a rolling nut, a shadow on the ground)
  *   'front'  in the world, OVER him, with the bushes (cover he stands in, a sweeper's shadow passing over)
  *   'screen' after the world transform, in screen pixels, with the chase and watch edges (a calm tint, an edge warning)
  */
-export type PieceLayer = 'back' | 'world' | 'front' | 'screen';
-export const PIECE_LAYERS: readonly PieceLayer[] = ['back', 'world', 'front', 'screen'];
+export type PieceLayer = 'under' | 'back' | 'world' | 'front' | 'screen';
+export const PIECE_LAYERS: readonly PieceLayer[] = ['under', 'back', 'world', 'front', 'screen'];
 
 /** what a piece may read of the engine: live, each read the engine's own value now */
 export interface PieceHost {

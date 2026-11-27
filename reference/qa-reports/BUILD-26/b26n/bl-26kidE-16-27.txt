@@ -1,0 +1,10 @@
+== kid E 16
+10.93 left bucket11 at 1273,6915 vx -87 -> bucket10 at 1206,7023 (0.27 s)
+56.93 left bucket30 at 978,4576 vx -136 -> plat29 at 824,4622 (0.57 s)
+102.27 left bucket61 at 476,1929 vx 36 -> plat58 at 628,1975 (0.60 s)
+{"t":126,"rescues":1,"stuck":["88.4 870,3962 fell back down from here 3 times"]}
+== kid E 27
+14.87 left bucket11 at 1207,6757 vx -87 -> bucket12 at 1195,6745 (0.07 s)
+53.37 left bucket31 at 964,4577 vx -136 -> plat29 at 794,4622 (0.63 s)
+94.83 left bucket63 at 484,1930 vx 136 -> plat58 at 637,1975 (0.57 s)
+{"t":118.8,"rescues":2,"stuck":["40.1 927,6384 fell back down from here 3 times","77.9 1183,3962 fell back down from here 3 times"]}

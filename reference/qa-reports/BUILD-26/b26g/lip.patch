@@ -1,0 +1,39 @@
+diff --git a/tools/inspect/firsttimer.ts b/tools/inspect/firsttimer.ts
+index c37874c5b..23a3bec70 100644
+--- a/tools/inspect/firsttimer.ts
++++ b/tools/inspect/firsttimer.ts
+@@ -1028,6 +1028,10 @@ export const touchHeld = (own: number, minMs: number): number => Math.max(own, m
+ 
+ /** px: the highest ledge over him he hops for on a tower's stair (a single jump rises 108 px, stageMetrics JUMP_RISE; a stair step is 60) */
+ const STAIR_HOP = 100;
++/** a step UP onto a ledge just past a lip (ledgeJustPast): `low` px is the over-him check's own 'higher than a seam' (the tower stop,
++ *  q.y < p.y - 30, intend), and `ahead` px is the tier bots' measured press distance between its median and p75 (aimQ, the profiles
++ *  above: middle 61 / 106, adult 58 / 92), so a ledge starting within it is one a press on the run still lands on (ENG-26o's 80) */
++const LIP_LEDGE = { low: 30, ahead: 80 };
+ const TRACE_FRAMES = typeof process !== 'undefined' && process.env.FT_FRAMES ? process.env.FT_FRAMES.split(",").map(Number) : null;
+ 
+ interface Jump {
+@@ -2835,6 +2839,10 @@ export class FirstTimerRun {
+           // (a late press is a walk-off: with a face ahead (a stump at a log's end, middle v3 on 164e4cf8: 9.4 s pressed against it,
+           // the plan re-armed every second) there is no lip to walk off, so he jumps)
+           if (tierEdge.how === 'late' && this.faceAhead(dir, 40) !== null) tierEdge.how = 'run';
++          // (nor where the way on steps UP onto a ledge that starts just past the lip: a late press there walks him off under it (BUILD-26g,
++          // 1-4 middle Easy 10: s14:b's lip, s14:c a thin bough 40 px up with no face, he dropped 320 px, rescued). LIP_LEDGE: how far past
++          // him and how high a ledge counts as the step up)
++          if (tierEdge.how === 'late' && this.ledgeJustPast(p, dir)) tierEdge.how = 'run';
+           if (tierEdge.how === 'run' && kind === 'double' && who.readAim !== undefined && !tierEdge.read) {
+             tierEdge.read = true;
+             const near = drawQ(this.r, who.aimQ!, 0, 0, who.readAim);
+@@ -3737,6 +3745,12 @@ export class FirstTimerRun {
+     return out;
+   }
+ 
++  /** a ledge rises just past him on `dir`'s side, its near end within LIP_LEDGE.ahead and its top between LIP_LEDGE.low and STAIR_HOP up */
++  private ledgeJustPast(p: { x: number; y: number }, dir: -1 | 1): boolean {
++    return this.sim.platforms.some((q) => this.solid(q) && q.y < p.y - LIP_LEDGE.low && q.y > p.y - STAIR_HOP &&
++      (dir > 0 ? q.x > p.x && q.x < p.x + LIP_LEDGE.ahead : q.x + q.width < p.x && q.x + q.width > p.x - LIP_LEDGE.ahead));
++  }
++
+   /** he decides to flick: it comes after the thumb's latency (N(mean, sd); an early one comes at once) */
+   private decide(dir: -1 | 0 | 1, kind: 'single' | 'double', off: boolean, meanwhile: Pad): Pad {
+     const lag = gauss(this.r, this.who.thumb);

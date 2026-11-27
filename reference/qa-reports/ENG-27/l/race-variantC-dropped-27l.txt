@@ -1,0 +1,35 @@
+# variant C, TRIED AND DROPPED (on 122193be4: the edge hop to a drifting log the edge wait judged (lands) held at least who.hold[0], SKILLS.floatHold): middle HOME then POST; then the falls
+middle	normal	1	shrine	lives 5	deaths ?	finish 171.2	WON him 82.9 boat 93.89 gap 11	P.middle 87.75
+middle	normal	2	shrine	lives 4	deaths ?	finish 195.7	lost him 95 boat 92.37 gap -2.6	P.middle 86.33
+middle	normal	3	shrine	lives 2	deaths ?	finish 172.5	WON him 76.4 boat 92.06 gap 15.7	P.middle 86.04
+middle	normal	4	shrine	lives 1	deaths ?	finish 165.2	WON him 94.7 boat 99.82 gap 5.1	P.middle 93.29
+middle	normal	5	shrine	lives 2	deaths ?	finish 158	WON him 85.7 boat 93.63 gap 7.9	P.middle 87.5
+middle	normal	6	shrine	lives 3	deaths ?	finish 156.4	WON him 83.8 boat 91.82 gap 8	P.middle 85.82
+middle	easy	1	shrine	lives 3	deaths ?	finish 137.5	WON him 75.8 boat 97.53 gap 21.7	P.middle 88.67
+middle	easy	2	shrine	lives 4	deaths ?	finish 165	WON him 81.9 boat 96.32 gap 14.4	P.middle 87.56
+middle	easy	3	shrine	lives 1	deaths ?	finish 141.7	WON him 74.5 boat 96.09 gap 21.6	P.middle 87.35
+middle	easy	4	shrine	lives 4	deaths ?	finish 153	WON him 81.8 boat 104.55 gap 22.8	P.middle 95.05
+middle	easy	5	shrine	lives 1	deaths ?	finish 147.3	WON him 80.1 boat 97.38 gap 17.3	P.middle 88.52
+middle	easy	6	shrine	lives 0	deaths ?	finish 151.8	WON him 85.5 boat 95.88 gap 10.4	P.middle 87.16
+middle	normal	1	shrine	lives 6	deaths ?	finish 181.5	lost him 104 boat 103.21 gap -0.8	P.middle 96.46
+middle	normal	2	shrine	lives 2	deaths ?	finish 160.1	WON him 95.6 boat 101.69 gap 6.1	P.middle 95.04
+middle	normal	3	shrine	lives 4	deaths ?	finish 164.8	WON him 95.4 boat 101.38 gap 6	P.middle 94.75
+middle	normal	4	shrine	lives 1	deaths ?	finish 166	lost him 101.1 boat 100.76 gap -0.3	P.middle 94.17
+middle	normal	5	shrine	lives 2	deaths ?	finish 167.6	WON him 100.9 boat 103.44 gap 2.5	P.middle 96.67
+middle	normal	6	shrine	lives 2	deaths ?	finish 150.4	WON him 89.4 boat 101.14 gap 11.7	P.middle 94.53
+middle	easy	1	shrine	lives 3	deaths ?	finish 152.9	WON him 95.3 boat 107.31 gap 12	P.middle 97.55
+middle	easy	2	shrine	lives 1	deaths ?	finish 152.8	WON him 90.5 boat 106.09 gap 15.6	P.middle 96.45
+middle	easy	3	shrine	lives 1	deaths ?	finish 138.1	WON him 88.2 boat 105.86 gap 17.7	P.middle 96.24
+middle	easy	4	shrine	lives 1	deaths ?	finish 140.6	WON him 84.4 boat 105.33 gap 20.9	P.middle 95.76
+middle	easy	5	shrine	lives 0	deaths ?	finish 152.9	WON him 96.8 boat 107.55 gap 10.8	P.middle 97.77
+middle	easy	6	shrine	lives 2	deaths ?	finish 141.6	WON him 81.1 boat 105.32 gap 24.2	P.middle 95.75
+# falls home N5, floatHold off (= 122193be4) then on; home N2 on
+offC-home5.txt:== LIFE LOST t 102.33 x 8794 (water)
+offC-home5.txt:== LIFE LOST t 103.80 x 8704 (water)
+offC-home5.txt:== LIFE LOST t 137.70 x 4664 (water)
+offC-home5.txt:== LIFE LOST t 158.80 x 1691 (water)
+onC-home5.txt:== LIFE LOST t 102.33 x 8794 (water)
+onC-home5.txt:== LIFE LOST t 103.73 x 8727 (water)
+onC-home2.txt:== LIFE LOST t 124.47 x 9300 (water)
+onC-home2.txt:== LIFE LOST t 142.50 x 7026 (water)
+onC-home2.txt:== LIFE LOST t 153.50 x 5783 (water)

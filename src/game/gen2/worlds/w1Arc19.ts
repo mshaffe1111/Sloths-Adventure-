@@ -411,6 +411,9 @@ export function kitLib19(): WorldKit {
       tips: { ...M.tips, ...Object.fromEntries((Object.keys(LINES_19) as Array<keyof typeof LINES_19>).map((k) => [lineId(k), LINES_19[k]])) },
       // (every line of the keeper's but the arrival's and the mark's is a TEACH line: Dot says it on Normal's default Tips as on Help, D50)
       teachTips: [...(M.teachTips ?? []), ...(['boa', 'freeze', 'miss', 'nest', 'eye'] as const).map(lineId)],
+      // (the stage's once-only story beats, each by the speaker its line table names: a story line on every help setting with the story switch
+      // on. As plain tips Tips dropped them, Normal's default: ENG-JETTY's scan, R-165.412)
+      storyTips: { ...(M.storyTips ?? {}), [lineId('mark')]: 'Dot' },
       graphs: { ...G, chunkSeconds: 60, list: [...G.list.filter((g) => g.archetype !== 'gauntlet'), ...Object.entries(ARC_19).map(([id, code]) => ({ id, archetype: 'gauntlet' as const, code }))], briefs: { ...G.briefs, [STAGE_19]: BRIEF_19 } },
     } } as WorldKit;
 }

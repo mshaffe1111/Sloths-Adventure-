@@ -1,0 +1,18 @@
+import json, sys, os
+# cmp3.py <c27dir> <ci6dir> <ci7dir>: per row, c27 / CI-6 / CI-7 (pass, time, rescues, lives); '=' when CI-7 equals c27
+a, b, c = sys.argv[1:4]
+def rows(d, f):
+    p = os.path.join(d, f)
+    return {json.loads(l)['seed']: json.loads(l) for l in open(p)} if os.path.exists(p) else {}
+k = lambda r: f"{'PASS' if r['pass'] else 'FAIL'} {r['time']} r{r['rescues']} l{r['lives']}" if r else '-'
+same = diff = 0
+for f in sorted(os.listdir(c)):
+    if not f.endswith('.jsonl'): continue
+    A, B, C = rows(a, f), rows(b, f), rows(c, f)
+    for s in sorted(C):
+        ka, kb, kc = k(A.get(s)), k(B.get(s)), k(C.get(s))
+        eq = ka == kc
+        same += eq; diff += not eq
+        flip = (A.get(s) and A[s]['pass'] and not C[s]['pass'])
+        print(f"{f[:-6]:22s} {s:3d} | c27 {ka:22s} | ci6 {kb:22s} | ci7 {kc:22s} {'=' if eq else 'MOVED'}{' BAR PASS->FAIL' if flip else ''}")
+print(f"rows equal to c27: {same}, moved: {diff}")

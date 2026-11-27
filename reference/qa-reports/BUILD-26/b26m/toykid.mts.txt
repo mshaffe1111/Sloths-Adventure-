@@ -1,0 +1,19 @@
+const W = process.env.WT!;
+await import(W + '/src/game/headlessDom.ts');
+const FT: any = await import(W + '/tools/inspect/firsttimer.ts');
+const WT: any = await import(W + '/tools/inspect/wheelToys.ts');
+const out: string[] = []; let T = 0;
+const P = FT.FirstTimerRun.prototype;
+const d = Object.getOwnPropertyDescriptor(P, 'wheelRide')!; const f = d.value;
+let src = '';
+P.wheelRide = function (...a: any[]) { const r = f.apply(this, a); src = r ? 'wheel' + JSON.stringify(r) : 'null'; return r; };
+const seed = WT.fixtureSeed('sparse');
+let prev = '';
+WT.wheelRun('sparse', 'kid', process.env.SET ?? 'easy', seed, 1, { onFrame: (sim: any) => {
+  const q = sim.platforms.find((p: any) => p.id === sim.standingOn);
+  const where = q?.wheel ? `bucket${q.id} mid ${Math.round(q.x + q.width / 2)} w ${Math.round(q.width)}` : q ? `plat${q.id}` : 'air';
+  const s = `${where} src ${src}`;
+  if (s !== prev) { out.push(`${sim.t.toFixed(2)} ${Math.round(sim.p.x)},${Math.round(sim.p.y)} vx ${Math.round(sim.p.vx)} ${s}`); prev = s; }
+  src = '';
+} });
+console.log(out.slice(0, 220).join('\n'));

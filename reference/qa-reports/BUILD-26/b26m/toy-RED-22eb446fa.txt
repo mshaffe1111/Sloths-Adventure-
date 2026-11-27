@@ -1,0 +1,40 @@
+TAP version 13
+# Subtest: rideWheel ON: every tier boards, rides and steps off the wheel: no scramble, no pond, across in about half a turn
+not ok 1 - rideWheel ON: every tier boards, rides and steps off the wheel: no scramble, no pond, across in about half a turn
+  ---
+  duration_ms: 9643.262706
+  type: 'test'
+  location: '/home/user/wt-toy/tools/inspect/wheelRide.test.ts:26:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    sparse kid easy v1: left a bucket 5 times other than onto the street
+    
+    5 !== 0
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 0
+  actual: 5
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (/home/user/wt-toy/tools/inspect/wheelRide.test.ts:32:14)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.start (node:internal/test_runner/test:944:17)
+    startSubtestAfterBootstrap (node:internal/test_runner/harness:296:17)
+  ...
+# Subtest: PLANTED: rideWheel OFF, every tier scrambles bucket to bucket instead of riding (RED)
+ok 2 - PLANTED: rideWheel OFF, every tier scrambles bucket to bucket instead of riding (RED)
+  ---
+  duration_ms: 16317.434935
+  type: 'test'
+  ...
+1..2
+# tests 2
+# suites 0
+# pass 1
+# fail 1
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 28957.507323

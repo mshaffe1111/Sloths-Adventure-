@@ -1,0 +1,49 @@
+== LIFE LOST t 102.73 x 8787 (water)
+  TAKEOFF feet 1503 ahead: solid#64 8932-9212 top 1474
+t 101.23 x 9136 y 1474 vx -41 vy 0 ON solid#64 8932-9212 in 
+t 101.27 x 9136 y 1474 vx 0 vy 0 ON solid#64 8932-9212 in 
+t 101.30 x 9136 y 1474 vx 0 vy 0 ON solid#64 8932-9212 in 
+t 101.33 x 9136 y 1474 vx 0 vy 0 ON solid#64 8932-9212 in 
+t 101.37 x 9136 y 1474 vx 0 vy 0 ON solid#64 8932-9212 in 
+t 101.40 x 9136 y 1474 vx 0 vy 0 ON solid#64 8932-9212 in 
+t 101.43 x 9136 y 1474 vx 0 vy 0 ON solid#64 8932-9212 in 
+t 101.47 x 9133 y 1474 vx -87 vy 0 ON solid#64 8932-9212 in left
+t 101.50 x 9128 y 1474 vx -173 vy 0 ON solid#64 8932-9212 in left
+t 101.53 x 9119 y 1474 vx -260 vy 0 ON solid#64 8932-9212 in left
+t 101.57 x 9109 y 1474 vx -285 vy 0 ON solid#64 8932-9212 in left
+t 101.60 x 9100 y 1474 vx -268 vy 0 ON solid#64 8932-9212 in left
+t 101.63 x 9091 y 1474 vx -285 vy 0 ON solid#64 8932-9212 in left
+t 101.67 x 9082 y 1474 vx -268 vy 0 ON solid#64 8932-9212 in left
+t 101.70 x 9073 y 1474 vx -285 vy 0 ON solid#64 8932-9212 in left
+t 101.73 x 9064 y 1474 vx -268 vy 0 ON solid#64 8932-9212 in left
+t 101.77 x 9054 y 1474 vx -285 vy 0 ON solid#64 8932-9212 in left
+t 101.80 x 9045 y 1474 vx -268 vy 0 ON solid#64 8932-9212 in left
+t 101.83 x 9036 y 1455 vx -285 vy -577 air in left
+  TAKEOFF feet 1503 ahead: drift#68 8585-8825 top 1502
+t 101.87 x 9027 y 1438 vx -268 vy -513 air in left
+t 101.90 x 9017 y 1432 vx -285 vy -167 air in left
+t 101.93 x 9008 y 1429 vx -268 vy -103 air in left
+t 101.97 x 8999 y 1427 vx -285 vy -40 air in left
+t 102.00 x 8990 y 1428 vx -268 vy 23 air in left
+t 102.03 x 8980 y 1432 vx -285 vy 107 air in left
+t 102.07 x 8971 y 1438 vx -268 vy 190 air in left
+t 102.10 x 8962 y 1447 vx -285 vy 273 air in left
+t 102.13 x 8953 y 1459 vx -268 vy 357 air in left
+t 102.17 x 8944 y 1474 vx -285 vy 440 air in left
+t 102.20 x 8935 y 1458 vx -268 vy -477 air in left
+t 102.23 x 8925 y 1444 vx -285 vy -413 air in left
+t 102.27 x 8916 y 1432 vx -268 vy -350 air in left
+t 102.30 x 8907 y 1423 vx -285 vy -287 air in left
+t 102.33 x 8898 y 1417 vx -268 vy -167 air in left
+t 102.37 x 8888 y 1414 vx -285 vy -103 air in left
+t 102.40 x 8879 y 1412 vx -268 vy -40 air in left
+t 102.43 x 8870 y 1413 vx -285 vy 23 air in left
+t 102.47 x 8861 y 1417 vx -268 vy 107 air in left
+t 102.50 x 8851 y 1423 vx -285 vy 190 air in left
+t 102.53 x 8843 y 1432 vx -268 vy 273 air in left
+t 102.57 x 8833 y 1444 vx -285 vy 357 air in left
+t 102.60 x 8824 y 1459 vx -268 vy 440 air in left
+t 102.63 x 8815 y 1476 vx -285 vy 523 air in left
+t 102.67 x 8806 y 1496 vx -268 vy 607 air in left
+t 102.70 x 8796 y 1519 vx -285 vy 690 air in left
+t 102.73 x 8787 y 1545 vx 0 vy 773 air in left
