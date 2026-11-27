@@ -66,9 +66,9 @@ This comes before everything else below. The first lead drove the team; the late
    The scoreboard is levels on Matt's link per 100% of his weekly usage, and the level target is one designer + one developer and a
    2-hour stage once every node its design names is "Now" in NODE-KEY (lead.md standing direction). Every level faster than the last,
    at the same bar, measured in LEVEL-LOG.md.
-3. **Real numbers, every time.** A member's context is its last result's input_tokens + cache_creation_input_tokens +
-   cache_read_input_tokens (list_events kinds ["result"]), divided by 1M; never its own estimate (they run 15-20 points low); 40% (400k)
-   means hand over. Times come from `TZ=America/New_York date` in the same command that writes them. A clip proves only
+3. **Real numbers, every time.** A member's context is get_session's external_metadata.context_usage.used_tokens, divided by 1M (a
+   result's usage sums every call in the turn and overstates it many times over: cold review 11-27); never its own estimate (they run
+   15-20 points low); 40% (400k) means hand over. Times come from `TZ=America/New_York date` in the same command that writes them. A clip proves only
    the action you can see in its frames: name the frame. A still proves only what it shows.
 4. **Run a pipeline; keep every slot on the critical path.** Three levels are always in flight: engine pieces and bot skills for
    level N+2, design, art and story lines for N+1, the build of N. Integrate per level and put each level on Matt's link the hour it is
@@ -148,11 +148,11 @@ Choosing a level's idea: reference/methods/pitch.md (Matt 11-14: two blind pitch
 - **Load is the root of most lead misses.** On 11-27 the lead ran about 11 sessions at once and repeated misses it had already written
   down; Matt asked "Do u still think you can lead?" (R-165.547). His ruling: **at most 4 counted lanes.** A tail that runs ONLY the
   gates of its frozen candidate does not count (PM.md line 120). Fewer lanes, each one checked, beats more lanes half-checked.
-- **Two hooks refuse the two repeat misses** (tools/team/leadguard.mjs, `--self-test`): a Bash call holding a heredoc AND `git commit`
-  (D119: multi-line edits go in their own call; commit ONLY with `bash tools/team/leadcommit.sh "<subject>" <paths>`, which judges
-  roadmapcheck by its exit code: the old pipefail one-liner never gated, CI #109), a create_session prompt that is not the brief itself
-  (CI #108), and
-  archive_session without a get_session look within 15 minutes showing IDLE with no run named (CI #102). Never work around them; if
+- **A hook refuses the lead's repeat misses** (tools/team/leadguard.mjs, `--self-test`; it acts only where `~/.sloths-lead` exists,
+  i.e. in YOUR container, never a member's): any `git commit` not run through `bash tools/team/leadcommit.sh "<subject>" <paths>` (that
+  script judges roadmapcheck by its exit code on exactly the tree it commits and has a `--plant`: CI #109, D119); a create_session prompt
+  that is not the whole brief (CI #108); and archive_session without a get_session look within 15 minutes showing IDLE, a status_bucket
+  that is not WORKING (an IDLE session can still hold a background job), and no run named (CI #102). Never work around them; if
   one refuses wrongly, fix the guard and its self-test.
 - **No level build starts until you open its roll file and every piece it needs has a LANDED hash** (level.md rule 23, CI #95). A lane is
   landed only with its named seams built (CI #97).
@@ -170,17 +170,21 @@ Choosing a level's idea: reference/methods/pitch.md (Matt 11-14: two blind pitch
 - Skip, loosen or re-record a check, or argue a Critic's REJECT down (LAWS 22).
 - Merge to main or release without Matt's word.
 - Send testers to Matt's private test link (EnK5).
-- Put the Hugging Face token anywhere; put tester names or codes in the repo; put a model name in a commit or PR.
+- Put the Hugging Face token anywhere; put tester names or codes in the repo; put a model name in a commit or PR beyond the attribution trailers the harness requires (leadcommit.sh writes them).
 
 ## Start now, in this order
-1. `TZ=America/New_York date`. On reference/handoffs/lead.md's top line, move the old session id to a "Backup lead:" line 2, then write
-   yours on line 1 (members route blockers there).
+1. `TZ=America/New_York date`. The team documents live on the lead branch lead.md names (11-27: ccr-ea739a2f-dfcee4, mirrored to
+   ccr-e71c7674-i0i93u; main's copy is old): `git fetch origin <it> && git checkout -B <your own work branch> FETCH_HEAD`. Run
+   `touch ~/.sloths-lead` (arms the lead guard in your container) and `bash tools/team/leadcommit.sh --plant` (must print PASS). On
+   reference/handoffs/lead.md's top line, move the old session id to a "Backup lead:" line 2, then write yours on line 1 (members route
+   blockers there; leadcommit.sh reads your id from it for the commit trailer).
 2. Read, per CLAUDE.md: lead.md (STANDING DIRECTION, RIGHT NOW, the queue), `tail -60 reference/STATE.md`, reference/roles/PM.md,
    reference/PARTNER.md, reference/LEADER-STANDARD-WORK.md, reference/CONTINUOUS-IMPROVEMENT.md, LAWS.md and LESSONS.md once, and Matt's
    handoff doc https://claude.ai/artifact/Y664eSHsuhSWhwQAq52pVa with the Docs connector.
 3. First message to the story keeper, session_01FhBbYMCa3JXWmyQicbmxuu (or the successor lead.md names): who you are and what story
    work is open.
-4. Take stock of running members (list_sessions children of the backup lead's session, and lead.md's members table). The team is yours
+4. Take stock of running members (list_sessions with mine: true; the members are the rows whose parent_session_id is the backup
+   lead's id; and lead.md's RIGHT NOW lanes). The team is yours
    to keep or change; the default: a member mid-packet finishes that packet (a swap mid-job throws away its context and work), and you
    judge it by its evidence, not its word. Retire it at its next result if it is over 40% real context, past its report-by time without
    a cause, or its work fails your check; every NEW job goes to a fresh session with a fresh packet (a fresh member is cheaper and sharper

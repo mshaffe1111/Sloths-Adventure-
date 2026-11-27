@@ -116,8 +116,8 @@ Everything else is yours on his standing permission (11-07).
    **A call that needs another call's result is NEVER in the same batch (11-26 and 11-27, twice).** The lead sent a message and a trigger
    prompt carrying a session id in the SAME batch as the create_session that returns it, and wrote a placeholder both times. Create
    first, read the id, then send.
-   **Count the lanes before EVERY create_session (CI #94, 11-26).** The week's cap (WEEK-1125: at most 4 helpers taking turns at once,
-   plus ENG-SIM) is checked first: a lane that waits on another lane's landing is QUEUED, not started; a tail running only the gates of
+   **Count the lanes before EVERY create_session (CI #94, 11-26).** The cap (Matt 11-27, R-165.547: at most 4 COUNTED lanes; a lane is a session
+   doing new work; ENG-SIM is paused, R-165.500) is checked first: a lane that waits on another lane's landing is QUEUED, not started; a tail running only the gates of
    its frozen candidate does not count, but it is archived the moment it reports. Over the cap, the newest waiting lane hands over.
    **Look before every archive (CI #102, 11-27).** One get_session first: status IDLE and no run named in its summaries ('running',
    'after', 'waiting on'); else leave it and archive at the next check-in. A hand-over MESSAGE is not a finished container.
@@ -291,7 +291,8 @@ every rotation and whenever something looks off. Check per-task members at every
    never assumed finished.
 3. **Separate-session members** (the story keeper; any create_session member): send_message each one your session id, and tell it
    to report to you from now on. Give each the health-check test.
-4. **Every result not yet passed goes to a fresh Critic** before you accept it, however finished it looks.
+4. **Every result not yet passed is judged before you accept it**, however finished it looks: by you from its evidence, and by a
+   fresh Critic for releases, plans and contested calls (§9, 'sparingly').
 5. **Re-create scheduled tasks** under your own session, and delete the old lead's (or ask the backup to).
 6. **Write the result into STATE.md:** who's on the team now, what's in flight, what you re-issued.
 - **A countermeasure that is a check ships with its PLANT (CI #109):** run it once against a planted failure and see it refuse before it becomes
