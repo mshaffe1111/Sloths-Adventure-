@@ -1,0 +1,12 @@
+wheelBoard.test.ts #3/#4 re-planted on 2-6 seed 29, the cast child on Easy (castRun's who), the top wheel #2 (way +1) (INT-R5-c, the lead's ruling 2).
+Old row: seed 1, child Normal v2 tier bot, top wheel (dead after C14 1457e1daf: 0 scrambles off). Search: board-1-100.txt (tier bots, 800 runs: one scramble hit, 77 child Easy v1, no wait there: a timing shift, board-probe-child-easy-v1-77.txt), cast-*.txt (cast bots with the wait rule).
+As committed: 4 pass, 0 fail.
+Plant A, skill OFF in both runs (the ON test runs with boardWatch off):
+  error: "seed 29 child easy: shrine 182.5 s, rescues 0 | #0 teachL sc0 pd0 wt0, #1 edgeL sc0 pd0 wt0, #2 topR sc2 pd0 wt0, #3 edgeR sc1 pd0 wt0, #4 greatR sc0 pd0 wt0: boardWatch held him on no way +1 jetty: this is not the skill's row (re-plant)"
+  error: "seed 29 child easy: shrine 182.5 s, rescues 0 | #0 teachL sc0 pd0 wt0, #1 edgeL sc0 pd0 wt0, #2 topR sc2 pd0 wt0, #3 edgeR sc1 pd0 wt0, #4 greatR sc0 pd0 wt0: boardWatch held him on no way +1 jetty: this is not the skill's row (re-plant)"
+# pass 2
+# fail 2
+Plant B, skill ON in both runs (the OFF test runs with boardWatch on):
+  error: 'seed 29 child easy: shrine 187.3 s, rescues 0 | #0 teachL sc0 pd0 wt101, #1 edgeL sc0 pd0 wt42, #2 topR sc0 pd0 wt95, #3 edgeR sc0 pd0 wt0, #4 greatR sc0 pd0 wt0: wheel #2: 0 scrambles with the skill off: the plant is not live'
+# pass 3
+# fail 1
