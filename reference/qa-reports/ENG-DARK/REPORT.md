@@ -4,7 +4,7 @@ lock written on frozen t-eng-w3 (3264 builds, 102 stages): EXIT 1, 101/102 uncha
 lead's ruling: any red, stop). The lock base lacks the lane's c1-c18, so the move may be any lane commit's. ALL ELSE GREEN on
 93e05e98d: tsc 0; generalitycheck PASS; suite 1 625/0 +TODO (4-3 wall), 2 728/0 +TODO (w4Runtime :392, the same wall check), 3 632/0,
 4 580/0 +TODO (R-165.312), 5 798/0, 6 762/0 (KID_RUNS_59 not shown); CI line 354/0 +TODO (chase bots OPEN); tierBots 9/9; dark 20/0;
-darkBots 31/0; castBots 16/0; plants running (see the plants line when it ends). NEXT (the lead's to rule): trace 1-4's lock row.
+darkBots 31/0; castBots 16/0; plants 50/50 CAUGHT (48-50 the new ones; none NO TEST, NO ANCHOR or BASE RED). NEXT (the lead's to rule): trace 1-4's lock row.
 **BOX 26 GATES ON 93e05e98d (past the box, the lead's ruling: gates of this frozen candidate only).** tsc 0; generalitycheck PASS.
 Suite on the chattr'd wtM: shard 4 580/0 +1 TODO (R-165.312), 5 798/0, 6 762/0; shard 1 624/1 +1 TODO (4-3's wall check): the ONE red,
 seedListChunk.test.ts:38 'the game's main script reaches no list file...', EPERM on mkdtemp under src/game/gen2/proven/ = THE FREEZE
