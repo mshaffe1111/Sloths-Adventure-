@@ -1,0 +1,27 @@
+DIFF seed 1 
+ on  child easy v1: shrine 195.7 s, lives 0, put-backs 0, rescues 0 | teachL 14.4s sc0 pd0, edgeL 17.8s sc1 pd0, topR 6.4s sc0 pd0, edgeR 9.4s sc0 pd0, greatR 15.4s sc0 pd0 
+ off child easy v1: shrine 187.3 s, lives 0, put-backs 0, rescues 0 | teachL 11s sc0 pd0, edgeL 10.2s sc0 pd0, topR 12.9s sc0 pd0, edgeR 13.4s sc0 pd0, greatR 11.1s sc0 pd0
+DIFF seed 1 
+ on  child easy v2: shrine 202.1 s, lives 0, put-backs 0, rescues 0 | teachL 13.5s sc0 pd0, edgeL 10.5s sc0 pd0, topR 11.1s sc0 pd0, edgeR 12.2s sc1 pd0, greatR 13.5s sc0 pd0 
+ off child easy v2: shrine 175 s, lives 0, put-backs 0, rescues 0 | teachL 10.2s sc0 pd0, edgeL 13.1s sc0 pd0, topR 8.1s sc0 pd0, edgeR 12.4s sc1 pd0, greatR 14.4s sc0 pd0
+DIFF seed 1 
+ on  child normal v1: shrine 181.8 s, lives 0, put-backs 0, rescues 0 | teachL 11.2s sc0 pd0, edgeR 12.7s sc1 pd0, topR 8.5s sc0 pd0, edgeR 8.2s sc0 pd0, greatL 11.9s sc0 pd0 
+ off child normal v1: shrine 176.9 s, lives 0, put-backs 0, rescues 0 | teachL 11.2s sc0 pd0, edgeR 9s sc0 pd0, topR 10.9s sc0 pd0, edgeR 7.8s sc0 pd0, greatL 13s sc0 pd0
+DIFF seed 1 
+ on  child normal v2: shrine 205.5 s, lives 0, put-backs 0, rescues 0 | teachL 13s sc0 pd0, edgeR 13s sc0 pd0, topR 12s sc0 pd0, edgeR 6.4s sc0 pd0, greatL 12.8s sc0 pd0 
+ off child normal v2: shrine 193.6 s, lives 0, put-backs 0, rescues 0 | teachL 10.2s sc0 pd0, edgeR 13.3s sc0 pd0, topR 9s sc2 pd0, edgeR 8s sc1 pd0, greatL 9.9s sc0 pd0
+same seed 1 
+ on  middle normal v1: shrine 120.3 s, lives 0, put-backs 0, rescues 0 | teachL 10.3s sc0 pd0, edgeR 9.7s sc0 pd0, topR 7.9s sc0 pd0, edgeR 6.5s sc0 pd0, greatL 9.2s sc0 pd0 
+same seed 1 
+ on  middle normal v2: shrine 129.3 s, lives 0, put-backs 0, rescues 0 | teachL 9.7s sc0 pd0, edgeR 9.4s sc0 pd0, topR 7.7s sc0 pd0, edgeR 10.3s sc0 pd0, greatL 11.7s sc0 pd0 
+DIFF seed 1 
+ on  middle easy v1: shrine 148.3 s, lives 0, put-backs 0, rescues 0 | teachL 17.4s sc0 pd0, edgeL 12s sc0 pd0, topR 6.1s sc0 pd0, edgeR 10.9s sc0 pd0, greatR 13s sc0 pd0 
+ off middle easy v1: shrine 140.9 s, lives 0, put-backs 0, rescues 0 | teachL 14.1s sc0 pd0, edgeL 11.7s sc0 pd0, topR 6.5s sc0 pd0, edgeR 10.1s sc0 pd0, greatR 12.4s sc0 pd0
+DIFF seed 1 
+ on  middle easy v2: shrine 145.7 s, lives 0, put-backs 0, rescues 0 | teachL 12.2s sc0 pd0, edgeL 11.5s sc0 pd0, topR 10.8s sc0 pd0, edgeR 10.2s sc0 pd0, greatR 12.3s sc0 pd0 
+ off middle easy v2: shrine 143.2 s, lives 0, put-backs 0, rescues 0 | teachL 12.2s sc0 pd0, edgeL 11.5s sc0 pd0, topR 7.6s sc0 pd0, edgeR 8.7s sc0 pd0, greatR 15.6s sc0 pd0
+same seed 1 
+ on  expert normal v1: shrine 117.3 s, lives 0, put-backs 0, rescues 0 | teachL 10s sc0 pd0, edgeR 11s sc0 pd0, topR 7.3s sc0 pd0, edgeR 7.1s sc0 pd0, greatL 11.3s sc0 pd0 
+same seed 1 
+ on  expert normal v2: shrine 114.9 s, lives 0, put-backs 0, rescues 0 | teachL 7.5s sc0 pd0, edgeR 8.5s sc0 pd0, topR 7.5s sc0 pd0, edgeR 10s sc0 pd0, greatL 10.1s sc0 pd0 
+row=0

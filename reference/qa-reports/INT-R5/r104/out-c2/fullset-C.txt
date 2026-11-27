@@ -1,0 +1,16 @@
+== FULL SET lane C on ab5673531 (main base 4bf2cbaaa) 9:09 AM ET
+tsc PASS (exit 0, 41 s)
+vitebuild PASS (exit 0, 30 s)
+chunkcheck PASS (exit 0, 0 s)
+artcheck PASS (exit 0, 1 s)
+knowncheck PASS (exit 0, 0 s)
+generalitycheck PASS (exit 0, 2 s)
+coveragecheck PASS (exit 0, 181 s)
+roadmapcheck PASS (exit 0, 11 s)
+timecheck PASS (exit 0, 5 s)
+drawcheck PASS (exit 0, 1420 s)
+clipcheck FAIL (exit 2, 3846 s)
+kbdcheck PASS (exit 0, 217 s)
+buildcheck FAIL (exit 1, 15 s)
+buildstore PASS (exit 0, 20 s)
+== lane C done 10:46 AM ET

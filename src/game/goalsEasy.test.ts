@@ -1,11 +1,11 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { gen2EasyGoal, goalHave, heldEasyGoal, kidMedian, withGoals } from './goals.ts';
+import { gen2EasyGoal, goalHave, heldEasyGoal, kidMedian, kidReaches, withGoals } from './goals.ts';
 import { loadSeedList } from './gen2/seedList.ts';
 import { easyStage } from './easyMode.ts';
 import { generateStage } from './stageGenerator.ts';
 import { generateAllLevels } from './worldsData.ts';
-import { GEN2_STAGES } from './gen2/game.ts';
+import { EASY_GOAL_59, GEN2_STAGES } from './gen2/game.ts';
 
 test("LV-24: a gen2 stage's Easy goal is 65% of what it holds, capped at the kid bot's median", () => {
   assert.equal(gen2EasyGoal(19), 12, '65% of 19');
@@ -14,9 +14,16 @@ test("LV-24: a gen2 stage's Easy goal is 65% of what it holds, capped at the kid
   assert.equal(gen2EasyGoal(18, kidMedian([5, 6, 4, 6, 6, 5])), 5, "5-9: 5 of 18 (bot-fix 2026-11-01; 9 came from the hopping bot)");
   assert.equal(gen2EasyGoal(6, 9), 4, 'the floor when the kid reaches more');
   assert.equal(gen2EasyGoal(1), 1);
-  // (5-9's own record: the fixed kid bot's six runs, and the goal they give; firstTimerBot.test.ts re-measures the runs)
-  assert.deepEqual([...GEN2_STAGES['5-9'].kidRuns!], [3, 5, 6, 7, 6, 5]); // (re-measured under the route walls, bb55a0a70; was 5, 6, 4, 6, 6, 5: the median is 5 either way)
-  assert.equal(GEN2_STAGES['5-9'].easyGoal, 5);
+  // (5-9's Easy goal is DATA, R-165.496: EASY_GOAL_59 = 5, Matt 11-26 'Keep it at 5'. The kid's recorded runs only CHECK it: the goal
+  // sits at or under their lower median. The runs themselves are not pinned here: firstTimerBot.test.ts re-measures them, and a
+  // re-record may move them freely as long as they still reach the goal)
+  const e59 = GEN2_STAGES['5-9'];
+  assert.equal(e59.easyGoal, EASY_GOAL_59, "5-9's entry uses the set goal");
+  assert.equal(EASY_GOAL_59, 5, "5-9's Easy goal is data: 5");
+  assert.ok(e59.kidRuns && e59.kidRuns.length > 0, "5-9 carries the kid's recorded runs that check its goal");
+  assert.ok(kidReaches(e59.easyGoal!, e59.kidRuns!), `5-9: the kid's runs ${e59.kidRuns!.join(', ')} (lower median ${kidMedian(e59.kidRuns!)}) do not reach the Easy goal ${e59.easyGoal}`);
+  // (the rule's own negative, on the same runs: one above the lower median is out of reach)
+  assert.equal(kidReaches(kidMedian(e59.kidRuns!) + 1, e59.kidRuns!), false, 'a goal above the kid\'s lower median must be out of reach');
 });
 
 test('LV-24: every gen2 stage on Easy asks min(65% of what it holds, the kid bot\'s median)', () => {

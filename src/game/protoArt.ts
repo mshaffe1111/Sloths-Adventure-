@@ -25,7 +25,7 @@ import { KIT_FRAMES } from './kitAtlasData.ts';
 import { assignRockLooks, isPaintedRock, KIT_BOULDER, rockFramesOf, rockSheet, ROCK_SEAT, type RockLook } from './rockLooks.ts';
 import { PROTO2_FRAMES } from './proto2AtlasData.ts';
 import { PROTO3_FRAMES } from './proto3AtlasData.ts';
-import { DEPTH_DARK, drawEnd, drawLip, drawSoil, drawUnderside as drawHungUnderside, endFace, warmGround, type DepthAt } from './groundPaint.ts';
+import { DEPTH_DARK, DEPTH_STRIP, drawEnd, drawLip, drawSoil, drawUnderside as drawHungUnderside, endFace, warmGround, type DepthAt } from './groundPaint.ts';
 import { GROUND_FRAMES } from './groundAtlasData.ts';
 import { canvasLost } from './canvasLost.ts';
 import { drawW8Fungus } from './w8FungusArt.ts';
@@ -1600,21 +1600,63 @@ export function groundLine(banks: Platform[], cs: readonly Ceiling[] = []): Dept
   // darkening stepped at LINE_REACH from the summit, a lighter block with a straight side under the start)
   const sig = bankSig(banks);
   const tops = banks.filter((q) => !q.soil && !bankOpen(q, banks, sig, cs)?.open.underside);
+  const at = easedLine(tops);
   return (x) => {
-    let sum = 0, wt = 0, near = Infinity, nearY = 0;
-    for (const q of tops) {
-      const o = Math.min(x + LINE_REACH, q.x + q.width) - Math.max(x - LINE_REACH, q.x);
-      if (o > 0) {
-        sum += q.y * o;
-        wt += o;
-      } else {
-        const d = Math.max(q.x - x, x - q.x - q.width);
-        if (d < near) { near = d; nearY = q.y; }
-      }
-    }
-    const y = wt > 0 ? sum / wt : nearY;
+    const y = at(x);
     return [y - DEPTH_ABOVE * depthView, y + DEPTH_BELOW * depthView];
   };
+}
+/** the tops within LINE_REACH of x, each weighed by how much of that reach it covers; past every top's reach, the nearest top (the line
+ *  before R-165.487 eased it: the input easedLine eases, and the plant the gate tests rebuild the old line from) */
+export function meanLine(tops: readonly Platform[], x: number): number {
+  let sum = 0, wt = 0, near = Infinity, nearY = 0;
+  for (const q of tops) {
+    const o = Math.min(x + LINE_REACH, q.x + q.width) - Math.max(x - LINE_REACH, q.x);
+    if (o > 0) {
+      sum += q.y * o;
+      wt += o;
+    } else {
+      const d = Math.max(q.x - x, x - q.x - q.width);
+      if (d < near) { near = d; nearY = q.y; }
+    }
+  }
+  return wt > 0 ? sum / wt : nearY;
+}
+/**
+ * R-165.487: the most the line moves from one DEPTH_STRIP strip to the next (world units). The weighed mean alone moved 49-73 in one
+ * strip where a bank starts with only a sliver of another top in reach (2-7's bank starts, a faint straight edge in the soil). The
+ * lead's planted steps: 24 shows nothing, 32-48 faint, 64 plain; the line moves at most 24 a strip, one under it here because each
+ * strip's view is rounded to a unit as it is drawn (groundPaint.ts depthRuns). Gate: tools/engine/paintFall.ts depthSteps.
+ */
+export const DEPTH_EASE = 23;
+let eased: { key: string; at: (x: number) => number } | null = null;
+/**
+ * The mean line eased: read at every strip's middle over the tops' span, then held to DEPTH_EASE a strip from both sides (the mean of
+ * the least line over it and the greatest under it that move no more than that: the same line wherever it already eases, a ramp
+ * centred on a steep step), joined straight between strips. Built once per set of tops (the squares of one stage share it).
+ */
+function easedLine(tops: readonly Platform[]): (x: number) => number {
+  const key = tops.map((q) => `${q.x},${q.y},${q.width}`).join(';');
+  if (eased?.key === key) return eased.at;
+  if (!tops.length) return () => meanLine(tops, 0);
+  let lo = Infinity, hi = -Infinity;
+  for (const q of tops) { lo = Math.min(lo, q.x); hi = Math.max(hi, q.x + q.width); }
+  const i0 = Math.floor((lo - LINE_REACH) / DEPTH_STRIP) - 1, n = Math.ceil((hi + LINE_REACH) / DEPTH_STRIP) + 2 - i0;
+  const mid = (i: number) => (i0 + i) * DEPTH_STRIP + DEPTH_STRIP / 2;
+  const up = new Float64Array(n), dn = new Float64Array(n);
+  for (let i = 0; i < n; i++) up[i] = dn[i] = meanLine(tops, mid(i));
+  for (let i = 1; i < n; i++) { up[i] = Math.max(up[i], up[i - 1] - DEPTH_EASE); dn[i] = Math.min(dn[i], dn[i - 1] + DEPTH_EASE); }
+  for (let i = n - 2; i >= 0; i--) { up[i] = Math.max(up[i], up[i + 1] - DEPTH_EASE); dn[i] = Math.min(dn[i], dn[i + 1] + DEPTH_EASE); }
+  const ys = up.map((u, i) => (u + dn[i]) / 2);
+  const at = (x: number) => {
+    const t = (x - DEPTH_STRIP / 2) / DEPTH_STRIP - i0;
+    if (t <= 0) return ys[0];
+    if (t >= n - 1) return ys[n - 1];
+    const i = Math.floor(t);
+    return ys[i] + (ys[i + 1] - ys[i]) * (t - i);
+  };
+  eased = { key, at };
+  return at;
 }
 
 /**

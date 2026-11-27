@@ -7649,7 +7649,8 @@ export class GameEngine {
       this.paintKit && protoArtReady() ? this.swingVines : this.drawnVines,
       this.paintKit && protoArtReady() ? [] : this.currentStage.trees,
       this.camera,
-      this.gameTime
+      this.gameTime,
+      this.platforms
     );
     // the Spanish moss on a mossy liana (holding one is cover, 1-7 NEW 6), hanging from the rope where its swing puts it (w17Art.ts)
     for (const v of this.vines) {

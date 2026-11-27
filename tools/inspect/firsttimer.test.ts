@@ -302,15 +302,19 @@ test('on the run it was found on, 2-4 kid Easy seed 35: no jump off a drifting l
   assert.equal(downs, 0, `no jump off a log came down in the water (${downs} of ${offs})`);
 });
 
-test('on the run it was found on, 2-1 child Easy seed 2: landing on a small log running his way (under 220 px), even inside his run-out of its front, he takes the pad pause and is never pulled back; the row ends at the shrine with no rescue (c23; RED on c22 52bcce623: the pull-back turned him on landing on a 200 px log 75 px from its front, his run-out 91, the pause and its draw skipped, and he was rescued at the back river)', () => {
+test('on the run it was found on, 2-1 child Easy seed 2: landing on a small log running his way (under 220 px), his middle on it, even inside his run-out of its front, he takes the pad pause and is never pulled back; his middle already past its front, no pause is started there (the pull-back, C11); the row ends at the shrine with no rescue (c23; RED on c22 52bcce623: the pull-back turned him on landing on a 200 px log 75 px from its front, his run-out 91, the pause and its draw skipped, and he was rescued at the back river)', () => {
   // (the real stage and bot, as castBots rolls them; read by what he meets, never where: a landing (the run's lastLand inside 0.1 s)
   //  grounded on a drifting log narrower than 220 px whose drift runs the way he landed moving; the pause is the run's padPause on that
   //  log. The proof of the RED half on c22 is in reference/qa-reports/ENG-PLANT/REPORT.md, ENG-PLANT-s)
+  // (ONE rule with C11's kept pull-back (R-165.465, the lead's order), set by his middle: on the log, the pause (c23's #43, 75 px short
+  //  of its front); past its front, no floor under his middle, the pull-back and no pause (a pause there is dropped by its own block the
+  //  next frame, and the stand ran him off: 2-1 child Normal 20 on C10, hopJudged.test.ts 'a pull-back due ... is kept'). On C11 this
+  //  run landed on #111 at 213.47 17 px past its front (pulled back, slid off, splashed back, shrine); C12 moves the run before it)
   const P = FirstTimerRun.prototype as unknown as { play: (this: unknown) => unknown };
   const play = P.play;
   let run: { t: number; lastLand: number; padPause: { id: number } | null; runOut: () => number } | null = null;
   P.play = function (this: unknown) { run = this as typeof run; return play.call(this); };
-  const lands = new Map<number, { inside: boolean; pause: boolean }>();
+  const lands = new Map<number, { inside: boolean; past: boolean; pause: boolean }>();
   // (a landing is judged once, on its first grounded frame: 'the way he landed moving' is his speed THERE. ENG-PLANT-CI session 12: on
   //  CI-1 .. CI-15 he lands at 169.900 moving right (172 px/s) on #87, a log running LEFT at 70 px/s (against him); the next frame the
   //  log's carry put his speed at -75 and the read took it for a landing on a log running his way, 9 px 'past its front', no pause)
@@ -328,7 +332,7 @@ test('on the run it was found on, 2-1 child Easy seed 2: landing on a small log 
         judged.add(key);
         if (Math.sign(p.vx) !== q.drift.dir) return;
         const front = q.drift.dir > 0 ? q.x + q.width : q.x;
-        row = { inside: q.drift.dir * (front - p.x) < run.runOut(), pause: false };
+        row = { inside: q.drift.dir * (front - p.x) < run.runOut(), past: q.drift.dir * (p.x - front) > 0, pause: false };
         lands.set(key, row);
       }
       if (run.padPause?.id === q.id) row.pause = true;
@@ -337,8 +341,9 @@ test('on the run it was found on, 2-1 child Easy seed 2: landing on a small log 
     P.play = play;
   }
   const all = [...lands.values()];
-  assert.ok(all.some((l) => l.inside), `he landed on a small log running his way inside his run-out of its front (${JSON.stringify(all)})`);
-  assert.deepEqual(all.filter((l) => !l.pause), [], `every such landing takes the pause (${all.length} landings)`);
+  assert.ok(all.some((l) => l.inside && !l.past), `he landed on a small log running his way inside his run-out of its front, his middle on it (${JSON.stringify(all)})`);
+  assert.deepEqual(all.filter((l) => !l.past && !l.pause), [], `every such landing with his middle on the log takes the pause (${all.length} landings)`);
+  assert.deepEqual(all.filter((l) => l.past && l.pause), [], `no landing with his middle past the front starts a pause (${all.length} landings)`);
   assert.equal(r.end, 'shrine', `he reaches the shrine (${r.end})`);
   assert.equal(r.rescues, 0, `no rescue (${r.rescues})`);
 });

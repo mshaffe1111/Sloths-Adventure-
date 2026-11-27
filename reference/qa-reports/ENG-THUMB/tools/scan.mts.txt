@@ -1,0 +1,30 @@
+// scan.mts <tree> <stages,> <bot> <settings,> <seeds a-b>: per run, a stand (`standing`) kept across a game put-back, and a walk-off
+// from a drifting log's end his middle already past it (grounded on it by his feet) followed by a put-back or a life within 1 s
+const [T, sts, bot, sets, rng] = process.argv.slice(2);
+await import(`${T}/src/game/headlessDom.ts`);
+const ft = await import(`${T}/tools/inspect/firsttimer.ts`);
+const { castRun } = await import(`${T}/tools/inspect/castBots.ts`);
+const P = ft.FirstTimerRun.prototype as any; const it = P.intend;
+let cur: any = null;
+P.intend = function () {
+  const p = this.sim.p, t = this.t, c = cur;
+  if (c.lastT >= 0 && Math.abs(t - c.lastT - 1 / 30) < 1e-3 && Math.abs(p.x - c.lastX) >= 100) {
+    if (c.held && this.standing === c.held) c.stale.push(`t ${t.toFixed(2)} x ${Math.round(c.lastX)}->${Math.round(p.x)}`);
+    if (c.off && t - c.off.t < 1) { c.offs.push(c.off.s); c.off = null; }
+  }
+  if (p.grounded) {
+    const q = this.sim.platforms.find((q: any) => q.id === this.sim.standingOn);
+    const d = Math.sign(c.lastX === null ? 0 : p.x - c.lastX);
+    if (q && q.type === 'drift' && d !== 0 && (d > 0 ? p.x > q.x + q.width : p.x < q.x)) c.edgeAt = { t, s: `t ${t.toFixed(2)} x ${Math.round(p.x)} #${q.id} d${q.drift?.dir} dir ${d}` };
+    else c.edgeAt = null;
+  } else if (c.edgeAt) { c.off = c.edgeAt; c.edgeAt = null; }
+  const o = it.call(this);
+  c.lastT = t; c.lastX = this.sim.p.x; c.held = this.standing;
+  return o;
+};
+const [a, b] = rng.split('-').map(Number);
+for (const st of sts.split(',')) for (const set of sets.split(',')) for (let seed = a; seed <= b; seed++) {
+  cur = { lastT: -1, lastX: null, held: null, stale: [], offs: [], off: null, edgeAt: null };
+  const r = castRun(bot, set, st, seed);
+  console.log(JSON.stringify({ st, bot, set, seed, end: r.end, pass: r.pass, rescues: r.rescues, lives: r.lives, stale: cur.stale, offs: cur.offs }));
+}

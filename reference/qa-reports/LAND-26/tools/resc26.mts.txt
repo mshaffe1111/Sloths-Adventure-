@@ -1,0 +1,16 @@
+const T = process.env.TREE!;
+await import(T + '/src/game/headlessDom.ts');
+const { firstTimer } = await import(T + '/tools/inspect/firsttimer.ts');
+const { CAST_BOTS } = await import(T + '/tools/inspect/castBots.ts');
+for (const job of process.argv.slice(2)) {
+  const [bot, setting, seedS] = job.split(':');
+  let prev: any = null, f = 0; const jumps: string[] = [];
+  let riv: any[] = [];
+  const r: any = firstTimer('2-6', +seedS, CAST_BOTS[bot][setting], { cap: 1200, dotSetting: true, onFrame: (sim: any) => {
+    const p = sim.p ?? sim.e.player; f++;
+    if (!riv.length) riv = (sim.e.currentStage?.rivers ?? sim.e.rivers ?? []).filter((q: any) => q.speed === 0 && !q.wheelPond);
+    if (prev && Math.hypot(p.x - prev.x, p.y - prev.y) > 150) jumps.push(`f${f} (${prev.x},${prev.y})->(${Math.round(p.x)},${Math.round(p.y)})`);
+    prev = { x: Math.round(p.x), y: Math.round(p.y) };
+  } } as never);
+  console.log(job, 'rescues', r.rescues, 'at x', JSON.stringify(r.rescueXs), 'lives', r.lives ?? '', '| jumps', jumps.join(' '), '| still pools', riv.map((q) => `${Math.round(q.x0)}-${Math.round(q.x1)}@${Math.round(q.surfaceY)}`).join(' '));
+}

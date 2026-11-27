@@ -1,0 +1,30 @@
+# 356 reAim plant on C13 c38532c48 (p356.mts = riverRide :296 plantedRide; mg.mts = ENG-PLANT s11-margins on an unfrozen copy patched at the gate's next)
+## scan, reAim on | off
+phase 0 reAim 1: hop@126 log 17|reAim 0: back@151 log 17
+phase 0.25 reAim 1: back@127 log 17|reAim 0: back@127 log 17
+phase 0.5 reAim 1: back@119 log 17|reAim 0: back@119 log 17
+phase 0.75 reAim 1: back@112 log 17|reAim 0: back@112 log 17
+phase 1 reAim 1: hop@104 log 17|reAim 0: back@114 log 17
+phase 1.25 reAim 1: back@97 log 17|reAim 0: back@110 log 17
+phase 1.5 reAim 1: hop@94 log 17|reAim 0: hop@73 log 17
+phase 1.75 reAim 1: hop@91 log 17|reAim 0: hop@63 log 17
+phase 2 reAim 1: back@105 log 17|reAim 0: back@105 log 17
+phase 2.25 reAim 1: back@84 log 17|reAim 0: back@84 log 17
+phase 2.5 reAim 1: hop@142 log 16|reAim 0: back@168 log 16
+phase 2.75 reAim 1: hop@138 log 16|reAim 0: back@146 log 16
+phase 3 reAim 1: hop@137 log 16|reAim 0: back@167 log 16
+## margins (C13)
+phase 0.00 on hop off back | press 63, min 61; phase 1.00 hop/back 54 (33); phase 1.50 hop/HOP 49 (47); phase 2.50 hop/back 45 (31); phase 2.75 hop/back 26 (26, out); phase 3.00 hop/back 43 (43)
+## phase 1.5 reAim off, C11 vs C12 (frames on a log with no floor by his middle, presses, landings)
+### C11
+  STUB at t 2.17 x 1050.9
+  t 2.37 x 1091.2 g1 on 17 940-1090 mid 0 out {} edge 1 late - st 1
+  t 2.40 x 1094.4 g1 on 17 937-1087 mid 0 out {} edge 1 late - st 1
+  t 2.43 x 1093.8 g1 on 17 935-1085 mid 0 out {} edge 1 late - st 1
+### C12
+  STUB at t 2.17 x 1050.9
+  t 2.37 x 1091.2 g1 on 17 940-1090 mid 0 out {} edge 1 late - st 0
+  t 2.40 x 1094.4 g1 on 17 937-1087 mid 0 out {"right":true,"press":true,"jump":true} edge 0 late - st 0
+  t 6.57 x 994.0 g1 on 1 0-1000 mid 1 out {"right":true,"press":true,"jump":true} edge 0 late - st 0
+  C12 landings: LAND 1.63 on 17; AIR 2.43 x 1098 (the gate's judged hop); LAND 2.70 x 1170.8 on 16; back on the bank 6.57 (rode 16 back)
+## honest aim RED half (gateAirtime flying the drawn thumb), phases 0,1,2.5,3: phase 0: the press was decided on the drawn noise (as drawn 4.167@1063.6, loud 17.867@1140.9)

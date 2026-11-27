@@ -1,0 +1,24 @@
+// probe231.mts <tree>: c23's landings (2-1 child Easy 2: grounded on a drifting log under 220 px running the way he landed moving,
+// first grounded frame within 0.1 s of lastLand), each with his middle vs the log's front, the pause, the steer and what came after
+const T = process.argv[2];
+await import(`${T}/src/game/headlessDom.ts`);
+const ft = await import(`${T}/tools/inspect/firsttimer.ts`);
+const P = ft.FirstTimerRun.prototype as any; const play = P.play, it = P.intend;
+let run: any = null; P.play = function () { run = this; return play.call(this); };
+const steer: string[] = []; P.intend = function () { const o = it.call(this); steer.push(JSON.stringify(o)); return o; };
+const rows: any[] = []; const judged = new Set<number>(); let open: any = null; let lastX = 0;
+const r = ft.firstTimer('2-1', 2, ft.FT_CHILD_EASY, { cap: 1200, dotSetting: true, onFrame: (sim: any) => {
+  const e = sim.e, p = e.player, q = e.platforms.find((k: any) => k.id === e.standingOnId);
+  if (open) { open.n++; if (open.n <= 12) open.after.push(`${Math.round(p.x)}${p.grounded ? '' : '^'}${e.standingOnId === open.id ? '' : '*'}`); if (Math.abs(p.x - lastX) >= 100) open.after.push('PUTBACK'); if (open.n > 40) open = null; }
+  lastX = p.x;
+  if (!run || !p.grounded || !q || q.type !== 'drift' || !q.drift || q.width >= 220 || run.t - run.lastLand >= 0.1) return;
+  const key = Math.round(run.lastLand * 30);
+  if (judged.has(key)) { const row = rows.find((w) => w.key === key); if (row && run.padPause?.id === q.id) row.pause = true; return; }
+  judged.add(key);
+  if (Math.sign(p.vx) !== q.drift.dir) return;
+  const front = q.drift.dir > 0 ? q.x + q.width : q.x;
+  const row: any = { key, t: +run.t.toFixed(2), x: Math.round(p.x), id: q.id, log: `${Math.round(q.x)}-${Math.round(q.x + q.width)}`, past: Math.round(q.drift.dir * (p.x - front)), inside: q.drift.dir * (front - p.x) < run.runOut(), pause: run.padPause?.id === q.id, steer: '', after: [], n: 0 };
+  rows.push(row); open = row; row.si = steer.length;
+} });
+for (const w of rows) console.log(`t ${w.t} x ${w.x} #${w.id} ${w.log} middle ${w.past > 0 ? w.past + ' px PAST' : -w.past + ' px short of'} the front, inside ${w.inside}, pause ${w.pause}, steer ${steer.slice(w.si - 1, w.si + 3).join(' ')} | ${w.after.join(' ')}`);
+console.log(`end ${r.end} rescues ${r.rescues} lives ${r.lives}`);

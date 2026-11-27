@@ -1,0 +1,20 @@
+// where each rescue happens with stepOff OFF (boardWatch on, as cb69a104e's plant), and the last wheel he rode before it (bucket, way)
+const R = process.env.REPO!;
+await import(`${R}/src/game/headlessDom.ts`);
+const { FirstTimerRun, SKILLS } = await import(`${R}/tools/inspect/firsttimer.ts`);
+const { castRun } = await import(`${R}/tools/inspect/castBots.ts`);
+const FP: any = FirstTimerRun.prototype;
+let last: any = null, out: string[] = [], refuse: string[] = [];
+const p0 = FP.pad; FP.pad = function (...a: any[]) { const q = this.sim.platforms.find((x: any) => x.id === this.sim.standingOn); if (q?.wheel) last = { t: this.sim.t, id: q.id, i: q.wheel.i, way: q.wheel.w.way, x: this.sim.p.x, y: this.sim.p.y }; return p0.apply(this, a); };
+const r0 = FP.rescue; FP.rescue = function (...a: any[]) { const ok = r0.apply(this, a); if (ok) out.push(`rescue t ${this.sim.t.toFixed(1)} at x ${this.sim.p.x.toFixed(0)} y ${this.sim.p.y.toFixed(0)}; last wheel bucket #${last?.id} b${last?.i} way ${last?.way} at t ${last?.t.toFixed(1)} x ${last?.x.toFixed(0)} y ${last?.y.toFixed(0)}`); return ok; };
+const s0 = FP.stepOffLands; FP.stepOffLands = function (w: any, ...a: any[]) { const ok = s0.call(this, w, ...a); if (!ok) refuse.push(`way ${w.way} t ${this.sim.t.toFixed(1)}`); return ok; };
+for (const l of (process.env.ROWS ?? '').split(';').filter(Boolean)) {
+  const [bot, set, seed] = l.trim().split(' ');
+  for (const on of [false, true]) {
+    SKILLS.stepOff = on; out = []; refuse = []; last = null;
+    const r = castRun(bot, set as any, '2-6', Number(seed));
+    const rf = [...new Set(refuse.map((s) => s.split(' t ')[0]))].join(',');
+    console.log(`${l} stepOff ${on ? 'ON ' : 'OFF'}: ${r.end} ${r.time.toFixed(1)} s res ${r.rescues} | refusals ${refuse.length} (${rf}) first ${refuse[0] ?? '-'} | ${out.join(' ; ') || 'no rescue'}`);
+  }
+}
+SKILLS.stepOff = true;

@@ -1,0 +1,11 @@
+import json, sys, collections
+# rates.py <dir> [<dir>...]: pass counts per stage, bot and setting
+for d in sys.argv[1:]:
+    out = []
+    for st in ['2-1', '2-2', '2-4', '2-5', '1-4']:
+        try: rows = [json.loads(l) for l in open(f'{d}/{st}.jsonl')]
+        except FileNotFoundError: continue
+        c = collections.Counter(); n = collections.Counter()
+        for r in rows: k = r['bot'][:3] + r['setting'][0].upper(); n[k] += 1; c[k] += bool(r['pass'])
+        out.append(st + ' ' + ' '.join(f'{k}:{c[k]}/{n[k]}' for k in sorted(n)))
+    print(d.split('/')[-1]); print('\n'.join(out))

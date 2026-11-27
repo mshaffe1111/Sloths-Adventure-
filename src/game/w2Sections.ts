@@ -18,7 +18,7 @@ import { stream } from './protoStage.ts';
 import type { RoomTips } from './puzzleKit.ts';
 import type { Collectible, LevelConfig, Platform, Vine } from './types.ts';
 
-export type W2Plan = '2-6' | '2-9';
+export type W2Plan = '2-9';
 type Stream = ReturnType<typeof stream>;
 
 /** the bank's dressing for a roll: reeds and poles, the moorings (jetty posts and spare logs), or the village's cottages */
@@ -82,8 +82,8 @@ export interface W2Kit {
   STONE: number;
 }
 
-/** the flavours each stage rolls among (2-6 is World 1's climbing stage built up the bank houses: protoStage.ts buildKapok) */
-export const W2_FLAVOURS: Record<Exclude<W2Plan, '2-6'>, readonly string[]> = {
+/** the flavours each stage rolls among */
+export const W2_FLAVOURS: Record<W2Plan, readonly string[]> = {
   '2-9': ['lilies', 'porches', 'sandbars', 'gates'],
 };
 const LOOKS: readonly W2Look[] = ['reeds', 'moorings', 'cottages'];
@@ -99,9 +99,9 @@ export interface W2Picks {
  * Which flavour each stage takes for a draw of 0..3. The draw is the layout number's own (the same for every stage of the world), and the
  * tables pair the stages that share a world's ideas so that one roll never gives them the same kind of way across (the 200-roll tool
  * compares each stage with the same roll of the others: "no two stages of a world alike", STAGE-RULES §2)
- * (2-1, 2-2, 2-3, 2-4, 2-5, 2-7 and 2-8 are gen2's: gen2/worlds/w2.ts and its w2Arc files)
+ * (2-1, 2-2, 2-3, 2-4, 2-5, 2-6, 2-7 and 2-8 are gen2's: gen2/worlds/w2.ts and its w2Arc files)
  */
-const BY_DRAW: Record<Exclude<W2Plan, '2-6'>, readonly string[]> = {
+const BY_DRAW: Record<W2Plan, readonly string[]> = {
   '2-9': ['porches', 'lilies', 'sandbars', 'gates'],
 };
 
@@ -109,7 +109,7 @@ const BY_DRAW: Record<Exclude<W2Plan, '2-6'>, readonly string[]> = {
 export function w2Picks(plan: W2Plan, seed: number): W2Picks {
   const s = stream(seed * 131 + plan.charCodeAt(2) * 17 + 5);
   const draw = new ShuffleBag(stream(seed * 131 + 5).f, [0, 1, 2, 3]).draw()!;
-  const flavour = plan === '2-6' ? 'climb' : BY_DRAW[plan][draw];
+  const flavour = BY_DRAW[plan][draw];
   const look = new ShuffleBag(s.f, LOOKS).draw()!;
   return { flavour, look, rng: s.f };
 }
@@ -141,7 +141,7 @@ class Turns<K extends string> {
 }
 
 /** build a stage's sections in the order its flavour gives */
-export function buildW2Sections(plan: Exclude<W2Plan, '2-6'>, k: W2Kit, picks: W2Picks): void {
+export function buildW2Sections(plan: W2Plan, k: W2Kit, picks: W2Picks): void {
   PLANS[plan](k, picks.flavour, picks.rng);
 }
 
@@ -270,7 +270,7 @@ class Crossings {
   }
 }
 
-const PLANS: Record<Exclude<W2Plan, '2-6'>, (k: W2Kit, flavour: string, rng: Rng) => void> = {
+const PLANS: Record<W2Plan, (k: W2Kit, flavour: string, rng: Rng) => void> = {
   // ======================================================================================================================
   // 2-9 The River King's Court: fight through the court to the king. His guards (royal snappers, upright with spears) block a blow to
   // the front, jab further than a snapper bites, and need two hits; from behind, or open after a jab, they go down; a kick staggers one

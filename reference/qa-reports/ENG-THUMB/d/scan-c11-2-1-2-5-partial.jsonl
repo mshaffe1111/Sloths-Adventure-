@@ -1,0 +1,306 @@
+{"st":"2-1","bot":"child","set":"easy","seed":1,"end":"shrine","pass":true,"rescues":0,"lives":0,"stale":[],"offs":["t 118.90 x 14647 #69 d1 dir 1","t 167.13 x 20007 #88 d-1 dir 1","t 212.67 x 25183 #113 d1 dir 1","t 224.60 x 26200 #117 d-1 dir 1"]}
+{"st":"2-1","bot":"child","set":"easy","seed":2,"end":"shrine","pass":true,"rescues":0,"lives":0,"stale":[],"offs":["t 212.27 x 25137 #112 d1 dir 1","t 213.47 x 24989 #111 d1 dir 1"]}
+{"st":"2-1","bot":"child","set":"easy","seed":3,"end":"shrine","pass":false,"rescues":1,"lives":0,"stale":[],"offs":["t 169.77 x 20000 #86 d-1 dir 1"]}
+{"st":"2-1","bot":"child","set":"easy","seed":4,"end":"shrine","pass":true,"rescues":0,"lives":0,"stale":[],"offs":[]}
+{"st":"2-1","bot":"child","set":"easy","seed":5,"end":"shrine","pass":true,"rescues":0,"lives":0,"stale":[],"offs":[]}
+{"st":"2-1","bot":"child","set":"easy","seed":6,"end":"shrine","pass":true,"rescues":0,"lives":0,"stale":[],"offs":[]}
+{"st":"2-1","bot":"child","set":"easy","seed":7,"end":"shrine","pass":true,"rescues":0,"lives":0,"stale":[],"offs":["t 183.90 x 25534 #110 d1 dir 1"]}
+{"st":"2-1","bot":"child","set":"easy","seed":8,"end":"shrine","pass":true,"rescues":0,"lives":0,"stale":[],"offs":[]}
+{"st":"2-1","bot":"child","set":"easy","seed":9,"end":"shrine","pass":true,"rescues":0,"lives":0,"stale":[],"offs":["t 234.27 x 31047 #135 d1 dir 1","t 238.13 x 31048 #134 d1 dir 1","t 239.53 x 30848 #136 d1 dir 1"]}
+{"st":"2-1","bot":"child","set":"easy","seed":10,"end":"shrine","pass":true,"rescues":0,"lives":0,"stale":[],"offs":[]}
+{"st":"2-1","bot":"child","set":"easy","seed":11,"end":"shrine","pass":true,"rescues":0,"lives":0,"stale":[],"offs":[]}
+{"st":"2-1","bot":"child","set":"easy","seed":12,"end":"shrine","pass":true,"rescues":0,"lives":0,"stale":[],"offs":["t 121.97 x 14520 #65 d1 dir 1"]}
+{"st":"2-1","bot":"child","set":"easy","seed":13,"end":"shrine","pass":true,"rescues":0,"lives":0,"stale":[],"offs":[]}
+{"st":"2-1","bot":"child","set":"easy","seed":14,"end":"shrine","pass":true,"rescues":0,"lives":0,"stale":[],"offs":[]}
+{"st":"2-1","bot":"child","set":"easy","seed":15,"end":"shrine","pass":true,"rescues":0,"lives":0,"stale":[],"offs":["t 74.93 x 9134 #43 d1 dir 1"]}
+{"st":"2-1","bot":"child","set":"easy","seed":16,"end":"shrine","pass":true,"rescues":0,"lives":0,"stale":[],"offs":["t 67.60 x 8601 #42 d1 dir 1","t 203.30 x 24989 #109 d1 dir 1"]}
+{"st":"2-1","bot":"child","set":"easy","seed":17,"end":"shrine","pass":true,"rescues":0,"lives":0,"stale":[],"offs":[]}
+{"st":"2-1","bot":"child","set":"easy","seed":18,"end":"shrine","pass":true,"rescues":0,"lives":0,"stale":[],"offs":[]}
+{"st":"2-1","bot":"child","set":"easy","seed":19,"end":"shrine","pass":true,"rescues":0,"lives":0,"stale":[],"offs":[]}
+{"st":"2-1","bot":"child","set":"easy","seed":20,"end":"shrine","pass":true,"rescues":0,"lives":0,"stale":[],"offs":[]}
+{"st":"2-1","bot":"child","set":"easy","seed":21,"end":"shrine","pass":true,"rescues":0,"lives":0,"stale":[],"offs":[]}
+{"st":"2-1","bot":"child","set":"easy","seed":22,"end":"shrine","pass":true,"rescues":0,"lives":0,"stale":[],"offs":[]}
+{"st":"2-1","bot":"child","set":"easy","seed":23,"end":"shrine","pass":true,"rescues":0,"lives":0,"stale":[],"offs":["t 60.10 x 8622 #41 d1 dir 1"]}
+{"st":"2-1","bot":"child","set":"easy","seed":24,"end":"shrine","pass":true,"rescues":0,"lives":0,"stale":["t 190.10 x 24046->23933"],"offs":["t 60.90 x 8707 #42 d1 dir 1","t 208.80 x 25922 #115 d-1 dir 1"]}
+{"st":"2-1","bot":"child","set":"easy","seed":25,"end":"shrine","pass":true,"rescues":0,"lives":0,"stale":[],"offs":[]}
+{"st":"2-1","bot":"child","set":"easy","seed":26,"end":"shrine","pass":true,"rescues":0,"lives":0,"stale":[],"offs":[]}
+{"st":"2-1","bot":"child","set":"easy","seed":27,"end":"shrine","pass":true,"rescues":0,"lives":0,"stale":[],"offs":["t 246.70 x 31131 #136 d1 dir 1"]}
+{"st":"2-1","bot":"child","set":"easy","seed":28,"end":"shrine","pass":true,"rescues":0,"lives":0,"stale":[],"offs":[]}
+{"st":"2-1","bot":"child","set":"easy","seed":29,"end":"shrine","pass":true,"rescues":0,"lives":0,"stale":[],"offs":[]}
+{"st":"2-1","bot":"child","set":"easy","seed":30,"end":"shrine","pass":true,"rescues":0,"lives":0,"stale":[],"offs":[]}
+{"st":"2-1","bot":"child","set":"easy","seed":31,"end":"shrine","pass":true,"rescues":0,"lives":0,"stale":[],"offs":[]}
+{"st":"2-1","bot":"child","set":"easy","seed":32,"end":"shrine","pass":true,"rescues":0,"lives":0,"stale":["t 141.93 x 18849->18719"],"offs":["t 154.73 x 20202 #88 d-1 dir 1"]}
+{"st":"2-1","bot":"child","set":"easy","seed":33,"end":"shrine","pass":true,"rescues":0,"lives":0,"stale":[],"offs":[]}
+{"st":"2-1","bot":"child","set":"easy","seed":34,"end":"shrine","pass":true,"rescues":0,"lives":0,"stale":[],"offs":[]}
+{"st":"2-1","bot":"child","set":"easy","seed":35,"end":"shrine","pass":true,"rescues":0,"lives":0,"stale":[],"offs":[]}
+{"st":"2-1","bot":"child","set":"easy","seed":36,"end":"shrine","pass":true,"rescues":0,"lives":0,"stale":[],"offs":["t 261.90 x 30965 #137 d1 dir 1"]}
+{"st":"2-1","bot":"child","set":"easy","seed":37,"end":"shrine","pass":true,"rescues":0,"lives":0,"stale":[],"offs":["t 192.03 x 25135 #110 d1 dir 1"]}
+{"st":"2-1","bot":"child","set":"easy","seed":38,"end":"shrine","pass":true,"rescues":0,"lives":0,"stale":[],"offs":["t 171.03 x 19522 #84 d-1 dir 1"]}
+{"st":"2-1","bot":"child","set":"easy","seed":39,"end":"shrine","pass":true,"rescues":0,"lives":0,"stale":[],"offs":["t 60.33 x 8717 #41 d1 dir 1"]}
+{"st":"2-1","bot":"child","set":"easy","seed":40,"end":"shrine","pass":true,"rescues":0,"lives":0,"stale":[],"offs":["t 217.40 x 25068 #109 d1 dir 1"]}
+{"st":"2-1","bot":"child","set":"normal","seed":1,"end":"shrine","pass":true,"rescues":0,"lives":2,"stale":[],"offs":[]}
+{"st":"2-1","bot":"child","set":"normal","seed":2,"end":"shrine","pass":true,"rescues":0,"lives":0,"stale":[],"offs":[]}
+{"st":"2-1","bot":"child","set":"normal","seed":3,"end":"shrine","pass":true,"rescues":0,"lives":0,"stale":[],"offs":["t 334.53 x 30202 #134 d1 dir 1"]}
+{"st":"2-1","bot":"child","set":"normal","seed":4,"end":"shrine","pass":true,"rescues":0,"lives":0,"stale":[],"offs":[]}
+{"st":"2-1","bot":"child","set":"normal","seed":5,"end":"shrine","pass":true,"rescues":0,"lives":1,"stale":[],"offs":[]}
+{"st":"2-1","bot":"child","set":"normal","seed":6,"end":"shrine","pass":true,"rescues":0,"lives":1,"stale":[],"offs":["t 81.03 x 8815 #43 d1 dir 1"]}
+{"st":"2-1","bot":"child","set":"normal","seed":7,"end":"shrine","pass":true,"rescues":0,"lives":1,"stale":[],"offs":["t 74.23 x 8811 #45 d1 dir 1"]}
+{"st":"2-1","bot":"child","set":"normal","seed":8,"end":"shrine","pass":true,"rescues":0,"lives":0,"stale":[],"offs":[]}
+{"st":"2-1","bot":"child","set":"normal","seed":9,"end":"shrine","pass":true,"rescues":0,"lives":5,"stale":[],"offs":[]}
+{"st":"2-1","bot":"child","set":"normal","seed":10,"end":"shrine","pass":true,"rescues":0,"lives":0,"stale":[],"offs":[]}
+{"st":"2-1","bot":"child","set":"normal","seed":11,"end":"shrine","pass":true,"rescues":0,"lives":1,"stale":[],"offs":[]}
+{"st":"2-1","bot":"child","set":"normal","seed":12,"end":"shrine","pass":true,"rescues":0,"lives":0,"stale":[],"offs":[]}
+{"st":"2-1","bot":"child","set":"normal","seed":13,"end":"shrine","pass":true,"rescues":0,"lives":1,"stale":[],"offs":[]}
+{"st":"2-1","bot":"child","set":"normal","seed":14,"end":"shrine","pass":true,"rescues":0,"lives":2,"stale":[],"offs":[]}
+{"st":"2-1","bot":"child","set":"normal","seed":15,"end":"shrine","pass":true,"rescues":0,"lives":0,"stale":[],"offs":[]}
+{"st":"2-1","bot":"child","set":"normal","seed":16,"end":"shrine","pass":true,"rescues":0,"lives":0,"stale":[],"offs":[]}
+{"st":"2-1","bot":"child","set":"normal","seed":17,"end":"shrine","pass":true,"rescues":0,"lives":0,"stale":[],"offs":[]}
+{"st":"2-1","bot":"child","set":"normal","seed":18,"end":"shrine","pass":true,"rescues":0,"lives":0,"stale":[],"offs":[]}
+{"st":"2-1","bot":"child","set":"normal","seed":19,"end":"shrine","pass":true,"rescues":0,"lives":0,"stale":[],"offs":[]}
+{"st":"2-1","bot":"child","set":"normal","seed":20,"end":"shrine","pass":true,"rescues":0,"lives":2,"stale":[],"offs":["t 81.23 x 8627 #41 d1 dir 1"]}
+{"st":"2-1","bot":"child","set":"normal","seed":21,"end":"shrine","pass":true,"rescues":0,"lives":1,"stale":[],"offs":[]}
+{"st":"2-1","bot":"child","set":"normal","seed":22,"end":"shrine","pass":true,"rescues":0,"lives":1,"stale":[],"offs":[]}
+{"st":"2-1","bot":"child","set":"normal","seed":23,"end":"shrine","pass":true,"rescues":0,"lives":0,"stale":[],"offs":[]}
+{"st":"2-1","bot":"child","set":"normal","seed":24,"end":"shrine","pass":true,"rescues":0,"lives":0,"stale":[],"offs":[]}
+{"st":"2-1","bot":"child","set":"normal","seed":25,"end":"shrine","pass":true,"rescues":0,"lives":0,"stale":[],"offs":[]}
+{"st":"2-1","bot":"child","set":"normal","seed":26,"end":"shrine","pass":true,"rescues":0,"lives":0,"stale":[],"offs":[]}
+{"st":"2-1","bot":"child","set":"normal","seed":27,"end":"shrine","pass":true,"rescues":0,"lives":1,"stale":[],"offs":[]}
+{"st":"2-1","bot":"child","set":"normal","seed":28,"end":"shrine","pass":true,"rescues":0,"lives":1,"stale":["t 317.67 x 30447->30212"],"offs":["t 317.53 x 30424 #135 d1 dir 1"]}
+{"st":"2-1","bot":"child","set":"normal","seed":29,"end":"shrine","pass":true,"rescues":0,"lives":0,"stale":[],"offs":["t 332.53 x 30361 #132 d1 dir 1"]}
+{"st":"2-1","bot":"child","set":"normal","seed":30,"end":"shrine","pass":true,"rescues":0,"lives":0,"stale":[],"offs":[]}
+{"st":"2-1","bot":"child","set":"normal","seed":31,"end":"shrine","pass":true,"rescues":0,"lives":1,"stale":[],"offs":[]}
+{"st":"2-1","bot":"child","set":"normal","seed":32,"end":"shrine","pass":true,"rescues":0,"lives":0,"stale":[],"offs":[]}
+{"st":"2-1","bot":"child","set":"normal","seed":33,"end":"shrine","pass":true,"rescues":0,"lives":1,"stale":[],"offs":[]}
+{"st":"2-1","bot":"child","set":"normal","seed":34,"end":"shrine","pass":true,"rescues":0,"lives":0,"stale":[],"offs":[]}
+{"st":"2-1","bot":"child","set":"normal","seed":35,"end":"shrine","pass":true,"rescues":0,"lives":2,"stale":[],"offs":["t 84.83 x 8711 #41 d1 dir 1"]}
+{"st":"2-1","bot":"child","set":"normal","seed":36,"end":"shrine","pass":true,"rescues":0,"lives":1,"stale":[],"offs":[]}
+{"st":"2-1","bot":"child","set":"normal","seed":37,"end":"shrine","pass":true,"rescues":0,"lives":2,"stale":[],"offs":[]}
+{"st":"2-1","bot":"child","set":"normal","seed":38,"end":"shrine","pass":true,"rescues":0,"lives":1,"stale":[],"offs":[]}
+{"st":"2-1","bot":"kid","set":"easy","seed":1,"end":"shrine","pass":true,"rescues":0,"lives":0,"stale":[],"offs":[]}
+{"st":"2-1","bot":"kid","set":"easy","seed":2,"end":"shrine","pass":true,"rescues":0,"lives":0,"stale":[],"offs":[]}
+{"st":"2-1","bot":"kid","set":"easy","seed":3,"end":"shrine","pass":true,"rescues":0,"lives":0,"stale":[],"offs":[]}
+{"st":"2-1","bot":"kid","set":"easy","seed":4,"end":"shrine","pass":true,"rescues":0,"lives":0,"stale":[],"offs":[]}
+{"st":"2-1","bot":"kid","set":"easy","seed":5,"end":"shrine","pass":true,"rescues":0,"lives":0,"stale":[],"offs":[]}
+{"st":"2-1","bot":"kid","set":"easy","seed":6,"end":"shrine","pass":true,"rescues":0,"lives":0,"stale":[],"offs":[]}
+{"st":"2-1","bot":"kid","set":"easy","seed":7,"end":"shrine","pass":true,"rescues":0,"lives":0,"stale":[],"offs":[]}
+{"st":"2-1","bot":"kid","set":"easy","seed":8,"end":"shrine","pass":true,"rescues":0,"lives":0,"stale":[],"offs":[]}
+{"st":"2-1","bot":"kid","set":"easy","seed":9,"end":"shrine","pass":true,"rescues":0,"lives":0,"stale":[],"offs":[]}
+{"st":"2-1","bot":"kid","set":"easy","seed":10,"end":"shrine","pass":true,"rescues":0,"lives":0,"stale":[],"offs":[]}
+{"st":"2-1","bot":"kid","set":"easy","seed":11,"end":"shrine","pass":true,"rescues":0,"lives":0,"stale":[],"offs":[]}
+{"st":"2-1","bot":"kid","set":"easy","seed":12,"end":"shrine","pass":true,"rescues":0,"lives":0,"stale":[],"offs":[]}
+{"st":"2-1","bot":"kid","set":"easy","seed":13,"end":"shrine","pass":true,"rescues":0,"lives":0,"stale":[],"offs":[]}
+{"st":"2-1","bot":"kid","set":"easy","seed":14,"end":"shrine","pass":true,"rescues":0,"lives":0,"stale":[],"offs":[]}
+{"st":"2-1","bot":"kid","set":"easy","seed":15,"end":"shrine","pass":true,"rescues":0,"lives":0,"stale":[],"offs":["t 75.13 x 14404 #66 d1 dir 1"]}
+{"st":"2-1","bot":"kid","set":"easy","seed":16,"end":"shrine","pass":true,"rescues":0,"lives":0,"stale":[],"offs":[]}
+{"st":"2-1","bot":"kid","set":"easy","seed":17,"end":"shrine","pass":true,"rescues":0,"lives":0,"stale":[],"offs":[]}
+{"st":"2-1","bot":"kid","set":"easy","seed":18,"end":"shrine","pass":true,"rescues":0,"lives":0,"stale":[],"offs":[]}
+{"st":"2-1","bot":"kid","set":"easy","seed":19,"end":"shrine","pass":true,"rescues":0,"lives":0,"stale":[],"offs":[]}
+{"st":"2-1","bot":"kid","set":"easy","seed":20,"end":"shrine","pass":true,"rescues":0,"lives":0,"stale":[],"offs":["t 147.20 x 26429 #115 d-1 dir 1"]}
+{"st":"2-1","bot":"kid","set":"easy","seed":21,"end":"shrine","pass":true,"rescues":0,"lives":0,"stale":[],"offs":["t 71.60 x 14384 #63 d1 dir 1","t 137.90 x 26358 #115 d-1 dir 1"]}
+{"st":"2-1","bot":"kid","set":"easy","seed":22,"end":"shrine","pass":true,"rescues":0,"lives":0,"stale":[],"offs":[]}
+{"st":"2-1","bot":"kid","set":"easy","seed":23,"end":"shrine","pass":true,"rescues":0,"lives":0,"stale":[],"offs":[]}
+{"st":"2-1","bot":"kid","set":"easy","seed":24,"end":"shrine","pass":true,"rescues":0,"lives":0,"stale":[],"offs":[]}
+{"st":"2-1","bot":"kid","set":"easy","seed":25,"end":"shrine","pass":true,"rescues":0,"lives":0,"stale":[],"offs":[]}
+{"st":"2-1","bot":"kid","set":"easy","seed":26,"end":"shrine","pass":true,"rescues":0,"lives":0,"stale":[],"offs":[]}
+{"st":"2-1","bot":"kid","set":"easy","seed":27,"end":"shrine","pass":true,"rescues":0,"lives":0,"stale":[],"offs":[]}
+{"st":"2-1","bot":"kid","set":"easy","seed":28,"end":"shrine","pass":true,"rescues":0,"lives":0,"stale":[],"offs":[]}
+{"st":"2-1","bot":"kid","set":"easy","seed":29,"end":"shrine","pass":true,"rescues":0,"lives":0,"stale":[],"offs":[]}
+{"st":"2-1","bot":"kid","set":"easy","seed":30,"end":"shrine","pass":true,"rescues":0,"lives":0,"stale":[],"offs":[]}
+{"st":"2-1","bot":"kid","set":"easy","seed":31,"end":"shrine","pass":true,"rescues":0,"lives":0,"stale":[],"offs":[]}
+{"st":"2-1","bot":"kid","set":"easy","seed":32,"end":"shrine","pass":true,"rescues":0,"lives":0,"stale":[],"offs":[]}
+{"st":"2-1","bot":"kid","set":"easy","seed":33,"end":"shrine","pass":true,"rescues":0,"lives":0,"stale":[],"offs":[]}
+{"st":"2-1","bot":"kid","set":"easy","seed":34,"end":"shrine","pass":true,"rescues":0,"lives":0,"stale":[],"offs":[]}
+{"st":"2-1","bot":"kid","set":"easy","seed":35,"end":"shrine","pass":true,"rescues":0,"lives":0,"stale":[],"offs":[]}
+{"st":"2-1","bot":"kid","set":"easy","seed":36,"end":"shrine","pass":true,"rescues":0,"lives":0,"stale":[],"offs":[]}
+{"st":"2-1","bot":"kid","set":"easy","seed":37,"end":"shrine","pass":true,"rescues":0,"lives":0,"stale":[],"offs":[]}
+{"st":"2-1","bot":"kid","set":"easy","seed":38,"end":"shrine","pass":true,"rescues":0,"lives":0,"stale":[],"offs":["t 134.90 x 26243 #112 d-1 dir 1"]}
+{"st":"2-1","bot":"kid","set":"easy","seed":39,"end":"shrine","pass":true,"rescues":0,"lives":0,"stale":[],"offs":["t 137.80 x 26315 #113 d-1 dir 1"]}
+{"st":"2-1","bot":"kid","set":"easy","seed":40,"end":"shrine","pass":true,"rescues":0,"lives":0,"stale":[],"offs":["t 75.10 x 14545 #68 d1 dir 1"]}
+{"st":"2-1","bot":"kid","set":"normal","seed":1,"end":"shrine","pass":true,"rescues":0,"lives":0,"stale":[],"offs":[]}
+{"st":"2-1","bot":"kid","set":"normal","seed":2,"end":"shrine","pass":true,"rescues":0,"lives":1,"stale":[],"offs":[]}
+{"st":"2-1","bot":"kid","set":"normal","seed":3,"end":"shrine","pass":true,"rescues":0,"lives":0,"stale":[],"offs":[]}
+{"st":"2-1","bot":"kid","set":"normal","seed":4,"end":"shrine","pass":true,"rescues":0,"lives":0,"stale":[],"offs":[]}
+{"st":"2-1","bot":"kid","set":"normal","seed":5,"end":"shrine","pass":true,"rescues":0,"lives":0,"stale":[],"offs":[]}
+{"st":"2-1","bot":"kid","set":"normal","seed":6,"end":"shrine","pass":true,"rescues":0,"lives":0,"stale":[],"offs":[]}
+{"st":"2-1","bot":"kid","set":"normal","seed":7,"end":"shrine","pass":true,"rescues":0,"lives":0,"stale":[],"offs":[]}
+{"st":"2-1","bot":"kid","set":"normal","seed":8,"end":"shrine","pass":true,"rescues":0,"lives":0,"stale":[],"offs":[]}
+{"st":"2-1","bot":"kid","set":"normal","seed":9,"end":"shrine","pass":true,"rescues":0,"lives":1,"stale":[],"offs":[]}
+{"st":"2-1","bot":"kid","set":"normal","seed":10,"end":"shrine","pass":true,"rescues":0,"lives":0,"stale":[],"offs":[]}
+{"st":"2-1","bot":"kid","set":"normal","seed":11,"end":"shrine","pass":true,"rescues":0,"lives":0,"stale":[],"offs":[]}
+{"st":"2-1","bot":"kid","set":"normal","seed":12,"end":"shrine","pass":true,"rescues":0,"lives":0,"stale":[],"offs":[]}
+{"st":"2-1","bot":"kid","set":"normal","seed":13,"end":"shrine","pass":true,"rescues":0,"lives":0,"stale":[],"offs":[]}
+{"st":"2-1","bot":"kid","set":"normal","seed":14,"end":"shrine","pass":true,"rescues":0,"lives":0,"stale":[],"offs":[]}
+{"st":"2-1","bot":"kid","set":"normal","seed":15,"end":"shrine","pass":true,"rescues":0,"lives":0,"stale":[],"offs":[]}
+{"st":"2-1","bot":"kid","set":"normal","seed":16,"end":"shrine","pass":true,"rescues":0,"lives":0,"stale":[],"offs":[]}
+{"st":"2-1","bot":"kid","set":"normal","seed":17,"end":"shrine","pass":true,"rescues":0,"lives":0,"stale":[],"offs":[]}
+{"st":"2-1","bot":"kid","set":"normal","seed":18,"end":"shrine","pass":true,"rescues":0,"lives":0,"stale":[],"offs":[]}
+{"st":"2-1","bot":"kid","set":"normal","seed":19,"end":"shrine","pass":true,"rescues":0,"lives":0,"stale":[],"offs":[]}
+{"st":"2-1","bot":"kid","set":"normal","seed":20,"end":"shrine","pass":true,"rescues":0,"lives":0,"stale":[],"offs":[]}
+{"st":"2-1","bot":"kid","set":"normal","seed":21,"end":"shrine","pass":true,"rescues":0,"lives":0,"stale":[],"offs":[]}
+{"st":"2-1","bot":"kid","set":"normal","seed":22,"end":"shrine","pass":true,"rescues":0,"lives":1,"stale":[],"offs":[]}
+{"st":"2-1","bot":"kid","set":"normal","seed":23,"end":"shrine","pass":true,"rescues":0,"lives":0,"stale":[],"offs":[]}
+{"st":"2-1","bot":"kid","set":"normal","seed":24,"end":"shrine","pass":true,"rescues":0,"lives":1,"stale":[],"offs":[]}
+{"st":"2-1","bot":"kid","set":"normal","seed":25,"end":"shrine","pass":true,"rescues":0,"lives":1,"stale":[],"offs":[]}
+{"st":"2-1","bot":"kid","set":"normal","seed":26,"end":"shrine","pass":true,"rescues":0,"lives":0,"stale":[],"offs":[]}
+{"st":"2-1","bot":"kid","set":"normal","seed":27,"end":"shrine","pass":true,"rescues":0,"lives":2,"stale":[],"offs":[]}
+{"st":"2-1","bot":"kid","set":"normal","seed":28,"end":"shrine","pass":true,"rescues":0,"lives":0,"stale":[],"offs":[]}
+{"st":"2-1","bot":"kid","set":"normal","seed":29,"end":"shrine","pass":true,"rescues":0,"lives":1,"stale":[],"offs":[]}
+{"st":"2-1","bot":"kid","set":"normal","seed":30,"end":"shrine","pass":true,"rescues":0,"lives":0,"stale":[],"offs":[]}
+{"st":"2-1","bot":"kid","set":"normal","seed":31,"end":"shrine","pass":true,"rescues":0,"lives":0,"stale":[],"offs":[]}
+{"st":"2-1","bot":"kid","set":"normal","seed":32,"end":"shrine","pass":true,"rescues":0,"lives":0,"stale":[],"offs":[]}
+{"st":"2-1","bot":"kid","set":"normal","seed":33,"end":"shrine","pass":true,"rescues":0,"lives":0,"stale":[],"offs":[]}
+{"st":"2-1","bot":"kid","set":"normal","seed":34,"end":"shrine","pass":true,"rescues":0,"lives":0,"stale":[],"offs":[]}
+{"st":"2-1","bot":"kid","set":"normal","seed":35,"end":"shrine","pass":true,"rescues":0,"lives":1,"stale":[],"offs":[]}
+{"st":"2-1","bot":"kid","set":"normal","seed":36,"end":"shrine","pass":true,"rescues":0,"lives":0,"stale":[],"offs":[]}
+{"st":"2-1","bot":"kid","set":"normal","seed":37,"end":"shrine","pass":true,"rescues":0,"lives":0,"stale":[],"offs":[]}
+{"st":"2-1","bot":"kid","set":"normal","seed":38,"end":"shrine","pass":true,"rescues":0,"lives":0,"stale":[],"offs":["t 39.77 x 8601 #41 d1 dir 1"]}
+{"st":"2-1","bot":"kid","set":"normal","seed":39,"end":"shrine","pass":true,"rescues":0,"lives":0,"stale":[],"offs":[]}
+{"st":"2-1","bot":"kid","set":"normal","seed":40,"end":"shrine","pass":true,"rescues":0,"lives":3,"stale":[],"offs":["t 101.07 x 19486 #88 d-1 dir 1"]}
+{"st":"2-5","bot":"kid","set":"easy","seed":1,"end":"shrine","pass":false,"rescues":1,"lives":0,"stale":[],"offs":[]}
+{"st":"2-5","bot":"kid","set":"easy","seed":2,"end":"shrine","pass":false,"rescues":2,"lives":0,"stale":[],"offs":[]}
+{"st":"2-5","bot":"kid","set":"easy","seed":3,"end":"shrine","pass":true,"rescues":0,"lives":0,"stale":[],"offs":[]}
+{"st":"2-5","bot":"kid","set":"easy","seed":4,"end":"shrine","pass":false,"rescues":1,"lives":0,"stale":[],"offs":[]}
+{"st":"2-5","bot":"kid","set":"easy","seed":5,"end":"shrine","pass":false,"rescues":1,"lives":0,"stale":[],"offs":[]}
+{"st":"2-5","bot":"kid","set":"easy","seed":6,"end":"shrine","pass":true,"rescues":0,"lives":0,"stale":[],"offs":[]}
+{"st":"2-5","bot":"kid","set":"easy","seed":7,"end":"shrine","pass":true,"rescues":0,"lives":0,"stale":[],"offs":[]}
+{"st":"2-5","bot":"kid","set":"easy","seed":8,"end":"shrine","pass":false,"rescues":2,"lives":0,"stale":[],"offs":[]}
+{"st":"2-5","bot":"kid","set":"easy","seed":9,"end":"shrine","pass":true,"rescues":0,"lives":0,"stale":[],"offs":[]}
+{"st":"2-5","bot":"kid","set":"easy","seed":10,"end":"shrine","pass":true,"rescues":0,"lives":0,"stale":[],"offs":[]}
+{"st":"2-5","bot":"kid","set":"easy","seed":11,"end":"shrine","pass":false,"rescues":1,"lives":0,"stale":[],"offs":[]}
+{"st":"2-5","bot":"kid","set":"easy","seed":12,"end":"shrine","pass":true,"rescues":0,"lives":0,"stale":[],"offs":[]}
+{"st":"2-5","bot":"kid","set":"easy","seed":13,"end":"shrine","pass":true,"rescues":0,"lives":0,"stale":[],"offs":[]}
+{"st":"2-5","bot":"kid","set":"easy","seed":14,"end":"shrine","pass":true,"rescues":0,"lives":0,"stale":[],"offs":[]}
+{"st":"2-5","bot":"kid","set":"easy","seed":15,"end":"shrine","pass":true,"rescues":0,"lives":0,"stale":[],"offs":[]}
+{"st":"2-5","bot":"kid","set":"easy","seed":16,"end":"shrine","pass":true,"rescues":0,"lives":0,"stale":[],"offs":[]}
+{"st":"2-5","bot":"kid","set":"easy","seed":17,"end":"shrine","pass":true,"rescues":0,"lives":0,"stale":[],"offs":["t 50.13 x 8596 #42 d1 dir 1"]}
+{"st":"2-5","bot":"kid","set":"easy","seed":18,"end":"shrine","pass":true,"rescues":0,"lives":0,"stale":[],"offs":[]}
+{"st":"2-5","bot":"kid","set":"easy","seed":19,"end":"shrine","pass":true,"rescues":0,"lives":0,"stale":[],"offs":[]}
+{"st":"2-5","bot":"kid","set":"easy","seed":20,"end":"shrine","pass":true,"rescues":0,"lives":0,"stale":[],"offs":[]}
+{"st":"2-5","bot":"kid","set":"easy","seed":21,"end":"shrine","pass":true,"rescues":0,"lives":0,"stale":[],"offs":[]}
+{"st":"2-5","bot":"kid","set":"easy","seed":22,"end":"shrine","pass":true,"rescues":0,"lives":0,"stale":[],"offs":[]}
+{"st":"2-5","bot":"kid","set":"easy","seed":23,"end":"shrine","pass":true,"rescues":0,"lives":0,"stale":[],"offs":[]}
+{"st":"2-5","bot":"kid","set":"easy","seed":24,"end":"shrine","pass":false,"rescues":1,"lives":0,"stale":[],"offs":[]}
+{"st":"2-5","bot":"kid","set":"easy","seed":25,"end":"shrine","pass":true,"rescues":0,"lives":0,"stale":[],"offs":[]}
+{"st":"2-5","bot":"kid","set":"easy","seed":26,"end":"shrine","pass":true,"rescues":0,"lives":0,"stale":[],"offs":[]}
+{"st":"2-5","bot":"kid","set":"easy","seed":27,"end":"shrine","pass":false,"rescues":1,"lives":0,"stale":[],"offs":[]}
+{"st":"2-5","bot":"kid","set":"easy","seed":28,"end":"shrine","pass":true,"rescues":0,"lives":0,"stale":[],"offs":[]}
+{"st":"2-5","bot":"kid","set":"easy","seed":29,"end":"shrine","pass":true,"rescues":0,"lives":0,"stale":[],"offs":[]}
+{"st":"2-5","bot":"kid","set":"easy","seed":30,"end":"shrine","pass":false,"rescues":1,"lives":0,"stale":[],"offs":[]}
+{"st":"2-5","bot":"kid","set":"easy","seed":31,"end":"shrine","pass":true,"rescues":0,"lives":0,"stale":[],"offs":[]}
+{"st":"2-5","bot":"kid","set":"easy","seed":32,"end":"shrine","pass":true,"rescues":0,"lives":0,"stale":[],"offs":[]}
+{"st":"2-5","bot":"kid","set":"easy","seed":33,"end":"shrine","pass":false,"rescues":2,"lives":0,"stale":[],"offs":[]}
+{"st":"2-5","bot":"kid","set":"easy","seed":34,"end":"shrine","pass":true,"rescues":0,"lives":0,"stale":[],"offs":[]}
+{"st":"2-5","bot":"kid","set":"easy","seed":35,"end":"shrine","pass":true,"rescues":0,"lives":0,"stale":[],"offs":[]}
+{"st":"2-5","bot":"kid","set":"easy","seed":36,"end":"shrine","pass":true,"rescues":0,"lives":0,"stale":[],"offs":[]}
+{"st":"2-1","bot":"middle","set":"easy","seed":1,"end":"shrine","pass":true,"rescues":0,"lives":0,"stale":[],"offs":[]}
+{"st":"2-1","bot":"middle","set":"easy","seed":2,"end":"shrine","pass":true,"rescues":0,"lives":0,"stale":[],"offs":["t 142.50 x 25356 #111 d1 dir 1"]}
+{"st":"2-1","bot":"middle","set":"easy","seed":3,"end":"shrine","pass":true,"rescues":0,"lives":0,"stale":[],"offs":[]}
+{"st":"2-1","bot":"middle","set":"easy","seed":4,"end":"shrine","pass":true,"rescues":0,"lives":0,"stale":[],"offs":["t 151.90 x 25070 #109 d1 dir 1"]}
+{"st":"2-1","bot":"middle","set":"easy","seed":5,"end":"shrine","pass":true,"rescues":0,"lives":0,"stale":[],"offs":[]}
+{"st":"2-1","bot":"middle","set":"easy","seed":6,"end":"shrine","pass":true,"rescues":0,"lives":0,"stale":[],"offs":[]}
+{"st":"2-1","bot":"middle","set":"easy","seed":7,"end":"shrine","pass":true,"rescues":0,"lives":0,"stale":[],"offs":[]}
+{"st":"2-1","bot":"middle","set":"easy","seed":8,"end":"shrine","pass":true,"rescues":0,"lives":0,"stale":[],"offs":[]}
+{"st":"2-1","bot":"middle","set":"easy","seed":9,"end":"shrine","pass":true,"rescues":0,"lives":0,"stale":[],"offs":[]}
+{"st":"2-1","bot":"middle","set":"easy","seed":10,"end":"shrine","pass":true,"rescues":0,"lives":0,"stale":[],"offs":[]}
+{"st":"2-1","bot":"middle","set":"easy","seed":11,"end":"shrine","pass":true,"rescues":0,"lives":0,"stale":[],"offs":[]}
+{"st":"2-1","bot":"middle","set":"easy","seed":12,"end":"shrine","pass":true,"rescues":0,"lives":0,"stale":[],"offs":[]}
+{"st":"2-1","bot":"middle","set":"easy","seed":13,"end":"shrine","pass":true,"rescues":0,"lives":0,"stale":[],"offs":[]}
+{"st":"2-1","bot":"middle","set":"easy","seed":14,"end":"shrine","pass":true,"rescues":0,"lives":0,"stale":[],"offs":[]}
+{"st":"2-1","bot":"middle","set":"easy","seed":15,"end":"shrine","pass":true,"rescues":0,"lives":0,"stale":[],"offs":[]}
+{"st":"2-1","bot":"middle","set":"easy","seed":16,"end":"shrine","pass":true,"rescues":0,"lives":0,"stale":[],"offs":[]}
+{"st":"2-1","bot":"middle","set":"easy","seed":17,"end":"shrine","pass":true,"rescues":0,"lives":0,"stale":[],"offs":["t 151.67 x 25504 #112 d1 dir 1","t 189.73 x 31062 #134 d1 dir 1"]}
+{"st":"2-1","bot":"middle","set":"easy","seed":18,"end":"shrine","pass":true,"rescues":0,"lives":0,"stale":["t 10.00 x 2135->2010"],"offs":[]}
+{"st":"2-1","bot":"middle","set":"easy","seed":19,"end":"shrine","pass":true,"rescues":0,"lives":0,"stale":[],"offs":[]}
+{"st":"2-1","bot":"middle","set":"easy","seed":20,"end":"shrine","pass":true,"rescues":0,"lives":0,"stale":[],"offs":[]}
+{"st":"2-1","bot":"middle","set":"easy","seed":21,"end":"shrine","pass":true,"rescues":0,"lives":0,"stale":[],"offs":[]}
+{"st":"2-1","bot":"middle","set":"easy","seed":22,"end":"shrine","pass":true,"rescues":0,"lives":0,"stale":[],"offs":["t 81.97 x 14702 #65 d1 dir 1"]}
+{"st":"2-1","bot":"middle","set":"easy","seed":23,"end":"shrine","pass":true,"rescues":0,"lives":0,"stale":[],"offs":[]}
+{"st":"2-1","bot":"middle","set":"easy","seed":24,"end":"shrine","pass":true,"rescues":0,"lives":0,"stale":[],"offs":[]}
+{"st":"2-1","bot":"middle","set":"easy","seed":25,"end":"shrine","pass":true,"rescues":0,"lives":0,"stale":[],"offs":["t 156.17 x 26288 #114 d-1 dir 1"]}
+{"st":"2-1","bot":"middle","set":"easy","seed":26,"end":"shrine","pass":true,"rescues":0,"lives":0,"stale":[],"offs":[]}
+{"st":"2-1","bot":"middle","set":"easy","seed":27,"end":"shrine","pass":true,"rescues":0,"lives":0,"stale":[],"offs":[]}
+{"st":"2-1","bot":"middle","set":"easy","seed":28,"end":"shrine","pass":true,"rescues":0,"lives":0,"stale":[],"offs":[]}
+{"st":"2-1","bot":"middle","set":"easy","seed":29,"end":"shrine","pass":true,"rescues":0,"lives":0,"stale":[],"offs":[]}
+{"st":"2-1","bot":"middle","set":"easy","seed":30,"end":"shrine","pass":true,"rescues":0,"lives":0,"stale":[],"offs":[]}
+{"st":"2-1","bot":"middle","set":"easy","seed":31,"end":"shrine","pass":true,"rescues":0,"lives":0,"stale":[],"offs":[]}
+{"st":"2-1","bot":"middle","set":"easy","seed":32,"end":"shrine","pass":true,"rescues":0,"lives":0,"stale":[],"offs":["t 121.90 x 19999 #89 d-1 dir 1"]}
+{"st":"2-1","bot":"middle","set":"easy","seed":33,"end":"shrine","pass":true,"rescues":0,"lives":0,"stale":[],"offs":[]}
+{"st":"2-1","bot":"middle","set":"easy","seed":34,"end":"shrine","pass":true,"rescues":0,"lives":0,"stale":[],"offs":[]}
+{"st":"2-1","bot":"middle","set":"easy","seed":35,"end":"shrine","pass":true,"rescues":0,"lives":0,"stale":[],"offs":[]}
+{"st":"2-1","bot":"middle","set":"easy","seed":36,"end":"shrine","pass":true,"rescues":0,"lives":0,"stale":[],"offs":[]}
+{"st":"2-1","bot":"middle","set":"easy","seed":37,"end":"shrine","pass":true,"rescues":0,"lives":0,"stale":[],"offs":[]}
+{"st":"2-1","bot":"middle","set":"easy","seed":38,"end":"shrine","pass":true,"rescues":0,"lives":0,"stale":[],"offs":[]}
+{"st":"2-1","bot":"middle","set":"easy","seed":39,"end":"shrine","pass":true,"rescues":0,"lives":0,"stale":[],"offs":[]}
+{"st":"2-1","bot":"middle","set":"easy","seed":40,"end":"shrine","pass":true,"rescues":0,"lives":0,"stale":[],"offs":["t 176.33 x 31015 #133 d1 dir 1"]}
+{"st":"2-1","bot":"middle","set":"normal","seed":1,"end":"shrine","pass":true,"rescues":0,"lives":1,"stale":[],"offs":[]}
+{"st":"2-1","bot":"middle","set":"normal","seed":2,"end":"shrine","pass":true,"rescues":0,"lives":0,"stale":[],"offs":[]}
+{"st":"2-1","bot":"middle","set":"normal","seed":3,"end":"shrine","pass":true,"rescues":0,"lives":0,"stale":[],"offs":[]}
+{"st":"2-1","bot":"middle","set":"normal","seed":4,"end":"shrine","pass":true,"rescues":0,"lives":0,"stale":[],"offs":[]}
+{"st":"2-1","bot":"middle","set":"normal","seed":5,"end":"shrine","pass":true,"rescues":0,"lives":0,"stale":[],"offs":[]}
+{"st":"2-1","bot":"middle","set":"normal","seed":6,"end":"shrine","pass":true,"rescues":0,"lives":2,"stale":[],"offs":["t 50.93 x 8883 #44 d1 dir 1"]}
+{"st":"2-1","bot":"middle","set":"normal","seed":7,"end":"shrine","pass":true,"rescues":0,"lives":1,"stale":[],"offs":[]}
+{"st":"2-1","bot":"middle","set":"normal","seed":8,"end":"shrine","pass":true,"rescues":0,"lives":0,"stale":[],"offs":[]}
+{"st":"2-1","bot":"middle","set":"normal","seed":9,"end":"shrine","pass":true,"rescues":0,"lives":0,"stale":[],"offs":[]}
+{"st":"2-1","bot":"middle","set":"normal","seed":10,"end":"shrine","pass":true,"rescues":0,"lives":1,"stale":[],"offs":[]}
+{"st":"2-1","bot":"middle","set":"normal","seed":11,"end":"shrine","pass":true,"rescues":0,"lives":0,"stale":[],"offs":[]}
+{"st":"2-1","bot":"middle","set":"normal","seed":12,"end":"shrine","pass":true,"rescues":0,"lives":0,"stale":[],"offs":[]}
+{"st":"2-1","bot":"middle","set":"normal","seed":13,"end":"shrine","pass":true,"rescues":0,"lives":0,"stale":[],"offs":[]}
+{"st":"2-1","bot":"middle","set":"normal","seed":14,"end":"shrine","pass":true,"rescues":0,"lives":0,"stale":[],"offs":[]}
+{"st":"2-1","bot":"middle","set":"normal","seed":15,"end":"shrine","pass":true,"rescues":0,"lives":0,"stale":[],"offs":[]}
+{"st":"2-1","bot":"middle","set":"normal","seed":16,"end":"shrine","pass":true,"rescues":0,"lives":3,"stale":[],"offs":[]}
+{"st":"2-1","bot":"middle","set":"normal","seed":17,"end":"shrine","pass":true,"rescues":0,"lives":0,"stale":[],"offs":[]}
+{"st":"2-1","bot":"middle","set":"normal","seed":18,"end":"shrine","pass":true,"rescues":0,"lives":0,"stale":[],"offs":[]}
+{"st":"2-1","bot":"middle","set":"normal","seed":19,"end":"shrine","pass":true,"rescues":0,"lives":1,"stale":[],"offs":[]}
+{"st":"2-1","bot":"middle","set":"normal","seed":20,"end":"shrine","pass":true,"rescues":0,"lives":0,"stale":[],"offs":[]}
+{"st":"2-1","bot":"middle","set":"normal","seed":21,"end":"shrine","pass":true,"rescues":0,"lives":2,"stale":[],"offs":[]}
+{"st":"2-1","bot":"middle","set":"normal","seed":22,"end":"shrine","pass":true,"rescues":0,"lives":0,"stale":[],"offs":[]}
+{"st":"2-1","bot":"middle","set":"normal","seed":23,"end":"shrine","pass":true,"rescues":0,"lives":0,"stale":[],"offs":[]}
+{"st":"2-1","bot":"middle","set":"normal","seed":24,"end":"shrine","pass":true,"rescues":0,"lives":0,"stale":[],"offs":[]}
+{"st":"2-1","bot":"middle","set":"normal","seed":25,"end":"shrine","pass":true,"rescues":0,"lives":1,"stale":[],"offs":[]}
+{"st":"2-1","bot":"middle","set":"normal","seed":26,"end":"shrine","pass":true,"rescues":0,"lives":0,"stale":[],"offs":[]}
+{"st":"2-1","bot":"middle","set":"normal","seed":27,"end":"shrine","pass":true,"rescues":0,"lives":0,"stale":[],"offs":[]}
+{"st":"2-1","bot":"middle","set":"normal","seed":28,"end":"shrine","pass":true,"rescues":0,"lives":0,"stale":[],"offs":[]}
+{"st":"2-1","bot":"middle","set":"normal","seed":29,"end":"shrine","pass":true,"rescues":0,"lives":0,"stale":[],"offs":[]}
+{"st":"2-1","bot":"middle","set":"normal","seed":30,"end":"shrine","pass":true,"rescues":0,"lives":0,"stale":[],"offs":[]}
+{"st":"2-1","bot":"middle","set":"normal","seed":31,"end":"shrine","pass":true,"rescues":0,"lives":0,"stale":[],"offs":[]}
+{"st":"2-1","bot":"middle","set":"normal","seed":32,"end":"shrine","pass":true,"rescues":0,"lives":0,"stale":[],"offs":[]}
+{"st":"2-1","bot":"middle","set":"normal","seed":33,"end":"shrine","pass":true,"rescues":0,"lives":1,"stale":[],"offs":[]}
+{"st":"2-1","bot":"middle","set":"normal","seed":34,"end":"shrine","pass":true,"rescues":0,"lives":1,"stale":[],"offs":[]}
+{"st":"2-1","bot":"middle","set":"normal","seed":35,"end":"shrine","pass":true,"rescues":0,"lives":0,"stale":[],"offs":[]}
+{"st":"2-1","bot":"middle","set":"normal","seed":36,"end":"shrine","pass":true,"rescues":0,"lives":0,"stale":[],"offs":[]}
+{"st":"2-1","bot":"middle","set":"normal","seed":37,"end":"shrine","pass":true,"rescues":0,"lives":0,"stale":[],"offs":[]}
+{"st":"2-1","bot":"middle","set":"normal","seed":38,"end":"shrine","pass":true,"rescues":0,"lives":2,"stale":[],"offs":[]}
+{"st":"2-1","bot":"middle","set":"normal","seed":39,"end":"shrine","pass":true,"rescues":0,"lives":1,"stale":[],"offs":[]}
+{"st":"2-1","bot":"middle","set":"normal","seed":40,"end":"shrine","pass":true,"rescues":0,"lives":0,"stale":[],"offs":[]}
+{"st":"2-5","bot":"middle","set":"easy","seed":1,"end":"shrine","pass":true,"rescues":0,"lives":0,"stale":[],"offs":["t 153.57 x 22055 #111 d1 dir 1"]}
+{"st":"2-5","bot":"middle","set":"easy","seed":2,"end":"shrine","pass":true,"rescues":0,"lives":0,"stale":[],"offs":[]}
+{"st":"2-5","bot":"middle","set":"easy","seed":3,"end":"shrine","pass":true,"rescues":0,"lives":0,"stale":[],"offs":[]}
+{"st":"2-5","bot":"middle","set":"easy","seed":4,"end":"shrine","pass":true,"rescues":0,"lives":0,"stale":["t 64.50 x 11311->11190"],"offs":[]}
+{"st":"2-5","bot":"middle","set":"easy","seed":5,"end":"shrine","pass":true,"rescues":0,"lives":0,"stale":[],"offs":[]}
+{"st":"2-5","bot":"middle","set":"easy","seed":6,"end":"shrine","pass":true,"rescues":0,"lives":0,"stale":[],"offs":[]}
+{"st":"2-5","bot":"middle","set":"easy","seed":7,"end":"shrine","pass":true,"rescues":0,"lives":0,"stale":[],"offs":[]}
+{"st":"2-5","bot":"middle","set":"easy","seed":8,"end":"shrine","pass":true,"rescues":0,"lives":0,"stale":[],"offs":[]}
+{"st":"2-5","bot":"middle","set":"easy","seed":9,"end":"shrine","pass":true,"rescues":0,"lives":0,"stale":[],"offs":[]}
+{"st":"2-5","bot":"middle","set":"easy","seed":10,"end":"shrine","pass":true,"rescues":0,"lives":0,"stale":[],"offs":[]}
+{"st":"2-5","bot":"middle","set":"easy","seed":11,"end":"shrine","pass":true,"rescues":0,"lives":0,"stale":[],"offs":["t 51.07 x 8783 #43 d1 dir 1"]}
+{"st":"2-5","bot":"middle","set":"easy","seed":12,"end":"shrine","pass":true,"rescues":0,"lives":0,"stale":[],"offs":[]}
+{"st":"2-5","bot":"middle","set":"easy","seed":13,"end":"shrine","pass":true,"rescues":0,"lives":0,"stale":[],"offs":[]}
+{"st":"2-5","bot":"middle","set":"easy","seed":14,"end":"shrine","pass":true,"rescues":0,"lives":0,"stale":[],"offs":[]}
+{"st":"2-5","bot":"middle","set":"easy","seed":15,"end":"shrine","pass":true,"rescues":0,"lives":0,"stale":[],"offs":[]}
+{"st":"2-5","bot":"middle","set":"easy","seed":16,"end":"shrine","pass":true,"rescues":0,"lives":0,"stale":[],"offs":[]}
+{"st":"2-5","bot":"middle","set":"easy","seed":17,"end":"shrine","pass":true,"rescues":0,"lives":0,"stale":[],"offs":[]}
+{"st":"2-5","bot":"middle","set":"easy","seed":18,"end":"shrine","pass":true,"rescues":0,"lives":0,"stale":[],"offs":[]}
+{"st":"2-5","bot":"middle","set":"easy","seed":19,"end":"shrine","pass":true,"rescues":0,"lives":0,"stale":[],"offs":[]}
+{"st":"2-5","bot":"middle","set":"easy","seed":20,"end":"shrine","pass":true,"rescues":0,"lives":0,"stale":[],"offs":[]}
+{"st":"2-5","bot":"middle","set":"easy","seed":21,"end":"shrine","pass":true,"rescues":0,"lives":0,"stale":[],"offs":[]}
+{"st":"2-5","bot":"middle","set":"easy","seed":22,"end":"shrine","pass":true,"rescues":0,"lives":0,"stale":[],"offs":[]}
+{"st":"2-5","bot":"middle","set":"easy","seed":23,"end":"shrine","pass":true,"rescues":0,"lives":0,"stale":[],"offs":[]}
+{"st":"2-5","bot":"middle","set":"easy","seed":24,"end":"shrine","pass":true,"rescues":0,"lives":0,"stale":[],"offs":[]}
+{"st":"2-5","bot":"middle","set":"easy","seed":25,"end":"shrine","pass":true,"rescues":0,"lives":0,"stale":[],"offs":[]}
+{"st":"2-5","bot":"middle","set":"easy","seed":26,"end":"shrine","pass":true,"rescues":0,"lives":0,"stale":[],"offs":[]}
+{"st":"2-5","bot":"middle","set":"easy","seed":27,"end":"shrine","pass":true,"rescues":0,"lives":0,"stale":[],"offs":[]}
+{"st":"2-5","bot":"middle","set":"easy","seed":28,"end":"shrine","pass":true,"rescues":0,"lives":0,"stale":[],"offs":[]}
+{"st":"2-5","bot":"middle","set":"easy","seed":29,"end":"shrine","pass":true,"rescues":0,"lives":0,"stale":[],"offs":[]}
+{"st":"2-5","bot":"middle","set":"easy","seed":30,"end":"shrine","pass":true,"rescues":0,"lives":0,"stale":[],"offs":[]}
+{"st":"2-5","bot":"middle","set":"easy","seed":31,"end":"shrine","pass":true,"rescues":0,"lives":0,"stale":[],"offs":[]}
+{"st":"2-5","bot":"middle","set":"easy","seed":32,"end":"shrine","pass":true,"rescues":0,"lives":0,"stale":[],"offs":[]}

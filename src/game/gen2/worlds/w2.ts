@@ -36,7 +36,7 @@ import type { Platform } from '../../types.ts';
 import type { Difficulty, GraphBrief, NodeJob, SectionPiece, SectionTemplate, Socket, WorldKit, WorldManifest } from '../types.ts';
 import { hash01 } from '../stillLay.ts';
 import { stackedUnder } from '../legs.ts';
-import { catchUnder, TOWER } from '../tower.ts';
+import { catchUnder, runX, TOWER, walkOff } from '../tower.ts';
 import type { RiverRow } from '../riverLay.ts';
 import type { PadRow } from '../rideLay.ts';
 import type { FollowRow } from '../../follow.ts';
@@ -373,7 +373,7 @@ export function w2World(): WorldKit {
 type FinishStage = {
   platforms: Platform[];
   rivers?: RiverZone[];
-  gen2?: { falls?: Array<{ x0: number; x1: number; y: number; kind: string; site?: string }>; seed?: number; tower?: { flow?: string; legs?: ReadonlyArray<{ travel: string; x0: number; x1: number; y0: number; y1: number }> } };
+  gen2?: { falls?: Array<{ x0: number; x1: number; y: number; kind: string; site?: string }>; seed?: number; tower?: { flow?: string; width?: number; legs?: ReadonlyArray<{ travel: string; x0: number; x1: number; y0: number; y1: number }> } };
   proto?: { decor?: W2Decor[] };
 };
 
@@ -383,6 +383,8 @@ const REED_OFF = 20;
  *  the bank it leaves (pipeline place 'land': raised up to 160), and some */
 export const LIP_RISE = 170;
 const REED_BANK = 200;
+/** half his body (engine.ts p.width 44): a widened bed runs this far past where a walk-off brings his middle down, so his middle lands on it */
+const BODY_HALF = 22;
 /** a piece under this deep is a plank, not a bank (a bank of earth is 90 or more: w1Pits.ts paintedBank) */
 const THIN = 90;
 
@@ -464,6 +466,39 @@ export function w2Finish<T extends FinishStage>(st: T, _difficulty?: Difficulty)
   });
   const hasRiver = (f: (typeof sorted)[number]) => wheelPond(f) || had.some((r) => r.x0 < f.x1 - 1 && r.x1 > f.x0 + 1 && r.surfaceY >= f.y - 20 && r.surfaceY <= f.y + surfaceBelowBank + LIP_RISE + 20);
   const water = (f: (typeof sorted)[number]) => !!paintsUnder({ pitPainter: W2_PAINTER }, f.kind) && !hasRiver(f);
+  // (a soft gap between two thin pieces stays dry (ruling (B) below) when every drop through it lands on wood within TOWER.see and in no
+  //  water: a step straight down at either lip and its middle, and a running walk-off off each lip, its floor widened to catch that)
+  const width = st.gen2?.tower?.width ?? Infinity;
+  const wet = (x: number, y: number, land: number) => rivers.some((r) => x >= r.x0 && x <= r.x1 && r.surfaceY > y && r.surfaceY < land);
+  const lands = (x: number, y: number) => {
+    const land = catchUnder(st.platforms, x, y, TOWER.see);
+    return land !== undefined && !wet(x, y, land);
+  };
+  const runsOn = (p: Platform, side: 1 | -1) => {
+    const l = walkOff(st.platforms, p, side, width);
+    return !!l && l.y > p.y && l.y <= p.y + TOWER.see && !wet(l.x, p.y, l.y);
+  };
+  const dryGap = (y: number, x0: number, x1: number, near: Platform, far: Platform): boolean => {
+    if (![x0 + 8, (x0 + x1) / 2, x1 - 8].every((x) => lands(x, y))) return false;
+    // (ruling (B) as it was: over the floor of a run leg laid under this one, the gap is left open as it is (ENG-GROUND-d's toy, 2-7))
+    if (overLowFloor(x0, x1)) return true;
+    // (elsewhere, its floor: the highest sound piece under the gap's middle, within the fall rule. None: it keeps its water. One: it is
+    //  widened whatever the flown path says, so a walk-off comes down half his body inside its ends. Still missed once widened: it keeps
+    //  its water. KNOWN (LAND-26): the pocket has no walls under thin pieces, so one who lands in it and walks on can
+    //  still walk off the floor's end, under the plank and down (2-6 Easy kid seed 36, one rescue in 360 runs); the root is the lay's
+    //  (pipeline.ts pitSteps lays the floor for earth walls), the lead's R-number)
+    //  (a floor this finish widened before still reads as the gap's own: under its middle, inside its two lips' pieces; called twice, the same)
+    const mid = (x0 + x1) / 2;
+    const bed = solids.filter((p) => p.x <= mid && p.x + p.width >= mid && p.x >= near.x - 1 && p.x + p.width <= far.x + far.width + 1 && p.y > y + 1 && p.y <= y + TOWER.see).sort((a, b) => a.y - b.y)[0];
+    if (!bed) return false;
+    const was = { x: bed.x, width: bed.width };
+    const a = Math.max(near.x, Math.min(bed.x, runX(far.x, -1, bed.y - far.y, width) - BODY_HALF));
+    const b = Math.min(far.x + far.width, Math.max(bed.x + bed.width, runX(near.x + near.width, 1, bed.y - near.y, width) + BODY_HALF));
+    Object.assign(bed, { x: a, width: b - a });
+    if (runsOn(near, 1) && runsOn(far, -1)) return true;
+    Object.assign(bed, was);
+    return false;
+  };
   const taken = new Set<(typeof sorted)[number]>();
   for (const f of sorted) {
     if (!water(f) || taken.has(f)) continue;
@@ -503,10 +538,15 @@ export function w2Finish<T extends FinishStage>(st: T, _difficulty?: Difficulty)
     //  as a column over the floor he walks (2-7's toy, the descent); lidded at its bed it hung as a box of water between the planks. Only
     //  where every drop through it (either lip and its middle) lands on wood within the live fall rule going down (tower.ts towerFalls:
     //  TOWER.see) and in no water; else it keeps its water as before)
-    if (safe && near.height < THIN && far.height < THIN && overLowFloor(x0, x1) && [x0 + 8, (x0 + x1) / 2, x1 - 8].every((x) => {
-      const land = catchUnder(st.platforms, x, f.y, TOWER.see);
-      return land !== undefined && !rivers.some((r) => x >= r.x0 && x <= r.x1 && r.surfaceY > f.y && r.surfaceY < land);
-    })) continue;
+    // (LAND-26, R-165.471, the lead's ruling DRY: on ANY stage, not only one that lays a run leg under another. 2-6's porch gaps (its
+    //  design names water only under the wheels and in the millrace) took a still pool that drew as no water at all (an empty gap, reeds
+    //  on its lips) and dropped the pit's floor. And 'every drop' is a step straight down AND a walk-off at a run off either lip (tower.ts
+    //  walkOff, the engine's flown path): a soft pit's floor laid inside its gap (pipeline.ts pitSteps, one hop under the far lip) has no
+    //  wall under a thin piece: on the dry 2-6 he came down on that floor's end, or past it, and went on under the far plank and down the
+    //  storey (Easy kid seed 12 and adult seed 4: three falls each, 27 rescues over seeds 1-40; widened, 1). Where the gap's own floor is
+    //  what catches him, it runs on under each thin lip to where that walk-off brings his middle down and half his body past it, never past
+    //  that lip's own piece)
+    if (safe && near.height < THIN && far.height < THIN && dryGap(f.y, x0, x1, near, far)) continue;
     // (its bed: the solids under its water. Never a floor of a run leg laid UNDER the fall's own leg (stackedUnder, the band overLowFloor
     //  reads): that is the low leg's ground, not this fall's bed. 2-7's out-leg soft pits lie over its home leg and deleted its banks there,
     //  BUILD-27's trace, ENG-JETTY. A fall ON the low leg (its lip in the band) drops its own bed as before)

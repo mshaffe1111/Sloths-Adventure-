@@ -141,7 +141,7 @@ const BLOB_PERIOD = 3000;
  */
 export type DepthAt = (x: number) => [number, number];
 /** the strips the darkening is drawn in when it follows the ground (world units; drawn once, into the ground's squares) */
-const DEPTH_STRIP = 16;
+export const DEPTH_STRIP = 16;
 
 /**
  * Paint the world's soil over the box x0..x1 by top..bottom (already clipped by the caller to the bank's shape), with the darkening
@@ -203,15 +203,25 @@ export function shadeSoil(ctx: C, w: number, x0: number, x1: number, top: number
     depthBand(ctx, g.deep, x0, x1, top, bottom, viewBottom, viewTop ?? viewBottom - 900);
     return true;
   }
-  // (strips where the line runs level are one band: over a flat bank that is one gradient, as before)
+  for (const r of depthRuns(x0, x1, depthAt)) depthBand(ctx, g.deep, r.x0, r.x1, top, bottom, r.vb, r.vt);
+  return true;
+}
+
+/**
+ * The bands the darkening with depth is drawn in over x0..x1 when it follows the ground (shadeSoil): DEPTH_STRIP strips, each laid out
+ * from the line at its middle, strips where the line runs level joined into one band (over a flat bank, one gradient). The paint gate
+ * reads these same bands (tools/engine/paintFall.ts depthSteps, R-165.451): what is drawn, not a copy of the rule.
+ */
+export function depthRuns(x0: number, x1: number, depthAt: DepthAt): Array<{ x0: number; x1: number; vt: number; vb: number }> {
+  const out: Array<{ x0: number; x1: number; vt: number; vb: number }> = [];
   let run = -1, rt = 0, rb = 0;
   for (let x = Math.floor(x0 / DEPTH_STRIP) * DEPTH_STRIP; x < x1; x += DEPTH_STRIP) {
     const [vt, vb] = depthAt(x + DEPTH_STRIP / 2).map(Math.round);
-    if (run >= 0 && (vt !== rt || vb !== rb)) depthBand(ctx, g.deep, Math.max(x0, run), x, top, bottom, rb, rt);
+    if (run >= 0 && (vt !== rt || vb !== rb)) out.push({ x0: Math.max(x0, run), x1: x, vt: rt, vb: rb });
     if (run < 0 || vt !== rt || vb !== rb) { run = x; rt = vt; rb = vb; }
   }
-  if (run >= 0) depthBand(ctx, g.deep, Math.max(x0, run), x1, top, bottom, rb, rt);
-  return true;
+  if (run >= 0) out.push({ x0: Math.max(x0, run), x1, vt: rt, vb: rb });
+  return out;
 }
 
 /** the darkening with depth over x0..x1: nothing above the view's middle, DEPTH_DARK by its bottom and below */

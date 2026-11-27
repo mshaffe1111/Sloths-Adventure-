@@ -1,0 +1,39 @@
+// trace the child at the top wheel: one line a frame from first touch of its jetty to the street
+const R = process.env.REPO ?? '/home/user/Sloths-Adventure-';
+await import(`${R}/src/game/headlessDom.ts`);
+const { RealPlay } = await import(`${R}/src/game/realPlay.ts`);
+const { bucketAngle } = await import(`${R}/src/game/wheel.ts`);
+const { WHEEL_FLOWN } = await import(`${R}/src/game/gen2/wheelFlights.data.ts`);
+const { flownKey } = await import(`${R}/src/game/gen2/wheelLay.ts`);
+const { withPlantedRow } = await import(`${R}/tools/inspect/rowWheels.ts`);
+const { runTier } = await import(`${R}/tools/inspect/tierBots.ts`);
+const { kitLib26, STAGE_26 } = await import(`${R}/src/game/gen2/worlds/w2Arc26.ts`);
+const { w2Finish } = await import(`${R}/src/game/gen2/worlds/w2.ts`);
+let lastPad: any = {};
+const { FirstTimerRun, SKILLS } = await import(`${R}/tools/inspect/firsttimer.ts`); if (process.env.BW === "0") SKILLS.boardWatch = false;
+const FP: any = FirstTimerRun.prototype; const wr0 = FP.wheelRide; let bot: any = null; let wrOut = "nc";
+FP.wheelRide = function (...a: any[]) { bot = this; const o = wr0.apply(this, a); wrOut = o === null ? "null" : JSON.stringify(o); return o; };
+const f0 = RealPlay.prototype.frame;
+RealPlay.prototype.frame = function (pad: any = {}) { lastPad = pad; return f0.call(this, pad); };
+const ROWN = process.env.ROW ?? 'top', setting = (process.env.SET ?? 'normal') as any, v = Number(process.env.V ?? 2), tier = (process.env.TIER ?? 'child') as any;
+let on = false, done = false, prev = '';
+withPlantedRow({ stage: STAGE_26, kit: kitLib26, world: w2Finish as never }, Number(process.env.SEED ?? 1), () => runTier(tier, setting, v, STAGE_26, { onFrame: (sim: any) => {
+  if (done) return;
+  const ws = [...new Set(sim.platforms.flatMap((p: any) => (p.wheel ? [p.wheel.w] : [])))] as any[];
+  const w = ws.find((q) => q.lay?.row === ROWN && (process.env.WAY ? q.way === Number(process.env.WAY) : true));
+  if (!w) return;
+  const lay = w.lay, q = sim.platforms.find((p: any) => p.id === sim.standingOn);
+  const where = sim.standingOn === lay.jetty ? 'jetty' : q?.wheel?.w === w ? `b${q.wheel.i}` : q?.id === lay.streetId ? 'STREET' : sim.standingOn >= 0 ? `o${sim.standingOn}` : 'air';
+  if (!on && (where === "jetty")) { on = true; const j = sim.platforms.find((p: any) => p.id === lay.jetty); console.log("JETTY", j.x, j.x + j.width, j.y, "wheel cx", w.cx, "cy", w.cy, "R", w.R, "way", w.way, "edgeAim", bot?.who?.edgeAim, "aimQ", JSON.stringify(bot?.who?.aimQ), "holdQ", JSON.stringify(bot?.who?.holdQ), "hold", JSON.stringify(bot?.who?.hold)); }
+  if (!on) return;
+  const fk = WHEEL_FLOWN[flownKey({ R: w.R, V: w.V, N: w.N, W: w.W, street: lay.street, up: lay.up }, setting === 'easy' ? 'easy' : 'normal')];
+  const rd = lay.street === 'up' ? fk?.jump : fk?.tap;
+  let ps = '';
+  if (q?.wheel?.w === w) { const phi = bucketAngle(w, q.wheel.i, sim.e.gameTime); const past = (((phi - Math.PI) % (2 * Math.PI)) + 3 * Math.PI) % (2 * Math.PI) - Math.PI; ps = `past ${past.toFixed(2)} [${rd?.from?.toFixed(2)},${rd?.to?.toFixed(2)}] off ${(sim.p.x - (q.x + q.width / 2)).toFixed(0)} bw ${q.width}`; }
+  const pad = Object.keys(lastPad).filter((k) => lastPad[k]).join('+') || '-';
+  const st = bot ? `J${bot.jump ? 1 : 0} P${bot.pending ? 1 : 0} H${bot.wheelHop} WR ${wrOut}` : ""; wrOut = "nc";
+  const line = `${st} t ${sim.t.toFixed(2)} gt ${sim.e.gameTime.toFixed(2)} ${where} x ${sim.p.x.toFixed(0)} y ${sim.p.y.toFixed(0)} vx ${sim.p.vx.toFixed(0)} vy ${sim.p.vy.toFixed(0)} g ${sim.p.grounded ? 1 : 0} pad ${pad} ${ps}`;
+  if (process.env.ALL || where !== prev || pad !== '-') console.log(line);
+  prev = where;
+  if (where === 'STREET') done = true;
+} }));

@@ -1,0 +1,6 @@
+not ok 195 - chase bots (OPEN, todo): the CHILD bot on Normal reaches the fork on 2 or more of 3 seeds # TODO measured 1 of 3 (ENG-B4): every miss a fall at a 120 px gap, never a catch
+not ok 359 - PLANTED: trunkCatch OFF, a double that grabs a trunk or turn vine straight off the ground flicks him off it: rescues come back (RED)
+# tests 426
+# pass 424
+# fail 1
+# todo 1

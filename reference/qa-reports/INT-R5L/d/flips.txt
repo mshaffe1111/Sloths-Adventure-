@@ -1,0 +1,5 @@
+2-1: rows 360 (main 360, fix 360), differ 0, PASS->FAIL 0, fail->pass 0
+2-2: rows 360 (main 360, fix 360), differ 0, PASS->FAIL 0, fail->pass 0
+2-4: rows 360 (main 360, fix 360), differ 0, PASS->FAIL 0, fail->pass 0
+2-5: rows 360 (main 360, fix 360), differ 0, PASS->FAIL 0, fail->pass 0
+1-4: rows 360 (main 360, fix 360), differ 0, PASS->FAIL 0, fail->pass 0

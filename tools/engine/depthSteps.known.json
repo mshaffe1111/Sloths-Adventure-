@@ -1,0 +1,4 @@
+{
+ "defect": "R-165.487: the depth steps (paintFall.ts depthSteps, bar 48) there when 2-6 landed with the gate (11-26), all 2-7's: real and faint by the lead's ruling C (planted 24 px shows nothing, 32-48 faint, 64 plain). Owner: the soil-ease packet R-165.487. Shrink-only: knowncheck.mjs fails an added entry; paintcheck fails a listed one a whole sweep no longer shows, and a step over its listed jump.",
+ "known": []
+}

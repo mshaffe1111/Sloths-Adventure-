@@ -88,7 +88,6 @@ export const STAGE_DRAWS: Record<string, readonly string[]> = {
   '1-9': ['foe:boa', 'foe:eagle', 'props2'], // (the kit's boas, the eagle over the hunters and the Old Boa, its moss cover's bushes; no gold snake since the hand-built 1-9 went, BUILD-19)
   '2-3': ['w2-new'], // (the mooring post and the pond's reed isle, w2NewArt.ts; BUILD-23b)
   '2-5': ['foe:turtle'],
-  '2-6': ['foe:goldsnake'],
   '2-9': ['foe:guard', 'foe:turtle'],
   '3-2': ['foe:eagle', 'props2'],
   '3-3': ['foe:jaguar', 'foe:ocelot'],

@@ -62,6 +62,8 @@ export interface WheelFlown {
 /** the floor his miss lands on, under the bottom floor (px): the pond (WHEEL.pond) */
 const BUCKET_ID = 100;
 const JETTY = 1, STREET = 2, POND = 3;
+/** the board is flown from standing this far back of the jetty's lip (px, his middle): the bots judge their own hop nearer it (firsttimer.ts hopBoards) */
+export const BOARD_BACK = 30;
 /** the deepest a clean board lands under the jetty's top: a hop down, never a fall into a bucket lower on the rising side */
 const BOARD_DROP = 70;
 
@@ -126,7 +128,7 @@ export async function flyWheel(L: WheelLayout, setting: Difficulty, stageId: str
   const board = (t0: number, how: 'tap' | 'walk'): string => {
     world();
     e.gameTime = t0;
-    r.stand(lips.jettyX - way * 30, lips.jettyY);
+    r.stand(lips.jettyX - way * BOARD_BACK, lips.jettyY);
     frames(1);
     inp.triggerTouchMove(toward);
     if (how === 'tap') { inp.triggerTouchUp(0, 80); frames(2); inp.releaseTouchUp(); }

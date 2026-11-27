@@ -1,0 +1,10 @@
+ciline on 39ee096b7 exit 1 574 s
+# tests 424
+# pass 420
+# fail 3
+# cancelled 0
+# todo 1
+not ok 177 - under a raised row on a tower, KID stops (one late lift-off), hops up and never runs off the floor under it
+not ok 195 - chase bots (OPEN, todo): the CHILD bot on Normal reaches the fork on 2 or more of 3 seeds # TODO measured 1 of 3 (ENG-B4): every miss a fall at a 120 px gap, never a catch
+not ok 254 - a beat row is started from a floor that stays only on a breath that crosses it: 2-2 adult Normal 4, the latch carried over pads (CI-14)
+not ok 300 - planted: with waitRise off, 2-2 takes the child on Normal the skill carries across (6, 22, 24: clean with it, rescued without)

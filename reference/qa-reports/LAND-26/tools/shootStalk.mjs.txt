@@ -1,0 +1,48 @@
+// stills of a stage's bounce plants whose cap stands on a thin piece over open backdrop (the stalk line, R-165.474), 2x upright
+import fs from 'node:fs';
+const PWm = await import('/opt/node-tools/node_modules/playwright/index.js'); const chromium = PWm.chromium ?? PWm.default.chromium;
+const [port, out, stage, tag, diff = 'normal', orient = 'upright', layout = '0', maxN = '2'] = process.argv.slice(2);
+fs.mkdirSync(out, { recursive: true });
+const b = await chromium.launch();
+const E = "(typeof window.__engine === 'function' ? window.__engine() : window.__engine)";
+const vp = orient === 'upright' ? { width: 412, height: 915 } : { width: 915, height: 412 };
+const ctx = await b.newContext({ viewport: vp, deviceScaleFactor: +(process.env.DSF ?? 2) });
+await ctx.addInitScript((d) => { try { localStorage.setItem('sloth_difficulty', d); } catch {} }, diff);
+const p = await ctx.newPage();
+p.on('pageerror', (e) => console.log('ERR', e.message));
+await p.goto(`http://127.0.0.1:${port}/?lessons=off`);
+await p.waitForTimeout(2500);
+await p.evaluate(([s, l]) => window.__play(s, l), [stage, +layout]);
+await p.waitForTimeout(4000);
+await p.waitForFunction((E) => { const e = eval(E); return !!(e && e.currentStage && e.player && e.platforms); }, E, { timeout: 90000 });
+await p.waitForFunction(() => document.documentElement.dataset.hudCard !== '1', null, { timeout: 30000 }).catch(() => {});
+await p.waitForTimeout(2000);
+const spots = await p.evaluate((E) => {
+  const e = eval(E); const pl = e.platforms; const out = [];
+  for (const q of pl.filter((x) => x.type === 'bouncy')) {
+    const cx = q.x + q.width / 2;
+    const under = pl.filter((u) => u !== q && u.type === 'solid' && u.x <= cx && u.x + u.width >= cx && u.y >= q.y - 2).sort((a, c) => a.y - c.y);
+    const root = under[0]; if (!root || root.height >= 90) continue;
+    const next = under[1];
+    if (next && next.y - (root.y + root.height) < 140) continue;
+    out.push([Math.round(cx), Math.round(root.y), Math.round(root.x), Math.round(root.x + root.width), next ? Math.round(next.y - root.y) : -1]);
+  }
+  return out.sort((a, c) => a[1] - c[1]);
+}, E);
+console.log(stage, 'open plants', JSON.stringify(spots));
+const pick = process.env.PICK ? process.env.PICK.split(',').map(Number) : spots.map((_, i) => i).slice(0, +maxN);
+for (const k of pick) {
+  const [cx, ry, rx0, rx1] = spots[k];
+  const sx = cx - 90 >= rx0 + 10 ? cx - 90 : Math.min(rx1 - 10, cx + 90);
+  const r = await p.evaluate(([E, x, y]) => {
+    const e = eval(E); e.isPaused = true; const pw = e.player.width, ph = e.player.height;
+    for (const hh of e.currentStage?.proto?.hints ?? []) hh.shown = true;
+    Object.assign(e.player, { x: x - pw / 2, y: y - ph - 2, vx: 0, vy: 0, grounded: false, invincibleTimer: 9 });
+    for (let i = 0; i < 45; i++) e.update(1 / 30);
+    return { px: Math.round(e.player.x), py: Math.round(e.player.y), seed: e.currentStage.gen2?.seed };
+  }, [E, sx, ry]);
+  for (let i = 0; i < 10; i++) { await p.evaluate((E) => { const e = eval(E); e.update(1 / 30); e.clearGuide?.(); e.render(); }, E); await p.evaluate(() => new Promise((r) => requestAnimationFrame(() => r(0)))); }
+  console.log(stage, k, cx, ry, JSON.stringify(r));
+  await p.screenshot({ path: `${out}/${tag}-${stage}-plant${k}-x${cx}-${diff}-${orient}.jpg`, type: 'jpeg', quality: 85 });
+}
+await b.close();

@@ -1,0 +1,12 @@
+diff --git a/src/game/protoArt.ts b/src/game/protoArt.ts
+index 0b9fe8026..26dd08b16 100644
+--- a/src/game/protoArt.ts
++++ b/src/game/protoArt.ts
+@@ -2029,6 +2029,7 @@ function paintTile(platforms: Platform[], banks: Platform[], cx: number, cy: num
+     return cv;
+   }
+   groundDepth = groundLine(banks, groundCeilings(platforms, banks));
++  { const pl = (globalThis as any).__depthPlant; if (pl) { const g0 = groundDepth; groundDepth = ((xx: number) => { const r = g0(xx) as number[]; return (xx >= pl.x ? [r[0] + pl.j, r[1] + pl.j] : r) as never; }) as never; } }
+   drawGround(g, platforms, banks, { x0: x - CHUNK_PAD - 300, x1: x + CHUNK + CHUNK_PAD + 300, y0: y - CHUNK_PAD, y1: y + CHUNK + CHUNK_PAD + 4 });
+   groundDepth = null;
+   return cv;

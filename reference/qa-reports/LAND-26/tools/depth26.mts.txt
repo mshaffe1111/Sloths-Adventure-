@@ -1,0 +1,18 @@
+const T = process.env.TREE!;
+await import(T + '/src/game/headlessDom.ts');
+const { generateAllLevels } = await import(T + '/src/game/worldsData.ts');
+const { listedStage, playFinish } = await import(T + '/src/game/gen2/listed.ts');
+const { buildGen2Stage } = await import(T + '/src/game/gen2/pipeline.ts');
+const PA: any = await import(T + '/src/game/protoArt.ts');
+const seed = +(process.env.SEED ?? 1), d = (process.env.D ?? 'normal') as any;
+const cfg = generateAllLevels().find((c: any) => c.id === '2-6' && !c.secret)!;
+const row = listedStage('2-6')!;
+const st: any = playFinish(row, buildGen2Stage({ config: cfg, kit: row.kit(), seed, difficulty: d }) as never, d);
+const banks = PA.groundBanks(st.platforms);
+const oldLine = (bs: any[]) => { const tops = bs.filter((q: any) => !q.soil); return (x: number) => { let sum = 0, wt = 0, near = Infinity, nearY = 0; for (const q of tops) { const o = Math.min(x + 240, q.x + q.width) - Math.max(x - 240, q.x); if (o > 0) { sum += q.y * o; wt += o; } else { const dd = Math.max(q.x - x, x - q.x - q.width); if (dd < near) { near = dd; nearY = q.y; } } } const y = wt > 0 ? sum / wt : nearY; return [y - 0.55 * 900, y + 0.45 * 900]; }; };
+const line = process.env.OLD ? oldLine(banks) : PA.groundCeilings ? PA.groundLine(banks, PA.groundCeilings(st.platforms, banks)) : PA.groundLine(banks);
+const runs = (x0: number, x1: number) => { const out: any[] = []; let run = -1, rt = 0, rb = 0; for (let x = Math.floor(x0 / 16) * 16; x < x1; x += 16) { const [vt, vb] = line(x + 8).map(Math.round); if (run >= 0 && (vt !== rt || vb !== rb)) out.push({ x0: Math.max(x0, run), x1: x, vt: rt, vb: rb }); if (run < 0 || vt !== rt || vb !== rb) { run = x; rt = vt; rb = vb; } } if (run >= 0) out.push({ x0: Math.max(x0, run), x1, vt: rt, vb: rb }); return out; };
+const all: any[] = [];
+for (const b of banks) { const r = runs(b.x, b.x + b.width); for (let i = 1; i < r.length; i++) { const a = r[i - 1], c = r[i]; const y0a = a.vt + (a.vb - a.vt) * 0.5, y0c = c.vt + (c.vb - c.vt) * 0.5; all.push({ jump: Math.round(Math.abs(y0c - y0a)), x: c.x0, bank: `${Math.round(b.x)}-${Math.round(b.x + b.width)}@${Math.round(b.y)}h${Math.round(b.height)}` }); } }
+all.sort((a, b) => b.jump - a.jump);
+console.log('banks', banks.length, 'max jumps', JSON.stringify(all.slice(0, 5)));

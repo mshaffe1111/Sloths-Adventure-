@@ -1,0 +1,17 @@
+import sys, re
+# held.py <err>: runs of frames where he meant a bare {} and the pad still steered (the thumb never let go), longest first
+for f in sys.argv[1:]:
+    fr = [l for l in open(f) if l.startswith('    f ')]
+    # the frame trace prints 2 lines per frame at times; keep unique t
+    seen = {}; 
+    for l in fr: seen.setdefault(l.split()[1], l)
+    runs = []; cur = []
+    for t, l in seen.items():
+        m = re.search(r'pad (\{.*?\}) meant (\{.*?\})( stop)? on (-?\d+)', l)
+        pad, meant = m.group(1), m.group(2)
+        if meant == '{}' and ' g1 ' in l and ('right' in pad or 'left' in pad): cur.append((t, l))
+        else:
+            if cur: runs.append(cur)
+            cur = []
+    runs.sort(key=len, reverse=True)
+    print(f.split('/')[-1], 'runs', len(runs), 'longest', [ (len(r), r[0][0], r[0][1].split()[2]) for r in runs[:4]])

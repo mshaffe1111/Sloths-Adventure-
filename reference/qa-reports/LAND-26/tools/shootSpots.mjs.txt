@@ -1,0 +1,33 @@
+import fs from 'node:fs';
+const PWm = await import('/opt/node-tools/node_modules/playwright/index.js'); const chromium = PWm.chromium ?? PWm.default.chromium;
+const [port, out, diff = 'normal', orient = 'upright', tag = 'x', layout = '0'] = process.argv.slice(2);
+const spots = (process.env.SPOTS ?? '').split(';').filter(Boolean).map((s) => { const [n, x, y] = s.split(','); return [n, +x, +y]; });
+fs.mkdirSync(out, { recursive: true });
+const b = await chromium.launch();
+const E = "(typeof window.__engine === 'function' ? window.__engine() : window.__engine)";
+const vp = orient === 'upright' ? { width: 412, height: 915 } : { width: 915, height: 412 };
+const ctx = await b.newContext({ viewport: vp, deviceScaleFactor: +(process.env.DSF ?? 2) });
+await ctx.addInitScript((d) => { try { localStorage.setItem('sloth_difficulty', d); } catch {} }, diff);
+const p = await ctx.newPage();
+p.on('pageerror', (e) => console.log('ERR', e.message));
+await p.goto(`http://127.0.0.1:${port}/?lessons=off`);
+await p.waitForTimeout(2500);
+await p.evaluate((l) => window.__play('2-6', l), +layout);
+await p.waitForTimeout(4000);
+await p.waitForFunction((E) => { const e = eval(E); return !!(e && e.currentStage && e.player && e.platforms); }, E, { timeout: 90000 });
+await p.waitForFunction(() => document.documentElement.dataset.hudCard !== '1', null, { timeout: 30000 }).catch(() => {});
+await p.waitForTimeout(2000);
+for (const [name, x, y] of spots) {
+  const r = await p.evaluate(([E, x, y]) => {
+    const e = eval(E); e.isPaused = true; const pw = e.player.width, ph = e.player.height;
+    for (const hh of e.currentStage?.proto?.hints ?? []) hh.shown = true;
+    Object.assign(e.player, { x: x - pw / 2, y: y - ph - 2, vx: 0, vy: 0, grounded: false, invincibleTimer: 9 });
+    for (let i = 0; i < 45; i++) e.update(1 / 30);
+    const riv = (e.currentStage.rivers ?? e.rivers ?? []).filter((q) => q.speed === 0 && !q.wheelPond).map((q) => `${Math.round(q.x0)}-${Math.round(q.x1)}@${Math.round(q.surfaceY)}`);
+    return { x, y, px: Math.round(e.player.x), py: Math.round(e.player.y), seed: e.currentStage.gen2?.seed, still: riv.join(' ') };
+  }, [E, x, y]);
+  for (let i = 0; i < 10; i++) { await p.evaluate((E) => { const e = eval(E); e.update(1 / 30); e.clearGuide?.(); e.render(); }, E); await p.evaluate(() => new Promise((r) => requestAnimationFrame(() => r(0)))); }
+  console.log(name, JSON.stringify(r));
+  await p.screenshot({ path: `${out}/${tag}-${name}-${diff}-${orient}.jpg`, type: 'jpeg', quality: 85 });
+}
+await b.close();

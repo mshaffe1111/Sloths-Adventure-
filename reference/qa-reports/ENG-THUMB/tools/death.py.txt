@@ -1,0 +1,8 @@
+import sys, re
+# death.py <err> <t> [secs] [step]: frames before t (every step-th), meant vs pad
+f, t = sys.argv[1], float(sys.argv[2]); w = float(sys.argv[3]) if len(sys.argv) > 3 else 0.8; st = int(sys.argv[4]) if len(sys.argv) > 4 else 2
+fr = [l for l in open(f) if l.startswith('    f ')]
+sel = [l for l in fr if t - w <= float(l.split()[1]) <= t + 0.01]
+seen = set()
+for l in sel[::st]:
+    print(l[6:].rstrip()[:175])

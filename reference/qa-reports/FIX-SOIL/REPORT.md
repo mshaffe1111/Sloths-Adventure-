@@ -1,14 +1,49 @@
-# FIX-SOIL-b (session 2 of FIX-SOIL; t-fix-soil from main cdffdc627). Started 8:58 AM ET 11-25 (by `date`); this box written 10:11 AM ET
+# FIX-SOIL-b (session 2 of FIX-SOIL; t-fix-soil from main cdffdc627). Started 8:58 AM ET 11-25 (by `date`); this box written 11:15 AM ET
 
 
-## EXACT NEXT STEP
-**FINAL CODE HEAD 539885c37 (the lead's ruling SHADE: 003e8b323 + the underside turf darkened toward the world's deep tone, 0.55, in
-its one-time bake). Every gate ONCE on it, on frozen scratch wt-final3. RUNNING: paintcheck full sweep, lockall vs main's lock. NEXT, in
-order: (1) read both (zero moves; trace any move); (2) stills on the final head: 1-4 layout 1 both settings both ways (shoot-b.mjs on a
-vite of wt-final3) and 2-6 B/C/A upright AND sideways (scratch shoot26.mjs on a vite of wt-26f = a9439e586 + the final patch); look at
-each on the phone frame; (3) suite in 4 shards (scratch shard0-3.txt), the CI tool line (scratch ciline.sh), drawcheck; (4) gate table
-here, push, ls-remote, hash + paths to the lead. Name the 2-6 lighter soil block (W2-LANE's, not ours) with its still. Do NOT merge into
-the 2-6 branch.**
+## EXACT NEXT STEP (for a FRESH session: this one stopped at the lead's word, context past the box)
+**FINAL CODE HEAD 539885c37 on t-fix-soil (stills APPROVED by the lead). Two gates NOT RUN on it; run each ONCE on a frozen tree of
+539885c37 (git worktree add --detach; link node_modules; chattr -R +i src tools; D115):
+(1) the CI tool line: .github/workflows/gates.yml, the 'rolled' job's step that starts `npx tsx --test tools/engine/library.test.ts`
+(about 5 min; it includes tools/engine/paintFall.test.ts, this fix's 4 planted tests);
+(2) `node tools/perf/drawcheck.mjs` (about 6 min; 1-4 and 2-6 are its scenarios; the hung bank adds 1 bake and, on the live path
+only, 1 image and 1 gradient a frame).
+Then fill their rows in the gate table below, push t-fix-soil, confirm with `git ls-remote origin t-fix-soil`, send the hash and table
+to the lead. Do NOT merge into the 2-6 branch: integration takes t-fix-soil into release 4.**
+
+## Gate table, final code head 539885c37 (every run once, on a frozen tree unless named)
+| Gate | Result |
+|---|---|
+| tsc --noEmit -p . | PASS (on the working tree holding exactly 539885c37's code, run just before that commit) |
+| paintcheck full sweep (all parts in one run) | PASS: 5838 builds of 102 stages, every listed seed, both settings; 0 SOIL OVER, 0 new, 0 stale |
+| lockall --layouts 16 --check main's lock (made on frozen cdffdc627, lock-main-cdffdc627.json) | PASS: 102/102 stages unchanged (zero moves) |
+| the suite, 4 shards (CLAUDE.md's 7 globs, 622 files) | PASS: 4042 tests, 4039 pass, 0 fail, 3 todo (the todos are already there before this change: 4-3 wall check, R-165.312, one more) |
+| the CI tool line (gates.yml rolled) | NOT RUN (see EXACT NEXT STEP) |
+| drawcheck | NOT RUN (see EXACT NEXT STEP) |
+| planted RED/GREEN (on 003e8b323's code = 539885c37 less the bake-only shade; the rule's geometry is the same) | 1-4: GREEN 200/200; cut off RED 335 lines. 2-6 at a9439e586 + the patch: GREEN 200/200; cut off RED 600 lines on 200/200 |
+| paintFall.test.ts | 15/15 on 003e8b323's code (part of the CI line above on 539885c37) |
+| generalitycheck, knowncheck | PASS (c22702edc); roadmapcheck: FAIL here only because this container is a shallow clone (no ROADMAP change) |
+
+## Stills on the final head (APPROVED by the lead): final/
+- 1-4 layout 1, main vs 539885c37: final/F-BA-normal-sideways.jpg, F-BA-normal-upright.jpg, F-BA-easy-sideways.jpg,
+  F-BA-easy-upright.jpg; the underside 2x: final/F-underside-closeups.jpg.
+- 2-6 at a9439e586 vs + the patch, beats A (porch 5), B (the start floor under it), C (the top bank): final/F-BA26-sideways.jpg,
+  F-BA26-upright.jpg. NAMED, not ours (the lead filed it for W2-LANE): in beat A a lighter soil block with a straight side right of
+  x ~545 under porch 5, in both before and after (final/F-BA26-upright.jpg, frame A, bottom right).
+
+## Pushback / suggestions / unresolved / method
+- Pushback: none on the ruling. One finding beyond it, fixed with the lead's OK: the soil's depth line averaged the summit's top into
+  the start floor (a shade step under the start on main).
+- Suggestion (a packet): paintTile still paints empty squares under a hung bank down the whole climb (as main painted the column);
+  stop a hung bank's reach at its underside + 80 in paintTile's null test (fewer squares, less memory on 1-4).
+- Merge note for integration: protoArt.ts groundBanks() is the ONE bank list; t-fix-sidewall changes that same drawProtoScene line to
+  narrowBank.ts bankList(...): put bankList INSIDE groundBanks, so the gate keeps reading what the screen draws.
+- Unresolved: the two NOT RUN gates above.
+- Method update (stage-fix/render-fix): a look gate reads the drawer's exported output (here groundSoil's outlines), never the
+  assignment (D136); a fix that hangs a bank shoots both worlds it reaches before landing (World 2's pale lip rim showed only on 2-6).
+- Lessons applied: D115 (every run on a frozen, chattr'd tree), D119 (no heredoc in a commit chain), D128 (times from date), D134
+  (pushed and ls-remote before every hand-over), D135 (every suite red named: none), D136 (the gate reads what is drawn).
+- Turnover: reference/handoffs/engine-core.md 0zs-SOIL (commit f4c364a53).
 
 ## What changed (draw-only; no layout moves: lockall pending)
 - src/game/protoArt.ts: drawGround's per-bank side logic moved, unchanged, into exported bankOpen(); the soil's clip outline into

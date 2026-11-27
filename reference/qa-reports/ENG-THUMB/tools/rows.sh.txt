@@ -1,0 +1,9 @@
+#!/bin/bash
+# rows.sh <frozen tree> <outdir> <bots> <stages...>: castBots rows, seeds 1-40, both settings (rows28.sh's flags, bots chosen)
+T=$1; O=$2; B=$3; shift 3; mkdir -p $O; cd $T || exit 9
+echo "rows on $(git rev-parse --short=9 HEAD) bots $B $(TZ=America/New_York date '+%-I:%M %p ET')" >> $O/progress.txt
+for st in "$@"; do t0=$SECONDS
+  npx tsx tools/inspect/castBots.ts --stage $st --seeds 1-40 --bots $B --setting both --par 4 --rows $O/$st.jsonl > $O/$st.log 2>&1
+  echo "$st exit $? $(wc -l < $O/$st.jsonl) rows $((SECONDS-t0)) s" >> $O/progress.txt
+done
+echo "rows done $(TZ=America/New_York date '+%-I:%M %p ET')" >> $O/progress.txt

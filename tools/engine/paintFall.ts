@@ -12,7 +12,8 @@
 // missing art, a catalog and STAGE-RULES §4 question for Content, listed by the sweep as `unpainted` so it is seen, not hidden); a stage
 // whose painted kit is off (a boss lair: engine.ts paintKit), where no painter runs at all.
 import { footingOf, type FootingInput } from '../../src/game/terrain.ts';
-import { groundBanks, groundCeilings, groundSoil, insideOutline, paintedPlatforms, soilCover, SOIL_JOIN, SOIL_ROOM } from '../../src/game/protoArt.ts';
+import { groundBanks, groundCeilings, groundLine, groundSoil, insideOutline, paintedPlatforms, soilCover, SOIL_JOIN, SOIL_ROOM } from '../../src/game/protoArt.ts';
+import { depthRuns, type DepthAt } from '../../src/game/groundPaint.ts';
 import { ceilingAt, ceilingsOver, type Ceiling } from '../../src/game/groundStack.ts';
 import type { Platform } from '../../src/game/types.ts';
 
@@ -180,6 +181,39 @@ export function soilShorts(platforms: Platform[], cs: readonly Ceiling[] = groun
       short += SHORT_STEP; gap = Math.max(gap, Math.round(line - y));
     }
     if (short > SHORT_MIN) out.push({ bank: { id: p.id, x: Math.round(p.x), y: Math.round(p.y), w: Math.round(p.width), h: p.height }, short, gap });
+  }
+  return out;
+}
+
+/**
+ * R-165.451 (2-6's beat A, the lead 11-25): a straight-sided lighter block in a bank's soil. The darkening with depth is drawn in bands
+ * that follow the ground line (groundPaint.ts shadeSoil over depthRuns, the line protoArt.ts groundLine sets while it paints a square);
+ * where two neighbouring bands start their darkening far apart, the soil shows a straight vertical edge between them. On t-build-26 a hung
+ * bank's top (2-6's storeys, thousands of px up) stood in the line, and under the start floor's soil the darkening's start jumped 192-224
+ * px at x 1040-1056 and 176-192: the block (FIX-SOIL-b c22702edc left hung banks out of the line, R-165.441). The gate reads the bands as
+ * the square painter draws them: the same line built from the same banks and ceilings (protoArt.ts paintTile), cut by the same function.
+ */
+export interface DepthStep {
+  x: number;
+  y: number;
+  bank: string;
+  /** how far the darkening's start moves between the two bands (px) */
+  jump: number;
+}
+/** the most the darkening's start may move between two neighbouring bands (px): the largest of the lead's planted steps that shows
+ *  nothing (R-165.487: 24 nothing, 32-48 faint, 64 plain; the block was 176-224). The line is eased to it (protoArt.ts DEPTH_EASE). */
+export const DEPTH_STEP_MAX = 24;
+export function depthSteps(platforms: readonly Platform[], line?: DepthAt): DepthStep[] {
+  const banks = groundBanks(platforms);
+  const at = line ?? groundLine(banks as Platform[], groundCeilings(platforms, banks));
+  const out: DepthStep[] = [];
+  for (const b of banks) {
+    const r = depthRuns(b.x, b.x + b.width, at);
+    for (let i = 1; i < r.length; i++) {
+      const a = r[i - 1], c = r[i];
+      const jump = Math.abs(c.vt + (c.vb - c.vt) * 0.5 - (a.vt + (a.vb - a.vt) * 0.5));
+      if (jump > DEPTH_STEP_MAX) out.push({ x: Math.round(c.x0), y: Math.round(b.y), bank: `${Math.round(b.x)}-${Math.round(b.x + b.width)}@${Math.round(b.y)}`, jump: Math.round(jump) });
+    }
   }
   return out;
 }

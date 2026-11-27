@@ -1,0 +1,20 @@
+ciline on 48af07540 exit 1 868 s
+# tests 430
+# pass 425
+# fail 4
+# cancelled 0
+# todo 1
+not ok 231 - on the run it was found on, 2-1 child Easy seed 2: landing on a small log running his way (under 220 px), even inside his run-out of its front, he takes the pad pause and is never pulled 
+not ok 254 - a beat row is started from a floor that stays only on a breath that crosses it: 2-2 adult Normal 4, the latch carried over pads (CI-14)
+not ok 305 - planted: with waitRise off, 2-2 takes the child on Normal the skill carries across (6, 22, 24: clean with it, rescued without)
+not ok 353 - planted: with the against-the-flow skill off, the child on Normal is rescued on 2-1 (17) and the child and the middle on Normal lose 5+ more lives (child 3, 15; middle 16)
+
+231 detail:
+  location: '/home/user/ft/c11/tools/inspect/firsttimer.test.ts:305:1'
+    +   {
+    +     inside: true,
+    +     pause: false
+    +   }
+254 detail:
+  location: '/home/user/ft/c11/tools/inspect/hopJudged.test.ts:392:1'
+  error: 'he left floor #50 at t 75.533 onto beat pad #55 with 1.87 s of the breath left for a run that needs 2.04 s'
