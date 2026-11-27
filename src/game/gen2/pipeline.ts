@@ -571,7 +571,8 @@ const QUIET_JOBS: ReadonlySet<NodeJob> = new Set(['rest']);
  *   - `ends`: a quiet brief drops its finale and the rest before the exit; a finale brief gets one before the exit;
  *   - the stage's lessons force its teach nodes, one per move, in the lessons' order, right after the arrival and each other's; a teach
  *     is never forked;
- *   - `branching` sets the fork count (none 0, some 1-2, lots 3-4): a practise, flow or climb becomes a fork, or a fork a practise;
+ *   - `branching` sets the fork count of a ROLLED graph (none 0, some 1-2, lots 3-4): a practise, flow or climb becomes a fork, or a fork a
+ *     practise; a DESIGNED graph's (`dealExact`) forks are its code's F nodes, exactly those, and a branching other than 'none' is refused;
  *   - a rest after every test, twist and signature (unless a quiet node or the exit is next), never two quiet nodes side by side.
  * Each node then rolls its shape (fork two-road, climb rising, descent falling; a practise, flow, combine or test by the trend) and its
  * dials (tempo, density, height, terrain, rating).
@@ -647,8 +648,12 @@ function rolledGraph(budget: StageBudget, M: WorldManifest, seed: number): Missi
   while (jobs.filter((j) => j === 'teach').length < teach.length) put(teachAt() + 1, 0, 'teach');
   // (a stage with no moves named keeps its graph's teach nodes, each taking any move not yet taught)
   if (teach.length || brief.teaches) while (jobs.filter((j) => j === 'teach').length > teach.length) jobs[jobs.lastIndexOf('teach')] = 'practise';
-  // (branching: the fork count)
-  const forks = brief.branching === 'none' ? 0 : brief.branching === 'some' ? 1 + (r() < 0.5 ? 1 : 0) : 3 + (r() < 0.5 ? 1 : 0);
+  // (branching: the fork count. A DESIGNED graph (GraphBrief.dealExact, a level's arc): its F nodes ARE its forks, exactly those, at
+  // those places, on every roll, and no coin is drawn; a designed brief that asks a branching is the brief and the code at odds, named.
+  // A rolled graph: the brief's count, as before. ENG-FORK28, rule 26)
+  if (brief.dealExact && brief.branching !== 'none') throw new Error(`gen2 ${budget.id}: graph ${g.id}: a designed graph's forks are its code's F nodes; the brief's branching '${brief.branching}' is for a rolled graph (write 'none')`);
+  const forks = brief.dealExact ? parsed.filter((t) => JOB_OF[t.job] === 'fork').length
+    : brief.branching === 'none' ? 0 : brief.branching === 'some' ? 1 + (r() < 0.5 ? 1 : 0) : 3 + (r() < 0.5 ? 1 : 0);
   while (jobs.filter((j) => j === 'fork').length > forks) jobs[jobs.lastIndexOf('fork')] = 'practise';
   for (let guard = 0; jobs.filter((j) => j === 'fork').length < forks && guard < 8; guard++) {
     // (a node the designer asked things of keeps its job: a fork is laid as one two-road section, which would lay none of them)

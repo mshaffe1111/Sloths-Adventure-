@@ -54,9 +54,11 @@ export const TOY_DOORS = 2;
 
 /** the toy's graph: out right with the river at him, down a column, home left with the rivers (2-7's shape, its node string's legs) */
 export const HOME_CODE = 'A Pg1> Xw1> R /D Dc_ /L Pf1< Pw1> Mg1> Ww1> R Sw1> E';
-/** the POST toy's (ENG-27c): the same with a flow of ground and a rest before the weir, 2-7's longer way out, where its doors stand (on
- *  HOME_CODE's short out leg only one door stood clear of a log's and a double jump's landing on 3 rolls in 12). It lays the post */
-export const POST_CODE = 'A Pg1> Xw1> R Fg1> R /D Dc_ /L Pf1< Pw1> Mg1> Ww1> R Sw1> E';
+/** the POST toy's (ENG-27c): the same with a practise of ground and a rest before the weir, 2-7's longer way out, where its doors stand
+ *  (on HOME_CODE's short out leg only one door stood clear of a log's and a double jump's landing on 3 rolls in 12). It lays the post.
+ *  It was written 'Fg1>' (F is the FORK letter, not flow): under the designed brief's 'none' that F was laid as a practise, which is
+ *  what 'Pg1>' writes, so the toy lays as it did (ENG-FORK28: a designed graph's F nodes are now real forks) */
+export const POST_CODE = 'A Pg1> Xw1> R Pg1> R /D Dc_ /L Pf1< Pw1> Mg1> Ww1> R Sw1> E';
 /** the same beats turned back at the out leg's own ground (no column): the overlay the 2-7 designer found (Pushback 1), refused by name */
 export const SAME_GROUND_CODE = 'A Pg1> Xw1> R /L Pf1< Pw1> Mg1> Wf1> R Sw1> E';
 
