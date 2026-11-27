@@ -1,0 +1,4 @@
+== FULL SET lane E on ab5673531 (main base 4bf2cbaaa) 9:09 AM ET
+toolline FAIL (exit 1, 3529 s)
+tipwalk PASS (exit 0, 79 s)
+storytipscan FAIL (exit 1, 39 s)
