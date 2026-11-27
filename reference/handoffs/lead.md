@@ -111,7 +111,30 @@ code-checked plan (ENGINE-NEEDS.md); "add a level" in one step; every lead keeps
 3. **The lead manages; members engineer.** The lead decides scope, priority, time and the bar, judges the evidence and unsticks; it does not do the work or design the code. A member's technical fork goes back as 'decide it within your budget and show me the evidence', unless it changes scope, the bar, a shipped stage or Matt's taste.
 4. **The scoreboard in every report to Matt:** levels on his link this week vs the plan; hours per level vs 2 h; pieces landed ahead; **2-HOUR PROGRESS** (Matt 11-23, R-165.409): what was done today toward the 2-hour level (reference/plans/TWO-HOUR-PLAN.md and its schedule).
 
-## RIGHT NOW (11-25 evening, written about 5:20 PM ET, refreshed at the wrap about 9:35 PM ET; this block wins over everything below, R-165.242)
+## RIGHT NOW (11-26 night, drafted 9:30 PM ET, refreshed at the wrap; this block wins over everything below, R-165.242)
+MATT TONIGHT (read these first): R-165.495 release 5 = A (2-6, 2-7, the bot fix, the stalk fix Friday; 2-8 + 2-9 release 6);
+R-165.496 5-9's Easy goal stays 5 (a goal only has to be reachable by the kid bot; no bot run raises it); R-165.497 "Sunday is not
+acceptable... Why do we keep doing the same shit" + "Shouldn't you be telling the helpers to make sure that they're getting all the pieces
+in?"; R-165.498 his choice: FIX + keep 4 helpers (every World 3 piece found up front by rolling the designs; trims to existing pieces + at
+most ONE new; pieces side by side); R-165.500 the bot switch PAUSED to Wednesday, its slot to World 3 (5 slots).
+THE NEW STANDARD (CI #95, level.md rule 23, PM.md): NO level build starts until the lead OPENS its roll file (the whole node string through
+the real pipeline) and every piece it names has a LANDED hash. Also tonight: CI #92 (a ruled number names its flight), #93 (no 'on the bar'
+without suite totals), #94 (count lanes before every create_session; the cap), dispatch-packet (a shared lay file runs the FULL lock).
+WORLD 3 (plans/W3-LANES.md = the plan of record; packets/2026-11-27/W3-FRIDAY.md = Friday's packets): AUDIT-W3 rolled all nine designs
+(t-audit-w3 0b8930e64; codes/codes-trim.txt = builders' starting codes); trims ruled; 14 lanes. LANDED tonight on t-eng-w3: a8bc662e5
+(3-1's tower fix + the DARK piece; 1-4's intended lock move, 101/102). Landing next on t-eng-w3, in this order: ENG-ASKS (the hazard registry,
+merge 11e2af1a0) then ENG-SPORE-c (d653d3994 built on it). Then ENG-ASKS-b (World 3's #dark/#spore/@puff rows). World 3's LINES EXIST
+(t-keeper-3x 5b63cd8c6 lines-3.md): KEEPER-W3 is a review.
+WORLD 2: 2-6 LANDED (t-land-26 2f681402e). 2-9: every engine piece landed (t-eng-29 28c848dbd: barge, guard, drum, G6 COURT_SAG; wide stone
+t-eng-stone29 a6ac7316b); listed, hand build deleted; lianas 365 px; ENG-QUIET fixing the quiet-line model (rule B: a let-go reads as a move);
+BUILD-29-i proposing data for the gate walk / terrace ride / barge ride. 2-8: fork landed (t-eng-fork28 8fbdb72ac); BUILD-28-e: a clean roll
+first, 2-7's stale seed list rebuilt on its branch. Target: World 2 done Saturday (release 6).
+FRIDAY 8:30 AM ET: INT-R5 (packets/2026-11-26/INT-R5.md; every seed list checked, not only 1-1), KIT-W3a + KIT-W3b (the long pole), KEEPER-W3,
+ENG-ROOT, ENG-MOON, ENG-CAM29 (R-165.513, before release 6), BUILD-31 when its roll is clean. QUEUED: TOOLS-AMP (t-amp-hook; widened to D119),
+R-165.492 (the cap as a gate), R-165.494 (the freeze trap), R-165.499 (roadmapcheck's lesson numbers), R-165.515 (lockall's count).
+OPEN WITH MATT: nothing asked and unanswered. Tell him Friday evening where World 3 stands against: 3-1..3-4 by Sunday night, the rest mid next week.
+
+## RIGHT NOW (11-25 evening, written about 5:20 PM ET, refreshed at the wrap about 9:35 PM ET; SUPERSEDED by the 11-26 block above)
 THE WEEK (Matt R-165.449, R-165.461/.462 answered 'A' at 4:23 PM): finish World 2 (release 4 tonight; LAND-26, 2-8, 2-9 -> release 5 Friday);
 THURSDAY ENG-BOTSIM (packets/2026-11-26/ENG-BOTSIM.md: can the bots ask the engine instead of their own physics copy; a YES/NO with numbers);
 World 3's pieces land, then 3-1 and 3-2 built as the PROOF of the 2-hour level (3-3/3-4 this weekend only if they come in near 2 h);
