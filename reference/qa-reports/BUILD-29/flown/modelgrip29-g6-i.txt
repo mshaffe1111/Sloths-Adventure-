@@ -1,0 +1,16 @@
+M undefined normal s1 x8099 g0.7 one=true 0.93 1.13
+M undefined normal s1 x14576 g0.7 one=true 0.73 1.37
+M undefined normal s1 x8099 g0.95 one=true 1.03 1.13
+M undefined normal s1 x14576 g0.95 one=true 0.87 1.37
+M undefined normal s2 x8099 g0.7 one=true 0.93 1.13
+M undefined normal s2 x14722 g0.7 one=true 0.73 1.37
+M undefined normal s2 x8099 g0.95 one=true 1.03 1.13
+M undefined normal s2 x14722 g0.95 one=true 0.87 1.37
+M undefined easy s1 x8312 g0.7 one=true 1.10 2.03
+M undefined easy s1 x15032 g0.7 one=true 1.10 2.03
+M undefined easy s1 x8312 g0.95 one=true 1.20 1.93
+M undefined easy s1 x15032 g0.95 one=true 1.20 1.93
+M undefined easy s2 x8312 g0.7 one=true 1.10 2.03
+M undefined easy s2 x15148 g0.7 one=true 1.10 2.03
+M undefined easy s2 x8312 g0.95 one=true 1.20 1.93
+M undefined easy s2 x15148 g0.95 one=true 1.20 1.93

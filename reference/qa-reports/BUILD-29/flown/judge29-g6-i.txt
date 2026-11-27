@@ -1,0 +1,6 @@
+TLEN=410 normal s1 seed1 rerolls 0 | x8099 len365 one=true e0.93 l1.13 | x14576 len365 one=true e0.73 l1.37
+TLEN=410 normal s2 seed2 rerolls 0 | x8099 len365 one=true e0.93 l1.13 | x14722 len365 one=true e0.73 l1.37
+TLEN=410 normal s3 seed3 rerolls 0 | x8099 len365 one=true e0.93 l1.13 | x14862 len365 one=true e0.73 l1.37
+TLEN=410 easy s1 seed1 rerolls 0 | x8312 len365 one=true e1.10 l1.93 | x15032 len365 one=true e1.10 l1.93
+TLEN=410 easy s2 seed2 rerolls 0 | x8312 len365 one=true e1.10 l1.93 | x15148 len365 one=true e1.10 l1.93
+TLEN=410 easy s3 seed3 rerolls 0 | x8312 len365 one=true e1.10 l1.93 | x15258 len365 one=true e1.10 l1.93
