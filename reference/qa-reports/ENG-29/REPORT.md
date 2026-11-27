@@ -1,18 +1,29 @@
 # ENG-29 REPORT: 2-9's NEW 1 (the court's tempo) and NEW 2 (the drum you hear), built ahead (R-165.449)
 
-## ENG-29-f (box 2, ENG-29-e's packet; written 6:38 PM ET Thu 11/26 by `date`): ruling 0, G1 and G3's tempo fix DONE on t-eng-29-wip; G6 MEASURING
+## ENG-29-f (box 2, ENG-29-e's packet; hand-over 7:14 PM ET Thu 11/26 by `date`): ruling 0, G1 and G3's tempo fix DONE; G6 MEASURED and RULED (code: box 3); d1038af49 landing
 
 ### EXACT NEXT STEP (box 3)
-Re-fetch t-eng-29-wip (head d1038af49 or this REPORT commit after it). Run ReadNotifications. Then, in order:
-1. **G6's bar**: the real-engine measurement is reference/qa-reports/ENG-29/probes/oneMargin.ts, a SCRATCH probe (it needs t-build-29's
-   w2Arc29.ts: run it in a worktree of origin/t-build-29 with t-eng-29-wip merged and the barge29 row given `look: 'barge'`, never
-   committed there). If the lead has not had the numbers, run `for s in 1 2; do npx tsx reference/qa-reports/ENG-29/probes/oneMargin.ts $s 4; done`
-   (background, about 10 min), send the per-liana early/late margins (worst over seeds, grips, 4 bars) and a proposed bar to the lead, and
-   WAIT for the bar (not reversible: no 20-minute default). Then: lockedDrops reports `early`/`late` (s, the contiguous landing presses
-   either side of the press on ONE, worst over grips and the joint cycle's swings); tempoFaults refuses a court liana under the bar; a toy
-   each way (RED with the refusal ignored), and a check that the model's margin is not looser than the real engine's on the draft.
-2. GATES ONCE on the frozen final candidate (the packet list; KID_RUNS_59 named as the inherited red R-165.473), land on t-eng-29 (no
-   force), the hash and what BUILD-29 can lay to the LEAD only (the lead's order: BUILD-29-c handed over; the lead starts its next box).
+Re-fetch t-eng-29-wip (head: this REPORT commit). Run ReadNotifications. Box 2 handed over with d1038af49's gates running and its landing
+on t-eng-29 to follow (the lead's order: d1038af49 = G2, G3 + the tempo fix, ruling 0's toy, G1; KID_RUNS_59 the only inherited red). If
+`git ls-remote origin t-eng-29` is not d1038af49, check the box-2 hand-over message for the gate totals and land it first (no force).
+Then **G6, the lead's bar (RULED, from the real-engine read below)**, as its OWN candidate on wip:
+1. riverLay.ts lockedDrops reports `early` and `late` (s): the landing presses contiguous with the press on ONE (k1) on each side, the
+   index i = r*n + k read round the joint cycle (consecutive i are consecutive frames), worst (least) over LIANA_RIVER.grips and the
+   cycle's swings. Keep `one`. (riverLay/tempo code only: rideLay.ts SNAP_LAY/SNAP_FAIR/snapFaults are ENG-STONE29's, do not touch.)
+2. tempo.ts tempoFaults (via riverLay lockedLianas) refuses a court liana whose ONE press has under **0.20 s early OR late on Normal,
+   0.30 s on Easy** (a constant with the lead's ruling cited; Easy never under Normal), the fault naming the liana, the side and both numbers.
+3. Toys each way (gen2/tempoToy or a new gen2/oneMargin.test.ts): the tempo toy's court liana at a lock that passes and one that fails
+   (find them with the model, e.g. sweep lock 0.80-0.98), RED with the refusal ignored. And the CHECK the lead asked for: the model's
+   early/late on 2-9's draft is never looser (larger) than the real engine's read (probes/oneMargin-0.92.txt and the lock sweep below:
+   0.92 Normal 0.37/0.17, Easy 0.47/0.23; 0.90 Normal 0.30/0.23, Easy 0.37/0.33; 0.88 Normal 0.20/0.33, Easy 0.30/0.43). The draft lives
+   on t-build-29 only, so this check runs in the scratch tree (t-build-29 + wip + barge29 look 'barge') and its numbers go in the REPORT;
+   if the model reads looser than the engine anywhere, say so to the lead before landing (the gate would pass a lock the engine fails).
+4. lockall --check: no listed stage moves (no listed stage has a locked court liana besides the tempo toy's tests; confirm).
+5. Full gates on THAT hash with each shard's totals (CI #93): tsc; the CI tool line; the suite in 6 shards (KID_RUNS_59 named,
+   R-165.473); lockall --check; tierBots 9/9; generalitycheck; drawcheck. FREEZE TRAP: src/game/gen2/seedListChunk.test.ts:50 mkdtemp's
+   src/game/gen2/proven/planted-XXXXXX, so under a chattr-frozen src it fails EPERM; re-run that one file on an unfrozen worktree of the
+   same hash (box 2 did: 2/2 green, tree clean after). The lead is logging the root fix (the test writes to the OS temp dir).
+6. Land on t-eng-29 (no force); the hash and what BUILD-29 can lay (TEMPO_29.lock 0.90, flown before use) to the lead.
 
 ### Done this box (each pushed to t-eng-29-wip and ls-remote-confirmed)
 - **Ruling 0, the posted row's bag exclusion PROVEN** (c46f0a7a): postedGuard.test.ts 'the bag never deals the posted row': the tempo
@@ -36,8 +47,9 @@ Re-fetch t-eng-29-wip (head d1038af49 or this REPORT commit after it). Run ReadN
   gap: 72, logs: 3, look: 'barge', easy: { speed: 70, logW: 390 } },` (the draft then builds: the probe's scratch tree rolls seed 1).
 - tsc clean on each; targeted runs green: postedGuard 6, drumDouble 2, drumEngine/drum/drumBus/tempo/gen2 tempo/tempoToy/tempoResume 29,
   bargeRow/riverLeft/riverTail/lianaRiver 16.
-- The suite in 6 shards and the CI tool line on d1038af49 (frozen worktree, CI #93): RUNNING at this writing; totals go in the ruling
-  request and here.
+- The suite in 6 shards on d1038af49 (frozen worktree, CI #93): 1 684 pass / 1 fail (seedListChunk 'planted', EPERM: the freeze trap above;
+  2/2 green unfrozen), 2 830/0, 3 737/1 (KID_RUNS_59, inherited R-165.473), 4 674/0 (1 todo R-165.312), 5 702/0, 6 606/0. tsc clean,
+  generalitycheck PASS. The CI tool line, lockall --check, tierBots and drawcheck were RUNNING at the hand-over (results in the landing message).
 - **G6 measuring method (the real engine)**: oneMargin.ts hangs him on each locked court liana at each grip (LIANA_RIVER.grips 0.7, 0.95)
   on the vine's own clock (vineShift 0: the lock holds), presses let-go at a bar's ONE + j frames (j -45..45) on 4 consecutive bars, and
   scores a press as landing when he next stands on a log of that river or on its far bank within 5 s (water or the vine: a miss). HARNESS
@@ -59,7 +71,7 @@ Re-fetch t-eng-29-wip (head d1038af49 or this REPORT commit after it). Run ReadN
   worst early / late over both lianas and grips: lock 0.85 Normal 0.07 / 0.43, Easy 0.17 / 0.57; **0.88** Normal 0.20 / 0.33, Easy
   0.30 / 0.43; **0.90 Normal 0.30 / 0.23, Easy 0.37 / 0.33**; 0.92 Normal 0.37 / 0.17, Easy 0.47 / 0.23. The run is about 0.67-0.73 s
   wide on Normal and 0.83-0.90 s on Easy at every lock; lockedDrops' `one` reads true at all of them (it cannot tell them apart).
-- **PROPOSED BAR (sent to the lead; the lead sets it)**: tempoFaults refuses a court liana whose press on ONE has under **0.20 s (6
+- **THE BAR, RULED by the lead as proposed**: tempoFaults refuses a court liana whose press on ONE has under **0.20 s (6
   frames) on either side on Normal, 0.30 s (9 frames) on Easy**, worst over LIANA_RIVER.grips and the joint cycle's swings. 0.92 fails
   it (Normal late 0.17 s); 0.90 passes (Normal 0.30 / 0.23, Easy 0.37 / 0.33), a data move for BUILD-29 (TEMPO_29.lock 0.90).
 
