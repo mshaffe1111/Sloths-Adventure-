@@ -51,7 +51,6 @@ Verdict on LEADER-STANDARD-WORK.md:51 ("270-350k within 25 minutes"): engine 272
 box is at 215k, BELOW it. Every box starts at ~89k before reading anything. Tool results explain only 1/3-1/2 of the growth; the rest
 is the box's own turns (scripts, tool inputs, thinking).
 End-of-box context across 198 readable sessions: median 237k, range 114k-494k (context_usage.used_tokens).
-
 ## Not measured / could not read
 - 21 sessions had no usage block (cost unread; listed "unread" in sessions.csv), e.g. LAND-26-e, ENG-26c, BUILD-26r, ENG-27d.
 - Sessions before 11-19 7:21 PM ET (2-6/2-7 design and early engine) are past page 4; the World 3 shared lanes that do not name
