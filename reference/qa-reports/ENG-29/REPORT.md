@@ -3,22 +3,24 @@
 ## ENG-29-g (box 3, ENG-29-e's packet; 7:29 PM ET Thu 11/26 by `date`): G6 CODED on wip (ca30a4885), NOT landed: the model and the bar's engine read judge DIFFERENT inputs
 
 ### EXACT NEXT STEP (box 4)
-Re-fetch t-eng-29-wip (head: this REPORT commit; G6 code = ca30a4885 + cf09bd54a, the flick-only model). Run ReadNotifications: the lead
-ruled (its message): G6 does NOT land while the model can be looser than the engine; fix the model so it is never looser on the draft
-at 0.88 / 0.90 / 0.92, both settings; tempo.test.ts:33 holds BOTH faults by name (DONE, cf09bd54a); the real-engine fallback is the
-lead's call: if the model is not matched by the end of box 4, bring the lead its cost per roll against the model's, with numbers. The
-lead's answer on the INPUT question (flick / no direction / worse of both; my default (c), worse of both) may be in the queue: read it.
+Re-fetch t-eng-29-wip (head: this REPORT commit; G6 code = ca30a4885 + cf09bd54a, the model on its own input). Run ReadNotifications.
+The lead ruled: G6 does NOT land while the model can be looser than the engine; the model never looser on the draft at 0.88 / 0.90 /
+0.92, both settings; the real-engine fallback is the lead's call (bring its cost per roll against the model's if the model is not
+matched by the end of box 4). The lead's answer on WHICH INPUT the gate judges (asked in the hand-over message) may be in the queue.
 `git ls-remote origin t-eng-29`: if it is box 2's landing (d1038af49), merge it into wip. Then:
-1. Under (c) or (b): apply probes/nodir-model.patch (flyLaunch/letGoFall take `dir`, 0 = nothing held in the air, the leap keeps its
-   speed; lockedDrops' early/late worst over the flick G and no-direction H). As it stands it is TOO TIGHT: ONE misses on Normal at
-   every lock (model 0.00 / 0.00) and 6 suite reds (oneMargin GREEN, tempoToy GREEN and pads, tempo.test court/wave/wheel). The engine's
-   no-direction press at ONE (x7903 grip 0.7, probes/oneMarginR-nodir-j0-x7903-g0.7.txt) lands at x 8271.9 on a log spanning
-   8111-8267: an EDGE catch. Find the few px: the model's c.x (letGoFall/fallOnLog: q.x +- BODY_W*DRIFT_CATCH.side) against the engine's
-   onFloor drift catch (p.x is his LEFT edge, width 44); the flick matched within 2 frames, so the edge rule is the suspect. Then the
-   model's no-direction grid against oneMargin-0.92.txt (box 2's read) frame by frame, never looser, at the three locks.
-2. Under (a) (the flick only): the model stands. Chase the x14389 grip-0.95 flicker first (below), then re-measure the bar on the
-   flick and take it to the lead.
-3. Then the gates and the landing as box 2's steps 5-6 (6 shards, CI #93; KID_RUNS_59 named; the freeze trap).
+1. THE MODEL'S INPUT IS NOW MATCHED (below, 'the model's own input'): within 1-2 frames at every band edge, 4/4 Normal liana-grips at
+   0.92 seed 1. What is left on that input: the engine's SINGLE-FRAME water holes the model never shows (x14389 grip 0.95: j +4 on 1 bar;
+   the '#.#.#.#' run round ONE on some bars with the jump released on the vine, oneMarginR-flick-0.92.txt). Chase one: trace it
+   (probes/oneMarginR.ts TRACE=14389 GRIP=0.95 TJ=4 HOLDVINE=1 RIGHT=1 FLICK=1) against probes/fly29.ts (OWN=1 GRIP=0.95) frame by frame;
+   a 1-frame hole is either an engine catch quirk the model should carry (then the model reads it) or a harness carry-over.
+2. Then re-read the engine on the model's input at 0.88 / 0.90 / 0.92, Normal and Easy, seeds 1-2 (LOCK29 env in the scratch tree:
+   t-build-29 + wip + barge29 look 'barge' + `lock: Number(process.env.LOCK29 ?? 0.92)`; node_modules symlinked), and the model's
+   (probes/model29.ts); never looser = the model's early/late <= the engine's at every lock and setting; say both and the bar to the
+   lead (the 0.20 / 0.30 s bar was read on ANOTHER input, below).
+3. If the lead rules the gate must ALSO judge box 2's input (a tap: jump on the press frame only, nothing held): probes/nodir-model.patch
+   is a start (no air steering) but it still climbs through the hold; that input also needs pressClimb for ONE frame only (the engine
+   climbs only while jump is held). Not built.
+4. Then the gates and the landing as box 2's steps 5-6 (6 shards, CI #93; KID_RUNS_59 named; the freeze trap).
 
 ### Done this box (pushed to t-eng-29-wip, ls-remote-confirmed)
 - **G6 coded** (ca30a4885): riverLay lockedDrops reports `early` and `late` (s): the landing presses contiguous with the press on ONE
@@ -50,6 +52,13 @@ lead's answer on the INPUT question (flick / no direction / worse of both; my de
   `dir` 0 (probes/nodir-model.patch, NOT applied) reads x7903 grip 0.7 '############.....................########................
   ########################...#######' against the engine's '###########....................####################.....#####...':
   the bands agree, the run round ONE does not (the model misses ONE; the engine lands it on the log's last px).
+- **THE INPUT, found (probes/fly29.ts, oneMarginR.ts HOLDVINE)**: the model's press is Right held, jump HELD while he is on the vine
+  (pressClimb: his grip climbs through the sweet-spot hold) and released in flight (flyLaunch: no glide). Box 2's probe held jump on the
+  press frame only: no climb, launch 27 px lower at grip 0.7 (engine y 675.7 against the model's 648.6, x and v the same), so the flight
+  lands a frame sooner. **On the model's own input the engine matches it** (oneMarginR-modelinput-0.92-normal-s1.txt, Normal, seed 1,
+  1 bar, j +-45): x7903 grip 0.7 '#########....######...' engine vs '##########.....#####...' model; grip 0.95, x14389 0.7 and 0.95 the
+  same within 1-2 frames at each band edge. Engine margins on that input: x7903 1.07 / 1.50 and 1.20 / 0.70, x14389 0.90 / 1.27 and
+  1.00 / **0.10** (a single-frame hole at j +4 the model does not show: the one place the model is looser).
 - On the flick, the engine would pass 2-9's lock 0.92 (except the flicker), so the 0.20 / 0.30 s bar and "0.92 refused" stand on
   the no-direction read only. The input is the lead's call (asked, with (c) as the default).
 

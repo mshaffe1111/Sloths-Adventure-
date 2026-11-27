@@ -47,11 +47,11 @@ for (const d of (process.env.ONLYN ? ["normal"] : ["normal", "easy"]) as ("norma
             sim.died = false;
             while (e.gameTime < tPress - 1e-6) { sim.frame(); if (!e.player.isVineSwinging) return 'fell-off'; }
             sim.frame({ press: true, jump: true, right: !!process.env.RIGHT });
-            const TR = process.env.TRACE && j === 0 && m === 0 && Math.round(v.x) === Number(process.env.TRACE) && grip === Number(process.env.GRIP);
+            const TR = process.env.TRACE && j === Number(process.env.TJ ?? 0) && m === 0 && Math.round(v.x) === Number(process.env.TRACE) && grip === Number(process.env.GRIP);
             if (TR) console.log('TRACE press t', e.gameTime.toFixed(3), 'x', e.player.x.toFixed(1), 'y', e.player.y.toFixed(1), 'swing', !!e.player.isVineSwinging);
             for (let f = 0; f < 150; f++) {
-              sim.frame(process.env.RIGHT ? (process.env.FLICK ? { right: true } : { right: true, jump: true }) : {});
-              if (TR && f < 40) { const q = e.player as any; console.log('TRACE', f, e.gameTime.toFixed(3), 'x', q.x.toFixed(1), 'y', q.y.toFixed(1), 'vx', (q.vx ?? 0).toFixed(0), 'vy', (q.vy ?? 0).toFixed(0), q.isVineSwinging ? 'S' : '', q.grounded ? 'G' : '', 'logs', S.platforms.filter((pp) => pp.type === 'drift' && pp.x > river.x0 - 200 && pp.x < river.x1).map((pp) => Math.round(pp.x)).join(',')); }
+              sim.frame({ ...(process.env.RIGHT ? { right: true } : {}), ...((process.env.HOLDVINE && e.player.isVineSwinging) || (process.env.RIGHT && !process.env.FLICK) ? { jump: true } : {}) });
+              if (TR && f < 40) { const q = e.player as any; console.log('TRACE', f, e.gameTime.toFixed(3), 'x', q.x.toFixed(1), 'y', q.y.toFixed(1), 'face', q.facing, 'vx', (q.vx ?? 0).toFixed(0), 'vy', (q.vy ?? 0).toFixed(0), q.isVineSwinging ? 'S' : '', q.grounded ? 'G' : '', 'logs', S.platforms.filter((pp) => pp.type === 'drift' && pp.x > river.x0 - 200 && pp.x < river.x1).map((pp) => Math.round(pp.x)).join(',')); }
               if (sim.died) return 'water';
               const p = e.player;
               if (p.grounded) {
