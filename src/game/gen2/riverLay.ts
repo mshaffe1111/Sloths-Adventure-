@@ -13,7 +13,7 @@
  */
 import type { Platform, Vine } from '../types.ts';
 import { driftCycle, driftX, gapFor, hopLimit, lianasOver, lianasOverLogs, logLayout, LOG_DROP, LOG_HEIGHT, onRiver, riverEnd, surfaceBelowBank, DRIFT_CATCH, type DriftInfo, type RiverZone } from '../river.ts';
-import { airStep, ASSIST, canGrabSwing, FORGIVE, flyLaunch, FORWARD_END, forwardEndLands, PHYS, pressLaunches, secondJumpV, vinePeriod, type AirBody, type PressLaunch } from '../physics.ts';
+import { airStep, ASSIST, canGrabSwing, FORGIVE, flyLaunch, FORWARD_END, forwardEndLands, PHYS, pressLaunches, pressLaunchesFrom, secondJumpV, vineAmp, vineAngle, vineOmega, vinePeriod, type AirBody, type PressLaunch } from '../physics.ts';
 import { withSetting } from '../settingDials.ts';
 import { gripsOf, lianaCaught } from '../levelCheck.ts';
 import { LAND_IN } from './landings.ts';
@@ -427,22 +427,38 @@ export function lockedDrops(v: Vine, logs: readonly DriftInfo[], difficulty: Dif
     while (reps < 8 && Math.abs((reps * period) / spacing - Math.round((reps * period) / spacing)) > 1e-3) reps++;
     let share = 1, wait = 0, window = Infinity, one = true, early = Infinity, late = Infinity;
     for (const g of LIANA_RIVER.grips) {
-      const L = pressLaunches(v, g);
-      const n = L.length, N = n * reps;
-      // (the press on ONE: the one whose clock is nearest a whole swing)
-      const ring = (x: number) => { const u = ((x % period) + period) % period; return Math.min(u, period - u); };
-      let k1 = 0;
-      L.forEach((l, k) => { if (ring(l.pt) < ring(L[k1].pt)) k1 = k; });
+      // (each swing of the cycle on the game's own frames: the bar need not be a whole number of frames (2.85 s is 85.5), so swing r's
+      //  presses sit `lag` s past its whole swings, on the vine's clock from his hang (the vine's own swing at hold g, as the engine hangs
+      //  him: swingGrab's jump-in hangs him a few px lower); ONE is the first press at or after the whole swing, as the engine and the
+      //  child's onOne press it. ENG-29-h: one grid, ONE the nearest press, missed 2-9's draft's 0.90 hole by 7 frames)
+      const LL = v.bottomY - v.topY, len = Math.min(LL * g, LL - 20);
+      const grids = new Map<number, PressLaunch[]>();
+      const gridAt = (lag: number): PressLaunch[] => {
+        const key = Math.round(lag * 1e6);
+        let q = grids.get(key);
+        if (!q) grids.set(key, (q = pressLaunchesFrom(v, { angle: vineAngle(v, lag), omega: vineOmega(v, lag), len, t: lag, amp: vineAmp(v) })));
+        return q;
+      };
+      const lagOf = (r: number) => { const f = r * period / FRAME; return ((Math.ceil(f - 1e-6) - f) * FRAME + FRAME) % FRAME; };
+      const n = gridAt(0).length, N = n * reps;
+      const ones: number[] = [];
       const G = new Uint8Array(N);
-      L.forEach((l, k) => {
-        const f = courtFalls(l, d0);
-        for (let r = 0; r < reps; r++) G[r * n + k] = courtLands(f, logs, l.pt + r * period, easy) ? 1 : 0;
-      });
+      for (let r = 0; r < reps; r++) {
+        const L = gridAt(lagOf(r));
+        let k1 = 0, best = Infinity;
+        L.forEach((l, k) => {
+          let u = ((l.pt % period) + period) % period;
+          if (u > period - 1e-6) u = 0;
+          if (u < best) { best = u; k1 = k; }
+          G[r * n + k] = courtLands(courtFalls(l, d0), logs, l.pt + r * period, easy) ? 1 : 0;
+        });
+        ones.push(r * n + k1);
+      }
       let lands = 0;
       for (let i = 0; i < N; i++) lands += G[i];
       share = Math.min(share, lands / N);
       for (let r = 0; r < reps; r++) {
-        const i0 = r * n + k1;
+        const i0 = ones[r];
         if (!G[i0]) { one = false; early = 0; late = 0; continue; }
         let e = 0, l = 0;
         while (e < N - 1 && G[(i0 - e - 1 + N) % N]) e++;
