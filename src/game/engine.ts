@@ -6908,7 +6908,8 @@ export class GameEngine {
     // back by 60 px or more, and on 5-4's long silk lines upright (320 x 782) he swung out past the left edge (QA v200). The framing is
     // the aim's; this only keeps his whole body (and a little room) inside while the camera catches up (cameraFollow.ts keepHeroX)
     const teaK = this.teaAimK();
-    const kept = keepHeroX(this.camera.x, p.x, vw);
+    // (a puzzle room's pan to a far gate or to the far guards a bell calls goes there for a moment, leaving him: puzzlePlay.ts ring, ENG-CAM29)
+    const kept = this.roomAim?.pan ? this.camera.x : keepHeroX(this.camera.x, p.x, vw);
     this.camera.x = kept + (this.camera.x - kept) * teaK;
     // (and on a widened swing the eased camera keeps ALL of his drawn pose in, behind him too: SWING_CAM.body, cameraFollow.ts)
     if (sv && this.swingWide > 1) {
