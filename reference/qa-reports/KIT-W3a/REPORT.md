@@ -28,6 +28,10 @@ reference/qa-reports/KIT-W3a/probe/patch.mts` (seeds 1-6 x both, only that brick
    buildGen2Stage({config, kit, seed, difficulty}) with kit = LISTED['3-1'].kit() whose manifest graphs.list is ONE graph of 3-1's
    trimmed code `A Tg1 D_ Pf1< Xg1> R Dc1_ Wf1> R Pb1< Cg1> R Sf1_< E` and briefs['3-1'] dealExact. Assert each c / b node's section is
    a W3_DOWN_TOWER id. Planted red: W3_DOWN_TOWER emptied -> the c/b asks refuse.
+   Fact (box 2): w3.ts's manifest has NO graphs; the test's kit sets manifest.graphs = { list: [{ id, archetype, code }], briefs:
+   { '3-1': brief }, maxPerStage } as auditKit does (brief: ends 'quiet', trend 'level', branching 'none', deal from parseCode +
+   TYPE_OF_LETTER, dealExact true). Each built section carries `node` (st.gen2.sections[].node) to match against the code's c / b nodes.
+   cap-down's easy-1 red is ENG-CATCH's: the test asserts the bricks are DEALT (counted), not that the roll is clean.
 4. 3-1's AFTER-roll, then the gates, then the landing: box 1's items 4-5 (below, unchanged).
 ## Box 1's step (items 1-3 done in box 2; 4-5 still to do; box 1's fixes (a)-(f): `git show 782df622e:reference/qa-reports/KIT-W3a/REPORT.md`)
 4. AFTER roll: worktree on the candidate + `git apply` origin/t-audit-w3:reference/qa-reports/AUDIT-W3/scratch.patch, add W3_DOWN_TOWER to
