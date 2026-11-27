@@ -1,3 +1,4 @@
 == FULL SET lane E1 on c9770adb2 (main base 4bf2cbaaa) 11:59 AM ET
 tipwalk PASS (exit 0, 78 s)
 storytipscan PASS (exit 0, 39 s)
+teachfirst PASS (exit 0, 2658 s)
