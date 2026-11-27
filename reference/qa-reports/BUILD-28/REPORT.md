@@ -15,6 +15,12 @@ DONE:
 2. THE LOCK (running, alone): run 1 on c9770adb2 (/home/user/base-c97) `lockall.ts --layouts 16 --out <scratch>/base.json`
    (<scratch>/lockbase.log); then run 2 `--check` on ccc94633f (/home/user/cand-ccc). If the container is fresh, base.json is gone:
    re-run run 1 first.
+STOPPED 12:37 PM ET (from date) on THE LEAD'S STOP (Matt's ruling: the weekly usage limit is in warning; only release 5 goes on; the next
+   lead decides what comes after). The STOP arrived AFTER the merge was committed and pushed (ccc94633f; tsc 0, generality PASS), so it
+   stands on the branch, UNVERIFIED by the lock and the gates. Lock run 1 on c9770adb2 FINISHED: 'lock: wrote 3264 builds of 102 stages'
+   (exit 0, 12:21-12:33 PM ET); its base.json lived in this container's scratchpad only. Lock run 2 on ccc94633f was STOPPED unfinished
+   (TaskStop, at World 1): NO counts line, NO move named, NO gate run. The next box: re-run lock run 1 on c9770adb2 first (base.json is
+   gone with the container), then run 2, then the steps below.
 NEXT, in order (ReadNotifications at every step boundary): the counts line and every move named (2-8; ENG-W2FALL's verdict-only gen2
    lines; tipleft / fork28 / cut each by a 1-stage lock on its own commit; 2-7 should be unchanged, else 241695723^ -> 241695723
    `--stages 2-7`; 1-4 hints, if they move, a 1-stage bisect on `--stages 1-4`) -> first message to the lead -> the ONE gate run on
