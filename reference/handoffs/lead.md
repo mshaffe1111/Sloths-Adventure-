@@ -25,7 +25,21 @@ WEEK TARGETS told to Matt: release 5 TODAY (2-6, 2-7, the bot fix, the stalk fix
 RULINGS THIS WEEK (keep): R-165.496 5-9's Easy goal stays 5 (no bot run raises it); R-165.497 every helper gets ALL the pieces in;
 R-165.498 fix + 4 helpers; R-165.500 the bot switch paused to Wednesday; R-165.547 the 4-lane cap and this rotation.
 
-RELEASE 5 (release-0.10.4): ON MATT'S TEST LINK. The code is frozen at c9770adb2; the PR head is release-0.10.4
+RELEASE 5 IS LIVE (0.10.4, "Water wheels and the mail boat"): Matt said "Lets deploy" at 2:04 PM ET.
+  - PR #80 (https://github.com/mshaffe1111/Sloths-Adventure-/pull/80), merged by Matt at 2:06 PM ET: main 49fdc8cb6.
+  - All three runs green: publish 46054332116 (with the gates), pages build 46057322370, APK 46054332141.
+  - APK v0.10.4-49: https://github.com/mshaffe1111/Sloths-Adventure-/releases/tag/v0.10.4-49
+  - gh-pages c09450ff8 "Publish 49fdc8c" serves index-tfwbS9gY.js, which holds 0.10.4. This container cannot reach github.io (curl
+    exit 56), so the live page was proven from the gh-pages branch.
+  - EnK5 version 271 = main's code (no source difference from c9770adb2).
+  - LEFT FOR YOU from release.md "After the merge":
+    - tick Matt's handoff doc Y664 (0.10.4 live, a line for the release);
+    - the 15-minute release retro;
+    - Matt taps Refresh on his phone;
+    - a real phone on the testers' link (https://mshaffe1111.github.io/Sloths-Adventure-/?fresh=1#ctest) is the only proof a survey
+      row arrives.
+  The gate record before the merge follows.
+RELEASE 5 (release-0.10.4), as it stood before the merge: ON MATT'S TEST LINK. The code is frozen at c9770adb2; the PR head is release-0.10.4
   ece9c7580 (c9770adb2 plus REPORT commits only). THE FULL SET is green on c9770adb2 (INT-R5-c; reference/qa-reports/INT-R5/REPORT.md
   on release-0.10.4 holds the gate table):
   - the suite in 6 shards, 0 fail; the tool line 448/0; tsc;
@@ -53,7 +67,7 @@ that a new lead is coming and to report to the session that names itself as the 
 member below your id and its next report-by; arm your own 30-minute check-in (the outgoing lead's trigger is deleted at the hand-over);
 first message of all to the story keeper. Nothing pauses for the switch.
 LANES AT THE HAND-OVER (each reports to the BACKUP's id until you message it; PM.md §9):
-- INT-R5-c session_01FhBbYK3yZH8BvQ5xoKtfmF: release 5 DONE (see above), idle, stopped before the PR.
+- INT-R5-c session_01FhBbYK3yZH8BvQ5xoKtfmF: release 5 done and merged; ARCHIVED.
 - ENG-DEAL LANDED t-eng-w3 = 7a580aefc (code 98f424884; 2:28 PM ET).
   - Gates on the frozen code, each once: tsc 0; generality; CI line 50/0; tierBots 9/9; all 14 seed lists; suite 6 shards 0 fail, except
     the named ctestPicker red (R-165.550).
