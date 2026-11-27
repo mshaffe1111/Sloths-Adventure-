@@ -1,6 +1,6 @@
 # INT-R5 REPORT: release 5 (0.10.4) candidate, release-0.10.4 (packet reference/packets/2026-11-26/INT-R5.md)
 
-## EXACT NEXT STEP for INT-R5-d (written 11:18 AM ET 11-27 by `date`; box 3, INT-R5-c; supersedes box 2's 10:28 step below)
+## EXACT NEXT STEP for INT-R5-d (written 11:16 AM ET 11-27 by `date`; box 3, INT-R5-c; supersedes box 2's 10:28 step below)
 release-0.10.4 now holds ALL of fixes 2-4 on top of 59f5f1930 (code = ab5673531): fc31f6e1f (goalsEasy), 581e7198b (2-6's view line),
 a323cdf97 (wheelStepOff re-planted), f506a2068 (wheelBoard re-planted). tsc clean after each; each changed test passes alone (goalsEasy 3,
 w2Arc26 5, wheelStepOff 2, wheelBoard 4) and storyTipScan --check is 0 dropped. **The CI tool line has NOT run on these yet** (46 files,
