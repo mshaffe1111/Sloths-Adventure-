@@ -1,5 +1,18 @@
 # ENG-QUIET: is a wait for ONE on 2-9's drum "quiet"? (Engine, from t-build-29 4c3ff9d8)
 
+## RED, NOT LANDED (ENG-QUIET-d, 11-27 9:35 AM ET): t-eng-29 stays 28c848dbd; the lead rules the next step
+- The CI tool line on frozen f589b979a: 429 tests, 427 pass, 1 FAIL (#195 the chase-bots child-fork line is a TODO, not a fail).
+  First failing line: tools/inspect/firsttimer.test.ts:369 `not ok 232 - on the run it was found on, 2-4 child Normal seed 8: the
+  run-up's jump ... is held at least as long as runPress judged it; the row ends at the shrine with no rescue` -> error 'he made a
+  run-up jump' (expected true, actual false). The same test alone: 28c848dbd PASS, f589b979a FAIL. Variant 8 is one of 2-4's 20 rebuilt
+  rows (row 9), so the new roll removes the run-up this test was pinned to. The release.md item-6 grep (setPick11|roll11Seed|
+  provenSeedFor) does not find this test (it pins a roll through firstTimer(stage, variant)), so the seed-pinning run passed 34/34
+  without it. Countermeasure to propose: widen the item-6 grep to tests that call firstTimer/castRun/RealPlay on a listed stage.
+- Green at the red: seed-pinning 34/34, tsc, generalitycheck, lockall --check (99/102 unchanged; only 2-1, 2-4 and 2-7 moved, as
+  intended), tierBots 9/9, shard 1 691/0, seed lists 1-1..1-5. Still running then: seed lists 1-6.., shards 2-6.
+- Not fixed, as ruled. The fix belongs to whoever the lead names: re-pin the test to a roll that still holds a run-up (properties, not x),
+  or keep 2-4 v8's old roll.
+
 ## EXACT NEXT STEP (box 4 hand-over, ENG-QUIET-d, 11-27 9:03 AM ET; NOT landed: t-eng-29 still 28c848dbd; work branch t-eng-quiet-b = f589b979a, unchanged in box 4)
 1. RULED (the lead, 11-27 9:05 AM ET): KEEP THE ROLLS; C1-C3 logged as one bots row. Go on with step 2 below (gates list as ruled:
    tsc, the CI tool line, ALL 15 seed lists, lockall ONE run (102 stages), the 6 shards, tierBots, generalitycheck), then land on t-eng-29.
