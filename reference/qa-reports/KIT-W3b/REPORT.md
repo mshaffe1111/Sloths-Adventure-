@@ -140,9 +140,11 @@ A node's label is the code AS LAID (its laid letters), not the asked code: an S 
   content (lit and dark) cleared 3-2's X double and the tip keys at once (Matt's variety rule: more pieces, not rerolls).
 - An animal socket on Easy is not 'laid' by the brick alone: Easy's 60% cut can move it to the node's ask top-up. Count Normal on the socket,
   Easy by the ask.
-- Lessons applied: D115 (frozen worktree, proven writable), D119 (no heredoc in a commit chain), D128 (stamps from `date`), D134 (next step
+- Lessons applied: D115 (frozen worktree, proven writable), D128 (stamps from `date`), D134 (next step
   pushed and ls-remote-confirmed before the hand-over), D138 (the hand-over ends new work; box 2 stays a gates-only tail), D140
   (ReadNotifications at each step), D141 (the CI tool line on the candidate), CI #89 (the 20-minute recommendation: merging 5196f738f).
+- MISSED D119 once: the hand-over commit 5cec5d304 ran in the same command as a heredoc that appended this section (the commit is intact;
+  no other commit used one).
 - Proposed rule (for the lead's retro, with box 1's): **every content letter a level's code uses gets at least two World 3 shapes, each lit
   and dark where the code asks #dark**, checked by a test that rolls the trimmed code and asserts no section at that node is another
   world's stand-in.
