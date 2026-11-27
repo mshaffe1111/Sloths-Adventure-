@@ -1,0 +1,36 @@
+#!/bin/bash
+# BUILD-28 box 13: the ONE gate run on the frozen merged head ($1 = worktree), one gate at a time; PASS/FAIL lines to $S/gates.txt.
+# gates-s15's list + what the brief and CI (gates.yml, deploy.yml) add: the CI scans, coverage, timecheck, the build that ships,
+# chunkcheck, artcheck, knowncheck, kbdcheck, buildcheck (1-1 as CI, and 2-8), roadmapcheck, paintcheck's 3 parts.
+W=$1; S=$2; cd "$W" || exit 9
+O=$S/gates.txt; : > "$O"; echo "HEAD $(git rev-parse HEAD)" >> "$O"
+g() { local name=$1; shift; local t0=$(date +%s); bash -c "$*" > "$S/g-$name.log" 2>&1; local rc=$?; local t=$(( $(date +%s) - t0 ));
+  if [ $rc -eq 0 ]; then echo "PASS $name (${t}s)" >> "$O"; else echo "FAIL $name rc=$rc (${t}s)" >> "$O"; fi; }
+g tsc "npx tsc --noEmit -p ."
+g generality "npx tsx tools/engine/generalitycheck.ts"
+CI=$(sed -n 's/^ *- run: \(npx tsx --test tools\/engine\/library.test.ts.*\)$/\1/p' .github/workflows/gates.yml)
+g ciline "$CI"
+g tipwalk "npx tsx tools/engine/tipwalk.ts --layouts 4"
+g storytips "npx tsx tools/engine/storyTipScan.ts --check"
+g teachfirst "npx tsx tools/engine/teachFirstScan.ts --check --seeds 20"
+g registry "npx tsx tools/engine/registrycheck.ts"
+g coverage "npx tsx tools/difficulty/coveragecheck.ts"
+for i in 1 2 3 4 5 6; do
+  g suite$i "npx tsx --test --test-shard=$i/6 src/audio/*.test.ts src/game/*.test.ts src/components/*.test.ts src/components/**/*.test.ts src/game/gen2/*.test.ts src/game/gen2/worlds/*.test.ts src/game/art/*.test.ts"
+done
+g seedlists 'L=$(npx tsx tools/engine/registrycheck.ts --lists) || exit 1; f=0; for s in $L; do echo "== $s"; npx tsx tools/engine/seedlist.ts "$s" --check || { echo "FAILED $s"; f=1; }; done; exit $f'
+g pingrep 'echo "FILES: $(grep -rlE "setPick11|roll11Seed|provenSeedFor|firstTimer\(|castRun\(|RealPlay" src tools --include=*.test.ts | tr "\n" " ")"; npx tsx --test $(grep -rlE "setPick11|roll11Seed|provenSeedFor|firstTimer\(|castRun\(|RealPlay" src tools --include=*.test.ts)'
+g tierbots "npx tsx --test tools/inspect/tierBots.test.ts"
+g vitebuild "BASE_PATH=/Sloths-Adventure-/ npx vite build"
+g chunkcheck "CHUNKCHECK_BASE=/Sloths-Adventure-/ node tools/perf/chunkcheck.mjs"
+g artcheck "node tools/perf/artcheck.mjs"
+g knowncheck "node tools/perf/knowncheck.mjs"
+g roadmapcheck "node tools/roadmapcheck.mjs"
+g timecheck "node tools/timecheck.mjs"
+g drawcheck "node tools/perf/drawcheck.mjs"
+g clipcheck "node tools/perf/clipcheck.mjs"
+g kbdcheck "node tools/perf/kbdcheck.mjs"
+g buildcheck "node tools/perf/buildcheck.mjs"
+g buildcheck28 "BUILDCHECK_STAGE=2-8 node tools/perf/buildcheck.mjs"
+for p in 0 1 2; do g paint$p "npx tsx tools/engine/paintcheck.ts --part $p/3"; done
+echo "ALL DONE" >> "$O"

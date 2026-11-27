@@ -1,4 +1,26 @@
-# BUILD-28 REPORT (W2-LANE: 2-8 "Before the Water Rises"; R-165.430 (2), READY-28, BUILD-28). Session 1 (W2-LANE a), started 9:44 AM ET (from date). Session 2 (W2-LANE b), started 10:07 AM ET (from date). Session 3 (W2-LANE c), started 10:30 AM ET (from date). Session 4 (W2-LANE d), started 10:52 AM ET (from date). Session 5 (W2-LANE e), started 11:19 AM ET (from the session hook date) Session 6 (W2-LANE f), started 11:41 AM ET (from the session hook date) Session 7 (W2-LANE g), started 12:05 PM ET (from the session hook date) Session 8 (W2-LANE h), started 12:49 PM ET (from the session hook date) Session 9 (W2-LANE i), started 1:15 PM ET (from the session hook date) Session 10 (W2-LANE j), started 1:05 PM ET (from the session hook date) Session 12 (W2-LANE l), started 2:20 PM ET (from the session hook date) Session 13 (BUILD-28-j, box 10), started 10:43 AM ET (from the session hook date) Session 14 (BUILD-28-k, box 11), started 11:08 AM ET (from the session hook date) Session 15 (BUILD-28-l, box 12), started 11:35 AM ET (from the session hook date)
+# BUILD-28 REPORT (W2-LANE: 2-8 "Before the Water Rises"; R-165.430 (2), READY-28, BUILD-28). Session 1 (W2-LANE a), started 9:44 AM ET (from date). Session 2 (W2-LANE b), started 10:07 AM ET (from date). Session 3 (W2-LANE c), started 10:30 AM ET (from date). Session 4 (W2-LANE d), started 10:52 AM ET (from date). Session 5 (W2-LANE e), started 11:19 AM ET (from the session hook date) Session 6 (W2-LANE f), started 11:41 AM ET (from the session hook date) Session 7 (W2-LANE g), started 12:05 PM ET (from the session hook date) Session 8 (W2-LANE h), started 12:49 PM ET (from the session hook date) Session 9 (W2-LANE i), started 1:15 PM ET (from the session hook date) Session 10 (W2-LANE j), started 1:05 PM ET (from the session hook date) Session 12 (W2-LANE l), started 2:20 PM ET (from the session hook date) Session 13 (BUILD-28-j, box 10), started 10:43 AM ET (from the session hook date) Session 14 (BUILD-28-k, box 11), started 11:08 AM ET (from the session hook date) Session 15 (BUILD-28-l, box 12), started 11:35 AM ET (from the session hook date) Session 16 (BUILD-28-m, box 13), started 12:14 PM ET (from the session hook date)
+
+## EXACT NEXT STEP (BUILD-28 box 13, BUILD-28-m, started 12:14 PM ET (from the session hook date); MERGED HEAD ccc94633f on t-build-28-wip)
+THE LEAD'S RULING (final, box 13's brief): 2-8 lands in release 6 ON TOP OF release 5 (release-0.10.4 frozen at c9770adb2, by hash).
+DONE:
+1. The clone was shallow (2 grafts: 'refusing to merge unrelated histories'): `git fetch --unshallow origin`; merge-base(a29c1528a,
+   c9770adb2) = c73cb9766 (release 4); release 5 holds 126 commits past it, this branch 219.
+   MERGED c9770adb2 BY HASH (no rebase): ccc94633f. 11 files conflicted, all resolved keeping both sides (release 5 lists 2-6, this
+   branch 2-8): judgedTable.test.ts (2 hunks), listed.ts (3: KITS, WORLD, FINISH), flownArcs.ts, stageTable.ts: both entries kept;
+   provenIndex.ts: 2-6 1ed9df17 + 2-7 c9e1e269 (equal both sides) + 2-8 06be25e5; stageSheets.ts, w2Stages.ts: base held 2-6 and 2-8
+   as sheet stages, each side dropped its own, so both dropped; w2Sections.ts: W2Plan = '2-9', Record<W2Plan> without the Exclude
+   (release 5) and without 2-8's rows (ours), the Critter type dropped (ours removed its one user), the gen2 comment names both;
+   w2.ts: ENG-W2FALL's paintsUnder water test (ours) then release 5's dry-gap block (theirs); paintFall.test.ts: both planted tests;
+   firsttimer.ts: both imports. package.json/lock equal release 5's (0.10.4). tsc 0; generalitycheck PASS (26 literals, 26 known).
+2. THE LOCK (running, alone): run 1 on c9770adb2 (/home/user/base-c97) `lockall.ts --layouts 16 --out <scratch>/base.json`
+   (<scratch>/lockbase.log); then run 2 `--check` on ccc94633f (/home/user/cand-ccc). If the container is fresh, base.json is gone:
+   re-run run 1 first.
+NEXT, in order (ReadNotifications at every step boundary): the counts line and every move named (2-8; ENG-W2FALL's verdict-only gen2
+   lines; tipleft / fork28 / cut each by a 1-stage lock on its own commit; 2-7 should be unchanged, else 241695723^ -> 241695723
+   `--stages 2-7`; 1-4 hints, if they move, a 1-stage bisect on `--stages 1-4`) -> first message to the lead -> the ONE gate run on
+   ccc94633f by reference/qa-reports/BUILD-28/gates-s16.sh.txt (gates-s15's list + the CI scans, coverage, timecheck, the build that
+   ships, chunkcheck, artcheck, knowncheck, kbdcheck, buildcheck 1-1 and 2-8, roadmapcheck, paintcheck 3 parts) -> bots x40 both
+   settings -> stills (both fish-trap placements, every new piece) -> one landing onto origin/t-build-28 -> debrief + LEVEL-LOG row.
 
 ## EXACT NEXT STEP (BUILD-28 box 12, BUILD-28-l, started 11:35 AM ET (from the session hook date); hand-over 12:07 PM ET (from date); FROZEN CANDIDATE cb7b9af11 on t-build-28-wip)
 THE LEAD'S RULING ON THE LOCK (D159): box 11's base 1558489a2 predates release-0.10.3 c73cb9766, which this branch contains (merge-base
