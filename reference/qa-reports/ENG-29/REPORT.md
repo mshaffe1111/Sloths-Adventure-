@@ -3,18 +3,22 @@
 ## ENG-29-g (box 3, ENG-29-e's packet; 7:29 PM ET Thu 11/26 by `date`): G6 CODED on wip (ca30a4885), NOT landed: the model and the bar's engine read judge DIFFERENT inputs
 
 ### EXACT NEXT STEP (box 4)
-Re-fetch t-eng-29-wip (head: this REPORT commit). Run ReadNotifications and read the lead's ruling on the INPUT (asked: (a) Right held,
-jump released, a flick: the model's and LIANA_RIVER's convention; (b) no direction held, box 2's read; (c) the worse of the two; the
-default (c) after 20 minutes with no reply, reversible). `git ls-remote origin t-eng-29`: if it is box 2's landing (d1038af49), merge it
-into wip. Then:
-1. (a) ruled: the model stands (it matches the engine on the flick within about 2 frames, below). Find the x14389 grip-0.95 flicker
-   first (the engine's read moves with WHICH bar the probe uses on a one-log-a-bar river: probes/oneMarginR.ts MOFF 0/1/2 below): a harness
-   carry-over between tries or a real engine non-periodicity; then re-measure the bar on the flick (2-9 draft, locks 0.85-0.95) and
-   take it to the lead (0.20/0.30 was set from (b)); then the gates and the landing as box 2's step 5-6.
-2. (b) or (c) ruled: lockedDrops needs a second flight, no direction held (the engine's leapDir falls back to p.facing; no Right in
-   the air, so no air steering), judged worst with the flick for (c). Build it in riverLay (pressLaunches/letGoFall with the input as a
-   parameter), then this box's check again: the model's grid against probes/oneMargin.ts (no direction) on the draft, never looser.
-3. The toy (oneMargin.test.ts) and the tempo.test.ts:33 filter stay as they are unless the bar moves; re-run them on the new model.
+Re-fetch t-eng-29-wip (head: this REPORT commit; G6 code = ca30a4885 + cf09bd54a, the flick-only model). Run ReadNotifications: the lead
+ruled (its message): G6 does NOT land while the model can be looser than the engine; fix the model so it is never looser on the draft
+at 0.88 / 0.90 / 0.92, both settings; tempo.test.ts:33 holds BOTH faults by name (DONE, cf09bd54a); the real-engine fallback is the
+lead's call: if the model is not matched by the end of box 4, bring the lead its cost per roll against the model's, with numbers. The
+lead's answer on the INPUT question (flick / no direction / worse of both; my default (c), worse of both) may be in the queue: read it.
+`git ls-remote origin t-eng-29`: if it is box 2's landing (d1038af49), merge it into wip. Then:
+1. Under (c) or (b): apply probes/nodir-model.patch (flyLaunch/letGoFall take `dir`, 0 = nothing held in the air, the leap keeps its
+   speed; lockedDrops' early/late worst over the flick G and no-direction H). As it stands it is TOO TIGHT: ONE misses on Normal at
+   every lock (model 0.00 / 0.00) and 6 suite reds (oneMargin GREEN, tempoToy GREEN and pads, tempo.test court/wave/wheel). The engine's
+   no-direction press at ONE (x7903 grip 0.7, probes/oneMarginR-nodir-j0-x7903-g0.7.txt) lands at x 8271.9 on a log spanning
+   8111-8267: an EDGE catch. Find the few px: the model's c.x (letGoFall/fallOnLog: q.x +- BODY_W*DRIFT_CATCH.side) against the engine's
+   onFloor drift catch (p.x is his LEFT edge, width 44); the flick matched within 2 frames, so the edge rule is the suspect. Then the
+   model's no-direction grid against oneMargin-0.92.txt (box 2's read) frame by frame, never looser, at the three locks.
+2. Under (a) (the flick only): the model stands. Chase the x14389 grip-0.95 flicker first (below), then re-measure the bar on the
+   flick and take it to the lead.
+3. Then the gates and the landing as box 2's steps 5-6 (6 shards, CI #93; KID_RUNS_59 named; the freeze trap).
 
 ### Done this box (pushed to t-eng-29-wip, ls-remote-confirmed)
 - **G6 coded** (ca30a4885): riverLay lockedDrops reports `early` and `late` (s): the landing presses contiguous with the press on ONE
@@ -41,6 +45,11 @@ into wip. Then:
   every other frame on the first bar). It moves with the bar the probe starts on: 1 bar per press, MOFF 0 and 2 alternate, MOFF 1 all
   land; with 4 bars MOFF 1 ONE misses (water, j -5..1). The river is one log a bar (3 logs, 228 px pitch at 80 px/s = 2.85 s), so a
   bar-periodic court should not move: unexplained (a harness carry-over or an engine clock that is not the bar's). NOT chased further.
+- **The no-direction flight in the engine (traces)**: j +8 at x7903 grip 0.7: vx stays 520 the whole flight (no air steering) and he
+  lands in the gap at about x 8290 (water); with Right held vx falls to about 280 (maxRun) and he lands on the log. The model with
+  `dir` 0 (probes/nodir-model.patch, NOT applied) reads x7903 grip 0.7 '############.....................########................
+  ########################...#######' against the engine's '###########....................####################.....#####...':
+  the bands agree, the run round ONE does not (the model misses ONE; the engine lands it on the log's last px).
 - On the flick, the engine would pass 2-9's lock 0.92 (except the flicker), so the 0.20 / 0.30 s bar and "0.92 refused" stand on
   the no-direction read only. The input is the lead's call (asked, with (c) as the default).
 
