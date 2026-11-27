@@ -1,6 +1,20 @@
 # SOIL-EASE (R-165.487): the soil's darkening line eased at every bank start
 
-## EXACT NEXT STEP (box 1 hand-over, 10:55 AM ET)
+## GATES ONCE on frozen df06d9753 (the tail, 11:54 AM ET; D115 freeze: chattr -R +i src tools, proven/ writable; base frozen at ab5673531)
+- tsc PASS. Suite in 6 shards: 4,192 tests, 4,188 pass, 1 FAIL, 3 todo (shard 4: goalsEasy.test.ts:10 LV-24, the 5-9 kidRuns pin
+  [3,5,6,7,6,5] vs [14,13,17,18,5,5]). The CI tool line: 449 tests, 446 pass, 2 FAIL, 1 todo (wheelBoard.test.ts:74 boardWatch PLANTED
+  OFF; wheelStepOff.test.ts:38 stepOff PLANTED OFF).
+- ALL THREE REDS ARE INHERITED: each fails the same way on frozen ab5673531 (run there alone: goalsEasy 0/1; wheelBoard + wheelStepOff
+  4 pass, 2 fail). They are INT-R5's discovery reds #4 and #2, fixed on release-0.10.4 by fc31f6e1f, a323cdf97 and f506a2068 (not in
+  ab5673531). This diff touches none of their files (5 files: groundPaint.ts, protoArt.ts, paintFall.ts, paintFall.test.ts, the list).
+- THE LOCK GATE, two runs: `--layouts 16 --out base.json` on ab5673531 PASS (496 s), `--check base.json` on df06d9753 PASS (503 s):
+  "lock: 102/102 stages unchanged".
+- paint0 PASS (306 s), paint1 PASS (426 s), paint2 PASS (421 s): each "0 known depth steps seen, R-165.487", no new lines, no stale id.
+- drawcheck PASS (842 s). knowncheck, generalitycheck, roadmapcheck PASS (box 1).
+- The probe (every stage, both settings, every listed seed / 16 layouts): ALL max 24 a strip (2-7 max 24, was 73); none over 24.
+- NOT LANDED: the lead's tail said any red = record, no fix, stop. The reds are inherited; the lead rules whether t-soil-ease lands as is.
+
+## EXACT NEXT STEP (box 1 hand-over, 10:55 AM ET; done in the tail above)
 On t-soil-ease (cut from ab5673531; this branch's fix commit is the one before this REPORT), run the gates ONCE, each to a log, read
 tails only: (1) the suite in 6 shards (INT-R5 r104/run1.sh suite1..suite6 lines); (2) the CI tool line (gates.yml
 `npx tsx --test tools/engine/library.test.ts ...`); (3) THE LOCK GATE as two runs: in a worktree at ab5673531
