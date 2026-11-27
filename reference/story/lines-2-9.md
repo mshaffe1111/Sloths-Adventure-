@@ -29,10 +29,10 @@ Two stage texts the new design makes false, replaced (the keeper's call, as 2-4'
 
 | Key | Where | REPLACES | Line |
 |---|---|---|---|
-| `page` | Pokey's journal page `'2-9'` (pokeyJournal.ts:68) | "The king's guards stood up straight and held their spears just so. I bowed. Then we got on with it." | The whole court danced to the king's drum. I danced too, slowly, but on the beat. Then I rang his bell. |
+| `page` | Pokey's journal page `'2-9'` (pokeyJournal.ts:68) | "The king's guards stood up straight and held their spears just so. I bowed. Then we got on with it." | The whole court danced to the king's drum. I danced too, on the beat, mostly. Then I rang his bell. |
 | (none) | the Stage Cleared clue `'2-9'` (stageClue.ts:35, "A Crooked Crown") | stays: true of the new stage (no guards in it) | |
 
-Code form for the builder: `'2-9': "The whole court danced to the king's drum. I danced too, slowly, but on the beat. Then I rang his bell.",`
+Code form for the builder: `'2-9': "The whole court danced to the king's drum. I danced too, on the beat, mostly. Then I rang his bell.",`
 (21 words: pokeyJournal.test.ts:38 allows 8-23; it opens "the whole", not 2-8's "the water" or 2-10's "Told", pokeyJournal.ts `opener`). The goal lines are FIXED lines for 2-9 (goalStart / goalLate; {n} the live count,
 "snapper" at n = 1), `sealed` goes in SEALED_LINES as `'2:gauntlet'` (2-9 is World 2's only gauntlet, stagePlan.ts:65-75), and the
 HUD's countWord for World 2's gauntlet is **`snappers`**. 2-5 (World 2's purge, also snappers) is not in this packet: its words stay

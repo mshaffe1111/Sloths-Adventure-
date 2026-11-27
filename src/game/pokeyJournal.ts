@@ -66,7 +66,7 @@ export const STAGE_LINES: Record<string, string> = {
   '2-6': "Rode the water wheels up the bank in buckets meant for water. The water didn't mind sharing.",
   '2-7': 'Took the post up the mill-race, came down the weir, and raced the mailman home. The URGENT one stayed in his bag.',
   '2-8': "The water rose the moment I stepped in. Little ones out first. Then I remembered I don't swim.",
-  '2-9': "The whole court danced to the king's drum. I danced too, slowly, but on the beat. Then I rang his bell.",
+  '2-9': "The whole court danced to the king's drum. I danced too, on the beat, mostly. Then I rang his bell.",
   '2-10': 'Told the king his crown suited him. It did. Then I put him upside down in his own mud.',
   // World 3 · Mossy Grotto
   '3-1': "Followed the glowworm light down into the grotto. I'm dim, but I'm steady. It was enough today.",
