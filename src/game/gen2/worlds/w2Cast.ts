@@ -27,3 +27,16 @@ export function w2CastSpawn(e: Enemy, _c: CreatureDef, out: StageSink): void {
   const cast = (out.proto.cast ??= { kinds: [], traps: [] });
   if (!cast.kinds.includes(e.type)) cast.kinds.push(e.type);
 }
+
+/**
+ * The river king's guard POSTED (ENG-29-e G2; PICKS-29-32.md, the lead's rulings (1), (4), (5)): a royal snapper (predatorAI.ts `royal`:
+ * upright with a spear, head-on he blocks, from behind a kick), the body the hand build's guard() laid (36 x 66, 2 hits, his feet 14 under
+ * his middle). Tagged 'posted': never in the creature bag (pipeline.ts castRows), laid only by an enemy socket whose `allow` names this
+ * row, where the socket stands, on both settings, paid from no threat; he holds his post (Enemy.post: no patrol) facing the nearest
+ * river's water, and he is no foe of the goal (Enemy.uncounted: a gauntlet's count and the sealed exit never read him). A stage puts this
+ * row in its creatures and a socket on a rest beat; nothing here is a stage's.
+ */
+export const W2_POSTED_GUARD: CreatureDef = {
+  id: 'royal-guard-posted', enemy: 'turtle', terrain: 'flat', minGround: 60, w: 36, h: 66, hp: 2, footY: 14, threat: 0,
+  extra: { royal: true, post: -1, uncounted: true, attackCooldown: 1.6 }, tags: ['posted'],
+};

@@ -13,6 +13,10 @@ import W2_NEXT from '../assets/w2-next/w2-next.json';
 export const W2_NEXT_URL = new URL('../assets/w2-next/w2-next.webp', import.meta.url).href;
 /** the sheet's own frames: the cutter's cells (w2-next.json) */
 export const W2_NEXT_FRAMES: Readonly<Record<string, { x: number; y: number; w: number; h: number }>> = W2_NEXT;
+/** the King's Barge's footing in its frame (cut px; the inventory row w2-next#barge's walk_y / walk_x0 / walk_x1, w2NextArt.test.ts):
+ *  the deck from the stern post to the prow's root at this height is the river row's log top, so the log's width sets the drawn size
+ *  (ART-W3-b: a 384-390 px log draws the barge 505-510 px whole, the stern and the croc prow overhanging the deck's ends) */
+export const BARGE_DECK = { y: 222, x0: 80, x1: 1050 } as const;
 /** cut px a world px (the catalog's on_screen_px: 3 cut px a unit, the mailman about one Pokey tall) */
 export const W2_NEXT_SCALE = 3;
 

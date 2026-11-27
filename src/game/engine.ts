@@ -181,7 +181,7 @@ import {
 import { InputEngine } from './inputEngine.ts';
 import { sound } from './audio.ts';
 import type { DrumBeat } from '../audio/drum.ts';
-import { tempoBeat, type TempoSpec } from './tempo.ts';
+import { drumDoubled, tempoBeat, type TempoSpec } from './tempo.ts';
 import { FIND_BY_ID } from './finds.ts';
 import { bossMaterial, materialFor } from '../audio/combat.ts';
 import { FEET, endStagger, isPredator, staggerPredator, stepPredator, stepSpider, turtleGuard } from './predatorAI.ts';
@@ -643,7 +643,8 @@ export class GameEngine {
     const t = this.currentStage.tempo;
     if (!t) return;
     if (this.drumBeat?.t !== t) this.drumBeat = { t, b: { beats: t.beats, beat: tempoBeat(t, this.easy) } };
-    sound.drumTick(this.drumBeat.b, this.gameTime);
+    // (the twist, ENG-29-e G1: doubled while his middle is inside a span the brief's mark laid, tempo.ts drumDoubled, on both settings)
+    sound.drumTick(this.drumBeat.b, this.gameTime, drumDoubled(t, this.player.x + this.player.width / 2));
   }
   private set gameTime(t: number) { this.clock.seek(t); }
   private standingOnId: number = -1;
@@ -4941,7 +4942,8 @@ export class GameEngine {
         markTipHeard(FIRST_OF_STAGE, `cast:${way}`);
         this.guide(line, 4);
       }
-      p.enemiesDefeated++;
+      // (a foe the goal does not name, Enemy.uncounted, moves no count: goals.ts goalCounts leaves him out of the total too)
+      if (!e.uncounted) p.enemiesDefeated++;
       if (!e.minion && e.type !== 'boss' && e.type !== 'ant_hazard') this.statKills[e.type] = (this.statKills[e.type] ?? 0) + 1;
       recorder.event('chasedOff', e.type);
       sound.playWhoosh();
@@ -5310,7 +5312,7 @@ export class GameEngine {
     e.koTimer = 0;
     e.koAngle = 0;
     e.koLanded = false;
-    p.enemiesDefeated++;
+    if (!e.uncounted) p.enemiesDefeated++;
     if (e.groundY === undefined) e.groundY = e.y;
     if (isPredator(e.type)) staggerPredator(e); // open crouch pose, then the hop and flop
     const ko = koLaunch(e, dir);
@@ -6422,7 +6424,7 @@ export class GameEngine {
         //  river's box above ends there, one clip, DRESS-27b)
         if (painted && drawSafeRiverOver(ctx, logs, r.surfaceY, t, r.dir, r.speed)) {
           for (const lg of logs) {
-            if (lg.drift?.look === 'raft') continue;
+            if (lg.drift?.look === 'raft' || lg.drift?.look === 'barge') continue;
             const ly = safeLogLine(lg, t);
             for (let x = lg.x + 22; x < lg.x + lg.width - 8; x += 50) drawRiverFoam(ctx, Math.round(x / 50) + lg.id, x, ly + 2, 56, 0.75, (lg.id + Math.round(x / 50)) % 2 === 0);
           }
