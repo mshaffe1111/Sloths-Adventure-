@@ -43,6 +43,10 @@ import type { FollowRow } from '../../follow.ts';
 import type { WheelRow } from '../wheelLay.ts';
 import { W1_KIT } from './w1.ts';
 import { W1_LIANA_GAP } from './w1Swing.ts';
+import { paintsUnder } from '../fallPaint.ts';
+
+/** World 2's fall painter (its manifest's pitPainter): what this finish lays under an open fall, the one rule the judges read too */
+const W2_PAINTER = 'splashRivers' as const;
 
 /** World 2's ground: the floor line, a bank's depth (the hand-built world's BANK_H) and how deep a splash-back river's bed lies */
 export const W2_GROUND = { y: G, bankH: 90, pitDepth: 110 } as const;
@@ -337,6 +341,8 @@ export function w2Manifest(): WorldManifest {
     moves: ['double', 'climb', 'swing'],
     ground: { y: W2_GROUND.y, bankH: W2_GROUND.bankH, style: 'log' },
     pit: 'soft', pitDepth: W2_GROUND.pitDepth,
+    // (its fall painter: the finish below turns every open soft fall into a splash-back river; the judges read the same rule, fallPaint.ts)
+    pitPainter: W2_PAINTER,
     rollRanges: W1_KIT.rollRanges,
     corridor: { top: G - 400, bottom: G + 80, soft: 60 },
     themeShare: [1, 1],
@@ -457,7 +463,7 @@ export function w2Finish<T extends FinishStage>(st: T, _difficulty?: Difficulty)
     return had.some((r) => r.wheelPond && Math.abs(r.surfaceY - (w.cy + w.R + WHEEL.pond)) <= 2 && r.x0 <= f.x0 + 1 && r.x1 >= f.x1 - 1);
   });
   const hasRiver = (f: (typeof sorted)[number]) => wheelPond(f) || had.some((r) => r.x0 < f.x1 - 1 && r.x1 > f.x0 + 1 && r.surfaceY >= f.y - 20 && r.surfaceY <= f.y + surfaceBelowBank + LIP_RISE + 20);
-  const water = (f: (typeof sorted)[number]) => (f.kind === 'water' || f.kind === 'soft') && !hasRiver(f);
+  const water = (f: (typeof sorted)[number]) => !!paintsUnder({ pitPainter: W2_PAINTER }, f.kind) && !hasRiver(f);
   const taken = new Set<(typeof sorted)[number]>();
   for (const f of sorted) {
     if (!water(f) || taken.has(f)) continue;
@@ -491,7 +497,7 @@ export function w2Finish<T extends FinishStage>(st: T, _difficulty?: Difficulty)
     }
     for (const g of joined) taken.add(g);
     const x0 = f.x0;
-    const safe = f.kind === 'soft';
+    const safe = paintsUnder({ pitPainter: W2_PAINTER }, f.kind) === 'safe-river';
     // (the lead's ruling (B), ENG-GROUND-d: on a stage that lays a run leg under another, a soft gap between two thin pieces over that
     //  leg's floor is left open. Filled, its water stood under the next stair down, out of his reach, and ran its paint to the view's foot
     //  as a column over the floor he walks (2-7's toy, the descent); lidded at its bed it hung as a box of water between the planks. Only
