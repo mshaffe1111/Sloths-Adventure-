@@ -137,7 +137,7 @@ import { drawKitDecor } from './puzzleArt.ts';
 import { drawDress } from './dressArt.ts';
 import { drawInvDress } from './art/invDress.ts';
 import { drawWaterSign, signRattle } from './waterSign.ts';
-import { ROOM_CAM, roomCentre, roomFloor, roomLean, roomView } from './puzzleCamera.ts';
+import { earOf, ROOM_CAM, roomCentre, roomFloor, roomLean, roomView, roomZoomStep, type CamEar } from './puzzleCamera.ts';
 /** no World 5 pieces for Dot to point at (any other world) */
 const NO_W5_THINGS: readonly never[] = [];
 /** over a stacked leg's earth (stackViewFloor), the lowest share of the view his feet may sit at when the view's foot is held up */
@@ -6790,7 +6790,7 @@ export class GameEngine {
     }
     // a puzzle room (puzzleCamera.ts): the view leans from him toward the part of the puzzle that matters now, or goes to a far gate
     // that has just opened; outside every room this is nothing
-    const kf = !look && this.kit ? this.kit.camFocus(p, vw * this.roomZoom, vh * this.roomZoom, this.roomFloorNow()) : null;
+    const kf = !look && this.kit ? this.kit.camFocus(p, vw * this.roomZoom, vh * this.roomZoom, this.roomFloorNow(), this.kitEars()) : null;
     if (kf) {
       // (moved from the lean point just enough to keep the key box in: the stone, its basket and the cage it lifts, all at once)
       const lean = roomLean(p.x, p.y - 45, kf.x, kf.y);
@@ -9654,6 +9654,12 @@ export class GameEngine {
     }
   }
 
+  /** the watchers that hear the kit's noises (noise.ts: the turtles and royal guards, line 'e.lureX'), for a room's camera; none outside */
+  private kitEars(): CamEar[] {
+    if (!this.kit || this.kit.inRoom < 0) return [];
+    return this.enemies.filter((q) => q.type === 'turtle' && !q.defeated).map((q) => earOf(q.x, q.y));
+  }
+
   /** the most a puzzle room may pull back now, of the usual zoom (puzzleCamera.ts roomFloor: further upright than sideways) */
   private roomFloorNow(): number {
     return roomFloor(this.viewCssW, this.viewCssH, this.roomUsual);
@@ -9665,11 +9671,11 @@ export class GameEngine {
     // (the Butler's sleepy steam: the drowsy veil, as World 5's teapots give it)
     this.drowsy = Math.max(this.drowsy, this.kit!.sleepy());
     const cam = this.camera;
-    const kf = this.kit!.camFocus(this.player, cam.viewportWidth * this.roomZoom, cam.viewportHeight * this.roomZoom, this.roomFloorNow());
+    const kf = this.kit!.camFocus(this.player, cam.viewportWidth * this.roomZoom, cam.viewportHeight * this.roomZoom, this.roomFloorNow(), this.kitEars());
     const want = kf ? (kf.pan ? this.roomZoom : kf.zoom) : 1;
     const prev = this.roomZoom;
-    this.roomZoom += (want - this.roomZoom) * Math.min(1, dt * ROOM_CAM.ease);
-    if (Math.abs(want - this.roomZoom) < 0.002) this.roomZoom = want;
+    // (eased, with the view's size changing at most ROOM_CAM.slew a second: puzzleCamera.ts roomZoomStep)
+    this.roomZoom = roomZoomStep(prev, want, dt, Math.max(cam.viewportWidth, cam.viewportHeight) * prev);
     if (this.roomZoom !== prev) this.applyZoom();
   }
 
