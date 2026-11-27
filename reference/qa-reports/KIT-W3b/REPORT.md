@@ -16,6 +16,23 @@ lead each shard's totals, the tool line and the lock counts. Box 3:
    (rising): its sections rise 0 px' x12 on 3-3). A rising climb out (no walk off the shelf: the exit bank at the shelf's height, exitDy
    -(180-54)) is the w3.ts prowlClimb way with a third flag; counted by a test on 3-3's code with its planted red.
 
+## GATES and LANDING (box 2 tail, by `date`: gates done 10:57 AM ET, landed after 11:15 AM ET Fri 11-27)
+Frozen candidate 5035c191a (worktree, src and tools read-only, src/game/gen2/proven/ writable, D115):
+- tsc 0; generalitycheck PASS (68 engine files, 26 literals, 26 known).
+- Suite, 6 shards (deploy.yml's split): 1: 656 tests 655 pass 0 fail 1 todo; 2: 650/650/0; 3: 766/766/0; 4: 722/722/0; 5: 630/629/0/1
+  todo; 6: 728/727/0/1 todo. The CI tool line (gates.yml 'rolled'): 355 tests 354 pass 0 fail 1 todo. Every 'not ok' is a listed TODO
+  (R-165.312's roost boa; 4-3's boulder; the chase child bot).
+- Lock: **102/102 stages unchanged, 3264 builds** (`lockall.ts --layouts 16 --out` on the landing base f79963053, then `--check <that
+  file>` on 5035c191a). MY MISS, owned: the first run was `lockall.ts --check` with NO file: it builds every stage, compares nothing,
+  prints no counts and exits 0, an empty pass, counted as not run. Countermeasure accepted by the lead: R-165.536 (lockall exits 1 on a
+  bare --check, with a planted test; every brief spells out `--check <lock file>`; a lock result without its counts line is not run).
+  Box 1's and box 2's earlier next steps printed the bare command; this record replaces them.
+- seedlist --check, all 14 proven lists (no World 3 stage has one; w3.ts is imported by stageTable.ts, which every listed stage reads):
+  1-1 PASS 161 seeds, 1-5 PASS 150, 1-2 1-3 1-4 1-6 1-7 1-8 1-9 2-1 2-2 2-3 2-4 2-5 PASS 100 each, every seed clean on both settings.
+Landing: t-eng-w3 had moved to 9818cc87d (ENG-CATCH, tower.ts); merged into t-kit-w3b = 75d4f3af8 (clean). After the merge: tsc 0;
+w3.test + w3Level.test + tower.test + w3HazardAsks.test 65/65; lock **102/102 unchanged, 3264 builds** (recorded on 9818cc87d, checked
+on 75d4f3af8). Then onto origin/t-eng-w3 by merge (fast-forward), no force.
+
 ## Box 2 (R-165.505): the climb out, in the light and the dark
 ### The bricks (src/game/gen2/worlds/w3.ts; all `feel` = W3_LEVEL_STAGES, jobs PROWL_JOBS (never a teach), ocelot sockets only)
 - `w3-prowl-climb` / `-dark` (content 'climb', needs climb): an entry bank 280-320, a plain 54 px step (0.61 Pokey) down onto the ocelot's
