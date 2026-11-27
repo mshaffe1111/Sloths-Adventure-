@@ -1,4 +1,10 @@
 # ENG-DARK REPORT (the dark + light ring as one gen2 brick; WORLD-3-PLAN F2; R-165.449)
+**BOX 26 GATES ON 93e05e98d (past the box, the lead's ruling: gates of this frozen candidate only).** tsc 0; generalitycheck PASS.
+Suite on the chattr'd wtM: shard 4 580/0 +1 TODO (R-165.312), 5 798/0, 6 762/0; shard 1 624/1 +1 TODO (4-3's wall check): the ONE red,
+seedListChunk.test.ts:38 'the game's main script reaches no list file...', EPERM on mkdtemp under src/game/gen2/proven/ = THE FREEZE
+itself (R-165.494, the third lane tonight). Stopped, reported; the lead APPROVED a re-run: wtS = 93e05e98d chattr'd with only the
+directories src, src/game, src/game/gen2, src/game/gen2/proven left writable (every file still frozen): seedListChunk.test.ts 2/0;
+shards 1, 2, 3 re-running there; the CI line on wtU (93e05e98d, unfrozen, untouched). Shards 2-3 on wtM were stopped unfinished.
 **EXACT NEXT STEP (ENG-DARK-z box 26 HAND-OVER, 6:56 PM ET by `date`): THE CANDIDATE = 93e05e98d** (merge of t-eng-w3 88592a9c4 into
 t-eng-dark-wip at c20 b83522463 + the REPORT; clean, engine.ts auto-merged as in box 25's trial). Code since c18: tower.ts rule 1 only
 (+ the toy in tower.test.ts, plants 48-50 in planted-faults.py). GATES ON FROZEN 93e05e98d (chattr'd worktree), box 26 so far: tsc 0;
