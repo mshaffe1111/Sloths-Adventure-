@@ -27,6 +27,9 @@ ReadNotifications first (D140). Box 11 DID steps 1-3 and 5; 4 and 6 are RUNNING 
    No stage id goes in engine code (generalitycheck), so this is by cast, not by 2-9.
 5. The gates on 1846b25b are DISCOVERY only (the lead's ruling): drawcheck (22 scenarios incl. 2-9), the lock as two runs (base on
    7387d089a, check on 1846b25b) and the 6 shards were running at this stamp in the scratchpad; their totals are below if they finished.
+   - DRAWCHECK (step 4) PASS, 22 scenarios incl. 2-9, the same limits, 899 s, no breach (flown/drawcheck-k.txt). For 2-9 only the
+     reported note shrunkOver2_5x 9.00 at spot 0 (fails over 32; 2-5 9.75, 2-7 11.00). Its top call sites: paintedScenery.ts:104/102
+     (drawGroundFlora) 2.76 + 2.24/frame and sheetBake.ts:125 (drawSheet) 2.55/frame, the same as 2-3/2-4/2-5/2-7.
 LEARNED (k): (1) a bot's low pass rate on one stage means nothing until the same metric runs on the stage's siblings: 2-5 at 4/40
 put 2-9's 5/40 in line in one 4-minute run, before any re-lay. (2) A two-line stderr probe (the foe's state at each rescue, then every
 6 frames over the stall) named the cause in two runs; keep it as probes/kid-trace-k.patch. (3) stills-at-setting needs
