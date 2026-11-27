@@ -16,7 +16,7 @@ import { applyVerdicts, buildGen2Stage, HARD_JOBS, keptFoes, layLocal, layStage,
 import { packPlan, stageParts, unpackPlan } from './seedList.ts';
 import { cfg as runCfg, kit as runKit } from './toyWorld.ts';
 import { ARC_CODE, arcKit, gateKit, hopsUp, towerCfg, upKit, upManifest } from './toyTower.ts';
-import { fallSeconds, flagFurther, gapCatchY, LEAP, leaps, localExtent, HANG, offEnd, openEnds, walledEnd, reflectLocal, routeAt, routeOf, storeyLimit, TOWER, towerCatches, towerFalls, towerFlagBreaches, stopVines, towerHandOns, towerVineCuts, towerFlags, towerGates, towerSkips, towerVaults, vertical, towerLids, ROOF, overlapRefused } from './tower.ts';
+import { fallSeconds, flagFurther, gapCatchY, LEAP, leaps, localExtent, HANG, offEnd, openEnds, walledEnd, reflectLocal, routeAt, routeOf, storeyLimit, TOWER, towerCatches, towerFalls, towerFlagBreaches, stopVines, towerHandOns, towerVineCuts, towerFlags, towerGates, towerSkips, towerVaults, vertical, towerLids, ROOF, overlapRefused, downInvariant, TowerRefusal } from './tower.ts';
 import { climbX, CLIMB_CLEAR, VAULT_GAP } from '../vineTop.ts';
 import type { Gen2Stage } from './types.ts';
 
@@ -917,4 +917,31 @@ test("going down, a bridge started a hop past a vine's top that reaches the end'
   const all = [...base, ...cs.map((c, k) => solid(c.x, c.y, c.w, 100 + k))];
   assert.ok(cs.some((c) => c.y === 1256 && c.x === 554 + TOWER.hop + 30 && c.x + c.w >= 726), `the end is bridged from the storey, a hop past the vine: ${JSON.stringify(cs)}`);
   assert.deepEqual(towerFalls('down', all, FLOOR, W), [], 'no blind drop is left');
+});
+
+test("THE DOWN TOWER'S INVARIANT names any two pieces of solid wood that overlap at one height (|dy| <= 1), the stage's own wood and the catches alike; end to end, a crack apart in height, or not both solid is no overlap (ENG-CATCH-h)", () => {
+  const W = 1280, FLOOR = 1481, floor = solid(0, FLOOR, W, 9);
+  const named = (ps: Platform[]) => downInvariant([...ps, floor], [], [], FLOOR, W).filter((m) => m.what === 'overlap').map((m) => m.line);
+  assert.deepEqual(named([solid(200, 1300, 300, 1), solid(450, 1301, 200, 2)]), ['tower: two pieces of solid wood overlap at one height: x 200-500 and x 450-650 at y 1300'], 'a 50 px overlap, 1 px apart in height, is named');
+  assert.deepEqual(named([solid(200, 1300, 300, 1), solid(250, 1300, 100, 2)]), ['tower: two pieces of solid wood overlap at one height: x 200-500 and x 250-350 at y 1300'], 'a piece wholly over another is named');
+  assert.deepEqual(named([solid(200, 1300, 300, 1), solid(500, 1300, 200, 2)]), [], 'end to end is no overlap');
+  assert.deepEqual(named([solid(200, 1300, 300, 1), solid(450, 1302, 200, 2)]), [], '2 px apart in height is no overlap');
+  assert.deepEqual(named([solid(200, 1300, 300, 1), { ...solid(450, 1300, 200, 2), type: 'fragile' } as Platform]), [], 'a piece that is not solid wood is no overlap');
+});
+
+test("THE GUARANTEE refuses by name a down tower that would leave two pieces of solid wood overlapping at one height, whatever laid them: the roll is refused, never shipped (ENG-CATCH-h)", () => {
+  const W = 1280, FLOOR = 1481;
+  const base = [solid(200, 1300, 300, 1), solid(450, 1300, 200, 2), solid(0, FLOOR, W, 3)];
+  assert.throws(() => towerCatches('down', base, [], FLOOR, W), (e: unknown) => e instanceof TowerRefusal && e.miss === 'tower: two pieces of solid wood overlap at one height: x 200-500 and x 450-650 at y 1300', 'refused by name');
+  // (box 2's toys: every lay the tower returns, read by the invariant itself, has no overlap and no other miss)
+  const vine = { id: 1, x: 554, topY: 1256, bottomY: FLOOR, swaySpeed: 1, swayPhase: 0, vineType: 'tree_climb' } as Vine;
+  for (const [name, ps, vs] of [
+    ["ENG-CATCH-b's toy", [solid(650, 1000, 269, 1), solid(136, 1256, 418, 2), solid(0, FLOOR, W, 3)], [vine]],
+    ['the 50 px gap', [solid(524, 1000, 400, 1), solid(200, 1200, 275, 2), solid(525, 1200, 300, 3), solid(0, FLOOR, W, 4)], []],
+    ['the 60 px gap', [solid(524, 1000, 400, 1), solid(200, 1200, 270, 2), solid(530, 1200, 300, 3), solid(0, FLOOR, W, 4)], []],
+  ] as Array<[string, Platform[], Vine[]]>) {
+    const cs = towerCatches('down', ps, vs, FLOOR, W);
+    const all = [...ps, ...cs.map((c, k) => solid(c.x, c.y, c.w, 100 + k))];
+    assert.deepEqual(downInvariant(all, vs, [], FLOOR, W).map((m) => m.line), [], `${name}: the lay as returned keeps the invariant: ${JSON.stringify(cs)}`);
+  }
 });

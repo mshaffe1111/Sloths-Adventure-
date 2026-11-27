@@ -1088,22 +1088,40 @@ function handOnMisses(turns: ReadonlyArray<{ x: number; from: number; to: number
 
 /** one miss of THE DOWN TOWER'S INVARIANT (downInvariant), by name: `line` is the verdict's own line; `piece` the wood it is of (the end's
  *  piece, or the turn's catch); `at` the fall lines a landing would mend (the end's, or every way off the catch he was followed along) */
-export interface DownMiss { what: 'drop' | 'gives' | 'pass' | 'lid'; line: string; piece?: Platform; at: Array<{ x: number; y: number; dir: -1 | 1 }>; turn?: { x: number; from: number; to: number } }
+export interface DownMiss { what: 'overlap' | 'drop' | 'gives' | 'pass' | 'lid'; line: string; piece?: Platform; at: Array<{ x: number; y: number; dir: -1 | 1 }>; turn?: { x: number; from: number; to: number } }
 
 /**
  * THE DOWN TOWER'S INVARIANT (ENG-CATCH-c, R-165.534; D154): going down, no piece end's fall line drops him more than TOWER.see (his landing
  * is in view, D46: towerFalls), no piece gives way over a blind drop, no turn's catch hands him past the storey it serves (towerHandOns), and
- * nothing lies in his hop's room (towerLids). Read with the vines where the stage will hang them (clearClimbs: climbX) and stop them
+ * nothing lies in his hop's room (towerLids), and no two pieces of solid wood overlap at one height (woodOverlaps). Read with the vines where the stage will hang them (clearClimbs: climbX) and stop them
  * (stopVines), so the lay (towerCatches, which keeps it) and the stage's verdict read one tower. Each miss by name; empty: kept.
  * `turns`: the column's turn vines by id, with the storeys each joins (pipeline.ts turns).
  */
 export function downInvariant(platforms: readonly Platform[], vines: readonly Vine[], turns: ReadonlyArray<{ id: number; from: number; to: number }>, floorY: number, width: number): DownMiss[] {
   const hung = vines.map((v) => ({ ...v, x: climbX(v, platforms) }));
   stopVines(hung, platforms);
-  const out: DownMiss[] = fallMisses('down', platforms, floorY, width).map((m) => (m.x === undefined ? { what: 'gives', line: m.line, piece: m.p, at: [] } : { what: 'drop', line: m.line, piece: m.p, at: [{ x: m.x, y: m.p.y, dir: m.x < m.p.x ? -1 : 1 }] }));
+  // (no two pieces of solid wood overlap at one height, the stage's own and the catches alike: named FIRST, so a lay that any path
+  //  leaves with one is refused by this name (towerCatches' guarantee), and the mend never keeps a remedy that lays one (it would not
+  //  leave fewer misses). `put` and every move keep it by construction (ENG-CATCH-g: 303 pairs on 79 of 80 drafted 3-1s, then 0); this
+  //  is the net under every path, the move paths' refusal included, which no toy reaches, ENG-CATCH-h)
+  const out: DownMiss[] = woodOverlaps(platforms).map((line) => ({ what: 'overlap', line, at: [] }));
+  for (const m of fallMisses('down', platforms, floorY, width)) out.push(m.x === undefined ? { what: 'gives', line: m.line, piece: m.p, at: [] } : { what: 'drop', line: m.line, piece: m.p, at: [{ x: m.x, y: m.p.y, dir: m.x < m.p.x ? -1 : 1 }] });
   const T = turns.flatMap((t) => { const v = hung.find((q) => q.id === t.id); return v ? [{ x: v.x, from: t.from, to: t.to }] : []; });
   for (const m of handOnMisses(T, platforms, width)) out.push({ what: 'pass', line: m.line, piece: m.c, at: m.trail, turn: m.turn });
   for (const line of towerLids(hung, platforms)) out.push({ what: 'lid', line, at: [] });
+  return out;
+}
+
+/** every two pieces of solid wood that overlap at one height (|dy| <= 1, strictly along: end to end is none), each by name: two planks
+ *  drawn over each other show an end cap in the middle of a plank (ENG-CATCH-g). Sorted by height, so each piece is read only against
+ *  the wood within 1 px of its height (downInvariant runs on every lay and every try of the mend), ENG-CATCH-h */
+export function woodOverlaps(platforms: readonly Platform[]): string[] {
+  const S = platforms.filter((p) => p.type === 'solid').sort((a, b) => a.y - b.y || a.x - b.x);
+  const out: string[] = [];
+  for (let i = 0; i < S.length; i++) for (let j = i + 1; j < S.length && S[j].y - S[i].y <= 1; j++) {
+    const a = S[i], b = S[j];
+    if (a.x < b.x + b.width && b.x < a.x + a.width) out.push(`tower: two pieces of solid wood overlap at one height: x ${Math.round(a.x)}-${Math.round(a.x + a.width)} and x ${Math.round(b.x)}-${Math.round(b.x + b.width)} at y ${Math.round(a.y)}`);
+  }
   return out;
 }
 
