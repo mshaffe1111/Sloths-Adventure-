@@ -1,0 +1,11 @@
+2-9: 24 seeds x both settings, built from its stage-table row as the seed-list search builds it
+== normal: CLEAN 0 of 24 (0%), thrown 1; 0 distinct beat orders; graphs none
+   cast none; creatures per clean roll none; seconds n/a; width n/a px
+     23  the quiet line: # s with nothing to do at x #, over # s (the goal run-out excluded)
+      1  THROW gen# ##: no section fits node n# (sho): the pool is spent (# that fit are laid already, slot #)
+== easy: CLEAN 0 of 24 (0%), thrown 1; 0 distinct beat orders; graphs none
+   cast none; creatures per clean roll none; seconds n/a; width n/a px
+     23  the quiet line: # s with nothing to do at x #, over # s (the goal run-out excluded)
+      1  THROW gen# ##: no section fits node n# (sho): the pool is spent (# that fit are laid already, slot #)
+clean on BOTH settings: 0 of 24 seeds
+pool sections never laid: none

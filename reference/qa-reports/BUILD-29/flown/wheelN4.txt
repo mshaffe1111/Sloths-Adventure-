@@ -1,0 +1,7 @@
+normal N4 2-beat R160 V176.37: turn 5.7 s, period 1.43 s, lift 264; board tap 100% 1.43 s, walk 58% 0.77 s; ride stayed in; step 1.2 s (walk 0.73, tap 1.2); half turn + half period 3.57 s
+normal N4 2-beat R140 V154.32: turn 5.7 s, period 1.43 s, lift 224; board tap 100% 1.43 s, walk 67% 0.97 s; ride stayed in; step 1.37 s (walk 0.8, tap 1.37); half turn + half period 3.57 s
+normal N4 2-beat R120 V132.28: turn 5.7 s, period 1.42 s, lift 184; board tap 100% 1.43 s, walk 74% 1.07 s; ride stayed in; step 1.67 s (walk 0.93, tap 1.67); half turn + half period 3.56 s
+easy N4 bar R160 (Easy) V76.16: turn 13.2 s, period 3.3 s, lift 264; board tap 100% 3.3 s, walk 60% 1.97 s; ride stayed in; step 2.7 s (walk 1.77, tap 2.7); half turn + half period 8.25 s
+easy N4 2-beat R160 (Easy) V152.32: turn 6.6 s, period 1.65 s, lift 264; board tap 100% 1.63 s, walk 69% 1.13 s; ride stayed in; step 1.53 s (walk 0.93, tap 1.53); half turn + half period 4.13 s
+easy N4 bar R140 (Easy) V66.64: turn 13.2 s, period 3.3 s, lift 224; board tap 100% 3.3 s, walk 65% 2.13 s; ride stayed in; step 3.03 s (walk 1.93, tap 3.03); half turn + half period 8.25 s
+easy N4 2-beat R140 (Easy) V133.28: turn 6.6 s, period 1.65 s, lift 224; board tap 100% 1.63 s, walk 73% 1.2 s; ride stayed in; step 1.8 s (walk 1, tap 1.8); half turn + half period 4.13 s

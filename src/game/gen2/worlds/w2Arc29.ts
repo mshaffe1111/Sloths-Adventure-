@@ -176,10 +176,10 @@ const grandDance = (easy: boolean): Lay => ({
 /** [P b1^<] beat 9, up to the quay: World 2's bounce to the royal quay */
 const upQuay: Lay = { pieces: [bank('a', null, 360), spring('sp', 'a', 0.7), rise('z', 'a', 420, -160)], sockets: [] };
 /** [S w1>] beat 10, the King's Barge: from the quay to the shrine steps (G3: its own look; the bell on the arch, not in the draft) */
-// (beat 10's landing: the king's guard POSTED on the far bank (G2, the lead's rulings (1)(4)(5)), facing the barge, out of the goal)
+// (beat 10's landing: the king's guard POSTED on the far bank (G2, the lead's rulings (1)(4)(5)), facing the barge, out of the goal; at t 0.6 (336 px in): the nearest post to the landing the engine's safe spot allows (t 0.3-0.5 refused on 14 of 24 seeds both settings, 'no clear ground', patchFor), the lead's ruling (b) as swept, BUILD-29-h)
 // (the far bank 560 px, not 300: the stage's last flag (ROLLED_FLAGS.last) lands on it on 19 of 40 rolls, and the guard keeps SAFE_APPROACH +
 //  24 = 224 px from a flag; at 300 px both cannot stand on it, and patchFor refuses the post by name. BUILD-29-d)
-const barge: Lay = { pieces: [bank('a', null, 420), river('c', 'a', 'barge29', 360), bank('z', 'c', 560)], sockets: [{ id: 'guard', role: 'enemy', on: 'z', t: 0.8, allow: [W2_POSTED_GUARD.id] }] };
+const barge: Lay = { pieces: [bank('a', null, 420), river('c', 'a', 'barge29', 360), bank('z', 'c', 560)], sockets: [{ id: 'guard', role: 'enemy', on: 'z', t: 0.6, allow: [W2_POSTED_GUARD.id] }] };
 /** [R] a rest on the bank */
 const rest: Lay = { pieces: [bank('a', null, 240), bank('b', 'a', 300), rock('rb', 'b', 0.5), bank('z', 'b', 240)], sockets: [{ id: 'find', role: 'findSpot', on: 'a', t: 0.5 }] };
 
