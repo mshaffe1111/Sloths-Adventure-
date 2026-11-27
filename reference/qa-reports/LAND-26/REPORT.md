@@ -7,8 +7,9 @@ tools/engine/depthSteps.known.json (108 entries: stage|setting|seed|x|bank, each
 at or under its listed jump; growth, unlisted or vanished-on-a-whole-sweep entries fail) and by knowncheck (shrink-only). Proven: 2-7
 passes with the list; one jump lowered or one entry deleted = 2 NEW lines, FAIL; knowncheck against the committed list: an added
 entry FAILS (exit 1), one removed passes ("107, 1 fewer"). paintFall.test (the planted RED) 17/17.
-Next: the gates still running on frozen 800bcda5b (the table below: suite shards 1-3, sweep 2/3, tierBots); each result in the
-table; then the landing message to the lead with the hash and one line per gate (each shard's totals).
+**LANDED on t-land-26 (7:26 PM ET Thu 11-26): every gate below ran ONCE on frozen 800bcda5b (drawcheck/clipcheck on cf9a59a07, src identical); the only
+red is KID_RUNS_59, the release line's inherited one; roadmapcheck owed to the lead's ROADMAP at integration. The landing message to the
+lead carries the hash and one line per gate.** Next: nothing in this box; R-165.487 (the soil ease) and R-165.488 are the lead's to route.
 
 ### Session 7 gates (frozen 800bcda5b unless noted; one run each)
 | gate | result |
@@ -16,7 +17,7 @@ table; then the landing message to the lead with the hash and one line per gate 
 | tsc | PASS (0) |
 | paintcheck part 1/3 | **PASS** (2196 builds, 34 stages; 108 known depth steps seen, 0 stale, 0 new; 107 known ids R-165.292) |
 | paintcheck part 0/3 | PASS (170 known ids; 0 depth steps) |
-| paintcheck part 2/3 | RUNNING |
+| paintcheck part 2/3 | PASS (1928 builds; 106 known ids; 0 depth steps) |
 | the CI tool line (gates.yml:157) | PASS 432/433, 0 fail, 1 todo |
 | knowncheck | PASS (depthSteps.known.json new, 108) |
 | paintFall.test.ts | 17/17 |
@@ -25,8 +26,10 @@ table; then the landing message to the lead with the hash and one line per gate 
 | roadmapcheck | FAIL (14): 13 inherited (commits not in this clone's history; same 13 on cf9a59a07) + depthSteps.known.json not yet cited: **owed to the lead's ROADMAP at integration** (R-165.487's Source; the lead's ruling) |
 | drawcheck | PASS (1181 s) on frozen cf9a59a07 (src identical to 800bcda5b) |
 | clipcheck | PASS (83 known, none new) on frozen cf9a59a07 (src identical) |
-| suite shards 1-3 | RUNNING |
-| tierBots | RUNNING (queued after sweep 2/3) |
+| suite shard 1 | PASS 1418/1420, 0 fail, 2 todo |
+| suite shard 2 | 1401/1403, **1 fail = KID_RUNS_59** (inherited, R-165.473/.477), 1 todo |
+| suite shard 3 | PASS 1368/1368 |
+| tierBots | 9/9 |
 | KID_RUNS_59 | the release line's inherited red (R-165.473/.477), held for Matt |
 
 ### LAND-26-e's final gate record (relayed by the lead; its own record commit was never pushed). Code 1caf50a93 unless noted
