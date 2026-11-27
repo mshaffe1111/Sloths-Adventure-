@@ -70,7 +70,7 @@ export const lineId29 = (line: keyof typeof LINES_29): string => `w29.${line}`;
 export const KICK_29 = 'hint.2-9.kick';
 const KICK_WORDS_29 = ((r) => r?.[4] ?? r?.[5] ?? undefined)(DOT_LINES.find((q) => q[0] === KICK_29));
 /** the teach lines (said on the first meeting, never waiting out Dot's calm gap) */
-export const TEACH_29 = ['drum'] as const;
+export const TEACH_29 = ['drum', 'roar'] as const;
 
 /** the court's rows of snap stones and pads (2-9.md:10-17). The stones are the WIDE snap stone (130 px, ENG-STONE29's flown band, a pace of
  *  258-281 px/s): Normal 130 + 62, Easy its own twin rows at 130 + 92 (mid-band; Easy 130 + 50 is off the beat), the lead's ruling 3; flown
@@ -231,10 +231,6 @@ export function kitLib29(id: string = STAGE_29): WorldKit {
       required: {},
       tips: { ...M.tips, ...Object.fromEntries((Object.keys(LINES_29) as Array<keyof typeof LINES_29>).map((key) => [lineId29(key), LINES_29[key]])), ...(KICK_WORDS_29 ? { [KICK_29]: KICK_WORDS_29 } : {}) },
       teachTips: [...(M.teachTips ?? []), ...TEACH_29.map(lineId29)],
-      // (the stage's once-only story beat, by the speaker its line table names (lines-2-9.md:19: Dot, once, right after the king's roar
-      // at the twist): a story line on every help setting with the story switch on. As a plain tip Tips dropped it, Normal's default:
-      // storyTipScan, R-165.571, the form 2-1 uses, R-165.412)
-      storyTips: { ...(M.storyTips ?? {}), [lineId29('roar')]: 'Dot' },
       graphs: { ...G, list: [...G.list.filter((g) => g.archetype !== 'gauntlet'), ...Object.entries(ARC_29).map(([id, code]) => ({ id, archetype: 'gauntlet' as const, code }))], briefs: { ...G.briefs, [id]: BRIEF_29 } },
     } } as WorldKit;
 }

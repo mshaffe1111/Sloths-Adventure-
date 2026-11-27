@@ -1,0 +1,2 @@
+teachFirstScan: 0 miss(es) over 200 roll(s) of 1 listed stage(s)
+teach29 EXIT 0
