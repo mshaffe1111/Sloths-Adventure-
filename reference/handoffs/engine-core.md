@@ -2,6 +2,17 @@
 
 Merged at INT-14 (11-20, t-int-14): §0zq-25d/§0zq-25c ENG-25c (2-5's snap rows level, the snapper's ground, the straddle), §0zq-NOISE ENG-NOISE (one noise channel), §0zq-PROWL ENG-PROWL (sight.up + the leap), §0zq-small3 ENG-SMALL3 (R-165.317/.319/.321), and PAINT-292 (World 1's painted planks and stones; no section here). Merged at INT-13 (11-19, t-int-13): §0ENG23 ENG-23 (followers, the heron reads the line) and §0zl-168 TIME-168 (timecheck), §0zm-25b ENG-25b (the snapper bot skill, the meter's snap channel) and §0zl-25 ENG-25 (2-5's snap stones and snapper rows), §0zn-26b ENG-26b and §0zm-26 ENG-26 (the water wheel), §0W2A ART-W2A (2-3's painted follow poses), §0zo ART-W2B (the wheel's painted draw), §0zo-285c/§0zo-285b/§0zo-285 ENG-285 (the judges and bots fly the engine's Pokey), §0zp-284 FIX-284/284b (2-2's big pads, the real tap hop), §0zp-24d BUILD-24d, §0zn-24c ENG-24c (the raft look, the glow) and §0zm-24 BUILD-24 (2-4) joined; rewritten at the INT-12 merge (11-18, t-int-12): four members wrote here the same day, so labels are suffixed where they met: §0zm-22p ART-22P (CI's seed-list matrix, R-165.278); §0zl-24 ENG-24 (a liana over a river; its REPORT cites it as §0zl); §0zm BUILD-19b, §0zn ENG-19c and §0zl BUILD-19 (t-build-19, the labels its REPORT cites). Before them FIX-22b (11-15): section 0zk.
 
+## 0zs-W2FALL. ENG-W2FALL (t-eng-w2fall from t-build-28-wip cc06d2f90, 11-27; code head db2947730): a world's fall painter, declared once
+- src/game/gen2/fallPaint.ts FALL_PAINT is the ONE definition of what a world's pit painter lays under an open fall; WorldManifest.pitPainter
+  is `PitPainter` ('w1Pits' | 'splashRivers'; the widening ACCEPTED by the lead). World 2's manifest declares 'splashRivers'; w2Finish reads
+  the same table (which falls get water, which are safe); dropsOf reads it through the manifest (a soft fall with no river and no ground under
+  it -> putback / take-off / safe-water-art, before the soft-zone line); floorlessGaps reads the drops (a gap whose every open slot is covered
+  by safe-water-art drops and the pieces over it is wet: a plank-joined run is ONE gap to findW1Pits).
+- Trap: the verdicts run in the pipeline BEFORE a world's finish. Anything a finish paints must be declared where the judges can read it
+  (the manifest), never re-derived inside the finish alone. Toy: worlds/w2FallPaint.test.ts.
+- Proof: 2-8 libstage 40 x both CLEAN 40/40 (was 0/40); lockall 101/102 (2-8 only: it threw on cc06d2f90); no verdict-only change on any
+  other build (3232/3264 identical drops and verdicts, scratchpad verdictdump).
+
 ## 0zs-FLOOD28. ENG-FLOOD28 (t-eng-flood28 from t-build-28-wip d4e7677ba, 11-26; code head 4d8450bcc): the TEACH flood mark (P1, READY-28 item 1)
 - WHAT: `RiverRow.flood: 'teach'` lays a water that rises to paddling depth on its OWN start (FloodWater.own; flood.ts FloodClock.over(x, t),
   called by engine.ts each frame he plays: the first frame his centre is over x0 < x < x1, ground or air), over FloodRow.teach s (optional;
