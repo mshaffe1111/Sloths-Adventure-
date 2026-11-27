@@ -1,6 +1,52 @@
 # BUILD-28 REPORT (W2-LANE: 2-8 "Before the Water Rises"; R-165.430 (2), READY-28, BUILD-28). Session 1 (W2-LANE a), started 9:44 AM ET (from date). Session 2 (W2-LANE b), started 10:07 AM ET (from date). Session 3 (W2-LANE c), started 10:30 AM ET (from date). Session 4 (W2-LANE d), started 10:52 AM ET (from date). Session 5 (W2-LANE e), started 11:19 AM ET (from the session hook date) Session 6 (W2-LANE f), started 11:41 AM ET (from the session hook date) Session 7 (W2-LANE g), started 12:05 PM ET (from the session hook date) Session 8 (W2-LANE h), started 12:49 PM ET (from the session hook date) Session 9 (W2-LANE i), started 1:15 PM ET (from the session hook date) Session 10 (W2-LANE j), started 1:05 PM ET (from the session hook date) Session 12 (W2-LANE l), started 2:20 PM ET (from the session hook date) Session 13 (BUILD-28-j, box 10), started 10:43 AM ET (from the session hook date) Session 14 (BUILD-28-k, box 11), started 11:08 AM ET (from the session hook date) Session 15 (BUILD-28-l, box 12), started 11:35 AM ET (from the session hook date) Session 16 (BUILD-28-m, box 13), started 12:14 PM ET (from the session hook date)
 
-## EXACT NEXT STEP (BUILD-28 box 13, BUILD-28-m, started 12:14 PM ET (from the session hook date); MERGED HEAD ccc94633f on t-build-28-wip)
+## EXACT NEXT STEP (BUILD-28 box 14, BUILD-28-n, started 5:45 PM ET (from date); hand-over 6:15 PM ET (from date); MERGED HEAD 4cabd94d3 on t-build-28-wip)
+CLOCK (the 2-hour level clock's dry run): start 5:45:37 PM ET; stops: none mid-job; the 28-minute box ran out at 6:13 PM ET with lock run 2 running (finished and recorded, 6:15); end 6:15:25 PM ET (box 14 of the job; 30 min).
+DONE:
+1. MERGES, by hash, no rebase, no force. (a) t-eng-29 337ba7d0b -> 614341a44. Merge-bases c73cb9766 AND fda48b3d8 (criss-cross). It
+   brings 60 commits new to this branch: ENG-CAM29 + ENG-DECOR AND all of ENG-29 (2-9's court tempo, the drum, the barge row, the posted
+   guard, ENG-QUIET's rule B with 2-1/2-4/2-7 lists rebuilt "same seeds, same order"). 11 conflicts, both sides kept: gates.yml (ours'
+   tool line + theirs' letGoBeat/tempoToys tests); engine-core.md (both sections); inventory w2/w5/w6.json REGENERATED from the merged
+   CATALOG-MASTER.csv (`python3 tools/art/catalog_master.py --emit`; each side's one changed row is in: theirs' barge packed, ours'
+   cage-whole); inventory.test.ts theirs' 217 (the barge packed); provenIndex.ts ours (2-6, 2-7 c9e1e269 equal both sides, 2-8);
+   riverLay.ts ours' teach/marsh + theirs' `easy`; puzzleCamera.test.ts theirs' ring field and rung-pan check, ours' every-piece check
+   (2-8 designed is in, as theirs' comment foresaw); firsttimer.ts ours' FORK_JUMP/REROUTE (the virtual base's stale LINE_SKILL copy
+   dropped; theirs' stopMeant lines are release 4's, release 5 rewrote them: release 5 wins); lineBot.test.ts ours (a superset: theirs'
+   8 differing lines are the old flood toy ours rewrote). Two type fixes after: riverLay.ts lockedLianas skips `r0.floodMark` (the
+   hand-built `flood` field went with 2-8's hand build); w2Arc26.test.ts Rolled.gen2 carries `brief` (theirs' riverFaults signature).
+   tsc 0; generalitycheck PASS (26 literals, 26 known). (b) main 49fdc8cb6 -> 4cabd94d3: clean, nothing under src/tools/.github changed
+   (its code = c9770adb2, in via ccc94633f). tsc 0; generalitycheck PASS (26/26).
+2. THE LOCK, alone: run 1 on main 49fdc8cb6 (/home/user/base-49f) `--layouts 16 --out <scratch>/base.json`: 'lock: wrote 3264 builds of 102 stages' (exit 0, 5:52-6:04 PM ET); kept as reference/qa-reports/BUILD-28/lockbase-49fdc8cb6.json.gz
+   (a16ca983a; base.json sha256 764b4dd9...: `gunzip -c` it, never re-run run 1). Run 2 on
+   4cabd94d3 (/home/user/cand-4ca) `--check`: COUNTS LINE 'lock: 95/102 stages unchanged', exit 1 (6:04-6:15 PM ET; log
+   reference/qa-reports/BUILD-28/lockall-s16-49fdc8cb6-vs-4cabd94d3.txt). Moved, each with its cause:
+   - 2-8: the whole lay (this build). EXPECTED.
+   - 2-5, 2-9: proto.dress only (ENG-DECOR d2fd4e0da, from t-eng-29; its own lock named exactly these). EXPECTED.
+   - gen2 verdicts and drops (not hashed) on 40 stages (W1 1-9, W2 2-1..2-8, 5-7, 5-9, W6-W8): ENG-W2FALL's kind. EXPECTED.
+   - 2-1, 2-4: THE WHOLE LAY (size, platforms, vines, rivers, collectibles, spawnY, totems, checkpoints, waterY, gen2, proto.*). NOT IN
+     THE BRIEF'S LIST: RED, sent to the lead, NOT landed. Suspected cause (UNPROVEN): ENG-29, which t-eng-29 carries beyond main
+     (14ebbfa5e GraphBrief.tempo / layTempo locks every liana to the bar; 1f919f98e 2-4's court drops; 88b5611b4 ENG-QUIET rule B;
+     74d88d236 rebuilt 2-1/2-4's proven lists 'same seeds, same order', versions 1950fa0c->0c8ad7fe, 08c32188->917a538d).
+   - 1-4, 2-6: proto.hints only. Candidates: ENG-TIPLEFT 8a2045547 (not in main) for 2-6; 1-4's was UNTRACED in box 12 (not TIPLEFT
+     there). Each needs its 1-stage lock.
+3. WORDS: all 13 of reference/story/lines-2-8.md (origin/t-keeper-28 943984c2) are in src verbatim (W2_TIPS.water w2.ts:91 included).
+   2-8 IS the World 2 book's stage (finds.ts:45 FIND_STAGE book: 8; wayside.ts:308 hidesFern; fernLine's generic fern line), and
+   finds.ts:416 w2_book's hint says "Hurry!". NOT YET CHECKED on the built stage whether gen2's 2-8 lays the fern/find: next box.
+NEXT, in order (ReadNotifications at every step boundary): (0) THE LEAD'S RULING on 2-1/2-4 (asked at hand-over). If the lead
+   wants the proof first, 1-stage locks `--stages 2-1,2-4` (seconds each, alone): 49fdc8cb6 vs 74d88d236^ and 74d88d236, then the
+   t-eng-29 commits above, until the commit that moves them is named; `--stages 1-4,2-6` on 8a2045547^ -> 8a2045547 and, for fork28 /
+   cut, 408679c3d^ -> 408679c3d and 4d2a579de^ -> 4d2a579de (a 1-stage lock on its own commit for each, per the brief). (1) step 3's
+   open item: build 2-8 once and look for a Hush Fern / the book find; if laid, the w2_book keys to the lead (finds.ts:416 'Hurry!').
+   (2) the brief's steps 4-8 on 4cabd94d3 (or the lead's next head): pre-freeze whole test files of every changed source and its importers
+   (riverLay.ts, firsttimer.ts, provenIndex.ts, puzzleCamera.test.ts, lineBot.test.ts, inventory.test.ts, w2Arc26.test.ts) +
+   puzzleCamera.test.ts (R-165.513) + firstTimerBot.test.ts (KID_RUNS_59); ls-remote t-eng-29/main; freeze in a detached worktree;
+   the ONE gate run by gates-s16.sh.txt; bots x40; stills (both fish-trap placements); land onto t-build-28; debrief.
+LEARNED (proposed, the lead approves): a merge of an engine line is listed by its commits NEW to the target (`git log --no-merges
+   <target>..<line>`), not by its last landing names: t-eng-29 was briefed as 'ENG-CAM29 + ENG-DECOR' and carries 60 commits incl. all
+   of ENG-29, so the lock's expected list missed 2-1/2-4. Proposed level.md rule: before a lock, write the expected moves from that list.
+
+
+## (was the EXACT NEXT STEP) (BUILD-28 box 13, BUILD-28-m, started 12:14 PM ET (from the session hook date); MERGED HEAD ccc94633f on t-build-28-wip)
 THE LEAD'S RULING (final, box 13's brief): 2-8 lands in release 6 ON TOP OF release 5 (release-0.10.4 frozen at c9770adb2, by hash).
 DONE:
 1. The clone was shallow (2 grafts: 'refusing to merge unrelated histories'): `git fetch --unshallow origin`; merge-base(a29c1528a,
