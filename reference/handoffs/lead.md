@@ -120,16 +120,17 @@ Every art lane names its DRAW PATH before it paints (W3-LANES addendum). Also CI
 LANDED TONIGHT: t-land-26 2f681402e (2-6); t-eng-29 28c848dbd (2-9's barge, guard, drum, G6 COURT_SAG) + t-eng-stone29 a6ac7316b (wide
 stone); t-eng-fork28 8fbdb72ac (designed forks); t-eng-w3 13135bf6b (3-1's tower fix + the DARK piece + the hazard REGISTRY + the SPORE
 piece, all gated together; 1-4's intended lock move).
-IN GATES at the wrap (archive each when it reports): ENG-QUIET-b (rule B, t-eng-quiet-b 88b5611b4: NOT to land as is: RULED (a): 2-1/2-4/2-7's
-lists rebuilt under B on t-eng-29 first (check base 28c848dbd red on the same three seeds first)); ENG-TIPLEFT (t-eng-tipleft, candidate 0057bd6f5:
-1-4 hints + 2-8 intended); ENG-CUT (t-eng-cut fd455b8cc: any world's cut pieces draw; path APPROVED).
+LANDED AFTER THE WRAP: t-eng-tipleft 8a2045547 (head 8a97567b3: left-leg Dot lines on the leftward pass; 1-4 hints + 2-8 rolls intended)
+and t-eng-cut 57d7b8287 (any world's cut pieces draw; World 1 before/after judged identical; 6 shards: 5 fails, all inherited). ENG-QUIET-b
+CLOSED, NOT landed (t-eng-quiet f02b6750d): rule B moves 2-1 s100 and 2-4 s65 (B's); 2-7 s22 is stale on t-eng-29 already (inherited). All
+members archived; nothing runs overnight.
 FRIDAY 8:30 AM ET, first starts, inside the cap (5 slots), each with rule 23 where it is a build:
 1. INT-R5 (packets/2026-11-26/INT-R5.md): release 5; every seed list checked, not only 1-1.
 2. ENG-ASKS-b: World 3's registry rows (#dark, #dark@puff, #spore@puff, #soft@moon) on t-eng-w3.
 3. KIT-W3a (down c/b first) and KIT-W3b (ocelot ground first): packets/2026-11-27/W3-FRIDAY.md.
 4. ENG-QUIET-c: the base check, then the three lists rebuilt under B, then land on t-eng-29 -> BUILD-29-j (merge, roll 24 x both, addlevel,
    bots x40, drawcheck WITH 2-9 added as a scenario (same limits), stills; hint.2-9.kick laid 800 px+ before the guard; ONE Easy wheel row try).
-5. BUILD-28-f after ENG-TIPLEFT + ENG-CUT land: merge both; the fork-rest dealt ONLY to the fork's own rest (seed 3) + a test; the reed
+5. BUILD-28-f (BOTH landed: start it): merge both; the fork-rest dealt ONLY to the fork's own rest (seed 3) + a test; the reed
    island laid 340 wide with its foot IN the water and the caption clear (re-shoot, the lead judges); the pinned 2-7 tests; the suite; bots.
 Then KEEPER-W3 (a review of lines-3.md), ENG-ROOT, ENG-MOON, ENG-CAM29 (R-165.513), ENG-SOCKET (R-165.518), BUILD-31 on a clean roll.
 TARGETS told to Matt: release 5 Friday evening; 2-8 + 2-9 (release 6) Saturday; 3-1..3-4 Sunday night; the rest of World 3 mid next week.
