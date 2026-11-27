@@ -1,6 +1,18 @@
 # ENG-DEAL (R-165.541): the deal follows the code's letters, every slot, every job
 
-## THE EXACT NEXT STEP (box 5; written 1:28 PM ET Fri 11-27 by `date`)
+## THE EXACT NEXT STEP (box 6; written 1:33 PM ET Fri 11-27 by `date`)
+658d4e50f's KIT rolls showed it dropped the letter at the FIRST loosening (loose 1, job kept, type dropped) before trying the letter by
+its phase: 3-2's content lines came back, 0 -> 12 (v2-32.txt), 3-3's 36 -> 48 (v2-33.txt), each named by the new note but laid the wrong
+kind where box 1's fix had laid the right one. FIX 98f424884: typeFits holds a lettered node's type through loose 2 (job dropped, phase
+kept) and drops it only at loose 3, the lay's last resort, with the note naming the letter. KIT rolls on it: 3-2 and 3-3 BYTE-IDENTICAL to
+box 1's fix (v3-32.txt = 32-kit.txt, v3-33.txt = 33-kit.txt). On 98f424884: tsc 0, generality PASS, dealLetters + w3Level + nodeAsks
+15/15. The 658d4e50f re-gate is STOPPED (stale). RUNNING on the frozen `$S/g4` = 98f424884 (lines to `$S/g4-gates.txt`): chain A
+(`$S/chainA4.sh`: lock --check vs `$S/base2.json`, tierBots, seedlist 1-8, CI tool line) and chain B (`$S/chainB4.sh`: 3-1 w3 + wide on
+`$S/kit`, then the suite in 6 shards). All green but the named ctestPicker red -> fetch t-eng-w3; not moved: push as a fast-forward;
+moved: merge and re-check. Landing message: the lead's cost lines (clean / tried and pool-short notes by letter per KIT roll).
+Counting note: from here, refusal lines are WEIGHTED (each "Nx" line counts N); box 1's 3-3 "22 -> 14" counted distinct lines (weighted
+48 -> 36).
+### Box 5's step (658d4e50f, superseded by box 6)
 THE MERGE'S RE-CHECK CAUGHT A RED OF MINE: on 9fec4226d, shard 5 was 647 pass / 3 fail: ctestPicker (t-eng-w3's, known) and
 src/game/gen2/worlds/w3Level.test.ts:152 and :168 (KIT-W3b's 3-2 dark X(c) and C tests), green on f3014145c alone, red on the merge.
 Cause: 3-2's dark code letters T, W and S 'r' (rope) and World 3's level pool has no rope section yet; box 1's fix THREW on a lettered
