@@ -1,25 +1,28 @@
 # ENG-CATCH-e (R-165.534; engine, Opus 5.5 xhigh): THE DOWN TOWER'S GUARANTEE. Branch t-eng-catch-e
 
-## EXACT NEXT STEP (box 3 hand-over, written 12:01 PM ET Fri 11-27 by `date`). CANDIDATE 18a353e4a FROZEN (pushed, ls-remote equal); NOT LANDED
-Candidate 18a353e4a = ENG-CATCH-d's 6d296c1b7 + this box (bc94dab78 guarantee, ab059518d toys) merged with t-eng-w3 51ef0c6ab (THE LOCK BASE,
-by hash: t-eng-w3's head when this box started, D159). Sent to the lead and KIT-W3a-e. tsc 0; generalitycheck PASS (26 literals, 26 known).
-RUNNING past the box (the SAME frozen candidate only, D138), logs in this session's scratchpad:
-- PROOF DONE (the lead's ruling: the guarantee ACCEPTED as built; this lane a TAIL on 18a353e4a). wt-try (frozen: bricks de6feebff =
-  t-kit-w3a 39a3c5b52's w3.ts byte for byte, the FINAL pieces; tower.ts and pipeline.ts byte-identical to 18a353e4a's), seeds 1-40 x both,
-  probe/proof.mts (every refusal counted and named as it is made; LEAK = a down verdict line in a returned stage). proof/*.txt here.
-  EVERY CONFIG 80/80, LEAKS 0. Normal's rolls refused / tried: all five 3/42 (7%), root-down 0/40, two-roots 0/40, cap-down 1/40,
-  cap-steps 1/41, shelf-hops 3/43 (7%; was 74/80). Worst stage: 1 refusal. Each refused shape's next roll was clean.
-- CI tool line on wt-cand (ciline.log).
-- LOCK run 1 DONE: `lockall.ts --layouts 16 --out base.json` on 51ef0c6ab (wt-base): 3264 builds of 102 stages. Run 2 (--check) running.
-- Running on wt-cand: the CI tool line, suite shards 1-3, tierBots; shards 4-6 to start when a core frees.
-Next:
-1. ReadNotifications. Read each gate as it finishes (logs in this session's scratchpad: ciline.log, lock-check.log, shard-<i>.log,
-   tierbots.log).
-2. GATES once on the frozen worktree wt-cand (18a353e4a, src and tools immutable): the CI tool line; LOCK run 2 `lockall.ts --layouts 16
-   --check base.json` with the counts line (ANY listed stage moves = STOP, send the lead each); the suite in 6 shards; tierBots 9/9.
-3. When ENG-DEAL is on t-eng-w3: merge it into a scratch copy of wt-try and re-run shelf-hops alone (the lead: n13 is ENG-DEAL's node).
-4. LAND: merge 18a353e4a onto origin/t-eng-w3 (no force; never rebase; refused: fetch, re-merge, re-check); ls-remote; send the lead the
-   landed hash, the six-config counts line and each shard's totals.
+## EXACT NEXT STEP (tail STOPPED, written 12:42 PM ET Fri 11-27 by `date`). CANDIDATE 18a353e4a: RED, NOT LANDED (the lead's order)
+RED on 18a353e4a (the lead's report from ENG-CATCH-d, confirmed here on the frozen worktree): src/game/gen2/tower.test.ts:856, ENG-CATCH-b's
+toy "going down, a bridge started a hop past a vine's top that misses the end's fall line is no catch: the end gets one of its own",
+assertion 'no catch is laid twice' (:869): 3 !== 12 (12 catches laid, 3 distinct). tower.test.ts 44/45. It passes on d49de60f0 and fails
+from ENG-CATCH-c box 1's mend on (6d296c1b7 carries it; the guarantee does not change it). Suite shard 4/6: 762 pass, 1 fail (this test).
+NO FIX in this lane (the lead: Matt paused new work for the weekly usage limit; the next lead decides the fix box). The fix box re-runs the
+gates below on its own candidate.
+Gates on 18a353e4a (frozen worktree, base t-eng-w3 51ef0c6ab by hash):
+- tsc 0; generalitycheck PASS (26 literals, 26 known); towerMend.test.ts 13/13.
+- CI tool line: 355 tests, 354 pass, 0 fail (1 todo: chase bots, ENG-B4, standing).
+- LOCK, two runs: `--out base.json` on 51ef0c6ab, 3264 builds of 102 stages; `--check base.json` on 18a353e4a: 102/102 stages unchanged.
+- tierBots 9/9.
+- Suite: shard 1/6 742 pass 0 fail; shard 4/6 762 pass 1 fail (tower.test.ts:856, above). Shards 2, 3, 5, 6: STOPPED unfinished (the
+  lead's stop).
+- PROOF (wt-try: bricks de6feebff = t-kit-w3a 39a3c5b52's w3.ts byte for byte; tower.ts and pipeline.ts byte-identical to 18a353e4a's),
+  seeds 1-40 x both, probe/proof.mts (every refusal counted and named as it is made; LEAK = a down verdict line in a returned stage),
+  logs proof/*.txt: EVERY CONFIG 80/80, LEAKS 0. Normal's rolls refused / tried: all five 3/42 (7%), root-down 0/40, two-roots 0/40,
+  cap-down 1/40, cap-steps 1/41, shelf-hops 3/43 (7%; was 74/80). Worst stage: 1 refusal; each refused shape's next roll was clean.
+- REPLAY (probe/replay.mts): the three new captures REFUSED by name, 0 leaks. The 58 old reds' re-capture (wt-old = 1b300ebc3 + the diag
+  patch, clean apply) was STOPPED at 14 fixtures, not replayed.
+- Not done: ENG-DEAL's shelf-hops re-run (ENG-DEAL is not on t-eng-w3; head still 51ef0c6ab).
+For the fix box: the toy is tower.test.ts:856; green on d49de60f0 and red from box 1's mend on (ENG-CATCH-d's finding; checked here on
+18a353e4a only): bisect the mend's remedies to find which one lays a catch twice. The guarantee (bc94dab78) is independent of it and was ACCEPTED by the lead as the design.
 
 ## What this box did (general: no stage id, seed or x)
 - THE GUARANTEE (tower.ts towerCatches): a down tower NEVER RETURNS A LAY WITH A MISS. downInvariant runs on the final lay every time; any
