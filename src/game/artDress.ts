@@ -224,6 +224,31 @@ export const DRESS_SETS = Object.fromEntries(
 export const DRESS_WORLDS = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10] as const;
 export type DressWorld = (typeof DRESS_WORLDS)[number];
 
+/**
+ * Decor never looks like a danger (R-165.542, the lead on BUILD-29-k's stills: 2-9's and 2-5's snappers ARE turtles, and a harmless
+ * painted turtle stood beside them, which teaches a child the wrong thing). A dressing piece that shows an animal a stage can field as
+ * a foe names that foe's family (the Enemy `type`, types.ts EnemyType). On a stage whose own cast has that family, the piece becomes
+ * its `swap` (a harmless look of the same footing, no bigger) or, with no swap, is left out. A stage without that foe keeps its dress.
+ * Any world adds its rows here; nothing names a stage.
+ */
+export const HAZARD_LOOKALIKE: Partial<Record<DressName, { family: string; swap?: DressName }>> = {
+  w2Turtle: { family: 'turtle', swap: 'w2Frog' },
+};
+
+/** the dressing with every piece that looks like one of `foes` (the stage's own enemy types) swapped for its harmless look, or left out */
+export function clearLookalikes<T extends { n: DressName }>(ds: readonly T[], foes: ReadonlySet<string>): T[] {
+  const out: T[] = [];
+  for (const d of ds) {
+    const like = HAZARD_LOOKALIKE[d.n];
+    if (!like || !foes.has(like.family)) { out.push(d); continue; }
+    // (the swap must not be a lookalike on this stage itself)
+    const swap = like.swap;
+    const swapLike = swap ? HAZARD_LOOKALIKE[swap] : undefined;
+    if (swap && !(swapLike && foes.has(swapLike.family))) out.push({ ...d, n: swap });
+  }
+  return out;
+}
+
 /** the dressing sets laid in a stage of World 1, 2 or 5 (empty for any other world) */
 export function dressSets(d: DressInput & { checkpoints?: readonly { x: number }[] }): DressPiece[] {
   const sets = DRESS_SETS[d.world as DressWorld];
