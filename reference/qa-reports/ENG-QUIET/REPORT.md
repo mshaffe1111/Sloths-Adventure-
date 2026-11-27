@@ -1,5 +1,52 @@
 # ENG-QUIET: is a wait for ONE on 2-9's drum "quiet"? (Engine, from t-build-29 4c3ff9d8)
 
+## EXACT NEXT STEP (box 3 hand-over, ENG-QUIET-c; NOT landed: t-eng-29 still 28c848dbd; work branch t-eng-quiet-b = f589b979a)
+t-eng-quiet-b now holds the candidate 88b5611b4 + 74d88d236 (2-1's and 2-4's lists rebuilt under B) + f589b979a (2-7's list rebuilt).
+Lists only (src/game/gen2/proven/seeds-2-{1,4,7}.ts + provenIndex.ts); no engine or tools change in box 3. NEXT BOX, in order:
+1. 2-4's three new bot misses (below) are UNRESOLVED: trace each (rule 28: two runs per cause, seed, x, frame, what took him) and bring
+   the lead a ruling request BEFORE the gates: the child on Easy hangs on drop-ride-drop's vine ("no way on", x 8136 v64 / 8204 v85) and
+   is rescued; the kid on Normal v66 is rescued after 3 water lives. Old rolls of those variants: all three PASS. The repeat run
+   (castBots 2-4 --seeds 64,85,66 --bots child,kid, both) reproduced all three exactly (same times, same stuck points: the bots are deterministic), so each is one cause, not noise.
+2. 2-7's bots on its 35 changed variants (castBots 2-7 --seeds <below> --setting both --rows, old list on frozen 88b5611b4 vs new on
+   frozen f589b979a): RUNNING at the hand-over (results below if they finished; else re-run both, D115 frozen trees).
+3. Then item 3-5 of the packet: every roll/seed-pinning test (release.md item 6:
+   npx tsx --test $(grep -rln "setPick11\|roll11Seed\|provenSeedFor" src --include=*.test.ts)), then GATES once on the final candidate
+   (tsc; the CI tool line; seedlist --check on ALL 15 lists; lockall --check ONE run vs 28c848dbd's lock (re-record it: box 1/2's lock was
+   scratch only); suite in 6 shards; tierBots; generalitycheck), freeze per D115 with src/game/gen2/proven/ writable, land on t-eng-29 as
+   a fast-forward (no force), message the lead: hash, each shard's totals, list verdicts. Ships with release 6, not release 5.
+
+### Box 3 findings (ENG-QUIET-c, 11-27)
+- 2-7's OWN cause (packet item 1), named and proven: ENG-26e step 1, 5a67dba93 (t-build-26, 11-21 12:29 PM ET): the drop judge, Easy's
+  flags/steps and the water lesson read water through river.ts waterUnder (a storey floor between the fall and the water ends the fall).
+  2-7's list (42a5e6ef9) was built on t-build-27e (5a6847ffe) without it; INT-R5's merge b3195f31e ('merge t-build-27e @ 801cae9e8')
+  joined them, and from there the search keeps rolls the old judge refused. Seed 3: roll 0's w2-27-stilts at slot 12 was refused
+  'verdict drop.unwarned (normal): the first water at x 5326..5468 has no Dot line' (instrumented scratch tree) and is kept now; the list
+  holds roll 1 (seed 10946). Proof: 801cae9e8 PASSES; 801cae9e8 + 5a67dba93 alone FAILS the same seeds (3 8 9 11 12 15 17 19 20 22 ...);
+  bisect (first-parent) 768e1dcd7 good .. b3195f31e bad. Not on main (2-7 is not listed there): no shipped list is stale.
+- Correction to box 2: 2-7 is not 'seed 22' alone. On base 28c848dbd and on 88b5611b4 alike the check fails seeds 3 8 9 11 12 15 17 19 20
+  22 ... (the check prints its first 20 lines only), both settings. The rebuild changed 35 of 100 plans. 2-1 and 2-4 likewise moved more
+  than one seed each (6 and 20, below).
+- Rebuilt lists (seedlist <id> --count 100; every list was seeds 1..100 before and is the same seeds in the same order after, so no
+  variant moved to another seed):
+  - 2-1 (74d88d236): 100/100, version 1950fa0c -> 0c8ad7fe, quiet longest 4 s; changed seeds 3 9 28 83 86 100 (variants 2 8 27 82 85 99),
+    each now its first roll (rerolls 1 -> 0): B's let-go/log-catch beats pass the quiet judge first time.
+  - 2-4 (74d88d236): 100/100, version 08c32188 -> 917a538d, quiet longest 3.7 s; changed seeds 2 3 8 9 19 31 48 50 62 65 67 73 75 77 79 81
+    82 85 86 95 (variants = seed - 1), each now its first roll (rerolls 1-8 -> 0).
+  - 2-7 (f589b979a): 100/100, version dcdc8f40 -> c9e1e269 (the SAME version BUILD-28-e built on t-build-28-wip, 241695723), quiet longest 1.1 s, outro 860-880 px; changed seeds 3 8 9 11 12 15
+    17 19 20 22 27 28 33 37 44 49 52 59 64 66 68 69 70 72 73 75 76 77 80 81 83 86 87 88 90 (variants = seed - 1).
+- castBots on every changed variant, both settings, old list (frozen 88b5611b4) vs new (frozen 74d88d236), five bots:
+  - 2-1 (6 variants, 54 runs each): old 53/54 (child Easy v85 rescued) -> new 54/54; none under the floor. Water lives: child Normal 4 -> 2,
+    middle Normal 0 -> 2, expert Normal 2 -> 3.
+  - 2-4 (20 variants, 180 runs each): old 179/180 (child Easy v74 rescued) -> new 177/180; none under the floor. NEW misses, all on changed
+    rolls: child Easy v64 (rescued x1; stuck 'on a vine at 8136,746 with no way on', then 'set down here 8 times' at 13558), child Easy
+    v85 (rescued x2; the vine at 8204,823, water ahead 22863, a 50 px step 24192), kid Normal v66 (rescued x1 after 3 water lives).
+    v64's and v85's vine is in w2-24-drop-ride-drop (6036-9128 / 6156-9248) on BOTH old and new layouts; on the old rolls the child
+    passes with no stuck spot. Water lives (sum over 20): kid N 18 -> 25, adult N 15 -> 20, child N 75 -> 88, middle N 51 -> 37,
+    expert N 56 -> 57.
+- Lessons applied: D115 (every run on a frozen worktree; the builds ran in the main tree with nothing reading it), D134 (this step pushed
+  before the message), D135 (2-7's red named, not carried as 'inherited'), D140 (notifications read at each boundary), D143.
+- Evidence: reference/qa-reports/ENG-QUIET/box3/bots2{1,4}-{old,new}.jsonl, bots24-rep.jsonl (castBots --rows, one run a line).
+
 ## EXACT NEXT STEP (box 2 hand-over, 11-26 10:50 PM ET; NOT landed: t-eng-29 still 28c848dbd; candidate 88b5611b4 untouched)
 THE LEAD RULED (a), not (b): rule B stays general (rule 22); (b) would keep 2-9's own list search on today's beats (its let-go 5.4 s and
 twist still refused, so 2-9 could not list). NEXT BOX (Friday morning), in order: (1) DONE in box 2, base 28c848dbd `seedlist --check`: 2-4 PASS (100), 2-1 PASS (100)
