@@ -1,0 +1,22 @@
+### model-old-0.88 (old = wip 59b9b6192's model; cand = wip 71b1ea8d4; NOMARGIN=1 so both read the engine read's stage)
+0.88 normal worst 0.77 / 0.00 | s1 x7903 0.93/0.90 one=true; s1 x14389 0.77/0.00 one=true; s2 x7903 0.93/0.90 one=true; s2 x14531 0.77/0.00 one=true
+0.88 easy worst 1.10 / 1.97 | s1 x8026 1.10/1.97 one=true; s1 x14617 1.10/1.97 one=true; s2 x8026 1.10/1.97 one=true; s2 x14729 1.10/1.97 one=true
+### model-old-0.90 (old = wip 59b9b6192's model; cand = wip 71b1ea8d4; NOMARGIN=1 so both read the engine read's stage)
+0.90 normal worst 0.83 / 0.20 | s1 x7903 0.97/0.77 one=true; s1 x14389 0.83/0.20 one=true; s2 x7903 0.97/0.77 one=true; s2 x14531 0.83/0.20 one=true
+0.90 easy worst 1.17 / 1.90 | s1 x8026 1.17/1.90 one=true; s1 x14617 1.17/1.90 one=true; s2 x8026 1.17/1.90 one=true; s2 x14729 1.17/1.90 one=true
+### model-old-0.92 (old = wip 59b9b6192's model; cand = wip 71b1ea8d4; NOMARGIN=1 so both read the engine read's stage)
+0.92 normal worst 0.83 / 0.70 | s1 x7903 1.00/0.70 one=true; s1 x14389 0.83/1.33 one=true; s2 x7903 1.00/0.70 one=true; s2 x14531 0.83/1.33 one=true
+0.92 easy worst 1.20 / 0.77 | s1 x8026 1.20/0.77 one=true; s1 x14617 1.20/0.77 one=true; s2 x8026 1.20/0.77 one=true; s2 x14729 1.20/0.77 one=true
+### model-cand-0.88 (old = wip 59b9b6192's model; cand = wip 71b1ea8d4; NOMARGIN=1 so both read the engine read's stage)
+0.88 normal worst 0.00 / 0.00 | s1 x7903 0.93/1.17 one=true; s1 x14389 0.00/0.00 one=false; s2 x7903 0.93/1.17 one=true; s2 x14531 0.00/0.00 one=false
+   s1: the liana at x 14389 over the river at x 14224-14895: a press on ONE misses its logs on every bar (locked: 78% of a bar's presses land, the longest run 1.067 s)
+   s2: the liana at x 14531 over the river at x 14366-15037: a press on ONE misses its logs on every bar (locked: 78% of a bar's presses land, the longest run 1.067 s)
+0.88 easy worst 1.10 / 1.97 | s1 x8026 1.10/1.97 one=true; s1 x14617 1.10/1.97 one=true; s2 x8026 1.10/1.97 one=true; s2 x14729 1.10/1.97 one=true
+   s1: the liana at x 14389 over the river at x 14224-14895: a press on ONE misses its logs on every bar (locked: 78% of a bar's presses land, the longest run 1.067 s)
+   s2: the liana at x 14531 over the river at x 14366-15037: a press on ONE misses its logs on every bar (locked: 78% of a bar's presses land, the longest run 1.067 s)
+### model-cand-0.90 (old = wip 59b9b6192's model; cand = wip 71b1ea8d4; NOMARGIN=1 so both read the engine read's stage)
+0.90 normal worst 0.80 / 0.00 | s1 x7903 0.97/0.77 one=true; s1 x14389 0.80/0.00 one=true; s2 x7903 0.97/0.77 one=true; s2 x14531 0.80/0.00 one=true
+0.90 easy worst 1.17 / 1.90 | s1 x8026 1.17/1.90 one=true; s1 x14617 1.17/1.90 one=true; s2 x8026 1.17/1.90 one=true; s2 x14729 1.17/1.90 one=true
+### model-cand-0.92 (old = wip 59b9b6192's model; cand = wip 71b1ea8d4; NOMARGIN=1 so both read the engine read's stage)
+0.92 normal worst 0.83 / 0.67 | s1 x7903 1.00/0.67 one=true; s1 x14389 0.83/1.33 one=true; s2 x7903 1.00/0.67 one=true; s2 x14531 0.83/1.33 one=true
+0.92 easy worst 1.17 / 0.80 | s1 x8026 1.17/0.80 one=true; s1 x14617 1.17/0.80 one=true; s2 x8026 1.17/0.80 one=true; s2 x14729 1.17/0.80 one=true

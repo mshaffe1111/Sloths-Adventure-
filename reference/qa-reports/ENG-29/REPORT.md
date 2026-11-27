@@ -1,5 +1,76 @@
 # ENG-29 REPORT: 2-9's NEW 1 (the court's tempo) and NEW 2 (the drum you hear), built ahead (R-165.449)
 
+## ENG-29-h (box 4, the lead's rulings 1-5; hand-over 8:02 PM ET Thu 11/26 by `date`): ruling 1 READ, ruling 2 HALF CLOSED (two causes found and fixed, a third open), ruling 3 RE-READ; G6 NOT landed, gates NOT run
+
+### EXACT NEXT STEP (box 5)
+Re-fetch t-eng-29-wip (head: this REPORT commit; code = 8aa7e5a76 + 71b1ea8d4 on 59b9b6192). Run ReadNotifications: the lead's answer to
+this hand-over's question (below, "FOR THE LEAD") decides the box. `git ls-remote origin t-eng-29` (d1038af49 is already inside wip).
+Scratch tree (rebuild it, the container is new each box): `git worktree add --detach <scratch>/b29 origin/t-build-29` (fa92fce1d), merge
+t-eng-29-wip, `ln -s <repo>/node_modules`, in src/game/gen2/worlds/w2Arc29.ts give barge29 `look: 'barge'` and TEMPO_29
+`lock: Number(process.env.LOCK29 ?? 0.92)`, in src/game/tempo.ts:136 `const need = process.env.NOMARGIN ? 0 : ...` (so 0.88 builds for
+the engine read, and the model reads the same stage). Then, by the lead's answer:
+- (A) keep chasing the model: the one place left where it is looser is 2-9's draft x14389 grip 0.95 at lock 0.92, Normal, the press j +4
+  on 1 bar of 4 (the engine's isolated one-frame water hole: late 0.10 s, '#.#'). The cause is NOT the catch order, NOT the hold and NOT
+  the frame grid (all three now ruled out or fixed): it is the LAUNCH. The model's launch matches the engine's in x within 0.4 px but sits
+  5-10 px HIGHER (engine frame 0 y 727.48 vs model 717.49 on grid 0; 727.1 vs 722.08 on the half-frame grid; probes/launch29.ts against
+  probes/oneMarginR-trace.ts). Two guesses already flown and REJECTED (the scratch only): no climb at all (CLIMB off: the model then refuses
+  Easy ONE at 0.88/0.90 where the engine lands 1.17-1.20 / 1.50) and one climb frame fewer (0.92 x14389 still 1.33 late; Easy 0.90 drops
+  to 0.10 against the engine's 1.50). Next: print the engine's swing len every frame from the press to the leave (engine.ts swingStep's
+  climb, and whether FakeInput's jump is Up on the vine: inputEngine.ts) on the hole's own bar (oneMarginR-trace.ts J=4 TJ=4 on the bar
+  that fails: run J=45 to find it, the trace prints m 0 only), and make pressLaunchesFrom's climb read what the engine does on each input.
+  pressLaunchesFrom also feeds lianaDrops (2-4's judges) and the glow: lockall --check then tells if a listed stage moves.
+- (B) the real-engine fallback for G6 (the lead's call): a roll on the engine costs about 1-2 min per lock per setting per seed on 4 bars
+  (this box's reads: 3 locks x 2 seeds x 2 settings in about 4 minutes on 3 cores); the model costs well under a second a roll.
+Either way, then the gates once (ruling 4: tsc; the CI tool line; lockall --check; 6 shards, run_in_background AND timeout 7200000,
+KID_RUNS_59 the inherited red; tierBots 9/9; generalitycheck; the freeze per D115 with src/game/gen2/proven/ writable) and the landing on
+t-eng-29 (no force), the hash and each shard's totals to the lead AND BUILD-29-d. Then rewrite reference/handoffs/engine-core.md.
+
+### FOR THE LEAD (sent in the hand-over message)
+1. Ruling 1, the child's let-go in one line: tools/inspect/firsttimer.ts:3359-3364, `decide(fdir, 'single', true, side(fdir))`: forward
+   HELD, the jump pressed and held its own drawn hold (startJump's flickHold; at least 220 ms on touch, MIN_TOUCH_JUMP_HOLD_MS), forward
+   steered in flight (:3391-3393). That is the model's convention, so (a). One difference: the model flew the jump held through the whole
+   flight (letGoFall held 99: gravity x0.72 at the top), the child lets go after his hold, before the top on most presses. Fixed (below).
+2. 2-9's draft at the locks the lead named FAILS ON THE ENGINE ITSELF at Normal: x14389 grip 0.95 misses ONE at 0.88 and 0.90 (both
+   seeds; at 0.90 the presses j 0..6 drown on bar 0) and keeps only 0.10 s late at 0.92. No lock of the three clears the 0.20 s bar on
+   the engine. Easy clears at every lock (>= 1.17 s early, >= 1.50 s late, the read's cap). So 'the lock 0.90' (ruling 3) is refused by
+   the engine, not only by the model: a BUILD-29 data question (the lock, or that liana's grip band), not G6's.
+3. The question: (A) one more box on the model's launch (the cause is found to the px; the fix may move lianaDrops on listed stages), or
+   (B) the real-engine fallback. My recommendation, reversible: (A) for one box, because the gate's verdict already matches the engine at
+   0.88 and 0.90 and the one miss left is a measured 5-10 px launch height; if box 5 has not matched it at its clock, (B).
+
+### The re-read (ruling 3; probes/oneMarginR-reread-h.txt and probes/model29-reread-h.txt). Worst early / late (s) over grips 0.7/0.95,
+### both lianas, seeds 1-2. Engine: HOLDVINE=1 RIGHT=1 FLICK=1 (forward held, jump held on the vine, released in flight: the child's input)
+| lock | setting | engine | model before (59b9b6192) | model now (71b1ea8d4) | verdict at 0.20 / 0.30 s, engine / model now |
+|---|---|---|---|---|---|
+| 0.88 | Normal | x14389 g0.95 ONE MISSES; x7903 0.97 / 1.10 | 0.77 / 0.00 | x14389 ONE misses; x7903 0.93 / 1.17 | refuse / refuse |
+| 0.88 | Easy | 1.17 / 1.50 | 1.10 / 1.97 | 1.10 / 1.97 | pass / pass |
+| 0.90 | Normal | x14389 g0.95 ONE MISSES; x7903 1.03 / 0.77 | 0.83 / 0.20 | x14389 0.80 / 0.00; x7903 0.97 / 0.77 | refuse / refuse |
+| 0.90 | Easy | 1.20 / 1.50 | 1.17 / 1.90 | 1.17 / 1.90 | pass / pass |
+| 0.92 | Normal | x14389 g0.95 1.00 / 0.10; x7903 1.07 / 0.70 | 0.83 / 0.70 | x14389 0.83 / 1.33; x7903 1.00 / 0.67 | refuse / PASS (looser) |
+| 0.92 | Easy | 1.23 / 1.50 | 1.20 / 0.77 | 1.17 / 0.80 | pass / pass |
+The engine's late 1.50 on Easy is the read's cap (J 45 frames). Model looser than the engine, by number: 0.88 x7903 late (1.17 vs 1.10,
+2 frames; both pass the bar) and 0.92 x14389 (the verdict). Seeds 1 and 2 read the same everywhere.
+
+### Done this box (pushed to t-eng-29-wip, ls-remote-confirmed)
+- **8aa7e5a76: the hold.** The box-3 hole traced to the end: the engine's logs sit at driftX of the frame's own clock every frame
+  (probes/oneMarginR-trace.ts prints z.x against driftX(now) and driftX(prev): equal to 0.01 px), exactly as fallOnLog reads them, so the
+  catch ORDER (ruling 2's suspect) already matched. The difference was the flight: flown released, the engine's own frame-0 state
+  reproduces the engine to 0.02 px (probes/flyhold.ts) and crosses the log top once; flown held (letGoFall's held 99) the float keeps him
+  about 26 px higher and he crosses again a frame later, about 9 px on, and takes a log end the engine misses. riverLay.ts courtFalls /
+  courtLands: a court let-go lands only if it lands held AND released (letGoFall's new `held` argument, default 99: lianaDrops, the glow
+  and the bots unchanged). The toy (oneMargin.test.ts, 'the court's catch is never looser than the engine'): the engine's traced launch
+  and a log 0.45 px past his catch: PLANTED RED with courtLands held-only ('the court's catch refuses it'), GREEN now. tempo.test.ts:33's
+  pinned liana fault reads 0 s early (was 0.033): the same fault, one frame stricter.
+- **71b1ea8d4: the frame grid.** The bar is 2.85 s = 85.5 frames, so the game's presses fall on two grids half a frame apart, bar to bar;
+  lockedDrops read one grid from swingGrab's jump-in clock (and hung him about 3 px lower than the engine does) and took the NEAREST press
+  as ONE. Now each swing of the joint cycle reads its presses on the game's own frames for that bar, from the vine's own swing at the grip,
+  ONE the first press at or after the whole swing (the engine's tPress, the child's onOne).
+- Targeted tests 42/42 (drumDouble, bargeRow, lianaRiver, oneMargin, riverLay, gen2 tempo, tempoToy, letGoCue, tempo, tempoResume); tsc
+  clean. NOT run: the CI tool line, lockall --check, the 6 shards, tierBots, generalitycheck (ruling 4: once, on the final candidate).
+- Traps this box: a `&` in a scratch script (stopped at once, re-run as separate background tasks; LAWS: never a shell '&'); a scratch
+  tempo.ts edit (NOMARGIN, a no-op without the env) while the 0.90 / 0.92 engine reads read that tree (D115: their reads stand, as the
+  edit changes nothing unset, but it is named). Lessons applied: D115, D119, D128, D134, D138, D140, D146.
+
 ## ENG-29-g (box 3, ENG-29-e's packet; 7:29 PM ET Thu 11/26 by `date`): G6 CODED on wip (ca30a4885), NOT landed: the model and the bar's engine read judge DIFFERENT inputs
 
 ### EXACT NEXT STEP (box 4)
