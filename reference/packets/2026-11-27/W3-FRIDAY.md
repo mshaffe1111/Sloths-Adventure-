@@ -70,3 +70,13 @@ inventory row; stills of each beside Pokey, upright and sideways, from the COMMI
 5. The ROOT's own art for 3-2 (ENG-ROOT's stills use World 1's painted vine rope until this lands).
 Not in this lane: 2-9's court art (built on 2-9's branch). Land on t-art-w3; the hash and the stills to the lead.
 
+## ADDED 11-27 10:10 AM ET: ENG-MOON box 1's facts (t-eng-moon-wip 8707f440f) for its next box and the kits
+- THE KIND for the kit (rule 26): the section zone { kind: 'moon', on, n: 3, rise: 100, step: 120, w: 120, band: 'rest'|'swing'|'rise' }; it is
+  what ENG-ASKS-b's '#soft@moon' row reads. 3-4's code asks it on n2 Tp1^ (rest, the teach), n4 Xc1^ (swing), n6 Wp1^ (rise), n8 Cf1^ (swing),
+  n9 Sp1^ (rest). The p storeys are ENG-MOON's own emitter; X c and C f are KIT-W3a's RISING c / f with this zone on them.
+- ENG-MOON-b's FIRST step (R-165.537): a world's manifest DECLARES its verdicts and the pipeline runs them into gen2.errors on every roll;
+  darkGaps (today test-only: dark.test's 3-1 rolls 1-40) and moonVerdicts both go through it, a planted red each. Then wait-for-light, the
+  draw (code-drawn flower stand-in, named; ART-W3 told), the lit read through ENG-ROOT's litRing (R-165.529), stills, gates once (the lock as
+  two runs, CI #100), land on t-eng-w3.
+- BUILD-31 (3-1): until R-165.537 lands, dark.test must cover every seed on 3-1's list (darkGaps empty on each, both settings).
+
