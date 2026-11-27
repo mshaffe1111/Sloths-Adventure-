@@ -1,3 +1,62 @@
+# INT-R5 REPORT: release 5 (0.10.4) candidate, release-0.10.4 (packet reference/packets/2026-11-26/INT-R5.md)
+
+## EXACT NEXT STEP (written 8:47 AM ET 11-27 by `date`; release-0.10.4, box 1 of 11-27; the old release-0.10.3 report is below the line)
+1. **The What's New TITLE**: the approved title "Two new stages" duplicates 0.9.8's title, so playerText.test fails ("What's New
+   items: exact duplicates", on 5b9389168). A ruling was asked of the lead. The recommendation is A = "Water wheels and the mail boat"
+   (B "Up the bank, then home by boat"). With no reply in 20 minutes, A goes in (reversible). Edit ONLY the 0.10.4 `title:` line in
+   src/game/whatsNew.ts; then run whatsNew.test + playerText.test (0 fail); commit; push.
+2. **The DISCOVERY run on 5b9389168** (frozen /home/user/wt/c1, main frozen /home/user/wt/main, results in /home/user/wt/out-c1) runs
+   in box 1's container. It is the gates of the same frozen candidate, so box 1 lets it finish (D138) and pushes each lane's
+   fullset-*.txt plus every failing g-*.log tail to reference/qa-reports/INT-R5/r104/out-c1/. The lanes are listed under "THE FULL
+   SET" below. Read the pushed results; fix every red (a stale seed list per release.md step 6, then the roll/seed-pinning tests);
+   each fix is its own commit, with tsc and the CI tool line after it.
+3. Then THE FULL SET on the FINAL head: freeze it (git worktree add --detach; chattr per dispatch-packet.md D115, src/game/gen2/proven
+   writable), the same six lanes with r104/lane.sh (r104/run1.sh holds every gate line; read the lane list below). Each shard's totals
+   go in the gate table. The lockall moves must be NAMED: 2-6, 2-7, C14's and release-0.10.3's own (INT-R5 below listed them), each judged.
+4. The PLAY-STORE §6 table; release.md 4b (CI time limits per the candidate's shard plan: g-shardplan.log); the test link PRE-BUILT
+   (python3 tools/testlink/build.py, in its own worktree of the final head) and NOT published. STOP before the PR.
+
+## Merges (release-0.10.4 cut from origin/main 4bf2cbaaa, every merge --no-ff, in the packet's order)
+| # | Branch @ head | Merge commit | Commits | Conflicts (named) | tsc | CI tool line |
+|---|---|---|---|---|---|---|
+| 1 | release-0.10.3 c73cb9766 | 96998505d | 681 not on main (1558489a2..c73cb9766) | whatsNew.ts (kept main's SHIPPED 0.10.3 "Two little fixes" entry, which players saw); reference/handoffs/engine-core.md (one blank line: took release-0.10.3's) | clean | running (box 1 pushes the totals) |
+| 2 | t-eng-thumb-wip 35d5252c2 | 2576ddf24 | 42 over release-0.10.3 | none | clean | running |
+| 3 | t-land-26 2f681402e | abdc6e4d1 | 38 over release-0.10.3 | none: the expected protoArt conflict did NOT arise (release-0.10.3 already holds the soil fix's protoArt) | clean | running |
+
+## 5-9's Easy goal (R-165.496), commit 4799f6026
+- KID_RUNS_59 re-measured on merge 3 (abdc6e4d1): **[14, 13, 17, 18, 5, 5]**, as the packet expected. Re-recorded in gen2/game.ts.
+- EASY_GOAL_59 = 5 is DATA in gen2/game.ts, and 5-9's entry uses it. The kidMedian derivation is gone. goals.ts kidReaches(goal, runs): goal at or
+  under the runs' lower median (13 here).
+- firstTimerBot.test.ts: the re-measure test (it now says "re-record KID_RUNS_59 (the goal stays EASY_GOAL_59)"), plus a new test:
+  the goal is 5, the entry uses it, the kid reaches it, and the test's own negatives (14 over those runs fails; 13 passes; no runs fails).
+- Frozen 4799f6026: 2 pass, 0 fail. **Planted RED A** (runs re-recorded as [3,3,4,4,4,4]): both fail, "the kid's runs 3, 3, 4, 4, 4, 4
+  (lower median 4) do not reach the goal 5". **Planted RED B** (easyGoal back to kidMedian(KID_RUNS_59), the "re-record lifts the goal"
+  case): test 2 fails, actual 13, expected 5. Each plant ran in its own fresh worktree, which was removed afterwards.
+- Other stages: no other Easy goal comes from a bot's runs. `kidRuns` appears only on 5-9 (grep src). World 1's marks goals (w1mix.ts:1264)
+  come from the stage designs' goal counts. stageGenerator.ts:2955 only caps the gen2 goal at the enemies laid.
+
+## Version and What's New (commit fca8ed1cb): 0.10.4, package.json + package-lock.json; the lead APPROVED the entry as drafted (A)
+"Two new stages": Up the Bank Houses (water wheels); The Mailman's Route; Dot warns before deep water, on every setting; the rivers run
+smoother and the bouncy plants' stems reach the ground they grow from. Lines 2-4 come from release-0.10.3's approved draft, which never shipped.
+**The title is a duplicate (step 1 above).**
+
+## THE FULL SET: discovery run on 5b9389168 (NOT the green run: the title must change)
+Lanes (r104/lane.sh <frozen> <main> <out> <lane> <gates>; each run_in_background, timeout 7,200,000 ms):
+A1 suite1 suite2 suite3 | A2 suite4 suite5 suite6 | B seedlists seed11 shardplan registrycheck | C tsc vitebuild chunkcheck artcheck
+knowncheck generalitycheck coveragecheck roadmapcheck timecheck drawcheck clipcheck kbdcheck buildcheck buildstore | D lockbase lockall
+paint0 paint1 paint2 | E toolline tipwalk storytipscan teachfirst castbots26 castbots27 funcheck fundiff tierbots.
+Known so far: playerText.test 1 fail (the title). Everything else is running.
+
+## Lessons applied
+D92 (tsc + the CI tool line after each merge), D115 (every run on a frozen, chattr'd tree; the plants in fresh trees), D119 (no heredoc in
+a commit chain), D128 (stamps from `date`), D134 (this step pushed and ls-remote checked before the hand-over), D138 (only this candidate's
+gates run past the box), D140 (ReadNotifications at each step), CI #89 (20-minute default), CI #93 (totals for the hash in each message).
+**My miss (for LESSONS): I ran whatsNew.test after drafting and then edited a line without re-running it, and never ran playerText.test,
+which checks titles for duplicates across every release. Countermeasure proposed: release.md step 3 names BOTH tests (whatsNew.test
+and playerText.test), re-run after ANY edit to the entry, before the lead is asked.**
+
+---
+
 # INT-R5 REPORT: release 4 (0.10.3) candidate, release-0.10.3
 
 Session 1: started 2:31 PM ET 11-24 (by `date`), handed over at the 28-minute box. Lead: session_01FhBbYN2CVHnFXg7XzqKXpM.
