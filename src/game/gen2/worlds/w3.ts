@@ -205,8 +205,51 @@ export const w3ProwlPair: SectionTemplate = {
   mirrorable: false,
 };
 
-/** World 3's level bricks, in the order a pool reads them (the ocelot's ground first; the dark climb and rope next, ENG-ASKS-b) */
-export const W3_LEVEL: readonly SectionTemplate[] = [w3ProwlFloor, w3ProwlPair];
+/** the climb out of the ocelot's floor (px): two Pokeys up the vine (89.1 px each), past a plain jump's rise, so the vine is the way */
+const PROWL_CLIMB_H = 180;
+/** the plain step down from the climb's entry bank onto the ocelot's floor (px; 0.61 of Pokey): the walk off the shelf lands at the entry's
+ *  height, the vine's height less this step, so the brick leaves where it came in */
+const PROWL_STEP = 54;
+
+/**
+ * THE CLIMB OUT (3-2's climb beats with an ocelot, P(c) 'Pc1&<:&ocelot*1' and X(c) 'Xc1&<:#dark:&ocelot*1'; AUDIT-W3 'ocelot*1: laid
+ * 0' x11): the ocelot prowls the stone floor at the vine's foot; he stands still until its back is turned, slips past, climbs the vine
+ * (World 3's climb, drawn as the kit's trunk) onto a branch shelf and walks off it down onto the exit bank (a walk, never a jump: only a
+ * jump's dy is scaled by the rise, R-165.524). Plain jumps only. `dark`: the dark stretch over the whole brick, a glowworm at its end.
+ */
+function prowlClimb(dark: boolean): SectionTemplate {
+  return {
+    id: dark ? 'w3-prowl-climb-dark' : 'w3-prowl-climb',
+    name: dark ? 'the climb out, in the dark' : 'the climb out',
+    feel: W3_LEVEL_STAGES, archetypes: 'any',
+    phases: ['sho', 'ten', 'ketsu'],
+    difficulty: dark ? 4 : 3, needs: ['climb'], jobs: PROWL_JOBS, content: 'climb', maxPerStage: 3,
+    pieces: [
+      { key: 'in', shape: 'bank', w: [280, 320], place: { kind: 'start' } },
+      { key: 'foot', shape: 'bank', w: PROWL_FLOOR, place: { kind: 'walk', after: 'in', dy: PROWL_STEP } },
+      { key: 'vine', shape: 'vine', w: 0, place: { kind: 'climb', on: 'foot', at: 1, h: PROWL_CLIMB_H } },
+      { key: 'shelf', shape: 'branch', w: [220, 260], place: { kind: 'over', on: 'vine', at: 0, dy: 0 }, main: true },
+      { key: 'out', shape: 'bank', w: [280, 320], place: { kind: 'walk', after: 'shelf', dy: PROWL_CLIMB_H - PROWL_STEP } },
+    ],
+    entry: { piece: 'in', kind: 'ground' },
+    exit: { piece: 'out', kind: 'ground' },
+    exitDy: 0,
+    sockets: [
+      ...(dark ? darkEnds('in', 'out', 'glow') : []),
+      ocelotAt('ocelot', 'foot', [0.3, 0.45]),
+      { id: 'petals', role: 'pickup', on: 'shelf', t: [0.4, 0.6], dn: 34, count: 2, span: 90, allow: ['pickups'] },
+      { id: 'petal', role: 'pickup', on: 'out', t: 0.35, dn: 34 },
+      // (a flag that falls in the brick stands on its exit bank, never at the ocelot's floor: pipeline.ts patchFor, SAFE_APPROACH)
+      { id: 'flag', role: 'flag', on: 'out', t: 0.7 },
+    ],
+    mirrorable: false,
+  };
+}
+export const w3ProwlClimb: SectionTemplate = prowlClimb(false);
+export const w3ProwlClimbDark: SectionTemplate = prowlClimb(true);
+
+/** World 3's level bricks, in the order a pool reads them (the ocelot's ground, the climb out; the root rope next, ENG-ROOT) */
+export const W3_LEVEL: readonly SectionTemplate[] = [w3ProwlFloor, w3ProwlPair, w3ProwlClimb, w3ProwlClimbDark];
 
 // ───────────────────────────── the manifest and the kit ─────────────────────────────
 

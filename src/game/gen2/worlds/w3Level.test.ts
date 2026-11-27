@@ -18,12 +18,12 @@ import { TYPE_OF_LETTER } from '../nodeAsks.ts';
 import type { ContentType, GraphBrief, SectionTemplate, WorldKit } from '../types.ts';
 import { w1World } from './w1.ts';
 import { w2World } from './w2.ts';
-import { W3_LEVEL, W3_LEVEL_STAGES, w3Ledge, w3World } from './w3.ts';
+import { W3_LEVEL, W3_LEVEL_STAGES, w3Ledge, w3ProwlClimb, w3ProwlClimbDark, w3World } from './w3.ts';
 
 /** 3-2's trimmed code as the audit rolls it (codes-trim-rolled.txt: the asks the base can check; #dark joins with ENG-ASKS-b) */
 const CODE_32 = 'A Tc1< Pg1> Pf1< Xc1&<:&ocelot*1 R Pg1< Wf1&>:&ocelot*1 R Pc1&<:&ocelot*1 Cg1&>:&ocelot*2 R Sf1&<:&ocelot*3 E';
 const BOTH = ['normal', 'easy'] as const;
-const SEEDS = [1, 2];
+const SEEDS = [1, 2, 3];
 
 /** the audit's "nearest piece" kit for one stage and one code: World 3's arrival/rest/exit ledge, `own` (World 3's typed bricks), and
  *  every typed World 1-2 section as a stand-in for the bricks still to come (their tips left off: World 3 has none) */
@@ -47,7 +47,7 @@ type Built = { gen2: { errors?: string[]; nodes: Array<{ token: string }>; graph
 type Rolled = { errors: string[]; secs: string[]; onSockets: number };
 /** one roll of a code; a stand-in World 1-2 section that throws on World 3's budget by name is left out and the seed re-rolled (the
  *  audit's raw.ts way). Returns the C node's laid sections and the ocelots standing on `own`'s OWN sockets there (not a top-up) */
-function roll(stage: string, code: string, own: readonly SectionTemplate[], seed: number, d: (typeof BOTH)[number]): Rolled {
+function roll(stage: string, code: string, own: readonly SectionTemplate[], seed: number, d: (typeof BOTH)[number], at: string | number = 'C'): Rolled {
   const config = generateAllLevels().find((c) => c.id === stage && !c.secret)!;
   const out = new Set<string>();
   for (let tries = 0; tries < 60; tries++) {
@@ -55,7 +55,9 @@ function roll(stage: string, code: string, own: readonly SectionTemplate[], seed
       const k = rollKit(stage, code, own);
       k.manifest.sections = k.manifest.sections.filter((q) => !out.has(q.id));
       const g = (buildGen2Stage({ config, kit: k, seed, difficulty: d }) as unknown as Built).gen2;
-      const i = g.nodes.findIndex((n) => n.token.startsWith('C'));
+      // (a node by its place in the code, or by its first letters AS LAID: a node's token is its laid code)
+      const i = typeof at === 'number' ? at : g.nodes.findIndex((n) => n.token.startsWith(at));
+      assert.equal(g.nodes.length, code.split(' ').length, 'one laid node per token of the code');
       const id = g.graph.nodes[i].id;
       const here = g.sections.filter((q) => q.node === id);
       const uids = new Set(here.map((q) => q.uid));
@@ -76,6 +78,7 @@ function roll(stage: string, code: string, own: readonly SectionTemplate[], seed
 /** the refusals that name 3-2's C node (the ground beat with two ocelots) or the pool's ground at it */
 const cRefusals = (r: Rolled) => r.errors.filter((e) => /node n\d+ "C[^"]*": (threat ocelot|creatures|content 'g')|no ground section left|no section fits/.test(e));
 const LEVEL_IDS = new Set(W3_LEVEL.map((s) => s.id));
+const CLIMB_IDS = new Set([w3ProwlClimb.id, w3ProwlClimbDark.id]);
 /** the same bricks with no animal socket (planted red 1: the count on them drops to 0) */
 const NO_SOCKETS = W3_LEVEL.map((s) => ({ ...s, sockets: s.sockets.filter((q) => q.role !== 'enemy') }));
 
@@ -83,14 +86,21 @@ test("World 3's level bricks are in its level stages' pools only (feel), so the 
   assert.deepEqual([...W3_LEVEL_STAGES], ['3-2', '3-3', '3-6', '3-7', '3-8', '3-9']);
   for (const s of W3_LEVEL) {
     assert.deepEqual([...(s.feel ?? [])], [...W3_LEVEL_STAGES], s.id);
-    assert.equal(s.content, 'ground', s.id);
+    assert.equal(s.content, CLIMB_IDS.has(s.id) ? 'climb' : 'ground', s.id);
     assert.ok(!s.jobs?.includes('teach'), `${s.id}: the first ocelot is the build's (level.md rule 7)`);
     const foes = s.sockets.filter((q) => q.role === 'enemy');
     assert.ok(foes.length >= 1 && foes.every((q) => q.allow?.length === 1 && q.allow[0] === 'ocelot'), `${s.id}: ocelot sockets only`);
     // (the ocelot prowls its own floor: past its minGround and its sight ahead, W3_CAST / predators/world3.ts)
     for (const q of foes) { const p = s.pieces.find((x) => x.key === q.on)!; assert.ok((p.w as [number, number])[0] >= 240, `${s.id}: ${q.on} floor`); }
     // (plain steps only: nothing asks for the double, AUDIT-W3 finding 4)
-    for (const p of s.pieces) if (p.place.kind === 'walk') for (const v of p.place.dy as [number, number]) assert.ok(Math.abs(v) <= 60, `${s.id}: ${p.key} step`);
+    // (a climb's one drop is the walk off its shelf back down the vine's height, R-165.524: a walk, never a jump)
+    const shelf = new Set(s.pieces.filter((p) => p.place.kind === 'over').map((p) => p.key));
+    for (const p of s.pieces) if (p.place.kind === 'walk') for (const v of [p.place.dy ?? 0].flat() as number[]) {
+      const vine = s.pieces.find((x) => x.place.kind === 'climb');
+      if (shelf.has(p.place.after) && vine?.place.kind === 'climb') assert.ok(v > 60 && v <= Number(vine.place.h), `${s.id}: ${p.key} drop, no deeper than the vine`);
+      else assert.ok(Math.abs(v) <= 60, `${s.id}: ${p.key} step`);
+    }
+    assert.ok(!s.pieces.some((p) => p.place.kind === 'jump' || p.place.kind === 'double'), `${s.id}: no jump piece (plain walks and steps)`);
   }
 });
 
@@ -110,4 +120,22 @@ test("3-2's C beat ('Cg1&>:&ocelot*2'): laid from World 3's ocelot ground, both 
     if (cRefusals(none).length) red++;
   }
   assert.ok(red > 0, 'the planted red (no level bricks) refused the C beat on no roll');
+});
+
+/** the refusals that name 3-2's P(c) node (the climb beat with one ocelot, 'Pc1&<:&ocelot*1') or the pool's climb at it */
+const PC_32 = CODE_32.split(' ').indexOf('Pc1&<:&ocelot*1');
+const pcRefusals = (r: Rolled) => r.errors.filter((e) => new RegExp(`node n${PC_32} "[^"]*": (threat ocelot|creatures|content 'c')|no climb section left|no section fits`).test(e));
+
+test("3-2's climb beat P(c) ('Pc1&<:&ocelot*1'): laid from World 3's climb out, its ocelot on the brick's OWN foot socket, on every roll (planted red)", () => {
+  for (const seed of SEEDS) for (const d of BOTH) {
+    const r = roll('3-2', CODE_32, W3_LEVEL, seed, d, PC_32);
+    assert.deepEqual(pcRefusals(r), [], `seed ${seed} ${d}`);
+    assert.ok(r.secs.length > 0 && r.secs.every((t) => CLIMB_IDS.has(t)), `seed ${seed} ${d}: P(c) laid ${r.secs.join(', ')}`);
+    // (Normal lays it on the brick's own socket. Easy's 60% cut may take a later ocelot off its socket, and the node's ask then stands it
+    //  back on the node's main ground as a top-up, pipeline.ts 'a node whose code asks for creatures': at least one, the ask's Easy rule)
+    if (d === 'normal') assert.equal(r.onSockets, 1, `seed ${seed} ${d}: the ocelot on the climb's foot socket`);
+    else assert.ok(r.onSockets <= 1, `seed ${seed} ${d}: ${r.onSockets} on Easy`);
+    // (planted red: the same bricks with their ocelot sockets stripped; the count on them drops to 0 on every roll)
+    assert.equal(roll('3-2', CODE_32, NO_SOCKETS, seed, d, PC_32).onSockets, 0, `seed ${seed} ${d}: sockets removed`);
+  }
 });
