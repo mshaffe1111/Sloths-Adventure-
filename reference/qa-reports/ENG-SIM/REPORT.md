@@ -57,7 +57,8 @@ Head: the hand-over message's hash (pushed to t-eng-sim, ls-remote confirmed). N
   engine' (rows: plans runUpPlan's own flights returned, set by setPlan; each probe-caught one must catch its liana on the frame the
   probe said; the row ends at the shrine, 0 rescues): GREEN, 1 row (t 79.2, x 7,051, log #36, k 8, press 14, probe 21, caught 21);
   **PLANTED RED** (the loop's play-now removed: the plan a frame late): 0/1. hopJudged's two stand toys (CI-11 2-4 kid Easy 35, CI-12 2-4 kid
-  Easy 19) PASS on bb5e7fb2d; lianaRide's 'A VINE FROM A LOG' / 'A VINE OVER THE TAIL' outcome rows RUNNING at this push.
+  Easy 19) PASS on bb5e7fb2d; lianaRide's 'A VINE FROM A LOG' (with its planted half) and 'A VINE OVER THE TAIL' outcome rows: KEPT, re-measured, PASS (4/4
+  with hopJudged's two, 66 s, the frozen tree of bb5e7fb2d).
 - **Hours (box 6):** the timing harness and the merge / seal baselines 8 min; the run plan 7 min; the over-3x count, the message and
   option A's measure 8 min; firstWindow, its exhaustive test and the :351 toy with both plants 10 min. The spike's 1 h for 1a-ii holds
   for the code; the checks (CI line + shards, about 50 min of wall clock) and rule 28 are box 7's.
