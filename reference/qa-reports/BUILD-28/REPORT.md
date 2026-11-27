@@ -1,6 +1,6 @@
 # BUILD-28 REPORT (W2-LANE: 2-8 "Before the Water Rises"; R-165.430 (2), READY-28, BUILD-28). Session 1 (W2-LANE a), started 9:44 AM ET (from date). Session 2 (W2-LANE b), started 10:07 AM ET (from date). Session 3 (W2-LANE c), started 10:30 AM ET (from date). Session 4 (W2-LANE d), started 10:52 AM ET (from date). Session 5 (W2-LANE e), started 11:19 AM ET (from the session hook date) Session 6 (W2-LANE f), started 11:41 AM ET (from the session hook date) Session 7 (W2-LANE g), started 12:05 PM ET (from the session hook date) Session 8 (W2-LANE h), started 12:49 PM ET (from the session hook date) Session 9 (W2-LANE i), started 1:15 PM ET (from the session hook date) Session 10 (W2-LANE j), started 1:05 PM ET (from the session hook date) Session 12 (W2-LANE l), started 2:20 PM ET (from the session hook date)
 
-## EXACT NEXT STEP (BUILD-28 box 6, BUILD-28-f, started 8:34 AM ET (from the session hook date); code head 25d527e40 on t-build-28-wip)
+## EXACT NEXT STEP (BUILD-28 box 6, BUILD-28-f, started 8:34 AM ET (from the session hook date); code head = the commit after 9be0afcff on t-build-28-wip (the lines' kinds); rolled and flown on 25d527e40)
 DONE THIS BOX (every number from the built stage, rule 27):
 1. MERGED, no force, no conflicts, tsc 0 after each: t-eng-tipleft 8a97567b3 (a FAST-FORWARD: the tree is ENG-TIPLEFT's own, its gates
    carry), then t-eng-cut 57d7b8287 (merge a2c959be5). The CI tool line on a frozen a2c959be5 (scratchpad toolline.sh): tsc 0; engine
@@ -9,7 +9,9 @@ DONE THIS BOX (every number from the built stage, rule 27):
    the hand-over (re-run them on the next candidate anyway: it moves). storyTipScan --check FAILED on a2c959be5: 2-8's two lines are
    'info' rows, "The low road's quick, but filling. High road's dry." (w28.fork) and "The river's rising! Up the steps, back home!"
    (w28.turn): lay each at its source (a warning with StageHint.warn, a story beat in storyTips, or the stage's coaching in teachTips,
-   R-165.412). This is the packet's "storyTipScan (its two 2-8 lines)": NOT done this box.
+   R-165.412). DONE (the next commit): w28.turn is a STORY line (STORY_28 = { turn: 'Dot' }, kitLib28 storyTips: 2-7's STORY_27 form),
+   w28.fork the stage's own coaching (TEACH_28 + 'fork'). In the working tree: storyTipScan --check PASS (0 dropped, 147 lines, 16
+   stages); teachFirstScan --check --seeds 20 PASS (0 misses, 600 rolls); w2Arc28.test 4/4; tsc 0. The lead may re-rule either kind.
 2. SEED 3's FORK LINE (ruled, the lead): no job is the fork rest's alone (every R is 'rest'; Y 'story' is LATER, V13), so the fork-rest
    brick has window [0.45, 0.62]: only n10, the fork's own rest, lies inside (n6 0.31, n13/n15 0.69-0.85). Without it the deal put it on
    n6 (the OUTBOUND rest) on seeds 1, 3, 7, 8, ... Test w2Arc28.test "Dot's fork line is laid at the fork's own rest", seeds 1-40 x both
@@ -32,7 +34,6 @@ DONE THIS BOX (every number from the built stage, rule 27):
    Seed-list workers ran on 25d527e40 (25 of 25 kept each, 100%) but the MERGE was NOT run: the list waits for the judged row.
 6. tools/perf/limits.json: "2-8" added to drawcheck's scenarios, the SAME limits (registrycheck's drawcheck line). Not yet run.
 NEXT (box 7), in order:
-a0. Lay storyTipScan's two 2-8 lines at their source (item 1); storyTipScan --check PASS.
 a. ReadNotifications. Enter 2-8's flown Normal rows the way 2-7's were (BUILD-27d 2590fcacf + BUILD-27c's rows): flownArcs.ts
    `n28 = nW2('2-8')` with the 8 moves (single-hold/flick/tap, double-hold/flick/tap-tap, bounce, bounce-air: climb block/thin and gap
    from70/lastGround/any from fly-2-8's "[dist]" tables; copy the log to reference/qa-reports/BUILD-28/fly-2-8.txt), stageTable '2-8'

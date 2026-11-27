@@ -88,7 +88,11 @@ export const PAGE_28 = "Walked the little ones home while the marsh filled behin
 /** a line's id in the kit: its own, `w28.<key>` */
 export const lineId28 = (line: keyof typeof LINES_28): string => `w28.${line}`;
 /** the lines Dot says as TEACH lines (said on Normal's default Tips as on Help, D50) */
-export const TEACH_28 = ['rise', 'rise2'] as const;
+export const TEACH_28 = ['rise', 'rise2', 'fork'] as const;
+/** the lines said as STORY lines (StageHint.story: once, on every Tips setting while the story switch is on), 2-7's STORY_27 form: the
+ *  turn, where the flood clock starts (BUILD-28-f: storyTipScan read it as a plain 'info' tip, dropped on Normal's default Tips). The fork
+ *  line is the stage's own coaching on its one choice (TEACH_28 above) */
+export const STORY_28 = { turn: 'Dot' } as const;
 
 /** the little ones caged on 2-8, by setting (the goal: Normal 7, Easy 5; READY-28 beat 14) */
 export const CAGES_28 = { normal: 7, easy: 5 } as const;
@@ -282,6 +286,7 @@ export function kitLib28(): WorldKit {
       required: {},
       tips: { ...M.tips, ...Object.fromEntries((Object.keys(LINES_28) as Array<keyof typeof LINES_28>).map((key) => [lineId28(key), LINES_28[key]])) },
       teachTips: [...(M.teachTips ?? []), ...TEACH_28.map(lineId28)],
+      storyTips: { ...M.storyTips, ...Object.fromEntries(Object.entries(STORY_28).map(([key, who]) => [lineId28(key as keyof typeof LINES_28), who])) },
       graphs: { ...G, list: [...G.list.filter((g) => g.archetype !== 'rescue'), ...Object.entries(ARC_28).map(([id, code]) => ({ id, archetype: 'rescue' as const, code }))], briefs: { ...G.briefs, [STAGE_28]: BRIEF_28 } },
     } } as WorldKit;
 }
