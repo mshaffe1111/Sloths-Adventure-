@@ -21,17 +21,17 @@ file and every piece below that it names has a LANDED hash (level.md rule 23; PM
 | 1 | ENG-DARK landing (3-1's tower fix + the dark piece; 1-4's lock move traced first) | M | 3-1, 3-2, 3-6, 3-7, 3-9 | - | R-165.491 |
 | 2 | ENG-SPORE landing (ENG-SPORE-c: merge into t-eng-spore-wip 5dd854b15, toys, gates) | S | 3-1, 3-3, 3-7 | 1 | (ENG-SPORE) |
 | 3 | ENG-ASKS (started 11-26) | S | all nine | - | R-165.501 |
-| 4 | ENG-ROOT | M | 3-2 | - | R-165.322 |
+| 4 | ENG-ROOT (packets/2026-11-25/ENG-ROOT.md) | M | 3-2 | - | R-165.452 |
 | 5 | ENG-LURE + ring-to-call, bait-and-climb | M | 3-3 | 2 | R-165.502 |
 | 6 | ENG-MOON + wait-for-light | M | 3-4 | - | R-165.503 |
 | 7a | KIT-W3a towers: down c/b FIRST, rising c/f/b, vine sockets | L | 3-1, 3-4, 3-5 | (dark/puff bricks after 1-2) | R-165.504 |
 | 7b | KIT-W3b levels: ocelot ground FIRST, lure, root r, cover m, finds, fern, swing | L | 3-2, 3-3, 3-6..3-9 | (root after 4, lure after 5) | R-165.505 |
-| 8 | KEEPER-W3: lines-3-1 and 3-2 first, then 3-3..3-9 | M | all nine | - | R-165.506 |
+| 8 | KEEPER-W3: REVIEW lines-3.md (t-keeper-3x 5b63cd8c6, approved 11-19) against the trims | S | all nine | - | R-165.506 |
 | 9 | ART-W3 (Hugging Face): puffball, moonflower x3 + beam, lamp, guarana + shadow, thorn-vine liana x3 | M | 3-3, 3-4, 3-6, 3-7, 3-8 | - | R-165.507 |
-| 10 | ENG-VINE + quiet-route, wake-from-afar | M | 3-5, 3-8 | - | R-165.271 |
+| 10 | ENG-VINE + quiet-route, wake-from-afar (packets/2026-11-25/ENG-VINE.md) | M | 3-5, 3-8 | - | R-165.514 |
 | 11 | ENG-LIGHT + toss-light, set-down-to-climb | M | 3-6, 3-9 | 1 | R-165.508 |
 | 12 | ENG-FERN (+ &eyes row if cheap) | M | 3-7 | - | R-165.509 |
-| 13 | ENG-SLEEPER + the s swing emitter | L | 3-8 | 10 | R-165.510 |
+| 13 | ENG-SLEEPER + the s swing emitter | L | 3-8 | 10 (R-165.514) | R-165.510 |
 | 14 | ENG-WAYS + bait-and-slip | M | 3-9 | 11 | R-165.511 |
 
 ## The order inside the cap (5 slots from Friday 8:30 AM ET; release 5's INT-R5 and the 2-8 / 2-9 builds share them)
