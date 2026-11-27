@@ -1,0 +1,6 @@
+   normal 8 tower: a blind drop off the piece at x 1039-1219, y 7936: 389 px to its landing (in view: within 300)
+   easy 2 tower: a blind drop off the piece at x 650-919, y 7121: 481 px to its landing (in view: within 300)
+   easy 4 tower: a blind drop off the piece at x 610-896, y 7021: 477 px to its landing (in view: within 300)
+   easy 8 tower: a blind drop off the piece at x 1039-1219, y 7936: 389 px to its landing (in view: within 300)
+w3-root-down,w3-two-roots,w3-cap-down,w3-cap-steps undefined ok 20 n8 e2 e4 e8
+  4 tower: a blind drop off the piece at x #-#, y #: # px to its landing (

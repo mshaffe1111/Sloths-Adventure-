@@ -1,0 +1,7 @@
+3x normal ERR pool short at slot 5 (n3 descent: no bounce section left)
+4x normal ERR ask: node n13 "Sg1_<": content 'f' (floating): 3 of 3 sections are ground
+1x normal ERR pool short at slot 6 (n3 descent: no bounce section left)
+6x easy ERR pool short at slot 5 (n3 descent: no bounce section left)
+8x easy ERR ask: node n13 "Sg1_<": content 'f' (floating): 3 of 3 sections are ground
+2x easy ERR pool short at slot 6 (n3 descent: no bounce section left)
+clean 0/8
