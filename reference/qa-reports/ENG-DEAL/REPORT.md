@@ -1,6 +1,6 @@
 # ENG-DEAL (R-165.541): the deal follows the code's letters, every slot, every job
 
-## THE EXACT NEXT STEP (box 4; written 12:27 PM ET Fri 11-27 by `date`)
+## THE EXACT NEXT STEP (box 4; written 12:24 PM ET Fri 11-27 by `date`; box 4's first push 8f35c4489 carried a hand-typed stamp 3 min after its own commit: D128, my miss, fixed here)
 t-eng-w3 MOVED to f3014145c (KIT-W3b box 2 + ENG-ROOT box 4; ENG-ROOT changed 68 lines of pipeline.ts) before I landed. Merged it in:
 9fec4226d, no conflicts; on the merge: tsc 0, generalitycheck PASS, dealLetters + nodeAsks 10/10. The gates above ran on 9818cc87 +
 the fix, so the merge is RE-CHECKED: RUNNING the lock pair (`--out $S/base2.json` on `$S/base2` = f3014145c, then `--check` on the
