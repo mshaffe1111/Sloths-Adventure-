@@ -2,21 +2,26 @@
 
 ## ENG-CUT-b (R-165.520: a section piece lays its cut). Started 9:02 AM ET (from the session hook date); this section stamped 9:12 AM ET.
 
-### EXACT NEXT STEP (ENG-CUT-b, box 1 HAND-OVER, stamped 9:49 AM ET; past the 28-minute box: see "Own misses")
-Candidate 4d2a579de (src) on t-eng-cut. STILL RUNNING on frozen wt-cand (scratchpad, chattr +i, gen2/proven writable): suite shard 6,
-the CI tool line (toolline.sh: line-157 tool tests, tipwalk, storyTipScan, teachFirstScan, registrycheck, tierBots, kbdcheck), drawcheck;
-on frozen wt-base 57d7b8287: puzzleCamera/artUse/stageSheets by name. When they end: each verdict below, any red re-run by name on
-wt-base, push, then the hash + every shard's totals to the lead AND to BUILD-28-g. If this session is gone: the next member re-runs
-shard 6, the tool line and drawcheck on a frozen 4d2a579de (the same commands) and sends them; nothing else is open.
+### EXACT NEXT STEP (ENG-CUT-b, LANDED, stamped 10:22 AM ET)
+NOTHING LEFT IN THIS LANE. 4d2a579de (src) is landed on t-eng-cut; every gate below ran on a frozen 4d2a579de, every red re-run by
+name on a frozen 57d7b8287 and RED there too. Next owner: 2-8's next build box (the lead's ruling): name the cut
+'w2-reed28#reed-isle-28' on the island's section piece (SectionPiece.cut) and, in its test, await loadInventory(2) before building so a
+wrong id is refused at the lay.
 
-### Gates on frozen 4d2a579de (so far)
+### Gates on frozen 4d2a579de (final)
 - tsc 0. generalitycheck PASS (26 literals, 26 known).
-- lockall --check (ONE run, 16 layouts, base recorded on frozen 57d7b8287 in 15m45s): 102/102 stages unchanged, exit 0 (2-8 included).
-- Suite, 6 shards (the shard split moves with the added test file, so totals differ from ENG-CUT's): 1: 718 pass / 1 fail / 1 todo
-  (puzzleCamera.test "30 moments checked": ENG-CUT's inherited list). 2: 595/0. 3: 699/1 (artUse.test: cage-whole + cage-b, the same
-  two). 4: 734/1 (stageSheets.test "2-8: STAGE_DRAWS lists more than it draws": foe:goldsnake, the same). 5: 710/0. 6: running.
-  Base re-run of those three by name: running.
-- CI tool line, drawcheck: running.
+- lockall --check (ONE run, 16 layouts, base recorded on frozen 57d7b8287): 102/102 stages unchanged, exit 0 (2-8 included).
+- Suite, 6 shards (the split moves with the added test file): 1: 718 pass / 1 fail / 1 todo (puzzleCamera "30 moments checked").
+  2: 595/0. 3: 699/1 (artUse: cage-whole + cage-b). 4: 734/1 (stageSheets "2-8: STAGE_DRAWS lists more than it draws": foe:goldsnake).
+  5: 710/0. 6: 758/2, 2 todo (firstTimerBot KID_RUNS_59; groundwork "5 stages checked"). TOTAL 4,214 pass, 5 fail, 3 todo: all 5
+  INHERITED (each re-run by name on frozen 57d7b8287: RED there, the same messages; goldsnake included).
+- CI tool line: engine tools' tests 435 pass / 1 fail / 1 todo (registrycheck.test "the shipped table passes the gate": RED on
+  57d7b8287 too); tipwalk PASS; storyTipScan --check FAIL (2 of 2-8's laid lines: RED on 57d7b8287 too); teachFirstScan PASS (0 misses,
+  600 rolls); registrycheck FAIL (2-8 not in drawcheck scenarios, no proven list, not flown: RED on 57d7b8287 too, 2-8 mid-build);
+  tierBots 9/0; kbdcheck PASS.
+- drawcheck PASS (1092 s), exit 0.
+- Not run (not in this packet's GATES): the deploy build + chunkcheck (pipeline now imports art/invCut.ts), paintcheck, clipcheck.
+  Suggestion: the next build box runs the deploy build and chunkcheck once on its merge.
 
 ### Own misses (named)
 - The safe-keep push went to t-eng-cut itself (the landing branch) before any gate: BUILD-28-g could have merged an ungated head.
