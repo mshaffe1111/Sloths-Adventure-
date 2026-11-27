@@ -1,0 +1,42 @@
+s1 w2-29-let-go 5.41 counts 5.41
+     SUM swing(added) 0.98, lianaDrop(added) 2.91, walk 1.53
+s1 w2-29-double 5.65 counts 5.65
+     SUM swing(added) 0.98, lianaDrop(added) 2.76, walk 1.92
+s1 w2-29-shrine 5.48 counts 1.34
+     SUM walk 5.48
+s1 2-9 s1 normal: total 151.8 move 122.8; quiet stretches > 4 s
+s2 w2-29-let-go 5.81 counts 5.81
+     SUM swing(added) 0.98, lianaDrop(added) 2.91, walk 1.93
+s2 w2-29-double 6.83 counts 6.83
+     SUM swing(added) 0.98, lianaDrop(added) 2.76, walk 3.09
+s2 w2-29-shrine 5.41 counts 1.34
+     SUM walk 5.41
+s2 2-9 s2 normal: total 154.9 move 123.9; quiet stretches > 4 s
+s3 w2-29-let-go 5.81 counts 5.81
+     SUM swing(added) 0.98, lianaDrop(added) 2.91, walk 1.92
+s3 w2-29-double 6.83 counts 6.83
+     SUM swing(added) 0.98, lianaDrop(added) 2.76, walk 3.09
+s3 w2-29-shrine 5.44 counts 1.34
+     SUM walk 5.44
+s3 2-9 s3 normal: total 155.2 move 124.2; quiet stretches > 4 s
+s4 w2-29-let-go 5.80 counts 5.80
+     SUM swing(added) 0.98, lianaDrop(added) 2.91, walk 1.92
+s4 w2-29-double 5.65 counts 5.65
+     SUM swing(added) 0.98, lianaDrop(added) 2.76, walk 1.91
+s4 w2-29-shrine 5.47 counts 1.34
+     SUM walk 5.47
+s4 2-9 s4 normal: total 147.7 move 120.7; quiet stretches > 4 s
+s5 w2-29-let-go 5.81 counts 5.81
+     SUM swing(added) 0.98, lianaDrop(added) 2.91, walk 1.92
+s5 w2-29-double 5.65 counts 5.65
+     SUM swing(added) 0.98, lianaDrop(added) 2.76, walk 1.92
+s5 w2-29-shrine 5.68 counts 1.40
+     SUM walk 5.43, drop 0.25
+s5 2-9 s5 normal: total 151.4 move 122.4; quiet stretches > 4 s
+s6 w2-29-let-go 5.81 counts 5.81
+     SUM swing(added) 0.98, lianaDrop(added) 2.91, walk 1.93
+s6 w2-29-double 5.66 counts 5.66
+     SUM swing(added) 0.98, lianaDrop(added) 2.76, walk 1.92
+s6 w2-29-shrine 5.46 counts 1.34
+     SUM walk 5.46
+s6 2-9 s6 normal: total 151.5 move 122.5; quiet stretches > 4 s

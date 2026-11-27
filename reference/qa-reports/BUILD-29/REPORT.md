@@ -1,7 +1,27 @@
 # BUILD-29 REPORT: 2-9 "The River King's Court" (the World 2 finale; R-165.449), release 6
 Branch t-build-29, cut from origin/t-eng-29 = 098047713 (the lead's named base). Session 1 started 5:45 PM ET Thu 11/26 (by `date`).
 
-## EXACT NEXT STEP (session 8 hand-over, BUILD-29-h; STOPPED for the lead's ruling on the quiet line, stage-wide)
+## EXACT NEXT STEP (session 9, BUILD-29-i; WAITING for the lead's ruling on the three quiet proposals, sent 9:28 PM ET Thu 11/26)
+Head: this commit. ReadNotifications first (D140). Box 9 DID:
+1. MERGED t-eng-29 at 28c848dbd (G6, COURT_SAG), no conflicts (c42447a23). judge29 + ENG-29's per-grip read on the merged head
+   (flown/judge29-g6-i.txt, modelgrip29-g6-i.txt), seeds 1-3: every court liana at both grips (0.70, 0.95) has ONE early/late
+   Normal >= 0.73 / 1.13 s, Easy >= 1.10 / 1.93 s (bars 0.20 / 0.30). PASS.
+2. THREE DATA PROPOSALS flown together (probes/parts.ts = ENG-QUIET's, probes/fly.sh; quietOf's goal share applied), Normal seeds 1-6,
+   worst stretch per beat (flown/quiet-c2-worst.txt; base quiet-base.txt; the diff is flown/quiet-c2.patch, NOT in the tree):
+   - GATE 4.87 -> 3.46: a second stone on bank b (rock 'rb' at 0.5); the 400 px walk, Dot's tip and its distance stay.
+     (Rejected: bank b 400 -> 150, worst 4.00 on s4, no margin: quiet-c1.txt.)
+   - TERRACE 10.5-12.0 -> 3.59: court wheel R120 V132.28 easyV45.7 N4 (a bucket every two beats; flown wheelN4.txt: step 1.67 s, Easy
+     walk-off 2.73 s) + the top street 300 -> 150 + a 50 px step up after it (rise 'z'): lift 184 + 50 px. N4 alone is 4.12-5.83
+     (quiet-c1.txt: the walk after the wheel).
+   - BARGE 5.45 -> 3.85: barge29 logs 3 -> 2 (river 1440 -> 984 px, a barge still every two bars). The posted guard is REFUSED at t 0.5,
+     0.6, 0.8 with two logs (silently: guards NONE) and laid at t 0.4 on 24/24 both settings (guard-logs2-t0.*.txt, guard-c2.txt).
+   With all three: seed 4 builds (it threw 'pool is spent' before), every seed both settings builds, tsc clean. Still over 4 s: let-go
+   5.41-5.81 and twist 5.65-6.83 (B clears them, ENG-QUIET's lane). Stage total Normal 148-155 s (was 158-162).
+NEXT: the lead's ruling per beat. If the lead is quiet 20 minutes: apply quiet-c2.patch on t-build-29 as my own reversible
+recommendation (say so first). Then, once B lands on t-eng-29: merge it, wheelflights --write for the court row, re-fly the quiet line;
+only then rules 28/29 (rolls clean 24 x both), addlevel, bots, drawcheck, stills, the suite. No bots, seed list or stills before.
+
+## (superseded) EXACT NEXT STEP (session 8 hand-over, BUILD-29-h; STOPPED for the lead's ruling on the quiet line, stage-wide)
 Head: this commit. ReadNotifications first (D140). Box 7 (BUILD-29-g) left no section here; its state is in the commit 16825e931 message.
 Box 8 DID (each on t-build-29; files in flown/):
 1. RULING (a), the court wheel on street 'edge' (w2.ts W2_WHEELS.court), flown with wheelflights --write: Normal R160 V58.79 N6 step

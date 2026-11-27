@@ -1,0 +1,66 @@
+s1 w2-29-gate 4.86 counts s
+     SUM walk 4.62, drop 0.24
+s1 w2-29-let-go 5.41 counts s
+     SUM swing(added) 0.98, lianaDrop(added) 2.91, walk 1.53
+s1 w2-29-double 5.65 counts s
+     SUM swing(added) 0.98, lianaDrop(added) 2.76, walk 1.92
+s1 w2-29-terrace 10.53 counts s
+     SUM wheel(added) 9.48, walk 1.05
+s1 w2-29-barge 5.45 counts s
+     SUM timedHop 0.40, walk 5.05
+s1 w2-29-shrine 5.09 counts s
+     SUM walk 5.09
+s1 2-9 s1 normal: total 158.4 move 129.4; quiet stretches > 4 s
+s2 w2-29-gate 4.87 counts s
+     SUM walk 4.64, drop 0.24
+s2 w2-29-let-go 5.81 counts s
+     SUM swing(added) 0.98, lianaDrop(added) 2.91, walk 1.93
+s2 w2-29-double 6.83 counts s
+     SUM swing(added) 0.98, lianaDrop(added) 2.76, walk 3.09
+s2 w2-29-terrace 10.53 counts s
+     SUM wheel(added) 9.48, walk 1.05
+s2 w2-29-barge 5.45 counts s
+     SUM timedHop 0.40, walk 5.05
+s2 w2-29-shrine 5.03 counts s
+     SUM walk 5.03
+s2 2-9 s2 normal: total 161.6 move 130.6; quiet stretches > 4 s
+s3 w2-29-gate 4.86 counts s
+     SUM walk 4.63, drop 0.24
+s3 w2-29-let-go 5.81 counts s
+     SUM swing(added) 0.98, lianaDrop(added) 2.91, walk 1.92
+s3 w2-29-double 6.83 counts s
+     SUM swing(added) 0.98, lianaDrop(added) 2.76, walk 3.09
+s3 w2-29-terrace 12.00 counts s
+     SUM wheel(added) 9.48, walk 2.53
+s3 w2-29-barge 5.45 counts s
+     SUM timedHop 0.40, walk 5.05
+s3 w2-29-shrine 5.06 counts s
+     SUM walk 5.06
+s3 2-9 s3 normal: total 161.9 move 130.9; quiet stretches > 4 s
+s4 ERR       throw new Error(`gen2 ${budget.id}: no section fits node ${n.id} (${n.phase})${spent ? `: the pool is spent (${spent} that fit are laid already, slot ${i 
+s5 w2-29-gate 4.87 counts s
+     SUM walk 4.64, drop 0.24
+s5 w2-29-let-go 5.81 counts s
+     SUM swing(added) 0.98, lianaDrop(added) 2.91, walk 1.92
+s5 w2-29-double 5.65 counts s
+     SUM swing(added) 0.98, lianaDrop(added) 2.76, walk 1.92
+s5 w2-29-terrace 10.53 counts s
+     SUM wheel(added) 9.48, walk 1.05
+s5 w2-29-barge 5.45 counts s
+     SUM timedHop 0.40, walk 5.05
+s5 w2-29-shrine 5.30 counts s
+     SUM walk 5.05, drop 0.25
+s5 2-9 s5 normal: total 158.1 move 129.1; quiet stretches > 4 s
+s6 w2-29-gate 4.87 counts s
+     SUM walk 4.63, drop 0.24
+s6 w2-29-let-go 5.81 counts s
+     SUM swing(added) 0.98, lianaDrop(added) 2.91, walk 1.93
+s6 w2-29-double 5.66 counts s
+     SUM swing(added) 0.98, lianaDrop(added) 2.76, walk 1.92
+s6 w2-29-terrace 12.00 counts s
+     SUM wheel(added) 9.48, walk 2.53
+s6 w2-29-barge 5.45 counts s
+     SUM timedHop 0.40, walk 5.05
+s6 w2-29-shrine 5.08 counts s
+     SUM walk 5.08
+s6 2-9 s6 normal: total 158.2 move 129.2; quiet stretches > 4 s
