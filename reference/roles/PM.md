@@ -113,6 +113,9 @@ Everything else is yours on his standing permission (11-07).
    the lead opens the roll file its packet cites (the design's whole node string through the real pipeline, 4 seeds, both settings) and
    checks every MISSING piece has a LANDED hash. Matt 11-26: "Shouldn't you be telling the helpers to make sure that they're getting all
    the pieces in?" Rule 23 already said so; the lead did not enforce it for 2-8 and 2-9.
+   **A call that needs another call's result is NEVER in the same batch (11-26 and 11-27, twice).** The lead sent a message and a trigger
+   prompt carrying a session id in the SAME batch as the create_session that returns it, and wrote a placeholder both times. Create
+   first, read the id, then send.
    **Count the lanes before EVERY create_session (CI #94, 11-26).** The week's cap (WEEK-1125: at most 4 helpers taking turns at once,
    plus ENG-SIM) is checked first: a lane that waits on another lane's landing is QUEUED, not started; a tail running only the gates of
    its frozen candidate does not count, but it is archived the moment it reports. Over the cap, the newest waiting lane hands over.
