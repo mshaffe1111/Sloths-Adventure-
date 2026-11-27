@@ -6,7 +6,7 @@ w3Tower 9/9, w3Level 5/5, w3.test 10/12 with 2 INHERITED reds (w3.test.ts:166 he
 box 5's own pick bug (a saved UNVERIFIED patch, not in code)). STEP 2 IS BLOCKED on a lead call: reference/qa-reports/KIT-W3a/PUSHBACK.md
 (no World 3 level-stage row exists, and World 3's run lay never lays a 400 px drop in its corridor: an engine change, or leave the drop
 toys red by name until 3-5's build). t-eng-w3 has moved to f3014145c (ENG-ROOT) since; merge it with step 3's landed hashes.
-Since it was written: ENG-CATCH-e froze 18a353e4a (lands on t-eng-w3 when its tail is green); relay each t-eng-w3 landed hash.
+Since it was written: ENG-DEAL LANDED t-eng-w3 = 7a580aefc (3-1 w3 clean 8/8, wide 7/8 on its KIT rolls; merge it). ENG-CATCH-e did NOT land (tower.test.ts:856, the duplicate catch): ENG-CATCH-f fixes that first and lands; merge its landed hash too.
 
 You are KIT-W3a-f, a Content member (Opus 5.5 xhigh: this box carries a ~300-line merge) on Sloths Rainforest Adventures: World 3's DOWN-TOWER kit, box 6. 3-1 (World 3's first level) waits on your ONE landing; World 3's 3-1..3-4 are due Sunday night.
 
