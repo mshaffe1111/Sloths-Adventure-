@@ -10,7 +10,8 @@ import assert from 'node:assert/strict';
 import { buildGen2Stage } from './pipeline.ts';
 import { withTestStage } from './listed.ts';
 import { COURT_TEMPO, TEMPO_ID, tempoCfg, tempoKit, tempoRow, type TempoToyOpts } from './worlds/w2TempoToy.ts';
-import { courtFalls, courtLands, fallOnLog, letGoFall, lockedLianas } from './riverLay.ts';
+import { COURT_SAG, courtFalls, courtLands, fallOnLog, letGoFall, lockedDrops, lockedLianas } from './riverLay.ts';
+import type { Vine } from '../types.ts';
 import { driftX, type DriftInfo } from '../river.ts';
 import type { PressLaunch } from '../physics.ts';
 import { ONE_MARGIN, tempoFaults } from '../tempo.ts';
@@ -72,4 +73,21 @@ test('the court\'s catch is never looser than the engine: the traced log-end pre
   assert.equal(fallOnLog(free, [log], 0, false), false, 'released: the water (the engine)');
   assert.equal(fallOnLog(held, [log], 0, false), true, 'held: the log end (the model\'s float)');
   assert.equal(courtLands(courtFalls(l, log), [log], 0, false), false, 'the court\'s catch refuses it, as the engine does');
+});
+
+// (ENG-29-i, the lead's scope ruling: the model is never LOOSER than the engine, not an exact copy.) 2-9's draft at lock 0.92, Normal,
+// seed 1 (t-build-29 fa92fce1d, the court's second liana and its river, as laid): the engine refuses it (grip 0.95: ONE keeps only
+// 0.10 s late, a one-frame hole at the press j +4; probes/oneMarginR-reread-h.txt), the model's own launch passed it (0.83 / 1.33 s)
+// because it sits 5-10 px higher than the engine's. The judge now flies each let-go from the launch lowered by COURT_SAG too and takes
+// the worst: ONE keeps 0.17 s late, under the 0.20 s bar, refused as the engine refuses (probes/modelgrip29.ts, the whole table).
+test('the court judge is never looser than the engine: 2-9\'s draft at lock 0.92 Normal is refused, as the engine refuses it', () => {
+  const v = { id: 2, x: 14389, topY: 360, bottomY: 770, swaySpeed: 1.1, swayPhase: 4.937, vineType: 'swing_liana', isSwingingVine: true,
+    swingAmp: 0.45, swingPeriod: 2.85, swingPhase: 0.92 } as Vine;
+  const logs = [0, 1.425, 2.85, 4.275].map((offset) =>
+    ({ x0: 14224, x1: 14894.5, dir: 1, speed: 140, width: 127.5, offset, baseY: 798 }) as DriftInfo);
+  assert.deepEqual([...COURT_SAG], [0, 5, 10]);
+  const d = lockedDrops(v, logs, 'normal');
+  assert.equal(d.one, true, 'ONE itself still lands');
+  assert.ok(d.late < ONE_MARGIN.normal, `late ${d.late.toFixed(3)} s: under the bar, refused (the model's own launch alone kept 1.33 s)`);
+  assert.ok(d.early >= ONE_MARGIN.normal, `early ${d.early.toFixed(3)} s`);
 });

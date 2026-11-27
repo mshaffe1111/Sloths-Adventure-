@@ -391,21 +391,35 @@ export interface LockedDrops extends LianaDrops {
 }
 
 /**
- * A court let-go's two flights (lockedDrops): the jump held through the flight (letGoFall's, the 0.72 float at the top, engine.ts air
- * step) and let go as he leaves the vine (held 0: the climb on the vine is pressLaunches' own). A child's hold (the calibrated child bot's
- * let-go: forward held, the press held its own drawn hold, firsttimer.ts) ends between the two, before the top on most presses.
+ * How much LOWER than the model's launch the engine's own launch may sit (px, screen y down), the court's judge flies each let-go from
+ * every one (courtFalls). The model's launch matches the engine's in x to 0.4 px but sits 5-10 px higher (ENG-29-h: 2-9's draft, the
+ * engine's frame 0 y 727.48 against the model's 717.49 on one frame grid, 727.1 against 722.08 on the other, probes/launch29.ts). Its
+ * cause was not found in two flown guesses, so the judge does not guess it: it takes the WORST of the model's launch and the launch
+ * lowered by the measured gap and by half of it (a landing is not monotone in the height, so the middle is flown too). The lead's
+ * scope ruling (ENG-29-i): the model is never looser than the engine, not an exact copy of it.
  */
-export function courtFalls(l: PressLaunch, w: Pick<DriftInfo, 'x0' | 'x1' | 'baseY' | 'tail'>): [LetGoFall, LetGoFall] {
-  return [letGoFall(l, w), letGoFall(l, w, 0)];
+export const COURT_SAG = [0, 5, 10] as const;
+
+/**
+ * A court let-go's flights (lockedDrops), from the launch and the launch lowered by each COURT_SAG: each one held through the flight
+ * (letGoFall's, the 0.72 float at the top, engine.ts air step) and let go as he leaves the vine (held 0: the climb on the vine is
+ * pressLaunches' own). A child's hold (the calibrated child bot's let-go: forward held, the press held its own drawn hold, firsttimer.ts)
+ * ends between the two, before the top on most presses.
+ */
+export function courtFalls(l: PressLaunch, w: Pick<DriftInfo, 'x0' | 'x1' | 'baseY' | 'tail'>): LetGoFall[] {
+  return COURT_SAG.flatMap((dy) => {
+    const q = dy ? { ...l, y: l.y + dy } : l;
+    return [letGoFall(q, w), letGoFall(q, w, 0)];
+  });
 }
 
 /**
- * Does a court let-go land (lockedDrops)? Only when BOTH its flights do (courtFalls): the model is never looser than the engine on either
- * end of the hold. Held alone it was: the float kept him over a log's top a frame longer, about 9 px on, and took a log end the engine's
+ * Does a court let-go land (lockedDrops)? Only when EVERY one of its flights does (courtFalls): the model is never looser than the engine
+ * on either end of the hold, nor at any launch height down to the engine's. Held alone it was: the float kept him over a log's top a frame longer, about 9 px on, and took a log end the engine's
  * released flight misses by a px (ENG-29-h, 2-9's draft x14389 grip 0.95 press j +4; the engine's logs sit at driftX of the frame's own
  * clock, as fallOnLog reads them: the catch order matched, the hold did not).
  */
-export function courtLands(f: readonly [LetGoFall, LetGoFall], logs: readonly DriftInfo[], off: number, easy: boolean): boolean {
+export function courtLands(f: readonly LetGoFall[], logs: readonly DriftInfo[], off: number, easy: boolean): boolean {
   return f.every((q) => q.far || fallOnLog(q, logs, off, easy));
 }
 
