@@ -6,7 +6,8 @@
  * THE WORLD'S RULE (WORLD-3-PLAN §1, GAME-MAP §4): the grotto goes DOWN. Its first stage travels down (its draft row's `travel`), laid
  * storey under storey by gen2's one lay (pipeline.ts layStage, tower.ts): every drop's landing in view before he commits (tower.ts
  * towerFalls, TOWER.see; D46: no blind fall), the lay's vine climbed down where a storey turns. Its falls are soft (a miss costs a storey, never
- * a life). The dark, the glowworms that wake below, the spore puffs are World 3's next pieces (ENG-DARK, ENG-SPORE): none is laid here.
+ * a life). The dark, the glowworms that wake below, the spore puffs are World 3's pieces (ENG-DARK, ENG-SPORE); a node code asks them by
+ * W3_HAZARDS (below).
  *
  * THE ART (the inventory, src/game/art/inventory/w3.json, reference/art/CATALOG-MASTER.csv): every piece the kit lays is drawn by World
  * 3's painted kit (src/assets/kits/w3.webp: the bank's top strip, fill and end; the branch shelf; the boulder), as the engine draws them
@@ -24,6 +25,7 @@
  */
 import { G } from '../../protoStage.ts';
 import { DARK_EMIT, DARK_GLOW_PROPS, darkEnds } from '../dark.ts';
+import type { HazardDef, HazardLay } from '../nodeAsks.ts';
 import type { CreatureDef, SectionTemplate, WorldKit, WorldManifest } from '../types.ts';
 import { W1_KIT } from './w1.ts';
 
@@ -127,6 +129,27 @@ export const w3Walk: SectionTemplate = {
 /** the way down's bricks, in the order a pool reads them */
 export const W3_DOWN: readonly SectionTemplate[] = [w3Ledge, w3Drops, w3Walk];
 
+// ───────────────────────────── the hazards a node code may ask ─────────────────────────────
+
+/** the puff's clock (the spore piece, gen2/spore.ts: a section's SectionZone 'spore' lays its cloud on zones.ts SPORE's beat) */
+const PUFF: HazardLay = { zone: 'spore', zones: ['spore'] };
+
+/**
+ * WORLD 3's HAZARD REGISTRY (nodeAsks.ts hazardRegistry, ENG-ASKS R-165.501; ENG-ASKS-b): the ids and named clocks a World 3 node code
+ * may ask (`:#id`, `:#id@clock`), each by the bricks that lay it. The deal draws a section that lays it, or the roll fails by name.
+ *   - #dark: the glowworms' dark (gen2/dark.ts), laid by a section's dark ends (darkEnds: its 'darkFrom' prop), read as a 'dark' zone;
+ *   - @puff: the spore puff's clock (#dark@puff: the dark with a puff on its shelf, its light on the puff's beat; #spore@puff);
+ *   - #spore: the spore puff itself, by its zone brick;
+ *   - #soft@moon: a soft fall on the moon's clock. NO BRICK LAYS THE MOON YET (ENG-MOON builds it): the row is registered so the ask is
+ *     refused by name ('no section in the pool lays @moon') until a section with a 'moon' zone is in the pool; ENG-MOON sets the zone.
+ * NOT YET: #vine and #thornvine@doze wait for ENG-VINE (until then a code that asks them is refused '... is not a registered hazard').
+ */
+export const W3_HAZARDS: readonly HazardDef[] = [
+  { id: 'dark', zone: 'dark', props: ['darkFrom'], clocks: { puff: PUFF } },
+  { id: 'spore', ...PUFF, clocks: { puff: PUFF } },
+  { id: 'soft', clocks: { moon: { zone: 'moon', zones: ['moon'] } } },
+];
+
 // ───────────────────────────── the manifest and the kit ─────────────────────────────
 
 /**
@@ -149,6 +172,7 @@ export function w3Manifest(): WorldManifest {
     lessons: { jump: '1-1', double: '1-1', bounce: '1-1', climb: '1-4', creak: '1-5', swing: '1-6' },
     tips: W3_TIPS,
     required: {},
+    hazards: W3_HAZARDS,
   };
 }
 
