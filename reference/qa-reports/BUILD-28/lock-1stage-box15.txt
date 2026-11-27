@@ -1,0 +1,64 @@
+# BUILD-28 box 15 (BUILD-28-o): 1-stage locks naming every box-14 lock move by commit. tools/engine/lockall.ts --layouts 16 --stages <s>: parent --out, commit --check (64 builds per pair: 2 stages x 16 layouts x Normal/Easy). Each run alone.
+## 2-1,2-4: main == 88b5611b4 (node compare of lockbase-49fdc8cb6 vs the 88b5611b4 --out: 64 builds, no part differs)
+== 18:27:11 pair 88b5611b4 -> 74d88d236 stages 2-1,2-4
+lock: wrote 64 builds of 2 stages
+
+lock: 0/2 stages unchanged
+lock: gen2 gained verdicts and drops (not hashed): 2-1, 2-4
+  2-1: size, platforms, vines, rivers, collectibles, spawnY, exitTotemX, exitTotemY, checkpoints, waterY, gen2, proto.hints, proto.beats, proto.gen2, proto.decor, proto.dress
+  2-4: size, platforms, vines, rivers, collectibles, spawnY, exitTotemX, exitTotemY, checkpoints, waterY, gen2, proto.hints, proto.beats, proto.gen2, proto.decor, proto.dress
+exit 1
+== 18:28:52 done
+## 2-1,2-4: 74d88d236 --out vs head 4cabd94d3 (code of 62c6d628a) --check
+lock: 2/2 stages unchanged; exit 0
+## 1-4,2-6: the brief's three candidates (none moves them)
+== 18:31:04 pair 12c39c874 -> 8a2045547 stages 1-4,2-6
+lock: wrote 64 builds of 2 stages
+
+lock: 2/2 stages unchanged
+lock: gen2 gained verdicts and drops (not hashed): 1-4
+exit 0
+== 18:31:28 done
+== 18:31:28 pair e878b1f45 -> 408679c3d stages 1-4,2-6
+lock: wrote 64 builds of 2 stages
+
+lock: 2/2 stages unchanged
+lock: gen2 gained verdicts and drops (not hashed): 1-4
+exit 0
+== 18:31:52 done
+== 18:31:52 pair 57d7b8287 -> 4d2a579de stages 1-4,2-6
+lock: wrote 64 builds of 2 stages
+
+lock: 2/2 stages unchanged
+lock: gen2 gained verdicts and drops (not hashed): 1-4
+exit 0
+== 18:32:16 done
+## 1-4,2-6: 0057bd6f5 (ENG-TIPLEFT, found by git log -S beforeX 49fdc8cb6..4cabd94d3 after a hint-content diff main vs head: 220 lines differ, teach/story tips gain beforeX and x moves earlier)
+== 18:33:05 pair a0d85e961 -> 0057bd6f5 stages 1-4,2-6
+lock: wrote 64 builds of 2 stages
+
+lock: 1/2 stages unchanged
+lock: gen2 gained verdicts and drops (not hashed): 1-4
+  1-4: proto.hints
+exit 1
+== 18:33:28 done
+## 1-4,2-6: across the t-eng-29 merge (0057bd6f5 was already on this branch's line)
+== 18:33:42 pair 5c7ddade2 -> 614341a44 stages 1-4,2-6
+lock: wrote 64 builds of 2 stages
+
+lock: 2/2 stages unchanged
+lock: gen2 gained verdicts and drops (not hashed): 1-4, 2-6
+exit 0
+== 18:33:59 done
+## 1-4,2-6: main 49fdc8cb6 + cherry-pick -n 0057bd6f5 (alone) --check lockbase-49fdc8cb6
+lock: 0/2 stages unchanged
+  1-4: proto.hints
+  2-6: proto.hints
+exit 1
+## 1-4,2-6: main+0057bd6f5 --out vs head 4cabd94d3 --check
+lock: 2/2 stages unchanged; exit 0
+## sample of the hint move (layout 1 Normal), main vs head
+2c2
+< 1-4 normal 1 {"x":484,"text":"Reach for the next vine! Two hands zoom up!","pad":"Reach for the next vine! Two hands zoom up!","keys":"Reach for the next vine! Two hands zoom up!","band":[8767,9610]
+---
+> 1-4 normal 1 {"x":110,"beforeX":484,"text":"Reach for the next vine! Two hands zoom up!","pad":"Reach for the next vine! Two hands zoom up!","keys":"Reach for the next vine! Two hands zoom up!","ban

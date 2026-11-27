@@ -1,6 +1,56 @@
 # BUILD-28 REPORT (W2-LANE: 2-8 "Before the Water Rises"; R-165.430 (2), READY-28, BUILD-28). Session 1 (W2-LANE a), started 9:44 AM ET (from date). Session 2 (W2-LANE b), started 10:07 AM ET (from date). Session 3 (W2-LANE c), started 10:30 AM ET (from date). Session 4 (W2-LANE d), started 10:52 AM ET (from date). Session 5 (W2-LANE e), started 11:19 AM ET (from the session hook date) Session 6 (W2-LANE f), started 11:41 AM ET (from the session hook date) Session 7 (W2-LANE g), started 12:05 PM ET (from the session hook date) Session 8 (W2-LANE h), started 12:49 PM ET (from the session hook date) Session 9 (W2-LANE i), started 1:15 PM ET (from the session hook date) Session 10 (W2-LANE j), started 1:05 PM ET (from the session hook date) Session 12 (W2-LANE l), started 2:20 PM ET (from the session hook date) Session 13 (BUILD-28-j, box 10), started 10:43 AM ET (from the session hook date) Session 14 (BUILD-28-k, box 11), started 11:08 AM ET (from the session hook date) Session 15 (BUILD-28-l, box 12), started 11:35 AM ET (from the session hook date) Session 16 (BUILD-28-m, box 13), started 12:14 PM ET (from the session hook date)
 
-## EXACT NEXT STEP (BUILD-28 box 14, BUILD-28-n, started 5:45 PM ET (from date); hand-over 6:15 PM ET (from date); MERGED HEAD 4cabd94d3 on t-build-28-wip)
+## EXACT NEXT STEP (BUILD-28 box 15, BUILD-28-o, started 6:23 PM ET (from date); hand-over 6:47 PM ET (from date); CODE HEAD 4cabd94d3 on t-build-28-wip, unchanged this box)
+CLOCK (the 2-hour level clock's dry run): start 6:23:06 PM ET; stops: none mid-job (the first 1-stage lock waited about 1.5 min on two
+   fresh worktree checkouts of the 3 GB tree: work, not a stop; later pairs reuse the two worktrees by `git checkout --detach`, seconds);
+   handed over at the brief's report-by with the pre-freeze test run still running (it is finished and recorded below); hand-over 6:47:17 PM ET (box 15 of the job).
+DONE:
+0. EVERY BOX-14 LOCK MOVE NAMED BY COMMIT, each by a 1-stage lock (`lockall.ts --layouts 16 --stages <s>`, parent --out, commit --check,
+   64 builds a pair, each alone; full log reference/qa-reports/BUILD-28/lock-1stage-box15.txt):
+   - 2-1, 2-4 WHOLE LAY = 74d88d236 (ENG-QUIET-c, t-eng-29, not in main). main 49fdc8cb6 == 88b5611b4 on both (64/64 builds equal to
+     lockbase-49fdc8cb6); 88b5611b4 -> 74d88d236 'lock: 0/2 stages unchanged', the same 16 parts box 14 named; 74d88d236 -> head
+     4cabd94d3 'lock: 2/2 stages unchanged'. The ONLY mover.
+   - 1-4, 2-6 proto.hints = 0057bd6f5 (ENG-TIPLEFT's main commit: teach/story tips gain beforeX and are said earlier; e.g. 1-4 'Reach
+     for the next vine!' x 484 -> 110, beforeX 484). NOT the brief's candidates: 12c39c874 -> 8a2045547, e878b1f45 -> 408679c3d,
+     57d7b8287 -> 4d2a579de each 'lock: 2/2 stages unchanged'; nor the t-eng-29 merge (5c7ddade2 -> 614341a44 2/2 unchanged: 0057bd6f5
+     was already on this branch's own line through the earlier t-eng merges). Found by a hint-content diff (main vs head, 220 lines)
+     then `git log -S beforeX 49fdc8cb6..4cabd94d3` (one commit). Proof: main + `cherry-pick -n 0057bd6f5` alone vs lockbase 'lock:
+     0/2 stages unchanged', 1-4 and 2-6 proto.hints only; main+0057bd6f5 vs head 2/2 unchanged. On t-eng-29's own line it moves 1-4
+     only (2-6 there predates release 5's 2-6). 1-4's mover, untraced since box 12, is 0057bd6f5.
+   So box 14's 95/102 is fully accounted: 2-8 (this build), 2-5/2-9 proto.dress (d2fd4e0da), 2-1/2-4 (74d88d236), 1-4/2-6 hints
+   (0057bd6f5), gen2 verdicts on 40 stages (not hashed). Sent to the lead with every hash.
+1. THE BOOK FIND: gen2's 2-8 lays it on 32/32 builds (16 layouts x Normal/Easy, head 4cabd94d3): type 'find', findId w2_book,
+   hidden: true (a Hush Fern), no findSpot socket (proto.findSpot null), so addFinds (stageGenerator.ts:3103) picks it each roll: x
+   7019-19300 on a stage 22,070-23,042 wide. Measured by x only: within 400 px of a river edge on 24/32 rolls, 400-1340 px on 8/32.
+   Keys sent to the lead for the keeper: finds.ts:90 w2_book (card hint 'World 2, hidden. A photo album in a fern.') and DOT_HINTS
+   finds.ts:416 'Look along the banks in Before the Water Rises. Hurry!' against DOT_HINTS' own rule (finds.ts:403: 'only what is
+   true on every layout'): 'along the banks' does not hold on 8/32 rolls as laid. Nothing in finds.ts changed (the keeper's words).
+2. PRE-FREEZE on 4cabd94d3 (the main checkout, code = 4cabd94d3): `git ls-remote`: main 49fdc8cb6, t-eng-29 337ba7d0b (unmoved).
+   tsc rc=0; generalitycheck PASS. THE WHOLE TEST FILES (60: the 7 box 14 names + firstTimerBot.test.ts +
+   every test importing riverLay.ts, firsttimer.ts or provenIndex.ts; `npx tsx --test <60 files>`, started 6:35:54 PM ET): RUNNING at
+   hand-over, 211 ok and 0 not ok so far; the totals go in this line when it ends (the box records it before it stops).
+NEXT, in order (ReadNotifications at every step boundary; the lead's reply to the step-0 message first):
+   (a) FREEZE the pushed head of t-build-28-wip (code = 4cabd94d3; this box's commits are reference/ only) in a detached worktree.
+   (b) THE ONE GATE RUN on it by reference/qa-reports/BUILD-28/gates-s16.sh.txt (each gate's verdict word and counts line; the suite in
+       6 shards with totals); the lock = run 2 `--check` against `gunzip -c reference/qa-reports/BUILD-28/lockbase-49fdc8cb6.json.gz`
+       (never re-run run 1): EXPECT 'lock: 95/102 stages unchanged' with exactly 2-1, 2-4 (74d88d236), 1-4, 2-6 proto.hints
+       (0057bd6f5), 2-5, 2-9 proto.dress (d2fd4e0da), 2-8; anything else is a red. seedlist --check on EVERY list; the widened pin grep
+       if a list is rebuilt; `node tools/timecheck.mjs --repo . --range 49fdc8cb6..HEAD`. Every red: file:line, run alone on main
+       49fdc8cb6. Inherited and owned: R-165.531, R-165.543 (artUse.allow.json untouched), R-165.550.
+   (c) bots x40 on 2-8 both settings (castBots.ts --stage 2-8 --seeds 1-40); stills at phone size upright and sideways, Normal and
+       Easy, BOTH fish-trap placements (the jetty, the parade home), every new piece, the fern; (d) land onto origin/t-build-28 (create
+       from the head if absent; no force, no rebase), ls-remote equal; (e) the debrief (level.md).
+   Tools left in the scratchpad (not in the repo; rewrite if gone): a pair-lock script (two worktrees reused by checkout --detach),
+   a 2-8 find dump, a 1-4/2-6 hint dump (.mts: top-level await needs ESM).
+LEARNED (proposed, the lead approves): (1) a lock move is named by its commit only after a 1-stage lock on THAT commit moves it AND
+   the chain closes (base == parent, commit == head); a brief's candidate (8a2045547 here) is a guess until then: 3 of 4 named
+   candidates moved nothing. (2) When candidates fail, diff the moved part's CONTENT (main vs head), then `git log -S <new field>`:
+   it named 0057bd6f5 in one step instead of a 273-commit bisect. (3) A commit can move a stage only where it meets another line's
+   code (0057bd6f5 moves 2-6 on main's 2-6, not on its own line): prove it by cherry-pick -n onto the base, not only on its own line.
+   Proposed level.md rule (lock step 7): 'name every lock move by a 1-stage lock on its commit, chain closed both ends; for a part-only
+   move, diff the part's content and git log -S the new field'.
+
+## (was the EXACT NEXT STEP) (BUILD-28 box 14, BUILD-28-n, started 5:45 PM ET (from date); hand-over 6:15 PM ET (from date); MERGED HEAD 4cabd94d3 on t-build-28-wip)
 CLOCK (the 2-hour level clock's dry run): start 5:45:37 PM ET; stops: none mid-job; the 28-minute box ran out at 6:13 PM ET with lock run 2 running (finished and recorded, 6:15); end 6:15:25 PM ET (box 14 of the job; 30 min).
 DONE:
 1. MERGES, by hash, no rebase, no force. (a) t-eng-29 337ba7d0b -> 614341a44. Merge-bases c73cb9766 AND fda48b3d8 (criss-cross). It
