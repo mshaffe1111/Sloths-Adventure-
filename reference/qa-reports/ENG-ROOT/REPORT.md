@@ -1,13 +1,16 @@
 # ENG-ROOT REPORT (3-2's roof root; R-165.452; the 'lit = seen' seam R-165.529) — t-eng-root-wip, base t-eng-w3 13135bf6b
 
-## EXACT NEXT STEP (box 4 ENG-ROOT-d; head on t-eng-root-wip = the commit carrying this; FROZEN CANDIDATE a619ea16a, code unchanged after it)
-1. GATES running on frozen a619ea16a (scratchpad worktree, src/tools read-only, gen2/proven writable): the 6 suite shards; the LOCK BASE
-   `lockall --layouts 16 --out base.json` on t-eng-w3 f79963053. Then, in order: `--layouts 16 --check base.json` on a619ea16a (counts
-   line; no listed stage moves, every shipped rope 120); tierBots 9/9; the CI tool line on a619ea16a. DONE on it: tsc 0, generality PASS.
-   A fresh member re-runs any gate whose result is not recorded below: it runs ONCE, on a619ea16a (or the head, if only this file moved).
-2. LAND: `git fetch origin t-eng-w3`; if it has not moved past f79963053 the merge is a fast-forward; else merge it into the branch (never
-   rebase), tsc + `lockall --check` on the merge; push HEAD:t-eng-w3 (no force), ls-remote. Send the lead the hash, the shard totals,
-   what 3-2's build can measure and the brick spec (KIT-W3b section below; the watch rule is box 3's).
+## EXACT NEXT STEP: NONE, LANDED (box 4 ENG-ROOT-d). ENG-ROOT is on t-eng-w3 at the commit carrying this. KIT-W3b builds the root brick
+from the spec below; 3-2's build measures with the list below. Open for the lead: R-165.539 (nothing on Pokey reads 'seen' vs 'hidden'),
+R-165.540 (the resting ocelot dark on dark beside a petal glow), ART-W3's root art.
+
+## Gates (box 4), ONCE on frozen a619ea16a: tsc 0; generality PASS (after the rename below); CI tool line 355 tests, 354 pass, 0 fail,
+1 todo; LOCK (two runs, D153): --out on t-eng-w3 f79963053 (3264 builds of 102 stages), --check on a619ea16a: 102/102 stages unchanged
+(every shipped rope's list unchanged, so its speed is unset = 120); suite shards 1-6: 725/725, 681/681, 682/683 (1 todo), 598/600
+(2 todo), 674/674, 796/796, 0 fail in all; tierBots 9/9. AFTER THE MERGE (t-eng-w3 had moved to 51ef0c6ab, KIT-W3b box 2 over
+ENG-CATCH; merge f52e7ab03, no conflicts): tsc 0; generality PASS; the root tests 12/12; LOCK --out on 51ef0c6ab, --check on the
+merge: 102/102 unchanged. (The lock also prints 'gen2 gained verdicts and drops (not hashed)' on 37 stages, the same line on both
+checks.) Lessons applied: D115, D119, D128, D134, D138, D140, D149, D153.
 
 ## Done in box 4 (ENG-ROOT-d)
 - MERGE: t-eng-w3 f79963053 was already in the branch (box 3's 65ad413f9); nothing new. tsc 0; CI tool line 355 tests, 354 pass, 0 fail
@@ -91,4 +94,4 @@ starting and ending outside it (box 2's 'ends over the ocelot's stretch' was wro
 - the stills: tools/engine/rootshoot.mjs <out> <slot> (any unlisted slot; LAID = BUILT printed). For 3-2's own build, use draftshoot.mjs
   on the draft id instead (the root then comes from 3-2's own roll).
 
-## Gates (box 4, frozen a619ea16a): tsc 0, generality PASS; the rest: the next step above. Pushback: 'lit = seen' was missing (sent; accepted). Lessons applied: D134, D138, D140, D148, D40.
+(box 4 gates: at the top)
