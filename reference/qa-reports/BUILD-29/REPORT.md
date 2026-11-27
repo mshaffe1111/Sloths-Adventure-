@@ -7,13 +7,23 @@ stageTable row `'2-9': { kit: 'w2-29' }`, unjudged as the draft rolled; listed.t
 STARTED (the hand-built 2-9 deleted: w2Stages.ts '2-9' + COURT_GOAL_29 + W2_PUZZLES '2-9' + bellGate/bellGallery/guard; w2Sections.ts
 W2Plan '2-9', its flavours and its PLANS row; dotTips/dotLinesData hint.2-9.kick/court/guards; w2Stages.test's court test;
 w2Puzzles.test's two court-bell tests; puzzleCamera.test's leave-the-room test RE-POINTED to the kit stage's own bell room (plain
-ground; the court bell's engine code stays held there); tsc clean; the 41 test files that name 2-9 or Dot's lines: see the commit).
+ground; the court bell's engine code stays held there); P-03 (puzzleGateWall.test) re-pointed to the kit's gated room, 4/0; tsc clean.
+FOUND by the 41 test files that name 2-9 or Dot's lines (301 tests, 296 pass, 5 fail on 2cb7b0a4a): listed through the game's own
+config, 2-9 built NO seed of 24 ('node n7 "Pg1>": threat snapper*3: laid 5'): the draft's goal (GOAL_29, countSet) lived only in
+draft29Cfg. FIXED in data: stagePlan.ts's 2-9 row in 2-5's form `{ ...S('gauntlet', ..., MISSION_29's words), count: 5 }` (the
+keeper's mission too). That cleared 4 of the 5 (plainWalk x2, w1NewArt and P-03 all failed on that build); the re-run of plainWalk +
+w1NewArt + puzzleCamera on the next commit was running at the hand-over. ENGINE-WORTHY (rule 26, not coded around): puzzleCamera's
+leave-the-room test on the kit's bell room: the camera's y jumps 54 px in one frame walking out left at 390x844
+((3772.9, -494.0) -> (3757.8, -440.0); the bar is 24). 2-9's old room never hit it. The test stays as the honest check: it is RED
+until an engine lane fixes the camera (or the lead rules a different room).
+SHARDS on a6a74323a (frozen): s2 830/830 0 fail; s3, s4, s5 running at the hand-over (s4: 588 so far, its one 'not ok' the known
+R-165.312 todo).
 1. THE SUITE for a6a74323a: shards 2-5 were running in BUILD-29-f's container at the hand-over (frozen worktree); their totals go to
    the lead from it if it lives; if not, re-run 2-5 (CLAUDE.md glob, 661 files, sorted, `awk 'NR%6==i'`) + bargeRow.test.
 2. G6: COURT_SAG was NOT yet on t-eng-29 (head d1038af49 at the hand-over). When ENG-29-i's hash comes: merge (no force; conflicts
    named), probes/judge29.ts 3, the court >= 0.20 Normal / 0.30 Easy both sides.
 3. R2 part 2, LEFT (in order): (a) the keeper's words (origin/t-keeper-23-29 reference/story/lines-2-9.md): mission on the card
-   (stagePlan.ts the 2-9 row: "Dance to the king's drum, chase off his snappers, reach the shrine." = MISSION_29), the page
+   (DONE: stagePlan.ts's row), the page
    (pokeyJournal.ts '2-9': "The whole court danced to the king's drum. I danced too, slowly, but on the beat. Then I rang his bell."),
    sealed (stagePlan.ts SEALED_LINES '2:gauntlet' = LINES_29.sealed), the journal card The King's Drum (DRUM_CARD_29), goalStart /
    goalLate as 2-3's GOAL_LINES_23 (read w2Arc23.test.ts:55-62 for how they are held), the old rows the keeper names

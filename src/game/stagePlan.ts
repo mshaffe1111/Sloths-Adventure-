@@ -85,7 +85,9 @@ export const STAGE_PLAN: Record<number, StageSpec[]> = {
     S('ascent', 'Up the Bank Houses', 'Climb up through the village houses dug into the bank.'),
     S('sprint', "The Mailman's Route", 'Carry the post up the mill-race, then race the mail boat home.'),
     S('rescue', 'Before the Water Rises', 'Free more little ones before the water rises.'),
-    S('gauntlet', "The River King's Court", "Fight through the river king's court and reach the shrine."),
+    // (the story keeper's mission, reference/story/lines-2-9.md (t-keeper-23-29): gen2/worlds/w2Arc29.ts MISSION_29; its goal the
+    //  design's (GOAL_29: 7 seated, chase off 5; the lead's ruling A on BUILD-29-b), no top-up)
+    { ...S('gauntlet', "The River King's Court", "Dance to the king's drum, chase off his snappers, reach the shrine."), count: 5 },
   ],
   3: [
     S('sprint', 'Into the Grotto', 'Follow the glowworm light down into the grotto.'),

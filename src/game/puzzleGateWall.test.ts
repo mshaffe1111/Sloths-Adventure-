@@ -14,7 +14,8 @@ import assert from 'node:assert/strict';
 import { RealPlay } from './realPlay.ts';
 import type { KitPlay } from './puzzlePlay.ts';
 
-for (const id of ['7-3', '3-2', '2-9', '6-7']) {
+// (2-9's court gate went with its hand build, BUILD-29 11-26: the kit stage's own gated room stands in for it)
+for (const id of ['7-3', '3-2', 'kit', '6-7']) {
   test(`P-03: ${id}: jumping at the room's shut gate never brings the "jump twice" line`, () => {
     const sim = new RealPlay(id, 1);
     // (RealPlay switches the stuck watch off as cosmetic: the engine's own is put back)
