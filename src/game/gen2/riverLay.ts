@@ -296,13 +296,13 @@ export interface LetGoFall {
   far: boolean;
   cross: Array<{ x: number; vx: number; dt: number; above: boolean }>;
 }
-export function letGoFall(l: PressLaunch, w: Pick<DriftInfo, 'x0' | 'x1' | 'baseY' | 'tail'>): LetGoFall {
+export function letGoFall(l: PressLaunch, w: Pick<DriftInfo, 'x0' | 'x1' | 'baseY' | 'tail'>, held = 99): LetGoFall {
   const top = w.baseY, bankTop = top - LOG_DROP;
   // (the far bank's lip: the logs' window's end, or past its tail of log-free water, ENG-24e: a let-go into the tail is in the water)
   const end = riverEnd(w);
   const cross: LetGoFall['cross'] = [];
   let far = false;
-  flyLaunch(l, { held: 99, dbl: 99 }, top + 200, (c: AirBody, t: number, prevY: number) => {
+  flyLaunch(l, { held, dbl: 99 }, top + 200, (c: AirBody, t: number, prevY: number) => {
     if (c.vy < 0) return false;
     const inWindow = c.x >= w.x0 && c.x <= w.x1;
     if ((c.x < w.x0 || c.x > end) && prevY <= bankTop + 14 && c.y >= bankTop) {
@@ -391,6 +391,25 @@ export interface LockedDrops extends LianaDrops {
 }
 
 /**
+ * A court let-go's two flights (lockedDrops): the jump held through the flight (letGoFall's, the 0.72 float at the top, engine.ts air
+ * step) and let go as he leaves the vine (held 0: the climb on the vine is pressLaunches' own). A child's hold (the calibrated child bot's
+ * let-go: forward held, the press held its own drawn hold, firsttimer.ts) ends between the two, before the top on most presses.
+ */
+export function courtFalls(l: PressLaunch, w: Pick<DriftInfo, 'x0' | 'x1' | 'baseY' | 'tail'>): [LetGoFall, LetGoFall] {
+  return [letGoFall(l, w), letGoFall(l, w, 0)];
+}
+
+/**
+ * Does a court let-go land (lockedDrops)? Only when BOTH its flights do (courtFalls): the model is never looser than the engine on either
+ * end of the hold. Held alone it was: the float kept him over a log's top a frame longer, about 9 px on, and took a log end the engine's
+ * released flight misses by a px (ENG-29-h, 2-9's draft x14389 grip 0.95 press j +4; the engine's logs sit at driftX of the frame's own
+ * clock, as fallOnLog reads them: the catch order matched, the hold did not).
+ */
+export function courtLands(f: readonly [LetGoFall, LetGoFall], logs: readonly DriftInfo[], off: number, easy: boolean): boolean {
+  return f.every((q) => q.far || fallOnLog(q, logs, off, easy));
+}
+
+/**
  * lianaDrops on a LOCKED court (tempo.ts layTempo: the liana's swing is the bar, the river a log every whole number of beats, both on the
  * game's clock, engine.ts vineClock): the vine and the river are ONE clock, so a waiting player meets one pairing only, never every pair
  * (lianaDrops' grid): the press at swing clock `pt` with the river at that same game time, and, when a log comes less often than a swing,
@@ -416,8 +435,8 @@ export function lockedDrops(v: Vine, logs: readonly DriftInfo[], difficulty: Dif
       L.forEach((l, k) => { if (ring(l.pt) < ring(L[k1].pt)) k1 = k; });
       const G = new Uint8Array(N);
       L.forEach((l, k) => {
-        const f = letGoFall(l, d0);
-        for (let r = 0; r < reps; r++) G[r * n + k] = f.far || fallOnLog(f, logs, l.pt + r * period, easy) ? 1 : 0;
+        const f = courtFalls(l, d0);
+        for (let r = 0; r < reps; r++) G[r * n + k] = courtLands(f, logs, l.pt + r * period, easy) ? 1 : 0;
       });
       let lands = 0;
       for (let i = 0; i < N; i++) lands += G[i];
