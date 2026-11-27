@@ -1,7 +1,52 @@
 # BUILD-28 REPORT (W2-LANE: 2-8 "Before the Water Rises"; R-165.430 (2), READY-28, BUILD-28). Session 1 (W2-LANE a), started 9:44 AM ET (from date). Session 2 (W2-LANE b), started 10:07 AM ET (from date). Session 3 (W2-LANE c), started 10:30 AM ET (from date). Session 4 (W2-LANE d), started 10:52 AM ET (from date). Session 5 (W2-LANE e), started 11:19 AM ET (from the session hook date) Session 6 (W2-LANE f), started 11:41 AM ET (from the session hook date) Session 7 (W2-LANE g), started 12:05 PM ET (from the session hook date) Session 8 (W2-LANE h), started 12:49 PM ET (from the session hook date) Session 9 (W2-LANE i), started 1:15 PM ET (from the session hook date) Session 10 (W2-LANE j), started 1:05 PM ET (from the session hook date) Session 12 (W2-LANE l), started 2:20 PM ET (from the session hook date)
 
+## EXACT NEXT STEP (BUILD-28 box 5, BUILD-28-e, session 18, started 9:22 PM ET (from the session hook date); head = this commit on t-build-28-wip)
+DONE THIS BOX (every number from the built stage, rule 27):
+1. MERGED, no force, no conflicts, tsc 0 after each: t-eng-fork28 8fbdb72ac (7e39d459d), then t-art-28 d84ca4a76 (b06515dbf: the cut and
+   its inventory row only; no image packed in src, so the art-use gate is not touched yet). The CI tool line's fast part on 7e39d459d
+   (scratchpad script, main tree): engine tools' tests 437/435/1 (the 1 = registrycheck.test, the same red ENG-FORK28 inherited), tipwalk
+   PASS; storyTipScan and teachFirstScan were still running at the hand-over (read their logs or re-run on the candidate).
+2. 2-8's DATA from its rolls (aad4d81d2, 14d2fc3ca, this commit). Roll 1 (b06515dbf, seeds 1-4): 0 clean; V11 at token 8 (Uc1^ next to
+   Dc_: 'c' twice), the flood 49-60 s short on every roll, the fork tip early (3 of 4), the legs 198 px apart on seed 4 (LEG_CLEAR 260).
+   - V11: the column is `Df_` (its ledges are planks he walks off), brick content 'floating'; deal ground 4, water 3, floating 3, climb 1.
+     (Changes the lead's ruled notation `Dc_`: named here and in the message; reversible.)
+   - The legs: the column walks off THREE ledges of 110-130 px (2-7's step) at 200-240 px wide (2-7's widths threw 1,141 > 1,140 on 2 of
+     40), exitDy 360. FLOWN (CI #92): seeds 1-40 x both settings on 14d2fc3ca: NO legs error on any roll: LEG_CLEAR 260 holds.
+   - The flood (box item 5, T_CLOSE): reference/specs/sims/flood28.ts (the design's sim from t-design-26, with env PRE and HOST: the host
+     stage only seats him, r.bare() replaces its ground) reproduces the design's 22.0 s at PRE 2000 and, at the laid 12,700 px, gives the
+     line's prompt tail-off 70.9 s Normal, 58.3 s Easy (out/flood28-laid-*.txt). FLOOD_28 (w2Arc28.ts) = W2_FLOOD with that flown leg and
+     close 80 s on both settings. Laid px on seeds 1-40: Normal 10,109-13,171, Easy 10,440-13,531; the longest needs 77.5 s (Normal) and
+     70.1 s (Easy). Named: on the shortest roll the low road's spare is 23.6 s, not 4 (one close for a 3,000 px spread of lays).
+   RESULT on 14d2fc3ca, libstage --stage 2-8 --seeds 40: CLEAN 39 of 40 on BOTH settings; the ONE red: seed 2's fork tip.
+3. ENGINE GAP, RULED a pieces lane (the lead): ENG-TIPLEFT (session_01FhBbYLfvp99YyneEadRvte, from aad4d81d2, lands on t-eng-tipleft):
+   a socket tip on a LEFT leg has only { x, band } (pipeline.ts:3652) and the engine says it once p.x >= x in band (engine.ts:3313), so
+   running home he is right of it from the leg's start. Seed 3, which the check PASSES: the fork hint x 18066, band 507-1000, ground in
+   band up to x 20,867: said about 2,800 px early in the game. tipReach (pipeline.ts:4556) walks only leg end points (misses seed 3).
+   NOT coded around in 2-8's data.
+4. 2-7's SEED LIST rebuilt (241695723): seedlist 2-7 --count 100 on a frozen b06515dbf: 100 of 100 kept, version c9e1e269 (was
+   dcdc8f40), quiet longest 1.1 s, outro 860-880 px; --check PASS. What moved: every replay (the merged engine work); same seeds.
+   NOT YET RUN: the tests that pin a 2-7 roll or seed (release.md step 6) on the candidate.
+5. THE REED ISLAND: NOT WIRED. Its row says "new slot: World 2 reed island"; the only cut-piece hook is World 1's (Platform.cut ->
+   w1CutArt.ts W1_CUT, one W1 sheet, drawn by protoArt paintedPlatforms). A World 2 draw site is engine work (a cut sheet for any world on
+   Platform.cut, its preload in stageManifest, its pack in src/assets): ASKED of the lead in the hand-over message (rule 26), not built.
+NEXT (box 6), in order:
+a. ReadNotifications. When ENG-TIPLEFT's LANDING hash comes: merge it (no force; conflicts named), tsc, libstage --stage 2-8 --seeds 40
+   (both settings, frozen tree): expect 40 of 40 clean; run the probe (scratchpad scripts are gone: x / beforeX of the fork hint vs the
+   home leg's ground in band) on seed 3 to see the line said on the leftward pass.
+b. The lead's ruling on the reed island's draw site (a pieces lane, or in this lane); wire it with its pack (the art-use gate).
+c. On the clean candidate: the WHOLE suite (6 shards; ENG-FORK28's inherited list on t-eng-fork28's REPORT: about 49 tests that throw
+   "2-8 no seed of 24 builds cleanly" should clear; name any that stay red), the CI tool line in full (tools tests, tipwalk,
+   storyTipScan, teachFirstScan, registrycheck, tierBots, buildcheck, kbdcheck, every seedlist --check incl. 2-7's new list), and the
+   2-7-pinned tests (release.md step 6).
+d. The 2-minute floor on every tier (the bots' fastest clean run, packet step 4), then FIRST LOOK stills at 2x (the fork from the bank's
+   edge FIRST, upright; the rising water's teach; a dyke beat; the reed island; the home stretch), upright first to the lead.
+Lessons applied (box 5): D115 (every roll and the 2-7 search on chattr-frozen worktrees; proven/ AND provenIndex.ts unfrozen, the search
+writes both: found when its first write failed EPERM), D119 (commit messages from files), D128 (stamps from date), D134/D138 (pushed and
+ls-remote-checked before the hand-over; the hand-over ends new work), D140 (ReadNotifications at the step boundaries: the lead's ruling),
+rule 26 (two engine gaps reported, neither coded around), rule 27 (the flood comment's px range corrected from the built stage).
 
-## EXACT NEXT STEP (BUILD-28 box 4, session 17, started 6:22 PM ET (from the session hook date); head = this commit on t-build-28-wip)
+
+## (superseded by box 5) EXACT NEXT STEP (BUILD-28 box 4, session 17, started 6:22 PM ET (from the session hook date); head = this commit on t-build-28-wip)
 RULED (the lead, on box 3's four items):
 (1) THE FORK COUNT is an engine gap: a pieces lane, ENG-FORK28 (base e878b1f45, landing on t-eng-fork28). Its rule: a designed code's F
     nodes ARE its forks; brief.branching is for rolled codes only. NOT worked around in 2-8's data (BRIEF_28 keeps branching 'none':

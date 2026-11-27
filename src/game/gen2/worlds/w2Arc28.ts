@@ -48,7 +48,8 @@ export const FLOOD_LESSON = 'flood-rise';
  *  on a 2,000 px road; the laid road from the last cage to off the low road is 12,400-13,000 px (libstage 2-8, seeds 1-4), and the line's
  *  prompt tail-off over 12,700 px is 70.9 s Normal, 58.3 s Easy (its rate is not the short road's: the dips' waits are a smaller share).
  *  The close: one number on both settings (the design's form: Easy never harder), over the Normal need (tail-off + 4 s) of every rolled
- *  seed's laid px: seeds 1-40 lay 12,400-13,287 px (seed 2 the longest: 74.2 + 4 = 78.2 s), so 80 s holds to 13,613 px */
+ *  seed's laid px: seeds 1-40 lay 10,109-13,171 px on Normal (Easy 10,440-13,531; BUILD-28-e on 14d2fc3ca), the longest needing 73.5 + 4
+ *  = 77.5 s Normal and 62.1 + 8 = 70.1 s Easy, so 80 s holds to 13,613 px. Named: on the shortest roll the spare is 23.6 s, not 4 */
 export const FLOOD_28: typeof W2_FLOOD = { ...W2_FLOOD, close: { normal: 80, easy: 80 }, flown: { px: 12700, tailOff: { normal: 70.9, easy: 58.3 } } };
 
 /** 2-8's brief, all of it data (a rescue on two legs: 11 content nodes: ground 4, water 3, floating 2, climb 2: the steps and the drop
