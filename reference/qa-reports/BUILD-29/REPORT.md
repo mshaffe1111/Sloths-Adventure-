@@ -52,7 +52,9 @@ one gate run, land, debrief): the next box starts at the two questions below, th
 NEXT (box 13): ReadNotifications; the lead's answers to Q1 (the wayside words) and Q2 (the uncounted late line); then step 5 PRE-FREEZE on this head (tsc; generality; the whole test file of every source changed in box 12 and its importers,
    already run above: re-run only if src moves; ls-remote t-eng-29 / main), FREEZE (dispatch-packet.md:81), then step 6's ONE gate run,
    7 land, 8 debrief. The lock's expected moves vs main: 2-9 and 2-5's proto.dress (ENG-DECOR); ALSO watch 2-1 and 2-4: provenIndex
-   carries ours' versions (2-1 0c8ad7fe, 2-4 917a538d; main 1950fa0c, 08c32188), so seedlist --check for 2-1 and 2-4 is the first to read.
+   carries ours' versions (2-1 0c8ad7fe, 2-4 917a538d; main 1950fa0c, 08c32188), so seedlist --check for 2-1 and 2-4 is the first to read. DISCOVERY after the hand-over
+   push, on 7b55f15b (working tree = that head, by `date` 5:48 PM ET): seedlist --check 2-1, 2-4, 2-6, 2-9 each PASS (100 seeds, each clean on
+   both settings); the other lists are not run. The ONE gate run still runs them all on the frozen head.
 LEARNED (l): (1) a merge's semantic conflict (a widened parameter vs another branch's typed caller) is caught only by tsc after EACH merge,
    as the brief ordered: w2Arc26.test.ts:75 did not conflict in git. (2) A floor counted across stages hides which stage it counted; a
    per-plan floor table names it, and a new plan without a floor fails.
