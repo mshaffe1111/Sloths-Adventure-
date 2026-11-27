@@ -52,7 +52,7 @@ CPU is a finding to bring to the lead). Nothing lands on release-0.10.3, main or
   generalitycheck PASS (70 engine files, 26 literals, 26 known); **the CI tool line PASS: 445 tests, 444 pass, 0 fail, 1 todo** (chaseBots'
   CHILD-on-Normal fork, OPEN, ENG-B4), 1,852 s (sharing 4 cores with the three shards); **the probe gate 11/11** (the B3 plant + one seed of
   every world, the 2-4 s35 row among them). **The suite in 3 shards** (651 files, CLAUDE.md's src globs, `split -n l/3` of the sorted list):
-  shard 0: 1,244 tests, 1,243 pass, **1 FAIL** (KID_RUNS_59, below), 0 todo, 1,191 s; shard 1 and shard 2: RUNNING on the frozen tree (their totals go in this line and the hand-over message).
+  shard 0: 1,244 tests, 1,243 pass, **1 FAIL** (KID_RUNS_59, below), 0 todo, 1,191 s; shard 1: 1,318 tests, 1,317 pass, 0 fail, 1 todo (R-165.312's flag placer, known), 2,681 s; shard 2: 1,632 tests, 1,630 pass, 0 fail, 2 todo (4-3 in the real engine and the boulder floor walk: the wall check has no bottom, known), 2,790 s.
 - **Rule 28 on the one suite red, KID_RUNS_59** (src/game/firstTimerBot.test.ts:177: 5-9, the kid on Easy, seeds 1-3 x 2 trials,
   recorded [3, 5, 6, 7, 6, 5]). Run on frozen trees of each hash: release-0.10.3 c73cb9766, the whole file, gives [8, 9, 7, 7, 4, 7] (10/11:
   the release line's inherited red, as STATE records). From ENG-THUMB's head 35d5252c2 it gives [14, 13, 17, 18, 5, 5], and the merge
