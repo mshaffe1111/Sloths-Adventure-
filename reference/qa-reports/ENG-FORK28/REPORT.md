@@ -10,7 +10,12 @@ real designed F is 2-8's own `F[P+|P]` (w2Arc28.ts:37), meant. No real stage's c
 GATES (frozen trees in the scratchpad: cand/ = 8fbdb72ac, base/ = e878b1f45; chattr -R +i src and tools, then chattr -i on the ONE
 folder src/game/gen2/proven/ so seedListChunk.test's mkdtemp can write its planted-* folder there; verified: touch in src fails EPERM,
 mkdir in proven/ works): tsc 0; generalitycheck PASS (26/26 known); lockall (16 layouts: record on base/, --check on cand/), the CI
-tool line (gates.yml rolled job's 7 lines, kbdcheck, every seedlist --check): RUNNING. lockall --check: 101/102 unchanged, 2-8 the one
+tool line on cand/: [1] the engine tools' tests 437/435/1 (registrycheck.test, inherited; pacerRespawn and hopJudged GREEN, red on
+408679c3d); [2] tipwalk PASS; [3] storyTipScan red (inherited); [4] teachFirstScan PASS; [5] registrycheck red (inherited); [6] tierBots
+PASS; [7] buildcheck: the first run RED (1-1 Normal p95 168 ms vs 150) while the base re-runs loaded the box; then base/ and cand/ back
+to back under one load: base p95 130 PASS, cand p95 123 PASS (a re-run, named as one: the lead weighs it; the piece does not touch a
+rolled graph's lay, 1-1's fork counts pinned by designedForks.test); kbdcheck PASS; seedlists 1-1..1-9, 2-1, 2-2, 2-3 PASS; the run
+was stopped at its 2-hour limit inside 2-4, so 2-4, 2-5, 2-7 were restarted (3 at once, cand/): RUNNING. 2-8 has no list. lockall --check: 101/102 unchanged, 2-8 the one
 (an error on both heads). THE SUITE, 6 shards on 8fbdb72ac (tests/pass/fail): 1: 752/749/3; 2: 715/703/12; 3: 702/694/7 (todo 1);
 4: 656/647/7 (one a TODO, R-165.312); 5: 679/669/10; 6: 698/688/10. EVERY red is red on e878b1f45 too (each file re-run on base/, the
 red names compared): shard 1 chaseRespawnReal, pitPocket, stageSheets; shard 2 artUse, easyMode x4, harpy, levels x3, stageStart x2,
