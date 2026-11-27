@@ -114,7 +114,7 @@ import { driftCycle, driftProgress, driftX, floodLevel, lianasOver, logClock, lo
 import { GLOW_SHOWN, letGoLands, letGoTable, type LetGoTable } from './letGoCue.ts';
 import { heard, NOISE } from './noise.ts';
 import { mayRegrow, regrowDelay } from './regrow.ts';
-import { zoneEffect, windPush, zoneDrag, columnHit, inZone, ventLift, drowsyLevel, drowsySpeed, drowsyJump, GLOW_STILL, GLOW_REACH, glowReaches, clockGlow } from './zones.ts';
+import { zoneEffect, windPush, zoneDrag, columnHit, inZone, ventLift, drowsyLevel, drowsySpeed, drowsyJump, GLOW_STILL, GLOW_REACH, glowReaches, clockGlow, litRing } from './zones.ts';
 import { drawGlowworm, drawThornVine, drawW3Decor, drawW3Fern, drawW3Piece, GLOWWORM_H, w3FernHeight } from './w3Art.ts';
 import { inReach, VINE, vinePeriod, vinePhase, vineSees } from './thornVine.ts';
 import { drawAbyss, drawLandingShadow, W4Play } from './w4Play.ts';
@@ -647,6 +647,8 @@ export class GameEngine {
   /** World 3's glowworms (zones.ts): how long he has stood still in the dark, and when each sleeping light woke (game time, by id) */
   private glowStill = 0;
   private glowWake = new Map<number, number>();
+  /** when a sleeping glowworm woke, by id (zones.ts litRing reads it; made once, nothing per frame) */
+  private readonly wokeAt = (id: number): number | undefined => this.glowWake.get(id);
   /** World 3's thorn vines: a lash under way (by vine index: when it saw him, which way, whether it has landed), and the cycle it was in */
   private vineLash = new Map<number, { at: number; dir: number; landed: boolean; cycle: number }>();
   /** and the noise (its game time) each vine last struck at (3-5's pebble lure: once per noise) */
@@ -4810,6 +4812,7 @@ export class GameEngine {
     //  hid him in the game, BUILD-17's hanging-moss still: hanging true, calmNow 0. hangCover.test.ts)
     h.holding = !!(p.climbing || p.isVineSwinging || p.hanging);
     h.hanging = !!p.hanging;
+    h.lit = litRing(this.currentStage.zones, p.x, p.y, this.gameTime, this.wokeAt);
     h.rope = p.isVineSwinging ? p.swingVineId : p.climbing ? p.climbingVineId : undefined;
     // (the ground he stands on: quiet ground (moss, Platform.quiet) takes a landing without a sound, castPlay.ts; asked again only when he
     //  stands on another platform)

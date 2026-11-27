@@ -40,6 +40,8 @@ export interface CastHero {
   holding: boolean;
   /** hanging from a rope (holding it): his creep along it is moving (stillness.ts moving) */
   hanging?: boolean;
+  /** inside a lit light's ring (zones.ts litRing): seen at any height ('lit = seen', predators/core.ts upOf) */
+  lit?: boolean;
   /** the vine he holds, by id (a mossy liana is cover: stillness.ts Cover.rope) */
   rope?: number;
   /** the ground he stands on is quiet (Platform.quiet: moss): a landing on it makes no noise (heroNoise.ts landingNoise) */
@@ -189,6 +191,8 @@ export class CastPlay {
     prey.covered = inCover(this.covers, hero);
     // (hanging from a rope over it: a kind with a leap answers him with it, predators/core.ts startTell; ENG-PROWL)
     prey.hanging = !!hero.hanging;
+    // (inside a lit light's ring: seen at any height, 'lit = seen', 3-2.md NEW 1)
+    prey.lit = !!hero.lit;
 
     // his landing: how far he fell says how far it carries; a soft one makes no noise at all, nor one on quiet ground (moss), and none
     // does before the world that teaches quiet feet (roster.ts TAUGHT.landing)

@@ -263,13 +263,13 @@ export const eyeOf = (def: PredatorDef, s: PredatorState): number => (def.habit 
  * carries ENG-DARK's report that he is inside a light's ring, this returns Infinity for him. Not built here (D40: ENG-DARK defines how a
  * ring is reported); the one place `up` is read is this function, so ENG-DARK changes only it (and Prey, and castPlay's prey fill)
  */
-export const upOf = (def: PredatorDef): number => def.sight.up ?? def.sight.tall;
+export const upOf = (def: PredatorDef, hero?: Pick<Prey, 'lit'>): number => (hero?.lit ? Infinity : def.sight.up ?? def.sight.tall);
 
 const inSight = (def: PredatorDef, s: PredatorState, hero: Prey): boolean => {
   const dx = hero.x - eyeOf(def, s);
   // (above its feet up to `up`, below them down to `tall`: the y axis points down, so he is above when his feet are under its y)
   const over = s.y - hero.y;
-  return Math.abs(dx) <= (dx * s.facing >= 0 ? def.sight.ahead : def.sight.behind) && (over > 0 ? over <= upOf(def) : -over <= def.sight.tall);
+  return Math.abs(dx) <= (dx * s.facing >= 0 ? def.sight.ahead : def.sight.behind) && (over > 0 ? over <= upOf(def, hero) : -over <= def.sight.tall);
 };
 
 /** does it see him this frame? Its own box, then stillness.ts's rule */

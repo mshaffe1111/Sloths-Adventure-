@@ -262,6 +262,8 @@ export interface Prey {
   moving?: boolean;
   /** hanging from a rope by his hands (castPlay.ts CastHero.hanging): a kind with a leap answers him with it. Unset: not hanging */
   hanging?: boolean;
+  /** inside a lit light's ring (zones.ts litRing; 'lit = seen', 3-2.md NEW 1): seen at any height over its feet (core.ts upOf). Unset: dark */
+  lit?: boolean;
 }
 
 /** one fixed step of the stage, as a predator sees it */
