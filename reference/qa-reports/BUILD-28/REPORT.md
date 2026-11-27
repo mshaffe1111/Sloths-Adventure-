@@ -1,6 +1,61 @@
 # BUILD-28 REPORT (W2-LANE: 2-8 "Before the Water Rises"; R-165.430 (2), READY-28, BUILD-28). Session 1 (W2-LANE a), started 9:44 AM ET (from date). Session 2 (W2-LANE b), started 10:07 AM ET (from date). Session 3 (W2-LANE c), started 10:30 AM ET (from date). Session 4 (W2-LANE d), started 10:52 AM ET (from date). Session 5 (W2-LANE e), started 11:19 AM ET (from the session hook date) Session 6 (W2-LANE f), started 11:41 AM ET (from the session hook date) Session 7 (W2-LANE g), started 12:05 PM ET (from the session hook date) Session 8 (W2-LANE h), started 12:49 PM ET (from the session hook date) Session 9 (W2-LANE i), started 1:15 PM ET (from the session hook date) Session 10 (W2-LANE j), started 1:05 PM ET (from the session hook date) Session 12 (W2-LANE l), started 2:20 PM ET (from the session hook date)
 
-## EXACT NEXT STEP (BUILD-28 box 8, BUILD-28-h, started 9:56 AM ET (from the session hook date); hand-over 10:13 AM ET (from date); code head = the commit after 1e461ed0f on t-build-28-wip (two test files); no merge yet)
+## EXACT NEXT STEP (BUILD-28 box 9, BUILD-28-i, started 10:18 AM ET (from the session hook date); hand-over 10:38 AM ET (from date); code head a25e3ed7b (merges 8bcd15cdb + ea75ffdf8, the test and the data fix) on t-build-28-wip)
+DONE THIS BOX (packet reference/packets/2026-11-27/BUILD-28-h.md; the lead's rulings in box 8's section below):
+1. RULING 1, the gallery1 moments, commit 31451e6be (src/game/puzzleCamera.test.ts): moments(room, ears) now has
+   (a) at a bell with no gate: 'at bellN: the bell and every guard it calls' (ears = the stage's live turtles, not defeated; called = within
+       NOISE.bellHear in x and NOISE.hearY in y of the bell, noise.ts heard; a guard's box from predatorAI's royal body, x +-16, y -46..+12);
+   (b) a thing meant for no gate (2-9's pebble), at its pile: 'pebbleN at its pileN: the pebble and every guard it turns' (NOISE.hear);
+   (c) a coverage assert: every bell, lever, plate and item of a shipped (non-kit) room appears in a moment of its own room.
+   Plants (scratch, db2947730): bell moment removed -> RED '2-9 #1 gallery1: bell1 is in no moment to check' (CAUGHT); bell and pebble
+   moments removed -> RED, same line (CAUGHT). Rooms: 2-9 bell0 3, gallery1 6 (was 0), kit carry 6, lure 9, throw 6, seesaw 3, trade 3;
+   kit bell/light/wind/sluice 0 (exempted by name). 36 moments.
+   UNPLANTED IT IS RED ON A REAL CAMERA GAP, ENG-CAM29's (R-165.513), SENT to the lead; the camera NOT touched here:
+   390x844 zoom 0.938, view x 8279..8695, Pokey 8470: guard:9 [8740..8772] and guard:10 [8960..8992] out of view;
+   360x740 zoom 0.822, view 8268..8706: the same two guards out. Sideways 844x390 frames all. Every pebble moment passes on all 3 phones.
+   puzzleCamera.test stays RED on this gap until ENG-CAM29 lands. No known-list entry.
+2. MERGE 1: t-eng-w2fall at 8bcd15cdb (its REPORT: 'EXACT NEXT STEP: LANDED', code db2947730), no conflicts. tsc 0. CI tool line
+   (gates.yml:157): 437 tests, 435 pass, 1 fail, 1 TODO. The fail: registrycheck 'the shipped table passes the gate: every stage-table stage
+   registered everywhere' (2-8 has no proven list yet; the lead: it clears with 2-8's seed list). TODO 'chase bots ... CHILD bot ...
+   reaches the fork' (OPEN, ENG-B4, not counted).
+3. 2(iii) artUse, the trace (no roll needed): both pieces read as 'used' on main only through the hand-built 2-8's template
+   `cage-${o.mode}` (w2Stages.ts:877 on 69c3c1640^), a section-piece KIND, never a draw: artuse.mjs's dynamic-name match counted every
+   'cage-*' frame. Box 2's deletion (69c3c1640) removed the template, so both show as unused: they were NEVER drawn.
+   - w1to4art/w2-new.json#cage-whole (World 2): packed by 9b16737d4 (10-31, 'W1-4 art round 1 cut', session 01FhBbYKp4ffis3QWPLKJxDQ).
+   - w6to10/props-made/w10alt.json#cage-b (World 10): drawn on Hugging Face by 165e47475 (10-29, 'Props made on Hugging Face ...
+     a second painting of six kit pieces per world (5-10). Nothing imports them yet', session 019iachLiuwNTAZUBSJWUmR3). World 10's lane
+     places it; not 2-8's.
+   Re-check after the roll; then PROPOSE cage-whole's place in 2-8 to the lead.
+4. MERGE 2: t-eng-cut at ea75ffdf8 (its REPORT: 'EXACT NEXT STEP (ENG-CUT-b, LANDED ...)', code 4d2a579de), merge 93dd9f821, no
+   conflicts. tsc 0. CI tool line on a25e3ed7b: STARTED at hand-over, not read (re-run it first; the next box owns the number).
+5. stageSheets '2-8 foe:goldsnake' (ENG-CUT-b's inherited list), BY CAUSE: STAGE_DRAWS['2-8'] was the deleted hand-built 2-8's snake;
+   the built 2-8 lays none on rolls 1-3. FIXED as data, a25e3ed7b (the line removed). stageSheets.test 8/8 (was 7/8).
+6. storyTipScan's 2 reds on 2-8 (the lead: same on 57d7b8287), BY CAUSE: 57d7b8287 lacks box 6's 5b6494404 (the lines' kinds); on the
+   merged head `npx tsx tools/engine/storyTipScan.ts 2-8`: 0 dropped of 6 laid lines. Nothing to fix; its --check runs in the gates.
+NEXT, in order (ReadNotifications at every step boundary):
+a. Fresh container: `npm install --no-audit --no-fund --legacy-peer-deps` and `git fetch --unshallow` (run_in_background).
+b. The CI tool line (gates.yml:157) on the head; expect only registrycheck's 2-8 red (clears with the seed list).
+c. THE ISLAND CUT (the lead, with ENG-CUT-b's landing): 2-8's reed island section piece names cut 'w2-reed28#reed-isle-28'
+   (SectionPiece.cut, w2Arc28.ts); every 2-8 test and tool that builds 2-8 AWAITS loadInventory(2) first (layCut.test.ts is the model);
+   a cut the inventory refuses fails the section at the lay by name. Today w2Arc28.ts names NO cut (grep 'cut:' is empty).
+d. Packet items 3-6: roll 40 x both (CLEAN or every refusal named); seedlist; the WIDENED pin grep (release.md step 6 on the lead's
+   branch: grep -rlE "setPick11|roll11Seed|provenSeedFor|firstTimer\(|castRun\(|RealPlay" src tools --include=*.test.ts), re-pin by
+   property; ONE full gate run on a frozen worktree (the lock as TWO runs: --out base.json on cc06d2f90, --check on the candidate, with
+   its counts line, D153; the suite's 6 shards with totals; drawcheck with 2-8 as a scenario under the SAME limits; clipcheck;
+   tierBots; generalitycheck; seedlist --check; storyTipScan --check); stills from the committed lay; bots x40 with every moved row
+   traced; then 2(iii)'s re-check after the roll.
+e. Inherited reds, named as such in the gate table: R-165.535 (5-9 kid runs; resolved by release 5's 4799f6026), R-165.531
+   (tools/validate, in no CI line), puzzleCamera's gallery1 bell moment upright (ENG-CAM29, R-165.513; item 1 above).
+
+LEARNED (box 9): (1) a text-match 'used' check can be satisfied by a name that is not a draw: `cage-${o.mode}` (a section-piece kind)
+kept two never-drawn cages off the unused list until its stage was deleted. (2) A named inherited red needs its base checked: the two
+storyTipScan reds on 57d7b8287 were already fixed on this branch by 5b6494404; check with merge-base --is-ancestor before fixing.
+(3) A coverage assert (every piece of a shipped room is in a moment) is what makes a single-moment plant go red; a derived count alone
+moves with the moments and cannot catch one going missing.
+PROPOSED RULES (level.md, for the lead): "artuse's dynamic-name match is not a draw: a piece kept 'used' only by a template is named in
+the level's art check"; "a check over a room's moments also asserts every piece of the room is shown in one (planted: one moment removed)".
+
+## (was the EXACT NEXT STEP) (BUILD-28 box 8, BUILD-28-h, started 9:56 AM ET (from the session hook date); hand-over 10:13 AM ET (from date); code head = the commit after 1e461ed0f on t-build-28-wip (two test files); no merge yet)
 DONE THIS BOX (packet reference/packets/2026-11-27/BUILD-28-h.md, items 2(iv), 2(i), 2(ii)):
 1. 2(iv) / R-165.535 TRACED by git bisect run on that one test (scratchpad bistest.sh: pass 1 good, 're-measure' bad, else skip). The clone
    was SHALLOW: the first bisect stopped on a grafted root (361993001, 19,915 files): deepen first (git fetch --deepen=400). Range: good
