@@ -2,3 +2,4 @@
 toolline FAIL (exit 1, 3529 s)
 tipwalk PASS (exit 0, 79 s)
 storytipscan FAIL (exit 1, 39 s)
+teachfirst PASS (exit 0, 2050 s)

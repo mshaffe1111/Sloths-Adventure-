@@ -9,3 +9,8 @@ coveragecheck PASS (exit 0, 181 s)
 roadmapcheck PASS (exit 0, 11 s)
 timecheck PASS (exit 0, 5 s)
 drawcheck PASS (exit 0, 1420 s)
+clipcheck FAIL (exit 2, 3846 s)
+kbdcheck PASS (exit 0, 217 s)
+buildcheck FAIL (exit 1, 15 s)
+buildstore PASS (exit 0, 20 s)
+== lane C done 10:46 AM ET
