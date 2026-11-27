@@ -57,4 +57,5 @@ End-of-box context across 198 readable sessions: median 237k, range 114k-494k (c
 - Sessions before 11-19 7:21 PM ET (2-6/2-7 design and early engine) are past page 4; the World 3 shared lanes that do not name
   3-1 (ENG-CATCH*, KIT-W3a*, ENG-ROOT*) are not counted, so 3-1 is UNDER-counted.
 - Minutes are created->updated: an idle tail before archive would inflate them (two long boxes checked; both matched STATE).
-- No per-box split between classes; (e) waiting time in minutes; integration boxes shared by several levels go to the first named.
+Gates (5:36 PM ET): roadmapcheck FAIL (41) both on HEAD and on base fb6714f65 (unshallowed; 12 are PR #77/#78, 29 are commits on branches
+not fetched): inherited, no ROADMAP change here. timecheck: tools/timecheck.mjs is in no fetched branch: NOT RUN. knowncheck PASS.
