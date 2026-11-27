@@ -24,7 +24,7 @@ import type { Platform } from '../types.ts';
 import { drawCutArt, isW1Cut } from '../w1CutArt.ts';
 import { frameRect } from './invDress.ts';
 import { invDressFolders, invDressUrl } from './invDressArt.ts';
-import { loadInventory, standable, usable, type ArtRow, type Inventory } from './inventory.ts';
+import { inventoryInHand, loadInventory, standable, usable, type ArtRow, type Inventory } from './inventory.ts';
 
 export { isW1Cut };
 
@@ -60,6 +60,18 @@ export function invCutBreaches(platforms: readonly Pick<Platform, 'id' | 'x' | '
     if (why) out.push(`platform ${p.id} at x ${Math.round(p.x)}: ${why}`);
   }
   return out;
+}
+
+/**
+ * Why gen2's lay must refuse a section piece that names cut `id` in world `world` (SectionPiece.cut), or undefined when it may lay it: the
+ * gate's own refusal (above), read against the world's inventory when it is in hand. A World 1 cut is w1CutArt's and passes. The lay is
+ * sync and each inventory is its own lazy chunk: before the world's inventory is read (a stage's first build in the game) nothing is
+ * refused here, and the same refusal stops the piece being drawn (readyInvCuts) and fails invCut.test's listed-stage gate by name.
+ */
+export function layCutRefusal(id: string, world: number): string | undefined {
+  if (isW1Cut(id)) return undefined;
+  const inv = inventoryInHand(world);
+  return inv ? refusal(id, inv.byId(id), world) : undefined;
 }
 
 /** a resolved piece: its picture (loaded through atlasLoader, let go with its world and reloaded if the phone takes it back), rect, footing */
