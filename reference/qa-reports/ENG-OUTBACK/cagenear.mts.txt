@@ -1,0 +1,19 @@
+// nearest approach of the bot (his feet) to every cage, and whether it opened: a bot, setting, seed from argv
+const ROOT = process.cwd();
+await import(`${ROOT}/src/game/headlessDom.ts`);
+const { firstTimer } = await import(`${ROOT}/tools/inspect/firsttimer.ts`);
+const { CAST_BOTS } = await import(`${ROOT}/tools/inspect/castBots.ts`);
+const [bot, setting, seed] = process.argv.slice(2);
+const near = new Map<number, { x: number; y: number; d: number; at: string; dx: number; dy: number; open: boolean }>();
+let n = 0; let last: any = null; const marks: string[] = [];
+const r: any = firstTimer('2-8', +seed, CAST_BOTS[bot][setting], { cap: 400, dotSetting: true, onFrame: (sim: any) => {
+  n++; const fp = (sim.e ?? sim.engine ?? sim)?.follow; if (fp) { last = fp.line.map((f: any) => ({ x: Math.round(f.x), y: Math.round(f.y), s: f.state ?? f.mode ?? '', home: f.home ?? f.homed })); if (n % 300 === 0) marks.push(`${n/30}s he ${Math.round(sim.p.x)} line ${JSON.stringify(last.map((f: any) => f.x + ':' + f.s))}`); }
+  for (const c of sim.collectibles) if (c.type === 'cage') {
+    const dx = c.x - sim.p.x, dy = c.y - sim.p.y, d = Math.hypot(dx, dy);
+    const o = near.get(c.id) ?? { x: Math.round(c.x), y: Math.round(c.y), d: Infinity, at: '', dx: 0, dy: 0, open: false };
+    if (d < o.d) Object.assign(o, { d: Math.round(d), at: `${(n / 30).toFixed(1)}s`, dx: Math.round(dx), dy: Math.round(dy) });
+    o.open = !!c.collected; near.set(c.id, o);
+  } } } as any);
+console.log(bot, setting, seed, 'end', r.end, 't', r.time, 'goal', JSON.stringify(r.goal));
+console.log(' follow at end', JSON.stringify(last)); for (const m of marks) console.log(' ', m);
+for (const [id, o] of near) console.log(` cage ${id} at ${o.x},${o.y}: nearest ${o.d} px (dx ${o.dx}, dy ${o.dy}, cage minus his feet) at ${o.at}; open ${o.open}`);

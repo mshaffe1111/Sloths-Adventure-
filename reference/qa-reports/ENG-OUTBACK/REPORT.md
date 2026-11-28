@@ -1,7 +1,8 @@
 # ENG-OUTBACK REPORT (engine; R-165.583, R-165.584, R-165.585)
 
-## EXACT NEXT STEP (box 1, started 9:15:46 PM ET (from date); hand-over written 9:31 PM ET (from date), the last box tonight (the lead: no successor until Matt restarts the team tomorrow); branch t-eng-outback, head: see the lead message / git ls-remote)
-STATE: (A) FIXED, RED-first, pushed (e10e208f5). (B) CLOSED, no defect (the engine and the HUD both show the number that opens the
+## EXACT NEXT STEP (box 1, started 9:15:46 PM ET (from date); hand-over written 9:32 PM ET (from date), the last box tonight (the lead: no successor until Matt restarts the team tomorrow); branch t-eng-outback, head: see the lead message / git ls-remote)
+STATE: (A) FIXED, RED-first, pushed (e10e208f5). NEW: on the fix the top 'stranded' cause is the little ones' line FREEZING at the
+   far turn (adult seed 18, NEXT 3a), not the bot. (B) CLOSED, no defect (the engine and the HUD both show the number that opens the
    door; the HUD waits for it, UI-22). (C) NOT STARTED (no bot code written). Nothing landed on t-build-28-wip. No freeze, no gates beyond tsc, generality and the
    river/flood suites. The lead has the step-4 table for (A) only (message sent with this hand-over).
 NEXT, in order:
@@ -24,8 +25,19 @@ NEXT, in order:
           assumes seed 30's pre-sort indices follow seed 28's printed pattern (water j -> river 0,2,3,4,5,6,7), which is INFERRED, not
           printed for seed 30 on the base. So BUILD-28's "every bot walks straight home first" was largely (A)'s skew: the bot's route
           already runs out and back (it walks right first). (C) STILL LIVES on the seeds that stay 'stranded goal 0/N' (adult Normal
-          19/40, kid 8/40): trace ONE of them on the fix (adult Normal seed 18) with kidx.mts (bot adult) to see where it turns home,
-          then build (C)'s RED toy on THAT behaviour, not on BUILD-28's.
+          19/40, kid 8/40). TRACED ONE (cagenear.mts.txt, cagenear-adult-normal-18-7a7efac76.txt): adult Normal seed 18 on the fix
+          reaches and OPENS ALL FOUR cages (each within 30 px, open by 59 s); all four little ones join and follow (the line at x
+          20518-20632 at 70 s); he turns at the far end (x 21716 at 70 s); and at ~75-80 s THE LINE FREEZES at x 20858-20960, y 680, state
+          'follow', and never moves again while he walks home (x 229 at 160 s): goal 0/4, 'stranded'. So the top 'stranded' cause on the
+          fix is NOT the bot skipping cages (BUILD-28's (C)) but the FOLLOW LINE stopping at the out-and-back's far turn: an engine
+          question (follow.ts trail / stepLine / wallCap at the turn, where he leaves the out leg, y ~680-790, for the home leg, y ~1564).
+          PRE-EXISTING, NOT FROM (A): the same probe on be2ebe7d2 prints the same run frame for frame (same cages opened, same freeze at
+          x 20858-20960, y 680 from ~80 s). A real player who takes the same way down would lose the line too. NEXT for a fresh box: (i) still the far turn on seed 18
+          (stills tool, both orientations) to see the way he goes down and where the line stands; (ii) per-frame his x, y and the line's
+          s, x, y for 65-85 s, to name the frame and the follow rule that holds them (follow.ts); (iii) RED toy: an out-and-back turn
+          where he drops a storey, the line must follow him down (or Dot must say why not), RED on 7a7efac76; (iv) only then (C)'s bot
+          turn-back (firsttimer.ts:5807), if any seed still walks home with cages shut. Check 2-3 seeds of each 'stranded' bot first
+          (adult 18, 36, 11; kid 24, 5) to see if they all freeze at the turn.
       (b) 'shrine rescued xN' is the PARADE again, without a life: child Normal seed 12 on e10e208f5 splashed back 8 times at the dip
           x 2554-2654 (stuck 'set down here 8 times' at x 2579), then the bot's rescue at x 3221 (the splash-back point is 3224). A child
           missing a flat 100-px hop 8 times is a bot-skill question (fly-2-8: maxGap(0) single 143.3 px) or a lay one (the run-up: he is
