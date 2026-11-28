@@ -77,6 +77,9 @@ import the bot from tools/inspect (pacerLay, legsHome, postLay, firstTimerBot, w
 w5 ...), so a bot-only commit can turn them red. Every bot commit's push runs the suite on its head (frozen, in the background) before the
 lead rules its rows; a packet never says 'src unchanged: no suite' for a bot change.
 
+## A build box runs its bots FIRST (D171, 11-27; CI #118)
+Every build box, on its current head, runs castBots x40 (both settings, every bot: minutes) BEFORE any gate, and keeps the table in its REPORT with the head it ran on. The bots are the one check that can still send a level back to a src change, and a src change voids every gate after it. 2-8 went 19 boxes without one run; the first showed 3/40 for the child on Normal.
+
 ## Pre-freeze covers the whole change against the LANDING BASE (D168, 11-27; CI #115)
 Before a head is called frozen: tsc; generalitycheck; and the WHOLE test file of every source changed **vs the base the work lands on or is released from** (`git diff --name-only <landing base> HEAD -- src tools`), plus every test file that imports any of them (grep the imports). Never only this box's changes: 2-9's five suite reds (verdicts, judgedTable x2, groundwork, artUse) were born in earlier boxes, passed every box's own pre-freeze, and surfaced only in the 6-shard suite of the one gate run, a box late. Then `git ls-remote` of every named base: still at its hash, or merged by hash and re-checked. Until the tools box builds the check (R-165.579), every brief spells this line out.
 
