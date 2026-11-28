@@ -38,6 +38,10 @@ b. If the suite's 6 shard totals are not in item 2 above, run them FIRST (`--tes
    2-9 --seeds 1-40` both settings; storyTipScan --check; `tipwalk.ts --layouts 4`; `teachFirstScan.ts --check --seeds 20`. (storyTipScan
    and teachFirstScan 2-9 already PASS on this same src, item 1, but run on the main tree before the freeze: run them on the frozen tree.)
    No list is rebuilt, so no pin grep is due. The lock half is DONE (above): do not re-run it.
+   KNOWN RED (the lead's message to box 14, "NOT A STOP"): tools/inspect/riverRide.test.ts:278 (the 2-1 upstream plant: 'upstream off, 1
+   more lives (at least 5): on child normal seed 8 ...') fails on ANY branch holding main's C14 re-plant AND 74d88d236's 2-1 list; ours
+   holds both (BUILD-28-p proved it on main 49fdc8cb6 + 74d88d236 alone). It is **R-165.574**, owned by release 6's integration: name it
+   with its failing text, do NOT trace it, do NOT touch the test, count the rest as usual. Any OTHER red is yours to prove on main.
 c. THE STILLS OF RECORD on ae5d22ce6 (vite on the frozen tree), upright AND sideways, Normal AND Easy, judged at 1x and 2x: the roar line
    (stills-n/roar.mjs, below: a FRESH context for each shot); Easy's frog at the quay (dress list x 29464) and the frog upright both settings
    (crop by eye); the journal page with fix (1)'s line (pokeyJournal.ts:69); guard / quay / pads on both settings (stand him with y =
