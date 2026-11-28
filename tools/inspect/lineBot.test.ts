@@ -256,7 +256,10 @@ function floodRun(who: FirstTimer, seed: number, late: number, marsh?: MarshToy)
       // (his take-off is the last ground he stood on)
       if (low && !p.grounded && !off) off = stood;
       if (low && p.grounded && off) {
-        if (Math.abs(p.y - off.y) <= SAME_GROUND && Math.abs(off.y - (Y + 60)) < 2 && dipsAt.some(([a, b]) => Math.min(off!.x, p.x) < a && Math.max(off!.x, p.x) > b)) flat = true;
+        // (by his SUPPORT, as he stands: his body overlaps the floor piece before the dip at one end and the piece beyond it at the other
+        //  (`x` is his left edge, `width` his 44 px). The left edge alone past the far edge (the old measure) refused a landing with 6 px of
+        //  him over the dip: release 5's bot moved the adult's landing 1251 -> 1244 on the same hop, BUILD-28 box 16)
+        if (Math.abs(p.y - off.y) <= SAME_GROUND && Math.abs(off.y - (Y + 60)) < 2 && dipsAt.some(([a, b]) => Math.min(off!.x, p.x) < a && Math.max(off!.x, p.x) + p.width > b)) flat = true;
         off = null;
       }
       if (p.grounded) stood = { x: p.x, y: p.y };
