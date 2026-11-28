@@ -1,0 +1,9 @@
+wood in x 250-1300, y 5850-6550 (9): 114-334@5939 branch 
+354-464@5989 fragile branch 
+484-594@6039 fragile branch 
+614-724@6089 fragile branch 
+334-1034@6139 branch 
+1034-1280@6139 branch 
+70-350@6420 branch 
+350-550@6420 branch 
+550-990@6460 branch

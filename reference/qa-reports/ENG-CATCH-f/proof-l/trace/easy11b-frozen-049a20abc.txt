@@ -1,0 +1,4 @@
+wood in x 0-1300, y 4150-4700 (4): 0-120@4307 branch | 120-800@4307 branch | 636-844@4588 branch | 256-636@4628 branch
+1-4 middle easy 11 on frozen-049a20abc: end shrine time 241.3 rescues 1
+  rescue 1 at 179.87 s: from x 288, y 4307 (last on 120-800@4307) -> put at x 734, y 4588
+  wood near x 288, y 4307: 0-120@4307 120-800@4307 636-844@4588 256-636@4628

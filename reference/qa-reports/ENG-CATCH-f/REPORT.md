@@ -1,10 +1,35 @@
 # ENG-CATCH-f: the down tower never lays a catch twice, no two pieces of wood overlap, and the named check refuses any that do; onto t-eng-w3 (R-165.561)
 
 ## EXACT NEXT STEP
-(box 7, ENG-CATCH-l, engine, written 8:37 PM ET Fri 11-27 by `date`, a safe-keeping draft while the gates run; t-eng-w3 = 7a580aefc by `git ls-remote` at the start and 7a580aefc (still, at this draft) at the hand-over;
+(box 7, ENG-CATCH-l, engine, written 8:46 PM ET Fri 11-27 by `date`, at the hand-over; t-eng-w3 = 7a580aefc by `git ls-remote` at the start and 7a580aefc (unchanged) at the hand-over;
 this branch's candidate = 049a20abc: 192a433ae + reference/ + darkBots.test.ts only (`git diff --stat 192a433ae 049a20abc -- src tools`))
-NOT LANDED YET (box 7 is waiting on its gates, started inside the box; this draft is rewritten when they finish). Next: record each
-running gate below; if all green and t-eng-w3 is still 7a580aefc, fast-forward t-eng-w3 to 049a20abc + this report, check `git ls-remote`.
+NOT LANDED (the lead ruled A: 1-4 is SHIPPED; trace the castBots 1-4 PASS->FAIL rows, sort them into classes, land only after the
+lead reads them). Candidate 049a20abc is frozen and every gate but the rows is green below (shard 1/6 752/753 + 1 todo, 0 fail).
+1. FINISH THE TRACE (scratch tools, read-only: proof-l/trace/rescuetrace.mts `ROOT=<tree> [BOX=x0,x1,y0,y1] npx --prefix <repo> tsx
+   rescuetrace.mts 1-4 middle <setting> <seed>`: each rescue's time, from where, the piece he last stood on, put back where; BOX prints
+   the run's own wood in a box at its first frame. Each trace reproduces its castBots row exactly, so each is a second run.)
+   - middle EASY 11: cand rescue 1 at 179.87 s from x 288, y 4307, on 120-800@4307, put at 734, 4588 (stuck: "in a dip 281 px deep",
+     "a trunk beside him, the way on is 319 px down"). The wood at the spot is IDENTICAL on both trees (x 0-1300, y 4150-4700:
+     0-120@4307 | 120-800@4307 | 636-844@4588 | 256-636@4628). The base bot stalled at the same spot (stuck x 355/283, "the way on is
+     321 px down") and got down unrescued. PROVISIONAL (ii). Next: the first frame the two runs part (diff the traces' x by time), and
+     the wood moved there; show the route down 120-800@4307 -> 256-636@4628 / 636-844@4588 as fair (a drop he takes on base).
+   - middle NORMAL 15: cand rescue 1 at 98.30 s from x 1178, y 6139, on 1034-1280@6139, put at 1007, 5418 (stuck x 1036: "fell back
+     down from here 8 times"). The wood IDENTICAL on both trees (x 250-1300, y 5850-6550). PROVISIONAL (ii); same next step as Easy 11.
+   - middle NORMAL 6: cand 4 rescues: 152.67 s from x 841, y 6228 (on 764-924@6228, stuck "in a dip 321 px deep, the way on is 320 px
+     down") -> put 386, 6668; 157.80 s from x 99, y 6668 (on 0-112@6668) -> 849, 4644; 163.93 s and 177.03 s from x 1260, y 5907 (on
+     1232-1280@5907; "fell back down from here 8 times" x 872/846/712) -> 264, 3943 and 712, 3662. THE TOWER MOVED WOOD HERE (x 0-1300,
+     y 5550-7050, 25 pieces each): base 0-866@5626 + 166-766@5626 (overlapping) -> cand 166-766@5626 + 766-866@5626 (the 0-166 stretch
+     at y 5626 is GONE); base 104-284@6227 -> cand 104-226@6227 (trimmed where it lay under 226-446@6228). The CLASS (i) CANDIDATE: check
+     whether 0-166@5626 was a catch his climb from 1232-1280@5907 or 764-924@6228 used on base (the base run's frames near y 5626).
+     If it was, the overlap trim removed a needed catch: a red in the tower fix (keep a route or refuse the roll by name; fix at the
+     root, never a re-pin).
+   - Two runs per cause: castBots + the trace are two of each row; a different seed with the same cause is still to find.
+   - Also say whether the 4 FAIL->PASS rows (child easy 5, child normal 10, expert normal 13, kid normal 16) share the cause family
+     (trace each the same way).
+   - Stills of each rescue spot, both trees, upright, looked at first (proof-j's shoot14.mjs, scratch-fixed in proof-l to wait for
+     `__engine`: `<root> <port> <out> <label> <layout=seed> <setting> <x> <y>`; verify the layout argument is the castBots seed).
+2. Message the lead the classes. LAND only after the lead reads them: fast-forward t-eng-w3 to this branch's head (049a20abc +
+   reference/ only) if t-eng-w3 is still 7a580aefc; else merge BY HASH and run 3b of the ENG-CATCH-l brief. Check `git ls-remote`.
 
 ## Box 7 (ENG-CATCH-l, engine): the lip toy built and proven both ways on both trees; frozen; the gates
 (started 8:24 PM ET Fri 11-27 by `date`; on 75ce21abc; npm ci and `git fetch --unshallow` as tracked tasks, both exit 0)
@@ -33,7 +58,7 @@ running gate below; if all green and t-eng-w3 is still 7a580aefc, fast-forward t
   7a580aefc likewise (its toy copy restored first). The lock stands (101/102, 1-4 the one move, R-165.573): src lay code unchanged since
   192a433ae (the diff above).
 - GATES on the frozen 049a20abc:
-  - shard 1/6 whole: RUNNING (started inside the box)
+  - shard 1/6 whole: tests 753, pass 752, fail 0, cancelled 0, skipped 0, todo 1 (634.6 s)
   - the CI tool line (gates.yml:157): tests 111, pass 110, fail 0, cancelled 0, skipped 0, todo 1 (284.6 s; the todo is the open chase
     row, `not ok 45 ... # TODO measured 1 of 3 (ENG-B4)`, a todo node does not count as a fail)
   - tierBots: tests 9, pass 9, fail 0, cancelled 0, skipped 0 (334.3 s)
@@ -45,9 +70,14 @@ running gate below; if all green and t-eng-w3 is still 7a580aefc, fast-forward t
     (150.9 s | rescued x1). FAIL->PASS 4: child easy 5 (217.7 s), child normal 10 (241.6 s), expert normal 13 (169.3 s), kid normal 16
     (129.5 s). Under the floor 0 on both trees. The rows are the tower's 1-4 move (src vs 7a580aefc: pipeline.ts, tower.ts + tests),
     not the toy (a test file). Asked the lead: A) trace the 3 PASS->FAIL rows, then land; B) rule them the intended move, land now.
-  - the normal-4 stills at y 10364, upright and sideways, both trees: RUNNING (started inside the box)
+  - the normal-4 stills at y 10364, upright and sideways, both trees (looked at by me first; proof-l/stills-*): CLEAN on the candidate:
+    the wood under Pokey meets end to end, the HUD clears the notch, Pokey reads on the vine, both orientations. On 7a580aefc the
+    upright still shows a plank lying over the next in the row under him (x about 130 px), the overlap the tower removes: the shooter's
+    near list reads base 854-1054@10364 + 996-1176@10363 (overlapping), cand 854-1054@10364 + 1054-1176@10363 (end to end). The
+    scratch shooter crashed twice under load (`window.__engine is not a function`: it waited for `__play` alone); fixed to wait for both.
   - timecheck: PASS (349 commits, 14 files, 67 stamps). roadmapcheck: PASS.
-- Proof files: proof-l/ (the runs' outputs, the toy copy).
+- Proof files: proof-l/ (the runs' outputs, the toy copy, castcmp-14.txt, stills-*, trace/: the rescue traces and the wood lists).
+- Commit 504dc4a7d's Claude-Session trailer names the lead's session by mistake; this box's session is session_01FhBbYP97yawW6qqsiQqgHm.
 - Lessons applied: a gate calls the code the screen calls (the toy runs the real engine and the harness's own watch, D19); test the
   measuring tool first (the watch missed the toy's first frame until the harness's step was run for it, D15); every run reads a frozen
   worktree (D115); read the queue at every push (D57).

@@ -1,0 +1,2 @@
+wood in x 0-1300, y 4150-4700 (4): 0-120@4307 branch | 120-800@4307 branch | 636-844@4588 branch | 256-636@4628 branch
+1-4 middle easy 11 on base7a5: end shrine time 185.9 rescues 0
