@@ -1,0 +1,98 @@
+wood in x 0-1300, y 0-30000 (98): 70-490@360 moss_stone 
+490-910@360 branch 
+0-674@641 branch 
+674-954@641 branch 
+674-954@1081 branch 
+954-1068@1081 branch 
+534-634@1141 fragile branch 
+414-514@1201 fragile branch 
+294-394@1261 fragile branch 
+274-954@1321 branch 
+954-1068@1321 branch 
+1068-1182@1321 branch 
+1182-1280@1321 branch 
+0-230@1602 branch 
+230-470@1602 branch 
+470-870@1642 branch 
+970-1068@1642 branch 
+1068-1182@1642 branch 
+394-914@1923 branch 
+856-1036@2022 branch 
+1036-1182@2022 branch 
+1182-1280@2022 branch 
+314-994@2363 branch 
+0-270@2644 branch 
+270-670@2644 branch 
+770-1108@2644 branch 
+1108-1280@2644 branch 
+670-1030@2869 branch 
+590-1110@3229 branch 
+476-614@3510 branch 
+714-1154@3510 branch 
+1154-1280@3510 branch 
+194-714@3735 branch 
+114-794@4155 branch 
+0-70@4436 branch 
+70-570@4436 branch 
+570-990@4436 branch 
+594-1034@4717 branch 
+514-1114@5097 branch 
+470-630@5378 branch 
+630-1010@5418 branch 
+1110-1228@5418 branch 
+1228-1280@5418 branch 
+996-1176@5698 branch 
+356-516@5699 branch 
+516-834@5699 branch 
+834-1054@5699 branch 
+0-114@5939 branch 
+114-334@5939 branch 
+354-464@5989 fragile branch 
+484-594@6039 fragile branch 
+614-724@6089 fragile branch 
+334-1034@6139 branch 
+1034-1280@6139 branch 
+0-70@6420 branch 
+70-350@6420 branch 
+350-550@6420 branch 
+550-990@6460 branch 
+594-1034@6741 branch 
+436-616@6840 branch 
+322-414@7141 branch 
+514-1114@7141 branch 
+0-470@7422 branch 
+0-1030@7422 branch 
+470-930@7422 branch 
+1030-1228@7422 branch 
+1228-1280@7422 branch 
+534-974@7703 branch 
+454-1054@8063 branch 
+410-850@8344 branch 
+850-1280@8344 branch 
+296-410@8704 branch 
+410-850@8704 branch 
+0-454@8985 branch 
+454-894@8985 branch 
+454-894@9385 branch 
+894-1008@9385 branch 
+1008-1280@9385 branch 
+410-630@9666 branch 
+630-1010@9706 branch 
+114-334@9987 branch 
+364-474@9987 fragile branch 
+634-744@9987 fragile branch 
+744-854@9987 fragile branch 
+854-1054@9987 branch 
+334-974@10067 branch 
+0-70@10348 branch 
+70-361@10348 branch 
+361-621@10348 branch 
+721-1088@10348 branch 
+571-911@10668 branch 
+1011-1202@10668 branch 
+1202-1280@10668 branch 
+457-851@10888 branch 
+851-1151@10888 branch 
+0-640@11169 moss_stone 
+640-1195@11169 moss_stone 
+1195-1280@11169 moss_stone

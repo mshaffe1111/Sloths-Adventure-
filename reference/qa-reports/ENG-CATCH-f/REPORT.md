@@ -18,7 +18,11 @@ lead reads them). Candidate 049a20abc is frozen and every gate but the rows is g
      THE SAME CAUSE FAMILY AS NORMAL 6: he lands on a trim remnant and stops at its flush seam; the run is later by that pause and
      parts from there (the rescue at 179.87 s is downstream). Next: confirm the stop's cause (which bot read, frames 36.07-36.5 s).
    - middle NORMAL 15: cand rescue 1 at 98.30 s from x 1178, y 6139, on 1034-1280@6139, put at 1007, 5418 (stuck x 1036: "fell back
-     down from here 8 times"). The wood IDENTICAL on both trees (x 250-1300, y 5850-6550). PROVISIONAL (ii); same next step as Easy 11.
+     down from here 8 times"). The wood at the spot IDENTICAL on both trees (x 250-1300, y 5850-6550).
+     THE RUNS PART at 39.200 s (proof-l/trace/path-n15-*.txt.gz), falling onto y 7422 near x 945: base lands on id 21 and walks on
+     (927.8, 918.9, 913.8); the candidate lands on id 86 (930-1030@7422, the trim's 100 px remnant of 0-1030@7422) and STOPS DEAD at
+     x 938.3. The stage's wood differs only by the trims (996-1176@5698 -> 1054-1176@5698; 0-1030@7422 -> 930-1030@7422). THE SAME
+     CAUSE FAMILY.
    - middle NORMAL 6: cand 4 rescues: 152.67 s from x 841, y 6228 (on 764-924@6228, stuck "in a dip 321 px deep, the way on is 320 px
      down") -> put 386, 6668; 157.80 s from x 99, y 6668 (on 0-112@6668) -> 849, 4644; 163.93 s and 177.03 s from x 1260, y 5907 (on
      1232-1280@5907; "fell back down from here 8 times" x 872/846/712) -> 264, 3943 and 712, 3662. THE TOWER MOVED WOOD HERE (x 0-1300,
@@ -41,11 +45,12 @@ lead reads them). Candidate 049a20abc is frozen and every gate but the rows is g
      deep" later at x 852), then confirm (ii) or find an engine cause (a flush seam the engine treats as an end is an engine red).
      NOTE for the lead: if a flush seam the tower's trims make stops any bot, every trimmed overlap on every stage can do it: the fix is
      at the root (the trim merges flush same-height pieces, or the bots read flush pieces as one floor), never a re-pin.
-   - CAUSE FAMILY (2 of 3 rows, two runs each: castBots + the trace): the overlap trim (no two pieces overlap) keeps a 100 px remnant
+   - CAUSE FAMILY (ALL 3 rows, two runs each: castBots + the trace): the overlap trim (no two pieces overlap) keeps a 100 px remnant
      flush with the piece it overlapped; the middle bot landing on the remnant stops dead at the flush seam (0.5 s on Normal 6), and the
      run parts from there. The wood stays continuous (a fair route for a player): (ii) as the class reads, BUT made by the tower on every
      trimmed overlap, so the lead rules where the root fix goes (the trim merging flush same-height pieces into one, or the bots reading
-     flush pieces as one floor), never a re-pin. Normal 15: not yet traced for its first parting (its rescue spot's wood is unchanged).
+     flush pieces as one floor), never a re-pin. Still to do: which bot read stops him at the seam (frames just after each landing), and whether the 4
+     FAIL->PASS rows share the family (trace each the same way), and the stills of each spot, both trees, upright.
    - Also say whether the 4 FAIL->PASS rows (child easy 5, child normal 10, expert normal 13, kid normal 16) share the cause family
      (trace each the same way).
    - Stills of each rescue spot, both trees, upright, looked at first (proof-j's shoot14.mjs, scratch-fixed in proof-l to wait for
