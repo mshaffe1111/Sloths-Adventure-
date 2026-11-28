@@ -6,8 +6,8 @@ tools/difficulty/lineChannel.test.ts, reference/design/meter-coverage.json; no s
 Every gate of the packet PASSES except the CI tool line, whose ONE red (riverRide.test.ts:278 on 2-1) is identical on 48f889a05
 without the fix: the frozen head's own, not this change's. Landed on t-build-28-wip by fast-forward from 48f889a05 at hand-over (the
 `git ls-remote` hash is in the message to the lead).
-NEXT (the lead's): (1) rule on riverRide:278, a red the frozen head be5e9fc12 carries into its CI tool line (main's result in the
-message); (2) 2-8's meter numbers are far under its design target and Easy reads ABOVE Normal: the stage's, not the meter's (the line
+NEXT (the lead's): (1) rule on riverRide:278, a red the frozen head be5e9fc12 carries into its CI tool line (main passes it 28/28,
+so it is BUILD-28's own); (2) 2-8's meter numbers are far under its design target and Easy reads ABOVE Normal: the stage's, not the meter's (the line
 channel asks nothing on 2-8: its follow stage has no heron zones and no reeds, probed on all 6 layouts; Easy's heaviest beat is a pad
 board, ride-board 5.97 points on seed 1, that Normal does not have).
 
@@ -62,7 +62,8 @@ HEAD:src, so the stage lock and the src suite do not move (they read src only).
   least 5): ... seed 8 ... stuck [{"x":19577,...}]') fails WORD FOR WORD the same on frozen 48f889a05 without the fix (riverRide whole
   there: tests 28, pass 27, fail 1). riverRide imports no tools/difficulty file (its imports and firsttimer / castBots / tierBots
   grepped: no '../difficulty/' import). BUILD-28 box 17 stopped before suite2, so the CI tool line had not yet run on be5e9fc12: this
-  red is the frozen head's own and the lead's to rule on. main 49fdc8cb6's riverRide: see the message (run at hand-over).
+  red is the frozen head's own and the lead's to rule on. On main 49fdc8cb6 riverRide passes WHOLE (8:13:04-8:14:21 PM ET: tests 28,
+  pass 28, fail 0): the red came in between main and be5e9fc12, i.e. with BUILD-28's own changes (the test imports w2Finish, W2_RIVERS).
 
 ## The lead's pre-freeze set (D168; message received mid-box): every importer of a changed file, run WHOLE (prefreeze-set.txt)
 - `git grep -l` for difficulty/score, difficulty/lineChannel, difficulty/lineToy, meter-coverage (reference/ left out): code importers of

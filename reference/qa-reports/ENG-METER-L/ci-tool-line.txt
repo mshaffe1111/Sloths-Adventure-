@@ -19,3 +19,11 @@ not ok 22 - planted: with the against-the-flow skill off, the child on Normal is
 # cancelled 0
 # skipped 0
 EXIT (08:12:42 PM)
+== the failing file alone on main
+== riverRide on 49fdc8cb6 (main) (08:13:04 PM)
+# tests 28
+# pass 28
+# fail 0
+# cancelled 0
+# skipped 0
+EXIT (08:14:21 PM)
