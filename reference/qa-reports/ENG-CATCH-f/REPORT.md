@@ -27,7 +27,8 @@ running gate below; if all green and t-eng-w3 is still 7a580aefc, fast-forward t
 - PRE-FREEZE vs 7a580aefc (D168): `git diff --name-only 7a580aefc 049a20abc -- src tools` = darkBots.test.ts, pipeline.ts,
   tower.test.ts, tower.ts, towerMend.test.ts. tsc: clean. generalitycheck: PASS (68 engine files, 26 literals, 26 known). The suite on
   192a433ae (4184/4189) carries over for every file but darkBots.test.ts (D118: the diff 192a433ae..049a20abc in src tools is that file
-  alone, 96 lines). darkBots.test.ts WHOLE on the candidate: RUNNING (started inside the box)
+  alone, 96 lines). darkBots.test.ts WHOLE on the candidate: tests 31, pass 31, fail 0, cancelled 0, skipped 0 (211.4 s; read the main tree,
+  untouched while it ran, started before the freeze; shard 1/6 on the frozen head runs this file again)
 - FREEZE: 049a20abc in a worktree, node_modules linked, `chattr -R +i src tools`, `chattr -i src/game/gen2/proven` (D115); the base
   7a580aefc likewise (its toy copy restored first). The lock stands (101/102, 1-4 the one move, R-165.573): src lay code unchanged since
   192a433ae (the diff above).
