@@ -67,9 +67,11 @@ NEXT, IN ORDER:
    more record at the put: a wider job, it would also move base's own seams on every tower stage), or does this job stop at fit's cut?
    Recommendation: stop at fit's cut (the brief's root, and the 30 of 38 it removes); trace whether the middle bot stops at any of the 8
    on castBots first (rows decide it, not opinion).
-LESSONS APPLIED (LESSONS.md, read by headline this box): check the fact before the brief's wording (the 1180 base seams); a test that
-pins a roll's x positions moves with any lay change (the darkBots roll-1 red: name it, never re-pin); time stamps from `date` only (one
-stamp corrected before push, timecheck PASS).
+LESSONS APPLIED (LESSONS.md, the entries that bear on this job, searched in this box): D30 (every time pasted from `date`: one stamp
+typed 3 min ahead was caught and corrected before the push, timecheck PASS on every push); D29 (run every test that pins a roll: the
+darkBots roll-1 test caught the draft's whole-roll move); D23 (merge the latest base before judging: t-eng-w3 moved, so no gate result
+here is final until the merge of f7e76b765); D55 (context in every message to the lead). Law 3: the brief's literal test was checked
+against the base first (1179 seam positions shipped), and scoped to the trim's own cut.
    Then the brief's count: trims leaving a flush remnant of ANOTHER kind or top (trimSeams is reset per towerCatches call: accumulate it
    in the scan by wrapping towerCatches), every listed stage + draft 3-1 seeds 1-40 both settings; and how often `into` holds 2+ ids
    (the second stage piece is taken out of platforms and seams only: if it is a section's own PIECE, `pieces` still holds it: a red).
