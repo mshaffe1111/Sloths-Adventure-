@@ -34,8 +34,9 @@ running gate below; if all green and t-eng-w3 is still 7a580aefc, fast-forward t
   192a433ae (the diff above).
 - GATES on the frozen 049a20abc:
   - shard 1/6 whole: RUNNING (started inside the box)
-  - the CI tool line (gates.yml:157): RUNNING (started inside the box)
-  - tierBots: RUNNING (started inside the box)
+  - the CI tool line (gates.yml:157): tests 111, pass 110, fail 0, cancelled 0, skipped 0, todo 1 (284.6 s; the todo is the open chase
+    row, `not ok 45 ... # TODO measured 1 of 3 (ENG-B4)`, a todo node does not count as a fail)
+  - tierBots: tests 9, pass 9, fail 0, cancelled 0, skipped 0 (334.3 s)
   - `seedlist.ts 1-4 --check`: PASS (100 seeds, each clean on both settings; the verdicts refuse 0 of 100)
   - castBots 1-4, seeds 1-16, both settings, par 4, candidate AND 7a580aefc: RUNNING (started inside the box)
   - the normal-4 stills at y 10364, upright and sideways, both trees: RUNNING (started inside the box)
