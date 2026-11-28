@@ -1,7 +1,7 @@
 # ENG-CATCH-f: the down tower never lays a catch twice, no two pieces of wood overlap, and the named check refuses any that do; onto t-eng-w3 (R-165.561)
 
-## EXACT NEXT STEP (box 9, ENG-CATCH-n: a merge is laid like any catch; f7e76b765 merged; pre-freeze PREFREEZE_WORD; NOT frozen-gated, NOT landed; R-165.561, R-165.573)
-(written STAMP ET Fri 11-27 by `TZ=America/New_York date`, at the hand-over; started 9:17 PM ET on 4b3b27fa6. t-eng-w3 = f7e76b765 by
+## EXACT NEXT STEP (box 9, ENG-CATCH-n: a merge is laid like any catch; f7e76b765 merged; pre-freeze 1153/1155, its one red inherited (R-165.576); NOT frozen-gated, NOT landed; R-165.561, R-165.573)
+(written 9:58 PM ET Fri 11-27 by `TZ=America/New_York date`, at the hand-over; started 9:17 PM ET on 4b3b27fa6. t-eng-w3 = f7e76b765 by
 `git ls-remote` during the box (unmoved). The lead's word this box: the LAST tower box tonight; step 1 + the merge only, no lock, shards or
 castBots; a fresh box tomorrow starts at NEXT 1.)
 DONE THIS BOX (head 1b289d86f = 4152a4a4e (the fix) + the merge of f7e76b765):
@@ -34,7 +34,13 @@ DONE THIS BOX (head 1b289d86f = 4152a4a4e (the fix) + the merge of f7e76b765):
 - PRE-FREEZE SET vs 7a580aefc (D168), on that frozen tree: changed src/tools vs 7a580aefc = tower.ts, pipeline.ts, types.ts,
   worlds/stageTable.ts, tower.test.ts, towerMend.test.ts, darkBots.test.ts, worlds/w3Noise.test.ts; their test importers by resolved
   import (proof-n/importers.mjs) = **148 files** (proof-n/n-importers.txt: ENG-DROP's 143 + camRepick, cameraFollow, darkBots, legs,
-  towerMend), WHOLE: PREFREEZE_LINE
+  towerMend), WHOLE: `# tests 1155 # pass 1153 # fail 1 # cancelled 0 # skipped 0 # todo 1` (1860 s, 9:26:49 to 9:57:49 PM ET;
+  proof-n/n-importers.log.gz). The todo is `not ok 789 ... # TODO R-165.312` (the flag placer, not a fail). **The ONE red:
+  src/game/mixer/support.test.ts:27** "a stone step seated on a deep bank stands; the same stone moved over air still FAILS":
+  `no seated island-earth stone in gen2 1-1 seeds 1-24`. **INHERITED (R-165.576):** run ALONE on 7a580aefc (a frozen chattr worktree)
+  it is the same red, `# tests 2 # pass 1 # fail 1`, the same error (proof-n/support-7a580aefc.txt); ENG-DROP found the same
+  (ENG-DROP/REPORT.md:80). So the set is the same shape as ENG-DROP's (1072/1074 + 1 fail + 1 todo there), with 81 tests more (the 5 more
+  files and the toys).
 - A 1-4 SPOT (not a gate; proof-n/one14.mts): easy 6 and 11, normal 6 and 15 build the same platform counts (97, 104, 92, 97) and the
   same named seams (only box 8's two "another top") on 4b3b27fa6 and here: no 1-4 seam was refused by the new checks on those four. The
   lock tomorrow says it for all 32.
@@ -42,7 +48,8 @@ DONE THIS BOX (head 1b289d86f = 4152a4a4e (the fix) + the merge of f7e76b765):
   live tree (D115); both were stopped within two minutes, no result taken from either, and re-run tracked (the pre-freeze set on the
   frozen tree).
 NEXT, IN ORDER (a fresh box):
-1. NEXT1_TEXT
+1. NOTHING IS OWED FROM BOX 9's steps 1-2: the pre-freeze set's one red is inherited (R-165.576, owned elsewhere). The lead rules whether
+   1b289d86f is frozen with it (ENG-DROP's head was gated with the same red). Read first, in the order: this section; box 8's below.
 2. FREEZE 1b289d86f (or the fixed head) per dispatch-packet.md (D115: a frozen worktree, chattr).
 3. castBots 1-4 FIRST among the gates (D171/D170): seeds 1-16, both settings, on the candidate AND 7a580aefc, every moved row traced as
    box 7 did; message the lead the classes: (i) the fair route is gone = red; (ii) a fair route remains, the bot chose differently, named

@@ -1,0 +1,4 @@
+  error: 'no seated island-earth stone in gen2 1-1 seeds 1-24'
+# tests 2
+# pass 1
+# fail 1
