@@ -1,6 +1,6 @@
 # ENG-OUTBACK REPORT (engine; R-165.583, R-165.584, R-165.585)
 
-## EXACT NEXT STEP (box 1, started 9:15:46 PM ET (from date); hand-over written 9:35 PM ET (from date), the last box tonight (the lead: no successor until Matt restarts the team tomorrow); branch t-eng-outback, head: see the lead message / git ls-remote)
+## EXACT NEXT STEP (box 1, started 9:15:46 PM ET (from date); hand-over written 9:34 PM ET (from date), the last box tonight (the lead: no successor until Matt restarts the team tomorrow); branch t-eng-outback, head: see the lead message / git ls-remote)
 STATE: (A) FIXED, RED-first, pushed (e10e208f5). NEW: on the fix the top 'stranded' cause is the little ones' line FREEZING at the
    far turn (adult seed 18, NEXT 3a), not the bot. (B) CLOSED, no defect (the engine and the HUD both show the number that opens the
    door; the HUD waits for it, UI-22). (C) NOT STARTED (no bot code written). Nothing landed on t-build-28-wip. No freeze, no gates beyond tsc, generality and the
@@ -48,7 +48,13 @@ NEXT, in order:
           20,000 px behind him, and was counted home at the door: a second rough spot (what the player sees: the line stops following,
           then appears at the exit), the opposite of seed 18's (held: counted 0). Name (1) why the head's x froze while its s ran on
           (follow.ts stepLine / wallCap at the drop), (2) what set them home at the door (followPlay.ts, the exit), (3) why seed 18's
-          trail was held and seed 4's was not (his landing vs take-off, follow.ts:134). Then decide with the lead: is the far turn's
+          trail was held and seed 4's was not (his landing vs take-off, follow.ts:134).
+          FIRST SUSPECT for (2), NOT VERIFIED: follow.ts:401 regroup re-forms the WHOLE line bunched behind him "(a lost heart's flag, a
+          splash-back)", and the engine calls follow?.setBack() on every safe splash (engine.ts:3002, :3013); home() (follow.ts:429)
+          then counts whoever reaches homeX. So seed 4's line likely came home because he SPLASHED in a safe water near home (the parade
+          marsh, now a splash since (A)) and the line was teleported to him; seed 18 made every hop and kept a line 20,000 px behind.
+          If that holds, a 2-8 pass on the fix depends on FALLING near home: check seed 4 for a splash after 145 s (log engine.ts:3013
+          firing) before any fix. Then decide with the lead: is the far turn's
           way down a lay fault (it must offer a way down the line can take, every drop <= step, or a held line must be fetched), a
           follow rule, or a bot one. A real player who takes the same way down loses the line the same way. NEXT for a fresh box: (i) still the far turn on seed 18
           (stills tool, both orientations) to see the way he goes down and where the line stands; (ii) per-frame his x, y and the line's
