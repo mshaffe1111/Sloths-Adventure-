@@ -1,0 +1,57 @@
+TAP version 13
+# Subtest: goals: gather about 85-90% of the flowers a player can reach; never one on a crumbling platform
+ok 1 - goals: gather about 85-90% of the flowers a player can reach; never one on a crumbling platform
+  ---
+  duration_ms: 1.202139
+  type: 'test'
+  ...
+# Subtest: goals: free every animal there is to free; beat about three quarters of the predators
+ok 2 - goals: free every animal there is to free; beat about three quarters of the predators
+  ---
+  duration_ms: 0.251817
+  type: 'test'
+  ...
+# Subtest: goals: Normal gets its share; Easy asks round(Normal x 0.65), never under today's goal (LV-6), and its gentler beat-the-animals goal
+ok 3 - goals: Normal gets its share; Easy asks round(Normal x 0.65), never under today's goal (LV-6), and its gentler beat-the-animals goal
+  ---
+  duration_ms: 38.002123
+  type: 'test'
+  ...
+# Subtest: goals: every hand-built stage of Worlds 1-4 with a count lands in Matt's band on Normal (small counts round as near as they can)
+not ok 4 - goals: every hand-built stage of Worlds 1-4 with a count lands in Matt's band on Normal (small counts round as near as they can)
+  ---
+  duration_ms: 3348.57178
+  type: 'test'
+  location: '/home/user/wt-f4e/src/game/groundwork.test.ts:71:1'
+  failureType: 'testCodeFailure'
+  error: '5 stages checked'
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: true
+  actual: false
+  operator: '=='
+  stack: |-
+    TestContext.<anonymous> (/home/user/wt-f4e/src/game/groundwork.test.ts:90:10)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: regrow: a crumbled platform comes back only after 30-35 s, and only off screen, and never where he is
+ok 5 - regrow: a crumbled platform comes back only after 30-35 s, and only off screen, and never where he is
+  ---
+  duration_ms: 0.461178
+  type: 'test'
+  ...
+1..5
+# tests 5
+# suites 0
+# pass 4
+# fail 1
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 3909.68732
+exit 1

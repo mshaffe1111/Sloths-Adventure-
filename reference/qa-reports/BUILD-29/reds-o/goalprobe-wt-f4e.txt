@@ -1,0 +1,20 @@
+1-1 sprint goal 1 of 0 skipped (have 0) {"petals":81,"animals":0,"rescuable":0,"relics":0}
+2-8 rescue goal 10 of 10 CHECKED {"petals":53,"animals":0,"rescuable":10,"relics":0}
+3-1 sprint goal 1 of 0 skipped (have 0) {"petals":82,"animals":0,"rescuable":0,"relics":0}
+3-2 stealth goal 1 of 0 skipped (have 0) {"petals":77,"animals":0,"rescuable":0,"relics":0}
+3-3 purge goal 14 of 19 CHECKED {"petals":124,"animals":19,"rescuable":0,"relics":0}
+3-4 ascent goal 1 of 0 skipped (have 0) {"petals":62,"animals":0,"rescuable":0,"relics":0}
+3-5 stealth goal 1 of 0 skipped (have 0) {"petals":70,"animals":0,"rescuable":0,"relics":0}
+3-6 relic_hunt goal 5 of 0 skipped (have 0) {"petals":79,"animals":0,"rescuable":0,"relics":9}
+3-7 relic_hunt goal 6 of 0 skipped (have 0) {"petals":96,"animals":0,"rescuable":0,"relics":9}
+3-8 vine_runner goal 1 of 0 skipped (have 0) {"petals":106,"animals":0,"rescuable":0,"relics":0}
+3-9 gauntlet goal 21 of 28 CHECKED {"petals":149,"animals":28,"rescuable":0,"relics":0}
+4-1 ascent goal 1 of 0 skipped (have 0) {"petals":79,"animals":0,"rescuable":0,"relics":0}
+4-2 sprint goal 1 of 0 skipped (have 0) {"petals":164,"animals":0,"rescuable":0,"relics":0}
+4-3 ascent goal 1 of 0 skipped (have 0) {"petals":112,"animals":0,"rescuable":0,"relics":0}
+4-4 vine_runner goal 1 of 0 skipped (have 0) {"petals":137,"animals":0,"rescuable":0,"relics":0}
+4-5 stealth goal 1 of 0 skipped (have 0) {"petals":109,"animals":0,"rescuable":0,"relics":0}
+4-6 ascent goal 1 of 0 skipped (have 0) {"petals":90,"animals":3,"rescuable":0,"relics":0}
+4-7 sprint goal 1 of 0 skipped (have 0) {"petals":249,"animals":0,"rescuable":0,"relics":0}
+4-8 rescue goal 20 of 20 CHECKED {"petals":144,"animals":0,"rescuable":20,"relics":0}
+4-9 gauntlet goal 13 of 17 CHECKED {"petals":164,"animals":17,"rescuable":0,"relics":0}

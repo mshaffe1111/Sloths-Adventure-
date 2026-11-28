@@ -1,0 +1,58 @@
+TAP version 13
+# Subtest: 2-9 has its proven seed list (100 seeds)
+ok 1 - 2-9 has its proven seed list (100 seeds)
+  ---
+  duration_ms: 0.72239
+  type: 'test'
+  ...
+# Subtest: 2-9's Normal goal lands in Matt's band (70-80% of the animals) on EVERY listed seed, as Play builds it (withGoals), and an off-band goal is named
+ok 2 - 2-9's Normal goal lands in Matt's band (70-80% of the animals) on EVERY listed seed, as Play builds it (withGoals), and an off-band goal is named
+  ---
+  duration_ms: 3722.047899
+  type: 'test'
+  ...
+# Subtest: 2-9's lines are the story keeper's, word for word (reference/story/lines-2-9.md, KEEPER-23-29 t-keeper-23-29), and the game says them
+ok 3 - 2-9's lines are the story keeper's, word for word (reference/story/lines-2-9.md, KEEPER-23-29 t-keeper-23-29), and the game says them
+  ---
+  duration_ms: 178.183185
+  type: 'test'
+  ...
+# Subtest: 2-9 is gen2's: its own row and kit, the hand build deleted (new replaces old)
+ok 4 - 2-9 is gen2's: its own row and kit, the hand build deleted (new replaces old)
+  ---
+  duration_ms: 0.20739
+  type: 'test'
+  ...
+# Subtest: 2-9: the court lianas' far-bank moss stone stands in its bank's middle, never at the lip he lands on (plainWalk's 50 px step, BUILD-29-f)
+ok 5 - 2-9: the court lianas' far-bank moss stone stands in its bank's middle, never at the lip he lands on (plainWalk's 50 px step, BUILD-29-f)
+  ---
+  duration_ms: 177.355444
+  type: 'test'
+  ...
+# Subtest: 2-9: Dot's kick line (hint.2-9.kick) is laid on EVERY listed seed, both settings, said 800 px+ before the posted guard (level.md rule 6; a ruled socket the engine refuses vanishes silently, R-165.518: BUILD-29-j)
+ok 6 - 2-9: Dot's kick line (hint.2-9.kick) is laid on EVERY listed seed, both settings, said 800 px+ before the posted guard (level.md rule 6; a ruled socket the engine refuses vanishes silently, R-165.518: BUILD-29-j)
+  ---
+  duration_ms: 4344.577133
+  type: 'test'
+  ...
+# Subtest: 2-9's log rivers are fair on every listed seed, both settings (riverFaults == []), and a barge's gap widened past the reach is named (R-165.544)
+ok 7 - 2-9's log rivers are fair on every listed seed, both settings (riverFaults == []), and a barge's gap widened past the reach is named (R-165.544)
+  ---
+  duration_ms: 913.592923
+  type: 'test'
+  ...
+# Subtest: 2-9: the king's posted guard is laid on EVERY seed, both settings, on the barge's landing past the river (a ruled socket the engine refuses vanishes silently: BUILD-29-i, two barges refused him at t 0.5-0.8)
+ok 8 - 2-9: the king's posted guard is laid on EVERY seed, both settings, on the barge's landing past the river (a ruled socket the engine refuses vanishes silently: BUILD-29-i, two barges refused him at t 0.5-0.8)
+  ---
+  duration_ms: 8.8217
+  type: 'test'
+  ...
+1..8
+# tests 8
+# suites 0
+# pass 8
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 9997.534006

@@ -21,7 +21,7 @@ import { kitLib24 } from './worlds/w2Arc24.ts';
 import { kitLib25 } from './worlds/w2Arc25.ts';
 import { finish26, kitLib26 } from './worlds/w2Arc26.ts';
 import { kitLib27 } from './worlds/w2Arc27.ts';
-import { kitLib29 } from './worlds/w2Arc29.ts';
+import { finish29, kitLib29 } from './worlds/w2Arc29.ts';
 import type { Difficulty } from '../difficulty.ts';
 import { JUDGED } from './reach.ts';
 import type { WorldKit } from './types.ts';
@@ -52,7 +52,7 @@ const W2: WorldFinish = (st, _squirrels, difficulty) => w2Finish(st as never, di
 export const worldFinish = (row: Pick<ListedStage, 'world'>): WorldFinish => row.world ?? W1;
 const WORLD: Record<string, WorldFinish> = { w1: W1, 'w1-12': W1, 'w1-14': W1, 'w1-15': W1, 'w1-16': W1, 'w1-17': W1, 'w1-18': W1, 'w1-19': W1, w2: W2, 'w2-21': W2, 'w2-22': W2, 'w2-23': W2, 'w2-24': W2, 'w2-25': W2, 'w2-26': W2, 'w2-27': W2, 'w2-29': W2 };
 /** the kits' own finishes, run after the world's (by kit name) */
-const FINISH: Record<string, ListedStage['finish']> = { 'w1-14': finish14 as ListedStage['finish'], 'w1-16': finish16 as ListedStage['finish'], 'w1-17': finish17 as ListedStage['finish'], 'w1-18': finish18 as ListedStage['finish'], 'w1-19': finish19 as ListedStage['finish'], 'w2-21': finish21 as ListedStage['finish'], 'w2-23': finish23 as ListedStage['finish'], 'w2-26': finish26 as ListedStage['finish'] };
+const FINISH: Record<string, ListedStage['finish']> = { 'w1-14': finish14 as ListedStage['finish'], 'w1-16': finish16 as ListedStage['finish'], 'w1-17': finish17 as ListedStage['finish'], 'w1-18': finish18 as ListedStage['finish'], 'w1-19': finish19 as ListedStage['finish'], 'w2-21': finish21 as ListedStage['finish'], 'w2-23': finish23 as ListedStage['finish'], 'w2-26': finish26 as ListedStage['finish'], 'w2-29': finish29 as ListedStage['finish'] };
 
 /** the rows, from the ONE stage table (worlds/stageTable.ts, world data): each stage's kit and its own flags */
 export const LISTED: Record<string, ListedStage> = Object.fromEntries(Object.entries(STAGE_TABLE).map(([id, r]) => [id, {

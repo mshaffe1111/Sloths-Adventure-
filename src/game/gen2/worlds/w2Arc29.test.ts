@@ -10,12 +10,12 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { buildGen2Stage } from '../pipeline.ts';
-import { listedStage, worldFinish } from '../listed.ts';
+import { listedStage, playFinish, worldFinish } from '../listed.ts';
 import { generateAllLevels } from '../../worldsData.ts';
 import { W2_STAGES } from '../../w2Stages.ts';
 import { STAGE_LINES } from '../../pokeyJournal.ts';
 import { countWord, goalLine, sealedLine } from '../../stagePlan.ts';
-import { DRUM_CARD_29, KICK_29, LINES_29, MISSION_29, STAGE_29 } from './w2Arc29.ts';
+import { COURT_29, DRUM_CARD_29, KICK_29, LINES_29, MISSION_29, STAGE_29 } from './w2Arc29.ts';
 import { DOT_LINES } from '../../dotLinesData.ts';
 /** the kick line's words as the kit says them (its row's old words; dotLines.ts swaps the new look's in where it is said) */
 const LINES_KICK = (): string => { const r = DOT_LINES.find((q) => q[0] === KICK_29)!; return (r[4] ?? r[5])!; };
@@ -179,4 +179,30 @@ test("2-9: the king's posted guard is laid on EVERY seed, both settings, on the 
     assert.ok(barge, `${d} seed ${s}: the barge's river`);
     assert.ok(guards[0].x > barge.x1, `${d} seed ${s}: the guard at x ${Math.round(guards[0].x)} stands past the barge's river (ends x ${Math.round(barge.x1)})`);
   }
+});
+
+test("2-9: the King's Court is dressed before the shrine on EVERY listed seed, both settings, as Play finishes it: the lily carpet, the dais, the throne on it, each whole on the shrine's ground, the shrine past the throne (all the art used, BUILD-29-o)", () => {
+  let laid = 0;
+  for (const d of BOTH) for (const s of LISTED) {
+    const row = listedStage(STAGE_29)!;
+    const st = playFinish(row, buildGen2Stage({ config: cfg, kit: row.kit(), seed: s, difficulty: d }) as never, d) as Any;
+    const court = (st.proto?.decor ?? []).filter((q: Any) => ['lilyCarpet', 'dais', 'throne'].includes(q.n));
+    const of = (n: string) => court.filter((q: Any) => q.n === n);
+    assert.equal(of('throne').length, 1, `${d} seed ${s}: one throne`);
+    assert.equal(of('dais').length, 1, `${d} seed ${s}: one dais`);
+    assert.ok(of('lilyCarpet').length >= 2, `${d} seed ${s}: ${of('lilyCarpet').length} carpets, under 2`);
+    const [throne] = of('throne'), [dais] = of('dais');
+    assert.equal(throne.x, dais.x, `${d} seed ${s}: the throne on its dais`);
+    assert.equal(st.exitTotemX - throne.x, COURT_29.throneToShrine, `${d} seed ${s}: the shrine past the throne`);
+    for (const q of court) {
+      // (each piece whole on solid ground at the shrine's height: never over the barge's river)
+      const G = q.b - (q.n === 'throne' ? -30 : q.n === 'dais' ? 14 : 16);
+      const L = q.x - q.w / 2, R = q.x + q.w / 2;
+      const under = st.platforms.filter((p: Any) => p.type === 'solid' && Math.abs(p.y - G) <= 2 && p.x < R && p.x + p.width > L);
+      const covered = under.reduce((a: number, p: Any) => a + Math.min(R, p.x + p.width) - Math.max(L, p.x), 0);
+      assert.ok(covered >= q.w - 1, `${d} seed ${s}: ${q.n} at ${q.x} stands on ${covered} of its ${q.w} px`);
+    }
+    laid++;
+  }
+  assert.equal(laid, 2 * LISTED.length);
 });

@@ -1,0 +1,30 @@
+TAP version 13
+# Subtest: 2-9's Normal goal lands in Matt's band (70-80% of the animals) on EVERY listed seed, as Play builds it (withGoals), and an off-band goal is named
+not ok 1 - 2-9's Normal goal lands in Matt's band (70-80% of the animals) on EVERY listed seed, as Play builds it (withGoals), and an off-band goal is named
+  ---
+  duration_ms: 3724.873355
+  type: 'test'
+  location: '/home/user/Sloths-Adventure-/src/game/gen2/worlds/w2Arc29.test.ts:60:1'
+  failureType: 'testCodeFailure'
+  error: 'a goal of 7 of 7 is named'
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+  actual: ''
+  operator: 'match'
+  stack: |-
+    TestContext.<anonymous> (/home/user/Sloths-Adventure-/src/game/gen2/worlds/w2Arc29.test.ts:76:12)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.start (node:internal/test_runner/test:944:17)
+    startSubtestAfterBootstrap (node:internal/test_runner/harness:296:17)
+  ...
+1..1
+# tests 1
+# suites 0
+# pass 0
+# fail 1
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 4299.090489

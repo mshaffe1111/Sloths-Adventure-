@@ -1,0 +1,2 @@
+type gauntlet target 5 countSet true
+100 seeds [ [ 'goal 5 of animals 7 (easyGoal 3)', 100 ] ]

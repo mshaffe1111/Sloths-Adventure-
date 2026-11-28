@@ -27,6 +27,8 @@ import type { CreatureDef, GraphBrief, NodeJob, SectionPiece, SectionTemplate, S
 import type { LevelConfig } from '../../types.ts';
 import { w2Finish } from './w2.ts';
 import { DOT_LINES } from '../../dotLinesData.ts';
+import type { W2Decor } from '../../riverArt.ts';
+import type { Platform } from '../../types.ts';
 
 export const STAGE_29 = '2-9';
 /** the draft's bot id (the bots fly a fixture by an id no stage of the game has, realPlay.ts withFixtureConfig; the tempo toy is 2-90) */
@@ -244,3 +246,41 @@ export function draft29Cfg(id: string = STAGE_29): LevelConfig {
 /** the draft's stageTable row (World 2's finish), for listed.ts's test seam only */
 export const draft29Row = (seeds: number[] = [], id: string = STAGE_29): ListedStage & { seeds: number[] } =>
   ({ kit: () => kitLib29(id), world: (s, _sq, d) => w2Finish(s as never, d) as typeof s, seeds });
+
+/** the court's dress before the shrine (the hand-built court's look and sizes, w2Sections.ts on main 49fdc8cb6: three lily carpets
+ *  200 px at 170 apart, then the dais 250 px with the empty throne on it, 200 px; the shrine 340 px past the throne, never in front of it) */
+export const COURT_29 = { carpetW: 200, carpetStep: 170, carpets: 3, daisW: 250, throneW: 200, throneToShrine: 340, edge: 20 } as const;
+type Finish29 = { platforms: Platform[]; exitTotemX: number; proto?: { decor?: W2Decor[]; court29?: boolean } };
+/**
+ * 2-9's own finish (listed.ts FINISH 'w2-29', after World 2's): the River King's Court before the shrine, decor only (nothing he stands
+ * on moves): the lily-pad carpet he walks along to the king's throne on its dais (Matt's rule: all the art is used; these three are World
+ * 2's court pieces, inventory w2.json `proto.decor key throne / dais / lilyCarpet`). Laid on the shrine's own ground: the solid run at the
+ * shrine's height ending at its bank, each piece whole on it (a carpet that would hang over the barge's river is not laid). Twice: no change.
+ */
+export function finish29<T extends Finish29>(st: T): T {
+  const proto = (st.proto ??= {});
+  if (proto.court29) return st;
+  proto.court29 = true;
+  const decor = (proto.decor ??= []);
+  const solids = st.platforms.filter((p) => p.type === 'solid');
+  const bank = solids.filter((p) => p.x <= st.exitTotemX && p.x + p.width >= st.exitTotemX).sort((a, b) => a.y - b.y)[0];
+  if (!bank) return st;
+  // (the shrine's ground: back from its bank while a solid at its height (2 px) meets the run's start)
+  let x0 = bank.x;
+  for (;;) {
+    const prev = solids.find((p) => Math.abs(p.x + p.width - x0) <= 2 && Math.abs(p.y - bank.y) <= 2);
+    if (!prev) break;
+    x0 = prev.x;
+  }
+  const C = COURT_29, G = bank.y;
+  const throneX = st.exitTotemX - C.throneToShrine;
+  if (throneX - C.daisW / 2 < x0 + C.edge) return st;
+  for (let i = 0; i < C.carpets; i++) {
+    const cx = throneX - C.carpetStep * (C.carpets - i);
+    if (cx - C.carpetW / 2 < x0 + C.edge) continue;
+    decor.push({ n: 'lilyCarpet', x: cx, b: G + 16, w: C.carpetW });
+  }
+  decor.push({ n: 'dais', x: throneX, b: G + 14, w: C.daisW });
+  decor.push({ n: 'throne', x: throneX, b: G - 30, w: C.throneW });
+  return st;
+}
