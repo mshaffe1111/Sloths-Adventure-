@@ -54,7 +54,12 @@ NEXT, IN ORDER:
    rule 1's run-on into the wall?). `trimSeams` reads only the LAST towerCatches call of a build: on normal 6 it names
    "the trim's 104-226 meets 226-446 at y -4008: another top (y -4007)" (box 7's 104-226@6227 under 226-446@6228: an another-top seam,
    named as built). Easy 6/9 and easy 5's last call named none, so their seams come from an EARLIER call (another column) or another path.
-   Next: accumulate trimSeams per call (wrap the pipeline's call in the scan) and print each call's `seams` record on easy 6.
+   DEBUG-PRINTED (a scratch copy of this tree's tower.ts with two console.error lines; proof-m/one.mts, 1-4 easy 6): **1-4's tower is
+   an UP tower, one towerCatches call** (`CALL up false 43 3`: flow up, 43 pieces laid, 3 seams recorded), all 3 seams the catch's kind and
+   merged (e.g. remnant 480-580 into 580-1100 at tower y -6854: as built, 41:480-1100, the s17 foot piece grown). The seams left at 480
+   and 60 (93:60-480, 96:0-60) are NOT fit's cuts (no record): pieces laid flush against the trimmed piece by another rule of the lay
+   (rule 1's run-on into the wall, or the no-slot flush). NEXT: on easy 6, print every put (x0, x1, y, which rule) at that y to name the
+   rule that lays 60-480 and 0-60; then the lead rules whether those join the merge (they are new vs base, so the trim's change made them).
    Then the brief's count: trims leaving a flush remnant of ANOTHER kind or top (trimSeams is reset per towerCatches call: accumulate it
    in the scan by wrapping towerCatches), every listed stage + draft 3-1 seeds 1-40 both settings; and how often `into` holds 2+ ids
    (the second stage piece is taken out of platforms and seams only: if it is a section's own PIECE, `pieces` still holds it: a red).

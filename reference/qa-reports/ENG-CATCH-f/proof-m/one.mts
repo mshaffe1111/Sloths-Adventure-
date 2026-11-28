@@ -1,0 +1,10 @@
+const ROOT = process.env.ROOT!;
+await import(ROOT + '/src/game/headlessDom.ts');
+const { generateAllLevels } = await import(ROOT + '/src/game/worldsData.ts');
+const { generateStage, setLayoutVariant } = await import(ROOT + '/src/game/stageGenerator.ts');
+const { easyStage } = await import(ROOT + '/src/game/easyMode.ts');
+const { withGoals } = await import(ROOT + '/src/game/goals.ts');
+const c = generateAllLevels().find((c: any) => c.id === '1-4');
+setLayoutVariant(6);
+const st: any = easyStage(withGoals(generateStage({ ...c, unlocked: true }, 'easy')));
+console.log((st.platforms as any[]).filter((p) => p.y === 3662).map((p) => `${p.id}:${p.x}-${p.x + p.width} h${p.height}`).join(' '));
