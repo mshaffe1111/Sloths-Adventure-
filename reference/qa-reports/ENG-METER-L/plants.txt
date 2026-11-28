@@ -1,0 +1,18 @@
+== plant 1 (the mirror line removed: lineCrossings dir -1 -> UnpricedPiece)
+ok 1 - the leave is lineFaults' own flown safeWindow, priced as a timed press he may wait for
+ok 2 - a crossing with a wide safe window prices low, a tight one high (wider mud; a second heron out of step)
+ok 3 - the stop: where he and the N little ones all stand inside the reeds (lineInCover), W - N x gap - 20 px; narrower reeds price higher
+ok 4 - a spook adds its fetch cost: 2 x distance / his run, at the meter's replay rate
+ok 5 - a stretch's first crossing: its whole first calm; free where the first look only warns (freeFirst, Easy); nobody following, nothing asked
+ok 6 - the follow toy end to end: the engine's own FollowPlay, line:follow a piece, both settings; without the follow row it is the old refusal
+not ok 7 - a left-running follow stage: priced as the mirror of the right-running one, crossing by crossing (a and b in his travel)
+  name: 'UnpricedPiece'
+ok 8 - the leftward leave is safeWindow's flight read the other way: one heron cycle later, each is the other (to the 0.1 s step)
+not ok 9 - a left-running stage's challenges: the right one's prices, each at the mirror of its place; the stop where his travel meets the clump
+  name: 'UnpricedPiece'
+# pass 7
+# fail 2
+== plant 2 (the mirror's own leave kept)
+not ok 7 - a left-running follow stage: priced as the mirror of the right-running one, crossing by crossing (a and b in his travel)
+# pass 8
+# fail 1

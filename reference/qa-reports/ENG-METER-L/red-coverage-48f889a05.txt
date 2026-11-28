@@ -1,0 +1,12 @@
+Fri Nov 27 19:54:42 EST 2026
+48f889a05
+meter coverage: 18 built stages (1-1 1-2 1-3 1-4 1-5 1-6 1-7 1-8 1-9 1-10 2-1 2-2 2-3 2-4 2-5 2-6 2-7 2-8), 31 pieces used, 5 known gaps
+  FAIL (c) 2-8 normal seed 1: unpriced piece line:follow (a left-running follow stage (safeWindow flies to the right)): the meter has no channel for it; price it in score.ts and give it its row in reference/design/meter-coverage.json (R-165.272)
+  FAIL (c) 2-8 normal seed 2: unpriced piece line:follow (a left-running follow stage (safeWindow flies to the right)): the meter has no channel for it; price it in score.ts and give it its row in reference/design/meter-coverage.json (R-165.272)
+  FAIL (c) 2-8 normal seed 3: unpriced piece line:follow (a left-running follow stage (safeWindow flies to the right)): the meter has no channel for it; price it in score.ts and give it its row in reference/design/meter-coverage.json (R-165.272)
+  FAIL (c) 2-8 easy seed 1: unpriced piece line:follow (a left-running follow stage (safeWindow flies to the right)): the meter has no channel for it; price it in score.ts and give it its row in reference/design/meter-coverage.json (R-165.272)
+  FAIL (c) 2-8 easy seed 2: unpriced piece line:follow (a left-running follow stage (safeWindow flies to the right)): the meter has no channel for it; price it in score.ts and give it its row in reference/design/meter-coverage.json (R-165.272)
+  FAIL (c) 2-8 easy seed 3: unpriced piece line:follow (a left-running follow stage (safeWindow flies to the right)): the meter has no channel for it; price it in score.ts and give it its row in reference/design/meter-coverage.json (R-165.272)
+coveragecheck: FAIL (6)
+EXIT 1
+Fri Nov 27 19:56:13 EST 2026

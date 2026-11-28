@@ -1,0 +1,35 @@
+08:00:03 PM
+2-8 normal score   NaN (NaN-NaN over 3 layouts)  4.38 min  points 14.1  mean 3.2/min  peak 9.3/min  {"single":41,"cage":4,"ride-board":3,"ride-off":3,"double":5} route check
+2-8 easy   score   NaN (NaN-NaN over 3 layouts)  4.46 min  points 15.1  mean 3.4/min  peak 15.7/min  {"single":45,"cage":4,"ride-board":2,"ride-off":2,"double":1} route check
+SCALE NaN (1 meter point = NaN raw points a minute)
+-- 2-8 normal seed 1: the 12 heaviest challenges
+   t   34s x  15139 double           bits 1.96 x stakes 1.00 (soft) x overlap 1.0 x new 1.50 = 1.45  gap 142 rise 0 land 360 share 0.36
+   t   51s x  18978 double           bits 1.96 x stakes 1.00 (soft) x overlap 1.0 x new 1.35 = 1.30  gap 142 rise 0 land 520 share 0.36
+   t   62s x  21240 double           bits 1.96 x stakes 1.00 (soft) x overlap 1.0 x new 1.29 = 1.24  gap 142 rise 0 land 520 share 0.36
+   t  116s x   8182 double           bits 1.96 x stakes 1.00 (soft) x overlap 1.0 x new 1.25 = 1.20  gap 142 rise 0 land 360 share 0.36
+   t  132s x   4635 double           bits 1.93 x stakes 1.00 (soft) x overlap 1.0 x new 1.22 = 1.14  gap 136 rise 0 land 440 share 0.34
+   t   21s x  12089 single           bits 1.88 x stakes 1.00 (retry) x overlap 1.0 x new 1.20 = 1.06  gap 0 rise 75 land 420 share 0.73
+   t   67s x  19978 single           bits 1.88 x stakes 1.00 (retry) x overlap 1.0 x new 1.11 = 0.98  gap 0 rise 75 land 520 share 0.73
+   t   74s x  18438 single           bits 1.88 x stakes 1.00 (retry) x overlap 1.0 x new 1.11 = 0.97  gap 0 rise 75 land 520 share 0.73
+   t   81s x  16898 single           bits 1.88 x stakes 1.00 (retry) x overlap 1.0 x new 1.10 = 0.97  gap 0 rise 75 land 520 share 0.73
+   t  107s x  10542 single           bits 1.88 x stakes 1.00 (retry) x overlap 1.0 x new 1.09 = 0.96  gap 0 rise 75 land 520 share 0.73
+   t  142s x   2359 single           bits 1.88 x stakes 1.00 (retry) x overlap 1.0 x new 1.08 = 0.95  gap 0 rise 75 land 620 share 0.73
+   t   89s x  14858 single           bits 1.63 x stakes 1.00 (soft) x overlap 1.0 x new 1.10 = 0.69  gap 165 rise 60 land 330 share 0.68
+-- 2-8 easy seed 1: the 12 heaviest challenges
+   t   26s x  13611 ride-board       bits 3.94 x stakes 1.00 (soft) x overlap 1.5 x new 1.35 = 5.97  board a pad: open 3.00s of 3.00s, still jump 3.94 bits
+   t   90s x  15105 double           bits 1.93 x stakes 1.00 (soft) x overlap 1.0 x new 1.50 = 1.40  gap 138 rise 60 land 330 share 0.34
+   t   21s x  12243 single           bits 1.88 x stakes 1.00 (retry) x overlap 1.0 x new 1.20 = 1.06  gap 0 rise 75 land 468 share 0.73
+   t   68s x  20369 single           bits 1.88 x stakes 1.00 (retry) x overlap 1.0 x new 1.11 = 0.97  gap 0 rise 75 land 568 share 0.73
+   t   75s x  18781 single           bits 1.88 x stakes 1.00 (retry) x overlap 1.0 x new 1.10 = 0.97  gap 0 rise 75 land 568 share 0.73
+   t   81s x  17193 single           bits 1.88 x stakes 1.00 (retry) x overlap 1.0 x new 1.10 = 0.96  gap 0 rise 75 land 568 share 0.73
+   t  107s x  10768 single           bits 1.88 x stakes 1.00 (retry) x overlap 1.0 x new 1.09 = 0.96  gap 0 rise 75 land 568 share 0.73
+   t  143s x   2455 single           bits 1.88 x stakes 1.00 (retry) x overlap 1.0 x new 1.07 = 0.95  gap 0 rise 75 land 668 share 0.73
+   t   34s x  15389 single           bits 1.39 x stakes 1.00 (soft) x overlap 1.0 x new 1.18 = 0.46  gap 113 rise 0 land 360 share 0.62
+   t   52s x  19369 single           bits 1.39 x stakes 1.00 (soft) x overlap 1.0 x new 1.13 = 0.44  gap 113 rise 0 land 520 share 0.62
+   t   62s x  21602 single           bits 1.39 x stakes 1.00 (soft) x overlap 1.0 x new 1.11 = 0.44  gap 113 rise 0 land 520 share 0.62
+   t  117s x   8360 single           bits 1.39 x stakes 1.00 (soft) x overlap 1.0 x new 1.09 = 0.43  gap 113 rise 0 land 360 share 0.62
+EXIT 0
+==band
+2-8 Normal 1.818 2.01 1.65 1.23 1.99 | Easy 2.615 2.64 2.68 2.59 2.53
+EXIT 0
+08:00:18 PM

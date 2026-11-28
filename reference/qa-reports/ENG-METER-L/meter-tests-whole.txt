@@ -1,0 +1,68 @@
+07:59:16 PM
+ok 1 - cageVine: a cage beside a climbing vine, in his airKick reach, hangs up it; one at his height, out of reach, or by a swing does not
+ok 2 - cageChallenges: a punch at his height, the climb plus a punch up a vine; a retry, never a heart; only beat:cages
+ok 3 - 2-3 end to end (seed 1, both settings): its five cages priced by the cage channel, the mooring post's one up its vine; beat:cages a piece
+ok 4 - the vocabulary is read from the code: a new ZoneKind with no table entry fails (a)
+ok 5 - beats.ts's families are its off() labels: addAs, a 'beat:' literal and a span's label; a zone span passes its own
+ok 6 - a symbol the table names must resolve: a renamed channel fails (e)
+ok 7 - a piece a built stage uses needs a bot AND a channel, or a known-list entry for the missing half (b)
+ok 8 - the known list only shrinks: a covered entry, or one no built stage uses, fails (d)
+ok 9 - the meter refuses a piece it has no channel for: unpriced throws, a known one keeps its old price; a refusal is a fault (c)
+ok 10 - on real stages: a stage with an unpriced piece is refused (4-2's wind), never a flat 2; 1-4's known crumbling branch keeps its 2 bits, marked
+ok 11 - a water wheel's bucket is the wheel's piece (move:wheel), not a moving floor; with no rideWheel bot the gate still FAILS (b)
+ok 12 - LET-GO ONTO A LOG: the route boards a liana river from the air and the meter prices the let-go by its share (gap280 41% > long 86%)
+ok 13 - A CATCH OFF A LOG: the catch toy (no bank reaches the liana) prices the jump off the riding log by its window; the route boards from the bank
+ok 14 - PLANTED: without its channel a stage laying a liana over a river is refused by the meter and failed by the coverage gate
+ok 15 - the leave is lineFaults' own flown safeWindow, priced as a timed press he may wait for
+ok 16 - a crossing with a wide safe window prices low, a tight one high (wider mud; a second heron out of step)
+ok 17 - the stop: where he and the N little ones all stand inside the reeds (lineInCover), W - N x gap - 20 px; narrower reeds price higher
+ok 18 - a spook adds its fetch cost: 2 x distance / his run, at the meter's replay rate
+ok 19 - a stretch's first crossing: its whole first calm; free where the first look only warns (freeFirst, Easy); nobody following, nothing asked
+ok 20 - the follow toy end to end: the engine's own FollowPlay, line:follow a piece, both settings; without the follow row it is the old refusal
+ok 21 - a left-running follow stage: priced as the mirror of the right-running one, crossing by crossing (a and b in his travel)
+ok 22 - the leftward leave is safeWindow's flight read the other way: one heron cycle later, each is the other (to the 0.1 s step)
+ok 23 - a left-running stage's challenges: the right one's prices, each at the mirror of its place; the stop where his travel meets the clump
+ok 24 - a hop onto a drifting log is a moving jump: its board window (feet on the log, once a log spacing), not nothing (planted: the old meter priced it 0)
+ok 25 - the step-off is a forced deadline: a single jump's reach over the log's speed, or half the ride, the shorter; Easy no harder
+ok 26 - a miss into the water costs what the water costs: a teaching river splashes him back (soft), a deep one is a life
+ok 27 - a ride on a stage beat (ride.ts): board while it stands at the near end, once in two periods, plus the still jump; Easy stretches it
+ok 28 - a moving floor on no clock the meter reads is refused, never priced as nothing
+ok 29 - on a real river stage (the hand-built 2-1): every hop onto or off a log is priced, and its river beat is no flat 2
+ok 30 - a weight pad is priced from its count: always up when he boards, off before it goes under (its hold, Easy x1.5); never refused
+ok 31 - a beat pad is priced from its row's breath: board while it is up or shivering, once a breath (RW), off before it goes under (FB)
+ok 32 - a pad whose clock the stage does not list is refused, never priced as nothing
+ok 33 - 2-2's spur (FIX-22): its rope shimmy is priced as the self-paced climb it is (METER-COVERAGE \#7), the stage scored, never refused
+ok 34 - one liana bank to bank is one swing, scored at its release, not two
+ok 35 - a chain of two lianas is two swings; a ledge-to-ledge swing the check linked is one
+ok 36 - a missed swing costs what the ground under it costs, as a jump does
+ok 37 - on the real World 1 stages: one swing a liana the route hangs on, and none charged a life on a soft-pit stage
+ok 38 - a release is a timed press in the window the engine flies for that perch: bits = windowBits(period, heldLandings window)
+ok 39 - a route link that leaps a chain's middle liana is flown liana by liana (chainOf), never through a false one
+ok 40 - the catch off a bank: a liana every running jump catches is the whole swing (free); one out of reach is none
+ok 41 - a vine snake is a creature in reach by its own warn (its tell), a threat at its liana's release, costing what the swing costs
+ok 42 - a chase is one challenge a stretch, the front's share of his run, and the front overlaps every move inside its stretch
+ok 43 - a rolling nut is a hop timed to its roll; a fruit is read in its tell; a teach only bumps; each height its own move
+ok 44 - a watched stretch: each pass the run to the worst spot's nearest cover plus the calm-in, of the warn; its eye over the stretch
+ok 45 - a creature beat finds its member on the member's own ground, not only within 200 px of where it perches (1-7's eagles)
+ok 46 - on the real World 1 stages: a hand-built chase is scored by its stretches, never as a two-bit hazard a beat
+ok 47 - a falling pod's window is its quiet less the time the route keeps him in its column; a crossing as long as the quiet is split
+ok 48 - the anchor is 1-1 on its fixed layouts (anchor11.ts): a relist of 1-1 that moves every position never moves the scale
+ok 49 - PREDATOR READ: the boa is read by its freeze window, flown on the real engine; a shorter rear narrows it; Easy never narrower
+ok 50 - PREDATOR READ on a real stage: on 1-9, every awake boa of its cast is a 'predator-read' at creatureBits(freezeWindow), none a plain creature
+ok 51 - the step toy: its pond is ONE snap run, priced on the engine's window (snapWindow), a heart, both settings; the piece is pad:snap
+ok 52 - the wave toy: its pond is ONE snap run, priced on the engine's window (snapWindow), a heart, both settings; the piece is pad:snap
+ok 53 - the in-step row reads harder than the wave of 3 on Normal (its window is shorter: 1.37 s vs 1.60 s, 2-5.md's flight 1.40 vs 1.63)
+ok 54 - planted: a run of snap stones on a clock the stage does not list is refused (UnpricedPiece pad:snap), never priced as nothing
+ok 55 - planted: the coverage table without the snap channel is a coveragecheck fault on a stage that lays snap stones
+ok 56 - 2-5.md's rows on the channel (its bars, snapClock): the teach and the wave of 5 where the design put them; Easy's beat never over Normal's
+ok 57 - THE ROUTE rides a wheel as ONE move, the jetty to the street: never a hop onto a bucket (PLANTED: the old route hopped on and off them)
+ok 58 - THE CHANNEL prices the board and the step-off from the flown table, the easiest way; an in-street asks no step-off; both settings
+ok 59 - PLANTED: a wheel whose row was never flown is refused by the channel, never priced from a guess
+ok 60 - PLANTED: without its channel a stage laying a wheel is refused by the meter and failed by the coverage gate
+# tests 60
+# pass 60
+# fail 0
+# cancelled 0
+# skipped 0
+EXIT 0
+07:59:44 PM
