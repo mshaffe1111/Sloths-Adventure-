@@ -1,0 +1,32 @@
+// BUILD-28 box 17: where to stand for 2-8's stills of record, read from the stage AS THE PAGE BUILDS IT (stageGenerator.generateStage with
+// the layout variant set, so the listed seed's proven plan + playFinish, exactly __play(id, layout)'s path). Prints, per setting: the seed
+// built, both fish traps (TRAP_28: x, y, the section they stand on), the book find (findId w2_book: x, y, hidden), and the jetty/parade boxes.
+// Light (a few stage builds); run it only when no gate is running (pre-mortem: nothing heavy beside a gate run).
+//   cp reference/qa-reports/BUILD-28/stillspots-s17.ts.txt <scratch>/stillspots.ts; (cd <frozen worktree> && npx tsx <scratch>/stillspots.ts <layout>)
+// Then (vite in the background: npx vite --port 5199 --strictPort):
+//   DIFF=normal node tools/engine/runs/stills-at-setting.mjs 5199 <out> 28-normal 2-8 <layout> <x:low> ...   (and DIFF=easy)
+// (ROOT = the tree to read, default the current directory: run it from the FROZEN worktree)
+const ROOT = process.env.ROOT ?? process.cwd();
+await import(`${ROOT}/src/game/headlessDom.ts`);
+const { generateAllLevels } = await import(`${ROOT}/src/game/worldsData.ts`);
+const { generateStage, setLayoutVariant } = await import(`${ROOT}/src/game/stageGenerator.ts`);
+const { TRAP_28 } = await import(`${ROOT}/src/game/gen2/worlds/w2Arc28.ts`);
+const { loadSeedList } = await import(`${ROOT}/src/game/gen2/seedList.ts`);
+
+const layout = +(process.argv[2] ?? 1);
+await loadSeedList('2-8');
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const cfg = generateAllLevels().find((c: any) => c.id === '2-8' && !c.secret)!;
+setLayoutVariant(layout);
+for (const d of ['normal', 'easy'] as const) {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const st = generateStage(cfg, d) as any;
+  const secs = (st.gen2?.sections ?? []) as Array<{ uid: string; template: string; x0: number; x1: number }>;
+  const on = (x: number) => secs.find((s) => s.x0 <= x && x <= s.x1)?.template ?? '?';
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const traps = (st.proto?.invDress ?? []).filter((r: any) => r.inv === TRAP_28).map((r: any) => ({ x: Math.round(r.x), y: Math.round(r.y), on: on(r.x) }));
+  const finds: unknown[] = [];
+  for (const [k, v] of Object.entries(st)) if (Array.isArray(v)) for (const o of v as Array<Record<string, unknown>>) if (o && typeof o === 'object' && (o.findId === 'w2_book' || o.id === 'w2_book')) finds.push({ in: k, x: Math.round(+(o.x as number)), y: Math.round(+(o.y as number)), hidden: o.hidden, on: on(+(o.x as number)) });
+  const boxes = secs.filter((s) => /jetty|parade/.test(s.template)).map((s) => `${s.template} ${Math.round(s.x0)}..${Math.round(s.x1)}`);
+  console.log(JSON.stringify({ setting: d, layout, seed: st.gen2?.seed, width: Math.round(st.width ?? st.stageWidth ?? 0), traps, finds, boxes }));
+}

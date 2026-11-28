@@ -1,6 +1,53 @@
-# BUILD-28 REPORT (W2-LANE: 2-8 "Before the Water Rises"; R-165.430 (2), READY-28, BUILD-28). Session 1 (W2-LANE a), started 9:44 AM ET (from date). Session 2 (W2-LANE b), started 10:07 AM ET (from date). Session 3 (W2-LANE c), started 10:30 AM ET (from date). Session 4 (W2-LANE d), started 10:52 AM ET (from date). Session 5 (W2-LANE e), started 11:19 AM ET (from the session hook date) Session 6 (W2-LANE f), started 11:41 AM ET (from the session hook date) Session 7 (W2-LANE g), started 12:05 PM ET (from the session hook date) Session 8 (W2-LANE h), started 12:49 PM ET (from the session hook date) Session 9 (W2-LANE i), started 1:15 PM ET (from the session hook date) Session 10 (W2-LANE j), started 1:05 PM ET (from the session hook date) Session 12 (W2-LANE l), started 2:20 PM ET (from the session hook date) Session 13 (BUILD-28-j, box 10), started 10:43 AM ET (from the session hook date) Session 14 (BUILD-28-k, box 11), started 11:08 AM ET (from the session hook date) Session 15 (BUILD-28-l, box 12), started 11:35 AM ET (from the session hook date) Session 16 (BUILD-28-m, box 13), started 12:14 PM ET (from the session hook date) BUILD-28-p (box 16), started 6:58 PM ET (from date)
+# BUILD-28 REPORT (W2-LANE: 2-8 "Before the Water Rises"; R-165.430 (2), READY-28, BUILD-28). Session 1 (W2-LANE a), started 9:44 AM ET (from date). Session 2 (W2-LANE b), started 10:07 AM ET (from date). Session 3 (W2-LANE c), started 10:30 AM ET (from date). Session 4 (W2-LANE d), started 10:52 AM ET (from date). Session 5 (W2-LANE e), started 11:19 AM ET (from the session hook date) Session 6 (W2-LANE f), started 11:41 AM ET (from the session hook date) Session 7 (W2-LANE g), started 12:05 PM ET (from the session hook date) Session 8 (W2-LANE h), started 12:49 PM ET (from the session hook date) Session 9 (W2-LANE i), started 1:15 PM ET (from the session hook date) Session 10 (W2-LANE j), started 1:05 PM ET (from the session hook date) Session 12 (W2-LANE l), started 2:20 PM ET (from the session hook date) Session 13 (BUILD-28-j, box 10), started 10:43 AM ET (from the session hook date) Session 14 (BUILD-28-k, box 11), started 11:08 AM ET (from the session hook date) Session 15 (BUILD-28-l, box 12), started 11:35 AM ET (from the session hook date) Session 16 (BUILD-28-m, box 13), started 12:14 PM ET (from the session hook date) BUILD-28-p (box 16), started 6:58 PM ET (from date) BUILD-28-q (box 17), started 7:26 PM ET (from date)
 
-## EXACT NEXT STEP (BUILD-28 box 16, BUILD-28-p, started 6:58 PM ET (from date); hand-over 7:22 PM ET (from date); FROZEN HEAD be5e9fc12 on t-build-28-wip)
+## EXACT NEXT STEP (BUILD-28 box 17, BUILD-28-q, started 7:26 PM ET (from date); hand-over 7:51 PM ET (from date); FROZEN HEAD be5e9fc12 on t-build-28-wip, unchanged)
+CLOCK (the 2-hour level clock's dry run): start 7:26:40 PM ET; stops: none mid-job (the gate run is work; the box stopped it at a gate
+   boundary for the hand-over: STOP touched 7:46:28 PM ET, suite1 finished and recorded, the run stopped before suite2 at 7:47:51 PM ET);
+   coverage alone on main 7:47:56-7:49:22 PM ET; hand-over 7:51 PM ET (box 17 of the job; boxes 14-17 of this phase: box 15 started 6:23:06 PM ET).
+DONE (log: reference/qa-reports/BUILD-28/gates-s17-box17.txt):
+0. `git ls-remote` at start: main 49fdc8cb6, t-eng-29 337ba7d0b (unmoved); t-build-28 does not exist yet. RE-FROZE be5e9fc12 in a detached
+   worktree (node_modules a symlink to the checkout's: package.json and package-lock.json equal be5e9fc12 vs bff52302e vs 49fdc8cb6).
+1. THE GATE RUN on frozen be5e9fc12 by gates-s17.sh.txt (gates-s16 word for word plus two hooks in g(): `touch $S/STOP` stops at the next
+   gate boundary; SKIP="names" skips gates already recorded). Nothing else heavy ran beside it. In order:
+   - PASS tsc (4s, empty log); PASS generality ('26 literals, 26 known').
+   - FAIL ciline rc=1 (456 s): '# tests 469, # pass 467, # fail 1, # todo 1'. The one red: tools/inspect/riverRide.test.ts:278 =
+     R-165.574, owned by INT-R6 (the head's exact words: 'upstream off, 1 more lives (at least 5): on child normal seed 8 ... stuck x 19577
+     an open drop ahead, water ahead'); NOT traced (the lead's ruling). The todo: chase bots (OPEN, todo, ENG-B4), as before.
+   - PASS tipwalk ('tipwalk: PASS'); PASS storytips ('0 laid tip line(s) dropped ... over 17 listed stage(s), 153 laid line(s) read');
+     PASS teachfirst ('0 miss(es) over 680 roll(s) of 17 listed stage(s)'); PASS registry ('17 stages ... 17 lists checked in CI').
+   - FAIL coverage rc=1 (89 s): 'coveragecheck: FAIL (6)', 18 built stages: (c) 2-8 normal seeds 1-3 and easy seeds 1-3, each 'unpriced
+     piece line:follow (a left-running follow stage (safeWindow flies to the right)): the meter has no channel for it; price it in score.ts
+     and give it its row in reference/design/meter-coverage.json (R-165.272)'. Where: tools/difficulty/score.ts:662 lineCrossings throws
+     UnpricedPiece when `fs.dir !== 1`; 2-8's finish (w2Arc28.ts finish28, proto.follow = W2_FOLLOW) is a parade that runs home LEFT.
+     RUN ALONE ON MAIN 49fdc8cb6: 'coveragecheck: PASS' (17 built stages, 2-8 not listed on main: listed.ts has no '2-8'). So THIS
+     BUILD'S RED, not inherited. NOT fixed: the fix is meter code (score.ts: price a left-running follow by mirroring the crossings), outside
+     a content lane on a frozen head. SENT TO THE LEAD for a ruling (who prices it, on which branch, and whether 2-8 lands before it).
+   - PASS suite1 (197 s): '# tests 763, # pass 763, # fail 0'.
+   - STOPPED before suite2 (the hand-over).
+2. Prepared, NOT yet run (nothing beside a gate run): reference/qa-reports/BUILD-28/stillspots-s17.ts.txt, the spot finder for the stills
+   (builds 2-8 as __play does: generateStage with the layout variant; prints the seed, both fish traps with their section, the w2_book
+   find, the jetty/parade boxes), to feed tools/engine/runs/stills-at-setting.mjs (DIFF=normal|easy, upright 412x915 and sideways 915x412 at 2x).
+NEXT, in order (ReadNotifications at every step boundary, at every push, and between waits on a long run):
+   (a) The lead's ruling on coverage's 2-8 line:follow red FIRST (no landing of a red gate without it).
+   (b) RE-FREEZE be5e9fc12 in a detached worktree (about 20 s to 1.5 min), node_modules a symlink as above.
+   (c) THE REST OF THE ONE GATE RUN: `SKIP="tsc generality ciline tipwalk storytips teachfirst registry coverage suite1" bash
+       reference/qa-reports/BUILD-28/gates-s17.sh.txt <worktree> <scratch>` (re-run coverage only if the lead's ruling changes the head;
+       then the whole run is on the new head). Left: suite2-6 (about 3.5 min each), seedlists (EVERY list), pingrep (riverRide :278 =
+       R-165.574 again: name it), tierbots, vitebuild, chunkcheck, artcheck, knowncheck, roadmapcheck, timecheck (also `--range
+       49fdc8cb6..HEAD`), drawcheck, clipcheck, kbdcheck, buildcheck, buildcheck28, paint0-2 (about 18 min). Never the lock.
+   (d) bots x40 on 2-8 (`npx tsx tools/inspect/castBots.ts --stage 2-8 --seeds 1-40`: both settings and every bot by default, --par 6);
+       the table in this REPORT.
+   (e) stills by stillspots-s17.ts.txt + stills-at-setting.mjs on the frozen tree: both fish-trap placements, the book's Hush Fern,
+       the w2_book hint on the real page (the locked find card), every new piece; Normal and Easy, upright and sideways; judged at 1x and 2x.
+   (f) LAND onto origin/t-build-28 (create from the head if absent; no force, never rebase); `git ls-remote` equal; message the lead.
+   (g) the debrief (level.md).
+LEARNED (proposed; the lead approves):
+   - A gate script a box may have to stop mid-run gets a boundary hook (STOP file) and a skip list, so a hand-over never kills a
+     running gate and the successor runs only the rest (gates-s17.sh.txt). Check: the run's file ends 'STOPPED before <gate>'.
+   - A new stage meets the METER the day it is listed, not at the last gate run: coverage was first run with 2-8 in box 17, the last
+     box of the job. Check: coveragecheck in the stage's first pre-freeze set (beside tsc and generality: 89 s).
+
+## BOX 16 (superseded by box 17 above; kept as history) (BUILD-28 box 16, BUILD-28-p, started 6:58 PM ET (from date); hand-over 7:22 PM ET (from date); FROZEN HEAD be5e9fc12 on t-build-28-wip)
 CLOCK (the 2-hour level clock's dry run): start 6:58:05 PM ET; stops: none mid-job (the rulings came back about 2 min after the
    question, and the box kept working while it waited: fix A was prepared and tested); the lock ran alone 7:11:10-7:22:08 PM ET (work, not a stop; the box waited for it rather than hand over with it running, LESSONS 83); hand-over 7:22 PM ET (from date) (box 16 of the job;
    boxes 14-16 of this phase: box 15 started 6:23:06 PM ET).
