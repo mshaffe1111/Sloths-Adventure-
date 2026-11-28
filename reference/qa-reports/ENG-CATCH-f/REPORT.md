@@ -26,8 +26,9 @@ DONE THIS BOX (on this branch's head, src diff vs 5a9af1813 = tower.ts, pipeline
 - FINDING FOR THE LEAD (proof-m/seams.mts, base-14.txt, cand-14.txt): shipped 1-4 already holds **1180** flush same-top same-kind pairs
   over its 32 builds (layouts 1-16 x both settings, on 7a580aefc: the banks 0-640|640-1196 moss_stone, section branch runs, the tower's
   no-slot flush catches), and the bots cross them. So the brief's literal test (no flush pair anywhere in the final lay) is red on the
-  base too and the trim's merge cannot green it; the test is scoped to THE TRIM'S OWN CUT. On 049a20abc 1-4 holds 1217: the trims ADD 40
-  seams (every one a 100 px remnant at its cut, e.g. 717-817|817-1157@8255, 930-1030|1030-1228@7422, 766-866|866-1118@5626) and drop 31.
+  base too and the trim's merge cannot green it; the test is scoped to THE TRIM'S OWN CUT. On 049a20abc 1-4 holds 1217: the trims ADD 38
+  seam positions (40 pairs by piece name; e.g. 717-817|817-1157@8255, 930-1030|1030-1228@7422, 766-866|866-1118@5626, not each one
+  checked as a remnant at its cut) and drop some (pieces the trims moved). See NEXT 2 for the fix's count.
 NEXT, IN ORDER:
 1. darkBots red, TRACED AS FAR AS (9:09 PM ET, proof-m/spot.mts `ROOT=<tree> npx --prefix <repo> tsx spot.mts`: draft 3-1 roll 1 Normal,
    the adult's first frame, wood in x 250-900, y 3550-3950, and runOffRims there): **roll 1 is a DIFFERENT STAGE after the merge**, not
@@ -39,7 +40,13 @@ NEXT, IN ORDER:
    call on roll 1, before/after misses and any refusal on both trees. Then class it: the draft's pinned fixture moved (the test is
    rebuilt as a hand-built toy like lipToy, a REPLACEMENT the lead rules on) or an engine red. Do not re-pin a roll. Run the test alone on
    7a580aefc and 049a20abc (both green per box 7).
-2. Re-run proof-m/seams.mts on this tree (`ROOT=<tree> V=1 STAGES=1-4 npx --prefix <repo> tsx seams.mts`): the 40 trim seams must be gone.
+2. RUN ONCE THIS BOX (proof-m/fix-14.txt; compare seam POSITIONS, setting + layout + x@y, not piece names, which the merge renames):
+   base 7a580aefc 1179 positions, 049a20abc 1217, this tree 1187. The trims ADDED 38 positions; **30 are GONE on this tree, 8 REMAIN**:
+   easy 5 35@8275;easy 6 480@3662;easy 6 60@3662;easy 9 120@3325;easy 9 500@3325;normal 6 1158@3662;normal 6 124@5345;normal 6 786@3662;
+   and the fix adds no position the trims did not (fix-only vs base = exactly those 8). NEXT: why each of the 8 stayed: named in
+   trimSeams (another kind or top), or cut by a path other than fit (the mend's trimKeep trims the tower's own pieces back, tower.ts
+   ~:689-708, and reLay moves them: a seam either makes is not in `seams`). The brief's job is the overlap trim (fit); if trimKeep makes
+   them, ask the lead before widening the merge to it.
    Then the brief's count: trims leaving a flush remnant of ANOTHER kind or top (trimSeams is reset per towerCatches call: accumulate it
    in the scan by wrapping towerCatches), every listed stage + draft 3-1 seeds 1-40 both settings; and how often `into` holds 2+ ids
    (the second stage piece is taken out of platforms and seams only: if it is a section's own PIECE, `pieces` still holds it: a red).
