@@ -19,6 +19,7 @@ const r = firstTimer(stage, Number(seedS), who, { onFrame(sim: any, b: any) {
   }
   plats = sim.platforms;
   const p = sim.p;
+  if (process.env.PATHF) ((globalThis as any).__path ??= []).push(`${b.t.toFixed(3)} ${p.x.toFixed(1)} ${p.y.toFixed(1)} ${p.grounded ? 1 : 0} ${sim.standingOn}`);
   if (p.grounded && sim.standingOn >= 0) lastOn = sim.standingOn;
   if (process.env.STOOD && p.grounded && sim.standingOn >= 0) {
     const q = sim.platforms.find((k: any) => k.id === sim.standingOn), Y = Number(process.env.STOOD);
@@ -39,3 +40,4 @@ for (const s of spots) {
   console.log(`  wood near x ${Math.round(s.x)}, y ${Math.round(s.y)}: ` + near.map((q) => `${Math.round(q.x)}-${Math.round(q.x + q.width)}@${Math.round(q.y)}`).join(' '));
 }
 if ((globalThis as any).__seen) for (const [k, v] of (globalThis as any).__seen) console.log(`  stood on ${k}: ${v.t0.toFixed(2)}-${v.t1.toFixed(2)} s, his x ${Math.round(v.x0)}-${Math.round(v.x1)}`);
+if (process.env.PATHF) (await import('node:fs')).writeFileSync(process.env.PATHF, (globalThis as any).__path.join('\n'));

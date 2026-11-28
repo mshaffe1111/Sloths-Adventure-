@@ -24,8 +24,15 @@ lead reads them). Candidate 049a20abc is frozen and every gate but the rows is g
      (110.30 s: the 766-866 part the candidate keeps) then 166-766 (110.57-110.97 s); the candidate the same, 766-866 (110.30-111.07 s)
      then 166-766 (111.10-111.47 s); neither ever stood on 104-284/104-226@6227. Both runs stood on 226-446@6228 from 79.10 s; base left
      it at 105.23 s, the candidate was back there and on 446-764 / 764-924@6228 at 133-152.63 s (fell back down), rescue 1 at 152.67 s.
-     So NOT an obvious class (i). Next: the first frame after 111.47 s the two runs part (diff x,y by time), and what is under him there
-     on each tree; then the class.   - Two runs per cause: castBots + the trace are two of each row; a different seed with the same cause is still to find.
+     THE RUNS PART at 110.533 s (PATHF=<file> writes t x y grounded standingOn per frame; proof-l/trace/path-n6-*.txt.gz), falling onto
+     y 5626 near x 773: base lands on id 34 at x 763.8 and walks on left (754.9, 745.4 ...); the candidate lands on id 99 (766-866@5626,
+     the piece the overlap trim made) at x 769.1 and STOPS DEAD at x 766.8, the flush seam where 766-866 meets 166-766 at the same height
+     (both branch, height 24 < WALL_H 50: no wall). The trim turned one piece (0-866) into two flush ones, and the middle bot stops at
+     the seam; a player walks across. PROVISIONAL (ii): the route is fair (continuous wood), the bot read the flush seam as an end.
+     Next: the frames 110.6-111.5 s (why he stops: which bot read: an edge stop, a lip, a dark/glow rim? `stuck` says "in a dip 321 px
+     deep" later at x 852), then confirm (ii) or find an engine cause (a flush seam the engine treats as an end is an engine red).
+     NOTE for the lead: if a flush seam the tower's trims make stops any bot, every trimmed overlap on every stage can do it: the fix is
+     at the root (the trim merges flush same-height pieces, or the bots read flush pieces as one floor), never a re-pin.   - Two runs per cause: castBots + the trace are two of each row; a different seed with the same cause is still to find.
    - Also say whether the 4 FAIL->PASS rows (child easy 5, child normal 10, expert normal 13, kid normal 16) share the cause family
      (trace each the same way).
    - Stills of each rescue spot, both trees, upright, looked at first (proof-j's shoot14.mjs, scratch-fixed in proof-l to wait for
