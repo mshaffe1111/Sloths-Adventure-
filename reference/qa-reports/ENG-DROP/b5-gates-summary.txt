@@ -1,0 +1,10 @@
+shard 3/6 start Fri Nov 27 20:24:11 EST 2026
+shard 3/6 exit 0 467s: # tests 635 # pass 635 # fail 0 # cancelled 0 # skipped 0 # todo 0 
+shard 4/6 start Fri Nov 27 20:31:58 EST 2026
+shard 4/6 exit 0 193s: # tests 733 # pass 733 # fail 0 # cancelled 0 # skipped 0 # todo 0 
+shard 5/6 start Fri Nov 27 20:35:11 EST 2026
+shard 5/6 exit 0 577s: # tests 652 # pass 650 # fail 0 # cancelled 0 # skipped 0 # todo 2 
+shard 6/6 start Fri Nov 27 20:44:48 EST 2026
+STOP set Fri Nov 27 20:50:00 EST 2026
+shard 6/6 exit 0 336s: # tests 654 # pass 653 # fail 0 # cancelled 0 # skipped 0 # todo 1 
+CHAIN DONE

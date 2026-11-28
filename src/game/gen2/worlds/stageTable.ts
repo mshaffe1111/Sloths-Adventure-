@@ -94,6 +94,10 @@ export const DRAFT_TABLE: Readonly<Record<string, DraftRow>> = {
   // (3-1 Into the Grotto: World 3's first stage, laid DOWN on World 3's kit (w3.ts, ENG-W3a 11-23; WORLD-3-PLAN F1). The live 3-1 is
   //  the old section maker until 3-1's build designs its arc on its own kit over 'w3' and lists it)
   '3-1': { kit: 'w3', travel: 'down' },
+  // (3-2: World 3's first stage laid ALONG on World 3's kit (ENG-DROP, R-165.562; KIT-W3a's PUSHBACK option 1): the row the drop toys
+  //  play on, a designed drop past the run's corridor (SectionTemplate.drop). The live 3-2 is the hand-built stage until 3-2's build
+  //  lists it)
+  '3-2': { kit: 'w3' },
 };
 
 /** a stage's draft row; undefined when it has none */

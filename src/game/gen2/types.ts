@@ -562,6 +562,12 @@ export interface SectionTemplate {
   exit: { piece: string; kind: PortKind };
   /** about how far the exit sits above (negative) or below the entry: what the corridor clamp steers by */
   exitDy: number;
+  /** a DESIGNED drop (ENG-DROP, R-165.562): the px its exit falls under its entry on purpose (3-5's 400 px walk-off onto moss). The run
+   *  lay lays it past the corridor's floor: its landing at its own depth, and the run's ground and corridor follow from there
+   *  (pipeline.ts layStage). Laid only on a run, never in a tower, and only where the landing is in view before the fall (the camera's
+   *  own look, cameraFollow.ts landingAhead, finds it from the lip; nothing lies across the fall); otherwise refused by name. A section
+   *  without it keeps the corridor as before */
+  drop?: number;
   sockets: Socket[];
   /**
    * Spelunky's sub-blocks (A5): a stretch of the section with several authored versions, one rolled per use (2 sub-blocks of 3

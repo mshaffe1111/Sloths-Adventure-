@@ -1,0 +1,4 @@
+3-2 normal (drop declared): clean 40/40, toy laid 0/40, laid+clean 0/40, laid in view (dropSeen) 0/0
+  32 x swapped: w#-noise-toy-moss swapped out: w#-noise-toy-moss: its designed drop of # px has wood across its fall (x #-# at y #): he lands on that, not the drop
+3-2 easy (drop declared): clean 40/40, toy laid 0/40, laid+clean 0/40, laid in view (dropSeen) 0/0
+  32 x swapped: w#-noise-toy-moss swapped out: w#-noise-toy-moss: its designed drop of # px has wood across its fall (x #-# at y #): he lands on that, not the drop

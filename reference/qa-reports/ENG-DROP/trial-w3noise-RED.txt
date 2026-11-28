@@ -1,0 +1,173 @@
+TAP version 13
+# Subtest: the row: 3-1's draft on World 3's own kit; the toy section laid by gen2 (stone in the cast, World 3's ocelot on its floor; moss quiet)
+not ok 1 - the row: 3-1's draft on World 3's own kit; the toy section laid by gen2 (stone in the cast, World 3's ocelot on its floor; moss quiet)
+  ---
+  duration_ms: 64775.16538
+  type: 'test'
+  location: '/tmp/claude-0/-home-user-Sloths-Adventure-/a5d73f5e-6150-53e1-b434-1b06a9ed6ada/scratchpad/trial/src/game/gen2/worlds/w3Noise.test.ts:199:1'
+  failureType: 'testCodeFailure'
+  error: "no roll of 3-1's draft lays the call toy"
+  code: 'ERR_TEST_FAILURE'
+  stack: |-
+    built (/tmp/claude-0/-home-user-Sloths-Adventure-/a5d73f5e-6150-53e1-b434-1b06a9ed6ada/scratchpad/trial/src/game/gen2/worlds/w3Noise.test.ts:159:9)
+    TestContext.<anonymous> (/tmp/claude-0/-home-user-Sloths-Adventure-/a5d73f5e-6150-53e1-b434-1b06a9ed6ada/scratchpad/trial/src/game/gen2/worlds/w3Noise.test.ts:203:16)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.start (node:internal/test_runner/test:944:17)
+    startSubtestAfterBootstrap (node:internal/test_runner/harness:296:17)
+  ...
+# Subtest: in play: a punch on the stone rings it; World 3's ocelot comes to look, under the stone; the punch makes ONLY the stone's sound
+not ok 2 - in play: a punch on the stone rings it; World 3's ocelot comes to look, under the stone; the punch makes ONLY the stone's sound
+  ---
+  duration_ms: 60321.709855
+  type: 'test'
+  location: '/tmp/claude-0/-home-user-Sloths-Adventure-/a5d73f5e-6150-53e1-b434-1b06a9ed6ada/scratchpad/trial/src/game/gen2/worlds/w3Noise.test.ts:238:1'
+  failureType: 'testCodeFailure'
+  error: "no roll of 3-1's draft lays the call toy"
+  code: 'ERR_TEST_FAILURE'
+  stack: |-
+    built (/tmp/claude-0/-home-user-Sloths-Adventure-/a5d73f5e-6150-53e1-b434-1b06a9ed6ada/scratchpad/trial/src/game/gen2/worlds/w3Noise.test.ts:159:9)
+    inPlay (/tmp/claude-0/-home-user-Sloths-Adventure-/a5d73f5e-6150-53e1-b434-1b06a9ed6ada/scratchpad/trial/src/game/gen2/worlds/w3Noise.test.ts:165:29)
+    ring (/tmp/claude-0/-home-user-Sloths-Adventure-/a5d73f5e-6150-53e1-b434-1b06a9ed6ada/scratchpad/trial/src/game/gen2/worlds/w3Noise.test.ts:216:10)
+    TestContext.<anonymous> (/tmp/claude-0/-home-user-Sloths-Adventure-/a5d73f5e-6150-53e1-b434-1b06a9ed6ada/scratchpad/trial/src/game/gen2/worlds/w3Noise.test.ts:239:13)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
+  ...
+# Subtest: planted: the stone's emitter off (a struck stone makes no noise) -> World 3's ocelot never comes
+not ok 3 - planted: the stone's emitter off (a struck stone makes no noise) -> World 3's ocelot never comes
+  ---
+  duration_ms: 59815.314726
+  type: 'test'
+  location: '/tmp/claude-0/-home-user-Sloths-Adventure-/a5d73f5e-6150-53e1-b434-1b06a9ed6ada/scratchpad/trial/src/game/gen2/worlds/w3Noise.test.ts:247:1'
+  failureType: 'testCodeFailure'
+  error: "no roll of 3-1's draft lays the call toy"
+  code: 'ERR_TEST_FAILURE'
+  stack: |-
+    built (/tmp/claude-0/-home-user-Sloths-Adventure-/a5d73f5e-6150-53e1-b434-1b06a9ed6ada/scratchpad/trial/src/game/gen2/worlds/w3Noise.test.ts:159:9)
+    inPlay (/tmp/claude-0/-home-user-Sloths-Adventure-/a5d73f5e-6150-53e1-b434-1b06a9ed6ada/scratchpad/trial/src/game/gen2/worlds/w3Noise.test.ts:165:29)
+    ring (/tmp/claude-0/-home-user-Sloths-Adventure-/a5d73f5e-6150-53e1-b434-1b06a9ed6ada/scratchpad/trial/src/game/gen2/worlds/w3Noise.test.ts:216:10)
+    TestContext.<anonymous> (/tmp/claude-0/-home-user-Sloths-Adventure-/a5d73f5e-6150-53e1-b434-1b06a9ed6ada/scratchpad/trial/src/game/gen2/worlds/w3Noise.test.ts:248:13)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: in play: his punch wakes World 3's ocelot asleep within 240 px; one 300 px off sleeps on
+not ok 4 - in play: his punch wakes World 3's ocelot asleep within 240 px; one 300 px off sleeps on
+  ---
+  duration_ms: 62162.171255
+  type: 'test'
+  location: '/tmp/claude-0/-home-user-Sloths-Adventure-/a5d73f5e-6150-53e1-b434-1b06a9ed6ada/scratchpad/trial/src/game/gen2/worlds/w3Noise.test.ts:271:1'
+  failureType: 'testCodeFailure'
+  error: "no roll of 3-1's draft lays the punch toy"
+  code: 'ERR_TEST_FAILURE'
+  stack: |-
+    built (/tmp/claude-0/-home-user-Sloths-Adventure-/a5d73f5e-6150-53e1-b434-1b06a9ed6ada/scratchpad/trial/src/game/gen2/worlds/w3Noise.test.ts:159:9)
+    inPlay (/tmp/claude-0/-home-user-Sloths-Adventure-/a5d73f5e-6150-53e1-b434-1b06a9ed6ada/scratchpad/trial/src/game/gen2/worlds/w3Noise.test.ts:165:29)
+    punchBy (/tmp/claude-0/-home-user-Sloths-Adventure-/a5d73f5e-6150-53e1-b434-1b06a9ed6ada/scratchpad/trial/src/game/gen2/worlds/w3Noise.test.ts:256:10)
+    TestContext.<anonymous> (/tmp/claude-0/-home-user-Sloths-Adventure-/a5d73f5e-6150-53e1-b434-1b06a9ed6ada/scratchpad/trial/src/game/gen2/worlds/w3Noise.test.ts:272:16)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: planted: his punch off the channel (the seam drops it) -> the sleeper 200 px off sleeps on
+not ok 5 - planted: his punch off the channel (the seam drops it) -> the sleeper 200 px off sleeps on
+  ---
+  duration_ms: 61885.67255
+  type: 'test'
+  location: '/tmp/claude-0/-home-user-Sloths-Adventure-/a5d73f5e-6150-53e1-b434-1b06a9ed6ada/scratchpad/trial/src/game/gen2/worlds/w3Noise.test.ts:281:1'
+  failureType: 'testCodeFailure'
+  error: "no roll of 3-1's draft lays the punch toy"
+  code: 'ERR_TEST_FAILURE'
+  stack: |-
+    built (/tmp/claude-0/-home-user-Sloths-Adventure-/a5d73f5e-6150-53e1-b434-1b06a9ed6ada/scratchpad/trial/src/game/gen2/worlds/w3Noise.test.ts:159:9)
+    inPlay (/tmp/claude-0/-home-user-Sloths-Adventure-/a5d73f5e-6150-53e1-b434-1b06a9ed6ada/scratchpad/trial/src/game/gen2/worlds/w3Noise.test.ts:165:29)
+    punchBy (/tmp/claude-0/-home-user-Sloths-Adventure-/a5d73f5e-6150-53e1-b434-1b06a9ed6ada/scratchpad/trial/src/game/gen2/worlds/w3Noise.test.ts:256:10)
+    TestContext.<anonymous> (/tmp/claude-0/-home-user-Sloths-Adventure-/a5d73f5e-6150-53e1-b434-1b06a9ed6ada/scratchpad/trial/src/game/gen2/worlds/w3Noise.test.ts:282:13)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: in play: a 400 px drop onto moss wakes nothing; onto stone it wakes World 3's sleeping ocelot 300 px off
+not ok 6 - in play: a 400 px drop onto moss wakes nothing; onto stone it wakes World 3's sleeping ocelot 300 px off
+  ---
+  duration_ms: 79770.675759
+  type: 'test'
+  location: '/tmp/claude-0/-home-user-Sloths-Adventure-/a5d73f5e-6150-53e1-b434-1b06a9ed6ada/scratchpad/trial/src/game/gen2/worlds/w3Noise.test.ts:319:1'
+  failureType: 'testCodeFailure'
+  error: "no roll of 3-1's draft lays the moss toy"
+  code: 'ERR_TEST_FAILURE'
+  stack: |-
+    built (/tmp/claude-0/-home-user-Sloths-Adventure-/a5d73f5e-6150-53e1-b434-1b06a9ed6ada/scratchpad/trial/src/game/gen2/worlds/w3Noise.test.ts:159:9)
+    inPlay (/tmp/claude-0/-home-user-Sloths-Adventure-/a5d73f5e-6150-53e1-b434-1b06a9ed6ada/scratchpad/trial/src/game/gen2/worlds/w3Noise.test.ts:165:29)
+    dropOnto (/tmp/claude-0/-home-user-Sloths-Adventure-/a5d73f5e-6150-53e1-b434-1b06a9ed6ada/scratchpad/trial/src/game/gen2/worlds/w3Noise.test.ts:292:10)
+    TestContext.<anonymous> (/tmp/claude-0/-home-user-Sloths-Adventure-/a5d73f5e-6150-53e1-b434-1b06a9ed6ada/scratchpad/trial/src/game/gen2/worlds/w3Noise.test.ts:320:16)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: planted: the ground's quiet ignored (the cast hears every landing as on stone) -> the sleeper by the moss wakes
+not ok 7 - planted: the ground's quiet ignored (the cast hears every landing as on stone) -> the sleeper by the moss wakes
+  ---
+  duration_ms: 77737.706903
+  type: 'test'
+  location: '/tmp/claude-0/-home-user-Sloths-Adventure-/a5d73f5e-6150-53e1-b434-1b06a9ed6ada/scratchpad/trial/src/game/gen2/worlds/w3Noise.test.ts:333:1'
+  failureType: 'testCodeFailure'
+  error: "no roll of 3-1's draft lays the moss toy"
+  code: 'ERR_TEST_FAILURE'
+  stack: |-
+    built (/tmp/claude-0/-home-user-Sloths-Adventure-/a5d73f5e-6150-53e1-b434-1b06a9ed6ada/scratchpad/trial/src/game/gen2/worlds/w3Noise.test.ts:159:9)
+    inPlay (/tmp/claude-0/-home-user-Sloths-Adventure-/a5d73f5e-6150-53e1-b434-1b06a9ed6ada/scratchpad/trial/src/game/gen2/worlds/w3Noise.test.ts:165:29)
+    dropOnto (/tmp/claude-0/-home-user-Sloths-Adventure-/a5d73f5e-6150-53e1-b434-1b06a9ed6ada/scratchpad/trial/src/game/gen2/worlds/w3Noise.test.ts:292:10)
+    TestContext.<anonymous> (/tmp/claude-0/-home-user-Sloths-Adventure-/a5d73f5e-6150-53e1-b434-1b06a9ed6ada/scratchpad/trial/src/game/gen2/worlds/w3Noise.test.ts:334:13)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: PLANTED: wood laid across the drops' fall column (between the top and the floor) -> the pick refuses the roll
+not ok 8 - PLANTED: wood laid across the drops' fall column (between the top and the floor) -> the pick refuses the roll
+  ---
+  duration_ms: 78115.486539
+  type: 'test'
+  location: '/tmp/claude-0/-home-user-Sloths-Adventure-/a5d73f5e-6150-53e1-b434-1b06a9ed6ada/scratchpad/trial/src/game/gen2/worlds/w3Noise.test.ts:343:1'
+  failureType: 'testCodeFailure'
+  error: "no roll of 3-1's draft lays the moss toy"
+  code: 'ERR_TEST_FAILURE'
+  stack: |-
+    built (/tmp/claude-0/-home-user-Sloths-Adventure-/a5d73f5e-6150-53e1-b434-1b06a9ed6ada/scratchpad/trial/src/game/gen2/worlds/w3Noise.test.ts:159:9)
+    TestContext.<anonymous> (/tmp/claude-0/-home-user-Sloths-Adventure-/a5d73f5e-6150-53e1-b434-1b06a9ed6ada/scratchpad/trial/src/game/gen2/worlds/w3Noise.test.ts:344:18)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+1..8
+# tests 8
+# suites 0
+# pass 0
+# fail 8
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 548977.301569
+EXIT 1

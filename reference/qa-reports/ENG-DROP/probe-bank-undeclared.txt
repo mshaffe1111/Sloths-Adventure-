@@ -1,0 +1,2 @@
+3-2 normal (drop UNDECLARED): clean 40/40, toy laid 0/40, laid+clean 0/40, laid in view (dropSeen) 0/0
+3-2 easy (drop UNDECLARED): clean 40/40, toy laid 0/40, laid+clean 0/40, laid in view (dropSeen) 0/0

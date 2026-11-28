@@ -14,7 +14,7 @@ import { readied, readyDraft } from '../../../../tools/engine/draft.ts';
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { generateAllLevels } from '../../worldsData.ts';
-import { buildGen2Stage, keptFoes } from '../pipeline.ts';
+import { buildGen2Stage, dropSeen, keptFoes } from '../pipeline.ts';
 import { LISTED } from '../listed.ts';
 import { packPlan, plantSeedList } from '../seedList.ts';
 import { soundEmitters, soundProps, soundSocket, type SoundRow } from '../soundLay.ts';
@@ -32,10 +32,19 @@ import { W3_CAST } from './w3.ts';
 import { draftRow } from './stageTable.ts';
 
 const DRAFT = '3-1';
+/** the drop toys' row (ENG-DROP, R-165.562): 3-2's DRAFT, World 3's kit laid ALONG (DRAFT_TABLE '3-2'). The toy declares its drop
+ *  (SectionTemplate.drop) and the run lay lays it past the corridor; 3-1's way down is a tower, where no drop past TOWER.see is laid */
+const ALONG = '3-2';
 if (readied !== DRAFT) readyDraft(DRAFT);
-const cfg: LevelConfig = { ...generateAllLevels().find((c) => c.id === DRAFT && !c.secret)!, unlocked: true };
-/** World 3's real kit for the row (listed.ts KITS 'w3', through the draft row) */
-const realKit = LISTED[DRAFT].kit;
+readyDraft(ALONG);
+const levels = generateAllLevels();
+const cfgOf = (id: string): LevelConfig => ({ ...levels.find((c) => c.id === id && !c.secret)!, unlocked: true });
+const cfg = cfgOf(DRAFT);
+const along = cfgOf(ALONG);
+/** the row a toy plays on: every toy on 3-2's run (the lead's ruling, ENG-DROP box 2, R-165.564: on the trial merge with KIT-W3a's
+ *  bricks no roll of 3-1's way down lays the call or the punch toy); 3-1's draft stays the tower the declared drop is refused in */
+const stageOf = (_row: Row) => ALONG;
+const configOf = (_row: Row) => along;
 /** a chime stone's box (the toy's: about Pokey's knee to his chest; ENG-LURE gives the chime its own look and size) */
 const SOUNDS: Record<string, SoundRow> = { chime: { w: 60, h: 70 } };
 /** World 3's own ocelot row (w3.ts W3_CAST) as the kit lays it; the sleeper is the same animal laid asleep */
@@ -54,9 +63,9 @@ const TOY_THREAT = 1;
 const DROP = 400;
 /** the drops' floor: the top (up to 240 px), its gap (up to 20) and this floor make one storey (1140 px) */
 const DROP_W = 800;
-/** where the drops' sleeper lies along the floor (t, from the top's side): about 300 px past where a walk-off from the top lands (he
- *  comes down about 140 px in) */
-const SLEEP_T = 0.55;
+/** where the drops' sleeper lies along the floor (t, from the top's side): about 300 px past where a walk-off from the top lands. Off
+ *  3-2's cliff he comes down about 185 px in (off 3-1's tower branch it was about 140: 0.55 put him 255 px off, ENG-DROP box 1) */
+const SLEEP_T = 0.6;
 const dropRow = (row: Row) => row === 'moss' || row === 'stone';
 /**
  * the ONE test-only section a toy adds to the row's pool: a long stone (or moss) floor, the stone and the animal on it. The drops build their
@@ -77,16 +86,19 @@ const sectionOf = (row: Row): SectionTemplate => {
   return {
     ...head,
     pieces: [
-      { key: 'top', shape: 'branch', w: [200, 240], place: { kind: 'start' }, main: true },
+      // (a cliff, a bank, never a perch: on a run a soft pit's floor before a perch is stretched under it to the next earth (R-165.246,
+      // joinPitFloors), which is the drop's own landing, and wood would lie across the fall: refused by name, dropSeen)
+      { key: 'top', shape: 'bank', w: [200, 240], place: { kind: 'start' }, main: true },
       { key: 'floor', shape: 'bank', w: [DROP_W, DROP_W], place: { kind: 'jump', after: 'top', dy: [DROP, DROP], gapPx: [8, 20] }, landing: true, main: true,
         ...(row === 'moss' ? { quiet: true } : {}) },
     ],
     sockets: [{ id: 'sleeper', role: 'enemy', on: 'floor', t: [SLEEP_T, SLEEP_T], maxThreat: TOY_THREAT, chance: 1 }],
-    entry: { piece: 'top', kind: 'ledge' }, exit: { piece: 'floor', kind: 'ground' }, exitDy: DROP,
+    entry: { piece: 'top', kind: 'ground' }, exit: { piece: 'floor', kind: 'ground' }, exitDy: DROP, drop: DROP,
   };
 };
 const kitOf = (row: Row): WorldKit => {
-  const k = realKit();
+  // (World 3's real kit for the row: listed.ts KITS 'w3', through the row's draft)
+  const k = LISTED[stageOf(row)].kit();
   const ocelot: CreatureDef = { ...W3_OCELOT, threat: TOY_THREAT, ...(row === 'call' ? {} : { extra: { ...W3_OCELOT.extra, asleep: true } }) };
   return {
     ...k,
@@ -132,7 +144,7 @@ function built(row: Row) {
   if (had) return had;
   const kit = kitOf(row);
   for (let seed = 1; seed <= 40; seed++) {
-    const st = buildGen2Stage({ config: cfg, kit, seed, difficulty: 'normal' });
+    const st = buildGen2Stage({ config: configOf(row), kit, seed, difficulty: 'normal' });
     if (st.gen2.errors?.length) continue;
     const e = st.enemies.find((q) => q.type === 'ocelot' && toyFloor(st.platforms, q, W3_OCELOT.footY ?? 0, row));
     const fl = e && toyFloor(st.platforms, e, W3_OCELOT.footY ?? 0, row);
@@ -145,7 +157,7 @@ function built(row: Row) {
       return builds.get(row)!;
     }
   }
-  throw new Error(`no roll of ${DRAFT}'s draft lays the ${row} toy`);
+  throw new Error(`no roll of ${stageOf(row)}'s draft lays the ${row} toy`);
 }
 
 interface Played { sim: RealPlay; e: Enemy; cast: CastPlay; heard: Array<Sound['from']>; floor: Platform; stone?: SoundPost }
@@ -155,13 +167,14 @@ function inPlay<T>(row: Row, f: (q: Played) => T, plant?: (c: CastPlay) => void)
   const dict: string[] = [];
   const packed = packPlan({ seed: st.gen2.seed, rerolls: st.gen2.rerolls, plan: st.gen2.plan, foes: [...keptFoes(st)] }, dict);
   setDifficulty('normal');
-  const was = LISTED[DRAFT];
-  LISTED[DRAFT] = { ...was, kit: () => kit };
-  const undo = plantSeedList(DRAFT, { dict, seeds: [seed], plans: [packed] });
+  const id = stageOf(row);
+  const was = LISTED[id];
+  LISTED[id] = { ...was, kit: () => kit };
+  const undo = plantSeedList(id, { dict, seeds: [seed], plans: [packed] });
   try {
     {
       // (a real stage: its own config, readied, handed to the real engine; no fixture)
-      const sim = new RealPlay(DRAFT, seed, cfg);
+      const sim = new RealPlay(id, seed, configOf(row));
       const eng = (sim as unknown as { e: { enemies: Enemy[]; platforms: Platform[]; cast: CastPlay } }).e;
       const e = eng.enemies.find((q) => q.type === 'ocelot' && q.kit && toyFloor(eng.platforms, q.kit, 0, row))!;
       assert.ok(e?.kit, 'the toy\'s ocelot is the creature kit\'s (in the cast)');
@@ -181,11 +194,11 @@ function inPlay<T>(row: Row, f: (q: Played) => T, plant?: (c: CastPlay) => void)
     }
   } finally {
     undo();
-    LISTED[DRAFT] = was;
+    LISTED[id] = was;
   }
 }
 
-test('the row: 3-1\'s draft on World 3\'s own kit; the toy section laid by gen2 (stone in the cast, World 3\'s ocelot on its floor; moss quiet)', () => {
+test('the rows: 3-1\'s draft (down) and 3-2\'s (along) on World 3\'s own kit; the toy section laid by gen2 (stone in the cast, World 3\'s ocelot on its floor; moss quiet)', () => {
   assert.equal(draftRow(DRAFT)?.kit, 'w3');
   assert.equal(cfg.travel, 'down', 'readied: the draft travels down');
   assert.equal(castDef('ocelot', 3)?.hears, OCELOT.hears, 'the registry hands World 3 its own ocelot, which hears');
@@ -327,4 +340,90 @@ test('planted: the ground\'s quiet ignored (the cast hears every landing as on s
   assert.ok(r.awake, 'moss ignored: the 400 px drop wakes it');
   assert.deepEqual(r.heard, ['landing']);
   t.diagnostic(`planted: moss ignored -> ${r.awake ? 'woke' : 'slept'} [${r.heard}] (sleeper ${r.by.toFixed(0)} px off)`);
+});
+
+/** the moss toy's kit with its declared drop taken off: an ordinary section, which the corridor refuses */
+const undeclared = (): WorldKit => {
+  const k = kitOf('moss');
+  return { ...k, manifest: { ...k.manifest, sections: k.manifest.sections.map((t) => (t.id === sectionOf('moss').id ? { ...t, drop: undefined } : t)) } };
+};
+/** how many rolls (seeds 1-40, Normal) of `config` on `kit` lay the moss toy, and how many of those are clean */
+const laysToy = (config: LevelConfig, kit: WorldKit) => {
+  let laid = 0, clean = 0;
+  for (let seed = 1; seed <= 40; seed++) {
+    const st = buildGen2Stage({ config, kit, seed, difficulty: 'normal' });
+    if (st.gen2.sections.some((q) => q.template === sectionOf('moss').id)) (laid++, st.gen2.errors?.length || clean++);
+  }
+  return { laid, clean };
+};
+
+test('ENG-DROP: the drop toy is laid on 3-2\'s run past the corridor, in view (the camera\'s own look finds its landing; nothing across its fall)', (t) => {
+  assert.equal(along.travel ?? 'right', 'right', '3-2\'s draft travels along');
+  assert.equal(draftRow(ALONG)?.kit, 'w3');
+  const { st, seed } = built('moss');
+  const e = st.enemies.find((q) => q.type === 'ocelot' && toyFloor(st.platforms, q, W3_OCELOT.footY ?? 0, 'moss'))!;
+  const floor = toyFloor(st.platforms, e, W3_OCELOT.footY ?? 0, 'moss')!;
+  const top = dropTop(st.platforms, floor)!;
+  assert.equal(dropSeen(top, floor, st.platforms), undefined, 'the laid drop is in view');
+  assert.ok(!st.gen2.tower, 'a run, not a tower');
+  t.diagnostic(`3-2 seed ${seed}: the moss toy's drop ${Math.round(floor.y - top.y)} px, laid clean`);
+});
+
+test('PLANTED: the corridor exemption removed (the toy\'s drop undeclared) -> no roll of 3-2 lays the drop toy', (t) => {
+  const r = laysToy(along, undeclared());
+  assert.equal(r.laid, 0, `undeclared, the 400 px drop leaves the corridor: never laid (${r.laid} of 40)`);
+  t.diagnostic(`undeclared: laid ${r.laid} of 40`);
+});
+
+test('ENG-DROP: a declared drop is never laid in a tower (3-1\'s way down): no roll lays it', (t) => {
+  const r = laysToy(cfg, kitOf('moss'));
+  assert.equal(r.laid, 0, `3-1's tower: the declared drop is laid ${r.laid} of 40`);
+  t.diagnostic(`tower: laid ${r.laid} of 40`);
+});
+
+test('ENG-DROP: a designed drop not in view is refused BY NAME: wood across its fall; a fall past the view (dropSeen)', () => {
+  const { st } = built('moss');
+  const e = st.enemies.find((q) => q.type === 'ocelot' && toyFloor(st.platforms, q, W3_OCELOT.footY ?? 0, 'moss'))!;
+  const floor = toyFloor(st.platforms, e, W3_OCELOT.footY ?? 0, 'moss')!;
+  const top = dropTop(st.platforms, floor)!;
+  const f = floor.x > top.x ? 1 : -1;
+  const lip = f > 0 ? top.x + top.width : top.x;
+  const wood = { ...floor, x: f > 0 ? lip + 20 : lip - 120, width: 100, y: top.y + 280, quiet: undefined } as Platform;
+  assert.match(dropSeen(top, floor, [...st.platforms, wood]) ?? '', /^has wood across its fall/, 'wood 280 px under the lip: named');
+  const deep = { ...floor, y: top.y + 700 } as Platform;
+  assert.match(dropSeen(top, deep, st.platforms.map((p) => (p === floor ? deep : p))) ?? '', /^falls 700 px, past what the view shows under him/, 'a 700 px fall: named');
+});
+
+/** the moss toy's FINISHED fall on every roll of 3-2 that lays it (seeds 1-40, both settings): its floor (the quiet DROP_W piece inside the
+ *  section's span) under its top (the piece 8-20 px before it); and every refusal of a fall not its declared depth, by name */
+const fallsOf = () => {
+  const off: string[] = [], named: string[] = [];
+  let laid = 0;
+  for (const difficulty of ['normal', 'easy'] as const) for (let seed = 1; seed <= 40; seed++) {
+    let st: ReturnType<typeof buildGen2Stage>;
+    try { st = buildGen2Stage({ config: along, kit: kitOf('moss'), seed, difficulty }); } catch { continue; }
+    for (const r of st.gen2.repairs ?? []) if (/not its declared/.test(r.note)) named.push(`${difficulty} ${seed}: ${r.note}`);
+    const q = st.gen2.sections.find((z) => z.template === sectionOf('moss').id);
+    if (!q) continue;
+    laid++;
+    const floor = st.platforms.find((p) => p.quiet && p.width >= DROP_W && p.x >= q.x0 - 1 && p.x + p.width <= q.x1 + 1);
+    const top = floor && st.platforms.find((p) => p !== floor && p.y < floor.y && ((g: number) => g >= 8 && g <= 20)(floor.x - (p.x + p.width)));
+    const fall = floor && top ? Math.round(floor.y - top.y) : NaN;
+    if (!(Math.abs(fall - DROP) <= 12)) off.push(`${difficulty} ${seed}: falls ${fall} px`);
+  }
+  return { laid, off, named };
+};
+
+test('PLANTED (ENG-DROP, the lead\'s A): a designed drop whose finished fall is not its declared depth is refused BY NAME (3-2: no laid toy falls past 400 +- 12)', (t) => {
+  const r = fallsOf();
+  t.diagnostic(`3-2 x both: laid ${r.laid} of 80; off its declared depth: [${r.off.join('; ')}]; refused by name: ${r.named.length} [${r.named.slice(0, 3).join(' | ')}]`);
+  assert.deepEqual(r.off, [], 'every laid toy falls its declared 400 px (+- 12)');
+  assert.ok(r.named.length > 0, 'the rolls that fell deeper are refused by name ("falls N px, not its declared 400")');
+  assert.ok(r.laid > 0, 'the toy is still laid');
+  const { st } = built('moss');
+  const e = st.enemies.find((q) => q.type === 'ocelot' && toyFloor(st.platforms, q, W3_OCELOT.footY ?? 0, 'moss'))!;
+  const floor = toyFloor(st.platforms, e, W3_OCELOT.footY ?? 0, 'moss')!;
+  const top = dropTop(st.platforms, floor)!;
+  const deeper = { ...floor, y: top.y + DROP + 131 } as Platform;
+  assert.match(dropSeen(top, deeper, st.platforms.map((p) => (p === floor ? deeper : p)), DROP) ?? '', /^falls 531 px, not its declared 400/, 'a 531 px fall of a declared 400: named');
 });
