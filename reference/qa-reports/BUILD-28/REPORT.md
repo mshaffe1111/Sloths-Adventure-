@@ -1,6 +1,69 @@
 # BUILD-28 REPORT (W2-LANE: 2-8 "Before the Water Rises"; R-165.430 (2), READY-28, BUILD-28). Session 1 (W2-LANE a), started 9:44 AM ET (from date). Session 2 (W2-LANE b), started 10:07 AM ET (from date). Session 3 (W2-LANE c), started 10:30 AM ET (from date). Session 4 (W2-LANE d), started 10:52 AM ET (from date). Session 5 (W2-LANE e), started 11:19 AM ET (from the session hook date) Session 6 (W2-LANE f), started 11:41 AM ET (from the session hook date) Session 7 (W2-LANE g), started 12:05 PM ET (from the session hook date) Session 8 (W2-LANE h), started 12:49 PM ET (from the session hook date) Session 9 (W2-LANE i), started 1:15 PM ET (from the session hook date) Session 10 (W2-LANE j), started 1:05 PM ET (from the session hook date) Session 12 (W2-LANE l), started 2:20 PM ET (from the session hook date) Session 13 (BUILD-28-j, box 10), started 10:43 AM ET (from the session hook date) Session 14 (BUILD-28-k, box 11), started 11:08 AM ET (from the session hook date) Session 15 (BUILD-28-l, box 12), started 11:35 AM ET (from the session hook date) Session 16 (BUILD-28-m, box 13), started 12:14 PM ET (from the session hook date) BUILD-28-p (box 16), started 6:58 PM ET (from date) BUILD-28-q (box 17), started 7:26 PM ET (from date)
 
-## EXACT NEXT STEP (BUILD-28 box 18, BUILD-28-r, started 8:19 PM ET (from date); hand-over 8:53 PM ET (from date); FROZEN CODE HEAD be2ebe7d2 = be5e9fc12 + ENG-METER-L's tools-only meter fix; src unchanged)
+## EXACT NEXT STEP (BUILD-28 box 19, BUILD-28-s, started 8:55 PM ET (from date); hand-over written 9:09 PM ET (from date); FROZEN CODE HEAD be2ebe7d2, unchanged; NOTHING in src or tools changed)
+STATE: HELD ON THE LEAD'S RULING. The bots (run FIRST, as the brief ordered) found a red on 2-8; the lead ruled A (trace, read-only, then
+   the lead rules). The gate run (suite5 on) and the stills of record were NOT started: a ruling that changes src or the bot voids them.
+CLOCK (the 2-hour level clock's dry run; every time below is a pasted date stamp, or a span between two): start 8:55:40 PM ET; bots
+   8:57:08-8:59:53 PM ET; the red to the lead after 8:59:53 and before the 9:03:19 PM ET stamp; ruling A read and the trace run between
+   the 9:03:19 and 9:05:44 PM ET stamps (the pit runs finished before the 9:06:20 stamp); stills between 9:06:53 and 9:09:12 PM ET; hand-over 9:09 PM ET. Stops: none (the hold is work: the trace).
+DONE (all in reference/qa-reports/BUILD-28/bots-s19/):
+0. git ls-remote at start: t-build-28-wip d0cfc358f; `git diff --stat be2ebe7d2 d0cfc358f -- src tools` empty. FROZE be2ebe7d2 in a
+   detached worktree (node_modules a symlink; package-lock.json equal byte for byte). npm ci and the unshallow as tracked background tasks.
+1. BOTS x40, alone, on frozen be2ebe7d2: `npx tsx tools/inspect/castBots.ts --stage 2-8 --seeds 1-40 --par 6 --rows ...` (every bot,
+   both settings; 360 rows; 2 m 45 s). Full output: castBots-2-8-x40-be2ebe7d2.txt; rows: castBots-2-8-x40-rows.jsonl.gz.
+   | bot    | Normal PASS | Normal lives (cause)        | Easy PASS | Easy lives (cause) | time median N / E |
+   |--------|-------------|-----------------------------|-----------|--------------------|-------------------|
+   | kid    | 4/40        | 11 (pit 8, water 3)         | 10/40     | 1 (water 1)        | 162.8 / 161.6 s   |
+   | adult  | 4/40        | 6 (pit 6)                   | 13/40     | 1 (water 1)        | 156.8 / 156.3 s   |
+   | child  | 3/40        | 101 (pit 92, water 9)       | 7/40      | 18 (water 18)      | 553.3 / 332.6 s   |
+   | middle | 6/40        | 32 (pit 23, water 9)        | 9/40      | 12 (water 12)      | 235.6 / 217.1 s   |
+   | expert | 7/40        | 19 (pit 15, water 4)        | (Normal only) |                | 210 / -           |
+   THE LEAD'S QUESTION ANSWERED: Easy IS gentler for the child and the middle bot by every number (child: clears 7 vs 3, lives 18 vs
+   101, rescues 15 vs 21; middle: 9 vs 6, lives 12 vs 32). No Easy-over-Normal red; the meter's Easy 2.615 > Normal 1.818 is not what the
+   bots feel (ENG-METER-L's pad board, ride-board 5.97, is not where any bot loses a life).
+   THE RED (a different one): every bot fails most seeds. Main end: the sealed sanctuary (home, x 226-260) short of the goal; child Normal
+   32/40 'sealed door', 24 of them 1 of 4. For scale, 2-7 (INT-R5 castbots27-counts.txt): child Normal 83/100, Easy 100/100.
+   First castBots run 2-8 ever had (the lead checked all 19 boxes).
+2. THE TRACE (the lead's ruling A; read-only; scripts pits28/spawn28/run28 .mts.txt; traces trace-*.jsonl):
+   (1) THE TOOL, a bot gap in two places (no toy built: the real stage shows it; a toy needs a stage row):
+       - tools/inspect/firsttimer.ts:1968 `findRoute(st, [], ...)`: the bot's route is the inspector's way from the spawn to the exit
+         totem; goal items are never waypoints (pins only for river spurs, :1994-2000). 2-8 is out-and-back: spawn on the jetty x ~6450-6990,
+         the 4 cages RIGHT of it (first-cage ~8840-9370, pads ~13740-14170, island ~15890-16460, steps ~18850-19430), home LEFT (parade
+         1439-4499, home 560-1439, exit totem x 260), the road home open from the first frame. kid Normal seed 30 walked straight home: sealed
+         door x 226 at t 47 s, 0 of 4; expert Normal seed 2 the same at 55 s.
+       - firsttimer.ts:5807: at a sealed door the bot turns back only when e.cast is set (2-8: cast null on all 360 rows), and that hunt
+         takes e.enemies (:5808), never cages (collectibles of type 'cage'; the cage aim :2936-2943 fires only on a shut cage near his way).
+   (2) CAGES vs ROUTE: 2-8 LAYS 4 cages on every seed 1-40 (Normal) and Normal needs 4: no slack. w2Arc28.ts:98 CAGES_28 says Normal 7,
+       Easy 5: 3 are not laid, or the constant is stale. Child Normal 1-5: seed 2 4/4 (712 s), seeds 1,3,4,5 sealed door 1 of 4. Expert
+       Normal 1-5: seed 3 4/4; 1 and 5 got 1; 4 got 2; 2 got 0. Nearest approach per cage: NOT measured (needs a per-frame trace).
+   (3) THE PITS: child Normal 101 lives over 40 seeds (reproduces castBots exactly): 92 in the PARADE home (the left-running stretch), on
+       29 of 40 seeds; by x: 2800-2899 67, 2500-2599 14, 2700-2799 11, all at y ~2080-2104 (the pit floor). Worst seeds 28 (10), 21 (6),
+       13 (6). Then 8 water at rise|reed-bank x ~11100 (seed 2); 1 water at rise x 11626. Expert Normal 1-5: 1 life, parade x 2819.
+   STILLS (stills/, upright; DIFF=normal stills-at-setting.mjs on the frozen tree): LABELLED BY WHAT THE PAGE BUILT (D62), which is NOT
+       the bot's seed: layout 28 built seed 29; layout 2 built seed 3 (layout n builds the list's seed, not raw seed n); layout 21's
+       sideways re-rolled to seed 38036 (rerolls 2). Judged at phone size, the parade pit (layout 28, x 2850): a gap between two grassy
+       banks whose bottom shows as a dirt floor a short way down. It reads as a trench he could stand in, not as a drop that kills
+       (the content bar: "a drop that kills must look like it kills before the player ever falls"). The other two are shot, not judged.
+NEXT, in order (ReadNotifications at every step boundary; waits as background untils capped at 2 minutes):
+   (a) READ THE LEAD'S RULING on the trace (three messages: the red, the diagnosis, the three answers; the last before the 9:06:53 PM ET stamp). The likely forks: a bot fix (an engine member: level.md rule
+       22, builders do not touch tools/inspect), a lay fix (cage count/slack, the open road home, the parade pit's look), or both. Any src
+       or bot change VOIDS everything recorded on be2ebe7d2 that it can touch, and the gate run restarts on the new frozen head.
+   (b) If the lead says go on as is: the gate run by gates-s17.sh.txt with box 18's SKIP list (suite5, suite6, seedlists, pingrep,
+       tierbots, vitebuild, chunkcheck, artcheck, drawcheck, clipcheck, kbdcheck, buildcheck, buildcheck28, paint0-2; never the lock); then
+       the stills of record (box 18's NEXT d); then land onto origin/t-build-28 and the debrief.
+   (c) Stills: shoot by the BUILT seed. To shoot the bot's seed, find the layout whose built seed is that seed first (the page prints
+       BUILT {seed}); never label a still by the layout number.
+LEARNED (proposed; the lead approves):
+   - Bots first caught a red that 18 boxes of gates never could: no gate runs the cast bots on a new stage. Proposed check: a new stage's
+     castBots x40 is the FIRST gate of its first gate run, and its table is in the REPORT before any other gate is recorded.
+   - The bot routes to the exit, not through the goal: on an out-and-back stage its 'natural run' is a walk home. Any stage whose exit is
+     behind the spawn needs the bot's goal route (or its turn-back hunt) before its numbers mean anything (D15: test the tool).
+   - A still's layout number is not the bot's seed (layout 28 built seed 29). Shoot by built seed.
+   - MISSES (owned): my first STOP timer had no sleep and fired at once (the real one, set a minute later, ran to the line); one wait was a
+     2-minute FOREGROUND until, not background; the trace's 5 runners were started with a shell '&' (untracked; all 5 finished, checked
+     with ps, before hand-over).
+
+## BOX 18 (superseded by box 19 above; kept as history) (BUILD-28 box 18, BUILD-28-r, started 8:19 PM ET (from date); hand-over 8:53 PM ET (from date); FROZEN CODE HEAD be2ebe7d2 = be5e9fc12 + ENG-METER-L's tools-only meter fix; src unchanged)
 CLOCK (the 2-hour level clock's dry run): start 8:19:44 PM ET; stops: none mid-job (the gate run is work; the box stopped it at a gate
    boundary for the hand-over: STOP touched at the line 8:47:44 PM ET by a timer; suite4, started inside the box, finished and recorded 8:52:25 PM ET; the run stopped before suite5); hand-over 8:53 PM ET (box 18 of the job).
 DONE (log: reference/qa-reports/BUILD-28/gates-s18-box18.txt):

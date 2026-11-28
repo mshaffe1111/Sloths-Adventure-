@@ -1,0 +1,13 @@
+const ROOT = process.cwd();
+await import(`${ROOT}/src/game/headlessDom.ts`);
+const { generateAllLevels } = await import(`${ROOT}/src/game/worldsData.ts`);
+const { generateStage, setLayoutVariant } = await import(`${ROOT}/src/game/stageGenerator.ts`);
+const { loadSeedList } = await import(`${ROOT}/src/game/gen2/seedList.ts`);
+await loadSeedList('2-8');
+const cfg: any = generateAllLevels().find((c: any) => c.id === '2-8' && !c.secret)!;
+console.log('objective', cfg.objectiveType, 'targetCount', JSON.stringify(cfg.targetCount));
+for (const layout of [1, 30]) { setLayoutVariant(layout); for (const d of ['normal', 'easy'] as const) { const st: any = generateStage(cfg, d);
+  const secs = (st.gen2?.sections ?? []).map((s: any) => `${s.template.replace('w2-28-', '')}:${Math.round(s.x0)}-${Math.round(s.x1)}`);
+  const under = (x: number, y: number) => st.platforms.filter((p: any) => p.x <= x && x <= p.x + p.width && p.y >= y - 10).sort((a: any, b: any) => a.y - b.y)[0];
+  const cages = st.collectibles.filter((c: any) => c.type === 'cage').map((c: any) => { const u = under(c.x, c.y); return `@${Math.round(c.x)},${Math.round(c.y)} under:${u ? `${u.type ?? u.style ?? ''}y${Math.round(u.y)}` : 'none'}`; });
+  console.log(`L${layout} ${d}: spawn ${Math.round(st.spawnX)},${Math.round(st.spawnY)} exit ${Math.round(st.exitTotemX)},${Math.round(st.exitTotemY)} cages ${cages.join(' ')}\n   sections ${secs.join(' ')}`); } }

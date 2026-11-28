@@ -1,0 +1,20 @@
+// BUILD-28 box 19 trace (read-only): every life lost by a bot on 2-8, with its section, per seed; and cages laid vs need.
+const ROOT = process.cwd();
+await import(`${ROOT}/src/game/headlessDom.ts`);
+const { firstTimer } = await import(`${ROOT}/tools/inspect/firsttimer.ts`);
+const { CAST_BOTS } = await import(`${ROOT}/tools/inspect/castBots.ts`);
+const { generateAllLevels } = await import(`${ROOT}/src/game/worldsData.ts`);
+const { generateStage, setLayoutVariant } = await import(`${ROOT}/src/game/stageGenerator.ts`);
+const { loadSeedList } = await import(`${ROOT}/src/game/gen2/seedList.ts`);
+await loadSeedList('2-8');
+const cfg: any = generateAllLevels().find((c: any) => c.id === '2-8' && !c.secret)!;
+const [bot, setting, from, to] = process.argv.slice(2);
+for (let seed = +from; seed <= +to; seed++) {
+  setLayoutVariant(seed); const st: any = generateStage(cfg, setting as any);
+  const secs = (st.gen2?.sections ?? []) as Array<{ template: string; x0: number; x1: number }>;
+  const on = (x: number) => secs.filter((s) => s.x0 <= x && x <= s.x1).map((s) => s.template.replace('w2-28-', '')).join('|') || '?';
+  const cages = st.collectibles.filter((c: any) => c.type === 'cage').map((c: any) => `${Math.round(c.x)},${Math.round(c.y)}[${on(c.x)}]`);
+  const r: any = firstTimer('2-8', seed, CAST_BOTS[bot][setting], { cap: 1200, dotSetting: true });
+  const lives = (r.harms ?? []).filter((h: any) => h.kind === 'life').map((h: any) => ({ x: Math.round(h.x), y: Math.round(h.y ?? 0), by: h.by ?? h.what ?? h.cause ?? '', sec: on(h.x) }));
+  console.log(JSON.stringify({ bot, setting, seed, end: r.end, t: r.time, goal: r.goal, spawn: Math.round(st.spawnX), cages, lives }));
+}
