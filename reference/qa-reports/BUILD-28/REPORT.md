@@ -55,8 +55,8 @@ THE LEAD'S RULING (read after the 9:10:56 PM ET push): the TOOL GAP goes first, 
        on Easy. Where need 4 comes from: not traced in this box; the level config's targetCount reads 3 (spawn28.mts printed it) while the engine's
        progress callback reports need 4 on Normal and 3 on Easy on every row (firsttimer.ts:1908, onProgressUpdate).
    (b) THE CHILD'S PIT DEATHS on Normal, top three by section: parade 92 (x 2500-2899), rise|reed-bank 8 water (x ~11100, seed 2),
-       rise 1 water (x 11626). Stills (upright): parade at x 2850 (layout 28, BUILT seed 29) and x 2550 (layout 21), reed-bank x 11130
-       (layout 2, BUILT seed 3), in bots-s19/stills/. Only the first is judged (above). Not shot: rise x 11626.
+       rise 1 water (x 11626; shot later, see (d)). Stills (upright): parade at x 2850 (layout 28, BUILT seed 29) and x 2550 (layout 21), reed-bank x 11130
+       (layout 2, BUILT seed 3), in bots-s19/stills/. Only the first is judged (above).
    (c) THE PARADE GAP (the lead's second question): it is a MARSH, not a pit. On layouts 1, 13, 21, 28 the parade row is river x
        2354-3154 (dir -1, way -1, marsh floor y 1639, lip 1564, flood 'rise', safe: backX 3224 backY 1564): four 200-px log floors with
        TWO 100-px dips between them (2554-2654, 2854-2954), rise 0 either way. A 100-px dip with no rise is well inside the child's
@@ -71,6 +71,14 @@ THE LEAD'S RULING (read after the 9:10:56 PM ET push): the TOOL GAP goes first, 
        on an open grassy bank running right; at the bank's left end the ground stops at a tall earth column over rocks and water. ROUGH
        SPOT seen: a hard vertical seam in the backdrop at that column (the far waterfall scene cut off by a different rock layer), and a
        dark blank band under it, bottom left. Needs a real spawn shot (the page's own start, no placement) at the built seed's spawn.
+       ADDED at 9:14 PM ET (stamp): spawn-real-2-8-L1-normal-x6449-{upright,sideways}.jpg, layout 1 = BUILT seed 2 at ITS spawn x 6449
+       (still placed by the tool: no opening line). Judged sideways at phone size: Pokey on a small grassy jetty facing right, a kingfisher
+       on a post beside him; RIGHT, a gap of open water, then a reedy bank; LEFT, one hop away, a roped wooden plank floating on the water.
+       The left way reads at least as inviting as the right (a standable plank right there), and nothing on screen says "the little
+       ones are to the right". So a first-timer may well go left, toward home, first. The stills tool's own Dot line (the flood line) sits
+       over the water in both shots: a placement artifact, not what the player sees at spawn.
+       Also: rise-2-8-L5-normal-x11626-{upright,sideways}.jpg, layout 5 = BUILT seed 6, the child's seed for the rise water life (x 11626).
+       (The page's layout n built list seed n+1 on layouts 1, 2, 5, 28; the headless setLayoutVariant(n) and the bot's seed n built seed n.)
    DOT AT THE SEALED DOOR (w2Arc28.ts:75-78, LINES_28): missingCage "A little one's still caged! Back we go!" (said when the exit is
        locked and a cage is still shut); missingBank "One's waiting by the low road! Back we go!" (no cage shut, a little one waits at the
        low road's near bank). The goal line (GOAL_LINES_28, :85): "Bring {n} little ones home to open the sanctuary".
