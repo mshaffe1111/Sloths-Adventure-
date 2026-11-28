@@ -1,0 +1,4 @@
+3-2 normal (drop declared): clean 40/40, toy laid 28/40, laid+clean 28/40, laid in view (dropSeen) 28/28
+  5 x swapped: w#-noise-toy-moss swapped out: w#-noise-toy-moss: its designed drop of # px falls # px, not its declared #
+3-2 easy (drop declared): clean 40/40, toy laid 28/40, laid+clean 28/40, laid in view (dropSeen) 28/28
+  5 x swapped: w#-noise-toy-moss swapped out: w#-noise-toy-moss: its designed drop of # px falls # px, not its declared #

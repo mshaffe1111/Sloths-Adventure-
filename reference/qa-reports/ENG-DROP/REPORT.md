@@ -1,6 +1,6 @@
 # ENG-DROP (R-165.562): the run lay lays a DESIGNED drop past its corridor, on a real World 3 row
 
-**Box 2 hand-over, stamped Fri Nov 27 7:08 PM ET (`TZ=America/New_York date`). Branch t-eng-drop: box 2's commits on 456a84e5f on 7a580aefc. WIP, NOT
+**Box 2 hand-over, stamped Fri Nov 27 7:20 PM ET (`TZ=America/New_York date`). Branch t-eng-drop: box 2's commits on 456a84e5f on 7a580aefc. WIP, NOT
 gated, NOT landed. Box 2 started 7:01 PM ET.**
 
 ## EXACT NEXT STEP (box 3 starts here)
@@ -25,21 +25,57 @@ gated, NOT landed. Box 2 started 7:01 PM ET.**
    beside the ground before (x 13394-13529, y 518, 75 px lower). The probe missed it because the fall as laid is **531 px, not 400**
    (its finder wants 400 +- 12); dropSeen passed it (531 is inside AHEAD.down 560, nothing across the fall). For the lead, 1 below.
 4. DONE in box 2: 3-1's kit rolls (seeds 1-4 x both, `probe/kitrolls.mts`, fingerprint of platforms, enemies, sections, errors, tower):
-   before (7a580aefc) = after (box 2's head), 8/8 identical (`b2-kitrolls-31-base.txt` / `-head.txt`).
+   before (7a580aefc) = after (box 2's head), 8/8 identical (`b2-kitrolls-31-base.txt` / `-head.txt`); and after A: 8/8 identical
+   (`b2A-kitrolls-31-head.txt`).
+4b. DONE in box 2: THE LEAD'S A (answered 7:10 PM ET, word for word in the lead's message: "dropSeen also refuses a drop whose finished
+   fall is not its declared depth, by name: 'falls N px, not its declared D'"; conditions: tolerance picked and justified in one line,
+   box 1's 12 px unless shown why not; planted on one of the 5 rolls first, RED before the fix, refused by name after; re-count 3-2's
+   pick over seeds 1-40 x both after it, every refusal named; w3Noise WHOLE green on t-eng-drop AND on the trial tree; inside this packet).
+   - Tolerance: DROP_TOL 12 (the pick's own for the laid exit): the roll's tempo spreads a 400 px drop 392-407 px (pipeline.ts:1430
+     `dy *= T.rise`), inside 12; the off rolls are 101-159 px off, far outside it.
+   - pipeline.ts `dropSeen(top, floor, platforms, declared?)`: after the view's reach, `falls N px, not its declared D` when
+     |fall - declared| > DROP_TOL; checkAndRepair passes the section's own `drop` (d.px). Swapped by name like every other dropSeen miss.
+   - PLANTED first, w3Noise.test.ts (the last test, "PLANTED (ENG-DROP, the lead's A)"): 3-2 x both, every laid moss toy's finished fall
+     within 400 +- 12, and the deeper rolls refused by name; plus dropSeen on a floor 131 px deeper names "falls 531 px, not its declared
+     400". RED before the fix (`b2-planted-RED.txt`): laid 66 of 80, OFF 10 = Normal and Easy seeds 1 (531 px), 16 (532), 22 (501),
+     30 (559), 33 (506); refused by name 0. GREEN after (`b2-planted-GREEN.txt`): laid 56 of 80, off 0, refused by name 10
+     (`w3-noise-toy-moss: its designed drop of 400 px falls 531 px, not its declared 400`, ...).
+   - Re-count (box 1's probe, TOP=bank, `b2A-probe-bank.txt`): Normal clean 40/40, toy laid 28/40, laid in view 28/28, 5 x swapped
+     "falls N px, not its declared 400"; Easy the same (40/40, 28/40, 28/28, 5 named). Before A: 33/40 laid, 5 of them off (and 39/40
+     clean: the one "pool is spent" THROW is gone after A, the swap changes that roll).
+   - Why those 5 fall deeper: not the tempo (outside 392-407); something after the lay moves the top or the floor. Not chased (the
+     refusal by name is the lead's ruling); box 3 may print 3-2 Normal seed 1's local lay vs the finished platforms for the roadmap.
+   - w3Noise WHOLE after A: t-eng-drop `# tests 12 # pass 12 # fail 0` (98 s, `b2A-w3noise.txt`; the plant: laid 56 of 80, off 0,
+     refused by name 10); the trial tree (A merged in, d15bca29c, tsc clean) `# tests 13 # pass 13 # fail 0` (92 s,
+     `b2A-trial-w3noise.txt`; the plant: laid 50 of 80, off 0, refused by name 12: KIT-W3a's bricks change the rolls). Every toy and
+     plant named in both: call, punch, moss / stone, emitter-off, punch-off-channel, moss-ignored, undeclared 0/40, tower 0/40, dropSeen
+     by name, A's plant (and KIT-W3a's wood-across-the-fall plant on the trial tree).
 5. THE LOCK, run 1 (base, ALONE): `npx tsx tools/engine/lockall.ts --layouts 16 --out base.json` in a detached worktree at 7a580aefc,
-   started about 7:06 PM ET, nothing else heavy beside it: RUNNING at this stamp (about 15 s a stage, 102 stages); its result is recorded below when it ends
-6. NOT DONE (box 3): pre-freeze on the head: tsc, `npx tsx tools/engine/generalitycheck.ts`, w3.test, w3Level.test, tower.test, and every
+   started about 7:06 PM ET, nothing else heavy beside it: `lock: wrote 3264 builds of 102 stages` (9 m 01 s; `b2-lock-base.txt`).
+   The base file is committed as `lock-base-7a580aefc.json.gz` (gunzip it; box 3 does not re-run run 1 unless the base moves)
+6. PRE-FREEZE on the head (box 2): tsc exit 0; `generality check: 68 engine files (216 exempt under the engine folders), 26 literals,
+   26 known PASS` (and again after A: the same, PASS); the importer run: STARTED on the pre-A head and STOPPED when A changed pipeline.ts
+   (a run on a stale head proves nothing): box 3 runs it on the post-A head.
+   The importers: every
    importer of pipeline.ts / types.ts / stageTable.ts: by resolved import (`b2-importers-tests.txt`): pipeline.ts 175 importers (131
    tests), gen2/types.ts 156 (72 tests), worlds/stageTable.ts 21 (12 tests); union of test importers **143** files. Then
    `git ls-remote origin refs/heads/t-eng-w3` (7a580aefc at box 2's hand-over): if ENG-CATCH-i's tail moved it, merge BY HASH, re-run
    tsc + generality + tower.test + w3Noise; freeze in a detached worktree; THE LOCK run 2 `--check base.json` on the frozen head ALONE
    (expected 102/102); the gates once (the CI tool line; the suite in 6 shards with totals; tierBots); land on t-eng-w3 (no force).
 
+7. **BOX 3 STARTS HERE:** on t-eng-drop's head (A is in it): tsc; generality; the 143 importer test files (`b2-importers-tests.txt`,
+   `npx tsx --test $(cat reference/qa-reports/ENG-DROP/b2-importers-tests.txt)`, totals); `git ls-remote origin refs/heads/t-eng-w3`
+   (merge BY HASH if moved, re-run tsc + generality + tower.test + w3Noise); freeze in a detached worktree; lock run 2 `--check` against
+   the gunzipped `lock-base-7a580aefc.json.gz` ALONE (expected 102/102; A touches only sections that declare a drop, and no listed stage
+   does: any move is a red to prove or send to the lead); the gates once; land on t-eng-w3; message the lead every counts line.
+
 ## For the lead (box 2)
-1. The 5 "no top found" rolls fall 531 px, not the declared 400: the run lay's pick reads the median lay (exitDyOf) within DROP_TOL 12,
+1. ANSWERED A by the lead (done, 4b above). The question as asked: the 5 "no top found" rolls fall 531 px, not the declared 400: the run lay's pick reads the median lay (exitDyOf) within DROP_TOL 12,
    but on those rolls the finished fall is 131 px deeper. dropSeen judges view (<= 560) and wood, not the declared depth, so it passes
    them. A designed drop should land at its declared depth or be refused by name; that is a new check (a planted roll first), not in this
-   packet. Your call: box 3 adds `dropSeen` "falls N px, not its declared D" (the toy's 400 +- 12) or it goes on the roadmap.
+   packet. Not the tempo: a jump's dy is scaled by the roll's tempo (pipeline.ts:1430 `dy *= T.rise`), which DROP_TOL's own note
+   (pipeline.ts:1756) puts at 392-407 px for a 400 px drop; 531 is outside that, so something after the lay moves the top or the floor
+   (box 3: print the section's local lay vs the finished platforms on 3-2 Normal seed 1). Your call: box 3 adds `dropSeen` "falls N px, not its declared D" (the toy's 400 +- 12) or it goes on the roadmap.
 
 
 **Box 1 hand-over, stamped Fri Nov 27 6:51 PM ET (`TZ=America/New_York date`). Branch t-eng-drop on 7a580aefc. WIP, NOT gated, NOT landed.**

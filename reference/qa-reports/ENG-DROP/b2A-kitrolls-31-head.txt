@@ -1,0 +1,8 @@
+3-1 normal seed 1: 698ee9dacb7c847a plats 204 errors 0 sections 28
+3-1 normal seed 2: 598818b4798734ea plats 195 errors 0 sections 29
+3-1 normal seed 3: f8a42508355ff079 plats 205 errors 0 sections 29
+3-1 normal seed 4: a50866cbfd4115dd plats 224 errors 0 sections 29
+3-1 easy seed 1: b81117b17b4b958c plats 204 errors 0 sections 28
+3-1 easy seed 2: e08b11a66db89529 plats 209 errors 0 sections 29
+3-1 easy seed 3: 0cdc84f65bded6c5 plats 184 errors 0 sections 29
+3-1 easy seed 4: 1abdcebc72c71afa plats 197 errors 0 sections 29

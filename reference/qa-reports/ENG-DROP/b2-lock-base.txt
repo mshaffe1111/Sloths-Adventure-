@@ -1,0 +1,5 @@
+lock: wrote 3264 builds of 102 stages
+
+real	9m0.665s
+user	9m52.351s
+sys	0m7.281s
