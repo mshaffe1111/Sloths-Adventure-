@@ -1,0 +1,16 @@
+const ROOT = process.cwd();
+await import(`${ROOT}/src/game/headlessDom.ts`);
+const { makeEngine } = await import(`${ROOT}/src/game/engineCoreHarness.ts`);
+const { generateAllLevels } = await import(`${ROOT}/src/game/worldsData.ts`);
+const { generateStage, setLayoutVariant } = await import(`${ROOT}/src/game/stageGenerator.ts`);
+const { setDifficulty, getDifficulty } = await import(`${ROOT}/src/game/difficulty.ts`);
+const { loadSeedList } = await import(`${ROOT}/src/game/gen2/seedList.ts`);
+await loadSeedList('2-8');
+const cfg: any = generateAllLevels().find((c: any) => c.id === '2-8' && !c.secret)!;
+console.log('levelcfg targetCount', cfg.targetCount, 'default difficulty', getDifficulty?.());
+for (const d of ['normal', 'easy']) {
+  setLayoutVariant(1); const a: any = generateStage(cfg, d as any);
+  setDifficulty(d as any); setLayoutVariant(1); const b: any = generateStage(cfg, d as any); setLayoutVariant(null);
+  const { e } = makeEngine('2-8', d as any, 1);
+  console.log(d, 'gen w/o setDifficulty', a.config.targetCount, 'gen with', b.config.targetCount, 'engine', e.currentStage.config.targetCount, 'cages', b.collectibles.filter((c: any) => c.type === 'cage').length);
+}

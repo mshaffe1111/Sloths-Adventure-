@@ -1,0 +1,14 @@
+const ROOT = process.cwd();
+await import(`${ROOT}/src/game/headlessDom.ts`);
+const { generateAllLevels } = await import(`${ROOT}/src/game/worldsData.ts`);
+const { generateStage, setLayoutVariant } = await import(`${ROOT}/src/game/stageGenerator.ts`);
+const { loadSeedList } = await import(`${ROOT}/src/game/gen2/seedList.ts`);
+await loadSeedList('2-8');
+const cfg: any = generateAllLevels().find((c: any) => c.id === '2-8' && !c.secret)!;
+const seed = +(process.argv[2] ?? 28);
+setLayoutVariant(seed); const st: any = generateStage(cfg, 'normal');
+console.log('levelHeight', st.config.levelHeight, 'targetCount', st.config.targetCount, 'waterY', st.waterY);
+for (const r of st.rivers ?? []) if (r.x1 > 2000 && r.x0 < 3500) console.log('river', JSON.stringify(r));
+for (const p of st.platforms) if (p.x + p.width > 2300 && p.x < 3300) console.log('plat', p.id, p.type, p.x, p.y, p.width, p.height, p.style ?? '');
+console.log('heartFalls', JSON.stringify((st.heartFalls ?? []).filter((z: any) => z.x1 > 2000 && z.x0 < 3500)));
+console.log('safeWater', JSON.stringify(st.safeWater ?? []));
