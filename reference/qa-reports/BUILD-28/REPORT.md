@@ -78,6 +78,9 @@ THE LEAD'S RULING (read after the 9:10:56 PM ET push): the TOOL GAP goes first, 
        ones are to the right". So a first-timer may well go left, toward home, first. The stills tool's own Dot line (the flood line) sits
        over the water in both shots: a placement artifact, not what the player sees at spawn.
        Also: rise-2-8-L5-normal-x11626-{upright,sideways}.jpg, layout 5 = BUILT seed 6, the child's seed for the rise water life (x 11626).
+       Judged upright: Pokey on a grassy bank, a log pile ahead right, the river far behind in the backdrop; NO water at his level in
+       frame, so this still does not show where the child fell (life at y 1559). It proves nothing about that death; a clip of the
+       child's own run there is the right proof (D69).
        (The page's layout n BUILT seed n+1 on layouts 1, 2, 5, 28. The headless setLayoutVariant(2) gave spawn x 6449, the page's
        BUILT seed 2's spawn. CHECKED: the bot's firstTimer('2-8', n) builds its stage by new RealPlay(id, seed) (firsttimer.ts:1891), whose
        constructor calls setLayoutVariant(seed) (src/game/realPlay.ts:153-154), the same path the trace's positions came from.)
