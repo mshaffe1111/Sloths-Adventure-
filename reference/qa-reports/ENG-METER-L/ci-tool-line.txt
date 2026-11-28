@@ -1,0 +1,21 @@
+== CI tool line (08:03:53 PM) on be2ebe7d2
+not ok 382 - planted: with the against-the-flow skill off, the child on Normal is rescued on 2-1 (16) and loses 5+ more lives (15, 8, 6)
+  error: 'upstream off, 1 more lives (at least 5): on child normal seed 8: shrine, rescues 0, lives 1, stuck []; off child normal seed 8: shrine, rescues 0, lives 2, stuck [{"x":19577,"what":"an open drop ahead, water ahead"}]'
+# tests 472
+# suites 0
+# pass 470
+# fail 1
+# cancelled 0
+# skipped 0
+# todo 1
+EXIT 1 (08:12:39 PM)
+== the failing file alone on the frozen base
+== riverRide on 48f889a05 (08:11:26 PM)
+not ok 22 - planted: with the against-the-flow skill off, the child on Normal is rescued on 2-1 (16) and loses 5+ more lives (15, 8, 6)
+  error: 'upstream off, 1 more lives (at least 5): on child normal seed 8: shrine, rescues 0, lives 1, stuck []; off child normal seed 8: shrine, rescues 0, lives 2, stuck [{"x":19577,"what":"an open drop ahead, water ahead"}]'
+# tests 28
+# pass 27
+# fail 1
+# cancelled 0
+# skipped 0
+EXIT (08:12:42 PM)

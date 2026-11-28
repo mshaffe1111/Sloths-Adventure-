@@ -1,12 +1,15 @@
 # ENG-METER-L REPORT (R-165.578): the difficulty meter prices a LEFT-running follow. Engine, xhigh. Box 1 started 7:53 PM ET (from date).
 
-## EXACT NEXT STEP (box 1, written 8:05 PM ET (from date))
-STATE: the fix is committed on t-meter-left (be2ebe7d2, one commit on frozen 48f889a05: tools/difficulty/score.ts,
-tools/difficulty/lineChannel.test.ts, reference/design/meter-coverage.json; no src change). The landing on t-build-28-wip by
-fast-forward from 48f889a05 is the last step of this box; the hash `git ls-remote` gives is in the message to the lead.
-NEXT (for the lead, not this job): 2-8's meter numbers below are far under its design target, and Easy reads ABOVE Normal. That is the
-stage's, not the meter's: the line channel asks nothing on 2-8 because 2-8's follow stage has no heron zones and no reeds (probed:
-zones [], covers 0, all 6 layouts), and Easy's heaviest beat is a pad board (ride-board 5.97 points, seed 1) that Normal does not have.
+## EXACT NEXT STEP (box 1, written 8:13 PM ET (from date))
+STATE: the fix is on t-meter-left (be2ebe7d2 the code, one commit on frozen 48f889a05: tools/difficulty/score.ts,
+tools/difficulty/lineChannel.test.ts, reference/design/meter-coverage.json; no src change; the commits after it are this folder only).
+Every gate of the packet PASSES except the CI tool line, whose ONE red (riverRide.test.ts:278 on 2-1) is identical on 48f889a05
+without the fix: the frozen head's own, not this change's. Landed on t-build-28-wip by fast-forward from 48f889a05 at hand-over (the
+`git ls-remote` hash is in the message to the lead).
+NEXT (the lead's): (1) rule on riverRide:278, a red the frozen head be5e9fc12 carries into its CI tool line (main's result in the
+message); (2) 2-8's meter numbers are far under its design target and Easy reads ABOVE Normal: the stage's, not the meter's (the line
+channel asks nothing on 2-8: its follow stage has no heron zones and no reeds, probed on all 6 layouts; Easy's heaviest beat is a pad
+board, ride-board 5.97 points on seed 1, that Normal does not have).
 
 ## What changed (tools/difficulty only)
 - score.ts lineCrossings: a follow stage with dir -1 is no longer refused. leftCrossings reads it in a mirror (mirrorFollow, x -> -x:
@@ -53,7 +56,13 @@ HEAD:src, so the stage lock and the src suite do not move (they read src only).
   `git fetch --unshallow origin` PASS at 8:04:17 PM ET ('all: 1467.6 helper hours (Matt's own items and the decisions left out: 23)').
 - PASS timecheck (after the unshallow, 8:04:24 PM ET): '299 commits, 15 files, 3510 lines they wrote, 109 stamps' over 49fdc8cb6..HEAD.
 - PASS coveragecheck (8:04:05-8:05:43 PM ET): '18 built stages (1-1 .. 2-8), 31 pieces used, 5 known gaps'.
-- CI tool line (gates.yml:157, every tools test file CI runs, the three meter test files among them): CI-LINE-PLACEHOLDER
+- CI tool line (gates.yml:157, every tools test file CI runs, 8:03:53-8:12:39 PM ET, ci-tool-line.txt): FAIL 'tests 472, pass 470,
+  fail 1, cancelled 0, skipped 0, todo 1'. The one fail is NOT this change's: tools/inspect/riverRide.test.ts:278 ('planted: with the
+  against-the-flow skill off, the child on Normal is rescued on 2-1 (16) and loses 5+ more lives'; 'upstream off, 1 more lives (at
+  least 5): ... seed 8 ... stuck [{"x":19577,...}]') fails WORD FOR WORD the same on frozen 48f889a05 without the fix (riverRide whole
+  there: tests 28, pass 27, fail 1). riverRide imports no tools/difficulty file (its imports and firsttimer / castBots / tierBots
+  grepped: no '../difficulty/' import). BUILD-28 box 17 stopped before suite2, so the CI tool line had not yet run on be5e9fc12: this
+  red is the frozen head's own and the lead's to rule on. main 49fdc8cb6's riverRide: see the message (run at hand-over).
 
 ## The lead's pre-freeze set (D168; message received mid-box): every importer of a changed file, run WHOLE (prefreeze-set.txt)
 - `git grep -l` for difficulty/score, difficulty/lineChannel, difficulty/lineToy, meter-coverage (reference/ left out): code importers of
