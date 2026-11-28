@@ -1,7 +1,7 @@
 # ENG-CATCH-f: the down tower never lays a catch twice, no two pieces of wood overlap, and the named check refuses any that do; onto t-eng-w3 (R-165.561)
 
 ## EXACT NEXT STEP
-(box 7, ENG-CATCH-l, engine, written 8:47 PM ET Fri 11-27 by `date`, at the hand-over; t-eng-w3 = 7a580aefc by `git ls-remote` at the start and 7a580aefc (unchanged) at the hand-over;
+(box 7, ENG-CATCH-l, engine, written 8:48 PM ET Fri 11-27 by `date`, at the hand-over; t-eng-w3 = 7a580aefc by `git ls-remote` at the start and 7a580aefc (unchanged) at the hand-over;
 this branch's candidate = 049a20abc: 192a433ae + reference/ + darkBots.test.ts only (`git diff --stat 192a433ae 049a20abc -- src tools`))
 NOT LANDED (the lead ruled A: 1-4 is SHIPPED; trace the castBots 1-4 PASS->FAIL rows, sort them into classes, land only after the
 lead reads them). Candidate 049a20abc is frozen and every gate but the rows is green below (shard 1/6 752/753 + 1 todo, 0 fail).
@@ -29,7 +29,11 @@ lead reads them). Candidate 049a20abc is frozen and every gate but the rows is g
      the piece the overlap trim made) at x 769.1 and STOPS DEAD at x 766.8, the flush seam where 766-866 meets 166-766 at the same height
      (both branch, height 24 < WALL_H 50: no wall). The trim turned one piece (0-866) into two flush ones, and the middle bot stops at
      the seam; a player walks across. PROVISIONAL (ii): the route is fair (continuous wood), the bot read the flush seam as an end.
-     Next: the frames 110.6-111.5 s (why he stops: which bot read: an edge stop, a lip, a dark/glow rim? `stuck` says "in a dip 321 px
+     He stands at the seam 0.5 s (110.6-111.07 s), then walks on along 166-766 (x 758 -> 666 by 111.47 s). Both runs then CLIMB at
+     x 626 (x fixed, y falling): base from 111.13 s up to y 5434.9 (111.97 s), then left along y 5508 (x 506 -> 346, 112.3-113.0 s);
+     the candidate 0.5 s later from 111.63 s up to y 5464.7 (112.30 s), then DROPS back to y 5596.7 (112.63 s) and is at x 546, y 5560
+     at 112.97 s: a SECOND parting, his climb lost at 112.3-112.6 s. Next: what he holds and presses at 112.2-112.7 s on each tree (a
+     timed piece, a creaking limb, a hop off the climb), and the frames 110.6-111.07 s (why he stops: which bot read: an edge stop, a lip, a dark/glow rim? `stuck` says "in a dip 321 px
      deep" later at x 852), then confirm (ii) or find an engine cause (a flush seam the engine treats as an end is an engine red).
      NOTE for the lead: if a flush seam the tower's trims make stops any bot, every trimmed overlap on every stage can do it: the fix is
      at the root (the trim merges flush same-height pieces, or the bots read flush pieces as one floor), never a re-pin.   - Two runs per cause: castBots + the trace are two of each row; a different seed with the same cause is still to find.
