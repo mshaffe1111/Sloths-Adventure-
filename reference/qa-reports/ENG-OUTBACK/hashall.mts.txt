@@ -1,0 +1,19 @@
+// every listed stage's built data (layouts 1-3, both settings), hashed: the tree it runs in is process.cwd()
+import { createHash } from 'node:crypto';
+const ROOT = process.cwd();
+await import(`${ROOT}/src/game/headlessDom.ts`);
+const { generateAllLevels } = await import(`${ROOT}/src/game/worldsData.ts`);
+const { generateStage, setLayoutVariant } = await import(`${ROOT}/src/game/stageGenerator.ts`);
+const { setDifficulty } = await import(`${ROOT}/src/game/difficulty.ts`);
+const { loadSeedList } = await import(`${ROOT}/src/game/gen2/seedList.ts`);
+const { LISTED } = await import(`${ROOT}/src/game/gen2/listed.ts`);
+const levels = generateAllLevels();
+for (const id of Object.keys(LISTED)) {
+  const cfg: any = levels.find((l: any) => l.id === id && !l.secret); if (!cfg) continue;
+  await loadSeedList(id);
+  for (const d of ['normal', 'easy']) for (const L of [1, 2, 3]) {
+    setDifficulty(d as any); setLayoutVariant(L); const st: any = generateStage(cfg, d as any); setLayoutVariant(null);
+    const h = createHash('sha1').update(JSON.stringify(st, (k, v) => (typeof v === 'function' ? undefined : v))).digest('hex').slice(0, 12);
+    console.log(id, d, L, h);
+  }
+}

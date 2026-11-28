@@ -1,0 +1,4 @@
+kid:normal:30: end shrine t 160.8 x 225 progress 1.00 goal {"got":4,"need":4} rescues 0 rescueXs []
+   harms [] stuck [] loops ["water ahead@11174,1576 n2"]
+child:normal:12: end shrine t 550.5 x 297 progress 1.00 goal {"got":4,"need":4} rescues 1 rescueXs [3221]
+   harms [] stuck [{"x":2579,"y":1542,"t":530.1,"dur":0,"what":"set down here 8 times","step":null,"dip":null,"puzzle":false,"rescued":false}] loops ["water ahead, the way on is 75 px up@10736,791 n2","water ahead@15230,791 n2","water ahead@18391,815 n2","water ahead, the way on is 75 px up@17127,1542 n2"]

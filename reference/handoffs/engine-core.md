@@ -2,6 +2,19 @@
 
 Merged at INT-14 (11-20, t-int-14): §0zq-25d/§0zq-25c ENG-25c (2-5's snap rows level, the snapper's ground, the straddle), §0zq-NOISE ENG-NOISE (one noise channel), §0zq-PROWL ENG-PROWL (sight.up + the leap), §0zq-small3 ENG-SMALL3 (R-165.317/.319/.321), and PAINT-292 (World 1's painted planks and stones; no section here). Merged at INT-13 (11-19, t-int-13): §0ENG23 ENG-23 (followers, the heron reads the line) and §0zl-168 TIME-168 (timecheck), §0zm-25b ENG-25b (the snapper bot skill, the meter's snap channel) and §0zl-25 ENG-25 (2-5's snap stones and snapper rows), §0zn-26b ENG-26b and §0zm-26 ENG-26 (the water wheel), §0W2A ART-W2A (2-3's painted follow poses), §0zo ART-W2B (the wheel's painted draw), §0zo-285c/§0zo-285b/§0zo-285 ENG-285 (the judges and bots fly the engine's Pokey), §0zp-284 FIX-284/284b (2-2's big pads, the real tap hop), §0zp-24d BUILD-24d, §0zn-24c ENG-24c (the raft look, the glow) and §0zm-24 BUILD-24 (2-4) joined; rewritten at the INT-12 merge (11-18, t-int-12): four members wrote here the same day, so labels are suffixed where they met: §0zm-22p ART-22P (CI's seed-list matrix, R-165.278); §0zl-24 ENG-24 (a liana over a river; its REPORT cites it as §0zl); §0zm BUILD-19b, §0zn ENG-19c and §0zl BUILD-19 (t-build-19, the labels its REPORT cites). Before them FIX-22b (11-15): section 0zk.
 
+## 0zs-OUTBACK. ENG-OUTBACK (t-eng-outback from t-build-28-wip 6d9e348d1, 11-27; code head e10e208f5): a flood's waters keep naming their own river (R-165.583)
+- **What changed:** worlds/w2.ts w2Finish re-points every `st.flood.waters[i].river` after its `rivers.sort` by x (it runs AFTER the
+  pipeline's layFlood, pipeline.ts:4368, through game.ts:163 / listed.ts:75 / curate.ts:72 / every toy's `world:`). Before, on 2-8 every
+  water named another river; the engine raises rivers[w.river] each frame (engine.ts:1995-2001), so the parade's SAFE marsh sat at the
+  teach marsh's level (700 px over its floor) and a fall through a dip passed under riverAt's 120-px window: a pit life, not a splash.
+- **Tests:** src/game/floodRiverIndex.test.ts (every listed flood stage's waters name their own river, both settings; the real engine
+  splashes him back from every safe marsh dip, either way). Both RED on be2ebe7d2 (frame 10, live surface 880), GREEN on e10e208f5.
+- **Traps:** (1) FloodWater.river is an INDEX into st.rivers: any pass that reorders or filters st.rivers after layFlood must re-point
+  it (or the type becomes an id: an Architect's packet). (2) When a fall a lay says is caught is not, print the engine's LIVE zone after
+  one update, not the lay's: the lay was right here. (3) BUILD-28's "targetCount 3" on 2-8 is the RAW worldsData config; the engine plays
+  withGoals (engine.ts:1078), 4 on Normal; the HUD waits for the engine's number (App.tsx:854 UI-22, VineHud.tsx:120 `counting`).
+- **Open:** (C) R-165.585, the bot's sealed-door turn-back (firsttimer.ts:5807, `e.cast` only, enemies only): ENG-OUTBACK REPORT NEXT.
+
 ## 0zs-W2FALL. ENG-W2FALL (t-eng-w2fall from t-build-28-wip cc06d2f90, 11-27; code head db2947730): a world's fall painter, declared once
 - src/game/gen2/fallPaint.ts FALL_PAINT is the ONE definition of what a world's pit painter lays under an open fall; WorldManifest.pitPainter
   is `PitPainter` ('w1Pits' | 'splashRivers'; the widening ACCEPTED by the lead). World 2's manifest declares 'splashRivers'; w2Finish reads

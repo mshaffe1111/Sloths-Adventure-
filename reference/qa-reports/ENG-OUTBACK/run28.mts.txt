@@ -1,0 +1,12 @@
+const ROOT = process.cwd();
+await import(`${ROOT}/src/game/headlessDom.ts`);
+const { castRun } = await import(`${ROOT}/tools/inspect/castBots.ts`);
+const { firstTimer } = await import(`${ROOT}/tools/inspect/firsttimer.ts`);
+const { CAST_BOTS } = await import(`${ROOT}/tools/inspect/castBots.ts`);
+for (const spec of process.argv.slice(2)) {
+  const [bot, setting, seed] = spec.split(':');
+  const who = CAST_BOTS[bot][setting];
+  const r: any = firstTimer('2-8', +seed, who, { cap: 1200, dotSetting: true });
+  console.log(`${spec}: end ${r.end} t ${r.time} x ${Math.round(r.x)} progress ${r.progress?.toFixed?.(2)} goal ${JSON.stringify(r.goal)} rescues ${r.rescues} rescueXs ${JSON.stringify(r.rescueXs?.map(Math.round))}`);
+  console.log(`   harms ${JSON.stringify((r.harms ?? []).slice(0, 8).map((h: any) => `${h.kind}:${h.what ?? h.by ?? ''}@${Math.round(h.x)}`))} stuck ${JSON.stringify(r.stuck?.slice(0, 5))} loops ${JSON.stringify((r.loops ?? []).slice(0, 4).map((l: any) => `${l.what}@${Math.round(l.x)},${Math.round(l.y)} n${l.n}`))}`);
+}

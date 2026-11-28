@@ -1,0 +1,4 @@
+kid:normal:30: end sealed door t 47 x 226 progress 1.00 goal {"got":0,"need":4} rescues 0 rescueXs []
+   harms [] stuck [] loops []
+child:normal:12: end sealed door t 256.2 x 226 progress 1.00 goal {"got":1,"need":4} rescues 0 rescueXs []
+   harms ["life:@2713"] stuck [] loops ["water ahead@7561,1542 n2"]
