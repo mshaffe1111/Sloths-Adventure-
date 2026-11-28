@@ -40,7 +40,9 @@ DONE:
    49fdc8cb6..HEAD`: FAIL (3), all REPORT.md:1 in box 13's commit 46cda5b2 (12:24:49 PM ET 11-27): its header rewrite re-added 11-26's
    session start stamps '12:49 PM ET', '1:15 PM ET', '1:05 PM ET' (sessions 8-10). The same FAIL (3) on box 15's head 0b308457c: not
    this box's; history is never rewritten here (no rebase, no force). SENT TO THE LEAD for a ruling; the successor does not touch
-   timecheck or its rule.
+   timecheck or its rule. AFTER this box's commit 76f1c7dbe (it edits REPORT.md:1 again, adding box 16 to the header): timecheck on
+   49fdc8cb6..HEAD reads PASS, because the 3 old stamps now sit on a line committed at 7:23 PM ET. That is a side effect of the edit,
+   NOT a fix of its cause (box 13 re-adding older stamps to a rewritten line); named to the lead as such.
 NEXT, in order (ReadNotifications at every step boundary, at every push, and between waits on a long run):
    (a) RE-FREEZE be5e9fc12 in a detached worktree (`git worktree add --detach <dir> be5e9fc12`, about 1.5 min on this 3 GB tree;
        npm ci --legacy-peer-deps as a tracked background task, or a symlink to a checkout's node_modules with the same package.json).
