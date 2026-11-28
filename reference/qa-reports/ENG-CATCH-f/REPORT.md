@@ -35,9 +35,13 @@ NEXT, IN ORDER:
    a local change at the edge. 049a20abc: 87:376-556@3672 | 18:444-673@3850 | 149:262-444@3850 | 88:684-864@3742 | 89:864-1052@3742 |
    17:818-938@3569; run-off 556,3672 -> 664,3850 (the test's). This tree: 90:257-437@3563 | 154:143-325@3741 | 18:325-539@3741 |
    91:569-931@3677 | 92:211-549@3919 | 19:549-788@3919; run-off 437,3563 -> 539,3741. Every height differs, so the roll as a whole moved:
-   find why first (a guess to check, not a finding: the merge changed a down-tower lay's miss count, `left`, so `again`/`first` or a
-   TowerRefusal flipped and the seed search drew another roll; or a grown stage piece changed a later leg's lay). Print, per towerCatches
-   call on roll 1, before/after misses and any refusal on both trees. Then class it: the draft's pinned fixture moved (the test is
+   WHY (found at the line; console.error `CALL flow cover laid` before reLay/mend in scratch copies of both trees, spot.mts on draft
+   roll 1): calls 1-2 lay the same (141, 143 pieces on both trees); call 3 differs: 049a20abc `down false 143` (a new first lay: call 2's
+   lay had no miss), this tree `down true 143` (the COVER lay, `again`: call 2's first lay, read through withoutMerged, now HAS a miss).
+   So the merge makes the down invariant name a miss the trimmed lay did not have, and the seed search goes another way. Likely suspect
+   (unproven): a catch merged into a storey's own piece reads to towerHandOns as a catch run on over ALL of its storey, or a turn's
+   storey piece (by id) is gone. NEXT: print `before.map(m => m.line)` on that call (this tree) and name the miss; it is an ENGINE red
+   of this fix until shown otherwise (the merge must not make a miss: fix the read, or keep that seam and name it). Then class it: the draft's pinned fixture moved (the test is
    rebuilt as a hand-built toy like lipToy, a REPLACEMENT the lead rules on) or an engine red. Do not re-pin a roll. Run the test alone on
    7a580aefc and 049a20abc (both green per box 7).
 2. RUN ONCE THIS BOX (proof-m/fix-14.txt; compare seam POSITIONS, setting + layout + x@y, not piece names, which the merge renames):
