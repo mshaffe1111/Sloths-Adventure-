@@ -36,7 +36,7 @@ running gate below; if all green and t-eng-w3 is still 7a580aefc, fast-forward t
   - shard 1/6 whole: RUNNING (started inside the box)
   - the CI tool line (gates.yml:157): RUNNING (started inside the box)
   - tierBots: RUNNING (started inside the box)
-  - `seedlist.ts 1-4 --check`: RUNNING (started inside the box)
+  - `seedlist.ts 1-4 --check`: PASS (100 seeds, each clean on both settings; the verdicts refuse 0 of 100)
   - castBots 1-4, seeds 1-16, both settings, par 4, candidate AND 7a580aefc: RUNNING (started inside the box)
   - the normal-4 stills at y 10364, upright and sideways, both trees: RUNNING (started inside the box)
   - timecheck: PASS (349 commits, 14 files, 67 stamps). roadmapcheck: PASS.
