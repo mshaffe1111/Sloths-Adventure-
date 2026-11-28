@@ -1,5 +1,65 @@
 # ENG-CATCH-f: the down tower never lays a catch twice, no two pieces of wood overlap, and the named check refuses any that do; onto t-eng-w3 (R-165.561)
 
+## EXACT NEXT STEP (box 9, ENG-CATCH-n: a merge is laid like any catch; f7e76b765 merged; pre-freeze PREFREEZE_WORD; NOT frozen-gated, NOT landed; R-165.561, R-165.573)
+(written STAMP ET Fri 11-27 by `TZ=America/New_York date`, at the hand-over; started 9:17 PM ET on 4b3b27fa6. t-eng-w3 = f7e76b765 by
+`git ls-remote` during the box (unmoved). The lead's word this box: the LAST tower box tonight; step 1 + the merge only, no lock, shards or
+castBots; a fresh box tomorrow starts at NEXT 1.)
+DONE THIS BOX (head 1b289d86f = 4152a4a4e (the fix) + the merge of f7e76b765):
+- THE ROOT OF THE darkBots RED (draft 3-1 adult Normal roll 1): climbX (vineTop.ts:18) stands a climb vine CLIMB_CLEAR px off the FACE of
+  the bough whose end is at its top. The trim's seam at x 848 WAS that face; merged into 542-964 @6946 there is no face, the vine stands at
+  848, and the wood 670-850 @6820 lies in its climb-off room (hopRooms): the down invariant names "a roof over a vine's top", so
+  towerCatches takes the cover lay and the seed search goes another way (box 8's trace). So a merge changes what the lay's checks read
+  (an end gone: a face, a lip, a slot), and box 8's merge ran none of them.
+- THE FIX (tower.ts, general, no vine case): at the lay's end (layCatches), `unfair` runs fair's own checks on a catch, each by name
+  (cramped, slotted, byGate, passes, lidded with the rooms read fresh, storeyAt), and `held` reads the down invariant (downInvariant) on the
+  lay as the stage holds it (withoutMerged + the catches: the reading towerCatches' `left` uses). mergeSeams keeps each group, in turn,
+  only where its merged catch passes `unfair` and `held` names no miss the lay without it does not have; else its seams stay, named in
+  trimSeams: `seam: the trim's A | B at y Y: merged X0-X1 fails <check>` (the invariant's miss line quoted).
+- RED FIRST: tower.test.ts, the last test "A MERGE IS LAID LIKE ANY CATCH": ENG-CATCH-b's toy (the storey 136-554 @1256, the climb vine's
+  top at its end, x 554) plus a shelf 470-550 @1130, 126 px over that top. **RED on 4b3b27fa6** (a worktree, this test file): pass 0 fail 1,
+  `the trim's catch is laid at the storey's height, under the shelf's fall line: [{"x":556,"y":1287,"w":180,..},{"x":736,"y":1287,"w":297,..}]`
+  (the cover lay: the same flip as roll 1). GREEN here; its seam named `seam: the trim's 136-554 | 554-716 at y 1256: merged 136-716 fails
+  the down invariant (tower: a roof over a vine's top: wood at x 470-550, y 1130, lies 126 px over the top of the vine at x 554 (y 1256),
+  in his climb-off (180 px))`; the held lay keeps the invariant; the same toy without the shelf still merges (into [2]).
+- THE PLANT: `held` reads no miss (`flow !== 'down' ? [] :` -> `true ? [] :`): the new test RED, the same message; restored (grep 0).
+- WHOLE (the fix in): tower.test.ts **51/51** (with the toy); tower + towerMend + darkBots, run before the toy was appended: **94/94**, the
+  darkBots roll-1 test ("a RUN off a lit edge ... adult Normal roll 1") green again. proof-n/: tower-whole.txt, three-before-toy.txt,
+  new-red-b8.txt, new-plant.txt, new-green.txt, toy.mts.
+- MERGE t-eng-w3 f7e76b765 BY HASH (no rebase): 1b289d86f (parents 4152a4a4e, f7e76b765). **No conflict.** pipeline.ts auto-merged: the
+  two sides' hunks are disjoint (this branch: the import at :25, layStage :2607, buildRolledOn :4894-5185, the catch's `into` grow;
+  ENG-DROP: the import at :30, layLocal :1753, layStage :2104-3324, checkAndRepair :4422); merged vs this branch adds exactly ENG-DROP's
+  64 changed lines, so both are kept whole. types.ts, worlds/stageTable.ts, worlds/w3Noise.test.ts and reference/qa-reports/ENG-DROP/:
+  ENG-DROP's side only.
+- On 1b289d86f, a FROZEN immutable worktree (D115, chattr +i src tools): tsc 0; generality PASS (26 literals, 26 known).
+- PRE-FREEZE SET vs 7a580aefc (D168), on that frozen tree: changed src/tools vs 7a580aefc = tower.ts, pipeline.ts, types.ts,
+  worlds/stageTable.ts, tower.test.ts, towerMend.test.ts, darkBots.test.ts, worlds/w3Noise.test.ts; their test importers by resolved
+  import (proof-n/importers.mjs) = **148 files** (proof-n/n-importers.txt: ENG-DROP's 143 + camRepick, cameraFollow, darkBots, legs,
+  towerMend), WHOLE: PREFREEZE_LINE
+- A 1-4 SPOT (not a gate; proof-n/one14.mts): easy 6 and 11, normal 6 and 15 build the same platform counts (97, 104, 92, 97) and the
+  same named seams (only box 8's two "another top") on 4b3b27fa6 and here: no 1-4 seam was refused by the new checks on those four. The
+  lock tomorrow says it for all 32.
+- PROCESS MISS (owned): one tower.test.ts run was started with a shell `&` against the brief, and the first pre-freeze start read the
+  live tree (D115); both were stopped within two minutes, no result taken from either, and re-run tracked (the pre-freeze set on the
+  frozen tree).
+NEXT, IN ORDER (a fresh box):
+1. NEXT1_TEXT
+2. FREEZE 1b289d86f (or the fixed head) per dispatch-packet.md (D115: a frozen worktree, chattr).
+3. castBots 1-4 FIRST among the gates (D171/D170): seeds 1-16, both settings, on the candidate AND 7a580aefc, every moved row traced as
+   box 7 did; message the lead the classes: (i) the fair route is gone = red; (ii) a fair route remains, the bot chose differently, named
+   with its route. Ruling (A) stands: the merge stops at fit's own cut; the 8 joins left on 1-4 (the bridge :573, the wall run-on :552)
+   stay, castBots decides whether they matter.
+4. Then the gates, each with its verdict word and counts line: the lock --check vs reference/qa-reports/ENG-CATCH-f/lockbase-7a580aefc.json.gz
+   with the key-set diff (R-165.577; expected moves: 1-4 only, and the draft 3-1 rolls the merge touches); ALL 6 shards; the CI tool line;
+   tierBots; `seedlist.ts 1-4 --check`; the normal-4 stills, both trees, upright and sideways, looked at first; timecheck; roadmapcheck.
+   Every red gets a file:line and a run alone on 7a580aefc.
+5. LAND on t-eng-w3 by fast-forward from f7e76b765 (it is this head's second parent), only after the lead reads step 3's classes; check
+   `git ls-remote` equal. NOT YOURS: R-165.580, R-165.582.
+LEARNED: a merge or any rewrite of laid wood is a NEW LAY: it changes the ends every check reads (a vine's face, a lip, a slot), so it
+passes the lay's own checks, by name, or it is not made. Method update (reference/methods/dispatch-packet.md, proposed for the lead): "a
+post-pass that reshapes laid pieces (merge, grow, trim) re-runs the lay's own per-piece checks and the invariant on its result; its
+toy is a hazard that only the reshaped piece's lost END creates".
+
+
 ## EXACT NEXT STEP (box 8, ENG-CATCH-m: the trim's seam merged at its root; NOT frozen, NOT gated, NOT landed; R-165.561, R-165.573)
 (written 9:08 PM ET Fri 11-27 by `TZ=America/New_York date`, at the hand-over; started 8:52 PM ET on 5a9af1813. t-eng-w3 = 7a580aefc by
 `git ls-remote` at the start; **f7e76b765 at the hand-over: IT MOVED** (ENG-DROP's boxes 2-5: src/game/gen2/types.ts +6,

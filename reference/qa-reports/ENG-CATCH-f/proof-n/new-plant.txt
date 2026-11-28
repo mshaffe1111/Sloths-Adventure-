@@ -1,0 +1,4 @@
+  error: `the trim's catch is laid at the storey's height, under the shelf's fall line: [{"x":556,"y":1287,"w":180,"level":0},{"x":736,"y":1287,"w":297,"level":0}]`
+# tests 1
+# pass 0
+# fail 1
