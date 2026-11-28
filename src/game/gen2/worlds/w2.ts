@@ -376,6 +376,8 @@ export function w2World(): WorldKit {
 type FinishStage = {
   platforms: Platform[];
   rivers?: RiverZone[];
+  /** a laid flood (pipeline.ts layFlood, before this finish): its waters name their river by its INDEX in `rivers` (flood.ts FloodWater) */
+  flood?: { waters: Array<{ river: number }> };
   gen2?: { falls?: Array<{ x0: number; x1: number; y: number; kind: string; site?: string }>; seed?: number; tower?: { flow?: string; width?: number; legs?: ReadonlyArray<{ travel: string; x0: number; x1: number; y0: number; y1: number }> } };
   proto?: { decor?: W2Decor[] };
 };
@@ -562,6 +564,15 @@ export function w2Finish<T extends FinishStage>(st: T, _difficulty?: Difficulty)
     reeds(near, far, x0, x1);
   }
   if (drop.size) st.platforms = st.platforms.filter((p) => !drop.has(p.id));
+  // (R-165.583, ENG-OUTBACK: the sort keeps every flood water naming the river it was laid from. The engine raises rivers[w.river] to the
+  //  water's level each frame (engine.ts floodClock); before this, on 2-8 every water named another river, and the parade home's safe
+  //  marsh took the teach marsh's level, 700 px over its floor: a fall through a dip never met its water and cost a life as a pit)
+  const named = st.flood?.waters.map((w) => rivers[w.river]);
   st.rivers = rivers.sort((a, b) => a.x0 - b.x0);
+  st.flood?.waters.forEach((w, i) => {
+    const at = rivers.indexOf(named![i]);
+    if (at < 0) throw new Error(`World 2 finish: flood water ${i} names river ${w.river}, which the stage does not have`);
+    w.river = at;
+  });
   return st;
 }
