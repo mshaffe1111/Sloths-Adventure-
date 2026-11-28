@@ -47,6 +47,14 @@ NEXT, IN ORDER:
    trimSeams (another kind or top), or cut by a path other than fit (the mend's trimKeep trims the tower's own pieces back, tower.ts
    ~:689-708, and reLay moves them: a seam either makes is not in `seams`). The brief's job is the overlap trim (fit); if trimKeep makes
    them, ask the lead before widening the merge to it.
+   PROBED (proof-m/why8.mts, the row of solid wood at each seam's y, as built on this tree):
+   easy 6 @3662: 96:0-60 | 93:60-480 | 41:480-1100 (tag s17:foot); easy 9 @3325: 93:0-120 | 89:120-500 | 40:500-1120 (s17:foot);
+   normal 6 @3662: 41:166-786 (s17:foot) | 93:786-1158 | 100:1158-1280; normal 6 @5345: 99:0-124 | 91:124-504; easy 5 @8275:
+   97:0-35 | 92:35-415. So each is a catch meeting the stage's s17 `foot` piece and/or a short catch against the wall (x 0 or 1280:
+   rule 1's run-on into the wall?). `trimSeams` reads only the LAST towerCatches call of a build: on normal 6 it names
+   "the trim's 104-226 meets 226-446 at y -4008: another top (y -4007)" (box 7's 104-226@6227 under 226-446@6228: an another-top seam,
+   named as built). Easy 6/9 and easy 5's last call named none, so their seams come from an EARLIER call (another column) or another path.
+   Next: accumulate trimSeams per call (wrap the pipeline's call in the scan) and print each call's `seams` record on easy 6.
    Then the brief's count: trims leaving a flush remnant of ANOTHER kind or top (trimSeams is reset per towerCatches call: accumulate it
    in the scan by wrapping towerCatches), every listed stage + draft 3-1 seeds 1-40 both settings; and how often `into` holds 2+ ids
    (the second stage piece is taken out of platforms and seams only: if it is a section's own PIECE, `pieces` still holds it: a red).
