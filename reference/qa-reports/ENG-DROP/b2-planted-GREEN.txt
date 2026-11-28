@@ -1,0 +1,17 @@
+TAP version 13
+# Subtest: PLANTED (ENG-DROP, the lead's A): a designed drop whose finished fall is not its declared depth is refused BY NAME (3-2: no laid toy falls past 400 +- 12)
+ok 1 - PLANTED (ENG-DROP, the lead's A): a designed drop whose finished fall is not its declared depth is refused BY NAME (3-2: no laid toy falls past 400 +- 12)
+  ---
+  duration_ms: 3920.529981
+  type: 'test'
+  ...
+# 3-2 x both: laid 56 of 80; off its declared depth: []; refused by name: 10 [normal 1: w3-noise-toy-moss swapped out: w3-noise-toy-moss: its designed drop of 400 px falls 531 px, not its declared 400 | normal 16: w3-noise-toy-moss swapped out: w3-noise-toy-moss: its designed drop of 400 px falls 532 px, not its declared 400 | normal 22: w3-noise-toy-moss swapped out: w3-noise-toy-moss: its designed drop of 400 px falls 501 px, not its declared 400]
+1..1
+# tests 1
+# suites 0
+# pass 1
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 4792.328028

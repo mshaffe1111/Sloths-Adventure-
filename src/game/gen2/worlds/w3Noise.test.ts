@@ -393,3 +393,37 @@ test('ENG-DROP: a designed drop not in view is refused BY NAME: wood across its 
   const deep = { ...floor, y: top.y + 700 } as Platform;
   assert.match(dropSeen(top, deep, st.platforms.map((p) => (p === floor ? deep : p))) ?? '', /^falls 700 px, past what the view shows under him/, 'a 700 px fall: named');
 });
+
+/** the moss toy's FINISHED fall on every roll of 3-2 that lays it (seeds 1-40, both settings): its floor (the quiet DROP_W piece inside the
+ *  section's span) under its top (the piece 8-20 px before it); and every refusal of a fall not its declared depth, by name */
+const fallsOf = () => {
+  const off: string[] = [], named: string[] = [];
+  let laid = 0;
+  for (const difficulty of ['normal', 'easy'] as const) for (let seed = 1; seed <= 40; seed++) {
+    let st: ReturnType<typeof buildGen2Stage>;
+    try { st = buildGen2Stage({ config: along, kit: kitOf('moss'), seed, difficulty }); } catch { continue; }
+    for (const r of st.gen2.repairs ?? []) if (/not its declared/.test(r.note)) named.push(`${difficulty} ${seed}: ${r.note}`);
+    const q = st.gen2.sections.find((z) => z.template === sectionOf('moss').id);
+    if (!q) continue;
+    laid++;
+    const floor = st.platforms.find((p) => p.quiet && p.width >= DROP_W && p.x >= q.x0 - 1 && p.x + p.width <= q.x1 + 1);
+    const top = floor && st.platforms.find((p) => p !== floor && p.y < floor.y && ((g: number) => g >= 8 && g <= 20)(floor.x - (p.x + p.width)));
+    const fall = floor && top ? Math.round(floor.y - top.y) : NaN;
+    if (!(Math.abs(fall - DROP) <= 12)) off.push(`${difficulty} ${seed}: falls ${fall} px`);
+  }
+  return { laid, off, named };
+};
+
+test('PLANTED (ENG-DROP, the lead\'s A): a designed drop whose finished fall is not its declared depth is refused BY NAME (3-2: no laid toy falls past 400 +- 12)', (t) => {
+  const r = fallsOf();
+  t.diagnostic(`3-2 x both: laid ${r.laid} of 80; off its declared depth: [${r.off.join('; ')}]; refused by name: ${r.named.length} [${r.named.slice(0, 3).join(' | ')}]`);
+  assert.deepEqual(r.off, [], 'every laid toy falls its declared 400 px (+- 12)');
+  assert.ok(r.named.length > 0, 'the rolls that fell deeper are refused by name ("falls N px, not its declared 400")');
+  assert.ok(r.laid > 0, 'the toy is still laid');
+  const { st } = built('moss');
+  const e = st.enemies.find((q) => q.type === 'ocelot' && toyFloor(st.platforms, q, W3_OCELOT.footY ?? 0, 'moss'))!;
+  const floor = toyFloor(st.platforms, e, W3_OCELOT.footY ?? 0, 'moss')!;
+  const top = dropTop(st.platforms, floor)!;
+  const deeper = { ...floor, y: top.y + DROP + 131 } as Platform;
+  assert.match(dropSeen(top, deeper, st.platforms.map((p) => (p === floor ? deeper : p)), DROP) ?? '', /^falls 531 px, not its declared 400/, 'a 531 px fall of a declared 400: named');
+});

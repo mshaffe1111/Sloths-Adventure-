@@ -1760,13 +1760,17 @@ export const DROP_LAND = 180;
 /**
  * A designed drop as laid (ENG-DROP, R-165.562): undefined when its landing is in view before the fall, else why not, by name. In view:
  * the fall is within what the camera shows under him (AHEAD.down), no wood lies across the fall from the lip to DROP_LAND past the
- * landing's near end, and the camera's own look from the lip (cameraFollow.ts landingAhead, the code the screen runs) finds the landing.
+ * landing's near end, the camera's own look from the lip (cameraFollow.ts landingAhead, the code the screen runs) finds the landing,
+ * and (given `declared`, its SectionTemplate.drop) the finished fall is its declared depth within DROP_TOL.
  */
-export function dropSeen(top: Platform, floor: Platform, platforms: readonly Platform[]): string | undefined {
+export function dropSeen(top: Platform, floor: Platform, platforms: readonly Platform[], declared?: number): string | undefined {
   const f = floor.x + floor.width / 2 >= top.x + top.width / 2 ? 1 : -1;
   const lip = f > 0 ? top.x + top.width : top.x;
   const fall = Math.round(floor.y - top.y);
   if (fall > AHEAD.down) return `falls ${fall} px, past what the view shows under him (${AHEAD.down} px): a blind drop`;
+  // (a designed drop lands where it was designed to land (the lead's A, ENG-DROP box 2): its finished fall within DROP_TOL of what it
+  // declares, the same tolerance the pick takes for its laid exit; the roll's tempo spreads a 400 px drop 392-407, inside it)
+  if (declared !== undefined && Math.abs(fall - declared) > DROP_TOL) return `falls ${fall} px, not its declared ${declared}`;
   const near = f > 0 ? floor.x : floor.x + floor.width;
   const [lo, hi] = f > 0 ? [lip, Math.max(lip, near) + DROP_LAND] : [Math.min(lip, near) - DROP_LAND, lip];
   const across = platforms.find((p) => p !== top && p !== floor && p.width > 0 && p.y > top.y + 2 && p.y < floor.y - 2 && p.x < hi && p.x + p.width > lo);
@@ -4470,7 +4474,7 @@ export function checkAndRepair(b: Built, budget: StageBudget, repairs: Repair[],
   // (and a designed drop not in view on the finished stage (its landing from its lip, nothing across its fall): swapped by name, never
   // laid blind, ENG-DROP; judged here, once every piece is laid, as the camera will see it)
   for (const d of b.laid.drops ?? []) {
-    const why = dropSeen(d.top, d.floor, st.platforms);
+    const why = dropSeen(d.top, d.floor, st.platforms, d.px);
     if (why) return { ok: false, swap: Number(d.uid.slice(1)) - 1, why: `${d.id}: its designed drop of ${d.px} px ${why}` };
   }
   // (R-165.226: a stone no piece and no move keeps on its ground: its section is swapped)
