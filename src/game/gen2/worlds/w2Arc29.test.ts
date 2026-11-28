@@ -22,6 +22,7 @@ const LINES_KICK = (): string => { const r = DOT_LINES.find((q) => q[0] === KICK
 import { STAGE_TABLE } from './stageTable.ts';
 import { loadSeedList, provenSeeds } from '../seedList.ts';
 import { riverFaults } from '../riverLay.ts';
+import { goalCounts, withGoals } from '../../goals.ts';
 
 const root = path.join(path.dirname(fileURLToPath(import.meta.url)), '..', '..', '..', '..');
 const read = (f: string): string => fs.readFileSync(path.join(root, f), 'utf8');
@@ -45,6 +46,37 @@ await loadSeedList(STAGE_29);
 const LISTED = provenSeeds(STAGE_29);
 test('2-9 has its proven seed list (100 seeds)', () => assert.ok(LISTED.length >= 100, `${LISTED.length} listed seeds`));
 const BOTH = ['normal', 'easy'] as const;
+/** Matt's goal band on Normal (groundwork.test.ts "goals: every hand-built stage ..."): a gauntlet asks 70-80% of the animals it counts,
+ *  with the same slack for a small count's nearest whole number; Easy asks no more than Normal. A fault line, or '' in the band */
+function goalBandFault(g: Any): string {
+  const have = goalCounts(g).animals;
+  if (!have) return `no animals counted for a ${cfg.objectiveType} goal`;
+  const share = g.config.targetCount / have;
+  const slack = 0.5 / have + 0.005;
+  if (share < 0.7 - slack || share > 0.8 + slack) return `goal ${g.config.targetCount} of ${have} animals, outside 70-80%`;
+  if ((g.easyGoal ?? 0) > g.config.targetCount) return `Easy asks ${g.easyGoal}, more than Normal's ${g.config.targetCount}`;
+  return '';
+}
+test("2-9's Normal goal lands in Matt's band (70-80% of the animals) on EVERY listed seed, as Play builds it (withGoals), and an off-band goal is named", () => {
+  // (the check MOVED here from groundwork.test.ts:71, Law 22, BUILD-29-o: the hand-built 2-9 (23 of 30) was one of the six stages that
+  //  test counted, and its deletion (2cb7b0a4a, BUILD-29-f) left the gen2 2-9's goal judged nowhere; on t-build-29 f4e77273 it checked 5)
+  assert.equal(cfg.objectiveType, 'gauntlet');
+  let judged = 0;
+  for (const s of LISTED) {
+    const g = withGoals(built(s, 'normal'));
+    assert.equal(goalBandFault(g), '', `normal seed ${s}`);
+    judged++;
+  }
+  assert.equal(judged, LISTED.length, `${judged} listed seeds judged`);
+  // (the plants: the same build asking all seven, or three; the band must name both)
+  const g = withGoals(built(1, 'normal'));
+  const have = goalCounts(g).animals;
+  for (const n of [have, 3]) {
+    const planted = { ...g, config: { ...g.config, targetCount: n } };
+    assert.match(goalBandFault(planted), /outside 70-80%/, `a goal of ${n} of ${have} is named`);
+  }
+  assert.match(goalBandFault({ ...g, easyGoal: g.config.targetCount + 1 }), /more than Normal/, 'an Easy goal over Normal is named');
+});
 
 test("2-9's lines are the story keeper's, word for word (reference/story/lines-2-9.md, KEEPER-23-29 t-keeper-23-29), and the game says them", () => {
   const md = read('reference/story/lines-2-9.md');

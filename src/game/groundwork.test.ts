@@ -87,7 +87,10 @@ test('goals: every hand-built stage of Worlds 1-4 with a count lands in Matt\'s 
     assert.ok((st.easyGoal ?? 0) <= st.config.targetCount, `${c.id}: Easy asks no more than Normal`);
     checked++;
   }
-  assert.ok(checked >= 6, `${checked} stages checked`);
+  // (5, not 6, since BUILD-29-o: the hand-built 2-9 left W2_STAGES for gen2 (2cb7b0a4a, BUILD-29-f), so its goal is judged where its stage
+  //  is built now: w2Arc29.test.ts "2-9's Normal goal lands in Matt's band", on every listed seed, with plants. The hand path holds 2-8,
+  //  3-3, 3-9, 4-8 and 4-9, the same counts as on main 49fdc8cb6)
+  assert.ok(checked >= 5, `${checked} stages checked`);
 });
 
 // ───────────────────────────── crumbling platforms ─────────────────────────────
