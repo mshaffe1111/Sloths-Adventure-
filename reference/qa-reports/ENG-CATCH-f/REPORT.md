@@ -53,7 +53,9 @@ lead reads them). Candidate 049a20abc is frozen and every gate but the rows is g
      FAIL->PASS rows share the family (trace each the same way), and the stills of each spot, both trees, upright.
    - FAIL->PASS child EASY 5 (one of the 4; the trace reproduces both rows: base 163.9 s, 1 rescue; cand 217.7 s, 0): the runs part at
      46.133 s, both on id 18 at y 8536: the candidate stops at x 667.2 (base walks on: 665.9, 656.4, 647.5). The same piece id on both
-     trees, so whether a seam is near is UNVERIFIED (print the wood at y 8536 on both trees, x 400-900). proof-l/trace/path-ce5-*.gz.
+     trees; the wood at y 8536 (proof-l/trace/wood-ce5-*): base 0-777 + 77-677 (overlapping) + 777-1017; cand 77-677 + 677-777 (the trim's
+     remnant) + 777-1017. He stops 10 px past the flush seam at x 677: THE SAME FAMILY, here turning a FAIL into a PASS. So the seam
+     pause moves rows BOTH ways (a timing shift, no route lost on the 4 rows traced): the class reads (ii), made by the tower's trims.
    - Also say whether the 4 FAIL->PASS rows (child easy 5, child normal 10, expert normal 13, kid normal 16) share the cause family
      (trace each the same way).
    - Stills of each rescue spot, both trees, upright, looked at first (proof-j's shoot14.mjs, scratch-fixed in proof-l to wait for
